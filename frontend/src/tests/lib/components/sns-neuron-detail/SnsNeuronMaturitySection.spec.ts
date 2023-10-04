@@ -3,26 +3,25 @@
  */
 
 import SnsNeuronMaturitySection from "$lib/components/sns-neuron-detail/SnsNeuronMaturitySection.svelte";
-import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { SnsNeuronMaturitySectionPo } from "$tests/page-objects/SnsNeuronMaturitySection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { SnsNeuron } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
-import NeuronContextActionsTest from "./SnsNeuronContextTest.svelte";
 
 describe("SnsNeuronMaturitySection", () => {
+  const feeE8s = 10_000n;
   const mockNeuron = createMockSnsNeuron({
     id: [1],
     stakedMaturity: 100_000_000n,
     maturity: 214_000_000n,
+    activeDisbursementsE8s: [200_000_000n],
   });
   const renderComponent = (neuron: SnsNeuron) => {
-    const { container } = render(NeuronContextActionsTest, {
+    const { container } = render(SnsNeuronMaturitySection, {
       props: {
         neuron,
-        rootCanisterId: mockCanisterId,
-        testComponent: SnsNeuronMaturitySection,
+        feeE8s,
       },
     });
 
@@ -34,7 +33,7 @@ describe("SnsNeuronMaturitySection", () => {
   it("should render total maturity", async () => {
     const po = renderComponent(mockNeuron);
 
-    expect(await po.getTotalMaturity()).toBe("3.14");
+    expect(await po.getTotalMaturity()).toBe("5.14");
   });
 
   it("should render item actions", async () => {

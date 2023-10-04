@@ -7,11 +7,10 @@ import {
   sortedSnsUserNeuronsStore,
 } from "$lib/derived/sns/sns-sorted-neurons.derived";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import { snsResponsesFor } from "$tests/mocks/sns-response.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
@@ -23,14 +22,16 @@ describe("sortedSnsNeuronStore", () => {
 
   beforeEach(() => {
     snsNeuronsStore.reset();
-    snsQueryStore.reset();
-
-    snsQueryStore.setData(
-      snsResponsesFor([
-        { principal: mockPrincipal, lifecycle: SnsSwapLifecycle.Committed },
-        { principal: principal2, lifecycle: SnsSwapLifecycle.Committed },
-      ])
-    );
+    setSnsProjects([
+      {
+        rootCanisterId: mockPrincipal,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+      {
+        rootCanisterId: principal2,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+    ]);
   });
 
   it("returns an empty array if no neurons", () => {

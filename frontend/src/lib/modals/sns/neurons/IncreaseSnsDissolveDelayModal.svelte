@@ -7,7 +7,10 @@
   } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
   import type { SnsNeuron } from "@dfinity/sns";
-  import { getSnsLockedTimeInSeconds } from "$lib/utils/sns-neuron.utils";
+  import {
+    getSnsDissolvingTimeInSeconds,
+    getSnsLockedTimeInSeconds,
+  } from "$lib/utils/sns-neuron.utils";
   import ConfirmSnsDissolveDelay from "$lib/components/sns-neurons/ConfirmSnsDissolveDelay.svelte";
   import type { Token } from "@dfinity/utils";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
@@ -37,7 +40,11 @@
   let currentStep: WizardStep | undefined;
   let modal: WizardModal;
 
-  let delayInSeconds = Number(getSnsLockedTimeInSeconds(neuron) ?? 0n);
+  let delayInSeconds = Number(
+    getSnsLockedTimeInSeconds(neuron) ??
+      getSnsDissolvingTimeInSeconds(neuron) ??
+      0n
+  );
 
   $: if ($snsOnlyProjectStore !== undefined) {
     loadSnsParameters($snsOnlyProjectStore);
@@ -78,7 +85,13 @@
   };
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal
+  {steps}
+  bind:currentStep
+  bind:this={modal}
+  on:nnsClose
+  testId="increase-sns-dissolve-delay-modal-component"
+>
   <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
   {#if currentStep?.name === "SetSnsDissolveDelay"}
     <SetSnsDissolveDelay

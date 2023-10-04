@@ -1,3 +1,4 @@
+import { MATURITY_MODULATION_VARIANCE_PERCENTAGE } from "$lib/constants/neurons.constants";
 import {
   HOTKEY_PERMISSIONS,
   MANAGE_HOTKEY_PERMISSIONS,
@@ -15,6 +16,7 @@ import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, Vote, type E8s, type NeuronInfo } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import type { SnsNeuronId } from "@dfinity/sns";
 import {
   SnsNeuronPermissionType,
@@ -69,7 +71,7 @@ export const getSnsNeuronState = ({
   return NeuronState.Unspecified;
 };
 
-export const getSnsDissolvingTimeInSeconds = (
+export const getSnsDissolvingTimestampSeconds = (
   neuron: SnsNeuron
 ): bigint | undefined => {
   const neuronState = getSnsNeuronState(neuron);
@@ -79,8 +81,17 @@ export const getSnsDissolvingTimeInSeconds = (
     dissolveState !== undefined &&
     "WhenDissolvedTimestampSeconds" in dissolveState
   ) {
-    return dissolveState.WhenDissolvedTimestampSeconds - BigInt(nowInSeconds());
+    return dissolveState.WhenDissolvedTimestampSeconds;
   }
+};
+
+export const getSnsDissolvingTimeInSeconds = (
+  neuron: SnsNeuron
+): bigint | undefined => {
+  const dissolvingTimestamp = getSnsDissolvingTimestampSeconds(neuron);
+  return nonNullish(dissolvingTimestamp)
+    ? dissolvingTimestamp - BigInt(nowInSeconds())
+    : undefined;
 };
 
 export const getSnsLockedTimeInSeconds = (
@@ -265,6 +276,21 @@ export const hasPermissionToStakeMaturity = ({
     identity,
     permissions: [
       SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_STAKE_MATURITY,
+    ],
+  });
+
+export const hasPermissionToDisburseMaturity = ({
+  neuron,
+  identity,
+}: {
+  neuron: SnsNeuron;
+  identity: Identity | undefined | null;
+}): boolean =>
+  hasPermissions({
+    neuron,
+    identity,
+    permissions: [
+      SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_DISBURSE_MATURITY,
     ],
   });
 
@@ -463,12 +489,11 @@ export const formattedMaturity = (
  * Format the sum of the maturity in a value (token "currency") way.
  * @param {SnsNeuron} neuron The neuron that contains the `maturity_e8s_equivalent` and `staked_maturity_e8s_equivalent` which will be summed and formatted
  */
-export const formattedTotalMaturity = (
-  neuron: SnsNeuron | null | undefined
-): string =>
+export const formattedTotalMaturity = (neuron: SnsNeuron): string =>
   formatToken({
     value:
-      (neuron?.maturity_e8s_equivalent ?? BigInt(0)) +
+      neuron.maturity_e8s_equivalent +
+      totalDisbursingMaturity(neuron) +
       (fromNullable(neuron?.staked_maturity_e8s_equivalent ?? []) ?? BigInt(0)),
   });
 
@@ -479,6 +504,20 @@ export const formattedTotalMaturity = (
 export const hasEnoughMaturityToStake = (
   neuron: SnsNeuron | null | undefined
 ): boolean => (neuron?.maturity_e8s_equivalent ?? BigInt(0)) > BigInt(0);
+
+/**
+ * Is the maturity of the neuron bigger than the minimum amount to disburse?
+ * @param {SnsNeuron} neuron
+ * @param {bigint} feeE8s
+ */
+export const hasEnoughMaturityToDisburse = ({
+  neuron: { maturity_e8s_equivalent },
+  feeE8s,
+}: {
+  feeE8s: bigint;
+  neuron: SnsNeuron;
+}): boolean =>
+  maturity_e8s_equivalent >= minimumAmountToDisburseMaturity(feeE8s);
 
 /**
  * Does the neuron has staked maturity?
@@ -622,6 +661,8 @@ export const neuronAge = ({
  * Returns the sns neuron voting power
  * voting_power = neuron's_stake * dissolve_delay_bonus * age_bonus * voting_power_multiplier
  * The backend logic: https://gitlab.com/dfinity-lab/public/ic/-/blob/07ce9cef07535bab14d88f3f4602e1717be6387a/rs/sns/governance/src/neuron.rs#L158
+ *
+ * Returns 0 if the neuron is not eligible to vote.
  *
  * @param {SnsNeuron} neuron
  * @param {SnsNervousSystemParameters} neuron.snsParameters
@@ -923,3 +964,30 @@ export const vestingInSeconds = ({
  */
 export const isVesting = (neuron: SnsNeuron): boolean =>
   vestingInSeconds(neuron) > 0n;
+
+export const neuronDashboardUrl = ({
+  neuron,
+  rootCanisterId,
+}: {
+  neuron: SnsNeuron;
+  rootCanisterId: Principal;
+}) =>
+  `https://dashboard.internetcomputer.org/sns/${rootCanisterId.toText()}/neuron/${getSnsNeuronIdAsHexString(
+    neuron
+  )}`;
+
+export const totalDisbursingMaturity = ({
+  disburse_maturity_in_progress,
+}: SnsNeuron): bigint =>
+  disburse_maturity_in_progress.reduce(
+    (acc, disbursement) => acc + disbursement.amount_e8s,
+    BigInt(0)
+  );
+
+/**
+ * The governance canister checks that the amount to disburse in the worst case (of the maturity modulation) is bigger than the transaction fee.
+ *
+ * Source: https://sourcegraph.com/github.com/dfinity/ic/-/blob/rs/sns/governance/src/governance.rs?L1651
+ */
+export const minimumAmountToDisburseMaturity = (fee: bigint): bigint =>
+  BigInt(Math.ceil(Number(fee) / MATURITY_MODULATION_VARIANCE_PERCENTAGE));

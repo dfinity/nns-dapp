@@ -1,11 +1,12 @@
+import { queryProposals } from "$lib/api/proposals.api";
 import { querySnsProjects } from "$lib/api/sns-aggregator.api";
 import { getNervousSystemFunctions } from "$lib/api/sns-governance.api";
 import { buildAndStoreWrapper } from "$lib/api/sns-wrapper.api";
-import { queryAllSnsMetadata, querySnsSwapStates } from "$lib/api/sns.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
-import { loadProposalsByTopic } from "$lib/services/$public/proposals.services";
+import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { i18n } from "$lib/stores/i18n";
+import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
 import { snsProposalsStore, snsQueryStore } from "$lib/stores/sns.store";
@@ -17,7 +18,9 @@ import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
 import { isForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
-import { Topic, type ProposalInfo } from "@dfinity/nns";
+import { convertDtoData } from "$lib/utils/sns-aggregator-converters.utils";
+import { convertDerivedStateResponseToDerivedState } from "$lib/utils/sns.utils";
+import { ProposalStatus, Topic, type ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
 import { nonNullish, toNullable } from "@dfinity/utils";
@@ -26,7 +29,9 @@ import { getCurrentIdentity } from "../auth.services";
 
 export const loadSnsProjects = async (): Promise<void> => {
   try {
-    const cachedSnses = await querySnsProjects();
+    const aggregatorData = await querySnsProjects();
+    snsAggregatorStore.setData(aggregatorData);
+    const cachedSnses = convertDtoData(aggregatorData);
     const identity = getCurrentIdentity();
     // We load the wrappers to avoid making calls to SNS-W and Root canister for each project.
     // The SNS Aggregator gives us the canister ids of the SNS projects.
@@ -73,7 +78,13 @@ export const loadSnsProjects = async (): Promise<void> => {
         ),
         indexCanisterId: Principal.fromText(sns.canister_ids.index_canister_id),
         swap: toNullable(sns.swap_state.swap),
-        derived: toNullable(sns.swap_state.derived),
+        // The endpoint `get_state` and `get_derived_state` return different fields and decimal precision.
+        // * `sns.swap_state` is the response from `get_state`
+        // * `sns.derived_state` is the response from `get_derived_state`
+        // We want to use the info in `derived_state` immediately instead of changing it afterwards to avoid having a partial different data in the snsQueryStore.
+        derived: toNullable(
+          convertDerivedStateResponseToDerivedState(sns.derived_state)
+        ),
       })),
     ];
     snsQueryStore.setData(snsQueryStoreData);
@@ -120,56 +131,15 @@ export const loadSnsProjects = async (): Promise<void> => {
           {} as TokensStoreData
         )
     );
-    cachedSnses.forEach(
-      ({ canister_ids: { root_canister_id }, derived_state }) => {
-        snsQueryStore.updateDerivedState({
-          rootCanisterId: root_canister_id,
-          derivedState: derived_state,
-        });
-      }
-    );
     // TODO: PENDING to be implemented, load SNS parameters.
   } catch (err) {
-    // If aggregator canister fails, fallback to the old way
-    // TODO: Agree on whether we want to fallback or not.
-    // If the error is due to overload of the system, we might not want the fallback.
-    // This is useful if the error comes from the aggregator canister only.
-    await loadSnsSummaries();
+    toastsError(
+      toToastError({
+        err,
+        fallbackErrorLabelKey: "error__sns.list_summaries",
+      })
+    );
   }
-};
-
-export const loadSnsSummaries = (): Promise<void> => {
-  snsQueryStore.reset();
-
-  return queryAndUpdate<[QuerySnsMetadata[], QuerySnsSwapState[]], unknown>({
-    identityType: "anonymous",
-    strategy: FORCE_CALL_STRATEGY,
-    request: ({ certified, identity }) =>
-      Promise.all([
-        queryAllSnsMetadata({ certified, identity }),
-        querySnsSwapStates({ certified, identity }),
-      ]),
-    onLoad: ({ response }) => snsQueryStore.setData(response),
-    onError: ({ error: err, certified, identity }) => {
-      console.error(err);
-
-      if (
-        certified ||
-        identity.getPrincipal().isAnonymous() ||
-        isForceCallStrategy()
-      ) {
-        snsQueryStore.reset();
-
-        toastsError(
-          toToastError({
-            err,
-            fallbackErrorLabelKey: "error__sns.list_summaries",
-          })
-        );
-      }
-    },
-    logMessage: "Syncing Sns summaries",
-  });
 };
 
 export const loadProposalsSnsCF = async (): Promise<void> => {
@@ -178,10 +148,18 @@ export const loadProposalsSnsCF = async (): Promise<void> => {
   return queryAndUpdate<ProposalInfo[], unknown>({
     identityType: "anonymous",
     strategy: FORCE_CALL_STRATEGY,
-    request: ({ certified }) =>
-      loadProposalsByTopic({
+    request: ({ certified, identity }) =>
+      queryProposals({
+        beforeProposal: undefined,
+        identity,
+        filters: {
+          topics: [Topic.SnsAndCommunityFund],
+          rewards: [],
+          status: [ProposalStatus.Open],
+          excludeVotedProposals: false,
+          lastAppliedFilter: undefined,
+        },
         certified,
-        topic: Topic.SnsAndCommunityFund,
       }),
     onLoad: ({ response: proposals, certified }) =>
       snsProposalsStore.setProposals({
@@ -214,9 +192,10 @@ export const loadProposalsSnsCF = async (): Promise<void> => {
 export const loadSnsNervousSystemFunctions = async (
   rootCanisterId: Principal
 ) => {
-  const store = get(snsFunctionsStore);
-  // Avoid loading the same data multiple times if the data loaded is certified
-  if (store[rootCanisterId.toText()]?.certified) {
+  const store = createSnsNsFunctionsProjectStore(rootCanisterId);
+  const storeData = get(store);
+  // Avoid loading the same data multiple times if the data is loaded
+  if (nonNullish(storeData)) {
     return;
   }
 

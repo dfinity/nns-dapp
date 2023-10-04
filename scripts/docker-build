@@ -81,7 +81,7 @@ set -x
 docker build --target check-environment .
 
 if DOCKER_BUILDKIT=1 docker build \
-  --target scratch \
+  --target "$DFX_TARGET" \
   "$PROGRESS" \
   --build-arg DFX_NETWORK="$DFX_NETWORK" \
   --build-arg COMMIT="$COMMIT" \

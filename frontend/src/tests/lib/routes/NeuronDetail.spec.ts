@@ -2,25 +2,28 @@
  * @jest-environment jsdom
  */
 
+import * as agent from "$lib/api/agent.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import NeuronDetail from "$lib/routes/NeuronDetail.svelte";
 import { loadSnsProjects } from "$lib/services/$public/sns.services";
-import { snsQueryStore } from "$lib/stores/sns.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { page } from "$mocks/$app/stores";
 import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
 import * as fakeSnsAggregatorApi from "$tests/fakes/sns-aggregator-api.fake";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import * as fakeSnsLedgerApi from "$tests/fakes/sns-ledger-api.fake";
-import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { resetSnsProjects } from "$tests/utils/sns.test-utils";
+import type { HttpAgent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
+import { mock } from "jest-mock-extended";
 
 jest.mock("$lib/api/sns-aggregator.api");
 jest.mock("$lib/api/governance.api");
@@ -42,7 +45,9 @@ describe("NeuronDetail", () => {
   fakeSnsAggregatorApi.install();
 
   beforeEach(() => {
-    snsQueryStore.reset();
+    resetIdentity();
+    resetSnsProjects();
+    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   describe("nns neuron", () => {
@@ -118,10 +123,8 @@ describe("NeuronDetail", () => {
       // Load SNS projects after rendering to make sure we don't load
       // NnsNeuronDetail instead, which was a bug we had.
       await loadSnsProjects();
-      expect(await po.isContentLoaded()).toBe(false);
-      await waitFor(async () => {
-        expect(await po.isContentLoaded()).toBe(true);
-      });
+      expect(await po.isContentLoaded()).toBe(true);
+
       expect(await po.hasNnsNeuronDetailPo()).toBe(false);
       expect(await po.hasSnsNeuronDetailPo()).toBe(true);
       expect(await po.getSnsNeuronDetailPo().isContentLoaded()).toBe(true);

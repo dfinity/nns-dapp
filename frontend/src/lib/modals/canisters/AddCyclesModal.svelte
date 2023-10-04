@@ -1,7 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher, getContext, onMount } from "svelte";
   import type { Principal } from "@dfinity/principal";
-  import NnsSelectAccount from "$lib/components/accounts/NnsSelectAccount.svelte";
   import ConfirmCyclesCanister from "$lib/components/canisters/ConfirmCyclesCanister.svelte";
   import SelectCyclesCanister from "$lib/components/canisters/SelectCyclesCanister.svelte";
   import {
@@ -27,8 +26,10 @@
   import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
   import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
   import { valueSpan } from "$lib/utils/utils";
-  import TransactionSource from "$lib/components/transaction/TransactionSource.svelte";
   import { ICPToken } from "@dfinity/utils";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import TransactionFromAccount from "$lib/components/transaction/TransactionFromAccount.svelte";
+  import { filterHardwareWalletAccounts } from "$lib/utils/accounts.utils";
 
   let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {
@@ -37,12 +38,8 @@
 
   const steps: WizardSteps = [
     {
-      name: "SelectAccount",
-      title: $i18n.canister_detail.top_up_canister,
-    },
-    {
       name: "SelectCycles",
-      title: $i18n.canisters.enter_amount,
+      title: $i18n.canister_detail.top_up_canister,
     },
     {
       name: "ConfirmCycles",
@@ -61,13 +58,6 @@
   $: canisterId = $store.info?.canister_id;
   let canisterName: string | undefined;
   $: canisterName = $store.info?.name;
-
-  const onSelectAccount = ({
-    detail,
-  }: CustomEvent<{ selectedAccount: Account }>) => {
-    account = detail.selectedAccount;
-    modal.next();
-  };
 
   const selectAmount = () => {
     modal.next();
@@ -114,19 +104,23 @@
     ></svelte:fragment
   >
   <svelte:fragment>
-    {#if currentStep?.name === "SelectAccount"}
-      <NnsSelectAccount
-        hideHardwareWalletAccounts
-        on:nnsSelectAccount={onSelectAccount}
-      />
-    {/if}
-    {#if currentStep?.name === "SelectCycles" && account !== undefined}
+    {#if currentStep?.name === "SelectCycles"}
+      <div class="from">
+        <TransactionFromAccount
+          bind:selectedAccount={account}
+          canSelectSource={true}
+          rootCanisterId={OWN_CANISTER_ID}
+          token={ICPToken}
+          filterAccounts={filterHardwareWalletAccounts}
+        />
+      </div>
       <SelectCyclesCanister
         {icpToCyclesExchangeRate}
         bind:amount
         on:nnsClose
         on:nnsBack={() => modal.back()}
         on:nnsSelectAmount={selectAmount}
+        backAction={false}
       >
         <svelte:fragment slot="select-amount"
           >{$i18n.canisters.review_cycles_purchase}</svelte:fragment
@@ -140,10 +134,6 @@
             })}
           />
         </p>
-        <div>
-          <TransactionSource {account} token={ICPToken} />
-        </div>
-        <CanisterIdInfo {canisterId} />
       </SelectCyclesCanister>
     {/if}
     {#if currentStep?.name === "ConfirmCycles" && amount !== undefined && account !== undefined}
@@ -161,3 +151,9 @@
     {/if}
   </svelte:fragment>
 </WizardModal>
+
+<style lang="scss">
+  .from {
+    margin: 0 0 var(--padding-3x);
+  }
+</style>

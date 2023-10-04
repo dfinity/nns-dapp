@@ -15,11 +15,11 @@ environment. The following steps _should_ build the official Wasm image.
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   ```
 - [Bash](https://www.gnu.org/software/bash/) is a popular shell that we use to execute scripts.
-    - Check which version of bash you have installed:
-      ```sh
-      bash --version
-      ```
-    - If you have version 5 or newer, your installation is up to date. If you have an old version, such as 3, [please upgrade](https://itnext.io/upgrading-bash-on-macos-7138bd1066ba).
+  - Check which version of bash you have installed:
+    ```sh
+    bash --version
+    ```
+  - If you have version 5 or newer, your installation is up to date. If you have an old version, such as 3, [please upgrade](https://itnext.io/upgrading-bash-on-macos-7138bd1066ba).
 - [Git](https://git-scm.com/) is a distributed version control tool. Please install it with:
   ```sh
   brew install git
@@ -27,11 +27,11 @@ environment. The following steps _should_ build the official Wasm image.
 - [Docker](https://www.docker.com/) is a container environment. It lets you build the nns-dapp code in a sandbox, fairly reliably, and without you having to install a lot of custom tools that you may not trust. Please use [one of the official installers](https://docs.docker.com/get-docker/).
 - [Docker buildx](https://github.com/docker/buildx) is an extension that makes it easier to compile under docker. `buildx` is included in the standard docker installer for Mac desktops. If you have installed docker for an os-x server, please follow [the official guide](https://docs.docker.com/build/install-buildx/).
 - [Rosetta]() allows Mac M1 and M2 processors to run programs that use the AMD64 instruction set. If you have an M1 or M2 CPU, please:
-    - Install rosetta:
-      ```sh
-      softwareupdate --install-rosetta
-      ```
-    - Restart your laptop.
+  - Install Rosetta:
+    ```sh
+    softwareupdate --install-rosetta
+    ```
+  - Restart your laptop.
 
 #### Ubuntu Linux
 
@@ -76,8 +76,8 @@ When you have the tools installed, you can build the container with:
   git checkout THE_COMMIT
   ```
 - Verify that docker is running. If not, please start it.
-    - Mac: Press cmd+space and enter docker
-    - Ubuntu: `pgrep docker || sudo systemctl start docker`
+  - Mac: Press cmd+space and enter docker
+  - Ubuntu: `pgrep docker || sudo systemctl start docker`
 - Now you can build:
   ```sh
   ./scripts/docker-build
@@ -93,6 +93,21 @@ The resulting `nns-dapp.wasm.gz` is ready for deployment as
 Our CI also performs these steps; you can compare the SHA256 with the output there, or download the artifact from [a release](https://github.com/dfinity/nns-dapp/releases?q=proposal&expanded=true).
 
 TODO: When we make a proposal, we should have a corresponding release that voters can download. E.g. https://github.com/dfinity/nns-dapp/releases/tag/release-candidate exists but it doesn't have build artefacts.
+
+### Build flavors
+
+The build creates several different `nns-dapp` and `sns_aggregator` Wasms. These builds target specific use cases:
+
+| Flavor     | Description                                                                                                                                                                                                                                            |     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :-: |
+| Production | This is the production build deployed to https://nns.ic0.app                                                                                                                                                                                           |
+| Dev        | This is a build for testing integration with third party canisters. If you wish to include `nns-dapp` or the `sns_aggregator` in your CI, this build is designed to make your testing easy and convenient.                                             |
+| Test       | This is a build for testing internal functionality. If you are changing `nns-dapp` or `sns_aggregator` functionality and need to access or modify the internal state of the nns-dapp to test, this is the build for you.                               |
+| Noassets   | This is a build of the nns-dapp that does not include web assets. This reduces the size of the Wasm, which may be convenient in some test scenarios. Note that web assets can be uploaded to the nns-dapp after deployment by the canister controller. |
+
+TODO: Document how to make the `sns_aggregator` collect data quickly.
+
+TODO: Document how to create accounts in the nns-dapp.
 
 ## Development
 

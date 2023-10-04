@@ -1,6 +1,7 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
+import userEvent from "@testing-library/user-event";
 
 const SELF_SELECTOR = ":scope";
 
@@ -130,21 +131,48 @@ export class JestPageObjectElement implements PageObjectElement {
     return this.element && Array.from(this.element.classList);
   }
 
+  async isChecked(): Promise<boolean> {
+    if ("checked" in this.element) {
+      // TS doesn't know that the "checked" property is of type boolean
+      return this.element.checked as boolean;
+    }
+    throw new Error(
+      `"checked" property is not supported for element: "${this.element.tagName}"`
+    );
+  }
+
   async click(): Promise<void> {
     await this.waitFor();
     await fireEvent.click(this.element);
   }
 
-  async typeText(text: string): Promise<void> {
+  async input(value: string): Promise<void> {
     await this.waitFor();
     // Svelte generates code for listening to the `input` event, not the `change` event in input fields.
     // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-    await fireEvent.input(this.element, { target: { value: text } });
+    await fireEvent.input(this.element, { target: { value } });
   }
 
-  async selectOption(_text: string): Promise<void> {
-    throw new Error("Not implemented");
-    // Not tested:
-    // userEvent.selectOption(this.element, text);
+  async typeText(text: string): Promise<void> {
+    return this.input(text);
+  }
+
+  async selectOption(text: string): Promise<void> {
+    await this.waitFor();
+    return userEvent.selectOptions(this.element, text);
+  }
+
+  async isVisible(): Promise<boolean> {
+    try {
+      expect(this.element).toBeVisible();
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async blur(): Promise<void> {
+    await this.waitFor();
+    await fireEvent.blur(this.element);
   }
 }

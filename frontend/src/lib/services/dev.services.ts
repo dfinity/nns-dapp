@@ -10,7 +10,7 @@ import {
   snsAccountsStore,
   type SnsAccountsStoreData,
 } from "$lib/stores/sns-accounts.store";
-import type { Account } from "$lib/types/account";
+import type { IcpAccount } from "$lib/types/account";
 import type { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
@@ -19,7 +19,7 @@ import { loadSnsAccounts } from "./sns-accounts.services";
 
 export const getTestBalance = getTestAccountBalance;
 
-const getMainAccount = async (): Promise<Account> => {
+const getMainAccount = async (): Promise<IcpAccount> => {
   const { main }: IcpAccountsStoreData = get(icpAccountsStore);
   if (nonNullish(main)) {
     return main;

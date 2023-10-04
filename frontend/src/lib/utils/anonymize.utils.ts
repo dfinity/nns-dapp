@@ -12,7 +12,7 @@ import type {
   SnsSummarySwap,
   SnsSwapCommitment,
 } from "$lib/types/sns";
-import type { IcrcTransaction } from "@dfinity/ledger";
+import type { IcrcTransaction } from "@dfinity/ledger-icrc";
 import type {
   Ballot,
   Followees,
@@ -321,6 +321,7 @@ const anonymizeSnsTransaction = async (
     burn: await anonymizeTransfer(tx.burn as TransferOpt),
     mint: await anonymizeTransfer(tx.mint as TransferOpt),
     transfer: await anonymizeTransfer(tx.transfer as TransferOpt),
+    approve: await anonymizeTransfer(tx.approve as TransferOpt),
   };
 };
 

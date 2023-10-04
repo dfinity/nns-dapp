@@ -5,7 +5,7 @@
   import { ProgressBar } from "@dfinity/gix-components";
 
   export let max: bigint;
-  export let value: bigint;
+  export let participationE8s: bigint;
   export let minimumIndicator: bigint | undefined = undefined;
 
   let width: number | undefined;
@@ -16,7 +16,12 @@
       : undefined;
 </script>
 
-<ProgressBar max={Number(max)} value={Number(value)} color="warning">
+<ProgressBar
+  max={Number(max)}
+  value={Number(participationE8s)}
+  color="warning"
+  testId="commitment-progress-bar-component"
+>
   <div class="info" slot="top">
     <p class="right">
       <span>

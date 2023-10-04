@@ -62,7 +62,7 @@
 
   <div class="transaction">
     <KeyValuePair>
-      <h3 slot="key" class="value title">{headline}</h3>
+      <h3 slot="key" class="value title" data-tid="headline">{headline}</h3>
 
       <AmountDisplay
         slot="value"
@@ -163,7 +163,7 @@
       color: var(--positive-emphasis);
 
       &.send {
-        background: var(--card-background);
+        background: var(--background);
         color: var(--disable-contrast);
       }
     }

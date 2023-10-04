@@ -1,3 +1,4 @@
+use crate::accounts_store::histogram::AccountsStoreHistogram;
 use crate::accounts_store::{
     AccountDetails, AddPendingNotifySwapRequest, AddPendingTransactionResponse, AttachCanisterRequest,
     AttachCanisterResponse, CreateSubAccountResponse, DetachCanisterRequest, DetachCanisterResponse,
@@ -12,10 +13,13 @@ use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
 pub use candid::{CandidType, Deserialize};
 use dfn_candid::{candid, candid_one};
-use dfn_core::{api::trap_with, over, over_async, stable};
+use dfn_core::{over, over_async};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use icp_ledger::AccountIdentifier;
 pub use serde::Serialize;
+
+#[cfg(any(test, feature = "toy_data_gen"))]
+use ic_base_types::PrincipalId;
 
 mod accounts_store;
 mod arguments;
@@ -27,7 +31,6 @@ mod metrics_encoder;
 mod multi_part_transactions_processor;
 mod perf;
 mod periodic_tasks_runner;
-mod proposals;
 mod state;
 mod stats;
 mod time;
@@ -43,7 +46,7 @@ fn init(args: Option<CanisterArguments>) {
     perf::record_instruction_count("init stop");
 }
 
-/// Redundant function, never called but reqired as this is main.rs.
+/// Redundant function, never called but required as this is `main.rs`.
 fn main() {}
 
 #[pre_upgrade]
@@ -55,8 +58,7 @@ fn pre_upgrade() {
         stats::gibibytes(stats::wasm_memory_size_bytes())
     ));
     STATE.with(|s| {
-        let bytes = s.encode();
-        stable::set(&bytes);
+        s.pre_upgrade();
     });
     dfn_core::api::print(format!(
         "pre_upgrade instruction_counter after saving state: {} stable_memory_size_gib: {} wasm_memory_size_gib: {}",
@@ -73,13 +75,7 @@ fn post_upgrade(args: Option<CanisterArguments>) {
     // as the storage is about to be wiped out and replaced with stable memory.
     let counter_before = PerformanceCount::new("post_upgrade start");
     STATE.with(|s| {
-        let bytes = stable::get();
-        let new_state = State::decode(bytes).unwrap_or_else(|e| {
-            trap_with(&format!("Decoding stable memory failed. Error: {e:?}"));
-            unreachable!();
-        });
-
-        s.replace(new_state);
+        s.replace(State::post_upgrade());
     });
     perf::save_instruction_count(counter_before);
     perf::record_instruction_count("post_upgrade after state_recovery");
@@ -129,7 +125,7 @@ fn add_account_impl() -> AccountIdentifier {
 
 /// Returns a page of transactions for a given `AccountIdentifier`.
 ///
-/// The `AccountIdentifier` must be linked to the caller's account, else an empty Vec will be
+/// The `AccountIdentifier` must be linked to the caller's account, else an empty `Vec` will be
 /// returned.
 #[export_name = "canister_query get_transactions"]
 pub fn get_transactions() {
@@ -177,7 +173,7 @@ fn rename_sub_account_impl(request: RenameSubAccountRequest) -> RenameSubAccount
 ///
 /// A single hardware wallet can be linked to multiple user accounts, but in order to make calls to
 /// the IC from the account, the user must use the hardware wallet to sign each request.
-/// Some readonly calls do not require signing, eg. viewing the account's ICP balance.
+/// Some read-only calls do not require signing, e.g. viewing the account's ICP balance.
 #[export_name = "canister_update register_hardware_wallet"]
 pub fn register_hardware_wallet() {
     over(candid_one, register_hardware_wallet_impl);
@@ -277,11 +273,37 @@ fn get_stats_impl() -> stats::Stats {
     STATE.with(stats::get_stats)
 }
 
+/// Makes a histogram of the number of sub-accounts etc per account.
+///
+/// This is to be able to design an efficient account store.
+///
+/// Note: This is expensive to compute, as it scans across all
+/// accounts, so this is not included in the general stats above.
+#[export_name = "canister_query get_histogram"]
+pub fn get_histogram() {
+    over(candid, |()| get_histogram_impl());
+}
+
+pub fn get_histogram_impl() -> AccountsStoreHistogram {
+    // The API is intended for ad-hoc analysis only and may be discontinued at any time.
+    // - Other canisters should not rely on the method being available.
+    // - Users should make query calls.
+    let is_query_call = ic_cdk::api::data_certificate().is_some();
+    if !is_query_call {
+        dfn_core::api::trap_with("Sorry, the histogram is available only as a query call.");
+    }
+    // Gets the histogram:
+    STATE.with(|state| {
+        let accounts_store = state.accounts_store.borrow();
+        accounts_store.get_histogram()
+    })
+}
+
 /// Executes on every block height and is used to run background processes.
 ///
 /// These background processes include:
 /// - Sync transactions from the ledger
-/// - Process any queued 'multi-part' actions (eg. staking a neuron or topping up a canister)
+/// - Process any queued 'multi-part' actions (e.g. staking a neuron or topping up a canister)
 /// - Prune old transactions if memory usage is too high
 #[export_name = "canister_heartbeat"]
 pub fn canister_heartbeat() {
@@ -331,6 +353,45 @@ pub fn add_assets_tar_xz() {
             .map_err(|e| format!("Permission to upload denied: {}", e))
             .unwrap();
         insert_tar_xz(asset_bytes);
+    })
+}
+
+/// Generates a lot of toy accounts for testing.
+///
+/// # Returns
+/// The first account index created by this call.
+///
+/// E.g. if there are already 5 accounts and this call creates 10 accounts, then
+/// 5 is returned.  If the call is repeated, then the returned value will be 15.
+///
+/// # Panics
+/// - If the requested number of accounts is too large, the call will run out of cycles and be killed.
+#[cfg(any(test, feature = "toy_data_gen"))]
+#[export_name = "canister_update create_toy_accounts"]
+pub fn create_toy_accounts() {
+    over(candid_one, |num_accounts: u128| {
+        let caller = ic_cdk::caller();
+        if !ic_cdk::api::is_controller(&caller) {
+            dfn_core::api::trap_with("Only the controller may generate toy accounts");
+        }
+        STATE.with(|s| s.accounts_store.borrow_mut().create_toy_accounts(num_accounts as u64))
+    })
+}
+
+/// Gets any toy account by toy account index.
+#[cfg(any(test, feature = "toy_data_gen"))]
+#[export_name = "canister_query get_toy_account"]
+pub fn get_toy_account() {
+    over(candid_one, |toy_account_index: u64| {
+        let caller = ic_cdk::caller();
+        if !ic_cdk::api::is_controller(&caller) {
+            dfn_core::api::trap_with("Only the controller may access toy accounts");
+        }
+        let principal = PrincipalId::new_user_test_id(toy_account_index);
+        STATE.with(|s| match s.accounts_store.borrow().get_account(principal) {
+            Some(account) => GetAccountResponse::Ok(account),
+            None => GetAccountResponse::AccountNotFound,
+        })
     })
 }
 

@@ -1,3 +1,4 @@
+import * as agent from "$lib/api/agent.api";
 import {
   executeIcrcTransfer,
   getIcrcAccount,
@@ -10,8 +11,9 @@ import {
   mockQueryTokenResponse,
   mockSnsToken,
 } from "$tests/mocks/sns-projects.mock";
-import { IcrcLedgerCanister } from "@dfinity/ledger";
-import mock from "jest-mock-extended/lib/Mock";
+import type { HttpAgent } from "@dfinity/agent";
+import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
+import { mock } from "jest-mock-extended";
 
 describe("icrc-ledger api", () => {
   const ledgerCanisterMock = mock<IcrcLedgerCanister>();
@@ -20,6 +22,7 @@ describe("icrc-ledger api", () => {
     jest
       .spyOn(IcrcLedgerCanister, "create")
       .mockImplementation(() => ledgerCanisterMock);
+    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   afterEach(() => jest.clearAllMocks());

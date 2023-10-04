@@ -1,4 +1,4 @@
-import type { IcrcTransactionWithId } from "@dfinity/ledger";
+import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
 import type { Account } from "./account";
 
 export type NewTransaction = {
@@ -63,6 +63,7 @@ export enum AccountTransactionType {
   CreateCanister = "createCanister",
   TopUpCanister = "topUpCanister",
   ParticipateSwap = "participateSwap",
+  RefundSwap = "refundSwap",
 }
 
 export interface Transaction {

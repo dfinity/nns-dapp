@@ -33,6 +33,19 @@ jobs:
                   git diff
                   exit 1
           }
+  spelling:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install spellcheck
+        run: |
+          cd /
+          sudo apt-get update
+          sudo apt-get install -yy hunspell hunspell-en-gb hunspell-en-us clang libclang-dev
+          cargo install --target x86_64-unknown-linux-gnu cargo-spellcheck
+      - name: Spellcheck Rust
+        run: cargo spellcheck
   cargo-tests:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -55,6 +68,8 @@ jobs:
           cargo test --all-targets --all-features
         env:
           RUST_BACKTRACE: 1
+      - name: Lint rustdoc
+        run: ./scripts/lint-rustdoc
   svelte-tests:
     runs-on: ubuntu-latest-m
     defaults:
@@ -97,40 +112,16 @@ jobs:
       - name: Run linter
         run: npm run check
         working-directory: ./frontend
-  e2e-lint:
-    runs-on: ubuntu-20.04
-    defaults:
-      run:
-        shell: bash
-    env:
-      DFX_NETWORK: mainnet
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Get node version
-        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - name: Install dfx
-        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-      - name: Provide a config
-        run: ./config.sh
-      - name: Install dependencies
-        run: npm ci
-        working-directory: ./e2e-tests
-      - name: Run e2e linter
-        run: npm run lint
-        working-directory: ./e2e-tests
   shell-checks:
     name: ShellCheck
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - name: Run ShellCheck
-        uses: ludeeus/action-shellcheck@master
-        env:
-          SHELLCHECK_OPTS: -e SC1090 -e SC2119 -e SC1091
+        run: |
+          sudo apt-get update
+          sudo apt-get install -yy shellcheck
+          ./scripts/lint-sh
   ic-commit-consistency:
     name: IC Commit
     runs-on: ubuntu-20.04
@@ -142,7 +133,7 @@ jobs:
           mkdir -p "$USER_BIN"
           echo "$USER_BIN" >> $GITHUB_PATH
           version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
-          # TODO: Make didc support binstall, then use binstall here.
+          # TODO: Make `didc` support `binstall`, then use `binstall` here.
           curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
       - name: Check didc
         run: command -v didc
@@ -168,7 +159,7 @@ jobs:
           mkdir -p "$USER_BIN"
           echo "$USER_BIN" >> $GITHUB_PATH
           version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
-          # TODO: Use binstall, once didc supports it.
+          # TODO: Use `binstall`, once `didc` supports it.
           curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
       - name: Check didc
         run: command -v didc
@@ -194,7 +185,7 @@ jobs:
           mkdir -p "$USER_BIN"
           echo "$USER_BIN" >> $GITHUB_PATH
           version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
-          # TODO: Use binstall, once didc supports it.
+          # TODO: Use `binstall`, once `didc` supports it.
           curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
       - name: Check didc
         run: command -v didc
@@ -207,9 +198,10 @@ jobs:
       - uses: actions/checkout@v3
       - name: Install dfx
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+      - name: Install cargo binstall
+        uses: ./.github/actions/install_binstall
       - name: Install tools
         run: |
-          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/181b5293e73cfe16f7a79c5b3a4339bd522d31f3/install-from-binstall-release.sh | bash
           cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
       - name: Check mainnet config
         run: bash -x config.test
@@ -221,6 +213,8 @@ jobs:
       - name: Test chunking
         run: scripts/nns-dapp/split-assets.test
   dfx-nns-proposal-args-works:
+    # TODO: Reenable (add it in line 338) once fixed, should it depend on mainnet?
+    if: false
     name: Can get NNS proposal args
     runs-on: ubuntu-20.04
     steps:
@@ -231,10 +225,10 @@ jobs:
           mkdir -p "$USER_BIN"
           echo "$USER_BIN" >> $GITHUB_PATH
           version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
-          # TODO: Make didc support binstall, then use binstall here.
+          # TODO: Make `didc` support `binstall`, then use `binstall` here.
           curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
-      - name: Install binstall
-        run: curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/181b5293e73cfe16f7a79c5b3a4339bd522d31f3/install-from-binstall-release.sh | bash && cargo binstall -V
+      - name: Install cargo binstall
+        uses: ./.github/actions/install_binstall
       - name: Install idl2json
         run: cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)" && idl2json --version
       - name: Install sponge
@@ -249,10 +243,46 @@ jobs:
       - uses: actions/checkout@v3
       - name: docker-build prints help
         run: ./scripts/docker-build --help | grep -i usage
-  download-nns-dapp-ci-wasm:
+  minor-version-bump-works:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
+      - name: Install yq
+        run: sudo snap install yq
+      - name: Install sponge
+        run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
+      - name: Bumping the package versions works
+        run: ./scripts/nns-dapp/bump-patch.test
+      - name: Set git user
+        run: |
+          git config --global user.email "gix-bot@dfinity.org"
+          git config --global user.name "GIX bot"
+      - name: Command creates commits
+        run: |
+          original_commit="$(git rev-parse HEAD)"
+          git checkout .
+          ./scripts/nns-dapp/bump-patch --commit
+          num_commits="$(git log --oneline "$original_commit..HEAD" | wc -l)"
+          (( num_commits == 2 )) || {
+                  echo "Expected two commits.  Got:"
+                  git log --oneline "$original_commit..HEAD"
+                  exit 1
+          } >&2
+          # TODO: Verify that the commits contain the expected changes.
+  download-nns-dapp-ci-wasm:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, macos-13]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install bash and sha256sum if on Mac
+        run: |
+          if command -v brew ; then
+            brew install bash
+            brew install coreutils
+          fi
       - name: Download NNS-dapp CI wasm
         run: |
           MAIN_COMMIT="$(git ls-remote --refs https://github.com/dfinity/nns-dapp.git main | awk '{print $1}')"
@@ -261,32 +291,64 @@ jobs:
       GH_TOKEN: ${{ github.token }}
   canister-ids-tool:
     name: Test canister_ids tool
-    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, macos-13]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
+      - name: Install bash if on Mac
+        run: |
+          if command -v brew ; then
+            brew install bash
+          fi
       - run: scripts/canister_ids.test
   release-sop:
     name: Test release-sop script
-    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, macos-13]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
+      - name: Install bash if on Mac
+        run: |
+          if command -v brew ; then
+            brew install bash
+          fi
       - run: scripts/nns-dapp/release-sop.test
   split-changelog:
     name: Test split-changelog script
-    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, macos-13]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
+      - name: Install bash if on Mac
+        run: |
+          if command -v brew ; then
+            brew install bash
+          fi
       - run: scripts/nns-dapp/split-changelog.test
   past-changelog:
     name: Test that no new change log entries are added to past releases.
-    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, macos-13]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - run: scripts/past-changelog-test
+      - run: scripts/past-changelog-test.test
   checks-pass:
-    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "e2e-lint", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "asset-chunking-works", "dfx-nns-proposal-args-works", "docker-build-cli-flags", "download-nns-dapp-ci-wasm", "canister-ids-tool", "release-sop", "split-changelog", "past-changelog"]
+    needs: ["formatting", "spelling", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "asset-chunking-works", "docker-build-cli-flags", "download-nns-dapp-ci-wasm", "canister-ids-tool", "release-sop", "split-changelog", "past-changelog", "minor-version-bump-works"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:

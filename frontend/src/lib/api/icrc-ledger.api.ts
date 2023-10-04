@@ -7,19 +7,19 @@ import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
-import type { HttpAgent, Identity } from "@dfinity/agent";
+import type { Agent, Identity } from "@dfinity/agent";
 import type {
   BalanceParams,
   IcrcTokenMetadataResponse,
   IcrcTokens,
-} from "@dfinity/ledger";
+} from "@dfinity/ledger-icrc";
 import {
   IcrcLedgerCanister,
   encodeIcrcAccount,
   type IcrcAccount,
   type IcrcBlockIndex,
   type TransferParams,
-} from "@dfinity/ledger";
+} from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import type { QueryParams } from "@dfinity/utils";
 import {
@@ -81,7 +81,6 @@ export interface IcrcTransferParams {
   fromSubAccount?: SubAccountArray;
   createdAt?: bigint;
   fee: bigint;
-  transfer: (params: TransferParams) => Promise<IcrcBlockIndex>;
 }
 
 export const icrcTransfer = async ({
@@ -91,7 +90,7 @@ export const icrcTransfer = async ({
 }: {
   identity: Identity;
   canisterId: Principal;
-} & Omit<IcrcTransferParams, "transfer">): Promise<IcrcBlockIndex> => {
+} & IcrcTransferParams): Promise<IcrcBlockIndex> => {
   logWithTimestamp("Getting ckBTC transfer: call...");
 
   const {
@@ -122,7 +121,9 @@ export const executeIcrcTransfer = async ({
   createdAt,
   transfer: transferApi,
   ...rest
-}: IcrcTransferParams): Promise<IcrcBlockIndex> =>
+}: IcrcTransferParams & {
+  transfer: (params: TransferParams) => Promise<IcrcBlockIndex>;
+}): Promise<IcrcBlockIndex> =>
   transferApi({
     to: {
       owner,
@@ -143,7 +144,7 @@ export const icrcLedgerCanister = async ({
   canisterId: Principal;
 }): Promise<{
   canister: IcrcLedgerCanister;
-  agent: HttpAgent;
+  agent: Agent;
 }> => {
   const agent = await createAgent({
     identity,

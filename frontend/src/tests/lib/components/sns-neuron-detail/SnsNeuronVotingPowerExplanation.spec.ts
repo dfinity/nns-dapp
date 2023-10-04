@@ -51,7 +51,7 @@ describe("SnsNeuronVotingPowerExplanation", () => {
       stakedMaturity: 800_000_000n,
       id: [1],
       state: NeuronState.Locked,
-      ageSinceSeconds: BigInt(nowSeconds) - 200n,
+      ageSinceTimestampSeconds: BigInt(nowSeconds) - 200n,
       dissolveDelaySeconds: maxDissolveDelay - 200n,
       votingPowerMultiplier: 100n,
     });
@@ -68,7 +68,7 @@ describe("SnsNeuronVotingPowerExplanation", () => {
       stakedMaturity: 800_000_000n,
       id: [1],
       state: NeuronState.Locked,
-      ageSinceSeconds: BigInt(nowSeconds) - 200n,
+      ageSinceTimestampSeconds: BigInt(nowSeconds) - 200n,
       dissolveDelaySeconds: maxDissolveDelay - 200n,
       votingPowerMultiplier: 50n,
     });

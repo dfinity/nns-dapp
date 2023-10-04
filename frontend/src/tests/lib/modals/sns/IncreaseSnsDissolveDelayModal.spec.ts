@@ -3,12 +3,11 @@
  */
 
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
-import { SECONDS_IN_YEAR } from "$lib/constants/constants";
+import { SECONDS_IN_DAY, SECONDS_IN_YEAR } from "$lib/constants/constants";
 import IncreaseSnsDissolveDelayModal from "$lib/modals/sns/neurons/IncreaseSnsDissolveDelayModal.svelte";
 import * as authServices from "$lib/services/auth.services";
 import { loadSnsParameters } from "$lib/services/sns-parameters.services";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
-import { snsQueryStore } from "$lib/stores/sns.store";
 import { daysToSeconds, secondsToDays } from "$lib/utils/date.utils";
 import { page } from "$mocks/$app/stores";
 import {
@@ -17,10 +16,12 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import {
+  createMockSnsNeuron,
   mockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
-import { snsResponseFor } from "$tests/mocks/sns-response.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { NeuronState } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { ICPToken, fromDefinedNullable } from "@dfinity/utils";
@@ -78,13 +79,12 @@ describe("IncreaseSnsDissolveDelayModal", () => {
       parameters: snsNervousSystemParametersMock,
     });
 
-    snsQueryStore.reset();
-    snsQueryStore.setData(
-      snsResponseFor({
-        principal: mockPrincipal,
+    setSnsProjects([
+      {
+        rootCanisterId: mockPrincipal,
         lifecycle: SnsSwapLifecycle.Committed,
-      })
-    );
+      },
+    ]);
 
     page.mock({ data: { universe: mockPrincipal.toText() } });
   });
@@ -93,6 +93,36 @@ describe("IncreaseSnsDissolveDelayModal", () => {
     const { container } = await renderIncreaseDelayModal(neuron);
 
     expect(container.querySelector("div.modal")).not.toBeNull();
+  });
+
+  it("should use current dissolve delay value when locked", async () => {
+    const dissolveDelayDays = 12345;
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      state: NeuronState.Locked,
+      dissolveDelaySeconds: BigInt(dissolveDelayDays * SECONDS_IN_DAY),
+    });
+    const { queryByTestId } = await renderIncreaseDelayModal(neuron);
+
+    expect((queryByTestId("input-range") as HTMLInputElement).value).toBe(
+      dissolveDelayDays.toString()
+    );
+  });
+
+  it("should use current dissolve delay value when dissolving", async () => {
+    const whenDissolvedTimestampSeconds = BigInt(
+      nowInSeconds + SECONDS_IN_YEAR
+    );
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      state: NeuronState.Dissolving,
+      whenDissolvedTimestampSeconds,
+    });
+    const { queryByTestId } = await renderIncreaseDelayModal(neuron);
+
+    expect((queryByTestId("input-range") as HTMLInputElement).value).toBe(
+      "366"
+    );
   });
 
   it("should have the update delay button disabled by default", async () => {
@@ -115,7 +145,7 @@ describe("IncreaseSnsDissolveDelayModal", () => {
 
     inputRange &&
       (await fireEvent.input(inputRange, {
-        target: { value: SECONDS_IN_YEAR * 2 },
+        target: { value: 365 * 2 },
       }));
 
     const goToConfirmDelayButton = container.querySelector(

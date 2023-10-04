@@ -13,14 +13,10 @@ import {
   stakeNeuron,
   updateDelay,
 } from "$lib/services/neurons.services";
-import { authStore } from "$lib/stores/auth.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { formatVotingPower } from "$lib/utils/neuron.utils";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
   mockAccountDetails,
@@ -36,8 +32,9 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { assertNonNullish, clickByTestId } from "$tests/utils/utils.test-utils";
+import { LedgerCanister } from "@dfinity/ledger-icp";
 import type { NeuronInfo } from "@dfinity/nns";
-import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
+import { GovernanceCanister } from "@dfinity/nns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import { mock } from "jest-mock-extended";
 import type { SvelteComponent } from "svelte";
@@ -86,6 +83,7 @@ jest.mock("$lib/stores/toasts.store", () => {
 
 describe("NnsStakeNeuronModal", () => {
   beforeEach(() => {
+    resetIdentity();
     cancelPollAccounts();
     jest.clearAllMocks();
   });
@@ -100,9 +98,6 @@ describe("NnsStakeNeuronModal", () => {
         subAccounts: [mockSubAccount],
       });
       jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
-      jest
         .spyOn(LedgerCanister, "create")
         .mockImplementation(() => mock<LedgerCanister>());
       jest
@@ -111,10 +106,6 @@ describe("NnsStakeNeuronModal", () => {
       queryBalanceSpy = jest
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(newBalanceE8s);
-    });
-
-    afterEach(() => {
-      neuronsStore.setNeurons({ neurons: [], certified: true });
     });
 
     it("should display modal", async () => {
@@ -225,7 +216,7 @@ describe("NnsStakeNeuronModal", () => {
       expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
     });
 
-    it("should have disabled button for dissolve less than six months", async () => {
+    it("should have enabled button for dissolve less than six months", async () => {
       const { container } = await renderModal({
         component: NnsStakeNeuronModal,
       });
@@ -244,7 +235,7 @@ describe("NnsStakeNeuronModal", () => {
       );
       const inputRange = container.querySelector('input[type="range"]');
 
-      const FIVE_MONTHS = 60 * 60 * 24 * 30 * 5;
+      const FIVE_MONTHS = 30 * 5;
       inputRange &&
         (await fireEvent.input(inputRange, {
           target: { value: FIVE_MONTHS },
@@ -253,7 +244,7 @@ describe("NnsStakeNeuronModal", () => {
       const updateDelayButton = container.querySelector(
         '[data-tid="go-confirm-delay-button"]'
       );
-      expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
+      expect(updateDelayButton?.getAttribute("disabled")).toBeNull();
     });
 
     it("should be able to create a neuron and see the stake of the new neuron in the dissolve modal", async () => {
@@ -335,7 +326,7 @@ describe("NnsStakeNeuronModal", () => {
       );
       const inputRange = container.querySelector('input[type="range"]');
 
-      const ONE_YEAR = 60 * 60 * 24 * 365;
+      const ONE_YEAR = 365;
       inputRange &&
         (await fireEvent.input(inputRange, {
           target: { value: ONE_YEAR },
@@ -412,15 +403,11 @@ describe("NnsStakeNeuronModal", () => {
 
   describe("hardware wallet account selection", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
       neuronsStore.setNeurons({ neurons: [], certified: true });
       icpAccountsStore.setForTesting({
         ...mockAccountsStoreData,
         hardwareWallets: [mockHardwareWalletAccount],
       });
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
     });
 
     const createNeuron = async ({
@@ -497,7 +484,7 @@ describe("NnsStakeNeuronModal", () => {
       );
       const inputRange = container.querySelector('input[type="range"]');
 
-      const ONE_YEAR = 60 * 60 * 24 * 365;
+      const ONE_YEAR = 365;
       inputRange &&
         (await fireEvent.input(inputRange, {
           target: { value: ONE_YEAR },
@@ -559,7 +546,6 @@ describe("NnsStakeNeuronModal", () => {
     beforeEach(() => {
       icpAccountsStore.resetForTesting();
       jest.clearAllTimers();
-      jest.clearAllMocks();
       const now = Date.now();
       jest.useFakeTimers().setSystemTime(now);
       const mainBalanceE8s = BigInt(10_000_000);

@@ -22,10 +22,12 @@
 
   const openModal = () =>
     openNnsNeuronModal({ type: "split-neuron", data: { neuron } });
+
+  const testId = "split-nns-neuron-button-component";
 </script>
 
 {#if splittable}
-  <button on:click={openModal} class="primary"
+  <button on:click={openModal} class="secondary" data-tid={testId}
     >{$i18n.neuron_detail.split_neuron}</button
   >
 {:else}
@@ -42,7 +44,7 @@
       }
     )}
   >
-    <button on:click={openModal} class="primary" disabled
+    <button on:click={openModal} class="secondary" disabled data-tid={testId}
       >{$i18n.neuron_detail.split_neuron}</button
     >
   </Tooltip>

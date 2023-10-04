@@ -1,6 +1,7 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { ButtonPo } from "./Button.page-object";
+import type { ButtonPo } from "./Button.page-object";
+import { CanisterPageHeadingPo } from "./CanisterPageHeading.page-object";
 import { RenameCanisterModalPo } from "./RenameCanisterModal.page-object";
 
 export class CanisterDetailPo extends BasePageObject {
@@ -11,10 +12,7 @@ export class CanisterDetailPo extends BasePageObject {
   }
 
   getRenameButtonPo(): ButtonPo {
-    return ButtonPo.under({
-      element: this.root,
-      testId: "rename-canister-button-component",
-    });
+    return this.getButton("rename-canister-button-component");
   }
 
   clickRename(): Promise<void> {
@@ -29,9 +27,19 @@ export class CanisterDetailPo extends BasePageObject {
     await this.getRenameCanisterModalPo().rename(newName);
   }
 
-  async getCanisterTitle(): Promise<string> {
-    return (
-      await this.root.byTestId("canister-card-title-compoment").getText()
-    ).trim();
+  getCanisterPageHeading(): CanisterPageHeadingPo {
+    return CanisterPageHeadingPo.under(this.root);
+  }
+
+  async getTitle(): Promise<string> {
+    return this.getCanisterPageHeading().getTitle();
+  }
+
+  async getSubtitle(): Promise<string> {
+    return this.getCanisterPageHeading().getSubtitle();
+  }
+
+  async hasSubtitle(): Promise<boolean> {
+    return this.getCanisterPageHeading().hasSubtitle();
   }
 }

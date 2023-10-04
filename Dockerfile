@@ -21,7 +21,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
     apt -yq update && \
     apt -yqq install --no-install-recommends curl ca-certificates \
         build-essential pkg-config libssl-dev llvm-dev liblmdb-dev clang cmake \
-        git jq npm xxd
+        git jq npm xxd file
 
 # Gets tool versions.
 #
@@ -38,6 +38,7 @@ RUN jq -r '.defaults.build.config.NODE_VERSION' dfx.json > config/node_version
 RUN jq -r '.defaults.build.config.DIDC_VERSION' dfx.json > config/didc_version
 RUN jq -r '.defaults.build.config.OPTIMIZER_VERSION' dfx.json > config/optimizer_version
 RUN jq -r '.defaults.build.config.IC_WASM_VERSION' dfx.json > config/ic_wasm_version
+RUN jq -r '.defaults.build.config.BINSTALL_VERSION' dfx.json > config/binstall_version
 
 # This is the "builder", i.e. the base image used later to build the final code.
 FROM base as builder
@@ -68,14 +69,16 @@ COPY rust-toolchain.toml .
 COPY Cargo.lock .
 COPY Cargo.toml .
 COPY rs/backend/Cargo.toml rs/backend/Cargo.toml
+COPY rs/proposals/Cargo.toml rs/proposals/Cargo.toml
 COPY rs/sns_aggregator/Cargo.toml rs/sns_aggregator/Cargo.toml
-RUN mkdir -p rs/backend/src/bin rs/sns_aggregator/src && touch rs/backend/src/lib.rs rs/sns_aggregator/src/lib.rs && echo 'fn main(){}' | tee rs/backend/src/main.rs > rs/backend/src/bin/nns-dapp-check-args.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -f target/wasm32-unknown-unknown/release/*wasm
+RUN mkdir -p rs/backend/src/bin rs/proposals/src rs/sns_aggregator/src && touch rs/backend/src/lib.rs rs/proposals/src/lib.rs rs/sns_aggregator/src/lib.rs && echo 'fn main(){}' | tee rs/backend/src/main.rs > rs/backend/src/bin/nns-dapp-check-args.rs && cargo build --target wasm32-unknown-unknown --release --package nns-dapp && rm -f target/wasm32-unknown-unknown/release/*wasm
 # Install dfx
 WORKDIR /
 RUN DFX_VERSION="$(cat config/dfx_version)" sh -c "$(curl -fsSL https://sdk.dfinity.org/install.sh)" && dfx --version
 # TODO: Make didc support binstall, then use cargo binstall --no-confirm didc here.
 RUN set +x && curl -Lf --retry 5 "https://github.com/dfinity/candid/releases/download/$(cat config/didc_version)/didc-linux64" | install -m 755 /dev/stdin "/usr/local/bin/didc" && didc --version
-RUN curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/181b5293e73cfe16f7a79c5b3a4339bd522d31f3/install-from-binstall-release.sh | bash && cargo binstall -V
+RUN curl -L --proto '=https' --tlsv1.2 -sSf "https://github.com/cargo-bins/cargo-binstall/releases/download/v$(cat config/binstall_version)/cargo-binstall-x86_64-unknown-linux-musl.tgz" | tar -xvzf -
+RUN ./cargo-binstall -y --force "cargo-binstall@$(cat config/binstall_version)"
 RUN cargo binstall --no-confirm "ic-wasm@$(cat config/ic_wasm_version)" && command -v ic-wasm
 
 # Title: Gets the deployment configuration
@@ -126,9 +129,11 @@ RUN ./build-frontend.sh
 FROM builder AS build_nnsdapp
 SHELL ["bash", "-c"]
 COPY ./rs/backend /build/rs/backend
+COPY ./rs/proposals /build/rs/proposals
 COPY ./scripts/nns-dapp/test-exports /build/scripts/nns-dapp/test-exports
 COPY ./scripts/clap.bash /build/scripts/clap.bash
 COPY ./build-backend.sh /build/
+COPY ./scripts/nns-dapp/flavours.bash /build/scripts/nns-dapp/flavours.bash
 COPY ./build-rs.sh /build/
 COPY ./Cargo.toml /build/
 COPY ./Cargo.lock /build/
@@ -145,45 +150,12 @@ WORKDIR /build
 # So we update the timestamps of the root code files.
 # Old canisters use src/main.rs, new ones use src/lib.rs.  We update the timestamps on all that exist.
 # We don't wish to update the code from main.rs to lib.rs and then have builds break.
-RUN touch --no-create rs/backend/src/main.rs rs/backend/src/lib.rs
+RUN touch --no-create rs/backend/src/main.rs rs/backend/src/lib.rs rs/proposals/src/lib.rs
 RUN ./build-backend.sh
 COPY ./scripts/dfx-wasm-metadata-add /build/scripts/dfx-wasm-metadata-add
-# TODO: Move this to the apt install at the beginning of this file.
-RUN apt-get update -yq && apt-get install -yqq --no-install-recommends file
 ARG COMMIT
-RUN scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name nns-dapp --verbose
-
-# Title: Image to build the nns-dapp backend without assets.
-FROM builder AS build_nnsdapp_without_assets
-SHELL ["bash", "-c"]
-COPY ./rs/backend /build/rs/backend
-COPY ./scripts/nns-dapp/test-exports /build/scripts/nns-dapp/test-exports
-COPY ./scripts/clap.bash /build/scripts/clap.bash
-COPY ./build-backend.sh /build/
-COPY ./build-rs.sh /build/
-COPY ./Cargo.toml /build/
-COPY ./Cargo.lock /build/
-COPY ./dfx.json /build/
-WORKDIR /build
-# Create an empty assets tarfile.
-RUN tar -cJf assets.tar.xz -T /dev/null
-# We need to make sure that the rebuild happens if the code has changed.
-# - Docker checks whether the filesystem or command line have changed, so it will
-#   run if there are code changes and skip otherwise.  Perfect.
-# - However cargo _may_ then look at the mtime and decide that no, or only minimal,
-#   rebuilding is necessary due to the potentially recent dependency building step above.
-#   Cargo checks whether the mtime of some code is newer than its last build, like
-#   it's 1974, unlike bazel that uses checksums.
-# So we update the timestamps of the root code files.
-# Old canisters use src/main.rs, new ones use src/lib.rs.  We update the timestamps on all that exist.
-# We don't wish to update the code from main.rs to lib.rs and then have builds break.
-RUN touch --no-create rs/backend/src/main.rs rs/backend/src/lib.rs
-RUN ./build-backend.sh
-COPY ./scripts/dfx-wasm-metadata-add /build/scripts/dfx-wasm-metadata-add
-# TODO: Move this to the apt install at the beginning of this file.
-RUN apt-get update -yq && apt-get install -yqq --no-install-recommends file
-ARG COMMIT
-RUN scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name nns-dapp --verbose
+RUN . scripts/nns-dapp/flavours.bash && for flavour in "${NNS_DAPP_BUILD_FLAVOURS[@]}" ; do scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name nns-dapp --wasm "nns-dapp_$flavour.wasm.gz" --verbose ; done
+RUN scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name nns-dapp --wasm nns-dapp.wasm.gz --verbose
 
 # Title: Image to build the sns aggregator, used to increase performance and reduce load.
 # Args: None.
@@ -206,8 +178,6 @@ RUN mv sns_aggregator.wasm.gz sns_aggregator_dev.wasm.gz
 RUN ./build-sns-aggregator.sh
 COPY ./scripts/clap.bash /build/scripts/clap.bash
 COPY ./scripts/dfx-wasm-metadata-add /build/scripts/dfx-wasm-metadata-add
-# TODO: Move this to the apt install at the beginning of this file.
-RUN apt-get update -yq && apt-get install -yqq --no-install-recommends file
 ARG COMMIT
 RUN for wasm in sns_aggregator.wasm.gz sns_aggregator_dev.wasm.gz ; do scripts/dfx-wasm-metadata-add --commit "$COMMIT" --canister_name sns_aggregator --verbose --wasm "$wasm" ; done
 
@@ -218,7 +188,9 @@ COPY --from=configurator /build/nns-dapp-arg* /
 # Note: The frontend/.env is kept for use with test deployments only.
 COPY --from=configurator /build/frontend/.env /frontend-config.sh
 COPY --from=build_nnsdapp /build/nns-dapp.wasm.gz /
-COPY --from=build_nnsdapp_without_assets /build/nns-dapp.wasm.gz /nns-dapp_noassets.wasm.gz
+COPY --from=build_nnsdapp /build/nns-dapp_test.wasm.gz /
+COPY --from=build_nnsdapp /build/nns-dapp_production.wasm.gz /
+COPY --from=build_nnsdapp /build/nns-dapp_noassets.wasm.gz /nns-dapp_noassets.wasm.gz
 COPY --from=build_nnsdapp /build/assets.tar.xz /
 COPY --from=build_frontend /build/sourcemaps.tar.xz /
 COPY --from=build_aggregate /build/sns_aggregator.wasm.gz /

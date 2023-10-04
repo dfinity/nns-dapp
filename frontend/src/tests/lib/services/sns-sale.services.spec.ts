@@ -55,15 +55,15 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import type { HttpAgent, Identity } from "@dfinity/agent";
+import type { Agent, Identity } from "@dfinity/agent";
 import {
   InsufficientFundsError,
   TransferError,
   TxCreatedInFutureError,
   TxDuplicateError,
   TxTooOldError,
-  type SnsWasmCanisterOptions,
-} from "@dfinity/nns";
+} from "@dfinity/ledger-icp";
+import type { SnsWasmCanisterOptions } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
   GetOpenTicketErrorType,
@@ -84,7 +84,7 @@ import { get } from "svelte/store";
 jest.mock("$lib/proxy/api.import.proxy");
 jest.mock("$lib/api/agent.api", () => {
   return {
-    createAgent: () => Promise.resolve(mock<HttpAgent>()),
+    createAgent: () => Promise.resolve(mock<Agent>()),
   };
 });
 

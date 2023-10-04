@@ -3,6 +3,7 @@
   import { debounce } from "@dfinity/utils";
 
   export let id: string;
+  export let testId = "tooltip-component";
   export let text = "";
   export let noWrap = false;
   export let top = false;
@@ -27,11 +28,10 @@
       return;
     }
 
-    const { innerWidth } = window;
-
     const SCROLLBAR_FALLBACK_WIDTH = 20;
 
     const { clientWidth, offsetWidth } = main;
+    const { left: containerLeft } = main.getBoundingClientRect();
     const scrollbarWidth =
       offsetWidth - clientWidth > 0
         ? offsetWidth - clientWidth
@@ -43,8 +43,11 @@
 
     const { width: tooltipWidth } = tooltipComponent.getBoundingClientRect();
 
-    const spaceLeft = targetCenter - (innerWidth - clientWidth) / 2;
-    const spaceRight = innerWidth - scrollbarWidth - targetCenter;
+    // Space at the left of the center of the target until the containerSelector.
+    const spaceLeft = targetCenter - containerLeft;
+    // Space at the right of the center of the target until the containerSelector.
+    const spaceRight =
+      containerLeft + clientWidth - scrollbarWidth - targetCenter;
 
     const overflowLeft = spaceLeft > 0 ? tooltipWidth / 2 - spaceLeft : 0;
     const overflowRight = spaceRight > 0 ? tooltipWidth / 2 - spaceRight : 0;
@@ -75,7 +78,7 @@
 
 <svelte:window bind:innerWidth />
 
-<div class="tooltip-wrapper" data-tid="tooltip-component">
+<div class="tooltip-wrapper" data-tid={testId}>
   <div class="tooltip-target" aria-describedby={id} bind:this={target}>
     <slot />
   </div>

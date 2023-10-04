@@ -7,13 +7,16 @@ import type {
   SnsSwapCommitment,
 } from "$lib/types/sns";
 import type { QuerySnsMetadata } from "$lib/types/sns.query";
+import type { Universe } from "$lib/types/universe";
 import {
   IcrcMetadataResponseEntries,
   type IcrcTokenMetadataResponse,
-} from "@dfinity/ledger";
+} from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import {
   SnsSwapLifecycle,
+  type SnsGetDerivedStateResponse,
+  type SnsGetLifecycleResponse,
   type SnsGetMetadataResponse,
   type SnsParams,
   type SnsSwap,
@@ -34,24 +37,14 @@ export const mockProjectSubscribe =
     return () => undefined;
   };
 
-export const principal = (index: number): Principal =>
-  [
-    Principal.fromText(
-      "2vtpp-r6lcd-cbfas-qbabv-wxrv5-lsrkj-c4dtb-6ets3-srlqe-xpuzf-vqe"
-    ),
-    Principal.fromText(
-      "nv24n-kslcc-636yn-hazy3-t2zgj-fsrkg-2uhfm-vumlm-vqolw-6ciai-tae"
-    ),
-    Principal.fromText(
-      "2lwez-knpss-xe26y-sqpx3-7m5ev-gbqwb-ogdk4-af53j-r7fed-k5df4-uqe"
-    ),
-    Principal.fromText(
-      "vxi5c-ydsws-tmett-fndw6-7qwga-thtxc-epwtj-st3wy-jc464-muowb-eqe"
-    ),
-    Principal.fromText(
-      "4etav-nasrq-uvswa-iqsll-6spts-ryhsl-e4yf6-xtycj-4sxvp-ciay5-yae"
-    ),
-  ][index];
+// Opaque ids end with 0x01: https://internetcomputer.org/docs/current/references/ic-interface-spec/#principal
+export const principal = (index: number): Principal => {
+  let hexString = index.toString(16) + "01";
+  if (hexString.length % 2 === 1) {
+    hexString = "0" + hexString;
+  }
+  return Principal.fromHex(hexString);
+};
 
 export const createTransferableAmount = (
   amount: bigint
@@ -104,11 +97,19 @@ export const mockSnsParams: SnsParams = {
 };
 
 export const mockInit: SnsSwapInit = {
+  nns_proposal_id: [123n],
   sns_root_canister_id:
     "vxi5c-ydsws-tmett-fndw6-7qwga-thtxc-epwtj-st3wy-jc464-muowb-eqe",
+  min_participant_icp_e8s: [150_000_000n],
+  neuron_basket_construction_parameters: [],
   fallback_controller_principal_ids: [],
+  max_icp_e8s: [3_000_000_000n],
   neuron_minimum_stake_e8s: [100_000_000n],
   confirmation_text: [],
+  swap_start_timestamp_seconds: [0n],
+  swap_due_timestamp_seconds: [1n],
+  min_participants: [1],
+  sns_token_e8s: [150_000_000n],
   nns_governance_canister_id:
     "2vtpp-r6lcd-cbfas-qbabv-wxrv5-lsrkj-c4dtb-6ets3-srlqe-xpuzf-vqe",
   transaction_fee_e8s: [10_000n],
@@ -116,12 +117,22 @@ export const mockInit: SnsSwapInit = {
     "2lwez-knpss-xe26y-sqpx3-7m5ev-gbqwb-ogdk4-af53j-r7fed-k5df4-uqe",
   sns_ledger_canister_id:
     "nv24n-kslcc-636yn-hazy3-t2zgj-fsrkg-2uhfm-vumlm-vqolw-6ciai-tae",
+  neurons_fund_participants: [],
+  should_auto_finalize: [true],
+  max_participant_icp_e8s: [5_000_000_000n],
   sns_governance_canister_id:
     "2vtpp-r6lcd-cbfas-qbabv-wxrv5-lsrkj-c4dtb-6ets3-srlqe-xpuzf-vqe",
   restricted_countries: [],
+  min_icp_e8s: [1_500_000_000n],
+  neurons_fund_participation_constraints: [],
 };
 
 export const mockSwap: SnsSummarySwap = {
+  next_ticket_id: [],
+  auto_finalize_swap_response: [],
+  purge_old_tickets_last_completion_timestamp_nanoseconds: [],
+  purge_old_tickets_next_principal: [],
+  already_tried_to_auto_finalize: [false],
   neuron_recipes: [],
   cf_participants: [],
   init: [],
@@ -134,11 +145,13 @@ export const mockSwap: SnsSummarySwap = {
 };
 
 export const mockQuerySwap: SnsSwap = {
+  auto_finalize_swap_response: [],
   neuron_recipes: [],
   cf_participants: [],
   decentralization_sale_open_timestamp_seconds: [],
   finalize_swap_in_progress: [],
   init: [],
+  already_tried_to_auto_finalize: [],
   lifecycle: SnsSwapLifecycle.Open,
   open_sns_token_swap_proposal_id: [BigInt(1000)],
   buyers: [],
@@ -146,6 +159,8 @@ export const mockQuerySwap: SnsSwap = {
   next_ticket_id: [],
   purge_old_tickets_last_completion_timestamp_nanoseconds: [],
   purge_old_tickets_next_principal: [],
+  direct_participation_icp_e8s: [],
+  neurons_fund_participation_icp_e8s: [],
 };
 
 export const mockDerived: SnsSwapDerivedState = {
@@ -154,6 +169,18 @@ export const mockDerived: SnsSwapDerivedState = {
   cf_participant_count: [BigInt(100)],
   direct_participant_count: [BigInt(300)],
   cf_neuron_count: [BigInt(200)],
+  direct_participation_icp_e8s: [],
+  neurons_fund_participation_icp_e8s: [],
+};
+
+export const mockDerivedResponse: SnsGetDerivedStateResponse = {
+  buyer_total_icp_e8s: [BigInt(100 * 100000000)],
+  sns_tokens_per_icp: [1],
+  cf_participant_count: [BigInt(100)],
+  direct_participant_count: [BigInt(300)],
+  cf_neuron_count: [BigInt(200)],
+  direct_participation_icp_e8s: [],
+  neurons_fund_participation_icp_e8s: [],
 };
 
 export const mockMetadata: SnsSummaryMetadata = {
@@ -275,15 +302,30 @@ export const createSummary = ({
   restrictedCountries = undefined,
   minParticipants = 20,
   buyersCount = 300n,
+  tokensDistributed = 2_000_000_000_000n,
+  minParticipantCommitment = 100_000_000n,
+  maxParticipantCommitment = 5_000_000_000n,
+  swapDueTimestampSeconds = 1630444800n,
+  minTotalCommitment,
+  maxTotalCommitment,
+  currentTotalCommitment,
 }: {
   lifecycle?: SnsSwapLifecycle;
   confirmationText?: string | undefined;
   restrictedCountries?: string[] | undefined;
   minParticipants?: number;
   buyersCount?: bigint | null;
+  tokensDistributed?: bigint;
+  minParticipantCommitment?: bigint;
+  maxParticipantCommitment?: bigint;
+  swapDueTimestampSeconds?: bigint;
+  minTotalCommitment?: bigint;
+  maxTotalCommitment?: bigint;
+  currentTotalCommitment?: bigint;
 }): SnsSummary => {
   const init: SnsSwapInit = {
     ...mockInit,
+    swap_due_timestamp_seconds: [swapDueTimestampSeconds],
     confirmation_text: toNullable(confirmationText),
     restricted_countries: nonNullish(restrictedCountries)
       ? [{ iso_codes: restrictedCountries }]
@@ -292,10 +334,18 @@ export const createSummary = ({
   const params: SnsParams = {
     ...mockSnsParams,
     min_participants: minParticipants,
+    sns_token_e8s: tokensDistributed,
+    min_participant_icp_e8s: minParticipantCommitment,
+    max_participant_icp_e8s: maxParticipantCommitment,
+    swap_due_timestamp_seconds: swapDueTimestampSeconds,
+    min_icp_e8s: minTotalCommitment ?? mockSnsParams.min_icp_e8s,
+    max_icp_e8s: maxTotalCommitment ?? mockSnsParams.max_icp_e8s,
   };
   const derived: SnsSwapDerivedState = {
     ...mockDerived,
     direct_participant_count: buyersCount === null ? [] : [buyersCount],
+    buyer_total_icp_e8s:
+      currentTotalCommitment ?? mockDerived.buyer_total_icp_e8s,
   };
   const summary = summaryForLifecycle(lifecycle);
   return {
@@ -339,4 +389,14 @@ export const mockQueryMetadata: QuerySnsMetadata = {
 export const mockTokenStore = (run: Subscriber<Token>) => {
   run(mockSnsToken);
   return () => undefined;
+};
+
+export const mockUniverse: Universe = {
+  canisterId: principal(0).toText(),
+  summary: mockSnsFullProject.summary,
+};
+
+export const mockLifecycleResponse: SnsGetLifecycleResponse = {
+  lifecycle: [SnsSwapLifecycle.Open],
+  decentralization_sale_open_timestamp_seconds: [],
 };

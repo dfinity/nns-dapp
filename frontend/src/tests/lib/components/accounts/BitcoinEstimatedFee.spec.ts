@@ -8,7 +8,7 @@ import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.cons
 import { TransactionNetwork } from "$lib/types/transaction";
 import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
-import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { render, waitFor } from "@testing-library/svelte";
 
@@ -18,6 +18,8 @@ describe("BitcoinEstimatedFee", () => {
   const result = { minter_fee: 123n, bitcoin_fee: 456n };
 
   beforeEach(() => {
+    jest.clearAllMocks();
+    resetIdentity();
     spyEstimateFee = jest
       .spyOn(minterApi, "estimateFee")
       .mockResolvedValue(result);
@@ -50,6 +52,7 @@ describe("BitcoinEstimatedFee", () => {
   });
 
   it("should display estimated fee for network Bitcoin", async () => {
+    expect(spyEstimateFee).not.toHaveBeenCalled();
     const { getByTestId } = render(BitcoinEstimatedFee, {
       props: { selectedNetwork: TransactionNetwork.BTC_TESTNET, ...props },
     });
@@ -78,6 +81,8 @@ describe("BitcoinEstimatedFee", () => {
 
   it("should call service with amount E8s", async () => {
     const amount = 456;
+
+    expect(spyEstimateFee).not.toHaveBeenCalled();
 
     render(BitcoinEstimatedFee, {
       props: {

@@ -6,9 +6,12 @@ export type SnsNeuronModalType =
   | "follow"
   | "add-hotkey"
   | "stake-maturity"
+  | "disburse-maturity"
+  | "view-active-disbursements"
   | "split-neuron"
   | "dev-add-permissions"
   | "dev-remove-permissions"
+  | "dev-add-maturity"
   | "auto-stake-maturity";
 
 export interface SnsNeuronModal {

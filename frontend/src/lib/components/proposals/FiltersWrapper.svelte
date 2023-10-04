@@ -7,13 +7,10 @@
     display: flex;
     flex-wrap: wrap;
     padding: 0 0 var(--padding-3x);
+    gap: var(--padding);
 
     --checkbox-flex-direction: row-reverse;
     --checkbox-font-size: var(--font-size-small);
-
-    :global(button) {
-      margin: var(--padding) var(--padding) 0 0;
-    }
 
     > :global(div.checkbox) {
       width: fit-content;

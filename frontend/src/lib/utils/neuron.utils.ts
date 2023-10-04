@@ -12,9 +12,9 @@ import {
 import {
   AGE_MULTIPLIER,
   DISSOLVE_DELAY_MULTIPLIER,
+  MATURITY_MODULATION_VARIANCE_PERCENTAGE,
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
-  SPAWN_VARIANCE_PERCENTAGE,
   TOPICS_TO_FOLLOW_NNS,
 } from "$lib/constants/neurons.constants";
 import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
@@ -25,10 +25,10 @@ import type { Account } from "$lib/types/account";
 import type { Identity } from "@dfinity/agent";
 import type { WizardStep } from "@dfinity/gix-components";
 import {
+  IconDissolving,
   IconHistoryToggleOff,
   IconLockClosed,
   IconLockOpen,
-  IconPace,
 } from "@dfinity/gix-components";
 import {
   NeuronState,
@@ -60,43 +60,37 @@ import { formatToken } from "./token.utils";
 import { isDefined } from "./utils";
 
 export type StateInfo = {
-  textKey: string;
   Icon?: typeof SvelteComponent;
-  status: "ok" | "warn" | "spawning";
+  textKey: keyof I18n["neuron_state"];
 };
 
-type StateMapper = {
-  [key: number]: StateInfo;
-};
-export const stateTextMapper: StateMapper = {
+type StateMapper = Record<NeuronState, StateInfo>;
+
+const stateInfoMapper: StateMapper = {
   [NeuronState.Locked]: {
-    textKey: "locked",
     Icon: IconLockClosed,
-    status: "ok",
+    textKey: "Locked",
   },
   [NeuronState.Unspecified]: {
-    textKey: "unspecified",
-    status: "ok",
+    Icon: undefined,
+    textKey: "Unspecified",
   },
   [NeuronState.Dissolved]: {
-    textKey: "dissolved",
     Icon: IconLockOpen,
-    status: "ok",
+    textKey: "Dissolved",
   },
   [NeuronState.Dissolving]: {
-    textKey: "dissolving",
-    Icon: IconPace,
-    status: "warn",
+    Icon: IconDissolving,
+    textKey: "Dissolving",
   },
   [NeuronState.Spawning]: {
-    textKey: "spawning",
     Icon: IconHistoryToggleOff,
-    status: "spawning",
+    textKey: "Spawning",
   },
 };
 
-export const getStateInfo = (neuronState: NeuronState): StateInfo | undefined =>
-  stateTextMapper[neuronState];
+export const getStateInfo = (neuronState: NeuronState): StateInfo =>
+  stateInfoMapper[neuronState];
 
 /**
  * Calculation of the voting power of a neuron.
@@ -229,15 +223,23 @@ export const hasValidStake = (neuron: NeuronInfo): boolean =>
       BigInt(DEFAULT_TRANSACTION_FEE_E8S)
     : false;
 
-export const getDissolvingTimeInSeconds = (
+export const getDissolvingTimestampSeconds = (
   neuron: NeuronInfo
 ): bigint | undefined =>
   neuron.state === NeuronState.Dissolving &&
   neuron.fullNeuron?.dissolveState !== undefined &&
   "WhenDissolvedTimestampSeconds" in neuron.fullNeuron.dissolveState
-    ? neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds -
-      BigInt(nowInSeconds())
+    ? neuron.fullNeuron.dissolveState.WhenDissolvedTimestampSeconds
     : undefined;
+
+export const getDissolvingTimeInSeconds = (
+  neuron: NeuronInfo
+): bigint | undefined => {
+  const dissolvingTimestamp = getDissolvingTimestampSeconds(neuron);
+  return nonNullish(dissolvingTimestamp)
+    ? dissolvingTimestamp - BigInt(nowInSeconds())
+    : undefined;
+};
 
 export const getSpawningTimeInSeconds = (
   neuron: NeuronInfo
@@ -283,7 +285,7 @@ export const formattedTotalMaturity = ({ fullNeuron }: NeuronInfo): string =>
 export const formattedStakedMaturity = ({ fullNeuron }: NeuronInfo): string =>
   formatMaturity(fullNeuron?.stakedMaturityE8sEquivalent);
 
-const formatMaturity = (value?: bigint): string =>
+export const formatMaturity = (value?: bigint): string =>
   formatToken({
     value: isNullish(value) ? BigInt(0) : value,
   });
@@ -361,6 +363,61 @@ export const isHotKeyControllable = ({
     (hotkey) => hotkey === identity?.getPrincipal().toText()
   ) !== undefined &&
   fullNeuron.controller !== identity?.getPrincipal().toText();
+
+export type NeuronTag = {
+  text: string;
+};
+
+export const getNeuronTags = ({
+  neuron,
+  identity,
+  accounts,
+  i18n,
+}: {
+  neuron: NeuronInfo;
+  identity?: Identity | null;
+  accounts: IcpAccountsStoreData;
+  i18n: I18n;
+}): NeuronTag[] => {
+  const tags: NeuronTag[] = [];
+  if (hasJoinedCommunityFund(neuron)) {
+    tags.push({ text: i18n.neurons.community_fund });
+  }
+  const isHWControlled = isNeuronControlledByHardwareWallet({
+    neuron,
+    accounts,
+  });
+  if (isHWControlled) {
+    tags.push({ text: i18n.neurons.hardware_wallet_control });
+    // All HW controlled are hotkeys, but we don't want to show both tags to the user.
+  } else if (isHotKeyControllable({ neuron, identity })) {
+    tags.push({ text: i18n.neurons.hotkey_control });
+  }
+  return tags;
+};
+
+/**
+ * An identity can manage the neurons' fund participation when one of the below is true:
+ * - User is the controller.
+ * - User is a hotkey, but a hardware wallet account is NOT the controller.
+ *
+ * Technically, HW can manage SNS neurons, but we don't support it yet in the NNS Dapp.
+ * That's why we want to avoid HW controlled neurons from participating in a swap.
+ * Both joining the Neurons' Fund and participating in a swap is disabled for hardware wallets.
+ */
+export const canUserManageNeuronFundParticipation = ({
+  neuron,
+  identity,
+  accounts,
+}: {
+  neuron: NeuronInfo;
+  identity: Identity | null | undefined;
+  accounts: IcpAccountsStoreData;
+}): boolean =>
+  nonNullish(identity) &&
+  (isNeuronControllableByUser({ neuron, mainAccount: accounts.main }) ||
+    (isHotKeyControllable({ neuron, identity }) &&
+      !isNeuronControlledByHardwareWallet({ neuron, accounts })));
 
 /**
  * Calculate neuron stake (cachedNeuronStake - neuronFees)
@@ -442,7 +499,10 @@ export const isEnoughMaturityToSpawn = ({
   const maturitySelected = Math.floor(
     (Number(fullNeuron.maturityE8sEquivalent) * percentage) / 100
   );
-  return maturitySelected >= MIN_NEURON_STAKE / SPAWN_VARIANCE_PERCENTAGE;
+  return (
+    maturitySelected >=
+    MIN_NEURON_STAKE / MATURITY_MODULATION_VARIANCE_PERCENTAGE
+  );
 };
 
 export const isSpawning = (neuron: NeuronInfo): boolean =>
@@ -894,3 +954,6 @@ export const maturityLastDistribution = ({
       BigInt(SECONDS_IN_DAY)
   );
 };
+
+export const neuronDashboardUrl = ({ neuronId }: NeuronInfo): string =>
+  `https://dashboard.internetcomputer.org/neuron/${neuronId.toString()}`;

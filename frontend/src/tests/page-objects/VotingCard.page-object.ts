@@ -1,4 +1,4 @@
-import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -14,19 +14,19 @@ export class VotingCardPo extends BasePageObject {
   }
 
   getVoteYesButtonPo(): ButtonPo {
-    return ButtonPo.under({ element: this.root, testId: "vote-yes" });
+    return this.getButton("vote-yes");
   }
 
   getVoteNoButtonPo(): ButtonPo {
-    return ButtonPo.under({ element: this.root, testId: "vote-no" });
+    return this.getButton("vote-no");
   }
 
   getConfirmYesButtonPo(): ButtonPo {
-    return ButtonPo.under({ element: this.root, testId: "confirm-yes" });
+    return this.getButton("confirm-yes");
   }
 
   getConfirmNoButtonPo(): ButtonPo {
-    return ButtonPo.under({ element: this.root, testId: "confirm-no" });
+    return this.getButton("confirm-no");
   }
 
   waitForVotingComplete(): Promise<void> {

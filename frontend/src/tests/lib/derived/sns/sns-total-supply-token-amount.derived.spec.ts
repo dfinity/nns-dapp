@@ -1,30 +1,25 @@
 import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
 import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
-import { snsQueryStore } from "$lib/stores/sns.store";
-import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
-import { Principal } from "@dfinity/principal";
+import { principal } from "$tests/mocks/sns-projects.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { TokenAmount } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("snsTotalSupplyTokenAmountStore", () => {
   beforeEach(() => {
-    snsQueryStore.reset();
     snsTotalTokenSupplyStore.reset();
   });
   it("should return the total supply of tokens for each SNS in TokenAmount", () => {
-    const responses = snsResponsesForLifecycle({
-      certified: true,
-      lifecycles: [
-        SnsSwapLifecycle.Committed,
-        SnsSwapLifecycle.Open,
-        SnsSwapLifecycle.Open,
-      ],
-    });
-    const rootCanisterIds = responses[0].map(({ rootCanisterId }) =>
-      Principal.fromText(rootCanisterId)
+    const projectsParams = [
+      { rootCanisterId: principal(0), lifecycle: SnsSwapLifecycle.Committed },
+      { rootCanisterId: principal(1), lifecycle: SnsSwapLifecycle.Open },
+      { rootCanisterId: principal(2), lifecycle: SnsSwapLifecycle.Open },
+    ];
+    const rootCanisterIds = projectsParams.map(
+      ({ rootCanisterId }) => rootCanisterId
     );
-    snsQueryStore.setData(responses);
+    setSnsProjects(projectsParams);
     const totalSupplyBase = BigInt(10_000_000_000);
     const totalSupplies = rootCanisterIds.map((rootCanisterId, index) => ({
       rootCanisterId,

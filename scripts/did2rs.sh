@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
 
 ##########################
 # Hjelpe meg!
@@ -26,20 +28,25 @@ print_help() {
 
 	EOF
 }
-[[ "${1:-}" != "--help" ]] || {
-  print_help
-  exit 0
-}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=c long=canister desc="The canister name" variable=CANISTER_NAME
+clap.define short=d long=did desc="The did path.  Default: {GIT_ROOT}/declarations/{CANISTER_NAME}/{CANISTER_NAME}.did" variable=DID_PATH
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
 
 ##########################
 # Get working dir and args
 ##########################
-CANISTER_NAME="$(basename "${1%.did}")"
+CANISTER_NAME="${CANISTER_NAME:-${1:-${DID_PATH:-}}}"
+CANISTER_NAME="$(basename "${CANISTER_NAME%.did}")"
 GIT_ROOT="$(git rev-parse --show-toplevel)"
 
 RUST_PATH="${GIT_ROOT}/rs/sns_aggregator/src/types/ic_${CANISTER_NAME}.rs"
 PATCH_PATH="${GIT_ROOT}/rs/sns_aggregator/src/types/ic_${CANISTER_NAME}.patch"
-DID_PATH="${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did"
+DID_PATH="${DID_PATH:-${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did}"
 
 cd "$GIT_ROOT"
 
@@ -76,8 +83,9 @@ cd "$GIT_ROOT"
   #   - It makes almost all the types and fields private, which is not very helpful.
   #
   # sed:
-  #   - adds additional traits after Deserialize
-  #   - Makes structures and their fields "pub"
+  #   - Comments out the header provided by didc; we provide our own and the two conflict.
+  #   - Makes structures and their fields "pub", so that they can be used.
+  #   - Adds additional traits after "Deserialize".
   #   - Makes API call response types "CallResult".  The alternative convention is to have:
   #       use ic_cdk::api::call::CallResult as Result;
   #     at the top of the rust file but that is both confusing for Rust developers and conflicts
@@ -85,6 +93,7 @@ cd "$GIT_ROOT"
   #   - didc creates invalid Rust enum entries of the form: `StopDissolving{},`
   #     These are changed to legal Rust: `StopDissolving(EmptyRecord),`
   #     where "EmptyRecord" is defined as the name suggests.
+  #   - Deprecated: Uses `candid::Principal` instead of `Principal`.
   #
   # Final tweaks are defined manually and encoded as patch files.  The changes typically include:
   #   - Replacing the anonymous result{} type in enums with EmptyRecord.  didc produces valid rust code, but
@@ -95,12 +104,24 @@ cd "$GIT_ROOT"
   # shellcheck disable=SC2016
   didc bind "${DID_PATH}" --target rs |
     rustfmt --edition 2021 |
-    sed -E 's/^(struct|enum|type) /pub &/;
-            s@^use .*@// &@;
-            s/([{( ]Deserialize)([,})])/\1, Serialize, Clone, Debug\2/;
+    sed -E '
+            # Comment out the header "use", "//!" and "#!" lines.
+	    s@^(use |//!|#!)@// &@;
+
+	    # Make types and fields public:
+            s/^(struct|enum|type) /pub &/;
             s/^    [a-z].*:/    pub&/;s/^( *pub ) *pub /\1/;
-	    /impl SERVICE/,${s/-> Result/-> CallResult/g};
+
+	    # Add traits
+            s/([{( ]Deserialize)([,})])/\1, Serialize, Clone, Debug\2/;
+
+	    # In the service, return CallResult instead of Result.
+	    /impl Service/,${s/-> Result/-> CallResult/g};
+
+	    # Replace invalid "{}" in generated Rust code with "EmptyRecord":
 	    /^pub (struct|enum) /,/^}/{s/ *\{\},$/(EmptyRecord),/g};
+
+	    # Use candid::Principal instead of raw Principal
 	    s/\<Principal\>/candid::&/g;
 	    ' |
     rustfmt --edition 2021

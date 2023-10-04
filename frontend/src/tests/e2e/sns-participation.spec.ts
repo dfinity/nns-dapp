@@ -5,15 +5,11 @@ import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 test("Test SNS participation", async ({ page, context }) => {
-  await page.goto("/");
-  await expect(page).toHaveTitle("NNS Dapp");
-  await signInWithNewUser({ page, context });
+  await page.goto("/accounts");
+  await expect(page).toHaveTitle("My Tokens / NNS Dapp");
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
   const appPo = new AppPo(pageElement);
-
-  step("Get some ICP to participate in the sale");
-  await appPo.getTokens(20);
 
   step("D001: User can see the list of open sales");
   await appPo.goToLaunchpad();
@@ -39,9 +35,16 @@ test("Test SNS participation", async ({ page, context }) => {
   const projectDetail = appPo.getProjectDetailPo();
   await projectDetail.waitForContentLoaded();
   const projectName = await projectDetail.getProjectName();
-  expect(`Project ${projectName}`).toBe(snsProjectName);
+  expect(projectName).toBe(snsProjectName);
   expect(await projectDetail.getTokenSymbol()).not.toBe("");
   expect(await projectDetail.getStatus()).toBe("Accepting Participation");
+
+  await signInWithNewUser({ page, context });
+
+  step("Get some ICP to participate in the sale");
+  await appPo.goBack();
+  await appPo.getIcpTokens(20);
+  await openProjects[0].click();
 
   step("D004: User can participate in a sale");
   expect(await projectDetail.hasCommitmentAmount()).toBe(false);

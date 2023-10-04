@@ -1,6 +1,7 @@
 import { CanisterStatus } from "$lib/canisters/ic-management/ic-management.canister.types";
 import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
 import {
+  areEnoughCyclesSelected,
   canisterStatusToText,
   errorCanisterNameMessage,
   formatCyclesToTCycles,
@@ -199,6 +200,71 @@ describe("canister-utils", () => {
       expect(
         errorCanisterNameMessage("a".repeat(MAX_CANISTER_NAME_LENGTH + 1))
       ).toBe("Canister name too long. Maximum of 24 characters allowed.");
+    });
+  });
+
+  describe("areEnoughCyclesSelected", () => {
+    it("undefined is not a valid amount of cycles", () => {
+      expect(
+        areEnoughCyclesSelected({
+          amountCycles: undefined,
+          minimumCycles: undefined,
+        })
+      ).toBeFalsy();
+      expect(
+        areEnoughCyclesSelected({ amountCycles: undefined, minimumCycles: 2 })
+      ).toBeFalsy();
+      expect(
+        areEnoughCyclesSelected({ amountCycles: undefined, minimumCycles: 0 })
+      ).toBeFalsy();
+    });
+
+    it("user entering zero is not a valid amount of cycles", () => {
+      expect(
+        areEnoughCyclesSelected({
+          amountCycles: 0,
+          minimumCycles: undefined,
+        })
+      ).toBeFalsy();
+      expect(
+        areEnoughCyclesSelected({ amountCycles: 0, minimumCycles: 2 })
+      ).toBeFalsy();
+      expect(
+        areEnoughCyclesSelected({ amountCycles: 0, minimumCycles: 0 })
+      ).toBeFalsy();
+    });
+
+    it("user entering less cycles than minimum is not a valid amount", () => {
+      expect(
+        areEnoughCyclesSelected({
+          amountCycles: 0,
+          minimumCycles: 1,
+        })
+      ).toBeFalsy();
+      expect(
+        areEnoughCyclesSelected({ amountCycles: 0.9999, minimumCycles: 1 })
+      ).toBeFalsy();
+    });
+
+    it("user entering expected cycles amount is valid", () => {
+      expect(
+        areEnoughCyclesSelected({
+          amountCycles: 1,
+          minimumCycles: undefined,
+        })
+      ).toBeTruthy();
+      expect(
+        areEnoughCyclesSelected({
+          amountCycles: 1,
+          minimumCycles: 0,
+        })
+      ).toBeTruthy();
+      expect(
+        areEnoughCyclesSelected({
+          amountCycles: 1,
+          minimumCycles: 0.5,
+        })
+      ).toBeTruthy();
     });
   });
 });

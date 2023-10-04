@@ -8,8 +8,6 @@
   export let id: string;
   export let text: string;
   export let showCopy = false;
-  // remove copy icon from the css flow
-  export let flowLessCopy = false;
   export let className: string | undefined = undefined;
   export let splitLength: number | undefined = undefined;
 
@@ -17,7 +15,7 @@
   $: shortenText = shortenWithMiddleEllipsis(text, splitLength);
 </script>
 
-<span data-tid="hash-component" class:flowLessCopy>
+<span data-tid="hash-component">
   <Tooltip {id} {text}>
     <svelte:element this={tagName} data-tid={testId} class={className}>
       {shortenText}</svelte:element
@@ -32,21 +30,15 @@
 
 <style lang="scss">
   span {
+    align-items: center;
     display: inline-flex;
     gap: var(--padding-0_5x);
 
-    &.flowLessCopy {
-      // add padding to the right of the text to make space for the copy icon (button + padding)
-      padding-right: calc(var(--padding-4x) + var(--padding-0_5x));
-      position: relative;
-
-      // center vertically the copy icon
-      .copy {
-        position: absolute;
-        right: 0;
-        top: 50%;
-        transform: translate(0, -50%);
-      }
+    .copy {
+      align-items: center;
+      display: inline-flex;
+      // Make sure the icon doesn't increase the line height.
+      max-height: 0;
     }
   }
 </style>

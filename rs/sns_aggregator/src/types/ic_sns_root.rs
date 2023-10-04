@@ -8,7 +8,8 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
 use ic_cdk::api::call::CallResult;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
-// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, candid::Principal};
+// #![allow(dead_code, unused_imports)]
+// use candid::{self, CandidType, Decode, Deserialize, Serialize, Clone, Debug, Encode, candid::Principal};
 // use ic_cdk::api::call::CallResult as Result;
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -30,9 +31,12 @@ pub struct CanisterIdRecord {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub enum CanisterStatusType {
-    stopped,
-    stopping,
-    running,
+    #[serde(rename = "stopped")]
+    Stopped,
+    #[serde(rename = "stopping")]
+    Stopping,
+    #[serde(rename = "running")]
+    Running,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -51,9 +55,12 @@ pub struct CanisterStatusResult {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub enum CanisterInstallMode {
-    reinstall,
-    upgrade,
-    install,
+    #[serde(rename = "reinstall")]
+    Reinstall,
+    #[serde(rename = "upgrade")]
+    Upgrade,
+    #[serde(rename = "install")]
+    Install,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -124,7 +131,7 @@ pub struct GetSnsCanistersSummaryResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct list_sns_canisters_arg0 {}
+pub struct ListSnsCanistersArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug, Default)]
 pub struct ListSnsCanistersResponse {
@@ -143,7 +150,7 @@ pub struct RegisterDappCanisterRequest {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct register_dapp_canister_ret0 {}
+pub struct RegisterDappCanisterRet {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct RegisterDappCanistersRequest {
@@ -151,7 +158,7 @@ pub struct RegisterDappCanistersRequest {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct register_dapp_canisters_ret0 {}
+pub struct RegisterDappCanistersRet {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct SetDappControllersRequest {
@@ -176,8 +183,8 @@ pub struct SetDappControllersResponse {
     pub failed_updates: Vec<FailedUpdate>,
 }
 
-pub struct SERVICE(pub candid::Principal);
-impl SERVICE {
+pub struct Service(pub candid::Principal);
+impl Service {
     pub async fn canister_status(&self, arg0: CanisterIdRecord) -> CallResult<(CanisterStatusResult,)> {
         ic_cdk::call(self.0, "canister_status", (arg0,)).await
     }
@@ -193,19 +200,19 @@ impl SERVICE {
     ) -> CallResult<(GetSnsCanistersSummaryResponse,)> {
         ic_cdk::call(self.0, "get_sns_canisters_summary", (arg0,)).await
     }
-    pub async fn list_sns_canisters(&self, arg0: list_sns_canisters_arg0) -> CallResult<(ListSnsCanistersResponse,)> {
+    pub async fn list_sns_canisters(&self, arg0: ListSnsCanistersArg) -> CallResult<(ListSnsCanistersResponse,)> {
         ic_cdk::call(self.0, "list_sns_canisters", (arg0,)).await
     }
     pub async fn register_dapp_canister(
         &self,
         arg0: RegisterDappCanisterRequest,
-    ) -> CallResult<(register_dapp_canister_ret0,)> {
+    ) -> CallResult<(RegisterDappCanisterRet,)> {
         ic_cdk::call(self.0, "register_dapp_canister", (arg0,)).await
     }
     pub async fn register_dapp_canisters(
         &self,
         arg0: RegisterDappCanistersRequest,
-    ) -> CallResult<(register_dapp_canisters_ret0,)> {
+    ) -> CallResult<(RegisterDappCanistersRet,)> {
         ic_cdk::call(self.0, "register_dapp_canisters", (arg0,)).await
     }
     pub async fn set_dapp_controllers(

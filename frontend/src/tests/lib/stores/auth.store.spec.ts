@@ -3,7 +3,10 @@
  */
 
 import * as utils from "$lib/api/agent.api";
-import { OLD_MAINNET_IDENTITY_SERVICE_URL } from "$lib/constants/identity.constants";
+import {
+  IDENTITY_SERVICE_URL,
+  OLD_MAINNET_IDENTITY_SERVICE_URL,
+} from "$lib/constants/identity.constants";
 import { authStore } from "$lib/stores/auth.store";
 import { AuthClient } from "@dfinity/auth-client";
 import { mock } from "jest-mock-extended";
@@ -38,11 +41,63 @@ describe("auth-store", () => {
     });
   });
 
-  it("should call auth-client with old identity provider if currently in the old", async () => {
+  it("should call auth-client with identity provider", async () => {
+    const { host } = window.location;
+    Object.defineProperty(window, "location", {
+      writable: true,
+      value: { host: "nns.internetcomputer.org" },
+    });
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore: test file
+    mockAuthClient.login = async ({
+      onSuccess,
+      identityProvider,
+    }: {
+      onSuccess: () => void;
+      identityProvider: string;
+    }) => {
+      expect(identityProvider).toBe(IDENTITY_SERVICE_URL);
+      onSuccess();
+    };
+
+    await authStore.signIn(() => {
+      // do nothing on error here
+    });
+    window.location.host = host;
+  });
+
+  it("should call auth-client with old identity provider for nns.ic0.app", async () => {
     const { host } = window.location;
     Object.defineProperty(window, "location", {
       writable: true,
       value: { host: "nns.ic0.app" },
+    });
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore: test file
+    mockAuthClient.login = async ({
+      onSuccess,
+      identityProvider,
+    }: {
+      onSuccess: () => void;
+      identityProvider: string;
+    }) => {
+      expect(identityProvider).toBe(OLD_MAINNET_IDENTITY_SERVICE_URL);
+      onSuccess();
+    };
+
+    await authStore.signIn(() => {
+      // do nothing on error here
+    });
+    window.location.host = host;
+  });
+
+  it("should call auth-client with old identity provider for wallet.ic0.app", async () => {
+    const { host } = window.location;
+    Object.defineProperty(window, "location", {
+      writable: true,
+      value: { host: "wallet.ic0.app" },
     });
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

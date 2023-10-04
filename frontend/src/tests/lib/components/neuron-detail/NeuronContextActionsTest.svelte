@@ -11,6 +11,7 @@
 
   export let testComponent: typeof SvelteComponent;
   export let neuron: NeuronInfo | undefined;
+  export let moreProps: Record<string, unknown> = {};
 
   export const neuronStore = writable<NnsNeuronStore>({
     neuron,
@@ -21,6 +22,6 @@
   });
 </script>
 
-<svelte:component this={testComponent} {neuron} />
+<svelte:component this={testComponent} {neuron} {...moreProps} />
 
 <NnsNeuronModals />

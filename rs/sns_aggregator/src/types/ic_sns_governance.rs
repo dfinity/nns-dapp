@@ -8,7 +8,8 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
 use ic_cdk::api::call::CallResult;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
-// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, candid::Principal};
+// #![allow(dead_code, unused_imports)]
+// use candid::{self, CandidType, Decode, Deserialize, Serialize, Clone, Debug, Encode, candid::Principal};
 // use ic_cdk::api::call::CallResult as Result;
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -379,7 +380,7 @@ pub struct Disburse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub enum Command_2 {
+pub enum Command2 {
     Split(Split),
     Follow(Follow),
     DisburseMaturity(DisburseMaturity),
@@ -397,7 +398,7 @@ pub enum Command_2 {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct NeuronInFlightCommand {
-    pub command: Option<Command_2>,
+    pub command: Option<Command2>,
     pub timestamp: u64,
 }
 
@@ -500,13 +501,13 @@ pub struct ClaimSwapNeuronsResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct fail_stuck_upgrade_in_progress_arg0 {}
+pub struct FailStuckUpgradeInProgressArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct fail_stuck_upgrade_in_progress_ret0 {}
+pub struct FailStuckUpgradeInProgressRet {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct get_maturity_modulation_arg0 {}
+pub struct GetMaturityModulationArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetMaturityModulationResponse {
@@ -514,7 +515,7 @@ pub struct GetMaturityModulationResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct get_metadata_arg0 {}
+pub struct GetMetadataArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug, Default)]
 pub struct GetMetadataResponse {
@@ -525,7 +526,7 @@ pub struct GetMetadataResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct get_mode_arg0 {}
+pub struct GetModeArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetModeResponse {
@@ -538,14 +539,14 @@ pub struct GetNeuron {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub enum Result {
+pub enum Result_ {
     Error(GovernanceError),
     Neuron(Neuron),
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetNeuronResponse {
-    pub result: Option<Result>,
+    pub result: Option<Result_>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -554,21 +555,24 @@ pub struct GetProposal {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub enum Result_1 {
+pub enum Result1 {
     Error(GovernanceError),
     Proposal(ProposalData),
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetProposalResponse {
-    pub result: Option<Result_1>,
+    pub result: Option<Result1>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub enum CanisterStatusType {
-    stopped,
-    stopping,
-    running,
+    #[serde(rename = "stopped")]
+    Stopped,
+    #[serde(rename = "stopping")]
+    Stopping,
+    #[serde(rename = "running")]
+    Running,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -590,7 +594,7 @@ pub struct CanisterStatusResultV2 {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct get_running_sns_version_arg0 {}
+pub struct GetRunningSnsVersionArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetRunningSnsVersionResponse {
@@ -599,7 +603,7 @@ pub struct GetRunningSnsVersionResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct get_sns_initialization_parameters_arg0 {}
+pub struct GetSnsInitializationParametersArg {}
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct GetSnsInitializationParametersResponse {
@@ -673,6 +677,7 @@ pub struct SplitResponse {
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct DisburseMaturityResponse {
     pub amount_disbursed_e8s: u64,
+    pub amount_deducted_e8s: Option<u64>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -698,7 +703,7 @@ pub struct DisburseResponse {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub enum Command_1 {
+pub enum Command1 {
     Error(GovernanceError),
     Split(SplitResponse),
     Follow(EmptyRecord),
@@ -716,7 +721,7 @@ pub enum Command_1 {
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
 pub struct ManageNeuronResponse {
-    pub command: Option<Command_1>,
+    pub command: Option<Command1>,
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
@@ -725,17 +730,17 @@ pub struct SetMode {
 }
 
 #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-pub struct set_mode_ret0 {}
+pub struct SetModeRet {}
 
-pub struct SERVICE(pub candid::Principal);
-impl SERVICE {
+pub struct Service(pub candid::Principal);
+impl Service {
     pub async fn claim_swap_neurons(&self, arg0: ClaimSwapNeuronsRequest) -> CallResult<(ClaimSwapNeuronsResponse,)> {
         ic_cdk::call(self.0, "claim_swap_neurons", (arg0,)).await
     }
     pub async fn fail_stuck_upgrade_in_progress(
         &self,
-        arg0: fail_stuck_upgrade_in_progress_arg0,
-    ) -> CallResult<(fail_stuck_upgrade_in_progress_ret0,)> {
+        arg0: FailStuckUpgradeInProgressArg,
+    ) -> CallResult<(FailStuckUpgradeInProgressRet,)> {
         ic_cdk::call(self.0, "fail_stuck_upgrade_in_progress", (arg0,)).await
     }
     pub async fn get_build_metadata(&self) -> CallResult<(String,)> {
@@ -746,14 +751,14 @@ impl SERVICE {
     }
     pub async fn get_maturity_modulation(
         &self,
-        arg0: get_maturity_modulation_arg0,
+        arg0: GetMaturityModulationArg,
     ) -> CallResult<(GetMaturityModulationResponse,)> {
         ic_cdk::call(self.0, "get_maturity_modulation", (arg0,)).await
     }
-    pub async fn get_metadata(&self, arg0: get_metadata_arg0) -> CallResult<(GetMetadataResponse,)> {
+    pub async fn get_metadata(&self, arg0: GetMetadataArg) -> CallResult<(GetMetadataResponse,)> {
         ic_cdk::call(self.0, "get_metadata", (arg0,)).await
     }
-    pub async fn get_mode(&self, arg0: get_mode_arg0) -> CallResult<(GetModeResponse,)> {
+    pub async fn get_mode(&self, arg0: GetModeArg) -> CallResult<(GetModeResponse,)> {
         ic_cdk::call(self.0, "get_mode", (arg0,)).await
     }
     pub async fn get_nervous_system_parameters(&self, arg0: ()) -> CallResult<(NervousSystemParameters,)> {
@@ -770,13 +775,13 @@ impl SERVICE {
     }
     pub async fn get_running_sns_version(
         &self,
-        arg0: get_running_sns_version_arg0,
+        arg0: GetRunningSnsVersionArg,
     ) -> CallResult<(GetRunningSnsVersionResponse,)> {
         ic_cdk::call(self.0, "get_running_sns_version", (arg0,)).await
     }
     pub async fn get_sns_initialization_parameters(
         &self,
-        arg0: get_sns_initialization_parameters_arg0,
+        arg0: GetSnsInitializationParametersArg,
     ) -> CallResult<(GetSnsInitializationParametersResponse,)> {
         ic_cdk::call(self.0, "get_sns_initialization_parameters", (arg0,)).await
     }
@@ -792,7 +797,7 @@ impl SERVICE {
     pub async fn manage_neuron(&self, arg0: ManageNeuron) -> CallResult<(ManageNeuronResponse,)> {
         ic_cdk::call(self.0, "manage_neuron", (arg0,)).await
     }
-    pub async fn set_mode(&self, arg0: SetMode) -> CallResult<(set_mode_ret0,)> {
+    pub async fn set_mode(&self, arg0: SetMode) -> CallResult<(SetModeRet,)> {
         ic_cdk::call(self.0, "set_mode", (arg0,)).await
     }
 }

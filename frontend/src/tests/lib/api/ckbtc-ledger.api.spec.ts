@@ -1,3 +1,4 @@
+import * as agent from "$lib/api/agent.api";
 import { getCkBTCAccount, getCkBTCToken } from "$lib/api/ckbtc-ledger.api";
 import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
@@ -5,8 +6,9 @@ import {
   mockQueryTokenResponse,
   mockSnsToken,
 } from "$tests/mocks/sns-projects.mock";
-import { IcrcLedgerCanister } from "@dfinity/ledger";
-import mock from "jest-mock-extended/lib/Mock";
+import type { HttpAgent } from "@dfinity/agent";
+import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
+import { mock } from "jest-mock-extended";
 
 describe("ckbtc-ledger api", () => {
   const ledgerCanisterMock = mock<IcrcLedgerCanister>();
@@ -18,6 +20,10 @@ describe("ckbtc-ledger api", () => {
   });
 
   afterAll(() => jest.clearAllMocks());
+
+  beforeEach(() => {
+    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+  });
 
   describe("getCkBTCAccount", () => {
     it("returns main account with balance", async () => {

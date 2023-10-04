@@ -1,3 +1,4 @@
+import { KeyValuePairPo } from "$tests/page-objects/KeyValuePair.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -16,5 +17,28 @@ export class ProposalCardPo extends BasePageObject {
 
   getProposalId(): Promise<string> {
     return this.getText("proposal-id");
+  }
+
+  getProposalTopicText(): Promise<string> {
+    return KeyValuePairPo.under({
+      element: this.root,
+      testId: "proposal-topic",
+    }).getValueText();
+  }
+
+  async getProposalStatusText(): Promise<string> {
+    return (
+      await KeyValuePairPo.under({
+        element: this.root,
+        testId: "proposal-status",
+      }).getKeyText()
+    ).trim();
+  }
+
+  getShortenedProposer(): Promise<string> {
+    return KeyValuePairPo.under({
+      element: this.root,
+      testId: "shortened-proposer",
+    }).getValueText();
   }
 }

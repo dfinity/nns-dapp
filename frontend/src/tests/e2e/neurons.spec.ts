@@ -6,15 +6,15 @@ import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 test("Test neuron voting", async ({ page, context }) => {
-  await page.goto("/");
-  await expect(page).toHaveTitle("NNS Dapp");
+  await page.goto("/accounts");
+  await expect(page).toHaveTitle("My Tokens / NNS Dapp");
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
   const appPo = new AppPo(pageElement);
 
   step("Get some ICP");
-  await appPo.getTokens(41);
+  await appPo.getIcpTokens(41);
 
   // should be created before dummy proposals
   step("Stake neuron (for voting)");
@@ -30,7 +30,7 @@ test("Test neuron voting", async ({ page, context }) => {
   const neuronId = neuronIds[0];
 
   step("Create dummy proposals");
-  await createDummyProposal(appPo);
+  const proposer = await createDummyProposal(appPo);
 
   step("Go to the neurons tab");
   await appPo.goToNeurons();
@@ -41,11 +41,13 @@ test("Test neuron voting", async ({ page, context }) => {
   await appPo.goToNeuronDetails(neuronId);
 
   step("Get neuron voting power");
-  const neuronAVotingPower = await appPo
-    .getNeuronDetailPo()
-    .getNnsNeuronDetailPo()
-    .getNnsNeuronMetaInfoCardPageObjectPo()
-    .getVotingPower();
+  const neuronAVotingPower = Number(
+    await appPo
+      .getNeuronDetailPo()
+      .getNnsNeuronDetailPo()
+      .getVotingPowerSectionPo()
+      .getVotingPower()
+  );
 
   // vp=stake*2 when max dissolve delay (https://support.dfinity.org/hc/en-us/articles/4404284534420-What-is-voting-power-)
   expect(neuronAVotingPower).toBe(stake * 2);
@@ -63,9 +65,11 @@ test("Test neuron voting", async ({ page, context }) => {
   expect(proposalIds.length).toBeGreaterThan(0);
 
   step("Open first proposal");
-  await (
-    await appPo.getProposalsPo().getNnsProposalListPo().getProposalCardPos()
-  )[0].click();
+  const proposalCard = await appPo
+    .getProposalsPo()
+    .getNnsProposalListPo()
+    .getFirstProposalCardPoForProposer(proposer);
+  await proposalCard.click();
   const proposalDetails = appPo.getProposalDetailPo().getNnsProposalPo();
   await proposalDetails.waitForContentLoaded();
   const initialAdoptVotingPower = await proposalDetails

@@ -6,8 +6,8 @@ import type {
 import { getTransactions as getIcrcTransactions } from "$lib/api/icrc-index.api";
 import { HOST } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import type { HttpAgent, Identity } from "@dfinity/agent";
-import { IcrcIndexCanister } from "@dfinity/ledger";
+import type { Agent, Identity } from "@dfinity/agent";
+import { IcrcIndexCanister } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 
 export const getCkBTCTransactions = async ({
@@ -42,7 +42,7 @@ const ckBTCIndexCanister = async ({
   canisterId: Principal;
 }): Promise<{
   canister: IcrcIndexCanister;
-  agent: HttpAgent;
+  agent: Agent;
 }> => {
   const agent = await createAgent({
     identity,

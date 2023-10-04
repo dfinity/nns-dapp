@@ -3,8 +3,13 @@
  */
 
 import ProjectStatus from "$lib/components/project-detail/ProjectStatus.svelte";
+import {
+  getOrCreateSnsFinalizationStatusStore,
+  resetSnsFinalizationStatusStore,
+} from "$lib/stores/sns-finalization-status.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import en from "$tests/mocks/i18n.mock";
+import { createFinalizationStatusMock } from "$tests/mocks/sns-finalization-status.mock";
 import {
   mockSnsFullProject,
   summaryForLifecycle,
@@ -13,6 +18,10 @@ import { renderContextCmp } from "$tests/mocks/sns.mock";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 
 describe("ProjectStatus", () => {
+  beforeEach(() => {
+    resetSnsFinalizationStatusStore();
+  });
+
   it("should render accepting participation text when open", () => {
     const { queryByText } = renderContextCmp({
       summary: summaryForLifecycle(SnsSwapLifecycle.Open),
@@ -79,6 +88,42 @@ describe("ProjectStatus", () => {
 
     expect(
       queryByText(en.sns_project_detail.status_aborted)
+    ).toBeInTheDocument();
+  });
+
+  it("should render finalizing text when swap is finalizing", () => {
+    const summary = summaryForLifecycle(SnsSwapLifecycle.Committed);
+    const store = getOrCreateSnsFinalizationStatusStore(summary.rootCanisterId);
+    store.setData({
+      data: createFinalizationStatusMock(true),
+      certified: true,
+    });
+    const { queryByText } = renderContextCmp({
+      summary,
+      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+      Component: ProjectStatus,
+    });
+
+    expect(
+      queryByText(en.sns_project_detail.status_finalizing)
+    ).toBeInTheDocument();
+  });
+
+  it("should render committed text if finalizing data is not finalizing", () => {
+    const summary = summaryForLifecycle(SnsSwapLifecycle.Committed);
+    const store = getOrCreateSnsFinalizationStatusStore(summary.rootCanisterId);
+    store.setData({
+      data: createFinalizationStatusMock(false),
+      certified: true,
+    });
+    const { queryByText } = renderContextCmp({
+      summary,
+      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+      Component: ProjectStatus,
+    });
+
+    expect(
+      queryByText(en.sns_project_detail.status_committed)
     ).toBeInTheDocument();
   });
 });

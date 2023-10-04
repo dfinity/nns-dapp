@@ -9,8 +9,6 @@ This document list a couple of useful information to develop the NNS-dapp fronte
 - [Testnet](#testnet)
 - [Preview](#preview)
   - [Configure](#configure)
-- [e2e](#e2e)
-  - [Running against local server](#running-against-local-server)
 - [Requirements](#requirements)
 - [Dependencies](#dependencies)
 - [ckBTC deployment](#ckbtc-deployment)
@@ -32,15 +30,15 @@ To run the dapp against canisters deployed locally on a simulated IC network, us
 
 - Make sure you have a clean local replica running with `dfx start --clean`. This will stay running so use a separate terminal for this.
 - Deploy the NNS backend canisters locally with `dfx nns install`
-- From the last line of output of `dfx nns install` note down the value url for `nns-dapp`
+- From the last line of output of `dfx nns install` note down the value URL for `nns-dapp`
 - Run `DFX_NETWORK=local ./config.sh` to populate the `./frontend/.env` file.
-- Manually edit the `./frontend/.env` and replace `null` with the nns-dapp canister id from the url you noted down before.
+- Manually edit the `./frontend/.env` and replace `null` with the nns-dapp canister id from the URL you noted down before.
 - Create a file called `canister_ids.json` in `./dfx/local/` with the following content (and make sure to replace the id:
 
 ```
 {
   "nns-dapp": {
-    "local": "<the id from the url from the output of 'dfx nns install'>"
+    "local": "<the id from the URL from the output of 'dfx nns install'>"
   }
 }
 ```
@@ -78,18 +76,6 @@ To develop and run locally the dapp against a testnet, proceed as following:
 
 e.g. replace `<testnet_name>` with `small11`
 
-## e2e
-
-e2e tests also need a `.env` configuration. Such file can also be generated with the help of the `./config.sh` script by providing a specific output parameter.
-
-e.g. `DFX_NETWORK=<testnet_name> ENV_OUTPUT_FILE=./e2e-tests/.env ./config.sh`
-
-### Running against local server
-
-If you wish to run the e2e tests against your local server, please note:
-
-* The II version deployed locally might be different than the version pinned to run the test. Therefore you might need to adapt the selectors in [./e2e-tests/components/ii-congratulations-page.ts](./e2e-tests/components/ii-congratulations-page.ts).
-
 ## Requirements
 
 The `dfx` version installed locally should match the one defined in [dfx.json](https://github.com/dfinity/nns-dapp/blob/main/dfx.json). If not, you will have to either upgrade or manually change the version in the local file. In such case, please do not commit the change!
@@ -122,7 +108,7 @@ cd frontend
 ```
 
 3. Check for Newer Dependencies:
-   
+
 Identify the available newer versions of the dependencies. Run the following command in your terminal:
 
 ```bash
@@ -152,7 +138,7 @@ This command will install the newer versions of the dependencies and update the 
 After the installation is complete, it's crucial to thoroughly test the frontend dapp. Ensure that all the functionalities are working as expected and there are no compatibility issues with the updated dependencies.
 
 7. Create a Pull Request (PR):
-   
+
 If everything looks good and the frontend dapp is functioning correctly with the updated dependencies, it's time to create a pull request. Include the modified `package.json` and `package-lock.json` files in a new PR to let others review and merge the changes.
 
 ## ckBTC deployment
@@ -182,7 +168,7 @@ Add following in `defaults` of [dfx.json](./dfx.json).
 
 Deploying ckBTC ledger, index and minter are as well not yet automated.
 
-Their wasm and candid file can be downloaded with a script which finds place in [./scripts/ckbtc/download-ckbtc](./scripts/ckbtc/download-ckbtc).
+Their Wasm and candid file can be downloaded with a script which finds place in [./scripts/ckbtc/download-ckbtc](./scripts/ckbtc/download-ckbtc).
 
 ```
 ./scripts/ckbtc/download-ckbtc

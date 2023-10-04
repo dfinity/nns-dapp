@@ -1,15 +1,9 @@
 import { browser } from "$app/environment";
-import { SNS_AGGREGATOR_CANISTER_URL } from "$lib/constants/environment.constants";
-import {
-  loadSnsProjects,
-  loadSnsSummaries,
-} from "$lib/services/$public/sns.services";
+import { loadSnsProjects } from "$lib/services/$public/sns.services";
 import { displayAndCleanLogoutMsg } from "$lib/services/auth.services";
 import { authStore } from "$lib/stores/auth.store";
-import { ENABLE_SNS_AGGREGATOR } from "$lib/stores/feature-flags.store";
 import { layoutAuthReady } from "$lib/stores/layout.store";
 import { toastsError } from "$lib/stores/toasts.store";
-import { get } from "svelte/store";
 
 /**
  * Load the application public data that are available globally ("global stores").
@@ -19,12 +13,7 @@ export const initAppPublicData = (): Promise<
   [PromiseSettledResult<void[]>, PromiseSettledResult<void[]>]
 > => {
   const initNns: Promise<void>[] = [];
-
-  const initSns: Promise<void>[] = [
-    get(ENABLE_SNS_AGGREGATOR) && SNS_AGGREGATOR_CANISTER_URL !== undefined
-      ? loadSnsProjects()
-      : loadSnsSummaries(),
-  ];
+  const initSns: Promise<void>[] = [loadSnsProjects()];
 
   /**
    * If Nns load but Sns load fails it is "fine" to go on because Nns are core features.

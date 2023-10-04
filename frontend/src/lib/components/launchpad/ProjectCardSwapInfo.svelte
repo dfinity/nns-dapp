@@ -53,19 +53,19 @@
 <dl data-tid="project-card-swap-info-component">
   <!-- Sale is committed -->
   {#if lifecycle === SnsSwapLifecycle.Committed}
-    <dt>{$i18n.sns_project_detail.status_completed}</dt>
+    <dt class="label">{$i18n.sns_project_detail.status_completed}</dt>
     <dd class="value">{$i18n.sns_project_detail.completed}</dd>
   {/if}
 
   <!-- Sale is adopted -->
   {#if lifecycle === SnsSwapLifecycle.Adopted && durationTillStart !== undefined}
-    <dt>{$i18n.sns_project_detail.starts}</dt>
+    <dt class="label">{$i18n.sns_project_detail.starts}</dt>
     <dd class="value">{secondsToDuration(durationTillStart)}</dd>
   {/if}
 
   <!-- Sale is open -->
   {#if lifecycle === SnsSwapLifecycle.Open && durationTillDeadline !== undefined}
-    <dt>{$i18n.sns_project_detail.deadline}</dt>
+    <dt class="label">{$i18n.sns_project_detail.deadline}</dt>
     <dd class="value">{secondsToDuration(durationTillDeadline)}</dd>
   {/if}
 

@@ -30,7 +30,7 @@ test_with_data() {
     else
       (
         echo "ERROR: actual output differs from expected output. See diff above."
-        echo "Run '"$0" --update' to update the tests."
+        echo "Run '\"$0\" --update' to update the tests."
         echo "FAILED: $1"
       ) >&2
       exit 1
@@ -64,6 +64,8 @@ test_with_data "release-sop-test-different-cargo-audit"
 test_with_data "release-sop-test-html-in-template"
 test_with_data "release-sop-test-different-wasm-hash"
 test_with_data "release-sop-test-different-staging-wasm-hash"
+test_with_data "release-sop-test-different-built-wasm-hash"
+test_with_data "release-sop-test-different-built-args-hash"
 test_with_data "release-sop-test-successful-release"
 # The tests below rely on the checklist from the release-sop-test-successful-release.
 test_with_data "release-sop-test-continue-after-success"

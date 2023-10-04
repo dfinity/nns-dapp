@@ -39,4 +39,8 @@ export class KeyValuePairInfoPo extends BasePageObject {
   getDescriptionText(): Promise<string> {
     return this.getText(`${this.testId}-description`);
   }
+
+  async isDescriptionVisible(): Promise<boolean> {
+    return this.root.byTestId("collapsible-content").isVisible();
+  }
 }

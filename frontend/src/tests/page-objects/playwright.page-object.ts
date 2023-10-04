@@ -80,6 +80,10 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     return classNames?.split(" ");
   }
 
+  isChecked(): Promise<boolean> {
+    return this.locator.isChecked();
+  }
+
   async isPresent(): Promise<boolean> {
     return (await this.locator.count()) > 0;
   }
@@ -96,11 +100,23 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     return this.locator.click();
   }
 
+  input(_value: string): Promise<void> {
+    throw new Error("Not implement");
+  }
+
   typeText(text: string): Promise<void> {
     return this.locator.type(text);
   }
 
   async selectOption(text: string): Promise<void> {
     await this.locator.selectOption(text);
+  }
+
+  async isVisible(): Promise<boolean> {
+    throw new Error("Not implement");
+  }
+
+  async blur(): Promise<void> {
+    throw new Error("Not implement");
   }
 }

@@ -28,6 +28,7 @@ export type BusyStateInitiatorType =
   | "merge-maturity"
   | "spawn-neuron"
   | "stake-maturity"
+  | "disburse-maturity"
   | "claim_seed_neurons"
   | "project-participate"
   | "add-sns-hotkey-neuron"
@@ -42,6 +43,7 @@ export type BusyStateInitiatorType =
   | "disburse-sns-neuron"
   | "load-sns-filters"
   | "dev-add-sns-neuron-permissions"
+  | "dev-add-sns-neuron-maturity"
   | "load-sns-accounts"
   | "update-ckbtc-balance"
   | "reload-receive-account";

@@ -1,5 +1,6 @@
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
-import { TextInputPo } from "$tests/page-objects/TextInput.page-object";
+import { InputRangePo } from "$tests/page-objects/InputRange.page-object";
+import { InputWithErrorPo } from "$tests/page-objects/InputWithError.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -10,14 +11,18 @@ export class SetDissolveDelayPo extends BasePageObject {
     return new SetDissolveDelayPo(element.byTestId(SetDissolveDelayPo.TID));
   }
 
-  getTextInputPo(): TextInputPo {
-    return TextInputPo.under({ element: this.root });
+  getInputWithErrorPo(): InputWithErrorPo {
+    return InputWithErrorPo.under({ element: this.root });
   }
 
   getUpdateButtonPo(): ButtonPo {
+    return this.getButton("go-confirm-delay-button");
+  }
+
+  getMinButtonPo(): ButtonPo {
     return ButtonPo.under({
       element: this.root,
-      testId: "go-confirm-delay-button",
+      testId: "min-button",
     });
   }
 
@@ -28,12 +33,20 @@ export class SetDissolveDelayPo extends BasePageObject {
     });
   }
 
+  getInputRangePo(): InputRangePo {
+    return InputRangePo.under(this.root);
+  }
+
   clickUpdate(): Promise<void> {
     return this.getUpdateButtonPo().click();
   }
 
   clickMax(): Promise<void> {
     return this.getMaxButtonPo().click();
+  }
+
+  clickMin(): Promise<void> {
+    return this.getMinButtonPo().click();
   }
 
   clickSkip() {
@@ -48,8 +61,28 @@ export class SetDissolveDelayPo extends BasePageObject {
     if (days === "max") {
       await this.clickMax();
     } else {
-      await this.getTextInputPo().typeText(days.toString());
+      await this.enterDays(days);
     }
     await this.clickUpdate();
+  }
+
+  async enterDays(days: number): Promise<void> {
+    await this.getInputWithErrorPo().typeText(days.toString());
+  }
+
+  async getDays(): Promise<number> {
+    return Number(await this.getInputWithErrorPo().getValue());
+  }
+
+  getErrorMessage(): Promise<string> {
+    return this.getInputWithErrorPo().getErrorMessage();
+  }
+
+  async getSliderDays(): Promise<number> {
+    return this.getInputRangePo().getValue();
+  }
+
+  setSliderDays(days: number): Promise<void> {
+    return this.getInputRangePo().setValue(days);
   }
 }

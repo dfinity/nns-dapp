@@ -1,6 +1,6 @@
 # NNS Dapp Frontend
 
-All the pages in the [NNS dapp](https://nns.internetcomputer.org/) come from this project.
+All the pages in the [NNS Dapp](https://nns.internetcomputer.org/) come from this project.
 
 - **Stack**: [Typescript](https://www.typescriptlang.org/), [SvelteKit](https://kit.svelte.dev/) and [Jest](https://jestjs.io/).
 
@@ -28,7 +28,7 @@ After installing the project, you can run the test suite:
 npm run test
 ```
 
-There is also a project to run e2e tests [here](../e2e-tests/README.md).
+There is also a project to run e2e tests [here](src/tests/e2e/README.md).
 
 ## Style
 
@@ -36,5 +36,5 @@ This project uses [Prettier](https://prettier.io/) and [Eslint](https://eslint.o
 
 There are a few helpful commands:
 
-- `npm run format` automatically formats the code according to prettier. This command also runs in the Github pipeline.
+- `npm run format` automatically formats the code according to prettier. This command also runs in the GitHub pipeline.
 - `npm run check` runs Typescript and Eslint checks.

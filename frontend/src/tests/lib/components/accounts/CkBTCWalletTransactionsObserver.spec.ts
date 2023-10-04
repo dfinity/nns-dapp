@@ -12,7 +12,6 @@ import type {
   PostMessageDataResponseTransactions,
 } from "$lib/types/post-message.transactions";
 import type { PostMessage } from "$lib/types/post-messages";
-import { jsonReplacer } from "$lib/utils/json.utils";
 import { page } from "$mocks/$app/stores";
 import CkBTCWalletTransactionsObserverTest from "$tests/lib/components/accounts/CkBTCWalletTransactionsObserverTest.svelte";
 import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
@@ -21,6 +20,7 @@ import {
   mockIcrcTransactionWithId,
 } from "$tests/mocks/icrc-transactions.mock";
 import { PostMessageMock } from "$tests/mocks/post-message.mocks";
+import { jsonReplacer } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 

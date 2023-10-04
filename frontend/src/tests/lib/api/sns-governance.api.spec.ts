@@ -7,6 +7,7 @@ import {
   autoStakeMaturity,
   claimNeuron,
   disburse,
+  disburseMaturity,
   getNervousSystemFunctions,
   getNeuronBalance,
   getSnsNeuron,
@@ -47,8 +48,9 @@ import {
   rootCanisterIdMock,
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
-import type { HttpAgent } from "@dfinity/agent";
-import { LedgerCanister, type SnsWasmCanisterOptions } from "@dfinity/nns";
+import type { Agent } from "@dfinity/agent";
+import { LedgerCanister } from "@dfinity/ledger-icp";
+import type { SnsWasmCanisterOptions } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
@@ -63,7 +65,7 @@ import mock from "jest-mock-extended/lib/Mock";
 jest.mock("$lib/proxy/api.import.proxy");
 jest.mock("$lib/api/agent.api", () => {
   return {
-    createAgent: () => Promise.resolve(mock<HttpAgent>()),
+    createAgent: () => Promise.resolve(mock<Agent>()),
   };
 });
 
@@ -89,6 +91,7 @@ describe("sns-api", () => {
   const autoStakeMaturitySpy = jest.fn().mockResolvedValue(undefined);
   const listProposalsSpy = jest.fn().mockResolvedValue(proposals);
   const getProposalSpy = jest.fn().mockResolvedValue(mockSnsProposal);
+  const disburseMaturitySpy = jest.fn().mockResolvedValue(undefined);
   const nervousSystemFunctionsMock: SnsListNervousSystemFunctionsResponse = {
     reserved_ids: new BigUint64Array(),
     functions: [nervousSystemFunctionMock],
@@ -99,6 +102,10 @@ describe("sns-api", () => {
   const nervousSystemParametersSpy = jest
     .fn()
     .mockResolvedValue(snsNervousSystemParametersMock);
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   beforeAll(() => {
     jest
@@ -143,13 +150,9 @@ describe("sns-api", () => {
         autoStakeMaturity: autoStakeMaturitySpy,
         listProposals: listProposalsSpy,
         getProposal: getProposalSpy,
+        disburseMaturity: disburseMaturitySpy,
       })
     );
-  });
-
-  afterAll(() => {
-    jest.clearAllMocks();
-    jest.restoreAllMocks();
   });
 
   it("should query sns neurons", async () => {
@@ -399,5 +402,50 @@ describe("sns-api", () => {
     expect(getProposalSpy).toBeCalledWith({ proposalId });
     expect(getProposalSpy).toBeCalledTimes(1);
     expect(res).toEqual(mockSnsProposal);
+  });
+
+  describe("disburseMaturity", () => {
+    it("should disburse maturity", async () => {
+      expect(disburseMaturitySpy).not.toBeCalled();
+      const res = await disburseMaturity({
+        identity: mockIdentity,
+        rootCanisterId: rootCanisterIdMock,
+        neuronId: mockSnsNeuron.id[0],
+        percentageToDisburse: 33,
+      });
+
+      expect(res).toBeUndefined();
+      expect(disburseMaturitySpy).toBeCalledTimes(1);
+      expect(disburseMaturitySpy).toBeCalledWith({
+        neuronId: mockSnsNeuron.id[0],
+        percentageToDisburse: 33,
+      });
+    });
+
+    it("should disburse maturity with account", async () => {
+      const ownerText =
+        "k2t6j-2nvnp-4zjm3-25dtz-6xhaa-c7boj-5gayf-oj3xs-i43lp-teztq-6ae";
+      const owner = Principal.fromText(ownerText);
+      const toAccount = {
+        owner,
+        subaccount: undefined,
+      };
+
+      expect(disburseMaturitySpy).not.toBeCalled();
+      await disburseMaturity({
+        identity: mockIdentity,
+        rootCanisterId: rootCanisterIdMock,
+        neuronId: mockSnsNeuron.id[0],
+        percentageToDisburse: 33,
+        toAccount,
+      });
+
+      expect(disburseMaturitySpy).toBeCalledTimes(1);
+      expect(disburseMaturitySpy).toBeCalledWith({
+        neuronId: mockSnsNeuron.id[0],
+        percentageToDisburse: 33,
+        toAccount,
+      });
+    });
   });
 });

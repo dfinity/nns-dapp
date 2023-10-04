@@ -1,11 +1,11 @@
 {
-  "dfx": "0.14.1",
+  "dfx": "0.14.4",
   "canisters": {
     "nns-governance": {
       "type": "custom",
-      "candid": "target/ic/governance.did",
+      "candid": "declarations/nns_governance/nns_governance.did",
       "wasm": "target/ic/governance-canister_test.wasm",
-      "build": "./e2e-tests/scripts/nns-canister-download && ./e2e-tests/scripts/nns-canister-build",
+      "build": "./scripts/e2e-tests/nns-canister-download && ./scripts/e2e-tests/nns-canister-build",
       "remote": {
         "id": {
           "mainnet": "rrkah-fqaaa-aaaaa-aaaaq-cai",
@@ -17,7 +17,7 @@
       "type": "custom",
       "candid": "target/ic/ic-icrc1-ledger.did",
       "wasm": "target/ic/ic-icrc1-ledger.wasm",
-      "build": "./e2e-tests/scripts/nns-canister-download && ./e2e-tests/scripts/nns-canister-build",
+      "build": "./scripts/e2e-tests/nns-canister-download && ./scripts/e2e-tests/nns-canister-build",
       "remote": {
         "id": {
           "mainnet": "ryjl3-tyaaa-aaaaa-aaaba-cai",
@@ -72,7 +72,7 @@
       "build": [
         "true"
       ],
-      "candid": "target/ic/sns_wasm.did",
+      "candid": "declarations/sns_wasm/sns_wasm.did",
       "wasm": "target/ic/sns-wasm-canister.wasm",
       "type": "custom",
       "remote": {
@@ -86,7 +86,7 @@
       "build": [
         "true"
       ],
-      "candid": "target/ic/sns_governance.did",
+      "candid": "declarations/sns_governance/sns_governance.did",
       "wasm": "target/ic/sns-governance-canister.wasm",
       "type": "custom"
     },
@@ -94,7 +94,7 @@
       "build": [
         "true"
       ],
-      "candid": "target/ic/ic-icrc1-ledger.did",
+      "candid": "declarations/sns_ledger/sns_ledger.did",
       "wasm": "target/ic/ic-icrc1-ledger.wasm",
       "type": "custom"
     },
@@ -118,7 +118,7 @@
       "build": [
         "true"
       ],
-      "candid": "target/ic/sns_swap.did",
+      "candid": "declarations/sns_swap/sns_swap.did",
       "wasm": "target/ic/sns-swap-canister.wasm",
       "type": "custom"
     },
@@ -126,7 +126,7 @@
       "build": [
         "true"
       ],
-      "candid": "target/ic/sns_root.did",
+      "candid": "declarations/sns_root/sns_root.did",
       "wasm": "target/ic/sns-root-canister.wasm",
       "type": "custom"
     },
@@ -208,8 +208,6 @@
         "API_HOST": "https://icp-api.io",
         "STATIC_HOST": "https://icp0.io",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_VOTING": true,
-          "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false
         }
@@ -225,8 +223,6 @@
         "API_HOST": "https://icp-api.io",
         "STATIC_HOST": "https://icp0.io",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_VOTING": true,
-          "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false
         }
@@ -240,8 +236,6 @@
       "config": {
         "HOST": "https://nnsdapp.dfinity.network",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_VOTING": true,
-          "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false
         }
@@ -318,8 +312,6 @@
         "HOST": "http://localhost:8080",
         "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_VOTING": true,
-          "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": false,
           "ENABLE_CKTESTBTC": false
         }
@@ -630,14 +622,14 @@
       "config": {
         "FETCH_ROOT_KEY": true,
         "FEATURE_FLAGS": {
-          "ENABLE_SNS_VOTING": true,
-          "ENABLE_SNS_AGGREGATOR": true,
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
           "ENABLE_ICP_ICRC": false,
-          "ENABLE_SIMULATE_MERGE_NEURONS": false,
-          "ENABLE_NEURON_SETTINGS": false,
-          "ENABLE_INSTANT_UNLOCK": false
+          "ENABLE_INSTANT_UNLOCK": false,
+          "ENABLE_SNS_AGGREGATOR_STORE": true,
+          "ENABLE_STAKE_NEURON_ICRC1": false,
+          "ENABLE_SWAP_ICRC1": false,
+          "ENABLE_FULL_WIDTH_PROPOSAL": false
         }
       }
     },
@@ -647,8 +639,10 @@
         "IC_WASM_VERSION": "0.3.6",
         "IDL2JSON_VERSION": "0.8.8",
         "OPTIMIZER_VERSION": "0.3.6",
-        "DIDC_VERSION": "2023-07-11",
-        "IC_COMMIT": "06f339b83ce37e3fc9571e1b4251fbcf5c1a8239"
+        "BINSTALL_VERSION": "1.3.0",
+        "DIDC_VERSION": "2023-09-27",
+        "SNSDEMO_RELEASE": "release-2023-09-27",
+        "IC_COMMIT": "96184d42331028a46fe3265583792f8c5f807cf8"
       },
       "packtool": ""
     }

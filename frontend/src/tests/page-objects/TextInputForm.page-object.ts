@@ -1,4 +1,4 @@
-import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { InputWithErrorPo } from "$tests/page-objects/InputWithError.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -25,10 +25,7 @@ export class TextInputFormPo extends BasePageObject {
   }
 
   getConfirmButtonPo(): ButtonPo {
-    return ButtonPo.under({
-      element: this.root,
-      testId: "confirm-text-input-screen-button",
-    });
+    return this.getButton("confirm-text-input-screen-button");
   }
 
   clickSubmitButton(): Promise<void> {

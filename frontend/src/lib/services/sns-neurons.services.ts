@@ -3,6 +3,7 @@ import {
   addNeuronPermissions,
   autoStakeMaturity as autoStakeMaturityApi,
   disburse as disburseApi,
+  disburseMaturity as disburseMaturityApi,
   getSnsNeuron as getSnsNeuronApi,
   querySnsNeuron,
   querySnsNeurons,
@@ -46,7 +47,7 @@ import {
 import { formatToken, numberToE8s } from "$lib/utils/token.utils";
 import { hexStringToBytes } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
-import { decodeIcrcAccount } from "@dfinity/ledger";
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { E8s } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type {
@@ -60,6 +61,7 @@ import {
   fromDefinedNullable,
   fromNullable,
   isNullish,
+  nonNullish,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
@@ -764,6 +766,43 @@ export const stakeMaturity = async ({
   } catch (err: unknown) {
     toastsError({
       labelKey: "error__sns.sns_stake_maturity",
+      err,
+    });
+
+    return { success: false };
+  }
+};
+
+export const disburseMaturity = async ({
+  neuronId,
+  rootCanisterId,
+  percentageToDisburse,
+  toAccountAddress,
+}: {
+  neuronId: SnsNeuronId;
+  rootCanisterId: Principal;
+  percentageToDisburse: number;
+  toAccountAddress?: string;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity = await getSnsNeuronIdentity();
+
+    const toAccount = nonNullish(toAccountAddress)
+      ? decodeIcrcAccount(toAccountAddress)
+      : undefined;
+
+    await disburseMaturityApi({
+      neuronId,
+      rootCanisterId,
+      percentageToDisburse,
+      identity,
+      toAccount,
+    });
+
+    return { success: true };
+  } catch (err: unknown) {
+    toastsError({
+      labelKey: "error__sns.sns_disburse_maturity",
       err,
     });
 

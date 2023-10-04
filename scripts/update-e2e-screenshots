@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+print_help() {
+  cat <<-EOF
+	Downloads updated screenshots from a specific GitHub CI run and places them in
+	frontend/src/tests/e2e/screenshots
+EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=r long=run_id desc="GitHub run_id" variable=GITHUB_RUN_ID
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+TOP_DIR=$(git rev-parse --show-toplevel)
+
+tmp_dir="$(mktemp -d)"
+gh run download "${GITHUB_RUN_ID}" -n updated-screenshots --dir "${tmp_dir}"
+mv "${tmp_dir}"/* "${TOP_DIR}/frontend/src/tests/e2e/screenshots"
+rm -rf "${tmp_dir}"

@@ -1,5 +1,6 @@
 import type { SnsSummarySwap } from "$lib/types/sns";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
+import type { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import type {
   SnsSwap,
@@ -33,6 +34,8 @@ const swapToQuerySwap = (swap: SnsSummarySwap): [SnsSwap] => [
     next_ticket_id: [],
     purge_old_tickets_last_completion_timestamp_nanoseconds: [],
     purge_old_tickets_next_principal: [],
+    direct_participation_icp_e8s: [],
+    neurons_fund_participation_icp_e8s: [],
   },
 ];
 
@@ -43,6 +46,7 @@ export const snsResponseFor = ({
   restrictedCountries,
   directParticipantCount,
   projectName,
+  tokenMetadata,
 }: {
   principal: Principal;
   lifecycle: SnsSwapLifecycle;
@@ -50,6 +54,7 @@ export const snsResponseFor = ({
   restrictedCountries?: string[];
   directParticipantCount?: [] | [bigint];
   projectName?: string;
+  tokenMetadata?: IcrcTokenMetadataResponse;
 }): [QuerySnsMetadata[], QuerySnsSwapState[]] => [
   [
     {
@@ -59,7 +64,7 @@ export const snsResponseFor = ({
           ? [projectName]
           : mockQueryMetadataResponse.name,
       },
-      token: mockQueryTokenResponse,
+      token: tokenMetadata ?? mockQueryTokenResponse,
       rootCanisterId: principal.toText(),
       certified,
     },
@@ -94,7 +99,7 @@ export const snsResponseFor = ({
   ],
 ];
 
-const mergeSnsResponses = (
+export const mergeSnsResponses = (
   responses: [QuerySnsMetadata[], QuerySnsSwapState[]][]
 ): [QuerySnsMetadata[], QuerySnsSwapState[]] => {
   const metadata = responses.flatMap(([meta, _]) => meta);

@@ -1,10 +1,15 @@
 import { defineConfig, devices } from "@playwright/test";
 
+// 1024px === large display === menu revealed.
+// We want to test the application with the tablet/mobile UI, which requires the menu to be hidden and only revealed when needed.
+const viewport = { width: 1023, height: 720 };
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
   testDir: "./src/tests/e2e",
+  snapshotPathTemplate: './src/tests/e2e/screenshots/{testFilePath}-{arg}-{projectName}-{platform}{ext}',
   /* Maximum time one test can run for. */
   timeout: (process.env.CI ? 300 : 90) * 1000,
   expect: {
@@ -22,7 +27,7 @@ export default defineConfig({
   /* Let's not enable retries until we actually need them */
   retries: 0,
   /* Number of tests that can be run in parallel. */
-  workers: process.env.CI ? 3 : 6,
+  workers: 6,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [["html", { open: "never" }], ["list"]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -42,11 +47,11 @@ export default defineConfig({
   projects: [
     {
       name: "Google Chrome",
-      use: { ...devices["Desktop Chrome"], channel: "chrome" },
+      use: { ...devices["Desktop Chrome"], channel: "chrome", viewport },
     },
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'], channel: "firefox" },
+      use: { ...devices['Desktop Firefox'], channel: "firefox", viewport },
     },
     // {
     //   name: "chromium",

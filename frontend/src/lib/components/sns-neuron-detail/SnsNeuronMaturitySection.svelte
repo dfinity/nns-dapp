@@ -1,22 +1,14 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { Section } from "@dfinity/gix-components";
-  import SnsStakedMaturityActionItem from "./SnsStakedMaturityActionItem.svelte";
-  import SnsAvailableMaturityActionItem from "./SnsAvailableMaturityActionItem.svelte";
+  import SnsStakedMaturityItemAction from "./SnsStakedMaturityItemAction.svelte";
+  import SnsAvailableMaturityItemAction from "./SnsAvailableMaturityItemAction.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
   import { formattedTotalMaturity } from "$lib/utils/sns-neuron.utils";
-  import {
-    SELECTED_SNS_NEURON_CONTEXT_KEY,
-    type SelectedSnsNeuronContext,
-  } from "$lib/types/sns-neuron-detail.context";
-  import { getContext } from "svelte";
-  import { nonNullish } from "@dfinity/utils";
+  import SnsViewActiveDisbursementsItemAction from "$lib/components/sns-neuron-detail/SnsViewActiveDisbursementsItemAction.svelte";
 
-  const { store }: SelectedSnsNeuronContext =
-    getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
-
-  let neuron: SnsNeuron | undefined | null;
-  $: neuron = $store.neuron;
+  export let neuron: SnsNeuron;
+  export let feeE8s: bigint;
 </script>
 
 <Section testId="sns-neuron-maturity-section-component">
@@ -24,15 +16,14 @@
   <p slot="end" class="title-value" data-tid="total-maturity">
     {formattedTotalMaturity(neuron)}
   </p>
-  <p slot="description">
+  <p slot="description" class="description">
     {$i18n.neuron_detail.maturity_section_description}
   </p>
-  {#if nonNullish(neuron)}
-    <ul class="content">
-      <SnsStakedMaturityActionItem {neuron} />
-      <SnsAvailableMaturityActionItem {neuron} />
-    </ul>
-  {/if}
+  <ul class="content">
+    <SnsStakedMaturityItemAction {neuron} />
+    <SnsAvailableMaturityItemAction {neuron} {feeE8s} />
+    <SnsViewActiveDisbursementsItemAction {neuron} />
+  </ul>
 </Section>
 
 <style lang="scss">

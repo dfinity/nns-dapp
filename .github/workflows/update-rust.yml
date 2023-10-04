@@ -6,6 +6,10 @@ on:
     # check for new rust versions weekly
     - cron: '30 3 * * FRI'
   workflow_dispatch:
+  push:
+    branches:
+      # The development branch for this workflow:
+      - "update-rust"
 jobs:
   rust-update:
     runs-on: ubuntu-latest
@@ -13,13 +17,14 @@ jobs:
       - uses: actions/checkout@v3
         # First, check rust GitHub releases for a new version. We assume that the
         # latest version's tag name is the version.
+      - name: Install yq
+        run: sudo snap install yq
       - name: Check new rust version
         id: update
         run: |
           current_rust_version=$(cat ./rust-toolchain.toml | sed -n 's/^channel[[:space:]]*=[[:space:]]"\(.*\)"/\1/p')
           echo "current rust version '$current_rust_version'"
-          release_data=$(curl --silent -H 'Accept: application/vnd.github.v3+json' https://api.github.com/repos/rust-lang/rust/releases/latest)
-          latest_rust_version=$(echo -n "$release_data" | jq -cMr .tag_name)
+          latest_rust_version=$(curl -sSL https://static.rust-lang.org/dist/channel-rust-stable.toml | yq -p toml -oy .pkg.rust.version | awk '{print $1}')
 
           # The GitHub API has some hiccups, so we check the value before going further
           if [ -z "$latest_rust_version" ] || [ "$latest_rust_version" = "null" ]
@@ -59,7 +64,7 @@ jobs:
           # Since the this is a scheduled job, a failure won't be shown on any
           # PR status. To notify the team, we send a message to our Slack channel on failure.
       - name: Notify Slack on failure
-        uses: ./.github/actions/slack
+        uses: dfinity/internet-identity/.github/actions/slack@release-2023-08-28
         if: ${{ failure() }}
         with:
           WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

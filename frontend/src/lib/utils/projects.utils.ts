@@ -1,6 +1,9 @@
 import { NOT_LOADED } from "$lib/constants/stores.constants";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
-import { getDeniedCountries } from "$lib/getters/sns-summary";
+import {
+  getDeniedCountries,
+  getNeuronsFundParticipation,
+} from "$lib/getters/sns-summary";
 import type { Country } from "$lib/types/location";
 import type {
   SnsSummary,
@@ -15,6 +18,7 @@ import { nowInSeconds } from "./date.utils";
 import type { I18nSubstitutions } from "./i18n.utils";
 import { getCommitmentE8s } from "./sns.utils";
 import { formatToken } from "./token.utils";
+import { stringifyJson } from "./utils";
 
 export const filterProjectsStatus = ({
   swapLifecycle,
@@ -221,6 +225,7 @@ export const validParticipation = ({
       substitutions: {
         $amount: formatToken({
           value: project.summary.swap.params.min_participant_icp_e8s,
+          detailed: true,
         }),
       },
     };
@@ -371,4 +376,55 @@ export const participateButtonStatus = ({
   }
 
   return "enabled";
+};
+
+export const differentSummaries = (
+  summaries1: SnsSummary[],
+  summaries2: SnsSummary[]
+): SnsSummary[] =>
+  summaries1.filter((summary1) => {
+    const summary2 = summaries2.find(
+      ({ rootCanisterId }) =>
+        rootCanisterId.toText() === summary1.rootCanisterId.toText()
+    );
+    // We compare the inner fields because the order when stringifying it might be different
+    return (
+      stringifyJson(summary1.swap) !== stringifyJson(summary2?.swap) ||
+      stringifyJson(summary1.derived) !== stringifyJson(summary2?.derived) ||
+      stringifyJson(summary1.token) !== stringifyJson(summary2?.token) ||
+      stringifyJson(summary1.metadata) !== stringifyJson(summary2?.metadata) ||
+      summary1.governanceCanisterId.toText() !==
+        summary2?.governanceCanisterId.toText() ||
+      summary1.swapCanisterId.toText() !== summary2?.swapCanisterId.toText() ||
+      summary1.rootCanisterId.toText() !== summary2?.rootCanisterId.toText() ||
+      summary1.ledgerCanisterId.toText() !==
+        summary2?.ledgerCanisterId.toText() ||
+      summary1.indexCanisterId.toText() !== summary2?.indexCanisterId.toText()
+    );
+  });
+
+export type FullProjectCommitmentSplit = {
+  totalCommitmentE8s: bigint;
+  directCommitmentE8s: bigint;
+  nfCommitmentE8s: bigint;
+};
+export type ProjectCommitmentSplit =
+  | { totalCommitmentE8s: bigint }
+  | FullProjectCommitmentSplit;
+
+export const getProjectCommitmentSplit = (
+  summary: SnsSummary
+): ProjectCommitmentSplit => {
+  const nfCommitmentE8s = getNeuronsFundParticipation(summary);
+  if (nonNullish(nfCommitmentE8s)) {
+    return {
+      totalCommitmentE8s: summary.derived.buyer_total_icp_e8s,
+      directCommitmentE8s:
+        summary.derived.buyer_total_icp_e8s - nfCommitmentE8s,
+      nfCommitmentE8s,
+    };
+  }
+  return {
+    totalCommitmentE8s: summary.derived.buyer_total_icp_e8s,
+  };
 };

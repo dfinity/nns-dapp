@@ -1,6 +1,7 @@
 import * as api from "$lib/api/canisters.api";
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
+import * as authServices from "$lib/services/auth.services";
 import {
   addController,
   attachCanister,
@@ -17,6 +18,7 @@ import {
 import { canistersStore } from "$lib/stores/canisters.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import {
+  mockGetIdentity,
   mockIdentity,
   mockIdentityErrorMsg,
   resetIdentity,
@@ -97,6 +99,11 @@ describe("canisters-services", () => {
     spyGetExchangeRate = jest
       .spyOn(api, "getIcpToCyclesExchangeRate")
       .mockImplementation(() => Promise.resolve(exchangeRate));
+
+    resetIdentity();
+    jest
+      .spyOn(authServices, "getAuthenticatedIdentity")
+      .mockImplementation(mockGetIdentity);
   });
 
   describe("listCanisters", () => {

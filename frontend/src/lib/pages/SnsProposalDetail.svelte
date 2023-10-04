@@ -160,11 +160,15 @@
   };
 
   // Update layout title
-  $: layoutTitleStore.set(
-    `${$i18n.proposal_detail.title}${
-      nonNullish(proposalIdText) ? ` ${proposalIdText}` : ""
-    }`
-  );
+  let title = $i18n.proposal_detail.title;
+  $: title = `${$i18n.proposal_detail.title}${
+    nonNullish(proposalIdText) ? ` ${proposalIdText}` : ""
+  }`;
+
+  $: layoutTitleStore.set({
+    title,
+    header: title,
+  });
 
   let proposalIds: bigint[];
   $: proposalIds = nonNullish(universeIdText)

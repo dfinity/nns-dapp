@@ -10,7 +10,7 @@ import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
 import type { Identity } from "@dfinity/agent";
-import type { IcrcBlockIndex } from "@dfinity/ledger";
+import type { IcrcBlockIndex } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import type { IcrcTransferTokensUserParams } from "./icrc-accounts.services";
@@ -88,7 +88,7 @@ export const snsTransferTokens = async ({
     transfer: async (
       params: {
         identity: Identity;
-      } & Omit<IcrcTransferParams, "transfer">
+      } & IcrcTransferParams
     ) =>
       await snsTransfer({
         ...params,

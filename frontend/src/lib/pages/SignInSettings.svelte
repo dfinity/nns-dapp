@@ -1,16 +1,28 @@
 <script lang="ts">
+  import EmptyCards from "$lib/components/common/EmptyCards.svelte";
   import SignIn from "$lib/components/common/SignIn.svelte";
   import { i18n } from "$lib/stores/i18n";
-
-  // TODO(GIX-1071): this static pre-rendering component should be improved with some more information and shiny design
+  import { PageBanner, IconSettingsPage } from "@dfinity/gix-components";
 </script>
 
 <main class="sign-in">
-  <h1>{$i18n.navigation.settings}</h1>
+  <div class="content">
+    <PageBanner>
+      <IconSettingsPage slot="image" />
+      <svelte:fragment slot="title">{$i18n.navigation.settings}</svelte:fragment
+      >
+      <p class="description" slot="description">{$i18n.auth_accounts.text}</p>
+      <SignIn slot="actions" />
+    </PageBanner>
 
-  <p>
-    {$i18n.auth_accounts.text}
-  </p>
-
-  <SignIn />
+    <EmptyCards />
+  </div>
 </main>
+
+<style lang="scss">
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2x);
+  }
+</style>

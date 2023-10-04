@@ -1,5 +1,8 @@
 import type { IcrcTransactionsStoreData } from "$lib/stores/icrc-transactions.store";
-import type { IcrcTransaction, IcrcTransactionWithId } from "@dfinity/ledger";
+import type {
+  IcrcTransaction,
+  IcrcTransactionWithId,
+} from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import type { Subscriber } from "svelte/store";
 
@@ -29,8 +32,10 @@ export const createIcrcTransactionWithId = ({
         created_at_time: [BigInt(123)],
         amount: BigInt(33),
         fee: [BigInt(1)],
+        spender: [],
       },
     ],
+    approve: [],
   },
 });
 
@@ -52,8 +57,10 @@ const mockIcrcTransactionTransfer: IcrcTransaction = {
       created_at_time: [BigInt(123)],
       amount: BigInt(33),
       fee: [BigInt(1)],
+      spender: [],
     },
   ],
+  approve: [],
 };
 
 export const mockIcrcTransactionBurn: IcrcTransaction = {
@@ -65,10 +72,12 @@ export const mockIcrcTransactionBurn: IcrcTransaction = {
       from: fakeAccount,
       memo: [],
       created_at_time: [BigInt(123)],
+      spender: [],
     },
   ],
   mint: [],
   transfer: [],
+  approve: [],
 };
 
 export const mockIcrcTransactionMint: IcrcTransaction = {
@@ -84,6 +93,7 @@ export const mockIcrcTransactionMint: IcrcTransaction = {
     },
   ],
   transfer: [],
+  approve: [],
 };
 
 export const mockIcrcTransactionWithId: IcrcTransactionWithId = {

@@ -1,15 +1,25 @@
+import * as agent from "$lib/api/agent.api";
 import {
   queryAccountBalance,
   sendICP,
+  sendIcpIcrc1,
   transactionFee,
 } from "$lib/api/icp-ledger.api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
-import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
+import type { HttpAgent } from "@dfinity/agent";
+import { AccountIdentifier, LedgerCanister } from "@dfinity/ledger-icp";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { mock } from "jest-mock-extended";
 
 describe("icp-ledger.api", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.clearAllTimers();
+
+    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+  });
+
   describe("sendICP", () => {
     let spyTransfer;
 
@@ -21,7 +31,8 @@ describe("icp-ledger.api", () => {
 
     const now = Date.now();
     const nowInBigIntNanoSeconds = BigInt(now) * BigInt(1_000_000);
-    beforeAll(() => {
+
+    beforeEach(() => {
       const ledgerMock = mock<LedgerCanister>();
       ledgerMock.transfer.mockResolvedValue(BigInt(0));
       jest.useFakeTimers().setSystemTime(now);
@@ -31,11 +42,6 @@ describe("icp-ledger.api", () => {
         .mockImplementation((): LedgerCanister => ledgerMock);
 
       spyTransfer = jest.spyOn(ledgerMock, "transfer");
-    });
-
-    afterAll(() => {
-      jest.clearAllMocks();
-      jest.clearAllTimers();
     });
 
     it("should call ledger to send ICP", async () => {
@@ -105,6 +111,142 @@ describe("icp-ledger.api", () => {
         amount: amount.toE8s(),
         memo,
         createdAt,
+      });
+    });
+  });
+
+  describe("sendIcpIcrc1", () => {
+    let spyTransfer;
+
+    const owner = mockIdentity.getPrincipal();
+    const amount = TokenAmount.fromE8s({
+      amount: BigInt(11_000),
+      token: ICPToken,
+    });
+
+    const now = Date.now();
+    const nowInBigIntNanoSeconds = BigInt(now) * BigInt(1_000_000);
+
+    beforeEach(() => {
+      const ledgerMock = mock<LedgerCanister>();
+      ledgerMock.icrc1Transfer.mockResolvedValue(BigInt(0));
+      jest.useFakeTimers().setSystemTime(now);
+
+      jest
+        .spyOn(LedgerCanister, "create")
+        .mockImplementation((): LedgerCanister => ledgerMock);
+
+      spyTransfer = jest.spyOn(ledgerMock, "icrc1Transfer");
+    });
+
+    it("should call ledger to send ICP", async () => {
+      await sendIcpIcrc1({
+        identity: mockIdentity,
+        to: { owner },
+        amount,
+      });
+
+      expect(spyTransfer).toHaveBeenCalledWith({
+        to: { owner, subaccount: [] },
+        amount: amount.toE8s(),
+        createdAt: nowInBigIntNanoSeconds,
+        fromSubAccount: undefined,
+        memo: undefined,
+      });
+    });
+
+    it("should call ledger to send ICP with fee", async () => {
+      const fee = 15000n;
+      await sendIcpIcrc1({
+        identity: mockIdentity,
+        to: { owner },
+        amount,
+        fee,
+      });
+
+      expect(spyTransfer).toHaveBeenCalledWith({
+        to: { owner, subaccount: [] },
+        amount: amount.toE8s(),
+        fee,
+        fromSubAccount: undefined,
+        createdAt: nowInBigIntNanoSeconds,
+        memo: undefined,
+      });
+    });
+
+    it("should call ledger to send ICP with subaccount Id", async () => {
+      const fromSubAccount = new Uint8Array([
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 1,
+      ]);
+      await sendIcpIcrc1({
+        identity: mockIdentity,
+        to: { owner },
+        amount,
+        fromSubAccount,
+      });
+
+      expect(spyTransfer).toHaveBeenCalledWith({
+        to: { owner, subaccount: [] },
+        amount: amount.toE8s(),
+        fromSubAccount,
+        createdAt: nowInBigIntNanoSeconds,
+        memo: undefined,
+      });
+    });
+
+    it("should call ledger to send ICP with icrc1Memo", async () => {
+      const icrc1Memo = Uint8Array.from([4, 4, 5, 5]);
+      await sendIcpIcrc1({
+        identity: mockIdentity,
+        to: { owner },
+        amount,
+        icrc1Memo,
+      });
+
+      expect(spyTransfer).toHaveBeenCalledWith({
+        to: { owner, subaccount: [] },
+        amount: amount.toE8s(),
+        icrc1Memo,
+        createdAt: nowInBigIntNanoSeconds,
+        fromSubAccount: undefined,
+      });
+    });
+
+    it("should call ledger to send ICP with createdAt", async () => {
+      const icrc1Memo = Uint8Array.from([4, 4, 5, 5]);
+      const createdAt = BigInt(123456);
+      await sendIcpIcrc1({
+        identity: mockIdentity,
+        to: { owner },
+        amount,
+        icrc1Memo,
+        createdAt,
+      });
+
+      expect(spyTransfer).toHaveBeenCalledWith({
+        to: { owner, subaccount: [] },
+        amount: amount.toE8s(),
+        icrc1Memo,
+        createdAt,
+        fromSubAccount: undefined,
+      });
+    });
+
+    it("should call ledger to send ICP with subaccount", async () => {
+      const subaccount = Uint8Array.from([9, 9, 3, 3]);
+      await sendIcpIcrc1({
+        identity: mockIdentity,
+        to: { owner, subaccount },
+        amount,
+      });
+
+      expect(spyTransfer).toHaveBeenCalledWith({
+        to: { owner, subaccount: [subaccount] },
+        amount: amount.toE8s(),
+        icrc1Memo: undefined,
+        createdAt: nowInBigIntNanoSeconds,
+        fromSubAccount: undefined,
       });
     });
   });
