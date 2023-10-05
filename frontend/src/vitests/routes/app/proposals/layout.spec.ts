@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
@@ -13,7 +9,7 @@ import { get } from "svelte/store";
 
 describe("Layout", () => {
   afterAll(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("should go back to the proposal page", async () => {

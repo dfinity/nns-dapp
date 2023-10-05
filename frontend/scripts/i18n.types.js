@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import { writeFileSync } from "fs";
-import prettier from "prettier";
 import en_governance from "../src/lib/i18n/en.governance.json" assert { type: "json" };
 import en from "../src/lib/i18n/en.json" assert { type: "json" };
 
@@ -53,9 +52,7 @@ const generate = () => {
 
   const comment = `/**\n* Auto-generated definitions file ("npm run i18n")\n*/`;
 
-  const output = prettier.format(`${comment}${interfaces}${main}`, {
-    parser: "babel",
-  });
+  const output = `${comment}${interfaces}${main}`;
 
   writeFileSync("./src/lib/types/i18n.d.ts", output);
 };

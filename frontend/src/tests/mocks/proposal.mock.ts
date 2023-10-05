@@ -17,7 +17,7 @@ export const generateMockProposals = (
       ({
         ...fields,
         id: BigInt(index),
-      } as unknown as ProposalInfo)
+      }) as unknown as ProposalInfo
   );
 
 export const proposalActionMotion = {

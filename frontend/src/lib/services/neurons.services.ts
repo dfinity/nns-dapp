@@ -316,9 +316,8 @@ export const updateDelay = async ({
   dissolveDelayInSeconds: number;
 }): Promise<NeuronId | undefined> => {
   try {
-    const neuronIdentity: Identity = await getIdentityOfControllerByNeuronId(
-      neuronId
-    );
+    const neuronIdentity: Identity =
+      await getIdentityOfControllerByNeuronId(neuronId);
     await governanceApiService.increaseDissolveDelay({
       neuronId,
       dissolveDelayInSeconds,
@@ -370,9 +369,8 @@ export const toggleAutoStakeMaturity = async (
   try {
     const { neuronId } = neuron;
 
-    const identity: Identity = await getIdentityOfControllerByNeuronId(
-      neuronId
-    );
+    const identity: Identity =
+      await getIdentityOfControllerByNeuronId(neuronId);
 
     await assertLedgerVersion({
       identity,
@@ -401,12 +399,10 @@ const checkCanBeMerged = async ({
   sourceNeuronId: NeuronId;
   targetNeuronId: NeuronId;
 }): Promise<{ sourceNeuron: NeuronInfo; targetNeuron: NeuronInfo }> => {
-  const { neuron: sourceNeuron } = await getIdentityAndNeuronHelper(
-    sourceNeuronId
-  );
-  const { neuron: targetNeuron } = await getIdentityAndNeuronHelper(
-    targetNeuronId
-  );
+  const { neuron: sourceNeuron } =
+    await getIdentityAndNeuronHelper(sourceNeuronId);
+  const { neuron: targetNeuron } =
+    await getIdentityAndNeuronHelper(targetNeuronId);
   const { isValid, messageKey } = canBeMerged([sourceNeuron, targetNeuron]);
   if (!isValid) {
     throw new CannotBeMerged(
@@ -430,9 +426,8 @@ export const mergeNeurons = async ({
       targetNeuronId,
     });
 
-    const identity: Identity = await getIdentityOfControllerByNeuronId(
-      targetNeuronId
-    );
+    const identity: Identity =
+      await getIdentityOfControllerByNeuronId(targetNeuronId);
     const accounts = get(icpAccountsStore);
     if (
       isNeuronControlledByHardwareWallet({ neuron: targetNeuron, accounts })
@@ -545,9 +540,8 @@ export const addHotkey = async ({
   principal: Principal;
 }): Promise<NeuronId | undefined> => {
   try {
-    const identity: Identity = await getIdentityOfControllerByNeuronId(
-      neuronId
-    );
+    const identity: Identity =
+      await getIdentityOfControllerByNeuronId(neuronId);
 
     await governanceApiService.addHotkey({ neuronId, identity, principal });
 
@@ -580,9 +574,8 @@ export const removeHotkey = async ({
   }
   let removed = false;
   try {
-    const identity: Identity = await getIdentityOfControllerByNeuronId(
-      neuronId
-    );
+    const identity: Identity =
+      await getIdentityOfControllerByNeuronId(neuronId);
 
     await governanceApiService.removeHotkey({ neuronId, identity, principal });
     removed = true;
@@ -659,9 +652,8 @@ export const disburse = async ({
   toAccountId: string;
 }): Promise<{ success: boolean }> => {
   try {
-    const identity: Identity = await getIdentityOfControllerByNeuronId(
-      neuronId
-    );
+    const identity: Identity =
+      await getIdentityOfControllerByNeuronId(neuronId);
 
     await governanceApiService.disburse({ neuronId, toAccountId, identity });
 
@@ -687,9 +679,8 @@ export const mergeMaturity = async ({
   percentageToMerge: number;
 }): Promise<{ success: boolean }> => {
   try {
-    const identity: Identity = await getIdentityOfControllerByNeuronId(
-      neuronId
-    );
+    const identity: Identity =
+      await getIdentityOfControllerByNeuronId(neuronId);
 
     await assertLedgerVersion({
       identity,
@@ -720,9 +711,8 @@ export const stakeMaturity = async ({
   percentageToStake: number;
 }): Promise<{ success: boolean }> => {
   try {
-    const identity: Identity = await getIdentityOfControllerByNeuronId(
-      neuronId
-    );
+    const identity: Identity =
+      await getIdentityOfControllerByNeuronId(neuronId);
 
     await assertLedgerVersion({
       identity,
@@ -753,9 +743,8 @@ export const spawnNeuron = async ({
   percentageToSpawn?: number;
 }): Promise<NeuronId | undefined> => {
   try {
-    const identity: Identity = await getIdentityOfControllerByNeuronId(
-      neuronId
-    );
+    const identity: Identity =
+      await getIdentityOfControllerByNeuronId(neuronId);
 
     const newNeuronId = await governanceApiService.spawnNeuron({
       neuronId,
@@ -777,9 +766,8 @@ export const startDissolving = async (
   neuronId: NeuronId
 ): Promise<NeuronId | undefined> => {
   try {
-    const identity: Identity = await getIdentityOfControllerByNeuronId(
-      neuronId
-    );
+    const identity: Identity =
+      await getIdentityOfControllerByNeuronId(neuronId);
 
     await governanceApiService.startDissolving({ neuronId, identity });
 
@@ -797,9 +785,8 @@ export const stopDissolving = async (
   neuronId: NeuronId
 ): Promise<NeuronId | undefined> => {
   try {
-    const identity: Identity = await getIdentityOfControllerByNeuronId(
-      neuronId
-    );
+    const identity: Identity =
+      await getIdentityOfControllerByNeuronId(neuronId);
 
     await governanceApiService.stopDissolving({ neuronId, identity });
 
@@ -1039,9 +1026,8 @@ export const makeDummyProposals = async (neuronId: NeuronId): Promise<void> => {
     return;
   }
   try {
-    const identity: Identity = await getIdentityOfControllerByNeuronId(
-      neuronId
-    );
+    const identity: Identity =
+      await getIdentityOfControllerByNeuronId(neuronId);
     const { snsSummariesStore } = await import("../stores/sns.store");
     const projects = get(snsSummariesStore);
     const pendingProject = projects.find(

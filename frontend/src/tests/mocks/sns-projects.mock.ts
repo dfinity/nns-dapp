@@ -79,7 +79,7 @@ export const mockSnsSwapCommitment = (
       rootCanisterId: principal(3),
       myCommitment: undefined,
     },
-  }[rootCanisterId.toText()]);
+  })[rootCanisterId.toText()];
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
 const SECONDS_TODAY = +new Date(new Date().toJSON().split("T")[0]) / 1000;

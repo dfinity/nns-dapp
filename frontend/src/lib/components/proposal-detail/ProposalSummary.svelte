@@ -78,8 +78,14 @@
       color: var(--input-background-contrast);
       border-radius: var(--border-radius);
 
-      font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
-        Liberation Mono, monospace;
+      font-family:
+        ui-monospace,
+        SFMono-Regular,
+        SF Mono,
+        Menlo,
+        Consolas,
+        Liberation Mono,
+        monospace;
     }
 
     :global(table *),
