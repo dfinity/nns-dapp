@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import AccountsLayout from "$routes/(app)/(u)/(accounts)/+layout.svelte";
 import { render } from "@testing-library/svelte";

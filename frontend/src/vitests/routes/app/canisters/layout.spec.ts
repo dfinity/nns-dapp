@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import CanistersLayout from "$routes/(app)/(nns)/canisters/+layout.svelte";
 import { render } from "@testing-library/svelte";

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
@@ -13,7 +9,7 @@ import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("Layout", () => {
-  beforeAll(() => jest.resetAllMocks());
+  beforeAll(() => vi.resetAllMocks());
 
   const renderSettingsAndBack = () => {
     page.mock({
@@ -47,7 +43,7 @@ describe("Layout", () => {
   it("should go back to referrer", async () => {
     referrerPathStore.set(AppPath.Wallet);
 
-    const spy = jest.spyOn(history, "back");
+    const spy = vi.spyOn(history, "back");
 
     renderSettingsAndBack();
 
