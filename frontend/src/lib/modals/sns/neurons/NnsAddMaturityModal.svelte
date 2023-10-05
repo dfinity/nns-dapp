@@ -40,7 +40,7 @@
 
 <!-- ONLY FOR TESTNET. NO UNIT TESTS -->
 <Modal role="alert" on:nnsClose>
-  <span slot="title">{`Add Nns Neuron Maturity`}</span>
+  <span slot="title">Add Nns Neuron Maturity</span>
 
   <form id="get-maturity-form" on:submit|preventDefault={onSubmit}>
     <span class="label">How much?</span>
