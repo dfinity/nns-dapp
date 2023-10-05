@@ -16,8 +16,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
-* Update the governance canister schema used for proposal rendering to the schema from `2023-09-27`.
-* Get the governance canister schema direcly from the `.did` file rather than importing the whole governance canister crate to get the types.
+* Update the governance canister and SNS Wasm schema used for proposal rendering to the schema from `2023-09-27`.
+* Get the governance canister and SNS Wasm schemas direcly from the `.did` file rather than importing the whole canisters to get the types.
 * Make a histogram of transactions per account, used to optimize the new account storage.
 * Include a copy of the `nns-governance` candid file in the `nns-dapp` repository.
 * Update the IC commit in the `proposals` crate to `release-2023-08-01_23-01`.
