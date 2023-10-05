@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as agent from "$lib/api/agent.api";
 import BallotSummary from "$lib/components/neuron-detail/Ballots/BallotSummary.svelte";
 import { authStore } from "$lib/stores/auth.store";
@@ -11,13 +7,13 @@ import en from "$tests/mocks/i18n.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import { BallotSummaryPo } from "$tests/page-objects/BallotSummary.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
+import { runResolvedPromises } from "$vitests/utils/timers.test-utils";
+import { silentConsoleErrors } from "$vitests/utils/utils.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import type { BallotInfo, Proposal } from "@dfinity/nns";
 import { GovernanceCanister, Vote } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
-import { mock } from "jest-mock-extended";
+import { mock } from "vitest-mock-extended";
 
 describe("BallotSummary", () => {
   const mockBallot: BallotInfo = {
@@ -35,14 +31,12 @@ describe("BallotSummary", () => {
   beforeEach(() => {
     silentConsoleErrors();
 
-    jest
-      .spyOn(GovernanceCanister, "create")
-      .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
+    vi.spyOn(GovernanceCanister, "create").mockImplementation(
+      (): GovernanceCanister => mockGovernanceCanister
+    );
 
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
-    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   it("should render proposal id", async () => {

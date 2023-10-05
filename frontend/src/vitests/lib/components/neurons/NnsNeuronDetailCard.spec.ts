@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsNeuronDetailCard from "$lib/components/neurons/NnsNeuronDetailCard.svelte";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronDetailCardPo } from "$tests/page-objects/NnsNeuronDetailCard.page-object";
