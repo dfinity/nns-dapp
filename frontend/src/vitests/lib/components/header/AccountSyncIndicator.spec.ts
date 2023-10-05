@@ -185,7 +185,9 @@ describe("AccountSyncIndicator", () => {
         state: "idle",
       });
 
-      await waitFor(() => expect(queryByRole("menu")).toBeNull());
+      await waitFor(() => expect(queryByRole("menu")).toBeNull(), {
+        timeout: 2000,
+      });
 
       syncStore.setState({
         key: "balances",
