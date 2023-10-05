@@ -136,7 +136,7 @@ vi.mock("$lib/workers/transactions.worker?worker", () => ({
 
 - The pattern `await waitFor(expect().toBeNull)` seems to require an explicit arrow function call for vitest, like this: `await waitFor(() => expect().toBeNull())`.
 
-- [done() callback](https://vitest.dev/guide/migration.html#done-callback) is deprecated and should be replaced by promise. is deprecated and should be replaced with a promise. It's worth noting that this isn't an issue per sé, but it does trigger a console.log, which is not allowed by our test suite.
+- [done() callback](https://vitest.dev/guide/migration.html#done-callback) is deprecated and should be replaced by promise. It's worth noting that this isn't an issue per sé, but it does trigger a console.log, which is not allowed by our test suite.
 
 ```typescript
 // jest
