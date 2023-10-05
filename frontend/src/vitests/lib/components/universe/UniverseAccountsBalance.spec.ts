@@ -131,7 +131,7 @@ describe("UniverseAccountsBalance", () => {
       );
     });
 
-    it.only("should render a total balance for ckBTC", () => {
+    it("should render a total balance for ckBTC", () => {
       const totalBalance = mockCkBTCMainAccount.balanceE8s;
 
       icrcAccountsStore.set({
