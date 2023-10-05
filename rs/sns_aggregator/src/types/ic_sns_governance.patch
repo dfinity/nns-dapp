@@ -1,22 +1,22 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_governance.rs a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-index 484f5f709..ee951741f 100644
+index 699d84ad7..af9969652 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_governance.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-@@ -517,7 +517,7 @@ pub struct GetMaturityModulationResponse {
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+@@ -518,7 +518,7 @@ pub struct GetMaturityModulationResponse {
+ #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
  pub struct GetMetadataArg {}
  
--#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, Default)]
+-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
++#[derive(Serialize, Clone, Debug, CandidType, Deserialize, Default)]
  pub struct GetMetadataResponse {
      pub url: Option<String>,
      pub logo: Option<String>,
-@@ -610,7 +610,7 @@ pub struct GetSnsInitializationParametersResponse {
+@@ -611,7 +611,7 @@ pub struct GetSnsInitializationParametersResponse {
      pub sns_initialization_parameters: String,
  }
  
--#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, Default)]
+-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
++#[derive(Serialize, Clone, Debug, CandidType, Deserialize, Default)]
  pub struct ListNervousSystemFunctionsResponse {
      pub reserved_ids: Vec<u64>,
      pub functions: Vec<NervousSystemFunction>,

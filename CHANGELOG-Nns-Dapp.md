@@ -16,6 +16,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Update the governance canister and SNS Wasm schema used for proposal rendering to the schema from `2023-09-27`.
+* Get the governance canister and SNS Wasm schemas direcly from the `.did` file rather than importing the whole canisters to get the types.
 * Make a histogram of transactions per account, used to optimize the new account storage.
 * Include a copy of the `nns-governance` candid file in the `nns-dapp` repository.
 * Update the IC commit in the `proposals` crate to `release-2023-08-01_23-01`.
@@ -26,6 +28,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * New header UI in the canister detail page.
 * New labels for min and max participation.
 * Improve security by escaping additional images in the proposal summary markdown.
+* Internal change: remove unused snsQueryStore.
 
 #### Deprecated
 #### Removed
@@ -43,6 +46,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Not Published
 
+* New UI to better explain the commitment of Neurons' Fund and direct participation.
+
 ### Operations
 
 #### Added
@@ -53,6 +58,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Factor out the core of `did2rs` for wider use.
 * Reduce the manual changes needed for `did2rs` by automating more.
 * Use `clap` argument parsing in `did2rs`.
 * Populate the PR description of the `didc` updater.
@@ -65,6 +71,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Removed
 
 * Comment and skip dfx-nns-proposal-args.test.
+* Remove npm script `update:next`.
 
 #### Fixed
 

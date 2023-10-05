@@ -224,7 +224,6 @@ const anonymiseStoreState = async () => {
     snsTransactions,
     transactionsFees,
     transactions,
-    snsQueryStore,
     aggregatorStore,
   } = get(debugStore);
 
@@ -302,7 +301,6 @@ const anonymiseStoreState = async () => {
       anonymizeTransactionStore
     ),
     transactionsFees,
-    snsQueryStore,
     aggregatorStore,
   };
 };

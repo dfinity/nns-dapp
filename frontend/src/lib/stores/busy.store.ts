@@ -44,6 +44,7 @@ export type BusyStateInitiatorType =
   | "load-sns-filters"
   | "dev-add-sns-neuron-permissions"
   | "dev-add-sns-neuron-maturity"
+  | "dev-add-nns-neuron-maturity"
   | "load-sns-accounts"
   | "update-ckbtc-balance"
   | "reload-receive-account";

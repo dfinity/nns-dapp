@@ -88,9 +88,8 @@ export class NNSDappCanister {
   }: {
     certified: boolean;
   }): Promise<AccountDetails> {
-    const response: GetAccountResponse = await this.getNNSDappService(
-      certified
-    ).get_account();
+    const response: GetAccountResponse =
+      await this.getNNSDappService(certified).get_account();
     if ("AccountNotFound" in response) {
       throw new AccountNotFoundError("error__account.not_found");
     }
@@ -329,9 +328,8 @@ export class NNSDappCanister {
     proposalId: ProposalId;
   }): Promise<object> {
     // Currently works only with certifiedService
-    const response = await this.certifiedService.get_proposal_payload(
-      proposalId
-    );
+    const response =
+      await this.certifiedService.get_proposal_payload(proposalId);
     if ("Ok" in response) {
       return JSON.parse(response.Ok);
     }
@@ -353,9 +351,8 @@ export class NNSDappCanister {
   public async addPendingNotifySwap(
     request: AddPendingNotifySwapRequest
   ): Promise<void> {
-    const response = await this.certifiedService.add_pending_notify_swap(
-      request
-    );
+    const response =
+      await this.certifiedService.add_pending_notify_swap(request);
     if ("Ok" in response) {
       return;
     }

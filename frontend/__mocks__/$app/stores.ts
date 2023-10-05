@@ -38,3 +38,5 @@ const initPageStoreMock = () => {
 };
 
 export const page = initPageStoreMock();
+
+export const navigating = writable(null);

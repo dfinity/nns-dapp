@@ -731,6 +731,7 @@
     "max_user_commitment_reached": "Maximum commitment reached",
     "not_eligible_to_participate": "You are not eligible to participate in this swap.",
     "getting_sns_open_ticket": "We're connecting with the SNS swap. This might take more than a minute.",
+    "current_nf_commitment_description": "The NF commitment increases based on direct participation. <a href=\"https://internetcomputer.org/docs/current/tokenomics/nns/neurons-fund\" rel=\"noopener noreferrer\" aria-label=\"more info about neurons' fund\" target=\"_blank\">Learn more</a>.",
     "sign_in": "Sign in to participate"
   },
   "sns_sale": {

@@ -30,7 +30,7 @@ const testPrincipal2 = Principal.fromHex("456456456");
 const createIdentity = (principal: Principal) =>
   ({
     getPrincipal: () => principal,
-  } as Identity);
+  }) as Identity;
 
 const createAgent = (identity: Identity) =>
   agentApi.createAgent({

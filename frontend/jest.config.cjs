@@ -14,7 +14,7 @@ module.exports = {
   },
   moduleFileExtensions: ["js", "ts", "svelte"],
   setupFilesAfterEnv: ["<rootDir>/jest-setup.ts"],
-  collectCoverageFrom: ["src/**/*.{ts,tsx,svelte,js,jsx}"],
+  collectCoverageFrom: ["src/tests/**/*.{ts,tsx,svelte,js,jsx}"],
   testEnvironmentOptions: {
     url: "https://nns.internetcomputer.org/",
   },
@@ -26,10 +26,14 @@ module.exports = {
     "^\\$routes/(.*)$": "<rootDir>/src/routes/$1",
     "^\\$mocks/(.*)$": "<rootDir>/__mocks__/$1",
     "^\\$tests/(.*)$": "<rootDir>/src/tests/$1",
+    "^\\$vitests/(.*)$": "<rootDir>/src/vitests/$1",
     "@dfinity/gix-components":
       "<rootDir>/node_modules/@dfinity/gix-components/dist",
   },
   resolver: "<rootDir>/jest-resolver.cjs",
   setupFiles: ["fake-indexeddb/auto"],
-  testPathIgnorePatterns: ["<rootDir>/src/tests/e2e/"],
+  testPathIgnorePatterns: [
+    "<rootDir>/src/tests/e2e/",
+    "<rootDir>/src/vitests/",
+  ],
 };
