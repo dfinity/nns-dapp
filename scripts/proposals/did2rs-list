@@ -15,6 +15,7 @@ declared_canisters() {
 
 # Gets a list of canisters used by the proposal rendering crate.
 proposal_canisters() {
+  # shellcheck disable=SC2012 # We are not interested in non-alphanumeric filenames.
   ls rs/proposals/src/canisters/ | sed 's/[.].*//g' | sort | uniq | grep -vw mod
 }
 
