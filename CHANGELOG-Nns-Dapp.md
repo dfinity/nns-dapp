@@ -25,6 +25,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Review the chunking strategy to enhance the dapp's loading time and prevent random, rare flashes of unstyled content (FOUC).
 * New header UI in the canister detail page.
 * New labels for min and max participation.
+* Improve security by escaping additional images in the proposal summary markdown.
 
 #### Deprecated
 #### Removed
@@ -76,7 +77,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Added
 
 * Select destination when disbursing maturity.
-* Escape additional images in the proposal summary markdown to enhance security.
 
 #### Changed
 
