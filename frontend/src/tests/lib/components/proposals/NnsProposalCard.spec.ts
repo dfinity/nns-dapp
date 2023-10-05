@@ -74,7 +74,9 @@ describe("NnsProposalCard", () => {
     });
 
     expect(
-      getByText(`${en.topics[Topic[mockProposals[0].topic]]}`, { exact: false })
+      getByText(`${en.topics[Topic[mockProposals[0].topic]]}`, {
+        exact: false,
+      })
     ).toBeInTheDocument();
   });
 

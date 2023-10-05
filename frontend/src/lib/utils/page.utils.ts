@@ -36,7 +36,9 @@ export const pathForRouteId = (routeId: string | null | undefined): AppPath => {
   return AppPath[key as keyof AppPath] ?? AppPath.Accounts;
 };
 
-export const referrerPathForNav = ({ from }: Navigation): AppPath | undefined =>
+export const referrerPathForNav = ({
+  from,
+}: Navigation): AppPath | undefined =>
   from?.route.id !== null && from?.route.id !== undefined
     ? pathForRouteId(from.route.id)
     : undefined;

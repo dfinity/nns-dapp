@@ -13,7 +13,6 @@ import { authStore } from "$lib/stores/auth.store";
 import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
-import { snsQueryStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
@@ -126,7 +125,6 @@ describe("SNS public services", () => {
 
   describe("loadSnsProjects", () => {
     beforeEach(() => {
-      snsQueryStore.reset();
       snsFunctionsStore.reset();
       transactionsFeesStore.reset();
       snsAggregatorStore.reset();
@@ -148,9 +146,6 @@ describe("SNS public services", () => {
       const rootCanisterId = aggregatorSnsMockDto.canister_ids.root_canister_id;
       expect(spyQuerySnsProjects).toBeCalled();
 
-      const queryStore = get(snsQueryStore);
-      expect(queryStore.metadata.length).toBeGreaterThan(0);
-      expect(queryStore.swaps.length).toBeGreaterThan(0);
       const functionsStore = get(snsFunctionsStore);
       expect(functionsStore[rootCanisterId]).not.toBeUndefined();
       const feesStore = get(transactionsFeesStore);
@@ -211,33 +206,6 @@ describe("SNS public services", () => {
       expect(data).not.toBeUndefined();
       expect(data?.certified).toBeTruthy();
       expect(data?.totalSupply).toEqual(BigInt(totalSupply));
-    });
-
-    it("loads derived state from property derived state", async () => {
-      jest
-        .spyOn(aggregatorApi, "querySnsProjects")
-        .mockImplementation(() => Promise.resolve([aggregatorSnsMockDto]));
-
-      await loadSnsProjects();
-
-      const queryStore = get(snsQueryStore);
-      const derivedState = queryStore.swaps[0]?.derived[0];
-      const expectedDerivedState = aggregatorSnsMockDto.derived_state;
-      expect(derivedState.buyer_total_icp_e8s).toBe(
-        BigInt(expectedDerivedState.buyer_total_icp_e8s)
-      );
-      expect(derivedState.sns_tokens_per_icp).toBe(
-        expectedDerivedState.sns_tokens_per_icp
-      );
-      expect(derivedState.cf_neuron_count[0]).toBe(
-        BigInt(expectedDerivedState.cf_neuron_count)
-      );
-      expect(derivedState.cf_participant_count[0]).toBe(
-        BigInt(expectedDerivedState.cf_participant_count)
-      );
-      expect(derivedState.direct_participant_count[0]).toBe(
-        BigInt(expectedDerivedState.direct_participant_count)
-      );
     });
   });
 });

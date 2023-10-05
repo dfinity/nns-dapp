@@ -30,7 +30,7 @@ pub async fn get_proposal_payload(proposal_id: u64) -> Result<Json, String> {
     if let Some(result) = CACHED_PROPOSAL_PAYLOADS.with(|c| c.borrow().get(&proposal_id).cloned()) {
         Ok(result)
     } else {
-        match crate::canisters::governance::get_proposal_info(proposal_id).await {
+        match crate::canisters::nns_governance::get_proposal_info(proposal_id).await {
             Ok(Some(proposal_info)) => {
                 let json = process_proposal_payload(proposal_info);
                 CACHED_PROPOSAL_PAYLOADS

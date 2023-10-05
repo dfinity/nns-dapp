@@ -10,7 +10,7 @@ export const testAccountsModal = async ({
 }) => {
   const { container, getByTestId } = result;
 
-  await waitFor(expect(getByTestId(testId)).not.toBeNull);
+  await waitFor(() => expect(getByTestId(testId)).not.toBeNull());
 
   const button = getByTestId(testId) as HTMLButtonElement;
 
