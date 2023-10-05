@@ -339,9 +339,8 @@ export class LedgerIdentity extends SignIdentity {
     // If the request endpoint is a "call", then the body is a CallRequest.
     // Reference: https://github.com/dfinity/agent-js/blob/ce772199189748f9b77c8eb3ceeb3fdd11c70b5b/packages/agent/src/agent/http/types.ts#L28
     const callBody = body as CallRequest;
-    const { requestId, readStateBody } = await this.createReadStateRequest(
-      callBody
-    );
+    const { requestId, readStateBody } =
+      await this.createReadStateRequest(callBody);
     const signatures = await this.signWithReadState(
       this.prepareCborForLedger(body),
       this.prepareCborForLedger(readStateBody)

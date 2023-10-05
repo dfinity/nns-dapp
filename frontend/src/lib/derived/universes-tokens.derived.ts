@@ -33,7 +33,7 @@ export const ckBTCTokenFeeStore = derived<
   [
     Readable<
       Record<UniverseCanisterIdText, TokensStoreUniverseData | undefined>
-    >
+    >,
   ],
   Record<UniverseCanisterIdText, TokenAmount | undefined>
 >([ckBTCTokenStore], ([$ckBTCTokenStore]) =>

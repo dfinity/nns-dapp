@@ -294,7 +294,10 @@ describe("neurons api-service", () => {
         await governanceApiService.queryNeurons({ ...params, certified: true })
       ).toEqual([neuron1]);
       expect(
-        await governanceApiService.queryNeurons({ ...params, certified: false })
+        await governanceApiService.queryNeurons({
+          ...params,
+          certified: false,
+        })
       ).toEqual([neuron1]);
       expect(api.queryNeurons).toHaveBeenCalledWith({
         ...params,

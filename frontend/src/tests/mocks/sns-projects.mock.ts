@@ -79,7 +79,7 @@ export const mockSnsSwapCommitment = (
       rootCanisterId: principal(3),
       myCommitment: undefined,
     },
-  }[rootCanisterId.toText()]);
+  })[rootCanisterId.toText()];
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
 const SECONDS_TODAY = +new Date(new Date().toJSON().split("T")[0]) / 1000;
@@ -309,6 +309,8 @@ export const createSummary = ({
   minTotalCommitment,
   maxTotalCommitment,
   currentTotalCommitment,
+  neuronsFundCommitment,
+  directCommitment,
 }: {
   lifecycle?: SnsSwapLifecycle;
   confirmationText?: string | undefined;
@@ -322,6 +324,8 @@ export const createSummary = ({
   minTotalCommitment?: bigint;
   maxTotalCommitment?: bigint;
   currentTotalCommitment?: bigint;
+  neuronsFundCommitment?: bigint;
+  directCommitment?: bigint;
 }): SnsSummary => {
   const init: SnsSwapInit = {
     ...mockInit,
@@ -346,6 +350,8 @@ export const createSummary = ({
     direct_participant_count: buyersCount === null ? [] : [buyersCount],
     buyer_total_icp_e8s:
       currentTotalCommitment ?? mockDerived.buyer_total_icp_e8s,
+    neurons_fund_participation_icp_e8s: toNullable(neuronsFundCommitment),
+    direct_participation_icp_e8s: toNullable(directCommitment),
   };
   const summary = summaryForLifecycle(lifecycle);
   return {

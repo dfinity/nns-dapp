@@ -101,7 +101,9 @@ describe("universes-utils", () => {
 
     it("should render alt ckTESTBTC", () => {
       expect(
-        universeLogoAlt({ canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() })
+        universeLogoAlt({
+          canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID.toText(),
+        })
       ).toEqual(en.ckbtc.test_logo);
     });
 

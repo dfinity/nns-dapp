@@ -25,7 +25,8 @@
 
     padding: var(--padding-8x) var(--padding-2x) var(--padding-2x);
 
-    transition: transform linear var(--animation-time-normal),
+    transition:
+      transform linear var(--animation-time-normal),
       opacity linear calc(var(--animation-time-short) / 2);
 
     @mixin hidden {

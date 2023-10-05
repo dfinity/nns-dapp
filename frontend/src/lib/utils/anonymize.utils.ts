@@ -441,7 +441,7 @@ export const anonymizeProposal = async (
 
 const anonymizeBuyer = async ([buyer, state]: [
   string,
-  SnsSwapBuyerState
+  SnsSwapBuyerState,
 ]): Promise<[string, SnsSwapBuyerState]> => [
   buyer,
   {
