@@ -48,12 +48,12 @@
   ],
   "expectedOutput": [
     "Checklist file: scripts/nns-dapp/Release-2001-02-29.json",
-    "Start time: 2001-02-29 14:15:16",
+    "Start time: \u001b[32m2001-02-29 14:15:16\u001b[0m",
     "👇 Press enter to run the following command:",
     "",
     "git fetch --tags --force",
     "",
-    "git fetch --tags --force: Done",
+    "git fetch --tags --force: \u001b[32mDone\u001b[0m",
     "Release SOP script is newest version: Failed"
   ],
   "expectedExitCode": 1

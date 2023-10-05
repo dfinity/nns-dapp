@@ -6,7 +6,7 @@ import type {
   CachedSnsTokenMetadataDto,
 } from "$lib/types/sns-aggregator";
 import tenAggregatedSnses from "$tests/mocks/sns-aggregator.mock.json";
-import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
+import { IcrcMetadataResponseEntries } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle, type SnsNervousSystemFunction } from "@dfinity/sns";
 import { fromNullable, nonNullish } from "@dfinity/utils";
 import { mockQueryTokenResponse } from "./sns-projects.mock";
@@ -197,6 +197,7 @@ export const aggregatorSnsMock: CachedSns = {
           sns_ledger_canister_id: "5bqmf-wyaaa-aaaaq-aaa5q-cai",
           sns_governance_canister_id: "5grkr-3aaaa-aaaaq-aaa5a-cai",
           restricted_countries: [{ iso_codes: ["US"] }],
+          neurons_fund_participation_constraints: [],
         },
       ],
       already_tried_to_auto_finalize: [],
@@ -220,6 +221,8 @@ export const aggregatorSnsMock: CachedSns = {
       ],
       open_sns_token_swap_proposal_id: [123772n],
       decentralization_sale_open_timestamp_seconds: [1690786778n],
+      direct_participation_icp_e8s: [],
+      neurons_fund_participation_icp_e8s: [],
     },
     derived: {
       buyer_total_icp_e8s: 50669291278205n,
@@ -227,6 +230,8 @@ export const aggregatorSnsMock: CachedSns = {
       cf_neuron_count: [],
       cf_participant_count: [],
       direct_participant_count: [],
+      direct_participation_icp_e8s: [],
+      neurons_fund_participation_icp_e8s: [],
     },
   },
   icrc1_metadata: [
@@ -243,6 +248,8 @@ export const aggregatorSnsMock: CachedSns = {
     cf_participant_count: [145n],
     direct_participant_count: [224n],
     cf_neuron_count: [178n],
+    direct_participation_icp_e8s: [],
+    neurons_fund_participation_icp_e8s: [],
   },
 };
 

@@ -1,5 +1,5 @@
-use crate::proposals::tests::payloads::get_payloads;
-use crate::proposals::transform_payload_to_json;
+use crate::tests::payloads::get_payloads;
+use crate::transform_payload_to_json;
 
 mod args;
 mod payloads;

@@ -1,18 +1,8 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_ledger.rs a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
-index 4a838dd16..7592d9a16 100644
+index d8cb05a70..460b53d26 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_ledger.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
-@@ -8,8 +8,7 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
- use ic_cdk::api::call::CallResult;
- // This is an experimental feature to generate Rust binding from Candid.
- // You may want to manually adjust some of the types.
--#![allow(dead_code, unused_imports)]
--// use candid::{self, CandidType, Decode, Deserialize, Serialize, Clone, Debug, Encode, candid::Principal};
-+// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, candid::Principal};
- // use ic_cdk::api::call::CallResult as Result;
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-@@ -96,17 +95,15 @@ pub struct BlockRange {
+@@ -110,17 +110,15 @@ pub struct BlockRange {
      pub blocks: Vec<Block>,
  }
  
@@ -33,7 +23,7 @@ index 4a838dd16..7592d9a16 100644
  pub struct GetBlocksResponse {
      pub certificate: Option<serde_bytes::ByteBuf>,
      pub first_index: BlockIndex,
-@@ -168,17 +165,15 @@ pub struct TransactionRange {
+@@ -198,17 +196,15 @@ pub struct TransactionRange {
      pub transactions: Vec<Transaction>,
  }
  

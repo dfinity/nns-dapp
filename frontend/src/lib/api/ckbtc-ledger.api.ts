@@ -7,7 +7,7 @@ import type { Account, AccountType } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
-import type { IcrcAccount } from "@dfinity/ledger";
+import type { IcrcAccount } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 
 export const getCkBTCAccount = async ({

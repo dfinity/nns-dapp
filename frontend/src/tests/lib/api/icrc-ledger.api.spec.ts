@@ -12,7 +12,7 @@ import {
   mockSnsToken,
 } from "$tests/mocks/sns-projects.mock";
 import type { HttpAgent } from "@dfinity/agent";
-import { IcrcLedgerCanister } from "@dfinity/ledger";
+import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import { mock } from "jest-mock-extended";
 
 describe("icrc-ledger api", () => {

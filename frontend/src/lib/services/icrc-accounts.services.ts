@@ -5,7 +5,7 @@ import type { Account } from "$lib/types/account";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
-import { decodeIcrcAccount, type IcrcBlockIndex } from "@dfinity/ledger";
+import { decodeIcrcAccount, type IcrcBlockIndex } from "@dfinity/ledger-icrc";
 import { isNullish } from "@dfinity/utils";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

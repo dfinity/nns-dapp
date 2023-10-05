@@ -14,7 +14,7 @@ import {
   MinterTemporaryUnavailableError,
   type WithdrawalAccount,
 } from "@dfinity/ckbtc";
-import { encodeIcrcAccount } from "@dfinity/ledger";
+import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import {
   arrayOfNumberToUint8Array,
   fromNullable,

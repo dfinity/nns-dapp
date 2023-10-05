@@ -91,25 +91,22 @@ describe("ProjectCommitment", () => {
     expect(po.getCurrentTotalCommitment()).resolves.toEqual("500.00 ICP");
   });
 
-  it("should render a progress bar with total participation adding NF and direct commitments", async () => {
-    const directCommitment = 20000000000n;
-    const nfCommitment = 10000000000n;
+  it("should render a progress bar with overall participation if NF is not available", async () => {
+    const overallCommitment = 30000000000n;
     // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
     jest
       .spyOn(summaryGetters, "getNeuronsFundParticipation")
-      .mockImplementation(() => nfCommitment);
+      .mockImplementation(() => undefined);
 
     const summary = createSummary({
-      currentTotalCommitment: directCommitment + nfCommitment,
+      currentTotalCommitment: overallCommitment,
     });
     const po = renderComponent(summary);
     const progressBarPo = po.getCommitmentProgressBarPo();
-    expect(await progressBarPo.getTotalCommitmentE8s()).toBe(
-      directCommitment + nfCommitment
-    );
+    expect(await progressBarPo.getCommitmentE8s()).toBe(overallCommitment);
   });
 
-  it("should render a progress bar with different participations", async () => {
+  it("should render a progress bar with direct participation if NF is available", async () => {
     const directCommitment = 30000000000n;
     const nfCommitment = 10000000000n;
     // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
@@ -122,8 +119,7 @@ describe("ProjectCommitment", () => {
     });
     const po = renderComponent(summary);
     const progressBarPo = po.getCommitmentProgressBarPo();
-    expect(await progressBarPo.getNFCommitmentE8s()).toBe(nfCommitment);
-    expect(await progressBarPo.getDirectCommitmentE8s()).toBe(directCommitment);
+    expect(await progressBarPo.getCommitmentE8s()).toBe(directCommitment);
   });
 
   it("should not render detailed participation if neurons fund participation is not available", async () => {
@@ -153,7 +149,7 @@ describe("ProjectCommitment", () => {
     expect(await po.getDirectParticipation()).toEqual("200.00 ICP");
   });
 
-  it("should render detailed participation if neurons fund participation is available even with NF participation as 0", async () => {
+  it("should not render detailed participation if neurons fund participation is zero", async () => {
     const directCommitment = 20000000000n;
     const nfCommitment = 0n;
     // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
@@ -165,7 +161,7 @@ describe("ProjectCommitment", () => {
       currentTotalCommitment: directCommitment + nfCommitment,
     });
     const po = renderComponent(summary);
-    expect(await po.getNeuronsFundParticipation()).toEqual("0 ICP");
-    expect(await po.getDirectParticipation()).toEqual("200.00 ICP");
+    expect(await po.hasNeuronsFundParticipation()).toBe(false);
+    expect(await po.hasDirectParticipation()).toBe(false);
   });
 });

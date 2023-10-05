@@ -1,5 +1,8 @@
 import type { IcrcTransactionsStoreData } from "$lib/stores/icrc-transactions.store";
-import type { IcrcTransaction, IcrcTransactionWithId } from "@dfinity/ledger";
+import type {
+  IcrcTransaction,
+  IcrcTransactionWithId,
+} from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import type { Subscriber } from "svelte/store";
 

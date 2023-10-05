@@ -26,7 +26,7 @@ import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { poll, pollingLimit } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { CMCCanister, ProcessingError, type Cycles } from "@dfinity/cmc";
-import { AccountIdentifier, SubAccount } from "@dfinity/nns";
+import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp";
 import type { Principal } from "@dfinity/principal";
 import type { TokenAmount } from "@dfinity/utils";
 import { nonNullish, principalToSubAccount } from "@dfinity/utils";

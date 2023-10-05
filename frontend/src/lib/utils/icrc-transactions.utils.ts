@@ -9,8 +9,11 @@ import type {
 } from "$lib/types/transaction";
 import { AccountTransactionType } from "$lib/types/transaction";
 import type { UniverseCanisterId } from "$lib/types/universe";
-import type { IcrcTransaction, IcrcTransactionWithId } from "@dfinity/ledger";
-import { encodeIcrcAccount } from "@dfinity/ledger";
+import type {
+  IcrcTransaction,
+  IcrcTransactionWithId,
+} from "@dfinity/ledger-icrc";
+import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import { fromNullable } from "@dfinity/utils";
 import { mapToSelfTransaction, showTransactionFee } from "./transactions.utils";
