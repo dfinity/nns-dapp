@@ -176,7 +176,7 @@ describe("AccountSyncIndicator", () => {
         state: "in_progress",
       });
 
-      const { queryByRole, rerender } = await testPopover(
+      const { queryByRole } = await testPopover(
         en.sync.status_in_progress_detailed
       );
 
@@ -185,16 +185,12 @@ describe("AccountSyncIndicator", () => {
         state: "idle",
       });
 
-      rerender({});
-
-      expect(queryByRole("menu")).toBeNull();
+      await waitFor(() => expect(queryByRole("menu")).toBeNull());
 
       syncStore.setState({
         key: "balances",
         state: "in_progress",
       });
-
-      rerender({});
 
       expect(queryByRole("menu")).toBeNull();
     });
