@@ -2,7 +2,7 @@
 set -euo pipefail
 
 print_help() {
-	cat <<-EOF
+  cat <<-EOF
 
 	List of all canister APIs that cen be derived from .did files.
 	EOF
@@ -10,12 +10,12 @@ print_help() {
 
 # Gets a list of declared canisters
 declared_canisters() {
-    ls declarations
+  ls declarations
 }
 
 # Gets a list of canisters used by the proposal rendering crate.
 proposal_canisters() {
-    ls rs/proposals/src/canisters/ | sed 's/[.].*//g' | sort | uniq | grep -vw mod    
+  ls rs/proposals/src/canisters/ | sed 's/[.].*//g' | sort | uniq | grep -vw mod
 }
 
 # Canister interfaces that can potentially be generated from .did files
