@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.."
 
 print_help() {
   cat <<-EOF
@@ -7,6 +8,12 @@ print_help() {
 	List of all canister APIs that cen be derived from .did files.
 	EOF
 }
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
 
 # Gets a list of declared canisters
 declared_canisters() {
