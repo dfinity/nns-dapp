@@ -13,6 +13,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Added
 
 * Select destination when disbursing maturity.
+* Escape additional images in the proposal summary markdown to enhance security.
 
 #### Changed
 
