@@ -14,10 +14,6 @@ export class CommitmentProgressBarPo extends BasePageObject {
     return this.root.byTestId("commitment-min-indicator").isPresent();
   }
 
-  hasMaxCommitmentIndicator(): Promise<boolean> {
-    return this.root.byTestId("commitment-max-indicator").isPresent();
-  }
-
   async getMinCommitment(): Promise<string> {
     return (await this.getText("commitment-min-indicator-value")).trim();
   }
@@ -32,5 +28,11 @@ export class CommitmentProgressBarPo extends BasePageObject {
       .querySelector("progress")
       .getAttribute("value");
     return BigInt(valueString);
+  }
+
+  // The color prop is added as a class to the progress element.
+  async getColor(): Promise<string> {
+    const progressElement = this.root.querySelector("progress");
+    return (await progressElement.getClasses())[0];
   }
 }

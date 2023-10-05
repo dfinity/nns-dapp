@@ -1275,63 +1275,126 @@ describe("project-utils", () => {
 
   describe("getProjectCommitmentSplit", () => {
     const defaultSummary = summaryForLifecycle(SnsSwapLifecycle.Open);
+    const nfCommitment = 10000000000n;
+    const directCommitment = 20000000000n;
+    const summary = {
+      ...defaultSummary,
+      derived: {
+        ...defaultSummary.derived,
+        buyer_total_icp_e8s: directCommitment + nfCommitment,
+      },
+    };
 
-    it("returns the commitments split if NF participation is present", () => {
-      const directCommitment = 20000000000n;
-      const nfCommitment = 10000000000n;
-      // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
-      jest
-        .spyOn(summaryGetters, "getNeuronsFundParticipation")
-        .mockImplementation(() => nfCommitment);
-      const summary = {
-        ...defaultSummary,
-        derived: {
-          ...defaultSummary.derived,
-          buyer_total_icp_e8s: directCommitment + nfCommitment,
-        },
-      };
-      expect(getProjectCommitmentSplit(summary)).toEqual({
-        totalCommitmentE8s: 30000000000n,
-        directCommitmentE8s: 20000000000n,
-        nfCommitmentE8s: 10000000000n,
+    describe("when NF participation is present", () => {
+      beforeEach(() => {
+        // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
+        jest
+          .spyOn(summaryGetters, "getNeuronsFundParticipation")
+          .mockImplementation(() => nfCommitment);
+      });
+
+      it("returns the commitments split if min-max direct participations are present", () => {
+        const minDirectParticipation = 10000000000n;
+        const maxDirectParticipation = 100000000000n;
+        // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
+        jest
+          .spyOn(summaryGetters, "getMinDirectParticipation")
+          .mockImplementation(() => minDirectParticipation);
+        // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
+        jest
+          .spyOn(summaryGetters, "getMaxDirectParticipation")
+          .mockImplementation(() => maxDirectParticipation);
+
+        expect(getProjectCommitmentSplit(summary)).toEqual({
+          totalCommitmentE8s: 30000000000n,
+          directCommitmentE8s: 20000000000n,
+          nfCommitmentE8s: 10000000000n,
+          minDirectCommitmentE8s: minDirectParticipation,
+          maxDirectCommitmentE8s: maxDirectParticipation,
+        });
+      });
+
+      it("returns the full commitment if min direct participation is not present", () => {
+        // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
+        jest
+          .spyOn(summaryGetters, "getMinDirectParticipation")
+          .mockImplementation(() => undefined);
+        // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
+        jest
+          .spyOn(summaryGetters, "getMaxDirectParticipation")
+          .mockImplementation(() => 100000000000n);
+        expect(getProjectCommitmentSplit(summary)).toEqual({
+          totalCommitmentE8s: 30000000000n,
+        });
+      });
+
+      it("returns the full commitment if max direct participation is not present", () => {
+        // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
+        jest
+          .spyOn(summaryGetters, "getMinDirectParticipation")
+          .mockImplementation(() => 100000000000n);
+        // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
+        jest
+          .spyOn(summaryGetters, "getMaxDirectParticipation")
+          .mockImplementation(() => undefined);
+        expect(getProjectCommitmentSplit(summary)).toEqual({
+          totalCommitmentE8s: 30000000000n,
+        });
       });
     });
 
-    it("returns the commitments split if NF participation is present even when 0", () => {
-      const directCommitment = 20000000000n;
-      const nfCommitment = 0n;
-      // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
-      jest
-        .spyOn(summaryGetters, "getNeuronsFundParticipation")
-        .mockImplementation(() => nfCommitment);
-      const summary = {
-        ...defaultSummary,
-        derived: {
-          ...defaultSummary.derived,
-          buyer_total_icp_e8s: directCommitment + nfCommitment,
-        },
-      };
-      expect(getProjectCommitmentSplit(summary)).toEqual({
-        totalCommitmentE8s: 20000000000n,
-        directCommitmentE8s: 20000000000n,
-        nfCommitmentE8s: 0n,
+    describe("when NF participation is 0", () => {
+      it("returns the commitments split if NF participation is present even when 0", () => {
+        const directCommitment = 20000000000n;
+        const nfCommitment = 0n;
+        const minDirectParticipation = 10000000000n;
+        const maxDirectParticipation = 100000000000n;
+        // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
+        jest
+          .spyOn(summaryGetters, "getNeuronsFundParticipation")
+          .mockImplementation(() => nfCommitment);
+        // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
+        jest
+          .spyOn(summaryGetters, "getMinDirectParticipation")
+          .mockImplementation(() => minDirectParticipation);
+        // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
+        jest
+          .spyOn(summaryGetters, "getMaxDirectParticipation")
+          .mockImplementation(() => maxDirectParticipation);
+        const summary = {
+          ...defaultSummary,
+          derived: {
+            ...defaultSummary.derived,
+            buyer_total_icp_e8s: directCommitment + nfCommitment,
+          },
+        };
+        expect(getProjectCommitmentSplit(summary)).toEqual({
+          totalCommitmentE8s: 20000000000n,
+          directCommitmentE8s: 20000000000n,
+          nfCommitmentE8s: 0n,
+          minDirectCommitmentE8s: minDirectParticipation,
+          maxDirectCommitmentE8s: maxDirectParticipation,
+        });
       });
     });
 
-    it("returns only the full commitmentif NF participation is not present", () => {
-      // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
-      jest
-        .spyOn(summaryGetters, "getNeuronsFundParticipation")
-        .mockImplementation(() => undefined);
-      const summary = {
-        ...defaultSummary,
-        derived: {
-          ...defaultSummary.derived,
-          buyer_total_icp_e8s: 20000000000n,
-        },
-      };
-      expect(getProjectCommitmentSplit(summary)).toEqual({
-        totalCommitmentE8s: 20000000000n,
+    describe("when NF participation is not present", () => {
+      it("returns the full commitment even if min-max direct participation are present", () => {
+        // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
+        jest
+          .spyOn(summaryGetters, "getNeuronsFundParticipation")
+          .mockImplementation(() => undefined);
+        // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
+        jest
+          .spyOn(summaryGetters, "getMinDirectParticipation")
+          .mockImplementation(() => 100000000000n);
+        // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
+        jest
+          .spyOn(summaryGetters, "getMaxDirectParticipation")
+          .mockImplementation(() => 1000000000000n);
+        expect(getProjectCommitmentSplit(summary)).toEqual({
+          totalCommitmentE8s: 30000000000n,
+        });
       });
     });
   });

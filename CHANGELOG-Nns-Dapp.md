@@ -24,11 +24,13 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Improve the skeletons while loading in the neuron details page.
 * Review the chunking strategy to enhance the dapp's loading time and prevent random, rare flashes of unstyled content (FOUC).
 * New header UI in the canister detail page.
+* New labels for min and max participation.
 
 #### Deprecated
 #### Removed
 
 * Remove `ENABLE_DISBURSE_MATURITY` feature flag.
+* Remove `ENABLE_SNS_AGGREGATOR_STORE` feature flag.
 
 #### Fixed
 
@@ -40,6 +42,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Not Published
 
+* New UI to better explain the commitment of Neurons' Fund and direct participation.
+
 ### Operations
 
 #### Added
@@ -50,6 +54,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Factor out the core of `did2rs` for wider use.
 * Reduce the manual changes needed for `did2rs` by automating more.
 * Use `clap` argument parsing in `did2rs`.
 * Populate the PR description of the `didc` updater.

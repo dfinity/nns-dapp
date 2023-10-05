@@ -28,7 +28,7 @@ for CANISTER_NAME in sns_ledger sns_governance sns_root sns_swap sns_wasm; do
     cd "$GIT_ROOT"
     cp "$(jq '.canisters[env.CANISTER_NAME].candid' dfx.json)" "$DID_PATH"
   )
-  if output=$(./did2rs.sh "${CANISTER_NAME}"); then
+  if output=$("$GIT_ROOT/scripts/sns/aggregator/did2rs" "${CANISTER_NAME}"); then
     echo "$output"
   else
     failed_output="${failed_output}${output}"

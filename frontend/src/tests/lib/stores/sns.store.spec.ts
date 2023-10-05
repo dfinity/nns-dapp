@@ -1,4 +1,3 @@
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
 import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
 import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
@@ -13,11 +12,7 @@ import {
   type SnsQueryStoreData,
 } from "$lib/stores/sns.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
-import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
-import {
-  convertDtoData,
-  convertDtoToSnsSummary,
-} from "$lib/utils/sns-aggregator-converters.utils";
+import type { QuerySnsSwapState } from "$lib/types/sns.query";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import {
   aggregatorSnsMockDto,
@@ -32,7 +27,6 @@ import {
 import { snsResponsesForLifecycle } from "$tests/mocks/sns-response.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { ProposalStatus } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
 import {
   SnsSwapLifecycle,
   type SnsGetDerivedStateResponse,
@@ -40,7 +34,6 @@ import {
   type SnsSwap,
   type SnsSwapDerivedState,
 } from "@dfinity/sns";
-import { fromNullable, toNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("sns.store", () => {
@@ -223,44 +216,18 @@ describe("sns.store", () => {
   });
 
   describe("isLoadingSnsProjectsStore", () => {
-    describe("with ENABLE_SNS_AGGREGATOR_STORE false", () => {
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", false);
+    it("should not be loading if sns aggregator store is set but not snsQueryStore", () => {
+      const data = snsResponsesForLifecycle({
+        lifecycles: [SnsSwapLifecycle.Open],
+        certified: true,
       });
 
-      it("should not be loading if snsQueryStore is set but not snsAggregatorStore", () => {
-        snsQueryStore.reset();
-        snsAggregatorStore.setData([aggregatorSnsMockDto]);
-        expect(get(isLoadingSnsProjectsStore)).toBe(true);
+      snsQueryStore.setData(data);
+      snsAggregatorStore.reset();
+      expect(get(isLoadingSnsProjectsStore)).toBe(true);
 
-        const data = snsResponsesForLifecycle({
-          lifecycles: [SnsSwapLifecycle.Open],
-          certified: true,
-        });
-
-        snsQueryStore.setData(data);
-        expect(get(isLoadingSnsProjectsStore)).toBe(false);
-      });
-    });
-
-    describe("with ENABLE_SNS_AGGREGATOR_STORE true", () => {
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", true);
-      });
-
-      it("should not be loading if sns aggregator store is set but not snsQueryStore", () => {
-        const data = snsResponsesForLifecycle({
-          lifecycles: [SnsSwapLifecycle.Open],
-          certified: true,
-        });
-
-        snsQueryStore.setData(data);
-        snsAggregatorStore.reset();
-        expect(get(isLoadingSnsProjectsStore)).toBe(true);
-
-        snsAggregatorStore.setData([aggregatorSnsMockDto]);
-        expect(get(isLoadingSnsProjectsStore)).toBe(false);
-      });
+      snsAggregatorStore.setData([aggregatorSnsMockDto]);
+      expect(get(isLoadingSnsProjectsStore)).toBe(false);
     });
   });
 
@@ -525,222 +492,74 @@ describe("sns.store", () => {
   });
 
   describe("snsSummariesStore", () => {
-    describe("flag ENABLE_SNS_AGGREGATOR_STORE not enabled", () => {
-      beforeEach(() => {
-        jest.spyOn(console, "warn").mockImplementation(() => undefined);
-        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", false);
+    const rootCanisterId = rootCanisterIdMock;
+
+    it("does not snsQueryStore as source of data", () => {
+      snsAggregatorStore.reset();
+      const data = snsResponsesForLifecycle({
+        lifecycles: [SnsSwapLifecycle.Open],
+        certified: true,
       });
+      snsQueryStore.setData(data);
 
-      it("uses snsQueryStore as source of data", () => {
-        snsAggregatorStore.reset();
-        const data = snsResponsesForLifecycle({
-          lifecycles: [SnsSwapLifecycle.Open],
-          certified: true,
-        });
-        snsQueryStore.setData(data);
-
-        expect(get(snsSummariesStore)).toHaveLength(1);
-      });
-
-      it("does NOT use snsAggregator as source of data", () => {
-        snsAggregatorStore.setData([aggregatorSnsMockDto]);
-        snsQueryStore.reset();
-
-        expect(get(snsSummariesStore)).toHaveLength(0);
-      });
+      expect(get(snsSummariesStore)).toHaveLength(0);
     });
 
-    describe("flag ENABLE_SNS_AGGREGATOR_STORE is enabled", () => {
-      const rootCanisterId = rootCanisterIdMock;
+    it("uses snsAggregator as source of data", () => {
+      snsAggregatorStore.setData([aggregatorSnsMockDto]);
+      snsQueryStore.reset();
 
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_AGGREGATOR_STORE", true);
+      expect(get(snsSummariesStore)).toHaveLength(1);
+    });
+
+    it("derived state is overriden with data in snsDerivedStateStore", () => {
+      const newSnsTokensPerIcp = 4;
+      const aggregatorData = aggregatorSnsMockWith({
+        rootCanisterId: rootCanisterId.toText(),
+      });
+      snsAggregatorStore.setData([aggregatorData]);
+      snsQueryStore.reset();
+
+      expect(get(snsSummariesStore)[0].derived.sns_tokens_per_icp).not.toBe(
+        newSnsTokensPerIcp
+      );
+
+      const newDerivedState: SnsGetDerivedStateResponse = {
+        ...mockDerivedResponse,
+        sns_tokens_per_icp: [newSnsTokensPerIcp],
+      };
+      snsDerivedStateStore.setDerivedState({
+        certified: true,
+        rootCanisterId,
+        data: newDerivedState,
       });
 
-      it("warns when snsAggregatorStore and snsQueryStore have different number of summaries", () => {
-        expect(console.warn).not.toHaveBeenCalled();
-        snsAggregatorStore.setData([aggregatorSnsMockDto]);
-        const data = snsResponsesForLifecycle({
-          lifecycles: [SnsSwapLifecycle.Open, SnsSwapLifecycle.Open],
-          certified: true,
-        });
-        snsQueryStore.setData(data);
+      expect(get(snsSummariesStore)[0].derived.sns_tokens_per_icp).toBe(
+        newSnsTokensPerIcp
+      );
+    });
 
-        get(snsSummariesStore);
-        expect(console.warn).toHaveBeenCalledTimes(1);
-        expect(console.warn).toHaveBeenCalledWith(
-          "The aggregator and query data do not match. Aggregator data: 1, query data: 2."
-        );
+    it("lifestate is overriden with data in snsDerivedStateStore", () => {
+      const newLifecycle = SnsSwapLifecycle.Open;
+      const aggregatorData = aggregatorSnsMockWith({
+        rootCanisterId: rootCanisterId.toText(),
+      });
+      snsAggregatorStore.setData([aggregatorData]);
+      snsQueryStore.reset();
+
+      expect(get(snsSummariesStore)[0].swap.lifecycle).not.toBe(newLifecycle);
+
+      const newLifecycleResponse: SnsGetLifecycleResponse = {
+        ...mockLifecycleResponse,
+        lifecycle: [newLifecycle],
+      };
+      snsLifecycleStore.setData({
+        certified: true,
+        rootCanisterId,
+        data: newLifecycleResponse,
       });
 
-      it("warns when snsAggregatorStore and snsQueryStore return different summary data for the same SNS project", () => {
-        expect(console.warn).not.toHaveBeenCalled();
-        snsAggregatorStore.setData([aggregatorSnsMockDto]);
-        const cachedSnses = convertDtoData([aggregatorSnsMockDto]);
-        const snsQueryStoreData: [QuerySnsMetadata[], QuerySnsSwapState[]] = [
-          cachedSnses.map((sns) => ({
-            rootCanisterId: sns.canister_ids.root_canister_id,
-            certified: true,
-            metadata: sns.meta,
-            token: sns.icrc1_metadata,
-          })),
-          cachedSnses.map((sns) => ({
-            rootCanisterId: sns.canister_ids.root_canister_id,
-            certified: true,
-            swapCanisterId: Principal.fromText(
-              sns.canister_ids.swap_canister_id
-            ),
-            governanceCanisterId: Principal.fromText(
-              sns.canister_ids.governance_canister_id
-            ),
-            ledgerCanisterId: Principal.fromText(
-              sns.canister_ids.ledger_canister_id
-            ),
-            indexCanisterId: Principal.fromText(
-              sns.canister_ids.index_canister_id
-            ),
-            swap: toNullable(sns.swap_state.swap),
-            derived: toNullable({
-              // THIS IS DIFFERENT
-              sns_tokens_per_icp: 0,
-              buyer_total_icp_e8s:
-                fromNullable(sns.derived_state.buyer_total_icp_e8s) ?? 0n,
-              cf_participant_count: sns.derived_state.cf_participant_count,
-              direct_participant_count:
-                sns.derived_state.direct_participant_count,
-              cf_neuron_count: sns.derived_state.cf_neuron_count,
-              direct_participation_icp_e8s: [],
-              neurons_fund_participation_icp_e8s: [],
-            }),
-          })),
-        ];
-        snsQueryStore.setData(snsQueryStoreData);
-
-        const expectedSummary = convertDtoToSnsSummary(aggregatorSnsMockDto);
-
-        get(snsSummariesStore);
-        expect(console.warn).toHaveBeenCalledTimes(2);
-        expect(console.warn).toHaveBeenCalledWith(
-          "The aggregator and query data do not match. Check below and the debug store for more information."
-        );
-        expect(console.warn).toHaveBeenCalledWith([expectedSummary]);
-      });
-
-      it("doesn't warn anything if snsQueryStore and snsAggregator return the same summary", () => {
-        snsAggregatorStore.setData([aggregatorSnsMockDto]);
-        const cachedSnses = convertDtoData([aggregatorSnsMockDto]);
-        const snsQueryStoreData: [QuerySnsMetadata[], QuerySnsSwapState[]] = [
-          cachedSnses.map((sns) => ({
-            rootCanisterId: sns.canister_ids.root_canister_id,
-            certified: true,
-            metadata: sns.meta,
-            token: sns.icrc1_metadata,
-          })),
-          cachedSnses.map((sns) => ({
-            rootCanisterId: sns.canister_ids.root_canister_id,
-            certified: true,
-            swapCanisterId: Principal.fromText(
-              sns.canister_ids.swap_canister_id
-            ),
-            governanceCanisterId: Principal.fromText(
-              sns.canister_ids.governance_canister_id
-            ),
-            ledgerCanisterId: Principal.fromText(
-              sns.canister_ids.ledger_canister_id
-            ),
-            indexCanisterId: Principal.fromText(
-              sns.canister_ids.index_canister_id
-            ),
-            swap: toNullable(sns.swap_state.swap),
-            derived: toNullable({
-              sns_tokens_per_icp:
-                fromNullable(sns.derived_state.sns_tokens_per_icp) ?? 0,
-              buyer_total_icp_e8s:
-                fromNullable(sns.derived_state.buyer_total_icp_e8s) ?? 0n,
-              cf_participant_count: sns.derived_state.cf_participant_count,
-              direct_participant_count:
-                sns.derived_state.direct_participant_count,
-              cf_neuron_count: sns.derived_state.cf_neuron_count,
-              direct_participation_icp_e8s:
-                sns.derived_state.direct_participation_icp_e8s,
-              neurons_fund_participation_icp_e8s:
-                sns.derived_state.direct_participation_icp_e8s,
-            }),
-          })),
-        ];
-        snsQueryStore.setData(snsQueryStoreData);
-
-        get(snsSummariesStore);
-        expect(console.warn).not.toHaveBeenCalled();
-      });
-
-      it("does not snsQueryStore as source of data", () => {
-        snsAggregatorStore.reset();
-        const data = snsResponsesForLifecycle({
-          lifecycles: [SnsSwapLifecycle.Open],
-          certified: true,
-        });
-        snsQueryStore.setData(data);
-
-        expect(get(snsSummariesStore)).toHaveLength(0);
-      });
-
-      it("uses snsAggregator as source of data", () => {
-        snsAggregatorStore.setData([aggregatorSnsMockDto]);
-        snsQueryStore.reset();
-
-        expect(get(snsSummariesStore)).toHaveLength(1);
-      });
-
-      it("derived state is overriden with data in snsDerivedStateStore", () => {
-        const newSnsTokensPerIcp = 4;
-        const aggregatorData = aggregatorSnsMockWith({
-          rootCanisterId: rootCanisterId.toText(),
-        });
-        snsAggregatorStore.setData([aggregatorData]);
-        snsQueryStore.reset();
-
-        expect(get(snsSummariesStore)[0].derived.sns_tokens_per_icp).not.toBe(
-          newSnsTokensPerIcp
-        );
-
-        const newDerivedState: SnsGetDerivedStateResponse = {
-          ...mockDerivedResponse,
-          sns_tokens_per_icp: [newSnsTokensPerIcp],
-        };
-        snsDerivedStateStore.setDerivedState({
-          certified: true,
-          rootCanisterId,
-          data: newDerivedState,
-        });
-
-        expect(get(snsSummariesStore)[0].derived.sns_tokens_per_icp).toBe(
-          newSnsTokensPerIcp
-        );
-      });
-
-      it("lifestate is overriden with data in snsDerivedStateStore", () => {
-        const newLifecycle = SnsSwapLifecycle.Open;
-        const aggregatorData = aggregatorSnsMockWith({
-          rootCanisterId: rootCanisterId.toText(),
-        });
-        snsAggregatorStore.setData([aggregatorData]);
-        snsQueryStore.reset();
-
-        expect(get(snsSummariesStore)[0].swap.lifecycle).not.toBe(newLifecycle);
-
-        const newLifecycleResponse: SnsGetLifecycleResponse = {
-          ...mockLifecycleResponse,
-          lifecycle: [newLifecycle],
-        };
-        snsLifecycleStore.setData({
-          certified: true,
-          rootCanisterId,
-          data: newLifecycleResponse,
-        });
-
-        expect(get(snsSummariesStore)[0].swap.lifecycle).toBe(newLifecycle);
-      });
+      expect(get(snsSummariesStore)[0].swap.lifecycle).toBe(newLifecycle);
     });
   });
 });
