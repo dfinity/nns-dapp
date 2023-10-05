@@ -102,8 +102,11 @@ describe("BallotSummary", () => {
     await waitFor(async () =>
       expect(await po.isBallotSummaryVisible()).toBe(true)
     );
-    expect(await po.getBallotSummary()).toBe(
-      "Initialize datacenter records. For more info about this proposal, read the forum announcement: https://forum.dfinity.org/t/improvements-to-node-provider-remuneration/10553"
+
+    await waitFor(async () =>
+      expect(await po.getBallotSummary()).toBe(
+        "Initialize datacenter records. For more info about this proposal, read the forum announcement: https://forum.dfinity.org/t/improvements-to-node-provider-remuneration/10553"
+      )
     );
   });
 });
