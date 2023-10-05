@@ -350,12 +350,8 @@ export const createSummary = ({
     direct_participant_count: buyersCount === null ? [] : [buyersCount],
     buyer_total_icp_e8s:
       currentTotalCommitment ?? mockDerived.buyer_total_icp_e8s,
-    neurons_fund_participation_icp_e8s: nonNullish(neuronsFundCommitment)
-      ? [neuronsFundCommitment]
-      : [],
-    direct_participation_icp_e8s: nonNullish(directCommitment)
-      ? [directCommitment]
-      : [],
+    neurons_fund_participation_icp_e8s: toNullable(neuronsFundCommitment),
+    direct_participation_icp_e8s: toNullable(directCommitment),
   };
   const summary = summaryForLifecycle(lifecycle);
   return {

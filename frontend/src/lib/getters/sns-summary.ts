@@ -14,7 +14,7 @@ export const getConditionsToAccept = (
 export const getNeuronsFundParticipation = ({
   derived,
 }: SnsSummary): bigint | undefined =>
-  derived.neurons_fund_participation_icp_e8s[0];
+  fromNullable(derived.neurons_fund_participation_icp_e8s);
 
 // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
 export const getMinDirectParticipation = (

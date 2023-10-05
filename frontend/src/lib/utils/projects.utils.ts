@@ -14,8 +14,12 @@ import type {
 } from "$lib/types/sns";
 import type { StoreData } from "$lib/types/store";
 import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
-import type { TokenAmount } from "@dfinity/utils";
-import { isNullish, nonNullish } from "@dfinity/utils";
+import {
+  fromNullable,
+  isNullish,
+  nonNullish,
+  type TokenAmount,
+} from "@dfinity/utils";
 import { nowInSeconds } from "./date.utils";
 import type { I18nSubstitutions } from "./i18n.utils";
 import { getCommitmentE8s } from "./sns.utils";
@@ -420,7 +424,9 @@ export const getProjectCommitmentSplit = (
   summary: SnsSummary
 ): ProjectCommitmentSplit => {
   const nfCommitmentE8s = getNeuronsFundParticipation(summary);
-  const directCommitmentE8s = summary.derived.direct_participation_icp_e8s[0];
+  const directCommitmentE8s = fromNullable(
+    summary.derived.direct_participation_icp_e8s
+  );
   const minDirectCommitmentE8s = getMinDirectParticipation(summary);
   const maxDirectCommitmentE8s = getMaxDirectParticipation(summary);
   if (
