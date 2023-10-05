@@ -64,10 +64,9 @@ describe("AccountMenu", () => {
 
       settings !== null && fireEvent.click(settings);
 
-      await waitFor(
-        () => expect(() => renderResult.getByRole("menu")).toThrow(),
-        { timeout: 2000 }
-      );
+      renderResult.rerender({});
+
+      expect(() => renderResult.getByRole("menu")).toThrow();
     });
   });
 });
