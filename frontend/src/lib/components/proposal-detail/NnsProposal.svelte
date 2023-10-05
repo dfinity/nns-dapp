@@ -39,7 +39,7 @@
 
     <TestIdWrapper testId="proposal-details-grid">
       {#if $ENABLE_FULL_WIDTH_PROPOSAL}
-        <div class="proposal-data-section" data-tid="proposal-details-grid">
+        <div class="proposal-data-section">
           <div class="content-cell-island">
             <SplitBlock>
               <div slot="start">
@@ -53,7 +53,7 @@
           <div class="content-cell-island">
             <NnsProposalSummarySection proposalInfo={$store.proposal} />
           </div>
-          <div class="content-cell-island" data-tid="proposal-details-grid">
+          <div class="content-cell-island">
             <NnsProposalProposerActionsEntry
               proposal={$store.proposal.proposal}
             />
@@ -66,7 +66,7 @@
           </div>
         </div>
       {:else}
-        <div class="content-grid" data-tid="proposal-details-grid">
+        <div class="content-grid">
           <div class="content-a content-cell-island">
             <ProposalSystemInfoSection proposalInfo={$store.proposal} />
           </div>
