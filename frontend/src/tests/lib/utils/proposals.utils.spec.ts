@@ -683,7 +683,7 @@ describe("proposals-utils", () => {
         ...mockNeuron,
         neuronId: BigInt(id),
         votingPower: BigInt(votingPower),
-      } as NeuronInfo);
+      }) as NeuronInfo;
 
     const proposalInfo = (neurons: NeuronInfo[]): ProposalInfo => ({
       ...mockProposalInfo,
@@ -733,7 +733,7 @@ describe("proposals-utils", () => {
       ({
         ...mockNeuron,
         neuronId: BigInt(id),
-      } as NeuronInfo);
+      }) as NeuronInfo;
 
     it("should preserve old selection", () => {
       expect(

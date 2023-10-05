@@ -26,9 +26,9 @@ export class NnsProposalListPo extends BasePageObject {
 
   async getCardTopics(): Promise<string[]> {
     const topics = await Promise.all(
-      (
-        await this.getProposalCardPos()
-      ).map((card) => card.getProposalTopicText())
+      (await this.getProposalCardPos()).map((card) =>
+        card.getProposalTopicText()
+      )
     );
 
     // return unique values only
@@ -37,9 +37,9 @@ export class NnsProposalListPo extends BasePageObject {
 
   async getCardStatuses(): Promise<string[]> {
     const statuses = await Promise.all(
-      (
-        await this.getProposalCardPos()
-      ).map((card) => card.getProposalStatusText())
+      (await this.getProposalCardPos()).map((card) =>
+        card.getProposalStatusText()
+      )
     );
 
     // return unique values only

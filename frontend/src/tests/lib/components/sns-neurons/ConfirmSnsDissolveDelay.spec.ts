@@ -94,7 +94,10 @@ describe("ConfirmSnsDissolveDelay", () => {
 
     expect(
       getByText(
-        formatToken({ value: getSnsNeuronStake(mockSnsNeuron), detailed: true })
+        formatToken({
+          value: getSnsNeuronStake(mockSnsNeuron),
+          detailed: true,
+        })
       )
     ).toBeInTheDocument();
   });

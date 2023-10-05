@@ -324,7 +324,9 @@ describe("transactions-utils", () => {
         ?.Receive?.fee.e8s as bigint;
 
       expect(type).toBe(
-        transactionType({ transaction: mockReceivedFromMainAccountTransaction })
+        transactionType({
+          transaction: mockReceivedFromMainAccountTransaction,
+        })
       );
       expect(isSend).toBe(false);
       expect(isReceive).toBeTruthy();
