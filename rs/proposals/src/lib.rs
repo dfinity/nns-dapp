@@ -1,9 +1,9 @@
+use crate::canisters::nns_governance::api::{Action, ProposalInfo};
 use crate::def::*;
 use candid::parser::types::{IDLType, IDLTypes};
 use candid::{CandidType, Deserialize, IDLArgs};
 use ic_base_types::CanisterId;
-use ic_nns_constants::{IDENTITY_CANISTER_ID, GOVERNANCE_CANISTER_ID};
-use crate::canisters::nns_governance::api::{Action, ProposalInfo};
+use ic_nns_constants::{GOVERNANCE_CANISTER_ID, IDENTITY_CANISTER_ID};
 use idl2json::candid_types::internal_candid_type_to_idl_type;
 use idl2json::{idl_args2json_with_weak_names, BytesFormat, Idl2JsonOptions};
 use serde::de::DeserializeOwned;
@@ -29,7 +29,11 @@ pub async fn get_proposal_payload(proposal_id: u64) -> Result<Json, String> {
     if let Some(result) = CACHED_PROPOSAL_PAYLOADS.with(|c| c.borrow().get(&proposal_id).cloned()) {
         Ok(result)
     } else {
-        match crate::canisters::nns_governance::api::Service(GOVERNANCE_CANISTER_ID.into()).get_proposal_info(proposal_id).await.map(|result| result.0) {
+        match crate::canisters::nns_governance::api::Service(GOVERNANCE_CANISTER_ID.into())
+            .get_proposal_info(proposal_id)
+            .await
+            .map(|result| result.0)
+        {
             Ok(Some(proposal_info)) => {
                 let json = process_proposal_payload(proposal_info);
                 CACHED_PROPOSAL_PAYLOADS
