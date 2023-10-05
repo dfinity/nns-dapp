@@ -26,6 +26,7 @@ module.exports = {
     "^\\$routes/(.*)$": "<rootDir>/src/routes/$1",
     "^\\$mocks/(.*)$": "<rootDir>/__mocks__/$1",
     "^\\$tests/(.*)$": "<rootDir>/src/tests/$1",
+    "^\\$vitests/(.*)$": "<rootDir>/src/vitests/$1",
     "@dfinity/gix-components":
       "<rootDir>/node_modules/@dfinity/gix-components/dist",
   },

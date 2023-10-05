@@ -25,6 +25,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Review the chunking strategy to enhance the dapp's loading time and prevent random, rare flashes of unstyled content (FOUC).
 * New header UI in the canister detail page.
 * New labels for min and max participation.
+* Internal change: remove unused snsQueryStore.
 
 #### Deprecated
 #### Removed
