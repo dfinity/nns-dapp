@@ -289,7 +289,7 @@ export const listNeurons = async ({
 };
 
 // We always want to call this with the user identity
-const getAndLoadNeuron = async (neuronId: NeuronId) => {
+export const getAndLoadNeuron = async (neuronId: NeuronId) => {
   const identity = await getAuthenticatedIdentity();
   const neuron: NeuronInfo | undefined = await getNeuron({
     neuronId,
