@@ -17,7 +17,7 @@
   import { referrerPathStore } from "$lib/stores/routes.store";
   import { AppPath } from "$lib/constants/routes.constants";
   import { ENABLE_FULL_WIDTH_PROPOSAL } from "$lib/stores/feature-flags.store";
-  import { SplitBlock } from "../../../../../../gix-components";
+  import { SplitBlock } from "@dfinity/gix-components";
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
