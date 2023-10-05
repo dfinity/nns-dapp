@@ -7,28 +7,18 @@ import {
   hasOpenTicketInProcess,
   isInternalRefreshBuyerTokensError,
   isSnsFinalizing,
-  mapAndSortSnsQueryToSummaries,
   parseSnsSwapSaleBuyerCount,
 } from "$lib/utils/sns.utils";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { createFinalizationStatusMock } from "$tests/mocks/sns-finalization-status.mock";
 import {
   createBuyersState,
-  mockDerived,
   mockDerivedResponse,
-  mockQueryMetadata,
-  mockQueryMetadataResponse,
-  mockQuerySwap,
-  mockSnsParams,
-  mockSnsSummaryList,
-  mockSummary,
   principal,
 } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { AccountIdentifier } from "@dfinity/ledger-icp";
-import { IcrcMetadataResponseEntries } from "@dfinity/ledger-icrc";
-import { Principal } from "@dfinity/principal";
 import type {
   SnsGetAutoFinalizationStatusResponse,
   SnsGetDerivedStateResponse,
@@ -38,203 +28,6 @@ import { get } from "svelte/store";
 describe("sns-utils", () => {
   beforeEach(() => {
     snsTicketsStore.reset();
-  });
-
-  describe("concat sns summaries", () => {
-    it("should return empty for undefined summary", () => {
-      const summaries = mapAndSortSnsQueryToSummaries({
-        metadata: [],
-        swaps: [],
-      });
-
-      expect(summaries.length).toEqual(0);
-    });
-
-    it("should return empty for undefined swap query", () => {
-      const summaries = mapAndSortSnsQueryToSummaries({
-        metadata: [mockQueryMetadata],
-        swaps: [],
-      });
-
-      expect(summaries.length).toEqual(0);
-    });
-
-    it("should return empty for undefined params property in the swap", () => {
-      const summaries = mapAndSortSnsQueryToSummaries({
-        metadata: [mockQueryMetadata],
-        swaps: [
-          {
-            rootCanisterId: "1234",
-            swapCanisterId: Principal.fromText("aaaaa-aa"),
-            governanceCanisterId: Principal.fromText("aaaaa-aa"),
-            ledgerCanisterId: Principal.fromText("aaaaa-aa"),
-            indexCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [
-              {
-                ...mockQuerySwap,
-                params: [],
-              },
-            ],
-            derived: [mockDerived],
-            certified: true,
-          },
-        ],
-      });
-
-      expect(summaries.length).toEqual(0);
-    });
-
-    it("should return empty for undefined derived info", () => {
-      const summaries = mapAndSortSnsQueryToSummaries({
-        metadata: [mockQueryMetadata],
-        swaps: [
-          {
-            rootCanisterId: "1234",
-            swapCanisterId: Principal.fromText("aaaaa-aa"),
-            governanceCanisterId: Principal.fromText("aaaaa-aa"),
-            ledgerCanisterId: Principal.fromText("aaaaa-aa"),
-            indexCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [mockQuerySwap],
-            derived: [],
-            certified: true,
-          },
-        ],
-      });
-
-      expect(summaries.length).toEqual(0);
-    });
-
-    it("should concat summaries and swaps", () => {
-      const summaries = mapAndSortSnsQueryToSummaries({
-        metadata: [mockQueryMetadata],
-        swaps: [
-          {
-            rootCanisterId: mockSummary.rootCanisterId.toText(),
-            swapCanisterId: Principal.fromText("aaaaa-aa"),
-            governanceCanisterId: Principal.fromText("aaaaa-aa"),
-            ledgerCanisterId: Principal.fromText("aaaaa-aa"),
-            indexCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [mockQuerySwap],
-            derived: [mockDerived],
-            certified: true,
-          },
-        ],
-      });
-
-      expect(summaries.length).toEqual(1);
-    });
-
-    it("should return empty for partially undefined metadata", () => {
-      const summaries = mapAndSortSnsQueryToSummaries({
-        metadata: [
-          {
-            ...mockQueryMetadata,
-            metadata: {
-              ...mockQueryMetadataResponse,
-              name: [],
-            },
-          },
-        ],
-        swaps: [
-          {
-            rootCanisterId: mockSummary.rootCanisterId.toText(),
-            swapCanisterId: Principal.fromText("aaaaa-aa"),
-            governanceCanisterId: Principal.fromText("aaaaa-aa"),
-            ledgerCanisterId: Principal.fromText("aaaaa-aa"),
-            indexCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [mockQuerySwap],
-            derived: [mockDerived],
-            certified: true,
-          },
-        ],
-      });
-
-      expect(summaries.length).toEqual(0);
-    });
-
-    it("should return empty for partially undefined token", () => {
-      const summaries = mapAndSortSnsQueryToSummaries({
-        metadata: [
-          {
-            ...mockQueryMetadata,
-            token: [[IcrcMetadataResponseEntries.DECIMALS, { Nat: BigInt(8) }]],
-          },
-        ],
-        swaps: [
-          {
-            rootCanisterId: mockSummary.rootCanisterId.toText(),
-            swapCanisterId: Principal.fromText("aaaaa-aa"),
-            governanceCanisterId: Principal.fromText("aaaaa-aa"),
-            ledgerCanisterId: Principal.fromText("aaaaa-aa"),
-            indexCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [mockQuerySwap],
-            derived: [mockDerived],
-            certified: true,
-          },
-        ],
-      });
-
-      expect(summaries.length).toEqual(0);
-    });
-  });
-
-  describe("sort sns summaries", () => {
-    it("should sort summaries and swaps", () => {
-      const summaries = mapAndSortSnsQueryToSummaries({
-        metadata: [
-          mockQueryMetadata,
-          { ...mockQueryMetadata, rootCanisterId: principal(1).toText() },
-        ],
-        swaps: [
-          {
-            rootCanisterId: mockSummary.rootCanisterId.toText(),
-            swapCanisterId: Principal.fromText("aaaaa-aa"),
-            governanceCanisterId: Principal.fromText("aaaaa-aa"),
-            ledgerCanisterId: Principal.fromText("aaaaa-aa"),
-            indexCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [
-              {
-                ...mockQuerySwap,
-                params: [
-                  {
-                    ...mockSnsParams,
-                    swap_due_timestamp_seconds: BigInt(5),
-                  },
-                ],
-              },
-            ],
-            derived: [mockDerived],
-            certified: true,
-          },
-          {
-            rootCanisterId: mockSnsSummaryList[1].rootCanisterId.toText(),
-            swapCanisterId: Principal.fromText("aaaaa-aa"),
-            governanceCanisterId: Principal.fromText("aaaaa-aa"),
-            ledgerCanisterId: Principal.fromText("aaaaa-aa"),
-            indexCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [
-              {
-                ...mockQuerySwap,
-                params: [
-                  {
-                    ...mockSnsParams,
-                    swap_due_timestamp_seconds: BigInt(2),
-                  },
-                ],
-              },
-            ],
-            derived: [mockDerived],
-            certified: true,
-          },
-        ],
-      });
-
-      expect(summaries.length).toEqual(2);
-
-      expect(summaries[0].rootCanisterId.toText()).toEqual(
-        mockSnsSummaryList[1].rootCanisterId.toText()
-      );
-    });
   });
 
   describe("getSwapCanisterAccount", () => {
