@@ -420,17 +420,18 @@ export const getProjectCommitmentSplit = (
   summary: SnsSummary
 ): ProjectCommitmentSplit => {
   const nfCommitmentE8s = getNeuronsFundParticipation(summary);
+  const directCommitmentE8s = summary.derived.direct_participation_icp_e8s[0];
   const minDirectCommitmentE8s = getMinDirectParticipation(summary);
   const maxDirectCommitmentE8s = getMaxDirectParticipation(summary);
   if (
     nonNullish(nfCommitmentE8s) &&
+    nonNullish(directCommitmentE8s) &&
     nonNullish(minDirectCommitmentE8s) &&
     nonNullish(maxDirectCommitmentE8s)
   ) {
     return {
       totalCommitmentE8s: summary.derived.buyer_total_icp_e8s,
-      directCommitmentE8s:
-        summary.derived.buyer_total_icp_e8s - nfCommitmentE8s,
+      directCommitmentE8s,
       nfCommitmentE8s,
       minDirectCommitmentE8s,
       maxDirectCommitmentE8s,
