@@ -18,11 +18,21 @@ print_help() {
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/clap.bash"
 # Define options
-clap.define short=c long=canister desc="The canister for which the Rust types are to be derived" variable=CANISTER_NAME
+clap.define short=c long=canister desc="The canister for which the Rust types are to be derived.  If none is specified, all will be derived." variable=CANISTER_NAME
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
-CANISTER_NAME="${CANISTER_NAME:-$1}"
+CANISTER_NAME="${CANISTER_NAME:-${1:-}}"
+
+# If no canister is specified, derive all.
+if [[ "${CANISTER_NAME:-}" == "" ]]; then
+  readarray -t canisters < <("$SOURCE_DIR/proposals/did2rs-list")
+  for canister in "${canisters[@]}"; do
+    "$0" "$canister"
+  done
+  exit 0
+fi
+
 REPO_ROOT="${SOURCE_DIR}/.."
 RUST_PATH="${REPO_ROOT}/rs/proposals/src/canisters/${CANISTER_NAME}/api.rs"
 HEADER_FILE="$0.header"

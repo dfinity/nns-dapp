@@ -118,7 +118,9 @@
 
     opacity: 0;
     visibility: hidden;
-    transition: opacity 150ms, visibility 150ms;
+    transition:
+      opacity 150ms,
+      visibility 150ms;
 
     padding: 4px 6px;
     border-radius: 4px;

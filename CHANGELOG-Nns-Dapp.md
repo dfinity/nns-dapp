@@ -68,6 +68,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Removed
 
 * Comment and skip dfx-nns-proposal-args.test.
+* Remove npm script `update:next`.
 
 #### Fixed
 

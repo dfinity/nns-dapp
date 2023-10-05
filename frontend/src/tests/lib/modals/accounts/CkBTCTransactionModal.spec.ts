@@ -211,9 +211,8 @@ describe("CkBTCTransactionModal", () => {
   });
 
   it("should not render the select account dropdown if selected account is passed", async () => {
-    const { queryByTestId } = await renderTransactionModal(
-      mockCkBTCMainAccount
-    );
+    const { queryByTestId } =
+      await renderTransactionModal(mockCkBTCMainAccount);
 
     await waitFor(() =>
       expect(queryByTestId("transaction-step-1")).toBeInTheDocument()
