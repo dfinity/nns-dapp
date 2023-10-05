@@ -41,7 +41,10 @@ describe("Warnings", () => {
   });
 
   describe("TransactionRateWarning", () => {
-    beforeEach(() => metricsStore.set(undefined));
+    beforeEach(() => {
+      metricsStore.set(undefined);
+      toastsStore.reset();
+    });
 
     afterAll(() => {
       vi.clearAllMocks();
