@@ -22,11 +22,12 @@ ic-ic00-types = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-
 ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
 ic-nervous-system-root = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
 ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
 ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
 ic-sns-wasm = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
 registry-canister = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
 
+ic-cdk = { workspace = true }
+ic-cdk-macros = { workspace = true }
 idl2json = "0.8.7"
 
 [dev-dependencies]

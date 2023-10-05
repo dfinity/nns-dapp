@@ -1,10 +1,9 @@
+use crate::canisters::nns_governance::api::{Action, ProposalInfo};
 use crate::def::*;
 use candid::parser::types::{IDLType, IDLTypes};
 use candid::{CandidType, Deserialize, IDLArgs};
 use ic_base_types::CanisterId;
-use ic_nns_constants::IDENTITY_CANISTER_ID;
-use ic_nns_governance::pb::v1::proposal::Action;
-use ic_nns_governance::pb::v1::ProposalInfo;
+use ic_nns_constants::{GOVERNANCE_CANISTER_ID, IDENTITY_CANISTER_ID};
 use idl2json::candid_types::internal_candid_type_to_idl_type;
 use idl2json::{idl_args2json_with_weak_names, BytesFormat, Idl2JsonOptions};
 use serde::de::DeserializeOwned;
@@ -30,7 +29,11 @@ pub async fn get_proposal_payload(proposal_id: u64) -> Result<Json, String> {
     if let Some(result) = CACHED_PROPOSAL_PAYLOADS.with(|c| c.borrow().get(&proposal_id).cloned()) {
         Ok(result)
     } else {
-        match crate::canisters::nns_governance::get_proposal_info(proposal_id).await {
+        match crate::canisters::nns_governance::api::Service(GOVERNANCE_CANISTER_ID.into())
+            .get_proposal_info(proposal_id)
+            .await
+            .map(|result| result.0)
+        {
             Ok(Some(proposal_info)) => {
                 let json = process_proposal_payload(proposal_info);
                 CACHED_PROPOSAL_PAYLOADS
@@ -38,7 +41,7 @@ pub async fn get_proposal_payload(proposal_id: u64) -> Result<Json, String> {
                 Ok(json)
             }
             Ok(None) => Err("Proposal not found".to_string()), // We shouldn't cache this as the proposal may simply not exist yet
-            Err(error) => Err(error), // We shouldn't cache this as the error may just be transient
+            Err(error) => Err(error.1), // We shouldn't cache this as the error may just be transient
         }
     }
 }
@@ -619,11 +622,11 @@ mod def {
 
     // NNS function 39 - BitcoinSetConfig
     // https://github.com/dfinity/ic/blob/ae00aff1373e9f6db375ff7076250a20bbf3eea0/rs/nns/governance/src/governance.rs#L8930
-    pub type BitcoinSetConfigProposal = ic_nns_governance::governance::BitcoinSetConfigProposal;
+    pub type BitcoinSetConfigProposal = crate::canisters::nns_governance::internal::BitcoinSetConfigProposal;
 
     #[derive(CandidType, Serialize, Deserialize)]
     pub struct BitcoinSetConfigProposalHumanReadable {
-        pub network: ic_nns_governance::governance::BitcoinNetwork,
+        pub network: crate::canisters::nns_governance::internal::BitcoinNetwork,
         pub set_config_request: ic_btc_interface::SetConfigRequest,
     }
 

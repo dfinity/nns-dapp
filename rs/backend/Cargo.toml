@@ -25,8 +25,8 @@ hex = "0.4.3"
 # 0.4.19 works and satisfies ic.
 chrono = "=0.4.19"
 
-ic-cdk = "0.8.1"
-ic-cdk-macros = "0.6.10"
+ic-cdk = { workspace = true }
+ic-cdk-macros = { workspace = true }
 cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 dfn_candid = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 dfn_core = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
