@@ -71,12 +71,12 @@ describe("VotingCard", () => {
       .mockImplementation(mockAuthStoreSubscribe);
 
     neuronsStore.setNeurons({ neurons: [], certified: true });
-    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   afterAll(() => {
     neuronsStore.setNeurons({ neurons: [], certified: true });
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   it("should be hidden if there is no not-voted-neurons", async () => {
@@ -119,18 +119,18 @@ describe("VotingCard", () => {
     let spyRegisterVote;
 
     beforeEach(() => {
-      jest
+      vi
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreSubscribe);
 
-      jest
+      vi
         .spyOn(GovernanceCanister, "create")
         .mockImplementation(
           (): GovernanceCanister =>
             mockGovernanceCanister as unknown as GovernanceCanister
         );
-      spyRegisterVote = jest.spyOn(mockGovernanceCanister, "registerVote");
-      spyListNeurons = jest.spyOn(mockGovernanceCanister, "listNeurons");
+      spyRegisterVote = vi.spyOn(mockGovernanceCanister, "registerVote");
+      spyListNeurons = vi.spyOn(mockGovernanceCanister, "listNeurons");
 
       neuronsStore.setNeurons({ neurons, certified: true });
       renderVotingCard();

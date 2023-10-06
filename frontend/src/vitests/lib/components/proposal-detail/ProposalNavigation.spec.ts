@@ -81,7 +81,7 @@ describe("ProposalNavigation", () => {
       const po = renderComponent({
         currentProposalId: 1n,
         proposalIds: [2n, 1n],
-        selectProposal: jest.fn(),
+        selectProposal: vi.fn(),
       });
 
       expect(await po.isOlderButtonHidden()).toBe(true);
@@ -90,7 +90,7 @@ describe("ProposalNavigation", () => {
   });
 
   it("should emmit to-older-proposal click", async () => {
-    const selectProposalSpy = jest.fn();
+    const selectProposalSpy = vi.fn();
     const po = renderComponent({
       currentProposalId: 2n,
       proposalIds: [4n, 3n, 2n, 1n, 0n],
@@ -104,7 +104,7 @@ describe("ProposalNavigation", () => {
   });
 
   it("should emmit to-newer-proposal click", async () => {
-    const selectProposalSpy = jest.fn();
+    const selectProposalSpy = vi.fn();
     const po = renderComponent({
       currentProposalId: 2n,
       proposalIds: [4n, 3n, 2n, 1n, 0n],
@@ -118,7 +118,7 @@ describe("ProposalNavigation", () => {
   });
 
   it("should emit with right arguments for non-consecutive ids", async () => {
-    const selectProposalSpy = jest.fn();
+    const selectProposalSpy = vi.fn();
     const po = renderComponent({
       currentProposalId: 13n,
       proposalIds: [99n, 17n, 13n, 4n, 2n, 1n, 0n],
@@ -132,7 +132,7 @@ describe("ProposalNavigation", () => {
   });
 
   it("should emit with right arguments even when the current id is not in the list", async () => {
-    const selectProposalSpy = jest.fn();
+    const selectProposalSpy = vi.fn();
     const po = renderComponent({
       currentProposalId: 9n,
       proposalIds: [99n, 17n, 13n, 4n, 2n, 1n, 0n],
@@ -146,7 +146,7 @@ describe("ProposalNavigation", () => {
   });
 
   it("should sort ids", async () => {
-    const selectProposalSpy = jest.fn();
+    const selectProposalSpy = vi.fn();
     const po = renderComponent({
       currentProposalId: 3n,
       proposalIds: [0n, 1n, 5n, 3n, 7n, 9n, 2n],
