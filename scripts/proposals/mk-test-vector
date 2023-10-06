@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.."
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-"EOF"
+
+	Creates a test vector for proposal argument rendering:
+
+	- Gets a proposal from mainnet or another network.
+	- Renders the proposal to JSON.
+	- Saves both in a directory of test vectors.
+
+	Note: The rendered JSON MUST be reviewed before being merged into main.
+
+	A Rust test can then use those test vectors.
+
+	This works as follows:
+
+	1) Get the proposal from the governance canister.
+
+	2) Parse the payload:
+
+	                       [governance canister]
+	                        |              |
+	                        V              V
+	           [ProposalInfo.bin]       [governance.did]
+	                        |              |
+	                        \             /
+	                         \           /
+	                          \         /
+	                           \ PARSE /
+	                            V     V
+	                         [ProposalInfo.did]
+	                               |
+	                          EXTRACT-FIELD
+	                               |
+	                               V
+	                         [ProposalPayload.bin]
+
+	3) Print args.did and/or args.sha256.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="ic"
+clap.define short=p long=proposal desc="The proposal number" variable=DFX_PROPOSAL
+clap.define short=c long=nocache desc="Do not use cached results" variable=DFX_NO_CACHE nargs=0
+clap.define short=o long=out desc="The output directory." variable=CACHE_DIR default="${SOURCE_DIR}/../rs/proposals/src/tests/proposals/"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+DFX_PROPOSAL="${DFX_PROPOSAL:-${1:-}}"
+
+test -n "${DFX_PROPOSAL:-}" || {
+  echo "ERROR: Proposal number should be provided."
+  echo "       Please use --proposal <NUM>"
+  exit 1
+} >&2
+
+export DFX_NETWORK
+CACHE_DIR="${CACHE_DIR}/${DFX_NETWORK}"
+mkdir -p "$CACHE_DIR"
+CACHE_DIR="$(realpath "${CACHE_DIR}")"
+
+# Determines whether a given file can be used from cache
+cache_hit() {
+  local path
+  path="$1"
+  test -z "${DFX_NO_CACHE:-}" && test -e "$path"
+}
+
+# The location of a proposal in the cache.
+proposal_path() {
+  echo "$CACHE_DIR/proposals/$DFX_PROPOSAL"
+}
+
+# Downloads and parses the proposal info from the network
+get_proposal() {
+  mkdir -p "$(dirname "$(proposal_path)")"
+  cache_hit "$(proposal_path).raw" || dfx canister call nns-governance --network "$DFX_NETWORK" get_proposal_info "($DFX_PROPOSAL : nat64)" --query --output raw | sponge "$(proposal_path).raw"
+  cache_hit "$(proposal_path).did" || dfx canister call nns-governance --network "$DFX_NETWORK" get_proposal_info "($DFX_PROPOSAL : nat64)" --query | sponge "$(proposal_path).did"
+}
+
+# Pretty, redacted payload
+prettyprint_proposal() {
+  (
+    cd "$SOURCE_DIR/.."
+    EXE="target/debug/proposals"
+    test -x "$EXE" || {
+      echo "ERROR: Please build the proposals CLI."
+      echo "       cargo build -p proposals"
+      exit 1
+    } >&2
+    "$EXE" <"$(proposal_path).raw" >"$(proposal_path).payload.json"
+  )
+}
+
+get_proposal
+prettyprint_proposal
+echo "$(proposal_path).raw -> $(proposal_path).payload.json"
