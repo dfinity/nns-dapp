@@ -1,21 +1,25 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import { removeController } from "$lib/services/canisters.services";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import RemoveCanisterControllerButton from "./RemoveCanisterControllerButtonTest.svelte";
 
-vitest.mock("$lib/services/canisters.services", () => {
+jest.mock("$lib/services/canisters.services", () => {
   return {
-    removeController: vitest.fn().mockResolvedValue({ success: true }),
+    removeController: jest.fn().mockResolvedValue({ success: true }),
   };
 });
 
 describe("RemoveCanisterControllerButton", () => {
   const controller = "ryjl3-tyaaa-aaaaa-aaaba-cai";
-  const reloadDetailsMock = vitest.fn();
+  const reloadDetailsMock = jest.fn();
   const props = { controller, reloadDetails: reloadDetailsMock };
 
-  afterEach(() => vitest.clearAllMocks());
+  afterEach(() => jest.clearAllMocks());
 
   it("renders a button", () => {
     const { queryByTestId } = render(RemoveCanisterControllerButton, {
@@ -23,7 +27,7 @@ describe("RemoveCanisterControllerButton", () => {
     });
 
     expect(
-      queryByTestId("remove-canister-controller-button")
+        queryByTestId("remove-canister-controller-button")
     ).toBeInTheDocument();
   });
 
@@ -38,7 +42,7 @@ describe("RemoveCanisterControllerButton", () => {
     button && (await fireEvent.click(button));
 
     expect(
-      queryByTestId("remove-canister-controller-confirmation-modal")
+        queryByTestId("remove-canister-controller-confirmation-modal")
     ).toBeInTheDocument();
   });
 
@@ -50,15 +54,15 @@ describe("RemoveCanisterControllerButton", () => {
     await clickByTestId(queryByTestId, "remove-canister-controller-button");
 
     expect(
-      queryByTestId("remove-canister-controller-confirmation-modal")
+        queryByTestId("remove-canister-controller-confirmation-modal")
     ).toBeInTheDocument();
 
     await clickByTestId(queryByTestId, "confirm-no");
 
     await waitFor(() =>
-      expect(
-        queryByTestId("remove-canister-controller-confirmation-modal")
-      ).not.toBeInTheDocument()
+        expect(
+            queryByTestId("remove-canister-controller-confirmation-modal")
+        ).not.toBeInTheDocument()
     );
   });
 
@@ -70,15 +74,15 @@ describe("RemoveCanisterControllerButton", () => {
     await clickByTestId(queryByTestId, "remove-canister-controller-button");
 
     expect(
-      queryByTestId("remove-canister-controller-confirmation-modal")
+        queryByTestId("remove-canister-controller-confirmation-modal")
     ).toBeInTheDocument();
 
     await clickByTestId(queryByTestId, "confirm-yes");
 
     await waitFor(() =>
-      expect(
-        queryByTestId("remove-canister-controller-confirmation-modal")
-      ).not.toBeInTheDocument()
+        expect(
+            queryByTestId("remove-canister-controller-confirmation-modal")
+        ).not.toBeInTheDocument()
     );
     expect(removeController).toBeCalled();
     expect(reloadDetailsMock).toBeCalled();
