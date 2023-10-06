@@ -56,23 +56,23 @@ describe("Summary", () => {
         routeId: AppPath.Accounts,
       });
       const projectName = "test";
-      setSnsProjects([{
-        projectName,
-        lifecycle: SnsSwapLifecycle.Committed,
-        rootCanisterId,
-      }])
+      setSnsProjects([
+        {
+          projectName,
+          lifecycle: SnsSwapLifecycle.Committed,
+          rootCanisterId,
+        },
+      ]);
 
       const { container } = render(Summary);
 
       expect(
-        container
-          ?.querySelector("h1")
-          ?.textContent?.includes(projectName)
+        container?.querySelector("h1")?.textContent?.includes(projectName)
       ).toBeTruthy();
     });
   });
 
-  describe("ckBTC", () => {    
+  describe("ckBTC", () => {
     it("should render ckBTC", () => {
       page.mock({
         data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
