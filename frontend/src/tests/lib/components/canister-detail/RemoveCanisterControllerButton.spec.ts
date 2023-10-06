@@ -1,5 +1,5 @@
 import { removeController } from "$lib/services/canisters.services";
-import { clickByTestId } from "$vitests/utils/utils.test-utils";
+import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import RemoveCanisterControllerButton from "./RemoveCanisterControllerButtonTest.svelte";
