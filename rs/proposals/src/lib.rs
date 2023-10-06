@@ -1,10 +1,9 @@
+use crate::canisters::nns_governance::api::{Action, ProposalInfo};
 use crate::def::*;
 use candid::parser::types::{IDLType, IDLTypes};
 use candid::{CandidType, Deserialize, IDLArgs};
 use ic_base_types::CanisterId;
-use ic_nns_constants::IDENTITY_CANISTER_ID;
-use ic_nns_governance::pb::v1::proposal::Action;
-use ic_nns_governance::pb::v1::ProposalInfo;
+use ic_nns_constants::{GOVERNANCE_CANISTER_ID, IDENTITY_CANISTER_ID};
 use idl2json::candid_types::internal_candid_type_to_idl_type;
 use idl2json::{idl_args2json_with_weak_names, BytesFormat, Idl2JsonOptions};
 use serde::de::DeserializeOwned;
@@ -30,7 +29,11 @@ pub async fn get_proposal_payload(proposal_id: u64) -> Result<Json, String> {
     if let Some(result) = CACHED_PROPOSAL_PAYLOADS.with(|c| c.borrow().get(&proposal_id).cloned()) {
         Ok(result)
     } else {
-        match crate::canisters::nns_governance::get_proposal_info(proposal_id).await {
+        match crate::canisters::nns_governance::api::Service(GOVERNANCE_CANISTER_ID.into())
+            .get_proposal_info(proposal_id)
+            .await
+            .map(|result| result.0)
+        {
             Ok(Some(proposal_info)) => {
                 let json = process_proposal_payload(proposal_info);
                 CACHED_PROPOSAL_PAYLOADS
@@ -38,7 +41,7 @@ pub async fn get_proposal_payload(proposal_id: u64) -> Result<Json, String> {
                 Ok(json)
             }
             Ok(None) => Err("Proposal not found".to_string()), // We shouldn't cache this as the proposal may simply not exist yet
-            Err(error) => Err(error), // We shouldn't cache this as the error may just be transient
+            Err(error) => Err(error.1), // We shouldn't cache this as the error may just be transient
         }
     }
 }
@@ -212,13 +215,13 @@ fn debug<T: Debug>(value: T) -> String {
 
 mod def {
     use crate::canister_arg_types;
+    use crate::canisters::sns_wasm::api::{SnsUpgrade, SnsVersion};
     use crate::{decode_arg, Json};
-    use candid::CandidType;
+    use candid::{CandidType, Principal};
     use ic_base_types::{CanisterId, PrincipalId};
     use ic_crypto_sha2::Sha256;
     use ic_ic00_types::CanisterInstallMode;
     use ic_nervous_system_common::MethodAuthzChange;
-    use ic_sns_wasm::pb::v1::{SnsUpgrade, SnsVersion};
     use serde::{Deserialize, Serialize};
     use std::convert::TryFrom;
     use std::fmt::Write;
@@ -465,7 +468,7 @@ mod def {
 
     // NNS function 30 - AddSnsWasm
     // https://github.com/dfinity/ic/blob/187e933e73867efc3993572abc6344b8cedfafe5/rs/nns/sns-wasm/gen/ic_sns_wasm.pb.v1.rs#L62
-    pub type AddWasmRequest = ic_sns_wasm::pb::v1::AddWasmRequest;
+    pub type AddWasmRequest = crate::canisters::sns_wasm::api::AddWasmRequest;
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct SnsWasmTrimmed {
@@ -543,11 +546,11 @@ mod def {
 
     // NNS function 34 - UpdateSnsSubnetListRequest
     // https://gitlab.com/dfinity-lab/public/ic/-/blob/e5dfd171dc6f2180c1112569766e14dd2c10a090/rs/nns/sns-wasm/canister/sns-wasm.did#L77
-    pub type UpdateSnsSubnetListRequest = ic_sns_wasm::pb::v1::UpdateSnsSubnetListRequest;
+    pub type UpdateSnsSubnetListRequest = crate::canisters::sns_wasm::api::UpdateSnsSubnetListRequest;
 
     // NNS function 35 - UpdateAllowedPrincipals
     // https://github.com/dfinity/ic/blob/8d135c4eec4645837962797b7bdac930085c0dbb/rs/nns/sns-wasm/gen/ic_sns_wasm.pb.v1.rs#L255
-    pub type UpdateAllowedPrincipalsRequest = ic_sns_wasm::pb::v1::UpdateAllowedPrincipalsRequest;
+    pub type UpdateAllowedPrincipalsRequest = crate::canisters::sns_wasm::api::UpdateAllowedPrincipalsRequest;
 
     // NNS function 36 - RetireReplicaVersion
     // https://github.com/dfinity/ic/blob/c2ad499466967a9a5557d737c2b9c0b9fa8ad53f/rs/registry/canister/src/mutations/do_retire_replica_version.rs#L143
@@ -556,7 +559,7 @@ mod def {
 
     // NNS function 37 - InsertUpgradePathEntriesRequest
     // https://github.com/dfinity/ic/blob/8b674edbb228acfc19923d5c914807166edcd909/rs/nns/sns-wasm/gen/ic_sns_wasm.pb.v1.rs#L128
-    pub type InsertUpgradePathEntriesRequest = ic_sns_wasm::pb::v1::InsertUpgradePathEntriesRequest;
+    pub type InsertUpgradePathEntriesRequest = crate::canisters::sns_wasm::api::InsertUpgradePathEntriesRequest;
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct SnsVersionHumanReadable {
@@ -577,7 +580,7 @@ mod def {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct InsertUpgradePathEntriesRequestHumanReadable {
         pub upgrade_path: Vec<SnsUpgradeHumanReadable>,
-        pub sns_governance_canister_id: Option<PrincipalId>,
+        pub sns_governance_canister_id: Option<Principal>,
     }
 
     impl From<SnsVersion> for SnsVersionHumanReadable {
@@ -619,11 +622,11 @@ mod def {
 
     // NNS function 39 - BitcoinSetConfig
     // https://github.com/dfinity/ic/blob/ae00aff1373e9f6db375ff7076250a20bbf3eea0/rs/nns/governance/src/governance.rs#L8930
-    pub type BitcoinSetConfigProposal = ic_nns_governance::governance::BitcoinSetConfigProposal;
+    pub type BitcoinSetConfigProposal = crate::canisters::nns_governance::internal::BitcoinSetConfigProposal;
 
     #[derive(CandidType, Serialize, Deserialize)]
     pub struct BitcoinSetConfigProposalHumanReadable {
-        pub network: ic_nns_governance::governance::BitcoinNetwork,
+        pub network: crate::canisters::nns_governance::internal::BitcoinNetwork,
         pub set_config_request: ic_btc_interface::SetConfigRequest,
     }
 

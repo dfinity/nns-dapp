@@ -1,4 +1,5 @@
 import {
+  htmlRenderer,
   imageToLinkRenderer,
   markdownToHTML,
   targetBlankLinkRenderer,
@@ -92,6 +93,32 @@ describe("markdown.utils", () => {
     });
   });
 
+  describe("htmlRenderer", () => {
+    it("should apply imageToLinkRenderer to img tag", () => {
+      const src = "image.png";
+      const title = "title";
+      const alt = "alt";
+      const expectation = imageToLinkRenderer(src, title, alt);
+      expect(
+        htmlRenderer(`<img src="${src}" alt="${alt}" title="${title}" />`)
+      ).toEqual(expectation);
+      expect(
+        htmlRenderer(`<img src="${src}" alt="${alt}" title="${title}">...`)
+      ).toEqual(expectation);
+      expect(
+        htmlRenderer(
+          `<img data-test="123" src="${src}" alt="${alt}" title="${title}" />`
+        )
+      ).toEqual(expectation);
+    });
+
+    it("should escape img tag with data src", () => {
+      expect(htmlRenderer(`<img src=""data:image/...">`)).toEqual(
+        `&lt;img src=""data:image/..."&gt;`
+      );
+    });
+  });
+
   describe("markdown", () => {
     let renderer: unknown;
 
@@ -125,8 +152,15 @@ describe("markdown.utils", () => {
         renderer: {
           link: targetBlankLinkRenderer,
           image: imageToLinkRenderer,
+          html: htmlRenderer,
         },
       });
+    });
+
+    it("should escape all SVGs", async () => {
+      expect(await markdownToHTML("<h1><svg>...</svg></h1>")).toBe(
+        "<h1>&lt;svg&gt;...&lt;/svg&gt;</h1>-markdown"
+      );
     });
   });
 });
