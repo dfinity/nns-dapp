@@ -16,6 +16,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Update the schemas for the governance, registry and SNS Wasm canisters, used for proposal rendering.
+* Get the governance, registry and SNS Wasm schemas direcly from `.did` files rather than importing the canisters.
 * Make a histogram of transactions per account, used to optimize the new account storage.
 * Include a copy of the `nns-governance` candid file in the `nns-dapp` repository.
 * Update the IC commit in the `proposals` crate to `release-2023-08-01_23-01`.
@@ -25,6 +27,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Review the chunking strategy to enhance the dapp's loading time and prevent random, rare flashes of unstyled content (FOUC).
 * New header UI in the canister detail page.
 * New labels for min and max participation.
+* Improve security by escaping additional images in the proposal summary markdown.
 * Internal change: remove unused snsQueryStore.
 
 #### Deprecated
