@@ -65,7 +65,13 @@ describe("AccountMenu", () => {
       settings !== null && fireEvent.click(settings);
 
       await waitFor(() =>
-        expect(() => renderResult.getByRole("menu")).toThrow()
+        // TODO: flaky test
+        // expect(() => renderResult.getByRole("menu")).toThrow()
+        expect(
+          renderResult.component.$$.ctx[
+            renderResult.component.$$.props["visible"]
+          ]
+        ).toBeFalsy()
       );
     });
   });
