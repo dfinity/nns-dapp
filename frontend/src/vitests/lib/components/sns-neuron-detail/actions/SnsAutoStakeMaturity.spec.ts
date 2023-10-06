@@ -88,13 +88,11 @@ describe("SnsAutoStakeMaturity", () => {
     expect(inputElement.disabled).toBeTruthy();
   });
 
-  const toggleAutoStake = async (
-    {
-      neuronAutoStakeMaturity,
-    }: {
-      neuronAutoStakeMaturity: boolean | undefined;
-    }
-  ) => {
+  const toggleAutoStake = async ({
+    neuronAutoStakeMaturity,
+  }: {
+    neuronAutoStakeMaturity: boolean | undefined;
+  }) => {
     const { container, queryByTestId } = render(SnsNeuronContextTest, {
       props: {
         neuron: {
