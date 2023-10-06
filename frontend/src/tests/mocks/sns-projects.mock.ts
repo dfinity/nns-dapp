@@ -392,8 +392,8 @@ export const mockQueryMetadata: QuerySnsMetadata = {
   token: mockQueryTokenResponse,
 };
 
-export const mockTokenStore = (run: Subscriber<Token>) => {
-  run(mockSnsToken);
+export const mockTokenStore = (run?: Subscriber<Token>) => {
+  run?.(mockSnsToken);
   return () => undefined;
 };
 
