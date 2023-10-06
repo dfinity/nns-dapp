@@ -16,6 +16,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
+* Add a command line tool that uses the proposals rendering crate to render proposals locally.
 * Update the schemas for the governance, registry and SNS Wasm canisters, used for proposal rendering.
 * Get the governance, registry and SNS Wasm schemas direcly from `.did` files rather than importing the canisters.
 * Make a histogram of transactions per account, used to optimize the new account storage.
