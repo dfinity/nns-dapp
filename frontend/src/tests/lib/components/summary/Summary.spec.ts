@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import Summary from "$lib/components/summary/Summary.svelte";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -14,7 +18,7 @@ import { render } from "@testing-library/svelte";
 
 describe("Summary", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    jest.clearAllMocks();
     page.reset();
   });
 
@@ -25,13 +29,13 @@ describe("Summary", () => {
 
   describe("no universe", () => {
     beforeEach(() => {
-      vi.spyOn(snsProjectSelectedStore, "subscribe").mockImplementation(
-        mockStoreSubscribe(mockSnsFullProject)
-      );
+      jest
+          .spyOn(snsProjectSelectedStore, "subscribe")
+          .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
 
-      vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
-        mockProjectSubscribe([mockSnsFullProject])
-      );
+      jest
+          .spyOn(snsProjectsCommittedStore, "subscribe")
+          .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
     });
 
     it("should render internet computer if none", () => {
@@ -44,20 +48,20 @@ describe("Summary", () => {
       });
 
       expect(
-        container?.querySelector("h1")?.textContent?.includes(en.core.ic)
+          container?.querySelector("h1")?.textContent?.includes(en.core.ic)
       ).toBeTruthy();
     });
   });
 
   describe("nns", () => {
     beforeEach(() => {
-      vi.resetAllMocks();
+      jest.resetAllMocks();
     });
 
     beforeEach(() =>
-      vi
-        .spyOn(snsProjectSelectedStore, "subscribe")
-        .mockImplementation(mockStoreSubscribe(undefined))
+        jest
+            .spyOn(snsProjectSelectedStore, "subscribe")
+            .mockImplementation(mockStoreSubscribe(undefined))
     );
 
     it("should render internet computer", () => {
@@ -68,16 +72,16 @@ describe("Summary", () => {
       const { container } = render(Summary);
 
       expect(
-        container?.querySelector("h1")?.textContent?.includes(en.core.ic)
+          container?.querySelector("h1")?.textContent?.includes(en.core.ic)
       ).toBeTruthy();
     });
   });
 
   describe("sns", () => {
     beforeEach(() => {
-      vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
-        mockProjectSubscribe([mockSnsFullProject])
-      );
+      jest
+          .spyOn(snsProjectsCommittedStore, "subscribe")
+          .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
 
       page.mock({
         data: { universe: mockSnsFullProject.rootCanisterId.toText() },
@@ -88,9 +92,9 @@ describe("Summary", () => {
     it("should render project", () => {
       const { container } = render(Summary);
       expect(
-        container
-          ?.querySelector("h1")
-          ?.textContent?.includes(mockSnsFullProject.summary.metadata.name)
+          container
+              ?.querySelector("h1")
+              ?.textContent?.includes(mockSnsFullProject.summary.metadata.name)
       ).toBeTruthy();
     });
   });
@@ -107,7 +111,7 @@ describe("Summary", () => {
       const { container } = render(Summary);
 
       expect(
-        container?.querySelector("h1")?.textContent?.includes(en.ckbtc.title)
+          container?.querySelector("h1")?.textContent?.includes(en.ckbtc.title)
       ).toBeTruthy();
     });
   });
