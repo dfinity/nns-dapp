@@ -39,7 +39,7 @@ export const mockGetIdentity = async () => {
  * A static mock of the auth store. The component that uses it will be rendered for test with a value that is already defined on mount.
  */
 export const mockAuthStoreSubscribe = (
-  run?: Subscriber<AuthStoreData> | undefined
+  run?: Subscriber<AuthStoreData>
 ): (() => void) => {
   run?.({ identity: mockIdentity });
 
