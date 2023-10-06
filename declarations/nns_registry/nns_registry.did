@@ -1,5 +1,3 @@
-// From IC_COMMIT 96184d42331028a46fe3265583792f8c5f807cf8
-
 type AddFirewallRulesPayload = record {
   expected_hash : text;
   scope : FirewallRulesScope;
