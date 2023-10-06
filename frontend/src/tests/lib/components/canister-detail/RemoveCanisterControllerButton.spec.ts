@@ -27,7 +27,7 @@ describe("RemoveCanisterControllerButton", () => {
     });
 
     expect(
-        queryByTestId("remove-canister-controller-button")
+      queryByTestId("remove-canister-controller-button")
     ).toBeInTheDocument();
   });
 
@@ -42,7 +42,7 @@ describe("RemoveCanisterControllerButton", () => {
     button && (await fireEvent.click(button));
 
     expect(
-        queryByTestId("remove-canister-controller-confirmation-modal")
+      queryByTestId("remove-canister-controller-confirmation-modal")
     ).toBeInTheDocument();
   });
 
@@ -54,15 +54,15 @@ describe("RemoveCanisterControllerButton", () => {
     await clickByTestId(queryByTestId, "remove-canister-controller-button");
 
     expect(
-        queryByTestId("remove-canister-controller-confirmation-modal")
+      queryByTestId("remove-canister-controller-confirmation-modal")
     ).toBeInTheDocument();
 
     await clickByTestId(queryByTestId, "confirm-no");
 
     await waitFor(() =>
-        expect(
-            queryByTestId("remove-canister-controller-confirmation-modal")
-        ).not.toBeInTheDocument()
+      expect(
+        queryByTestId("remove-canister-controller-confirmation-modal")
+      ).not.toBeInTheDocument()
     );
   });
 
@@ -74,15 +74,15 @@ describe("RemoveCanisterControllerButton", () => {
     await clickByTestId(queryByTestId, "remove-canister-controller-button");
 
     expect(
-        queryByTestId("remove-canister-controller-confirmation-modal")
+      queryByTestId("remove-canister-controller-confirmation-modal")
     ).toBeInTheDocument();
 
     await clickByTestId(queryByTestId, "confirm-yes");
 
     await waitFor(() =>
-        expect(
-            queryByTestId("remove-canister-controller-confirmation-modal")
-        ).not.toBeInTheDocument()
+      expect(
+        queryByTestId("remove-canister-controller-confirmation-modal")
+      ).not.toBeInTheDocument()
     );
     expect(removeController).toBeCalled();
     expect(reloadDetailsMock).toBeCalled();
