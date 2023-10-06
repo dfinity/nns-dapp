@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ProjectStatus from "$lib/components/project-detail/ProjectStatus.svelte";
 import {
   getOrCreateSnsFinalizationStatusStore,

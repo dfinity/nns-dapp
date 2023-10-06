@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import Summary from "$lib/components/summary/Summary.svelte";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -18,7 +14,7 @@ import { render } from "@testing-library/svelte";
 
 describe("Summary", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     page.reset();
   });
 
@@ -29,13 +25,13 @@ describe("Summary", () => {
 
   describe("no universe", () => {
     beforeEach(() => {
-      jest
-        .spyOn(snsProjectSelectedStore, "subscribe")
-        .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
+      vi.spyOn(snsProjectSelectedStore, "subscribe").mockImplementation(
+        mockStoreSubscribe(mockSnsFullProject)
+      );
 
-      jest
-        .spyOn(snsProjectsCommittedStore, "subscribe")
-        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+      vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
+        mockProjectSubscribe([mockSnsFullProject])
+      );
     });
 
     it("should render internet computer if none", () => {
@@ -55,11 +51,11 @@ describe("Summary", () => {
 
   describe("nns", () => {
     beforeEach(() => {
-      jest.resetAllMocks();
+      vi.resetAllMocks();
     });
 
     beforeEach(() =>
-      jest
+      vi
         .spyOn(snsProjectSelectedStore, "subscribe")
         .mockImplementation(mockStoreSubscribe(undefined))
     );
@@ -79,9 +75,9 @@ describe("Summary", () => {
 
   describe("sns", () => {
     beforeEach(() => {
-      jest
-        .spyOn(snsProjectsCommittedStore, "subscribe")
-        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+      vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
+        mockProjectSubscribe([mockSnsFullProject])
+      );
 
       page.mock({
         data: { universe: mockSnsFullProject.rootCanisterId.toText() },

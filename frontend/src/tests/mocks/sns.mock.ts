@@ -59,7 +59,12 @@ export const renderContextCmp = ({
           swapCommitment,
           totalTokensSupply,
         }),
-        reload: reload === undefined ? jest.fn() : reload,
+        reload:
+          reload === undefined
+            ? () => {
+                // do nothing here
+              }
+            : reload,
       } as ProjectDetailContext,
       Component,
     },
