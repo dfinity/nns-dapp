@@ -5,7 +5,7 @@
   import UniversePageSummary from "../universe/UniversePageSummary.svelte";
 
   export let universe: Universe;
-  export let accountIdentifierText: string;
+  export let walletAddress: string;
 </script>
 
 <PageHeader testId="wallet-page-header-component">
@@ -15,7 +15,7 @@
     class="description header-end"
     data-tid="wallet-header-account-identifier"
   >
-    <IdentifierHash identifier={accountIdentifierText} />
+    <IdentifierHash identifier={walletAddress} />
   </span>
 </PageHeader>
 

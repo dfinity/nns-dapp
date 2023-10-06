@@ -10,15 +10,15 @@ export class WalletPageHeadingPo extends BasePageObject {
   }
 
   getTitle(): Promise<string> {
-    return this.root.byTestId("wallet-page-heading-title").getText();
+    return this.getText("wallet-page-heading-title");
   }
 
   hasSkeleton(): Promise<boolean> {
-    return this.root.byTestId("skeleton").isPresent();
+    return this.isPresent("skeleton");
   }
 
   getSubtitle(): Promise<string> {
-    return this.root.byTestId("wallet-page-heading-subtitle").getText();
+    return this.getText("wallet-page-heading-subtitle");
   }
 
   getPrincipal(): Promise<string> {

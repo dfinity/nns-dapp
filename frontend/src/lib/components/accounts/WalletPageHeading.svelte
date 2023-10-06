@@ -14,7 +14,7 @@
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
 
   export let balance: TokenAmount | undefined = undefined;
-  export let name: string;
+  export let accountName: string;
   export let principal: Principal | undefined = undefined;
 
   const updateLayoutTitle = ($event: Event) => {
@@ -27,7 +27,7 @@
       header:
         intersecting && nonNullish(balance)
           ? $i18n.wallet.title
-          : `${name} - ${formatToken({
+          : `${accountName} - ${formatToken({
               value: balance?.toE8s() ?? 0n,
             })} ${balance?.token.symbol}`,
     });
@@ -52,7 +52,7 @@
     use:onIntersection
   >
     <HeadingSubtitle testId="wallet-page-heading-subtitle">
-      {name}
+      {accountName}
     </HeadingSubtitle>
     {#if nonNullish(principal)}
       <p class="description" data-tid="wallet-page-heading-principal">

@@ -8,15 +8,15 @@ import { render } from "@testing-library/svelte";
 
 describe("WalletPageHeading", () => {
   const renderComponent = ({
-    accountIdentifierText = mockMainAccount.identifier,
+    walletAddress = mockMainAccount.identifier,
     universe = mockUniverse,
   }: {
-    accountIdentifierText?: string;
+    walletAddress?: string;
     universe?: Universe;
   }) => {
     const { container } = render(WalletPageHeader, {
       props: {
-        accountIdentifierText,
+        walletAddress,
         universe,
       },
     });
@@ -25,7 +25,7 @@ describe("WalletPageHeading", () => {
 
   it("should render account identifier", async () => {
     const po = renderComponent({
-      accountIdentifierText:
+      walletAddress:
         "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
     });
 

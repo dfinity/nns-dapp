@@ -14,20 +14,20 @@ describe("WalletPageHeading", () => {
     amount: "1",
     token: ICPToken,
   }) as TokenAmount;
-  const name = "Account Name";
+  const accountName = "Account Name";
   const renderComponent = ({
     balance,
-    name,
+    accountName,
     principal,
   }: {
     balance?: TokenAmount;
-    name: string;
+    accountName: string;
     principal?: Principal;
   }) => {
     const { container } = render(WalletPageHeading, {
       props: {
         balance,
-        name,
+        accountName,
         principal,
       },
     });
@@ -39,21 +39,24 @@ describe("WalletPageHeading", () => {
       amount: "3.14",
       token: ICPToken,
     }) as TokenAmount;
-    const po = renderComponent({ balance, name });
+    const po = renderComponent({ balance, accountName });
 
     expect(await po.getTitle()).toBe("3.14 ICP");
     expect(await po.hasSkeleton()).toBe(false);
   });
 
   it("should render skeleton if no balance", async () => {
-    const po = renderComponent({ balance: undefined, name });
+    const po = renderComponent({
+      balance: undefined,
+      accountName: accountName,
+    });
 
     expect(await po.hasSkeleton()).toBe(true);
   });
 
   it("should render name as subtitle", async () => {
     const accountName = "Test name";
-    const po = renderComponent({ balance, name: accountName });
+    const po = renderComponent({ balance, accountName });
 
     expect(await po.getSubtitle()).toBe(accountName);
   });
@@ -62,7 +65,7 @@ describe("WalletPageHeading", () => {
     const principalText = "rwlgt-iiaaa-aaaaa-aaaaa-cai";
     const po = renderComponent({
       balance,
-      name,
+      accountName: accountName,
       principal: Principal.fromText(principalText),
     });
 
@@ -73,17 +76,17 @@ describe("WalletPageHeading", () => {
     intersecting,
     expectedHeader,
     balance,
-    name,
+    accountName,
   }: {
     intersecting: boolean;
     balance: TokenAmount;
-    name: string;
+    accountName: string;
     expectedHeader: string;
   }) => {
     const { getByTestId } = render(WalletPageHeading, {
       props: {
         balance,
-        name,
+        accountName,
         principal: undefined,
       },
     });
@@ -102,7 +105,7 @@ describe("WalletPageHeading", () => {
       intersecting: false,
       expectedHeader: "Account Name - 1.00 ICP",
       balance,
-      name,
+      accountName,
     });
   });
 
@@ -111,7 +114,7 @@ describe("WalletPageHeading", () => {
       intersecting: true,
       expectedHeader: en.wallet.title,
       balance,
-      name,
+      accountName,
     });
   });
 });
