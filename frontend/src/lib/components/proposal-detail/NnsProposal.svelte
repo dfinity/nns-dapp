@@ -50,20 +50,14 @@
               </div>
             </SplitBlock>
           </div>
-          <div class="content-cell-island">
-            <NnsProposalSummarySection proposalInfo={$store.proposal} />
-          </div>
-          <div class="content-cell-island">
-            <NnsProposalProposerActionsEntry
-              proposal={$store.proposal.proposal}
-            />
-          </div>
-          <div class="content-cell-island">
-            <NnsProposalProposerPayloadEntry
-              proposal={$store.proposal.proposal}
-              proposalId={$store.proposalId}
-            />
-          </div>
+          <NnsProposalSummarySection proposalInfo={$store.proposal} />
+          <NnsProposalProposerActionsEntry
+            proposal={$store.proposal.proposal}
+          />
+          <NnsProposalProposerPayloadEntry
+            proposal={$store.proposal.proposal}
+            proposalId={$store.proposalId}
+          />
         </div>
       {:else}
         <div class="content-grid">
