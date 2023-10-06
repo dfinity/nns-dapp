@@ -1,13 +1,10 @@
-/**
- * @jest-environment jsdom
- */
 
 import CanisterCard from "$lib/components/canisters/CanisterCard.svelte";
 import { mockCanister } from "$tests/mocks/canisters.mock";
 import { render } from "@testing-library/svelte";
 
-jest.mock("$lib/services/worker-cycles.services", () => ({
-  initCyclesWorker: jest.fn(() =>
+vitest.mock("$lib/services/worker-cycles.services", () => ({
+  initCyclesWorker: vitest.fn(() =>
     Promise.resolve({
       startCyclesTimer: () => {
         // Do nothing

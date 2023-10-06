@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 
 import CanisterCardSubTitle from "$lib/components/canisters/CanisterCardSubTitle.svelte";
 import { mockCanister } from "$tests/mocks/canisters.mock";

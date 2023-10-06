@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 
 import * as api from "$lib/api/proposals.api";
 import Proposals from "$lib/components/launchpad/Proposals.svelte";
@@ -17,12 +14,12 @@ describe("Proposals", () => {
       ? snsProposalsStore.reset()
       : snsProposalsStore.setProposals({ proposals, certified: true });
 
-  const queryProposalsSpy = jest
+  const queryProposalsSpy = vitest
     .spyOn(api, "queryProposals")
     .mockResolvedValue([mockProposalInfo]);
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vitest.clearAllMocks();
     snsProposalsStore.reset();
   });
 

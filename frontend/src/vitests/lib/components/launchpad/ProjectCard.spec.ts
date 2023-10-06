@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 
 import ProjectCard from "$lib/components/launchpad/ProjectCard.svelte";
 import { authStore } from "$lib/stores/auth.store";
@@ -16,11 +13,11 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
 describe("ProjectCard", () => {
-  jest
+  vitest
     .spyOn(authStore, "subscribe")
     .mockImplementation(mutableMockAuthStoreSubscribe);
 
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vitest.clearAllMocks());
 
   describe("signed in", () => {
     beforeAll(() =>

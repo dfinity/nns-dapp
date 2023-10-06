@@ -1,20 +1,17 @@
-/**
- * @jest-environment jsdom
- */
 
 import { detachCanister } from "$lib/services/canisters.services";
 import { fireEvent, render } from "@testing-library/svelte";
 import UnlinkActionButtonTest from "./UnlinkActionButtonTest.svelte";
 
-jest.mock("$lib/services/canisters.services", () => {
+vitest.mock("$lib/services/canisters.services", () => {
   return {
-    detachCanister: jest.fn().mockResolvedValue({ success: true }),
+    detachCanister: vitest.fn().mockResolvedValue({ success: true }),
   };
 });
 
 describe("DissolveActionButton", () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vitest.clearAllMocks();
   });
 
   it("renders button", () => {

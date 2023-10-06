@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 
 import ProjectCardSwapInfo from "$lib/components/launchpad/ProjectCardSwapInfo.svelte";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
@@ -17,20 +14,20 @@ import {
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
-jest.mock("$lib/services/sns.services", () => {
+vitest.mock("$lib/services/sns.services", () => {
   return {
-    loadSnsSwapStateStore: jest.fn().mockResolvedValue(Promise.resolve()),
+    loadSnsSwapStateStore: vitest.fn().mockResolvedValue(Promise.resolve()),
   };
 });
 
 describe("ProjectCardSwapInfo", () => {
   const now = Date.now();
   beforeEach(() => {
-    jest.useFakeTimers().setSystemTime(now);
+    vitest.useFakeTimers().setSystemTime(now);
   });
 
   afterAll(() => {
-    jest.useRealTimers();
+    vitest.useRealTimers();
   });
 
   it("should render deadline", () => {
