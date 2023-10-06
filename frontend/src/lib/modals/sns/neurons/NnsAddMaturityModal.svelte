@@ -1,17 +1,14 @@
 <script lang="ts">
   import { Modal, Spinner } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
   import { createEventDispatcher } from "svelte";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsError } from "$lib/stores/toasts.store";
   import Input from "$lib/components/ui/Input.svelte";
   import { numberToE8s } from "$lib/utils/token.utils";
-  import { addMaturity } from "$lib/services/sns-neurons-dev.services";
-  import type { SnsNeuronId } from "@dfinity/sns";
+  import { addMaturity } from "$lib/services/nns-neurons-dev.services";
+  import type { NeuronInfo } from "@dfinity/nns";
 
-  export let neuronId: SnsNeuronId;
-  export let rootCanisterId: Principal;
-  export let reloadNeuron: () => Promise<void>;
+  export let neuron: NeuronInfo;
 
   const dispatcher = createEventDispatcher();
 
@@ -29,31 +26,23 @@
       return;
     }
 
-    transferring = true;
-    startBusy({ initiator: "dev-add-sns-neuron-maturity" });
+    startBusy({ initiator: "dev-add-nns-neuron-maturity" });
 
     await addMaturity({
-      rootCanisterId,
-      neuronId,
+      neuron,
       amountE8s: numberToE8s(inputValue),
     });
-    await reloadNeuron();
 
-    transferring = false;
     dispatcher("nnsClose");
-    stopBusy("dev-add-sns-neuron-maturity");
+    stopBusy("dev-add-nns-neuron-maturity");
   };
 </script>
 
 <!-- ONLY FOR TESTNET. NO UNIT TESTS -->
 <Modal role="alert" on:nnsClose>
-  <span slot="title">{`Add Sns Neuron Maturity`}</span>
+  <span slot="title">Add Nns Neuron Maturity</span>
 
-  <form
-    id="get-icp-form"
-    data-tid="get-icp-form"
-    on:submit|preventDefault={onSubmit}
-  >
+  <form id="get-maturity-form" on:submit|preventDefault={onSubmit}>
     <span class="label">How much?</span>
 
     <Input
@@ -66,8 +55,7 @@
   </form>
 
   <button
-    form="get-icp-form"
-    data-tid="get-icp-submit"
+    form="get-maturity-form"
     type="submit"
     class="primary"
     slot="footer"
