@@ -377,7 +377,7 @@ mod def {
 
     // NNS function 13 - RemoveNodesFromSubnet
     // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_remove_nodes_from_subnet.rs#L57
-    pub type RemoveNodesFromSubnetPayload = crate::canisters::nns_registry::api::RemoveNodesFromSubnetPayload;
+    pub type RemoveNodesFromSubnetPayload = crate::canisters::nns_registry::internal::RemoveNodesFromSubnetPayload;
 
     // NNS function 14 - SetAuthorizedSubnetworkList
     // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/nns/cmc/src/lib.rs#L168
@@ -449,7 +449,7 @@ mod def {
 
     // NNS function 27 - UpdateFirewallRules
     // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/firewall.rs#L246
-    pub type UpdateFirewallRulesPayload = crate::canisters::nns_registry::api::UpdateFirewallRulesPayload;
+    pub type UpdateFirewallRulesPayload = crate::canisters::nns_registry::internal::UpdateFirewallRulesPayload;
 
     // NNS function 28 - PrepareCanisterMigration
     // https://github.com/dfinity/ic/blob/5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c/rs/registry/canister/src/mutations/prepare_canister_migration.rs#L67

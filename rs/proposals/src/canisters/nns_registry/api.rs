@@ -227,24 +227,6 @@ pub struct DeleteSubnetPayload {
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
-pub struct NodeId {
-    pub principal_id: Option<Principal>,
-}
-
-#[derive(Serialize, CandidType, Deserialize)]
-pub struct RemoveNodesFromSubnetPayload {
-    pub node_ids: Vec<NodeId>,
-}
-
-#[derive(Serialize, CandidType, Deserialize)]
-pub struct UpdateFirewallRulesPayload {
-    pub expected_hash: String,
-    pub scope: FirewallRulesScope,
-    pub positions: Vec<i32>,
-    pub rules: Vec<FirewallRule>,
-}
-
-#[derive(Serialize, CandidType, Deserialize)]
 pub struct NodeOperatorRecord {
     pub ipv6: Option<String>,
     pub node_operator_principal_id: serde_bytes::ByteBuf,
@@ -497,12 +479,6 @@ impl Service {
     }
     pub async fn delete_subnet(&self, arg0: DeleteSubnetPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "delete_subnet", (arg0,)).await
-    }
-    pub async fn do_remove_nodes_from_subnet(&self, arg0: RemoveNodesFromSubnetPayload) -> CallResult<()> {
-        ic_cdk::call(self.0, "do_remove_nodes_from_subnet", (arg0,)).await
-    }
-    pub async fn do_update_firewall_rules(&self, arg0: UpdateFirewallRulesPayload) -> CallResult<()> {
-        ic_cdk::call(self.0, "do_update_firewall_rules", (arg0,)).await
     }
     pub async fn get_build_metadata(&self) -> CallResult<(String,)> {
         ic_cdk::call(self.0, "get_build_metadata", ()).await

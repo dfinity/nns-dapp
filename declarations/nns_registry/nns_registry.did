@@ -1,30 +1,5 @@
 // From IC_COMMIT 96184d42331028a46fe3265583792f8c5f807cf8
-// with manual additions
 
-/////////////////////
-// Manual additions:
-
-// Needed?  See comment on RemoveNodesFromSubnetPayload
-type NodeId= record {
-  principal_id : opt principal;
-};
-
-// Not 100% sure about this - should the content be `vec principal`?
-// If so, the type is identical to RemoveNodesPayload.
-type RemoveNodesFromSubnetPayload = record {
-  node_ids : vec NodeId;
-};
-
-// Note: This appears to be identical to AddFirewallRulesPayload
-type UpdateFirewallRulesPayload = record {
-    scope: FirewallRulesScope;
-    rules: vec FirewallRule;
-    positions: vec int32;
-    expected_hash: text;
-};
-
-//////////////////
-// From upstream:
 type AddFirewallRulesPayload = record {
   expected_hash : text;
   scope : FirewallRulesScope;
@@ -346,13 +321,4 @@ service : {
   update_subnet : (UpdateSubnetPayload) -> ();
   update_subnet_replica_version : (UpdateSubnetReplicaVersionPayload) -> ();
   update_unassigned_nodes_config : (UpdateUnassignedNodesConfigPayload) -> ();
-  // Manually added
-
-  // RemoveNodesFromSubnetPayload is used by `remove_nodes_from_subnet` in the IC repo,
-  // but `remove_nodes_from_subnet` is already listed with a different type.  What
-  // is the story here?  Are the two types identical?  Can we get rid of RemoveNodesFromSubnetPayload?
-  do_remove_nodes_from_subnet : (RemoveNodesFromSubnetPayload) -> ();
-
-  // Similar story: update_firewall_rules is listed above but witha different argument.
-  do_update_firewall_rules : (UpdateFirewallRulesPayload) -> ();
 }
