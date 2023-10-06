@@ -21,8 +21,8 @@ import type { SvelteComponent } from "svelte";
 
 describe("AccountSyncIndicator", () => {
   jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mutableMockAuthStoreSubscribe);
+    .spyOn(authStore, "subscribe")
+    .mockImplementation(mutableMockAuthStoreSubscribe);
 
   beforeEach(() => {
     syncStore.reset();
@@ -112,7 +112,7 @@ describe("AccountSyncIndicator", () => {
       });
 
       await waitFor(() =>
-          expect(() => getByTestId("sync-indicator")).toThrow()
+        expect(() => getByTestId("sync-indicator")).toThrow()
       );
     });
 
@@ -124,7 +124,7 @@ describe("AccountSyncIndicator", () => {
 
       const { getByTestId } = render(AccountSyncIndicator);
       expect(getByTestId("sync-indicator").getAttribute("aria-label")).toEqual(
-          en.sync.status_in_progress
+        en.sync.status_in_progress
       );
     });
 
@@ -136,12 +136,12 @@ describe("AccountSyncIndicator", () => {
 
       const { getByTestId } = render(AccountSyncIndicator);
       expect(getByTestId("sync-indicator").getAttribute("aria-label")).toEqual(
-          en.sync.status_error
+        en.sync.status_error
       );
     });
 
     const testPopover = async (
-        label: string
+      label: string
     ): Promise<RenderResult<SvelteComponent>> => {
       const result = render(AccountSyncIndicator);
 
@@ -181,7 +181,7 @@ describe("AccountSyncIndicator", () => {
       });
 
       const { queryByRole } = await testPopover(
-          en.sync.status_in_progress_detailed
+        en.sync.status_in_progress_detailed
       );
 
       syncStore.setState({

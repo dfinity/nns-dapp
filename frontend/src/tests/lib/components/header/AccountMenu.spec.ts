@@ -69,7 +69,7 @@ describe("AccountMenu", () => {
       settings !== null && fireEvent.click(settings);
 
       await waitFor(() =>
-          expect(() => renderResult.getByRole("menu")).toThrow()
+        expect(() => renderResult.getByRole("menu")).toThrow()
       );
     });
   });
