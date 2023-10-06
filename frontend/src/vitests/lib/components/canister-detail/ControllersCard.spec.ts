@@ -1,4 +1,3 @@
-
 import en from "$tests/mocks/i18n.mock";
 import { render } from "@testing-library/svelte";
 import ControllersCard from "./ControllersCardTest.svelte";

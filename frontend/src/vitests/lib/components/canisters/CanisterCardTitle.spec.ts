@@ -1,4 +1,3 @@
-
 import CanisterCardTitle from "$lib/components/canisters/CanisterCardTitle.svelte";
 import { mockCanister } from "$tests/mocks/canisters.mock";
 import { render } from "@testing-library/svelte";

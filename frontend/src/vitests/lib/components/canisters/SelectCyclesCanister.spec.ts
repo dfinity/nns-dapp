@@ -1,4 +1,3 @@
-
 import SelectCyclesCanister from "$lib/components/canisters/SelectCyclesCanister.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { clickByTestId } from "$vitests/utils/utils.test-utils";

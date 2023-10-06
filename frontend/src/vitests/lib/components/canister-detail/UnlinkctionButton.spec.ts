@@ -1,4 +1,3 @@
-
 import { detachCanister } from "$lib/services/canisters.services";
 import { fireEvent, render } from "@testing-library/svelte";
 import UnlinkActionButtonTest from "./UnlinkActionButtonTest.svelte";

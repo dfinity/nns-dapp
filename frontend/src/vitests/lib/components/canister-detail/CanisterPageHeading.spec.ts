@@ -1,4 +1,3 @@
-
 import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import CanisterPageHeading from "$lib/components/canister-detail/CanisterPageHeading.svelte";

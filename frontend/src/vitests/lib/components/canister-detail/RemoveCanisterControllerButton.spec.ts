@@ -1,4 +1,3 @@
-
 import { removeController } from "$lib/services/canisters.services";
 import { clickByTestId } from "$vitests/utils/utils.test-utils";
 import { fireEvent } from "@testing-library/dom";

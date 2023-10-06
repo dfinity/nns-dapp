@@ -1,4 +1,3 @@
-
 import * as api from "$lib/api/proposals.api";
 import Proposals from "$lib/components/launchpad/Proposals.svelte";
 import { snsProposalsStore } from "$lib/stores/sns.store";

@@ -1,4 +1,3 @@
-
 import ProjectCardSwapInfo from "$lib/components/launchpad/ProjectCardSwapInfo.svelte";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";

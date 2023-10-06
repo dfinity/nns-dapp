@@ -1,4 +1,3 @@
-
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import CanisterPageHeader from "$lib/components/canister-detail/CanisterPageHeader.svelte";
 import { mockCanister } from "$tests/mocks/canisters.mock";

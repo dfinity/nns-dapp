@@ -1,4 +1,3 @@
-
 import Projects from "$lib/components/launchpad/Projects.svelte";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";

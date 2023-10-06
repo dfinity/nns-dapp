@@ -1,4 +1,3 @@
-
 import ProjectCard from "$lib/components/launchpad/ProjectCard.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import {
