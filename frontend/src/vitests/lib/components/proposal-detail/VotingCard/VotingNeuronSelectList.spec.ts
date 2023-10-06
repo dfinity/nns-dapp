@@ -1,4 +1,3 @@
-
 import VotingNeuronSelectList from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelectList.svelte";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";

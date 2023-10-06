@@ -1,4 +1,3 @@
-
 import JoinCommunityFundCheckbox from "$lib/components/neuron-detail/actions/JoinCommunityFundCheckbox.svelte";
 import { toggleCommunityFund } from "$lib/services/neurons.services";
 import { mockNeuron } from "$tests/mocks/neurons.mock";

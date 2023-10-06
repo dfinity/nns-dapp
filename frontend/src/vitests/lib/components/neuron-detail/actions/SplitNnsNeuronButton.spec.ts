@@ -1,4 +1,3 @@
-
 import SplitNeuronButton from "$lib/components/neuron-detail/actions/SplitNnsNeuronButton.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";

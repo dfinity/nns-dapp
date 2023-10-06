@@ -1,4 +1,3 @@
-
 import NnsProposalProposerActionsEntry from "$lib/components/proposal-detail/NnsProposalProposerActionsEntry.svelte";
 import { proposalFirstActionKey } from "$lib/utils/proposals.utils";
 import {

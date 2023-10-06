@@ -1,4 +1,3 @@
-
 import * as agent from "$lib/api/agent.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import NnsProposalProposerPayloadEntry from "$lib/components/proposal-detail/NnsProposalProposerPayloadEntry.svelte";
@@ -56,9 +55,9 @@ describe("NnsProposalProposerPayloadEntry", () => {
   });
 
   it("should parse JSON strings and render them", async () => {
-    vi
-      .spyOn(nnsDappMock, "getProposalPayload")
-      .mockImplementation(async () => payloadWithJsonString);
+    vi.spyOn(nnsDappMock, "getProposalPayload").mockImplementation(
+      async () => payloadWithJsonString
+    );
     const { queryByTestId } = render(NnsProposalProposerPayloadEntry, {
       props: {
         proposal: proposalWithNnsFunctionAction,

@@ -1,4 +1,3 @@
-
 import NnsAutoStakeMaturity from "$lib/components/neuron-detail/actions/NnsAutoStakeMaturity.svelte";
 import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
 import en from "$tests/mocks/i18n.mock";

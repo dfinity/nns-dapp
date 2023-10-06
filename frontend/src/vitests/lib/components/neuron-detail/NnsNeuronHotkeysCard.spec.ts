@@ -1,4 +1,3 @@
-
 import NnsNeuronHotkeysCard from "$lib/components/neuron-detail/NnsNeuronHotkeysCard.svelte";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
@@ -44,9 +43,7 @@ describe("NnsNeuronHotkeysCard", () => {
   };
 
   beforeEach(() => {
-    vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
     vi.clearAllMocks();
   });
 

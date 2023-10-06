@@ -8,9 +8,9 @@ import {
 import { dispatchIntersecting } from "$lib/utils/events.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
-import ContextWrapperTest from "$vitests/lib/components/ContextWrapperTest.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
+import ContextWrapperTest from "$vitests/lib/components/ContextWrapperTest.svelte";
 import { ICPToken, type Token } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { get, writable } from "svelte/store";

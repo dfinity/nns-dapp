@@ -1,4 +1,3 @@
-
 import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
 import { ProposalNavigationPo } from "$tests/page-objects/ProposalNavigation.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";

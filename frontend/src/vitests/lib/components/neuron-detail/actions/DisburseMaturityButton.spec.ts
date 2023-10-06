@@ -1,4 +1,3 @@
-
 import DisburseMaturityButton from "$lib/components/neuron-detail/actions/DisburseMaturityButton.svelte";
 import { DisburseMaturityButtonPo } from "$tests/page-objects/DisburseMaturityButton.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";

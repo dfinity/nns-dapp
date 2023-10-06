@@ -1,4 +1,3 @@
-
 import NnsNeuronAdvancedSection from "$lib/components/neuron-detail/NnsNeuronAdvancedSection.svelte";
 import {
   SECONDS_IN_FOUR_YEARS,
@@ -49,9 +48,7 @@ describe("NnsNeuronAdvancedSection", () => {
     nnsLatestRewardEventStore.reset();
     vi.useFakeTimers();
     vi.setSystemTime(nowInSeconds * 1000);
-    vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
     icpAccountsStore.resetForTesting();
   });
 

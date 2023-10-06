@@ -1,4 +1,3 @@
-
 import NnsNeuronStateItemAction from "$lib/components/neuron-detail/NnsNeuronStateItemAction.svelte";
 import { SECONDS_IN_FOUR_YEARS } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
@@ -49,9 +48,7 @@ describe("NnsNeuronStateItemAction", () => {
   };
 
   beforeEach(() => {
-    vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
   it("should render locked text and Start dissolving button if neuron is locked", async () => {

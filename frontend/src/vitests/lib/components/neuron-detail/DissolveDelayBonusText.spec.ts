@@ -1,4 +1,3 @@
-
 import DissolveDelayBonusText from "$lib/components/neuron-detail/DissolveDelayBonusText.svelte";
 import { DissolveDelayBonusTextPo } from "$tests/page-objects/DissolveDelayBonusText.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";

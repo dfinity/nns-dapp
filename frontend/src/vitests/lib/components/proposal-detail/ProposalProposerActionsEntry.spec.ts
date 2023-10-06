@@ -1,4 +1,3 @@
-
 import ProposalProposerActionsEntry from "$lib/components/proposal-detail/ProposalProposerActionsEntry.svelte";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { ProposalProposerActionsEntryPo } from "$tests/page-objects/ProposalProposerActionsEntry.page-object";

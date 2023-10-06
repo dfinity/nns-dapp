@@ -1,4 +1,3 @@
-
 import NeuronFollowingCard from "$lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
 import { listKnownNeurons } from "$lib/services/known-neurons.services";
 import { authStore } from "$lib/stores/auth.store";
@@ -34,9 +33,7 @@ describe("NeuronFollowingCard", () => {
     },
   };
   beforeEach(() => {
-    vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
   afterEach(() => {

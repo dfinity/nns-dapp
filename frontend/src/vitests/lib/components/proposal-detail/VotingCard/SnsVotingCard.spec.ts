@@ -1,4 +1,3 @@
-
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import SnsVotingCard from "$lib/components/sns-proposals/SnsVotingCard.svelte";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
@@ -115,9 +114,7 @@ describe("SnsVotingCard", () => {
   beforeEach(() => {
     vi.useFakeTimers().setSystemTime(nowInSeconds * 1000);
     snsNeuronsStore.reset();
-    vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
 
     spyOnReloadProposal.mockClear();
     spyRegisterVote.mockClear();

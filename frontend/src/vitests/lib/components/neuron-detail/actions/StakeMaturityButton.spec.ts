@@ -1,4 +1,3 @@
-
 import StakeMaturityButton from "$lib/components/neuron-detail/actions/StakeMaturityButton.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { render, waitFor } from "@testing-library/svelte";

@@ -1,4 +1,3 @@
-
 import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
 import en from "$tests/mocks/i18n.mock";
 import { Topic } from "@dfinity/nns";

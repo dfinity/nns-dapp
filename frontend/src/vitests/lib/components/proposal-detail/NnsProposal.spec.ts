@@ -1,4 +1,3 @@
-
 import * as proposalsApi from "$lib/api/proposals.api";
 import { AppPath } from "$lib/constants/routes.constants";
 import { filteredProposals } from "$lib/derived/proposals.derived";
@@ -86,11 +85,9 @@ describe("Proposal", () => {
   });
 
   it("should render proposal navigation", async () => {
-    vi
-      .spyOn(filteredProposals, "subscribe")
-      .mockImplementation(
-        createMockProposalsStoreSubscribe(generateMockProposals(10))
-      );
+    vi.spyOn(filteredProposals, "subscribe").mockImplementation(
+      createMockProposalsStoreSubscribe(generateMockProposals(10))
+    );
 
     const { container } = renderProposalModern(5n);
     const po = ProposalNavigationPo.under(new JestPageObjectElement(container));
@@ -100,11 +97,9 @@ describe("Proposal", () => {
   });
 
   it("should not render proposal navigation when on launchpad", async () => {
-    vi
-      .spyOn(filteredProposals, "subscribe")
-      .mockImplementation(
-        createMockProposalsStoreSubscribe(generateMockProposals(10))
-      );
+    vi.spyOn(filteredProposals, "subscribe").mockImplementation(
+      createMockProposalsStoreSubscribe(generateMockProposals(10))
+    );
     referrerPathStore.set(AppPath.Launchpad);
 
     const { container } = renderProposalModern(5n);

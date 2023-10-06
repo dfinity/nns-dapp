@@ -1,4 +1,3 @@
-
 import StakeItemAction from "$lib/components/neuron-detail/StakeItemAction.svelte";
 import { mockToken, mockUniverse } from "$tests/mocks/sns-projects.mock";
 import { StakeItemActionPo } from "$tests/page-objects/StakeItemAction.page-object";

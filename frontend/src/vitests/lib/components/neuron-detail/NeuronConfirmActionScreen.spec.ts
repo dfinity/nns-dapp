@@ -1,4 +1,3 @@
-
 import { fireEvent, render } from "@testing-library/svelte";
 import NeuronConfirmActionScreenTest from "./NeuronConfirmActionScreenTest.svelte";
 

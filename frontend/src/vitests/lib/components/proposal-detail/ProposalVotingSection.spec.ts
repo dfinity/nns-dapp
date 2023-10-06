@@ -1,4 +1,3 @@
-
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -20,9 +19,9 @@ import { render } from "@testing-library/svelte";
 import ProposalVotingSectionTest from "./ProposalVotingSectionTest.svelte";
 
 describe("ProposalVotingSection", () => {
-  vi
-    .spyOn(authStore, "subscribe")
-    .mockImplementation(mutableMockAuthStoreSubscribe);
+  vi.spyOn(authStore, "subscribe").mockImplementation(
+    mutableMockAuthStoreSubscribe
+  );
 
   const neuronIds = [111, 222].map(BigInt);
 

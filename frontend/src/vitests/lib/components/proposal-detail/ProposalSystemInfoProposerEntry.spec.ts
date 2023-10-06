@@ -1,4 +1,3 @@
-
 import * as agent from "$lib/api/agent.api";
 import ProposalSystemInfoProposerEntry from "$lib/components/proposal-detail/ProposalSystemInfoProposerEntry.svelte";
 import { authStore } from "$lib/stores/auth.store";
@@ -18,9 +17,9 @@ describe("ProposalMeta", () => {
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
-  vi
-    .spyOn(authStore, "subscribe")
-    .mockImplementation(mutableMockAuthStoreSubscribe);
+  vi.spyOn(authStore, "subscribe").mockImplementation(
+    mutableMockAuthStoreSubscribe
+  );
 
   const props = {
     proposer: mockProposalInfo.proposer,

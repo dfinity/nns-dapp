@@ -1,4 +1,3 @@
-
 import DisburseButton from "$lib/components/neuron-detail/actions/DisburseButton.svelte";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import en from "$tests/mocks/i18n.mock";

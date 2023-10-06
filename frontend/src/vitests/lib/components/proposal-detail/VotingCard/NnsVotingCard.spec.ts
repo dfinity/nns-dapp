@@ -1,4 +1,3 @@
-
 import * as agent from "$lib/api/agent.api";
 import VotingCard from "$lib/components/proposal-detail/VotingCard/VotingCard.svelte";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
@@ -20,9 +19,9 @@ import { GovernanceCanister, ProposalStatus, Vote } from "@dfinity/nns";
 import { SnsNeuronPermissionType } from "@dfinity/sns";
 import { fireEvent, screen } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import { mock } from "vitest-mock-extended";
 import { tick } from "svelte";
 import { writable } from "svelte/store";
+import { mock } from "vitest-mock-extended";
 import ContextWrapperTest from "../../ContextWrapperTest.svelte";
 
 describe("VotingCard", () => {
@@ -66,9 +65,7 @@ describe("VotingCard", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
 
     neuronsStore.setNeurons({ neurons: [], certified: true });
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
@@ -119,16 +116,14 @@ describe("VotingCard", () => {
     let spyRegisterVote;
 
     beforeEach(() => {
-      vi
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreSubscribe
+      );
 
-      vi
-        .spyOn(GovernanceCanister, "create")
-        .mockImplementation(
-          (): GovernanceCanister =>
-            mockGovernanceCanister as unknown as GovernanceCanister
-        );
+      vi.spyOn(GovernanceCanister, "create").mockImplementation(
+        (): GovernanceCanister =>
+          mockGovernanceCanister as unknown as GovernanceCanister
+      );
       spyRegisterVote = vi.spyOn(mockGovernanceCanister, "registerVote");
       spyListNeurons = vi.spyOn(mockGovernanceCanister, "listNeurons");
 

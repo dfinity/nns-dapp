@@ -1,4 +1,3 @@
-
 import ProposalSystemInfoEntry from "$lib/components/proposal-detail/ProposalSystemInfoEntry.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { render, waitFor } from "@testing-library/svelte";

@@ -1,4 +1,3 @@
-
 import NnsStakedMaturityItemAction from "$lib/components/neuron-detail/NnsStakedMaturityItemAction.svelte";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsStakedMaturityItemActionPo } from "$tests/page-objects/NnsStakedMaturityItemAction.page-object";

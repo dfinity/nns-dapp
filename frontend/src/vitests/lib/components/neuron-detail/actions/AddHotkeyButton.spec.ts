@@ -1,4 +1,3 @@
-
 import AddHotkeyButton from "$lib/components/neuron-detail/actions/AddHotkeyButton.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";

@@ -1,4 +1,3 @@
-
 import IncreaseDissolveDelayButton from "$lib/components/neuron-detail/actions/IncreaseDissolveDelayButton.svelte";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { ButtonPo } from "$tests/page-objects/Button.page-object";

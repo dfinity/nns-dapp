@@ -1,4 +1,3 @@
-
 import IncreaseStakeButton from "$lib/components/neuron-detail/actions/IncreaseStakeButton.svelte";
 import { IncreaseStakeButtonPo } from "$tests/page-objects/IncreaseStakeButton.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";

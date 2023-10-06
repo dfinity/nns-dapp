@@ -1,4 +1,3 @@
-
 import NnsNeuronPageHeader from "$lib/components/neuron-detail/NnsNeuronPageHeader.svelte";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { dispatchIntersecting } from "$lib/utils/events.utils";
