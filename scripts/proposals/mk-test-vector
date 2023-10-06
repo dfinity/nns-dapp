@@ -9,10 +9,13 @@ print_help() {
 	Creates a test vector for proposal argument rendering:
 
 	- Gets a proposal from mainnet or another network.
-	- Renders the proposal to JSON.
-	- Saves both in a directory of test vectors.
+	  Note: The data is made available as hex and as human-readable candid.
+	- Renders the proposal from hex to JSON.
+	- Saves hex, candid and JSON in a directory of test vectors.
 
-	Note: The rendered JSON MUST be reviewed before being merged into main.
+	Note: The rendered JSON MUST be reviewed before being saved as "the correct answer".
+
+	Note: Proposals can be large.  Please consider carefully how much data you add to git.
 
 	A Rust test can then use those test vectors.
 
@@ -32,12 +35,12 @@ print_help() {
 	                          \         /
 	                           \ PARSE /
 	                            V     V
-	                         [ProposalInfo.did]
+	                         [ProposalInfo.bin] [ProposalInfo.did]
 	                               |
-	                          EXTRACT-FIELD
+	                        run the proposals CLI
 	                               |
 	                               V
-	                         [ProposalPayload.bin]
+	                       [proposal payload JSON]
 
 	3) Print args.did and/or args.sha256.
 	EOF

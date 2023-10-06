@@ -2,7 +2,7 @@ use ic_nns_governance::pb::v1::ProposalInfo;
 use proposals as lib;
 use std::io::{self, Read};
 
-/// Reads IDL from stdin, writes JSON to stdout.
+/// Reads hex from `stdin`, as provided by `canister call --output raw`, and writes JSON to `stdout`.
 fn main() {
     let mut idl_str = String::new();
     io::stdin()
