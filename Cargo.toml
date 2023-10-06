@@ -10,7 +10,19 @@ resolver = "2"
 version = "2.0.50"
 
 [workspace.dependencies]
-ic-cdk = "0.8.1"
+# Note: These dependencies match those used in the IC repo:
+# ./scripts/ic-dependencies-at release-2023-09-27_23-01 | grep -E '^(candid|serde|serde_bytes|serde_json|serde_cbor|hex|bytes) '
+bytes = "1.2.1"
+candid = "0.8.4"
+hex = "0.4.3"
+regex = "1.6.0"
+serde = "1.0.145"
+serde_bytes = "0.11.7"
+serde_cbor = "0.11.2"
+serde_json = "1.0.86"
+sha2 = "0.10.6"
+# Note: These are compatible with candid 0.8.4:
+ic-cdk = "0.9.2"
 ic-cdk-macros = "0.6.10"
 
 [profile.release]
@@ -20,3 +32,6 @@ codegen-units = 1
 
 [profile.release.package.ic-nns-governance]
 opt-level = 3
+
+[patch.crates-io]
+candid = { git = "https://github.com/dfinity/candid", rev = "2023-09-27" }

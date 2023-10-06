@@ -1,4 +1,4 @@
-use ic_cdk::export::Principal;
+use candid::Principal;
 
 /// Determine whether a given caller may upload the given tarball.
 ///

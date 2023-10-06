@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-EOF
+
+	Some motivational speech.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=c long=commit desc="The IC ref from which to get the dependencies" variable=IC_COMMIT default="master"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+IC_COMMIT="${IC_COMMIT:-$1}"
+CACHE_ROOT="$HOME/.cache/ic-dependencies-at/"
+
+git_ref_is_full_hash() {
+	echo "${IC_COMMIT:-}" | grep -qE '^[0-9a-f]{40}$'
+}
+
+# Generates a download filename.  Returns true if the file already existed.
+download_filename() {
+	local DOWNLOAD_FILENAME
+	if git_ref_is_full_hash
+	then DOWNLOAD_FILENAME="$CACHE_ROOT/commit/Cargo.lock/$IC_COMMIT.toml"
+		mkdir -p "$(dirname "$DOWNLOAD_FILENAME")"
+		echo "$DOWNLOAD_FILENAME"
+		test -e "$DOWNLOAD_FILENAME"
+	else
+		mktemp --suffix .toml
+		false
+	fi
+}
+download() {
+	local DOWNLOAD_FILENAME TEMPFILE
+	DOWNLOAD_FILENAME="$1"
+	TEMPFILE="$(mktemp)"
+	if curl -sSL --fail "https://raw.githubusercontent.com/dfinity/ic/${IC_COMMIT}/typescript/service-worker/test_utils/Cargo.lock" > "$TEMPFILE"
+	then mv "$TEMPFILE" "$DOWNLOAD_FILENAME"
+	else rm -f "$TEMPFILE" "$DOWNLOAD_FILENAME"
+	fi
+}
+
+DOWNLOAD_FILENAME="$(download_filename)" || download "$DOWNLOAD_FILENAME"
+
+yq -r -oj '.package[] | .name + " = \"" + .version + "\""' "$DOWNLOAD_FILENAME"

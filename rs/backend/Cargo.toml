@@ -7,14 +7,15 @@ edition = "2021"
 
 [dependencies]
 base64 = "0.13.0"
-candid = "0.8.1"
+candid = { workspace = true }
+candid9 = { package = "candid", version = "0.9.9" }
 futures = "0.3.21"
 itertools = "0.10.5"
 lazy_static = "1.4.0"
-serde = "1.0.136"
-serde_bytes = "0.11.5"
-serde_cbor = "0.11.2"
-sha2 = "0.10.6"
+serde = { workspace = true }
+serde_bytes = { workspace = true }
+serde_cbor = { workspace = true }
+sha2 = { workspace = true }
 lzma-rs = "0.2.0"
 tar = "0.4.37"
 hex = "0.4.3"
@@ -42,7 +43,7 @@ ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05
 icp-ledger = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 on_wire = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 flate2 = "1.0.25"
-regex = "1.7.1"
+regex = { workspace = true }
 
 proposals ={ path = "../proposals" }
 

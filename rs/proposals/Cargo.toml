@@ -6,28 +6,30 @@ version.workspace = true
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-candid = "0.8.1"
-serde = "1.0.136"
-serde_bytes = "0.11.5"
-serde_json = "1.0.81"
-hex = "0.4.3"
+candid = "0.9.9" #{ workspace = true }
+serde = { workspace = true }
+serde_bytes = { workspace = true }
+serde_json = { workspace = true }
+hex = { workspace = true }
+bytes = { workspace = true }
 
-cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-dfn_candid = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-dfn_core = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-ic-base-types = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-ic-btc-interface = { git = "https://github.com/dfinity/bitcoin-canister", rev="b1693619e3d4dbc00d8c79e9b6886e1db48b21f7" }
-ic-crypto-sha2 = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-ic-ic00-types = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-ic-nervous-system-root = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-registry-canister = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
+cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "release-2023-09-27_23-01" }
+dfn_candid = { git = "https://github.com/dfinity/ic", rev = "release-2023-09-27_23-01" }
+dfn_core = { git = "https://github.com/dfinity/ic", rev = "release-2023-09-27_23-01" }
+ic-base-types = { git = "https://github.com/dfinity/ic", rev = "release-2023-09-27_23-01" }
+ic-btc-interface = { git = "https://github.com/dfinity/bitcoin-canister", rev="release/2023-08-10" }
+ic-crypto-sha2 = { git = "https://github.com/dfinity/ic", rev = "release-2023-09-27_23-01" }
+ic-ic00-types = { git = "https://github.com/dfinity/ic", rev = "release-2023-09-27_23-01" }
+ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "release-2023-09-27_23-01" }
+ic-nervous-system-root = { git = "https://github.com/dfinity/ic", rev = "release-2023-09-27_23-01" }
+ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "release-2023-09-27_23-01" }
+ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2023-09-27_23-01" }
+registry-canister = { git = "https://github.com/dfinity/ic", rev = "release-2023-09-27_23-01" }
 
-ic-cdk = { workspace = true }
-ic-cdk-macros = { workspace = true }
-idl2json = "0.8.7"
+# Note: These are compatible with candid 9.x
+ic-cdk = "0.11.0"
+ic-cdk-macros = "0.8.1"
+idl2json = { git = "https://github.com/dfinity/idl2json", rev = "0.9.3" }
 
 [dev-dependencies]
 anyhow = "1.0.68"

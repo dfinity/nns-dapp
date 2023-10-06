@@ -122,6 +122,7 @@ fn decode_arg(arg: &[u8], arg_types: IDLTypes) -> String {
                 bytes_as: Some(BytesFormat::Hex),
                 long_bytes_as: None,
                 prog: Vec::new(), // These are the type definitions used in proposal payloads.  If we have them, it would be nice to use them.  Do we?
+                compact: true,
             };
             let json_value = idl_args2json_with_weak_names(&idl_args, &arg_types, &options);
             serde_json::to_string(&json_value).expect("Failed to serialize JSON")

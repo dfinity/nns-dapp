@@ -349,7 +349,7 @@ pub fn add_assets_tar_xz() {
     over(candid_one, |asset_bytes: Vec<u8>| {
         let caller = ic_cdk::caller();
         let is_controller = ic_cdk::api::is_controller(&caller);
-        assets::upload::may_upload(&caller, is_controller)
+        assets::upload::may_upload(&candid::Principal::from_slice(caller.as_slice()), is_controller)
             .map_err(|e| format!("Permission to upload denied: {}", e))
             .unwrap();
         insert_tar_xz(asset_bytes);
