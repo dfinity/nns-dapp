@@ -67,7 +67,7 @@ describe("SnsProposalCard", () => {
   });
 
   // TODO: fix this test after rebasing main with https://github.com/dfinity/nns-dapp/pull/1689
-  xit("should render deadline", () => {
+  it.skip("should render deadline", () => {
     const proposalData: SnsProposalData = {
       ...mockSnsProposal,
       wait_for_quiet_state: [
