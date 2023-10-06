@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import AccountMenu from "$lib/components/header/AccountMenu.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
@@ -65,13 +69,7 @@ describe("AccountMenu", () => {
       settings !== null && fireEvent.click(settings);
 
       await waitFor(() =>
-        // TODO: flaky test
-        // expect(() => renderResult.getByRole("menu")).toThrow()
-        expect(
-          renderResult.component.$$.ctx[
-            renderResult.component.$$.props["visible"]
-          ]
-        ).toBeFalsy()
+          expect(() => renderResult.getByRole("menu")).toThrow()
       );
     });
   });

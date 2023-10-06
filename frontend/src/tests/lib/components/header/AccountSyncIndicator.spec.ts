@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import AccountSyncIndicator from "$lib/components/header/AccountSyncIndicator.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { syncStore } from "$lib/stores/sync.store";
@@ -16,9 +20,9 @@ import {
 import type { SvelteComponent } from "svelte";
 
 describe("AccountSyncIndicator", () => {
-  vi.spyOn(authStore, "subscribe").mockImplementation(
-    mutableMockAuthStoreSubscribe
-  );
+  jest
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mutableMockAuthStoreSubscribe);
 
   beforeEach(() => {
     syncStore.reset();
@@ -108,7 +112,7 @@ describe("AccountSyncIndicator", () => {
       });
 
       await waitFor(() =>
-        expect(() => getByTestId("sync-indicator")).toThrow()
+          expect(() => getByTestId("sync-indicator")).toThrow()
       );
     });
 
@@ -120,7 +124,7 @@ describe("AccountSyncIndicator", () => {
 
       const { getByTestId } = render(AccountSyncIndicator);
       expect(getByTestId("sync-indicator").getAttribute("aria-label")).toEqual(
-        en.sync.status_in_progress
+          en.sync.status_in_progress
       );
     });
 
@@ -132,12 +136,12 @@ describe("AccountSyncIndicator", () => {
 
       const { getByTestId } = render(AccountSyncIndicator);
       expect(getByTestId("sync-indicator").getAttribute("aria-label")).toEqual(
-        en.sync.status_error
+          en.sync.status_error
       );
     });
 
     const testPopover = async (
-      label: string
+        label: string
     ): Promise<RenderResult<SvelteComponent>> => {
       const result = render(AccountSyncIndicator);
 
@@ -176,8 +180,8 @@ describe("AccountSyncIndicator", () => {
         state: "in_progress",
       });
 
-      const { component } = await testPopover(
-        en.sync.status_in_progress_detailed
+      const { queryByRole } = await testPopover(
+          en.sync.status_in_progress_detailed
       );
 
       syncStore.setState({
@@ -185,20 +189,14 @@ describe("AccountSyncIndicator", () => {
         state: "idle",
       });
 
-      await waitFor(() =>
-        // TODO: flaky test
-        // expect(queryByRole("menu")).toBeNull()
-        expect(component.$$.ctx[component.$$.props["visible"]]).toBeFalsy()
-      );
+      await waitFor(() => expect(queryByRole("menu")).toBeNull());
 
       syncStore.setState({
         key: "balances",
         state: "in_progress",
       });
 
-      // TODO: flaky test
-      // expect(queryByRole("menu")).toBeNull()
-      expect(component.$$.ctx[component.$$.props["visible"]]).toBeFalsy();
+      expect(queryByRole("menu")).toBeNull();
     });
   });
 });
