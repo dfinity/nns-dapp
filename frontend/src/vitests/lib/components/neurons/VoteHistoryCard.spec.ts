@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as agent from "$lib/api/agent.api";
 import VotingHistoryCard from "$lib/components/neurons/VotingHistoryCard.svelte";
 import { authStore } from "$lib/stores/auth.store";
@@ -10,12 +6,12 @@ import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
-import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
+import { silentConsoleErrors } from "$vitests/utils/utils.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import type { Proposal } from "@dfinity/nns";
 import { GovernanceCanister, Vote } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
-import { mock } from "jest-mock-extended";
+import { mock } from "vitest-mock-extended";
 
 describe("VoteHistoryCard", () => {
   const props = {
@@ -40,14 +36,12 @@ describe("VoteHistoryCard", () => {
   beforeEach(() => {
     silentConsoleErrors();
 
-    jest
-      .spyOn(GovernanceCanister, "create")
-      .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
+    vi.spyOn(GovernanceCanister, "create").mockImplementation(
+      (): GovernanceCanister => mockGovernanceCanister
+    );
 
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
-    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   it("should render title", async () => {
