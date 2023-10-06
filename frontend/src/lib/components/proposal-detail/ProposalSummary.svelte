@@ -16,7 +16,7 @@
     {/if}
 
     {#if nonNullish(summary) && summary !== ""}
-      <div class="content-cell-disabled-island markdown-container">
+      <div class="content-cell-island markdown-container">
         <Markdown text={summary} />
       </div>
     {/if}
@@ -43,6 +43,9 @@
 
     .markdown-container {
       margin-top: var(--padding-2x);
+      // custom island styles
+      background: var(--card-background-disabled);
+      color: var(--description-color);
     }
 
     :global(.markdown-container > :last-child) {
