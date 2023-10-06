@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import CommitmentProgressBar from "$lib/components/project-detail/CommitmentProgressBar.svelte";
 import { CommitmentProgressBarPo } from "$tests/page-objects/CommitmentProgressBarPo.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";

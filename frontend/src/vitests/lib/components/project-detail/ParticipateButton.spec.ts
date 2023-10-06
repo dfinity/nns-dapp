@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ParticipateButton from "$lib/components/project-detail/ParticipateButton.svelte";
 import { NOT_LOADED } from "$lib/constants/stores.constants";
 import { authStore } from "$lib/stores/auth.store";
@@ -29,7 +25,7 @@ import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { renderContextCmp, snsTicketMock } from "$tests/mocks/sns.mock";
 import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { clickByTestId } from "$tests/utils/utils.test-utils";
+import { clickByTestId } from "$vitests/utils/utils.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 
@@ -39,9 +35,9 @@ describe("ParticipateButton", () => {
     owner: rootCanisterIdMock,
   });
 
-  jest
-    .spyOn(authStore, "subscribe")
-    .mockImplementation(mutableMockAuthStoreSubscribe);
+  vi.spyOn(authStore, "subscribe").mockImplementation(
+    mutableMockAuthStoreSubscribe
+  );
 
   describe("signed in", () => {
     beforeEach(() => {
@@ -49,7 +45,7 @@ describe("ParticipateButton", () => {
         identity: mockIdentity,
       });
       snsTicketsStore.reset();
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       userCountryStore.set(NOT_LOADED);
     });
 
