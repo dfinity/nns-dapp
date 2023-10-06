@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import CanisterPageHeading from "$lib/components/canister-detail/CanisterPageHeading.svelte";
@@ -13,7 +9,7 @@ import { render } from "@testing-library/svelte";
 
 describe("CanisterHeadingTitle", () => {
   const canisterId = principal(0);
-  const eventListener = jest.fn();
+  const eventListener = vitest.fn();
 
   const renderComponent = (
     canister: CanisterInfo,
@@ -28,7 +24,7 @@ describe("CanisterHeadingTitle", () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vitest.clearAllMocks();
     window.removeEventListener("nnsCanisterDetailModal", eventListener);
   });
 
