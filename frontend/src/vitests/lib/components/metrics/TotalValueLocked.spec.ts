@@ -84,7 +84,9 @@ describe("TotalValueLocked", () => {
   it("should not render TVL on load", () => {
     const { getByTestId } = render(TotalValueLockedTest);
 
-    expect(getByTestId("total-value-locked-component")).not.toBeVisible();
+    expect(
+      getByTestId("total-value-locked-component").classList.contains("visible")
+    ).toBeFalsy();
   });
 
   it("should not render TVL if response has zero metrics", async () => {
@@ -99,6 +101,8 @@ describe("TotalValueLocked", () => {
       },
     });
 
-    expect(getByTestId("total-value-locked-component")).not.toBeVisible();
+    expect(
+      getByTestId("total-value-locked-component").classList.contains("visible")
+    ).toBeFalsy();
   });
 });
