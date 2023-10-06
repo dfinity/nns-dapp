@@ -6,7 +6,7 @@ import en from "$tests/mocks/i18n.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { toastsStore } from "@dfinity/gix-components";
-import { fireEvent, render } from "@testing-library/svelte";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
@@ -88,11 +88,13 @@ describe("SnsAutoStakeMaturity", () => {
     expect(inputElement.disabled).toBeTruthy();
   });
 
-  const toggleAutoStake = async ({
-    neuronAutoStakeMaturity,
-  }: {
-    neuronAutoStakeMaturity: boolean | undefined;
-  }) => {
+  const toggleAutoStake = async (
+    {
+      neuronAutoStakeMaturity,
+    }: {
+      neuronAutoStakeMaturity: boolean | undefined;
+    }
+  ) => {
     const { container, queryByTestId } = render(SnsNeuronContextTest, {
       props: {
         neuron: {
@@ -125,6 +127,7 @@ describe("SnsAutoStakeMaturity", () => {
 
   it("should call toggleAutoStakeMaturity neuron service on confirmation", async () => {
     await toggleAutoStake({ neuronAutoStakeMaturity: undefined });
+    await waitFor(() => expect(get(toastsStore)[0]).toBeDefined());
     expect(get(toastsStore)[0]).toMatchObject({
       level: "success",
       text: en.neuron_detail.auto_stake_maturity_on_success,
@@ -133,6 +136,7 @@ describe("SnsAutoStakeMaturity", () => {
 
   it("should show success message when disabling", async () => {
     await toggleAutoStake({ neuronAutoStakeMaturity: true });
+    await waitFor(() => expect(get(toastsStore)[0]).toBeDefined());
     expect(get(toastsStore)[0]).toMatchObject({
       level: "success",
       text: en.neuron_detail.auto_stake_maturity_off_success,
