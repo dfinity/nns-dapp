@@ -13,7 +13,7 @@ use std::collections::BTreeMap;
 use std::fmt::Debug;
 use std::ops::DerefMut;
 
-mod canisters;
+pub mod canisters;
 
 type Json = String;
 

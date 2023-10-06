@@ -1,8 +1,13 @@
-use ic_nns_governance::pb::v1::ProposalInfo;
+use lib::canisters::nns_governance::api::ProposalInfo;
 use proposals as lib;
 use std::io::{self, Read};
 
 /// Reads hex from `stdin`, as provided by `canister call --output raw`, and writes JSON to `stdout`.
+///
+/// For example, to render the payload of proposal 124999, you could run:
+/// ```
+/// dfx canister call nns-governance --network ic get_proposal_info "(124999 : nat64)" --query --output raw | cargo run --bin proposals
+/// ```
 fn main() {
     let mut idl_str = String::new();
     io::stdin()
