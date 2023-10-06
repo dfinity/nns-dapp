@@ -60,6 +60,7 @@
           />
         </div>
       {:else}
+        <!-- TODO(GIX-1957): remove this block after the full-width proposal is enabled -->
         <div class="content-grid">
           <div class="content-a content-cell-island">
             <ProposalSystemInfoSection proposalInfo={$store.proposal} />

@@ -21,6 +21,7 @@
       </div>
     {/if}
   {:else}
+    <!-- TODO(GIX-1957): remove this block after the full-width proposal is enabled -->
     {#if showTitle}
       <div class="title"><slot name="title" /></div>
 
