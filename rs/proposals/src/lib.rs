@@ -635,7 +635,8 @@ mod def {
 
     // NNS function 40 - UpdateElectedHostosVersions
     // https://github.com/dfinity/ic/blob/26098e18ddd64ab50d3f3725f50c7f369cd3f90e/rs/registry/canister/src/mutations/do_update_elected_hostos_versions.rs#L88
-    pub type UpdateElectedHostosVersionsPayload = crate::canisters::nns_registry::api::UpdateElectedHostosVersionsPayload;
+    pub type UpdateElectedHostosVersionsPayload =
+        crate::canisters::nns_registry::api::UpdateElectedHostosVersionsPayload;
 
     // NNS function 41 - UpdateNodesHostosVersion
     // https://github.com/dfinity/ic/blob/26098e18ddd64ab50d3f3725f50c7f369cd3f90e/rs/registry/canister/src/mutations/do_update_nodes_hostos_version.rs#L38C12-L38C43
