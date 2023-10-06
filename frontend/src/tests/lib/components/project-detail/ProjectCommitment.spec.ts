@@ -15,9 +15,6 @@ import { ProjectCommitmentPo } from "$tests/page-objects/ProjectCommitment.page-
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 
-// TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
-jest.mock("$lib/getters/sns-summary.ts");
-
 describe("ProjectCommitment", () => {
   const saleBuyerCount = 1_000_000;
 
@@ -94,12 +91,11 @@ describe("ProjectCommitment", () => {
     const directCommitment = 30000000000n;
     const summary = createSummary({
       currentTotalCommitment: directCommitment + nfCommitment,
+      directCommitment,
+      neuronsFundCommitment: nfCommitment,
     });
 
     beforeEach(() => {
-      jest
-        .spyOn(summaryGetters, "getNeuronsFundParticipation")
-        .mockImplementation(() => nfCommitment);
       // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
       jest
         .spyOn(summaryGetters, "getMinDirectParticipation")
@@ -131,9 +127,6 @@ describe("ProjectCommitment", () => {
 
   describe("when Neurons' Fund enhancements fields are available and NF commitment is 0", () => {
     beforeEach(() => {
-      jest
-        .spyOn(summaryGetters, "getNeuronsFundParticipation")
-        .mockImplementation(() => 0n);
       // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
       jest
         .spyOn(summaryGetters, "getMinDirectParticipation")
@@ -148,6 +141,8 @@ describe("ProjectCommitment", () => {
       const directCommitment = 20000000000n;
       const summary = createSummary({
         currentTotalCommitment: directCommitment,
+        neuronsFundCommitment: 0n,
+        directCommitment,
       });
       const po = renderComponent(summary);
       expect(await po.getNeuronsFundParticipation()).toEqual("0 ICP");
@@ -159,12 +154,11 @@ describe("ProjectCommitment", () => {
     const overallCommitment = 30000000000n;
     const summary = createSummary({
       currentTotalCommitment: overallCommitment,
+      neuronsFundCommitment: undefined,
+      directCommitment: undefined,
     });
 
     beforeEach(() => {
-      jest
-        .spyOn(summaryGetters, "getNeuronsFundParticipation")
-        .mockImplementation(() => undefined);
       // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
       jest
         .spyOn(summaryGetters, "getMinDirectParticipation")

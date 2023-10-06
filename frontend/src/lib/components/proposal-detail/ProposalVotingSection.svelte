@@ -21,10 +21,8 @@
   $: total = yes + no;
 </script>
 
-<div class="content-cell-island">
-  <VotesResults {yes} {no} {total} />
+<VotesResults {yes} {no} {total} />
 
-  {#if !settled}
-    <VotingCard {proposalInfo} />
-  {/if}
-</div>
+{#if !settled}
+  <VotingCard {proposalInfo} />
+{/if}

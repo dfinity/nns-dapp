@@ -21,6 +21,8 @@
     NnsNeuronModalVotingHistory,
   } from "$lib/types/nns-neuron-detail.modal";
   import { nonNullish } from "@dfinity/utils";
+  import { IS_TESTNET } from "$lib/constants/environment.constants";
+  import NnsAddMaturityModal from "../sns/neurons/NnsAddMaturityModal.svelte";
 
   let modal: NnsNeuronModal<NnsNeuronModalData> | undefined;
   const close = () => (modal = undefined);
@@ -82,6 +84,10 @@
 
     {#if type === "add-hotkey"}
       <AddHotkeyModal on:nnsClose={close} {neuron} />
+    {/if}
+
+    {#if type === "dev-add-maturity" && IS_TESTNET}
+      <NnsAddMaturityModal {neuron} on:nnsClose={close} />
     {/if}
   {/if}
 

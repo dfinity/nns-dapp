@@ -11,10 +11,10 @@ export const getConditionsToAccept = (
 ): string | undefined =>
   fromNullable(fromNullable(summary.swap.init)?.confirmation_text || []);
 
-// TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
-export const getNeuronsFundParticipation = (
-  _summary: SnsSummary
-): bigint | undefined => undefined;
+export const getNeuronsFundParticipation = ({
+  derived,
+}: SnsSummary): bigint | undefined =>
+  fromNullable(derived.neurons_fund_participation_icp_e8s);
 
 // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
 export const getMinDirectParticipation = (
