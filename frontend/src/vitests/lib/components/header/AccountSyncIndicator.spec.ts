@@ -176,7 +176,7 @@ describe("AccountSyncIndicator", () => {
         state: "in_progress",
       });
 
-      const { queryByRole, component } = await testPopover(
+      const { component } = await testPopover(
         en.sync.status_in_progress_detailed
       );
 
