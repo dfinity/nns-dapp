@@ -11,7 +11,6 @@
   import { i18n } from "$lib/stores/i18n";
   import { formatToken } from "$lib/utils/token.utils";
   import IdentifierHash from "../ui/IdentifierHash.svelte";
-  import TestIdWrapper from "../common/TestIdWrapper.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
