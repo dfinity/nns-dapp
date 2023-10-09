@@ -12,6 +12,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
+* Get BTC button to use the mock bitcoin canister to test ckBTC.
+
 #### Changed
 
 * Update the schemas for the governance, registry and SNS Wasm canisters, used for proposal rendering.
@@ -62,6 +64,9 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Review the chunking strategy to enhance the dapp's loading time and prevent random, rare flashes of unstyled content (FOUC).
 * New header UI in the canister detail page.
 * New labels for min and max participation.
+* Improve security by escaping additional images in the proposal summary markdown.
+* Internal change: remove unused snsQueryStore.
+* New Tag style. Used in followees topic and project status.
 
 #### Removed
 
