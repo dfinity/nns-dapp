@@ -27,7 +27,10 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$vitests/utils/timers.test-utils";
-import { assertNonNullish, clickByTestId } from "$vitests/utils/utils.test-utils";
+import {
+  assertNonNullish,
+  clickByTestId,
+} from "$vitests/utils/utils.test-utils";
 import { LedgerCanister } from "@dfinity/ledger-icp";
 import type { NeuronInfo } from "@dfinity/nns";
 import { GovernanceCanister } from "@dfinity/nns";
