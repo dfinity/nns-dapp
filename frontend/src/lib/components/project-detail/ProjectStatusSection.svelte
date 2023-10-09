@@ -1,22 +1,18 @@
 <script lang="ts">
-  import { TokenAmount, ICPToken } from "@dfinity/utils";
+  import { TokenAmount, ICPToken, nonNullish } from "@dfinity/utils";
   import type { SnsSwapCommitment, SnsSummary } from "$lib/types/sns";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import { KeyValuePair } from "@dfinity/gix-components";
   import ProjectStatus from "./ProjectStatus.svelte";
   import ProjectCommitment from "./ProjectCommitment.svelte";
-  import ProjectUserCommitmentLabel from "./ProjectUserCommitmentLabel.svelte";
-  import ProjectTimeline from "./ProjectTimeline.svelte";
+  import ProjectTimelineUserCommitment from "./ProjectTimelineUserCommitment.svelte";
   import { getContext } from "svelte";
   import {
     PROJECT_DETAIL_CONTEXT_KEY,
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
-  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { isNullish } from "@dfinity/utils";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import ParticipateButton from "./ParticipateButton.svelte";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
-  import Separator from "../ui/Separator.svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -58,28 +54,18 @@
 
 <!-- Because information might not be displayed once loaded - according the state - we do no display a spinner or skeleton -->
 
-{#if displayStatusSection}
+{#if displayStatusSection && nonNullish($projectDetailStore.summary)}
   <div data-tid="sns-project-detail-status" class="content-cell-island">
     <ProjectStatus />
 
     <div class="content content-cell-details">
       <ProjectCommitment />
 
-      <Separator spacing="none" />
-      <ProjectTimeline />
-      {#if nonNullish(myCommitmentIcp) && myCommitmentIcp.toE8s() > BigInt(0)}
-        <div>
-          <KeyValuePair testId="sns-user-commitment">
-            <ProjectUserCommitmentLabel
-              slot="key"
-              summary={$projectDetailStore.summary}
-              {swapCommitment}
-            />
-            <AmountDisplay slot="value" amount={myCommitmentIcp} singleLine />
-          </KeyValuePair>
-        </div>
-      {/if}
-      <Separator spacing="none" />
+      <ProjectTimelineUserCommitment
+        summary={$projectDetailStore.summary}
+        swapCommitment={$projectDetailStore.swapCommitment}
+        myCommitment={myCommitmentIcp}
+      />
     </div>
 
     <div class="actions content-cell-details">
