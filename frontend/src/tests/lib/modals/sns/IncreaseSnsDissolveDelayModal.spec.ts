@@ -35,7 +35,7 @@ jest.mock("$lib/services/sns-parameters.services");
 const testIdentity = createMockIdentity(10023);
 
 const roundUpSecondsToWholeDays = (seconds: number): number =>
-    daysToSeconds(secondsToDays(seconds));
+  daysToSeconds(secondsToDays(seconds));
 
 describe("IncreaseSnsDissolveDelayModal", () => {
   const nowInSeconds = 1689063315;
@@ -50,7 +50,7 @@ describe("IncreaseSnsDissolveDelayModal", () => {
   };
   const reloadNeuron = jest.fn().mockResolvedValue(undefined);
   const renderIncreaseDelayModal = async (
-      neuron: SnsNeuron
+    neuron: SnsNeuron
   ): Promise<RenderResult<SvelteComponent>> => {
     return renderModal({
       component: IncreaseSnsDissolveDelayModal,
@@ -66,8 +66,8 @@ describe("IncreaseSnsDissolveDelayModal", () => {
   beforeEach(() => {
     jest.resetAllMocks();
     jest
-        .spyOn(authServices, "getAuthenticatedIdentity")
-        .mockResolvedValue(testIdentity);
+      .spyOn(authServices, "getAuthenticatedIdentity")
+      .mockResolvedValue(testIdentity);
 
     jest.clearAllTimers();
     jest.useFakeTimers().setSystemTime(now);
@@ -105,13 +105,13 @@ describe("IncreaseSnsDissolveDelayModal", () => {
     const { queryByTestId } = await renderIncreaseDelayModal(neuron);
 
     expect((queryByTestId("input-range") as HTMLInputElement).value).toBe(
-        dissolveDelayDays.toString()
+      dissolveDelayDays.toString()
     );
   });
 
   it("should use current dissolve delay value when dissolving", async () => {
     const whenDissolvedTimestampSeconds = BigInt(
-        nowInSeconds + SECONDS_IN_YEAR
+      nowInSeconds + SECONDS_IN_YEAR
     );
     const neuron = createMockSnsNeuron({
       id: [1],
@@ -121,7 +121,7 @@ describe("IncreaseSnsDissolveDelayModal", () => {
     const { queryByTestId } = await renderIncreaseDelayModal(neuron);
 
     expect((queryByTestId("input-range") as HTMLInputElement).value).toBe(
-        "366"
+      "366"
     );
   });
 
@@ -129,7 +129,7 @@ describe("IncreaseSnsDissolveDelayModal", () => {
     const { container } = await renderIncreaseDelayModal(neuron);
 
     const updateDelayButton = container.querySelector(
-        '[data-tid="go-confirm-delay-button"]'
+      '[data-tid="go-confirm-delay-button"]'
     );
     expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
   });
@@ -138,36 +138,36 @@ describe("IncreaseSnsDissolveDelayModal", () => {
     const { container } = await renderIncreaseDelayModal(neuron);
 
     await waitFor(() =>
-        expect(container.querySelector('input[type="range"]')).not.toBeNull()
+      expect(container.querySelector('input[type="range"]')).not.toBeNull()
     );
     const inputRange = container.querySelector('input[type="range"]');
     expect(inputRange).not.toBeNull();
 
     inputRange &&
-    (await fireEvent.input(inputRange, {
-      target: { value: 365 * 2 },
-    }));
+      (await fireEvent.input(inputRange, {
+        target: { value: 365 * 2 },
+      }));
 
     const goToConfirmDelayButton = container.querySelector(
-        '[data-tid="go-confirm-delay-button"]'
+      '[data-tid="go-confirm-delay-button"]'
     );
 
     expect(goToConfirmDelayButton).toBeDefined();
 
     await waitFor(() =>
-        expect(goToConfirmDelayButton?.getAttribute("disabled")).toBeNull()
+      expect(goToConfirmDelayButton?.getAttribute("disabled")).toBeNull()
     );
 
     goToConfirmDelayButton && (await fireEvent.click(goToConfirmDelayButton));
 
     await waitFor(() =>
-        expect(
-            container.querySelector('[data-tid="confirm-dissolve-delay-container"]')
-        ).not.toBeNull()
+      expect(
+        container.querySelector('[data-tid="confirm-dissolve-delay-container"]')
+      ).not.toBeNull()
     );
 
     const confirmButton = container.querySelector(
-        '[data-tid="confirm-delay-button"]'
+      '[data-tid="confirm-delay-button"]'
     );
 
     expect(confirmButton).toBeDefined();
@@ -181,37 +181,37 @@ describe("IncreaseSnsDissolveDelayModal", () => {
     const { container, queryByTestId } = await renderIncreaseDelayModal(neuron);
 
     await waitFor(() =>
-        expect(queryByTestId("input-ui-element")).toBeInTheDocument()
+      expect(queryByTestId("input-ui-element")).toBeInTheDocument()
     );
 
     const dissolveDelaySeconds = roundUpSecondsToWholeDays(SECONDS_IN_YEAR * 2);
     const inputElement = queryByTestId("input-ui-element");
 
     inputElement &&
-    (await fireEvent.input(inputElement, {
-      target: { value: `${Math.round(secondsToDays(dissolveDelaySeconds))}` },
-    }));
+      (await fireEvent.input(inputElement, {
+        target: { value: `${Math.round(secondsToDays(dissolveDelaySeconds))}` },
+      }));
 
     const goToConfirmDelayButton = container.querySelector(
-        '[data-tid="go-confirm-delay-button"]'
+      '[data-tid="go-confirm-delay-button"]'
     );
 
     expect(goToConfirmDelayButton).toBeDefined();
 
     await waitFor(() =>
-        expect(goToConfirmDelayButton?.getAttribute("disabled")).toBeNull()
+      expect(goToConfirmDelayButton?.getAttribute("disabled")).toBeNull()
     );
 
     goToConfirmDelayButton && (await fireEvent.click(goToConfirmDelayButton));
 
     await waitFor(() =>
-        expect(
-            container.querySelector('[data-tid="confirm-dissolve-delay-container"]')
-        ).not.toBeNull()
+      expect(
+        container.querySelector('[data-tid="confirm-dissolve-delay-container"]')
+      ).not.toBeNull()
     );
 
     const confirmButton = container.querySelector(
-        '[data-tid="confirm-delay-button"]'
+      '[data-tid="confirm-delay-button"]'
     );
 
     expect(confirmButton).toBeDefined();
@@ -220,9 +220,9 @@ describe("IncreaseSnsDissolveDelayModal", () => {
 
     expect(snsGovernanceApi.setDissolveDelay).toBeCalledTimes(1);
     expect(snsGovernanceApi.setDissolveDelay).toBeCalledWith(
-        expect.objectContaining({
-          dissolveTimestampSeconds: dissolveDelaySeconds + nowInSeconds,
-        })
+      expect.objectContaining({
+        dissolveTimestampSeconds: dissolveDelaySeconds + nowInSeconds,
+      })
     );
   });
 
@@ -230,22 +230,22 @@ describe("IncreaseSnsDissolveDelayModal", () => {
     const { queryByTestId } = await renderIncreaseDelayModal(neuron);
 
     await waitFor(() =>
-        expect(queryByTestId("min-button")).toBeInTheDocument()
+      expect(queryByTestId("min-button")).toBeInTheDocument()
     );
 
     const minButton = queryByTestId("min-button");
     const inputElement = queryByTestId("input-ui-element");
 
     const minValue = fromDefinedNullable(
-        snsNervousSystemParametersMock.neuron_minimum_dissolve_delay_to_vote_seconds
+      snsNervousSystemParametersMock.neuron_minimum_dissolve_delay_to_vote_seconds
     );
 
     await fireEvent.click(minButton);
 
     await waitFor(() =>
-        expect((inputElement as HTMLInputElement).value).toEqual(
-            `${secondsToDays(Number(minValue))}`
-        )
+      expect((inputElement as HTMLInputElement).value).toEqual(
+        `${secondsToDays(Number(minValue))}`
+      )
     );
   });
 
@@ -253,11 +253,11 @@ describe("IncreaseSnsDissolveDelayModal", () => {
     const { queryByTestId } = await renderIncreaseDelayModal(neuron);
 
     await waitFor(() =>
-        expect(queryByTestId("max-button")).toBeInTheDocument()
+      expect(queryByTestId("max-button")).toBeInTheDocument()
     );
 
     const maxValue = fromDefinedNullable(
-        snsNervousSystemParametersMock.max_dissolve_delay_seconds
+      snsNervousSystemParametersMock.max_dissolve_delay_seconds
     );
     const maxButton = queryByTestId("max-button");
     const inputElement = queryByTestId("input-ui-element");
@@ -265,9 +265,9 @@ describe("IncreaseSnsDissolveDelayModal", () => {
     await fireEvent.click(maxButton);
 
     await waitFor(() =>
-        expect((inputElement as HTMLInputElement).value).toEqual(
-            `${secondsToDays(Number(maxValue))}`
-        )
+      expect((inputElement as HTMLInputElement).value).toEqual(
+        `${secondsToDays(Number(maxValue))}`
+      )
     );
   });
 

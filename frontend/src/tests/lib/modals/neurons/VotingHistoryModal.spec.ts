@@ -21,16 +21,16 @@ describe("VotingHistoryModal", () => {
   };
 
   const mockGovernanceCanister: MockGovernanceCanister =
-      new MockGovernanceCanister(mockProposals);
+    new MockGovernanceCanister(mockProposals);
 
   beforeEach(() => {
     jest.spyOn(console, "error").mockImplementation(jest.fn);
     jest
-        .spyOn(GovernanceCanister, "create")
-        .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
+      .spyOn(GovernanceCanister, "create")
+      .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
     jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe);
     jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
@@ -60,10 +60,10 @@ describe("VotingHistoryModal", () => {
 
   it("should close on error", async () => {
     jest
-        .spyOn(GovernanceCanister, "create")
-        .mockImplementation((): GovernanceCanister => {
-          throw new Error("test");
-        });
+      .spyOn(GovernanceCanister, "create")
+      .mockImplementation((): GovernanceCanister => {
+        throw new Error("test");
+      });
 
     const onClose = jest.fn();
     const { component } = render(VotingHistoryModal, {

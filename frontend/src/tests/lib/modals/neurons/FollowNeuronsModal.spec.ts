@@ -36,10 +36,10 @@ describe("FollowNeuronsModal", () => {
   };
 
   const fillNeuronStore = () =>
-      neuronsStore.setNeurons({
-        neurons: [neuronFollowing],
-        certified: true,
-      });
+    neuronsStore.setNeurons({
+      neurons: [neuronFollowing],
+      certified: true,
+    });
 
   beforeAll(() => fillNeuronStore());
 
@@ -61,14 +61,14 @@ describe("FollowNeuronsModal", () => {
     });
 
     const badgeExchange = queryByTestId(
-        `topic-${Topic.ExchangeRate}-followees-badge`
+      `topic-${Topic.ExchangeRate}-followees-badge`
     );
 
     expect(badgeExchange).not.toBeNull();
     expect(badgeExchange?.innerHTML).toBe("2");
 
     const badgeGovernance = queryByTestId(
-        `topic-${Topic.Governance}-followees-badge`
+      `topic-${Topic.Governance}-followees-badge`
     );
 
     expect(badgeGovernance).not.toBeNull();
@@ -83,19 +83,19 @@ describe("FollowNeuronsModal", () => {
     });
 
     const topicSection = queryByTestId(
-        `follow-topic-${Topic.ExchangeRate}-section`
+      `follow-topic-${Topic.ExchangeRate}-section`
     );
     expect(topicSection).not.toBeNull();
 
     if (topicSection !== null) {
       const followeeElements = topicSection?.querySelectorAll(
-          '[data-tid="current-followee-item"]'
+        '[data-tid="current-followee-item"]'
       );
 
       expect(followeeElements.length).toBe(2);
       expect(followeeElements[0]).not.toBeVisible();
       const collapsibleButton = topicSection.querySelector(
-          '[data-tid="collapsible-expand-button"]'
+        '[data-tid="collapsible-expand-button"]'
       );
       expect(collapsibleButton).not.toBeNull();
 

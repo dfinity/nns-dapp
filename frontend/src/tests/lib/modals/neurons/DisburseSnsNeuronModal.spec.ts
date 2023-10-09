@@ -32,8 +32,8 @@ const testIdentity = createMockIdentity(37373);
 describe("DisburseSnsNeuronModal", () => {
   const principalString = `${mockSnsMainAccount.principal}`;
   const renderDisburseModal = async (
-      neuron: SnsNeuron,
-      reloadNeuron: () => Promise<void> = () => Promise.resolve()
+    neuron: SnsNeuron,
+    reloadNeuron: () => Promise<void> = () => Promise.resolve()
   ): Promise<RenderResult<SvelteComponent>> => {
     return renderModal({
       component: DisburseSnsNeuronModal,
@@ -48,8 +48,8 @@ describe("DisburseSnsNeuronModal", () => {
   beforeEach(() => {
     jest.resetAllMocks();
     jest
-        .spyOn(authServices, "getAuthenticatedIdentity")
-        .mockResolvedValue(testIdentity);
+      .spyOn(authServices, "getAuthenticatedIdentity")
+      .mockResolvedValue(testIdentity);
 
     snsAccountsStore.setAccounts({
       rootCanisterId: mockPrincipal,
@@ -77,7 +77,7 @@ describe("DisburseSnsNeuronModal", () => {
     const { queryByTestId } = await renderDisburseModal(mockSnsNeuron);
 
     await waitFor(() =>
-        expect(queryByTestId("confirm-disburse-screen")).not.toBeNull()
+      expect(queryByTestId("confirm-disburse-screen")).not.toBeNull()
     );
   });
 
@@ -105,8 +105,8 @@ describe("DisburseSnsNeuronModal", () => {
 
     const reloadNeuron = jest.fn().mockResolvedValue(null);
     const { queryByTestId } = await renderDisburseModal(
-        mockSnsNeuron,
-        reloadNeuron
+      mockSnsNeuron,
+      reloadNeuron
     );
 
     expect(queryByTestId("confirm-disburse-screen")).not.toBeNull();
@@ -135,12 +135,12 @@ describe("DisburseSnsNeuronModal", () => {
 
     const reloadNeuron = jest.fn().mockResolvedValue(null);
     const { queryByTestId } = await renderDisburseModal(
-        mockSnsNeuron,
-        reloadNeuron
+      mockSnsNeuron,
+      reloadNeuron
     );
 
     await waitFor(() =>
-        expect(queryByTestId("disburse-neuron-button")).not.toBeNull()
+      expect(queryByTestId("disburse-neuron-button")).not.toBeNull()
     );
 
     await fireEvent.click(queryByTestId("disburse-neuron-button") as Element);

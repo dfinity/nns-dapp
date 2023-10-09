@@ -19,7 +19,7 @@ jest.mock("$lib/services/neurons.services", () => {
 
 describe("SplitNeuronModal", () => {
   const renderSplitNeuronModal = async (
-      neuron: NeuronInfo
+    neuron: NeuronInfo
   ): Promise<RenderResult<SvelteComponent>> => {
     return renderModal({
       component: SplitNeuronModal,
@@ -47,7 +47,7 @@ describe("SplitNeuronModal", () => {
     expect(inputElement).not.toBeNull();
 
     inputElement &&
-    (await fireEvent.input(inputElement, { target: { value: 0 } }));
+      (await fireEvent.input(inputElement, { target: { value: 0 } }));
 
     const splitButton = queryByTestId("split-neuron-button");
     expect(splitButton?.getAttribute("disabled")).not.toBeNull();
@@ -60,7 +60,7 @@ describe("SplitNeuronModal", () => {
     expect(inputElement).not.toBeNull();
 
     inputElement &&
-    (await fireEvent.input(inputElement, { target: { value: 2.2 } }));
+      (await fireEvent.input(inputElement, { target: { value: 2.2 } }));
 
     const splitButton = queryByTestId("split-neuron-button");
     expect(splitButton).not.toBeNull();
