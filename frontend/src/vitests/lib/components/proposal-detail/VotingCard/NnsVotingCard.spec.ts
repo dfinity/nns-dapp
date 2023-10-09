@@ -17,7 +17,7 @@ import type { HttpAgent } from "@dfinity/agent";
 import type { Ballot, NeuronInfo, ProposalInfo } from "@dfinity/nns";
 import { GovernanceCanister, ProposalStatus, Vote } from "@dfinity/nns";
 import { SnsNeuronPermissionType } from "@dfinity/sns";
-import { fireEvent, screen } from "@testing-library/dom";
+import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { writable } from "svelte/store";
@@ -28,7 +28,7 @@ describe("VotingCard", () => {
   const neuronIds = [111, 222].map(BigInt);
   const proposalInfo: ProposalInfo = {
     ...mockProposalInfo,
-    ballots: neuronIds.map((neuronId) => ({ neuronId }) as Ballot),
+    ballots: neuronIds.map((neuronId) => ({ neuronId } as Ballot)),
     proposalTimestampSeconds: BigInt(2000),
     status: ProposalStatus.Open,
   };
@@ -116,6 +116,8 @@ describe("VotingCard", () => {
     let spyRegisterVote;
 
     beforeEach(() => {
+      vi.resetAllMocks();
+
       vi.spyOn(authStore, "subscribe").mockImplementation(
         mockAuthStoreSubscribe
       );
@@ -128,13 +130,14 @@ describe("VotingCard", () => {
       spyListNeurons = vi.spyOn(mockGovernanceCanister, "listNeurons");
 
       neuronsStore.setNeurons({ neurons, certified: true });
-      renderVotingCard();
     });
 
     it("should trigger register-vote and neuron-list updates", async () => {
+      const { queryByTestId } = renderVotingCard();
+
       expect(spyRegisterVote).not.toBeCalled();
-      await fireEvent.click(screen.queryByTestId("vote-yes") as Element);
-      await fireEvent.click(screen.queryByTestId("confirm-yes") as Element);
+      await fireEvent.click(queryByTestId("vote-yes") as Element);
+      await fireEvent.click(queryByTestId("confirm-yes") as Element);
       await waitFor(() =>
         expect(spyRegisterVote).toBeCalledTimes(neurons.length)
       );
@@ -142,9 +145,11 @@ describe("VotingCard", () => {
     });
 
     it("should trigger register-vote YES", async () => {
+      const { queryByTestId } = renderVotingCard();
+
       expect(spyRegisterVote).not.toBeCalled();
-      await fireEvent.click(screen.queryByTestId("vote-yes") as Element);
-      await fireEvent.click(screen.queryByTestId("confirm-yes") as Element);
+      await fireEvent.click(queryByTestId("vote-yes") as Element);
+      await fireEvent.click(queryByTestId("confirm-yes") as Element);
       await waitFor(() =>
         expect(spyRegisterVote).toBeCalledWith({
           neuronId: neuronIds[0],
@@ -157,9 +162,11 @@ describe("VotingCard", () => {
 
     // it's on to show "console.error('vote:..." in the output (because of NO mock in canister)
     it("should trigger register-vote NO", async () => {
+      const { queryByTestId } = renderVotingCard();
+
       expect(spyRegisterVote).not.toBeCalled();
-      await fireEvent.click(screen.queryByTestId("vote-no") as Element);
-      await fireEvent.click(screen.queryByTestId("confirm-yes") as Element);
+      await fireEvent.click(queryByTestId("vote-no") as Element);
+      await fireEvent.click(queryByTestId("confirm-yes") as Element);
 
       await waitFor(() =>
         expect(spyRegisterVote).toHaveBeenCalledWith({

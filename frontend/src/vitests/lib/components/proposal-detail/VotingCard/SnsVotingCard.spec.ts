@@ -29,7 +29,7 @@ import {
 } from "@dfinity/sns";
 import type { NeuronPermission } from "@dfinity/sns/dist/candid/sns_governance";
 import { fromDefinedNullable } from "@dfinity/utils";
-import { fireEvent, screen } from "@testing-library/dom";
+import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 
@@ -318,13 +318,13 @@ describe("SnsVotingCard", () => {
         certified: true,
       });
 
-      renderVotingCard();
+      const { queryByTestId } = renderVotingCard();
 
       expect(spyRegisterVote).toBeCalledTimes(0);
       expect(spyOnReloadProposal).toBeCalledTimes(0);
 
-      await fireEvent.click(screen.queryByTestId("vote-yes") as Element);
-      await fireEvent.click(screen.queryByTestId("confirm-yes") as Element);
+      await fireEvent.click(queryByTestId("vote-yes") as Element);
+      await fireEvent.click(queryByTestId("confirm-yes") as Element);
 
       await waitFor(() =>
         expect(spyRegisterVote).toBeCalledTimes(testNeurons.length)
@@ -339,13 +339,13 @@ describe("SnsVotingCard", () => {
         certified: true,
       });
 
-      renderVotingCard();
+      const { queryByTestId } = renderVotingCard();
 
       expect(spyRegisterVote).toBeCalledTimes(0);
       expect(spyOnReloadProposal).toBeCalledTimes(0);
 
-      await fireEvent.click(screen.queryByTestId("vote-yes") as Element);
-      await fireEvent.click(screen.queryByTestId("confirm-yes") as Element);
+      await fireEvent.click(queryByTestId("vote-yes") as Element);
+      await fireEvent.click(queryByTestId("confirm-yes") as Element);
 
       await waitFor(() =>
         expect(spyRegisterVote).toBeCalledWith(
@@ -376,13 +376,13 @@ describe("SnsVotingCard", () => {
         certified: true,
       });
 
-      renderVotingCard();
+      const { queryByTestId } = renderVotingCard();
 
       expect(spyRegisterVote).toBeCalledTimes(0);
       expect(spyOnReloadProposal).toBeCalledTimes(0);
 
-      await fireEvent.click(screen.queryByTestId("vote-no") as Element);
-      await fireEvent.click(screen.queryByTestId("confirm-yes") as Element);
+      await fireEvent.click(queryByTestId("vote-no") as Element);
+      await fireEvent.click(queryByTestId("confirm-yes") as Element);
 
       await waitFor(() =>
         expect(spyRegisterVote).toHaveBeenCalledWith(
