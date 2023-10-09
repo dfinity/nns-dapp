@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import * as agent from "$lib/api/agent.api";
 import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
 import { authStore } from "$lib/stores/auth.store";
@@ -9,7 +13,7 @@ import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import type { HttpAgent } from "@dfinity/agent";
 import { GovernanceCanister } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
-import { mock } from "vitest-mock-extended";
+import { mock } from "jest-mock-extended";
 
 describe("VotingHistoryModal", () => {
   const props = {
@@ -17,15 +21,17 @@ describe("VotingHistoryModal", () => {
   };
 
   const mockGovernanceCanister: MockGovernanceCanister =
-    new MockGovernanceCanister(mockProposals);
+      new MockGovernanceCanister(mockProposals);
 
   beforeEach(() => {
-    vi.spyOn(console, "error").mockImplementation(vi.fn);
-    vi.spyOn(GovernanceCanister, "create").mockImplementation(
-      (): GovernanceCanister => mockGovernanceCanister
-    );
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
-    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    jest.spyOn(console, "error").mockImplementation(jest.fn);
+    jest
+        .spyOn(GovernanceCanister, "create")
+        .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
+    jest
+        .spyOn(authStore, "subscribe")
+        .mockImplementation(mockAuthStoreSubscribe);
+    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   it("should display modal", () => {
@@ -53,13 +59,13 @@ describe("VotingHistoryModal", () => {
   });
 
   it("should close on error", async () => {
-    vi.spyOn(GovernanceCanister, "create").mockImplementation(
-      (): GovernanceCanister => {
-        throw new Error("test");
-      }
-    );
+    jest
+        .spyOn(GovernanceCanister, "create")
+        .mockImplementation((): GovernanceCanister => {
+          throw new Error("test");
+        });
 
-    const onClose = vi.fn();
+    const onClose = jest.fn();
     const { component } = render(VotingHistoryModal, {
       props,
     });
