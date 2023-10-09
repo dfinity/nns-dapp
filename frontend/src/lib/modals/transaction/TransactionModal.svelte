@@ -1,3 +1,5 @@
+<svelte:options accessors/>
+
 <script lang="ts">
   import QrWizardModal from "./QrWizardModal.svelte";
   import type { QrResponse } from "$lib/types/qr-wizard-modal";
