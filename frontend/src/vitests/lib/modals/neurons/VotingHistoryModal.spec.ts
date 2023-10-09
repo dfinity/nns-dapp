@@ -9,7 +9,7 @@ import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import type { HttpAgent } from "@dfinity/agent";
 import { GovernanceCanister } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
-import { mock } from "vi-mock-extended";
+import { mock } from "vitest-mock-extended";
 
 describe("VotingHistoryModal", () => {
   const props = {
