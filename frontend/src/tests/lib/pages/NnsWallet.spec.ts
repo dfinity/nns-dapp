@@ -30,10 +30,10 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
+import AccountsTest from "$vitests/lib/pages/AccountsTest.svelte";
 import { ICPToken } from "@dfinity/utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
-import AccountsTest from "./AccountsTest.svelte";
 
 jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/accounts.api");

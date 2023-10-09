@@ -22,11 +22,11 @@ import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { mockTokensSubscribe } from "$tests/mocks/tokens.mock";
 import { testAccountsModal } from "$tests/utils/accounts.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import AccountsTest from "$vitests/lib/pages/AccountsTest.svelte";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import AccountsTest from "./AccountsTest.svelte";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {
