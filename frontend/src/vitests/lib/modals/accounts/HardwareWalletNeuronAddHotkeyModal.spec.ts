@@ -17,6 +17,7 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import HardwareWalletAddNeuronHotkeyTest from "$vitests/lib/components/accounts/HardwareWalletAddNeuronHotkeyTest.svelte";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import type { Mock } from "vitest";
 
 vi.mock("$lib/proxy/icp-ledger.services.proxy");
 
@@ -30,7 +31,7 @@ describe("HardwareWalletNeuronAddHotkeyModal", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     resetIdentity();
-    (getLedgerIdentityProxy as vi.Mock).mockImplementation(() =>
+    (getLedgerIdentityProxy as Mock).mockImplementation(() =>
       Promise.resolve(mockIdentity2)
     );
     spyAddHotkey = vi
