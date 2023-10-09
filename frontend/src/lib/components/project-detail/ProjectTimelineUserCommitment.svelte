@@ -16,7 +16,6 @@
   import ProjectUserCommitmentLabel from "./ProjectUserCommitmentLabel.svelte";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import Separator from "../ui/Separator.svelte";
-  import TestIdWrapper from "../common/TestIdWrapper.svelte";
 
   export let myCommitment: TokenAmount | undefined;
   export let summary: SnsSummary;
