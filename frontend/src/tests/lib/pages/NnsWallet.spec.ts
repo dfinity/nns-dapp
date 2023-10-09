@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import * as accountsApi from "$lib/api/accounts.api";
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
@@ -25,16 +29,15 @@ import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
-} from "$vitests/utils/timers.test-utils";
+} from "$tests/utils/timers.test-utils";
 import { ICPToken } from "@dfinity/utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
-import type { SpyInstance } from "vitest";
 import AccountsTest from "./AccountsTest.svelte";
 
-vi.mock("$lib/api/nns-dapp.api");
-vi.mock("$lib/api/accounts.api");
-vi.mock("$lib/api/icp-ledger.api");
+jest.mock("$lib/api/nns-dapp.api");
+jest.mock("$lib/api/accounts.api");
+jest.mock("$lib/api/icp-ledger.api");
 
 const blockedApiPaths = [
   "$lib/api/nns-dapp.api",
@@ -51,22 +54,24 @@ describe("NnsWallet", () => {
   const mainBalanceE8s = BigInt(10_000_000);
 
   beforeEach(() => {
-    vi.clearAllMocks();
-    vi.clearAllTimers();
+    jest.clearAllMocks();
+    jest.clearAllTimers();
     cancelPollAccounts();
     icpAccountsStore.resetForTesting();
 
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
-    vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
-      mainBalanceE8s
-    );
-    vi.spyOn(accountsApi, "getTransactions").mockResolvedValue([]);
+    jest
+        .spyOn(authStore, "subscribe")
+        .mockImplementation(mockAuthStoreSubscribe);
+    jest
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
+    jest.spyOn(accountsApi, "getTransactions").mockResolvedValue([]);
   });
 
   const testToolbarButton = ({
-    container,
-    disabled,
-  }: {
+                               container,
+                               disabled,
+                             }: {
     container: HTMLElement;
     disabled: boolean;
   }) => {
@@ -74,15 +79,15 @@ describe("NnsWallet", () => {
 
     expect(button).not.toBeNull();
     expect((button as HTMLButtonElement).hasAttribute("disabled")).toEqual(
-      disabled
+        disabled
     );
   };
 
   describe("no accounts", () => {
     beforeEach(() => {
-      vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(
-        mockAccountDetails
-      );
+      jest
+          .spyOn(nnsDappApi, "queryAccount")
+          .mockResolvedValue(mockAccountDetails);
     });
 
     it("should render a spinner while loading", () => {
@@ -115,7 +120,7 @@ describe("NnsWallet", () => {
       expect(queryByTestId("projects-summary")).toBeNull();
 
       await waitFor(() =>
-        expect(queryByTestId("projects-summary")).toBeInTheDocument()
+          expect(queryByTestId("projects-summary")).toBeInTheDocument()
       );
     });
   });
@@ -137,13 +142,13 @@ describe("NnsWallet", () => {
       const { getByTestId } = render(NnsWallet, props);
 
       await waitFor(() =>
-        expect(getByTestId("token-value-label")).not.toBeNull()
+          expect(getByTestId("token-value-label")).not.toBeNull()
       );
 
       expect(getByTestId("token-value-label")?.textContent.trim()).toEqual(
-        `${formatToken({
-          value: mockMainAccount.balanceE8s,
-        })} ${ICPToken.symbol}`
+          `${formatToken({
+            value: mockMainAccount.balanceE8s,
+          })} ${ICPToken.symbol}`
       );
     });
 
@@ -172,7 +177,7 @@ describe("NnsWallet", () => {
       const { getByTestId } = result;
 
       await waitFor(() =>
-        expect(getByTestId("transaction-step-1")).toBeInTheDocument()
+          expect(getByTestId("transaction-step-1")).toBeInTheDocument()
       );
     });
 
@@ -200,11 +205,11 @@ describe("NnsWallet", () => {
       const { getByText } = result;
 
       expect(
-        getByText(
-          replacePlaceholders(en.wallet.token_address, {
-            $tokenSymbol: en.core.icp,
-          })
-        )
+          getByText(
+              replacePlaceholders(en.wallet.token_address, {
+                $tokenSymbol: en.core.icp,
+              })
+          )
       ).toBeInTheDocument();
     });
 
@@ -218,18 +223,18 @@ describe("NnsWallet", () => {
       await waitModalIntroEnd({ container, selector: modalToolbarSelector });
 
       await waitFor(() =>
-        expect(accountsApi.getTransactions).toBeCalledTimes(2)
+          expect(accountsApi.getTransactions).toBeCalledTimes(2)
       );
       expect(ledgerApi.queryAccountBalance).not.toBeCalled();
 
       await waitFor(expect(getByTestId("receive-modal")).not.toBeNull);
 
       fireEvent.click(
-        getByTestId("reload-receive-account") as HTMLButtonElement
+          getByTestId("reload-receive-account") as HTMLButtonElement
       );
 
       await waitFor(() =>
-        expect(accountsApi.getTransactions).toBeCalledTimes(4)
+          expect(accountsApi.getTransactions).toBeCalledTimes(4)
       );
       expect(ledgerApi.queryAccountBalance).toBeCalledTimes(2);
     });
@@ -247,7 +252,7 @@ describe("NnsWallet", () => {
       accountIdentifier: mockHardwareWalletAccount.identifier,
     };
 
-    afterAll(() => vi.clearAllMocks());
+    afterAll(() => jest.clearAllMocks());
 
     it("should display principal", async () => {
       const { queryByText } = render(NnsWallet, props);
@@ -255,26 +260,26 @@ describe("NnsWallet", () => {
 
       expect(principal?.length).toBeGreaterThan(0);
       expect(
-        queryByText(`${principal}`, {
-          exact: false,
-        })
+          queryByText(`${principal}`, {
+            exact: false,
+          })
       ).toBeInTheDocument();
     });
   });
 
   describe("when no accounts and user navigates away", () => {
-    let spyQueryAccount: SpyInstance;
+    let spyQueryAccount: jest.SpyInstance;
     beforeEach(() => {
       const now = Date.now();
-      vi.useFakeTimers().setSystemTime(now);
+      jest.useFakeTimers().setSystemTime(now);
       const mainBalanceE8s = BigInt(10_000_000);
-      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
-        mainBalanceE8s
-      );
-      spyQueryAccount = vi
-        .spyOn(nnsDappApi, "queryAccount")
-        .mockRejectedValue(new Error("connection error"));
-      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      jest
+          .spyOn(ledgerApi, "queryAccountBalance")
+          .mockResolvedValue(mainBalanceE8s);
+      spyQueryAccount = jest
+          .spyOn(nnsDappApi, "queryAccount")
+          .mockRejectedValue(new Error("connection error"));
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
     });
 
     it("should stop polling", async () => {
