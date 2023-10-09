@@ -4,7 +4,7 @@ import {
   type WalletContext,
   type WalletStore,
 } from "$lib/types/wallet.context";
-import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
+import ContextWrapperTest from "$vitests/lib/components/ContextWrapperTest.svelte";
 import { render } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import { writable } from "svelte/store";

@@ -3,7 +3,7 @@ import {
   WALLET_CONTEXT_KEY,
   type WalletStore,
 } from "$lib/types/wallet.context";
-import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
+import ContextWrapperTest from "$vitests/lib/components/ContextWrapperTest.svelte";
 import type { RenderResult } from "@testing-library/svelte";
 import { render, waitFor } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
