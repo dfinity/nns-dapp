@@ -38,11 +38,12 @@ describe("NnsProposalProposerPayloadEntry", () => {
     const payloadWithJsonString = {
       a: JSON.stringify(nestedObj),
     };
-    const spyGetProposalPayload = vi
-      .spyOn(nnsDappMock, "getProposalPayload")
-      .mockImplementation(async () => payloadWithJsonString);
 
-    expect(spyGetProposalPayload).toBeCalledTimes(0);
+    nnsDappMock.getProposalPayload.mockImplementation(
+      async () => payloadWithJsonString
+    );
+
+    expect(nnsDappMock.getProposalPayload).toBeCalledTimes(0);
     render(NnsProposalProposerPayloadEntry, {
       props: {
         proposal: proposalWithNnsFunctionAction,
@@ -51,11 +52,11 @@ describe("NnsProposalProposerPayloadEntry", () => {
     });
 
     await runResolvedPromises();
-    expect(spyGetProposalPayload).toBeCalledTimes(1);
+    expect(nnsDappMock.getProposalPayload).toBeCalledTimes(1);
   });
 
   it("should parse JSON strings and render them", async () => {
-    vi.spyOn(nnsDappMock, "getProposalPayload").mockImplementation(
+    nnsDappMock.getProposalPayload.mockImplementation(
       async () => payloadWithJsonString
     );
     const { queryByTestId } = render(NnsProposalProposerPayloadEntry, {
