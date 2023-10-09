@@ -9,10 +9,15 @@
     getICPs,
     getTestBalance,
     getTokens,
+    getBTC,
   } from "$lib/services/dev.services";
   import { Spinner, IconAccountBalance } from "@dfinity/gix-components";
+  import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
-  import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
+  import {
+    isCkBTCUniverseStore,
+    selectedUniverseIdStore,
+  } from "$lib/derived/selected-universe.derived";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import type { Principal } from "@dfinity/principal";
@@ -48,6 +53,10 @@
         await getTokens({
           tokens: inputValue,
           rootCanisterId: selectedProjectId,
+        });
+      } else if ($isCkBTCUniverseStore) {
+        await getBTC({
+          amount: inputValue,
         });
       } else {
         await getICPs(inputValue);
@@ -85,10 +94,13 @@
     })();
 
   // If the test account balance is 0, don't show a button that won't work. Show the ICP token instead.
-  let token: Token;
-  $: token =
-    (tokenBalanceE8s === 0n ? ICPToken : $snsTokenSymbolSelectedStore) ??
-    ICPToken;
+  let tokenSymbol: string;
+  $: tokenSymbol =
+    ($isCkBTCUniverseStore
+      ? "BTC" /*$i18n.ckbtc.btc*/
+      : tokenBalanceE8s === 0n
+      ? ICPToken.symbol
+      : $snsTokenSymbolSelectedStore?.symbol) ?? ICPToken.symbol;
 </script>
 
 <TestIdWrapper testId="get-tokens-component">
@@ -98,15 +110,15 @@
       data-tid={`get-${isNns || tokenBalanceE8s === 0n ? "icp" : "sns"}-button`}
       on:click|preventDefault|stopPropagation={() => (visible = true)}
       class="open"
-      title={`Get ${token.symbol}`}
+      title={`Get ${tokenSymbol}`}
     >
       <IconAccountBalance />
-      <span>{`Get ${token.symbol}`}</span>
+      <span>{`Get ${tokenSymbol}`}</span>
     </button>
   {/if}
 
   <Modal {visible} role="alert" on:nnsClose={onClose}>
-    <span slot="title">{`Get ${token.symbol}`}</span>
+    <span slot="title">{`Get ${tokenSymbol}`}</span>
 
     <form
       id="get-icp-form"
