@@ -78,8 +78,8 @@ export const mockAccountsStoreData = {
 
 export const mockAccountsStoreSubscribe =
   (subAccounts: Account[] = [], hardwareWalletAccounts: Account[] = []) =>
-  (run?: Subscriber<IcpAccountsStoreData>): (() => void) => {
-    run?.({
+  (run: Subscriber<IcpAccountsStoreData>): (() => void) => {
+    run({
       main: mockMainAccount,
       subAccounts,
       hardwareWallets: hardwareWalletAccounts,
