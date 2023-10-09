@@ -183,7 +183,7 @@ describe("CkBTCTransactionModal", () => {
     });
 
     await waitFor(
-      expect(result.getByTestId("in-progress-warning")).not.toBeNull
+        () => expect(result.getByTestId("in-progress-warning")).not.toBeNull()
     );
 
     // In progress + transfer to ledger + sending BTC + reload
@@ -199,7 +199,7 @@ describe("CkBTCTransactionModal", () => {
     });
 
     await waitFor(
-      expect(() => result.getByTestId("in-progress-warning")).toThrow
+        () => expect(() => result.getByTestId("in-progress-warning")).toThrow()
     );
   });
 
@@ -494,7 +494,7 @@ describe("CkBTCTransactionModal", () => {
       });
 
       await waitFor(
-        expect(result.getByTestId("in-progress-warning")).not.toBeNull
+          () => expect(result.getByTestId("in-progress-warning")).not.toBeNull()
       );
 
       // In progress + sending BTC + reload
