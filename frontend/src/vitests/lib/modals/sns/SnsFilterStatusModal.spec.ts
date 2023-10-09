@@ -59,7 +59,7 @@ describe("SnsFilterStatusModal", () => {
     );
   });
 
-  it("should forward close modal event", (done) => {
+  it("should forward close modal event", () => new Promise<void>((done) => {
     const { container, component } = render(SnsFilterStatusModal, {
       props,
     });
@@ -73,7 +73,7 @@ describe("SnsFilterStatusModal", () => {
     );
 
     button && fireEvent.click(button);
-  });
+  }));
 
   it("should filter filters", async () => {
     const uncheckedFilters = filters.map((filter) => ({
