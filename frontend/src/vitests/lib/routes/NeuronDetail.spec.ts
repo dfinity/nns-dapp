@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as agent from "$lib/api/agent.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -23,13 +19,13 @@ import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import { mock } from "jest-mock-extended";
+import { mock } from "vitest-mock-extended";
 
-jest.mock("$lib/api/sns-aggregator.api");
-jest.mock("$lib/api/governance.api");
-jest.mock("$lib/api/sns-governance.api");
-jest.mock("$lib/api/sns-ledger.api");
-jest.mock("$lib/api/sns.api");
+vi.mock("$lib/api/sns-aggregator.api");
+vi.mock("$lib/api/governance.api");
+vi.mock("$lib/api/sns-governance.api");
+vi.mock("$lib/api/sns-ledger.api");
+vi.mock("$lib/api/sns.api");
 
 const testSnsCanisterId = Principal.fromHex("123321");
 const testNnsNeuronId = mockNeuron.neuronId;
@@ -47,7 +43,7 @@ describe("NeuronDetail", () => {
   beforeEach(() => {
     resetIdentity();
     resetSnsProjects();
-    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   describe("nns neuron", () => {

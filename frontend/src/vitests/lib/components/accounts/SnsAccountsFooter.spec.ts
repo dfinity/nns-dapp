@@ -3,7 +3,6 @@ import * as accountsServices from "$lib/services/sns-accounts.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { page } from "$mocks/$app/stores";
-import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
 import {
   modalToolbarSelector,
   waitModalIntroEnd,
@@ -12,6 +11,7 @@ import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { testAccountsModal } from "$tests/utils/accounts.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import AccountsTest from "$vitests/lib/pages/AccountsTest.svelte";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 

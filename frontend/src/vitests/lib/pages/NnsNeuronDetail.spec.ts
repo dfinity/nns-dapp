@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import NnsNeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -11,17 +7,17 @@ import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockVoteRegistration } from "$tests/mocks/proposal.mock";
 import { NnsNeuronDetailPo } from "$tests/page-objects/NnsNeuronDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { runResolvedPromises } from "$vitests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
 
 // Used when NeuronFollowingCard is mounted
-jest.mock("$lib/services/known-neurons.services", () => {
+vi.mock("$lib/services/known-neurons.services", () => {
   return {
-    listKnownNeurons: jest.fn().mockResolvedValue(undefined),
+    listKnownNeurons: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/api/governance.api");
+vi.mock("$lib/api/governance.api");
 
 describe("NeuronDetail", () => {
   fakeGovernanceApi.install();

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as api from "$lib/api/governance.api";
 import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
@@ -14,11 +10,11 @@ import { NeuronState } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 
-jest.mock("$lib/api/governance.api");
+vi.mock("$lib/api/governance.api");
 
 describe("NnsNeurons", () => {
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
     resetNeuronsApiService();
     neuronsStore.reset();
   });
@@ -40,10 +36,10 @@ describe("NnsNeurons", () => {
     const neurons = [mockNeuron, spawningNeuron, mockNeuron2];
 
     beforeEach(() => {
-      jest
-        .spyOn(authServices, "getAuthenticatedIdentity")
-        .mockResolvedValue(mockIdentity);
-      jest.spyOn(api, "queryNeurons").mockResolvedValue(neurons);
+      vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
+        mockIdentity
+      );
+      vi.spyOn(api, "queryNeurons").mockResolvedValue(neurons);
     });
 
     it("should render spawning neurons as disabled", async () => {
@@ -72,10 +68,10 @@ describe("NnsNeurons", () => {
 
   describe("no neurons", () => {
     beforeEach(() => {
-      jest
-        .spyOn(authServices, "getAuthenticatedIdentity")
-        .mockResolvedValue(mockIdentity);
-      jest.spyOn(api, "queryNeurons").mockResolvedValue([]);
+      vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
+        mockIdentity
+      );
+      vi.spyOn(api, "queryNeurons").mockResolvedValue([]);
     });
 
     it("should render an empty message", async () => {
@@ -89,10 +85,10 @@ describe("NnsNeurons", () => {
 
   describe("navigating", () => {
     beforeEach(() => {
-      jest
-        .spyOn(authServices, "getAuthenticatedIdentity")
-        .mockResolvedValue(mockIdentity);
-      jest.spyOn(api, "queryNeurons").mockResolvedValue([]);
+      vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
+        mockIdentity
+      );
+      vi.spyOn(api, "queryNeurons").mockResolvedValue([]);
     });
 
     it("should call query neurons twice when rendered", async () => {

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import * as snsSaleApi from "$lib/api/sns-sale.api";
@@ -46,13 +42,13 @@ import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
-} from "$tests/utils/timers.test-utils";
+} from "$vitests/utils/timers.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
-jest.mock("$lib/api/nns-dapp.api");
-jest.mock("$lib/api/sns.api");
+vi.mock("$lib/api/nns-dapp.api");
+vi.mock("$lib/api/sns.api");
 jest.mock("$lib/api/sns-swap-metrics.api");
 jest.mock("$lib/api/sns-sale.api");
 jest.mock("$lib/api/icp-ledger.api");

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsAccounts from "$lib/pages/SnsAccounts.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import * as workerBalances from "$lib/services/worker-balances.services";
@@ -25,9 +21,9 @@ import { nonNullish } from "@dfinity/utils";
 import { render, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { ComponentProps } from "svelte/types/runtime";
 
-jest.mock("$lib/services/sns-accounts.services");
+vi.mock("$lib/services/sns-accounts.services");
 
-jest.mock("$lib/services/worker-balances.services", () => ({
+vi.mock("$lib/services/worker-balances.services", () => ({
   initBalancesWorker: jest.fn(() =>
     Promise.resolve({
       startBalancesTimer: () => {

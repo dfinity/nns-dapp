@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
 import SnsWallet from "$lib/pages/SnsWallet.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
@@ -28,9 +24,9 @@ import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import AccountsTest from "./AccountsTest.svelte";
 
-jest.mock("$lib/services/sns-accounts.services", () => {
+vi.mock("$lib/services/sns-accounts.services", () => {
   return {
-    syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
+    syncSnsAccounts: vi.fn().mockResolvedValue(undefined),
   };
 });
 

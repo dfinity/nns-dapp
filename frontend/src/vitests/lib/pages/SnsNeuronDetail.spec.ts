@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { increaseStakeNeuron } from "$lib/api/sns.api";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -39,7 +35,7 @@ import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { SnsNeuronDetailPo } from "$tests/page-objects/SnsNeuronDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { runResolvedPromises } from "$vitests/utils/timers.test-utils";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle, type SnsNeuronId } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";

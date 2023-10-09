@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsProposals from "$lib/pages/SnsProposals.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
@@ -24,7 +20,7 @@ import {
 } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
-jest.mock("$lib/api/sns-governance.api");
+vi.mock("$lib/api/sns-governance.api");
 
 describe("SnsProposals", () => {
   fakeSnsGovernanceApi.install();
@@ -39,7 +35,7 @@ describe("SnsProposals", () => {
   const rootCanisterId = mockPrincipal;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     snsProposalsStore.reset();
     snsFunctionsStore.reset();
     snsFiltersStore.reset();
