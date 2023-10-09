@@ -18,7 +18,7 @@ import {
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
-import { clickByTestId } from "$tests/utils/utils.test-utils";
+import { clickByTestId } from "$vitests/utils/utils.test-utils";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";

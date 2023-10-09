@@ -26,8 +26,8 @@ import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import {
   advanceTime,
   runResolvedPromises,
-} from "$tests/utils/timers.test-utils";
-import { assertNonNullish, clickByTestId } from "$tests/utils/utils.test-utils";
+} from "$vitests/utils/timers.test-utils";
+import { assertNonNullish, clickByTestId } from "$vitests/utils/utils.test-utils";
 import { LedgerCanister } from "@dfinity/ledger-icp";
 import type { NeuronInfo } from "@dfinity/nns";
 import { GovernanceCanister } from "@dfinity/nns";

@@ -4,7 +4,7 @@ import { proposalsFiltersStore } from "$lib/stores/proposals.store";
 import type { ProposalsFilterModalProps } from "$lib/types/proposals";
 import { enumKeys } from "$lib/utils/enum.utils";
 import en from "$tests/mocks/i18n.mock";
-import { clickByTestId } from "$tests/utils/utils.test-utils";
+import { clickByTestId } from "$vitests/utils/utils.test-utils";
 import { Topic } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";

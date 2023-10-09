@@ -37,7 +37,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import {
   advanceTime,
   runResolvedPromises,
-} from "$tests/utils/timers.test-utils";
+} from "$vitests/utils/timers.test-utils";
 import { AccountIdentifier } from "@dfinity/ledger-icp";
 import { writable } from "svelte/store";
 import type { SpyInstance } from "vitest";

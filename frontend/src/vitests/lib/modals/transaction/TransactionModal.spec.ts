@@ -21,7 +21,7 @@ import { mockSnsAccountsStoreSubscribe } from "$tests/mocks/sns-accounts.mock";
 import { TransactionModalPo } from "$tests/page-objects/TransactionModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { queryToggleById } from "$tests/utils/toggle.test-utils";
-import { clickByTestId } from "$tests/utils/utils.test-utils";
+import { clickByTestId } from "$vitests/utils/utils.test-utils";
 import type { Principal } from "@dfinity/principal";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import {

@@ -1,5 +1,5 @@
 import QrWizardModal from "$lib/modals/transaction/QrWizardModal.svelte";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { runResolvedPromises } from "$vitests/utils/timers.test-utils";
 import { ICPToken } from "@dfinity/utils";
 import { fireEvent, render } from "@testing-library/svelte";
 

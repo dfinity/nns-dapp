@@ -18,7 +18,7 @@ import {
 import { renderModal } from "$tests/mocks/modal.mock";
 import { MergeNeuronsModalPo } from "$tests/page-objects/MergeNeuronsModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { runResolvedPromises } from "$vitests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { get } from "svelte/store";

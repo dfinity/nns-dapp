@@ -3,7 +3,7 @@ import LinkCanisterModal from "$lib/modals/canisters/LinkCanisterModal.svelte";
 import { attachCanister } from "$lib/services/canisters.services";
 import en from "$tests/mocks/i18n.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
-import { clickByTestId } from "$tests/utils/utils.test-utils";
+import { clickByTestId } from "$vitests/utils/utils.test-utils";
 import { nonNullish } from "@dfinity/utils";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";

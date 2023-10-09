@@ -22,7 +22,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import {
   advanceTime,
   runResolvedPromises,
-} from "$tests/utils/timers.test-utils";
+} from "$vitests/utils/timers.test-utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import type { RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";

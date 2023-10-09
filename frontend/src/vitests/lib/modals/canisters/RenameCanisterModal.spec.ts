@@ -6,7 +6,7 @@ import { mockCanisterId, mockCanisters } from "$tests/mocks/canisters.mock";
 import { RenameCanisterModalPo } from "$tests/page-objects/RenameCanisterModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { runResolvedPromises } from "$vitests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
 import RenameCanisterModalTest from "./RenameCanisterModalTest.svelte";
 

@@ -3,7 +3,7 @@ import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import type { Filter } from "$lib/types/filters";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
-import { clickByTestId } from "$tests/utils/utils.test-utils";
+import { clickByTestId } from "$vitests/utils/utils.test-utils";
 import { SnsProposalRewardStatus } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
