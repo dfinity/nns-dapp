@@ -4,10 +4,10 @@ import {
   type WalletContext,
   type WalletStore,
 } from "$lib/types/wallet.context";
-import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockReceivedFromMainAccountTransaction } from "$tests/mocks/transaction.mock";
+import ContextWrapperTest from "$vitests/lib/components/ContextWrapperTest.svelte";
 import { render } from "@testing-library/svelte";
 import { writable } from "svelte/store";
 
