@@ -46,13 +46,13 @@
 
     try {
       // Default to transfer ICPs if the test account's balance of the selected universe is 0.
-      if (!isSns || tokenBalanceE8s === 0n) {
-        await getICPs(inputValue);
-      } else {
+      if (isSns && tokenBalanceE8s > 0n) {
         await getTokens({
           tokens: inputValue,
           rootCanisterId: selectedProjectId,
         });
+      } else {
+        await getICPs(inputValue);
       }
 
       reset();
