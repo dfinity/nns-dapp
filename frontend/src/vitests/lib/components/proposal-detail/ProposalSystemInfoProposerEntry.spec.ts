@@ -11,6 +11,8 @@ import type { HttpAgent } from "@dfinity/agent";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mock } from "vitest-mock-extended";
 
+vi.mock("$lib/services/neurons.services");
+
 describe("ProposalMeta", () => {
   beforeEach(() => {
     vi.spyOn(console, "error").mockImplementation(vi.fn);
