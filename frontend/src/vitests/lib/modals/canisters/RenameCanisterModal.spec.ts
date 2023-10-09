@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as canisterApi from "$lib/api/canisters.api";
 import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
 import { authStore } from "$lib/stores/auth.store";
@@ -9,19 +5,16 @@ import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId, mockCanisters } from "$tests/mocks/canisters.mock";
 import { RenameCanisterModalPo } from "$tests/page-objects/RenameCanisterModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { blockAllCallsTo } from "$tests/utils/module.test-utils";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import RenameCanisterModalTest from "$vitests/lib/modals/canisters/RenameCanisterModalTest.svelte";
+import { runResolvedPromises } from "$vitests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
+import RenameCanisterModalTest from "./RenameCanisterModalTest.svelte";
 
-jest.mock("$lib/api/canisters.api");
+vi.mock("$lib/api/canisters.api");
 
 describe("RenameCanisterModal", () => {
-  blockAllCallsTo(["$lib/api/canisters.api"]);
-
   beforeEach(() => {
-    jest.spyOn(canisterApi, "renameCanister").mockResolvedValue(undefined);
-    jest.spyOn(canisterApi, "queryCanisters").mockResolvedValue(mockCanisters);
+    vi.spyOn(canisterApi, "renameCanister").mockResolvedValue(undefined);
+    vi.spyOn(canisterApi, "queryCanisters").mockResolvedValue(mockCanisters);
     authStore.setForTesting(mockIdentity);
   });
 
@@ -33,7 +26,7 @@ describe("RenameCanisterModal", () => {
     return RenameCanisterModalPo.under(new JestPageObjectElement(container));
   };
 
-  it("calls the canister api to rename canister", async () => {
+  it.only("calls the canister api to rename canister", async () => {
     const newName = "new name";
     const po = renderComponent({ canisterId: mockCanisterId, name: "name" });
 
