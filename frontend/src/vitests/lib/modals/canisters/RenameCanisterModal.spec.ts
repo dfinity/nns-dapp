@@ -26,7 +26,7 @@ describe("RenameCanisterModal", () => {
     return RenameCanisterModalPo.under(new JestPageObjectElement(container));
   };
 
-  it.only("calls the canister api to rename canister", async () => {
+  it("calls the canister api to rename canister", async () => {
     const newName = "new name";
     const po = renderComponent({ canisterId: mockCanisterId, name: "name" });
 
