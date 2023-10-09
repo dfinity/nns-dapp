@@ -119,7 +119,7 @@ import type { Mock } from "vitest";
 let spyQueryAccount: jest.SpyInstance;
 
 // vitest
-import type {SpyInstance} from "vitest";
+import type { SpyInstance } from "vitest";
 let spyQueryAccount: SpyInstance;
 ```
 
