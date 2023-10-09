@@ -1,13 +1,13 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_root.rs a/rs/sns_aggregator/src/types/ic_sns_root.rs
-index fe1e3ee0a..f65c1f3ca 100644
+index 91b761207..740fd15dd 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_root.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_root.rs
-@@ -133,7 +133,7 @@ pub struct GetSnsCanistersSummaryResponse {
+@@ -134,7 +134,7 @@ pub struct GetSnsCanistersSummaryResponse {
  #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
  pub struct ListSnsCanistersArg {}
  
 -#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 +#[derive(Serialize, Clone, Debug, CandidType, Deserialize, Default)]
  pub struct ListSnsCanistersResponse {
-     pub root: Option<candid::Principal>,
-     pub swap: Option<candid::Principal>,
+     pub root: Option<Principal>,
+     pub swap: Option<Principal>,

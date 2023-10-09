@@ -27,9 +27,9 @@ import { mockUniversesTokens } from "$tests/mocks/tokens.mock";
 import { selectSegmentBTC } from "$tests/utils/accounts.test-utils";
 import { advanceTime } from "$tests/utils/timers.test-utils";
 import { testTransferTokens } from "$tests/utils/transaction-modal.test-utils";
+import CkBTCAccountsTest from "$vitests/lib/components/accounts/CkBTCAccountsTest.svelte";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mockBTCAddressTestnet } from "../../mocks/ckbtc-accounts.mock";
-import CkBTCAccountsTest from "../components/accounts/CkBTCAccountsTest.svelte";
 
 const expectedBalanceAfterTransfer = 11_111n;
 

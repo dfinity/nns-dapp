@@ -380,7 +380,7 @@ describe("sns-neuron utils", () => {
         }),
       ];
       const neurons = ids.map(
-        (id) => ({ ...mockSnsNeuron, id: [{ id }] } as SnsNeuron)
+        (id) => ({ ...mockSnsNeuron, id: [{ id }] }) as SnsNeuron
       );
       const memo = nextMemo({
         neurons,
@@ -406,7 +406,7 @@ describe("sns-neuron utils", () => {
           })
       );
       const neurons = ids.map(
-        (id) => ({ ...mockSnsNeuron, id: [{ id }] } as SnsNeuron)
+        (id) => ({ ...mockSnsNeuron, id: [{ id }] }) as SnsNeuron
       );
 
       expect(() =>

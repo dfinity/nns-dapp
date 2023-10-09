@@ -93,7 +93,7 @@ const syncMetrics = async ({
 
 const emitCanister = ([tvl, transactionRate]: [
   GetTVLResult | undefined,
-  DashboardMessageExecutionRateResponse | undefined
+  DashboardMessageExecutionRateResponse | undefined,
 ]) =>
   postMessage({
     msg: "nnsSyncMetrics",

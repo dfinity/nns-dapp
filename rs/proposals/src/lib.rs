@@ -1,10 +1,9 @@
+use crate::canisters::nns_governance::api::{Action, ProposalInfo};
 use crate::def::*;
 use candid::parser::types::{IDLType, IDLTypes};
 use candid::{CandidType, Deserialize, IDLArgs};
 use ic_base_types::CanisterId;
-use ic_nns_constants::IDENTITY_CANISTER_ID;
-use ic_nns_governance::pb::v1::proposal::Action;
-use ic_nns_governance::pb::v1::ProposalInfo;
+use ic_nns_constants::{GOVERNANCE_CANISTER_ID, IDENTITY_CANISTER_ID};
 use idl2json::candid_types::internal_candid_type_to_idl_type;
 use idl2json::{idl_args2json_with_weak_names, BytesFormat, Idl2JsonOptions};
 use serde::de::DeserializeOwned;
@@ -30,7 +29,11 @@ pub async fn get_proposal_payload(proposal_id: u64) -> Result<Json, String> {
     if let Some(result) = CACHED_PROPOSAL_PAYLOADS.with(|c| c.borrow().get(&proposal_id).cloned()) {
         Ok(result)
     } else {
-        match crate::canisters::governance::get_proposal_info(proposal_id).await {
+        match crate::canisters::nns_governance::api::Service(GOVERNANCE_CANISTER_ID.into())
+            .get_proposal_info(proposal_id)
+            .await
+            .map(|result| result.0)
+        {
             Ok(Some(proposal_info)) => {
                 let json = process_proposal_payload(proposal_info);
                 CACHED_PROPOSAL_PAYLOADS
@@ -38,7 +41,7 @@ pub async fn get_proposal_payload(proposal_id: u64) -> Result<Json, String> {
                 Ok(json)
             }
             Ok(None) => Err("Proposal not found".to_string()), // We shouldn't cache this as the proposal may simply not exist yet
-            Err(error) => Err(error), // We shouldn't cache this as the error may just be transient
+            Err(error) => Err(error.1), // We shouldn't cache this as the error may just be transient
         }
     }
 }
@@ -212,24 +215,24 @@ fn debug<T: Debug>(value: T) -> String {
 
 mod def {
     use crate::canister_arg_types;
+    use crate::canisters::sns_wasm::api::{SnsUpgrade, SnsVersion};
     use crate::{decode_arg, Json};
-    use candid::CandidType;
+    use candid::{CandidType, Principal};
     use ic_base_types::{CanisterId, PrincipalId};
     use ic_crypto_sha2::Sha256;
     use ic_ic00_types::CanisterInstallMode;
     use ic_nervous_system_common::MethodAuthzChange;
-    use ic_sns_wasm::pb::v1::{SnsUpgrade, SnsVersion};
     use serde::{Deserialize, Serialize};
     use std::convert::TryFrom;
     use std::fmt::Write;
 
     // NNS function 1 - CreateSubnet
     // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_create_subnet.rs#L248
-    pub type CreateSubnetPayload = registry_canister::mutations::do_create_subnet::CreateSubnetPayload;
+    pub type CreateSubnetPayload = crate::canisters::nns_registry::api::CreateSubnetPayload;
 
     // NNS function 2 - AddNodeToSubnet
     // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_add_nodes_to_subnet.rs#L51
-    pub type AddNodesToSubnetPayload = registry_canister::mutations::do_add_nodes_to_subnet::AddNodesToSubnetPayload;
+    pub type AddNodesToSubnetPayload = crate::canisters::nns_registry::api::AddNodesToSubnetPayload;
 
     // NNS function 3 - AddNNSCanister
     // https://github.com/dfinity/ic/blob/fba1b63a8c6bd1d49510c10f85fe6d1668089422/rs/nervous_system/root/src/lib.rs#L192
@@ -314,20 +317,19 @@ mod def {
 
     // NNS function 5 - BlessReplicaVersion
     // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_bless_replica_version.rs#L83
-    pub type BlessReplicaVersionPayload =
-        registry_canister::mutations::do_bless_replica_version::BlessReplicaVersionPayload;
+    pub type BlessReplicaVersionPayload = crate::canisters::nns_registry::api::BlessReplicaVersionPayload;
 
     // NNS function 6 - RecoverSubnet
     // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_recover_subnet.rs#L249
-    pub type RecoverSubnetPayload = registry_canister::mutations::do_recover_subnet::RecoverSubnetPayload;
+    pub type RecoverSubnetPayload = crate::canisters::nns_registry::api::RecoverSubnetPayload;
 
     // NNS function 7 - UpdateSubnetConfig
     // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_update_subnet.rs#L159
-    pub type UpdateSubnetPayload = registry_canister::mutations::do_update_subnet::UpdateSubnetPayload;
+    pub type UpdateSubnetPayload = crate::canisters::nns_registry::api::UpdateSubnetPayload;
 
     // NNS function 8 - AddNodeOperator
     // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_add_node_operator.rs#L40
-    pub type AddNodeOperatorPayload = registry_canister::mutations::do_add_node_operator::AddNodeOperatorPayload;
+    pub type AddNodeOperatorPayload = crate::canisters::nns_registry::api::AddNodeOperatorPayload;
 
     // NNS function 9 - UpgradeRootCanister
     // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/nns/handlers/lifeline/lifeline.mo#L11
@@ -371,13 +373,11 @@ mod def {
 
     // NNS function 11 - UpdateSubnetReplicaVersion
     // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_update_subnet_replica.rs#L58
-    pub type UpdateSubnetReplicaVersionPayload =
-        registry_canister::mutations::do_update_subnet_replica::UpdateSubnetReplicaVersionPayload;
+    pub type UpdateSubnetReplicaVersionPayload = crate::canisters::nns_registry::api::UpdateSubnetReplicaVersionPayload;
 
     // NNS function 13 - RemoveNodesFromSubnet
     // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_remove_nodes_from_subnet.rs#L57
-    pub type RemoveNodesFromSubnetPayload =
-        registry_canister::mutations::do_remove_nodes_from_subnet::RemoveNodesFromSubnetPayload;
+    pub type RemoveNodesFromSubnetPayload = crate::canisters::nns_registry::internal::RemoveNodesFromSubnetPayload;
 
     // NNS function 14 - SetAuthorizedSubnetworkList
     // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/nns/cmc/src/lib.rs#L168
@@ -385,12 +385,11 @@ mod def {
 
     // NNS function 15 - SetFirewallConfig
     // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_set_firewall_config.rs#L39
-    pub type SetFirewallConfigPayload = registry_canister::mutations::do_set_firewall_config::SetFirewallConfigPayload;
+    pub type SetFirewallConfigPayload = crate::canisters::nns_registry::api::SetFirewallConfigPayload;
 
     // NNS function 16 - UpdateNodeOperatorConfig
     // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_update_node_operator_config.rs#L106
-    pub type UpdateNodeOperatorConfigPayload =
-        registry_canister::mutations::do_update_node_operator_config::UpdateNodeOperatorConfigPayload;
+    pub type UpdateNodeOperatorConfigPayload = crate::canisters::nns_registry::api::UpdateNodeOperatorConfigPayload;
 
     // NNS function 17 - StopOrStartNNSCanister
     // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/nervous_system/root/src/lib.rs#L258
@@ -398,7 +397,7 @@ mod def {
 
     // NNS function 18 - RemoveNodes
     // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/node_management/do_remove_nodes.rs#L96
-    pub type RemoveNodesPayload = registry_canister::mutations::node_management::do_remove_nodes::RemoveNodesPayload;
+    pub type RemoveNodesPayload = crate::canisters::nns_registry::api::RemoveNodesPayload;
 
     // NNS function 20 - UpdateNodeRewardsTable
     // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/protobuf/def/registry/node_rewards/v2/node_rewards.proto#L24
@@ -413,7 +412,7 @@ mod def {
     // NNS function 22 - UpdateUnassignedNodes
     // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_update_unassigned_nodes_config.rs#L62
     pub type UpdateUnassignedNodesConfigPayload =
-        registry_canister::mutations::do_update_unassigned_nodes_config::UpdateUnassignedNodesConfigPayload;
+        crate::canisters::nns_registry::api::UpdateUnassignedNodesConfigPayload;
 
     // NNS function 23 - RemoveNodeOperators
     // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/protobuf/def/registry/node_operator/v1/node_operator.proto#L34
@@ -438,34 +437,31 @@ mod def {
 
     // NNS function 24 - RerouteCanisterRange
     // https://github.com/dfinity/ic/blob/5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c/rs/registry/canister/src/mutations/reroute_canister_ranges.rs#L66
-    pub type RerouteCanisterRangesPayload =
-        registry_canister::mutations::reroute_canister_ranges::RerouteCanisterRangesPayload;
+    pub type RerouteCanisterRangesPayload = crate::canisters::nns_registry::api::RerouteCanisterRangesPayload;
 
     // NNS function 25 - AddFirewallRules
     // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/firewall.rs#L218
-    pub type AddFirewallRulesPayload = registry_canister::mutations::firewall::AddFirewallRulesPayload;
+    pub type AddFirewallRulesPayload = crate::canisters::nns_registry::api::AddFirewallRulesPayload;
 
     // NNS function 26 - RemoveFirewallRules
     // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/firewall.rs#L233
-    pub type RemoveFirewallRulesPayload = registry_canister::mutations::firewall::RemoveFirewallRulesPayload;
+    pub type RemoveFirewallRulesPayload = crate::canisters::nns_registry::api::RemoveFirewallRulesPayload;
 
     // NNS function 27 - UpdateFirewallRules
     // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/firewall.rs#L246
-    pub type UpdateFirewallRulesPayload = registry_canister::mutations::firewall::UpdateFirewallRulesPayload;
+    pub type UpdateFirewallRulesPayload = crate::canisters::nns_registry::internal::UpdateFirewallRulesPayload;
 
     // NNS function 28 - PrepareCanisterMigration
     // https://github.com/dfinity/ic/blob/5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c/rs/registry/canister/src/mutations/prepare_canister_migration.rs#L67
-    pub type PrepareCanisterMigrationPayload =
-        registry_canister::mutations::prepare_canister_migration::PrepareCanisterMigrationPayload;
+    pub type PrepareCanisterMigrationPayload = crate::canisters::nns_registry::api::PrepareCanisterMigrationPayload;
 
     // NNS function 29 - CompleteCanisterMigration
     // https://github.com/dfinity/ic/blob/5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c/rs/registry/canister/src/mutations/complete_canister_migration.rs#L34
-    pub type CompleteCanisterMigrationPayload =
-        registry_canister::mutations::complete_canister_migration::CompleteCanisterMigrationPayload;
+    pub type CompleteCanisterMigrationPayload = crate::canisters::nns_registry::api::CompleteCanisterMigrationPayload;
 
     // NNS function 30 - AddSnsWasm
     // https://github.com/dfinity/ic/blob/187e933e73867efc3993572abc6344b8cedfafe5/rs/nns/sns-wasm/gen/ic_sns_wasm.pb.v1.rs#L62
-    pub type AddWasmRequest = ic_sns_wasm::pb::v1::AddWasmRequest;
+    pub type AddWasmRequest = crate::canisters::sns_wasm::api::AddWasmRequest;
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct SnsWasmTrimmed {
@@ -495,8 +491,7 @@ mod def {
     // NNS function 31 - ChangeSubnetMembership
     // The payload of a proposal to change the membership of nodes in an existing subnet.
     // https://github.com/dfinity/ic/blob/f74c23fe475aa9545f936748e2506f609aa4be8d/rs/registry/canister/src/mutations/do_change_subnet_membership.rs#L71
-    pub type ChangeSubnetMembershipPayload =
-        registry_canister::mutations::do_change_subnet_membership::ChangeSubnetMembershipPayload;
+    pub type ChangeSubnetMembershipPayload = crate::canisters::nns_registry::api::ChangeSubnetMembershipPayload;
 
     // NNS function 32 - UpdateSubnetType
     // Updates the available subnet types in the cycles minting canister.
@@ -543,20 +538,19 @@ mod def {
 
     // NNS function 34 - UpdateSnsSubnetListRequest
     // https://gitlab.com/dfinity-lab/public/ic/-/blob/e5dfd171dc6f2180c1112569766e14dd2c10a090/rs/nns/sns-wasm/canister/sns-wasm.did#L77
-    pub type UpdateSnsSubnetListRequest = ic_sns_wasm::pb::v1::UpdateSnsSubnetListRequest;
+    pub type UpdateSnsSubnetListRequest = crate::canisters::sns_wasm::api::UpdateSnsSubnetListRequest;
 
     // NNS function 35 - UpdateAllowedPrincipals
     // https://github.com/dfinity/ic/blob/8d135c4eec4645837962797b7bdac930085c0dbb/rs/nns/sns-wasm/gen/ic_sns_wasm.pb.v1.rs#L255
-    pub type UpdateAllowedPrincipalsRequest = ic_sns_wasm::pb::v1::UpdateAllowedPrincipalsRequest;
+    pub type UpdateAllowedPrincipalsRequest = crate::canisters::sns_wasm::api::UpdateAllowedPrincipalsRequest;
 
     // NNS function 36 - RetireReplicaVersion
     // https://github.com/dfinity/ic/blob/c2ad499466967a9a5557d737c2b9c0b9fa8ad53f/rs/registry/canister/src/mutations/do_retire_replica_version.rs#L143
-    pub type RetireReplicaVersionPayload =
-        registry_canister::mutations::do_retire_replica_version::RetireReplicaVersionPayload;
+    pub type RetireReplicaVersionPayload = crate::canisters::nns_registry::api::RetireReplicaVersionPayload;
 
     // NNS function 37 - InsertUpgradePathEntriesRequest
     // https://github.com/dfinity/ic/blob/8b674edbb228acfc19923d5c914807166edcd909/rs/nns/sns-wasm/gen/ic_sns_wasm.pb.v1.rs#L128
-    pub type InsertUpgradePathEntriesRequest = ic_sns_wasm::pb::v1::InsertUpgradePathEntriesRequest;
+    pub type InsertUpgradePathEntriesRequest = crate::canisters::sns_wasm::api::InsertUpgradePathEntriesRequest;
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct SnsVersionHumanReadable {
@@ -577,7 +571,7 @@ mod def {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct InsertUpgradePathEntriesRequestHumanReadable {
         pub upgrade_path: Vec<SnsUpgradeHumanReadable>,
-        pub sns_governance_canister_id: Option<PrincipalId>,
+        pub sns_governance_canister_id: Option<Principal>,
     }
 
     impl From<SnsVersion> for SnsVersionHumanReadable {
@@ -615,15 +609,15 @@ mod def {
     /// The payload of a proposal to update elected replica versions.
     // https://gitlab.com/dfinity-lab/public/ic/-/blob/90d82ff6e51a66306f9ddba820fcad984f4d85a5/rs/registry/canister/src/mutations/do_update_elected_replica_versions.rs#L193
     pub type UpdateElectedReplicaVersionsPayload =
-        registry_canister::mutations::do_update_elected_replica_versions::UpdateElectedReplicaVersionsPayload;
+        crate::canisters::nns_registry::api::UpdateElectedReplicaVersionsPayload;
 
     // NNS function 39 - BitcoinSetConfig
     // https://github.com/dfinity/ic/blob/ae00aff1373e9f6db375ff7076250a20bbf3eea0/rs/nns/governance/src/governance.rs#L8930
-    pub type BitcoinSetConfigProposal = ic_nns_governance::governance::BitcoinSetConfigProposal;
+    pub type BitcoinSetConfigProposal = crate::canisters::nns_governance::internal::BitcoinSetConfigProposal;
 
     #[derive(CandidType, Serialize, Deserialize)]
     pub struct BitcoinSetConfigProposalHumanReadable {
-        pub network: ic_nns_governance::governance::BitcoinNetwork,
+        pub network: crate::canisters::nns_governance::internal::BitcoinNetwork,
         pub set_config_request: ic_btc_interface::SetConfigRequest,
     }
 

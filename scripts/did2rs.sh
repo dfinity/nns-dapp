@@ -46,9 +46,6 @@ GIT_ROOT="$(git rev-parse --show-toplevel)"
 PATCH_PATH="${PATCH_PATH:-${RUST_PATH%.rs}.patch}"
 DID_PATH="${DID_PATH:-${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did}"
 
-# TODO: Provide this as an argument.
-TRAITS="Serialize, Clone, Debug"
-
 cd "$GIT_ROOT"
 
 : "Ensure that tools are installed and working.  Rustfmt in particular can self-upgrade when called and the self-upgrade can fail."
@@ -121,9 +118,6 @@ cd "$GIT_ROOT"
 
 	    # Replace invalid "{}" in generated Rust code with "EmptyRecord":
 	    /^pub (struct|enum) /,/^}/{s/ *\{\},$/(EmptyRecord),/g};
-
-	    # Use candid::Principal instead of raw Principal
-	    s/\<Principal\>/candid::&/g;
 	    ' |
     rustfmt --edition 2021
 } >"${RUST_PATH}"

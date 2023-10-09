@@ -8,7 +8,7 @@ import { TextDecoder, TextEncoder } from "util";
 import { vi } from "vitest";
 import { browser, building } from "./__mocks__/$app/environment";
 import { afterNavigate, goto } from "./__mocks__/$app/navigation";
-import { page } from "./__mocks__/$app/stores";
+import { navigating, page } from "./__mocks__/$app/stores";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
 import localStorageMock from "./src/tests/mocks/local-storage.mock";
 import { failTestsThatLogToConsole } from "./src/tests/utils/console.test-utils";
@@ -93,4 +93,10 @@ vi.mock("$app/navigation", () => ({
 
 vi.mock("$app/stores", () => ({
   page,
+  navigating,
 }));
+
+// Issue: https://github.com/testing-library/svelte-testing-library/issues/206
+vi.stubGlobal("requestAnimationFrame", (fn) => {
+  return window.setTimeout(() => fn(Date.now()), 0);
+});

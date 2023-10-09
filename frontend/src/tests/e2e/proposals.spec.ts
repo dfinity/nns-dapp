@@ -48,9 +48,8 @@ test("Test neuron voting", async ({ page, context }) => {
     .getNnsProposalFiltersPo()
     .setVotableProposalsOnlyValue(true);
   await nnsProposalListPo.waitForContentLoaded();
-  const proposalIdsBeforeVoting = await nnsProposalListPo.getVisibleProposalIds(
-    proposerNeuronId
-  );
+  const proposalIdsBeforeVoting =
+    await nnsProposalListPo.getVisibleProposalIds(proposerNeuronId);
   step("Vote for a proposal");
   const proposalCardForVoting =
     await nnsProposalListPo.getFirstProposalCardPoForProposer(proposerNeuronId);
@@ -68,9 +67,8 @@ test("Test neuron voting", async ({ page, context }) => {
   // Back to proposals list
   await appPo.goBack();
   await nnsProposalListPo.waitForContentLoaded();
-  const proposalIdsAfterVoting = await nnsProposalListPo.getVisibleProposalIds(
-    proposerNeuronId
-  );
+  const proposalIdsAfterVoting =
+    await nnsProposalListPo.getVisibleProposalIds(proposerNeuronId);
 
   step("Voted proposal should be hidden");
   expect(proposalIdsAfterVoting).toHaveLength(
