@@ -26,7 +26,7 @@ import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import AccountsTest from "./AccountsTest.svelte";
+import AccountsTest from "$vitests/lib/pages/AccountsTest.svelte";
 
 jest.mock("$lib/services/sns-accounts.services", () => {
   return {

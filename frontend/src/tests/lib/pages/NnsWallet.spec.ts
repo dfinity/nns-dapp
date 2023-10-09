@@ -33,7 +33,7 @@ import {
 import { ICPToken } from "@dfinity/utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
-import AccountsTest from "./AccountsTest.svelte";
+import AccountsTest from "$vitests/lib/pages/AccountsTest.svelte";
 
 jest.mock("$lib/api/nns-dapp.api");
 jest.mock("$lib/api/accounts.api");
