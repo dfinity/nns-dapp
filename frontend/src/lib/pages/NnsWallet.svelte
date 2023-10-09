@@ -14,15 +14,17 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { writable } from "svelte/store";
-  import WalletActions from "$lib/components/accounts/WalletActions.svelte";
-  import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
   import TransactionList from "$lib/components/accounts/TransactionList.svelte";
   import {
     WALLET_CONTEXT_KEY,
     type WalletContext,
     type WalletStore,
   } from "$lib/types/wallet.context";
-  import { findAccount } from "$lib/utils/accounts.utils";
+  import {
+    accountName,
+    findAccount,
+    isAccountHardwareWallet,
+  } from "$lib/utils/accounts.utils";
   import {
     debugSelectedAccountStore,
     debugTransactions,
@@ -35,10 +37,14 @@
   import { pageStore } from "$lib/derived/page.derived";
   import Separator from "$lib/components/ui/Separator.svelte";
   import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
-  import Summary from "$lib/components/summary/Summary.svelte";
-  import { ICPToken, isNullish, nonNullish } from "@dfinity/utils";
+  import { ICPToken, TokenAmount, isNullish, nonNullish } from "@dfinity/utils";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import type { AccountIdentifierText } from "$lib/types/account";
+  import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
+  import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
+  import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
+  import HardwareWalletListNeuronsButton from "$lib/components/accounts/HardwareWalletListNeuronsButton.svelte";
+  import HardwareWalletShowActionButton from "$lib/components/accounts/HardwareWalletShowActionButton.svelte";
 
   onMount(() => {
     pollAccounts();
@@ -142,6 +148,15 @@
       });
     }
   };
+
+  let name: string;
+  $: name = accountName({
+    account: $selectedAccountStore.account,
+    mainName: $i18n.accounts.main,
+  });
+
+  let isHardwareWallet: boolean;
+  $: isHardwareWallet = isAccountHardwareWallet($selectedAccountStore.account);
 </script>
 
 <TestIdWrapper testId="nns-wallet-component">
@@ -149,12 +164,27 @@
     <main class="legacy" data-tid="nns-wallet">
       <section>
         {#if $selectedAccountStore.account !== undefined}
-          <Summary displayUniverse={false} />
+          <WalletPageHeader
+            universe={NNS_UNIVERSE}
+            walletAddress={$selectedAccountStore.account.identifier}
+          />
+          <WalletPageHeading
+            balance={TokenAmount.fromE8s({
+              amount: $selectedAccountStore.account.balanceE8s,
+              token: ICPToken,
+            })}
+            accountName={name}
+            principal={isHardwareWallet
+              ? $selectedAccountStore.account.principal
+              : undefined}
+          >
+            {#if isHardwareWallet}
+              <HardwareWalletListNeuronsButton />
+              <HardwareWalletShowActionButton />
+            {/if}
+          </WalletPageHeading>
 
-          <WalletSummary token={ICPToken} />
-          <WalletActions />
-
-          <Separator />
+          <Separator spacing="none" />
 
           <TransactionList {transactions} />
         {:else}
@@ -188,3 +218,11 @@
     />
   {/if}
 </TestIdWrapper>
+
+<style lang="scss">
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-4x);
+  }
+</style>

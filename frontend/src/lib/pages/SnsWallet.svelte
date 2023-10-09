@@ -3,7 +3,6 @@
   import { Spinner, busy } from "@dfinity/gix-components";
   import { setContext } from "svelte";
   import { writable } from "svelte/store";
-  import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
   import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
@@ -18,12 +17,11 @@
   import SnsTransactionsList from "$lib/components/accounts/SnsTransactionsList.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import { Island } from "@dfinity/gix-components";
-  import Summary from "$lib/components/summary/Summary.svelte";
   import {
     snsOnlyProjectStore,
     snsProjectSelectedStore,
   } from "$lib/derived/sns/sns-selected-project.derived";
-  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { TokenAmount, isNullish, nonNullish } from "@dfinity/utils";
   import IC_LOGO from "$lib/assets/icp.svg";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import { loadSnsAccountTransactions } from "$lib/services/sns-transactions.services";
@@ -33,6 +31,8 @@
   import { tokensStore } from "$lib/stores/tokens.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import SnsBalancesObserver from "$lib/components/accounts/SnsBalancesObserver.svelte";
+  import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
+  import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
 
   let showModal: "send" | undefined = undefined;
 
@@ -129,17 +129,25 @@
 <Island>
   <main class="legacy" data-tid="sns-wallet">
     <section>
-      {#if nonNullish($selectedAccountStore.account) && nonNullish($snsOnlyProjectStore) && nonNullish($snsProjectSelectedStore)}
+      {#if nonNullish($selectedAccountStore.account) && nonNullish($snsOnlyProjectStore) && nonNullish($snsProjectSelectedStore) && nonNullish(token)}
         <SnsBalancesObserver
           rootCanisterId={$snsOnlyProjectStore}
           accounts={[$selectedAccountStore.account]}
           ledgerCanisterId={$snsProjectSelectedStore.summary.ledgerCanisterId}
         >
-          <Summary />
+          <WalletPageHeader
+            universe={$selectedUniverseStore}
+            walletAddress={$selectedAccountStore.account.identifier}
+          />
+          <WalletPageHeading
+            balance={TokenAmount.fromE8s({
+              amount: $selectedAccountStore.account.balanceE8s,
+              token,
+            })}
+            accountName={$selectedAccountStore.account.name ?? ""}
+          />
 
-          <WalletSummary {token} />
-
-          <Separator />
+          <Separator spacing="none" />
 
           <SnsTransactionsList
             rootCanisterId={$snsOnlyProjectStore}
@@ -177,3 +185,11 @@
     loadTransactions
   />
 {/if}
+
+<style lang="scss">
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-4x);
+  }
+</style>

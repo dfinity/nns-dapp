@@ -265,6 +265,12 @@ describe("NnsWallet", () => {
         })
       ).toBeInTheDocument();
     });
+
+    it("should display hardware wallet buttons", async () => {
+      const { queryByTestId } = render(NnsWallet, props);
+      expect(queryByTestId("ledger-list-button")).toBeInTheDocument();
+      expect(queryByTestId("ledger-show-button")).toBeInTheDocument();
+    });
   });
 
   describe("when no accounts and user navigates away", () => {

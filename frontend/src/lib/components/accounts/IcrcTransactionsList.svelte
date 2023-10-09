@@ -44,9 +44,3 @@
     {/if}
   {/if}
 </div>
-
-<style lang="scss">
-  .container {
-    padding-top: var(--padding);
-  }
-</style>
