@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import { SECONDS_IN_DAY, SECONDS_IN_YEAR } from "$lib/constants/constants";
 import IncreaseDissolveDelayModal from "$lib/modals/neurons/IncreaseDissolveDelayModal.svelte";
 import { updateDelay } from "$lib/services/neurons.services";
@@ -8,16 +12,16 @@ import { fireEvent } from "@testing-library/dom";
 import { waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 
-vi.mock("$lib/services/neurons.services", () => {
+jest.mock("$lib/services/neurons.services", () => {
   return {
-    updateDelay: vi.fn().mockResolvedValue(undefined),
-    getNeuronFromStore: vi.fn(),
+    updateDelay: jest.fn().mockResolvedValue(undefined),
+    getNeuronFromStore: jest.fn(),
   };
 });
 
 describe("IncreaseDissolveDelayModal", () => {
   const renderIncreaseDelayModal = async (
-    neuron: NeuronInfo
+      neuron: NeuronInfo
   ): Promise<RenderResult<SvelteComponent>> => {
     return renderModal({
       component: IncreaseDissolveDelayModal,
@@ -38,7 +42,7 @@ describe("IncreaseDissolveDelayModal", () => {
     });
 
     const updateDelayButton = container.querySelector(
-      '[data-tid="go-confirm-delay-button"]'
+        '[data-tid="go-confirm-delay-button"]'
     );
     expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
   });
@@ -50,7 +54,7 @@ describe("IncreaseDissolveDelayModal", () => {
     });
 
     const updateDelayButton = container.querySelector(
-      '[data-tid="go-confirm-delay-button"]'
+        '[data-tid="go-confirm-delay-button"]'
     );
     expect(updateDelayButton?.getAttribute("disabled")).toBeNull();
   });
@@ -63,33 +67,33 @@ describe("IncreaseDissolveDelayModal", () => {
     const { container } = await renderIncreaseDelayModal(editableNeuron);
 
     await waitFor(() =>
-      expect(container.querySelector('input[type="range"]')).not.toBeNull()
+        expect(container.querySelector('input[type="range"]')).not.toBeNull()
     );
     const inputRange = container.querySelector('input[type="range"]');
     expect(inputRange).not.toBeNull();
 
     inputRange &&
-      (await fireEvent.input(inputRange, {
-        target: { value: 365 * 2 },
-      }));
+    (await fireEvent.input(inputRange, {
+      target: { value: 365 * 2 },
+    }));
 
     const goToConfirmDelayButton = container.querySelector(
-      '[data-tid="go-confirm-delay-button"]'
+        '[data-tid="go-confirm-delay-button"]'
     );
     await waitFor(() =>
-      expect(goToConfirmDelayButton?.getAttribute("disabled")).toBeNull()
+        expect(goToConfirmDelayButton?.getAttribute("disabled")).toBeNull()
     );
 
     goToConfirmDelayButton && (await fireEvent.click(goToConfirmDelayButton));
 
     await waitFor(() =>
-      expect(
-        container.querySelector('[data-tid="confirm-dissolve-delay-container"]')
-      ).not.toBeNull()
+        expect(
+            container.querySelector('[data-tid="confirm-dissolve-delay-container"]')
+        ).not.toBeNull()
     );
 
     const confirmButton = container.querySelector(
-      '[data-tid="confirm-delay-button"]'
+        '[data-tid="confirm-delay-button"]'
     );
     confirmButton && (await fireEvent.click(confirmButton));
 
@@ -101,34 +105,34 @@ describe("IncreaseDissolveDelayModal", () => {
     const editableNeuron = {
       ...mockNeuron,
       dissolveDelaySeconds: BigInt(
-        currentNeuronDissoveDelayDays * SECONDS_IN_DAY
+          currentNeuronDissoveDelayDays * SECONDS_IN_DAY
       ),
     };
     const { container } = await renderIncreaseDelayModal(editableNeuron);
 
     await waitFor(() =>
-      expect(container.querySelector('input[type="range"]')).not.toBeNull()
+        expect(container.querySelector('input[type="range"]')).not.toBeNull()
     );
     const inputRange = container.querySelector<HTMLInputElement>(
-      'input[type="range"]'
+        'input[type="range"]'
     );
     expect(inputRange).not.toBeNull();
 
     inputRange &&
-      (await fireEvent.input(inputRange, {
-        target: { value: currentNeuronDissoveDelayDays / 2 },
-      }));
+    (await fireEvent.input(inputRange, {
+      target: { value: currentNeuronDissoveDelayDays / 2 },
+    }));
 
     const goToConfirmDelayButton = container.querySelector(
-      '[data-tid="go-confirm-delay-button"]'
+        '[data-tid="go-confirm-delay-button"]'
     );
 
     await waitFor(() =>
-      expect(goToConfirmDelayButton?.getAttribute("disabled")).not.toBeNull()
+        expect(goToConfirmDelayButton?.getAttribute("disabled")).not.toBeNull()
     );
     inputRange &&
-      (await waitFor(() =>
+    (await waitFor(() =>
         expect(inputRange.value).toBe(String(currentNeuronDissoveDelayDays))
-      ));
+    ));
   });
 });
