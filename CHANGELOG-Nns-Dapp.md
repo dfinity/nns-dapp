@@ -30,6 +30,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * New labels for min and max participation.
 * Improve security by escaping additional images in the proposal summary markdown.
 * Internal change: remove unused snsQueryStore.
+* New Tag style. Used in followees topic and project status.
 
 #### Deprecated
 #### Removed
