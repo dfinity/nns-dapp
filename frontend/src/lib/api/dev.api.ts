@@ -5,7 +5,8 @@ import { invalidIcrcAddress } from "$lib/utils/accounts.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { isUniverseNns } from "$lib/utils/universe.utils";
 import type { Identity } from "@dfinity/agent";
-import { HttpAgent, type Agent } from "@dfinity/agent";
+import { Actor, HttpAgent, type Agent } from "@dfinity/agent";
+import type { IDL } from "@dfinity/candid";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
 import type { BlockHeight } from "@dfinity/ledger-icp";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/ledger-icp";
@@ -276,4 +277,64 @@ export const addMaturity = async ({
   });
 
   logWithTimestamp("Adding neuron maturity: done");
+};
+
+// Generated with `didc bind -t js bitcoin_mock.did`, and then everything but
+// push_utxo_to_address manually removed.
+const mockBitcoinIdlFactory: IDL.InterfaceFactory = ({ IDL }) => {
+  const OutPoint = IDL.Record({
+    txid: IDL.Vec(IDL.Nat8),
+    vout: IDL.Nat32,
+  });
+  const Utxo = IDL.Record({
+    height: IDL.Nat32,
+    value: IDL.Nat64,
+    outpoint: OutPoint,
+  });
+  const PushUtxoToAddress = IDL.Record({ utxo: Utxo, address: IDL.Text });
+  return IDL.Service({
+    push_utxo_to_address: IDL.Func([PushUtxoToAddress], [], []),
+  });
+};
+
+// The Bitcoin canister is accessed through the virtual management canister
+// and its ID is hard-coded in the execution environment, here:
+// https://github.com/dfinity/ic/blob/bb093eeca3d25b10f5eaa4e5843811c3201c941c/rs/config/src/execution_environment.rs#L100
+const HARD_CODED_BITCOIN_CANISTER_ID = "ghsi2-tqaaa-aaaan-aaaca-cai";
+
+export const receiveMockBtc = async ({
+  btcAddress,
+  amountE8s,
+}: {
+  btcAddress: string;
+  amountE8s: bigint;
+}) => {
+  const agent = new HttpAgent({
+    host: HOST,
+  });
+  await agent.fetchRootKey();
+  const actor = Actor.createActor(mockBitcoinIdlFactory, {
+    agent,
+    canisterId: HARD_CODED_BITCOIN_CANISTER_ID,
+  });
+  const txid = new Uint8Array(32);
+  // The txid just needs to be different each time so it does not get
+  // deduplicated by the ckbtc minter.
+  for (let i = 0; i < txid.length; i++) {
+    txid[i] = Math.floor(Math.random() * 256);
+  }
+  await actor.push_utxo_to_address({
+    utxo: {
+      // The height defines the number of confirmations. > 12 should mean the
+      // amount can be credited although the current mock bitcoin canister does
+      // not even seem to check this.
+      height: 15,
+      value: amountE8s,
+      outpoint: {
+        txid,
+        vout: 0,
+      },
+    },
+    address: btcAddress,
+  });
 };
