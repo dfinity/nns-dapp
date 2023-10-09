@@ -93,14 +93,14 @@
       }
     })();
 
-  // If the test account balance is 0, don't show a button that won't work. Show the ICP token instead.
+  // If the SNS test account balance is 0, don't show a button that won't work. Show the ICP token instead.
   let tokenSymbol: string;
   $: tokenSymbol =
-    ($isCkBTCUniverseStore
+    nonNullish(selectedProjectId) && tokenBalanceE8s > 0n
+      ? $snsTokenSymbolSelectedStore?.symbol ?? ICPToken.symbol
+      : $isCkBTCUniverseStore
       ? $i18n.ckbtc.btc
-      : tokenBalanceE8s === 0n
-      ? ICPToken.symbol
-      : $snsTokenSymbolSelectedStore?.symbol) ?? ICPToken.symbol;
+      : ICPToken.symbol;
 </script>
 
 <TestIdWrapper testId="get-tokens-component">
