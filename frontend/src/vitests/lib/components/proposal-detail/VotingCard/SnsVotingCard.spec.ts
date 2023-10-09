@@ -311,27 +311,30 @@ describe("SnsVotingCard", () => {
   });
 
   describe("voting", () => {
-    // TODO: Error: Test timed out in 5000ms. If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
-    // it("should trigger register-vote and call reloadProposal", async () => {
-    //   snsNeuronsStore.setNeurons({
-    //     rootCanisterId: mockSnsCanisterId,
-    //     neurons: testNeurons,
-    //     certified: true,
-    //   });
-    //
-    //   const { queryByTestId } = renderVotingCard();
-    //
-    //   expect(spyRegisterVote).toBeCalledTimes(0);
-    //   expect(spyOnReloadProposal).toBeCalledTimes(0);
-    //
-    //   await fireEvent.click(queryByTestId("vote-yes") as Element);
-    //   await fireEvent.click(queryByTestId("confirm-yes") as Element);
-    //
-    //   await waitFor(() =>
-    //     expect(spyRegisterVote).toBeCalledTimes(testNeurons.length)
-    //   );
-    //   await waitFor(() => expect(spyOnReloadProposal).toBeCalledTimes(1));
-    // });
+    it("should trigger register-vote and call reloadProposal", async () => {
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: mockSnsCanisterId,
+        neurons: testNeurons,
+        certified: true,
+      });
+
+      const { queryByTestId } = renderVotingCard();
+
+      expect(spyRegisterVote).toBeCalledTimes(0);
+      expect(spyOnReloadProposal).toBeCalledTimes(0);
+
+      await fireEvent.click(queryByTestId("vote-yes") as Element);
+      await fireEvent.click(queryByTestId("confirm-yes") as Element);
+
+      // w/o restoreRealTimers() waitFor calls the callback only twice (instead of till the end of the timeout/5000ms)
+      // this bug makes the spyOnReloadProposal test fail
+      vi.useRealTimers();
+
+      await waitFor(() =>
+        expect(spyRegisterVote).toBeCalledTimes(testNeurons.length)
+      );
+      await waitFor(() => expect(spyOnReloadProposal).toBeCalledTimes(1));
+    });
 
     it("should trigger register-vote YES", async () => {
       snsNeuronsStore.setNeurons({
