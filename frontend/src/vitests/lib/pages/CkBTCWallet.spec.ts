@@ -138,6 +138,7 @@ describe("CkBTCWallet", () => {
     beforeEach(() => {
       vi.clearAllMocks();
 
+      vi.clearAllTimers();
       vi.useFakeTimers().setSystemTime(new Date());
 
       vi.spyOn(authStore, "subscribe").mockImplementation(
