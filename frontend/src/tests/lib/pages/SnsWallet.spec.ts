@@ -43,27 +43,27 @@ jest.mock("$lib/services/sns-transactions.services", () => {
 
 jest.mock("$lib/services/worker-transactions.services", () => ({
   initTransactionsWorker: jest.fn(() =>
-      Promise.resolve({
-        startTransactionsTimer: () => {
-          // Do nothing
-        },
-        stopTransactionsTimer: () => {
-          // Do nothing
-        },
-      })
+    Promise.resolve({
+      startTransactionsTimer: () => {
+        // Do nothing
+      },
+      stopTransactionsTimer: () => {
+        // Do nothing
+      },
+    })
   ),
 }));
 
 jest.mock("$lib/services/worker-balances.services", () => ({
   initBalancesWorker: jest.fn(() =>
-      Promise.resolve({
-        startBalancesTimer: () => {
-          // Do nothing
-        },
-        stopBalancesTimer: () => {
-          // Do nothing
-        },
-      })
+    Promise.resolve({
+      startBalancesTimer: () => {
+        // Do nothing
+      },
+      stopBalancesTimer: () => {
+        // Do nothing
+      },
+    })
   ),
 }));
 
@@ -118,12 +118,12 @@ describe("SnsWallet", () => {
   describe("accounts loaded", () => {
     beforeAll(() => {
       jest.spyOn(tokensStore, "subscribe").mockImplementation(
-          mockTokensSubscribe({
-            [rootCanisterIdText]: {
-              token: mockSnsToken,
-              certified: true,
-            },
-          })
+        mockTokensSubscribe({
+          [rootCanisterIdText]: {
+            token: mockSnsToken,
+            certified: true,
+          },
+        })
       );
     });
 
@@ -157,10 +157,10 @@ describe("SnsWallet", () => {
       const { queryByTestId } = render(SnsWallet, props);
 
       await waitFor(() =>
-          expect(queryByTestId("wallet-summary")).toBeInTheDocument()
+        expect(queryByTestId("wallet-summary")).toBeInTheDocument()
       );
       await waitFor(() =>
-          expect(queryByTestId("transactions-list")).toBeInTheDocument()
+        expect(queryByTestId("transactions-list")).toBeInTheDocument()
       );
     });
 
@@ -168,13 +168,13 @@ describe("SnsWallet", () => {
       const { getByTestId } = render(SnsWallet, props);
 
       await waitFor(() =>
-          expect(getByTestId("token-value-label")).not.toBeNull()
+        expect(getByTestId("token-value-label")).not.toBeNull()
       );
 
       expect(getByTestId("token-value-label")?.textContent.trim()).toEqual(
-          `${formatToken({
-            value: mockSnsMainAccount.balanceE8s,
-          })} ${mockSnsToken.symbol}`
+        `${formatToken({
+          value: mockSnsMainAccount.balanceE8s,
+        })} ${mockSnsToken.symbol}`
       );
     });
 
@@ -184,7 +184,7 @@ describe("SnsWallet", () => {
       const { queryByTestId, getByTestId } = result;
 
       await waitFor(() =>
-          expect(queryByTestId("open-new-sns-transaction")).toBeInTheDocument()
+        expect(queryByTestId("open-new-sns-transaction")).toBeInTheDocument()
       );
 
       await testAccountsModal({ result, testId: "open-new-sns-transaction" });
@@ -211,8 +211,8 @@ describe("SnsWallet", () => {
 
     it("should reload account after finish receiving tokens", async () => {
       const spyLoadSnsAccountTransactions = jest.spyOn(
-          services,
-          "loadSnsAccountTransactions"
+        services,
+        "loadSnsAccountTransactions"
       );
 
       const result = render(AccountsTest, { props: modalProps });
@@ -227,7 +227,7 @@ describe("SnsWallet", () => {
       });
 
       fireEvent.click(
-          getByTestId("reload-receive-account") as HTMLButtonElement
+        getByTestId("reload-receive-account") as HTMLButtonElement
       );
 
       await waitFor(() => expect(syncSnsAccounts).toHaveBeenCalled());
@@ -264,7 +264,7 @@ describe("SnsWallet", () => {
       const { queryByTestId } = render(SnsWallet, props);
 
       await waitFor(() =>
-          expect(queryByTestId("transactions-list")).toBeInTheDocument()
+        expect(queryByTestId("transactions-list")).toBeInTheDocument()
       );
 
       expect(spy).toHaveBeenCalledTimes(1);
