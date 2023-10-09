@@ -203,17 +203,17 @@ describe("SnsNeurons", () => {
   });
 
   describe("no neurons", () => {
-    vi
-      .spyOn(snsProjectSelectedStore, "subscribe")
-      .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
+    vi.spyOn(snsProjectSelectedStore, "subscribe").mockImplementation(
+      mockStoreSubscribe(mockSnsFullProject)
+    );
 
     beforeAll(() => {
-      vi
-        .spyOn(sortedSnsUserNeuronsStore, "subscribe")
-        .mockImplementation(buildMockSortedSnsNeuronsStoreSubscribe([]));
-      vi
-        .spyOn(sortedSnsCFNeuronsStore, "subscribe")
-        .mockImplementation(buildMockSortedSnsNeuronsStoreSubscribe([]));
+      vi.spyOn(sortedSnsUserNeuronsStore, "subscribe").mockImplementation(
+        buildMockSortedSnsNeuronsStoreSubscribe([])
+      );
+      vi.spyOn(sortedSnsCFNeuronsStore, "subscribe").mockImplementation(
+        buildMockSortedSnsNeuronsStoreSubscribe([])
+      );
     });
 
     afterAll(() => vi.clearAllMocks());

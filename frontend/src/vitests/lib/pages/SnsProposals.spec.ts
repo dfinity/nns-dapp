@@ -52,9 +52,9 @@ describe("SnsProposals", () => {
         name: functionName,
         id: functionId,
       });
-      vi
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreSubscribe
+      );
     });
 
     describe("Matching results", () => {
@@ -132,9 +132,9 @@ describe("SnsProposals", () => {
 
   describe("when not logged in", () => {
     beforeEach(() => {
-      vi
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreNoIdentitySubscribe
+      );
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,
@@ -172,9 +172,9 @@ describe("SnsProposals", () => {
       }),
     ];
     beforeEach(() => {
-      vi
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreNoIdentitySubscribe
+      );
       const functionId = BigInt(3);
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),

@@ -90,9 +90,7 @@ describe("SnsNeuronDetail", () => {
       routeId: AppPath.Neuron,
     });
 
-    vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
   const renderComponent = async (props) => {

@@ -60,18 +60,18 @@ describe("NnsWallet", () => {
     icpAccountsStore.resetForTesting();
 
     jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
+      .spyOn(authStore, "subscribe")
+      .mockImplementation(mockAuthStoreSubscribe);
     jest
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mainBalanceE8s);
+      .spyOn(ledgerApi, "queryAccountBalance")
+      .mockResolvedValue(mainBalanceE8s);
     jest.spyOn(accountsApi, "getTransactions").mockResolvedValue([]);
   });
 
   const testToolbarButton = ({
-                               container,
-                               disabled,
-                             }: {
+    container,
+    disabled,
+  }: {
     container: HTMLElement;
     disabled: boolean;
   }) => {
@@ -79,15 +79,15 @@ describe("NnsWallet", () => {
 
     expect(button).not.toBeNull();
     expect((button as HTMLButtonElement).hasAttribute("disabled")).toEqual(
-        disabled
+      disabled
     );
   };
 
   describe("no accounts", () => {
     beforeEach(() => {
       jest
-          .spyOn(nnsDappApi, "queryAccount")
-          .mockResolvedValue(mockAccountDetails);
+        .spyOn(nnsDappApi, "queryAccount")
+        .mockResolvedValue(mockAccountDetails);
     });
 
     it("should render a spinner while loading", () => {
@@ -120,7 +120,7 @@ describe("NnsWallet", () => {
       expect(queryByTestId("projects-summary")).toBeNull();
 
       await waitFor(() =>
-          expect(queryByTestId("projects-summary")).toBeInTheDocument()
+        expect(queryByTestId("projects-summary")).toBeInTheDocument()
       );
     });
   });
@@ -142,13 +142,13 @@ describe("NnsWallet", () => {
       const { getByTestId } = render(NnsWallet, props);
 
       await waitFor(() =>
-          expect(getByTestId("token-value-label")).not.toBeNull()
+        expect(getByTestId("token-value-label")).not.toBeNull()
       );
 
       expect(getByTestId("token-value-label")?.textContent.trim()).toEqual(
-          `${formatToken({
-            value: mockMainAccount.balanceE8s,
-          })} ${ICPToken.symbol}`
+        `${formatToken({
+          value: mockMainAccount.balanceE8s,
+        })} ${ICPToken.symbol}`
       );
     });
 
@@ -177,7 +177,7 @@ describe("NnsWallet", () => {
       const { getByTestId } = result;
 
       await waitFor(() =>
-          expect(getByTestId("transaction-step-1")).toBeInTheDocument()
+        expect(getByTestId("transaction-step-1")).toBeInTheDocument()
       );
     });
 
@@ -205,11 +205,11 @@ describe("NnsWallet", () => {
       const { getByText } = result;
 
       expect(
-          getByText(
-              replacePlaceholders(en.wallet.token_address, {
-                $tokenSymbol: en.core.icp,
-              })
-          )
+        getByText(
+          replacePlaceholders(en.wallet.token_address, {
+            $tokenSymbol: en.core.icp,
+          })
+        )
       ).toBeInTheDocument();
     });
 
@@ -223,18 +223,18 @@ describe("NnsWallet", () => {
       await waitModalIntroEnd({ container, selector: modalToolbarSelector });
 
       await waitFor(() =>
-          expect(accountsApi.getTransactions).toBeCalledTimes(2)
+        expect(accountsApi.getTransactions).toBeCalledTimes(2)
       );
       expect(ledgerApi.queryAccountBalance).not.toBeCalled();
 
       await waitFor(expect(getByTestId("receive-modal")).not.toBeNull);
 
       fireEvent.click(
-          getByTestId("reload-receive-account") as HTMLButtonElement
+        getByTestId("reload-receive-account") as HTMLButtonElement
       );
 
       await waitFor(() =>
-          expect(accountsApi.getTransactions).toBeCalledTimes(4)
+        expect(accountsApi.getTransactions).toBeCalledTimes(4)
       );
       expect(ledgerApi.queryAccountBalance).toBeCalledTimes(2);
     });
@@ -260,9 +260,9 @@ describe("NnsWallet", () => {
 
       expect(principal?.length).toBeGreaterThan(0);
       expect(
-          queryByText(`${principal}`, {
-            exact: false,
-          })
+        queryByText(`${principal}`, {
+          exact: false,
+        })
       ).toBeInTheDocument();
     });
   });
@@ -274,11 +274,11 @@ describe("NnsWallet", () => {
       jest.useFakeTimers().setSystemTime(now);
       const mainBalanceE8s = BigInt(10_000_000);
       jest
-          .spyOn(ledgerApi, "queryAccountBalance")
-          .mockResolvedValue(mainBalanceE8s);
+        .spyOn(ledgerApi, "queryAccountBalance")
+        .mockResolvedValue(mainBalanceE8s);
       spyQueryAccount = jest
-          .spyOn(nnsDappApi, "queryAccount")
-          .mockRejectedValue(new Error("connection error"));
+        .spyOn(nnsDappApi, "queryAccount")
+        .mockRejectedValue(new Error("connection error"));
       jest.spyOn(console, "error").mockImplementation(() => undefined);
     });
 
