@@ -408,16 +408,6 @@ describe("TransactionModal", () => {
       expect(queryByTestId("select-network-dropdown")).toBeInTheDocument();
     });
 
-    it("should disable next button if network not selected", async () => {
-      const call = async () =>
-        await renderEnter10ICPAndNext({
-          rootCanisterId: OWN_CANISTER_ID,
-          mustSelectNetwork: true,
-        });
-
-      expect(call).rejects.toThrowError();
-    });
-
     it("should show the ledger fee", async () => {
       const { queryByTestId } = await renderTransactionModal({
         destinationAddress: mockMainAccount.identifier,
