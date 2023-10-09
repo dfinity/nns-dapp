@@ -10,8 +10,14 @@
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import SignedInOnly from "$lib/components/common/SignedInOnly.svelte";
   import { nonNullish } from "@dfinity/utils";
+  import { onMount } from "svelte";
+  import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
 
   export let project: SnsFullProject;
+
+  onMount(() => {
+    loadSnsFinalizationStatus(project.rootCanisterId);
+  });
 
   let summary: SnsSummary;
   let swapCommitment: SnsSwapCommitment | undefined;
