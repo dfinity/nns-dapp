@@ -13,6 +13,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Added
 
 * New feature flag `ENABLE_FULL_WIDTH_PROPOSAL`.
+* Get BTC button to use the mock bitcoin canister to test ckBTC.
 
 #### Changed
 
