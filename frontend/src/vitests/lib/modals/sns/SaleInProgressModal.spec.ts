@@ -15,6 +15,6 @@ describe("SaleInProgressModal", () => {
   it("should render progress in a modal", async () => {
     const { getByTestId } = await renderSaleInProgressModal();
 
-    await waitFor(expect(getByTestId("in-progress-warning")).not.toBeNull);
+    await waitFor(() => expect(getByTestId("in-progress-warning")).not.toBeNull());
   });
 });
