@@ -117,10 +117,12 @@ describe("NnsWallet", () => {
     it("should show new accounts after being loaded", async () => {
       const { queryByTestId } = render(NnsWallet, props);
 
-      expect(queryByTestId("projects-summary")).toBeNull();
+      expect(queryByTestId("wallet-page-heading-component")).toBeNull();
 
       await waitFor(() =>
-        expect(queryByTestId("projects-summary")).toBeInTheDocument()
+        expect(
+          queryByTestId("wallet-page-heading-component")
+        ).toBeInTheDocument()
       );
     });
   });
@@ -133,9 +135,9 @@ describe("NnsWallet", () => {
     it("should render nns project name", async () => {
       const { getByTestId } = render(NnsWallet, props);
 
-      const titleRow = getByTestId("projects-summary");
+      const titleRow = getByTestId("universe-page-summary-component");
 
-      expect(titleRow).not.toBeNull();
+      expect(titleRow.textContent.trim()).toBe("Internet Computer");
     });
 
     it("should render a balance with token in summary", async () => {

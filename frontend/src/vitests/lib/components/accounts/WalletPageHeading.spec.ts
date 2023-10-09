@@ -36,12 +36,23 @@ describe("WalletPageHeading", () => {
 
   it("should render balance as title and no skeleton", async () => {
     const balance = TokenAmount.fromString({
-      amount: "3.14",
+      amount: "3.14159265",
       token: ICPToken,
     }) as TokenAmount;
     const po = renderComponent({ balance, accountName });
 
     expect(await po.getTitle()).toBe("3.14 ICP");
+    expect(await po.hasSkeleton()).toBe(false);
+  });
+
+  it("should render tooltip with detailed balance", async () => {
+    const balance = TokenAmount.fromString({
+      amount: "3.14159265",
+      token: ICPToken,
+    }) as TokenAmount;
+    const po = renderComponent({ balance, accountName });
+
+    expect(await po.getTooltipText()).toBe("Current balance: 3.14159265 ICP");
     expect(await po.hasSkeleton()).toBe(false);
   });
 

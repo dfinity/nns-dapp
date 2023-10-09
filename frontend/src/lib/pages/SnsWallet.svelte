@@ -144,7 +144,8 @@
               amount: $selectedAccountStore.account.balanceE8s,
               token,
             })}
-            accountName={$selectedAccountStore.account.name ?? ""}
+            accountName={$selectedAccountStore.account.name ??
+              $i18n.accounts.main}
           />
 
           <Separator spacing="none" />

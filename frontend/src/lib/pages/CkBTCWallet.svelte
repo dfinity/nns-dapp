@@ -28,7 +28,10 @@
   } from "$lib/derived/universes-tokens.derived";
   import CkBTCWalletFooter from "$lib/components/accounts/CkBTCWalletFooter.svelte";
   import type { UniverseCanisterId } from "$lib/types/universe";
-  import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
+  import {
+    selectedCkBTCUniverseIdStore,
+    selectedUniverseStore,
+  } from "$lib/derived/selected-universe.derived";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
   import BitcoinAddress from "$lib/components/accounts/BitcoinAddress.svelte";
@@ -37,7 +40,6 @@
   import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
   import CkBTCBalancesObserver from "$lib/components/accounts/CkBTCBalancesObserver.svelte";
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
-  import { CKBTC_UNIVERSE } from "$lib/derived/ckbtc-universes.derived";
   import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
 
   export let accountIdentifier: string | undefined | null = undefined;
@@ -192,11 +194,12 @@
           reload={reloadOnlyAccountFromStore}
         >
           <WalletPageHeader
-            universe={CKBTC_UNIVERSE}
+            universe={$selectedUniverseStore}
             walletAddress={$selectedAccountStore.account.identifier}
           />
           <WalletPageHeading
-            accountName={$selectedAccountStore.account.name ?? ""}
+            accountName={$selectedAccountStore.account.name ??
+              $i18n.accounts.main}
             balance={TokenAmount.fromE8s({
               amount: $selectedAccountStore.account.balanceE8s,
               token: token?.token,
