@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import {
   OWN_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
@@ -22,36 +18,34 @@ import {
 import { waitFor } from "@testing-library/dom";
 import { fireEvent, render } from "@testing-library/svelte";
 
-jest.mock("$lib/services/$public/sns.services", () => {
+vi.mock("$lib/services/$public/sns.services", () => {
   return {
-    loadSnsNervousSystemFunctions: jest.fn().mockResolvedValue(undefined),
+    loadSnsNervousSystemFunctions: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/$public/proposals.services", () => {
+vi.mock("$lib/services/$public/proposals.services", () => {
   return {
-    listProposals: jest.fn().mockResolvedValue(undefined),
+    listProposals: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/$public/sns-proposals.services", () => {
+vi.mock("$lib/services/$public/sns-proposals.services", () => {
   return {
-    loadSnsProposals: jest.fn().mockResolvedValue(undefined),
+    loadSnsProposals: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/api/governance.api");
+vi.mock("$lib/api/governance.api");
 
 describe("Proposals", () => {
   beforeAll(() =>
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe)
   );
 
-  jest
-    .spyOn(snsProjectsCommittedStore, "subscribe")
-    .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+  vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
+    mockProjectSubscribe([mockSnsFullProject])
+  );
 
   beforeEach(() => {
     // Reset to default value
@@ -65,9 +59,9 @@ describe("Proposals", () => {
 
   describe("sns", () => {
     beforeAll(() => {
-      jest
-        .spyOn(snsProjectsStore, "subscribe")
-        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+      vi.spyOn(snsProjectsStore, "subscribe").mockImplementation(
+        mockProjectSubscribe([mockSnsFullProject])
+      );
     });
 
     it("should render project page when a project is selected", async () => {

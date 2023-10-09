@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
@@ -22,7 +18,7 @@ import {
 } from "$tests/mocks/sns-proposals.mock";
 import { SnsProposalDetailPo } from "$tests/page-objects/SnsProposalDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { runResolvedPromises } from "$vitests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
 import {
   SnsNeuronPermissionType,
@@ -33,7 +29,7 @@ import {
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
-jest.mock("$lib/api/sns-governance.api");
+vi.mock("$lib/api/sns-governance.api");
 
 describe("SnsProposalDetail", () => {
   fakeSnsGovernanceApi.install();
@@ -54,8 +50,8 @@ describe("SnsProposalDetail", () => {
 
   describe("not logged in", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.clearAllMocks();
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
       authStore.setForTesting(undefined);
       snsFunctionsStore.reset();
       page.mock({ data: { universe: rootCanisterId.toText() } });
@@ -115,7 +111,7 @@ describe("SnsProposalDetail", () => {
       });
       fakeSnsGovernanceApi.pause();
 
-      const spyOnSetTitle = jest.spyOn(layoutTitleStore, "set");
+      const spyOnSetTitle = vi.spyOn(layoutTitleStore, "set");
       const proposalIdText = proposalId.id.toString();
       render(SnsProposalDetail, {
         props: {
@@ -229,7 +225,7 @@ describe("SnsProposalDetail", () => {
 
     it("should display proposal navigation", async () => {
       // mock the store to have 3 proposals for navigation
-      jest.spyOn(snsFilteredProposalsStore, "subscribe").mockImplementation(
+      vi.spyOn(snsFilteredProposalsStore, "subscribe").mockImplementation(
         buildMockSnsProposalsStoreSubscribe({
           universeIdText: rootCanisterId.toText(),
           proposals: [
@@ -279,8 +275,8 @@ describe("SnsProposalDetail", () => {
 
   describe("not logged in that logs in afterwards", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.clearAllMocks();
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
       page.mock({ data: { universe: rootCanisterId.toText() } });
     });
 
