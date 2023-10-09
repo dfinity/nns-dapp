@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import FollowNeuronsModal from "$lib/modals/neurons/FollowNeuronsModal.svelte";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import en from "$tests/mocks/i18n.mock";
@@ -5,15 +9,15 @@ import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { Topic } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
 
-vi.mock("$lib/services/neurons.services", () => {
+jest.mock("$lib/services/neurons.services", () => {
   return {
-    removeFollowee: vi.fn().mockResolvedValue(undefined),
+    removeFollowee: jest.fn().mockResolvedValue(undefined),
   };
 });
 
-vi.mock("$lib/services/known-neurons.services", () => {
+jest.mock("$lib/services/known-neurons.services", () => {
   return {
-    listKnownNeurons: vi.fn(),
+    listKnownNeurons: jest.fn(),
   };
 });
 
@@ -32,10 +36,10 @@ describe("FollowNeuronsModal", () => {
   };
 
   const fillNeuronStore = () =>
-    neuronsStore.setNeurons({
-      neurons: [neuronFollowing],
-      certified: true,
-    });
+      neuronsStore.setNeurons({
+        neurons: [neuronFollowing],
+        certified: true,
+      });
 
   beforeAll(() => fillNeuronStore());
 
@@ -57,14 +61,14 @@ describe("FollowNeuronsModal", () => {
     });
 
     const badgeExchange = queryByTestId(
-      `topic-${Topic.ExchangeRate}-followees-badge`
+        `topic-${Topic.ExchangeRate}-followees-badge`
     );
 
     expect(badgeExchange).not.toBeNull();
     expect(badgeExchange?.innerHTML).toBe("2");
 
     const badgeGovernance = queryByTestId(
-      `topic-${Topic.Governance}-followees-badge`
+        `topic-${Topic.Governance}-followees-badge`
     );
 
     expect(badgeGovernance).not.toBeNull();
@@ -79,19 +83,19 @@ describe("FollowNeuronsModal", () => {
     });
 
     const topicSection = queryByTestId(
-      `follow-topic-${Topic.ExchangeRate}-section`
+        `follow-topic-${Topic.ExchangeRate}-section`
     );
     expect(topicSection).not.toBeNull();
 
     if (topicSection !== null) {
       const followeeElements = topicSection?.querySelectorAll(
-        '[data-tid="current-followee-item"]'
+          '[data-tid="current-followee-item"]'
       );
 
       expect(followeeElements.length).toBe(2);
       expect(followeeElements[0]).not.toBeVisible();
       const collapsibleButton = topicSection.querySelector(
-        '[data-tid="collapsible-expand-button"]'
+          '[data-tid="collapsible-expand-button"]'
       );
       expect(collapsibleButton).not.toBeNull();
 
