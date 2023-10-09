@@ -1,5 +1,3 @@
-
-
 import AddHotkeyModal from "$lib/modals/neurons/AddHotkeyModal.svelte";
 import { addHotkey } from "$lib/services/neurons.services";
 import en from "$tests/mocks/i18n.mock";

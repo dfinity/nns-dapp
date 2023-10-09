@@ -1,5 +1,3 @@
-
-
 import SaleInProgressModal from "$lib/modals/sns/sale/SaleInProgressModal.svelte";
 import { SaleStep } from "$lib/types/sale";
 import { renderModal } from "$tests/mocks/modal.mock";

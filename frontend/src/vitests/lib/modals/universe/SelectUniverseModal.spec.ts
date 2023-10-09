@@ -1,5 +1,3 @@
-
-
 import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
@@ -15,9 +13,9 @@ import { fireEvent } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("SelectUniverseModal", () => {
-  vi
-    .spyOn(snsProjectsCommittedStore, "subscribe")
-    .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+  vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
+    mockProjectSubscribe([mockSnsFullProject])
+  );
 
   beforeAll(() => {
     page.mock({

@@ -1,5 +1,3 @@
-
-
 import NewFolloweeModal from "$lib/modals/neurons/NewFolloweeModal.svelte";
 import { addFollowee, removeFollowee } from "$lib/services/neurons.services";
 import { authStore } from "$lib/stores/auth.store";
@@ -42,9 +40,7 @@ describe("NewFolloweeModal", () => {
     },
   };
   beforeEach(() => {
-    vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
   afterEach(() => {

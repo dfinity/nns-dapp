@@ -1,5 +1,3 @@
-
-
 import SnsFilterRewardsModal from "$lib/modals/sns/proposals/SnsFilterRewardsModal.svelte";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import type { Filter } from "$lib/types/filters";
@@ -59,21 +57,22 @@ describe("SnsFilterRewardsModal", () => {
     );
   });
 
-  it("should forward close modal event", () => new Promise<void>((done) => {
-    const { container, component } = render(SnsFilterRewardsModal, {
-      props,
-    });
+  it("should forward close modal event", () =>
+    new Promise<void>((done) => {
+      const { container, component } = render(SnsFilterRewardsModal, {
+        props,
+      });
 
-    component.$on("nnsClose", () => {
-      done();
-    });
+      component.$on("nnsClose", () => {
+        done();
+      });
 
-    const button: HTMLButtonElement | null = container.querySelector(
-      "button:first-of-type"
-    );
+      const button: HTMLButtonElement | null = container.querySelector(
+        "button:first-of-type"
+      );
 
-    button && fireEvent.click(button);
-  }));
+      button && fireEvent.click(button);
+    }));
 
   it("should change reward status filters", async () => {
     const uncheckedFilters = filters.map((filter) => ({

@@ -1,5 +1,3 @@
-
-
 import SplitNeuronModal from "$lib/modals/neurons/SplitNnsNeuronModal.svelte";
 import { splitNeuron } from "$lib/services/neurons.services";
 import { renderModal } from "$tests/mocks/modal.mock";

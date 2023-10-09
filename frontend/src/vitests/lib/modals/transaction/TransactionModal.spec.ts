@@ -1,5 +1,3 @@
-
-
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
@@ -75,9 +73,7 @@ describe("TransactionModal", () => {
     });
 
   beforeAll(() =>
-    vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe)
   );
 
   beforeEach(() => {
@@ -88,9 +84,9 @@ describe("TransactionModal", () => {
       certified: true,
     });
 
-    vi
-      .spyOn(snsAccountsStore, "subscribe")
-      .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
+    vi.spyOn(snsAccountsStore, "subscribe").mockImplementation(
+      mockSnsAccountsStoreSubscribe(mockPrincipal)
+    );
 
     vi.spyOn(console, "error").mockImplementation(() => undefined);
   });

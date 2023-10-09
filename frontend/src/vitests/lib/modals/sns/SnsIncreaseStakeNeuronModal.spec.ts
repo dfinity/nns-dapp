@@ -1,5 +1,3 @@
-
-
 import { AppPath } from "$lib/constants/routes.constants";
 import SnsIncreaseStakeNeuronModal from "$lib/modals/sns/neurons/SnsIncreaseStakeNeuronModal.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";

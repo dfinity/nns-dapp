@@ -1,5 +1,3 @@
-
-
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import ReceiveModal from "$lib/modals/accounts/ReceiveModal.svelte";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";

@@ -1,5 +1,3 @@
-
-
 import * as agent from "$lib/api/agent.api";
 import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
 import { authStore } from "$lib/stores/auth.store";
@@ -23,12 +21,10 @@ describe("VotingHistoryModal", () => {
 
   beforeEach(() => {
     vi.spyOn(console, "error").mockImplementation(vi.fn);
-    vi
-      .spyOn(GovernanceCanister, "create")
-      .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
-    vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(GovernanceCanister, "create").mockImplementation(
+      (): GovernanceCanister => mockGovernanceCanister
+    );
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
@@ -57,11 +53,11 @@ describe("VotingHistoryModal", () => {
   });
 
   it("should close on error", async () => {
-    vi
-      .spyOn(GovernanceCanister, "create")
-      .mockImplementation((): GovernanceCanister => {
+    vi.spyOn(GovernanceCanister, "create").mockImplementation(
+      (): GovernanceCanister => {
         throw new Error("test");
-      });
+      }
+    );
 
     const onClose = vi.fn();
     const { component } = render(VotingHistoryModal, {

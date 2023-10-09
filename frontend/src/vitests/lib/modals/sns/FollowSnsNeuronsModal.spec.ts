@@ -1,5 +1,3 @@
-
-
 import FollowSnsNeuronsModal from "$lib/modals/sns/neurons/FollowSnsNeuronsModal.svelte";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";

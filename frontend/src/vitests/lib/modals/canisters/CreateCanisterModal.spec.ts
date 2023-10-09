@@ -1,4 +1,3 @@
-
 import {
   MAX_CANISTER_NAME_LENGTH,
   NEW_CANISTER_MIN_T_CYCLES,
@@ -41,11 +40,9 @@ vi.mock("$lib/stores/toasts.store", () => {
 });
 
 describe("CreateCanisterModal", () => {
-  vi
-    .spyOn(icpAccountsStore, "subscribe")
-    .mockImplementation(
-      mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
-    );
+  vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
+    mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
+  );
 
   beforeEach(() => {
     vi.clearAllMocks();

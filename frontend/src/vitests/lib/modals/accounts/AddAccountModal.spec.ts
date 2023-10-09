@@ -1,4 +1,3 @@
-
 import { LedgerConnectionState } from "$lib/constants/ledger.constants";
 import AddAccountModal from "$lib/modals/accounts/AddAccountModal.svelte";
 import { addSubAccount } from "$lib/services/icp-accounts.services";
@@ -19,14 +18,12 @@ vi.mock("$lib/services/icp-accounts.services", () => {
 
 vi.mock("$lib/proxy/icp-ledger.services.proxy", () => {
   return {
-    connectToHardwareWalletProxy: vi
-      .fn()
-      .mockImplementation(async (callback) =>
-        callback({
-          connectionState: LedgerConnectionState.CONNECTED,
-          ledgerIdentity: mockIdentity,
-        })
-      ),
+    connectToHardwareWalletProxy: vi.fn().mockImplementation(async (callback) =>
+      callback({
+        connectionState: LedgerConnectionState.CONNECTED,
+        ledgerIdentity: mockIdentity,
+      })
+    ),
     registerHardwareWalletProxy: vi.fn().mockResolvedValue(undefined),
   };
 });

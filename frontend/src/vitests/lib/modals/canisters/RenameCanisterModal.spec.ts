@@ -1,5 +1,3 @@
-
-
 import * as canisterApi from "$lib/api/canisters.api";
 import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
 import { authStore } from "$lib/stores/auth.store";

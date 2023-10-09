@@ -1,5 +1,3 @@
-
-
 import * as api from "$lib/api/governance.api";
 import HardwareWalletNeuronAddHotkeyModal from "$lib/modals/accounts/HardwareWalletNeuronAddHotkeyModal.svelte";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
@@ -43,9 +41,7 @@ describe("HardwareWalletNeuronAddHotkeyModal", () => {
       .spyOn(api, "queryNeuron")
       .mockImplementation(() => Promise.resolve(mockNeuron));
 
-    vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
   it("should display modal", () => {

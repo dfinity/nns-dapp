@@ -1,5 +1,3 @@
-
-
 import SplitSnsNeuronModal from "$lib/modals/sns/neurons/SplitSnsNeuronModal.svelte";
 import { splitNeuron } from "$lib/services/sns-neurons.services";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";

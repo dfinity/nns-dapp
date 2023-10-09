@@ -1,5 +1,3 @@
-
-
 import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
@@ -39,24 +37,22 @@ describe("SnsTransactionModal", () => {
     });
 
   beforeAll(() =>
-    vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe)
   );
 
   beforeEach(() => {
-    vi
-      .spyOn(snsAccountsStore, "subscribe")
-      .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
-    vi
-      .spyOn(snsSelectedTransactionFeeStore, "subscribe")
-      .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
-    vi
-      .spyOn(selectedUniverseIdStore, "subscribe")
-      .mockImplementation((run: Subscriber<Principal>): (() => void) => {
+    vi.spyOn(snsAccountsStore, "subscribe").mockImplementation(
+      mockSnsAccountsStoreSubscribe(mockPrincipal)
+    );
+    vi.spyOn(snsSelectedTransactionFeeStore, "subscribe").mockImplementation(
+      mockSnsSelectedTransactionFeeStoreSubscribe()
+    );
+    vi.spyOn(selectedUniverseIdStore, "subscribe").mockImplementation(
+      (run: Subscriber<Principal>): (() => void) => {
         run(mockPrincipal);
         return () => undefined;
-      });
+      }
+    );
 
     page.mock({ data: { universe: mockPrincipal.toText() } });
   });

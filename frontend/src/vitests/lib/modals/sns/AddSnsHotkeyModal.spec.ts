@@ -1,5 +1,3 @@
-
-
 import AddSnsHotkeyModal from "$lib/modals/sns/neurons/AddSnsHotkeyModal.svelte";
 import { addHotkey } from "$lib/services/sns-neurons.services";
 import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";

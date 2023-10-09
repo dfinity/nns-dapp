@@ -1,5 +1,3 @@
-
-
 import FollowNeuronsModal from "$lib/modals/neurons/FollowNeuronsModal.svelte";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import en from "$tests/mocks/i18n.mock";

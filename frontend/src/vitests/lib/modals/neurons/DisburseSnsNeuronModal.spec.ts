@@ -1,5 +1,3 @@
-
-
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
 import * as authServices from "$lib/services/auth.services";
@@ -45,9 +43,9 @@ describe("DisburseSnsNeuronModal", () => {
 
   beforeEach(() => {
     vi.resetAllMocks();
-    vi
-      .spyOn(authServices, "getAuthenticatedIdentity")
-      .mockResolvedValue(testIdentity);
+    vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
+      testIdentity
+    );
 
     snsAccountsStore.setAccounts({
       rootCanisterId: mockPrincipal,

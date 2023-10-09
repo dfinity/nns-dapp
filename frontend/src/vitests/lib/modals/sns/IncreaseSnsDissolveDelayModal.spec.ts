@@ -1,5 +1,3 @@
-
-
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { SECONDS_IN_DAY, SECONDS_IN_YEAR } from "$lib/constants/constants";
 import IncreaseSnsDissolveDelayModal from "$lib/modals/sns/neurons/IncreaseSnsDissolveDelayModal.svelte";
@@ -63,9 +61,9 @@ describe("IncreaseSnsDissolveDelayModal", () => {
 
   beforeEach(() => {
     vi.resetAllMocks();
-    vi
-      .spyOn(authServices, "getAuthenticatedIdentity")
-      .mockResolvedValue(testIdentity);
+    vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
+      testIdentity
+    );
 
     vi.clearAllTimers();
     vi.useFakeTimers().setSystemTime(now);

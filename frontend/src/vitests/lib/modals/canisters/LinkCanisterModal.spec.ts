@@ -1,4 +1,3 @@
-
 import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
 import LinkCanisterModal from "$lib/modals/canisters/LinkCanisterModal.svelte";
 import { attachCanister } from "$lib/services/canisters.services";

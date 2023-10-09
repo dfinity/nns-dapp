@@ -1,5 +1,3 @@
-
-
 import SnsStakeMaturityModal from "$lib/modals/sns/neurons/SnsStakeMaturityModal.svelte";
 import { stakeMaturity } from "$lib/services/sns-neurons.services";
 import { formattedMaturity } from "$lib/utils/sns-neuron.utils";

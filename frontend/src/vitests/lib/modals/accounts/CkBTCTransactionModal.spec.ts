@@ -1,5 +1,3 @@
-
-
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
@@ -59,12 +57,8 @@ describe("CkBTCTransactionModal", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
 
-    vi
-      .mocked(ckBTCTransferTokens)
-      .mockResolvedValue({ blockIndex: undefined });
-    vi
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.mocked(ckBTCTransferTokens).mockResolvedValue({ blockIndex: undefined });
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
 
     icrcAccountsStore.set({
       accounts: {
@@ -89,9 +83,10 @@ describe("CkBTCTransactionModal", () => {
       routeId: AppPath.Accounts,
     });
 
-    vi
-      .spyOn(minterApi, "estimateFee")
-      .mockResolvedValue({ minter_fee: 123n, bitcoin_fee: 456n });
+    vi.spyOn(minterApi, "estimateFee").mockResolvedValue({
+      minter_fee: 123n,
+      bitcoin_fee: 456n,
+    });
   });
 
   it("should transfer tokens", async () => {
@@ -175,9 +170,9 @@ describe("CkBTCTransactionModal", () => {
   });
 
   it("should render progress when converting ckBTC to Bitcoin", async () => {
-    vi
-      .spyOn(services, "convertCkBTCToBtc")
-      .mockResolvedValue({ success: true });
+    vi.spyOn(services, "convertCkBTCToBtc").mockResolvedValue({
+      success: true,
+    });
 
     const result = await renderTransactionModal();
 
@@ -486,9 +481,9 @@ describe("CkBTCTransactionModal", () => {
     });
 
     it("should render progress without step transfer", async () => {
-      vi
-        .spyOn(services, "convertCkBTCToBtc")
-        .mockResolvedValue({ success: true });
+      vi.spyOn(services, "convertCkBTCToBtc").mockResolvedValue({
+        success: true,
+      });
       vi.spyOn(services, "retrieveBtc").mockResolvedValue({ success: true });
 
       const result = await renderTransactionModal(mockCkBTCWithdrawalAccount);

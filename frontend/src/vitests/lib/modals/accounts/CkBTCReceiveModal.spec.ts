@@ -1,5 +1,3 @@
-
-
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import {
   CKBTC_MINTER_CANISTER_ID,
@@ -14,6 +12,7 @@ import { tokensStore } from "$lib/stores/tokens.store";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import { page } from "$mocks/$app/stores";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import {
@@ -31,7 +30,6 @@ import {
 } from "$tests/mocks/tokens.mock";
 import { selectSegmentBTC } from "$tests/utils/accounts.test-utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
-import { page } from "$mocks/$app/stores";
 
 vi.mock("$lib/api/ckbtc-minter.api");
 
@@ -257,9 +255,9 @@ describe("BtcCkBTCReceiveModal", () => {
 
   describe("without btc", () => {
     beforeEach(() => {
-      vi
-        .spyOn(tokensStore, "subscribe")
-        .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
+      vi.spyOn(tokensStore, "subscribe").mockImplementation(
+        mockTokensSubscribe(mockUniversesTokens)
+      );
 
       page.mock({
         data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },

@@ -1,5 +1,3 @@
-
-
 import QrWizardModal from "$lib/modals/transaction/QrWizardModal.svelte";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { ICPToken } from "@dfinity/utils";

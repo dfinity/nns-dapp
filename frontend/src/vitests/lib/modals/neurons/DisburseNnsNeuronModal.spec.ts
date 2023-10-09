@@ -1,5 +1,3 @@
-
-
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import type { AccountDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
@@ -29,7 +27,7 @@ import type { NeuronInfo } from "@dfinity/nns";
 import type { RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import { get } from "svelte/store";
-import type {SpyInstance} from "vitest";
+import type { SpyInstance } from "vitest";
 
 vi.mock("$lib/api/nns-dapp.api");
 vi.mock("$lib/api/icp-ledger.api");
@@ -139,12 +137,10 @@ describe("DisburseNnsNeuronModal", () => {
         resolveQueryAccount = () => resolve(mockAccountDetails);
       });
 
-      vi
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mainBalanceE8s);
-      vi
-        .spyOn(nnsDappApi, "queryAccount")
-        .mockReturnValue(queryAccountPromise);
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        mainBalanceE8s
+      );
+      vi.spyOn(nnsDappApi, "queryAccount").mockReturnValue(queryAccountPromise);
 
       const po = await renderComponent(mockNeuron);
 
@@ -178,9 +174,9 @@ describe("DisburseNnsNeuronModal", () => {
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);
       const mainBalanceE8s = BigInt(10_000_000);
-      vi
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mainBalanceE8s);
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        mainBalanceE8s
+      );
       spyQueryAccount = vi
         .spyOn(nnsDappApi, "queryAccount")
         .mockRejectedValue(new Error("connection error"));
