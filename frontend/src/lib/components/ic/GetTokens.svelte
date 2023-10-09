@@ -21,7 +21,7 @@
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import type { Principal } from "@dfinity/principal";
-  import { ICPToken, type Token, nonNullish } from "@dfinity/utils";
+  import { ICPToken, nonNullish } from "@dfinity/utils";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { browser } from "$app/environment";
@@ -97,7 +97,7 @@
   let tokenSymbol: string;
   $: tokenSymbol =
     ($isCkBTCUniverseStore
-      ? "BTC" /*$i18n.ckbtc.btc*/
+      ? $i18n.ckbtc.btc
       : tokenBalanceE8s === 0n
       ? ICPToken.symbol
       : $snsTokenSymbolSelectedStore?.symbol) ?? ICPToken.symbol;

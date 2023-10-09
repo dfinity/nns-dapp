@@ -6,6 +6,7 @@ import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { isUniverseNns } from "$lib/utils/universe.utils";
 import type { Identity } from "@dfinity/agent";
 import { Actor, HttpAgent, type Agent } from "@dfinity/agent";
+import type { IDL } from "@dfinity/candid";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
 import type { BlockHeight } from "@dfinity/ledger-icp";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/ledger-icp";
@@ -280,7 +281,7 @@ export const addMaturity = async ({
 
 // Generated with `didc bind -t js bitcoin_mock.did`, and then everything but
 // push_utxo_to_address manually removed.
-const mockBitcoinIdlFactory = ({ IDL }) => {
+const mockBitcoinIdlFactory: IDL.InterfaceFactory = ({ IDL }) => {
   const OutPoint = IDL.Record({
     txid: IDL.Vec(IDL.Nat8),
     vout: IDL.Nat32,
