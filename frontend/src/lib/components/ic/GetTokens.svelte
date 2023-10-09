@@ -13,8 +13,10 @@
   import { Spinner, IconAccountBalance } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
   import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
+  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-  import { ICPToken, type Token } from "@dfinity/utils";
+  import type { Principal } from "@dfinity/principal";
+  import { ICPToken, type Token, nonNullish } from "@dfinity/utils";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { browser } from "$app/environment";
@@ -24,11 +26,11 @@
 
   let inputValue: number | undefined = undefined;
 
-  let selectedProjectId = OWN_CANISTER_ID;
-  $: selectedProjectId = $selectedUniverseIdStore;
+  let selectedProjectId: Principal | undefined;
+  $: selectedProjectId = $snsOnlyProjectStore;
 
   let isNns: boolean;
-  $: isNns = selectedProjectId.toText() === OWN_CANISTER_ID.toText();
+  $: isNns = $selectedUniverseIdStore.toText() === OWN_CANISTER_ID.toText();
 
   const onSubmit = async () => {
     if (invalidForm || inputValue === undefined) {
@@ -42,13 +44,13 @@
 
     try {
       // Default to transfer ICPs if the test account's balance of the selected universe is 0.
-      if (isNns || tokenBalanceE8s === 0n) {
-        await getICPs(inputValue);
-      } else {
+      if (nonNullish(selectedProjectId) && tokenBalanceE8s > 0n) {
         await getTokens({
           tokens: inputValue,
           rootCanisterId: selectedProjectId,
         });
+      } else {
+        await getICPs(inputValue);
       }
 
       reset();
@@ -77,7 +79,7 @@
   $: selectedProjectId,
     (async () => {
       // This was executed at build time and it depends on `window` in `base64ToUInt8Array` helper inside dev.api.ts
-      if (browser) {
+      if (browser && nonNullish(selectedProjectId)) {
         tokenBalanceE8s = await getTestBalance(selectedProjectId);
       }
     })();
