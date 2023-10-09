@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as canisterApi from "$lib/api/canisters.api";
 import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
 import CanisterDetail from "$lib/pages/CanisterDetail.svelte";
@@ -16,17 +12,17 @@ import {
 import { CanisterDetailPo } from "$tests/page-objects/CanisterDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { runResolvedPromises } from "$vitests/utils/timers.test-utils";
 import { Principal } from "@dfinity/principal";
 import { render } from "@testing-library/svelte";
 
-jest.mock("$lib/api/canisters.api");
+vi.mock("$lib/api/canisters.api");
 
 describe("CanisterDetail", () => {
   blockAllCallsTo(["$lib/api/canisters.api"]);
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     authStore.setForTesting(mockIdentity);
     canistersStore.setCanisters({ canisters: undefined, certified: true });
   });
@@ -53,10 +49,10 @@ describe("CanisterDetail", () => {
 
   describe("canister without name", () => {
     beforeEach(() => {
-      jest
-        .spyOn(canisterApi, "queryCanisterDetails")
-        .mockResolvedValue(mockCanisterDetails);
-      jest.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
+      vi.spyOn(canisterApi, "queryCanisterDetails").mockResolvedValue(
+        mockCanisterDetails
+      );
+      vi.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
         {
           canister_id: canisterId,
           name: "",
@@ -92,10 +88,10 @@ describe("CanisterDetail", () => {
     const canisterName = "canister name";
 
     beforeEach(() => {
-      jest
-        .spyOn(canisterApi, "queryCanisterDetails")
-        .mockResolvedValue(mockCanisterDetails);
-      jest.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
+      vi.spyOn(canisterApi, "queryCanisterDetails").mockResolvedValue(
+        mockCanisterDetails
+      );
+      vi.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
         {
           canister_id: canisterId,
           name: canisterName,
@@ -121,7 +117,7 @@ describe("CanisterDetail", () => {
 
   describe("user is the controller", () => {
     beforeEach(() => {
-      jest.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
+      vi.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
         {
           canister_id: canisterId,
           name: "canister name",
@@ -130,7 +126,7 @@ describe("CanisterDetail", () => {
     });
 
     it("shuold render cycles balance as title", async () => {
-      jest.spyOn(canisterApi, "queryCanisterDetails").mockResolvedValue({
+      vi.spyOn(canisterApi, "queryCanisterDetails").mockResolvedValue({
         ...mockCanisterDetails,
         cycles: 100_000_000n,
       });
@@ -141,13 +137,13 @@ describe("CanisterDetail", () => {
 
   describe("if user is not the controller", () => {
     beforeEach(() => {
-      jest
-        .spyOn(canisterApi, "queryCanisterDetails")
-        .mockRejectedValue(new UserNotTheControllerError());
+      vi.spyOn(canisterApi, "queryCanisterDetails").mockRejectedValue(
+        new UserNotTheControllerError()
+      );
     });
 
     it("should not render controllers card if user is not the controller", async () => {
-      jest.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
+      vi.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
         {
           canister_id: canisterId,
           name: "",
@@ -164,7 +160,7 @@ describe("CanisterDetail", () => {
 
     it("should render canister id as title if canister has no name", async () => {
       const canisterIdText = "ryjl3-tyaaa-aaaaa-aaaba-cai";
-      jest.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
+      vi.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
         {
           canister_id: Principal.fromText(canisterIdText),
           name: "",
@@ -176,7 +172,7 @@ describe("CanisterDetail", () => {
 
     it("should render canister id as title", async () => {
       const canisterName = "canister name";
-      jest.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
+      vi.spyOn(canisterApi, "queryCanisters").mockResolvedValue([
         {
           canister_id: canisterId,
           name: canisterName,
@@ -199,16 +195,15 @@ describe("CanisterDetail", () => {
       name: newName,
     };
     beforeEach(() => {
-      jest
-        .spyOn(canisterApi, "queryCanisterDetails")
-        .mockResolvedValue(mockCanisterDetails);
-      jest
-        .spyOn(canisterApi, "queryCanisters")
+      vi.spyOn(canisterApi, "queryCanisterDetails").mockResolvedValue(
+        mockCanisterDetails
+      );
+      vi.spyOn(canisterApi, "queryCanisters")
         .mockResolvedValueOnce([canisterOldName])
         .mockResolvedValueOnce([canisterOldName])
         .mockResolvedValueOnce([canisterNewName])
         .mockResolvedValueOnce([canisterNewName]);
-      jest.spyOn(canisterApi, "renameCanister").mockResolvedValue(undefined);
+      vi.spyOn(canisterApi, "renameCanister").mockResolvedValue(undefined);
     });
 
     it("should rename the canister successfully", async () => {
