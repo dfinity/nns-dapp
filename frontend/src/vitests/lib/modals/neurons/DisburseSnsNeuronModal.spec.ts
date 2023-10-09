@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
 import * as authServices from "$lib/services/auth.services";
@@ -24,8 +20,8 @@ import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 
-jest.mock("$lib/api/sns-governance.api");
-jest.mock("$lib/services/sns-accounts.services");
+vi.mock("$lib/api/sns-governance.api");
+vi.mock("$lib/services/sns-accounts.services");
 
 const testIdentity = createMockIdentity(37373);
 
@@ -46,10 +42,10 @@ describe("DisburseSnsNeuronModal", () => {
   };
 
   beforeEach(() => {
-    jest.resetAllMocks();
-    jest
-      .spyOn(authServices, "getAuthenticatedIdentity")
-      .mockResolvedValue(testIdentity);
+    vi.resetAllMocks();
+    vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
+      testIdentity
+    );
 
     snsAccountsStore.setAccounts({
       rootCanisterId: mockPrincipal,
@@ -92,7 +88,7 @@ describe("DisburseSnsNeuronModal", () => {
     expect(confirmButton).not.toBeNull();
 
     confirmButton && (await fireEvent.click(confirmButton));
-    expect(snsGovernanceApi.disburse).toBeCalledTimes(1);
+    await waitFor(() => expect(snsGovernanceApi.disburse).toBeCalledTimes(1));
     expect(snsGovernanceApi.disburse).toBeCalledWith({
       rootCanisterId: mockSnsMainAccount.principal,
       identity: testIdentity,
@@ -103,7 +99,7 @@ describe("DisburseSnsNeuronModal", () => {
   it("should call reloadNeuron", async () => {
     page.mock({ data: { universe: principalString, neuron: "12344" } });
 
-    const reloadNeuron = jest.fn().mockResolvedValue(null);
+    const reloadNeuron = vi.fn().mockResolvedValue(null);
     const { queryByTestId } = await renderDisburseModal(
       mockSnsNeuron,
       reloadNeuron
@@ -124,7 +120,7 @@ describe("DisburseSnsNeuronModal", () => {
 
     page.mock({ data: { universe: principalString, neuron: "12344" } });
 
-    const reloadNeuron = jest.fn().mockResolvedValue(null);
+    const reloadNeuron = vi.fn().mockResolvedValue(null);
     await renderDisburseModal(mockSnsNeuron, reloadNeuron);
 
     await waitFor(() => expect(syncSnsAccounts).toBeCalled());
@@ -133,7 +129,7 @@ describe("DisburseSnsNeuronModal", () => {
   it("should not trigger the project account load if already available", async () => {
     page.mock({ data: { universe: principalString, neuron: "12344" } });
 
-    const reloadNeuron = jest.fn().mockResolvedValue(null);
+    const reloadNeuron = vi.fn().mockResolvedValue(null);
     const { queryByTestId } = await renderDisburseModal(
       mockSnsNeuron,
       reloadNeuron
