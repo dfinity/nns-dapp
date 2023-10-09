@@ -1,4 +1,7 @@
-import { assertNonNullish as dfinityAssertNonNullish } from "@dfinity/utils";
+import {
+  assertNonNullish as dfinityAssertNonNullish,
+  nonNullish,
+} from "@dfinity/utils";
 import { fireEvent } from "@testing-library/dom";
 
 export const silentConsoleErrors = () =>
@@ -24,4 +27,20 @@ export const assertNonNullish = <T>(
 ): NonNullable<T> => {
   dfinityAssertNonNullish(value, message);
   return value;
+};
+
+/**
+ * vitest considers an element visible if it has height: 0px.
+ *
+ * Therefore, we try to check the height of the element to find out whether we consider it not visible.
+ */
+export const isNotVisible = (element: Element): boolean => {
+  try {
+    expect(element).not.toBeVisible();
+    return false;
+  } catch (_) {
+    const styles = element.getAttribute("style");
+    const heightString = styles?.match(/height: (\d+)px/)?.[1];
+    return nonNullish(heightString) && Number(heightString) === 0;
+  }
 };

@@ -1,23 +1,20 @@
-/**
- * @jest-environment jsdom
- */
-
 import FollowNeuronsModal from "$lib/modals/neurons/FollowNeuronsModal.svelte";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import en from "$tests/mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
+import { isNotVisible } from "$vitests/utils/utils.test-utils";
 import { Topic } from "@dfinity/nns";
-import { fireEvent, render } from "@testing-library/svelte";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
-jest.mock("$lib/services/neurons.services", () => {
+vi.mock("$lib/services/neurons.services", () => {
   return {
-    removeFollowee: jest.fn().mockResolvedValue(undefined),
+    removeFollowee: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/known-neurons.services", () => {
+vi.mock("$lib/services/known-neurons.services", () => {
   return {
-    listKnownNeurons: jest.fn(),
+    listKnownNeurons: vi.fn(),
   };
 });
 
@@ -88,12 +85,11 @@ describe("FollowNeuronsModal", () => {
     expect(topicSection).not.toBeNull();
 
     if (topicSection !== null) {
-      const followeeElements = topicSection?.querySelectorAll(
-        '[data-tid="current-followee-item"]'
+      const collapsibleContent = topicSection.querySelector(
+        "[data-tid='collapsible-content']"
       );
+      expect(isNotVisible(collapsibleContent)).toBe(true);
 
-      expect(followeeElements.length).toBe(2);
-      expect(followeeElements[0]).not.toBeVisible();
       const collapsibleButton = topicSection.querySelector(
         '[data-tid="collapsible-expand-button"]'
       );
@@ -101,7 +97,7 @@ describe("FollowNeuronsModal", () => {
 
       collapsibleButton && (await fireEvent.click(collapsibleButton));
 
-      expect(followeeElements[0]).toBeVisible();
+      await waitFor(() => expect(isNotVisible(collapsibleContent)).toBe(false));
     }
   });
 });
