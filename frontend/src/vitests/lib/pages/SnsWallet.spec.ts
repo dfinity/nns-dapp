@@ -30,15 +30,15 @@ vi.mock("$lib/services/sns-accounts.services", () => {
   };
 });
 
-jest.mock("$lib/services/sns-transactions.services", () => {
+vi.mock("$lib/services/sns-transactions.services", () => {
   return {
-    loadSnsAccountNextTransactions: jest.fn().mockResolvedValue(undefined),
-    loadSnsAccountTransactions: jest.fn().mockResolvedValue(undefined),
+    loadSnsAccountNextTransactions: vi.fn().mockResolvedValue(undefined),
+    loadSnsAccountTransactions: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/worker-transactions.services", () => ({
-  initTransactionsWorker: jest.fn(() =>
+vi.mock("$lib/services/worker-transactions.services", () => ({
+  initTransactionsWorker: vi.fn(() =>
     Promise.resolve({
       startTransactionsTimer: () => {
         // Do nothing
@@ -50,8 +50,8 @@ jest.mock("$lib/services/worker-transactions.services", () => ({
   ),
 }));
 
-jest.mock("$lib/services/worker-balances.services", () => ({
-  initBalancesWorker: jest.fn(() =>
+vi.mock("$lib/services/worker-balances.services", () => ({
+  initBalancesWorker: vi.fn(() =>
     Promise.resolve({
       startBalancesTimer: () => {
         // Do nothing
@@ -113,7 +113,7 @@ describe("SnsWallet", () => {
 
   describe("accounts loaded", () => {
     beforeAll(() => {
-      jest.spyOn(tokensStore, "subscribe").mockImplementation(
+      vi.spyOn(tokensStore, "subscribe").mockImplementation(
         mockTokensSubscribe({
           [rootCanisterIdText]: {
             token: mockSnsToken,
@@ -132,7 +132,7 @@ describe("SnsWallet", () => {
 
       page.mock({ data: { universe: rootCanisterIdText } });
 
-      jest.clearAllMocks();
+      vi.clearAllMocks();
     });
 
     it("should render sns project name", async () => {
@@ -206,7 +206,7 @@ describe("SnsWallet", () => {
     });
 
     it("should reload account after finish receiving tokens", async () => {
-      const spyLoadSnsAccountTransactions = jest.spyOn(
+      const spyLoadSnsAccountTransactions = vi.spyOn(
         services,
         "loadSnsAccountTransactions"
       );
@@ -247,7 +247,7 @@ describe("SnsWallet", () => {
     });
 
     it("should init worker that sync the balance", async () => {
-      const spy = jest.spyOn(workerBalances, "initBalancesWorker");
+      const spy = vi.spyOn(workerBalances, "initBalancesWorker");
 
       render(SnsWallet, props);
 
@@ -255,7 +255,7 @@ describe("SnsWallet", () => {
     });
 
     it("should init worker that sync the transactions", async () => {
-      const spy = jest.spyOn(workerTransactions, "initTransactionsWorker");
+      const spy = vi.spyOn(workerTransactions, "initTransactionsWorker");
 
       const { queryByTestId } = render(SnsWallet, props);
 

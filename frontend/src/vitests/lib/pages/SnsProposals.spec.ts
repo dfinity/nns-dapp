@@ -52,7 +52,7 @@ describe("SnsProposals", () => {
         name: functionName,
         id: functionId,
       });
-      jest
+      vi
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreSubscribe);
     });
@@ -132,7 +132,7 @@ describe("SnsProposals", () => {
 
   describe("when not logged in", () => {
     beforeEach(() => {
-      jest
+      vi
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreNoIdentitySubscribe);
       fakeSnsGovernanceApi.addProposalWith({
@@ -172,7 +172,7 @@ describe("SnsProposals", () => {
       }),
     ];
     beforeEach(() => {
-      jest
+      vi
         .spyOn(authStore, "subscribe")
         .mockImplementation(mockAuthStoreNoIdentitySubscribe);
       const functionId = BigInt(3);

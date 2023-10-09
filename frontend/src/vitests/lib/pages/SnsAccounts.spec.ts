@@ -24,7 +24,7 @@ import type { ComponentProps } from "svelte/types/runtime";
 vi.mock("$lib/services/sns-accounts.services");
 
 vi.mock("$lib/services/worker-balances.services", () => ({
-  initBalancesWorker: jest.fn(() =>
+  initBalancesWorker: vi.fn(() =>
     Promise.resolve({
       startBalancesTimer: () => {
         // Do nothing
@@ -57,9 +57,9 @@ describe("SnsAccounts", () => {
     nonNullish(container.querySelector(".value"));
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     snsAccountsStore.reset();
-    jest
+    vi
       .spyOn(tokensStore, "subscribe")
       .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
 
@@ -128,7 +128,7 @@ describe("SnsAccounts", () => {
     });
 
     it("should init worker that sync the balance", async () => {
-      const spy = jest.spyOn(workerBalances, "initBalancesWorker");
+      const spy = vi.spyOn(workerBalances, "initBalancesWorker");
 
       render(SnsAccounts);
 

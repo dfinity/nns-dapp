@@ -203,20 +203,20 @@ describe("SnsNeurons", () => {
   });
 
   describe("no neurons", () => {
-    jest
+    vi
       .spyOn(snsProjectSelectedStore, "subscribe")
       .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
 
     beforeAll(() => {
-      jest
+      vi
         .spyOn(sortedSnsUserNeuronsStore, "subscribe")
         .mockImplementation(buildMockSortedSnsNeuronsStoreSubscribe([]));
-      jest
+      vi
         .spyOn(sortedSnsCFNeuronsStore, "subscribe")
         .mockImplementation(buildMockSortedSnsNeuronsStoreSubscribe([]));
     });
 
-    afterAll(() => jest.clearAllMocks());
+    afterAll(() => vi.clearAllMocks());
 
     it("should render empty text if no neurons", async () => {
       const { getByText } = render(SnsNeurons);
