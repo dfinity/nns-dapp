@@ -1,6 +1,7 @@
 <script lang="ts">
   import Markdown from "$lib/components/ui/Markdown.svelte";
   import { nonNullish } from "@dfinity/utils";
+  import { ENABLE_FULL_WIDTH_PROPOSAL } from "$lib/stores/feature-flags.store";
 
   export let summary: string | undefined;
 
@@ -9,15 +10,28 @@
 </script>
 
 <div class="markdown" data-tid="proposal-summary-component">
-  {#if showTitle}
-    <div class="title"><slot name="title" /></div>
+  {#if $ENABLE_FULL_WIDTH_PROPOSAL}
+    {#if showTitle}
+      <div class="title"><slot name="title" /></div>
+    {/if}
 
     {#if nonNullish(summary) && summary !== ""}
-      <hr />
+      <div class="content-cell-island markdown-container">
+        <Markdown text={summary} />
+      </div>
     {/if}
-  {/if}
+  {:else}
+    <!-- TODO(GIX-1957): remove this block after the full-width proposal is enabled -->
+    {#if showTitle}
+      <div class="title"><slot name="title" /></div>
 
-  <Markdown text={summary} />
+      {#if nonNullish(summary) && summary !== ""}
+        <hr />
+      {/if}
+    {/if}
+
+    <Markdown text={summary} />
+  {/if}
 </div>
 
 <style lang="scss">
@@ -26,6 +40,18 @@
 
   .markdown {
     overflow-wrap: break-word;
+
+    .markdown-container {
+      margin-top: var(--padding-2x);
+      // custom island styles
+      background: var(--card-background-disabled);
+      color: var(--description-color);
+    }
+
+    :global(.markdown-container > :last-child) {
+      // remove marginы from the markdown container to avoid extra spacing inside sub-island
+      margin-bottom: 0;
+    }
 
     :global(strong) {
       font-weight: var(--font-weight-bold);
