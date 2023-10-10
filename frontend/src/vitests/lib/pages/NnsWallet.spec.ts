@@ -28,6 +28,7 @@ import {
 import { ICPToken } from "@dfinity/utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
+import type { SpyInstance } from "vitest";
 import AccountsTest from "./AccountsTest.svelte";
 
 vi.mock("$lib/api/nns-dapp.api");
@@ -261,7 +262,7 @@ describe("NnsWallet", () => {
   });
 
   describe("when no accounts and user navigates away", () => {
-    let spyQueryAccount: vi.SpyInstance;
+    let spyQueryAccount: SpyInstance;
     beforeEach(() => {
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);
