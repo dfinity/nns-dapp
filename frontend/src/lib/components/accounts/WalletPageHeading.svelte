@@ -11,11 +11,20 @@
   import { i18n } from "$lib/stores/i18n";
   import { formatToken } from "$lib/utils/token.utils";
   import IdentifierHash from "../ui/IdentifierHash.svelte";
-  import TestIdWrapper from "../common/TestIdWrapper.svelte";
+  import Tooltip from "../ui/Tooltip.svelte";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
   export let balance: TokenAmount | undefined = undefined;
   export let accountName: string;
   export let principal: Principal | undefined = undefined;
+
+  let detailedAccountBalance: string | undefined;
+  $: detailedAccountBalance = nonNullish(balance)
+    ? formatToken({
+        value: balance.toE8s(),
+        detailed: true,
+      })
+    : undefined;
 
   const updateLayoutTitle = ($event: Event) => {
     const {
@@ -35,15 +44,24 @@
 </script>
 
 <PageHeading testId="wallet-page-heading-component">
-  <TestIdWrapper slot="title" testId="wallet-page-heading-title">
-    {#if nonNullish(balance)}
-      <AmountDisplay amount={balance} size="huge" singleLine />
+  <svelte:fragment slot="title">
+    <!-- TS is not smart enough to understand that if `balance` is defined, then `detailedAccountBalance` is also defined -->
+    {#if nonNullish(balance) && nonNullish(detailedAccountBalance)}
+      <Tooltip
+        id="wallet-detailed-icp"
+        text={replacePlaceholders($i18n.accounts.current_balance_detail, {
+          $amount: detailedAccountBalance,
+          $token: balance.token.symbol,
+        })}
+      >
+        <AmountDisplay amount={balance} size="huge" singleLine />
+      </Tooltip>
     {:else}
       <div data-tid="skeleton" class="skeleton">
         <SkeletonText tagName="h1" />
       </div>
     {/if}
-  </TestIdWrapper>
+  </svelte:fragment>
   <div
     slot="subtitle"
     class="subtitles"

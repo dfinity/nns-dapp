@@ -22,7 +22,6 @@ import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
-import en from "$tests/mocks/i18n.mock";
 import { mockUniversesTokens } from "$tests/mocks/tokens.mock";
 import { selectSegmentBTC } from "$tests/utils/accounts.test-utils";
 import { advanceTime } from "$tests/utils/timers.test-utils";
@@ -168,13 +167,11 @@ describe("CkBTCWallet", () => {
     it("should render ckTESTBTC name", async () => {
       const { getByTestId } = render(CkBTCWallet, props);
 
-      await waitFor(() => {
-        const titleRow = getByTestId("projects-summary");
-        expect(titleRow).not.toBeNull();
+      await waitFor(() =>
         expect(
-          titleRow?.textContent?.includes(en.ckbtc.test_title)
-        ).toBeTruthy();
-      });
+          getByTestId("universe-page-summary-component").textContent.trim()
+        ).toBe("ckTESTBTC")
+      );
     });
 
     it("should hide spinner when selected account is loaded", async () => {
@@ -183,32 +180,17 @@ describe("CkBTCWallet", () => {
       await waitFor(() => expect(queryByTestId("spinner")).toBeNull());
     });
 
-    it("should render wallet summary", async () => {
+    it("should render `Main` as subtitle", async () => {
       const { queryByTestId } = render(CkBTCWallet, props);
 
       await waitFor(() =>
-        expect(queryByTestId("wallet-summary")).toBeInTheDocument()
+        expect(queryByTestId("wallet-page-heading-subtitle").textContent).toBe(
+          "Main"
+        )
       );
     });
 
-    it("should render a detailed balance in summary", async () => {
-      const { queryByTestId } = render(CkBTCWallet, props);
-
-      await waitFor(() =>
-        expect(queryByTestId("wallet-summary")).toBeInTheDocument()
-      );
-
-      const icp: HTMLSpanElement | null = queryByTestId("token-value");
-
-      expect(icp?.innerHTML).toEqual(
-        `${formatToken({
-          value: mockCkBTCMainAccount.balanceE8s,
-          detailed: true,
-        })}`
-      );
-    });
-
-    it("should render a balance with token in summary", async () => {
+    it("should render a balance with token", async () => {
       const { getByTestId } = render(CkBTCWallet, props);
 
       await waitFor(() =>
@@ -218,7 +200,6 @@ describe("CkBTCWallet", () => {
       expect(getByTestId("token-value-label")?.textContent.trim()).toEqual(
         `${formatToken({
           value: mockCkBTCMainAccount.balanceE8s,
-          detailed: true,
         })} ${mockCkBTCToken.symbol}`
       );
     });
@@ -248,18 +229,15 @@ describe("CkBTCWallet", () => {
     it("should update account after transfer tokens", async () => {
       const result = render(CkBTCAccountsTest, { props: modalProps });
 
-      const { queryByTestId, getByTestId, container } = result;
+      const { queryByTestId, getByTestId } = result;
 
       // Check original sum
       await waitFor(() =>
         expect(
-          container.querySelector("#wallet-detailed-icp")?.textContent ?? ""
-        ).toContain(
-          `${formatToken({
-            value: mockCkBTCMainAccount.balanceE8s,
-            detailed: true,
-          })}`
-        )
+          queryByTestId("wallet-page-heading-component").querySelector(
+            "[data-tid='token-value-label']"
+          )?.textContent
+        ).toBe("4'445'566.99 ckBTC")
       );
 
       // Make transfer
@@ -280,8 +258,10 @@ describe("CkBTCWallet", () => {
       // Account should have been updated and sum should be reflected
       await waitFor(() =>
         expect(
-          container.querySelector("#wallet-detailed-icp")?.textContent ?? ""
-        ).toContain(`${formatToken({ value: expectedBalanceAfterTransfer })}`)
+          queryByTestId("wallet-page-heading-component").querySelector(
+            "[data-tid='token-value-label']"
+          )?.textContent
+        ).toContain(formatToken({ value: expectedBalanceAfterTransfer }))
       );
     });
 
@@ -302,7 +282,6 @@ describe("CkBTCWallet", () => {
         expect(getByTestId("token-value")?.textContent ?? "").toEqual(
           `${formatToken({
             value: mockCkBTCMainAccount.balanceE8s,
-            detailed: true,
           })}`
         )
       );
