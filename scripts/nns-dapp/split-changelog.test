@@ -3,20 +3,35 @@ set -euo pipefail
 
 SOURCE_DIR="$(dirname "${BASH_SOURCE[0]}")"
 
-CHANGELOG="$(mktemp)"
-OLD_CHANGELOG="$(mktemp)"
-EXPECTED_CHANGELOG="$(mktemp)"
+RELEASED_CHANGELOG="$(mktemp)"
+UNRELEASED_CHANGELOG="$(mktemp)"
+OLD_UNRELEASED_CHANGELOG="$(mktemp)"
+EXPECTED_RELEASED_CHANGELOG="$(mktemp)"
+EXPECTED_UNRELEASED_CHANGELOG="$(mktemp)"
 
 clean_up() {
-  rm "$CHANGELOG"
-  rm "$OLD_CHANGELOG"
-  rm "$EXPECTED_CHANGELOG"
+  rm "$RELEASED_CHANGELOG"
+  rm "$UNRELEASED_CHANGELOG"
+  rm "$OLD_UNRELEASED_CHANGELOG"
+  rm "$EXPECTED_RELEASED_CHANGELOG"
+  rm "$EXPECTED_UNRELEASED_CHANGELOG"
 }
 
-cat >"$CHANGELOG" <<-EOF
+cat >"$RELEASED_CHANGELOG" <<-EOF
 # Changelog NNS Dapp
 
-Introduction...
+Introduction released...
+
+## Proposal 123245
+
+* Render the SNS Neuron age.
+etc...
+EOF
+
+cat >"$UNRELEASED_CHANGELOG" <<-EOF
+# Unreleased changelog NNS Dapp
+
+Introduction unreleased...
 
 ## Unreleased
 
@@ -79,17 +94,12 @@ Introduction...
 - Script to download WASM from CI no longer relies on broken \`gh --status\` flag.
 * ci-link script uses correct workflow name.
 #### Security
-
-## Proposal 123245
-
-* Render the SNS Neuron age.
-etc...
 EOF
 
-cat >"$OLD_CHANGELOG" <<-EOF
-# Changelog NNS Dapp
+cat >"$OLD_UNRELEASED_CHANGELOG" <<-EOF
+# Unreleased changelog NNS Dapp
 
-Introduction...
+Introduction unreleased...
 
 ## Unreleased
 
@@ -137,61 +147,12 @@ Introduction...
 #### Fixed
 - Script to download WASM from CI no longer relies on broken \`gh --status\` flag.
 #### Security
-
-## Proposal 123245
-
-* Render the SNS Neuron age.
-etc...
 EOF
 
-cat >"$EXPECTED_CHANGELOG" <<-EOF
+cat >"$EXPECTED_RELEASED_CHANGELOG" <<-EOF
 # Changelog NNS Dapp
 
-Introduction...
-
-## Unreleased
-
-### Application
-
-#### Added
-
-* Render SNS neuron voting power in neuron detail page.
-
-#### Changed
-
-* Simplify rust cache expiry with \`pop_first()\`.
-* Updated \`bitcoin-canister\` revision for proposal payload support.
-
-#### Deprecated
-
-#### Removed
-#### Fixed
-
-* Fix bug with newly created canisters where the name was ovewritten to empty string.
-
-#### Security
-#### Not Published
-
-* Progress on merge neurons preview, behind a flag.
-
-### Operations
-
-#### Added
-* CreateServiceNervousSystem proposal support.
-* Base64 image support for payload rendering.
-* \`scripts/canister_ids\` can now remove canisters from \`canister_ids.json\`.
-
-#### Changed
-* Consolidated the config tests.
-* Set a custom URL for \`internet_identity\` on \`ic\` rather than using the default.
-* Improve Canister Detail tests by mocking the api layer instead of services.
-* Copied the newest version of clap.bash from snsdemo.
-
-#### Deprecated
-#### Removed
-#### Fixed
-* ci-link script uses correct workflow name.
-#### Security
+Introduction released...
 
 ## Proposal 54321
 
@@ -245,13 +206,79 @@ Introduction...
 etc...
 EOF
 
-"$SOURCE_DIR"/split-changelog --test-changelog "$CHANGELOG" --test-old-changelog "$OLD_CHANGELOG" --test-proposal 54321
+cat >"$EXPECTED_UNRELEASED_CHANGELOG" <<-EOF
+# Unreleased changelog NNS Dapp
 
-if diff "$CHANGELOG" "$EXPECTED_CHANGELOG"; then
-  echo "Test passed"
+Introduction unreleased...
+
+## Unreleased
+
+### Application
+
+#### Added
+
+* Render SNS neuron voting power in neuron detail page.
+
+#### Changed
+
+* Simplify rust cache expiry with \`pop_first()\`.
+* Updated \`bitcoin-canister\` revision for proposal payload support.
+
+#### Deprecated
+
+#### Removed
+#### Fixed
+
+* Fix bug with newly created canisters where the name was ovewritten to empty string.
+
+#### Security
+#### Not Published
+
+* Progress on merge neurons preview, behind a flag.
+
+### Operations
+
+#### Added
+* CreateServiceNervousSystem proposal support.
+* Base64 image support for payload rendering.
+* \`scripts/canister_ids\` can now remove canisters from \`canister_ids.json\`.
+
+#### Changed
+* Consolidated the config tests.
+* Set a custom URL for \`internet_identity\` on \`ic\` rather than using the default.
+* Improve Canister Detail tests by mocking the api layer instead of services.
+* Copied the newest version of clap.bash from snsdemo.
+
+#### Deprecated
+#### Removed
+#### Fixed
+* ci-link script uses correct workflow name.
+#### Security
+EOF
+
+"$SOURCE_DIR"/split-changelog --test-released-changelog "$RELEASED_CHANGELOG" --test-unreleased-changelog "$UNRELEASED_CHANGELOG" --test-old-unreleased-changelog "$OLD_UNRELEASED_CHANGELOG" --test-proposal 54321
+
+if diff "$RELEASED_CHANGELOG" "$EXPECTED_RELEASED_CHANGELOG"; then
+  echo "Released changelog is as expected"
 else
+  echo "Released changelog is not as expected"
   echo "Test failed"
   exit 1
 fi
+
+if diff "$UNRELEASED_CHANGELOG" "$EXPECTED_UNRELEASED_CHANGELOG"; then
+  echo "Unreleased changelog is as expected"
+else
+  echo "Unreleased changelog is not as expected"
+  vimdiff "$UNRELEASED_CHANGELOG" "$EXPECTED_UNRELEASED_CHANGELOG"
+  echo "ACTUAL:"
+  cat "$UNRELEASED_CHANGELOG"
+  echo "EXPECTED:"
+  cat "$EXPECTED_UNRELEASED_CHANGELOG"
+  echo "Test failed"
+  exit 1
+fi
+
+echo "Test passed"
 
 clean_up
