@@ -17,9 +17,9 @@ export const advanceTime = async (millis?: number): Promise<void> => {
   // Make sure the timers are set before we advance time.
   await runResolvedPromises();
   if (nonNullish(millis)) {
-    vi.advanceTimersByTime(millis);
+    await vi.advanceTimersByTimeAsync(millis);
   } else {
-    vi.runOnlyPendingTimers();
+    await vi.runOnlyPendingTimersAsync();
   }
   await runResolvedPromises();
 };

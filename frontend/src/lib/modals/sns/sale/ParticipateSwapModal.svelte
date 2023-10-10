@@ -143,15 +143,10 @@
         return;
       }
 
-      if (IS_TEST_ENV) {
-        // TODO: Fix why setting a timeout to close causes the modal to never close.
+      // We defer the closing of the modal a bit to let the user notice the last step was successful.
+      setTimeout(() => {
         dispatcher("nnsClose");
-      } else {
-        // We defer the closing of the modal a bit to let the user notice the last step was successful.
-        setTimeout(() => {
-          dispatcher("nnsClose");
-        }, 1000);
-      }
+      }, 1000);
     }
   };
 
