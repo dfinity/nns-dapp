@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import * as snsSaleApi from "$lib/api/sns-sale.api";
@@ -46,25 +42,20 @@ import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
-} from "$tests/utils/timers.test-utils";
+} from "$vitests/utils/timers.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
-jest.mock("$lib/api/nns-dapp.api");
-jest.mock("$lib/api/sns.api");
-jest.mock("$lib/api/sns-swap-metrics.api");
-jest.mock("$lib/api/sns-sale.api");
-jest.mock("$lib/api/icp-ledger.api");
-jest.mock("$lib/api/location.api");
+vi.mock("$lib/api/nns-dapp.api");
+vi.mock("$lib/api/sns.api");
+vi.mock("$lib/api/sns-swap-metrics.api");
+vi.mock("$lib/api/sns-sale.api");
+vi.mock("$lib/api/icp-ledger.api");
+vi.mock("$lib/api/location.api");
 
-const blockedApiPaths = [
-  "$lib/api/sns.api",
-  "$lib/api/sns-swap-metrics.api",
-  "$lib/api/sns-sale.api",
-  "$lib/api/icp-ledger.api",
-  "$lib/api/location.api",
-];
+// Block only from fakes, not from mocked modules.
+const blockedApiPaths = ["$lib/api/location.api"];
 
 describe("ProjectDetail", () => {
   blockAllCallsTo(blockedApiPaths);
@@ -81,27 +72,25 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 # HELP sale_cf_participants_count`;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     resetSnsProjects();
     snsSwapCommitmentsStore.reset();
     snsSwapMetricsStore.reset();
     snsTicketsStore.reset();
     userCountryStore.set(NOT_LOADED);
 
-    jest.clearAllTimers();
+    vi.clearAllTimers();
     const now = Date.now();
-    jest.useFakeTimers().setSystemTime(now);
+    vi.useFakeTimers().setSystemTime(now);
 
-    jest.spyOn(ledgerApi, "sendICP").mockResolvedValue(undefined);
+    vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(undefined);
 
-    jest
-      .spyOn(nnsDappApi, "queryAccount")
-      .mockResolvedValue(mockAccountDetails);
-    jest.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(newBalance);
+    vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(mockAccountDetails);
+    vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(newBalance);
 
     fakeLocationApi.setCountryCode(userCountryCode);
 
-    jest.spyOn(snsApi, "querySnsDerivedState").mockResolvedValue({
+    vi.spyOn(snsApi, "querySnsDerivedState").mockResolvedValue({
       sns_tokens_per_icp: [1],
       buyer_total_icp_e8s: [BigInt(200_000_000)],
       cf_participant_count: [],
@@ -111,21 +100,21 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       direct_participation_icp_e8s: [],
     });
 
-    jest
-      .spyOn(snsSaleApi, "queryFinalizationStatus")
-      .mockResolvedValue(snsFinalizationStatusResponseMock);
+    vi.spyOn(snsSaleApi, "queryFinalizationStatus").mockResolvedValue(
+      snsFinalizationStatusResponseMock
+    );
 
-    jest
-      .spyOn(snsMetricsApi, "querySnsSwapMetrics")
-      .mockResolvedValue(rawMetricsText);
+    vi.spyOn(snsMetricsApi, "querySnsSwapMetrics").mockResolvedValue(
+      rawMetricsText
+    );
   });
 
   describe("not logged in user", () => {
     beforeEach(() => {
       page.mock({ data: { universe: null } });
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreNoIdentitySubscribe
+      );
     });
 
     // TODO: Remove once all SNSes support buyers count in derived state
@@ -311,12 +300,12 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
   describe("logged in user", () => {
     beforeEach(() => {
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreSubscribe
+      );
 
-      jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
-      jest.spyOn(snsApi, "querySnsLifecycle").mockResolvedValue({
+      vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
+      vi.spyOn(snsApi, "querySnsLifecycle").mockResolvedValue({
         decentralization_sale_open_timestamp_seconds: [BigInt(11231312)],
         lifecycle: [SnsSwapLifecycle.Open],
       });
@@ -341,19 +330,19 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             certified: true,
           },
         ]);
-        jest.spyOn(snsSaleApi, "notifyParticipation").mockResolvedValue({
+        vi.spyOn(snsSaleApi, "notifyParticipation").mockResolvedValue({
           icp_accepted_participation_e8s: testTicket.amount_icp_e8s,
           icp_ledger_account_balance_e8s: testTicket.amount_icp_e8s,
         });
-        jest.spyOn(ledgerApi, "sendICP").mockResolvedValue(BigInt(10));
-        jest
-          .spyOn(ledgerApi, "queryAccountBalance")
-          .mockResolvedValue(BigInt(1_000_000_000));
+        vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(BigInt(10));
+        vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+          BigInt(1_000_000_000)
+        );
       });
 
       it("should show user's commitment", async () => {
         const userCommitment = BigInt(100_000_000);
-        jest.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
+        vi.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
           rootCanisterId,
           myCommitment: {
             icp: [
@@ -382,8 +371,8 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
       describe("no open ticket and no commitment", () => {
         beforeEach(() => {
-          jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
-          jest.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
+          vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
+          vi.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
             rootCanisterId,
             myCommitment: undefined,
           } as SnsSwapCommitment);
@@ -460,13 +449,12 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             subAccounts: [],
             hardwareWallets: [],
           });
-          jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
-          jest.spyOn(snsSaleApi, "newSaleTicket").mockResolvedValue({
+          vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
+          vi.spyOn(snsSaleApi, "newSaleTicket").mockResolvedValue({
             ...testTicket,
             amount_icp_e8s: amountE8s,
           });
-          jest
-            .spyOn(snsApi, "querySnsSwapCommitment")
+          vi.spyOn(snsApi, "querySnsSwapCommitment")
             // Query call
             .mockResolvedValueOnce({
               rootCanisterId,
@@ -502,12 +490,15 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
           await projectDetail.clickParticipate();
           const modal = projectDetail.getParticipateSwapModalPo();
+
           await modal.participate({
             amount: amountICP,
             acceptConditions: false,
           });
+
           await advanceTime();
           await modal.waitForAbsent();
+
           expect(await projectDetail.getCommitmentAmount()).toBe(
             formattedAmountICP
           );
@@ -533,7 +524,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         });
 
         it("when restricted countries and getting location fails", async () => {
-          jest.spyOn(console, "error").mockImplementation(() => undefined);
+          vi.spyOn(console, "error").mockImplementation(() => undefined);
           fakeLocationApi.setCountryCode(
             new Error("Failed to get user location")
           );
@@ -551,9 +542,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
         it("should show finalizing after successful participation if api returns finalizing state", async () => {
           const finalizingStatus = createFinalizationStatusMock(true);
-          jest
-            .spyOn(snsSaleApi, "queryFinalizationStatus")
-            .mockResolvedValue(finalizingStatus);
+          vi.spyOn(snsSaleApi, "queryFinalizationStatus").mockResolvedValue(
+            finalizingStatus
+          );
 
           const po = await participateInSwap();
 
@@ -572,8 +563,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             },
           ],
         };
-        jest
-          .spyOn(snsApi, "querySnsSwapCommitment")
+        vi.spyOn(snsApi, "querySnsSwapCommitment")
           // Query call
           .mockResolvedValueOnce({
             rootCanisterId,
@@ -588,7 +578,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             rootCanisterId,
             myCommitment: finalCommitment,
           } as SnsSwapCommitment);
-        jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(testTicket);
+        vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(testTicket);
 
         expect(snsApi.querySnsSwapCommitment).not.toBeCalled();
 
@@ -628,7 +618,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             certified: true,
           },
         ]);
-        jest.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
+        vi.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
           rootCanisterId,
           myCommitment: {
             icp: [],
@@ -665,7 +655,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             certified: true,
           },
         ]);
-        jest.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
+        vi.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
           rootCanisterId,
           myCommitment: {
             icp: [
@@ -734,9 +724,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         },
       ]);
       page.mock({ data: { universe: null } });
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreNoIdentitySubscribe
+      );
     });
 
     it("should redirect to launchpad", async () => {
@@ -763,9 +753,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         },
       ]);
       page.mock({ data: { universe: null } });
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreNoIdentitySubscribe
+      );
     });
 
     it("should redirect to launchpad", async () => {
