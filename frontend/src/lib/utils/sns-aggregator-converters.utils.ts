@@ -141,9 +141,9 @@ const convertNeuronsFundParticipationConstraints = (
 
 const convertSwapInitParams = (
   init: CachedSwapInitParamsDto | null
-): [SnsSwapInit] | [] =>
+): SnsSwapInit | undefined =>
   nonNullish(init)
-    ? toNullable({
+    ? {
         nns_proposal_id: toNullable(
           convertOptionalNumToBigInt(init.nns_proposal_id)
         ),
@@ -221,8 +221,8 @@ const convertSwapInitParams = (
               )
             )
           : [],
-      })
-    : [];
+      }
+    : undefined;
 
 const convertSwapParams = (params: CachedSwapParamsDto): SnsParams => ({
   min_participant_icp_e8s: BigInt(params.min_participant_icp_e8s),
@@ -276,7 +276,7 @@ const convertSwap = ({
     open_sns_token_swap_proposal_id !== undefined
       ? toNullable(convertOptionalNumToBigInt(open_sns_token_swap_proposal_id))
       : [],
-  init: convertSwapInitParams(init),
+  init: toNullable(convertSwapInitParams(init)),
   params: isNullish(params) ? [] : [convertSwapParams(params)],
   direct_participation_icp_e8s: toNullable(
     convertOptionalNumToBigInt(direct_participation_icp_e8s)
@@ -460,6 +460,7 @@ export const convertDtoToSnsSummary = ({
   icrc1_metadata,
   swap_state,
   derived_state,
+  init,
 }: CachedSnsDto): SnsSummary | undefined => {
   const partialSummary: PartialSummary = {
     rootCanisterId: Principal.from(root_canister_id),
@@ -471,6 +472,7 @@ export const convertDtoToSnsSummary = ({
     token: convertDtoToTokenMetadata(icrc1_metadata),
     swap: convertDtoToSnsSummarySwap(swap_state.swap),
     derived: convertDerived(derived_state),
+    init: convertSwapInitParams(init.init),
   };
 
   return isValidSummary(partialSummary) ? partialSummary : undefined;
