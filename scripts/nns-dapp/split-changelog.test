@@ -17,17 +17,6 @@ clean_up() {
   rm "$EXPECTED_UNRELEASED_CHANGELOG"
 }
 
-cat >"$RELEASED_CHANGELOG" <<-EOF
-# Changelog NNS Dapp
-
-Introduction released...
-
-## Proposal 123245
-
-* Render the SNS Neuron age.
-etc...
-EOF
-
 cat >"$UNRELEASED_CHANGELOG" <<-EOF
 # Unreleased changelog NNS Dapp
 
@@ -96,6 +85,17 @@ Introduction unreleased...
 #### Security
 EOF
 
+cat >"$RELEASED_CHANGELOG" <<-EOF
+# Changelog NNS Dapp
+
+Introduction released...
+
+## Proposal 123245
+
+* Render the SNS Neuron age.
+etc...
+EOF
+
 cat >"$OLD_UNRELEASED_CHANGELOG" <<-EOF
 # Unreleased changelog NNS Dapp
 
@@ -146,6 +146,56 @@ Introduction unreleased...
 - Deleted the now empty \`docker-build\` and \`aggregator\` GitHub workflows.
 #### Fixed
 - Script to download WASM from CI no longer relies on broken \`gh --status\` flag.
+#### Security
+EOF
+
+cat >"$EXPECTED_UNRELEASED_CHANGELOG" <<-EOF
+# Unreleased changelog NNS Dapp
+
+Introduction unreleased...
+
+## Unreleased
+
+### Application
+
+#### Added
+
+* Render SNS neuron voting power in neuron detail page.
+
+#### Changed
+
+* Simplify rust cache expiry with \`pop_first()\`.
+* Updated \`bitcoin-canister\` revision for proposal payload support.
+
+#### Deprecated
+
+#### Removed
+#### Fixed
+
+* Fix bug with newly created canisters where the name was ovewritten to empty string.
+
+#### Security
+#### Not Published
+
+* Progress on merge neurons preview, behind a flag.
+
+### Operations
+
+#### Added
+* CreateServiceNervousSystem proposal support.
+* Base64 image support for payload rendering.
+* \`scripts/canister_ids\` can now remove canisters from \`canister_ids.json\`.
+
+#### Changed
+* Consolidated the config tests.
+* Set a custom URL for \`internet_identity\` on \`ic\` rather than using the default.
+* Improve Canister Detail tests by mocking the api layer instead of services.
+* Copied the newest version of clap.bash from snsdemo.
+
+#### Deprecated
+#### Removed
+#### Fixed
+* ci-link script uses correct workflow name.
 #### Security
 EOF
 
@@ -204,56 +254,6 @@ Introduction released...
 
 * Render the SNS Neuron age.
 etc...
-EOF
-
-cat >"$EXPECTED_UNRELEASED_CHANGELOG" <<-EOF
-# Unreleased changelog NNS Dapp
-
-Introduction unreleased...
-
-## Unreleased
-
-### Application
-
-#### Added
-
-* Render SNS neuron voting power in neuron detail page.
-
-#### Changed
-
-* Simplify rust cache expiry with \`pop_first()\`.
-* Updated \`bitcoin-canister\` revision for proposal payload support.
-
-#### Deprecated
-
-#### Removed
-#### Fixed
-
-* Fix bug with newly created canisters where the name was ovewritten to empty string.
-
-#### Security
-#### Not Published
-
-* Progress on merge neurons preview, behind a flag.
-
-### Operations
-
-#### Added
-* CreateServiceNervousSystem proposal support.
-* Base64 image support for payload rendering.
-* \`scripts/canister_ids\` can now remove canisters from \`canister_ids.json\`.
-
-#### Changed
-* Consolidated the config tests.
-* Set a custom URL for \`internet_identity\` on \`ic\` rather than using the default.
-* Improve Canister Detail tests by mocking the api layer instead of services.
-* Copied the newest version of clap.bash from snsdemo.
-
-#### Deprecated
-#### Removed
-#### Fixed
-* ci-link script uses correct workflow name.
-#### Security
 EOF
 
 "$SOURCE_DIR"/split-changelog --test-released-changelog "$RELEASED_CHANGELOG" --test-unreleased-changelog "$UNRELEASED_CHANGELOG" --test-old-unreleased-changelog "$OLD_UNRELEASED_CHANGELOG" --test-proposal 54321
