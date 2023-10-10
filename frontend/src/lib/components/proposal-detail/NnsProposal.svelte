@@ -50,22 +50,17 @@
               </div>
             </SplitBlock>
           </div>
-          <div class="content-cell-island">
-            <NnsProposalSummarySection proposalInfo={$store.proposal} />
-          </div>
-          <div class="content-cell-island">
-            <NnsProposalProposerActionsEntry
-              proposal={$store.proposal.proposal}
-            />
-          </div>
-          <div class="content-cell-island">
-            <NnsProposalProposerPayloadEntry
-              proposal={$store.proposal.proposal}
-              proposalId={$store.proposalId}
-            />
-          </div>
+          <NnsProposalSummarySection proposalInfo={$store.proposal} />
+          <NnsProposalProposerActionsEntry
+            proposal={$store.proposal.proposal}
+          />
+          <NnsProposalProposerPayloadEntry
+            proposal={$store.proposal.proposal}
+            proposalId={$store.proposalId}
+          />
         </div>
       {:else}
+        <!-- TODO(GIX-1957): remove this block after the full-width proposal is enabled -->
         <div class="content-grid">
           <div class="content-a content-cell-island">
             <ProposalSystemInfoSection proposalInfo={$store.proposal} />
