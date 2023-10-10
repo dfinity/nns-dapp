@@ -19,8 +19,8 @@ describe("ProjectCommitment", () => {
   const saleBuyerCount = 1_000_000;
 
   const renderComponent = (
-      summary: SnsSummary,
-      swapCommitment: SnsSwapCommitment = mockSnsFullProject.swapCommitment
+    summary: SnsSummary,
+    swapCommitment: SnsSwapCommitment = mockSnsFullProject.swapCommitment
   ) => {
     const { container } = renderContextCmp({
       summary,
@@ -98,12 +98,12 @@ describe("ProjectCommitment", () => {
     beforeEach(() => {
       // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
       jest
-          .spyOn(summaryGetters, "getMinDirectParticipation")
-          .mockImplementation(() => 10000000000n);
+        .spyOn(summaryGetters, "getMinDirectParticipation")
+        .mockImplementation(() => 10000000000n);
       // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
       jest
-          .spyOn(summaryGetters, "getMaxDirectParticipation")
-          .mockImplementation(() => 100000000000n);
+        .spyOn(summaryGetters, "getMaxDirectParticipation")
+        .mockImplementation(() => 100000000000n);
     });
 
     it("should render a progress bar with direct participation", async () => {
@@ -129,12 +129,12 @@ describe("ProjectCommitment", () => {
     beforeEach(() => {
       // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
       jest
-          .spyOn(summaryGetters, "getMinDirectParticipation")
-          .mockImplementation(() => 10000000000n);
+        .spyOn(summaryGetters, "getMinDirectParticipation")
+        .mockImplementation(() => 10000000000n);
       // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
       jest
-          .spyOn(summaryGetters, "getMaxDirectParticipation")
-          .mockImplementation(() => 100000000000n);
+        .spyOn(summaryGetters, "getMaxDirectParticipation")
+        .mockImplementation(() => 100000000000n);
     });
 
     it("should render detailed participation if neurons fund participation is zero", async () => {
@@ -161,12 +161,12 @@ describe("ProjectCommitment", () => {
     beforeEach(() => {
       // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
       jest
-          .spyOn(summaryGetters, "getMinDirectParticipation")
-          .mockImplementation(() => undefined);
+        .spyOn(summaryGetters, "getMinDirectParticipation")
+        .mockImplementation(() => undefined);
       // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
       jest
-          .spyOn(summaryGetters, "getMaxDirectParticipation")
-          .mockImplementation(() => undefined);
+        .spyOn(summaryGetters, "getMaxDirectParticipation")
+        .mockImplementation(() => undefined);
     });
 
     it("should render a progress bar with overall participation", async () => {
