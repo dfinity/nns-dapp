@@ -26,6 +26,7 @@ describe("ProjectStatus", () => {
     });
     expect(queryByText(en.sns_project_detail.status_open)).toBeInTheDocument();
     expect(queryByTestId("tag").classList.contains("success")).toBe(true);
+    expect(queryByTestId("tag").classList.contains("info")).toBe(false);
   });
 
   it("should render pending text when not yet open", () => {
@@ -39,6 +40,7 @@ describe("ProjectStatus", () => {
       queryByText(en.sns_project_detail.status_pending)
     ).toBeInTheDocument();
     expect(queryByTestId("tag").classList.contains("info")).toBe(true);
+    expect(queryByTestId("tag").classList.contains("success")).toBe(false);
   });
 
   it("should render unspecified text if not defined", () => {
@@ -52,6 +54,7 @@ describe("ProjectStatus", () => {
       queryByText(en.sns_project_detail.status_unspecified)
     ).toBeInTheDocument();
     expect(queryByTestId("tag").classList.contains("info")).toBe(true);
+    expect(queryByTestId("tag").classList.contains("success")).toBe(false);
   });
 
   it("should render committed text", () => {
@@ -78,6 +81,7 @@ describe("ProjectStatus", () => {
       queryByText(en.sns_project_detail.status_adopted)
     ).toBeInTheDocument();
     expect(queryByTestId("tag").classList.contains("info")).toBe(true);
+    expect(queryByTestId("tag").classList.contains("success")).toBe(false);
   });
 
   it("should render aborted text when cancelled", () => {
@@ -91,6 +95,7 @@ describe("ProjectStatus", () => {
       queryByText(en.sns_project_detail.status_aborted)
     ).toBeInTheDocument();
     expect(queryByTestId("tag").classList.contains("info")).toBe(true);
+    expect(queryByTestId("tag").classList.contains("success")).toBe(false);
   });
 
   it("should render finalizing text when swap is finalizing", () => {
@@ -110,6 +115,7 @@ describe("ProjectStatus", () => {
       queryByText(en.sns_project_detail.status_finalizing)
     ).toBeInTheDocument();
     expect(queryByTestId("tag").classList.contains("info")).toBe(true);
+    expect(queryByTestId("tag").classList.contains("success")).toBe(false);
   });
 
   it("should render committed text if finalizing data is not finalizing", () => {
