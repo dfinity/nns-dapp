@@ -89,7 +89,6 @@ START_OF_UNRELEASED_SECTION="$(($(grep -n -m 1 '^## Unreleased$' "$UNRELEASED_CH
 # Remove duplicate blank lines.
 cat -s "$RELEASED_CHANGELOG" | sponge "$RELEASED_CHANGELOG"
 
-
 # The script does the following to create the new unrelease changelog:
 # 1. Take the old unrelease changelog.
 # 2. Apply the change that have been made since, but add an extra '+' at the
@@ -108,7 +107,7 @@ diff -u "$OLD_UNRELEASED_CHANGELOG" "$UNRELEASED_CHANGELOG" >"$PATCH" || true
 sed -e 's@^+[-*]@+&@' <"$PATCH" | patch "$OLD_UNRELEASED_CHANGELOG"
 
 # Remove the entries that don't have the extra '+'.
-grep -v '^[-* ] ' "$OLD_UNRELEASED_CHANGELOG" | sed -E 's@^\+([-* ] )@* @' > "$UNRELEASED_CHANGELOG"
+grep -v '^[-* ] ' "$OLD_UNRELEASED_CHANGELOG" | sed -E 's@^\+([-* ] )@* @' >"$UNRELEASED_CHANGELOG"
 
 # Remove duplicate blank lines.
 cat -s "$UNRELEASED_CHANGELOG" | sponge "$UNRELEASED_CHANGELOG"
