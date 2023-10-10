@@ -44,7 +44,6 @@
     pollAccounts,
   } from "$lib/services/icp-accounts.services";
   import type { TransactionInit } from "$lib/types/transaction";
-  import { IS_TEST_ENV } from "$lib/constants/mockable.constants";
 
   onMount(() => {
     pollAccounts(false);
@@ -143,7 +142,7 @@
         return;
       }
 
-      // We defer the closing of the modal a bit to let the user notice the last step was successful.
+      // We defer the closing of the modal a bit to let the user notice the last step was successful
       setTimeout(() => {
         dispatcher("nnsClose");
       }, 1000);
