@@ -495,10 +495,8 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             amount: amountICP,
             acceptConditions: false,
           });
-
           await advanceTime();
           await modal.waitForAbsent();
-
           expect(await projectDetail.getCommitmentAmount()).toBe(
             formattedAmountICP
           );
