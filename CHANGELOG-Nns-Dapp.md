@@ -22,6 +22,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Internal change: remove unused snsQueryStore.
 * New Tag style. Used in followees topic and project status.
 * New header UI in the wallet pages.
+* New Tag style when swap is open.
 
 #### Deprecated
 #### Removed
