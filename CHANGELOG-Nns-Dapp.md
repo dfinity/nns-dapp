@@ -28,6 +28,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Fixed
 
+* Separators in project page appearing without data inside.
+
 #### Security
 
 #### Not Published
