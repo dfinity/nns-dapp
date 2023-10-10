@@ -54,8 +54,14 @@ vi.mock("$lib/api/sns-sale.api");
 vi.mock("$lib/api/icp-ledger.api");
 vi.mock("$lib/api/location.api");
 
-// Block only from fakes, not from mocked modules.
-const blockedApiPaths = ["$lib/api/location.api"];
+const blockedApiPaths = [
+  "$lib/api/nns-dapp.api",
+  "$lib/api/sns.api",
+  "$lib/api/sns-swap-metrics.api",
+  "$lib/api/sns-sale.api",
+  "$lib/api/icp-ledger.api",
+  "$lib/api/location.api",
+];
 
 describe("ProjectDetail", () => {
   blockAllCallsTo(blockedApiPaths);
