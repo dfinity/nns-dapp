@@ -61,6 +61,8 @@ fi
 
 START_OF_UNRELEASED_SECTION="$(($(grep -n -m 1 '^## Unreleased$' "$UNRELEASED_CHANGELOG" | cut -d: -f1) + 1))"
 
+NEW_RELEASE_SECTION_TMP_FILE="$(mktemp)"
+
 {
   # Get proposal number from tags applied to same commit as prod tag
   PROPOSAL_NUMBER="${PROPOSAL_NUMBER:-"$(git tag --contains "$COMMIT" | grep -E '^proposal-[0-9]+$' | cut -d- -f2)"}"
@@ -84,7 +86,11 @@ START_OF_UNRELEASED_SECTION="$(($(grep -n -m 1 '^## Unreleased$' "$UNRELEASED_CH
     awk '{if ($0 !~ /^##/ || prev !~ /^####/) print prev} {prev=$0}' |
     awk '{ if ($0 ~ /^###/) print "\n"$0"\n"; else print $0 }'
   echo
-} | sed -i '' "${START_OF_LAST_PROPOSAL}r /dev/stdin" "$RELEASED_CHANGELOG"
+} >"$NEW_RELEASE_SECTION_TMP_FILE"
+
+sed -i '' "${START_OF_LAST_PROPOSAL}r $NEW_RELEASE_SECTION_TMP_FILE" "$RELEASED_CHANGELOG"
+
+rm "$NEW_RELEASE_SECTION_TMP_FILE"
 
 # Remove duplicate blank lines.
 cat -s "$RELEASED_CHANGELOG" | sponge "$RELEASED_CHANGELOG"
