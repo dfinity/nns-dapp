@@ -490,7 +490,6 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
           await projectDetail.clickParticipate();
           const modal = projectDetail.getParticipateSwapModalPo();
-
           await modal.participate({
             amount: amountICP,
             acceptConditions: false,
