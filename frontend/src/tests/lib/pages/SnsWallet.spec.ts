@@ -142,9 +142,9 @@ describe("SnsWallet", () => {
     it("should render sns project name", async () => {
       const { getByTestId } = render(SnsWallet, props);
 
-      const titleRow = getByTestId("projects-summary");
+      const titleRow = getByTestId("universe-page-summary-component");
 
-      expect(titleRow).not.toBeNull();
+      expect(titleRow.textContent.trim()).toBe("Catalyze");
     });
 
     it("should hide spinner when selected account is loaded", async () => {
@@ -153,14 +153,21 @@ describe("SnsWallet", () => {
       await waitFor(() => expect(queryByTestId("spinner")).toBeNull());
     });
 
-    it("should render wallet summary and transactions", async () => {
+    it("should render transactions", async () => {
       const { queryByTestId } = render(SnsWallet, props);
 
       await waitFor(() =>
-        expect(queryByTestId("wallet-summary")).toBeInTheDocument()
-      );
-      await waitFor(() =>
         expect(queryByTestId("transactions-list")).toBeInTheDocument()
+      );
+    });
+
+    it("should render 'Main' as subtitle", async () => {
+      const { queryByTestId } = render(SnsWallet, props);
+
+      await waitFor(() =>
+        expect(queryByTestId("wallet-page-heading-subtitle").textContent).toBe(
+          "Main"
+        )
       );
     });
 
