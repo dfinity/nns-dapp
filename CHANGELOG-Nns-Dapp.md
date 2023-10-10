@@ -20,6 +20,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Get the governance, registry and SNS Wasm schemas direcly from `.did` files rather than importing the canisters.
 * Improve security by escaping additional images in the proposal summary markdown.
 * Internal change: remove unused snsQueryStore.
+* New Tag style. Used in followees topic and project status.
+* New header UI in the wallet pages.
 
 #### Deprecated
 #### Removed
@@ -66,7 +68,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * New labels for min and max participation.
 * Improve security by escaping additional images in the proposal summary markdown.
 * Internal change: remove unused snsQueryStore.
-* New Tag style. Used in followees topic and project status.
 
 #### Removed
 
