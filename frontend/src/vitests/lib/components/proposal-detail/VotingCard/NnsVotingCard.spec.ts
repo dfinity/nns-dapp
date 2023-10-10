@@ -3,7 +3,10 @@ import VotingCard from "$lib/components/proposal-detail/VotingCard/VotingCard.sv
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
-import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
+import {
+  voteRegistrationStore,
+  votingNeuronSelectStore,
+} from "$lib/stores/vote-registration.store";
 import {
   SELECTED_PROPOSAL_CONTEXT_KEY,
   type SelectedProposalContext,
@@ -65,6 +68,7 @@ describe("VotingCard", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    voteRegistrationStore.reset();
     vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
 
     neuronsStore.setNeurons({ neurons: [], certified: true });
