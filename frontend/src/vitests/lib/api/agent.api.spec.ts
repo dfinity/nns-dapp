@@ -11,15 +11,15 @@ import type {
 } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import * as utils from "@dfinity/utils";
-import { mock } from "jest-mock-extended";
+import type { Mocked } from "vitest";
+import { mock } from "vitest-mock-extended";
 
-jest.mock("@dfinity/utils", () => {
-  const originalModule = jest.requireActual("@dfinity/utils");
-
+vi.mock("@dfinity/utils", async () => {
   return {
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    ...(await vi.importActual<any>("@dfinity/utils")),
     __esModule: true,
-    ...originalModule,
-    createAgent: jest.fn(),
+    createAgent: vi.fn(),
   };
 });
 
@@ -39,10 +39,10 @@ const createAgent = (identity: Identity) =>
   });
 
 describe("agent-api", () => {
-  const utilsCreateAgentSpy = jest.spyOn(utils, "createAgent");
+  const utilsCreateAgentSpy = vi.spyOn(utils, "createAgent");
 
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
     agentApi.resetAgents();
 
     utilsCreateAgentSpy.mockResolvedValue(mock<HttpAgent>());
@@ -97,7 +97,7 @@ describe("agent-api", () => {
   describe("agent forwards method calls to the underlying agent", () => {
     const testIdentity = createIdentity(testPrincipal1);
 
-    let mockAgent: jest.Mocked<HttpAgent>;
+    let mockAgent: Mocked<HttpAgent>;
     let agent: Agent;
 
     beforeEach(async () => {
@@ -230,7 +230,7 @@ describe("agent-api", () => {
   describe("invalidateIdentity", () => {
     const testIdentity = createIdentity(testPrincipal1);
 
-    let mockAgent: jest.Mocked<HttpAgent>;
+    let mockAgent: Mocked<HttpAgent>;
     let agent: Agent;
 
     beforeEach(async () => {

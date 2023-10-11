@@ -16,21 +16,21 @@ import {
 } from "$tests/mocks/ckbtc-minter.mock";
 import type { HttpAgent } from "@dfinity/agent";
 import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
-import { mock } from "jest-mock-extended";
+import { mock } from "vitest-mock-extended";
 
 describe("ckbtc-minter api", () => {
   const minterCanisterMock = mock<CkBTCMinterCanister>();
 
   beforeAll(() => {
-    jest
-      .spyOn(CkBTCMinterCanister, "create")
-      .mockImplementation(() => minterCanisterMock);
+    vi.spyOn(CkBTCMinterCanister, "create").mockImplementation(
+      () => minterCanisterMock
+    );
   });
 
-  afterAll(() => jest.clearAllMocks());
+  afterAll(() => vi.clearAllMocks());
 
   beforeEach(() => {
-    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   const params = {
