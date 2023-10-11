@@ -48,15 +48,13 @@ describe("auth-store", () => {
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore: test file
-    mockAuthClient.login = async (
-      {
-        onSuccess,
-        identityProvider,
-      }: {
-        onSuccess: () => void;
-        identityProvider: string;
-      }
-    ) => {
+    mockAuthClient.login = async ({
+      onSuccess,
+      identityProvider,
+    }: {
+      onSuccess: () => void;
+      identityProvider: string;
+    }) => {
       expect(identityProvider).toBe(IDENTITY_SERVICE_URL);
       onSuccess();
     };
@@ -76,15 +74,13 @@ describe("auth-store", () => {
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore: test file
-    mockAuthClient.login = async (
-      {
-        onSuccess,
-        identityProvider,
-      }: {
-        onSuccess: () => void;
-        identityProvider: string;
-      }
-    ) => {
+    mockAuthClient.login = async ({
+      onSuccess,
+      identityProvider,
+    }: {
+      onSuccess: () => void;
+      identityProvider: string;
+    }) => {
       expect(identityProvider).toBe(OLD_MAINNET_IDENTITY_SERVICE_URL);
       onSuccess();
     };
@@ -104,15 +100,13 @@ describe("auth-store", () => {
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore: test file
-    mockAuthClient.login = async (
-      {
-        onSuccess,
-        identityProvider,
-      }: {
-        onSuccess: () => void;
-        identityProvider: string;
-      }
-    ) => {
+    mockAuthClient.login = async ({
+      onSuccess,
+      identityProvider,
+    }: {
+      onSuccess: () => void;
+      identityProvider: string;
+    }) => {
       expect(identityProvider).toBe(OLD_MAINNET_IDENTITY_SERVICE_URL);
       onSuccess();
     };
