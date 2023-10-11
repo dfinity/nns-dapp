@@ -275,7 +275,7 @@ describe("sns aggregator converters utils", () => {
       },
     };
 
-    it.only("returns sns summary from aggregator data", () => {
+    it("returns sns summary from aggregator data", () => {
       const {
         canister_ids: {
           root_canister_id,
