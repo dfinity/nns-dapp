@@ -9,6 +9,7 @@ import {
 import { renderContextCmp } from "$tests/mocks/sns.mock";
 import { ProjectCommitmentPo } from "$tests/page-objects/ProjectCommitment.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { advanceTime } from "$vitests/utils/timers.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 
 describe("ProjectCommitment", () => {
@@ -29,7 +30,14 @@ describe("ProjectCommitment", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+
+    vi.clearAllTimers();
+    vi.useFakeTimers().setSystemTime(new Date());
   });
+
+  // Fix "Failed to terminate worker while running. Tests closed successfully but something prevents Vite server from exiting"
+  // Related issue: https://github.com/vitest-dev/vitest/issues/2008#issuecomment-1434789112
+  afterEach(async () => await advanceTime(5000));
 
   it("should render min and max commitment", async () => {
     const summary = createSummary({
