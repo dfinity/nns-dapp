@@ -1,4 +1,5 @@
 import { NnsAccountsPo } from "$tests/page-objects/NnsAccounts.page-object";
+import { CkBTCAccountsPo } from "$tests/page-objects/CkBTCAccounts.page-object";
 import { NnsAccountsFooterPo } from "$tests/page-objects/NnsAccountsFooter.page-object";
 import { SnsAccountsPo } from "$tests/page-objects/SnsAccounts.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -13,6 +14,10 @@ export class AccountsPo extends BasePageObject {
 
   getNnsAccountsPo(): NnsAccountsPo {
     return NnsAccountsPo.under(this.root);
+  }
+
+  getCkBTCAccountsPo(): CkBTCAccountsPo {
+    return CkBTCAccountsPo.under(this.root);
   }
 
   getSnsAccountsPo(): SnsAccountsPo {

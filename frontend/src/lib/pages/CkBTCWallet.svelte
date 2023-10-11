@@ -184,7 +184,7 @@
     }))();
 </script>
 
-<Island>
+<Island testId="ckbtc-wallet-component">
   <main class="legacy" data-tid="ckbtc-wallet">
     <section>
       {#if loaded && nonNullish(canisters) && nonNullish($selectedAccountStore.account) && nonNullish($selectedCkBTCUniverseIdStore) && nonNullish(token)}
