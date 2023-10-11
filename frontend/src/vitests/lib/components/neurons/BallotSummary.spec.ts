@@ -44,21 +44,29 @@ describe("BallotSummary", () => {
       props,
     });
 
-    await waitFor(() => expect(queryByTestId("markdown-text")).not.toBeNull());
+    await waitFor(() => expect(queryByTestId("ballot-summary")).not.toBeNull());
 
     expect(getByText(`${mockProposals[0].id}`)).toBeInTheDocument();
   });
 
   it("should render proposal summary", async () => {
-    const { queryByTestId, getByText } = render(BallotSummary, {
+    const { container } = render(BallotSummary, {
       props,
     });
 
-    await waitFor(() => expect(queryByTestId("markdown-text")).not.toBeNull());
+    await waitFor(() =>
+      expect(
+        container.querySelector("[data-tid='proposal-summary-component'] p")
+      ).not.toBeNull()
+    );
 
-    expect(
-      getByText((mockProposals[0].proposal as Proposal).summary)
-    ).toBeInTheDocument();
+    const p = container.querySelector(
+      "[data-tid='proposal-summary-component'] p"
+    );
+
+    expect(p.textContent).toEqual(
+      (mockProposals[0].proposal as Proposal).summary
+    );
   });
 
   const testVote = async (vote: Vote) => {

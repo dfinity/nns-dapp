@@ -92,15 +92,14 @@ const proposalSummaryRenderer = (marked: Marked): Renderer => {
  * @see {@link https://github.com/markedjs/marked}
  */
 export const markdownToHTML = async (text: string): Promise<string> => {
-  const url = "/assets/libs/marked.min.js";
-
   // Replace the SVG elements in the HTML with their escaped versions to improve security.
   // It's not possible to do it with html renderer because the svg consists of multiple tags.
   // One edge case is not covered: if the svg is inside the <code> tag, it will be rendered as with &lt; & &gt; instead of "<" & ">"
   const escapedText = escapeSvgs(text);
 
   // The dynamic import cannot be analyzed by Vite. As it is intended, we use the /* @vite-ignore */ comment inside the import() call to suppress this warning.
-  const { marked }: { marked: Marked } = await import(/* @vite-ignore */ url);
+  const { marked }: { marked: Marked } = await import("marked");
+
   return marked(escapedText, {
     renderer: proposalSummaryRenderer(marked),
   });
