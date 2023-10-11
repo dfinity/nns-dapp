@@ -640,8 +640,8 @@
         "OPTIMIZER_VERSION": "0.3.6",
         "BINSTALL_VERSION": "1.3.0",
         "DIDC_VERSION": "2023-09-27",
-        "SNSDEMO_RELEASE": "release-2023-10-09",
-        "IC_COMMIT": "96184d42331028a46fe3265583792f8c5f807cf8"
+        "SNSDEMO_RELEASE": "release-2023-10-11",
+        "IC_COMMIT": "15e69667ae983fa92c33794a3954d9ca87518af6"
       },
       "packtool": ""
     }

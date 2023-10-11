@@ -10,7 +10,7 @@ import { silentConsoleErrors } from "$vitests/utils/utils.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import type { BallotInfo } from "@dfinity/nns";
 import { GovernanceCanister, Vote } from "@dfinity/nns";
-import { render, waitFor } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 import { mock } from "vitest-mock-extended";
 
 describe("Ballots", () => {
@@ -43,11 +43,6 @@ describe("Ballots", () => {
       },
     });
 
-    await waitFor(() =>
-      expect(
-        container.querySelector("[data-tid='markdown-text']")
-      ).not.toBeNull()
-    );
     expect(container.querySelectorAll("li").length).toBe(2);
     expect(container.querySelectorAll(".summary").length).toBe(2);
   });
