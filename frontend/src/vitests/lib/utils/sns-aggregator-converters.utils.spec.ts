@@ -407,6 +407,26 @@ describe("sns aggregator converters utils", () => {
           min_icp_e8s: [],
           neurons_fund_participation_constraints: [],
         },
+        swapParams: {
+          min_participant_icp_e8s: 100000000n,
+          neuron_basket_construction_parameters: [
+            {
+              dissolve_delay_interval_seconds: 5259486n,
+              count: 7n,
+            },
+          ],
+          max_icp_e8s: 130000000000000n,
+          swap_due_timestamp_seconds: 1691785258n,
+          min_participants: 125,
+          sns_token_e8s: 11250000000000000n,
+          sale_delay_seconds: [],
+          max_participant_icp_e8s: 15000000000000n,
+          min_icp_e8s: 65000000000000n,
+        },
+        lifecycle: {
+          decentralization_sale_open_timestamp_seconds: [1690786778n],
+          lifecycle: [2],
+        },
       });
     });
 
