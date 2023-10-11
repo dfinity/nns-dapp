@@ -12,12 +12,10 @@ describe("initTransactionsWorker", () => {
 
     vi.doMock("$lib/workers/transactions.worker?worker", () => ({
       default: class TransactionsWorker {
-        postMessage(
-          data: {
-            msg: "nnsStartTransactionsTimer";
-            data: PostMessageDataRequestTransactions;
-          }
-        ) {
+        postMessage(data: {
+          msg: "nnsStartTransactionsTimer";
+          data: PostMessageDataRequestTransactions;
+        }) {
           spyPostMessage(data);
         }
       },

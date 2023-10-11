@@ -7,7 +7,6 @@ import type {
 import type { PostMessageDataResponseSync } from "$lib/types/post-message.sync";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { ledgerCanisterIdMock } from "$tests/mocks/sns.api.mock";
-import {waitFor} from "@testing-library/svelte";
 
 describe("initBalancesWorker", () => {
   let spyPostMessage;
@@ -27,15 +26,15 @@ describe("initBalancesWorker", () => {
         }
 
         set onmessage(
-            callback: (
-                event: MessageEvent<
-                    PostMessageDataResponseBalances | PostMessageDataResponseSync
-                >
-            ) => void
+          callback: (
+            event: MessageEvent<
+              PostMessageDataResponseBalances | PostMessageDataResponseSync
+            >
+          ) => void
         ) {
           workerOnMessage = callback;
         }
-      }
+      },
     }));
   });
 
