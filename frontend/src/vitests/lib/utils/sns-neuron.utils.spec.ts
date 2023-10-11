@@ -89,20 +89,25 @@ import {
 import type { NeuronPermission } from "@dfinity/sns/dist/candid/sns_governance";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 
-vi.mock("$lib/constants/sns-neurons.constants.ts", () => ({
-  ...vi.requireActual("$lib/constants/sns-neurons.constants.ts"),
-  MAX_NEURONS_SUBACCOUNTS: 10,
-}));
+vi.mock("$lib/constants/sns-neurons.constants.ts", async () => {
+  return {
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    ...(await vi.importActual<any>("$lib/constants/sns-neurons.constants.ts")),
+    MAX_NEURONS_SUBACCOUNTS: 10,
+  };
+});
 
-const appendPermissions = ({
-  neuron,
-  identity,
-  permissions,
-}: {
-  neuron: SnsNeuron;
-  identity: Identity;
-  permissions: SnsNeuronPermissionType[];
-}) =>
+const appendPermissions = (
+  {
+    neuron,
+    identity,
+    permissions,
+  }: {
+    neuron: SnsNeuron;
+    identity: Identity;
+    permissions: SnsNeuronPermissionType[];
+  }
+) =>
   (neuron.permissions = [
     ...neuron.permissions,
     {
@@ -380,7 +385,7 @@ describe("sns-neuron utils", () => {
         }),
       ];
       const neurons = ids.map(
-        (id) => ({ ...mockSnsNeuron, id: [{ id }] }) as SnsNeuron
+        (id) => ({ ...mockSnsNeuron, id: [{ id }] } as SnsNeuron)
       );
       const memo = nextMemo({
         neurons,
@@ -406,7 +411,7 @@ describe("sns-neuron utils", () => {
           })
       );
       const neurons = ids.map(
-        (id) => ({ ...mockSnsNeuron, id: [{ id }] }) as SnsNeuron
+        (id) => ({ ...mockSnsNeuron, id: [{ id }] } as SnsNeuron)
       );
 
       expect(() =>
