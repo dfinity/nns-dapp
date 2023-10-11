@@ -428,6 +428,8 @@ describe("sns aggregator converters utils", () => {
           sale_delay_seconds: [],
           max_participant_icp_e8s: 15000000000000n,
           min_icp_e8s: 65000000000000n,
+          max_direct_participation_icp_e8s: [],
+          min_direct_participation_icp_e8s: [],
         },
         lifecycle: {
           decentralization_sale_open_timestamp_seconds: [1690786778n],
