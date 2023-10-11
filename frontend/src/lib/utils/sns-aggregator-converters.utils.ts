@@ -11,7 +11,6 @@ import type {
   CachedFunctionTypeDto,
   CachedNervousFunctionDto,
   CachedNeuronsFundParticipationConstraints,
-  CachedSns,
   CachedSnsDto,
   CachedSnsMetadataDto,
   CachedSnsSwapDerivedDto,
@@ -24,8 +23,6 @@ import type { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import type {
   SnsFunctionType,
-  SnsGetDerivedStateResponse,
-  SnsGetMetadataResponse,
   SnsNervousSystemFunction,
   SnsNeuronsFundParticipationConstraints,
   SnsParams,
@@ -51,16 +48,6 @@ const convertOptionalStringToOptionalPrincipal = (
 ): [] | [Principal] => {
   return isNullish(principalText) ? [] : [Principal.fromText(principalText)];
 };
-
-const convertMeta = (
-  { url, name, description }: CachedSnsMetadataDto,
-  rootCanisterId: string
-): SnsGetMetadataResponse => ({
-  url: toNullable(url),
-  name: toNullable(name),
-  description: toNullable(description),
-  logo: toNullable(aggregatorCanisterLogoPath(rootCanisterId)),
-});
 
 const convertFunctionType = (
   functionType: CachedFunctionTypeDto
@@ -314,37 +301,7 @@ const convertDerived = ({
   ),
 });
 
-const convertDerivedToResponse = ({
-  sns_tokens_per_icp,
-  buyer_total_icp_e8s,
-  cf_participant_count,
-  direct_participant_count,
-  cf_neuron_count,
-  direct_participation_icp_e8s,
-  neurons_fund_participation_icp_e8s,
-}: CachedSnsSwapDerivedDto): SnsGetDerivedStateResponse => ({
-  sns_tokens_per_icp: toNullable(sns_tokens_per_icp),
-  buyer_total_icp_e8s: toNullable(
-    convertOptionalNumToBigInt(buyer_total_icp_e8s)
-  ),
-  cf_participant_count: nonNullish(cf_participant_count)
-    ? toNullable(BigInt(cf_participant_count))
-    : [],
-  direct_participant_count: nonNullish(direct_participant_count)
-    ? toNullable(BigInt(direct_participant_count))
-    : [],
-  cf_neuron_count: nonNullish(cf_neuron_count)
-    ? toNullable(BigInt(cf_neuron_count))
-    : [],
-  direct_participation_icp_e8s: toNullable(
-    convertOptionalNumToBigInt(direct_participation_icp_e8s)
-  ),
-  neurons_fund_participation_icp_e8s: toNullable(
-    convertOptionalNumToBigInt(neurons_fund_participation_icp_e8s)
-  ),
-});
-
-const convertIcrc1Metadata = (
+export const convertIcrc1Metadata = (
   icrc1Metadata: CachedSnsTokenMetadataDto
 ): IcrcTokenMetadataResponse => {
   return icrc1Metadata.map(([key, value]) => {
@@ -357,39 +314,6 @@ const convertIcrc1Metadata = (
     return [key, value];
   });
 };
-
-const convertSnsData = ({
-  index,
-  canister_ids,
-  list_sns_canisters,
-  meta,
-  parameters,
-  swap_state,
-  icrc1_metadata,
-  icrc1_fee,
-  icrc1_total_supply,
-  derived_state,
-}: CachedSnsDto): CachedSns => ({
-  index,
-  canister_ids,
-  list_sns_canisters,
-  meta: convertMeta(meta, canister_ids.root_canister_id),
-  parameters: {
-    functions: parameters.functions.map(convertNervousFunction),
-    reserved_ids: parameters.reserved_ids.map(BigInt),
-  },
-  swap_state: {
-    swap: convertSwap(swap_state.swap),
-    derived: convertDerived(swap_state.derived),
-  },
-  icrc1_metadata: convertIcrc1Metadata(icrc1_metadata),
-  icrc1_fee: convertOptionalNumToBigInt(icrc1_fee[0]),
-  icrc1_total_supply: BigInt(icrc1_total_supply),
-  derived_state: convertDerivedToResponse(derived_state),
-});
-
-export const convertDtoData = (data: CachedSnsDto[]): CachedSns[] =>
-  data.map(convertSnsData);
 
 /**
  * Metadata is given only if all its properties are defined.
