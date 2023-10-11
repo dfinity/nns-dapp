@@ -71,6 +71,7 @@ export default defineConfig(
       sequence: {
         hooks: "list",
       },
+      useAtomics: true,
     },
   })
 );
