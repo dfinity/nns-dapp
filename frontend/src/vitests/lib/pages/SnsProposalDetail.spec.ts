@@ -149,7 +149,7 @@ describe("SnsProposalDetail", () => {
     });
 
     it("should render the payload", async () => {
-      const payload = "# Test payload";
+      const payload = "Test payload";
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,

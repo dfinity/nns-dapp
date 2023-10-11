@@ -25,6 +25,7 @@ const config: UserConfig = {
             "qr-creator",
             "@ledgerhq",
             "@zondax/ledger-icp",
+            "marked",
           ];
 
           if (
