@@ -31,6 +31,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * Separators in project page appearing without data inside.
+* Cycles displayed as T Cycles on canister detail page.
 
 #### Security
 
