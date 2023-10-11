@@ -71,6 +71,19 @@ export default defineConfig(
       sequence: {
         hooks: "list",
       },
+      // Vitest: https://github.com/vitest-dev/vitest/issues/2008#issuecomment-1436415644
+      // Some threads remain open when we run the test suite locally or in the CI, which causes vitest to hang forever.
+      // Following stacktrace can for example finds place:
+      //
+      // > # FILEHANDLE
+      // > node:internal/async_hooks:202
+      // > close timed out after 30000ms
+      // > Failed to terminate worker while running /nns-dapp/frontend/src/vitests/lib/components/project-detail/ProjectCommitment.spec.ts.
+      // > Tests closed successfully but something prevents Vite server from exiting
+      // > You can try to identify the cause by enabling "hanging-process" reporter. See https://vitest.dev/config/#reporters
+      //
+      // Use atomics to synchronize threads seem to resolve the issue according our tests.
+      // https://vitest.dev/config/#pooloptions-threads-useatomics
       useAtomics: true,
     },
   })
