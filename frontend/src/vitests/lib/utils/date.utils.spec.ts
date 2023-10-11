@@ -9,7 +9,7 @@ import {
   secondsToTime,
 } from "$lib/utils/date.utils";
 import en from "$tests/mocks/i18n.mock";
-import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
+import { normalizeWhitespace } from "$vitests/utils/utils.test-utils";
 
 describe("secondsToDuration", () => {
   // This function should not be smart. It should just make it easier to add
