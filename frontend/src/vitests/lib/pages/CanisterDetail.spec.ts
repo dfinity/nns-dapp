@@ -128,10 +128,10 @@ describe("CanisterDetail", () => {
     it("shuold render cycles balance as title", async () => {
       vi.spyOn(canisterApi, "queryCanisterDetails").mockResolvedValue({
         ...mockCanisterDetails,
-        cycles: 100_000_000n,
+        cycles: 1_000_000_000_000n,
       });
       const po = await renderComponent();
-      expect(await po.getTitle()).toBe("1.00 T Cycles");
+      expect(await po.getTitle()).toBe("1.000 T Cycles");
     });
   });
 
