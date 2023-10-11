@@ -62,22 +62,27 @@ describe("VoteHistoryCard", () => {
   });
 
   it("should render ballots", async () => {
-    const { container, getByText } = render(VotingHistoryCard, {
+    const { container } = render(VotingHistoryCard, {
       props,
     });
     await waitFor(() =>
       expect(
-        container.querySelectorAll("[data-tid='markdown-text']").length
+        container.querySelectorAll("[data-tid='proposal-summary-component'] p")
+          .length
       ).toEqual(2)
     );
 
-    expect(
-      getByText((mockProposals[0].proposal as Proposal).summary)
-    ).toBeInTheDocument();
+    const p = container.querySelectorAll(
+      "[data-tid='proposal-summary-component'] p"
+    );
 
-    expect(
-      getByText((mockProposals[1].proposal as Proposal).summary)
-    ).toBeInTheDocument();
+    expect(p[0].textContent).toEqual(
+      (mockProposals[0].proposal as Proposal).summary
+    );
+
+    expect(p[1].textContent).toEqual(
+      (mockProposals[1].proposal as Proposal).summary
+    );
   });
 
   it("should render skeleton texts", async () => {

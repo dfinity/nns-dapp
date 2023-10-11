@@ -120,46 +120,31 @@ describe("markdown.utils", () => {
   });
 
   describe("markdown", () => {
-    let renderer: unknown;
-
-    beforeEach(() => {
-      renderer = undefined;
-
-      function marked(...args) {
-        renderer = args[1];
-        return args[0] + "-markdown";
-      }
-      marked.Renderer = function () {
-        return {};
-      };
-      jest.mock(
-        "/assets/libs/marked.min.js",
-        () => ({
-          marked,
-        }),
-        { virtual: true }
-      );
-    });
-
     it("should call markedjs/marked", async () => {
-      expect(await markdownToHTML("test")).toBe("test-markdown");
-    });
-
-    it("should call markedjs/marked with custom renderers", async () => {
-      await markdownToHTML("test");
-
-      expect(renderer).toEqual({
-        renderer: {
-          link: targetBlankLinkRenderer,
-          image: imageToLinkRenderer,
-          html: htmlRenderer,
-        },
-      });
+      expect(await markdownToHTML("test")).toBe("<p>test</p>\n");
     });
 
     it("should escape all SVGs", async () => {
       expect(await markdownToHTML("<h1><svg>...</svg></h1>")).toBe(
-        "<h1>&lt;svg&gt;...&lt;/svg&gt;</h1>-markdown"
+        "<h1>&lt;svg&gt;...&lt;/svg&gt;</h1>"
+      );
+    });
+
+    it("should render link with a custom renderer", async () => {
+      expect(await markdownToHTML("[test](https://test.com)")).toBe(
+        '<p><a target="_blank" rel="noopener noreferrer" href="https://test.com">test</a></p>\n'
+      );
+    });
+
+    it("should render image link with a custom renderer", async () => {
+      expect(await markdownToHTML(`![alt](image.png "title")`)).toBe(
+        `<p><a href="image.png" target="_blank" rel="noopener noreferrer" type="image/png" title="title">alt</a></p>\n`
+      );
+    });
+
+    it("should render image provided as html with a custom renderer", async () => {
+      expect(await markdownToHTML(`<img src="image.png" alt="title" />`)).toBe(
+        `<a href="image.png" target="_blank" rel="noopener noreferrer" type="image/png">title</a>`
       );
     });
   });
