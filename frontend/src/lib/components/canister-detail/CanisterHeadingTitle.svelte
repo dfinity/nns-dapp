@@ -6,7 +6,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { SkeletonText } from "@dfinity/gix-components";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
-  import {formatCyclesToTCycles} from "$lib/utils/canisters.utils";
+  import { formatCyclesToTCycles } from "$lib/utils/canisters.utils";
 
   export let details: CanisterDetails | undefined;
   export let canister: CanisterInfo;
@@ -16,9 +16,7 @@
 <TestIdWrapper testId="canister-heading-title-component">
   {#if nonNullish(details)}
     <p class="cycles">
-      <span class="value"
-      >{formatCyclesToTCycles(details.cycles)}</span
-      >
+      <span class="value">{formatCyclesToTCycles(details.cycles)}</span>
       <span class="label">{$i18n.canister_detail.t_cycles}</span>
     </p>
     <!-- Only when we have loaded the data and we know whether the user is the controller -->
