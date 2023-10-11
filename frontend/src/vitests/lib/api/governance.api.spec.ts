@@ -49,7 +49,7 @@ describe("neurons-api", () => {
     mockGovernanceCanister.listKnownNeurons.mockImplementation(
       vi.fn().mockResolvedValue([])
     );
-    mockGovernanceCanister.stakeNeuron.mockImplementation(vi.fn());
+    mockGovernanceCanister.stakeNeuron.mockImplementation(undefined);
     mockGovernanceCanister.getNeuron.mockImplementation(
       vi.fn().mockResolvedValue(mockNeuron)
     );
