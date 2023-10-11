@@ -44,6 +44,11 @@ export default defineConfig(
     },
     test: {
       environment: "jsdom",
+      environmentOptions: {
+        jsdom: {
+          url: "https://nns.internetcomputer.org/"
+        }
+      },
       exclude: [
         ...configDefaults.exclude,
         ...(mode === "test" ? ["./src/tests/e2e/**/*"] : []),
