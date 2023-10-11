@@ -80,8 +80,10 @@ pub struct Init {
     pub should_auto_finalize: Option<bool>,
     pub max_participant_icp_e8s: Option<u64>,
     pub sns_governance_canister_id: String,
+    pub min_direct_participation_icp_e8s: Option<u64>,
     pub restricted_countries: Option<Countries>,
     pub min_icp_e8s: Option<u64>,
+    pub max_direct_participation_icp_e8s: Option<u64>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -350,7 +352,9 @@ pub struct Params {
     pub sns_token_e8s: u64,
     pub sale_delay_seconds: Option<u64>,
     pub max_participant_icp_e8s: u64,
+    pub min_direct_participation_icp_e8s: Option<u64>,
     pub min_icp_e8s: u64,
+    pub max_direct_participation_icp_e8s: Option<u64>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
