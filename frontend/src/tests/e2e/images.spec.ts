@@ -63,6 +63,8 @@ test("Test images load on accounts page", async ({ page, context }) => {
     page,
     sources: [
       // Universe selector in main layout
+      "ckBTC.svg",
+      // Universe selector in main layout
       "icp-rounded.svg",
       // Hidden title in main layout
       "icp-rounded.svg",
