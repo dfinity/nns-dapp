@@ -32,7 +32,7 @@ import { get } from "svelte/store";
 
 describe("sns.store", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     snsAggregatorStore.reset();
     snsDerivedStateStore.reset();
     snsLifecycleStore.reset();
