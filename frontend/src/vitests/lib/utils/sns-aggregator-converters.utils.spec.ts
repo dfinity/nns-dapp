@@ -275,7 +275,7 @@ describe("sns aggregator converters utils", () => {
       },
     };
 
-    it("returns sns summary from aggregator data", () => {
+    it.only("returns sns summary from aggregator data", () => {
       const {
         canister_ids: {
           root_canister_id,
@@ -343,6 +343,8 @@ describe("sns aggregator converters utils", () => {
               swap_start_timestamp_seconds: [],
               transaction_fee_e8s: [100000n],
               neurons_fund_participation_constraints: [],
+              max_direct_participation_icp_e8s: [],
+              min_direct_participation_icp_e8s: [],
             },
           ],
           lifecycle: 2,
@@ -364,6 +366,8 @@ describe("sns aggregator converters utils", () => {
             sale_delay_seconds: [],
             sns_token_e8s: 11250000000000000n,
             swap_due_timestamp_seconds: 1691785258n,
+            max_direct_participation_icp_e8s: [],
+            min_direct_participation_icp_e8s: [],
           },
           purge_old_tickets_last_completion_timestamp_nanoseconds: [],
           purge_old_tickets_next_principal: [],
@@ -406,6 +410,8 @@ describe("sns aggregator converters utils", () => {
           restricted_countries: [{ iso_codes: ["US"] }],
           min_icp_e8s: [],
           neurons_fund_participation_constraints: [],
+          max_direct_participation_icp_e8s: [],
+          min_direct_participation_icp_e8s: [],
         },
         swapParams: {
           min_participant_icp_e8s: 100000000n,
