@@ -6,11 +6,11 @@ import {
   isIcrcTransactionsCompleted,
   mapIcrcTransaction,
 } from "$lib/utils/icrc-transactions.utils";
-import { mockPrincipal } from "$tests//mocks/auth.store.mock";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
-} from "$tests//mocks/sns-accounts.mock";
+} from "$tests/mocks/sns-accounts.mock";
 import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
 import { createIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";

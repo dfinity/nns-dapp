@@ -9,16 +9,16 @@ describe("markdown.utils", () => {
   describe("targetBlankLinkRenderer", () => {
     it("should return rendered a tag", () => {
       expect(targetBlankLinkRenderer("/", "title", "text")).toEqual(
-        `<a target="_blank" rel="noopener noreferrer" href="/" title="title">text</a>`
+        `<a target="_blank" rel="noopener noreferrer" href="/frontend/static" title="title">text</a>`
       );
     });
 
     it("should skip title if not provided", () => {
       expect(targetBlankLinkRenderer("/", null, "text")).toEqual(
-        `<a target="_blank" rel="noopener noreferrer" href="/">text</a>`
+        `<a target="_blank" rel="noopener noreferrer" href="/frontend/static">text</a>`
       );
       expect(targetBlankLinkRenderer("/", undefined, "text")).toEqual(
-        `<a target="_blank" rel="noopener noreferrer" href="/">text</a>`
+        `<a target="_blank" rel="noopener noreferrer" href="/frontend/static">text</a>`
       );
     });
 
@@ -33,7 +33,7 @@ describe("markdown.utils", () => {
 
     it("should render href of title if no text", () => {
       expect(targetBlankLinkRenderer("/", "title", "")).toEqual(
-        `<a target="_blank" rel="noopener noreferrer" href="/" title="title">/</a>`
+        `<a target="_blank" rel="noopener noreferrer" href="/frontend/static" title="title">/</a>`
       );
       expect(targetBlankLinkRenderer(null, "title", "")).toEqual(
         `<a title="title">title</a>`
@@ -132,7 +132,7 @@ describe("markdown.utils", () => {
       marked.Renderer = function () {
         return {};
       };
-      jest.mock(
+      vi.mock(
         "/assets/libs/marked.min.js",
         () => ({
           marked,

@@ -89,8 +89,8 @@ import {
 import type { NeuronPermission } from "@dfinity/sns/dist/candid/sns_governance";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 
-jest.mock("$lib/constants/sns-neurons.constants.ts", () => ({
-  ...jest.requireActual("$lib/constants/sns-neurons.constants.ts"),
+vi.mock("$lib/constants/sns-neurons.constants.ts", () => ({
+  ...vi.requireActual("$lib/constants/sns-neurons.constants.ts"),
   MAX_NEURONS_SUBACCOUNTS: 10,
 }));
 
@@ -173,7 +173,7 @@ describe("sns-neuron utils", () => {
   const oneWeek = BigInt(SECONDS_IN_DAY * 7);
 
   beforeEach(() => {
-    jest.useFakeTimers().setSystemTime(nowSeconds * 1000);
+    vi.useFakeTimers().setSystemTime(nowSeconds * 1000);
   });
 
   describe("sortNeuronsByCreatedTimestamp", () => {
@@ -1758,7 +1758,7 @@ describe("sns-neuron utils", () => {
     };
 
     beforeEach(() => {
-      jest.useFakeTimers().setSystemTime(now);
+      vi.useFakeTimers().setSystemTime(now);
     });
 
     it("returns 0 if dissolve delay is less than minimum", () => {
@@ -1831,7 +1831,7 @@ describe("sns-neuron utils", () => {
     };
 
     beforeEach(() => {
-      jest.useFakeTimers().setSystemTime(now);
+      vi.useFakeTimers().setSystemTime(now);
     });
 
     // Backend sets the age to a value far in the future if the neuron is dissolving
@@ -2382,7 +2382,7 @@ describe("sns-neuron utils", () => {
 
   describe("neuronAge", () => {
     beforeEach(() => {
-      jest.useFakeTimers().setSystemTime(now);
+      vi.useFakeTimers().setSystemTime(now);
     });
 
     it("returns 0 if age_since is in the future", () => {
@@ -2406,7 +2406,7 @@ describe("sns-neuron utils", () => {
 
   describe("isVesting", () => {
     beforeEach(() => {
-      jest.useFakeTimers().setSystemTime(now);
+      vi.useFakeTimers().setSystemTime(now);
     });
 
     it("returns true if still vesting", () => {
@@ -2442,7 +2442,7 @@ describe("sns-neuron utils", () => {
 
   describe("vestingInSeconds", () => {
     beforeEach(() => {
-      jest.useFakeTimers().setSystemTime(now);
+      vi.useFakeTimers().setSystemTime(now);
     });
 
     it("returns remaining vesting if still vesting", () => {

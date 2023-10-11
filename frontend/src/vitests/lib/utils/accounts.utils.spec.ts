@@ -39,7 +39,7 @@ import { Principal } from "@dfinity/principal";
 import {
   mockBTCAddressMainnet,
   mockBTCAddressTestnet,
-} from "../../mocks/ckbtc-accounts.mock";
+} from "$tests/mocks/ckbtc-accounts.mock";
 
 describe("accounts-utils", () => {
   const accounts = [mockMainAccount, mockSubAccount];

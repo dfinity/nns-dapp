@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 
 import { replaceHistory } from "$lib/utils/route.utils";
 
