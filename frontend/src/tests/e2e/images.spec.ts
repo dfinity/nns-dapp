@@ -26,6 +26,9 @@ const expectImagesLoaded = async ({ page, sources }) => {
       // viewport.
       for (const img of images) {
         img.scrollIntoView();
+        // We need to rerender between scrolling otherwise it will scroll all
+        // the way to the bottom before the page is rerendered and if the list
+        // is long, it might skip over some images.
         await new Promise((resolve) => setTimeout(resolve, 0));
       }
       return images.every((img) => img.complete);
