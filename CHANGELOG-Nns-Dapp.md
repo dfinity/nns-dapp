@@ -8,46 +8,8 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 ## Unreleased
 
-### Application
-
-#### Added
-
-* Get BTC button to use the mock bitcoin canister to test ckBTC.
-
-#### Changed
-
-* Update the schemas for the governance, registry and SNS Wasm canisters, used for proposal rendering.
-* Get the governance, registry and SNS Wasm schemas direcly from `.did` files rather than importing the canisters.
-* Improve security by escaping additional images in the proposal summary markdown.
-* Internal change: remove unused snsQueryStore.
-* New Tag style. Used in followees topic and project status.
-* New header UI in the wallet pages.
-
-#### Deprecated
-#### Removed
-
-#### Fixed
-
-* Separators in project page appearing without data inside.
-
-#### Security
-
-#### Not Published
-
-### Operations
-
-#### Added
-
-#### Changed
-
-#### Deprecated
-#### Removed
-
-* Remove npm script `update:next`.
-
-#### Fixed
-
-#### Security
+Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
+here after a successful release.
 
 ## Proposal 124999
 
@@ -68,8 +30,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Review the chunking strategy to enhance the dapp's loading time and prevent random, rare flashes of unstyled content (FOUC).
 * New header UI in the canister detail page.
 * New labels for min and max participation.
-* Improve security by escaping additional images in the proposal summary markdown.
-* Internal change: remove unused snsQueryStore.
 
 #### Removed
 

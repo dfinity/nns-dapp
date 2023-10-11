@@ -74,6 +74,11 @@ export interface SnsSummary {
    * Derived information about the sale such as the current total of ICP all buyers have invested so far
    */
   derived: SnsSwapDerivedState;
+
+  /**
+   * Data from `get_init` call.
+   */
+  init?: SnsSwapInit;
 }
 
 export interface SnsSwapCommitment {
