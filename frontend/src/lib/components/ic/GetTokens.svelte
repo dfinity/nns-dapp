@@ -109,7 +109,6 @@
       : $isCkBTCUniverseStore
       ? "get-btc-button"
       : "get-icp-button";
-
 </script>
 
 <TestIdWrapper testId="get-tokens-component">
