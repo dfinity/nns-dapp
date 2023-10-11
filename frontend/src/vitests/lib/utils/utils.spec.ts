@@ -28,6 +28,7 @@ import { get } from "svelte/store";
 describe("utils", () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    vi.clearAllTimers();
     toastsStore.reset();
     vi.spyOn(console, "error").mockImplementation(() => undefined);
   });
