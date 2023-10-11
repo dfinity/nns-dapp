@@ -46,8 +46,8 @@ export default defineConfig(
       environment: "jsdom",
       environmentOptions: {
         jsdom: {
-          url: "https://nns.internetcomputer.org/"
-        }
+          url: "https://nns.internetcomputer.org/",
+        },
       },
       exclude: [
         ...configDefaults.exclude,

@@ -1,4 +1,3 @@
-
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   ACCOUNT_PARAM,

@@ -362,17 +362,15 @@ describe("utils", () => {
         jest.useFakeTimers();
       });
 
-      const getTimestamps = async (
-        {
-          maxAttempts,
-          millisecondsToWait,
-          useExponentialBackoff,
-        }: {
-          maxAttempts: number;
-          millisecondsToWait?: number;
-          useExponentialBackoff: boolean;
-        }
-      ): Promise<number[]> => {
+      const getTimestamps = async ({
+        maxAttempts,
+        millisecondsToWait,
+        useExponentialBackoff,
+      }: {
+        maxAttempts: number;
+        millisecondsToWait?: number;
+        useExponentialBackoff: boolean;
+      }): Promise<number[]> => {
         const t0 = Date.now();
         const timestamps = [];
 

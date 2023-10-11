@@ -97,17 +97,15 @@ vi.mock("$lib/constants/sns-neurons.constants.ts", async () => {
   };
 });
 
-const appendPermissions = (
-  {
-    neuron,
-    identity,
-    permissions,
-  }: {
-    neuron: SnsNeuron;
-    identity: Identity;
-    permissions: SnsNeuronPermissionType[];
-  }
-) =>
+const appendPermissions = ({
+  neuron,
+  identity,
+  permissions,
+}: {
+  neuron: SnsNeuron;
+  identity: Identity;
+  permissions: SnsNeuronPermissionType[];
+}) =>
   (neuron.permissions = [
     ...neuron.permissions,
     {
@@ -385,7 +383,7 @@ describe("sns-neuron utils", () => {
         }),
       ];
       const neurons = ids.map(
-        (id) => ({ ...mockSnsNeuron, id: [{ id }] } as SnsNeuron)
+        (id) => ({ ...mockSnsNeuron, id: [{ id }] }) as SnsNeuron
       );
       const memo = nextMemo({
         neurons,
@@ -411,7 +409,7 @@ describe("sns-neuron utils", () => {
           })
       );
       const neurons = ids.map(
-        (id) => ({ ...mockSnsNeuron, id: [{ id }] } as SnsNeuron)
+        (id) => ({ ...mockSnsNeuron, id: [{ id }] }) as SnsNeuron
       );
 
       expect(() =>
