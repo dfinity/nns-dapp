@@ -350,7 +350,7 @@ describe("vote-registration-services", () => {
     };
 
     beforeEach(() => {
-      vi.spyOn(console, "error").mockImplementation(vi.fn);
+      vi.spyOn(console, "error").mockReturnValue();
     });
 
     it("should show error.register_vote_unknown on not nns-js-based error", async () => {
@@ -466,7 +466,7 @@ describe("vote-registration-services", () => {
 
   describe("identity errors", () => {
     beforeEach(() => {
-      vi.spyOn(console, "error").mockImplementation(vi.fn);
+      vi.spyOn(console, "error").mockReturnValue();
       setNoIdentity();
     });
 
@@ -491,7 +491,7 @@ describe("vote-registration-services", () => {
 
   describe("processRegisterVoteErrors", () => {
     beforeEach(() => {
-      vi.spyOn(console, "error").mockImplementation(vi.fn);
+      vi.spyOn(console, "error").mockReturnValue();
     });
 
     it("should display an error", async () => {

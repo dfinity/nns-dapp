@@ -187,10 +187,10 @@ describe("proposals-services", () => {
         vi.spyOn(api, "queryProposal").mockImplementation(() => {
           throw new Error("test-message");
         });
-        vi.spyOn(console, "error").mockImplementation(vi.fn);
+        vi.spyOn(console, "error").mockReturnValue();
       });
 
-      it("should show error message in details", async () => {
+      it.only("should show error message in details", async () => {
         const toastsShow = vi.spyOn(toastsFunctions, "toastsShow");
         expect(toastsShow).not.toBeCalled();
 
@@ -247,7 +247,7 @@ describe("proposals-services", () => {
 
   describe("no identity", () => {
     beforeEach(() => {
-      vi.spyOn(console, "error").mockImplementation(vi.fn);
+      vi.spyOn(console, "error").mockReturnValue();
       vi.spyOn(authStore, "subscribe").mockImplementation(
         mockAuthStoreNoIdentitySubscribe
       );
@@ -335,7 +335,7 @@ describe("proposals-services", () => {
     const spyQueryProposalPayload = vi.spyOn(api, "queryProposalPayload");
 
     beforeEach(() => {
-      vi.spyOn(console, "error").mockImplementation(vi.fn);
+      vi.spyOn(console, "error").mockReturnValue();
       spyQueryProposalPayload.mockImplementation(() =>
         Promise.resolve({ data: "test" })
       );

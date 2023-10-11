@@ -84,7 +84,7 @@ describe("icp-accounts.services", () => {
   blockAllCallsTo(blockedApiPaths);
 
   beforeEach(() => {
-    vi.spyOn(console, "error").mockImplementation(vi.fn);
+    vi.spyOn(console, "error").mockReturnValue();
     vi.clearAllMocks();
     toastsStore.reset();
     icpAccountsStore.resetForTesting();

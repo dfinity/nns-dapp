@@ -15,7 +15,7 @@ vi.mock("$lib/services/neurons.services");
 
 describe("ProposalMeta", () => {
   beforeEach(() => {
-    vi.spyOn(console, "error").mockImplementation(vi.fn);
+    vi.spyOn(console, "error").mockReturnValue();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
