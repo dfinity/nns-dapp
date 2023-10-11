@@ -10,16 +10,18 @@ describe("initTransactionsWorker", () => {
   beforeEach(() => {
     spyPostMessage = vi.fn();
 
-    vi.mock("$lib/workers/transactions.worker?worker", () => {
-      return class TransactionsWorker {
-        postMessage(data: {
-          msg: "nnsStartTransactionsTimer";
-          data: PostMessageDataRequestTransactions;
-        }) {
+    vi.doMock("$lib/workers/transactions.worker?worker", () => ({
+      default: class TransactionsWorker {
+        postMessage(
+          data: {
+            msg: "nnsStartTransactionsTimer";
+            data: PostMessageDataRequestTransactions;
+          }
+        ) {
           spyPostMessage(data);
         }
-      };
-    });
+      },
+    }));
   });
 
   it("should start worker with params", async () => {
