@@ -36,10 +36,10 @@ describe("CanisterHeadingTitle", () => {
   it("renders the cycles as title when present", async () => {
     const canisterDetails = {
       ...mockCanisterDetails,
-      cycles: 314000000n,
+      cycles: 3_140_000_000_000n,
     };
     const po = renderComponent(mockCanister, canisterDetails, undefined);
-    expect(await po.getTitle()).toBe("3.14 T Cycles");
+    expect(await po.getTitle()).toBe("3.140 T Cycles");
   });
 
   it("renders the canister name as subtitle if present and user is the controller", async () => {
