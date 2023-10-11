@@ -30,9 +30,9 @@ import type { Agent } from "@dfinity/agent";
 import { LedgerCanister } from "@dfinity/ledger-icp";
 import { GovernanceCanister, Topic, Vote } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { mock } from "jest-mock-extended";
+import { mock } from "vitest-mock-extended";
 
-jest.mock("$lib/api/agent.api", () => {
+vi.mock("$lib/api/agent.api", () => {
   return {
     createAgent: () => Promise.resolve(mock<Agent>()),
   };
@@ -41,28 +41,28 @@ jest.mock("$lib/api/agent.api", () => {
 describe("neurons-api", () => {
   const mockGovernanceCanister = mock<GovernanceCanister>();
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
 
     mockGovernanceCanister.listNeurons.mockImplementation(
-      jest.fn().mockResolvedValue([])
+      vi.fn().mockResolvedValue([])
     );
     mockGovernanceCanister.listKnownNeurons.mockImplementation(
-      jest.fn().mockResolvedValue([])
+      vi.fn().mockResolvedValue([])
     );
-    mockGovernanceCanister.stakeNeuron.mockImplementation(jest.fn());
+    mockGovernanceCanister.stakeNeuron.mockImplementation(vi.fn());
     mockGovernanceCanister.getNeuron.mockImplementation(
-      jest.fn().mockResolvedValue(mockNeuron)
+      vi.fn().mockResolvedValue(mockNeuron)
     );
     mockGovernanceCanister.registerVote.mockResolvedValue(undefined);
-    jest
-      .spyOn(GovernanceCanister, "create")
-      .mockImplementation(() => mockGovernanceCanister);
+    vi.spyOn(GovernanceCanister, "create").mockImplementation(
+      () => mockGovernanceCanister
+    );
   });
 
   it("stakeNeuron creates a new neuron", async () => {
-    jest
-      .spyOn(LedgerCanister, "create")
-      .mockImplementation(() => mock<LedgerCanister>());
+    vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
+      mock<LedgerCanister>()
+    );
 
     expect(mockGovernanceCanister.stakeNeuron).not.toBeCalled();
 
@@ -89,9 +89,9 @@ describe("neurons-api", () => {
   });
 
   it("stakeNeuronIcrc1 creates a new neuron", async () => {
-    jest
-      .spyOn(LedgerCanister, "create")
-      .mockImplementation(() => mock<LedgerCanister>());
+    vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
+      mock<LedgerCanister>()
+    );
 
     expect(mockGovernanceCanister.stakeNeuronIcrc1).not.toBeCalled();
 
@@ -152,7 +152,7 @@ describe("neurons-api", () => {
   describe("increaseDissolveDelay", () => {
     it("updates neuron", async () => {
       mockGovernanceCanister.increaseDissolveDelay.mockImplementation(
-        jest.fn().mockResolvedValue(undefined)
+        vi.fn().mockResolvedValue(undefined)
       );
 
       await increaseDissolveDelay({
@@ -167,7 +167,7 @@ describe("neurons-api", () => {
     it("throws error when updating neuron fails", async () => {
       const error = new Error();
       mockGovernanceCanister.increaseDissolveDelay.mockImplementation(
-        jest.fn(() => {
+        vi.fn(() => {
           throw error;
         })
       );
@@ -186,7 +186,7 @@ describe("neurons-api", () => {
   describe("setFollowees", () => {
     it("updates neuron successfully", async () => {
       mockGovernanceCanister.setFollowees.mockImplementation(
-        jest.fn().mockResolvedValue(undefined)
+        vi.fn().mockResolvedValue(undefined)
       );
 
       await setFollowees({
@@ -202,7 +202,7 @@ describe("neurons-api", () => {
     it("throws error when setting followees fails", async () => {
       const error = new Error();
       mockGovernanceCanister.setFollowees.mockImplementation(
-        jest.fn(() => {
+        vi.fn(() => {
           throw error;
         })
       );
@@ -221,7 +221,7 @@ describe("neurons-api", () => {
   describe("joinCommunityFund", () => {
     it("updates neuron successfully", async () => {
       mockGovernanceCanister.joinCommunityFund.mockImplementation(
-        jest.fn().mockResolvedValue(undefined)
+        vi.fn().mockResolvedValue(undefined)
       );
 
       await joinCommunityFund({
@@ -235,7 +235,7 @@ describe("neurons-api", () => {
     it("throws error when joining community fund fails", async () => {
       const error = new Error();
       mockGovernanceCanister.joinCommunityFund.mockImplementation(
-        jest.fn(() => {
+        vi.fn(() => {
           throw error;
         })
       );
@@ -252,7 +252,7 @@ describe("neurons-api", () => {
   describe("leaveCommunityFund", () => {
     it("updates neuron successfully", async () => {
       mockGovernanceCanister.leaveCommunityFund.mockImplementation(
-        jest.fn().mockResolvedValue(undefined)
+        vi.fn().mockResolvedValue(undefined)
       );
 
       await leaveCommunityFund({
@@ -266,7 +266,7 @@ describe("neurons-api", () => {
     it("throws error when leaving community fund fails", async () => {
       const error = new Error();
       mockGovernanceCanister.leaveCommunityFund.mockImplementation(
-        jest.fn(() => {
+        vi.fn(() => {
           throw error;
         })
       );
@@ -283,7 +283,7 @@ describe("neurons-api", () => {
   describe("disburse", () => {
     it("disburses neuron successfully", async () => {
       mockGovernanceCanister.disburse.mockImplementation(
-        jest.fn().mockResolvedValue(undefined)
+        vi.fn().mockResolvedValue(undefined)
       );
 
       await disburse({
@@ -298,7 +298,7 @@ describe("neurons-api", () => {
     it("throws error when disburse fails", async () => {
       const error = new Error();
       mockGovernanceCanister.disburse.mockImplementation(
-        jest.fn(() => {
+        vi.fn(() => {
           throw error;
         })
       );
@@ -316,7 +316,7 @@ describe("neurons-api", () => {
   describe("mergeMaturity", () => {
     it("merges a percentage of the maturity of a neuron successfully", async () => {
       mockGovernanceCanister.mergeMaturity.mockImplementation(
-        jest.fn().mockResolvedValue(undefined)
+        vi.fn().mockResolvedValue(undefined)
       );
 
       await mergeMaturity({
@@ -331,7 +331,7 @@ describe("neurons-api", () => {
     it("throws error when mergeMaturity fails", async () => {
       const error = new Error();
       mockGovernanceCanister.mergeMaturity.mockImplementation(
-        jest.fn(() => {
+        vi.fn(() => {
           throw error;
         })
       );
@@ -349,7 +349,7 @@ describe("neurons-api", () => {
   describe("stakeMaturity", () => {
     it("stake the maturity of a neuron successfully", async () => {
       mockGovernanceCanister.stakeMaturity.mockImplementation(
-        jest.fn().mockResolvedValue(undefined)
+        vi.fn().mockResolvedValue(undefined)
       );
 
       await stakeMaturity({
@@ -364,7 +364,7 @@ describe("neurons-api", () => {
     it("throws error when stakeMaturity fails", async () => {
       const error = new Error();
       mockGovernanceCanister.stakeMaturity.mockImplementation(
-        jest.fn(() => {
+        vi.fn(() => {
           throw error;
         })
       );
@@ -383,7 +383,7 @@ describe("neurons-api", () => {
   describe("autoStakeMaturity", () => {
     it("auto stake the maturity of a neuron successfully", async () => {
       mockGovernanceCanister.autoStakeMaturity.mockImplementation(
-        jest.fn().mockResolvedValue(undefined)
+        vi.fn().mockResolvedValue(undefined)
       );
 
       await autoStakeMaturity({
@@ -398,7 +398,7 @@ describe("neurons-api", () => {
     it("throws error when autoStakeMaturity fails", async () => {
       const error = new Error();
       mockGovernanceCanister.autoStakeMaturity.mockImplementation(
-        jest.fn(() => {
+        vi.fn(() => {
           throw error;
         })
       );
@@ -415,7 +415,7 @@ describe("neurons-api", () => {
 
     it("should enable auto stake the maturity of a neuron", async () => {
       mockGovernanceCanister.autoStakeMaturity.mockImplementation(
-        jest.fn().mockResolvedValue(undefined)
+        vi.fn().mockResolvedValue(undefined)
       );
 
       const expected = {
@@ -433,7 +433,7 @@ describe("neurons-api", () => {
 
     it("should disable auto stake the maturity of a neuron", async () => {
       mockGovernanceCanister.autoStakeMaturity.mockImplementation(
-        jest.fn().mockResolvedValue(undefined)
+        vi.fn().mockResolvedValue(undefined)
       );
 
       const expected = {
@@ -454,7 +454,7 @@ describe("neurons-api", () => {
     it("spawn a neuron from a percentage of the maturity successfully", async () => {
       const newNeuronId = BigInt(12333);
       mockGovernanceCanister.spawnNeuron.mockImplementation(
-        jest.fn().mockResolvedValue(newNeuronId)
+        vi.fn().mockResolvedValue(newNeuronId)
       );
 
       const actualNeuronId = await spawnNeuron({
@@ -470,7 +470,7 @@ describe("neurons-api", () => {
     it("throws error when spawnNeuron fails", async () => {
       const error = new Error();
       mockGovernanceCanister.spawnNeuron.mockImplementation(
-        jest.fn(() => {
+        vi.fn(() => {
           throw error;
         })
       );
@@ -488,7 +488,7 @@ describe("neurons-api", () => {
   describe("merge", () => {
     it("merges neurons successfully", async () => {
       mockGovernanceCanister.mergeNeurons.mockImplementation(
-        jest.fn().mockResolvedValue(undefined)
+        vi.fn().mockResolvedValue(undefined)
       );
 
       await mergeNeurons({
@@ -503,7 +503,7 @@ describe("neurons-api", () => {
     it("throws error when merging neurons fails", async () => {
       const error = new Error();
       mockGovernanceCanister.mergeNeurons.mockImplementation(
-        jest.fn(() => {
+        vi.fn(() => {
           throw error;
         })
       );
@@ -521,7 +521,7 @@ describe("neurons-api", () => {
   describe("simulate merge neurons", () => {
     it("simulates merging neurons successfully", async () => {
       mockGovernanceCanister.simulateMergeNeurons.mockImplementation(
-        jest.fn().mockResolvedValue(undefined)
+        vi.fn().mockResolvedValue(undefined)
       );
 
       await simulateMergeNeurons({
@@ -536,7 +536,7 @@ describe("neurons-api", () => {
     it("throws error when simulating merging fails", async () => {
       const error = new Error();
       mockGovernanceCanister.simulateMergeNeurons.mockImplementation(
-        jest.fn(() => {
+        vi.fn(() => {
           throw error;
         })
       );
@@ -554,7 +554,7 @@ describe("neurons-api", () => {
   describe("addHotkey", () => {
     it("updates neuron successfully", async () => {
       mockGovernanceCanister.addHotkey.mockImplementation(
-        jest.fn().mockResolvedValue(undefined)
+        vi.fn().mockResolvedValue(undefined)
       );
 
       await addHotkey({
@@ -569,7 +569,7 @@ describe("neurons-api", () => {
     it("throws error when adding hotkey fails", async () => {
       const error = new Error();
       mockGovernanceCanister.addHotkey.mockImplementation(
-        jest.fn(() => {
+        vi.fn(() => {
           throw error;
         })
       );
@@ -587,7 +587,7 @@ describe("neurons-api", () => {
   describe("removeHotkey", () => {
     it("updates neuron successfully", async () => {
       mockGovernanceCanister.removeHotkey.mockImplementation(
-        jest.fn().mockResolvedValue(undefined)
+        vi.fn().mockResolvedValue(undefined)
       );
 
       await removeHotkey({
@@ -602,7 +602,7 @@ describe("neurons-api", () => {
     it("throws error when removing hotkey fails", async () => {
       const error = new Error();
       mockGovernanceCanister.removeHotkey.mockImplementation(
-        jest.fn(() => {
+        vi.fn(() => {
           throw error;
         })
       );
@@ -620,7 +620,7 @@ describe("neurons-api", () => {
   describe("startDissolving", () => {
     it("updates neuron successfully", async () => {
       mockGovernanceCanister.startDissolving.mockImplementation(
-        jest.fn().mockResolvedValue(undefined)
+        vi.fn().mockResolvedValue(undefined)
       );
 
       await startDissolving({
@@ -634,7 +634,7 @@ describe("neurons-api", () => {
     it("throws error when startDissolving fails", async () => {
       const error = new Error();
       mockGovernanceCanister.startDissolving.mockImplementation(
-        jest.fn(() => {
+        vi.fn(() => {
           throw error;
         })
       );
@@ -651,7 +651,7 @@ describe("neurons-api", () => {
   describe("stopDissolving", () => {
     it("updates neuron successfully", async () => {
       mockGovernanceCanister.stopDissolving.mockImplementation(
-        jest.fn().mockResolvedValue(undefined)
+        vi.fn().mockResolvedValue(undefined)
       );
 
       await stopDissolving({
@@ -665,7 +665,7 @@ describe("neurons-api", () => {
     it("throws error when stopDissolving fails", async () => {
       const error = new Error();
       mockGovernanceCanister.stopDissolving.mockImplementation(
-        jest.fn(() => {
+        vi.fn(() => {
           throw error;
         })
       );
@@ -683,7 +683,7 @@ describe("neurons-api", () => {
     const amount = BigInt(220_000_000);
     it("updates neuron successfully", async () => {
       mockGovernanceCanister.splitNeuron.mockImplementation(
-        jest.fn().mockResolvedValue(BigInt(11))
+        vi.fn().mockResolvedValue(BigInt(11))
       );
 
       await splitNeuron({
@@ -698,7 +698,7 @@ describe("neurons-api", () => {
     it("throws error when stopDissolving fails", async () => {
       const error = new Error();
       mockGovernanceCanister.splitNeuron.mockImplementation(
-        jest.fn(() => {
+        vi.fn(() => {
           throw error;
         })
       );
