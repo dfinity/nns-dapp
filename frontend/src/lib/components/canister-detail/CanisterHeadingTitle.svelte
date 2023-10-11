@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { TokenAmount, nonNullish } from "@dfinity/utils";
-  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import { nonNullish } from "@dfinity/utils";
   import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
   import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import { i18n } from "$lib/stores/i18n";
