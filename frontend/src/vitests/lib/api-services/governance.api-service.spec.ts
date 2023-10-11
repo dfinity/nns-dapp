@@ -31,17 +31,15 @@ const unknownIdentity = createMockIdentity(999);
 
 const knownNeuron1 = createMockKnownNeuron(1001);
 
-const shouldNotInvalidateCache = async <P, R>(
-  {
-    apiFunc,
-    apiServiceFunc,
-    params,
-  }: {
-    apiFunc: (params: P) => Promise<R>;
-    apiServiceFunc: (params: P) => Promise<R>;
-    params: P;
-  }
-) => {
+const shouldNotInvalidateCache = async <P, R>({
+  apiFunc,
+  apiServiceFunc,
+  params,
+}: {
+  apiFunc: (params: P) => Promise<R>;
+  apiServiceFunc: (params: P) => Promise<R>;
+  params: P;
+}) => {
   vi.spyOn(api, "queryNeurons").mockResolvedValue(neurons);
 
   const qParams = { identity: identity1, certified: true };
@@ -57,17 +55,15 @@ const shouldNotInvalidateCache = async <P, R>(
   expect(api.queryNeurons).toHaveBeenCalledTimes(1);
 };
 
-const shouldInvalidateCache = async <P, R>(
-  {
-    apiFunc,
-    apiServiceFunc,
-    params,
-  }: {
-    apiFunc: (params: P) => Promise<R>;
-    apiServiceFunc: (params: P) => Promise<R>;
-    params: P;
-  }
-) => {
+const shouldInvalidateCache = async <P, R>({
+  apiFunc,
+  apiServiceFunc,
+  params,
+}: {
+  apiFunc: (params: P) => Promise<R>;
+  apiServiceFunc: (params: P) => Promise<R>;
+  params: P;
+}) => {
   let resolveApi: () => void;
   const apiPromise = new Promise<void>((resolve) => {
     resolveApi = resolve;
@@ -104,17 +100,15 @@ const shouldInvalidateCache = async <P, R>(
   expect(api.queryNeurons).toHaveBeenCalledTimes(2);
 };
 
-const shouldInvalidateCacheOnFailure = async <P, R>(
-  {
-    apiFunc,
-    apiServiceFunc,
-    params,
-  }: {
-    apiFunc: (params: P) => Promise<R>;
-    apiServiceFunc: (params: P) => Promise<R>;
-    params: P;
-  }
-) => {
+const shouldInvalidateCacheOnFailure = async <P, R>({
+  apiFunc,
+  apiServiceFunc,
+  params,
+}: {
+  apiFunc: (params: P) => Promise<R>;
+  apiServiceFunc: (params: P) => Promise<R>;
+  params: P;
+}) => {
   let rejectApi: (error: Error) => void;
   const apiPromise = new Promise<void>((_, reject) => {
     rejectApi = reject;
