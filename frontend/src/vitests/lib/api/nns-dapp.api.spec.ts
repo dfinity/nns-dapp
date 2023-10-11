@@ -4,11 +4,11 @@ import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
 import type { HttpAgent } from "@dfinity/agent";
-import { mock } from "jest-mock-extended";
+import { mock } from "vitest-mock-extended";
 
 describe("nns-dapp api", () => {
   beforeEach(() => {
-    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   describe("addAccount", () => {
@@ -17,10 +17,10 @@ describe("nns-dapp api", () => {
     nnsDappCanister.addAccount.mockResolvedValue(undefined);
 
     beforeEach(() => {
-      jest.clearAllMocks();
-      jest
-        .spyOn(NNSDappCanister, "create")
-        .mockImplementation((): NNSDappCanister => nnsDappCanister);
+      vi.clearAllMocks();
+      vi.spyOn(NNSDappCanister, "create").mockImplementation(
+        (): NNSDappCanister => nnsDappCanister
+      );
     });
 
     it("get account details from nns-dapp canister", async () => {
