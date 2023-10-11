@@ -17,6 +17,10 @@ export class TransactionCardPo extends BasePageObject {
     return this.getText("identifier");
   }
 
+  getDescription(): Promise<string> {
+    return this.getText("transaction-description");
+  }
+
   getAmountDisplayPo(): AmountDisplayPo {
     return AmountDisplayPo.under(this.root);
   }

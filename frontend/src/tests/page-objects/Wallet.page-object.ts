@@ -1,4 +1,5 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { CkBTCWalletPo } from "$tests/page-objects/CkBTCWallet.page-object";
 import { NnsWalletPo } from "$tests/page-objects/NnsWallet.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -11,5 +12,9 @@ export class WalletPo extends BasePageObject {
 
   getNnsWalletPo(): NnsWalletPo {
     return NnsWalletPo.under(this.root);
+  }
+
+  getCkBTCWalletPo(): CkBTCWalletPo {
+    return CkBTCWalletPo.under(this.root);
   }
 }

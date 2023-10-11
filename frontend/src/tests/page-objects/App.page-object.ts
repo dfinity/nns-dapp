@@ -143,6 +143,12 @@ export class AppPo extends BasePageObject {
     await this.closeMenu();
   }
 
+  async getBtc(amount: number): Promise<void> {
+    await this.openMenu();
+    await this.getMenuItemsPo().getGetTokensPo().getBtc(amount);
+    await this.closeMenu();
+  }
+
   async goBack(): Promise<void> {
     await this.getButton("back").click();
     await this.getButton("back").waitForAbsent();

@@ -48,4 +48,16 @@ export class SelectUniverseListPo extends BasePageObject {
     }
     return snsCards;
   }
+
+  async goToCkbtcUniverse(): Promise<void> {
+    const cards = await this.getSelectUniverseCardPos();
+    const names = await Promise.all(cards.map((card) => card.getName()));
+    for (let i = 0; i < names.length; i++) {
+      if (names[i] === "ckBTC") {
+        await cards[i].click();
+        return;
+      }
+    }
+    throw new Error("ckBTC card not found");
+  }
 }
