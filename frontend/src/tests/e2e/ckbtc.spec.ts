@@ -22,7 +22,7 @@ test("Test accounts requirements", async ({ page, context }) => {
     .waitForWithdrawalAccountDone();
 
   step("Get BTC");
-  await appPo.getIcpTokens(20);
+  await appPo.getBtc(20);
 
   step("Open ckBTC wallet");
   await appPo
