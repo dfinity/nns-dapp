@@ -17,14 +17,17 @@ const expectImagesLoaded = async ({ page, sources }) => {
   expect(baseImageSources).toEqual(sources);
 
   await page.waitForFunction(
-    (expectedImageCount) => {
+    async (expectedImageCount) => {
       const images = Array.from(document.querySelectorAll("img"));
       if (images.length !== expectedImageCount) {
         return false;
       }
       // The browser might decide not to load images that are outside the
       // viewport.
-      images.forEach((img) => img.scrollIntoView());
+      for (const img of images) {
+        img.scrollIntoView();
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      }
       return images.every((img) => img.complete);
     },
     sources.length,
