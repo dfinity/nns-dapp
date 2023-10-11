@@ -53,7 +53,7 @@ export class SelectUniverseListPo extends BasePageObject {
     const cards = await this.getSelectUniverseCardPos();
     const names = await Promise.all(cards.map((card) => card.getName()));
     for (let i = 0; i < names.length; i++) {
-      if (names[i] == "ckBTC") {
+      if (names[i] === "ckBTC") {
         await cards[i].click();
         return;
       }
