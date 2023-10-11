@@ -2,19 +2,19 @@ import { TVLCanister } from "$lib/canisters/tvl/tvl.canister";
 import { ACTOR_PARAMS } from "$lib/constants/canister-actor.constants";
 import { queryTVL } from "$lib/worker-api/tvl.worker-api";
 import { AnonymousIdentity } from "@dfinity/agent";
-import mock from "jest-mock-extended/lib/Mock";
+import { mock } from "vitest-mock-extended";
 
-jest.mock("@dfinity/agent", () => {
-  const agent = jest.requireActual("@dfinity/agent");
+vi.mock("@dfinity/agent", async () => {
   return {
-    ...agent,
-    HttpAgent: jest.fn().mockImplementation(() => {
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    ...(await vi.importActual<any>("@dfinity/agent")),
+    HttpAgent: vi.fn().mockImplementation(() => {
       return {};
     }),
   };
 });
 
-jest.mock("$lib/constants/canister-ids.constants");
+vi.mock("$lib/constants/canister-ids.constants");
 
 describe("tvl worker-api", () => {
   const tvlCanisterMock = mock<TVLCanister>();
@@ -30,8 +30,8 @@ describe("tvl worker-api", () => {
   };
 
   beforeEach(async () => {
-    jest.clearAllMocks();
-    jest.spyOn(TVLCanister, "create").mockImplementation(() => tvlCanisterMock);
+    vi.clearAllMocks();
+    vi.spyOn(TVLCanister, "create").mockImplementation(() => tvlCanisterMock);
   });
 
   describe("with tvl canister id set", () => {
