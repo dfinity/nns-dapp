@@ -9,6 +9,7 @@ import type {
 } from "$lib/types/sns";
 import type {
   CachedFunctionTypeDto,
+  CachedLifecycleResponseDto,
   CachedNervousFunctionDto,
   CachedNeuronsFundParticipationConstraints,
   CachedSnsDto,
@@ -23,6 +24,7 @@ import type { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import type {
   SnsFunctionType,
+  SnsGetLifecycleResponse,
   SnsNervousSystemFunction,
   SnsNeuronsFundParticipationConstraints,
   SnsParams,
@@ -361,6 +363,17 @@ const convertDtoToSnsSummarySwap = (
   };
 };
 
+const convertDtoToLifecycle = (
+  data: CachedLifecycleResponseDto
+): SnsGetLifecycleResponse => ({
+  decentralization_sale_open_timestamp_seconds: toNullable(
+    convertOptionalNumToBigInt(
+      data.decentralization_sale_open_timestamp_seconds
+    )
+  ),
+  lifecycle: toNullable(data.lifecycle),
+});
+
 type PartialSummary = Omit<SnsSummary, "metadata" | "token" | "swap"> & {
   metadata?: SnsSummaryMetadata;
   token?: IcrcTokenMetadata;
@@ -385,6 +398,8 @@ export const convertDtoToSnsSummary = ({
   swap_state,
   derived_state,
   init,
+  swap_params,
+  lifecycle,
 }: CachedSnsDto): SnsSummary | undefined => {
   const partialSummary: PartialSummary = {
     rootCanisterId: Principal.from(root_canister_id),
@@ -397,6 +412,10 @@ export const convertDtoToSnsSummary = ({
     swap: convertDtoToSnsSummarySwap(swap_state.swap),
     derived: convertDerived(derived_state),
     init: convertSwapInitParams(init.init),
+    swapParams: nonNullish(swap_params.params)
+      ? convertSwapParams(swap_params.params)
+      : undefined,
+    lifecycle: convertDtoToLifecycle(lifecycle),
   };
 
   return isValidSummary(partialSummary) ? partialSummary : undefined;
