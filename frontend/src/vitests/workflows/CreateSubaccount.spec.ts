@@ -16,6 +16,7 @@ import { clickByTestId } from "$tests/utils/utils.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
+import type { SpyInstance } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/api/accounts.api", () => {
@@ -29,8 +30,8 @@ vi.mock("$lib/api/icp-ledger.api");
 vi.mock("$lib/api/nns-dapp.api");
 
 describe("Accounts", () => {
-  let queryAccountBalanceSpy: vi.SpyInstance;
-  let queryAccountSpy: vi.SpyInstance;
+  let queryAccountBalanceSpy: SpyInstance;
+  let queryAccountSpy: SpyInstance;
   beforeEach(() => {
     vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
     vi.spyOn(console, "error").mockImplementation(vi.fn);
