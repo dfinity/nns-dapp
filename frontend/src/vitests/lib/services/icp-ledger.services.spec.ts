@@ -128,7 +128,9 @@ describe("icp-ledger.services", () => {
 
       spySyncAccounts = vi
         .spyOn(accountsServices, "syncAccounts")
-        .mockImplementation(vi.fn());
+        .mockImplementation(async () => {
+          // Do nothing
+        });
 
       const mockCreateAgent = () => Promise.resolve(mock<Agent>());
       vi.spyOn(agent, "createAgent").mockImplementation(mockCreateAgent);
