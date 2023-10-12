@@ -2,7 +2,7 @@ import * as proposalsApi from "$lib/api/proposals.api";
 import { authStore } from "$lib/stores/auth.store";
 import { LaunchpadPo } from "$tests/page-objects/Launchpad.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import Launchpad from "$tests/workflows/LaunchPad/LaunchpadWithLayout.svelte";
+import Launchpad from "$vitests/workflows/Launchpad/LaunchpadWithLayout.svelte";
 import { toastsStore } from "@dfinity/gix-components";
 import { isNullish } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
@@ -53,7 +53,9 @@ describe("Launchpad", () => {
 
     await waitFor(async () =>
       expect(
-        (await po.getCommittedProjectsPo().getProjectCardPos()).length
+        (
+          await po.getCommittedProjectsPo().getProjectCardPos()
+        ).length
       ).toBeGreaterThan(0)
     );
 
