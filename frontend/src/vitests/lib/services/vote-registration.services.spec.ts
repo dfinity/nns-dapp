@@ -105,7 +105,7 @@ describe("vote-registration-services", () => {
     });
 
     describe("voting in progress", () => {
-      it("should update store with a new vote registration", (done) =>
+      it("should update store with a new vote registration", () =>
         new Promise<void>((done) => {
           let updateContextCalls = 0;
           registerNnsVotes({

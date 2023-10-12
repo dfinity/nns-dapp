@@ -258,7 +258,7 @@ describe("sns-proposals services", () => {
         );
       });
 
-      it("should use the proposal in store if certified and not call api", (done) =>
+      it("should use the proposal in store if certified and not call api", () =>
         new Promise<void>((done) => {
           const queryProposalSpy = vi
             .spyOn(api, "queryProposal")
@@ -339,7 +339,7 @@ describe("sns-proposals services", () => {
         );
       });
 
-      it("should use the proposal in store if certified and not call api", (done) =>
+      it("should use the proposal in store if certified and not call api", () =>
         new Promise<void>((done) => {
           const queryProposalSpy = vi
             .spyOn(api, "queryProposal")
