@@ -18,9 +18,7 @@
       "$mocks": ["__mocks__"],
       "$mocks/*": ["__mocks__/*"],
       "$tests": ["src/tests"],
-      "$tests/*": ["src/tests/*"],
-      "$vitests": ["src/vitests"],
-      "$vitests/*": ["src/vitests/*"]
+      "$tests/*": ["src/tests/*"]
     },
     "types": [
       "vitest/globals",
