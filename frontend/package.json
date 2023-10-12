@@ -18,7 +18,6 @@
     "format:modified": "prettier --write $(git diff --diff-filter=ACM --name-only | egrep \"\\.(ts|js|mjs|json|scss|svelte|html)$\" | cut -d'/' -f2-)",
     "test": "TZ=UTC vitest --config ./vitest.config.ts",
     "test-e2e": "tsc --noEmit -p src/tests/e2e/tsconfig.json && playwright test",
-    "deprecated-jest-test": "TZ=UTC jest",
     "update:agent": "npm rm @dfinity/agent @dfinity/auth-client @dfinity/candid @dfinity/identity @dfinity/principal @dfinity/nns @dfinity/nns-proto @dfinity/cmc @dfinity/sns @dfinity/utils @dfinity/ledger-icrc @dfinity/ledger-icp @dfinity/ckbtc @dfinity/ic-management && npm i @dfinity/agent @dfinity/auth-client @dfinity/candid @dfinity/identity @dfinity/principal @dfinity/utils@next @dfinity/ledger-icrc@next @dfinity/ledger-icp@next @dfinity/nns@next @dfinity/nns-proto@next @dfinity/cmc@next @dfinity/sns@next @dfinity/ckbtc@next @dfinity/ic-management@next && ../scripts/revert-next.sh",
     "update:gix": "npm update @dfinity/gix-components",
     "upgrade:next": "npm rm @dfinity/nns @dfinity/nns-proto @dfinity/cmc @dfinity/sns @dfinity/utils @dfinity/ledger-icrc @dfinity/ledger-icp @dfinity/ckbtc @dfinity/ic-management && npm i @dfinity/nns@next @dfinity/nns-proto@next @dfinity/cmc@next @dfinity/sns@next @dfinity/utils@next @dfinity/ledger-icrc@next @dfinity/ledger-icp@next @dfinity/ckbtc@next @dfinity/ic-management@next && ../scripts/revert-next.sh"
