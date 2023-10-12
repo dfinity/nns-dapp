@@ -123,6 +123,22 @@ describe("sns-finalization-services", () => {
         expect(get(store)).toBeUndefined();
         expect(saleApi.queryFinalizationStatus).not.toBeCalled();
       });
+
+      it("should call api.queryFinalizationStatus and load finalization status in store if forced to fetch", async () => {
+        vi.spyOn(saleApi, "queryFinalizationStatus").mockResolvedValue(
+          snsFinalizationStatusResponseMock
+        );
+
+        expect(saleApi.queryFinalizationStatus).not.toBeCalled();
+        await loadSnsFinalizationStatus({ rootCanisterId, forceFetch: true });
+
+        const store = getOrCreateSnsFinalizationStatusStore(rootCanisterId);
+        expect(get(store)).toEqual({
+          data: snsFinalizationStatusResponseMock,
+          certified: false,
+        });
+        expect(saleApi.queryFinalizationStatus).toBeCalled();
+      });
     });
   });
 });
