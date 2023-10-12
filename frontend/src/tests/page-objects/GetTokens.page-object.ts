@@ -13,6 +13,10 @@ export class GetTokensPo extends BasePageObject {
     return this.getButton("get-icp-button").click();
   }
 
+  clickGetBtc(): Promise<void> {
+    return this.getButton("get-btc-button").click();
+  }
+
   getSnsTokensButton(): ButtonPo {
     return this.getButton("get-sns-button");
   }
@@ -41,6 +45,11 @@ export class GetTokensPo extends BasePageObject {
   async getSnsTokens(amount: number): Promise<void> {
     await this.getSnsTokensButton().waitFor();
     await this.clickGetSnsTokens();
+    await this.getTokens(amount);
+  }
+
+  async getBtc(amount: number): Promise<void> {
+    await this.clickGetBtc();
     await this.getTokens(amount);
   }
 

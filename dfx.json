@@ -312,7 +312,7 @@
         "HOST": "http://localhost:8080",
         "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
         "FEATURE_FLAGS": {
-          "ENABLE_CKBTC": false,
+          "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false
         }
       },

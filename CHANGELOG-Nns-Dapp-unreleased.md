@@ -42,6 +42,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* E2E test for ckBTC.
+
 #### Changed
 
 * Put unreleased changes in `CHANGELOG-Nns-Dapp-unreleased.md` to avoid bad merges.
