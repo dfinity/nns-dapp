@@ -49,6 +49,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Put unreleased changes in `CHANGELOG-Nns-Dapp-unreleased.md` to avoid bad merges.
+* Migrate the Jest unit test suite to Vitest.
 
 #### Deprecated
 #### Removed
