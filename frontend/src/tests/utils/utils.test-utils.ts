@@ -1,13 +1,11 @@
-import { assertNonNullish as dfinityAssertNonNullish } from "@dfinity/utils";
+import {
+  assertNonNullish as dfinityAssertNonNullish,
+  nonNullish,
+} from "@dfinity/utils";
 import { fireEvent } from "@testing-library/dom";
 
-/**
- * TODO: delete module once migration to vitest over
- * @deprecated module was copied to frontend/src/vitests/utils/utils.test-utils.ts
- */
-
 export const silentConsoleErrors = () =>
-  jest.spyOn(console, "error").mockImplementation(jest.fn);
+  vi.spyOn(console, "error").mockReturnValue();
 
 export const clickByTestId = async (
   queryByTestId: (matcher: string) => HTMLElement | null,
@@ -29,4 +27,20 @@ export const assertNonNullish = <T>(
 ): NonNullable<T> => {
   dfinityAssertNonNullish(value, message);
   return value;
+};
+
+/**
+ * vitest considers an element visible if it has height: 0px.
+ *
+ * Therefore, we try to check the height of the element to find out whether we consider it not visible.
+ */
+export const isNotVisible = (element: Element): boolean => {
+  try {
+    expect(element).not.toBeVisible();
+    return false;
+  } catch (_) {
+    const styles = element.getAttribute("style");
+    const heightString = styles?.match(/height: (\d+)px/)?.[1];
+    return nonNullish(heightString) && Number(heightString) === 0;
+  }
 };

@@ -21,10 +21,6 @@ export default defineConfig(
           replacement: resolve(__dirname, "src/tests"),
         },
         {
-          find: "$vitests",
-          replacement: resolve(__dirname, "src/vitests"),
-        },
-        {
           find: "$mocks",
           replacement: resolve(__dirname, "__mocks__"),
         },
@@ -54,11 +50,9 @@ export default defineConfig(
         ...(mode === "test" ? ["./src/tests/e2e/**/*"] : []),
       ],
       include: [
-        // TODO: uncomment default config and remove **/vitests/** include pattern when migration over
-        // ...configDefaults.include,
         ...(mode === "e2e"
           ? ["./src/tests/e2e/**/*"]
-          : ["**/vitests/**/*.{test,spec}.?(c|m)[jt]s?(x)"]),
+          : ["./src/tests/**/*.{test,spec}.?(c|m)[jt]s?(x)"]),
       ],
       globals: true,
       watch: false,
@@ -83,7 +77,7 @@ export default defineConfig(
       // > # FILEHANDLE
       // > node:internal/async_hooks:202
       // > close timed out after 30000ms
-      // > Failed to terminate worker while running /nns-dapp/frontend/src/vitests/lib/components/project-detail/ProjectCommitment.spec.ts.
+      // > Failed to terminate worker while running /nns-dapp/frontend/src/tests/lib/components/project-detail/ProjectCommitment.spec.ts.
       // > Tests closed successfully but something prevents Vite server from exiting
       // > You can try to identify the cause by enabling "hanging-process" reporter. See https://vitest.dev/config/#reporters
       //
