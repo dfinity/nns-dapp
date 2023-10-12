@@ -1,21 +1,40 @@
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import {
-  convertDtoData,
   convertDtoToSnsSummary,
+  convertIcrc1Metadata,
   convertNervousFunction,
 } from "$lib/utils/sns-aggregator-converters.utils";
-import {
-  aggregatorSnsMock,
-  aggregatorSnsMockDto,
-} from "$tests/mocks/sns-aggregator.mock";
+import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { Principal } from "@dfinity/principal";
 
 describe("sns aggregator converters utils", () => {
   describe("convertDtoData", () => {
-    it("converts aggregator types to ic-js types", () => {
-      expect(convertDtoData([aggregatorSnsMockDto])).toEqual([
-        aggregatorSnsMock,
-      ]);
+    it("converts aggregator icrc metadata to ic-js types", () => {
+      expect(convertIcrc1Metadata(aggregatorSnsMockDto.icrc1_metadata)).toEqual(
+        [
+          ["icrc1:decimals", { Nat: 8n }],
+          ["icrc1:name", { Text: "CatalyzeDAO" }],
+          ["icrc1:symbol", { Text: "CAT" }],
+          ["icrc1:fee", { Nat: 100000n }],
+        ]
+      );
+    });
+
+    it("converts aggregator nervous function to ic-js types", () => {
+      expect(
+        convertNervousFunction(aggregatorSnsMockDto.parameters.functions[1])
+      ).toEqual({
+        id: 1n,
+        name: "Motion",
+        description: [
+          "Side-effect-less proposals to set general governance direction.",
+        ],
+        function_type: [
+          {
+            NativeNervousSystemFunction: {},
+          },
+        ],
+      });
     });
   });
 
@@ -387,6 +406,26 @@ describe("sns aggregator converters utils", () => {
           restricted_countries: [{ iso_codes: ["US"] }],
           min_icp_e8s: [],
           neurons_fund_participation_constraints: [],
+        },
+        swapParams: {
+          min_participant_icp_e8s: 100000000n,
+          neuron_basket_construction_parameters: [
+            {
+              dissolve_delay_interval_seconds: 5259486n,
+              count: 7n,
+            },
+          ],
+          max_icp_e8s: 130000000000000n,
+          swap_due_timestamp_seconds: 1691785258n,
+          min_participants: 125,
+          sns_token_e8s: 11250000000000000n,
+          sale_delay_seconds: [],
+          max_participant_icp_e8s: 15000000000000n,
+          min_icp_e8s: 65000000000000n,
+        },
+        lifecycle: {
+          decentralization_sale_open_timestamp_seconds: [1690786778n],
+          lifecycle: [2],
         },
       });
     });

@@ -176,7 +176,7 @@
         })}</span
       >
     {:else}
-      <div><IconCheck size="36px" /></div>
+      <div data-tid="all-btc-transfers-complete"><IconCheck size="36px" /></div>
       <span class="value">{$i18n.ckbtc.all_btc_transfers_complete}</span>
     {/if}
   </button>

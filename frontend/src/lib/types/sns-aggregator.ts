@@ -1,14 +1,4 @@
-import type {
-  IcrcMetadataResponseEntries,
-  IcrcTokenMetadataResponse,
-} from "@dfinity/ledger-icrc";
-import type {
-  SnsGetDerivedStateResponse,
-  SnsGetMetadataResponse,
-  SnsNervousSystemFunction,
-  SnsSwap,
-  SnsSwapDerivedState,
-} from "@dfinity/sns";
+import type { IcrcMetadataResponseEntries } from "@dfinity/ledger-icrc";
 
 type CanisterIds = {
   root_canister_id: string;
@@ -26,30 +16,6 @@ type ListSnsCanisterIds = {
   dapps: string[];
   archives: string[];
   index: string;
-};
-
-// TODO: Create types with script https://dfinity.atlassian.net/browse/GIX-1249
-export type CachedSns = {
-  index: number;
-  canister_ids: CanisterIds;
-  list_sns_canisters: ListSnsCanisterIds;
-  meta: SnsGetMetadataResponse;
-  parameters: {
-    functions: SnsNervousSystemFunction[];
-    reserved_ids: bigint[];
-  };
-  swap_state: {
-    swap: SnsSwap;
-    derived: SnsSwapDerivedState;
-  };
-  icrc1_metadata: IcrcTokenMetadataResponse;
-  /**
-   * TODO: integrate ckBTC fee
-   * @deprecated we will use the icrc1_metadata.fee as source information for the fee
-   */
-  icrc1_fee?: bigint;
-  icrc1_total_supply: bigint;
-  derived_state: SnsGetDerivedStateResponse;
 };
 
 export type CachedSnsMetadataDto = {
