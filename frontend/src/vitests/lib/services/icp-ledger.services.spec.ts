@@ -128,7 +128,7 @@ describe("icp-ledger.services", () => {
 
       spySyncAccounts = vi
         .spyOn(accountsServices, "syncAccounts")
-        .mockImplementation(vi.fn());
+        .mockImplementation(() => undefined);
 
       const mockCreateAgent = () => Promise.resolve(mock<Agent>());
       vi.spyOn(agent, "createAgent").mockImplementation(mockCreateAgent);
@@ -325,13 +325,13 @@ describe("icp-ledger.services", () => {
     });
 
     describe("error", () => {
-      beforeAll(() =>
-        vi
-          .spyOn(LedgerIdentity, "create")
-          .mockImplementation(async (): Promise<LedgerIdentity> => {
+      beforeAll(() => {
+        vi.spyOn(LedgerIdentity, "create").mockImplementation(
+          async (): Promise<LedgerIdentity> => {
             throw new LedgerErrorKey("error__ledger.please_open");
-          })
-      );
+          }
+        );
+      });
 
       it("should not list neurons if ledger throw an error", async () => {
         const spyToastError = vi.spyOn(toastsStore, "toastsError");
