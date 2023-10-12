@@ -152,6 +152,9 @@ describe("sns-api", () => {
     spyOnSendICP.mockReset();
     spyOnNotifyParticipation.mockReset();
     spyOnToastsShow.mockReset();
+    // `mockReset` seems to add a mock not calling the actual function and not only reset the spy.
+    // And because the service relies on the return value of the spy, we need to mock the return value.
+    // Jest was calling the original function instead.
     spyOnToastsShow.mockReturnValue(Symbol("toast-id"));
     spyOnToastsSuccess.mockReset();
     spyOnToastsError.mockReset();
@@ -507,7 +510,7 @@ describe("sns-api", () => {
         expect(snsSwapCanister.getOpenTicket).toBeCalledTimes(expectedCalls);
       });
 
-      it.only("should hide toast when stop retrying", async () => {
+      it("should hide toast when stop retrying", async () => {
         snsSwapCanister.getOpenTicket.mockRejectedValue(
           new Error("network error")
         );
