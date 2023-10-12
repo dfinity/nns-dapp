@@ -10,7 +10,6 @@ import { browser, building } from "./__mocks__/$app/environment";
 import { afterNavigate, goto } from "./__mocks__/$app/navigation";
 import { navigating, page } from "./__mocks__/$app/stores";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
-import localStorageMock from "./src/tests/mocks/local-storage.mock";
 import { failTestsThatLogToConsole } from "./src/tests/utils/console.test-utils";
 import {
   mockedConstants,
@@ -41,7 +40,6 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
       ENABLE_CKTESTBTC: true,
       ENABLE_ICP_ICRC: false,
       ENABLE_INSTANT_UNLOCK: true,
-      ENABLE_SNS_AGGREGATOR_STORE: true,
       ENABLE_STAKE_NEURON_ICRC1: true,
       ENABLE_SWAP_ICRC1: true,
       ENABLE_FULL_WIDTH_PROPOSAL: true,
@@ -71,8 +69,6 @@ setDefaultTestConstants({
   QR_CODE_RENDERED_DEFAULT_STATE: true,
   ENABLE_QR_CODE_READER: false,
 });
-
-global.localStorage = localStorageMock;
 
 failTestsThatLogToConsole();
 
