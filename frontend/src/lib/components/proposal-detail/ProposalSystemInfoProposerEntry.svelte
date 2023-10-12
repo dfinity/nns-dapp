@@ -5,6 +5,7 @@
   import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { ENABLE_FULL_WIDTH_PROPOSAL } from "$lib/stores/feature-flags.store";
 
   export let proposer: NeuronId | undefined;
 
@@ -15,7 +16,10 @@
 
 <TestIdWrapper testId="proposal-system-info-proposer-entry-component">
   {#if proposer !== undefined}
-    <KeyValuePairInfo testId="proposal-system-info-proposer">
+    <KeyValuePairInfo
+      testId="proposal-system-info-proposer"
+      alignIconRight={$ENABLE_FULL_WIDTH_PROPOSAL}
+    >
       <svelte:fragment slot="key"
         >{$i18n.proposal_detail.proposer_prefix}</svelte:fragment
       >

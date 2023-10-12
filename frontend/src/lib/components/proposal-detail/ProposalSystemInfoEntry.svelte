@@ -2,6 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { keyOf } from "$lib/utils/utils";
   import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
+  import { ENABLE_FULL_WIDTH_PROPOSAL } from "$lib/stores/feature-flags.store";
 
   export let labelKey: string;
   export let testId: string;
@@ -9,7 +10,7 @@
   export let description: string | undefined;
 </script>
 
-<KeyValuePairInfo {testId}>
+<KeyValuePairInfo {testId} alignIconRight={$ENABLE_FULL_WIDTH_PROPOSAL}>
   <svelte:fragment slot="key"
     >{keyOf({ obj: $i18n.proposal_detail, key: labelKey })}</svelte:fragment
   >

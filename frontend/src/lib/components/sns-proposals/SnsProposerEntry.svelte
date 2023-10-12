@@ -4,6 +4,7 @@
   import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
   import type { SnsNeuronId } from "@dfinity/sns";
   import Hash from "../ui/Hash.svelte";
+  import { ENABLE_FULL_WIDTH_PROPOSAL } from "$lib/stores/feature-flags.store";
 
   export let proposer: SnsNeuronId;
 
@@ -11,7 +12,10 @@
   $: proposerText = subaccountToHexString(proposer.id);
 </script>
 
-<KeyValuePairInfo testId="proposal-system-info-proposer">
+<KeyValuePairInfo
+  testId="proposal-system-info-proposer"
+  alignIconRight={$ENABLE_FULL_WIDTH_PROPOSAL}
+>
   <svelte:fragment slot="key"
     >{$i18n.proposal_detail.proposer_prefix}</svelte:fragment
   >
