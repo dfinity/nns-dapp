@@ -628,6 +628,7 @@
           "ENABLE_INSTANT_UNLOCK": false,
           "ENABLE_STAKE_NEURON_ICRC1": false,
           "ENABLE_SWAP_ICRC1": false,
+          "ENABLE_MY_TOKENS": false,
           "ENABLE_FULL_WIDTH_PROPOSAL": false
         }
       }

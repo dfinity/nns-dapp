@@ -38,6 +38,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Not Published
 
+* New feature flag `ENABLE_MY_TOKENS`.
+
 ### Operations
 
 #### Added
