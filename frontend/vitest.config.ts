@@ -50,8 +50,9 @@ export default defineConfig(
         ...(mode === "test" ? ["./src/tests/e2e/**/*"] : []),
       ],
       include: [
-        ...configDefaults.include,
-        ...(mode === "e2e" ? ["./src/tests/e2e/**/*"] : []),
+        ...(mode === "e2e"
+          ? ["./src/tests/e2e/**/*"]
+          : ["./src/tests/**/*.{test,spec}.?(c|m)[jt]s?(x)"]),
       ],
       globals: true,
       watch: false,
