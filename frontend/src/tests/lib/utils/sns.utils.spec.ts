@@ -1,3 +1,4 @@
+import { SECONDS_IN_DAY, SECONDS_IN_MONTH } from "$lib/constants/constants";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import {
@@ -8,20 +9,22 @@ import {
   isInternalRefreshBuyerTokensError,
   isSnsFinalizing,
   parseSnsSwapSaleBuyerCount,
+  swapEndedMoreThanOneWeekAgo,
 } from "$lib/utils/sns.utils";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { createFinalizationStatusMock } from "$tests/mocks/sns-finalization-status.mock";
 import {
   createBuyersState,
+  createSummary,
   mockDerivedResponse,
   principal,
 } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { AccountIdentifier } from "@dfinity/ledger-icp";
-import type {
-  SnsGetAutoFinalizationStatusResponse,
-  SnsGetDerivedStateResponse,
+import {
+  type SnsGetAutoFinalizationStatusResponse,
+  type SnsGetDerivedStateResponse,
 } from "@dfinity/sns";
 import { get } from "svelte/store";
 
@@ -290,6 +293,44 @@ sale_participants_count ${saleBuyerCount} 1677707139456
       expect(
         convertDerivedStateResponseToDerivedState(missingSnsPerIcp)
       ).toBeUndefined();
+    });
+  });
+
+  describe("swapEndedMoreThanOneWeekAgo", () => {
+    const nowInSeconds = Math.floor(Date.now() / 1000);
+
+    it("should return false if swap ended less than one week ago", () => {
+      const summary = createSummary({
+        swapDueTimestampSeconds: BigInt(nowInSeconds - SECONDS_IN_DAY),
+      });
+      expect(swapEndedMoreThanOneWeekAgo({ summary, nowInSeconds })).toBe(
+        false
+      );
+      const summary1 = createSummary({
+        swapDueTimestampSeconds: BigInt(nowInSeconds - 1),
+      });
+      expect(
+        swapEndedMoreThanOneWeekAgo({ summary: summary1, nowInSeconds })
+      ).toBe(false);
+      const summary2 = createSummary({
+        swapDueTimestampSeconds: BigInt(nowInSeconds + SECONDS_IN_DAY),
+      });
+      expect(
+        swapEndedMoreThanOneWeekAgo({ summary: summary2, nowInSeconds })
+      ).toBe(false);
+    });
+
+    it("should return true if swap ended more than one week ago", () => {
+      const summary = createSummary({
+        swapDueTimestampSeconds: BigInt(nowInSeconds - SECONDS_IN_DAY * 7 - 1),
+      });
+      expect(swapEndedMoreThanOneWeekAgo({ summary, nowInSeconds })).toBe(true);
+      const summary1 = createSummary({
+        swapDueTimestampSeconds: BigInt(nowInSeconds - SECONDS_IN_MONTH),
+      });
+      expect(
+        swapEndedMoreThanOneWeekAgo({ summary: summary1, nowInSeconds })
+      ).toBe(true);
     });
   });
 });

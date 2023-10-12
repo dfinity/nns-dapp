@@ -1,5 +1,6 @@
 import { CardPo } from "$tests/page-objects/Card.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { ProjectCardSwapInfoPo } from "./ProjectCardSwapInfo.page-object";
 
 export class ProjectCardPo extends CardPo {
   private static readonly TID = "project-card-component";
@@ -16,5 +17,9 @@ export class ProjectCardPo extends CardPo {
 
   getProjectName(): Promise<string> {
     return this.getText("project-name");
+  }
+
+  getStatus(): Promise<string> {
+    return ProjectCardSwapInfoPo.under(this.root).getStatus();
   }
 }

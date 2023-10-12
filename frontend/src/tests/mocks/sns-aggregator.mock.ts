@@ -68,6 +68,7 @@ export const aggregatorSnsMockWith = ({
   tokenMetadata,
   index,
   nervousFunctions,
+  swapDueTimestampSeconds,
 }: {
   rootCanisterId?: string;
   lifecycle?: SnsSwapLifecycle;
@@ -78,6 +79,7 @@ export const aggregatorSnsMockWith = ({
   tokenMetadata?: Partial<IcrcTokenMetadata>;
   index?: number;
   nervousFunctions?: SnsNervousSystemFunction[];
+  swapDueTimestampSeconds?: number;
 }): CachedSnsDto => ({
   index: index ?? aggregatorSnsMockDto.index,
   ...aggregatorSnsMockDto,
@@ -99,6 +101,13 @@ export const aggregatorSnsMockWith = ({
         restricted_countries: nonNullish(restrictedCountries)
           ? { iso_codes: restrictedCountries }
           : aggregatorSnsMockDto.swap_state.swap.init.restricted_countries,
+      },
+      params: {
+        ...aggregatorSnsMockDto.swap_state.swap.params,
+        swap_due_timestamp_seconds:
+          swapDueTimestampSeconds ??
+          aggregatorSnsMockDto.swap_state.swap.params
+            .swap_due_timestamp_seconds,
       },
     },
     derived: {
@@ -124,6 +133,17 @@ export const aggregatorSnsMockWith = ({
       restricted_countries: nonNullish(restrictedCountries)
         ? { iso_codes: restrictedCountries }
         : aggregatorSnsMockDto.swap_state.swap.init.restricted_countries,
+      swap_due_timestamp_seconds:
+        swapDueTimestampSeconds ??
+        aggregatorSnsMockDto.swap_state.swap.params.swap_due_timestamp_seconds,
+    },
+  },
+  swap_params: {
+    params: {
+      ...aggregatorSnsMockDto.swap_params.params,
+      swap_due_timestamp_seconds:
+        swapDueTimestampSeconds ??
+        aggregatorSnsMockDto.swap_state.swap.params.swap_due_timestamp_seconds,
     },
   },
   derived_state: {

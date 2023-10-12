@@ -1,15 +1,22 @@
 import ProjectCardSwapInfo from "$lib/components/launchpad/ProjectCardSwapInfo.svelte";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+import {
+  getOrCreateSnsFinalizationStatusStore,
+  resetSnsFinalizationStatusStore,
+} from "$lib/stores/sns-finalization-status.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import { secondsToDuration } from "$lib/utils/date.utils";
 import { getCommitmentE8s } from "$lib/utils/sns.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import en from "$tests/mocks/i18n.mock";
+import { createFinalizationStatusMock } from "$tests/mocks/sns-finalization-status.mock";
 import {
   mockSnsFullProject,
   summaryForLifecycle,
 } from "$tests/mocks/sns-projects.mock";
+import { ProjectCardSwapInfoPo } from "$tests/page-objects/ProjectCardSwapInfo.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
@@ -23,6 +30,7 @@ describe("ProjectCardSwapInfo", () => {
   const now = Date.now();
   beforeEach(() => {
     vitest.useFakeTimers().setSystemTime(now);
+    resetSnsFinalizationStatusStore();
   });
 
   afterAll(() => {
@@ -119,5 +127,27 @@ describe("ProjectCardSwapInfo", () => {
     });
 
     expect(getByText(en.sns_project_detail.completed)).toBeInTheDocument();
+  });
+
+  it("should render finalizing", async () => {
+    const finalizingData = createFinalizationStatusMock(true);
+    const store = getOrCreateSnsFinalizationStatusStore(
+      mockSnsFullProject.rootCanisterId
+    );
+    store.setData({ data: finalizingData, certified: true });
+    const { container } = render(ProjectCardSwapInfo, {
+      props: {
+        project: {
+          ...mockSnsFullProject,
+          summary: summaryForLifecycle(SnsSwapLifecycle.Committed),
+        },
+      },
+    });
+
+    const po = ProjectCardSwapInfoPo.under(
+      new JestPageObjectElement(container)
+    );
+
+    expect(await po.getStatus()).toBe("Status Finalizing");
   });
 });
