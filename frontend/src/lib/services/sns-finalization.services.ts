@@ -13,7 +13,13 @@ import { isNullish, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { queryAndUpdate } from "./utils.services";
 
-export const loadSnsFinalizationStatus = async (rootCanisterId: Principal) => {
+export const loadSnsFinalizationStatus = async ({
+  rootCanisterId,
+  forceFetch = false,
+}: {
+  rootCanisterId: Principal;
+  forceFetch?: boolean;
+}) => {
   const summaries = get(snsSummariesStore);
   const summary = summaries.find(
     (s) => s.rootCanisterId.toText() === rootCanisterId.toText()
@@ -23,9 +29,10 @@ export const loadSnsFinalizationStatus = async (rootCanisterId: Principal) => {
   // It might take a few hours.
   // Waiting one week ensures that the project is not finalizing anymore.
   if (
-    isNullish(summary) ||
-    summary.swap.lifecycle !== SnsSwapLifecycle.Committed ||
-    swapEndedMoreThanOneWeekAgo({ summary, nowInSeconds: nowInSeconds() })
+    !forceFetch &&
+    (isNullish(summary) ||
+      summary.swap.lifecycle !== SnsSwapLifecycle.Committed ||
+      swapEndedMoreThanOneWeekAgo({ summary, nowInSeconds: nowInSeconds() }))
   ) {
     return;
   }

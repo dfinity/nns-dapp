@@ -46,7 +46,7 @@ describe("sns-finalization-services", () => {
         );
 
         expect(saleApi.queryFinalizationStatus).not.toBeCalled();
-        await loadSnsFinalizationStatus(rootCanisterId);
+        await loadSnsFinalizationStatus({ rootCanisterId });
 
         const store = getOrCreateSnsFinalizationStatusStore(rootCanisterId);
         expect(get(store)).toEqual({
@@ -62,7 +62,7 @@ describe("sns-finalization-services", () => {
         );
 
         expect(saleApi.queryFinalizationStatus).not.toBeCalled();
-        await loadSnsFinalizationStatus(rootCanisterId);
+        await loadSnsFinalizationStatus({ rootCanisterId });
 
         const store = getOrCreateSnsFinalizationStatusStore(rootCanisterId);
         expect(get(store)).toBeUndefined();
@@ -81,11 +81,27 @@ describe("sns-finalization-services", () => {
       });
 
       it("should call not load finalization status in store nor call api", async () => {
-        await loadSnsFinalizationStatus(rootCanisterId);
+        await loadSnsFinalizationStatus({ rootCanisterId });
 
         const store = getOrCreateSnsFinalizationStatusStore(rootCanisterId);
         expect(get(store)).toBeUndefined();
         expect(saleApi.queryFinalizationStatus).not.toBeCalled();
+      });
+
+      it("should call api.queryFinalizationStatus and load finalization status in store if forced to fetch", async () => {
+        vi.spyOn(saleApi, "queryFinalizationStatus").mockResolvedValue(
+          snsFinalizationStatusResponseMock
+        );
+
+        expect(saleApi.queryFinalizationStatus).not.toBeCalled();
+        await loadSnsFinalizationStatus({ rootCanisterId, forceFetch: true });
+
+        const store = getOrCreateSnsFinalizationStatusStore(rootCanisterId);
+        expect(get(store)).toEqual({
+          data: snsFinalizationStatusResponseMock,
+          certified: false,
+        });
+        expect(saleApi.queryFinalizationStatus).toBeCalled();
       });
     });
 
@@ -101,7 +117,7 @@ describe("sns-finalization-services", () => {
       });
 
       it("should call not load finalization status in store nor call api", async () => {
-        await loadSnsFinalizationStatus(rootCanisterId);
+        await loadSnsFinalizationStatus({ rootCanisterId });
 
         const store = getOrCreateSnsFinalizationStatusStore(rootCanisterId);
         expect(get(store)).toBeUndefined();

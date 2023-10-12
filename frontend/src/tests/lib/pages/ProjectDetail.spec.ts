@@ -3,6 +3,7 @@ import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import * as snsSaleApi from "$lib/api/sns-sale.api";
 import * as snsMetricsApi from "$lib/api/sns-swap-metrics.api";
 import * as snsApi from "$lib/api/sns.api";
+import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
 import { NOT_LOADED } from "$lib/constants/stores.constants";
@@ -76,6 +77,8 @@ describe("ProjectDetail", () => {
 # TYPE sale_buyer_count gauge
 sale_buyer_count ${saleBuyerCount} 1677707139456
 # HELP sale_cf_participants_count`;
+  const now = Date.now();
+  const nowInSeconds = Math.floor(now / 1000);
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -86,7 +89,6 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     userCountryStore.set(NOT_LOADED);
 
     vi.clearAllTimers();
-    const now = Date.now();
     vi.useFakeTimers().setSystemTime(now);
 
     vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(undefined);
@@ -263,6 +265,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             lifecycle: SnsSwapLifecycle.Committed,
             directParticipantCount: [30n],
             certified: true,
+            swapDueTimestampSeconds: nowInSeconds - SECONDS_IN_DAY,
           },
         ]);
       });

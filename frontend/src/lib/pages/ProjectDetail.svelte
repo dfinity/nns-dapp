@@ -77,7 +77,10 @@
         },
         forceFetch: true,
       }),
-      loadSnsFinalizationStatus(Principal.fromText(rootCanisterId)),
+      loadSnsFinalizationStatus({
+        rootCanisterId: Principal.fromText(rootCanisterId),
+        forceFetch: true,
+      }),
     ]);
   };
 
@@ -173,7 +176,9 @@
     nonNullish(rootCanisterId) &&
     $projectDetailStore.summary?.swap.lifecycle === SnsSwapLifecycle.Committed
   ) {
-    loadSnsFinalizationStatus(Principal.fromText(rootCanisterId));
+    loadSnsFinalizationStatus({
+      rootCanisterId: Principal.fromText(rootCanisterId),
+    });
   }
 
   let derivedStateHasBuyersCount: boolean | undefined;

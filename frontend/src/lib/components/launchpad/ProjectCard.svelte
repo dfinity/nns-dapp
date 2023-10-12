@@ -16,7 +16,7 @@
   export let project: SnsFullProject;
 
   onMount(() => {
-    loadSnsFinalizationStatus(project.rootCanisterId);
+    loadSnsFinalizationStatus({ rootCanisterId: project.rootCanisterId });
   });
 
   let summary: SnsSummary;
