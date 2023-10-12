@@ -9,7 +9,7 @@ import {
   type WalletStore,
 } from "$lib/types/wallet.context";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
-import ContextWrapperTest from "$vitests/lib/components/ContextWrapperTest.svelte";
+import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
 import type { SnsNeuron } from "@dfinity/sns";
 import type { RenderResult } from "@testing-library/svelte";
 import { render } from "@testing-library/svelte";

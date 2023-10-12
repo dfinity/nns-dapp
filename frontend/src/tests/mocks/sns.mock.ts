@@ -6,7 +6,7 @@ import {
 import type { SnsSummary, SnsSwapCommitment, SnsTicket } from "$lib/types/sns";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
-import ContextWrapperTest from "$vitests/lib/components/ContextWrapperTest.svelte";
+import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
 import type { Principal } from "@dfinity/principal";
 import type { TokenAmount } from "@dfinity/utils";
 import { toNullable } from "@dfinity/utils";
