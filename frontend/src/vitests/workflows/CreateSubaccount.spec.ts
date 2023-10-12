@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { createSubAccount } from "$lib/api/accounts.api";
 import * as agent from "$lib/api/agent.api";
 import * as ledgerApi from "$lib/api/icp-ledger.api";
@@ -20,33 +16,32 @@ import { clickByTestId } from "$tests/utils/utils.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import { mock } from "jest-mock-extended";
+import type { SpyInstance } from "vitest";
+import { mock } from "vitest-mock-extended";
 
-jest.mock("$lib/api/accounts.api", () => {
+vi.mock("$lib/api/accounts.api", () => {
   return {
-    createSubAccount: jest.fn().mockResolvedValue(undefined),
+    createSubAccount: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/api/icp-ledger.api");
+vi.mock("$lib/api/icp-ledger.api");
 
-jest.mock("$lib/api/nns-dapp.api");
+vi.mock("$lib/api/nns-dapp.api");
 
 describe("Accounts", () => {
-  let queryAccountBalanceSpy: jest.SpyInstance;
-  let queryAccountSpy: jest.SpyInstance;
+  let queryAccountBalanceSpy: SpyInstance;
+  let queryAccountSpy: SpyInstance;
   beforeEach(() => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
-    jest.spyOn(console, "error").mockImplementation(jest.fn);
-    queryAccountBalanceSpy = jest
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(console, "error").mockImplementation(vi.fn);
+    queryAccountBalanceSpy = vi
       .spyOn(ledgerApi, "queryAccountBalance")
       .mockResolvedValue(BigInt(0));
-    queryAccountSpy = jest
+    queryAccountSpy = vi
       .spyOn(nnsDappApi, "queryAccount")
       .mockResolvedValue(mockAccountDetails);
-    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   it("should create a subaccount in NNS", async () => {
