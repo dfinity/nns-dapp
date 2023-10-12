@@ -184,7 +184,7 @@ describe("sns-api", () => {
       certified: true,
     });
 
-    (importSnsWasmCanister as vi.Mock).mockResolvedValue({
+    (importSnsWasmCanister as Mock).mockResolvedValue({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       create: (options: SnsWasmCanisterOptions) => ({
         listSnses: () => Promise.resolve(deployedSnsMock),
