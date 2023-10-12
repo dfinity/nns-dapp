@@ -53,9 +53,7 @@ describe("Launchpad", () => {
 
     await waitFor(async () =>
       expect(
-        (
-          await po.getCommittedProjectsPo().getProjectCardPos()
-        ).length
+        (await po.getCommittedProjectsPo().getProjectCardPos()).length
       ).toBeGreaterThan(0)
     );
 
