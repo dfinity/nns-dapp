@@ -190,7 +190,7 @@ describe("proposals-services", () => {
         vi.spyOn(console, "error").mockReturnValue();
       });
 
-      it.only("should show error message in details", async () => {
+      it("should show error message in details", async () => {
         const toastsShow = vi.spyOn(toastsFunctions, "toastsShow");
         expect(toastsShow).not.toBeCalled();
 
@@ -258,26 +258,24 @@ describe("proposals-services", () => {
     });
 
     it("should list proposals if no identity", async () => {
-      const call = async () =>
-        await listProposals({
+      await expect(
+        listProposals({
           loadFinished: () => {
             // do nothing here
           },
-        });
-
-      await expect(call).resolves;
+        })
+      ).resolves;
     });
 
     it("should list next proposals if no identity", async () => {
-      const call = async () =>
-        await listNextProposals({
+      await expect(
+        listNextProposals({
           beforeProposal: mockProposals[mockProposals.length - 1].id,
           loadFinished: () => {
             // do nothing here
           },
-        });
-
-      await expect(call).resolves;
+        })
+      ).resolves;
     });
 
     it("should load proposal if no identity", async () => {
