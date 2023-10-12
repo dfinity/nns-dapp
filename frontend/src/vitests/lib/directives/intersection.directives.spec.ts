@@ -8,7 +8,7 @@ import IntersectionTest from "./IntersectionTest.svelte";
 
 describe("IntersectionDirectives", () => {
   beforeAll(() =>
-      vi.stubGlobal("IntersectionObserver", IntersectionObserverActive)
+    vi.stubGlobal("IntersectionObserver", IntersectionObserverActive)
   );
 
   afterAll(() => vi.unstubAllGlobals());
@@ -17,12 +17,12 @@ describe("IntersectionDirectives", () => {
   let testIntersecting: boolean;
 
   beforeEach(
-      () =>
-          (spy = vi
-              .spyOn(dispatchEvents, "dispatchIntersecting")
-              .mockImplementation(
-                  ($event) => (testIntersecting = $event?.intersecting ?? false)
-              ))
+    () =>
+      (spy = vi
+        .spyOn(dispatchEvents, "dispatchIntersecting")
+        .mockImplementation(
+          ($event) => (testIntersecting = $event?.intersecting ?? false)
+        ))
   );
   afterEach(() => vi.clearAllMocks());
 
