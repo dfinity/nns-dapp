@@ -42,6 +42,7 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
       ENABLE_INSTANT_UNLOCK: true,
       ENABLE_STAKE_NEURON_ICRC1: true,
       ENABLE_SWAP_ICRC1: true,
+      ENABLE_MY_TOKENS: false,
       ENABLE_FULL_WIDTH_PROPOSAL: true,
       TEST_FLAG_EDITABLE: true,
       TEST_FLAG_NOT_EDITABLE: true,
