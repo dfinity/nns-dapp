@@ -151,13 +151,15 @@ describe("ckbtc-accounts-services", () => {
   });
 
   describe("ckBTCTransferTokens", () => {
-    const spyAccounts = vi
-      .spyOn(ckbtcLedgerApi, "getCkBTCAccount")
-      .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
+    let spyAccounts;
 
     beforeEach(() => {
       vi.clearAllMocks();
       icrcAccountsStore.reset();
+
+      spyAccounts = vi
+        .spyOn(ckbtcLedgerApi, "getCkBTCAccount")
+        .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
     });
 
     afterEach(() => {
