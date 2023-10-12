@@ -143,12 +143,12 @@ describe("sns-neurons-services", () => {
     });
 
     describe("when sns parameters are loaded", () => {
-      const spyOnNervousSystemParameters = jest
-        .spyOn(governanceApi, "nervousSystemParameters")
-        .mockRejectedValue("should not be called");
+      let spyOnNervousSystemParameters;
 
       beforeEach(() => {
-        spyOnNervousSystemParameters.mockClear();
+        spyOnNervousSystemParameters = jest
+          .spyOn(governanceApi, "nervousSystemParameters")
+          .mockRejectedValue("should not be called");
       });
 
       it("should call api.querySnsNeurons and load neurons in store", async () => {
@@ -619,13 +619,14 @@ describe("sns-neurons-services", () => {
   });
 
   describe("updateDelay ", () => {
-    const spyOnSetDissolveDelay = jest
-      .spyOn(governanceApi, "setDissolveDelay")
-      .mockImplementation(() => Promise.resolve());
+    let spyOnSetDissolveDelay;
     const nowInSeconds = 1689063315;
     const now = nowInSeconds * 1000;
 
     beforeEach(() => {
+      spyOnSetDissolveDelay = jest
+        .spyOn(governanceApi, "setDissolveDelay")
+        .mockImplementation(() => Promise.resolve());
       jest.useFakeTimers().setSystemTime(now);
       spyOnSetDissolveDelay.mockClear();
     });
@@ -840,9 +841,7 @@ describe("sns-neurons-services", () => {
   });
 
   describe("addFollowee ", () => {
-    const setFolloweesSpy = jest
-      .spyOn(governanceApi, "setFollowees")
-      .mockImplementation(() => Promise.resolve());
+    let setFolloweesSpy;
 
     const followee1: SnsNeuronId = {
       id: arrayOfNumberToUint8Array([1, 2, 3]),
@@ -853,6 +852,12 @@ describe("sns-neurons-services", () => {
     const followeeHex2 = subaccountToHexString(followee2.id);
     const rootCanisterId = mockPrincipal;
     const functionId = BigInt(3);
+
+    beforeEach(() => {
+      setFolloweesSpy = jest
+        .spyOn(governanceApi, "setFollowees")
+        .mockImplementation(() => Promise.resolve());
+    });
 
     it("should call sns api setFollowees with new followee when topic already has followees", async () => {
       const queryNeuronSpy = jest
@@ -960,9 +965,7 @@ describe("sns-neurons-services", () => {
   });
 
   describe("removeFollowee ", () => {
-    const setFolloweesSpy = jest
-      .spyOn(governanceApi, "setFollowees")
-      .mockImplementation(() => Promise.resolve());
+    let setFolloweesSpy;
 
     const followee1: SnsNeuronId = {
       id: arrayOfNumberToUint8Array([1, 2, 3]),
@@ -972,6 +975,12 @@ describe("sns-neurons-services", () => {
     };
     const rootCanisterId = mockPrincipal;
     const functionId = BigInt(3);
+
+    beforeEach(() => {
+      setFolloweesSpy = jest
+        .spyOn(governanceApi, "setFollowees")
+        .mockImplementation(() => Promise.resolve());
+    });
 
     it("should call sns api setFollowees with followee removed from list", async () => {
       const neuron: SnsNeuron = {
@@ -1064,9 +1073,7 @@ describe("sns-neurons-services", () => {
   });
 
   describe("toggleAutoStakeMaturity", () => {
-    const spyOnStakeMaturity = jest
-      .spyOn(governanceApi, "autoStakeMaturity")
-      .mockImplementation(() => Promise.resolve());
+    let spyOnStakeMaturity;
 
     const testToggle = async ({
       neuron,
@@ -1094,6 +1101,12 @@ describe("sns-neurons-services", () => {
     const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
     const identity = mockIdentity;
     const rootCanisterId = mockPrincipal;
+
+    beforeEach(() => {
+      spyOnStakeMaturity = jest
+        .spyOn(governanceApi, "autoStakeMaturity")
+        .mockImplementation(() => Promise.resolve());
+    });
 
     it("should call api.autoStakeMaturity with true for the first toggle", async () => {
       const neuron = {
