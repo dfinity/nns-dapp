@@ -191,16 +191,13 @@ describe("ckbtc-minter-services", () => {
         throw new MinterNoNewUtxosError();
       });
 
-      const spyOnToastsShow = vi.spyOn(toastsStore, "toastsShow");
+      const spyOnToastsSuccess = vi.spyOn(toastsStore, "toastsSuccess");
 
       const result = await services.updateBalance(params);
 
       expect(result).toEqual({ success: true });
-      expect(spyOnToastsShow).toHaveBeenCalledWith({
-        level: "success",
+      expect(spyOnToastsSuccess).toHaveBeenCalledWith({
         labelKey: en.error__ckbtc.no_new_confirmed_btc,
-        duration: 4000,
-        substitutions: undefined,
       });
     });
 
