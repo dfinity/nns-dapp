@@ -124,14 +124,16 @@ describe("sns-accounts-services", () => {
   });
 
   describe("snsTransferTokens", () => {
-    const spyAccounts = vi
-      .spyOn(ledgerApi, "getSnsAccounts")
-      .mockImplementation(() => Promise.resolve([mockSnsMainAccount]));
+    let spyAccounts;
 
     beforeEach(() => {
       vi.clearAllMocks();
       snsAccountsStore.reset();
       vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+      spyAccounts = vi
+        .spyOn(ledgerApi, "getSnsAccounts")
+        .mockImplementation(() => Promise.resolve([mockSnsMainAccount]));
     });
 
     afterEach(() => {
