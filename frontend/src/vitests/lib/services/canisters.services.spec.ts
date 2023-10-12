@@ -33,6 +33,7 @@ import en from "$tests/mocks/i18n.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
+import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import type { SpyInstance } from "vitest";
 
@@ -435,7 +436,7 @@ describe("canisters-services", () => {
       expect(canisterId).not.toBeUndefined();
       expect(spyCreateCanister).toBeCalled();
       expect(spyQueryCanisters).toBeCalled();
-      expect(spyQueryAccountBalance).toBeCalled();
+      await waitFor(() => expect(spyQueryAccountBalance).toBeCalled());
     });
 
     it("should not call api if account doesn't have enough funds", async () => {
@@ -500,7 +501,7 @@ describe("canisters-services", () => {
       });
       expect(success).toBe(true);
       expect(spyTopUpCanister).toBeCalled();
-      expect(spyQueryAccountBalance).toBeCalled();
+      await waitFor(() => expect(spyQueryAccountBalance).toBeCalled());
     });
 
     it("should not call api if account doesn't have enough funds", async () => {
