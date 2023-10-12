@@ -2,11 +2,11 @@ import * as proposalsApi from "$lib/api/proposals.api";
 import { authStore } from "$lib/stores/auth.store";
 import { LaunchpadPo } from "$tests/page-objects/Launchpad.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import Launchpad from "$tests/workflows/LaunchPad/LaunchpadWithLayout.svelte";
 import { toastsStore } from "@dfinity/gix-components";
 import { isNullish } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import Launchpad from "./LaunchpadWithLayout.svelte";
 import snsPage0 from "./sns-agg-page-0-2023-09-29-1545.json";
 import snsPage1 from "./sns-agg-page-1-2023-09-29-1545.json";
 
