@@ -94,6 +94,8 @@ export const mockSnsParams: SnsParams = {
   max_participant_icp_e8s: BigInt(5000000000),
   min_icp_e8s: BigInt(1500 * 100000000),
   sale_delay_seconds: [],
+  min_direct_participation_icp_e8s: [],
+  max_direct_participation_icp_e8s: [],
 };
 
 export const mockInit: SnsSwapInit = {
@@ -125,6 +127,8 @@ export const mockInit: SnsSwapInit = {
   restricted_countries: [],
   min_icp_e8s: [1_500_000_000n],
   neurons_fund_participation_constraints: [],
+  min_direct_participation_icp_e8s: [],
+  max_direct_participation_icp_e8s: [],
 };
 
 export const mockSwap: SnsSummarySwap = {
