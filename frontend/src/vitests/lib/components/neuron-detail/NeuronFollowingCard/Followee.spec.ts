@@ -12,7 +12,7 @@ describe("Followee", () => {
   };
 
   beforeEach(() => {
-    vi.spyOn(console, "error").mockImplementation(vi.fn);
+    vi.spyOn(console, "error").mockReturnValue();
     knownNeuronsStore.reset();
   });
 
