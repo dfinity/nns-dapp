@@ -23,7 +23,6 @@
     "types": [
       "vitest/globals",
       "node",
-      "jest",
       "@testing-library/jest-dom",
       "@types/wicg-file-system-access"
     ]
