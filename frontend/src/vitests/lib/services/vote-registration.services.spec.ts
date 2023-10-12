@@ -480,12 +480,10 @@ describe("vote-registration-services", () => {
         },
       });
 
-      expect(spyOnToastsShow).toHaveBeenCalledWith(
-        expect.objectContaining({
-          detail: en.error.missing_identity,
-          level: "error",
-        })
-      );
+      expect(spyOnToastsError).toHaveBeenCalledWith({
+        err: new Error(en.error.missing_identity),
+        labelKey: "error.register_vote_unknown",
+      });
     });
   });
 
