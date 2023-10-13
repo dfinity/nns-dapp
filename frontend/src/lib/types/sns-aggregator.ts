@@ -59,6 +59,8 @@ export type CachedSwapParamsDto = {
     dissolve_delay_interval_seconds: number;
   };
   sale_delay_seconds?: number;
+  min_direct_participation_icp_e8s?: number | null;
+  max_direct_participation_icp_e8s?: number | null;
 };
 
 interface CachedLinearScalingCoefficient {
@@ -116,6 +118,8 @@ export type CachedSwapInitParamsDto = {
   confirmation_text?: string | undefined;
   restricted_countries?: CachedCountriesDto | undefined;
   neurons_fund_participation_constraints?: CachedNeuronsFundParticipationConstraints | null;
+  min_direct_participation_icp_e8s?: number | null;
+  max_direct_participation_icp_e8s?: number | null;
 };
 
 export type CachedSnsSwapDto = {
