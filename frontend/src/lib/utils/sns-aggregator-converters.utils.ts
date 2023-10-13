@@ -210,8 +210,12 @@ const convertSwapInitParams = (
               )
             )
           : [],
-        min_direct_participation_icp_e8s: [],
-        max_direct_participation_icp_e8s: [],
+        min_direct_participation_icp_e8s: toNullable(
+          convertOptionalNumToBigInt(init.min_direct_participation_icp_e8s)
+        ),
+        max_direct_participation_icp_e8s: toNullable(
+          convertOptionalNumToBigInt(init.max_direct_participation_icp_e8s)
+        ),
       }
     : undefined;
 
@@ -233,8 +237,12 @@ const convertSwapParams = (params: CachedSwapParamsDto): SnsParams => ({
   sale_delay_seconds: toNullable(
     convertOptionalNumToBigInt(params.sale_delay_seconds)
   ),
-  min_direct_participation_icp_e8s: [],
-  max_direct_participation_icp_e8s: [],
+  min_direct_participation_icp_e8s: toNullable(
+    convertOptionalNumToBigInt(params.min_direct_participation_icp_e8s)
+  ),
+  max_direct_participation_icp_e8s: toNullable(
+    convertOptionalNumToBigInt(params.max_direct_participation_icp_e8s)
+  ),
 });
 
 const convertSwap = ({

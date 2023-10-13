@@ -475,7 +475,7 @@ describe("sns aggregator converters utils", () => {
       ).toBeUndefined();
     });
 
-    it("converts fields related to NF participation", () => {
+    it("converts fields related to NF participation enhancements", () => {
       const aggregatorNFAndDirectParticipationFields: CachedSnsDto = {
         ...mockData,
         swap_state: {
@@ -484,6 +484,11 @@ describe("sns aggregator converters utils", () => {
             ...mockData.swap_state.swap,
             direct_participation_icp_e8s: 300000000000000,
             neurons_fund_participation_icp_e8s: 100000000000000,
+            params: {
+              ...mockData.swap_state.swap.params,
+              min_direct_participation_icp_e8s: 300000000000,
+              max_direct_participation_icp_e8s: 3000000000000,
+            },
             init: {
               ...mockData.swap_state.swap.init,
               neurons_fund_participation_constraints: {
@@ -499,6 +504,8 @@ describe("sns aggregator converters utils", () => {
                 max_neurons_fund_participation_icp_e8s: 300000000000,
                 min_direct_participation_threshold_icp_e8s: 10000000000,
               },
+              min_direct_participation_icp_e8s: 300000000000,
+              max_direct_participation_icp_e8s: 3000000000000,
             },
           },
           derived: {
@@ -512,6 +519,13 @@ describe("sns aggregator converters utils", () => {
           direct_participation_icp_e8s: 300000000000000,
           neurons_fund_participation_icp_e8s: 100000000000000,
         },
+        init: {
+          init: {
+            ...mockData.init.init,
+            min_direct_participation_icp_e8s: 300000000000,
+            max_direct_participation_icp_e8s: 3000000000000,
+          },
+        },
       };
 
       const summaryMockData = convertDtoToSnsSummary(mockData);
@@ -521,6 +535,11 @@ describe("sns aggregator converters utils", () => {
         ...summaryMockData,
         swap: {
           ...summaryMockData.swap,
+          params: {
+            ...summaryMockData.swap.params,
+            min_direct_participation_icp_e8s: [300000000000n],
+            max_direct_participation_icp_e8s: [3000000000000n],
+          },
           init: [
             {
               ...summaryMockData.swap.init[0],
@@ -539,6 +558,8 @@ describe("sns aggregator converters utils", () => {
                   min_direct_participation_threshold_icp_e8s: [10000000000n],
                 },
               ],
+              min_direct_participation_icp_e8s: [300000000000n],
+              max_direct_participation_icp_e8s: [3000000000000n],
             },
           ],
           direct_participation_icp_e8s: [300000000000000n],
@@ -548,6 +569,11 @@ describe("sns aggregator converters utils", () => {
           ...summaryMockData.derived,
           direct_participation_icp_e8s: [300000000000000n],
           neurons_fund_participation_icp_e8s: [100000000000000n],
+        },
+        init: {
+          ...summaryMockData.init,
+          min_direct_participation_icp_e8s: [300000000000n],
+          max_direct_participation_icp_e8s: [3000000000000n],
         },
       });
     });
