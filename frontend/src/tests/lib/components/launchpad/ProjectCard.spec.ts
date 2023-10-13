@@ -1,6 +1,6 @@
 import * as saleApi from "$lib/api/sns-sale.api";
 import ProjectCard from "$lib/components/launchpad/ProjectCard.svelte";
-import { SECONDS_IN_DAY } from "$lib/constants/constants";
+import { SECONDS_IN_DAY, SECONDS_IN_MONTH } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
 import {
   authStoreMock,
@@ -9,7 +9,11 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { createFinalizationStatusMock } from "$tests/mocks/sns-finalization-status.mock";
-import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import {
+  createMockSnsFullProject,
+  mockSnsFullProject,
+} from "$tests/mocks/sns-projects.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { ProjectCardPo } from "$tests/page-objects/ProjectCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
@@ -151,27 +155,43 @@ describe("ProjectCard", () => {
       ).toBeInTheDocument();
     });
 
+    it("should render complete status if swap is Committed", async () => {
+      const oneMonthAgoInSeconds = nowInSeconds - SECONDS_IN_MONTH;
+      const snsFulProject = createMockSnsFullProject({
+        rootCanisterId: rootCanisterIdMock,
+        summaryParams: {
+          lifecycle: SnsSwapLifecycle.Committed,
+          swapDueTimestampSeconds: BigInt(oneMonthAgoInSeconds),
+        },
+      });
+
+      const { container } = render(ProjectCard, {
+        props: {
+          project: snsFulProject,
+        },
+      });
+
+      const po = ProjectCardPo.under(new JestPageObjectElement(container));
+      await runResolvedPromises();
+
+      expect(await po.getStatus()).toBe("Status Completed");
+    });
+
     it("should render finalizing status if swap is finalizing", async () => {
       vi.spyOn(saleApi, "queryFinalizationStatus").mockResolvedValue(
         createFinalizationStatusMock(true)
       );
+      const snsFulProject = createMockSnsFullProject({
+        rootCanisterId: rootCanisterIdMock,
+        summaryParams: {
+          lifecycle: SnsSwapLifecycle.Committed,
+          swapDueTimestampSeconds: BigInt(yesterdayInSeconds),
+        },
+      });
 
       const { container } = render(ProjectCard, {
         props: {
-          project: {
-            ...mockSnsFullProject,
-            summary: {
-              ...mockSnsFullProject.summary,
-              swap: {
-                ...mockSnsFullProject.summary.swap,
-                lifecycle: SnsSwapLifecycle.Committed,
-                params: {
-                  ...mockSnsFullProject.summary.swap.params,
-                  swap_due_timestamp_seconds: BigInt(yesterdayInSeconds),
-                },
-              },
-            },
-          },
+          project: snsFulProject,
         },
       });
 

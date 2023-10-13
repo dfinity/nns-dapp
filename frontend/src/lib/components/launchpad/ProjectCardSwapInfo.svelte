@@ -17,17 +17,15 @@
   import ProjectUserCommitmentLabel from "$lib/components/project-detail/ProjectUserCommitmentLabel.svelte";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import { nonNullish } from "@dfinity/utils";
-  import type { Readable } from "svelte/store";
-  import { createIsSnsFinalizingStore } from "$lib/stores/sns-finalization-status.store";
-  import type { Principal } from "@dfinity/principal";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
 
   export let project: SnsFullProject;
+  // The data to know whether it's finalizing or not is not in the SnsFullProject.
+  export let isFinalizing: boolean;
 
   let summary: SnsSummary;
   let swapCommitment: SnsSwapCommitment | undefined;
-  let rootCanisterId: Principal;
-  $: ({ summary, swapCommitment, rootCanisterId } = project);
+  $: ({ summary, swapCommitment } = project);
 
   let swap: SnsSummarySwap;
   $: ({ swap } = summary);
@@ -42,9 +40,6 @@
 
   let durationTillStart: bigint | undefined;
   $: durationTillStart = durationTillSwapStart(swap);
-
-  let isFinalizingStore: Readable<boolean>;
-  $: isFinalizingStore = createIsSnsFinalizingStore(rootCanisterId);
 
   let myCommitment: TokenAmount | undefined = undefined;
   $: {
@@ -64,7 +59,7 @@
     {#if lifecycle === SnsSwapLifecycle.Committed}
       <dt class="label">{$i18n.sns_project_detail.status_completed}</dt>
       <!-- is finalizing is not a lifecycle, it can be Committed and Finalizing or Not Finalizing -->
-      {#if $isFinalizingStore}
+      {#if isFinalizing}
         <dd class="value">{$i18n.sns_project_detail.status_finalizing}</dd>
       {:else}
         <dd class="value">{$i18n.sns_project_detail.completed}</dd>

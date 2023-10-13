@@ -300,6 +300,23 @@ export const summaryForLifecycle = (
   },
 });
 
+type SnsSummaryParams = {
+  lifecycle?: SnsSwapLifecycle;
+  confirmationText?: string | undefined;
+  restrictedCountries?: string[] | undefined;
+  minParticipants?: number;
+  buyersCount?: bigint | null;
+  tokensDistributed?: bigint;
+  minParticipantCommitment?: bigint;
+  maxParticipantCommitment?: bigint;
+  swapDueTimestampSeconds?: bigint;
+  minTotalCommitment?: bigint;
+  maxTotalCommitment?: bigint;
+  currentTotalCommitment?: bigint;
+  neuronsFundCommitment?: bigint;
+  directCommitment?: bigint;
+};
+
 export const createSummary = ({
   lifecycle = SnsSwapLifecycle.Open,
   confirmationText = undefined,
@@ -315,22 +332,7 @@ export const createSummary = ({
   currentTotalCommitment,
   neuronsFundCommitment,
   directCommitment,
-}: {
-  lifecycle?: SnsSwapLifecycle;
-  confirmationText?: string | undefined;
-  restrictedCountries?: string[] | undefined;
-  minParticipants?: number;
-  buyersCount?: bigint | null;
-  tokensDistributed?: bigint;
-  minParticipantCommitment?: bigint;
-  maxParticipantCommitment?: bigint;
-  swapDueTimestampSeconds?: bigint;
-  minTotalCommitment?: bigint;
-  maxTotalCommitment?: bigint;
-  currentTotalCommitment?: bigint;
-  neuronsFundCommitment?: bigint;
-  directCommitment?: bigint;
-}): SnsSummary => {
+}: SnsSummaryParams): SnsSummary => {
   const init: SnsSwapInit = {
     ...mockInit,
     swap_due_timestamp_seconds: [swapDueTimestampSeconds],
@@ -368,6 +370,18 @@ export const createSummary = ({
     derived,
   };
 };
+
+export const createMockSnsFullProject = ({
+  summaryParams,
+  rootCanisterId,
+}: {
+  rootCanisterId: Principal;
+  summaryParams: SnsSummaryParams;
+}) => ({
+  rootCanisterId,
+  summary: createSummary(summaryParams),
+  mockSwapCommitment: mockSnsSwapCommitment(rootCanisterId),
+});
 
 export const mockQueryMetadataResponse: SnsGetMetadataResponse = {
   url: [`https://my.url/`],
