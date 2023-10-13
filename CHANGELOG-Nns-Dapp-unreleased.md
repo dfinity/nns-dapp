@@ -33,6 +33,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Separators in project page appearing without data inside.
 * Cycles displayed as T Cycles on canister detail page.
+* Add "Finalizing" status in projects of the Launchpad.
 
 #### Security
 

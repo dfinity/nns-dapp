@@ -10,14 +10,10 @@ import {
   mockSnsFullProject,
   summaryForLifecycle,
 } from "$tests/mocks/sns-projects.mock";
+import { ProjectCardSwapInfoPo } from "$tests/page-objects/ProjectCardSwapInfo.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
-
-vitest.mock("$lib/services/sns.services", () => {
-  return {
-    loadSnsSwapStateStore: vitest.fn().mockResolvedValue(Promise.resolve()),
-  };
-});
 
 describe("ProjectCardSwapInfo", () => {
   const now = Date.now();
@@ -33,6 +29,7 @@ describe("ProjectCardSwapInfo", () => {
     const { getByText } = render(ProjectCardSwapInfo, {
       props: {
         project: mockSnsFullProject,
+        isFinalizing: false,
       },
     });
 
@@ -62,6 +59,7 @@ describe("ProjectCardSwapInfo", () => {
     const { getByText } = render(ProjectCardSwapInfo, {
       props: {
         project,
+        isFinalizing: false,
       },
     });
 
@@ -76,6 +74,7 @@ describe("ProjectCardSwapInfo", () => {
     const { getByText } = render(ProjectCardSwapInfo, {
       props: {
         project: mockSnsFullProject,
+        isFinalizing: false,
       },
     });
 
@@ -99,6 +98,7 @@ describe("ProjectCardSwapInfo", () => {
             myCommitment: undefined,
           },
         },
+        isFinalizing: false,
       },
     });
 
@@ -115,9 +115,28 @@ describe("ProjectCardSwapInfo", () => {
           ...mockSnsFullProject,
           summary: summaryForLifecycle(SnsSwapLifecycle.Committed),
         },
+        isFinalizing: false,
       },
     });
 
     expect(getByText(en.sns_project_detail.completed)).toBeInTheDocument();
+  });
+
+  it("should render finalizing", async () => {
+    const { container } = render(ProjectCardSwapInfo, {
+      props: {
+        project: {
+          ...mockSnsFullProject,
+          summary: summaryForLifecycle(SnsSwapLifecycle.Committed),
+        },
+        isFinalizing: true,
+      },
+    });
+
+    const po = ProjectCardSwapInfoPo.under(
+      new JestPageObjectElement(container)
+    );
+
+    expect(await po.getStatus()).toBe("Status Finalizing");
   });
 });
