@@ -25,6 +25,7 @@ proposal is successful, the changes it released will be moved from this file to
 * New Tag style. Used in followees topic and project status.
 * New header UI in the wallet pages.
 * Integrated library `marked` within dependencies instead of shipping it as a static asset.
+* Detailed values of the Neurons' Fund and direct participation in the project detai page.
 
 #### Deprecated
 #### Removed
