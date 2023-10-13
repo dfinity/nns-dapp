@@ -19,7 +19,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
-import { render, waitFor } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 
 describe("ProjectCard", () => {
   vitest
@@ -198,9 +198,7 @@ describe("ProjectCard", () => {
       const po = ProjectCardPo.under(new JestPageObjectElement(container));
       await runResolvedPromises();
 
-      await waitFor(async () =>
-        expect(await po.getStatus()).toBe("Status Finalizing")
-      );
+      expect(await po.getStatus()).toBe("Status Finalizing");
     });
   });
 
