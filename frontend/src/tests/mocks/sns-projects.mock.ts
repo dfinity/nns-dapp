@@ -127,8 +127,8 @@ export const mockInit: SnsSwapInit = {
   restricted_countries: [],
   min_icp_e8s: [1_500_000_000n],
   neurons_fund_participation_constraints: [],
-  min_direct_participation_icp_e8s: [],
-  max_direct_participation_icp_e8s: [],
+  min_direct_participation_icp_e8s: [1_000_000_000n],
+  max_direct_participation_icp_e8s: [3_000_000_000n],
 };
 
 export const mockSwap: SnsSummarySwap = {
@@ -315,6 +315,8 @@ type SnsSummaryParams = {
   currentTotalCommitment?: bigint;
   neuronsFundCommitment?: bigint;
   directCommitment?: bigint;
+  minDirectParticipation?: bigint;
+  maxDirectParticipation?: bigint;
 };
 
 export const createSummary = ({
@@ -332,11 +334,15 @@ export const createSummary = ({
   currentTotalCommitment,
   neuronsFundCommitment,
   directCommitment,
+  minDirectParticipation,
+  maxDirectParticipation,
 }: SnsSummaryParams): SnsSummary => {
   const init: SnsSwapInit = {
     ...mockInit,
     swap_due_timestamp_seconds: [swapDueTimestampSeconds],
     confirmation_text: toNullable(confirmationText),
+    min_direct_participation_icp_e8s: toNullable(minDirectParticipation),
+    max_direct_participation_icp_e8s: toNullable(maxDirectParticipation),
     restricted_countries: nonNullish(restrictedCountries)
       ? [{ iso_codes: restrictedCountries }]
       : [],
@@ -368,6 +374,7 @@ export const createSummary = ({
       params,
     },
     derived,
+    init,
   };
 };
 
