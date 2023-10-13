@@ -22,9 +22,9 @@ import {
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { AccountIdentifier } from "@dfinity/ledger-icp";
-import {
-  type SnsGetAutoFinalizationStatusResponse,
-  type SnsGetDerivedStateResponse,
+import type {
+  SnsGetAutoFinalizationStatusResponse,
+  SnsGetDerivedStateResponse,
 } from "@dfinity/sns";
 import { get } from "svelte/store";
 
