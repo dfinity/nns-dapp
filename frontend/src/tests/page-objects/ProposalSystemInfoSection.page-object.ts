@@ -25,19 +25,27 @@ export class ProposalSystemInfoSectionPo extends BasePageObject {
   }
 
   async getProposalTypeText(): Promise<string> {
-    return this.getKeyValuePairValueText("proposal-system-info-type");
+    return (
+      await this.getKeyValuePairValueText("proposal-system-info-type")
+    )?.trim();
   }
 
   async getProposalTopicText(): Promise<string> {
-    return this.getKeyValuePairValueText("proposal-system-info-topic");
+    return (
+      await this.getKeyValuePairValueText("proposal-system-info-topic")
+    )?.trim();
   }
 
   async getProposalStatusText(): Promise<string> {
-    return this.getKeyValuePairValueText("proposal-system-info-status");
+    return (
+      await this.getKeyValuePairValueText("proposal-system-info-status")
+    )?.trim();
   }
 
   async getProposalRewardText(): Promise<string> {
-    return this.getKeyValuePairValueText("proposal-system-info-reward");
+    return (
+      await this.getKeyValuePairValueText("proposal-system-info-reward")
+    )?.trim();
   }
 
   async getProposalProposerNeuronIdText(): Promise<string> {
