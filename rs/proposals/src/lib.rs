@@ -13,7 +13,7 @@ use std::collections::BTreeMap;
 use std::fmt::Debug;
 use std::ops::DerefMut;
 
-mod canisters;
+pub mod canisters;
 
 type Json = String;
 
@@ -131,7 +131,7 @@ fn decode_arg(arg: &[u8], arg_types: IDLTypes) -> String {
 }
 
 // Check if the proposal has a payload, if yes, deserialize it then convert it to JSON.
-fn process_proposal_payload(proposal_info: ProposalInfo) -> Json {
+pub fn process_proposal_payload(proposal_info: ProposalInfo) -> Json {
     if let Some(Action::ExecuteNnsFunction(f)) = proposal_info.proposal.as_ref().and_then(|p| p.action.as_ref()) {
         transform_payload_to_json(f.nns_function, &f.payload)
             .unwrap_or_else(|e| serde_json::to_string(&format!("Unable to deserialize payload: {e}")).unwrap())

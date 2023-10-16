@@ -44,8 +44,10 @@ export class ProjectCommitmentPo extends BasePageObject {
     return this.getNeuronsFundParticipationElement().isPresent();
   }
 
-  getNeuronsFundParticipation(): Promise<string> {
-    return this.getNeuronsFundParticipationElement().getValueText();
+  async getNeuronsFundParticipation(): Promise<string | undefined> {
+    return (
+      await this.getNeuronsFundParticipationElement().getValueText()
+    )?.trim();
   }
 
   getDirectParticipationElement(): KeyValuePairPo {
@@ -59,7 +61,7 @@ export class ProjectCommitmentPo extends BasePageObject {
     return this.getDirectParticipationElement().isPresent();
   }
 
-  getDirectParticipation(): Promise<string> {
-    return this.getDirectParticipationElement().getValueText();
+  async getDirectParticipation(): Promise<string | undefined> {
+    return (await this.getDirectParticipationElement().getValueText())?.trim();
   }
 }
