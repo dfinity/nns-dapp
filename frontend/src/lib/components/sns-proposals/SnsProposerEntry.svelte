@@ -12,10 +12,7 @@
   $: proposerText = subaccountToHexString(proposer.id);
 </script>
 
-<KeyValuePairInfo
-  testId="proposal-system-info-proposer"
-  alignIconRight={$ENABLE_FULL_WIDTH_PROPOSAL}
->
+<KeyValuePairInfo testId="proposal-system-info-proposer" alignIconRight>
   <svelte:fragment slot="key"
     >{$i18n.proposal_detail.proposer_prefix}</svelte:fragment
   >

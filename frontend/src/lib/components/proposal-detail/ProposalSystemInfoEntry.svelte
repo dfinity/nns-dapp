@@ -10,7 +10,7 @@
   export let description: string | undefined;
 </script>
 
-<KeyValuePairInfo {testId} alignIconRight={$ENABLE_FULL_WIDTH_PROPOSAL}>
+<KeyValuePairInfo {testId} alignIconRight>
   <svelte:fragment slot="key"
     >{keyOf({ obj: $i18n.proposal_detail, key: labelKey })}</svelte:fragment
   >
