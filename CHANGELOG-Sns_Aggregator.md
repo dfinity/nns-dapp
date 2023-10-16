@@ -11,6 +11,7 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 ### Added
 ### Changed
 * Updated libraries provided by the `ic` repository to `release-2023-06-07_23-01`.
+* Add new fields for swap canister: `max_direct_participation_icp_e8s`, `min_direct_participation_icp_e8s` and `neurons_fund_participation`
 ### Deprecated
 ### Removed
 ### Fixed
