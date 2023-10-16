@@ -35,6 +35,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Documentation for the proposals payload renderer.
 * E2E test for ckBTC.
 
 #### Changed
