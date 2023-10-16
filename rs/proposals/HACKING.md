@@ -13,14 +13,14 @@ If a suitable proposal has been made on mainnet:
 ```
 PROPOSAL=123456 # Please replace this with the proposal you wish to work on
 
-dfx canister call nns-governance --network ic get_proposal_info "($PROPOSAL : nat64)" --query --output raw > proposal-$PROPOSAL-payload.did
+dfx canister call nns-governance --network ic get_proposal_info "($PROPOSAL : nat64)" --query --output raw > proposal-$PROPOSAL-info.did
 ```
 
 This should give you a file filled with candid expressed as hex.
 
 #### From upstream
 
-If a proposal of the type you are interested in has not been made on mainnet, please contact the NNS team and ask for a sample payload in hex format.
+If a proposal of the type you are interested in has not been made on mainnet, please contact the NNS team and ask for a sample `proposal_info` in hex format.
 
 ### Change code
 
@@ -42,7 +42,7 @@ If the APIs of canisters controlled by the NNS have changed, proposal payloads m
 To see how your shiny new code renders the proposal you obtained earlier, use the CLI:
 
 ```
-cargo run --bin proposals < proposal-$PROPOSAL-payload.did
+cargo run --bin proposals < proposal-$PROPOSAL-info.did
 ```
 
 This should build your code, then print JSON.
