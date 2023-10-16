@@ -4,7 +4,6 @@
   import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
   import type { SnsNeuronId } from "@dfinity/sns";
   import Hash from "../ui/Hash.svelte";
-  import { ENABLE_FULL_WIDTH_PROPOSAL } from "$lib/stores/feature-flags.store";
 
   export let proposer: SnsNeuronId;
 

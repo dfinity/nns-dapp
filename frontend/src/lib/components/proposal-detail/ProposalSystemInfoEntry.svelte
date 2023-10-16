@@ -2,7 +2,6 @@
   import { i18n } from "$lib/stores/i18n";
   import { keyOf } from "$lib/utils/utils";
   import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
-  import { ENABLE_FULL_WIDTH_PROPOSAL } from "$lib/stores/feature-flags.store";
 
   export let labelKey: string;
   export let testId: string;

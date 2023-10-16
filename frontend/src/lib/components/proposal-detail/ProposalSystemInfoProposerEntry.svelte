@@ -5,7 +5,6 @@
   import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import { ENABLE_FULL_WIDTH_PROPOSAL } from "$lib/stores/feature-flags.store";
 
   export let proposer: NeuronId | undefined;
 
