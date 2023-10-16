@@ -16,12 +16,12 @@ export const getNeuronsFundParticipation = ({
 }: SnsSummary): bigint | undefined =>
   fromNullable(derived.neurons_fund_participation_icp_e8s);
 
-// TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
-export const getMinDirectParticipation = (
-  _summary: SnsSummary
-): bigint | undefined => undefined;
+export const getMinDirectParticipation = ({
+  init,
+}: SnsSummary): bigint | undefined =>
+  fromNullable(init?.min_direct_participation_icp_e8s ?? []);
 
-// TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
-export const getMaxDirectParticipation = (
-  _summary: SnsSummary
-): bigint | undefined => undefined;
+export const getMaxDirectParticipation = ({
+  init,
+}: SnsSummary): bigint | undefined =>
+  fromNullable(init?.max_direct_participation_icp_e8s ?? []);

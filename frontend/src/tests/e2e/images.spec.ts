@@ -17,14 +17,20 @@ const expectImagesLoaded = async ({ page, sources }) => {
   expect(baseImageSources).toEqual(sources);
 
   await page.waitForFunction(
-    (expectedImageCount) => {
+    async (expectedImageCount) => {
       const images = Array.from(document.querySelectorAll("img"));
       if (images.length !== expectedImageCount) {
         return false;
       }
       // The browser might decide not to load images that are outside the
       // viewport.
-      images.forEach((img) => img.scrollIntoView());
+      for (const img of images) {
+        img.scrollIntoView();
+        // We need to rerender between scrolling otherwise it will scroll all
+        // the way to the bottom before the page is rerendered and if the list
+        // is long, it might skip over some images.
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      }
       return images.every((img) => img.complete);
     },
     sources.length,
@@ -62,6 +68,8 @@ test("Test images load on accounts page", async ({ page, context }) => {
   await expectImagesLoaded({
     page,
     sources: [
+      // Universe selector in main layout
+      "ckBTC.svg",
       // Universe selector in main layout
       "icp-rounded.svg",
       // Hidden title in main layout

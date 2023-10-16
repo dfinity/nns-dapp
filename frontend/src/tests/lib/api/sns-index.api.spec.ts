@@ -2,12 +2,12 @@ import { getSnsTransactions } from "$lib/api/sns-index.api";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 
-jest.mock("$lib/proxy/api.import.proxy");
-const getTransactionsSpy = jest.fn().mockResolvedValue({
+vi.mock("$lib/proxy/api.import.proxy");
+const getTransactionsSpy = vi.fn().mockResolvedValue({
   transactions: [],
   oldest_tx_id: BigInt(2),
 });
-jest.mock("$lib/api/sns-wrapper.api", () => {
+vi.mock("$lib/api/sns-wrapper.api", () => {
   return {
     wrapper: () => ({
       getTransactions: getTransactionsSpy,

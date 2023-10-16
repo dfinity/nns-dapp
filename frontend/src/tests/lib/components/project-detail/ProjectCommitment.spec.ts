@@ -1,9 +1,4 @@
-/**
- * @jest-environment jsdom
- */
-
 import ProjectCommitment from "$lib/components/project-detail/ProjectCommitment.svelte";
-import * as summaryGetters from "$lib/getters/sns-summary";
 import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import {
@@ -32,7 +27,7 @@ describe("ProjectCommitment", () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("should render min and max commitment", async () => {
@@ -93,17 +88,8 @@ describe("ProjectCommitment", () => {
       currentTotalCommitment: directCommitment + nfCommitment,
       directCommitment,
       neuronsFundCommitment: nfCommitment,
-    });
-
-    beforeEach(() => {
-      // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
-      jest
-        .spyOn(summaryGetters, "getMinDirectParticipation")
-        .mockImplementation(() => 10000000000n);
-      // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
-      jest
-        .spyOn(summaryGetters, "getMaxDirectParticipation")
-        .mockImplementation(() => 100000000000n);
+      minDirectParticipation: 10000000000n,
+      maxDirectParticipation: 100000000000n,
     });
 
     it("should render a progress bar with direct participation", async () => {
@@ -126,23 +112,14 @@ describe("ProjectCommitment", () => {
   });
 
   describe("when Neurons' Fund enhancements fields are available and NF commitment is 0", () => {
-    beforeEach(() => {
-      // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
-      jest
-        .spyOn(summaryGetters, "getMinDirectParticipation")
-        .mockImplementation(() => 10000000000n);
-      // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
-      jest
-        .spyOn(summaryGetters, "getMaxDirectParticipation")
-        .mockImplementation(() => 100000000000n);
-    });
-
     it("should render detailed participation if neurons fund participation is zero", async () => {
       const directCommitment = 20000000000n;
       const summary = createSummary({
         currentTotalCommitment: directCommitment,
         neuronsFundCommitment: 0n,
         directCommitment,
+        minDirectParticipation: 10000000000n,
+        maxDirectParticipation: 100000000000n,
       });
       const po = renderComponent(summary);
       expect(await po.getNeuronsFundParticipation()).toEqual("0 ICP");
@@ -156,17 +133,8 @@ describe("ProjectCommitment", () => {
       currentTotalCommitment: overallCommitment,
       neuronsFundCommitment: undefined,
       directCommitment: undefined,
-    });
-
-    beforeEach(() => {
-      // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
-      jest
-        .spyOn(summaryGetters, "getMinDirectParticipation")
-        .mockImplementation(() => undefined);
-      // TODO: https://dfinity.atlassian.net/browse/GIX-1936 use min direct field when present
-      jest
-        .spyOn(summaryGetters, "getMaxDirectParticipation")
-        .mockImplementation(() => undefined);
+      minDirectParticipation: undefined,
+      maxDirectParticipation: undefined,
     });
 
     it("should render a progress bar with overall participation", async () => {

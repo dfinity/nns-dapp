@@ -101,13 +101,21 @@
       : $isCkBTCUniverseStore
       ? $i18n.ckbtc.btc
       : ICPToken.symbol;
+
+  let buttonTestId: string;
+  $: buttonTestId =
+    nonNullish(selectedProjectId) && tokenBalanceE8s > 0n
+      ? "get-sns-button"
+      : $isCkBTCUniverseStore
+      ? "get-btc-button"
+      : "get-icp-button";
 </script>
 
 <TestIdWrapper testId="get-tokens-component">
   {#if $authSignedInStore}
     <button
       role="menuitem"
-      data-tid={`get-${isNns || tokenBalanceE8s === 0n ? "icp" : "sns"}-button`}
+      data-tid={buttonTestId}
       on:click|preventDefault|stopPropagation={() => (visible = true)}
       class="open"
       title={`Get ${tokenSymbol}`}

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as indexApi from "$lib/api/ckbtc-index.api";
 import {
   CKBTC_INDEX_CANISTER_ID,
@@ -22,11 +18,11 @@ describe("ckbtc-transactions-services", () => {
     icrcTransactionsStore.reset();
   });
 
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vi.clearAllMocks());
 
   describe("loadCkBTCAccountTransactions", () => {
     it("loads transactions in the store", async () => {
-      const spyGetTransactions = jest
+      const spyGetTransactions = vi
         .spyOn(indexApi, "getCkBTCTransactions")
         .mockResolvedValue({
           oldestTxId: BigInt(1234),
@@ -67,7 +63,7 @@ describe("ckbtc-transactions-services", () => {
 
   describe("loadCkBTCAccountNextTransactions", () => {
     it("loads transactions in the store", async () => {
-      const spyGetTransactions = jest
+      const spyGetTransactions = vi
         .spyOn(indexApi, "getCkBTCTransactions")
         .mockResolvedValue({
           oldestTxId: BigInt(1234),
@@ -103,7 +99,7 @@ describe("ckbtc-transactions-services", () => {
     });
 
     it("uses store oldest transaction to set the start", async () => {
-      const spyGetTransactions = jest
+      const spyGetTransactions = vi
         .spyOn(indexApi, "getCkBTCTransactions")
         .mockResolvedValue({
           oldestTxId: BigInt(1234),

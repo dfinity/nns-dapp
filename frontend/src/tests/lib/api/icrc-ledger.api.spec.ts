@@ -13,23 +13,23 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import type { HttpAgent } from "@dfinity/agent";
 import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
-import { mock } from "jest-mock-extended";
+import { mock } from "vitest-mock-extended";
 
 describe("icrc-ledger api", () => {
   const ledgerCanisterMock = mock<IcrcLedgerCanister>();
 
   beforeEach(() => {
-    jest
-      .spyOn(IcrcLedgerCanister, "create")
-      .mockImplementation(() => ledgerCanisterMock);
-    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    vi.spyOn(IcrcLedgerCanister, "create").mockImplementation(
+      () => ledgerCanisterMock
+    );
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vi.clearAllMocks());
 
   describe("getIcrcMainAccount", () => {
     it("returns main account with balance and project token metadata", async () => {
-      const balanceSpy = jest.fn().mockResolvedValue(BigInt(10_000_000));
+      const balanceSpy = vi.fn().mockResolvedValue(BigInt(10_000_000));
 
       const account = await getIcrcAccount({
         certified: true,
@@ -69,7 +69,7 @@ describe("icrc-ledger api", () => {
 
   describe("getIcrcToken", () => {
     it("returns token metadata", async () => {
-      const metadataSpy = jest.fn().mockResolvedValue(mockQueryTokenResponse);
+      const metadataSpy = vi.fn().mockResolvedValue(mockQueryTokenResponse);
 
       const token = await getIcrcToken({
         certified: true,
@@ -98,7 +98,7 @@ describe("icrc-ledger api", () => {
 
   describe("execute transfer", () => {
     it("successfully calls transfer api", async () => {
-      const transferSpy = jest.fn().mockResolvedValue(undefined);
+      const transferSpy = vi.fn().mockResolvedValue(undefined);
 
       await executeIcrcTransfer({
         to: { owner: mockIdentity.getPrincipal() },

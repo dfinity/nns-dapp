@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import { startBusyNeuron } from "$lib/services/busy.services";
 import * as busyStore from "$lib/stores/busy.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
@@ -12,12 +9,12 @@ import {
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 
 describe("busy-services", () => {
-  const startBusySpy = jest
+  const startBusySpy = vi
     .spyOn(busyStore, "startBusy")
-    .mockImplementation(jest.fn());
+    .mockImplementation(vi.fn());
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("call start busy without message if neuron is not controlled by hardware wallet", async () => {

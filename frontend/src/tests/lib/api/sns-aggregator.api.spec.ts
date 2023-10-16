@@ -5,10 +5,10 @@ import tenAggregatedSnses from "$tests/mocks/sns-aggregator.mock.json";
 describe("sns-aggregator api", () => {
   describe("querySnsProjects", () => {
     afterEach(() => {
-      jest.resetAllMocks();
+      vi.resetAllMocks();
     });
     it("should fetch json once if less than 10 SNSes", async () => {
-      const mockFetch = jest.fn();
+      const mockFetch = vi.fn();
       const [_first, ...nineSnses] = tenAggregatedSnses;
       mockFetch.mockReturnValueOnce(
         Promise.resolve({
@@ -25,7 +25,7 @@ describe("sns-aggregator api", () => {
     });
 
     it("should fetch next page if there are 10 SNSes", async () => {
-      const mockFetch = jest.fn();
+      const mockFetch = vi.fn();
       mockFetch
         .mockReturnValueOnce(
           Promise.resolve({
@@ -52,7 +52,7 @@ describe("sns-aggregator api", () => {
     });
 
     it("should work even when second page is empty", async () => {
-      const mockFetch = jest.fn();
+      const mockFetch = vi.fn();
       mockFetch
         .mockReturnValueOnce(
           Promise.resolve({
@@ -79,8 +79,8 @@ describe("sns-aggregator api", () => {
     });
 
     it("should not fail if second page response is not ok", async () => {
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
-      const mockFetch = jest.fn();
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      const mockFetch = vi.fn();
       mockFetch
         .mockReturnValueOnce(
           Promise.resolve({
@@ -106,8 +106,8 @@ describe("sns-aggregator api", () => {
     });
 
     it("should not fail if second page failes", async () => {
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
-      const mockFetch = jest.fn();
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
+      const mockFetch = vi.fn();
       mockFetch
         .mockReturnValueOnce(
           Promise.resolve({
@@ -129,7 +129,7 @@ describe("sns-aggregator api", () => {
     });
 
     it("should not convert response", async () => {
-      const mockFetch = jest.fn();
+      const mockFetch = vi.fn();
       mockFetch.mockReturnValue(
         Promise.resolve({
           ok: true,

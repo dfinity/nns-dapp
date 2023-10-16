@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath, UNIVERSE_PARAM } from "$lib/constants/routes.constants";
 import {

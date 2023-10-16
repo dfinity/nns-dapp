@@ -1,8 +1,5 @@
-/**
- * @jest-environment jsdom
- */
-
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { CKBTC_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/ckbtc.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCWallet from "$lib/pages/CkBTCWallet.svelte";
 import * as services from "$lib/services/ckbtc-accounts.services";
@@ -17,6 +14,7 @@ import { tokensStore } from "$lib/stores/tokens.store";
 import { TransactionNetwork } from "$lib/types/transaction";
 import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
+import CkBTCAccountsTest from "$tests/lib/components/accounts/CkBTCAccountsTest.svelte";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import {
   mockCkBTCMainAccount,
@@ -26,17 +24,16 @@ import { mockUniversesTokens } from "$tests/mocks/tokens.mock";
 import { selectSegmentBTC } from "$tests/utils/accounts.test-utils";
 import { advanceTime } from "$tests/utils/timers.test-utils";
 import { testTransferTokens } from "$tests/utils/transaction-modal.test-utils";
-import CkBTCAccountsTest from "$vitests/lib/components/accounts/CkBTCAccountsTest.svelte";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mockBTCAddressTestnet } from "../../mocks/ckbtc-accounts.mock";
 
 const expectedBalanceAfterTransfer = 11_111n;
 
-jest.mock("$lib/services/ckbtc-accounts.services", () => {
+vi.mock("$lib/services/ckbtc-accounts.services", () => {
   return {
-    syncCkBTCAccounts: jest.fn().mockResolvedValue(undefined),
-    loadCkBTCAccounts: jest.fn().mockResolvedValue(undefined),
-    ckBTCTransferTokens: jest.fn().mockImplementation(async () => {
+    syncCkBTCAccounts: vi.fn().mockResolvedValue(undefined),
+    loadCkBTCAccounts: vi.fn().mockResolvedValue(undefined),
+    ckBTCTransferTokens: vi.fn().mockImplementation(async () => {
       icrcAccountsStore.set({
         accounts: {
           accounts: [
@@ -55,35 +52,39 @@ jest.mock("$lib/services/ckbtc-accounts.services", () => {
   };
 });
 
-jest.mock("$lib/services/ckbtc-transactions.services", () => {
+vi.mock("$lib/services/ckbtc-transactions.services", () => {
   return {
-    loadCkBTCAccountNextTransactions: jest.fn().mockResolvedValue(undefined),
-    loadCkBTCAccountTransactions: jest.fn().mockResolvedValue(undefined),
+    loadCkBTCAccountNextTransactions: vi.fn().mockResolvedValue(undefined),
+    loadCkBTCAccountTransactions: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/api/ckbtc-minter.api", () => {
+vi.mock("$lib/api/ckbtc-minter.api", () => {
   return {
-    getBTCAddress: jest.fn().mockImplementation(() => mockBTCAddressTestnet),
+    getBTCAddress: vi.fn().mockImplementation(() => mockBTCAddressTestnet),
   };
 });
 
-jest.mock("$lib/services/ckbtc-minter.services", () => {
+vi.mock("$lib/services/ckbtc-minter.services", async () => {
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  const actual = await vi.importActual<any>(
+    "$lib/services/ckbtc-minter.services"
+  );
   return {
-    ...jest.requireActual("$lib/services/ckbtc-minter.services"),
-    updateBalance: jest.fn().mockResolvedValue([]),
-    depositFee: jest.fn().mockResolvedValue(789n),
+    ...actual,
+    updateBalance: vi.fn().mockResolvedValue([]),
+    depositFee: vi.fn().mockResolvedValue(789n),
   };
 });
 
-jest.mock("$lib/services/ckbtc-info.services", () => {
+vi.mock("$lib/services/ckbtc-info.services", () => {
   return {
-    loadCkBTCInfo: jest.fn().mockResolvedValue(undefined),
+    loadCkBTCInfo: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/worker-balances.services", () => ({
-  initBalancesWorker: jest.fn(() =>
+vi.mock("$lib/services/worker-balances.services", () => ({
+  initBalancesWorker: vi.fn(() =>
     Promise.resolve({
       startBalancesTimer: () => {
         // Do nothing
@@ -95,8 +96,8 @@ jest.mock("$lib/services/worker-balances.services", () => ({
   ),
 }));
 
-jest.mock("$lib/services/worker-transactions.services", () => ({
-  initTransactionsWorker: jest.fn(() =>
+vi.mock("$lib/services/worker-transactions.services", () => ({
+  initTransactionsWorker: vi.fn(() =>
     Promise.resolve({
       startTransactionsTimer: () => {
         // Do nothing
@@ -113,8 +114,13 @@ describe("CkBTCWallet", () => {
     accountIdentifier: mockCkBTCMainAccount.identifier,
   };
 
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.clearAllTimers();
+  });
+
   describe("accounts not loaded", () => {
-    beforeAll(() => {
+    beforeEach(() => {
       icrcAccountsStore.reset();
 
       page.mock({
@@ -138,13 +144,11 @@ describe("CkBTCWallet", () => {
 
   describe("accounts loaded", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
+      vi.useFakeTimers().setSystemTime(new Date());
 
-      jest.useFakeTimers().setSystemTime(new Date());
-
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreSubscribe
+      );
 
       icrcAccountsStore.set({
         accounts: {
@@ -162,7 +166,7 @@ describe("CkBTCWallet", () => {
       });
     });
 
-    afterAll(() => jest.useRealTimers());
+    afterAll(() => vi.useRealTimers());
 
     it("should render ckTESTBTC name", async () => {
       const { getByTestId } = render(CkBTCWallet, props);
@@ -266,14 +270,11 @@ describe("CkBTCWallet", () => {
     });
 
     it("should reload transactions after transfer tokens", async () => {
-      const spy = jest.spyOn(
-        transactionsServices,
-        "loadCkBTCAccountTransactions"
-      );
-
       const result = render(CkBTCAccountsTest, { props: modalProps });
 
-      expect(spy).toBeCalledTimes(0);
+      expect(transactionsServices.loadCkBTCAccountTransactions).toBeCalledTimes(
+        0
+      );
 
       const { queryByTestId, getByTestId } = result;
 
@@ -301,9 +302,13 @@ describe("CkBTCWallet", () => {
 
       await waitFor(() => expect(ckBTCTransferTokens).toBeCalled());
 
-      await advanceTime(5000);
+      await advanceTime(CKBTC_TRANSACTIONS_RELOAD_DELAY + 1000);
 
-      await waitFor(() => expect(spy).toBeCalledTimes(1));
+      await waitFor(() =>
+        expect(
+          transactionsServices.loadCkBTCAccountTransactions
+        ).toBeCalledTimes(1)
+      );
     });
 
     it("should open receive modal", async () => {
@@ -335,7 +340,7 @@ describe("CkBTCWallet", () => {
 
       await selectSegmentBTC(container);
 
-      const spy = jest.spyOn(services, "loadCkBTCAccounts");
+      const spy = vi.spyOn(services, "loadCkBTCAccounts");
 
       fireEvent.click(
         getByTestId("reload-receive-account") as HTMLButtonElement

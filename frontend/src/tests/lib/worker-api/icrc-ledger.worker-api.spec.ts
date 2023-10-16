@@ -3,17 +3,17 @@ import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
 import { getIcrcBalance } from "$lib/worker-api/icrc-ledger.worker-api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
-import mock from "jest-mock-extended/lib/Mock";
+import { mock } from "vitest-mock-extended";
 
 describe("icrc-ledger.worker-api", () => {
   const ledgerCanisterMock = mock<IcrcLedgerCanister>();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
-    jest
-      .spyOn(IcrcLedgerCanister, "create")
-      .mockImplementation(() => ledgerCanisterMock);
+    vi.spyOn(IcrcLedgerCanister, "create").mockImplementation(
+      () => ledgerCanisterMock
+    );
   });
 
   const params = {
