@@ -355,6 +355,7 @@ pub struct Params {
     pub min_direct_participation_icp_e8s: Option<u64>,
     pub min_icp_e8s: u64,
     pub max_direct_participation_icp_e8s: Option<u64>,
+    pub neurons_fund_participation: Option<bool>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
