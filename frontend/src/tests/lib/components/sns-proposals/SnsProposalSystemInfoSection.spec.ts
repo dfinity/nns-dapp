@@ -121,9 +121,9 @@ describe("ProposalSystemInfoSection", () => {
     it("should not render any timestamps", async () => {
       const po = await renderComponent(props);
 
-      expect(await po.getDecidedText()).toBeNull();
-      expect(await po.getExecutedText()).toBeNull();
-      expect(await po.getFailedText()).toBeNull();
+      expect(await po.getDecidedText()).toBeUndefined();
+      expect(await po.getExecutedText()).toBeUndefined();
+      expect(await po.getFailedText()).toBeUndefined();
     });
 
     it("should render proposer info", async () => {
