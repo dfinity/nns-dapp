@@ -10,12 +10,22 @@
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import SignedInOnly from "$lib/components/common/SignedInOnly.svelte";
   import { nonNullish } from "@dfinity/utils";
+  import { onMount } from "svelte";
+  import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
+  import type { Readable } from "svelte/store";
+  import { createIsSnsFinalizingStore } from "$lib/stores/sns-finalization-status.store";
+  import type { Principal } from "@dfinity/principal";
 
   export let project: SnsFullProject;
 
+  onMount(() => {
+    loadSnsFinalizationStatus({ rootCanisterId: project.rootCanisterId });
+  });
+
   let summary: SnsSummary;
   let swapCommitment: SnsSwapCommitment | undefined;
-  $: ({ summary, swapCommitment } = project);
+  let rootCanisterId: Principal;
+  $: ({ summary, swapCommitment, rootCanisterId } = project);
 
   let logo: string;
   let name: string;
@@ -33,6 +43,9 @@
 
   let href: string;
   $: href = `${AppPath.Project}/?project=${project.rootCanisterId.toText()}`;
+
+  let isFinalizingStore: Readable<boolean>;
+  $: isFinalizingStore = createIsSnsFinalizingStore(rootCanisterId);
 </script>
 
 <Card
@@ -47,7 +60,7 @@
 
   <p class="value description">{description}</p>
 
-  <ProjectCardSwapInfo {project} />
+  <ProjectCardSwapInfo isFinalizing={$isFinalizingStore} {project} />
 
   <SignedInOnly>
     <!-- TODO L2-751: handle fetching errors -->

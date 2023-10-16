@@ -1,12 +1,41 @@
 import { queryFinalizationStatus } from "$lib/api/sns-sale.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { getOrCreateSnsFinalizationStatusStore } from "$lib/stores/sns-finalization-status.store";
+import { snsSummariesStore } from "$lib/stores/sns.store";
+import { nowInSeconds } from "$lib/utils/date.utils";
+import { swapEndedMoreThanOneWeekAgo } from "$lib/utils/sns.utils";
 import type { Principal } from "@dfinity/principal";
-import type { SnsGetAutoFinalizationStatusResponse } from "@dfinity/sns";
-import { nonNullish } from "@dfinity/utils";
+import {
+  SnsSwapLifecycle,
+  type SnsGetAutoFinalizationStatusResponse,
+} from "@dfinity/sns";
+import { isNullish, nonNullish } from "@dfinity/utils";
+import { get } from "svelte/store";
 import { queryAndUpdate } from "./utils.services";
 
-export const loadSnsFinalizationStatus = async (rootCanisterId: Principal) => {
+export const loadSnsFinalizationStatus = async ({
+  rootCanisterId,
+  forceFetch = false,
+}: {
+  rootCanisterId: Principal;
+  forceFetch?: boolean;
+}) => {
+  const summaries = get(snsSummariesStore);
+  const summary = summaries.find(
+    (s) => s.rootCanisterId.toText() === rootCanisterId.toText()
+  );
+  // We don't want to do calls that we know are unnecessary.
+  // The project starts finalizing right after the sale ends.
+  // It might take a few hours.
+  // Waiting one week ensures that the project is not finalizing anymore.
+  if (
+    !forceFetch &&
+    (isNullish(summary) ||
+      summary.swap.lifecycle !== SnsSwapLifecycle.Committed ||
+      swapEndedMoreThanOneWeekAgo({ summary, nowInSeconds: nowInSeconds() }))
+  ) {
+    return;
+  }
   await queryAndUpdate<
     SnsGetAutoFinalizationStatusResponse | undefined,
     unknown

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { disburseMaturity } from "$lib/api/sns-governance.api";
 import SnsDisburseMaturityModal from "$lib/modals/sns/neurons/SnsDisburseMaturityModal.svelte";
 import { authStore } from "$lib/stores/auth.store";
@@ -22,10 +18,10 @@ import type { SnsNeuron } from "@dfinity/sns";
 import { nonNullish } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 
-jest.mock("$lib/api/sns-governance.api");
+vi.mock("$lib/api/sns-governance.api");
 
 describe("SnsDisburseMaturityModal", () => {
-  const reloadNeuron = jest.fn();
+  const reloadNeuron = vi.fn();
   const rootCanisterId = mockPrincipal;
 
   const renderSnsDisburseMaturityModal = async (
@@ -44,7 +40,7 @@ describe("SnsDisburseMaturityModal", () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     authStore.setForTesting(mockIdentity);
     tokensStore.setToken({
       canisterId: rootCanisterId,

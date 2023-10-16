@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsStakeMaturityModal from "$lib/modals/neurons/NnsStakeMaturityModal.svelte";
 import { stakeMaturity } from "$lib/services/neurons.services";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
@@ -16,11 +12,11 @@ import { selectPercentage } from "$tests/utils/neurons-modal.test-utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 
-jest.mock("$lib/services/neurons.services", () => {
+vi.mock("$lib/services/neurons.services", () => {
   return {
-    stakeMaturity: jest.fn().mockResolvedValue({ success: true }),
-    mergeMaturity: jest.fn().mockResolvedValue({ success: true }),
-    getNeuronFromStore: jest.fn(),
+    stakeMaturity: vi.fn().mockResolvedValue({ success: true }),
+    mergeMaturity: vi.fn().mockResolvedValue({ success: true }),
+    getNeuronFromStore: vi.fn(),
   };
 });
 
@@ -102,7 +98,7 @@ describe("NnsStakeMaturityModal", () => {
 
   describe("HW", () => {
     beforeAll(() =>
-      jest
+      vi
         .spyOn(icpAccountsStore, "subscribe")
         .mockImplementation(
           mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])

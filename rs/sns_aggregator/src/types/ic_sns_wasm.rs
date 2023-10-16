@@ -180,9 +180,11 @@ pub struct SnsInitPayload {
     pub token_logo: Option<String>,
     pub token_name: Option<String>,
     pub max_participant_icp_e8s: Option<u64>,
+    pub min_direct_participation_icp_e8s: Option<u64>,
     pub proposal_reject_cost_e8s: Option<u64>,
     pub restricted_countries: Option<Countries>,
     pub min_icp_e8s: Option<u64>,
+    pub max_direct_participation_icp_e8s: Option<u64>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]

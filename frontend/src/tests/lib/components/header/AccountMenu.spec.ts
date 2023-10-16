@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import AccountMenu from "$lib/components/header/AccountMenu.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";

@@ -17,11 +17,14 @@ import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { isForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
-import { convertDtoData } from "$lib/utils/sns-aggregator-converters.utils";
+import {
+  convertIcrc1Metadata,
+  convertNervousFunction,
+} from "$lib/utils/sns-aggregator-converters.utils";
 import { ProposalStatus, Topic, type ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
-import { nonNullish } from "@dfinity/utils";
+import { fromDefinedNullable, fromNullable, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getCurrentIdentity } from "../auth.services";
 
@@ -29,12 +32,11 @@ export const loadSnsProjects = async (): Promise<void> => {
   try {
     const aggregatorData = await querySnsProjects();
     snsAggregatorStore.setData(aggregatorData);
-    const cachedSnses = convertDtoData(aggregatorData);
     const identity = getCurrentIdentity();
     // We load the wrappers to avoid making calls to SNS-W and Root canister for each project.
     // The SNS Aggregator gives us the canister ids of the SNS projects.
     await Promise.all(
-      cachedSnses.map(async ({ canister_ids }) => {
+      aggregatorData.map(async ({ canister_ids }) => {
         const canisterIds = {
           rootCanisterId: Principal.fromText(canister_ids.root_canister_id),
           swapCanisterId: Principal.fromText(canister_ids.swap_canister_id),
@@ -58,33 +60,32 @@ export const loadSnsProjects = async (): Promise<void> => {
       })
     );
     snsTotalTokenSupplyStore.setTotalTokenSupplies(
-      cachedSnses.map(({ icrc1_total_supply, canister_ids }) => ({
+      aggregatorData.map(({ icrc1_total_supply, canister_ids }) => ({
         rootCanisterId: Principal.fromText(canister_ids.root_canister_id),
-        totalSupply: icrc1_total_supply,
+        totalSupply: BigInt(icrc1_total_supply),
         certified: true,
       }))
     );
     snsFunctionsStore.setProjectsFunctions(
-      cachedSnses.map((sns) => ({
+      aggregatorData.map((sns) => ({
         rootCanisterId: Principal.fromText(sns.canister_ids.root_canister_id),
-        nsFunctions: sns.parameters.functions,
+        nsFunctions: sns.parameters.functions.map(convertNervousFunction),
         certified: true,
       }))
     );
     transactionsFeesStore.setFees(
-      cachedSnses
-        .filter(({ icrc1_fee }) => icrc1_fee !== undefined)
+      aggregatorData
+        .filter(({ icrc1_fee }) => nonNullish(fromNullable(icrc1_fee)))
         .map((sns) => ({
           rootCanisterId: Principal.fromText(sns.canister_ids.root_canister_id),
-          // TS is not smart enought to know that we filtered out the undefined icrc1_fee above.
-          fee: sns.icrc1_fee as bigint,
+          fee: BigInt(fromDefinedNullable(sns.icrc1_fee)),
           certified: true,
         }))
     );
     tokensStore.setTokens(
-      cachedSnses
+      aggregatorData
         .map(({ icrc1_metadata, canister_ids: { root_canister_id } }) => ({
-          token: mapOptionalToken(icrc1_metadata),
+          token: mapOptionalToken(convertIcrc1Metadata(icrc1_metadata)),
           root_canister_id,
         }))
         .filter(({ token }) => nonNullish(token))

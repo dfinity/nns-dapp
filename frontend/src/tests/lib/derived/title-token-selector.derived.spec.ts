@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { titleTokenSelectorStore } from "$lib/derived/title-token-selector.derived";

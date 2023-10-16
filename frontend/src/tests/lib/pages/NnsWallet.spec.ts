@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as accountsApi from "$lib/api/accounts.api";
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
@@ -25,7 +21,6 @@ import {
   waitModalIntroEnd,
 } from "$tests/mocks/modal.mock";
 import { testAccountsModal } from "$tests/utils/accounts.test-utils";
-import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
@@ -33,39 +28,30 @@ import {
 import { ICPToken } from "@dfinity/utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
+import type { SpyInstance } from "vitest";
 import AccountsTest from "./AccountsTest.svelte";
 
-jest.mock("$lib/api/nns-dapp.api");
-jest.mock("$lib/api/accounts.api");
-jest.mock("$lib/api/icp-ledger.api");
-
-const blockedApiPaths = [
-  "$lib/api/nns-dapp.api",
-  "$lib/api/accounts.api",
-  "$lib/api/icp-ledger.api",
-];
+vi.mock("$lib/api/nns-dapp.api");
+vi.mock("$lib/api/accounts.api");
+vi.mock("$lib/api/icp-ledger.api");
 
 describe("NnsWallet", () => {
-  blockAllCallsTo(blockedApiPaths);
-
   const props = {
     accountIdentifier: mockMainAccount.identifier,
   };
   const mainBalanceE8s = BigInt(10_000_000);
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.clearAllTimers();
+    vi.clearAllMocks();
+    vi.clearAllTimers();
     cancelPollAccounts();
     icpAccountsStore.resetForTesting();
 
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
-    jest
-      .spyOn(ledgerApi, "queryAccountBalance")
-      .mockResolvedValue(mainBalanceE8s);
-    jest.spyOn(accountsApi, "getTransactions").mockResolvedValue([]);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+      mainBalanceE8s
+    );
+    vi.spyOn(accountsApi, "getTransactions").mockResolvedValue([]);
   });
 
   const testToolbarButton = ({
@@ -85,9 +71,9 @@ describe("NnsWallet", () => {
 
   describe("no accounts", () => {
     beforeEach(() => {
-      jest
-        .spyOn(nnsDappApi, "queryAccount")
-        .mockResolvedValue(mockAccountDetails);
+      vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(
+        mockAccountDetails
+      );
     });
 
     it("should render a spinner while loading", () => {
@@ -117,10 +103,12 @@ describe("NnsWallet", () => {
     it("should show new accounts after being loaded", async () => {
       const { queryByTestId } = render(NnsWallet, props);
 
-      expect(queryByTestId("projects-summary")).toBeNull();
+      expect(queryByTestId("wallet-page-heading-component")).toBeNull();
 
       await waitFor(() =>
-        expect(queryByTestId("projects-summary")).toBeInTheDocument()
+        expect(
+          queryByTestId("wallet-page-heading-component")
+        ).toBeInTheDocument()
       );
     });
   });
@@ -133,9 +121,9 @@ describe("NnsWallet", () => {
     it("should render nns project name", async () => {
       const { getByTestId } = render(NnsWallet, props);
 
-      const titleRow = getByTestId("projects-summary");
+      const titleRow = getByTestId("universe-page-summary-component");
 
-      expect(titleRow).not.toBeNull();
+      expect(titleRow.textContent.trim()).toBe("Internet Computer");
     });
 
     it("should render a balance with token in summary", async () => {
@@ -227,7 +215,7 @@ describe("NnsWallet", () => {
       );
       expect(ledgerApi.queryAccountBalance).not.toBeCalled();
 
-      await waitFor(expect(getByTestId("receive-modal")).not.toBeNull);
+      await waitFor(() => expect(getByTestId("receive-modal")).not.toBeNull());
 
       fireEvent.click(
         getByTestId("reload-receive-account") as HTMLButtonElement
@@ -252,7 +240,7 @@ describe("NnsWallet", () => {
       accountIdentifier: mockHardwareWalletAccount.identifier,
     };
 
-    afterAll(() => jest.clearAllMocks());
+    afterAll(() => vi.clearAllMocks());
 
     it("should display principal", async () => {
       const { queryByText } = render(NnsWallet, props);
@@ -265,21 +253,27 @@ describe("NnsWallet", () => {
         })
       ).toBeInTheDocument();
     });
+
+    it("should display hardware wallet buttons", async () => {
+      const { queryByTestId } = render(NnsWallet, props);
+      expect(queryByTestId("ledger-list-button")).toBeInTheDocument();
+      expect(queryByTestId("ledger-show-button")).toBeInTheDocument();
+    });
   });
 
   describe("when no accounts and user navigates away", () => {
-    let spyQueryAccount: jest.SpyInstance;
+    let spyQueryAccount: SpyInstance;
     beforeEach(() => {
       const now = Date.now();
-      jest.useFakeTimers().setSystemTime(now);
+      vi.useFakeTimers().setSystemTime(now);
       const mainBalanceE8s = BigInt(10_000_000);
-      jest
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mainBalanceE8s);
-      spyQueryAccount = jest
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        mainBalanceE8s
+      );
+      spyQueryAccount = vi
         .spyOn(nnsDappApi, "queryAccount")
         .mockRejectedValue(new Error("connection error"));
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
     });
 
     it("should stop polling", async () => {

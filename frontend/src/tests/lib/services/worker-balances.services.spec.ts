@@ -14,10 +14,10 @@ describe("initBalancesWorker", () => {
 
   beforeEach(() => {
     workerOnMessage = undefined;
-    spyPostMessage = jest.fn();
+    spyPostMessage = vi.fn();
 
-    jest.mock("$lib/workers/balances.worker?worker", () => {
-      return class BalancesWorker {
+    vi.doMock("$lib/workers/balances.worker?worker", () => ({
+      default: class BalancesWorker {
         postMessage(data: {
           msg: "nnsStartBalancesTimer";
           data: PostMessageDataRequestBalances;
@@ -34,14 +34,14 @@ describe("initBalancesWorker", () => {
         ) {
           workerOnMessage = callback;
         }
-      };
-    });
+      },
+    }));
   });
 
   it("should start worker with params", async () => {
     const worker = await initBalancesWorker();
 
-    const callback = jest.fn();
+    const callback = vi.fn();
 
     const params = {
       ledgerCanisterId: ledgerCanisterIdMock.toText(),
@@ -70,7 +70,7 @@ describe("initBalancesWorker", () => {
 
     expect(workerOnMessage).toBeDefined();
 
-    const callback = jest.fn();
+    const callback = vi.fn();
 
     const params = {
       ledgerCanisterId: ledgerCanisterIdMock.toText(),
@@ -121,7 +121,7 @@ describe("initBalancesWorker", () => {
 
     expect(workerOnMessage).toBeDefined();
 
-    const callback = jest.fn();
+    const callback = vi.fn();
 
     const params = {
       ledgerCanisterId: ledgerCanisterIdMock.toText(),

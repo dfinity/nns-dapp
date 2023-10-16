@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ProposalSystemInfoSection from "$lib/components/proposal-detail/ProposalSystemInfoSection.svelte";
 import { secondsToDateTime } from "$lib/utils/date.utils";
 import { getNnsFunctionKey, mapProposalInfo } from "$lib/utils/proposals.utils";

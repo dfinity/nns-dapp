@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
 import SnsWallet from "$lib/pages/SnsWallet.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
@@ -14,6 +10,7 @@ import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
+import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { waitModalIntroEnd } from "$tests/mocks/modal.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
@@ -26,23 +23,22 @@ import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import AccountsTest from "./AccountsTest.svelte";
 
-jest.mock("$lib/services/sns-accounts.services", () => {
+vi.mock("$lib/services/sns-accounts.services", () => {
   return {
-    syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
+    syncSnsAccounts: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/sns-transactions.services", () => {
+vi.mock("$lib/services/sns-transactions.services", () => {
   return {
-    loadSnsAccountNextTransactions: jest.fn().mockResolvedValue(undefined),
-    loadSnsAccountTransactions: jest.fn().mockResolvedValue(undefined),
+    loadSnsAccountNextTransactions: vi.fn().mockResolvedValue(undefined),
+    loadSnsAccountTransactions: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/worker-transactions.services", () => ({
-  initTransactionsWorker: jest.fn(() =>
+vi.mock("$lib/services/worker-transactions.services", () => ({
+  initTransactionsWorker: vi.fn(() =>
     Promise.resolve({
       startTransactionsTimer: () => {
         // Do nothing
@@ -54,8 +50,8 @@ jest.mock("$lib/services/worker-transactions.services", () => ({
   ),
 }));
 
-jest.mock("$lib/services/worker-balances.services", () => ({
-  initBalancesWorker: jest.fn(() =>
+vi.mock("$lib/services/worker-balances.services", () => ({
+  initBalancesWorker: vi.fn(() =>
     Promise.resolve({
       startBalancesTimer: () => {
         // Do nothing
@@ -117,7 +113,7 @@ describe("SnsWallet", () => {
 
   describe("accounts loaded", () => {
     beforeAll(() => {
-      jest.spyOn(tokensStore, "subscribe").mockImplementation(
+      vi.spyOn(tokensStore, "subscribe").mockImplementation(
         mockTokensSubscribe({
           [rootCanisterIdText]: {
             token: mockSnsToken,
@@ -136,15 +132,15 @@ describe("SnsWallet", () => {
 
       page.mock({ data: { universe: rootCanisterIdText } });
 
-      jest.clearAllMocks();
+      vi.clearAllMocks();
     });
 
     it("should render sns project name", async () => {
       const { getByTestId } = render(SnsWallet, props);
 
-      const titleRow = getByTestId("projects-summary");
+      const titleRow = getByTestId("universe-page-summary-component");
 
-      expect(titleRow).not.toBeNull();
+      expect(titleRow.textContent.trim()).toBe("Catalyze");
     });
 
     it("should hide spinner when selected account is loaded", async () => {
@@ -153,14 +149,21 @@ describe("SnsWallet", () => {
       await waitFor(() => expect(queryByTestId("spinner")).toBeNull());
     });
 
-    it("should render wallet summary and transactions", async () => {
+    it("should render transactions", async () => {
       const { queryByTestId } = render(SnsWallet, props);
 
       await waitFor(() =>
-        expect(queryByTestId("wallet-summary")).toBeInTheDocument()
-      );
-      await waitFor(() =>
         expect(queryByTestId("transactions-list")).toBeInTheDocument()
+      );
+    });
+
+    it("should render 'Main' as subtitle", async () => {
+      const { queryByTestId } = render(SnsWallet, props);
+
+      await waitFor(() =>
+        expect(queryByTestId("wallet-page-heading-subtitle").textContent).toBe(
+          "Main"
+        )
       );
     });
 
@@ -210,7 +213,7 @@ describe("SnsWallet", () => {
     });
 
     it("should reload account after finish receiving tokens", async () => {
-      const spyLoadSnsAccountTransactions = jest.spyOn(
+      const spyLoadSnsAccountTransactions = vi.spyOn(
         services,
         "loadSnsAccountTransactions"
       );
@@ -251,7 +254,7 @@ describe("SnsWallet", () => {
     });
 
     it("should init worker that sync the balance", async () => {
-      const spy = jest.spyOn(workerBalances, "initBalancesWorker");
+      const spy = vi.spyOn(workerBalances, "initBalancesWorker");
 
       render(SnsWallet, props);
 
@@ -259,7 +262,7 @@ describe("SnsWallet", () => {
     });
 
     it("should init worker that sync the transactions", async () => {
-      const spy = jest.spyOn(workerTransactions, "initTransactionsWorker");
+      const spy = vi.spyOn(workerTransactions, "initTransactionsWorker");
 
       const { queryByTestId } = render(SnsWallet, props);
 

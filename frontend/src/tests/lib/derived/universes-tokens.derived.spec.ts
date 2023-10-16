@@ -21,12 +21,12 @@ import { get } from "svelte/store";
 describe("universes-tokens", () => {
   describe("complete data set", () => {
     beforeAll(() => {
-      jest
-        .spyOn(tokensStore, "subscribe")
-        .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
+      vi.spyOn(tokensStore, "subscribe").mockImplementation(
+        mockTokensSubscribe(mockUniversesTokens)
+      );
     });
 
-    afterAll(() => jest.clearAllMocks());
+    afterAll(() => vi.clearAllMocks());
 
     it("should derive Nns token only", () => {
       const token = get(nnsTokenStore);
@@ -67,14 +67,14 @@ describe("universes-tokens", () => {
 
   describe("ckBTC empty", () => {
     beforeAll(() => {
-      jest.spyOn(tokensStore, "subscribe").mockImplementation(
+      vi.spyOn(tokensStore, "subscribe").mockImplementation(
         mockTokensSubscribe({
           [OWN_CANISTER_ID.toText()]: NNS_TOKEN,
         })
       );
     });
 
-    afterAll(() => jest.clearAllMocks());
+    afterAll(() => vi.clearAllMocks());
 
     it("should derive no ckBTC token", () => {
       const token = get(ckBTCTokenStore);

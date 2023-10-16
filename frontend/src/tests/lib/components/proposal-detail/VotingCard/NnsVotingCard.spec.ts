@@ -1,13 +1,12 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as agent from "$lib/api/agent.api";
 import VotingCard from "$lib/components/proposal-detail/VotingCard/VotingCard.svelte";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
-import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
+import {
+  voteRegistrationStore,
+  votingNeuronSelectStore,
+} from "$lib/stores/vote-registration.store";
 import {
   SELECTED_PROPOSAL_CONTEXT_KEY,
   type SelectedProposalContext,
@@ -21,11 +20,11 @@ import type { HttpAgent } from "@dfinity/agent";
 import type { Ballot, NeuronInfo, ProposalInfo } from "@dfinity/nns";
 import { GovernanceCanister, ProposalStatus, Vote } from "@dfinity/nns";
 import { SnsNeuronPermissionType } from "@dfinity/sns";
-import { fireEvent, screen } from "@testing-library/dom";
+import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
-import { mock } from "jest-mock-extended";
 import { tick } from "svelte";
 import { writable } from "svelte/store";
+import { mock } from "vitest-mock-extended";
 import ContextWrapperTest from "../../ContextWrapperTest.svelte";
 
 describe("VotingCard", () => {
@@ -64,22 +63,21 @@ describe("VotingCard", () => {
     });
 
   beforeAll(() =>
-    jest.spyOn(console, "error").mockImplementation(() => undefined)
+    vi.spyOn(console, "error").mockImplementation(() => undefined)
   );
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.clearAllMocks();
+    voteRegistrationStore.reset();
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
 
     neuronsStore.setNeurons({ neurons: [], certified: true });
-    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   afterAll(() => {
     neuronsStore.setNeurons({ neurons: [], certified: true });
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   it("should be hidden if there is no not-voted-neurons", async () => {
@@ -122,27 +120,28 @@ describe("VotingCard", () => {
     let spyRegisterVote;
 
     beforeEach(() => {
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
+      vi.resetAllMocks();
 
-      jest
-        .spyOn(GovernanceCanister, "create")
-        .mockImplementation(
-          (): GovernanceCanister =>
-            mockGovernanceCanister as unknown as GovernanceCanister
-        );
-      spyRegisterVote = jest.spyOn(mockGovernanceCanister, "registerVote");
-      spyListNeurons = jest.spyOn(mockGovernanceCanister, "listNeurons");
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreSubscribe
+      );
+
+      vi.spyOn(GovernanceCanister, "create").mockImplementation(
+        (): GovernanceCanister =>
+          mockGovernanceCanister as unknown as GovernanceCanister
+      );
+      spyRegisterVote = vi.spyOn(mockGovernanceCanister, "registerVote");
+      spyListNeurons = vi.spyOn(mockGovernanceCanister, "listNeurons");
 
       neuronsStore.setNeurons({ neurons, certified: true });
-      renderVotingCard();
     });
 
     it("should trigger register-vote and neuron-list updates", async () => {
+      const { queryByTestId } = renderVotingCard();
+
       expect(spyRegisterVote).not.toBeCalled();
-      await fireEvent.click(screen.queryByTestId("vote-yes") as Element);
-      await fireEvent.click(screen.queryByTestId("confirm-yes") as Element);
+      await fireEvent.click(queryByTestId("vote-yes") as Element);
+      await fireEvent.click(queryByTestId("confirm-yes") as Element);
       await waitFor(() =>
         expect(spyRegisterVote).toBeCalledTimes(neurons.length)
       );
@@ -150,9 +149,11 @@ describe("VotingCard", () => {
     });
 
     it("should trigger register-vote YES", async () => {
+      const { queryByTestId } = renderVotingCard();
+
       expect(spyRegisterVote).not.toBeCalled();
-      await fireEvent.click(screen.queryByTestId("vote-yes") as Element);
-      await fireEvent.click(screen.queryByTestId("confirm-yes") as Element);
+      await fireEvent.click(queryByTestId("vote-yes") as Element);
+      await fireEvent.click(queryByTestId("confirm-yes") as Element);
       await waitFor(() =>
         expect(spyRegisterVote).toBeCalledWith({
           neuronId: neuronIds[0],
@@ -165,9 +166,11 @@ describe("VotingCard", () => {
 
     // it's on to show "console.error('vote:..." in the output (because of NO mock in canister)
     it("should trigger register-vote NO", async () => {
+      const { queryByTestId } = renderVotingCard();
+
       expect(spyRegisterVote).not.toBeCalled();
-      await fireEvent.click(screen.queryByTestId("vote-no") as Element);
-      await fireEvent.click(screen.queryByTestId("confirm-yes") as Element);
+      await fireEvent.click(queryByTestId("vote-no") as Element);
+      await fireEvent.click(queryByTestId("confirm-yes") as Element);
 
       await waitFor(() =>
         expect(spyRegisterVote).toHaveBeenCalledWith({

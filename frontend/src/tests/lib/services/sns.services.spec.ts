@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import * as api from "$lib/api/sns.api";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
@@ -31,6 +27,7 @@ import type {
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import type { SpyInstance } from "vitest";
 
 const {
   getSwapAccount,
@@ -46,9 +43,9 @@ describe("sns-services", () => {
 
   beforeEach(() => {
     resetIdentity();
-    jest.useFakeTimers();
-    jest.clearAllTimers();
-    jest.clearAllMocks();
+    vi.useFakeTimers();
+    vi.clearAllTimers();
+    vi.clearAllMocks();
     snsSwapCommitmentsStore.reset();
     resetSnsProjects();
     snsDerivedStateStore.reset();
@@ -66,7 +63,7 @@ describe("sns-services", () => {
       const commitment1 = mockSnsSwapCommitment(principal(0));
       const commitment2 = mockSnsSwapCommitment(principal(1));
       const commitments = [commitment1, commitment2];
-      const spy = jest
+      const spy = vi
         .spyOn(api, "querySnsSwapCommitments")
         .mockImplementation(() => Promise.resolve(commitments));
       await loadSnsSwapCommitments();
@@ -99,7 +96,7 @@ describe("sns-services", () => {
         swapCommitment: commitment2,
         certified: true,
       });
-      const spy = jest
+      const spy = vi
         .spyOn(api, "querySnsSwapCommitments")
         .mockImplementation(() => Promise.resolve(commitments));
       await loadSnsSwapCommitments();
@@ -119,7 +116,7 @@ describe("sns-services", () => {
         neurons_fund_participation_icp_e8s: [],
       };
 
-      const spy = jest
+      const spy = vi
         .spyOn(api, "querySnsDerivedState")
         .mockImplementation(() => Promise.resolve(derivedState));
 
@@ -143,7 +140,7 @@ describe("sns-services", () => {
         direct_participation_icp_e8s: [],
         neurons_fund_participation_icp_e8s: [],
       };
-      const spy = jest
+      const spy = vi
         .spyOn(api, "querySnsDerivedState")
         .mockImplementation(() => Promise.resolve(derivedState));
 
@@ -173,7 +170,7 @@ describe("sns-services", () => {
         neurons_fund_participation_icp_e8s: [],
       };
 
-      const spy = jest
+      const spy = vi
         .spyOn(api, "querySnsDerivedState")
         .mockResolvedValue(derivedState);
 
@@ -203,10 +200,10 @@ describe("sns-services", () => {
   });
 
   describe("loadSnsSwapCommitment", () => {
-    let queryCommitmentSpy: jest.SpyInstance;
+    let queryCommitmentSpy: SpyInstance;
     const commitment1 = mockSnsSwapCommitment(principal(0));
     beforeEach(() => {
-      queryCommitmentSpy = jest
+      queryCommitmentSpy = vi
         .spyOn(api, "querySnsSwapCommitment")
         .mockImplementation(() => Promise.resolve(commitment1));
     });
@@ -282,7 +279,7 @@ describe("sns-services", () => {
         decentralization_sale_open_timestamp_seconds: [BigInt(1)],
       };
 
-      const spy = jest
+      const spy = vi
         .spyOn(api, "querySnsLifecycle")
         .mockImplementation(() => Promise.resolve(lifeCycleResponse));
 

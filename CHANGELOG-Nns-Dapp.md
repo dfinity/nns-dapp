@@ -8,6 +8,11 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 ## Unreleased
 
+Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
+here after a successful release.
+
+## Proposal 124999
+
 ### Application
 
 #### Added
@@ -16,9 +21,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Changed
 
-* Add a command line tool that uses the proposals rendering crate to render proposals locally.
-* Update the schemas for the governance, registry and SNS Wasm canisters, used for proposal rendering.
-* Get the governance, registry and SNS Wasm schemas direcly from `.did` files rather than importing the canisters.
 * Make a histogram of transactions per account, used to optimize the new account storage.
 * Include a copy of the `nns-governance` candid file in the `nns-dapp` repository.
 * Update the IC commit in the `proposals` crate to `release-2023-08-01_23-01`.
@@ -28,10 +30,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Review the chunking strategy to enhance the dapp's loading time and prevent random, rare flashes of unstyled content (FOUC).
 * New header UI in the canister detail page.
 * New labels for min and max participation.
-* Improve security by escaping additional images in the proposal summary markdown.
-* Internal change: remove unused snsQueryStore.
 
-#### Deprecated
 #### Removed
 
 * Remove `ENABLE_DISBURSE_MATURITY` feature flag.
@@ -52,9 +51,9 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 ### Operations
 
 #### Added
+
 * Run several script tests on macos as well as ubuntu.
 * Extend the release SOP script up to submitting the proposal.
-
 * Check spelling in Rust documentation as part of CI.
 
 #### Changed
@@ -68,15 +67,9 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Cron job to update `snsdemo` weekly.
 * Update data for the Launchpad Prod test.
 
-#### Deprecated
 #### Removed
 
 * Comment and skip dfx-nns-proposal-args.test.
-* Remove npm script `update:next`.
-
-#### Fixed
-
-#### Security
 
 ## Proposal 124855
 

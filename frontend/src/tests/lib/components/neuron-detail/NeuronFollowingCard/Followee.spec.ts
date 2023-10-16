@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
 import en from "$tests/mocks/i18n.mock";
 import { Topic } from "@dfinity/nns";
@@ -16,7 +12,7 @@ describe("Followee", () => {
   };
 
   beforeEach(() => {
-    jest.spyOn(console, "error").mockImplementation(jest.fn);
+    vi.spyOn(console, "error").mockReturnValue();
     knownNeuronsStore.reset();
   });
 

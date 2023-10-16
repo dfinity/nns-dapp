@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import StakeItemAction from "$lib/components/neuron-detail/StakeItemAction.svelte";
 import { mockToken, mockUniverse } from "$tests/mocks/sns-projects.mock";
 import { StakeItemActionPo } from "$tests/page-objects/StakeItemAction.page-object";
@@ -69,7 +65,7 @@ describe("StakeItemAction", () => {
   });
 
   it("Dispatches event when clicked", async () => {
-    const increaseStake = jest.fn();
+    const increaseStake = vi.fn();
 
     const po = await renderComponent({
       increaseStakeCallback: increaseStake,

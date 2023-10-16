@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import SnsVotingCard from "$lib/components/sns-proposals/SnsVotingCard.svelte";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
@@ -33,7 +29,7 @@ import {
 } from "@dfinity/sns";
 import type { NeuronPermission } from "@dfinity/sns/dist/candid/sns_governance";
 import { fromDefinedNullable } from "@dfinity/utils";
-import { fireEvent, screen } from "@testing-library/dom";
+import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 
@@ -103,10 +99,10 @@ describe("SnsVotingCard", () => {
       permissions: permissionsWithTypeVote,
     },
   ];
-  const spyRegisterVote = jest
+  const spyRegisterVote = vi
     .spyOn(snsGovernanceApi, "registerVote")
     .mockResolvedValue();
-  const spyOnReloadProposal = jest.fn();
+  const spyOnReloadProposal = vi.fn();
   const renderVotingCard = (proposal = testProposal) =>
     render(SnsVotingCard, {
       props: {
@@ -116,11 +112,9 @@ describe("SnsVotingCard", () => {
     });
 
   beforeEach(() => {
-    jest.useFakeTimers().setSystemTime(nowInSeconds * 1000);
+    vi.useFakeTimers().setSystemTime(nowInSeconds * 1000);
     snsNeuronsStore.reset();
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
 
     spyOnReloadProposal.mockClear();
     spyRegisterVote.mockClear();
@@ -324,13 +318,17 @@ describe("SnsVotingCard", () => {
         certified: true,
       });
 
-      renderVotingCard();
+      const { queryByTestId } = renderVotingCard();
 
       expect(spyRegisterVote).toBeCalledTimes(0);
       expect(spyOnReloadProposal).toBeCalledTimes(0);
 
-      await fireEvent.click(screen.queryByTestId("vote-yes") as Element);
-      await fireEvent.click(screen.queryByTestId("confirm-yes") as Element);
+      await fireEvent.click(queryByTestId("vote-yes") as Element);
+      await fireEvent.click(queryByTestId("confirm-yes") as Element);
+
+      // w/o restoreRealTimers() waitFor calls the callback only twice (instead of till the end of the timeout/5000ms)
+      // this bug makes the spyOnReloadProposal test fail
+      vi.useRealTimers();
 
       await waitFor(() =>
         expect(spyRegisterVote).toBeCalledTimes(testNeurons.length)
@@ -345,13 +343,13 @@ describe("SnsVotingCard", () => {
         certified: true,
       });
 
-      renderVotingCard();
+      const { queryByTestId } = renderVotingCard();
 
       expect(spyRegisterVote).toBeCalledTimes(0);
       expect(spyOnReloadProposal).toBeCalledTimes(0);
 
-      await fireEvent.click(screen.queryByTestId("vote-yes") as Element);
-      await fireEvent.click(screen.queryByTestId("confirm-yes") as Element);
+      await fireEvent.click(queryByTestId("vote-yes") as Element);
+      await fireEvent.click(queryByTestId("confirm-yes") as Element);
 
       await waitFor(() =>
         expect(spyRegisterVote).toBeCalledWith(
@@ -382,13 +380,13 @@ describe("SnsVotingCard", () => {
         certified: true,
       });
 
-      renderVotingCard();
+      const { queryByTestId } = renderVotingCard();
 
       expect(spyRegisterVote).toBeCalledTimes(0);
       expect(spyOnReloadProposal).toBeCalledTimes(0);
 
-      await fireEvent.click(screen.queryByTestId("vote-no") as Element);
-      await fireEvent.click(screen.queryByTestId("confirm-yes") as Element);
+      await fireEvent.click(queryByTestId("vote-no") as Element);
+      await fireEvent.click(queryByTestId("confirm-yes") as Element);
 
       await waitFor(() =>
         expect(spyRegisterVote).toHaveBeenCalledWith(

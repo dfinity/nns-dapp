@@ -27,9 +27,10 @@ import { get } from "svelte/store";
 
 describe("utils", () => {
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
+    vi.clearAllTimers();
     toastsStore.reset();
-    jest.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
   });
 
   describe("stringifyJson", () => {
@@ -277,9 +278,9 @@ describe("utils", () => {
     describe("without timers", () => {
       beforeEach(() => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        jest.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
+        vi.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
         // Avoid to print errors during test
-        jest.spyOn(console, "log").mockImplementation(() => undefined);
+        vi.spyOn(console, "log").mockImplementation(() => undefined);
       });
 
       it("should recall the function until `fn` succeeds", async () => {
@@ -359,7 +360,7 @@ describe("utils", () => {
       ];
 
       beforeEach(() => {
-        jest.useFakeTimers();
+        vi.useFakeTimers();
       });
 
       const getTimestamps = async ({
@@ -533,7 +534,7 @@ describe("utils", () => {
 
       it("should stop polling when cancelled during wait", async () => {
         const pollId = Symbol();
-        const fnSpy = jest.fn();
+        const fnSpy = vi.fn();
         fnSpy.mockRejectedValue(new Error("failing"));
         let cancelled = false;
         poll({
@@ -564,7 +565,7 @@ describe("utils", () => {
 
       it("should stop polling when cancelled during call", async () => {
         const pollId = Symbol();
-        const fnSpy = jest.fn();
+        const fnSpy = vi.fn();
         fnSpy.mockReturnValue(
           new Promise(() => {
             //never resolve
@@ -599,7 +600,7 @@ describe("utils", () => {
       it("should throw PollingCancelledError when canceled during the last attempt", async () => {
         const maxAttempts = 2;
         const pollId = Symbol();
-        const fnSpy = jest.fn();
+        const fnSpy = vi.fn();
         let rejectCall: () => void;
         fnSpy.mockImplementation(
           () =>
@@ -634,7 +635,7 @@ describe("utils", () => {
 
       it("should cancel immediately when called again while polling", async () => {
         const pollId = Symbol();
-        const fnSpy = jest.fn();
+        const fnSpy = vi.fn();
         let resolvePromise;
         fnSpy.mockReturnValue(
           new Promise((resolve) => {
@@ -662,7 +663,7 @@ describe("utils", () => {
 
       it("should work when called again after success", async () => {
         const pollId = Symbol();
-        const fnSpy = jest.fn();
+        const fnSpy = vi.fn();
 
         const expectedResult1 = "foo";
         const expectedResult2 = "bar";
@@ -687,7 +688,7 @@ describe("utils", () => {
 
       it("should work when called again after cancel", async () => {
         const pollId = Symbol();
-        const fnSpy = jest.fn();
+        const fnSpy = vi.fn();
 
         const expectedResult2 = "baz";
 
@@ -725,7 +726,7 @@ describe("utils", () => {
       it("should cancel only the polling with the correct id", async () => {
         const pollId1 = Symbol();
         const pollId2 = Symbol();
-        const fnSpy = jest.fn();
+        const fnSpy = vi.fn();
 
         fnSpy.mockReturnValue(
           new Promise(() => {

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as agent from "$lib/api/agent.api";
 import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import * as governanceApi from "$lib/api/sns-governance.api";
@@ -32,15 +28,15 @@ import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import { waitFor } from "@testing-library/svelte";
-import { mock } from "jest-mock-extended";
 import { get } from "svelte/store";
+import { mock } from "vitest-mock-extended";
 
-jest.mock("$lib/api/sns.api");
-jest.mock("$lib/api/sns-aggregator.api");
-jest.mock("$lib/api/sns-governance.api");
-jest.mock("$lib/stores/toasts.store", () => {
+vi.mock("$lib/api/sns.api");
+vi.mock("$lib/api/sns-aggregator.api");
+vi.mock("$lib/api/sns-governance.api");
+vi.mock("$lib/stores/toasts.store", () => {
   return {
-    toastsError: jest.fn(),
+    toastsError: vi.fn(),
   };
 });
 
@@ -54,19 +50,19 @@ describe("SNS public services", () => {
   blockAllCallsTo(blockedPaths);
 
   beforeEach(() => {
-    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   describe("loadSnsNervousSystemFunctions", () => {
     beforeEach(() => {
       snsFunctionsStore.reset();
-      jest.clearAllMocks();
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
+      vi.clearAllMocks();
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreSubscribe
+      );
     });
     it("should call sns api getNervousSystemFunctions and load the nervous system functions store", async () => {
-      const spyGetFunctions = jest
+      const spyGetFunctions = vi
         .spyOn(governanceApi, "getNervousSystemFunctions")
         .mockImplementation(() => Promise.resolve([nervousSystemFunctionMock]));
 
@@ -87,7 +83,7 @@ describe("SNS public services", () => {
         nsFunctions: [nervousSystemFunctionMock],
         certified: true,
       });
-      const spyGetFunctions = jest
+      const spyGetFunctions = vi
         .spyOn(governanceApi, "getNervousSystemFunctions")
         .mockImplementation(() => Promise.resolve([nervousSystemFunctionMock]));
 
@@ -102,7 +98,7 @@ describe("SNS public services", () => {
         rootCanisterId: rootCanisterId.toText(),
       });
       snsAggregatorStore.setData([aggregatorProject]);
-      const spyGetFunctions = jest.spyOn(
+      const spyGetFunctions = vi.spyOn(
         governanceApi,
         "getNervousSystemFunctions"
       );
@@ -113,9 +109,9 @@ describe("SNS public services", () => {
     });
 
     it("should show a toast if api throws an error", async () => {
-      jest
-        .spyOn(governanceApi, "getNervousSystemFunctions")
-        .mockImplementation(() => Promise.reject("error"));
+      vi.spyOn(governanceApi, "getNervousSystemFunctions").mockImplementation(
+        () => Promise.reject("error")
+      );
 
       await loadSnsNervousSystemFunctions(mockPrincipal);
 
@@ -128,14 +124,14 @@ describe("SNS public services", () => {
       snsFunctionsStore.reset();
       transactionsFeesStore.reset();
       snsAggregatorStore.reset();
-      jest.clearAllMocks();
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
+      vi.clearAllMocks();
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreSubscribe
+      );
     });
 
     it("loads sns stores with data", async () => {
-      const spyQuerySnsProjects = jest
+      const spyQuerySnsProjects = vi
         .spyOn(aggregatorApi, "querySnsProjects")
         .mockImplementation(() =>
           Promise.resolve([aggregatorSnsMockDto, aggregatorSnsMockDto])
@@ -153,9 +149,9 @@ describe("SNS public services", () => {
     });
 
     it("should load sns aggregator store", async () => {
-      jest
-        .spyOn(aggregatorApi, "querySnsProjects")
-        .mockImplementation(() => Promise.resolve(aggregatorMockSnsesDataDto));
+      vi.spyOn(aggregatorApi, "querySnsProjects").mockImplementation(() =>
+        Promise.resolve(aggregatorMockSnsesDataDto)
+      );
 
       expect(get(snsAggregatorStore).data).toBeUndefined();
 
@@ -165,11 +161,9 @@ describe("SNS public services", () => {
     });
 
     it("should load and map tokens", async () => {
-      jest
-        .spyOn(aggregatorApi, "querySnsProjects")
-        .mockImplementation(() =>
-          Promise.resolve([aggregatorSnsMockDto, aggregatorSnsMockDto])
-        );
+      vi.spyOn(aggregatorApi, "querySnsProjects").mockImplementation(() =>
+        Promise.resolve([aggregatorSnsMockDto, aggregatorSnsMockDto])
+      );
 
       await loadSnsProjects();
 
@@ -195,9 +189,9 @@ describe("SNS public services", () => {
         },
         aggregatorSnsMockDto,
       ];
-      jest
-        .spyOn(aggregatorApi, "querySnsProjects")
-        .mockImplementation(() => Promise.resolve(response));
+      vi.spyOn(aggregatorApi, "querySnsProjects").mockImplementation(() =>
+        Promise.resolve(response)
+      );
 
       await loadSnsProjects();
 

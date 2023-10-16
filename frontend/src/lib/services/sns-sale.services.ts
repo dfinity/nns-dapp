@@ -14,7 +14,12 @@ import {
 import { getConditionsToAccept } from "$lib/getters/sns-summary";
 import { getCurrentIdentity } from "$lib/services/auth.services";
 import { loadBalance } from "$lib/services/icp-accounts.services";
-import { toastsError, toastsHide, toastsShow } from "$lib/stores/toasts.store";
+import {
+  toastsError,
+  toastsHide,
+  toastsShow,
+  toastsSuccess,
+} from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { ApiErrorKey } from "$lib/types/api.errors";
@@ -68,7 +73,6 @@ import { get } from "svelte/store";
 import { DEFAULT_TOAST_DURATION_MILLIS } from "../constants/constants";
 import { SALE_PARTICIPATION_RETRY_SECONDS } from "../constants/sns.constants";
 import { snsTicketsStore } from "../stores/sns-tickets.store";
-import { toastsSuccess } from "../stores/toasts.store";
 import { nanoSecondsToDateTime } from "../utils/date.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
 import { formatToken } from "../utils/token.utils";

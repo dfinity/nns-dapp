@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as agent from "$lib/api/agent.api";
 import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -35,10 +31,11 @@ import {
   decodeIcrcAccount,
   encodeIcrcAccount,
 } from "@dfinity/ledger-icrc";
-import { mock } from "jest-mock-extended";
+import type { Mock } from "vitest";
+import { mock } from "vitest-mock-extended";
 
-jest.mock("$lib/services/ckbtc-transactions.services");
-jest.mock("$lib/services/ckbtc-withdrawal-accounts.services");
+vi.mock("$lib/services/ckbtc-transactions.services");
+vi.mock("$lib/services/ckbtc-withdrawal-accounts.services");
 
 describe("ckbtc-convert-services", () => {
   const minterCanisterMock = mock<CkBTCMinterCanister>();
@@ -61,7 +58,7 @@ describe("ckbtc-convert-services", () => {
     updateProgressSpy,
     steps,
   }: {
-    updateProgressSpy: jest.Mock;
+    updateProgressSpy: Mock;
     steps: ConvertBtcStep[];
   }) => {
     steps.forEach((step, index) => {
@@ -70,7 +67,7 @@ describe("ckbtc-convert-services", () => {
     expect(updateProgressSpy).toBeCalledTimes(steps.length);
   };
 
-  const expectAllStepsPerformed = (updateProgressSpy: jest.Mock) => {
+  const expectAllStepsPerformed = (updateProgressSpy: Mock) => {
     expectStepsPerformed({
       updateProgressSpy,
       steps: [
@@ -85,20 +82,20 @@ describe("ckbtc-convert-services", () => {
 
   beforeEach(() => {
     resetIdentity();
-    jest.restoreAllMocks();
-    jest.clearAllTimers();
+    vi.restoreAllMocks();
+    vi.clearAllTimers();
 
     ckBTCWithdrawalAccountsStore.reset();
 
-    jest
-      .spyOn(CkBTCMinterCanister, "create")
-      .mockImplementation(() => minterCanisterMock);
-    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    vi.spyOn(CkBTCMinterCanister, "create").mockImplementation(
+      () => minterCanisterMock
+    );
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
 
-    jest.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
 
     const now = Date.now();
-    jest.useFakeTimers().setSystemTime(now);
+    vi.useFakeTimers().setSystemTime(now);
   });
 
   describe("convert flow", () => {
@@ -112,14 +109,14 @@ describe("ckbtc-convert-services", () => {
       const ledgerCanisterMock = mock<IcrcLedgerCanister>();
 
       beforeEach(() => {
-        jest
-          .spyOn(IcrcLedgerCanister, "create")
-          .mockImplementation(() => ledgerCanisterMock);
+        vi.spyOn(IcrcLedgerCanister, "create").mockImplementation(
+          () => ledgerCanisterMock
+        );
         getWithdrawalAccountSpy.mockResolvedValue(mockWithdrawalAccount);
       });
 
       it("should get a withdrawal account", async () => {
-        const updateProgressSpy = jest.fn();
+        const updateProgressSpy = vi.fn();
 
         await convert(updateProgressSpy);
 
@@ -139,18 +136,18 @@ describe("ckbtc-convert-services", () => {
           minterCanisterMock.retrieveBtc.mockReset();
           tokensStore.setTokens(mockTokens);
           transferSpy.mockResolvedValue(123n);
-          jest
-            .spyOn(ledgerApi, "getCkBTCAccount")
-            .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
+          vi.spyOn(ledgerApi, "getCkBTCAccount").mockImplementation(() =>
+            Promise.resolve(mockCkBTCMainAccount)
+          );
         });
 
         it("should transfer tokens to ledger", async () => {
-          const blockIndexAddSpy = jest.spyOn(
+          const blockIndexAddSpy = vi.spyOn(
             bitcoinConvertBlockIndexes,
             "addBlockIndex"
           );
 
-          const updateProgressSpy = jest.fn();
+          const updateProgressSpy = vi.fn();
 
           await convert(updateProgressSpy);
 
@@ -191,7 +188,7 @@ describe("ckbtc-convert-services", () => {
           });
 
           it("should retrieve btc", async () => {
-            const updateProgressSpy = jest.fn();
+            const updateProgressSpy = vi.fn();
 
             await convert(updateProgressSpy);
 
@@ -205,7 +202,7 @@ describe("ckbtc-convert-services", () => {
           });
 
           it("should load transactions and withdrawal account", async () => {
-            const updateProgressSpy = jest.fn();
+            const updateProgressSpy = vi.fn();
 
             await convert(updateProgressSpy);
 
@@ -217,12 +214,12 @@ describe("ckbtc-convert-services", () => {
           });
 
           it("should remove block index from local storage", async () => {
-            const blockIndexRemoveSpy = jest.spyOn(
+            const blockIndexRemoveSpy = vi.spyOn(
               bitcoinConvertBlockIndexes,
               "removeBlockIndex"
             );
 
-            const updateProgressSpy = jest.fn();
+            const updateProgressSpy = vi.fn();
 
             await convert(updateProgressSpy);
 
@@ -236,9 +233,9 @@ describe("ckbtc-convert-services", () => {
               throw new Error();
             });
 
-            const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
+            const spyOnToastsError = vi.spyOn(toastsStore, "toastsError");
 
-            const updateProgressSpy = jest.fn();
+            const updateProgressSpy = vi.fn();
 
             await convert(updateProgressSpy);
 
@@ -256,7 +253,7 @@ describe("ckbtc-convert-services", () => {
           });
 
           it("should remove the block index from local storage because ui is still active", async () => {
-            const blockIndexRemoveSpy = jest.spyOn(
+            const blockIndexRemoveSpy = vi.spyOn(
               bitcoinConvertBlockIndexes,
               "removeBlockIndex"
             );
@@ -265,7 +262,7 @@ describe("ckbtc-convert-services", () => {
               throw new Error();
             });
 
-            const updateProgressSpy = jest.fn();
+            const updateProgressSpy = vi.fn();
 
             await convert(updateProgressSpy);
 
@@ -280,9 +277,9 @@ describe("ckbtc-convert-services", () => {
             throw new Error();
           });
 
-          const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
+          const spyOnToastsError = vi.spyOn(toastsStore, "toastsError");
 
-          const updateProgressSpy = jest.fn();
+          const updateProgressSpy = vi.fn();
 
           await convert(updateProgressSpy);
 
@@ -298,7 +295,7 @@ describe("ckbtc-convert-services", () => {
         });
 
         it("should not add block index to local storage", async () => {
-          const blockIndexAddSpy = jest.spyOn(
+          const blockIndexAddSpy = vi.spyOn(
             bitcoinConvertBlockIndexes,
             "addBlockIndex"
           );
@@ -307,7 +304,7 @@ describe("ckbtc-convert-services", () => {
             throw new Error();
           });
 
-          const updateProgressSpy = jest.fn();
+          const updateProgressSpy = vi.fn();
 
           await convert(updateProgressSpy);
 
@@ -324,7 +321,7 @@ describe("ckbtc-convert-services", () => {
       });
 
       it("should not call to get a withdrawal account", async () => {
-        const updateProgressSpy = jest.fn();
+        const updateProgressSpy = vi.fn();
 
         ckBTCWithdrawalAccountsStore.set({
           account: {
@@ -340,7 +337,7 @@ describe("ckbtc-convert-services", () => {
       });
 
       it("should get a withdrawal account if store value is not certified", async () => {
-        const updateProgressSpy = jest.fn();
+        const updateProgressSpy = vi.fn();
 
         ckBTCWithdrawalAccountsStore.set({
           account: {
@@ -362,9 +359,9 @@ describe("ckbtc-convert-services", () => {
           throw new Error();
         });
 
-        const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
+        const spyOnToastsError = vi.spyOn(toastsStore, "toastsError");
 
-        const updateProgressSpy = jest.fn();
+        const updateProgressSpy = vi.fn();
 
         await convert(updateProgressSpy);
 
@@ -390,7 +387,7 @@ describe("ckbtc-convert-services", () => {
     });
 
     it("should retrieve btc", async () => {
-      const updateProgressSpy = jest.fn();
+      const updateProgressSpy = vi.fn();
 
       await retrieveBtc({
         ...params,
@@ -422,9 +419,9 @@ describe("ckbtc-convert-services", () => {
         throw new Error();
       });
 
-      const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
+      const spyOnToastsError = vi.spyOn(toastsStore, "toastsError");
 
-      const updateProgressSpy = jest.fn();
+      const updateProgressSpy = vi.fn();
 
       await retrieveBtc({
         ...params,
@@ -446,7 +443,7 @@ describe("ckbtc-convert-services", () => {
     it("should reload withdrawal account on retrieve btc success", async () => {
       await retrieveBtc({
         ...params,
-        updateProgress: jest.fn(),
+        updateProgress: vi.fn(),
       });
 
       expect(loadCkBTCWithdrawalAccount).toBeCalled();
@@ -455,7 +452,7 @@ describe("ckbtc-convert-services", () => {
     it("should not reload transaction on retrieve btc success", async () => {
       await retrieveBtc({
         ...params,
-        updateProgress: jest.fn(),
+        updateProgress: vi.fn(),
       });
 
       expect(loadCkBTCAccountTransactions).not.toBeCalled();
@@ -468,7 +465,7 @@ describe("ckbtc-convert-services", () => {
 
       await retrieveBtc({
         ...params,
-        updateProgress: jest.fn(),
+        updateProgress: vi.fn(),
       });
 
       expect(loadCkBTCWithdrawalAccount).toBeCalled();
@@ -481,7 +478,7 @@ describe("ckbtc-convert-services", () => {
 
       await retrieveBtc({
         ...params,
-        updateProgress: jest.fn(),
+        updateProgress: vi.fn(),
       });
 
       expect(loadCkBTCAccountTransactions).not.toBeCalled();
