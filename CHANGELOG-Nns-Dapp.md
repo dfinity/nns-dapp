@@ -11,6 +11,39 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 125061
+
+### Application
+
+#### Added
+
+* Get BTC button to use the mock bitcoin canister to test ckBTC.
+
+#### Changed
+
+* Update the schemas for the governance, registry and SNS Wasm canisters, used for proposal rendering.
+* Get the governance, registry and SNS Wasm schemas direcly from `.did` files rather than importing the canisters.
+* Improve security by escaping additional images in the proposal summary markdown.
+* Internal change: remove unused snsQueryStore.
+* New Tag style. Used in followees topic and project status.
+* New header UI in the wallet pages.
+* Integrated library `marked` within dependencies instead of shipping it as a static asset.
+
+#### Fixed
+
+* Separators in project page appearing without data inside.
+* Cycles displayed as T Cycles on canister detail page.
+
+### Operations
+
+#### Changed
+
+* Put unreleased changes in `CHANGELOG-Nns-Dapp-unreleased.md` to avoid bad merges.
+
+#### Removed
+
+* Remove npm script `update:next`.
+
 ## Proposal 124999
 
 ### Application
