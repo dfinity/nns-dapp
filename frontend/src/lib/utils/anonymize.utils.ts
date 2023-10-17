@@ -120,7 +120,7 @@ export const anonymizeNeuronInfo = async (
   neuron: NeuronInfo | undefined
 ): Promise<undefined | { [key in keyof Required<NeuronInfo>]: unknown }> => {
   if (neuron === undefined || neuron === null) {
-    return neuron;
+    return undefined;
   }
 
   const {
@@ -170,7 +170,7 @@ export const anonymizeFullNeuron = async (
   neuron: Neuron | undefined
 ): Promise<undefined | { [key in keyof Required<Neuron>]: unknown }> => {
   if (neuron === undefined || neuron === null) {
-    return neuron;
+    return undefined;
   }
 
   const {
