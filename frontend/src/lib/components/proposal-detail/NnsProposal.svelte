@@ -12,12 +12,16 @@
   import NnsProposalProposerActionsEntry from "./NnsProposalProposerActionsEntry.svelte";
   import NnsProposalProposerPayloadEntry from "./NnsProposalProposerPayloadEntry.svelte";
   import { filteredProposals } from "$lib/derived/proposals.derived";
-  import { navigateToProposal } from "$lib/utils/proposals.utils";
+  import {
+    mapProposalInfo,
+    navigateToProposal,
+  } from "$lib/utils/proposals.utils";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { referrerPathStore } from "$lib/stores/routes.store";
   import { AppPath } from "$lib/constants/routes.constants";
   import { ENABLE_FULL_WIDTH_PROPOSAL } from "$lib/stores/feature-flags.store";
   import { SplitBlock } from "@dfinity/gix-components";
+  import { nonNullish } from "@dfinity/utils";
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
@@ -25,13 +29,20 @@
 
   let proposalIds: bigint[] | undefined;
   $: proposalIds = $filteredProposals.proposals?.map(({ id }) => id as bigint);
+
+  let proposalStatusString: string | undefined;
+  $: if (nonNullish($store.proposal)) {
+    ({ statusString: proposalStatusString } = mapProposalInfo($store.proposal));
+    console.log("proposalStatusString", proposalStatusString);
+  }
 </script>
 
 <TestIdWrapper testId="nns-proposal-component">
-  {#if $store?.proposal?.id !== undefined}
+  {#if $store?.proposal?.id !== undefined && nonNullish(proposalStatusString)}
     {#if $referrerPathStore !== AppPath.Launchpad}
       <ProposalNavigation
         currentProposalId={$store.proposal.id}
+        currentProposalStatusString={proposalStatusString}
         {proposalIds}
         selectProposal={navigateToProposal}
       />

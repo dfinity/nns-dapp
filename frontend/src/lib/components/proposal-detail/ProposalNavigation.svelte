@@ -11,8 +11,10 @@
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
 
   export let currentProposalId: bigint;
+  export let currentProposalStatusString: string;
   export let proposalIds: bigint[] = [];
   export let selectProposal: (proposalId: bigint) => void;
 
@@ -46,8 +48,7 @@
 {#if $ENABLE_FULL_WIDTH_PROPOSAL}
   <div class="proposal-nav" role="toolbar" data-tid="proposal-nav">
     <span class="status">
-      TBD: Status
-      <!-- TODO(GIX-1971): render proposal status component -->
+      <ProposalStatusTag statusString={currentProposalStatusString} />
     </span>
     <h2 class="title">
       <div class="universe-logo">
