@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import SnsProposalVotingSection from "$lib/components/sns-proposals/SnsProposalVotingSection.svelte";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";

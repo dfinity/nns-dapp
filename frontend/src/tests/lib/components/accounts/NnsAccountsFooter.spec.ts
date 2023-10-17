@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsAccountsFooter from "$lib/components/accounts/NnsAccountsFooter.svelte";
 import * as accountsServices from "$lib/services/icp-accounts.services";
 import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
@@ -12,9 +8,9 @@ import {
 import { testAccountsModal } from "$tests/utils/accounts.test-utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
-jest.mock("$lib/services/icp-accounts.services", () => {
+vi.mock("$lib/services/icp-accounts.services", () => {
   return {
-    syncAccounts: jest.fn().mockResolvedValue(undefined),
+    syncAccounts: vi.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -42,9 +38,9 @@ describe("NnsAccountsFooter", () => {
 
     await waitModalIntroEnd({ container, selector: modalToolbarSelector });
 
-    await waitFor(expect(getByTestId("receive-modal")).not.toBeNull);
+    await waitFor(() => expect(getByTestId("receive-modal")).not.toBeNull());
 
-    const spy = jest.spyOn(accountsServices, "syncAccounts");
+    const spy = vi.spyOn(accountsServices, "syncAccounts");
 
     fireEvent.click(getByTestId("reload-receive-account") as HTMLButtonElement);
 

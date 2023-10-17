@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import TransactionFormItemNetwork from "$lib/components/transaction/TransactionFormItemNetwork.svelte";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { TransactionNetwork } from "$lib/types/transaction";

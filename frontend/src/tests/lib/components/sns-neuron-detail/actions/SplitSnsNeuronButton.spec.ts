@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SplitSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/SplitSnsNeuronButton.svelte";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { openSnsNeuronModal } from "$lib/utils/modals.utils";
@@ -16,8 +12,8 @@ import {
 import { mockToken } from "$tests/mocks/sns-projects.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
-jest.mock("$lib/utils/modals.utils", () => ({
-  openSnsNeuronModal: jest.fn(),
+vi.mock("$lib/utils/modals.utils", () => ({
+  openSnsNeuronModal: vi.fn(),
 }));
 
 describe("SplitSnsNeuronButton", () => {
@@ -37,7 +33,7 @@ describe("SplitSnsNeuronButton", () => {
   };
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("should display enabled button", async () => {

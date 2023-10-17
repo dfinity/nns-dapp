@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import TransactionSummary from "$lib/components/transaction/TransactionSummary.svelte";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken, numberToE8s } from "$lib/utils/token.utils";

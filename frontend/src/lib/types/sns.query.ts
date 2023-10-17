@@ -1,5 +1,5 @@
 import type { RootCanisterIdText } from "$lib/types/sns";
-import type { IcrcTokenMetadataResponse } from "@dfinity/ledger";
+import type { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import type {
   SnsGetMetadataResponse,

@@ -4,9 +4,9 @@ import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterDetails } from "$tests/mocks/canisters.mock";
 import type { CanisterStatusResponse } from "@dfinity/ic-management";
 import { ICManagementCanister } from "@dfinity/ic-management";
-import { mock } from "jest-mock-extended";
+import { mock } from "vitest-mock-extended";
 
-jest.mock("@dfinity/agent");
+vi.mock("@dfinity/agent");
 
 describe("canisters-worker-api", () => {
   const response: CanisterStatusResponse = {
@@ -24,12 +24,12 @@ describe("canisters-worker-api", () => {
   };
 
   beforeEach(async () => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
 
     const mockICManagementCanister = mock<ICManagementCanister>();
-    jest
-      .spyOn(ICManagementCanister, "create")
-      .mockImplementation(() => mockICManagementCanister);
+    vi.spyOn(ICManagementCanister, "create").mockImplementation(
+      () => mockICManagementCanister
+    );
 
     mockICManagementCanister.canisterStatus.mockResolvedValue(response);
   });

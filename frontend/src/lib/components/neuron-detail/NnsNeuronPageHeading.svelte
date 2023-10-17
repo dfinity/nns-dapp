@@ -13,8 +13,9 @@
   import PageHeading from "../common/PageHeading.svelte";
   import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
   import { authStore } from "$lib/stores/auth.store";
-  import HeadingTag from "../common/HeadingTag.svelte";
   import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+  import HeadingSubtitle from "../common/HeadingSubtitle.svelte";
+  import { Tag } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
 
@@ -40,7 +41,7 @@
 
 <PageHeading testId="nns-neuron-page-heading-component">
   <AmountDisplay slot="title" {amount} size="huge" singleLine />
-  <span slot="subtitle" data-tid="voting-power">
+  <HeadingSubtitle slot="subtitle" testId="voting-power">
     {#if canVote}
       {replacePlaceholders($i18n.neuron_detail.voting_power_subtitle, {
         $votingPower: formatVotingPower(neuron.votingPower),
@@ -48,10 +49,10 @@
     {:else}
       {$i18n.neuron_detail.voting_power_zero_subtitle}
     {/if}
-  </span>
+  </HeadingSubtitle>
   <svelte:fragment slot="tags">
     {#each neuronTags as tag}
-      <HeadingTag testId="neuron-tag">{tag.text}</HeadingTag>
+      <Tag size="large" testId="neuron-tag">{tag.text}</Tag>
     {/each}
   </svelte:fragment>
 </PageHeading>

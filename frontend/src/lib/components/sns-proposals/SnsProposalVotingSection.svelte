@@ -6,6 +6,7 @@
   import { fromDefinedNullable } from "@dfinity/utils";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import { snsRewardStatus } from "$lib/utils/sns-proposals.utils";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let proposal: SnsProposalData;
   export let reloadProposal: () => Promise<void>;
@@ -25,13 +26,10 @@
   $: total = yes + no;
 </script>
 
-<div
-  class="content-cell-island"
-  data-tid="sns-proposal-voting-section-component"
->
+<TestIdWrapper testId="sns-proposal-voting-section-component">
   <VotesResults {yes} {no} {total} />
 
   {#if !settled}
     <SnsVotingCard {proposal} {reloadProposal} />
   {/if}
-</div>
+</TestIdWrapper>

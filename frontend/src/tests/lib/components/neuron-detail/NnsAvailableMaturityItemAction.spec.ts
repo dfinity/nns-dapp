@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsAvailableMaturityItemAction from "$lib/components/neuron-detail/NnsAvailableMaturityItemAction.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
@@ -36,9 +32,7 @@ describe("NnsAvailableMaturityItemAction", () => {
   };
 
   beforeEach(() => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
     icpAccountsStore.resetForTesting();
   });
 

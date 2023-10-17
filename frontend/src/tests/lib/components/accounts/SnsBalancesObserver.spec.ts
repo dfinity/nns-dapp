@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { AppPath } from "$lib/constants/routes.constants";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
@@ -33,7 +29,7 @@ describe("SnsBalancesObserver", () => {
   let postMessageMock: PostMessageMock<BalancesMessageEvent>;
 
   beforeEach(() => {
-    jest.spyOn(snsProjectsStore, "subscribe").mockImplementation(
+    vi.spyOn(snsProjectsStore, "subscribe").mockImplementation(
       mockProjectSubscribe([
         {
           ...mockSnsFullProject,
@@ -56,8 +52,8 @@ describe("SnsBalancesObserver", () => {
 
     postMessageMock = new PostMessageMock();
 
-    jest.mock("$lib/workers/balances.worker?worker", () => {
-      return class BalancesWorker {
+    vi.doMock("$lib/workers/balances.worker?worker", () => ({
+      default: class BalancesWorker {
         constructor() {
           postMessageMock.subscribe(async (msg) => await this.onmessage(msg));
         }
@@ -72,8 +68,8 @@ describe("SnsBalancesObserver", () => {
         onmessage = async (_params: BalancesMessageEvent) => {
           // Nothing here
         };
-      };
-    });
+      },
+    }));
   });
 
   it("should init data and render slotted content", async () => {

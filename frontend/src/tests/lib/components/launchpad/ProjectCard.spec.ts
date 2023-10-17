@@ -1,8 +1,6 @@
-/**
- * @jest-environment jsdom
- */
-
+import * as saleApi from "$lib/api/sns-sale.api";
 import ProjectCard from "$lib/components/launchpad/ProjectCard.svelte";
+import { SECONDS_IN_DAY, SECONDS_IN_MONTH } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
 import {
   authStoreMock,
@@ -10,17 +8,37 @@ import {
   mutableMockAuthStoreSubscribe,
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
-import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import { createFinalizationStatusMock } from "$tests/mocks/sns-finalization-status.mock";
+import {
+  createMockSnsFullProject,
+  mockSnsFullProject,
+} from "$tests/mocks/sns-projects.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { ProjectCardPo } from "$tests/page-objects/ProjectCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
 describe("ProjectCard", () => {
-  jest
+  vitest
     .spyOn(authStore, "subscribe")
     .mockImplementation(mutableMockAuthStoreSubscribe);
 
-  afterEach(() => jest.clearAllMocks());
+  const now = Date.now();
+  const nowInSeconds = Math.floor(now / 1000);
+  const yesterdayInSeconds = nowInSeconds - SECONDS_IN_DAY;
+  beforeEach(() => {
+    vi.clearAllMocks();
+    setSnsProjects([
+      {
+        rootCanisterId: mockSnsFullProject.rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+        swapDueTimestampSeconds: yesterdayInSeconds,
+      },
+    ]);
+  });
 
   describe("signed in", () => {
     beforeAll(() =>
@@ -135,6 +153,52 @@ describe("ProjectCard", () => {
       expect(
         getByText(en.sns_project_detail.user_current_commitment)
       ).toBeInTheDocument();
+    });
+
+    it("should render complete status if swap is Committed", async () => {
+      const oneMonthAgoInSeconds = nowInSeconds - SECONDS_IN_MONTH;
+      const snsFulProject = createMockSnsFullProject({
+        rootCanisterId: rootCanisterIdMock,
+        summaryParams: {
+          lifecycle: SnsSwapLifecycle.Committed,
+          swapDueTimestampSeconds: BigInt(oneMonthAgoInSeconds),
+        },
+      });
+
+      const { container } = render(ProjectCard, {
+        props: {
+          project: snsFulProject,
+        },
+      });
+
+      const po = ProjectCardPo.under(new JestPageObjectElement(container));
+      await runResolvedPromises();
+
+      expect(await po.getStatus()).toBe("Status Completed");
+    });
+
+    it("should render finalizing status if swap is finalizing", async () => {
+      vi.spyOn(saleApi, "queryFinalizationStatus").mockResolvedValue(
+        createFinalizationStatusMock(true)
+      );
+      const snsFulProject = createMockSnsFullProject({
+        rootCanisterId: rootCanisterIdMock,
+        summaryParams: {
+          lifecycle: SnsSwapLifecycle.Committed,
+          swapDueTimestampSeconds: BigInt(yesterdayInSeconds),
+        },
+      });
+
+      const { container } = render(ProjectCard, {
+        props: {
+          project: snsFulProject,
+        },
+      });
+
+      const po = ProjectCardPo.under(new JestPageObjectElement(container));
+      await runResolvedPromises();
+
+      expect(await po.getStatus()).toBe("Status Finalizing");
     });
   });
 

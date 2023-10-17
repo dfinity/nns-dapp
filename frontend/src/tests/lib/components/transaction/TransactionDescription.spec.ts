@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import TransactionDescription from "$lib/components/transaction/TransactionDescription.svelte";
 import { TransactionNetwork } from "$lib/types/transaction";
 import en from "$tests/mocks/i18n.mock";

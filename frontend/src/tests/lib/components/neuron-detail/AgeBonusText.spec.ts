@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import AgeBonusText from "$lib/components/neuron-detail/AgeBonusText.svelte";
 import { AgeBonusTextPo } from "$tests/page-objects/AgeBonusText.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";

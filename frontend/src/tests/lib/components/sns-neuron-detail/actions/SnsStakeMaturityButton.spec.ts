@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsStakeMaturityButton from "$lib/components/sns-neuron-detail/actions/SnsStakeMaturityButton.svelte";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
@@ -10,7 +6,7 @@ import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
 describe("SnsStakeMaturityButton", () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("should open stake maturity modal", async () => {

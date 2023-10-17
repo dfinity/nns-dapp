@@ -2,7 +2,7 @@ import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
 import { writableStored } from "$lib/stores/writable-stored";
 import type { BtcAddressText } from "$lib/types/bitcoin";
 import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
-import type { IcrcBlockIndex } from "@dfinity/ledger";
+import type { IcrcBlockIndex } from "@dfinity/ledger-icrc";
 import type { Readable } from "svelte/store";
 import { writable } from "svelte/store";
 

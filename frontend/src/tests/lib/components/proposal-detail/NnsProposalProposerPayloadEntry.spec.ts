@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as agent from "$lib/api/agent.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import NnsProposalProposerPayloadEntry from "$lib/components/proposal-detail/NnsProposalProposerPayloadEntry.svelte";
@@ -15,7 +11,7 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import type { Proposal } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import { mock } from "jest-mock-extended";
+import { mock } from "vitest-mock-extended";
 
 const proposalWithNnsFunctionAction = {
   ...mockProposalInfo.proposal,
@@ -24,7 +20,7 @@ const proposalWithNnsFunctionAction = {
 
 describe("NnsProposalProposerPayloadEntry", () => {
   const nnsDappMock = mock<NNSDappCanister>();
-  jest.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
+  vi.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
 
   const nestedObj = { b: "c" };
   const payloadWithJsonString = {
@@ -32,9 +28,9 @@ describe("NnsProposalProposerPayloadEntry", () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     proposalPayloadsStore.reset();
-    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   it("should trigger getProposalPayload", async () => {
@@ -42,11 +38,12 @@ describe("NnsProposalProposerPayloadEntry", () => {
     const payloadWithJsonString = {
       a: JSON.stringify(nestedObj),
     };
-    const spyGetProposalPayload = jest
-      .spyOn(nnsDappMock, "getProposalPayload")
-      .mockImplementation(async () => payloadWithJsonString);
 
-    expect(spyGetProposalPayload).toBeCalledTimes(0);
+    nnsDappMock.getProposalPayload.mockImplementation(
+      async () => payloadWithJsonString
+    );
+
+    expect(nnsDappMock.getProposalPayload).toBeCalledTimes(0);
     render(NnsProposalProposerPayloadEntry, {
       props: {
         proposal: proposalWithNnsFunctionAction,
@@ -55,13 +52,13 @@ describe("NnsProposalProposerPayloadEntry", () => {
     });
 
     await runResolvedPromises();
-    expect(spyGetProposalPayload).toBeCalledTimes(1);
+    expect(nnsDappMock.getProposalPayload).toBeCalledTimes(1);
   });
 
   it("should parse JSON strings and render them", async () => {
-    jest
-      .spyOn(nnsDappMock, "getProposalPayload")
-      .mockImplementation(async () => payloadWithJsonString);
+    nnsDappMock.getProposalPayload.mockImplementation(
+      async () => payloadWithJsonString
+    );
     const { queryByTestId } = render(NnsProposalProposerPayloadEntry, {
       props: {
         proposal: proposalWithNnsFunctionAction,

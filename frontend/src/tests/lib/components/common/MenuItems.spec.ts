@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import MenuItems from "$lib/components/common/MenuItems.svelte";
 import {
   OWN_CANISTER_ID,
@@ -12,8 +8,8 @@ import { page } from "$mocks/$app/stores";
 import en from "$tests/mocks/i18n.mock";
 import { render } from "@testing-library/svelte";
 
-jest.mock("$lib/services/$public/worker-metrics.services", () => ({
-  initMetricsWorker: jest.fn(() =>
+vi.mock("$lib/services/$public/worker-metrics.services", () => ({
+  initMetricsWorker: vi.fn(() =>
     Promise.resolve({
       startMetricsTimer: () => {
         // Do nothing

@@ -1,21 +1,40 @@
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import {
-  convertDtoData,
   convertDtoToSnsSummary,
+  convertIcrc1Metadata,
   convertNervousFunction,
 } from "$lib/utils/sns-aggregator-converters.utils";
-import {
-  aggregatorSnsMock,
-  aggregatorSnsMockDto,
-} from "$tests/mocks/sns-aggregator.mock";
+import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { Principal } from "@dfinity/principal";
 
 describe("sns aggregator converters utils", () => {
   describe("convertDtoData", () => {
-    it("converts aggregator types to ic-js types", () => {
-      expect(convertDtoData([aggregatorSnsMockDto])).toEqual([
-        aggregatorSnsMock,
-      ]);
+    it("converts aggregator icrc metadata to ic-js types", () => {
+      expect(convertIcrc1Metadata(aggregatorSnsMockDto.icrc1_metadata)).toEqual(
+        [
+          ["icrc1:decimals", { Nat: 8n }],
+          ["icrc1:name", { Text: "CatalyzeDAO" }],
+          ["icrc1:symbol", { Text: "CAT" }],
+          ["icrc1:fee", { Nat: 100000n }],
+        ]
+      );
+    });
+
+    it("converts aggregator nervous function to ic-js types", () => {
+      expect(
+        convertNervousFunction(aggregatorSnsMockDto.parameters.functions[1])
+      ).toEqual({
+        id: 1n,
+        name: "Motion",
+        description: [
+          "Side-effect-less proposals to set general governance direction.",
+        ],
+        function_type: [
+          {
+            NativeNervousSystemFunction: {},
+          },
+        ],
+      });
     });
   });
 
@@ -323,6 +342,9 @@ describe("sns aggregator converters utils", () => {
               swap_due_timestamp_seconds: [],
               swap_start_timestamp_seconds: [],
               transaction_fee_e8s: [100000n],
+              neurons_fund_participation_constraints: [],
+              max_direct_participation_icp_e8s: [],
+              min_direct_participation_icp_e8s: [],
             },
           ],
           lifecycle: 2,
@@ -344,9 +366,13 @@ describe("sns aggregator converters utils", () => {
             sale_delay_seconds: [],
             sns_token_e8s: 11250000000000000n,
             swap_due_timestamp_seconds: 1691785258n,
+            max_direct_participation_icp_e8s: [],
+            min_direct_participation_icp_e8s: [],
           },
           purge_old_tickets_last_completion_timestamp_nanoseconds: [],
           purge_old_tickets_next_principal: [],
+          direct_participation_icp_e8s: [],
+          neurons_fund_participation_icp_e8s: [],
         },
         derived: {
           buyer_total_icp_e8s: 50669291278205n,
@@ -354,6 +380,60 @@ describe("sns aggregator converters utils", () => {
           cf_participant_count: [145n],
           direct_participant_count: [224n],
           sns_tokens_per_icp: 222.02796936035156,
+          neurons_fund_participation_icp_e8s: [],
+          direct_participation_icp_e8s: [],
+        },
+        init: {
+          nns_proposal_id: [],
+          sns_root_canister_id: "5psbn-niaaa-aaaaq-aaa4q-cai",
+          min_participant_icp_e8s: [],
+          neuron_basket_construction_parameters: [],
+          fallback_controller_principal_ids: [
+            "ledm3-52ncq-rffuv-6ed44-hg5uo-iicyu-pwkzj-syfva-heo4k-p7itq-aqe",
+            "efaeg-aiaaa-aaaap-aan6a-cai",
+          ],
+          max_icp_e8s: [],
+          neuron_minimum_stake_e8s: [400000000n],
+          confirmation_text: [],
+          swap_start_timestamp_seconds: [],
+          swap_due_timestamp_seconds: [],
+          min_participants: [],
+          sns_token_e8s: [],
+          nns_governance_canister_id: "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          transaction_fee_e8s: [100000n],
+          icp_ledger_canister_id: "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          sns_ledger_canister_id: "5bqmf-wyaaa-aaaaq-aaa5q-cai",
+          neurons_fund_participants: [],
+          should_auto_finalize: [],
+          max_participant_icp_e8s: [],
+          sns_governance_canister_id: "5grkr-3aaaa-aaaaq-aaa5a-cai",
+          restricted_countries: [{ iso_codes: ["US"] }],
+          min_icp_e8s: [],
+          neurons_fund_participation_constraints: [],
+          max_direct_participation_icp_e8s: [],
+          min_direct_participation_icp_e8s: [],
+        },
+        swapParams: {
+          min_participant_icp_e8s: 100000000n,
+          neuron_basket_construction_parameters: [
+            {
+              dissolve_delay_interval_seconds: 5259486n,
+              count: 7n,
+            },
+          ],
+          max_icp_e8s: 130000000000000n,
+          swap_due_timestamp_seconds: 1691785258n,
+          min_participants: 125,
+          sns_token_e8s: 11250000000000000n,
+          sale_delay_seconds: [],
+          max_participant_icp_e8s: 15000000000000n,
+          min_icp_e8s: 65000000000000n,
+          max_direct_participation_icp_e8s: [],
+          min_direct_participation_icp_e8s: [],
+        },
+        lifecycle: {
+          decentralization_sale_open_timestamp_seconds: [1690786778n],
+          lifecycle: [2],
         },
       });
     });
@@ -393,6 +473,109 @@ describe("sns aggregator converters utils", () => {
       expect(
         convertDtoToSnsSummary(aggregatorMissingSwapParams)
       ).toBeUndefined();
+    });
+
+    it("converts fields related to NF participation enhancements", () => {
+      const aggregatorNFAndDirectParticipationFields: CachedSnsDto = {
+        ...mockData,
+        swap_state: {
+          ...mockData.swap_state,
+          swap: {
+            ...mockData.swap_state.swap,
+            direct_participation_icp_e8s: 300000000000000,
+            neurons_fund_participation_icp_e8s: 100000000000000,
+            params: {
+              ...mockData.swap_state.swap.params,
+              min_direct_participation_icp_e8s: 300000000000,
+              max_direct_participation_icp_e8s: 3000000000000,
+            },
+            init: {
+              ...mockData.swap_state.swap.init,
+              neurons_fund_participation_constraints: {
+                coefficient_intervals: [
+                  {
+                    slope_numerator: 2,
+                    intercept_icp_e8s: 5000000000,
+                    from_direct_participation_icp_e8s: 1000000000,
+                    slope_denominator: 3,
+                    to_direct_participation_icp_e8s: 2000000000,
+                  },
+                ],
+                max_neurons_fund_participation_icp_e8s: 300000000000,
+                min_direct_participation_threshold_icp_e8s: 10000000000,
+              },
+              min_direct_participation_icp_e8s: 300000000000,
+              max_direct_participation_icp_e8s: 3000000000000,
+            },
+          },
+          derived: {
+            ...mockData.swap_state.derived,
+            direct_participation_icp_e8s: 300000000000000,
+            neurons_fund_participation_icp_e8s: 100000000000000,
+          },
+        },
+        derived_state: {
+          ...mockData.derived_state,
+          direct_participation_icp_e8s: 300000000000000,
+          neurons_fund_participation_icp_e8s: 100000000000000,
+        },
+        init: {
+          init: {
+            ...mockData.init.init,
+            min_direct_participation_icp_e8s: 300000000000,
+            max_direct_participation_icp_e8s: 3000000000000,
+          },
+        },
+      };
+
+      const summaryMockData = convertDtoToSnsSummary(mockData);
+      expect(
+        convertDtoToSnsSummary(aggregatorNFAndDirectParticipationFields)
+      ).toEqual({
+        ...summaryMockData,
+        swap: {
+          ...summaryMockData.swap,
+          params: {
+            ...summaryMockData.swap.params,
+            min_direct_participation_icp_e8s: [300000000000n],
+            max_direct_participation_icp_e8s: [3000000000000n],
+          },
+          init: [
+            {
+              ...summaryMockData.swap.init[0],
+              neurons_fund_participation_constraints: [
+                {
+                  coefficient_intervals: [
+                    {
+                      slope_numerator: [2n],
+                      intercept_icp_e8s: [5000000000n],
+                      from_direct_participation_icp_e8s: [1000000000n],
+                      slope_denominator: [3n],
+                      to_direct_participation_icp_e8s: [2000000000n],
+                    },
+                  ],
+                  max_neurons_fund_participation_icp_e8s: [300000000000n],
+                  min_direct_participation_threshold_icp_e8s: [10000000000n],
+                },
+              ],
+              min_direct_participation_icp_e8s: [300000000000n],
+              max_direct_participation_icp_e8s: [3000000000000n],
+            },
+          ],
+          direct_participation_icp_e8s: [300000000000000n],
+          neurons_fund_participation_icp_e8s: [100000000000000n],
+        },
+        derived: {
+          ...summaryMockData.derived,
+          direct_participation_icp_e8s: [300000000000000n],
+          neurons_fund_participation_icp_e8s: [100000000000000n],
+        },
+        init: {
+          ...summaryMockData.init,
+          min_direct_participation_icp_e8s: [300000000000n],
+          max_direct_participation_icp_e8s: [3000000000000n],
+        },
+      });
     });
   });
 

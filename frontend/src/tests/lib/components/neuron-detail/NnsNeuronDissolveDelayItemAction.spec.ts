@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsNeuronDissolveDelayItemAction from "$lib/components/neuron-detail/NnsNeuronDissolveDelayItemAction.svelte";
 import { SECONDS_IN_MONTH, SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
@@ -45,9 +41,7 @@ describe("NnsNeuronDissolveDelayItemAction", () => {
 
   beforeEach(() => {
     icpAccountsStore.resetForTesting();
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
   it("should render dissolve delay text and bonus if neuron is locked", async () => {

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SelectNetworkDropdown from "$lib/components/accounts/SelectNetworkDropdown.svelte";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,

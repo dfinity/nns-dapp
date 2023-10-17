@@ -1,4 +1,5 @@
 import {
+  htmlRenderer,
   imageToLinkRenderer,
   markdownToHTML,
   targetBlankLinkRenderer,
@@ -92,41 +93,59 @@ describe("markdown.utils", () => {
     });
   });
 
+  describe("htmlRenderer", () => {
+    it("should apply imageToLinkRenderer to img tag", () => {
+      const src = "image.png";
+      const title = "title";
+      const alt = "alt";
+      const expectation = imageToLinkRenderer(src, title, alt);
+      expect(
+        htmlRenderer(`<img src="${src}" alt="${alt}" title="${title}" />`)
+      ).toEqual(expectation);
+      expect(
+        htmlRenderer(`<img src="${src}" alt="${alt}" title="${title}">...`)
+      ).toEqual(expectation);
+      expect(
+        htmlRenderer(
+          `<img data-test="123" src="${src}" alt="${alt}" title="${title}" />`
+        )
+      ).toEqual(expectation);
+    });
+
+    it("should escape img tag with data src", () => {
+      expect(htmlRenderer(`<img src=""data:image/...">`)).toEqual(
+        `&lt;img src=""data:image/..."&gt;`
+      );
+    });
+  });
+
   describe("markdown", () => {
-    let renderer: unknown;
+    it("should call markedjs/marked", async () => {
+      expect(await markdownToHTML("test")).toBe("<p>test</p>\n");
+    });
 
-    beforeEach(() => {
-      renderer = undefined;
-
-      function marked(...args) {
-        renderer = args[1];
-        return args[0] + "-markdown";
-      }
-      marked.Renderer = function () {
-        return {};
-      };
-      jest.mock(
-        "/assets/libs/marked.min.js",
-        () => ({
-          marked,
-        }),
-        { virtual: true }
+    it("should escape all SVGs", async () => {
+      expect(await markdownToHTML("<h1><svg>...</svg></h1>")).toBe(
+        "<h1>&lt;svg&gt;...&lt;/svg&gt;</h1>"
       );
     });
 
-    it("should call markedjs/marked", async () => {
-      expect(await markdownToHTML("test")).toBe("test-markdown");
+    it("should render link with a custom renderer", async () => {
+      expect(await markdownToHTML("[test](https://test.com)")).toBe(
+        '<p><a target="_blank" rel="noopener noreferrer" href="https://test.com">test</a></p>\n'
+      );
     });
 
-    it("should call markedjs/marked with custom renderers", async () => {
-      await markdownToHTML("test");
+    it("should render image link with a custom renderer", async () => {
+      expect(await markdownToHTML(`![alt](image.png "title")`)).toBe(
+        `<p><a href="image.png" target="_blank" rel="noopener noreferrer" type="image/png" title="title">alt</a></p>\n`
+      );
+    });
 
-      expect(renderer).toEqual({
-        renderer: {
-          link: targetBlankLinkRenderer,
-          image: imageToLinkRenderer,
-        },
-      });
+    it("should render image provided as html with a custom renderer", async () => {
+      expect(await markdownToHTML(`<img src="image.png" alt="title" />`)).toBe(
+        `<a href="image.png" target="_blank" rel="noopener noreferrer" type="image/png">title</a>`
+      );
     });
   });
 });

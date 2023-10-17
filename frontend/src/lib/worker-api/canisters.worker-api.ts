@@ -22,9 +22,8 @@ export const queryCanisterDetails = async ({
   try {
     const canister_id = mapCanisterId(canisterId);
 
-    const rawResponse: CanisterStatusResponse = await canisterStatus(
-      canister_id
-    );
+    const rawResponse: CanisterStatusResponse =
+      await canisterStatus(canister_id);
 
     const response = toCanisterDetails({
       response: rawResponse,

@@ -9,7 +9,7 @@
   export let description: string | undefined;
 </script>
 
-<KeyValuePairInfo {testId}>
+<KeyValuePairInfo {testId} alignIconRight>
   <svelte:fragment slot="key"
     >{keyOf({ obj: $i18n.proposal_detail, key: labelKey })}</svelte:fragment
   >

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsNeuronAge from "$lib/components/sns-neurons/SnsNeuronAge.svelte";
 import { SECONDS_IN_MONTH } from "$lib/constants/constants";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
@@ -14,7 +10,7 @@ describe("SnsNeuronAge", () => {
   const now = 1686806749421;
   const nowSeconds = Math.floor(now / 1000);
   beforeEach(() => {
-    jest.useFakeTimers().setSystemTime(now);
+    vi.useFakeTimers().setSystemTime(now);
   });
 
   const renderComponent = (neuron: SnsNeuron) => {

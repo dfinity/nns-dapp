@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as api from "$lib/api/ckbtc-minter.api";
 import CkBTCWalletActions from "$lib/components/accounts/CkBTCWalletActions.svelte";
 import {
@@ -10,15 +6,15 @@ import {
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKBTC_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/ckbtc.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { page } from "$mocks/$app/stores";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { advanceTime } from "$tests/utils/timers.test-utils";
 import { waitFor } from "@testing-library/dom";
 import { fireEvent, render } from "@testing-library/svelte";
-import { page } from "../../../../../__mocks__/$app/stores";
 
-jest.mock("$lib/api/ckbtc-minter.api", () => ({
-  updateBalance: jest.fn().mockResolvedValue(undefined),
+vi.mock("$lib/api/ckbtc-minter.api", () => ({
+  updateBalance: vi.fn().mockResolvedValue(undefined),
 }));
 
 describe("CkBTCWalletActions", () => {
@@ -33,9 +29,9 @@ describe("CkBTCWalletActions", () => {
 
   beforeEach(() => {
     resetIdentity();
-    jest.useFakeTimers().setSystemTime(now);
+    vi.useFakeTimers().setSystemTime(now);
   });
-  afterEach(jest.clearAllTimers);
+  afterEach(vi.clearAllTimers);
 
   const props = {
     minterCanisterId: CKTESTBTC_MINTER_CANISTER_ID,
@@ -51,39 +47,23 @@ describe("CkBTCWalletActions", () => {
     expect(button?.textContent).toEqual(en.ckbtc.refresh_balance);
   });
 
-  it("should render a menubar", () => {
-    const { getByTestId } = render(CkBTCWalletActions, { props });
-    expect(
-      getByTestId("manual-refresh-balance-container")?.getAttribute("role")
-    ).toEqual("menubar");
-  });
-
-  it("should not render a menubar", () => {
-    const { getByTestId } = render(CkBTCWalletActions, {
-      props: {
-        ...props,
-        inline: true,
-      },
-    });
-    expect(
-      getByTestId("manual-refresh-balance-container")?.hasAttribute("role")
-    ).toEqual(false);
-  });
-
   it("should call update balance", async () => {
-    const spyUpdateBalance = jest.spyOn(api, "updateBalance");
+    const spyUpdateBalance = vi.spyOn(api, "updateBalance");
 
     const { getByTestId } = render(CkBTCWalletActions, { props });
 
     const button = getByTestId("manual-refresh-balance");
 
-    fireEvent.click(button as HTMLButtonElement);
+    await fireEvent.click(button as HTMLButtonElement);
+
+    // wait for 4 seconds
+    await advanceTime(CKBTC_TRANSACTIONS_RELOAD_DELAY);
 
     await waitFor(() => expect(spyUpdateBalance).toHaveBeenCalledTimes(1));
   });
 
   it("should call reload", async () => {
-    const spyReload = jest.fn();
+    const spyReload = vi.fn();
 
     const { getByTestId } = render(CkBTCWalletActions, {
       props: {

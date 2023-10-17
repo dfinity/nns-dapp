@@ -1,11 +1,8 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as api from "$lib/api/governance.api";
 import HardwareWalletNeuronAddHotkeyModal from "$lib/modals/accounts/HardwareWalletNeuronAddHotkeyModal.svelte";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { authStore } from "$lib/stores/auth.store";
+import HardwareWalletAddNeuronHotkeyTest from "$tests/lib/components/accounts/HardwareWalletAddNeuronHotkeyTest.svelte";
 import {
   createMockIdentity,
   mockAuthStoreSubscribe,
@@ -20,9 +17,9 @@ import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import HardwareWalletAddNeuronHotkeyTest from "../../components/accounts/HardwareWalletAddNeuronHotkeyTest.svelte";
+import type { Mock } from "vitest";
 
-jest.mock("$lib/proxy/icp-ledger.services.proxy");
+vi.mock("$lib/proxy/icp-ledger.services.proxy");
 
 describe("HardwareWalletNeuronAddHotkeyModal", () => {
   const props = { testComponent: HardwareWalletNeuronAddHotkeyModal };
@@ -32,22 +29,20 @@ describe("HardwareWalletNeuronAddHotkeyModal", () => {
   const mockIdentity2 = createMockIdentity(0);
 
   beforeEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
     resetIdentity();
-    (getLedgerIdentityProxy as jest.Mock).mockImplementation(() =>
+    (getLedgerIdentityProxy as Mock).mockImplementation(() =>
       Promise.resolve(mockIdentity2)
     );
-    spyAddHotkey = jest
+    spyAddHotkey = vi
       .spyOn(api, "addHotkey")
       .mockImplementation(() => Promise.resolve());
 
-    spyGetNeuron = jest
+    spyGetNeuron = vi
       .spyOn(api, "queryNeuron")
       .mockImplementation(() => Promise.resolve(mockNeuron));
 
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
   it("should display modal", () => {

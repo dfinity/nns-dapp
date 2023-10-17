@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SelectAccountDropdown from "$lib/components/accounts/SelectAccountDropdown.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
@@ -19,7 +15,7 @@ import { fireEvent, render, waitFor } from "@testing-library/svelte";
 describe("SelectAccountDropdown", () => {
   describe("no accounts", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       icpAccountsStore.resetForTesting();
     });
 

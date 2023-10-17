@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
@@ -32,15 +28,17 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { assertNonNullish, clickByTestId } from "$tests/utils/utils.test-utils";
+import { LedgerCanister } from "@dfinity/ledger-icp";
 import type { NeuronInfo } from "@dfinity/nns";
-import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
+import { GovernanceCanister } from "@dfinity/nns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import { mock } from "jest-mock-extended";
 import type { SvelteComponent } from "svelte";
 import { get } from "svelte/store";
+import type { SpyInstance } from "vitest";
+import { mock } from "vitest-mock-extended";
 
-jest.mock("$lib/api/nns-dapp.api");
-jest.mock("$lib/api/icp-ledger.api");
+vi.mock("$lib/api/nns-dapp.api");
+vi.mock("$lib/api/icp-ledger.api");
 const neuronStake = 2.2;
 const neuronStakeE8s = BigInt(Math.round(neuronStake * E8S_PER_ICP));
 const newNeuron: NeuronInfo = {
@@ -52,31 +50,31 @@ const newNeuron: NeuronInfo = {
     cachedNeuronStake: neuronStakeE8s,
   },
 };
-jest.mock("$lib/services/neurons.services", () => {
+vi.mock("$lib/services/neurons.services", () => {
   return {
-    stakeNeuron: jest
+    stakeNeuron: vi
       .fn()
       .mockImplementation(() => Promise.resolve(newNeuron.neuronId)),
-    updateDelay: jest.fn().mockResolvedValue(undefined),
-    loadNeuron: jest.fn().mockResolvedValue(undefined),
-    addHotkeyForHardwareWalletNeuron: jest
+    updateDelay: vi.fn().mockResolvedValue(undefined),
+    loadNeuron: vi.fn().mockResolvedValue(undefined),
+    addHotkeyForHardwareWalletNeuron: vi
       .fn()
       .mockResolvedValue({ success: true }),
-    getNeuronFromStore: jest.fn(),
+    getNeuronFromStore: vi.fn(),
   };
 });
 
-jest.mock("$lib/services/known-neurons.services", () => {
+vi.mock("$lib/services/known-neurons.services", () => {
   return {
-    listKnownNeurons: jest.fn(),
+    listKnownNeurons: vi.fn(),
   };
 });
 
-jest.mock("$lib/stores/toasts.store", () => {
+vi.mock("$lib/stores/toasts.store", () => {
   return {
-    toastsError: jest.fn(),
-    toastsShow: jest.fn(),
-    toastsSuccess: jest.fn(),
+    toastsError: vi.fn(),
+    toastsShow: vi.fn(),
+    toastsSuccess: vi.fn(),
   };
 });
 
@@ -84,11 +82,11 @@ describe("NnsStakeNeuronModal", () => {
   beforeEach(() => {
     resetIdentity();
     cancelPollAccounts();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe("main account selection", () => {
-    let queryBalanceSpy: jest.SpyInstance;
+    let queryBalanceSpy: SpyInstance;
     const newBalanceE8s = BigInt(10_000_000);
     beforeEach(() => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
@@ -96,13 +94,13 @@ describe("NnsStakeNeuronModal", () => {
         ...mockAccountsStoreData,
         subAccounts: [mockSubAccount],
       });
-      jest
-        .spyOn(LedgerCanister, "create")
-        .mockImplementation(() => mock<LedgerCanister>());
-      jest
-        .spyOn(GovernanceCanister, "create")
-        .mockImplementation(() => mock<GovernanceCanister>());
-      queryBalanceSpy = jest
+      vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
+        mock<LedgerCanister>()
+      );
+      vi.spyOn(GovernanceCanister, "create").mockImplementation(() =>
+        mock<GovernanceCanister>()
+      );
+      queryBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(newBalanceE8s);
     });
@@ -391,7 +389,7 @@ describe("NnsStakeNeuronModal", () => {
         component: NnsStakeNeuronModal,
       });
 
-      const onClose = jest.fn();
+      const onClose = vi.fn();
       component.$on("nnsClose", onClose);
 
       await clickByTestId(getByTestId, "stake-neuron-button-cancel");
@@ -445,7 +443,7 @@ describe("NnsStakeNeuronModal", () => {
       await waitFor(() =>
         expect(queryByTestId("add-principal-to-hotkeys-modal")).not.toBeNull()
       );
-      const onClose = jest.fn();
+      const onClose = vi.fn();
       component.$on("nnsClose", onClose);
 
       const skipButton = queryByTestId("skip-add-principal-to-hotkey-modal");
@@ -520,12 +518,12 @@ describe("NnsStakeNeuronModal", () => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
       icpAccountsStore.resetForTesting();
       const mainBalanceE8s = BigInt(10_000_000);
-      jest
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mainBalanceE8s);
-      jest
-        .spyOn(nnsDappApi, "queryAccount")
-        .mockResolvedValue(mockAccountDetails);
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        mainBalanceE8s
+      );
+      vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(
+        mockAccountDetails
+      );
     });
     it("should load and then show the accounts", async () => {
       const { queryByTestId } = await renderModal({
@@ -541,20 +539,20 @@ describe("NnsStakeNeuronModal", () => {
   });
 
   describe("when no accounts and user navigates away", () => {
-    let spyQueryAccount: jest.SpyInstance;
+    let spyQueryAccount: SpyInstance;
     beforeEach(() => {
       icpAccountsStore.resetForTesting();
-      jest.clearAllTimers();
+      vi.clearAllTimers();
       const now = Date.now();
-      jest.useFakeTimers().setSystemTime(now);
+      vi.useFakeTimers().setSystemTime(now);
       const mainBalanceE8s = BigInt(10_000_000);
-      jest
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mainBalanceE8s);
-      spyQueryAccount = jest
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        mainBalanceE8s
+      );
+      spyQueryAccount = vi
         .spyOn(nnsDappApi, "queryAccount")
         .mockRejectedValue(new Error("connection error"));
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
     });
 
     it("should stop polling", async () => {

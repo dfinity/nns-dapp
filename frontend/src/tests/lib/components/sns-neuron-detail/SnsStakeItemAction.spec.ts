@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsStakeItemAction from "$lib/components/sns-neuron-detail/SnsStakeItemAction.svelte";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import {

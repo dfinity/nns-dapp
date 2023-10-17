@@ -12,7 +12,7 @@ import type {
   SnsSummarySwap,
   SnsSwapCommitment,
 } from "$lib/types/sns";
-import type { IcrcTransaction } from "@dfinity/ledger";
+import type { IcrcTransaction } from "@dfinity/ledger-icrc";
 import type {
   Ballot,
   Followees,
@@ -441,7 +441,7 @@ export const anonymizeProposal = async (
 
 const anonymizeBuyer = async ([buyer, state]: [
   string,
-  SnsSwapBuyerState
+  SnsSwapBuyerState,
 ]): Promise<[string, SnsSwapBuyerState]> => [
   buyer,
   {

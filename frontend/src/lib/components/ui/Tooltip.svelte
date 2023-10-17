@@ -15,11 +15,16 @@
   let tooltipStyle: string | undefined = undefined;
 
   const setPosition = debounce(() => {
+    // The debounce might effectively happen after the component has been destroyed, this is particularly the case in unit tests.
+    // That is why we are using a guard to avoid to perform any logic in case the Tooltip does not exist anymore.
+    if (destroyed) {
+      return;
+    }
+
     // We need the main reference because at the moment the scrollbar is displayed in that element therefore it's the way to get to know the real width - i.e. window width - scrollbar width
     const main: HTMLElement | null = document.querySelector(containerSelector);
 
     if (
-      destroyed ||
       main === null ||
       tooltipComponent === undefined ||
       target === undefined
@@ -118,7 +123,9 @@
 
     opacity: 0;
     visibility: hidden;
-    transition: opacity 150ms, visibility 150ms;
+    transition:
+      opacity 150ms,
+      visibility 150ms;
 
     padding: 4px 6px;
     border-radius: 4px;

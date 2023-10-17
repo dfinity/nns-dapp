@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
 import { initAuthWorker } from "$lib/services/worker-auth.services";
 import { authStore } from "$lib/stores/auth.store";
@@ -15,8 +11,8 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { render } from "@testing-library/svelte";
 
-jest.mock("$lib/services/worker-auth.services", () => ({
-  initAuthWorker: jest.fn(() =>
+vi.mock("$lib/services/worker-auth.services", () => ({
+  initAuthWorker: vi.fn(() =>
     Promise.resolve({
       syncAuthIdle: () => {
         // Do nothing
@@ -25,21 +21,21 @@ jest.mock("$lib/services/worker-auth.services", () => ({
   ),
 }));
 
-jest.mock("$lib/services/app.services", () => ({
-  initApp: jest.fn(() => Promise.resolve()),
+vi.mock("$lib/services/app.services", () => ({
+  initApp: vi.fn(() => Promise.resolve()),
 }));
 
-jest.mock("$lib/proxy/app.services.proxy");
+vi.mock("$lib/proxy/app.services.proxy");
 
 describe("Layout", () => {
   beforeEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
 
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mutableMockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(
+      mutableMockAuthStoreSubscribe
+    );
 
-    jest.spyOn(authStore, "sync").mockImplementation(() => Promise.resolve());
+    vi.spyOn(authStore, "sync").mockImplementation(() => Promise.resolve());
   });
 
   it("should init the app after sign in", async () => {
@@ -69,7 +65,7 @@ describe("Layout", () => {
   });
 
   it("should reset toasts on sign in", async () => {
-    const spy = jest.spyOn(toastsStore, "reset");
+    const spy = vi.spyOn(toastsStore, "reset");
     expect(spy).not.toBeCalled();
 
     render(App);

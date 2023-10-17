@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsActiveDisbursementEntry from "$lib/modals/sns/neurons/SnsActiveDisbursementEntry.svelte";
 import { mockPrincipalText } from "$tests/mocks/auth.store.mock";
 import { ActiveDisbursementEntryPo } from "$tests/page-objects/ActiveDisbursementEntry.page-object";
@@ -45,8 +41,8 @@ describe("SnsActiveDisbursementEntry", () => {
   });
 
   it("should display timestamp", async () => {
-    jest.useFakeTimers();
-    jest.setSystemTime(new Date(0));
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(0));
 
     const po = renderComponent(testActiveDisbursement);
 

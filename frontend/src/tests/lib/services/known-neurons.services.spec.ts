@@ -12,15 +12,15 @@ import { mockKnownNeuron } from "$tests/mocks/neurons.mock";
 import { get } from "svelte/store";
 
 describe("knownNeurons-services", () => {
-  const spyQueryKnownNeurons = jest
+  const spyQueryKnownNeurons = vi
     .spyOn(api, "queryKnownNeurons")
     .mockResolvedValue([mockKnownNeuron]);
 
   beforeEach(() => {
     resetIdentity();
-    jest
-      .spyOn(authServices, "getAuthenticatedIdentity")
-      .mockImplementation(mockGetIdentity);
+    vi.spyOn(authServices, "getAuthenticatedIdentity").mockImplementation(
+      mockGetIdentity
+    );
   });
 
   it("should list known neurons", async () => {

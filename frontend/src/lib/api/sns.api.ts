@@ -8,7 +8,7 @@ import type {
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
-import type { IcrcAccount } from "@dfinity/ledger";
+import type { IcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import type {
   SnsGetDerivedStateResponse,

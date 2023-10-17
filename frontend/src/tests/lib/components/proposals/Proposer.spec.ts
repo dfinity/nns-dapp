@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as agent from "$lib/api/agent.api";
 import Proposer from "$lib/components/proposals/Proposer.svelte";
 import { authStore } from "$lib/stores/auth.store";
@@ -13,7 +9,7 @@ import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import type { HttpAgent } from "@dfinity/agent";
 import { GovernanceCanister } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { mock } from "jest-mock-extended";
+import { mock } from "vitest-mock-extended";
 
 describe("Proposer", () => {
   const props = {
@@ -24,14 +20,12 @@ describe("Proposer", () => {
     new MockGovernanceCanister(mockProposals);
 
   beforeEach(() => {
-    jest
-      .spyOn(GovernanceCanister, "create")
-      .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
+    vi.spyOn(GovernanceCanister, "create").mockImplementation(
+      (): GovernanceCanister => mockGovernanceCanister
+    );
 
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
-    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   it("should render proposer", () => {

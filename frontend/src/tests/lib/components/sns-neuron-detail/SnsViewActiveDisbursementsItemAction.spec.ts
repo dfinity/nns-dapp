@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsViewActiveDisbursementsItemAction from "$lib/components/sns-neuron-detail/SnsViewActiveDisbursementsItemAction.svelte";
 import {
   mockActiveDisbursement,

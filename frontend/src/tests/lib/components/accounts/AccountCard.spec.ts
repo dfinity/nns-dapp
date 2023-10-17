@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import AccountCard from "$lib/components/accounts/AccountCard.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import type { Account } from "$lib/types/account";

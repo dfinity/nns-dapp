@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import TextInputFormTest from "$tests/lib/components/common/TextInputFormTest.svelte";
 import { TextInputFormPo } from "$tests/page-objects/TextInputForm.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -71,7 +67,7 @@ describe("TextInputForm", () => {
       props: mandatoryProps,
     });
 
-    const callback = jest.fn();
+    const callback = vi.fn();
     component.$on("nnsClose", callback);
     clickByTestId(getByTestId, "cancel");
     expect(callback).toHaveBeenCalled();
@@ -82,7 +78,7 @@ describe("TextInputForm", () => {
       props: mandatoryProps,
     });
 
-    const callback = jest.fn();
+    const callback = vi.fn();
     component.$on("nnsConfirmText", callback);
     clickByTestId(getByTestId, "confirm-text-input-screen-button");
     expect(callback).toHaveBeenCalled();

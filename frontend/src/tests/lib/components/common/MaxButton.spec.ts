@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import MaxButton from "$lib/components/common/MaxButton.svelte";
 import { fireEvent, render } from "@testing-library/svelte";
 
@@ -16,10 +12,11 @@ describe("MaxButton", () => {
     expect(queryByTestId("icon-subdirectory")).toBeInTheDocument();
   });
 
-  it("should trigger on click event", (done) => {
-    const { container, component } = render(MaxButton);
-    component.$on("click", () => done());
-    const buttonElement = container.querySelector("button");
-    buttonElement && fireEvent.click(buttonElement);
-  });
+  it("should trigger on click event", () =>
+    new Promise<void>((done) => {
+      const { container, component } = render(MaxButton);
+      component.$on("click", () => done());
+      const buttonElement = container.querySelector("button");
+      buttonElement && fireEvent.click(buttonElement);
+    }));
 });

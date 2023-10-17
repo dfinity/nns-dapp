@@ -1,14 +1,4 @@
-import type {
-  IcrcMetadataResponseEntries,
-  IcrcTokenMetadataResponse,
-} from "@dfinity/ledger";
-import type {
-  SnsGetDerivedStateResponse,
-  SnsGetMetadataResponse,
-  SnsNervousSystemFunction,
-  SnsSwap,
-  SnsSwapDerivedState,
-} from "@dfinity/sns";
+import type { IcrcMetadataResponseEntries } from "@dfinity/ledger-icrc";
 
 type CanisterIds = {
   root_canister_id: string;
@@ -26,30 +16,6 @@ type ListSnsCanisterIds = {
   dapps: string[];
   archives: string[];
   index: string;
-};
-
-// TODO: Create types with script https://dfinity.atlassian.net/browse/GIX-1249
-export type CachedSns = {
-  index: number;
-  canister_ids: CanisterIds;
-  list_sns_canisters: ListSnsCanisterIds;
-  meta: SnsGetMetadataResponse;
-  parameters: {
-    functions: SnsNervousSystemFunction[];
-    reserved_ids: bigint[];
-  };
-  swap_state: {
-    swap: SnsSwap;
-    derived: SnsSwapDerivedState;
-  };
-  icrc1_metadata: IcrcTokenMetadataResponse;
-  /**
-   * TODO: integrate ckBTC fee
-   * @deprecated we will use the icrc1_metadata.fee as source information for the fee
-   */
-  icrc1_fee?: bigint;
-  icrc1_total_supply: bigint;
-  derived_state: SnsGetDerivedStateResponse;
 };
 
 export type CachedSnsMetadataDto = {
@@ -93,6 +59,22 @@ export type CachedSwapParamsDto = {
     dissolve_delay_interval_seconds: number;
   };
   sale_delay_seconds?: number;
+  min_direct_participation_icp_e8s?: number | null;
+  max_direct_participation_icp_e8s?: number | null;
+};
+
+interface CachedLinearScalingCoefficient {
+  slope_numerator?: number | null;
+  slope_denominator?: number | null;
+  intercept_icp_e8s?: number | null;
+  from_direct_participation_icp_e8s?: number | null;
+  to_direct_participation_icp_e8s?: number | null;
+}
+
+export type CachedNeuronsFundParticipationConstraints = {
+  coefficient_intervals: Array<CachedLinearScalingCoefficient>;
+  max_neurons_fund_participation_icp_e8s?: number | null;
+  min_direct_participation_threshold_icp_e8s?: number | null;
 };
 
 // TODO: update when the candid is updated with the new init params
@@ -135,6 +117,9 @@ export type CachedSwapInitParamsDto = {
   neuron_minimum_stake_e8s: number;
   confirmation_text?: string | undefined;
   restricted_countries?: CachedCountriesDto | undefined;
+  neurons_fund_participation_constraints?: CachedNeuronsFundParticipationConstraints | null;
+  min_direct_participation_icp_e8s?: number | null;
+  max_direct_participation_icp_e8s?: number | null;
 };
 
 export type CachedSnsSwapDto = {
@@ -144,6 +129,8 @@ export type CachedSnsSwapDto = {
   init: CachedSwapInitParamsDto | null;
   params: CachedSwapParamsDto | null;
   open_sns_token_swap_proposal_id: number | null;
+  direct_participation_icp_e8s?: number | undefined | null;
+  neurons_fund_participation_icp_e8s?: number | undefined | null;
 };
 
 export type CachedSnsSwapDerivedDto = {
@@ -152,6 +139,8 @@ export type CachedSnsSwapDerivedDto = {
   cf_participant_count?: number | undefined | null;
   direct_participant_count?: number | undefined | null;
   cf_neuron_count?: number | undefined | null;
+  direct_participation_icp_e8s?: number | undefined | null;
+  neurons_fund_participation_icp_e8s?: number | undefined | null;
 };
 
 type CachedSwapParamsResponseDto = {
@@ -175,7 +164,7 @@ export type CachedSnsTokenMetadataDto = [
     | { Nat: [number] }
     | { Blob: Uint8Array }
     | { Text: string }
-  )
+  ),
 ][];
 
 // Export for testing purposes

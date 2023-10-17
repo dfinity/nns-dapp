@@ -630,6 +630,7 @@ interface I18nNeuron_detail {
   disburse_maturity_confirmation_amount: string;
   disburse_maturity_confirmation_tokens: string;
   disburse_maturity_confirmation_destination: string;
+  disburse_maturity_edit: string;
   stake: string;
   spawn_neuron: string;
   spawn: string;
@@ -755,6 +756,7 @@ interface I18nSns_project_detail {
   max_user_commitment_reached: string;
   not_eligible_to_participate: string;
   getting_sns_open_ticket: string;
+  current_nf_commitment_description: string;
   sign_in: string;
 }
 

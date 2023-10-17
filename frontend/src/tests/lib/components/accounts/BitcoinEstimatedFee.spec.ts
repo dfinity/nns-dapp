@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import BitcoinEstimatedFee from "$lib/components/accounts/BitcoinEstimatedFee.svelte";
 import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -18,9 +14,9 @@ describe("BitcoinEstimatedFee", () => {
   const result = { minter_fee: 123n, bitcoin_fee: 456n };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     resetIdentity();
-    spyEstimateFee = jest
+    spyEstimateFee = vi
       .spyOn(minterApi, "estimateFee")
       .mockResolvedValue(result);
   });

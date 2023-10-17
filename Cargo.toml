@@ -1,11 +1,17 @@
 [workspace]
 members = [
     "rs/backend",
+    "rs/proposals",
     "rs/sns_aggregator"
 ]
+resolver = "2"
 
 [workspace.package]
-version = "2.0.49"
+version = "2.0.51"
+
+[workspace.dependencies]
+ic-cdk = "0.8.1"
+ic-cdk-macros = "0.6.10"
 
 [profile.release]
 lto = false

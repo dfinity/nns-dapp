@@ -11,7 +11,7 @@ import type { Universe } from "$lib/types/universe";
 import {
   IcrcMetadataResponseEntries,
   type IcrcTokenMetadataResponse,
-} from "@dfinity/ledger";
+} from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import {
   SnsSwapLifecycle,
@@ -79,7 +79,7 @@ export const mockSnsSwapCommitment = (
       rootCanisterId: principal(3),
       myCommitment: undefined,
     },
-  }[rootCanisterId.toText()]);
+  })[rootCanisterId.toText()];
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
 const SECONDS_TODAY = +new Date(new Date().toJSON().split("T")[0]) / 1000;
@@ -94,6 +94,8 @@ export const mockSnsParams: SnsParams = {
   max_participant_icp_e8s: BigInt(5000000000),
   min_icp_e8s: BigInt(1500 * 100000000),
   sale_delay_seconds: [],
+  min_direct_participation_icp_e8s: [],
+  max_direct_participation_icp_e8s: [],
 };
 
 export const mockInit: SnsSwapInit = {
@@ -124,6 +126,9 @@ export const mockInit: SnsSwapInit = {
     "2vtpp-r6lcd-cbfas-qbabv-wxrv5-lsrkj-c4dtb-6ets3-srlqe-xpuzf-vqe",
   restricted_countries: [],
   min_icp_e8s: [1_500_000_000n],
+  neurons_fund_participation_constraints: [],
+  min_direct_participation_icp_e8s: [1_000_000_000n],
+  max_direct_participation_icp_e8s: [3_000_000_000n],
 };
 
 export const mockSwap: SnsSummarySwap = {
@@ -158,6 +163,8 @@ export const mockQuerySwap: SnsSwap = {
   next_ticket_id: [],
   purge_old_tickets_last_completion_timestamp_nanoseconds: [],
   purge_old_tickets_next_principal: [],
+  direct_participation_icp_e8s: [],
+  neurons_fund_participation_icp_e8s: [],
 };
 
 export const mockDerived: SnsSwapDerivedState = {
@@ -166,6 +173,8 @@ export const mockDerived: SnsSwapDerivedState = {
   cf_participant_count: [BigInt(100)],
   direct_participant_count: [BigInt(300)],
   cf_neuron_count: [BigInt(200)],
+  direct_participation_icp_e8s: [],
+  neurons_fund_participation_icp_e8s: [],
 };
 
 export const mockDerivedResponse: SnsGetDerivedStateResponse = {
@@ -174,6 +183,8 @@ export const mockDerivedResponse: SnsGetDerivedStateResponse = {
   cf_participant_count: [BigInt(100)],
   direct_participant_count: [BigInt(300)],
   cf_neuron_count: [BigInt(200)],
+  direct_participation_icp_e8s: [],
+  neurons_fund_participation_icp_e8s: [],
 };
 
 export const mockMetadata: SnsSummaryMetadata = {
@@ -289,6 +300,25 @@ export const summaryForLifecycle = (
   },
 });
 
+type SnsSummaryParams = {
+  lifecycle?: SnsSwapLifecycle;
+  confirmationText?: string | undefined;
+  restrictedCountries?: string[] | undefined;
+  minParticipants?: number;
+  buyersCount?: bigint | null;
+  tokensDistributed?: bigint;
+  minParticipantCommitment?: bigint;
+  maxParticipantCommitment?: bigint;
+  swapDueTimestampSeconds?: bigint;
+  minTotalCommitment?: bigint;
+  maxTotalCommitment?: bigint;
+  currentTotalCommitment?: bigint;
+  neuronsFundCommitment?: bigint;
+  directCommitment?: bigint;
+  minDirectParticipation?: bigint;
+  maxDirectParticipation?: bigint;
+};
+
 export const createSummary = ({
   lifecycle = SnsSwapLifecycle.Open,
   confirmationText = undefined,
@@ -302,24 +332,17 @@ export const createSummary = ({
   minTotalCommitment,
   maxTotalCommitment,
   currentTotalCommitment,
-}: {
-  lifecycle?: SnsSwapLifecycle;
-  confirmationText?: string | undefined;
-  restrictedCountries?: string[] | undefined;
-  minParticipants?: number;
-  buyersCount?: bigint | null;
-  tokensDistributed?: bigint;
-  minParticipantCommitment?: bigint;
-  maxParticipantCommitment?: bigint;
-  swapDueTimestampSeconds?: bigint;
-  minTotalCommitment?: bigint;
-  maxTotalCommitment?: bigint;
-  currentTotalCommitment?: bigint;
-}): SnsSummary => {
+  neuronsFundCommitment,
+  directCommitment,
+  minDirectParticipation,
+  maxDirectParticipation,
+}: SnsSummaryParams): SnsSummary => {
   const init: SnsSwapInit = {
     ...mockInit,
     swap_due_timestamp_seconds: [swapDueTimestampSeconds],
     confirmation_text: toNullable(confirmationText),
+    min_direct_participation_icp_e8s: toNullable(minDirectParticipation),
+    max_direct_participation_icp_e8s: toNullable(maxDirectParticipation),
     restricted_countries: nonNullish(restrictedCountries)
       ? [{ iso_codes: restrictedCountries }]
       : [],
@@ -339,6 +362,8 @@ export const createSummary = ({
     direct_participant_count: buyersCount === null ? [] : [buyersCount],
     buyer_total_icp_e8s:
       currentTotalCommitment ?? mockDerived.buyer_total_icp_e8s,
+    neurons_fund_participation_icp_e8s: toNullable(neuronsFundCommitment),
+    direct_participation_icp_e8s: toNullable(directCommitment),
   };
   const summary = summaryForLifecycle(lifecycle);
   return {
@@ -349,8 +374,21 @@ export const createSummary = ({
       params,
     },
     derived,
+    init,
   };
 };
+
+export const createMockSnsFullProject = ({
+  summaryParams,
+  rootCanisterId,
+}: {
+  rootCanisterId: Principal;
+  summaryParams: SnsSummaryParams;
+}) => ({
+  rootCanisterId,
+  summary: createSummary(summaryParams),
+  mockSwapCommitment: mockSnsSwapCommitment(rootCanisterId),
+});
 
 export const mockQueryMetadataResponse: SnsGetMetadataResponse = {
   url: [`https://my.url/`],
@@ -379,8 +417,8 @@ export const mockQueryMetadata: QuerySnsMetadata = {
   token: mockQueryTokenResponse,
 };
 
-export const mockTokenStore = (run: Subscriber<Token>) => {
-  run(mockSnsToken);
+export const mockTokenStore = (run?: Subscriber<Token>) => {
+  run?.(mockSnsToken);
   return () => undefined;
 };
 

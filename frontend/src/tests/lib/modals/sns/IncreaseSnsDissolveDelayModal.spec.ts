@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { SECONDS_IN_DAY, SECONDS_IN_YEAR } from "$lib/constants/constants";
 import IncreaseSnsDissolveDelayModal from "$lib/modals/sns/neurons/IncreaseSnsDissolveDelayModal.svelte";
@@ -29,8 +25,8 @@ import { fireEvent } from "@testing-library/dom";
 import { waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 
-jest.mock("$lib/api/sns-governance.api");
-jest.mock("$lib/services/sns-parameters.services");
+vi.mock("$lib/api/sns-governance.api");
+vi.mock("$lib/services/sns-parameters.services");
 
 const testIdentity = createMockIdentity(10023);
 
@@ -48,7 +44,7 @@ describe("IncreaseSnsDissolveDelayModal", () => {
       },
     ],
   };
-  const reloadNeuron = jest.fn().mockResolvedValue(undefined);
+  const reloadNeuron = vi.fn().mockResolvedValue(undefined);
   const renderIncreaseDelayModal = async (
     neuron: SnsNeuron
   ): Promise<RenderResult<SvelteComponent>> => {
@@ -64,13 +60,13 @@ describe("IncreaseSnsDissolveDelayModal", () => {
   };
 
   beforeEach(() => {
-    jest.resetAllMocks();
-    jest
-      .spyOn(authServices, "getAuthenticatedIdentity")
-      .mockResolvedValue(testIdentity);
+    vi.resetAllMocks();
+    vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
+      testIdentity
+    );
 
-    jest.clearAllTimers();
-    jest.useFakeTimers().setSystemTime(now);
+    vi.clearAllTimers();
+    vi.useFakeTimers().setSystemTime(now);
 
     snsParametersStore.reset();
     snsParametersStore.setParameters({
@@ -171,10 +167,13 @@ describe("IncreaseSnsDissolveDelayModal", () => {
     );
 
     expect(confirmButton).toBeDefined();
+    expect(snsGovernanceApi.setDissolveDelay).toBeCalledTimes(0);
 
     confirmButton && (await fireEvent.click(confirmButton));
 
-    expect(snsGovernanceApi.setDissolveDelay).toBeCalledTimes(1);
+    await waitFor(() =>
+      expect(snsGovernanceApi.setDissolveDelay).toBeCalledTimes(1)
+    );
   });
 
   it("should be able to change dissolve delay in the confirmation screen using input", async () => {
@@ -215,10 +214,13 @@ describe("IncreaseSnsDissolveDelayModal", () => {
     );
 
     expect(confirmButton).toBeDefined();
+    expect(snsGovernanceApi.setDissolveDelay).toBeCalledTimes(0);
 
     confirmButton && (await fireEvent.click(confirmButton));
 
-    expect(snsGovernanceApi.setDissolveDelay).toBeCalledTimes(1);
+    await waitFor(() =>
+      expect(snsGovernanceApi.setDissolveDelay).toBeCalledTimes(1)
+    );
     expect(snsGovernanceApi.setDissolveDelay).toBeCalledWith(
       expect.objectContaining({
         dissolveTimestampSeconds: dissolveDelaySeconds + nowInSeconds,

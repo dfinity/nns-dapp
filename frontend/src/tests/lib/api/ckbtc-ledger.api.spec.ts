@@ -7,22 +7,22 @@ import {
   mockSnsToken,
 } from "$tests/mocks/sns-projects.mock";
 import type { HttpAgent } from "@dfinity/agent";
-import { IcrcLedgerCanister } from "@dfinity/ledger";
-import { mock } from "jest-mock-extended";
+import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
+import { mock } from "vitest-mock-extended";
 
 describe("ckbtc-ledger api", () => {
   const ledgerCanisterMock = mock<IcrcLedgerCanister>();
 
   beforeAll(() => {
-    jest
-      .spyOn(IcrcLedgerCanister, "create")
-      .mockImplementation(() => ledgerCanisterMock);
+    vi.spyOn(IcrcLedgerCanister, "create").mockImplementation(
+      () => ledgerCanisterMock
+    );
   });
 
-  afterAll(() => jest.clearAllMocks());
+  afterAll(() => vi.clearAllMocks());
 
   beforeEach(() => {
-    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   describe("getCkBTCAccount", () => {

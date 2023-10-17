@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import BitcoinKYTFee from "$lib/components/accounts/BitcoinKYTFee.svelte";
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";

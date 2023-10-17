@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import DisburseSnsButton from "$lib/components/sns-neuron-detail/actions/DisburseSnsButton.svelte";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
@@ -16,13 +12,13 @@ import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
 describe("DisburseSnsButton", () => {
   beforeAll(() =>
-    jest
+    vi
       .spyOn(snsTokenSymbolSelectedStore, "subscribe")
       .mockImplementation(mockTokenStore)
   );
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("renders title", () => {

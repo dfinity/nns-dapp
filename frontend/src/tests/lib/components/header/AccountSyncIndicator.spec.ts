@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import AccountSyncIndicator from "$lib/components/header/AccountSyncIndicator.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { syncStore } from "$lib/stores/sync.store";
@@ -20,9 +16,9 @@ import {
 import type { SvelteComponent } from "svelte";
 
 describe("AccountSyncIndicator", () => {
-  jest
-    .spyOn(authStore, "subscribe")
-    .mockImplementation(mutableMockAuthStoreSubscribe);
+  vi.spyOn(authStore, "subscribe").mockImplementation(
+    mutableMockAuthStoreSubscribe
+  );
 
   beforeEach(() => {
     syncStore.reset();

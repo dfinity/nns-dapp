@@ -11,7 +11,17 @@ export const getConditionsToAccept = (
 ): string | undefined =>
   fromNullable(fromNullable(summary.swap.init)?.confirmation_text || []);
 
-// TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
-export const getNeuronsFundParticipation = (
-  _summary: SnsSummary
-): bigint | undefined => undefined;
+export const getNeuronsFundParticipation = ({
+  derived,
+}: SnsSummary): bigint | undefined =>
+  fromNullable(derived.neurons_fund_participation_icp_e8s);
+
+export const getMinDirectParticipation = ({
+  init,
+}: SnsSummary): bigint | undefined =>
+  fromNullable(init?.min_direct_participation_icp_e8s ?? []);
+
+export const getMaxDirectParticipation = ({
+  init,
+}: SnsSummary): bigint | undefined =>
+  fromNullable(init?.max_direct_participation_icp_e8s ?? []);

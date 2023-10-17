@@ -8,7 +8,7 @@ import type { Account } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
-import type { IcrcBlockIndex } from "@dfinity/ledger";
+import type { IcrcBlockIndex } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import { wrapper } from "./sns-wrapper.api";
 

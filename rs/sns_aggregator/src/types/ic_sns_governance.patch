@@ -1,32 +1,22 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_governance.rs a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-index 8dd073c48..8f297a9a1 100644
+index 699d84ad7..af9969652 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_governance.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-@@ -8,8 +8,7 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
- use ic_cdk::api::call::CallResult;
- // This is an experimental feature to generate Rust binding from Candid.
- // You may want to manually adjust some of the types.
--#![allow(dead_code, unused_imports)]
--// use candid::{self, CandidType, Decode, Deserialize, Serialize, Clone, Debug, Encode, candid::Principal};
-+// use candid::{self, CandidType, Deserialize, Serialize, Clone, Debug, candid::Principal};
- // use ic_cdk::api::call::CallResult as Result;
- 
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-@@ -517,7 +516,7 @@ pub struct GetMaturityModulationResponse {
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+@@ -518,7 +518,7 @@ pub struct GetMaturityModulationResponse {
+ #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
  pub struct GetMetadataArg {}
  
--#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, Default)]
+-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
++#[derive(Serialize, Clone, Debug, CandidType, Deserialize, Default)]
  pub struct GetMetadataResponse {
      pub url: Option<String>,
      pub logo: Option<String>,
-@@ -610,7 +609,7 @@ pub struct GetSnsInitializationParametersResponse {
+@@ -611,7 +611,7 @@ pub struct GetSnsInitializationParametersResponse {
      pub sns_initialization_parameters: String,
  }
  
--#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, Default)]
+-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
++#[derive(Serialize, Clone, Debug, CandidType, Deserialize, Default)]
  pub struct ListNervousSystemFunctionsResponse {
      pub reserved_ids: Vec<u64>,
      pub functions: Vec<NervousSystemFunction>,

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
 import CanisterCardCycles from "$lib/components/canisters/CanisterCardCycles.svelte";
 import type { CyclesCallback } from "$lib/services/worker-cycles.services";
@@ -10,12 +6,11 @@ import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCanister } from "$tests/mocks/canisters.mock";
 import en from "$tests/mocks/i18n.mock";
 import { render, waitFor } from "@testing-library/svelte";
-import { tick } from "svelte";
 
 let cyclesCallback: CyclesCallback | undefined;
 
-jest.mock("$lib/services/worker-cycles.services", () => ({
-  initCyclesWorker: jest.fn(() =>
+vitest.mock("$lib/services/worker-cycles.services", () => ({
+  initCyclesWorker: vitest.fn(() =>
     Promise.resolve({
       startCyclesTimer: ({ callback }: { callback: CyclesCallback }) => {
         cyclesCallback = callback;
@@ -28,9 +23,11 @@ jest.mock("$lib/services/worker-cycles.services", () => ({
 }));
 
 describe("CanisterCardCycles", () => {
+  beforeEach(() => (cyclesCallback = undefined));
+
   afterAll(() => {
-    jest.clearAllMocks();
-    jest.resetAllMocks();
+    vitest.clearAllMocks();
+    vitest.resetAllMocks();
   });
 
   const props = { props: { canister: mockCanister } };
@@ -48,7 +45,7 @@ describe("CanisterCardCycles", () => {
   it("should render canister cycles information", async () => {
     const { getByTestId } = render(CanisterCardCycles, props);
 
-    await tick();
+    await waitFor(() => expect(cyclesCallback).toBeDefined());
 
     cyclesCallback?.({
       canister: mock,
@@ -68,7 +65,7 @@ describe("CanisterCardCycles", () => {
   it("should render a hint if canister cycles are zero", async () => {
     const { getByTestId } = render(CanisterCardCycles, props);
 
-    await tick();
+    await waitFor(() => expect(cyclesCallback).toBeDefined());
 
     cyclesCallback?.({
       canister: {
@@ -92,7 +89,7 @@ describe("CanisterCardCycles", () => {
   it("should not render canister cycles information if different canister", async () => {
     const { getByTestId } = render(CanisterCardCycles, props);
 
-    await tick();
+    await waitFor(() => expect(cyclesCallback).toBeDefined());
 
     cyclesCallback?.({
       canister: {
@@ -107,7 +104,7 @@ describe("CanisterCardCycles", () => {
   it("should not render any information if canister cycles sync on error", async () => {
     const { container } = render(CanisterCardCycles, props);
 
-    await tick();
+    await waitFor(() => expect(cyclesCallback).toBeDefined());
 
     cyclesCallback?.({
       canister: {
@@ -124,7 +121,7 @@ describe("CanisterCardCycles", () => {
   it("should render skeleton while syncing", async () => {
     const { getAllByTestId } = render(CanisterCardCycles, props);
 
-    await tick();
+    await waitFor(() => expect(cyclesCallback).toBeDefined());
 
     cyclesCallback?.({
       canister: {

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import TransactionSource from "$lib/components/transaction/TransactionSource.svelte";
 import { formatToken } from "$lib/utils/token.utils";
 import en from "$tests/mocks/i18n.mock";

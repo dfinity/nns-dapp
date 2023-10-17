@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import CardInfo from "$lib/components/ui/CardInfo.svelte";
 import { render } from "@testing-library/svelte";
 import CardInfoTest from "./CardInfoTest.svelte";

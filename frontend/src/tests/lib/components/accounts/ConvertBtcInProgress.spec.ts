@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ConvertBtcInProgress from "$lib/components/accounts/ConvertBtcInProgress.svelte";
 import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
 import en from "$tests/mocks/i18n.mock";

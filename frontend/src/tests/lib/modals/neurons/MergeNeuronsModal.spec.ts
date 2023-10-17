@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
 import { mergeNeurons } from "$lib/api/governance.api";
@@ -27,7 +23,7 @@ import { toastsStore } from "@dfinity/gix-components";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
 
-jest.mock("$lib/api/governance.api");
+vi.mock("$lib/api/governance.api");
 
 const testIdentity = createMockIdentity(37373);
 
@@ -46,10 +42,10 @@ describe("MergeNeuronsModal", () => {
   fakeGovernanceApi.install();
 
   beforeEach(() => {
-    jest
-      .spyOn(authServices, "getAuthenticatedIdentity")
-      .mockResolvedValue(testIdentity);
-    jest.clearAllMocks();
+    vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
+      testIdentity
+    );
+    vi.clearAllMocks();
     icpAccountsStore.resetForTesting();
     neuronsStore.reset();
     resetNeuronsApiService();

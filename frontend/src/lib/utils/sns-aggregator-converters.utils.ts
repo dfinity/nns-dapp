@@ -9,8 +9,9 @@ import type {
 } from "$lib/types/sns";
 import type {
   CachedFunctionTypeDto,
+  CachedLifecycleResponseDto,
   CachedNervousFunctionDto,
-  CachedSns,
+  CachedNeuronsFundParticipationConstraints,
   CachedSnsDto,
   CachedSnsMetadataDto,
   CachedSnsSwapDerivedDto,
@@ -19,13 +20,13 @@ import type {
   CachedSwapInitParamsDto,
   CachedSwapParamsDto,
 } from "$lib/types/sns-aggregator";
-import type { IcrcTokenMetadataResponse } from "@dfinity/ledger";
+import type { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import type {
   SnsFunctionType,
-  SnsGetDerivedStateResponse,
-  SnsGetMetadataResponse,
+  SnsGetLifecycleResponse,
   SnsNervousSystemFunction,
+  SnsNeuronsFundParticipationConstraints,
   SnsParams,
   SnsSwap,
   SnsSwapDerivedState,
@@ -49,16 +50,6 @@ const convertOptionalStringToOptionalPrincipal = (
 ): [] | [Principal] => {
   return isNullish(principalText) ? [] : [Principal.fromText(principalText)];
 };
-
-const convertMeta = (
-  { url, name, description }: CachedSnsMetadataDto,
-  rootCanisterId: string
-): SnsGetMetadataResponse => ({
-  url: toNullable(url),
-  name: toNullable(name),
-  description: toNullable(description),
-  logo: toNullable(aggregatorCanisterLogoPath(rootCanisterId)),
-});
 
 const convertFunctionType = (
   functionType: CachedFunctionTypeDto
@@ -99,11 +90,49 @@ export const convertNervousFunction = ({
     : [],
 });
 
+const convertNeuronsFundParticipationConstraints = (
+  constraints: CachedNeuronsFundParticipationConstraints
+): SnsNeuronsFundParticipationConstraints => ({
+  coefficient_intervals: constraints.coefficient_intervals.map(
+    ({
+      slope_numerator,
+      intercept_icp_e8s,
+      from_direct_participation_icp_e8s,
+      slope_denominator,
+      to_direct_participation_icp_e8s,
+    }) => ({
+      slope_numerator: toNullable(convertOptionalNumToBigInt(slope_numerator)),
+      intercept_icp_e8s: toNullable(
+        convertOptionalNumToBigInt(intercept_icp_e8s)
+      ),
+      from_direct_participation_icp_e8s: toNullable(
+        convertOptionalNumToBigInt(from_direct_participation_icp_e8s)
+      ),
+      slope_denominator: toNullable(
+        convertOptionalNumToBigInt(slope_denominator)
+      ),
+      to_direct_participation_icp_e8s: toNullable(
+        convertOptionalNumToBigInt(to_direct_participation_icp_e8s)
+      ),
+    })
+  ),
+  max_neurons_fund_participation_icp_e8s: toNullable(
+    convertOptionalNumToBigInt(
+      constraints.max_neurons_fund_participation_icp_e8s
+    )
+  ),
+  min_direct_participation_threshold_icp_e8s: toNullable(
+    convertOptionalNumToBigInt(
+      constraints.min_direct_participation_threshold_icp_e8s
+    )
+  ),
+});
+
 const convertSwapInitParams = (
   init: CachedSwapInitParamsDto | null
-): [SnsSwapInit] | [] =>
+): SnsSwapInit | undefined =>
   nonNullish(init)
-    ? toNullable({
+    ? {
         nns_proposal_id: toNullable(
           convertOptionalNumToBigInt(init.nns_proposal_id)
         ),
@@ -172,8 +201,23 @@ const convertSwapInitParams = (
           init.fallback_controller_principal_ids,
         nns_governance_canister_id: init.nns_governance_canister_id,
         icp_ledger_canister_id: init.icp_ledger_canister_id,
-      })
-    : [];
+        neurons_fund_participation_constraints: nonNullish(
+          init.neurons_fund_participation_constraints
+        )
+          ? toNullable(
+              convertNeuronsFundParticipationConstraints(
+                init.neurons_fund_participation_constraints
+              )
+            )
+          : [],
+        min_direct_participation_icp_e8s: toNullable(
+          convertOptionalNumToBigInt(init.min_direct_participation_icp_e8s)
+        ),
+        max_direct_participation_icp_e8s: toNullable(
+          convertOptionalNumToBigInt(init.max_direct_participation_icp_e8s)
+        ),
+      }
+    : undefined;
 
 const convertSwapParams = (params: CachedSwapParamsDto): SnsParams => ({
   min_participant_icp_e8s: BigInt(params.min_participant_icp_e8s),
@@ -193,6 +237,12 @@ const convertSwapParams = (params: CachedSwapParamsDto): SnsParams => ({
   sale_delay_seconds: toNullable(
     convertOptionalNumToBigInt(params.sale_delay_seconds)
   ),
+  min_direct_participation_icp_e8s: toNullable(
+    convertOptionalNumToBigInt(params.min_direct_participation_icp_e8s)
+  ),
+  max_direct_participation_icp_e8s: toNullable(
+    convertOptionalNumToBigInt(params.max_direct_participation_icp_e8s)
+  ),
 });
 
 const convertSwap = ({
@@ -202,6 +252,8 @@ const convertSwap = ({
   params,
   decentralization_sale_open_timestamp_seconds,
   finalize_swap_in_progress,
+  direct_participation_icp_e8s,
+  neurons_fund_participation_icp_e8s,
 }: CachedSnsSwapDto): SnsSwap => ({
   auto_finalize_swap_response: [],
   already_tried_to_auto_finalize: [],
@@ -225,8 +277,14 @@ const convertSwap = ({
     open_sns_token_swap_proposal_id !== undefined
       ? toNullable(convertOptionalNumToBigInt(open_sns_token_swap_proposal_id))
       : [],
-  init: convertSwapInitParams(init),
+  init: toNullable(convertSwapInitParams(init)),
   params: isNullish(params) ? [] : [convertSwapParams(params)],
+  direct_participation_icp_e8s: toNullable(
+    convertOptionalNumToBigInt(direct_participation_icp_e8s)
+  ),
+  neurons_fund_participation_icp_e8s: toNullable(
+    convertOptionalNumToBigInt(neurons_fund_participation_icp_e8s)
+  ),
 });
 
 const convertDerived = ({
@@ -235,6 +293,8 @@ const convertDerived = ({
   cf_participant_count,
   direct_participant_count,
   cf_neuron_count,
+  direct_participation_icp_e8s,
+  neurons_fund_participation_icp_e8s,
 }: CachedSnsSwapDerivedDto): SnsSwapDerivedState => ({
   sns_tokens_per_icp,
   buyer_total_icp_e8s: BigInt(buyer_total_icp_e8s),
@@ -247,31 +307,15 @@ const convertDerived = ({
   cf_neuron_count: nonNullish(cf_neuron_count)
     ? toNullable(BigInt(cf_neuron_count))
     : [],
-});
-
-const convertDerivedToResponse = ({
-  sns_tokens_per_icp,
-  buyer_total_icp_e8s,
-  cf_participant_count,
-  direct_participant_count,
-  cf_neuron_count,
-}: CachedSnsSwapDerivedDto): SnsGetDerivedStateResponse => ({
-  sns_tokens_per_icp: toNullable(sns_tokens_per_icp),
-  buyer_total_icp_e8s: toNullable(
-    convertOptionalNumToBigInt(buyer_total_icp_e8s)
+  direct_participation_icp_e8s: toNullable(
+    convertOptionalNumToBigInt(direct_participation_icp_e8s)
   ),
-  cf_participant_count: nonNullish(cf_participant_count)
-    ? toNullable(BigInt(cf_participant_count))
-    : [],
-  direct_participant_count: nonNullish(direct_participant_count)
-    ? toNullable(BigInt(direct_participant_count))
-    : [],
-  cf_neuron_count: nonNullish(cf_neuron_count)
-    ? toNullable(BigInt(cf_neuron_count))
-    : [],
+  neurons_fund_participation_icp_e8s: toNullable(
+    convertOptionalNumToBigInt(neurons_fund_participation_icp_e8s)
+  ),
 });
 
-const convertIcrc1Metadata = (
+export const convertIcrc1Metadata = (
   icrc1Metadata: CachedSnsTokenMetadataDto
 ): IcrcTokenMetadataResponse => {
   return icrc1Metadata.map(([key, value]) => {
@@ -284,39 +328,6 @@ const convertIcrc1Metadata = (
     return [key, value];
   });
 };
-
-const convertSnsData = ({
-  index,
-  canister_ids,
-  list_sns_canisters,
-  meta,
-  parameters,
-  swap_state,
-  icrc1_metadata,
-  icrc1_fee,
-  icrc1_total_supply,
-  derived_state,
-}: CachedSnsDto): CachedSns => ({
-  index,
-  canister_ids,
-  list_sns_canisters,
-  meta: convertMeta(meta, canister_ids.root_canister_id),
-  parameters: {
-    functions: parameters.functions.map(convertNervousFunction),
-    reserved_ids: parameters.reserved_ids.map(BigInt),
-  },
-  swap_state: {
-    swap: convertSwap(swap_state.swap),
-    derived: convertDerived(swap_state.derived),
-  },
-  icrc1_metadata: convertIcrc1Metadata(icrc1_metadata),
-  icrc1_fee: convertOptionalNumToBigInt(icrc1_fee[0]),
-  icrc1_total_supply: BigInt(icrc1_total_supply),
-  derived_state: convertDerivedToResponse(derived_state),
-});
-
-export const convertDtoData = (data: CachedSnsDto[]): CachedSns[] =>
-  data.map(convertSnsData);
 
 /**
  * Metadata is given only if all its properties are defined.
@@ -364,6 +375,17 @@ const convertDtoToSnsSummarySwap = (
   };
 };
 
+const convertDtoToLifecycle = (
+  data: CachedLifecycleResponseDto
+): SnsGetLifecycleResponse => ({
+  decentralization_sale_open_timestamp_seconds: toNullable(
+    convertOptionalNumToBigInt(
+      data.decentralization_sale_open_timestamp_seconds
+    )
+  ),
+  lifecycle: toNullable(data.lifecycle),
+});
+
 type PartialSummary = Omit<SnsSummary, "metadata" | "token" | "swap"> & {
   metadata?: SnsSummaryMetadata;
   token?: IcrcTokenMetadata;
@@ -387,6 +409,9 @@ export const convertDtoToSnsSummary = ({
   icrc1_metadata,
   swap_state,
   derived_state,
+  init,
+  swap_params,
+  lifecycle,
 }: CachedSnsDto): SnsSummary | undefined => {
   const partialSummary: PartialSummary = {
     rootCanisterId: Principal.from(root_canister_id),
@@ -398,6 +423,11 @@ export const convertDtoToSnsSummary = ({
     token: convertDtoToTokenMetadata(icrc1_metadata),
     swap: convertDtoToSnsSummarySwap(swap_state.swap),
     derived: convertDerived(derived_state),
+    init: convertSwapInitParams(init.init),
+    swapParams: nonNullish(swap_params.params)
+      ? convertSwapParams(swap_params.params)
+      : undefined,
+    lifecycle: convertDtoToLifecycle(lifecycle),
   };
 
   return isValidSummary(partialSummary) ? partialSummary : undefined;

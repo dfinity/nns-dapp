@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsNeuronAdvancedSection from "$lib/components/neuron-detail/NnsNeuronAdvancedSection.svelte";
 import {
   SECONDS_IN_FOUR_YEARS,
@@ -50,11 +46,9 @@ describe("NnsNeuronAdvancedSection", () => {
 
   beforeEach(() => {
     nnsLatestRewardEventStore.reset();
-    jest.useFakeTimers();
-    jest.setSystemTime(nowInSeconds * 1000);
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.useFakeTimers();
+    vi.setSystemTime(nowInSeconds * 1000);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
     icpAccountsStore.resetForTesting();
   });
 

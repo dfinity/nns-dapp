@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsTransactionList from "$lib/components/accounts/SnsTransactionsList.svelte";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import * as services from "$lib/services/sns-transactions.services";
@@ -20,14 +16,14 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { render } from "@testing-library/svelte";
 
-jest.mock("$lib/services/sns-transactions.services", () => {
+vi.mock("$lib/services/sns-transactions.services", () => {
   return {
-    loadSnsAccountNextTransactions: jest.fn().mockResolvedValue(undefined),
+    loadSnsAccountNextTransactions: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/worker-transactions.services", () => ({
-  initTransactionsWorker: jest.fn(() =>
+vi.mock("$lib/services/worker-transactions.services", () => ({
+  initTransactionsWorker: vi.fn(() =>
     Promise.resolve({
       startTransactionsTimer: () => {
         // Do nothing
@@ -50,18 +46,18 @@ describe("SnsTransactionList", () => {
     });
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     page.mock({
       data: { universe: mockSnsFullProject.rootCanisterId.toText() },
     });
 
-    jest
-      .spyOn(snsProjectsStore, "subscribe")
-      .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+    vi.spyOn(snsProjectsStore, "subscribe").mockImplementation(
+      mockProjectSubscribe([mockSnsFullProject])
+    );
   });
 
   it("should call service to load transactions", () => {
-    const spy = jest.spyOn(services, "loadSnsAccountNextTransactions");
+    const spy = vi.spyOn(services, "loadSnsAccountNextTransactions");
 
     renderSnsTransactionList(mockSnsMainAccount, mockPrincipal);
 
@@ -79,9 +75,9 @@ describe("SnsTransactionList", () => {
       },
     };
 
-    jest
-      .spyOn(icrcTransactionsStore, "subscribe")
-      .mockImplementation(mockIcrcTransactionsStoreSubscribe(store));
+    vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(
+      mockIcrcTransactionsStoreSubscribe(store)
+    );
 
     const { queryAllByTestId } = renderSnsTransactionList(
       mockSnsMainAccount,

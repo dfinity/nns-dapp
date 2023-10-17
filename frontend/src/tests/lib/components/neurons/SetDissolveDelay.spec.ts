@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import SetDissolveDelay from "$lib/components/neurons/SetDissolveDelay.svelte";
 import {
   SECONDS_IN_DAY,

@@ -9,7 +9,7 @@ import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
 import { getOldestTxIdFromStore } from "$lib/utils/icrc-transactions.utils";
-import { decodeIcrcAccount } from "@dfinity/ledger";
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 

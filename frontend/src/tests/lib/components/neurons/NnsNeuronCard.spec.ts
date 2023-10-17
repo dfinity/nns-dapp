@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsNeuronCard from "$lib/components/neurons/NnsNeuronCard.svelte";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
@@ -26,10 +22,8 @@ import { fireEvent, render } from "@testing-library/svelte";
 describe("NnsNeuronCard", () => {
   const nowInSeconds = 1689843195;
   beforeEach(() => {
-    jest.useFakeTimers().setSystemTime(nowInSeconds * 1000);
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.useFakeTimers().setSystemTime(nowInSeconds * 1000);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
 
     icpAccountsStore.resetForTesting();
   });
@@ -45,7 +39,7 @@ describe("NnsNeuronCard", () => {
   });
 
   it("is clickable", async () => {
-    const spyClick = jest.fn();
+    const spyClick = vi.fn();
     const { container, component } = render(NnsNeuronCard, {
       props: {
         neuron: mockNeuron,

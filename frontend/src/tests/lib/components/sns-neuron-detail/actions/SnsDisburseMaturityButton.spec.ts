@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsDisburseMaturityButton from "$lib/components/sns-neuron-detail/actions/SnsDisburseMaturityButton.svelte";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { DisburseMaturityButtonPo } from "$tests/page-objects/DisburseMaturityButton.page-object";
@@ -22,7 +18,7 @@ describe("SnsDisburseMaturityButton", () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("should be enabled if enough maturity is available", async () => {

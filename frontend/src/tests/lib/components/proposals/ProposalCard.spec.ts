@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ProposalCard from "$lib/components/proposals/ProposalCard.svelte";
 import { ProposalStatusColor } from "$lib/constants/proposals.constants";
 import { nowInSeconds } from "$lib/utils/date.utils";
@@ -9,7 +5,7 @@ import en from "$tests/mocks/i18n.mock";
 import { render } from "@testing-library/svelte";
 
 describe("ProposalCard", () => {
-  jest.useFakeTimers().setSystemTime(Date.now());
+  vi.useFakeTimers().setSystemTime(Date.now());
 
   const nowSeconds = Math.floor(nowInSeconds());
   const props = {
@@ -25,7 +21,7 @@ describe("ProposalCard", () => {
     href: "https://nns.ic0.app/proposal/?u=qoctq-giaaa-aaaaa-aaaea-cai&proposal=123786",
   };
 
-  afterAll(jest.useRealTimers);
+  afterAll(vi.useRealTimers);
 
   it("should render a title", () => {
     const { getByText } = render(ProposalCard, {

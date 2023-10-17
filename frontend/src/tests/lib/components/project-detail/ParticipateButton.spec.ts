@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ParticipateButton from "$lib/components/project-detail/ParticipateButton.svelte";
 import { NOT_LOADED } from "$lib/constants/stores.constants";
 import { authStore } from "$lib/stores/auth.store";
@@ -39,9 +35,9 @@ describe("ParticipateButton", () => {
     owner: rootCanisterIdMock,
   });
 
-  jest
-    .spyOn(authStore, "subscribe")
-    .mockImplementation(mutableMockAuthStoreSubscribe);
+  vi.spyOn(authStore, "subscribe").mockImplementation(
+    mutableMockAuthStoreSubscribe
+  );
 
   describe("signed in", () => {
     beforeEach(() => {
@@ -49,7 +45,7 @@ describe("ParticipateButton", () => {
         identity: mockIdentity,
       });
       snsTicketsStore.reset();
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       userCountryStore.set(NOT_LOADED);
     });
 

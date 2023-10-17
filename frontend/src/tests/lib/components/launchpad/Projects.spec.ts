@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import Projects from "$lib/components/launchpad/Projects.svelte";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
@@ -10,7 +6,7 @@ import { render, waitFor } from "@testing-library/svelte";
 describe("Projects", () => {
   beforeEach(() => {
     resetSnsProjects();
-    jest.clearAllMocks();
+    vitest.clearAllMocks();
   });
 
   it("should render 'Open' projects", () => {

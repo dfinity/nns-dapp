@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import IncreaseSnsDissolveDelayButton from "$lib/components/sns-neuron-detail/actions/IncreaseSnsDissolveDelayButton.svelte";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
@@ -20,12 +16,12 @@ import { render, waitFor } from "@testing-library/svelte";
 import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
 // Avoid triggering the api call to not have to mock the api layer. Not needed for this test.
-jest.mock("$lib/services/sns-parameters.services");
+vi.mock("$lib/services/sns-parameters.services");
 
 describe("IncreaseSnsDissolveDelayButton", () => {
   const rootCanisterId = mockPrincipal;
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     setSnsProjects([
       {
         rootCanisterId,

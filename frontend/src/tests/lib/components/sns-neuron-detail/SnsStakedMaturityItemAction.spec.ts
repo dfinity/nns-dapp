@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsStakedMaturityItemAction from "$lib/components/sns-neuron-detail/SnsStakedMaturityItemAction.svelte";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";

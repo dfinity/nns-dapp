@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import Title from "$lib/components/header/Title.svelte";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { render, within } from "@testing-library/svelte";

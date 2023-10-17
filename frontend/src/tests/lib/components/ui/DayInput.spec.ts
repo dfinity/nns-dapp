@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import DayInput from "$lib/components/ui/DayInput.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { render } from "@testing-library/svelte";

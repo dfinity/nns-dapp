@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCAccounts from "$lib/pages/CkBTCAccounts.svelte";
@@ -9,6 +5,7 @@ import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { formatToken } from "$lib/utils/token.utils";
+import { page } from "$mocks/$app/stores";
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
@@ -19,34 +16,33 @@ import {
   mockUniversesTokens,
 } from "$tests/mocks/tokens.mock";
 import { render, waitFor } from "@testing-library/svelte";
-import { page } from "../../../../__mocks__/$app/stores";
 
-jest.mock("$lib/services/ckbtc-accounts.services", () => {
+vi.mock("$lib/services/ckbtc-accounts.services", () => {
   return {
-    syncCkBTCAccounts: jest.fn().mockResolvedValue(undefined),
+    syncCkBTCAccounts: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/ckbtc-withdrawal-accounts.services", () => {
+vi.mock("$lib/services/ckbtc-withdrawal-accounts.services", () => {
   return {
-    loadCkBTCWithdrawalAccount: jest.fn().mockResolvedValue(undefined),
+    loadCkBTCWithdrawalAccount: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/ckbtc-minter.services", () => {
+vi.mock("$lib/services/ckbtc-minter.services", () => {
   return {
-    updateBalance: jest.fn().mockResolvedValue(undefined),
+    updateBalance: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/ckbtc-info.services", () => {
+vi.mock("$lib/services/ckbtc-info.services", () => {
   return {
-    loadCkBTCInfo: jest.fn().mockResolvedValue(undefined),
+    loadCkBTCInfo: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/worker-balances.services", () => ({
-  initBalancesWorker: jest.fn(() =>
+vi.mock("$lib/services/worker-balances.services", () => ({
+  initBalancesWorker: vi.fn(() =>
     Promise.resolve({
       startBalancesTimer: () => {
         // Do nothing
@@ -60,10 +56,10 @@ jest.mock("$lib/services/worker-balances.services", () => ({
 
 describe("CkBTCAccounts", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest
-      .spyOn(tokensStore, "subscribe")
-      .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
+    vi.clearAllMocks();
+    vi.spyOn(tokensStore, "subscribe").mockImplementation(
+      mockTokensSubscribe(mockUniversesTokens)
+    );
 
     page.mock({
       data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },

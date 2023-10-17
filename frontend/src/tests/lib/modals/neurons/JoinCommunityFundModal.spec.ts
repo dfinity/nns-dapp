@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import JoinCommunityFundModal from "$lib/modals/neurons/JoinCommunityFundModal.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import {
@@ -29,9 +25,7 @@ describe("ConfirmationModal", () => {
   };
 
   beforeEach(() => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
   it("should render leave text if neuron is part of the Neurons' Fund", async () => {

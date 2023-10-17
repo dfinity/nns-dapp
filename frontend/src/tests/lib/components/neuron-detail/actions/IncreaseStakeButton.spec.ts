@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import IncreaseStakeButton from "$lib/components/neuron-detail/actions/IncreaseStakeButton.svelte";
 import { IncreaseStakeButtonPo } from "$tests/page-objects/IncreaseStakeButton.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -20,7 +16,7 @@ describe("IncreaseStakeButton", () => {
   };
 
   it("Dispatches event when clicked", async () => {
-    const increaseStake = jest.fn();
+    const increaseStake = vi.fn();
 
     const po = await renderComponent({
       increaseStakeCallback: increaseStake,

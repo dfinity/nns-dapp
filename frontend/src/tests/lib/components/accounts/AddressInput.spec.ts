@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import AddressInput from "$lib/components/accounts/AddressInput.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { TransactionNetwork } from "$lib/types/transaction";
@@ -49,7 +45,7 @@ describe("AddressInput", () => {
     it("should trigger the event on click on qr code scanner button", () => {
       const { getByTestId, component } = render(AddressInput, { props });
 
-      const openSpy = jest.fn();
+      const openSpy = vi.fn();
       component.$on("nnsOpenQRCodeReader", openSpy);
 
       const button = getByTestId(
