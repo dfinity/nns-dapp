@@ -35,6 +35,7 @@ describe("SnsTransactionModal", () => {
 
   beforeEach(() => {
     resetIdentity();
+    snsAccountsStore.reset();
   });
 
   it("should transfer tokens", async () => {
