@@ -1566,6 +1566,7 @@ import type { CachedSnsDto } from "$lib/types/sns-aggregator";
       ["icrc1:fee", { Nat: [100000] }],
     ],
     icrc1_fee: [100000],
+    /* eslint-disable-next-line @typescript-eslint/no-loss-of-precision */
     icrc1_total_supply: 100000001544666698,
     swap_params: {
       params: {
