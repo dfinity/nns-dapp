@@ -1,4 +1,6 @@
 import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { page } from "$mocks/$app/stores";
 import { ProposalNavigationPo } from "$tests/page-objects/ProposalNavigation.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
@@ -9,25 +11,43 @@ describe("ProposalNavigation", () => {
     return ProposalNavigationPo.under(new JestPageObjectElement(container));
   };
 
+  beforeEach(() => {
+    // for logo
+    page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
+  });
+
   describe("not rendered", () => {
-    it("should not render buttons if no proposalIds", async () => {
+    it("should render universe logo", async () => {
       const po = renderComponent({
         currentProposalId: 1n,
         proposalIds: undefined,
         selectProposal: vi.fn(),
       });
 
-      expect(await po.isPresent()).toBe(false);
+      expect(await po.getLogoSource()).toEqual(
+        "/src/lib/assets/icp-rounded.svg"
+      );
     });
 
-    it("should not render buttons if no currentProposalId in proposalIds", async () => {
+    it("should render proposal title", async () => {
       const po = renderComponent({
         currentProposalId: 1n,
-        proposalIds: [0n],
+        proposalIds: undefined,
         selectProposal: vi.fn(),
       });
 
-      expect(await po.isPresent()).toBe(false);
+      expect(await po.getTitle()).toEqual("Proposal 1");
+    });
+
+    it("should hide buttons if no proposalIds", async () => {
+      const po = renderComponent({
+        currentProposalId: 1n,
+        proposalIds: undefined,
+        selectProposal: vi.fn(),
+      });
+
+      expect(await po.isOlderButtonHidden()).toBe(true);
+      expect(await po.isNewerButtonHidden()).toBe(true);
     });
   });
 

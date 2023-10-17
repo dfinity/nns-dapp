@@ -10,7 +10,7 @@
   import { ENABLE_FULL_WIDTH_PROPOSAL } from "$lib/stores/feature-flags.store";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
-  import type { ProposalStatus } from "@dfinity/nns";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let currentProposalId: bigint;
   export let proposalIds: bigint[] = [];
@@ -58,7 +58,7 @@
           universe={$selectedUniverseStore}
         />
       </div>
-      {title}
+      <TestIdWrapper testId="title">{title}</TestIdWrapper>
     </h2>
     <button
       class="ghost newer"
