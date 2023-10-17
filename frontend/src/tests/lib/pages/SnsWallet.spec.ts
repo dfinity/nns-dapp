@@ -87,6 +87,7 @@ describe("SnsWallet", () => {
     let resolve;
 
     beforeEach(() => {
+      resolve = undefined;
       vi.spyOn(snsLedgerApi, "getSnsAccounts").mockImplementation(() => {
         return new Promise<Account[]>((r) => {
           resolve = r;
