@@ -106,7 +106,7 @@ pub enum SchemaLabel {
     /// data, mostly consisting of transactions, is serialized into a single large blob in the
     /// `pre_upgrade` hook.
     #[cfg(test)]
-    StableAccountsS1 = 1,
+    AccountsInStableMemory = 1,
 }
 
 /// A trait for data stores that support `BTreeMap` for account storage.

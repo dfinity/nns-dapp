@@ -87,6 +87,6 @@ impl AccountsDbTrait for MockS1DataStorage {
     /// Note: We use the label for the stable memory version, even though this is a mock
     /// implementation that doesn't persist data in any way.
     fn schema_label(&self) -> SchemaLabel {
-        SchemaLabel::StableAccountsS1
+        SchemaLabel::AccountsInStableMemory
     }
 }
