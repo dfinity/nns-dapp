@@ -149,6 +149,7 @@
       flex: 1 1 auto;
     }
     .title {
+      @include fonts.h3;
       margin: 0;
       grid-area: title;
       display: flex;
