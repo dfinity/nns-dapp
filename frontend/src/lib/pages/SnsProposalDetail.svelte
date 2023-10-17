@@ -19,6 +19,7 @@
   import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
   import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
   import {
+    mapProposalInfo,
     snsProposalId,
     snsProposalIdString,
     sortSnsProposalsById,
@@ -27,14 +28,17 @@
   import { debugSnsProposalStore } from "../derived/debug.derived";
   import { isUniverseNns } from "$lib/utils/universe.utils";
   import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
-  import { navigateToProposal } from "$lib/utils/proposals.utils";
-  import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { i18n } from "$lib/stores/i18n";
   import { authStore } from "$lib/stores/auth.store";
   import { ENABLE_FULL_WIDTH_PROPOSAL } from "$lib/stores/feature-flags.store";
   import { SplitBlock } from "@dfinity/gix-components";
+  import type { Readable } from "svelte/store";
+  import type { SnsNervousSystemFunction } from "@dfinity/sns";
+  import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
+  import { navigateToProposal } from "$lib/utils/proposals.utils";
+  import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -181,12 +185,26 @@
 
   // The `update` function cares about the necessary data to be refetched.
   $: universeIdText, proposalIdText, $snsNeuronsStore, $authStore, update();
+
+  // LOL code
+  let functionsStore: Readable<SnsNervousSystemFunction[] | undefined>;
+  $: functionsStore = createSnsNsFunctionsProjectStore(universeCanisterId);
+
+  let statusString: string | undefined;
+  $: if (nonNullish(proposal) && nonNullish(functionsStore))
+    ({ statusString } = mapProposalInfo({
+      proposalData: proposal,
+      nsFunctions: $functionsStore,
+    }));
+
+  $: console.log("statusString", statusString);
 </script>
 
 <TestIdWrapper testId="sns-proposal-details-grid">
-  {#if nonNullish(proposalIdText) && !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
+  {#if nonNullish(proposalIdText) && !updating && nonNullish(proposal) && nonNullish(universeCanisterId) && nonNullish(statusString)}
     <ProposalNavigation
       currentProposalId={BigInt(proposalIdText)}
+      currentProposalStatusString={statusString}
       {proposalIds}
       selectProposal={navigateToProposal}
     />
