@@ -17,6 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Detailed values of the Neurons' Fund and direct participation in the project detail page.
+* Update proposal info icons position to improve the UX.
 
 #### Deprecated
 #### Removed
