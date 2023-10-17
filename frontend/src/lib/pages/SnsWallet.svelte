@@ -180,7 +180,7 @@
   </Footer>
 </Island>
 
-{#if showModal && nonNullish($snsOnlyProjectStore) && nonNullish(token)}
+{#if showModal && nonNullish($snsOnlyProjectStore)}
   <SnsTransactionModal
     on:nnsClose={() => (showModal = undefined)}
     selectedAccount={$selectedAccountStore.account}

@@ -4,10 +4,7 @@ import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
-import {
-  mockSnsAccountsStoreSubscribe,
-  mockSnsMainAccount,
-} from "$tests/mocks/sns-accounts.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { testTransferTokens } from "$tests/utils/transaction-modal.test-utils";
 import { TokenAmount } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
@@ -38,12 +35,15 @@ describe("SnsTransactionModal", () => {
 
   beforeEach(() => {
     resetIdentity();
-    vi.spyOn(snsAccountsStore, "subscribe").mockImplementation(
-      mockSnsAccountsStoreSubscribe(rootCanisterId)
-    );
   });
 
   it("should transfer tokens", async () => {
+    // Used to choose the source account
+    snsAccountsStore.setAccounts({
+      rootCanisterId,
+      accounts: [mockSnsMainAccount],
+      certified: true,
+    });
     const result = await renderTransactionModal();
 
     await testTransferTokens({ result });
