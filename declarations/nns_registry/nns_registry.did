@@ -1,3 +1,4 @@
+//! nns_registry .did file obtained from: https://raw.githubusercontent.com/dfinity/ic/2d57e93dabc5f13258d0dee1ffb2363ddce7fe62/rs/registry/canister/canister/registry.did
 type AddApiBoundaryNodePayload = record {
   node_id : principal;
   domain : text;

@@ -1,13 +1,8 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-index 9bdc39aa6..5cebd0ad6 100644
+index bf51d6fae..d7102af03 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-@@ -1,4 +1,3 @@
--//! Created by: scripts/did2rs.sh  scripts/did2rs.sh --canister sns_swap --out home/max/dfn/nns-dapp/branches/preserve-provenance/rs/sns_aggregator/src/types/ic_sns_swap.rs --header sns/aggregator/did2rs.header --traits Serialize\,\ Clone\,\ Debug
- #![allow(clippy::all)]
- #![allow(unused_imports)]
- #![allow(clippy::missing_docs_in_private_items)]
-@@ -14,13 +13,13 @@ use ic_cdk::api::call::CallResult;
+@@ -15,13 +15,13 @@ use ic_cdk::api::call::CallResult;
  // use candid::{self, CandidType, Decode, Deserialize, Encode, Principal};
  // use ic_cdk::api::call::CallResult as Result;
  
@@ -23,7 +18,7 @@ index 9bdc39aa6..5cebd0ad6 100644
  pub struct LinearScalingCoefficient {
      pub slope_numerator: Option<u64>,
      pub intercept_icp_e8s: Option<u64>,
-@@ -29,36 +28,36 @@ pub struct LinearScalingCoefficient {
+@@ -30,36 +30,36 @@ pub struct LinearScalingCoefficient {
      pub to_direct_participation_icp_e8s: Option<u64>,
  }
  
@@ -66,7 +61,7 @@ index 9bdc39aa6..5cebd0ad6 100644
  pub struct Init {
      pub nns_proposal_id: Option<u64>,
      pub sns_root_canister_id: String,
-@@ -169,7 +168,7 @@ pub struct SettleCommunityFundParticipationResult {
+@@ -170,7 +170,7 @@ pub struct SettleCommunityFundParticipationResult {
  
  #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
  pub enum Possibility2 {
@@ -75,7 +70,7 @@ index 9bdc39aa6..5cebd0ad6 100644
      Err(CanisterCallError),
  }
  
-@@ -343,7 +342,7 @@ pub struct GetOpenTicketResponse {
+@@ -344,7 +344,7 @@ pub struct GetOpenTicketResponse {
  #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
  pub struct GetSaleParametersArg {}
  
@@ -84,7 +79,7 @@ index 9bdc39aa6..5cebd0ad6 100644
  pub struct Params {
      pub min_participant_icp_e8s: u64,
      pub neuron_basket_construction_parameters: Option<NeuronBasketConstructionParameters>,
-@@ -434,7 +433,7 @@ pub struct DerivedState {
+@@ -435,7 +435,7 @@ pub struct DerivedState {
      pub cf_neuron_count: Option<u64>,
  }
  

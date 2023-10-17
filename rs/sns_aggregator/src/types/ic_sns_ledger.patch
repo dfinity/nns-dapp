@@ -1,13 +1,8 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_ledger.rs a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
-index 445ecb62d..a407881a7 100644
+index 91d53548a..6e60edbe0 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_ledger.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
-@@ -1,4 +1,3 @@
--//! Created by: scripts/did2rs.sh  scripts/did2rs.sh --canister sns_ledger --out home/max/dfn/nns-dapp/branches/preserve-provenance/rs/sns_aggregator/src/types/ic_sns_ledger.rs --header sns/aggregator/did2rs.header --traits Serialize\,\ Clone\,\ Debug
- #![allow(clippy::all)]
- #![allow(unused_imports)]
- #![allow(clippy::missing_docs_in_private_items)]
-@@ -112,17 +111,15 @@ pub struct BlockRange {
+@@ -113,17 +113,15 @@ pub struct BlockRange {
      pub blocks: Vec<Block>,
  }
  
@@ -28,7 +23,7 @@ index 445ecb62d..a407881a7 100644
  pub struct GetBlocksResponse {
      pub certificate: Option<serde_bytes::ByteBuf>,
      pub first_index: BlockIndex,
-@@ -200,17 +197,15 @@ pub struct TransactionRange {
+@@ -201,17 +199,15 @@ pub struct TransactionRange {
      pub transactions: Vec<Transaction>,
  }
  
