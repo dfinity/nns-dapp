@@ -1,7 +1,7 @@
 // Reference: https://github.com/microsoft/TypeScript/issues/48364
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 
-[
+const data: CachedSnsDto[] = [
   {
     index: 0,
     canister_ids: {
@@ -2676,5 +2676,4 @@ import type { CachedSnsDto } from "$lib/types/sns-aggregator";
   },
 ];
 
-declare const data: CachedSnsDto[];
 export default data;
