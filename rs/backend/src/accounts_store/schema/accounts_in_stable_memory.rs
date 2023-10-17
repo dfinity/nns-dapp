@@ -63,21 +63,8 @@ pub trait AccountsInStableMemoryTrait {
     /// - The page that was removed from the database, if it was present, else `None`.
     fn s1_remove_account_page(&mut self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage>;
 
-
     /// Gets the pages for an account.
     fn s1_get_account_pages(&self, account_key: &[u8]) -> Box<dyn Iterator<Item = AccountStoragePage> + '_>;
-
-    /// Checks whether to get the next page.
-    /// - If the very last page is full, getting the next page will return None. That is expected.
-    fn s1_is_last_page(last_page_maybe: &Option<AccountStoragePage>) -> bool {
-        if let Some(last_page) = last_page_maybe {
-            // If the page is not full, there are no more pages.
-            last_page.len() < AccountStoragePage::MAX_PAYLOAD_LEN
-        } else {
-            // We have already run out of pages.
-            true
-        }
-    }
 
     // High level methods to get and set accounts.
     //
@@ -120,7 +107,7 @@ pub trait AccountsInStableMemoryTrait {
             } else {
                 // If the number of pages has reduced, we need to remove some pages.
                 // ... If the last removed or replaced page was not full, we are done.
-                if Self::s1_is_last_page(&last_removed_page) {
+                if last_removed_page.is_none() {
                     break;
                 }
                 last_removed_page = self.s1_remove_account_page(&account_storage_key);
@@ -140,7 +127,7 @@ pub trait AccountsInStableMemoryTrait {
         for index in 0..Self::MAX_PAGES_PER_ACCOUNT {
             let account_storage_key = AccountStorageKey::new(index as u16, account_key);
             let last_page = self.s1_remove_account_page(&account_storage_key);
-            if Self::s1_is_last_page(&last_page) {
+            if last_page.is_none() {
                 break;
             }
         }

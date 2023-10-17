@@ -8,8 +8,8 @@ use super::{AccountStorageKey, AccountStoragePage, AccountsInStableMemoryTrait};
 use crate::accounts_store::schema::SchemaLabel;
 use crate::accounts_store::Account;
 use crate::accounts_store::AccountsDbTrait;
-use std::collections::BTreeMap;
 use core::ops::Bound;
+use std::collections::BTreeMap;
 
 #[cfg(test)]
 mod test_accounts_in_stable_memory;
@@ -53,7 +53,7 @@ impl AccountsInStableMemoryTrait for MockS1DataStorage {
         let first_key = AccountStorageKey::new(0, account_key);
         let last_key = AccountStorageKey::new(u16::MAX, account_key);
         let range = (Bound::Included(first_key), Bound::Included(last_key));
-        Box::new(self.accounts_storage.range(range).map(|(_k,v)| v.clone()))
+        Box::new(self.accounts_storage.range(range).map(|(_k, v)| v.clone()))
     }
     fn s1_keys(&self) -> Box<dyn Iterator<Item = Vec<u8>> + '_> {
         Box::new(
