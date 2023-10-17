@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_root.rs a/rs/sns_aggregator/src/types/ic_sns_root.rs
-index 963142c51..58c5a703e 100644
+index 55c139f45..fbdbe4e10 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_root.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_root.rs
 @@ -136,7 +136,7 @@ pub struct GetSnsCanistersSummaryResponse {

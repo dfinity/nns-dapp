@@ -40,7 +40,7 @@ source "$(clap.build)"
     local local_path="declarations/${canister}/${canister}.did"
     mkdir -p "$(dirname "$local_path")"
     {
-      echo "//! $canister .did file obtained from: $IC_URL$upstream_path"
+      echo "//! $canister .did file obtained from: <$IC_URL$upstream_path>"
       curl -sfL --retry 5 "$IC_URL$upstream_path"
     } >"${local_path}"
   }

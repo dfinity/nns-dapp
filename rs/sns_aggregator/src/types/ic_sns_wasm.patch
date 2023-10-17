@@ -1,5 +1,5 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_wasm.rs a/rs/sns_aggregator/src/types/ic_sns_wasm.rs
-index 0a47c08c5..1792806d7 100644
+index e69a5b5e0..89a3f0a0d 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_wasm.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_wasm.rs
 @@ -285,7 +285,7 @@ pub struct InsertUpgradePathEntriesResponse {
