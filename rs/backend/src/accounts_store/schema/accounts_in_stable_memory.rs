@@ -1,4 +1,4 @@
-//! Data storage schema `S1`: Accounts data is stored in a `StableBTreeMap`,
+//! Data storage schema `AccountsInStableMemory`: Accounts data is stored in a `StableBTreeMap`,
 //! other data is on the heap and serialized in `pre_upgrade` hooks.
 //!
 //! ## Pagination
@@ -41,39 +41,39 @@ pub trait AccountsInStableMemoryTrait {
 
     // Low level methods to get and set pages.
     /// Gets a page of memory.
-    fn s1_get_account_page(&self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage>;
+    fn aism_get_account_page(&self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage>;
 
     /// Inserts a page of memory.
     ///
     /// # Returns
     /// - If the database did not have this key present, `None` is returned.
     /// - If the database did have this key present, the page is updated, and the old page is returned.
-    fn s1_insert_account_page(
+    fn aism_insert_account_page(
         &mut self,
         account_storage_key: AccountStorageKey,
         account: AccountStoragePage,
     ) -> Option<AccountStoragePage>;
 
     /// Checks whether a page of memory exists.
-    fn s1_contains_account_page(&self, account_storage_key: &AccountStorageKey) -> bool;
+    fn aism_contains_account_page(&self, account_storage_key: &AccountStorageKey) -> bool;
 
     /// Removes a page of memory.
     ///
     /// # Returns
     /// - The page that was removed from the database, if it was present, else `None`.
-    fn s1_remove_account_page(&mut self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage>;
+    fn aism_remove_account_page(&mut self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage>;
 
     /// Gets the pages for an account.
-    fn s1_get_account_pages(&self, account_key: &[u8]) -> Box<dyn Iterator<Item = AccountStoragePage> + '_>;
+    fn aism_get_account_pages(&self, account_key: &[u8]) -> Box<dyn Iterator<Item = AccountStoragePage> + '_>;
 
     // High level methods to get and set accounts.
     //
     // Note: These assist in implementing the AccountsDbTrait.
 
     /// Equivalent of [`super::AccountsDbTrait::db_get_account`].
-    fn s1_get_account(&self, account_key: &[u8]) -> Option<Account> {
+    fn aism_get_account(&self, account_key: &[u8]) -> Option<Account> {
         let mut bytes = Vec::new();
-        for page in self.s1_get_account_pages(account_key) {
+        for page in self.aism_get_account_pages(account_key) {
             let len = page.len();
             bytes.extend_from_slice(&page.bytes[AccountStoragePage::PAYLOAD_OFFSET..][..len]);
         }
@@ -88,7 +88,7 @@ pub trait AccountsInStableMemoryTrait {
     }
 
     /// Equivalent of [`super::AccountsDbTrait::db_insert_account`].
-    fn s1_insert_account(&mut self, account_key: &[u8], account: Account) {
+    fn aism_insert_account(&mut self, account_key: &[u8], account: Account) {
         // Serialize the account into one or more pages.
         let pages_to_insert = AccountStoragePage::pages_from_account(&account);
         if pages_to_insert.len() > Self::MAX_PAGES_PER_ACCOUNT {
@@ -103,30 +103,30 @@ pub trait AccountsInStableMemoryTrait {
         for index in 0..Self::MAX_PAGES_PER_ACCOUNT {
             let account_storage_key = AccountStorageKey::new(index as u16, account_key);
             if let Some(page_to_insert) = pages_to_insert.get(index) {
-                last_removed_page = self.s1_insert_account_page(account_storage_key, *page_to_insert);
+                last_removed_page = self.aism_insert_account_page(account_storage_key, *page_to_insert);
             } else {
                 // If the number of pages has reduced, we need to remove some pages.
                 // ... If the last removed or replaced page was not full, we are done.
                 if last_removed_page.is_none() {
                     break;
                 }
-                last_removed_page = self.s1_remove_account_page(&account_storage_key);
+                last_removed_page = self.aism_remove_account_page(&account_storage_key);
             }
         }
     }
 
     /// Equivalent of [`super::AccountsDbTrait::db_contains_account`].
-    fn s1_contains_account(&self, account_key: &[u8]) -> bool {
+    fn aism_contains_account(&self, account_key: &[u8]) -> bool {
         let account_storage_key = AccountStorageKey::new(0, account_key);
-        self.s1_contains_account_page(&account_storage_key)
+        self.aism_contains_account_page(&account_storage_key)
     }
 
     /// Equivalent of [`super::AccountsDbTrait::db_remove_account`].
-    fn s1_remove_account(&mut self, account_key: &[u8]) {
+    fn aism_remove_account(&mut self, account_key: &[u8]) {
         #[allow(unused_assignments)] // The "last_page" variable is populated and modified in the loop.
         for index in 0..Self::MAX_PAGES_PER_ACCOUNT {
             let account_storage_key = AccountStorageKey::new(index as u16, account_key);
-            let last_page = self.s1_remove_account_page(&account_storage_key);
+            let last_page = self.aism_remove_account_page(&account_storage_key);
             if last_page.is_none() {
                 break;
             }
@@ -134,15 +134,15 @@ pub trait AccountsInStableMemoryTrait {
     }
 
     /// Equivalent of [`super::AccountsDbTrait::db_accounts_len`].
-    fn s1_accounts_len(&self) -> u64;
+    fn aism_accounts_len(&self) -> u64;
 
     /// Equivalent of [`super::AccountsDbTrait::values`].
-    fn s1_values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
-        Box::new(self.s1_keys().filter_map(|key| self.s1_get_account(&key)))
+    fn aism_values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
+        Box::new(self.aism_keys().filter_map(|key| self.aism_get_account(&key)))
     }
 
     /// Iterates over account identifiers, represented as bytes.
-    fn s1_keys(&self) -> Box<dyn Iterator<Item = Vec<u8>> + '_>;
+    fn aism_keys(&self) -> Box<dyn Iterator<Item = Vec<u8>> + '_>;
 }
 
 /// Key for account data in a stable `BTreeMap`.

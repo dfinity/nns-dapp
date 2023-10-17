@@ -1,4 +1,4 @@
-//! Mock implementation of the `S1` schema data storage.
+//! Mock implementation of the `AccountsInStableMemory` schema data storage.
 //!
 //! This implementation stores the accounts in a normal `BTreeMap`
 //! and does not persist data across upgrades.  The implementation is
@@ -29,33 +29,33 @@ struct MockS1DataStorage {
 }
 
 impl AccountsInStableMemoryTrait for MockS1DataStorage {
-    fn s1_get_account_page(&self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage> {
+    fn aism_get_account_page(&self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage> {
         self.accounts_storage.get(account_storage_key).cloned()
     }
-    fn s1_insert_account_page(
+    fn aism_insert_account_page(
         &mut self,
         account_storage_key: AccountStorageKey,
         account: AccountStoragePage,
     ) -> Option<AccountStoragePage> {
         self.accounts_storage.insert(account_storage_key, account)
     }
-    fn s1_contains_account_page(&self, account_storage_key: &AccountStorageKey) -> bool {
+    fn aism_contains_account_page(&self, account_storage_key: &AccountStorageKey) -> bool {
         self.accounts_storage.contains_key(account_storage_key)
     }
-    fn s1_remove_account_page(&mut self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage> {
+    fn aism_remove_account_page(&mut self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage> {
         self.accounts_storage.remove(account_storage_key)
     }
-    fn s1_accounts_len(&self) -> u64 {
+    fn aism_accounts_len(&self) -> u64 {
         // TODO: Replace with a stored count.
-        self.s1_keys().count() as u64
+        self.aism_keys().count() as u64
     }
-    fn s1_get_account_pages(&self, account_key: &[u8]) -> Box<dyn Iterator<Item = AccountStoragePage> + '_> {
+    fn aism_get_account_pages(&self, account_key: &[u8]) -> Box<dyn Iterator<Item = AccountStoragePage> + '_> {
         let first_key = AccountStorageKey::new(0, account_key);
         let last_key = AccountStorageKey::new(u16::MAX, account_key);
         let range = (Bound::Included(first_key), Bound::Included(last_key));
         Box::new(self.accounts_storage.range(range).map(|(_k, v)| v.clone()))
     }
-    fn s1_keys(&self) -> Box<dyn Iterator<Item = Vec<u8>> + '_> {
+    fn aism_keys(&self) -> Box<dyn Iterator<Item = Vec<u8>> + '_> {
         Box::new(
             self.accounts_storage
                 .iter()
@@ -67,22 +67,22 @@ impl AccountsInStableMemoryTrait for MockS1DataStorage {
 
 impl AccountsDbTrait for MockS1DataStorage {
     fn db_insert_account(&mut self, account_key: &[u8], account: Account) {
-        self.s1_insert_account(account_key, account)
+        self.aism_insert_account(account_key, account)
     }
     fn db_contains_account(&self, account_key: &[u8]) -> bool {
-        self.s1_contains_account(account_key)
+        self.aism_contains_account(account_key)
     }
     fn db_get_account(&self, account_key: &[u8]) -> Option<Account> {
-        self.s1_get_account(account_key)
+        self.aism_get_account(account_key)
     }
     fn db_remove_account(&mut self, account_key: &[u8]) {
-        self.s1_remove_account(account_key)
+        self.aism_remove_account(account_key)
     }
     fn db_accounts_len(&self) -> u64 {
-        self.s1_accounts_len()
+        self.aism_accounts_len()
     }
     fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
-        self.s1_values()
+        self.aism_values()
     }
     /// Note: We use the label for the stable memory version, even though this is a mock
     /// implementation that doesn't persist data in any way.

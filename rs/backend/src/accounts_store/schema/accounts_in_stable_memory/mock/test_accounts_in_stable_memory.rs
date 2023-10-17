@@ -65,16 +65,16 @@ fn test_account_storage() {
     };
     let account_key = vec![1, 2, 3];
     let account = tiny_account(1);
-    storage.s1_insert_account(&account_key, account.clone());
-    assert!(storage.s1_contains_account(&account_key));
-    assert_eq!(storage.s1_get_account(&account_key), Some(account.clone()));
+    storage.aism_insert_account(&account_key, account.clone());
+    assert!(storage.aism_contains_account(&account_key));
+    assert_eq!(storage.aism_get_account(&account_key), Some(account.clone()));
     let updated_account = large_account(1);
-    storage.s1_insert_account(&account_key, updated_account.clone());
-    assert!(storage.s1_contains_account(&account_key));
-    assert_eq!(storage.s1_get_account(&account_key), Some(updated_account.clone()));
-    storage.s1_remove_account(&account_key);
-    assert!(!storage.s1_contains_account(&account_key));
-    assert_eq!(storage.s1_get_account(&account_key), None);
+    storage.aism_insert_account(&account_key, updated_account.clone());
+    assert!(storage.aism_contains_account(&account_key));
+    assert_eq!(storage.aism_get_account(&account_key), Some(updated_account.clone()));
+    storage.aism_remove_account(&account_key);
+    assert!(!storage.aism_contains_account(&account_key));
+    assert_eq!(storage.aism_get_account(&account_key), None);
 }
 
 /// We assume that new account identifiers are 32 bytes long.
