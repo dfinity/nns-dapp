@@ -14,11 +14,12 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Added provenance information to .did files and derived rust code.
+
 #### Changed
 
 * Detailed values of the Neurons' Fund and direct participation in the project detail page.
 * Update proposal info icons position to improve the UX.
-* Detailed values of the Neurons' Fund and direct participation in the project detai page.
 * Improve the indicator of the minimum commitment in the project status.
 
 #### Deprecated
