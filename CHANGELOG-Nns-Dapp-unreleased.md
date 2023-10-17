@@ -27,6 +27,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * Add "Finalizing" status in projects of the Launchpad.
+* Fix UI bug when commitment was very low.
 
 #### Security
 
