@@ -99,7 +99,7 @@ describe("SnsWallet", () => {
 
       expect(queryByTestId("spinner")).toBeInTheDocument();
 
-      await waitFor(() => expect(resolve).not.toBeUndefined());
+      await waitFor(() => expect(resolve).toBeDefined());
 
       resolve([mockSnsMainAccount]);
       await runResolvedPromises();
