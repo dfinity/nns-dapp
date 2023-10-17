@@ -66,6 +66,9 @@ pub trait AccountsInStableMemoryTrait {
     /// Gets the pages for an account.
     fn aism_get_account_pages(&self, account_key: &[u8]) -> Box<dyn Iterator<Item = AccountStoragePage> + '_>;
 
+    /// Gets the number of pages used for account storage
+    fn aism_pages_len(&self) -> u64;
+
     // High level methods to get and set accounts.
     //
     // Note: These assist in implementing the AccountsDbTrait.

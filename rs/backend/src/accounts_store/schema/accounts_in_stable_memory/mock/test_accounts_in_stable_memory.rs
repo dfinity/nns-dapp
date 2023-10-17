@@ -63,18 +63,57 @@ fn test_account_storage() {
     let mut storage = MockS1DataStorage {
         accounts_storage: BTreeMap::new(),
     };
+    assert_eq!(storage.aism_accounts_len(), 0, "Expected to have no accounts initially");
+
+    // Inserts the first account
     let account_key = vec![1, 2, 3];
     let account = tiny_account(1);
     storage.aism_insert_account(&account_key, account.clone());
+    assert_eq!(
+        storage.aism_accounts_len(),
+        1,
+        "Expected to have one account after the first insertion"
+    );
+    assert_eq!(
+        storage.aism_pages_len(),
+        1,
+        "Expected to be using one page after inserting a tiny account."
+    );
     assert!(storage.aism_contains_account(&account_key));
     assert_eq!(storage.aism_get_account(&account_key), Some(account.clone()));
+
+    // Updates the account to a large one that uses lots of pages
     let updated_account = large_account(1);
     storage.aism_insert_account(&account_key, updated_account.clone());
+    assert_eq!(
+        storage.aism_accounts_len(),
+        1,
+        "Expected to still have one account after updating the account"
+    );
     assert!(storage.aism_contains_account(&account_key));
     assert_eq!(storage.aism_get_account(&account_key), Some(updated_account.clone()));
+
+    // Updates the account to a small one that consumes just one page
+    storage.aism_insert_account(&account_key, account.clone());
+    assert_eq!(
+        storage.aism_pages_len(),
+        1,
+        "Expected to be using one page after reducing the account to a tiny size"
+    );
+
+    // Deletes the account
     storage.aism_remove_account(&account_key);
     assert!(!storage.aism_contains_account(&account_key));
-    assert_eq!(storage.aism_get_account(&account_key), None);
+    assert_eq!(
+        storage.aism_get_account(&account_key),
+        None,
+        "Expected not to be able to retrieve a deleted account."
+    );
+    assert_eq!(
+        storage.aism_pages_len(),
+        0,
+        "Expected to be using no pages after deleting the only account."
+    );
 }
 
 /// We assume that new account identifiers are 32 bytes long.

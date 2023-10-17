@@ -49,6 +49,9 @@ impl AccountsInStableMemoryTrait for MockS1DataStorage {
         // TODO: Replace with a stored count.
         self.aism_keys().count() as u64
     }
+    fn aism_pages_len(&self) -> u64 {
+        self.accounts_storage.len() as u64
+    }
     fn aism_get_account_pages(&self, account_key: &[u8]) -> Box<dyn Iterator<Item = AccountStoragePage> + '_> {
         let first_key = AccountStorageKey::new(0, account_key);
         let last_key = AccountStorageKey::new(u16::MAX, account_key);
