@@ -36,7 +36,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Documentation for the proposals payload renderer.
 * E2E test for ckBTC.
+* Fix erroneous failures in the `tip` tagging workflow when a PR is closed without merging.
 
 #### Changed
 
