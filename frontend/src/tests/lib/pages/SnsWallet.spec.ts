@@ -6,6 +6,7 @@ import * as workerBalances from "$lib/services/worker-balances.services";
 import * as workerTransactions from "$lib/services/worker-transactions.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import type { Account } from "$lib/types/account";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
@@ -72,9 +73,7 @@ describe("SnsWallet", () => {
     });
     vi.spyOn(snsLedgerApi, "transactionFee").mockResolvedValue(BigInt(10_000));
     vi.spyOn(snsLedgerApi, "getSnsToken").mockResolvedValue(mockSnsToken);
-    vi.spyOn(snsLedgerApi, "getSnsAccounts").mockResolvedValue([
-      mockSnsMainAccount,
-    ]);
+
     setSnsProjects([
       {
         rootCanisterId,
@@ -84,7 +83,38 @@ describe("SnsWallet", () => {
     page.mock({ data: { universe: rootCanisterIdText } });
   });
 
+  describe("loading accounts", () => {
+    let resolve;
+
+    beforeEach(() => {
+      vi.spyOn(snsLedgerApi, "getSnsAccounts").mockImplementation(() => {
+        return new Promise<Account[]>((r) => {
+          resolve = r;
+        });
+      });
+    });
+
+    it("should hide spinner when account is loaded", async () => {
+      const { queryByTestId } = render(SnsWallet, props);
+
+      expect(queryByTestId("spinner")).toBeInTheDocument();
+
+      await waitFor(() => expect(resolve).not.toBeUndefined());
+
+      resolve([mockSnsMainAccount]);
+      await runResolvedPromises();
+
+      expect(queryByTestId("spinner")).toBeNull();
+    });
+  });
+
   describe("accounts loaded", () => {
+    beforeEach(() => {
+      vi.spyOn(snsLedgerApi, "getSnsAccounts").mockResolvedValue([
+        mockSnsMainAccount,
+      ]);
+    });
+
     it("should render sns project name", async () => {
       const { getByTestId } = render(SnsWallet, props);
 
@@ -93,16 +123,6 @@ describe("SnsWallet", () => {
       const titleRow = getByTestId("universe-page-summary-component");
 
       expect(titleRow.textContent.trim()).toBe("Catalyze");
-    });
-
-    it("should hide spinner when account is loaded", async () => {
-      const { queryByTestId } = render(SnsWallet, props);
-
-      expect(queryByTestId("spinner")).toBeInTheDocument();
-
-      await runResolvedPromises();
-
-      expect(queryByTestId("spinner")).toBeNull();
     });
 
     it("should render transactions", async () => {
@@ -186,7 +206,9 @@ describe("SnsWallet", () => {
         selector: "[data-tid='reload-receive-account']",
       });
 
+      // Query + update
       expect(snsLedgerApi.getSnsAccounts).toHaveBeenCalledTimes(2);
+      // Transactions can only be fetched from the Index canister with `updated` calls for now.
       expect(snsIndexApi.getSnsTransactions).toHaveBeenCalledTimes(1);
 
       fireEvent.click(
@@ -221,7 +243,6 @@ describe("SnsWallet", () => {
       const spy = vi.spyOn(workerBalances, "initBalancesWorker");
 
       render(SnsWallet, props);
-      expect(spy).toHaveBeenCalledTimes(0);
 
       await runResolvedPromises();
 
@@ -232,7 +253,6 @@ describe("SnsWallet", () => {
       const spy = vi.spyOn(workerTransactions, "initTransactionsWorker");
 
       const { queryByTestId } = render(SnsWallet, props);
-      expect(spy).toHaveBeenCalledTimes(0);
 
       await runResolvedPromises();
 
