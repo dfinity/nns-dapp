@@ -16,7 +16,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-* Detailed values of the Neurons' Fund and direct participation in the project detai page.
+* Detailed values of the Neurons' Fund and direct participation in the project detail page.
 
 #### Deprecated
 #### Removed
@@ -36,6 +36,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * E2E test for ckBTC.
+* Fix erroneous failures in the `tip` tagging workflow when a PR is closed without merging.
 
 #### Changed
 
