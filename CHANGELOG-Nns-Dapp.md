@@ -17,17 +17,6 @@ here after a successful release.
 
 #### Added
 
-* New feature flag `ENABLE_FULL_WIDTH_PROPOSAL`.
-
-#### Changed
-
-* Include a copy of the `nns-governance` candid file in the `nns-dapp` repository.
-* Update the IC commit in the `proposals` crate to `release-2023-08-01_23-01`.
-* Separate proposals backend into a separate crate.
-* Improve spacings in the page headings.
-* Improve the skeletons while loading in the neuron details page.
-* Review the chunking strategy to enhance the dapp's loading time and prevent random, rare flashes of unstyled content (FOUC).
-* New header UI in the canister detail page.
 * Get BTC button to use the mock bitcoin canister to test ckBTC.
 
 #### Changed
@@ -90,17 +79,11 @@ here after a successful release.
 
 #### Not Published
 
-#### Not Published
-
 * New UI to better explain the commitment of Neurons' Fund and direct participation.
 
 ### Operations
 
 #### Added
-* Run several script tests on macos as well as ubuntu.
-* Extend the release SOP script up to submitting the proposal.
-
-* Check spelling in Rust documentation as part of CI.
 
 * Run several script tests on macos as well as ubuntu.
 * Extend the release SOP script up to submitting the proposal.
@@ -120,38 +103,6 @@ here after a successful release.
 #### Removed
 
 * Comment and skip dfx-nns-proposal-args.test.
-
-## Proposal 124855
-
-### Application
-
-#### Added
-
-* Select destination when disbursing maturity.
-
-#### Changed
-
-* Use ICRC-1 transfer on ICP ledger canister instead of generic ICRC-1 ledger canister.
-* Allow `get_histogram` (an unstable API) only as a query call.
-* Set `ENABLE_SNS_AGGREGATOR_STORE` true for production.
-* Use custom button label for disburse maturity flow.
-
-#### Fixed
-
-* Fix CSS on canister cards to show tooltip and name correctly.
-
-#### Not Published
-
-* Use ICRC-1 transfer when staking a neuron, behind a feature flag.
-
-### Operations
-
-#### Changed
-
-* Fix the `release-sop` command that set `origin/main` as the upstream.
-* Specify the version of `binstall` in `dfx.json`.
-* Fix the proposal matching pattern in `nns-dapp/split-changelog` that used to match aggregator proposals as well.
-* Fix the rust-update action.
 
 ## Proposal 124855
 
