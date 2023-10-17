@@ -18,8 +18,8 @@ export class SnsNeuronVotingPowerPo extends BasePageObject {
     });
   }
 
-  getVotingPower(): Promise<string> {
-    return this.getKeyValuePairPo().getValueText();
+  async getVotingPower(): Promise<string | undefined> {
+    return (await this.getKeyValuePairPo().getValueText())?.trim();
   }
 
   clickInfoIcon(): Promise<void> {
