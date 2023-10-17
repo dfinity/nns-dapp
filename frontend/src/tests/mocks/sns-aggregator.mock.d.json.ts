@@ -2674,5 +2674,5 @@ import type { CachedSnsDto } from "$lib/types/sns-aggregator";
   },
 ];
 
-const data: CachedSnsDto[];
+declare const data: CachedSnsDto[];
 export default data;
