@@ -23,9 +23,8 @@ source "$(clap.build)"
 cargo spellcheck check CHANGELOG-Nns-Dapp-unreleased.md
 
 # For the aggregator, check everything before the first proposal:
-for file in CHANGELOG-Sns_Aggregator.md; do
-  unreleased="$(mktemp --suffix=.md)" # File with unreleased changelog entries.
-  sed -E '/^#+.*Proposal/q' "$file" >"$unreleased"
-  cargo spellcheck check "$unreleased" | awk -v tmp="$unreleased" -v orig="$file" '{gsub(tmp,orig,$0);print}'
-  rm "$unreleased"
-done
+file=CHANGELOG-Sns_Aggregator.md
+unreleased="$(mktemp --suffix=.md)" # File with unreleased changelog entries.
+sed -E '/^#+.*Proposal/q' "$file" >"$unreleased"
+cargo spellcheck check "$unreleased" | awk -v tmp="$unreleased" -v orig="$file" '{gsub(tmp,orig,$0);print}'
+rm "$unreleased"
