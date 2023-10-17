@@ -53,6 +53,7 @@
       <div class="universe-logo">
         <UniverseLogo
           size="small"
+          rounded
           horizontalPadding={false}
           universe={$selectedUniverseStore}
         />

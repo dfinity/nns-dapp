@@ -14,6 +14,7 @@
   export let universe: Universe;
   export let size: "big" | "small" = "small";
   export let framed = false;
+  export let rounded = false;
   export let horizontalPadding = true;
 
   let summary: SnsSummary | undefined;
@@ -37,7 +38,12 @@
   $: title = universeLogoAlt(universe);
 </script>
 
-<div class={`${size}`} class:horizontalPadding data-tid="project-logo">
+<div
+  class={`${size}`}
+  class:rounded
+  class:horizontalPadding
+  data-tid="project-logo"
+>
   <Logo src={logo} alt={title} {size} {framed} testId="logo" />
 </div>
 
@@ -47,6 +53,11 @@
     justify-content: center;
     align-items: center;
     width: fit-content;
+  }
+
+  .rounded {
+    border-radius: 50%;
+    overflow: hidden;
   }
 
   .small.horizontalPadding {
