@@ -1,8 +1,13 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_root.rs a/rs/sns_aggregator/src/types/ic_sns_root.rs
-index 91b761207..740fd15dd 100644
+index 7833a9bcf..740fd15dd 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_root.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_root.rs
-@@ -134,7 +134,7 @@ pub struct GetSnsCanistersSummaryResponse {
+@@ -1,4 +1,3 @@
+-//! Created by: scripts/did2rs.sh  scripts/did2rs.sh --canister sns_root --out home/max/dfn/nns-dapp/branches/preserve-provenance/rs/sns_aggregator/src/types/ic_sns_root.rs --header sns/aggregator/did2rs.header --traits Serialize\,\ Clone\,\ Debug
+ #![allow(clippy::all)]
+ #![allow(unused_imports)]
+ #![allow(clippy::missing_docs_in_private_items)]
+@@ -135,7 +134,7 @@ pub struct GetSnsCanistersSummaryResponse {
  #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
  pub struct ListSnsCanistersArg {}
  

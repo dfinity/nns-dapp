@@ -1,8 +1,13 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_wasm.rs a/rs/sns_aggregator/src/types/ic_sns_wasm.rs
-index fa3ab977f..6c61e246b 100644
+index aa3cfce8a..6c61e246b 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_wasm.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_wasm.rs
-@@ -283,7 +283,7 @@ pub struct InsertUpgradePathEntriesResponse {
+@@ -1,4 +1,3 @@
+-//! Created by: scripts/did2rs.sh  scripts/did2rs.sh --canister sns_wasm --out home/max/dfn/nns-dapp/branches/preserve-provenance/rs/sns_aggregator/src/types/ic_sns_wasm.rs --header sns/aggregator/did2rs.header --traits Serialize\,\ Clone\,\ Debug
+ #![allow(clippy::all)]
+ #![allow(unused_imports)]
+ #![allow(clippy::missing_docs_in_private_items)]
+@@ -284,7 +283,7 @@ pub struct InsertUpgradePathEntriesResponse {
  #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
  pub struct ListDeployedSnsesArg {}
  

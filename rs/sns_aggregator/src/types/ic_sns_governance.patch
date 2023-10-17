@@ -1,8 +1,13 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_governance.rs a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-index 699d84ad7..af9969652 100644
+index bca9a5ed3..af9969652 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_governance.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_governance.rs
-@@ -518,7 +518,7 @@ pub struct GetMaturityModulationResponse {
+@@ -1,4 +1,3 @@
+-//! Created by: scripts/did2rs.sh  scripts/did2rs.sh --canister sns_governance --out home/max/dfn/nns-dapp/branches/preserve-provenance/rs/sns_aggregator/src/types/ic_sns_governance.rs --header sns/aggregator/did2rs.header --traits Serialize\,\ Clone\,\ Debug
+ #![allow(clippy::all)]
+ #![allow(unused_imports)]
+ #![allow(clippy::missing_docs_in_private_items)]
+@@ -519,7 +518,7 @@ pub struct GetMaturityModulationResponse {
  #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
  pub struct GetMetadataArg {}
  
@@ -11,7 +16,7 @@ index 699d84ad7..af9969652 100644
  pub struct GetMetadataResponse {
      pub url: Option<String>,
      pub logo: Option<String>,
-@@ -611,7 +611,7 @@ pub struct GetSnsInitializationParametersResponse {
+@@ -612,7 +611,7 @@ pub struct GetSnsInitializationParametersResponse {
      pub sns_initialization_parameters: String,
  }
  
