@@ -5,6 +5,7 @@ import SnsWallet from "$lib/pages/SnsWallet.svelte";
 import * as workerBalances from "$lib/services/worker-balances.services";
 import * as workerTransactions from "$lib/services/worker-transactions.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
@@ -64,6 +65,7 @@ describe("SnsWallet", () => {
     resetIdentity();
     vi.clearAllMocks();
     snsAccountsStore.reset();
+    transactionsFeesStore.reset();
     vi.spyOn(snsIndexApi, "getSnsTransactions").mockResolvedValue({
       oldestTxId: BigInt(1234),
       transactions: [mockIcrcTransactionWithId],
@@ -82,157 +84,161 @@ describe("SnsWallet", () => {
     page.mock({ data: { universe: rootCanisterIdText } });
   });
 
-  it("should render sns project name", async () => {
-    const { getByTestId } = render(SnsWallet, props);
+  describe("accounts loaded", () => {
+    it("should render sns project name", async () => {
+      const { getByTestId } = render(SnsWallet, props);
 
-    await runResolvedPromises();
+      await runResolvedPromises();
 
-    const titleRow = getByTestId("universe-page-summary-component");
+      const titleRow = getByTestId("universe-page-summary-component");
 
-    expect(titleRow.textContent.trim()).toBe("Catalyze");
-  });
-
-  it("should hide spinner when account is loaded", async () => {
-    const { queryByTestId } = render(SnsWallet, props);
-
-    expect(queryByTestId("spinner")).toBeInTheDocument();
-
-    await runResolvedPromises();
-
-    expect(queryByTestId("spinner")).toBeNull();
-  });
-
-  it("should render transactions", async () => {
-    const { queryByTestId } = render(SnsWallet, props);
-
-    await runResolvedPromises();
-
-    expect(queryByTestId("transactions-list")).toBeInTheDocument();
-  });
-
-  it("should render 'Main' as subtitle", async () => {
-    const { queryByTestId } = render(SnsWallet, props);
-
-    await runResolvedPromises();
-
-    expect(queryByTestId("wallet-page-heading-subtitle").textContent).toBe(
-      "Main"
-    );
-  });
-
-  it("should render a balance with token", async () => {
-    const { getByTestId } = render(SnsWallet, props);
-
-    await runResolvedPromises();
-
-    expect(
-      getByTestId("wallet-page-heading-component")
-        .querySelector('[data-tid="token-value-label"]')
-        ?.textContent.trim()
-    ).toEqual(
-      `${formatToken({
-        value: mockSnsMainAccount.balanceE8s,
-      })} ${mockSnsToken.symbol}`
-    );
-  });
-
-  it("should open new transaction modal", async () => {
-    const result = render(SnsWallet, props);
-
-    await runResolvedPromises();
-
-    const { queryByTestId, getByTestId } = result;
-
-    await waitFor(() =>
-      expect(queryByTestId("open-new-sns-transaction")).toBeInTheDocument()
-    );
-
-    await testAccountsModal({ result, testId: "open-new-sns-transaction" });
-
-    expect(getByTestId("transaction-step-1")).toBeInTheDocument();
-  });
-
-  const modalProps = {
-    ...props,
-    testComponent: SnsWallet,
-  };
-
-  it("should open receive modal", async () => {
-    const result = render(AccountsTest, { props: modalProps });
-
-    await runResolvedPromises();
-
-    await testAccountsModal({ result, testId: "receive-sns" });
-
-    const { getByTestId } = result;
-
-    expect(getByTestId("receive-modal")).not.toBeNull();
-  });
-
-  it("should reload account after finish receiving tokens", async () => {
-    const result = render(AccountsTest, { props: modalProps });
-
-    await runResolvedPromises();
-
-    await testAccountsModal({ result, testId: "receive-sns" });
-
-    const { getByTestId, container } = result;
-
-    await waitModalIntroEnd({
-      container,
-      selector: "[data-tid='reload-receive-account']",
+      expect(titleRow.textContent.trim()).toBe("Catalyze");
     });
 
-    expect(snsLedgerApi.getSnsAccounts).toHaveBeenCalledTimes(2);
-    expect(snsIndexApi.getSnsTransactions).toHaveBeenCalledTimes(1);
+    it("should hide spinner when account is loaded", async () => {
+      const { queryByTestId } = render(SnsWallet, props);
 
-    fireEvent.click(getByTestId("reload-receive-account") as HTMLButtonElement);
+      expect(queryByTestId("spinner")).toBeInTheDocument();
 
-    await runResolvedPromises();
+      await runResolvedPromises();
 
-    expect(snsLedgerApi.getSnsAccounts).toHaveBeenCalledTimes(4);
-    expect(snsIndexApi.getSnsTransactions).toHaveBeenCalledTimes(2);
-  });
-
-  it("should display receive modal information", async () => {
-    const result = render(AccountsTest, { props: modalProps });
-
-    await runResolvedPromises();
-
-    await testAccountsModal({ result, testId: "receive-sns" });
-
-    const { getByText } = result;
-
-    const store = get(selectedUniverseStore);
-
-    const title = replacePlaceholders(en.wallet.token_address, {
-      $tokenSymbol: store.summary?.token.symbol ?? "error-title-is-undefined",
+      expect(queryByTestId("spinner")).toBeNull();
     });
 
-    expect(getByText(title)).toBeInTheDocument();
-  });
+    it("should render transactions", async () => {
+      const { queryByTestId } = render(SnsWallet, props);
 
-  it("should init worker that sync the balance", async () => {
-    const spy = vi.spyOn(workerBalances, "initBalancesWorker");
+      await runResolvedPromises();
 
-    render(SnsWallet, props);
-    expect(spy).toHaveBeenCalledTimes(0);
+      expect(queryByTestId("transactions-list")).toBeInTheDocument();
+    });
 
-    await runResolvedPromises();
+    it("should render 'Main' as subtitle", async () => {
+      const { queryByTestId } = render(SnsWallet, props);
 
-    expect(spy).toHaveBeenCalledTimes(1);
-  });
+      await runResolvedPromises();
 
-  it("should init worker that sync the transactions", async () => {
-    const spy = vi.spyOn(workerTransactions, "initTransactionsWorker");
+      expect(queryByTestId("wallet-page-heading-subtitle").textContent).toBe(
+        "Main"
+      );
+    });
 
-    const { queryByTestId } = render(SnsWallet, props);
-    expect(spy).toHaveBeenCalledTimes(0);
+    it("should render a balance with token", async () => {
+      const { getByTestId } = render(SnsWallet, props);
 
-    await runResolvedPromises();
+      await runResolvedPromises();
 
-    expect(queryByTestId("transactions-list")).toBeInTheDocument();
+      expect(
+        getByTestId("wallet-page-heading-component")
+          .querySelector('[data-tid="token-value-label"]')
+          ?.textContent.trim()
+      ).toEqual(
+        `${formatToken({
+          value: mockSnsMainAccount.balanceE8s,
+        })} ${mockSnsToken.symbol}`
+      );
+    });
 
-    expect(spy).toHaveBeenCalledTimes(1);
+    it("should open new transaction modal", async () => {
+      const result = render(SnsWallet, props);
+
+      await runResolvedPromises();
+
+      const { queryByTestId, getByTestId } = result;
+
+      await waitFor(() =>
+        expect(queryByTestId("open-new-sns-transaction")).toBeInTheDocument()
+      );
+
+      await testAccountsModal({ result, testId: "open-new-sns-transaction" });
+
+      expect(getByTestId("transaction-step-1")).toBeInTheDocument();
+    });
+
+    const modalProps = {
+      ...props,
+      testComponent: SnsWallet,
+    };
+
+    it("should open receive modal", async () => {
+      const result = render(AccountsTest, { props: modalProps });
+
+      await runResolvedPromises();
+
+      await testAccountsModal({ result, testId: "receive-sns" });
+
+      const { getByTestId } = result;
+
+      expect(getByTestId("receive-modal")).not.toBeNull();
+    });
+
+    it("should reload account after finish receiving tokens", async () => {
+      const result = render(AccountsTest, { props: modalProps });
+
+      await runResolvedPromises();
+
+      await testAccountsModal({ result, testId: "receive-sns" });
+
+      const { getByTestId, container } = result;
+
+      await waitModalIntroEnd({
+        container,
+        selector: "[data-tid='reload-receive-account']",
+      });
+
+      expect(snsLedgerApi.getSnsAccounts).toHaveBeenCalledTimes(2);
+      expect(snsIndexApi.getSnsTransactions).toHaveBeenCalledTimes(1);
+
+      fireEvent.click(
+        getByTestId("reload-receive-account") as HTMLButtonElement
+      );
+
+      await runResolvedPromises();
+
+      expect(snsLedgerApi.getSnsAccounts).toHaveBeenCalledTimes(4);
+      expect(snsIndexApi.getSnsTransactions).toHaveBeenCalledTimes(2);
+    });
+
+    it("should display receive modal information", async () => {
+      const result = render(AccountsTest, { props: modalProps });
+
+      await runResolvedPromises();
+
+      await testAccountsModal({ result, testId: "receive-sns" });
+
+      const { getByText } = result;
+
+      const store = get(selectedUniverseStore);
+
+      const title = replacePlaceholders(en.wallet.token_address, {
+        $tokenSymbol: store.summary?.token.symbol ?? "error-title-is-undefined",
+      });
+
+      expect(getByText(title)).toBeInTheDocument();
+    });
+
+    it("should init worker that sync the balance", async () => {
+      const spy = vi.spyOn(workerBalances, "initBalancesWorker");
+
+      render(SnsWallet, props);
+      expect(spy).toHaveBeenCalledTimes(0);
+
+      await runResolvedPromises();
+
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    it("should init worker that sync the transactions", async () => {
+      const spy = vi.spyOn(workerTransactions, "initTransactionsWorker");
+
+      const { queryByTestId } = render(SnsWallet, props);
+      expect(spy).toHaveBeenCalledTimes(0);
+
+      await runResolvedPromises();
+
+      expect(queryByTestId("transactions-list")).toBeInTheDocument();
+
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
   });
 });
