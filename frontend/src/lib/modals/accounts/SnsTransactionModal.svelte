@@ -8,7 +8,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { snsTransferTokens } from "$lib/services/sns-accounts.services";
   import type { Account } from "$lib/types/account";
-  import { Spinner, Modal, type WizardStep } from "@dfinity/gix-components";
+  import { Modal, Spinner, type WizardStep } from "@dfinity/gix-components";
   import type { TransactionInit } from "$lib/types/transaction";
   import { TokenAmount, nonNullish, type Token } from "@dfinity/utils";
   import type { Principal } from "@dfinity/principal";
