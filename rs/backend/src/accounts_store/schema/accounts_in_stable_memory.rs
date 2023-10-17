@@ -37,7 +37,7 @@ pub trait AccountsInStableMemoryTrait {
     // TODO: Add a small cache to limit the cost of getting and parsing data to once per API call.
 
     /// Every account is serialized and stored in between `1` and `2**16-1` pages.
-    const MAX_PAGES_PER_ACCOUNT: usize = u16::MAX as usize;
+    const MAX_PAGES_PER_ACCOUNT: usize = u16::MAX as usize + 1;
 
     // Low level methods to get and set pages.
     /// Gets a page of memory.
@@ -63,6 +63,10 @@ pub trait AccountsInStableMemoryTrait {
     /// - The page that was removed from the database, if it was present, else `None`.
     fn s1_remove_account_page(&mut self, account_storage_key: &AccountStorageKey) -> Option<AccountStoragePage>;
 
+
+    /// Gets the pages for an account.
+    fn s1_get_account_pages(&self, account_key: &[u8]) -> Box<dyn Iterator<Item = AccountStoragePage> + '_>;
+
     /// Checks whether to get the next page.
     /// - If the very last page is full, getting the next page will return None. That is expected.
     fn s1_is_last_page(last_page_maybe: &Option<AccountStoragePage>) -> bool {
@@ -82,28 +86,17 @@ pub trait AccountsInStableMemoryTrait {
     /// Equivalent of [`super::AccountsDbTrait::db_get_account`].
     fn s1_get_account(&self, account_key: &[u8]) -> Option<Account> {
         let mut bytes = Vec::new();
-        let mut have_account = false;
-        for page_num in 0..Self::MAX_PAGES_PER_ACCOUNT {
-            let account_storage_key = AccountStorageKey::new(page_num as u16, account_key);
-            if let Some(page) = self.s1_get_account_page(&account_storage_key) {
-                have_account = true;
-                let len = page.len();
-                bytes.extend_from_slice(&page.bytes[AccountStoragePage::PAYLOAD_OFFSET..][..len]);
-                if len < AccountStoragePage::MAX_PAYLOAD_LEN {
-                    break;
-                }
-            } else {
-                // The last page was full, or there were no pages.
-                break;
-            }
+        for page in self.s1_get_account_pages(account_key) {
+            let len = page.len();
+            bytes.extend_from_slice(&page.bytes[AccountStoragePage::PAYLOAD_OFFSET..][..len]);
         }
-        if have_account {
+        if bytes.is_empty() {
+            None
+        } else {
             let (account,) = Candid::from_bytes(bytes)
                 .map(|c| c.0)
                 .expect("Failed to parse account from store.");
             Some(account)
-        } else {
-            None
         }
     }
 
