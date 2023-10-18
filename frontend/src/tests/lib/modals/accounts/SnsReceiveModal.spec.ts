@@ -3,7 +3,6 @@ import type { Account } from "$lib/types/account";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
-import { waitFor } from "@testing-library/svelte";
 
 describe("SnsReceiveModal", () => {
   const reloadSpy = vi.fn();
@@ -39,9 +38,7 @@ describe("SnsReceiveModal", () => {
       tokenSymbol,
     });
 
-    await waitFor(() =>
-      expect(getByTestId("logo").getAttribute("alt")).toEqual(tokenSymbol)
-    );
+    expect(getByTestId("logo").getAttribute("alt")).toEqual(tokenSymbol);
   });
 
   it("should render the address label of the sns account", async () => {
