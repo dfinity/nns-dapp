@@ -214,16 +214,12 @@
       [SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_FAILED]: "failed",
     }[proposalMap.status];
   }
-
-  let a: SnsProposalDecisionStatus | undefined;
-  $: a = nonNullish(proposal) && snsDecisionStatus(proposal);
 </script>
 
 <TestIdWrapper testId="sns-proposal-details-grid">
-  {#if nonNullish(proposalIdText) && !updating && nonNullish(proposal) && nonNullish(universeCanisterId) && nonNullish(statusString)}
+  {#if nonNullish(proposalIdText) && !updating && nonNullish(proposal) && nonNullish(universeCanisterId) && nonNullish(statusString) && nonNullish(status)}
     <ProposalNavigation
       currentProposalId={BigInt(proposalIdText)}
-      currentProposalStatus={statusString}
       {proposalIds}
       selectProposal={navigateToProposal}
     >

@@ -48,11 +48,10 @@
 </script>
 
 <TestIdWrapper testId="nns-proposal-component">
-  {#if $store?.proposal?.id !== undefined}
+  {#if $store?.proposal?.id !== undefined && nonNullish(statusString) && nonNullish(status)}
     {#if $referrerPathStore !== AppPath.Launchpad}
       <ProposalNavigation
         currentProposalId={$store.proposal.id}
-        currentProposalStatus={$store.proposal.status}
         {proposalIds}
         selectProposal={navigateToProposal}
       >
