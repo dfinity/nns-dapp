@@ -39,6 +39,12 @@ describe("SnsAccountsFooter", () => {
 
     snsAccountsStore.reset();
     transactionsFeesStore.reset();
+    setSnsProjects([
+      {
+        rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+    ]);
     transactionsFeesStore.setFee({
       rootCanisterId,
       fee,
@@ -50,12 +56,6 @@ describe("SnsAccountsFooter", () => {
       accounts: [mockSnsMainAccount],
       certified: true,
     });
-    setSnsProjects([
-      {
-        rootCanisterId,
-        lifecycle: SnsSwapLifecycle.Committed,
-      },
-    ]);
 
     page.mock({ data: { universe: rootCanisterIdText } });
   });
