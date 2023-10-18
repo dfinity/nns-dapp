@@ -39,7 +39,10 @@ source "$(clap.build)"
     local upstream_path="$2"
     local local_path="declarations/${canister}/${canister}.did"
     mkdir -p "$(dirname "$local_path")"
-    curl -sfL --retry 5 "$IC_URL$upstream_path" >"${local_path}"
+    {
+      echo "//! Candid for canister \`$canister\` obtained by \`scripts/update_ic_commit\` from: <$IC_URL$upstream_path>"
+      curl -sfL --retry 5 "$IC_URL$upstream_path"
+    } >"${local_path}"
   }
   did_curl nns_governance /rs/nns/governance/canister/governance.did
   did_curl nns_registry /rs/registry/canister/canister/registry.did

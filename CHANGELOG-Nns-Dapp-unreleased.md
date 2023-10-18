@@ -14,6 +14,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Added provenance information to .did files and derived rust code.
+* Added `approveTransfer` in icrc-ledger API.
+
 #### Changed
 
 * Update proposal info icons position to improve the UX.
