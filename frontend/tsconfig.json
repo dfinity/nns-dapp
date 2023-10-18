@@ -7,7 +7,6 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "allowArbitraryExtensions": true,
     "sourceMap": true,
     "strict": true,
     "paths": {
