@@ -22,6 +22,7 @@ source "$SOURCE_DIR/clap.bash"
 # Define options
 clap.define short=s long=snapshot desc="The snapshot .zip or .tar.xz file" variable=SNAPSHOT_ARCHIVE default="snapshot.tar.xz"
 clap.define short=c long=clean desc="Extract a clean state from the .zip file, even if a directory with extracted state exists" variable=CLEAN nargs=0 default="false"
+clap.define long=host desc="Passed to dfx start as --host" variable=DFX_HOST
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
@@ -62,6 +63,10 @@ echo "*  If the state was generated on a different type of machine, then  *"
 echo "*  starting the replica may just hang after a panic.                *"
 echo "*                                                                   *"
 echo "*********************************************************************"
-dfx start
+
+if [ "${DFX_HOST:-}" ]; then
+  DFX_ARGS=("--host" "$DFX_HOST")
+fi
+dfx start "${DFX_ARGS[@]}"
 
 # The trap set above will restore the state before this script exits.
