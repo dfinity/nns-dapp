@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Get cargo sort version
+        run: jq -r '"CARGO_SORT_VERSION=\(.defaults.build.config.CARGO_SORT_VERSION)"' dfx.json >> $GITHUB_ENV
       - name: Get node version
         run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
       - uses: actions/setup-node@v3
@@ -25,7 +27,7 @@ jobs:
       - name: Install yq
         run: sudo snap install yq
       - name: Install cargo dependency sorter
-        run: cargo install cargo-sort
+        run: cargo install cargo-sort@${{ env.CARGO_SORT_VERSION }}
       - name: Format
         run: ./scripts/fmt
       - name: Check formatted

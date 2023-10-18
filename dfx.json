@@ -641,6 +641,7 @@
         "OPTIMIZER_VERSION": "0.3.6",
         "BINSTALL_VERSION": "1.3.0",
         "DIDC_VERSION": "2023-09-27",
+        "CARGO_SORT_VERSION": "1.0.9",
         "SNSDEMO_RELEASE": "release-2023-10-16",
         "IC_COMMIT": "2d57e93dabc5f13258d0dee1ffb2363ddce7fe62"
       },
