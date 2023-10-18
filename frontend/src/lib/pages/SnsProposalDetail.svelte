@@ -169,7 +169,7 @@
 
   $: layoutTitleStore.set({
     title,
-    header: title,
+    header: $ENABLE_FULL_WIDTH_PROPOSAL ? "" : title,
   });
 
   let proposalIds: bigint[];

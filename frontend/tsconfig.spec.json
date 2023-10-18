@@ -9,6 +9,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": false,
+    "allowArbitraryExtensions": true,
     "baseUrl": ".",
     "paths": {
       "$lib": ["src/lib"],

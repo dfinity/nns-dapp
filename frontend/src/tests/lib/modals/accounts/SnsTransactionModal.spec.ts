@@ -1,25 +1,13 @@
-import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
-import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
 import { snsTransferTokens } from "$lib/services/sns-accounts.services";
-import { authStore } from "$lib/stores/auth.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
-import { page } from "$mocks/$app/stores";
-import {
-  mockAuthStoreSubscribe,
-  mockPrincipal,
-} from "$tests/mocks/auth.store.mock";
+import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
-import {
-  mockSnsAccountsStoreSubscribe,
-  mockSnsMainAccount,
-} from "$tests/mocks/sns-accounts.mock";
-import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { testTransferTokens } from "$tests/utils/transaction-modal.test-utils";
-import type { Principal } from "@dfinity/principal";
+import { TokenAmount } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
-import type { Subscriber } from "svelte/store";
 
 vi.mock("$lib/services/sns-accounts.services", () => {
   return {
@@ -28,36 +16,35 @@ vi.mock("$lib/services/sns-accounts.services", () => {
 });
 
 describe("SnsTransactionModal", () => {
+  const rootCanisterId = mockPrincipal;
+  const token = { name: "Test", symbol: "TST" };
+  const transactionFee = TokenAmount.fromE8s({
+    amount: BigInt(10_000),
+    token,
+  });
   const renderTransactionModal = (selectedAccount?: Account) =>
     renderModal({
       component: SnsTransactionModal,
       props: {
         selectedAccount,
+        rootCanisterId,
+        transactionFee,
+        token,
       },
     });
 
-  beforeAll(() =>
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe)
-  );
-
   beforeEach(() => {
-    vi.spyOn(snsAccountsStore, "subscribe").mockImplementation(
-      mockSnsAccountsStoreSubscribe(mockPrincipal)
-    );
-    vi.spyOn(snsSelectedTransactionFeeStore, "subscribe").mockImplementation(
-      mockSnsSelectedTransactionFeeStoreSubscribe()
-    );
-    vi.spyOn(selectedUniverseIdStore, "subscribe").mockImplementation(
-      (run: Subscriber<Principal>): (() => void) => {
-        run(mockPrincipal);
-        return () => undefined;
-      }
-    );
-
-    page.mock({ data: { universe: mockPrincipal.toText() } });
+    resetIdentity();
+    snsAccountsStore.reset();
   });
 
   it("should transfer tokens", async () => {
+    // Used to choose the source account
+    snsAccountsStore.setAccounts({
+      rootCanisterId,
+      accounts: [mockSnsMainAccount],
+      certified: true,
+    });
     const result = await renderTransactionModal();
 
     await testTransferTokens({ result });

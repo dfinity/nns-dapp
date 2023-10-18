@@ -1,7 +1,11 @@
 import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { page } from "$mocks/$app/stores";
 import { ProposalNavigationPo } from "$tests/page-objects/ProposalNavigation.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
+import { beforeEach, describe } from "vitest";
 
 describe("ProposalNavigation", () => {
   const renderComponent = (props) => {
@@ -9,82 +13,192 @@ describe("ProposalNavigation", () => {
     return ProposalNavigationPo.under(new JestPageObjectElement(container));
   };
 
-  describe("not rendered", () => {
-    it("should not render buttons if no proposalIds", async () => {
-      const po = renderComponent({
-        currentProposalId: 1n,
-        proposalIds: undefined,
-        selectProposal: vi.fn(),
+  beforeEach(() => {
+    // for logo
+    page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
+  });
+
+  // TODO(GIX-1957): remove this block after the full-width proposal is enabled
+  describe("ENABLE_FULL_WIDTH_PROPOSAL disabled", () => {
+    beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_FULL_WIDTH_PROPOSAL", false);
+    });
+    describe("not rendered", () => {
+      it("should not render buttons if no proposalIds", async () => {
+        const po = renderComponent({
+          currentProposalId: 1n,
+          proposalIds: undefined,
+          selectProposal: vi.fn(),
+        });
+
+        expect(await po.isPresent()).toBe(false);
       });
 
-      expect(await po.isPresent()).toBe(false);
+      it("should not render buttons if no currentProposalId in proposalIds", async () => {
+        const po = renderComponent({
+          currentProposalId: 1n,
+          proposalIds: [0n],
+          selectProposal: vi.fn(),
+        });
+
+        expect(await po.isPresent()).toBe(false);
+      });
     });
 
-    it("should not render buttons if no currentProposalId in proposalIds", async () => {
-      const po = renderComponent({
-        currentProposalId: 1n,
-        proposalIds: [0n],
-        selectProposal: vi.fn(),
+    describe("display", () => {
+      it("should render buttons", async () => {
+        const po = renderComponent({
+          currentProposalId: 1n,
+          proposalIds: [2n, 1n, 0n],
+          selectProposal: vi.fn(),
+        });
+
+        expect(await po.getNewerButtonPo().isPresent()).toBe(true);
+        expect(await po.getOlderButtonPo().isPresent()).toBe(true);
       });
 
-      expect(await po.isPresent()).toBe(false);
+      it("should enable both buttons", async () => {
+        const po = renderComponent({
+          currentProposalId: 1n,
+          proposalIds: [2n, 1n, 0n],
+          selectProposal: vi.fn(),
+        });
+
+        expect(await po.isOlderButtonHidden()).toBe(false);
+        expect(await po.isNewerButtonHidden()).toBe(false);
+      });
+
+      it("should be visible even when the current proposal is not in the list", async () => {
+        const po = renderComponent({
+          currentProposalId: 10n,
+          proposalIds: [20n, 0n],
+          selectProposal: vi.fn(),
+        });
+
+        expect(await po.isOlderButtonHidden()).toBe(false);
+        expect(await po.isNewerButtonHidden()).toBe(false);
+      });
+
+      it("should hide to-newer-proposal button when the newest proposal is selected", async () => {
+        const po = renderComponent({
+          currentProposalId: 1n,
+          proposalIds: [1n, 0n],
+          selectProposal: vi.fn(),
+        });
+
+        expect(await po.isOlderButtonHidden()).toBe(false);
+        expect(await po.isNewerButtonHidden()).toBe(true);
+      });
+
+      it("should hide to-oldest-proposal when the oldest is selected", async () => {
+        const po = renderComponent({
+          currentProposalId: 1n,
+          proposalIds: [2n, 1n],
+          selectProposal: vi.fn(),
+        });
+
+        expect(await po.isOlderButtonHidden()).toBe(true);
+        expect(await po.isNewerButtonHidden()).toBe(false);
+      });
     });
   });
 
-  describe("display", () => {
-    it("should render buttons", async () => {
-      const po = renderComponent({
-        currentProposalId: 1n,
-        proposalIds: [2n, 1n, 0n],
-        selectProposal: vi.fn(),
-      });
-
-      expect(await po.getNewerButtonPo().isPresent()).toBe(true);
-      expect(await po.getOlderButtonPo().isPresent()).toBe(true);
+  // TODO(GIX-1957): unwrap this block after the full-width proposal is enabled
+  describe("ENABLE_FULL_WIDTH_PROPOSAL enabled", () => {
+    beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_FULL_WIDTH_PROPOSAL", true);
     });
 
-    it("should enable both buttons", async () => {
-      const po = renderComponent({
-        currentProposalId: 1n,
-        proposalIds: [2n, 1n, 0n],
-        selectProposal: vi.fn(),
+    describe("not rendered", () => {
+      it("should render universe logo", async () => {
+        const po = renderComponent({
+          currentProposalId: 1n,
+          proposalIds: undefined,
+          selectProposal: vi.fn(),
+        });
+
+        expect(await po.getLogoSource()).toEqual(
+          "/src/lib/assets/icp-rounded.svg"
+        );
       });
 
-      expect(await po.isOlderButtonHidden()).toBe(false);
-      expect(await po.isNewerButtonHidden()).toBe(false);
+      it("should render proposal title", async () => {
+        const po = renderComponent({
+          currentProposalId: 1n,
+          proposalIds: undefined,
+          selectProposal: vi.fn(),
+        });
+
+        expect(await po.getTitle()).toEqual("Proposal 1");
+      });
+
+      it("should hide buttons if no proposalIds", async () => {
+        const po = renderComponent({
+          currentProposalId: 1n,
+          proposalIds: undefined,
+          selectProposal: vi.fn(),
+        });
+
+        expect(await po.isOlderButtonHidden()).toBe(true);
+        expect(await po.isNewerButtonHidden()).toBe(true);
+      });
     });
 
-    it("should be visible even when the current proposal is not in the list", async () => {
-      const po = renderComponent({
-        currentProposalId: 10n,
-        proposalIds: [20n, 0n],
-        selectProposal: vi.fn(),
+    describe("display", () => {
+      it("should render buttons", async () => {
+        const po = renderComponent({
+          currentProposalId: 1n,
+          proposalIds: [2n, 1n, 0n],
+          selectProposal: vi.fn(),
+        });
+
+        expect(await po.getNewerButtonPo().isPresent()).toBe(true);
+        expect(await po.getOlderButtonPo().isPresent()).toBe(true);
       });
 
-      expect(await po.isOlderButtonHidden()).toBe(false);
-      expect(await po.isNewerButtonHidden()).toBe(false);
-    });
+      it("should enable both buttons", async () => {
+        const po = renderComponent({
+          currentProposalId: 1n,
+          proposalIds: [2n, 1n, 0n],
+          selectProposal: vi.fn(),
+        });
 
-    it("should hide to-newer-proposal button when the newest proposal is selected", async () => {
-      const po = renderComponent({
-        currentProposalId: 1n,
-        proposalIds: [1n, 0n],
-        selectProposal: vi.fn(),
+        expect(await po.isOlderButtonHidden()).toBe(false);
+        expect(await po.isNewerButtonHidden()).toBe(false);
       });
 
-      expect(await po.isOlderButtonHidden()).toBe(false);
-      expect(await po.isNewerButtonHidden()).toBe(true);
-    });
+      it("should be visible even when the current proposal is not in the list", async () => {
+        const po = renderComponent({
+          currentProposalId: 10n,
+          proposalIds: [20n, 0n],
+          selectProposal: vi.fn(),
+        });
 
-    it("should hide to-oldest-proposal when the oldest is selected", async () => {
-      const po = renderComponent({
-        currentProposalId: 1n,
-        proposalIds: [2n, 1n],
-        selectProposal: vi.fn(),
+        expect(await po.isOlderButtonHidden()).toBe(false);
+        expect(await po.isNewerButtonHidden()).toBe(false);
       });
 
-      expect(await po.isOlderButtonHidden()).toBe(true);
-      expect(await po.isNewerButtonHidden()).toBe(false);
+      it("should hide to-newer-proposal button when the newest proposal is selected", async () => {
+        const po = renderComponent({
+          currentProposalId: 1n,
+          proposalIds: [1n, 0n],
+          selectProposal: vi.fn(),
+        });
+
+        expect(await po.isOlderButtonHidden()).toBe(false);
+        expect(await po.isNewerButtonHidden()).toBe(true);
+      });
+
+      it("should hide to-oldest-proposal when the oldest is selected", async () => {
+        const po = renderComponent({
+          currentProposalId: 1n,
+          proposalIds: [2n, 1n],
+          selectProposal: vi.fn(),
+        });
+
+        expect(await po.isOlderButtonHidden()).toBe(true);
+        expect(await po.isNewerButtonHidden()).toBe(false);
+      });
     });
   });
 
