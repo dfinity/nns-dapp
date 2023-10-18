@@ -16,7 +16,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-* Detailed values of the Neurons' Fund and direct participation in the project detail page.
 * Update proposal info icons position to improve the UX.
 * Improve the indicator of the minimum commitment in the project status.
 
@@ -33,6 +32,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Not Published
 
 * New feature flag `ENABLE_MY_TOKENS`.
+* Detailed values of the Neurons' Fund and direct participation in the project detail page.
 
 ### Operations
 
