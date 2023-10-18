@@ -252,6 +252,10 @@ describe("Accounts", () => {
     await waitFor(() =>
       expect(container.querySelector("div.modal")).not.toBeNull()
     );
+
+    expect(getByTestId("logo").getAttribute("alt")).toEqual(
+      `${mockSnsFullProject.summary.metadata.name} project logo`
+    );
   });
 
   it("should load Sns accounts balances", async () => {
