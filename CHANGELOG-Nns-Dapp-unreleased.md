@@ -18,7 +18,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Detailed values of the Neurons' Fund and direct participation in the project detail page.
 * Update proposal info icons position to improve the UX.
-* Detailed values of the Neurons' Fund and direct participation in the project detai page.
 * Improve the indicator of the minimum commitment in the project status.
 
 #### Deprecated
