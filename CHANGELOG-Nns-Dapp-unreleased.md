@@ -14,6 +14,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Added `approveTransfer` in icrc-ledger API.
+
 #### Changed
 
 * Detailed values of the Neurons' Fund and direct participation in the project detail page.
