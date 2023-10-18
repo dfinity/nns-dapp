@@ -4,7 +4,7 @@
   import { PageBanner, IconAccountsPage } from "@dfinity/gix-components";
 </script>
 
-<main class="sign-in" data-tid="sign-in-my-tokens-page-component">
+<main class="sign-in" data-tid="sign-in-tokens-page-component">
   <div class="content">
     <PageBanner>
       <IconAccountsPage slot="image" />
@@ -14,7 +14,7 @@
       <SignIn slot="actions" />
     </PageBanner>
 
-    <!-- TODO: GIX-1979 Add MyTokens table no balances -->
+    <!-- TODO: GIX-1979 Add Tokens table no balances -->
   </div>
 </main>
 

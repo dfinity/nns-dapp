@@ -3,8 +3,8 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import MyTokens from "$lib/pages/MyTokens.svelte";
-  import SignInMyTokens from "$lib/pages/SignInMyTokens.svelte";
+  import Tokens from "$lib/pages/Tokens.svelte";
+  import SignInTokens from "$lib/pages/SignInTokens.svelte";
   import { ENABLE_MY_TOKENS } from "$lib/stores/feature-flags.store";
   import { onMount } from "svelte";
 
@@ -15,10 +15,10 @@
   });
 </script>
 
-<TestIdWrapper testId="my-tokens-route-component">
+<TestIdWrapper testId="tokens-route-component">
   {#if $authSignedInStore}
-    <MyTokens />
+    <Tokens />
   {:else}
-    <SignInMyTokens />
+    <SignInTokens />
   {/if}
 </TestIdWrapper>
