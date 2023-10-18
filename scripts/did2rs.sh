@@ -25,7 +25,7 @@ print_help() {
 }
 
 # This command, with paths stripped down to the basename.
-STRIPPED_COMMAND="scripts/did2rs.sh $(printf " %q" scripts/did2rs.sh "${@##*/}")"
+STRIPPED_COMMAND="scripts/did2rs.sh$(printf " %q" "${@##*/}")"
 
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/clap.bash"
@@ -62,7 +62,7 @@ cd "$GIT_ROOT"
 ##########################
 {
   # The first line should be a comment declaring how the rust file was created.
-  echo "//! Created by: $STRIPPED_COMMAND"
+  echo "//! Rust code created from candid by: $STRIPPED_COMMAND"
 
   # We preserve lines starting `//!` at the head of the .did file.
   # These are used to provide information about provenance.
