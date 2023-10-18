@@ -182,7 +182,10 @@ describe("ckbtc-minter api", () => {
         }
       );
 
-      const call = () => retrieveBtcWithApproval(retrieveWithApprovalParams);
+      const call = () => retrieveBtcWithApproval({
+        ...params,
+        ...retrieveWithApprovalParams,
+      });
 
       expect(call).rejects.toThrowError();
     });
