@@ -24,6 +24,8 @@ jobs:
         run: sudo snap install --classic shfmt
       - name: Install yq
         run: sudo snap install yq
+      - name: Install cargo dependency sorter
+        run: cargo install cargo-sort
       - name: Format
         run: ./scripts/fmt
       - name: Check formatted
