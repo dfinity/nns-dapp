@@ -24,6 +24,8 @@ import {
   mockSummary,
 } from "$tests/mocks/sns-projects.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import WalletTest from "../pages/AccountsTest.svelte";
@@ -127,6 +129,7 @@ describe("Accounts", () => {
     });
 
     icpAccountsStore.setForTesting(mockAccountsStoreData);
+    resetSnsProjects();
   });
 
   it("should render NnsAccounts by default", () => {
@@ -207,6 +210,12 @@ describe("Accounts", () => {
     page.mock({
       data: { universe: mockSnsFullProject.rootCanisterId.toText() },
     });
+    setSnsProjects([
+      {
+        rootCanisterId: mockSnsFullProject.rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+    ]);
 
     transactionsFeesStore.setFee({
       rootCanisterId: mockSnsFullProject.rootCanisterId,
