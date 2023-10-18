@@ -1,15 +1,14 @@
 <script lang="ts">
-  export let statusLabel: string;
-  export let status:
-    | "unknown"
-    | "open"
-    | "rejected"
-    | "adopted"
-    | "executed"
-    | "failed";
+  import type { UniversalProposalStatus } from "$lib/types/proposals";
+  import { i18n } from "$lib/stores/i18n";
+
+  export let status: UniversalProposalStatus;
+
+  let label: string;
+  $: label = $i18n.proposal_status[status];
 </script>
 
-<span data-tid="proposal-status" class={`tag ${status}`}>{statusLabel}</span>
+<span data-tid="proposal-status" class={`tag ${status}`}>{label}</span>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";

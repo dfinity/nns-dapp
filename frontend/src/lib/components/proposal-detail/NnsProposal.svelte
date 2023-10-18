@@ -13,7 +13,7 @@
   import NnsProposalProposerPayloadEntry from "./NnsProposalProposerPayloadEntry.svelte";
   import { filteredProposals } from "$lib/derived/proposals.derived";
   import {
-    mapProposalInfo,
+    getUniversalProposalStatus,
     navigateToProposal,
   } from "$lib/utils/proposals.utils";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
@@ -23,7 +23,7 @@
   import { SplitBlock } from "@dfinity/gix-components";
   import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
   import { nonNullish } from "@dfinity/utils";
-  import { ProposalStatus } from "@dfinity/nns";
+  import type { UniversalProposalStatus } from "$lib/types/proposals";
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
@@ -32,30 +32,19 @@
   let proposalIds: bigint[] | undefined;
   $: proposalIds = $filteredProposals.proposals?.map(({ id }) => id as bigint);
 
-  let statusString: string | undefined;
-  let status: string | undefined;
-  $: if (nonNullish($store?.proposal)) {
-    ({ statusString } = mapProposalInfo($store.proposal));
-    status = {
-      [ProposalStatus.Unknown]: "unknown",
-      [ProposalStatus.Open]: "open",
-      [ProposalStatus.Rejected]: "rejected",
-      [ProposalStatus.Accepted]: "adopted",
-      [ProposalStatus.Executed]: "executed",
-      [ProposalStatus.Failed]: "failed",
-    }[$store.proposal.status];
-  }
+  let status: UniversalProposalStatus | undefined;
+  $: status = $store?.proposal && getUniversalProposalStatus($store.proposal);
 </script>
 
 <TestIdWrapper testId="nns-proposal-component">
-  {#if $store?.proposal?.id !== undefined && nonNullish(statusString) && nonNullish(status)}
+  {#if $store?.proposal?.id !== undefined && nonNullish(status)}
     {#if $referrerPathStore !== AppPath.Launchpad}
       <ProposalNavigation
         currentProposalId={$store.proposal.id}
         {proposalIds}
         selectProposal={navigateToProposal}
       >
-        <ProposalStatusTag slot="status" statusLabel={statusString} {status} />
+        <ProposalStatusTag slot="status" {status} />
       </ProposalNavigation>
     {/if}
 

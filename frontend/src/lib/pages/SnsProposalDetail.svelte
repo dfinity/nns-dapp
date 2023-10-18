@@ -3,11 +3,7 @@
   import { buildProposalsUrl } from "$lib/utils/navigation.utils";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { getSnsProposalById } from "$lib/services/$public/sns-proposals.services";
-  import {
-    type SnsProposalData,
-    SnsProposalDecisionStatus,
-    type SnsProposalId,
-  } from "@dfinity/sns";
+  import type { SnsProposalData, SnsProposalId } from "@dfinity/sns";
   import { toastsError } from "$lib/stores/toasts.store";
   import { Principal } from "@dfinity/principal";
   import SnsProposalSystemInfoSection from "$lib/components/sns-proposals/SnsProposalSystemInfoSection.svelte";
@@ -23,8 +19,7 @@
   import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
   import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
   import {
-    mapProposalInfo,
-    snsDecisionStatus,
+    getUniversalProposalStatus,
     snsProposalId,
     snsProposalIdString,
     sortSnsProposalsById,
@@ -39,12 +34,10 @@
   import { authStore } from "$lib/stores/auth.store";
   import { ENABLE_FULL_WIDTH_PROPOSAL } from "$lib/stores/feature-flags.store";
   import { SplitBlock } from "@dfinity/gix-components";
-  import type { Readable } from "svelte/store";
-  import type { SnsNervousSystemFunction } from "@dfinity/sns";
-  import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
   import { navigateToProposal } from "$lib/utils/proposals.utils";
   import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
   import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
+  import type { UniversalProposalStatus } from "$lib/types/proposals";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -192,38 +185,18 @@
   // The `update` function cares about the necessary data to be refetched.
   $: universeIdText, proposalIdText, $snsNeuronsStore, $authStore, update();
 
-  // LOL code
-  let functionsStore: Readable<SnsNervousSystemFunction[] | undefined>;
-  $: functionsStore = createSnsNsFunctionsProjectStore(universeCanisterId);
-
-  let statusString: string | undefined;
-  let status: string | undefined;
-  $: if (nonNullish(proposal) && nonNullish(functionsStore)) {
-    const proposalMap = mapProposalInfo({
-      proposalData: proposal,
-      nsFunctions: $functionsStore,
-    });
-    statusString = proposalMap.statusString;
-    status = {
-      [SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_UNSPECIFIED]:
-        "unknown",
-      [SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN]: "open",
-      [SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_REJECTED]: "rejected",
-      [SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_ADOPTED]: "adopted",
-      [SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED]: "executed",
-      [SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_FAILED]: "failed",
-    }[proposalMap.status];
-  }
+  let status: UniversalProposalStatus | undefined;
+  $: status = proposal && getUniversalProposalStatus(proposal);
 </script>
 
 <TestIdWrapper testId="sns-proposal-details-grid">
-  {#if nonNullish(proposalIdText) && !updating && nonNullish(proposal) && nonNullish(universeCanisterId) && nonNullish(statusString) && nonNullish(status)}
+  {#if nonNullish(proposalIdText) && !updating && nonNullish(proposal) && nonNullish(universeCanisterId) && nonNullish(status)}
     <ProposalNavigation
       currentProposalId={BigInt(proposalIdText)}
       {proposalIds}
       selectProposal={navigateToProposal}
     >
-      <ProposalStatusTag slot="status" statusLabel={statusString} {status} />
+      <ProposalStatusTag slot="status" {status} />
     </ProposalNavigation>
   {/if}
 

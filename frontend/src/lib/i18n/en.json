@@ -924,6 +924,14 @@
     "4": "Executed",
     "5": "Failed"
   },
+  "proposal_status": {
+    "unknown": "Unknown",
+    "open": "Open",
+    "rejected": "Rejected",
+    "adopted": "Adopted",
+    "executed": "Executed",
+    "failed": "Failed"
+  },
   "sns_status_description": {
     "0": "",
     "1": "A decision has not yet been made to adopt or reject the proposal.",

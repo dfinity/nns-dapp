@@ -969,6 +969,15 @@ interface I18nSns_status {
   5: string;
 }
 
+interface I18nProposal_status {
+  unknown: string;
+  open: string;
+  rejected: string;
+  adopted: string;
+  executed: string;
+  failed: string;
+}
+
 interface I18nSns_status_description {
   0: string;
   1: string;
@@ -1300,6 +1309,7 @@ interface I18n {
   sns_rewards_status: I18nSns_rewards_status;
   sns_rewards_description: I18nSns_rewards_description;
   sns_status: I18nSns_status;
+  proposal_status: I18nProposal_status;
   sns_status_description: I18nSns_status_description;
   metrics: I18nMetrics;
   ckbtc: I18nCkbtc;

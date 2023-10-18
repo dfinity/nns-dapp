@@ -4,7 +4,10 @@ import {
   SNS_PROPOSAL_COLOR,
 } from "$lib/constants/sns-proposals.constants";
 import { i18n } from "$lib/stores/i18n";
-import type { VotingNeuron } from "$lib/types/proposals";
+import type {
+  UniversalProposalStatus,
+  VotingNeuron,
+} from "$lib/types/proposals";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import type { Vote } from "@dfinity/nns";
 import type {
@@ -22,7 +25,7 @@ import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
 } from "@dfinity/sns";
-import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
+import { fromDefinedNullable, fromNullable, isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { nowInSeconds } from "./date.utils";
 import { keyOfOptional } from "./utils";
@@ -389,3 +392,24 @@ export const toNnsVote = (vote: SnsVote | Vote): Vote =>
 /** To have the logic in one place */
 export const toSnsVote = (vote: SnsVote | Vote): SnsVote =>
   vote as unknown as SnsVote;
+
+export const getUniversalProposalStatus = (
+  proposalData: SnsProposalData
+): UniversalProposalStatus => {
+  const status = snsDecisionStatus(proposalData);
+
+  const statusType = {
+    [SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_UNSPECIFIED]: "unknown",
+    [SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN]: "open",
+    [SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_REJECTED]: "rejected",
+    [SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_ADOPTED]: "adopted",
+    [SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED]: "executed",
+    [SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_FAILED]: "failed",
+  }[status];
+
+  if (isNullish(statusType)) {
+    throw new Error(`Unknown sns proposal status: ${status}`);
+  }
+
+  return statusType as UniversalProposalStatus;
+};
