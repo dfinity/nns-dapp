@@ -1,4 +1,4 @@
-//! sns_swap .did file obtained from: <https://raw.githubusercontent.com/dfinity/ic/2d57e93dabc5f13258d0dee1ffb2363ddce7fe62/rs/sns/swap/canister/swap.did>
+//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/2d57e93dabc5f13258d0dee1ffb2363ddce7fe62/rs/sns/swap/canister/swap.did>
 type BuyerState = record { icp : opt TransferableAmount };
 type CanisterCallError = record { code : opt int32; description : text };
 type CanisterStatusResultV2 = record {
