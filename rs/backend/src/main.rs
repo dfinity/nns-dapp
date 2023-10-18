@@ -34,7 +34,6 @@ mod periodic_tasks_runner;
 mod state;
 mod stats;
 mod time;
-mod memory;
 
 type Cycles = u128;
 
