@@ -21,7 +21,9 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { ENABLE_FULL_WIDTH_PROPOSAL } from "$lib/stores/feature-flags.store";
   import { SplitBlock } from "@dfinity/gix-components";
+  import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
   import { nonNullish } from "@dfinity/utils";
+  import { ProposalStatus } from "@dfinity/nns";
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
@@ -30,22 +32,32 @@
   let proposalIds: bigint[] | undefined;
   $: proposalIds = $filteredProposals.proposals?.map(({ id }) => id as bigint);
 
-  let proposalStatusString: string | undefined;
-  $: if (nonNullish($store.proposal)) {
-    ({ statusString: proposalStatusString } = mapProposalInfo($store.proposal));
-    console.log("proposalStatusString", proposalStatusString);
+  let statusString: string | undefined;
+  let status: string | undefined;
+  $: if (nonNullish($store?.proposal)) {
+    ({ statusString } = mapProposalInfo($store.proposal));
+    status = {
+      [ProposalStatus.Unknown]: "unknown",
+      [ProposalStatus.Open]: "open",
+      [ProposalStatus.Rejected]: "rejected",
+      [ProposalStatus.Accepted]: "adopted",
+      [ProposalStatus.Executed]: "executed",
+      [ProposalStatus.Failed]: "failed",
+    }[$store.proposal.status];
   }
 </script>
 
 <TestIdWrapper testId="nns-proposal-component">
-  {#if $store?.proposal?.id !== undefined && nonNullish(proposalStatusString)}
+  {#if $store?.proposal?.id !== undefined}
     {#if $referrerPathStore !== AppPath.Launchpad}
       <ProposalNavigation
         currentProposalId={$store.proposal.id}
-        currentProposalStatusString={proposalStatusString}
+        currentProposalStatus={$store.proposal.status}
         {proposalIds}
         selectProposal={navigateToProposal}
-      />
+      >
+        <ProposalStatusTag slot="status" statusLabel={statusString} {status} />
+      </ProposalNavigation>
     {/if}
 
     <TestIdWrapper testId="proposal-details-grid">

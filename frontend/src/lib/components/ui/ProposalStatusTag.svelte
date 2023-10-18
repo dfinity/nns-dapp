@@ -1,15 +1,15 @@
 <script lang="ts">
-  // TODO: switch to ids
-  export let statusString: string;
-
-  let statusClass: string;
-  $: statusClass = statusString.toLowerCase();
-
-  let label: string;
-  $: label = statusString;
+  export let statusLabel: string;
+  export let status:
+    | "unknown"
+    | "open"
+    | "rejected"
+    | "adopted"
+    | "executed"
+    | "failed";
 </script>
 
-<span data-tid="proposal-status" class={`tag ${statusClass}`}>{label}</span>
+<span data-tid="proposal-status" class={`tag ${status}`}>{statusLabel}</span>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
@@ -31,8 +31,7 @@
       color: var(--pink);
       background-color: var(--pink-tint);
     }
-    &.adopted,
-    &.accepted {
+    &.adopted {
       color: var(--blue);
       background-color: var(--blue-tint);
     }

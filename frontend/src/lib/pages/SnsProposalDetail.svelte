@@ -3,7 +3,11 @@
   import { buildProposalsUrl } from "$lib/utils/navigation.utils";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { getSnsProposalById } from "$lib/services/$public/sns-proposals.services";
-  import type { SnsProposalData, SnsProposalId } from "@dfinity/sns";
+  import {
+    type SnsProposalData,
+    SnsProposalDecisionStatus,
+    type SnsProposalId,
+  } from "@dfinity/sns";
   import { toastsError } from "$lib/stores/toasts.store";
   import { Principal } from "@dfinity/principal";
   import SnsProposalSystemInfoSection from "$lib/components/sns-proposals/SnsProposalSystemInfoSection.svelte";
@@ -20,6 +24,7 @@
   import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
   import {
     mapProposalInfo,
+    snsDecisionStatus,
     snsProposalId,
     snsProposalIdString,
     sortSnsProposalsById,
@@ -39,6 +44,7 @@
   import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
   import { navigateToProposal } from "$lib/utils/proposals.utils";
   import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
+  import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -191,23 +197,38 @@
   $: functionsStore = createSnsNsFunctionsProjectStore(universeCanisterId);
 
   let statusString: string | undefined;
-  $: if (nonNullish(proposal) && nonNullish(functionsStore))
-    ({ statusString } = mapProposalInfo({
+  let status: string | undefined;
+  $: if (nonNullish(proposal) && nonNullish(functionsStore)) {
+    const proposalMap = mapProposalInfo({
       proposalData: proposal,
       nsFunctions: $functionsStore,
-    }));
+    });
+    statusString = proposalMap.statusString;
+    status = {
+      [SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_UNSPECIFIED]:
+        "unknown",
+      [SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN]: "open",
+      [SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_REJECTED]: "rejected",
+      [SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_ADOPTED]: "adopted",
+      [SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED]: "executed",
+      [SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_FAILED]: "failed",
+    }[proposalMap.status];
+  }
 
-  $: console.log("statusString", statusString);
+  let a: SnsProposalDecisionStatus | undefined;
+  $: a = nonNullish(proposal) && snsDecisionStatus(proposal);
 </script>
 
 <TestIdWrapper testId="sns-proposal-details-grid">
   {#if nonNullish(proposalIdText) && !updating && nonNullish(proposal) && nonNullish(universeCanisterId) && nonNullish(statusString)}
     <ProposalNavigation
       currentProposalId={BigInt(proposalIdText)}
-      currentProposalStatusString={statusString}
+      currentProposalStatus={statusString}
       {proposalIds}
       selectProposal={navigateToProposal}
-    />
+    >
+      <ProposalStatusTag slot="status" statusLabel={statusString} {status} />
+    </ProposalNavigation>
   {/if}
 
   {#if !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
