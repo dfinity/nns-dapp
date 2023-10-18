@@ -48,7 +48,7 @@ describe("Tokens route", () => {
     });
   });
 
-  describe("when feature flag enabled", () => {
+  describe("when feature flag disabled", () => {
     beforeEach(() => {
       overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
       page.mock({ routeId: AppPath.Tokens });
