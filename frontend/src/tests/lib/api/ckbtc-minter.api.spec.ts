@@ -5,6 +5,7 @@ import {
   getWithdrawalAccount,
   minterInfo,
   retrieveBtc,
+  retrieveBtcWithApproval,
   updateBalance,
 } from "$lib/api/ckbtc-minter.api";
 import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -142,6 +143,50 @@ describe("ckbtc-minter api", () => {
       });
 
       const call = () => retrieveBtc(retrieveParams);
+
+      expect(call).rejects.toThrowError();
+    });
+  });
+
+  describe("retrieveBtcWithApproval", () => {
+    const retrieveWithApprovalParams = {
+      address: mockBTCAddressTestnet,
+      amount: 123n,
+    };
+
+    it("returns successfully when btc are retrieved", async () => {
+      const ok: RetrieveBtcOk = {
+        block_index: 1n,
+      };
+
+      const retrieveBtcWithApprovalSpy =
+        minterCanisterMock.retrieveBtcWithApproval.mockResolvedValue(ok);
+
+      const result = await retrieveBtcWithApproval({
+        ...params,
+        ...retrieveWithApprovalParams,
+      });
+
+      expect(result).toEqual(ok);
+
+      expect(retrieveBtcWithApprovalSpy).toBeCalledTimes(1);
+      expect(retrieveBtcWithApprovalSpy).toBeCalledWith(
+        retrieveWithApprovalParams
+      );
+    });
+
+    it("bubble errors", () => {
+      minterCanisterMock.retrieveBtcWithApproval.mockImplementation(
+        async () => {
+          throw new Error();
+        }
+      );
+
+      const call = () =>
+        retrieveBtcWithApproval({
+          ...params,
+          ...retrieveWithApprovalParams,
+        });
 
       expect(call).rejects.toThrowError();
     });
