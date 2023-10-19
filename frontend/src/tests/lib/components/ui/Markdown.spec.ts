@@ -9,7 +9,9 @@ vi.mock("$lib/utils/html.utils", () => ({
 }));
 
 describe("Markdown", () => {
-  beforeEach(silentConsoleErrors);
+  beforeEach(() => {
+    silentConsoleErrors();
+  });
   afterAll(() => {
     vi.clearAllMocks();
   });

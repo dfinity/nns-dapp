@@ -18,11 +18,11 @@ function replaceRealLogger(logType: LogType) {
 }
 
 export const failTestsThatLogToConsole = () => {
-  global.beforeEach(() => {
+  beforeEach(() => {
     gotLogs = false;
   });
 
-  global.afterEach(() => {
+  afterEach(() => {
     if (!isLoggingAllowed && gotLogs) {
       throw new Error(
         "Your test produced console logs, which is not allowed.\n" +

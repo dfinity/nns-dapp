@@ -31,9 +31,9 @@ describe("IncreaseNeuronStakeModal", () => {
       },
     });
 
-  beforeEach(() =>
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe)
-  );
+  beforeEach(() => {
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+  });
 
   describe("when accounts store is empty", () => {
     beforeEach(() => {

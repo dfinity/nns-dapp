@@ -58,6 +58,7 @@ describe("sns-utils", () => {
         rootCanisterId: mockPrincipal,
         myCommitment: {
           icp: [],
+          has_created_neuron_recipes: [],
         },
       };
       expect(getCommitmentE8s(commitment)).toEqual(BigInt(0));

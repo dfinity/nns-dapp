@@ -27,9 +27,9 @@ vi.mock("$lib/services/$public/sns.services", () => ({
 }));
 
 describe("SnsNeuronFollowingCard", () => {
-  beforeAll(() =>
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe)
-  );
+  beforeAll(() => {
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+  });
 
   describe("user has permissions to manage followees", () => {
     const controlledNeuron: SnsNeuron = {

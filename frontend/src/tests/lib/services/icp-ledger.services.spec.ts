@@ -309,13 +309,11 @@ describe("icp-ledger.services", () => {
     });
 
     describe("success", () => {
-      beforeAll(() =>
-        vi
-          .spyOn(LedgerIdentity, "create")
-          .mockImplementation(
-            async (): Promise<LedgerIdentity> => mockLedgerIdentity
-          )
-      );
+      beforeAll(() => {
+        vi.spyOn(LedgerIdentity, "create").mockImplementation(
+          async (): Promise<LedgerIdentity> => mockLedgerIdentity
+        );
+      });
 
       it("should list neurons on hardware wallet", async () => {
         const { neurons } = await listNeuronsHardwareWallet();
