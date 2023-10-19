@@ -1,6 +1,6 @@
 import { AppPath, ROUTE_ID_GROUPS } from "$lib/constants/routes.constants";
 import { isNullish } from "@dfinity/utils";
-import type {AfterNavigate} from "@sveltejs/kit";
+import type { AfterNavigate } from "@sveltejs/kit";
 
 /**
  * Returns an AppPath for a given path.
