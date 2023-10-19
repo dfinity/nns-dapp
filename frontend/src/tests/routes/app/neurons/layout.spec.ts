@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import NeuronsLayout from "$routes/(app)/(u)/(list)/neurons/+layout.svelte";
 import { render } from "@testing-library/svelte";

@@ -11,13 +11,15 @@ import {
 import type { ToastMsg } from "$lib/types/toast";
 import { InvalidaTransactionError, RefundedError } from "@dfinity/cmc";
 import {
-  CouldNotClaimNeuronError,
-  GovernanceError,
-  InsufficientAmountError as InsufficientAmountNNSError,
   InsufficientFundsError,
   InvalidAccountIDError,
   InvalidSenderError,
   TransferError,
+} from "@dfinity/ledger-icp";
+import {
+  CouldNotClaimNeuronError,
+  GovernanceError,
+  InsufficientAmountError as InsufficientAmountNNSError,
 } from "@dfinity/nns";
 import { SnsGovernanceError, UnsupportedMethodError } from "@dfinity/sns";
 import { InvalidPercentageError, nonNullish } from "@dfinity/utils";

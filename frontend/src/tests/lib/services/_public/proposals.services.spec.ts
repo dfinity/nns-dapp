@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as api from "$lib/api/proposals.api";
 import {
   ProposalPayloadNotFoundError,
@@ -34,24 +30,24 @@ describe("proposals-services", () => {
   beforeEach(() => {
     toastsStore.reset();
     proposalsStore.setProposals({ proposals: [], certified: true });
-    jest.clearAllMocks();
-    jest.spyOn(console, "error").mockRestore();
+    vi.clearAllMocks();
+    vi.spyOn(console, "error").mockRestore();
   });
 
   describe("logged in user", () => {
     beforeEach(() => {
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreSubscribe
+      );
     });
 
     describe("list", () => {
-      const spySetProposals = jest.spyOn(proposalsStore, "setProposals");
-      const spyPushProposals = jest.spyOn(proposalsStore, "pushProposals");
+      const spySetProposals = vi.spyOn(proposalsStore, "setProposals");
+      const spyPushProposals = vi.spyOn(proposalsStore, "pushProposals");
       let spyQueryProposals;
 
       beforeEach(() => {
-        spyQueryProposals = jest
+        spyQueryProposals = vi
           .spyOn(api, "queryProposals")
           .mockImplementation(() => Promise.resolve(mockProposals));
       });
@@ -107,7 +103,7 @@ describe("proposals-services", () => {
       });
 
       it("should call callback when load finished", async () => {
-        const spy = jest.fn();
+        const spy = vi.fn();
 
         await listNextProposals({
           beforeProposal: mockProposals[mockProposals.length - 1].id,
@@ -119,7 +115,7 @@ describe("proposals-services", () => {
 
     describe("list proposal fails", () => {
       beforeEach(() => {
-        jest.spyOn(console, "error").mockImplementation(() => undefined);
+        vi.spyOn(console, "error").mockImplementation(() => undefined);
       });
 
       it("show add toast error size too large", async () => {
@@ -129,7 +125,7 @@ describe("proposals-services", () => {
         "Status": "rejected"
         "Code": "CanisterError"
         "Message": "IC0504: Canister rrkah-fqaaa-aaaaa-aaaaq-cai violated contract: ic0.msg_reply_data_append: application payload size (3824349) cannot be larger than 3145728"`;
-        jest.spyOn(api, "queryProposals").mockRejectedValue(new Error(message));
+        vi.spyOn(api, "queryProposals").mockRejectedValue(new Error(message));
         await listProposals({
           loadFinished: () => {
             // do nothing here
@@ -144,9 +140,9 @@ describe("proposals-services", () => {
 
       it("show error message from api", async () => {
         const errorMessage = "Error message from api.";
-        jest
-          .spyOn(api, "queryProposals")
-          .mockRejectedValue(new Error(errorMessage));
+        vi.spyOn(api, "queryProposals").mockRejectedValue(
+          new Error(errorMessage)
+        );
         await listProposals({
           loadFinished: () => {
             // do nothing here
@@ -162,7 +158,7 @@ describe("proposals-services", () => {
     });
 
     describe("load", () => {
-      const spyQueryProposal = jest.spyOn(api, "queryProposal");
+      const spyQueryProposal = vi.spyOn(api, "queryProposal");
 
       beforeEach(() => {
         spyQueryProposal.mockImplementation(() =>
@@ -188,19 +184,19 @@ describe("proposals-services", () => {
 
     describe("error message in details", () => {
       beforeEach(() => {
-        jest.spyOn(api, "queryProposal").mockImplementation(() => {
+        vi.spyOn(api, "queryProposal").mockImplementation(() => {
           throw new Error("test-message");
         });
-        jest.spyOn(console, "error").mockImplementation(jest.fn);
+        vi.spyOn(console, "error").mockReturnValue();
       });
 
       it("should show error message in details", async () => {
-        const toastsShow = jest.spyOn(toastsFunctions, "toastsShow");
+        const toastsShow = vi.spyOn(toastsFunctions, "toastsShow");
         expect(toastsShow).not.toBeCalled();
 
         await loadProposal({
           proposalId: BigInt(0),
-          setProposal: jest.fn,
+          setProposal: vi.fn,
         });
         expect(toastsShow).toBeCalledTimes(1);
         expect(toastsShow).toBeCalledWith({
@@ -213,11 +209,11 @@ describe("proposals-services", () => {
 
     describe("empty list", () => {
       it("should not push empty proposals to the list", async () => {
-        jest
-          .spyOn(api, "queryProposals")
-          .mockImplementation(() => Promise.resolve([]));
+        vi.spyOn(api, "queryProposals").mockImplementation(() =>
+          Promise.resolve([])
+        );
 
-        const spy = jest.spyOn(proposalsStore, "pushProposals");
+        const spy = vi.spyOn(proposalsStore, "pushProposals");
         await listNextProposals({
           beforeProposal: mockProposals[mockProposals.length - 1].id,
           loadFinished: () => {
@@ -229,11 +225,11 @@ describe("proposals-services", () => {
       });
 
       it("should call callback with pagination over", async () => {
-        jest
-          .spyOn(api, "queryProposals")
-          .mockImplementation(() => Promise.resolve([]));
+        vi.spyOn(api, "queryProposals").mockImplementation(() =>
+          Promise.resolve([])
+        );
 
-        const spyCallback = jest.fn();
+        const spyCallback = vi.fn();
 
         await listNextProposals({
           beforeProposal: mockProposals[mockProposals.length - 1].id,
@@ -251,10 +247,10 @@ describe("proposals-services", () => {
 
   describe("no identity", () => {
     beforeEach(() => {
-      jest.spyOn(console, "error").mockImplementation(jest.fn);
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
+      vi.spyOn(console, "error").mockReturnValue();
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreNoIdentitySubscribe
+      );
     });
 
     it("should use anonymous identity", () => {
@@ -262,30 +258,28 @@ describe("proposals-services", () => {
     });
 
     it("should list proposals if no identity", async () => {
-      const call = async () =>
-        await listProposals({
+      await expect(
+        listProposals({
           loadFinished: () => {
             // do nothing here
           },
-        });
-
-      await expect(call).resolves;
+        })
+      ).resolves;
     });
 
     it("should list next proposals if no identity", async () => {
-      const call = async () =>
-        await listNextProposals({
+      await expect(
+        listNextProposals({
           beforeProposal: mockProposals[mockProposals.length - 1].id,
           loadFinished: () => {
             // do nothing here
           },
-        });
-
-      await expect(call).resolves;
+        })
+      ).resolves;
     });
 
     it("should load proposal if no identity", async () => {
-      const spyQueryProposal = jest
+      const spyQueryProposal = vi
         .spyOn(api, "queryProposal")
         .mockImplementation(() =>
           Promise.resolve({ ...mockProposals[0], id: BigInt(666) })
@@ -306,10 +300,10 @@ describe("proposals-services", () => {
     let spyQueryProposals;
 
     beforeEach(() => {
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
-      spyQueryProposals = jest
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreNoIdentitySubscribe
+      );
+      spyQueryProposals = vi
         .spyOn(api, "queryProposals")
         .mockImplementation(() => Promise.resolve(mockProposals));
     });
@@ -336,10 +330,10 @@ describe("proposals-services", () => {
   });
 
   describe("getProposalPayload", () => {
-    const spyQueryProposalPayload = jest.spyOn(api, "queryProposalPayload");
+    const spyQueryProposalPayload = vi.spyOn(api, "queryProposalPayload");
 
     beforeEach(() => {
-      jest.spyOn(console, "error").mockImplementation(jest.fn);
+      vi.spyOn(console, "error").mockReturnValue();
       spyQueryProposalPayload.mockImplementation(() =>
         Promise.resolve({ data: "test" })
       );
@@ -352,7 +346,7 @@ describe("proposals-services", () => {
     });
 
     it("should update proposalPayloadsStore", async () => {
-      const spyOnSetPayload = jest.spyOn(proposalPayloadsStore, "setPayload");
+      const spyOnSetPayload = vi.spyOn(proposalPayloadsStore, "setPayload");
       expect(spyOnSetPayload).not.toBeCalled();
       await loadProposalPayload({ proposalId: BigInt(0) });
 
@@ -366,7 +360,7 @@ describe("proposals-services", () => {
     it("should update proposalPayloadsStore with null if the payload was not found", async () => {
       proposalPayloadsStore.reset();
 
-      jest.spyOn(api, "queryProposalPayload").mockImplementation(() => {
+      vi.spyOn(api, "queryProposalPayload").mockImplementation(() => {
         throw new ProposalPayloadNotFoundError();
       });
 
@@ -378,7 +372,7 @@ describe("proposals-services", () => {
     it("should update proposalPayloadsStore with null if the payload was not found", async () => {
       proposalPayloadsStore.reset();
 
-      jest.spyOn(api, "queryProposalPayload").mockImplementation(() => {
+      vi.spyOn(api, "queryProposalPayload").mockImplementation(() => {
         throw new ProposalPayloadTooLargeError();
       });
 

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsNeuronCard from "$lib/components/sns-neurons/SnsNeuronCard.svelte";
 import { SECONDS_IN_DAY, SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
@@ -38,12 +34,10 @@ const permissionsWithTypeVote = [
 ];
 describe("SnsNeuronCard", () => {
   beforeAll(() => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
-    jest
-      .spyOn(snsTokenSymbolSelectedStore, "subscribe")
-      .mockImplementation(mockTokenStore);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(snsTokenSymbolSelectedStore, "subscribe").mockImplementation(
+      mockTokenStore
+    );
   });
 
   const defaultProps = {
@@ -71,7 +65,7 @@ describe("SnsNeuronCard", () => {
   });
 
   it("is clickable", async () => {
-    const spyClick = jest.fn();
+    const spyClick = vi.fn();
     const { getByTestId, component } = render(SnsNeuronCard, {
       props: {
         neuron: mockSnsNeuron,

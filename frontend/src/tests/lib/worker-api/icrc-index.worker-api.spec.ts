@@ -2,18 +2,18 @@ import { CKBTC_INDEX_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.const
 import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
 import { getIcrcTransactions } from "$lib/worker-api/icrc-index.worker-api";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
-import { IcrcIndexCanister, type IcrcTransaction } from "@dfinity/ledger";
-import mock from "jest-mock-extended/lib/Mock";
+import { IcrcIndexCanister, type IcrcTransaction } from "@dfinity/ledger-icrc";
+import { mock } from "vitest-mock-extended";
 
 describe("icrc-index.worker-api", () => {
   const indexCanisterMock = mock<IcrcIndexCanister>();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
-    jest
-      .spyOn(IcrcIndexCanister, "create")
-      .mockImplementation(() => indexCanisterMock);
+    vi.spyOn(IcrcIndexCanister, "create").mockImplementation(
+      () => indexCanisterMock
+    );
   });
 
   const params = {

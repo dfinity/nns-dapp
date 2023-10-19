@@ -1,13 +1,9 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsProposalSummarySection from "$lib/components/proposal-detail/NnsProposalSummarySection.svelte";
 import { mapProposalInfo } from "$lib/utils/proposals.utils";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { render, waitFor } from "@testing-library/svelte";
 
-jest.mock("$lib/utils/html.utils", () => ({
+vi.mock("$lib/utils/html.utils", () => ({
   markdownToHTML: (value) => Promise.resolve(value),
 }));
 

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import TransactionCard from "$lib/components/accounts/TransactionCard.svelte";
 import {
   AccountTransactionType,

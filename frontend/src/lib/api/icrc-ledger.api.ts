@@ -12,14 +12,14 @@ import type {
   BalanceParams,
   IcrcTokenMetadataResponse,
   IcrcTokens,
-} from "@dfinity/ledger";
+} from "@dfinity/ledger-icrc";
 import {
   IcrcLedgerCanister,
   encodeIcrcAccount,
   type IcrcAccount,
   type IcrcBlockIndex,
   type TransferParams,
-} from "@dfinity/ledger";
+} from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import type { QueryParams } from "@dfinity/utils";
 import {
@@ -135,6 +135,51 @@ export const executeIcrcTransfer = async ({
       : undefined,
     ...rest,
   });
+
+export const approveTransfer = async ({
+  identity,
+  canisterId,
+  amount,
+  spender,
+  fromSubaccount,
+  fee,
+  expiresAt,
+  createdAt,
+  expectedAllowance,
+}: {
+  identity: Identity;
+  canisterId: Principal;
+  amount: bigint;
+  spender: Principal;
+  fromSubaccount?: Uint8Array;
+  fee?: bigint;
+  expiresAt?: bigint;
+  createdAt?: bigint;
+  expectedAllowance?: bigint;
+}): Promise<IcrcBlockIndex> => {
+  logWithTimestamp("Approving transfer: call...");
+
+  const {
+    canister: { approve },
+  } = await icrcLedgerCanister({ identity, canisterId });
+
+  const blockIndex = await approve({
+    amount,
+    spender: {
+      owner: spender,
+      subaccount: [],
+    },
+    from_subaccount: fromSubaccount,
+    fee,
+    expires_at: expiresAt,
+    created_at_time: createdAt ?? nowInBigIntNanoSeconds(),
+    expected_allowance: expectedAllowance,
+  });
+
+  logWithTimestamp("Approving transfer: call...");
+
+  return blockIndex;
+};
 
 export const icrcLedgerCanister = async ({
   identity,

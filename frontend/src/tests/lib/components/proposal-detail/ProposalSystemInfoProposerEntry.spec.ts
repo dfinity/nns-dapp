@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as agent from "$lib/api/agent.api";
 import ProposalSystemInfoProposerEntry from "$lib/components/proposal-detail/ProposalSystemInfoProposerEntry.svelte";
 import { authStore } from "$lib/stores/auth.store";
@@ -13,17 +9,19 @@ import {
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import type { HttpAgent } from "@dfinity/agent";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { mock } from "jest-mock-extended";
+import { mock } from "vitest-mock-extended";
+
+vi.mock("$lib/services/neurons.services");
 
 describe("ProposalMeta", () => {
   beforeEach(() => {
-    jest.spyOn(console, "error").mockImplementation(jest.fn);
-    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    vi.spyOn(console, "error").mockReturnValue();
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
-  jest
-    .spyOn(authStore, "subscribe")
-    .mockImplementation(mutableMockAuthStoreSubscribe);
+  vi.spyOn(authStore, "subscribe").mockImplementation(
+    mutableMockAuthStoreSubscribe
+  );
 
   const props = {
     proposer: mockProposalInfo.proposer,

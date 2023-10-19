@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import CanisterHeadingTitle from "$lib/components/canister-detail/CanisterHeadingTitle.svelte";
@@ -59,15 +55,15 @@ describe("CanisterHeadingTitle", () => {
   it("renders cycles balance if defined", async () => {
     const canisterDetails = {
       ...mockCanisterDetails,
-      cycles: 314000000n,
+      cycles: 246913400000000n,
     };
     const po1 = renderComponent(canisterDetails, true);
-    expect(await po1.getTitle()).toBe("3.14 T Cycles");
+    expect(await po1.getTitle()).toBe("246.913 T Cycles");
 
     const po2 = renderComponent(canisterDetails, false);
-    expect(await po2.getTitle()).toBe("3.14 T Cycles");
+    expect(await po2.getTitle()).toBe("246.913 T Cycles");
 
     const po3 = renderComponent(canisterDetails, undefined);
-    expect(await po3.getTitle()).toBe("3.14 T Cycles");
+    expect(await po3.getTitle()).toBe("246.913 T Cycles");
   });
 });

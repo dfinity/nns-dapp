@@ -5,40 +5,27 @@
   import UnlinkCanisterButton from "./UnlinkCanisterButton.svelte";
   import RenameCanisterButton from "./RenameCanisterButton.svelte";
   import CanisterHeadingTitle from "./CanisterHeadingTitle.svelte";
+  import HeadingSubtitle from "../common/HeadingSubtitle.svelte";
 
   export let canisterDetails: CanisterDetails | undefined;
   export let canister: CanisterInfo;
   export let isController: boolean | undefined;
 </script>
 
-<!-- We can't set conditional slots. -->
-{#if canister.name.length === 0 || !isController}
-  <PageHeading testId="canister-page-heading-component">
-    <CanisterHeadingTitle
-      slot="title"
-      details={canisterDetails}
-      {canister}
-      {isController}
-    />
-    <svelte:fragment slot="tags">
-      <UnlinkCanisterButton canisterId={canister.canister_id} />
-      <RenameCanisterButton />
-    </svelte:fragment>
-  </PageHeading>
-{:else}
-  <PageHeading testId="canister-page-heading-component">
-    <CanisterHeadingTitle
-      slot="title"
-      details={canisterDetails}
-      {canister}
-      {isController}
-    />
-    <span slot="subtitle" data-tid="subtitle">
-      {canister.name}
-    </span>
-    <svelte:fragment slot="tags">
-      <UnlinkCanisterButton canisterId={canister.canister_id} />
-      <RenameCanisterButton />
-    </svelte:fragment>
-  </PageHeading>
-{/if}
+<PageHeading testId="canister-page-heading-component">
+  <CanisterHeadingTitle
+    slot="title"
+    details={canisterDetails}
+    {canister}
+    {isController}
+  />
+  <svelte:fragment slot="subtitle">
+    {#if canister.name.length > 0 && isController}
+      <HeadingSubtitle testId="subtitle">{canister.name}</HeadingSubtitle>
+    {/if}
+  </svelte:fragment>
+  <svelte:fragment slot="tags">
+    <UnlinkCanisterButton canisterId={canister.canister_id} />
+    <RenameCanisterButton />
+  </svelte:fragment>
+</PageHeading>

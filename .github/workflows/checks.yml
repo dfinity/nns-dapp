@@ -33,6 +33,21 @@ jobs:
                   git diff
                   exit 1
           }
+  spelling:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install spellcheck
+        run: |
+          cd /
+          sudo apt-get update
+          sudo apt-get install -yy hunspell hunspell-en-gb hunspell-en-us clang libclang-dev
+          cargo install --target x86_64-unknown-linux-gnu cargo-spellcheck
+      - name: Spellcheck Rust
+        run: cargo spellcheck
+      - name: Spellcheck changelog
+        run: scripts/spellcheck-changelog
   cargo-tests:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -335,7 +350,7 @@ jobs:
       - run: scripts/past-changelog-test
       - run: scripts/past-changelog-test.test
   checks-pass:
-    needs: ["formatting", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "asset-chunking-works", "docker-build-cli-flags", "download-nns-dapp-ci-wasm", "canister-ids-tool", "release-sop", "split-changelog", "past-changelog", "minor-version-bump-works"]
+    needs: ["formatting", "spelling", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "asset-chunking-works", "docker-build-cli-flags", "download-nns-dapp-ci-wasm", "canister-ids-tool", "release-sop", "split-changelog", "past-changelog", "minor-version-bump-works"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:

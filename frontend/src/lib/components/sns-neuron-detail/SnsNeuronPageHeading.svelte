@@ -14,7 +14,8 @@
   import PageHeading from "../common/PageHeading.svelte";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
   import { authStore } from "$lib/stores/auth.store";
-  import HeadingTag from "../common/HeadingTag.svelte";
+  import HeadingSubtitle from "../common/HeadingSubtitle.svelte";
+  import { Tag } from "@dfinity/gix-components";
 
   export let neuron: SnsNeuron;
   export let parameters: SnsNervousSystemParameters;
@@ -47,7 +48,7 @@
       <AmountDisplay {amount} size="huge" singleLine />
     {/if}
   </svelte:fragment>
-  <span slot="subtitle" data-tid="voting-power">
+  <HeadingSubtitle slot="subtitle" testId="voting-power">
     {#if votingPower > 0}
       {replacePlaceholders($i18n.neuron_detail.voting_power_subtitle, {
         $votingPower: formatVotingPower(votingPower),
@@ -55,11 +56,10 @@
     {:else}
       {$i18n.neuron_detail.voting_power_zero_subtitle}
     {/if}
-  </span>
+  </HeadingSubtitle>
   <svelte:fragment slot="tags">
     {#if isHotkey}
-      <HeadingTag testId="hotkey-tag">{$i18n.neurons.hotkey_control}</HeadingTag
-      >
+      <Tag size="large" testId="hotkey-tag">{$i18n.neurons.hotkey_control}</Tag>
     {/if}
   </svelte:fragment>
 </PageHeading>

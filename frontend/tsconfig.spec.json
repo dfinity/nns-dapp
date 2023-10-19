@@ -9,6 +9,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": false,
+    "allowArbitraryExtensions": true,
     "baseUrl": ".",
     "paths": {
       "$lib": ["src/lib"],
@@ -19,11 +20,18 @@
       "$mocks/*": ["__mocks__/*"],
       "$tests": ["src/tests"],
       "$tests/*": ["src/tests/*"]
-    }
+    },
+    "types": [
+      "vitest/globals",
+      "node",
+      "@testing-library/jest-dom",
+      "@types/wicg-file-system-access"
+    ]
   },
   "include": [
     ".svelte-kit/ambient.d.ts",
     "./vite.config.ts",
+    "./vitest.config.ts",
     "./src/**/*.js",
     "./src/**/*.ts",
     "./src/**/*.svelte"

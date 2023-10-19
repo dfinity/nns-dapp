@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import BitcoinAddress from "$lib/components/accounts/BitcoinAddress.svelte";
 import { BITCOIN_BLOCK_EXPLORER_TESTNET_URL } from "$lib/constants/bitcoin.constants";
@@ -12,6 +8,7 @@ import {
 import { AppPath } from "$lib/constants/routes.constants";
 import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
+import { page } from "$mocks/$app/stores";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockBTCAddressTestnet,
@@ -20,7 +17,6 @@ import {
 import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { render, waitFor } from "@testing-library/svelte";
-import { page } from "../../../../../__mocks__/$app/stores";
 
 describe("BitcoinAddress", () => {
   beforeAll(() => {
@@ -34,12 +30,12 @@ describe("BitcoinAddress", () => {
     account: mockCkBTCMainAccount,
     minterCanisterId: CKTESTBTC_MINTER_CANISTER_ID,
     universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
-    reload: jest.fn(),
+    reload: vi.fn(),
   };
 
   beforeEach(() => {
     resetIdentity();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     bitcoinAddressStore.reset();
     ckBTCInfoStore.reset();
   });
@@ -48,7 +44,7 @@ describe("BitcoinAddress", () => {
     let spyGetAddress;
 
     beforeEach(() => {
-      spyGetAddress = jest
+      spyGetAddress = vi
         .spyOn(minterApi, "getBTCAddress")
         .mockResolvedValue(mockBTCAddressTestnet);
     });
@@ -106,7 +102,7 @@ describe("BitcoinAddress", () => {
     });
 
     it("should not load bitcoin address on mount if already loaded", async () => {
-      const spyGetAddress = jest
+      const spyGetAddress = vi
         .spyOn(minterApi, "getBTCAddress")
         .mockResolvedValue(mockBTCAddressTestnet);
 

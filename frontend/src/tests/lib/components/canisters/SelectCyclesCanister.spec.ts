@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SelectCyclesCanister from "$lib/components/canisters/SelectCyclesCanister.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
@@ -9,9 +5,9 @@ import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import SelectCyclesCanisterTest from "./SelectCyclesCanisterTest.svelte";
 
-jest.mock("$lib/services/canisters.services", () => {
+vitest.mock("$lib/services/canisters.services", () => {
   return {
-    getIcpToCyclesExchangeRate: jest.fn().mockResolvedValue(BigInt(10_000)),
+    getIcpToCyclesExchangeRate: vitest.fn().mockResolvedValue(BigInt(10_000)),
   };
 });
 
@@ -107,7 +103,7 @@ describe("SelectCyclesCanister", () => {
         target: { value: 2 },
       }));
 
-    const fn = jest.fn();
+    const fn = vitest.fn();
     component.$on("nnsSelectAmount", fn);
     await clickByTestId(queryByTestId, "select-cycles-button");
 

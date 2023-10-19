@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import Warnings from "$lib/components/warnings/Warnings.svelte";
 import type { MetricsCallback } from "$lib/services/$public/worker-metrics.services";
 import { bitcoinConvertBlockIndexes } from "$lib/stores/bitcoin.store";
@@ -18,8 +14,8 @@ import WarningsTest from "./WarningsTest.svelte";
 
 let metricsCallback: MetricsCallback | undefined;
 
-jest.mock("$lib/services/$public/worker-metrics.services", () => ({
-  initMetricsWorker: jest.fn(() =>
+vi.mock("$lib/services/$public/worker-metrics.services", () => ({
+  initMetricsWorker: vi.fn(() =>
     Promise.resolve({
       startMetricsTimer: ({ callback }: { callback: MetricsCallback }) => {
         metricsCallback = callback;
@@ -31,10 +27,13 @@ jest.mock("$lib/services/$public/worker-metrics.services", () => ({
   ),
 }));
 
-jest.mock("$lib/constants/environment.constants.ts", () => ({
-  ...jest.requireActual("$lib/constants/environment.constants.ts"),
-  IS_TEST_MAINNET: true,
-}));
+vi.mock("$lib/constants/environment.constants.ts", async () => {
+  return {
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    ...(await vi.importActual<any>("$lib/constants/environment.constants.ts")),
+    IS_TEST_MAINNET: true,
+  };
+});
 
 describe("Warnings", () => {
   beforeEach(() => {
@@ -42,11 +41,14 @@ describe("Warnings", () => {
   });
 
   describe("TransactionRateWarning", () => {
-    beforeEach(() => metricsStore.set(undefined));
+    beforeEach(() => {
+      metricsStore.set(undefined);
+      toastsStore.reset();
+    });
 
     afterAll(() => {
-      jest.clearAllMocks();
-      jest.resetAllMocks();
+      vi.clearAllMocks();
+      vi.resetAllMocks();
     });
 
     const transactionRateHighLoad: DashboardMessageExecutionRateResponse = {
@@ -131,8 +133,8 @@ describe("Warnings", () => {
 
   describe("ConvertCkBTCToBtcWarning", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
-      jest.resetAllMocks();
+      vi.clearAllMocks();
+      vi.resetAllMocks();
 
       layoutWarningToastId.set(undefined);
       metricsStore.set(undefined);
@@ -224,7 +226,9 @@ describe("Warnings", () => {
           },
         });
 
-        await waitFor(expect(() => getByTestId("test-env-warning")).toThrow);
+        await waitFor(() =>
+          expect(() => getByTestId("test-env-warning")).toThrow()
+        );
       });
     });
 

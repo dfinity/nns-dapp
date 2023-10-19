@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import SelectUniverseCard from "$lib/components/universe/SelectUniverseCard.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -35,7 +32,7 @@ describe("SelectUniverseCard", () => {
   };
 
   beforeEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
     icpAccountsStore.resetForTesting();
     resetIdentity();
   });

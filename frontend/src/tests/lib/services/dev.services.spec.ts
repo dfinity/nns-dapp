@@ -1,15 +1,12 @@
-/**
- * @jest-environment jsdom
- */
 import { getICPs } from "$lib/services/dev.services";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { mockAccountsStoreSubscribe } from "$tests/mocks/icp-accounts.store.mock";
 
 describe("dev-services", () => {
   beforeEach(() => {
-    jest
-      .spyOn(icpAccountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe());
+    vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
+      mockAccountsStoreSubscribe()
+    );
   });
 
   it("should throw an error if the environment is not testnet", async () => {

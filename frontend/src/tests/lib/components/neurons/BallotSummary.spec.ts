@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as agent from "$lib/api/agent.api";
 import BallotSummary from "$lib/components/neuron-detail/Ballots/BallotSummary.svelte";
 import { authStore } from "$lib/stores/auth.store";
@@ -17,7 +13,7 @@ import type { HttpAgent } from "@dfinity/agent";
 import type { BallotInfo, Proposal } from "@dfinity/nns";
 import { GovernanceCanister, Vote } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
-import { mock } from "jest-mock-extended";
+import { mock } from "vitest-mock-extended";
 
 describe("BallotSummary", () => {
   const mockBallot: BallotInfo = {
@@ -35,14 +31,12 @@ describe("BallotSummary", () => {
   beforeEach(() => {
     silentConsoleErrors();
 
-    jest
-      .spyOn(GovernanceCanister, "create")
-      .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
+    vi.spyOn(GovernanceCanister, "create").mockImplementation(
+      (): GovernanceCanister => mockGovernanceCanister
+    );
 
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
-    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   it("should render proposal id", async () => {
@@ -50,21 +44,29 @@ describe("BallotSummary", () => {
       props,
     });
 
-    await waitFor(() => expect(queryByTestId("markdown-text")).not.toBeNull());
+    await waitFor(() => expect(queryByTestId("ballot-summary")).not.toBeNull());
 
     expect(getByText(`${mockProposals[0].id}`)).toBeInTheDocument();
   });
 
   it("should render proposal summary", async () => {
-    const { queryByTestId, getByText } = render(BallotSummary, {
+    const { container } = render(BallotSummary, {
       props,
     });
 
-    await waitFor(() => expect(queryByTestId("markdown-text")).not.toBeNull());
+    await waitFor(() =>
+      expect(
+        container.querySelector("[data-tid='proposal-summary-component'] p")
+      ).not.toBeNull()
+    );
 
-    expect(
-      getByText((mockProposals[0].proposal as Proposal).summary)
-    ).toBeInTheDocument();
+    const p = container.querySelector(
+      "[data-tid='proposal-summary-component'] p"
+    );
+
+    expect(p.textContent).toEqual(
+      (mockProposals[0].proposal as Proposal).summary
+    );
   });
 
   const testVote = async (vote: Vote) => {
@@ -108,8 +110,11 @@ describe("BallotSummary", () => {
     await waitFor(async () =>
       expect(await po.isBallotSummaryVisible()).toBe(true)
     );
-    expect(await po.getBallotSummary()).toBe(
-      "Initialize datacenter records. For more info about this proposal, read the forum announcement: https://forum.dfinity.org/t/improvements-to-node-provider-remuneration/10553"
+
+    await waitFor(async () =>
+      expect(await po.getBallotSummary()).toBe(
+        "Initialize datacenter records. For more info about this proposal, read the forum announcement: https://forum.dfinity.org/t/improvements-to-node-provider-remuneration/10553"
+      )
     );
   });
 });

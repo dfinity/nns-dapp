@@ -29,6 +29,7 @@
       return;
     }
 
+    transferring = true;
     startBusy({ initiator: "dev-add-sns-neuron-maturity" });
 
     await addMaturity({
@@ -38,6 +39,7 @@
     });
     await reloadNeuron();
 
+    transferring = false;
     dispatcher("nnsClose");
     stopBusy("dev-add-sns-neuron-maturity");
   };

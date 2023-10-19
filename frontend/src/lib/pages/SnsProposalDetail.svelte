@@ -33,6 +33,8 @@
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { i18n } from "$lib/stores/i18n";
   import { authStore } from "$lib/stores/auth.store";
+  import { ENABLE_FULL_WIDTH_PROPOSAL } from "$lib/stores/feature-flags.store";
+  import { SplitBlock } from "@dfinity/gix-components";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -167,7 +169,7 @@
 
   $: layoutTitleStore.set({
     title,
-    header: title,
+    header: $ENABLE_FULL_WIDTH_PROPOSAL ? "" : title,
   });
 
   let proposalIds: bigint[];
@@ -190,29 +192,54 @@
     />
   {/if}
 
-  <div class="content-grid">
-    {#if !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
-      <div class="content-a">
-        <SnsProposalSystemInfoSection
-          {proposal}
-          rootCanisterId={universeCanisterId}
-        />
-      </div>
-      <div class="content-b expand-content-b">
-        <SnsProposalVotingSection {proposal} {reloadProposal} />
-      </div>
-      <div class="content-c proposal-data-section">
+  {#if !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
+    {#if $ENABLE_FULL_WIDTH_PROPOSAL}
+      <div class="proposal-data-section">
+        <div class="content-cell-island">
+          <SplitBlock>
+            <div slot="start">
+              <SnsProposalSystemInfoSection
+                {proposal}
+                rootCanisterId={universeCanisterId}
+              />
+            </div>
+            <div slot="end">
+              <SnsProposalVotingSection {proposal} {reloadProposal} />
+            </div>
+          </SplitBlock>
+        </div>
         <SnsProposalSummarySection {proposal} />
         <SnsProposalPayloadSection {proposal} />
       </div>
     {:else}
+      <!-- TODO(GIX-1957): remove this block after the full-width proposal is enabled -->
+      <div class="content-grid">
+        <div class="content-a content-cell-island">
+          <SnsProposalSystemInfoSection
+            {proposal}
+            rootCanisterId={universeCanisterId}
+          />
+        </div>
+        <div class="content-b expand-content-b">
+          <div class="content-cell-island">
+            <SnsProposalVotingSection {proposal} {reloadProposal} />
+          </div>
+        </div>
+        <div class="content-c proposal-data-section">
+          <SnsProposalSummarySection {proposal} />
+          <SnsProposalPayloadSection {proposal} />
+        </div>
+      </div>
+    {/if}
+  {:else}
+    <div class="content-grid">
       <div class="content-a">
         <div class="skeleton">
           <SkeletonDetails />
         </div>
       </div>
-    {/if}
-  </div>
+    </div>
+  {/if}
 </TestIdWrapper>
 
 <style lang="scss">

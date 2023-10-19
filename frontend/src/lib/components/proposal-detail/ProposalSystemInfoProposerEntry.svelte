@@ -15,7 +15,7 @@
 
 <TestIdWrapper testId="proposal-system-info-proposer-entry-component">
   {#if proposer !== undefined}
-    <KeyValuePairInfo testId="proposal-system-info-proposer">
+    <KeyValuePairInfo testId="proposal-system-info-proposer" alignIconRight>
       <svelte:fragment slot="key"
         >{$i18n.proposal_detail.proposer_prefix}</svelte:fragment
       >

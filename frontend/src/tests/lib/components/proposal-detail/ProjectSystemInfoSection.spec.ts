@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ProposalSystemInfoSection from "$lib/components/proposal-detail/ProposalSystemInfoSection.svelte";
 import { secondsToDateTime } from "$lib/utils/date.utils";
 import { getNnsFunctionKey, mapProposalInfo } from "$lib/utils/proposals.utils";
@@ -60,10 +56,10 @@ describe("ProposalSystemInfoSection", () => {
     expect(description).not.toBeUndefined();
 
     await waitFor(() =>
-      expect(getByTestId(`${testId}-value`)?.textContent).toEqual(value)
+      expect(getByTestId(`${testId}-value`)?.textContent?.trim()).toEqual(value)
     );
     await waitFor(() =>
-      expect(getByTestId(`${testId}-description`)?.textContent).toEqual(
+      expect(getByTestId(`${testId}-description`)?.textContent?.trim()).toEqual(
         description
       )
     );

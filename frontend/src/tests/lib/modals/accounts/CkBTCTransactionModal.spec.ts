@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
@@ -39,8 +35,8 @@ import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import { SvelteComponent, tick } from "svelte";
 import { get } from "svelte/store";
 
-jest.mock("$lib/services/ckbtc-accounts.services");
-jest.mock("$lib/services/ckbtc-convert.services");
+vi.mock("$lib/services/ckbtc-accounts.services");
+vi.mock("$lib/services/ckbtc-convert.services");
 
 describe("CkBTCTransactionModal", () => {
   const renderTransactionModal = (selectedAccount?: Account) =>
@@ -59,14 +55,10 @@ describe("CkBTCTransactionModal", () => {
     });
 
   beforeEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
 
-    jest
-      .mocked(ckBTCTransferTokens)
-      .mockResolvedValue({ blockIndex: undefined });
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.mocked(ckBTCTransferTokens).mockResolvedValue({ blockIndex: undefined });
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
 
     icrcAccountsStore.set({
       accounts: {
@@ -91,9 +83,10 @@ describe("CkBTCTransactionModal", () => {
       routeId: AppPath.Accounts,
     });
 
-    jest
-      .spyOn(minterApi, "estimateFee")
-      .mockResolvedValue({ minter_fee: 123n, bitcoin_fee: 456n });
+    vi.spyOn(minterApi, "estimateFee").mockResolvedValue({
+      minter_fee: 123n,
+      bitcoin_fee: 456n,
+    });
   });
 
   it("should transfer tokens", async () => {
@@ -114,7 +107,7 @@ describe("CkBTCTransactionModal", () => {
     success: boolean;
     eventName: "nnsClose" | "nnsTransfer";
   }) => {
-    const spy = jest
+    const spy = vi
       .spyOn(services, "convertCkBTCToBtc")
       .mockResolvedValue({ success });
 
@@ -133,7 +126,7 @@ describe("CkBTCTransactionModal", () => {
     success: boolean;
     eventName: "nnsClose" | "nnsTransfer";
   }) => {
-    const spy = jest
+    const spy = vi
       .spyOn(services, "retrieveBtc")
       .mockResolvedValue({ success });
 
@@ -156,7 +149,7 @@ describe("CkBTCTransactionModal", () => {
   }) => {
     const result = await renderTransactionModal(selectedAccount);
 
-    const onEnd = jest.fn();
+    const onEnd = vi.fn();
     result.component.$on(eventName, onEnd);
 
     await testTransferTokens({
@@ -177,9 +170,9 @@ describe("CkBTCTransactionModal", () => {
   });
 
   it("should render progress when converting ckBTC to Bitcoin", async () => {
-    jest
-      .spyOn(services, "convertCkBTCToBtc")
-      .mockResolvedValue({ success: true });
+    vi.spyOn(services, "convertCkBTCToBtc").mockResolvedValue({
+      success: true,
+    });
 
     const result = await renderTransactionModal();
 
@@ -189,8 +182,8 @@ describe("CkBTCTransactionModal", () => {
       destinationAddress: mockBTCAddressTestnet,
     });
 
-    await waitFor(
-      expect(result.getByTestId("in-progress-warning")).not.toBeNull
+    await waitFor(() =>
+      expect(result.getByTestId("in-progress-warning")).not.toBeNull()
     );
 
     // In progress + transfer to ledger + sending BTC + reload
@@ -205,15 +198,14 @@ describe("CkBTCTransactionModal", () => {
       selectedNetwork: TransactionNetwork.ICP,
     });
 
-    await waitFor(
-      expect(() => result.getByTestId("in-progress-warning")).toThrow
+    await waitFor(() =>
+      expect(() => result.getByTestId("in-progress-warning")).toThrow()
     );
   });
 
   it("should not render the select account dropdown if selected account is passed", async () => {
-    const { queryByTestId } = await renderTransactionModal(
-      mockCkBTCMainAccount
-    );
+    const { queryByTestId } =
+      await renderTransactionModal(mockCkBTCMainAccount);
 
     await waitFor(() =>
       expect(queryByTestId("transaction-step-1")).toBeInTheDocument()
@@ -489,10 +481,10 @@ describe("CkBTCTransactionModal", () => {
     });
 
     it("should render progress without step transfer", async () => {
-      jest
-        .spyOn(services, "convertCkBTCToBtc")
-        .mockResolvedValue({ success: true });
-      jest.spyOn(services, "retrieveBtc").mockResolvedValue({ success: true });
+      vi.spyOn(services, "convertCkBTCToBtc").mockResolvedValue({
+        success: true,
+      });
+      vi.spyOn(services, "retrieveBtc").mockResolvedValue({ success: true });
 
       const result = await renderTransactionModal(mockCkBTCWithdrawalAccount);
 
@@ -501,8 +493,8 @@ describe("CkBTCTransactionModal", () => {
         destinationAddress: mockBTCAddressTestnet,
       });
 
-      await waitFor(
-        expect(result.getByTestId("in-progress-warning")).not.toBeNull
+      await waitFor(() =>
+        expect(result.getByTestId("in-progress-warning")).not.toBeNull()
       );
 
       // In progress + sending BTC + reload

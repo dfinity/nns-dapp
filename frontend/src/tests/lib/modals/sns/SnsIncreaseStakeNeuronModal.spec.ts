@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { AppPath } from "$lib/constants/routes.constants";
 import SnsIncreaseStakeNeuronModal from "$lib/modals/sns/neurons/SnsIncreaseStakeNeuronModal.svelte";
 import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
@@ -33,27 +29,27 @@ import {
 } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 
-jest.mock("$lib/services/sns-neurons.services", () => {
+vi.mock("$lib/services/sns-neurons.services", () => {
   return {
-    increaseStakeNeuron: jest.fn().mockResolvedValue({ success: true }),
+    increaseStakeNeuron: vi.fn().mockResolvedValue({ success: true }),
   };
 });
 
-jest.mock("$lib/services/sns-accounts.services", () => {
+vi.mock("$lib/services/sns-accounts.services", () => {
   return {
-    syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
+    syncSnsAccounts: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/stores/busy.store", () => {
+vi.mock("$lib/stores/busy.store", () => {
   return {
-    startBusy: jest.fn(),
-    stopBusy: jest.fn(),
+    startBusy: vi.fn(),
+    stopBusy: vi.fn(),
   };
 });
 
 describe("SnsIncreaseStakeNeuronModal", () => {
-  const reloadNeuron = jest.fn();
+  const reloadNeuron = vi.fn();
   const rootCanisterId = mockPrincipal;
   const snsProjectParams = {
     lifecycle: SnsSwapLifecycle.Committed,
@@ -77,7 +73,7 @@ describe("SnsIncreaseStakeNeuronModal", () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     page.mock({
       routeId: AppPath.Neuron,
       data: { universe: rootCanisterId.toText() },

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsProposalCard from "$lib/components/proposals/NnsProposalCard.svelte";
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import { proposalsFiltersStore } from "$lib/stores/proposals.store";
@@ -16,7 +12,7 @@ describe("NnsProposalCard", () => {
   const nowInSeconds = 1689843195;
 
   beforeEach(() => {
-    jest.useFakeTimers().setSystemTime(nowInSeconds * 1000);
+    vi.useFakeTimers().setSystemTime(nowInSeconds * 1000);
   });
 
   it("should render a proposal title", () => {
@@ -74,7 +70,9 @@ describe("NnsProposalCard", () => {
     });
 
     expect(
-      getByText(`${en.topics[Topic[mockProposals[0].topic]]}`, { exact: false })
+      getByText(`${en.topics[Topic[mockProposals[0].topic]]}`, {
+        exact: false,
+      })
     ).toBeInTheDocument();
   });
 

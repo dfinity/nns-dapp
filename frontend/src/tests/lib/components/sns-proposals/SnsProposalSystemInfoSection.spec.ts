@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ProposalSystemInfoSection from "$lib/components/sns-proposals/SnsProposalSystemInfoSection.svelte";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { secondsToDateTime } from "$lib/utils/date.utils";
@@ -20,7 +16,7 @@ import { SnsProposalDecisionStatus } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
-jest.mock("$lib/api/sns-governance.api");
+vi.mock("$lib/api/sns-governance.api");
 
 describe("ProposalSystemInfoSection", () => {
   fakeSnsGovernanceApi.install();
@@ -45,7 +41,7 @@ describe("ProposalSystemInfoSection", () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     snsFunctionsStore.reset();
     fakeSnsGovernanceApi.addNervousSystemFunctionWith({
       rootCanisterId,
@@ -125,9 +121,9 @@ describe("ProposalSystemInfoSection", () => {
     it("should not render any timestamps", async () => {
       const po = await renderComponent(props);
 
-      expect(await po.getDecidedText()).toBeNull();
-      expect(await po.getExecutedText()).toBeNull();
-      expect(await po.getFailedText()).toBeNull();
+      expect(await po.getDecidedText()).toBeUndefined();
+      expect(await po.getExecutedText()).toBeUndefined();
+      expect(await po.getFailedText()).toBeUndefined();
     });
 
     it("should render proposer info", async () => {

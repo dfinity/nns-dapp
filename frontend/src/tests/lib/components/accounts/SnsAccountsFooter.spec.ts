@@ -1,11 +1,8 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsAccountsFooter from "$lib/components/accounts/SnsAccountsFooter.svelte";
 import * as accountsServices from "$lib/services/sns-accounts.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { page } from "$mocks/$app/stores";
 import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
 import {
   modalToolbarSelector,
@@ -17,11 +14,10 @@ import { testAccountsModal } from "$tests/utils/accounts.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
-import { page } from "../../../../../__mocks__/$app/stores";
 
-jest.mock("$lib/services/sns-accounts.services", () => {
+vi.mock("$lib/services/sns-accounts.services", () => {
   return {
-    syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
+    syncSnsAccounts: vi.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -76,9 +72,9 @@ describe("SnsAccountsFooter", () => {
 
     await waitModalIntroEnd({ container, selector: modalToolbarSelector });
 
-    await waitFor(expect(getByTestId("receive-modal")).not.toBeNull);
+    await waitFor(() => expect(getByTestId("receive-modal")).not.toBeNull());
 
-    const spy = jest.spyOn(accountsServices, "syncSnsAccounts");
+    const spy = vi.spyOn(accountsServices, "syncSnsAccounts");
 
     fireEvent.click(getByTestId("reload-receive-account") as HTMLButtonElement);
 

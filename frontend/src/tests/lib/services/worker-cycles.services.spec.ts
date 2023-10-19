@@ -2,14 +2,14 @@ import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
 import { initCyclesWorker } from "$lib/services/worker-cycles.services";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 
-jest.mock("$lib/workers/cycles.worker?worker");
+vi.mock("$lib/workers/cycles.worker?worker");
 
 describe("initCyclesWorker", () => {
-  const postMessage = jest.fn();
+  const postMessage = vi.fn();
   beforeEach(async () => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     const module = await import("$lib/workers/cycles.worker?worker");
-    module.default = jest.fn().mockReturnValue({
+    module.default = vi.fn().mockReturnValue({
       postMessage,
     });
   });
@@ -17,7 +17,7 @@ describe("initCyclesWorker", () => {
   it("starting sends post message with host and fetchRootKey", async () => {
     const cyclesWorker = initCyclesWorker();
 
-    const callback = jest.fn();
+    const callback = vi.fn();
 
     (await cyclesWorker).startCyclesTimer({
       callback,

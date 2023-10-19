@@ -17,8 +17,11 @@
   import ProjectUserCommitmentLabel from "$lib/components/project-detail/ProjectUserCommitmentLabel.svelte";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import { nonNullish } from "@dfinity/utils";
+  import TestIdWrapper from "../common/TestIdWrapper.svelte";
 
   export let project: SnsFullProject;
+  // The data to know whether it's finalizing or not is not in the SnsFullProject.
+  export let isFinalizing: boolean;
 
   let summary: SnsSummary;
   let swapCommitment: SnsSwapCommitment | undefined;
@@ -51,23 +54,30 @@
 </script>
 
 <dl data-tid="project-card-swap-info-component">
-  <!-- Sale is committed -->
-  {#if lifecycle === SnsSwapLifecycle.Committed}
-    <dt class="label">{$i18n.sns_project_detail.status_completed}</dt>
-    <dd class="value">{$i18n.sns_project_detail.completed}</dd>
-  {/if}
+  <TestIdWrapper testId="project-status-text">
+    <!-- Sale is committed -->
+    {#if lifecycle === SnsSwapLifecycle.Committed}
+      <dt class="label">{$i18n.sns_project_detail.status_completed}</dt>
+      <!-- is finalizing is not a lifecycle, it can be Committed and Finalizing or Not Finalizing -->
+      {#if isFinalizing}
+        <dd class="value">{$i18n.sns_project_detail.status_finalizing}</dd>
+      {:else}
+        <dd class="value">{$i18n.sns_project_detail.completed}</dd>
+      {/if}
+    {/if}
 
-  <!-- Sale is adopted -->
-  {#if lifecycle === SnsSwapLifecycle.Adopted && durationTillStart !== undefined}
-    <dt class="label">{$i18n.sns_project_detail.starts}</dt>
-    <dd class="value">{secondsToDuration(durationTillStart)}</dd>
-  {/if}
+    <!-- Sale is adopted -->
+    {#if lifecycle === SnsSwapLifecycle.Adopted && durationTillStart !== undefined}
+      <dt class="label">{$i18n.sns_project_detail.starts}</dt>
+      <dd class="value">{secondsToDuration(durationTillStart)}</dd>
+    {/if}
 
-  <!-- Sale is open -->
-  {#if lifecycle === SnsSwapLifecycle.Open && durationTillDeadline !== undefined}
-    <dt class="label">{$i18n.sns_project_detail.deadline}</dt>
-    <dd class="value">{secondsToDuration(durationTillDeadline)}</dd>
-  {/if}
+    <!-- Sale is open -->
+    {#if lifecycle === SnsSwapLifecycle.Open && durationTillDeadline !== undefined}
+      <dt class="label">{$i18n.sns_project_detail.deadline}</dt>
+      <dd class="value">{secondsToDuration(durationTillDeadline)}</dd>
+    {/if}
+  </TestIdWrapper>
 
   {#if myCommitment !== undefined}
     <dt><ProjectUserCommitmentLabel {summary} {swapCommitment} /></dt>

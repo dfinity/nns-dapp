@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsDestinationAddress from "$lib/components/accounts/NnsDestinationAddress.svelte";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import {
@@ -12,6 +8,7 @@ import { NnsDestinationAddressPo } from "$tests/page-objects/NnsDestinationAddre
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { allowLoggingInOneTestForDebugging } from "$tests/utils/console.test-utils";
 import { render } from "@testing-library/svelte";
+import type { Mock } from "vitest";
 
 describe("NnsDestinationAddress", () => {
   const mockSubAccount1 = {
@@ -28,18 +25,18 @@ describe("NnsDestinationAddress", () => {
       "72c0fde366c2ae6128591316d66429b99373bd2e5485aa07224a7b3f6fbe7104",
   };
 
-  let onAccountSelectedSpy: jest.Mock;
+  let onAccountSelectedSpy: Mock;
 
   beforeEach(() => {
     allowLoggingInOneTestForDebugging();
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
 
     icpAccountsStore.setForTesting({
       main: mockMainAccount,
       subAccounts: [mockSubAccount1, mockSubAccount2],
       hardwareWallets: [],
     });
-    onAccountSelectedSpy = jest.fn();
+    onAccountSelectedSpy = vi.fn();
   });
 
   const renderComponent = () => {

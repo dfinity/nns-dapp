@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import IcrcTransactionsList from "$lib/components/accounts/IcrcTransactionsList.svelte";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import type { Account } from "$lib/types/account";
@@ -37,12 +33,12 @@ describe("IcrcTransactionList", () => {
       },
     });
 
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => vi.clearAllMocks());
 
   it("renders skeleton when loading transactions", async () => {
-    jest
-      .spyOn(icrcTransactionsStore, "subscribe")
-      .mockImplementation(mockIcrcTransactionsStoreSubscribe({}));
+    vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(
+      mockIcrcTransactionsStoreSubscribe({})
+    );
 
     const { queryAllByTestId } = renderIcrcTransactionList({
       account: mockSnsMainAccount,
@@ -54,9 +50,9 @@ describe("IcrcTransactionList", () => {
   });
 
   it("should display no-transactions message", async () => {
-    jest
-      .spyOn(icrcTransactionsStore, "subscribe")
-      .mockImplementation(mockIcrcTransactionsStoreSubscribe({}));
+    vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(
+      mockIcrcTransactionsStoreSubscribe({})
+    );
 
     const { getByText } = renderIcrcTransactionList({
       account: mockSnsMainAccount,

@@ -3,22 +3,22 @@ import { getCkBTCTransactions } from "$lib/api/ckbtc-index.api";
 import { CKBTC_INDEX_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import type { HttpAgent } from "@dfinity/agent";
-import { IcrcIndexCanister, type IcrcTransaction } from "@dfinity/ledger";
-import { mock } from "jest-mock-extended";
+import { IcrcIndexCanister, type IcrcTransaction } from "@dfinity/ledger-icrc";
+import { mock } from "vitest-mock-extended";
 
 describe("ckbtc-index api", () => {
   const indexCanisterMock = mock<IcrcIndexCanister>();
 
   beforeAll(() => {
-    jest
-      .spyOn(IcrcIndexCanister, "create")
-      .mockImplementation(() => indexCanisterMock);
+    vi.spyOn(IcrcIndexCanister, "create").mockImplementation(
+      () => indexCanisterMock
+    );
   });
 
-  afterAll(() => jest.clearAllMocks());
+  afterAll(() => vi.clearAllMocks());
 
   beforeEach(() => {
-    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   const params = {

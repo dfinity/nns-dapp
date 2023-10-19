@@ -41,6 +41,12 @@ export class KeyValuePairInfoPo extends BasePageObject {
   }
 
   async isDescriptionVisible(): Promise<boolean> {
-    return this.root.byTestId("collapsible-content").isVisible();
+    // Before: `return this.root.byTestId("collapsible-content").isVisible();`
+    // But Vitest returns `true` for `.toBeVisible()` when the element has height: 0px.
+    const el = this.root.byTestId("collapsible-content");
+    // We rely on the implementation detail that the height is set inline style.
+    const styles = await el.getAttribute("style");
+    const height = Number(styles?.match(/height: (\d+)px/)?.[1]);
+    return height > 0;
   }
 }

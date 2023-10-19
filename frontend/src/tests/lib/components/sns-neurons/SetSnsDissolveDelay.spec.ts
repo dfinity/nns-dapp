@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ConfirmSnsDissolveDelay from "$lib/components/sns-neurons/ConfirmSnsDissolveDelay.svelte";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
@@ -37,7 +33,7 @@ describe("ConfirmSnsDissolveDelay", () => {
 
   // freeze time
   beforeAll(() => {
-    jest.useFakeTimers().setSystemTime(Date.now());
+    vi.useFakeTimers().setSystemTime(Date.now());
 
     snsParametersStore.setParameters({
       certified: true,
@@ -47,7 +43,7 @@ describe("ConfirmSnsDissolveDelay", () => {
   });
 
   afterAll(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
     snsParametersStore.reset();
   });
 
@@ -94,7 +90,10 @@ describe("ConfirmSnsDissolveDelay", () => {
 
     expect(
       getByText(
-        formatToken({ value: getSnsNeuronStake(mockSnsNeuron), detailed: true })
+        formatToken({
+          value: getSnsNeuronStake(mockSnsNeuron),
+          detailed: true,
+        })
       )
     ).toBeInTheDocument();
   });

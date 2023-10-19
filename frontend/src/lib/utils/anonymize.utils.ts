@@ -12,7 +12,7 @@ import type {
   SnsSummarySwap,
   SnsSwapCommitment,
 } from "$lib/types/sns";
-import type { IcrcTransaction } from "@dfinity/ledger";
+import type { IcrcTransaction } from "@dfinity/ledger-icrc";
 import type {
   Ballot,
   Followees,
@@ -120,7 +120,7 @@ export const anonymizeNeuronInfo = async (
   neuron: NeuronInfo | undefined
 ): Promise<undefined | { [key in keyof Required<NeuronInfo>]: unknown }> => {
   if (neuron === undefined || neuron === null) {
-    return neuron;
+    return undefined;
   }
 
   const {
@@ -169,7 +169,7 @@ export const anonymizeFullNeuron = async (
   neuron: Neuron | undefined
 ): Promise<undefined | { [key in keyof Required<Neuron>]: unknown }> => {
   if (neuron === undefined || neuron === null) {
-    return neuron;
+    return undefined;
   }
 
   const {
@@ -441,7 +441,7 @@ export const anonymizeProposal = async (
 
 const anonymizeBuyer = async ([buyer, state]: [
   string,
-  SnsSwapBuyerState
+  SnsSwapBuyerState,
 ]): Promise<[string, SnsSwapBuyerState]> => [
   buyer,
   {

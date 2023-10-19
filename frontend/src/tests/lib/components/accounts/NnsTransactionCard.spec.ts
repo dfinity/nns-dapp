@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import NnsTransactionCard from "$lib/components/accounts/NnsTransactionCard.svelte";
 import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";

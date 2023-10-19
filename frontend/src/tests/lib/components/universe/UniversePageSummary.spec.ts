@@ -1,9 +1,8 @@
-/**
- * @jest-environment jsdom
- */
-import { CKTESTBTC_UNIVERSE } from "$lib//derived/ckbtc-universes.derived";
 import UniversePageSummary from "$lib/components/universe/UniversePageSummary.svelte";
-import { CKBTC_UNIVERSE } from "$lib/derived/ckbtc-universes.derived";
+import {
+  CKBTC_UNIVERSE,
+  CKTESTBTC_UNIVERSE,
+} from "$lib/derived/ckbtc-universes.derived";
 import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
 import {
   mockSnsFullProject,

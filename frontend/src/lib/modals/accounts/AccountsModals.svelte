@@ -7,6 +7,9 @@
   import NnsReceiveModal from "$lib/modals/accounts/NnsReceiveModal.svelte";
   import { nonNullish } from "@dfinity/utils";
   import SnsReceiveModal from "$lib/modals/accounts/SnsReceiveModal.svelte";
+  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
+  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
+  import IC_LOGO from "$lib/assets/icp.svg";
 
   let modal: AccountsModal | undefined;
   const close = () => (modal = undefined);
@@ -28,5 +31,11 @@
 {/if}
 
 {#if type === "sns-receive" && nonNullish(data)}
-  <SnsReceiveModal on:nnsClose={close} {data} />
+  <SnsReceiveModal
+    on:nnsClose={close}
+    {data}
+    universeId={$snsOnlyProjectStore}
+    logo={$selectedUniverseStore?.summary?.metadata.logo ?? IC_LOGO}
+    tokenSymbol={$selectedUniverseStore?.summary?.token.symbol}
+  />
 {/if}

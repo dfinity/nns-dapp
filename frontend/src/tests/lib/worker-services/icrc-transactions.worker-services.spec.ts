@@ -8,18 +8,19 @@ import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
-import { IcrcIndexCanister, type IcrcTransaction } from "@dfinity/ledger";
-import mock from "jest-mock-extended/lib/Mock";
+import type { IcrcGetTransactions } from "@dfinity/ledger-icrc";
+import { IcrcIndexCanister, type IcrcTransaction } from "@dfinity/ledger-icrc";
+import { mock } from "vitest-mock-extended";
 
 describe("transactions.worker-services", () => {
   const indexCanisterMock = mock<IcrcIndexCanister>();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
-    jest
-      .spyOn(IcrcIndexCanister, "create")
-      .mockImplementation(() => indexCanisterMock);
+    vi.spyOn(IcrcIndexCanister, "create").mockImplementation(
+      () => indexCanisterMock
+    );
   });
 
   const transaction = {
@@ -154,24 +155,28 @@ describe("transactions.worker-services", () => {
     let firstCall = true;
 
     const getTransactionsSpy =
-      indexCanisterMock.getTransactions.mockImplementation(async () => {
-        if (firstCall) {
-          firstCall = false;
+      indexCanisterMock.getTransactions.mockImplementation(
+        async (): Promise<IcrcGetTransactions> => {
+          if (firstCall) {
+            firstCall = false;
+
+            return {
+              transactions: transactions.slice(
+                0,
+                DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT
+              ),
+              oldest_tx_id: [],
+            };
+          }
 
           return {
             transactions: transactions.slice(
-              0,
               DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT
             ),
             oldest_tx_id: [],
           };
         }
-
-        return {
-          transactions: transactions.slice(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
-          oldest_tx_id: [],
-        };
-      });
+      );
 
     const data: PostMessageDataRequestTransactions = {
       ...request,

@@ -1,95 +1,90 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-index 0698a0e6d..e66ac425f 100644
+index 992068092..ac8795f06 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-@@ -8,17 +8,17 @@ use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
- use ic_cdk::api::call::CallResult;
- // This is an experimental feature to generate Rust binding from Candid.
- // You may want to manually adjust some of the types.
--#![allow(dead_code, unused_imports)]
-+// #![allow(dead_code, unused_imports)]
- // use candid::{self, CandidType, Decode, Deserialize, Serialize, Clone, Debug, Encode, candid::Principal};
+@@ -15,13 +15,13 @@ use ic_cdk::api::call::CallResult;
+ // use candid::{self, CandidType, Decode, Deserialize, Encode, Principal};
  // use ic_cdk::api::call::CallResult as Result;
  
--#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
+-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
++#[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
  pub struct NeuronBasketConstructionParameters {
      pub dissolve_delay_interval_seconds: u64,
      pub count: u64,
  }
  
--#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
+-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
++#[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
  pub struct LinearScalingCoefficient {
      pub slope_numerator: Option<u64>,
      pub intercept_icp_e8s: Option<u64>,
-@@ -27,36 +27,36 @@ pub struct LinearScalingCoefficient {
+@@ -30,36 +30,36 @@ pub struct LinearScalingCoefficient {
      pub to_direct_participation_icp_e8s: Option<u64>,
  }
  
--#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
+-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
++#[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
  pub struct NeuronsFundParticipationConstraints {
      pub coefficient_intervals: Vec<LinearScalingCoefficient>,
      pub max_neurons_fund_participation_icp_e8s: Option<u64>,
      pub min_direct_participation_threshold_icp_e8s: Option<u64>,
  }
  
--#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
+-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
++#[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
  pub struct CfNeuron {
      pub nns_neuron_id: u64,
      pub amount_icp_e8s: u64,
  }
  
--#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
+-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
++#[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
  pub struct CfParticipant {
      pub hotkey_principal: String,
      pub cf_neurons: Vec<CfNeuron>,
  }
  
--#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
+-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
++#[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
  pub struct NeuronsFundParticipants {
      pub cf_participants: Vec<CfParticipant>,
  }
  
--#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
+-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
++#[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
  pub struct Countries {
      pub iso_codes: Vec<String>,
  }
  
--#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
+-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
++#[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
  pub struct Init {
      pub nns_proposal_id: Option<u64>,
      pub sns_root_canister_id: String,
-@@ -165,7 +165,7 @@ pub struct SettleCommunityFundParticipationResult {
+@@ -170,7 +170,7 @@ pub struct SettleCommunityFundParticipationResult {
  
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+ #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
  pub enum Possibility2 {
 -    Ok(EmptyRecord),
 +    Ok,
      Err(CanisterCallError),
  }
  
-@@ -339,7 +339,7 @@ pub struct GetOpenTicketResponse {
- #[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+@@ -344,7 +344,7 @@ pub struct GetOpenTicketResponse {
+ #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
  pub struct GetSaleParametersArg {}
  
--#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, PartialEq)]
+-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
++#[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
  pub struct Params {
      pub min_participant_icp_e8s: u64,
      pub neuron_basket_construction_parameters: Option<NeuronBasketConstructionParameters>,
-@@ -428,7 +428,7 @@ pub struct DerivedState {
+@@ -435,7 +435,7 @@ pub struct DerivedState {
      pub cf_neuron_count: Option<u64>,
  }
  
--#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
-+#[derive(CandidType, Deserialize, Serialize, Clone, Debug, Default)]
+-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
++#[derive(Serialize, Clone, Debug, CandidType, Deserialize, Default)]
  pub struct GetStateResponse {
      pub swap: Option<Swap>,
      pub derived: Option<DerivedState>,

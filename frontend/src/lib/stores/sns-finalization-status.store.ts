@@ -10,7 +10,7 @@ interface SnsFinalizationStatusData {
 }
 
 export interface SnsFinalizationStatusStore
-  extends Readable<SnsFinalizationStatusData> {
+  extends Readable<SnsFinalizationStatusData | undefined> {
   setData: (data: SnsFinalizationStatusData) => void;
 }
 
@@ -22,7 +22,9 @@ export const resetSnsFinalizationStatusStore = () => {
 };
 
 const initStore = (): SnsFinalizationStatusStore => {
-  const { subscribe, set } = writable<SnsFinalizationStatusData>(undefined);
+  const { subscribe, set } = writable<SnsFinalizationStatusData | undefined>(
+    undefined
+  );
 
   const store = {
     subscribe,

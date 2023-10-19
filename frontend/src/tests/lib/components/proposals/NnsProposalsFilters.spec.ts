@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsProposalsFilters from "$lib/components/proposals/NnsProposalsFilters.svelte";
 import {
   DEFAULT_PROPOSALS_FILTERS,
@@ -42,9 +38,9 @@ describe("NnsProposalsFilters", () => {
   };
 
   describe("default filters", () => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mutableMockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(
+      mutableMockAuthStoreSubscribe
+    );
 
     it("should render topics filters", () => {
       const { container } = render(NnsProposalsFilters);

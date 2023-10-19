@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import AddHotkeyButton from "$lib/components/neuron-detail/actions/AddHotkeyButton.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
@@ -10,7 +6,7 @@ import NeuronContextTest from "../NeuronContextTest.svelte";
 
 describe("AddHotkeyButton", () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("renders add hotkey message", () => {

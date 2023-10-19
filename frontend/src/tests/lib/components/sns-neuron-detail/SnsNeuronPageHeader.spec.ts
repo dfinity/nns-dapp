@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsNeuronPageHeader from "$lib/components/sns-neuron-detail/SnsNeuronPageHeader.svelte";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { dispatchIntersecting } from "$lib/utils/events.utils";
@@ -22,7 +18,7 @@ describe("SnsNeuronPageHeader", () => {
     const { container } = renderSelectedSnsNeuronContext({
       Component: SnsNeuronPageHeader,
       neuron,
-      reload: jest.fn(),
+      reload: vi.fn(),
       props: {
         token: mockToken,
       },
@@ -62,7 +58,7 @@ describe("SnsNeuronPageHeader", () => {
     const { getByTestId } = renderSelectedSnsNeuronContext({
       Component: SnsNeuronPageHeader,
       neuron: mockSnsNeuron,
-      reload: jest.fn(),
+      reload: vi.fn(),
       props: {
         token: mockToken,
       },

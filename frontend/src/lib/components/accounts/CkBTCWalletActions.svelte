@@ -16,32 +16,16 @@
     });
 </script>
 
-<div
-  role={!inline ? "menubar" : undefined}
-  class:inline
-  data-tid="manual-refresh-balance-container"
+<button
+  class={inline ? "text" : "secondary"}
+  type="button"
+  on:click={updateBalance}
+  data-tid="manual-refresh-balance"
 >
-  <button
-    class={inline ? "text" : "secondary"}
-    type="button"
-    on:click={updateBalance}
-    data-tid="manual-refresh-balance"
-  >
-    {$i18n.ckbtc.refresh_balance}
-  </button>
-</div>
+  {$i18n.ckbtc.refresh_balance}
+</button>
 
 <style lang="scss">
-  @use "../../themes/mixins/section";
-
-  [role="menubar"] {
-    @include section.actions;
-  }
-
-  .inline {
-    display: inline-block;
-  }
-
   .text {
     text-decoration: underline;
     padding: 0;

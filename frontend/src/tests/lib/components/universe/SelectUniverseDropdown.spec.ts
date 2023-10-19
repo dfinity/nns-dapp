@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import SelectUniverseDropdown from "$lib/components/universe/SelectUniverseDropdown.svelte";
 import { AppPath } from "$lib/constants/routes.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
@@ -29,24 +26,24 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
 describe("SelectUniverseDropdown", () => {
-  jest
-    .spyOn(snsProjectSelectedStore, "subscribe")
-    .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
+  vi.spyOn(snsProjectSelectedStore, "subscribe").mockImplementation(
+    mockStoreSubscribe(mockSnsFullProject)
+  );
 
-  jest
-    .spyOn(tokensStore, "subscribe")
-    .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
+  vi.spyOn(tokensStore, "subscribe").mockImplementation(
+    mockTokensSubscribe(mockUniversesTokens)
+  );
 
-  jest
-    .spyOn(snsTokenSymbolSelectedStore, "subscribe")
-    .mockImplementation(mockTokenStore);
+  vi.spyOn(snsTokenSymbolSelectedStore, "subscribe").mockImplementation(
+    mockTokenStore
+  );
 
-  jest
-    .spyOn(snsProjectsCommittedStore, "subscribe")
-    .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+  vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
+    mockProjectSubscribe([mockSnsFullProject])
+  );
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     snsAccountsStore.reset();
     resetIdentity();
 

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
 import { transferICP } from "$lib/services/icp-accounts.services";
 import { authStore } from "$lib/stores/auth.store";
@@ -15,17 +11,15 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 
-jest.mock("$lib/services/icp-accounts.services", () => {
+vi.mock("$lib/services/icp-accounts.services", () => {
   return {
-    transferICP: jest.fn().mockResolvedValue({ success: true }),
+    transferICP: vi.fn().mockResolvedValue({ success: true }),
   };
 });
 
 describe("IcpTransactionModal", () => {
   beforeAll(() =>
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe)
   );
 
   const renderTransactionModal = () =>
@@ -35,9 +29,9 @@ describe("IcpTransactionModal", () => {
     });
 
   beforeEach(() => {
-    jest
-      .spyOn(icpAccountsStore, "subscribe")
-      .mockImplementation(mockAccountsStoreSubscribe([mockSubAccount]));
+    vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
+      mockAccountsStoreSubscribe([mockSubAccount])
+    );
   });
 
   it("should transfer icps", async () => {

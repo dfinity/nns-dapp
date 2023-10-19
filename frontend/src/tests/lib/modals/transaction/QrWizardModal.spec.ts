@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import QrWizardModal from "$lib/modals/transaction/QrWizardModal.svelte";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { ICPToken } from "@dfinity/utils";
@@ -55,7 +51,7 @@ describe("QrWizardModal", () => {
     const { getByTestId, component } = render(QrWizardModal, { steps });
 
     const qrPromise = scanQrCode(component);
-    const qrPromiseResolved = jest.fn();
+    const qrPromiseResolved = vi.fn();
     qrPromise.then(qrPromiseResolved);
 
     await runResolvedPromises();

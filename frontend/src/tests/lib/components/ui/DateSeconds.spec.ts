@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
 import { render } from "@testing-library/svelte";

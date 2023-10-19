@@ -1,10 +1,5 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsProposalCard from "$lib/components/sns-proposals/SnsProposalCard.svelte";
 import { SECONDS_IN_HOUR } from "$lib/constants/constants";
-import { nowInSeconds } from "$lib/utils/date.utils";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 import en from "$tests/mocks/i18n.mock";
@@ -15,6 +10,13 @@ import { render } from "@testing-library/svelte";
 
 describe("SnsProposalCard", () => {
   const props = { proposalData: mockSnsProposal, nsFunctions: [] };
+  const now = Date.now();
+  const nowInSeconds = Math.ceil(now / 1000);
+  beforeEach(() => {
+    vi.clearAllTimers();
+    vi.useFakeTimers().setSystemTime(now);
+  });
+
   it("should render a proposal title", () => {
     const { getByText } = render(SnsProposalCard, {
       props,
@@ -70,24 +72,25 @@ describe("SnsProposalCard", () => {
     expect(getByText(nervousSystemFunctionMock.name)).toBeInTheDocument();
   });
 
-  // TODO: fix this test after rebasing main with https://github.com/dfinity/nns-dapp/pull/1689
-  xit("should render deadline", () => {
+  it("should render deadline", () => {
     const proposalData: SnsProposalData = {
       ...mockSnsProposal,
       wait_for_quiet_state: [
         {
           current_deadline_timestamp_seconds: BigInt(
-            nowInSeconds() + SECONDS_IN_HOUR
+            nowInSeconds + SECONDS_IN_HOUR
           ),
         },
       ],
     };
-    render(SnsProposalCard, {
+    const { queryByTestId } = render(SnsProposalCard, {
       props: {
         proposalData,
         nsFunctions: [],
       },
     });
+
+    expect(queryByTestId("countdown").textContent).toBe("1 hour remaining");
   });
 
   it("should not render accessible labels", () => {
@@ -112,7 +115,7 @@ describe("SnsProposalCard", () => {
           timestamp_seconds: BigInt(2222),
         },
       ],
-      executed_timestamp_seconds: BigInt(nowInSeconds()),
+      executed_timestamp_seconds: BigInt(nowInSeconds),
     };
     const { container } = render(SnsProposalCard, {
       props: {

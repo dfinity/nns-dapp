@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import VotesResults from "$lib/components/proposal-detail/VotesResults.svelte";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { VotesResultPo } from "$tests/page-objects/VotesResults.page-object";

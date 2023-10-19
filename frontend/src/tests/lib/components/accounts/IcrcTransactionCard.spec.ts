@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import IcrcTransactionCard from "$lib/components/accounts/IcrcTransactionCard.svelte";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import type { Account } from "$lib/types/account";
@@ -21,7 +17,7 @@ import {
   mockSnsToken,
 } from "$tests/mocks/sns-projects.mock";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
-import type { IcrcTransactionWithId } from "@dfinity/ledger";
+import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import type { Token } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
@@ -66,9 +62,9 @@ describe("IcrcTransactionCard", () => {
   });
 
   beforeEach(() => {
-    jest
-      .spyOn(snsProjectsStore, "subscribe")
-      .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+    vi.spyOn(snsProjectsStore, "subscribe").mockImplementation(
+      mockProjectSubscribe([mockSnsFullProject])
+    );
   });
 
   it("renders received headline", () => {

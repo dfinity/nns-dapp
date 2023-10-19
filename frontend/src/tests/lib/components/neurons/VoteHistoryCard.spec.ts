@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as agent from "$lib/api/agent.api";
 import VotingHistoryCard from "$lib/components/neurons/VotingHistoryCard.svelte";
 import { authStore } from "$lib/stores/auth.store";
@@ -15,7 +11,7 @@ import type { HttpAgent } from "@dfinity/agent";
 import type { Proposal } from "@dfinity/nns";
 import { GovernanceCanister, Vote } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
-import { mock } from "jest-mock-extended";
+import { mock } from "vitest-mock-extended";
 
 describe("VoteHistoryCard", () => {
   const props = {
@@ -40,14 +36,12 @@ describe("VoteHistoryCard", () => {
   beforeEach(() => {
     silentConsoleErrors();
 
-    jest
-      .spyOn(GovernanceCanister, "create")
-      .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
+    vi.spyOn(GovernanceCanister, "create").mockImplementation(
+      (): GovernanceCanister => mockGovernanceCanister
+    );
 
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
-    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   it("should render title", async () => {
@@ -68,22 +62,27 @@ describe("VoteHistoryCard", () => {
   });
 
   it("should render ballots", async () => {
-    const { container, getByText } = render(VotingHistoryCard, {
+    const { container } = render(VotingHistoryCard, {
       props,
     });
     await waitFor(() =>
       expect(
-        container.querySelectorAll("[data-tid='markdown-text']").length
+        container.querySelectorAll("[data-tid='proposal-summary-component'] p")
+          .length
       ).toEqual(2)
     );
 
-    expect(
-      getByText((mockProposals[0].proposal as Proposal).summary)
-    ).toBeInTheDocument();
+    const p = container.querySelectorAll(
+      "[data-tid='proposal-summary-component'] p"
+    );
 
-    expect(
-      getByText((mockProposals[1].proposal as Proposal).summary)
-    ).toBeInTheDocument();
+    expect(p[0].textContent).toEqual(
+      (mockProposals[0].proposal as Proposal).summary
+    );
+
+    expect(p[1].textContent).toEqual(
+      (mockProposals[1].proposal as Proposal).summary
+    );
   });
 
   it("should render skeleton texts", async () => {

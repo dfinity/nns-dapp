@@ -1,6 +1,5 @@
 import { NOT_LOADED } from "$lib/constants/stores.constants";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
-import * as summaryGetters from "$lib/getters/sns-summary";
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import {
@@ -46,7 +45,7 @@ describe("project-utils", () => {
   });
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe("filter", () => {
@@ -169,11 +168,11 @@ describe("project-utils", () => {
   describe("durationTillSwapDeadline", () => {
     const now = Date.now();
     beforeEach(() => {
-      jest.useFakeTimers().setSystemTime(now);
+      vi.useFakeTimers().setSystemTime(now);
     });
 
     afterAll(() => {
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
     it("should return duration until swap deadline", () => {
       const dueSeconds = 3600;
@@ -192,11 +191,11 @@ describe("project-utils", () => {
   describe("durationTillSwapStart", () => {
     const now = Date.now();
     beforeEach(() => {
-      jest.useFakeTimers().setSystemTime(now);
+      vi.useFakeTimers().setSystemTime(now);
     });
 
     afterAll(() => {
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
     it("should return duration until swap deadline", () => {
       const dueSeconds = 3600;
@@ -295,7 +294,7 @@ describe("project-utils", () => {
 
   describe("userCountryIsNeeded", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
     });
 
     it("country not needed", () => {
@@ -1274,64 +1273,112 @@ describe("project-utils", () => {
   });
 
   describe("getProjectCommitmentSplit", () => {
-    const defaultSummary = summaryForLifecycle(SnsSwapLifecycle.Open);
+    const nfCommitment = 10000000000n;
+    const directCommitment = 20000000000n;
 
-    it("returns the commitments split if NF participation is present", () => {
-      const directCommitment = 20000000000n;
-      const nfCommitment = 10000000000n;
-      // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
-      jest
-        .spyOn(summaryGetters, "getNeuronsFundParticipation")
-        .mockImplementation(() => nfCommitment);
-      const summary = {
-        ...defaultSummary,
-        derived: {
-          ...defaultSummary.derived,
-          buyer_total_icp_e8s: directCommitment + nfCommitment,
-        },
-      };
-      expect(getProjectCommitmentSplit(summary)).toEqual({
-        totalCommitmentE8s: 30000000000n,
-        directCommitmentE8s: 20000000000n,
-        nfCommitmentE8s: 10000000000n,
+    describe("when NF participation is present", () => {
+      it("returns the commitments split if min-max direct participations are present", () => {
+        const minDirectParticipation = 10000000000n;
+        const maxDirectParticipation = 100000000000n;
+        const summary = createSummary({
+          currentTotalCommitment: directCommitment + nfCommitment,
+          directCommitment,
+          neuronsFundCommitment: nfCommitment,
+          minDirectParticipation,
+          maxDirectParticipation,
+        });
+
+        expect(getProjectCommitmentSplit(summary)).toEqual({
+          totalCommitmentE8s: directCommitment + nfCommitment,
+          directCommitmentE8s: directCommitment,
+          nfCommitmentE8s: nfCommitment,
+          minDirectCommitmentE8s: minDirectParticipation,
+          maxDirectCommitmentE8s: maxDirectParticipation,
+        });
+      });
+
+      it("returns the full commitment if min direct participation is not present", () => {
+        const summary = createSummary({
+          currentTotalCommitment: directCommitment + nfCommitment,
+          directCommitment,
+          neuronsFundCommitment: nfCommitment,
+          minDirectParticipation: undefined,
+          maxDirectParticipation: 100000000000n,
+        });
+        expect(getProjectCommitmentSplit(summary)).toEqual({
+          totalCommitmentE8s: 30000000000n,
+        });
+      });
+
+      it("returns the full commitment if max direct participation is not present", () => {
+        const summary = createSummary({
+          currentTotalCommitment: directCommitment + nfCommitment,
+          directCommitment,
+          neuronsFundCommitment: nfCommitment,
+          minDirectParticipation: 100000000000n,
+          maxDirectParticipation: undefined,
+        });
+        expect(getProjectCommitmentSplit(summary)).toEqual({
+          totalCommitmentE8s: 30000000000n,
+        });
       });
     });
 
-    it("returns the commitments split if NF participation is present even when 0", () => {
-      const directCommitment = 20000000000n;
-      const nfCommitment = 0n;
-      // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
-      jest
-        .spyOn(summaryGetters, "getNeuronsFundParticipation")
-        .mockImplementation(() => nfCommitment);
-      const summary = {
-        ...defaultSummary,
-        derived: {
-          ...defaultSummary.derived,
-          buyer_total_icp_e8s: directCommitment + nfCommitment,
-        },
-      };
-      expect(getProjectCommitmentSplit(summary)).toEqual({
-        totalCommitmentE8s: 20000000000n,
-        directCommitmentE8s: 20000000000n,
-        nfCommitmentE8s: 0n,
+    describe("when NF participation is 0", () => {
+      it("returns the commitments split if NF participation is present even when 0", () => {
+        const directCommitment = 20000000000n;
+        const minDirectParticipation = 10000000000n;
+        const maxDirectParticipation = 100000000000n;
+        const summary = createSummary({
+          currentTotalCommitment: directCommitment,
+          directCommitment,
+          neuronsFundCommitment: 0n,
+          minDirectParticipation,
+          maxDirectParticipation,
+        });
+        expect(getProjectCommitmentSplit(summary)).toEqual({
+          totalCommitmentE8s: 20000000000n,
+          directCommitmentE8s: 20000000000n,
+          nfCommitmentE8s: 0n,
+          minDirectCommitmentE8s: minDirectParticipation,
+          maxDirectCommitmentE8s: maxDirectParticipation,
+        });
       });
     });
 
-    it("returns only the full commitmentif NF participation is not present", () => {
-      // TODO: https://dfinity.atlassian.net/browse/GIX-1909 use nf participation field when present
-      jest
-        .spyOn(summaryGetters, "getNeuronsFundParticipation")
-        .mockImplementation(() => undefined);
-      const summary = {
-        ...defaultSummary,
-        derived: {
-          ...defaultSummary.derived,
-          buyer_total_icp_e8s: 20000000000n,
-        },
-      };
-      expect(getProjectCommitmentSplit(summary)).toEqual({
-        totalCommitmentE8s: 20000000000n,
+    describe("when NF participation is not present", () => {
+      it("returns the full commitment even if min-max direct participation are present", () => {
+        const currentTotalCommitment = 30000000000n;
+        const summary = createSummary({
+          currentTotalCommitment,
+          directCommitment: undefined,
+          neuronsFundCommitment: undefined,
+          minDirectParticipation: 100000000000n,
+          maxDirectParticipation: 1000000000000n,
+        });
+        expect(getProjectCommitmentSplit(summary)).toEqual({
+          totalCommitmentE8s: currentTotalCommitment,
+        });
+      });
+    });
+
+    describe("when direct participation is present", () => {
+      it("returns the overall commitments even if nf commitment and min-max direct participations are present", () => {
+        const minDirectParticipation = 10000000000n;
+        const maxDirectParticipation = 100000000000n;
+
+        const currentTotalCommitment = 30000000000n;
+        const summary = createSummary({
+          currentTotalCommitment,
+          directCommitment: undefined,
+          neuronsFundCommitment: 10n,
+          minDirectParticipation,
+          maxDirectParticipation,
+        });
+
+        expect(getProjectCommitmentSplit(summary)).toEqual({
+          totalCommitmentE8s: currentTotalCommitment,
+        });
       });
     });
   });

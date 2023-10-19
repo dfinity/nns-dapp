@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import Hash from "$lib/components/ui/Hash.svelte";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { render } from "@testing-library/svelte";

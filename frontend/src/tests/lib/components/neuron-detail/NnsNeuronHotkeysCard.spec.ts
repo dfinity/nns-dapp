@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsNeuronHotkeysCard from "$lib/components/neuron-detail/NnsNeuronHotkeysCard.svelte";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
@@ -17,10 +13,10 @@ import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
-jest.mock("$lib/services/neurons.services", () => {
+vi.mock("$lib/services/neurons.services", () => {
   return {
-    removeHotkey: jest.fn().mockResolvedValue(BigInt(10)),
-    getNeuronFromStore: jest.fn(),
+    removeHotkey: vi.fn().mockResolvedValue(BigInt(10)),
+    getNeuronFromStore: vi.fn(),
   };
 });
 
@@ -47,10 +43,8 @@ describe("NnsNeuronHotkeysCard", () => {
   };
 
   beforeEach(() => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
-    jest.clearAllMocks();
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    vi.clearAllMocks();
   });
 
   it("renders hotkeys title", () => {

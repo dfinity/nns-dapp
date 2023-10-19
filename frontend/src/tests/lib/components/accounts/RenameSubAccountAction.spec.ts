@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import RenameSubAccountAction from "$lib/components/accounts/RenameSubAccountAction.svelte";
 import { renameSubAccount } from "$lib/services/icp-accounts.services";
 import type { Account } from "$lib/types/account";
@@ -9,19 +5,20 @@ import { renderSelectedAccountContext } from "$tests/mocks/context-wrapper.mock"
 import en from "$tests/mocks/i18n.mock";
 import { mockSubAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { fireEvent } from "@testing-library/dom";
+import type { Mock } from "vitest";
 
-jest.mock("$lib/services/icp-accounts.services");
+vi.mock("$lib/services/icp-accounts.services");
 
 describe("RenameSubAccountAction", () => {
   afterEach(() => {
-    jest.clearAllMocks();
-    jest.restoreAllMocks();
+    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   let spy;
 
   beforeAll(() => {
-    spy = (renameSubAccount as jest.Mock).mockImplementation(async () => {
+    spy = (renameSubAccount as Mock).mockImplementation(async () => {
       // Do nothing test
     });
   });

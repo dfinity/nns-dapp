@@ -8,23 +8,70 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 ## Unreleased
 
+Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
+here after a successful release.
+
+## Proposal 125061
+
 ### Application
 
 #### Added
 
+* Get BTC button to use the mock bitcoin canister to test ckBTC.
+
 #### Changed
 
+* Update the schemas for the governance, registry and SNS Wasm canisters, used for proposal rendering.
+* Get the governance, registry and SNS Wasm schemas direcly from `.did` files rather than importing the canisters.
+* Improve security by escaping additional images in the proposal summary markdown.
+* Internal change: remove unused snsQueryStore.
+* New Tag style. Used in followees topic and project status.
+* New header UI in the wallet pages.
+* Integrated library `marked` within dependencies instead of shipping it as a static asset.
+
+#### Fixed
+
+* Separators in project page appearing without data inside.
+* Cycles displayed as T Cycles on canister detail page.
+
+### Operations
+
+#### Changed
+
+* Put unreleased changes in `CHANGELOG-Nns-Dapp-unreleased.md` to avoid bad merges.
+
+#### Removed
+
+* Remove npm script `update:next`.
+
+## Proposal 124999
+
+### Application
+
+#### Added
+
+* New feature flag `ENABLE_FULL_WIDTH_PROPOSAL`.
+
+#### Changed
+
+* Make a histogram of transactions per account, used to optimize the new account storage.
+* Include a copy of the `nns-governance` candid file in the `nns-dapp` repository.
 * Update the IC commit in the `proposals` crate to `release-2023-08-01_23-01`.
 * Separate proposals backend into a separate crate.
 * Improve spacings in the page headings.
 * Improve the skeletons while loading in the neuron details page.
 * Review the chunking strategy to enhance the dapp's loading time and prevent random, rare flashes of unstyled content (FOUC).
 * New header UI in the canister detail page.
+* New labels for min and max participation.
 
-#### Deprecated
 #### Removed
 
+* Remove `ENABLE_DISBURSE_MATURITY` feature flag.
+* Remove `ENABLE_SNS_AGGREGATOR_STORE` feature flag.
+
 #### Fixed
+
+* Change inconsistency in the name of an NNS topic.
 
 #### Security
 
@@ -32,28 +79,30 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Not Published
 
+* New UI to better explain the commitment of Neurons' Fund and direct participation.
+
 ### Operations
 
 #### Added
+
 * Run several script tests on macos as well as ubuntu.
 * Extend the release SOP script up to submitting the proposal.
+* Check spelling in Rust documentation as part of CI.
 
 #### Changed
 
+* Factor out the core of `did2rs` for wider use.
+* Reduce the manual changes needed for `did2rs` by automating more.
+* Use `clap` argument parsing in `did2rs`.
 * Populate the PR description of the `didc` updater.
 * Update the `snsdemo` test environment, `dfx` and the IC commit of the NNS canisters.
 * Update the snsdemo commit & automate further updates.
 * Cron job to update `snsdemo` weekly.
 * Update data for the Launchpad Prod test.
 
-#### Deprecated
 #### Removed
 
 * Comment and skip dfx-nns-proposal-args.test.
-
-#### Fixed
-
-#### Security
 
 ## Proposal 124855
 

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import RenameSubAccount from "$lib/components/accounts/RenameSubAccountButton.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";

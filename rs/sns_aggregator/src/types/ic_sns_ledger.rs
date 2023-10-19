@@ -1,3 +1,5 @@
+//! Rust code created from candid by: scripts/did2rs.sh --canister sns_ledger --out ic_sns_ledger.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug
+//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/2d57e93dabc5f13258d0dee1ffb2363ddce7fe62/rs/rosetta-api/icrc1/ledger/ledger.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -5,14 +7,15 @@
 #![allow(dead_code)]
 
 use crate::types::{CandidType, Deserialize, EmptyRecord, Serialize};
+use candid::Principal;
 use ic_cdk::api::call::CallResult;
 // This is an experimental feature to generate Rust binding from Candid.
 // You may want to manually adjust some of the types.
 // #![allow(dead_code, unused_imports)]
-// use candid::{self, CandidType, Decode, Deserialize, Serialize, Clone, Debug, Encode, candid::Principal};
+// use candid::{self, CandidType, Decode, Deserialize, Encode, Principal};
 // use ic_cdk::api::call::CallResult as Result;
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum MetadataValue {
     Int(candid::Int),
     Nat(candid::Nat),
@@ -21,24 +24,24 @@ pub enum MetadataValue {
 }
 
 pub type Subaccount = serde_bytes::ByteBuf;
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Account {
-    pub owner: candid::Principal,
+    pub owner: Principal,
     pub subaccount: Option<Subaccount>,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum ChangeFeeCollector {
     SetTo(Account),
     Unset,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct FeatureFlags {
     pub icrc2: bool,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct UpgradeArgs {
     pub token_symbol: Option<String>,
     pub transfer_fee: Option<candid::Nat>,
@@ -51,7 +54,7 @@ pub struct UpgradeArgs {
     pub feature_flags: Option<FeatureFlags>,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct InitArgsArchiveOptions {
     pub num_blocks_to_archive: u64,
     pub max_transactions_per_response: Option<u64>,
@@ -59,10 +62,10 @@ pub struct InitArgsArchiveOptions {
     pub max_message_size_bytes: Option<u64>,
     pub cycles_for_archive_creation: Option<u64>,
     pub node_max_memory_size_bytes: Option<u64>,
-    pub controller_id: candid::Principal,
+    pub controller_id: Principal,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct InitArgs {
     pub decimals: Option<u8>,
     pub token_symbol: String,
@@ -79,21 +82,21 @@ pub struct InitArgs {
     pub feature_flags: Option<FeatureFlags>,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum LedgerArg {
     Upgrade(Option<UpgradeArgs>),
     Init(InitArgs),
 }
 
 pub type BlockIndex = candid::Nat;
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetBlocksArgs {
     pub start: BlockIndex,
     pub length: candid::Nat,
 }
 
 pub type Map = Vec<(String, Box<Value>)>;
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum Value {
     Int(candid::Int),
     Map(Map),
@@ -105,7 +108,7 @@ pub enum Value {
 }
 
 pub type Block = Box<Value>;
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct BlockRange {
     pub blocks: Vec<Block>,
 }
@@ -127,21 +130,21 @@ pub struct GetBlocksResponse {
     pub archived_blocks: Vec<GetBlocksResponseArchivedBlocksItem>,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct DataCertificate {
     pub certificate: Option<serde_bytes::ByteBuf>,
     pub hash_tree: serde_bytes::ByteBuf,
 }
 
 pub type TxIndex = candid::Nat;
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetTransactionsRequest {
     pub start: TxIndex,
     pub length: candid::Nat,
 }
 
 pub type Timestamp = u64;
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Burn {
     pub from: Account,
     pub memo: Option<serde_bytes::ByteBuf>,
@@ -150,7 +153,7 @@ pub struct Burn {
     pub spender: Option<Account>,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Mint {
     pub to: Account,
     pub memo: Option<serde_bytes::ByteBuf>,
@@ -158,7 +161,7 @@ pub struct Mint {
     pub amount: candid::Nat,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Approve {
     pub fee: Option<candid::Nat>,
     pub from: Account,
@@ -170,7 +173,7 @@ pub struct Approve {
     pub spender: Account,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Transfer {
     pub to: Account,
     pub fee: Option<candid::Nat>,
@@ -181,7 +184,7 @@ pub struct Transfer {
     pub spender: Option<Account>,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Transaction {
     pub burn: Option<Burn>,
     pub kind: String,
@@ -191,7 +194,7 @@ pub struct Transaction {
     pub transfer: Option<Transfer>,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct TransactionRange {
     pub transactions: Vec<Transaction>,
 }
@@ -213,13 +216,13 @@ pub struct GetTransactionsResponse {
 }
 
 pub type Tokens = candid::Nat;
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct StandardRecord {
     pub url: String,
     pub name: String,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct TransferArg {
     pub to: Account,
     pub fee: Option<Tokens>,
@@ -229,7 +232,7 @@ pub struct TransferArg {
     pub amount: Tokens,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum TransferError {
     GenericError { message: String, error_code: candid::Nat },
     TemporarilyUnavailable,
@@ -241,25 +244,25 @@ pub enum TransferError {
     InsufficientFunds { balance: Tokens },
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum TransferResult {
     Ok(BlockIndex),
     Err(TransferError),
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct AllowanceArgs {
     pub account: Account,
     pub spender: Account,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Allowance {
     pub allowance: candid::Nat,
     pub expires_at: Option<Timestamp>,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ApproveArgs {
     pub fee: Option<candid::Nat>,
     pub memo: Option<serde_bytes::ByteBuf>,
@@ -271,7 +274,7 @@ pub struct ApproveArgs {
     pub spender: Account,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum ApproveError {
     GenericError { message: String, error_code: candid::Nat },
     TemporarilyUnavailable,
@@ -284,13 +287,13 @@ pub enum ApproveError {
     InsufficientFunds { balance: candid::Nat },
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum ApproveResult {
     Ok(BlockIndex),
     Err(ApproveError),
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct TransferFromArgs {
     pub to: Account,
     pub fee: Option<Tokens>,
@@ -301,7 +304,7 @@ pub struct TransferFromArgs {
     pub amount: Tokens,
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum TransferFromError {
     GenericError { message: String, error_code: candid::Nat },
     TemporarilyUnavailable,
@@ -314,13 +317,13 @@ pub enum TransferFromError {
     InsufficientFunds { balance: Tokens },
 }
 
-#[derive(CandidType, Deserialize, Serialize, Clone, Debug)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum TransferFromResult {
     Ok(BlockIndex),
     Err(TransferFromError),
 }
 
-pub struct Service(pub candid::Principal);
+pub struct Service(pub Principal);
 impl Service {
     pub async fn get_blocks(&self, arg0: GetBlocksArgs) -> CallResult<(GetBlocksResponse,)> {
         ic_cdk::call(self.0, "get_blocks", (arg0,)).await

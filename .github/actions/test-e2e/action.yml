@@ -51,6 +51,14 @@ runs:
         export PLAYWRIGHT_BASE_URL="$(../scripts/dfx-canister-url nns-dapp)"
         PLAYWRIGHT_FILES="$(ls src/tests/e2e/${{ inputs.test_filter }} | cat | split -n r/${{ inputs.shard_number }}/${{ inputs.shard_count }})"
         npm run test-e2e -- --update-snapshots ${PLAYWRIGHT_FILES:-}
+    - name: List Playwright results
+      if: ${{ failure() }}
+      shell: bash
+      # The playwright-failure-results artifact often ends up containing nothing
+      # but index.html. List the files we expect to be there to pin down what's
+      # going wrong.
+      run: |
+        find frontend/playwright-*
     - name: Upload Playwright results
       uses: actions/upload-artifact@v3
       if: ${{ failure() }}

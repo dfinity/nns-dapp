@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import LayoutList from "$lib/components/layout/LayoutList.svelte";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { BREAKPOINT_LARGE } from "@dfinity/gix-components";

@@ -1,25 +1,21 @@
-/**
- * @jest-environment jsdom
- */
-
 import Summary from "$lib/components/summary/Summary.svelte";
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
-import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
-import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import { page } from "$mocks/$app/stores";
-import { mockStoreSubscribe } from "$tests/mocks/commont.mock";
 import en from "$tests/mocks/i18n.mock";
-import {
-  mockProjectSubscribe,
-  mockSnsFullProject,
-} from "$tests/mocks/sns-projects.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
 describe("Summary", () => {
+  const rootCanisterId = rootCanisterIdMock;
+
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     page.reset();
+    resetSnsProjects();
   });
 
   it("should render a logo", () => {
@@ -28,21 +24,7 @@ describe("Summary", () => {
   });
 
   describe("no universe", () => {
-    beforeEach(() => {
-      jest
-        .spyOn(snsProjectSelectedStore, "subscribe")
-        .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
-
-      jest
-        .spyOn(snsProjectsCommittedStore, "subscribe")
-        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
-    });
-
     it("should render internet computer if none", () => {
-      page.mock({
-        data: { universe: mockSnsFullProject.rootCanisterId.toText() },
-      });
-
       const { container } = render(Summary, {
         props: { displayUniverse: false },
       });
@@ -54,19 +36,9 @@ describe("Summary", () => {
   });
 
   describe("nns", () => {
-    beforeEach(() => {
-      jest.resetAllMocks();
-    });
-
-    beforeEach(() =>
-      jest
-        .spyOn(snsProjectSelectedStore, "subscribe")
-        .mockImplementation(mockStoreSubscribe(undefined))
-    );
-
     it("should render internet computer", () => {
       page.mock({
-        data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+        data: { universe: OWN_CANISTER_ID.toText() },
       });
 
       const { container } = render(Summary);
@@ -78,36 +50,35 @@ describe("Summary", () => {
   });
 
   describe("sns", () => {
-    beforeEach(() => {
-      jest
-        .spyOn(snsProjectsCommittedStore, "subscribe")
-        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
-
+    it("should render project", () => {
       page.mock({
-        data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+        data: { universe: rootCanisterId.toText() },
         routeId: AppPath.Accounts,
       });
-    });
+      const projectName = "test";
+      setSnsProjects([
+        {
+          projectName,
+          lifecycle: SnsSwapLifecycle.Committed,
+          rootCanisterId,
+        },
+      ]);
 
-    it("should render project", () => {
       const { container } = render(Summary);
+
       expect(
-        container
-          ?.querySelector("h1")
-          ?.textContent?.includes(mockSnsFullProject.summary.metadata.name)
+        container?.querySelector("h1")?.textContent?.includes(projectName)
       ).toBeTruthy();
     });
   });
 
   describe("ckBTC", () => {
-    beforeEach(() => {
+    it("should render ckBTC", () => {
       page.mock({
         data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
         routeId: AppPath.Accounts,
       });
-    });
 
-    it("should render ckBTC", () => {
       const { container } = render(Summary);
 
       expect(

@@ -8,16 +8,16 @@ import {
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import type { HttpAgent } from "@dfinity/agent";
-import { AccountIdentifier, LedgerCanister } from "@dfinity/nns";
+import { AccountIdentifier, LedgerCanister } from "@dfinity/ledger-icp";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
-import { mock } from "jest-mock-extended";
+import { mock } from "vitest-mock-extended";
 
 describe("icp-ledger.api", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.clearAllTimers();
+    vi.clearAllMocks();
+    vi.clearAllTimers();
 
-    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   describe("sendICP", () => {
@@ -35,13 +35,13 @@ describe("icp-ledger.api", () => {
     beforeEach(() => {
       const ledgerMock = mock<LedgerCanister>();
       ledgerMock.transfer.mockResolvedValue(BigInt(0));
-      jest.useFakeTimers().setSystemTime(now);
+      vi.useFakeTimers().setSystemTime(now);
 
-      jest
-        .spyOn(LedgerCanister, "create")
-        .mockImplementation((): LedgerCanister => ledgerMock);
+      vi.spyOn(LedgerCanister, "create").mockImplementation(
+        (): LedgerCanister => ledgerMock
+      );
 
-      spyTransfer = jest.spyOn(ledgerMock, "transfer");
+      spyTransfer = vi.spyOn(ledgerMock, "transfer");
     });
 
     it("should call ledger to send ICP", async () => {
@@ -130,13 +130,13 @@ describe("icp-ledger.api", () => {
     beforeEach(() => {
       const ledgerMock = mock<LedgerCanister>();
       ledgerMock.icrc1Transfer.mockResolvedValue(BigInt(0));
-      jest.useFakeTimers().setSystemTime(now);
+      vi.useFakeTimers().setSystemTime(now);
 
-      jest
-        .spyOn(LedgerCanister, "create")
-        .mockImplementation((): LedgerCanister => ledgerMock);
+      vi.spyOn(LedgerCanister, "create").mockImplementation(
+        (): LedgerCanister => ledgerMock
+      );
 
-      spyTransfer = jest.spyOn(ledgerMock, "icrc1Transfer");
+      spyTransfer = vi.spyOn(ledgerMock, "icrc1Transfer");
     });
 
     it("should call ledger to send ICP", async () => {
@@ -257,9 +257,9 @@ describe("icp-ledger.api", () => {
     ledgerMock.transactionFee.mockResolvedValue(fee);
 
     beforeEach(() => {
-      jest
-        .spyOn(LedgerCanister, "create")
-        .mockImplementation((): LedgerCanister => ledgerMock);
+      vi.spyOn(LedgerCanister, "create").mockImplementation(
+        (): LedgerCanister => ledgerMock
+      );
     });
 
     it("gets transaction fee from LedgerCanister", async () => {
@@ -275,9 +275,9 @@ describe("icp-ledger.api", () => {
     ledgerMock.accountBalance.mockResolvedValue(balance);
 
     beforeEach(() => {
-      jest
-        .spyOn(LedgerCanister, "create")
-        .mockImplementation((): LedgerCanister => ledgerMock);
+      vi.spyOn(LedgerCanister, "create").mockImplementation(
+        (): LedgerCanister => ledgerMock
+      );
     });
 
     it("gets accounts balance from LedgerCanister", async () => {

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import IcrcTransactionsObserver from "$lib/components/accounts/IcrcTransactionsObserver.svelte";
 import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
 import type { TransactionsObserverData } from "$lib/types/icrc.observer";
@@ -14,18 +10,18 @@ describe("IcrcTransactionsObserver", () => {
   let spyPostMessage;
 
   beforeEach(() => {
-    spyPostMessage = jest.fn();
+    spyPostMessage = vi.fn();
 
-    jest.mock("$lib/workers/transactions.worker?worker", () => {
-      return class TransactionsWorker {
+    vi.doMock("$lib/workers/transactions.worker?worker", () => ({
+      default: class TransactionsWorker {
         postMessage(data: {
           msg: "nnsStartTransactionsTimer";
           data: PostMessageDataRequestTransactions;
         }) {
           spyPostMessage(data);
         }
-      };
-    });
+      },
+    }));
   });
 
   const data: TransactionsObserverData = {
@@ -37,7 +33,7 @@ describe("IcrcTransactionsObserver", () => {
     render(IcrcTransactionsObserver, {
       props: {
         data,
-        callback: jest.fn(),
+        callback: vi.fn(),
       },
     });
 
@@ -58,7 +54,7 @@ describe("IcrcTransactionsObserver", () => {
     const { unmount } = render(IcrcTransactionsObserver, {
       props: {
         data,
-        callback: jest.fn(),
+        callback: vi.fn(),
       },
     });
 

@@ -1,3 +1,4 @@
+//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/2d57e93dabc5f13258d0dee1ffb2363ddce7fe62/rs/nns/sns-wasm/canister/sns-wasm.did>
 type AddWasmRequest = record { hash : vec nat8; wasm : opt SnsWasm };
 type AddWasmResponse = record { result : opt Result };
 type AirdropDistribution = record { airdrop_neurons : vec NeuronDistribution };
@@ -141,9 +142,11 @@ type SnsInitPayload = record {
   token_logo : opt text;
   token_name : opt text;
   max_participant_icp_e8s : opt nat64;
+  min_direct_participation_icp_e8s : opt nat64;
   proposal_reject_cost_e8s : opt nat64;
   restricted_countries : opt Countries;
   min_icp_e8s : opt nat64;
+  max_direct_participation_icp_e8s : opt nat64;
 };
 type SnsUpgrade = record {
   next_version : opt SnsVersion;

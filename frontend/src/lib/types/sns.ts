@@ -2,6 +2,7 @@ import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { Principal } from "@dfinity/principal";
 import type {
   CfParticipant,
+  SnsGetLifecycleResponse,
   SnsNeuronRecipe,
   SnsParams,
   SnsSwapBuyerState,
@@ -74,6 +75,21 @@ export interface SnsSummary {
    * Derived information about the sale such as the current total of ICP all buyers have invested so far
    */
   derived: SnsSwapDerivedState;
+
+  /**
+   * Data from `get_init` call.
+   */
+  init?: SnsSwapInit;
+
+  /**
+   * Data from `get_sale_parameters` call.
+   */
+  swapParams?: SnsParams;
+
+  /**
+   * Data from `get_lifecycle` call.
+   */
+  lifecycle?: SnsGetLifecycleResponse;
 }
 
 export interface SnsSwapCommitment {

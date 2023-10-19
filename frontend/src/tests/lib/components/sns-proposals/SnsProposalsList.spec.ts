@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import SnsProposalsList from "$lib/components/sns-proposals/SnsProposalsList.svelte";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import type { SnsProposalData } from "@dfinity/sns";

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsNeuronVotingPower from "$lib/components/sns-neuron-detail/SnsNeuronVotingPower.svelte";
 import {
   createMockSnsNeuron,
@@ -37,7 +33,7 @@ describe("SnsNeuronVotingPower", () => {
   };
 
   beforeEach(() => {
-    jest.useFakeTimers().setSystemTime(now);
+    vi.useFakeTimers().setSystemTime(now);
   });
 
   const renderComponent = (neuron: SnsNeuron) => {

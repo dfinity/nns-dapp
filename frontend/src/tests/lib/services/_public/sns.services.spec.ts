@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as agent from "$lib/api/agent.api";
 import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import * as governanceApi from "$lib/api/sns-governance.api";
@@ -13,7 +9,6 @@ import { authStore } from "$lib/stores/auth.store";
 import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
-import { snsQueryStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
@@ -33,15 +28,15 @@ import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import { waitFor } from "@testing-library/svelte";
-import { mock } from "jest-mock-extended";
 import { get } from "svelte/store";
+import { mock } from "vitest-mock-extended";
 
-jest.mock("$lib/api/sns.api");
-jest.mock("$lib/api/sns-aggregator.api");
-jest.mock("$lib/api/sns-governance.api");
-jest.mock("$lib/stores/toasts.store", () => {
+vi.mock("$lib/api/sns.api");
+vi.mock("$lib/api/sns-aggregator.api");
+vi.mock("$lib/api/sns-governance.api");
+vi.mock("$lib/stores/toasts.store", () => {
   return {
-    toastsError: jest.fn(),
+    toastsError: vi.fn(),
   };
 });
 
@@ -55,19 +50,19 @@ describe("SNS public services", () => {
   blockAllCallsTo(blockedPaths);
 
   beforeEach(() => {
-    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   describe("loadSnsNervousSystemFunctions", () => {
     beforeEach(() => {
       snsFunctionsStore.reset();
-      jest.clearAllMocks();
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
+      vi.clearAllMocks();
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreSubscribe
+      );
     });
     it("should call sns api getNervousSystemFunctions and load the nervous system functions store", async () => {
-      const spyGetFunctions = jest
+      const spyGetFunctions = vi
         .spyOn(governanceApi, "getNervousSystemFunctions")
         .mockImplementation(() => Promise.resolve([nervousSystemFunctionMock]));
 
@@ -88,7 +83,7 @@ describe("SNS public services", () => {
         nsFunctions: [nervousSystemFunctionMock],
         certified: true,
       });
-      const spyGetFunctions = jest
+      const spyGetFunctions = vi
         .spyOn(governanceApi, "getNervousSystemFunctions")
         .mockImplementation(() => Promise.resolve([nervousSystemFunctionMock]));
 
@@ -103,7 +98,7 @@ describe("SNS public services", () => {
         rootCanisterId: rootCanisterId.toText(),
       });
       snsAggregatorStore.setData([aggregatorProject]);
-      const spyGetFunctions = jest.spyOn(
+      const spyGetFunctions = vi.spyOn(
         governanceApi,
         "getNervousSystemFunctions"
       );
@@ -114,9 +109,9 @@ describe("SNS public services", () => {
     });
 
     it("should show a toast if api throws an error", async () => {
-      jest
-        .spyOn(governanceApi, "getNervousSystemFunctions")
-        .mockImplementation(() => Promise.reject("error"));
+      vi.spyOn(governanceApi, "getNervousSystemFunctions").mockImplementation(
+        () => Promise.reject("error")
+      );
 
       await loadSnsNervousSystemFunctions(mockPrincipal);
 
@@ -126,18 +121,17 @@ describe("SNS public services", () => {
 
   describe("loadSnsProjects", () => {
     beforeEach(() => {
-      snsQueryStore.reset();
       snsFunctionsStore.reset();
       transactionsFeesStore.reset();
       snsAggregatorStore.reset();
-      jest.clearAllMocks();
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
+      vi.clearAllMocks();
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreSubscribe
+      );
     });
 
     it("loads sns stores with data", async () => {
-      const spyQuerySnsProjects = jest
+      const spyQuerySnsProjects = vi
         .spyOn(aggregatorApi, "querySnsProjects")
         .mockImplementation(() =>
           Promise.resolve([aggregatorSnsMockDto, aggregatorSnsMockDto])
@@ -148,9 +142,6 @@ describe("SNS public services", () => {
       const rootCanisterId = aggregatorSnsMockDto.canister_ids.root_canister_id;
       expect(spyQuerySnsProjects).toBeCalled();
 
-      const queryStore = get(snsQueryStore);
-      expect(queryStore.metadata.length).toBeGreaterThan(0);
-      expect(queryStore.swaps.length).toBeGreaterThan(0);
       const functionsStore = get(snsFunctionsStore);
       expect(functionsStore[rootCanisterId]).not.toBeUndefined();
       const feesStore = get(transactionsFeesStore);
@@ -158,9 +149,9 @@ describe("SNS public services", () => {
     });
 
     it("should load sns aggregator store", async () => {
-      jest
-        .spyOn(aggregatorApi, "querySnsProjects")
-        .mockImplementation(() => Promise.resolve(aggregatorMockSnsesDataDto));
+      vi.spyOn(aggregatorApi, "querySnsProjects").mockImplementation(() =>
+        Promise.resolve(aggregatorMockSnsesDataDto)
+      );
 
       expect(get(snsAggregatorStore).data).toBeUndefined();
 
@@ -170,11 +161,9 @@ describe("SNS public services", () => {
     });
 
     it("should load and map tokens", async () => {
-      jest
-        .spyOn(aggregatorApi, "querySnsProjects")
-        .mockImplementation(() =>
-          Promise.resolve([aggregatorSnsMockDto, aggregatorSnsMockDto])
-        );
+      vi.spyOn(aggregatorApi, "querySnsProjects").mockImplementation(() =>
+        Promise.resolve([aggregatorSnsMockDto, aggregatorSnsMockDto])
+      );
 
       await loadSnsProjects();
 
@@ -200,9 +189,9 @@ describe("SNS public services", () => {
         },
         aggregatorSnsMockDto,
       ];
-      jest
-        .spyOn(aggregatorApi, "querySnsProjects")
-        .mockImplementation(() => Promise.resolve(response));
+      vi.spyOn(aggregatorApi, "querySnsProjects").mockImplementation(() =>
+        Promise.resolve(response)
+      );
 
       await loadSnsProjects();
 
@@ -211,33 +200,6 @@ describe("SNS public services", () => {
       expect(data).not.toBeUndefined();
       expect(data?.certified).toBeTruthy();
       expect(data?.totalSupply).toEqual(BigInt(totalSupply));
-    });
-
-    it("loads derived state from property derived state", async () => {
-      jest
-        .spyOn(aggregatorApi, "querySnsProjects")
-        .mockImplementation(() => Promise.resolve([aggregatorSnsMockDto]));
-
-      await loadSnsProjects();
-
-      const queryStore = get(snsQueryStore);
-      const derivedState = queryStore.swaps[0]?.derived[0];
-      const expectedDerivedState = aggregatorSnsMockDto.derived_state;
-      expect(derivedState.buyer_total_icp_e8s).toBe(
-        BigInt(expectedDerivedState.buyer_total_icp_e8s)
-      );
-      expect(derivedState.sns_tokens_per_icp).toBe(
-        expectedDerivedState.sns_tokens_per_icp
-      );
-      expect(derivedState.cf_neuron_count[0]).toBe(
-        BigInt(expectedDerivedState.cf_neuron_count)
-      );
-      expect(derivedState.cf_participant_count[0]).toBe(
-        BigInt(expectedDerivedState.cf_participant_count)
-      );
-      expect(derivedState.direct_participant_count[0]).toBe(
-        BigInt(expectedDerivedState.direct_participant_count)
-      );
     });
   });
 });

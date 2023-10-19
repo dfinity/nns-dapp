@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import type { FiatCurrency } from "$lib/canisters/tvl/tvl.types";
 import type { MetricsCallback } from "$lib/services/$public/worker-metrics.services";
 import { metricsStore } from "$lib/stores/metrics.store";
@@ -11,8 +7,8 @@ import TotalValueLockedTest from "./TotalValueLockedTest.svelte";
 
 let metricsCallback: MetricsCallback | undefined;
 
-jest.mock("$lib/services/$public/worker-metrics.services", () => ({
-  initMetricsWorker: jest.fn(() =>
+vi.mock("$lib/services/$public/worker-metrics.services", () => ({
+  initMetricsWorker: vi.fn(() =>
     Promise.resolve({
       startMetricsTimer: ({ callback }: { callback: MetricsCallback }) => {
         metricsCallback = callback;
@@ -28,8 +24,8 @@ describe("TotalValueLocked", () => {
   beforeEach(() => metricsStore.set(undefined));
 
   afterEach(() => {
-    jest.clearAllMocks();
-    jest.resetAllMocks();
+    vi.clearAllMocks();
+    vi.resetAllMocks();
   });
 
   const tvl = {
@@ -88,7 +84,9 @@ describe("TotalValueLocked", () => {
   it("should not render TVL on load", () => {
     const { getByTestId } = render(TotalValueLockedTest);
 
-    expect(getByTestId("total-value-locked-component")).not.toBeVisible();
+    expect(
+      getByTestId("total-value-locked-component").classList.contains("visible")
+    ).toBeFalsy();
   });
 
   it("should not render TVL if response has zero metrics", async () => {
@@ -103,6 +101,8 @@ describe("TotalValueLocked", () => {
       },
     });
 
-    expect(getByTestId("total-value-locked-component")).not.toBeVisible();
+    expect(
+      getByTestId("total-value-locked-component").classList.contains("visible")
+    ).toBeFalsy();
   });
 });

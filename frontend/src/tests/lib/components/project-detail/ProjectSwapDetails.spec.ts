@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ProjectSwapDetails from "$lib/components/project-detail/ProjectSwapDetails.svelte";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";

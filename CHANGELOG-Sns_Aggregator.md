@@ -10,6 +10,7 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 
 ### Added
 ### Changed
+* Updated libraries provided by the `ic` repository to `release-2023-06-07_23-01`.
 ### Deprecated
 ### Removed
 ### Fixed
