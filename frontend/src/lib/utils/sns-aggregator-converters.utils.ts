@@ -174,6 +174,7 @@ const convertSwapInitParams = (
                         // CfNeuron
                         nns_neuron_id: BigInt(nns_neuron_id),
                         amount_icp_e8s: BigInt(amount_icp_e8s),
+                        has_created_neuron_recipes: [],
                       })
                     ),
                   })
@@ -216,6 +217,7 @@ const convertSwapInitParams = (
         max_direct_participation_icp_e8s: toNullable(
           convertOptionalNumToBigInt(init.max_direct_participation_icp_e8s)
         ),
+        neurons_fund_participation: [],
       }
     : undefined;
 
