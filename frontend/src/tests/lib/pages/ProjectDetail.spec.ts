@@ -363,6 +363,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
                 amount_transferred_e8s: [],
               },
             ],
+            has_created_neuron_recipes: [],
           },
         });
         const { queryByTestId } = render(ProjectDetail, props);
@@ -449,6 +450,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
               transfer_success_timestamp_seconds: BigInt(123445),
             },
           ],
+          has_created_neuron_recipes: [],
         };
 
         beforeEach(() => {
@@ -559,7 +561,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       });
 
       it("should participate without user interaction if there is an open ticket.", async () => {
-        const initialCommitment = { icp: [] };
+        const initialCommitment = { icp: [], has_created_neuron_recipes: [] };
         const finalCommitment = {
           icp: [
             {
@@ -568,6 +570,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
               transfer_success_timestamp_seconds: BigInt(123445),
             },
           ],
+          has_created_neuron_recipes: [],
         };
         vi.spyOn(snsApi, "querySnsSwapCommitment")
           // Query call
@@ -628,6 +631,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           rootCanisterId,
           myCommitment: {
             icp: [],
+            has_created_neuron_recipes: [],
           },
         });
       });
@@ -673,6 +677,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
                 amount_transferred_e8s: [],
               },
             ],
+            has_created_neuron_recipes: [],
           },
         });
       });

@@ -276,6 +276,7 @@ describe("project-utils", () => {
               icp: [
                 createTransferableAmount(mockSnsParams.max_participant_icp_e8s),
               ],
+              has_created_neuron_recipes: [],
             },
           },
         })
@@ -414,6 +415,7 @@ describe("project-utils", () => {
               icp: [
                 createTransferableAmount(mockSnsParams.max_participant_icp_e8s),
               ],
+              has_created_neuron_recipes: [],
             },
           },
           loggedIn: true,
@@ -455,6 +457,7 @@ describe("project-utils", () => {
             ...mockSwapCommitment,
             myCommitment: {
               icp: [],
+              has_created_neuron_recipes: [],
             },
           },
         })
@@ -525,6 +528,7 @@ describe("project-utils", () => {
           ...(mockSnsFullProject.swapCommitment as SnsSwapCommitment),
           myCommitment: {
             icp: [createTransferableAmount(userCommitment)],
+            has_created_neuron_recipes: [],
           },
         },
       };
@@ -599,6 +603,7 @@ describe("project-utils", () => {
           ...(mockSnsFullProject.swapCommitment as SnsSwapCommitment),
           myCommitment: {
             icp: [createTransferableAmount(userCommitment)],
+            has_created_neuron_recipes: [],
           },
         },
       };
@@ -669,6 +674,7 @@ describe("project-utils", () => {
         ...(mockSnsFullProject.swapCommitment as SnsSwapCommitment),
         myCommitment: {
           icp: [createTransferableAmount(BigInt(0))],
+          has_created_neuron_recipes: [],
         },
       },
     };
@@ -766,6 +772,7 @@ describe("project-utils", () => {
           ...(validProject.swapCommitment as SnsSwapCommitment),
           myCommitment: {
             icp: [createTransferableAmount(validAmountE8s)],
+            has_created_neuron_recipes: [],
           },
         },
       };
@@ -849,6 +856,7 @@ describe("project-utils", () => {
           ...(validProject.swapCommitment as SnsSwapCommitment),
           myCommitment: {
             icp: [createTransferableAmount(currentUserParticipation)],
+            has_created_neuron_recipes: [],
           },
         },
       };
@@ -910,6 +918,7 @@ describe("project-utils", () => {
         ...(mockSnsFullProject.swapCommitment as SnsSwapCommitment),
         myCommitment: {
           icp: [createTransferableAmount(initialAmountUser)],
+          has_created_neuron_recipes: [],
         },
       };
 
@@ -1163,6 +1172,7 @@ describe("project-utils", () => {
               summary.swap.params.max_participant_icp_e8s + BigInt(1)
             ),
           ],
+          has_created_neuron_recipes: [],
         },
       };
       expect(
