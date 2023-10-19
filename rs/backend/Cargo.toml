@@ -18,6 +18,8 @@ sha2 = "0.10.6"
 lzma-rs = "0.2.0"
 tar = "0.4.37"
 hex = "0.4.3"
+flate2 = "1.0.25"
+regex = "1.7.1"
 
 # chrono 0.4.19 has vulnerabilities fixed in 0.4.20
 # but, 0.4.20 doesn't satisfy ic. We get the followig error when deploying the canister:
@@ -41,8 +43,7 @@ ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "89129b821279
 ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 icp-ledger = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 on_wire = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-flate2 = "1.0.25"
-regex = "1.7.1"
+ic-stable-structures = "0.6.0"
 
 proposals ={ path = "../proposals" }
 

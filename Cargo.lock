@@ -1645,7 +1645,7 @@ dependencies = [
  "crc32fast",
  "ic-crypto-sha 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "ic-protobuf 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
- "ic-stable-structures",
+ "ic-stable-structures 0.5.4",
  "phantom_newtype 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "prost",
  "serde",
@@ -1666,7 +1666,7 @@ dependencies = [
  "crc32fast",
  "ic-crypto-sha 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-06-07_23-01)",
  "ic-protobuf 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-06-07_23-01)",
- "ic-stable-structures",
+ "ic-stable-structures 0.5.4",
  "phantom_newtype 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-06-07_23-01)",
  "prost",
  "serde",
@@ -1687,7 +1687,7 @@ dependencies = [
  "crc32fast",
  "ic-crypto-sha2",
  "ic-protobuf 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-stable-structures",
+ "ic-stable-structures 0.5.4",
  "phantom_newtype 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
  "prost",
  "serde",
@@ -2763,7 +2763,7 @@ dependencies = [
  "ic-metrics-encoder",
  "ic-nervous-system-runtime",
  "ic-nns-constants 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
- "ic-stable-structures",
+ "ic-stable-structures 0.5.4",
  "icp-ledger 0.8.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
  "icrc-ledger-types 0.1.0 (git+https://github.com/dfinity/ic?rev=release-2023-08-01_23-01)",
  "json5",
@@ -3260,7 +3260,7 @@ dependencies = [
  "ic-nervous-system-root 0.1.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "ic-protobuf 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "ic-sns-governance",
- "ic-stable-structures",
+ "ic-stable-structures 0.5.4",
  "icp-ledger 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "icrc-ledger-types 0.1.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "itertools",
@@ -3312,6 +3312,12 @@ name = "ic-stable-structures"
 version = "0.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b4e026318236de13568edafd85534ad29910908bf08cdcf177d4403fd4a5f6c4"
+
+[[package]]
+name = "ic-stable-structures"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "be4867a1d9f232e99ca68682161d1fc67dff9501f4f1bf42d69a9358289ad0f8"
 
 [[package]]
 name = "ic-sys"
@@ -4017,6 +4023,7 @@ dependencies = [
  "ic-nns-constants 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "ic-nns-governance",
  "ic-sns-swap",
+ "ic-stable-structures 0.6.0",
  "icp-ledger 0.8.0 (git+https://github.com/dfinity/ic?rev=89129b8212791d7e05cab62ff08eece2888a86e0)",
  "itertools",
  "lazy_static",
