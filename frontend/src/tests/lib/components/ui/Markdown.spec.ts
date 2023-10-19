@@ -9,8 +9,12 @@ vi.mock("$lib/utils/html.utils", () => ({
 }));
 
 describe("Markdown", () => {
-  beforeEach(silentConsoleErrors);
-  afterAll(() => vi.clearAllMocks());
+  beforeEach(() => {
+    silentConsoleErrors();
+  });
+  afterAll(() => {
+    vi.clearAllMocks();
+  });
 
   it("should render html content", async () => {
     transform = (value) => Promise.resolve(value);

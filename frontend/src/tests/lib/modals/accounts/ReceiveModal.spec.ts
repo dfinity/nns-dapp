@@ -12,7 +12,9 @@ import { fireEvent, waitFor } from "@testing-library/svelte";
 describe("ReceiveModal", () => {
   const reloadSpy = vi.fn();
 
-  beforeEach(() => vi.clearAllMocks());
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   const qrCodeLabel = "test QR code";
   const logo = "logo";

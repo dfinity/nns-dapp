@@ -18,7 +18,9 @@ describe("ckbtc-transactions-services", () => {
     icrcTransactionsStore.reset();
   });
 
-  afterEach(() => vi.clearAllMocks());
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
 
   describe("loadCkBTCAccountTransactions", () => {
     it("loads transactions in the store", async () => {

@@ -26,7 +26,9 @@ describe("universes-tokens", () => {
       );
     });
 
-    afterAll(() => vi.clearAllMocks());
+    afterAll(() => {
+      vi.clearAllMocks();
+    });
 
     it("should derive Nns token only", () => {
       const token = get(nnsTokenStore);
@@ -74,7 +76,9 @@ describe("universes-tokens", () => {
       );
     });
 
-    afterAll(() => vi.clearAllMocks());
+    afterAll(() => {
+      vi.clearAllMocks();
+    });
 
     it("should derive no ckBTC token", () => {
       const token = get(ckBTCTokenStore);

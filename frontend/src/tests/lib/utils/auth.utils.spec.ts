@@ -20,11 +20,11 @@ describe("auth-utils", () => {
       const mockAuthClient = mock<AuthClient>();
       mockAuthClient.isAuthenticated.mockResolvedValue(false);
 
-      beforeEach(() =>
-        vi
-          .spyOn(AuthClient, "create")
-          .mockImplementation(async (): Promise<AuthClient> => mockAuthClient)
-      );
+      beforeEach(() => {
+        vi.spyOn(AuthClient, "create").mockImplementation(
+          async (): Promise<AuthClient> => mockAuthClient
+        );
+      });
 
       it("should return undefined if not authenticated", async () => {
         expect(await loadIdentity()).toBeUndefined();
@@ -36,11 +36,11 @@ describe("auth-utils", () => {
       mockAuthClient.isAuthenticated.mockResolvedValue(true);
       mockAuthClient.getIdentity.mockResolvedValue(mockIdentity as never);
 
-      beforeEach(() =>
-        vi
-          .spyOn(AuthClient, "create")
-          .mockImplementation(async (): Promise<AuthClient> => mockAuthClient)
-      );
+      beforeEach(() => {
+        vi.spyOn(AuthClient, "create").mockImplementation(
+          async (): Promise<AuthClient> => mockAuthClient
+        );
+      });
 
       it("should return identity if authenticated", async () => {
         expect(await loadIdentity()).toEqual(mockIdentity);
