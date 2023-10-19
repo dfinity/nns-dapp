@@ -78,7 +78,9 @@ describe("SnsNeuronHotkeysCard", () => {
     );
   });
 
-  afterEach(() => vi.clearAllMocks());
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
 
   it("renders hotkeys title", () => {
     const { queryByText } = renderCard(controlledNeuron);

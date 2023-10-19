@@ -158,7 +158,9 @@ describe("SnsNeuronFollowingCard", () => {
         neuron,
       });
 
-    afterEach(() => vi.clearAllMocks());
+    afterEach(() => {
+      vi.clearAllMocks();
+    });
 
     it("loads sns topics", async () => {
       renderCard(uncontrolledNeuron);

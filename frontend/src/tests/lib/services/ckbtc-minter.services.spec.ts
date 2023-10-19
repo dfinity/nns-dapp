@@ -33,7 +33,9 @@ describe("ckbtc-minter-services", () => {
     resetIdentity();
   });
 
-  afterEach(() => vi.clearAllMocks());
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
 
   describe("loadBtcAddress", () => {
     page.mock({

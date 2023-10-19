@@ -24,7 +24,9 @@ describe("IntersectionDirectives", () => {
           ($event) => (testIntersecting = $event?.intersecting ?? false)
         ))
   );
-  afterEach(() => vi.clearAllMocks());
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
 
   it("should trigger an intersect event", () => {
     render(IntersectionTest);

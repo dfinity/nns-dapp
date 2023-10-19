@@ -13,7 +13,9 @@ import type { HttpAgent } from "@dfinity/agent";
 import { mock } from "vitest-mock-extended";
 
 describe("accounts-api", () => {
-  afterAll(() => vi.clearAllMocks());
+  afterAll(() => {
+    vi.clearAllMocks();
+  });
 
   beforeEach(() => {
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
