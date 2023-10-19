@@ -1,5 +1,5 @@
 //! Methods for serializing and deserializing schema labels.
-use super::{SchemaLabel, SchemaLabelBytes};
+use super::{SchemaLabel, SchemaLabelBytes, SchemaLabelError};
 use ic_crypto_sha::Sha256;
 use std::convert::{TryFrom, TryInto};
 
@@ -7,15 +7,7 @@ use std::convert::{TryFrom, TryInto};
 mod tests;
 
 /// Internal type for just the serialized schema label without a checksum.
-pub type SchemaBytesWithoutChecksum = [u8; SchemaLabel::LABEL_BYTES];
-
-/// Errors that can occur when deserializing a schema label.
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
-pub enum SchemaLabelError {
-    InvalidChecksum,
-    InvalidLabel,
-    InsufficientBytes,
-}
+type SchemaBytesWithoutChecksum = [u8; SchemaLabel::LABEL_BYTES];
 
 impl TryFrom<u32> for SchemaLabel {
     type Error = SchemaLabelError;

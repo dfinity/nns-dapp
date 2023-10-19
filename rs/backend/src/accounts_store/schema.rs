@@ -111,6 +111,14 @@ pub enum SchemaLabel {
 /// Schema Label as written to stable memory.
 type SchemaLabelBytes = [u8; SchemaLabel::MAX_BYTES];
 
+/// Errors that can occur when deserializing a schema label.
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+pub enum SchemaLabelError {
+    InvalidChecksum,
+    InvalidLabel,
+    InsufficientBytes,
+}
+
 /// A trait for data stores that support `BTreeMap` for account storage.
 pub trait AccountsDbBTreeMapTrait {
     /// Creates a database from a map of accounts.
