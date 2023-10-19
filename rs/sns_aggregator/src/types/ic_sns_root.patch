@@ -1,8 +1,8 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_root.rs a/rs/sns_aggregator/src/types/ic_sns_root.rs
-index 91b761207..740fd15dd 100644
+index b528b5098..afcd78900 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_root.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_root.rs
-@@ -134,7 +134,7 @@ pub struct GetSnsCanistersSummaryResponse {
+@@ -136,7 +136,7 @@ pub struct GetSnsCanistersSummaryResponse {
  #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
  pub struct ListSnsCanistersArg {}
  

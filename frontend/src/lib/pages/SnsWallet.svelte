@@ -33,6 +33,7 @@
   import SnsBalancesObserver from "$lib/components/accounts/SnsBalancesObserver.svelte";
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
   import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
+  import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 
   let showModal: "send" | undefined = undefined;
 
@@ -179,11 +180,14 @@
   </Footer>
 </Island>
 
-{#if showModal}
+{#if showModal && nonNullish($snsOnlyProjectStore)}
   <SnsTransactionModal
     on:nnsClose={() => (showModal = undefined)}
     selectedAccount={$selectedAccountStore.account}
+    rootCanisterId={$snsOnlyProjectStore}
     loadTransactions
+    {token}
+    transactionFee={$snsSelectedTransactionFeeStore}
   />
 {/if}
 

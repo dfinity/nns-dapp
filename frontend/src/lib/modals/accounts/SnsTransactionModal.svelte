@@ -5,20 +5,21 @@
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { NewTransaction } from "$lib/types/transaction";
   import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
-  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
-  import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { snsTransferTokens } from "$lib/services/sns-accounts.services";
-  import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import type { Account } from "$lib/types/account";
   import { Modal, Spinner, type WizardStep } from "@dfinity/gix-components";
   import type { TransactionInit } from "$lib/types/transaction";
-  import { nonNullish } from "@dfinity/utils";
+  import { TokenAmount, nonNullish, type Token } from "@dfinity/utils";
+  import type { Principal } from "@dfinity/principal";
 
   // TODO: Refactor to expect as props the rootCanisterId, transactionFee and token.
   // This way we can reuse this component in a dashboard page.
   export let selectedAccount: Account | undefined = undefined;
   export let loadTransactions = false;
+  export let rootCanisterId: Principal;
+  export let token: Token | undefined;
+  export let transactionFee: TokenAmount | undefined;
 
   let transactionInit: TransactionInit = {
     sourceAccount: selectedAccount,
@@ -46,7 +47,7 @@
       destinationAddress,
       amount,
       loadTransactions,
-      rootCanisterId: $selectedUniverseIdStore,
+      rootCanisterId,
     });
 
     stopBusy("accounts");
@@ -58,14 +59,14 @@
   };
 </script>
 
-{#if $snsSelectedTransactionFeeStore !== undefined}
+{#if nonNullish(transactionFee) && nonNullish(token)}
   <TransactionModal
-    rootCanisterId={$selectedUniverseIdStore}
+    {rootCanisterId}
     on:nnsSubmit={transfer}
     on:nnsClose
     bind:currentStep
-    token={$snsTokenSymbolSelectedStore}
-    transactionFee={$snsSelectedTransactionFeeStore}
+    {token}
+    {transactionFee}
     {transactionInit}
   >
     <svelte:fragment slot="title"
@@ -73,7 +74,7 @@
     >
     <p slot="description" class="value no-margin">
       {replacePlaceholders($i18n.accounts.sns_transaction_description, {
-        $token: $snsTokenSymbolSelectedStore?.symbol ?? "",
+        $token: token.symbol,
       })}
     </p>
   </TransactionModal>

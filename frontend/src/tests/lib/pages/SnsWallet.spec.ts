@@ -11,16 +11,18 @@ import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
-import { resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { waitModalIntroEnd } from "$tests/mocks/modal.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
-import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
+import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { testAccountsModal } from "$tests/utils/accounts.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { testTransferTokens } from "$tests/utils/transaction-modal.test-utils";
+import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -61,6 +63,8 @@ describe("SnsWallet", () => {
 
   const rootCanisterId = rootCanisterIdMock;
   const rootCanisterIdText = rootCanisterId.toText();
+  const fee = 10_000n;
+  const projectName = "Tetris";
 
   beforeEach(() => {
     resetIdentity();
@@ -71,13 +75,15 @@ describe("SnsWallet", () => {
       oldestTxId: BigInt(1234),
       transactions: [mockIcrcTransactionWithId],
     });
-    vi.spyOn(snsLedgerApi, "transactionFee").mockResolvedValue(BigInt(10_000));
+    vi.spyOn(snsLedgerApi, "transactionFee").mockResolvedValue(fee);
     vi.spyOn(snsLedgerApi, "getSnsToken").mockResolvedValue(mockSnsToken);
+    vi.spyOn(snsLedgerApi, "snsTransfer").mockResolvedValue(10n);
 
     setSnsProjects([
       {
         rootCanisterId,
         lifecycle: SnsSwapLifecycle.Committed,
+        projectName,
       },
     ]);
     page.mock({ data: { universe: rootCanisterIdText } });
@@ -123,7 +129,7 @@ describe("SnsWallet", () => {
 
       const titleRow = getByTestId("universe-page-summary-component");
 
-      expect(titleRow.textContent.trim()).toBe("Catalyze");
+      expect(titleRow.textContent.trim()).toBe(projectName);
     });
 
     it("should render transactions", async () => {
@@ -176,12 +182,51 @@ describe("SnsWallet", () => {
       expect(getByTestId("transaction-step-1")).toBeInTheDocument();
     });
 
+    it("should make a new transaction", async () => {
+      const result = render(SnsWallet, props);
+
+      await runResolvedPromises();
+
+      const { queryByTestId, getByTestId } = result;
+
+      await waitFor(() =>
+        expect(queryByTestId("open-new-sns-transaction")).toBeInTheDocument()
+      );
+
+      await testAccountsModal({ result, testId: "open-new-sns-transaction" });
+
+      expect(getByTestId("transaction-step-1")).toBeInTheDocument();
+
+      expect(snsLedgerApi.snsTransfer).toHaveBeenCalledTimes(0);
+
+      const destinationAccount = {
+        owner: principal(1),
+      };
+      await testTransferTokens({
+        result,
+        amount: "2",
+        destinationAddress: encodeIcrcAccount(destinationAccount),
+      });
+
+      await runResolvedPromises();
+
+      expect(snsLedgerApi.snsTransfer).toHaveBeenCalledTimes(1);
+      expect(snsLedgerApi.snsTransfer).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        rootCanisterId,
+        amount: 200000000n,
+        fromSubaccount: undefined,
+        fee,
+        to: destinationAccount,
+      });
+    });
+
     const modalProps = {
       ...props,
       testComponent: SnsWallet,
     };
 
-    it("should open receive modal", async () => {
+    it("should open receive modal with sns logo", async () => {
       const result = render(AccountsTest, { props: modalProps });
 
       await runResolvedPromises();
@@ -191,6 +236,10 @@ describe("SnsWallet", () => {
       const { getByTestId } = result;
 
       expect(getByTestId("receive-modal")).not.toBeNull();
+
+      expect(getByTestId("logo").getAttribute("alt")).toEqual(
+        `${projectName} project logo`
+      );
     });
 
     it("should reload account after finish receiving tokens", async () => {
