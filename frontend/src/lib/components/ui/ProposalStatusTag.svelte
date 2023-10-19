@@ -5,7 +5,7 @@
   export let status: UniversalProposalStatus;
 
   let label: string;
-  $: label = $i18n.proposal_status[status];
+  $: label = $i18n.universal_proposal_status[status];
 </script>
 
 <span data-tid="proposal-status" class={`tag ${status}`}>{label}</span>

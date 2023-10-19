@@ -924,7 +924,7 @@
     "4": "Executed",
     "5": "Failed"
   },
-  "proposal_status": {
+  "universal_proposal_status": {
     "unknown": "Unknown",
     "open": "Open",
     "rejected": "Rejected",
