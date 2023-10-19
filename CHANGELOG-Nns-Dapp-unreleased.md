@@ -21,6 +21,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Update proposal info icons position to improve the UX.
 * Improve the indicator of the minimum commitment in the project status.
+* Dapp upgraded to Svelte v4.
 
 #### Deprecated
 #### Removed
