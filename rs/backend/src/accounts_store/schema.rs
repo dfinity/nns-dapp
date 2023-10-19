@@ -7,7 +7,7 @@ pub mod proxy;
 // Mechanics
 use crate::accounts_store::Account;
 use strum_macros::EnumIter;
-pub mod label_serialization;
+mod label_serialization;
 #[cfg(test)]
 mod tests;
 
