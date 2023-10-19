@@ -21,7 +21,6 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { ENABLE_FULL_WIDTH_PROPOSAL } from "$lib/stores/feature-flags.store";
   import { SplitBlock } from "@dfinity/gix-components";
-  import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
   import { nonNullish } from "@dfinity/utils";
   import type { UniversalProposalStatus } from "$lib/types/proposals";
 
@@ -41,11 +40,10 @@
     {#if $referrerPathStore !== AppPath.Launchpad}
       <ProposalNavigation
         currentProposalId={$store.proposal.id}
+        currentProposalStatus={status}
         {proposalIds}
         selectProposal={navigateToProposal}
-      >
-        <ProposalStatusTag slot="status" {status} />
-      </ProposalNavigation>
+      />
     {/if}
 
     <TestIdWrapper testId="proposal-details-grid">

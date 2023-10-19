@@ -11,8 +11,11 @@
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import UniverseLogo from "$lib/components/universe/UniverseLogo.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import type { UniversalProposalStatus } from "$lib/types/proposals";
+  import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
 
   export let currentProposalId: bigint;
+  export let currentProposalStatus: UniversalProposalStatus;
   export let proposalIds: bigint[] = [];
   export let selectProposal: (proposalId: bigint) => void;
 
@@ -45,7 +48,9 @@
 
 {#if $ENABLE_FULL_WIDTH_PROPOSAL}
   <div class="proposal-nav" role="toolbar" data-tid="proposal-nav">
-    <div class="status"><slot name="status" /></div>
+    <div class="status">
+      <ProposalStatusTag status={currentProposalStatus} />
+    </div>
     <h2 class="title">
       <div class="universe-logo">
         <UniverseLogo

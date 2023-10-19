@@ -36,7 +36,6 @@
   import { SplitBlock } from "@dfinity/gix-components";
   import { navigateToProposal } from "$lib/utils/proposals.utils";
   import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
-  import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
   import type { UniversalProposalStatus } from "$lib/types/proposals";
 
   export let proposalIdText: string | undefined | null = undefined;
@@ -193,11 +192,10 @@
   {#if nonNullish(proposalIdText) && !updating && nonNullish(proposal) && nonNullish(universeCanisterId) && nonNullish(status)}
     <ProposalNavigation
       currentProposalId={BigInt(proposalIdText)}
+      currentProposalStatus={status}
       {proposalIds}
       selectProposal={navigateToProposal}
-    >
-      <ProposalStatusTag slot="status" {status} />
-    </ProposalNavigation>
+    />
   {/if}
 
   {#if !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
