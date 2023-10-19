@@ -73,7 +73,7 @@
 
   const reloadOnlyAccountFromStore = () => setSelectedAccount();
 
-  // transactions?.reloadTransactions() returns a promise.
+  // transactions?.reloadTransactions?.() returns a promise.
   // However, the UI displays skeletons while loading and the user can proceed with other operations during this time.
   // That is why we do not need to wait for the promise to resolve here.
   const reloadTransactions = () => transactions?.reloadTransactions?.();
