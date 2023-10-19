@@ -27,7 +27,7 @@ describe("SelectNetworkDropdown", () => {
     const option = container.querySelector("option[disabled]");
 
     expect(option).not.toBeNull();
-    expect(option?.getAttribute("value")).toEqual("undefined");
+    expect(option?.getAttribute("value")).toEqual("");
   });
 
   it("should display an option to select ICP", () => {
