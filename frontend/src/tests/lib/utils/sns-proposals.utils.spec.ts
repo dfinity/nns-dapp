@@ -2,6 +2,7 @@ import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
 import {
   ballotVotingPower,
+  getUniversalProposalStatus,
   isAccepted,
   lastProposalId,
   mapProposalInfo,
@@ -586,6 +587,67 @@ describe("sns-proposals utils", () => {
         neuronIdString: "010203",
         votingPower: 250n,
       });
+    });
+  });
+
+  describe("getUniversalProposalStatus", () => {
+    it("should return UniversalProposalStatus", () => {
+      const acceptedProposal = {
+        ...mockSnsProposal,
+        latest_tally: [
+          {
+            yes: BigInt(2),
+            no: BigInt(0),
+          },
+        ],
+      } as SnsProposalData;
+      const rejectedProposal = {
+        ...mockSnsProposal,
+        latest_tally: [
+          {
+            yes: BigInt(0),
+            no: BigInt(2),
+          },
+        ],
+      } as SnsProposalData;
+      expect(
+        getUniversalProposalStatus({
+          ...acceptedProposal,
+          decided_timestamp_seconds: 0n,
+          executed_timestamp_seconds: 0n,
+          failed_timestamp_seconds: 0n,
+        } as SnsProposalData)
+      ).toBe("open");
+      expect(
+        getUniversalProposalStatus({
+          ...acceptedProposal,
+          decided_timestamp_seconds: 1n,
+          executed_timestamp_seconds: 1n,
+          failed_timestamp_seconds: 0n,
+        } as SnsProposalData)
+      ).toBe("executed");
+      expect(
+        getUniversalProposalStatus({
+          ...acceptedProposal,
+          decided_timestamp_seconds: 1n,
+          executed_timestamp_seconds: 0n,
+          failed_timestamp_seconds: 1n,
+        } as SnsProposalData)
+      ).toBe("failed");
+      expect(
+        getUniversalProposalStatus({
+          ...acceptedProposal,
+          decided_timestamp_seconds: 1n,
+          executed_timestamp_seconds: 0n,
+          failed_timestamp_seconds: 0n,
+        } as SnsProposalData)
+      ).toBe("adopted");
+      expect(
+        getUniversalProposalStatus({
+          ...rejectedProposal,
+          decided_timestamp_seconds: 1n,
+        } as SnsProposalData)
+      ).toBe("rejected");
     });
   });
 });
