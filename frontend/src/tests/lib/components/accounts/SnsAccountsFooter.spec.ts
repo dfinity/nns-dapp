@@ -106,7 +106,7 @@ describe("SnsAccountsFooter", () => {
 
     expect(getByTestId("transaction-step-1")).toBeInTheDocument();
 
-    expect(snsLedgerApi.snsTransfer).toHaveBeenCalledTimes(0);
+    expect(snsLedgerApi.snsTransfer).toBeCalledTimes(0);
 
     const destinationAccount = {
       owner: principal(1),
@@ -119,7 +119,7 @@ describe("SnsAccountsFooter", () => {
 
     await runResolvedPromises();
 
-    expect(snsLedgerApi.snsTransfer).toHaveBeenCalledTimes(1);
+    expect(snsLedgerApi.snsTransfer).toBeCalledTimes(1);
     expect(snsLedgerApi.snsTransfer).toHaveBeenCalledWith({
       identity: mockIdentity,
       rootCanisterId,
