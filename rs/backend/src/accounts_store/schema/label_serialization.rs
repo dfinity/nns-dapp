@@ -6,9 +6,10 @@ use std::convert::{TryFrom, TryInto};
 #[cfg(test)]
 mod tests;
 
-/// Internal type for the serialized schema label without any kind of safety check.
+/// Internal type for just the serialized schema label without a checksum.
 pub type SchemaBytesWithoutChecksum = [u8; SchemaLabel::LABEL_BYTES];
 
+/// Errors that can occur when deserializing a schema label.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum SchemaLabelError {
     InvalidChecksum,
@@ -62,6 +63,19 @@ impl TryFrom<&SchemaLabelBytes> for SchemaLabel {
         } else {
             Err(SchemaLabelError::InvalidChecksum)
         }
+    }
+}
+
+impl TryFrom<&[u8]> for SchemaLabel {
+    type Error = SchemaLabelError;
+    fn try_from(value: &[u8]) -> Result<Self, Self::Error> {
+        let bytes: &SchemaLabelBytes = value
+            .chunks(SchemaLabel::MAX_BYTES)
+            .next()
+            .ok_or(SchemaLabelError::InsufficientBytes)? // Zero bytes lead to no chunks.
+            .try_into()
+            .map_err(|_| SchemaLabelError::InsufficientBytes)?; // There are some bytes but not enough to make a full chunk.
+        Self::try_from(bytes)
     }
 }
 
