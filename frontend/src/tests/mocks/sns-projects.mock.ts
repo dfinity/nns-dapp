@@ -57,6 +57,7 @@ export const createTransferableAmount = (
 });
 export const createBuyersState = (amount: bigint): SnsSwapBuyerState => ({
   icp: [createTransferableAmount(amount)],
+  has_created_neuron_recipes: [],
 });
 
 export const mockSnsSwapCommitment = (
@@ -129,6 +130,7 @@ export const mockInit: SnsSwapInit = {
   neurons_fund_participation_constraints: [],
   min_direct_participation_icp_e8s: [1_000_000_000n],
   max_direct_participation_icp_e8s: [3_000_000_000n],
+  neurons_fund_participation: [],
 };
 
 export const mockSwap: SnsSummarySwap = {
