@@ -36,7 +36,6 @@
   import { SplitBlock } from "@dfinity/gix-components";
   import { navigateToProposal } from "$lib/utils/proposals.utils";
   import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
-  import type { UniversalProposalStatus } from "$lib/types/proposals";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -183,16 +182,13 @@
 
   // The `update` function cares about the necessary data to be refetched.
   $: universeIdText, proposalIdText, $snsNeuronsStore, $authStore, update();
-
-  let status: UniversalProposalStatus | undefined;
-  $: status = proposal && getUniversalProposalStatus(proposal);
 </script>
 
 <TestIdWrapper testId="sns-proposal-details-grid">
-  {#if nonNullish(proposalIdText) && !updating && nonNullish(proposal) && nonNullish(universeCanisterId) && nonNullish(status)}
+  {#if nonNullish(proposalIdText) && !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
     <ProposalNavigation
       currentProposalId={BigInt(proposalIdText)}
-      currentProposalStatus={status}
+      currentProposalStatus={getUniversalProposalStatus(proposal)}
       {proposalIds}
       selectProposal={navigateToProposal}
     />

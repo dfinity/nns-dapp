@@ -21,8 +21,6 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { ENABLE_FULL_WIDTH_PROPOSAL } from "$lib/stores/feature-flags.store";
   import { SplitBlock } from "@dfinity/gix-components";
-  import { nonNullish } from "@dfinity/utils";
-  import type { UniversalProposalStatus } from "$lib/types/proposals";
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
@@ -30,17 +28,14 @@
 
   let proposalIds: bigint[] | undefined;
   $: proposalIds = $filteredProposals.proposals?.map(({ id }) => id as bigint);
-
-  let status: UniversalProposalStatus | undefined;
-  $: status = $store?.proposal && getUniversalProposalStatus($store.proposal);
 </script>
 
 <TestIdWrapper testId="nns-proposal-component">
-  {#if $store?.proposal?.id !== undefined && nonNullish(status)}
+  {#if $store?.proposal?.id !== undefined}
     {#if $referrerPathStore !== AppPath.Launchpad}
       <ProposalNavigation
         currentProposalId={$store.proposal.id}
-        currentProposalStatus={status}
+        currentProposalStatus={getUniversalProposalStatus($store.proposal)}
         {proposalIds}
         selectProposal={navigateToProposal}
       />
