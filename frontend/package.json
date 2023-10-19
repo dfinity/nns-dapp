@@ -16,7 +16,8 @@
     "lint": "prettier --check './**/*.{ts,js,mjs,json,scss,svelte,html}' && eslint --max-warnings 0 .",
     "format": "prettier --write './**/*.{ts,js,mjs,json,scss,svelte,html}'",
     "format:modified": "prettier --write $(git diff --diff-filter=ACM --name-only | egrep \"\\.(ts|js|mjs|json|scss|svelte|html)$\" | cut -d'/' -f2-)",
-    "test": "TZ=UTC vitest --config ./vitest.config.ts",
+    "test": "tsc --noEmit -p src/tests/e2e/tsconfig.json && npm run vitest",
+    "vitest": "TZ=UTC vitest --config ./vitest.config.ts",
     "test-e2e": "tsc --noEmit -p src/tests/e2e/tsconfig.json && playwright test",
     "update:agent": "npm rm @dfinity/agent @dfinity/auth-client @dfinity/candid @dfinity/identity @dfinity/principal @dfinity/nns @dfinity/nns-proto @dfinity/cmc @dfinity/sns @dfinity/utils @dfinity/ledger-icrc @dfinity/ledger-icp @dfinity/ckbtc @dfinity/ic-management && npm i @dfinity/agent @dfinity/auth-client @dfinity/candid @dfinity/identity @dfinity/principal @dfinity/utils@next @dfinity/ledger-icrc@next @dfinity/ledger-icp@next @dfinity/nns@next @dfinity/nns-proto@next @dfinity/cmc@next @dfinity/sns@next @dfinity/ckbtc@next @dfinity/ic-management@next && ../scripts/revert-next.sh",
     "update:gix": "npm update @dfinity/gix-components",
@@ -31,9 +32,9 @@
     "@rollup/plugin-inject": "^5.0.3",
     "@sveltejs/adapter-static": "^2.0.2",
     "@sveltejs/kit": "^1.18.0",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/svelte": "^3.2.2",
-    "@testing-library/user-event": "^14.4.3",
+    "@testing-library/jest-dom": "^6.1.4",
+    "@testing-library/svelte": "^4.0.4",
+    "@testing-library/user-event": "^14.5.1",
     "@types/wicg-file-system-access": "^2020.9.6",
     "@typescript-eslint/eslint-plugin": "^5.59.7",
     "@typescript-eslint/parser": "^5.59.7",
@@ -55,9 +56,9 @@
     "svelte-preprocess": "^5.0.3",
     "svelte2tsx": "^0.6.14",
     "typescript": "^5.0.4",
-    "vite": "^4.3.8",
+    "vite": "^4.5.0",
     "vitest": "^0.34.6",
-    "vitest-mock-extended": "^1.3.0"
+    "vitest-mock-extended": "^1.3.1"
   },
   "type": "module",
   "dependencies": {
@@ -80,7 +81,7 @@
     "@ledgerhq/hw-transport-webhid": "^6.27.8",
     "@zondax/ledger-icp": "^0.6.1",
     "buffer": "^6.0.3",
-    "marked": "^9.1.0"
+    "marked": "^9.1.2"
   },
   "overrides": {
     "semver": "^7.5.3"
