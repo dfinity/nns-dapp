@@ -9,6 +9,40 @@ mod tests;
 /// Internal type for just the serialized schema label without a checksum.
 type SchemaBytesWithoutChecksum = [u8; SchemaLabel::LABEL_BYTES];
 
+impl SchemaLabel {
+    /// When serialized, the offset of the bytes containing the label.
+    pub const LABEL_OFFSET: usize = 0;
+    /// The number of bytes needed to store just the schema label.
+    pub const LABEL_BYTES: usize = 4;
+    /// When serialized, the offset of the bytes containing the checksum, if included.
+    pub const CHECKSUM_OFFSET: usize = Self::LABEL_BYTES;
+    /// The length of the SHA256 checksum of the schema label.
+    pub const CHECKSUM_BYTES: usize = 32;
+    /// The number of bytes needed to store the schema label and its checksum.
+    pub const MAX_BYTES: usize = Self::CHECKSUM_OFFSET + Self::CHECKSUM_BYTES;
+    /// String used to distinguish this checksum from checksums for other purposes.
+    pub const DOMAIN_SEPARATOR: &[u8; 12] = b"schema-label";
+
+    /// Checksum of the label.
+    fn checksum(self_bytes: &[u8; Self::LABEL_BYTES]) -> [u8; Self::CHECKSUM_BYTES] {
+        let mut state = Sha256::new();
+        state.write(Self::DOMAIN_SEPARATOR);
+        state.write(self_bytes);
+        state.finish()
+    }
+
+    /// Adds a checksum to the label bytes.
+    fn with_checksum(label_bytes: SchemaBytesWithoutChecksum) -> SchemaLabelBytes {
+        let mut bytes = [0u8; SchemaLabel::MAX_BYTES];
+        bytes[SchemaLabel::LABEL_OFFSET..SchemaLabel::LABEL_OFFSET + SchemaLabel::LABEL_BYTES]
+            .copy_from_slice(&label_bytes);
+        let checksum = SchemaLabel::checksum(&label_bytes);
+        bytes[SchemaLabel::CHECKSUM_OFFSET..SchemaLabel::CHECKSUM_OFFSET + SchemaLabel::CHECKSUM_BYTES]
+            .copy_from_slice(&checksum);
+        bytes
+    }
+}
+
 impl TryFrom<u32> for SchemaLabel {
     type Error = SchemaLabelError;
     fn try_from(value: u32) -> Result<Self, Self::Error> {
@@ -68,39 +102,5 @@ impl TryFrom<&[u8]> for SchemaLabel {
             .try_into()
             .map_err(|_| SchemaLabelError::InsufficientBytes)?; // There are some bytes but not enough to make a full chunk.
         Self::try_from(bytes)
-    }
-}
-
-impl SchemaLabel {
-    /// When serialized, the offset of the bytes containing the label.
-    pub const LABEL_OFFSET: usize = 0;
-    /// The number of bytes needed to store just the schema label.
-    pub const LABEL_BYTES: usize = 4;
-    /// When serialized, the offset of the bytes containing the checksum, if included.
-    pub const CHECKSUM_OFFSET: usize = Self::LABEL_BYTES;
-    /// The length of the SHA256 checksum of the schema label.
-    pub const CHECKSUM_BYTES: usize = 32;
-    /// The number of bytes needed to store the schema label and its checksum.
-    pub const MAX_BYTES: usize = Self::CHECKSUM_OFFSET + Self::CHECKSUM_BYTES;
-    /// String used to distinguish this checksum from checksums for other purposes.
-    pub const DOMAIN_SEPARATOR: &[u8; 12] = b"schema-label";
-
-    /// Checksum of the label.
-    fn checksum(self_bytes: &[u8; Self::LABEL_BYTES]) -> [u8; Self::CHECKSUM_BYTES] {
-        let mut state = Sha256::new();
-        state.write(Self::DOMAIN_SEPARATOR);
-        state.write(self_bytes);
-        state.finish()
-    }
-
-    /// Converts bytes to bytes with a checksum
-    fn with_checksum(label_bytes: SchemaBytesWithoutChecksum) -> SchemaLabelBytes {
-        let mut bytes = [0u8; SchemaLabel::MAX_BYTES];
-        bytes[SchemaLabel::LABEL_OFFSET..SchemaLabel::LABEL_OFFSET + SchemaLabel::LABEL_BYTES]
-            .copy_from_slice(&label_bytes);
-        let checksum = SchemaLabel::checksum(&label_bytes);
-        bytes[SchemaLabel::CHECKSUM_OFFSET..SchemaLabel::CHECKSUM_OFFSET + SchemaLabel::CHECKSUM_BYTES]
-            .copy_from_slice(&checksum);
-        bytes
     }
 }
