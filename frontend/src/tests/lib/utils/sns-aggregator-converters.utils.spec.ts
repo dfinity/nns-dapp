@@ -345,6 +345,7 @@ describe("sns aggregator converters utils", () => {
               neurons_fund_participation_constraints: [],
               max_direct_participation_icp_e8s: [],
               min_direct_participation_icp_e8s: [],
+              neurons_fund_participation: [],
             },
           ],
           lifecycle: 2,
@@ -412,6 +413,7 @@ describe("sns aggregator converters utils", () => {
           neurons_fund_participation_constraints: [],
           max_direct_participation_icp_e8s: [],
           min_direct_participation_icp_e8s: [],
+          neurons_fund_participation: [],
         },
         swapParams: {
           min_participant_icp_e8s: 100000000n,

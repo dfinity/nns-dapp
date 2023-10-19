@@ -103,6 +103,7 @@ describe("ProjectCard", () => {
                     transfer_success_timestamp_seconds: BigInt(5443554),
                   },
                 ],
+                has_created_neuron_recipes: [],
               },
             },
           },
