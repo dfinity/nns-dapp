@@ -238,11 +238,11 @@ describe("NnsProposals", () => {
           .spyOn(proposalsStore, "subscribe")
           .mockImplementation(mockProposalsStoreSubscribe);
 
-      beforeEach(() =>
-        vi
-          .spyOn(GovernanceCanister, "create")
-          .mockImplementation((): GovernanceCanister => mockGovernanceCanister)
-      );
+      beforeEach(() => {
+        vi.spyOn(GovernanceCanister, "create").mockImplementation(
+          (): GovernanceCanister => mockGovernanceCanister
+        );
+      });
 
       it("should render proposals", () => {
         mockLoadProposals();

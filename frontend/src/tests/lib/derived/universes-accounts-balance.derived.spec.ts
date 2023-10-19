@@ -25,7 +25,9 @@ describe("universes-accounts-balance.derived", () => {
     });
   });
 
-  afterAll(() => vi.clearAllMocks());
+  afterAll(() => {
+    vi.clearAllMocks();
+  });
 
   it("should derive a balance of Nns accounts", () => {
     const balances = get(universesAccountsBalance);

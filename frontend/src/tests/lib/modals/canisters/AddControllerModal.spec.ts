@@ -22,7 +22,9 @@ describe("AddControllerModal", () => {
     });
   };
 
-  afterEach(() => vi.clearAllMocks());
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
 
   it("should display modal", async () => {
     const { container } = await renderAddControllerModal();

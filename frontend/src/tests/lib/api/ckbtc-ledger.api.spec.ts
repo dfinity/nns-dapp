@@ -19,7 +19,9 @@ describe("ckbtc-ledger api", () => {
     );
   });
 
-  afterAll(() => vi.clearAllMocks());
+  afterAll(() => {
+    vi.clearAllMocks();
+  });
 
   beforeEach(() => {
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());

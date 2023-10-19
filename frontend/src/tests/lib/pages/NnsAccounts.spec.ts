@@ -27,7 +27,9 @@ describe("NnsAccounts", () => {
     resetIdentity();
   });
 
-  afterEach(() => vi.clearAllMocks());
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
 
   describe("when there are accounts", () => {
     beforeEach(() => {

@@ -138,7 +138,7 @@ const shouldInvalidateCacheOnFailure = async <P, R>({
 
   try {
     await servicePromise;
-    fail("The call should have failed.");
+    expect.unreachable("The call should have failed.");
   } catch (error) {
     expect(error.message).toEqual(apiErrorMessage);
   }

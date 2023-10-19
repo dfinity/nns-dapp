@@ -18,9 +18,9 @@ vi.mock("$lib/services/icp-accounts.services", () => {
 });
 
 describe("IcpTransactionModal", () => {
-  beforeAll(() =>
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe)
-  );
+  beforeAll(() => {
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+  });
 
   const renderTransactionModal = () =>
     renderModal({
