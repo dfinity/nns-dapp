@@ -8,7 +8,7 @@
   $: label = $i18n.universal_proposal_status[status];
 </script>
 
-<span data-tid="proposal-status" class={`tag ${status}`}>{label}</span>
+<span data-tid="proposal-status-tag" class={`tag ${status}`}>{label}</span>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
