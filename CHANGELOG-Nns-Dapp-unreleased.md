@@ -50,6 +50,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Add traits with a dedicated command rather than with patch files.
 * Migrate the Jest unit test suite to Vitest.
 
 #### Deprecated

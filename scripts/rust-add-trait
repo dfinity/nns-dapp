@@ -73,4 +73,4 @@ sponge() {
 # - Reverse the lines, so that we read the type line just before the line with the traits.
 # - When we see a #[derive(...)] line, check whether the type provided in the last line is the type we need to modify.  If so, add traits.
 # - Reverse the lines again.
-<"$INFILE" rustfmt --edition 2021 | tac | gawk -v traits="$TRAITS" -v type="$TYPE" '(match($0,/^(#\[derive\(.*)(\)])/,groups) && match(last, /^pub +(struct|enum) +(\S+)/, type_groups) && (type_groups[2] == type)){$0=groups[1] ", "traits groups[2]}{last=$0; print}' | tac | rustfmt --edition 2021 | sponge "$OUTFILE"
+rustfmt <"$INFILE" --edition 2021 | tac | gawk -v traits="$TRAITS" -v type="$TYPE" '(match($0,/^(#\[derive\(.*)(\)])/,groups) && match(last, /^pub +(struct|enum) +(\S+)/, type_groups) && (type_groups[2] == type)){$0=groups[1] ", "traits groups[2]}{last=$0; print}' | tac | rustfmt --edition 2021 | sponge "$OUTFILE"
