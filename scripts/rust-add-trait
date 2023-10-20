@@ -60,6 +60,15 @@ test -z "${FILE:-}" || {
   }
 }
 
+# Writes stdin to the given file, but only after reading all of stdin.
+# Polyfill because `sponge` is not available everywhere.
+sponge() {
+  local tmp_file
+  tmp_file="$(mktemp)"
+  cat >"$tmp_file"
+  mv "$tmp_file" "$1"
+}
+
 # Strategy:
 # - Reverse the lines, so that we read the type line just before the line with the traits.
 # - When we see a #[derive(...)] line, check whether the type provided in the last line is the type we need to modify.  If so, add traits.
