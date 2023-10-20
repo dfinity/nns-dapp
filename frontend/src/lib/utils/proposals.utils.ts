@@ -618,18 +618,19 @@ export const navigateToProposal = (proposalId: ProposalId): Promise<void> =>
 export const getUniversalProposalStatus = (
   proposal: ProposalInfo
 ): UniversalProposalStatus => {
-  const statusType = {
+  const statusTypeMap: Record<ProposalStatus, UniversalProposalStatus> = {
     [ProposalStatus.Unknown]: "unknown",
     [ProposalStatus.Open]: "open",
     [ProposalStatus.Rejected]: "rejected",
     [ProposalStatus.Accepted]: "adopted",
     [ProposalStatus.Executed]: "executed",
     [ProposalStatus.Failed]: "failed",
-  }[proposal.status];
+  };
+  const statusType = statusTypeMap[proposal.status];
 
   if (isNullish(statusType)) {
     throw new Error(`Unknown proposal status: ${proposal.status}`);
   }
 
-  return statusType as UniversalProposalStatus;
+  return statusType;
 };

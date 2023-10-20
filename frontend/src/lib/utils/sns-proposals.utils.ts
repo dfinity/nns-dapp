@@ -397,19 +397,22 @@ export const getUniversalProposalStatus = (
   proposalData: SnsProposalData
 ): UniversalProposalStatus => {
   const status = snsDecisionStatus(proposalData);
-
-  const statusType = {
+  const statusTypeMap: Record<
+    SnsProposalDecisionStatus,
+    UniversalProposalStatus
+  > = {
     [SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_UNSPECIFIED]: "unknown",
     [SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN]: "open",
     [SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_REJECTED]: "rejected",
     [SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_ADOPTED]: "adopted",
     [SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED]: "executed",
     [SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_FAILED]: "failed",
-  }[status];
+  };
+  const statusType = statusTypeMap[status];
 
   if (isNullish(statusType)) {
     throw new Error(`Unknown sns proposal status: ${status}`);
   }
 
-  return statusType as UniversalProposalStatus;
+  return statusType;
 };
