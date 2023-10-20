@@ -30,6 +30,8 @@ test("Test accounts requirements", async ({ page, context }) => {
 
   // The linked account should still be present after refresh
   await page.reload();
+  await page.waitForTimeout(5000);
+
   expect(await accountNames()).toEqual([mainAccountName, subAccountName]);
 
   // Get some ICP to be able to transfer
