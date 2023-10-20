@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euxo pipefail
+
+# Commands to run after creating teh rust file with didc:
+scripts/rust-add-trait -f rs/sns_aggregator/src/types/ic_sns_wasm.rs --type DeployedSns --trait Default
