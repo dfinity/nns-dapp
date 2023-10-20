@@ -592,61 +592,45 @@ describe("sns-proposals utils", () => {
 
   describe("getUniversalProposalStatus", () => {
     it("should return UniversalProposalStatus", () => {
-      const acceptedProposal = {
-        ...mockSnsProposal,
-        latest_tally: [
-          {
-            yes: BigInt(2),
-            no: BigInt(0),
-          },
-        ],
-      } as SnsProposalData;
-      const rejectedProposal = {
-        ...mockSnsProposal,
-        latest_tally: [
-          {
-            yes: BigInt(0),
-            no: BigInt(2),
-          },
-        ],
-      } as SnsProposalData;
       expect(
-        getUniversalProposalStatus({
-          ...acceptedProposal,
-          decided_timestamp_seconds: 0n,
-          executed_timestamp_seconds: 0n,
-          failed_timestamp_seconds: 0n,
-        } as SnsProposalData)
+        getUniversalProposalStatus(
+          createSnsProposal({
+            proposalId: 0n,
+            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+          })
+        )
       ).toBe("open");
       expect(
-        getUniversalProposalStatus({
-          ...acceptedProposal,
-          decided_timestamp_seconds: 1n,
-          executed_timestamp_seconds: 1n,
-          failed_timestamp_seconds: 0n,
-        } as SnsProposalData)
+        getUniversalProposalStatus(
+          createSnsProposal({
+            proposalId: 0n,
+            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED,
+          })
+        )
       ).toBe("executed");
       expect(
-        getUniversalProposalStatus({
-          ...acceptedProposal,
-          decided_timestamp_seconds: 1n,
-          executed_timestamp_seconds: 0n,
-          failed_timestamp_seconds: 1n,
-        } as SnsProposalData)
+        getUniversalProposalStatus(
+          createSnsProposal({
+            proposalId: 0n,
+            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_FAILED,
+          })
+        )
       ).toBe("failed");
       expect(
-        getUniversalProposalStatus({
-          ...acceptedProposal,
-          decided_timestamp_seconds: 1n,
-          executed_timestamp_seconds: 0n,
-          failed_timestamp_seconds: 0n,
-        } as SnsProposalData)
+        getUniversalProposalStatus(
+          createSnsProposal({
+            proposalId: 0n,
+            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_ADOPTED,
+          })
+        )
       ).toBe("adopted");
       expect(
-        getUniversalProposalStatus({
-          ...rejectedProposal,
-          decided_timestamp_seconds: 1n,
-        } as SnsProposalData)
+        getUniversalProposalStatus(
+          createSnsProposal({
+            proposalId: 0n,
+            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_REJECTED,
+          })
+        )
       ).toBe("rejected");
     });
   });
