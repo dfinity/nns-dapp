@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euxo pipefail
 
-# Commands to run after creating teh rust file with didc:
+# Commands to run after creating the rust file with didc:
 scripts/rust-add-trait -f rs/sns_aggregator/src/types/ic_sns_swap.rs --type NeuronBasketConstructionParameters --trait PartialEq
 scripts/rust-add-trait -f rs/sns_aggregator/src/types/ic_sns_swap.rs --type LinearScalingCoefficient --trait PartialEq
 scripts/rust-add-trait -f rs/sns_aggregator/src/types/ic_sns_swap.rs --type NeuronsFundParticipationConstraints --trait PartialEq
