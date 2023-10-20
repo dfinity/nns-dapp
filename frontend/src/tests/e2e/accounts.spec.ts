@@ -30,6 +30,7 @@ test("Test accounts requirements", async ({ page, context }) => {
 
   // The linked account should still be present after refresh
   await page.reload();
+  // TODO: this timeout is required following the introduction of Svelte v4
   await page.waitForTimeout(5000);
   expect(await accountNames()).toEqual([mainAccountName, subAccountName]);
 
