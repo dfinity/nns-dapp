@@ -14,10 +14,13 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Added provenance information to .did files and derived rust code.
+* Added `approveTransfer` in icrc-ledger API.
+
 #### Changed
 
-* Detailed values of the Neurons' Fund and direct participation in the project detail page.
 * Update proposal info icons position to improve the UX.
+* Improve the indicator of the minimum commitment in the project status.
 
 #### Deprecated
 #### Removed
@@ -25,12 +28,16 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * Add "Finalizing" status in projects of the Launchpad.
+* Fix UI bug when commitment was very low.
 
 #### Security
 
 #### Not Published
 
 * New feature flag `ENABLE_MY_TOKENS`.
+* Detailed values of the Neurons' Fund and direct participation in the project detail page.
+* Added `approveTransfer` in icrc-ledger API.
+* Added `retrieveBtcWithApproval` in ckbtc-minter API.
 
 ### Operations
 
@@ -39,6 +46,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Documentation for the proposals payload renderer.
 * E2E test for ckBTC.
 * Fix erroneous failures in the `tip` tagging workflow when a PR is closed without merging.
+* Add --host flag to dfx-snapshot-start.
 
 #### Changed
 

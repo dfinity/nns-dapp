@@ -25,11 +25,11 @@ describe("timer.worker-utils", () => {
     const mockAuthClient = mock<AuthClient>();
     mockAuthClient.isAuthenticated.mockResolvedValue(false);
 
-    beforeEach(() =>
-      vi
-        .spyOn(AuthClient, "create")
-        .mockImplementation(async (): Promise<AuthClient> => mockAuthClient)
-    );
+    beforeEach(() => {
+      vi.spyOn(AuthClient, "create").mockImplementation(
+        async (): Promise<AuthClient> => mockAuthClient
+      );
+    });
 
     it("should not call if no identity", async () => {
       const worker = new TimerWorkerUtils();
@@ -51,11 +51,11 @@ describe("timer.worker-utils", () => {
     mockAuthClient.isAuthenticated.mockResolvedValue(true);
     mockAuthClient.getIdentity.mockResolvedValue(mockIdentity as never);
 
-    beforeEach(() =>
-      vi
-        .spyOn(AuthClient, "create")
-        .mockImplementation(async (): Promise<AuthClient> => mockAuthClient)
-    );
+    beforeEach(() => {
+      vi.spyOn(AuthClient, "create").mockImplementation(
+        async (): Promise<AuthClient> => mockAuthClient
+      );
+    });
 
     it("should call job on start", async () => {
       const worker = new TimerWorkerUtils();

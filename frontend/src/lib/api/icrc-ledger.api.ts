@@ -136,6 +136,51 @@ export const executeIcrcTransfer = async ({
     ...rest,
   });
 
+export const approveTransfer = async ({
+  identity,
+  canisterId,
+  amount,
+  spender,
+  fromSubaccount,
+  fee,
+  expiresAt,
+  createdAt,
+  expectedAllowance,
+}: {
+  identity: Identity;
+  canisterId: Principal;
+  amount: bigint;
+  spender: Principal;
+  fromSubaccount?: Uint8Array;
+  fee?: bigint;
+  expiresAt?: bigint;
+  createdAt?: bigint;
+  expectedAllowance?: bigint;
+}): Promise<IcrcBlockIndex> => {
+  logWithTimestamp("Approving transfer: call...");
+
+  const {
+    canister: { approve },
+  } = await icrcLedgerCanister({ identity, canisterId });
+
+  const blockIndex = await approve({
+    amount,
+    spender: {
+      owner: spender,
+      subaccount: [],
+    },
+    from_subaccount: fromSubaccount,
+    fee,
+    expires_at: expiresAt,
+    created_at_time: createdAt ?? nowInBigIntNanoSeconds(),
+    expected_allowance: expectedAllowance,
+  });
+
+  logWithTimestamp("Approving transfer: call...");
+
+  return blockIndex;
+};
+
 export const icrcLedgerCanister = async ({
   identity,
   canisterId,

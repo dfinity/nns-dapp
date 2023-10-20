@@ -62,9 +62,9 @@ describe("VotingCard", () => {
       },
     });
 
-  beforeAll(() =>
-    vi.spyOn(console, "error").mockImplementation(() => undefined)
-  );
+  beforeAll(() => {
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+  });
 
   beforeEach(() => {
     vi.clearAllMocks();

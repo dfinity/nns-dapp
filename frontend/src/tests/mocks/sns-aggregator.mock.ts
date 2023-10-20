@@ -10,9 +10,7 @@ import { SnsSwapLifecycle, type SnsNervousSystemFunction } from "@dfinity/sns";
 import { fromNullable, nonNullish } from "@dfinity/utils";
 import { mockQueryTokenResponse } from "./sns-projects.mock";
 
-// TS is not smart enough to infer the type from the JSON file.
-export const aggregatorMockSnsesDataDto: CachedSnsDto[] =
-  tenAggregatedSnses as unknown as CachedSnsDto[];
+export const aggregatorMockSnsesDataDto: CachedSnsDto[] = tenAggregatedSnses;
 
 // It should match the token below
 export const aggregatorTokenMock: IcrcTokenMetadata = {

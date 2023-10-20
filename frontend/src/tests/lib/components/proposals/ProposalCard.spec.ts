@@ -21,7 +21,9 @@ describe("ProposalCard", () => {
     href: "https://nns.ic0.app/proposal/?u=qoctq-giaaa-aaaaa-aaaea-cai&proposal=123786",
   };
 
-  afterAll(vi.useRealTimers);
+  afterAll(() => {
+    vi.useRealTimers();
+  });
 
   it("should render a title", () => {
     const { getByText } = render(ProposalCard, {

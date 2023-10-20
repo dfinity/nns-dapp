@@ -74,6 +74,7 @@ export const testTransferTokens = async ({
     result,
     selectedNetwork,
     destinationAddress,
+    amount,
   });
 
   await waitFor(() => expect(getByTestId("transaction-step-2")).toBeTruthy());
