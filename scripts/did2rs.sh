@@ -47,6 +47,7 @@ CANISTER_NAME="$(basename "${CANISTER_NAME%.did}")"
 GIT_ROOT="$(git rev-parse --show-toplevel)"
 
 PATCH_PATH="${PATCH_PATH:-${RUST_PATH%.rs}.patch}"
+EDIT_PATH="${EDIT_PATH:-${RUST_PATH%.rs}.edit}"
 DID_PATH="${DID_PATH:-${GIT_ROOT}/declarations/${CANISTER_NAME}/${CANISTER_NAME}.did}"
 
 cd "$GIT_ROOT"
@@ -131,6 +132,11 @@ cd "$GIT_ROOT"
 	    ' |
     rustfmt --edition 2021
 } >"${RUST_PATH}"
+if test -f "${EDIT_PATH}"; then
+  (
+    "${EDIT_PATH}"
+  )
+fi
 if test -f "${PATCH_PATH}"; then
   (
     patch -p1 <"${PATCH_PATH}"
