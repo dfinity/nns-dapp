@@ -92,6 +92,10 @@ fn test_account_storage() {
     );
     assert!(storage.aism_contains_account(&account_key));
     assert_eq!(storage.aism_get_account(&account_key), Some(updated_account.clone()));
+    assert!(
+        storage.aism_pages_len() > 1,
+        "Expected the large account to consume multiple pages."
+    );
 
     // Updates the account to a small one that consumes just one page
     storage.aism_insert_account(&account_key, account.clone());

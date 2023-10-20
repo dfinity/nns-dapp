@@ -36,7 +36,7 @@ mod mock;
 pub trait AccountsInStableMemoryTrait {
     // TODO: Add a small cache to limit the cost of getting and parsing data to once per API call.
 
-    /// Every account is serialized and stored in between `1` and `2**16-1` pages.
+    /// Every account is serialized and stored in between `1` and `2**16` pages.
     const MAX_PAGES_PER_ACCOUNT: usize = u16::MAX as usize + 1;
 
     // Low level methods to get and set pages.
