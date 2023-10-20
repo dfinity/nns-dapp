@@ -28,7 +28,9 @@ describe("icrc-ledger api", () => {
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
-  afterEach(() => vi.clearAllMocks());
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
 
   describe("getIcrcMainAccount", () => {
     it("returns main account with balance and project token metadata", async () => {

@@ -97,13 +97,11 @@ describe("NnsStakeMaturityModal", () => {
   });
 
   describe("HW", () => {
-    beforeAll(() =>
-      vi
-        .spyOn(icpAccountsStore, "subscribe")
-        .mockImplementation(
-          mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
-        )
-    );
+    beforeAll(() => {
+      vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
+        mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
+      );
+    });
 
     it("should call stakeMaturity service on confirm click for HW", async () => {
       const renderResult: RenderResult<SvelteComponent> =

@@ -17,7 +17,9 @@ describe("sns-tokens-services", () => {
       tokensStore.reset();
     });
 
-    afterEach(() => vi.clearAllMocks());
+    afterEach(() => {
+      vi.clearAllMocks();
+    });
 
     it("should load token in the store", async () => {
       const spyGetToken = vi
@@ -57,7 +59,9 @@ describe("sns-tokens-services", () => {
       });
     });
 
-    afterEach(() => vi.clearAllMocks());
+    afterEach(() => {
+      vi.clearAllMocks();
+    });
 
     it("should not reload token if already loaded", async () => {
       const spyGetToken = vi

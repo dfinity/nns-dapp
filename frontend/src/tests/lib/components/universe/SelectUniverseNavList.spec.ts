@@ -22,7 +22,9 @@ describe("SelectUniverseNavList", () => {
     });
   });
 
-  afterAll(() => vi.clearAllMocks());
+  afterAll(() => {
+    vi.clearAllMocks();
+  });
 
   it("should render universe cards as buttons", () => {
     const { getAllByRole } = render(SelectUniverseNavList);

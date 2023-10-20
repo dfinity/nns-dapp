@@ -29,7 +29,9 @@ describe("SplitSnsNeuronModal", () => {
       },
     });
 
-  afterAll(vi.clearAllMocks);
+  afterAll(() => {
+    vi.clearAllMocks();
+  });
 
   it("should display modal", async () => {
     const { container } = await renderSplitNeuronModal();

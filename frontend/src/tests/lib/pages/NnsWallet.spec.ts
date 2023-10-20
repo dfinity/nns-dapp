@@ -240,7 +240,9 @@ describe("NnsWallet", () => {
       accountIdentifier: mockHardwareWalletAccount.identifier,
     };
 
-    afterAll(() => vi.clearAllMocks());
+    afterAll(() => {
+      vi.clearAllMocks();
+    });
 
     it("should display principal", async () => {
       const { queryByText } = render(NnsWallet, props);

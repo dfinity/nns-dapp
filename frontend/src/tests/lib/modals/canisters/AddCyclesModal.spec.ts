@@ -38,7 +38,9 @@ describe("AddCyclesModal", () => {
 
   const reloadDetails = vi.fn();
   const props = { reloadDetails };
-  afterEach(() => vi.clearAllMocks());
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
   it("should display modal", () => {
     const { container } = render(AddCyclesModalTest, { props });
 

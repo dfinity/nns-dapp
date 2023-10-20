@@ -48,9 +48,9 @@ describe("Wallet", () => {
     icpAccountsStore.setForTesting(mockAccountsStoreData);
   });
 
-  beforeAll(() =>
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe)
-  );
+  beforeAll(() => {
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+  });
 
   describe("nns context", () => {
     it("should render NnsWallet", () => {

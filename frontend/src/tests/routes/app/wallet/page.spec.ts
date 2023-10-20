@@ -17,7 +17,9 @@ describe("Wallet page", () => {
     });
   });
 
-  afterAll(() => vi.clearAllMocks());
+  afterAll(() => {
+    vi.clearAllMocks();
+  });
 
   it("should render sign-in if not logged in", () => {
     const { getByTestId } = render(WalletPage, {

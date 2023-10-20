@@ -98,7 +98,9 @@ describe("ckbtc-info-services", () => {
       });
     });
 
-    afterEach(() => vi.clearAllMocks());
+    afterEach(() => {
+      vi.clearAllMocks();
+    });
 
     it("should not reload info if already loaded", async () => {
       const spyGetMinterInfo = vi
