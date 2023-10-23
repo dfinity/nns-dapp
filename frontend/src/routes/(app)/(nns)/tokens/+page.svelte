@@ -7,17 +7,64 @@
   import SignInTokens from "$lib/pages/SignInTokens.svelte";
   import { ENABLE_MY_TOKENS } from "$lib/stores/feature-flags.store";
   import { onMount } from "svelte";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import { ICPToken, TokenAmount } from "@dfinity/utils";
+  import IC_LOGO_ROUNDED from "$lib/assets/icp-rounded.svg";
+  import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+  import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
+  import type { UserTokenData } from "$lib/types/tokens-page";
 
   onMount(() => {
     if (!$ENABLE_MY_TOKENS) {
       goto(AppPath.Accounts);
     }
   });
+
+  const data = [
+    {
+      canisterId: OWN_CANISTER_ID,
+      title: "Internet Computer",
+      balance: TokenAmount.fromE8s({ amount: 314000000n, token: ICPToken }),
+      logo: IC_LOGO_ROUNDED,
+      actions: ["goToDetail"],
+    },
+    {
+      canisterId: CKBTC_UNIVERSE_CANISTER_ID,
+      title: "CkBTC",
+      balance: TokenAmount.fromE8s({
+        amount: 1160000000n,
+        token: { name: "CkBTC", symbol: "CkBTC" },
+      }),
+      logo: CKBTC_LOGO,
+      actions: ["send", "receive"],
+    },
+  ];
+
+  const goToDetail = ({ detail }: { detail: UserTokenData }) => {
+    console.log("go to detail");
+    console.log(detail);
+  };
+
+  const openSendModal = ({ detail }: { detail: UserTokenData }) => {
+    console.log("open send modal");
+    console.log(detail);
+  };
+
+  const openReceiveModal = ({ detail }: { detail: UserTokenData }) => {
+    console.log("open receive modal");
+    console.log(detail);
+  };
 </script>
 
 <TestIdWrapper testId="tokens-route-component">
   {#if $authSignedInStore}
-    <Tokens />
+    <Tokens
+      tokens={data}
+      on:nnsGoToDetail={goToDetail}
+      on:nnsRowClick={goToDetail}
+      on:nnsSend={openSendModal}
+      on:nnsReceive={openReceiveModal}
+    />
   {:else}
     <SignInTokens />
   {/if}

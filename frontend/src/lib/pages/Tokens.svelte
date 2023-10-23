@@ -1,8 +1,19 @@
-<script>
+<script lang="ts">
   import MainWrapper from "$lib/components/tokens/MainWrapper.svelte";
+  import TokensTable from "$lib/components/tokens/TokensTable.svelte";
+  import type { UserTokenData } from "$lib/types/tokens-page";
+
+  export let tokens: UserTokenData[];
 </script>
 
-<!-- TODO: GIX-1976 Render Tokens table with data -->
-<MainWrapper testId="tokens-page-component">
-  <div>My Tokens</div>
+<MainWrapper data-tid="tokens-page-component">
+  <!-- TODO: GIX-1982 Render desktop or mobile component -->
+  <TokensTable
+    {tokens}
+    on:nnsGoToDetail
+    on:nnsRowClick
+    on:nnsSend
+    on:nnsReceive
+  />
+  <!-- TODO: GIX-1977 Mobile component -->
 </MainWrapper>
