@@ -16,11 +16,13 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Added provenance information to .did files and derived rust code.
 * Added `approveTransfer` in icrc-ledger API.
+* Add `UpdateElectedHostosVersions` and `UpdateNodesHostosVersion` proposals support
 
 #### Changed
 
 * Update proposal info icons position to improve the UX.
 * Improve the indicator of the minimum commitment in the project status.
+* Dapp upgraded to Svelte v4.
 
 #### Deprecated
 #### Removed
@@ -29,6 +31,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Add "Finalizing" status in projects of the Launchpad.
 * Fix UI bug when commitment was very low.
+* Remove robots metatag to allow search engines to crawl NNS Dapp.
 
 #### Security
 
@@ -50,6 +53,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Add traits with a dedicated command rather than with patch files.
 * Migrate the Jest unit test suite to Vitest.
 
 #### Deprecated

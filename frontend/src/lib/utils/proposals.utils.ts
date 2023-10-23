@@ -7,7 +7,10 @@ import { pageStore } from "$lib/derived/page.derived";
 import { i18n } from "$lib/stores/i18n";
 import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
 import type { VoteRegistrationStoreEntry } from "$lib/stores/vote-registration.store";
-import type { VotingNeuron } from "$lib/types/proposals";
+import type {
+  UniversalProposalStatus,
+  VotingNeuron,
+} from "$lib/types/proposals";
 import { buildProposalUrl } from "$lib/utils/navigation.utils";
 import type { Identity } from "@dfinity/agent";
 import type {
@@ -28,7 +31,7 @@ import {
   Vote,
 } from "@dfinity/nns";
 import type { SnsVote } from "@dfinity/sns";
-import { nonNullish } from "@dfinity/utils";
+import { isNullish, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { nowInSeconds } from "./date.utils";
 import { errorToString } from "./error.utils";
@@ -611,3 +614,23 @@ export const navigateToProposal = (proposalId: ProposalId): Promise<void> =>
       proposalId,
     })
   );
+
+export const getUniversalProposalStatus = (
+  proposal: ProposalInfo
+): UniversalProposalStatus => {
+  const statusTypeMap: Record<ProposalStatus, UniversalProposalStatus> = {
+    [ProposalStatus.Unknown]: "unknown",
+    [ProposalStatus.Open]: "open",
+    [ProposalStatus.Rejected]: "rejected",
+    [ProposalStatus.Accepted]: "adopted",
+    [ProposalStatus.Executed]: "executed",
+    [ProposalStatus.Failed]: "failed",
+  };
+  const statusType = statusTypeMap[proposal.status];
+
+  if (isNullish(statusType)) {
+    throw new Error(`Unknown proposal status: ${proposal.status}`);
+  }
+
+  return statusType;
+};

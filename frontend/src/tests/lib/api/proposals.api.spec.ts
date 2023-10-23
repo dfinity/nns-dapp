@@ -111,7 +111,9 @@ describe("proposals-api", () => {
     nnsDappMock.getProposalPayload.mockResolvedValue({});
     vi.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
 
-    afterAll(vi.clearAllMocks);
+    afterAll(() => {
+      vi.clearAllMocks();
+    });
 
     it("should call the canister to get proposal payload", async () => {
       const spyGetProposalPayload = vi.spyOn(nnsDappMock, "getProposalPayload");

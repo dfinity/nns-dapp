@@ -397,7 +397,7 @@ const reset = () => {
   resetPaused();
 };
 
-export { pause, pauseFor, getPendingCallsCount, resolvePendingCalls, resume };
+export { getPendingCallsCount, pause, pauseFor, resolvePendingCalls, resume };
 
 const createNeuronId = ({
   identity,

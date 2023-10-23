@@ -11,11 +11,11 @@ import { fireEvent, render } from "@testing-library/svelte";
 import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
 describe("DisburseSnsButton", () => {
-  beforeAll(() =>
-    vi
-      .spyOn(snsTokenSymbolSelectedStore, "subscribe")
-      .mockImplementation(mockTokenStore)
-  );
+  beforeAll(() => {
+    vi.spyOn(snsTokenSymbolSelectedStore, "subscribe").mockImplementation(
+      mockTokenStore
+    );
+  });
 
   afterEach(() => {
     vi.clearAllMocks();

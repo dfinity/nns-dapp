@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { SnsNeuron } from "@dfinity/sns";
   import StakeMaturityModal from "$lib/modals/neurons/StakeMaturityModal.svelte";
-  import { formattedMaturity } from "$lib/utils/sns-neuron.utils";
   import type { SnsNeuronId } from "@dfinity/sns";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
@@ -13,9 +12,6 @@
   export let neuronId: SnsNeuronId;
   export let rootCanisterId: Principal;
   export let reloadNeuron: () => Promise<void>;
-
-  let maturity: string;
-  $: maturity = formattedMaturity(neuron);
 
   const dispatcher = createEventDispatcher();
   const close = () => dispatcher("nnsClose");

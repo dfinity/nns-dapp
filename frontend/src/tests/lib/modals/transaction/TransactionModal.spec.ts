@@ -72,9 +72,9 @@ describe("TransactionModal", () => {
       },
     });
 
-  beforeAll(() =>
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe)
-  );
+  beforeAll(() => {
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+  });
 
   beforeEach(() => {
     icpAccountsStore.setForTesting({

@@ -179,7 +179,7 @@ describe("LedgerIdentity", () => {
       const body = readRequest2.body.content as ReadRequest;
       expect(getRequestId(body)).toEqual(requestId2);
     } else {
-      fail("To read request id from transformed request 2");
+      expect.unreachable("To read request id from transformed request 2");
     }
 
     // Read state for first call
@@ -193,7 +193,7 @@ describe("LedgerIdentity", () => {
       const body = readRequest1.body.content as ReadRequest;
       expect(getRequestId(body)).toEqual(requestId1);
     } else {
-      fail("To read request id from transformed request 1");
+      expect.unreachable("To read request id from transformed request 1");
     }
   });
 });

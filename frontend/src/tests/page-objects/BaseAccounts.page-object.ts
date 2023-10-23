@@ -1,5 +1,6 @@
 import { AccountCardPo } from "$tests/page-objects/AccountCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 
 export class BaseAccountsPo extends BasePageObject {
   getMainAccountCardPo(): AccountCardPo {
@@ -7,7 +8,8 @@ export class BaseAccountsPo extends BasePageObject {
     return AccountCardPo.under(this.root);
   }
 
-  getAccountCardPos(): Promise<AccountCardPo[]> {
+  async getAccountCardPos(): Promise<AccountCardPo[]> {
+    await this.waitForContentLoaded();
     return AccountCardPo.allUnder(this.root);
   }
 
@@ -21,6 +23,15 @@ export class BaseAccountsPo extends BasePageObject {
       );
     }
     return cards[index];
+  }
+
+  getSkeletonCardPo(): SkeletonCardPo {
+    return SkeletonCardPo.under(this.root);
+  }
+
+  async waitForContentLoaded(): Promise<void> {
+    await this.waitFor();
+    await this.getSkeletonCardPo().waitForAbsent();
   }
 
   async openAccount(accountName: string): Promise<void> {

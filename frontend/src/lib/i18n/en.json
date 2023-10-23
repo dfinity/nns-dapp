@@ -29,7 +29,8 @@
     "done": "Done",
     "this_may_take_a_few_minutes": "This may take a few minutes",
     "do_not_close": "Please do not close your browser tab",
-    "finish": "Finish"
+    "finish": "Finish",
+    "unknown": "Unknown"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -923,6 +924,14 @@
     "4": "Executed",
     "5": "Failed"
   },
+  "universal_proposal_status": {
+    "unknown": "Unknown",
+    "open": "Open",
+    "rejected": "Rejected",
+    "adopted": "Adopted",
+    "executed": "Executed",
+    "failed": "Failed"
+  },
   "sns_status_description": {
     "0": "",
     "1": "A decision has not yet been made to adopt or reject the proposal.",
@@ -970,7 +979,7 @@
   "error__ckbtc": {
     "already_process": "The minter has already been notified and updating the balance is in progress.",
     "no_new_utxo": "There are no new UTXOs to process.",
-    "temporary_unavailable": "The minter is temporary unavailable.",
+    "temporary_unavailable": "The minter is temporarily unavailable.",
     "no_minter_defined": "No minter canister is defined.",
     "info_not_found": "Sorry, there was an error loading the ckBTC minter information.",
     "get_btc_address": "Sorry, the BTC address for the account cannot be fetched.",
@@ -1008,5 +1017,8 @@
     "status_idle_detailed": "Synchronization is currently idle.",
     "status_error_detailed": "An error occurred while synchronizing data. Please try reloading the page. If the problem persists, please contact support for further assistance.",
     "status_in_progress_detailed": "Checking for new transactions."
+  },
+  "tokens": {
+    "title": "Tokens"
   }
 }

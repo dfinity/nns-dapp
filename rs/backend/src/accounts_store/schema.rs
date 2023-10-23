@@ -1,6 +1,8 @@
 //! Data storage schemas.
 
 // Schemas
+#[cfg(test)]
+pub mod accounts_in_stable_memory;
 pub mod map;
 pub mod proxy;
 
@@ -106,6 +108,11 @@ pub enum SchemaLabel {
     /// Data is stored on the heap in a `BTreeMap` and serialized to stable memory on upgrade.
     /// Implemented by: [`map::AccountsDbAsMap`]
     Map = 0,
+    /// Every account is serialized separately and stored in a `StableBTreeMap`.  The remaining
+    /// data, mostly consisting of transactions, is serialized into a single large blob in the
+    /// `pre_upgrade` hook.
+    #[cfg(test)]
+    AccountsInStableMemory = 1,
 }
 
 /// Schema Label as written to stable memory.

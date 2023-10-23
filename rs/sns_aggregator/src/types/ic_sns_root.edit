@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euxo pipefail
+
+# Commands to run after creating the rust file with didc:
+scripts/rust-add-trait -f rs/sns_aggregator/src/types/ic_sns_root.rs --type ListSnsCanistersResponse --trait Default

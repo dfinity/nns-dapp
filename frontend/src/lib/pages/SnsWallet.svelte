@@ -22,7 +22,6 @@
     snsProjectSelectedStore,
   } from "$lib/derived/sns/sns-selected-project.derived";
   import { TokenAmount, isNullish, nonNullish } from "@dfinity/utils";
-  import IC_LOGO from "$lib/assets/icp.svg";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import { loadSnsAccountTransactions } from "$lib/services/sns-transactions.services";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -93,12 +92,6 @@
 
   let disabled = false;
   $: disabled = isNullish($selectedAccountStore.account) || $busy;
-
-  let logo: string;
-  $: logo = $selectedUniverseStore?.summary?.metadata.logo ?? IC_LOGO;
-
-  let tokenSymbol: string | undefined;
-  $: tokenSymbol = $selectedUniverseStore?.summary?.token.symbol;
 
   const reloadAccount = async () => {
     try {

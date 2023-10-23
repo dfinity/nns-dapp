@@ -1,5 +1,5 @@
 //! Rust code created from candid by: scripts/did2rs.sh --canister sns_swap --out ic_sns_swap.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug
-//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/2d57e93dabc5f13258d0dee1ffb2363ddce7fe62/rs/sns/swap/canister/swap.did>
+//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/dd51544944987556c978e774aa7a1992e5c11542/rs/sns/swap/canister/swap.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -39,6 +39,7 @@ pub struct NeuronsFundParticipationConstraints {
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
 pub struct CfNeuron {
+    pub has_created_neuron_recipes: Option<bool>,
     pub nns_neuron_id: u64,
     pub amount_icp_e8s: u64,
 }
@@ -63,6 +64,7 @@ pub struct Countries {
 pub struct Init {
     pub nns_proposal_id: Option<u64>,
     pub sns_root_canister_id: String,
+    pub neurons_fund_participation: Option<bool>,
     pub min_participant_icp_e8s: Option<u64>,
     pub neuron_basket_construction_parameters: Option<NeuronBasketConstructionParameters>,
     pub fallback_controller_principal_ids: Vec<String>,
@@ -226,6 +228,7 @@ pub struct TransferableAmount {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct BuyerState {
     pub icp: Option<TransferableAmount>,
+    pub has_created_neuron_recipes: Option<bool>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
