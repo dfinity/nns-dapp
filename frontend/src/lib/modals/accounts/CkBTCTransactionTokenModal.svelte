@@ -18,15 +18,13 @@
   let canisters: CkBTCAdditionalCanisters;
   let universeId: UniverseCanisterId;
   let account: Account | undefined;
-  let reloadAccountFromStore: (() => void) | undefined;
   let loadTransactions: boolean;
 
-  $: ({ account, reloadAccountFromStore, universeId, canisters } = data);
+  $: ({ account, universeId, canisters } = data);
 
   const dispatcher = createEventDispatcher();
 
-  const onTransferReloadSelectedAccount = async () => {
-    reloadAccountFromStore?.();
+  const onTransfer = async () => {
     dispatcher("nnsClose");
   };
 
@@ -40,7 +38,7 @@
 {#if nonNullish(token) && nonNullish(transactionFee)}
   <CkBTCTransactionModal
     on:nnsClose
-    on:nnsTransfer={onTransferReloadSelectedAccount}
+    on:nnsTransfer={onTransfer}
     selectedAccount={account}
     {loadTransactions}
     token={token.token}

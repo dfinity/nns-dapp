@@ -60,12 +60,6 @@
     reloadTransactions();
   };
 
-  // e.g. when a function such as a transfer is called and which also reload the data and populate the stores after execution
-  const reloadAccountFromStore = () => {
-    setSelectedAccount();
-    reloadTransactions();
-  };
-
   const reloadOnlyAccountFromStore = () => setSelectedAccount();
 
   // transactions?.reloadTransactions?.() returns a promise.
@@ -227,11 +221,7 @@
   </main>
 
   {#if canMakeTransactions}
-    <CkBTCWalletFooter
-      store={selectedAccountStore}
-      {reloadAccount}
-      {reloadAccountFromStore}
-    />
+    <CkBTCWalletFooter store={selectedAccountStore} {reloadAccount} />
   {/if}
 </Island>
 

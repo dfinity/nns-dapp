@@ -12,7 +12,6 @@
 
   export let store: Writable<WalletStore>;
   export let reloadAccount: () => Promise<void>;
-  export let reloadAccountFromStore: () => void;
 
   let canisters: CkBTCAdditionalCanisters | undefined = undefined;
   $: canisters = nonNullish($selectedCkBTCUniverseIdStore)
@@ -32,7 +31,6 @@
     {disableButton}
     {canisters}
     account={$store.account}
-    {reloadAccountFromStore}
     loadTransactions
   />
 

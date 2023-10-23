@@ -10,7 +10,6 @@
 
   export let account: Account | undefined = undefined;
   export let disableButton: boolean;
-  export let reloadAccountFromStore: (() => void) | undefined = undefined;
   export let canisters: CkBTCAdditionalCanisters | undefined = undefined;
   export let loadTransactions = false;
 
@@ -29,7 +28,6 @@
         type: "ckbtc-transaction",
         data: {
           account,
-          reloadAccountFromStore,
           universeId: $selectedCkBTCUniverseIdStore,
           canisters,
           loadTransactions,
