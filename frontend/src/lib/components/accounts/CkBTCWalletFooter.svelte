@@ -1,10 +1,6 @@
 <script lang="ts">
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import {
-    WALLET_CONTEXT_KEY,
-    type CkBTCWalletContext,
-  } from "$lib/types/wallet.context";
-  import { getContext } from "svelte";
+  import type { WalletStore } from "$lib/types/wallet.context";
   import { busy } from "@dfinity/gix-components";
   import Footer from "$lib/components/layout/Footer.svelte";
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
@@ -12,11 +8,11 @@
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
   import CkBTCReceiveButton from "$lib/components/accounts/CkBTCReceiveButton.svelte";
   import CkBTCSendButton from "$lib/components/accounts/CkBTCSendButton.svelte";
+  import type { Writable } from "svelte/store";
 
-  const context: CkBTCWalletContext =
-    getContext<CkBTCWalletContext>(WALLET_CONTEXT_KEY);
-  const { store, reloadAccount, reloadAccountFromStore }: CkBTCWalletContext =
-    context;
+  export let store: Writable<WalletStore>;
+  export let reloadAccount: () => Promise<void>;
+  export let reloadAccountFromStore: () => void;
 
   let canisters: CkBTCAdditionalCanisters | undefined = undefined;
   $: canisters = nonNullish($selectedCkBTCUniverseIdStore)
