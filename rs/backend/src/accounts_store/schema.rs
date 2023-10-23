@@ -1,6 +1,8 @@
 //! Data storage schemas.
 use crate::accounts_store::Account;
 
+#[cfg(test)]
+pub mod accounts_in_stable_memory;
 pub mod map;
 pub mod proxy;
 #[cfg(test)]
@@ -100,6 +102,11 @@ pub enum SchemaLabel {
     /// Data is stored on the heap in a `BTreeMap` and serialized to stable memory on upgrade.
     /// Implemented by: [`map::AccountsDbAsMap`]
     Map = 0,
+    /// Every account is serialized separately and stored in a `StableBTreeMap`.  The remaining
+    /// data, mostly consisting of transactions, is serialized into a single large blob in the
+    /// `pre_upgrade` hook.
+    #[cfg(test)]
+    AccountsInStableMemory = 1,
 }
 
 /// A trait for data stores that support `BTreeMap` for account storage.
