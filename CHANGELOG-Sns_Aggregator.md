@@ -10,12 +10,15 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 
 ### Added
 ### Changed
-* Updated libraries provided by the `ic` repository to `release-2023-06-07_23-01`.
 ### Deprecated
 ### Removed
 ### Fixed
 ### Security
 
+
+## [Proposal 125319](https://nns.ic0.app/proposal/?u=qoctq-giaaa-aaaaa-aaaea-cai&proposal=125319)
+### Changed
+* Updated libraries provided by the `ic` repository to `release-2023-06-07_23-01`.
 
 ## [Proposal 124788](https://nns.ic0.app/proposal/?u=qoctq-giaaa-aaaaa-aaaea-cai&proposal=124788)
 
