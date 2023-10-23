@@ -289,7 +289,7 @@ is_release_sop_script_newest_version() {
 npm_audit() {
   local audit
   pushd "$TOP_DIR/frontend" >&2
-  audit="$(npm audit --json | jq --slurp -r '[.. | .via? | .[]? | .url?] | join(",")')"
+  audit="$(npm audit --json | jq --slurp -r '[.. | .via? | .[]? | .url?] | join(" ")')"
   if [ "$audit" ]; then
     echo "$audit"
     exit
