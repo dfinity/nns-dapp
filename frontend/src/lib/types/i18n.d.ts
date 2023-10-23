@@ -1071,6 +1071,10 @@ interface I18nSync {
   status_in_progress_detailed: string;
 }
 
+interface I18nTokens {
+  title: string;
+}
+
 interface I18nNeuron_state {
   Unspecified: string;
   Locked: string;
@@ -1317,6 +1321,7 @@ interface I18n {
   feature_flags_prompt: I18nFeature_flags_prompt;
   settings: I18nSettings;
   sync: I18nSync;
+  tokens: I18nTokens;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;
