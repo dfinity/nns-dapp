@@ -353,8 +353,23 @@ jobs:
           fetch-depth: 0
       - run: scripts/past-changelog-test
       - run: scripts/past-changelog-test.test
+  version-match:
+    name: The nns-dapp npm and cargo versions should match
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Backend and frontend have the same version
+        run: |
+          backend_version="$(cargo metadata | jq -r '.packages[] | select(.name == "nns-dapp").version')"
+          frontend_version="$(jq -r .version frontend/package.json)"
+          [[ "${backend_version}" == "${frontend_version}" ]] || {
+                  echo "ERROR: The nns-dapp frontend and backend should have the same version but:"
+                  echo "Backend:  $backend_version"
+                  echo "Frontend: $frontend_version"
+                  exit 1
+          } >&2
   checks-pass:
-    needs: ["formatting", "spelling", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "asset-chunking-works", "docker-build-cli-flags", "download-nns-dapp-ci-wasm", "canister-ids-tool", "release-sop", "split-changelog", "past-changelog", "minor-version-bump-works"]
+    needs: ["formatting", "spelling", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "asset-chunking-works", "docker-build-cli-flags", "download-nns-dapp-ci-wasm", "canister-ids-tool", "release-sop", "split-changelog", "past-changelog", "minor-version-bump-works", "version-match"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
