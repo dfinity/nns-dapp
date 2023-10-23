@@ -12,14 +12,12 @@
   } from "@dfinity/sns";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
-  import type { SnsProposalDecisionStatus } from "@dfinity/sns";
 
   export let proposalData: SnsProposalData;
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;
   export let hidden = false;
 
   let statusString: string;
-  let status: SnsProposalDecisionStatus;
   let id: SnsProposalId | undefined;
   let title: string | undefined;
   let color: ProposalStatusColor | undefined;
@@ -41,7 +39,6 @@
     type,
     proposer,
     current_deadline_timestamp_seconds: deadlineTimestampSeconds,
-    status,
   } = mapProposalInfo({ proposalData, nsFunctions }));
 
   let href: string;
