@@ -508,6 +508,7 @@ describe("sns aggregator converters utils", () => {
               },
               min_direct_participation_icp_e8s: 300000000000,
               max_direct_participation_icp_e8s: 3000000000000,
+              neurons_fund_participation: true,
             },
           },
           derived: {
@@ -526,6 +527,7 @@ describe("sns aggregator converters utils", () => {
             ...mockData.init.init,
             min_direct_participation_icp_e8s: 300000000000,
             max_direct_participation_icp_e8s: 3000000000000,
+            neurons_fund_participation: true,
           },
         },
       };
@@ -562,6 +564,7 @@ describe("sns aggregator converters utils", () => {
               ],
               min_direct_participation_icp_e8s: [300000000000n],
               max_direct_participation_icp_e8s: [3000000000000n],
+              neurons_fund_participation: [true],
             },
           ],
           direct_participation_icp_e8s: [300000000000000n],
@@ -576,6 +579,7 @@ describe("sns aggregator converters utils", () => {
           ...summaryMockData.init,
           min_direct_participation_icp_e8s: [300000000000n],
           max_direct_participation_icp_e8s: [3000000000000n],
+          neurons_fund_participation: [true],
         },
       });
     });
