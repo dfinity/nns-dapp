@@ -29,7 +29,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Not Published
 
-* Added `approveTransfer` in icrc-ledger API.
 * Added `retrieveBtcWithApproval` in ckbtc-minter API.
 
 ### Operations
