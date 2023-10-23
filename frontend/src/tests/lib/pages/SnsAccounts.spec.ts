@@ -19,7 +19,7 @@ import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { nonNullish } from "@dfinity/utils";
 import { render, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { ComponentProps } from "svelte/types/runtime";
+import type { ComponentProps } from "svelte";
 
 vi.mock("$lib/services/sns-accounts.services");
 

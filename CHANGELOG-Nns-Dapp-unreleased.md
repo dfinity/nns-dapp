@@ -18,6 +18,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Dapp upgraded to Svelte v4.
+
 #### Deprecated
 #### Removed
 

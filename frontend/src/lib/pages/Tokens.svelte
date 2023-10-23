@@ -1,2 +1,8 @@
+<script>
+  import MainWrapper from "$lib/components/tokens/MainWrapper.svelte";
+</script>
+
 <!-- TODO: GIX-1976 Render Tokens table with data -->
-<div data-tid="tokens-page-component">My Tokens</div>
+<MainWrapper testId="tokens-page-component">
+  <div>My Tokens</div>
+</MainWrapper>

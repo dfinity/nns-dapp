@@ -1,6 +1,6 @@
 import { AppPath, ROUTE_ID_GROUPS } from "$lib/constants/routes.constants";
 import { isNullish } from "@dfinity/utils";
-import type { Navigation } from "@sveltejs/kit";
+import type { AfterNavigate } from "@sveltejs/kit";
 
 /**
  * Returns an AppPath for a given path.
@@ -38,7 +38,7 @@ export const pathForRouteId = (routeId: string | null | undefined): AppPath => {
 
 export const referrerPathForNav = ({
   from,
-}: Navigation): AppPath | undefined =>
+}: AfterNavigate): AppPath | undefined =>
   from?.route.id !== null && from?.route.id !== undefined
     ? pathForRouteId(from.route.id)
     : undefined;

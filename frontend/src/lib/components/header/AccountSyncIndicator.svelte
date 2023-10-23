@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { SvelteComponent } from "svelte";
+  import type { ComponentType } from "svelte";
   import { IconSync } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import { IconError, Popover } from "@dfinity/gix-components";
@@ -13,7 +13,7 @@
 
   let label: string;
   let description: string;
-  let icon: typeof SvelteComponent | undefined;
+  let icon: ComponentType | undefined;
 
   const syncLabel = (state: SyncState): string => {
     switch (state) {
@@ -37,7 +37,7 @@
     }
   };
 
-  const syncIcon = (state: SyncState): typeof SvelteComponent | undefined => {
+  const syncIcon = (state: SyncState): ComponentType | undefined => {
     switch (state) {
       case "error":
         return IconError;
