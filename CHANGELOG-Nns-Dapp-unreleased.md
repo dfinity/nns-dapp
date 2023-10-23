@@ -39,6 +39,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Add test to check that the nns-dapp cargo and npm versions match.
+
 #### Changed
 
 * Add traits with a dedicated command rather than with patch files.
