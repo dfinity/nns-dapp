@@ -51,7 +51,6 @@ here after a successful release.
 #### Added
 
 * New feature flag `ENABLE_FULL_WIDTH_PROPOSAL`.
-* Add `UpdateElectedHostosVersions` and `UpdateNodesHostosVersion` proposals support
 
 #### Changed
 
