@@ -1,8 +1,8 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_swap.rs a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-index 644f5b236..ac8795f06 100644
+index d7b6fe69b..60992d269 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_swap.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_swap.rs
-@@ -170,7 +170,7 @@ pub struct SettleCommunityFundParticipationResult {
+@@ -172,7 +172,7 @@ pub struct SettleCommunityFundParticipationResult {
  
  #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
  pub enum Possibility2 {
