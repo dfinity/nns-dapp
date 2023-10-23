@@ -95,7 +95,7 @@ local_deployment_data="$(
   export TVL_CANISTER_ID
 
   : "Define the robots text, if any"
-  if [[ "$DFX_NETWORK" == "local" ]] || [[ "$DFX_NETWORK" == "testnet" ]]; then
+  if [[ "$DFX_NETWORK" == "mainnet" ]]; then
     ROBOTS=''
   else
     # shellcheck disable=SC2089 # yes, we really want the backslash

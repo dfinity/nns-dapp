@@ -18,7 +18,9 @@ import { TokenAmount } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 
 describe("ckbtc-accounts-loader-services", () => {
-  afterEach(() => vi.clearAllMocks());
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
 
   describe("getCkBTCAccounts", () => {
     it("should call get CkBTC account", async () => {

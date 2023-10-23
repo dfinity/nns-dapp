@@ -7,11 +7,24 @@
   import { onMount } from "svelte";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { isNullish } from "@dfinity/utils";
+  import type {
+    SnsProposalDecisionStatus,
+    SnsProposalRewardStatus,
+  } from "@dfinity/sns";
+  import type {
+    ProposalRewardStatus,
+    ProposalStatus,
+    Topic,
+  } from "@dfinity/nns";
 
-  // Source: https://github.com/dummdidumm/rfcs/blob/ts-typedefs-within-svelte-components/text/ts-typing-props-slots-events.md#solution
-  type T = $$Generic;
+  type FiltersData =
+    | SnsProposalRewardStatus
+    | Topic
+    | ProposalRewardStatus
+    | ProposalStatus
+    | SnsProposalDecisionStatus;
   // `undefined` means the filters are not loaded yet.
-  export let filters: Filter<T>[] | undefined;
+  export let filters: Filter<FiltersData>[] | undefined;
   export let visible = true;
 
   let loading: boolean;

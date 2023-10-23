@@ -288,6 +288,7 @@ describe("ParticipateButton", () => {
             icp: [
               createTransferableAmount(mockSnsParams.max_participant_icp_e8s),
             ],
+            has_created_neuron_recipes: [],
           },
         },
         Component: ParticipateButton,

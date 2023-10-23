@@ -39,9 +39,9 @@ vi.mock("$lib/services/$public/sns-proposals.services", () => {
 vi.mock("$lib/api/governance.api");
 
 describe("Proposals", () => {
-  beforeAll(() =>
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe)
-  );
+  beforeAll(() => {
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+  });
 
   vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
     mockProjectSubscribe([mockSnsFullProject])

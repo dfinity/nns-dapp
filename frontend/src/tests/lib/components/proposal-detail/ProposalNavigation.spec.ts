@@ -27,6 +27,7 @@ describe("ProposalNavigation", () => {
       it("should not render buttons if no proposalIds", async () => {
         const po = renderComponent({
           currentProposalId: 1n,
+          currentProposalStatus: "open",
           proposalIds: undefined,
           selectProposal: vi.fn(),
         });
@@ -37,6 +38,7 @@ describe("ProposalNavigation", () => {
       it("should not render buttons if no currentProposalId in proposalIds", async () => {
         const po = renderComponent({
           currentProposalId: 1n,
+          currentProposalStatus: "open",
           proposalIds: [0n],
           selectProposal: vi.fn(),
         });
@@ -49,6 +51,7 @@ describe("ProposalNavigation", () => {
       it("should render buttons", async () => {
         const po = renderComponent({
           currentProposalId: 1n,
+          currentProposalStatus: "open",
           proposalIds: [2n, 1n, 0n],
           selectProposal: vi.fn(),
         });
@@ -60,6 +63,7 @@ describe("ProposalNavigation", () => {
       it("should enable both buttons", async () => {
         const po = renderComponent({
           currentProposalId: 1n,
+          currentProposalStatus: "open",
           proposalIds: [2n, 1n, 0n],
           selectProposal: vi.fn(),
         });
@@ -71,6 +75,7 @@ describe("ProposalNavigation", () => {
       it("should be visible even when the current proposal is not in the list", async () => {
         const po = renderComponent({
           currentProposalId: 10n,
+          currentProposalStatus: "open",
           proposalIds: [20n, 0n],
           selectProposal: vi.fn(),
         });
@@ -82,6 +87,7 @@ describe("ProposalNavigation", () => {
       it("should hide to-newer-proposal button when the newest proposal is selected", async () => {
         const po = renderComponent({
           currentProposalId: 1n,
+          currentProposalStatus: "open",
           proposalIds: [1n, 0n],
           selectProposal: vi.fn(),
         });
@@ -93,6 +99,7 @@ describe("ProposalNavigation", () => {
       it("should hide to-oldest-proposal when the oldest is selected", async () => {
         const po = renderComponent({
           currentProposalId: 1n,
+          currentProposalStatus: "open",
           proposalIds: [2n, 1n],
           selectProposal: vi.fn(),
         });
@@ -113,6 +120,7 @@ describe("ProposalNavigation", () => {
       it("should render universe logo", async () => {
         const po = renderComponent({
           currentProposalId: 1n,
+          currentProposalStatus: "open",
           proposalIds: undefined,
           selectProposal: vi.fn(),
         });
@@ -122,9 +130,21 @@ describe("ProposalNavigation", () => {
         );
       });
 
+      it("should render proposal statur", async () => {
+        const po = renderComponent({
+          currentProposalId: 1n,
+          currentProposalStatus: "open",
+          proposalIds: undefined,
+          selectProposal: vi.fn(),
+        });
+
+        expect(await po.getProposalStatus()).toEqual("Open");
+      });
+
       it("should render proposal title", async () => {
         const po = renderComponent({
           currentProposalId: 1n,
+          currentProposalStatus: "open",
           proposalIds: undefined,
           selectProposal: vi.fn(),
         });
@@ -135,6 +155,7 @@ describe("ProposalNavigation", () => {
       it("should hide buttons if no proposalIds", async () => {
         const po = renderComponent({
           currentProposalId: 1n,
+          currentProposalStatus: "open",
           proposalIds: undefined,
           selectProposal: vi.fn(),
         });
@@ -148,6 +169,7 @@ describe("ProposalNavigation", () => {
       it("should render buttons", async () => {
         const po = renderComponent({
           currentProposalId: 1n,
+          currentProposalStatus: "open",
           proposalIds: [2n, 1n, 0n],
           selectProposal: vi.fn(),
         });
@@ -159,6 +181,7 @@ describe("ProposalNavigation", () => {
       it("should enable both buttons", async () => {
         const po = renderComponent({
           currentProposalId: 1n,
+          currentProposalStatus: "open",
           proposalIds: [2n, 1n, 0n],
           selectProposal: vi.fn(),
         });
@@ -170,6 +193,7 @@ describe("ProposalNavigation", () => {
       it("should be visible even when the current proposal is not in the list", async () => {
         const po = renderComponent({
           currentProposalId: 10n,
+          currentProposalStatus: "open",
           proposalIds: [20n, 0n],
           selectProposal: vi.fn(),
         });
@@ -181,6 +205,7 @@ describe("ProposalNavigation", () => {
       it("should hide to-newer-proposal button when the newest proposal is selected", async () => {
         const po = renderComponent({
           currentProposalId: 1n,
+          currentProposalStatus: "open",
           proposalIds: [1n, 0n],
           selectProposal: vi.fn(),
         });
@@ -192,6 +217,7 @@ describe("ProposalNavigation", () => {
       it("should hide to-oldest-proposal when the oldest is selected", async () => {
         const po = renderComponent({
           currentProposalId: 1n,
+          currentProposalStatus: "open",
           proposalIds: [2n, 1n],
           selectProposal: vi.fn(),
         });
@@ -206,6 +232,7 @@ describe("ProposalNavigation", () => {
     const selectProposalSpy = vi.fn();
     const po = renderComponent({
       currentProposalId: 2n,
+      currentProposalStatus: "open",
       proposalIds: [4n, 3n, 2n, 1n, 0n],
       selectProposal: selectProposalSpy,
     });
@@ -220,6 +247,7 @@ describe("ProposalNavigation", () => {
     const selectProposalSpy = vi.fn();
     const po = renderComponent({
       currentProposalId: 2n,
+      currentProposalStatus: "open",
       proposalIds: [4n, 3n, 2n, 1n, 0n],
       selectProposal: selectProposalSpy,
     });
@@ -234,6 +262,7 @@ describe("ProposalNavigation", () => {
     const selectProposalSpy = vi.fn();
     const po = renderComponent({
       currentProposalId: 13n,
+      currentProposalStatus: "open",
       proposalIds: [99n, 17n, 13n, 4n, 2n, 1n, 0n],
       selectProposal: selectProposalSpy,
     });
@@ -248,6 +277,7 @@ describe("ProposalNavigation", () => {
     const selectProposalSpy = vi.fn();
     const po = renderComponent({
       currentProposalId: 9n,
+      currentProposalStatus: "open",
       proposalIds: [99n, 17n, 13n, 4n, 2n, 1n, 0n],
       selectProposal: selectProposalSpy,
     });
@@ -262,6 +292,7 @@ describe("ProposalNavigation", () => {
     const selectProposalSpy = vi.fn();
     const po = renderComponent({
       currentProposalId: 3n,
+      currentProposalStatus: "open",
       proposalIds: [0n, 1n, 5n, 3n, 7n, 9n, 2n],
       selectProposal: selectProposalSpy,
     });

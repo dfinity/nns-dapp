@@ -14,12 +14,8 @@
   import { Spinner, IconAccountBalance } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
-  import {
-    isCkBTCUniverseStore,
-    selectedUniverseIdStore,
-  } from "$lib/derived/selected-universe.derived";
+  import { isCkBTCUniverseStore } from "$lib/derived/selected-universe.derived";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
-  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import type { Principal } from "@dfinity/principal";
   import { ICPToken, nonNullish } from "@dfinity/utils";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
@@ -33,9 +29,6 @@
 
   let selectedProjectId: Principal | undefined;
   $: selectedProjectId = $snsOnlyProjectStore;
-
-  let isNns: boolean;
-  $: isNns = $selectedUniverseIdStore.toText() === OWN_CANISTER_ID.toText();
 
   const onSubmit = async () => {
     if (invalidForm || inputValue === undefined) {

@@ -64,6 +64,7 @@ describe("SnsWallet", () => {
   const rootCanisterId = rootCanisterIdMock;
   const rootCanisterIdText = rootCanisterId.toText();
   const fee = 10_000n;
+  const projectName = "Tetris";
 
   beforeEach(() => {
     resetIdentity();
@@ -82,6 +83,7 @@ describe("SnsWallet", () => {
       {
         rootCanisterId,
         lifecycle: SnsSwapLifecycle.Committed,
+        projectName,
       },
     ]);
     page.mock({ data: { universe: rootCanisterIdText } });
@@ -127,7 +129,7 @@ describe("SnsWallet", () => {
 
       const titleRow = getByTestId("universe-page-summary-component");
 
-      expect(titleRow.textContent.trim()).toBe("Catalyze");
+      expect(titleRow.textContent.trim()).toBe(projectName);
     });
 
     it("should render transactions", async () => {
@@ -224,7 +226,7 @@ describe("SnsWallet", () => {
       testComponent: SnsWallet,
     };
 
-    it("should open receive modal", async () => {
+    it("should open receive modal with sns logo", async () => {
       const result = render(AccountsTest, { props: modalProps });
 
       await runResolvedPromises();
@@ -234,6 +236,10 @@ describe("SnsWallet", () => {
       const { getByTestId } = result;
 
       expect(getByTestId("receive-modal")).not.toBeNull();
+
+      expect(getByTestId("logo").getAttribute("alt")).toEqual(
+        `${projectName} project logo`
+      );
     });
 
     it("should reload account after finish receiving tokens", async () => {

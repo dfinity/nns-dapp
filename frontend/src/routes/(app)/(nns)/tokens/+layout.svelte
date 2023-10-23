@@ -5,7 +5,7 @@
   import { i18n } from "$lib/stores/i18n";
 </script>
 
-<LayoutList title={$i18n.sns_launchpad.header}>
+<LayoutList title={$i18n.tokens.title}>
   <Layout>
     <Content>
       <slot />

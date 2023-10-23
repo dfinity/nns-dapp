@@ -166,7 +166,9 @@ describe("CkBTCWallet", () => {
       });
     });
 
-    afterAll(() => vi.useRealTimers());
+    afterAll(() => {
+      vi.useRealTimers();
+    });
 
     it("should render ckTESTBTC name", async () => {
       const { getByTestId } = render(CkBTCWallet, props);

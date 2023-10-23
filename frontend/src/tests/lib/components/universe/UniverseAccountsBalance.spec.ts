@@ -49,7 +49,9 @@ describe("UniverseAccountsBalance", () => {
     );
   });
 
-  afterAll(() => vi.clearAllMocks());
+  afterAll(() => {
+    vi.clearAllMocks();
+  });
 
   // Not the same sns canister id to test that the balance is not displayed
   const universe: Universe = {
@@ -80,7 +82,9 @@ describe("UniverseAccountsBalance", () => {
       mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
     );
 
-    afterAll(() => vi.clearAllMocks());
+    afterAll(() => {
+      vi.clearAllMocks();
+    });
 
     it("should render a total balance for Nns", () => {
       const { getByTestId } = render(ProjectAccountsBalance, {

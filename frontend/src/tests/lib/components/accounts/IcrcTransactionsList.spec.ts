@@ -33,7 +33,9 @@ describe("IcrcTransactionList", () => {
       },
     });
 
-  afterEach(() => vi.clearAllMocks());
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
 
   it("renders skeleton when loading transactions", async () => {
     vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(

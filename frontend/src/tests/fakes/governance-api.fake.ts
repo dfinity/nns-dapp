@@ -159,7 +159,7 @@ const reset = () => {
   resetPaused();
 };
 
-export { pause, resume, getNeuron };
+export { getNeuron, pause, resume };
 
 export const addNeuronWith = ({
   identity = mockIdentity,

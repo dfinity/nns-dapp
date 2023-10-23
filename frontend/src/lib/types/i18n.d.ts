@@ -33,6 +33,7 @@ interface I18nCore {
   this_may_take_a_few_minutes: string;
   do_not_close: string;
   finish: string;
+  unknown: string;
 }
 
 interface I18nError {
@@ -968,6 +969,15 @@ interface I18nSns_status {
   5: string;
 }
 
+interface I18nUniversal_proposal_status {
+  unknown: string;
+  open: string;
+  rejected: string;
+  adopted: string;
+  executed: string;
+  failed: string;
+}
+
 interface I18nSns_status_description {
   0: string;
   1: string;
@@ -1059,6 +1069,10 @@ interface I18nSync {
   status_idle_detailed: string;
   status_error_detailed: string;
   status_in_progress_detailed: string;
+}
+
+interface I18nTokens {
+  title: string;
 }
 
 interface I18nNeuron_state {
@@ -1210,6 +1224,8 @@ interface I18nNns_functions {
   InsertSnsWasmUpgradePathEntries: string;
   UpdateElectedReplicaVersions: string;
   BitcoinSetConfig: string;
+  UpdateElectedHostosVersions: string;
+  UpdateNodesHostosVersion: string;
 }
 
 interface I18nNns_functions_description {
@@ -1253,6 +1269,8 @@ interface I18nNns_functions_description {
   InsertSnsWasmUpgradePathEntries: string;
   UpdateElectedReplicaVersions: string;
   BitcoinSetConfig: string;
+  UpdateElectedHostosVersions: string;
+  UpdateNodesHostosVersion: string;
 }
 
 interface I18n {
@@ -1299,6 +1317,7 @@ interface I18n {
   sns_rewards_status: I18nSns_rewards_status;
   sns_rewards_description: I18nSns_rewards_description;
   sns_status: I18nSns_status;
+  universal_proposal_status: I18nUniversal_proposal_status;
   sns_status_description: I18nSns_status_description;
   metrics: I18nMetrics;
   ckbtc: I18nCkbtc;
@@ -1306,6 +1325,7 @@ interface I18n {
   feature_flags_prompt: I18nFeature_flags_prompt;
   settings: I18nSettings;
   sync: I18nSync;
+  tokens: I18nTokens;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;

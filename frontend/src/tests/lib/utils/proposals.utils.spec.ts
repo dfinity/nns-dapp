@@ -7,6 +7,7 @@ import {
   concatenateUniqueProposals,
   excludeProposals,
   getNnsFunctionKey,
+  getUniversalProposalStatus,
   getVotingBallot,
   getVotingPower,
   hasMatchingProposals,
@@ -1310,6 +1311,31 @@ describe("proposals-utils", () => {
         neuronIdString: `${neuronId}`,
         votingPower: votingPower,
       });
+    });
+  });
+
+  describe("getUniversalProposalStatus", () => {
+    it("should return UniversalProposalStatus", () => {
+      const proposalWithStatus = (status: ProposalStatus): ProposalInfo => ({
+        ...mockProposalInfo,
+        status,
+      });
+
+      expect(
+        getUniversalProposalStatus(proposalWithStatus(ProposalStatus.Unknown))
+      ).toBe("unknown");
+      expect(
+        getUniversalProposalStatus(proposalWithStatus(ProposalStatus.Open))
+      ).toBe("open");
+      expect(
+        getUniversalProposalStatus(proposalWithStatus(ProposalStatus.Rejected))
+      ).toBe("rejected");
+      expect(
+        getUniversalProposalStatus(proposalWithStatus(ProposalStatus.Accepted))
+      ).toBe("adopted");
+      expect(
+        getUniversalProposalStatus(proposalWithStatus(ProposalStatus.Failed))
+      ).toBe("failed");
     });
   });
 });

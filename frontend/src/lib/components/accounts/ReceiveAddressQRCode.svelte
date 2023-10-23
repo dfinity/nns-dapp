@@ -42,7 +42,7 @@
   </article>
 
   {#if addressSelected && qrCodeRendered}
-    <div class="address-block">
+    <div data-tid="qr-address-label" class="address-block">
       <p class="label no-margin"><slot name="address-label" /></p>
       <div class="address">
         <span class="value" data-tid="qrcode-display-address">{address}</span>
