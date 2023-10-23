@@ -11,6 +11,39 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 125318
+
+### Application
+
+#### Changed
+
+* Update proposal info icons position to improve the UX.
+* Improve the indicator of the minimum commitment in the project status.
+
+#### Fixed
+
+* Add "Finalizing" status in projects of the Launchpad.
+* Fix UI bug when commitment was very low.
+
+#### Not Published
+
+* Added `approveTransfer` in icrc-ledger API.
+* New feature flag `ENABLE_MY_TOKENS`.
+* Detailed values of the Neurons' Fund and direct participation in the project detail page.
+
+### Operations
+
+#### Added
+
+* Documentation for the proposals payload renderer.
+* E2E test for ckBTC.
+* Fix erroneous failures in the `tip` tagging workflow when a PR is closed without merging.
+* Add --host flag to dfx-snapshot-start.
+
+#### Changed
+
+* Migrate the Jest unit test suite to Vitest.
+
 ## Proposal 125061
 
 ### Application
