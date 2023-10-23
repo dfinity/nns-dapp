@@ -2,6 +2,7 @@ import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
 import {
   ballotVotingPower,
+  getUniversalProposalStatus,
   isAccepted,
   lastProposalId,
   mapProposalInfo,
@@ -586,6 +587,51 @@ describe("sns-proposals utils", () => {
         neuronIdString: "010203",
         votingPower: 250n,
       });
+    });
+  });
+
+  describe("getUniversalProposalStatus", () => {
+    it("should return UniversalProposalStatus", () => {
+      expect(
+        getUniversalProposalStatus(
+          createSnsProposal({
+            proposalId: 0n,
+            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+          })
+        )
+      ).toBe("open");
+      expect(
+        getUniversalProposalStatus(
+          createSnsProposal({
+            proposalId: 0n,
+            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED,
+          })
+        )
+      ).toBe("executed");
+      expect(
+        getUniversalProposalStatus(
+          createSnsProposal({
+            proposalId: 0n,
+            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_FAILED,
+          })
+        )
+      ).toBe("failed");
+      expect(
+        getUniversalProposalStatus(
+          createSnsProposal({
+            proposalId: 0n,
+            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_ADOPTED,
+          })
+        )
+      ).toBe("adopted");
+      expect(
+        getUniversalProposalStatus(
+          createSnsProposal({
+            proposalId: 0n,
+            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_REJECTED,
+          })
+        )
+      ).toBe("rejected");
     });
   });
 });

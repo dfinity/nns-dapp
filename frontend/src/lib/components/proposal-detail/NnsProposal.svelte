@@ -12,7 +12,10 @@
   import NnsProposalProposerActionsEntry from "./NnsProposalProposerActionsEntry.svelte";
   import NnsProposalProposerPayloadEntry from "./NnsProposalProposerPayloadEntry.svelte";
   import { filteredProposals } from "$lib/derived/proposals.derived";
-  import { navigateToProposal } from "$lib/utils/proposals.utils";
+  import {
+    getUniversalProposalStatus,
+    navigateToProposal,
+  } from "$lib/utils/proposals.utils";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { referrerPathStore } from "$lib/stores/routes.store";
   import { AppPath } from "$lib/constants/routes.constants";
@@ -32,6 +35,7 @@
     {#if $referrerPathStore !== AppPath.Launchpad}
       <ProposalNavigation
         currentProposalId={$store.proposal.id}
+        currentProposalStatus={getUniversalProposalStatus($store.proposal)}
         {proposalIds}
         selectProposal={navigateToProposal}
       />
