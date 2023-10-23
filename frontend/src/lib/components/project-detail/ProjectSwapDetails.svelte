@@ -98,7 +98,7 @@
     <AmountDisplay slot="value" amount={maxCommitmentIcp} singleLine />
   </KeyValuePair>
   {#if nonNullish(maxNFParticipation)}
-    <KeyValuePair testId="sns-max-participant-commitment">
+    <KeyValuePair testId="sns-max-nf-commitment">
       <span slot="key">{$i18n.sns_project_detail.max_nf_commitment} </span>
       <AmountDisplay
         slot="value"

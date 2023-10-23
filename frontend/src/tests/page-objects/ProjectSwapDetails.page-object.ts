@@ -55,6 +55,15 @@ export class ProjectSwapDetailsPo extends BasePageObject {
     ).trim();
   }
 
+  async getMaxNfCommitment(): Promise<string> {
+    return (
+      await KeyValuePairPo.under({
+        element: this.root,
+        testId: "sns-max-nf-commitment",
+      }).getValueText()
+    ).trim();
+  }
+
   async getSaleEnd(): Promise<string> {
     return normalizeWhitespace(
       await KeyValuePairPo.under({

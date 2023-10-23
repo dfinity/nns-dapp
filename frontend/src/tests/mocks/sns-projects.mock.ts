@@ -319,6 +319,7 @@ type SnsSummaryParams = {
   directCommitment?: bigint;
   minDirectParticipation?: bigint;
   maxDirectParticipation?: bigint;
+  maxNFParticipation?: bigint;
 };
 
 export const createSummary = ({
@@ -338,6 +339,7 @@ export const createSummary = ({
   directCommitment,
   minDirectParticipation,
   maxDirectParticipation,
+  maxNFParticipation,
 }: SnsSummaryParams): SnsSummary => {
   const init: SnsSwapInit = {
     ...mockInit,
@@ -347,6 +349,16 @@ export const createSummary = ({
     max_direct_participation_icp_e8s: toNullable(maxDirectParticipation),
     restricted_countries: nonNullish(restrictedCountries)
       ? [{ iso_codes: restrictedCountries }]
+      : [],
+    neurons_fund_participation_constraints: nonNullish(maxNFParticipation)
+      ? [
+          {
+            max_neurons_fund_participation_icp_e8s:
+              toNullable(maxNFParticipation),
+            coefficient_intervals: [],
+            min_direct_participation_threshold_icp_e8s: [],
+          },
+        ]
       : [],
   };
   const params: SnsParams = {
