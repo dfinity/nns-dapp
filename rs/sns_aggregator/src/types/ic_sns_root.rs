@@ -1,5 +1,5 @@
 //! Rust code created from candid by: scripts/did2rs.sh --canister sns_root --out ic_sns_root.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug
-//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/2d57e93dabc5f13258d0dee1ffb2363ddce7fe62/rs/sns/root/canister/root.did>
+//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/dd51544944987556c978e774aa7a1992e5c11542/rs/sns/root/canister/root.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(clippy::missing_docs_in_private_items)]

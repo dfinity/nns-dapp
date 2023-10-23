@@ -1,4 +1,4 @@
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/2d57e93dabc5f13258d0dee1ffb2363ddce7fe62/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/dd51544944987556c978e774aa7a1992e5c11542/rs/nns/governance/canister/governance.did>
 type AccountIdentifier = record { hash : vec nat8 };
 type Action = variant {
   RegisterKnownNeuron : KnownNeuron;
@@ -40,7 +40,11 @@ type CanisterSummary = record {
   status : opt CanisterStatusResultV2;
   canister_id : opt principal;
 };
-type CfNeuron = record { nns_neuron_id : nat64; amount_icp_e8s : nat64 };
+type CfNeuron = record {
+  has_created_neuron_recipes : opt bool;
+  nns_neuron_id : nat64;
+  amount_icp_e8s : nat64;
+};
 type CfParticipant = record {
   hotkey_principal : text;
   cf_neurons : vec CfNeuron;
@@ -317,7 +321,6 @@ type Neuron = record {
   created_timestamp_seconds : nat64;
   auto_stake_maturity : opt bool;
   aging_since_timestamp_seconds : nat64;
-  is_genesis : opt bool;
   hot_keys : vec principal;
   account : vec nat8;
   joined_community_fund_timestamp_seconds : opt nat64;
@@ -357,7 +360,6 @@ type NeuronInfo = record {
   recent_ballots : vec BallotInfo;
   created_timestamp_seconds : nat64;
   state : int32;
-  is_genesis : opt bool;
   stake_e8s : nat64;
   joined_community_fund_timestamp_seconds : opt nat64;
   retrieved_at_timestamp_seconds : nat64;
@@ -374,30 +376,41 @@ type NeuronStakeTransfer = record {
   transfer_timestamp : nat64;
   block_height : nat64;
 };
+type NeuronsFundData = record {
+  final_neurons_fund_participation : opt NeuronsFundParticipation;
+  initial_neurons_fund_participation : opt NeuronsFundParticipation;
+  neurons_fund_refunds : opt NeuronsFundSnapshot;
+};
 type NeuronsFundNeuron = record {
   hotkey_principal : opt text;
   is_capped : opt bool;
   nns_neuron_id : opt nat64;
   amount_icp_e8s : opt nat64;
 };
-type NeuronsFundNeuron_1 = record {
+type NeuronsFundNeuronPortion = record {
   hotkey_principal : opt principal;
   is_capped : opt bool;
-  nns_neuron_id : opt nat64;
+  maturity_equivalent_icp_e8s : opt nat64;
+  nns_neuron_id : opt NeuronId;
   amount_icp_e8s : opt nat64;
 };
 type NeuronsFundParticipation = record {
-  neurons_fund_snapshot : opt NeuronsFundSnapshot;
+  total_maturity_equivalent_icp_e8s : opt nat64;
+  intended_neurons_fund_participation_icp_e8s : opt nat64;
+  direct_participation_icp_e8s : opt nat64;
+  swap_participation_limits : opt SwapParticipationLimits;
+  max_neurons_fund_swap_participation_icp_e8s : opt nat64;
+  neurons_fund_reserves : opt NeuronsFundSnapshot;
   ideal_matched_participation_function : opt IdealMatchedParticipationFunction;
 };
 type NeuronsFundSnapshot = record {
-  neurons_fund_neurons : vec NeuronsFundNeuron_1;
+  neurons_fund_neuron_portions : vec NeuronsFundNeuronPortion;
 };
 type NodeProvider = record {
   id : opt principal;
   reward_account : opt AccountIdentifier;
 };
-type Ok = record { neurons_fund_neurons : vec NeuronsFundNeuron };
+type Ok = record { neurons_fund_neuron_portions : vec NeuronsFundNeuron };
 type OpenSnsTokenSwap = record {
   community_fund_investment_e8s : opt nat64;
   target_swap_canister_id : opt principal;
@@ -437,13 +450,13 @@ type Proposal = record {
 };
 type ProposalData = record {
   id : opt NeuronId;
-  neurons_fund_participation : opt NeuronsFundParticipation;
   failure_reason : opt GovernanceError;
   cf_participants : vec CfParticipant;
   ballots : vec record { nat64; Ballot };
   proposal_timestamp_seconds : nat64;
   reward_event_round : nat64;
   failed_timestamp_seconds : nat64;
+  neurons_fund_data : opt NeuronsFundData;
   reject_cost_e8s : nat64;
   derived_proposal_information : opt DerivedProposalInformation;
   latest_tally : opt Tally;
@@ -566,6 +579,12 @@ type SwapParameters = record {
   maximum_icp : opt Tokens;
   neurons_fund_investment_icp : opt Tokens;
   restricted_countries : opt Countries;
+};
+type SwapParticipationLimits = record {
+  min_participant_icp_e8s : opt nat64;
+  max_participant_icp_e8s : opt nat64;
+  min_direct_participation_icp_e8s : opt nat64;
+  max_direct_participation_icp_e8s : opt nat64;
 };
 type Tally = record {
   no : nat64;
