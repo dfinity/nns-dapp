@@ -1,6 +1,9 @@
 <script lang="ts">
   import { TokenAmount, ICPToken } from "@dfinity/utils";
-  import { getDeniedCountries } from "$lib/getters/sns-summary";
+  import {
+    getDeniedCountries,
+    getMaxNeuronsFundParticipation,
+  } from "$lib/getters/sns-summary";
   import type { SnsSummary } from "$lib/types/sns";
   import { getContext } from "svelte";
   import type { CountryCode } from "$lib/types/location";
@@ -61,6 +64,9 @@
 
   let formattedDeniedCountryCodes: string;
   $: formattedDeniedCountryCodes = deniedCountryCodes.join(", ");
+
+  let maxNFParticipation: bigint | undefined;
+  $: maxNFParticipation = getMaxNeuronsFundParticipation(summary);
 </script>
 
 <TestIdWrapper testId="project-swap-details-component">
@@ -91,6 +97,19 @@
     <span slot="key">{$i18n.sns_project_detail.max_commitment} </span>
     <AmountDisplay slot="value" amount={maxCommitmentIcp} singleLine />
   </KeyValuePair>
+  {#if nonNullish(maxNFParticipation)}
+    <KeyValuePair testId="sns-max-participant-commitment">
+      <span slot="key">{$i18n.sns_project_detail.max_nf_commitment} </span>
+      <AmountDisplay
+        slot="value"
+        amount={TokenAmount.fromE8s({
+          amount: maxNFParticipation,
+          token: ICPToken,
+        })}
+        singleLine
+      />
+    </KeyValuePair>
+  {/if}
   <KeyValuePair testId="sns-sale-end">
     <span slot="key">{$i18n.sns_project_detail.sale_end} </span>
     <DateSeconds

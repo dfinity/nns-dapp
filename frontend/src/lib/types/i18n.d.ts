@@ -725,6 +725,7 @@ interface I18nSns_project_detail {
   total_tokens_supply: string;
   min_commitment: string;
   max_commitment: string;
+  max_nf_commitment: string;
   min_participants: string;
   current_overall_commitment: string;
   current_nf_commitment: string;
