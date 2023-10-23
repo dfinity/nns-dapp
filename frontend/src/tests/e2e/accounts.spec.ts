@@ -29,9 +29,7 @@ test("Test accounts requirements", async ({ page, context }) => {
   expect(await accountNames()).toEqual([mainAccountName, subAccountName]);
 
   // The linked account should still be present after refresh
-  await page.reload();
-  // TODO: this timeout is required following the introduction of Svelte v4
-  await page.waitForTimeout(5000);
+  page.reload();
   expect(await accountNames()).toEqual([mainAccountName, subAccountName]);
 
   // Get some ICP to be able to transfer
