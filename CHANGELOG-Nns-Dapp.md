@@ -15,10 +15,6 @@ here after a successful release.
 
 ### Application
 
-#### Added
-
-* Added `approveTransfer` in icrc-ledger API.
-
 #### Changed
 
 * Update proposal info icons position to improve the UX.
@@ -31,6 +27,7 @@ here after a successful release.
 
 #### Not Published
 
+* Added `approveTransfer` in icrc-ledger API.
 * New feature flag `ENABLE_MY_TOKENS`.
 * Detailed values of the Neurons' Fund and direct participation in the project detail page.
 
