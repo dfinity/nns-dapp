@@ -33,7 +33,6 @@ interface I18nCore {
   this_may_take_a_few_minutes: string;
   do_not_close: string;
   finish: string;
-  not_applicable: string;
   unknown: string;
 }
 
@@ -730,6 +729,7 @@ interface I18nSns_project_detail {
   min_participants: string;
   current_overall_commitment: string;
   current_nf_commitment: string;
+  not_participating: string;
   current_direct_commitment: string;
   current_sale_buyer_count: string;
   min_commitment_goal: string;

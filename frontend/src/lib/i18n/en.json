@@ -30,7 +30,6 @@
     "this_may_take_a_few_minutes": "This may take a few minutes",
     "do_not_close": "Please do not close your browser tab",
     "finish": "Finish",
-    "not_applicable": "N/A",
     "unknown": "Unknown"
   },
   "error": {
@@ -705,6 +704,7 @@
     "min_participants": "Minimum Participants",
     "current_overall_commitment": "Overall Commitment",
     "current_nf_commitment": "Neurons' Fund Commitment",
+    "not_participating": "Not Participating",
     "current_direct_commitment": "Direct Commitment",
     "current_sale_buyer_count": "Direct Participants",
     "min_commitment_goal": "Minimum Commitment Goal",

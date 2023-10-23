@@ -110,7 +110,7 @@
 
         <svelte:fragment slot="value">
           {#if projectCommitments.nfCommitmentE8s === null}
-            <span>{$i18n.core.not_applicable}</span>
+            <span>{$i18n.sns_project_detail.not_participating}</span>
           {:else}
             <AmountDisplay
               amount={TokenAmount.fromE8s({
