@@ -9,6 +9,8 @@ use crate::tests::payloads::nns_function_16::payload_44876;
 use crate::tests::payloads::nns_function_20::payload_44877;
 use crate::tests::payloads::nns_function_21::payload_43825;
 use crate::tests::payloads::nns_function_23::payload_44892;
+use crate::tests::payloads::nns_function_40::payload_nns_function_id_40;
+use crate::tests::payloads::nns_function_41::payload_nns_function_id_41;
 
 mod nns_function_02;
 mod nns_function_04;
@@ -21,6 +23,8 @@ mod nns_function_16;
 mod nns_function_20;
 mod nns_function_21;
 mod nns_function_23;
+mod nns_function_40;
+mod nns_function_41;
 
 pub fn get_payloads() -> Vec<(i32, Vec<u8>)> {
     vec![
@@ -48,5 +52,7 @@ pub fn get_payloads() -> Vec<(i32, Vec<u8>)> {
         // (22, ???),
         (23, payload_44892()),
         // (24, ???),
+        (40, payload_nns_function_id_40()),
+        (41, payload_nns_function_id_41()),
     ]
 }
