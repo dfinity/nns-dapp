@@ -28,7 +28,7 @@ import {
 import type { HttpAgent } from "@dfinity/agent";
 import { AccountIdentifier } from "@dfinity/ledger-icp";
 import { Principal } from "@dfinity/principal";
-import { mock } from "jest-mock-extended";
+import { mock } from "vitest-mock-extended";
 
 describe("NNSDapp", () => {
   const createNnsDapp = async (service: NNSDappService) => {
@@ -163,7 +163,9 @@ describe("NNSDapp", () => {
   });
 
   describe("NNSDapp.addPendingNotifySwap", () => {
-    afterEach(() => jest.clearAllMocks());
+    afterEach(() => {
+      vi.clearAllMocks();
+    });
     it("should call add_pending_notify_swap successfully", async () => {
       const service = mock<NNSDappService>();
       service.add_pending_notify_swap.mockResolvedValue({ Ok: null });

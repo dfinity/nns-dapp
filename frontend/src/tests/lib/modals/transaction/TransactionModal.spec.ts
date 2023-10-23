@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
@@ -76,11 +72,9 @@ describe("TransactionModal", () => {
       },
     });
 
-  beforeAll(() =>
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
-  );
+  beforeAll(() => {
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+  });
 
   beforeEach(() => {
     icpAccountsStore.setForTesting({
@@ -90,11 +84,11 @@ describe("TransactionModal", () => {
       certified: true,
     });
 
-    jest
-      .spyOn(snsAccountsStore, "subscribe")
-      .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
+    vi.spyOn(snsAccountsStore, "subscribe").mockImplementation(
+      mockSnsAccountsStoreSubscribe(mockPrincipal)
+    );
 
-    jest.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
   });
 
   const renderEnter10ICPAndNext = async ({
@@ -178,7 +172,7 @@ describe("TransactionModal", () => {
         rootCanisterId: OWN_CANISTER_ID,
       });
 
-      const onClose = jest.fn();
+      const onClose = vi.fn();
       component.$on("nnsClose", onClose);
 
       await clickByTestId(getByTestId, "transaction-button-cancel");
@@ -334,7 +328,7 @@ describe("TransactionModal", () => {
         rootCanisterId: OWN_CANISTER_ID,
       });
 
-      const onSubmit = jest.fn();
+      const onSubmit = vi.fn();
       component.$on("nnsSubmit", onSubmit);
 
       const confirmButton = getByTestId("transaction-button-execute");
@@ -414,16 +408,6 @@ describe("TransactionModal", () => {
       expect(queryByTestId("select-network-dropdown")).toBeInTheDocument();
     });
 
-    it("should disable next button if network not selected", async () => {
-      const call = async () =>
-        await renderEnter10ICPAndNext({
-          rootCanisterId: OWN_CANISTER_ID,
-          mustSelectNetwork: true,
-        });
-
-      expect(call).rejects.toThrowError();
-    });
-
     it("should show the ledger fee", async () => {
       const { queryByTestId } = await renderTransactionModal({
         destinationAddress: mockMainAccount.identifier,
@@ -495,7 +479,7 @@ describe("TransactionModal", () => {
         getByTestId("transaction-summary-total-received")?.textContent
       ).toContain(icpAmount);
 
-      const onSubmit = jest.fn();
+      const onSubmit = vi.fn();
       component.$on("nnsSubmit", onSubmit);
 
       const confirmButton = getByTestId("transaction-button-execute");

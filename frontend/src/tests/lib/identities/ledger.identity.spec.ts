@@ -19,7 +19,7 @@ import {
 import type TransportWebHID from "@ledgerhq/hw-transport-webhid";
 import type InternetComputerApp from "@zondax/ledger-icp";
 import { LedgerError } from "@zondax/ledger-icp";
-import { mock } from "jest-mock-extended";
+import { mock } from "vitest-mock-extended";
 
 describe("LedgerIdentity", () => {
   const mockLedgerApp = mock<InternetComputerApp>();
@@ -54,8 +54,8 @@ describe("LedgerIdentity", () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.spyOn(console, "warn").mockImplementation(() => undefined);
+    vi.clearAllMocks();
+    vi.spyOn(console, "warn").mockImplementation(() => undefined);
     mockLedgerApp.getAddressAndPubKey.mockResolvedValue({
       errorMessage: undefined,
       returnCode: LedgerError.NoErrors,
@@ -64,13 +64,13 @@ describe("LedgerIdentity", () => {
       address: Buffer.from(""),
       principalText: mockPrincipal.toText(),
     });
-    jest.spyOn(LedgerIdentity, "connect").mockResolvedValue({
+    vi.spyOn(LedgerIdentity, "connect").mockResolvedValue({
       app: mockLedgerApp,
       transport: mockTransport,
     });
-    jest
-      .spyOn(LedgerIdentity, "fetchPublicKeyFromDevice")
-      .mockResolvedValue(publicKey);
+    vi.spyOn(LedgerIdentity, "fetchPublicKeyFromDevice").mockResolvedValue(
+      publicKey
+    );
     const callSignature = Buffer.alloc(64);
     const readStateSignature = Buffer.alloc(64);
     mockLedgerApp.signUpdateCall.mockResolvedValue({
@@ -179,7 +179,7 @@ describe("LedgerIdentity", () => {
       const body = readRequest2.body.content as ReadRequest;
       expect(getRequestId(body)).toEqual(requestId2);
     } else {
-      fail("To read request id from transformed request 2");
+      expect.unreachable("To read request id from transformed request 2");
     }
 
     // Read state for first call
@@ -193,7 +193,7 @@ describe("LedgerIdentity", () => {
       const body = readRequest1.body.content as ReadRequest;
       expect(getRequestId(body)).toEqual(requestId1);
     } else {
-      fail("To read request id from transformed request 1");
+      expect.unreachable("To read request id from transformed request 1");
     }
   });
 });

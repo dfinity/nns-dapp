@@ -14,6 +14,7 @@
   import SnsProposerEntry from "./SnsProposerEntry.svelte";
   import type { Readable } from "svelte/store";
   import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let proposal: SnsProposalData;
   export let rootCanisterId: Principal;
@@ -53,10 +54,7 @@
   }));
 </script>
 
-<div
-  class="content-cell-island"
-  data-tid="proposal-system-info-details-component"
->
+<TestIdWrapper testId="proposal-system-info-details-component">
   <h1 class="content-cell-title">{type ?? ""}</h1>
 
   <div class="content-cell-details">
@@ -121,4 +119,4 @@
       <SnsProposerEntry {proposer} />
     {/if}
   </div>
-</div>
+</TestIdWrapper>

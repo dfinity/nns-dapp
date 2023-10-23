@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SpawnNeuronModal from "$lib/modals/neurons/SpawnNeuronModal.svelte";
 import { spawnNeuron } from "$lib/services/neurons.services";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
@@ -14,10 +10,10 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent } from "@testing-library/svelte";
 
-jest.mock("$lib/services/neurons.services", () => {
+vi.mock("$lib/services/neurons.services", () => {
   return {
-    spawnNeuron: jest.fn().mockResolvedValue(BigInt(10)),
-    getNeuronFromStore: jest.fn(),
+    spawnNeuron: vi.fn().mockResolvedValue(BigInt(10)),
+    getNeuronFromStore: vi.fn(),
   };
 });
 
@@ -37,7 +33,9 @@ describe("SpawnNeuronModal", () => {
     })
   );
 
-  afterAll(() => jest.clearAllMocks());
+  afterAll(() => {
+    vi.clearAllMocks();
+  });
 
   it("should display modal", async () => {
     const { container } = await renderModal({

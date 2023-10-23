@@ -1,19 +1,12 @@
 <script lang="ts">
   import { Island, Spinner } from "@dfinity/gix-components";
-  import Summary from "$lib/components/summary/Summary.svelte";
-  import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import { writable } from "svelte/store";
-  import {
-    WALLET_CONTEXT_KEY,
-    type CkBTCWalletContext,
-    type WalletStore,
-  } from "$lib/types/wallet.context";
+  import type { WalletStore } from "$lib/types/wallet.context";
   import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
-  import { setContext } from "svelte";
   import { findAccount, hasAccounts } from "$lib/utils/accounts.utils";
   import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { TokenAmount, isNullish, nonNullish } from "@dfinity/utils";
   import {
     loadCkBTCAccounts,
     syncCkBTCAccounts,
@@ -30,7 +23,10 @@
   } from "$lib/derived/universes-tokens.derived";
   import CkBTCWalletFooter from "$lib/components/accounts/CkBTCWalletFooter.svelte";
   import type { UniverseCanisterId } from "$lib/types/universe";
-  import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
+  import {
+    selectedCkBTCUniverseIdStore,
+    selectedUniverseStore,
+  } from "$lib/derived/selected-universe.derived";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
   import BitcoinAddress from "$lib/components/accounts/BitcoinAddress.svelte";
@@ -38,6 +34,8 @@
   import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
   import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
   import CkBTCBalancesObserver from "$lib/components/accounts/CkBTCBalancesObserver.svelte";
+  import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
+  import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
@@ -70,16 +68,10 @@
 
   const reloadOnlyAccountFromStore = () => setSelectedAccount();
 
-  // transactions?.reloadTransactions() returns a promise.
+  // transactions?.reloadTransactions?.() returns a promise.
   // However, the UI displays skeletons while loading and the user can proceed with other operations during this time.
   // That is why we do not need to wait for the promise to resolve here.
-  const reloadTransactions = () => transactions?.reloadTransactions();
-
-  setContext<CkBTCWalletContext>(WALLET_CONTEXT_KEY, {
-    store: selectedAccountStore,
-    reloadAccount,
-    reloadAccountFromStore,
-  });
+  const reloadTransactions = () => transactions?.reloadTransactions?.();
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
 
@@ -181,27 +173,37 @@
     }))();
 </script>
 
-<Island>
+<Island testId="ckbtc-wallet-component">
   <main class="legacy" data-tid="ckbtc-wallet">
     <section>
-      {#if loaded}
-        <Summary />
-
-        <WalletSummary detailedBalance token={token?.token} />
-
-        {#if nonNullish(canisters) && nonNullish($selectedAccountStore.account) && nonNullish($selectedCkBTCUniverseIdStore)}
-          <CkBTCBalancesObserver
-            universeId={$selectedCkBTCUniverseIdStore}
-            accounts={[$selectedAccountStore.account]}
-            reload={reloadOnlyAccountFromStore}
+      {#if loaded && nonNullish(canisters) && nonNullish($selectedAccountStore.account) && nonNullish($selectedCkBTCUniverseIdStore) && nonNullish(token)}
+        <CkBTCBalancesObserver
+          universeId={$selectedCkBTCUniverseIdStore}
+          accounts={[$selectedAccountStore.account]}
+          reload={reloadOnlyAccountFromStore}
+        >
+          <WalletPageHeader
+            universe={$selectedUniverseStore}
+            walletAddress={$selectedAccountStore.account.identifier}
+          />
+          <WalletPageHeading
+            accountName={$selectedAccountStore.account.name ??
+              $i18n.accounts.main}
+            balance={TokenAmount.fromE8s({
+              amount: $selectedAccountStore.account.balanceE8s,
+              token: token?.token,
+            })}
           >
             <CkBTCWalletActions
               reload={reloadAccount}
               minterCanisterId={canisters.minterCanisterId}
             />
+          </WalletPageHeading>
 
-            <Separator />
+          <Separator spacing="none" />
 
+          <!-- Transactions and the explanation go together. -->
+          <div>
             <BitcoinAddress
               account={$selectedAccountStore.account}
               universeId={$selectedCkBTCUniverseIdStore}
@@ -216,8 +218,8 @@
               indexCanisterId={canisters.indexCanisterId}
               token={token?.token}
             />
-          </CkBTCBalancesObserver>
-        {/if}
+          </div>
+        </CkBTCBalancesObserver>
       {:else}
         <Spinner />
       {/if}
@@ -225,6 +227,18 @@
   </main>
 
   {#if canMakeTransactions}
-    <CkBTCWalletFooter />
+    <CkBTCWalletFooter
+      store={selectedAccountStore}
+      {reloadAccount}
+      {reloadAccountFromStore}
+    />
   {/if}
 </Island>
+
+<style lang="scss">
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-4x);
+  }
+</style>

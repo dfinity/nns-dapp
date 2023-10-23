@@ -10,7 +10,6 @@ import { browser, building } from "./__mocks__/$app/environment";
 import { afterNavigate, goto } from "./__mocks__/$app/navigation";
 import { navigating, page } from "./__mocks__/$app/stores";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
-import localStorageMock from "./src/tests/mocks/local-storage.mock";
 import { failTestsThatLogToConsole } from "./src/tests/utils/console.test-utils";
 import {
   mockedConstants,
@@ -41,9 +40,9 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
       ENABLE_CKTESTBTC: true,
       ENABLE_ICP_ICRC: false,
       ENABLE_INSTANT_UNLOCK: true,
-      ENABLE_SNS_AGGREGATOR_STORE: true,
       ENABLE_STAKE_NEURON_ICRC1: true,
       ENABLE_SWAP_ICRC1: true,
+      ENABLE_MY_TOKENS: false,
       ENABLE_FULL_WIDTH_PROPOSAL: true,
       TEST_FLAG_EDITABLE: true,
       TEST_FLAG_NOT_EDITABLE: true,
@@ -72,8 +71,6 @@ setDefaultTestConstants({
   ENABLE_QR_CODE_READER: false,
 });
 
-global.localStorage = localStorageMock;
-
 failTestsThatLogToConsole();
 
 // testing-library setup
@@ -95,3 +92,8 @@ vi.mock("$app/stores", () => ({
   page,
   navigating,
 }));
+
+// Issue: https://github.com/testing-library/svelte-testing-library/issues/206
+vi.stubGlobal("requestAnimationFrame", (fn) => {
+  return window.setTimeout(() => fn(Date.now()), 0);
+});

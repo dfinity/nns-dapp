@@ -17,9 +17,9 @@ import {
 import { tick } from "svelte";
 import { get } from "svelte/store";
 
-jest.mock("$lib/stores/toasts.store", () => {
+vi.mock("$lib/stores/toasts.store", () => {
   return {
-    toastsError: jest.fn(),
+    toastsError: vi.fn(),
   };
 });
 
@@ -29,7 +29,7 @@ describe("ckbtc-accounts-balance.services", () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     icrcAccountsStore.reset();
     tokensStore.reset();
@@ -43,11 +43,11 @@ describe("ckbtc-accounts-balance.services", () => {
   };
 
   it("should call api.getCkBTCAccounts and load balance in store", async () => {
-    jest
-      .spyOn(ledgerApi, "getCkBTCToken")
-      .mockImplementation(() => Promise.resolve(mockCkBTCToken));
+    vi.spyOn(ledgerApi, "getCkBTCToken").mockImplementation(() =>
+      Promise.resolve(mockCkBTCToken)
+    );
 
-    const spyQuery = jest
+    const spyQuery = vi
       .spyOn(ledgerApi, "getCkBTCAccount")
       .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
 
@@ -65,13 +65,13 @@ describe("ckbtc-accounts-balance.services", () => {
   });
 
   it("should call api.getCkBTCToken and load token in store", async () => {
-    const spyQuery = jest
+    const spyQuery = vi
       .spyOn(ledgerApi, "getCkBTCToken")
       .mockImplementation(() => Promise.resolve(mockCkBTCToken));
 
-    jest
-      .spyOn(ledgerApi, "getCkBTCAccount")
-      .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
+    vi.spyOn(ledgerApi, "getCkBTCAccount").mockImplementation(() =>
+      Promise.resolve(mockCkBTCMainAccount)
+    );
 
     await services.uncertifiedLoadCkBTCAccountsBalance(params);
 
@@ -91,8 +91,8 @@ describe("ckbtc-accounts-balance.services", () => {
   });
 
   it("should toast error", async () => {
-    jest.spyOn(console, "error").mockImplementation(() => undefined);
-    jest.spyOn(ledgerApi, "getCkBTCAccount").mockRejectedValue(new Error());
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.spyOn(ledgerApi, "getCkBTCAccount").mockRejectedValue(new Error());
 
     await services.uncertifiedLoadCkBTCAccountsBalance(params);
 

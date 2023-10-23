@@ -5,6 +5,7 @@ import {
   getWithdrawalAccount,
   minterInfo,
   retrieveBtc,
+  retrieveBtcWithApproval,
   updateBalance,
 } from "$lib/api/ckbtc-minter.api";
 import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -16,21 +17,23 @@ import {
 } from "$tests/mocks/ckbtc-minter.mock";
 import type { HttpAgent } from "@dfinity/agent";
 import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
-import { mock } from "jest-mock-extended";
+import { mock } from "vitest-mock-extended";
 
 describe("ckbtc-minter api", () => {
   const minterCanisterMock = mock<CkBTCMinterCanister>();
 
   beforeAll(() => {
-    jest
-      .spyOn(CkBTCMinterCanister, "create")
-      .mockImplementation(() => minterCanisterMock);
+    vi.spyOn(CkBTCMinterCanister, "create").mockImplementation(
+      () => minterCanisterMock
+    );
   });
 
-  afterAll(() => jest.clearAllMocks());
+  afterAll(() => {
+    vi.clearAllMocks();
+  });
 
   beforeEach(() => {
-    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   const params = {
@@ -142,6 +145,50 @@ describe("ckbtc-minter api", () => {
       });
 
       const call = () => retrieveBtc(retrieveParams);
+
+      expect(call).rejects.toThrowError();
+    });
+  });
+
+  describe("retrieveBtcWithApproval", () => {
+    const retrieveWithApprovalParams = {
+      address: mockBTCAddressTestnet,
+      amount: 123n,
+    };
+
+    it("returns successfully when btc are retrieved", async () => {
+      const ok: RetrieveBtcOk = {
+        block_index: 1n,
+      };
+
+      const retrieveBtcWithApprovalSpy =
+        minterCanisterMock.retrieveBtcWithApproval.mockResolvedValue(ok);
+
+      const result = await retrieveBtcWithApproval({
+        ...params,
+        ...retrieveWithApprovalParams,
+      });
+
+      expect(result).toEqual(ok);
+
+      expect(retrieveBtcWithApprovalSpy).toBeCalledTimes(1);
+      expect(retrieveBtcWithApprovalSpy).toBeCalledWith(
+        retrieveWithApprovalParams
+      );
+    });
+
+    it("bubble errors", () => {
+      minterCanisterMock.retrieveBtcWithApproval.mockImplementation(
+        async () => {
+          throw new Error();
+        }
+      );
+
+      const call = () =>
+        retrieveBtcWithApproval({
+          ...params,
+          ...retrieveWithApprovalParams,
+        });
 
       expect(call).rejects.toThrowError();
     });

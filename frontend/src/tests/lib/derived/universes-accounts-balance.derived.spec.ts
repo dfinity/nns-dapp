@@ -11,9 +11,9 @@ import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 import { get } from "svelte/store";
 
 describe("universes-accounts-balance.derived", () => {
-  jest
-    .spyOn(icpAccountsStore, "subscribe")
-    .mockImplementation(mockAccountsStoreSubscribe([], []));
+  vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
+    mockAccountsStoreSubscribe([], [])
+  );
 
   const rootCanisterId = mockSnsFullProject.rootCanisterId;
 
@@ -25,7 +25,9 @@ describe("universes-accounts-balance.derived", () => {
     });
   });
 
-  afterAll(() => jest.clearAllMocks());
+  afterAll(() => {
+    vi.clearAllMocks();
+  });
 
   it("should derive a balance of Nns accounts", () => {
     const balances = get(universesAccountsBalance);

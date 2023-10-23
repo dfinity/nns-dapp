@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { increaseStakeNeuron } from "$lib/api/sns.api";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -46,9 +42,9 @@ import { fromNullable } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
-jest.mock("$lib/api/sns.api");
-jest.mock("$lib/api/sns-governance.api");
-jest.mock("$lib/api/sns-ledger.api");
+vi.mock("$lib/api/sns.api");
+vi.mock("$lib/api/sns-governance.api");
+vi.mock("$lib/api/sns-ledger.api");
 
 describe("SnsNeuronDetail", () => {
   fakeSnsGovernanceApi.install();
@@ -68,7 +64,7 @@ describe("SnsNeuronDetail", () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     snsParametersStore.reset();
     transactionsFeesStore.reset();
     tokensStore.reset();
@@ -94,9 +90,7 @@ describe("SnsNeuronDetail", () => {
       routeId: AppPath.Neuron,
     });
 
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
   const renderComponent = async (props) => {

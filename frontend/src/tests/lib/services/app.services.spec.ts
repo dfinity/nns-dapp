@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import * as agent from "$lib/api/agent.api";
 import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
@@ -11,10 +8,10 @@ import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import type { HttpAgent } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
 import { LedgerCanister } from "@dfinity/ledger-icp";
-import { mock } from "jest-mock-extended";
 import { get } from "svelte/store";
+import { mock } from "vitest-mock-extended";
 
-jest.mock("$lib/api/sns-aggregator.api");
+vi.mock("$lib/api/sns-aggregator.api");
 
 describe("app-services", () => {
   const mockLedgerCanister = mock<LedgerCanister>();
@@ -23,24 +20,25 @@ describe("app-services", () => {
   beforeEach(() => {
     resetIdentity();
     toastsStore.reset();
-    jest.clearAllMocks();
-    jest
-      .spyOn(LedgerCanister, "create")
-      .mockImplementation((): LedgerCanister => mockLedgerCanister);
+    vi.clearAllMocks();
+    vi.spyOn(LedgerCanister, "create").mockImplementation(
+      (): LedgerCanister => mockLedgerCanister
+    );
 
-    jest
-      .spyOn(NNSDappCanister, "create")
-      .mockImplementation((): NNSDappCanister => mockNNSDappCanister);
+    vi.spyOn(NNSDappCanister, "create").mockImplementation(
+      (): NNSDappCanister => mockNNSDappCanister
+    );
 
-    jest.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
 
-    jest
-      .spyOn(aggregatorApi, "querySnsProjects")
-      .mockResolvedValue([aggregatorSnsMockDto, aggregatorSnsMockDto]);
+    vi.spyOn(aggregatorApi, "querySnsProjects").mockResolvedValue([
+      aggregatorSnsMockDto,
+      aggregatorSnsMockDto,
+    ]);
 
     mockNNSDappCanister.getAccount.mockResolvedValue(mockAccountDetails);
     mockLedgerCanister.accountBalance.mockResolvedValue(BigInt(100_000_000));
-    jest.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   it("should init Nns", async () => {

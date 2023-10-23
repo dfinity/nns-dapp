@@ -2,7 +2,6 @@
   import type { Transaction as NnsTransaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import type { Account } from "$lib/types/account";
   import { i18n } from "$lib/stores/i18n";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import NnsTransactionCard from "./NnsTransactionCard.svelte";
   import { getContext } from "svelte";
@@ -27,7 +26,8 @@
   $: extendedTransactions = mapToSelfTransaction(transactions ?? []);
 </script>
 
-<TestIdWrapper testId="transaction-list-component">
+<!-- We want this `div` as wrapper so that the parent doesn't apply spacing between the elements. -->
+<div data-tid="transaction-list-component">
   {#if account === undefined || transactions === undefined}
     <SkeletonCard cardType="info" />
   {:else if transactions.length === 0}
@@ -39,7 +39,7 @@
       </div>
     {/each}
   {/if}
-</TestIdWrapper>
+</div>
 
 <style lang="scss">
   .flip:first-of-type {

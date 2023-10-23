@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import {
   getIcpToCyclesExchangeRate,
   topUpCanister,
@@ -21,29 +18,29 @@ import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import AddCyclesModalTest from "./AddCyclesModalTest.svelte";
 
-jest.mock("$lib/services/canisters.services", () => {
+vi.mock("$lib/services/canisters.services", () => {
   return {
-    getIcpToCyclesExchangeRate: jest.fn().mockResolvedValue(BigInt(100_000)),
-    topUpCanister: jest.fn().mockResolvedValue({ success: true }),
+    getIcpToCyclesExchangeRate: vi.fn().mockResolvedValue(BigInt(100_000)),
+    topUpCanister: vi.fn().mockResolvedValue({ success: true }),
   };
 });
 
-jest.mock("$lib/stores/toasts.store", () => {
+vi.mock("$lib/stores/toasts.store", () => {
   return {
-    toastsSuccess: jest.fn(),
+    toastsSuccess: vi.fn(),
   };
 });
 
 describe("AddCyclesModal", () => {
-  jest
-    .spyOn(icpAccountsStore, "subscribe")
-    .mockImplementation(
-      mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
-    );
+  vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
+    mockAccountsStoreSubscribe([mockSubAccount], [mockHardwareWalletAccount])
+  );
 
-  const reloadDetails = jest.fn();
+  const reloadDetails = vi.fn();
   const props = { reloadDetails };
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
   it("should display modal", () => {
     const { container } = render(AddCyclesModalTest, { props });
 
@@ -145,7 +142,7 @@ describe("AddCyclesModal", () => {
       ).toBeInTheDocument()
     );
 
-    const done = jest.fn();
+    const done = vi.fn();
     component.$on("nnsClose", done);
 
     await clickByTestId(queryByTestId, "confirm-cycles-canister-button");

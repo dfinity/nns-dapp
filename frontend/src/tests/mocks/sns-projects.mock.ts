@@ -57,6 +57,7 @@ export const createTransferableAmount = (
 });
 export const createBuyersState = (amount: bigint): SnsSwapBuyerState => ({
   icp: [createTransferableAmount(amount)],
+  has_created_neuron_recipes: [],
 });
 
 export const mockSnsSwapCommitment = (
@@ -94,6 +95,8 @@ export const mockSnsParams: SnsParams = {
   max_participant_icp_e8s: BigInt(5000000000),
   min_icp_e8s: BigInt(1500 * 100000000),
   sale_delay_seconds: [],
+  min_direct_participation_icp_e8s: [],
+  max_direct_participation_icp_e8s: [],
 };
 
 export const mockInit: SnsSwapInit = {
@@ -125,6 +128,9 @@ export const mockInit: SnsSwapInit = {
   restricted_countries: [],
   min_icp_e8s: [1_500_000_000n],
   neurons_fund_participation_constraints: [],
+  min_direct_participation_icp_e8s: [1_000_000_000n],
+  max_direct_participation_icp_e8s: [3_000_000_000n],
+  neurons_fund_participation: [],
 };
 
 export const mockSwap: SnsSummarySwap = {
@@ -296,6 +302,25 @@ export const summaryForLifecycle = (
   },
 });
 
+type SnsSummaryParams = {
+  lifecycle?: SnsSwapLifecycle;
+  confirmationText?: string | undefined;
+  restrictedCountries?: string[] | undefined;
+  minParticipants?: number;
+  buyersCount?: bigint | null;
+  tokensDistributed?: bigint;
+  minParticipantCommitment?: bigint;
+  maxParticipantCommitment?: bigint;
+  swapDueTimestampSeconds?: bigint;
+  minTotalCommitment?: bigint;
+  maxTotalCommitment?: bigint;
+  currentTotalCommitment?: bigint;
+  neuronsFundCommitment?: bigint;
+  directCommitment?: bigint;
+  minDirectParticipation?: bigint;
+  maxDirectParticipation?: bigint;
+};
+
 export const createSummary = ({
   lifecycle = SnsSwapLifecycle.Open,
   confirmationText = undefined,
@@ -311,26 +336,15 @@ export const createSummary = ({
   currentTotalCommitment,
   neuronsFundCommitment,
   directCommitment,
-}: {
-  lifecycle?: SnsSwapLifecycle;
-  confirmationText?: string | undefined;
-  restrictedCountries?: string[] | undefined;
-  minParticipants?: number;
-  buyersCount?: bigint | null;
-  tokensDistributed?: bigint;
-  minParticipantCommitment?: bigint;
-  maxParticipantCommitment?: bigint;
-  swapDueTimestampSeconds?: bigint;
-  minTotalCommitment?: bigint;
-  maxTotalCommitment?: bigint;
-  currentTotalCommitment?: bigint;
-  neuronsFundCommitment?: bigint;
-  directCommitment?: bigint;
-}): SnsSummary => {
+  minDirectParticipation,
+  maxDirectParticipation,
+}: SnsSummaryParams): SnsSummary => {
   const init: SnsSwapInit = {
     ...mockInit,
     swap_due_timestamp_seconds: [swapDueTimestampSeconds],
     confirmation_text: toNullable(confirmationText),
+    min_direct_participation_icp_e8s: toNullable(minDirectParticipation),
+    max_direct_participation_icp_e8s: toNullable(maxDirectParticipation),
     restricted_countries: nonNullish(restrictedCountries)
       ? [{ iso_codes: restrictedCountries }]
       : [],
@@ -362,8 +376,21 @@ export const createSummary = ({
       params,
     },
     derived,
+    init,
   };
 };
+
+export const createMockSnsFullProject = ({
+  summaryParams,
+  rootCanisterId,
+}: {
+  rootCanisterId: Principal;
+  summaryParams: SnsSummaryParams;
+}) => ({
+  rootCanisterId,
+  summary: createSummary(summaryParams),
+  mockSwapCommitment: mockSnsSwapCommitment(rootCanisterId),
+});
 
 export const mockQueryMetadataResponse: SnsGetMetadataResponse = {
   url: [`https://my.url/`],

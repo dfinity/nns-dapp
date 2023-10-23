@@ -8,6 +8,9 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { toastsError } from "$lib/stores/toasts.store";
+  import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
+  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+  import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 
   // TODO: Support adding subaccounts
   let modal: "NewTransaction" | undefined = undefined;
@@ -27,7 +30,12 @@
 </script>
 
 {#if modal === "NewTransaction"}
-  <SnsTransactionModal on:nnsClose={closeModal} />
+  <SnsTransactionModal
+    rootCanisterId={$selectedUniverseIdStore}
+    token={$snsTokenSymbolSelectedStore}
+    transactionFee={$snsSelectedTransactionFeeStore}
+    on:nnsClose={closeModal}
+  />
 {/if}
 
 {#if nonNullish($snsProjectAccountsStore)}

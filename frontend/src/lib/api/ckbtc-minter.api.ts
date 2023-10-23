@@ -101,6 +101,30 @@ export const retrieveBtc = async ({
   return result;
 };
 
+export const retrieveBtcWithApproval = async ({
+  identity,
+  canisterId,
+  ...params
+}: {
+  identity: Identity;
+  canisterId: Principal;
+  address: string;
+  amount: bigint;
+  fromSubaccount?: Uint8Array;
+}): Promise<RetrieveBtcOk> => {
+  logWithTimestamp("Retrieve BTC with approval: call...");
+
+  const {
+    canister: { retrieveBtcWithApproval: retrieveBtcWithApprovalApi },
+  } = await ckBTCMinterCanister({ identity, canisterId });
+
+  const result = await retrieveBtcWithApprovalApi(params);
+
+  logWithTimestamp("Retrieve BTC with approval: done");
+
+  return result;
+};
+
 export const estimateFee = async ({
   identity,
   canisterId,

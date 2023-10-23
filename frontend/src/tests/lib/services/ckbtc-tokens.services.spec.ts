@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
@@ -22,10 +18,12 @@ describe("ckbtc-tokens-services", () => {
       tokensStore.reset();
     });
 
-    afterEach(() => jest.clearAllMocks());
+    afterEach(() => {
+      vi.clearAllMocks();
+    });
 
     it("should load token in the store", async () => {
-      const spyGetToken = jest
+      const spyGetToken = vi
         .spyOn(ledgerApi, "getCkBTCToken")
         .mockResolvedValue(mockCkBTCToken);
 
@@ -61,10 +59,12 @@ describe("ckbtc-tokens-services", () => {
       });
     });
 
-    afterEach(() => jest.clearAllMocks());
+    afterEach(() => {
+      vi.clearAllMocks();
+    });
 
     it("should not reload token if already loaded", async () => {
-      const spyGetToken = jest
+      const spyGetToken = vi
         .spyOn(ledgerApi, "getCkBTCToken")
         .mockResolvedValue(mockCkBTCToken);
 

@@ -9,6 +9,7 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": false,
+    "allowArbitraryExtensions": true,
     "baseUrl": ".",
     "paths": {
       "$lib": ["src/lib"],
@@ -18,14 +19,11 @@
       "$mocks": ["__mocks__"],
       "$mocks/*": ["__mocks__/*"],
       "$tests": ["src/tests"],
-      "$tests/*": ["src/tests/*"],
-      "$vitests": ["src/vitests"],
-      "$vitests/*": ["src/vitests/*"]
+      "$tests/*": ["src/tests/*"]
     },
     "types": [
       "vitest/globals",
       "node",
-      "jest",
       "@testing-library/jest-dom",
       "@types/wicg-file-system-access"
     ]

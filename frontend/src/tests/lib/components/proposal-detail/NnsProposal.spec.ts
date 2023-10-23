@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as proposalsApi from "$lib/api/proposals.api";
 import { AppPath } from "$lib/constants/routes.constants";
 import { filteredProposals } from "$lib/derived/proposals.derived";
@@ -18,11 +14,11 @@ import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { render, waitFor } from "@testing-library/svelte";
 import NnsProposalTest from "./NnsProposalTest.svelte";
 
-jest.mock("$lib/utils/html.utils", () => ({
+vi.mock("$lib/utils/html.utils", () => ({
   markdownToHTML: (value) => Promise.resolve(value),
 }));
 
-jest.mock("$lib/api/nns-dapp.api");
+vi.mock("$lib/api/nns-dapp.api");
 
 describe("Proposal", () => {
   blockAllCallsTo(["$lib/api/nns-dapp.api"]);
@@ -46,7 +42,7 @@ describe("Proposal", () => {
     });
 
   beforeEach(() => {
-    jest.spyOn(proposalsApi, "queryProposalPayload").mockResolvedValue({});
+    vi.spyOn(proposalsApi, "queryProposalPayload").mockResolvedValue({});
   });
 
   it("should render a detail grid", async () => {
@@ -89,11 +85,9 @@ describe("Proposal", () => {
   });
 
   it("should render proposal navigation", async () => {
-    jest
-      .spyOn(filteredProposals, "subscribe")
-      .mockImplementation(
-        createMockProposalsStoreSubscribe(generateMockProposals(10))
-      );
+    vi.spyOn(filteredProposals, "subscribe").mockImplementation(
+      createMockProposalsStoreSubscribe(generateMockProposals(10))
+    );
 
     const { container } = renderProposalModern(5n);
     const po = ProposalNavigationPo.under(new JestPageObjectElement(container));
@@ -103,11 +97,9 @@ describe("Proposal", () => {
   });
 
   it("should not render proposal navigation when on launchpad", async () => {
-    jest
-      .spyOn(filteredProposals, "subscribe")
-      .mockImplementation(
-        createMockProposalsStoreSubscribe(generateMockProposals(10))
-      );
+    vi.spyOn(filteredProposals, "subscribe").mockImplementation(
+      createMockProposalsStoreSubscribe(generateMockProposals(10))
+    );
     referrerPathStore.set(AppPath.Launchpad);
 
     const { container } = renderProposalModern(5n);

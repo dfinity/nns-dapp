@@ -1,8 +1,13 @@
+//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/dd51544944987556c978e774aa7a1992e5c11542/rs/nns/sns-wasm/canister/sns-wasm.did>
 type AddWasmRequest = record { hash : vec nat8; wasm : opt SnsWasm };
 type AddWasmResponse = record { result : opt Result };
 type AirdropDistribution = record { airdrop_neurons : vec NeuronDistribution };
 type Canister = record { id : opt principal };
-type CfNeuron = record { nns_neuron_id : nat64; amount_icp_e8s : nat64 };
+type CfNeuron = record {
+  has_created_neuron_recipes : opt bool;
+  nns_neuron_id : nat64;
+  amount_icp_e8s : nat64;
+};
 type CfParticipant = record {
   hotkey_principal : text;
   cf_neurons : vec CfNeuron;
@@ -112,6 +117,7 @@ type SnsInitPayload = record {
   max_dissolve_delay_seconds : opt nat64;
   max_dissolve_delay_bonus_percentage : opt nat64;
   nns_proposal_id : opt nat64;
+  neurons_fund_participation : opt bool;
   min_participant_icp_e8s : opt nat64;
   neuron_basket_construction_parameters : opt NeuronBasketConstructionParameters;
   fallback_controller_principal_ids : vec text;
@@ -141,9 +147,11 @@ type SnsInitPayload = record {
   token_logo : opt text;
   token_name : opt text;
   max_participant_icp_e8s : opt nat64;
+  min_direct_participation_icp_e8s : opt nat64;
   proposal_reject_cost_e8s : opt nat64;
   restricted_countries : opt Countries;
   min_icp_e8s : opt nat64;
+  max_direct_participation_icp_e8s : opt nat64;
 };
 type SnsUpgrade = record {
   next_version : opt SnsVersion;

@@ -1,6 +1,7 @@
+import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import type { SnsTicketsStoreData } from "$lib/stores/sns-tickets.store";
 import type { TicketStatus } from "$lib/types/sale";
-import type { SnsSwapCommitment } from "$lib/types/sns";
+import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp";
 import type { Principal } from "@dfinity/principal";
 import type {
@@ -155,4 +156,18 @@ export const convertDerivedStateResponseToDerivedState = (
     sns_tokens_per_icp,
     buyer_total_icp_e8s,
   };
+};
+
+/**
+ * Returns true if the swap has ended more than one week ago.
+ */
+export const swapEndedMoreThanOneWeekAgo = ({
+  summary,
+  nowInSeconds,
+}: {
+  summary: SnsSummary;
+  nowInSeconds: number;
+}) => {
+  const oneWeekAgoInSeconds = BigInt(nowInSeconds - SECONDS_IN_DAY * 7);
+  return oneWeekAgoInSeconds > summary.swap.params.swap_due_timestamp_seconds;
 };

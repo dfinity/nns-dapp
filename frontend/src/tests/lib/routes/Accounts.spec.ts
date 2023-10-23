@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -28,54 +24,56 @@ import {
   mockSummary,
 } from "$tests/mocks/sns-projects.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import WalletTest from "../pages/AccountsTest.svelte";
 
-jest.mock("$lib/services/sns-accounts.services", () => {
+vi.mock("$lib/services/sns-accounts.services", () => {
   return {
-    syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
+    syncSnsAccounts: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/ckbtc-accounts.services", () => {
+vi.mock("$lib/services/ckbtc-accounts.services", () => {
   return {
-    syncCkBTCAccounts: jest.fn().mockResolvedValue(undefined),
+    syncCkBTCAccounts: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/sns-accounts-balance.services", () => {
+vi.mock("$lib/services/sns-accounts-balance.services", () => {
   return {
-    uncertifiedLoadSnsAccountsBalances: jest.fn().mockResolvedValue(undefined),
+    uncertifiedLoadSnsAccountsBalances: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/ckbtc-accounts-balance.services", () => {
+vi.mock("$lib/services/ckbtc-accounts-balance.services", () => {
   return {
-    uncertifiedLoadCkBTCAccountsBalance: jest.fn().mockResolvedValue(undefined),
+    uncertifiedLoadCkBTCAccountsBalance: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/ckbtc-withdrawal-accounts.services", () => {
+vi.mock("$lib/services/ckbtc-withdrawal-accounts.services", () => {
   return {
-    loadCkBTCWithdrawalAccount: jest.fn().mockResolvedValue(undefined),
+    loadCkBTCWithdrawalAccount: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/ckbtc-minter.services", () => {
+vi.mock("$lib/services/ckbtc-minter.services", () => {
   return {
-    updateBalance: jest.fn().mockResolvedValue(undefined),
+    updateBalance: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/ckbtc-info.services", () => {
+vi.mock("$lib/services/ckbtc-info.services", () => {
   return {
-    loadCkBTCInfo: jest.fn().mockResolvedValue(undefined),
+    loadCkBTCInfo: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/worker-transactions.services", () => ({
-  initTransactionsWorker: jest.fn(() =>
+vi.mock("$lib/services/worker-transactions.services", () => ({
+  initTransactionsWorker: vi.fn(() =>
     Promise.resolve({
       startTransactionsTimer: () => {
         // Do nothing
@@ -87,8 +85,8 @@ jest.mock("$lib/services/worker-transactions.services", () => ({
   ),
 }));
 
-jest.mock("$lib/services/worker-balances.services", () => ({
-  initBalancesWorker: jest.fn(() =>
+vi.mock("$lib/services/worker-balances.services", () => ({
+  initBalancesWorker: vi.fn(() =>
     Promise.resolve({
       startBalancesTimer: () => {
         // Do nothing
@@ -102,23 +100,21 @@ jest.mock("$lib/services/worker-balances.services", () => ({
 
 describe("Accounts", () => {
   beforeAll(() => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
-  jest
-    .spyOn(snsProjectsCommittedStore, "subscribe")
-    .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+  vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
+    mockProjectSubscribe([mockSnsFullProject])
+  );
 
-  jest
-    .spyOn(snsProjectsStore, "subscribe")
-    .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+  vi.spyOn(snsProjectsStore, "subscribe").mockImplementation(
+    mockProjectSubscribe([mockSnsFullProject])
+  );
 
   beforeEach(() => {
-    jest
-      .spyOn(snsSelectedTransactionFeeStore, "subscribe")
-      .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
+    vi.spyOn(snsSelectedTransactionFeeStore, "subscribe").mockImplementation(
+      mockSnsSelectedTransactionFeeStoreSubscribe()
+    );
 
     // Reset to default value
     page.mock({
@@ -133,6 +129,7 @@ describe("Accounts", () => {
     });
 
     icpAccountsStore.setForTesting(mockAccountsStoreData);
+    resetSnsProjects();
   });
 
   it("should render NnsAccounts by default", () => {
@@ -213,6 +210,12 @@ describe("Accounts", () => {
     page.mock({
       data: { universe: mockSnsFullProject.rootCanisterId.toText() },
     });
+    setSnsProjects([
+      {
+        rootCanisterId: mockSnsFullProject.rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+    ]);
 
     transactionsFeesStore.setFee({
       rootCanisterId: mockSnsFullProject.rootCanisterId,
@@ -248,6 +251,10 @@ describe("Accounts", () => {
 
     await waitFor(() =>
       expect(container.querySelector("div.modal")).not.toBeNull()
+    );
+
+    expect(getByTestId("logo").getAttribute("alt")).toEqual(
+      `${mockSnsFullProject.summary.metadata.name} project logo`
     );
   });
 

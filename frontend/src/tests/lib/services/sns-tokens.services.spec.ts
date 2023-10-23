@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as ledgerApi from "$lib/api/sns-ledger.api";
 import * as services from "$lib/services/sns-tokens.services";
 import { tokensStore } from "$lib/stores/tokens.store";
@@ -21,10 +17,12 @@ describe("sns-tokens-services", () => {
       tokensStore.reset();
     });
 
-    afterEach(() => jest.clearAllMocks());
+    afterEach(() => {
+      vi.clearAllMocks();
+    });
 
     it("should load token in the store", async () => {
-      const spyGetToken = jest
+      const spyGetToken = vi
         .spyOn(ledgerApi, "getSnsToken")
         .mockResolvedValue(mockSnsToken);
 
@@ -61,10 +59,12 @@ describe("sns-tokens-services", () => {
       });
     });
 
-    afterEach(() => jest.clearAllMocks());
+    afterEach(() => {
+      vi.clearAllMocks();
+    });
 
     it("should not reload token if already loaded", async () => {
-      const spyGetToken = jest
+      const spyGetToken = vi
         .spyOn(ledgerApi, "getSnsToken")
         .mockResolvedValue(mockSnsToken);
 

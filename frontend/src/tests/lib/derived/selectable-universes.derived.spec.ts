@@ -12,7 +12,7 @@ import { get } from "svelte/store";
 
 describe("selectable universes derived stores", () => {
   beforeEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
 
     page.mock({
       routeId: AppPath.Accounts,
@@ -45,9 +45,9 @@ describe("selectable universes derived stores", () => {
 
   describe("with projects", () => {
     beforeEach(() => {
-      jest
-        .spyOn(snsProjectsCommittedStore, "subscribe")
-        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+      vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
+        mockProjectSubscribe([mockSnsFullProject])
+      );
     });
 
     it("should return Nns, ckBTC, ckTESTBTC (flag for test is true) and another project", () => {

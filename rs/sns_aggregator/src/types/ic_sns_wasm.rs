@@ -1,3 +1,5 @@
+//! Rust code created from candid by: scripts/did2rs.sh --canister sns_wasm --out ic_sns_wasm.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug
+//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/dd51544944987556c978e774aa7a1992e5c11542/rs/nns/sns-wasm/canister/sns-wasm.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -82,6 +84,7 @@ pub struct NeuronsFundParticipationConstraints {
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct CfNeuron {
+    pub has_created_neuron_recipes: Option<bool>,
     pub nns_neuron_id: u64,
     pub amount_icp_e8s: u64,
 }
@@ -151,6 +154,7 @@ pub struct SnsInitPayload {
     pub max_dissolve_delay_seconds: Option<u64>,
     pub max_dissolve_delay_bonus_percentage: Option<u64>,
     pub nns_proposal_id: Option<u64>,
+    pub neurons_fund_participation: Option<bool>,
     pub min_participant_icp_e8s: Option<u64>,
     pub neuron_basket_construction_parameters: Option<NeuronBasketConstructionParameters>,
     pub fallback_controller_principal_ids: Vec<String>,
@@ -180,9 +184,11 @@ pub struct SnsInitPayload {
     pub token_logo: Option<String>,
     pub token_name: Option<String>,
     pub max_participant_icp_e8s: Option<u64>,
+    pub min_direct_participation_icp_e8s: Option<u64>,
     pub proposal_reject_cost_e8s: Option<u64>,
     pub restricted_countries: Option<Countries>,
     pub min_icp_e8s: Option<u64>,
+    pub max_direct_participation_icp_e8s: Option<u64>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]

@@ -1,10 +1,6 @@
-/**
- * @jest-environment jsdom
- */
-
 import HardwareWalletListNeuronsModal from "$lib/modals/accounts/HardwareWalletListNeuronsModal.svelte";
+import HardwareWalletNeuronsTest from "$tests/lib/components/accounts/HardwareWalletNeuronsTest.svelte";
 import en from "$tests/mocks/i18n.mock";
-import HardwareWalletNeuronsTest from "$vitests/lib/components/accounts/HardwareWalletNeuronsTest.svelte";
 import { render } from "@testing-library/svelte";
 
 describe("HardwareWalletListNeuronsModal", () => {

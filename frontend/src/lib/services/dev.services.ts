@@ -1,9 +1,13 @@
+import { getBTCAddress } from "$lib/api/ckbtc-minter.api";
 import {
   acquireICPTs,
   acquireSnsTokens,
   getTestAccountBalance,
+  receiveMockBtc,
 } from "$lib/api/dev.api";
+import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import type { IcpAccountsStoreData } from "$lib/stores/icp-accounts.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import {
@@ -76,4 +80,16 @@ export const getTokens = async ({
 
   // Reload accounts to sync tokens that have been transferred
   await loadSnsAccounts({ rootCanisterId });
+};
+
+export const getBTC = async ({ amount }: { amount: number }) => {
+  const identity = await getAuthenticatedIdentity();
+  const btcAddress = await getBTCAddress({
+    canisterId: CKBTC_MINTER_CANISTER_ID,
+    identity,
+  });
+  await receiveMockBtc({
+    btcAddress,
+    amountE8s: BigInt(amount * E8S_PER_ICP),
+  });
 };

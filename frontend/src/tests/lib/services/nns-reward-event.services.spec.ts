@@ -10,20 +10,21 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { get } from "svelte/store";
+import type { SpyInstance } from "vitest";
 
 describe("nns-reward-event-services", () => {
-  let spyQueryLatestRewardEvent: jest.SpyInstance;
+  let spyQueryLatestRewardEvent: SpyInstance;
 
   beforeEach(() => {
     nnsLatestRewardEventStore.reset();
-    jest.clearAllMocks();
-    spyQueryLatestRewardEvent = jest
+    vi.clearAllMocks();
+    spyQueryLatestRewardEvent = vi
       .spyOn(api, "queryLastestRewardEvent")
       .mockResolvedValue(mockRewardEvent);
     resetIdentity();
-    jest
-      .spyOn(authServices, "getAuthenticatedIdentity")
-      .mockImplementation(mockGetIdentity);
+    vi.spyOn(authServices, "getAuthenticatedIdentity").mockImplementation(
+      mockGetIdentity
+    );
   });
 
   it("should load nns reward event store", async () => {

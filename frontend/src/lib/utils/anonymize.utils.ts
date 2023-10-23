@@ -120,7 +120,7 @@ export const anonymizeNeuronInfo = async (
   neuron: NeuronInfo | undefined
 ): Promise<undefined | { [key in keyof Required<NeuronInfo>]: unknown }> => {
   if (neuron === undefined || neuron === null) {
-    return neuron;
+    return undefined;
   }
 
   const {
@@ -169,7 +169,7 @@ export const anonymizeFullNeuron = async (
   neuron: Neuron | undefined
 ): Promise<undefined | { [key in keyof Required<Neuron>]: unknown }> => {
   if (neuron === undefined || neuron === null) {
-    return neuron;
+    return undefined;
   }
 
   const {
@@ -452,6 +452,7 @@ const anonymizeBuyer = async ([buyer, state]: [
           (await anonymizeAmount(state.icp[0]?.amount_e8s)) ?? BigInt(0),
       } as SnsTransferableAmount,
     ],
+    has_created_neuron_recipes: state.has_created_neuron_recipes,
   },
 ];
 
@@ -518,6 +519,8 @@ export const anonymizeSnsSwapCommitment = async (
                 },
               ]
             : [],
+        has_created_neuron_recipes:
+          originalSwapCommitment.myCommitment.has_created_neuron_recipes,
       },
     };
   }

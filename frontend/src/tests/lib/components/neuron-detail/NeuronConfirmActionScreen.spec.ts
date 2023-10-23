@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { fireEvent, render } from "@testing-library/svelte";
 import NeuronConfirmActionScreenTest from "./NeuronConfirmActionScreenTest.svelte";
 
@@ -36,7 +32,7 @@ describe("NeuronConfirmActionScreen", () => {
   });
 
   it("should trigger nnsConfirm event on click button", async () => {
-    const spy = jest.fn();
+    const spy = vi.fn();
     const { queryByTestId } = render(NeuronConfirmActionScreenTest, {
       props: { spy },
     });
