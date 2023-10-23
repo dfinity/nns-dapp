@@ -108,14 +108,19 @@
           />
         </div>
 
-        <AmountDisplay
-          slot="value"
-          amount={TokenAmount.fromE8s({
-            amount: projectCommitments.nfCommitmentE8s,
-            token: ICPToken,
-          })}
-          singleLine
-        />
+        <svelte:fragment slot="value">
+          {#if projectCommitments.nfCommitmentE8s === null}
+            <span>{$i18n.core.not_applicable}</span>
+          {:else}
+            <AmountDisplay
+              amount={TokenAmount.fromE8s({
+                amount: projectCommitments.nfCommitmentE8s,
+                token: ICPToken,
+              })}
+              singleLine
+            />
+          {/if}
+        </svelte:fragment>
       </KeyValuePairInfo>
     </div>
   {/if}

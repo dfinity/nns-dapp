@@ -127,6 +127,23 @@ describe("ProjectCommitment", () => {
     });
   });
 
+  describe("when Neurons' Fund enhancements fields are available and NF is not participating", () => {
+    it("should render detailed participation with NF participation not applicable", async () => {
+      const directCommitment = 20000000000n;
+      const summary = createSummary({
+        currentTotalCommitment: directCommitment,
+        neuronsFundCommitment: undefined,
+        directCommitment,
+        minDirectParticipation: 10000000000n,
+        maxDirectParticipation: 100000000000n,
+        neuronsFundIsParticipating: [false],
+      });
+      const po = renderComponent(summary);
+      expect(await po.getNeuronsFundParticipation()).toEqual("N/A");
+      expect(await po.getDirectParticipation()).toEqual("200.00 ICP");
+    });
+  });
+
   describe("when Neurons' Fund enhancements fields are not available", () => {
     const overallCommitment = 30000000000n;
     const summary = createSummary({

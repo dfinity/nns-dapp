@@ -33,6 +33,7 @@ interface I18nCore {
   this_may_take_a_few_minutes: string;
   do_not_close: string;
   finish: string;
+  not_applicable: string;
   unknown: string;
 }
 
