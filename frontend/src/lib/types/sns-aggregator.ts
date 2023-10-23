@@ -120,6 +120,7 @@ export type CachedSwapInitParamsDto = {
   neurons_fund_participation_constraints?: CachedNeuronsFundParticipationConstraints | null;
   min_direct_participation_icp_e8s?: number | null;
   max_direct_participation_icp_e8s?: number | null;
+  neurons_fund_participation?: boolean | null;
 };
 
 export type CachedSnsSwapDto = {
