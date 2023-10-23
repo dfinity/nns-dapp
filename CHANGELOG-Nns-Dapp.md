@@ -51,7 +51,6 @@ here after a successful release.
 #### Added
 
 * Get BTC button to use the mock bitcoin canister to test ckBTC.
-* Show the maximum participation of the Neurons' Fund when present.
 
 #### Changed
 
