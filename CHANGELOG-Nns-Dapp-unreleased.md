@@ -22,7 +22,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Update proposal info icons position to improve the UX.
 * Improve the indicator of the minimum commitment in the project status.
-* Dapp upgraded to Svelte v4.
+* Dapp upgraded to Svelte `v4`.
 
 #### Deprecated
 #### Removed
@@ -31,7 +31,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Add "Finalizing" status in projects of the Launchpad.
 * Fix UI bug when commitment was very low.
-* Remove robots metatag to allow search engines to crawl NNS Dapp.
+* Remove robots meta tag to allow search engines to crawl NNS Dapp.
 
 #### Security
 
@@ -50,6 +50,7 @@ proposal is successful, the changes it released will be moved from this file to
 * E2E test for ckBTC.
 * Fix erroneous failures in the `tip` tagging workflow when a PR is closed without merging.
 * Add --host flag to dfx-snapshot-start.
+* Add test to check that the nns-dapp cargo and npm versions match.
 
 #### Changed
 
