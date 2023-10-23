@@ -2,13 +2,8 @@
   import { Island, Spinner } from "@dfinity/gix-components";
   import Separator from "$lib/components/ui/Separator.svelte";
   import { writable } from "svelte/store";
-  import {
-    WALLET_CONTEXT_KEY,
-    type CkBTCWalletContext,
-    type WalletStore,
-  } from "$lib/types/wallet.context";
+  import type { WalletStore } from "$lib/types/wallet.context";
   import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
-  import { setContext } from "svelte";
   import { findAccount, hasAccounts } from "$lib/utils/accounts.utils";
   import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
   import { TokenAmount, isNullish, nonNullish } from "@dfinity/utils";
@@ -77,12 +72,6 @@
   // However, the UI displays skeletons while loading and the user can proceed with other operations during this time.
   // That is why we do not need to wait for the promise to resolve here.
   const reloadTransactions = () => transactions?.reloadTransactions?.();
-
-  setContext<CkBTCWalletContext>(WALLET_CONTEXT_KEY, {
-    store: selectedAccountStore,
-    reloadAccount,
-    reloadAccountFromStore,
-  });
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
 
@@ -238,7 +227,11 @@
   </main>
 
   {#if canMakeTransactions}
-    <CkBTCWalletFooter />
+    <CkBTCWalletFooter
+      store={selectedAccountStore}
+      {reloadAccount}
+      {reloadAccountFromStore}
+    />
   {/if}
 </Island>
 

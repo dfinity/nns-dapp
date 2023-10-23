@@ -33,7 +33,7 @@ pub fn toy_account(account_index: u64, num_canisters: u64) -> Account {
     account
 }
 
-/// Verifies that an arbitrary AccountsDbTrait implementation does basic crud correctly.
+/// Verifies that an arbitrary `AccountsDbTrait` implementation does basic crud correctly.
 ///
 /// Individual implementations are expected to perform their own tests for error conditions
 /// relevant to them.
@@ -266,7 +266,7 @@ where
     );
 }
 
-/// Verifies that the `values()` iterator works corerctly.
+/// Verifies that the `values()` iterator works correctly.
 pub fn assert_iterates_over_values<D>(mut storage: D)
 where
     D: AccountsDbTrait,
@@ -314,10 +314,10 @@ where
     assert_eq!(accounts_db.as_map(), &accounts);
 }
 
-/// Tests common functionality of AccountsDbTrait implementations.
+/// Tests common functionality of `AccountsDbTrait` implementations.
 ///
 /// # Arguments
-/// `$implementation`: An expression that evaluates to an empty AccountsDbTrait implementation.
+/// `$implementation`: An expression that evaluates to an empty `AccountsDbTrait` implementation.
 ///     Note: The expression will be called repeatedly.
 macro_rules! test_accounts_db {
     ($implementation:expr) => {
