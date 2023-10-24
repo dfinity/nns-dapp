@@ -57,7 +57,7 @@
       "type": "custom",
       "wasm": "internet_identity_dev.wasm",
       "candid": "internet_identity.did",
-      "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2023-01-31/internet_identity_dev.wasm\" -o internet_identity_dev.wasm",
+      "build": "curl --fail -sSL \"https://github.com/dfinity/internet-identity/releases/download/release-2023-09-29/internet_identity_dev.wasm.gz\" -o internet_identity_dev.wasm.gz",
       "url": {
         "mainnet": "https://identity.internetcomputer.org/",
         "app": "https://identity.internetcomputer.org/"
