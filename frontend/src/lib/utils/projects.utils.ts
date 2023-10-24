@@ -412,9 +412,10 @@ export const differentSummaries = (
 export type FullProjectCommitmentSplit = {
   totalCommitmentE8s: bigint;
   directCommitmentE8s: bigint;
-  nfCommitmentE8s: bigint;
+  nfCommitmentE8s?: bigint;
   minDirectCommitmentE8s: bigint;
   maxDirectCommitmentE8s: bigint;
+  isNFParticipating: boolean;
 };
 export type ProjectCommitmentSplit =
   | { totalCommitmentE8s: bigint }
@@ -429,8 +430,12 @@ export const getProjectCommitmentSplit = (
   );
   const minDirectCommitmentE8s = getMinDirectParticipation(summary);
   const maxDirectCommitmentE8s = getMaxDirectParticipation(summary);
+  const isNFParticipating = fromNullable(
+    summary.init?.neurons_fund_participation ?? []
+  );
+
   if (
-    nonNullish(nfCommitmentE8s) &&
+    nonNullish(isNFParticipating) &&
     nonNullish(directCommitmentE8s) &&
     nonNullish(minDirectCommitmentE8s) &&
     nonNullish(maxDirectCommitmentE8s)
@@ -438,7 +443,8 @@ export const getProjectCommitmentSplit = (
     return {
       totalCommitmentE8s: summary.derived.buyer_total_icp_e8s,
       directCommitmentE8s,
-      nfCommitmentE8s,
+      nfCommitmentE8s: isNFParticipating ? nfCommitmentE8s : undefined,
+      isNFParticipating,
       minDirectCommitmentE8s,
       maxDirectCommitmentE8s,
     };

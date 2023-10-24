@@ -1304,6 +1304,7 @@ describe("project-utils", () => {
           nfCommitmentE8s: nfCommitment,
           minDirectCommitmentE8s: minDirectParticipation,
           maxDirectCommitmentE8s: maxDirectParticipation,
+          isNFParticipating: true,
         });
       });
 
@@ -1352,27 +1353,12 @@ describe("project-utils", () => {
           nfCommitmentE8s: 0n,
           minDirectCommitmentE8s: minDirectParticipation,
           maxDirectCommitmentE8s: maxDirectParticipation,
+          isNFParticipating: true,
         });
       });
     });
 
-    describe("when NF participation is not present", () => {
-      it("returns the full commitment even if min-max direct participation are present", () => {
-        const currentTotalCommitment = 30000000000n;
-        const summary = createSummary({
-          currentTotalCommitment,
-          directCommitment: undefined,
-          neuronsFundCommitment: undefined,
-          minDirectParticipation: 100000000000n,
-          maxDirectParticipation: 1000000000000n,
-        });
-        expect(getProjectCommitmentSplit(summary)).toEqual({
-          totalCommitmentE8s: currentTotalCommitment,
-        });
-      });
-    });
-
-    describe("when direct participation is present", () => {
+    describe("when direct participation is not present", () => {
       it("returns the overall commitments even if nf commitment and min-max direct participations are present", () => {
         const minDirectParticipation = 10000000000n;
         const maxDirectParticipation = 100000000000n;
@@ -1388,6 +1374,50 @@ describe("project-utils", () => {
 
         expect(getProjectCommitmentSplit(summary)).toEqual({
           totalCommitmentE8s: currentTotalCommitment,
+        });
+      });
+    });
+
+    describe("when neurons fund participation is not present", () => {
+      it("returns the overall commitments even if nf commitment and min-max direct participations are present", () => {
+        const minDirectParticipation = 10000000000n;
+        const maxDirectParticipation = 100000000000n;
+
+        const summary = createSummary({
+          currentTotalCommitment: nfCommitment + directCommitment,
+          directCommitment: directCommitment,
+          neuronsFundCommitment: nfCommitment,
+          minDirectParticipation,
+          maxDirectParticipation,
+          neuronsFundIsParticipating: [],
+        });
+
+        expect(getProjectCommitmentSplit(summary)).toEqual({
+          totalCommitmentE8s: nfCommitment + directCommitment,
+        });
+      });
+    });
+
+    describe("when NF enhancement fields are present, but NF is not participating", () => {
+      it("returns the commitments split with NF as `null`", () => {
+        const minDirectParticipation = 10000000000n;
+        const maxDirectParticipation = 100000000000n;
+        const summary = createSummary({
+          currentTotalCommitment: directCommitment,
+          directCommitment,
+          neuronsFundCommitment: undefined,
+          minDirectParticipation,
+          maxDirectParticipation,
+          neuronsFundIsParticipating: [false],
+        });
+
+        expect(getProjectCommitmentSplit(summary)).toEqual({
+          totalCommitmentE8s: directCommitment,
+          directCommitmentE8s: directCommitment,
+          nfCommitmentE8s: undefined,
+          minDirectCommitmentE8s: minDirectParticipation,
+          maxDirectCommitmentE8s: maxDirectParticipation,
+          isNFParticipating: false,
         });
       });
     });
