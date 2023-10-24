@@ -43,6 +43,7 @@ fi
 
 NOT_MOCKED_COMMANDS=(
   echo
+  printf
   get_build_hash
   review_proposal
 )
@@ -289,7 +290,7 @@ is_release_sop_script_newest_version() {
 npm_audit() {
   local audit
   pushd "$TOP_DIR/frontend" >&2
-  audit="$(npm audit --json | jq --slurp -r '[.. | .via? | .[]? | .url?] | join(",")')"
+  audit="$(npm audit --json | jq --slurp -r '[.. | .via? | .[]? | .url?] | join(" ")')"
   if [ "$audit" ]; then
     echo "$audit"
     exit
@@ -464,7 +465,7 @@ confirm_cmd dfx canister install nns-dapp --argument "$(execute cat nns-dapp-arg
 record "Staging URL" echo "https://$CANISTER_ID.nnsdapp.dfinity.network/"
 verify "CI NNS-dapp WASM hash" "Staging WASM hash" get_module_hash_from_network staging
 record "Post RC on Slack" post_rc_on_slack
-confirm_manual "Update playground" echo "Update the 'Playground' bookmark on the #eng-nns-dapp Slack channel to point to the new release candidate.\n\nSlack channel: https://dfinity.slack.com/channels/eng-nns-dapp\nNew Playground bookmark: $(checklist_must_get "Staging URL")"
+confirm_manual "Update playground" printf 'Update the "Playground" bookmark on the #eng-nns-dapp Slack channel to point to the new release candidate.\n\nSlack channel: https://dfinity.slack.com/channels/eng-nns-dapp\nNew Playground bookmark:  %s\n' "$(checklist_must_get "Staging URL")"
 
 # Release
 record "Canister IDs" "$SOURCE_DIR/../canister_ids" --export --network staging

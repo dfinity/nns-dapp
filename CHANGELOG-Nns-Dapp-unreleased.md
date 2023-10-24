@@ -16,7 +16,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Added provenance information to .did files and derived rust code.
 * Added `approveTransfer` in icrc-ledger API.
-* Add `UpdateElectedHostosVersions` and `UpdateNodesHostosVersion` proposals support
+* Add `UpdateElectedHostosVersions` and `UpdateNodesHostosVersion` proposals support.
+* Show the maximum participation of the Neurons' Fund when present.
 
 #### Changed
 
@@ -39,10 +40,12 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Formatting for `Cargo.toml` files.
 * Add test to check that the nns-dapp cargo and npm versions match.
 
 #### Changed
 
+* Join npm audit URLs with spaces instead of commas.
 * Add traits with a dedicated command rather than with patch files.
 
 #### Deprecated

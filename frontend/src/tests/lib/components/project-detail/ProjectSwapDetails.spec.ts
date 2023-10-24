@@ -80,6 +80,28 @@ describe("ProjectSwapDetails", () => {
     expect(await po.getMaxParticipantCommitment()).toEqual("345.00 ICP");
   });
 
+  it("should render max NF commitment", async () => {
+    const po = renderComponent({
+      summary: createSummary({
+        maxNFParticipation: 60000000000n,
+      }),
+      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+    });
+
+    expect(await po.getMaxNfCommitment()).toEqual("600.00 ICP");
+  });
+
+  it("should render NOT max NF commitment if not present", async () => {
+    const po = renderComponent({
+      summary: createSummary({
+        maxNFParticipation: undefined,
+      }),
+      swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
+    });
+
+    expect(await po.hasMaxNfCommitment()).toEqual(false);
+  });
+
   it("should render sale end", async () => {
     const swapDeadline = new Date("2023-10-04T15:00:00.000Z").getTime() / 1000;
     const po = renderComponent({

@@ -1,8 +1,7 @@
 [package]
 name = "nns-dapp"
-version.workspace = true
+version = { workspace = true }
 edition = "2021"
-
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
@@ -19,6 +18,8 @@ serde = "1.0.136"
 serde_bytes = "0.11.5"
 serde_cbor = "0.11.2"
 sha2 = "0.10.6"
+strum = "0.24.1"
+strum_macros = "0.24.3"
 tar = "0.4.37"
 
 # chrono 0.4.19 has vulnerabilities fixed in 0.4.20
@@ -27,13 +28,13 @@ tar = "0.4.37"
 # 0.4.19 works and satisfies ic.
 chrono = "=0.4.19"
 
-ic-cdk = { workspace = true }
-ic-cdk-macros = { workspace = true }
 cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 dfn_candid = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 dfn_core = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 ic-base-types = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
+ic-cdk = { workspace = true }
+ic-cdk-macros = { workspace = true }
 ic-certified-map = "0.3.4" # == https://github.com/dfinity/cdk-rs 6a15aa1616bcfdfdc4c120d17d37a089f5700c36
 ic-crypto-sha = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 ic-ledger-core = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
@@ -45,11 +46,11 @@ ic-stable-structures = "0.5.6"
 icp-ledger = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 on_wire = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 
-proposals ={ path = "../proposals" }
+proposals = { path = "../proposals" }
 
 [dev-dependencies]
-maplit = "1.0.2"
 anyhow = "1.0.68"
+maplit = "1.0.2"
 
 [features]
 # Build flavours; these should not normally be referred to directly in code.

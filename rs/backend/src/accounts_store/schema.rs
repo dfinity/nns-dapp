@@ -1,10 +1,15 @@
 //! Data storage schemas.
-use crate::accounts_store::Account;
 
+// Schemas
 #[cfg(test)]
 pub mod accounts_in_stable_memory;
 pub mod map;
 pub mod proxy;
+
+// Mechanics
+use crate::accounts_store::Account;
+use strum_macros::EnumIter;
+mod label_serialization;
 #[cfg(test)]
 mod tests;
 
@@ -98,6 +103,7 @@ pub trait AccountsDbTrait {
 ///
 /// Note: The numeric representations of these labels are guaranteed to be stable.
 #[repr(u32)]
+#[derive(Clone, Copy, Debug, EnumIter, PartialEq, Eq)]
 pub enum SchemaLabel {
     /// Data is stored on the heap in a `BTreeMap` and serialized to stable memory on upgrade.
     /// Implemented by: [`map::AccountsDbAsMap`]
@@ -107,6 +113,17 @@ pub enum SchemaLabel {
     /// `pre_upgrade` hook.
     #[cfg(test)]
     AccountsInStableMemory = 1,
+}
+
+/// Schema Label as written to stable memory.
+type SchemaLabelBytes = [u8; SchemaLabel::MAX_BYTES];
+
+/// Errors that can occur when deserializing a schema label.
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+pub enum SchemaLabelError {
+    InvalidChecksum,
+    InvalidLabel,
+    InsufficientBytes,
 }
 
 /// A trait for data stores that support `BTreeMap` for account storage.

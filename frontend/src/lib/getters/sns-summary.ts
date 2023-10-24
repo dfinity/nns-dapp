@@ -25,3 +25,11 @@ export const getMaxDirectParticipation = ({
   init,
 }: SnsSummary): bigint | undefined =>
   fromNullable(init?.max_direct_participation_icp_e8s ?? []);
+
+export const getMaxNeuronsFundParticipation = ({
+  init,
+}: SnsSummary): bigint | undefined =>
+  fromNullable(
+    fromNullable(init?.neurons_fund_participation_constraints ?? [])
+      ?.max_neurons_fund_participation_icp_e8s ?? []
+  );
