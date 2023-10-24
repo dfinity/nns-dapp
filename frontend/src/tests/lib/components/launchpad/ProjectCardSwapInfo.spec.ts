@@ -10,8 +10,8 @@ import { render } from "@testing-library/svelte";
 
 describe("ProjectCardSwapInfo", () => {
   const rootCanisterId = rootCanisterIdMock;
-  const now = Date.now();
-  const nowInSeconds = Math.ceil(now / 1000);
+  const now = 1698139468000;
+  const nowInSeconds = Math.round(now / 1000);
 
   const renderCard = (props: {
     project: SnsFullProject;

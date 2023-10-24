@@ -18,11 +18,12 @@ import { render } from "@testing-library/svelte";
 
 describe("ProjectCard", () => {
   const rootCanisterId = rootCanisterIdMock;
-  const now = 1698139468065;
+  const now = 1698139468000;
   const nowInSeconds = Math.round(now / 1000);
   const yesterdayInSeconds = nowInSeconds - SECONDS_IN_DAY;
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.useFakeTimers().setSystemTime(now);
     setSnsProjects([
       {
         rootCanisterId: mockSnsFullProject.rootCanisterId,
