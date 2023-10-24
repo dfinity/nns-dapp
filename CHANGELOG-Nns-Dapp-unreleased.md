@@ -20,14 +20,14 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-* Dapp upgraded to Svelte v4.
+* Dapp upgraded to Svelte `v4`.
 
 #### Deprecated
 #### Removed
 
 #### Fixed
 
-* Remove robots metatag to allow search engines to crawl NNS Dapp.
+* Remove robots meta tag to allow search engines to crawl NNS Dapp.
 
 #### Security
 
