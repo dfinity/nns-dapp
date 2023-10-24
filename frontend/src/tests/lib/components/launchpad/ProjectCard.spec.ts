@@ -138,8 +138,6 @@ describe("ProjectCard", () => {
 
       const po = await renderCard(snsFulProject);
 
-      await runResolvedPromises();
-
       expect(await po.getStatus()).toBe("Status Completed");
     });
 
