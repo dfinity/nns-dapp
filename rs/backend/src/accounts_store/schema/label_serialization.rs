@@ -48,6 +48,7 @@ impl TryFrom<u32> for SchemaLabel {
     fn try_from(value: u32) -> Result<Self, Self::Error> {
         match value {
             0 => Ok(Self::Map),
+            #[cfg(test)]
             1 => Ok(Self::AccountsInStableMemory),
             _ => Err(SchemaLabelError::InvalidLabel),
         }
