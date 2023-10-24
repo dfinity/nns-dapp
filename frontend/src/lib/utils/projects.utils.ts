@@ -412,10 +412,10 @@ export const differentSummaries = (
 export type FullProjectCommitmentSplit = {
   totalCommitmentE8s: bigint;
   directCommitmentE8s: bigint;
-  // `null` means that the NF is not participating
-  nfCommitmentE8s: bigint | null;
+  nfCommitmentE8s?: bigint;
   minDirectCommitmentE8s: bigint;
   maxDirectCommitmentE8s: bigint;
+  isNFParticipating: boolean;
 };
 export type ProjectCommitmentSplit =
   | { totalCommitmentE8s: bigint }
@@ -443,7 +443,8 @@ export const getProjectCommitmentSplit = (
     return {
       totalCommitmentE8s: summary.derived.buyer_total_icp_e8s,
       directCommitmentE8s,
-      nfCommitmentE8s: isNFParticipating ? nfCommitmentE8s : null,
+      nfCommitmentE8s: isNFParticipating ? nfCommitmentE8s : undefined,
+      isNFParticipating,
       minDirectCommitmentE8s,
       maxDirectCommitmentE8s,
     };

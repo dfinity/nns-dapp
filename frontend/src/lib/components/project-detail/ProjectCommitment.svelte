@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TokenAmount, ICPToken } from "@dfinity/utils";
+  import { TokenAmount, ICPToken, isNullish } from "@dfinity/utils";
   import type { SnsSummary } from "$lib/types/sns";
   import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
@@ -109,9 +109,7 @@
         </div>
 
         <svelte:fragment slot="value">
-          {#if projectCommitments.nfCommitmentE8s === null}
-            <span>{$i18n.sns_project_detail.not_participating}</span>
-          {:else}
+          {#if projectCommitments.isNFParticipating && nonNullish(projectCommitments.nfCommitmentE8s)}
             <AmountDisplay
               amount={TokenAmount.fromE8s({
                 amount: projectCommitments.nfCommitmentE8s,
@@ -119,6 +117,8 @@
               })}
               singleLine
             />
+          {:else}
+            <span>{$i18n.sns_project_detail.not_participating}</span>
           {/if}
         </svelte:fragment>
       </KeyValuePairInfo>
