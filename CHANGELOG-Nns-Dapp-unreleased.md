@@ -48,6 +48,8 @@ proposal is successful, the changes it released will be moved from this file to
 #### Deprecated
 #### Removed
 
+* Delete nightly `GitHub` job to update II used in tests; we now use the II that comes with `snsdemo`.
+
 #### Fixed
 
 #### Security
