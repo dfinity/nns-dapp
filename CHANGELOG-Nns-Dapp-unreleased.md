@@ -16,7 +16,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Added provenance information to .did files and derived rust code.
 * Added `approveTransfer` in icrc-ledger API.
-* Add `UpdateElectedHostosVersions` and `UpdateNodesHostosVersion` proposals support
+* Add `UpdateElectedHostosVersions` and `UpdateNodesHostosVersion` proposals support.
+* Show the maximum participation of the Neurons' Fund when present.
 
 #### Changed
 
@@ -41,11 +42,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Formatting for `Cargo.toml` files.
 * Add test to check that the nns-dapp cargo and npm versions match.
-* Documentation for the proposals payload renderer.
-* E2E test for ckBTC.
-* Fix erroneous failures in the `tip` tagging workflow when a PR is closed without merging.
-* Add --host flag to dfx-snapshot-start.
-* Show the maximum participation of the Neurons' Fund when present.
 
 #### Changed
 
