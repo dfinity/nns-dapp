@@ -108,14 +108,19 @@
           />
         </div>
 
-        <AmountDisplay
-          slot="value"
-          amount={TokenAmount.fromE8s({
-            amount: projectCommitments.nfCommitmentE8s,
-            token: ICPToken,
-          })}
-          singleLine
-        />
+        <svelte:fragment slot="value">
+          {#if projectCommitments.isNFParticipating && nonNullish(projectCommitments.nfCommitmentE8s)}
+            <AmountDisplay
+              amount={TokenAmount.fromE8s({
+                amount: projectCommitments.nfCommitmentE8s,
+                token: ICPToken,
+              })}
+              singleLine
+            />
+          {:else}
+            <span>{$i18n.sns_project_detail.not_participating}</span>
+          {/if}
+        </svelte:fragment>
       </KeyValuePairInfo>
     </div>
   {/if}

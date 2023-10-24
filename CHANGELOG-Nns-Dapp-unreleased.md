@@ -22,14 +22,14 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Stable structures updated to `0.6.0`.
-* Dapp upgraded to Svelte v4.
+* Dapp upgraded to Svelte `v4`.
 
 #### Deprecated
 #### Removed
 
 #### Fixed
 
-* Remove robots metatag to allow search engines to crawl NNS Dapp.
+* Remove robots meta tag to allow search engines to crawl NNS Dapp.
 
 #### Security
 
@@ -51,6 +51,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Deprecated
 #### Removed
+
+* Delete nightly `GitHub` job to update II used in tests; we now use the II that comes with `snsdemo`.
 
 #### Fixed
 

@@ -704,6 +704,7 @@
     "min_participants": "Minimum Participants",
     "current_overall_commitment": "Overall Commitment",
     "current_nf_commitment": "Neurons' Fund Commitment",
+    "not_participating": "Not Participating",
     "current_direct_commitment": "Direct Commitment",
     "current_sale_buyer_count": "Direct Participants",
     "min_commitment_goal": "Minimum Commitment Goal",
