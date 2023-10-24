@@ -139,7 +139,9 @@ describe("ProjectCommitment", () => {
         neuronsFundIsParticipating: [false],
       });
       const po = renderComponent(summary);
-      expect(await po.getNeuronsFundParticipation()).toEqual("N/A");
+      expect(await po.getNeuronsFundParticipation()).toEqual(
+        "Not Participating"
+      );
       expect(await po.getDirectParticipation()).toEqual("200.00 ICP");
     });
   });
