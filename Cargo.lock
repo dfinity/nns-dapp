@@ -4030,6 +4030,8 @@ dependencies = [
  "serde_bytes",
  "serde_cbor",
  "sha2 0.10.7",
+ "strum 0.24.1",
+ "strum_macros 0.24.3",
  "tar",
 ]
 
