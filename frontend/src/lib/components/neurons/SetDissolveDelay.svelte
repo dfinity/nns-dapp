@@ -9,7 +9,7 @@
   import DayInput from "$lib/components/ui/DayInput.svelte";
   import type { NeuronState } from "@dfinity/nns";
   import { type TokenAmount, nonNullish } from "@dfinity/utils";
-  import InputRangeDissolveDelay from "./InputRangeDissolveDelay.svelte";
+  import RangeDissolveDelay from "./RangeDissolveDelay.svelte";
 
   export let neuronState: NeuronState;
   export let neuronDissolveDelaySeconds: bigint;
@@ -129,12 +129,7 @@
       />
     </div>
     <div class="range">
-      <InputRangeDissolveDelay
-        {maxDelayInSeconds}
-        bind:delayInSeconds
-        {onRangeInput}
-        {votingPower}
-      />
+      <RangeDissolveDelay {maxDelayInSeconds} {delayInSeconds} {votingPower} />
     </div>
   </div>
 

@@ -2,24 +2,17 @@
   import { i18n } from "$lib/stores/i18n";
   import { daysToDuration, secondsToDays } from "$lib/utils/date.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
-  import { InputRange } from "@dfinity/gix-components";
+  import { ProgressBar } from "@dfinity/gix-components";
 
   export let delayInSeconds: number;
   export let maxDelayInSeconds: number;
-  export let onRangeInput: () => void;
   export let votingPower: number;
 
   let delayInDays: number;
   $: delayInDays = secondsToDays(delayInSeconds);
 </script>
 
-<InputRange
-  ariaLabel={$i18n.neuron_detail.dissolve_delay_range}
-  min={0}
-  max={maxDelayInSeconds}
-  bind:value={delayInSeconds}
-  handleInput={onRangeInput}
-/>
+<ProgressBar max={maxDelayInSeconds} value={delayInSeconds} />
 <div class="details">
   <div>
     <p class="label">

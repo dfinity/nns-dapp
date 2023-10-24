@@ -7,7 +7,7 @@
   import { nonNullish } from "@dfinity/utils";
 
   export let seconds: number;
-  export let maxInSeconds: number | undefined = undefined;
+  export let maxInSeconds: number;
   export let placeholderLabelKey = "core.amount";
   export let name = "amount";
   export let getInputError: (value: number) => string | undefined;
@@ -31,7 +31,7 @@
   {placeholderLabelKey}
   {name}
   bind:value={days}
-  max={nonNullish(maxInSeconds) ? secondsToDays(maxInSeconds) : undefined}
+  max={secondsToDays(maxInSeconds)}
   inputType="number"
   {errorMessage}
   on:nnsInput={update}
