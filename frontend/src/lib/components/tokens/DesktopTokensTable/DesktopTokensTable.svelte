@@ -1,11 +1,11 @@
 <script lang="ts">
   import type { UserTokenData } from "$lib/types/tokens-page";
-  import TokensTableRow from "./TokensTableRow.svelte";
+  import Row from "./DesktopTokensTableRow.svelte";
 
   export let tokens: UserTokenData[];
 </script>
 
-<table>
+<table data-tid="desktop-tokens-table-component">
   <thead>
     <tr>
       <th class="header-left">Projects</th>
@@ -14,7 +14,7 @@
   </thead>
   <tbody>
     {#each tokens as userToken}
-      <TokensTableRow
+      <Row
         on:nnsGoToDetail
         on:nnsRowClick
         on:nnsSend

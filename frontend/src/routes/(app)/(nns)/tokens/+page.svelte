@@ -12,7 +12,7 @@
   import IC_LOGO_ROUNDED from "$lib/assets/icp-rounded.svg";
   import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
   import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
-  import type { UserTokenData } from "$lib/types/tokens-page";
+  import { UserTokenActions, type UserTokenData } from "$lib/types/tokens-page";
 
   onMount(() => {
     if (!$ENABLE_MY_TOKENS) {
@@ -26,7 +26,7 @@
       title: "Internet Computer",
       balance: TokenAmount.fromE8s({ amount: 314000000n, token: ICPToken }),
       logo: IC_LOGO_ROUNDED,
-      actions: ["goToDetail"],
+      actions: [UserTokenActions.GoToDetail],
     },
     {
       canisterId: CKBTC_UNIVERSE_CANISTER_ID,
@@ -36,7 +36,7 @@
         token: { name: "CkBTC", symbol: "CkBTC" },
       }),
       logo: CKBTC_LOGO,
-      actions: ["send", "receive"],
+      actions: [UserTokenActions.Send, UserTokenActions.Receive],
     },
   ];
 

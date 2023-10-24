@@ -1,12 +1,12 @@
 <script lang="ts">
   import MainWrapper from "$lib/components/tokens/MainWrapper.svelte";
-  import TokensTable from "$lib/components/tokens/TokensTable.svelte";
+  import TokensTable from "$lib/components/tokens/DesktopTokensTable/DesktopTokensTable.svelte";
   import type { UserTokenData } from "$lib/types/tokens-page";
 
   export let tokens: UserTokenData[];
 </script>
 
-<MainWrapper data-tid="tokens-page-component">
+<MainWrapper testId="tokens-page-component">
   <!-- TODO: GIX-1982 Render desktop or mobile component -->
   <TokensTable
     {tokens}
