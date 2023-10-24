@@ -3,12 +3,24 @@
   import MaxButton from "$lib/components/common/MaxButton.svelte";
   import InputWithError from "./InputWithError.svelte";
   import MinButton from "$lib/components/common/MinButton.svelte";
+  import { daysToSeconds, secondsToDays } from "$lib/utils/date.utils";
+  import { nonNullish } from "@dfinity/utils";
 
-  export let days: number | undefined = undefined;
-  export let max: number | undefined = undefined;
-  export let errorMessage: string | undefined = undefined;
+  export let seconds: number;
+  export let maxInSeconds: number | undefined = undefined;
   export let placeholderLabelKey = "core.amount";
   export let name = "amount";
+  export let getInputError: (value: number) => string | undefined;
+
+  let days: number;
+  $: days = secondsToDays(seconds);
+
+  let errorMessage: string | undefined;
+  $: errorMessage = getInputError(seconds);
+
+  const update = () => {
+    seconds = daysToSeconds(days);
+  };
 
   const dispatch = createEventDispatcher();
   const setMin = () => dispatch("nnsMin");
@@ -19,11 +31,11 @@
   {placeholderLabelKey}
   {name}
   bind:value={days}
-  {max}
+  max={nonNullish(maxInSeconds) ? secondsToDays(maxInSeconds) : undefined}
   inputType="number"
   {errorMessage}
-  on:nnsInput
-  on:blur
+  on:nnsInput={update}
+  on:blur={update}
 >
   <MinButton on:click={setMin} slot="start" />
   <MaxButton on:click={setMax} slot="end" />
