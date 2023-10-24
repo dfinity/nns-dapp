@@ -25,7 +25,7 @@
 
 use crate::accounts_store::Account;
 use dfn_candid::Candid;
-use ic_stable_structures::storable::{BoundedStorable, Storable};
+use ic_stable_structures::storable::{Bound, Storable};
 use on_wire::{FromWire, IntoWire};
 use std::borrow::Cow;
 use std::convert::TryInto;
@@ -157,6 +157,10 @@ pub struct AccountStorageKey {
     bytes: [u8; AccountStorageKey::SIZE],
 }
 impl Storable for AccountStorageKey {
+    const BOUND: Bound = Bound::Bounded {
+        max_size: Self::MAX_SIZE,
+        is_fixed_size: Self::IS_FIXED_SIZE,
+    };
     fn to_bytes(&self) -> Cow<'_, [u8]> {
         self.bytes[..].into()
     }
@@ -170,11 +174,9 @@ impl Storable for AccountStorageKey {
         }
     }
 }
-impl BoundedStorable for AccountStorageKey {
+impl AccountStorageKey {
     const MAX_SIZE: u32 = Self::SIZE as u32;
     const IS_FIXED_SIZE: bool = true;
-}
-impl AccountStorageKey {
     /// Location of the account identifier length in the key bytes.
     ///
     /// Note: Account identifiers typically consume 32 bytes, however some are shorter.
@@ -243,6 +245,10 @@ pub struct AccountStoragePage {
     bytes: [u8; AccountStoragePage::SIZE as usize],
 }
 impl Storable for AccountStoragePage {
+    const BOUND: Bound = Bound::Bounded {
+        max_size: Self::MAX_SIZE,
+        is_fixed_size: Self::IS_FIXED_SIZE,
+    };
     fn to_bytes(&self) -> Cow<'_, [u8]> {
         self.bytes[..].into()
     }
@@ -256,11 +262,9 @@ impl Storable for AccountStoragePage {
         }
     }
 }
-impl BoundedStorable for AccountStoragePage {
+impl AccountStoragePage {
     const MAX_SIZE: u32 = AccountStoragePage::SIZE as u32;
     const IS_FIXED_SIZE: bool = true;
-}
-impl AccountStoragePage {
     /// The size of a page in bytes.
     pub const SIZE: u16 = 1024;
     /// The offset of the length header
