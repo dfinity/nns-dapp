@@ -9,6 +9,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { IntersectingDetail } from "$lib/types/intersection.types";
   import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
+  import { Tag } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
 
@@ -35,6 +36,7 @@
     use:onIntersection
     on:nnsIntersecting={updateLayoutTitle}
   >
+    {#if neuron.isSeed}<Tag>seed</Tag>{/if}
     <IdentifierHash
       identifier={neuron.neuronId.toString()}
       splitLength={MAX_NEURON_ID_DIGITS / 2}
@@ -47,5 +49,11 @@
     // The IdentifierHash has the copy button at the end which has some extra padding.
     // This is needed to align in the center the UniversePageSummary and the IdentifierHash in mobile view.
     padding-left: var(--padding-1_5x);
+  }
+
+  .description {
+    display: flex;
+    align-items: center;
+    gap: var(--padding);
   }
 </style>

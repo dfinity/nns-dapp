@@ -4,6 +4,7 @@
   import { getNeuronTags, type NeuronTag } from "$lib/utils/neuron.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+  import { Tag } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
   export let tagName: "p" | "h3" = "p";
@@ -19,7 +20,9 @@
 
 <div class="title" data-tid="neuron-card-title">
   <svelte:element this={tagName} data-tid="neuron-id"
-    >{neuron.neuronId}</svelte:element
+    ><div class="neuron-id">
+      {#if neuron.isSeed}<Tag>seed</Tag>{/if}<span>{neuron.neuronId}</span>
+    </div></svelte:element
   >
 
   {#each neuronTags as tag}
@@ -30,6 +33,12 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/card";
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
+  .neuron-id {
+    display: flex;
+    align-items: center;
+    gap: var(--padding);
+  }
 
   .title {
     @include card.stacked-title;
