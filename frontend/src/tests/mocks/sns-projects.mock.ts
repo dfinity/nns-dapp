@@ -321,6 +321,7 @@ type SnsSummaryParams = {
   maxDirectParticipation?: bigint;
   maxNFParticipation?: bigint;
   neuronsFundIsParticipating?: [boolean] | [];
+  swapOpenTimestampSeconds?: bigint;
 };
 
 export const createSummary = ({
@@ -342,6 +343,7 @@ export const createSummary = ({
   maxDirectParticipation,
   maxNFParticipation,
   neuronsFundIsParticipating,
+  swapOpenTimestampSeconds,
 }: SnsSummaryParams): SnsSummary => {
   const init: SnsSwapInit = {
     ...mockInit,
@@ -392,6 +394,7 @@ export const createSummary = ({
       ...summary.swap,
       init: [init],
       params,
+      decentralization_sale_open_timestamp_seconds: swapOpenTimestampSeconds,
     },
     derived,
     init,
@@ -401,13 +404,20 @@ export const createSummary = ({
 export const createMockSnsFullProject = ({
   summaryParams,
   rootCanisterId,
+  icpCommitment,
 }: {
   rootCanisterId: Principal;
   summaryParams: SnsSummaryParams;
-}) => ({
+  icpCommitment?: bigint;
+}): SnsFullProject => ({
   rootCanisterId,
   summary: createSummary(summaryParams),
-  mockSwapCommitment: mockSnsSwapCommitment(rootCanisterId),
+  swapCommitment: {
+    rootCanisterId,
+    myCommitment: nonNullish(icpCommitment)
+      ? createBuyersState(icpCommitment)
+      : undefined,
+  },
 });
 
 export const mockQueryMetadataResponse: SnsGetMetadataResponse = {

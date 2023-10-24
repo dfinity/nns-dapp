@@ -1,13 +1,8 @@
 import * as saleApi from "$lib/api/sns-sale.api";
 import ProjectCard from "$lib/components/launchpad/ProjectCard.svelte";
 import { SECONDS_IN_DAY, SECONDS_IN_MONTH } from "$lib/constants/constants";
-import { authStore } from "$lib/stores/auth.store";
-import {
-  authStoreMock,
-  mockIdentity,
-  mutableMockAuthStoreSubscribe,
-} from "$tests/mocks/auth.store.mock";
-import en from "$tests/mocks/i18n.mock";
+import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { createFinalizationStatusMock } from "$tests/mocks/sns-finalization-status.mock";
 import {
   createMockSnsFullProject,
@@ -22,12 +17,10 @@ import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
 describe("ProjectCard", () => {
-  vitest
-    .spyOn(authStore, "subscribe")
-    .mockImplementation(mutableMockAuthStoreSubscribe);
-
+  const rootCanisterId = rootCanisterIdMock;
   const now = Date.now();
-  const nowInSeconds = Math.floor(now / 1000);
+  // Round up to the next second to avoid flaky tests
+  const nowInSeconds = Math.ceil(now / 1000);
   const yesterdayInSeconds = nowInSeconds - SECONDS_IN_DAY;
   beforeEach(() => {
     vi.clearAllMocks();
@@ -40,120 +33,97 @@ describe("ProjectCard", () => {
     ]);
   });
 
+  const renderCard = async (project: SnsFullProject) => {
+    const { container } = render(ProjectCard, {
+      props: {
+        project,
+      },
+    });
+
+    await runResolvedPromises();
+
+    return ProjectCardPo.under(new JestPageObjectElement(container));
+  };
+
   describe("signed in", () => {
-    beforeAll(() =>
-      authStoreMock.next({
-        identity: mockIdentity,
-      })
-    );
+    beforeEach(() => {
+      resetIdentity();
+    });
 
-    it("should render a logo", () => {
-      const { container } = render(ProjectCard, {
-        props: {
-          project: mockSnsFullProject,
-        },
-      });
+    it("should render a logo", async () => {
+      const po = await renderCard(mockSnsFullProject);
 
-      const img = container.querySelector("img");
-
-      expect(img).toBeInTheDocument();
-      expect(img?.getAttribute("src")).toBe(
+      expect(await po.getLogoSrc()).toBe(
         mockSnsFullProject.summary.metadata.logo
       );
     });
 
     it("should render a title", async () => {
-      const { container } = render(ProjectCard, {
-        props: {
-          project: mockSnsFullProject,
-        },
-      });
-
-      const po = ProjectCardPo.under(new JestPageObjectElement(container));
+      const po = await renderCard(mockSnsFullProject);
 
       expect(await po.getProjectName()).toBe(
         mockSnsFullProject.summary.metadata.name
       );
     });
 
-    it("should render a description", () => {
-      const { getByText } = render(ProjectCard, {
-        props: {
-          project: mockSnsFullProject,
-        },
-      });
+    it("should render a description", async () => {
+      const po = await renderCard(mockSnsFullProject);
 
-      expect(
-        getByText(mockSnsFullProject.summary.metadata.description)
-      ).toBeInTheDocument();
+      expect(await po.getDescription()).toBe(
+        mockSnsFullProject.summary.metadata.description
+      );
     });
 
-    it("should be highlighted", async () => {
-      const { container } = render(ProjectCard, {
-        props: {
-          project: {
-            ...mockSnsFullProject,
-            swapCommitment: {
-              rootCanisterId: mockSnsFullProject.rootCanisterId,
-              myCommitment: {
-                icp: [
-                  {
-                    transfer_start_timestamp_seconds: BigInt(123132),
-                    amount_e8s: BigInt(100_000_000),
-                    transfer_success_timestamp_seconds: BigInt(5443554),
-                  },
-                ],
-                has_created_neuron_recipes: [],
-              },
-            },
-          },
+    it("should be highlighted with user commitment", async () => {
+      const project = createMockSnsFullProject({
+        rootCanisterId,
+        summaryParams: {
+          lifecycle: SnsSwapLifecycle.Open,
         },
+        icpCommitment: 100_000_000n,
       });
 
-      const po = ProjectCardPo.under(new JestPageObjectElement(container));
+      const po = await renderCard(project);
 
       expect(await po.isHighlighted()).toBe(true);
     });
 
     it("should not be highlighted without commitment", async () => {
-      const { container } = render(ProjectCard, {
-        props: {
-          project: {
-            ...mockSnsFullProject,
-            swapCommitment: {
-              rootCanisterId: mockSnsFullProject.rootCanisterId,
-              myCommitment: undefined,
-            },
-          },
+      const project = createMockSnsFullProject({
+        rootCanisterId,
+        summaryParams: {
+          lifecycle: SnsSwapLifecycle.Open,
         },
+        icpCommitment: undefined,
       });
-
-      const po = ProjectCardPo.under(new JestPageObjectElement(container));
+      const po = await renderCard(project);
 
       expect(await po.isHighlighted()).toBe(false);
     });
 
-    it("should display a spinner when the swapCommitment is not loaded", () => {
-      const { getByTestId } = render(ProjectCard, {
-        props: {
-          project: { ...mockSnsFullProject, swapCommitment: undefined },
-        },
+    it("should display a spinner when the swapCommitment is not loaded", async () => {
+      const po = await renderCard({
+        ...mockSnsFullProject,
+        swapCommitment: undefined,
       });
 
-      expect(getByTestId("spinner")).toBeInTheDocument();
+      expect(await po.hasSpinner()).toBe(true);
     });
 
-    it("should render swap info", () => {
-      const { getByText } = render(ProjectCard, {
-        props: {
-          project: mockSnsFullProject,
+    it("should render swap info", async () => {
+      const project = createMockSnsFullProject({
+        rootCanisterId,
+        summaryParams: {
+          lifecycle: SnsSwapLifecycle.Open,
+          swapDueTimestampSeconds: BigInt(nowInSeconds + SECONDS_IN_DAY),
         },
+        icpCommitment: 314000000n,
       });
 
-      expect(getByText(en.sns_project_detail.deadline)).toBeInTheDocument();
-      expect(
-        getByText(en.sns_project_detail.user_current_commitment)
-      ).toBeInTheDocument();
+      const po = await renderCard(project);
+
+      expect(await po.getUserCommitment()).toBe("3.14 ICP");
+      expect(await po.getDeadline()).toBe("1 day");
     });
 
     it("should render complete status if swap is Committed", async () => {
@@ -166,13 +136,8 @@ describe("ProjectCard", () => {
         },
       });
 
-      const { container } = render(ProjectCard, {
-        props: {
-          project: snsFulProject,
-        },
-      });
+      const po = await renderCard(snsFulProject);
 
-      const po = ProjectCardPo.under(new JestPageObjectElement(container));
       await runResolvedPromises();
 
       expect(await po.getStatus()).toBe("Status Completed");
@@ -190,34 +155,24 @@ describe("ProjectCard", () => {
         },
       });
 
-      const { container } = render(ProjectCard, {
-        props: {
-          project: snsFulProject,
-        },
-      });
-
-      const po = ProjectCardPo.under(new JestPageObjectElement(container));
-      await runResolvedPromises();
+      const po = await renderCard(snsFulProject);
 
       expect(await po.getStatus()).toBe("Status Finalizing");
     });
   });
 
   describe("not signed in", () => {
-    beforeAll(() =>
-      authStoreMock.next({
-        identity: undefined,
-      })
-    );
+    beforeAll(() => {
+      setNoIdentity();
+    });
 
-    it("should not display a spinner when the swapCommitment is not loaded", () => {
-      const { getByTestId } = render(ProjectCard, {
-        props: {
-          project: { ...mockSnsFullProject, swapCommitment: undefined },
-        },
+    it("should not display a spinner when the swapCommitment is not loaded", async () => {
+      const po = await renderCard({
+        ...mockSnsFullProject,
+        swapCommitment: undefined,
       });
 
-      expect(() => getByTestId("spinner")).toThrow();
+      expect(await po.hasSpinner()).toBe(false);
     });
   });
 });

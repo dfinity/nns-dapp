@@ -58,7 +58,7 @@
     <h3 data-tid="project-name">{name}</h3>
   </div>
 
-  <p class="value description">{description}</p>
+  <p data-tid="project-description" class="value description">{description}</p>
 
   <ProjectCardSwapInfo isFinalizing={$isFinalizingStore} {project} />
 
