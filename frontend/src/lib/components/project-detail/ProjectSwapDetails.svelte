@@ -90,11 +90,15 @@
     >
   </KeyValuePair>
   <KeyValuePair testId="sns-min-participant-commitment">
-    <span slot="key">{$i18n.sns_project_detail.min_commitment} </span>
+    <span slot="key"
+      >{$i18n.sns_project_detail.min_participant_commitment}
+    </span>
     <AmountDisplay slot="value" amount={minCommitmentIcp} detailed singleLine />
   </KeyValuePair>
   <KeyValuePair testId="sns-max-participant-commitment">
-    <span slot="key">{$i18n.sns_project_detail.max_commitment} </span>
+    <span slot="key"
+      >{$i18n.sns_project_detail.max_participant_commitment}
+    </span>
     <AmountDisplay slot="value" amount={maxCommitmentIcp} singleLine />
   </KeyValuePair>
   {#if nonNullish(maxNFParticipation)}

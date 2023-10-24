@@ -723,8 +723,8 @@ interface I18nSns_project_detail {
   token_symbol: string;
   total_tokens: string;
   total_tokens_supply: string;
-  min_commitment: string;
-  max_commitment: string;
+  min_participant_commitment: string;
+  max_participant_commitment: string;
   max_nf_commitment: string;
   min_participants: string;
   current_overall_commitment: string;
