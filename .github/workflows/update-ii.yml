@@ -40,6 +40,16 @@ jobs:
           branch: bot-ii-update
           delete-branch: true
           title: 'Update II version'
+          body: |
+            # Motivation
+            We would like to test with a recent version of Internet Identity.
+
+            # Changes
+            * Updated `internet_identity` version in `dfx.json`.
+
+            # Tests
+              - See CI
+
           # Since the this is a scheduled job, a failure won't be shown on any
           # PR status. To notify the team, we send a message to our Slack channel on failure.
       - name: Notify Slack on failure
