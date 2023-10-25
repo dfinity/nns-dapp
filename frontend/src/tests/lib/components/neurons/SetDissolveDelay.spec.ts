@@ -57,7 +57,7 @@ describe("SetDissolveDelay", () => {
     });
   });
 
-  it("should initialize text and slider correctly", async () => {
+  it("should initialize text", async () => {
     const neuronDissolveDelaySeconds = 90 * SECONDS_IN_DAY;
     const po = renderComponent({
       neuronDissolveDelaySeconds: BigInt(neuronDissolveDelaySeconds),
@@ -65,7 +65,6 @@ describe("SetDissolveDelay", () => {
     });
 
     expect(await po.getDays()).toBe(90);
-    expect(await po.getSliderDays()).toBe(90);
   });
 
   it("fractional days get rounded up", async () => {
@@ -77,31 +76,18 @@ describe("SetDissolveDelay", () => {
     });
 
     expect(await po.getDays()).toBe(91);
-    expect(await po.getSliderDays()).toBe(91);
   });
 
   it("should update slider on text input", async () => {
     const po = renderComponent();
     await po.enterDays(1);
-    expect(await po.getSliderDays()).toBe(1);
+    expect(await po.getProgressBarSeconds()).toBe(1 * SECONDS_IN_DAY);
 
     await po.enterDays(1000);
-    expect(await po.getSliderDays()).toBe(1000);
+    expect(await po.getProgressBarSeconds()).toBe(1000 * SECONDS_IN_DAY);
 
     await po.enterDays(0);
-    expect(await po.getSliderDays()).toBe(0);
-  });
-
-  it("should update text on slider input", async () => {
-    const po = renderComponent();
-    await po.setSliderDays(1);
-    expect(await po.getDays()).toBe(1);
-
-    await po.setSliderDays(1000);
-    expect(await po.getDays()).toBe(1000);
-
-    await po.setSliderDays(0);
-    expect(await po.getDays()).toBe(0);
+    expect(await po.getProgressBarSeconds()).toBe(0);
   });
 
   describe("should update error message and button state", () => {
@@ -174,58 +160,6 @@ describe("SetDissolveDelay", () => {
         en.neurons.dissolve_delay_above_maximum
       );
     });
-
-    it("when slider input below or equal to current delay", async () => {
-      const neuronDays = 365;
-      const neuronDissolveDelaySeconds = neuronDays * SECONDS_IN_DAY;
-      const projectMinDays = 183;
-
-      const po = renderComponent({
-        neuronDissolveDelaySeconds: BigInt(neuronDissolveDelaySeconds),
-        minProjectDelayInSeconds: projectMinDays * SECONDS_IN_DAY,
-        delayInSeconds: neuronDissolveDelaySeconds,
-        maxDelayInSeconds: SECONDS_IN_EIGHT_YEARS,
-      });
-
-      expect(await po.getUpdateButtonPo().isDisabled()).toBe(true);
-      expect(await po.getErrorMessage()).toBe(null);
-
-      await po.setSliderDays(neuronDays);
-      expect(await po.getErrorMessage()).toBe(
-        en.neurons.dissolve_delay_below_current
-      );
-      expect(await po.getUpdateButtonPo().isDisabled()).toBe(true);
-
-      await po.setSliderDays(neuronDays + 1);
-      expect(await po.getErrorMessage()).toBe(null);
-      expect(await po.getUpdateButtonPo().isDisabled()).toBe(false);
-    });
-
-    it("when slider input below min project delay", async () => {
-      const neuronDays = 0;
-      const neuronDissolveDelaySeconds = neuronDays * SECONDS_IN_DAY;
-      const projectMinDays = 183;
-
-      const po = renderComponent({
-        neuronDissolveDelaySeconds: BigInt(neuronDissolveDelaySeconds),
-        minProjectDelayInSeconds: projectMinDays * SECONDS_IN_DAY,
-        delayInSeconds: neuronDissolveDelaySeconds,
-        maxDelayInSeconds: SECONDS_IN_EIGHT_YEARS,
-      });
-
-      expect(await po.getUpdateButtonPo().isDisabled()).toBe(true);
-      expect(await po.getErrorMessage()).toBe(null);
-
-      await po.setSliderDays(projectMinDays - 1);
-      expect(await po.getUpdateButtonPo().isDisabled()).toBe(false);
-      expect(await po.getErrorMessage()).toBe(
-        en.neurons.dissolve_delay_below_minimum
-      );
-
-      await po.setSliderDays(projectMinDays);
-      expect(await po.getUpdateButtonPo().isDisabled()).toBe(false);
-      expect(await po.getErrorMessage()).toBe(null);
-    });
   });
 
   it("can set same number of days when current number of days is fractional", async () => {
@@ -237,7 +171,7 @@ describe("SetDissolveDelay", () => {
     });
 
     expect(await po.getDays()).toBe(1001);
-    expect(await po.getSliderDays()).toBe(1001);
+    expect(await po.getProgressBarSeconds()).toBe(1001 * SECONDS_IN_DAY);
 
     expect(await po.getErrorMessage()).toBe(null);
     expect(await po.getUpdateButtonPo().isDisabled()).toBe(false);
@@ -270,20 +204,7 @@ describe("SetDissolveDelay", () => {
     expect(getDelayInSeconds(component)).toBe(200 * SECONDS_IN_DAY);
   });
 
-  it("should update prop on slider input", async () => {
-    const { container, component } = render(SetDissolveDelay, {
-      props: defaultComponentProps,
-    });
-    const po = SetDissolveDelayPo.under(new JestPageObjectElement(container));
-
-    await po.setSliderDays(100);
-    expect(getDelayInSeconds(component)).toBe(100 * SECONDS_IN_DAY);
-
-    await po.setSliderDays(200);
-    expect(getDelayInSeconds(component)).toBe(200 * SECONDS_IN_DAY);
-  });
-
-  it("should update prop, text and slider on Min/Max", async () => {
+  it("should update prop, text, progress bar on Min/Max", async () => {
     const minProjectDelayInDays = 50;
     const maxDelayInDays = 500;
     const minProjectDelayInSeconds = minProjectDelayInDays * SECONDS_IN_DAY;
@@ -305,17 +226,23 @@ describe("SetDissolveDelay", () => {
     await po.clickMin();
     expect(getDelayInSeconds(component)).toBe(minProjectDelayInSeconds);
     expect(await po.getDays()).toBe(minProjectDelayInDays);
-    expect(await po.getSliderDays()).toBe(minProjectDelayInDays);
+    expect(await po.getProgressBarSeconds()).toBe(
+      minProjectDelayInDays * SECONDS_IN_DAY
+    );
 
     await po.clickMax();
     expect(getDelayInSeconds(component)).toBe(maxDelayInSeconds);
     expect(await po.getDays()).toBe(maxDelayInDays);
-    expect(await po.getSliderDays()).toBe(maxDelayInDays);
+    expect(await po.getProgressBarSeconds()).toBe(
+      maxDelayInDays * SECONDS_IN_DAY
+    );
 
     // Clicking "Min" can decrease the delay to the minimum.
     await po.clickMin();
     expect(getDelayInSeconds(component)).toBe(minProjectDelayInSeconds);
     expect(await po.getDays()).toBe(minProjectDelayInDays);
-    expect(await po.getSliderDays()).toBe(minProjectDelayInDays);
+    expect(await po.getProgressBarSeconds()).toBe(
+      minProjectDelayInDays * SECONDS_IN_DAY
+    );
   });
 });

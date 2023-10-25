@@ -1,8 +1,8 @@
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
-import { InputRangePo } from "$tests/page-objects/InputRange.page-object";
 import { InputWithErrorPo } from "$tests/page-objects/InputWithError.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { RangeDissolveDelayPo } from "./RangeDissolveDelay.page-object";
 
 export class SetDissolveDelayPo extends BasePageObject {
   private static readonly TID = "set-dissolve-delay-component";
@@ -33,8 +33,8 @@ export class SetDissolveDelayPo extends BasePageObject {
     });
   }
 
-  getInputRangePo(): InputRangePo {
-    return InputRangePo.under(this.root);
+  getRangeDissolveDelayPo(): RangeDissolveDelayPo {
+    return RangeDissolveDelayPo.under(this.root);
   }
 
   clickUpdate(): Promise<void> {
@@ -78,11 +78,7 @@ export class SetDissolveDelayPo extends BasePageObject {
     return this.getInputWithErrorPo().getErrorMessage();
   }
 
-  async getSliderDays(): Promise<number> {
-    return this.getInputRangePo().getValue();
-  }
-
-  setSliderDays(days: number): Promise<void> {
-    return this.getInputRangePo().setValue(days);
+  async getProgressBarSeconds(): Promise<number> {
+    return this.getRangeDissolveDelayPo().getProgressBarValue();
   }
 }

@@ -29,32 +29,11 @@
   let disableUpdate: boolean;
   $: disableUpdate = shouldUpdateBeDisabled(delayInSeconds);
 
-  const keepDelaysInBounds = () => {
-    if (delayInSeconds < Number(neuronDissolveDelaySeconds)) {
-      delayInSeconds = Number(neuronDissolveDelaySeconds);
-    }
-
-    if (delayInSeconds > maxDelayInSeconds) {
-      delayInSeconds = maxDelayInSeconds;
-    }
-  };
-
-  const setMin = () => {
-    delayInSeconds = Math.max(
-      Number(neuronDissolveDelaySeconds),
-      minProjectDelayInSeconds
-    );
-  };
-
-  const setMax = () => {
-    delayInSeconds = maxDelayInSeconds;
-  };
-
   const getInputError = (delayInSeconds: number) => {
     if (delayInSeconds > maxDelayInSeconds) {
       return $i18n.neurons.dissolve_delay_above_maximum;
     }
-    if (delayInSeconds < neuronDissolveDelaySeconds) {
+    if (delayInSeconds <= neuronDissolveDelaySeconds) {
       return $i18n.neurons.dissolve_delay_below_current;
     }
     if (delayInSeconds < minProjectDelayInSeconds) {
@@ -70,10 +49,6 @@
     return (
       nonNullish(error) && error !== $i18n.neurons.dissolve_delay_below_minimum
     );
-  };
-
-  const onRangeInput = () => {
-    keepDelaysInBounds();
   };
 
   const cancel = () => dispatch("nnsCancel");
@@ -121,8 +96,10 @@
       <DayInput
         bind:seconds={delayInSeconds}
         maxInSeconds={maxDelayInSeconds}
-        on:nnsMin={setMin}
-        on:nnsMax={setMax}
+        minInSeconds={Math.max(
+          Number(neuronDissolveDelaySeconds),
+          minProjectDelayInSeconds
+        )}
         placeholderLabelKey="neurons.dissolve_delay_placeholder"
         name="dissolve_delay"
         {getInputError}

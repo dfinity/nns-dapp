@@ -1,5 +1,5 @@
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
-import { SECONDS_IN_DAY, SECONDS_IN_YEAR } from "$lib/constants/constants";
+import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import IncreaseSnsDissolveDelayModal from "$lib/modals/sns/neurons/IncreaseSnsDissolveDelayModal.svelte";
 import * as authServices from "$lib/services/auth.services";
 import { loadSnsParameters } from "$lib/services/sns-parameters.services";
@@ -44,6 +44,7 @@ describe("IncreaseSnsDissolveDelayModal", () => {
       },
     ],
   };
+
   const reloadNeuron = vi.fn().mockResolvedValue(undefined);
   const renderIncreaseDelayModal = async (
     neuron: SnsNeuron
@@ -58,6 +59,8 @@ describe("IncreaseSnsDissolveDelayModal", () => {
       },
     });
   };
+  const getProgressBarValue = (container) =>
+    container.querySelector("progress").getAttribute("value");
 
   beforeEach(() => {
     vi.resetAllMocks();
@@ -93,31 +96,31 @@ describe("IncreaseSnsDissolveDelayModal", () => {
 
   it("should use current dissolve delay value when locked", async () => {
     const dissolveDelayDays = 12345;
+    const delayInSeconds = dissolveDelayDays * SECONDS_IN_DAY;
     const neuron = createMockSnsNeuron({
       id: [1],
       state: NeuronState.Locked,
-      dissolveDelaySeconds: BigInt(dissolveDelayDays * SECONDS_IN_DAY),
+      dissolveDelaySeconds: BigInt(delayInSeconds),
     });
-    const { queryByTestId } = await renderIncreaseDelayModal(neuron);
+    const { container } = await renderIncreaseDelayModal(neuron);
 
-    expect((queryByTestId("input-range") as HTMLInputElement).value).toBe(
-      dissolveDelayDays.toString()
-    );
+    expect(getProgressBarValue(container)).toBe(delayInSeconds.toString());
   });
 
   it("should use current dissolve delay value when dissolving", async () => {
+    const dissolveDelayDays = 365;
     const whenDissolvedTimestampSeconds = BigInt(
-      nowInSeconds + SECONDS_IN_YEAR
+      nowInSeconds + dissolveDelayDays * SECONDS_IN_DAY
     );
     const neuron = createMockSnsNeuron({
       id: [1],
       state: NeuronState.Dissolving,
       whenDissolvedTimestampSeconds,
     });
-    const { queryByTestId } = await renderIncreaseDelayModal(neuron);
+    const { container } = await renderIncreaseDelayModal(neuron);
 
-    expect((queryByTestId("input-range") as HTMLInputElement).value).toBe(
-      "366"
+    expect(getProgressBarValue(container)).toBe(
+      String(dissolveDelayDays * SECONDS_IN_DAY)
     );
   });
 
@@ -130,52 +133,6 @@ describe("IncreaseSnsDissolveDelayModal", () => {
     expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
   });
 
-  it("should be able to change dissolve delay in the confirmation screen using range", async () => {
-    const { container } = await renderIncreaseDelayModal(neuron);
-
-    await waitFor(() =>
-      expect(container.querySelector('input[type="range"]')).not.toBeNull()
-    );
-    const inputRange = container.querySelector('input[type="range"]');
-    expect(inputRange).not.toBeNull();
-
-    inputRange &&
-      (await fireEvent.input(inputRange, {
-        target: { value: 365 * 2 },
-      }));
-
-    const goToConfirmDelayButton = container.querySelector(
-      '[data-tid="go-confirm-delay-button"]'
-    );
-
-    expect(goToConfirmDelayButton).toBeDefined();
-
-    await waitFor(() =>
-      expect(goToConfirmDelayButton?.getAttribute("disabled")).toBeNull()
-    );
-
-    goToConfirmDelayButton && (await fireEvent.click(goToConfirmDelayButton));
-
-    await waitFor(() =>
-      expect(
-        container.querySelector('[data-tid="confirm-dissolve-delay-container"]')
-      ).not.toBeNull()
-    );
-
-    const confirmButton = container.querySelector(
-      '[data-tid="confirm-delay-button"]'
-    );
-
-    expect(confirmButton).toBeDefined();
-    expect(snsGovernanceApi.setDissolveDelay).toBeCalledTimes(0);
-
-    confirmButton && (await fireEvent.click(confirmButton));
-
-    await waitFor(() =>
-      expect(snsGovernanceApi.setDissolveDelay).toBeCalledTimes(1)
-    );
-  });
-
   it("should be able to change dissolve delay in the confirmation screen using input", async () => {
     const { container, queryByTestId } = await renderIncreaseDelayModal(neuron);
 
@@ -183,12 +140,12 @@ describe("IncreaseSnsDissolveDelayModal", () => {
       expect(queryByTestId("input-ui-element")).toBeInTheDocument()
     );
 
-    const dissolveDelaySeconds = roundUpSecondsToWholeDays(SECONDS_IN_YEAR * 2);
+    const increaseDelayDays = 365;
     const inputElement = queryByTestId("input-ui-element");
 
     inputElement &&
       (await fireEvent.input(inputElement, {
-        target: { value: `${Math.round(secondsToDays(dissolveDelaySeconds))}` },
+        target: { value: increaseDelayDays },
       }));
 
     const goToConfirmDelayButton = container.querySelector(
@@ -223,7 +180,8 @@ describe("IncreaseSnsDissolveDelayModal", () => {
     );
     expect(snsGovernanceApi.setDissolveDelay).toBeCalledWith(
       expect.objectContaining({
-        dissolveTimestampSeconds: dissolveDelaySeconds + nowInSeconds,
+        dissolveTimestampSeconds:
+          daysToSeconds(increaseDelayDays) + nowInSeconds,
       })
     );
   });
