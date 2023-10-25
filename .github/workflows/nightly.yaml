@@ -48,25 +48,8 @@ jobs:
         with:
           assets_dir: 'out'
           token: ${{ secrets.GITHUB_TOKEN }}
-  update-ii:
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Update II
-        run: ./scripts/update-ii
-      - name: Commit updated Internet Identity
-        uses: EndBug/add-and-commit@v9.1.1
-        with:
-          add: .
-          author_name: Nightly GitHub Action
-          author_email: "<nobody@dfinity.org>"
-          message: "Update Internet Identity"
-          # do not pull: if this branch is behind, then we might as well let
-          # the pushing fail
-          pull_strategy: "NO-PULL"
   nightly-passes:
-    needs: ["tag-main", "update-ii"]
+    needs: ["tag-main"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:

@@ -36,7 +36,9 @@ describe("SelectUniverseList", () => {
     });
   });
 
-  afterAll(() => vi.clearAllMocks());
+  afterAll(() => {
+    vi.clearAllMocks();
+  });
 
   it("should render universe cards", () => {
     const { getAllByTestId } = render(SelectUniverseList);

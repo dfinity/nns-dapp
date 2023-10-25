@@ -32,7 +32,9 @@ describe("auth-services", () => {
     });
   });
 
-  afterAll(() => (window.location = originalLocation));
+  afterAll(() => {
+    window.location = originalLocation;
+  });
 
   describe("auth-client", () => {
     it("agent-js should clear indexeddb auth info on logout", async () => {

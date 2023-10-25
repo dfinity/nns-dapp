@@ -4,14 +4,11 @@
   import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { TransactionNetwork } from "$lib/types/transaction";
-  import { createEventDispatcher, onMount } from "svelte";
+  import { createEventDispatcher } from "svelte";
   import { assertNonNullish } from "@dfinity/utils";
 
   export let showManualAddress = false;
   export let selectedDestinationAddress: string | undefined = undefined;
-  let mounted = false;
-
-  onMount(() => (mounted = true));
 
   const onEnterAddress = () => {
     // The button is only enabled when the address is valid, so we know that the

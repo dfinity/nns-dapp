@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euxo pipefail
+
+# Commands to run after creating the rust file with didc:
+scripts/rust-add-trait -f rs/sns_aggregator/src/types/ic_sns_swap.rs --type NeuronBasketConstructionParameters --trait PartialEq
+scripts/rust-add-trait -f rs/sns_aggregator/src/types/ic_sns_swap.rs --type LinearScalingCoefficient --trait PartialEq
+scripts/rust-add-trait -f rs/sns_aggregator/src/types/ic_sns_swap.rs --type NeuronsFundParticipationConstraints --trait PartialEq
+scripts/rust-add-trait -f rs/sns_aggregator/src/types/ic_sns_swap.rs --type CfNeuron --trait PartialEq
+scripts/rust-add-trait -f rs/sns_aggregator/src/types/ic_sns_swap.rs --type CfParticipant --trait PartialEq
+scripts/rust-add-trait -f rs/sns_aggregator/src/types/ic_sns_swap.rs --type NeuronsFundParticipants --trait PartialEq
+scripts/rust-add-trait -f rs/sns_aggregator/src/types/ic_sns_swap.rs --type Countries --trait PartialEq
+scripts/rust-add-trait -f rs/sns_aggregator/src/types/ic_sns_swap.rs --type Params --trait PartialEq
+scripts/rust-add-trait -f rs/sns_aggregator/src/types/ic_sns_swap.rs --type Init --trait PartialEq
+scripts/rust-add-trait -f rs/sns_aggregator/src/types/ic_sns_swap.rs --type GetStateResponse --trait Default

@@ -163,7 +163,9 @@ describe("NNSDapp", () => {
   });
 
   describe("NNSDapp.addPendingNotifySwap", () => {
-    afterEach(() => vi.clearAllMocks());
+    afterEach(() => {
+      vi.clearAllMocks();
+    });
     it("should call add_pending_notify_swap successfully", async () => {
       const service = mock<NNSDappService>();
       service.add_pending_notify_swap.mockResolvedValue({ Ok: null });

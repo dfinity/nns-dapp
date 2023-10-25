@@ -47,9 +47,9 @@ describe("SnsStakeNeuronModal", () => {
       },
     });
 
-  beforeAll(() =>
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe)
-  );
+  beforeAll(() => {
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+  });
 
   beforeEach(() => {
     vi.spyOn(snsAccountsStore, "subscribe").mockImplementation(

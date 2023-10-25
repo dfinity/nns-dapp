@@ -14,11 +14,11 @@ vi.mock("$lib/services/$public/sns.services", () => {
 });
 
 describe("FollowSnsNeuronsButton", () => {
-  beforeAll(() =>
-    vi
-      .spyOn(snsTokenSymbolSelectedStore, "subscribe")
-      .mockImplementation(mockTokenStore)
-  );
+  beforeAll(() => {
+    vi.spyOn(snsTokenSymbolSelectedStore, "subscribe").mockImplementation(
+      mockTokenStore
+    );
+  });
 
   afterEach(() => {
     vi.clearAllMocks();

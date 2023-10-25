@@ -2,6 +2,7 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { secondsToDuration } from "$lib/utils/date.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
     formatVotingPower,
     formattedStakedMaturity,
@@ -29,7 +30,11 @@
     <span class="value" slot="value">{neuron.neuronId}</span>
   </KeyValuePair>
   <KeyValuePair testId="stake">
-    <span class="label" slot="key">{$i18n.neurons.ic_stake}</span>
+    <span class="label" slot="key"
+      >{replacePlaceholders($i18n.neurons.ic_stake, {
+        $token: ICPToken.symbol,
+      })}</span
+    >
     <span class="value" slot="value"
       ><AmountDisplay inline singleLine amount={stake} /></span
     >

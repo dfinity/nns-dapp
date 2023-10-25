@@ -10,7 +10,7 @@
   } from "$lib/services/$public/app.services";
   import Warnings from "$lib/components/warnings/Warnings.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-  import type { Navigation } from "@sveltejs/kit";
+  import type { AfterNavigate } from "@sveltejs/kit";
   import { afterNavigate } from "$app/navigation";
   import { referrerPathStore } from "$lib/stores/routes.store";
   import { referrerPathForNav } from "$lib/utils/page.utils";
@@ -26,7 +26,7 @@
   );
 
   // Use the top level layout to set the `referrerPath` because anything under `{#if isNullish($navigating)}` will miss the `afterNavigate` events
-  afterNavigate((nav: Navigation) =>
+  afterNavigate((nav: AfterNavigate) =>
     // TODO: e2e to test this
     referrerPathStore.set(referrerPathForNav(nav))
   );

@@ -25,6 +25,15 @@ export class NnsNeuronDetailCardPo extends BasePageObject {
     return (await this.getValue("stake")).trim();
   }
 
+  async getStakeLabel(): Promise<string> {
+    return (
+      await KeyValuePairPo.under({
+        element: this.root,
+        testId: "stake",
+      }).getKeyText()
+    ).trim();
+  }
+
   getDissolveDelay(): Promise<string> {
     return this.getValue("dissolve-delay");
   }

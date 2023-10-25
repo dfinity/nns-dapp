@@ -41,7 +41,9 @@ describe("Launchpad", () => {
       })
     );
 
-    afterEach(() => vi.clearAllMocks());
+    afterEach(() => {
+      vi.clearAllMocks();
+    });
 
     it("should render titles", () => {
       vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(

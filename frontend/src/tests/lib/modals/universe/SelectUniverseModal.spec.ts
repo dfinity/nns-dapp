@@ -23,7 +23,9 @@ describe("SelectUniverseModal", () => {
     });
   });
 
-  afterAll(() => vi.clearAllMocks());
+  afterAll(() => {
+    vi.clearAllMocks();
+  });
 
   it("should render title", async () => {
     const { getByTestId } = await renderModal({

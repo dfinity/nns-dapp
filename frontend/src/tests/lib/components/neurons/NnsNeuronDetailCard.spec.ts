@@ -32,6 +32,7 @@ describe("NnsNeuronDetailCard", () => {
     });
 
     expect(await po.getStake()).toBe("20.00 ICP");
+    expect(await po.getStakeLabel()).toBe("ICP staked");
   });
 
   it("should render neuron dissolve delay", async () => {

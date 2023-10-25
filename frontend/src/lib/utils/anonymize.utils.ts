@@ -134,7 +134,6 @@ export const anonymizeNeuronInfo = async (
     votingPower,
     ageSeconds,
     fullNeuron,
-    isGenesis,
   } = neuron;
 
   return {
@@ -148,7 +147,6 @@ export const anonymizeNeuronInfo = async (
     votingPower: await anonymizeAmount(votingPower),
     ageSeconds,
     fullNeuron: await anonymizeFullNeuron(fullNeuron),
-    isGenesis,
   };
 };
 
@@ -193,7 +191,6 @@ export const anonymizeFullNeuron = async (
     dissolveState,
     followees,
     spawnAtTimesSeconds,
-    isGenesis,
   } = neuron;
 
   return {
@@ -217,7 +214,6 @@ export const anonymizeFullNeuron = async (
     spawnAtTimesSeconds,
     dissolveState,
     followees: await mapPromises(followees, anonymizeFollowees),
-    isGenesis,
   };
 };
 
@@ -456,6 +452,7 @@ const anonymizeBuyer = async ([buyer, state]: [
           (await anonymizeAmount(state.icp[0]?.amount_e8s)) ?? BigInt(0),
       } as SnsTransferableAmount,
     ],
+    has_created_neuron_recipes: state.has_created_neuron_recipes,
   },
 ];
 
@@ -522,6 +519,8 @@ export const anonymizeSnsSwapCommitment = async (
                 },
               ]
             : [],
+        has_created_neuron_recipes:
+          originalSwapCommitment.myCommitment.has_created_neuron_recipes,
       },
     };
   }

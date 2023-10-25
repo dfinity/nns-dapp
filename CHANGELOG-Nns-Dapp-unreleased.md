@@ -14,27 +14,29 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Added provenance information to .did files and derived rust code.
 * Added `approveTransfer` in icrc-ledger API.
+* Add `UpdateElectedHostosVersions` and `UpdateNodesHostosVersion` proposals support.
+* Show the maximum participation of the Neurons' Fund when present.
 
 #### Changed
 
-* Detailed values of the Neurons' Fund and direct participation in the project detail page.
-* Update proposal info icons position to improve the UX.
-* Improve the indicator of the minimum commitment in the project status.
+* Stable structures updated to `0.6.0`.
+* Dapp upgraded to Svelte `v4`.
 
 #### Deprecated
 #### Removed
 
 #### Fixed
 
-* Add "Finalizing" status in projects of the Launchpad.
-* Fix UI bug when commitment was very low.
+* Remove robots meta tag to allow search engines to crawl NNS Dapp.
+* Fix i18n key in merge neurons summary screen.
 
 #### Security
 
 #### Not Published
 
-* New feature flag `ENABLE_MY_TOKENS`.
+* Added `retrieveBtcWithApproval` in ckbtc-minter API.
 
 ### Operations
 
@@ -45,13 +47,18 @@ proposal is successful, the changes it released will be moved from this file to
 * Fix erroneous failures in the `tip` tagging workflow when a PR is closed without merging.
 * Add --host flag to dfx-snapshot-start.
 * Script to deploy nns-dapp on DevEnv.
+* Formatting for `Cargo.toml` files.
+* Add test to check that the nns-dapp cargo and npm versions match.
 
 #### Changed
 
-* Migrate the Jest unit test suite to Vitest.
+* Join npm audit URLs with spaces instead of commas.
+* Add traits with a dedicated command rather than with patch files.
 
 #### Deprecated
 #### Removed
+
+* Delete nightly `GitHub` job to update II used in tests; we now use the II that comes with `snsdemo`.
 
 #### Fixed
 

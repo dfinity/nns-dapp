@@ -57,6 +57,7 @@ export const createTransferableAmount = (
 });
 export const createBuyersState = (amount: bigint): SnsSwapBuyerState => ({
   icp: [createTransferableAmount(amount)],
+  has_created_neuron_recipes: [],
 });
 
 export const mockSnsSwapCommitment = (
@@ -129,6 +130,7 @@ export const mockInit: SnsSwapInit = {
   neurons_fund_participation_constraints: [],
   min_direct_participation_icp_e8s: [1_000_000_000n],
   max_direct_participation_icp_e8s: [3_000_000_000n],
+  neurons_fund_participation: [],
 };
 
 export const mockSwap: SnsSummarySwap = {
@@ -317,6 +319,8 @@ type SnsSummaryParams = {
   directCommitment?: bigint;
   minDirectParticipation?: bigint;
   maxDirectParticipation?: bigint;
+  maxNFParticipation?: bigint;
+  neuronsFundIsParticipating?: [boolean] | [];
 };
 
 export const createSummary = ({
@@ -336,6 +340,8 @@ export const createSummary = ({
   directCommitment,
   minDirectParticipation,
   maxDirectParticipation,
+  maxNFParticipation,
+  neuronsFundIsParticipating,
 }: SnsSummaryParams): SnsSummary => {
   const init: SnsSwapInit = {
     ...mockInit,
@@ -343,8 +349,22 @@ export const createSummary = ({
     confirmation_text: toNullable(confirmationText),
     min_direct_participation_icp_e8s: toNullable(minDirectParticipation),
     max_direct_participation_icp_e8s: toNullable(maxDirectParticipation),
+    neurons_fund_participation:
+      neuronsFundIsParticipating ??
+      // If `neuronsFundCommitment` is set, it means that the neurons fund is participating
+      toNullable(nonNullish(neuronsFundCommitment)),
     restricted_countries: nonNullish(restrictedCountries)
       ? [{ iso_codes: restrictedCountries }]
+      : [],
+    neurons_fund_participation_constraints: nonNullish(maxNFParticipation)
+      ? [
+          {
+            max_neurons_fund_participation_icp_e8s:
+              toNullable(maxNFParticipation),
+            coefficient_intervals: [],
+            min_direct_participation_threshold_icp_e8s: [],
+          },
+        ]
       : [],
   };
   const params: SnsParams = {

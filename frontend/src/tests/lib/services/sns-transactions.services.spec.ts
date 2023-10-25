@@ -17,7 +17,9 @@ describe("sns-transactions-services", () => {
     beforeEach(() => {
       icrcTransactionsStore.reset();
     });
-    afterEach(() => vi.clearAllMocks());
+    afterEach(() => {
+      vi.clearAllMocks();
+    });
     it("loads transactions in the store", async () => {
       const spyGetTransactions = vi
         .spyOn(indexApi, "getSnsTransactions")
@@ -59,7 +61,9 @@ describe("sns-transactions-services", () => {
     beforeEach(() => {
       icrcTransactionsStore.reset();
     });
-    afterEach(() => vi.clearAllMocks());
+    afterEach(() => {
+      vi.clearAllMocks();
+    });
     it("loads transactions in the store", async () => {
       const spyGetTransactions = vi
         .spyOn(indexApi, "getSnsTransactions")
