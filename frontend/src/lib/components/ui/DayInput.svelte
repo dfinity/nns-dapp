@@ -43,7 +43,6 @@
   max={secondsToDays(maxInSeconds)}
   inputType="number"
   {errorMessage}
-  on:blur={showError}
   on:nnsInput={showError}
 >
   <MinButton on:click={setMin} slot="start" />
