@@ -1,6 +1,6 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { TransactionFormPo } from "$tests/page-objects/TransactionForm.page-object";
 import { TransactionReviewPo } from "$tests/page-objects/TransactionReview.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 // This should not be used directly but rather as a base class for specific
@@ -32,6 +32,28 @@ export class TransactionModalBasePo extends BasePageObject {
     if (destinationAddress.trim() !== expectedAccountAddress.trim()) {
       throw new Error(
         `Destination address should be ${expectedAccountAddress} but was ${destinationAddress}.`
+      );
+    }
+    await review.clickSend();
+  }
+
+  async transferToAddress({
+    destinationAddress,
+    amount,
+  }: {
+    destinationAddress: string;
+    amount: number;
+  }): Promise<void> {
+    await this.getTransactionFormPo().transferToAddress({
+      destinationAddress,
+      amount,
+    });
+    const review = this.getTransactionReviewPo();
+    await review.waitFor();
+    const address = await review.getDestinationAddress();
+    if (address.trim() !== destinationAddress.trim()) {
+      throw new Error(
+        `Destination address should be ${destinationAddress} but was ${address}.`
       );
     }
     await review.clickSend();

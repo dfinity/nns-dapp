@@ -1,10 +1,11 @@
 <script lang="ts">
   import { Toolbar } from "@dfinity/gix-components";
 
+  export let testId: string | undefined = undefined;
   export let columns = 2;
 </script>
 
-<footer style={`--footer-columns: ${columns}`}>
+<footer data-tid={testId} style={`--footer-columns: ${columns}`}>
   <Toolbar>
     <slot />
   </Toolbar>

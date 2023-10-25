@@ -119,4 +119,8 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
   async blur(): Promise<void> {
     throw new Error("Not implement");
   }
+
+  async innerHtmlForDebugging(): Promise<string> {
+    return "not implemeneted";
+  }
 }

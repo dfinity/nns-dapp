@@ -178,6 +178,7 @@
 </script>
 
 <TransactionModal
+  testId="ckbtc-transaction-modal-component"
   rootCanisterId={universeId}
   bind:this={modal}
   on:nnsSubmit={transfer}
