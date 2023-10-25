@@ -33,6 +33,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Remove robots meta tag to allow search engines to crawl NNS Dapp.
 * Fix i18n key in merge neurons summary screen.
+* Ignore blocks that fail to decode.
 
 #### Security
 
