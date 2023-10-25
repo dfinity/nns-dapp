@@ -21,6 +21,10 @@ if ! pgrep replica; then
   exit 1
 fi
 
+if ! dfx canister id nns-dapp; then
+  exit 1
+fi
+
 for identity in $(dfx identity list 2>/dev/null); do
   principal="$(dfx identity get-principal --identity "$identity")"
   if dfx canister info nns-dapp | grep "$principal"; then
