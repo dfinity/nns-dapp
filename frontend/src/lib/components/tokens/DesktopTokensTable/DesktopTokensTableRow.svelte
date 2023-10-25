@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { UserTokenActions, type UserTokenData } from "$lib/types/tokens-page";
+  import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
   import {
     SvelteComponent,
     createEventDispatcher,
@@ -10,41 +10,49 @@
   import GoToDetailButton from "./actions/GoToDetailButton.svelte";
   import ReceiveButton from "./actions/ReceiveButton.svelte";
   import SendButton from "./actions/SendButton.svelte";
+  import { ActionType } from "$lib/types/actions";
 
-  export let userToken: UserTokenData;
+  export let userTokenData: UserTokenData;
 
   const dispatcher = createEventDispatcher();
 
   const actionMapper: Record<
-    UserTokenActions,
+    UserTokenAction,
     ComponentType<SvelteComponent<{ userToken: UserTokenData }>>
   > = {
-    [UserTokenActions.GoToDetail]: GoToDetailButton,
-    [UserTokenActions.Receive]: ReceiveButton,
-    [UserTokenActions.Send]: SendButton,
+    [UserTokenAction.GoToDetail]: GoToDetailButton,
+    [UserTokenAction.Receive]: ReceiveButton,
+    [UserTokenAction.Send]: SendButton,
   };
 </script>
 
 <tr
-  on:click={() => dispatcher("nnsRowClick", userToken)}
+  on:click={() =>
+    dispatcher("nnsAction", {
+      type: ActionType.GoToTokenDetail,
+      data: userTokenData,
+    })}
   data-tid="desktop-tokens-table-row-component"
 >
   <td>
     <div class="universe-data">
-      <Logo src={userToken.logo} alt={userToken.title} size="medium" framed />
-      <span>{userToken.title}</span>
+      <Logo
+        src={userTokenData.logo}
+        alt={userTokenData.title}
+        size="medium"
+        framed
+      />
+      <span>{userTokenData.title}</span>
     </div>
   </td>
   <td>
     <div class="universe-balance">
-      <AmountDisplay singleLine amount={userToken.balance} />
-      {#each userToken.actions as action}
+      <AmountDisplay singleLine amount={userTokenData.balance} />
+      {#each userTokenData.actions as action}
         <svelte:component
           this={actionMapper[action]}
-          {userToken}
-          on:nnsSend
-          on:nnsReceive
-          on:nnsGoToDetail
+          userToken={userTokenData}
+          on:nnsAction
         />
       {/each}
     </div>

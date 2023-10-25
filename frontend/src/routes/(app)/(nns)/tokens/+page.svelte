@@ -12,7 +12,8 @@
   import IC_LOGO_ROUNDED from "$lib/assets/icp-rounded.svg";
   import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
   import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
-  import { UserTokenActions, type UserTokenData } from "$lib/types/tokens-page";
+  import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
+  import type { Action } from "$lib/types/actions";
 
   onMount(() => {
     if (!$ENABLE_MY_TOKENS) {
@@ -20,51 +21,35 @@
     }
   });
 
-  const data = [
+  const data: UserTokenData[] = [
     {
-      canisterId: OWN_CANISTER_ID,
+      universeId: OWN_CANISTER_ID,
       title: "Internet Computer",
       balance: TokenAmount.fromE8s({ amount: 314000000n, token: ICPToken }),
       logo: IC_LOGO_ROUNDED,
-      actions: [UserTokenActions.GoToDetail],
+      actions: [UserTokenAction.GoToDetail],
     },
     {
-      canisterId: CKBTC_UNIVERSE_CANISTER_ID,
+      universeId: CKBTC_UNIVERSE_CANISTER_ID,
       title: "CkBTC",
       balance: TokenAmount.fromE8s({
         amount: 1160000000n,
         token: { name: "CkBTC", symbol: "CkBTC" },
       }),
       logo: CKBTC_LOGO,
-      actions: [UserTokenActions.Send, UserTokenActions.Receive],
+      actions: [UserTokenAction.Send, UserTokenAction.Receive],
     },
   ];
 
-  const goToDetail = ({ detail }: { detail: UserTokenData }) => {
-    console.log("go to detail");
-    console.log(detail);
-  };
-
-  const openSendModal = ({ detail }: { detail: UserTokenData }) => {
-    console.log("open send modal");
-    console.log(detail);
-  };
-
-  const openReceiveModal = ({ detail }: { detail: UserTokenData }) => {
-    console.log("open receive modal");
-    console.log(detail);
+  const handleAction = ({ detail }: { detail: Action<UserTokenData> }) => {
+    console.log("action", detail.type);
+    console.log(detail.data);
   };
 </script>
 
 <TestIdWrapper testId="tokens-route-component">
   {#if $authSignedInStore}
-    <Tokens
-      tokens={data}
-      on:nnsGoToDetail={goToDetail}
-      on:nnsRowClick={goToDetail}
-      on:nnsSend={openSendModal}
-      on:nnsReceive={openReceiveModal}
-    />
+    <Tokens userTokensData={data} on:nnsAction={handleAction} />
   {:else}
     <SignInTokens />
   {/if}

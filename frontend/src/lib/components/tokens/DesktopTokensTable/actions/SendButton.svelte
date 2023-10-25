@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { ActionType } from "$lib/types/actions";
   import type { UserTokenData } from "$lib/types/tokens-page";
   import { IconNorthEast } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
@@ -12,7 +13,7 @@
   class="icon"
   data-tid="send-button-component"
   on:click|stopPropagation={() => {
-    dispatcher("nnsSend", userToken);
+    dispatcher("nnsAction", { type: ActionType.Send, data: userToken });
   }}
 >
   <IconNorthEast />

@@ -2,7 +2,7 @@
   import type { UserTokenData } from "$lib/types/tokens-page";
   import Row from "./DesktopTokensTableRow.svelte";
 
-  export let tokens: UserTokenData[];
+  export let userTokensData: UserTokenData[];
 </script>
 
 <table data-tid="desktop-tokens-table-component">
@@ -13,14 +13,8 @@
     </tr>
   </thead>
   <tbody>
-    {#each tokens as userToken}
-      <Row
-        on:nnsGoToDetail
-        on:nnsRowClick
-        on:nnsSend
-        on:nnsReceive
-        {userToken}
-      />
+    {#each userTokensData as userTokenData}
+      <Row on:nnsAction {userTokenData} />
     {/each}
   </tbody>
 </table>

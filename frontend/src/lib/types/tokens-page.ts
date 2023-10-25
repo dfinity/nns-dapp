@@ -1,16 +1,16 @@
 import type { Principal } from "@dfinity/principal";
 import type { TokenAmount } from "@dfinity/utils";
 
-export enum UserTokenActions {
+export enum UserTokenAction {
   Send = "send",
   GoToDetail = "goToDetail",
   Receive = "receive",
 }
 
 export type UserTokenData = {
-  canisterId: Principal;
+  universeId: Principal;
   title: string;
   balance: TokenAmount;
   logo: string;
-  actions: UserTokenActions[];
+  actions: UserTokenAction[];
 };
