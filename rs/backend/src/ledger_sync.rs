@@ -80,7 +80,7 @@ async fn get_blocks(from: BlockIndex, tip_of_chain: BlockIndex) -> Result<Vec<(B
         .flat_map(|(index, block)| match Block::decode(block) {
             Ok(block) => Some((range.start() + (index as u64), block)),
             Err(err)  => {
-                println!("Ignoring block {}: {}", range.start() + (index as u64), err);
+                ic_cdk::println!("Ignoring block {}: {}", range.start() + (index as u64), err);
                 None
             }
         })
