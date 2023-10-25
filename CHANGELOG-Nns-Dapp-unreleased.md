@@ -44,6 +44,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Formatting for `Cargo.toml` files.
 * Add test to check that the nns-dapp cargo and npm versions match.
+* Script to deploy nns-dapp on DevEnv.
 
 #### Changed
 
