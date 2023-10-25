@@ -58,6 +58,7 @@ describe("DayInput", () => {
       props: {
         ...defaultProps,
         seconds: SECONDS_IN_DAY * days,
+        maxInSeconds: SECONDS_IN_YEAR,
       },
     });
 
@@ -70,6 +71,7 @@ describe("DayInput", () => {
     const { queryByTestId, container } = render(DayInputTest, {
       props: {
         ...defaultProps,
+        maxInSeconds: SECONDS_IN_YEAR,
         seconds: initialSeconds,
       },
     });
@@ -90,7 +92,7 @@ describe("DayInput", () => {
     );
   });
 
-  it("shuold update seconds and input on Min/Max click", async () => {
+  it("should update seconds and input on Min/Max click", async () => {
     const initialSeconds = SECONDS_IN_DAY;
     const minInSeconds = SECONDS_IN_DAY * 30;
     const maxInSeconds = SECONDS_IN_YEAR;
@@ -127,5 +129,26 @@ describe("DayInput", () => {
 
     expect(queryByTestId("seconds")?.textContent).toBe(minInSeconds.toString());
     expect(inputElement.value).toBe("30");
+  });
+
+  it("should take into accout the max when rounding up", async () => {
+    // This is a fraction that if rounded up would be 366 days.
+    const initialSeconds = SECONDS_IN_DAY * 365 + 10;
+    // But the max is 365.5 days
+    const maxInSeconds = SECONDS_IN_DAY * 365 + SECONDS_IN_DAY / 2;
+    const minInSeconds = SECONDS_IN_DAY * 30;
+
+    const { container } = render(DayInput, {
+      props: {
+        seconds: initialSeconds,
+        maxInSeconds,
+        minInSeconds,
+        getInputError: () => null,
+      },
+    });
+
+    const inputElement = container.querySelector("input");
+
+    expect(inputElement.value).toBe("365.5");
   });
 });

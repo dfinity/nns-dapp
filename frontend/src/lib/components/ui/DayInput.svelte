@@ -12,12 +12,16 @@
   export let getInputError: (value: number) => string | undefined;
 
   // Round up the first time to not show a lot of decimal places.
-  let days: number = Math.min(Math.ceil(secondsToDays(seconds)), maxInSeconds);
+  let days: number = Math.min(
+    Math.ceil(secondsToDays(seconds)),
+    secondsToDays(maxInSeconds)
+  );
   $: seconds = daysToSeconds(days);
 
   let errorMessage: string | undefined;
   const showError = () => {
-    // This is called with before `$: seconds = daysToSeconds(days);`
+    // This is called with before we update the `seconds` variable
+    // The seconds variable is update a line above: `$: seconds = daysToSeconds(days);`
     errorMessage = getInputError(daysToSeconds(days));
   };
 

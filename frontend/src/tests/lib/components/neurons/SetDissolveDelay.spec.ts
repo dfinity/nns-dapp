@@ -65,6 +65,7 @@ describe("SetDissolveDelay", () => {
     });
 
     expect(await po.getDays()).toBe(90);
+    expect(await po.getProgressBarSeconds()).toBe(90 * SECONDS_IN_DAY);
   });
 
   it("fractional days get rounded up", async () => {
@@ -76,9 +77,10 @@ describe("SetDissolveDelay", () => {
     });
 
     expect(await po.getDays()).toBe(91);
+    expect(await po.getProgressBarSeconds()).toBe(91 * SECONDS_IN_DAY);
   });
 
-  it("should update slider on text input", async () => {
+  it("should update progress bar on text input", async () => {
     const po = renderComponent();
     await po.enterDays(1);
     expect(await po.getProgressBarSeconds()).toBe(1 * SECONDS_IN_DAY);
@@ -107,6 +109,12 @@ describe("SetDissolveDelay", () => {
       expect(await po.getErrorMessage()).toBe(null);
 
       await po.enterDays(neuronDays);
+      expect(await po.getErrorMessage()).toBe(
+        en.neurons.dissolve_delay_below_current
+      );
+      expect(await po.getUpdateButtonPo().isDisabled()).toBe(true);
+
+      await po.enterDays(neuronDays - 1.5);
       expect(await po.getErrorMessage()).toBe(
         en.neurons.dissolve_delay_below_current
       );
