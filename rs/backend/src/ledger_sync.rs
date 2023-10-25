@@ -2,11 +2,11 @@ use crate::canisters::ledger;
 use crate::state::STATE;
 use candid::Principal;
 use dfn_core::CanisterId;
-use ic_ledger_core::Tokens;
 use ic_ledger_core::block::BlockType;
+use ic_ledger_core::Tokens;
 use ic_nns_constants::LEDGER_CANISTER_ID;
 use icp_ledger::protobuf::ArchiveIndexEntry;
-use icp_ledger::{Block, BlockIndex, TimeStamp, Transaction, Memo, Operation, AccountIdentifier};
+use icp_ledger::{AccountIdentifier, Block, BlockIndex, Memo, Operation, TimeStamp, Transaction};
 use lazy_static::lazy_static;
 use std::cmp::{max, min};
 use std::ops::RangeInclusive;
@@ -79,26 +79,36 @@ async fn get_blocks(from: BlockIndex, tip_of_chain: BlockIndex) -> Result<Vec<(B
     let results: Vec<_> = blocks
         .into_iter()
         .enumerate()
-        .map(|(index, block)| (range.start() + (index as u64), match Block::decode(block) {
-            Ok(block) => block,
-            Err(err)  => {
-                let dummy = Block {
-                    parent_hash: None,
-                    timestamp: TimeStamp::new(0, 0),
-                    transaction: Transaction {
-                        memo: Memo(64),
-                        created_at_time: None,
-                        icrc1_memo: None,
-                        operation: Operation::Burn {
-                            from: AccountIdentifier::new(Principal::management_canister().into(), None),
-                            amount: Tokens::from_e8s(1234),
-                        },
-                    },
-                };
-                ic_cdk::println!("Replacing block {} with dummy block {:?} because of error: {}", range.start() + (index as u64), &dummy, err);
-                dummy
-            }
-        }))
+        .map(|(index, block)| {
+            (
+                range.start() + (index as u64),
+                match Block::decode(block) {
+                    Ok(block) => block,
+                    Err(err) => {
+                        let dummy = Block {
+                            parent_hash: None,
+                            timestamp: TimeStamp::new(0, 0),
+                            transaction: Transaction {
+                                memo: Memo(64),
+                                created_at_time: None,
+                                icrc1_memo: None,
+                                operation: Operation::Burn {
+                                    from: AccountIdentifier::new(Principal::management_canister().into(), None),
+                                    amount: Tokens::from_e8s(1234),
+                                },
+                            },
+                        };
+                        ic_cdk::println!(
+                            "Replacing block {} with dummy block {:?} because of error: {}",
+                            range.start() + (index as u64),
+                            &dummy,
+                            err
+                        );
+                        dummy
+                    }
+                },
+            )
+        })
         .collect();
 
     Ok(results)
