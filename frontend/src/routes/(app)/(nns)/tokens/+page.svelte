@@ -41,7 +41,7 @@
     },
   ];
 
-  const handleAction = ({ detail }: { detail: Action<UserTokenData> }) => {
+  const handleAction = ({ detail }: { detail: Action }) => {
     console.log("action", detail.type);
     console.log(detail.data);
   };

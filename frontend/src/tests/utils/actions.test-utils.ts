@@ -1,12 +1,6 @@
-import type { ActionType } from "$lib/types/actions";
+import type { Action } from "$lib/types/actions";
 
-export const createActionEvent = ({
-  type,
-  data,
-}: {
-  type: ActionType;
-  data?: unknown;
-}) =>
+export const createActionEvent = ({ type, data }: Action) =>
   new CustomEvent("nnsAction", {
     detail: {
       type,
