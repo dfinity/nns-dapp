@@ -42,13 +42,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Documentation for the proposals payload renderer.
-* E2E test for ckBTC.
-* Fix erroneous failures in the `tip` tagging workflow when a PR is closed without merging.
-* Add --host flag to dfx-snapshot-start.
-* Script to deploy nns-dapp on DevEnv.
 * Formatting for `Cargo.toml` files.
 * Add test to check that the nns-dapp cargo and npm versions match.
+* Script to deploy nns-dapp on DevEnv.
 
 #### Changed
 
