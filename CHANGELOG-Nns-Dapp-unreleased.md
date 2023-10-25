@@ -27,6 +27,8 @@ proposal is successful, the changes it released will be moved from this file to
 #### Deprecated
 #### Removed
 
+* Removed debounce on deriving Network from ckBTC send address.
+
 #### Fixed
 
 * Remove robots meta tag to allow search engines to crawl NNS Dapp.
