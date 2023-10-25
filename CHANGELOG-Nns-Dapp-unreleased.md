@@ -44,6 +44,7 @@ proposal is successful, the changes it released will be moved from this file to
 * E2E test for ckBTC.
 * Fix erroneous failures in the `tip` tagging workflow when a PR is closed without merging.
 * Add --host flag to dfx-snapshot-start.
+* Script to deploy nns-dapp on DevEnv.
 
 #### Changed
 
