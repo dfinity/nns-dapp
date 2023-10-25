@@ -192,8 +192,8 @@ describe("daysToDuration", () => {
   });
 
   it("should return fractions of day", () => {
-    expect(daysToDuration(1.5)).toBe("");
-    expect(daysToDuration(365.125)).toBe("1 year");
+    expect(daysToDuration(1.5)).toBe("1 day, 12 hours");
+    expect(daysToDuration(365.125)).toBe("1 year, 3 hours");
   });
 });
 
