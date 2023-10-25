@@ -13,4 +13,18 @@ export class ProjectCardSwapInfoPo extends CardPo {
   async getStatus(): Promise<string> {
     return (await this.getText("project-status-text")).trim();
   }
+
+  hasUserCommitment(): Promise<boolean> {
+    return this.isPresent("commitment-token-value");
+  }
+
+  async getUserCommitment(): Promise<string | null> {
+    return (await this.hasUserCommitment())
+      ? this.getText("commitment-token-value")
+      : null;
+  }
+
+  getSwapDeadline(): Promise<string> {
+    return this.getText("project-deadline");
+  }
 }

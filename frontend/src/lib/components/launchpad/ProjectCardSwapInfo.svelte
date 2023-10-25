@@ -75,7 +75,9 @@
     <!-- Sale is open -->
     {#if lifecycle === SnsSwapLifecycle.Open && durationTillDeadline !== undefined}
       <dt class="label">{$i18n.sns_project_detail.deadline}</dt>
-      <dd class="value">{secondsToDuration(durationTillDeadline)}</dd>
+      <dd class="value" data-tid="project-deadline">
+        {secondsToDuration(durationTillDeadline)}
+      </dd>
     {/if}
   </TestIdWrapper>
 
