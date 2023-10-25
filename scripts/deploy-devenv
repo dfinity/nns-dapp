@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# deploy-devenv should be run from a DevEnv machine which is running a local
+# replica started with 'dfx start --host 0.0.0.0:8080'.
+# It will deploy nns-dapp.wasm.gz with arguments such that it can be accessed
+# from a VPN URL from other machines.
+
+if [[ "$HOSTNAME" =~ ^(devenv)-(.*)$ ]]; then
+  DEVENV_NAME=${BASH_REMATCH[2]}
+else
+  {
+    echo "Error: This script must be run on a Developer Environment."
+    echo "See https://dfinity-lab.gitlab.io/private/k8s/k8s/#/bases/apps/devenv/"
+  } >&2
+  exit 1
+fi
+
+if ! pgrep replica; then
+  echo "A local replica must be running to deploy to." >&2
+  exit 1
+fi
+
+for identity in $(dfx identity list 2>/dev/null); do
+  principal="$(dfx identity get-principal --identity "$identity")"
+  if dfx canister info nns-dapp | grep "$principal"; then
+    NNS_DAPP_CONTROLLER_IDENTITY="$identity"
+    break
+  fi
+done
+
+if ! [[ "${NNS_DAPP_CONTROLLER_IDENTITY:-}" ]]; then
+  {
+  echo
+  echo "None of your identities is a controller of nns-dapp"
+  } >&2
+  exit 1
+fi
+
+TOP_DIR=$(git rev-parse --show-toplevel)
+
+cd "$TOP_DIR"
+
+DFX_NETWORK=local ./config.sh
+
+DEVENV_HOST="$DEVENV_NAME-ingress.devenv.dfinity.network"
+
+LOCAL_ARGS_DID="nns-dapp-arg-local.did"
+DEVENV_ARGS_DID="nns-dapp-arg-devenv.did"
+
+sed -e "s/localhost:8080/$DEVENV_HOST/g" -e 's/http:/https:/g' <"$LOCAL_ARGS_DID" >"$DEVENV_ARGS_DID"
+
+NNS_DAPP_WASM="nns-dapp.wasm.gz"
+
+if [[ -f "$NNS_DAPP_WASM" ]]; then
+  echo
+  echo "Using existing $NNS_DAPP_WASM."
+  echo
+else
+  DFX_NETWORK=local ./build.sh
+fi
+
+dfx identity use "$NNS_DAPP_CONTROLLER_IDENTITY"
+
+dfx canister install nns-dapp --wasm nns-dapp.wasm.gz --upgrade-unchanged --mode reinstall --yes -v --argument "$(cat "$DEVENV_ARGS_DID")"
+
+NNS_DAPP_ID="$(dfx canister id nns-dapp)"
+DEVENV_URL="https://$NNS_DAPP_ID.$DEVENV_HOST"
+echo
+echo "Access NNS dapp at $DEVENV_URL"
