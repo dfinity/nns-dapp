@@ -329,13 +329,13 @@ describe("NnsStakeNeuronModal", () => {
           container.querySelector("input[name='dissolve_delay']")
         ).not.toBeNull()
       );
-      const inputRange = container.querySelector(
+      const inputElement = container.querySelector(
         "input[name='dissolve_delay']"
       );
 
       const ONE_YEAR = 365;
-      inputRange &&
-        (await fireEvent.input(inputRange, {
+      inputElement &&
+        (await fireEvent.input(inputElement, {
           target: { value: ONE_YEAR },
         }));
 
@@ -493,13 +493,13 @@ describe("NnsStakeNeuronModal", () => {
           container.querySelector("input[name='dissolve_delay']")
         ).not.toBeNull()
       );
-      const inputRange = container.querySelector(
+      const inputElement = container.querySelector(
         "input[name='dissolve_delay']"
       );
 
       const ONE_YEAR = 365;
-      inputRange &&
-        (await fireEvent.input(inputRange, {
+      inputElement &&
+        (await fireEvent.input(inputElement, {
           target: { value: ONE_YEAR },
         }));
 
