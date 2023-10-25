@@ -30,9 +30,6 @@ vi.mock("$lib/services/sns-parameters.services");
 
 const testIdentity = createMockIdentity(10023);
 
-const roundUpSecondsToWholeDays = (seconds: number): number =>
-  daysToSeconds(secondsToDays(seconds));
-
 describe("IncreaseSnsDissolveDelayModal", () => {
   const nowInSeconds = 1689063315;
   const now = nowInSeconds * 1000;
