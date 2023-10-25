@@ -77,7 +77,11 @@ async fn get_blocks(from: BlockIndex, tip_of_chain: BlockIndex) -> Result<Vec<(B
     let results: Vec<_> = blocks
         .into_iter()
         .enumerate()
-        .map(|(index, block)| (range.start() + (index as u64), Block::decode(block).unwrap()))
+        .flat_map(|(index, block)| match Block::decode(block) {
+            Ok(block) => Some((range.start() + (index as u64), block)),
+            Err(err) if err.contains("SignedToken") => None,
+            Err(err) => panic!("{}", err),
+        })
         .collect();
 
     Ok(results)
