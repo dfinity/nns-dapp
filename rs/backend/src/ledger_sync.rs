@@ -79,8 +79,10 @@ async fn get_blocks(from: BlockIndex, tip_of_chain: BlockIndex) -> Result<Vec<(B
         .enumerate()
         .flat_map(|(index, block)| match Block::decode(block) {
             Ok(block) => Some((range.start() + (index as u64), block)),
-            Err(err) if err.contains("SignedToken") => None,
-            Err(err) => panic!("{}", err),
+            Err(err)  => {
+                println!("Ignoring block {}: {}", range.start() + (index as u64), err);
+                None
+            }
         })
         .collect();
 
