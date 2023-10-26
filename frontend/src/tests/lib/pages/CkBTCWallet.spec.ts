@@ -11,20 +11,20 @@ import * as transactionsServices from "$lib/services/ckbtc-transactions.services
 import { authStore } from "$lib/stores/auth.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { TransactionNetwork } from "$lib/types/transaction";
-import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import CkBTCAccountsTest from "$tests/lib/components/accounts/CkBTCAccountsTest.svelte";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
-import {
-  mockCkBTCMainAccount,
-  mockCkBTCToken,
-} from "$tests/mocks/ckbtc-accounts.mock";
+import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockUniversesTokens } from "$tests/mocks/tokens.mock";
-import { selectSegmentBTC } from "$tests/utils/accounts.test-utils";
-import { advanceTime } from "$tests/utils/timers.test-utils";
-import { testTransferTokens } from "$tests/utils/transaction-modal.test-utils";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { CkBTCReceiveModalPo } from "$tests/page-objects/CkBTCReceiveModal.page-object";
+import { CkBTCTransactionModalPo } from "$tests/page-objects/CkBTCTransactionModal.page-object";
+import { CkBTCWalletPo } from "$tests/page-objects/CkBTCWallet.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "$tests/utils/timers.test-utils";
+import { render, waitFor } from "@testing-library/svelte";
 import { mockBTCAddressTestnet } from "../../mocks/ckbtc-accounts.mock";
 
 const expectedBalanceAfterTransfer = 11_111n;
@@ -114,6 +114,35 @@ describe("CkBTCWallet", () => {
     accountIdentifier: mockCkBTCMainAccount.identifier,
   };
 
+  const modalProps = {
+    ...props,
+    testComponent: CkBTCWallet,
+  };
+
+  const renderWallet = async (): Promise<CkBTCWalletPo> => {
+    const { container } = render(CkBTCWallet, props);
+    await runResolvedPromises();
+    return CkBTCWalletPo.under(new JestPageObjectElement(container));
+  };
+
+  const renderWalletAndModal = async (): Promise<{
+    walletPo: CkBTCWalletPo;
+    sendModalPo: CkBTCTransactionModalPo;
+    receiveModalPo: CkBTCReceiveModalPo;
+  }> => {
+    const { container } = render(CkBTCAccountsTest, modalProps);
+    await runResolvedPromises();
+    return {
+      walletPo: CkBTCWalletPo.under(new JestPageObjectElement(container)),
+      sendModalPo: CkBTCTransactionModalPo.under(
+        new JestPageObjectElement(container)
+      ),
+      receiveModalPo: CkBTCReceiveModalPo.under(
+        new JestPageObjectElement(container)
+      ),
+    };
+  };
+
   beforeEach(() => {
     vi.clearAllMocks();
     vi.clearAllTimers();
@@ -129,14 +158,13 @@ describe("CkBTCWallet", () => {
       });
     });
 
-    it("should render a spinner while loading", () => {
-      const { getByTestId } = render(CkBTCWallet, props);
-
-      expect(getByTestId("spinner")).not.toBeNull();
+    it("should render a spinner while loading", async () => {
+      const po = await renderWallet();
+      expect(await po.hasSpinner()).toBe(true);
     });
 
     it("should call to load ckBTC accounts", async () => {
-      render(CkBTCWallet, props);
+      await renderWallet();
 
       await waitFor(() => expect(syncCkBTCAccounts).toBeCalled());
     });
@@ -171,135 +199,79 @@ describe("CkBTCWallet", () => {
     });
 
     it("should render ckTESTBTC name", async () => {
-      const { getByTestId } = render(CkBTCWallet, props);
+      const po = await renderWallet();
 
-      await waitFor(() =>
-        expect(
-          getByTestId("universe-page-summary-component").textContent.trim()
-        ).toBe("ckTESTBTC")
-      );
+      expect(await po.getWalletPageHeaderPo().getUniverse()).toBe("ckTESTBTC");
     });
 
     it("should hide spinner when selected account is loaded", async () => {
-      const { queryByTestId } = render(CkBTCWallet, props);
+      const po = await renderWallet();
 
-      await waitFor(() => expect(queryByTestId("spinner")).toBeNull());
+      expect(await po.hasSpinner()).toBe(false);
     });
 
     it("should render `Main` as subtitle", async () => {
-      const { queryByTestId } = render(CkBTCWallet, props);
+      const po = await renderWallet();
 
-      await waitFor(() =>
-        expect(queryByTestId("wallet-page-heading-subtitle").textContent).toBe(
-          "Main"
-        )
-      );
+      expect(await po.getWalletPageHeadingPo().getSubtitle()).toBe("Main");
     });
 
     it("should render a balance with token", async () => {
-      const { getByTestId } = render(CkBTCWallet, props);
+      const po = await renderWallet();
 
-      await waitFor(() =>
-        expect(getByTestId("token-value-label")).not.toBeNull()
-      );
-
-      expect(getByTestId("token-value-label")?.textContent.trim()).toEqual(
-        `${formatToken({
-          value: mockCkBTCMainAccount.balanceE8s,
-        })} ${mockCkBTCToken.symbol}`
+      expect(await po.getWalletPageHeadingPo().getTitle()).toBe(
+        "4'445'566.99 ckBTC"
       );
     });
 
-    const modalProps = {
-      ...props,
-      testComponent: CkBTCWallet,
-    };
-
     it("should open new transaction modal", async () => {
-      const { queryByTestId, getByTestId } = render(CkBTCAccountsTest, {
-        props: modalProps,
-      });
+      const { walletPo, sendModalPo } = await renderWalletAndModal();
 
-      await waitFor(() =>
-        expect(queryByTestId("open-ckbtc-transaction")).toBeInTheDocument()
-      );
-
-      const button = getByTestId("open-ckbtc-transaction") as HTMLButtonElement;
-      await fireEvent.click(button);
-
-      await waitFor(() => {
-        expect(getByTestId("transaction-step-1")).toBeInTheDocument();
-      });
+      expect(await sendModalPo.isPresent()).toBe(false);
+      await walletPo.getCkBTCWalletFooterPo().clickSendButton();
+      expect(await sendModalPo.isPresent()).toBe(true);
     });
 
     it("should update account after transfer tokens", async () => {
-      const result = render(CkBTCAccountsTest, { props: modalProps });
-
-      const { queryByTestId, getByTestId } = result;
+      const { walletPo, sendModalPo } = await renderWalletAndModal();
 
       // Check original sum
-      await waitFor(() =>
-        expect(
-          queryByTestId("wallet-page-heading-component").querySelector(
-            "[data-tid='token-value-label']"
-          )?.textContent
-        ).toBe("4'445'566.99 ckBTC")
+      expect(await walletPo.getWalletPageHeadingPo().getTitle()).toBe(
+        "4'445'566.99 ckBTC"
       );
 
       // Make transfer
-      await waitFor(() =>
-        expect(queryByTestId("open-ckbtc-transaction")).toBeInTheDocument()
-      );
-
-      const button = getByTestId("open-ckbtc-transaction") as HTMLButtonElement;
-      await fireEvent.click(button);
-
-      await testTransferTokens({
-        result,
-        selectedNetwork: TransactionNetwork.ICP,
+      await walletPo.getCkBTCWalletFooterPo().clickSendButton();
+      await sendModalPo.transferToAddress({
+        destinationAddress: "aaaaa-aa",
+        amount: 10,
       });
 
       await waitFor(() => expect(ckBTCTransferTokens).toBeCalled());
 
       // Account should have been updated and sum should be reflected
-      await waitFor(() =>
-        expect(
-          queryByTestId("wallet-page-heading-component").querySelector(
-            "[data-tid='token-value-label']"
-          )?.textContent
-        ).toContain(formatToken({ value: expectedBalanceAfterTransfer }))
+      expect(await walletPo.getWalletPageHeadingPo().getTitle()).toBe(
+        "0.00011111 ckBTC"
       );
     });
 
     it("should reload transactions after transfer tokens", async () => {
-      const result = render(CkBTCAccountsTest, { props: modalProps });
+      const { walletPo, sendModalPo } = await renderWalletAndModal();
 
       expect(transactionsServices.loadCkBTCAccountTransactions).toBeCalledTimes(
         0
       );
 
-      const { queryByTestId, getByTestId } = result;
-
       // Check original sum
-      await waitFor(() =>
-        expect(getByTestId("token-value")?.textContent ?? "").toEqual(
-          `${formatToken({
-            value: mockCkBTCMainAccount.balanceE8s,
-          })}`
-        )
+      expect(await walletPo.getWalletPageHeadingPo().getTitle()).toBe(
+        "4'445'566.99 ckBTC"
       );
 
       // Make transfer
-      await waitFor(() =>
-        expect(queryByTestId("open-ckbtc-transaction")).toBeInTheDocument()
-      );
-
-      const button = getByTestId("open-ckbtc-transaction") as HTMLButtonElement;
-      await fireEvent.click(button);
-
-      await testTransferTokens({
-        result,
-        selectedNetwork: TransactionNetwork.ICP,
+      await walletPo.getCkBTCWalletFooterPo().clickSendButton();
+      await sendModalPo.transferToAddress({
+        destinationAddress: "aaaaa-aa",
+        amount: 10,
       });
 
       await waitFor(() => expect(ckBTCTransferTokens).toBeCalled());
@@ -314,39 +286,25 @@ describe("CkBTCWallet", () => {
     });
 
     it("should open receive modal", async () => {
-      const { getByTestId, container } = render(CkBTCAccountsTest, {
-        props: modalProps,
-      });
+      const { walletPo, receiveModalPo } = await renderWalletAndModal();
 
-      await waitFor(() => expect(getByTestId("receive-ckbtc")).not.toBeNull());
-
-      fireEvent.click(getByTestId("receive-ckbtc") as HTMLButtonElement);
-
-      await waitFor(() =>
-        expect(container.querySelector("div.modal")).not.toBeNull()
-      );
+      expect(await receiveModalPo.isPresent()).toBe(false);
+      await walletPo.getCkBTCWalletFooterPo().clickReceiveButton();
+      expect(await receiveModalPo.isPresent()).toBe(true);
     });
 
     it("should reload on close receive modal", async () => {
-      const { getByTestId, container } = render(CkBTCAccountsTest, {
-        props: modalProps,
-      });
+      const { walletPo, receiveModalPo } = await renderWalletAndModal();
 
-      await waitFor(() => expect(getByTestId("receive-ckbtc")).not.toBeNull());
+      expect(await receiveModalPo.isPresent()).toBe(false);
+      await walletPo.getCkBTCWalletFooterPo().clickReceiveButton();
+      expect(await receiveModalPo.isPresent()).toBe(true);
 
-      fireEvent.click(getByTestId("receive-ckbtc") as HTMLButtonElement);
-
-      await waitFor(() =>
-        expect(container.querySelector("div.modal")).not.toBeNull()
-      );
-
-      await selectSegmentBTC(container);
+      await receiveModalPo.selectBitcoin();
 
       const spy = vi.spyOn(services, "loadCkBTCAccounts");
 
-      fireEvent.click(
-        getByTestId("reload-receive-account") as HTMLButtonElement
-      );
+      await receiveModalPo.clickFinish();
 
       await waitFor(() => expect(spy).toHaveBeenCalled());
     });

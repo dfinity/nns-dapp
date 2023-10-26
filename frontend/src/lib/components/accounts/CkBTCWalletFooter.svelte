@@ -27,7 +27,7 @@
     $busy;
 </script>
 
-<Footer>
+<Footer testId="ckbtc-wallet-footer-component">
   <CkBTCSendButton
     {disableButton}
     {canisters}

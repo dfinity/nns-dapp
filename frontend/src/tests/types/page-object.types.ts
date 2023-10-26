@@ -35,4 +35,5 @@ export interface PageObjectElement {
   getValue(): Promise<string>;
   isVisible(): Promise<boolean>;
   blur(): Promise<void>;
+  innerHtmlForDebugging(): Promise<string>;
 }

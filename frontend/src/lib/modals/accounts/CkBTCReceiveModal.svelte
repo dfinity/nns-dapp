@@ -124,8 +124,10 @@
 
   <div class="receive">
     <Segment bind:selectedSegmentId bind:this={segment}>
-      <SegmentButton segmentId={ckBTCSegmentId}>{segmentLabel}</SegmentButton>
-      <SegmentButton segmentId={bitcoinSegmentId}
+      <SegmentButton testId="receive-ckbtc" segmentId={ckBTCSegmentId}
+        >{segmentLabel}</SegmentButton
+      >
+      <SegmentButton testId="receive-bitcoin" segmentId={bitcoinSegmentId}
         >{bitcoinSegmentLabel}</SegmentButton
       >
     </Segment>

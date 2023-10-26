@@ -10,11 +10,11 @@ export class WalletPageHeaderPo extends BasePageObject {
     return new WalletPageHeaderPo(element.byTestId(WalletPageHeaderPo.TID));
   }
 
-  getUniverse() {
+  getUniverse(): Promise<string> {
     return UniversePageSummaryPo.under(this.root).getTitle();
   }
 
-  getWalletAddress() {
+  getWalletAddress(): Promise<string> {
     return HashPo.under(this.root).getText();
   }
 }

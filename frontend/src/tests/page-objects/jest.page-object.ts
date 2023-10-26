@@ -175,4 +175,9 @@ export class JestPageObjectElement implements PageObjectElement {
     await this.waitFor();
     await fireEvent.blur(this.element);
   }
+
+  async innerHtmlForDebugging(): Promise<string> {
+    await this.waitFor();
+    return this.element?.innerHTML ?? "";
+  }
 }
