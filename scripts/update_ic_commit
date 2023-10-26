@@ -46,6 +46,7 @@ source "$(clap.build)"
   }
   did_curl nns_governance /rs/nns/governance/canister/governance.did
   did_curl nns_registry /rs/registry/canister/canister/registry.did
+  did_curl nns_ledger /rs/rosetta-api/icp_ledger/ledger.did
   did_curl sns_governance /rs/sns/governance/canister/governance.did
   did_curl sns_root /rs/sns/root/canister/root.did
   did_curl sns_swap /rs/sns/swap/canister/swap.did
