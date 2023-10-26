@@ -104,6 +104,11 @@ async fn get_blocks(from: BlockIndex, tip_of_chain: BlockIndex) -> Result<Vec<(B
                             &dummy,
                             err
                         );
+                        STATE.with(|s| {
+                            s.performance
+                                .borrow_mut()
+                                .record_exceptional_transaction_id(range.start() + (index as u64))
+                        });
                         dummy
                     }
                 },
