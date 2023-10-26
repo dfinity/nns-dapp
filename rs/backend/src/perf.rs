@@ -34,6 +34,7 @@ impl PerformanceCount {
 #[derive(CandidType, Deserialize, Clone, Debug, Default, Eq, PartialEq)]
 pub struct PerformanceCounts {
     pub instruction_counts: VecDeque<PerformanceCount>,
+    pub exceptional_transactions: Option<VecDeque<u64>>,
 }
 
 impl PerformanceCounts {
@@ -47,6 +48,19 @@ impl PerformanceCounts {
 
     pub fn get_stats(&self, stats: &mut Stats) {
         stats.performance_counts = self.instruction_counts.iter().cloned().collect();
+    }
+
+    /// The maximum number of exceptional transaction IDs we store.
+    const MAX_EXCEPTIONAL_TRANSACTIONS: usize = 1000;
+    /// Saves an exceptional transaction ID
+    pub fn record_exceptional_transaction_id(&mut self, transaction_id: u64) {
+        if self.exceptional_transactions.is_none() {
+            self.exceptional_transactions = Some(VecDeque::new());
+        }
+        if let Some(exceptional_transactions) = &mut self.exceptional_transactions {
+            exceptional_transactions.push_front(transaction_id);
+            exceptional_transactions.truncate(Self::MAX_EXCEPTIONAL_TRANSACTIONS);
+        }
     }
 
     /// Generates sample data for use in tests
