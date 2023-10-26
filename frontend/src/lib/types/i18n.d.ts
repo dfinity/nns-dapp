@@ -516,6 +516,7 @@ interface I18nProposal_detail {
   summary: string;
   topic_prefix: string;
   status_prefix: string;
+  rewards_prefix: string;
   type_prefix: string;
   reward_prefix: string;
   id_prefix: string;
