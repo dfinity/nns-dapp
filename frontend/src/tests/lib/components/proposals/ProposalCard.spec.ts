@@ -13,7 +13,7 @@ describe("ProposalCard", () => {
     statusString: "Open",
     id: BigInt(112),
     title: "Test Proposal",
-    color: ProposalStatusColor.PRIMARY,
+    color: ProposalStatusColor.SUCCESS,
     topic: "Test Topic",
     proposer: "1233444",
     type: "Test Type",

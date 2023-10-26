@@ -496,6 +496,7 @@
     "summary": "Proposal Summary",
     "topic_prefix": "Topic",
     "status_prefix": "Status",
+    "rewards_prefix": "Rewards",
     "type_prefix": "Type",
     "reward_prefix": "Reward Status",
     "id_prefix": "ID",

@@ -13,12 +13,12 @@
   let id: ProposalId | undefined;
   let title: string | undefined;
   let color: ProposalStatusColor | undefined;
+  let created: bigint;
 
   let topic: string | undefined;
-  let proposer: NeuronId | undefined;
   let type: string | undefined;
 
-  $: ({ id, title, color, topic, proposer, type, statusString } =
+  $: ({ id, title, color, topic, type, statusString, created } =
     mapProposalInfo(proposalInfo));
 
   let href: string;
@@ -36,7 +36,7 @@
   {title}
   {color}
   {topic}
-  proposer={String(proposer)}
+  createdTimestampSeconds={created}
   {type}
   deadlineTimestampSeconds={proposalInfo.deadlineTimestampSeconds}
 />

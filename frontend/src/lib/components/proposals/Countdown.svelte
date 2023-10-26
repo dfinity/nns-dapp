@@ -69,7 +69,7 @@
 </script>
 
 {#if countdown !== undefined && countdown > ZERO}
-  <p class="description" data-tid="countdown">
+  <p data-tid="countdown">
     {secondsToDuration(countdown)}
     {$i18n.proposal_detail.remaining}
   </p>
@@ -77,7 +77,6 @@
 
 <style lang="scss">
   p {
-    text-align: right;
-    margin-bottom: 0;
+    margin: 0;
   }
 </style>

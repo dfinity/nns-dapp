@@ -21,14 +21,9 @@
   let id: SnsProposalId | undefined;
   let title: string | undefined;
   let color: ProposalStatusColor | undefined;
+  let proposal_creation_timestamp_seconds: bigint;
 
   let type: string | undefined;
-  let proposer: SnsNeuronId | undefined;
-  let proposerString: string | undefined;
-  $: proposerString =
-    proposer !== undefined
-      ? shortenWithMiddleEllipsis(subaccountToHexString(proposer.id))
-      : undefined;
   let deadlineTimestampSeconds: bigint | undefined;
 
   $: ({
@@ -38,6 +33,7 @@
     color,
     type,
     proposer,
+    proposal_creation_timestamp_seconds,
     current_deadline_timestamp_seconds: deadlineTimestampSeconds,
   } = mapProposalInfo({ proposalData, nsFunctions }));
 
@@ -56,6 +52,6 @@
   {title}
   {color}
   {type}
-  proposer={proposerString}
+  createdTimestampSeconds={proposal_creation_timestamp_seconds}
   {deadlineTimestampSeconds}
 />
