@@ -7,6 +7,8 @@ export type PostMessageRequest =
   | "nnsStopCyclesTimer"
   | "nnsStartTransactionsTimer"
   | "nnsStopTransactionsTimer"
+  | "nnsStartIcpWalletTimer"
+  | "nnsStopIcpWalletTimer"
   | "nnsStartBalancesTimer"
   | "nnsStopBalancesTimer";
 
@@ -19,7 +21,8 @@ export type PostMessageResponse =
   | "nnsSyncErrorTransactions"
   | "nnsSyncBalances"
   | "nnsSyncErrorBalances"
-  | "nnsSyncStatus";
+  | "nnsSyncStatus"
+  | "nnsSyncIcpWallet";
 
 export type PostMessageData = object;
 

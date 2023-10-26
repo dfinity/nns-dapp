@@ -11,8 +11,9 @@
   } from "$lib/types/wallet.context";
   import { mapToSelfTransaction } from "$lib/utils/transactions.utils";
   import { flip } from "svelte/animate";
+  import type { TransactionWithId } from "@junobuild/ledger";
 
-  export let transactions: NnsTransaction[] | undefined;
+  export let transactions: TransactionWithId[] | undefined;
 
   const { store } = getContext<WalletContext>(WALLET_CONTEXT_KEY);
 
@@ -20,7 +21,7 @@
   $: ({ account } = $store);
 
   let extendedTransactions: {
-    transaction: NnsTransaction;
+    transaction: TransactionWithId;
     toSelfTransaction: boolean;
   }[];
   $: extendedTransactions = mapToSelfTransaction(transactions ?? []);
@@ -33,7 +34,7 @@
   {:else if transactions.length === 0}
     {$i18n.wallet.no_transactions}
   {:else}
-    {#each extendedTransactions as { toSelfTransaction, transaction } (`${transaction.timestamp.timestamp_nanos}-${toSelfTransaction}`)}
+    {#each extendedTransactions as { toSelfTransaction, transaction } (`${transaction.transaction.created_at_time ?? new Date().getTime()}-${toSelfTransaction}`)}
       <div animate:flip={{ duration: 250 }} class="flip">
         <NnsTransactionCard {account} {transaction} {toSelfTransaction} />
       </div>

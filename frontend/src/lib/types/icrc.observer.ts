@@ -1,5 +1,6 @@
 import type { Account } from "$lib/types/account";
 import type { PostMessageDataRequestBalances } from "$lib/types/post-message.balances";
+import type { PostMessageDataRequestIcpWallet } from "$lib/types/post-message.icp-transactions";
 import type { PostMessageDataRequestTransactions } from "$lib/types/post-message.transactions";
 
 export type BalancesObserverData = Pick<
@@ -11,6 +12,13 @@ export type BalancesObserverData = Pick<
 
 export type TransactionsObserverData = Pick<
   PostMessageDataRequestTransactions,
+  "indexCanisterId"
+> & {
+  account: Account;
+};
+
+export type WalletObserverData = Pick<
+  PostMessageDataRequestIcpWallet,
   "indexCanisterId"
 > & {
   account: Account;

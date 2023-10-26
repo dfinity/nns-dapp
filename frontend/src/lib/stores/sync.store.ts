@@ -2,7 +2,7 @@ import type { SyncState } from "$lib/types/sync";
 import type { Readable } from "svelte/store";
 import { writable } from "svelte/store";
 
-export type SyncStoreDataKey = "balances" | "transactions";
+export type SyncStoreDataKey = "balances" | "transactions" | "wallet";
 
 export type SyncStoreData = Record<SyncStoreDataKey, SyncState>;
 
@@ -18,6 +18,7 @@ const initSyncStore = (): SyncStore => {
   const INITIAL_STATE: SyncStoreData = {
     balances: "idle",
     transactions: "idle",
+    wallet: "idle",
   } as const;
 
   const { subscribe, update, set } = writable<SyncStoreData>(INITIAL_STATE);

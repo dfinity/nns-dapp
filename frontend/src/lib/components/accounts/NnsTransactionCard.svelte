@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { Account } from "$lib/types/account";
-  import type { Transaction as NnsTransaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
-  import { mapNnsTransaction } from "$lib/utils/transactions.utils";
+  import { mapIcpTransaction } from "$lib/utils/transactions.utils";
   import { toastsError } from "$lib/stores/toasts.store";
   import TransactionCard from "./TransactionCard.svelte";
   import { ICPToken } from "@dfinity/utils";
@@ -10,9 +9,10 @@
   import type { Principal } from "@dfinity/principal";
   import type { Readable } from "svelte/store";
   import { authStore } from "$lib/stores/auth.store";
+  import type { TransactionWithId } from "@junobuild/ledger";
 
   export let account: Account;
-  export let transaction: NnsTransaction;
+  export let transaction: TransactionWithId;
   export let toSelfTransaction = false;
 
   // Subaccounts have no principal, but they belong to the II user.
@@ -31,7 +31,7 @@
     transaction,
     (() => {
       try {
-        transactionData = mapNnsTransaction({
+        transactionData = mapIcpTransaction({
           transaction,
           toSelfTransaction,
           account,

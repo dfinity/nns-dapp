@@ -8,7 +8,8 @@ import {
   AccountTransactionType,
   TransactionNetwork,
 } from "$lib/types/transaction";
-import { isNullish } from "@dfinity/utils";
+import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
+import type { TransactionWithId } from "@junobuild/ledger";
 import { replacePlaceholders } from "./i18n.utils";
 import { stringifyJson } from "./utils";
 
@@ -107,6 +108,88 @@ export const transactionDisplayAmount = ({
   return amount;
 };
 
+export const mapIcpTransaction = ({
+  transaction,
+  account,
+  toSelfTransaction,
+  swapCanisterAccounts,
+}: {
+  transaction: TransactionWithId;
+  account: Account;
+  toSelfTransaction?: boolean;
+  swapCanisterAccounts?: Set<string>;
+}): Transaction => {
+  const {
+    transaction: { operation, created_at_time },
+  } = transaction;
+  let from: AccountIdentifierString | undefined;
+  let to: AccountIdentifierString | undefined;
+  let amount: bigint | undefined;
+  let fee: bigint | undefined;
+  let type: AccountTransactionType;
+
+  if ("Transfer" in operation) {
+    from = operation.Transfer.from;
+    to = operation.Transfer.to;
+    amount = operation.Transfer.amount.e8s;
+    fee = operation.Transfer.fee.e8s;
+    // TODO: lack of details
+    type = AccountTransactionType.Send;
+  } else if ("Approve" in operation) {
+    // TODO: correctly implement Approve
+    from = operation.Approve.from;
+    amount = operation.Approve.allowance.e8s;
+    fee = operation.Approve.fee.e8s;
+    // TODO: type
+    type = AccountTransactionType.Send;
+  } else if ("TransferFrom" in operation) {
+    // TODO: correctly implement TransferFrom
+    from = operation.TransferFrom.from;
+    to = operation.TransferFrom.to;
+    amount = operation.TransferFrom.amount.e8s;
+    fee = operation.TransferFrom.fee.e8s;
+    // TODO: type
+    type = AccountTransactionType.Send;
+  } else if ("Burn" in operation) {
+    from = operation.Burn.from;
+    amount = operation.Burn.amount.e8s;
+    type = AccountTransactionType.Burn;
+  } else if ("Mint" in operation) {
+    from = operation.Mint.to;
+    amount = operation.Mint.amount.e8s;
+    type = AccountTransactionType.Mint;
+  } else {
+    throw new Error("Unsupported transfer type");
+  }
+
+  const timestamp = fromNullable(created_at_time);
+  const date = nonNullish(timestamp)
+    ? new Date(Number(timestamp.timestamp_nanos / BigInt(1e6)))
+    : // TODO: What to do if created at is empty
+      new Date();
+  const isReceive = toSelfTransaction === true || from !== account.identifier;
+  const isSend = to !== account.identifier;
+  // (from==to workaround) in case of transaction duplication we replace one of the transaction to `Received`, and it doesn't need to show fee because paid fee is already shown in the `Send` one.
+  const useFee =
+    toSelfTransaction === true
+      ? false
+      : showTransactionFee({ type, isReceive });
+  const displayAmount = transactionDisplayAmount({ useFee, amount, fee });
+
+  return {
+    isReceive,
+    isSend,
+    type,
+    from,
+    to,
+    displayAmount,
+    date,
+  };
+};
+
+/**
+ * @deprecated Replace with mapIcpTransaction
+ */
 export const mapNnsTransaction = ({
   transaction,
   account,

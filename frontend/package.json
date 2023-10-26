@@ -76,6 +76,7 @@
     "@dfinity/principal": "^0.19.2",
     "@dfinity/sns": "next",
     "@dfinity/utils": "next",
+    "@junobuild/ledger": "^0.0.21",
     "@ledgerhq/hw-transport-node-hid-noevents": "^6.27.8",
     "@ledgerhq/hw-transport-webhid": "^6.27.8",
     "@zondax/ledger-icp": "^0.6.1",

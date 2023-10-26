@@ -45,33 +45,9 @@
   import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
   import HardwareWalletListNeuronsButton from "$lib/components/accounts/HardwareWalletListNeuronsButton.svelte";
   import HardwareWalletShowActionButton from "$lib/components/accounts/HardwareWalletShowActionButton.svelte";
-
-  onMount(() => {
-    pollAccounts();
-  });
-
-  onDestroy(() => {
-    cancelPollAccounts();
-  });
+  import IcpWalletTransactions from "$lib/components/accounts/IcpWalletTransactions.svelte";
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
-
-  let transactions: Transaction[] | undefined;
-
-  const reloadTransactions = (
-    accountIdentifier: AccountIdentifierText
-  ): Promise<void> =>
-    getAccountTransactions({
-      accountIdentifier: accountIdentifier,
-      onLoad: ({ accountIdentifier, transactions: loadedTransactions }) => {
-        // avoid using outdated transactions
-        if (accountIdentifier !== $selectedAccountStore.account?.identifier) {
-          return;
-        }
-
-        transactions = loadedTransactions;
-      },
-    });
 
   const selectedAccountStore = writable<WalletStore>({
     account: undefined,
@@ -79,7 +55,8 @@
   });
 
   debugSelectedAccountStore(selectedAccountStore);
-  $: debugTransactions(transactions);
+  // TODO: debug
+  // $: debugTransactions(transactions);
 
   setContext<WalletContext>(WALLET_CONTEXT_KEY, {
     store: selectedAccountStore,
@@ -88,11 +65,6 @@
   export let accountIdentifier: string | undefined | null = undefined;
 
   const accountDidUpdate = async ({ account }: WalletStore) => {
-    if (account !== undefined) {
-      await reloadTransactions(account.identifier);
-      return;
-    }
-
     // handle unknown accountIdentifier from URL
     if (
       account === undefined &&
@@ -128,26 +100,6 @@
 
   let disabled = false;
   $: disabled = isNullish($selectedAccountStore.account) || $busy;
-
-  const reloadAccount = async () => {
-    try {
-      if (nonNullish($selectedAccountStore.account)) {
-        await Promise.all([
-          loadBalance({
-            accountIdentifier: $selectedAccountStore.account.identifier,
-          }),
-          reloadTransactions($selectedAccountStore.account.identifier),
-        ]);
-      }
-    } catch (err: unknown) {
-      toastsError({
-        labelKey: replacePlaceholders($i18n.error.account_not_reload, {
-          $account_identifier: accountIdentifier ?? "",
-        }),
-        err,
-      });
-    }
-  };
 
   let name: string;
   $: name = accountName({
@@ -186,7 +138,7 @@
 
           <Separator spacing="none" />
 
-          <TransactionList {transactions} />
+          <IcpWalletTransactions />
         {:else}
           <Spinner />
         {/if}
@@ -204,7 +156,6 @@
       <ReceiveButton
         type="nns-receive"
         account={$selectedAccountStore.account}
-        reload={reloadAccount}
       />
     </Footer>
   </Island>
