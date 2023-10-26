@@ -5,6 +5,7 @@ canister_post_upgrade
 canister_pre_upgrade
 canister_query get_account
 canister_query get_canisters
+canister_query get_exceptional_transactions
 canister_query get_histogram
 canister_query get_stats
 canister_query get_toy_account
