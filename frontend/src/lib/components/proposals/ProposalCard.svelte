@@ -3,7 +3,8 @@
   import { i18n } from "$lib/stores/i18n";
   import type { ProposalStatusColor } from "$lib/constants/proposals.constants";
   import Countdown from "./Countdown.svelte";
-  import { secondsToDateTime } from "$lib/utils/date.utils";
+  import { nowInSeconds, secondsToDateTime } from "$lib/utils/date.utils";
+  import { nonNullish } from "@dfinity/utils";
 
   export let hidden = false;
   export let statusString: string | undefined;
@@ -38,12 +39,14 @@
             >
           </KeyValuePair>
 
-          <KeyValuePair>
-            <span class="description" slot="key"
-              >{$i18n.proposal_detail.rewards_prefix}</span
-            >
-            <Countdown slot="value" {deadlineTimestampSeconds} />
-          </KeyValuePair>
+          {#if nonNullish(deadlineTimestampSeconds) && deadlineTimestampSeconds > nowInSeconds()}
+            <KeyValuePair>
+              <span class="description" slot="key"
+                >{$i18n.proposal_detail.rewards_prefix}</span
+              >
+              <Countdown slot="value" {deadlineTimestampSeconds} />
+            </KeyValuePair>
+          {/if}
 
           <KeyValuePair>
             <span class="description" slot="key"
