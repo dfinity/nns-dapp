@@ -340,6 +340,7 @@ interface I18nNeurons {
   edit_delay: string;
   merge_neurons_article_title: string;
   cannot_merge_neuron_community: string;
+  cannot_merge_neuron_seed: string;
   cannot_merge_neuron_spawning: string;
   cannot_merge_neuron_hotkey: string;
   cannot_merge_neuron_state: string;
