@@ -5,6 +5,8 @@
   import { authStore } from "$lib/stores/auth.store";
   import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
   import { Tag } from "@dfinity/gix-components";
+  import { nonNullish } from "@dfinity/utils";
+  import NeuronTypeTag from "$lib/components/ui/NeuronTypeTag.svelte";
 
   export let neuron: NeuronInfo;
   export let tagName: "p" | "h3" = "p";
@@ -21,7 +23,10 @@
 <div class="title" data-tid="neuron-card-title">
   <svelte:element this={tagName} data-tid="neuron-id"
     ><div class="neuron-id">
-      {#if neuron.isSeed}<Tag>seed</Tag>{/if}<span>{neuron.neuronId}</span>
+      {#if nonNullish(neuron.neuronType)}<NeuronTypeTag
+          type={neuron.neuronType}
+          top
+        />{/if}<span>{neuron.neuronId}</span>
     </div></svelte:element
   >
 

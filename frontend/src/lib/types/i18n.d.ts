@@ -272,6 +272,13 @@ interface I18nAccounts {
   transaction_time_seconds: string;
 }
 
+interface I18nNeuron_types {
+  seed: string;
+  seedDescription: string;
+  ect: string;
+  ectDescription: string;
+}
+
 interface I18nNeurons {
   title: string;
   text: string;
@@ -1314,6 +1321,7 @@ interface I18n {
   header: I18nHeader;
   auth: I18nAuth;
   accounts: I18nAccounts;
+  neuron_types: I18nNeuron_types;
   neurons: I18nNeurons;
   new_followee: I18nNew_followee;
   follow_neurons: I18nFollow_neurons;
