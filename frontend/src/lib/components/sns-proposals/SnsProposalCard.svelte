@@ -51,7 +51,7 @@
   id={id?.id}
   {title}
   {color}
-  {type}
+  heading={type ?? ""}
   createdTimestampSeconds={proposal_creation_timestamp_seconds}
   {deadlineTimestampSeconds}
 />

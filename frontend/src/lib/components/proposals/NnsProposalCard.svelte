@@ -33,10 +33,9 @@
   {href}
   {statusString}
   {id}
+  heading={type ?? topic ?? ""}
   {title}
   {color}
-  {topic}
   createdTimestampSeconds={created}
-  {type}
   deadlineTimestampSeconds={proposalInfo.deadlineTimestampSeconds}
 />

@@ -8,10 +8,9 @@
   export let hidden = false;
   export let statusString: string | undefined;
   export let id: bigint | undefined;
+  export let heading: string;
   export let title: string | undefined;
   export let color: ProposalStatusColor | undefined;
-  export let topic: string | undefined = undefined;
-  export let type: string | undefined;
   export let deadlineTimestampSeconds: bigint | undefined;
   export let createdTimestampSeconds: bigint;
   export let href: string;
@@ -21,13 +20,13 @@
   <Card testId="proposal-card" {href}>
     <div class="stretch-wrapper">
       <div>
-        <h3>{type ?? topic}</h3>
+        <h3>{heading}</h3>
 
-        <div class="highlight">
-          {#if title}
+        {#if title}
+          <div class="highlight">
             <p>{title}</p>
-          {/if}
-        </div>
+          </div>
+        {/if}
 
         <div class="content">
           <KeyValuePair>
