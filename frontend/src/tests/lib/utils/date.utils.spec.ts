@@ -1,6 +1,7 @@
 import { SECONDS_IN_DAY, SECONDS_IN_MONTH } from "$lib/constants/constants";
 import {
   daysToDuration,
+  daysToSeconds,
   nanoSecondsToDateTime,
   secondsToDate,
   secondsToDateTime,
@@ -190,6 +191,11 @@ describe("daysToDuration", () => {
       });
     }
   });
+
+  it("should return fractions of day", () => {
+    expect(daysToDuration(1.5)).toBe("1 day, 12 hours");
+    expect(daysToDuration(365.125)).toBe("1 year, 3 hours");
+  });
 });
 
 describe("secondsToDissolveDelayDuration", () => {
@@ -309,5 +315,18 @@ describe("secondsToTime", () => {
     date.setMinutes(45);
     date.setSeconds(59);
     expect(secondsToTime(+date / 1000)).toContain("9:45");
+  });
+});
+
+describe("daysToSeconds", () => {
+  it("returns the days in seconds", () => {
+    expect(daysToSeconds(1)).toBe(SECONDS_IN_DAY);
+    expect(daysToSeconds(2)).toBe(SECONDS_IN_DAY * 2);
+    expect(daysToSeconds(3)).toBe(SECONDS_IN_DAY * 3);
+  });
+
+  it("returns integers only", () => {
+    expect(daysToSeconds(1.123456)).not.toBe(SECONDS_IN_DAY * 1.123456);
+    expect(daysToSeconds(1.123456)).toBe(97067);
   });
 });

@@ -45,7 +45,7 @@
     isNullish(snsParameters)
       ? 0
       : snsNeuronVotingPower({
-          newDissolveDelayInSeconds: BigInt(delayInSeconds),
+          newDissolveDelayInSeconds: BigInt(Math.round(delayInSeconds)),
           neuron,
           snsParameters,
         });
