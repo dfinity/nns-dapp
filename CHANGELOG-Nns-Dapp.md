@@ -11,6 +11,14 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 125338
+
+### Application
+
+#### Fixed
+
+* Fix issue with transactions not appearing in the Wallet page.
+
 ## Proposal 125318
 
 ### Application
