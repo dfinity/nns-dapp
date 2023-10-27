@@ -25,7 +25,7 @@
 
   let errorMessage: string | undefined;
   const showError = () => {
-    // This is called with before we update the `seconds` variable
+    // This is called before we update the `seconds` variable
     // The seconds variable is update a line above: `$: seconds = daysToSeconds(days);`
     errorMessage = getInputError(daysToSeconds(days));
   };
