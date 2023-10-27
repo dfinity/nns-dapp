@@ -156,7 +156,7 @@ test("Test neuron voting", async ({ page, context }) => {
 
   step("Open proposal details");
   const governanceProposalCard =
-    await nnsProposalListPo.getFirstProposalCardPoForStatus(proposerNeuronId);
+    await nnsProposalListPo.getFirstProposalCardPoForStatus("Open");
 
   await governanceProposalCard.click();
   await appPo.getProposalDetailPo().getNnsProposalPo().waitForContentLoaded();

@@ -58,7 +58,7 @@
             </KeyValuePair>
           {/if}
 
-          <KeyValuePair>
+          <KeyValuePair testId="proposal-status">
             <span class="description" slot="key"
               >{$i18n.proposal_detail.status_prefix}</span
             >

@@ -31,7 +31,7 @@ export class ProposalCardPo extends BasePageObject {
       await KeyValuePairPo.under({
         element: this.root,
         testId: "proposal-status",
-      }).getKeyText()
+      }).getValueText()
     ).trim();
   }
 }
