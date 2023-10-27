@@ -1,0 +1,2 @@
+// TODO: These types SHOULD be included in the upstream .did file: `AddCanisterProposal, ChangeCanisterProposal, StopOrStartCanisterProposal`
+//   - Please see: https://app.slack.com/client/E04JD4T1YRH/C0175CHJ0P6
