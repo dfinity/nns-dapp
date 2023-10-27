@@ -57,6 +57,14 @@ describe("SnsProposalCard", () => {
     expect(getByText(en.sns_status["1"])).toBeInTheDocument();
   });
 
+  it("should not render topic key", () => {
+    const { queryByTestId } = render(SnsProposalCard, {
+      props,
+    });
+
+    expect(queryByTestId("proposal-topic")).not.toBeInTheDocument();
+  });
+
   it("should render a proposal created time", () => {
     const proposalData: SnsProposalData = createSnsProposal({
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED,

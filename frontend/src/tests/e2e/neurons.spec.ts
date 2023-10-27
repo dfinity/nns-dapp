@@ -68,7 +68,7 @@ test("Test neuron voting", async ({ page, context }) => {
   const proposalCard = await appPo
     .getProposalsPo()
     .getNnsProposalListPo()
-    .getFirstProposalCardPoForProposer(proposer);
+    .getFirstProposalCardPoForStatus("Open");
   await proposalCard.click();
   const proposalDetails = appPo.getProposalDetailPo().getNnsProposalPo();
   await proposalDetails.waitForContentLoaded();

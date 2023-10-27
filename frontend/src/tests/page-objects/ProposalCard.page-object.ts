@@ -34,11 +34,4 @@ export class ProposalCardPo extends BasePageObject {
       }).getKeyText()
     ).trim();
   }
-
-  getShortenedProposer(): Promise<string> {
-    return KeyValuePairPo.under({
-      element: this.root,
-      testId: "shortened-proposer",
-    }).getValueText();
-  }
 }

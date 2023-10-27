@@ -19,7 +19,6 @@
   let title: string | undefined;
   let color: ProposalStatusColor | undefined;
   let proposal_creation_timestamp_seconds: bigint;
-
   let type: string | undefined;
   let deadlineTimestampSeconds: bigint | undefined;
 
@@ -29,7 +28,6 @@
     title,
     color,
     type,
-    proposer,
     proposal_creation_timestamp_seconds,
     current_deadline_timestamp_seconds: deadlineTimestampSeconds,
   } = mapProposalInfo({ proposalData, nsFunctions }));

@@ -15,6 +15,7 @@ describe("ProposalCard", () => {
     heading: "Treasury Proposal",
     title: "Give me my tokens",
     color: ProposalStatusColor.SUCCESS,
+    topic: "Test Topic",
     deadlineTimestampSeconds: BigInt(nowSeconds + SECONDS_IN_DAY),
     createdTimestampSeconds: BigInt(nowSeconds - SECONDS_IN_DAY),
     href: "https://nns.ic0.app/proposal/?u=qoctq-giaaa-aaaaa-aaaea-cai&proposal=123786",
@@ -46,6 +47,14 @@ describe("ProposalCard", () => {
     });
 
     expect(getByText(en.status.Open)).toBeInTheDocument();
+  });
+
+  it("should render a proposal topic", () => {
+    const { getByText } = render(ProposalCard, {
+      props,
+    });
+
+    expect(getByText(props.topic, { exact: false })).toBeInTheDocument();
   });
 
   it("should render a proposal id", () => {

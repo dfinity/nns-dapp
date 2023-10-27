@@ -11,6 +11,7 @@
   export let id: bigint | undefined;
   export let heading: string;
   export let title: string | undefined;
+  export let topic: string | undefined = undefined;
   export let color: ProposalStatusColor | undefined;
   export let deadlineTimestampSeconds: bigint | undefined;
   export let createdTimestampSeconds: bigint;
@@ -19,7 +20,7 @@
 
 <li class:hidden>
   <Card testId="proposal-card" {href}>
-    <div class="stretch-wrapper">
+    <div class="stretch-wrapper" data-proposal-id={id}>
       <div>
         <h3 data-tid="proposal-card-heading">{heading}</h3>
 
@@ -48,6 +49,15 @@
             </KeyValuePair>
           {/if}
 
+          {#if nonNullish(topic)}
+            <KeyValuePair testId="proposal-topic">
+              <span class="description" slot="key"
+                >{$i18n.proposal_detail.topic_prefix}</span
+              >
+              <span slot="value">{topic}</span>
+            </KeyValuePair>
+          {/if}
+
           <KeyValuePair>
             <span class="description" slot="key"
               >{$i18n.proposal_detail.status_prefix}</span
@@ -58,7 +68,7 @@
       </div>
 
       <div>
-        <p class="id">{id}</p>
+        <p class="id" data-tid="proposal-id">{id}</p>
       </div>
     </div>
   </Card>

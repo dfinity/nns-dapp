@@ -7,6 +7,7 @@ import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import {
   NnsFunction,
   ProposalStatus,
+  Topic,
   type Proposal,
   type ProposalInfo,
 } from "@dfinity/nns";
@@ -90,6 +91,20 @@ describe("NnsProposalCard", () => {
     });
 
     expect(getByText(en.status.Open)).toBeInTheDocument();
+  });
+
+  it("should render a proposal topic", () => {
+    const { getByText } = render(NnsProposalCard, {
+      props: {
+        proposalInfo: mockProposals[0],
+      },
+    });
+
+    expect(
+      getByText(`${en.topics[Topic[mockProposals[0].topic]]}`, {
+        exact: false,
+      })
+    ).toBeInTheDocument();
   });
 
   it("should render a proposal id", () => {

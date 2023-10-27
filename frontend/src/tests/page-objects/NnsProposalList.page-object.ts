@@ -1,5 +1,3 @@
-import { PROPOSER_ID_DISPLAY_SPLIT_LENGTH } from "$lib/constants/proposals.constants";
-import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { ProposalCardPo } from "$tests/page-objects/ProposalCard.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -46,18 +44,12 @@ export class NnsProposalListPo extends BasePageObject {
     return Array.from(new Set(statuses));
   }
 
-  async getProposalCardPosForProposer(
-    proposer: string
-  ): Promise<ProposalCardPo[]> {
-    const shortProposer = shortenWithMiddleEllipsis(
-      proposer,
-      PROPOSER_ID_DISPLAY_SPLIT_LENGTH
-    );
+  async getProposalCardPosForStatus(status: string): Promise<ProposalCardPo[]> {
     const allCards = await this.getProposalCardPos();
     const proposerCards = [];
 
     for (const card of allCards) {
-      if ((await card.getShortenedProposer()) === shortProposer) {
+      if ((await card.getProposalStatusText()) === status) {
         proposerCards.push(card);
       }
     }
@@ -65,15 +57,15 @@ export class NnsProposalListPo extends BasePageObject {
     return proposerCards;
   }
 
-  async getFirstProposalCardPoForProposer(
-    proposer: string
+  async getFirstProposalCardPoForStatus(
+    status: string
   ): Promise<ProposalCardPo> {
-    const proposerCards = await this.getProposalCardPosForProposer(proposer);
+    const proposerCards = await this.getProposalCardPosForStatus(status);
     if (proposerCards.length > 0) {
       return proposerCards[0];
     }
 
-    throw new Error(`No proposal card found for proposer ${proposer}`);
+    throw new Error(`No proposal card found for status ${status}`);
   }
 
   async getProposalIds(): Promise<string[]> {
@@ -99,11 +91,9 @@ export class NnsProposalListPo extends BasePageObject {
     this.getSkeletonCardPo().waitForAbsent();
   }
 
-  async getVisibleProposalIds(proposerNeuronId: string): Promise<string[]> {
+  async getVisibleProposalIds(): Promise<string[]> {
     return Promise.all(
-      (await this.getProposalCardPosForProposer(proposerNeuronId)).map((card) =>
-        card.getProposalId()
-      )
+      (await this.getProposalCardPos()).map((card) => card.getProposalId())
     );
   }
 }

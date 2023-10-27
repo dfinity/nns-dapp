@@ -14,9 +14,10 @@
   let title: string | undefined;
   let color: ProposalStatusColor | undefined;
   let created: bigint;
+  let topic: string | undefined;
   let type: string | undefined;
 
-  $: ({ id, title, color, type, statusString, created } =
+  $: ({ id, title, color, type, statusString, created, topic } =
     mapProposalInfo(proposalInfo));
 
   let href: string;
@@ -31,6 +32,7 @@
   {href}
   {statusString}
   {id}
+  {topic}
   heading={type ?? ""}
   {title}
   {color}
