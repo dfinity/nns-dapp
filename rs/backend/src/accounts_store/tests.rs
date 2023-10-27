@@ -84,6 +84,51 @@ fn get_transactions_returns_expected_page() {
 }
 
 #[test]
+fn get_transactions_transfer_from() {
+    let principal1 = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal2 = PrincipalId::from_str(TEST_ACCOUNT_2).unwrap();
+    let account_identifier1 = AccountIdentifier::from(principal1);
+    let account_identifier2 = AccountIdentifier::from(principal2);
+    let timestamp = TimeStamp::from_nanos_since_unix_epoch(100);
+    let fee = Tokens::from_e8s(1_000);
+    let amount = Tokens::from_e8s(350_000_000);
+
+    let mut store = AccountsStore::default();
+    store.add_account(principal1);
+    store.add_account(principal2);
+    let transfer_from = TransferFrom {
+        amount,
+        fee,
+        from: account_identifier1,
+        to: account_identifier2,
+        spender: account_identifier2,
+    };
+    store.append_transaction(transfer_from, Memo(0), 0, timestamp).unwrap();
+
+    let results = store.get_transactions(
+        principal2,
+        GetTransactionsRequest {
+            account_identifier: account_identifier2,
+            offset: 0,
+            page_size: 10,
+        },
+    );
+
+    assert_eq!(1, results.total);
+    assert_eq!(1, results.transactions.len());
+    let transaction = &results.transactions[0];
+    assert_eq!(Some(TransactionType::Transfer), transaction.transaction_type);
+    assert_eq!(
+        TransferResult::Receive {
+            from: account_identifier1,
+            amount,
+            fee
+        },
+        transaction.transfer
+    );
+}
+
+#[test]
 fn add_account_adds_principal_and_sets_transaction_types() {
     let mut store = setup_test_store();
 
