@@ -44,6 +44,7 @@ source "$(clap.build)"
       curl -sfL --retry 5 "$IC_URL$upstream_path"
     } >"${local_path}"
   }
+  did_curl nns_cmc /rs/nns/cmc/cmc.did
   did_curl nns_governance /rs/nns/governance/canister/governance.did
   did_curl nns_registry /rs/registry/canister/canister/registry.did
   did_curl sns_governance /rs/sns/governance/canister/governance.did
