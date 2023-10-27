@@ -24,7 +24,6 @@ export const DEFAULT_PROPOSALS_FILTERS = {
 };
 
 export enum ProposalStatusColor {
-  PRIMARY = "primary",
   SUCCESS = "success",
   WARNING = "warning",
   ERROR = "error",

@@ -10,17 +10,17 @@ describe("Countdown", () => {
     vi.useFakeTimers().setSystemTime(now);
   });
   it("should render no countdown", () => {
-    const { container } = render(Countdown, {
+    const { queryByTestId } = render(Countdown, {
       props: {
         deadlineTimestampSeconds: undefined,
       },
     });
 
-    expect(container.querySelector("p.description")).toBeNull();
+    expect(queryByTestId("countdown")).toBeNull();
   });
 
   it("should render countdown", () => {
-    const { container } = render(Countdown, {
+    const { queryByTestId } = render(Countdown, {
       props: {
         deadlineTimestampSeconds: mockProposals[0].deadlineTimestampSeconds,
       },
@@ -34,6 +34,6 @@ describe("Countdown", () => {
       en.proposal_detail.remaining
     }`;
 
-    expect(container.querySelector("p.description")?.textContent).toEqual(text);
+    expect(queryByTestId("countdown")?.textContent).toEqual(text);
   });
 });

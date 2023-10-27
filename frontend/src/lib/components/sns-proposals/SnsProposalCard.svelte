@@ -11,7 +11,6 @@
     SnsProposalId,
   } from "@dfinity/sns";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
-  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 
   export let proposalData: SnsProposalData;
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;
@@ -21,14 +20,12 @@
   let id: SnsProposalId | undefined;
   let title: string | undefined;
   let color: ProposalStatusColor | undefined;
-
+  let proposal_creation_timestamp_seconds: bigint;
   let type: string | undefined;
   let proposer: SnsNeuronId | undefined;
   let proposerString: string | undefined;
   $: proposerString =
-    proposer !== undefined
-      ? shortenWithMiddleEllipsis(subaccountToHexString(proposer.id))
-      : undefined;
+    proposer !== undefined ? subaccountToHexString(proposer.id) : undefined;
   let deadlineTimestampSeconds: bigint | undefined;
 
   $: ({
@@ -37,7 +34,7 @@
     title,
     color,
     type,
-    proposer,
+    proposal_creation_timestamp_seconds,
     current_deadline_timestamp_seconds: deadlineTimestampSeconds,
   } = mapProposalInfo({ proposalData, nsFunctions }));
 
@@ -55,7 +52,8 @@
   id={id?.id}
   {title}
   {color}
-  {type}
+  heading={type ?? ""}
   proposer={proposerString}
+  createdTimestampSeconds={proposal_creation_timestamp_seconds}
   {deadlineTimestampSeconds}
 />

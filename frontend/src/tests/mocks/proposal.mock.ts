@@ -71,6 +71,14 @@ export const mockProposalInfo: ProposalInfo = {
   deadlineTimestampSeconds,
 } as unknown as ProposalInfo;
 
+export const createMockProposalInfo = ({ action }: { action: Action }) => ({
+  ...mockProposalInfo,
+  proposal: {
+    ...mockProposalInfo.proposal,
+    action,
+  },
+});
+
 export const mockVoteRegistration = {
   proposalIdString: "10000",
   neuronIdStrings: ["1234567890"],

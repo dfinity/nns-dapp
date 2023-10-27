@@ -31,14 +31,13 @@ export class ProposalCardPo extends BasePageObject {
       await KeyValuePairPo.under({
         element: this.root,
         testId: "proposal-status",
-      }).getKeyText()
+      }).getValueText()
     ).trim();
   }
 
-  getShortenedProposer(): Promise<string> {
-    return KeyValuePairPo.under({
-      element: this.root,
-      testId: "shortened-proposer",
-    }).getValueText();
+  getProposer(): Promise<string> {
+    return this.root
+      .querySelector("[data-proposer-id]")
+      ?.getAttribute("data-proposer-id");
   }
 }
