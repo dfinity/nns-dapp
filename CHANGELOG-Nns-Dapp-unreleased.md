@@ -15,7 +15,6 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Added provenance information to .did files and derived rust code.
-* Added `approveTransfer` in icrc-ledger API.
 * Add `UpdateElectedHostosVersions` and `UpdateNodesHostosVersion` proposals support.
 * Show the maximum participation of the Neurons' Fund when present.
 * A list of exceptional (not-rendered, zero value) transactions.
