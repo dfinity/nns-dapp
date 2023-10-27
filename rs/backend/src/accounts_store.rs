@@ -783,6 +783,13 @@ impl AccountsStore {
             .take(request.page_size as usize)
             .map(|transaction_index| {
                 let transaction = self.get_transaction(*transaction_index).unwrap();
+                let transaction_type = transaction.transaction_type;
+                let used_transaction_type = if let Some(TransactionType::TransferFrom) = transaction_type {
+                    Some(TransactionType::Transfer)
+                } else {
+                    transaction_type
+                };
+
                 TransactionResult {
                     block_height: transaction.block_height,
                     timestamp: transaction.timestamp,
@@ -818,7 +825,7 @@ impl AccountsStore {
                             fee,
                         },
                     },
-                    transaction_type: transaction.transaction_type,
+                    transaction_type: used_transaction_type,
                 }
             })
             .collect();
@@ -1710,7 +1717,7 @@ pub struct TransactionResult {
     transaction_type: Option<TransactionType>,
 }
 
-#[derive(CandidType)]
+#[derive(CandidType, Debug, PartialEq)]
 pub enum TransferResult {
     Burn {
         amount: Tokens,
