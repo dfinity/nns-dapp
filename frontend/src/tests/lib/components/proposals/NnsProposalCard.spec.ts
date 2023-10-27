@@ -61,7 +61,9 @@ describe("NnsProposalCard", () => {
       },
     };
     const { queryByTestId } = render(NnsProposalCard, {
-      props: createMockProposalInfo({ action: knownNeuronAction }),
+      props: {
+        proposalInfo: createMockProposalInfo({ action: knownNeuronAction }),
+      },
     });
 
     expect(queryByTestId("proposal-card-heading").textContent).toBe(

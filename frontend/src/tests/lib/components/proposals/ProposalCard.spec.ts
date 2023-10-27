@@ -15,6 +15,7 @@ describe("ProposalCard", () => {
     heading: "Treasury Proposal",
     title: "Give me my tokens",
     color: ProposalStatusColor.SUCCESS,
+    proposer: "2",
     topic: "Test Topic",
     deadlineTimestampSeconds: BigInt(nowSeconds + SECONDS_IN_DAY),
     createdTimestampSeconds: BigInt(nowSeconds - SECONDS_IN_DAY),
