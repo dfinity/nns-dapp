@@ -80,6 +80,21 @@ describe("SetDissolveDelay", () => {
     expect(await po.getProgressBarSeconds()).toBe(91 * SECONDS_IN_DAY);
   });
 
+  it("user can enter fractional days", async () => {
+    const neuronDissolveDelaySeconds = 90 * SECONDS_IN_DAY;
+    const po = renderComponent({
+      neuronDissolveDelaySeconds: BigInt(neuronDissolveDelaySeconds),
+      delayInSeconds: neuronDissolveDelaySeconds,
+    });
+
+    expect(await po.getDays()).toBe(90);
+    expect(await po.getProgressBarSeconds()).toBe(90 * SECONDS_IN_DAY);
+
+    await po.enterDays(100.5);
+    expect(await po.getDays()).toBe(100.5);
+    expect(await po.getProgressBarSeconds()).toBe(100.5 * SECONDS_IN_DAY);
+  });
+
   it("should update progress bar on text input", async () => {
     const po = renderComponent();
     await po.enterDays(1);
@@ -212,45 +227,53 @@ describe("SetDissolveDelay", () => {
     expect(getDelayInSeconds(component)).toBe(200 * SECONDS_IN_DAY);
   });
 
-  it("should update prop, text, progress bar on Min/Max", async () => {
-    const minProjectDelayInDays = 50;
-    const maxDelayInDays = 500;
-    const minProjectDelayInSeconds = minProjectDelayInDays * SECONDS_IN_DAY;
-    const maxDelayInSeconds = maxDelayInDays * SECONDS_IN_DAY;
+  const minMaxDaysPairs = [
+    { min: 50, max: 500 },
+    { min: 50.5, max: 500.5 },
+    { min: 50, max: 500.2 },
+    { min: 50.1, max: 500 },
+  ];
+  for (const { min, max } of minMaxDaysPairs) {
+    it("should update prop, text, progress bar on Min/Max", async () => {
+      const minProjectDelayInDays = min;
+      const maxDelayInDays = max;
+      const minProjectDelayInSeconds = minProjectDelayInDays * SECONDS_IN_DAY;
+      const maxDelayInSeconds = maxDelayInDays * SECONDS_IN_DAY;
 
-    const { container, component } = render(SetDissolveDelay, {
-      props: {
-        ...defaultComponentProps,
-        delayInSeconds: 0,
-        minProjectDelayInSeconds,
-        maxDelayInSeconds,
-      },
+      const { container, component } = render(SetDissolveDelay, {
+        props: {
+          ...defaultComponentProps,
+          delayInSeconds: 0,
+          minProjectDelayInSeconds,
+          maxDelayInSeconds,
+        },
+      });
+      const po = SetDissolveDelayPo.under(new JestPageObjectElement(container));
+
+      expect(getDelayInSeconds(component)).toBe(0);
+
+      // Clicking "Min" can increase the delay to the minimum.
+      await po.clickMin();
+      expect(getDelayInSeconds(component)).toBe(minProjectDelayInSeconds);
+      expect(await po.getDays()).toBe(minProjectDelayInDays);
+      expect(await po.getProgressBarSeconds()).toBe(
+        minProjectDelayInDays * SECONDS_IN_DAY
+      );
+
+      await po.clickMax();
+      expect(getDelayInSeconds(component)).toBe(maxDelayInSeconds);
+      expect(await po.getDays()).toBe(maxDelayInDays);
+      expect(await po.getProgressBarSeconds()).toBe(
+        maxDelayInDays * SECONDS_IN_DAY
+      );
+
+      // Clicking "Min" can decrease the delay to the minimum.
+      await po.clickMin();
+      expect(getDelayInSeconds(component)).toBe(minProjectDelayInSeconds);
+      expect(await po.getDays()).toBe(minProjectDelayInDays);
+      expect(await po.getProgressBarSeconds()).toBe(
+        minProjectDelayInDays * SECONDS_IN_DAY
+      );
     });
-    const po = SetDissolveDelayPo.under(new JestPageObjectElement(container));
-
-    expect(getDelayInSeconds(component)).toBe(0);
-
-    // Clicking "Min" can increase the delay to the minimum.
-    await po.clickMin();
-    expect(getDelayInSeconds(component)).toBe(minProjectDelayInSeconds);
-    expect(await po.getDays()).toBe(minProjectDelayInDays);
-    expect(await po.getProgressBarSeconds()).toBe(
-      minProjectDelayInDays * SECONDS_IN_DAY
-    );
-
-    await po.clickMax();
-    expect(getDelayInSeconds(component)).toBe(maxDelayInSeconds);
-    expect(await po.getDays()).toBe(maxDelayInDays);
-    expect(await po.getProgressBarSeconds()).toBe(
-      maxDelayInDays * SECONDS_IN_DAY
-    );
-
-    // Clicking "Min" can decrease the delay to the minimum.
-    await po.clickMin();
-    expect(getDelayInSeconds(component)).toBe(minProjectDelayInSeconds);
-    expect(await po.getDays()).toBe(minProjectDelayInDays);
-    expect(await po.getProgressBarSeconds()).toBe(
-      minProjectDelayInDays * SECONDS_IN_DAY
-    );
-  });
+  }
 });

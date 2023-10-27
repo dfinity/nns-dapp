@@ -44,6 +44,7 @@
   inputType="number"
   {errorMessage}
   on:nnsInput={showError}
+  on:blur={showError}
 >
   <MinButton on:click={setMin} slot="start" />
   <MaxButton on:click={setMax} slot="end" />

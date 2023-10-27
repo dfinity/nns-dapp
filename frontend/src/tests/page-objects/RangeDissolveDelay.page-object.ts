@@ -8,7 +8,7 @@ export class RangeDissolveDelayPo extends BasePageObject {
     return new RangeDissolveDelayPo(element.byTestId(RangeDissolveDelayPo.TID));
   }
 
-  async getProgressBarValue(): Promise<number> {
+  async getProgressBarSeconds(): Promise<number> {
     return Number(
       await this.root.querySelector("progress").getAttribute("value")
     );

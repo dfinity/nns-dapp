@@ -79,6 +79,6 @@ export class SetDissolveDelayPo extends BasePageObject {
   }
 
   async getProgressBarSeconds(): Promise<number> {
-    return this.getRangeDissolveDelayPo().getProgressBarValue();
+    return this.getRangeDissolveDelayPo().getProgressBarSeconds();
   }
 }
