@@ -6,12 +6,9 @@
   import ProposalCard from "$lib/components/proposals/ProposalCard.svelte";
   import type {
     SnsNervousSystemFunction,
-    SnsNeuronId,
     SnsProposalData,
     SnsProposalId,
   } from "@dfinity/sns";
-  import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
-  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 
   export let proposalData: SnsProposalData;
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Card, KeyValuePair, Tag, Value } from "@dfinity/gix-components";
+  import { Card, KeyValuePair, Tag } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import type { ProposalStatusColor } from "$lib/constants/proposals.constants";
   import Countdown from "./Countdown.svelte";
@@ -34,7 +34,7 @@
             <span class="description" slot="key"
               >{$i18n.proposal_detail.created_prefix}</span
             >
-            <span slot="value"
+            <span slot="value" data-tid="created"
               >{secondsToDateTime(createdTimestampSeconds)}</span
             >
           </KeyValuePair>

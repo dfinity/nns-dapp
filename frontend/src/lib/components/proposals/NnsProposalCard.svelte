@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ProposalInfo, NeuronId, ProposalId } from "@dfinity/nns";
+  import type { ProposalInfo, ProposalId } from "@dfinity/nns";
   import { mapProposalInfo } from "$lib/utils/proposals.utils";
   import type { ProposalStatusColor } from "$lib/constants/proposals.constants";
   import ProposalCard from "./ProposalCard.svelte";
@@ -14,11 +14,9 @@
   let title: string | undefined;
   let color: ProposalStatusColor | undefined;
   let created: bigint;
-
-  let topic: string | undefined;
   let type: string | undefined;
 
-  $: ({ id, title, color, topic, type, statusString, created } =
+  $: ({ id, title, color, type, statusString, created } =
     mapProposalInfo(proposalInfo));
 
   let href: string;

@@ -4,8 +4,12 @@ import { proposalsFiltersStore } from "$lib/stores/proposals.store";
 import { secondsToDuration } from "$lib/utils/date.utils";
 import en from "$tests/mocks/i18n.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
-import type { Proposal, ProposalInfo } from "@dfinity/nns";
-import { ProposalStatus } from "@dfinity/nns";
+import {
+  NnsFunction,
+  ProposalStatus,
+  type Proposal,
+  type ProposalInfo,
+} from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
 describe("NnsProposalCard", () => {
@@ -26,6 +30,56 @@ describe("NnsProposalCard", () => {
     expect(
       getByText((firstProposal.proposal as Proposal).title as string)
     ).toBeInTheDocument();
+  });
+
+  it("should render the proposal nns execute function name as title for ExecuteNnsFunction actions", () => {
+    const { queryByTestId } = render(NnsProposalCard, {
+      props: {
+        proposalInfo: {
+          ...mockProposals[0],
+          proposal: {
+            ...mockProposals[0].proposal,
+            action: {
+              ExecuteNnsFunction: {
+                nnsFunctionId: NnsFunction.NnsCanisterUpgrade,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    expect(queryByTestId("proposal-card-heading").textContent).toBe(
+      "NNS Canister Upgrade"
+    );
+  });
+
+  it("should render the proposal action key as title if not ExecuteNnsFunction action", () => {
+    const { queryByTestId } = render(NnsProposalCard, {
+      props: {
+        proposalInfo: {
+          ...mockProposals[0],
+          proposal: {
+            ...mockProposals[0].proposal,
+            action: {
+              RegisterKnownNeuron: {
+                id: [{ id: BigInt(1) }],
+                known_neuron_data: [
+                  {
+                    name: "test",
+                    description: [],
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    });
+
+    expect(queryByTestId("proposal-card-heading").textContent).toBe(
+      "Register Known Neuron"
+    );
   });
 
   it("should render a proposal status", () => {

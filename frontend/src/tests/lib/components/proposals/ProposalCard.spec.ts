@@ -2,6 +2,7 @@ import ProposalCard from "$lib/components/proposals/ProposalCard.svelte";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import { ProposalStatusColor } from "$lib/constants/proposals.constants";
 import en from "$tests/mocks/i18n.mock";
+import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
 import { render } from "@testing-library/svelte";
 
 describe("ProposalCard", () => {
@@ -55,12 +56,33 @@ describe("ProposalCard", () => {
     expect(getByText(`${props.id}`, { exact: false })).toBeInTheDocument();
   });
 
+  it("should render a created data", () => {
+    const { queryByTestId } = render(ProposalCard, {
+      props,
+    });
+
+    expect(
+      normalizeWhitespace(queryByTestId("created")?.textContent ?? "")
+    ).toBe("Oct 23, 2023 9:24 AM");
+  });
+
   it("should render countdown", () => {
     const { queryByTestId } = render(ProposalCard, {
       props,
     });
 
     expect(queryByTestId("countdown")).toBeInTheDocument();
+  });
+
+  it("should not render countdown if no deadline is provided", () => {
+    const { queryByTestId } = render(ProposalCard, {
+      props: {
+        ...props,
+        deadlineTimestampSeconds: undefined,
+      },
+    });
+
+    expect(queryByTestId("countdown")).not.toBeInTheDocument();
   });
 
   it("should render a specific color for the status", () => {
