@@ -10,7 +10,6 @@
     SnsProposalData,
     SnsProposalId,
   } from "@dfinity/sns";
-  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 
   export let proposalData: SnsProposalData;
