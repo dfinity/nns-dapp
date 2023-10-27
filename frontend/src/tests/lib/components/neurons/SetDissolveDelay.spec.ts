@@ -234,7 +234,7 @@ describe("SetDissolveDelay", () => {
     { min: 50.1, max: 500 },
   ];
   for (const { min, max } of minMaxDaysPairs) {
-    it("should update prop, text, progress bar on Min/Max", async () => {
+    it(`should update prop, text, progress bar on Min ${min} and Max ${max}`, async () => {
       const minProjectDelayInDays = min;
       const maxDelayInDays = max;
       const minProjectDelayInSeconds = minProjectDelayInDays * SECONDS_IN_DAY;
