@@ -9,6 +9,11 @@
   export let minInSeconds: number;
   export let placeholderLabelKey = "core.amount";
   export let name = "amount";
+  // We don't want to trigger an error message until the input changes.
+  // We need to trigger the error on:nnsInput
+  // Yet, on:nnsInput is triggered before `seconds` change.
+  // And we don't want to expose days outside.
+  // That's why we expect the error function, instead of relying on the parent to calculate it based on `seconds`.
   export let getInputError: (value: number) => string | undefined;
 
   // Round up the first time to not show a lot of decimal places.

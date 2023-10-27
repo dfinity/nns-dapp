@@ -39,6 +39,18 @@ describe("DayInput", () => {
     ).toEqual(en.core.amount);
   });
 
+  it("should render an error message after changing value", async () => {
+    const { queryByText, container } = render(DayInput, {
+      props: {
+        ...defaultProps,
+        getInputError: () => "error",
+      },
+    });
+    expect(queryByText("error")).toBeNull();
+    await fireEvent.input(container.querySelector("input"), { target: "12" });
+    expect(queryByText("error")).toBeInTheDocument();
+  });
+
   it("should render a custom placeholder attribute", () => {
     const { container } = render(DayInput, {
       props: {
