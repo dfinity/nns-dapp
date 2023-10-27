@@ -326,7 +326,7 @@ describe("daysToSeconds", () => {
   });
 
   it("returns integers only", () => {
-    expect(daysToSeconds(1.11)).not.toBe(SECONDS_IN_DAY * 1.11);
-    expect(daysToSeconds(1.11)).toBe(95904);
+    expect(daysToSeconds(1.123456)).not.toBe(SECONDS_IN_DAY * 1.123456);
+    expect(daysToSeconds(1.123456)).toBe(97067);
   });
 });
