@@ -50,6 +50,7 @@ pub struct Stats {
     pub wasm_memory_size_bytes: Option<u64>,
     pub schema: Option<u32>,              // The numeric form of a SchemaLabel.
     pub migration_countdown: Option<u32>, // When non-zero, a migration is in progress.
+    pub exceptional_transactions_count: Option<u32>,
 }
 
 pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
@@ -108,6 +109,11 @@ pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
         "nns_dapp_migration_countdown",
         stats.migration_countdown.unwrap_or(0) as f64,
         "When non-zero, a migration is in progress.",
+    )?;
+    w.encode_gauge(
+        "exceptional_transactions_count",
+        stats.exceptional_transactions_count.unwrap_or(0) as f64,
+        "The number of exceptional transactions in the canister log.",
     )?;
     Ok(())
 }

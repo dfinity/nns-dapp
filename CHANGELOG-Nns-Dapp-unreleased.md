@@ -15,7 +15,6 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Added provenance information to .did files and derived rust code.
-* Added `approveTransfer` in icrc-ledger API.
 * Add `UpdateElectedHostosVersions` and `UpdateNodesHostosVersion` proposals support.
 * Show the maximum participation of the Neurons' Fund when present.
 * A list of exceptional (not-rendered, zero value) transactions.
@@ -45,6 +44,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Import candid for NNS ledger.
 * Formatting for `Cargo.toml` files.
 * Add test to check that the nns-dapp cargo and npm versions match.
 * Script to deploy nns-dapp on DevEnv.

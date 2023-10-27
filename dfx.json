@@ -15,7 +15,7 @@
     },
     "nns-ledger": {
       "type": "custom",
-      "candid": "target/ic/ic-icrc1-ledger.did",
+      "candid": "declarations/nns_ledger/nns_ledger.did",
       "wasm": "target/ic/ic-icrc1-ledger.wasm",
       "build": "./scripts/e2e-tests/nns-canister-download && ./scripts/e2e-tests/nns-canister-build",
       "remote": {

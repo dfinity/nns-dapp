@@ -45,13 +45,14 @@ source "$(clap.build)"
     } >"${local_path}"
   }
   did_curl nns_governance /rs/nns/governance/canister/governance.did
+  did_curl nns_ledger /rs/rosetta-api/icp_ledger/ledger.did
   did_curl nns_registry /rs/registry/canister/canister/registry.did
   did_curl nns_root /rs/nns/handlers/root/impl/canister/root.did
   did_curl sns_governance /rs/sns/governance/canister/governance.did
+  did_curl sns_ledger /rs/rosetta-api/icrc1/ledger/ledger.did
   did_curl sns_root /rs/sns/root/canister/root.did
   did_curl sns_swap /rs/sns/swap/canister/swap.did
   did_curl sns_wasm /rs/nns/sns-wasm/canister/sns-wasm.did
-  did_curl sns_ledger /rs/rosetta-api/icrc1/ledger/ledger.did
 }
 
 : "Derive Rust types from candid interfaces"

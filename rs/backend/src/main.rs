@@ -395,6 +395,20 @@ pub fn get_toy_account() {
     })
 }
 
+#[export_name = "canister_query get_exceptional_transactions"]
+pub fn get_exceptional_transactions() {
+    over(candid, |()| get_exceptional_transactions_impl());
+}
+fn get_exceptional_transactions_impl() -> Option<Vec<u64>> {
+    STATE.with(|s| {
+        s.performance
+            .borrow()
+            .exceptional_transactions
+            .as_ref()
+            .map(|transactions| transactions.iter().cloned().collect::<Vec<u64>>())
+    })
+}
+
 #[derive(CandidType)]
 pub enum GetAccountResponse {
     Ok(AccountDetails),
