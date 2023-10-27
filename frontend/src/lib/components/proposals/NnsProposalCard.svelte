@@ -33,7 +33,7 @@
   {href}
   {statusString}
   {id}
-  heading={type ?? topic ?? ""}
+  heading={type ?? ""}
   {title}
   {color}
   createdTimestampSeconds={created}

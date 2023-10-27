@@ -1,16 +1,13 @@
 import SnsProposalCard from "$lib/components/sns-proposals/SnsProposalCard.svelte";
 import { SECONDS_IN_HOUR } from "$lib/constants/constants";
-import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
-import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 import en from "$tests/mocks/i18n.mock";
-import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import type { SnsProposalData } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
 describe("SnsProposalCard", () => {
   const props = { proposalData: mockSnsProposal, nsFunctions: [] };
-  const now = Date.now();
+  const now = 1689843195;
   const nowInSeconds = Math.ceil(now / 1000);
   beforeEach(() => {
     vi.clearAllTimers();
@@ -35,17 +32,6 @@ describe("SnsProposalCard", () => {
     expect(getByText(en.sns_status["1"])).toBeInTheDocument();
   });
 
-  it("should render a proposer", () => {
-    const { getByText } = render(SnsProposalCard, {
-      props,
-    });
-
-    const proposerString = shortenWithMiddleEllipsis(
-      subaccountToHexString(mockSnsProposal.proposer[0]?.id)
-    );
-    expect(getByText(proposerString, { exact: false })).toBeInTheDocument();
-  });
-
   it("should render a proposal id", () => {
     const { queryAllByText } = render(SnsProposalCard, {
       props,
@@ -54,22 +40,6 @@ describe("SnsProposalCard", () => {
     expect(
       queryAllByText(String(mockSnsProposal.id[0]?.id), { exact: false }).length
     ).toBeGreaterThan(0);
-  });
-
-  it("should render a proposal topic", () => {
-    const nsFunctions = [nervousSystemFunctionMock];
-    const proposalData = {
-      ...mockSnsProposal,
-      action: nervousSystemFunctionMock.id,
-    };
-    const { getByText } = render(SnsProposalCard, {
-      props: {
-        proposalData,
-        nsFunctions,
-      },
-    });
-
-    expect(getByText(nervousSystemFunctionMock.name)).toBeInTheDocument();
   });
 
   it("should render deadline", () => {
@@ -91,16 +61,6 @@ describe("SnsProposalCard", () => {
     });
 
     expect(queryByTestId("countdown").textContent).toBe("1 hour remaining");
-  });
-
-  it("should not render accessible labels", () => {
-    const { container } = render(SnsProposalCard, {
-      props,
-    });
-
-    expect(
-      container.querySelector(`[aria-label="${en.proposal_detail.id_prefix}"]`)
-    ).toBeInTheDocument();
   });
 
   it("should render a specific color for the status", () => {

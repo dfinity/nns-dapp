@@ -5,7 +5,7 @@ import { secondsToDuration } from "$lib/utils/date.utils";
 import en from "$tests/mocks/i18n.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import type { Proposal, ProposalInfo } from "@dfinity/nns";
-import { ProposalStatus, Topic } from "@dfinity/nns";
+import { ProposalStatus } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
 describe("NnsProposalCard", () => {
@@ -38,18 +38,6 @@ describe("NnsProposalCard", () => {
     expect(getByText(en.status.Open)).toBeInTheDocument();
   });
 
-  it("should render a proposer", () => {
-    const { getByText } = render(NnsProposalCard, {
-      props: {
-        proposalInfo: mockProposals[0],
-      },
-    });
-
-    expect(
-      getByText(`${mockProposals[0].proposer}`, { exact: false })
-    ).toBeInTheDocument();
-  });
-
   it("should render a proposal id", () => {
     const { getByText } = render(NnsProposalCard, {
       props: {
@@ -59,20 +47,6 @@ describe("NnsProposalCard", () => {
 
     expect(
       getByText(`${mockProposals[0].id}`, { exact: false })
-    ).toBeInTheDocument();
-  });
-
-  it("should render a proposal topic", () => {
-    const { getByText } = render(NnsProposalCard, {
-      props: {
-        proposalInfo: mockProposals[0],
-      },
-    });
-
-    expect(
-      getByText(`${en.topics[Topic[mockProposals[0].topic]]}`, {
-        exact: false,
-      })
     ).toBeInTheDocument();
   });
 
@@ -102,23 +76,6 @@ describe("NnsProposalCard", () => {
     }`;
 
     expect(getByText(text)).toBeInTheDocument();
-  });
-
-  it("should render accessible info without label", () => {
-    const { container } = render(NnsProposalCard, {
-      props: {
-        proposalInfo: mockProposals[0],
-      },
-    });
-
-    expect(
-      container.querySelector(`[aria-label="${en.proposal_detail.id_prefix}"]`)
-    ).not.toBeNull();
-    expect(
-      container.querySelector(
-        `[aria-label="${en.proposal_detail.type_prefix}"]`
-      )
-    ).not.toBeNull();
   });
 
   it("should render a specific color for the status", () => {

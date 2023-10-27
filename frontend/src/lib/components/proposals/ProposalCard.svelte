@@ -21,7 +21,7 @@
   <Card testId="proposal-card" {href}>
     <div class="stretch-wrapper">
       <div>
-        <h3>{heading}</h3>
+        <h3 data-tid="proposal-card-heading">{heading}</h3>
 
         {#if title}
           <div class="highlight">
