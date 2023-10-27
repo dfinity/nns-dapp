@@ -30,7 +30,7 @@ test("Test neuron voting", async ({ page, context }) => {
   const neuronId = neuronIds[0];
 
   step("Create dummy proposals");
-  const proposer = await createDummyProposal(appPo);
+  await createDummyProposal(appPo);
 
   step("Go to the neurons tab");
   await appPo.goToNeurons();
