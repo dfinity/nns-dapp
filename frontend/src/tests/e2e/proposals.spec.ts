@@ -49,10 +49,10 @@ test("Test neuron voting", async ({ page, context }) => {
     .setVotableProposalsOnlyValue(true);
   await nnsProposalListPo.waitForContentLoaded();
   const proposalIdsBeforeVoting =
-    await nnsProposalListPo.getVisibleProposalIds();
+    await nnsProposalListPo.getVisibleProposalIds(proposerNeuronId);
   step("Vote for a proposal");
   const proposalCardForVoting =
-    await nnsProposalListPo.getFirstProposalCardPoForStatus("Open");
+    await nnsProposalListPo.getFirstProposalCardPoForProposer(proposerNeuronId);
   const proposalIdForVoting = await proposalCardForVoting.getProposalId();
   // Open proposal details
   await proposalCardForVoting.click();
@@ -68,7 +68,7 @@ test("Test neuron voting", async ({ page, context }) => {
   await appPo.goBack();
   await nnsProposalListPo.waitForContentLoaded();
   const proposalIdsAfterVoting =
-    await nnsProposalListPo.getVisibleProposalIds();
+    await nnsProposalListPo.getVisibleProposalIds(proposerNeuronId);
 
   step("Voted proposal should be hidden");
   expect(proposalIdsAfterVoting).toHaveLength(
@@ -86,9 +86,9 @@ test("Test neuron voting", async ({ page, context }) => {
   // check that all proposals are visible again
 
   step("Voted proposal should be visible again");
-  expect(await nnsProposalListPo.getVisibleProposalIds()).toEqual(
-    proposalIdsBeforeVoting
-  );
+  expect(
+    await nnsProposalListPo.getVisibleProposalIds(proposerNeuronId)
+  ).toEqual(proposalIdsBeforeVoting);
 
   step("Filter proposals by Topic");
   const getVisibleCardTopics = () => nnsProposalListPo.getCardTopics();
@@ -156,7 +156,10 @@ test("Test neuron voting", async ({ page, context }) => {
 
   step("Open proposal details");
   const governanceProposalCard =
-    await nnsProposalListPo.getFirstProposalCardPoForStatus("Open");
+    await nnsProposalListPo.getFirstProposalCardPoForProposer(proposerNeuronId);
+  expect(await governanceProposalCard.getProposalTopicText()).toBe(
+    "Governance"
+  );
 
   await governanceProposalCard.click();
   await appPo.getProposalDetailPo().getNnsProposalPo().waitForContentLoaded();

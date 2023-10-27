@@ -11,8 +11,9 @@
   export let id: bigint | undefined;
   export let heading: string;
   export let title: string | undefined;
-  export let topic: string | undefined = undefined;
   export let color: ProposalStatusColor | undefined;
+  export let topic: string | undefined = undefined;
+  export let proposer: string | undefined;
   export let deadlineTimestampSeconds: bigint | undefined;
   export let createdTimestampSeconds: bigint;
   export let href: string;
@@ -20,7 +21,12 @@
 
 <li class:hidden>
   <Card testId="proposal-card" {href}>
-    <div class="stretch-wrapper" data-proposal-id={id}>
+    <!-- "data-proposer-id" is used in e2e tests -->
+    <div
+      class="stretch-wrapper"
+      data-proposal-id={id}
+      data-proposer-id={proposer}
+    >
       <div>
         <h3 data-tid="proposal-card-heading">{heading}</h3>
 

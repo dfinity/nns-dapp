@@ -44,12 +44,14 @@ export class NnsProposalListPo extends BasePageObject {
     return Array.from(new Set(statuses));
   }
 
-  async getProposalCardPosForStatus(status: string): Promise<ProposalCardPo[]> {
+  async getProposalCardPosForProposer(
+    proposer: string
+  ): Promise<ProposalCardPo[]> {
     const allCards = await this.getProposalCardPos();
     const proposerCards = [];
 
     for (const card of allCards) {
-      if ((await card.getProposalStatusText()) === status) {
+      if ((await card.getProposer()) === proposer) {
         proposerCards.push(card);
       }
     }
@@ -57,15 +59,15 @@ export class NnsProposalListPo extends BasePageObject {
     return proposerCards;
   }
 
-  async getFirstProposalCardPoForStatus(
-    status: string
+  async getFirstProposalCardPoForProposer(
+    proposer: string
   ): Promise<ProposalCardPo> {
-    const proposerCards = await this.getProposalCardPosForStatus(status);
+    const proposerCards = await this.getProposalCardPosForProposer(proposer);
     if (proposerCards.length > 0) {
       return proposerCards[0];
     }
 
-    throw new Error(`No proposal card found for status ${status}`);
+    throw new Error(`No proposal card found for proposer ${proposer}`);
   }
 
   async getProposalIds(): Promise<string[]> {
@@ -91,9 +93,11 @@ export class NnsProposalListPo extends BasePageObject {
     this.getSkeletonCardPo().waitForAbsent();
   }
 
-  async getVisibleProposalIds(): Promise<string[]> {
+  async getVisibleProposalIds(proposerNeuronId: string): Promise<string[]> {
     return Promise.all(
-      (await this.getProposalCardPos()).map((card) => card.getProposalId())
+      (await this.getProposalCardPosForProposer(proposerNeuronId)).map((card) =>
+        card.getProposalId()
+      )
     );
   }
 }

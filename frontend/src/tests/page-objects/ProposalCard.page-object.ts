@@ -34,4 +34,10 @@ export class ProposalCardPo extends BasePageObject {
       }).getValueText()
     ).trim();
   }
+
+  getProposer(): Promise<string> {
+    return this.root
+      .querySelector("[data-proposer-id]")
+      ?.getAttribute("data-proposer-id");
+  }
 }

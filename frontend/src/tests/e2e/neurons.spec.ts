@@ -30,7 +30,7 @@ test("Test neuron voting", async ({ page, context }) => {
   const neuronId = neuronIds[0];
 
   step("Create dummy proposals");
-  await createDummyProposal(appPo);
+  const proposer = await createDummyProposal(appPo);
 
   step("Go to the neurons tab");
   await appPo.goToNeurons();
@@ -68,7 +68,7 @@ test("Test neuron voting", async ({ page, context }) => {
   const proposalCard = await appPo
     .getProposalsPo()
     .getNnsProposalListPo()
-    .getFirstProposalCardPoForStatus("Open");
+    .getFirstProposalCardPoForProposer(proposer);
   await proposalCard.click();
   const proposalDetails = appPo.getProposalDetailPo().getNnsProposalPo();
   await proposalDetails.waitForContentLoaded();

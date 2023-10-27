@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { ProposalInfo, ProposalId } from "@dfinity/nns";
+  import type { NeuronId, ProposalInfo, ProposalId } from "@dfinity/nns";
   import { mapProposalInfo } from "$lib/utils/proposals.utils";
   import type { ProposalStatusColor } from "$lib/constants/proposals.constants";
   import ProposalCard from "./ProposalCard.svelte";
@@ -13,12 +13,21 @@
   let id: ProposalId | undefined;
   let title: string | undefined;
   let color: ProposalStatusColor | undefined;
-  let created: bigint;
+  let createdAt: bigint;
   let topic: string | undefined;
+  let proposer: NeuronId | undefined;
   let type: string | undefined;
 
-  $: ({ id, title, color, type, statusString, created, topic } =
-    mapProposalInfo(proposalInfo));
+  $: ({
+    id,
+    title,
+    color,
+    type,
+    statusString,
+    created: createdAt,
+    topic,
+    proposer,
+  } = mapProposalInfo(proposalInfo));
 
   let href: string;
   $: href = buildProposalUrl({
@@ -32,10 +41,11 @@
   {href}
   {statusString}
   {id}
-  {topic}
-  heading={type ?? ""}
   {title}
   {color}
-  createdTimestampSeconds={created}
+  {topic}
+  proposer={String(proposer)}
+  heading={type ?? ""}
+  createdTimestampSeconds={createdAt}
   deadlineTimestampSeconds={proposalInfo.deadlineTimestampSeconds}
 />

@@ -6,9 +6,12 @@
   import ProposalCard from "$lib/components/proposals/ProposalCard.svelte";
   import type {
     SnsNervousSystemFunction,
+    SnsNeuronId,
     SnsProposalData,
     SnsProposalId,
   } from "@dfinity/sns";
+  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
+  import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 
   export let proposalData: SnsProposalData;
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;
@@ -20,6 +23,10 @@
   let color: ProposalStatusColor | undefined;
   let proposal_creation_timestamp_seconds: bigint;
   let type: string | undefined;
+  let proposer: SnsNeuronId | undefined;
+  let proposerString: string | undefined;
+  $: proposerString =
+    proposer !== undefined ? subaccountToHexString(proposer.id) : undefined;
   let deadlineTimestampSeconds: bigint | undefined;
 
   $: ({
@@ -47,6 +54,7 @@
   {title}
   {color}
   heading={type ?? ""}
+  proposer={proposerString}
   createdTimestampSeconds={proposal_creation_timestamp_seconds}
   {deadlineTimestampSeconds}
 />

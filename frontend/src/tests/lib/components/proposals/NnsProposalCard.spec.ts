@@ -3,11 +3,13 @@ import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import { proposalsFiltersStore } from "$lib/stores/proposals.store";
 import { secondsToDuration } from "$lib/utils/date.utils";
 import en from "$tests/mocks/i18n.mock";
+import { createMockProposalInfo } from "$tests/mocks/proposal.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import {
   NnsFunction,
   ProposalStatus,
   Topic,
+  type Action,
   type Proposal,
   type ProposalInfo,
 } from "@dfinity/nns";
@@ -34,19 +36,14 @@ describe("NnsProposalCard", () => {
   });
 
   it("should render the proposal nns execute function name as title for ExecuteNnsFunction actions", () => {
+    const action: Action = {
+      ExecuteNnsFunction: {
+        nnsFunctionId: NnsFunction.NnsCanisterUpgrade,
+      },
+    };
     const { queryByTestId } = render(NnsProposalCard, {
       props: {
-        proposalInfo: {
-          ...mockProposals[0],
-          proposal: {
-            ...mockProposals[0].proposal,
-            action: {
-              ExecuteNnsFunction: {
-                nnsFunctionId: NnsFunction.NnsCanisterUpgrade,
-              },
-            },
-          },
-        },
+        proposalInfo: createMockProposalInfo({ action }),
       },
     });
 
@@ -56,26 +53,15 @@ describe("NnsProposalCard", () => {
   });
 
   it("should render the proposal action key as title if not ExecuteNnsFunction action", () => {
-    const { queryByTestId } = render(NnsProposalCard, {
-      props: {
-        proposalInfo: {
-          ...mockProposals[0],
-          proposal: {
-            ...mockProposals[0].proposal,
-            action: {
-              RegisterKnownNeuron: {
-                id: [{ id: BigInt(1) }],
-                known_neuron_data: [
-                  {
-                    name: "test",
-                    description: [],
-                  },
-                ],
-              },
-            },
-          },
-        },
+    const knownNeuronAction: Action = {
+      RegisterKnownNeuron: {
+        id: 2n,
+        name: "Super neuron",
+        description: "Super neuron description",
       },
+    };
+    const { queryByTestId } = render(NnsProposalCard, {
+      props: createMockProposalInfo({ action: knownNeuronAction }),
     });
 
     expect(queryByTestId("proposal-card-heading").textContent).toBe(
