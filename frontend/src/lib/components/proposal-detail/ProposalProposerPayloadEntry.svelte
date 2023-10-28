@@ -4,8 +4,9 @@
   import { SkeletonText } from "@dfinity/gix-components";
   import { expandObject, stringifyJson } from "$lib/utils/utils";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import TreeRawToggle from "$lib/components/proposal-detail/DataRepresentationToggle.svelte";
+  import TreeRawToggle from "$lib/components/proposal-detail/JsonRepresentationModeToggle.svelte";
   import { type Writable, writable } from "svelte/store";
+  import { jsonRepresentationModeStore } from "$lib/stores/json-representation-mode.store";
 
   // `undefined` means that the payload is not loaded yet
   // `null` means that the payload was not found
@@ -15,8 +16,6 @@
   $: expandedPayload = isNullish(payload)
     ? payload
     : expandObject(payload as Record<string, unknown>);
-
-  const toggleStore: Writable<"tree" | "raw"> = writable("tree");
 
   let rawContent: string | undefined | null;
   $: rawContent = nonNullish(payload)
@@ -33,14 +32,14 @@
       {$i18n.proposal_detail.payload}
     </h2>
 
-    <TreeRawToggle store={toggleStore} />
+    <TreeRawToggle />
   </div>
 
   <div class="content-cell-details">
     <div class="content-cell-island markdown-container">
       <!-- `null` payload should be shown as `null` -->
       {#if expandedPayload !== undefined}
-        {#if $toggleStore === "tree"}
+        {#if $jsonRepresentationModeStore === "pretty"}
           <div class="json" data-tid="json-wrapper">
             <Json json={expandedPayload} />
           </div>

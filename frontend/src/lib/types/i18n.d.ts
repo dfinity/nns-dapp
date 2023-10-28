@@ -549,7 +549,7 @@ interface I18nProposal_detail {
   newer_short: string;
   sign_in: string;
   toggle_lable: string;
-  toggle_tree: string;
+  toggle_pretty: string;
   toggle_raw: string;
 }
 
