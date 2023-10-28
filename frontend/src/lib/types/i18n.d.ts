@@ -548,6 +548,9 @@ interface I18nProposal_detail {
   older_short: string;
   newer_short: string;
   sign_in: string;
+  toggle_lable: string;
+  toggle_tree: string;
+  toggle_raw: string;
 }
 
 interface I18nProposal_detail__vote {
