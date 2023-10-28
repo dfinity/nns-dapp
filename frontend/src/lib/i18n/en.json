@@ -529,7 +529,7 @@
     "newer_short": "Newer",
     "sign_in": "Sign in to vote",
     "toggle_lable": "Switch between user-friendly and raw data representation",
-    "toggle_tree": "Tree",
+    "toggle_pretty": "Pretty",
     "toggle_raw": "Raw"
   },
   "proposal_detail__vote": {

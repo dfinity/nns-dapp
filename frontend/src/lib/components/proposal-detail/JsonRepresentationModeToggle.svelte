@@ -1,19 +1,15 @@
 <script lang="ts">
   import { Toggle } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import type { Writable } from "svelte/store";
-
-  type DataRepresentation = "tree" | "raw";
-  export let store: Writable<DataRepresentation>;
+  import { jsonRepresentationModeStore } from "$lib/stores/json-representation-mode.store";
 
   let checked: boolean;
-  $: checked = $store === "raw";
+  $: checked = $jsonRepresentationModeStore === "raw";
 
-  const setTree = () => ($store = "tree");
-  const setRaw = () => ($store = "raw");
-  const toggle = () => ($store === "tree" ? setRaw() : setTree());
-
-  $: console.log("checked", checked);
+  const setPretty = () => ($jsonRepresentationModeStore = "pretty");
+  const setRaw = () => ($jsonRepresentationModeStore = "raw");
+  const toggle = () =>
+    $jsonRepresentationModeStore === "pretty" ? setRaw() : setPretty();
 </script>
 
 <div class="data-representation-toggle" data-tid="data-representation-toggle">
@@ -21,8 +17,8 @@
     <button
       class="ghost"
       type="button"
-      on:click={setTree}
-      data-tid="toggle-tree">{$i18n.proposal_detail.toggle_tree}</button
+      on:click={setPretty}
+      data-tid="toggle-pretty">{$i18n.proposal_detail.toggle_pretty}</button
     >
     <Toggle
       bind:checked

@@ -4,6 +4,7 @@ export enum StoreLocalStorageKey {
   FeatureFlags = "nnsOverrideFeatureFlags",
   BitcoinConvertBlockIndexes = "nnsBitcoinConvertBlockIndexes",
   SnsProposalFilters = "nnsSnsProposalFilters",
+  JsonRepresentationMode = "jsonRepresentationMode",
 }
 
 export const NOT_LOADED = Symbol("NOT_LOADED");
