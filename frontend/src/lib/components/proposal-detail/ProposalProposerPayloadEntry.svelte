@@ -1,7 +1,11 @@
 <script lang="ts">
   import Json from "../common/Json.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { Copy, SkeletonText } from "@dfinity/gix-components";
+  import {
+    Copy,
+    IconExpandCircleDown,
+    SkeletonText,
+  } from "@dfinity/gix-components";
   import { expandObject, stringifyJson } from "$lib/utils/utils";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import TreeRawToggle from "$lib/components/proposal-detail/JsonRepresentationModeToggle.svelte";
@@ -21,6 +25,9 @@
   $: rawContent = nonNullish(payload)
     ? stringifyJson(payload, { indentation: 2 })
     : payload;
+
+  let expanded: boolean = false;
+  const toggleExpanded = () => (expanded = !expanded);
 </script>
 
 <div class="content-cell-island">
@@ -38,11 +45,19 @@
 
   <div class="content-cell-details">
     <div class="content-cell-island markdown-container">
-      <!-- `null` payload should be shown as `null` -->
+      <!-- TODO(Max): create a component for pretty vs raw renderer -->
       {#if expandedPayload !== undefined}
         {#if $jsonRepresentationModeStore === "pretty"}
           <div class="json" data-tid="json-wrapper">
-            <Json json={expandedPayload} />
+            <button
+              disabled={expanded ? "disabled" : undefined}
+              class="ghost expand-all"
+              on:click={toggleExpanded}><IconExpandCircleDown />All</button
+            >
+            <Json
+              json={expandedPayload}
+              defaultExpandedLevel={expanded ? undefined : 1}
+            />
           </div>
         {:else}
           <pre>{rawContent}</pre>
@@ -68,7 +83,20 @@
     align-items: center;
   }
 
+  .expand-all {
+    position: absolute;
+    right: var(--padding-0_5x);
+    top: var(--padding-0_5x);
+    display: flex;
+    align-items: center;
+    gap: var(--padding-0_5x);
+    padding: var(--padding-0_5x);
+  }
+
   .json {
+    // needs for the expand all button
+    position: relative;
+
     word-break: break-word;
   }
 
