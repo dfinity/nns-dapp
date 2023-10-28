@@ -527,7 +527,10 @@
     "newer": "Navigate to newer proposal",
     "older_short": "Older",
     "newer_short": "Newer",
-    "sign_in": "Sign in to vote"
+    "sign_in": "Sign in to vote",
+    "toggle_lable": "Switch between user-friendly and raw data representation",
+    "toggle_tree": "Tree",
+    "toggle_raw": "Raw"
   },
   "proposal_detail__vote": {
     "headline": "Cast Vote",
