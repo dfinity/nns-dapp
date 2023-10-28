@@ -17,7 +17,6 @@
 </script>
 
 <div class="data-representation-toggle" data-tid="data-representation-toggle">
-  {$store}
   <div class="toggle">
     <button
       class="ghost"
