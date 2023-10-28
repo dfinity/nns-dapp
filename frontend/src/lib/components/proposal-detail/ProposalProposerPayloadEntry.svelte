@@ -2,8 +2,8 @@
   import Json from "../common/Json.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { SkeletonText } from "@dfinity/gix-components";
-  import { expandObject } from "$lib/utils/utils";
-  import { isNullish } from "@dfinity/utils";
+  import { expandObject, stringifyJson } from "$lib/utils/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import TreeRawToggle from "$lib/components/proposal-detail/DataRepresentationToggle.svelte";
   import { type Writable, writable } from "svelte/store";
 
@@ -17,6 +17,11 @@
     : expandObject(payload as Record<string, unknown>);
 
   const toggleStore: Writable<"tree" | "raw"> = writable("tree");
+
+  let rawContent: string | undefined | null;
+  $: rawContent = nonNullish(payload)
+    ? stringifyJson(payload, { indentation: 2 })
+    : payload;
 </script>
 
 <div class="content-cell-island">
@@ -40,7 +45,7 @@
             <Json json={expandedPayload} />
           </div>
         {:else}
-          TBD
+          <pre>{rawContent}</pre>
         {/if}
       {:else}
         <SkeletonText />
@@ -67,6 +72,10 @@
     // custom island styles
     background: var(--card-background-disabled);
     color: var(--description-color);
+  }
+
+  pre {
+    overflow-x: auto;
   }
 
   :global(.markdown-container > :last-child) {
