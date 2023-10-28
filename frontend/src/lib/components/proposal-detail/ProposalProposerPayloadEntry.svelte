@@ -1,7 +1,7 @@
 <script lang="ts">
   import Json from "../common/Json.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { SkeletonText } from "@dfinity/gix-components";
+  import { Copy, SkeletonText } from "@dfinity/gix-components";
   import { expandObject, stringifyJson } from "$lib/utils/utils";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import TreeRawToggle from "$lib/components/proposal-detail/JsonRepresentationModeToggle.svelte";
@@ -26,10 +26,11 @@
 <div class="content-cell-island">
   <div class="header">
     <h2
-      class="content-cell-title"
+      class="content-cell-title header-text"
       data-tid="proposal-proposer-payload-entry-title"
     >
       {$i18n.proposal_detail.payload}
+      <Copy value={rawContent ?? ""} />
     </h2>
 
     <TreeRawToggle />
@@ -62,6 +63,11 @@
     align-items: center;
   }
 
+  .header-text {
+    display: flex;
+    align-items: center;
+  }
+
   .json {
     word-break: break-word;
   }
@@ -75,10 +81,5 @@
 
   pre {
     overflow-x: auto;
-  }
-
-  :global(.markdown-container > :last-child) {
-    // remove marginы from the markdown container to avoid extra spacing inside sub-island
-    margin-bottom: 0;
   }
 </style>
