@@ -43,6 +43,7 @@
   import { loadUserCountry } from "$lib/services/user-country.services";
   import { hasBuyersCount } from "$lib/utils/sns-swap.utils";
   import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
+  import ProjectProposal from "$lib/components/project-detail/ProjectProposal.svelte";
 
   export let rootCanisterId: string | undefined | null;
 
@@ -300,17 +301,20 @@
 <TestIdWrapper testId="project-detail-component">
   <main>
     <div class="stretch-mobile">
+      <ProjectMetadataSection />
       <div class="content-grid">
         <div class="content-a">
-          <ProjectMetadataSection />
-        </div>
-
-        <div class="content-c">
           <ProjectInfoSection />
         </div>
-        <div class="content-d">
+        <div class="content-b">
           <ProjectStatusSection />
         </div>
+
+        {#if nonNullish($projectDetailStore.summary)}
+          <div class="content-c">
+            <ProjectProposal summary={$projectDetailStore.summary} />
+          </div>
+        {/if}
       </div>
     </div>
   </main>
@@ -327,9 +331,7 @@
 
     display: flex;
     align-items: stretch;
-
-    @include media.min-width(large) {
-      display: block;
-    }
+    flex-direction: column;
+    gap: var(--row-gap);
   }
 </style>
