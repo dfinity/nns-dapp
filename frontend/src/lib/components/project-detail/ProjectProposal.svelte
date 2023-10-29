@@ -19,7 +19,7 @@
         setProposal: (proposal: ProposalInfo) => {
           // User might navigate quickly between proposals - previous / next.
           // e.g. the update call of previous proposal id 3n might be fetched after user has navigated to next proposal id 2n
-          if (proposal.id !== proposalId) {
+          if (proposal.id !== getProjectProposal(summary)) {
             return;
           }
           proposalInfo = proposal;
