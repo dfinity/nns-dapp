@@ -12,7 +12,7 @@
   let proposalInfo: ProposalInfo | undefined;
 
   $: {
-    let proposalId = getProjectProposal(summary);
+    const proposalId = getProjectProposal(summary);
     if (nonNullish(proposalId)) {
       loadProposal({
         proposalId,
