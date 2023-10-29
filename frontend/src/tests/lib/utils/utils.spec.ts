@@ -1,15 +1,16 @@
 import {
+  PollingCancelledError,
+  PollingLimitExceededError,
   bytesToHexString,
   cancelPoll,
   createChunks,
   expandObject,
+  getObjMaxDepth,
   hexStringToBytes,
   isDefined,
   isHash,
   isPngAsset,
   poll,
-  PollingCancelledError,
-  PollingLimitExceededError,
   removeKeys,
   sameBufferData,
   smallerVersion,
@@ -864,6 +865,29 @@ describe("utils", () => {
       expect(sameBufferData(a, b2)).toBe(false);
       const b3 = new Uint16Array([1, 2, 3, 4]).buffer;
       expect(sameBufferData(a, b3)).toBe(false);
+    });
+  });
+
+  describe("getObjMaxDepth", () => {
+    it("returns object maximum depth", () => {
+      const myObject = {
+        a: {
+          b: {
+            c: {
+              d: "Hello, World!",
+            },
+          },
+        },
+        e: [1, 2, [3, 4, [5]]],
+      };
+      expect(getObjMaxDepth(myObject)).toBe(4);
+    });
+
+    it("returns 0 for not objects", () => {
+      expect(getObjMaxDepth(undefined)).toBe(0);
+      expect(getObjMaxDepth(null)).toBe(0);
+      expect(getObjMaxDepth("hello")).toBe(0);
+      expect(getObjMaxDepth(0)).toBe(0);
     });
   });
 });

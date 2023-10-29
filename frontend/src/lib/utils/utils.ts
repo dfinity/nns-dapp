@@ -412,3 +412,23 @@ export const sameBufferData = (
   }
   return true;
 };
+
+export const getObjMaxDepth = (obj: unknown): number => {
+  if (typeof obj !== "object" || obj === null) {
+    return 0; // If it's not an object, return 0.
+  }
+
+  let maxDepth = 0;
+
+  for (const key in obj) {
+    // eslint-disable-next-line no-prototype-builtins
+    if (obj.hasOwnProperty(key)) {
+      const depth = getObjMaxDepth((obj as Record<string, unknown>)[key]);
+      if (depth > maxDepth) {
+        maxDepth = depth;
+      }
+    }
+  }
+
+  return 1 + maxDepth; // Add 1 for the current level.
+};
