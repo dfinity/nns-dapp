@@ -188,7 +188,8 @@
   ul {
     list-style: none;
     // space between object|array entries
-    margin: 0 0 var(--padding-1_5x) 0;
+    //margin: 0 0 var(--padding-1_5x) 0;
+    margin: 0;
     // space between deep levels
     padding: 0 0 0 var(--padding-3x);
 
