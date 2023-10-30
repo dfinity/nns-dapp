@@ -1,25 +1,32 @@
+import * as ckbtcLedgerApi from "$lib/api/ckbtc-ledger.api";
+import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKBTC_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/ckbtc.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCWallet from "$lib/pages/CkBTCWallet.svelte";
 import * as services from "$lib/services/ckbtc-accounts.services";
-import {
-  ckBTCTransferTokens,
-  syncCkBTCAccounts,
-} from "$lib/services/ckbtc-accounts.services";
 import * as transactionsServices from "$lib/services/ckbtc-transactions.services";
 import { authStore } from "$lib/stores/auth.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
+import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
 import CkBTCAccountsTest from "$tests/lib/components/accounts/CkBTCAccountsTest.svelte";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
-import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
+import {
+  mockAuthStoreSubscribe,
+  resetIdentity,
+} from "$tests/mocks/auth.store.mock";
+import {
+  mockCkBTCMainAccount,
+  mockCkBTCToken,
+} from "$tests/mocks/ckbtc-accounts.mock";
 import { mockUniversesTokens } from "$tests/mocks/tokens.mock";
 import { CkBTCReceiveModalPo } from "$tests/page-objects/CkBTCReceiveModal.page-object";
 import { CkBTCTransactionModalPo } from "$tests/page-objects/CkBTCTransactionModal.page-object";
 import { CkBTCWalletPo } from "$tests/page-objects/CkBTCWallet.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { allowLoggingInOneTestForDebugging } from "$tests/utils/console.test-utils";
+import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
@@ -28,29 +35,6 @@ import { render, waitFor } from "@testing-library/svelte";
 import { mockBTCAddressTestnet } from "../../mocks/ckbtc-accounts.mock";
 
 const expectedBalanceAfterTransfer = 11_111n;
-
-vi.mock("$lib/services/ckbtc-accounts.services", () => {
-  return {
-    syncCkBTCAccounts: vi.fn().mockResolvedValue(undefined),
-    loadCkBTCAccounts: vi.fn().mockResolvedValue(undefined),
-    ckBTCTransferTokens: vi.fn().mockImplementation(async () => {
-      icrcAccountsStore.set({
-        accounts: {
-          accounts: [
-            {
-              ...mockCkBTCMainAccount,
-              balanceE8s: expectedBalanceAfterTransfer,
-            },
-          ],
-          certified: true,
-        },
-        universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
-      });
-
-      return { blockIndex: 123n };
-    }),
-  };
-});
 
 vi.mock("$lib/services/ckbtc-transactions.services", () => {
   return {
@@ -109,7 +93,17 @@ vi.mock("$lib/services/worker-transactions.services", () => ({
   ),
 }));
 
+vi.mock("$lib/api/ckbtc-ledger.api");
+vi.mock("$lib/api/icrc-ledger.api");
+
+const blockedApiPaths = [
+  "$lib/api/ckbtc-ledger.api",
+  "$lib/api/icrc-ledger.api",
+];
+
 describe("CkBTCWallet", () => {
+  blockAllCallsTo(blockedApiPaths);
+
   const props = {
     accountIdentifier: mockCkBTCMainAccount.identifier,
   };
@@ -144,11 +138,17 @@ describe("CkBTCWallet", () => {
   };
 
   beforeEach(() => {
+    allowLoggingInOneTestForDebugging();
+
     vi.clearAllMocks();
     vi.clearAllTimers();
+    tokensStore.reset();
+    resetIdentity();
   });
 
   describe("accounts not loaded", () => {
+    let resolveAccounts: (Account) => void;
+
     beforeEach(() => {
       icrcAccountsStore.reset();
 
@@ -156,22 +156,37 @@ describe("CkBTCWallet", () => {
         data: { universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() },
         routeId: AppPath.Wallet,
       });
+
+      vi.mocked(ckbtcLedgerApi.getCkBTCAccount).mockImplementation(() => {
+        return new Promise<Account>((resolve) => {
+          resolveAccounts = resolve;
+        });
+      });
+      vi.mocked(ckbtcLedgerApi.getCkBTCToken).mockResolvedValue(mockCkBTCToken);
     });
 
     it("should render a spinner while loading", async () => {
       const po = await renderWallet();
       expect(await po.hasSpinner()).toBe(true);
+      resolveAccounts(mockCkBTCMainAccount);
+      await runResolvedPromises();
+      expect(await po.hasSpinner()).toBe(false);
     });
 
     it("should call to load ckBTC accounts", async () => {
       await renderWallet();
 
-      await waitFor(() => expect(syncCkBTCAccounts).toBeCalled());
+      await runResolvedPromises();
+      expect(ckbtcLedgerApi.getCkBTCAccount).toBeCalled();
+      expect(ckbtcLedgerApi.getCkBTCToken).toBeCalled();
     });
   });
 
   describe("accounts loaded", () => {
+    let afterTransfer = false;
+
     beforeEach(() => {
+      afterTransfer = false;
       vi.useFakeTimers().setSystemTime(new Date());
 
       vi.spyOn(authStore, "subscribe").mockImplementation(
@@ -192,6 +207,20 @@ describe("CkBTCWallet", () => {
         data: { universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() },
         routeId: AppPath.Wallet,
       });
+
+      vi.mocked(icrcLedgerApi.icrcTransfer).mockImplementation(() => {
+        console.log("dskloetx mock icrcTransfer");
+        afterTransfer = true;
+        return Promise.resolve(BigInt(1));
+      });
+      vi.mocked(ckbtcLedgerApi.getCkBTCAccount).mockImplementation(() => {
+        return Promise.resolve({
+          ...mockCkBTCMainAccount,
+          ...(afterTransfer
+            ? { balanceE8s: expectedBalanceAfterTransfer }
+            : {}),
+        });
+      });
     });
 
     afterAll(() => {
@@ -202,12 +231,6 @@ describe("CkBTCWallet", () => {
       const po = await renderWallet();
 
       expect(await po.getWalletPageHeaderPo().getUniverse()).toBe("ckTESTBTC");
-    });
-
-    it("should hide spinner when selected account is loaded", async () => {
-      const po = await renderWallet();
-
-      expect(await po.hasSpinner()).toBe(false);
     });
 
     it("should render `Main` as subtitle", async () => {
@@ -247,7 +270,8 @@ describe("CkBTCWallet", () => {
         amount: 10,
       });
 
-      await waitFor(() => expect(ckBTCTransferTokens).toBeCalled());
+      await runResolvedPromises();
+      expect(icrcLedgerApi.icrcTransfer).toBeCalledTimes(1);
 
       // Account should have been updated and sum should be reflected
       expect(await walletPo.getWalletPageHeadingPo().getTitle()).toBe(
@@ -274,7 +298,8 @@ describe("CkBTCWallet", () => {
         amount: 10,
       });
 
-      await waitFor(() => expect(ckBTCTransferTokens).toBeCalled());
+      await runResolvedPromises();
+      expect(icrcLedgerApi.icrcTransfer).toBeCalledTimes(1);
 
       await advanceTime(CKBTC_TRANSACTIONS_RELOAD_DELAY + 1000);
 
