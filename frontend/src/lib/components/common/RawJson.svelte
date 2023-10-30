@@ -2,12 +2,12 @@
   import { nonNullish } from "@dfinity/utils";
   import { stringifyJson } from "$lib/utils/utils";
 
-  export let data: object | string | number | null | undefined;
+  export let json: object | string | number | null | undefined;
 
   let rawContent: string | undefined | null;
-  $: rawContent = nonNullish(data)
-    ? stringifyJson(data, { indentation: 2 })
-    : data;
+  $: rawContent = nonNullish(json)
+    ? stringifyJson(json, { indentation: 2 })
+    : json;
 </script>
 
 <pre>{rawContent}</pre>

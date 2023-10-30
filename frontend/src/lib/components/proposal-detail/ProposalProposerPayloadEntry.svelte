@@ -34,8 +34,6 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-
   .header {
     display: flex;
     justify-content: space-between;

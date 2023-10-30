@@ -20,8 +20,6 @@
   let expandAll: boolean = false;
   $: expandAll = maxDeep < 2 ? true : expandAll;
   const toggleExpanded = () => (expandAll = !expandAll);
-
-  $: console.log(expandedData);
 </script>
 
 <div class="content-cell-island markdown-container">
