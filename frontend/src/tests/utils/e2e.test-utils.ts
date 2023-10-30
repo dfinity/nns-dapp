@@ -59,7 +59,9 @@ export const signInWithNewUser = async ({
   const iiPage = await iiPagePromise;
   await expect(iiPage).toHaveTitle("Internet Identity");
 
-  await iiPage.getByRole("button", { name: "Create Internet Identity" }).click();
+  await iiPage
+    .getByRole("button", { name: "Create Internet Identity" })
+    .click();
   await iiPage.getByRole("button", { name: "Create Passkey" }).click();
   step("Sign in > creating identity");
 
