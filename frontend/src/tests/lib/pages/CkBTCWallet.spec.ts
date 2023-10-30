@@ -7,16 +7,12 @@ import { CKBTC_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/ckbtc.constants"
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCWallet from "$lib/pages/CkBTCWallet.svelte";
 import * as services from "$lib/services/ckbtc-accounts.services";
-import { authStore } from "$lib/stores/auth.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
 import CkBTCAccountsTest from "$tests/lib/components/accounts/CkBTCAccountsTest.svelte";
-import {
-  mockAuthStoreSubscribe,
-  resetIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
@@ -26,7 +22,6 @@ import { CkBTCReceiveModalPo } from "$tests/page-objects/CkBTCReceiveModal.page-
 import { CkBTCTransactionModalPo } from "$tests/page-objects/CkBTCTransactionModal.page-object";
 import { CkBTCWalletPo } from "$tests/page-objects/CkBTCWallet.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { allowLoggingInOneTestForDebugging } from "$tests/utils/console.test-utils";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import {
   advanceTime,
@@ -112,8 +107,6 @@ describe("CkBTCWallet", () => {
   };
 
   beforeEach(() => {
-    allowLoggingInOneTestForDebugging();
-
     vi.clearAllMocks();
     vi.clearAllTimers();
     tokensStore.reset();
@@ -174,10 +167,6 @@ describe("CkBTCWallet", () => {
     beforeEach(() => {
       afterTransfer = false;
       vi.useFakeTimers().setSystemTime(new Date());
-
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreSubscribe
-      );
 
       icrcAccountsStore.set({
         accounts: {
