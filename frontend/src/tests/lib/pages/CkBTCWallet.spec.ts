@@ -7,6 +7,8 @@ import { CKBTC_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/ckbtc.constants"
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCWallet from "$lib/pages/CkBTCWallet.svelte";
 import * as services from "$lib/services/ckbtc-accounts.services";
+import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
+import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
@@ -110,6 +112,8 @@ describe("CkBTCWallet", () => {
     vi.clearAllMocks();
     vi.clearAllTimers();
     tokensStore.reset();
+    ckBTCInfoStore.reset();
+    bitcoinAddressStore.reset();
     resetIdentity();
 
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
