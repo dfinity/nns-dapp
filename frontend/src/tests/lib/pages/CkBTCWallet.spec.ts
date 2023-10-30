@@ -37,12 +37,6 @@ import { mockBTCAddressTestnet } from "../../mocks/ckbtc-accounts.mock";
 
 const expectedBalanceAfterTransfer = 11_111n;
 
-vi.mock("$lib/services/ckbtc-info.services", () => {
-  return {
-    loadCkBTCInfo: vi.fn().mockResolvedValue(undefined),
-  };
-});
-
 vi.mock("$lib/services/worker-balances.services", () => ({
   initBalancesWorker: vi.fn(() =>
     Promise.resolve({
@@ -150,6 +144,11 @@ describe("CkBTCWallet", () => {
       vi.mocked(ckbtcMinterApi.getBTCAddress).mockResolvedValue(
         mockBTCAddressTestnet
       );
+      vi.mocked(ckbtcMinterApi.minterInfo).mockResolvedValue({
+        retrieve_btc_min_amount: 80_000n,
+        min_confirmations: 12,
+        kyt_fee: 7_000n,
+      });
     });
 
     it("should render a spinner while loading", async () => {
