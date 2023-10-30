@@ -1,4 +1,5 @@
 import * as ckbtcLedgerApi from "$lib/api/ckbtc-ledger.api";
+import * as ckbtcMinterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -35,12 +36,6 @@ import { render, waitFor } from "@testing-library/svelte";
 import { mockBTCAddressTestnet } from "../../mocks/ckbtc-accounts.mock";
 
 const expectedBalanceAfterTransfer = 11_111n;
-
-vi.mock("$lib/api/ckbtc-minter.api", () => {
-  return {
-    getBTCAddress: vi.fn().mockImplementation(() => mockBTCAddressTestnet),
-  };
-});
 
 vi.mock("$lib/services/ckbtc-minter.services", async () => {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
@@ -87,11 +82,13 @@ vi.mock("$lib/services/worker-transactions.services", () => ({
 }));
 
 vi.mock("$lib/api/ckbtc-ledger.api");
+vi.mock("$lib/api/ckbtc-minter.api");
 vi.mock("$lib/api/icrc-ledger.api");
 vi.mock("$lib/api/icrc-index.api");
 
 const blockedApiPaths = [
   "$lib/api/ckbtc-ledger.api",
+  "$lib/api/ckbtc-minter.api",
   "$lib/api/icrc-ledger.api",
   "$lib/api/icrc-index.api",
 ];
@@ -162,6 +159,9 @@ describe("CkBTCWallet", () => {
         });
       });
       vi.mocked(ckbtcLedgerApi.getCkBTCToken).mockResolvedValue(mockCkBTCToken);
+      vi.mocked(ckbtcMinterApi.getBTCAddress).mockResolvedValue(
+        mockBTCAddressTestnet
+      );
     });
 
     it("should render a spinner while loading", async () => {
