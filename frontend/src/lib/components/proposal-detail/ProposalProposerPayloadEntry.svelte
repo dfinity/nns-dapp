@@ -11,15 +11,54 @@
   import TreeRawToggle from "$lib/components/proposal-detail/JsonRepresentationModeToggle.svelte";
   import { type Writable, writable } from "svelte/store";
   import { jsonRepresentationModeStore } from "$lib/stores/json-representation-mode.store";
+  import PrettyJson from "$lib/components/common/PrettyJson.svelte";
 
   // `undefined` means that the payload is not loaded yet
   // `null` means that the payload was not found
   // `object` means that the payload is an object
   export let payload: object | undefined | null;
   let expandedPayload: object | undefined | null;
-  $: expandedPayload = isNullish(payload)
-    ? payload
-    : expandObject(payload as Record<string, unknown>);
+  // $: expandedPayload = isNullish(payload)
+  //   ? payload
+  //   : expandObject(payload as Record<string, unknown>);
+  expandedPayload = JSON.parse(`{
+  "data_centers_to_add": [
+    {
+      "id": 0,
+      "region": "Asia,HK,HongKong,Asia,HK,HongKong,Asia,HK,HongKong,Asia,HK,HongKong,Asia,HK,HongKong,Asia,HK,HongKong,Asia,HK,HongKong,Asia,HK,HongKong,Asia,HK,HongKong,Asia,HK,HongKong,Asia,HK,HongKong,Asia,HK,HongKong,Asia,HK,HongKong,Asia,HK,HongKong,Asia,HK,HongKong,Asia,HK,HongKong,Asia,HK,HongKong,Asia,HK,HongKong,Asia,HK,HongKong,Asia,HK,HongKong,Asia,HK,HongKong",
+      "owner": "hkntt",
+      "gps": {
+        "latitude": 22.453768,
+        "longitude": 114.18723
+      }
+    },
+    {
+      "id": 1,
+      "region": "Asia,HK,HongKong",
+      "owner": "hkntt",
+      "gps": {
+        "latitude": 22.453768,
+        "longitude": 114.18723
+      }
+    },
+    {},
+    {"hello": "world!"},
+    [],
+    [1,2,3],
+    {
+      "id": 2,
+      "region": "Asia,HK,HongKong",
+      "owner": "hkntt",
+      "gps": {
+        "latitude": 22.453768,
+        "longitude": 114.18723
+      }
+    }
+  ],
+  "data_centers_to_remove": [3,4,5],
+  "data_centers_to_edit": [],
+  "additional_demo_type": {}
+}`);
 
   let rawContent: string | undefined | null;
   $: rawContent = nonNullish(payload)
@@ -54,10 +93,7 @@
               class="ghost expand-all"
               on:click={toggleExpanded}><IconExpandCircleDown />All</button
             >
-            <Json
-              json={expandedPayload}
-              defaultExpandedLevel={expanded ? undefined : 1}
-            />
+            <PrettyJson json={expandedPayload} />
           </div>
         {:else}
           <pre>{rawContent}</pre>

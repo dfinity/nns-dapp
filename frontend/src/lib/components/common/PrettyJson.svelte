@@ -65,7 +65,7 @@
     isArray = Array.isArray(json);
     isFlatArray =
       Array.isArray(json) &&
-      json.every((v) => notFlatArrayTypes.includes(getValueType(v)));
+      json.every((v) => !notFlatArrayTypes.includes(getValueType(v)));
     openBracket = isArray ? "[" : "{";
     closeBracket = isArray ? "]" : "}";
     root = _level === 0;
@@ -120,11 +120,13 @@
     </ul>
   {/if}
 {:else if isExpandable}
-  <!-- no childre -->
-  <!--  TODO(max): i18n-->
-  <span data-tid={testId} class="key key--no-expand-button" class:root
-    >{keyLabel}<span class="bracket">Empty</span></span
-  >
+  <!-- no children -->
+  <span data-tid={testId} class="key-value" class:root>
+    {#if keyLabel !== ""}<span class="key key--no-expand-button" class:root
+        >{keyLabel}</span
+      >{/if}
+    <span class="value bracket" {title}>{openBracket} {closeBracket}</span>
+  </span>
 {:else if valueType === "base64Encoding"}
   <!-- base64 encoded image (use <Html> to sanitize the content from XSS) -->
   <span data-tid={testId} class="key-value">
@@ -169,6 +171,10 @@
   }
   ul.key-less {
     padding-left: 0;
+  }
+  ul.flat-array {
+    flex-direction: row;
+    column-gap: var(--padding-1_5x);
   }
   li {
     //border: 1px solid green;
