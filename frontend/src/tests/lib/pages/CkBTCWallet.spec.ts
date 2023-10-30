@@ -154,8 +154,6 @@ describe("CkBTCWallet", () => {
 
     it("should call to load ckBTC accounts", async () => {
       await renderWallet();
-
-      await runResolvedPromises();
       expect(ckbtcLedgerApi.getCkBTCAccount).toBeCalled();
       expect(ckbtcLedgerApi.getCkBTCToken).toBeCalled();
     });
