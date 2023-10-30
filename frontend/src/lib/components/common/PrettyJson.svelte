@@ -85,7 +85,11 @@
 {#if isExpandable && hasChildren}
   <!-- ignore first level object syntax-->
   {#if _level > 0 && keyLabel}
-    <div class="key key-expandable" class:key-expanded={!collapsed} class:root>
+    <div
+      class="key key-expandable"
+      class:key-expanded={!collapsed}
+      class:root={_level === 1}
+    >
       <button
         class="icon-only"
         data-tid={testId}
@@ -121,32 +125,38 @@
   {/if}
 {:else if isExpandable}
   <!-- no children -->
-  <span data-tid={testId} class="key-value" class:root>
-    {#if keyLabel !== ""}<span class="key key--no-expand-button" class:root
-        >{keyLabel}</span
+  <span data-tid={testId} class="key-value">
+    {#if keyLabel !== ""}<span
+        class="key key--no-expand-button"
+        class:root={_level === 1}>{keyLabel}</span
       >{/if}
     <span class="value bracket" {title}>{openBracket} {closeBracket}</span>
   </span>
 {:else if valueType === "base64Encoding"}
   <!-- base64 encoded image (use <Html> to sanitize the content from XSS) -->
-  <span data-tid={testId} class="key-value">
-    {#if keyLabel !== ""}<span class="key" class:root>{keyLabel}</span
+  <span data-tid={testId} class="key-value" class:root={_level === 1}>
+    {#if keyLabel !== ""}<span class="key" class:root={_level === 1}
+        >{keyLabel}</span
       >{/if}<Html
       text={`<img class="value ${valueType}" alt="${_key}" src="${value}" />`}
     /></span
   >
 {:else}
   <!-- key:value -->
-  <span data-tid={testId} class="key-value">
-    {#if keyLabel !== ""}<span class="key key--no-expand-button" class:root
-        >{keyLabel}</span
+  <span data-tid={testId} class="key-value" class:root={_level === 1}>
+    {#if keyLabel !== ""}<span
+        class="key key--no-expand-button"
+        class:root={_level === 1}>{keyLabel}</span
       >{/if}
-    <span class="value {valueType}" {title}>{value}</span>
+    <span class="value {valueType}" {title} class:root={_level === 0}
+      >{value}</span
+    >
   </span>
 {/if}
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/interaction";
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
   $icon-padding-compensation: 6px;
 
@@ -176,14 +186,17 @@
     flex-direction: row;
     column-gap: var(--padding-1_5x);
   }
-  li {
-    //border: 1px solid green;
-  }
 
   .key {
     display: flex;
     align-items: center;
     margin-right: var(--padding-2x);
+
+    @include fonts.standard(true);
+    color: var(--content-color);
+  }
+  .key.root {
+    @include fonts.h4();
   }
   // TODO(max): no global
   //:global(.root .key) {
@@ -211,33 +224,35 @@
     flex: 1 1 0;
     // Values can be strings of JSON and long. We want to break the value, so that the keys stay on the same line.
     word-break: break-all;
+
+    color: var(--description-color);
   }
 
   // value types
-  .value {
-    color: var(--json-value-color);
-  }
-  .value.string {
-    color: var(--json-string-color);
-  }
-  .value.number {
-    color: var(--json-number-color);
-  }
-  .value.null {
-    color: var(--json-null-color);
-  }
-  .value.principal {
-    color: var(--json-principal-color);
-  }
-  .value.hash {
-    color: var(--json-hash-color);
-  }
-  .value.bigint {
-    color: var(--json-bigint-color);
-  }
-  .value.boolean {
-    color: var(--json-boolean-color);
-  }
+  //.value {
+  //  color: var(--json-value-color);
+  //}
+  //.value.string {
+  //  color: var(--json-string-color);
+  //}
+  //.value.number {
+  //  color: var(--json-number-color);
+  //}
+  //.value.null {
+  //  color: var(--json-null-color);
+  //}
+  //.value.principal {
+  //  color: var(--json-principal-color);
+  //}
+  //.value.hash {
+  //  color: var(--json-hash-color);
+  //}
+  //.value.bigint {
+  //  color: var(--json-bigint-color);
+  //}
+  //.value.boolean {
+  //  color: var(--json-boolean-color);
+  //}
   :global(.value.base64Encoding) {
     vertical-align: top;
   }

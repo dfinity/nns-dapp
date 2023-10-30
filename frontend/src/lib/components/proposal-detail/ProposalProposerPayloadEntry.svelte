@@ -6,12 +6,10 @@
     IconExpandCircleDown,
     SkeletonText,
   } from "@dfinity/gix-components";
-  import { expandObject, stringifyJson } from "$lib/utils/utils";
-  import { isNullish, nonNullish } from "@dfinity/utils";
   import TreeRawToggle from "$lib/components/proposal-detail/JsonRepresentationModeToggle.svelte";
-  import { type Writable, writable } from "svelte/store";
   import { jsonRepresentationModeStore } from "$lib/stores/json-representation-mode.store";
   import PrettyJson from "$lib/components/common/PrettyJson.svelte";
+  import RawJson from "$lib/components/common/RawJson.svelte";
 
   // `undefined` means that the payload is not loaded yet
   // `null` means that the payload was not found
@@ -56,14 +54,12 @@
     }
   ],
   "data_centers_to_remove": [3,4,5],
-  "data_centers_to_edit": [],
+  "string": "hello",
+  "number": 123,
+  "float": 0.0001,
+  "bigint": 1999999999999,
   "additional_demo_type": {}
 }`);
-
-  let rawContent: string | undefined | null;
-  $: rawContent = nonNullish(payload)
-    ? stringifyJson(payload, { indentation: 2 })
-    : payload;
 
   let expanded: boolean = false;
   const toggleExpanded = () => (expanded = !expanded);
@@ -76,7 +72,7 @@
       data-tid="proposal-proposer-payload-entry-title"
     >
       {$i18n.proposal_detail.payload}
-      <Copy value={rawContent ?? ""} />
+      <Copy value={"rawContent" ?? payload} />
     </h2>
 
     <TreeRawToggle />
@@ -96,7 +92,7 @@
             <PrettyJson json={expandedPayload} />
           </div>
         {:else}
-          <pre>{rawContent}</pre>
+          <RawJson data={expandedPayload} />
         {/if}
       {:else}
         <SkeletonText />
