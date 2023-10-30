@@ -4,6 +4,7 @@
   import {
     Copy,
     IconExpandCircleDown,
+    IconExpandMore,
     SkeletonText,
   } from "@dfinity/gix-components";
   import TreeRawToggle from "$lib/components/proposal-detail/JsonRepresentationModeToggle.svelte";
@@ -70,8 +71,8 @@
   "additional_demo_type": {}
 }`);
 
-  let expanded: boolean = false;
-  const toggleExpanded = () => (expanded = !expanded);
+  let expandAll: boolean = false;
+  const toggleExpanded = () => (expandAll = !expandAll);
 </script>
 
 <div class="content-cell-island">
@@ -93,12 +94,18 @@
       {#if expandedPayload !== undefined}
         {#if $jsonRepresentationModeStore === "pretty"}
           <div class="json" data-tid="json-wrapper">
-            <button
-              disabled={expanded ? "disabled" : undefined}
-              class="ghost expand-all"
-              on:click={toggleExpanded}><IconExpandCircleDown />All</button
-            >
-            <PrettyJson json={expandedPayload} defaultExpandedLevel={1} />
+            {#if !expandAll}
+              <!-- TODO(Max): add expand all to i18n-->
+              <button
+                disabled={expandAll ? "disabled" : undefined}
+                class="ghost expand-all"
+                on:click={toggleExpanded}><IconExpandMore />Expand All</button
+              >
+            {/if}
+            <PrettyJson
+              json={expandedPayload}
+              defaultExpandedLevel={expandAll ? Number.MAX_SAFE_INTEGER : 1}
+            />
           </div>
         {:else}
           <RawJson data={expandedPayload} />
