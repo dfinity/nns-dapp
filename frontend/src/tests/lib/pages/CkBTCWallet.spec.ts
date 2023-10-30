@@ -115,6 +115,14 @@ describe("CkBTCWallet", () => {
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
       transactions: [],
     });
+    vi.mocked(ckbtcMinterApi.getBTCAddress).mockResolvedValue(
+      mockBTCAddressTestnet
+    );
+    vi.mocked(ckbtcMinterApi.minterInfo).mockResolvedValue({
+      retrieve_btc_min_amount: 80_000n,
+      min_confirmations: 12,
+      kyt_fee: 7_000n,
+    });
   });
 
   describe("accounts not loaded", () => {
@@ -134,14 +142,6 @@ describe("CkBTCWallet", () => {
         });
       });
       vi.mocked(ckbtcLedgerApi.getCkBTCToken).mockResolvedValue(mockCkBTCToken);
-      vi.mocked(ckbtcMinterApi.getBTCAddress).mockResolvedValue(
-        mockBTCAddressTestnet
-      );
-      vi.mocked(ckbtcMinterApi.minterInfo).mockResolvedValue({
-        retrieve_btc_min_amount: 80_000n,
-        min_confirmations: 12,
-        kyt_fee: 7_000n,
-      });
     });
 
     it("should render a spinner while loading", async () => {
