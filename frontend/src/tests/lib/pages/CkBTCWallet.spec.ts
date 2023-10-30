@@ -37,18 +37,6 @@ import { mockBTCAddressTestnet } from "../../mocks/ckbtc-accounts.mock";
 
 const expectedBalanceAfterTransfer = 11_111n;
 
-vi.mock("$lib/services/ckbtc-minter.services", async () => {
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  const actual = await vi.importActual<any>(
-    "$lib/services/ckbtc-minter.services"
-  );
-  return {
-    ...actual,
-    updateBalance: vi.fn().mockResolvedValue([]),
-    depositFee: vi.fn().mockResolvedValue(789n),
-  };
-});
-
 vi.mock("$lib/services/ckbtc-info.services", () => {
   return {
     loadCkBTCInfo: vi.fn().mockResolvedValue(undefined),
@@ -208,7 +196,6 @@ describe("CkBTCWallet", () => {
       });
 
       vi.mocked(icrcLedgerApi.icrcTransfer).mockImplementation(() => {
-        console.log("dskloetx mock icrcTransfer");
         afterTransfer = true;
         return Promise.resolve(BigInt(1));
       });
