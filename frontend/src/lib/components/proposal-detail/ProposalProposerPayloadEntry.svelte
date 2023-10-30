@@ -27,6 +27,15 @@
       "owner": "hkntt",
       "gps": {
         "latitude": 22.453768,
+        "metadata": {
+          "id": 1,
+          "region": "Asia,HK,HongKong",
+          "owner": "hkntt",
+          "gps": {
+            "latitude": 22.453768,
+            "longitude": 114.18723
+          }
+        },
         "longitude": 114.18723
       }
     },
@@ -89,7 +98,7 @@
               class="ghost expand-all"
               on:click={toggleExpanded}><IconExpandCircleDown />All</button
             >
-            <PrettyJson json={expandedPayload} />
+            <PrettyJson json={expandedPayload} defaultExpandedLevel={1} />
           </div>
         {:else}
           <RawJson data={expandedPayload} />

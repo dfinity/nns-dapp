@@ -51,6 +51,7 @@
   let closeBracket: string;
   let root: boolean;
   let testId: "json" | undefined;
+  let t = Date.now();
   $: {
     valueType = getValueType(json);
     isExpandable = valueType === "object";
@@ -77,7 +78,10 @@
 
   let collapsed = true;
   $: collapsed =
-    _collapsed === undefined ? defaultExpandedLevel < _level : _collapsed;
+    _collapsed === undefined ? _level >= defaultExpandedLevel : _collapsed;
+
+  let keyIsIndex = false;
+  $: keyIsIndex = !isNaN(Number(_key));
 
   const toggle = () => (collapsed = !collapsed);
 </script>
@@ -85,10 +89,14 @@
 {#if isExpandable && hasChildren}
   <!-- ignore first level object syntax-->
   {#if _level > 0 && keyLabel}
+    <!-- expandable-key-->
     <div
-      class="key key-expandable"
+      class="key key-expandable with-children"
       class:key-expanded={!collapsed}
       class:root={_level === 1}
+      class:key-index={keyIsIndex}
+      data-collapsed={collapsed}
+      data-u-collapsed={!!_collapsed}
     >
       <button
         class="icon-only"
@@ -103,19 +111,22 @@
     </div>
   {/if}
   {#if !collapsed}
-    <!-- children -->
+    <!-- children of expandable-key -->
     <ul
       class:root
-      style={`--current-deep: ${_level};`}
       class:key-less={isNullish(_key)}
       class:is-array={isArray}
       class:flat-array={isFlatArray}
+      data-collapsed={collapsed}
+      data-u-collapsed={!!_collapsed}
+      data-deep={_level}
+      data-defaultExpandedLevel={defaultExpandedLevel}
     >
       {#each children as [key, value]}
-        <li class:root>
+        <li class:root data-collapsed={collapsed}>
           <svelte:self
             json={value}
-            _key={isArray ? undefined : key}
+            _key={key}
             {defaultExpandedLevel}
             _level={_level + 1}
           />
@@ -124,29 +135,38 @@
     </ul>
   {/if}
 {:else if isExpandable}
-  <!-- no children -->
-  <span data-tid={testId} class="key-value">
+  <!-- expandable w/o children - key+{}|[] -->
+  <span data-tid={testId} class="key-value" data-collapsed={collapsed}>
     {#if keyLabel !== ""}<span
         class="key key--no-expand-button"
-        class:root={_level === 1}>{keyLabel}</span
+        class:root={_level === 1}
+        class:key-index={keyIsIndex}>{keyLabel}</span
       >{/if}
     <span class="value bracket" {title}>{openBracket} {closeBracket}</span>
   </span>
 {:else if valueType === "base64Encoding"}
   <!-- base64 encoded image (use <Html> to sanitize the content from XSS) -->
   <span data-tid={testId} class="key-value" class:root={_level === 1}>
-    {#if keyLabel !== ""}<span class="key" class:root={_level === 1}
-        >{keyLabel}</span
+    {#if keyLabel !== ""}<span
+        class="key"
+        class:root={_level === 1}
+        class:key-index={keyIsIndex}>{keyLabel}</span
       >{/if}<Html
       text={`<img class="value ${valueType}" alt="${_key}" src="${value}" />`}
     /></span
   >
 {:else}
-  <!-- key:value -->
-  <span data-tid={testId} class="key-value" class:root={_level === 1}>
+  <!-- non-expandable key+value -->
+  <span
+    data-tid={testId}
+    class="key-value"
+    class:root={_level === 1}
+    data-collapsed={collapsed}
+  >
     {#if keyLabel !== ""}<span
         class="key key--no-expand-button"
-        class:root={_level === 1}>{keyLabel}</span
+        class:root={_level === 1}
+        class:key-index={keyIsIndex}>{keyLabel}</span
       >{/if}
     <span class="value {valueType}" {title} class:root={_level === 0}
       >{value}</span
@@ -182,10 +202,10 @@
   ul.key-less {
     padding-left: 0;
   }
-  ul.flat-array {
-    flex-direction: row;
-    column-gap: var(--padding-1_5x);
-  }
+  //ul.flat-array {
+  //  flex-direction: row;
+  //  column-gap: var(--padding-1_5x);
+  //}
 
   .key {
     display: flex;
@@ -198,14 +218,13 @@
   .key.root {
     @include fonts.h4();
   }
-  // TODO(max): no global
-  //:global(.root .key) {
-  //  padding-left: 0;
-  //}
   .key-expandable {
     margin-right: 0;
     // no icon gap compensation
     margin-left: 0;
+  }
+  .key-index {
+    font-family: monospace;
   }
   .key-expanded {
     // same as gap between LIs
