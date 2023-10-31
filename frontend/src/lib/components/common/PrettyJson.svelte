@@ -3,7 +3,7 @@
   import { isHash, stringifyJson } from "$lib/utils/utils";
   import { isPrincipal } from "$lib/utils/utils";
   import { Html, IconExpandMore } from "@dfinity/gix-components";
-  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { nonNullish } from "@dfinity/utils";
 
   export let json: unknown | undefined = undefined;
   export let defaultExpandedLevel = Infinity;
@@ -91,12 +91,9 @@
   {#if _level > 0 && keyLabel}
     <!-- expandable-key-->
     <div
-      class="key key-expandable with-children"
-      class:key-expanded={!collapsed}
+      class="key key--expandable"
       class:root={_level === 1}
-      class:key-index={keyIsIndex}
-      data-collapsed={collapsed}
-      data-u-collapsed={!!_collapsed}
+      class:key--is-index={keyIsIndex}
     >
       <button
         class="icon-only"
@@ -112,18 +109,9 @@
   {/if}
   {#if !collapsed}
     <!-- children of expandable-key -->
-    <ul
-      class:root
-      class:key-less={isNullish(_key)}
-      class:is-array={isArray}
-      class:flat-array={isFlatArray}
-      data-collapsed={collapsed}
-      data-u-collapsed={!!_collapsed}
-      data-deep={_level}
-      data-defaultExpandedLevel={defaultExpandedLevel}
-    >
+    <ul class:root class:is-array={isArray} class:flat-array={isFlatArray}>
       {#each children as [key, value]}
-        <li class:root data-collapsed={collapsed}>
+        <li class:root>
           <svelte:self
             json={value}
             _key={key}
@@ -136,11 +124,11 @@
   {/if}
 {:else if isExpandable}
   <!-- expandable w/o children - key+{}|[] -->
-  <span data-tid={testId} class="key-value" data-collapsed={collapsed}>
+  <span data-tid={testId} class="key-value">
     {#if keyLabel !== ""}<span
         class="key key--no-expand-button"
         class:root={_level === 1}
-        class:key-index={keyIsIndex}>{keyLabel}</span
+        class:key--is-index={keyIsIndex}>{keyLabel}</span
       >{/if}
     <span class="value bracket" {title}>{openBracket} {closeBracket}</span>
   </span>
@@ -150,23 +138,18 @@
     {#if keyLabel !== ""}<span
         class="key"
         class:root={_level === 1}
-        class:key-index={keyIsIndex}>{keyLabel}</span
+        class:key--is-index={keyIsIndex}>{keyLabel}</span
       >{/if}<Html
       text={`<img class="value ${valueType}" alt="${_key}" src="${value}" />`}
     /></span
   >
 {:else}
   <!-- non-expandable key+value -->
-  <span
-    data-tid={testId}
-    class="key-value"
-    class:root={_level === 1}
-    data-collapsed={collapsed}
-  >
+  <span data-tid={testId} class="key-value" class:root={_level === 1}>
     {#if keyLabel !== ""}<span
         class="key key--no-expand-button"
         class:root={_level === 1}
-        class:key-index={keyIsIndex}>{keyLabel}</span
+        class:key--is-index={keyIsIndex}>{keyLabel}</span
       >{/if}
     <span class="value {valueType}" {title} class:root={_level === 0}
       >{value}</span
@@ -178,17 +161,8 @@
   @use "@dfinity/gix-components/dist/styles/mixins/interaction";
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
-  $icon-padding-compensation: 6px;
-
-  ul.root {
-    margin: 0;
-    padding: 0;
-    //border: 1px solid blue;
-  }
   ul {
     list-style: none;
-    // space between object|array entries (when no array indexes)
-    //margin: 0 0 var(--padding-1_5x) 0;
     margin: 0;
     // space between deep levels
     padding: 0 0 0 var(--padding-3x);
@@ -196,15 +170,23 @@
     display: flex;
     flex-direction: column;
     row-gap: var(--padding-0_5x);
-    //border: 1px solid red;
+
+    &.root {
+      margin: 0;
+      padding: 0;
+    }
   }
-  ul.key-less {
-    padding-left: 0;
+
+  // key-value entry wrapper
+  .key-value {
+    display: flex;
+    align-items: center;
+
+    // To have at least the same height as IconExpandMore
+    min-height: 28px;
+    // icon gap compensation
+    margin-left: 6px;
   }
-  //ul.flat-array {
-  //  flex-direction: row;
-  //  column-gap: var(--padding-1_5x);
-  //}
 
   .key {
     display: flex;
@@ -213,71 +195,37 @@
 
     @include fonts.standard(true);
     color: var(--content-color);
+
+    &.root {
+      @include fonts.h4();
+    }
+    &.key--expandable {
+      margin-right: 0;
+      // no icon gap compensation
+      margin-left: 0;
+    }
+    &.key--is-index {
+      // monospace for array indexes to avoid different widths
+      font-family: monospace;
+    }
   }
-  .key.root {
-    @include fonts.h4();
-  }
-  .key-expandable {
-    margin-right: 0;
-    // no icon gap compensation
-    margin-left: 0;
-  }
-  .key-index {
-    font-family: monospace;
-  }
-  .key-expanded {
-    // same as gap between LIs
-    //margin-bottom: var(--padding);
-  }
-  // entry wrapper
-  .key-value {
-    display: flex;
-    align-items: center;
-    min-height: 28px;
-    // icon gap compensation
-    margin-left: $icon-padding-compensation;
-  }
+
   .value {
     // better shrink the value than the key
     flex: 1 1 0;
-    // Values can be strings of JSON and long. We want to break the value, so that the keys stay on the same line.
+    // We want to break the value, so that the keys stay on the same line.
     word-break: break-all;
-
     color: var(--description-color);
   }
 
-  // value types
-  //.value {
-  //  color: var(--json-value-color);
-  //}
-  //.value.string {
-  //  color: var(--json-string-color);
-  //}
-  //.value.number {
-  //  color: var(--json-number-color);
-  //}
-  //.value.null {
-  //  color: var(--json-null-color);
-  //}
-  //.value.principal {
-  //  color: var(--json-principal-color);
-  //}
-  //.value.hash {
-  //  color: var(--json-hash-color);
-  //}
-  //.value.bigint {
-  //  color: var(--json-bigint-color);
-  //}
-  //.value.boolean {
-  //  color: var(--json-boolean-color);
-  //}
-
+  // base64 encoded image
   :global(.value.base64Encoding) {
     vertical-align: top;
     max-width: var(--padding-3x);
     overflow: hidden;
     transition: max-width ease-out var(--animation-time-normal);
 
+    // increase size on hover (128px max size)
     &:hover {
       max-width: calc(16 * var(--padding));
     }

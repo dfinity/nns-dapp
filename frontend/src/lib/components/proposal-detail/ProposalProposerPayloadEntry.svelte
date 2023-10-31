@@ -3,7 +3,6 @@
   import { Copy } from "@dfinity/gix-components";
   import TreeRawToggle from "$lib/components/proposal-detail/JsonRepresentationModeToggle.svelte";
   import JsonPreview from "$lib/components/common/JsonPreview.svelte";
-  import { nonNullish } from "@dfinity/utils";
   import { stringifyJson } from "$lib/utils/utils";
 
   // `undefined` means that the payload is not loaded yet
