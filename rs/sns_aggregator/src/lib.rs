@@ -238,6 +238,9 @@ fn interface() -> String {
 }
 
 #[cfg(test)]
+#[allow(clippy::expect_used)]
+#[allow(clippy::panic)]
+#[allow(clippy::unwerap)]
 mod tests {
     use super::*;
     use candid::utils::{service_compatible, CandidSource};
@@ -251,8 +254,8 @@ mod tests {
 
             let path = PathBuf::from(cargo_manifest_dir).join("sns_aggregator.did");
 
-            let contents = std::fs::read(path).unwrap();
-            String::from_utf8(contents).unwrap()
+            let contents = std::fs::read(path).expect("Failed to read .did file.");
+            String::from_utf8(contents).expect(".did file is not valid text.")
         };
         static ref IMPLEMENTED_INTERFACE: String = interface();
     }
