@@ -19,4 +19,5 @@
     record{ 0="TVL_CANISTER_ID"; 1="ewh3f-3qaaa-aaaap-aazjq-cai" };
     record{ 0="WASM_CANISTER_ID"; 1="qaa6y-5yaaa-aaaaa-aaafa-cai" };
   };
+  schema = opt variant Map;
 })
