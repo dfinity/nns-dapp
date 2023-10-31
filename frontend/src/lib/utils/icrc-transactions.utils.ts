@@ -107,6 +107,8 @@ const getTransactionInformation = (
         : undefined,
     memo: fromNullable(data?.memo),
     created_at_time: fromNullable(data?.created_at_time),
+    // For Approve transactions, the amount is the approved amount, not the
+    // transacted amount.
     amount: isApprove ? 0n : data?.amount,
     fee: fromNullable("fee" in data ? data.fee : []),
   };
