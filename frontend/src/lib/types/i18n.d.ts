@@ -34,6 +34,7 @@ interface I18nCore {
   do_not_close: string;
   finish: string;
   unknown: string;
+  expand_all: string;
 }
 
 interface I18nError {
