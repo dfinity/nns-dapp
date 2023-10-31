@@ -240,7 +240,7 @@ fn interface() -> String {
 #[cfg(test)]
 #[allow(clippy::expect_used)]
 #[allow(clippy::panic)]
-#[allow(clippy::unwrap)]
+#[allow(clippy::unwrap_used)]
 mod tests {
     use super::*;
     use candid::utils::{service_compatible, CandidSource};
