@@ -265,6 +265,12 @@ type ConfigAtom = record { 0: text; 1: text; };
 
 type Config = record {
   args : vec ConfigAtom;
+  schema: opt SchemaLabel;
+};
+
+type SchemaLabel = variant {
+    Map;
+    AccountsInStableMemory;
 };
 
 service: (opt Config) -> {
