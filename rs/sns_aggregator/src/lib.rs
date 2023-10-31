@@ -91,8 +91,7 @@ fn tail_log(limit: Option<u16>) -> String {
 /// Web server
 #[candid_method(query)]
 #[export_name = "canister_query http_request"]
-fn http_request(request: HttpRequest) -> HttpResponse
-{
+fn http_request(request: HttpRequest) -> HttpResponse {
     ic_cdk::setup();
     match request.url.as_ref() {
         "/__candid" => HttpResponse::from(__export_service()),
@@ -248,8 +247,7 @@ mod tests {
 
     lazy_static! {
         static ref DECLARED_INTERFACE: String = {
-            let cargo_manifest_dir =
-                var_os("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR env var undefined");
+            let cargo_manifest_dir = var_os("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR env var undefined");
 
             let path = PathBuf::from(cargo_manifest_dir).join("sns_aggregator.did");
 
