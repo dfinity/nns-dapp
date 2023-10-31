@@ -187,7 +187,7 @@
   }
   ul {
     list-style: none;
-    // space between object|array entries
+    // space between object|array entries (when no array indexes)
     //margin: 0 0 var(--padding-1_5x) 0;
     margin: 0;
     // space between deep levels
@@ -196,8 +196,6 @@
     display: flex;
     flex-direction: column;
     row-gap: var(--padding-0_5x);
-    //gap: min(var(--padding-4x), calc(var(--padding) * 4 - var(--current-deep)));
-    //gap: var(--padding);
     //border: 1px solid red;
   }
   ul.key-less {
@@ -273,7 +271,15 @@
   //.value.boolean {
   //  color: var(--json-boolean-color);
   //}
+
   :global(.value.base64Encoding) {
     vertical-align: top;
+    max-width: var(--padding-3x);
+    overflow: hidden;
+    transition: max-width ease-out var(--animation-time-normal);
+
+    &:hover {
+      max-width: calc(16 * var(--padding));
+    }
   }
 </style>
