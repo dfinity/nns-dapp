@@ -21,6 +21,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Read schema version from stable memory.
 * Stable structures updated to `0.6.0`.
 * Dapp upgraded to Svelte `v4`.
 * New Proposal Card.
