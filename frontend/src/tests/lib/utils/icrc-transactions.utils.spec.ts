@@ -7,6 +7,7 @@ import {
   mapIcrcTransaction,
 } from "$lib/utils/icrc-transactions.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
 import { createIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import {
@@ -172,6 +173,37 @@ describe("icrc-transaction utils", () => {
       });
       expect(data.isSend).toBe(false);
       expect(data.isReceive).toBe(true);
+    });
+
+    it("maps approve transaction", () => {
+      const data = mapIcrcTransaction({
+        transaction: {
+          id: BigInt(1234),
+          transaction: {
+            kind: "approve",
+            timestamp: BigInt(12349),
+            approve: [
+              {
+                from,
+                amount: BigInt(100_000_000),
+                spender: to,
+                fee: [],
+                memo: [],
+                created_at_time: [],
+                expected_allowance: [],
+                expires_at: [],
+              },
+            ],
+            transfer: [],
+            burn: [],
+            mint: [],
+          },
+        },
+        account: mockCkBTCMainAccount,
+        toSelfTransaction: false,
+      });
+      expect(data.isSend).toBe(false);
+      expect(data.isReceive).toBe(false);
     });
 
     it("maps self transaction", () => {

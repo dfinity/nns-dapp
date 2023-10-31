@@ -15,7 +15,7 @@ import type {
 } from "@dfinity/ledger-icrc";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
-import { fromNullable } from "@dfinity/utils";
+import { fromNullable, nonNullish } from "@dfinity/utils";
 import { mapToSelfTransaction, showTransactionFee } from "./transactions.utils";
 
 /**
@@ -52,6 +52,9 @@ const getIcrcTransactionType = ({
   transaction: IcrcTransaction;
   governanceCanisterId?: Principal;
 }): AccountTransactionType => {
+  if (fromNullable(transaction.approve) !== undefined) {
+    return AccountTransactionType.Approve;
+  }
   if (fromNullable(transaction.burn) !== undefined) {
     return AccountTransactionType.Burn;
   }
@@ -78,15 +81,15 @@ const getTransactionInformation = (
   transaction: IcrcTransaction
 ): IcrcTransactionInfo | undefined => {
   const data =
+    fromNullable(transaction.approve) ??
     fromNullable(transaction.burn) ??
     fromNullable(transaction.mint) ??
     fromNullable(transaction.transfer);
+  const isApprove = nonNullish(fromNullable(transaction.approve));
   // Edge case, a transaction will have either "burn", "mint" or "transfer" data.
   if (data === undefined) {
     throw new Error(`Unknown transaction type ${JSON.stringify(transaction)}`);
   }
-  // Fee is only present in "transfer" transactions.
-  const fee = fromNullable(fromNullable(transaction.transfer)?.fee ?? []);
   return {
     from:
       "from" in data
@@ -104,8 +107,8 @@ const getTransactionInformation = (
         : undefined,
     memo: fromNullable(data?.memo),
     created_at_time: fromNullable(data?.created_at_time),
-    amount: data?.amount,
-    fee,
+    amount: isApprove ? 0n : data?.amount,
+    fee: fromNullable("fee" in data ? data.fee : []),
   };
 };
 
@@ -133,7 +136,7 @@ export const mapIcrcTransaction = ({
     }
     const isReceive =
       toSelfTransaction === true || txInfo.from !== account.identifier;
-    const isSend = txInfo.to !== account.identifier;
+    const isSend = nonNullish(txInfo.to) && txInfo.to !== account.identifier;
     const useFee =
       toSelfTransaction === true
         ? false
