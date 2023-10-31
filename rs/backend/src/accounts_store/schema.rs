@@ -115,6 +115,12 @@ pub enum SchemaLabel {
     AccountsInStableMemory = 1,
 }
 
+impl Default for SchemaLabel {
+    fn default() -> Self {
+        Self::Map
+    }
+}
+
 /// Schema Label as written to stable memory.
 type SchemaLabelBytes = [u8; SchemaLabel::MAX_BYTES];
 
