@@ -1,3 +1,4 @@
+use crate::accounts_store::schema::SchemaLabel;
 use crate::accounts_store::AccountsStore;
 use crate::assets::AssetHashes;
 use crate::assets::Assets;
@@ -63,8 +64,9 @@ impl StableState for State {
 // Methods called on pre_upgrade and post_upgrade.
 impl State {
     /// The schema version, determined by the last version that was saved to stable memory.
-    fn schema_version_from_stable_memory() -> Option<u32> {
-        None // The schema is currently unversioned.
+    fn schema_version_from_stable_memory() -> Option<SchemaLabel> {
+        let schema_label_bytes = stable::read(0, SchemaLabel::MAX_BYTES as u32);
+        SchemaLabel::try_from(&schema_label_bytes[..]).ok()
     }
     /// Create the state from stable memory in the `post_upgrade()` hook.
     ///
@@ -81,7 +83,7 @@ impl State {
         match Self::schema_version_from_stable_memory() {
             None => Self::post_upgrade_unversioned(),
             Some(version) => {
-                trap_with(&format!("Unknown schema version: {version}"));
+                trap_with(&format!("Unknown schema version: {version:?}"));
                 unreachable!();
             }
         }
