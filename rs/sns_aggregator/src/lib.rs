@@ -18,7 +18,6 @@ use std::time::Duration;
 use assets::{insert_favicon, insert_home_page, AssetHashes, HttpRequest, HttpResponse};
 use candid::{candid_method, export_service};
 use fast_scheduler::FastScheduler;
-use ic_cdk::api::call::{self};
 use ic_cdk_timers::{clear_timer, set_timer, set_timer_interval};
 use state::{Config, StableState, STATE};
 use types::Icrc1Value;
@@ -258,6 +257,26 @@ mod tests {
             String::from_utf8(contents).unwrap()
         };
         static ref IMPLEMENTED_INTERFACE: String = interface();
+    }
+
+    /// Makes sure that ./root.did is up to date with the implementation.
+    ///
+    /// Note: This does a text comparison with the generated `.did` and the actual `.did`.
+    ///       Thus trivial, non-semantically meaningful changes may cause it to fail.
+    ///       On the other hand, the diff is expressed in a very readabale fashion, so
+    ///       while this is not the preferred test, it can be helpful to see its output.
+    ///
+    /// Note: This will NOT generate type aliases such as `HttpHeader = (String, String)`.
+    #[test]
+    #[ignore] // It is preferred to check that the implementation matches the candid file.
+              // To run anyway: cargo test -- --include-ignored check_candid_interface_definition_file
+    fn check_candid_interface_definition_file() {
+        assert_eq!(
+            *DECLARED_INTERFACE, *IMPLEMENTED_INTERFACE,
+            "Generated candid definition does not match canister/root.did. \
+             Run `bazel run :generate_did > canister/root.did` (no nix and/or direnv) in \
+             rs/sns/root to update canister/root.did."
+        );
     }
 
     /// Ensures that the implementation matches the `nns-dapp.did` file
