@@ -1,5 +1,6 @@
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
+import * as proposalsApi from "$lib/api/proposals.api";
 import * as snsSaleApi from "$lib/api/sns-sale.api";
 import * as snsMetricsApi from "$lib/api/sns-swap-metrics.api";
 import * as snsApi from "$lib/api/sns.api";
@@ -31,6 +32,7 @@ import {
   mockAccountDetails,
   mockMainAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import {
   createFinalizationStatusMock,
   snsFinalizationStatusResponseMock,
@@ -54,6 +56,7 @@ vi.mock("$lib/api/sns-swap-metrics.api");
 vi.mock("$lib/api/sns-sale.api");
 vi.mock("$lib/api/icp-ledger.api");
 vi.mock("$lib/api/location.api");
+vi.mock("$lib/api/proposals.api");
 
 const blockedApiPaths = [
   "$lib/api/nns-dapp.api",
@@ -62,6 +65,7 @@ const blockedApiPaths = [
   "$lib/api/sns-sale.api",
   "$lib/api/icp-ledger.api",
   "$lib/api/location.api",
+  "$lib/api/proposals.api",
 ];
 
 describe("ProjectDetail", () => {
@@ -95,6 +99,8 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
     vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(mockAccountDetails);
     vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(newBalance);
+
+    vi.spyOn(proposalsApi, "queryProposal").mockResolvedValue(mockProposalInfo);
 
     fakeLocationApi.setCountryCode(userCountryCode);
 
@@ -303,6 +309,30 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         await runResolvedPromises();
         const store = getOrCreateSnsFinalizationStatusStore(rootCanisterId);
         expect(get(store)?.data).toEqual(snsFinalizationStatusResponseMock);
+      });
+    });
+
+    describe("project with nns_proposal_id present", () => {
+      const props = {
+        rootCanisterId: rootCanisterId.toText(),
+      };
+      beforeEach(() => {
+        setSnsProjects([
+          {
+            rootCanisterId,
+            lifecycle: SnsSwapLifecycle.Committed,
+            certified: true,
+            nnsProposalId: Number(mockProposalInfo.id),
+          },
+        ]);
+      });
+
+      it("should show a proposal card from the proposal id", async () => {
+        const { queryByTestId } = render(ProjectDetail, props);
+
+        await runResolvedPromises();
+
+        expect(queryByTestId("proposal-card")).toBeInTheDocument();
       });
     });
   });

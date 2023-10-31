@@ -18,6 +18,7 @@ export const setSnsProjects = (
     tokenMetadata?: Partial<IcrcTokenMetadata>;
     nervousFunctions?: SnsNervousSystemFunction[];
     swapDueTimestampSeconds?: number;
+    nnsProposalId?: number;
   }[]
 ) => {
   const aggregatorProjects = params.map((params, index) => {
@@ -31,6 +32,7 @@ export const setSnsProjects = (
       tokenMetadata: params.tokenMetadata,
       nervousFunctions: params.nervousFunctions,
       swapDueTimestampSeconds: params.swapDueTimestampSeconds,
+      nnsProposalId: params.nnsProposalId,
     });
   });
   snsLifecycleStore.reset();

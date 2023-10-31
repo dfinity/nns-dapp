@@ -85,8 +85,12 @@
   @use "@dfinity/gix-components/dist/styles/mixins/card";
   @use "@dfinity/gix-components/dist/styles/mixins/media";
 
-  li.hidden {
-    visibility: hidden;
+  li {
+    list-style: none;
+
+    &.hidden {
+      visibility: hidden;
+    }
   }
 
   .stretch-wrapper {
