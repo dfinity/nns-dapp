@@ -1,6 +1,5 @@
 <script lang="ts">
-  import Json from "../common/Json.svelte";
-  import { Copy } from "../../../../../../gix-components";
+  import { Copy } from "@dfinity/gix-components";
   import TreeRawToggle from "$lib/components/proposal-detail/JsonRepresentationModeToggle.svelte";
   import { stringifyJson } from "$lib/utils/utils";
   import JsonPreview from "$lib/components/common/JsonPreview.svelte";

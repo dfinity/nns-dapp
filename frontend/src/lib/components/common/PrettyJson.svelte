@@ -15,7 +15,7 @@
   let hasChildren: boolean;
   let isExpandable: boolean;
   let isArray: boolean;
-  let emptyExpandable: "{ }" | "[ ]";
+  let emptyExpandableValue: "{ }" | "[ ]";
   let root: boolean;
   let testId: "json" | undefined;
   $: {
@@ -24,7 +24,7 @@
     children = isExpandable ? Object.entries(json as object) : [];
     hasChildren = children.length > 0;
     isArray = Array.isArray(json);
-    emptyExpandable = isArray ? "[ ]" : "{ }";
+    emptyExpandableValue = isArray ? "[ ]" : "{ }";
     root = _level === 0;
     testId = root ? "json" : undefined;
   }
@@ -83,7 +83,7 @@
         class:root={_level === 1}
         class:key--is-index={keyIsIndex}>{keyLabel}</span
       >{/if}
-    <span class="value">{emptyExpandable}</span>
+    <span class="value">{emptyExpandableValue}</span>
   </span>
 {:else}
   <!-- key+value -->
@@ -93,7 +93,7 @@
         class:root
         class:key--is-index={keyIsIndex}>{keyLabel}</span
       >{/if}
-    <PrettyJsonValue data={json} key={_key} isRoot={root} />
+    <PrettyJsonValue data={json} key={_key} />
   </span>
 {/if}
 
