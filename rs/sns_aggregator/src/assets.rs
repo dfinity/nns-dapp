@@ -8,7 +8,7 @@ use sha2::{Digest, Sha256};
 use std::collections::HashMap;
 
 /// A standard HTTP header
-type HeaderField = (String, String);
+pub type HeaderField = (String, String);
 
 /// The standardized data structure for HTTP responses as supported natively by the replica.
 #[derive(Clone, Debug, CandidType, Deserialize)]
@@ -20,7 +20,7 @@ pub struct HttpRequest {
     /// Note: This does NOT contain the domain, port or protocol.
     pub url: String,
     /// The HTTP request headers
-    pub headers: Vec<(String, String)>,
+    pub headers: Vec<HeaderField>,
     /// The complete body of the HTTP request
     pub body: ByteBuf,
 }
@@ -161,7 +161,7 @@ fn security_headers() -> Vec<HeaderField> {
 }
 
 /// Generates a header used by clients to verify the integrity of the data.
-fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -> Result<(String, String), String> {
+fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -> Result<HeaderField, String> {
     let certificate = ic_cdk::api::data_certificate()
         .ok_or_else(|| "data certificate is only available in query calls".to_string())?;
     let witness = asset_hashes.0.witness(asset_name.as_bytes());

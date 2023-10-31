@@ -92,15 +92,13 @@ fn tail_log(limit: Option<u16>) -> String {
 /// Web server
 #[candid_method(query)]
 #[export_name = "canister_query http_request"]
-fn http_request(/* req: HttpRequest */) /* -> HttpResponse */
+fn http_request(request: HttpRequest) -> HttpResponse
 {
     ic_cdk::setup();
-    let request = call::arg_data::<(HttpRequest,)>().0;
-    let response = match request.url.as_ref() {
+    match request.url.as_ref() {
         "/__candid" => HttpResponse::from(__export_service()),
         _ => assets::http_request(request),
-    };
-    call::reply((response,));
+    }
 }
 
 /// Function called when a canister is first created IF it is created
@@ -165,7 +163,7 @@ fn post_upgrade(config: Option<Config>) {
 ///
 /// Note: This _could_ be exposed in production if limited to the controllers
 ///  - Controllers can be obtained by the async call: `agent.read_state_canister_info(canister_id, "controllers")`
-#[cfg(feature = "reconfigurable")]
+#[cfg(any(test, feature = "reconfigurable"))]
 #[ic_cdk_macros::update]
 #[candid_method(update)]
 fn reconfigure(config: Option<Config>) {
@@ -239,4 +237,51 @@ export_service!();
 #[ic_cdk_macros::query]
 fn interface() -> String {
     __export_service()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use candid::utils::{service_compatible, CandidSource};
+    use lazy_static::lazy_static;
+    use pretty_assertions::assert_eq;
+    use std::{env::var_os, path::PathBuf};
+
+    lazy_static! {
+        static ref DECLARED_INTERFACE: String = {
+            let cargo_manifest_dir =
+                var_os("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR env var undefined");
+
+            let path = PathBuf::from(cargo_manifest_dir).join("sns_aggregator.did");
+
+            let contents = std::fs::read(path).unwrap();
+            String::from_utf8(contents).unwrap()
+        };
+        static ref IMPLEMENTED_INTERFACE: String = interface();
+    }
+
+    /// Ensures that the implementation matches the `nns-dapp.did` file
+    #[test]
+    fn test_implementation_conforms_to_declared_interface() {
+        let result = service_compatible(
+            CandidSource::Text(&IMPLEMENTED_INTERFACE),
+            CandidSource::Text(&DECLARED_INTERFACE),
+        );
+
+        if let Err(err) = result {
+            panic!(
+                "Implemented interface:\n\
+                 {}\n\
+                 \n\
+                 Declared interface:\n\
+                 {}\n\
+                 \n\
+                 Error:\n\
+                 {}n\
+                 \n\
+                 The Candid service implementation does not comply with the declared interface.",
+                *IMPLEMENTED_INTERFACE, *DECLARED_INTERFACE, err,
+            );
+        }
+    }
 }

@@ -1,19 +1,4 @@
-type Config = record {
-  update_interval_ms : nat64;
-  fast_interval_ms : nat64;
-};
 type HttpHeader = record { text; text };
-type HttpRequest = record {
-  url : text;
-  method : text;
-  body : vec nat8;
-  headers : vec HttpHeader;
-};
-type HttpResponse = record  {
-    status_code: nat16;
-    headers: vec HttpHeader;
-    body: vec nat8;
-};
 
 type CanisterStatusResultV2 = record {
   controller : principal;
@@ -27,12 +12,24 @@ type CanisterStatusResultV2 = record {
   module_hash : opt vec nat8;
 };
 type CanisterStatusType = variant { stopped; stopping; running };
+type Config = record { update_interval_ms : nat64; fast_interval_ms : nat64 };
 type DefiniteCanisterSettingsArgs = record {
   controller : principal;
   freezing_threshold : nat;
   controllers : vec principal;
   memory_allocation : nat;
   compute_allocation : nat;
+};
+type HttpRequest = record {
+  url : text;
+  method : text;
+  body : vec nat8;
+  headers : vec HttpHeader;
+};
+type HttpResponse = record  {
+  body : vec nat8;
+  headers : vec HttpHeader;
+  status_code : nat16;
 };
 
 service : (opt Config) -> {
