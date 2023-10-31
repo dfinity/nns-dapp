@@ -20,6 +20,9 @@ pub struct CanisterArguments {
     /// Values that are to be set in the web front end, by injecting them into JavaScript.
     pub args: Vec<(String, String)>,
     /// The preferred schema.  If there is existing data in another schema, it will be converted to this schema.
+    ///
+    /// Note: To change the default schema, please change the default value in `impl Default for SchemaLabel`.
+    ///       This way `canister_arguments.schema.unwrap_or_default()` will provide the expected value.
     pub schema: Option<SchemaLabel>,
 }
 
