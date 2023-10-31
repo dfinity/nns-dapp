@@ -36,8 +36,8 @@ type DefiniteCanisterSettingsArgs = record {
 };
 
 service : (opt Config) -> {
-  get_canister_status : () -> (CanisterStatusResultV2);
   get_canister_config : () -> (Config) query;
+  get_canister_status : () -> (CanisterStatusResultV2);
   health_check : () -> (text) query;
   http_request : (HttpRequest) -> (HttpResponse) query;
   reconfigure : (opt Config) -> ();
