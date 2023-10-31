@@ -43,6 +43,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Not Published
 
 * Added `retrieveBtcWithApproval` in ckbtc-minter API.
+* Render Approve transactions in transaction list.
 
 ### Operations
 
