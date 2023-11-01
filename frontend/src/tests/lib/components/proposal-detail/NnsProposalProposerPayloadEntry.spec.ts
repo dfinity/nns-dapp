@@ -1,6 +1,7 @@
 import * as agent from "$lib/api/agent.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import NnsProposalProposerPayloadEntry from "$lib/components/proposal-detail/NnsProposalProposerPayloadEntry.svelte";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { proposalPayloadsStore } from "$lib/stores/proposals.store";
 import {
   mockProposalInfo,
@@ -31,6 +32,8 @@ describe("NnsProposalProposerPayloadEntry", () => {
     vi.clearAllMocks();
     proposalPayloadsStore.reset();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    // TODO(GIX-2030) remove this once the feature flag is removed
+    overrideFeatureFlagsStore.setFlag("ENABLE_FULL_WIDTH_PROPOSAL", false);
   });
 
   it("should trigger getProposalPayload", async () => {
