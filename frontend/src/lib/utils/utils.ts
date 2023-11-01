@@ -386,12 +386,15 @@ export const expandObject = (value: unknown): unknown => {
     return value.map(expandObject);
   }
   if (typeof value === "object") {
-    Object.keys(value).forEach(
+    // to avoid mutating original object
+    const result = { ...value };
+    Object.keys(result).forEach(
       (key) =>
-        ((value as Record<string, unknown>)[key] = expandObject(
-          (value as Record<string, unknown>)[key]
+        ((result as Record<string, unknown>)[key] = expandObject(
+          (result as Record<string, unknown>)[key]
         ))
     );
+    return result;
   }
   return value;
 };
