@@ -1,8 +1,32 @@
 <script lang="ts">
-  import { stringifyJson } from "$lib/utils/utils";
   import { Html } from "@dfinity/gix-components";
   import type { TreeJsonValueType } from "$lib/utils/json.utils";
   import { getTreeJsonValueRenderType } from "$lib/utils/json.utils";
+  import { stringifyJson } from "$lib/utils/utils.js";
+
+  // To avoid having quotes around all the value types
+  const formatData = (value: unknown) => {
+    const valueType = getTreeJsonValueRenderType(value);
+    if (valueType === "base64Encoding") {
+      return (data as { [key: string]: unknown })["base64Encoding"];
+    }
+    if (
+      (
+        [
+          "undefined",
+          "null",
+          "number",
+          "bigint",
+          "boolean",
+          "object",
+        ] as Array<TreeJsonValueType>
+      ).includes(valueType)
+    ) {
+      return `${value}`;
+    }
+    // more reliable (functions etc), but adds quotes
+    return stringifyJson(value);
+  };
 
   export let data: unknown | undefined = undefined;
   export let key: string | undefined = undefined;
@@ -11,10 +35,7 @@
   $: valueType = getTreeJsonValueRenderType(data);
 
   let value: unknown;
-  $: value =
-    valueType === "base64Encoding"
-      ? (data as { [key: string]: unknown })["base64Encoding"]
-      : stringifyJson(data);
+  $: value = formatData(data);
 
   let title: string | undefined;
   $: title = valueType === "hash" ? (data as number[]).join() : undefined;
