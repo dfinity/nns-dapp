@@ -371,30 +371,30 @@ export const isPngAsset = (
  * @param obj
  * @returns parsed object
  */
-export const expandObject = (value: unknown): unknown => {
-  if (value === null || value === undefined) {
-    return value;
-  }
-  if (typeof value === "string") {
-    try {
-      return JSON.parse(value);
-    } catch (e) {
-      return value;
-    }
-  }
-  if (Array.isArray(value)) {
-    return value.map(expandObject);
-  }
-  if (typeof value === "object") {
-    Object.keys(value).forEach(
-      (key) =>
-        ((value as Record<string, unknown>)[key] = expandObject(
-          (value as Record<string, unknown>)[key]
-        ))
-    );
-  }
-  return value;
-};
+export const expandObject = (
+  obj: Record<string, unknown>
+): Record<string, unknown> =>
+  Object.keys(obj).reduce(
+    (acc, key) => {
+      const value = obj[key];
+      if (typeof value === "string") {
+        try {
+          acc[key] = JSON.parse(value);
+        } catch (e) {
+          acc[key] = value;
+        }
+      } else if (typeof value === "object") {
+        acc[key] =
+          value !== null
+            ? expandObject(value as Record<string, unknown>)
+            : value;
+      } else {
+        acc[key] = value;
+      }
+      return acc;
+    },
+    {} as Record<string, unknown>
+  );
 
 export const sameBufferData = (
   buffer1: ArrayBuffer,
