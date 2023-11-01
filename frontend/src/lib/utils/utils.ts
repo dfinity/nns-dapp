@@ -371,30 +371,33 @@ export const isPngAsset = (
  * @param obj
  * @returns parsed object
  */
-export const expandObject = (
-  obj: Record<string, unknown>
-): Record<string, unknown> =>
-  Object.keys(obj).reduce(
-    (acc, key) => {
-      const value = obj[key];
-      if (typeof value === "string") {
-        try {
-          acc[key] = JSON.parse(value);
-        } catch (e) {
-          acc[key] = value;
-        }
-      } else if (typeof value === "object") {
-        acc[key] =
-          value !== null
-            ? expandObject(value as Record<string, unknown>)
-            : value;
-      } else {
-        acc[key] = value;
-      }
-      return acc;
-    },
-    {} as Record<string, unknown>
-  );
+export const expandObject = (value: unknown): unknown => {
+  if (value === null || value === undefined) {
+    return value;
+  }
+  if (typeof value === "string") {
+    try {
+      return JSON.parse(value);
+    } catch (e: unknown) {
+      return value;
+    }
+  }
+  if (Array.isArray(value)) {
+    return value.map(expandObject);
+  }
+  if (typeof value === "object") {
+    // to avoid mutating original object
+    const result = { ...value };
+    Object.keys(result).forEach(
+      (key) =>
+        ((result as Record<string, unknown>)[key] = expandObject(
+          (result as Record<string, unknown>)[key]
+        ))
+    );
+    return result;
+  }
+  return value;
+};
 
 export const sameBufferData = (
   buffer1: ArrayBuffer,
@@ -411,4 +414,28 @@ export const sameBufferData = (
     }
   }
   return true;
+};
+
+export const getObjMaxDepth = (obj: unknown): number => {
+  if (typeof obj !== "object" || obj === null) {
+    return 0; // If it's not an object, return 0.
+  }
+
+  const keyCount = Object.keys(obj).length;
+  if (keyCount === 0) {
+    return 0; // If it's an empty object, return 0.
+  }
+  // or calculate children depth
+  let childrenMaxDepth = 0;
+  for (const key in obj) {
+    // eslint-disable-next-line no-prototype-builtins
+    if (obj.hasOwnProperty(key)) {
+      const depth = getObjMaxDepth((obj as Record<string, unknown>)[key]);
+      if (depth > childrenMaxDepth) {
+        childrenMaxDepth = depth;
+      }
+    }
+  }
+
+  return 1 + childrenMaxDepth; // Add 1 for the current level.
 };

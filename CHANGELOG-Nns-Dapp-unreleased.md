@@ -26,6 +26,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Dapp upgraded to Svelte `v4`.
 * New Proposal Card.
 * Change the slider in dissolve delay for a read-only progress bar.
+* Redesign the proposal payload and action.
 
 #### Deprecated
 #### Removed
@@ -44,6 +45,8 @@ proposal is successful, the changes it released will be moved from this file to
 #### Not Published
 
 * Added `retrieveBtcWithApproval` in ckbtc-minter API.
+* Render Approve transactions in transaction list.
+* Add feature flag `ENABLE_CKBTC_ICRC2`.
 
 ### Operations
 
