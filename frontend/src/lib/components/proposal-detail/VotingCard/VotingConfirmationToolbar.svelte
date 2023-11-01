@@ -86,14 +86,18 @@
   [role="toolbar"] {
     display: flex;
 
-    padding: var(--padding-2x) var(--padding-2x) 0;
+    padding: var(--padding) 0;
     justify-content: center;
-    gap: var(--padding-2x);
+    gap: var(--padding);
 
     @include media.min-width(large) {
       padding: 0;
       justify-content: flex-start;
       gap: var(--padding);
+    }
+
+    button {
+      flex: 1 1 auto;
     }
   }
 
