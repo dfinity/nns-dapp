@@ -2,13 +2,13 @@
   import { stringifyJson } from "$lib/utils/utils";
   import { Html } from "@dfinity/gix-components";
   import type { TreeJsonValueType } from "$lib/utils/json.utils";
-  import { getTreeJsonValueType } from "$lib/utils/json.utils";
+  import { getTreeJsonValueRenderType } from "$lib/utils/json.utils";
 
   export let data: unknown | undefined = undefined;
   export let key: string | undefined = undefined;
 
   let valueType: TreeJsonValueType;
-  $: valueType = getTreeJsonValueType(data);
+  $: valueType = getTreeJsonValueRenderType(data);
 
   let value: unknown;
   $: value =

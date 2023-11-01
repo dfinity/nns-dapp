@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { IconExpandMore } from "@dfinity/gix-components";
   import TreeJsonValue from "$lib/components/common/TreeJsonValue.svelte";
-  import { getTreeJsonValueType } from "$lib/utils/json.utils";
+  import { getTreeJsonValueRenderType } from "$lib/utils/json.utils";
   import { fade } from "svelte/transition";
 
   export let json: unknown | undefined = undefined;
@@ -20,7 +20,7 @@
   let root: boolean;
   let testId: "json" | undefined;
   $: {
-    isExpandable = getTreeJsonValueType(json) === "object";
+    isExpandable = getTreeJsonValueRenderType(json) === "object";
     keyLabel = `${_key ?? ""}`;
     children = isExpandable ? Object.entries(json as object) : [];
     hasChildren = children.length > 0;
