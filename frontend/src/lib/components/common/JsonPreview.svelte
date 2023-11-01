@@ -3,7 +3,7 @@
   import { expandObject, getObjMaxDepth } from "$lib/utils/utils";
   import { isNullish } from "@dfinity/utils";
   import { jsonRepresentationModeStore } from "$lib/stores/json-representation-mode.store";
-  import { IconExpandAll, SkeletonText } from "@dfinity/gix-components";
+  import { IconExpandAll } from "@dfinity/gix-components";
   import PrettyJson from "$lib/components/common/PrettyJson.svelte";
   import RawJson from "$lib/components/common/RawJson.svelte";
 
@@ -23,31 +23,25 @@
 </script>
 
 <div class="content-cell-island markdown-container">
-  {#if json !== undefined}
-    {#if $jsonRepresentationModeStore === "pretty"}
-      <div class="json" data-tid="json-wrapper">
-        {#if !expandAll}
-          <button
-            disabled={expandAll ? "disabled" : undefined}
-            class="ghost expand-all"
-            on:click={toggleExpanded}
-            ><IconExpandAll /><span class="expand-all-label"
-              >{$i18n.core.expand_all}</span
-            ></button
-          >
-        {/if}
-        <PrettyJson
-          json={expandedData}
-          defaultExpandedLevel={expandAll ? Number.MAX_SAFE_INTEGER : 1}
-        />
-      </div>
-    {:else}
-      <RawJson {json} />
-    {/if}
+  {#if $jsonRepresentationModeStore === "pretty"}
+    <div class="json" data-tid="json-wrapper">
+      {#if !expandAll}
+        <button
+          disabled={expandAll ? "disabled" : undefined}
+          class="ghost expand-all"
+          on:click={toggleExpanded}
+          ><IconExpandAll /><span class="expand-all-label"
+            >{$i18n.core.expand_all}</span
+          ></button
+        >
+      {/if}
+      <PrettyJson
+        json={expandedData}
+        defaultExpandedLevel={expandAll ? Number.MAX_SAFE_INTEGER : 1}
+      />
+    </div>
   {:else}
-    <SkeletonText />
-    <SkeletonText />
-    <SkeletonText />
+    <RawJson {json} />
   {/if}
 </div>
 
