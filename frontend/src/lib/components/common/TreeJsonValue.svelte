@@ -23,7 +23,7 @@
 {#if valueType === "base64Encoding"}
   <!-- base64 encoded image (use <Html> to sanitize the content from XSS) -->
   <Html
-    text={`<img class="value ${valueType}" alt="${key}" src="${value}" />`}
+    text={`<img class="value ${valueType}" alt="${key}" src="${value}" loading="lazy" />`}
   />
 {:else}
   <span class="value {valueType}" {title}>{value}</span>

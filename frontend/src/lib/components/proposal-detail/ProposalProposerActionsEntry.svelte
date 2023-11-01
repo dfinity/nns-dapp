@@ -19,13 +19,15 @@
 >
   {#if $ENABLE_FULL_WIDTH_PROPOSAL}
     <div class="header">
-      <h2
-        class="content-cell-title header-text"
-        data-tid="proposal-proposer-actions-entry-title"
-      >
-        {actionKey ?? ""}
+      <div class="title-copy">
+        <h2
+          class="content-cell-title header-text"
+          data-tid="proposal-proposer-actions-entry-title"
+        >
+          {actionKey ?? ""}
+        </h2>
         <Copy value={copyContent} />
-      </h2>
+      </div>
       <TreeRawToggle />
     </div>
 
@@ -57,6 +59,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    .title-copy {
+      display: flex;
+      align-items: center;
+    }
   }
 
   .header-text {

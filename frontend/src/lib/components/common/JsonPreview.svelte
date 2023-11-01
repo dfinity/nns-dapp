@@ -13,10 +13,12 @@
   let expandedData: unknown;
   $: expandedData = isNullish(json)
     ? json
-    : (expandObject(json as Record<string, unknown>) as object);
+    : expandObject(json as Record<string, unknown>);
 
-  let expandAll: boolean = false;
-  $: expandAll = getObjMaxDepth(expandedData) < 2 ? true : expandAll;
+  const DEFAULT_EXPANDED_LEVEL = 1;
+  let expandAll = false;
+  $: expandAll =
+    getObjMaxDepth(expandedData) <= DEFAULT_EXPANDED_LEVEL ? true : expandAll;
   const toggleExpanded = () => (expandAll = !expandAll);
 </script>
 
