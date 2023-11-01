@@ -18,7 +18,7 @@ export interface JsonRepresentationStore
  */
 const initJsonRepresentationStore = (): JsonRepresentationStore => {
   const { subscribe, update } = writableStored<JsonRepresentationState>({
-    key: StoreLocalStorageKey.JsonRepresentationMode,
+    key: StoreLocalStorageKey.JsonRepresentation,
     defaultValue: {
       mode: "tree",
     },
