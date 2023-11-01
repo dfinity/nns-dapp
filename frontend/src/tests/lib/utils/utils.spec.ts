@@ -868,19 +868,43 @@ describe("utils", () => {
     });
   });
 
-  describe("getObjMaxDepth", () => {
+  describe.only("getObjMaxDepth", () => {
     it("returns object maximum depth", () => {
       const myObject = {
         a: {
-          b: {
-            c: {
-              d: "Hello, World!",
-            },
+          c: {
+            d: "Hello, World!",
           },
         },
-        e: [1, 2, [3, 4, [5]]],
+        e: [
+          2,
+          [
+            [
+              [
+                {
+                  f: "Hello, World!",
+                },
+              ],
+            ],
+          ],
+        ],
       };
-      expect(getObjMaxDepth(myObject)).toBe(4);
+      expect(getObjMaxDepth(myObject)).toBe(6);
+    });
+
+    it("returns 1 for arrays", () => {
+      const myObject = [1];
+      expect(getObjMaxDepth(myObject)).toBe(1);
+    });
+
+    it("returns 0 for empty arrays", () => {
+      const myObject = [];
+      expect(getObjMaxDepth(myObject)).toBe(0);
+    });
+
+    it("returns 0 for empty objects", () => {
+      const myObject = {};
+      expect(getObjMaxDepth(myObject)).toBe(0);
     });
 
     it("returns 0 for not objects", () => {

@@ -18,6 +18,7 @@
   let isArray: boolean;
   let emptyExpandableValue: "{ }" | "[ ]";
   let root: boolean;
+  let keyRoot: boolean;
   let testId: "json" | undefined;
   $: {
     isExpandable = getTreeJsonValueRenderType(json) === "object";
@@ -27,6 +28,8 @@
     isArray = Array.isArray(json);
     emptyExpandableValue = isArray ? "[ ]" : "{ }";
     root = _level === 0;
+    // ignore 0 level wrapper
+    keyRoot = _level <= 1;
     testId = root ? "json" : undefined;
   }
 
@@ -46,7 +49,7 @@
     <!-- expandable-key-->
     <div
       class="key key--expandable"
-      class:root={_level === 1}
+      class:root={keyRoot}
       class:key--is-index={keyIsIndex}
     >
       <button
@@ -82,7 +85,7 @@
   <span data-tid={testId} class="key-value">
     {#if keyLabel !== ""}<span
         class="key key--no-expand-button"
-        class:root={_level === 1}
+        class:root={keyRoot}
         class:key--is-index={keyIsIndex}>{keyLabel}</span
       >{/if}
     <span class="value">{emptyExpandableValue}</span>
@@ -92,7 +95,7 @@
   <span class="key-value">
     {#if keyLabel !== ""}<span
         class="key key--no-expand-button"
-        class:root
+        class:root={keyRoot}
         class:key--is-index={keyIsIndex}>{keyLabel}</span
       >{/if}
     <TreeJsonValue data={json} key={_key} />
