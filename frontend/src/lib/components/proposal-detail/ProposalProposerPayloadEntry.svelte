@@ -13,13 +13,11 @@
   // `object` means that the payload is an object
   export let payload: object | undefined | null;
 
-  let expandedPayload: unknown;
-  $: expandedPayload = isNullish(payload)
-    ? payload
-    : expandObject(payload as Record<string, unknown>);
-
   let copyContent = "";
   $: copyContent = stringifyJson(payload, { indentation: 2 }) ?? "";
+
+  let expandedPayload: unknown;
+  $: expandedPayload = isNullish(payload) ? payload : expandObject(payload);
 </script>
 
 <div class="content-cell-island">

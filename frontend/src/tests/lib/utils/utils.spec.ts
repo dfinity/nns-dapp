@@ -25,6 +25,7 @@ import {
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { get } from "svelte/store";
+import { beforeEach } from "vitest";
 
 describe("utils", () => {
   beforeEach(() => {
@@ -836,6 +837,16 @@ describe("utils", () => {
     it("should parse JSON strings", () => {
       const obj = { a: JSON.stringify({ b: "c" }) };
       expect(expandObject(obj)).toEqual({ a: { b: "c" } });
+    });
+
+    it("should respect arrays (not convert into objects)", () => {
+      const obj = { a: [1, 2, 3] };
+      expect(expandObject(obj)).toEqual({ a: [1, 2, 3] });
+    });
+
+    it("should parse JSON strings from arrays", () => {
+      const obj = { a: [1, JSON.stringify({ b: 2 }), 3] };
+      expect(expandObject(obj)).toEqual({ a: [1, { b: 2 }, 3] });
     });
   });
 
