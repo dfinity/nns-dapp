@@ -471,11 +471,13 @@
     "createCanister": "Create Canister",
     "topUpCanister": "Top-up Canister",
     "refundSwap": "Swap Refund",
-    "participateSwap": "Decentralization Swap"
+    "participateSwap": "Decentralization Swap",
+    "approve": "Approve transfer"
   },
   "ckbtc_transaction_names": {
     "burn": "To: <span class=\"value\">BTC Network</span>",
-    "mint": "From: <span class=\"value\">BTC Network</span>"
+    "mint": "From: <span class=\"value\">BTC Network</span>",
+    "approve": "&ZeroWidthSpace;"
   },
   "wallet": {
     "title": "Account",
