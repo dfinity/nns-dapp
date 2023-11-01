@@ -9,16 +9,13 @@
 
   export let json: unknown | undefined = undefined;
 
-  let expandedData: object | undefined | null;
+  let expandedData: unknown;
   $: expandedData = isNullish(json)
     ? json
     : (expandObject(json as Record<string, unknown>) as object);
 
-  let maxDeep = 0;
-  $: maxDeep = getObjMaxDepth(expandedData);
-
   let expandAll: boolean = false;
-  $: expandAll = maxDeep < 2 ? true : expandAll;
+  $: expandAll = getObjMaxDepth(expandedData) < 2 ? true : expandAll;
   const toggleExpanded = () => (expandAll = !expandAll);
 </script>
 
@@ -26,10 +23,7 @@
   {#if $jsonRepresentationModeStore === "pretty"}
     <div class="json" data-tid="json-wrapper">
       {#if !expandAll}
-        <button
-          disabled={expandAll ? "disabled" : undefined}
-          class="ghost expand-all"
-          on:click={toggleExpanded}
+        <button class="ghost expand-all" on:click={toggleExpanded}
           ><IconExpandAll /><span class="expand-all-label"
             >{$i18n.core.expand_all}</span
           ></button
