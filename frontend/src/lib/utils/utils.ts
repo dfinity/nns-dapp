@@ -378,7 +378,7 @@ export const expandObject = (value: unknown): unknown => {
   if (typeof value === "string") {
     try {
       return JSON.parse(value);
-    } catch (e) {
+    } catch (e: unknown) {
       return value;
     }
   }
