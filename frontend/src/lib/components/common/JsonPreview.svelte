@@ -6,6 +6,7 @@
   import { IconExpandAll } from "@dfinity/gix-components";
   import TreeJson from "$lib/components/common/TreeJson.svelte";
   import RawJson from "$lib/components/common/RawJson.svelte";
+  import { fade } from "svelte/transition";
 
   export let json: unknown | undefined = undefined;
 
@@ -21,7 +22,7 @@
 
 <div class="content-cell-island markdown-container">
   {#if $jsonRepresentationModeStore === "pretty"}
-    <div class="json" data-tid="json-wrapper">
+    <div class="json" data-tid="json-wrapper" in:fade>
       {#if !expandAll}
         <button class="ghost expand-all" on:click={toggleExpanded}
           ><IconExpandAll /><span class="expand-all-label"
@@ -35,7 +36,9 @@
       />
     </div>
   {:else}
-    <RawJson {json} />
+    <div in:fade>
+      <RawJson {json} />
+    </div>
   {/if}
 </div>
 

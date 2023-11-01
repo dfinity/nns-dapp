@@ -3,6 +3,7 @@
   import { IconExpandMore } from "@dfinity/gix-components";
   import PrettyJsonValue from "$lib/components/common/PrettyJsonValue.svelte";
   import { getPrettyJsonValueType } from "$lib/utils/pretty-json.utils";
+  import { fade } from "svelte/transition";
 
   export let json: unknown | undefined = undefined;
   export let defaultExpandedLevel = Infinity;
@@ -63,7 +64,7 @@
   {/if}
   {#if !collapsed}
     <!-- children of expandable-key -->
-    <ul class:root class:is-array={isArray}>
+    <ul class:root class:is-array={isArray} in:fade>
       {#each children as [key, value]}
         <li class:root>
           <svelte:self
