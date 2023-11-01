@@ -9,10 +9,8 @@
   // `null` means that the payload was not found
   // `object` means that the payload is an object
   export let payload: object | undefined | null;
-  let expandedPayload: object | undefined | null;
-  $: expandedPayload = isNullish(payload)
-    ? payload
-    : expandObject(payload as Record<string, unknown>);
+  let expandedPayload: unknown;
+  $: expandedPayload = isNullish(payload) ? payload : expandObject(payload);
 </script>
 
 <div class="content-cell-island">

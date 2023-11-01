@@ -44,6 +44,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Added `retrieveBtcWithApproval` in ckbtc-minter API.
 * Render Approve transactions in transaction list.
+* Add feature flag `ENABLE_CKBTC_ICRC2`.
 
 ### Operations
 
