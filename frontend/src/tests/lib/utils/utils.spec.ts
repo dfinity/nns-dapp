@@ -868,7 +868,7 @@ describe("utils", () => {
     });
   });
 
-  describe.only("getObjMaxDepth", () => {
+  describe("getObjMaxDepth", () => {
     it("returns object maximum depth", () => {
       const myObject = {
         a: {
