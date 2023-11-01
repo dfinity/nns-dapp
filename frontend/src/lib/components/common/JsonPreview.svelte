@@ -2,11 +2,11 @@
   import { i18n } from "$lib/stores/i18n";
   import { expandObject, getObjMaxDepth } from "$lib/utils/utils";
   import { isNullish } from "@dfinity/utils";
-  import { jsonRepresentationModeStore } from "$lib/stores/json-representation-mode.store";
   import { IconExpandAll } from "@dfinity/gix-components";
   import TreeJson from "$lib/components/common/TreeJson.svelte";
   import RawJson from "$lib/components/common/RawJson.svelte";
   import { fade } from "svelte/transition";
+  import { jsonRepresentationModeStore } from "$lib/derived/json-representation.derived";
 
   export let json: unknown | undefined = undefined;
 

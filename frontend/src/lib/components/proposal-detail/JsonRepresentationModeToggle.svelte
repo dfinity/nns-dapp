@@ -1,13 +1,14 @@
 <script lang="ts">
   import { Toggle } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import { jsonRepresentationModeStore } from "$lib/stores/json-representation-mode.store";
+  import { jsonRepresentationStore } from "$lib/stores/json-representation.store";
+  import { jsonRepresentationModeStore } from "$lib/derived/json-representation.derived.js";
 
   let checked: boolean;
   $: checked = $jsonRepresentationModeStore === "raw";
 
-  const setTree = () => ($jsonRepresentationModeStore = "tree");
-  const setRaw = () => ($jsonRepresentationModeStore = "raw");
+  const setTree = () => jsonRepresentationStore.setMode("tree");
+  const setRaw = () => jsonRepresentationStore.setMode("raw");
   const toggle = () =>
     $jsonRepresentationModeStore === "tree" ? setRaw() : setTree();
 </script>
