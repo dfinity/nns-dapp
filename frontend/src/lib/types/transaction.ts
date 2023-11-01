@@ -54,6 +54,7 @@ export interface IcrcTransactionInfo {
 
 // Value should match the key in i18n "transaction_names"
 export enum AccountTransactionType {
+  Approve = "approve",
   Burn = "burn",
   Mint = "mint",
   Send = "send",

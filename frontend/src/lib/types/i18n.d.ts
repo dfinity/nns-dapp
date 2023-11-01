@@ -487,11 +487,13 @@ interface I18nTransaction_names {
   topUpCanister: string;
   refundSwap: string;
   participateSwap: string;
+  approve: string;
 }
 
 interface I18nCkbtc_transaction_names {
   burn: string;
   mint: string;
+  approve: string;
 }
 
 interface I18nWallet {
