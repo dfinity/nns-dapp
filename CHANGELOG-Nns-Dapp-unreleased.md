@@ -57,6 +57,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Install `dfx` by means of the dedicated GitHub action.
 * Join npm audit URLs with spaces instead of commas.
 * Add traits with a dedicated command rather than with patch files.
 * Use snsdemo snapshot with Internet Identity version 2023-10-27.
