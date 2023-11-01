@@ -25,6 +25,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Dapp upgraded to Svelte `v4`.
 * New Proposal Card.
 * Change the slider in dissolve delay for a read-only progress bar.
+* Redesign the proposal payload and action.
 
 #### Deprecated
 #### Removed

@@ -1,9 +1,15 @@
 import ProposalProposerActionsEntry from "$lib/components/proposal-detail/ProposalProposerActionsEntry.svelte";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { ProposalProposerActionsEntryPo } from "$tests/page-objects/ProposalProposerActionsEntry.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
 describe("ProposalProposerActionsEntry", () => {
+  // TODO(GIX-2030) remove this once the feature flag is removed
+  beforeEach(() =>
+    overrideFeatureFlagsStore.setFlag("ENABLE_FULL_WIDTH_PROPOSAL", false)
+  );
+
   const renderComponent = (props) => {
     const { container } = render(ProposalProposerActionsEntry, {
       props,

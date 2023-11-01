@@ -30,7 +30,8 @@
     "this_may_take_a_few_minutes": "This may take a few minutes",
     "do_not_close": "Please do not close your browser tab",
     "finish": "Finish",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "expand_all": "Expand All"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -529,7 +530,10 @@
     "newer": "Navigate to newer proposal",
     "older_short": "Older",
     "newer_short": "Newer",
-    "sign_in": "Sign in to vote"
+    "sign_in": "Sign in to vote",
+    "toggle_lable": "Switch between user-friendly and raw data representation",
+    "toggle_tree": "Tree",
+    "toggle_raw": "Raw"
   },
   "proposal_detail__vote": {
     "headline": "Cast Vote",

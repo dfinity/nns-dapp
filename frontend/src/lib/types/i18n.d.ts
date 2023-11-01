@@ -34,6 +34,7 @@ interface I18nCore {
   do_not_close: string;
   finish: string;
   unknown: string;
+  expand_all: string;
 }
 
 interface I18nError {
@@ -550,6 +551,9 @@ interface I18nProposal_detail {
   older_short: string;
   newer_short: string;
   sign_in: string;
+  toggle_lable: string;
+  toggle_tree: string;
+  toggle_raw: string;
 }
 
 interface I18nProposal_detail__vote {

@@ -1,4 +1,5 @@
 import NnsProposalProposerActionsEntry from "$lib/components/proposal-detail/NnsProposalProposerActionsEntry.svelte";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { proposalFirstActionKey } from "$lib/utils/proposals.utils";
 import {
   mockProposalInfo,
@@ -31,6 +32,11 @@ const proposalWithActionWithUndefined = {
 } as Proposal;
 
 describe("NnsProposalProposerActionsEntry", () => {
+  // TODO(GIX-2030) remove this once the feature flag is removed
+  beforeEach(() =>
+    overrideFeatureFlagsStore.setFlag("ENABLE_FULL_WIDTH_PROPOSAL", false)
+  );
+
   it("should render action key", () => {
     const { getByText } = render(NnsProposalProposerActionsEntry, {
       props: {
