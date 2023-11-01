@@ -6,10 +6,10 @@
   let checked: boolean;
   $: checked = $jsonRepresentationModeStore === "raw";
 
-  const setPretty = () => ($jsonRepresentationModeStore = "pretty");
+  const setTree = () => ($jsonRepresentationModeStore = "tree");
   const setRaw = () => ($jsonRepresentationModeStore = "raw");
   const toggle = () =>
-    $jsonRepresentationModeStore === "pretty" ? setRaw() : setPretty();
+    $jsonRepresentationModeStore === "tree" ? setRaw() : setTree();
 </script>
 
 <div class="data-representation-toggle" data-tid="data-representation-toggle">
@@ -17,8 +17,8 @@
     <button
       class="ghost"
       type="button"
-      on:click={setPretty}
-      data-tid="toggle-pretty">{$i18n.proposal_detail.toggle_pretty}</button
+      on:click={setTree}
+      data-tid="toggle-tree">{$i18n.proposal_detail.toggle_tree}</button
     >
     <Toggle
       bind:checked

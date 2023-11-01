@@ -1,6 +1,6 @@
 import { isHash, isPrincipal } from "$lib/utils/utils";
 
-export type PrettyJsonValueType =
+export type TreeJsonValueType =
   | "bigint"
   | "boolean"
   | "function"
@@ -14,7 +14,7 @@ export type PrettyJsonValueType =
   | "base64Encoding"
   | "undefined";
 
-export const getPrettyJsonValueType = (value: unknown): PrettyJsonValueType => {
+export const getTreeJsonValueType = (value: unknown): TreeJsonValueType => {
   if (value === null) return "null";
   if (isPrincipal(value)) return "principal";
   if (Array.isArray(value) && isHash(value)) return "hash";

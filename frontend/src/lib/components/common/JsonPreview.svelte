@@ -21,7 +21,7 @@
 </script>
 
 <div class="content-cell-island markdown-container">
-  {#if $jsonRepresentationModeStore === "pretty"}
+  {#if $jsonRepresentationModeStore === "tree"}
     <div class="json" data-tid="json-wrapper" in:fade>
       {#if !expandAll}
         <button class="ghost expand-all" on:click={toggleExpanded}

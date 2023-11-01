@@ -1,29 +1,23 @@
 <script lang="ts">
   import { stringifyJson } from "$lib/utils/utils";
   import { Html } from "@dfinity/gix-components";
-  import type { PrettyJsonValueType } from "$lib/utils/pretty-json.utils";
-  import { getPrettyJsonValueType } from "$lib/utils/pretty-json.utils";
+  import type { TreeJsonValueType } from "$lib/utils/json.utils";
+  import { getTreeJsonValueType } from "$lib/utils/json.utils";
 
   export let data: unknown | undefined = undefined;
   export let key: string | undefined = undefined;
 
-  let valueType: PrettyJsonValueType;
+  let valueType: TreeJsonValueType;
+  $: valueType = getTreeJsonValueType(data);
+
   let value: unknown;
-  let keyLabel: string;
-  $: {
-    valueType = getPrettyJsonValueType(data);
-    value =
-      valueType === "base64Encoding"
-        ? (data as { [key: string]: unknown })["base64Encoding"]
-        : stringifyJson(data);
-    keyLabel = `${key ?? ""}`;
-  }
+  $: value =
+    valueType === "base64Encoding"
+      ? (data as { [key: string]: unknown })["base64Encoding"]
+      : stringifyJson(data);
 
   let title: string | undefined;
   $: title = valueType === "hash" ? (data as number[]).join() : undefined;
-
-  let keyIsIndex = false;
-  $: keyIsIndex = !isNaN(Number(key));
 </script>
 
 {#if valueType === "base64Encoding"}

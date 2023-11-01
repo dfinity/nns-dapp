@@ -1,7 +1,7 @@
 import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
 import { writableStored } from "./writable-stored";
 
-type JsonRepresentationMode = "pretty" | "raw";
+type JsonRepresentationMode = "tree" | "raw";
 
 /**
  * A store that contains user preferences for the JSON representation.
@@ -9,5 +9,5 @@ type JsonRepresentationMode = "pretty" | "raw";
 export const jsonRepresentationModeStore =
   writableStored<JsonRepresentationMode>({
     key: StoreLocalStorageKey.JsonRepresentationMode,
-    defaultValue: "pretty",
+    defaultValue: "tree",
   });
