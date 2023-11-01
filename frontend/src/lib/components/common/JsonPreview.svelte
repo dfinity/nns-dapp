@@ -4,7 +4,7 @@
   import { isNullish } from "@dfinity/utils";
   import { jsonRepresentationModeStore } from "$lib/stores/json-representation-mode.store";
   import { IconExpandAll } from "@dfinity/gix-components";
-  import PrettyJson from "$lib/components/common/PrettyJson.svelte";
+  import TreeJson from "$lib/components/common/TreeJson.svelte";
   import RawJson from "$lib/components/common/RawJson.svelte";
 
   export let json: unknown | undefined = undefined;
@@ -29,7 +29,7 @@
           ></button
         >
       {/if}
-      <PrettyJson
+      <TreeJson
         json={expandedData}
         defaultExpandedLevel={expandAll ? Number.MAX_SAFE_INTEGER : 1}
       />
