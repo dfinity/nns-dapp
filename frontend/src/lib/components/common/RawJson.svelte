@@ -18,6 +18,6 @@
   pre {
     margin: 0;
     overflow-x: auto;
-    @include fonts.standard;
+    @include fonts.small;
   }
 </style>
