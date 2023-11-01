@@ -49,7 +49,8 @@
       class:key--is-index={keyIsIndex}
     >
       <button
-        class="icon-only"
+        class="icon-only expand-button"
+        class:expand-button--expanded={!collapsed}
         data-tid={testId}
         aria-label={$i18n.core.toggle}
         tabindex="0"
@@ -146,6 +147,15 @@
     &.key--is-index {
       // monospace for array indexes to avoid different widths
       font-family: monospace;
+    }
+  }
+
+  .expand-button {
+    transform: rotate(-90deg);
+    transition: transform ease-out var(--animation-time-normal);
+
+    &--expanded {
+      transform: rotate(0);
     }
   }
 </style>
