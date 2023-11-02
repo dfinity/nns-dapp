@@ -21,7 +21,6 @@
   export let proposalIds: bigint[] = [];
   export let selectProposal: (proposalId: bigint) => void;
 
-  //
   let sortedProposalIds: bigint[] = [];
   // sort proposalIds in descent order
   $: sortedProposalIds = [...proposalIds].sort((a, b) => Number(b - a));
