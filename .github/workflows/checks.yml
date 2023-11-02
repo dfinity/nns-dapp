@@ -169,8 +169,12 @@ jobs:
           curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
       - name: Check didc
         run: command -v didc
+      - name: Get dfx version
+        run: echo "DFX_VERSION=$(jq -r .dfx dfx.json)" >> $GITHUB_ENV
       - name: Install dfx
-        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+        uses: dfinity/setup-dfx@main
+        with:
+          dfx-version: ${{ env.DFX_VERSION }}
       - name: Verify template creation
         run: |
           echo Create a fake wasm

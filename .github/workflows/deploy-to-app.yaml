@@ -44,9 +44,14 @@ jobs:
       - name: Get versions
         id: tool_versions
         run: echo "dfx=$(jq -r .dfx dfx.json)" >> "$GITHUB_OUTPUT"
+      - name: Get dfx version
+        run: echo "DFX_VERSION=$(jq -r .dfx dfx.json)" >> $GITHUB_ENV
+      - name: Install dfx
+        uses: dfinity/setup-dfx@main
+        with:
+          dfx-version: ${{ env.DFX_VERSION }}
       - name: Set credentials
         run: |
-          DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
           printf "%s" "${{ secrets.DFX_IDENTITY_PEM }}" | dfx identity import --storage-mode=plaintext ci /dev/stdin
           dfx identity use ci
         env:
