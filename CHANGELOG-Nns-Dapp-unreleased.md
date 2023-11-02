@@ -59,6 +59,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Stop updating candid files when updating the test environment.
 * Join npm audit URLs with spaces instead of commas.
 * Add traits with a dedicated command rather than with patch files.
 * Use snsdemo snapshot with Internet Identity version 2023-10-27.
