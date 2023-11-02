@@ -37,7 +37,7 @@
             >
           </div>
 
-          <Tag intent={color}>{statusString}</Tag>
+          <Tag testId="proposal-status" intent={color}>{statusString}</Tag>
         </div>
 
         <h3 data-tid="proposal-card-heading">{heading}</h3>
@@ -67,7 +67,7 @@
         </p>
 
         {#if nonNullish(deadlineTimestampSeconds) && deadlineTimestampSeconds > nowInSeconds()}
-          <p data-proposer-id={proposer} class="info">
+          <p class="info">
             <IconClockNoFill />
             <span class="visually-hidden"
               >{$i18n.proposal_detail.proposer_prefix}</span
