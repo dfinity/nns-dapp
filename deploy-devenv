@@ -2,7 +2,8 @@
 set -euxo pipefail
 
 # Usage: cat deploy-devenv | ssh devenv
-
+#
+# To tear down: ssh devenv screen -S dfx -X quit
 
 WORKDIR="$HOME/dfn"
 
