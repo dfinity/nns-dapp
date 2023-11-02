@@ -51,19 +51,19 @@
 
       <div>
         {#if nonNullish(topic)}
-          <p data-tid="proposal-topic" class="info">
+          <p class="info">
             <IconChat />
             <span class="visually-hidden"
               >{$i18n.proposal_detail.topic_prefix}</span
-            ><output>{topic}</output>
+            ><output data-tid="proposal-topic">{topic}</output>
           </p>
         {/if}
 
-        <p data-proposer-id={proposer} class="info">
+        <p class="info">
           <IconUser />
           <span class="visually-hidden"
             >{$i18n.proposal_detail.proposer_prefix}</span
-          ><output>{proposer}</output>
+          ><output data-proposer-id={proposer}>{proposer}</output>
         </p>
 
         {#if nonNullish(deadlineTimestampSeconds) && deadlineTimestampSeconds > nowInSeconds()}
