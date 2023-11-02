@@ -41,6 +41,7 @@
   .markdown {
     overflow-wrap: break-word;
 
+    // TODO(max): rename and move to gix-components
     .markdown-container {
       margin-top: var(--padding-2x);
       // custom island styles

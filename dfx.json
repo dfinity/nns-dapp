@@ -629,7 +629,8 @@
           "ENABLE_STAKE_NEURON_ICRC1": false,
           "ENABLE_SWAP_ICRC1": false,
           "ENABLE_MY_TOKENS": false,
-          "ENABLE_FULL_WIDTH_PROPOSAL": false
+          "ENABLE_FULL_WIDTH_PROPOSAL": false,
+          "ENABLE_CKBTC_ICRC2": false
         }
       }
     },
@@ -642,7 +643,7 @@
         "BINSTALL_VERSION": "1.3.0",
         "DIDC_VERSION": "2023-09-27",
         "CARGO_SORT_VERSION": "1.0.9",
-        "SNSDEMO_RELEASE": "release-2023-10-30",
+        "SNSDEMO_RELEASE": "release-2023-11-02",
         "IC_COMMIT": "dd51544944987556c978e774aa7a1992e5c11542"
       },
       "packtool": ""

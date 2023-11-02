@@ -34,6 +34,7 @@ interface I18nCore {
   do_not_close: string;
   finish: string;
   unknown: string;
+  expand_all: string;
 }
 
 interface I18nError {
@@ -487,11 +488,13 @@ interface I18nTransaction_names {
   topUpCanister: string;
   refundSwap: string;
   participateSwap: string;
+  approve: string;
 }
 
 interface I18nCkbtc_transaction_names {
   burn: string;
   mint: string;
+  approve: string;
 }
 
 interface I18nWallet {
@@ -548,6 +551,9 @@ interface I18nProposal_detail {
   older_short: string;
   newer_short: string;
   sign_in: string;
+  toggle_lable: string;
+  toggle_tree: string;
+  toggle_raw: string;
 }
 
 interface I18nProposal_detail__vote {
