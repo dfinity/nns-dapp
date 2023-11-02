@@ -55,7 +55,9 @@
 </script>
 
 <TestIdWrapper testId="proposal-system-info-details-component">
-  <h1 class="content-cell-title">{type ?? ""}</h1>
+  <h1 class="content-cell-title">
+    {$i18n.proposal_detail.headline}
+  </h1>
 
   <div class="content-cell-details">
     {#if nonNullish(type)}
@@ -120,3 +122,11 @@
     {/if}
   </div>
 </TestIdWrapper>
+
+<style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
+  h1 {
+    @include fonts.h3;
+  }
+</style>

@@ -37,6 +37,11 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
+  .title {
+    @include fonts.h3;
+  }
 
   .latest-tally {
     display: grid;
@@ -102,9 +107,5 @@
         background: var(--positive-emphasis-gradient);
       }
     }
-  }
-
-  .title {
-    padding-bottom: var(--padding);
   }
 </style>
