@@ -51,17 +51,25 @@
         >{formatPercentage(noProportion)}</span
       >
     </div>
-    <div
-      class="progressbar"
-      role="progressbar"
-      data-tid="progressbar"
-      aria-label={$i18n.proposal_detail__vote.vote_progress}
-      aria-valuenow={yes}
-      aria-valuemin={0}
-      aria-valuemax={total}
-    >
-      <div class="yes" style={`width: ${yesProportion * 100}%`}></div>
-      <div class="no" style={`width: ${noProportion * 100}%`}></div>
+    <div class="progressbar-container">
+      <div class="majority absolute-majority">
+        <div class="majority-icon absolute-majority triangle-icon"></div>
+      </div>
+      <div class="majority simple-majority">
+        <div class="majority-icon simple-majority"></div>
+      </div>
+      <div
+        class="progressbar"
+        role="progressbar"
+        data-tid="progressbar"
+        aria-label={$i18n.proposal_detail__vote.vote_progress}
+        aria-valuenow={yes}
+        aria-valuemin={0}
+        aria-valuemax={total}
+      >
+        <div class="yes" style={`width: ${yesProportion * 100}%`}></div>
+        <div class="no" style={`width: ${noProportion * 100}%`}></div>
+      </div>
     </div>
     <span class="yes-value yes caption">
       <span class="label description">{`Voting power `}&nbsp;</span>
@@ -75,7 +83,10 @@
 
   <div class="legends">
     <VotesResultsMajorityDescription>
-      <h4 class="description" slot="title">Absolute Majority</h4>
+      <h4 class="description" slot="title">
+        <div class="majority-icon absolute-majority"></div>
+        Absolute Majority
+      </h4>
       <p class="description">
         Before the voting period ends, a proposal is adopted or rejected if an
         absolute majority (more than half of the total voting power, 🚧indicated
@@ -83,7 +94,10 @@
       </p>
     </VotesResultsMajorityDescription>
     <VotesResultsMajorityDescription>
-      <h4 class="description" slot="title">Simple Majority</h4>
+      <h4 class="description" slot="title">
+        <div class="majority-icon simple-majority"></div>
+        Simple Majority
+      </h4>
       <p class="description">
         When the voting period ends, a proposal is adopted if a simple majority
         (more than half of the votes cast) has voted Yes and those votes
@@ -102,8 +116,6 @@
   @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
-  // absolute var(--purple-600)
-  // simple var(--orange)
   $font-size-medium: 0.875rem;
 
   .title {
@@ -117,7 +129,7 @@
     // 5 columns for mobile to give more space for the ".remain" section
     grid-template-areas:
       "yes-percent yes-percent _ no-percent no-percent"
-      "progressbar progressbar  progressbar progressbar progressbar"
+      "progressbar progressbar progressbar progressbar progressbar"
       "yes-value remain remain remain no-value";
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 
@@ -148,8 +160,15 @@
       justify-content: center;
       text-align: center;
     }
-    .progressbar {
+    .progressbar-container {
       grid-area: progressbar;
+      // to display majorities
+      position: relative;
+      margin-top: var(--padding-1_5x);
+      .majority-icon.simple-majority {
+        width: calc(var(--padding) * 0.75);
+        height: calc(var(--padding) * 0.75);
+      }
     }
     .yes-value {
       grid-area: yes-value;
@@ -183,6 +202,51 @@
     }
   }
 
+  .majority-icon {
+    width: var(--padding);
+    height: var(--padding);
+    border-radius: 50%;
+
+    &.absolute-majority {
+      background: var(--purple-600);
+    }
+    &.simple-majority {
+      background: var(--orange);
+    }
+    &.triangle-icon {
+      width: 0;
+      height: 0;
+      border-radius: 0;
+      background: none;
+      border-left: var(--padding-0_5x) solid transparent;
+      border-right: var(--padding-0_5x) solid transparent;
+      border-top: var(--padding-0_5x) solid var(--purple-600);
+    }
+  }
+
+  .majority {
+    position: absolute;
+    background: var(--card-background);
+    width: calc(var(--padding) / 4);
+    height: var(--padding-1_5x);
+
+    &.absolute-majority {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    &.simple-majority {
+      left: 3%;
+      transform: translateX(-50%);
+    }
+
+    .majority-icon {
+      position: absolute;
+      top: calc(-1 * var(--padding-1_5x));
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+
   .progressbar {
     display: flex;
     // the aria in between is undecided (see the dashboard bar)
@@ -207,9 +271,12 @@
   }
 
   h4 {
+    display: inline-flex;
+    align-items: center;
+    column-gap: var(--padding-0_5x);
+
     @include fonts.standard;
     font-size: $font-size-medium;
-    display: inline;
   }
 
   .legends {
