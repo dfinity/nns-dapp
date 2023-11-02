@@ -74,6 +74,19 @@ setDefaultTestConstants({
 
 failTestsThatLogToConsole();
 
+// Avoid using fetch in tests
+let usedFetch = false;
+beforeEach(() => {
+  usedFetch = false;
+});
+afterEach(async () => {
+  expect(usedFetch).toBe(false);
+});
+vi.spyOn(global, "fetch").mockImplementation(() => {
+  usedFetch = true;
+  throw new Error("fetch is not allowed in tests");
+});
+
 // testing-library setup
 configure({
   testIdAttribute: "data-tid",
