@@ -71,11 +71,15 @@
       </div>
     </div>
     <span class="yes-value yes caption">
-      <span class="label description">{`Voting power `}&nbsp;</span>
+      <span class="label description"
+        >{$i18n.proposal_detail__vote.voting_power}&nbsp;</span
+      >
       <span data-tid="adopt">{formatVotingPower(yes)}</span>
     </span>
     <span class="no-value no caption">
-      <span class="label description">{`Voting power`}&nbsp;</span>
+      <span class="label description"
+        >{$i18n.proposal_detail__vote.voting_power}&nbsp;</span
+      >
       <span data-tid="reject">{formatVotingPower(no)}</span>
     </span>
   </div>
