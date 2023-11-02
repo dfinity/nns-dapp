@@ -1,6 +1,7 @@
 <script lang="ts">
   import {
-    Card, IconChat,
+    Card,
+    IconChat,
     IconClockNoFill,
     IconUser,
     Tag,
@@ -52,27 +53,25 @@
         {#if nonNullish(topic)}
           <p data-tid="proposal-topic">
             <IconChat />
-            <label for="topic" class="visually-hidden"
-              >{$i18n.proposal_detail.topic_prefix}</label
-            ><output id="topic">{topic}</output>
+            <span class="visually-hidden"
+              >{$i18n.proposal_detail.topic_prefix}</span
+            ><output>{topic}</output>
           </p>
         {/if}
 
         <p data-proposer-id={proposer}>
           <IconUser />
-          <label for="proposer" class="visually-hidden"
-            >{$i18n.proposal_detail.proposer_prefix}</label
-          ><output id="proposer">{proposer}</output>
+          <span class="visually-hidden"
+            >{$i18n.proposal_detail.proposer_prefix}</span
+          ><output>{proposer}</output>
         </p>
 
         {#if nonNullish(deadlineTimestampSeconds) && deadlineTimestampSeconds > nowInSeconds()}
           <p data-proposer-id={proposer}>
             <IconClockNoFill />
-            <label for="countdown" class="visually-hidden"
-              >{$i18n.proposal_detail.proposer_prefix}</label
-            ><output id="countdown"
-              ><Countdown {deadlineTimestampSeconds} /></output
-            >
+            <span class="visually-hidden"
+              >{$i18n.proposal_detail.proposer_prefix}</span
+            ><output><Countdown {deadlineTimestampSeconds} /></output>
           </p>
         {/if}
       </div>
