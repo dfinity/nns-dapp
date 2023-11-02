@@ -1,8 +1,10 @@
 name: 'Clone the snsdemo repository'
 description: |
-  If the snsdemo repository is already present: Does nothing.
+  Ensures that the snsdemo repository is checked out at `./snsdemo` at the commit specified in `dfx.json`.
 
-  Otherwise: Clones the snsdemo repository at the commit specified in `dfx.json`
+  * If the snsdemo repository is already present: Checks that the repo is checked
+    out at the expected commit.  If not, this fails with an error merssage.
+  * Otherwise: Clones the snsdemo repository at the commit specified in `dfx.json`
 inputs:
   token:
     description: "Github access token used to clone"
