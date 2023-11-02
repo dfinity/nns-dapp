@@ -51,7 +51,7 @@
 
       <div>
         {#if nonNullish(topic)}
-          <p data-tid="proposal-topic">
+          <p data-tid="proposal-topic" class="info">
             <IconChat />
             <span class="visually-hidden"
               >{$i18n.proposal_detail.topic_prefix}</span
@@ -59,7 +59,7 @@
           </p>
         {/if}
 
-        <p data-proposer-id={proposer}>
+        <p data-proposer-id={proposer} class="info">
           <IconUser />
           <span class="visually-hidden"
             >{$i18n.proposal_detail.proposer_prefix}</span
@@ -67,7 +67,7 @@
         </p>
 
         {#if nonNullish(deadlineTimestampSeconds) && deadlineTimestampSeconds > nowInSeconds()}
-          <p data-proposer-id={proposer}>
+          <p data-proposer-id={proposer} class="info">
             <IconClockNoFill />
             <span class="visually-hidden"
               >{$i18n.proposal_detail.proposer_prefix}</span
@@ -89,20 +89,6 @@
     height: 100%;
   }
 
-  h3 {
-    margin-bottom: var(--padding-2x);
-  }
-
-  p {
-    margin: 0;
-  }
-
-  .content {
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding);
-  }
-
   .header {
     display: flex;
     justify-content: space-between;
@@ -110,13 +96,23 @@
 
   h3 {
     padding: var(--padding-2x) 0 var(--padding-0_5x);
-  }
-
-  blockquote {
-    padding: 0 0 var(--padding-2x);
+    margin-bottom: var(--padding-2x);
   }
 
   p {
+    margin: 0;
+  }
+
+  blockquote {
+    padding: 0 0 var(--padding-3x);
+
+    p {
+      @include text.clamp(6);
+      word-break: break-word;
+    }
+  }
+
+  .info {
     display: flex;
     align-items: center;
     gap: var(--padding);
