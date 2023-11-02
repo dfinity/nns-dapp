@@ -92,6 +92,12 @@
   .header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    gap: var(--padding);
+  }
+
+  .id {
+    @include text.truncate;
   }
 
   h3 {
