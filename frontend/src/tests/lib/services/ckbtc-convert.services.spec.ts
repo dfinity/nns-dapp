@@ -1,8 +1,11 @@
 import * as agent from "$lib/api/agent.api";
 import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
+import * as minterApi from "$lib/api/ckbtc-minter.api";
+import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import {
   convertCkBTCToBtc,
+  convertCkBTCToBtcIcrc2,
   retrieveBtc,
 } from "$lib/services/ckbtc-convert.services";
 import { loadCkBTCAccountTransactions } from "$lib/services/ckbtc-transactions.services";
@@ -14,7 +17,11 @@ import { tokensStore } from "$lib/stores/tokens.store";
 import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
-import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
+import {
+  mockIdentity,
+  mockPrincipal,
+  resetIdentity,
+} from "$tests/mocks/auth.store.mock";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import {
   mockBTCAddressTestnet,
@@ -24,8 +31,13 @@ import {
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
 import { mockTokens } from "$tests/mocks/tokens.mock";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
-import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
+import {
+  CkBTCMinterCanister,
+  MinterInsufficientFundsError,
+  type RetrieveBtcOk,
+} from "@dfinity/ckbtc";
 import {
   IcrcLedgerCanister,
   decodeIcrcAccount,
@@ -38,6 +50,7 @@ vi.mock("$lib/services/ckbtc-transactions.services");
 vi.mock("$lib/services/ckbtc-withdrawal-accounts.services");
 
 describe("ckbtc-convert-services", () => {
+  const now = new Date("2019-02-03T12:34:56.789Z").getTime();
   const minterCanisterMock = mock<CkBTCMinterCanister>();
 
   const params = {
@@ -94,7 +107,6 @@ describe("ckbtc-convert-services", () => {
 
     vi.spyOn(console, "error").mockImplementation(() => undefined);
 
-    const now = Date.now();
     vi.useFakeTimers().setSystemTime(now);
   });
 
@@ -482,6 +494,217 @@ describe("ckbtc-convert-services", () => {
       });
 
       expect(loadCkBTCAccountTransactions).not.toBeCalled();
+    });
+  });
+
+  describe("convert with ICRC-2", () => {
+    let approveTransferSpy;
+    let resolveApproveTransfer;
+    let retrieveBtcSpy;
+    let resolveRetrieveBtc;
+    let rejectRetrieveBtc;
+    let resolveLoadCkBTCWithdrawalAccount;
+    let spyOnToastsError;
+
+    beforeEach(() => {
+      resolveApproveTransfer = undefined;
+      resolveRetrieveBtc = undefined;
+      resolveLoadCkBTCWithdrawalAccount = undefined;
+
+      approveTransferSpy = vi
+        .spyOn(icrcLedgerApi, "approveTransfer")
+        .mockImplementation(
+          () =>
+            new Promise<bigint>((resolve) => {
+              resolveApproveTransfer = resolve;
+            })
+        );
+      retrieveBtcSpy = vi
+        .spyOn(minterApi, "retrieveBtcWithApproval")
+        .mockImplementation(
+          () =>
+            new Promise<RetrieveBtcOk>((resolve, reject) => {
+              resolveRetrieveBtc = resolve;
+              rejectRetrieveBtc = reject;
+            })
+        );
+      vi.mocked(loadCkBTCWithdrawalAccount).mockImplementation(
+        () =>
+          new Promise<void>((resolve) => {
+            resolveLoadCkBTCWithdrawalAccount = resolve;
+          })
+      );
+      spyOnToastsError = vi.spyOn(toastsStore, "toastsError");
+    });
+
+    it("should approve the transfer", async () => {
+      const updateProgressSpy = vi.fn();
+
+      // No await because the call doesn't finish during this test.
+      convertCkBTCToBtcIcrc2({
+        ...params,
+        updateProgress: updateProgressSpy,
+      });
+
+      await runResolvedPromises();
+
+      expectStepsPerformed({
+        updateProgressSpy,
+        steps: [ConvertBtcStep.APPROVE_TRANSFER],
+      });
+
+      expect(approveTransferSpy).toBeCalledWith({
+        identity: mockIdentity,
+        canisterId: params.universeId,
+        amount: numberToE8s(params.amount),
+        expiresAt: BigInt(now) * 1_000_000n + 5n * 60n * 1_000_000_000n,
+        spender: mockCkBTCAdditionalCanisters.minterCanisterId,
+      });
+
+      expect(approveTransferSpy).toBeCalledTimes(1);
+      expect(retrieveBtcSpy).toBeCalledTimes(0);
+      expect(loadCkBTCWithdrawalAccount).toBeCalledTimes(0);
+      expect(loadCkBTCAccountTransactions).toBeCalledTimes(0);
+    });
+
+    it("should retrieve BTC with approval", async () => {
+      const updateProgressSpy = vi.fn();
+
+      // No await because the call doesn't finish during this test.
+      convertCkBTCToBtcIcrc2({
+        ...params,
+        updateProgress: updateProgressSpy,
+      });
+
+      await runResolvedPromises();
+      resolveApproveTransfer(123n);
+      await runResolvedPromises();
+
+      expectStepsPerformed({
+        updateProgressSpy,
+        steps: [ConvertBtcStep.APPROVE_TRANSFER, ConvertBtcStep.SEND_BTC],
+      });
+
+      expect(retrieveBtcSpy).toBeCalledWith({
+        identity: mockIdentity,
+        canisterId: mockCkBTCAdditionalCanisters.minterCanisterId,
+        address: params.destinationAddress,
+        amount: numberToE8s(params.amount),
+      });
+
+      expect(approveTransferSpy).toBeCalledTimes(1);
+      expect(retrieveBtcSpy).toBeCalledTimes(1);
+      expect(loadCkBTCWithdrawalAccount).toBeCalledTimes(0);
+      expect(loadCkBTCAccountTransactions).toBeCalledTimes(0);
+    });
+
+    it("should reload account and transactions", async () => {
+      const updateProgressSpy = vi.fn();
+
+      // No await because the call doesn't finish during this test.
+      convertCkBTCToBtcIcrc2({
+        ...params,
+        updateProgress: updateProgressSpy,
+      });
+
+      await runResolvedPromises();
+      resolveApproveTransfer(123n);
+      await runResolvedPromises();
+      resolveRetrieveBtc({ block_index: 125 });
+      await runResolvedPromises();
+
+      expectStepsPerformed({
+        updateProgressSpy,
+        steps: [
+          ConvertBtcStep.APPROVE_TRANSFER,
+          ConvertBtcStep.SEND_BTC,
+          ConvertBtcStep.RELOAD,
+        ],
+      });
+
+      expect(loadCkBTCWithdrawalAccount).toBeCalledWith({
+        universeId: params.universeId,
+      });
+
+      expect(loadCkBTCAccountTransactions).toBeCalledWith({
+        account: params.source,
+        canisterId: params.universeId,
+        indexCanisterId: mockCkBTCAdditionalCanisters.indexCanisterId,
+      });
+
+      expect(approveTransferSpy).toBeCalledTimes(1);
+      expect(retrieveBtcSpy).toBeCalledTimes(1);
+      expect(loadCkBTCWithdrawalAccount).toBeCalledTimes(1);
+      expect(loadCkBTCAccountTransactions).toBeCalledTimes(1);
+    });
+
+    it("succeeds", async () => {
+      const updateProgressSpy = vi.fn();
+
+      const convertPromise = convertCkBTCToBtcIcrc2({
+        ...params,
+        updateProgress: updateProgressSpy,
+      });
+
+      await runResolvedPromises();
+      resolveApproveTransfer(123n);
+      await runResolvedPromises();
+      resolveRetrieveBtc({ block_index: 125 });
+      await runResolvedPromises();
+      resolveLoadCkBTCWithdrawalAccount(undefined);
+      await runResolvedPromises();
+
+      expectStepsPerformed({
+        updateProgressSpy,
+        steps: [
+          ConvertBtcStep.APPROVE_TRANSFER,
+          ConvertBtcStep.SEND_BTC,
+          ConvertBtcStep.RELOAD,
+          ConvertBtcStep.DONE,
+        ],
+      });
+
+      expect(approveTransferSpy).toBeCalledTimes(1);
+      expect(retrieveBtcSpy).toBeCalledTimes(1);
+      expect(loadCkBTCWithdrawalAccount).toBeCalledTimes(1);
+      expect(loadCkBTCAccountTransactions).toBeCalledTimes(1);
+
+      expect(await convertPromise).toEqual({ success: true });
+      expect(spyOnToastsError).toBeCalledTimes(0);
+    });
+
+    it("fails when minter throws", async () => {
+      const updateProgressSpy = vi.fn();
+
+      const convertPromise = convertCkBTCToBtcIcrc2({
+        ...params,
+        updateProgress: updateProgressSpy,
+      });
+
+      await runResolvedPromises();
+      resolveApproveTransfer(123n);
+      await runResolvedPromises();
+      rejectRetrieveBtc(new MinterInsufficientFundsError());
+      await runResolvedPromises();
+      resolveLoadCkBTCWithdrawalAccount(undefined);
+      await runResolvedPromises();
+
+      expectStepsPerformed({
+        updateProgressSpy,
+        steps: [
+          ConvertBtcStep.APPROVE_TRANSFER,
+          ConvertBtcStep.SEND_BTC,
+          ConvertBtcStep.RELOAD,
+        ],
+      });
+
+      expect(approveTransferSpy).toBeCalledTimes(1);
+      expect(retrieveBtcSpy).toBeCalledTimes(1);
+      expect(loadCkBTCWithdrawalAccount).toBeCalledTimes(1);
+      expect(loadCkBTCAccountTransactions).toBeCalledTimes(1);
+
+      expect(await convertPromise).toEqual({ success: false });
+      expect(spyOnToastsError).toBeCalledTimes(1);
     });
   });
 });
