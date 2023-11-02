@@ -41,7 +41,7 @@ runs:
     - name: Get SNS scripts
       uses: ./.github/actions/checkout_snsdemo
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ inputs.token }}
     - name: Add SNS scripts to the path
       shell: bash
       run: echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
