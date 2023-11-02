@@ -69,6 +69,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Removed
 
 * Delete nightly `GitHub` job to update II used in tests; we now use the II that comes with `snsdemo`.
+* No longer update rust bindings when NNS canister interfaces are updated.
 
 #### Fixed
 
