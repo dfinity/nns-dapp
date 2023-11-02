@@ -515,6 +515,7 @@ interface I18nBusy_screen {
 }
 
 interface I18nProposal_detail {
+  headline: string;
   title: string;
   summary: string;
   topic_prefix: string;

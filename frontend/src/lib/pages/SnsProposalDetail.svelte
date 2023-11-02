@@ -20,6 +20,8 @@
   import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
   import {
     getUniversalProposalStatus,
+    mapProposalInfo,
+    type SnsProposalDataMap,
     snsProposalId,
     snsProposalIdString,
     sortSnsProposalsById,
@@ -36,6 +38,9 @@
   import { SplitBlock } from "@dfinity/gix-components";
   import { navigateToProposal } from "$lib/utils/proposals.utils";
   import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
+  import type { Readable } from "svelte/store";
+  import type { SnsNervousSystemFunction } from "@dfinity/sns";
+  import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -170,8 +175,24 @@
 
   $: layoutTitleStore.set({
     title,
-    header: $ENABLE_FULL_WIDTH_PROPOSAL ? "" : title,
+    header: title,
   });
+
+  // preload sns functions for mapping
+  let functionsStore: Readable<SnsNervousSystemFunction[] | undefined>;
+  $: if (universeCanisterId) {
+    loadSnsNervousSystemFunctions(universeCanisterId);
+    functionsStore = createSnsNsFunctionsProjectStore(universeCanisterId);
+  }
+
+  let proposalDataMap: SnsProposalDataMap | undefined;
+  $: proposalDataMap =
+    nonNullish(proposal) && nonNullish($functionsStore)
+      ? mapProposalInfo({
+          proposalData: proposal,
+          nsFunctions: $functionsStore,
+        })
+      : undefined;
 
   let proposalIds: bigint[];
   $: proposalIds = nonNullish(universeIdText)
@@ -182,11 +203,15 @@
 
   // The `update` function cares about the necessary data to be refetched.
   $: universeIdText, proposalIdText, $snsNeuronsStore, $authStore, update();
+
+  let proposalNavigationTitle: string | undefined;
+  $: proposalNavigationTitle = proposalDataMap?.type;
 </script>
 
 <TestIdWrapper testId="sns-proposal-details-grid">
   {#if nonNullish(proposalIdText) && !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
     <ProposalNavigation
+      title={proposalNavigationTitle}
       currentProposalId={BigInt(proposalIdText)}
       currentProposalStatus={getUniversalProposalStatus(proposal)}
       {proposalIds}
@@ -194,16 +219,13 @@
     />
   {/if}
 
-  {#if !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
+  {#if !updating && nonNullish(proposal) && nonNullish(proposalDataMap) && nonNullish(universeCanisterId)}
     {#if $ENABLE_FULL_WIDTH_PROPOSAL}
       <div class="proposal-data-section">
         <div class="content-cell-island">
           <SplitBlock>
             <div slot="start">
-              <SnsProposalSystemInfoSection
-                {proposal}
-                rootCanisterId={universeCanisterId}
-              />
+              <SnsProposalSystemInfoSection {proposalDataMap} />
             </div>
             <div slot="end">
               <SnsProposalVotingSection {proposal} {reloadProposal} />
@@ -217,10 +239,7 @@
       <!-- TODO(GIX-1957): remove this block after the full-width proposal is enabled -->
       <div class="content-grid">
         <div class="content-a content-cell-island">
-          <SnsProposalSystemInfoSection
-            {proposal}
-            rootCanisterId={universeCanisterId}
-          />
+          <SnsProposalSystemInfoSection {proposalDataMap} />
         </div>
         <div class="content-b expand-content-b">
           <div class="content-cell-island">

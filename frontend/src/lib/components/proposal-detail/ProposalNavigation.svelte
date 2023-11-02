@@ -16,6 +16,7 @@
   import { triggerDebugReport } from "$lib/directives/debug.directives";
 
   export let currentProposalId: bigint;
+  export let title: string | undefined = undefined;
   export let currentProposalStatus: UniversalProposalStatus;
   export let proposalIds: bigint[] = [];
   export let selectProposal: (proposalId: bigint) => void;
@@ -42,9 +43,6 @@
     assertNonNullish(olderId);
     selectProposal(olderId);
   };
-
-  let title: string;
-  $: title = `${$i18n.proposal_detail.title} ${currentProposalId}`;
 </script>
 
 {#if $ENABLE_FULL_WIDTH_PROPOSAL}
@@ -61,7 +59,7 @@
           universe={$selectedUniverseStore}
         />
       </span>
-      <TestIdWrapper testId="title">{title}</TestIdWrapper>
+      <TestIdWrapper testId="title">{title ?? ""}</TestIdWrapper>
     </h2>
     <button
       class="ghost newer"
