@@ -14,6 +14,7 @@
   import { filteredProposals } from "$lib/derived/proposals.derived";
   import {
     getUniversalProposalStatus,
+    mapProposalInfo,
     navigateToProposal,
   } from "$lib/utils/proposals.utils";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
@@ -21,10 +22,16 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { ENABLE_FULL_WIDTH_PROPOSAL } from "$lib/stores/feature-flags.store";
   import { SplitBlock } from "@dfinity/gix-components";
+  import { nonNullish } from "@dfinity/utils";
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
   );
+
+  let proposalType: string | undefined;
+  $: nonNullish($store.proposal)
+    ? ({ type: proposalType } = mapProposalInfo($store.proposal))
+    : undefined;
 
   let proposalIds: bigint[] | undefined;
   $: proposalIds = $filteredProposals.proposals?.map(({ id }) => id as bigint);
@@ -34,6 +41,7 @@
   {#if $store?.proposal?.id !== undefined}
     {#if $referrerPathStore !== AppPath.Launchpad}
       <ProposalNavigation
+        title={proposalType}
         currentProposalId={$store.proposal.id}
         currentProposalStatus={getUniversalProposalStatus($store.proposal)}
         {proposalIds}
