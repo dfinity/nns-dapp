@@ -33,7 +33,7 @@
           <div class="id" data-proposal-id={id}>
             <Value
               ariaLabel={$i18n.proposal_detail.id_prefix}
-              testId="proposal-id">ID: {id}</Value
+              testId="proposal-id">{$i18n.proposal_detail.id}: {id}</Value
             >
           </div>
 

@@ -554,6 +554,7 @@ interface I18nProposal_detail {
   toggle_lable: string;
   toggle_tree: string;
   toggle_raw: string;
+  id: string;
 }
 
 interface I18nProposal_detail__vote {
