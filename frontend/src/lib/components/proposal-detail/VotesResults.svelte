@@ -4,6 +4,7 @@
   import ProposalContentCell from "./ProposalContentCell.svelte";
   import Countdown from "$lib/components/proposals/Countdown.svelte";
   import VotesResultsMajorityDescription from "$lib/components/proposal-detail/VotesResultsMajorityDescription.svelte";
+  import { nonNullish } from "@dfinity/utils";
 
   const formatVotingPower = (value: number) =>
     `${formatNumber(value, {
@@ -28,21 +29,23 @@
 
   <div class="votes-info">
     <div class="yes yes-percent">
-      <span class="caption">Adopt</span>
+      <span class="caption">{$i18n.proposal_detail.adopt}</span>
       <span class="percentage" data-tid="adopt-percentage"
         >{formatPercentage(yesProportion)}</span
       >
     </div>
     <div class="remain">
-      {#if deadlineTimestampSeconds}
-        <span class="caption description">Expiration date</span>
+      {#if nonNullish(deadlineTimestampSeconds) && deadlineTimestampSeconds > 0n}
+        <span class="caption description"
+          >{$i18n.proposal_detail__vote.expiration}</span
+        >
         <div class="caption value">
           <Countdown {deadlineTimestampSeconds} />
         </div>
       {/if}
     </div>
     <div class="no no-percent">
-      <span class="caption">Reject</span>
+      <span class="caption">{$i18n.proposal_detail.reject}</span>
       <span class="percentage" data-tid="reject-percentage"
         >{formatPercentage(noProportion)}</span
       >
@@ -81,28 +84,19 @@
     <VotesResultsMajorityDescription>
       <h4 class="description" slot="title">
         <div class="majority-icon absolute-majority"></div>
-        Absolute Majority
+        {$i18n.proposal_detail__vote.absolute_majority}
       </h4>
       <p class="description">
-        Before the voting period ends, a proposal is adopted or rejected if an
-        absolute majority (more than half of the total voting power, 🚧indicated
-        by delimiter above) has voted Yes or No on the proposal, respectively.
+        {$i18n.proposal_detail__vote.absolute_majority_description}
       </p>
     </VotesResultsMajorityDescription>
     <VotesResultsMajorityDescription>
       <h4 class="description" slot="title">
         <div class="majority-icon simple-majority"></div>
-        Simple Majority
+        {$i18n.proposal_detail__vote.simple_majority}
       </h4>
       <p class="description">
-        When the voting period ends, a proposal is adopted if a simple majority
-        (more than half of the votes cast) has voted Yes and those votes
-        constitute at least 3% of the total voting power (indicated by delimiter
-        above). Otherwise, the proposal is rejected. Before a proposal is
-        decided by Simple Majority, the voting period can be extended in order
-        to “wait for quiet”. Such voting period extensions occur when a
-        proposal’s voting results turn from either a Yes majority to a No
-        majority or vice versa.
+        {$i18n.proposal_detail__vote.simple_majority_description}
       </p>
     </VotesResultsMajorityDescription>
   </div>
