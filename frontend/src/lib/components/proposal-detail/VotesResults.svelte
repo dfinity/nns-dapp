@@ -1,150 +1,148 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { formatNumber } from "$lib/utils/format.utils";
+  import { formatNumber, formatPercentage } from "$lib/utils/format.utils";
   import ProposalContentCell from "./ProposalContentCell.svelte";
   import { nonNullish } from "@dfinity/utils";
   import Countdown from "$lib/components/proposals/Countdown.svelte";
 
-  const formatPercent = (value: number) =>
-    formatNumber(value, {
+  const formatVotingPower = (value: number) =>
+    // TODO(max): i18n
+    `${"Voting power"} ${formatNumber(value, {
       minFraction: 3,
       maxFraction: 3,
-    });
+    })}`;
 
   export let yes: number;
   export let no: number;
   export let total: number;
   export let deadlineTimestampSeconds: bigint | undefined;
 
-  let yesPercent: number;
-  $: yesPercent = (yes / total) * 100;
+  let yesProportion: number;
+  $: yesProportion = yes / total;
 
-  let noPercent: number;
-  $: noPercent = (no / total) * 100;
+  let noProportion: number;
+  $: noProportion = no / total;
 
   let undecidedPercent: number;
-  $: undecidedPercent = 100 - yesPercent - noPercent;
+  $: undecidedPercent = 100 - yesProportion - noProportion;
 </script>
 
 <ProposalContentCell testId="votes-results-component">
   <h2 slot="start" class="title">{$i18n.proposal_detail.voting_results}</h2>
 
-  <pre>
-    yes: {yes}
-    no: {no}
-    total: {total}
-    undecidedPercent: {formatPercent(undecidedPercent)}
-  </pre>
-
-  <div class="top-info">
-    <div class="adopt">
-      <span>Adopt</span>
-      <span data-tid="adopt-percent">{formatPercent(yesPercent)}</span>
+  <div class="votes-info">
+    <div class="yes">
+      <span class="caption">Adopt</span>
+      <span class="percentage" data-tid="adopt-percentage"
+        >{formatPercentage(yesProportion)}</span
+      >
     </div>
     <div class="remain">
       {#if nonNullish(deadlineTimestampSeconds)}
-        Expiration date
-        <Countdown slot="value" {deadlineTimestampSeconds} />
+        <span class="caption description">Expiration date</span>
+        <div class="caption value">
+          <Countdown slot="value" {deadlineTimestampSeconds} />
+        </div>
       {/if}
     </div>
-    <div class="reject">
-      <span>Reject</span>
-      <span data-tid="reject-percent">{formatPercent(noPercent)}</span>
+    <div class="no">
+      <span class="caption">Reject</span>
+      <span class="percentage" data-tid="reject-percentage"
+        >{formatPercentage(noProportion)}</span
+      >
     </div>
   </div>
 
-  <div class="latest-tally">
-    <h4 class="label yes">
-      {$i18n.proposal_detail.adopt}<span data-tid="adopt"
-        >{formatNumber(yes)}</span
-      >
-    </h4>
-    <div
-      class="progressbar"
-      role="progressbar"
-      data-tid="votes-progressbar"
-      aria-label={$i18n.proposal_detail__vote.vote_progress}
-      aria-valuenow={yes}
-      aria-valuemin={0}
-      aria-valuemax={total}
-    >
-      <div class="progressbar-value" style="width: {(yes / total) * 100}%" />
-    </div>
-    <h4 class="label no">
-      {$i18n.proposal_detail.reject}<span data-tid="reject"
-        >{formatNumber(no)}</span
-      >
-    </h4>
+  <div
+    class="votes-progressbar"
+    role="progressbar"
+    data-tid="votes-progressbar"
+    aria-label={$i18n.proposal_detail__vote.vote_progress}
+    aria-valuenow={yes}
+    aria-valuemin={0}
+    aria-valuemax={total}
+  >
+    <div class="yes" style={`width: ${yesProportion * 100}%`}></div>
+    <div class="no" style={`width: ${noProportion * 100}%`}></div>
+  </div>
+  <div class="progressbar-values description">
+    <span class="caption" data-tid="adopt">{formatVotingPower(yes)}</span>
+    <span class="caption" data-tid="reject">{formatVotingPower(no)}</span>
   </div>
 </ProposalContentCell>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
-  .latest-tally {
+  .caption {
+    @include fonts.small;
+  }
+  .yes {
+    color: var(--positive-emphasis);
+  }
+  .no {
+    color: var(--negative-emphasis);
+  }
+  .votes-info {
     display: grid;
-
-    grid-template-columns: 110px 1fr 110px;
+    column-gap: var(--padding-1_5x);
+    row-gap: var(--padding);
     align-items: center;
-    height: var(--header-height);
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "yes no"
+      "remain remain";
 
-    @include media.min-width(medium) {
-      grid-template-columns: 130px 1fr 130px;
+    @include media.min-width(small) {
+      grid-template-areas: "yes remain no";
+      grid-template-columns: 1fr auto 1fr;
     }
 
-    h4 {
-      line-height: var(--line-height-standard);
-      text-align: center;
-
-      &.yes {
-        color: var(--positive-emphasis);
-      }
-
-      &.no {
-        color: var(--negative-emphasis);
-      }
-
-      span {
-        display: block;
-        text-align: center;
-        font-size: var(--font-size-small);
-        font-weight: initial;
-
-        @include media.min-width(medium) {
-          font-size: var(--font-size-h5);
-        }
-      }
+    .yes {
+      grid-area: yes;
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+    }
+    .remain {
+      grid-area: remain;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .no {
+      grid-area: no;
+      display: flex;
+      flex-direction: column;
+      align-items: end;
     }
 
-    .progressbar {
-      position: relative;
-      height: 10px;
+    .percentage {
+      @include fonts.h2(true);
+    }
+  }
+
+  .votes-progressbar {
+    display: flex;
+    // the aria in between is undecided (see the dashboard bar)
+    justify-content: space-between;
+    height: var(--padding-1_5x);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    background: var(--elements-divider);
+
+    .yes {
+      background: var(--positive-emphasis);
+    }
+    .no {
       background: var(--negative-emphasis);
-
-      border-radius: var(--border-radius);
-      overflow: hidden;
-
-      .progressbar-value {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-
-        // TODO(L2-931): delete legacy style
-        --positive-emphasis-gradient: linear-gradient(
-          99.27deg,
-          var(--positive-emphasis) -0.11%,
-          #026500 100.63%
-        );
-        --positive-emphasis-gradient-fallback: var(--positive-emphasis);
-        --positive-emphasis-gradient-contrast: var(
-          --positive-emphasis-contrast
-        );
-
-        background: var(--positive-emphasis-gradient-fallback);
-        background: var(--positive-emphasis-gradient);
-      }
     }
+  }
+
+  .progressbar-values {
+    display: flex;
+    justify-content: space-between;
   }
 
   .title {
