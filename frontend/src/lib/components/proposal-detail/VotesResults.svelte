@@ -18,10 +18,10 @@
   export let deadlineTimestampSeconds: bigint | undefined = undefined;
 
   let yesProportion: number;
-  $: yesProportion = yes / total;
+  $: yesProportion = total ? yes / total : 0;
 
   let noProportion: number;
-  $: noProportion = no / total;
+  $: noProportion = total ? no / total : 0;
 </script>
 
 <ProposalContentCell testId="votes-results-component">
