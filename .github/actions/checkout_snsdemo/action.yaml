@@ -7,6 +7,8 @@ inputs:
   token:
     description: "Github access token used to clone"
     required: true
+outputs:
+  ref: ${{ steps.snsdemo_ref.outputs.ref }}
 runs:
   using: "composite"
   steps:
