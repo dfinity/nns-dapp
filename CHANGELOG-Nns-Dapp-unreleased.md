@@ -27,6 +27,7 @@ proposal is successful, the changes it released will be moved from this file to
 * New Proposal Card.
 * Change the slider in dissolve delay for a read-only progress bar.
 * Redesign the proposal payload and action.
+* Switch the flag to use redesigned proposal detail page sections by default.
 * Redesign the proposal voting section.
 * Beautify the proposal cards look & feel.
 
