@@ -2,23 +2,17 @@
   import { Collapsible, IconInfo } from "@dfinity/gix-components";
 
   let toggleContent: () => void;
-  let expanded: boolean;
 </script>
 
 <Collapsible
   expandButton={false}
   externalToggle={true}
   bind:toggleContent
-  bind:expanded
   wrapHeight
 >
-  <div slot="header" class="description" class:expanded>
+  <div slot="header" class="description">
     <slot name="title" />
-    <button
-      class="icon"
-      class:expanded
-      on:click|stopPropagation={toggleContent}
-    >
+    <button class="icon" on:click|stopPropagation={toggleContent}>
       <IconInfo />
     </button>
   </div>
