@@ -271,6 +271,7 @@
   }
 
   h4 {
+    margin: 0;
     display: inline-flex;
     align-items: center;
     column-gap: var(--padding-0_5x);

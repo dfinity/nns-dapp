@@ -33,10 +33,7 @@
     margin: 0;
   }
   .icon {
+    padding: 0;
     color: var(--description-color);
-    transition: transform ease-out var(--animation-time-normal);
-    .expanded {
-      transform: rotate(180deg);
-    }
   }
 </style>
