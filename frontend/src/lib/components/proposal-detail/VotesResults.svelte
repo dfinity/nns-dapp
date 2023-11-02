@@ -4,12 +4,12 @@
   import ProposalContentCell from "./ProposalContentCell.svelte";
   import { nonNullish } from "@dfinity/utils";
   import Countdown from "$lib/components/proposals/Countdown.svelte";
+  import VotesResultsMajorityDescription from "$lib/components/proposal-detail/VotesResultsMajorityDescription.svelte";
 
   const formatVotingPower = (value: number) =>
-    // TODO(max): i18n
-    `${"Voting power"} ${formatNumber(value, {
-      minFraction: 3,
-      maxFraction: 3,
+    `${formatNumber(value, {
+      minFraction: 0,
+      maxFraction: 0,
     })}`;
 
   export let yes: number;
@@ -23,15 +23,15 @@
   let noProportion: number;
   $: noProportion = no / total;
 
-  let undecidedPercent: number;
-  $: undecidedPercent = 100 - yesProportion - noProportion;
+  let toggleContent: () => void;
+  let expanded: boolean;
 </script>
 
 <ProposalContentCell testId="votes-results-component">
   <h2 slot="start" class="title">{$i18n.proposal_detail.voting_results}</h2>
 
   <div class="votes-info">
-    <div class="yes">
+    <div class="yes yes-percent">
       <span class="caption">Adopt</span>
       <span class="percentage" data-tid="adopt-percentage"
         >{formatPercentage(yesProportion)}</span
@@ -45,29 +45,56 @@
         </div>
       {/if}
     </div>
-    <div class="no">
+    <div class="no no-percent">
       <span class="caption">Reject</span>
       <span class="percentage" data-tid="reject-percentage"
         >{formatPercentage(noProportion)}</span
       >
     </div>
+    <div
+      class="progressbar"
+      role="progressbar"
+      data-tid="progressbar"
+      aria-label={$i18n.proposal_detail__vote.vote_progress}
+      aria-valuenow={yes}
+      aria-valuemin={0}
+      aria-valuemax={total}
+    >
+      <div class="yes" style={`width: ${yesProportion * 100}%`}></div>
+      <div class="no" style={`width: ${noProportion * 100}%`}></div>
+    </div>
+    <span class="yes-value yes caption" data-tid="adopt">
+      <span class="label description">{`Voting power `}&nbsp;</span>
+      <span>{formatVotingPower(yes)}</span>
+    </span>
+    <span class="no-value no caption" data-tid="reject">
+      <span class="label description">{`Voting power`}&nbsp;</span>
+      <span>{formatVotingPower(no)}</span>
+    </span>
   </div>
 
-  <div
-    class="votes-progressbar"
-    role="progressbar"
-    data-tid="votes-progressbar"
-    aria-label={$i18n.proposal_detail__vote.vote_progress}
-    aria-valuenow={yes}
-    aria-valuemin={0}
-    aria-valuemax={total}
-  >
-    <div class="yes" style={`width: ${yesProportion * 100}%`}></div>
-    <div class="no" style={`width: ${noProportion * 100}%`}></div>
-  </div>
-  <div class="progressbar-values description">
-    <span class="caption" data-tid="adopt">{formatVotingPower(yes)}</span>
-    <span class="caption" data-tid="reject">{formatVotingPower(no)}</span>
+  <div class="legends">
+    <VotesResultsMajorityDescription>
+      <h4 class="description" slot="title">Absolute Majority</h4>
+      <p class="description">
+        Before the voting period ends, a proposal is adopted or rejected if an
+        absolute majority (more than half of the total voting power, 🚧indicated
+        by delimiter above) has voted Yes or No on the proposal, respectively.
+      </p>
+    </VotesResultsMajorityDescription>
+    <VotesResultsMajorityDescription>
+      <h4 class="description" slot="title">Simple Majority</h4>
+      <p class="description">
+        When the voting period ends, a proposal is adopted if a simple majority
+        (more than half of the votes cast) has voted Yes and those votes
+        constitute at least 3% of the total voting power (indicated by delimiter
+        above). Otherwise, the proposal is rejected. Before a proposal is
+        decided by Simple Majority, the voting period can be extended in order
+        to “wait for quiet”. Such voting period extensions occur when a
+        proposal’s voting results turn from either a Yes majority to a No
+        majority or vice versa.
+      </p>
+    </VotesResultsMajorityDescription>
   </div>
 </ProposalContentCell>
 
@@ -75,59 +102,93 @@
   @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
-  .caption {
-    @include fonts.small;
+  // absolute var(--purple-600)
+  // simple var(--orange)
+  $font-size-medium: 0.875rem;
+
+  .title {
+    @include fonts.h3(true);
   }
-  .yes {
-    color: var(--positive-emphasis);
-  }
-  .no {
-    color: var(--negative-emphasis);
-  }
+
   .votes-info {
     display: grid;
-    column-gap: var(--padding-1_5x);
-    row-gap: var(--padding);
-    align-items: center;
-    grid-template-columns: 1fr 1fr;
+    margin: var(--padding-2) 0;
+
+    // 5 columns for mobile to give more space for the ".remain" section
     grid-template-areas:
-      "yes no"
-      "remain remain";
+      "yes-percent yes-percent _ no-percent no-percent"
+      "progressbar progressbar  progressbar progressbar progressbar"
+      "yes-value remain remain remain no-value";
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 
     @include media.min-width(small) {
-      grid-template-areas: "yes remain no";
-      grid-template-columns: 1fr auto 1fr;
+      grid-template-areas:
+        "yes-percent remain no-percent"
+        "progressbar progressbar progressbar"
+        "yes-value _ no-value";
+      grid-template-columns: 1fr 1fr 1fr;
+      row-gap: var(--padding-0_5x);
     }
-
-    .yes {
-      grid-area: yes;
+    .yes-percent {
+      grid-area: yes-percent;
       display: flex;
       flex-direction: column;
       align-items: start;
+    }
+    .no-percent {
+      grid-area: no-percent;
+      display: flex;
+      flex-direction: column;
+      align-items: end;
     }
     .remain {
       grid-area: remain;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      justify-content: center;
+      text-align: center;
     }
-    .no {
-      grid-area: no;
+    .progressbar {
+      grid-area: progressbar;
+    }
+    .yes-value {
+      grid-area: yes-value;
       display: flex;
-      flex-direction: column;
-      align-items: end;
+      justify-content: flex-start;
+    }
+    .no-value {
+      grid-area: no-value;
+      display: flex;
+      justify-content: flex-end;
+    }
+    // yes-value and no-value mobile/desktop
+    .label {
+      display: none;
+      @include media.min-width(small) {
+        display: initial;
+      }
     }
 
     .percentage {
       @include fonts.h2(true);
     }
+    .caption {
+      @include fonts.small;
+    }
+    .yes {
+      color: var(--positive-emphasis);
+    }
+    .no {
+      color: var(--negative-emphasis);
+    }
   }
 
-  .votes-progressbar {
+  .progressbar {
     display: flex;
     // the aria in between is undecided (see the dashboard bar)
     justify-content: space-between;
     height: var(--padding-1_5x);
+    margin-bottom: var(--padding-0_5x);
     border-radius: var(--border-radius);
     overflow: hidden;
     background: var(--elements-divider);
@@ -145,7 +206,16 @@
     justify-content: space-between;
   }
 
-  .title {
-    padding-bottom: var(--padding);
+  h4 {
+    @include fonts.standard;
+    font-size: $font-size-medium;
+    display: inline;
+  }
+
+  .legends {
+    margin-top: var(--padding);
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--padding-0_5x);
   }
 </style>

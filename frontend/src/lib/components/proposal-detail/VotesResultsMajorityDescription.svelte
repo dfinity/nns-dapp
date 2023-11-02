@@ -1,0 +1,42 @@
+<script lang="ts">
+  import { Collapsible, IconInfo } from "@dfinity/gix-components";
+
+  let toggleContent: () => void;
+  let expanded: boolean;
+</script>
+
+<Collapsible
+  expandButton={false}
+  externalToggle={true}
+  bind:toggleContent
+  bind:expanded
+  wrapHeight
+>
+  <div slot="header" class="description" class:expanded>
+    <slot name="title" />
+    <button
+      class="icon"
+      class:expanded
+      on:click|stopPropagation={toggleContent}
+    >
+      <IconInfo />
+    </button>
+  </div>
+  <slot />
+</Collapsible>
+
+<style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
+  p {
+    margin: 0;
+  }
+  .icon {
+    color: var(--description-color);
+    transition: transform ease-out var(--animation-time-normal);
+    .expanded {
+      transform: rotate(180deg);
+    }
+  }
+</style>
