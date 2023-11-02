@@ -1,6 +1,6 @@
 <script lang="ts">
   import {
-    Card,
+    Card, IconChat,
     IconClockNoFill,
     IconUser,
     Tag,
@@ -51,7 +51,7 @@
       <div>
         {#if nonNullish(topic)}
           <p data-tid="proposal-topic">
-            <IconUser />
+            <IconChat />
             <label for="topic" class="visually-hidden"
               >{$i18n.proposal_detail.topic_prefix}</label
             ><output id="topic">{topic}</output>
