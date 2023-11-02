@@ -8,6 +8,8 @@ pub mod proxy;
 
 // Mechanics
 use crate::accounts_store::Account;
+use candid::{CandidType, Deserialize};
+use serde::Serialize;
 use strum_macros::EnumIter;
 mod label_serialization;
 #[cfg(test)]
@@ -103,7 +105,7 @@ pub trait AccountsDbTrait {
 ///
 /// Note: The numeric representations of these labels are guaranteed to be stable.
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, EnumIter, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, EnumIter, PartialEq, Eq, CandidType, Serialize, Deserialize)]
 pub enum SchemaLabel {
     /// Data is stored on the heap in a `BTreeMap` and serialized to stable memory on upgrade.
     /// Implemented by: [`map::AccountsDbAsMap`]
@@ -113,6 +115,12 @@ pub enum SchemaLabel {
     /// `pre_upgrade` hook.
     #[cfg(test)]
     AccountsInStableMemory = 1,
+}
+
+impl Default for SchemaLabel {
+    fn default() -> Self {
+        Self::Map
+    }
 }
 
 /// Schema Label as written to stable memory.
