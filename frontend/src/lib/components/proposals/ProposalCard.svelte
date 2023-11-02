@@ -12,6 +12,8 @@
   import Countdown from "./Countdown.svelte";
   import { nowInSeconds } from "$lib/utils/date.utils";
   import { nonNullish } from "@dfinity/utils";
+  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
+  import { PROPOSER_ID_DISPLAY_SPLIT_LENGTH } from "$lib/constants/proposals.constants";
 
   export let hidden = false;
   export let statusString: string | undefined;
@@ -59,12 +61,19 @@
           </p>
         {/if}
 
-        <p class="info">
-          <IconUser />
-          <span class="visually-hidden"
-            >{$i18n.proposal_detail.proposer_prefix}</span
-          ><output data-proposer-id={proposer}>{proposer}</output>
-        </p>
+        {#if nonNullish(proposer)}
+          <p class="info">
+            <IconUser />
+            <span class="visually-hidden"
+              >{$i18n.proposal_detail.proposer_prefix}</span
+            ><output data-proposer-id={proposer}
+              >{shortenWithMiddleEllipsis(
+                proposer,
+                PROPOSER_ID_DISPLAY_SPLIT_LENGTH
+              )}</output
+            >
+          </p>
+        {/if}
 
         {#if nonNullish(deadlineTimestampSeconds) && deadlineTimestampSeconds > nowInSeconds()}
           <p class="info">
