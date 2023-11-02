@@ -63,13 +63,13 @@
       <div class="yes" style={`width: ${yesProportion * 100}%`}></div>
       <div class="no" style={`width: ${noProportion * 100}%`}></div>
     </div>
-    <span class="yes-value yes caption" data-tid="adopt">
+    <span class="yes-value yes caption">
       <span class="label description">{`Voting power `}&nbsp;</span>
-      <span>{formatVotingPower(yes)}</span>
+      <span data-tid="adopt">{formatVotingPower(yes)}</span>
     </span>
-    <span class="no-value no caption" data-tid="reject">
+    <span class="no-value no caption">
       <span class="label description">{`Voting power`}&nbsp;</span>
-      <span>{formatVotingPower(no)}</span>
+      <span data-tid="reject">{formatVotingPower(no)}</span>
     </span>
   </div>
 
