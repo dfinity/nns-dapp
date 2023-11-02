@@ -72,7 +72,9 @@ describe("SnsProposals", () => {
           expect(queryByTestId("proposal-card")).toBeInTheDocument()
         );
 
-        expect(queryByTestId("proposal-type").innerHTML).toMatch(functionName);
+        expect(queryByTestId("proposal-card-heading").textContent).toMatch(
+          functionName
+        );
       });
 
       it("should load decision status filters", async () => {

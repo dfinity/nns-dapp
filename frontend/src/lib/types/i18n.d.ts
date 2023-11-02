@@ -34,6 +34,7 @@ interface I18nCore {
   do_not_close: string;
   finish: string;
   unknown: string;
+  expand_all: string;
 }
 
 interface I18nError {
@@ -487,11 +488,13 @@ interface I18nTransaction_names {
   topUpCanister: string;
   refundSwap: string;
   participateSwap: string;
+  approve: string;
 }
 
 interface I18nCkbtc_transaction_names {
   burn: string;
   mint: string;
+  approve: string;
 }
 
 interface I18nWallet {
@@ -516,6 +519,7 @@ interface I18nProposal_detail {
   summary: string;
   topic_prefix: string;
   status_prefix: string;
+  rewards_prefix: string;
   type_prefix: string;
   reward_prefix: string;
   id_prefix: string;
@@ -547,6 +551,9 @@ interface I18nProposal_detail {
   older_short: string;
   newer_short: string;
   sign_in: string;
+  toggle_lable: string;
+  toggle_tree: string;
+  toggle_raw: string;
 }
 
 interface I18nProposal_detail__vote {
@@ -719,6 +726,7 @@ interface I18nSns_launchpad {
 }
 
 interface I18nSns_project_detail {
+  swap_proposal: string;
   token_name: string;
   token_symbol: string;
   total_tokens: string;

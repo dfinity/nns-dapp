@@ -90,7 +90,7 @@ export const secondsToDuration = (seconds: bigint): string => {
  * @param days
  */
 export const daysToDuration = (days: number): string =>
-  secondsToDuration(BigInt(days) * BigInt(SECONDS_IN_DAY));
+  secondsToDuration(BigInt(Math.ceil(days * SECONDS_IN_DAY)));
 
 /**
  * Displays years, months and days.
@@ -157,10 +157,9 @@ export const secondsToTime = (seconds: number): string => {
 };
 
 export const secondsToDays = (seconds: number): number =>
-  Math.ceil(seconds / SECONDS_IN_DAY);
-export const secondsToDaysRoundedDown = (seconds: number): number =>
-  Math.floor(seconds / SECONDS_IN_DAY);
-export const daysToSeconds = (days: number): number => days * SECONDS_IN_DAY;
+  seconds / SECONDS_IN_DAY;
+export const daysToSeconds = (days: number): number =>
+  Math.round(days * SECONDS_IN_DAY);
 
 export const nowInSeconds = (): number => Math.round(Date.now() / 1000);
 export const nowInBigIntNanoSeconds = (): bigint =>

@@ -228,13 +228,17 @@ describe("NnsStakeNeuronModal", () => {
       createButton && (await fireEvent.click(createButton));
 
       await waitFor(() =>
-        expect(container.querySelector('input[type="range"]')).not.toBeNull()
+        expect(
+          container.querySelector("input[name='dissolve_delay']")
+        ).not.toBeNull()
       );
-      const inputRange = container.querySelector('input[type="range"]');
+      const inputElement = container.querySelector(
+        "input[name='dissolve_delay']"
+      );
 
       const FIVE_MONTHS = 30 * 5;
-      inputRange &&
-        (await fireEvent.input(inputRange, {
+      inputElement &&
+        (await fireEvent.input(inputElement, {
           target: { value: FIVE_MONTHS },
         }));
 
@@ -260,7 +264,9 @@ describe("NnsStakeNeuronModal", () => {
       createButton && (await fireEvent.click(createButton));
 
       await waitFor(() =>
-        expect(container.querySelector('input[type="range"]')).not.toBeNull()
+        expect(
+          container.querySelector("input[name='dissolve_delay']")
+        ).not.toBeNull()
       );
 
       expect(
@@ -319,13 +325,17 @@ describe("NnsStakeNeuronModal", () => {
       createButton && (await fireEvent.click(createButton));
 
       await waitFor(() =>
-        expect(container.querySelector('input[type="range"]')).not.toBeNull()
+        expect(
+          container.querySelector("input[name='dissolve_delay']")
+        ).not.toBeNull()
       );
-      const inputRange = container.querySelector('input[type="range"]');
+      const inputElement = container.querySelector(
+        "input[name='dissolve_delay']"
+      );
 
       const ONE_YEAR = 365;
-      inputRange &&
-        (await fireEvent.input(inputRange, {
+      inputElement &&
+        (await fireEvent.input(inputElement, {
           target: { value: ONE_YEAR },
         }));
 
@@ -371,7 +381,9 @@ describe("NnsStakeNeuronModal", () => {
 
       // SCREEN: Set Dissolve Delay
       await waitFor(() =>
-        expect(container.querySelector('input[type="range"]')).not.toBeNull()
+        expect(
+          container.querySelector("input[name='dissolve_delay']")
+        ).not.toBeNull()
       );
 
       const skipButton = queryByTestId("cancel-neuron-delay");
@@ -477,13 +489,17 @@ describe("NnsStakeNeuronModal", () => {
       expect(addHotkeyForHardwareWalletNeuron).toBeCalled();
 
       await waitFor(() =>
-        expect(container.querySelector('input[type="range"]')).not.toBeNull()
+        expect(
+          container.querySelector("input[name='dissolve_delay']")
+        ).not.toBeNull()
       );
-      const inputRange = container.querySelector('input[type="range"]');
+      const inputElement = container.querySelector(
+        "input[name='dissolve_delay']"
+      );
 
       const ONE_YEAR = 365;
-      inputRange &&
-        (await fireEvent.input(inputRange, {
+      inputElement &&
+        (await fireEvent.input(inputElement, {
           target: { value: ONE_YEAR },
         }));
 

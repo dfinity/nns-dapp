@@ -25,7 +25,7 @@
     Number(
       neuronVotingPower({
         neuron,
-        newDissolveDelayInSeconds: BigInt(delayInSeconds),
+        newDissolveDelayInSeconds: BigInt(Math.round(delayInSeconds)),
       })
     );
 </script>

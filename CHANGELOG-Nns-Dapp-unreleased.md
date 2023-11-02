@@ -23,6 +23,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Stable structures updated to `0.6.0`.
 * Dapp upgraded to Svelte `v4`.
+* New Proposal Card.
+* Change the slider in dissolve delay for a read-only progress bar.
+* Redesign the proposal payload and action.
 
 #### Deprecated
 #### Removed
@@ -34,12 +37,15 @@ proposal is successful, the changes it released will be moved from this file to
 * Remove robots meta tag to allow search engines to crawl NNS Dapp.
 * Fix i18n key in merge neurons summary screen.
 * Display `TransferFrom` as a normal receive instead of failing to load transactions.
+* Fix issue with setting max dissolve delay when max is not a whole day.
 
 #### Security
 
 #### Not Published
 
 * Added `retrieveBtcWithApproval` in ckbtc-minter API.
+* Render Approve transactions in transaction list.
+* Add feature flag `ENABLE_CKBTC_ICRC2`.
 
 ### Operations
 
@@ -55,6 +61,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Stop updating candid files when updating the test environment.
 * Join npm audit URLs with spaces instead of commas.
 * Add traits with a dedicated command rather than with patch files.
+* Use snsdemo snapshot with Internet Identity version 2023-10-27.
 
 #### Deprecated
 #### Removed

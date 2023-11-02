@@ -63,13 +63,17 @@ describe("IncreaseDissolveDelayModal", () => {
     const { container } = await renderIncreaseDelayModal(editableNeuron);
 
     await waitFor(() =>
-      expect(container.querySelector('input[type="range"]')).not.toBeNull()
+      expect(
+        container.querySelector("input[name='dissolve_delay']")
+      ).not.toBeNull()
     );
-    const inputRange = container.querySelector('input[type="range"]');
-    expect(inputRange).not.toBeNull();
+    const inputElement = container.querySelector(
+      "input[name='dissolve_delay']"
+    );
+    expect(inputElement).not.toBeNull();
 
-    inputRange &&
-      (await fireEvent.input(inputRange, {
+    inputElement &&
+      (await fireEvent.input(inputElement, {
         target: { value: 365 * 2 },
       }));
 
@@ -107,15 +111,17 @@ describe("IncreaseDissolveDelayModal", () => {
     const { container } = await renderIncreaseDelayModal(editableNeuron);
 
     await waitFor(() =>
-      expect(container.querySelector('input[type="range"]')).not.toBeNull()
+      expect(
+        container.querySelector("input[name='dissolve_delay']")
+      ).not.toBeNull()
     );
-    const inputRange = container.querySelector<HTMLInputElement>(
-      'input[type="range"]'
+    const inputElement = container.querySelector<HTMLInputElement>(
+      "input[name='dissolve_delay']"
     );
-    expect(inputRange).not.toBeNull();
+    expect(inputElement).not.toBeNull();
 
-    inputRange &&
-      (await fireEvent.input(inputRange, {
+    inputElement &&
+      (await fireEvent.input(inputElement, {
         target: { value: currentNeuronDissoveDelayDays / 2 },
       }));
 
@@ -123,12 +129,6 @@ describe("IncreaseDissolveDelayModal", () => {
       '[data-tid="go-confirm-delay-button"]'
     );
 
-    await waitFor(() =>
-      expect(goToConfirmDelayButton?.getAttribute("disabled")).not.toBeNull()
-    );
-    inputRange &&
-      (await waitFor(() =>
-        expect(inputRange.value).toBe(String(currentNeuronDissoveDelayDays))
-      ));
+    expect(goToConfirmDelayButton?.getAttribute("disabled")).not.toBeNull();
   });
 });

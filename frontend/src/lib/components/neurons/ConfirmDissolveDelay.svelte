@@ -16,7 +16,7 @@
   import { valueSpan } from "$lib/utils/utils";
   import { Html, busy } from "@dfinity/gix-components";
 
-  export let delayInSeconds: number;
+  export let delayInSeconds: bigint;
   export let neuron: NeuronInfo;
   export let confirmButtonText: string;
 
@@ -29,8 +29,9 @@
 
     const neuronId = await updateDelay({
       neuronId: neuron.neuronId,
-      dissolveDelayInSeconds:
-        delayInSeconds - Number(neuron.dissolveDelaySeconds),
+      dissolveDelayInSeconds: Number(
+        delayInSeconds - neuron.dissolveDelaySeconds
+      ),
     });
 
     stopBusy("update-delay");
@@ -43,7 +44,7 @@
 
 <div class="wrapper" data-tid="confirm-dissolve-delay-container">
   <div class="main-info">
-    <h3>{secondsToDuration(BigInt(delayInSeconds))}</h3>
+    <h3>{secondsToDuration(delayInSeconds)}</h3>
   </div>
   <div>
     <p class="label">{$i18n.neurons.neuron_id}</p>
@@ -65,7 +66,7 @@
       {formatVotingPower(
         neuronVotingPower({
           neuron,
-          newDissolveDelayInSeconds: BigInt(delayInSeconds),
+          newDissolveDelayInSeconds: delayInSeconds,
         })
       )}
     </p>

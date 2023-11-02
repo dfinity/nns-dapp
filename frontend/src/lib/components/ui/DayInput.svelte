@@ -1,29 +1,55 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
   import MaxButton from "$lib/components/common/MaxButton.svelte";
   import InputWithError from "./InputWithError.svelte";
   import MinButton from "$lib/components/common/MinButton.svelte";
+  import { daysToSeconds, secondsToDays } from "$lib/utils/date.utils";
 
-  export let days: number | undefined = undefined;
-  export let max: number | undefined = undefined;
-  export let errorMessage: string | undefined = undefined;
+  export let seconds: number;
+  export let maxInSeconds: number;
+  export let minInSeconds: number;
   export let placeholderLabelKey = "core.amount";
   export let name = "amount";
+  // We don't want to trigger an error message until the input changes.
+  // We need to trigger the error on:nnsInput
+  // Yet, on:nnsInput is triggered before `seconds` change.
+  // And we don't want to expose days outside.
+  // That's why we expect the error function, instead of relying on the parent to calculate it based on `seconds`.
+  export let getInputError: (value: number) => string | undefined;
 
-  const dispatch = createEventDispatcher();
-  const setMin = () => dispatch("nnsMin");
-  const setMax = () => dispatch("nnsMax");
+  // Round up the first time to not show a lot of decimal places.
+  let days: number = Math.min(
+    Math.ceil(secondsToDays(seconds)),
+    secondsToDays(maxInSeconds)
+  );
+  $: seconds = daysToSeconds(days);
+
+  let errorMessage: string | undefined;
+  const showError = () => {
+    // This is called before we update the `seconds` variable
+    // The seconds variable is update a line above: `$: seconds = daysToSeconds(days);`
+    errorMessage = getInputError(daysToSeconds(days));
+  };
+
+  const setMin = () => {
+    seconds = minInSeconds;
+    days = secondsToDays(seconds);
+  };
+
+  const setMax = () => {
+    seconds = maxInSeconds;
+    days = secondsToDays(seconds);
+  };
 </script>
 
 <InputWithError
   {placeholderLabelKey}
   {name}
   bind:value={days}
-  {max}
+  max={secondsToDays(maxInSeconds)}
   inputType="number"
   {errorMessage}
-  on:nnsInput
-  on:blur
+  on:nnsInput={showError}
+  on:blur={showError}
 >
   <MinButton on:click={setMin} slot="start" />
   <MaxButton on:click={setMax} slot="end" />

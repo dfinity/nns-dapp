@@ -13,6 +13,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import type { UniversalProposalStatus } from "$lib/types/proposals";
   import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
+  import { triggerDebugReport } from "$lib/directives/debug.directives";
 
   export let currentProposalId: bigint;
   export let currentProposalStatus: UniversalProposalStatus;
@@ -51,15 +52,15 @@
     <div class="status">
       <ProposalStatusTag status={currentProposalStatus} />
     </div>
-    <h2 class="title">
-      <div class="universe-logo">
+    <h2 class="title" use:triggerDebugReport>
+      <span class="universe-logo">
         <UniverseLogo
           size="small"
           framed
           horizontalPadding={false}
           universe={$selectedUniverseStore}
         />
-      </div>
+      </span>
       <TestIdWrapper testId="title">{title}</TestIdWrapper>
     </h2>
     <button

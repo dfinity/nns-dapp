@@ -1,21 +1,15 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import {
-    daysToSeconds,
-    secondsToDays,
-    secondsToDaysRoundedDown,
-  } from "$lib/utils/date.utils";
   import { formatToken } from "$lib/utils/token.utils";
-  import { formatVotingPower } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { InputRange, Html } from "@dfinity/gix-components";
+  import { Html } from "@dfinity/gix-components";
   import { valueSpan } from "$lib/utils/utils";
   import NeuronStateRemainingTime from "$lib/components/neurons/NeuronStateRemainingTime.svelte";
   import DayInput from "$lib/components/ui/DayInput.svelte";
-  import { daysToDuration } from "$lib/utils/date.utils";
   import type { NeuronState } from "@dfinity/nns";
   import { type TokenAmount, nonNullish } from "@dfinity/utils";
+  import RangeDissolveDelay from "./RangeDissolveDelay.svelte";
 
   export let neuronState: NeuronState;
   export let neuronDissolveDelaySeconds: bigint;
@@ -29,78 +23,32 @@
 
   const dispatch = createEventDispatcher();
 
-  let delayInDays = secondsToDays(delayInSeconds);
-
-  $: delayInSeconds = daysToSeconds(delayInDays);
-
-  let neuronDelayInDays = secondsToDays(Number(neuronDissolveDelaySeconds));
-
-  let minDelayInDays = 0;
-  $: minDelayInDays = secondsToDays(Number(neuronDissolveDelaySeconds) + 1);
-
-  let minProjectDelayInDays = 0;
-  $: minProjectDelayInDays = secondsToDays(minProjectDelayInSeconds);
-
-  let maxDelayInDays = 0;
-  $: maxDelayInDays = secondsToDaysRoundedDown(maxDelayInSeconds);
-
   let votingPower: number;
   $: votingPower = calculateVotingPower(delayInSeconds);
 
-  let inputError: string | undefined;
-
   let disableUpdate: boolean;
-  $: disableUpdate = shouldUpdateBeDisabled(delayInDays);
+  $: disableUpdate = shouldUpdateBeDisabled(delayInSeconds);
 
-  const keepDelaysInBounds = () => {
-    if (delayInDays < neuronDelayInDays) {
-      delayInDays = neuronDelayInDays;
-    }
-
-    if (delayInDays > maxDelayInDays) {
-      delayInDays = maxDelayInDays;
-    }
-  };
-
-  const setMin = () => {
-    delayInDays = Math.max(minDelayInDays, minProjectDelayInDays);
-    updateInputError();
-  };
-
-  const setMax = () => {
-    delayInDays = maxDelayInDays;
-    updateInputError();
-  };
-
-  const getInputError = (delayInDays: number) => {
-    if (delayInDays > maxDelayInDays) {
+  const getInputError = (delayInSeconds: number) => {
+    if (delayInSeconds > maxDelayInSeconds) {
       return $i18n.neurons.dissolve_delay_above_maximum;
     }
-    if (delayInDays < minDelayInDays) {
+    if (delayInSeconds <= neuronDissolveDelaySeconds) {
       return $i18n.neurons.dissolve_delay_below_current;
     }
-    if (delayInDays < minProjectDelayInDays) {
+    if (delayInSeconds < minProjectDelayInSeconds) {
       return $i18n.neurons.dissolve_delay_below_minimum;
     }
     return undefined;
   };
 
-  const updateInputError = () => {
-    inputError = getInputError(delayInDays);
-  };
-
-  const shouldUpdateBeDisabled = (delayInDays: number): boolean => {
-    const error = getInputError(delayInDays);
+  const shouldUpdateBeDisabled = (delayInSeconds: number): boolean => {
+    const error = getInputError(delayInSeconds);
     // It's allowed to set the dissolve delay below the project minimum but we
     // still show a warning message to the user.
     return (
       nonNullish(error) && error !== $i18n.neurons.dissolve_delay_below_minimum
     );
-  };
-
-  const onRangeInput = () => {
-    keepDelaysInBounds();
-    updateInputError();
   };
 
   const cancel = () => dispatch("nnsCancel");
@@ -146,40 +94,19 @@
     <p class="subtitle">{$i18n.neurons.dissolve_delay_label}</p>
     <div>
       <DayInput
-        bind:days={delayInDays}
-        on:nnsMin={setMin}
-        on:nnsMax={setMax}
-        on:nnsInput={updateInputError}
-        on:blur={updateInputError}
-        errorMessage={inputError}
+        bind:seconds={delayInSeconds}
+        maxInSeconds={maxDelayInSeconds}
+        minInSeconds={Math.max(
+          Number(neuronDissolveDelaySeconds),
+          minProjectDelayInSeconds
+        )}
         placeholderLabelKey="neurons.dissolve_delay_placeholder"
         name="dissolve_delay"
+        {getInputError}
       />
     </div>
     <div class="range">
-      <InputRange
-        ariaLabel={$i18n.neuron_detail.dissolve_delay_range}
-        min={0}
-        max={maxDelayInDays}
-        bind:value={delayInDays}
-        handleInput={onRangeInput}
-      />
-      <div class="details">
-        <div>
-          <p class="label">
-            {formatVotingPower(votingPower)}
-          </p>
-          <p>{$i18n.neurons.voting_power}</p>
-        </div>
-        <div>
-          {#if delayInSeconds > 0}
-            <p class="label">{daysToDuration(delayInDays)}</p>
-          {:else}
-            <p class="label">{$i18n.neurons.no_delay}</p>
-          {/if}
-          <p>{$i18n.neurons.dissolve_delay_title}</p>
-        </div>
-      </div>
+      <RangeDissolveDelay {maxDelayInSeconds} {delayInSeconds} {votingPower} />
     </div>
   </div>
 
@@ -209,11 +136,5 @@
 
   .select-delay-container {
     width: 100%;
-
-    .details {
-      margin-top: var(--padding);
-      display: flex;
-      justify-content: space-around;
-    }
   }
 </style>

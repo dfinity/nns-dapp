@@ -322,6 +322,7 @@ type SnsSummaryParams = {
   maxNFParticipation?: bigint;
   neuronsFundIsParticipating?: [boolean] | [];
   swapOpenTimestampSeconds?: bigint;
+  nnsProposalId?: bigint;
 };
 
 export const createSummary = ({
@@ -344,6 +345,7 @@ export const createSummary = ({
   maxNFParticipation,
   neuronsFundIsParticipating,
   swapOpenTimestampSeconds,
+  nnsProposalId,
 }: SnsSummaryParams): SnsSummary => {
   const init: SnsSwapInit = {
     ...mockInit,
@@ -368,6 +370,7 @@ export const createSummary = ({
           },
         ]
       : [],
+    nns_proposal_id: toNullable(nnsProposalId),
   };
   const params: SnsParams = {
     ...mockSnsParams,
