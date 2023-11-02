@@ -576,6 +576,11 @@ interface I18nProposal_detail__vote {
   vote_reject_in_progress: string;
   vote_status_registering: string;
   vote_status_updating: string;
+  expiration: string;
+  absolute_majority: string;
+  absolute_majority_description: string;
+  simple_majority: string;
+  simple_majority_description: string;
 }
 
 interface I18nProposal_detail__ineligible {

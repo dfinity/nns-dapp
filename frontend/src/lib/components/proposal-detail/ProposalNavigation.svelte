@@ -53,7 +53,7 @@
     <h2 class="title" use:triggerDebugReport>
       <span class="universe-logo">
         <UniverseLogo
-          size="small"
+          size="medium"
           framed
           horizontalPadding={false}
           universe={$selectedUniverseStore}
