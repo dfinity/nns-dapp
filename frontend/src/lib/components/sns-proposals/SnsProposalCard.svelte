@@ -20,7 +20,6 @@
   let id: SnsProposalId | undefined;
   let title: string | undefined;
   let color: ProposalStatusColor | undefined;
-  let proposal_creation_timestamp_seconds: bigint;
   let type: string | undefined;
   let proposer: SnsNeuronId | undefined;
   let proposerString: string | undefined;
@@ -34,7 +33,7 @@
     title,
     color,
     type,
-    proposal_creation_timestamp_seconds,
+    proposer,
     current_deadline_timestamp_seconds: deadlineTimestampSeconds,
   } = mapProposalInfo({ proposalData, nsFunctions }));
 
@@ -54,6 +53,5 @@
   {color}
   heading={type ?? ""}
   proposer={proposerString}
-  createdTimestampSeconds={proposal_creation_timestamp_seconds}
   {deadlineTimestampSeconds}
 />

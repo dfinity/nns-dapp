@@ -1,12 +1,11 @@
 import SnsProposalCard from "$lib/components/sns-proposals/SnsProposalCard.svelte";
-import { SECONDS_IN_DAY, SECONDS_IN_HOUR } from "$lib/constants/constants";
+import { SECONDS_IN_HOUR } from "$lib/constants/constants";
 import en from "$tests/mocks/i18n.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import {
   createSnsProposal,
   mockSnsProposal,
 } from "$tests/mocks/sns-proposals.mock";
-import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
@@ -63,25 +62,6 @@ describe("SnsProposalCard", () => {
     });
 
     expect(queryByTestId("proposal-topic")).not.toBeInTheDocument();
-  });
-
-  it("should render a proposal created time", () => {
-    const proposalData: SnsProposalData = createSnsProposal({
-      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED,
-      rewardStatus: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED,
-      proposalId: 123n,
-      createdAt: BigInt(nowInSeconds - SECONDS_IN_DAY),
-    });
-    const { queryByTestId } = render(SnsProposalCard, {
-      props: {
-        proposalData,
-        nsFunctions: [],
-      },
-    });
-
-    expect(
-      normalizeWhitespace(queryByTestId("created")?.textContent ?? "")
-    ).toBe("Oct 23, 2023 9:24 AM");
   });
 
   it("should render a proposal id", () => {

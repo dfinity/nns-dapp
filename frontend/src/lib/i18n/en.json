@@ -533,7 +533,8 @@
     "sign_in": "Sign in to vote",
     "toggle_lable": "Switch between user-friendly and raw data representation",
     "toggle_tree": "Tree",
-    "toggle_raw": "Raw"
+    "toggle_raw": "Raw",
+    "id": "ID"
   },
   "proposal_detail__vote": {
     "headline": "Cast Vote",
