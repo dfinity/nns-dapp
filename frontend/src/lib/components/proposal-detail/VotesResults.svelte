@@ -2,7 +2,6 @@
   import { i18n } from "$lib/stores/i18n";
   import { formatNumber, formatPercentage } from "$lib/utils/format.utils";
   import ProposalContentCell from "./ProposalContentCell.svelte";
-  import { nonNullish } from "@dfinity/utils";
   import Countdown from "$lib/components/proposals/Countdown.svelte";
   import VotesResultsMajorityDescription from "$lib/components/proposal-detail/VotesResultsMajorityDescription.svelte";
 
@@ -15,16 +14,13 @@
   export let yes: number;
   export let no: number;
   export let total: number;
-  export let deadlineTimestampSeconds: bigint | undefined;
+  export let deadlineTimestampSeconds: bigint | undefined = undefined;
 
   let yesProportion: number;
   $: yesProportion = yes / total;
 
   let noProportion: number;
   $: noProportion = no / total;
-
-  let toggleContent: () => void;
-  let expanded: boolean;
 </script>
 
 <ProposalContentCell testId="votes-results-component">
@@ -38,10 +34,10 @@
       >
     </div>
     <div class="remain">
-      {#if nonNullish(deadlineTimestampSeconds)}
+      {#if deadlineTimestampSeconds}
         <span class="caption description">Expiration date</span>
         <div class="caption value">
-          <Countdown slot="value" {deadlineTimestampSeconds} />
+          <Countdown {deadlineTimestampSeconds} />
         </div>
       {/if}
     </div>
@@ -61,7 +57,7 @@
       <div
         class="progressbar"
         role="progressbar"
-        data-tid="progressbar"
+        data-tid="votes-progressbar"
         aria-label={$i18n.proposal_detail__vote.vote_progress}
         aria-valuenow={yes}
         aria-valuemin={0}
@@ -263,11 +259,6 @@
     .no {
       background: var(--negative-emphasis);
     }
-  }
-
-  .progressbar-values {
-    display: flex;
-    justify-content: space-between;
   }
 
   h4 {

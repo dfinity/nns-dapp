@@ -29,9 +29,6 @@
   @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
-  p {
-    margin: 0;
-  }
   .icon {
     padding: 0;
     color: var(--description-color);
