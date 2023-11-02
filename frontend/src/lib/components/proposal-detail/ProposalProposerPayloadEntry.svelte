@@ -24,13 +24,13 @@
   {#if expandedPayload !== undefined}
     {#if $ENABLE_FULL_WIDTH_PROPOSAL}
       <div class="header">
-        <h2
+        <h3
           class="content-cell-title header-text"
           data-tid="proposal-proposer-payload-entry-title"
         >
           {$i18n.proposal_detail.payload}
           <Copy value={copyContent} />
-        </h2>
+        </h3>
 
         <TreeRawToggle />
       </div>
@@ -68,12 +68,6 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
-
-  h2 {
-    @include fonts.h3;
-  }
-
   // TODO(max): remove after flag is removed
   .json {
     word-break: break-word;
