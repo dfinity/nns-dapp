@@ -38,6 +38,7 @@ fn schema_can_be_read_from_memory() {
     memory.write(0, &[0xa5u8; 1000]);
     // Without a checksummed schema, we should get schema None.
     assert_eq!(None, State::schema_version_from_memory(memory.clone()));
+    // With a checksummed schema, we should get the schema.
     for schema in SchemaLabel::iter() {
         let schema_bytes = SchemaLabelBytes::from(schema);
         memory.write(0, &schema_bytes);
