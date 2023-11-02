@@ -2,14 +2,57 @@
   import { i18n } from "$lib/stores/i18n";
   import { formatNumber } from "$lib/utils/format.utils";
   import ProposalContentCell from "./ProposalContentCell.svelte";
+  import { nonNullish } from "@dfinity/utils";
+  import Countdown from "$lib/components/proposals/Countdown.svelte";
+
+  const formatPercent = (value: number) =>
+    formatNumber(value, {
+      minFraction: 3,
+      maxFraction: 3,
+    });
 
   export let yes: number;
   export let no: number;
   export let total: number;
+  export let deadlineTimestampSeconds: bigint | undefined;
+
+  let yesPercent: number;
+  $: yesPercent = (yes / total) * 100;
+
+  let noPercent: number;
+  $: noPercent = (no / total) * 100;
+
+  let undecidedPercent: number;
+  $: undecidedPercent = 100 - yesPercent - noPercent;
 </script>
 
 <ProposalContentCell testId="votes-results-component">
   <h2 slot="start" class="title">{$i18n.proposal_detail.voting_results}</h2>
+
+  <pre>
+    yes: {yes}
+    no: {no}
+    total: {total}
+    undecidedPercent: {formatPercent(undecidedPercent)}
+  </pre>
+
+  <div class="top-info">
+    <div class="adopt">
+      <span>Adopt</span>
+      <span data-tid="adopt-percent">{formatPercent(yesPercent)}</span>
+    </div>
+    <div class="remain">
+      {#if nonNullish(deadlineTimestampSeconds)}
+        Expiration date
+        <Countdown slot="value" {deadlineTimestampSeconds} />
+      {/if}
+    </div>
+    <div class="reject">
+      <span>Reject</span>
+      <span data-tid="reject-percent">{formatPercent(noPercent)}</span>
+    </div>
+  </div>
+
   <div class="latest-tally">
     <h4 class="label yes">
       {$i18n.proposal_detail.adopt}<span data-tid="adopt"
