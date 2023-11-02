@@ -27,6 +27,7 @@ proposal is successful, the changes it released will be moved from this file to
 * New Proposal Card.
 * Change the slider in dissolve delay for a read-only progress bar.
 * Redesign the proposal payload and action.
+* Refurbish the proposal cards look & feel.
 
 #### Deprecated
 #### Removed
