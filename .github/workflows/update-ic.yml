@@ -3,7 +3,7 @@
 name: Update IC
 on:
   schedule:
-    # check for new `didc` releases daily at 7:30
+    # Check for new IC releases daily at 7:30.  Upstream releases about once weekly.
     - cron: '30 7 * * *'
   push:
     branches:
@@ -34,19 +34,51 @@ jobs:
               echo "release=$latest_release"
             fi
           } >> "$GITHUB_OUTPUT"
+      # TODO: Put this oft-repeated chunk into an action.
+      - name: Check whether the snsdemo repo is already present
+        if: ${{ steps.update.outputs.updated == '1' }}
+        shell: bash
+        id: have_snsdemo
+        run: |
+          if test -d snsdemo
+          then echo have_snsdemo=true >> "$GITHUB_OUTPUT"
+          else have_snsdemo=false >> "$GITHUB_OUTPUT"
+          fi
+      - name: Determine snsdemo ref
+        if: ${{ steps.have_snsdemo.outputs.have_snsdemo }} == 'false'
+        id: snsdemo_ref
+        shell: bash
+        run: |
+          SNSDEMO_RELEASE="$(jq -r .defaults.build.config.SNSDEMO_RELEASE dfx.json)"
+          echo "ref=$SNSDEMO_RELEASE" >> "$GITHUB_OUTPUT"
+      - name: Get SNS scripts
+        if: ${{ steps.have_snsdemo.outputs.have_snsdemo }} == 'false'
+        uses: actions/checkout@v3
+        with:
+          repository: 'dfinity/snsdemo'
+          path: 'snsdemo'
+          ref: ${{ steps.snsdemo_ref.outputs.ref }}
+      - name: Add SNS scripts to the path
+        if: ${{ steps.update.outputs.updated == '1' }}
+        shell: bash
+        run: echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
+      - name: Install sponge
+        if: ${{ steps.update.outputs.updated == '1' }}
+        run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
       - name: Update candid files
         if: ${{ steps.update.outputs.updated == '1' }}
         run: |
+          # Install didc
+          snsdemo/bin/dfx-software-didc-install --release "$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+          # Update didc
           scripts/update_ic_commit -c "${{ steps.update.outputs.release }}"
-          git commit -a -m "Update NNS candid files to ${{ steps.update.outputs.release }}"
       - name: Create Pull Request
         if: ${{ steps.update.outputs.updated == '1' }}
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.GIX_BOT_PAT }}
           base: main
-          add-paths: dfx.json
-          commit-message: Update didc release
+          commit-message: Update ic candid files
           committer: GitHub <noreply@github.com>
           author: gix-bot <gix-bot@users.noreply.github.com>
           branch: bot-ic-update
@@ -65,6 +97,7 @@ jobs:
 
             # Tests
             - See CI
+            - [ ] Check for breaking changes in the APIs and schedule any required follow-on work.
           # Since this is a scheduled job, a failure won't be shown on any
           # PR status. To notify the team, we send a message to our Slack channel on failure.
       - name: Notify Slack on failure
@@ -72,4 +105,4 @@ jobs:
         if: ${{ failure() }}
         with:
           WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          MESSAGE: "didc update failed"
+          MESSAGE: "IC commit update failed"
