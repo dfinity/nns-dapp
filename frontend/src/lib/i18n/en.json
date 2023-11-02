@@ -553,7 +553,12 @@
     "vote_adopt_in_progress": "Adopting proposal $proposalType ($proposalId). $status",
     "vote_reject_in_progress": "Rejecting proposal $proposalType ($proposalId). $status",
     "vote_status_registering": "Neurons registered: $completed/$amount. Keep the dapp open until completed.",
-    "vote_status_updating": "Updating proposal state..."
+    "vote_status_updating": "Updating proposal state...",
+    "expiration": "Expiration date",
+    "absolute_majority": "Absolute Majority",
+    "absolute_majority_description": "Before the voting period ends, a proposal is adopted or rejected if an absolute majority (more than half of the total voting power) has voted Yes or No on the proposal, respectively.",
+    "simple_majority": "Simple Majority",
+    "simple_majority_description": "When the voting period ends, a proposal is adopted if a simple majority (more than half of the votes cast) has voted Yes and those votes constitute at least 3% of the total voting power. Otherwise, the proposal is rejected. Before a proposal is decided by Simple Majority, the voting period can be extended in order to “wait for quiet”. Such voting period extensions occur when a proposal’s voting results turn from either a Yes majority to a No majority or vice versa."
   },
   "proposal_detail__ineligible": {
     "headline": "Ineligible Neurons",

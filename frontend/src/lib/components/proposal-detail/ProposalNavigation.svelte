@@ -55,7 +55,7 @@
     <h2 class="title" use:triggerDebugReport>
       <span class="universe-logo">
         <UniverseLogo
-          size="small"
+          size="medium"
           framed
           horizontalPadding={false}
           universe={$selectedUniverseStore}
@@ -132,7 +132,7 @@
   }
 
   div.proposal-nav {
-    margin-bottom: var(--padding-1_5x);
+    margin-bottom: var(--padding-2x);
     display: grid;
     column-gap: var(--padding-1_5x);
     row-gap: var(--padding);
