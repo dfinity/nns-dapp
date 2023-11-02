@@ -2,7 +2,6 @@ import ProposalCard from "$lib/components/proposals/ProposalCard.svelte";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import { ProposalStatusColor } from "$lib/constants/proposals.constants";
 import en from "$tests/mocks/i18n.mock";
-import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
 import { render } from "@testing-library/svelte";
 
 describe("ProposalCard", () => {
@@ -18,7 +17,6 @@ describe("ProposalCard", () => {
     proposer: "2",
     topic: "Test Topic",
     deadlineTimestampSeconds: BigInt(nowSeconds + SECONDS_IN_DAY),
-    createdTimestampSeconds: BigInt(nowSeconds - SECONDS_IN_DAY),
     href: "https://nns.ic0.app/proposal/?u=qoctq-giaaa-aaaaa-aaaea-cai&proposal=123786",
   };
 
@@ -64,16 +62,6 @@ describe("ProposalCard", () => {
     });
 
     expect(getByText(`${props.id}`, { exact: false })).toBeInTheDocument();
-  });
-
-  it("should render a created data", () => {
-    const { queryByTestId } = render(ProposalCard, {
-      props,
-    });
-
-    expect(
-      normalizeWhitespace(queryByTestId("created")?.textContent ?? "")
-    ).toBe("Oct 23, 2023 9:24 AM");
   });
 
   it("should render countdown", () => {

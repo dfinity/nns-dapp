@@ -13,21 +13,12 @@
   let id: ProposalId | undefined;
   let title: string | undefined;
   let color: ProposalStatusColor | undefined;
-  let createdAt: bigint;
   let topic: string | undefined;
   let proposer: NeuronId | undefined;
   let type: string | undefined;
 
-  $: ({
-    id,
-    title,
-    color,
-    type,
-    statusString,
-    created: createdAt,
-    topic,
-    proposer,
-  } = mapProposalInfo(proposalInfo));
+  $: ({ id, title, color, type, statusString, topic, proposer } =
+    mapProposalInfo(proposalInfo));
 
   let href: string;
   $: href = buildProposalUrl({
@@ -46,6 +37,5 @@
   {topic}
   proposer={String(proposer)}
   heading={type ?? ""}
-  createdTimestampSeconds={createdAt}
   deadlineTimestampSeconds={proposalInfo.deadlineTimestampSeconds}
 />
