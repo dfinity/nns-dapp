@@ -26,6 +26,7 @@ jobs:
         id: update
         run: ./scripts/proposals/did2rs
       - name: Create Pull Request
+        id: cpr
         # Note: If there were no changes, this step creates no PR.
         uses: peter-evans/create-pull-request@v4
         with:
@@ -50,6 +51,15 @@ jobs:
               - [ ] Please check for new proposal types and add tests for them.
           # Since the this is a scheduled job, a failure won't be shown on any
           # PR status. To notify the team, we send a message to our Slack channel on failure.
+      - name: Report on the action
+        run: |
+          (
+            echo "## Proposals Update"
+            if test -n "${{ steps.cpr.outputs.pull-request-number }}"
+            then echo "Created [PR #${{ steps.cpr.outputs.pull-request-number }}](${{ steps.cpr.outputs.pull-request-url }}) with proposal payload updates."
+            else echo "No changes needed."
+            fi
+          ) | tee -a $GITHUB_STEP_SUMMARY
       - name: Notify Slack on failure
         uses: dfinity/internet-identity/.github/actions/slack@release-2023-08-28
         if: ${{ failure() }}
