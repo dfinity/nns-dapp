@@ -34,3 +34,9 @@
   <h3>{$i18n.sns_project_detail.swap_proposal}</h3>
   <NnsProposalCard {proposalInfo} />
 {/if}
+
+<style lang="scss">
+  h3 {
+    margin: var(--padding) 0;
+  }
+</style>
