@@ -12,10 +12,7 @@
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import type { AfterNavigate } from "@sveltejs/kit";
   import { afterNavigate } from "$app/navigation";
-  import {
-    referrerPathStore,
-    referrerQueryParamsStore,
-  } from "$lib/stores/routes.store";
+  import { referrerPathStore } from "$lib/stores/routes.store";
   import { referrerPathForNav } from "$lib/utils/page.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { browser } from "$app/environment";
@@ -29,11 +26,10 @@
   );
 
   // Use the top level layout to set the `referrerPath` because anything under `{#if isNullish($navigating)}` will miss the `afterNavigate` events
-  afterNavigate((nav: AfterNavigate) => {
-    referrerQueryParamsStore.set(nav?.from?.url?.search);
+  afterNavigate((nav: AfterNavigate) =>
     // TODO: e2e to test this
-    referrerPathStore.set(referrerPathForNav(nav));
-  });
+    referrerPathStore.set(referrerPathForNav(nav))
+  );
 
   // To improve the UX while the app is loading on mainnet we display a spinner which is attached statically in the index.html files.
   // Once the authentication has been initialized we know most JavaScript resources has been loaded and therefore we can hide the spinner, the loading information.
