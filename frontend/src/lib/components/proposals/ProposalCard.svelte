@@ -92,6 +92,10 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/text";
 
+  li {
+    list-style: none;
+  }
+
   .container {
     display: flex;
     flex-direction: column;
