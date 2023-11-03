@@ -7,14 +7,14 @@
   import LayoutNavGuard from "$lib/components/layout/LayoutNavGuard.svelte";
   import { referrerPathStore } from "$lib/stores/routes.store";
 
-  const back = (): Promise<void> => {
+  const back = async (): Promise<void> => {
     // This is a hack to jump back to the specific project page (because of the query params)
     if ($referrerPathStore === AppPath.Project) {
       history.back();
-      return Promise.resolve();
+      return;
     }
 
-    return goto(
+    goto(
       $referrerPathStore === AppPath.Launchpad
         ? $referrerPathStore
         : $proposalsPathStore
