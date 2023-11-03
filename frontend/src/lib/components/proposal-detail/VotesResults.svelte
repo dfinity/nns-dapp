@@ -253,9 +253,11 @@
 
     .yes {
       background: var(--positive-emphasis);
+      transition: width ease-out var(--animation-time-normal);
     }
     .no {
       background: var(--negative-emphasis);
+      transition: width ease-out var(--animation-time-normal);
     }
   }
 
