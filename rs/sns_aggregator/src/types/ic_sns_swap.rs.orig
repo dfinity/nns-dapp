@@ -181,7 +181,7 @@ pub struct SettleCommunityFundParticipationResult {
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum Possibility2 {
-    Ok,
+    Ok(EmptyRecord),
     Err(CanisterCallError),
 }
 
