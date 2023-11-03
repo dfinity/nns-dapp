@@ -4,23 +4,22 @@
     IconChat,
     IconClockNoFill,
     IconUser,
-    Tag,
     Value,
   } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import type { ProposalStatusColor } from "$lib/constants/proposals.constants";
   import Countdown from "./Countdown.svelte";
   import { nowInSeconds } from "$lib/utils/date.utils";
   import { nonNullish } from "@dfinity/utils";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { PROPOSER_ID_DISPLAY_SPLIT_LENGTH } from "$lib/constants/proposals.constants";
+  import type { UniversalProposalStatus } from "$lib/types/proposals";
+  import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
 
   export let hidden = false;
-  export let statusString: string | undefined;
+  export let status: UniversalProposalStatus | undefined;
   export let id: bigint | undefined;
   export let heading: string;
   export let title: string | undefined;
-  export let color: ProposalStatusColor | undefined;
   export let topic: string | undefined = undefined;
   export let proposer: string | undefined;
   export let deadlineTimestampSeconds: bigint | undefined;
@@ -39,7 +38,9 @@
             >
           </div>
 
-          <Tag testId="proposal-status" intent={color}>{statusString}</Tag>
+          {#if nonNullish(status)}
+            <ProposalStatusTag testId="proposal-status" {status} />
+          {/if}
         </div>
 
         <h3 data-tid="proposal-card-heading">{heading}</h3>

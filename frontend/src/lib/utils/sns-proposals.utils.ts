@@ -1,8 +1,4 @@
-import type { ProposalStatusColor } from "$lib/constants/proposals.constants";
-import {
-  SNS_MIN_NUMBER_VOTES_FOR_PROPOSAL_RATIO,
-  SNS_PROPOSAL_COLOR,
-} from "$lib/constants/sns-proposals.constants";
+import { SNS_MIN_NUMBER_VOTES_FOR_PROPOSAL_RATIO } from "$lib/constants/sns-proposals.constants";
 import { i18n } from "$lib/stores/i18n";
 import type {
   UniversalProposalStatus,
@@ -67,7 +63,6 @@ export type SnsProposalDataMap = {
   statusDescription: string;
   rewardStatusString: string;
   rewardStatusDescription: string;
-  color: ProposalStatusColor | undefined;
 
   // Mapped from Nervous Functions
   type?: string;
@@ -154,7 +149,6 @@ export const mapProposalInfo = ({
     statusDescription: sns_status_description[decisionStatus],
     rewardStatusString: sns_rewards_status[rewardStatus],
     rewardStatusDescription: sns_rewards_description[rewardStatus],
-    color: SNS_PROPOSAL_COLOR[decisionStatus],
 
     // Mapped from Nervous Functions
     type: nsFunction?.name,

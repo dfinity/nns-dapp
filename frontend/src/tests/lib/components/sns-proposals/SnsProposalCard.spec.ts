@@ -132,6 +132,6 @@ describe("SnsProposalCard", () => {
       },
     });
 
-    expect(container.querySelector(".success")).not.toBeNull();
+    expect(container.querySelector(".executed")).not.toBeNull();
   });
 });
