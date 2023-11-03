@@ -133,7 +133,7 @@
     margin-bottom: var(--padding-2x);
     display: grid;
     column-gap: var(--padding-1_5x);
-    row-gap: var(--padding);
+    row-gap: var(--padding-2x);
     align-items: center;
     grid-template-columns: 1fr auto auto;
     grid-template-areas:
@@ -141,6 +141,7 @@
       "title title title";
 
     @include media.min-width(small) {
+      row-gap: var(--padding);
       grid-template-areas: "title status newer older";
       grid-template-columns: auto 1fr auto auto;
     }

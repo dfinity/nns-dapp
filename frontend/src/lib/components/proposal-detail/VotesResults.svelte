@@ -29,7 +29,7 @@
 
   <div class="votes-info">
     <div class="yes yes-percent">
-      <span class="caption">{$i18n.proposal_detail.adopt}</span>
+      <span class="caption">{$i18n.core.yes}</span>
       <span class="percentage" data-tid="adopt-percentage"
         >{formatPercentage(yesProportion)}</span
       >
@@ -45,7 +45,7 @@
       {/if}
     </div>
     <div class="no no-percent">
-      <span class="caption">{$i18n.proposal_detail.reject}</span>
+      <span class="caption">{$i18n.core.no}</span>
       <span class="percentage" data-tid="reject-percentage"
         >{formatPercentage(noProportion)}</span
       >

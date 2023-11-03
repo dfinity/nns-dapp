@@ -527,8 +527,6 @@ interface I18nProposal_detail {
   proposer_prefix: string;
   proposer_description: string;
   open_voting_prefix: string;
-  adopt: string;
-  reject: string;
   my_votes: string;
   loading_neurons: string;
   unknown_nns_function: string;
