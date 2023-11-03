@@ -52,6 +52,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Cron job to update proposal types.
 * Import candid for NNS ledger.
 * Formatting for `Cargo.toml` files.
 * Add test to check that the nns-dapp cargo and npm versions match.
