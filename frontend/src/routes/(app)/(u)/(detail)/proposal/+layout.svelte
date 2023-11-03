@@ -11,7 +11,7 @@
     // This is a hack to jump back to the specific project page (because of the query params)
     if ($referrerPathStore === AppPath.Project) {
       history.back();
-      return;
+      return Promise.resolve();
     }
 
     goto(
