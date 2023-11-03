@@ -1,7 +1,4 @@
-import {
-  DEFAULT_PROPOSALS_FILTERS,
-  PROPOSAL_COLOR,
-} from "$lib/constants/proposals.constants";
+import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import {
   concatenateUniqueProposals,
@@ -880,7 +877,6 @@ describe("proposals-utils", () => {
       const {
         topic,
         topicDescription,
-        color,
         deadline,
         proposer,
         title,
@@ -898,7 +894,6 @@ describe("proposals-utils", () => {
 
       expect(topic).toEqual(en.topics.Governance);
       expect(topicDescription).toEqual(en.topics_description.Governance);
-      expect(color).toEqual(PROPOSAL_COLOR[ProposalStatus.Open]);
       expect(deadline).toEqual(
         deadlineTimestampSeconds - BigInt(nowInSeconds())
       );

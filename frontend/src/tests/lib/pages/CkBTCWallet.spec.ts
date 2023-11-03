@@ -2,7 +2,10 @@ import * as ckbtcLedgerApi from "$lib/api/ckbtc-ledger.api";
 import * as ckbtcMinterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
-import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import {
+  CKTESTBTC_MINTER_CANISTER_ID,
+  CKTESTBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKBTC_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/ckbtc.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCWallet from "$lib/pages/CkBTCWallet.svelte";
@@ -33,6 +36,7 @@ import { render, waitFor } from "@testing-library/svelte";
 import { mockBTCAddressTestnet } from "../../mocks/ckbtc-accounts.mock";
 
 const expectedBalanceAfterTransfer = 11_111n;
+const testnetBtcAddress = "mziXLoUuJs427ATrgn5bMdxtUnXZMZCc3L";
 
 vi.mock("$lib/services/worker-balances.services", () => ({
   initBalancesWorker: vi.fn(() =>
@@ -126,6 +130,17 @@ describe("CkBTCWallet", () => {
       retrieve_btc_min_amount: 80_000n,
       min_confirmations: 12,
       kyt_fee: 7_000n,
+    });
+    vi.mocked(ckbtcMinterApi.getWithdrawalAccount).mockResolvedValue({
+      owner: CKTESTBTC_MINTER_CANISTER_ID,
+      subaccount: [],
+    });
+    vi.mocked(ckbtcMinterApi.retrieveBtc).mockResolvedValue({
+      block_index: 123n,
+    });
+    vi.mocked(ckbtcMinterApi.estimateFee).mockResolvedValue({
+      minter_fee: 2000n,
+      bitcoin_fee: 5000n,
     });
   });
 
@@ -278,6 +293,60 @@ describe("CkBTCWallet", () => {
       await advanceTime(CKBTC_TRANSACTIONS_RELOAD_DELAY + 1000);
 
       expect(icrcIndexApi.getTransactions).toBeCalledTimes(2);
+    });
+
+    it("should update account after withdrawing BTC", async () => {
+      const { walletPo, sendModalPo } = await renderWalletAndModal();
+
+      // Check original sum
+      expect(await walletPo.getWalletPageHeadingPo().getTitle()).toBe(
+        "4'445'566.99 ckBTC"
+      );
+
+      // Make transfer
+      await walletPo.getCkBTCWalletFooterPo().clickSendButton();
+      await sendModalPo.transferToAddress({
+        destinationAddress: testnetBtcAddress,
+        amount: 10,
+      });
+
+      await runResolvedPromises();
+      expect(icrcLedgerApi.icrcTransfer).toBeCalledTimes(1);
+
+      // Account should have been updated and sum should be reflected
+      expect(await walletPo.getWalletPageHeadingPo().getTitle()).toBe(
+        "0.00011111 ckBTC"
+      );
+    });
+
+    it("should reload transactions after withdrawing BTC", async () => {
+      const { walletPo, sendModalPo } = await renderWalletAndModal();
+
+      expect(icrcIndexApi.getTransactions).toBeCalledTimes(1);
+
+      // Check original sum
+      expect(await walletPo.getWalletPageHeadingPo().getTitle()).toBe(
+        "4'445'566.99 ckBTC"
+      );
+
+      // Make transfer
+      await walletPo.getCkBTCWalletFooterPo().clickSendButton();
+      await sendModalPo.transferToAddress({
+        destinationAddress: testnetBtcAddress,
+        amount: 10,
+      });
+
+      await runResolvedPromises();
+      expect(icrcLedgerApi.icrcTransfer).toBeCalledTimes(1);
+
+      expect(icrcIndexApi.getTransactions).toBeCalledTimes(2);
+
+      await advanceTime(CKBTC_TRANSACTIONS_RELOAD_DELAY + 1000);
+
+      // This additional loading of transactions is not necessary.
+      // TODO: Remove the double reloading and change the expected number of
+      // calls from 2 to 3.
+      expect(icrcIndexApi.getTransactions).toBeCalledTimes(3);
     });
 
     it("should open receive modal", async () => {

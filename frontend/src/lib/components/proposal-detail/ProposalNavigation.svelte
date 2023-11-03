@@ -13,8 +13,10 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import type { UniversalProposalStatus } from "$lib/types/proposals";
   import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
+  import { triggerDebugReport } from "$lib/directives/debug.directives";
 
   export let currentProposalId: bigint;
+  export let title: string | undefined = undefined;
   export let currentProposalStatus: UniversalProposalStatus;
   export let proposalIds: bigint[] = [];
   export let selectProposal: (proposalId: bigint) => void;
@@ -41,9 +43,6 @@
     assertNonNullish(olderId);
     selectProposal(olderId);
   };
-
-  let title: string;
-  $: title = `${$i18n.proposal_detail.title} ${currentProposalId}`;
 </script>
 
 {#if $ENABLE_FULL_WIDTH_PROPOSAL}
@@ -51,16 +50,16 @@
     <div class="status">
       <ProposalStatusTag status={currentProposalStatus} />
     </div>
-    <h2 class="title">
-      <div class="universe-logo">
+    <h2 class="title" use:triggerDebugReport>
+      <span class="universe-logo">
         <UniverseLogo
-          size="small"
+          size="medium"
           framed
           horizontalPadding={false}
           universe={$selectedUniverseStore}
         />
-      </div>
-      <TestIdWrapper testId="title">{title}</TestIdWrapper>
+      </span>
+      <TestIdWrapper testId="title">{title ?? ""}</TestIdWrapper>
     </h2>
     <button
       class="ghost newer"
@@ -131,10 +130,10 @@
   }
 
   div.proposal-nav {
-    margin-bottom: var(--padding-1_5x);
+    margin-bottom: var(--padding-2x);
     display: grid;
     column-gap: var(--padding-1_5x);
-    row-gap: var(--padding);
+    row-gap: var(--padding-2x);
     align-items: center;
     grid-template-columns: 1fr auto auto;
     grid-template-areas:
@@ -142,6 +141,7 @@
       "title title title";
 
     @include media.min-width(small) {
+      row-gap: var(--padding);
       grid-template-areas: "title status newer older";
       grid-template-columns: auto 1fr auto auto;
     }

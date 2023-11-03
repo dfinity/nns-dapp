@@ -30,7 +30,8 @@
     "this_may_take_a_few_minutes": "This may take a few minutes",
     "do_not_close": "Please do not close your browser tab",
     "finish": "Finish",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "expand_all": "Expand All"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -470,11 +471,13 @@
     "createCanister": "Create Canister",
     "topUpCanister": "Top-up Canister",
     "refundSwap": "Swap Refund",
-    "participateSwap": "Decentralization Swap"
+    "participateSwap": "Decentralization Swap",
+    "approve": "Approve transfer"
   },
   "ckbtc_transaction_names": {
     "burn": "To: <span class=\"value\">BTC Network</span>",
-    "mint": "From: <span class=\"value\">BTC Network</span>"
+    "mint": "From: <span class=\"value\">BTC Network</span>",
+    "approve": "&ZeroWidthSpace;"
   },
   "wallet": {
     "title": "Account",
@@ -492,6 +495,7 @@
     "take_long": "This might take a while."
   },
   "proposal_detail": {
+    "headline": "Proposal Details",
     "title": "Proposal",
     "summary": "Proposal Summary",
     "topic_prefix": "Topic",
@@ -503,8 +507,6 @@
     "proposer_prefix": "Proposer",
     "proposer_description": "The ID of the neuron that submitted the proposal.",
     "open_voting_prefix": "Voting open:",
-    "adopt": "Adopt",
-    "reject": "Reject",
     "my_votes": "My Votes",
     "loading_neurons": "Loading your neurons...",
     "unknown_nns_function": "Unknown nnsFunction",
@@ -527,7 +529,11 @@
     "newer": "Navigate to newer proposal",
     "older_short": "Older",
     "newer_short": "Newer",
-    "sign_in": "Sign in to vote"
+    "sign_in": "Sign in to vote",
+    "toggle_lable": "Switch between user-friendly and raw data representation",
+    "toggle_tree": "Tree",
+    "toggle_raw": "Raw",
+    "id": "ID"
   },
   "proposal_detail__vote": {
     "headline": "Cast Vote",
@@ -547,7 +553,12 @@
     "vote_adopt_in_progress": "Adopting proposal $proposalType ($proposalId). $status",
     "vote_reject_in_progress": "Rejecting proposal $proposalType ($proposalId). $status",
     "vote_status_registering": "Neurons registered: $completed/$amount. Keep the dapp open until completed.",
-    "vote_status_updating": "Updating proposal state..."
+    "vote_status_updating": "Updating proposal state...",
+    "expiration": "Expiration date",
+    "absolute_majority": "Absolute Majority",
+    "absolute_majority_description": "Before the voting period ends, a proposal is adopted or rejected if an absolute majority (more than half of the total voting power) has voted Yes or No on the proposal, respectively.",
+    "simple_majority": "Simple Majority",
+    "simple_majority_description": "When the voting period ends, a proposal is adopted if a simple majority (more than half of the votes cast) has voted Yes and those votes constitute at least 3% of the total voting power. Otherwise, the proposal is rejected. Before a proposal is decided by Simple Majority, the voting period can be extended in order to “wait for quiet”. Such voting period extensions occur when a proposal’s voting results turn from either a Yes majority to a No majority or vice versa."
   },
   "proposal_detail__ineligible": {
     "headline": "Ineligible Neurons",
