@@ -507,8 +507,6 @@
     "proposer_prefix": "Proposer",
     "proposer_description": "The ID of the neuron that submitted the proposal.",
     "open_voting_prefix": "Voting open:",
-    "adopt": "Adopt",
-    "reject": "Reject",
     "my_votes": "My Votes",
     "loading_neurons": "Loading your neurons...",
     "unknown_nns_function": "Unknown nnsFunction",

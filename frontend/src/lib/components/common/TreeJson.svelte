@@ -140,9 +140,6 @@
     @include fonts.standard(true);
     color: var(--content-color);
 
-    &.root {
-      @include fonts.h4();
-    }
     &.key--expandable {
       margin-right: 0;
       // no icon gap compensation
