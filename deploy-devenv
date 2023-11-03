@@ -94,7 +94,7 @@ check_path_has() {
 }
 install_path_has() {
   export PATH="$1:$PATH"
-  printf "%s\n" '' 'export PATH="$1:$PATH"' >>~/.bashrc
+  printf "%s\n" '' "export PATH=\"$1:\$PATH\"" >>~/.bashrc
 }
 # Creates a snapshot, if not already there
 SNAPSHOT="$HOME/snapshot.tar.xz"
@@ -141,7 +141,6 @@ install_screen_info() {
     echo "To kill the screen: screen -S dfx -X quit"
     URL="$(hostname)"
     URL="https://$(dfx canister id nns-dapp).${URL#devenv-}-ingress.devenv.dfinity.network/"
-    echo $URL
     echo "nns-dapp: $URL"
   )
 }
