@@ -37,6 +37,6 @@
 
 <style lang="scss">
   h3 {
-    margin: var(--padding) 0;
+    margin: var(--padding-8x) 0 var(--padding-3x);
   }
 </style>
