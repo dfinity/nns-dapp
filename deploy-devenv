@@ -1,9 +1,34 @@
 #!/usr/bin/env bash
-set -euxo pipefail
+set -euo pipefail
 
-# Usage: cat deploy-devenv | ssh devenv
-#
-# To tear down: ssh devenv screen -S dfx -X quit
+print_help() {
+  cat <<-EOF
+
+	Serves the nns-dapp on a DevEnv server.
+
+	Usage: cat deploy-devenv | ssh devenv
+
+	To tear down: ssh devenv screen -S dfx -X quit
+	EOF
+}
+
+# Simple, portable argument parsing.
+# If the arguments multiply, please consider switching to clap.
+while (($# > 0)); do
+  arg="$1"
+  shift 1
+  case "${arg:-}" in
+  --help | -h)
+    print_help
+    exit 0
+    ;;
+  --) break ;;
+  *)
+    echo "ERROR: Unsupported argument '${arg:-}'."
+    exit 1
+    ;;
+  esac
+done
 
 WORKDIR="$HOME/dfn"
 
