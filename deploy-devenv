@@ -35,47 +35,39 @@ setup_checked() {
   }
 }
 
-# Implements desired state: The workdir ~/dfn exists
+# Desired state: The workdir ~/dfn exists
 check_workdir() {
   test -d "$WORKDIR"
 }
 install_workdir() {
   mkdir -p "$WORKDIR"
 }
-# Implements desired state: snsdemo clone exists
+# Desired state: snsdemo clone exists
 check_snsdemo() {
   test -d "$WORKDIR/snsdemo"
 }
 install_snsdemo() {
   git clone git@github.com:dfinity/snsdemo.git "$WORKDIR/snsdemo"
 }
-# Implements desired state: nns-dapp clone exists
+# Desired state: nns-dapp clone exists
 check_nns_dapp() {
   test -d "$WORKDIR/nns-dapp"
 }
 install_nns_dapp() {
   git clone git@github.com:dfinity/nns-dapp.git "$WORKDIR/nns-dapp"
 }
-# Installs nns-dapp tools
+# Desired state: nns-dapp tools are installed
 install_nns_dapp_tools() {
   "$WORKDIR/nns-dapp/scripts/setup"
 }
-# Implements desired state: ic clone exists
+# Desired state: ic clone exists
 check_ic() {
   test -d "$WORKDIR/ic"
 }
 install_ic() {
   git clone git@github.com:dfinity/ic.git "$WORKDIR/ic"
 }
-# Gets a version of ic-admin that works
-IC_ADMIN="$WORKDIR/snsdemo/bin-other/ic-admin"
-check_ic_admin() {
-  "$IC_ADMIN" --help
-}
-install_ic_admin() {
-  curl https://download.dfinity.systems/ic/dc5d8cfec5550f99dc4912501037478de8ab9426/openssl-static-binaries/x86_64-linux/ic-admin.gz | gunzip | install -m 755 /dev/stdin "$IC_ADMIN"
-}
-# Installs with apt
+# Desired state: A given apt package is installed.
 check_apt() {
   dpkg-query -l "$1"
 }
@@ -84,11 +76,11 @@ install_apt() {
   find "/var/lib/apt/periodic/update-success-stamp" -mtime +1 -print | grep -q . || sudo apt-get update
   sudo apt-get install -yy "$1"
 }
-# Installs snsdemo tools
+# Desired state: snsdemo tools are installed.
 install_snsdemo_tools() {
   "$WORKDIR/snsdemo/bin/dfx-sns-demo-install"
 }
-# Adds to the path, if not already there
+# Desired state: The path contains a given string.
 check_path_has() {
   echo "$PATH" | tr : "\n" | grep -qw "$1"
 }
@@ -96,7 +88,7 @@ install_path_has() {
   export PATH="$1:$PATH"
   printf "%s\n" '' "export PATH=\"$1:\$PATH\"" >>~/.bashrc
 }
-# Creates a snapshot, if not already there
+# Desired satte:  A snapshot newer than snsdemo exists.
 SNAPSHOT="$HOME/snapshot.tar.xz"
 check_snapshot() {
   [[ "$SNAPSHOT" -nt "$WORKDIR/snsdemo" ]]
@@ -107,7 +99,7 @@ install_snapshot() {
     bin/dfx-snapshot-stock-make --snapshot ~/snapshot.tar.xz
   )
 }
-# Checks out the matching snsdemo release
+# Desired state: The existing snsdemo clone is checked out at a given release.
 install_snsdemo_release() {
   local release
   release="$(jq -r '.defaults.build.config.SNSDEMO_RELEASE' "$WORKDIR/nns-dapp/dfx.json")"
@@ -115,7 +107,8 @@ install_snsdemo_release() {
   git checkout "$release"
   popd
 }
-# Start screen running dfx
+# Desired state: There is a screen running dfx.
+# Note: The screen will be named, excitingly, "dfx".
 check_dfx_screen() {
   screen -ls | grep -wq dfx
 }
@@ -127,7 +120,7 @@ install_dfx_screen() {
     install_dfx_info
   )
 }
-# Print dfx info
+# Prints dfx info
 install_screen_info() {
   (
     set -euo pipefail
@@ -156,7 +149,6 @@ if (($# == 0)); then
   setup snsdemo_release
   setup nns_dapp_tools
   setup snsdemo_tools
-  setup ic_admin
   dfx-software-dfx-install --version 0.14.4 # BUG: nns-dapp setup should have installed the correct version
   setup snapshot
   setup dfx_screen
