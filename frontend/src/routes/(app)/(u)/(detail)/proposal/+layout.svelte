@@ -14,7 +14,7 @@
       return Promise.resolve();
     }
 
-    goto(
+    return goto(
       $referrerPathStore === AppPath.Launchpad
         ? $referrerPathStore
         : $proposalsPathStore
