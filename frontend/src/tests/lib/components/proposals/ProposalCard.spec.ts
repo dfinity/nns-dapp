@@ -1,6 +1,5 @@
 import ProposalCard from "$lib/components/proposals/ProposalCard.svelte";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
-import { ProposalStatusColor } from "$lib/constants/proposals.constants";
 import en from "$tests/mocks/i18n.mock";
 import { render } from "@testing-library/svelte";
 
@@ -9,11 +8,10 @@ describe("ProposalCard", () => {
   const nowSeconds = Math.floor(now / 1000);
   const props = {
     hidden: false,
-    statusString: "Open",
+    status: "open",
     id: BigInt(112),
     heading: "Treasury Proposal",
     title: "Give me my tokens",
-    color: ProposalStatusColor.SUCCESS,
     proposer: "2",
     topic: "Test Topic",
     deadlineTimestampSeconds: BigInt(nowSeconds + SECONDS_IN_DAY),
@@ -83,15 +81,15 @@ describe("ProposalCard", () => {
     expect(queryByTestId("countdown")).not.toBeInTheDocument();
   });
 
-  it("should render a specific color for the status", () => {
+  it("should render a specific status", () => {
     const { container } = render(ProposalCard, {
       props: {
         ...props,
-        color: ProposalStatusColor.SUCCESS,
+        status: "executed",
       },
     });
 
-    expect(container.querySelector(".success")).not.toBeNull();
+    expect(container.querySelector(".executed")).not.toBeNull();
   });
 
   it("should render an url", () => {
