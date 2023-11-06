@@ -36,7 +36,6 @@
   } from "$lib/stores/ckbtc-info.store";
 
   export let selectedAccount: Account | undefined = undefined;
-  export let loadTransactions = false;
 
   export let canisters: CkBTCAdditionalCanisters;
   export let universeId: UniverseCanisterId;
@@ -99,7 +98,6 @@
       source: sourceAccount,
       destinationAddress,
       amount,
-      loadTransactions,
       universeId,
       indexCanisterId: canisters.indexCanisterId,
     });

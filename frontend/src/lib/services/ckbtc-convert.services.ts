@@ -170,7 +170,6 @@ export const convertCkBTCToBtc = async ({
     source,
     amount,
     destinationAddress: ledgerAddress,
-    loadTransactions: false,
     universeId,
     indexCanisterId,
   });

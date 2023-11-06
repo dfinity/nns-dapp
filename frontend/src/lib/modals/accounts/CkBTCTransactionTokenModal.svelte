@@ -19,7 +19,6 @@
   let universeId: UniverseCanisterId;
   let account: Account | undefined;
   let reloadAccountFromStore: (() => void) | undefined;
-  let loadTransactions: boolean;
 
   $: ({ account, reloadAccountFromStore, universeId, canisters } = data);
 
@@ -42,7 +41,6 @@
     on:nnsClose
     on:nnsTransfer={onTransferReloadSelectedAccount}
     selectedAccount={account}
-    {loadTransactions}
     token={token.token}
     {transactionFee}
     {universeId}
