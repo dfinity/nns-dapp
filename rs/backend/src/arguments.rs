@@ -12,11 +12,21 @@ use regex::{Captures, Regex};
 use serde::Serialize;
 use std::collections::HashMap;
 
+use crate::accounts_store::schema::SchemaLabel;
+
 /// `init` and `post_upgrade` arguments
 #[derive(Debug, Default, Eq, PartialEq, CandidType, Serialize, Deserialize)]
 pub struct CanisterArguments {
     /// Values that are to be set in the web front end, by injecting them into JavaScript.
     pub args: Vec<(String, String)>,
+    /// TODO: This is a placeholder variable.  Please check whether this is actually implemented
+    /// (in case I forget to remove this when it is implemented) and if it is, delete this TODO.
+    ///
+    /// The preferred schema.  If there is existing data in another schema, it will be converted to this schema.
+    ///
+    /// Note: To change the default schema, please change the default value in `impl Default for SchemaLabel`.
+    ///       This way `canister_arguments.schema.unwrap_or_default()` will provide the expected value.
+    pub schema: Option<SchemaLabel>,
 }
 
 thread_local! {

@@ -6,19 +6,14 @@ import {
   updateVoteRegistrationToastMessage,
   voteRegistrationByProposal,
 } from "$lib/services/vote-registration.services";
-import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import { proposalsStore } from "$lib/stores/proposals.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
 import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
-import { updateNeuronsVote } from "$lib/utils/neuron.utils";
-import {
-  mapProposalInfo as mapNnsProposal,
-  updateProposalVote,
-} from "$lib/utils/proposals.utils";
+import { mapProposalInfo as mapNnsProposal } from "$lib/utils/proposals.utils";
 import type { Identity } from "@dfinity/agent";
 import type { NeuronId, ProposalId, ProposalInfo, Vote } from "@dfinity/nns";
-import { assertNonNullish, nonNullish } from "@dfinity/utils";
+import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { loadProposal } from "./$public/proposals.services";
 import { getAuthenticatedIdentity } from "./auth.services";
@@ -55,7 +50,6 @@ export const registerNnsVotes = async ({
         neuronIds,
         proposalInfo,
         vote,
-        updateProposalContext,
         toastId,
       });
     },
@@ -115,51 +109,6 @@ const updateToastAfterNeuronRegistration = ({
   });
 };
 
-/** Optimistically update the neuron and proposal state after successful vote registration */
-const updateOptimisticStateAfterNeuronVote = ({
-  neuronId,
-  proposalInfo,
-  updateProposalContext,
-}: {
-  neuronId: NeuronId;
-  proposalInfo: ProposalInfo;
-  updateProposalContext: (proposal: ProposalInfo) => void;
-}) => {
-  const proposalIdString = `${proposalInfo.id}`;
-  const { vote } = voteRegistrationByProposal({
-    proposalIdString,
-    universeCanisterId: OWN_CANISTER_ID,
-  });
-  const $definedNeuronsStore = get(definedNeuronsStore);
-  const originalNeuron = $definedNeuronsStore.find(
-    ({ neuronId: id }) => id === neuronId
-  );
-  assertNonNullish(proposalInfo, `Proposal (${proposalIdString}) not found`);
-
-  // TODO: remove after live testing. In theory it should be always defined here.
-  assertNonNullish(originalNeuron, `Neuron ${neuronId} not defined`);
-
-  // Optimistically update neuron vote state
-  const votingNeuron = updateNeuronsVote({
-    neuron: originalNeuron,
-    vote,
-    proposalId: proposalInfo.id as bigint,
-  });
-  neuronsStore.replaceNeurons([votingNeuron]);
-
-  // Optimistically update proposal vote state
-  const votingProposal = updateProposalVote({
-    proposalInfo,
-    neuron: votingNeuron,
-    vote,
-  });
-  // update proposal list with voted proposal to make "hide open" filter work (because of the changes in ballots)
-  proposalsStore.replaceProposals([votingProposal]);
-
-  // Update proposal context store
-  updateProposalContext(votingProposal);
-};
-
 /**
  * Make governance registerVote api call per neuronId and handles update errors
  */
@@ -167,13 +116,11 @@ const registerNnsNeuronsVote = async ({
   neuronIds,
   proposalInfo,
   vote,
-  updateProposalContext,
   toastId,
 }: {
   neuronIds: NeuronId[];
   proposalInfo: ProposalInfo;
   vote: Vote;
-  updateProposalContext: (proposal: ProposalInfo) => void;
   toastId: symbol;
 }) => {
   const identity: Identity = await getAuthenticatedIdentity();
@@ -197,11 +144,6 @@ const registerNnsNeuronsVote = async ({
               neuronId,
               proposalId,
               toastId,
-            });
-            updateOptimisticStateAfterNeuronVote({
-              neuronId,
-              proposalInfo,
-              updateProposalContext,
             });
           })
     );

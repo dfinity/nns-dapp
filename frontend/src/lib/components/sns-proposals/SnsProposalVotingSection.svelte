@@ -23,7 +23,7 @@
   let no = 0;
   $: no = Number(tally.no) / E8S_PER_ICP;
   let total = 0;
-  $: total = yes + no;
+  $: total = Number(tally.total) / E8S_PER_ICP;
 </script>
 
 <TestIdWrapper testId="sns-proposal-voting-section-component">

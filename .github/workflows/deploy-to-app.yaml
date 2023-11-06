@@ -44,24 +44,22 @@ jobs:
       - name: Get versions
         id: tool_versions
         run: echo "dfx=$(jq -r .dfx dfx.json)" >> "$GITHUB_OUTPUT"
+      - name: Get dfx version
+        run: echo "DFX_VERSION=$(jq -r .dfx dfx.json)" >> $GITHUB_ENV
+      - name: Install dfx
+        uses: dfinity/setup-dfx@main
+        with:
+          dfx-version: ${{ env.DFX_VERSION }}
       - name: Set credentials
         run: |
-          DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
           printf "%s" "${{ secrets.DFX_IDENTITY_PEM }}" | dfx identity import --storage-mode=plaintext ci /dev/stdin
           dfx identity use ci
         env:
           DFX_IDENTITY_PEM: ${{ secrets.DFX_IDENTITY_PEM }}
-      - name: Determine snsdemo ref
-        id: snsdemo_ref
-        run: |
-          SNSDEMO_REF="$(jq -r .defaults.build.config.SNSDEMO_RELEASE dfx.json)"
-          echo "ref=$SNSDEMO_REF" >> "$GITHUB_OUTPUT"
       - name: Get SNS scripts
-        uses: actions/checkout@v3
+        uses: ./.github/actions/checkout_snsdemo
         with:
-          repository: 'dfinity/snsdemo'
-          path: 'snsdemo'
-          ref: ${{ steps.snsdemo_ref.outputs.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up SNS scripts
         run: |
           : Install more

@@ -38,28 +38,10 @@ runs:
       run: |
         set -euxo pipefail
         git log | head -n1 > out/commit.txt
-    - name: Check whether the snsdemo repo is already present
-      shell: bash
-      id: have_snsdemo
-      run: |
-        if test -d snsdemo
-        then echo have_snsdemo=true >> "$GITHUB_OUTPUT"
-        else have_snsdemo=false >> "$GITHUB_OUTPUT"
-        fi
-    - name: Determine snsdemo ref
-      if: ${{ steps.have_snsdemo.outputs.have_snsdemo }} == 'false'
-      id: snsdemo_ref
-      shell: bash
-      run: |
-        SNSDEMO_RELEASE="$(jq -r .defaults.build.config.SNSDEMO_RELEASE dfx.json)"
-        echo "ref=$SNSDEMO_RELEASE" >> "$GITHUB_OUTPUT"
     - name: Get SNS scripts
-      if: ${{ steps.have_snsdemo.outputs.have_snsdemo }} == 'false'
-      uses: actions/checkout@v3
+      uses: ./.github/actions/checkout_snsdemo
       with:
-        repository: 'dfinity/snsdemo'
-        path: 'snsdemo'
-        ref: ${{ steps.snsdemo_ref.outputs.ref }}
+        token: ${{ inputs.token }}
     - name: Add SNS scripts to the path
       shell: bash
       run: echo "$PWD/snsdemo/bin" >> $GITHUB_PATH

@@ -150,7 +150,7 @@ describe("NnsProposalCard", () => {
       },
     });
 
-    expect(container.querySelector(".success")).not.toBeNull();
+    expect(container.querySelector(".executed")).not.toBeNull();
 
     proposalsFiltersStore.filterStatus(DEFAULT_PROPOSALS_FILTERS.status);
   });

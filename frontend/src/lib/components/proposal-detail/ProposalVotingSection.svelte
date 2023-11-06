@@ -18,10 +18,15 @@
   let no: number;
   $: no = Number(proposalInfo?.latestTally?.no ?? 0) / E8S_PER_ICP;
   let total: number;
-  $: total = yes + no;
+  $: total = Number(proposalInfo?.latestTally?.total ?? 0) / E8S_PER_ICP;
 </script>
 
-<VotesResults {yes} {no} {total} />
+<VotesResults
+  {yes}
+  {no}
+  {total}
+  deadlineTimestampSeconds={proposalInfo.deadlineTimestampSeconds}
+/>
 
 {#if !settled}
   <VotingCard {proposalInfo} />
