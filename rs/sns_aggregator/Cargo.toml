@@ -27,7 +27,7 @@ serde_bytes = "0.11.5"
 serde_cbor = "0.11.2"
 serde_derive = "1.0.126"
 serde_json = "1.0.91"
-sha2 = "0.10.6"
+sha2 = "0.10.8"
 
 [features]
 reconfigurable = []
