@@ -732,6 +732,7 @@ interface I18nSns_launchpad {
 
 interface I18nSns_project_detail {
   swap_proposal: string;
+  link_to_dashboard: string;
   token_name: string;
   token_symbol: string;
   total_tokens: string;

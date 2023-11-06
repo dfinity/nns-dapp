@@ -6,7 +6,13 @@ import {
 } from "$lib/types/project-detail.context";
 import type { SnsSummary } from "$lib/types/sns";
 import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
-import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import {
+  createSummary,
+  mockSnsFullProject,
+} from "$tests/mocks/sns-projects.mock";
+import { ProjectMetadataSectionPo } from "$tests/page-objects/ProjectMetadataSection.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import { writable } from "svelte/store";
 
@@ -46,6 +52,32 @@ describe("ProjectMetadataSection", () => {
     expect(element).toBeInTheDocument();
     expect(element.getAttribute("href")).toEqual(
       mockSnsFullProject.summary.metadata.url
+    );
+  });
+
+  it("should not render dashboard link if not committed", async () => {
+    const summary = createSummary({
+      lifecycle: SnsSwapLifecycle.Open,
+    });
+    const { container } = renderProjectMetadataSection(summary);
+    const po = ProjectMetadataSectionPo.under(
+      new JestPageObjectElement(container)
+    );
+
+    expect(await po.getDashboardLink()).toBeNull();
+  });
+
+  it("should render dashboard link if not committed", async () => {
+    const summary = createSummary({
+      lifecycle: SnsSwapLifecycle.Committed,
+    });
+    const { container } = renderProjectMetadataSection(summary);
+    const po = ProjectMetadataSectionPo.under(
+      new JestPageObjectElement(container)
+    );
+
+    expect(await po.getDashboardLink()).toBe(
+      "https://dashboard.internetcomputer.org/sns/g3pce-2iaae"
     );
   });
 

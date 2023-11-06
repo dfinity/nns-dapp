@@ -707,6 +707,7 @@
   },
   "sns_project_detail": {
     "swap_proposal": "Swap Proposal",
+    "link_to_dashboard": "Link to ICP dashboard",
     "token_name": "Token Name",
     "token_symbol": "Token Symbol",
     "total_tokens": "Tokens Distributed to Participants",
