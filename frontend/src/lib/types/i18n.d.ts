@@ -1022,6 +1022,7 @@ interface I18nCkbtc {
   ckbtc_balance_updated: string;
   step_initialization: string;
   step_locking_ckbtc: string;
+  step_approve_transfer: string;
   step_send_btc: string;
   step_reload: string;
   sending_ckbtc_to_btc: string;

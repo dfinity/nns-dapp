@@ -974,6 +974,7 @@
     "ckbtc_balance_updated": "Updated available ckBTC : New confirmed BTC.",
     "step_initialization": "Initializing transaction",
     "step_locking_ckbtc": "Confirming ckBTC",
+    "step_approve_transfer": "Approving transfer",
     "step_send_btc": "Sending BTC",
     "step_reload": "Refreshing UI Balances",
     "sending_ckbtc_to_btc": "Sending ckBTC —> BTC",

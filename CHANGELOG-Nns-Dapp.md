@@ -11,6 +11,67 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 125508
+
+### Application
+
+#### Added
+
+* Specified the preferred storage schema as an argument.
+* Added provenance information to .did files and derived rust code.
+* Add `UpdateElectedHostosVersions` and `UpdateNodesHostosVersion` proposals support.
+* Show the maximum participation of the Neurons' Fund when present.
+* A list of exceptional (not-rendered, zero value) transactions.
+
+#### Changed
+
+* Stable structures updated to `0.6.0`.
+* Dapp upgraded to Svelte `v4`.
+* New Proposal Card.
+* Change the slider in dissolve delay for a read-only progress bar.
+* Redesign the proposal payload and action.
+* Switch the flag to use redesigned proposal detail page sections by default.
+* Redesign the proposal voting section.
+* Beautify the proposal cards look & feel.
+
+#### Removed
+
+* Removed debounce on deriving Network from ckBTC send address.
+
+#### Fixed
+
+* Remove robots meta tag to allow search engines to crawl NNS Dapp.
+* Fix i18n key in merge neurons summary screen.
+* Display `TransferFrom` as a normal receive instead of failing to load transactions.
+* Fix issue with setting max dissolve delay when max is not a whole day.
+
+#### Not Published
+
+* Added `retrieveBtcWithApproval` in ckbtc-minter API.
+* Render Approve transactions in transaction list.
+* Add feature flag `ENABLE_CKBTC_ICRC2`.
+
+### Operations
+
+#### Added
+
+* Import candid for NNS ledger.
+* Formatting for `Cargo.toml` files.
+* Add test to check that the nns-dapp cargo and npm versions match.
+* Script to deploy nns-dapp on `DevEnv`.
+
+#### Changed
+
+* Install `dfx` by means of the dedicated GitHub action.
+* Stop updating candid files when updating the test environment.
+* Join npm audit URLs with spaces instead of commas.
+* Add traits with a dedicated command rather than with patch files.
+* Use snsdemo snapshot with Internet Identity version 2023-10-27.
+
+#### Removed
+
+* Delete nightly `GitHub` job to update II used in tests; we now use the II that comes with `snsdemo`.
+
 ## Proposal 125338
 
 ### Application
