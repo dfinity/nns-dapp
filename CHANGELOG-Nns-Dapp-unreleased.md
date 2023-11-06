@@ -22,7 +22,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-* Factor out the `snsdemo` installation.
 * Stable structures updated to `0.6.0`.
 * Dapp upgraded to Svelte `v4`.
 * New Proposal Card.
@@ -60,6 +59,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Factor out the `snsdemo` installation.
 * Install `dfx` by means of the dedicated GitHub action.
 * Stop updating candid files when updating the test environment.
 * Join npm audit URLs with spaces instead of commas.
