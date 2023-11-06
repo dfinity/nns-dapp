@@ -52,7 +52,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Workflow to get the latest NNS canister candid files.
+* Workflow to get the latest NNS and SNS canister candid files.
 * Import candid for NNS ledger.
 * Formatting for `Cargo.toml` files.
 * Add test to check that the nns-dapp cargo and npm versions match.
