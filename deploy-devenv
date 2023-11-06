@@ -113,7 +113,7 @@ install_path_has() {
   export PATH="$1:$PATH"
   printf "%s\n" '' "export PATH=\"$1:\$PATH\"" >>~/.bashrc
 }
-# Desired satte:  A snapshot newer than snsdemo exists.
+# Desired state:  A snapshot newer than snsdemo exists.
 SNAPSHOT="$HOME/snapshot.tar.xz"
 check_snapshot() {
   [[ "$SNAPSHOT" -nt "$WORKDIR/snsdemo" ]]
@@ -129,6 +129,7 @@ install_snsdemo_release() {
   local release
   release="$(jq -r '.defaults.build.config.SNSDEMO_RELEASE' "$WORKDIR/nns-dapp/dfx.json")"
   pushd "$WORKDIR/snsdemo"
+  git fetch --tags
   git checkout "$release"
   popd
 }
