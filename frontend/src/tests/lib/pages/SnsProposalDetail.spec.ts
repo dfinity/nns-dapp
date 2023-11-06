@@ -122,7 +122,7 @@ describe("SnsProposalDetail", () => {
       expect(spyOnSetTitle).toHaveBeenCalledTimes(1);
       expect(spyOnSetTitle).toHaveBeenCalledWith({
         title: `Proposal ${proposalIdText}`,
-        header: ``,
+        header: `Proposal ${proposalIdText}`,
       });
     });
 
@@ -144,7 +144,7 @@ describe("SnsProposalDetail", () => {
       const po = await renderComponent();
 
       await waitFor(async () =>
-        expect(await po.getSystemInfoSectionTitle()).toBe(functionName)
+        expect(await po.getSystemInfoSectionTitle()).toBe("Proposal Details")
       );
     });
 

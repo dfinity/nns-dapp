@@ -1,10 +1,14 @@
+import { NANO_SECONDS_IN_MINUTE } from "$lib/constants/constants";
 import { getWithdrawalAccount as getWithdrawalAccountServices } from "$lib/services/ckbtc-minter.services";
 import { loadCkBTCWithdrawalAccount } from "$lib/services/ckbtc-withdrawal-accounts.services";
 import { bitcoinConvertBlockIndexes } from "$lib/stores/bitcoin.store";
 import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-withdrawal-accounts.store";
+import type { Account } from "$lib/types/account";
+import type { CanisterId } from "$lib/types/canister";
 import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
 import type { UniverseCanisterId } from "$lib/types/universe";
+import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import {
   MinterAlreadyProcessingError,
   MinterAmountTooLowError,
@@ -23,7 +27,11 @@ import {
   toNullable,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { retrieveBtc as retrieveBtcAPI } from "../api/ckbtc-minter.api";
+import {
+  retrieveBtc as retrieveBtcAPI,
+  retrieveBtcWithApproval,
+} from "../api/ckbtc-minter.api";
+import { approveTransfer } from "../api/icrc-ledger.api";
 import { toastsError } from "../stores/toasts.store";
 import { numberToE8s } from "../utils/token.utils";
 import { getAuthenticatedIdentity } from "./auth.services";
@@ -41,7 +49,61 @@ export type ConvertCkBTCToBtcParams = Omit<
 };
 
 /**
- * Convert ckBTC to BTC.
+ * Convert ckBTC to BTC with ICRC-2
+ *
+ * 1. Approve transfer (ledger.icrc2_approve).
+ * 2. Request BTC (minter.retrieve_btc_with_approval).
+ */
+export const convertCkBTCToBtcIcrc2 = async ({
+  destinationAddress,
+  amount,
+  source,
+  universeId,
+  canisters: { minterCanisterId, indexCanisterId },
+  updateProgress,
+}: ConvertCkBTCToBtcParams &
+  Pick<IcrcTransferTokensUserParams, "source">): Promise<{
+  success: boolean;
+}> => {
+  try {
+    const identity = await getAuthenticatedIdentity();
+
+    updateProgress(ConvertBtcStep.APPROVE_TRANSFER);
+
+    await approveTransfer({
+      identity,
+      canisterId: universeId,
+      amount: numberToE8s(amount),
+      // 5 minutes should be long enough to perform the transfer but if it
+      // doesn't succeed we don't want the approval to remain valid
+      // indefinitely.
+      expiresAt: nowInBigIntNanoSeconds() + BigInt(5 * NANO_SECONDS_IN_MINUTE),
+      spender: minterCanisterId,
+    });
+
+    updateProgress(ConvertBtcStep.SEND_BTC);
+
+    await retrieveBtcWithApproval({
+      identity,
+      canisterId: minterCanisterId,
+      address: destinationAddress,
+      amount: numberToE8s(amount),
+    });
+  } catch (err: unknown) {
+    toastsError(toastRetrieveBtcError(err));
+
+    return { success: false };
+  } finally {
+    await reload({ source, universeId, indexCanisterId, updateProgress });
+  }
+
+  updateProgress(ConvertBtcStep.DONE);
+
+  return { success: true };
+};
+
+/**
+ * Convert ckBTC to BTC (legacy, before ICRC-2)
  *
  * 1. get_withdrawal_account -> get ckBTC address (account)
  * 2. icrc1_transfer(account)
@@ -197,30 +259,49 @@ const retrieveBtcAndReload = async ({
       bitcoinConvertBlockIndexes.removeBlockIndex(blockIndex);
     }
 
-    updateProgress(ConvertBtcStep.RELOAD);
-
-    // Reload:
-    // - if provided, the transactions of the account for which the transfer was executed
-    // - the balance of the withdrawal account to display an information if some funds - from this transaction or another - are stuck and not been converted yet
-    await Promise.all([
-      ...(nonNullish(source)
-        ? [
-            loadCkBTCAccountTransactions({
-              account: source,
-              canisterId: universeId,
-              indexCanisterId,
-            }),
-          ]
-        : []),
-      loadCkBTCWithdrawalAccount({
-        universeId,
-      }),
-    ]);
+    await reload({
+      source,
+      universeId,
+      indexCanisterId,
+      updateProgress,
+    });
   }
 
   updateProgress(ConvertBtcStep.DONE);
 
   return { success: true };
+};
+
+const reload = async ({
+  source,
+  universeId,
+  indexCanisterId,
+  updateProgress,
+}: {
+  source?: Account;
+  universeId: UniverseCanisterId;
+  indexCanisterId: CanisterId;
+  updateProgress: (step: ConvertBtcStep) => void;
+}): Promise<void> => {
+  updateProgress(ConvertBtcStep.RELOAD);
+
+  // Reload:
+  // - if provided, the transactions of the account for which the transfer was executed
+  // - the balance of the withdrawal account to display an information if some funds - from this transaction or another - are stuck and not been converted yet
+  await Promise.all([
+    ...(nonNullish(source)
+      ? [
+          loadCkBTCAccountTransactions({
+            account: source,
+            canisterId: universeId,
+            indexCanisterId,
+          }),
+        ]
+      : []),
+    loadCkBTCWithdrawalAccount({
+      universeId,
+    }),
+  ]);
 };
 
 const toastRetrieveBtcError = (

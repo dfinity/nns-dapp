@@ -2,8 +2,9 @@
 set -euo pipefail
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 print_help() {
-  cat <<-EOF
-	Gets stable data from an sns_aggregator.
+  cat <<-"EOF"
+
+	Fetches the candid for NNS canisters.
 	EOF
 }
 # Source the clap.bash file ---------------------------------------------------
@@ -53,9 +54,6 @@ source "$(clap.build)"
   did_curl sns_wasm /rs/nns/sns-wasm/canister/sns-wasm.did
   did_curl sns_ledger /rs/rosetta-api/icrc1/ledger/ledger.did
 }
-
-: "Derive Rust types from candid interfaces"
-time scripts/mk_nns_types.sh
 
 : "All done"
 echo FIN

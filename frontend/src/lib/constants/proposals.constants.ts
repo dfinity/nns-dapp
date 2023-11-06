@@ -23,24 +23,6 @@ export const DEFAULT_PROPOSALS_FILTERS = {
   lastAppliedFilter: undefined,
 };
 
-export enum ProposalStatusColor {
-  SUCCESS = "success",
-  WARNING = "warning",
-  ERROR = "error",
-}
-
-export const PROPOSAL_COLOR: Record<
-  ProposalStatus,
-  ProposalStatusColor | undefined
-> = {
-  [ProposalStatus.Executed]: ProposalStatusColor.SUCCESS,
-  [ProposalStatus.Open]: ProposalStatusColor.WARNING,
-  [ProposalStatus.Unknown]: undefined,
-  [ProposalStatus.Rejected]: ProposalStatusColor.ERROR,
-  [ProposalStatus.Accepted]: undefined,
-  [ProposalStatus.Failed]: ProposalStatusColor.ERROR,
-};
-
 export const DEPRECATED_TOPICS = [Topic.SnsDecentralizationSale];
 
 export const PROPOSER_ID_DISPLAY_SPLIT_LENGTH = 5;

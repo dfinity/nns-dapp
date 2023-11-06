@@ -27,6 +27,9 @@ proposal is successful, the changes it released will be moved from this file to
 * New Proposal Card.
 * Change the slider in dissolve delay for a read-only progress bar.
 * Redesign the proposal payload and action.
+* Switch the flag to use redesigned proposal detail page sections by default.
+* Redesign the proposal voting section.
+* Beautify the proposal cards look & feel.
 
 #### Deprecated
 #### Removed
@@ -53,13 +56,17 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Cron job to update proposal types.
+* Enable dependabot for Rust updates.
 * Import candid for NNS ledger.
+* Workflow to get the latest NNS and SNS canister candid files.
 * Formatting for `Cargo.toml` files.
 * Add test to check that the nns-dapp cargo and npm versions match.
 * Script to deploy nns-dapp on `DevEnv`.
+* Try to prevent calls to global.fetch in unit tests.
 
 #### Changed
 
+* Factor out the `snsdemo` installation.
 * Install `dfx` by means of the dedicated GitHub action.
 * Stop updating candid files when updating the test environment.
 * Join npm audit URLs with spaces instead of commas.
@@ -70,6 +77,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Removed
 
 * Delete nightly `GitHub` job to update II used in tests; we now use the II that comes with `snsdemo`.
+* No longer update rust bindings when NNS canister interfaces are updated.
 
 #### Fixed
 

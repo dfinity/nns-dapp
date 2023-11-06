@@ -41,11 +41,9 @@ import {
   type Neuron,
   type NeuronId,
   type NeuronInfo,
-  type ProposalId,
   type ProposalInfo,
   type RewardEvent,
 } from "@dfinity/nns";
-import type { SnsVote } from "@dfinity/sns";
 import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
 import type { ComponentType } from "svelte";
 import {
@@ -55,7 +53,6 @@ import {
 import { nowInSeconds } from "./date.utils";
 import { formatNumber } from "./format.utils";
 import { getVotingBallot, getVotingPower } from "./proposals.utils";
-import { toNnsVote } from "./sns-proposals.utils";
 import { formatToken } from "./token.utils";
 import { isDefined } from "./utils";
 
@@ -841,39 +838,6 @@ export const getNeuronById = ({
   neuronId: NeuronId;
 }): NeuronInfo | undefined =>
   neuronsStore.neurons?.find((n) => n.neuronId === neuronId);
-
-/** Update neurons voting state as they participated in voting */
-export const updateNeuronsVote = ({
-  neuron,
-  vote,
-  proposalId,
-}: {
-  neuron: NeuronInfo;
-  vote: Vote | SnsVote;
-  proposalId: ProposalId;
-}): NeuronInfo => {
-  const newBallot: BallotInfo = {
-    vote: toNnsVote(vote),
-    proposalId,
-  };
-  const recentBallots = [
-    ...neuron.recentBallots.filter(
-      ({ proposalId: ballotProposalId }) => ballotProposalId !== proposalId
-    ),
-    newBallot,
-  ].map((ballot) => ({
-    ...ballot,
-  }));
-
-  return {
-    ...neuron,
-    recentBallots,
-    fullNeuron: {
-      ...(neuron.fullNeuron as Neuron),
-      recentBallots,
-    },
-  };
-};
 
 /** Is a neuron currently in a vote registration process */
 export const neuronVoting = ({

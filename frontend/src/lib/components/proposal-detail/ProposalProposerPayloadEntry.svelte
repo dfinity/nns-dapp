@@ -24,13 +24,13 @@
   {#if expandedPayload !== undefined}
     {#if $ENABLE_FULL_WIDTH_PROPOSAL}
       <div class="header">
-        <h2
+        <h3
           class="content-cell-title header-text"
           data-tid="proposal-proposer-payload-entry-title"
         >
           {$i18n.proposal_detail.payload}
           <Copy value={copyContent} />
-        </h2>
+        </h3>
 
         <TreeRawToggle />
       </div>
