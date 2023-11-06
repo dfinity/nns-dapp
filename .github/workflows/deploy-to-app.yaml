@@ -56,17 +56,10 @@ jobs:
           dfx identity use ci
         env:
           DFX_IDENTITY_PEM: ${{ secrets.DFX_IDENTITY_PEM }}
-      - name: Determine snsdemo ref
-        id: snsdemo_ref
-        run: |
-          SNSDEMO_REF="$(jq -r .defaults.build.config.SNSDEMO_RELEASE dfx.json)"
-          echo "ref=$SNSDEMO_REF" >> "$GITHUB_OUTPUT"
       - name: Get SNS scripts
-        uses: actions/checkout@v3
+        uses: ./.github/actions/checkout_snsdemo
         with:
-          repository: 'dfinity/snsdemo'
-          path: 'snsdemo'
-          ref: ${{ steps.snsdemo_ref.outputs.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up SNS scripts
         run: |
           : Install more
