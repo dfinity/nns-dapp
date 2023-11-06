@@ -1,8 +1,4 @@
 import { goto } from "$app/navigation";
-import {
-  PROPOSAL_COLOR,
-  type ProposalStatusColor,
-} from "$lib/constants/proposals.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import { i18n } from "$lib/stores/i18n";
 import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
@@ -340,7 +336,6 @@ export type ProposalInfoMap = {
   proposer: NeuronId | undefined;
   title: string | undefined;
   url: string | undefined;
-  color: ProposalStatusColor | undefined;
 
   created: bigint;
   decided: bigint | undefined;
@@ -400,7 +395,6 @@ export const mapProposalInfo = (
     proposal,
     title: proposal?.title,
     url: proposal?.url,
-    color: PROPOSAL_COLOR[status],
 
     created: proposalTimestampSeconds,
     decided: decidedTimestampSeconds > 0 ? decidedTimestampSeconds : undefined,

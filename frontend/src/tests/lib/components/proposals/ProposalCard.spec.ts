@@ -1,8 +1,6 @@
 import ProposalCard from "$lib/components/proposals/ProposalCard.svelte";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
-import { ProposalStatusColor } from "$lib/constants/proposals.constants";
 import en from "$tests/mocks/i18n.mock";
-import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
 import { render } from "@testing-library/svelte";
 
 describe("ProposalCard", () => {
@@ -10,15 +8,13 @@ describe("ProposalCard", () => {
   const nowSeconds = Math.floor(now / 1000);
   const props = {
     hidden: false,
-    statusString: "Open",
+    status: "open",
     id: BigInt(112),
     heading: "Treasury Proposal",
     title: "Give me my tokens",
-    color: ProposalStatusColor.SUCCESS,
     proposer: "2",
     topic: "Test Topic",
     deadlineTimestampSeconds: BigInt(nowSeconds + SECONDS_IN_DAY),
-    createdTimestampSeconds: BigInt(nowSeconds - SECONDS_IN_DAY),
     href: "https://nns.ic0.app/proposal/?u=qoctq-giaaa-aaaaa-aaaea-cai&proposal=123786",
   };
 
@@ -66,16 +62,6 @@ describe("ProposalCard", () => {
     expect(getByText(`${props.id}`, { exact: false })).toBeInTheDocument();
   });
 
-  it("should render a created data", () => {
-    const { queryByTestId } = render(ProposalCard, {
-      props,
-    });
-
-    expect(
-      normalizeWhitespace(queryByTestId("created")?.textContent ?? "")
-    ).toBe("Oct 23, 2023 9:24 AM");
-  });
-
   it("should render countdown", () => {
     const { queryByTestId } = render(ProposalCard, {
       props,
@@ -95,15 +81,15 @@ describe("ProposalCard", () => {
     expect(queryByTestId("countdown")).not.toBeInTheDocument();
   });
 
-  it("should render a specific color for the status", () => {
+  it("should render a specific status", () => {
     const { container } = render(ProposalCard, {
       props: {
         ...props,
-        color: ProposalStatusColor.SUCCESS,
+        status: "executed",
       },
     });
 
-    expect(container.querySelector(".success")).not.toBeNull();
+    expect(container.querySelector(".executed")).not.toBeNull();
   });
 
   it("should render an url", () => {

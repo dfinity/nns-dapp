@@ -12,7 +12,7 @@
   } from "$lib/utils/universe.utils";
 
   export let universe: Universe;
-  export let size: "big" | "small" = "small";
+  export let size: "big" | "medium" | "small" = "small";
   export let framed = false;
   export let horizontalPadding = true;
 

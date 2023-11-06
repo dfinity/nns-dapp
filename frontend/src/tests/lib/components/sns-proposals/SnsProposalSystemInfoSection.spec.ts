@@ -66,11 +66,14 @@ describe("ProposalSystemInfoSection", () => {
       nsFunctions: [nervousFunction],
     });
     const props = {
-      proposal: openProposal,
-      rootCanisterId,
+      proposalDataMap: mapProposalInfo({
+        proposalData: openProposal,
+        nsFunctions: [nervousFunction],
+      }),
     };
 
-    it("should load the nervous functions in the store", async () => {
+    // TODO: move to SnsProposalDetail.spec.ts
+    it.skip("should load the nervous functions in the store", async () => {
       fakeSnsGovernanceApi.pause();
       render(ProposalSystemInfoSection, { props });
 
@@ -84,10 +87,10 @@ describe("ProposalSystemInfoSection", () => {
       );
     });
 
-    it("should render type as title", async () => {
+    it("should render title", async () => {
       const po = await renderComponent(props);
 
-      expect(await po.getTitleText()).toEqual(testNervousFunctionName);
+      expect(await po.getTitleText()).toEqual("Proposal Details");
     });
 
     it("should render type info from the nervous function", async () => {
@@ -143,8 +146,10 @@ describe("ProposalSystemInfoSection", () => {
       }),
     };
     const props = {
-      proposal: adoptedProposal,
-      rootCanisterId,
+      proposalDataMap: mapProposalInfo({
+        proposalData: adoptedProposal,
+        nsFunctions: [nervousFunction],
+      }),
     };
     it("should render adopted status", async () => {
       const po = await renderComponent(props);
@@ -173,9 +178,12 @@ describe("ProposalSystemInfoSection", () => {
       }),
     };
     const props = {
-      proposal: executedProposal,
-      rootCanisterId,
+      proposalDataMap: mapProposalInfo({
+        proposalData: executedProposal,
+        nsFunctions: [nervousFunction],
+      }),
     };
+
     it("should render executed status", async () => {
       const po = await renderComponent(props);
 
@@ -203,8 +211,10 @@ describe("ProposalSystemInfoSection", () => {
       }),
     };
     const props = {
-      proposal: failedProposal,
-      rootCanisterId,
+      proposalDataMap: mapProposalInfo({
+        proposalData: failedProposal,
+        nsFunctions: [nervousFunction],
+      }),
     };
 
     it("should render failed status", async () => {

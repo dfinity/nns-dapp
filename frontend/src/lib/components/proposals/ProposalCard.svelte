@@ -1,80 +1,89 @@
 <script lang="ts">
-  import { Card, KeyValuePair, Tag } from "@dfinity/gix-components";
+  import {
+    Card,
+    IconChat,
+    IconClockNoFill,
+    IconUser,
+    Value,
+  } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import type { ProposalStatusColor } from "$lib/constants/proposals.constants";
   import Countdown from "./Countdown.svelte";
-  import { nowInSeconds, secondsToDateTime } from "$lib/utils/date.utils";
+  import { nowInSeconds } from "$lib/utils/date.utils";
   import { nonNullish } from "@dfinity/utils";
+  import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
+  import { PROPOSER_ID_DISPLAY_SPLIT_LENGTH } from "$lib/constants/proposals.constants";
+  import type { UniversalProposalStatus } from "$lib/types/proposals";
+  import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
 
   export let hidden = false;
-  export let statusString: string | undefined;
+  export let status: UniversalProposalStatus | undefined;
   export let id: bigint | undefined;
   export let heading: string;
   export let title: string | undefined;
-  export let color: ProposalStatusColor | undefined;
   export let topic: string | undefined = undefined;
   export let proposer: string | undefined;
   export let deadlineTimestampSeconds: bigint | undefined;
-  export let createdTimestampSeconds: bigint;
   export let href: string;
 </script>
 
 <li class:hidden>
   <Card testId="proposal-card" {href}>
-    <!-- "data-proposer-id" is used in e2e tests -->
-    <div
-      class="stretch-wrapper"
-      data-proposal-id={id}
-      data-proposer-id={proposer}
-    >
+    <div class="container">
       <div>
+        <div class="header">
+          <div class="id" data-proposal-id={id}>
+            <Value
+              ariaLabel={$i18n.proposal_detail.id_prefix}
+              testId="proposal-id">{$i18n.proposal_detail.id}: {id}</Value
+            >
+          </div>
+
+          {#if nonNullish(status)}
+            <ProposalStatusTag testId="proposal-status" {status} />
+          {/if}
+        </div>
+
         <h3 data-tid="proposal-card-heading">{heading}</h3>
 
         {#if title}
-          <div class="highlight">
-            <p>{title}</p>
-          </div>
+          <blockquote class="title-placeholder">
+            <p class="description">{title}</p>
+          </blockquote>
         {/if}
-
-        <div class="content">
-          <KeyValuePair>
-            <span class="description" slot="key"
-              >{$i18n.proposal_detail.created_prefix}</span
-            >
-            <span slot="value" data-tid="created"
-              >{secondsToDateTime(createdTimestampSeconds)}</span
-            >
-          </KeyValuePair>
-
-          {#if nonNullish(deadlineTimestampSeconds) && deadlineTimestampSeconds > nowInSeconds()}
-            <KeyValuePair>
-              <span class="description" slot="key"
-                >{$i18n.proposal_detail.rewards_prefix}</span
-              >
-              <Countdown slot="value" {deadlineTimestampSeconds} />
-            </KeyValuePair>
-          {/if}
-
-          {#if nonNullish(topic)}
-            <KeyValuePair testId="proposal-topic">
-              <span class="description" slot="key"
-                >{$i18n.proposal_detail.topic_prefix}</span
-              >
-              <span slot="value">{topic}</span>
-            </KeyValuePair>
-          {/if}
-
-          <KeyValuePair testId="proposal-status">
-            <span class="description" slot="key"
-              >{$i18n.proposal_detail.status_prefix}</span
-            >
-            <Tag slot="value" intent={color}>{statusString}</Tag>
-          </KeyValuePair>
-        </div>
       </div>
 
       <div>
-        <p class="id" data-tid="proposal-id">{id}</p>
+        {#if nonNullish(topic)}
+          <p class="info">
+            <IconChat />
+            <span class="visually-hidden"
+              >{$i18n.proposal_detail.topic_prefix}</span
+            ><output data-tid="proposal-topic">{topic}</output>
+          </p>
+        {/if}
+
+        {#if nonNullish(proposer)}
+          <p class="info">
+            <IconUser />
+            <span class="visually-hidden"
+              >{$i18n.proposal_detail.proposer_prefix}</span
+            ><output data-proposer-id={proposer}
+              >{shortenWithMiddleEllipsis(
+                proposer,
+                PROPOSER_ID_DISPLAY_SPLIT_LENGTH
+              )}</output
+            >
+          </p>
+        {/if}
+
+        {#if nonNullish(deadlineTimestampSeconds) && deadlineTimestampSeconds > nowInSeconds()}
+          <p class="info">
+            <IconClockNoFill />
+            <span class="visually-hidden"
+              >{$i18n.proposal_detail.proposer_prefix}</span
+            ><output><Countdown {deadlineTimestampSeconds} /></output>
+          </p>
+        {/if}
       </div>
     </div>
   </Card>
@@ -82,26 +91,31 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/text";
-  @use "@dfinity/gix-components/dist/styles/mixins/card";
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   li {
     list-style: none;
-
-    &.hidden {
-      visibility: hidden;
-    }
   }
 
-  .stretch-wrapper {
+  .container {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: var(--padding-3x);
     height: 100%;
   }
 
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--padding);
+  }
+
+  .id {
+    @include text.truncate;
+  }
+
   h3 {
+    padding: var(--padding-2x) 0 var(--padding-0_5x);
     margin-bottom: var(--padding-2x);
   }
 
@@ -109,46 +123,28 @@
     margin: 0;
   }
 
-  .content {
+  blockquote {
+    padding: 0 0 var(--padding-3x);
+
+    p {
+      @include text.clamp(6);
+      word-break: break-word;
+    }
+  }
+
+  .info {
     display: flex;
-    flex-direction: column;
+    align-items: center;
     gap: var(--padding);
-  }
+    padding: 0 0 var(--padding-1_5x);
 
-  .highlight {
-    padding: var(--padding);
-    border-radius: var(--border-radius-0_5x);
-
-    margin-bottom: var(--padding-2x);
-
-    box-sizing: border-box;
-    width: 100%;
-
-    & p {
-      width: 100%;
-
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      text-overflow: ellipsis;
-      overflow: hidden;
-
-      word-break: break-all;
+    :global(svg) {
+      min-width: 20px;
     }
-    // TODO: Create and use a variable in gix-components
-    background: var(--purple-600);
-    color: var(--purple-50);
-  }
 
-  @include media.dark-theme {
-    .highlight {
-      background: var(--purple-50);
-      color: var(--purple-dark-900);
+    span,
+    output {
+      @include text.truncate;
     }
-  }
-
-  .id {
-    color: var(--primary);
-    text-align: right;
   }
 </style>
