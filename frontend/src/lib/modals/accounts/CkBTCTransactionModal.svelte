@@ -99,7 +99,6 @@
       destinationAddress,
       amount,
       universeId,
-      indexCanisterId: canisters.indexCanisterId,
     });
 
     stopBusy("accounts");

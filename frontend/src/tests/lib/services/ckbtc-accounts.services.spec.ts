@@ -1,7 +1,6 @@
 import * as ckbtcLedgerApi from "$lib/api/ckbtc-ledger.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import {
-  CKBTC_INDEX_CANISTER_ID,
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -177,7 +176,6 @@ describe("ckbtc-accounts-services", () => {
         destinationAddress: "aaaaa-aa",
         amount: 1,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
-        indexCanisterId: CKBTC_INDEX_CANISTER_ID,
       });
 
       expect(blockIndex).toEqual(456n);
@@ -200,7 +198,6 @@ describe("ckbtc-accounts-services", () => {
         destinationAddress: "aaaaa-aa",
         amount: 1,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
-        indexCanisterId: CKBTC_INDEX_CANISTER_ID,
       });
 
       expect(blockIndex).toBeUndefined();
@@ -223,7 +220,6 @@ describe("ckbtc-accounts-services", () => {
         destinationAddress: "aaaaa-aa",
         amount: 1,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
-        indexCanisterId: CKBTC_INDEX_CANISTER_ID,
       });
 
       expect(blockIndex).toBeUndefined();

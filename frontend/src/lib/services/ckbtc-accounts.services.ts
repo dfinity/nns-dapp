@@ -11,7 +11,6 @@ import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
-import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { notForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
@@ -71,11 +70,10 @@ export const syncCkBTCAccounts = async (params: {
 export const ckBTCTransferTokens = async ({
   source,
   universeId,
-  indexCanisterId,
   ...rest
 }: IcrcTransferTokensUserParams & {
   universeId: UniverseCanisterId;
-} & Pick<CkBTCAdditionalCanisters, "indexCanisterId">): Promise<{
+}): Promise<{
   blockIndex: IcrcBlockIndex | undefined;
 }> => {
   const fee = get(ckBTCTokenStore)[universeId.toText()]?.token.fee;
