@@ -62,6 +62,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Factor out the `snsdemo` installation.
 * Install `dfx` by means of the dedicated GitHub action.
 * Stop updating candid files when updating the test environment.
 * Join npm audit URLs with spaces instead of commas.
