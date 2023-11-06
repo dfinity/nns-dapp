@@ -74,17 +74,20 @@ setDefaultTestConstants({
 
 failTestsThatLogToConsole();
 
-// Avoid using fetch in tests
-let usedFetch = false;
+// Avoid using fetch in tests.
+// NOTE: This doesn't seem to work when all tests are run but works when
+// individual tests are run. Not sure why. Still it seems better to have it than
+// not to have it.
+let usedGlobalFetch = false;
 beforeEach(() => {
-  usedFetch = false;
+  usedGlobalFetch = false;
 });
 afterEach(async () => {
-  expect(usedFetch).toBe(false);
+  expect(usedGlobalFetch).toBe(false);
 });
 vi.spyOn(global, "fetch").mockImplementation(() => {
-  usedFetch = true;
-  throw new Error("fetch is not allowed in tests");
+  usedGlobalFetch = true;
+  throw new Error("global.fetch is not allowed in tests");
 });
 
 // testing-library setup
