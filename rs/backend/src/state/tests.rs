@@ -1,7 +1,7 @@
 use super::{AssetHashes, Assets, Memory, PerformanceCounts, StableState, State};
 use crate::accounts_store::schema::{SchemaLabel, SchemaLabelBytes};
 use ic_stable_structures::VectorMemory;
-use std::{cell::RefCell, rc::Rc};
+use std::cell::RefCell;
 use strum::IntoEnumIterator;
 
 /// Creates a populated test state for testing.
@@ -31,8 +31,7 @@ fn state_can_be_restored_from_stable_memory() {
 
 #[test]
 fn schema_can_be_read_from_memory() {
-    let raw_memory = vec![];
-    let memory: VectorMemory = Rc::new(RefCell::new(raw_memory));
+    let memory: VectorMemory = VectorMemory::default();
     memory.grow(1);
     // Pre-populate the memory so that it contains more than just the schema.
     memory.write(0, &[0xa5u8; 1000]);
