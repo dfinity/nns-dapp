@@ -163,8 +163,12 @@ install_npm_linux() {
 
 install_rust() {
   echo "Installing rust"
-  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+  local tempfile
+  tempfile="$(mktemp)"
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > "$tempfile"
+  sh "$tempfile" -y
   append_to_profile 'export CARGO_BUILD_JOBS=2'
+  rm "$tempfile"
 }
 
 install_binstall() {

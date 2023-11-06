@@ -6,7 +6,7 @@ print_help() {
 
 	Serves the nns-dapp on a DevEnv server.
 
-	Usage: cat deploy-devenv | ssh devenv
+	Usage: cat deploy-devenv | ssh -A devenv
 
 	To tear down: ssh devenv screen -S dfx -X quit
 	EOF
@@ -83,7 +83,7 @@ install_nns_dapp() {
 }
 # Desired state: nns-dapp tools are installed
 install_nns_dapp_tools() {
-  "$WORKDIR/nns-dapp/scripts/setup"
+  bash -x "$WORKDIR/nns-dapp/scripts/setup" --profile .bashrc
 }
 # Desired state: ic clone exists
 check_ic() {
@@ -143,7 +143,7 @@ install_dfx_screen() {
     set -euxo pipefail
     cd "$WORKDIR/nns-dapp"
     screen -L -Logfile dfx.screenlog -d -S dfx -m ./scripts/dfx-snapshot-start --host 0.0.0.0:8080 --snapshot "$SNAPSHOT"
-    install_dfx_info
+    install_screen_info
   )
 }
 # Prints dfx info
