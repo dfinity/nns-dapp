@@ -17,6 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 #### Deprecated
+
 #### Removed
 
 #### Fixed
@@ -29,11 +30,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-#### Changed
-
-#### Deprecated
-#### Removed
-
 * Enable dependabot for Rust updates.
 
 #### Changed
@@ -41,6 +37,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Factor out the `snsdemo` installation.
 
 #### Deprecated
+
 #### Removed
 
 * No longer update rust bindings when NNS canister interfaces are updated.
