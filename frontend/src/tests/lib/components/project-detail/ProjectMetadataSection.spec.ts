@@ -67,7 +67,7 @@ describe("ProjectMetadataSection", () => {
     expect(await po.getDashboardLink()).toBeNull();
   });
 
-  it("should render dashboard link if not committed", async () => {
+  it("should render dashboard link if committed", async () => {
     const summary = createSummary({
       lifecycle: SnsSwapLifecycle.Committed,
     });
