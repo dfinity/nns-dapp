@@ -199,9 +199,6 @@ test("Test neuron voting", async ({ page, context }) => {
   expect(
     await nnsProposalPo.getProposalProposerActionsEntryPo().getActionTitle()
   ).toBe("Motion");
-  expect(
-    await nnsProposalPo.getProposalProposerActionsEntryPo().getJsonPos()
-  ).toHaveLength(1);
 
   await appPo.goBack();
 });

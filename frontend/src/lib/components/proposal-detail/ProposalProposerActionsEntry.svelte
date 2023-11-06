@@ -55,6 +55,14 @@
 </div>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
+  .header-text {
+    display: flex;
+    align-items: center;
+    @include fonts.h3;
+  }
+
   .header {
     display: flex;
     justify-content: space-between;
@@ -64,10 +72,5 @@
       display: flex;
       align-items: center;
     }
-  }
-
-  .header-text {
-    display: flex;
-    align-items: center;
   }
 </style>

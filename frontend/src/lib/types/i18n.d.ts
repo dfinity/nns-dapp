@@ -515,6 +515,7 @@ interface I18nBusy_screen {
 }
 
 interface I18nProposal_detail {
+  headline: string;
   title: string;
   summary: string;
   topic_prefix: string;
@@ -526,8 +527,6 @@ interface I18nProposal_detail {
   proposer_prefix: string;
   proposer_description: string;
   open_voting_prefix: string;
-  adopt: string;
-  reject: string;
   my_votes: string;
   loading_neurons: string;
   unknown_nns_function: string;
@@ -554,6 +553,7 @@ interface I18nProposal_detail {
   toggle_lable: string;
   toggle_tree: string;
   toggle_raw: string;
+  id: string;
 }
 
 interface I18nProposal_detail__vote {
@@ -575,6 +575,11 @@ interface I18nProposal_detail__vote {
   vote_reject_in_progress: string;
   vote_status_registering: string;
   vote_status_updating: string;
+  expiration: string;
+  absolute_majority: string;
+  absolute_majority_description: string;
+  simple_majority: string;
+  simple_majority_description: string;
 }
 
 interface I18nProposal_detail__ineligible {
