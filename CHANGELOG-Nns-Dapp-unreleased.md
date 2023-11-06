@@ -57,9 +57,11 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Enable dependabot for Rust updates.
 * Import candid for NNS ledger.
+* Workflow to get the latest NNS and SNS canister candid files.
 * Formatting for `Cargo.toml` files.
 * Add test to check that the nns-dapp cargo and npm versions match.
 * Script to deploy nns-dapp on `DevEnv`.
+* Try to prevent calls to global.fetch in unit tests.
 
 #### Changed
 
