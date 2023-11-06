@@ -67,11 +67,11 @@ impl State {
     /// The schema version, determined by the last version that was saved to stable memory.
     fn schema_version_from_stable_memory() -> Option<SchemaLabel> {
         let memory = DefaultMemoryImpl::default();
-        Self::schema_version_from_memory(memory)
+        Self::schema_version_from_memory(&memory)
     }
 
     /// The schema version, as stored in an arbitrary memory.
-    fn schema_version_from_memory<M>(memory: M) -> Option<SchemaLabel>
+    fn schema_version_from_memory<M>(memory: &M) -> Option<SchemaLabel>
     where
         M: Memory,
     {
