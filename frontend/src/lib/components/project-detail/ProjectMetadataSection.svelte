@@ -54,26 +54,31 @@
         <p class="description">
           {metadata.description}
         </p>
-        <a href={metadata.url} target="_blank" rel="noopener noreferrer"
-          >{metadata.url}</a
-        >
-        {#if lifecycle === SnsSwapLifecycle.Committed}
-          <p>
+        <p class="links">
+          <a href={metadata.url} target="_blank" rel="noopener noreferrer"
+            >{metadata.url}</a
+          >
+          {#if lifecycle === SnsSwapLifecycle.Committed}
+            <span class="separator">|</span>
             <a
               data-tid="dashboard-link"
               href={snsProjectDashboardUrl(rootCanisterId)}
               target="_blank"
               rel="noopener noreferrer"
-              >{$i18n.sns_project_detail.link_to_dashboard}</a
+              class="dashboard-link"
             >
-          </p>
-        {/if}
+              {$i18n.sns_project_detail.link_to_dashboard}
+            </a>
+          {/if}
+        </p>
       </div>
     </div>
   {/if}
 </TestIdWrapper>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+
   p {
     margin: 0;
   }
@@ -93,5 +98,29 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding);
+  }
+
+  .links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+
+    .separator {
+      display: none;
+    }
+
+    .dashboard-link {
+      display: flex;
+      align-items: center;
+      gap: var(--padding-0_5x);
+    }
+
+    @include media.min-width(medium) {
+      flex-direction: row;
+
+      .separator {
+        display: inline-block;
+      }
+    }
   }
 </style>
