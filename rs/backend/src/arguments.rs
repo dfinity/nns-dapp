@@ -54,7 +54,7 @@ impl CanisterArguments {
     /// args.push(("OWN_CANISTER_ID".to_string(), "aeiouy".to_string()));
     ///
     /// // We now have complete arguments:
-    /// let args = CanisterArguments{args};
+    /// let args = CanisterArguments{args, ..CanisterArguments::default()};
     ///
     /// // The arguments are encoded as a meta tag like this:
     /// assert_eq!(args.to_html(), r#"<meta name="nns-dapp-vars"
@@ -89,7 +89,7 @@ impl CanisterArguments {
     /// ```
     /// use nns_dapp::arguments::CanisterArguments;
     /// let args = CanisterArguments::args_from_str(&[("FOO", "bar"), ("BAT", "man")]);
-    /// let canister_arguments = CanisterArguments{args};
+    /// let canister_arguments = CanisterArguments{args, ..CanisterArguments::default()};
     /// ```
     #[allow(dead_code)]
     pub fn args_from_str(str_args: &[(&str, &str)]) -> Vec<(String, String)> {
