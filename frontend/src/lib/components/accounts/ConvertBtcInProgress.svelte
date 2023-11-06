@@ -6,22 +6,33 @@
 
   export let progressStep: ConvertBtcStep;
   export let transferToLedgerStep = true;
+  export let useIcrc2 = false;
 
   let steps: [ProgressStep, ...ProgressStep[]] = [
-    {
-      step: ConvertBtcStep.INITIALIZATION,
-      text: $i18n.ckbtc.step_initialization,
-      state: "next",
-    } as ProgressStep,
-    ...(transferToLedgerStep
+    ...(useIcrc2
       ? [
           {
-            step: ConvertBtcStep.LOCKING_CKBTC,
-            text: $i18n.ckbtc.step_locking_ckbtc,
+            step: ConvertBtcStep.APPROVE_TRANSFER,
+            text: $i18n.ckbtc.step_approve_transfer,
             state: "next",
           } as ProgressStep,
         ]
-      : []),
+      : [
+          {
+            step: ConvertBtcStep.INITIALIZATION,
+            text: $i18n.ckbtc.step_initialization,
+            state: "next",
+          } as ProgressStep,
+          ...(transferToLedgerStep
+            ? [
+                {
+                  step: ConvertBtcStep.LOCKING_CKBTC,
+                  text: $i18n.ckbtc.step_locking_ckbtc,
+                  state: "next",
+                } as ProgressStep,
+              ]
+            : []),
+        ]),
     {
       step: ConvertBtcStep.SEND_BTC,
       text: $i18n.ckbtc.step_send_btc,
