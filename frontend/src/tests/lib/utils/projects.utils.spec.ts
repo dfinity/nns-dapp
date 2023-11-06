@@ -16,6 +16,7 @@ import {
   hasUserParticipatedToSwap,
   participateButtonStatus,
   projectRemainingAmount,
+  snsProjectDashboardUrl,
   userCountryIsNeeded,
   validParticipation,
 } from "$lib/utils/projects.utils";
@@ -31,6 +32,7 @@ import {
   principal,
   summaryForLifecycle,
 } from "$tests/mocks/sns-projects.mock";
+import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 
@@ -1420,6 +1422,21 @@ describe("project-utils", () => {
           isNFParticipating: false,
         });
       });
+    });
+  });
+
+  describe("snsProjectDashboardUrl", () => {
+    it("returns a link to the dashboard", () => {
+      expect(snsProjectDashboardUrl(Principal.fromText("aaaaa-aa"))).toBe(
+        "https://dashboard.internetcomputer.org/sns/aaaaa-aa"
+      );
+      expect(
+        snsProjectDashboardUrl(
+          Principal.fromText("pin7y-wyaaa-aaaaa-aacpa-cai")
+        )
+      ).toBe(
+        "https://dashboard.internetcomputer.org/sns/pin7y-wyaaa-aaaaa-aacpa-cai"
+      );
     });
   });
 });
