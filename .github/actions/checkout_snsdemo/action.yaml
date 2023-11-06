@@ -1,0 +1,51 @@
+name: 'Clone the snsdemo repository'
+description: |
+  Ensures that the snsdemo repository is checked out at `./snsdemo` at the commit specified in `dfx.json`.
+
+  * If the snsdemo repository is already present: Checks that the repo is checked
+    out at the expected commit.  If not, this fails with an error merssage.
+  * Otherwise: Clones the snsdemo repository at the commit specified in `dfx.json`
+inputs:
+  token:
+    description: "Github access token used to clone"
+    required: true
+outputs:
+  ref:
+    description: The snsdemo reference that was checked out
+    value: ${{ steps.snsdemo_ref.outputs.ref }}
+runs:
+  using: "composite"
+  steps:
+    - name: Check whether the snsdemo repo is already present
+      shell: bash
+      id: have_snsdemo
+      run: |
+        if test -d snsdemo
+        then echo have_snsdemo=true >> "$GITHUB_OUTPUT"
+        else have_snsdemo=false >> "$GITHUB_OUTPUT"
+        fi
+    - name: Determine snsdemo ref
+      id: snsdemo_ref
+      shell: bash
+      run: |
+        SNSDEMO_RELEASE="$(jq -r .defaults.build.config.SNSDEMO_RELEASE dfx.json)"
+        echo "ref=$SNSDEMO_RELEASE" >> "$GITHUB_OUTPUT"
+    - name: Check that the existing repo has the expected commit.
+      if: ${{ steps.have_snsdemo.outputs.have_snsdemo }} == 'true'
+      shell: bash
+      run: |
+        expected_commit="$(git rev-parse "${{ steps.snsdemo_ref.outputs.ref }}" || true)"
+        actual_commit="$(git rev-parse HEAD)"
+        [[ "$expected_commit" == "$actual_commit" ]] || {
+          echo "ERROR: snsdemo is already checked out but not at the requested commit."
+          echo "Requested ref:    ${{ steps.snsdemo_ref.outputs.ref }}"
+          echo "Requested commit: $expected_commit  (May be missing in the case of a partial clone)"
+          echo "Actual commit:    $actual_commit"
+        }
+    - name: Get snsdemo
+      if: ${{ steps.have_snsdemo.outputs.have_snsdemo }} == 'false'
+      uses: actions/checkout@v3
+      with:
+        repository: 'dfinity/snsdemo'
+        path: 'snsdemo'
+        ref: ${{ steps.snsdemo_ref.outputs.ref }}
