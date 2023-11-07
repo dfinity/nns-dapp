@@ -31,6 +31,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Show canister title in details when user is not the controller.
+
 #### Security
 
 #### Not Published

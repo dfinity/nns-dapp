@@ -7,14 +7,12 @@ export function mapError(error: Error | unknown): Error | unknown {
   const statusLine =
     error instanceof Error
       ? error.message
-      : ""
           .split("\n")
           .map((l) => l.trim().toLowerCase())
-          .find(
-            (l) => l.startsWith("code:") || l.startsWith("http status code:")
-          );
+          .find((l) => l.startsWith('"error code"'))
+      : "";
 
-  if (statusLine?.includes("403")) {
+  if (statusLine?.includes("ic0512")) {
     return new UserNotTheControllerError();
   }
   return error;
