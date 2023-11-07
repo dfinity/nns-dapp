@@ -46,6 +46,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Update `ic-wasm` to the latest version.
 * Factor out the `snsdemo` installation.
 * Add `prod` and `aggregator-prod` to the list of public releases.
 
