@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { expandObject, getObjMaxDepth } from "$lib/utils/utils";
   import { isNullish } from "@dfinity/utils";
-  import { IconExpandAll } from "@dfinity/gix-components";
+  import { IconExpandAll, IconExpandMore } from "@dfinity/gix-components";
   import TreeJson from "$lib/components/common/TreeJson.svelte";
   import RawJson from "$lib/components/common/RawJson.svelte";
   import { fade } from "svelte/transition";
@@ -16,25 +16,37 @@
     : expandObject(json as Record<string, unknown>);
 
   const DEFAULT_EXPANDED_LEVEL = 1;
-  let expandAll = false;
-  $: expandAll =
-    getObjMaxDepth(expandedData) <= DEFAULT_EXPANDED_LEVEL ? true : expandAll;
-  const toggleExpanded = () => (expandAll = !expandAll);
+  let isAllExpanded: boolean | undefined = undefined;
+  $: isAllExpanded = false;
+
+  let isExpandedAllVisible = false;
+  $: isExpandedAllVisible =
+    getObjMaxDepth(expandedData) > DEFAULT_EXPANDED_LEVEL;
+  const toggleExpanded = () => {
+    isAllExpanded = !isAllExpanded;
+  };
 </script>
 
 <div class="content-cell-island markdown-container">
   {#if $jsonRepresentationModeStore === "tree"}
     <div class="json" data-tid="json-wrapper" in:fade>
-      {#if !expandAll}
-        <button class="ghost expand-all" on:click={toggleExpanded}
-          ><IconExpandAll /><span class="expand-all-label"
-            >{$i18n.core.expand_all}</span
+      {#if isExpandedAllVisible}
+        <button
+          class="ghost expand-all"
+          class:expand-all--expanded={isAllExpanded}
+          on:click={toggleExpanded}
+          ><IconExpandMore /><span class="expand-all-label"
+            >{isAllExpanded
+              ? $i18n.core.collapse_all
+              : $i18n.core.expand_all}</span
           ></button
         >
       {/if}
       <TreeJson
         json={expandedData}
-        defaultExpandedLevel={expandAll ? Number.MAX_SAFE_INTEGER : 1}
+        defaultExpandedLevel={isAllExpanded
+          ? Number.MAX_SAFE_INTEGER
+          : DEFAULT_EXPANDED_LEVEL}
       />
     </div>
   {:else}
@@ -62,6 +74,17 @@
 
       @include media.min-width(small) {
         display: initial;
+      }
+    }
+
+    :global(svg) {
+      transform: rotate(-90deg);
+      transition: transform ease-out var(--animation-time-normal);
+    }
+
+    &--expanded {
+      :global(svg) {
+        transform: rotate(0);
       }
     }
   }

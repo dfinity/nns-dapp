@@ -31,7 +31,8 @@
     "do_not_close": "Please do not close your browser tab",
     "finish": "Finish",
     "unknown": "Unknown",
-    "expand_all": "Expand All"
+    "expand_all": "Expand All",
+    "collapse_all": "Collapse All"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
