@@ -4,6 +4,8 @@
  * @throws UserNotTheControllerError and Error.
  */
 export function mapError(error: Error | unknown): Error | unknown {
+  // As per IC Specification: https://internetcomputer.org/docs/current/references/ic-interface-spec#error-codes
+  // Specification might change and then we might need to change this as well.
   const statusLine =
     error instanceof Error
       ? error.message
