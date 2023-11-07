@@ -35,6 +35,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Not Published
 
+* Use ICRC-2 for BTC withdrawal when `ENABLE_CKBTC_ICRC2` is enabled.
+
 ### Operations
 
 #### Added

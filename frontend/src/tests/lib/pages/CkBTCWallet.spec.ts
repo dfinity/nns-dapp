@@ -12,6 +12,7 @@ import CkBTCWallet from "$lib/pages/CkBTCWallet.svelte";
 import * as services from "$lib/services/ckbtc-accounts.services";
 import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
@@ -118,6 +119,7 @@ describe("CkBTCWallet", () => {
     tokensStore.reset();
     ckBTCInfoStore.reset();
     bitcoinAddressStore.reset();
+    overrideFeatureFlagsStore.reset();
     resetIdentity();
 
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
@@ -202,8 +204,17 @@ describe("CkBTCWallet", () => {
 
       vi.mocked(icrcLedgerApi.icrcTransfer).mockImplementation(() => {
         afterTransfer = true;
-        return Promise.resolve(BigInt(1));
+        return Promise.resolve(1n);
       });
+      vi.mocked(icrcLedgerApi.approveTransfer).mockImplementation(() => {
+        return Promise.resolve(2n);
+      });
+      vi.mocked(ckbtcMinterApi.retrieveBtcWithApproval).mockImplementation(
+        () => {
+          afterTransfer = true;
+          return Promise.resolve({ block_index: 3n });
+        }
+      );
       vi.mocked(ckbtcLedgerApi.getCkBTCAccount).mockImplementation(() => {
         return Promise.resolve({
           ...mockCkBTCMainAccount,
@@ -295,58 +306,132 @@ describe("CkBTCWallet", () => {
       expect(icrcIndexApi.getTransactions).toBeCalledTimes(2);
     });
 
-    it("should update account after withdrawing BTC", async () => {
-      const { walletPo, sendModalPo } = await renderWalletAndModal();
-
-      // Check original sum
-      expect(await walletPo.getWalletPageHeadingPo().getTitle()).toBe(
-        "4'445'566.99 ckBTC"
-      );
-
-      // Make transfer
-      await walletPo.getCkBTCWalletFooterPo().clickSendButton();
-      await sendModalPo.transferToAddress({
-        destinationAddress: testnetBtcAddress,
-        amount: 10,
+    describe("without ICRC-2", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC_ICRC2", false);
       });
 
-      await runResolvedPromises();
-      expect(icrcLedgerApi.icrcTransfer).toBeCalledTimes(1);
+      it("should update account after withdrawing BTC", async () => {
+        const { walletPo, sendModalPo } = await renderWalletAndModal();
 
-      // Account should have been updated and sum should be reflected
-      expect(await walletPo.getWalletPageHeadingPo().getTitle()).toBe(
-        "0.00011111 ckBTC"
-      );
+        // Check original sum
+        expect(await walletPo.getWalletPageHeadingPo().getTitle()).toBe(
+          "4'445'566.99 ckBTC"
+        );
+
+        // Make transfer
+        await walletPo.getCkBTCWalletFooterPo().clickSendButton();
+        await sendModalPo.transferToAddress({
+          destinationAddress: testnetBtcAddress,
+          amount: 10,
+        });
+
+        await runResolvedPromises();
+        expect(icrcLedgerApi.icrcTransfer).toBeCalledTimes(1);
+        expect(icrcLedgerApi.approveTransfer).toBeCalledTimes(0);
+        expect(ckbtcMinterApi.retrieveBtcWithApproval).toBeCalledTimes(0);
+
+        // Account should have been updated and sum should be reflected
+        expect(await walletPo.getWalletPageHeadingPo().getTitle()).toBe(
+          "0.00011111 ckBTC"
+        );
+      });
+
+      it("should reload transactions after withdrawing BTC", async () => {
+        const { walletPo, sendModalPo } = await renderWalletAndModal();
+
+        expect(icrcIndexApi.getTransactions).toBeCalledTimes(1);
+
+        // Check original sum
+        expect(await walletPo.getWalletPageHeadingPo().getTitle()).toBe(
+          "4'445'566.99 ckBTC"
+        );
+
+        // Make transfer
+        await walletPo.getCkBTCWalletFooterPo().clickSendButton();
+        await sendModalPo.transferToAddress({
+          destinationAddress: testnetBtcAddress,
+          amount: 10,
+        });
+
+        await runResolvedPromises();
+        expect(icrcLedgerApi.icrcTransfer).toBeCalledTimes(1);
+        expect(icrcLedgerApi.approveTransfer).toBeCalledTimes(0);
+        expect(ckbtcMinterApi.retrieveBtcWithApproval).toBeCalledTimes(0);
+
+        expect(icrcIndexApi.getTransactions).toBeCalledTimes(2);
+
+        await advanceTime(CKBTC_TRANSACTIONS_RELOAD_DELAY + 1000);
+
+        // This additional loading of transactions is not necessary.
+        // TODO: Remove the double reloading and change the expected number of
+        // calls from 2 to 3.
+        expect(icrcIndexApi.getTransactions).toBeCalledTimes(3);
+      });
     });
 
-    it("should reload transactions after withdrawing BTC", async () => {
-      const { walletPo, sendModalPo } = await renderWalletAndModal();
-
-      expect(icrcIndexApi.getTransactions).toBeCalledTimes(1);
-
-      // Check original sum
-      expect(await walletPo.getWalletPageHeadingPo().getTitle()).toBe(
-        "4'445'566.99 ckBTC"
-      );
-
-      // Make transfer
-      await walletPo.getCkBTCWalletFooterPo().clickSendButton();
-      await sendModalPo.transferToAddress({
-        destinationAddress: testnetBtcAddress,
-        amount: 10,
+    describe("with ICRC-2", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC_ICRC2", true);
       });
 
-      await runResolvedPromises();
-      expect(icrcLedgerApi.icrcTransfer).toBeCalledTimes(1);
+      it("should update account after withdrawing BTC", async () => {
+        const { walletPo, sendModalPo } = await renderWalletAndModal();
 
-      expect(icrcIndexApi.getTransactions).toBeCalledTimes(2);
+        // Check original sum
+        expect(await walletPo.getWalletPageHeadingPo().getTitle()).toBe(
+          "4'445'566.99 ckBTC"
+        );
 
-      await advanceTime(CKBTC_TRANSACTIONS_RELOAD_DELAY + 1000);
+        // Make transfer
+        await walletPo.getCkBTCWalletFooterPo().clickSendButton();
+        await sendModalPo.transferToAddress({
+          destinationAddress: testnetBtcAddress,
+          amount: 10,
+        });
 
-      // This additional loading of transactions is not necessary.
-      // TODO: Remove the double reloading and change the expected number of
-      // calls from 2 to 3.
-      expect(icrcIndexApi.getTransactions).toBeCalledTimes(3);
+        await runResolvedPromises();
+        expect(icrcLedgerApi.icrcTransfer).toBeCalledTimes(0);
+        expect(icrcLedgerApi.approveTransfer).toBeCalledTimes(1);
+        expect(ckbtcMinterApi.retrieveBtcWithApproval).toBeCalledTimes(1);
+
+        // Account should have been updated and sum should be reflected
+        expect(await walletPo.getWalletPageHeadingPo().getTitle()).toBe(
+          "0.00011111 ckBTC"
+        );
+      });
+
+      it("should reload transactions after withdrawing BTC", async () => {
+        const { walletPo, sendModalPo } = await renderWalletAndModal();
+
+        expect(icrcIndexApi.getTransactions).toBeCalledTimes(1);
+
+        // Check original sum
+        expect(await walletPo.getWalletPageHeadingPo().getTitle()).toBe(
+          "4'445'566.99 ckBTC"
+        );
+
+        // Make transfer
+        await walletPo.getCkBTCWalletFooterPo().clickSendButton();
+        await sendModalPo.transferToAddress({
+          destinationAddress: testnetBtcAddress,
+          amount: 10,
+        });
+
+        await runResolvedPromises();
+        expect(icrcLedgerApi.icrcTransfer).toBeCalledTimes(0);
+        expect(icrcLedgerApi.approveTransfer).toBeCalledTimes(1);
+        expect(ckbtcMinterApi.retrieveBtcWithApproval).toBeCalledTimes(1);
+
+        expect(icrcIndexApi.getTransactions).toBeCalledTimes(2);
+
+        await advanceTime(CKBTC_TRANSACTIONS_RELOAD_DELAY + 1000);
+
+        // This additional loading of transactions is not necessary.
+        // TODO: Remove the double reloading and change the expected number of
+        // calls from 2 to 3.
+        expect(icrcIndexApi.getTransactions).toBeCalledTimes(3);
+      });
     });
 
     it("should open receive modal", async () => {

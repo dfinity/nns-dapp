@@ -3,6 +3,7 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
+  import { ENABLE_CKBTC_ICRC2 } from "$lib/stores/feature-flags.store";
   import type { NewTransaction, TransactionInit } from "$lib/types/transaction";
   import { TransactionNetwork } from "$lib/types/transaction";
   import type { ValidateAmountFn } from "$lib/types/transaction";
@@ -18,6 +19,7 @@
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import {
     convertCkBTCToBtc,
+    convertCkBTCToBtcIcrc2,
     type ConvertCkBTCToBtcParams,
     retrieveBtc,
   } from "$lib/services/ckbtc-convert.services";
@@ -109,6 +111,8 @@
     }
   };
 
+  let useIcrc2ForProgress = true;
+
   const convert = async ({
     detail: { sourceAccount, amount, destinationAddress },
   }: CustomEvent<NewTransaction>) => {
@@ -124,12 +128,24 @@
       updateProgress,
     };
 
-    const { success } = withdrawalAccount
-      ? await retrieveBtc(params)
-      : await convertCkBTCToBtc({
-          source: sourceAccount,
-          ...params,
-        });
+    let success = false;
+
+    if (withdrawalAccount) {
+      useIcrc2ForProgress = false;
+      ({ success } = await retrieveBtc(params));
+    } else if ($ENABLE_CKBTC_ICRC2) {
+      useIcrc2ForProgress = true;
+      ({ success } = await convertCkBTCToBtcIcrc2({
+        source: sourceAccount,
+        ...params,
+      }));
+    } else {
+      useIcrc2ForProgress = false;
+      ({ success } = await convertCkBTCToBtc({
+        source: sourceAccount,
+        ...params,
+      }));
+    }
 
     if (success) {
       toastsSuccess({
@@ -224,5 +240,6 @@
     slot="in_progress"
     {progressStep}
     transferToLedgerStep={!withdrawalAccount}
+    useIcrc2={useIcrc2ForProgress}
   />
 </TransactionModal>
