@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { expandObject, getObjMaxDepth } from "$lib/utils/utils";
   import { isNullish } from "@dfinity/utils";
-  import { IconExpandAll, IconExpandMore } from "@dfinity/gix-components";
+  import { IconCollapseAll, IconExpandAll } from "@dfinity/gix-components";
   import TreeJson from "$lib/components/common/TreeJson.svelte";
   import RawJson from "$lib/components/common/RawJson.svelte";
   import { fade } from "svelte/transition";
@@ -31,16 +31,17 @@
   {#if $jsonRepresentationModeStore === "tree"}
     <div class="json" data-tid="json-wrapper" in:fade>
       {#if isExpandedAllVisible}
-        <button
-          class="ghost expand-all"
-          class:expand-all--expanded={isAllExpanded}
-          on:click={toggleExpanded}
-          ><IconExpandMore /><span class="expand-all-label"
-            >{isAllExpanded
-              ? $i18n.core.collapse_all
-              : $i18n.core.expand_all}</span
-          ></button
-        >
+        {#if isAllExpanded}
+          <button in:fade class="ghost expand-all" on:click={toggleExpanded}>
+            <IconCollapseAll />
+            <span class="expand-all-label">{$i18n.core.collapse_all}</span>
+          </button>
+        {:else}
+          <button in:fade class="ghost expand-all" on:click={toggleExpanded}>
+            <IconExpandAll />
+            <span class="expand-all-label">{$i18n.core.expand_all}</span>
+          </button>
+        {/if}
       {/if}
       <TreeJson
         json={expandedData}
@@ -74,17 +75,6 @@
 
       @include media.min-width(small) {
         display: initial;
-      }
-    }
-
-    :global(svg) {
-      transform: rotate(-90deg);
-      transition: transform ease-out var(--animation-time-normal);
-    }
-
-    &--expanded {
-      :global(svg) {
-        transform: rotate(0);
       }
     }
   }
