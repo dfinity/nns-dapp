@@ -5,14 +5,12 @@ import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
 import { getCkBTCAccounts } from "$lib/services/ckbtc-accounts-loader.services";
 import { loadCkBTCToken } from "$lib/services/ckbtc-tokens.services";
-import { loadCkBTCAccountTransactions } from "$lib/services/ckbtc-transactions.services";
 import { transferTokens } from "$lib/services/icrc-accounts.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
-import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { notForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
@@ -71,14 +69,11 @@ export const syncCkBTCAccounts = async (params: {
 
 export const ckBTCTransferTokens = async ({
   source,
-  loadTransactions,
   universeId,
-  indexCanisterId,
   ...rest
 }: IcrcTransferTokensUserParams & {
-  loadTransactions: boolean;
   universeId: UniverseCanisterId;
-} & Pick<CkBTCAdditionalCanisters, "indexCanisterId">): Promise<{
+}): Promise<{
   blockIndex: IcrcBlockIndex | undefined;
 }> => {
   const fee = get(ckBTCTokenStore)[universeId.toText()]?.token.fee;
@@ -97,13 +92,6 @@ export const ckBTCTransferTokens = async ({
         canisterId: universeId,
       }),
     reloadAccounts: async () => await loadCkBTCAccounts({ universeId }),
-    reloadTransactions: async () =>
-      await (loadTransactions
-        ? loadCkBTCAccountTransactions({
-            account: source,
-            canisterId: universeId,
-            indexCanisterId,
-          })
-        : Promise.resolve()),
+    reloadTransactions: async () => Promise.resolve(),
   });
 };
