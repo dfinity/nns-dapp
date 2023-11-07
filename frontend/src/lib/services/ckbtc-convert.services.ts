@@ -35,7 +35,10 @@ import { approveTransfer } from "../api/icrc-ledger.api";
 import { toastsError } from "../stores/toasts.store";
 import { numberToE8s } from "../utils/token.utils";
 import { getAuthenticatedIdentity } from "./auth.services";
-import { ckBTCTransferTokens } from "./ckbtc-accounts.services";
+import {
+  ckBTCTransferTokens,
+  loadCkBTCAccounts,
+} from "./ckbtc-accounts.services";
 import { loadCkBTCAccountTransactions } from "./ckbtc-transactions.services";
 import type { IcrcTransferTokensUserParams } from "./icrc-accounts.services";
 
@@ -94,7 +97,13 @@ export const convertCkBTCToBtcIcrc2 = async ({
 
     return { success: false };
   } finally {
-    await reload({ source, universeId, indexCanisterId, updateProgress });
+    await reload({
+      source,
+      universeId,
+      indexCanisterId,
+      loadAccounts: true,
+      updateProgress,
+    });
   }
 
   updateProgress(ConvertBtcStep.DONE);
@@ -263,6 +272,7 @@ const retrieveBtcAndReload = async ({
       source,
       universeId,
       indexCanisterId,
+      loadAccounts: false,
       updateProgress,
     });
   }
@@ -276,11 +286,13 @@ const reload = async ({
   source,
   universeId,
   indexCanisterId,
+  loadAccounts,
   updateProgress,
 }: {
   source?: Account;
   universeId: UniverseCanisterId;
   indexCanisterId: CanisterId;
+  loadAccounts: boolean;
   updateProgress: (step: ConvertBtcStep) => void;
 }): Promise<void> => {
   updateProgress(ConvertBtcStep.RELOAD);
@@ -289,6 +301,7 @@ const reload = async ({
   // - if provided, the transactions of the account for which the transfer was executed
   // - the balance of the withdrawal account to display an information if some funds - from this transaction or another - are stuck and not been converted yet
   await Promise.all([
+    ...(loadAccounts ? [loadCkBTCAccounts({ universeId })] : []),
     ...(nonNullish(source)
       ? [
           loadCkBTCAccountTransactions({
