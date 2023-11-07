@@ -28,8 +28,8 @@ runs:
           then gh release upload --repo dfinity/nns-dapp --clobber "$tag" "${artefacts[@]}" || true
           else gh release create --title "Release for tags/$tag" --draft --notes "$("$GITHUB_ACTION_PATH/template" --tag "$tag" --dir .)" "$tag" "${artefacts[@]}"
           fi
-          : If the tag is for a proposal or nightly, make it public
-          [[ "$tag" != proposal-* ]] && [[ "$tag" != nightly-* ]] || { echo "Making release public" ; gh release edit "$tag" --draft=false ; }
+          : If the tag is for a proposal, prod or nightly, make it public
+          [[ "$tag" != proposal-* ]] && [[ "$tag" != nightly-* ]] && [[ "$tag" != "aggregator-prod" ]] && [[ "$tag" != "prod" ]] || { echo "Making release public" ; gh release edit "$tag" --draft=false ; }
         done
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
