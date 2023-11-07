@@ -137,7 +137,13 @@ describe("ICManagementCanister", () => {
     });
 
     it("throws UserNotTheControllerError", async () => {
-      const error = new Error("code: 403");
+      const error = new Error(`Call failed:
+      Canister: aaaaa-aa
+      Method: canister_status (update)
+      "Request ID": "9dac7652f94de82d72f00ee492c132defc48da8dd6043516312275ab0fa5b5e1"
+      "Error code": "IC0512"
+      "Reject code": "5"
+      "Reject message": "Only controllers of canister mwewp-s4aaa-aaaaa-qabjq-cai can call ic00 method canister_status"`);
       const service = mock<IcManagementService>();
       service.update_settings.mockRejectedValue(error);
 
