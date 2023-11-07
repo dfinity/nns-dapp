@@ -83,7 +83,7 @@ jobs:
           author: gix-bot <gix-bot@users.noreply.github.com>
           branch: bot-ic-update
           delete-branch: true
-          title: 'Update didc release'
+          title: 'Update IC candid files'
           body: |
             # Motivation
             A newer release of the internet computer is available.
