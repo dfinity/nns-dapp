@@ -1,9 +1,11 @@
+use crate::accounts_store::schema::SchemaLabel;
 use crate::accounts_store::AccountsStore;
 use crate::assets::AssetHashes;
 use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
 use dfn_candid::Candid;
 use dfn_core::{api::trap_with, stable};
+use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use on_wire::{FromWire, IntoWire};
 use std::cell::RefCell;
 #[cfg(test)]
@@ -63,9 +65,21 @@ impl StableState for State {
 // Methods called on pre_upgrade and post_upgrade.
 impl State {
     /// The schema version, determined by the last version that was saved to stable memory.
-    fn schema_version_from_stable_memory() -> Option<u32> {
-        None // The schema is currently unversioned.
+    fn schema_version_from_stable_memory() -> Option<SchemaLabel> {
+        let memory = DefaultMemoryImpl::default();
+        Self::schema_version_from_memory(&memory)
     }
+
+    /// The schema version, as stored in an arbitrary memory.
+    fn schema_version_from_memory<M>(memory: &M) -> Option<SchemaLabel>
+    where
+        M: Memory,
+    {
+        let mut schema_label_bytes = [0u8; SchemaLabel::MAX_BYTES];
+        memory.read(0, &mut schema_label_bytes);
+        SchemaLabel::try_from(&schema_label_bytes[..]).ok()
+    }
+
     /// Create the state from stable memory in the `post_upgrade()` hook.
     ///
     /// Note: The stable memory may have been created by any of these schemas:
@@ -81,7 +95,7 @@ impl State {
         match Self::schema_version_from_stable_memory() {
             None => Self::post_upgrade_unversioned(),
             Some(version) => {
-                trap_with(&format!("Unknown schema version: {version}"));
+                trap_with(&format!("Unknown schema version: {version:?}"));
                 unreachable!();
             }
         }
@@ -92,7 +106,7 @@ impl State {
     }
 }
 
-// The unversionsed schema.
+// The unversioned schema.
 impl State {
     /// Save any unsaved state to stable memory.
     fn pre_upgrade_unversioned(&self) {

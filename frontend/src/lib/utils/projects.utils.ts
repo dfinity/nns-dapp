@@ -13,6 +13,7 @@ import type {
   SnsSwapCommitment,
 } from "$lib/types/sns";
 import type { StoreData } from "$lib/types/store";
+import type { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
 import {
   fromNullable,
@@ -458,3 +459,6 @@ export const isCommitmentSplitWithNeuronsFund = (
   commitmentSplit: ProjectCommitmentSplit
 ): commitmentSplit is FullProjectCommitmentSplit =>
   "nfCommitmentE8s" in commitmentSplit;
+
+export const snsProjectDashboardUrl = (rootCanisterId: Principal): string =>
+  `https://dashboard.internetcomputer.org/sns/${rootCanisterId.toText()}`;
