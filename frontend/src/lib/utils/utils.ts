@@ -444,3 +444,24 @@ export const isLikeANumber = (value: unknown): boolean =>
   typeof value === "number" ||
   typeof value === "bigint" ||
   (typeof value === "string" && value.length > 0 && !isNaN(Number(value)));
+
+/**
+ * Split a value into 8 characters chunks
+ * @example
+ * 00001111222233334444 --> ["0000", "11112222", "33334444"]
+ */
+export const splitE8sIntoChunks = (value: unknown): string[] => {
+  if (!isLikeANumber(value)) {
+    console.error("splitE8sIntoChunks: value is not a number");
+    return [`${value}`];
+  }
+
+  const chars = `${value}`.split("");
+  const chunks: string[] = [];
+  for (let i = chars.length; i >= 0; i -= 8) {
+    const chunk = chars.slice(Math.max(i - 8, 0), i);
+    chunks.unshift(chunk.join(""));
+  }
+
+  return chunks;
+};
