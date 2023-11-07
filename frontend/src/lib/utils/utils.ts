@@ -439,3 +439,8 @@ export const getObjMaxDepth = (obj: unknown): number => {
 
   return 1 + childrenMaxDepth; // Add 1 for the current level.
 };
+
+export const isLikeANumber = (value: unknown): boolean =>
+  typeof value === "number" ||
+  typeof value === "bigint" ||
+  (typeof value === "string" && value.length > 0 && !isNaN(Number(value)));

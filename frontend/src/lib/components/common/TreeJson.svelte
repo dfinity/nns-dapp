@@ -4,6 +4,7 @@
   import TreeJsonValue from "$lib/components/common/TreeJsonValue.svelte";
   import { getTreeJsonValueRenderType } from "$lib/utils/json.utils";
   import { fade } from "svelte/transition";
+  import { isLikeANumber } from "$lib/utils/utils";
 
   export let json: unknown | undefined = undefined;
   export let defaultExpandedLevel = Infinity;
@@ -38,7 +39,7 @@
     _collapsed === undefined ? _level >= defaultExpandedLevel : _collapsed;
 
   let keyIsIndex = false;
-  $: keyIsIndex = !isNaN(Number(_key));
+  $: keyIsIndex = isLikeANumber(_key);
 
   const toggle = () => (collapsed = !collapsed);
 </script>

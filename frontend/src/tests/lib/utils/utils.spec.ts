@@ -9,6 +9,7 @@ import {
   hexStringToBytes,
   isDefined,
   isHash,
+  isLikeANumber,
   isPngAsset,
   poll,
   removeKeys,
@@ -912,6 +913,40 @@ describe("utils", () => {
       expect(getObjMaxDepth(null)).toBe(0);
       expect(getObjMaxDepth("hello")).toBe(0);
       expect(getObjMaxDepth(0)).toBe(0);
+    });
+  });
+
+  describe("isLikeANumber", () => {
+    it("returns true for numbers", () => {
+      expect(isLikeANumber(1)).toBe(true);
+      expect(isLikeANumber(0)).toBe(true);
+      expect(isLikeANumber(0.001)).toBe(true);
+      expect(isLikeANumber(-1)).toBe(true);
+    });
+
+    it("returns true for bigint", () => {
+      expect(isLikeANumber(99999999999999999999999999999999999999999999n)).toBe(
+        true
+      );
+    });
+
+    it("returns true for stringified number", () => {
+      expect(isLikeANumber("1")).toBe(true);
+      expect(isLikeANumber("0")).toBe(true);
+      expect(isLikeANumber("0.001")).toBe(true);
+      expect(isLikeANumber("-1")).toBe(true);
+      expect(isLikeANumber("+1")).toBe(true);
+    });
+
+    it("returns false for empty string", () => {
+      expect(isLikeANumber("")).toBe(false);
+    });
+
+    it("returns false for not numbers", () => {
+      expect(isLikeANumber("test")).toBe(false);
+      expect(isLikeANumber("123sec")).toBe(false);
+      expect(isLikeANumber([])).toBe(false);
+      expect(isLikeANumber({})).toBe(false);
     });
   });
 });
