@@ -182,3 +182,4 @@ if (($# == 0)); then
 else
   setup "${@}"
 fi
+echo FIN
