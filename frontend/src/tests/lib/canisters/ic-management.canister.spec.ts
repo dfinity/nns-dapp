@@ -71,7 +71,7 @@ describe("ICManagementCanister", () => {
       expect(call).rejects.toThrowError(UserNotTheControllerError);
     });
 
-    it("throws Error if code is in request id", async () => {
+    it('throws Error if "IC0512" is present, but not as "Error Code"', async () => {
       const error = new Error(`Call failed:
       Canister: aaaaa-aa
       Method: canister_status (update)
