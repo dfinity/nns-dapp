@@ -47,7 +47,13 @@
   </td>
   <td>
     <div class="universe-balance">
-      <AmountDisplay singleLine amount={userTokenData.balance} />
+      {#if userTokenData.balance === "not-available"}
+        <span data-tid="token-value-label"
+          >{`--/-- ${userTokenData.token}`}</span
+        >
+      {:else}
+        <AmountDisplay singleLine amount={userTokenData.balance} />
+      {/if}
       {#each userTokenData.actions as action}
         <svelte:component
           this={actionMapper[action]}
