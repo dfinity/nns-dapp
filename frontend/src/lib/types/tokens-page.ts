@@ -1,3 +1,4 @@
+import type { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import type { Principal } from "@dfinity/principal";
 import type { TokenAmount } from "@dfinity/utils";
 
@@ -10,8 +11,7 @@ export enum UserTokenAction {
 export type UserTokenData = {
   universeId: Principal;
   title: string;
-  balance: TokenAmount | "not-available";
+  balance: TokenAmount | UnavailableTokenAmount;
   logo: string;
-  token: string;
   actions: UserTokenAction[];
 };

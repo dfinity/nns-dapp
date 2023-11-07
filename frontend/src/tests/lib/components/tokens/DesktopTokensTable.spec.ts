@@ -2,6 +2,7 @@ import DesktopTokensTable from "$lib/components/tokens/DesktopTokensTable/Deskto
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { ActionType } from "$lib/types/actions";
 import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
+import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import {
   createUserToken,
@@ -72,15 +73,14 @@ describe("DesktopTokensTable", () => {
   it("should render specific text if balance not available", async () => {
     const token1 = createUserToken({
       universeId: OWN_CANISTER_ID,
-      balance: "not-available",
-      token: "ckBTC",
+      balance: new UnavailableTokenAmount({ name: "ckBTC", symbol: "ckBTC" }),
     });
     const po = renderTable({ userTokensData: [token1] });
 
     const rows = await po.getRows();
     const row1Po = rows[0];
 
-    expect(await row1Po.getBalance()).toBe("--/-- ckBTC");
+    expect(await row1Po.getBalance()).toBe("-/- ckBTC");
   });
 
   it("should render a button Send action", async () => {
