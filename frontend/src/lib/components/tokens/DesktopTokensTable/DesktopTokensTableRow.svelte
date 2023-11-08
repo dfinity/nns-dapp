@@ -11,6 +11,7 @@
   import ReceiveButton from "./actions/ReceiveButton.svelte";
   import SendButton from "./actions/SendButton.svelte";
   import { ActionType } from "$lib/types/actions";
+  import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 
   export let userTokenData: UserTokenData;
 
@@ -47,7 +48,13 @@
   </td>
   <td>
     <div class="universe-balance">
-      <AmountDisplay singleLine amount={userTokenData.balance} />
+      {#if userTokenData.balance instanceof UnavailableTokenAmount}
+        <span data-tid="token-value-label"
+          >{`-/- ${userTokenData.balance.token.symbol}`}</span
+        >
+      {:else}
+        <AmountDisplay singleLine amount={userTokenData.balance} />
+      {/if}
       {#each userTokenData.actions as action}
         <svelte:component
           this={actionMapper[action]}
