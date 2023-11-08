@@ -30,9 +30,7 @@
 
   export let data: unknown | undefined = undefined;
   export let key: string | undefined = undefined;
-
-  let valueType: TreeJsonValueType;
-  $: valueType = getTreeJsonValueRenderType(data);
+  export let valueType: TreeJsonValueType;
 
   let title: string | undefined;
   $: title = valueType === "hash" ? (data as number[]).join() : undefined;

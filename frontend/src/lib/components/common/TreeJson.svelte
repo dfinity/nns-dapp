@@ -2,7 +2,10 @@
   import { i18n } from "$lib/stores/i18n";
   import { IconExpandMore } from "@dfinity/gix-components";
   import TreeJsonValue from "$lib/components/common/TreeJsonValue.svelte";
-  import { getTreeJsonValueRenderType } from "$lib/utils/json.utils";
+  import {
+    getTreeJsonValueRenderType,
+    type TreeJsonValueType,
+  } from "$lib/utils/json.utils";
   import { fade } from "svelte/transition";
   import { isLikeANumber } from "$lib/utils/utils";
 
@@ -11,6 +14,8 @@
   export let _key: string | undefined = undefined;
   export let _level = 0;
   export let _collapsed: boolean | undefined = undefined;
+  // because the child doesn't know if its parent type
+  export let _isArrayEntry: boolean | undefined = undefined;
 
   let keyLabel: string;
   let children: [string, unknown][];
@@ -21,8 +26,10 @@
   let root: boolean;
   let keyRoot: boolean;
   let testId: "json" | undefined;
+  let valueType: TreeJsonValueType;
   $: {
-    isExpandable = getTreeJsonValueRenderType(json) === "object";
+    valueType = getTreeJsonValueRenderType(json);
+    isExpandable = valueType === "object";
     keyLabel = `${_key ?? ""}`;
     children = isExpandable ? Object.entries(json as object) : [];
     hasChildren = children.length > 0;
@@ -39,7 +46,7 @@
     _collapsed === undefined ? _level >= defaultExpandedLevel : _collapsed;
 
   let keyIsIndex = false;
-  $: keyIsIndex = isLikeANumber(_key);
+  $: keyIsIndex = isLikeANumber(_key) || (_isArrayEntry ?? false);
 
   const toggle = () => (collapsed = !collapsed);
 </script>
@@ -49,13 +56,13 @@
   {#if _level > 0 && keyLabel}
     <!-- expandable-key-->
     <div
-      class="key key--expandable"
+      class="key expandable"
       class:root={keyRoot}
-      class:key--is-index={keyIsIndex}
+      class:key-is-index={keyIsIndex}
     >
       <button
         class="icon-only expand-button"
-        class:expand-button--expanded={!collapsed}
+        class:is-expandable={!collapsed}
         data-tid={testId}
         aria-label={$i18n.core.toggle}
         tabindex="0"
@@ -70,12 +77,13 @@
     <!-- children of expandable-key -->
     <ul class:root class:is-array={isArray} in:fade>
       {#each children as [key, value]}
-        <li class:root>
+        <li class:root class:key-is-index={keyIsIndex}>
           <svelte:self
             json={value}
             _key={key}
             {defaultExpandedLevel}
             _level={_level + 1}
+            _isArrayEntry={isArray}
           />
         </li>
       {/each}
@@ -83,23 +91,22 @@
   {/if}
 {:else if isExpandable}
   <!-- expandable w/o children - key+{}|[] -->
-  <span data-tid={testId} class="key-value">
+  <span data-tid={testId} class="key-value" class:key-is-index={keyIsIndex}>
     {#if keyLabel !== ""}<span
-        class="key key--no-expand-button"
+        class="key"
         class:root={keyRoot}
-        class:key--is-index={keyIsIndex}>{keyLabel}</span
+        class:key-is-index={_isArrayEntry}>{keyLabel}</span
       >{/if}
     <span class="value">{emptyExpandableValue}</span>
   </span>
 {:else}
   <!-- key+value -->
-  <span class="key-value">
-    {#if keyLabel !== ""}<span
-        class="key key--no-expand-button"
-        class:root={keyRoot}
-        class:key--is-index={keyIsIndex}>{keyLabel}</span
-      >{/if}
-    <TreeJsonValue data={json} key={_key} />
+  <span class={`key-value ${valueType}`} class:key-is-index={keyIsIndex}>
+    {#if keyLabel !== ""}
+      <span class="key" class:key-is-index={keyIsIndex} class:root={keyRoot}>
+        {keyLabel}
+      </span>{/if}
+    <TreeJsonValue data={json} key={_key} {valueType} />
   </span>
 {/if}
 
@@ -127,10 +134,23 @@
     display: flex;
     align-items: center;
 
+    // To improve long lines mobile readability
+    flex-wrap: wrap;
+    row-gap: calc(var(--padding-0_5x) / 2);
+
     // To have at least the same height as IconExpandMore
     min-height: 28px;
     // icon gap compensation
     margin-left: 6px;
+
+    // don't wrap array entries because keys are short (`0: "..."`)
+    &.key-is-index {
+      flex-wrap: nowrap;
+    }
+    // don't wrap images because of broken zoom animation
+    &.base64Encoding {
+      flex-wrap: nowrap;
+    }
   }
 
   .key {
@@ -141,12 +161,12 @@
     @include fonts.standard(true);
     color: var(--content-color);
 
-    &.key--expandable {
+    &.expandable {
       margin-right: 0;
       // no icon gap compensation
       margin-left: 0;
     }
-    &.key--is-index {
+    &.key-is-index {
       // monospace for array indexes to avoid different widths
       font-family: monospace;
     }
@@ -156,7 +176,7 @@
     transform: rotate(-90deg);
     transition: transform ease-out var(--animation-time-normal);
 
-    &--expanded {
+    &.is-expandable {
       transform: rotate(0);
     }
   }
