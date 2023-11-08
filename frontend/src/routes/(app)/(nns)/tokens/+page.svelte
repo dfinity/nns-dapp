@@ -14,6 +14,7 @@
   import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
   import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
   import type { Action } from "$lib/types/actions";
+  import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 
   onMount(() => {
     if (!$ENABLE_MY_TOKENS) {
@@ -32,10 +33,7 @@
     {
       universeId: CKBTC_UNIVERSE_CANISTER_ID,
       title: "CkBTC",
-      balance: TokenAmount.fromE8s({
-        amount: 1160000000n,
-        token: { name: "CkBTC", symbol: "CkBTC" },
-      }),
+      balance: new UnavailableTokenAmount({ name: "CKBTC", symbol: "ckBTC" }),
       logo: CKBTC_LOGO,
       actions: [UserTokenAction.Send, UserTokenAction.Receive],
     },

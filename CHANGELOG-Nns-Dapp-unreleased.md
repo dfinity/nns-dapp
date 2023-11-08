@@ -32,9 +32,13 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Show canister title in details when user is not the controller.
+
 #### Security
 
 #### Not Published
+
+* Use ICRC-2 for BTC withdrawal when `ENABLE_CKBTC_ICRC2` is enabled.
 
 ### Operations
 
@@ -47,7 +51,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Update `ic-wasm` to the latest version.
 * Factor out the `snsdemo` installation.
+* Add `prod` and `aggregator-prod` to the list of public releases.
 
 #### Deprecated
 
