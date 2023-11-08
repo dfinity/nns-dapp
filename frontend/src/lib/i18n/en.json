@@ -534,6 +534,9 @@
     "toggle_lable": "Switch between user-friendly and raw data representation",
     "toggle_tree": "Tree",
     "toggle_raw": "Raw",
+    "json_unit_basis_points": "basis points",
+    "json_unit_seconds": "seconds",
+    "json_unit_e8s": "e8s",
     "id": "ID"
   },
   "proposal_detail__vote": {

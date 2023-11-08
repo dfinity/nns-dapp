@@ -2,6 +2,7 @@
   import { Html } from "@dfinity/gix-components";
   import type { TreeJsonValueType } from "$lib/utils/json.utils";
   import { splitE8sIntoChunks, stringifyJson } from "$lib/utils/utils.js";
+  import { i18n } from "$lib/stores/i18n";
 
   // To avoid having quotes around all the value types
   const formatData = (value: unknown) => {
@@ -44,19 +45,20 @@
 {:else if valueType === "seconds"}
   <span class="value {valueType}" {title}
     >{data?.seconds}
-    <span class="unit">seconds</span>
+    <span class="unit">{$i18n.proposal_detail.json_unit_seconds}</span>
   </span>
 {:else if valueType === "e8s"}
   <span class="value {valueType}" {title}>
     {#each splitE8sIntoChunks(data?.e8s) as chunk}
       <span>{chunk}</span>
     {/each}
-    <span class="unit">e8s</span>
+    <span class="unit">{$i18n.proposal_detail.json_unit_e8s}</span>
   </span>
 {:else if valueType === "basisPoints"}
   <span class="value {valueType}" {title}
     >{data?.basisPoints}
-    <span class="unit">basis points</span></span
+    <span class="unit">{$i18n.proposal_detail.json_unit_basis_points}</span
+    ></span
   >
 {:else}
   <span class="value {valueType}" {title}>{formatData(data)}</span>
