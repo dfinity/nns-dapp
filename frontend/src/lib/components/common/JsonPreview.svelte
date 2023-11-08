@@ -23,25 +23,27 @@
 </script>
 
 <div class="content-cell-island markdown-container">
-  {#if $jsonRepresentationModeStore === "tree"}
-    <div class="json" data-tid="json-wrapper" in:fade>
-      {#if !expandAll}
-        <button class="ghost expand-all" on:click={toggleExpanded}
-          ><IconExpandAll /><span class="expand-all-label"
-            >{$i18n.core.expand_all}</span
-          ></button
-        >
-      {/if}
-      <TreeJson
-        json={expandedData}
-        defaultExpandedLevel={expandAll ? Number.MAX_SAFE_INTEGER : 1}
-      />
-    </div>
-  {:else}
-    <div in:fade>
-      <RawJson {json} />
-    </div>
+  {#if !expandAll}
+    <button class="ghost expand-all" on:click={toggleExpanded}
+      ><IconExpandAll /><span class="expand-all-label"
+        >{$i18n.core.expand_all}</span
+      ></button
+    >
   {/if}
+  <div class="json-container">
+    <div class="json" data-tid="json-wrapper" in:fade>
+      {#if $jsonRepresentationModeStore === "tree"}
+        <TreeJson
+          json={expandedData}
+          defaultExpandedLevel={expandAll ? Number.MAX_SAFE_INTEGER : 1}
+        />
+      {:else}
+        <div in:fade>
+          <RawJson {json} />
+        </div>
+      {/if}
+    </div>
+  </div>
 </div>
 
 <style lang="scss">
@@ -50,8 +52,8 @@
   .expand-all {
     padding: 0;
     position: absolute;
-    right: var(--padding-0_5x);
-    top: var(--padding-0_5x);
+    right: var(--padding-2x);
+    top: var(--padding-2x);
 
     display: flex;
     align-items: center;
@@ -66,10 +68,11 @@
     }
   }
 
-  .json {
-    // needs for the expand all button
-    position: relative;
-    word-break: break-word;
+  .json-container {
+    // json content scrolling
+    overflow-x: auto;
+    // same as "content-cell-island"
+    padding: var(--padding-2x);
   }
 
   // TODO(max): rename and move to gix-components
@@ -77,5 +80,10 @@
     // custom island styles
     background: var(--card-background-disabled);
     color: var(--description-color);
+
+    // reset "content-cell-island" padding
+    padding: 0;
+    // to place expand-all button
+    position: relative;
   }
 </style>
