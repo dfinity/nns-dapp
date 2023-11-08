@@ -453,14 +453,16 @@ export const isLikeANumber = (value: unknown): boolean =>
 export const splitE8sIntoChunks = (value: unknown): string[] => {
   if (!isLikeANumber(value)) {
     console.error("splitE8sIntoChunks: value is not a number");
-    return [`${value}`];
+    return [`${stringifyJson(value)}`];
   }
 
   const chars = `${value}`.split("");
   const chunks: string[] = [];
-  for (let i = chars.length; i >= 0; i -= 8) {
+  for (let i = chars.length; i > 0; i -= 8) {
     const chunk = chars.slice(Math.max(i - 8, 0), i);
+    // if (chunk.length > 0) {
     chunks.unshift(chunk.join(""));
+    // }
   }
 
   return chunks;

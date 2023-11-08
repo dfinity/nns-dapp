@@ -15,6 +15,7 @@ import {
   removeKeys,
   sameBufferData,
   smallerVersion,
+  splitE8sIntoChunks,
   stringifyJson,
   uniqueObjects,
 } from "$lib/utils/utils";
@@ -947,6 +948,55 @@ describe("utils", () => {
       expect(isLikeANumber("123sec")).toBe(false);
       expect(isLikeANumber([])).toBe(false);
       expect(isLikeANumber({})).toBe(false);
+    });
+  });
+
+  describe("splitE8sIntoChunks", () => {
+    it("should split strings", () => {
+      expect(splitE8sIntoChunks("12345678")).toStrictEqual(["12345678"]);
+      expect(splitE8sIntoChunks("1234567890")).toStrictEqual([
+        "12",
+        "34567890",
+      ]);
+      expect(splitE8sIntoChunks("12345678901234567890")).toStrictEqual([
+        "1234",
+        "56789012",
+        "34567890",
+      ]);
+    });
+
+    it("should split number", () => {
+      expect(splitE8sIntoChunks(12345678)).toStrictEqual(["12345678"]);
+      expect(splitE8sIntoChunks(1234567890)).toStrictEqual(["12", "34567890"]);
+      expect(splitE8sIntoChunks(45678901234567890)).toStrictEqual([
+        "4",
+        "56789012",
+        "34567890",
+      ]);
+    });
+
+    it("should split bigints", () => {
+      expect(splitE8sIntoChunks(12345678n)).toStrictEqual(["12345678"]);
+      expect(splitE8sIntoChunks(1234567890n)).toStrictEqual(["12", "34567890"]);
+      expect(splitE8sIntoChunks(12345678901234567890n)).toStrictEqual([
+        "1234",
+        "56789012",
+        "34567890",
+      ]);
+    });
+
+    it("should not split short values", () => {
+      expect(splitE8sIntoChunks(0)).toStrictEqual(["0"]);
+      expect(splitE8sIntoChunks(12345678)).toStrictEqual(["12345678"]);
+    });
+
+    it("should not split not numbers", () => {
+      expect(splitE8sIntoChunks(NaN)).toStrictEqual(["NaN"]);
+      expect(splitE8sIntoChunks("")).toStrictEqual([`""`]);
+      expect(splitE8sIntoChunks(null)).toStrictEqual(["null"]);
+      expect(splitE8sIntoChunks(undefined)).toStrictEqual(["undefined"]);
+      expect(splitE8sIntoChunks([])).toStrictEqual(["[]"]);
+      expect(splitE8sIntoChunks({})).toStrictEqual(["{}"]);
     });
   });
 });
