@@ -7,6 +7,7 @@
   import RawJson from "$lib/components/common/RawJson.svelte";
   import { fade } from "svelte/transition";
   import { jsonRepresentationModeStore } from "$lib/derived/json-representation.derived";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   const DEFAULT_EXPANDED_LEVEL = 1;
 
@@ -44,7 +45,7 @@
     </button>
   {/if}
   <div class="json-container">
-    <div class="json" data-tid="json-wrapper">
+    <TestIdWrapper dataTid="json-wrapper">
       {#if $jsonRepresentationModeStore === "tree"}
         <div in:fade>
           <TreeJson
@@ -57,7 +58,7 @@
           <RawJson {json} />
         </div>
       {/if}
-    </div>
+    </TestIdWrapper>
   </div>
 </div>
 
