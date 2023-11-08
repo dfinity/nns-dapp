@@ -43,7 +43,6 @@ export const getTreeJsonValueRenderType = (
     if (keys.length === 1) {
       const key = keys[0];
       const keyValue = (value as Record<string, unknown>)[key];
-      console.log(key, keyValue);
       if (
         ["e8s", "seconds", "basisPoints"].includes(key) &&
         isLikeANumber(keyValue)
