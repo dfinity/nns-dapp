@@ -1,4 +1,4 @@
-import { isHash, isPrincipal } from "$lib/utils/utils";
+import { isHash, isPrincipal, typeOfLikeANumber } from "$lib/utils/utils";
 
 export type TreeJsonValueType =
   | "bigint"
@@ -12,7 +12,14 @@ export type TreeJsonValueType =
   | "string"
   | "symbol"
   | "base64Encoding"
-  | "undefined";
+  | "undefined"
+  // units-only nodes
+  // sample: { "seconds": 1000000000 }
+  | "seconds"
+  // sample: { "e8s": 1000000000 }
+  | "e8s"
+  // sample: { "basisPoints": 1000000000 }
+  | "basisPoints";
 
 /**
  * Returns the type of the value for the TreeJson&TreeJsonValue components.
@@ -25,10 +32,24 @@ export const getTreeJsonValueRenderType = (
   if (isPrincipal(value)) return "principal";
   if (Array.isArray(value) && isHash(value)) return "hash";
   // not null was already checked above
-  if (
-    typeof value === "object" &&
-    Object.keys(value as object)[0] === "base64Encoding"
-  )
-    return "base64Encoding";
+  if (typeof value === "object") {
+    const keys = Object.keys(value);
+
+    if (keys[0] === "base64Encoding") {
+      return "base64Encoding";
+    }
+
+    // check for unit-only nodes (e.g. { "e8s": 1000000000 })
+    if (keys.length === 1) {
+      const key = keys[0];
+      const keyValue = (value as Record<string, unknown>)[key];
+      if (
+        ["e8s", "seconds", "basisPoints"].includes(key) &&
+        typeOfLikeANumber(keyValue)
+      ) {
+        return key as TreeJsonValueType;
+      }
+    }
+  }
   return typeof value;
 };

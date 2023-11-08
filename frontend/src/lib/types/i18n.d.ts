@@ -554,6 +554,9 @@ interface I18nProposal_detail {
   toggle_lable: string;
   toggle_tree: string;
   toggle_raw: string;
+  json_unit_basis_points: string;
+  json_unit_seconds: string;
+  json_unit_e8s: string;
   id: string;
 }
 
