@@ -11,6 +11,12 @@
     if (valueType === "base64Encoding") {
       return (data as { [key: string]: unknown })["base64Encoding"] as string;
     }
+    if (valueType === "basisPoints") {
+      return `${data.basisPoints}`;
+    }
+    if (valueType === "seconds") {
+      return `${data.seconds}`;
+    }
     if (
       (
         [
@@ -20,8 +26,6 @@
           "bigint",
           "boolean",
           "object",
-          "basisPoints",
-          "seconds",
         ] as Array<TreeJsonValueType>
       ).includes(valueType)
     ) {
