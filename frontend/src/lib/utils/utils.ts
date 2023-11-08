@@ -440,7 +440,7 @@ export const getObjMaxDepth = (obj: unknown): number => {
   return 1 + childrenMaxDepth; // Add 1 for the current level.
 };
 
-export const isLikeANumber = (value: unknown): boolean =>
+export const typeOfLikeANumber = (value: unknown): boolean =>
   typeof value === "number" ||
   typeof value === "bigint" ||
   (typeof value === "string" && value.length > 0 && !isNaN(Number(value)));
@@ -451,7 +451,7 @@ export const isLikeANumber = (value: unknown): boolean =>
  * 00001111222233334444 --> ["0000", "11112222", "33334444"]
  */
 export const splitE8sIntoChunks = (value: unknown): string[] => {
-  if (!isLikeANumber(value)) {
+  if (!typeOfLikeANumber(value)) {
     console.error("splitE8sIntoChunks: value is not a number");
     return [`${stringifyJson(value)}`];
   }

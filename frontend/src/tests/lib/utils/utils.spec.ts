@@ -9,7 +9,6 @@ import {
   hexStringToBytes,
   isDefined,
   isHash,
-  isLikeANumber,
   isPngAsset,
   poll,
   removeKeys,
@@ -17,6 +16,7 @@ import {
   smallerVersion,
   splitE8sIntoChunks,
   stringifyJson,
+  typeOfLikeANumber,
   uniqueObjects,
 } from "$lib/utils/utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
@@ -917,37 +917,37 @@ describe("utils", () => {
     });
   });
 
-  describe("isLikeANumber", () => {
+  describe("typeOfLikeANumber", () => {
     it("returns true for numbers", () => {
-      expect(isLikeANumber(1)).toBe(true);
-      expect(isLikeANumber(0)).toBe(true);
-      expect(isLikeANumber(0.001)).toBe(true);
-      expect(isLikeANumber(-1)).toBe(true);
+      expect(typeOfLikeANumber(1)).toBe(true);
+      expect(typeOfLikeANumber(0)).toBe(true);
+      expect(typeOfLikeANumber(0.001)).toBe(true);
+      expect(typeOfLikeANumber(-1)).toBe(true);
     });
 
     it("returns true for bigint", () => {
-      expect(isLikeANumber(99999999999999999999999999999999999999999999n)).toBe(
-        true
-      );
+      expect(
+        typeOfLikeANumber(99999999999999999999999999999999999999999999n)
+      ).toBe(true);
     });
 
     it("returns true for stringified number", () => {
-      expect(isLikeANumber("1")).toBe(true);
-      expect(isLikeANumber("0")).toBe(true);
-      expect(isLikeANumber("0.001")).toBe(true);
-      expect(isLikeANumber("-1")).toBe(true);
-      expect(isLikeANumber("+1")).toBe(true);
+      expect(typeOfLikeANumber("1")).toBe(true);
+      expect(typeOfLikeANumber("0")).toBe(true);
+      expect(typeOfLikeANumber("0.001")).toBe(true);
+      expect(typeOfLikeANumber("-1")).toBe(true);
+      expect(typeOfLikeANumber("+1")).toBe(true);
     });
 
     it("returns false for empty string", () => {
-      expect(isLikeANumber("")).toBe(false);
+      expect(typeOfLikeANumber("")).toBe(false);
     });
 
     it("returns false for not numbers", () => {
-      expect(isLikeANumber("test")).toBe(false);
-      expect(isLikeANumber("123sec")).toBe(false);
-      expect(isLikeANumber([])).toBe(false);
-      expect(isLikeANumber({})).toBe(false);
+      expect(typeOfLikeANumber("test")).toBe(false);
+      expect(typeOfLikeANumber("123sec")).toBe(false);
+      expect(typeOfLikeANumber([])).toBe(false);
+      expect(typeOfLikeANumber({})).toBe(false);
     });
   });
 

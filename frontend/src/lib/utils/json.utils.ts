@@ -1,4 +1,4 @@
-import { isHash, isLikeANumber, isPrincipal } from "$lib/utils/utils";
+import { isHash, isPrincipal, typeOfLikeANumber } from "$lib/utils/utils";
 
 export type TreeJsonValueType =
   | "bigint"
@@ -35,7 +35,7 @@ export const getTreeJsonValueRenderType = (
   if (typeof value === "object") {
     const keys = Object.keys(value);
 
-    if (Object.keys(value as object)[0] === "base64Encoding") {
+    if (keys[0] === "base64Encoding") {
       return "base64Encoding";
     }
 
@@ -45,7 +45,7 @@ export const getTreeJsonValueRenderType = (
       const keyValue = (value as Record<string, unknown>)[key];
       if (
         ["e8s", "seconds", "basisPoints"].includes(key) &&
-        isLikeANumber(keyValue)
+        typeOfLikeANumber(keyValue)
       ) {
         return key as TreeJsonValueType;
       }

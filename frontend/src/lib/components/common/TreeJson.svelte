@@ -7,7 +7,7 @@
     type TreeJsonValueType,
   } from "$lib/utils/json.utils";
   import { fade } from "svelte/transition";
-  import { isLikeANumber } from "$lib/utils/utils";
+  import { typeOfLikeANumber } from "$lib/utils/utils";
 
   export let json: unknown | undefined = undefined;
   export let defaultExpandedLevel = Infinity;
@@ -44,7 +44,7 @@
   $: collapsed = _level >= defaultExpandedLevel;
 
   let keyIsIndex = false;
-  $: keyIsIndex = isLikeANumber(_key) || (_isArrayEntry ?? false);
+  $: keyIsIndex = typeOfLikeANumber(_key) || (_isArrayEntry ?? false);
 
   const toggle = () => (collapsed = !collapsed);
 </script>
