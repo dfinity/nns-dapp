@@ -69,6 +69,11 @@
     @include text.clamp(1);
   }
 
+  .toggle {
+    // compensate toggle and toggle inner buttons padding. Is important when cols wrap on mobile.
+    margin: 0 calc(var(--padding-0_5x) * -2);
+  }
+
   .header {
     display: flex;
     justify-content: space-between;
