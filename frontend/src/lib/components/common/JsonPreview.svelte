@@ -23,7 +23,7 @@
 </script>
 
 <div class="content-cell-island markdown-container">
-  {#if !expandAll}
+  {#if $jsonRepresentationModeStore === "tree" && !expandAll}
     <button class="ghost expand-all" on:click={toggleExpanded}
       ><IconExpandAll /><span class="expand-all-label"
         >{$i18n.core.expand_all}</span
