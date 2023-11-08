@@ -31,17 +31,19 @@
   {#if $jsonRepresentationModeStore === "tree"}
     <div class="json" data-tid="json-wrapper" in:fade>
       {#if isExpandedAllVisible}
-        {#if isAllExpanded}
-          <button in:fade class="ghost expand-all" on:click={toggleExpanded}>
-            <IconCollapseAll />
-            <span class="expand-all-label">{$i18n.core.collapse_all}</span>
-          </button>
-        {:else}
-          <button in:fade class="ghost expand-all" on:click={toggleExpanded}>
-            <IconExpandAll />
-            <span class="expand-all-label">{$i18n.core.expand_all}</span>
-          </button>
-        {/if}
+        <button class="ghost expand-all" on:click={toggleExpanded}>
+          {#if isAllExpanded}
+            <div in:fade>
+              <IconCollapseAll />
+              <span class="expand-all-label">{$i18n.core.collapse_all}</span>
+            </div>
+          {:else}
+            <div in:fade>
+              <IconExpandAll />
+              <span class="expand-all-label">{$i18n.core.expand_all}</span>
+            </div>
+          {/if}
+        </button>
       {/if}
       <TreeJson
         json={expandedData}
@@ -66,9 +68,11 @@
     right: var(--padding-0_5x);
     top: var(--padding-0_5x);
 
-    display: flex;
-    align-items: center;
-    gap: var(--padding-0_5x);
+    div {
+      display: flex;
+      align-items: center;
+      gap: var(--padding-0_5x);
+    }
 
     .expand-all-label {
       display: none;
