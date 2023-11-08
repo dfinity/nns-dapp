@@ -13,10 +13,10 @@
     }
     // TODO(max): think about moving to a separate component
     if (valueType === "basisPoints") {
-      return `${data.basisPoints}`;
+      return `${(data as { [basisPoints: string]: unknown }).basisPoints}`;
     }
     if (valueType === "seconds") {
-      return `${data.seconds}`;
+      return `${(data as { [seconds: string]: unknown }).seconds}`;
     }
     if (
       (
