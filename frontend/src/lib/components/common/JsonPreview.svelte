@@ -8,6 +8,8 @@
   import { fade } from "svelte/transition";
   import { jsonRepresentationModeStore } from "$lib/derived/json-representation.derived";
 
+  const DEFAULT_EXPANDED_LEVEL = 1;
+
   export let json: unknown | undefined = undefined;
 
   let expandedData: unknown;
@@ -15,13 +17,11 @@
     ? json
     : expandObject(json as Record<string, unknown>);
 
-  const DEFAULT_EXPANDED_LEVEL = 1;
-  let isAllExpanded: boolean | undefined = undefined;
-  $: isAllExpanded = false;
-
   let isExpandedAllVisible = false;
   $: isExpandedAllVisible =
     getObjMaxDepth(expandedData) > DEFAULT_EXPANDED_LEVEL;
+
+  let isAllExpanded: boolean | undefined = undefined;
   const toggleExpanded = () => {
     isAllExpanded = !isAllExpanded;
   };
