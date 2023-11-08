@@ -69,8 +69,7 @@
   tr {
     @include interaction.tappable;
 
-    // background-color: var(--input-focus-background);
-    background-color: var(--purple-75);
+    background-color: var(--input-focus-background);
 
     &:hover {
       background-color: var(--input-background);
