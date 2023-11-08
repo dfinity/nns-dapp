@@ -52,7 +52,7 @@ describe("ICManagementCanister", () => {
       );
     });
 
-    it("throws UserNotTheControllerError", async () => {
+    it('throws UserNotTheControllerError if "Error Code" is "IC0512"', async () => {
       const error = new Error(`Call failed:
       Canister: aaaaa-aa
       Method: canister_status (update)
