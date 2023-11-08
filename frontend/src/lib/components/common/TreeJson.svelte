@@ -13,7 +13,6 @@
   export let defaultExpandedLevel = Infinity;
   export let _key: string | undefined = undefined;
   export let _level = 0;
-  export let _collapsed: boolean | undefined = undefined;
   // because the child doesn't know if its parent type
   export let _isArrayEntry: boolean | undefined = undefined;
 
@@ -42,8 +41,7 @@
   }
 
   let collapsed = true;
-  $: collapsed =
-    _collapsed === undefined ? _level >= defaultExpandedLevel : _collapsed;
+  $: collapsed = _level >= defaultExpandedLevel;
 
   let keyIsIndex = false;
   $: keyIsIndex = isLikeANumber(_key) || (_isArrayEntry ?? false);

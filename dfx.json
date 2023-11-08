@@ -637,14 +637,14 @@
     "build": {
       "config": {
         "NODE_VERSION": "18.14.2",
-        "IC_WASM_VERSION": "0.3.6",
+        "IC_WASM_VERSION": "0.6.0",
         "IDL2JSON_VERSION": "0.8.8",
         "OPTIMIZER_VERSION": "0.3.6",
         "BINSTALL_VERSION": "1.3.0",
         "DIDC_VERSION": "2023-09-27",
         "CARGO_SORT_VERSION": "1.0.9",
         "SNSDEMO_RELEASE": "release-2023-11-02",
-        "IC_COMMIT": "dd51544944987556c978e774aa7a1992e5c11542"
+        "IC_COMMIT": "release-2023-11-01_23-01+quic"
       },
       "packtool": ""
     }

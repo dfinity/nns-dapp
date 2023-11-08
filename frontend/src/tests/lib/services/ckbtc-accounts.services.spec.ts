@@ -1,14 +1,12 @@
 import * as ckbtcLedgerApi from "$lib/api/ckbtc-ledger.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import {
-  CKBTC_INDEX_CANISTER_ID,
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
 import * as services from "$lib/services/ckbtc-accounts.services";
 import { loadCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
-import { loadCkBTCAccountTransactions } from "$lib/services/ckbtc-transactions.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import * as toastsStore from "$lib/stores/toasts.store";
@@ -177,36 +175,12 @@ describe("ckbtc-accounts-services", () => {
         source: mockCkBTCMainAccount,
         destinationAddress: "aaaaa-aa",
         amount: 1,
-        loadTransactions: false,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
-        indexCanisterId: CKBTC_INDEX_CANISTER_ID,
       });
 
       expect(blockIndex).toEqual(456n);
       expect(spyTransfer).toBeCalled();
       expect(spyAccounts).toBeCalled();
-    });
-
-    it("should load transactions if flag is passed", async () => {
-      tokensStore.setTokens(mockTokens);
-
-      const spyTransfer = vi
-        .spyOn(icrcLedgerApi, "icrcTransfer")
-        .mockResolvedValue(456n);
-
-      const { blockIndex } = await services.ckBTCTransferTokens({
-        source: mockCkBTCMainAccount,
-        destinationAddress: "aaaaa-aa",
-        amount: 1,
-        loadTransactions: true,
-        universeId: CKBTC_UNIVERSE_CANISTER_ID,
-        indexCanisterId: CKBTC_INDEX_CANISTER_ID,
-      });
-
-      expect(blockIndex).toEqual(456n);
-      expect(spyTransfer).toBeCalled();
-      expect(spyAccounts).toBeCalled();
-      expect(loadCkBTCAccountTransactions).toBeCalled();
     });
 
     it("should show toast and return success false if transfer fails", async () => {
@@ -223,9 +197,7 @@ describe("ckbtc-accounts-services", () => {
         source: mockCkBTCMainAccount,
         destinationAddress: "aaaaa-aa",
         amount: 1,
-        loadTransactions: false,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
-        indexCanisterId: CKBTC_INDEX_CANISTER_ID,
       });
 
       expect(blockIndex).toBeUndefined();
@@ -247,9 +219,7 @@ describe("ckbtc-accounts-services", () => {
         source: mockCkBTCMainAccount,
         destinationAddress: "aaaaa-aa",
         amount: 1,
-        loadTransactions: false,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
-        indexCanisterId: CKBTC_INDEX_CANISTER_ID,
       });
 
       expect(blockIndex).toBeUndefined();

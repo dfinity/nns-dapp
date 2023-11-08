@@ -1,12 +1,10 @@
 <script lang="ts">
   import { Html } from "@dfinity/gix-components";
   import type { TreeJsonValueType } from "$lib/utils/json.utils";
-  import { getTreeJsonValueRenderType } from "$lib/utils/json.utils";
   import { splitE8sIntoChunks, stringifyJson } from "$lib/utils/utils.js";
 
   // To avoid having quotes around all the value types
   const formatData = (value: unknown) => {
-    const valueType = getTreeJsonValueRenderType(value);
     if (valueType === "base64Encoding") {
       return (data as { [key: string]: unknown })["base64Encoding"];
     }
