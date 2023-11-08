@@ -45,7 +45,7 @@
     </button>
   {/if}
   <div class="json-container">
-    <TestIdWrapper dataTid="json-wrapper">
+    <TestIdWrapper testId="json-wrapper">
       {#if $jsonRepresentationModeStore === "tree"}
         <div in:fade>
           <TreeJson

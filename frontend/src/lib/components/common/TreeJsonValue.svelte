@@ -11,6 +11,7 @@
     if (valueType === "base64Encoding") {
       return (data as { [key: string]: unknown })["base64Encoding"] as string;
     }
+    // TODO(max): think about moving to a separate component
     if (valueType === "basisPoints") {
       return `${data.basisPoints}`;
     }
