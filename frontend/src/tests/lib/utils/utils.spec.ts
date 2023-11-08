@@ -978,6 +978,7 @@ describe("utils", () => {
     it("should split bigints", () => {
       expect(splitE8sIntoChunks(12345678n)).toStrictEqual(["12345678"]);
       expect(splitE8sIntoChunks(1234567890n)).toStrictEqual(["12", "34567890"]);
+      expect(splitE8sIntoChunks(123456789n)).toStrictEqual(["1", "23456789"]);
       expect(splitE8sIntoChunks(12345678901234567890n)).toStrictEqual([
         "1234",
         "56789012",

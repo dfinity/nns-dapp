@@ -460,9 +460,7 @@ export const splitE8sIntoChunks = (value: unknown): string[] => {
   const chunks: string[] = [];
   for (let i = chars.length; i > 0; i -= 8) {
     const chunk = chars.slice(Math.max(i - 8, 0), i);
-    // if (chunk.length > 0) {
     chunks.unshift(chunk.join(""));
-    // }
   }
 
   return chunks;
