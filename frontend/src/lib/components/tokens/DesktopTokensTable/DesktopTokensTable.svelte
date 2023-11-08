@@ -5,29 +5,32 @@
   export let userTokensData: UserTokenData[];
 </script>
 
-<table data-tid="desktop-tokens-table-component">
-  <thead>
-    <tr>
-      <th class="header-left">Projects</th>
-      <th class="header-right">Balance</th>
-    </tr>
-  </thead>
-  <tbody>
-    {#each userTokensData as userTokenData}
-      <Row on:nnsAction {userTokenData} />
+<div role="table" data-tid="desktop-tokens-table-component">
+  <div role="rowgroup">
+    <div role="row" class="header-row">
+      <span role="cell" class="header-left">Projects</span>
+      <span role="cell" class="header-right">Balance</span>
+    </div>
+  </div>
+  <div role="rowgroup">
+    {#each userTokensData as userTokenData, index}
+      <Row on:nnsAction {userTokenData} {index} />
     {/each}
-  </tbody>
-</table>
+  </div>
+</div>
 
 <style lang="scss">
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    border: 0;
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
-    th {
+  div[role="table"] {
+    width: 100%;
+
+    .header-row {
       color: var(--text-description);
       background-color: var(--table-header-background);
+
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
 
       font-weight: normal;
       font-size: var(--font-size-small);
@@ -37,12 +40,13 @@
       border-bottom: 1px solid var(--elements-divider);
     }
 
-    th.header-left {
-      text-align: left;
-    }
+    .header-right {
+      display: none;
 
-    th.header-right {
-      text-align: right;
+      @include media.min-width(medium) {
+        display: block;
+        text-align: right;
+      }
     }
   }
 </style>

@@ -12,8 +12,10 @@
   import SendButton from "./actions/SendButton.svelte";
   import { ActionType } from "$lib/types/actions";
   import { UnavailableTokenAmount } from "$lib/utils/token.utils";
+  import TokenBalance from "../TokenBalance.svelte";
 
   export let userTokenData: UserTokenData;
+  export let index: number;
 
   const dispatcher = createEventDispatcher();
 
@@ -25,17 +27,22 @@
     [UserTokenAction.Receive]: ReceiveButton,
     [UserTokenAction.Send]: SendButton,
   };
-</script>
 
-<tr
-  on:click={() =>
+  const handleClick = () =>
     dispatcher("nnsAction", {
       type: ActionType.GoToTokenDetail,
       data: userTokenData,
-    })}
+    });
+</script>
+
+<div
+  role="row"
+  tabindex={index + 1}
+  on:keypress={handleClick}
+  on:click={handleClick}
   data-tid="desktop-tokens-table-row-component"
 >
-  <td>
+  <div role="cell">
     <div class="universe-data">
       <Logo
         src={userTokenData.logo}
@@ -45,16 +52,12 @@
       />
       <span>{userTokenData.title}</span>
     </div>
-  </td>
-  <td>
+  </div>
+  <div role="cell">
     <div class="universe-balance">
-      {#if userTokenData.balance instanceof UnavailableTokenAmount}
-        <span data-tid="token-value-label"
-          >{`-/- ${userTokenData.balance.token.symbol}`}</span
-        >
-      {:else}
-        <AmountDisplay singleLine amount={userTokenData.balance} />
-      {/if}
+      <div class="desktop-balance">
+        <TokenBalance {userTokenData} />
+      </div>
       {#each userTokenData.actions as action}
         <svelte:component
           this={actionMapper[action]}
@@ -63,30 +66,65 @@
         />
       {/each}
     </div>
-  </td>
-</tr>
+  </div>
+  <div role="cell" class="mobile-balance">
+    <span>Balance</span>
+    <TokenBalance {userTokenData} />
+  </div>
+</div>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/interaction";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
-  tr td {
-    padding: var(--padding-2x);
-  }
-
-  tr {
+  div[role="row"] {
     @include interaction.tappable;
 
+    display: grid;
+    align-items: center;
+    row-gap: var(--padding);
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: repeat(2, 1fr);
+
+    padding: var(--padding-2x);
+
     background-color: var(--table-row-background);
+
+    @include media.min-width(medium) {
+      grid-template-rows: 1fr;
+    }
 
     &:hover {
       background-color: var(--table-row-background-hover);
     }
   }
 
+  div[role="cell"] > * {
+    height: 100%;
+  }
+
   .universe-data {
     display: flex;
     align-items: center;
     gap: var(--padding);
+  }
+
+  .desktop-balance {
+    display: none;
+
+    @include media.min-width(medium) {
+      display: block;
+    }
+  }
+
+  .mobile-balance {
+    display: flex;
+    justify-content: space-between;
+    grid-column-end: span 2;
+
+    @include media.min-width(medium) {
+      display: none;
+    }
   }
 
   .universe-balance {
