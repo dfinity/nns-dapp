@@ -35,6 +35,7 @@ interface I18nCore {
   finish: string;
   unknown: string;
   expand_all: string;
+  collapse_all: string;
 }
 
 interface I18nError {

@@ -2,11 +2,13 @@
   import { i18n } from "$lib/stores/i18n";
   import { expandObject, getObjMaxDepth } from "$lib/utils/utils";
   import { isNullish } from "@dfinity/utils";
-  import { IconExpandAll } from "@dfinity/gix-components";
+  import { IconCollapseAll, IconExpandAll } from "@dfinity/gix-components";
   import TreeJson from "$lib/components/common/TreeJson.svelte";
   import RawJson from "$lib/components/common/RawJson.svelte";
   import { fade } from "svelte/transition";
   import { jsonRepresentationModeStore } from "$lib/derived/json-representation.derived";
+
+  const DEFAULT_EXPANDED_LEVEL = 1;
 
   export let json: unknown | undefined = undefined;
 
@@ -15,26 +17,39 @@
     ? json
     : expandObject(json as Record<string, unknown>);
 
-  const DEFAULT_EXPANDED_LEVEL = 1;
-  let expandAll = false;
-  $: expandAll =
-    getObjMaxDepth(expandedData) <= DEFAULT_EXPANDED_LEVEL ? true : expandAll;
-  const toggleExpanded = () => (expandAll = !expandAll);
+  let isExpandedAllVisible = false;
+  $: isExpandedAllVisible =
+    getObjMaxDepth(expandedData) > DEFAULT_EXPANDED_LEVEL;
+
+  let isAllExpanded: boolean | undefined = undefined;
+  const toggleExpanded = () => {
+    isAllExpanded = !isAllExpanded;
+  };
 </script>
 
 <div class="content-cell-island markdown-container">
   {#if $jsonRepresentationModeStore === "tree"}
     <div class="json" data-tid="json-wrapper" in:fade>
-      {#if !expandAll}
-        <button class="ghost expand-all" on:click={toggleExpanded}
-          ><IconExpandAll /><span class="expand-all-label"
-            >{$i18n.core.expand_all}</span
-          ></button
-        >
+      {#if isExpandedAllVisible}
+        <button class="ghost expand-all" on:click={toggleExpanded}>
+          {#if isAllExpanded}
+            <div in:fade>
+              <IconCollapseAll />
+              <span class="expand-all-label">{$i18n.core.collapse_all}</span>
+            </div>
+          {:else}
+            <div in:fade>
+              <IconExpandAll />
+              <span class="expand-all-label">{$i18n.core.expand_all}</span>
+            </div>
+          {/if}
+        </button>
       {/if}
       <TreeJson
         json={expandedData}
-        defaultExpandedLevel={expandAll ? Number.MAX_SAFE_INTEGER : 1}
+        defaultExpandedLevel={isAllExpanded
+          ? Number.MAX_SAFE_INTEGER
+          : DEFAULT_EXPANDED_LEVEL}
       />
     </div>
   {:else}
@@ -53,9 +68,11 @@
     right: var(--padding-0_5x);
     top: var(--padding-0_5x);
 
-    display: flex;
-    align-items: center;
-    gap: var(--padding-0_5x);
+    div {
+      display: flex;
+      align-items: center;
+      gap: var(--padding-0_5x);
+    }
 
     .expand-all-label {
       display: none;

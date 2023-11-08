@@ -9,7 +9,6 @@
   export let defaultExpandedLevel = Infinity;
   export let _key: string | undefined = undefined;
   export let _level = 0;
-  export let _collapsed: boolean | undefined = undefined;
 
   let keyLabel: string;
   let children: [string, unknown][];
@@ -34,8 +33,7 @@
   }
 
   let collapsed = true;
-  $: collapsed =
-    _collapsed === undefined ? _level >= defaultExpandedLevel : _collapsed;
+  $: collapsed = _level >= defaultExpandedLevel;
 
   let keyIsIndex = false;
   $: keyIsIndex = !isNaN(Number(_key));

@@ -20,6 +20,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Show the maximum participation of the Neurons' Fund when present.
 * A list of exceptional (not-rendered, zero value) transactions.
 * Add a link to the ICP Dashboard in the project detail page.
+* Add collapse-all functionality to json tree view.
 
 #### Changed
 
