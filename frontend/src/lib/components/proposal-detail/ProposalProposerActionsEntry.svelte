@@ -28,7 +28,9 @@
         </h2>
         <Copy value={copyContent} />
       </div>
-      <TreeRawToggle />
+      <div class="toggle">
+        <TreeRawToggle />
+      </div>
     </div>
 
     <div
@@ -56,17 +58,24 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "@dfinity/gix-components/dist/styles/mixins/text";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   .header-text {
     display: flex;
     align-items: center;
     @include fonts.h3;
+
+    @include text.clamp(1);
   }
 
   .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    flex-wrap: wrap;
+    row-gap: var(--padding);
 
     .title-copy {
       display: flex;
