@@ -49,9 +49,9 @@ describe("Tokens page", () => {
       (window as any).innerWidth = BREAKPOINT_MEDIUM - 10;
     });
 
-    it("should render the mobile tokens list", () => {
+    it("should render the mobile tokens list", async () => {
       const po = renderPage(userTokensPageMock);
-      expect(po.hasMobileTokensList()).toBe(true);
+      expect(await po.hasMobileTokensList()).toBe(true);
     });
   });
 });
