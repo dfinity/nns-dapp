@@ -67,34 +67,9 @@
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
-  .key {
-    display: flex;
-    align-items: center;
-    margin-right: var(--padding-2x);
-
-    @include fonts.standard(true);
-    color: var(--content-color);
-
-    &.root {
-      @include fonts.h4();
-    }
-    &.key--expandable {
-      margin-right: 0;
-      // no icon gap compensation
-      margin-left: 0;
-    }
-    &.key--is-index {
-      // monospace for array indexes to avoid different widths
-      font-family: monospace;
-    }
-  }
-
   .value {
-    // better shrink the value than the key
-    flex: 1 1 0;
     color: var(--description-color);
 
     // for chunks and units
@@ -102,10 +77,8 @@
     align-items: center;
     gap: var(--padding-0_5x);
 
-    @include media.min-width(medium) {
-      // We want to break the value, so that the keys stay on the same line.
-      word-break: break-all;
-    }
+    // keep lines (scroll horizontally)
+    white-space: nowrap;
 
     .unit {
       margin-left: var(--padding-0_5x);
