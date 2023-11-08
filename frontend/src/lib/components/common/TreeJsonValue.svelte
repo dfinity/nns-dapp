@@ -5,9 +5,11 @@
   import { i18n } from "$lib/stores/i18n";
 
   // To avoid having quotes around all the value types
-  const formatData = (value: unknown) => {
+  const formatE8s = (data: unknown): string[] =>
+    splitE8sIntoChunks((data as Record<"e8s", unknown>)?.e8s);
+  const formatData = (value: unknown): string => {
     if (valueType === "base64Encoding") {
-      return (data as { [key: string]: unknown })["base64Encoding"];
+      return (data as { [key: string]: unknown })["base64Encoding"] as string;
     }
     if (
       (
@@ -18,6 +20,8 @@
           "bigint",
           "boolean",
           "object",
+          "basisPoints",
+          "seconds",
         ] as Array<TreeJsonValueType>
       ).includes(valueType)
     ) {
@@ -31,6 +35,9 @@
   export let key: string | undefined = undefined;
   export let valueType: TreeJsonValueType;
 
+  let value: string | undefined;
+  $: value = formatData(data);
+
   let title: string | undefined;
   $: title = valueType === "hash" ? (data as number[]).join() : undefined;
 </script>
@@ -38,30 +45,28 @@
 {#if valueType === "base64Encoding"}
   <!-- base64 encoded image (use <Html> to sanitize the content from XSS) -->
   <Html
-    text={`<img class="value ${valueType}" alt="${key}" src="${formatData(
-      data
-    )}" loading="lazy" />`}
+    text={`<img class="value ${valueType}" alt="${key}" src="${value}" loading="lazy" />`}
   />
 {:else if valueType === "seconds"}
   <span class="value {valueType}" {title}
-    >{data?.seconds}
+    >{value}
     <span class="unit">{$i18n.proposal_detail.json_unit_seconds}</span>
   </span>
 {:else if valueType === "e8s"}
   <span class="value {valueType}" {title}>
-    {#each splitE8sIntoChunks(data?.e8s) as chunk}
+    {#each formatE8s(data) as chunk}
       <span>{chunk}</span>
     {/each}
     <span class="unit">{$i18n.proposal_detail.json_unit_e8s}</span>
   </span>
 {:else if valueType === "basisPoints"}
   <span class="value {valueType}" {title}
-    >{data?.basisPoints}
+    >{value}
     <span class="unit">{$i18n.proposal_detail.json_unit_basis_points}</span
     ></span
   >
 {:else}
-  <span class="value {valueType}" {title}>{formatData(data)}</span>
+  <span class="value {valueType}" {title}>{value}</span>
 {/if}
 
 <style lang="scss">
