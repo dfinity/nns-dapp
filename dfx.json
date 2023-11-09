@@ -254,7 +254,7 @@
       ],
       "type": "persistent"
     },
-    "devenv-llorenc": {
+    "devenv_llorenc": {
       "config": {
         "HOST": "https://llorenc-ingress.devenv.dfinity.network",
         "FEATURE_FLAGS": {
