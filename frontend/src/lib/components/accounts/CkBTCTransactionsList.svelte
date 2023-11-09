@@ -12,6 +12,7 @@
   import {
     getSortedTransactionsFromStore,
     isIcrcTransactionsCompleted,
+    mapIcrcTransaction,
   } from "$lib/utils/icrc-transactions.utils";
   import IcrcTransactionsList from "$lib/components/accounts/IcrcTransactionsList.svelte";
   import type { UniverseCanisterId } from "$lib/types/universe";
@@ -106,5 +107,6 @@
     {completed}
     {descriptions}
     {token}
+    mapTransaction={mapIcrcTransaction}
   />
 </CkBTCWalletTransactionsObserver>

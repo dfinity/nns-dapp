@@ -7,6 +7,7 @@
   import SkeletonCard from "../ui/SkeletonCard.svelte";
   import type { IcrcTransactionData } from "$lib/types/transaction";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import type { mapIcrcTransactionType } from "$lib/utils/icrc-transactions.utils";
   import { flip } from "svelte/animate";
 
   export let account: Account;
@@ -16,6 +17,7 @@
   export let completed = false;
   export let descriptions: Record<string, string> | undefined = undefined;
   export let token: IcrcTokenMetadata | undefined;
+  export let mapTransaction: mapIcrcTransactionType;
 </script>
 
 <div data-tid="transactions-list" class="container">
@@ -35,6 +37,7 @@
             {governanceCanisterId}
             {descriptions}
             {token}
+            {mapTransaction}
           />
         </div>
       {/each}

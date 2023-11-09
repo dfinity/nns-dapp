@@ -10,6 +10,7 @@
   import {
     getSortedTransactionsFromStore,
     isIcrcTransactionsCompleted,
+    mapIcrcTransaction,
   } from "$lib/utils/icrc-transactions.utils";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import SnsWalletTransactionsObserver from "$lib/components/accounts/SnsWalletTransactionsObserver.svelte";
@@ -70,5 +71,6 @@
     {governanceCanisterId}
     {completed}
     {token}
+    mapTransaction={mapIcrcTransaction}
   />
 </SnsWalletTransactionsObserver>
