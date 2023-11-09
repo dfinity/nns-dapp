@@ -1,4 +1,6 @@
 import type { IcrcTransactionsStoreData } from "$lib/stores/icrc-transactions.store";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
 import type {
   IcrcTransaction,
   IcrcTransactionWithId,
@@ -14,9 +16,13 @@ export interface IcrcCandidAccount {
 export const createIcrcTransactionWithId = ({
   from,
   to,
+  fee,
+  amount,
 }: {
-  to: IcrcCandidAccount;
-  from: IcrcCandidAccount;
+  to?: IcrcCandidAccount;
+  from?: IcrcCandidAccount;
+  fee?: bigint;
+  amount?: bigint;
 }): IcrcTransactionWithId => ({
   id: BigInt(123),
   transaction: {
@@ -26,12 +32,18 @@ export const createIcrcTransactionWithId = ({
     mint: [],
     transfer: [
       {
-        to,
-        from,
+        to: to ?? {
+          owner: mockPrincipal,
+          subaccount: [Uint8Array.from(mockSubAccountArray)],
+        },
+        from: from ?? {
+          owner: mockPrincipal,
+          subaccount: [] as [],
+        },
         memo: [],
         created_at_time: [BigInt(123)],
-        amount: BigInt(33),
-        fee: [BigInt(1)],
+        amount: amount ?? BigInt(33),
+        fee: [fee ?? BigInt(1)],
         spender: [],
       },
     ],
