@@ -48,6 +48,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Factor out the `snsdemo` installation.
 * Add `prod` and `aggregator-prod` to the list of public releases.
+* Update `dfx` to `v0.15.1`.
 
 #### Deprecated
 
