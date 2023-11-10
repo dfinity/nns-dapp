@@ -52,13 +52,12 @@ export const loadCkBTCToken = async ({
         certified,
         canisterId: universeId,
       }),
-    onLoad: async ({ response: token, certified }) => {
+    onLoad: async ({ response: token, certified }) =>
       tokensStore.setToken({
         certified,
         canisterId: universeId,
         token,
-      });
-    },
+      }),
     onError: ({ error: err, certified }) => {
       if (!certified && notForceCallStrategy()) {
         return;
@@ -69,7 +68,7 @@ export const loadCkBTCToken = async ({
         err,
       });
       // Hide unproven data
-      // tokensStore.resetUniverse(universeId);
+      tokensStore.resetUniverse(universeId);
       handleError?.();
     },
   });
