@@ -3,8 +3,12 @@ import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import type { Account } from "$lib/types/account";
 import type { IcrcTransactionData } from "$lib/types/transaction";
 import {
-  mockIcrcTransactionsStoreSubscribe,
+  mapIcrcTransaction,
+  type mapIcrcTransactionType,
+} from "$lib/utils/icrc-transactions.utils";
+import {
   mockIcrcTransactionWithId,
+  mockIcrcTransactionsStoreSubscribe,
 } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
@@ -18,11 +22,13 @@ describe("IcrcTransactionList", () => {
     transactions,
     loading,
     completed = false,
+    mapTransaction,
   }: {
     account: Account;
     transactions: IcrcTransactionData[];
     loading?: boolean;
     completed?: boolean;
+    mapTransaction?: mapIcrcTransactionType;
   }) => {
     const { container } = render(IcrcTransactionsList, {
       props: {
@@ -31,6 +37,7 @@ describe("IcrcTransactionList", () => {
         loading,
         completed,
         token: mockSnsToken,
+        mapTransaction: mapTransaction ?? mapIcrcTransaction,
       },
     });
     return IcrcTransactionsListPo.under(new JestPageObjectElement(container));
@@ -83,5 +90,30 @@ describe("IcrcTransactionList", () => {
     });
 
     expect(await po.getTransactionCardPos()).toHaveLength(1);
+  });
+
+  it("uses mapTransaction", async () => {
+    const customIdentifier = "custom identifier";
+    const customMapTransaction = (params) => ({
+      ...mapIcrcTransaction(params),
+      from: customIdentifier,
+    });
+
+    const po = renderComponent({
+      account: mockSnsMainAccount,
+      transactions: [
+        {
+          transaction: mockIcrcTransactionWithId,
+          toSelfTransaction: false,
+        },
+      ],
+      loading: false,
+      completed: true,
+      mapTransaction: customMapTransaction,
+    });
+
+    const cards = await po.getTransactionCardPos();
+    expect(cards).toHaveLength(1);
+    expect(await cards[0].getIdentifier()).toBe(`Source: ${customIdentifier}`);
   });
 });

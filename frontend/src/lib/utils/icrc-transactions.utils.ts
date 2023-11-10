@@ -167,6 +167,8 @@ export const mapIcrcTransaction = ({
   }
 };
 
+export type mapIcrcTransactionType = typeof mapIcrcTransaction;
+
 // TODO: use `oldestTxId` instead of sorting and getting the oldest element's id.
 // It seems that the `Index` canister has a bug.
 /**
