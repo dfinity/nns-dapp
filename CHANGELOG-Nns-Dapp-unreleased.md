@@ -25,6 +25,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Read schema version from stable memory.
+* New icons for sent/received transactions.
 
 #### Deprecated
 
