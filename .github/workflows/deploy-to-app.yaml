@@ -56,6 +56,12 @@ jobs:
           dfx identity use ci
         env:
           DFX_IDENTITY_PEM: ${{ secrets.DFX_IDENTITY_PEM }}
+      - name: Get snsdemo
+        uses: actions/checkout@v3
+        with:
+          repository: 'dfinity/snsdemo'
+          path: snsdemo
+          ref: release-2023-10-27
       - name: Get SNS scripts
         uses: ./.github/actions/checkout_snsdemo
         with:
