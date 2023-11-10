@@ -17,7 +17,6 @@
 
   pre {
     margin: 0;
-    overflow-x: auto;
     @include fonts.small;
   }
 </style>

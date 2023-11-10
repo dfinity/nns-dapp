@@ -5,6 +5,10 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class TransactionCardPo extends BasePageObject {
   private static readonly TID = "transaction-card";
 
+  static under(element: PageObjectElement): TransactionCardPo {
+    return new TransactionCardPo(element.byTestId(TransactionCardPo.TID));
+  }
+
   static async allUnder(
     element: PageObjectElement
   ): Promise<TransactionCardPo[]> {
@@ -13,12 +17,20 @@ export class TransactionCardPo extends BasePageObject {
     );
   }
 
+  getHeadline(): Promise<string> {
+    return this.getText("headline");
+  }
+
   getIdentifier(): Promise<string> {
     return this.getText("identifier");
   }
 
   getDescription(): Promise<string> {
     return this.getText("transaction-description");
+  }
+
+  getDate(): Promise<string> {
+    return this.getText("transaction-date");
   }
 
   getAmountDisplayPo(): AmountDisplayPo {
