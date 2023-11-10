@@ -23,7 +23,9 @@ runs:
       shell: bash
       id: have_snsdemo
       run: |
+        # Check that the directory exists and is a git repository.
         if test -d "${{ inputs.path }}/.git"
+        # Note: This is useful information to log, so let's `tee`.
         then echo have_snsdemo=true | tee -a "$GITHUB_OUTPUT"
         else echo have_snsdemo=false | tee -a "$GITHUB_OUTPUT"
         fi
@@ -40,12 +42,14 @@ runs:
         set -euxo pipefail
         echo "Read have_snsdemo as ${{ steps.have_snsdemo.outputs.have_snsdemo }}"
         cd "${{ inputs.path }}"
-        git fetch --tags || true
+        git fetch --tags || true # This can fail as long as we get the ref we need.
         expected_commit="$(git rev-parse "${{ steps.snsdemo_ref.outputs.ref }}" || echo COMMIT_FOR_REF_IS_NOT_KNOWN)"
         actual_commit="$(git rev-parse HEAD)"
         if [[ "${expected_commit:-}" == "${actual_commit:-}" ]]
         then
           echo "OK: snsdemo is already checked out at the requested commit."
+          echo "Snsdemo path:     ${{ inputs.path }}"
+          echo "              ==  $PWD"
           echo "Requested ref:    ${{ steps.snsdemo_ref.outputs.ref }}"
           echo "Requested commit: $expected_commit"
         else
