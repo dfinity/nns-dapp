@@ -6,7 +6,12 @@
   import type { Token } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import { transactionName } from "$lib/utils/transactions.utils";
-  import { Html, IconNorthEast, IconUp, IconDown, KeyValuePair } from "@dfinity/gix-components";
+  import {
+    Html,
+    IconUp,
+    IconDown,
+    KeyValuePair,
+  } from "@dfinity/gix-components";
   import type {
     Transaction,
     AccountTransactionType,
