@@ -40,7 +40,6 @@ runs:
         set -euxo pipefail
         cd "${{ inputs.path }}"
         git fetch --tags || true
-        git tag
         expected_commit="$(git rev-parse "${{ steps.snsdemo_ref.outputs.ref }}" || true)"
         actual_commit="$(git rev-parse HEAD)"
         [[ "$expected_commit" == "$actual_commit" ]] || {
