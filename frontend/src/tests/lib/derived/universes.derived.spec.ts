@@ -23,7 +23,7 @@ describe("universes derived stores", () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", true);
     });
 
-    it("should return Nns, ckBTC and ckTESTBTC (flag for test is true) per default", () => {
+    it("should return Nns, ckBTC and ckTESTBTC per default", () => {
       const store = get(universesStore);
       expect(store.length).toEqual(3);
       expect(store[0].summary).toBeUndefined();
@@ -36,7 +36,7 @@ describe("universes derived stores", () => {
       );
     });
 
-    it("should return Nns, ckBTC, ckTESTBTC (flag for test is true) and SNS projects", () => {
+    it("should return Nns, ckBTC, ckTESTBTC and SNS projects", () => {
       const snsRootCanisterId = rootCanisterIdMock;
       setSnsProjects([
         {
@@ -57,7 +57,7 @@ describe("universes derived stores", () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
     });
 
-    it("should return Nns, ckBTC and ckTESTBTC (flag for test is true) per default", () => {
+    it("should return Nns and ckBTC", () => {
       const store = get(universesStore);
       expect(store.length).toEqual(2);
       expect(store[0].summary).toBeUndefined();
