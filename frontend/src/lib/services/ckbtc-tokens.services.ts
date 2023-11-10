@@ -62,13 +62,16 @@ export const loadCkBTCToken = async ({
       if (!certified && notForceCallStrategy()) {
         return;
       }
+
       // Explicitly handle only UPDATE errors
       toastsError({
         labelKey: "error.token_not_found",
         err,
       });
+
       // Hide unproven data
       tokensStore.resetUniverse(universeId);
+
       handleError?.();
     },
   });
