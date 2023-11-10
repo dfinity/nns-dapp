@@ -23,9 +23,9 @@ runs:
       shell: bash
       id: have_snsdemo
       run: |
-        if test -d "${{ inputs.path }}"
-        then echo have_snsdemo=true >> "$GITHUB_OUTPUT"
-        else have_snsdemo=false >> "$GITHUB_OUTPUT"
+        if test -d "${{ inputs.path }}/.git"
+        then echo have_snsdemo=true | tee -a "$GITHUB_OUTPUT"
+        else echo have_snsdemo=false | tee -a "$GITHUB_OUTPUT"
         fi
     - name: Determine snsdemo ref
       id: snsdemo_ref
@@ -34,24 +34,31 @@ runs:
         SNSDEMO_RELEASE="$(jq -r .defaults.build.config.SNSDEMO_RELEASE dfx.json)"
         echo "ref=$SNSDEMO_RELEASE" >> "$GITHUB_OUTPUT"
     - name: Check that the existing repo has the expected commit.
-      if: ${{ steps.have_snsdemo.outputs.have_snsdemo }} == 'true'
+      if: ${{ steps.have_snsdemo.outputs.have_snsdemo == 'true' }}
       shell: bash
       run: |
         set -euxo pipefail
+        echo "Read have_snsdemo as ${{ steps.have_snsdemo.outputs.have_snsdemo }}"
         cd "${{ inputs.path }}"
         git fetch --tags || true
-        expected_commit="$(git rev-parse "${{ steps.snsdemo_ref.outputs.ref }}" || true)"
+        expected_commit="$(git rev-parse "${{ steps.snsdemo_ref.outputs.ref }}" || echo COMMIT_FOR_REF_IS_NOT_KNOWN)"
         actual_commit="$(git rev-parse HEAD)"
-        [[ "$expected_commit" == "$actual_commit" ]] || {
+        if [[ "${expected_commit:-}" == "${actual_commit:-}" ]]
+        then
+          echo "OK: snsdemo is already checked out at the requested commit."
+          echo "Requested ref:    ${{ steps.snsdemo_ref.outputs.ref }}"
+          echo "Requested commit: $expected_commit"
+        else
           echo "ERROR: snsdemo is already checked out but not at the requested commit."
           echo "Snsdemo path:     ${{ inputs.path }}"
           echo "              ==  $PWD"
           echo "Requested ref:    ${{ steps.snsdemo_ref.outputs.ref }}"
-          echo "Requested commit: $expected_commit  (May be missing in the case of a partial clone)"
-          echo "Actual commit:    $actual_commit"
-        }
+          echo "Requested commit: ${expected_commit:-}  (May be missing in the case of a partial clone)"
+          echo "Actual commit:    ${actual_commit:-}"
+          exit 1
+        fi
     - name: Get snsdemo
-      if: ${{ steps.have_snsdemo.outputs.have_snsdemo }} == 'false'
+      if: ${{ steps.have_snsdemo.outputs.have_snsdemo == 'false' }}
       uses: actions/checkout@v3
       with:
         repository: 'dfinity/snsdemo'
