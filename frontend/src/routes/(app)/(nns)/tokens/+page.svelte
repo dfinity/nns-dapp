@@ -15,11 +15,14 @@
   import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
   import type { Action } from "$lib/types/actions";
   import { UnavailableTokenAmount } from "$lib/utils/token.utils";
+  import { loadCkBTCTokens } from "$lib/services/ckbtc-tokens.services";
+  import { tokensListBaseStore } from "$lib/derived/tokens-list-base.derived";
 
   onMount(() => {
     if (!$ENABLE_MY_TOKENS) {
       goto(AppPath.Accounts);
     }
+    loadCkBTCTokens();
   });
 
   const data: UserTokenData[] = [
@@ -49,6 +52,6 @@
   {#if $authSignedInStore}
     <Tokens userTokensData={data} on:nnsAction={handleAction} />
   {:else}
-    <SignInTokens />
+    <SignInTokens userTokensData={$tokensListBaseStore} />
   {/if}
 </TestIdWrapper>
