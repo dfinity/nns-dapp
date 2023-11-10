@@ -27,6 +27,9 @@ export const isUniverseCkBTC = (canisterId: Principal | string): boolean =>
     CKTESTBTC_UNIVERSE_CANISTER_ID.toText(),
   ].includes(typeof canisterId === "string" ? canisterId : canisterId.toText());
 
+export const isUniverseRealCkBTC = (canister: Principal): boolean =>
+  CKBTC_UNIVERSE_CANISTER_ID.toText() === canister.toText();
+
 export const isUniverseCkTESTBTC = (
   canisterId: Principal | string | undefined
 ): boolean =>
