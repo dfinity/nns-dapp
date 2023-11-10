@@ -66,4 +66,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Aggregator url doesn't use raw for devenv environments.
+
 #### Security
