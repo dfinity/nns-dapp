@@ -12,7 +12,12 @@ const snsAggregatorUrlEnv = envVars.snsAggregatorUrl ?? "";
 const snsAggregatorUrl = (url: string) => {
   try {
     const { hostname } = new URL(url);
-    if (isLocalhost(hostname) || hostname.includes("devenv")) {
+    if (isLocalhost(hostname)) {
+      return url;
+    }
+
+    // We don't want to add `raw` to the URL if we are running against a devenv environment.
+    if (url.includes("devenv")) {
       return url;
     }
 
