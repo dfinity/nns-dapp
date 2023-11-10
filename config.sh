@@ -39,15 +39,6 @@ first_not_null() {
   echo "null"
 }
 
-# ... Network config may be in dfx.json (deprecated) or in the user's global network config, if it exists.
-GLOBAL_NETWORK_CONFIG_FILE="$HOME/.config/dfx/networks.json"
-network_config() {
-  : "Getting the local and global network data..."
-  : "- The local and global network configurations are merged."
-  : "- If the same field is present locally and globally, the local version takes precedence."
-  jq -se '(.[1][env.DFX_NETWORK] // {}) * (.[0].networks[env.DFX_NETWORK] // {})' dfx.json <(cat "$GLOBAL_NETWORK_CONFIG_FILE" 2>/dev/null || echo "{}")
-}
-
 local_deployment_data="$(
   set -euo pipefail
   : "Try to find the nns-dapp canister ID:"
@@ -156,11 +147,11 @@ local_deployment_data="$(
 : "- construct ledger and governance canister URLs"
 # TODO: I believe that the following can be discarded now.
 json=$(HOST=$(dfx-canister-url --network "$DFX_NETWORK" --type api) jq -s --sort-keys '
-  (.[0].defaults.network.config // {}) * .[1] * (.[2].config // {}) |
+  (.[0].defaults.network.config // {}) * .[1] * (.[0].networks[env.DFX_NETWORK].config // {}) |
   .DFX_NETWORK = env.DFX_NETWORK |
   . as $config |
   .HOST=env.HOST
-    ' dfx.json <(echo "$local_deployment_data")) <(network_config)
+' dfx.json <(echo "$local_deployment_data"))
 
 dfxNetwork=$(echo "$json" | jq -r ".DFX_NETWORK")
 cmcCanisterId=$(echo "$json" | jq -r ".CYCLES_MINTING_CANISTER_ID")
