@@ -1,0 +1,127 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+. "${0%.test}"
+
+mk_env() {
+  HOME="$(mktemp -d)"
+  cd "$HOME"
+  mkdir toy_project
+  cd toy_project
+  cat <<-EOF >dfx.json
+	{
+	  "version": 1,
+	  "canisters": {
+	    "foasdhfgkayewr_backend": {
+	      "type": "rust",
+	      "package": "foasdhfgkayewr_backend",
+	      "candid": "src/foasdhfgkayewr_backend/foasdhfgkayewr_backend.did"
+	    },
+	    "foasdhfgkayewr_frontend": {
+	      "type": "assets",
+	      "source": [
+		"src/foasdhfgkayewr_frontend/assets"
+	      ],
+	      "dependencies": [
+		"foasdhfgkayewr_backend"
+	      ]
+	    }
+	  },
+	  "networks": {
+	    "mainnet": {
+	      "config": {
+		"FETCH_ROOT_KEY": false,
+		"API_HOST": "https://icp-api.io",
+		"STATIC_HOST": "https://icp0.io",
+		"FEATURE_FLAGS": {
+		  "ENABLE_CKBTC": true,
+		  "ENABLE_CKTESTBTC": false
+		}
+	      },
+	      "providers": [
+		"https://icp-api.io/"
+	      ],
+	      "type": "persistent"
+	    },
+	  },
+	  "defaults": {
+	    "build": {
+	      "packtool": "",
+	      "args": ""
+	    }
+	  },
+	  "output_env_file": ".env"
+	}
+	EOF
+  mkdir -p "$HOME/.config/dfx"
+  cat <<-EOF >"$HOME/.config/dfx/networks.json"
+	{
+	  "local": {
+	    "config": {
+	      "FETCH_ROOT_KEY": true,
+	      "HOST": "http://localhost:8080",
+	      "FEATURE_FLAGS": {
+		"ENABLE_SNS": true,
+		"ENABLE_SNS_2": true
+	      }
+	    },
+	    "bind": "127.0.0.1:8080",
+	    "type": "ephemeral",
+	    "replica": {
+	      "subnet_type": "system"
+	    }
+	  },
+	  "nnsdapp": {
+	    "config": {
+	      "FETCH_ROOT_KEY": true,
+	      "HOST": "https://nnsdapp.testnet.dfinity.network"
+	    },
+	    "providers": [
+	      "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
+	    ],
+	    "type": "persistent"
+	  }
+	}
+	EOF
+}
+
+(
+  echo "Self-check: Stock environment should be created"
+  HOME_BEFORE="$HOME"
+  mk_env
+  if [[ "$HOME" == "$HOME_BEFORE" ]]; then
+    {
+      echo "ERROR: Should have a temporary home dir."
+      echo "       HOME='$HOME'"
+      exit 1
+    } >&2
+  fi
+  echo OK
+)
+
+(
+  echo "assert_dfx_network_var_is_set should succeed when the network is set"
+
+  DFX_NETWORK=gobbeldygook
+  if assert_dfx_network_var_is_set; then
+    echo OK
+  else
+    {
+      echo "DFX_NETWORK is set (to '$DFX_NETWORK') so this should have succeeded."
+      exit 1
+    } >&2
+  fi
+)
+(
+  echo "assert_dfx_network_var_is_set should fail when the network is unset"
+
+  unset DFX_NETWORK
+  if assert_dfx_network_var_is_set 2>/dev/null; then
+    {
+      echo "FAIL"
+      exit 1
+    } >&2
+  else
+    echo OK
+  fi
+)
