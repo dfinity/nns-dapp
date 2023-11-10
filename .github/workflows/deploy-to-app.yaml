@@ -56,10 +56,13 @@ jobs:
           dfx identity use ci
         env:
           DFX_IDENTITY_PEM: ${{ secrets.DFX_IDENTITY_PEM }}
-      - name: Get SNS scripts
-        uses: ./.github/actions/checkout_snsdemo
+      - name: Get snsdemo
+        if: ${{ steps.have_snsdemo.outputs.have_snsdemo == 'false' }}
+        uses: actions/checkout@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: 'dfinity/snsdemo'
+          path: '${{ inputs.path }}'
+          ref: release-2023-10-27
       - name: Get SNS scripts
         uses: ./.github/actions/checkout_snsdemo
         with:
