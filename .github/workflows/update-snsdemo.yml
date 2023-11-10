@@ -76,8 +76,7 @@ jobs:
             * Ensured that the `dfx` version and IC commit in `dfx.json` match `snsdemo`.
 
             # Tests
-              - [ ] Please check the API updates for any breaking changes that affect our code.
-              - [ ] Please check for new proposal types.
+            CI should pass.
           # Since the this is a scheduled job, a failure won't be shown on any
           # PR status. To notify the team, we send a message to our Slack channel on failure.
       - name: Notify Slack on failure
