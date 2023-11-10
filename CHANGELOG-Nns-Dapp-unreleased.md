@@ -49,7 +49,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Enable dependabot for Rust updates.
 * Workflow to get the latest NNS and SNS canister candid files.
 * Try to prevent calls to global.fetch in unit tests.
-* Add `devenv_llorenc` to list of networks.
+* Add `devenv_llorenc` and `devenv_dskloet` to list of networks.
 
 #### Changed
 
