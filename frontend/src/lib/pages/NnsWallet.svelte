@@ -45,7 +45,7 @@
   import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
   import HardwareWalletListNeuronsButton from "$lib/components/accounts/HardwareWalletListNeuronsButton.svelte";
   import HardwareWalletShowActionButton from "$lib/components/accounts/HardwareWalletShowActionButton.svelte";
-    import RenameSubAccountButton from "$lib/components/accounts/RenameSubAccountButton.svelte";
+  import RenameSubAccountButton from "$lib/components/accounts/RenameSubAccountButton.svelte";
 
   onMount(() => {
     pollAccounts();
