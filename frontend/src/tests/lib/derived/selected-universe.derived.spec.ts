@@ -7,7 +7,7 @@ import {
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
-import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
+import { NNS_UNIVERSE } from "$lib/constants/universes.constants";
 import {
   isCkBTCUniverseStore,
   isNnsUniverseStore,

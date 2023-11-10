@@ -1,7 +1,7 @@
 import ProjectAccountsBalance from "$lib/components/universe/UniverseAccountsBalance.svelte";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { NNS_UNIVERSE } from "$lib/constants/universes.constants";
 import { CKBTC_UNIVERSE } from "$lib/derived/ckbtc-universes.derived";
-import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";

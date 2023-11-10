@@ -1,7 +1,7 @@
 import SelectUniverseCard from "$lib/components/universe/SelectUniverseCard.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
-import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
+import { NNS_UNIVERSE } from "$lib/constants/universes.constants";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
