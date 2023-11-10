@@ -45,7 +45,7 @@ export const loadCkBTCToken = async ({
 
   return queryAndUpdate<IcrcTokenMetadata, unknown>({
     strategy: FORCE_CALL_STRATEGY,
-    identityType: "anonymous",
+    identityType: "current",
     request: ({ certified, identity }) =>
       getCkBTCToken({
         identity,
