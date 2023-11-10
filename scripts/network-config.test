@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2030,SC2031,SC2001
+# Note regarding shellcheck: These tests create subshells with variables, it is intentional that the variables are not set globally.
 set -euo pipefail
 
 SCRIPT_TO_TEST="$(realpath "${0%.test}")"
@@ -138,7 +140,7 @@ mk_env() {
   mk_env
   export DFX_NETWORK
   DFX_NETWORK=local
-  export "$DFX_NETWORK"
+  export DFX_NETWORK
   ACTUAL_CONFIG="$(global_network_config | jq .)"
   EXPECTED_CONFIG="$(sample_global_config | jq ".$DFX_NETWORK")"
   [[ "$ACTUAL_CONFIG" == "${EXPECTED_CONFIG:-}" ]] || {
