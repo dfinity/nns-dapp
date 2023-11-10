@@ -60,6 +60,10 @@ jobs:
         uses: ./.github/actions/checkout_snsdemo
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get SNS scripts
+        uses: ./.github/actions/checkout_snsdemo
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up SNS scripts
         run: |
           : Install more
