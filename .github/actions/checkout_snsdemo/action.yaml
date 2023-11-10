@@ -37,11 +37,16 @@ runs:
       if: ${{ steps.have_snsdemo.outputs.have_snsdemo }} == 'true'
       shell: bash
       run: |
-        expected_commit="$(cd "${{ inputs.path }}" && git rev-parse "${{ steps.snsdemo_ref.outputs.ref }}" || true)"
-        actual_commit="$(cd "${{ inputs.path }}" && git rev-parse HEAD)"
+        set -euxo pipefail
+        cd "${{ inputs.path }}"
+        git fetch --tags || true
+        git tag
+        expected_commit="$(git rev-parse "${{ steps.snsdemo_ref.outputs.ref }}" || true)"
+        actual_commit="$(git rev-parse HEAD)"
         [[ "$expected_commit" == "$actual_commit" ]] || {
           echo "ERROR: snsdemo is already checked out but not at the requested commit."
           echo "Snsdemo path:     ${{ inputs.path }}"
+          echo "              ==  $PWD"
           echo "Requested ref:    ${{ steps.snsdemo_ref.outputs.ref }}"
           echo "Requested commit: $expected_commit  (May be missing in the case of a partial clone)"
           echo "Actual commit:    $actual_commit"
