@@ -27,7 +27,7 @@
 
     th {
       color: var(--text-description);
-      background-color: var(--input-background);
+      background-color: var(--table-header-background);
 
       font-weight: normal;
       font-size: var(--font-size-small);
