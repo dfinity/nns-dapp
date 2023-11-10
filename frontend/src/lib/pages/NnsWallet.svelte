@@ -160,7 +160,7 @@
   $: isHardwareWallet = isAccountHardwareWallet($selectedAccountStore.account);
 
   let isSubaccount: boolean;
-  $: isSubaccount = nonNullish($selectedAccountStore.account?.subAccount);
+  $: isSubaccount = $selectedAccountStore.account?.type === "subAccount";
 </script>
 
 <TestIdWrapper testId="nns-wallet-component">

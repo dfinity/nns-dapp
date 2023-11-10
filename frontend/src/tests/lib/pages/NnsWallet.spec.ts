@@ -234,7 +234,6 @@ describe("NnsWallet", () => {
       icpAccountsStore.setForTesting({
         ...mockAccountsStoreData,
         subAccounts: [mockSubAccount],
-        hardwareWallets: [mockHardwareWalletAccount],
       });
     });
 
