@@ -35,6 +35,8 @@ local_network_config() {
 assert_dfx_network_var_is_configured() {
 	local_network_config >/dev/null || global_network_config >/dev/null || {
 		echo "ERROR: DFX_NETWORK '$DFX_NETWORK' is not defined in dfx.json or $GLOBAL_NETWORK_CONFIG_FILE"
+		echo "Available networks are:"
+		list_networks
 		return 1
 	} >&2
 }
@@ -43,16 +45,7 @@ network_config() {
 	: "Getting the local and global network data..."
 	: "- The local and global network configurations are merged."
 	: "- If the same field is present locally and globally, the local version takes precedence."
-	if assert_dfx_network_var_is_configured; then
-		jq -s '(.[0] // {}) * (.[1] // {})' <(global_network_config || true) <(local_network_config || true)
-	else
-		{
-			echo "Available networks are:"
-			list_networks
-			return 1
-		} >&2
-	fi
-
+	assert_dfx_network_var_is_configured && jq -s '(.[0] // {}) * (.[1] // {})' <(global_network_config || true) <(local_network_config || true)
 }
 # Lists local network configurations
 local_networks() {
