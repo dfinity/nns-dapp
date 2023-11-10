@@ -1,11 +1,45 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-. "${0%.test}"
+SCRIPT_TO_TEST="$(realpath "${0%.test}")"
+
+sample_global_config() {
+  cat <<-EOF
+	{
+	  "local": {
+	    "config": {
+	      "FETCH_ROOT_KEY": true,
+	      "HOST": "http://localhost:8080",
+	      "FEATURE_FLAGS": {
+		"ENABLE_SNS": true,
+		"ENABLE_SNS_2": true
+	      }
+	    },
+	    "bind": "127.0.0.1:8080",
+	    "type": "ephemeral",
+	    "replica": {
+	      "subnet_type": "system"
+	    }
+	  },
+	  "nnsdapp": {
+	    "config": {
+	      "FETCH_ROOT_KEY": true,
+	      "HOST": "https://nnsdapp.testnet.dfinity.network"
+	    },
+	    "providers": [
+	      "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
+	    ],
+	    "type": "persistent"
+	  }
+	}
+	EOF
+}
 
 mk_env() {
   HOME="$(mktemp -d)"
+  export HOME
   cd "$HOME"
+  . "$SCRIPT_TO_TEST"
   mkdir toy_project
   cd toy_project
   cat <<-EOF >dfx.json
@@ -54,35 +88,7 @@ mk_env() {
 	}
 	EOF
   mkdir -p "$HOME/.config/dfx"
-  cat <<-EOF >"$HOME/.config/dfx/networks.json"
-	{
-	  "local": {
-	    "config": {
-	      "FETCH_ROOT_KEY": true,
-	      "HOST": "http://localhost:8080",
-	      "FEATURE_FLAGS": {
-		"ENABLE_SNS": true,
-		"ENABLE_SNS_2": true
-	      }
-	    },
-	    "bind": "127.0.0.1:8080",
-	    "type": "ephemeral",
-	    "replica": {
-	      "subnet_type": "system"
-	    }
-	  },
-	  "nnsdapp": {
-	    "config": {
-	      "FETCH_ROOT_KEY": true,
-	      "HOST": "https://nnsdapp.testnet.dfinity.network"
-	    },
-	    "providers": [
-	      "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
-	    ],
-	    "type": "persistent"
-	  }
-	}
-	EOF
+  sample_global_config >"$HOME/.config/dfx/networks.json"
 }
 
 (
@@ -101,7 +107,8 @@ mk_env() {
 
 (
   echo "assert_dfx_network_var_is_set should succeed when the network is set"
-
+  mk_env
+  export DFX_NETWORK
   DFX_NETWORK=gobbeldygook
   if assert_dfx_network_var_is_set; then
     echo OK
@@ -114,7 +121,8 @@ mk_env() {
 )
 (
   echo "assert_dfx_network_var_is_set should fail when the network is unset"
-
+  mk_env
+  export DFX_NETWORK
   unset DFX_NETWORK
   if assert_dfx_network_var_is_set 2>/dev/null; then
     {
@@ -124,4 +132,22 @@ mk_env() {
   else
     echo OK
   fi
+)
+(
+  echo "global_network_config should be able to get a globally defined network"
+  mk_env
+  export DFX_NETWORK
+  DFX_NETWORK=local
+  export "$DFX_NETWORK"
+  ACTUAL_CONFIG="$(global_network_config | jq .)"
+  EXPECTED_CONFIG="$(sample_global_config | jq ".$DFX_NETWORK")"
+  [[ "$ACTUAL_CONFIG" == "${EXPECTED_CONFIG:-}" ]] || {
+    echo "FAIL: Config mismatch:"
+    echo "Expected:"
+    echo "$EXPECTED_CONFIG" | sed 's/^/    /g'
+    echo "Actual:"
+    echo "${ACTUAL_CONFIG:-}" | sed 's/^/    /g'
+    exit 1
+  } >&2
+  echo OK
 )
