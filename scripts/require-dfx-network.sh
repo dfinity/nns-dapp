@@ -5,5 +5,5 @@
 DFX_NETWORK="${DFX_NETWORK:-}"
 export DFX_NETWORK
 
-. "$(dirname "$0")/network-config"
+. "$(dirname "$0")/scripts/network-config"
 assert_dfx_network_var_is_configured
