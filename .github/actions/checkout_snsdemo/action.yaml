@@ -1,14 +1,17 @@
 name: 'Clone the snsdemo repository'
 description: |
-  Ensures that the snsdemo repository is checked out at `./snsdemo` at the commit specified in `dfx.json`.
+  Ensures that the snsdemo repository is checked out at the commit specified in `dfx.json`.
 
   * If the snsdemo repository is already present: Checks that the repo is checked
-    out at the expected commit.  If not, this fails with an error merssage.
+    out at the expected commit.  If not, this fails with an error message.
   * Otherwise: Clones the snsdemo repository at the commit specified in `dfx.json`
 inputs:
   token:
     description: "Github access token used to clone"
     required: true
+  path:
+    description: "Where to check out the repository"
+    default: "snsdemo"
 outputs:
   ref:
     description: The snsdemo reference that was checked out
@@ -20,7 +23,7 @@ runs:
       shell: bash
       id: have_snsdemo
       run: |
-        if test -d snsdemo
+        if test -d "${{ inputs.path }}"
         then echo have_snsdemo=true >> "$GITHUB_OUTPUT"
         else have_snsdemo=false >> "$GITHUB_OUTPUT"
         fi
@@ -35,9 +38,10 @@ runs:
       shell: bash
       run: |
         expected_commit="$(git rev-parse "${{ steps.snsdemo_ref.outputs.ref }}" || true)"
-        actual_commit="$(git rev-parse HEAD)"
+        actual_commit="$(cd "${{ inputs.path }}" && git rev-parse HEAD)"
         [[ "$expected_commit" == "$actual_commit" ]] || {
           echo "ERROR: snsdemo is already checked out but not at the requested commit."
+          echo "Snsdemo path:     ${{ inputs.path }}"
           echo "Requested ref:    ${{ steps.snsdemo_ref.outputs.ref }}"
           echo "Requested commit: $expected_commit  (May be missing in the case of a partial clone)"
           echo "Actual commit:    $actual_commit"
@@ -47,5 +51,5 @@ runs:
       uses: actions/checkout@v3
       with:
         repository: 'dfinity/snsdemo'
-        path: 'snsdemo'
+        path: '${{ inputs.path }}'
         ref: ${{ steps.snsdemo_ref.outputs.ref }}
