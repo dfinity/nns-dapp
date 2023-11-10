@@ -47,6 +47,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Factor out the `snsdemo` installation.
+* Make the location of the snsdemo checkout configurable.
 * Add `prod` and `aggregator-prod` to the list of public releases.
 
 #### Deprecated
