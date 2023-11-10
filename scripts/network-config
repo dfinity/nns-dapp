@@ -43,7 +43,16 @@ network_config() {
 	: "Getting the local and global network data..."
 	: "- The local and global network configurations are merged."
 	: "- If the same field is present locally and globally, the local version takes precedence."
-	jq -s '(.[0] // {}) * (.[1] // {})' <(global_network_config || true) <(local_network_config || true)
+	if assert_dfx_network_var_is_configured; then
+		jq -s '(.[0] // {}) * (.[1] // {})' <(global_network_config || true) <(local_network_config || true)
+	else
+		{
+			echo "Available networks are:"
+			list_networks
+			return 1
+		} >&2
+	fi
+
 }
 # Lists local network configurations
 local_networks() {
@@ -64,14 +73,4 @@ list_networks() {
 }
 
 # If this is run on the command line, print the config.
-(return 0 2>/dev/null) || {
-	if assert_dfx_network_var_is_configured; then
-		network_config
-	else
-		{
-			echo "Available networks are:"
-			list_networks
-			exit 1
-		} >&2
-	fi
-}
+(return 0 2>/dev/null) || network_config
