@@ -10,8 +10,12 @@ export class TokensRoutePo extends BasePageObject {
     return new TokensRoutePo(element.byTestId(TokensRoutePo.TID));
   }
 
+  getSignInTokensPagePo(): SignInTokensPagePo {
+    return SignInTokensPagePo.under(this.root);
+  }
+
   hasLoginPage(): Promise<boolean> {
-    return SignInTokensPagePo.under(this.root).isPresent();
+    return this.getSignInTokensPagePo().isPresent();
   }
 
   hasTokensPage(): Promise<boolean> {
