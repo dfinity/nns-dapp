@@ -97,7 +97,7 @@ describe("ckbtc-tokens-services", () => {
         overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
       });
 
-      it("should load the ckTESTBTC token if enabled", async () => {
+      it("should not load the ckBTC related tokens", async () => {
         await services.loadCkBTCTokens();
 
         expect(
@@ -115,7 +115,7 @@ describe("ckbtc-tokens-services", () => {
         overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
       });
 
-      it("should load the ckBTC token if enabled", async () => {
+      it("should load the ckBTC token", async () => {
         await services.loadCkBTCTokens();
 
         expect(
@@ -133,7 +133,7 @@ describe("ckbtc-tokens-services", () => {
         overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", true);
       });
 
-      it("should load the ckTESTBTC token if enabled", async () => {
+      it("should load the ckTESTBTC token", async () => {
         await services.loadCkBTCTokens();
 
         expect(
@@ -151,7 +151,7 @@ describe("ckbtc-tokens-services", () => {
         overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", true);
       });
 
-      it("should load the ckTESTBTC token if enabled", async () => {
+      it("should load both ckBTC tokes", async () => {
         await services.loadCkBTCTokens();
 
         expect(
