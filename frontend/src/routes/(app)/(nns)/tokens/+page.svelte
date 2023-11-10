@@ -15,7 +15,6 @@
   import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
   import type { Action } from "$lib/types/actions";
   import { UnavailableTokenAmount } from "$lib/utils/token.utils";
-  import { tokensListBaseStore } from "$lib/derived/tokens-list-base.derived";
 
   onMount(() => {
     if (!$ENABLE_MY_TOKENS) {
@@ -50,6 +49,6 @@
   {#if $authSignedInStore}
     <Tokens userTokensData={data} on:nnsAction={handleAction} />
   {:else}
-    <SignInTokens userTokensData={$tokensListBaseStore} />
+    <SignInTokens />
   {/if}
 </TestIdWrapper>
