@@ -8,7 +8,7 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-anyhow = "1.0.68"
+anyhow = "1.0.75"
 base64 = "0.13.0"
 candid = "0.8.2"
 dfn_core = { git = "https://github.com/dfinity/ic", rev = "release-2023-06-07_23-01" }
