@@ -64,6 +64,10 @@ list_networks() {
 		global_networks
 	} | sort | uniq
 }
+# Gets the static host
+static_host() {
+  network_config | jq -e '.STATIC_HOST // .HOST'
+}
 
 # If this is run on the command line, print the config.
 (return 0 2>/dev/null) || network_config

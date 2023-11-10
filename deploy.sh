@@ -4,6 +4,8 @@ set -euo pipefail
 export PATH="$PWD/scripts:$PATH"
 
 cd "$(dirname "$(realpath "$0")")" || exit
+# Get commands for network configuration.
+. scripts/network-config
 
 help_text() {
   cat <<-"EOF"
@@ -56,10 +58,7 @@ while (($# > 0)); do
   *)
     DFX_NETWORK="$env"
     # Check that the network is valid.
-    DFX_NETWORK="$env" jq -e '.networks[env.DFX_NETWORK]' dfx.json || {
-      echo "ERROR: Network '$env' is not listed in dfx.json"
-      exit 1
-    } >&2
+    assert_dfx_network_var_is_configured || exit 1
     ;;
   esac
 done
@@ -82,10 +81,6 @@ first_not_null() {
     fi
   done
   echo "null"
-}
-
-static_host() {
-  jq -re '.networks[env.DFX_NETWORK].config | .STATIC_HOST // .HOST' dfx.json
 }
 
 canister_static_url_from_id() {
