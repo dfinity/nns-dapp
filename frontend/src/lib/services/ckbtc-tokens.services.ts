@@ -1,12 +1,33 @@
 import { getCkBTCToken } from "$lib/api/ckbtc-ledger.api";
+import {
+  CKBTC_UNIVERSE_CANISTER_ID,
+  CKTESTBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
-import { queryAndUpdate } from "$lib/services/utils.services";
+import {
+  ENABLE_CKBTC,
+  ENABLE_CKTESTBTC,
+} from "$lib/stores/feature-flags.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { notForceCallStrategy } from "$lib/utils/env.utils";
 import { get } from "svelte/store";
+import { queryAndUpdate } from "./utils.services";
+
+export const loadCkBTCTokens = async () => {
+  const enableCkBTC = get(ENABLE_CKBTC);
+  const enableCkBTCTest = get(ENABLE_CKTESTBTC);
+  return Promise.all([
+    enableCkBTC
+      ? loadCkBTCToken({ universeId: CKBTC_UNIVERSE_CANISTER_ID })
+      : undefined,
+    enableCkBTCTest
+      ? loadCkBTCToken({ universeId: CKTESTBTC_UNIVERSE_CANISTER_ID })
+      : undefined,
+  ]);
+};
 
 export const loadCkBTCToken = async ({
   handleError,
@@ -24,6 +45,7 @@ export const loadCkBTCToken = async ({
 
   return queryAndUpdate<IcrcTokenMetadata, unknown>({
     strategy: FORCE_CALL_STRATEGY,
+    identityType: "current",
     request: ({ certified, identity }) =>
       getCkBTCToken({
         identity,
