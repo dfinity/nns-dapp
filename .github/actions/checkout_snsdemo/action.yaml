@@ -37,7 +37,7 @@ runs:
       if: ${{ steps.have_snsdemo.outputs.have_snsdemo }} == 'true'
       shell: bash
       run: |
-        expected_commit="$(git rev-parse "${{ steps.snsdemo_ref.outputs.ref }}" || true)"
+        expected_commit="$(cd "${{ inputs.path }}" && git rev-parse "${{ steps.snsdemo_ref.outputs.ref }}" || true)"
         actual_commit="$(cd "${{ inputs.path }}" && git rev-parse HEAD)"
         [[ "$expected_commit" == "$actual_commit" ]] || {
           echo "ERROR: snsdemo is already checked out but not at the requested commit."
