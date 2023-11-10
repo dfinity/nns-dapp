@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/../.."
+. scripts/network-config
 
 # This is the command to be executed on the URL.
 # Shellcheck is concerned that we may want the output of echo here.
@@ -84,7 +85,7 @@ test -n "${DFX_NETWORK:-}" || test -n "${testnet:-}" || {
 }
 
 if test -n "${DFX_NETWORK:-}" && [[ "$DFX_NETWORK" != "local" ]]; then
-  DFX_NETWORK="$DFX_NETWORK" jq -er '.networks[env.DFX_NETWORK].providers[0]' dfx.json
+  DFX_NETWORK="$DFX_NETWORK" network_config | jq -er '.providers[0]' dfx.json
 elif test -n "${testnet:-}"; then
   testnet_config_dir="${ic_repo}/testnet/env/$testnet/"
   test -d "$ic_repo" || {

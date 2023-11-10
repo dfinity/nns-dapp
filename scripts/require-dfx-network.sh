@@ -4,8 +4,6 @@
 
 DFX_NETWORK="${DFX_NETWORK:-}"
 export DFX_NETWORK
-jq -e '.networks[env.DFX_NETWORK]' dfx.json || {
-  echo "Which deployment? Set DFX_NETWORK to one of:"
-  jq -er '.networks | keys | join("  ")' dfx.json
-  exit 1
-} >&2
+
+. "$(dirname "$0")/network-config"
+assert_dfx_network_var_is_configured

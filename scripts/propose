@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$(realpath "$0")")/.."
+. scripts/network-config
 PROPOSALS_DIR="scripts/propose-to"
 PATH="$PWD/target/ic:$PATH"
 
@@ -98,16 +99,7 @@ while (($# > 0)); do
     ;;
   --dfx-network)
     DFX_NETWORK="$1"
-    DFX_NETWORK="$DFX_NETWORK" jq -e '.networks[env.DFX_NETWORK]' dfx.json >/dev/null || {
-      cat <<-EOF
-
-	ERROR: No such network in dfx.json.
-	       Available networks are:
-	       $(jq -er '.networks | keys | join(" ")' dfx.json)
-
-	EOF
-      exit 1
-    }
+    DFX_NETWORK="$DFX_NETWORK" assert_dfx_network_var_is_configured || exit 1
     shift 1
     ;;
   --dry-run)
