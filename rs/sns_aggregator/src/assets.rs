@@ -1,5 +1,6 @@
 //! Machinery for pre-computing assets and serving them as certified HTTP responses.
 use crate::state::STATE;
+use base64::{engine::general_purpose::STANDARD as base64_engine, Engine};
 use candid::CandidType;
 use ic_certified_map::{labeled, labeled_hash, AsHashTree, Hash, RbTree};
 use serde::{Deserialize, Serialize};
@@ -176,8 +177,8 @@ fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -
         "IC-Certificate".to_string(),
         format!(
             "certificate=:{}:, tree=:{}:",
-            base64::encode(certificate),
-            base64::encode(serializer.into_inner())
+            base64_engine.encode(certificate),
+            base64_engine.encode(serializer.into_inner())
         ),
     ))
 }
