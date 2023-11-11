@@ -156,7 +156,9 @@ title() {
   DFX_NETWORK=local
   export DFX_NETWORK
   ACTUAL_CONFIG="$(global_network_config)" || {
-    echo "ERROR: global_network_config returned with a non-zero exit code."
+    echo "FAIL: global_network_config should have returned zero but:"
+    echo "Returned: $?"
+    echo "With value: '$ACTUAL_CONFIG'"
     exit 1
   }
   # Format both actual and expected outputs with jq so that whitespace differences don't matter.
@@ -178,7 +180,9 @@ title() {
   DFX_NETWORK=missingnetwork
   export DFX_NETWORK
   ACTUAL_CONFIG="$(! global_network_config)" || {
-    echo "FAIL: Should have returned with a non-zero exit code."
+    echo "FAIL: global_network_config should have returned with a non-zero exit code but:"
+    echo "Returned: $?"
+    echo "With value: '$ACTUAL_CONFIG'"
     exit 1
   } >&2
   # Format both actual and expected outputs with jq so that whitespace differences don't matter.
