@@ -99,8 +99,18 @@ mk_env() {
   sample_global_config >"$HOME/.config/dfx/networks.json"
 }
 
+# Prints a section title
+title() {
+  cat <<-EOF
+
+	=============================================================================
+	   $*
+	=============================================================================
+	EOF
+}
+
 (
-  echo "Self-check: Stock environment should be created"
+  title "Self-check: Stock environment should be created"
   HOME_BEFORE="$HOME"
   mk_env
   if [[ "$HOME" == "$HOME_BEFORE" ]]; then
@@ -114,7 +124,7 @@ mk_env() {
 )
 
 (
-  echo "assert_dfx_network_var_is_set should succeed when the network is set"
+  title "assert_dfx_network_var_is_set should succeed when the network is set"
   mk_env
   export DFX_NETWORK
   DFX_NETWORK=gobbeldygook
@@ -128,7 +138,7 @@ mk_env() {
   fi
 )
 (
-  echo "assert_dfx_network_var_is_set should fail when the network is unset"
+  title "assert_dfx_network_var_is_set should fail when the network is unset"
   mk_env
   export DFX_NETWORK
   unset DFX_NETWORK
@@ -142,7 +152,7 @@ mk_env() {
   fi
 )
 (
-  echo "global_network_config should be able to get a globally defined network"
+  title "global_network_config should be able to get a globally defined network"
   mk_env
   export DFX_NETWORK
   DFX_NETWORK=local
