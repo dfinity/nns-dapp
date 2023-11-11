@@ -195,7 +195,7 @@ title() {
     exit 1
   }
   # Format both actual and expected outputs with jq so that whitespace differences don't matter.
-  ACTUAL_CONFIG="$(echo "$ACTUAL_CONFIG")"
+  ACTUAL_CONFIG="$(echo "$ACTUAL_CONFIG" | jq .)"
   EXPECTED_CONFIG="$(sample_global_config | jq ".$DFX_NETWORK")"
   [[ "$ACTUAL_CONFIG" == "${EXPECTED_CONFIG:-}" ]] || {
     echo "FAIL: Config mismatch:"
@@ -219,7 +219,7 @@ title() {
     exit 1
   } >&2
   # Format both actual and expected outputs with jq so that whitespace differences don't matter.
-  ACTUAL_CONFIG="$(echo "$ACTUAL_CONFIG")"
+  ACTUAL_CONFIG="$(echo "$ACTUAL_CONFIG" | jq .)"
   EXPECTED_CONFIG="$(echo null | jq .)"
   [[ "$ACTUAL_CONFIG" == "${EXPECTED_CONFIG:-}" ]] || {
     echo "FAIL: Config mismatch:"
@@ -243,7 +243,7 @@ title() {
     exit 1
   }
   # Format both actual and expected outputs with jq so that whitespace differences don't matter.
-  ACTUAL_CONFIG="$(echo "$ACTUAL_CONFIG")"
+  ACTUAL_CONFIG="$(echo "$ACTUAL_CONFIG" | jq .)"
   EXPECTED_CONFIG="$(sample_local_config | jq ".networks.$DFX_NETWORK")"
   [[ "$ACTUAL_CONFIG" == "${EXPECTED_CONFIG:-}" ]] || {
     echo "FAIL: Config mismatch:"
@@ -267,7 +267,7 @@ title() {
     exit 1
   } >&2
   # Format both actual and expected outputs with jq so that whitespace differences don't matter.
-  ACTUAL_CONFIG="$(echo "$ACTUAL_CONFIG")"
+  ACTUAL_CONFIG="$(echo "$ACTUAL_CONFIG" | jq .)"
   EXPECTED_CONFIG="$(echo null | jq .)"
   [[ "$ACTUAL_CONFIG" == "${EXPECTED_CONFIG:-}" ]] || {
     echo "FAIL: Config mismatch:"
@@ -277,6 +277,97 @@ title() {
     echo "${ACTUAL_CONFIG:-}" | sed 's/^/    /g'
     exit 1
   } >&2
+  echo OK
+)
+(
+  title "network_config should be able to get a locally defined network"
+  mk_env
+  DFX_NETWORK=mainnet
+  export DFX_NETWORK
+  ACTUAL_CONFIG="$(network_config)" || {
+    echo "FAIL: network_config should have returned zero but:"
+    echo "Returned: $?"
+    echo "With value: '$ACTUAL_CONFIG'"
+    exit 1
+  }
+  # Format both actual and expected outputs with jq so that whitespace differences don't matter.
+  ACTUAL_CONFIG="$(echo "$ACTUAL_CONFIG" | jq .)"
+  EXPECTED_CONFIG="$(sample_local_config | jq ".networks.$DFX_NETWORK")"
+  [[ "$ACTUAL_CONFIG" == "${EXPECTED_CONFIG:-}" ]] || {
+    echo "FAIL: Config mismatch:"
+    echo "Expected:"
+    echo "$EXPECTED_CONFIG" | sed 's/^/    /g'
+    echo "Actual:"
+    echo "${ACTUAL_CONFIG:-}" | sed 's/^/    /g'
+    exit 1
+  } >&2
+  echo OK
+)
+(
+  title "network_config should be able to get a globally defined network"
+  mk_env
+  DFX_NETWORK=local
+  export DFX_NETWORK
+  ACTUAL_CONFIG="$(network_config)" || {
+    echo "FAIL: network_config should have returned zero but:"
+    echo "Returned: $?"
+    echo "With value: '$ACTUAL_CONFIG'"
+    exit 1
+  }
+  # Format both actual and expected outputs with jq so that whitespace differences don't matter.
+  ACTUAL_CONFIG="$(echo "$ACTUAL_CONFIG" | jq .)"
+  EXPECTED_CONFIG="$(sample_global_config | jq ".$DFX_NETWORK")"
+  [[ "$ACTUAL_CONFIG" == "${EXPECTED_CONFIG:-}" ]] || {
+    echo "FAIL: Config mismatch:"
+    echo "Expected:"
+    echo "$EXPECTED_CONFIG" | sed 's/^/    /g'
+    echo "Actual:"
+    echo "${ACTUAL_CONFIG:-}" | sed 's/^/    /g'
+    exit 1
+  } >&2
+  echo OK
+)
+(
+  title "network_config should return an error and no stdout for a missing network"
+  mk_env
+  DFX_NETWORK=missingnetwork
+  export DFX_NETWORK
+  ACTUAL_CONFIG="$(! network_config 2>/dev/null)" || {
+    echo "FAIL: network_config should have returned with a non-zero exit code but:"
+    echo "Returned: $?"
+    echo "With value: '$ACTUAL_CONFIG'"
+    exit 1
+  } >&2
+  EXPECTED_CONFIG=""
+  [[ "$ACTUAL_CONFIG" == "${EXPECTED_CONFIG:-}" ]] || {
+    echo "FAIL: Config mismatch:"
+    echo "Expected:"
+    echo "$EXPECTED_CONFIG" | sed 's/^/    /g'
+    echo "Actual:"
+    echo "${ACTUAL_CONFIG:-}" | sed 's/^/    /g'
+    exit 1
+  } >&2
+  echo OK
+)
+(
+  title "network_config should provide a list of networks in the error message if queried for a non-existent network"
+  mk_env
+  DFX_NETWORK=missingnetwork
+  export DFX_NETWORK
+  ACTUAL_CONFIG="$(! network_config 2>&1)" || {
+    echo "FAIL: network_config should have returned with a non-zero exit code but:"
+    echo "Returned: $?"
+    echo "With value: '$ACTUAL_CONFIG'"
+    exit 1
+  } >&2
+  for network in local mainnet; do
+    echo "${ACTUAL_CONFIG:-}" | grep "$network" >/dev/null || {
+      echo "FAIL: Expected an error message listing the existing networks, including '$network'."
+      echo "Actual:"
+      echo "${ACTUAL_CONFIG:-}" | sed 's/^/    /g'
+      exit 1
+    } >&2
+  done
   echo OK
 )
 
