@@ -189,8 +189,9 @@ title() {
   DFX_NETWORK=local
   export DFX_NETWORK
   ACTUAL_CONFIG="$(global_network_config)" || {
+    retval="$?"
     echo "FAIL: global_network_config should have returned zero but:"
-    echo "Returned: $?"
+    echo "Returned: $retval"
     echo "With value: '$ACTUAL_CONFIG'"
     exit 1
   }
@@ -213,8 +214,9 @@ title() {
   DFX_NETWORK=missingnetwork
   export DFX_NETWORK
   ACTUAL_CONFIG="$(! global_network_config)" || {
+    retval="$?"
     echo "FAIL: global_network_config should have returned with a non-zero exit code but:"
-    echo "Returned: $?"
+    echo "Returned: $retval"
     echo "With value: '$ACTUAL_CONFIG'"
     exit 1
   } >&2
@@ -237,8 +239,9 @@ title() {
   DFX_NETWORK=mainnet
   export DFX_NETWORK
   ACTUAL_CONFIG="$(local_network_config)" || {
+    retval="$?"
     echo "FAIL: local_network_config should have returned zero but:"
-    echo "Returned: $?"
+    echo "Returned: $retval"
     echo "With value: '$ACTUAL_CONFIG'"
     exit 1
   }
@@ -261,8 +264,9 @@ title() {
   DFX_NETWORK=missingnetwork
   export DFX_NETWORK
   ACTUAL_CONFIG="$(! local_network_config)" || {
+    retval="$?"
     echo "FAIL: local_network_config should have returned with a non-zero exit code but:"
-    echo "Returned: $?"
+    echo "Returned: $retval"
     echo "With value: '$ACTUAL_CONFIG'"
     exit 1
   } >&2
@@ -285,8 +289,9 @@ title() {
   DFX_NETWORK=mainnet
   export DFX_NETWORK
   ACTUAL_CONFIG="$(network_config)" || {
+    retval="$?"
     echo "FAIL: network_config should have returned zero but:"
-    echo "Returned: $?"
+    echo "Returned: $retval"
     echo "With value: '$ACTUAL_CONFIG'"
     exit 1
   }
@@ -310,8 +315,9 @@ title() {
   export DFX_NETWORK
   rm "$HOME/.config/dfx/networks.json"
   ACTUAL_CONFIG="$(network_config)" || {
+    retval="$?"
     echo "FAIL: network_config should have returned zero but:"
-    echo "Returned: $?"
+    echo "Returned: $retval"
     echo "With value: '$ACTUAL_CONFIG'"
     exit 1
   }
@@ -334,8 +340,9 @@ title() {
   DFX_NETWORK=local
   export DFX_NETWORK
   ACTUAL_CONFIG="$(network_config)" || {
+    retval="$?"
     echo "FAIL: network_config should have returned zero but:"
-    echo "Returned: $?"
+    echo "Returned: $retval"
     echo "With value: '$ACTUAL_CONFIG'"
     exit 1
   }
@@ -359,8 +366,9 @@ title() {
   export DFX_NETWORK
   jq 'del(.networks)' dfx.json | sponge dfx.json
   ACTUAL_CONFIG="$(network_config)" || {
+    retval="$?"
     echo "FAIL: network_config should have returned zero but:"
-    echo "Returned: $?"
+    echo "Returned: $retval"
     echo "With value: '$ACTUAL_CONFIG'"
     exit 1
   }
@@ -383,8 +391,9 @@ title() {
   DFX_NETWORK=missingnetwork
   export DFX_NETWORK
   ACTUAL_CONFIG="$(! network_config 2>/dev/null)" || {
+    retval="$?"
     echo "FAIL: network_config should have returned with a non-zero exit code but:"
-    echo "Returned: $?"
+    echo "Returned: $retval"
     echo "With value: '$ACTUAL_CONFIG'"
     exit 1
   } >&2
@@ -405,8 +414,9 @@ title() {
   DFX_NETWORK=missingnetwork
   export DFX_NETWORK
   ACTUAL_CONFIG="$(! network_config 2>&1)" || {
+    retval="$?"
     echo "FAIL: network_config should have returned with a non-zero exit code but:"
-    echo "Returned: $?"
+    echo "Returned: $retval"
     echo "With value: '$ACTUAL_CONFIG'"
     exit 1
   } >&2
