@@ -46,6 +46,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Added support for global network config.
 * Cron job to update proposal types.
 * Enable dependabot for Rust updates.
 * Workflow to get the latest NNS and SNS canister candid files.
