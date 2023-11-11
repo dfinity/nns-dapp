@@ -173,13 +173,17 @@ title() {
   echo OK
 )
 (
-  title "global_network_config should return an error and "null""
+  title "global_network_config should return an error and null for a missing network"
   mk_env
+  DFX_NETWORK=missingnetwork
   export DFX_NETWORK
-  DFX_NETWORK=local
-  export DFX_NETWORK
-  ACTUAL_CONFIG="$(global_network_config | jq .)"
-  EXPECTED_CONFIG="$(sample_global_config | jq ".$DFX_NETWORK")"
+  ACTUAL_CONFIG="$(! global_network_config)" || {
+    echo "FAIL: Should have returned with a non-zero exit code."
+    exit 1
+  } >&2
+  # Format both actual and expected outputs with jq so that whitespace differences don't matter.
+  ACTUAL_CONFIG="$(echo "$ACTUAL_CONFIG")"
+  EXPECTED_CONFIG="$(echo null | jq .)"
   [[ "$ACTUAL_CONFIG" == "${EXPECTED_CONFIG:-}" ]] || {
     echo "FAIL: Config mismatch:"
     echo "Expected:"
