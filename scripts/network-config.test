@@ -140,7 +140,6 @@ title() {
 (
   title "assert_dfx_network_var_is_set should fail when the network is unset"
   mk_env
-  export DFX_NETWORK
   unset DFX_NETWORK
   if assert_dfx_network_var_is_set 2>/dev/null; then
     {
@@ -153,6 +152,28 @@ title() {
 )
 (
   title "global_network_config should be able to get a globally defined network"
+  mk_env
+  DFX_NETWORK=local
+  export DFX_NETWORK
+  ACTUAL_CONFIG="$(global_network_config)" || {
+    echo "ERROR: global_network_config returned with a non-zero exit code."
+    exit 1
+  }
+  # Format both actual and expected outputs with jq so that whitespace differences don't matter.
+  ACTUAL_CONFIG="$(echo "$ACTUAL_CONFIG")"
+  EXPECTED_CONFIG="$(sample_global_config | jq ".$DFX_NETWORK")"
+  [[ "$ACTUAL_CONFIG" == "${EXPECTED_CONFIG:-}" ]] || {
+    echo "FAIL: Config mismatch:"
+    echo "Expected:"
+    echo "$EXPECTED_CONFIG" | sed 's/^/    /g'
+    echo "Actual:"
+    echo "${ACTUAL_CONFIG:-}" | sed 's/^/    /g'
+    exit 1
+  } >&2
+  echo OK
+)
+(
+  title "global_network_config should return an error and "null""
   mk_env
   export DFX_NETWORK
   DFX_NETWORK=local
@@ -169,3 +190,5 @@ title() {
   } >&2
   echo OK
 )
+
+title "SUCCESS: Tests in $0 passed."
