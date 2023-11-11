@@ -37,20 +37,9 @@ sample_global_config() {
 	}
 	EOF
 }
-
-# Creates a test environment with:
-# - HOME - a temporary HOME directory
-# - GLOBAL_NETWORK_CONFIG_FILE - the global config file for that test environment
-# - PWD - the PWD will be in a toy project in the temporary HOME
-# - dfx.json - local network configuration.
-mk_env() {
-  HOME="$(mktemp -d)"
-  export HOME
-  cd "$HOME"
-  . "$SCRIPT_TO_TEST"
-  mkdir toy_project
-  cd toy_project
-  cat <<-EOF >dfx.json
+# dfx.json used in tests
+sample_local_config() {
+	cat <<-"EOF"
 	{
 	  "version": 1,
 	  "canisters": {
@@ -84,7 +73,7 @@ mk_env() {
 		"https://icp-api.io/"
 	      ],
 	      "type": "persistent"
-	    },
+	    }
 	  },
 	  "defaults": {
 	    "build": {
@@ -95,6 +84,21 @@ mk_env() {
 	  "output_env_file": ".env"
 	}
 	EOF
+}
+
+# Creates a test environment with:
+# - HOME - a temporary HOME directory
+# - GLOBAL_NETWORK_CONFIG_FILE - the global config file for that test environment
+# - PWD - the PWD will be in a toy project in the temporary HOME
+# - dfx.json - local network configuration.
+mk_env() {
+  HOME="$(mktemp -d)"
+  export HOME
+  cd "$HOME"
+  . "$SCRIPT_TO_TEST"
+  mkdir toy_project
+  cd toy_project
+  sample_local_config >dfx.json
   mkdir -p "$HOME/.config/dfx"
   sample_global_config >"$HOME/.config/dfx/networks.json"
 }
@@ -113,14 +117,29 @@ title() {
   title "Self-check: Stock environment should be created"
   HOME_BEFORE="$HOME"
   mk_env
-  if [[ "$HOME" == "$HOME_BEFORE" ]]; then
-    {
+  [[ "$HOME" != "$HOME_BEFORE" ]] || {
       echo "ERROR: Should have a temporary home dir."
       echo "       HOME='$HOME'"
       exit 1
     } >&2
-  fi
-  echo OK
+
+  [[ "$PWD" == "$HOME/toy_project" ]] || {
+     echo "ERROR: Should be in a toy project in the temporary home directory."
+     echo "PWD: $PWD"
+     exit 1
+  } >&2
+
+  test -e dfx.json || {
+    echo "ERROR: Should have a dfx.json in the current directory."
+    exit 1
+  } >&2
+
+  jq -e .networks dfx.json >/dev/null || {
+    echo "ERROR: The local dfx.json should have a .networks entry."
+    exit 1
+  } >&2
+
+echo OK
 )
 
 (
@@ -181,6 +200,54 @@ title() {
   export DFX_NETWORK
   ACTUAL_CONFIG="$(! global_network_config)" || {
     echo "FAIL: global_network_config should have returned with a non-zero exit code but:"
+    echo "Returned: $?"
+    echo "With value: '$ACTUAL_CONFIG'"
+    exit 1
+  } >&2
+  # Format both actual and expected outputs with jq so that whitespace differences don't matter.
+  ACTUAL_CONFIG="$(echo "$ACTUAL_CONFIG")"
+  EXPECTED_CONFIG="$(echo null | jq .)"
+  [[ "$ACTUAL_CONFIG" == "${EXPECTED_CONFIG:-}" ]] || {
+    echo "FAIL: Config mismatch:"
+    echo "Expected:"
+    echo "$EXPECTED_CONFIG" | sed 's/^/    /g'
+    echo "Actual:"
+    echo "${ACTUAL_CONFIG:-}" | sed 's/^/    /g'
+    exit 1
+  } >&2
+  echo OK
+)
+(
+  title "local_network_config should be able to get a locally defined network"
+  mk_env
+  DFX_NETWORK=mainnet
+  export DFX_NETWORK
+  ACTUAL_CONFIG="$(local_network_config)" || {
+    echo "FAIL: local_network_config should have returned zero but:"
+    echo "Returned: $?"
+    echo "With value: '$ACTUAL_CONFIG'"
+    exit 1
+  }
+  # Format both actual and expected outputs with jq so that whitespace differences don't matter.
+  ACTUAL_CONFIG="$(echo "$ACTUAL_CONFIG")"
+  EXPECTED_CONFIG="$(sample_local_config | jq ".$DFX_NETWORK")"
+  [[ "$ACTUAL_CONFIG" == "${EXPECTED_CONFIG:-}" ]] || {
+    echo "FAIL: Config mismatch:"
+    echo "Expected:"
+    echo "$EXPECTED_CONFIG" | sed 's/^/    /g'
+    echo "Actual:"
+    echo "${ACTUAL_CONFIG:-}" | sed 's/^/    /g'
+    exit 1
+  } >&2
+  echo OK
+)
+(
+  title "local_network_config should return an error and null for a missing network"
+  mk_env
+  DFX_NETWORK=missingnetwork
+  export DFX_NETWORK
+  ACTUAL_CONFIG="$(! local_network_config)" || {
+    echo "FAIL: local_network_config should have returned with a non-zero exit code but:"
     echo "Returned: $?"
     echo "With value: '$ACTUAL_CONFIG'"
     exit 1
