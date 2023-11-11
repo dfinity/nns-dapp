@@ -670,7 +670,7 @@
         "DIDC_VERSION": "2023-09-27",
         "CARGO_SORT_VERSION": "1.0.9",
         "SNSDEMO_RELEASE": "release-2023-11-02",
-        "IC_COMMIT": "release-2023-11-01_23-01+quic"
+        "IC_COMMIT": "release-2023-11-08_23-01"
       },
       "packtool": ""
     }
