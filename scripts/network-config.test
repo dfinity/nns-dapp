@@ -123,7 +123,7 @@ title() {
     exit 1
   } >&2
 
-  [[ "$HOME" != "${HOME#${TMPDIR:-/tmp}}" ]] || {
+  [[ "$HOME" != "${HOME#"${TMPDIR:-/tmp}"}" ]] || {
     echo "ERROR: Expected the new HOME to be under TEMPDIR (defaulting to /tmp)."
     echo "       HOME='${HOME:-}'"
     echo "       TEMPDIR='${TMPDIR:-}'"
