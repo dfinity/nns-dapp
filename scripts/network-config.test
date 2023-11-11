@@ -304,10 +304,60 @@ title() {
   echo OK
 )
 (
+  title "network_config should be able to get a locally defined network even without global config"
+  mk_env
+  DFX_NETWORK=mainnet
+  export DFX_NETWORK
+  rm "$HOME/.config/dfx/networks.json"
+  ACTUAL_CONFIG="$(network_config)" || {
+    echo "FAIL: network_config should have returned zero but:"
+    echo "Returned: $?"
+    echo "With value: '$ACTUAL_CONFIG'"
+    exit 1
+  }
+  # Format both actual and expected outputs with jq so that whitespace differences don't matter.
+  ACTUAL_CONFIG="$(echo "$ACTUAL_CONFIG" | jq .)"
+  EXPECTED_CONFIG="$(sample_local_config | jq ".networks.$DFX_NETWORK")"
+  [[ "$ACTUAL_CONFIG" == "${EXPECTED_CONFIG:-}" ]] || {
+    echo "FAIL: Config mismatch:"
+    echo "Expected:"
+    echo "$EXPECTED_CONFIG" | sed 's/^/    /g'
+    echo "Actual:"
+    echo "${ACTUAL_CONFIG:-}" | sed 's/^/    /g'
+    exit 1
+  } >&2
+  echo OK
+)
+(
   title "network_config should be able to get a globally defined network"
   mk_env
   DFX_NETWORK=local
   export DFX_NETWORK
+  ACTUAL_CONFIG="$(network_config)" || {
+    echo "FAIL: network_config should have returned zero but:"
+    echo "Returned: $?"
+    echo "With value: '$ACTUAL_CONFIG'"
+    exit 1
+  }
+  # Format both actual and expected outputs with jq so that whitespace differences don't matter.
+  ACTUAL_CONFIG="$(echo "$ACTUAL_CONFIG" | jq .)"
+  EXPECTED_CONFIG="$(sample_global_config | jq ".$DFX_NETWORK")"
+  [[ "$ACTUAL_CONFIG" == "${EXPECTED_CONFIG:-}" ]] || {
+    echo "FAIL: Config mismatch:"
+    echo "Expected:"
+    echo "$EXPECTED_CONFIG" | sed 's/^/    /g'
+    echo "Actual:"
+    echo "${ACTUAL_CONFIG:-}" | sed 's/^/    /g'
+    exit 1
+  } >&2
+  echo OK
+)
+(
+  title "network_config should be able to get a globally defined network even if the local dfx has no networks"
+  mk_env
+  DFX_NETWORK=local
+  export DFX_NETWORK
+  jq 'del(.networks)' dfx.json | sponge dfx.json
   ACTUAL_CONFIG="$(network_config)" || {
     echo "FAIL: network_config should have returned zero but:"
     echo "Returned: $?"
