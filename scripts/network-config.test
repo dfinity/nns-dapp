@@ -5,6 +5,7 @@ set -euo pipefail
 
 SCRIPT_TO_TEST="$(realpath "${0%.test}")"
 
+# Config used in tests.
 sample_global_config() {
   cat <<-EOF
 	{
@@ -37,6 +38,11 @@ sample_global_config() {
 	EOF
 }
 
+# Creates a test environment with:
+# - HOME - a temporary HOME directory
+# - GLOBAL_NETWORK_CONFIG_FILE - the global config file for that test environment
+# - PWD - the PWD will be in a toy project in the temporary HOME
+# - dfx.json - local network configuration.
 mk_env() {
   HOME="$(mktemp -d)"
   export HOME
