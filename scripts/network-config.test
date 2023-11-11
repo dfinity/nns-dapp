@@ -39,7 +39,7 @@ sample_global_config() {
 }
 # dfx.json used in tests
 sample_local_config() {
-	cat <<-"EOF"
+  cat <<-"EOF"
 	{
 	  "version": 1,
 	  "canisters": {
@@ -118,15 +118,23 @@ title() {
   HOME_BEFORE="$HOME"
   mk_env
   [[ "$HOME" != "$HOME_BEFORE" ]] || {
-      echo "ERROR: Should have a temporary home dir."
-      echo "       HOME='$HOME'"
-      exit 1
-    } >&2
+    echo "ERROR: Should have a temporary home dir."
+    echo "       HOME='${HOME:-}'"
+    exit 1
+  } >&2
+
+  [[ "$HOME" != "${HOME#${TMPDIR:-/tmp}}" ]] || {
+    echo "ERROR: Expected the new HOME to be under TEMPDIR (defaulting to /tmp)."
+    echo "       HOME='${HOME:-}'"
+    echo "       TEMPDIR='${TMPDIR:-}'"
+    echo "       TEMPDIR='${TMPDIR:-/tmp}' (with default)"
+    exit 1
+  } >&2
 
   [[ "$PWD" == "$HOME/toy_project" ]] || {
-     echo "ERROR: Should be in a toy project in the temporary home directory."
-     echo "PWD: $PWD"
-     exit 1
+    echo "ERROR: Should be in a toy project in the temporary home directory."
+    echo "PWD: $PWD"
+    exit 1
   } >&2
 
   test -e dfx.json || {
@@ -139,7 +147,13 @@ title() {
     exit 1
   } >&2
 
-echo OK
+  test -e "$HOME/.config/dfx/networks.json" || {
+    echo "ERROR: The stock environment should have a global network config at:"
+    echo "  '$HOME/.config/dfx/networks.json'"
+    exit 1
+  } >&2
+
+  echo OK
 )
 
 (
@@ -230,7 +244,7 @@ echo OK
   }
   # Format both actual and expected outputs with jq so that whitespace differences don't matter.
   ACTUAL_CONFIG="$(echo "$ACTUAL_CONFIG")"
-  EXPECTED_CONFIG="$(sample_local_config | jq ".$DFX_NETWORK")"
+  EXPECTED_CONFIG="$(sample_local_config | jq ".networks.$DFX_NETWORK")"
   [[ "$ACTUAL_CONFIG" == "${EXPECTED_CONFIG:-}" ]] || {
     echo "FAIL: Config mismatch:"
     echo "Expected:"
