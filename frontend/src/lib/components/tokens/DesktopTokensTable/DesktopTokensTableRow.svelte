@@ -40,20 +40,31 @@
   on:click={handleClick}
   data-tid="desktop-tokens-table-row-component"
 >
-  <div role="cell" class="universe-data">
-    <Logo
-      src={userTokenData.logo}
-      alt={userTokenData.title}
-      size="medium"
-      framed
-    />
-    <span>{userTokenData.title}</span>
+  <div role="cell" class="title-cell">
+    <div class="title">
+      <Logo
+        src={userTokenData.logo}
+        alt={userTokenData.title}
+        size="medium"
+        framed
+      />
+      <span>{userTokenData.title}</span>
+    </div>
+    <div class="title-actions">
+      {#each userTokenData.actions as action}
+        <svelte:component
+          this={actionMapper[action]}
+          userToken={userTokenData}
+          on:nnsAction
+        />
+      {/each}
+    </div>
   </div>
-  <div role="cell" class="mobile-row left">
+  <div role="cell" class="mobile-row-cell left-cell">
     <span class="cell-key">Balance</span>
     <TokenBalance {userTokenData} />
   </div>
-  <div role="cell" class="actions">
+  <div role="cell" class="actions-cell">
     {#each userTokenData.actions as action}
       <svelte:component
         this={actionMapper[action]}
@@ -71,16 +82,17 @@
   div[role="row"] {
     @include interaction.tappable;
 
-    display: grid;
-    grid-template-columns: 1fr max-content;
-    grid-template-rows: auto;
-    grid-template-areas: "universe-data actions" "balance balance";
-    row-gap: var(--padding-2x);
+    // If we use grid-template-areas, we need to specify all the areas.
+    // That makes it hard to have dynamic columns.
+    // Instead, we duplicate the actions. Once as the last cell, another within the title cell.
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2x);
 
     @include media.min-width(medium) {
+      display: grid;
       grid-column: 1 / -1;
       grid-template-columns: subgrid;
-      grid-template-areas: auto;
       row-gap: 0;
     }
 
@@ -102,57 +114,62 @@
     align-items: center;
     gap: var(--padding);
 
-    &.universe-data {
-      grid-area: universe-data;
-
-      @include media.min-width(medium) {
-        grid-area: auto;
-      }
-    }
-
-    &.actions {
-      grid-area: actions;
-
-      @include media.min-width(medium) {
-        grid-area: auto;
-      }
-    }
-
-    &.mobile-row {
-      grid-area: balance;
-
-      display: flex;
+    &.title-cell {
       justify-content: space-between;
 
-      @include media.min-width(medium) {
-        grid-area: auto;
+      // Title actions are displayed only on mobile.
+      // On desktop, the actions are in the last cell.
+      .title-actions {
+        display: block;
 
-        &.left {
-          justify-content: flex-end;
+        @include media.min-width(medium) {
+          display: none;
+        }
+
+        :global(svg) {
+          color: var(--primary);
         }
       }
     }
 
-    .cell-key {
-      display: block;
+    // Actions cell is displayed only on desktop.
+    // On mobile, the actions are in the first cell.
+    &.actions-cell {
+      display: none;
+      justify-content: flex-end;
 
       @include media.min-width(medium) {
-        display: none;
+        display: flex;
+      }
+
+      :global(svg) {
+        color: var(--primary);
+      }
+    }
+
+    &.mobile-row-cell {
+      display: flex;
+      justify-content: space-between;
+
+      @include media.min-width(medium) {
+        &.left-cell {
+          justify-content: flex-end;
+        }
+      }
+
+      .cell-key {
+        display: block;
+
+        @include media.min-width(medium) {
+          display: none;
+        }
       }
     }
   }
 
-  .universe-data {
+  .title {
     display: flex;
     align-items: center;
     gap: var(--padding);
-  }
-
-  .actions {
-    justify-content: flex-end;
-
-    :global(svg) {
-      color: var(--primary);
-    }
   }
 </style>
