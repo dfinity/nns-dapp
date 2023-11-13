@@ -6,12 +6,10 @@
     type ComponentType,
   } from "svelte";
   import Logo from "../../ui/Logo.svelte";
-  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import GoToDetailButton from "./actions/GoToDetailButton.svelte";
   import ReceiveButton from "./actions/ReceiveButton.svelte";
   import SendButton from "./actions/SendButton.svelte";
   import { ActionType } from "$lib/types/actions";
-  import { UnavailableTokenAmount } from "$lib/utils/token.utils";
   import TokenBalance from "../TokenBalance.svelte";
 
   export let userTokenData: UserTokenData;
@@ -42,34 +40,27 @@
   on:click={handleClick}
   data-tid="desktop-tokens-table-row-component"
 >
-  <div role="cell">
-    <div class="universe-data">
-      <Logo
-        src={userTokenData.logo}
-        alt={userTokenData.title}
-        size="medium"
-        framed
-      />
-      <span>{userTokenData.title}</span>
-    </div>
+  <div role="cell" class="universe-data">
+    <Logo
+      src={userTokenData.logo}
+      alt={userTokenData.title}
+      size="medium"
+      framed
+    />
+    <span>{userTokenData.title}</span>
   </div>
-  <div role="cell">
-    <div class="universe-balance">
-      <div class="desktop-balance">
-        <TokenBalance {userTokenData} />
-      </div>
-      {#each userTokenData.actions as action}
-        <svelte:component
-          this={actionMapper[action]}
-          userToken={userTokenData}
-          on:nnsAction
-        />
-      {/each}
-    </div>
-  </div>
-  <div role="cell" class="mobile-balance">
-    <span>Balance</span>
+  <div role="cell" class="mobile-row left">
+    <span class="cell-key">Balance</span>
     <TokenBalance {userTokenData} />
+  </div>
+  <div role="cell" class="actions">
+    {#each userTokenData.actions as action}
+      <svelte:component
+        this={actionMapper[action]}
+        userToken={userTokenData}
+        on:nnsAction
+      />
+    {/each}
   </div>
 </div>
 
@@ -81,10 +72,17 @@
     @include interaction.tappable;
 
     display: grid;
-    align-items: center;
-    row-gap: var(--padding);
-    grid-template-columns: 2fr 1fr;
-    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: 1fr max-content;
+    grid-template-rows: auto;
+    grid-template-areas: "universe-data actions" "balance balance";
+    row-gap: var(--padding-2x);
+
+    @include media.min-width(medium) {
+      grid-column: 1 / -1;
+      grid-template-columns: subgrid;
+      grid-template-areas: auto;
+      row-gap: 0;
+    }
 
     padding: var(--padding-2x);
 
@@ -99,8 +97,49 @@
     }
   }
 
-  div[role="cell"] > * {
-    height: 100%;
+  div[role="cell"] {
+    display: flex;
+    align-items: center;
+    gap: var(--padding);
+
+    &.universe-data {
+      grid-area: universe-data;
+
+      @include media.min-width(medium) {
+        grid-area: auto;
+      }
+    }
+
+    &.actions {
+      grid-area: actions;
+
+      @include media.min-width(medium) {
+        grid-area: auto;
+      }
+    }
+
+    &.mobile-row {
+      grid-area: balance;
+
+      display: flex;
+      justify-content: space-between;
+
+      @include media.min-width(medium) {
+        grid-area: auto;
+
+        &.left {
+          justify-content: flex-end;
+        }
+      }
+    }
+
+    .cell-key {
+      display: block;
+
+      @include media.min-width(medium) {
+        display: none;
+      }
+    }
   }
 
   .universe-data {
@@ -109,29 +148,8 @@
     gap: var(--padding);
   }
 
-  .desktop-balance {
-    display: none;
-
-    @include media.min-width(medium) {
-      display: block;
-    }
-  }
-
-  .mobile-balance {
-    display: flex;
-    justify-content: space-between;
-    grid-column-end: span 2;
-
-    @include media.min-width(medium) {
-      display: none;
-    }
-  }
-
-  .universe-balance {
-    display: flex;
-    align-items: center;
+  .actions {
     justify-content: flex-end;
-    gap: var(--padding);
 
     :global(svg) {
       color: var(--primary);
