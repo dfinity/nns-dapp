@@ -1,5 +1,5 @@
 //! Rust code created from candid by: scripts/did2rs.sh --canister sns_swap --out ic_sns_swap.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug
-//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/dd51544944987556c978e774aa7a1992e5c11542/rs/sns/swap/canister/swap.did>
+//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-11-08_23-01/rs/sns/swap/canister/swap.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -30,11 +30,17 @@ pub struct LinearScalingCoefficient {
     pub to_direct_participation_icp_e8s: Option<u64>,
 }
 
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct IdealMatchedParticipationFunction {
+    pub serialized_representation: Option<String>,
+}
+
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
 pub struct NeuronsFundParticipationConstraints {
     pub coefficient_intervals: Vec<LinearScalingCoefficient>,
     pub max_neurons_fund_participation_icp_e8s: Option<u64>,
     pub min_direct_participation_threshold_icp_e8s: Option<u64>,
+    pub ideal_matched_participation_function: Option<IdealMatchedParticipationFunction>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
@@ -149,6 +155,15 @@ pub struct SetDappControllersCallResult {
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct SweepResult {
+    pub failure: u32,
+    pub skipped: u32,
+    pub invalid: u32,
+    pub success: u32,
+    pub global_failures: u32,
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GovernanceError {
     pub error_message: String,
     pub error_type: i32,
@@ -171,30 +186,45 @@ pub struct SettleCommunityFundParticipationResult {
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Ok1 {
+    pub neurons_fund_participation_icp_e8s: Option<u64>,
+    pub neurons_fund_neurons_count: Option<u64>,
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Error {
+    pub message: Option<String>,
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum Possibility2 {
-    Ok,
+    Ok(Ok1),
+    Err(Error),
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct SettleNeuronsFundParticipationResult {
+    pub possibility: Option<Possibility2>,
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub enum Possibility3 {
+    Ok(EmptyRecord),
     Err(CanisterCallError),
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct SetModeCallResult {
-    pub possibility: Option<Possibility2>,
-}
-
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct SweepResult {
-    pub failure: u32,
-    pub skipped: u32,
-    pub invalid: u32,
-    pub success: u32,
-    pub global_failures: u32,
+    pub possibility: Option<Possibility3>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct FinalizeSwapResponse {
     pub set_dapp_controllers_call_result: Option<SetDappControllersCallResult>,
+    pub create_sns_neuron_recipes_result: Option<SweepResult>,
     pub settle_community_fund_participation_result: Option<SettleCommunityFundParticipationResult>,
     pub error_message: Option<String>,
+    pub settle_neurons_fund_participation_result: Option<SettleNeuronsFundParticipationResult>,
     pub set_mode_call_result: Option<SetModeCallResult>,
     pub sweep_icp_result: Option<SweepResult>,
     pub claim_neuron_result: Option<SweepResult>,
@@ -324,7 +354,7 @@ pub struct Ticket {
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct Ok1 {
+pub struct Ok2 {
     pub ticket: Option<Ticket>,
 }
 
@@ -335,7 +365,7 @@ pub struct Err1 {
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum Result1 {
-    Ok(Ok1),
+    Ok(Ok2),
     Err(Err1),
 }
 
@@ -499,7 +529,7 @@ pub struct Err2 {
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum Result2 {
-    Ok(Ok1),
+    Ok(Ok2),
     Err(Err2),
 }
 
@@ -598,7 +628,7 @@ impl Service {
     pub async fn new_sale_ticket(&self, arg0: NewSaleTicketRequest) -> CallResult<(NewSaleTicketResponse,)> {
         ic_cdk::call(self.0, "new_sale_ticket", (arg0,)).await
     }
-    pub async fn notify_payment_failure(&self, arg0: NotifyPaymentFailureArg) -> CallResult<(Ok1,)> {
+    pub async fn notify_payment_failure(&self, arg0: NotifyPaymentFailureArg) -> CallResult<(Ok2,)> {
         ic_cdk::call(self.0, "notify_payment_failure", (arg0,)).await
     }
     pub async fn open(&self, arg0: OpenRequest) -> CallResult<(OpenRet,)> {
