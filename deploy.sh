@@ -57,7 +57,7 @@ while (($# > 0)); do
     ;;
   *)
     DFX_NETWORK="$env"
-    # Check that the network is valid.
+    # Check that the network is valid.  (Using a function from `./scripts/network-config`.)
     assert_dfx_network_var_is_configured || exit 1
     ;;
   esac

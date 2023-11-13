@@ -81,7 +81,7 @@ while (($# > 0)); do
 done
 
 dfx_network_check_specified
-DFX_NETWORK="$DFX_NETWORK" assert_dfx_network_var_is_configured || exit 1
+DFX_NETWORK="$DFX_NETWORK" assert_dfx_network_var_is_configured || exit 1 # Assert defined in `./scripts/network-config`.
 
 : "Tell the user how to set up a neuron, if none has been provided."
 test -n "${PROPOSER_NEURON_ID:-}" || {
