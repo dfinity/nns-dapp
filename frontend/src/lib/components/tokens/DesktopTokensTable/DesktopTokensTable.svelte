@@ -84,6 +84,10 @@
     .row-wrapper {
       border-bottom: 1px solid var(--elements-divider);
 
+      &:last-child {
+        border-bottom: none;
+      }
+
       @include media.min-width(medium) {
         border-bottom: none;
         display: grid;
