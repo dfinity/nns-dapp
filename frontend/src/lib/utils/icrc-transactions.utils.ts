@@ -9,6 +9,7 @@ import type {
 } from "$lib/types/transaction";
 import { AccountTransactionType } from "$lib/types/transaction";
 import type { UniverseCanisterId } from "$lib/types/universe";
+import { Cbor } from "@dfinity/agent";
 import type {
   IcrcTransaction,
   IcrcTransactionWithId,
@@ -211,6 +212,36 @@ export const mapIcrcTransaction = ({
 };
 
 export type mapIcrcTransactionType = typeof mapIcrcTransaction;
+
+// The memo will decode to: [0, [ withdrawalAddress, kytFee, status]]
+type CkbtcBurnMemo = [0, [string, number, number | null | undefined]];
+
+export const mapCkbtcTransaction = (params: {
+  transaction: IcrcTransactionWithId;
+  account: Account;
+  toSelfTransaction: boolean;
+  governanceCanisterId?: Principal;
+}): Transaction | undefined => {
+  const mappedTransaction = mapIcrcTransaction(params);
+  if (isNullish(mappedTransaction)) {
+    return mappedTransaction;
+  }
+  const {
+    transaction: { transaction },
+  } = params;
+  if (transaction.burn.length === 1) {
+    const memo = transaction.burn[0].memo[0] as Uint8Array;
+    try {
+      const decodedMemo = Cbor.decode(memo) as CkbtcBurnMemo;
+      const withdrawalAddress = decodedMemo[1][0];
+      mappedTransaction.to = withdrawalAddress;
+      mappedTransaction.isSend = true;
+    } catch (err) {
+      console.error("Failed to decode ckBTC burn memo", memo, err);
+    }
+  }
+  return mappedTransaction;
+};
 
 // TODO: use `oldestTxId` instead of sorting and getting the oldest element's id.
 // It seems that the `Index` canister has a bug.

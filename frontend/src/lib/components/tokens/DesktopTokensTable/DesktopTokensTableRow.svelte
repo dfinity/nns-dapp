@@ -6,14 +6,15 @@
     type ComponentType,
   } from "svelte";
   import Logo from "../../ui/Logo.svelte";
-  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import GoToDetailButton from "./actions/GoToDetailButton.svelte";
   import ReceiveButton from "./actions/ReceiveButton.svelte";
   import SendButton from "./actions/SendButton.svelte";
   import { ActionType } from "$lib/types/actions";
   import { UnavailableTokenAmount } from "$lib/utils/token.utils";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
 
   export let userTokenData: UserTokenData;
+  export let index: number;
 
   const dispatcher = createEventDispatcher();
 
@@ -25,18 +26,23 @@
     [UserTokenAction.Receive]: ReceiveButton,
     [UserTokenAction.Send]: SendButton,
   };
-</script>
 
-<tr
-  on:click={() =>
+  const handleClick = () =>
     dispatcher("nnsAction", {
       type: ActionType.GoToTokenDetail,
       data: userTokenData,
-    })}
+    });
+</script>
+
+<div
+  role="row"
+  tabindex={index + 1}
+  on:keypress={handleClick}
+  on:click={handleClick}
   data-tid="desktop-tokens-table-row-component"
 >
-  <td>
-    <div class="universe-data">
+  <div role="cell" class="title-cell">
+    <div class="title">
       <Logo
         src={userTokenData.logo}
         alt={userTokenData.title}
@@ -45,16 +51,7 @@
       />
       <span>{userTokenData.title}</span>
     </div>
-  </td>
-  <td>
-    <div class="universe-balance">
-      {#if userTokenData.balance instanceof UnavailableTokenAmount}
-        <span data-tid="token-value-label"
-          >{`-/- ${userTokenData.balance.token.symbol}`}</span
-        >
-      {:else}
-        <AmountDisplay singleLine amount={userTokenData.balance} />
-      {/if}
+    <div class="title-actions actions mobile-only">
       {#each userTokenData.actions as action}
         <svelte:component
           this={actionMapper[action]}
@@ -63,40 +60,120 @@
         />
       {/each}
     </div>
-  </td>
-</tr>
+  </div>
+  <div role="cell" class="mobile-row-cell left-cell">
+    <span class="mobile-only">Balance</span>
+    {#if userTokenData.balance instanceof UnavailableTokenAmount}
+      <span data-tid="token-value-label"
+        >{`-/- ${userTokenData.balance.token.symbol}`}</span
+      >
+    {:else}
+      <AmountDisplay singleLine amount={userTokenData.balance} />
+    {/if}
+  </div>
+  <div role="cell" class="actions-cell actions">
+    {#each userTokenData.actions as action}
+      <svelte:component
+        this={actionMapper[action]}
+        userToken={userTokenData}
+        on:nnsAction
+      />
+    {/each}
+  </div>
+</div>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/interaction";
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../../themes/mixins/grid-table";
 
-  tr td {
-    padding: var(--padding-2x);
-  }
-
-  tr {
+  div[role="row"] {
     @include interaction.tappable;
 
+    // If we use grid-template-areas, we need to specify all the areas.
+    // That makes it hard to have dynamic columns.
+    // Instead, we duplicate the actions. Once as the last cell, another within the title cell.
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2x);
+
+    @include media.min-width(medium) {
+      @include grid-table.row;
+      row-gap: 0;
+    }
+
+    padding: var(--padding-2x);
+
     background-color: var(--table-row-background);
+
+    @include media.min-width(medium) {
+      grid-template-rows: 1fr;
+    }
 
     &:hover {
       background-color: var(--table-row-background-hover);
     }
   }
 
-  .universe-data {
+  div[role="cell"] {
+    display: flex;
+    align-items: center;
+    gap: var(--padding);
+
+    &.title-cell {
+      justify-content: space-between;
+
+      // Title actions are displayed only on mobile.
+      // On desktop, the actions are in the last cell.
+      .title-actions {
+        display: block;
+
+        @include media.min-width(medium) {
+          display: none;
+        }
+      }
+    }
+
+    // Actions cell is displayed only on desktop.
+    // On mobile, the actions are in the first cell.
+    &.actions-cell {
+      display: none;
+      justify-content: flex-end;
+
+      @include media.min-width(medium) {
+        display: flex;
+      }
+    }
+
+    &.mobile-row-cell {
+      display: flex;
+      justify-content: space-between;
+
+      @include media.min-width(medium) {
+        &.left-cell {
+          justify-content: flex-end;
+        }
+      }
+    }
+  }
+
+  .title {
     display: flex;
     align-items: center;
     gap: var(--padding);
   }
 
-  .universe-balance {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: var(--padding);
-
+  .actions {
     :global(svg) {
       color: var(--primary);
+    }
+  }
+
+  .mobile-only {
+    display: block;
+
+    @include media.min-width(medium) {
+      display: none;
     }
   }
 </style>
