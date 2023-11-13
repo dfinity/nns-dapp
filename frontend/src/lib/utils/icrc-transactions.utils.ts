@@ -220,10 +220,13 @@ export const mapCkbtcTransaction = (params: {
   governanceCanisterId?: Principal;
 }): Transaction | undefined => {
   const mappedTransaction = mapIcrcTransaction(params);
+  if (isNullish(mappedTransaction)) {
+    return mappedTransaction;
+  }
   const {
     transaction: { transaction },
   } = params;
-  if (transaction.kind === "burn") {
+  if (transaction.burn.length === 1) {
     const memo = transaction.burn[0].memo[0];
     try {
       const decodedMemo = cbor.decodeFirstSync(memo);
