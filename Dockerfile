@@ -87,6 +87,7 @@ RUN cargo binstall --no-confirm "ic-wasm@$(cat config/ic_wasm_version)" && comma
 FROM builder AS configurator
 SHELL ["bash", "-c"]
 COPY dfx.json config.sh canister_ids.jso[n] /build/
+COPY .global-config.json $HOME/.config/dfx/networks.json
 COPY scripts/network-config /build/scripts/network-config
 COPY scripts/dfx-canister-url /build/scripts/dfx-canister-url
 COPY scripts/clap.bash /build/scripts/clap.bash
