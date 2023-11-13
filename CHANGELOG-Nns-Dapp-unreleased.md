@@ -35,6 +35,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Add a workflow to update the SNS aggregator bindings regularly.
 * Add `devenv_llorenc` and `devenv_dskloet` to list of networks.
 
 #### Changed
