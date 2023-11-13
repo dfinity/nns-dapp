@@ -8,9 +8,9 @@
 <div role="table" data-tid="desktop-tokens-table-component">
   <div role="rowgroup">
     <div role="row" class="header-row">
-      <span role="cell">Projects</span>
-      <span role="cell" class="header-right">Balance</span>
-      <span role="cell"></span>
+      <span role="columnheader">Projects</span>
+      <span role="columnheader" class="header-right">Balance</span>
+      <span role="columnheader"></span>
     </div>
   </div>
   <div role="rowgroup">
@@ -24,6 +24,7 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../../themes/mixins/grid-table";
 
   div[role="table"] {
     width: 100%;
@@ -48,7 +49,7 @@
 
       border-bottom: 1px solid var(--elements-divider);
 
-      [role="cell"] {
+      [role="columnheader"] {
         display: none;
 
         &:first-child {
@@ -65,19 +66,11 @@
       }
     }
 
-    [role="rowgroup"] {
+    [role="rowgroup"],
+    [role="row"],
+    .row-wrapper {
       @include media.min-width(medium) {
-        display: grid;
-        grid-column: 1 / -1;
-        grid-template-columns: subgrid;
-      }
-    }
-
-    [role="row"] {
-      @include media.min-width(medium) {
-        display: grid;
-        grid-column: 1 / -1;
-        grid-template-columns: subgrid;
+        @include grid-table.row;
       }
     }
 
@@ -90,9 +83,6 @@
 
       @include media.min-width(medium) {
         border-bottom: none;
-        display: grid;
-        grid-column: 1 / -1;
-        grid-template-columns: subgrid;
       }
     }
   }

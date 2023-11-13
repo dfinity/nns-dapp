@@ -51,7 +51,7 @@
       />
       <span>{userTokenData.title}</span>
     </div>
-    <div class="title-actions">
+    <div class="title-actions actions mobile-only">
       {#each userTokenData.actions as action}
         <svelte:component
           this={actionMapper[action]}
@@ -62,7 +62,7 @@
     </div>
   </div>
   <div role="cell" class="mobile-row-cell left-cell">
-    <span class="cell-key">Balance</span>
+    <span class="mobile-only">Balance</span>
     {#if userTokenData.balance instanceof UnavailableTokenAmount}
       <span data-tid="token-value-label"
         >{`-/- ${userTokenData.balance.token.symbol}`}</span
@@ -71,7 +71,7 @@
       <AmountDisplay singleLine amount={userTokenData.balance} />
     {/if}
   </div>
-  <div role="cell" class="actions-cell">
+  <div role="cell" class="actions-cell actions">
     {#each userTokenData.actions as action}
       <svelte:component
         this={actionMapper[action]}
@@ -85,6 +85,7 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/interaction";
   @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "../../../themes/mixins/grid-table";
 
   div[role="row"] {
     @include interaction.tappable;
@@ -97,9 +98,7 @@
     gap: var(--padding-2x);
 
     @include media.min-width(medium) {
-      display: grid;
-      grid-column: 1 / -1;
-      grid-template-columns: subgrid;
+      @include grid-table.row;
       row-gap: 0;
     }
 
@@ -132,10 +131,6 @@
         @include media.min-width(medium) {
           display: none;
         }
-
-        :global(svg) {
-          color: var(--primary);
-        }
       }
     }
 
@@ -148,10 +143,6 @@
       @include media.min-width(medium) {
         display: flex;
       }
-
-      :global(svg) {
-        color: var(--primary);
-      }
     }
 
     &.mobile-row-cell {
@@ -163,14 +154,6 @@
           justify-content: flex-end;
         }
       }
-
-      .cell-key {
-        display: block;
-
-        @include media.min-width(medium) {
-          display: none;
-        }
-      }
     }
   }
 
@@ -178,5 +161,19 @@
     display: flex;
     align-items: center;
     gap: var(--padding);
+  }
+
+  .actions {
+    :global(svg) {
+      color: var(--primary);
+    }
+  }
+
+  .mobile-only {
+    display: block;
+
+    @include media.min-width(medium) {
+      display: none;
+    }
   }
 </style>
