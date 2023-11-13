@@ -6,6 +6,7 @@ import type {
   IcrcTransactionWithId,
 } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
+import { toNullable } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
 
 export interface IcrcCandidAccount {
@@ -101,22 +102,42 @@ const mockIcrcTransactionTransferToSelf: IcrcTransaction = {
   approve: [],
 };
 
-export const mockIcrcTransactionBurn: IcrcTransaction = {
-  kind: "burn",
-  timestamp: BigInt(12354),
-  burn: [
-    {
-      amount: BigInt(33),
-      from: fakeAccount,
-      memo: [],
-      created_at_time: [BigInt(123)],
-      spender: [],
-    },
-  ],
-  mint: [],
-  transfer: [],
-  approve: [],
+export const createBurnTransaction = ({
+  timestamp = 12354n,
+  amount = 33n,
+  from = fakeAccount,
+  memo,
+  createdAt = 123n,
+  spender,
+}: {
+  timestamp?: bigint;
+  amount?: bigint;
+  from?: IcrcCandidAccount;
+  memo?: Uint8Array;
+  createdAt?: bigint;
+  spender?: IcrcCandidAccount;
+}): IcrcTransaction => {
+  return {
+    kind: "burn",
+    timestamp,
+    burn: [
+      {
+        amount,
+        from,
+        memo: toNullable(memo),
+        created_at_time: toNullable(createdAt),
+        spender: toNullable(spender),
+      },
+    ],
+    mint: [],
+    transfer: [],
+    approve: [],
+  };
 };
+
+export const mockIcrcTransactionBurn: IcrcTransaction = createBurnTransaction(
+  {}
+);
 
 export const mockIcrcTransactionMint: IcrcTransaction = {
   kind: "mint",

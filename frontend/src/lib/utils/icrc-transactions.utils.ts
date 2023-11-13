@@ -21,6 +21,7 @@ import {
   nonNullish,
   uint8ArrayToHexString,
 } from "@dfinity/utils";
+import * as cbor from "cbor-web";
 import { showTransactionFee } from "./transactions.utils";
 
 const isToSelf = (transaction: IcrcTransaction): boolean => {
@@ -211,6 +212,30 @@ export const mapIcrcTransaction = ({
 };
 
 export type mapIcrcTransactionType = typeof mapIcrcTransaction;
+
+export const mapCkbtcTransaction = (params: {
+  transaction: IcrcTransactionWithId;
+  account: Account;
+  toSelfTransaction: boolean;
+  governanceCanisterId?: Principal;
+}): Transaction | undefined => {
+  const mappedTransaction = mapIcrcTransaction(params);
+  const {
+    transaction: { transaction },
+  } = params;
+  if (transaction.kind === "burn") {
+    const memo = transaction.burn[0].memo[0];
+    try {
+      const decodedMemo = cbor.decodeFirstSync(memo);
+      const withdrawalAddress = decodedMemo[1][0];
+      mappedTransaction.to = withdrawalAddress;
+      mappedTransaction.isSend = true;
+    } catch (err) {
+      console.error("Failed to decode ckBTC burn memo", memo, err);
+    }
+  }
+  return mappedTransaction;
+};
 
 // TODO: use `oldestTxId` instead of sorting and getting the oldest element's id.
 // It seems that the `Index` canister has a bug.
