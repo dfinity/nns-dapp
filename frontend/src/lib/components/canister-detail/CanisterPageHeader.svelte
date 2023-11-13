@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
-  import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
+  import { NNS_UNIVERSE } from "$lib/constants/universes.constants";
   import PageHeader from "../common/PageHeader.svelte";
   import IdentifierHash from "../ui/IdentifierHash.svelte";
   import UniversePageSummary from "../universe/UniversePageSummary.svelte";

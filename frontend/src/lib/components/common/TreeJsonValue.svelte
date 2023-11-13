@@ -1,14 +1,22 @@
 <script lang="ts">
   import { Html } from "@dfinity/gix-components";
   import type { TreeJsonValueType } from "$lib/utils/json.utils";
-  import { getTreeJsonValueRenderType } from "$lib/utils/json.utils";
-  import { stringifyJson } from "$lib/utils/utils.js";
+  import { splitE8sIntoChunks, stringifyJson } from "$lib/utils/utils.js";
+  import { i18n } from "$lib/stores/i18n";
 
   // To avoid having quotes around all the value types
-  const formatData = (value: unknown) => {
-    const valueType = getTreeJsonValueRenderType(value);
+  const formatE8s = (data: unknown): string[] =>
+    splitE8sIntoChunks((data as Record<"e8s", unknown>)?.e8s);
+  const formatData = (value: unknown): string => {
     if (valueType === "base64Encoding") {
-      return (data as { [key: string]: unknown })["base64Encoding"];
+      return (data as { [key: string]: unknown })["base64Encoding"] as string;
+    }
+    // TODO(max): think about moving to a separate component
+    if (valueType === "basisPoints") {
+      return `${(data as { [basisPoints: string]: unknown }).basisPoints}`;
+    }
+    if (valueType === "seconds") {
+      return `${(data as { [seconds: string]: unknown }).seconds}`;
     }
     if (
       (
@@ -30,11 +38,9 @@
 
   export let data: unknown | undefined = undefined;
   export let key: string | undefined = undefined;
+  export let valueType: TreeJsonValueType;
 
-  let valueType: TreeJsonValueType;
-  $: valueType = getTreeJsonValueRenderType(data);
-
-  let value: unknown;
+  let value: string | undefined;
   $: value = formatData(data);
 
   let title: string | undefined;
@@ -46,6 +52,24 @@
   <Html
     text={`<img class="value ${valueType}" alt="${key}" src="${value}" loading="lazy" />`}
   />
+{:else if valueType === "seconds"}
+  <span class="value {valueType}" {title}
+    >{value}
+    <span class="unit">{$i18n.proposal_detail.json_unit_seconds}</span>
+  </span>
+{:else if valueType === "e8s"}
+  <span class="value {valueType}" {title}>
+    {#each formatE8s(data) as chunk}
+      <span>{chunk}</span>
+    {/each}
+    <span class="unit">{$i18n.proposal_detail.json_unit_e8s}</span>
+  </span>
+{:else if valueType === "basisPoints"}
+  <span class="value {valueType}" {title}
+    >{value}
+    <span class="unit">{$i18n.proposal_detail.json_unit_basis_points}</span
+    ></span
+  >
 {:else}
   <span class="value {valueType}" {title}>{value}</span>
 {/if}
@@ -53,34 +77,21 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
-  .key {
-    display: flex;
-    align-items: center;
-    margin-right: var(--padding-2x);
-
-    @include fonts.standard(true);
-    color: var(--content-color);
-
-    &.root {
-      @include fonts.h4();
-    }
-    &.key--expandable {
-      margin-right: 0;
-      // no icon gap compensation
-      margin-left: 0;
-    }
-    &.key--is-index {
-      // monospace for array indexes to avoid different widths
-      font-family: monospace;
-    }
-  }
-
   .value {
-    // better shrink the value than the key
-    flex: 1 1 0;
-    // We want to break the value, so that the keys stay on the same line.
-    word-break: break-all;
     color: var(--description-color);
+
+    // for chunks and units
+    display: inline-flex;
+    align-items: center;
+    gap: var(--padding-0_5x);
+
+    // keep lines (scroll horizontally)
+    white-space: nowrap;
+
+    .unit {
+      margin-left: var(--padding-0_5x);
+      @include fonts.small(false);
+    }
   }
 
   // base64 encoded image

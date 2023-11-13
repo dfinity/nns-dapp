@@ -15,6 +15,7 @@ import {
   mockAccountsStoreData,
   mockHardwareWalletAccount,
   mockMainAccount,
+  mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
 import {
   modalToolbarSelector,
@@ -225,6 +226,26 @@ describe("NnsWallet", () => {
         expect(accountsApi.getTransactions).toBeCalledTimes(4)
       );
       expect(ledgerApi.queryAccountBalance).toBeCalledTimes(2);
+    });
+  });
+
+  describe("accounts loaded (Subaccount)", () => {
+    beforeEach(() => {
+      icpAccountsStore.setForTesting({
+        ...mockAccountsStoreData,
+        subAccounts: [mockSubAccount],
+      });
+    });
+
+    const props = {
+      accountIdentifier: mockSubAccount.identifier,
+    };
+
+    it("should Rename button", async () => {
+      const { queryByTestId } = render(NnsWallet, props);
+      expect(
+        queryByTestId("open-rename-subaccount-button")
+      ).toBeInTheDocument();
     });
   });
 

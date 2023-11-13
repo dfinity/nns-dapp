@@ -28,7 +28,9 @@
         </h2>
         <Copy value={copyContent} />
       </div>
-      <TreeRawToggle />
+      <div class="toggle">
+        <TreeRawToggle />
+      </div>
     </div>
 
     <div
@@ -56,17 +58,28 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "@dfinity/gix-components/dist/styles/mixins/text";
 
   .header-text {
     display: flex;
     align-items: center;
     @include fonts.h3;
+
+    @include text.clamp(1);
+  }
+
+  .toggle {
+    // compensate toggle and toggle inner buttons padding. Is important when cols wrap on mobile.
+    margin: 0 calc(var(--padding-0_5x) * -2);
   }
 
   .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    flex-wrap: wrap;
+    row-gap: var(--padding);
 
     .title-copy {
       display: flex;

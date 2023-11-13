@@ -3,11 +3,9 @@ import {
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { NNS_UNIVERSE } from "$lib/constants/universes.constants";
 import { pageStore, type Page } from "$lib/derived/page.derived";
-import {
-  NNS_UNIVERSE,
-  selectableUniversesStore,
-} from "$lib/derived/selectable-universes.derived";
+import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
 import {
   ENABLE_CKBTC,
   ENABLE_CKTESTBTC,

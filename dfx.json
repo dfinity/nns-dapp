@@ -254,6 +254,32 @@
       ],
       "type": "persistent"
     },
+    "devenv_llorenc": {
+      "config": {
+        "HOST": "https://llorenc-ingress.devenv.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_CKBTC": true,
+          "ENABLE_CKTESTBTC": false
+        }
+      },
+      "providers": [
+        "https://llorenc-ingress.devenv.dfinity.network"
+      ],
+      "type": "persistent"
+    },
+    "devenv_dskloet": {
+      "config": {
+        "HOST": "https://dskloet-ingress.devenv.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_CKBTC": true,
+          "ENABLE_CKTESTBTC": false
+        }
+      },
+      "providers": [
+        "https://dskloet-ingress.devenv.dfinity.network"
+      ],
+      "type": "persistent"
+    },
     "nnsdapp": {
       "providers": [
         "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
@@ -637,14 +663,14 @@
     "build": {
       "config": {
         "NODE_VERSION": "18.14.2",
-        "IC_WASM_VERSION": "0.3.6",
+        "IC_WASM_VERSION": "0.6.0",
         "IDL2JSON_VERSION": "0.8.8",
         "OPTIMIZER_VERSION": "0.3.6",
         "BINSTALL_VERSION": "1.3.0",
         "DIDC_VERSION": "2023-09-27",
         "CARGO_SORT_VERSION": "1.0.9",
-        "SNSDEMO_RELEASE": "release-dfx-15",
-        "IC_COMMIT": "release-2023-11-01_23-01+quic"
+        "SNSDEMO_RELEASE": "release-2023-11-13",
+        "IC_COMMIT": "release-2023-11-08_23-01"
       },
       "packtool": ""
     }

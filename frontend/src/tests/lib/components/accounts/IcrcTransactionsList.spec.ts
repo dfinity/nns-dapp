@@ -2,36 +2,46 @@ import IcrcTransactionsList from "$lib/components/accounts/IcrcTransactionsList.
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import type { Account } from "$lib/types/account";
 import type { IcrcTransactionData } from "$lib/types/transaction";
-import en from "$tests/mocks/i18n.mock";
 import {
-  mockIcrcTransactionsStoreSubscribe,
+  mapIcrcTransaction,
+  type mapIcrcTransactionType,
+} from "$lib/utils/icrc-transactions.utils";
+import {
   mockIcrcTransactionWithId,
+  mockIcrcTransactionsStoreSubscribe,
 } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
-import { render, waitFor } from "@testing-library/svelte";
+import { IcrcTransactionsListPo } from "$tests/page-objects/IcrcTransactionsList.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { render } from "@testing-library/svelte";
 
 describe("IcrcTransactionList", () => {
-  const renderIcrcTransactionList = ({
+  const renderComponent = ({
     account,
     transactions,
     loading,
     completed = false,
+    mapTransaction,
   }: {
     account: Account;
     transactions: IcrcTransactionData[];
     loading?: boolean;
     completed?: boolean;
-  }) =>
-    render(IcrcTransactionsList, {
+    mapTransaction?: mapIcrcTransactionType;
+  }) => {
+    const { container } = render(IcrcTransactionsList, {
       props: {
         account,
         transactions,
         loading,
         completed,
         token: mockSnsToken,
+        mapTransaction: mapTransaction ?? mapIcrcTransaction,
       },
     });
+    return IcrcTransactionsListPo.under(new JestPageObjectElement(container));
+  };
 
   afterEach(() => {
     vi.clearAllMocks();
@@ -42,13 +52,13 @@ describe("IcrcTransactionList", () => {
       mockIcrcTransactionsStoreSubscribe({})
     );
 
-    const { queryAllByTestId } = renderIcrcTransactionList({
+    const po = renderComponent({
       account: mockSnsMainAccount,
       transactions: [],
       loading: true,
     });
 
-    expect(queryAllByTestId("skeleton-card").length).toBeGreaterThan(0);
+    expect(await po.getSkeletonCardPo().isPresent()).toBe(true);
   });
 
   it("should display no-transactions message", async () => {
@@ -56,22 +66,18 @@ describe("IcrcTransactionList", () => {
       mockIcrcTransactionsStoreSubscribe({})
     );
 
-    const { getByText } = renderIcrcTransactionList({
+    const po = renderComponent({
       account: mockSnsMainAccount,
       transactions: [],
       loading: false,
       completed: true,
     });
 
-    await waitFor(() => {
-      expect(
-        getByText(en.wallet.no_transactions, { exact: false })
-      ).toBeInTheDocument();
-    });
+    expect(await po.getText()).toBe("No transactions");
   });
 
-  it("should render transactions", () => {
-    const { queryAllByTestId } = renderIcrcTransactionList({
+  it("should render transactions", async () => {
+    const po = renderComponent({
       account: mockSnsMainAccount,
       transactions: [
         {
@@ -83,6 +89,31 @@ describe("IcrcTransactionList", () => {
       completed: true,
     });
 
-    expect(queryAllByTestId("transaction-card").length).toBe(1);
+    expect(await po.getTransactionCardPos()).toHaveLength(1);
+  });
+
+  it("uses mapTransaction", async () => {
+    const customIdentifier = "custom identifier";
+    const customMapTransaction = (params) => ({
+      ...mapIcrcTransaction(params),
+      from: customIdentifier,
+    });
+
+    const po = renderComponent({
+      account: mockSnsMainAccount,
+      transactions: [
+        {
+          transaction: mockIcrcTransactionWithId,
+          toSelfTransaction: false,
+        },
+      ],
+      loading: false,
+      completed: true,
+      mapTransaction: customMapTransaction,
+    });
+
+    const cards = await po.getTransactionCardPos();
+    expect(cards).toHaveLength(1);
+    expect(await cards[0].getIdentifier()).toBe(`Source: ${customIdentifier}`);
   });
 });
