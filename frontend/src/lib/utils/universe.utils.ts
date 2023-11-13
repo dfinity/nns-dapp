@@ -1,3 +1,6 @@
+import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
+import CKTESTBTC_LOGO from "$lib/assets/ckTESTBTC.svg";
+import IC_LOGO_ROUNDED from "$lib/assets/icp-rounded.svg";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
@@ -8,7 +11,7 @@ import type { Page } from "$lib/derived/page.derived";
 import { i18n } from "$lib/stores/i18n";
 import type { Universe } from "$lib/types/universe";
 import { isSelectedPath } from "$lib/utils/navigation.utils";
-import type { Principal } from "@dfinity/principal";
+import { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
@@ -53,4 +56,27 @@ export const universeLogoAlt = ({ summary, canisterId }: Universe): string => {
   }
 
   return i18nObj.auth.ic_logo;
+};
+
+export const getUniverseTitle = (universe: Universe): string | undefined => {
+  const i18nKeys = get(i18n);
+  const universeId = Principal.fromText(universe.canisterId);
+  return isUniverseNns(universeId)
+    ? i18nKeys.core.ic
+    : isUniverseCkTESTBTC(universeId)
+    ? i18nKeys.ckbtc.test_title
+    : isUniverseRealCkBTC(universeId)
+    ? i18nKeys.ckbtc.title
+    : universe.summary?.metadata.name;
+};
+
+export const getUniverseLogo = (universe: Universe): string | undefined => {
+  const universeId = Principal.fromText(universe.canisterId);
+  return isUniverseNns(universeId)
+    ? IC_LOGO_ROUNDED
+    : isUniverseCkTESTBTC(universeId)
+    ? CKTESTBTC_LOGO
+    : isUniverseRealCkBTC(universeId)
+    ? CKBTC_LOGO
+    : universe.summary?.metadata.logo;
 };
