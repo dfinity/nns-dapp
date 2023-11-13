@@ -35,6 +35,7 @@ jobs:
           committer: GitHub <noreply@github.com>
           author: gix-bot <gix-bot@users.noreply.github.com>
           branch: bot-proposals-update
+          branch-suffix: timestamp
           add-paths: .github/*/*ml
           delete-branch: true
           title: 'Update proposal rendering'
