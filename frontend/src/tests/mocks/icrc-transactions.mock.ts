@@ -14,17 +14,19 @@ export interface IcrcCandidAccount {
 }
 
 export const createIcrcTransactionWithId = ({
+  id,
   from,
   to,
   fee,
   amount,
 }: {
+  id?: bigint;
   to?: IcrcCandidAccount;
   from?: IcrcCandidAccount;
   fee?: bigint;
   amount?: bigint;
 }): IcrcTransactionWithId => ({
-  id: BigInt(123),
+  id: id ?? 123n,
   transaction: {
     kind: "transfer",
     timestamp: BigInt(12354),
@@ -56,7 +58,31 @@ const fakeAccount = {
   subaccount: [] as [],
 };
 
+const fakeSubAccount = {
+  owner: Principal.fromText("aaaaa-aa"),
+  subaccount: [new Uint8Array([2, 3, 4])] as [Uint8Array],
+};
+
 const mockIcrcTransactionTransfer: IcrcTransaction = {
+  kind: "transfer",
+  timestamp: BigInt(12354),
+  burn: [],
+  mint: [],
+  transfer: [
+    {
+      to: fakeSubAccount,
+      from: fakeAccount,
+      memo: [],
+      created_at_time: [BigInt(123)],
+      amount: BigInt(33),
+      fee: [BigInt(1)],
+      spender: [],
+    },
+  ],
+  approve: [],
+};
+
+const mockIcrcTransactionTransferToSelf: IcrcTransaction = {
   kind: "transfer",
   timestamp: BigInt(12354),
   burn: [],
@@ -111,6 +137,11 @@ export const mockIcrcTransactionMint: IcrcTransaction = {
 export const mockIcrcTransactionWithId: IcrcTransactionWithId = {
   id: BigInt(123),
   transaction: mockIcrcTransactionTransfer,
+};
+
+export const mockIcrcTransactionWithIdToSelf: IcrcTransactionWithId = {
+  id: BigInt(124),
+  transaction: mockIcrcTransactionTransferToSelf,
 };
 
 export const mockIcrcTransactionsStoreSubscribe =
