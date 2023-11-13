@@ -50,24 +50,14 @@ const mapToSelfTransactions = (
   transactions: IcrcTransactionWithId[]
 ): { transaction: IcrcTransactionWithId; toSelfTransaction: boolean }[] => {
   const resultTransactions = transactions.flatMap((transaction) => {
+    const tx = {
+      transaction: { ...transaction },
+      toSelfTransaction: false,
+    };
     if (isToSelf(transaction.transaction)) {
-      return [
-        {
-          transaction: { ...transaction },
-          toSelfTransaction: true,
-        },
-        {
-          transaction: { ...transaction },
-          toSelfTransaction: false,
-        },
-      ];
+      return [{ ...tx, toSelfTransaction: true }, tx];
     }
-    return [
-      {
-        transaction: { ...transaction },
-        toSelfTransaction: false,
-      },
-    ];
+    return [tx];
   });
   return resultTransactions;
 };
