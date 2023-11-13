@@ -26,20 +26,22 @@ describe("tokens-list-base.derived", () => {
     balance: new UnavailableTokenAmount(NNS_TOKEN_DATA),
     actions: [],
   };
+  const snsTetrisToken = mockSnsToken;
   const snsTetris = {
     rootCanisterId: rootCanisterIdMock,
     projectName: "Tetris",
     lifecycle: SnsSwapLifecycle.Committed,
-    tokenMetadata: mockSnsToken,
+    tokenMetadata: snsTetrisToken,
+  };
+  const snsPackmanToken = {
+    ...mockSnsToken,
+    symbol: "PAC",
   };
   const snsPacman = {
     rootCanisterId: principal(1),
     projectName: "Pacman",
     lifecycle: SnsSwapLifecycle.Committed,
-    tokenMetadata: {
-      ...mockSnsToken,
-      symbol: "PAC",
-    },
+    tokenMetadata: snsPackmanToken,
   };
   const tetrisTokenBase: UserTokenData = {
     universeId: snsTetris.rootCanisterId,
@@ -87,6 +89,16 @@ describe("tokens-list-base.derived", () => {
 
     it("should return ICP and SNS projects if loaded", () => {
       setSnsProjects([snsTetris, snsPacman]);
+      tokensStore.setTokens({
+        [snsTetris.rootCanisterId.toText()]: {
+          token: snsTetrisToken,
+          certified: true,
+        },
+        [snsPacman.rootCanisterId.toText()]: {
+          token: snsPackmanToken,
+          certified: true,
+        },
+      });
 
       expect(get(tokensListBaseStore)).toEqual([
         icpTokenBase,
@@ -123,6 +135,14 @@ describe("tokens-list-base.derived", () => {
         },
         [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: {
           token: mockCkTESTBTCToken,
+          certified: true,
+        },
+        [snsTetris.rootCanisterId.toText()]: {
+          token: snsTetrisToken,
+          certified: true,
+        },
+        [snsPacman.rootCanisterId.toText()]: {
+          token: snsPackmanToken,
           certified: true,
         },
       });
