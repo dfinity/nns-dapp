@@ -6,7 +6,12 @@
   import type { Token } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import { transactionName } from "$lib/utils/transactions.utils";
-  import { Html, IconNorthEast, KeyValuePair } from "@dfinity/gix-components";
+  import {
+    Html,
+    IconUp,
+    IconDown,
+    KeyValuePair,
+  } from "@dfinity/gix-components";
   import type {
     Transaction,
     AccountTransactionType,
@@ -57,7 +62,11 @@
 
 <article data-tid="transaction-card" transition:fade|global>
   <div class="icon" class:send={!isReceive}>
-    <IconNorthEast size="24px" />
+    {#if isReceive}
+      <IconDown size="24px" />
+    {:else}
+      <IconUp size="24px" />
+    {/if}
   </div>
 
   <div class="transaction">
@@ -138,8 +147,6 @@
     justify-content: center;
     align-items: center;
 
-    transform: rotate(90deg);
-
     background: var(--positive-emphasis-light);
     color: var(--positive-emphasis);
 
@@ -151,7 +158,6 @@
     margin: var(--padding-0_5x) 0;
 
     &.send {
-      transform: rotate(270deg);
       background: var(--background);
       color: var(--disable-contrast);
     }

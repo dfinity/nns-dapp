@@ -1,6 +1,10 @@
 import IcrcTransactionCard from "$lib/components/accounts/IcrcTransactionCard.svelte";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import type { Account } from "$lib/types/account";
+import {
+  mapIcrcTransaction,
+  type mapIcrcTransactionType,
+} from "$lib/utils/icrc-transactions.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
 import { createIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
@@ -27,11 +31,13 @@ describe("IcrcTransactionCard", () => {
     transactionWithId,
     governanceCanisterId = undefined,
     token,
+    mapTransaction,
   }: {
     account: Account;
     transactionWithId: IcrcTransactionWithId;
     governanceCanisterId?: Principal;
     token: Token | undefined;
+    mapTransaction?: mapIcrcTransactionType;
   }) => {
     const { container } = render(IcrcTransactionCard, {
       props: {
@@ -40,6 +46,7 @@ describe("IcrcTransactionCard", () => {
         toSelfTransaction: false,
         governanceCanisterId,
         token,
+        mapTransaction: mapTransaction ?? mapIcrcTransaction,
       },
     });
     return TransactionCardPo.under(new JestPageObjectElement(container));
@@ -193,5 +200,23 @@ describe("IcrcTransactionCard", () => {
     });
 
     expect(await po.isPresent()).toBe(false);
+  });
+
+  it("uses mapTransaction", async () => {
+    const customIdentifier = "custom identifier";
+    const customMapTransaction = (params) => ({
+      ...mapIcrcTransaction(params),
+      to: customIdentifier,
+    });
+
+    const po = renderComponent({
+      account: mockSnsMainAccount,
+      transactionWithId: transactionFromMainToSubaccount,
+      token: mockSnsToken,
+      mapTransaction: customMapTransaction,
+    });
+    const identifier = await po.getIdentifier();
+
+    expect(identifier).toBe(`To: ${customIdentifier}`);
   });
 });

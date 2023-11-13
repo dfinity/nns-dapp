@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
   import StakeItemAction from "$lib/components/neuron-detail/StakeItemAction.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import { ICPToken } from "@dfinity/utils";
@@ -10,6 +9,7 @@
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import { neuronStake } from "$lib/utils/neuron.utils";
   import { getContext } from "svelte";
+  import { NNS_UNIVERSE } from "$lib/constants/universes.constants";
 
   export let neuron: NeuronInfo;
 
