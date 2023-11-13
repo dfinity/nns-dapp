@@ -21,7 +21,7 @@ import {
   nonNullish,
   uint8ArrayToHexString,
 } from "@dfinity/utils";
-import * as cbor from "cbor-web";
+import * as cbor from "borc";
 import { showTransactionFee } from "./transactions.utils";
 
 const isToSelf = (transaction: IcrcTransaction): boolean => {
@@ -229,7 +229,7 @@ export const mapCkbtcTransaction = (params: {
   if (transaction.burn.length === 1) {
     const memo = transaction.burn[0].memo[0];
     try {
-      const decodedMemo = cbor.decodeFirstSync(memo);
+      const decodedMemo = cbor.decodeFirst(memo);
       const withdrawalAddress = decodedMemo[1][0];
       mappedTransaction.to = withdrawalAddress;
       mappedTransaction.isSend = true;

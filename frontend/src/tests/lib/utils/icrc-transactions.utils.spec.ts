@@ -21,7 +21,7 @@ import {
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
-import * as cbor from "cbor-web";
+import * as cbor from "borc";
 
 describe("icrc-transaction utils", () => {
   const to = {
@@ -260,7 +260,7 @@ describe("icrc-transaction utils", () => {
 
     it("Decodes BTC withdrawal address from cbor memo", () => {
       const btcWithdrawalAddress = "1ASLxsAMbbt4gcrNc6v6qDBW4JkeWAtTeh";
-      const kytFee = 1333n;
+      const kytFee = 1333;
       const decodedMemo = [0, [btcWithdrawalAddress, kytFee, null]];
       const memo = cbor.encode(decodedMemo);
 

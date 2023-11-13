@@ -80,7 +80,6 @@
     "@ledgerhq/hw-transport-webhid": "^6.27.8",
     "@zondax/ledger-icp": "^0.6.1",
     "buffer": "^6.0.3",
-    "cbor-web": "^9.0.1",
     "marked": "^9.1.0"
   },
   "overrides": {
