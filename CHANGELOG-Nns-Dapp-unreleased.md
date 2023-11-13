@@ -25,6 +25,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * Add missing "Rename" button in the subaccount page.
+* Fix disappearing "Received" half of to-self transactions.
 
 #### Security
 
