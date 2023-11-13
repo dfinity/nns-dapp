@@ -42,6 +42,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Factor out the `snsdemo` installation.
 * Make the location of the snsdemo checkout configurable.
 * Add `prod` and `aggregator-prod` to the list of public releases.
+* Update `dfx` to `v0.15.1`.
 * Use a unique branch when updating the snsdemo release, didc, IC candid files or rust.
 * Use a unique branch when updating the snsdemo release.
 

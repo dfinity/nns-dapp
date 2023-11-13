@@ -1,5 +1,5 @@
 {
-  "dfx": "0.14.4",
+  "dfx": "0.15.1",
   "canisters": {
     "nns-governance": {
       "type": "custom",
@@ -669,7 +669,7 @@
         "BINSTALL_VERSION": "1.3.0",
         "DIDC_VERSION": "2023-09-27",
         "CARGO_SORT_VERSION": "1.0.9",
-        "SNSDEMO_RELEASE": "release-2023-11-02",
+        "SNSDEMO_RELEASE": "release-2023-11-13",
         "IC_COMMIT": "release-2023-11-08_23-01"
       },
       "packtool": ""
