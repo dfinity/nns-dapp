@@ -261,6 +261,8 @@ jobs:
       - name: Set up docker buildx
         if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
         uses: docker/setup-buildx-action@v2
+      - name: Create a blank global config
+        run: echo "{}" > global-config.json
       - name: Build wasms
         if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
         uses: docker/build-push-action@v3

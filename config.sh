@@ -29,6 +29,9 @@ ENV_FILE=${ENV_OUTPUT_FILE:-$PWD/frontend/.env}
 JSON_OUT="deployment-config.json"
 CANDID_ARGS_FILE="nns-dapp-arg-${DFX_NETWORK}.did"
 
+: "Get network configuration functions"
+. scripts/network-config
+
 first_not_null() {
   for x in "$@"; do
     if [ "$x" != "null" ]; then
@@ -147,11 +150,11 @@ local_deployment_data="$(
 : "- construct ledger and governance canister URLs"
 # TODO: I believe that the following can be discarded now.
 json=$(HOST=$(dfx-canister-url --network "$DFX_NETWORK" --type api) jq -s --sort-keys '
-  (.[0].defaults.network.config // {}) * .[1] * (.[0].networks[env.DFX_NETWORK].config // {}) |
+  (.[0].defaults.network.config // {}) * .[1] * (.[2].config // {}) |
   .DFX_NETWORK = env.DFX_NETWORK |
   . as $config |
   .HOST=env.HOST
-' dfx.json <(echo "$local_deployment_data"))
+    ' dfx.json <(echo "$local_deployment_data") <(network_config))
 
 dfxNetwork=$(echo "$json" | jq -r ".DFX_NETWORK")
 cmcCanisterId=$(echo "$json" | jq -r ".CYCLES_MINTING_CANISTER_ID")
