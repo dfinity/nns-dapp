@@ -4,7 +4,7 @@ use crate::metrics_encoder::MetricsEncoder;
 use crate::state::{State, STATE};
 use crate::stats::encode_metrics;
 use crate::StableState;
-use base64::{engine::general_purpose::STANDARD as base64_engine, Engine};
+use base64::{engine::general_purpose::STANDARD as BASE64_ENGINE, Engine};
 use candid::{CandidType, Decode, Encode};
 use dfn_core::api::ic0::time;
 use flate2::read::GzDecoder;
@@ -325,8 +325,8 @@ fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -
         "IC-Certificate".to_string(),
         format!(
             "certificate=:{}:, tree=:{}:",
-            base64_engine.encode(certificate),
-            base64_engine.encode(serializer.into_inner())
+            BASE64_ENGINE.encode(certificate),
+            BASE64_ENGINE.encode(serializer.into_inner())
         ),
     )
 }

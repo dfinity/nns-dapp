@@ -8,7 +8,7 @@ use crate::types::ic_sns_swap::{
 use crate::types::ic_sns_wasm::DeployedSns;
 use crate::types::upstream::UpstreamData;
 use crate::Icrc1Value;
-use base64::{engine::general_purpose::STANDARD as base64_engine, Engine};
+use base64::{engine::general_purpose::STANDARD as BASE64_ENGINE, Engine};
 use candid::{CandidType, Nat};
 use num_traits::ToPrimitive;
 use serde::{Deserialize, Serialize};
@@ -105,7 +105,7 @@ pub const LOGO_PREFIX: &str = "data:image/png;base64,";
 /// Get the logo as binary from base64.
 /// TODO: Maybe support more image types?
 pub fn logo_binary(data_url: &str) -> Vec<u8> {
-    base64_engine
+    BASE64_ENGINE
         .decode(data_url.strip_prefix(LOGO_PREFIX).unwrap_or_default())
         .unwrap_or_default()
 }
