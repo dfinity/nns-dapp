@@ -186,7 +186,6 @@ RUN for wasm in sns_aggregator.wasm.gz sns_aggregator_dev.wasm.gz ; do scripts/d
 
 # Title: Image used to extract the final outputs from previous steps.
 FROM scratch AS scratch
-COPY --from=configurator /root/.config/dfx/networks.json global-config.json
 COPY --from=configurator /build/deployment-config.json /
 COPY --from=configurator /build/nns-dapp-arg* /
 # Note: The frontend/.env is kept for use with test deployments only.
