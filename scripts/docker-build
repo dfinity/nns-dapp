@@ -82,7 +82,7 @@ docker build --target check-environment .
 
 GLOBAL_NETWORK_CONFIG_PATH="$HOME/.config/dfx/networks.json"
 if test -e "$GLOBAL_NETWORK_CONFIG_PATH"
-then cp "$GLOBAL_NETWORK_CONFIG_PATH" .global-config.json # Docker cannot access files outside the local directory.
+then cp "$GLOBAL_NETWORK_CONFIG_PATH" global-config.json # Docker cannot access files outside the local directory.
 else echo "{}" > .global-config.json
 fi
 
@@ -103,6 +103,8 @@ else
     exit 1
   } >&2
 fi
+
+rm -f global-config.json
 set +x
 
 for file in "${assets[@]}"; do
