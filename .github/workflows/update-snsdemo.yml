@@ -51,7 +51,7 @@ jobs:
           ./scripts/update-snsdemo --dir ./snsdemo --release "${{ steps.update.outputs.release }}" --verbose
           echo "Changes:"
           git diff
-          git config --global user.email "gix-bot@dfinity.org"
+          git config --global user.email "gix-bot@users.noreply.github.com"
           git config --global user.name "GIX bot"
           git commit -a -m "Update snsdemo to ${{ steps.update.outputs.release }}"
       - name: Create Pull Request
