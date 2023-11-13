@@ -11,6 +11,7 @@ import {
   mockIcrcTransactionBurn,
   mockIcrcTransactionMint,
   mockIcrcTransactionWithId,
+  mockIcrcTransactionWithIdToSelf,
   mockIcrcTransactionsStoreSubscribe,
 } from "$tests/mocks/icrc-transactions.mock";
 import { IcrcTransactionsListPo } from "$tests/page-objects/IcrcTransactionsList.page-object";
@@ -123,6 +124,26 @@ describe("CkBTCTransactionList", () => {
     const { po } = renderComponent();
 
     expect(await po.getTransactionCardPos()).toHaveLength(1);
+  });
+
+  it("should render to-self transactions from store as duplicate", async () => {
+    const store = {
+      [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
+        [mockCkBTCMainAccount.identifier]: {
+          transactions: [mockIcrcTransactionWithIdToSelf],
+          completed: false,
+          oldestTxId: BigInt(0),
+        },
+      },
+    };
+
+    vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(
+      mockIcrcTransactionsStoreSubscribe(store)
+    );
+
+    const { po } = renderComponent();
+
+    expect(await po.getTransactionCardPos()).toHaveLength(2);
   });
 
   it("should render description burn to btc network", async () => {
