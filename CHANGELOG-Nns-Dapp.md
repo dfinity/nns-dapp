@@ -17,11 +17,6 @@ here after a successful release.
 
 #### Added
 
-* Specified the preferred storage schema as an argument.
-* Added provenance information to .did files and derived rust code.
-* Add `UpdateElectedHostosVersions` and `UpdateNodesHostosVersion` proposals support.
-* Show the maximum participation of the Neurons' Fund when present.
-* A list of exceptional (not-rendered, zero value) transactions.
 * Add a link to the ICP Dashboard in the project detail page.
 * Add collapse-all functionality to json tree view.
 
