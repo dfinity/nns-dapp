@@ -213,6 +213,9 @@ export const mapIcrcTransaction = ({
 
 export type mapIcrcTransactionType = typeof mapIcrcTransaction;
 
+// The memo will decode to: [0, [ withdrawalAddress, kytFee, status]]
+type CkbtcBurnMemo = [0, [string, number, number | null | undefined]];
+
 export const mapCkbtcTransaction = (params: {
   transaction: IcrcTransactionWithId;
   account: Account;
@@ -227,9 +230,9 @@ export const mapCkbtcTransaction = (params: {
     transaction: { transaction },
   } = params;
   if (transaction.burn.length === 1) {
-    const memo = transaction.burn[0].memo[0];
+    const memo = transaction.burn[0].memo[0] as Uint8Array;
     try {
-      const decodedMemo = Cbor.decode(memo);
+      const decodedMemo = Cbor.decode(memo) as CkbtcBurnMemo;
       const withdrawalAddress = decodedMemo[1][0];
       mappedTransaction.to = withdrawalAddress;
       mappedTransaction.isSend = true;
