@@ -30,7 +30,7 @@ pub struct LinearScalingCoefficient {
     pub to_direct_participation_icp_e8s: Option<u64>,
 }
 
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize, PartialEq)]
 pub struct IdealMatchedParticipationFunction {
     pub serialized_representation: Option<String>,
 }
