@@ -14,17 +14,19 @@ export interface IcrcCandidAccount {
 }
 
 export const createIcrcTransactionWithId = ({
+  id,
   from,
   to,
   fee,
   amount,
 }: {
+  id?: bigint;
   to?: IcrcCandidAccount;
   from?: IcrcCandidAccount;
   fee?: bigint;
   amount?: bigint;
 }): IcrcTransactionWithId => ({
-  id: BigInt(123),
+  id: id ?? 123n,
   transaction: {
     kind: "transfer",
     timestamp: BigInt(12354),
