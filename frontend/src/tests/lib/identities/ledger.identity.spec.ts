@@ -59,7 +59,7 @@ describe("LedgerIdentity", () => {
     mockLedgerApp.getAddressAndPubKey.mockResolvedValue({
       errorMessage: undefined,
       returnCode: LedgerError.NoErrors,
-      publicKey: Buffer.from(publicKey.toRaw()),
+      publicKey: Buffer.from(publicKey.rawKey),
       principal: Buffer.from(mockPrincipal.toUint8Array()),
       address: Buffer.from(""),
       principalText: mockPrincipal.toText(),

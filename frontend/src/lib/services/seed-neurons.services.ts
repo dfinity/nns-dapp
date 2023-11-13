@@ -41,7 +41,7 @@ export const claimSeedNeurons = async () => {
     });
 
     const bufferKey = identity.getPublicKey() as Secp256k1PublicKey;
-    const hexPubKey = buf2hex(bufferKey.toRaw());
+    const hexPubKey = buf2hex(bufferKey.rawKey);
     const isHex = hexPubKey.match("^[0-9a-fA-F]+$");
     if (!isHex) {
       toastsError({

@@ -67,7 +67,7 @@ describe("utils", () => {
 
     it("should render principal as hash", () => {
       expect(stringifyJson({ principal: mockPrincipal })).toBe(
-        `{"principal":"${mockPrincipal.toString()}"}`
+        `{"principal":{"__principal__":"${mockPrincipal.toString()}"}}`
       );
     });
 

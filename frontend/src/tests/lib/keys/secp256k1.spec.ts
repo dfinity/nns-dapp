@@ -32,7 +32,7 @@ describe("secp256k1", () => {
 
         const expectedPublicKey = fromHexString(rawPublicKeyHex);
         expect(
-          new Uint8Array(Secp256k1PublicKey.fromDer(derPublicKey).toRaw())
+          new Uint8Array(Secp256k1PublicKey.fromDer(derPublicKey).rawKey)
         ).toEqual(new Uint8Array(expectedPublicKey));
       }
     );
