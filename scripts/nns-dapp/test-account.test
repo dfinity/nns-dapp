@@ -26,7 +26,7 @@ test -z "${INSTALL:-}" || {
   dfx start --clean --background
 
   dfx canister create nns-dapp
-  dfx canister install nns-dapp --wasm "./$BUILD_DIR/nns-dapp_test.wasm.gz" --argument "$(cat "$BUILD_DIR/nns-dapp-arg-local.did")"
+  dfx canister install nns-dapp --wasm "./$BUILD_DIR/nns-dapp_test.wasm.gz" --argument "$(cat "$BUILD_DIR/nns-dapp-arg-local.did")" --yes
 }
 # However the network was created, the number of pre-existing test accounts must be zero.  We will enforce
 # the stronger constraint that the number of accounts is zero.

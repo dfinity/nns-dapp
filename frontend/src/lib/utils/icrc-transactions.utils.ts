@@ -15,14 +15,57 @@ import type {
 } from "@dfinity/ledger-icrc";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
-import { fromNullable, nonNullish } from "@dfinity/utils";
-import { mapToSelfTransaction, showTransactionFee } from "./transactions.utils";
+import {
+  fromNullable,
+  isNullish,
+  nonNullish,
+  uint8ArrayToHexString,
+} from "@dfinity/utils";
+import { showTransactionFee } from "./transactions.utils";
+
+const isToSelf = (transaction: IcrcTransaction): boolean => {
+  if (transaction.transfer.length !== 1) {
+    return false;
+  }
+  const { from, to } = transaction.transfer[0];
+  if (from.owner.toText() !== to.owner.toText()) {
+    return false;
+  }
+  const fromSub = fromNullable(from.subaccount);
+  const toSub = fromNullable(to.subaccount);
+  if (isNullish(fromSub)) {
+    return isNullish(toSub);
+  }
+  return (
+    nonNullish(toSub) &&
+    uint8ArrayToHexString(fromSub) === uint8ArrayToHexString(toSub)
+  );
+};
 
 /**
- * Returns transactions of an SNS account sorted by date (newest first).
- * Filters out duplicated transactions.
- * A duplicated transaction is normally one made to itself.
- * The data of the duplicated transaction is the same in both transactions. No need to show it twice.
+ * Duplicates transactions made from and to the same account such that one of
+ * the transactions has toSelfTransaction set to true and the other to false.
+ */
+const mapToSelfTransactions = (
+  transactions: IcrcTransactionWithId[]
+): { transaction: IcrcTransactionWithId; toSelfTransaction: boolean }[] => {
+  const resultTransactions = transactions.flatMap((transaction) => {
+    const tx = {
+      transaction: { ...transaction },
+      toSelfTransaction: false,
+    };
+    if (isToSelf(transaction.transaction)) {
+      return [{ ...tx, toSelfTransaction: true }, tx];
+    }
+    return [tx];
+  });
+  return resultTransactions;
+};
+
+/**
+ * Returns transactions of an ICRC-1 account sorted by date (newest first).
+ * Duplicates transactions made from and to the same account such that one of
+ * the transactions has toSelfTransaction set to true and the other to false.
  *
  * @param params
  * @param {Account} params.account
@@ -39,7 +82,7 @@ export const getSortedTransactionsFromStore = ({
   canisterId: UniverseCanisterId;
   account: Account;
 }): IcrcTransactionData[] =>
-  mapToSelfTransaction(
+  mapToSelfTransactions(
     store[canisterId.toText()]?.[account.identifier]?.transactions ?? []
   ).sort(({ transaction: txA }, { transaction: txB }) =>
     Number(txB.transaction.timestamp - txA.transaction.timestamp)
@@ -216,3 +259,20 @@ export const isIcrcTransactionsCompleted = ({
   account: Account;
 }): boolean =>
   Boolean(store[canisterId.toText()]?.[account.identifier]?.completed);
+
+/**
+ * Dedupe transactions based on ID.
+ */
+export const getUniqueTransactions = (
+  transactions: IcrcTransactionWithId[]
+): IcrcTransactionWithId[] => {
+  const txIds = new Set<bigint>();
+  const result: IcrcTransactionWithId[] = [];
+  for (const tx of transactions) {
+    if (!txIds.has(tx.id)) {
+      txIds.add(tx.id);
+      result.push(tx);
+    }
+  }
+  return result;
+};

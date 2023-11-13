@@ -42,10 +42,10 @@
   import type { AccountIdentifierText } from "$lib/types/account";
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
   import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
-  import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
   import HardwareWalletListNeuronsButton from "$lib/components/accounts/HardwareWalletListNeuronsButton.svelte";
   import HardwareWalletShowActionButton from "$lib/components/accounts/HardwareWalletShowActionButton.svelte";
   import RenameSubAccountButton from "$lib/components/accounts/RenameSubAccountButton.svelte";
+  import { NNS_UNIVERSE } from "$lib/constants/universes.constants";
 
   onMount(() => {
     pollAccounts();

@@ -248,7 +248,7 @@ jobs:
         run: ./scripts/nns-dapp/bump-patch.test
       - name: Set git user
         run: |
-          git config --global user.email "gix-bot@dfinity.org"
+          git config --global user.email "gix-bot@users.noreply.github.com"
           git config --global user.name "GIX bot"
       - name: Command creates commits
         run: |

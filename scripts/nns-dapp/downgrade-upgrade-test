@@ -134,7 +134,7 @@ upgrade_nnsdapp() {
   # Check that the data is plausible
   # TODO: Check that the prestate is not empty; first we need to populate the state.
   # TODO: Consider storing all accounts data in a merkle tree so that we can check just the root hash.
-  dfx canister install --upgrade-unchanged nns-dapp --wasm "$1" --mode upgrade --argument "$(cat nns-dapp-arg-local.did)"
+  dfx canister install --upgrade-unchanged nns-dapp --wasm "$1" --mode upgrade --argument "$(cat nns-dapp-arg-local.did)" --yes
   scripts/dfx-canister-check-wasm-hash --wasm "$1" --canister nns-dapp
   wait_for_migration
   poststate="$(get_upgrade_invariants)"
@@ -165,7 +165,7 @@ if dfx canister id nns-dapp >/dev/null 2>/dev/null; then
   upgrade_nnsdapp "$CURRENT_WASM"
 else
   dfx canister create nns-dapp
-  dfx canister install nns-dapp --wasm "$CURRENT_WASM" --argument "$(cat nns-dapp-arg-local.did)"
+  dfx canister install nns-dapp --wasm "$CURRENT_WASM" --argument "$(cat nns-dapp-arg-local.did)" --yes
 fi
 scripts/dfx-canister-check-wasm-hash --wasm "$CURRENT_WASM" --canister nns-dapp
 echo "Checking that the current wasm is healthy..."
