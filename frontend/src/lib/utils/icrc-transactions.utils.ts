@@ -9,6 +9,7 @@ import type {
 } from "$lib/types/transaction";
 import { AccountTransactionType } from "$lib/types/transaction";
 import type { UniverseCanisterId } from "$lib/types/universe";
+import { Cbor } from "@dfinity/agent";
 import type {
   IcrcTransaction,
   IcrcTransactionWithId,
@@ -21,7 +22,6 @@ import {
   nonNullish,
   uint8ArrayToHexString,
 } from "@dfinity/utils";
-import * as cbor from "borc";
 import { showTransactionFee } from "./transactions.utils";
 
 const isToSelf = (transaction: IcrcTransaction): boolean => {
@@ -229,7 +229,7 @@ export const mapCkbtcTransaction = (params: {
   if (transaction.burn.length === 1) {
     const memo = transaction.burn[0].memo[0];
     try {
-      const decodedMemo = cbor.decodeFirst(memo);
+      const decodedMemo = Cbor.decode(memo);
       const withdrawalAddress = decodedMemo[1][0];
       mappedTransaction.to = withdrawalAddress;
       mappedTransaction.isSend = true;
