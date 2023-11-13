@@ -10,7 +10,8 @@
   import ReceiveButton from "./actions/ReceiveButton.svelte";
   import SendButton from "./actions/SendButton.svelte";
   import { ActionType } from "$lib/types/actions";
-  import TokenBalance from "../TokenBalance.svelte";
+  import { UnavailableTokenAmount } from "$lib/utils/token.utils";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
 
   export let userTokenData: UserTokenData;
   export let index: number;
@@ -62,7 +63,13 @@
   </div>
   <div role="cell" class="mobile-row-cell left-cell">
     <span class="cell-key">Balance</span>
-    <TokenBalance {userTokenData} />
+    {#if userTokenData.balance instanceof UnavailableTokenAmount}
+      <span data-tid="token-value-label"
+        >{`-/- ${userTokenData.balance.token.symbol}`}</span
+      >
+    {:else}
+      <AmountDisplay singleLine amount={userTokenData.balance} />
+    {/if}
   </div>
   <div role="cell" class="actions-cell">
     {#each userTokenData.actions as action}
