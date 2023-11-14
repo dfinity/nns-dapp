@@ -64,7 +64,7 @@ jobs:
           author: gix-bot <gix-bot@users.noreply.github.com>
           branch: bot-snsdemo-update
           branch-suffix: timestamp
-          add-paths: .github/*/*ml
+          add-paths: dfx.json
           delete-branch: true
           title: 'Update snsdemo to ${{ steps.update.outputs.release }}'
           body: |

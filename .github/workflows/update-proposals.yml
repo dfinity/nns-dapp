@@ -36,7 +36,7 @@ jobs:
           author: gix-bot <gix-bot@users.noreply.github.com>
           branch: bot-proposals-update
           branch-suffix: timestamp
-          add-paths: .github/*/*ml
+          add-paths: rs/proposals/src/canisters/*/api.rs
           delete-branch: true
           title: 'Update proposal rendering'
           body: |
