@@ -1,10 +1,11 @@
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
 import TokensRoute from "$routes/(app)/(nns)/tokens/+page.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
-import { principal } from "$tests/mocks/sns-projects.mock";
+import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { TokensRoutePo } from "$tests/page-objects/TokensRoute.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -26,18 +27,28 @@ describe("Tokens route", () => {
   describe("when feature flag enabled", () => {
     beforeEach(() => {
       overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
+      const rootCanisterId1 = rootCanisterIdMock;
+      const rootCanisterId2 = principal(1);
       setSnsProjects([
         {
-          rootCanisterId: rootCanisterIdMock,
+          rootCanisterId: rootCanisterId1,
           projectName: "Tetris",
           lifecycle: SnsSwapLifecycle.Committed,
         },
         {
-          rootCanisterId: principal(1),
+          rootCanisterId: rootCanisterId2,
           projectName: "Pacman",
           lifecycle: SnsSwapLifecycle.Committed,
         },
       ]);
+      tokensStore.setTokens({
+        [rootCanisterId1.toText()]: {
+          token: mockSnsToken,
+        },
+        [rootCanisterId2.toText()]: {
+          token: mockSnsToken,
+        },
+      });
     });
 
     describe("when logged in", () => {
