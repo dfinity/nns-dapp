@@ -7,4 +7,6 @@ export type UniverseCanisterId = Principal;
 export interface Universe {
   canisterId: UniverseCanisterIdText;
   summary?: SnsSummary;
+  title?: string;
+  logo?: string;
 }

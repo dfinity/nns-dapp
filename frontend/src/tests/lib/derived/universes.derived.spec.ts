@@ -1,8 +1,10 @@
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import {
-  CKBTC_UNIVERSE_CANISTER_ID,
-  CKTESTBTC_UNIVERSE_CANISTER_ID,
-} from "$lib/constants/ckbtc-canister-ids.constants";
+  CKBTC_UNIVERSE,
+  CKTESTBTC_UNIVERSE,
+  NNS_UNIVERSE,
+} from "$lib/constants/universes.constants";
 import { universesStore } from "$lib/derived/universes.derived";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { principal } from "$tests/mocks/sns-projects.mock";
@@ -26,28 +28,29 @@ describe("universes derived stores", () => {
     it("should return Nns, ckBTC and ckTESTBTC per default", () => {
       const store = get(universesStore);
       expect(store.length).toEqual(3);
-      expect(store[0].summary).toBeUndefined();
-      expect(store[0].canisterId).toEqual(OWN_CANISTER_ID.toText());
-      expect(store[1].summary).toBeUndefined();
-      expect(store[1].canisterId).toEqual(CKBTC_UNIVERSE_CANISTER_ID.toText());
-      expect(store[2].summary).toBeUndefined();
-      expect(store[2].canisterId).toEqual(
-        CKTESTBTC_UNIVERSE_CANISTER_ID.toText()
-      );
+      expect(store[0]).toEqual(NNS_UNIVERSE);
+      expect(store[1]).toEqual(CKBTC_UNIVERSE);
+      expect(store[2]).toEqual(CKTESTBTC_UNIVERSE);
     });
 
     it("should return Nns, ckBTC, ckTESTBTC and SNS projects", () => {
       const snsRootCanisterId = rootCanisterIdMock;
+      const projectName = "Tetris";
       setSnsProjects([
         {
           lifecycle: SnsSwapLifecycle.Committed,
           rootCanisterId: snsRootCanisterId,
+          projectName,
         },
       ]);
       const store = get(universesStore);
       expect(store.length).toEqual(4);
       expect(store[3].summary).not.toBeUndefined();
       expect(store[3].canisterId).toEqual(snsRootCanisterId.toText());
+      expect(store[3].title).toBe(projectName);
+      expect(store[3].logo).toBe(
+        `https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/${snsRootCanisterId.toText()}/logo.png`
+      );
     });
   });
 

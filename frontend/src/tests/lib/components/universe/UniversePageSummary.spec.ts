@@ -1,9 +1,9 @@
 import UniversePageSummary from "$lib/components/universe/UniversePageSummary.svelte";
-import { NNS_UNIVERSE } from "$lib/constants/universes.constants";
 import {
   CKBTC_UNIVERSE,
   CKTESTBTC_UNIVERSE,
-} from "$lib/derived/ckbtc-universes.derived";
+  NNS_UNIVERSE,
+} from "$lib/constants/universes.constants";
 import {
   mockSnsFullProject,
   mockSummary,

@@ -1,21 +1,13 @@
 import {
-  CKBTC_UNIVERSE_CANISTER_ID,
-  CKTESTBTC_UNIVERSE_CANISTER_ID,
-} from "$lib/constants/ckbtc-canister-ids.constants";
+  CKBTC_UNIVERSE,
+  CKTESTBTC_UNIVERSE,
+} from "$lib/constants/universes.constants";
 import {
   ENABLE_CKBTC,
   ENABLE_CKTESTBTC,
 } from "$lib/stores/feature-flags.store";
 import type { Universe } from "$lib/types/universe";
 import { derived, type Readable } from "svelte/store";
-
-export const CKBTC_UNIVERSE: Universe = {
-  canisterId: CKBTC_UNIVERSE_CANISTER_ID.toText(),
-};
-
-export const CKTESTBTC_UNIVERSE: Universe = {
-  canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID.toText(),
-};
 
 export const ckBTCUniversesStore = derived<
   [Readable<boolean>, Readable<boolean>],

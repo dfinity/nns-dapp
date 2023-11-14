@@ -18,6 +18,8 @@ export const universesStore = derived<
     ...(projects.map(({ rootCanisterId, summary }) => ({
       canisterId: rootCanisterId.toText(),
       summary,
+      logo: summary.metadata.logo,
+      title: summary.metadata.name,
     })) ?? []),
   ]
 );

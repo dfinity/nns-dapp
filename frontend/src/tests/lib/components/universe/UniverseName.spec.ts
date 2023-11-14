@@ -1,9 +1,9 @@
 import UniverseName from "$lib/components/universe/UniverseName.svelte";
-import { NNS_UNIVERSE } from "$lib/constants/universes.constants";
 import {
   CKBTC_UNIVERSE,
   CKTESTBTC_UNIVERSE,
-} from "$lib/derived/ckbtc-universes.derived";
+  NNS_UNIVERSE,
+} from "$lib/constants/universes.constants";
 import en from "$tests/mocks/i18n.mock";
 import {
   mockSnsFullProject,
