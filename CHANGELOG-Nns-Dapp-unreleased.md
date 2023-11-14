@@ -36,6 +36,11 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Add a workflow to update the SNS aggregator bindings regularly.
+* Added support for global network config.
+* Cron job to update proposal types.
+* Enable dependabot for Rust updates.
+* Workflow to get the latest NNS and SNS canister candid files.
+* Try to prevent calls to global.fetch in unit tests.
 * Add `devenv_llorenc` and `devenv_dskloet` to list of networks.
 
 #### Changed

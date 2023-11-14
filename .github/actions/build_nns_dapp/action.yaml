@@ -21,6 +21,9 @@ runs:
   steps:
     - name: Set up docker buildx
       uses: docker/setup-buildx-action@v2
+    - name: Create global config
+      shell: bash
+      run: echo "{}" > global-config.json
     - name: Build wasms
       uses: docker/build-push-action@v3
       with:

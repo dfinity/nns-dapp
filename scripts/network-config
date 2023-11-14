@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+#
+# Determines the network configuration.
+#
+# Usage: Source this file.
+#
+# You MAY execute this file if you export DFX_NETWORK but that is not standard usage.
+
+# ... Network config may be in dfx.json (deprecated) or in the user's global network config, if it exists.
+GLOBAL_NETWORK_CONFIG_FILE="$HOME/.config/dfx/networks.json"
+
+# Checks that the DFX_NETWORK variable is defined
+assert_dfx_network_var_is_set() {
+  test -n "${DFX_NETWORK:-}" || {
+    echo "ERROR: DFX_NETWORK is not defined."
+    return 1
+  } >&2
+}
+# Gets the global network configuration.  If missing, the answer is null and the return-value 1.
+global_network_config() {
+  assert_dfx_network_var_is_set || return
+  if test -e "$GLOBAL_NETWORK_CONFIG_FILE"; then
+    jq -e '.[env.DFX_NETWORK]' "$GLOBAL_NETWORK_CONFIG_FILE"
+  else
+    echo null
+    return 1
+  fi
+}
+# Gets the local network configuration.  If missing, the answer is null and the return-value 1.
+local_network_config() {
+  assert_dfx_network_var_is_set || return
+  jq -e '.networks[env.DFX_NETWORK]' dfx.json
+}
+# Checks that the DFX_NETWORK is configured
+assert_dfx_network_var_is_configured() {
+  local_network_config >/dev/null || global_network_config >/dev/null || {
+    echo "ERROR: DFX_NETWORK '$DFX_NETWORK' is not defined in dfx.json or $GLOBAL_NETWORK_CONFIG_FILE"
+    echo "Available networks are:"
+    list_networks
+    return 1
+  } >&2
+}
+# Gets the combined network configuration.
+network_config() {
+  : "Getting the local and global network data..."
+  : "- The local and global network configurations are merged."
+  : "- If the same field is present locally and globally, the local version takes precedence."
+  assert_dfx_network_var_is_configured && jq -s '(.[0] // {}) * (.[1] // {})' <(global_network_config || true) <(local_network_config || true)
+}
+# Lists local network configurations
+local_networks() {
+  jq -r '.networks // [] | keys | .[]' dfx.json
+}
+# Lists global network configurations
+global_networks() {
+  if test -e "$GLOBAL_NETWORK_CONFIG_FILE"; then
+    jq -r '. | keys | .[]' "$GLOBAL_NETWORK_CONFIG_FILE"
+  fi
+}
+# Lists all dfx network configurations
+list_networks() {
+  {
+    local_networks
+    global_networks
+  } | sort | uniq
+}
+# Gets the static host
+static_host() {
+  network_config | jq -e '.STATIC_HOST // .HOST'
+}
+
+# If this is run on the command line, print the config.
+(return 0 2>/dev/null) || network_config

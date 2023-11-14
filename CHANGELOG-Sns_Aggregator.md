@@ -10,6 +10,7 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 
 ### Added
 ### Changed
+- Updated the SNS bindings used by the aggregator.
 ### Deprecated
 ### Removed
 ### Fixed

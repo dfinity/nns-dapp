@@ -1,0 +1,434 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2030,SC2031,SC2001
+# Note regarding shellcheck: These tests create subshells with variables, it is intentional that the variables are not set globally.
+set -euo pipefail
+
+SCRIPT_TO_TEST="$(realpath "${0%.test}")"
+
+# Config used in tests.
+sample_global_config() {
+  cat <<-EOF
+	{
+	  "local": {
+	    "config": {
+	      "FETCH_ROOT_KEY": true,
+	      "HOST": "http://localhost:8080",
+	      "FEATURE_FLAGS": {
+		"ENABLE_SNS": true,
+		"ENABLE_SNS_2": true
+	      }
+	    },
+	    "bind": "127.0.0.1:8080",
+	    "type": "ephemeral",
+	    "replica": {
+	      "subnet_type": "system"
+	    }
+	  },
+	  "nnsdapp": {
+	    "config": {
+	      "FETCH_ROOT_KEY": true,
+	      "HOST": "https://nnsdapp.testnet.dfinity.network"
+	    },
+	    "providers": [
+	      "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
+	    ],
+	    "type": "persistent"
+	  }
+	}
+	EOF
+}
+# dfx.json used in tests
+sample_local_config() {
+  cat <<-"EOF"
+	{
+	  "version": 1,
+	  "canisters": {
+	    "foasdhfgkayewr_backend": {
+	      "type": "rust",
+	      "package": "foasdhfgkayewr_backend",
+	      "candid": "src/foasdhfgkayewr_backend/foasdhfgkayewr_backend.did"
+	    },
+	    "foasdhfgkayewr_frontend": {
+	      "type": "assets",
+	      "source": [
+		"src/foasdhfgkayewr_frontend/assets"
+	      ],
+	      "dependencies": [
+		"foasdhfgkayewr_backend"
+	      ]
+	    }
+	  },
+	  "networks": {
+	    "mainnet": {
+	      "config": {
+		"FETCH_ROOT_KEY": false,
+		"API_HOST": "https://icp-api.io",
+		"STATIC_HOST": "https://icp0.io",
+		"FEATURE_FLAGS": {
+		  "ENABLE_CKBTC": true,
+		  "ENABLE_CKTESTBTC": false
+		}
+	      },
+	      "providers": [
+		"https://icp-api.io/"
+	      ],
+	      "type": "persistent"
+	    }
+	  },
+	  "defaults": {
+	    "build": {
+	      "packtool": "",
+	      "args": ""
+	    }
+	  },
+	  "output_env_file": ".env"
+	}
+	EOF
+}
+
+# Creates a test environment with:
+# - HOME - a temporary HOME directory
+# - GLOBAL_NETWORK_CONFIG_FILE - the global config file for that test environment
+# - PWD - the PWD will be in a toy project in the temporary HOME
+# - dfx.json - local network configuration.
+mk_env() {
+  HOME="$(mktemp -d)"
+  export HOME
+  cd "$HOME"
+  . "$SCRIPT_TO_TEST"
+  mkdir toy_project
+  cd toy_project
+  sample_local_config >dfx.json
+  mkdir -p "$HOME/.config/dfx"
+  sample_global_config >"$HOME/.config/dfx/networks.json"
+}
+
+# Prints a section title
+title() {
+  cat <<-EOF
+
+	=============================================================================
+	   $*
+	=============================================================================
+	EOF
+}
+
+(
+  title "Self-check: Stock environment should be created"
+  HOME_BEFORE="$HOME"
+  mk_env
+  [[ "$HOME" != "$HOME_BEFORE" ]] || {
+    echo "ERROR: Should have a temporary home dir."
+    echo "       HOME='${HOME:-}'"
+    exit 1
+  } >&2
+
+  [[ "$HOME" != "${HOME#"${TMPDIR:-/tmp}"}" ]] || {
+    echo "ERROR: Expected the new HOME to be under TEMPDIR (defaulting to /tmp)."
+    echo "       HOME='${HOME:-}'"
+    echo "       TEMPDIR='${TMPDIR:-}'"
+    echo "       TEMPDIR='${TMPDIR:-/tmp}' (with default)"
+    exit 1
+  } >&2
+
+  [[ "$PWD" == "$HOME/toy_project" ]] || {
+    echo "ERROR: Should be in a toy project in the temporary home directory."
+    echo "PWD: $PWD"
+    exit 1
+  } >&2
+
+  test -e dfx.json || {
+    echo "ERROR: Should have a dfx.json in the current directory."
+    exit 1
+  } >&2
+
+  jq -e .networks dfx.json >/dev/null || {
+    echo "ERROR: The local dfx.json should have a .networks entry."
+    exit 1
+  } >&2
+
+  test -e "$HOME/.config/dfx/networks.json" || {
+    echo "ERROR: The stock environment should have a global network config at:"
+    echo "  '$HOME/.config/dfx/networks.json'"
+    exit 1
+  } >&2
+
+  echo OK
+)
+
+(
+  title "assert_dfx_network_var_is_set should succeed when the network is set"
+  mk_env
+  export DFX_NETWORK
+  DFX_NETWORK=gobbeldygook
+  if assert_dfx_network_var_is_set; then
+    echo OK
+  else
+    {
+      echo "DFX_NETWORK is set (to '$DFX_NETWORK') so this should have succeeded."
+      exit 1
+    } >&2
+  fi
+)
+(
+  title "assert_dfx_network_var_is_set should fail when the network is unset"
+  mk_env
+  unset DFX_NETWORK
+  if assert_dfx_network_var_is_set 2>/dev/null; then
+    {
+      echo "FAIL"
+      exit 1
+    } >&2
+  else
+    echo OK
+  fi
+)
+(
+  title "global_network_config should be able to get a globally defined network"
+  mk_env
+  DFX_NETWORK=local
+  export DFX_NETWORK
+  ACTUAL_CONFIG="$(global_network_config)" || {
+    retval="$?"
+    echo "FAIL: global_network_config should have returned zero but:"
+    echo "Returned: $retval"
+    echo "With value: '$ACTUAL_CONFIG'"
+    exit 1
+  }
+  # Format both actual and expected outputs with jq so that whitespace differences don't matter.
+  ACTUAL_CONFIG="$(echo "$ACTUAL_CONFIG" | jq .)"
+  EXPECTED_CONFIG="$(sample_global_config | jq ".$DFX_NETWORK")"
+  [[ "$ACTUAL_CONFIG" == "${EXPECTED_CONFIG:-}" ]] || {
+    echo "FAIL: Config mismatch:"
+    echo "Expected:"
+    echo "$EXPECTED_CONFIG" | sed 's/^/    /g'
+    echo "Actual:"
+    echo "${ACTUAL_CONFIG:-}" | sed 's/^/    /g'
+    exit 1
+  } >&2
+  echo OK
+)
+(
+  title "global_network_config should return an error and null for a missing network"
+  mk_env
+  DFX_NETWORK=missingnetwork
+  export DFX_NETWORK
+  ACTUAL_CONFIG="$(! global_network_config)" || {
+    retval="$?"
+    echo "FAIL: global_network_config should have returned with a non-zero exit code but:"
+    echo "Returned: $retval"
+    echo "With value: '$ACTUAL_CONFIG'"
+    exit 1
+  } >&2
+  # Format both actual and expected outputs with jq so that whitespace differences don't matter.
+  ACTUAL_CONFIG="$(echo "$ACTUAL_CONFIG" | jq .)"
+  EXPECTED_CONFIG="$(echo null | jq .)"
+  [[ "$ACTUAL_CONFIG" == "${EXPECTED_CONFIG:-}" ]] || {
+    echo "FAIL: Config mismatch:"
+    echo "Expected:"
+    echo "$EXPECTED_CONFIG" | sed 's/^/    /g'
+    echo "Actual:"
+    echo "${ACTUAL_CONFIG:-}" | sed 's/^/    /g'
+    exit 1
+  } >&2
+  echo OK
+)
+(
+  title "local_network_config should be able to get a locally defined network"
+  mk_env
+  DFX_NETWORK=mainnet
+  export DFX_NETWORK
+  ACTUAL_CONFIG="$(local_network_config)" || {
+    retval="$?"
+    echo "FAIL: local_network_config should have returned zero but:"
+    echo "Returned: $retval"
+    echo "With value: '$ACTUAL_CONFIG'"
+    exit 1
+  }
+  # Format both actual and expected outputs with jq so that whitespace differences don't matter.
+  ACTUAL_CONFIG="$(echo "$ACTUAL_CONFIG" | jq .)"
+  EXPECTED_CONFIG="$(sample_local_config | jq ".networks.$DFX_NETWORK")"
+  [[ "$ACTUAL_CONFIG" == "${EXPECTED_CONFIG:-}" ]] || {
+    echo "FAIL: Config mismatch:"
+    echo "Expected:"
+    echo "$EXPECTED_CONFIG" | sed 's/^/    /g'
+    echo "Actual:"
+    echo "${ACTUAL_CONFIG:-}" | sed 's/^/    /g'
+    exit 1
+  } >&2
+  echo OK
+)
+(
+  title "local_network_config should return an error and null for a missing network"
+  mk_env
+  DFX_NETWORK=missingnetwork
+  export DFX_NETWORK
+  ACTUAL_CONFIG="$(! local_network_config)" || {
+    retval="$?"
+    echo "FAIL: local_network_config should have returned with a non-zero exit code but:"
+    echo "Returned: $retval"
+    echo "With value: '$ACTUAL_CONFIG'"
+    exit 1
+  } >&2
+  # Format both actual and expected outputs with jq so that whitespace differences don't matter.
+  ACTUAL_CONFIG="$(echo "$ACTUAL_CONFIG" | jq .)"
+  EXPECTED_CONFIG="$(echo null | jq .)"
+  [[ "$ACTUAL_CONFIG" == "${EXPECTED_CONFIG:-}" ]] || {
+    echo "FAIL: Config mismatch:"
+    echo "Expected:"
+    echo "$EXPECTED_CONFIG" | sed 's/^/    /g'
+    echo "Actual:"
+    echo "${ACTUAL_CONFIG:-}" | sed 's/^/    /g'
+    exit 1
+  } >&2
+  echo OK
+)
+(
+  title "network_config should be able to get a locally defined network"
+  mk_env
+  DFX_NETWORK=mainnet
+  export DFX_NETWORK
+  ACTUAL_CONFIG="$(network_config)" || {
+    retval="$?"
+    echo "FAIL: network_config should have returned zero but:"
+    echo "Returned: $retval"
+    echo "With value: '$ACTUAL_CONFIG'"
+    exit 1
+  }
+  # Format both actual and expected outputs with jq so that whitespace differences don't matter.
+  ACTUAL_CONFIG="$(echo "$ACTUAL_CONFIG" | jq .)"
+  EXPECTED_CONFIG="$(sample_local_config | jq ".networks.$DFX_NETWORK")"
+  [[ "$ACTUAL_CONFIG" == "${EXPECTED_CONFIG:-}" ]] || {
+    echo "FAIL: Config mismatch:"
+    echo "Expected:"
+    echo "$EXPECTED_CONFIG" | sed 's/^/    /g'
+    echo "Actual:"
+    echo "${ACTUAL_CONFIG:-}" | sed 's/^/    /g'
+    exit 1
+  } >&2
+  echo OK
+)
+(
+  title "network_config should be able to get a locally defined network even without global config"
+  mk_env
+  DFX_NETWORK=mainnet
+  export DFX_NETWORK
+  rm "$HOME/.config/dfx/networks.json"
+  ACTUAL_CONFIG="$(network_config)" || {
+    retval="$?"
+    echo "FAIL: network_config should have returned zero but:"
+    echo "Returned: $retval"
+    echo "With value: '$ACTUAL_CONFIG'"
+    exit 1
+  }
+  # Format both actual and expected outputs with jq so that whitespace differences don't matter.
+  ACTUAL_CONFIG="$(echo "$ACTUAL_CONFIG" | jq .)"
+  EXPECTED_CONFIG="$(sample_local_config | jq ".networks.$DFX_NETWORK")"
+  [[ "$ACTUAL_CONFIG" == "${EXPECTED_CONFIG:-}" ]] || {
+    echo "FAIL: Config mismatch:"
+    echo "Expected:"
+    echo "$EXPECTED_CONFIG" | sed 's/^/    /g'
+    echo "Actual:"
+    echo "${ACTUAL_CONFIG:-}" | sed 's/^/    /g'
+    exit 1
+  } >&2
+  echo OK
+)
+(
+  title "network_config should be able to get a globally defined network"
+  mk_env
+  DFX_NETWORK=local
+  export DFX_NETWORK
+  ACTUAL_CONFIG="$(network_config)" || {
+    retval="$?"
+    echo "FAIL: network_config should have returned zero but:"
+    echo "Returned: $retval"
+    echo "With value: '$ACTUAL_CONFIG'"
+    exit 1
+  }
+  # Format both actual and expected outputs with jq so that whitespace differences don't matter.
+  ACTUAL_CONFIG="$(echo "$ACTUAL_CONFIG" | jq .)"
+  EXPECTED_CONFIG="$(sample_global_config | jq ".$DFX_NETWORK")"
+  [[ "$ACTUAL_CONFIG" == "${EXPECTED_CONFIG:-}" ]] || {
+    echo "FAIL: Config mismatch:"
+    echo "Expected:"
+    echo "$EXPECTED_CONFIG" | sed 's/^/    /g'
+    echo "Actual:"
+    echo "${ACTUAL_CONFIG:-}" | sed 's/^/    /g'
+    exit 1
+  } >&2
+  echo OK
+)
+(
+  title "network_config should be able to get a globally defined network even if the local dfx has no networks"
+  mk_env
+  DFX_NETWORK=local
+  export DFX_NETWORK
+  jq 'del(.networks)' dfx.json | sponge dfx.json
+  ACTUAL_CONFIG="$(network_config)" || {
+    retval="$?"
+    echo "FAIL: network_config should have returned zero but:"
+    echo "Returned: $retval"
+    echo "With value: '$ACTUAL_CONFIG'"
+    exit 1
+  }
+  # Format both actual and expected outputs with jq so that whitespace differences don't matter.
+  ACTUAL_CONFIG="$(echo "$ACTUAL_CONFIG" | jq .)"
+  EXPECTED_CONFIG="$(sample_global_config | jq ".$DFX_NETWORK")"
+  [[ "$ACTUAL_CONFIG" == "${EXPECTED_CONFIG:-}" ]] || {
+    echo "FAIL: Config mismatch:"
+    echo "Expected:"
+    echo "$EXPECTED_CONFIG" | sed 's/^/    /g'
+    echo "Actual:"
+    echo "${ACTUAL_CONFIG:-}" | sed 's/^/    /g'
+    exit 1
+  } >&2
+  echo OK
+)
+(
+  title "network_config should return an error and no stdout for a missing network"
+  mk_env
+  DFX_NETWORK=missingnetwork
+  export DFX_NETWORK
+  ACTUAL_CONFIG="$(! network_config 2>/dev/null)" || {
+    retval="$?"
+    echo "FAIL: network_config should have returned with a non-zero exit code but:"
+    echo "Returned: $retval"
+    echo "With value: '$ACTUAL_CONFIG'"
+    exit 1
+  } >&2
+  EXPECTED_CONFIG=""
+  [[ "$ACTUAL_CONFIG" == "${EXPECTED_CONFIG:-}" ]] || {
+    echo "FAIL: Config mismatch:"
+    echo "Expected:"
+    echo "$EXPECTED_CONFIG" | sed 's/^/    /g'
+    echo "Actual:"
+    echo "${ACTUAL_CONFIG:-}" | sed 's/^/    /g'
+    exit 1
+  } >&2
+  echo OK
+)
+(
+  title "network_config should provide a list of networks in the error message if queried for a non-existent network"
+  mk_env
+  DFX_NETWORK=missingnetwork
+  export DFX_NETWORK
+  ACTUAL_CONFIG="$(! network_config 2>&1)" || {
+    retval="$?"
+    echo "FAIL: network_config should have returned with a non-zero exit code but:"
+    echo "Returned: $retval"
+    echo "With value: '$ACTUAL_CONFIG'"
+    exit 1
+  } >&2
+  for network in local mainnet; do
+    echo "${ACTUAL_CONFIG:-}" | grep "$network" >/dev/null || {
+      echo "FAIL: Expected an error message listing the existing networks, including '$network'."
+      echo "Actual:"
+      echo "${ACTUAL_CONFIG:-}" | sed 's/^/    /g'
+      exit 1
+    } >&2
+  done
+  echo OK
+)
+
+title "SUCCESS: Tests in $0 passed."
