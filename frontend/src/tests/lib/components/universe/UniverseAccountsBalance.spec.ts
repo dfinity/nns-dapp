@@ -59,6 +59,8 @@ describe("UniverseAccountsBalance", () => {
   const universe: Universe = {
     canisterId: mockSnsCanisterId.toText(),
     summary: mockSnsFullProject.summary,
+    logo: "https://logo.png",
+    title: "Tetris",
   };
 
   describe("no balance", () => {

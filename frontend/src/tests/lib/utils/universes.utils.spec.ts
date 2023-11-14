@@ -93,6 +93,8 @@ describe("universes-utils", () => {
         universeLogoAlt({
           summary: mockSummary,
           canisterId: mockSnsFullProject.rootCanisterId.toText(),
+          title: "Tetris",
+          logo: "https://logo.png",
         })
       ).toEqual(
         `${mockSnsFullProject.summary.metadata.name} ${en.sns_launchpad.project_logo}`
@@ -103,20 +105,30 @@ describe("universes-utils", () => {
       expect(
         universeLogoAlt({
           canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID.toText(),
+          title: "Tetris",
+          logo: "https://logo.png",
         })
       ).toEqual(en.ckbtc.test_logo);
     });
 
     it("should render alt ckBTC", () => {
       expect(
-        universeLogoAlt({ canisterId: CKBTC_UNIVERSE_CANISTER_ID.toText() })
+        universeLogoAlt({
+          canisterId: CKBTC_UNIVERSE_CANISTER_ID.toText(),
+          title: "Tetris",
+          logo: "https://logo.png",
+        })
       ).toEqual(en.ckbtc.logo);
     });
 
     it("should render alt NNS", () => {
-      expect(universeLogoAlt({ canisterId: OWN_CANISTER_ID_TEXT })).toEqual(
-        en.auth.ic_logo
-      );
+      expect(
+        universeLogoAlt({
+          canisterId: OWN_CANISTER_ID_TEXT,
+          title: "Tetris",
+          logo: "https://logo.png",
+        })
+      ).toEqual(en.auth.ic_logo);
     });
   });
 });

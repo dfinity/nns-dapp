@@ -458,6 +458,8 @@ export const mockTokenStore = (run?: Subscriber<Token>) => {
 export const mockUniverse: Universe = {
   canisterId: principal(0).toText(),
   summary: mockSnsFullProject.summary,
+  title: mockSnsFullProject.summary.metadata.name,
+  logo: mockSnsFullProject.summary.metadata.logo,
 };
 
 export const mockLifecycleResponse: SnsGetLifecycleResponse = {
