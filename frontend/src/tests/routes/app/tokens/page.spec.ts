@@ -13,7 +13,7 @@ import { TokensRoutePo } from "$tests/page-objects/TokensRoute.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { AuthClient } from "@dfinity/auth-client";
+import { AuthClient } from "@dfinity/auth-client";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -39,6 +39,9 @@ describe("Tokens route", () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
       vi.spyOn(ckBTCLedgerApi, "getCkBTCToken").mockResolvedValue(
         mockCkBTCToken
+      );
+      vi.spyOn(AuthClient, "create").mockImplementation(
+        async (): Promise<AuthClient> => mockAuthClient
       );
       const rootCanisterId1 = rootCanisterIdMock;
       const rootCanisterId2 = principal(1);
