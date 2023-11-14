@@ -7,7 +7,10 @@ import {
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
-import { NNS_UNIVERSE } from "$lib/constants/universes.constants";
+import {
+  CKBTC_UNIVERSE,
+  NNS_UNIVERSE,
+} from "$lib/constants/universes.constants";
 import {
   isCkBTCUniverseStore,
   isNnsUniverseStore,
@@ -188,6 +191,8 @@ describe("selected universe derived stores", () => {
       expect($store2).toEqual({
         canisterId: mockSnsFullProject.rootCanisterId.toText(),
         summary: mockSnsFullProject.summary,
+        title: mockSnsFullProject.summary.metadata.name,
+        logo: mockSnsFullProject.summary.metadata.logo,
       });
     });
 
@@ -204,9 +209,7 @@ describe("selected universe derived stores", () => {
       });
 
       const $store2 = get(selectedUniverseStore);
-      expect($store2).toEqual({
-        canisterId: CKBTC_UNIVERSE_CANISTER_ID.toText(),
-      });
+      expect($store2).toEqual(CKBTC_UNIVERSE);
     });
   });
 
