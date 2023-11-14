@@ -29,11 +29,16 @@ jobs:
             sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
             DIDC_RELEASE="$latest_didc_release" jq '.defaults.build.config.DIDC_VERSION=(env.DIDC_RELEASE)' dfx.json  | sponge dfx.json
             echo "updated=1" >> "$GITHUB_OUTPUT"
+            echo "version=$latest_didc_release" >> "$GITHUB_OUTPUT"
           else
             echo "updated=0" >> "$GITHUB_OUTPUT"
           fi
 
           jq '.defaults.build.config.DIDC_VERSION' dfx.json
+          echo "Git status:"
+          git status
+          echo "Changes:"
+          git diff
         # If `dfx.json` was updated, create a PR.
       - name: Create Pull Request
         if: ${{ steps.update.outputs.updated == '1' }}
@@ -49,7 +54,7 @@ jobs:
           branch: bot-didc-update
           branch-suffix: timestamp
           delete-branch: true
-          title: 'Update didc release'
+          title: 'Update didc release to ${{ steps.update.outputs.version }}'
           body: |
             # Motivation
             A newer version of `didc` is available.

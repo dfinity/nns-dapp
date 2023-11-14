@@ -24,7 +24,13 @@ jobs:
           curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
       - name: Update to the latest declared APIs
         id: update
-        run: ./scripts/proposals/did2rs
+        run: |
+          # Derive rust files
+          ./scripts/proposals/did2rs
+          # Show changes
+          echo "Git status:"
+          git status
+          echo "Note: The git diff may be long so is not logged.  Please see the PR."
       - name: Create Pull Request
         id: cpr
         # Note: If there were no changes, this step creates no PR.
@@ -40,6 +46,8 @@ jobs:
           add-paths: rs/proposals/src/canisters/*/api.rs
           delete-branch: true
           title: 'Update proposal rendering'
+          # Note: It is _likely_ but not guaranteed that the .did files match the IC_COMMIT in dfx.json.  The files in the PR have a header that give this information reliably.
+          #       We do _not_ put a commit in the PR title as it could be misleading.
           body: |
             # Motivation
             We would like to render all the latest proposal types.
