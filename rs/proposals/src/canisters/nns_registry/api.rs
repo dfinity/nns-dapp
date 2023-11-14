@@ -1,3 +1,5 @@
+//! Rust code created from candid by: scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-11-08_23-01/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(clippy::missing_docs_in_private_items)]
 #![allow(non_camel_case_types)]
@@ -13,6 +15,13 @@ pub struct EmptyRecord {}
 // #![allow(dead_code, unused_imports)]
 // use candid::{self, CandidType, Decode, Deserialize, Encode, Principal};
 // use ic_cdk::api::call::CallResult as Result;
+
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct AddApiBoundaryNodePayload {
+    pub node_id: Principal,
+    pub domain: String,
+    pub version: String,
+}
 
 #[derive(Serialize, CandidType, Deserialize)]
 pub enum FirewallRulesScope {
@@ -47,6 +56,7 @@ pub struct AddNodePayload {
     pub http_endpoint: String,
     pub idkg_dealing_encryption_pk: Option<serde_bytes::ByteBuf>,
     pub xnet_endpoint: String,
+    pub chip_id: Option<serde_bytes::ByteBuf>,
     pub committee_signing_pk: serde_bytes::ByteBuf,
     pub node_signing_pk: serde_bytes::ByteBuf,
     pub transport_tls_cert: serde_bytes::ByteBuf,
@@ -288,6 +298,11 @@ pub struct RecoverSubnetPayload {
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct RemoveApiBoundaryNodesPayload {
+    pub node_ids: Vec<Principal>,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct RemoveFirewallRulesPayload {
     pub expected_hash: String,
     pub scope: FirewallRulesScope,
@@ -326,6 +341,18 @@ pub struct SetFirewallConfigPayload {
     pub ipv4_prefixes: Vec<String>,
     pub firewall_config: String,
     pub ipv6_prefixes: Vec<String>,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct UpdateApiBoundaryNodeDomainPayload {
+    pub node_id: Principal,
+    pub domain: String,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct UpdateApiBoundaryNodesVersionPayload {
+    pub version: String,
+    pub node_ids: Vec<Principal>,
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
@@ -447,6 +474,9 @@ pub struct UpdateUnassignedNodesConfigPayload {
 
 pub struct Service(pub Principal);
 impl Service {
+    pub async fn add_api_boundary_node(&self, arg0: AddApiBoundaryNodePayload) -> CallResult<()> {
+        ic_cdk::call(self.0, "add_api_boundary_node", (arg0,)).await
+    }
     pub async fn add_firewall_rules(&self, arg0: AddFirewallRulesPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "add_firewall_rules", (arg0,)).await
     }
@@ -498,6 +528,9 @@ impl Service {
     pub async fn recover_subnet(&self, arg0: RecoverSubnetPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "recover_subnet", (arg0,)).await
     }
+    pub async fn remove_api_boundary_nodes(&self, arg0: RemoveApiBoundaryNodesPayload) -> CallResult<()> {
+        ic_cdk::call(self.0, "remove_api_boundary_nodes", (arg0,)).await
+    }
     pub async fn remove_firewall_rules(&self, arg0: RemoveFirewallRulesPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "remove_firewall_rules", (arg0,)).await
     }
@@ -521,6 +554,15 @@ impl Service {
     }
     pub async fn set_firewall_config(&self, arg0: SetFirewallConfigPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "set_firewall_config", (arg0,)).await
+    }
+    pub async fn update_api_boundary_node_domain(&self, arg0: UpdateApiBoundaryNodeDomainPayload) -> CallResult<()> {
+        ic_cdk::call(self.0, "update_api_boundary_node_domain", (arg0,)).await
+    }
+    pub async fn update_api_boundary_nodes_version(
+        &self,
+        arg0: UpdateApiBoundaryNodesVersionPayload,
+    ) -> CallResult<()> {
+        ic_cdk::call(self.0, "update_api_boundary_nodes_version", (arg0,)).await
     }
     pub async fn update_elected_hostos_versions(&self, arg0: UpdateElectedHostosVersionsPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "update_elected_hostos_versions", (arg0,)).await
