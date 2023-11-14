@@ -1,3 +1,5 @@
+//! Rust code created from candid by: scripts/did2rs.sh --canister sns_wasm --out api.rs --header did2rs.header --traits Serialize
+//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-11-08_23-01/rs/nns/sns-wasm/canister/sns-wasm.did>
 #![allow(clippy::all)]
 #![allow(clippy::missing_docs_in_private_items)]
 #![allow(non_camel_case_types)]
@@ -75,14 +77,21 @@ pub struct LinearScalingCoefficient {
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct IdealMatchedParticipationFunction {
+    pub serialized_representation: Option<String>,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct NeuronsFundParticipationConstraints {
     pub coefficient_intervals: Vec<LinearScalingCoefficient>,
     pub max_neurons_fund_participation_icp_e8s: Option<u64>,
     pub min_direct_participation_threshold_icp_e8s: Option<u64>,
+    pub ideal_matched_participation_function: Option<IdealMatchedParticipationFunction>,
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct CfNeuron {
+    pub has_created_neuron_recipes: Option<bool>,
     pub nns_neuron_id: u64,
     pub amount_icp_e8s: u64,
 }
@@ -152,6 +161,7 @@ pub struct SnsInitPayload {
     pub max_dissolve_delay_seconds: Option<u64>,
     pub max_dissolve_delay_bonus_percentage: Option<u64>,
     pub nns_proposal_id: Option<u64>,
+    pub neurons_fund_participation: Option<bool>,
     pub min_participant_icp_e8s: Option<u64>,
     pub neuron_basket_construction_parameters: Option<NeuronBasketConstructionParameters>,
     pub fallback_controller_principal_ids: Vec<String>,
@@ -181,9 +191,11 @@ pub struct SnsInitPayload {
     pub token_logo: Option<String>,
     pub token_name: Option<String>,
     pub max_participant_icp_e8s: Option<u64>,
+    pub min_direct_participation_icp_e8s: Option<u64>,
     pub proposal_reject_cost_e8s: Option<u64>,
     pub restricted_countries: Option<Countries>,
     pub min_icp_e8s: Option<u64>,
+    pub max_direct_participation_icp_e8s: Option<u64>,
 }
 
 #[derive(Serialize, CandidType, Deserialize)]

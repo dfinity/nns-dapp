@@ -9,6 +9,7 @@ import {
 import { AppPath } from "$lib/constants/routes.constants";
 import type { Page } from "$lib/derived/page.derived";
 import { i18n } from "$lib/stores/i18n";
+import type { SnsSummary } from "$lib/types/sns";
 import type { Universe } from "$lib/types/universe";
 import { isSelectedPath } from "$lib/utils/navigation.utils";
 import { Principal } from "@dfinity/principal";
@@ -80,3 +81,10 @@ export const getUniverseLogo = (universe: Universe): string | undefined => {
     ? CKBTC_LOGO
     : universe.summary?.metadata.logo;
 };
+
+export const createUniverse = (summary: SnsSummary): Universe => ({
+  canisterId: summary.rootCanisterId.toText(),
+  summary,
+  title: summary.metadata.name,
+  logo: summary.metadata.logo,
+});

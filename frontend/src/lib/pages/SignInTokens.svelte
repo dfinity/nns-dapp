@@ -1,7 +1,11 @@
 <script lang="ts">
   import SignIn from "$lib/components/common/SignIn.svelte";
+  import DesktopTokensTable from "$lib/components/tokens/DesktopTokensTable/DesktopTokensTable.svelte";
   import { i18n } from "$lib/stores/i18n";
+  import type { UserTokenData } from "$lib/types/tokens-page";
   import { PageBanner, IconAccountsPage } from "@dfinity/gix-components";
+
+  export let userTokensData: UserTokenData[];
 </script>
 
 <main class="sign-in" data-tid="sign-in-tokens-page-component">
@@ -14,7 +18,7 @@
       <SignIn slot="actions" />
     </PageBanner>
 
-    <!-- TODO: GIX-1979 Add Tokens table no balances -->
+    <DesktopTokensTable {userTokensData} />
   </div>
 </main>
 

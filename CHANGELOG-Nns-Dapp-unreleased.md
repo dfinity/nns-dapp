@@ -59,4 +59,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Remove accidentally committed (empty) directory and fix commit patterns.
+
 #### Security
