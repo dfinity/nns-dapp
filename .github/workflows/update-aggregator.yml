@@ -1,6 +1,6 @@
 # A GitHub Actions workflow that regularly updates the aggregator SNS parsing code
 # and creates a PR for any changes.
-name: Update aggregator
+name: Update aggregator candid bindings
 on:
   schedule:
     - cron: '30 3 * * *'
