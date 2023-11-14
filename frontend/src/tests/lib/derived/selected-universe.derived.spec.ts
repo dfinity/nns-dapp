@@ -8,10 +8,6 @@ import {
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import {
-  CKBTC_UNIVERSE,
-  NNS_UNIVERSE,
-} from "$lib/constants/universes.constants";
-import {
   isCkBTCUniverseStore,
   isNnsUniverseStore,
   selectedCkBTCUniverseIdStore,
@@ -29,6 +25,7 @@ import {
   mockSnsCanisterId,
   mockSnsCanisterIdText,
 } from "$tests/mocks/sns.api.mock";
+import { ckBTCUniverseMock, nnsUniverseMock } from "$tests/mocks/universe.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
@@ -175,13 +172,13 @@ describe("selected universe derived stores", () => {
 
       const $store = get(selectedUniverseStore);
 
-      expect($store).toEqual(NNS_UNIVERSE);
+      expect($store).toEqual(nnsUniverseMock);
     });
 
     it("should get sns project", () => {
       const $store1 = get(selectedUniverseStore);
 
-      expect($store1).toEqual(NNS_UNIVERSE);
+      expect($store1).toEqual(nnsUniverseMock);
 
       page.mock({
         data: { universe: mockSnsFullProject.rootCanisterId.toText() },
@@ -199,7 +196,7 @@ describe("selected universe derived stores", () => {
     it("should get ckBTC", () => {
       const $store1 = get(selectedUniverseStore);
 
-      expect($store1).toEqual(NNS_UNIVERSE);
+      expect($store1).toEqual(nnsUniverseMock);
 
       page.mock({
         data: {
@@ -209,7 +206,7 @@ describe("selected universe derived stores", () => {
       });
 
       const $store2 = get(selectedUniverseStore);
-      expect($store2).toEqual(CKBTC_UNIVERSE);
+      expect($store2).toEqual(ckBTCUniverseMock);
     });
   });
 

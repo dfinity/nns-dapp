@@ -1,15 +1,12 @@
 import ProjectAccountsBalance from "$lib/components/universe/UniverseAccountsBalance.svelte";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
-import {
-  CKBTC_UNIVERSE,
-  NNS_UNIVERSE,
-} from "$lib/constants/universes.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { formatToken } from "$lib/utils/token.utils";
+import { createUniverse } from "$lib/utils/universe.utils";
 import { page } from "$mocks/$app/stores";
 import {
   mockCkBTCMainAccount,
@@ -33,7 +30,7 @@ import {
   mockTokensSubscribe,
   mockUniversesTokens,
 } from "$tests/mocks/tokens.mock";
-import { createUniverseMock } from "$tests/mocks/universe.mock";
+import { ckBTCUniverseMock, nnsUniverseMock } from "$tests/mocks/universe.mock";
 import { render } from "@testing-library/svelte";
 
 describe("UniverseAccountsBalance", () => {
@@ -56,7 +53,7 @@ describe("UniverseAccountsBalance", () => {
   });
 
   // Not the same sns canister id to test that the balance is not displayed
-  const universe = createUniverseMock(mockSnsFullProject.summary);
+  const universe = createUniverse(mockSnsFullProject.summary);
 
   describe("no balance", () => {
     it("should render skeleton while loading", () => {
@@ -87,7 +84,7 @@ describe("UniverseAccountsBalance", () => {
 
     it("should render a total balance for Nns", () => {
       const { getByTestId } = render(ProjectAccountsBalance, {
-        props: { universe: NNS_UNIVERSE },
+        props: { universe: nnsUniverseMock },
       });
 
       const balance: HTMLElement | null = getByTestId("token-value-label");
@@ -145,7 +142,7 @@ describe("UniverseAccountsBalance", () => {
 
       const { getByTestId } = render(ProjectAccountsBalance, {
         props: {
-          universe: CKBTC_UNIVERSE,
+          universe: ckBTCUniverseMock,
         },
       });
 

@@ -1,15 +1,15 @@
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
-import {
-  CKBTC_UNIVERSE,
-  CKTESTBTC_UNIVERSE,
-  NNS_UNIVERSE,
-} from "$lib/constants/universes.constants";
 import { universesStore } from "$lib/derived/universes.derived";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { aggregatorCanisterLogoPath } from "$lib/utils/sns-aggregator-converters.utils";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import {
+  ckBTCUniverseMock,
+  ckTESTBTCUniverseMock,
+  nnsUniverseMock,
+} from "$tests/mocks/universe.mock";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
@@ -29,9 +29,9 @@ describe("universes derived stores", () => {
     it("should return Nns, ckBTC and ckTESTBTC per default", () => {
       const store = get(universesStore);
       expect(store.length).toEqual(3);
-      expect(store[0]).toEqual(NNS_UNIVERSE);
-      expect(store[1]).toEqual(CKBTC_UNIVERSE);
-      expect(store[2]).toEqual(CKTESTBTC_UNIVERSE);
+      expect(store[0]).toEqual(nnsUniverseMock);
+      expect(store[1]).toEqual(ckBTCUniverseMock);
+      expect(store[2]).toEqual(ckTESTBTCUniverseMock);
     });
 
     it("should return Nns, ckBTC, ckTESTBTC and SNS projects", () => {

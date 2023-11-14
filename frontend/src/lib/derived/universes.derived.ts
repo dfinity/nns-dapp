@@ -1,25 +1,25 @@
-import { NNS_UNIVERSE } from "$lib/constants/universes.constants";
 import { ckBTCUniversesStore } from "$lib/derived/ckbtc-universes.derived";
 import {
   snsProjectsCommittedStore,
   type SnsFullProject,
 } from "$lib/derived/sns/sns-projects.derived";
 import type { Universe } from "$lib/types/universe";
+import { createUniverse } from "$lib/utils/universe.utils";
 import { derived, type Readable } from "svelte/store";
+import { nnsUniverseStore } from "./nns-universe.derived";
 
 export const universesStore = derived<
-  [Readable<SnsFullProject[]>, Readable<Universe[]>],
+  [Readable<Universe>, Readable<SnsFullProject[]>, Readable<Universe[]>],
   Universe[]
 >(
-  [snsProjectsCommittedStore, ckBTCUniversesStore],
-  ([projects, ckBTCUniverses]: [SnsFullProject[], Universe[]]) => [
-    NNS_UNIVERSE,
+  [nnsUniverseStore, snsProjectsCommittedStore, ckBTCUniversesStore],
+  ([nnsUniverse, projects, ckBTCUniverses]: [
+    Universe,
+    SnsFullProject[],
+    Universe[],
+  ]) => [
+    nnsUniverse,
     ...ckBTCUniverses,
-    ...(projects.map(({ rootCanisterId, summary }) => ({
-      canisterId: rootCanisterId.toText(),
-      summary,
-      logo: summary.metadata.logo,
-      title: summary.metadata.name,
-    })) ?? []),
+    ...(projects.map(({ summary }) => createUniverse(summary)) ?? []),
   ]
 );

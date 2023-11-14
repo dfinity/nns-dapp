@@ -8,6 +8,7 @@ import {
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import {
+  createUniverse,
   isUniverseCkBTC,
   isUniverseNns,
   pathSupportsCkBTC,
@@ -15,9 +16,11 @@ import {
 } from "$lib/utils/universe.utils";
 import en from "$tests/mocks/i18n.mock";
 import {
+  createSummary,
   mockSnsFullProject,
   mockSummary,
 } from "$tests/mocks/sns-projects.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { Principal } from "@dfinity/principal";
 
 describe("universes-utils", () => {
@@ -129,6 +132,27 @@ describe("universes-utils", () => {
           logo: "https://logo.png",
         })
       ).toEqual(en.auth.ic_logo);
+    });
+  });
+
+  describe("createUniverse", () => {
+    it("should create a universe from a summary", () => {
+      const projectName = "Tetris";
+      const logo = "https://logo.png";
+      const rootCanisterId = rootCanisterIdMock;
+      const summary = createSummary({
+        rootCanisterId,
+        projectName,
+        logo,
+      });
+
+      const universe = createUniverse(summary);
+      expect(universe).toEqual({
+        canisterId: rootCanisterId.toText(),
+        summary,
+        title: projectName,
+        logo,
+      });
     });
   });
 });
