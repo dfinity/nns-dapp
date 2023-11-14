@@ -31,20 +31,11 @@ jobs:
               echo "release=$latest_release"
             fi
           } >> "$GITHUB_OUTPUT"
-      - name: Get snsdemo repo
-        uses: actions/checkout@v3
-        if: ${{ steps.update.outputs.updated == '1' }}
-        with:
-          repository: 'dfinity/snsdemo'
-          path: 'snsdemo'
-          ref: ${{ steps.update.outputs.release }}
       - name: Update snsdemo
         if: ${{ steps.update.outputs.updated == '1' }}
         run: |
           set -x
           echo snsdemo needs an update
-          # Install didc
-          snsdemo/bin/dfx-software-didc-install --release "$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
           # Install sponge
           sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
           # Update

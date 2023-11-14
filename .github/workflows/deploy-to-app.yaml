@@ -60,12 +60,13 @@ jobs:
         uses: ./.github/actions/checkout_snsdemo
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          path: ../snsdemo
       - name: Set up SNS scripts
         run: |
           : Install more
           sudo apt-get update -yy && sudo apt-get install -yy moreutils
           : Add scripts to the path
-          echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
+          echo "$PWD/../snsdemo/bin" >> $GITHUB_PATH
       - name: Verify identity
         run: |
           dfx identity whoami

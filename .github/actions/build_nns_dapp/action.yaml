@@ -45,9 +45,10 @@ runs:
       uses: ./.github/actions/checkout_snsdemo
       with:
         token: ${{ inputs.token }}
+        path: ../snsdemo # Next to, not inside, the nns-dapp repo.
     - name: Add SNS scripts to the path
       shell: bash
-      run: echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
+      run: echo "$PWD/../snsdemo/bin" >> $GITHUB_PATH
     - name: Install tools
       shell: bash
       run: |

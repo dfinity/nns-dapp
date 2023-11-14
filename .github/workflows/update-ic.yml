@@ -61,7 +61,7 @@ jobs:
       - name: Add SNS scripts to the path
         if: ${{ steps.update.outputs.updated == '1' }}
         shell: bash
-        run: echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
+        run: echo "$PWD/../snsdemo/bin" >> $GITHUB_PATH
       - name: Install sponge
         if: ${{ steps.update.outputs.updated == '1' }}
         run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
@@ -69,7 +69,7 @@ jobs:
         if: ${{ steps.update.outputs.updated == '1' }}
         run: |
           # Install didc
-          snsdemo/bin/dfx-software-didc-install --release "$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+          dfx-software-didc-install --release "$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
           # Update didc
           scripts/update_ic_commit -c "${{ steps.update.outputs.release }}"
       - name: Create Pull Request
