@@ -40,11 +40,11 @@ describe("TransactionCard", () => {
     expect(await po.getHeadline()).toBe("Received");
   });
 
-  it("renders ckBTC approve description", async () => {
+  it("renders burn description", async () => {
     const po = renderComponent({
       transaction: {
-        ...mockTransactionReceiveDataFromMain,
-        type: AccountTransactionType.Approve,
+        ...mockTransactionSendDataFromMain,
+        type: AccountTransactionType.Burn,
         from: undefined,
         to: undefined,
       },
@@ -54,10 +54,9 @@ describe("TransactionCard", () => {
       >,
     });
 
-    expect(await po.getHeadline()).toBe("Approve transfer");
-    // Approve transfer transactions don't have a description but we render a
-    // zero-width space to keep the layout consistent.
-    expect(await po.getDescription()).toBe("​");
+    expect(await po.getHeadline()).toBe("Sent");
+    expect(await po.getDescription()).toBe("To: BTC Network");
+    expect(await po.getIdentifier()).toBe(null);
   });
 
   it("renders ckBTC burn To:", async () => {
@@ -76,6 +75,7 @@ describe("TransactionCard", () => {
     expect(await po.getIdentifier()).toBe(
       `To: ${mockTransactionSendDataFromMain.to}`
     );
+    expect(await po.getDescription()).toBe(null);
   });
 
   it("renders sent headline", async () => {
