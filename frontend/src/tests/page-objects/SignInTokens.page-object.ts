@@ -1,6 +1,6 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { DesktopTokensTablePo } from "./DesktopTokensTable.page-object";
+import { TokensTablePo } from "./TokensTable.page-object";
 
 export class SignInTokensPagePo extends BasePageObject {
   private static readonly TID = "sign-in-tokens-page-component";
@@ -10,7 +10,7 @@ export class SignInTokensPagePo extends BasePageObject {
   }
 
   getTokensTablePo() {
-    return DesktopTokensTablePo.under(this.root);
+    return TokensTablePo.under(this.root);
   }
 
   async getTokenNames(): Promise<string[]> {

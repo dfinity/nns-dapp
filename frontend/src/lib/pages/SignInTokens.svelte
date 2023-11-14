@@ -1,6 +1,6 @@
 <script lang="ts">
   import SignIn from "$lib/components/common/SignIn.svelte";
-  import DesktopTokensTable from "$lib/components/tokens/DesktopTokensTable/DesktopTokensTable.svelte";
+  import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { UserTokenData } from "$lib/types/tokens-page";
   import { PageBanner, IconAccountsPage } from "@dfinity/gix-components";
@@ -18,7 +18,7 @@
       <SignIn slot="actions" />
     </PageBanner>
 
-    <DesktopTokensTable {userTokensData} />
+    <TokensTable {userTokensData} />
   </div>
 </main>
 

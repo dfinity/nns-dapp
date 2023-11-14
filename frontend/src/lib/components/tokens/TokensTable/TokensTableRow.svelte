@@ -39,7 +39,7 @@
   tabindex={index + 1}
   on:keypress={handleClick}
   on:click={handleClick}
-  data-tid="desktop-tokens-table-row-component"
+  data-tid="tokens-table-row-component"
 >
   <div role="cell" class="title-cell">
     <div class="title">
