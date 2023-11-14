@@ -7,6 +7,7 @@ import {
 } from "$lib/constants/universes.constants";
 import { universesStore } from "$lib/derived/universes.derived";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { aggregatorCanisterLogoPath } from "$lib/utils/sns-aggregator-converters.utils";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
@@ -49,7 +50,7 @@ describe("universes derived stores", () => {
       expect(store[3].canisterId).toEqual(snsRootCanisterId.toText());
       expect(store[3].title).toBe(projectName);
       expect(store[3].logo).toBe(
-        `https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/${snsRootCanisterId.toText()}/logo.png`
+        aggregatorCanisterLogoPath(snsRootCanisterId.toText())
       );
     });
   });

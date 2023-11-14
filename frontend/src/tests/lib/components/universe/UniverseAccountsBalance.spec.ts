@@ -9,7 +9,6 @@ import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import type { Universe } from "$lib/types/universe";
 import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import {
@@ -34,6 +33,7 @@ import {
   mockTokensSubscribe,
   mockUniversesTokens,
 } from "$tests/mocks/tokens.mock";
+import { createUniverseMock } from "$tests/mocks/universe.mock";
 import { render } from "@testing-library/svelte";
 
 describe("UniverseAccountsBalance", () => {
@@ -56,12 +56,7 @@ describe("UniverseAccountsBalance", () => {
   });
 
   // Not the same sns canister id to test that the balance is not displayed
-  const universe: Universe = {
-    canisterId: mockSnsCanisterId.toText(),
-    summary: mockSnsFullProject.summary,
-    logo: "https://logo.png",
-    title: "Tetris",
-  };
+  const universe = createUniverseMock(mockSnsFullProject.summary);
 
   describe("no balance", () => {
     it("should render skeleton while loading", () => {
@@ -123,9 +118,7 @@ describe("UniverseAccountsBalance", () => {
 
       const { getByTestId } = render(ProjectAccountsBalance, {
         props: {
-          universe: {
-            canisterId: rootCanisterId.toText(),
-          },
+          universe,
         },
       });
 

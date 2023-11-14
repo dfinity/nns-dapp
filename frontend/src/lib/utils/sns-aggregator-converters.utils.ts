@@ -36,7 +36,7 @@ import { isNullish, nonNullish, toNullable } from "@dfinity/utils";
 import { mapOptionalToken } from "./icrc-tokens.utils";
 import { isPngAsset } from "./utils";
 
-const aggregatorCanisterLogoPath = (rootCanisterId: string) =>
+export const aggregatorCanisterLogoPath = (rootCanisterId: string) =>
   `${SNS_AGGREGATOR_CANISTER_URL}/${AGGREGATOR_CANISTER_VERSION}/sns/root/${rootCanisterId}/logo.png`;
 
 const convertOptionalNumToBigInt = (
