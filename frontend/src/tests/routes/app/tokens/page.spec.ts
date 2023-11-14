@@ -13,13 +13,18 @@ import { TokensRoutePo } from "$tests/page-objects/TokensRoute.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import type { AuthClient } from "@dfinity/auth-client";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/api/ckbtc-ledger.api");
 
 describe("Tokens route", () => {
+  const mockAuthClient = mock<AuthClient>();
+  mockAuthClient.login.mockResolvedValue(undefined);
+
   const renderPage = async () => {
     const { container } = render(TokensRoute);
 
@@ -30,6 +35,7 @@ describe("Tokens route", () => {
 
   describe("when feature flag enabled", () => {
     beforeEach(() => {
+      vi.clearAllMocks();
       overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
       vi.spyOn(ckBTCLedgerApi, "getCkBTCToken").mockResolvedValue(
         mockCkBTCToken
@@ -118,6 +124,18 @@ describe("Tokens route", () => {
             "Pacman",
           ]);
         });
+      });
+
+      it("should click on a row should trigger a login", async () => {
+        const po = await renderPage();
+
+        const tablePo = po.getSignInTokensPagePo().getTokensTablePo();
+
+        expect(mockAuthClient.login).toBeCalledTimes(0);
+        const rows = await tablePo.getRows();
+        await rows[0].click();
+
+        expect(mockAuthClient.login).toBeCalledTimes(1);
       });
     });
   });
