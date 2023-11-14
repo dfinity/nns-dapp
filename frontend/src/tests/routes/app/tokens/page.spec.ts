@@ -1,3 +1,4 @@
+import * as ckBTCLedgerApi from "$lib/api/ckbtc-ledger.api";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
@@ -5,6 +6,7 @@ import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
 import TokensRoute from "$routes/(app)/(nns)/tokens/+page.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
+import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { TokensRoutePo } from "$tests/page-objects/TokensRoute.page-object";
@@ -14,6 +16,8 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
+
+vi.mock("$lib/api/ckbtc-ledger.api");
 
 describe("Tokens route", () => {
   const renderPage = async () => {
@@ -27,6 +31,9 @@ describe("Tokens route", () => {
   describe("when feature flag enabled", () => {
     beforeEach(() => {
       overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
+      vi.spyOn(ckBTCLedgerApi, "getCkBTCToken").mockResolvedValue(
+        mockCkBTCToken
+      );
       const rootCanisterId1 = rootCanisterIdMock;
       const rootCanisterId2 = principal(1);
       setSnsProjects([
@@ -76,15 +83,41 @@ describe("Tokens route", () => {
         expect(await po.hasTokensPage()).toBe(false);
       });
 
-      it("should render ICP and SNS tokens", async () => {
-        const po = await renderPage();
+      describe("when ckBTC is enabled", () => {
+        beforeEach(() => {
+          overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", true);
+          overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
+        });
 
-        const signInPo = po.getSignInTokensPagePo();
-        expect(await signInPo.getTokenNames()).toEqual([
-          "Internet Computer",
-          "Tetris",
-          "Pacman",
-        ]);
+        it("should render ICP and SNS tokens", async () => {
+          const po = await renderPage();
+
+          const signInPo = po.getSignInTokensPagePo();
+          expect(await signInPo.getTokenNames()).toEqual([
+            "Internet Computer",
+            "ckBTC",
+            "Tetris",
+            "Pacman",
+          ]);
+        });
+      });
+
+      describe("when ckBTC is not enabled", () => {
+        beforeEach(() => {
+          overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", false);
+          overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
+        });
+
+        it("should render ICP and SNS tokens", async () => {
+          const po = await renderPage();
+
+          const signInPo = po.getSignInTokensPagePo();
+          expect(await signInPo.getTokenNames()).toEqual([
+            "Internet Computer",
+            "Tetris",
+            "Pacman",
+          ]);
+        });
       });
     });
   });
