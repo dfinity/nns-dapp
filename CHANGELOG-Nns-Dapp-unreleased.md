@@ -35,6 +35,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Add a workflow to update the SNS aggregator bindings regularly.
 * Added support for global network config.
 * Cron job to update proposal types.
 * Enable dependabot for Rust updates.
