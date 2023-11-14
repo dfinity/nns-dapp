@@ -12,6 +12,10 @@ export class DesktopTokensTableRowPo extends BasePageObject {
     ).map((el) => new DesktopTokensTableRowPo(el));
   }
 
+  getProjectName(): Promise<string> {
+    return this.getText("project-name");
+  }
+
   getBalance(): Promise<string> {
     return this.getText("token-value-label");
   }

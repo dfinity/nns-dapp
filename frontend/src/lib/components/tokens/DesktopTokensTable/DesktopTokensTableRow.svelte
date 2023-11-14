@@ -49,7 +49,7 @@
         size="medium"
         framed
       />
-      <span>{userTokenData.title}</span>
+      <span data-tid="project-name">{userTokenData.title}</span>
     </div>
     <div class="title-actions actions mobile-only">
       {#each userTokenData.actions as action}
