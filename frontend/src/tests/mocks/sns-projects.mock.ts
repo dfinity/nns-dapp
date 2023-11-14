@@ -323,6 +323,9 @@ type SnsSummaryParams = {
   neuronsFundIsParticipating?: [boolean] | [];
   swapOpenTimestampSeconds?: bigint;
   nnsProposalId?: bigint;
+  rootCanisterId?: Principal;
+  projectName?: string;
+  logo?: string;
 };
 
 export const createSummary = ({
@@ -346,6 +349,9 @@ export const createSummary = ({
   neuronsFundIsParticipating,
   swapOpenTimestampSeconds,
   nnsProposalId,
+  rootCanisterId,
+  projectName,
+  logo,
 }: SnsSummaryParams): SnsSummary => {
   const init: SnsSwapInit = {
     ...mockInit,
@@ -390,9 +396,16 @@ export const createSummary = ({
     neurons_fund_participation_icp_e8s: toNullable(neuronsFundCommitment),
     direct_participation_icp_e8s: toNullable(directCommitment),
   };
+  const metadata: SnsSummaryMetadata = {
+    ...mockMetadata,
+    name: projectName ?? mockMetadata.name,
+    logo: logo ?? mockMetadata.logo,
+  };
   const summary = summaryForLifecycle(lifecycle);
   return {
     ...summary,
+    rootCanisterId: rootCanisterId ?? summary.rootCanisterId,
+    metadata,
     swap: {
       ...summary.swap,
       init: [init],
@@ -458,6 +471,8 @@ export const mockTokenStore = (run?: Subscriber<Token>) => {
 export const mockUniverse: Universe = {
   canisterId: principal(0).toText(),
   summary: mockSnsFullProject.summary,
+  title: mockSnsFullProject.summary.metadata.name,
+  logo: mockSnsFullProject.summary.metadata.logo,
 };
 
 export const mockLifecycleResponse: SnsGetLifecycleResponse = {

@@ -45,7 +45,7 @@
   import HardwareWalletListNeuronsButton from "$lib/components/accounts/HardwareWalletListNeuronsButton.svelte";
   import HardwareWalletShowActionButton from "$lib/components/accounts/HardwareWalletShowActionButton.svelte";
   import RenameSubAccountButton from "$lib/components/accounts/RenameSubAccountButton.svelte";
-  import { NNS_UNIVERSE } from "$lib/constants/universes.constants";
+  import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
 
   onMount(() => {
     pollAccounts();
@@ -169,7 +169,7 @@
       <section>
         {#if $selectedAccountStore.account !== undefined}
           <WalletPageHeader
-            universe={NNS_UNIVERSE}
+            universe={$nnsUniverseStore}
             walletAddress={$selectedAccountStore.account.identifier}
           />
           <WalletPageHeading
