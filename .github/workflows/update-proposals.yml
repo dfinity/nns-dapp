@@ -25,12 +25,12 @@ jobs:
       - name: Update to the latest declared APIs
         id: update
         run: |
-                # Derive rust files
-                ./scripts/proposals/did2rs
-                # Show changes
-                echo "Git status:"
-                git status
-                echo "Note: The git diff may be long so is not logged.  Please see the PR."
+          # Derive rust files
+          ./scripts/proposals/did2rs
+          # Show changes
+          echo "Git status:"
+          git status
+          echo "Note: The git diff may be long so is not logged.  Please see the PR."
       - name: Create Pull Request
         id: cpr
         # Note: If there were no changes, this step creates no PR.
