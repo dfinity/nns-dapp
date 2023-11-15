@@ -363,8 +363,18 @@ jobs:
         run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
       - name: Getting network config works
         run: scripts/network-config.test
+  dev-deploy-script:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Start snapshot environment
+        uses: ./.github/actions/start_dfx_snapshot
+      - name: Install tools
+        run: scripts/setup
+      - name: Deploy to local
+        run: ./deploy.sh --nns-dapp local
   checks-pass:
-    needs: ["formatting", "spelling", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "ic-commit-consistency", "release-templating-works", "config-check", "asset-chunking-works", "docker-build-cli-flags", "download-nns-dapp-ci-wasm", "canister-ids-tool", "release-sop", "split-changelog", "past-changelog", "minor-version-bump-works", "version-match", "network-config"]
+    needs: ["formatting", "spelling", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "ic-commit-consistency", "release-templating-works", "config-check", "asset-chunking-works", "docker-build-cli-flags", "download-nns-dapp-ci-wasm", "canister-ids-tool", "release-sop", "split-changelog", "past-changelog", "minor-version-bump-works", "version-match", "network-config", "dev-deploy-script"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
