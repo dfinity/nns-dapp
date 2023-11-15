@@ -31,7 +31,7 @@ type TransactionIndex = u64;
 
 /// The data migration is more complicated if there are too many accounts.  With below this many
 /// accounts we avoid some complications.
-const PRE_MIGRATION_LIMIT: u64 = 220_000;
+const PRE_MIGRATION_LIMIT: u64 = 230_000;
 
 /// Accounts, transactions and related data.
 #[derive(Default, Debug, Eq, PartialEq)]
