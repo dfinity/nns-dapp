@@ -38,13 +38,7 @@ describe("WalletPageHeading", () => {
     const universeName = "Test universe";
     const universe: Universe = {
       ...mockUniverse,
-      summary: {
-        ...mockUniverse.summary,
-        metadata: {
-          ...mockUniverse.summary.metadata,
-          name: universeName,
-        },
-      },
+      title: universeName,
     };
     const po = renderComponent({ universe });
 

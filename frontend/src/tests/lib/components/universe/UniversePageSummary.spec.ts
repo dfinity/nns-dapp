@@ -1,8 +1,6 @@
 import UniversePageSummary from "$lib/components/universe/UniversePageSummary.svelte";
-import {
-  mockSnsFullProject,
-  mockSummary,
-} from "$tests/mocks/sns-projects.mock";
+import { createUniverse } from "$lib/utils/universe.utils";
+import { mockSummary } from "$tests/mocks/sns-projects.mock";
 import {
   ckBTCUniverseMock,
   ckTESTBTCUniverseMock,
@@ -27,10 +25,7 @@ describe("UniversePageSummary", () => {
   });
 
   it("shout render sns", async () => {
-    const mockSnsUniverse = {
-      summary: mockSummary,
-      canisterId: mockSnsFullProject.rootCanisterId.toText(),
-    };
+    const mockSnsUniverse = createUniverse(mockSummary);
     const po = renderComponent(mockSnsUniverse);
     expect(await po.getTitle()).toEqual("Tetris");
   });
