@@ -33,6 +33,18 @@ describe("Tokens route", () => {
   const mockAuthClient = mock<AuthClient>();
   mockAuthClient.login.mockResolvedValue(undefined);
 
+  const rootCanisterIdTetris = rootCanisterIdMock;
+  const rootCanisterIdPacman = principal(1);
+  const tetrisToken = mockSnsToken;
+  const pacmanToken = {
+    ...mockSnsToken,
+    symbol: "PCMN",
+  };
+  const tetrisBalanceE8s = 222000000n;
+  const pacmanBalanceE8s = 314000000n;
+  const ckBTCBalanceE8s = 444556699n;
+  const icpBalanceE8s = 123456789n;
+
   const renderPage = async () => {
     const { container } = render(TokensRoute);
 
@@ -51,57 +63,59 @@ describe("Tokens route", () => {
       vi.spyOn(AuthClient, "create").mockImplementation(
         async (): Promise<AuthClient> => mockAuthClient
       );
-      vi.spyOn(ckBTCLedgerApi, "getCkBTCAccount").mockResolvedValue(
-        mockCkBTCMainAccount
-      );
+      vi.spyOn(ckBTCLedgerApi, "getCkBTCAccount").mockResolvedValue({
+        ...mockCkBTCMainAccount,
+        balanceE8s: ckBTCBalanceE8s,
+      });
       vi.spyOn(snsLedgerApi, "getSnsAccounts").mockImplementation(
         async ({ rootCanisterId }) => {
-          if (rootCanisterId.toText() === rootCanisterId1.toText()) {
-            return [mockSnsMainAccount];
+          if (rootCanisterId.toText() === rootCanisterIdTetris.toText()) {
+            return [
+              {
+                ...mockSnsMainAccount,
+                balanceE8s: tetrisBalanceE8s,
+              },
+            ];
           }
           return [
             {
               ...mockSnsMainAccount,
-              balanceE8s: 314000000n,
+              balanceE8s: pacmanBalanceE8s,
             },
           ];
         }
       );
       vi.spyOn(snsLedgerApi, "getSnsToken").mockImplementation(
         async ({ rootCanisterId }) => {
-          if (rootCanisterId.toText() === rootCanisterId1.toText()) {
-            return mockSnsToken;
+          if (rootCanisterId.toText() === rootCanisterIdTetris.toText()) {
+            return tetrisToken;
           }
-          return {
-            ...mockSnsToken,
-            symbol: "PCMN",
-          };
+          return pacmanToken;
         }
       );
-      const rootCanisterId1 = rootCanisterIdMock;
-      const rootCanisterId2 = principal(1);
+
       setSnsProjects([
         {
-          rootCanisterId: rootCanisterId1,
+          rootCanisterId: rootCanisterIdTetris,
           projectName: "Tetris",
           lifecycle: SnsSwapLifecycle.Committed,
         },
         {
-          rootCanisterId: rootCanisterId2,
+          rootCanisterId: rootCanisterIdPacman,
           projectName: "Pacman",
           lifecycle: SnsSwapLifecycle.Committed,
         },
       ]);
       tokensStore.setTokens({
-        [rootCanisterId1.toText()]: {
+        [rootCanisterIdTetris.toText()]: {
           token: mockSnsToken,
         },
-        [rootCanisterId2.toText()]: {
+        [rootCanisterIdPacman.toText()]: {
           token: mockSnsToken,
         },
       });
       icpAccountsStore.setForTesting({
-        main: mockMainAccount,
+        main: { ...mockMainAccount, balanceE8s: icpBalanceE8s },
       });
     });
 
@@ -140,9 +154,9 @@ describe("Tokens route", () => {
 
           const tokensPagePo = po.getTokensPagePo();
           expect(await tokensPagePo.getRowsData()).toEqual([
-            { projectName: "Internet Computer", balance: "1'234'567.89 ICP" },
-            { projectName: "ckBTC", balance: "4'445'566.99 ckBTC" },
-            { projectName: "Tetris", balance: "8'901'567.12 TST" },
+            { projectName: "Internet Computer", balance: "1.23 ICP" },
+            { projectName: "ckBTC", balance: "4.45 ckBTC" },
+            { projectName: "Tetris", balance: "2.22 TST" },
             { projectName: "Pacman", balance: "3.14 PCMN" },
           ]);
         });
