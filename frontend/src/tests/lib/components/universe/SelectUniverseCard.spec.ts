@@ -2,6 +2,8 @@ import SelectUniverseCard from "$lib/components/universe/SelectUniverseCard.svel
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+import type { Universe } from "$lib/types/universe";
+import { createUniverse } from "$lib/utils/universe.utils";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -10,10 +12,7 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
-import {
-  mockSnsFullProject,
-  mockSummary,
-} from "$tests/mocks/sns-projects.mock";
+import { mockSummary } from "$tests/mocks/sns-projects.mock";
 import { nnsUniverseMock } from "$tests/mocks/universe.mock";
 import { SelectUniverseCardPo } from "$tests/page-objects/SelectUniverseCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -21,10 +20,7 @@ import { render } from "@testing-library/svelte";
 
 describe("SelectUniverseCard", () => {
   const props = { universe: nnsUniverseMock, selected: false };
-  const mockSnsUniverse = {
-    summary: mockSummary,
-    canisterId: mockSnsFullProject.rootCanisterId.toText(),
-  };
+  const mockSnsUniverse: Universe = createUniverse(mockSummary);
 
   const renderComponent = (props) => {
     const { container } = render(SelectUniverseCard, props);
