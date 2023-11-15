@@ -170,19 +170,41 @@ title() {
     } >&2
   fi
 )
-(
-  title "assert_dfx_network_var_is_set should fail when the network is unset"
-  mk_env
-  unset DFX_NETWORK
-  if assert_dfx_network_var_is_set 2>/dev/null; then
-    {
-      echo "FAIL"
+for command in assert_dfx_network_var_is_set assert_dfx_network_var_is_configured global_network_config local_network_config network_config; do
+  (
+    title "$command should fail when the network is unset"
+    mk_env
+    unset DFX_NETWORK
+    if "$command" 2>/dev/null; then
+      {
+        echo "FAIL"
+        exit 1
+      } >&2
+    else
+      echo OK
+    fi
+  )
+  (
+    title "$command should fail when the network is defined but not exported"
+    mk_env
+    DFX_NETWORK=gobbeldygook
+    if actual_stderr="$("$command" 2>&1)"; then
+      {
+        echo "FAIL: $command should have returned non-zero."
+        exit 1
+      } >&2
+    else
+      echo OK
+    fi
+    expected_stderr="ERROR: DFX_NETWORK is not exported."
+    [[ "${expected_stderr}" == "${actual_stderr}" ]] || {
+      echo "FAIL: The error emitted by $command should state explicitly that DFX_NETWORK should be exported."
+      echo "Expected: $expected_stderr"
+      echo "Actual:   $actual_stderr"
       exit 1
     } >&2
-  else
-    echo OK
-  fi
-)
+  )
+done
 (
   title "global_network_config should be able to get a globally defined network"
   mk_env
