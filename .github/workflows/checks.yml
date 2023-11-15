@@ -369,6 +369,8 @@ jobs:
       - uses: actions/checkout@v3
       - name: Start snapshot environment
         uses: ./.github/actions/start_dfx_snapshot
+      - name: Install tools
+        run: scripts/setup
       - name: Deploy to local
         run: ./deploy.sh --nns-dapp local
   checks-pass:
