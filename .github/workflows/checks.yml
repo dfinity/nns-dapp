@@ -367,13 +367,8 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
-      - name: Install dfx
-        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-      - name: Install cargo binstall
-        uses: ./.github/actions/install_binstall
-      - name: Install tools
-        run: |
-          cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
+      - name: Start snapshot environment
+        uses: ./.github/actions/start_dfx_snapshot
       - name: Deploy to local
         run: ./deploy.sh --nns-dapp local
   checks-pass:
