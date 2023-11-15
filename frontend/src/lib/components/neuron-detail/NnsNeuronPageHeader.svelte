@@ -8,7 +8,7 @@
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { i18n } from "$lib/stores/i18n";
   import type { IntersectingDetail } from "$lib/types/intersection.types";
-  import { NNS_UNIVERSE } from "$lib/constants/universes.constants";
+  import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
 
   export let neuron: NeuronInfo;
 
@@ -27,7 +27,7 @@
 </script>
 
 <PageHeader testId="nns-neuron-page-header-component">
-  <UniversePageSummary slot="start" universe={NNS_UNIVERSE} />
+  <UniversePageSummary slot="start" universe={$nnsUniverseStore} />
   <span
     slot="end"
     class="description header-end"

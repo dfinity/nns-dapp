@@ -42,7 +42,7 @@ jobs:
         run: |
           if test -d snsdemo
           then echo have_snsdemo=true >> "$GITHUB_OUTPUT"
-          else have_snsdemo=false >> "$GITHUB_OUTPUT"
+          else echo have_snsdemo=false >> "$GITHUB_OUTPUT"
           fi
       - name: Determine snsdemo ref
         if: ${{ steps.have_snsdemo.outputs.have_snsdemo }} == 'false'
@@ -72,6 +72,10 @@ jobs:
           snsdemo/bin/dfx-software-didc-install --release "$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
           # Update didc
           scripts/update_ic_commit -c "${{ steps.update.outputs.release }}"
+          # Show changes
+          echo "Git status:"
+          git status
+          echo "Note: The git diff is likely to be long so is not logged.  Please see the PR."
       - name: Create Pull Request
         if: ${{ steps.update.outputs.updated == '1' }}
         uses: peter-evans/create-pull-request@v4
@@ -88,7 +92,7 @@ jobs:
           branch: bot-ic-update
           branch-suffix: timestamp
           delete-branch: true
-          title: 'Update IC candid files'
+          title: 'Update IC candid files to ${{ steps.update.outputs.release }}'
           body: |
             # Motivation
             A newer release of the internet computer is available.

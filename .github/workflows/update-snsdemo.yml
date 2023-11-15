@@ -49,17 +49,17 @@ jobs:
           sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
           # Update
           ./scripts/update-snsdemo --dir ./snsdemo --release "${{ steps.update.outputs.release }}" --verbose
+          # Show changes
+          echo "Git status:"
+          git status
           echo "Changes:"
           git diff
-          git config --global user.email "gix-bot@users.noreply.github.com"
-          git config --global user.name "GIX bot"
-          git commit -a -m "Update snsdemo to ${{ steps.update.outputs.release }}"
       - name: Create Pull Request
         if: ${{ steps.update.outputs.updated == '1' }}
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.GIX_BOT_PAT }}
-          commit-message: Update snsdemo
+          commit-message: Update snsdemo to ${{ steps.update.outputs.release }}
           committer: GitHub <noreply@github.com>
           author: gix-bot <gix-bot@users.noreply.github.com>
           branch: bot-snsdemo-update

@@ -52,7 +52,7 @@
     </div>
     <div class="progressbar-container">
       <div class="majority absolute-majority">
-        <div class="majority-icon absolute-majority triangle-icon"></div>
+        <div class="majority-icon absolute-majority"></div>
       </div>
       <div class="majority simple-majority">
         <div class="majority-icon simple-majority"></div>
@@ -159,7 +159,8 @@
       // to display majorities
       position: relative;
       margin-top: var(--padding-1_5x);
-      .majority-icon.simple-majority {
+
+      .majority-icon {
         width: calc(var(--padding) * 0.75);
         height: calc(var(--padding) * 0.75);
       }
@@ -206,15 +207,6 @@
     }
     &.simple-majority {
       background: var(--orange);
-    }
-    &.triangle-icon {
-      width: 0;
-      height: 0;
-      border-radius: 0;
-      background: none;
-      border-left: var(--padding-0_5x) solid transparent;
-      border-right: var(--padding-0_5x) solid transparent;
-      border-top: var(--padding-0_5x) solid var(--purple-600);
     }
   }
 

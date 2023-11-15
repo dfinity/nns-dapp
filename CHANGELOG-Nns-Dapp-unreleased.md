@@ -14,10 +14,13 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Render withdrawal address on ckBTC burn transactions.
+
 #### Changed
 
 * New icons for sent/received transactions.
 * Increase the pre-migration account limit.
+* Use "From:" instead of "Source:" for received transactions.
 
 #### Deprecated
 
@@ -27,6 +30,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Add missing "Rename" button in the subaccount page.
 * Fix disappearing "Received" half of to-self transactions.
+* Fix debug store that wasn't working.
 
 #### Security
 
@@ -36,6 +40,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Add a workflow to update the SNS aggregator bindings regularly.
 * Added support for global network config.
 * Cron job to update proposal types.
 * Enable dependabot for Rust updates.

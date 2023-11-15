@@ -9,7 +9,7 @@
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import { neuronStake } from "$lib/utils/neuron.utils";
   import { getContext } from "svelte";
-  import { NNS_UNIVERSE } from "$lib/constants/universes.constants";
+  import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
 
   export let neuron: NeuronInfo;
 
@@ -19,7 +19,7 @@
 </script>
 
 <StakeItemAction
-  universe={NNS_UNIVERSE}
+  universe={$nnsUniverseStore}
   token={ICPToken}
   neuronStake={neuronStake(neuron)}
   on:increaseStake={() =>

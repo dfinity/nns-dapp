@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
-  import { NNS_UNIVERSE } from "$lib/constants/universes.constants";
+  import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
   import PageHeader from "../common/PageHeader.svelte";
   import IdentifierHash from "../ui/IdentifierHash.svelte";
   import UniversePageSummary from "../universe/UniversePageSummary.svelte";
@@ -9,7 +9,7 @@
 </script>
 
 <PageHeader testId="canister-page-header-component">
-  <UniversePageSummary slot="start" universe={NNS_UNIVERSE} />
+  <UniversePageSummary slot="start" universe={$nnsUniverseStore} />
   <div slot="end" class="description header-end" data-tid="canister-id-element">
     <IdentifierHash identifier={canister.canister_id.toText()} />
   </div>

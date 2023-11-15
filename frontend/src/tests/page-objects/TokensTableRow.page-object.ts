@@ -1,15 +1,15 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { BasePageObject } from "./base.page-object";
 
-export class DesktopTokensTableRowPo extends BasePageObject {
-  private static readonly TID = "desktop-tokens-table-row-component";
+export class TokensTableRowPo extends BasePageObject {
+  private static readonly TID = "tokens-table-row-component";
 
   static async allUnder(
     element: PageObjectElement
-  ): Promise<DesktopTokensTableRowPo[]> {
-    return Array.from(
-      await element.allByTestId(DesktopTokensTableRowPo.TID)
-    ).map((el) => new DesktopTokensTableRowPo(el));
+  ): Promise<TokensTableRowPo[]> {
+    return Array.from(await element.allByTestId(TokensTableRowPo.TID)).map(
+      (el) => new TokensTableRowPo(el)
+    );
   }
 
   getProjectName(): Promise<string> {

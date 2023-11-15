@@ -114,6 +114,6 @@ describe("IcrcTransactionList", () => {
 
     const cards = await po.getTransactionCardPos();
     expect(cards).toHaveLength(1);
-    expect(await cards[0].getIdentifier()).toBe(`Source: ${customIdentifier}`);
+    expect(await cards[0].getIdentifier()).toBe(`From: ${customIdentifier}`);
   });
 });

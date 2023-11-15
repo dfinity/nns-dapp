@@ -1,11 +1,11 @@
 <script lang="ts">
   import type { UserTokenData } from "$lib/types/tokens-page";
-  import Row from "./DesktopTokensTableRow.svelte";
+  import Row from "./TokensTableRow.svelte";
 
   export let userTokensData: UserTokenData[];
 </script>
 
-<div role="table" data-tid="desktop-tokens-table-component">
+<div role="table" data-tid="tokens-table-component">
   <div role="rowgroup">
     <div role="row" class="header-row">
       <span role="columnheader">Projects</span>
@@ -31,6 +31,10 @@
 
     display: flex;
     flex-direction: column;
+
+    border-radius: var(--border-radius);
+    // Otherwise the non-rounded corners of the header and last row would be visible.
+    overflow: hidden;
 
     @include media.min-width(medium) {
       display: grid;

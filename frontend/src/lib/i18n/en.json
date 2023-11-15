@@ -484,7 +484,7 @@
     "title": "Account",
     "address": "Address",
     "principal": "Principal",
-    "direction_from": "Source:",
+    "direction_from": "From:",
     "direction_to": "To:",
     "no_transactions": "No transactions",
     "icp_qrcode_aria_label": "A QR code that renders the address to receive ICP",
