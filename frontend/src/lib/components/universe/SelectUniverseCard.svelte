@@ -7,7 +7,6 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { isSelectedPath } from "$lib/utils/navigation.utils";
   import type { Universe } from "$lib/types/universe";
-  import UniverseName from "$lib/components/universe/UniverseName.svelte";
 
   export let selected: boolean;
   export let role: "link" | "button" | "dropdown" = "link";
@@ -51,7 +50,7 @@
       class={`content ${role}`}
       class:balance={displayProjectAccountsBalance}
     >
-      <span class="name"><UniverseName {universe} /></span>
+      <span class="name">{universe.title}</span>
       {#if displayProjectAccountsBalance}
         <UniverseAccountsBalance {universe} />
       {/if}
