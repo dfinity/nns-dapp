@@ -32,7 +32,10 @@ import { derived, readable, writable, type Readable } from "svelte/store";
 const createDerivedStore = <T>(store: Readable<T>): Readable<T> =>
   derived(store, (store) => store);
 
-let addAccountStore: Readable<AddAccountStore>;
+let addAccountStore: Readable<AddAccountStore> = readable({
+  type: undefined,
+  hardwareWalletName: undefined,
+});
 export const debugAddAccountStore = (store: Readable<AddAccountStore>) =>
   (addAccountStore = createDerivedStore(store));
 
