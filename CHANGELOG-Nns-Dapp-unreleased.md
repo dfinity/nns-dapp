@@ -30,6 +30,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Add missing "Rename" button in the subaccount page.
 * Fix disappearing "Received" half of to-self transactions.
 * Fix debug store that wasn't working.
+* Fix the stuck loading issue with the Sns proposal.
 
 #### Security
 
