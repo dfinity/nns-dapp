@@ -363,8 +363,21 @@ jobs:
         run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
       - name: Getting network config works
         run: scripts/network-config.test
+  dev-deploy-script:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install dfx
+        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+      - name: Install cargo binstall
+        uses: ./.github/actions/install_binstall
+      - name: Install tools
+        run: |
+          cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
+      - name: Deploy to local
+        run: ./deploy.sh --nns-dapp local
   checks-pass:
-    needs: ["formatting", "spelling", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "ic-commit-consistency", "release-templating-works", "config-check", "asset-chunking-works", "docker-build-cli-flags", "download-nns-dapp-ci-wasm", "canister-ids-tool", "release-sop", "split-changelog", "past-changelog", "minor-version-bump-works", "version-match", "network-config"]
+    needs: ["formatting", "spelling", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "ic-commit-consistency", "release-templating-works", "config-check", "asset-chunking-works", "docker-build-cli-flags", "download-nns-dapp-ci-wasm", "canister-ids-tool", "release-sop", "split-changelog", "past-changelog", "minor-version-bump-works", "version-match", "network-config", "dev-deploy-script"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
