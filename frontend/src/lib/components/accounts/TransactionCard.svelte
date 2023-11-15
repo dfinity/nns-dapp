@@ -84,12 +84,10 @@
 
     <ColumnRow>
       <div slot="start" class="identifier">
-        {#if nonNullish(description)}
-          <p data-tid="transaction-description"><Html text={description} /></p>
-        {/if}
-
         {#if nonNullish(identifier)}
           <Identifier size="medium" {label} {identifier} />
+        {:else if nonNullish(description)}
+          <p data-tid="transaction-description"><Html text={description} /></p>
         {/if}
       </div>
 

@@ -8,7 +8,7 @@ import {
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import {
-  mockIcrcTransactionBurn,
+  createBurnTransaction,
   mockIcrcTransactionMint,
   mockIcrcTransactionWithId,
   mockIcrcTransactionWithIdToSelf,
@@ -20,6 +20,7 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
+import { Cbor } from "@dfinity/agent";
 import { render } from "@testing-library/svelte";
 
 vi.mock("$lib/services/ckbtc-transactions.services", () => {
@@ -147,13 +148,23 @@ describe("CkBTCTransactionList", () => {
   });
 
   it("should render description burn to btc network", async () => {
+    const errorLog = [];
+    vi.spyOn(console, "error").mockImplementation((msg) => {
+      errorLog.push(msg);
+    });
     const store = {
       [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
         [mockCkBTCMainAccount.identifier]: {
           transactions: [
             {
               id: BigInt(123),
-              transaction: mockIcrcTransactionBurn,
+              transaction: createBurnTransaction({
+                // Missing memo should result in fallback description.
+                from: {
+                  owner: mockCkBTCMainAccount.principal,
+                  subaccount: [],
+                },
+              }),
             },
           ],
           completed: false,
@@ -169,7 +180,51 @@ describe("CkBTCTransactionList", () => {
     const { po } = renderComponent();
     const cards = await po.getTransactionCardPos();
 
+    expect(cards).toHaveLength(1);
+    expect(await cards[0].getHeadline()).toEqual("Sent");
     expect(await cards[0].getDescription()).toEqual("To: BTC Network");
+    expect(errorLog).toEqual(["Failed to decode ckBTC burn memo"]);
+  });
+
+  it("should render description burn to btc address", async () => {
+    const btcWithdrawalAddress = "1ASLxsAMbbt4gcrNc6v6qDBW4JkeWAtTeh";
+    const kytFee = 1334;
+    const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
+    const memo = new Uint8Array(Cbor.encode(decodedMemo));
+
+    const store = {
+      [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
+        [mockCkBTCMainAccount.identifier]: {
+          transactions: [
+            {
+              id: BigInt(123),
+              transaction: createBurnTransaction({
+                memo,
+                from: {
+                  owner: mockCkBTCMainAccount.principal,
+                  subaccount: [],
+                },
+              }),
+            },
+          ],
+          completed: false,
+          oldestTxId: BigInt(0),
+        },
+      },
+    };
+
+    vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(
+      mockIcrcTransactionsStoreSubscribe(store)
+    );
+
+    const { po } = renderComponent();
+    const cards = await po.getTransactionCardPos();
+
+    expect(cards).toHaveLength(1);
+    expect(await cards[0].getHeadline()).toEqual("Sent");
+    expect(await cards[0].getIdentifier()).toEqual(
+      `To: ${btcWithdrawalAddress}`
+    );
   });
 
   it("should render description mint from btc network", async () => {

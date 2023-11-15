@@ -14,6 +14,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Render withdrawal address on ckBTC burn transactions.
+
 #### Changed
 
 * New icons for sent/received transactions.
