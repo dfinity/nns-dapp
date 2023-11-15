@@ -16,4 +16,12 @@ export class TokensPagePo extends BasePageObject {
   hasTokensTable(): Promise<boolean> {
     return this.getTokensTable().isPresent();
   }
+
+  getTokenNames(): Promise<string[]> {
+    return this.getTokensTable().getTokenNames();
+  }
+
+  getRowsData(): Promise<Record<string, string>[]> {
+    return this.getTokensTable().getRowsData();
+  }
 }

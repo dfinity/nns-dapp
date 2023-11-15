@@ -20,6 +20,12 @@ export class TokensTableRowPo extends BasePageObject {
     return this.getText("token-value-label");
   }
 
+  async getData(): Promise<Record<string, string>> {
+    const projectName = await this.getProjectName();
+    const balance = await this.getBalance();
+    return { projectName, balance };
+  }
+
   getSendButton(): PageObjectElement {
     return this.root.byTestId("send-button-component");
   }

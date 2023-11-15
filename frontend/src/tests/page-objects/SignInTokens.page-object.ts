@@ -13,8 +13,7 @@ export class SignInTokensPagePo extends BasePageObject {
     return TokensTablePo.under(this.root);
   }
 
-  async getTokenNames(): Promise<string[]> {
-    const rows = await this.getTokensTablePo().getRows();
-    return Promise.all(rows.map((row) => row.getProjectName()));
+  getTokenNames(): Promise<string[]> {
+    return this.getTokensTablePo().getTokenNames();
   }
 }
