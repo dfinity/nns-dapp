@@ -325,10 +325,16 @@ export const receiveMockBtc = async ({
   }
   await actor.push_utxo_to_address({
     utxo: {
-      // The height defines the number of confirmations. > 12 should mean the
-      // amount can be credited although the current mock bitcoin canister does
-      // not even seem to check this.
-      height: 15,
+      // We need >= 12 confirmations to get the ckBTC credited by the minter.
+      // We have 1 confirmation as soon as the UTXO is included in a block.
+      // Each block mined after that first block, in the same chain, counts as
+      // an additional confirmation.
+      // So the smaller the height of the block with the utxo, the more
+      // confirmations it has (given a fixed height of the latest block).
+      // The mock bitcoin canister starts out assuming that the latest block is
+      // at height 12. So giving our UTXO height 0 will make sure that it has
+      // the required 12 confirmations.
+      height: 0,
       value: amountE8s,
       outpoint: {
         txid,
