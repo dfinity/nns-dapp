@@ -1,6 +1,7 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { TokensTablePo } from "./TokensTable.page-object";
+import type { TokensTableRowData } from "./TokensTableRow.page-object";
 
 export class TokensPagePo extends BasePageObject {
   private static readonly TID = "tokens-page-component";
@@ -15,5 +16,13 @@ export class TokensPagePo extends BasePageObject {
 
   hasTokensTable(): Promise<boolean> {
     return this.getTokensTable().isPresent();
+  }
+
+  getTokenNames(): Promise<string[]> {
+    return this.getTokensTable().getTokenNames();
+  }
+
+  getRowsData(): Promise<TokensTableRowData[]> {
+    return this.getTokensTable().getRowsData();
   }
 }
