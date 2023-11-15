@@ -22,6 +22,8 @@
 
   let noProportion: number;
   $: noProportion = total ? no / total : 0;
+
+  let isCountdownVisible: boolean | undefined;
 </script>
 
 <ProposalContentCell testId="votes-results-component">
@@ -36,11 +38,16 @@
     </div>
     <div class="remain">
       {#if nonNullish(deadlineTimestampSeconds) && deadlineTimestampSeconds > 0n}
-        <span class="caption description"
-          >{$i18n.proposal_detail__vote.expiration}</span
-        >
+        {#if isCountdownVisible}
+          <span class="caption description"
+            >{$i18n.proposal_detail__vote.expiration}</span
+          >
+        {/if}
         <div class="caption value">
-          <Countdown {deadlineTimestampSeconds} />
+          <Countdown
+            {deadlineTimestampSeconds}
+            bind:visible={isCountdownVisible}
+          />
         </div>
       {/if}
     </div>
