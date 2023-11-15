@@ -32,6 +32,10 @@
     display: flex;
     flex-direction: column;
 
+    border-radius: var(--border-radius);
+    // Otherwise the non-rounded corners of the header and last row would be visible.
+    overflow: hidden;
+
     @include media.min-width(medium) {
       display: grid;
       grid-template-columns: 1fr max-content max-content;
