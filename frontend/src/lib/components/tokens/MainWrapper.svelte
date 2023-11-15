@@ -11,7 +11,6 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
 
-  // TODO: Confirm spacings https://dfinity.atlassian.net/browse/GIX-2005
   main {
     display: flex;
     align-items: stretch;
@@ -23,7 +22,7 @@
       var(--padding-2x);
 
     @include media.min-width(large) {
-      padding: var(--padding-4x) 0 0 0;
+      padding-top: var(--padding-4x);
     }
 
     & .content {
