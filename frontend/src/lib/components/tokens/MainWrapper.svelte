@@ -22,7 +22,7 @@
       var(--padding-2x);
 
     @include media.min-width(large) {
-      padding-top: var(--padding-4x);
+      padding: var(--padding-4x) 0 0 0;
     }
 
     & .content {
@@ -34,6 +34,7 @@
 
       @include media.min-width(large) {
         width: var(--island-width);
+        max-width: var(--island-max-width);
       }
     }
   }
