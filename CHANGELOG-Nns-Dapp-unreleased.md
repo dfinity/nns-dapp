@@ -17,6 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * New icons for sent/received transactions.
+* Increase the pre-migration account limit.
 
 #### Deprecated
 
