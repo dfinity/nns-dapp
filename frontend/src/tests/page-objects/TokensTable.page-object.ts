@@ -12,4 +12,14 @@ export class TokensTablePo extends BasePageObject {
   getRows(): Promise<TokensTableRowPo[]> {
     return TokensTableRowPo.allUnder(this.root);
   }
+
+  async getTokenNames(): Promise<string[]> {
+    const rows = await this.getRows();
+    return Promise.all(rows.map((row) => row.getProjectName()));
+  }
+
+  async getRowsData(): Promise<Record<string, string>[]> {
+    const rows = await this.getRows();
+    return Promise.all(rows.map((row) => row.getData()));
+  }
 }
