@@ -18,7 +18,7 @@
       <SignIn slot="actions" />
     </PageBanner>
 
-    <TokensTable {userTokensData} />
+    <TokensTable on:nnsAction {userTokensData} />
   </div>
 </main>
 

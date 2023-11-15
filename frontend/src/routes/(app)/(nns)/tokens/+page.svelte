@@ -15,8 +15,9 @@
   import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
   import type { Action } from "$lib/types/actions";
   import { UnavailableTokenAmount } from "$lib/utils/token.utils";
-  import { tokensListBaseStore } from "$lib/derived/tokens-list-base.derived";
   import { loadCkBTCTokens } from "$lib/services/ckbtc-tokens.services";
+  import { tokensListVisitorsStore } from "$lib/derived/tokens-list-visitors.derived";
+  import { login } from "$lib/services/auth.services";
 
   onMount(() => {
     if (!$ENABLE_MY_TOKENS) {
@@ -42,9 +43,11 @@
     },
   ];
 
-  const handleAction = ({ detail }: { detail: Action }) => {
-    console.log("action", detail.type);
-    console.log(detail.data);
+  const handleAction = ({ detail: _ }: { detail: Action }) => {
+    // Any action from non-signed in user should be trigger a login
+    if (!$authSignedInStore) {
+      login();
+    }
   };
 </script>
 
@@ -52,6 +55,9 @@
   {#if $authSignedInStore}
     <Tokens userTokensData={data} on:nnsAction={handleAction} />
   {:else}
-    <SignInTokens userTokensData={$tokensListBaseStore} />
+    <SignInTokens
+      on:nnsAction={handleAction}
+      userTokensData={$tokensListVisitorsStore}
+    />
   {/if}
 </TestIdWrapper>
