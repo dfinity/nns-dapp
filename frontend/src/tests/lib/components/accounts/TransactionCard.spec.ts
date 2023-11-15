@@ -124,7 +124,7 @@ describe("TransactionCard", () => {
     });
 
     expect(await po.getIdentifier()).toBe(
-      `Source: ${mockTransactionReceiveDataFromMain.from}`
+      `From: ${mockTransactionReceiveDataFromMain.from}`
     );
   });
 
