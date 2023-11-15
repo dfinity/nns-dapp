@@ -167,7 +167,7 @@ describe("IcrcTransactionCard", () => {
     });
     const identifier = await po.getIdentifier();
 
-    expect(identifier).toBe(`Source: ${mockSnsMainAccount.identifier}`);
+    expect(identifier).toBe(`From: ${mockSnsMainAccount.identifier}`);
   });
 
   it("displays identifier for sent for main sns account", async () => {
