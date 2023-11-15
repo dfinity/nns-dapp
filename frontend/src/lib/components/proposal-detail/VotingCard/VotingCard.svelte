@@ -61,10 +61,7 @@
   ).find(({ proposalIdString }) => `${proposalInfo.id}` === proposalIdString);
 
   $: $definedNeuronsStore,
-    (visible =
-      voteRegistration !== undefined ||
-      (votableNeurons().length > 0 &&
-        isProposalDeadlineInTheFuture(proposalInfo)));
+    (visible = isProposalDeadlineInTheFuture(proposalInfo));
 
   const updateVotingNeuronSelectedStore = () => {
     if (!initialSelectionDone) {
