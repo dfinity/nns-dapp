@@ -31,6 +31,7 @@ help_text() {
 }
 
 #
+export DFX_NETWORK
 DFX_NETWORK=local # which network to deploy to
 
 # Whether to run each action:
