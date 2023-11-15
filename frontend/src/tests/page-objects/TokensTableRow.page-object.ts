@@ -1,6 +1,11 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { BasePageObject } from "./base.page-object";
 
+export type TokensTableRowData = {
+  projectName: string;
+  balance: string;
+};
+
 export class TokensTableRowPo extends BasePageObject {
   private static readonly TID = "tokens-table-row-component";
 
@@ -20,7 +25,7 @@ export class TokensTableRowPo extends BasePageObject {
     return this.getText("token-value-label");
   }
 
-  async getData(): Promise<Record<string, string>> {
+  async getData(): Promise<TokensTableRowData> {
     const projectName = await this.getProjectName();
     const balance = await this.getBalance();
     return { projectName, balance };
