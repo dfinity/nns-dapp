@@ -41,6 +41,7 @@
   import type { Readable } from "svelte/store";
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
   import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
+  import { tick } from "svelte";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -60,7 +61,11 @@
   let proposal: SnsProposalData | undefined;
   let updating = false;
 
-  const setProposal = (value: typeof proposal) => {
+  const setProposal = async (value: typeof proposal) => {
+    // TODO: recheck if this workaround is still needed after next svelte update
+    // workaround to fix not triggering the subscriptions ($:...) after "proposal" changes.
+    // Because the update is ignored if the value is changed before onMount.
+    await tick();
     proposal = value;
     debugSnsProposalStore(value);
   };
