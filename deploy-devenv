@@ -12,27 +12,29 @@ print_help() {
 	EOF
 }
 
-# Simple, portable argument parsing.
-# If the arguments multiply, please consider switching to clap.
-while (($# > 0)); do
-  arg="$1"
-  shift 1
-  case "${arg:-}" in
-  --help | -h)
-    print_help
-    exit 0
-    ;;
-  --) break ;;
-  -*)
-    echo "ERROR: Unsupported argument '${arg:-}'."
-    exit 1
-    ;;
-  *)
-    set "${arg:-}" "${@}"
-    break
-    ;;
-  esac
-done
+argparse() {
+  # Simple, portable argument parsing.
+  # If the arguments multiply, please consider switching to clap.
+  while (($# > 0)); do
+    arg="$1"
+    shift 1
+    case "${arg:-}" in
+    --help | -h)
+      print_help
+      exit 0
+      ;;
+    --) break ;;
+    -*)
+      echo "ERROR: Unsupported argument '${arg:-}'."
+      exit 1
+      ;;
+    *)
+      set "${arg:-}" "${@}"
+      break
+      ;;
+    esac
+  done
+}
 
 WORKDIR="$HOME/dfn"
 
@@ -176,6 +178,7 @@ clean() {
 
 # Code to run if called as an executable
 main() {
+  argparse
   if (($# == 0)); then
     setup workdir
     setup path_has "$HOME/bin"
