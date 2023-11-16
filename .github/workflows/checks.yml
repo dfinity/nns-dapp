@@ -280,10 +280,15 @@ jobs:
             brew install bash
             brew install coreutils
           fi
-          echo "/usr/local/bin" >> $GITHUB_PATH
+          ls /opt/homebrew/bin
+          ls /opt/homebrew/Cellar/bash/5.2.15
+          echo "/opt/homebrew/bin" >> $GITHUB_PATH
+          echo "$PATH"
           bash --version
       - name: Download NNS-dapp CI wasm
         run: |
+          echo "$PATH"
+          bash --version
           MAIN_COMMIT="$(git ls-remote --refs https://github.com/dfinity/nns-dapp.git main | awk '{print $1}')"
           scripts/nns-dapp/download-ci-wasm.test --commit "$MAIN_COMMIT"
     env:
