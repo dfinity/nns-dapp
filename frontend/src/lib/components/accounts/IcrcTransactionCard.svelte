@@ -6,7 +6,7 @@
   import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
   import TransactionCard from "./TransactionCard.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import type { Transaction } from "$lib/types/transaction";
+  import type { Transaction, UiTransaction } from "$lib/types/transaction";
   import { nonNullish } from "@dfinity/utils";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
 
@@ -26,16 +26,19 @@
     governanceCanisterId,
   });
 
-  let uiTransaction: UiTransaction;
-  $: uiTransaction = toUiTransaction({
-    transaction: transactionData,
-    toSelfTransaction,
-    token,
-    transactionNames: $i18n.transaction_names,
-    fallbackDescriptions: descriptions,
-  });
+  let uiTransaction: UiTransaction | undefined;
+  $: uiTransaction =
+    transactionData &&
+    token &&
+    toUiTransaction({
+      transaction: transactionData,
+      toSelfTransaction,
+      token,
+      transactionNames: $i18n.transaction_names,
+      fallbackDescriptions: descriptions,
+    });
 </script>
 
-{#if nonNullish(transactionData) && nonNullish(token)}
+{#if nonNullish(uiTransaction) && nonNullish(token)}
   <TransactionCard transaction={uiTransaction} />
 {/if}

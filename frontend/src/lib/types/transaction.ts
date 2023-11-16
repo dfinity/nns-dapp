@@ -84,7 +84,7 @@ export interface UiTransaction {
   isIncoming: boolean;
   headline: string;
   // Where the amount is going to or coming from.
-  otherParty: string;
+  otherParty?: string;
   // TODO: Remove fallbackDescription and always use otherParty.
   fallbackDescription?: string;
   // Always positive.

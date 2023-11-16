@@ -175,10 +175,10 @@ export const toUiTransaction = ({
   fallbackDescriptions,
 }: {
   transaction: Transaction;
-  toSelfTransaction?: boolean;
+  toSelfTransaction: boolean;
   token: Token;
   transactionNames: I18nTransaction_names;
-  fallbackDescriptions?: I18nCkbtc_transaction_names;
+  fallbackDescriptions?: Record<string, string>;
 }): UiTransaction => {
   const isIncoming = transaction.isReceive || toSelfTransaction;
   const headline = transactionName({

@@ -6,20 +6,12 @@
   import type { Token } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import {
-    transactionName,
-    toUiTransaction,
-  } from "$lib/utils/transactions.utils";
-  import {
     Html,
     IconUp,
     IconDown,
     KeyValuePair,
   } from "@dfinity/gix-components";
-  import type {
-    Transaction,
-    UiTransaction,
-    AccountTransactionType,
-  } from "$lib/types/transaction";
+  import type { UiTransaction } from "$lib/types/transaction";
   import { nonNullish } from "@dfinity/utils";
   import { TokenAmount } from "@dfinity/utils";
   import { fade } from "svelte/transition";
@@ -31,6 +23,7 @@
   let token: Token;
   let isIncoming: boolean;
   let otherParty: string | undefined;
+  let fallbackDescription: string | undefined;
   let timestamp: Date;
   $: ({
     headline,

@@ -9,7 +9,7 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import TransactionCard from "./TransactionCard.svelte";
   import { ICPToken } from "@dfinity/utils";
-  import type { Transaction } from "$lib/types/transaction";
+  import type { UiTransaction } from "$lib/types/transaction";
   import { createSwapCanisterAccountsStore } from "$lib/derived/sns-swap-canisters-accounts.derived";
   import type { Principal } from "@dfinity/principal";
   import type { Readable } from "svelte/store";
