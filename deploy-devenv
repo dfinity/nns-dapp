@@ -175,7 +175,7 @@ if (($# == 0)); then
   setup snsdemo_release
   setup nns_dapp_tools
   setup snsdemo_tools
-  dfx-software-dfx-install --version 0.14.4 # BUG: nns-dapp setup should have installed the correct version
+  dfx-software-dfx-install --version 0.15.1 # BUG: nns-dapp setup should have installed the correct version
   setup snapshot
   setup dfx_screen
   setup screen_info
