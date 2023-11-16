@@ -27,7 +27,10 @@ while (($# > 0)); do
     echo "ERROR: Unsupported argument '${arg:-}'."
     exit 1
     ;;
-  *) break ;;
+  *)
+    set "${arg:-}" "${@}"
+    break
+    ;;
   esac
 done
 
