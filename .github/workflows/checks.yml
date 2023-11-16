@@ -263,6 +263,9 @@ jobs:
           } >&2
           # TODO: Verify that the commits contain the expected changes.
   download-nns-dapp-ci-wasm:
+    # Please keep the name short enough that name + OS is not truncated in the browser view.
+    # A maximal example: Test release-sop script (macos-13)
+    name: "Download CI Wasm"
     strategy:
       fail-fast: false
       matrix:
