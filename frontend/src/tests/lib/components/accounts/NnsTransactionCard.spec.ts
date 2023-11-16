@@ -1,7 +1,6 @@
 import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import NnsTransactionCard from "$lib/components/accounts/NnsTransactionCard.svelte";
 import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
-import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import { formatToken } from "$lib/utils/token.utils";
 import { mapNnsTransaction } from "$lib/utils/transactions.utils";
@@ -17,7 +16,6 @@ import {
   mockSentToSubAccountTransaction,
 } from "$tests/mocks/transaction.mock";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
-import { ICPToken } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("NnsTransactionCard", () => {
@@ -38,9 +36,7 @@ describe("NnsTransactionCard", () => {
       mockReceivedFromMainAccountTransaction
     );
 
-    const expectedText = replacePlaceholders(en.transaction_names.receive, {
-      $tokenSymbol: ICPToken.symbol,
-    });
+    const expectedText = en.transaction_names.receive;
     expect(getByText(expectedText)).toBeInTheDocument();
   });
 
@@ -82,9 +78,7 @@ describe("NnsTransactionCard", () => {
       mockSentToSubAccountTransaction
     );
 
-    const expectedText = replacePlaceholders(en.transaction_names.send, {
-      $tokenSymbol: ICPToken.symbol,
-    });
+    const expectedText = en.transaction_names.send;
     expect(getByText(expectedText)).toBeInTheDocument();
   });
 

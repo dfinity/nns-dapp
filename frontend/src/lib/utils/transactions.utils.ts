@@ -9,7 +9,6 @@ import {
   TransactionNetwork,
 } from "$lib/types/transaction";
 import { isNullish } from "@dfinity/utils";
-import { replacePlaceholders } from "./i18n.utils";
 import { stringifyJson } from "./utils";
 
 export const transactionType = ({
@@ -175,21 +174,16 @@ export const transactionName = ({
   type,
   isReceive,
   labels,
-  tokenSymbol,
 }: {
   type: AccountTransactionType;
   isReceive: boolean;
   labels: I18nTransaction_names;
-  tokenSymbol: string;
 }): string =>
-  replacePlaceholders(
-    type === AccountTransactionType.Send
-      ? isReceive
-        ? labels.receive
-        : labels.send
-      : labels[type] ?? type,
-    { $tokenSymbol: tokenSymbol }
-  );
+  type === AccountTransactionType.Send
+    ? isReceive
+      ? labels.receive
+      : labels.send
+    : labels[type] ?? type;
 
 /** (from==to workaround) Set `mapToSelfNnsTransaction: true` when sender and receiver are the same account (e.g. transmitting from `main` to `main` account) */
 export const mapToSelfTransaction = (
