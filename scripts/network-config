@@ -15,6 +15,7 @@ assert_dfx_network_var_is_set() {
     echo "ERROR: DFX_NETWORK is not defined."
     return 1
   } >&2
+  # Note: ${var@a} gets variable attributes.  It has been available in bash since 2020, so is as old as Node14.
   [[ "${DFX_NETWORK@a}" == *x* ]] || {
     echo "ERROR: DFX_NETWORK is not exported."
     return 1
