@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
-  import { nowInSeconds, secondsToDuration } from "$lib/utils/date.utils";
+  import { nowInSeconds } from "$lib/utils/date.utils";
+  import { secondsToDuration } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import { AUTH_SESSION_DURATION } from "$lib/constants/identity.constants";
 
@@ -70,7 +71,7 @@
 
 {#if countdown !== undefined && countdown > ZERO}
   <p data-tid="countdown">
-    {secondsToDuration(countdown)}
+    {secondsToDuration({ seconds: countdown, i18n: $i18n.time })}
     {$i18n.proposal_detail.remaining}
   </p>
 {/if}

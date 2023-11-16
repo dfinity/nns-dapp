@@ -80,9 +80,7 @@
   let visible = false;
   $: $snsOnlyProjectStore,
     $voteRegistrationStore,
-    (visible =
-      voteRegistration !== undefined ||
-      (votableNeurons.length > 0 && snsProposalAcceptingVotes(proposal)));
+    (visible = snsProposalAcceptingVotes(proposal));
 
   let neuronsReady = false;
   $: neuronsReady =

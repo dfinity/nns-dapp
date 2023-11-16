@@ -70,6 +70,30 @@ describe("TokensTable", () => {
     expect(await row2Po.getBalance()).toBe("1.14 TETRIS");
   });
 
+  it("should render the subtitle if present", async () => {
+    const subtitle = "Hardware Wallet";
+    const token1 = createUserToken({
+      universeId: OWN_CANISTER_ID,
+      balance: TokenAmount.fromE8s({ amount: 314000000n, token: ICPToken }),
+      subtitle,
+    });
+    const token2 = createUserToken({
+      universeId: principal(0),
+      balance: TokenAmount.fromE8s({
+        amount: 114000000n,
+        token: { name: "Tetris", symbol: "TETRIS" },
+      }),
+    });
+    const po = renderTable({ userTokensData: [token1, token2] });
+
+    const rows = await po.getRows();
+    const row1Po = rows[0];
+    const row2Po = rows[1];
+
+    expect(await row1Po.getSubtitle()).toBe(subtitle);
+    expect(await row2Po.getSubtitle()).toBeNull();
+  });
+
   it("should render specific text if balance not available", async () => {
     const token1 = createUserToken({
       universeId: OWN_CANISTER_ID,

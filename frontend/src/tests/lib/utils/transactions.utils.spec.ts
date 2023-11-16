@@ -4,7 +4,6 @@ import {
   TransactionNetwork,
 } from "$lib/types/transaction";
 import { enumKeys } from "$lib/utils/enum.utils";
-import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import {
   isTransactionNetworkBtc,
@@ -26,7 +25,6 @@ import {
   mockReceivedFromMainAccountTransaction,
   mockSentToSubAccountTransaction,
 } from "$tests/mocks/transaction.mock";
-import { ICPToken } from "@dfinity/utils";
 
 describe("transactions-utils", () => {
   describe("showTransactionFee", () => {
@@ -462,14 +460,8 @@ describe("transactions-utils", () => {
             type: key as AccountTransactionType,
             isReceive: false,
             labels: en.transaction_names,
-            tokenSymbol: ICPToken.symbol,
           })
-        ).toBe(
-          replacePlaceholders(
-            en.transaction_names[key as AccountTransactionType],
-            { $tokenSymbol: ICPToken.symbol }
-          )
-        );
+        ).toBe(en.transaction_names[key as AccountTransactionType]);
       }
     });
 
@@ -479,13 +471,8 @@ describe("transactions-utils", () => {
           type: AccountTransactionType.Send,
           isReceive: true,
           labels: en.transaction_names,
-          tokenSymbol: ICPToken.symbol,
         })
-      ).toBe(
-        replacePlaceholders(en.transaction_names.receive, {
-          $tokenSymbol: ICPToken.symbol,
-        })
-      );
+      ).toBe(en.transaction_names.receive);
     });
 
     it("returns raw type if not label", () => {
@@ -494,7 +481,6 @@ describe("transactions-utils", () => {
           type: "test" as AccountTransactionType,
           isReceive: true,
           labels: en.transaction_names,
-          tokenSymbol: ICPToken.symbol,
         })
       ).toBe("test");
     });
