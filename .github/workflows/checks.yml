@@ -281,15 +281,19 @@ jobs:
             brew install coreutils
             brew ls bash
             brew ls coreutils
+            # Brew has changed the installation location for Apple Silicon (M1/M2) to be /opt/homebrew/bin, see https://docs.brew.sh/Installation.
             echo "/opt/homebrew/bin" >> $GITHUB_PATH
             echo "/opt/homebrew/opt/coreutils/libexec/gnubin" >> $GITHUB_PATH
             export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:/opt/homebrew/bin:$PATH"
           fi
           echo "$PATH" | tr : "\n"
+          which bash
           bash --version
       - name: Download NNS-dapp CI wasm
         run: |
-          echo "$PATH"
+          echo "$PATH" | tr : "\n"
+          export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:/opt/homebrew/bin:$PATH"
+          which bash
           bash --version
           MAIN_COMMIT="$(git ls-remote --refs https://github.com/dfinity/nns-dapp.git main | awk '{print $1}')"
           scripts/nns-dapp/download-ci-wasm.test --commit "$MAIN_COMMIT"
