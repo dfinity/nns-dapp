@@ -342,7 +342,7 @@
           "ENABLE_CKTESTBTC": false
         }
       },
-      "bind": "127.0.0.1:8080",
+      "bind": "0.0.0.0:8080",
       "type": "ephemeral"
     },
     "https___benchmarklarge_testnet_dfinity_network": {
