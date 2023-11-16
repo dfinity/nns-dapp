@@ -1,4 +1,5 @@
 import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
+import type { Token } from "@dfinity/utils";
 import type { Account } from "./account";
 
 export type NewTransaction = {
@@ -77,6 +78,19 @@ export interface Transaction {
   to: string | undefined;
   displayAmount: bigint;
   date: Date;
+}
+
+export interface UiTransaction {
+  isIncoming: boolean;
+  headline: string;
+  // Where to amount is going to or coming from.
+  otherParty: string;
+  // TODO: Remove fallbackDescription and always use otherParty.
+  fallbackDescription?: string;
+  // Positing for incoming, negative for outgoing.
+  amount: bigint;
+  token: Token;
+  timestamp: Date;
 }
 
 export enum TransactionNetwork {

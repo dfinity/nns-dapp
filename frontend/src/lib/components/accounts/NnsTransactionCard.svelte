@@ -1,7 +1,11 @@
 <script lang="ts">
   import type { Account } from "$lib/types/account";
   import type { Transaction as NnsTransaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
-  import { mapNnsTransaction } from "$lib/utils/transactions.utils";
+  import {
+    mapNnsTransaction,
+    toUiTransaction,
+  } from "$lib/utils/transactions.utils";
+  import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
   import TransactionCard from "./TransactionCard.svelte";
   import { ICPToken } from "@dfinity/utils";
@@ -25,20 +29,26 @@
   $: swapCanisterAccountsStore =
     createSwapCanisterAccountsStore(accountPrincipal);
 
-  let transactionData: Transaction | undefined;
+  let uiTransaction: UiTransaction | undefined;
 
   $: account,
     transaction,
     (() => {
       try {
-        transactionData = mapNnsTransaction({
+        const transactionData = mapNnsTransaction({
           transaction,
           toSelfTransaction,
           account,
           swapCanisterAccounts: $swapCanisterAccountsStore,
         });
+        uiTransaction = toUiTransaction({
+          transaction: transactionData,
+          toSelfTransaction,
+          token: ICPToken,
+          transactionNames: $i18n.transaction_names,
+        });
       } catch (err: unknown) {
-        transactionData = undefined;
+        uiTransaction = undefined;
         toastsError(
           err instanceof Error
             ? { labelKey: err.message }
@@ -48,10 +58,6 @@
     })();
 </script>
 
-{#if transactionData !== undefined}
-  <TransactionCard
-    transaction={transactionData}
-    {toSelfTransaction}
-    token={ICPToken}
-  />
+{#if uiTransaction !== undefined}
+  <TransactionCard transaction={uiTransaction} />
 {/if}
