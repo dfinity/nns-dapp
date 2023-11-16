@@ -8,7 +8,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04, macos-12, macos-13]
+        os:
+          - ubuntu-20.04
+          - ubuntu-22.04
+          - macos-12
+          - macos-13
+          - macos-13-xlarge
+          # Note: macos-13-xlarge runs on M1 silicon while macos-13 runs on Intel.
         time: [now, future]
     steps:
       - name: Unbork mac
@@ -20,6 +26,7 @@ jobs:
             brew install gzip
             echo "/usr/local/bin" >> $GITHUB_PATH
             echo "$(brew --prefix)/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
+            # Note: For macos-13-xlarge, updating GITHUB_PATH is not enough and you will have to update PATH in every step.
           fi
       - name: Install dependencies
         run: |
@@ -61,6 +68,7 @@ jobs:
           npm ci
       - name: Build
         run: |
+          export PATH="$(brew --prefix)/opt/gnu-sed/libexec/gnubin:/usr/local/bin:$PATH"
           export DFX_NETWORK=mainnet
           . config.sh
           case "${{ matrix.time }}" in
