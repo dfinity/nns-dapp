@@ -23,10 +23,11 @@ while (($# > 0)); do
     exit 0
     ;;
   --) break ;;
-  *)
+  -*)
     echo "ERROR: Unsupported argument '${arg:-}'."
     exit 1
     ;;
+  *) break ;;
   esac
 done
 
@@ -162,6 +163,12 @@ install_screen_info() {
     URL="https://$(dfx canister id nns-dapp).${URL#devenv-}-ingress.devenv.dfinity.network/"
     echo "nns-dapp: $URL"
   )
+}
+# Cleans up after the last run
+clean() {
+  pushd "$WORKDIR/snsdemo"
+  git checkout .
+  popd
 }
 
 # Code to run if called as an executable
