@@ -280,6 +280,7 @@ jobs:
             brew install bash
             brew install coreutils
           fi
+          echo "/usr/local/bin" >> $GITHUB_PATH
           bash --version
       - name: Download NNS-dapp CI wasm
         run: |
@@ -305,6 +306,7 @@ jobs:
           if command -v brew ; then
             brew install bash
           fi
+          echo "/usr/local/bin" >> $GITHUB_PATH
           bash --version
       - run: scripts/canister_ids.test
   release-sop:
@@ -325,6 +327,7 @@ jobs:
           if command -v brew ; then
             brew install bash
           fi
+          echo "/usr/local/bin" >> $GITHUB_PATH
           bash --version
       - run: scripts/nns-dapp/release-sop.test
   split-changelog:
@@ -345,6 +348,7 @@ jobs:
           if command -v brew ; then
             brew install bash
           fi
+          echo "/usr/local/bin" >> $GITHUB_PATH
           bash --version
       - run: scripts/nns-dapp/split-changelog.test
   past-changelog:
