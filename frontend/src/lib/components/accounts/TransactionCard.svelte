@@ -39,7 +39,6 @@
     type,
     isReceive: isReceive || toSelfTransaction,
     labels: $i18n.transaction_names,
-    tokenSymbol: token.symbol,
   });
 
   let label: string | undefined;
