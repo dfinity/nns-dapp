@@ -279,11 +279,13 @@ jobs:
           if command -v brew ; then
             brew install bash
             brew install coreutils
+            brew ls bash
+            brew ls coreutils
+            echo "/opt/homebrew/bin" >> $GITHUB_PATH
+            echo "/opt/homebrew/opt/coreutils/libexec/gnubin" >> $GITHUB_PATH
+            export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:/opt/homebrew/bin:$PATH"
           fi
-          ls /opt/homebrew/bin
-          ls /opt/homebrew/Cellar/bash/5.2.15
-          echo "/opt/homebrew/bin" >> $GITHUB_PATH
-          echo "$PATH"
+          echo "$PATH" | tr : "\n"
           bash --version
       - name: Download NNS-dapp CI wasm
         run: |
