@@ -178,9 +178,7 @@ install_clean() {
 
 # Code to run if called as an executable
 main() {
-  echo "Args before: $*"
   argparse
-  echo "Args after: $*"
   if (($# == 0)); then
     setup workdir
     setup path_has "$HOME/bin"
