@@ -3,6 +3,7 @@ import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { formatToken } from "$lib/utils/token.utils";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -12,6 +13,8 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { NnsAccountsPo } from "$tests/page-objects/NnsAccounts.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import {
   advanceTime,
   runResolvedPromises,
@@ -23,14 +26,38 @@ vi.mock("$lib/api/nns-dapp.api");
 vi.mock("$lib/api/icp-ledger.api");
 
 describe("NnsAccounts", () => {
+  const renderComponent = () => {
+    const { container } = render(NnsAccounts);
+    return NnsAccountsPo.under(new JestPageObjectElement(container));
+  };
+
   beforeEach(() => {
-    resetIdentity();
-  });
-
-  afterEach(() => {
     vi.clearAllMocks();
+    resetIdentity();
+    // TODO: Move this inside a describe with tokens flag disabled
+    overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
   });
 
+  describe("when tokens flag is enabled", () => {
+    beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
+      // TODO: Return from mocked api layer instead of setting store directly
+      icpAccountsStore.setForTesting({
+        main: mockMainAccount,
+        subAccounts: [],
+        hardwareWallets: [],
+        certified: true,
+      });
+      cancelPollAccounts();
+    });
+
+    it("should render tokens table", async () => {
+      const po = renderComponent();
+      expect(await po.hasTokensTable()).toBe(true);
+    });
+  });
+
+  // TODO: Move this inside a describe with tokens flag disabled
   describe("when there are accounts", () => {
     beforeEach(() => {
       icpAccountsStore.setForTesting({
