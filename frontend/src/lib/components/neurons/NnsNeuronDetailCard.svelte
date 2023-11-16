@@ -1,7 +1,7 @@
 <script lang="ts">
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { secondsToDuration } from "$lib/utils/date.utils";
+  import { secondsToDuration } from "@dfinity/utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
     formatVotingPower,
@@ -42,13 +42,16 @@
   <KeyValuePair testId="dissolve-delay">
     <span slot="key" class="label">{$i18n.neurons.dissolve_delay_title}</span>
     <span slot="value" class="value"
-      >{secondsToDuration(neuron.dissolveDelaySeconds)}</span
+      >{secondsToDuration({
+        seconds: neuron.dissolveDelaySeconds,
+        i18n: $i18n.time,
+      })}</span
     >
   </KeyValuePair>
   <KeyValuePair testId="age">
     <span class="label" slot="key">{$i18n.neurons.age}</span>
     <span class="value" slot="value" data-tid="nns-neuron-age">
-      {secondsToDuration(neuronAge(neuron))}
+      {secondsToDuration({ seconds: neuronAge(neuron), i18n: $i18n.time })}
     </span>
   </KeyValuePair>
   <KeyValuePair testId="voting-power">

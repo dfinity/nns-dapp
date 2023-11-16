@@ -4,7 +4,7 @@
   import { NeuronState } from "@dfinity/nns";
   import CommonItemAction from "../ui/CommonItemAction.svelte";
   import { keyOf } from "$lib/utils/utils";
-  import { secondsToDuration } from "$lib/utils/date.utils";
+  import { secondsToDuration } from "@dfinity/utils";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
   import {
     dissolveDelayMultiplier,
@@ -58,7 +58,11 @@
     >{`${keyOf({
       obj: $i18n.neuron_detail,
       key: stateTextMapper[state],
-    })} ${dissolvingTime > 0n ? secondsToDuration(dissolvingTime) : "0"}`}</span
+    })} ${
+      dissolvingTime > 0n
+        ? secondsToDuration({ seconds: dissolvingTime, i18n: $i18n.time })
+        : "0"
+    }`}</span
   >
   <svelte:fragment slot="subtitle">
     {#if dissolvingTime >= minimumDelayToVoteInSeconds}

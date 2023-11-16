@@ -1,7 +1,6 @@
 import NnsProposalCard from "$lib/components/proposals/NnsProposalCard.svelte";
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import { proposalsFiltersStore } from "$lib/stores/proposals.store";
-import { secondsToDuration } from "$lib/utils/date.utils";
 import en from "$tests/mocks/i18n.mock";
 import { createMockProposalInfo } from "$tests/mocks/proposal.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
@@ -13,6 +12,7 @@ import {
   type Proposal,
   type ProposalInfo,
 } from "@dfinity/nns";
+import { secondsToDuration } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("NnsProposalCard", () => {
@@ -128,7 +128,7 @@ describe("NnsProposalCard", () => {
       (mockProposals[0].deadlineTimestampSeconds as bigint) -
       BigInt(nowInSeconds);
 
-    const text = `${secondsToDuration(durationTillDeadline)} ${
+    const text = `${secondsToDuration({ seconds: durationTillDeadline })} ${
       en.proposal_detail.remaining
     }`;
 

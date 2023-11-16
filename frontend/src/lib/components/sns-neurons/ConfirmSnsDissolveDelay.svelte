@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { secondsToDuration } from "$lib/utils/date.utils";
+  import { secondsToDuration } from "@dfinity/utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatToken } from "$lib/utils/token.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
@@ -47,7 +47,9 @@
 
 <div class="wrapper" data-tid="confirm-dissolve-delay-container">
   <div class="main-info">
-    <h3>{secondsToDuration(BigInt(delayInSeconds))}</h3>
+    <h3>
+      {secondsToDuration({ seconds: BigInt(delayInSeconds), i18n: $i18n.time })}
+    </h3>
   </div>
   <div>
     <p class="label">{$i18n.neurons.neuron_id}</p>
