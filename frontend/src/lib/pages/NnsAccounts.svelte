@@ -24,11 +24,12 @@
     cancelPollAccounts();
   });
 
-  export let userTokensData: UserTokenData[];
+  // TODO: Remove default value when we remove the feature flag
+  export let userTokensData: UserTokenData[] = [];
 </script>
 
 {#if $ENABLE_MY_TOKENS}
-  <MainWrapper testId="nns-accounts-component">
+  <MainWrapper testId="accounts-body">
     <TokensTable {userTokensData} />
   </MainWrapper>
 {:else}
