@@ -164,22 +164,27 @@ install_screen_info() {
   )
 }
 
-if (($# == 0)); then
-  setup workdir
-  setup path_has "$HOME/bin"
-  setup path_has "$HOME/.local/bin"
-  setup path_has "$WORKDIR/snsdemo/bin"
-  setup snsdemo
-  setup nns_dapp
-  setup ic
-  setup snsdemo_release
-  setup nns_dapp_tools
-  setup snsdemo_tools
-  dfx-software-dfx-install --version 0.15.1 # BUG: nns-dapp setup should have installed the correct version
-  setup snapshot
-  setup dfx_screen
-  setup screen_info
-else
-  setup "${@}"
-fi
-echo FIN
+# Code to run if called as an executable
+main() {
+  if (($# == 0)); then
+    setup workdir
+    setup path_has "$HOME/bin"
+    setup path_has "$HOME/.local/bin"
+    setup path_has "$WORKDIR/snsdemo/bin"
+    setup snsdemo
+    setup nns_dapp
+    setup ic
+    setup snsdemo_release
+    setup nns_dapp_tools
+    setup snsdemo_tools
+    dfx-software-dfx-install --version 0.15.1 # BUG: nns-dapp setup should have installed the correct version
+    setup snapshot
+    setup dfx_screen
+    setup screen_info
+  else
+    setup "${@}"
+  fi
+  echo FIN
+}
+
+(return 0 2>/dev/null) || main
