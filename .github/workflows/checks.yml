@@ -317,7 +317,7 @@ jobs:
           echo "/usr/local/bin" >> $GITHUB_PATH
           bash --version
       - run: |
-          export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:/opt/homebrew/bin:$PATH"
+          export PATH="/opt/homebrew/bin:$PATH"
           scripts/canister_ids.test
   release-sop:
     name: Test release-sop script
@@ -340,7 +340,7 @@ jobs:
           echo "/usr/local/bin" >> $GITHUB_PATH
           bash --version
       - run: |
-          export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:/opt/homebrew/bin:$PATH"
+          export PATH="/opt/homebrew/bin:$PATH"
           scripts/nns-dapp/release-sop.test
   split-changelog:
     name: Test split-changelog script
@@ -363,7 +363,7 @@ jobs:
           echo "/usr/local/bin" >> $GITHUB_PATH
           bash --version
       - run: |
-          export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:/opt/homebrew/bin:$PATH"
+          export PATH="/opt/homebrew/bin:$PATH"
           scripts/nns-dapp/split-changelog.test
   past-changelog:
     name: Test that no new change log entries are added to past releases.
