@@ -35,17 +35,6 @@ describe("NnsTransactionCard", () => {
     return TransactionCardPo.under(new JestPageObjectElement(container));
   };
 
-  const renderTransactionCard = (
-    account = mockMainAccount,
-    transaction = mockReceivedFromMainAccountTransaction
-  ) =>
-    render(NnsTransactionCard, {
-      props: {
-        account,
-        transaction,
-      },
-    });
-
   it("renders received headline", async () => {
     const po = renderComponent(
       mockSubAccount,
@@ -103,17 +92,6 @@ describe("NnsTransactionCard", () => {
     const po = renderComponent(account, transaction);
 
     expect(await po.getAmount()).toBe("-1.2301");
-  });
-
-  it("renders transaction ICPs with + sign", () => {
-    const account = mockSubAccount;
-    const transaction = mockReceivedFromMainAccountTransaction;
-    const { getByTestId } = renderTransactionCard(account, transaction);
-    const { displayAmount } = mapNnsTransaction({ account, transaction });
-
-    expect(getByTestId("token-value")?.textContent).toBe(
-      `+${formatToken({ value: displayAmount, detailed: true })}`
-    );
   });
 
   it("renders transaction ICPs with + sign", async () => {
