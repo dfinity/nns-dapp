@@ -202,4 +202,4 @@ main() {
   echo FIN
 }
 
-(return 0 2>/dev/null) || main
+(return 0 2>/dev/null) || main "${@}"
