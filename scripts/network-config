@@ -15,6 +15,14 @@ assert_dfx_network_var_is_set() {
     echo "ERROR: DFX_NETWORK is not defined."
     return 1
   } >&2
+  # Note: ${var@a} gets variable attributes.  It has been available in bash since bash 5.1, so is as old as Node14.
+  #       'x' is the export attribute.
+  #       If we find that we need to support older systems, please use this instead:
+  #         bash -c 'test -n "${DFX_NETWORK:-}"' || { ...
+  [[ "${DFX_NETWORK@a}" == *x* ]] || {
+    echo "ERROR: DFX_NETWORK is not exported."
+    return 1
+  }
 }
 # Gets the global network configuration.  If missing, the answer is null and the return-value 1.
 global_network_config() {
@@ -33,6 +41,7 @@ local_network_config() {
 }
 # Checks that the DFX_NETWORK is configured
 assert_dfx_network_var_is_configured() {
+  assert_dfx_network_var_is_set || return
   local_network_config >/dev/null || global_network_config >/dev/null || {
     echo "ERROR: DFX_NETWORK '$DFX_NETWORK' is not defined in dfx.json or $GLOBAL_NETWORK_CONFIG_FILE"
     echo "Available networks are:"
