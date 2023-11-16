@@ -41,14 +41,6 @@ describe("NnsAccounts", () => {
   describe("when tokens flag is enabled", () => {
     beforeEach(() => {
       overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
-      // TODO: Return from mocked api layer instead of setting store directly
-      icpAccountsStore.setForTesting({
-        main: mockMainAccount,
-        subAccounts: [],
-        hardwareWallets: [],
-        certified: true,
-      });
-      cancelPollAccounts();
     });
 
     it("should render tokens table", async () => {

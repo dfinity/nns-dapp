@@ -17,7 +17,9 @@
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
 
   onMount(() => {
-    pollAccounts();
+    if (!$ENABLE_MY_TOKENS) {
+      pollAccounts();
+    }
   });
 
   onDestroy(() => {
