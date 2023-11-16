@@ -11,7 +11,7 @@
   import CommonItemAction from "../ui/CommonItemAction.svelte";
   import IncreaseDissolveDelayButton from "./actions/IncreaseDissolveDelayButton.svelte";
   import { keyOf } from "$lib/utils/utils";
-  import { secondsToDuration } from "$lib/utils/date.utils";
+  import { secondsToDuration } from "@dfinity/utils";
   import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
   import { authStore } from "$lib/stores/auth.store";
   import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
@@ -55,7 +55,9 @@
       obj: $i18n.neuron_detail,
       key: stateTextMapper[neuron.state],
     })} ${
-      remainingTimeSeconds > 0n ? secondsToDuration(remainingTimeSeconds) : "0"
+      remainingTimeSeconds > 0n
+        ? secondsToDuration({ seconds: remainingTimeSeconds, i18n: $i18n.time })
+        : "0"
     }`}</span
   >
   <svelte:fragment slot="subtitle">
