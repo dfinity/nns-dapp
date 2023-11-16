@@ -1,25 +1,28 @@
 import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import {
+  CKBTC_UNIVERSE_CANISTER_ID,
+  CKTESTBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
 import * as services from "$lib/services/ckbtc-tokens.services";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
+vi.mock("$lib/api/ckbtc-ledger.api");
+
 describe("ckbtc-tokens-services", () => {
   beforeEach(() => {
+    vi.clearAllMocks();
     resetIdentity();
   });
 
-  describe("loadCkBTCTokens", () => {
+  describe("loadCkBTCToken", () => {
     beforeEach(() => {
       tokensStore.reset();
-    });
-
-    afterEach(() => {
-      vi.clearAllMocks();
     });
 
     it("should load token in the store", async () => {
@@ -50,17 +53,13 @@ describe("ckbtc-tokens-services", () => {
     });
   });
 
-  describe("already loaded", () => {
+  describe("loadCkBTCToken already loaded", () => {
     beforeEach(() => {
       tokensStore.setToken({
         canisterId: CKBTC_UNIVERSE_CANISTER_ID,
         token: mockCkBTCToken,
         certified: true,
       });
-    });
-
-    afterEach(() => {
-      vi.clearAllMocks();
     });
 
     it("should not reload token if already loaded", async () => {
@@ -71,6 +70,97 @@ describe("ckbtc-tokens-services", () => {
       await services.loadCkBTCToken({ universeId: CKBTC_UNIVERSE_CANISTER_ID });
 
       expect(spyGetToken).not.toBeCalled();
+    });
+  });
+
+  describe("loadCkBTCTokens", () => {
+    const mockCkTestBTCToken = {
+      ...mockCkBTCToken,
+      symbol: "ckTESTBTC",
+    };
+    beforeEach(() => {
+      tokensStore.reset();
+      vi.spyOn(ledgerApi, "getCkBTCToken").mockImplementation(
+        async ({ canisterId }) => {
+          if (canisterId.toText() === CKBTC_UNIVERSE_CANISTER_ID.toText()) {
+            return mockCkBTCToken;
+          } else {
+            return mockCkTestBTCToken;
+          }
+        }
+      );
+    });
+
+    describe("no ckBTC enabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", false);
+        overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
+      });
+
+      it("should not load the ckBTC related tokens", async () => {
+        await services.loadCkBTCTokens();
+
+        expect(
+          get(tokensStore)[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]
+        ).toBeUndefined();
+        expect(
+          get(tokensStore)[CKBTC_UNIVERSE_CANISTER_ID.toText()]
+        ).toBeUndefined();
+      });
+    });
+
+    describe("CKBTC enabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", true);
+        overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
+      });
+
+      it("should load the ckBTC token", async () => {
+        await services.loadCkBTCTokens();
+
+        expect(
+          get(tokensStore)[CKBTC_UNIVERSE_CANISTER_ID.toText()]?.token
+        ).toEqual(mockCkBTCToken);
+        expect(
+          get(tokensStore)[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]
+        ).toBeUndefined();
+      });
+    });
+
+    describe("CKBTCTest enabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", false);
+        overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", true);
+      });
+
+      it("should load the ckTESTBTC token", async () => {
+        await services.loadCkBTCTokens();
+
+        expect(
+          get(tokensStore)[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]?.token
+        ).toEqual(mockCkTestBTCToken);
+        expect(
+          get(tokensStore)[CKBTC_UNIVERSE_CANISTER_ID.toText()]
+        ).toBeUndefined();
+      });
+    });
+
+    describe("both ckbtc enabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", true);
+        overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", true);
+      });
+
+      it("should load both ckBTC tokes", async () => {
+        await services.loadCkBTCTokens();
+
+        expect(
+          get(tokensStore)[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]?.token
+        ).toEqual(mockCkTestBTCToken);
+        expect(
+          get(tokensStore)[CKBTC_UNIVERSE_CANISTER_ID.toText()]?.token
+        ).toEqual(mockCkBTCToken);
+      });
     });
   });
 });

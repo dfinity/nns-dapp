@@ -1,4 +1,4 @@
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/dd51544944987556c978e774aa7a1992e5c11542/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-11-08_23-01/rs/sns/governance/canister/governance.did>
 type Account = record { owner : opt principal; subaccount : opt Subaccount };
 type Action = variant {
   ManageNervousSystemParameters : NervousSystemParameters;
@@ -315,6 +315,7 @@ type Operation = variant {
   IncreaseDissolveDelay : IncreaseDissolveDelay;
   SetDissolveTimestamp : SetDissolveTimestamp;
 };
+type Percentage = record { basis_points : opt nat64 };
 type Proposal = record {
   url : text;
   title : text;
@@ -327,6 +328,7 @@ type ProposalData = record {
   action : nat64;
   failure_reason : opt GovernanceError;
   ballots : vec record { text; Ballot };
+  minimum_yes_proportion_of_total : opt Percentage;
   reward_event_round : nat64;
   failed_timestamp_seconds : nat64;
   reward_event_end_timestamp_seconds : opt nat64;

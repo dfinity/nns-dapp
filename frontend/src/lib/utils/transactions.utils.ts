@@ -192,9 +192,9 @@ export const transactionName = ({
   );
 
 /** (from==to workaround) Set `mapToSelfNnsTransaction: true` when sender and receiver are the same account (e.g. transmitting from `main` to `main` account) */
-export const mapToSelfTransaction = <T>(
-  transactions: T[]
-): { transaction: T; toSelfTransaction: boolean }[] => {
+export const mapToSelfTransaction = (
+  transactions: NnsTransaction[]
+): { transaction: NnsTransaction; toSelfTransaction: boolean }[] => {
   const resultTransactions = transactions.map((transaction) => ({
     transaction: { ...transaction },
     toSelfTransaction: false,

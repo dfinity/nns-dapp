@@ -44,9 +44,15 @@ jobs:
             echo "updated=1" >> "$GITHUB_OUTPUT"
           else
             echo "updated=0" >> "$GITHUB_OUTPUT"
+            echo "version=$latest_rust_version" >> "$GITHUB_OUTPUT"
           fi
 
           cat ./rust-toolchain.toml
+          # Show changes
+          echo "Git status:"
+          git status
+          echo "Git diff:"
+          git diff
         # If the rust-toolchain was updated, create a PR.
       - name: Create Pull Request
         if: ${{ steps.update.outputs.updated == '1' }}
@@ -54,13 +60,15 @@ jobs:
         with:
           token: ${{ secrets.GIX_BOT_PAT }}
           base: main
+          # Note: Please be careful when updating the add-paths field.  We have had the snsdemo committed by accident, with a pattern that matches nothing seemingly committing everything.
           add-paths: ./rust-toolchain.toml
           commit-message: Update rust version
           committer: GitHub <noreply@github.com>
           author: gix-bot <gix-bot@users.noreply.github.com>
           branch: bot-rust-update
+          branch-suffix: timestamp
           delete-branch: true
-          title: 'Update rust version'
+          title: 'Update rust version to ${{ steps.update.outputs.version }}'
           # Since the this is a scheduled job, a failure won't be shown on any
           # PR status. To notify the team, we send a message to our Slack channel on failure.
       - name: Notify Slack on failure

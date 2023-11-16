@@ -1,9 +1,12 @@
 import type { IcrcTransactionsStoreData } from "$lib/stores/icrc-transactions.store";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
 import type {
   IcrcTransaction,
   IcrcTransactionWithId,
 } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
+import { toNullable } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
 
 export interface IcrcCandidAccount {
@@ -12,13 +15,19 @@ export interface IcrcCandidAccount {
 }
 
 export const createIcrcTransactionWithId = ({
+  id,
   from,
   to,
+  fee,
+  amount,
 }: {
-  to: IcrcCandidAccount;
-  from: IcrcCandidAccount;
+  id?: bigint;
+  to?: IcrcCandidAccount;
+  from?: IcrcCandidAccount;
+  fee?: bigint;
+  amount?: bigint;
 }): IcrcTransactionWithId => ({
-  id: BigInt(123),
+  id: id ?? 123n,
   transaction: {
     kind: "transfer",
     timestamp: BigInt(12354),
@@ -26,12 +35,18 @@ export const createIcrcTransactionWithId = ({
     mint: [],
     transfer: [
       {
-        to,
-        from,
+        to: to ?? {
+          owner: mockPrincipal,
+          subaccount: [Uint8Array.from(mockSubAccountArray)],
+        },
+        from: from ?? {
+          owner: mockPrincipal,
+          subaccount: [] as [],
+        },
         memo: [],
         created_at_time: [BigInt(123)],
-        amount: BigInt(33),
-        fee: [BigInt(1)],
+        amount: amount ?? BigInt(33),
+        fee: [fee ?? BigInt(1)],
         spender: [],
       },
     ],
@@ -44,7 +59,31 @@ const fakeAccount = {
   subaccount: [] as [],
 };
 
+const fakeSubAccount = {
+  owner: Principal.fromText("aaaaa-aa"),
+  subaccount: [new Uint8Array([2, 3, 4])] as [Uint8Array],
+};
+
 const mockIcrcTransactionTransfer: IcrcTransaction = {
+  kind: "transfer",
+  timestamp: BigInt(12354),
+  burn: [],
+  mint: [],
+  transfer: [
+    {
+      to: fakeSubAccount,
+      from: fakeAccount,
+      memo: [],
+      created_at_time: [BigInt(123)],
+      amount: BigInt(33),
+      fee: [BigInt(1)],
+      spender: [],
+    },
+  ],
+  approve: [],
+};
+
+const mockIcrcTransactionTransferToSelf: IcrcTransaction = {
   kind: "transfer",
   timestamp: BigInt(12354),
   burn: [],
@@ -63,22 +102,42 @@ const mockIcrcTransactionTransfer: IcrcTransaction = {
   approve: [],
 };
 
-export const mockIcrcTransactionBurn: IcrcTransaction = {
-  kind: "burn",
-  timestamp: BigInt(12354),
-  burn: [
-    {
-      amount: BigInt(33),
-      from: fakeAccount,
-      memo: [],
-      created_at_time: [BigInt(123)],
-      spender: [],
-    },
-  ],
-  mint: [],
-  transfer: [],
-  approve: [],
+export const createBurnTransaction = ({
+  timestamp = 12354n,
+  amount = 33n,
+  from = fakeAccount,
+  memo,
+  createdAt = 123n,
+  spender,
+}: {
+  timestamp?: bigint;
+  amount?: bigint;
+  from?: IcrcCandidAccount;
+  memo?: Uint8Array;
+  createdAt?: bigint;
+  spender?: IcrcCandidAccount;
+}): IcrcTransaction => {
+  return {
+    kind: "burn",
+    timestamp,
+    burn: [
+      {
+        amount,
+        from,
+        memo: toNullable(memo),
+        created_at_time: toNullable(createdAt),
+        spender: toNullable(spender),
+      },
+    ],
+    mint: [],
+    transfer: [],
+    approve: [],
+  };
 };
+
+export const mockIcrcTransactionBurn: IcrcTransaction = createBurnTransaction(
+  {}
+);
 
 export const mockIcrcTransactionMint: IcrcTransaction = {
   kind: "mint",
@@ -99,6 +158,11 @@ export const mockIcrcTransactionMint: IcrcTransaction = {
 export const mockIcrcTransactionWithId: IcrcTransactionWithId = {
   id: BigInt(123),
   transaction: mockIcrcTransactionTransfer,
+};
+
+export const mockIcrcTransactionWithIdToSelf: IcrcTransactionWithId = {
+  id: BigInt(124),
+  transaction: mockIcrcTransactionTransferToSelf,
 };
 
 export const mockIcrcTransactionsStoreSubscribe =

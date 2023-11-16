@@ -57,4 +57,35 @@ describe("icrc-transactions", () => {
       ]
     ).toBeUndefined();
   });
+
+  it("should dedupe transactions", () => {
+    const canisterId = CKTESTBTC_UNIVERSE_CANISTER_ID;
+    const identifier = mockCkBTCMainAccount.identifier;
+
+    icrcTransactionsStore.addTransactions({
+      canisterId,
+      transactions: [mockIcrcTransactionWithId],
+      accountIdentifier: identifier,
+      oldestTxId: BigInt(10),
+      completed: false,
+    });
+
+    expect(
+      get(icrcTransactionsStore)[canisterId.toText()][identifier].transactions
+        .length
+    ).toBe(1);
+
+    icrcTransactionsStore.addTransactions({
+      canisterId,
+      transactions: [mockIcrcTransactionWithId, mockIcrcTransactionWithId],
+      accountIdentifier: identifier,
+      oldestTxId: BigInt(10),
+      completed: false,
+    });
+
+    expect(
+      get(icrcTransactionsStore)[canisterId.toText()][identifier].transactions
+        .length
+    ).toBe(1);
+  });
 });

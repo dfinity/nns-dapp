@@ -6,6 +6,7 @@ import {
 import { AppPath } from "$lib/constants/routes.constants";
 import type { Page } from "$lib/derived/page.derived";
 import { i18n } from "$lib/stores/i18n";
+import type { SnsSummary } from "$lib/types/sns";
 import type { Universe } from "$lib/types/universe";
 import { isSelectedPath } from "$lib/utils/navigation.utils";
 import type { Principal } from "@dfinity/principal";
@@ -26,6 +27,9 @@ export const isUniverseCkBTC = (canisterId: Principal | string): boolean =>
     CKBTC_UNIVERSE_CANISTER_ID.toText(),
     CKTESTBTC_UNIVERSE_CANISTER_ID.toText(),
   ].includes(typeof canisterId === "string" ? canisterId : canisterId.toText());
+
+export const isUniverseRealCkBTC = (canister: Principal): boolean =>
+  CKBTC_UNIVERSE_CANISTER_ID.toText() === canister.toText();
 
 export const isUniverseCkTESTBTC = (
   canisterId: Principal | string | undefined
@@ -51,3 +55,10 @@ export const universeLogoAlt = ({ summary, canisterId }: Universe): string => {
 
   return i18nObj.auth.ic_logo;
 };
+
+export const createUniverse = (summary: SnsSummary): Universe => ({
+  canisterId: summary.rootCanisterId.toText(),
+  summary,
+  title: summary.metadata.name,
+  logo: summary.metadata.logo,
+});

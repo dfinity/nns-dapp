@@ -31,7 +31,8 @@
     "do_not_close": "Please do not close your browser tab",
     "finish": "Finish",
     "unknown": "Unknown",
-    "expand_all": "Expand All"
+    "expand_all": "Expand All",
+    "collapse_all": "Collapse All"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -483,7 +484,7 @@
     "title": "Account",
     "address": "Address",
     "principal": "Principal",
-    "direction_from": "Source:",
+    "direction_from": "From:",
     "direction_to": "To:",
     "no_transactions": "No transactions",
     "icp_qrcode_aria_label": "A QR code that renders the address to receive ICP",
@@ -533,6 +534,9 @@
     "toggle_lable": "Switch between user-friendly and raw data representation",
     "toggle_tree": "Tree",
     "toggle_raw": "Raw",
+    "json_unit_basis_points": "basis points",
+    "json_unit_seconds": "seconds",
+    "json_unit_e8s": "e8s",
     "id": "ID"
   },
   "proposal_detail__vote": {
@@ -707,6 +711,7 @@
   },
   "sns_project_detail": {
     "swap_proposal": "Swap Proposal",
+    "link_to_dashboard": "ICP Dashboard",
     "token_name": "Token Name",
     "token_symbol": "Token Symbol",
     "total_tokens": "Tokens Distributed to Participants",
@@ -747,7 +752,7 @@
     "max_user_commitment_reached": "Maximum commitment reached",
     "not_eligible_to_participate": "You are not eligible to participate in this swap.",
     "getting_sns_open_ticket": "We're connecting with the SNS swap. This might take more than a minute.",
-    "current_nf_commitment_description": "The NF commitment increases based on direct participation. <a href=\"https://internetcomputer.org/docs/current/tokenomics/nns/neurons-fund\" rel=\"noopener noreferrer\" aria-label=\"more info about neurons' fund\" target=\"_blank\">Learn more</a>.",
+    "current_nf_commitment_description": "The Neurons' Fund commitment increases based on direct participation. The exact amount is computed at the end of the swap. <a href=\"https://internetcomputer.org/docs/current/tokenomics/nns/neurons-fund\" rel=\"noopener noreferrer\" aria-label=\"more info about neurons' fund\" target=\"_blank\">Learn more</a>.",
     "sign_in": "Sign in to participate"
   },
   "sns_sale": {
@@ -974,6 +979,7 @@
     "ckbtc_balance_updated": "Updated available ckBTC : New confirmed BTC.",
     "step_initialization": "Initializing transaction",
     "step_locking_ckbtc": "Confirming ckBTC",
+    "step_approve_transfer": "Approving transfer",
     "step_send_btc": "Sending BTC",
     "step_reload": "Refreshing UI Balances",
     "sending_ckbtc_to_btc": "Sending ckBTC —> BTC",

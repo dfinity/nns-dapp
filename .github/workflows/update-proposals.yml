@@ -1,0 +1,78 @@
+# A GitHub Actions workflow that regularly updates the proposals rendering code
+# and creates a PR for any changes.
+name: Update proposals
+on:
+  schedule:
+    - cron: '30 3 * * *'
+  workflow_dispatch:
+  push:
+    branches:
+      # Run when the development branch for this workflow is updated.
+      - update-proposals
+jobs:
+  update-proposals:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install didc
+        run: |
+          USER_BIN="$HOME/.local/bin"
+          mkdir -p "$USER_BIN"
+          echo "$USER_BIN" >> $GITHUB_PATH
+          version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+          # TODO: Make `didc` support `binstall`, then use `binstall` here.
+          curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
+      - name: Update to the latest declared APIs
+        id: update
+        run: |
+          # Derive rust files
+          ./scripts/proposals/did2rs
+          # Show changes
+          echo "Git status:"
+          git status
+          echo "Note: The git diff may be long so is not logged.  Please see the PR."
+      - name: Create Pull Request
+        id: cpr
+        # Note: If there were no changes, this step creates no PR.
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.GIX_BOT_PAT }}
+          commit-message: Update proposals
+          committer: GitHub <noreply@github.com>
+          author: gix-bot <gix-bot@users.noreply.github.com>
+          branch: bot-proposals-update
+          branch-suffix: timestamp
+          # Note: Please be careful when updating the add-paths field.  We have had the snsdemo committed by accident, with a pattern that matches nothing seemingly committing everything.
+          add-paths: rs/proposals/src/canisters/*/api.rs
+          delete-branch: true
+          title: 'Update proposal rendering'
+          # Note: It is _likely_ but not guaranteed that the .did files match the IC_COMMIT in dfx.json.  The files in the PR have a header that give this information reliably.
+          #       We do _not_ put a commit in the PR title as it could be misleading.
+          body: |
+            # Motivation
+            We would like to render all the latest proposal types.
+
+            # Changes
+            * Updated the Rust code derived from `.did` files in the proposals payload rendering crate.
+              * Note: The candid files under `declarations/nns-$CANISTER` are used as inputs.
+
+            # Tests
+              - [ ] Please check the API updates for any breaking changes that affect our code.
+              - [ ] Please check for new proposal types and add tests for them.
+          # Since the this is a scheduled job, a failure won't be shown on any
+          # PR status. To notify the team, we send a message to our Slack channel on failure.
+      - name: Report on the action
+        run: |
+          (
+            echo "## Proposals Update"
+            if test -n "${{ steps.cpr.outputs.pull-request-number }}"
+            then echo "Created [PR #${{ steps.cpr.outputs.pull-request-number }}](${{ steps.cpr.outputs.pull-request-url }}) with proposal payload updates."
+            else echo "No changes needed."
+            fi
+          ) | tee -a $GITHUB_STEP_SUMMARY
+      - name: Notify Slack on failure
+        uses: dfinity/internet-identity/.github/actions/slack@release-2023-08-28
+        if: ${{ failure() }}
+        with:
+          WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          MESSAGE: "Proposals update failed"

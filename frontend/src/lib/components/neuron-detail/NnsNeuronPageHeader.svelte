@@ -3,12 +3,12 @@
   import UniversePageSummary from "../universe/UniversePageSummary.svelte";
   import IdentifierHash from "../ui/IdentifierHash.svelte";
   import { MAX_NEURON_ID_DIGITS } from "$lib/constants/neurons.constants";
-  import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
   import PageHeader from "../common/PageHeader.svelte";
   import { onIntersection } from "$lib/directives/intersection.directives";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { i18n } from "$lib/stores/i18n";
   import type { IntersectingDetail } from "$lib/types/intersection.types";
+  import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
 
   export let neuron: NeuronInfo;
 
@@ -27,7 +27,7 @@
 </script>
 
 <PageHeader testId="nns-neuron-page-header-component">
-  <UniversePageSummary slot="start" universe={NNS_UNIVERSE} />
+  <UniversePageSummary slot="start" universe={$nnsUniverseStore} />
   <span
     slot="end"
     class="description header-end"

@@ -49,21 +49,23 @@ jobs:
           sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
           # Update
           ./scripts/update-snsdemo --dir ./snsdemo --release "${{ steps.update.outputs.release }}" --verbose
+          # Show changes
+          echo "Git status:"
+          git status
           echo "Changes:"
           git diff
-          git config --global user.email "gix-bot@dfinity.org"
-          git config --global user.name "GIX bot"
-          git commit -a -m "Update snsdemo to ${{ steps.update.outputs.release }}"
       - name: Create Pull Request
         if: ${{ steps.update.outputs.updated == '1' }}
         uses: peter-evans/create-pull-request@v4
         with:
           token: ${{ secrets.GIX_BOT_PAT }}
-          commit-message: Update snsdemo
+          commit-message: Update snsdemo to ${{ steps.update.outputs.release }}
           committer: GitHub <noreply@github.com>
           author: gix-bot <gix-bot@users.noreply.github.com>
           branch: bot-snsdemo-update
-          add-paths: .github/*/*ml
+          branch-suffix: timestamp
+          # Note: Please be careful when updating the add-paths field.  We have had the snsdemo committed by accident, with a pattern that matches nothing seemingly committing everything.
+          add-paths: dfx.json
           delete-branch: true
           title: 'Update snsdemo to ${{ steps.update.outputs.release }}'
           body: |
@@ -75,8 +77,7 @@ jobs:
             * Ensured that the `dfx` version and IC commit in `dfx.json` match `snsdemo`.
 
             # Tests
-              - [ ] Please check the API updates for any breaking changes that affect our code.
-              - [ ] Please check for new proposal types.
+            CI should pass.
           # Since the this is a scheduled job, a failure won't be shown on any
           # PR status. To notify the team, we send a message to our Slack channel on failure.
       - name: Notify Slack on failure

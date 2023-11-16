@@ -14,65 +14,57 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Specified the preferred storage schema as an argument.
-* Added provenance information to .did files and derived rust code.
-* Add `UpdateElectedHostosVersions` and `UpdateNodesHostosVersion` proposals support.
-* Show the maximum participation of the Neurons' Fund when present.
-* A list of exceptional (not-rendered, zero value) transactions.
+* Render withdrawal address on ckBTC burn transactions.
 
 #### Changed
 
-* Stable structures updated to `0.6.0`.
-* Dapp upgraded to Svelte `v4`.
-* New Proposal Card.
-* Change the slider in dissolve delay for a read-only progress bar.
-* Redesign the proposal payload and action.
-* Switch the flag to use redesigned proposal detail page sections by default.
-* Redesign the proposal voting section.
-* Beautify the proposal cards look & feel.
+* New icons for sent/received transactions.
+* Increase the pre-migration account limit.
+* Use "From:" instead of "Source:" for received transactions.
 
 #### Deprecated
-#### Removed
 
-* Removed debounce on deriving Network from ckBTC send address.
+#### Removed
 
 #### Fixed
 
-* Remove robots meta tag to allow search engines to crawl NNS Dapp.
-* Fix i18n key in merge neurons summary screen.
-* Display `TransferFrom` as a normal receive instead of failing to load transactions.
-* Fix issue with setting max dissolve delay when max is not a whole day.
+* Add missing "Rename" button in the subaccount page.
+* Fix disappearing "Received" half of to-self transactions.
+* Fix debug store that wasn't working.
+* Fix the stuck loading issue with the Sns proposal.
 
 #### Security
 
 #### Not Published
 
-* Added `retrieveBtcWithApproval` in ckbtc-minter API.
-* Render Approve transactions in transaction list.
-* Add feature flag `ENABLE_CKBTC_ICRC2`.
-
 ### Operations
 
 #### Added
 
-* Import candid for NNS ledger.
-* Formatting for `Cargo.toml` files.
-* Add test to check that the nns-dapp cargo and npm versions match.
-* Script to deploy nns-dapp on `DevEnv`.
+* Add a workflow to update the SNS aggregator bindings regularly.
+* Added support for global network config.
+* Cron job to update proposal types.
+* Enable dependabot for Rust updates.
+* Workflow to get the latest NNS and SNS canister candid files.
+* Try to prevent calls to global.fetch in unit tests.
+* Add `devenv_llorenc` and `devenv_dskloet` to list of networks.
 
 #### Changed
 
-* Install `dfx` by means of the dedicated GitHub action.
-* Stop updating candid files when updating the test environment.
-* Join npm audit URLs with spaces instead of commas.
-* Add traits with a dedicated command rather than with patch files.
-* Use snsdemo snapshot with Internet Identity version 2023-10-27.
+* Update `ic-wasm` to the latest version.
+* Factor out the `snsdemo` installation.
+* Make the location of the snsdemo checkout configurable.
+* Add `prod` and `aggregator-prod` to the list of public releases.
+* Update `dfx` to `v0.15.1`.
+* Update the URL of the app subnet to what dfx v15 expects.
+* Use a unique branch when updating the snsdemo release, didc, IC candid files or rust.
 
 #### Deprecated
+
 #### Removed
 
-* Delete nightly `GitHub` job to update II used in tests; we now use the II that comes with `snsdemo`.
-
 #### Fixed
+
+* Remove accidentally committed (empty) directory and fix commit patterns.
 
 #### Security

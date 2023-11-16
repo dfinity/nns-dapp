@@ -42,9 +42,10 @@
   import type { AccountIdentifierText } from "$lib/types/account";
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
   import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
-  import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
   import HardwareWalletListNeuronsButton from "$lib/components/accounts/HardwareWalletListNeuronsButton.svelte";
   import HardwareWalletShowActionButton from "$lib/components/accounts/HardwareWalletShowActionButton.svelte";
+  import RenameSubAccountButton from "$lib/components/accounts/RenameSubAccountButton.svelte";
+  import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
 
   onMount(() => {
     pollAccounts();
@@ -157,6 +158,9 @@
 
   let isHardwareWallet: boolean;
   $: isHardwareWallet = isAccountHardwareWallet($selectedAccountStore.account);
+
+  let isSubaccount: boolean;
+  $: isSubaccount = $selectedAccountStore.account?.type === "subAccount";
 </script>
 
 <TestIdWrapper testId="nns-wallet-component">
@@ -165,7 +169,7 @@
       <section>
         {#if $selectedAccountStore.account !== undefined}
           <WalletPageHeader
-            universe={NNS_UNIVERSE}
+            universe={$nnsUniverseStore}
             walletAddress={$selectedAccountStore.account.identifier}
           />
           <WalletPageHeading
@@ -181,6 +185,8 @@
             {#if isHardwareWallet}
               <HardwareWalletListNeuronsButton />
               <HardwareWalletShowActionButton />
+            {:else if isSubaccount}
+              <RenameSubAccountButton />
             {/if}
           </WalletPageHeading>
 

@@ -124,7 +124,7 @@ impl Default for SchemaLabel {
 }
 
 /// Schema Label as written to stable memory.
-type SchemaLabelBytes = [u8; SchemaLabel::MAX_BYTES];
+pub type SchemaLabelBytes = [u8; SchemaLabel::MAX_BYTES];
 
 /// Errors that can occur when deserializing a schema label.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]

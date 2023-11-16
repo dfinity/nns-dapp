@@ -14,7 +14,9 @@ import {
   removeKeys,
   sameBufferData,
   smallerVersion,
+  splitE8sIntoChunks,
   stringifyJson,
+  typeOfLikeANumber,
   uniqueObjects,
 } from "$lib/utils/utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
@@ -912,6 +914,90 @@ describe("utils", () => {
       expect(getObjMaxDepth(null)).toBe(0);
       expect(getObjMaxDepth("hello")).toBe(0);
       expect(getObjMaxDepth(0)).toBe(0);
+    });
+  });
+
+  describe("typeOfLikeANumber", () => {
+    it("returns true for numbers", () => {
+      expect(typeOfLikeANumber(1)).toBe(true);
+      expect(typeOfLikeANumber(0)).toBe(true);
+      expect(typeOfLikeANumber(0.001)).toBe(true);
+      expect(typeOfLikeANumber(-1)).toBe(true);
+    });
+
+    it("returns true for bigint", () => {
+      expect(
+        typeOfLikeANumber(99999999999999999999999999999999999999999999n)
+      ).toBe(true);
+    });
+
+    it("returns true for stringified number", () => {
+      expect(typeOfLikeANumber("1")).toBe(true);
+      expect(typeOfLikeANumber("0")).toBe(true);
+      expect(typeOfLikeANumber("0.001")).toBe(true);
+      expect(typeOfLikeANumber("-1")).toBe(true);
+      expect(typeOfLikeANumber("+1")).toBe(true);
+    });
+
+    it("returns false for empty string", () => {
+      expect(typeOfLikeANumber("")).toBe(false);
+    });
+
+    it("returns false for not numbers", () => {
+      expect(typeOfLikeANumber("test")).toBe(false);
+      expect(typeOfLikeANumber("123sec")).toBe(false);
+      expect(typeOfLikeANumber([])).toBe(false);
+      expect(typeOfLikeANumber({})).toBe(false);
+    });
+  });
+
+  describe("splitE8sIntoChunks", () => {
+    it("should split strings", () => {
+      expect(splitE8sIntoChunks("12345678")).toStrictEqual(["12345678"]);
+      expect(splitE8sIntoChunks("1234567890")).toStrictEqual([
+        "12",
+        "34567890",
+      ]);
+      expect(splitE8sIntoChunks("12345678901234567890")).toStrictEqual([
+        "1234",
+        "56789012",
+        "34567890",
+      ]);
+    });
+
+    it("should split number", () => {
+      expect(splitE8sIntoChunks(12345678)).toStrictEqual(["12345678"]);
+      expect(splitE8sIntoChunks(1234567890)).toStrictEqual(["12", "34567890"]);
+      expect(splitE8sIntoChunks(45678901234567890)).toStrictEqual([
+        "4",
+        "56789012",
+        "34567890",
+      ]);
+    });
+
+    it("should split bigints", () => {
+      expect(splitE8sIntoChunks(12345678n)).toStrictEqual(["12345678"]);
+      expect(splitE8sIntoChunks(1234567890n)).toStrictEqual(["12", "34567890"]);
+      expect(splitE8sIntoChunks(123456789n)).toStrictEqual(["1", "23456789"]);
+      expect(splitE8sIntoChunks(12345678901234567890n)).toStrictEqual([
+        "1234",
+        "56789012",
+        "34567890",
+      ]);
+    });
+
+    it("should not split short values", () => {
+      expect(splitE8sIntoChunks(0)).toStrictEqual(["0"]);
+      expect(splitE8sIntoChunks(12345678)).toStrictEqual(["12345678"]);
+    });
+
+    it("should not split not numbers", () => {
+      expect(splitE8sIntoChunks(NaN)).toStrictEqual(["NaN"]);
+      expect(splitE8sIntoChunks("")).toStrictEqual([`""`]);
+      expect(splitE8sIntoChunks(null)).toStrictEqual(["null"]);
+      expect(splitE8sIntoChunks(undefined)).toStrictEqual(["undefined"]);
+      expect(splitE8sIntoChunks([])).toStrictEqual(["[]"]);
+      expect(splitE8sIntoChunks({})).toStrictEqual(["{}"]);
     });
   });
 });

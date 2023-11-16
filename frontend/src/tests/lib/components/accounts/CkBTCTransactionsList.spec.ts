@@ -8,13 +8,20 @@ import {
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import {
-  mockIcrcTransactionBurn,
+  createBurnTransaction,
   mockIcrcTransactionMint,
   mockIcrcTransactionWithId,
+  mockIcrcTransactionWithIdToSelf,
   mockIcrcTransactionsStoreSubscribe,
 } from "$tests/mocks/icrc-transactions.mock";
-import { advanceTime } from "$tests/utils/timers.test-utils";
-import { render, waitFor } from "@testing-library/svelte";
+import { IcrcTransactionsListPo } from "$tests/page-objects/IcrcTransactionsList.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "$tests/utils/timers.test-utils";
+import { Cbor } from "@dfinity/agent";
+import { render } from "@testing-library/svelte";
 
 vi.mock("$lib/services/ckbtc-transactions.services", () => {
   return {
@@ -37,8 +44,8 @@ vi.mock("$lib/services/worker-transactions.services", () => ({
 }));
 
 describe("CkBTCTransactionList", () => {
-  const renderCkBTCTransactionList = () =>
-    render(CkBTCTransactionsList, {
+  const renderComponent = () => {
+    const { container, component } = render(CkBTCTransactionsList, {
       props: {
         account: mockCkBTCMainAccount,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
@@ -46,6 +53,11 @@ describe("CkBTCTransactionList", () => {
         token: mockCkBTCToken,
       },
     });
+    return {
+      po: IcrcTransactionsListPo.under(new JestPageObjectElement(container)),
+      reload: component.reloadTransactions,
+    };
+  };
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -59,7 +71,7 @@ describe("CkBTCTransactionList", () => {
   it("should call service to load transactions", () => {
     const spy = vi.spyOn(services, "loadCkBTCAccountNextTransactions");
 
-    renderCkBTCTransactionList();
+    renderComponent();
 
     expect(spy).toBeCalled();
   });
@@ -68,30 +80,34 @@ describe("CkBTCTransactionList", () => {
     const spy = vi.spyOn(services, "loadCkBTCAccountNextTransactions");
     const spyReload = vi.spyOn(services, "loadCkBTCAccountTransactions");
 
-    const { component } = render(CkBTCTransactionsList, {
-      props: {
-        account: mockCkBTCMainAccount,
-        universeId: CKBTC_UNIVERSE_CANISTER_ID,
-        indexCanisterId: mockCkBTCAdditionalCanisters.indexCanisterId,
-        token: mockCkBTCToken,
-      },
-    });
+    let resolveLoadNext;
+    spy.mockImplementation(
+      () =>
+        new Promise<void>((resolve) => {
+          resolveLoadNext = resolve;
+        })
+    );
 
-    await waitFor(() => expect(component.loading).toBeTruthy());
-    await waitFor(() => expect(component.loading).toBeFalsy());
+    const { po, reload } = renderComponent();
+
+    await runResolvedPromises();
+    expect(await po.getSkeletonCardPo().isPresent()).toBe(true);
+    resolveLoadNext();
+    await runResolvedPromises();
+    await po.getSkeletonCardPo().waitForAbsent();
 
     expect(spy).toBeCalledTimes(1);
     expect(spyReload).toBeCalledTimes(0);
 
-    component.reloadTransactions();
+    reload();
 
     await advanceTime(5000);
 
     expect(spy).toBeCalledTimes(1);
-    await waitFor(() => expect(spyReload).toBeCalledTimes(1));
+    expect(spyReload).toBeCalledTimes(1);
   });
 
-  it("should render transactions from store", () => {
+  it("should render transactions from store", async () => {
     const store = {
       [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
         [mockCkBTCMainAccount.identifier]: {
@@ -106,19 +122,49 @@ describe("CkBTCTransactionList", () => {
       mockIcrcTransactionsStoreSubscribe(store)
     );
 
-    const { queryAllByTestId } = renderCkBTCTransactionList();
+    const { po } = renderComponent();
 
-    expect(queryAllByTestId("transaction-card").length).toBe(1);
+    expect(await po.getTransactionCardPos()).toHaveLength(1);
   });
 
-  it("should render description burn to btc network", () => {
+  it("should render to-self transactions from store as duplicate", async () => {
+    const store = {
+      [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
+        [mockCkBTCMainAccount.identifier]: {
+          transactions: [mockIcrcTransactionWithIdToSelf],
+          completed: false,
+          oldestTxId: BigInt(0),
+        },
+      },
+    };
+
+    vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(
+      mockIcrcTransactionsStoreSubscribe(store)
+    );
+
+    const { po } = renderComponent();
+
+    expect(await po.getTransactionCardPos()).toHaveLength(2);
+  });
+
+  it("should render description burn to btc network", async () => {
+    const errorLog = [];
+    vi.spyOn(console, "error").mockImplementation((msg) => {
+      errorLog.push(msg);
+    });
     const store = {
       [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
         [mockCkBTCMainAccount.identifier]: {
           transactions: [
             {
               id: BigInt(123),
-              transaction: mockIcrcTransactionBurn,
+              transaction: createBurnTransaction({
+                // Missing memo should result in fallback description.
+                from: {
+                  owner: mockCkBTCMainAccount.principal,
+                  subaccount: [],
+                },
+              }),
             },
           ],
           completed: false,
@@ -131,14 +177,57 @@ describe("CkBTCTransactionList", () => {
       mockIcrcTransactionsStoreSubscribe(store)
     );
 
-    const { getByTestId } = renderCkBTCTransactionList();
+    const { po } = renderComponent();
+    const cards = await po.getTransactionCardPos();
 
-    expect(getByTestId("transaction-description")?.textContent).toEqual(
-      "To: BTC Network"
+    expect(cards).toHaveLength(1);
+    expect(await cards[0].getHeadline()).toEqual("Sent");
+    expect(await cards[0].getDescription()).toEqual("To: BTC Network");
+    expect(errorLog).toEqual(["Failed to decode ckBTC burn memo"]);
+  });
+
+  it("should render description burn to btc address", async () => {
+    const btcWithdrawalAddress = "1ASLxsAMbbt4gcrNc6v6qDBW4JkeWAtTeh";
+    const kytFee = 1334;
+    const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
+    const memo = new Uint8Array(Cbor.encode(decodedMemo));
+
+    const store = {
+      [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
+        [mockCkBTCMainAccount.identifier]: {
+          transactions: [
+            {
+              id: BigInt(123),
+              transaction: createBurnTransaction({
+                memo,
+                from: {
+                  owner: mockCkBTCMainAccount.principal,
+                  subaccount: [],
+                },
+              }),
+            },
+          ],
+          completed: false,
+          oldestTxId: BigInt(0),
+        },
+      },
+    };
+
+    vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(
+      mockIcrcTransactionsStoreSubscribe(store)
+    );
+
+    const { po } = renderComponent();
+    const cards = await po.getTransactionCardPos();
+
+    expect(cards).toHaveLength(1);
+    expect(await cards[0].getHeadline()).toEqual("Sent");
+    expect(await cards[0].getIdentifier()).toEqual(
+      `To: ${btcWithdrawalAddress}`
     );
   });
 
-  it("should render description mint from btc network", () => {
+  it("should render description mint from btc network", async () => {
     const store = {
       [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
         [mockCkBTCMainAccount.identifier]: {
@@ -158,10 +247,9 @@ describe("CkBTCTransactionList", () => {
       mockIcrcTransactionsStoreSubscribe(store)
     );
 
-    const { getByTestId } = renderCkBTCTransactionList();
+    const { po } = renderComponent();
+    const cards = await po.getTransactionCardPos();
 
-    expect(getByTestId("transaction-description")?.textContent).toEqual(
-      "From: BTC Network"
-    );
+    expect(await cards[0].getDescription()).toEqual("From: BTC Network");
   });
 });

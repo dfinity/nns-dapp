@@ -1,20 +1,21 @@
-import DesktopTokensTable from "$lib/components/tokens/DesktopTokensTable/DesktopTokensTable.svelte";
+import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { ActionType } from "$lib/types/actions";
 import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
+import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import {
   createUserToken,
   userTokenPageMock,
 } from "$tests/mocks/tokens-page.mock";
-import { DesktopTokensTablePo } from "$tests/page-objects/DesktopTokensTable.page-object";
+import { TokensTablePo } from "$tests/page-objects/TokensTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { createActionEvent } from "$tests/utils/actions.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 import type { Mock } from "vitest";
 
-describe("DesktopTokensTable", () => {
+describe("TokensTable", () => {
   const renderTable = ({
     userTokensData,
     onAction,
@@ -22,13 +23,13 @@ describe("DesktopTokensTable", () => {
     userTokensData: UserTokenData[];
     onAction?: Mock;
   }) => {
-    const { container, component } = render(DesktopTokensTable, {
+    const { container, component } = render(TokensTable, {
       props: { userTokensData },
     });
 
     component.$on("nnsAction", onAction);
 
-    return DesktopTokensTablePo.under(new JestPageObjectElement(container));
+    return TokensTablePo.under(new JestPageObjectElement(container));
   };
 
   beforeEach(() => {
@@ -67,6 +68,19 @@ describe("DesktopTokensTable", () => {
 
     expect(await row1Po.getBalance()).toBe("3.14 ICP");
     expect(await row2Po.getBalance()).toBe("1.14 TETRIS");
+  });
+
+  it("should render specific text if balance not available", async () => {
+    const token1 = createUserToken({
+      universeId: OWN_CANISTER_ID,
+      balance: new UnavailableTokenAmount({ name: "ckBTC", symbol: "ckBTC" }),
+    });
+    const po = renderTable({ userTokensData: [token1] });
+
+    const rows = await po.getRows();
+    const row1Po = rows[0];
+
+    expect(await row1Po.getBalance()).toBe("-/- ckBTC");
   });
 
   it("should render a button Send action", async () => {

@@ -1,8 +1,9 @@
 import SelectUniverseCard from "$lib/components/universe/SelectUniverseCard.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
-import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+import type { Universe } from "$lib/types/universe";
+import { createUniverse } from "$lib/utils/universe.utils";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -11,20 +12,15 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
-import {
-  mockSnsFullProject,
-  mockSummary,
-} from "$tests/mocks/sns-projects.mock";
+import { mockSummary } from "$tests/mocks/sns-projects.mock";
+import { nnsUniverseMock } from "$tests/mocks/universe.mock";
 import { SelectUniverseCardPo } from "$tests/page-objects/SelectUniverseCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
 describe("SelectUniverseCard", () => {
-  const props = { universe: NNS_UNIVERSE, selected: false };
-  const mockSnsUniverse = {
-    summary: mockSummary,
-    canisterId: mockSnsFullProject.rootCanisterId.toText(),
-  };
+  const props = { universe: nnsUniverseMock, selected: false };
+  const mockSnsUniverse: Universe = createUniverse(mockSummary);
 
   const renderComponent = (props) => {
     const { container } = render(SelectUniverseCard, props);
@@ -169,7 +165,7 @@ describe("SelectUniverseCard", () => {
         });
 
         const po = renderComponent({
-          props: { universe: NNS_UNIVERSE, selected: true },
+          props: { universe: nnsUniverseMock, selected: true },
         });
         // Expecting 1 + 2 + 4.
         expect(await po.getBalance()).toBe("7.00");
@@ -182,7 +178,7 @@ describe("SelectUniverseCard", () => {
         });
 
         const po = renderComponent({
-          props: { universe: NNS_UNIVERSE, selected: false },
+          props: { universe: nnsUniverseMock, selected: false },
         });
         // Expecting 1 + 2 + 4.
         expect(await po.getBalance()).toBe("7.00");
@@ -227,7 +223,7 @@ describe("SelectUniverseCard", () => {
         });
 
         const po = renderComponent({
-          props: { universe: NNS_UNIVERSE, selected: true },
+          props: { universe: nnsUniverseMock, selected: true },
         });
         expect(await po.hasBalance()).toBe(false);
       });
@@ -239,7 +235,7 @@ describe("SelectUniverseCard", () => {
         });
 
         const po = renderComponent({
-          props: { universe: NNS_UNIVERSE, selected: false },
+          props: { universe: nnsUniverseMock, selected: false },
         });
         expect(await po.hasBalance()).toBe(false);
       });

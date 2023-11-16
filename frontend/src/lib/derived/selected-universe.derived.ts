@@ -4,10 +4,7 @@ import {
 } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { pageStore, type Page } from "$lib/derived/page.derived";
-import {
-  NNS_UNIVERSE,
-  selectableUniversesStore,
-} from "$lib/derived/selectable-universes.derived";
+import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
 import {
   ENABLE_CKBTC,
   ENABLE_CKTESTBTC,
@@ -21,6 +18,7 @@ import {
 } from "$lib/utils/universe.utils";
 import { Principal } from "@dfinity/principal";
 import { derived, type Readable } from "svelte/store";
+import { nnsUniverseStore } from "./nns-universe.derived";
 
 /**
  * In Neurons or ultimately in Voting screen, user can select the "universe" - e.g. display Neurons of Nns or a particular Sns
@@ -83,11 +81,11 @@ export const isCkBTCUniverseStore = derived(
 );
 
 export const selectedUniverseStore: Readable<Universe> = derived(
-  [selectedUniverseIdStore, selectableUniversesStore],
-  ([$selectedUniverseIdStore, $selectableUniverses]) =>
+  [selectedUniverseIdStore, selectableUniversesStore, nnsUniverseStore],
+  ([$selectedUniverseIdStore, $selectableUniverses, nnsUniverse]) =>
     $selectableUniverses?.find(
       ({ canisterId }) => canisterId === $selectedUniverseIdStore.toText()
-    ) ?? NNS_UNIVERSE
+    ) ?? nnsUniverse
 );
 
 export const selectedCkBTCUniverseIdStore = derived<

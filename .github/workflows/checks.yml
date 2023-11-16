@@ -184,23 +184,6 @@ jobs:
           scripts/nns-dapp/release-template
           echo Check the proposal
           ./scripts/nns-dapp/release-check
-  sns-aggregator-patches:
-    name: SNS aggregator patches
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v3
-      - name: Install didc
-        run: |
-          USER_BIN="$HOME/.local/bin"
-          mkdir -p "$USER_BIN"
-          echo "$USER_BIN" >> $GITHUB_PATH
-          version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
-          # TODO: Use `binstall`, once `didc` supports it.
-          curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
-      - name: Check didc
-        run: command -v didc
-      - name: Recreate and compare patches
-        run: scripts/mk_nns_patch.test
   config-check:
     name: Config is as expected
     runs-on: ubuntu-20.04
@@ -265,7 +248,7 @@ jobs:
         run: ./scripts/nns-dapp/bump-patch.test
       - name: Set git user
         run: |
-          git config --global user.email "gix-bot@dfinity.org"
+          git config --global user.email "gix-bot@users.noreply.github.com"
           git config --global user.name "GIX bot"
       - name: Command creates commits
         run: |
@@ -372,8 +355,16 @@ jobs:
                   echo "Frontend: $frontend_version"
                   exit 1
           } >&2
+  network-config:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install sponge
+        run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
+      - name: Getting network config works
+        run: scripts/network-config.test
   checks-pass:
-    needs: ["formatting", "spelling", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "asset-chunking-works", "docker-build-cli-flags", "download-nns-dapp-ci-wasm", "canister-ids-tool", "release-sop", "split-changelog", "past-changelog", "minor-version-bump-works", "version-match"]
+    needs: ["formatting", "spelling", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "ic-commit-consistency", "release-templating-works", "config-check", "asset-chunking-works", "docker-build-cli-flags", "download-nns-dapp-ci-wasm", "canister-ids-tool", "release-sop", "split-changelog", "past-changelog", "minor-version-bump-works", "version-match", "network-config"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:

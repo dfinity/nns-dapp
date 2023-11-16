@@ -35,6 +35,7 @@ interface I18nCore {
   finish: string;
   unknown: string;
   expand_all: string;
+  collapse_all: string;
 }
 
 interface I18nError {
@@ -553,6 +554,9 @@ interface I18nProposal_detail {
   toggle_lable: string;
   toggle_tree: string;
   toggle_raw: string;
+  json_unit_basis_points: string;
+  json_unit_seconds: string;
+  json_unit_e8s: string;
   id: string;
 }
 
@@ -732,6 +736,7 @@ interface I18nSns_launchpad {
 
 interface I18nSns_project_detail {
   swap_proposal: string;
+  link_to_dashboard: string;
   token_name: string;
   token_symbol: string;
   total_tokens: string;
@@ -1022,6 +1027,7 @@ interface I18nCkbtc {
   ckbtc_balance_updated: string;
   step_initialization: string;
   step_locking_ckbtc: string;
+  step_approve_transfer: string;
   step_send_btc: string;
   step_reload: string;
   sending_ckbtc_to_btc: string;

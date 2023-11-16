@@ -3,18 +3,25 @@ import { AccountTransactionType } from "$lib/types/transaction";
 import {
   getOldestTxIdFromStore,
   getSortedTransactionsFromStore,
+  getUniqueTransactions,
   isIcrcTransactionsCompleted,
+  mapCkbtcTransaction,
   mapIcrcTransaction,
+  type mapIcrcTransactionType,
 } from "$lib/utils/icrc-transactions.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
-import { createIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
+import {
+  createBurnTransaction,
+  createIcrcTransactionWithId,
+} from "$tests/mocks/icrc-transactions.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
+import { Cbor } from "@dfinity/agent";
 
 describe("icrc-transaction utils", () => {
   const to = {
@@ -83,11 +90,11 @@ describe("icrc-transaction utils", () => {
       });
     });
 
-    it("should set selfTransaction to true", () => {
+    it("should duplicate selfTransaction", () => {
       const store: IcrcTransactionsStoreData = {
         [mockSnsMainAccount.principal.toText()]: {
           [mockSnsMainAccount.identifier]: {
-            transactions: [selfTransaction, selfTransaction],
+            transactions: [selfTransaction],
             completed: false,
             oldestTxId: BigInt(1234),
           },
@@ -110,9 +117,9 @@ describe("icrc-transaction utils", () => {
     });
   });
 
-  describe("mapSnsTransaction", () => {
+  const testMapTransactionCommon = (mapTransaction: mapIcrcTransactionType) => {
     it("maps sent transaction", () => {
-      const data = mapIcrcTransaction({
+      const data = mapTransaction({
         transaction: transactionFromMainToSubaccount,
         account: mockSnsMainAccount,
         toSelfTransaction: false,
@@ -132,7 +139,7 @@ describe("icrc-transaction utils", () => {
         from,
       });
       stakeNeuronTransaction.transaction.transfer[0].memo = [new Uint8Array()];
-      const data = mapIcrcTransaction({
+      const data = mapTransaction({
         transaction: stakeNeuronTransaction,
         account: mockSnsMainAccount,
         toSelfTransaction: false,
@@ -154,7 +161,7 @@ describe("icrc-transaction utils", () => {
         from,
       });
       topUpNeuronTransaction.transaction.transfer[0].memo = [];
-      const data = mapIcrcTransaction({
+      const data = mapTransaction({
         transaction: topUpNeuronTransaction,
         account: mockSnsMainAccount,
         toSelfTransaction: false,
@@ -166,17 +173,18 @@ describe("icrc-transaction utils", () => {
     });
 
     it("maps received transaction", () => {
-      const data = mapIcrcTransaction({
+      const data = mapTransaction({
         transaction: transactionFromMainToSubaccount,
         account: mockSnsSubAccount,
         toSelfTransaction: false,
       });
       expect(data.isSend).toBe(false);
       expect(data.isReceive).toBe(true);
+      expect(data.type).toBe(AccountTransactionType.Send);
     });
 
     it("maps approve transaction", () => {
-      const data = mapIcrcTransaction({
+      const data = mapTransaction({
         transaction: {
           id: BigInt(1234),
           transaction: {
@@ -204,10 +212,11 @@ describe("icrc-transaction utils", () => {
       });
       expect(data.isSend).toBe(false);
       expect(data.isReceive).toBe(false);
+      expect(data.type).toBe(AccountTransactionType.Approve);
     });
 
     it("maps self transaction", () => {
-      const data = mapIcrcTransaction({
+      const data = mapTransaction({
         transaction: selfTransaction,
         account: mockSnsSubAccount,
         toSelfTransaction: true,
@@ -217,7 +226,7 @@ describe("icrc-transaction utils", () => {
     });
 
     it("adds fee to sent transactions", () => {
-      const data = mapIcrcTransaction({
+      const data = mapTransaction({
         transaction: transactionFromMainToSubaccount,
         account: mockSnsMainAccount,
         toSelfTransaction: false,
@@ -225,6 +234,70 @@ describe("icrc-transaction utils", () => {
       expect(data.isSend).toBe(true);
       const txData = transactionFromMainToSubaccount.transaction.transfer[0];
       expect(data.displayAmount).toBe(txData.amount + txData.fee[0]);
+    });
+  };
+
+  describe("mapSnsTransaction", () => {
+    testMapTransactionCommon(mapIcrcTransaction);
+
+    it("maps burn transaction", () => {
+      const data = mapIcrcTransaction({
+        transaction: {
+          id: BigInt(1234),
+          transaction: createBurnTransaction({ from }),
+        },
+        account: mockCkBTCMainAccount,
+        toSelfTransaction: false,
+      });
+      expect(data.isSend).toBe(false);
+      expect(data.isReceive).toBe(false);
+      expect(data.type).toBe(AccountTransactionType.Burn);
+    });
+  });
+
+  describe("mapCkbtcTransaction", () => {
+    testMapTransactionCommon(mapCkbtcTransaction);
+
+    it("Decodes BTC withdrawal address from cbor memo", () => {
+      const btcWithdrawalAddress = "1ASLxsAMbbt4gcrNc6v6qDBW4JkeWAtTeh";
+      const kytFee = 1333;
+      const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
+      const memo = new Uint8Array(Cbor.encode(decodedMemo));
+
+      const data = mapCkbtcTransaction({
+        transaction: {
+          id: BigInt(1234),
+          transaction: createBurnTransaction({ from, memo }),
+        },
+        account: mockCkBTCMainAccount,
+        toSelfTransaction: false,
+      });
+      expect(data.to).toBe(btcWithdrawalAddress);
+      expect(data.isSend).toBe(true);
+      expect(data.isReceive).toBe(false);
+    });
+
+    it("Maps burn transaction without memo", () => {
+      // We expect every ckBTC transaction to have a cbor-encoded memo, but when
+      // it doesn't it should fail gracefully.
+      const errorLog = [];
+      vi.spyOn(console, "error").mockImplementation((msg) =>
+        errorLog.push(msg)
+      );
+
+      const data = mapCkbtcTransaction({
+        transaction: {
+          id: BigInt(1234),
+          transaction: createBurnTransaction({ from }),
+        },
+        account: mockCkBTCMainAccount,
+        toSelfTransaction: false,
+      });
+      expect(data.isSend).toBe(false);
+      expect(data.isReceive).toBe(false);
+      expect(data.type).toBe(AccountTransactionType.Burn);
+      expect(data.to).toBeUndefined();
+      expect(errorLog).toEqual(["Failed to decode ckBTC burn memo"]);
     });
   });
 
@@ -335,6 +408,56 @@ describe("icrc-transaction utils", () => {
           account: mockSnsSubAccount,
         })
       ).toBe(true);
+    });
+  });
+
+  describe("getUniqueTransactions", () => {
+    const mainAccount = {
+      owner: mockPrincipal,
+      subaccount: [] as [] | [Uint8Array],
+    };
+    const subAccount = {
+      owner: mockPrincipal,
+      subaccount: [new Uint8Array([1, 2, 3])] as [] | [Uint8Array],
+    };
+    const txA = createIcrcTransactionWithId({
+      id: 1n,
+      from: mainAccount,
+      to: subAccount,
+    });
+    const txB = createIcrcTransactionWithId({
+      id: 2n,
+      from: subAccount,
+      to: mainAccount,
+    });
+    const txC = createIcrcTransactionWithId({
+      id: 3n,
+      from: mainAccount,
+      to: mainAccount,
+    });
+
+    it("empty array", () => {
+      expect(getUniqueTransactions([])).toEqual([]);
+    });
+
+    it("singleton array", () => {
+      const transactions = [txA];
+      expect(getUniqueTransactions(transactions)).toEqual(transactions);
+    });
+
+    it("duplicate transactions", () => {
+      const transactions = [txA, txA];
+      expect(getUniqueTransactions(transactions)).toEqual([txA]);
+    });
+
+    it("multiple different transactions", () => {
+      const transactions = [txA, txB, txC];
+      expect(getUniqueTransactions(transactions)).toEqual(transactions);
+    });
+
+    it("non-consecutive duplicate transactions", () => {
+      const transactions = [txA, txB, txC, txA, txC, txB, txA, txC];
+      expect(getUniqueTransactions(transactions)).toEqual([txA, txB, txC]);
     });
   });
 });
