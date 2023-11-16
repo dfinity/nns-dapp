@@ -280,6 +280,7 @@ jobs:
             brew install bash
             brew install coreutils
           fi
+          bash --version
       - name: Download NNS-dapp CI wasm
         run: |
           MAIN_COMMIT="$(git ls-remote --refs https://github.com/dfinity/nns-dapp.git main | awk '{print $1}')"
@@ -304,6 +305,7 @@ jobs:
           if command -v brew ; then
             brew install bash
           fi
+          bash --version
       - run: scripts/canister_ids.test
   release-sop:
     name: Test release-sop script
@@ -323,6 +325,7 @@ jobs:
           if command -v brew ; then
             brew install bash
           fi
+          bash --version
       - run: scripts/nns-dapp/release-sop.test
   split-changelog:
     name: Test split-changelog script
@@ -342,6 +345,7 @@ jobs:
           if command -v brew ; then
             brew install bash
           fi
+          bash --version
       - run: scripts/nns-dapp/split-changelog.test
   past-changelog:
     name: Test that no new change log entries are added to past releases.
