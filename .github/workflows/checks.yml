@@ -266,7 +266,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-13]
+        os:
+          - ubuntu-20.04
+          - macos-13
+          - macos-13-xlarge
+          # Note: macos-13-xlarge runs on M1 silicon while macos-13 runs on Intel.
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
