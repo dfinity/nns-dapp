@@ -11,6 +11,7 @@ export enum UserTokenAction {
 export type UserTokenData = {
   universeId: Principal;
   title: string;
+  subtitle?: string;
   balance: TokenAmount | UnavailableTokenAmount;
   logo: string;
   actions: UserTokenAction[];
