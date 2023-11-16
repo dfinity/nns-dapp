@@ -18,9 +18,8 @@
         $i18n.sns_neuron_detail.vesting_period_tooltip,
         {
           $remainingVesting: secondsToDuration({
-            seconds: vestingInSeconds(neuron),
+            seconds: vestingInSeconds(neuron), i18n: $i18n.time,
           }),
-          i18n: $i18n.time,
         }
       )}
     >
