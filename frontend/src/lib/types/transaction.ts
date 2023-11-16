@@ -83,11 +83,11 @@ export interface Transaction {
 export interface UiTransaction {
   isIncoming: boolean;
   headline: string;
-  // Where to amount is going to or coming from.
+  // Where the amount is going to or coming from.
   otherParty: string;
   // TODO: Remove fallbackDescription and always use otherParty.
   fallbackDescription?: string;
-  // Positing for incoming, negative for outgoing.
+  // Always positive.
   amount: bigint;
   token: Token;
   timestamp: Date;
