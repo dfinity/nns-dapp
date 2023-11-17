@@ -79,17 +79,17 @@ export interface SnsSummary {
   /**
    * Data from `get_init` call.
    */
-  init?: SnsSwapInit;
+  init: SnsSwapInit;
 
   /**
    * Data from `get_sale_parameters` call.
    */
-  swapParams?: SnsParams;
+  swapParams: SnsParams;
 
   /**
    * Data from `get_lifecycle` call.
    */
-  lifecycle?: SnsGetLifecycleResponse;
+  lifecycle: SnsGetLifecycleResponse;
 }
 
 export interface SnsSwapCommitment {

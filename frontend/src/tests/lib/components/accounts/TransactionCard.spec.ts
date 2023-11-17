@@ -1,57 +1,47 @@
 import TransactionCard from "$lib/components/accounts/TransactionCard.svelte";
-import {
-  AccountTransactionType,
-  type Transaction,
-} from "$lib/types/transaction";
-import en from "$tests/mocks/i18n.mock";
-import {
-  mockTransactionReceiveDataFromMain,
-  mockTransactionSendDataFromMain,
-} from "$tests/mocks/transaction.mock";
+import type { UiTransaction } from "$lib/types/transaction";
 import { TransactionCardPo } from "$tests/page-objects/TransactionCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
-import { ICPToken } from "@dfinity/utils";
+import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("TransactionCard", () => {
-  const renderComponent = ({
-    transaction = mockTransactionSendDataFromMain,
-    descriptions,
-  }: {
-    transaction?: Transaction;
-    descriptions?: Record<string, string>;
-  }) => {
+  const defaultTransaction = {
+    isIncoming: false,
+    icon: "outgoing",
+    headline: "Sent",
+    otherParty: "some-address",
+    tokenAmount: TokenAmount.fromE8s({ amount: 123_000_000n, token: ICPToken }),
+    timestamp: new Date("2021-03-14T00:00:00.000Z"),
+  } as UiTransaction;
+
+  const renderComponent = (transaction: Partial<UiTransaction>) => {
     const { container } = render(TransactionCard, {
       props: {
-        transaction,
-        token: ICPToken,
-        descriptions,
+        transaction: {
+          ...defaultTransaction,
+          ...transaction,
+        },
       },
     });
     return TransactionCardPo.under(new JestPageObjectElement(container));
   };
 
   it("renders received headline", async () => {
+    const headline = "Received";
     const po = renderComponent({
-      transaction: mockTransactionReceiveDataFromMain,
+      headline,
     });
 
-    expect(await po.getHeadline()).toBe("Received");
+    expect(await po.getHeadline()).toBe(headline);
   });
 
   it("renders burn description", async () => {
     const po = renderComponent({
-      transaction: {
-        ...mockTransactionSendDataFromMain,
-        type: AccountTransactionType.Burn,
-        from: undefined,
-        to: undefined,
-      },
-      descriptions: en.ckbtc_transaction_names as unknown as Record<
-        string,
-        string
-      >,
+      headline: "Sent",
+      fallbackDescription: "To: BTC Network",
+      otherParty: undefined,
     });
 
     expect(await po.getHeadline()).toBe("Sent");
@@ -61,37 +51,32 @@ describe("TransactionCard", () => {
 
   it("renders ckBTC burn To:", async () => {
     const po = renderComponent({
-      transaction: {
-        ...mockTransactionSendDataFromMain,
-        type: AccountTransactionType.Burn,
-      },
-      descriptions: en.ckbtc_transaction_names as unknown as Record<
-        string,
-        string
-      >,
+      isIncoming: false,
+      headline: "Sent",
+      otherParty: "withdrwala-address",
     });
 
     expect(await po.getHeadline()).toBe("Sent");
-    expect(await po.getIdentifier()).toBe(
-      `To: ${mockTransactionSendDataFromMain.to}`
-    );
+    expect(await po.getIdentifier()).toBe("To: withdrwala-address");
     expect(await po.getDescription()).toBe(null);
   });
 
   it("renders sent headline", async () => {
+    const headline = "Sent";
     const po = renderComponent({
-      transaction: mockTransactionSendDataFromMain,
+      headline,
     });
 
-    expect(await po.getHeadline()).toBe("Sent");
+    expect(await po.getHeadline()).toBe(headline);
   });
 
   it("renders transaction ICPs with - sign", async () => {
     const po = renderComponent({
-      transaction: {
-        ...mockTransactionSendDataFromMain,
-        displayAmount: 123_000_000n,
-      },
+      isIncoming: false,
+      tokenAmount: TokenAmount.fromE8s({
+        amount: 123_000_000n,
+        token: ICPToken,
+      }),
     });
 
     expect(await po.getAmount()).toBe("-1.23");
@@ -99,10 +84,11 @@ describe("TransactionCard", () => {
 
   it("renders transaction ICPs with + sign", async () => {
     const po = renderComponent({
-      transaction: {
-        ...mockTransactionReceiveDataFromMain,
-        displayAmount: 345_000_000n,
-      },
+      isIncoming: true,
+      tokenAmount: TokenAmount.fromE8s({
+        amount: 345_000_000n,
+        token: ICPToken,
+      }),
     });
 
     expect(await po.getAmount()).toBe("+3.45");
@@ -110,7 +96,7 @@ describe("TransactionCard", () => {
 
   it("displays transaction date and time", async () => {
     const po = renderComponent({
-      transaction: mockTransactionSendDataFromMain,
+      timestamp: new Date("2021-03-14T00:00:00.000Z"),
     });
 
     expect(normalizeWhitespace(await po.getDate())).toBe(
@@ -120,21 +106,19 @@ describe("TransactionCard", () => {
 
   it("displays identifier for received", async () => {
     const po = renderComponent({
-      transaction: mockTransactionReceiveDataFromMain,
+      isIncoming: true,
+      otherParty: "from-address",
     });
 
-    expect(await po.getIdentifier()).toBe(
-      `From: ${mockTransactionReceiveDataFromMain.from}`
-    );
+    expect(await po.getIdentifier()).toBe("From: from-address");
   });
 
   it("displays identifier for sent", async () => {
     const po = renderComponent({
-      transaction: mockTransactionSendDataFromMain,
+      isIncoming: false,
+      otherParty: "to-address",
     });
 
-    expect(await po.getIdentifier()).toBe(
-      `To: ${mockTransactionSendDataFromMain.to}`
-    );
+    expect(await po.getIdentifier()).toBe("To: to-address");
   });
 });
