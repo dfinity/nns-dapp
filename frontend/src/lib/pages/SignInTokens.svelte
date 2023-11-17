@@ -1,5 +1,6 @@
 <script lang="ts">
   import SignIn from "$lib/components/common/SignIn.svelte";
+  import MainWrapper from "$lib/components/tokens/MainWrapper.svelte";
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { UserTokenData } from "$lib/types/tokens-page";
@@ -8,7 +9,7 @@
   export let userTokensData: UserTokenData[];
 </script>
 
-<main class="sign-in" data-tid="sign-in-tokens-page-component">
+<MainWrapper testId="sign-in-tokens-page-component">
   <div class="content">
     <PageBanner>
       <IconAccountsPage slot="image" />
@@ -20,7 +21,7 @@
 
     <TokensTable on:nnsAction {userTokensData} />
   </div>
-</main>
+</MainWrapper>
 
 <style lang="scss">
   .content {
