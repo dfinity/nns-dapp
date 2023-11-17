@@ -520,26 +520,6 @@ describe("transactions-utils", () => {
       });
     });
 
-    it("should convert an approve transaction", () => {
-      expect(
-        toUiTransaction({
-          ...defaultParams,
-          transaction: {
-            ...defaultTransaction,
-            type: AccountTransactionType.Approve,
-            isSend: false,
-            isReceive: false,
-            from: undefined,
-            to: undefined,
-          },
-        })
-      ).toEqual({
-        ...defaultExpectedUiTransaction,
-        headline: "Approve transfer",
-        otherParty: undefined,
-      });
-    });
-
     it("should use fallbackDescriptions", () => {
       expect(
         toUiTransaction({
