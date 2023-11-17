@@ -56,10 +56,8 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  button.with-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--padding-0_5x);
+  @use "../../themes/mixins/button";
+  button {
+    @include button.with-icon;
   }
 </style>

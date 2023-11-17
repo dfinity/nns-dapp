@@ -183,7 +183,11 @@ interface I18nAccounts {
   send: string;
   buy_icp: string;
   buy_icp_banxa: string;
-  your_icp_address: string;
+  receiving_icp_address: string;
+  icp_token_utility: string;
+  buy_icp_description: string;
+  buy_icp_note: string;
+  banxa_logo_alt: string;
   icp_transaction_description: string;
   sns_transaction_description: string;
   ckbtc_transaction_description: string;

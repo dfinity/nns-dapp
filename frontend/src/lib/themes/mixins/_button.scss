@@ -1,0 +1,6 @@
+@mixin with-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--padding-0_5x);
+}
