@@ -1,6 +1,5 @@
 <script lang="ts">
   import SignIn from "$lib/components/common/SignIn.svelte";
-  import MainWrapper from "$lib/components/tokens/MainWrapper.svelte";
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { UserTokenData } from "$lib/types/tokens-page";
@@ -9,19 +8,16 @@
   export let userTokensData: UserTokenData[];
 </script>
 
-<MainWrapper testId="sign-in-tokens-page-component">
-  <div class="content">
-    <PageBanner>
-      <IconAccountsPage slot="image" />
-      <svelte:fragment slot="title">{$i18n.auth_accounts.title}</svelte:fragment
-      >
-      <p class="description" slot="description">{$i18n.auth_accounts.text}</p>
-      <SignIn slot="actions" />
-    </PageBanner>
+<div class="content" data-tid="sign-in-tokens-page-component">
+  <PageBanner>
+    <IconAccountsPage slot="image" />
+    <svelte:fragment slot="title">{$i18n.auth_accounts.title}</svelte:fragment>
+    <p class="description" slot="description">{$i18n.auth_accounts.text}</p>
+    <SignIn slot="actions" />
+  </PageBanner>
 
-    <TokensTable on:nnsAction {userTokensData} />
-  </div>
-</MainWrapper>
+  <TokensTable on:nnsAction {userTokensData} />
+</div>
 
 <style lang="scss">
   .content {

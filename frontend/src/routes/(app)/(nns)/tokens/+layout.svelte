@@ -3,12 +3,15 @@
   import Content from "$lib/components/layout/Content.svelte";
   import LayoutList from "$lib/components/layout/LayoutList.svelte";
   import { i18n } from "$lib/stores/i18n";
+  import MainWrapper from "$lib/components/tokens/MainWrapper.svelte";
 </script>
 
 <LayoutList title={$i18n.tokens.title}>
   <Layout>
     <Content>
-      <slot />
+      <MainWrapper>
+        <slot />
+      </MainWrapper>
     </Content>
   </Layout>
 </LayoutList>
