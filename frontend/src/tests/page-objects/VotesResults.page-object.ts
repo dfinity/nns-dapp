@@ -48,4 +48,9 @@ export class VotesResultPo extends BasePageObject {
       await assertNonNullish(this.root.byTestId("reject").getText())
     );
   }
+
+  /** @returns formatted text */
+  async getExpirationDateText(): Promise<string> {
+    return assertNonNullish(this.root.byTestId("remain").getText());
+  }
 }

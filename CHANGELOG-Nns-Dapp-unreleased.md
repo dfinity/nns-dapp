@@ -32,6 +32,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Fix disappearing "Received" half of to-self transactions.
 * Fix debug store that wasn't working.
 * Fix the stuck loading issue with the Sns proposal.
+* Fix "Expiration date" countdown label visibility.
 
 #### Security
 
