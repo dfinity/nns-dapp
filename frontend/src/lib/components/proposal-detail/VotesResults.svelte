@@ -5,6 +5,7 @@
   import Countdown from "$lib/components/proposals/Countdown.svelte";
   import VotesResultsMajorityDescription from "$lib/components/proposal-detail/VotesResultsMajorityDescription.svelte";
   import { nonNullish } from "@dfinity/utils";
+  import { nowInSeconds } from "$lib/utils/date.utils";
 
   const formatVotingPower = (value: number) =>
     `${formatNumber(value, {
@@ -23,7 +24,10 @@
   let noProportion: number;
   $: noProportion = total ? no / total : 0;
 
-  let isCountdownVisible: boolean | undefined;
+  let showExperationDate: boolean = true;
+  $: showExperationDate =
+    nonNullish(deadlineTimestampSeconds) &&
+    deadlineTimestampSeconds > BigInt(nowInSeconds());
 </script>
 
 <ProposalContentCell testId="votes-results-component">
@@ -36,18 +40,13 @@
         >{formatPercentage(yesProportion)}</span
       >
     </div>
-    <div class="remain">
-      {#if nonNullish(deadlineTimestampSeconds) && deadlineTimestampSeconds > 0n}
-        {#if isCountdownVisible}
-          <span class="caption description"
-            >{$i18n.proposal_detail__vote.expiration}</span
-          >
-        {/if}
+    <div class="remain" data-tid="remain">
+      {#if showExperationDate}
+        <span class="caption description">
+          {$i18n.proposal_detail__vote.expiration}
+        </span>
         <div class="caption value">
-          <Countdown
-            {deadlineTimestampSeconds}
-            bind:visible={isCountdownVisible}
-          />
+          <Countdown {deadlineTimestampSeconds} />
         </div>
       {/if}
     </div>

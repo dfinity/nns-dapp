@@ -5,7 +5,6 @@
   import { AUTH_SESSION_DURATION } from "$lib/constants/identity.constants";
 
   export let deadlineTimestampSeconds: bigint | undefined;
-  export let visible: boolean = true;
 
   const ZERO = BigInt(0);
 
@@ -17,8 +16,6 @@
       clearInterval(clear);
     }
   };
-
-  $: visible = countdown !== undefined && countdown > ZERO;
 
   const next = () => {
     if (
