@@ -181,6 +181,9 @@ interface I18nAccounts {
   main: string;
   balance: string;
   send: string;
+  buy_icp: string;
+  buy_icp_banxa: string;
+  your_icp_address: string;
   icp_transaction_description: string;
   sns_transaction_description: string;
   ckbtc_transaction_description: string;

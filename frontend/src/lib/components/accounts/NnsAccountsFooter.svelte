@@ -8,6 +8,7 @@
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import { syncAccounts } from "$lib/services/icp-accounts.services";
   import { openAccountsModal } from "$lib/utils/modals.utils";
+  import { IconRocketLaunch } from "@dfinity/gix-components";
 
   let modal: "NewTransaction" | undefined = undefined;
   const openNewTransaction = () => (modal = "NewTransaction");
@@ -36,20 +37,29 @@
   {#if nonNullish($icpAccountsStore)}
     <Footer columns={3}>
       <button
-        class="primary full-width"
-        on:click={openBuyIcpModal}
-        data-tid="buy-icp-button"
-      >
-        {`Buy ICP`}</button
-      >
-
-      <button
         class="secondary full-width"
         on:click={openNewTransaction}
         data-tid="open-new-transaction">{$i18n.accounts.send}</button
       >
 
       <ReceiveButton type="nns-receive" canSelectAccount {reload} />
+
+      <button
+        class="primary full-width with-icon"
+        on:click={openBuyIcpModal}
+        data-tid="buy-icp-button"
+      >
+        <IconRocketLaunch />{$i18n.accounts.buy_icp}
+      </button>
     </Footer>
   {/if}
 </TestIdWrapper>
+
+<style lang="scss">
+  button.with-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--padding-0_5x);
+  }
+</style>
