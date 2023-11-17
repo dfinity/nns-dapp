@@ -24,8 +24,8 @@
   let noProportion: number;
   $: noProportion = total ? no / total : 0;
 
-  let showExperationDate: boolean = true;
-  $: showExperationDate =
+  let showExpirationDate: boolean = true;
+  $: showExpirationDate =
     nonNullish(deadlineTimestampSeconds) &&
     deadlineTimestampSeconds > BigInt(nowInSeconds());
 </script>
@@ -41,7 +41,7 @@
       >
     </div>
     <div class="remain" data-tid="remain">
-      {#if showExperationDate}
+      {#if showExpirationDate}
         <span class="caption description">
           {$i18n.proposal_detail__vote.expiration}
         </span>
