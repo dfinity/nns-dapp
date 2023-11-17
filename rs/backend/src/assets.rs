@@ -120,7 +120,7 @@ impl Assets {
     /// - "" -> "/index.html" A directory does not need a trailing slash.  E.g. `/launchpad` may
     ///   serve `/launchpad/index.html`.  Please note that if this is done, relative URLs in
     ///   `index.html` will break so be careful if using this much requested but error-prone option.
-    const SUFFIX_REWRITES: [(&str, &str); 3] = [("", ""), ("/", "/index.html"), ("", "/index.html")];
+    const SUFFIX_REWRITES: [(&'static str, &'static str); 3] = [("", ""), ("/", "/index.html"), ("", "/index.html")];
     /// Inserts an asset into the database.
     ///
     /// - The asset encoding is deduced from the asset path suffix.  Thus
