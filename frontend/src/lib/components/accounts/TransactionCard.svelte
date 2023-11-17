@@ -3,7 +3,6 @@
   import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Identifier from "$lib/components/ui/Identifier.svelte";
-  import type { Token } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import {
     Html,
@@ -12,23 +11,20 @@
     KeyValuePair,
   } from "@dfinity/gix-components";
   import type { UiTransaction } from "$lib/types/transaction";
-  import { nonNullish } from "@dfinity/utils";
-  import { TokenAmount } from "@dfinity/utils";
+  import { nonNullish, type TokenAmount } from "@dfinity/utils";
   import { fade } from "svelte/transition";
 
   export let transaction: UiTransaction;
 
   let headline: string;
-  let amount: bigint;
-  let token: Token;
+  let tokenAmount: TokenAmount;
   let isIncoming: boolean;
   let otherParty: string | undefined;
   let fallbackDescription: string | undefined;
   let timestamp: Date;
   $: ({
     headline,
-    amount,
-    token,
+    tokenAmount,
     isIncoming,
     otherParty,
     fallbackDescription,
@@ -59,7 +55,7 @@
 
       <AmountDisplay
         slot="value"
-        amount={TokenAmount.fromE8s({ amount, token })}
+        amount={tokenAmount}
         sign={isIncoming ? "+" : "-"}
         detailed
         inline

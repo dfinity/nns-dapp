@@ -9,7 +9,7 @@ import {
   TransactionNetwork,
 } from "$lib/types/transaction";
 import type { Token } from "@dfinity/utils";
-import { isNullish } from "@dfinity/utils";
+import { TokenAmount, isNullish } from "@dfinity/utils";
 import { stringifyJson } from "./utils";
 
 export const transactionType = ({
@@ -196,8 +196,10 @@ export const toUiTransaction = ({
     headline,
     otherParty,
     fallbackDescription,
-    amount: transaction.displayAmount,
-    token,
+    tokenAmount: TokenAmount.fromE8s({
+      amount: transaction.displayAmount,
+      token,
+    }),
     timestamp: transaction.date,
   };
 };

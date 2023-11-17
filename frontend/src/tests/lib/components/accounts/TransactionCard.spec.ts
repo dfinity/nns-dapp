@@ -3,7 +3,7 @@ import type { UiTransaction } from "$lib/types/transaction";
 import { TransactionCardPo } from "$tests/page-objects/TransactionCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
-import { ICPToken } from "@dfinity/utils";
+import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("TransactionCard", () => {
@@ -12,8 +12,7 @@ describe("TransactionCard", () => {
     icon: "outgoing",
     headline: "Sent",
     otherParty: "some-address",
-    amount: 123_000_000n,
-    token: ICPToken,
+    tokenAmount: TokenAmount.fromE8s({ amount: 123_000_000n, token: ICPToken }),
     timestamp: new Date("2021-03-14T00:00:00.000Z"),
   } as UiTransaction;
 
@@ -74,7 +73,10 @@ describe("TransactionCard", () => {
   it("renders transaction ICPs with - sign", async () => {
     const po = renderComponent({
       isIncoming: false,
-      amount: 123_000_000n,
+      tokenAmount: TokenAmount.fromE8s({
+        amount: 123_000_000n,
+        token: ICPToken,
+      }),
     });
 
     expect(await po.getAmount()).toBe("-1.23");
@@ -83,7 +85,10 @@ describe("TransactionCard", () => {
   it("renders transaction ICPs with + sign", async () => {
     const po = renderComponent({
       isIncoming: true,
-      amount: 345_000_000n,
+      tokenAmount: TokenAmount.fromE8s({
+        amount: 345_000_000n,
+        token: ICPToken,
+      }),
     });
 
     expect(await po.getAmount()).toBe("+3.45");

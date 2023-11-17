@@ -1,5 +1,5 @@
 import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
-import type { Token } from "@dfinity/utils";
+import type { TokenAmount } from "@dfinity/utils";
 import type { Account } from "./account";
 
 export type NewTransaction = {
@@ -88,8 +88,7 @@ export interface UiTransaction {
   // TODO: Remove fallbackDescription and always use otherParty.
   fallbackDescription?: string;
   // Always positive.
-  amount: bigint;
-  token: Token;
+  tokenAmount: TokenAmount;
   timestamp: Date;
 }
 
