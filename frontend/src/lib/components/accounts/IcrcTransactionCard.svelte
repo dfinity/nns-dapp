@@ -1,10 +1,12 @@
 <script lang="ts">
   import type { Account } from "$lib/types/account";
+  import { toUiTransaction } from "$lib/utils/transactions.utils";
   import type { mapIcrcTransactionType } from "$lib/utils/icrc-transactions.utils";
   import type { Principal } from "@dfinity/principal";
   import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
   import TransactionCard from "./TransactionCard.svelte";
-  import type { Transaction } from "$lib/types/transaction";
+  import { i18n } from "$lib/stores/i18n";
+  import type { Transaction, UiTransaction } from "$lib/types/transaction";
   import { nonNullish } from "@dfinity/utils";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
 
@@ -23,13 +25,20 @@
     toSelfTransaction,
     governanceCanisterId,
   });
+
+  let uiTransaction: UiTransaction | undefined;
+  $: uiTransaction =
+    transactionData &&
+    token &&
+    toUiTransaction({
+      transaction: transactionData,
+      toSelfTransaction,
+      token,
+      transactionNames: $i18n.transaction_names,
+      fallbackDescriptions: descriptions,
+    });
 </script>
 
-{#if nonNullish(transactionData) && nonNullish(token)}
-  <TransactionCard
-    {toSelfTransaction}
-    transaction={transactionData}
-    {token}
-    {descriptions}
-  />
+{#if nonNullish(uiTransaction) && nonNullish(token)}
+  <TransactionCard transaction={uiTransaction} />
 {/if}

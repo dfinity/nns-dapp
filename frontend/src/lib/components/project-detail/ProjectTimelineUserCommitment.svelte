@@ -9,7 +9,7 @@
     durationTillSwapDeadline,
     durationTillSwapStart,
   } from "$lib/utils/projects.utils";
-  import { secondsToDuration } from "$lib/utils/date.utils";
+  import { secondsToDuration } from "@dfinity/utils";
   import { Value, KeyValuePair } from "@dfinity/gix-components";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import { TokenAmount, nonNullish } from "@dfinity/utils";
@@ -55,7 +55,7 @@
       {$i18n.sns_project_detail.deadline}
     </span>
     <Value slot="value">
-      {secondsToDuration(durationTillDeadline)}
+      {secondsToDuration({ seconds: durationTillDeadline, i18n: $i18n.time })}
     </Value>
   </KeyValuePair>
 {/if}
@@ -65,7 +65,7 @@
       {$i18n.sns_project_detail.starts}
     </span>
     <Value slot="value">
-      {secondsToDuration(durationTillStart)}
+      {secondsToDuration({ seconds: durationTillStart, i18n: $i18n.time })}
     </Value>
   </KeyValuePair>
 {/if}

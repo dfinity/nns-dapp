@@ -1,7 +1,7 @@
 <script lang="ts">
   import { NeuronState } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
-  import { secondsToDuration } from "$lib/utils/date.utils";
+  import { secondsToDuration } from "@dfinity/utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { Html, KeyValuePair } from "@dfinity/gix-components";
 
@@ -17,7 +17,10 @@
       <p class="duration label" class:default-gaps={defaultGaps}>
         <Html
           text={replacePlaceholders($i18n.neurons.inline_remaining, {
-            $duration: secondsToDuration(timeInSeconds),
+            $duration: secondsToDuration({
+              seconds: timeInSeconds,
+              i18n: $i18n.time,
+            }),
           })}
         />
       </p>
@@ -25,15 +28,18 @@
       <KeyValuePair>
         <span slot="key" class="label">{$i18n.neurons.remaining}</span>
         <span slot="value" class="value"
-          >{secondsToDuration(timeInSeconds)}</span
+          >{secondsToDuration({
+            seconds: timeInSeconds,
+            i18n: $i18n.time,
+          })}</span
         >
       </KeyValuePair>
     {/if}
   {:else if state === NeuronState.Locked}
     {#if inline}
       <p class="duration label" class:default-gaps={defaultGaps}>
-        {secondsToDuration(timeInSeconds)} – {$i18n.neurons
-          .dissolve_delay_title}
+        {secondsToDuration({ seconds: timeInSeconds, i18n: $i18n.time })} – {$i18n
+          .neurons.dissolve_delay_title}
       </p>
     {:else}
       <KeyValuePair>
@@ -41,7 +47,10 @@
           >{$i18n.neurons.dissolve_delay_title}</span
         >
         <span slot="value" class="value"
-          >{secondsToDuration(timeInSeconds)}</span
+          >{secondsToDuration({
+            seconds: timeInSeconds,
+            i18n: $i18n.time,
+          })}</span
         >
       </KeyValuePair>
     {/if}

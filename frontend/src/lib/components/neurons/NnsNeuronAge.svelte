@@ -2,7 +2,7 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
   import { KeyValuePair } from "@dfinity/gix-components";
-  import { secondsToDuration } from "$lib/utils/date.utils";
+  import { secondsToDuration } from "@dfinity/utils";
   import { neuronAge } from "$lib/utils/neuron.utils";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
 
@@ -14,7 +14,7 @@
     <KeyValuePair>
       <span class="label" slot="key">{$i18n.neurons.age}</span>
       <span class="value" slot="value" data-tid="nns-neuron-age">
-        {secondsToDuration(neuronAge(neuron))}
+        {secondsToDuration({ seconds: neuronAge(neuron), i18n: $i18n.time })}
       </span>
     </KeyValuePair>
   {/if}

@@ -12,6 +12,7 @@
   import { ActionType } from "$lib/types/actions";
   import { UnavailableTokenAmount } from "$lib/utils/token.utils";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import { nonNullish } from "@dfinity/utils";
 
   export let userTokenData: UserTokenData;
   export let index: number;
@@ -39,17 +40,24 @@
   tabindex={index + 1}
   on:keypress={handleClick}
   on:click={handleClick}
-  data-tid="desktop-tokens-table-row-component"
+  data-tid="tokens-table-row-component"
 >
   <div role="cell" class="title-cell">
-    <div class="title">
+    <div class="title-logo-wrapper">
       <Logo
         src={userTokenData.logo}
         alt={userTokenData.title}
         size="medium"
         framed
       />
-      <span data-tid="project-name">{userTokenData.title}</span>
+      <div class="title-wrapper">
+        <span data-tid="project-name">{userTokenData.title}</span>
+        {#if nonNullish(userTokenData.subtitle)}
+          <span data-tid="project-subtitle" class="description"
+            >{userTokenData.subtitle}</span
+          >
+        {/if}
+      </div>
     </div>
     <div class="title-actions actions mobile-only">
       {#each userTokenData.actions as action}
@@ -157,10 +165,16 @@
     }
   }
 
-  .title {
+  .title-logo-wrapper {
     display: flex;
     align-items: center;
     gap: var(--padding);
+
+    .title-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: var(--padding-0_5x);
+    }
   }
 
   .actions {

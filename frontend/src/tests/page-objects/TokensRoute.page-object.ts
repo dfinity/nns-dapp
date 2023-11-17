@@ -18,7 +18,11 @@ export class TokensRoutePo extends BasePageObject {
     return this.getSignInTokensPagePo().isPresent();
   }
 
+  getTokensPagePo(): TokensPagePo {
+    return TokensPagePo.under(this.root);
+  }
+
   hasTokensPage(): Promise<boolean> {
-    return TokensPagePo.under(this.root).isPresent();
+    return this.getTokensPagePo().isPresent();
   }
 }

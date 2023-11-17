@@ -14,7 +14,7 @@
     snsProjectsCommittedStore,
     type SnsFullProject,
   } from "$lib/derived/sns/sns-projects.derived";
-  import { nonNullish } from "@dfinity/utils";
+  import { TokenAmount, nonNullish } from "@dfinity/utils";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { uncertifiedLoadCkBTCAccountsBalance } from "$lib/services/ckbtc-accounts-balance.services";
   import CkBTCAccounts from "$lib/pages/CkBTCAccounts.svelte";
@@ -25,6 +25,10 @@
   import { isArrayEmpty } from "$lib/utils/utils";
   import AccountsModals from "$lib/modals/accounts/AccountsModals.svelte";
   import CkBTCAccountsModals from "$lib/modals/accounts/CkBTCAccountsModals.svelte";
+  import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
+  import IC_LOGO_ROUNDED from "$lib/assets/icp-rounded.svg";
 
   // TODO: This component is mounted twice. Understand why and fix it.
 
@@ -77,6 +81,20 @@
       loadSnsAccountsBalances($snsProjectsCommittedStore),
       loadCkBTCAccountsBalances($ckBTCUniversesStore),
     ]))();
+
+  // TODO: Use derived store https://dfinity.atlassian.net/browse/GIX-2083
+  const data: UserTokenData[] = [
+    {
+      universeId: OWN_CANISTER_ID,
+      title: "Main",
+      balance: TokenAmount.fromE8s({
+        amount: 314000000n,
+        token: NNS_TOKEN_DATA,
+      }),
+      logo: IC_LOGO_ROUNDED,
+      actions: [UserTokenAction.Send, UserTokenAction.Receive],
+    },
+  ];
 </script>
 
 <TestIdWrapper testId="accounts-component">
@@ -84,7 +102,7 @@
     <SummaryUniverse />
 
     {#if $isNnsUniverseStore}
-      <NnsAccounts />
+      <NnsAccounts userTokensData={data} />
     {:else if $isCkBTCUniverseStore}
       <CkBTCAccounts />
     {:else if nonNullish($snsProjectSelectedStore)}

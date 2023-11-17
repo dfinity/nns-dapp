@@ -3,13 +3,13 @@ import type {
   Transaction as NnsTransaction,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { Account } from "$lib/types/account";
-import type { Transaction } from "$lib/types/transaction";
+import type { Transaction, UiTransaction } from "$lib/types/transaction";
 import {
   AccountTransactionType,
   TransactionNetwork,
 } from "$lib/types/transaction";
-import { isNullish } from "@dfinity/utils";
-import { replacePlaceholders } from "./i18n.utils";
+import type { Token } from "@dfinity/utils";
+import { TokenAmount, isNullish } from "@dfinity/utils";
 import { stringifyJson } from "./utils";
 
 export const transactionType = ({
@@ -167,6 +167,43 @@ export const mapNnsTransaction = ({
   };
 };
 
+export const toUiTransaction = ({
+  transaction,
+  toSelfTransaction,
+  token,
+  transactionNames,
+  fallbackDescriptions,
+}: {
+  transaction: Transaction;
+  toSelfTransaction: boolean;
+  token: Token;
+  transactionNames: I18nTransaction_names;
+  fallbackDescriptions?: Record<string, string>;
+}): UiTransaction => {
+  const isIncoming = transaction.isReceive || toSelfTransaction;
+  const headline = transactionName({
+    type: transaction.type,
+    isReceive: isIncoming,
+    labels: transactionNames,
+  });
+  const otherParty = isIncoming ? transaction.from : transaction.to;
+  const fallbackDescription = isNullish(otherParty)
+    ? fallbackDescriptions?.[transaction.type]
+    : undefined;
+
+  return {
+    isIncoming,
+    headline,
+    otherParty,
+    fallbackDescription,
+    tokenAmount: TokenAmount.fromE8s({
+      amount: transaction.displayAmount,
+      token,
+    }),
+    timestamp: transaction.date,
+  };
+};
+
 /**
  * Note: We used to display the token symbol within the transaction labels that is why this function uses replacePlaceholders.
  * Although it was decided to not render such symbol anymore, we keep the code as it in case this would change in the future.
@@ -175,21 +212,16 @@ export const transactionName = ({
   type,
   isReceive,
   labels,
-  tokenSymbol,
 }: {
   type: AccountTransactionType;
   isReceive: boolean;
   labels: I18nTransaction_names;
-  tokenSymbol: string;
 }): string =>
-  replacePlaceholders(
-    type === AccountTransactionType.Send
-      ? isReceive
-        ? labels.receive
-        : labels.send
-      : labels[type] ?? type,
-    { $tokenSymbol: tokenSymbol }
-  );
+  type === AccountTransactionType.Send
+    ? isReceive
+      ? labels.receive
+      : labels.send
+    : labels[type] ?? type;
 
 /** (from==to workaround) Set `mapToSelfNnsTransaction: true` when sender and receiver are the same account (e.g. transmitting from `main` to `main` account) */
 export const mapToSelfTransaction = (

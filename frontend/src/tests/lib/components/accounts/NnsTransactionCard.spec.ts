@@ -1,11 +1,7 @@
 import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import NnsTransactionCard from "$lib/components/accounts/NnsTransactionCard.svelte";
 import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
-import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
-import { formatToken } from "$lib/utils/token.utils";
-import { mapNnsTransaction } from "$lib/utils/transactions.utils";
-import en from "$tests/mocks/i18n.mock";
 import {
   mockMainAccount,
   mockSubAccount,
@@ -13,38 +9,40 @@ import {
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import {
+  createMockReceiveTransaction,
+  createMockSendTransaction,
   mockReceivedFromMainAccountTransaction,
   mockSentToSubAccountTransaction,
 } from "$tests/mocks/transaction.mock";
+import { TransactionCardPo } from "$tests/page-objects/TransactionCard.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
-import { ICPToken } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("NnsTransactionCard", () => {
-  const renderTransactionCard = (
+  const renderComponent = (
     account = mockMainAccount,
     transaction = mockReceivedFromMainAccountTransaction
-  ) =>
-    render(NnsTransactionCard, {
+  ) => {
+    const { container } = render(NnsTransactionCard, {
       props: {
         account,
         transaction,
       },
     });
+    return TransactionCardPo.under(new JestPageObjectElement(container));
+  };
 
-  it("renders received headline", () => {
-    const { getByText } = renderTransactionCard(
+  it("renders received headline", async () => {
+    const po = renderComponent(
       mockSubAccount,
       mockReceivedFromMainAccountTransaction
     );
 
-    const expectedText = replacePlaceholders(en.transaction_names.receive, {
-      $tokenSymbol: ICPToken.symbol,
-    });
-    expect(getByText(expectedText)).toBeInTheDocument();
+    expect(await po.getHeadline()).toBe("Received");
   });
 
-  it("renders participate in swap transaction type", () => {
+  it("renders participate in swap transaction type", async () => {
     const swapCanisterId = principal(0);
     const aggregatorData = {
       ...aggregatorSnsMockDto,
@@ -68,79 +66,70 @@ describe("NnsTransactionCard", () => {
         },
       },
     };
-    const { queryByTestId } = renderTransactionCard(
-      mockMainAccount,
-      swapTransaction
-    );
+    const po = renderComponent(mockMainAccount, swapTransaction);
 
-    expect(queryByTestId("headline").textContent).toBe("Decentralization Swap");
+    expect(await po.getHeadline()).toBe("Decentralization Swap");
   });
 
-  it("renders sent headline", () => {
-    const { getByText } = renderTransactionCard(
+  it("renders sent headline", async () => {
+    const po = renderComponent(
       mockMainAccount,
       mockSentToSubAccountTransaction
     );
 
-    const expectedText = replacePlaceholders(en.transaction_names.send, {
-      $tokenSymbol: ICPToken.symbol,
-    });
-    expect(getByText(expectedText)).toBeInTheDocument();
+    expect(await po.getHeadline()).toBe("Sent");
   });
 
-  it("renders transaction ICPs with - sign", () => {
+  it("renders transaction ICPs with - sign", async () => {
     const account = mockMainAccount;
-    const transaction = mockSentToSubAccountTransaction;
-    const { getByTestId } = renderTransactionCard(account, transaction);
-    const { displayAmount } = mapNnsTransaction({ account, transaction });
+    const transaction = createMockSendTransaction({
+      amount: 123_000_000n,
+      fee: 10_000n,
+      to: mockSubAccount.identifier,
+    });
+    const po = renderComponent(account, transaction);
 
-    expect(getByTestId("token-value")?.textContent).toBe(
-      `-${formatToken({ value: displayAmount, detailed: true })}`
-    );
+    expect(await po.getAmount()).toBe("-1.2301");
   });
 
-  it("renders transaction ICPs with + sign", () => {
+  it("renders transaction ICPs with + sign", async () => {
     const account = mockSubAccount;
-    const transaction = mockReceivedFromMainAccountTransaction;
-    const { getByTestId } = renderTransactionCard(account, transaction);
-    const { displayAmount } = mapNnsTransaction({ account, transaction });
+    const transaction = createMockReceiveTransaction({
+      from: mockMainAccount.identifier,
+      amount: 125_000_000n,
+      fee: 20_000n,
+    });
+    const po = renderComponent(account, transaction);
 
-    expect(getByTestId("token-value")?.textContent).toBe(
-      `+${formatToken({ value: displayAmount, detailed: true })}`
-    );
+    expect(await po.getAmount()).toBe("+1.25");
   });
 
-  it("displays transaction date and time", () => {
-    const { getByTestId } = renderTransactionCard(
+  it("displays transaction date and time", async () => {
+    const po = renderComponent(
       mockMainAccount,
       mockSentToSubAccountTransaction
     );
 
-    const div = getByTestId("transaction-date");
-
-    expect(div?.textContent).toContain("Jan 1, 1970");
-    expect(normalizeWhitespace(div?.textContent)).toContain("12:00 AM");
+    expect(normalizeWhitespace(await po.getDate())).toBe(
+      "Jan 1, 1970 12:00 AM"
+    );
   });
 
-  it("displays identifier for received", () => {
-    const { getByTestId } = renderTransactionCard(
+  it("displays identifier for received", async () => {
+    const po = renderComponent(
       mockSubAccount,
       mockReceivedFromMainAccountTransaction
     );
-    const identifier = getByTestId("identifier")?.textContent;
-
-    expect(identifier).toContain(mockMainAccount.identifier);
-    expect(identifier).toContain(en.wallet.direction_from);
+    expect(await po.getIdentifier()).toBe(
+      `From: ${mockMainAccount.identifier}`
+    );
   });
 
-  it("displays identifier for sent", () => {
-    const { getByTestId } = renderTransactionCard(
+  it("displays identifier for sent", async () => {
+    const po = renderComponent(
       mockMainAccount,
       mockSentToSubAccountTransaction
     );
-    const identifier = getByTestId("identifier")?.textContent;
-
-    expect(identifier).toContain(mockSubAccount.identifier);
-    expect(identifier).toContain(en.wallet.direction_to);
+    expect(await po.getIdentifier()).toBe(`To: ${mockSubAccount.identifier}`);
   });
 });

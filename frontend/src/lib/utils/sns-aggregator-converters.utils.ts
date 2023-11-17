@@ -388,16 +388,23 @@ const convertDtoToLifecycle = (
   lifecycle: toNullable(data.lifecycle),
 });
 
-type PartialSummary = Omit<SnsSummary, "metadata" | "token" | "swap"> & {
+type PartialSummary = Omit<
+  SnsSummary,
+  "metadata" | "token" | "swap" | "init" | "swapParams"
+> & {
   metadata?: SnsSummaryMetadata;
   token?: IcrcTokenMetadata;
   swap?: SnsSummarySwap;
+  init?: SnsSwapInit;
+  swapParams?: SnsParams;
 };
 
 const isValidSummary = (entry: PartialSummary): entry is SnsSummary =>
   nonNullish(entry.metadata) &&
   nonNullish(entry.token) &&
-  nonNullish(entry.swap);
+  nonNullish(entry.swap) &&
+  nonNullish(entry.init) &&
+  nonNullish(entry.swapParams);
 
 export const convertDtoToSnsSummary = ({
   canister_ids: {

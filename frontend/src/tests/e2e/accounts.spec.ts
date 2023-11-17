@@ -72,8 +72,6 @@ test("Test accounts requirements", async ({ page, context }) => {
   expect(transactions).toHaveLength(1);
   const transaction = transactions[0];
 
-  expect(await transaction.getIdentifier()).toBe(
-    `Source: ${mainAccountAddress}`
-  );
+  expect(await transaction.getIdentifier()).toBe(`From: ${mainAccountAddress}`);
   expect(await transaction.getAmount()).toBe("+5.00");
 });

@@ -3,7 +3,7 @@
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
   import { KeyValuePair } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import { secondsToDuration } from "$lib/utils/date.utils";
+  import { secondsToDuration } from "@dfinity/utils";
   import { isVesting, vestingInSeconds } from "$lib/utils/sns-neuron.utils";
 
   export let neuron: SnsNeuron;
@@ -14,7 +14,10 @@
     <KeyValuePair testId="sns-neuron-vesting-period">
       <span class="label" slot="key">{$i18n.neurons.vestion_period}</span>
       <span class="value" slot="value">
-        {secondsToDuration(vestingInSeconds(neuron))}
+        {secondsToDuration({
+          seconds: vestingInSeconds(neuron),
+          i18n: $i18n.time,
+        })}
       </span>
     </KeyValuePair>
   {/if}

@@ -90,6 +90,16 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           network: ${{ env.DFX_NETWORK }}
+      - name: Log the current state of the canisters
+        run: |
+          for canister in nns-dapp sns_aggregator ; do
+            echo "==== $canister ===="
+            set -x
+            dfx canister id --network app "$canister"
+            dfx canister info --network app "$canister"
+            dfx canister status --network app "$canister"
+            set +x
+          done
       - name: Deploy nns-dapp
         if: (inputs.canisters == 'all') || (inputs.canisters == 'nns-dapp') || ( github.event_name != 'workflow_dispatch' )
         run: |

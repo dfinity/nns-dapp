@@ -1,7 +1,6 @@
 import ProjectTimelineUserCommitment from "$lib/components/project-detail/ProjectTimelineUserCommitment.svelte";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import type { SnsSwapCommitment } from "$lib/types/sns";
-import { secondsToDuration } from "$lib/utils/date.utils";
 import {
   durationTillSwapDeadline,
   durationTillSwapStart,
@@ -13,7 +12,7 @@ import {
   summaryForLifecycle,
 } from "$tests/mocks/sns-projects.mock";
 import { SnsSwapLifecycle } from "@dfinity/sns";
-import { ICPToken, TokenAmount } from "@dfinity/utils";
+import { ICPToken, TokenAmount, secondsToDuration } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("ProjectTimelineUserCommitment", () => {
@@ -33,9 +32,9 @@ describe("ProjectTimelineUserCommitment", () => {
     });
     expect(queryByText(en.sns_project_detail.deadline)).toBeInTheDocument();
 
-    const expectedDeadline = secondsToDuration(
-      durationTillSwapDeadline(summary.swap) as bigint
-    );
+    const expectedDeadline = secondsToDuration({
+      seconds: durationTillSwapDeadline(summary.swap) as bigint,
+    });
     expect(queryByText(expectedDeadline)).toBeInTheDocument();
   });
 
@@ -57,9 +56,9 @@ describe("ProjectTimelineUserCommitment", () => {
     });
     expect(queryByText(en.sns_project_detail.starts)).toBeInTheDocument();
 
-    const expectedStartingInfo = secondsToDuration(
-      durationTillSwapStart(summary.swap)
-    );
+    const expectedStartingInfo = secondsToDuration({
+      seconds: durationTillSwapStart(summary.swap),
+    });
     expect(queryByText(expectedStartingInfo)).toBeInTheDocument();
   });
 

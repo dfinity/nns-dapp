@@ -3,66 +3,46 @@
   import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Identifier from "$lib/components/ui/Identifier.svelte";
-  import type { Token } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
-  import { transactionName } from "$lib/utils/transactions.utils";
   import {
     Html,
     IconUp,
     IconDown,
     KeyValuePair,
   } from "@dfinity/gix-components";
-  import type {
-    Transaction,
-    AccountTransactionType,
-  } from "$lib/types/transaction";
-  import { nonNullish } from "@dfinity/utils";
-  import { TokenAmount } from "@dfinity/utils";
+  import type { UiTransaction } from "$lib/types/transaction";
+  import { nonNullish, type TokenAmount } from "@dfinity/utils";
   import { fade } from "svelte/transition";
 
-  export let transaction: Transaction;
-  export let toSelfTransaction = false;
-  export let token: Token;
-  export let descriptions: Record<string, string> | undefined = undefined;
-
-  let type: AccountTransactionType;
-  let isReceive: boolean;
-  let isSend: boolean;
-  let from: string | undefined;
-  let to: string | undefined;
-  let displayAmount: bigint;
-  let date: Date;
-  $: ({ type, isReceive, isSend, from, to, displayAmount, date } = transaction);
+  export let transaction: UiTransaction;
 
   let headline: string;
-  $: headline = transactionName({
-    type,
-    isReceive: isReceive || toSelfTransaction,
-    labels: $i18n.transaction_names,
-    tokenSymbol: token.symbol,
-  });
+  let tokenAmount: TokenAmount;
+  let isIncoming: boolean;
+  let otherParty: string | undefined;
+  let fallbackDescription: string | undefined;
+  let timestamp: Date;
+  $: ({
+    headline,
+    tokenAmount,
+    isIncoming,
+    otherParty,
+    fallbackDescription,
+    timestamp,
+  } = transaction);
 
-  let label: string | undefined;
-  $: label =
-    isReceive || toSelfTransaction
-      ? $i18n.wallet.direction_from
-      : isSend
-      ? $i18n.wallet.direction_to
-      : undefined;
-
-  let description: string | undefined;
-  $: description = descriptions?.[type];
-
-  let identifier: string | undefined;
-  $: identifier = isReceive ? from : to;
+  let label: string;
+  $: label = isIncoming
+    ? $i18n.wallet.direction_from
+    : $i18n.wallet.direction_to;
 
   let seconds: number;
-  $: seconds = date.getTime() / 1000;
+  $: seconds = timestamp.getTime() / 1000;
 </script>
 
 <article data-tid="transaction-card" transition:fade|global>
-  <div class="icon" class:send={!isReceive}>
-    {#if isReceive}
+  <div class="icon" class:send={!isIncoming}>
+    {#if isIncoming}
       <IconDown size="24px" />
     {:else}
       <IconUp size="24px" />
@@ -75,8 +55,8 @@
 
       <AmountDisplay
         slot="value"
-        amount={TokenAmount.fromE8s({ amount: displayAmount, token })}
-        sign={isReceive || toSelfTransaction ? "+" : "-"}
+        amount={tokenAmount}
+        sign={isIncoming ? "+" : "-"}
         detailed
         inline
       />
@@ -84,12 +64,12 @@
 
     <ColumnRow>
       <div slot="start" class="identifier">
-        {#if nonNullish(description)}
-          <p data-tid="transaction-description"><Html text={description} /></p>
-        {/if}
-
-        {#if nonNullish(identifier)}
-          <Identifier size="medium" {label} {identifier} />
+        {#if nonNullish(otherParty)}
+          <Identifier size="medium" {label} identifier={otherParty} />
+        {:else if nonNullish(fallbackDescription)}
+          <p data-tid="transaction-description">
+            <Html text={fallbackDescription} />
+          </p>
         {/if}
       </div>
 

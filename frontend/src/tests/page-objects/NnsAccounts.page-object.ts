@@ -1,12 +1,21 @@
 import { BaseAccountsPo } from "$tests/page-objects/BaseAccounts.page-object";
 import { NnsAddAccountPo } from "$tests/page-objects/NnsAddAccount.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { TokensTablePo } from "./TokensTable.page-object";
 
 export class NnsAccountsPo extends BaseAccountsPo {
   private static readonly TID = "accounts-body";
 
   static under(element: PageObjectElement): NnsAccountsPo {
     return new NnsAccountsPo(element.byTestId(NnsAccountsPo.TID));
+  }
+
+  getTokensTablePo() {
+    return TokensTablePo.under(this.root);
+  }
+
+  hasTokensTable(): Promise<boolean> {
+    return this.getTokensTablePo().isPresent();
   }
 
   getNnsAddAccountPo(): NnsAddAccountPo {

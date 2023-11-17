@@ -3,7 +3,7 @@
   import { createEventDispatcher } from "svelte";
   import { updateDelay } from "$lib/services/neurons.services";
   import { i18n } from "$lib/stores/i18n";
-  import { secondsToDuration } from "$lib/utils/date.utils";
+  import { secondsToDuration } from "@dfinity/utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatToken } from "$lib/utils/token.utils";
   import {
@@ -44,7 +44,7 @@
 
 <div class="wrapper" data-tid="confirm-dissolve-delay-container">
   <div class="main-info">
-    <h3>{secondsToDuration(delayInSeconds)}</h3>
+    <h3>{secondsToDuration({ seconds: delayInSeconds, i18n: $i18n.time })}</h3>
   </div>
   <div>
     <p class="label">{$i18n.neurons.neuron_id}</p>

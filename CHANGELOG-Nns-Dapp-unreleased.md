@@ -14,9 +14,13 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Render withdrawal address on ckBTC burn transactions.
+
 #### Changed
 
 * New icons for sent/received transactions.
+* Increase the pre-migration account limit.
+* Use "From:" instead of "Source:" for received transactions.
 
 #### Deprecated
 
@@ -27,6 +31,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Add missing "Rename" button in the subaccount page.
 * Fix disappearing "Received" half of to-self transactions.
 * Fix debug store that wasn't working.
+* Fix the stuck loading issue with the Sns proposal.
 * Fix "Expiration date" countdown label visibility.
 
 #### Security
@@ -52,8 +57,9 @@ proposal is successful, the changes it released will be moved from this file to
 * Make the location of the snsdemo checkout configurable.
 * Add `prod` and `aggregator-prod` to the list of public releases.
 * Update `dfx` to `v0.15.1`.
+* Update the URL of the app subnet to what dfx v15 expects.
 * Use a unique branch when updating the snsdemo release, didc, IC candid files or rust.
-* Use a unique branch when updating the snsdemo release.
+* Better checks that the network is defined.
 
 #### Deprecated
 
@@ -62,5 +68,6 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * Remove accidentally committed (empty) directory and fix commit patterns.
+* Fix local deployments with `dfx 0.15.1`.
 
 #### Security

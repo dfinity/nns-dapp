@@ -1,13 +1,10 @@
 import {
-  DAYS_IN_NON_LEAP_YEAR,
-  HOURS_IN_DAY,
-  MINUTES_IN_HOUR,
   SECONDS_IN_DAY,
-  SECONDS_IN_MINUTE,
   SECONDS_IN_MONTH,
   SECONDS_IN_YEAR,
 } from "$lib/constants/constants";
 import { i18n } from "$lib/stores/i18n";
+import { secondsToDuration } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 type LabelKey = "year" | "month" | "day" | "hour" | "minute" | "second";
@@ -19,63 +16,6 @@ const createLabel = (labelKey: LabelKey, amount: bigint): LabelInfo => ({
   labelKey,
   amount: Number(amount),
 });
-
-// Returns how many days there are in the given number of years, adding a leap
-// day for every 4 years.
-const daysInYears = (years: bigint): bigint => {
-  // Use integer division.
-  const leapDays = years / BigInt(4);
-  return years * BigInt(DAYS_IN_NON_LEAP_YEAR) + leapDays;
-};
-
-// Returns how many full years, requiring a leap day for every 4 full years,
-// there are in the given number of days.
-const fullYearsInDays = (days: bigint): bigint => {
-  // Use integer division.
-  let years = days / BigInt(DAYS_IN_NON_LEAP_YEAR);
-  while (daysInYears(years) > days) {
-    years--;
-  }
-  return years;
-};
-
-export const secondsToDuration = (seconds: bigint): string => {
-  const i18nObj = get(i18n);
-
-  let minutes = seconds / BigInt(SECONDS_IN_MINUTE);
-
-  let hours = minutes / BigInt(MINUTES_IN_HOUR);
-  minutes -= hours * BigInt(MINUTES_IN_HOUR);
-
-  let days = hours / BigInt(HOURS_IN_DAY);
-  hours -= days * BigInt(HOURS_IN_DAY);
-
-  const years = fullYearsInDays(days);
-  days -= daysInYears(years);
-
-  const periods = [
-    createLabel("year", years),
-    createLabel("day", days),
-    createLabel("hour", hours),
-    createLabel("minute", minutes),
-    ...(seconds > BigInt(0) && seconds < BigInt(60)
-      ? [createLabel("second", seconds)]
-      : []),
-  ];
-
-  return periods
-    .filter(({ amount }) => amount > 0)
-    .slice(0, 2)
-    .map(
-      (labelInfo) =>
-        `${labelInfo.amount} ${
-          labelInfo.amount === 1
-            ? i18nObj.time[labelInfo.labelKey]
-            : i18nObj.time[`${labelInfo.labelKey}_plural`]
-        }`
-    )
-    .join(", ");
-};
 
 /**
  * Rounds days to full years (1 year = 365.25 days).
@@ -89,8 +29,13 @@ export const secondsToDuration = (seconds: bigint): string => {
  *
  * @param days
  */
-export const daysToDuration = (days: number): string =>
-  secondsToDuration(BigInt(Math.ceil(days * SECONDS_IN_DAY)));
+export const daysToDuration = (days: number): string => {
+  const { time } = get(i18n);
+  return secondsToDuration({
+    seconds: BigInt(Math.ceil(days * SECONDS_IN_DAY)),
+    i18n: time,
+  });
+};
 
 /**
  * Displays years, months and days.
