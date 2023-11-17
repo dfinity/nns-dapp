@@ -203,6 +203,11 @@ export const mockToken: IcrcTokenMetadata = {
   fee: BigInt(0),
 };
 
+export const mockLifecycleResponse: SnsGetLifecycleResponse = {
+  lifecycle: [SnsSwapLifecycle.Open],
+  decentralization_sale_open_timestamp_seconds: [],
+};
+
 export const mockSnsSummaryList: SnsSummary[] = [
   {
     rootCanisterId: principal(0),
@@ -214,6 +219,9 @@ export const mockSnsSummaryList: SnsSummary[] = [
     token: mockToken,
     swap: mockSwap,
     derived: mockDerived,
+    init: mockInit,
+    swapParams: mockSnsParams,
+    lifecycle: mockLifecycleResponse,
   },
   {
     rootCanisterId: principal(1),
@@ -235,6 +243,9 @@ export const mockSnsSummaryList: SnsSummary[] = [
     },
     swap: mockSwap,
     derived: mockDerived,
+    init: mockInit,
+    swapParams: mockSnsParams,
+    lifecycle: mockLifecycleResponse,
   },
   {
     rootCanisterId: principal(2),
@@ -256,6 +267,9 @@ export const mockSnsSummaryList: SnsSummary[] = [
     },
     swap: mockSwap,
     derived: mockDerived,
+    init: mockInit,
+    swapParams: mockSnsParams,
+    lifecycle: mockLifecycleResponse,
   },
   {
     rootCanisterId: principal(3),
@@ -277,6 +291,9 @@ export const mockSnsSummaryList: SnsSummary[] = [
     },
     swap: mockSwap,
     derived: mockDerived,
+    init: mockInit,
+    swapParams: mockSnsParams,
+    lifecycle: mockLifecycleResponse,
   },
 ];
 
@@ -473,9 +490,4 @@ export const mockUniverse: Universe = {
   summary: mockSnsFullProject.summary,
   title: mockSnsFullProject.summary.metadata.name,
   logo: mockSnsFullProject.summary.metadata.logo,
-};
-
-export const mockLifecycleResponse: SnsGetLifecycleResponse = {
-  lifecycle: [SnsSwapLifecycle.Open],
-  decentralization_sale_open_timestamp_seconds: [],
 };
