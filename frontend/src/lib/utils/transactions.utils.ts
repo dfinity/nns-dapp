@@ -3,12 +3,13 @@ import type {
   Transaction as NnsTransaction,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { Account } from "$lib/types/account";
-import type { Transaction } from "$lib/types/transaction";
+import type { Transaction, UiTransaction } from "$lib/types/transaction";
 import {
   AccountTransactionType,
   TransactionNetwork,
 } from "$lib/types/transaction";
-import { isNullish } from "@dfinity/utils";
+import type { Token } from "@dfinity/utils";
+import { TokenAmount, isNullish } from "@dfinity/utils";
 import { stringifyJson } from "./utils";
 
 export const transactionType = ({
@@ -163,6 +164,43 @@ export const mapNnsTransaction = ({
     to,
     displayAmount,
     date,
+  };
+};
+
+export const toUiTransaction = ({
+  transaction,
+  toSelfTransaction,
+  token,
+  transactionNames,
+  fallbackDescriptions,
+}: {
+  transaction: Transaction;
+  toSelfTransaction: boolean;
+  token: Token;
+  transactionNames: I18nTransaction_names;
+  fallbackDescriptions?: Record<string, string>;
+}): UiTransaction => {
+  const isIncoming = transaction.isReceive || toSelfTransaction;
+  const headline = transactionName({
+    type: transaction.type,
+    isReceive: isIncoming,
+    labels: transactionNames,
+  });
+  const otherParty = isIncoming ? transaction.from : transaction.to;
+  const fallbackDescription = isNullish(otherParty)
+    ? fallbackDescriptions?.[transaction.type]
+    : undefined;
+
+  return {
+    isIncoming,
+    headline,
+    otherParty,
+    fallbackDescription,
+    tokenAmount: TokenAmount.fromE8s({
+      amount: transaction.displayAmount,
+      token,
+    }),
+    timestamp: transaction.date,
   };
 };
 
