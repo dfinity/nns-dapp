@@ -111,34 +111,16 @@ TODO: Document how to create accounts in the nns-dapp.
 
 ## Development
 
-Development relies on the presence of a testnet that is setup with the II, governance, ledger, and cycle minting canisters. Fully local development is unfortunately not yet supported and the tools for setting up a testnet are not yet available publicly. It is on the roadmap to make these tools available publicly for developers.
+Development relies on the presence of an environment that is setup with the II, governance, ledger, and cycle minting canisters. This is provided by [`dfx nns install`](https://internetcomputer.org/docs/current/references/cli-reference/dfx-nns), both in automated testing and for local development. Please note, however, that it takes some work to configure the NNS canisters. If you would like a test environment with all the NNS canisters configured suitably for use with the nns-dapp, please consider using the [snsdemo tools.](https://github.com/dfinity/snsdemo):
 
-When deploying the governance, ledger, and cycle minting canisters to the testnet you must first create a file called `test-accounts.json` in the root of the IC repo whose contents is:
+- Make sure that you have a version of `dfx` that matches the `snsdemo`.
+- Create a state snapshot (about 20 minutes): `snsdapp$ dfx-snapshot-stock-make --snapshot ~/stock-snsdemo-snapshot.tar.xz`
+- Start the snapshot: `nns-dapp$ ./scripts/dfx-snapshot-start --snapshot ~/stock-snsdemo-snapshot.tar.xz`
 
-```json
-{
-  "init_ledger_accounts": [
-    "5b315d2f6702cb3a27d826161797d7b2c2e131cd312aece51d4d5574d1247087"
-  ]
-}
-```
-
-Then run the following from the root directory of the IC repo:
+You can now access the frontend using Chrome or Firefox (sorry, Safari doesn't support subdomains of `localhost`):
 
 ```sh
-./testnet/tools/icos_deploy.sh --git-revision <commit_id> nnsdapp --ansible-args "-e @$PWD/test-accounts.json"
-```
-
-To deploy the NNS Dapp canister to the testnet, run the following:
-
-```sh
-./deploy.sh testnet
-```
-
-You can now access the frontend using:
-
-```sh
-open "https://$(dfx canister --network testnet id nns-dapp).nnsdapp.dfinity.network"
+open "http://$(dfx canister id nns-dapp).localhost:8080"
 ```
 
 To work on the UI locally, either use your IDE, or run the following:
