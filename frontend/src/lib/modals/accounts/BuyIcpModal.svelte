@@ -9,7 +9,7 @@
   };
 </script>
 
-<Modal testId="receive-modal" on:nnsClose>
+<Modal testId="buy-icp-modal-component" on:nnsClose>
   <span slot="title">{`Buy ICP`}</span>
 
   <div>

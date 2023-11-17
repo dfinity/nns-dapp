@@ -1,14 +1,21 @@
+import * as ledgerApi from "$lib/api/icp-ledger.api";
+import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { page } from "$mocks/$app/stores";
 import AccountsPage from "$routes/(app)/(u)/(accounts)/accounts/+page.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
+import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
 import { AccountsPlusPagePo } from "$tests/page-objects/AccountsPlusPage.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
 
 vi.mock("$lib/api/ckbtc-ledger.api");
+vi.mock("$lib/api/icp-ledger.api");
+vi.mock("$lib/api/nns-dapp.api");
 vi.mock("$lib/api/sns-ledger.api");
 
 describe("Accounts page", () => {
@@ -19,6 +26,9 @@ describe("Accounts page", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    icpAccountsStore.resetForTesting();
+    vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(mockAccountDetails);
+    vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(314000000n);
   });
 
   describe("not logged in", () => {
@@ -93,6 +103,16 @@ describe("Accounts page", () => {
 
         const pagePo = po.getAccountsPo().getNnsAccountsPo();
         expect(await pagePo.hasTokensTable()).toBe(false);
+      });
+
+      it("should open buy ICP modal", async () => {
+        const po = renderComponent();
+
+        await runResolvedPromises();
+
+        const pagePo = po.getAccountsPo();
+        await pagePo.clickBuyICP();
+        expect(await pagePo.getBuyICPModalPo().isPresent()).toBe(true);
       });
     });
   });

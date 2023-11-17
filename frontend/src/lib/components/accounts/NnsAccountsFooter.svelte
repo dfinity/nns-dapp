@@ -16,7 +16,7 @@
   // TODO: for performance reason use `loadBalance` to reload specific account
   const reload = async () => await syncAccounts();
 
-  const openBuyIcpModal = () =>
+  const openBuyIcpModal = () => {
     openAccountsModal({
       type: "buy-icp",
       data: {
@@ -25,6 +25,7 @@
         canSelectAccount: false,
       },
     });
+  };
 </script>
 
 <TestIdWrapper testId="nns-accounts-footer-component">
