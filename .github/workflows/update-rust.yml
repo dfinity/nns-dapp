@@ -1,6 +1,6 @@
 # A GitHub Actions workflow that regularly checks for new Rust toolchain release
 # and creates a PR on new versions.
-name: Rust Update
+name: Update rust
 on:
   schedule:
     # check for new rust versions weekly
@@ -36,6 +36,7 @@ jobs:
           fi
 
           echo "latest rust version '$latest_rust_version'"
+          echo "version=$latest_rust_version" >> "$GITHUB_OUTPUT"
 
           if [ "$current_rust_version" != "$latest_rust_version" ]
           then
@@ -44,7 +45,6 @@ jobs:
             echo "updated=1" >> "$GITHUB_OUTPUT"
           else
             echo "updated=0" >> "$GITHUB_OUTPUT"
-            echo "version=$latest_rust_version" >> "$GITHUB_OUTPUT"
           fi
 
           cat ./rust-toolchain.toml
@@ -69,9 +69,19 @@ jobs:
           branch-suffix: timestamp
           delete-branch: true
           title: 'Update rust version to ${{ steps.update.outputs.version }}'
-          # Since the this is a scheduled job, a failure won't be shown on any
-          # PR status. To notify the team, we send a message to our Slack channel on failure.
+          body: |
+            # Motivation
+            A new verion of Rust is available.
+
+            # Automated changes
+            * Update Rust version.
+
+            # Manual changes
+            [ ] Fix clippy lints (if necessary)
+            [ ] Write a changelog entry.
       - name: Notify Slack on failure
+        # Since the this is a scheduled job, a failure won't be shown on any
+        # PR status. To notify the team, we send a message to our Slack channel on failure.
         uses: dfinity/internet-identity/.github/actions/slack@release-2023-08-28
         if: ${{ failure() }}
         with:
