@@ -54,6 +54,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Update `ic-wasm` to the latest version.
 * Factor out the `snsdemo` installation.
 * Make the location of the snsdemo checkout configurable.
+* Update Rust to the latest stable version (1.74.0).
 * Add `prod` and `aggregator-prod` to the list of public releases.
 * Update `dfx` to `v0.15.1`.
 * Update the URL of the app subnet to what dfx v15 expects.
