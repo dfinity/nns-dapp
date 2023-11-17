@@ -29,6 +29,8 @@ jobs:
             # Note: For macos-13-xlarge, updating GITHUB_PATH is not enough and you will have to update PATH in every step.
           fi
       - name: Install dependencies
+        # libfaketime is not supported on apple M1
+        if: ${{ matrix.os != 'macos-13-xlarge' }}
         run: |
           case "$(uname)" in
           Linux)
@@ -67,6 +69,8 @@ jobs:
           cd frontend
           npm ci
       - name: Build
+        # libfaketime is not supported on apple M1
+        if: ${{ (matrix.os != 'macos-13-xlarge') || (matrix.time != 'future') }}
         run: |
           export PATH="$(brew --prefix)/opt/gnu-sed/libexec/gnubin:/usr/local/bin:$PATH"
           export DFX_NETWORK=mainnet
@@ -82,16 +86,21 @@ jobs:
           cp sourcemaps.tar.xz "builds/sourcemaps_${{ matrix.os }}_${{ matrix.time }}.tar.xz"
       - name: 'Upload assets'
         uses: actions/upload-artifact@v3
-        if: always()
+        # libfaketime is not supported on apple M1
+        if: ${{ ((matrix.os != 'macos-13-xlarge') || (matrix.time != 'future')) && always() }}
         with:
           name: builds
           path: builds/*.tar.xz
           retention-days: 1
       - name: 'Output the hash'
+        # libfaketime is not supported on apple M1
+        if: ${{ ((matrix.os != 'macos-13-xlarge') || (matrix.time != 'future')) }}
         run: |
           mkdir -p hashes
           sha256sum assets.tar.xz > "hashes/assets_sha256_${{ matrix.os }}_${{ matrix.time }}.txt"
       - name: 'Upload hashes'
+        # libfaketime is not supported on apple M1
+        if: ${{ ((matrix.os != 'macos-13-xlarge') || (matrix.time != 'future')) }}
         uses: actions/upload-artifact@v3
         with:
           name: hashes
