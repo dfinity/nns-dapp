@@ -64,6 +64,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
+* References to static testnets.
+
 #### Fixed
 
 * Remove accidentally committed (empty) directory and fix commit patterns.
