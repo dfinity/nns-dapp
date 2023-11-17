@@ -111,7 +111,7 @@ TODO: Document how to create accounts in the nns-dapp.
 
 ## Development
 
-Development relies on the presence of a testnet that is setup with the II, governance, ledger, and cycle minting canisters.  This is provided by [`dfx nns install`](https://internetcomputer.org/docs/current/references/cli-reference/dfx-nns), both in automated testing and for local development.  Please note, however, that it takes some work to configure the NNS canisters.  If you would like a test environment with all the NNS canisters configured suitably for use with the nns-dapp, please consider using the [snsdemo tools.](https://github.com/dfinity/snsdemo):
+Development relies on the presence of an environment that is setup with the II, governance, ledger, and cycle minting canisters.  This is provided by [`dfx nns install`](https://internetcomputer.org/docs/current/references/cli-reference/dfx-nns), both in automated testing and for local development.  Please note, however, that it takes some work to configure the NNS canisters.  If you would like a test environment with all the NNS canisters configured suitably for use with the nns-dapp, please consider using the [snsdemo tools.](https://github.com/dfinity/snsdemo):
 
 * Make sure that you have a version of `dfx` that matches the `snsdemo`.
 * Create a state snapshot (about 20 minutes): `snsdapp$ dfx-snapshot-stock-make --snapshot ~/stock-snsdemo-snapshot.tar.xz`
@@ -120,7 +120,7 @@ Development relies on the presence of a testnet that is setup with the II, gover
 You can now access the frontend using Chrome or Firefox (sorry, Safari doesn't support subdomains of `localhost`):
 
 ```sh
-open "http://$(dfx canister --network testnet id nns-dapp).localhost:8080"
+open "http://$(dfx canister id nns-dapp).localhost:8080"
 ```
 
 To work on the UI locally, either use your IDE, or run the following:
