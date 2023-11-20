@@ -62,6 +62,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Use a unique branch when updating the snsdemo release, didc, IC candid files or rust.
 * Better checks that the network is defined.
 * Better text for rust update PRs.
+* Revert `dfx` to `v0.14.4`.
 
 #### Deprecated
 
