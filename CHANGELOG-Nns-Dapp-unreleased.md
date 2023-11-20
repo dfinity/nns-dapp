@@ -59,6 +59,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Update the URL of the app subnet to what dfx v15 expects.
 * Use a unique branch when updating the snsdemo release, didc, IC candid files or rust.
 * Better checks that the network is defined.
+* Move the commands that derive aggregator code from NNS candid files.
 
 #### Deprecated
 
