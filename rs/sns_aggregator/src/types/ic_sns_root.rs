@@ -1,5 +1,5 @@
 //! Rust code created from candid by: scripts/did2rs.sh --canister sns_root --out ic_sns_root.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug
-//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-11-08_23-01/rs/sns/root/canister/root.did>
+//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-11-15_23-00/rs/sns/root/canister/root.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -67,28 +67,13 @@ pub enum CanisterInstallMode {
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub enum AuthzChangeOp {
-    Authorize { add_self: bool },
-    Deauthorize,
-}
-
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct MethodAuthzChange {
-    pub principal: Option<Principal>,
-    pub method_name: String,
-    pub canister: Principal,
-    pub operation: AuthzChangeOp,
-}
-
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct ChangeCanisterProposal {
+pub struct ChangeCanisterRequest {
     pub arg: serde_bytes::ByteBuf,
     pub wasm_module: serde_bytes::ByteBuf,
     pub stop_before_installing: bool,
     pub mode: CanisterInstallMode,
     pub canister_id: Principal,
     pub query_allocation: Option<candid::Nat>,
-    pub authz_changes: Vec<MethodAuthzChange>,
     pub memory_allocation: Option<candid::Nat>,
     pub compute_allocation: Option<candid::Nat>,
 }
@@ -191,7 +176,7 @@ impl Service {
     pub async fn canister_status(&self, arg0: CanisterIdRecord) -> CallResult<(CanisterStatusResult,)> {
         ic_cdk::call(self.0, "canister_status", (arg0,)).await
     }
-    pub async fn change_canister(&self, arg0: ChangeCanisterProposal) -> CallResult<()> {
+    pub async fn change_canister(&self, arg0: ChangeCanisterRequest) -> CallResult<()> {
         ic_cdk::call(self.0, "change_canister", (arg0,)).await
     }
     pub async fn get_build_metadata(&self) -> CallResult<(String,)> {
