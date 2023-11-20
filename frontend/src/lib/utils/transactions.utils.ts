@@ -70,25 +70,6 @@ export const transactionType = ({
   );
 };
 
-export const showTransactionFee = ({
-  type,
-  isReceive,
-}: {
-  type: AccountTransactionType;
-  isReceive: boolean;
-}): boolean => {
-  if (isReceive) {
-    return false;
-  }
-  switch (type) {
-    case AccountTransactionType.Mint:
-    case AccountTransactionType.Burn:
-      return false;
-    default:
-      return true;
-  }
-};
-
 export const transactionDisplayAmount = ({
   useFee,
   amount,
@@ -149,11 +130,7 @@ export const mapNnsTransaction = ({
   const date = new Date(Number(timestamp.timestamp_nanos / BigInt(1e6)));
   const isReceive = toSelfTransaction === true || from !== account.identifier;
   const isSend = to !== account.identifier;
-  // (from==to workaround) in case of transaction duplication we replace one of the transaction to `Received`, and it doesn't need to show fee because paid fee is already shown in the `Send` one.
-  const useFee =
-    toSelfTransaction === true
-      ? false
-      : showTransactionFee({ type, isReceive });
+  const useFee = !isReceive;
   const displayAmount = transactionDisplayAmount({ useFee, amount, fee });
 
   return {
