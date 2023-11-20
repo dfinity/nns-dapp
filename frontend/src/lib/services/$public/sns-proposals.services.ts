@@ -159,8 +159,11 @@ export const loadSnsProposals = async ({
           beforeProposal: beforeProposalId,
           includeStatus:
             filters?.decisionStatus.map(({ value }) => value) ?? [],
-          // TODO: add filter by nervous function
           // TODO: add filter by reward status
+          excludeType: toExcludeTypeParameter({
+            filter: filters.topics,
+            snsFunctions,
+          }),
         },
         identity,
         certified,

@@ -1,10 +1,16 @@
 import { SNS_MIN_NUMBER_VOTES_FOR_PROPOSAL_RATIO } from "$lib/constants/sns-proposals.constants";
 import { i18n } from "$lib/stores/i18n";
+import type { Filter, SnsProposalTypeFilterData } from "$lib/types/filters";
+import { SNS_SPECIFIC_PROPOSAL_TYPE_ID } from "$lib/types/filters";
 import type {
   UniversalProposalStatus,
   VotingNeuron,
 } from "$lib/types/proposals";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
+import {
+  isGenericNervousSystemFunction,
+  isNativeNervousSystemFunction,
+} from "$lib/utils/sns.utils";
 import type { Vote } from "@dfinity/nns";
 import type {
   SnsAction,
@@ -409,4 +415,42 @@ export const getUniversalProposalStatus = (
   }
 
   return statusType;
+};
+
+// TODO(max): add tests (w/ and w/o GenericNervousSystemFunction)
+export const toExcludeTypeParameter = ({
+  filter,
+  snsFunctions,
+}: {
+  filter: Filter<SnsProposalTypeFilterData>[];
+  snsFunctions: SnsNervousSystemFunction[];
+}): bigint[] => {
+  // If no filter is selected, return all functions
+  if (filter.length === 0) {
+    return [];
+  }
+
+  // Ignore the "All Topics" entry
+  const validSnsFunctions = snsFunctions.filter(({ id }) => id !== 0n);
+
+  // Filter by snsFunctions instead of filter to have snsFunctions as the source of truth (e.g. spoiled local storage values)
+  const excludeNativeNsFunctionIds = validSnsFunctions
+    .filter(isNativeNervousSystemFunction)
+    .filter(
+      ({ id }) =>
+        !filter.some(
+          ({ checked, value }) =>
+            checked && (value as SnsNervousSystemFunction)?.id === id
+        )
+    )
+    .map(({ id }) => id);
+  const isGenericNsFunctionChecked = filter.some(
+    ({ checked, value }) => value === SNS_SPECIFIC_PROPOSAL_TYPE_ID && checked
+  );
+  const excludeGenericNsFunctionIds = isGenericNsFunctionChecked
+    ? []
+    : validSnsFunctions
+        .filter(isGenericNervousSystemFunction)
+        .map(({ id }) => id);
+  return [...excludeNativeNsFunctionIds, ...excludeGenericNsFunctionIds];
 };
