@@ -93,7 +93,6 @@ cd "$GIT_ROOT"
   #
   # sed:
   #   - Comments out the header provided by didc; we provide our own and the two conflict.
-  #   - Makes structures and their fields "pub", so that they can be used.
   #   - Adds additional traits after "Deserialize".
   #   - Makes API call response types "CallResult".  The alternative convention is to have:
   #       use ic_cdk::api::call::CallResult as Result;
@@ -116,10 +115,6 @@ cd "$GIT_ROOT"
     sed -E '
             # Comment out the header "use", "//!" and "#!" lines.
 	    s@^(use |//!|#!)@// &@;
-
-	    # Make types and fields public:
-            s/^(struct|enum|type) /pub &/;
-            s/^    [a-z].*:/    pub&/;s/^( *pub ) *pub /\1/;
 
 	    # Add traits
             s/#\[derive\(/&'"${TRAITS:-}${TRAITS:+, }"'/;
