@@ -81,6 +81,8 @@ export interface Transaction {
 }
 
 export interface UiTransaction {
+  // Used in forEach for consistent rendering.
+  domKey: string;
   isIncoming: boolean;
   headline: string;
   // Where the amount is going to or coming from.

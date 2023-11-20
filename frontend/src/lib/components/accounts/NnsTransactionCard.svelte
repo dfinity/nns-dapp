@@ -43,6 +43,7 @@
         });
         uiTransaction = toUiTransaction({
           transaction: transactionData,
+          transactionId: transaction.block_height,
           toSelfTransaction,
           token: ICPToken,
           transactionNames: $i18n.transaction_names,

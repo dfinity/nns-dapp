@@ -169,12 +169,14 @@ export const mapNnsTransaction = ({
 
 export const toUiTransaction = ({
   transaction,
+  transactionId,
   toSelfTransaction,
   token,
   transactionNames,
   fallbackDescriptions,
 }: {
   transaction: Transaction;
+  transactionId: bigint;
   toSelfTransaction: boolean;
   token: Token;
   transactionNames: I18nTransaction_names;
@@ -192,6 +194,7 @@ export const toUiTransaction = ({
     : undefined;
 
   return {
+    domKey: `${transactionId}-${toSelfTransaction ? "0" : "1"}`,
     isIncoming,
     headline,
     otherParty,
