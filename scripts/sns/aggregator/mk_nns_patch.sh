@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../.."
 
 # Checks whether we have the .did file for a canister.
 #
