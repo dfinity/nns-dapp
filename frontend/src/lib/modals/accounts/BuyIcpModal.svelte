@@ -33,7 +33,7 @@
     <button
       class="primary full-width with-icon"
       on:click={openBanxa}
-      data-tid="reload-receive-account"
+      data-tid="buy-icp-banxa-button"
       ><img
         src={BANXA_LOGO}
         alt={$i18n.accounts.banxa_logo_alt}

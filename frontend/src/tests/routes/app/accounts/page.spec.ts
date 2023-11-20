@@ -24,11 +24,15 @@ describe("Accounts page", () => {
     return AccountsPlusPagePo.under(new JestPageObjectElement(container));
   };
 
+  const openSpy = vi.fn();
+
   beforeEach(() => {
     vi.clearAllMocks();
     icpAccountsStore.resetForTesting();
     vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(mockAccountDetails);
     vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(314000000n);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).open = openSpy;
   });
 
   describe("not logged in", () => {
@@ -105,14 +109,27 @@ describe("Accounts page", () => {
         expect(await pagePo.hasTokensTable()).toBe(false);
       });
 
-      it("should open buy ICP modal", async () => {
+      it("should be able to go and buy icp for the account", async () => {
         const po = renderComponent();
 
         await runResolvedPromises();
 
         const pagePo = po.getAccountsPo();
         await pagePo.clickBuyICP();
-        expect(await pagePo.getBuyICPModalPo().isPresent()).toBe(true);
+        await pagePo.clickBuyICP();
+
+        expect(openSpy).not.toHaveBeenCalled();
+
+        const modalPo = pagePo.getBuyICPModalPo();
+
+        await modalPo.clickBanxa();
+
+        // TODO: Change with actual URL
+        expect(openSpy).toHaveBeenCalledWith(
+          "https://banxa.com/",
+          "_blank",
+          "width=400,height=600"
+        );
       });
     });
   });
