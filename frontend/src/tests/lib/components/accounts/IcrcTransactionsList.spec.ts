@@ -95,7 +95,7 @@ describe("IcrcTransactionList", () => {
     expect(await po.getTransactionCardPos()).toHaveLength(1);
   });
 
-  it.only("should not render transactions without token", async () => {
+  it("should not render transactions without token", async () => {
     const po = renderComponent({
       account: mockSnsMainAccount,
       transactions: [
