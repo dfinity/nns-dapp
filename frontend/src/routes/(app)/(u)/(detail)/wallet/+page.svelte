@@ -13,5 +13,6 @@
 {#if $authSignedInStore}
   <Wallet {accountIdentifier} />
 {:else}
+  <!-- TODO: New derived store accounts visitors https://dfinity.atlassian.net/browse/GIX-2058 -->
   <SignInAccounts />
 {/if}

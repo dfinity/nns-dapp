@@ -31,6 +31,33 @@ describe("Accounts page", () => {
 
       expect(getByTestId("login-button")).not.toBeNull();
     });
+
+    describe("tokens flag enabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
+      });
+
+      it("renders tokens table for NNS accounts", async () => {
+        const po = renderComponent();
+
+        // TODO: Test that the tokens table is rendered when we implement the derived store for visitors
+        const pagePo = po.getSignInAccountsPo();
+        expect(await pagePo.hasEmptyCards()).toBe(false);
+      });
+    });
+
+    describe("tokens flag disabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
+      });
+
+      it("renders tokens empty cards", async () => {
+        const po = renderComponent();
+
+        const pagePo = po.getSignInAccountsPo();
+        expect(await pagePo.hasEmptyCards()).toBe(true);
+      });
+    });
   });
 
   describe("logged in NNS Accounts", () => {

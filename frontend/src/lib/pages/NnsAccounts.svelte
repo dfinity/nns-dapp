@@ -13,8 +13,8 @@
   import { ICPToken } from "@dfinity/utils";
   import type { UserTokenData } from "$lib/types/tokens-page";
   import { ENABLE_MY_TOKENS } from "$lib/stores/feature-flags.store";
-  import MainWrapper from "$lib/components/tokens/MainWrapper.svelte";
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   onMount(() => {
     if (!$ENABLE_MY_TOKENS) {
@@ -31,9 +31,9 @@
 </script>
 
 {#if $ENABLE_MY_TOKENS}
-  <MainWrapper testId="accounts-body">
+  <TestIdWrapper testId="accounts-body">
     <TokensTable {userTokensData} />
-  </MainWrapper>
+  </TestIdWrapper>
 {:else}
   <div class="card-grid" data-tid="accounts-body">
     {#if nonNullish($icpAccountsStore?.main)}
