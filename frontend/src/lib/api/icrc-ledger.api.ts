@@ -49,7 +49,7 @@ export const getIcrcAccount = async ({
     identifier: encodeIcrcAccount(account),
     principal: owner,
     ...(nonNullish(subaccount) && {
-      subAccount: uint8ArrayToArrayOfNumber(subaccount),
+      subAccount: uint8ArrayToArrayOfNumber(new Uint8Array(subaccount)),
     }),
     balanceE8s,
     type,

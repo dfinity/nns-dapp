@@ -39,7 +39,8 @@ const isToSelf = (transaction: IcrcTransaction): boolean => {
   }
   return (
     nonNullish(toSub) &&
-    uint8ArrayToHexString(fromSub) === uint8ArrayToHexString(toSub)
+    uint8ArrayToHexString(new Uint8Array(fromSub)) ===
+      uint8ArrayToHexString(new Uint8Array(toSub))
   );
 };
 

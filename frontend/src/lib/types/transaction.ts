@@ -47,7 +47,7 @@ export interface IcrcTransactionData {
 export interface IcrcTransactionInfo {
   to?: string;
   from?: string;
-  memo?: Uint8Array;
+  memo?: Uint8Array | number[];
   created_at_time?: bigint;
   amount: bigint;
   fee?: bigint;
