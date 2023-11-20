@@ -8,7 +8,7 @@
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import { syncAccounts } from "$lib/services/icp-accounts.services";
   import { openAccountsModal } from "$lib/utils/modals.utils";
-  import { IconAdd, IconRocketLaunch } from "@dfinity/gix-components";
+  import { IconAdd } from "@dfinity/gix-components";
 
   let modal: "NewTransaction" | undefined = undefined;
   const openNewTransaction = () => (modal = "NewTransaction");
