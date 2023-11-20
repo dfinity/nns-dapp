@@ -6,7 +6,7 @@
   import { PageBanner, IconAccountsPage } from "@dfinity/gix-components";
 </script>
 
-<main class="sign-in" data-tid="accounts-landing-page">
+<main data-tid="accounts-landing-page">
   <SummaryUniverse />
 
   <div class="content">
