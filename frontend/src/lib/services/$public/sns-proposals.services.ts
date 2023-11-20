@@ -22,9 +22,11 @@ import {
   hasPermissionToVote,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
+import { toExcludeTypeParameter } from "$lib/utils/sns-proposals.utils";
 import { NeuronState } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type {
+  SnsNervousSystemFunction,
   SnsNeuron,
   SnsNeuronId,
   SnsProposalData,
@@ -79,9 +81,11 @@ export const registerVote = async ({
 export const registerVoteDemo = async ({
   vote,
   proposal,
+  snsFunctions,
 }: {
   vote: SnsVote;
   proposal: SnsProposalData;
+  snsFunctions: SnsNervousSystemFunction[];
 }) => {
   let registrations = 0;
 
@@ -122,6 +126,7 @@ export const registerVoteDemo = async ({
 
     await loadSnsProposals({
       rootCanisterId,
+      snsFunctions,
     });
 
     toastsSuccess({
@@ -137,9 +142,11 @@ export const registerVoteDemo = async ({
 
 export const loadSnsProposals = async ({
   rootCanisterId,
+  snsFunctions,
   beforeProposalId,
 }: {
   rootCanisterId: Principal;
+  snsFunctions: SnsNervousSystemFunction[];
   beforeProposalId?: SnsProposalId;
 }): Promise<void> => {
   const filters = get(snsSelectedFiltersStore)[rootCanisterId.toText()];

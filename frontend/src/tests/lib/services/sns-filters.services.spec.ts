@@ -14,7 +14,7 @@ describe("sns-filters services", () => {
       snsFiltersStore.reset();
     });
     it("should load the sns decision status filters store but not Unspecified", async () => {
-      await loadSnsFilters(mockPrincipal);
+      await loadSnsFilters({ rootCanisterId: mockPrincipal, snsFunctions: [] });
 
       const projectStore = get(snsFiltersStore)[mockPrincipal.toText()];
 
@@ -29,7 +29,7 @@ describe("sns-filters services", () => {
     });
 
     it("should load the sns reward status filters store but not Unspecified", async () => {
-      await loadSnsFilters(mockPrincipal);
+      await loadSnsFilters({ rootCanisterId: mockPrincipal, snsFunctions: [] });
 
       const projectStore = get(snsFiltersStore)[mockPrincipal.toText()];
 
@@ -50,7 +50,7 @@ describe("sns-filters services", () => {
         decisionStatus,
       });
 
-      await loadSnsFilters(mockPrincipal);
+      await loadSnsFilters({ rootCanisterId: mockPrincipal, snsFunctions: [] });
 
       const projectStore = get(snsFiltersStore)[mockPrincipal.toText()];
       expect(projectStore.decisionStatus).toHaveLength(decisionStatus.length);

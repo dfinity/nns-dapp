@@ -22,17 +22,27 @@
   import type { Readable } from "svelte/store";
 
   let currentProjectCanisterId: Principal | undefined = undefined;
+  let functionsStore: Readable<SnsNervousSystemFunction[] | undefined>;
   const onSnsProjectChanged = async (
     selectedProjectCanisterId: Principal | undefined
   ) => {
     currentProjectCanisterId = selectedProjectCanisterId;
     if (nonNullish(selectedProjectCanisterId)) {
-      await Promise.all([
-        loadSnsNervousSystemFunctions(selectedProjectCanisterId),
-        loadSnsFilters(selectedProjectCanisterId),
-      ]);
+      functionsStore = createSnsNsFunctionsProjectStore(
+        currentProjectCanisterId
+      );
+      await loadSnsNervousSystemFunctions(selectedProjectCanisterId);
     }
   };
+  $: if (
+    currentProjectCanisterId !== undefined &&
+    $functionsStore !== undefined
+  ) {
+    loadSnsFilters({
+      rootCanisterId: currentProjectCanisterId,
+      snsFunctions: $functionsStore,
+    });
+  }
 
   $: onSnsProjectChanged($snsOnlyProjectStore);
 
@@ -41,9 +51,13 @@
     // Once we have the initial filters, we load the proposals.
     if (
       nonNullish(currentProjectCanisterId) &&
-      nonNullish(filters[currentProjectCanisterId.toText()])
+      nonNullish(filters[currentProjectCanisterId.toText()]) &&
+      nonNullish($functionsStore)
     ) {
-      await loadSnsProposals({ rootCanisterId: currentProjectCanisterId });
+      await loadSnsProposals({
+        rootCanisterId: currentProjectCanisterId,
+        snsFunctions: $functionsStore,
+      });
     }
   };
 
@@ -51,13 +65,17 @@
   // TODO(e2e): cover this with e2e tests.
   $: $snsOnlyProjectStore,
     $snsFiltersStore,
+    $functionsStore,
     (() => fetchProposals($snsFiltersStore))();
 
   let loadingNextPage = false;
   let loadNextPage: () => void;
   $: loadNextPage = async () => {
     const selectedProjectCanisterId = $snsOnlyProjectStore;
-    if (selectedProjectCanisterId !== undefined) {
+    if (
+      selectedProjectCanisterId !== undefined &&
+      nonNullish($functionsStore)
+    ) {
       const beforeProposalId = nonNullish(currentProjectCanisterId)
         ? lastProposalId(
             $snsProposalsStore[currentProjectCanisterId.toText()]?.proposals ??
@@ -68,6 +86,7 @@
       loadingNextPage = true;
       await loadSnsProposals({
         rootCanisterId: selectedProjectCanisterId,
+        snsFunctions: $functionsStore,
         beforeProposalId,
       });
       loadingNextPage = false;

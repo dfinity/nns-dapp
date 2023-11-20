@@ -67,6 +67,7 @@ describe("sns-proposals services", () => {
       it("should call queryProposals with the default params", async () => {
         await loadSnsProposals({
           rootCanisterId: mockPrincipal,
+          snsFunctions: [],
         });
         expect(queryProposalsSpy).toHaveBeenCalledWith({
           params: {
@@ -85,6 +86,7 @@ describe("sns-proposals services", () => {
         await loadSnsProposals({
           rootCanisterId: mockPrincipal,
           beforeProposalId: proposalId,
+          snsFunctions: [],
         });
         expect(queryProposalsSpy).toHaveBeenCalledWith({
           params: {
@@ -125,6 +127,7 @@ describe("sns-proposals services", () => {
         await loadSnsProposals({
           rootCanisterId,
           beforeProposalId: proposalId,
+          snsFunctions: [],
         });
         expect(queryProposalsSpy).toHaveBeenCalledWith({
           params: {
@@ -141,6 +144,7 @@ describe("sns-proposals services", () => {
       it("should load the proposals in the store", async () => {
         await loadSnsProposals({
           rootCanisterId: mockPrincipal,
+          snsFunctions: [],
         });
         await waitFor(() => {
           const storeData = get(snsProposalsStore);
@@ -153,6 +157,7 @@ describe("sns-proposals services", () => {
       it("set completed to true if response has less than page size", async () => {
         await loadSnsProposals({
           rootCanisterId: mockPrincipal,
+          snsFunctions: [],
         });
         await waitFor(() => {
           const storeData = get(snsProposalsStore);
@@ -175,6 +180,7 @@ describe("sns-proposals services", () => {
       it("should call queryProposals with user's identity", async () => {
         await loadSnsProposals({
           rootCanisterId: mockPrincipal,
+          snsFunctions: [],
         });
         expect(queryProposalsSpy).toHaveBeenCalledWith({
           params: {
