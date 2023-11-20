@@ -924,6 +924,20 @@
     "select_nervous_system": "Select Nervous System",
     "select": "Select"
   },
+  "sns_types": {
+    "sns_specific": "SNS-specific proposals",
+    "1": "Motion",
+    "2": "Manage nervous system parameters",
+    "3": "Upgrade SNS controlled canister",
+    "4": "Add nervous system function",
+    "5": "Remove nervous system function",
+    "6": "Execute nervous system function",
+    "7": "Upgrade SNS to next version",
+    "8": "Manage SNS metadata",
+    "9": "Transfer SNS treasury funds",
+    "10": "Register dapp canisters",
+    "11": "Deregister Dapp Canisters"
+  },
   "sns_rewards_status": {
     "0": "Unknown",
     "1": "Accepting Votes",

@@ -966,6 +966,21 @@ interface I18nUniverse {
   select: string;
 }
 
+interface I18nSns_types {
+  1: string;
+  2: string;
+  3: string;
+  4: string;
+  5: string;
+  6: string;
+  7: string;
+  8: string;
+  9: string;
+  10: string;
+  11: string;
+  sns_specific: string;
+}
+
 interface I18nSns_rewards_status {
   0: string;
   1: string;
@@ -1335,6 +1350,7 @@ interface I18n {
   auth_canisters: I18nAuth_canisters;
   auth_sns: I18nAuth_sns;
   universe: I18nUniverse;
+  sns_types: I18nSns_types;
   sns_rewards_status: I18nSns_rewards_status;
   sns_rewards_description: I18nSns_rewards_description;
   sns_status: I18nSns_status;
