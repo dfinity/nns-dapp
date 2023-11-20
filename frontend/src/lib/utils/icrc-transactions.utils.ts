@@ -22,7 +22,6 @@ import {
   nonNullish,
   uint8ArrayToHexString,
 } from "@dfinity/utils";
-import { showTransactionFee } from "./transactions.utils";
 
 const isToSelf = (transaction: IcrcTransaction): boolean => {
   if (transaction.transfer.length !== 1) {
@@ -183,10 +182,7 @@ export const mapIcrcTransaction = ({
     const isReceive =
       toSelfTransaction === true || txInfo.from !== account.identifier;
     const isSend = nonNullish(txInfo.to) && txInfo.to !== account.identifier;
-    const useFee =
-      toSelfTransaction === true
-        ? false
-        : showTransactionFee({ type, isReceive });
+    const useFee = !isReceive;
     const feeApplied =
       useFee && txInfo.fee !== undefined ? txInfo.fee : BigInt(0);
 

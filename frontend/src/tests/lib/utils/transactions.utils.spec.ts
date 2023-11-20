@@ -11,7 +11,6 @@ import {
   isTransactionNetworkBtc,
   mapNnsTransaction,
   mapToSelfTransaction,
-  showTransactionFee,
   toUiTransaction,
   transactionDisplayAmount,
   transactionName,
@@ -31,53 +30,6 @@ import {
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 
 describe("transactions-utils", () => {
-  describe("showTransactionFee", () => {
-    it("should be false for received transactions", () => {
-      expect(
-        showTransactionFee({
-          type: AccountTransactionType.Send,
-          isReceive: true,
-        })
-      ).toBe(false);
-      expect(
-        showTransactionFee({
-          type: AccountTransactionType.Mint,
-          isReceive: true,
-        })
-      ).toBe(false);
-    });
-
-    it("should be false for sent Mint and Burn", () => {
-      expect(
-        showTransactionFee({
-          type: AccountTransactionType.Mint,
-          isReceive: false,
-        })
-      ).toBe(false);
-      expect(
-        showTransactionFee({
-          type: AccountTransactionType.Burn,
-          isReceive: false,
-        })
-      ).toBe(false);
-    });
-
-    it("should be true for Sent", () => {
-      expect(
-        showTransactionFee({
-          type: AccountTransactionType.Send,
-          isReceive: false,
-        })
-      ).toBeTruthy();
-      expect(
-        showTransactionFee({
-          type: AccountTransactionType.StakeNeuron,
-          isReceive: false,
-        })
-      ).toBeTruthy();
-    });
-  });
-
   describe("transactionType", () => {
     it("determines type by transaction_type value", () => {
       expect(
