@@ -7,6 +7,7 @@ import type { Principal } from "@dfinity/principal";
 import type {
   SnsGetAutoFinalizationStatusResponse,
   SnsGetDerivedStateResponse,
+  SnsNervousSystemFunction,
 } from "@dfinity/sns";
 import type { DerivedState } from "@dfinity/sns/dist/candid/sns_swap";
 import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
@@ -171,3 +172,24 @@ export const swapEndedMoreThanOneWeekAgo = ({
   const oneWeekAgoInSeconds = BigInt(nowInSeconds - SECONDS_IN_DAY * 7);
   return oneWeekAgoInSeconds > summary.swap.params.swap_due_timestamp_seconds;
 };
+
+/**
+ * Returns true if the FunctionType is NativeNervousSystemFunction.
+ */
+export const isNativeNervousSystemFunction = (
+  nsFunction: SnsNervousSystemFunction
+): boolean => {
+  return (
+    Object.keys(fromNullable(nsFunction.function_type) ?? {})?.[0] ===
+    "NativeNervousSystemFunction"
+  );
+};
+
+/**
+ * Returns true if the FunctionType is GenericNervousSystemFunction.
+ */
+export const isGenericNervousSystemFunction = (
+  nsFunction: SnsNervousSystemFunction
+): boolean =>
+  Object.keys(fromNullable(nsFunction.function_type) ?? {})?.[0] ===
+  "GenericNervousSystemFunction";

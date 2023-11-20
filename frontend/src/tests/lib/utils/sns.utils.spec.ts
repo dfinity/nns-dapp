@@ -6,13 +6,16 @@ import {
   getCommitmentE8s,
   getSwapCanisterAccount,
   hasOpenTicketInProcess,
+  isGenericNervousSystemFunction,
   isInternalRefreshBuyerTokensError,
+  isNativeNervousSystemFunction,
   isSnsFinalizing,
   parseSnsSwapSaleBuyerCount,
   swapEndedMoreThanOneWeekAgo,
 } from "$lib/utils/sns.utils";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { createFinalizationStatusMock } from "$tests/mocks/sns-finalization-status.mock";
+import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import {
   createBuyersState,
   createSummary,
@@ -25,6 +28,7 @@ import { AccountIdentifier } from "@dfinity/ledger-icp";
 import type {
   SnsGetAutoFinalizationStatusResponse,
   SnsGetDerivedStateResponse,
+  SnsNervousSystemFunction,
 } from "@dfinity/sns";
 import { get } from "svelte/store";
 
@@ -332,6 +336,40 @@ sale_participants_count ${saleBuyerCount} 1677707139456
       expect(
         swapEndedMoreThanOneWeekAgo({ summary: summary1, nowInSeconds })
       ).toBe(true);
+    });
+  });
+
+  describe("isNativeNervousSystemFunction", () => {
+    it("should return true for NativeNervousSystemFunction", () => {
+      const nsFunction = {
+        ...nervousSystemFunctionMock,
+        function_type: [{ NativeNervousSystemFunction: {} }],
+      } as SnsNervousSystemFunction;
+      expect(isNativeNervousSystemFunction(nsFunction)).toBe(true);
+    });
+    it("should return false for not NativeNervousSystemFunction", () => {
+      const nsFunction = {
+        ...nervousSystemFunctionMock,
+        function_type: [{ GenericNervousSystemFunction: {} }],
+      } as SnsNervousSystemFunction;
+      expect(isNativeNervousSystemFunction(nsFunction)).toBe(false);
+    });
+  });
+
+  describe("isGenericNervousSystemFunction", () => {
+    it("should return true for GenericNervousSystemFunction", () => {
+      const nsFunction = {
+        ...nervousSystemFunctionMock,
+        function_type: [{ GenericNervousSystemFunction: {} }],
+      } as SnsNervousSystemFunction;
+      expect(isGenericNervousSystemFunction(nsFunction)).toBe(true);
+    });
+    it("should return false for not GenericNervousSystemFunction", () => {
+      const nsFunction = {
+        ...nervousSystemFunctionMock,
+        function_type: [{ NativeNervousSystemFunction: {} }],
+      } as SnsNervousSystemFunction;
+      expect(isGenericNervousSystemFunction(nsFunction)).toBe(false);
     });
   });
 });
