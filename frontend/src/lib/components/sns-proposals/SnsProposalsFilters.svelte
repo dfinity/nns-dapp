@@ -10,6 +10,7 @@
   import FiltersWrapper from "../proposals/FiltersWrapper.svelte";
   import FiltersButton from "../ui/FiltersButton.svelte";
   import SnsFilterRewardsModal from "$lib/modals/sns/proposals/SnsFilterRewardsModal.svelte";
+  import SnsFilterTypesModal from "$lib/modals/sns/proposals/SnsFilterTypesModal.svelte";
 
   let modal: "topics" | "rewards" | "status" | undefined = undefined;
 
@@ -29,6 +30,14 @@
 
 <FiltersWrapper>
   <FiltersButton
+    testId="filters-by-types"
+    totalFilters={filtersStore?.topics.length ?? 0}
+    activeFilters={filtersStore?.topics.filter(({ checked }) => checked)
+      .length ?? 0}
+    on:nnsFilter={() => openFilters("topics")}
+    >{$i18n.voting.topics}</FiltersButton
+  >
+  <FiltersButton
     testId="filters-by-rewards"
     totalFilters={filtersStore?.rewardStatus.length ?? 0}
     activeFilters={filtersStore?.rewardStatus.filter(({ checked }) => checked)
@@ -45,6 +54,14 @@
     >{$i18n.voting.status}</FiltersButton
   >
 </FiltersWrapper>
+
+{#if modal === "topics"}
+  <SnsFilterTypesModal
+    filters={filtersStore?.topics}
+    {rootCanisterId}
+    on:nnsClose={close}
+  />
+{/if}
 
 {#if modal === "status"}
   <SnsFilterStatusModal
