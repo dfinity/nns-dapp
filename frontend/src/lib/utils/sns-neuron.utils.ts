@@ -152,8 +152,9 @@ export const getSnsNeuronIdAsHexString = ({
  * @param {Uint8Array} subaccount
  * @returns {string} hex string
  */
-export const subaccountToHexString = (subaccount: Uint8Array): string =>
-  bytesToHexString(Array.from(subaccount));
+export const subaccountToHexString = (
+  subaccount: Uint8Array | number[]
+): string => bytesToHexString(Array.from(subaccount));
 
 /**
  * Find the first not existed memo (index based).

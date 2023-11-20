@@ -270,7 +270,7 @@ const maybeIcrcToIcpAccountIdentifier = (
   const { owner: principal, subaccount } = decodeIcrcAccount(accountIdentifier);
 
   const sub = nonNullish(subaccount)
-    ? SubAccount.fromBytes(subaccount)
+    ? SubAccount.fromBytes(new Uint8Array(subaccount))
     : undefined;
 
   if (sub instanceof Error) {

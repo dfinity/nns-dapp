@@ -91,7 +91,7 @@ const claimAndLoadNeuron = async ({
   identity: Identity;
   controller: Principal;
   memo: bigint;
-  subaccount: Uint8Array;
+  subaccount: Uint8Array | number[];
 }): Promise<void> => {
   // There is a subaccount with balance and no neuron. Claim it.
   const neuronId = await claimNeuron({
@@ -111,7 +111,7 @@ const claimAndLoadNeuron = async ({
 };
 
 const findNeuronBySubaccount =
-  (subaccount: Uint8Array) => (neuron: SnsNeuron) =>
+  (subaccount: Uint8Array | number[]) => (neuron: SnsNeuron) =>
     getSnsNeuronIdAsHexString(neuron) === subaccountToHexString(subaccount);
 
 /**

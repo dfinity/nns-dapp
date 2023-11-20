@@ -101,7 +101,7 @@ describe("sns-neurons-services", () => {
       });
 
       it("should call api.querySnsNeurons and load neurons in store", async () => {
-        const subaccount: Uint8Array = neuronSubaccount({
+        const subaccount = neuronSubaccount({
           controller: mockIdentity.getPrincipal(),
           index: 0,
         });
@@ -149,7 +149,7 @@ describe("sns-neurons-services", () => {
       });
 
       it("should call api.querySnsNeurons and load neurons in store", async () => {
-        const subaccount: Uint8Array = neuronSubaccount({
+        const subaccount = neuronSubaccount({
           controller: mockIdentity.getPrincipal(),
           index: 0,
         });
@@ -185,7 +185,7 @@ describe("sns-neurons-services", () => {
     });
 
     it("should refresh and refetch the neuron if balance doesn't match", async () => {
-      const subaccount: Uint8Array = neuronSubaccount({
+      const subaccount = neuronSubaccount({
         controller: mockIdentity.getPrincipal(),
         index: 0,
       });
@@ -223,7 +223,7 @@ describe("sns-neurons-services", () => {
     });
 
     it("should claim neuron if find a subaccount without neuron", async () => {
-      const subaccount: Uint8Array = neuronSubaccount({
+      const subaccount = neuronSubaccount({
         controller: mockIdentity.getPrincipal(),
         index: 1,
       });
@@ -288,7 +288,7 @@ describe("sns-neurons-services", () => {
     });
 
     it("should call api.querySnsNeurons and load neurons in store", async () => {
-      const subaccount: Uint8Array = neuronSubaccount({
+      const subaccount = neuronSubaccount({
         controller: mockIdentity.getPrincipal(),
         index: 0,
       });
@@ -316,7 +316,7 @@ describe("sns-neurons-services", () => {
     });
     it("should call api.querySnsNeuron and call load neuron when neuron not in store", () =>
       new Promise<void>((done) => {
-        const subaccount: Uint8Array = neuronSubaccount({
+        const subaccount = neuronSubaccount({
           controller: mockIdentity.getPrincipal(),
           index: 0,
         });
@@ -359,7 +359,7 @@ describe("sns-neurons-services", () => {
 
     it("should refresh neuron if balance does not match and load again", () =>
       new Promise<void>((done) => {
-        const subaccount: Uint8Array = neuronSubaccount({
+        const subaccount = neuronSubaccount({
           controller: mockIdentity.getPrincipal(),
           index: 0,
         });

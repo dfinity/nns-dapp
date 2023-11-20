@@ -26,7 +26,7 @@ describe("sns-neurons-check-balances-services", () => {
     });
 
     it("should check balance and not refresh when balance matches stake", async () => {
-      const subaccount: Uint8Array = neuronSubaccount({
+      const subaccount = neuronSubaccount({
         controller: mockIdentity.getPrincipal(),
         index: 0,
       });
@@ -55,7 +55,7 @@ describe("sns-neurons-check-balances-services", () => {
     });
 
     it("should check balance and refresh when balance does not match stake and load the updated neuron in the store", async () => {
-      const subaccount: Uint8Array = neuronSubaccount({
+      const subaccount = neuronSubaccount({
         controller: mockIdentity.getPrincipal(),
         index: 0,
       });
@@ -98,7 +98,7 @@ describe("sns-neurons-check-balances-services", () => {
     });
 
     it("should check balance and refresh when balance is 0 and does not match stake and load the updated neuron in the store", async () => {
-      const subaccount: Uint8Array = neuronSubaccount({
+      const subaccount = neuronSubaccount({
         controller: mockIdentity.getPrincipal(),
         index: 0,
       });
