@@ -4,7 +4,7 @@ import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { page } from "$mocks/$app/stores";
 import AccountsPage from "$routes/(app)/(u)/(accounts)/accounts/+page.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
-import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
+import { AccountsPlusPagePo } from "$tests/page-objects/AccountsPlusPage.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
@@ -14,7 +14,7 @@ vi.mock("$lib/api/sns-ledger.api");
 describe("Accounts page", () => {
   const renderComponent = () => {
     const { container } = render(AccountsPage);
-    return AccountsPo.under(new JestPageObjectElement(container));
+    return AccountsPlusPagePo.under(new JestPageObjectElement(container));
   };
 
   beforeEach(() => {
@@ -50,7 +50,7 @@ describe("Accounts page", () => {
       it("renders tokens table for NNS accounts", async () => {
         const po = renderComponent();
 
-        const pagePo = po.getNnsAccountsPo();
+        const pagePo = po.getAccountsPo().getNnsAccountsPo();
         expect(await pagePo.hasTokensTable()).toBe(true);
       });
     });
@@ -63,7 +63,7 @@ describe("Accounts page", () => {
       it("does not render tokens table for NNS accounts", async () => {
         const po = renderComponent();
 
-        const pagePo = po.getNnsAccountsPo();
+        const pagePo = po.getAccountsPo().getNnsAccountsPo();
         expect(await pagePo.hasTokensTable()).toBe(false);
       });
     });
