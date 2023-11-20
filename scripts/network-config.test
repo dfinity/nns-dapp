@@ -24,10 +24,10 @@ sample_global_config() {
 	      "subnet_type": "system"
 	    }
 	  },
-	  "nnsdapp": {
+	  "fubar": {
 	    "config": {
 	      "FETCH_ROOT_KEY": true,
-	      "HOST": "https://nnsdapp.testnet.dfinity.network"
+	      "HOST": "https://fubar.testnet.dfinity.network"
 	    },
 	    "providers": [
 	      "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"

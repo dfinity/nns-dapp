@@ -32,6 +32,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Fix disappearing "Received" half of to-self transactions.
 * Fix debug store that wasn't working.
 * Fix the stuck loading issue with the Sns proposal.
+* Fix "Expiration date" countdown label visibility.
 
 #### Security
 
@@ -54,16 +55,20 @@ proposal is successful, the changes it released will be moved from this file to
 * Update `ic-wasm` to the latest version.
 * Factor out the `snsdemo` installation.
 * Make the location of the snsdemo checkout configurable.
+* Update Rust to the latest stable version (1.74.0).
 * Add `prod` and `aggregator-prod` to the list of public releases.
 * Update `dfx` to `v0.15.1`.
 * Update the URL of the app subnet to what dfx v15 expects.
 * Use a unique branch when updating the snsdemo release, didc, IC candid files or rust.
 * Better checks that the network is defined.
 * Move the commands that derive aggregator code from NNS candid files.
+* Better text for rust update PRs.
 
 #### Deprecated
 
 #### Removed
+
+* References to static testnets.
 
 #### Fixed
 

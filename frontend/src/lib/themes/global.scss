@@ -1,9 +1,3 @@
-main.sign-in {
-  h1 {
-    line-height: var(--line-height-standard);
-  }
-}
-
 // Workaround to not display twice the title of two pages while navigating between those.
 // Not perfect, as navigating from start/end page to an island page will have for effect to shift the title in the toolbar.
 // But still better than displaying twice a title.

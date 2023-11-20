@@ -26,7 +26,7 @@ serde = "1.0.192"
 serde_bytes = "0.11.12"
 serde_cbor = "0.11.2"
 serde_derive = "1.0.126"
-serde_json = "1.0.91"
+serde_json = "1.0.108"
 sha2 = "0.10.8"
 
 [features]

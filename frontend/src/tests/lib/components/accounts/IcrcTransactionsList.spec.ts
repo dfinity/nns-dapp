@@ -1,6 +1,7 @@
 import IcrcTransactionsList from "$lib/components/accounts/IcrcTransactionsList.svelte";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import type { Account } from "$lib/types/account";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { IcrcTransactionData } from "$lib/types/transaction";
 import {
   mapIcrcTransaction,
@@ -23,12 +24,14 @@ describe("IcrcTransactionList", () => {
     loading,
     completed = false,
     mapTransaction,
+    token = mockSnsToken,
   }: {
     account: Account;
     transactions: IcrcTransactionData[];
     loading?: boolean;
     completed?: boolean;
     mapTransaction?: mapIcrcTransactionType;
+    token?: IcrcTokenMetadata;
   }) => {
     const { container } = render(IcrcTransactionsList, {
       props: {
@@ -36,7 +39,7 @@ describe("IcrcTransactionList", () => {
         transactions,
         loading,
         completed,
-        token: mockSnsToken,
+        token,
         mapTransaction: mapTransaction ?? mapIcrcTransaction,
       },
     });
@@ -90,6 +93,23 @@ describe("IcrcTransactionList", () => {
     });
 
     expect(await po.getTransactionCardPos()).toHaveLength(1);
+  });
+
+  it("should not render transactions without token", async () => {
+    const po = renderComponent({
+      account: mockSnsMainAccount,
+      transactions: [
+        {
+          transaction: mockIcrcTransactionWithId,
+          toSelfTransaction: false,
+        },
+      ],
+      loading: false,
+      completed: true,
+      token: null,
+    });
+
+    expect(await po.getTransactionCardPos()).toHaveLength(0);
   });
 
   it("uses mapTransaction", async () => {
