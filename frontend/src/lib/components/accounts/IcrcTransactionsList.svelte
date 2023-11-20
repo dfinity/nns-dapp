@@ -2,12 +2,18 @@
   import type { Account } from "$lib/types/account";
   import type { Principal } from "@dfinity/principal";
   import { InfiniteScroll, Spinner } from "@dfinity/gix-components";
+  import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
+  import { isNullish } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import IcrcTransactionCard from "./IcrcTransactionCard.svelte";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
-  import type { IcrcTransactionData } from "$lib/types/transaction";
+  import type {
+    IcrcTransactionData,
+    UiTransaction,
+  } from "$lib/types/transaction";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import type { mapIcrcTransactionType } from "$lib/utils/icrc-transactions.utils";
+  import { toUiTransaction } from "$lib/utils//transactions.utils";
   import { flip } from "svelte/animate";
 
   export let account: Account;
@@ -18,6 +24,40 @@
   export let descriptions: Record<string, string> | undefined = undefined;
   export let token: IcrcTokenMetadata | undefined;
   export let mapTransaction: mapIcrcTransactionType;
+
+  let uiTransactions: UiTransaction[] = [];
+  $: uiTransactions = transactions.flatMap(
+    ({
+      transaction,
+      toSelfTransaction,
+    }: {
+      transaction: IcrcTransactionWithId;
+      toSelfTransaction: boolean;
+    }) => {
+      if (isNullish(token)) {
+        return [];
+      }
+      const mappedTransaction = mapTransaction({
+        transaction,
+        account,
+        toSelfTransaction,
+        governanceCanisterId,
+      });
+      if (isNullish(mappedTransaction)) {
+        return [];
+      }
+      return [
+        toUiTransaction({
+          transaction: mappedTransaction,
+          transactionId: transaction.id,
+          toSelfTransaction,
+          token,
+          transactionNames: $i18n.transaction_names,
+          fallbackDescriptions: descriptions,
+        }),
+      ];
+    }
+  );
 </script>
 
 <div data-tid="transactions-list" class="container">
@@ -28,17 +68,9 @@
     <SkeletonCard cardType="info" />
   {:else}
     <InfiniteScroll on:nnsIntersect disabled={loading || completed}>
-      {#each transactions as { transaction, toSelfTransaction } (`${transaction.id}-${toSelfTransaction ? "0" : "1"}`)}
+      {#each uiTransactions as transaction (transaction.domKey)}
         <div animate:flip={{ duration: 250 }}>
-          <IcrcTransactionCard
-            transactionWithId={transaction}
-            {toSelfTransaction}
-            {account}
-            {governanceCanisterId}
-            {descriptions}
-            {token}
-            {mapTransaction}
-          />
+          <IcrcTransactionCard {transaction} />
         </div>
       {/each}
     </InfiniteScroll>

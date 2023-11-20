@@ -8,6 +8,7 @@ import { render } from "@testing-library/svelte";
 
 describe("TransactionCard", () => {
   const defaultTransaction = {
+    domKey: "234-0",
     isIncoming: false,
     icon: "outgoing",
     headline: "Sent",

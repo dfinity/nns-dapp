@@ -442,12 +442,14 @@ describe("transactions-utils", () => {
 
     const defaultParams = {
       transaction: defaultTransaction,
+      transactionId: 123n,
       toSelfTransaction: false,
       token: ICPToken,
       transactionNames: en.transaction_names,
     };
 
     const defaultExpectedUiTransaction: UiTransaction = {
+      domKey: "123-1",
       isIncoming: false,
       headline: "Sent",
       otherParty: defaultTo,
@@ -549,10 +551,12 @@ describe("transactions-utils", () => {
       expect(
         toUiTransaction({
           ...defaultParams,
+          transactionId: 129n,
           toSelfTransaction: true,
         })
       ).toEqual({
         ...defaultExpectedUiTransaction,
+        domKey: "129-0",
         isIncoming: true,
         headline: "Received",
         otherParty: defaultFrom,
