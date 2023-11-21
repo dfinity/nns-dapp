@@ -22,7 +22,13 @@ const convertAccountToUserTokenData = ({
   i18nObj: I18n;
   account?: Account;
 }): UserTokenData => {
-  const subtitleMap: Record<AccountType, string | undefined> = i18nObj.accounts;
+  const subtitleMap: Record<AccountType, string | undefined> = {
+    main: undefined,
+    subAccount: i18nObj.accounts.subAccount,
+    hardwareWallet: i18nObj.accounts.hardwareWallet,
+    // This is not used in the UI, but it's here for completeness
+    withdrawalAccount: i18nObj.accounts.withdrawalAccount,
+  };
   const title: string = isNullish(account)
     ? i18nObj.core.ic
     : account.type === "main"
