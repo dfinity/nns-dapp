@@ -28,6 +28,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Fix docker builds when there is no global config.
 * Add missing "Rename" button in the subaccount page.
 * Fix disappearing "Received" half of to-self transactions.
 * Fix debug store that wasn't working.
