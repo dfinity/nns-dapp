@@ -14,7 +14,15 @@ export class SignInAccountsPo extends BasePageObject {
     return this.isPresent("empty-cards-component");
   }
 
+  getTokensTablePo(): TokensTablePo {
+    return TokensTablePo.under(this.root);
+  }
+
   hasTokensTable(): Promise<boolean> {
     return TokensTablePo.under(this.root).isPresent();
+  }
+
+  async getTokenNames(): Promise<string[]> {
+    return TokensTablePo.under(this.root).getTokenNames();
   }
 }
