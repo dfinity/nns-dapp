@@ -24,7 +24,7 @@ jobs:
           curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
       - name: Update to the latest declared APIs
         id: update
-        run: scripts/mk_nns_types.sh
+        run: scripts/sns/aggregator/mk_nns_types.sh
       - name: Create Pull Request
         id: cpr
         # Note: If there were no changes, this step creates no PR.
