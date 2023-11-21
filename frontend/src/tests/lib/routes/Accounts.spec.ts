@@ -10,13 +10,19 @@ import Accounts from "$lib/routes/Accounts.svelte";
 import { uncertifiedLoadCkBTCAccountsBalance } from "$lib/services/ckbtc-accounts-balance.services";
 import { uncertifiedLoadSnsAccountsBalances } from "$lib/services/sns-accounts-balance.services";
 import { authStore } from "$lib/stores/auth.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { page } from "$mocks/$app/stores";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
-import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
+import {
+  mockAccountsStoreData,
+  mockHardwareWalletAccount,
+  mockMainAccount,
+  mockSubAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   mockProjectSubscribe,
@@ -24,6 +30,8 @@ import {
   mockSummary,
 } from "$tests/mocks/sns-projects.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
+import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, waitFor } from "@testing-library/dom";
@@ -353,5 +361,64 @@ describe("Accounts", () => {
     const img = logo.querySelector('[data-tid="logo"]');
 
     expect(img?.getAttribute("alt") ?? "").toEqual(en.ckbtc.logo);
+  });
+
+  describe("when NNS universe", () => {
+    const renderComponent = () => {
+      const { container } = render(Accounts);
+
+      return AccountsPo.under(new JestPageObjectElement(container));
+    };
+
+    beforeEach(() => {
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT },
+        routeId: AppPath.Accounts,
+      });
+    });
+
+    describe("when tokens page is enabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
+      });
+
+      it("renders tokens table with NNS accounts", async () => {
+        icpAccountsStore.setForTesting({
+          main: {
+            ...mockMainAccount,
+            balanceE8s: 314000000n,
+          },
+          subAccounts: [
+            {
+              ...mockSubAccount,
+              balanceE8s: 123456789000000n,
+            },
+          ],
+          hardwareWallets: [
+            {
+              ...mockHardwareWalletAccount,
+              balanceE8s: 222000000n,
+            },
+          ],
+        });
+        const po = renderComponent();
+
+        const tablePo = po.getNnsAccountsPo().getTokensTablePo();
+        expect(await tablePo.getRowsData()).toEqual([
+          {
+            balance: "3.14 ICP",
+            projectName: "Main",
+          },
+          {
+            balance: "1'234'567.89 ICP",
+            projectName: "test subaccount",
+          },
+          {
+            balance: "2.22 ICP",
+            projectName: "hardware wallet account test",
+          },
+        ]);
+      });
+    });
   });
 });
