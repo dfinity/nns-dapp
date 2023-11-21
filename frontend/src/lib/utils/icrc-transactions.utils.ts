@@ -5,10 +5,11 @@ import type { Account } from "$lib/types/account";
 import type {
   IcrcTransactionData,
   IcrcTransactionInfo,
-  Transaction,
+  UiTransaction,
 } from "$lib/types/transaction";
 import { AccountTransactionType } from "$lib/types/transaction";
 import type { UniverseCanisterId } from "$lib/types/universe";
+import { transactionName } from "$lib/utils/transactions.utils";
 import { Cbor } from "@dfinity/agent";
 import type {
   IcrcTransaction,
@@ -17,10 +18,12 @@ import type {
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import {
+  TokenAmount,
   fromNullable,
   isNullish,
   nonNullish,
   uint8ArrayToHexString,
+  type Token,
 } from "@dfinity/utils";
 
 const isToSelf = (transaction: IcrcTransaction): boolean => {
@@ -163,13 +166,23 @@ export const mapIcrcTransaction = ({
   account,
   toSelfTransaction,
   governanceCanisterId,
+  token,
+  transactionNames,
+  fallbackDescriptions,
 }: {
   transaction: IcrcTransactionWithId;
   account: Account;
   toSelfTransaction: boolean;
   governanceCanisterId?: Principal;
-}): Transaction | undefined => {
+  token: Token | undefined;
+  transactionNames: I18nTransaction_names;
+  fallbackDescriptions?: Record<string, string>;
+}): UiTransaction | undefined => {
   try {
+    if (isNullish(token)) {
+      return undefined;
+    }
+
     const type = getIcrcTransactionType({
       transaction: transaction.transaction,
       governanceCanisterId,
@@ -182,22 +195,34 @@ export const mapIcrcTransaction = ({
     }
     const isReceive =
       toSelfTransaction === true || txInfo.from !== account.identifier;
-    const isSend = nonNullish(txInfo.to) && txInfo.to !== account.identifier;
     const useFee = !isReceive;
     const feeApplied =
       useFee && txInfo.fee !== undefined ? txInfo.fee : BigInt(0);
+
+    const headline = transactionName({
+      type,
+      isReceive,
+      labels: transactionNames,
+    });
+    const otherParty = isReceive ? txInfo.from : txInfo.to;
+    const fallbackDescription = isNullish(otherParty)
+      ? fallbackDescriptions?.[type]
+      : undefined;
 
     // Timestamp is in nano seconds
     const timestampMilliseconds =
       Number(transaction.transaction.timestamp) / NANO_SECONDS_IN_MILLISECOND;
     return {
-      type,
-      isReceive,
-      isSend,
-      from: txInfo.from,
-      to: txInfo.to,
-      displayAmount: txInfo.amount + feeApplied,
-      date: new Date(timestampMilliseconds),
+      domKey: `${transaction.id}-${toSelfTransaction ? "0" : "1"}`,
+      isIncoming: isReceive,
+      headline,
+      otherParty,
+      fallbackDescription,
+      tokenAmount: TokenAmount.fromE8s({
+        amount: txInfo.amount + feeApplied,
+        token,
+      }),
+      timestamp: new Date(timestampMilliseconds),
     };
   } catch (err) {
     toastsError({
@@ -218,7 +243,10 @@ export const mapCkbtcTransaction = (params: {
   account: Account;
   toSelfTransaction: boolean;
   governanceCanisterId?: Principal;
-}): Transaction | undefined => {
+  token: Token | undefined;
+  transactionNames: I18nTransaction_names;
+  fallbackDescriptions?: Record<string, string>;
+}): UiTransaction | undefined => {
   const mappedTransaction = mapIcrcTransaction(params);
   if (isNullish(mappedTransaction)) {
     return mappedTransaction;
@@ -231,8 +259,7 @@ export const mapCkbtcTransaction = (params: {
     try {
       const decodedMemo = Cbor.decode(memo) as CkbtcBurnMemo;
       const withdrawalAddress = decodedMemo[1][0];
-      mappedTransaction.to = withdrawalAddress;
-      mappedTransaction.isSend = true;
+      mappedTransaction.otherParty = withdrawalAddress;
     } catch (err) {
       console.error("Failed to decode ckBTC burn memo", memo, err);
     }

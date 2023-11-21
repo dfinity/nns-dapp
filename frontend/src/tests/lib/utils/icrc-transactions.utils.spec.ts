@@ -1,5 +1,5 @@
+import { NANO_SECONDS_IN_MILLISECOND } from "$lib/constants/constants";
 import type { IcrcTransactionsStoreData } from "$lib/stores/icrc-transactions.store";
-import { AccountTransactionType } from "$lib/types/transaction";
 import {
   getOldestTxIdFromStore,
   getSortedTransactionsFromStore,
@@ -11,6 +11,7 @@ import {
 } from "$lib/utils/icrc-transactions.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
+import en from "$tests/mocks/i18n.mock";
 import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
 import {
   createBurnTransaction,
@@ -22,19 +23,21 @@ import {
 } from "$tests/mocks/sns-accounts.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { Cbor } from "@dfinity/agent";
+import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
+import { ICPToken, TokenAmount, toNullable } from "@dfinity/utils";
 
 describe("icrc-transaction utils", () => {
-  const to = {
+  const subAccount = {
     owner: mockPrincipal,
     subaccount: [Uint8Array.from(mockSubAccountArray)] as [Uint8Array],
   };
-  const from = {
+  const mainAccount = {
     owner: mockPrincipal,
     subaccount: [] as [],
   };
   const transactionFromMainToSubaccount = createIcrcTransactionWithId({
-    to,
-    from,
+    to: subAccount,
+    from: mainAccount,
   });
   const recentTx = {
     id: BigInt(1234),
@@ -57,7 +60,10 @@ describe("icrc-transaction utils", () => {
       timestamp: BigInt(1000),
     },
   };
-  const selfTransaction = createIcrcTransactionWithId({ to, from: to });
+  const selfTransaction = createIcrcTransactionWithId({
+    from: subAccount,
+    to: subAccount,
+  });
 
   describe("getSortedTransactionsFromStore", () => {
     it("should return transactions sorted by date", () => {
@@ -118,86 +124,157 @@ describe("icrc-transaction utils", () => {
   });
 
   const testMapTransactionCommon = (mapTransaction: mapIcrcTransactionType) => {
+    const defaultTimestamp = new Date("2023-01-01T00:00:00.000Z");
+    const defaultTransactionParams = {
+      id: 112n,
+      from: mainAccount,
+      to: subAccount,
+      amount: 100_000_000n,
+      fee: 10_000n,
+      timestamp: defaultTimestamp,
+    };
+    const defaultParams = {
+      transaction: createIcrcTransactionWithId(defaultTransactionParams),
+      account: mockSnsMainAccount,
+      toSelfTransaction: false,
+      token: ICPToken,
+      transactionNames: en.transaction_names,
+    };
+    const defaultExpectedData = {
+      domKey: "112-1",
+      headline: "Sent",
+      isIncoming: false,
+      otherParty: mockSnsSubAccount.identifier,
+      timestamp: defaultTimestamp,
+      tokenAmount: TokenAmount.fromE8s({
+        amount: 100_010_000n,
+        token: ICPToken,
+      }),
+    };
+
     it("maps sent transaction", () => {
       const data = mapTransaction({
-        transaction: transactionFromMainToSubaccount,
+        ...defaultParams,
         account: mockSnsMainAccount,
-        toSelfTransaction: false,
+        transaction: createIcrcTransactionWithId({
+          ...defaultTransactionParams,
+          from: mainAccount,
+          to: subAccount,
+          amount: 200_000_000n,
+          fee: 10_000n,
+        }),
       });
-      expect(data.isSend).toBe(true);
-      expect(data.isReceive).toBe(false);
+      expect(data).toEqual({
+        ...defaultExpectedData,
+        headline: "Sent",
+        isIncoming: false,
+        otherParty: mockSnsSubAccount.identifier,
+        // Includes fee
+        tokenAmount: TokenAmount.fromE8s({
+          amount: 200_010_000n,
+          token: ICPToken,
+        }),
+      });
     });
 
     it("maps stake neuron transaction", () => {
       const governanceCanisterId = principal(2);
+      const governanceSubaccount = Uint8Array.from([0, 0, 1]);
       const toGovernance = {
         owner: governanceCanisterId,
-        subaccount: [Uint8Array.from([0, 0, 1])] as [Uint8Array],
+        subaccount: toNullable(governanceSubaccount),
       };
-      const stakeNeuronTransaction = createIcrcTransactionWithId({
-        to: toGovernance,
-        from,
-      });
-      stakeNeuronTransaction.transaction.transfer[0].memo = [new Uint8Array()];
       const data = mapTransaction({
-        transaction: stakeNeuronTransaction,
-        account: mockSnsMainAccount,
-        toSelfTransaction: false,
+        ...defaultParams,
+        transaction: createIcrcTransactionWithId({
+          ...defaultTransactionParams,
+          to: toGovernance,
+          memo: new Uint8Array(),
+        }),
         governanceCanisterId,
       });
-      expect(data.isSend).toBe(true);
-      expect(data.isReceive).toBe(false);
-      expect(data.type).toBe(AccountTransactionType.StakeNeuron);
+      expect(data).toEqual({
+        ...defaultExpectedData,
+        headline: "Stake Neuron",
+        otherParty: encodeIcrcAccount({
+          owner: governanceCanisterId,
+          subaccount: governanceSubaccount,
+        }),
+      });
     });
 
     it("maps top up neuron transaction", () => {
       const governanceCanisterId = principal(2);
+      const governanceSubaccount = Uint8Array.from([0, 0, 1]);
       const toGovernance = {
         owner: governanceCanisterId,
-        subaccount: [Uint8Array.from([0, 0, 1])] as [Uint8Array],
+        subaccount: toNullable(governanceSubaccount),
       };
-      const topUpNeuronTransaction = createIcrcTransactionWithId({
-        to: toGovernance,
-        from,
-      });
-      topUpNeuronTransaction.transaction.transfer[0].memo = [];
       const data = mapTransaction({
-        transaction: topUpNeuronTransaction,
-        account: mockSnsMainAccount,
-        toSelfTransaction: false,
+        ...defaultParams,
+        transaction: createIcrcTransactionWithId({
+          ...defaultTransactionParams,
+          to: toGovernance,
+          memo: null,
+        }),
         governanceCanisterId,
       });
-      expect(data.isSend).toBe(true);
-      expect(data.isReceive).toBe(false);
-      expect(data.type).toBe(AccountTransactionType.TopUpNeuron);
+      expect(data).toEqual({
+        ...defaultExpectedData,
+        headline: "Top-up Neuron",
+        otherParty: encodeIcrcAccount({
+          owner: governanceCanisterId,
+          subaccount: governanceSubaccount,
+        }),
+      });
     });
 
     it("maps received transaction", () => {
       const data = mapTransaction({
-        transaction: transactionFromMainToSubaccount,
+        ...defaultParams,
         account: mockSnsSubAccount,
-        toSelfTransaction: false,
+        transaction: createIcrcTransactionWithId({
+          ...defaultTransactionParams,
+          from: mainAccount,
+          to: subAccount,
+          amount: 300_000_000n,
+          fee: 10_000n,
+        }),
       });
-      expect(data.isSend).toBe(false);
-      expect(data.isReceive).toBe(true);
-      expect(data.type).toBe(AccountTransactionType.Send);
+      expect(data).toEqual({
+        ...defaultExpectedData,
+        headline: "Received",
+        isIncoming: true,
+        otherParty: mockSnsMainAccount.identifier,
+        // Does not include fee
+        tokenAmount: TokenAmount.fromE8s({
+          amount: 300_000_000n,
+          token: ICPToken,
+        }),
+      });
     });
 
     it("maps approve transaction", () => {
       const data = mapTransaction({
+        ...defaultParams,
         transaction: {
           id: BigInt(1234),
           transaction: {
             kind: "approve",
-            timestamp: BigInt(12349),
+            timestamp:
+              BigInt(defaultTimestamp.getTime()) *
+              BigInt(NANO_SECONDS_IN_MILLISECOND),
             approve: [
               {
-                from,
+                from: mainAccount,
                 amount: BigInt(100_000_000),
-                spender: to,
-                fee: [],
+                spender: subAccount,
+                fee: [10_000n],
                 memo: [],
-                created_at_time: [],
+                created_at_time: [
+                  BigInt(defaultTimestamp.getTime()) *
+                    BigInt(NANO_SECONDS_IN_MILLISECOND),
+                ],
                 expected_allowance: [],
                 expires_at: [],
               },
@@ -210,30 +287,43 @@ describe("icrc-transaction utils", () => {
         account: mockCkBTCMainAccount,
         toSelfTransaction: false,
       });
-      expect(data.isSend).toBe(false);
-      expect(data.isReceive).toBe(false);
-      expect(data.type).toBe(AccountTransactionType.Approve);
+      expect(data).toEqual({
+        ...defaultExpectedData,
+        domKey: "1234-1",
+        headline: "Approve transfer",
+        tokenAmount: TokenAmount.fromE8s({
+          amount: 10_000n,
+          token: ICPToken,
+        }),
+        otherParty: undefined,
+      });
     });
 
     it("maps self transaction", () => {
       const data = mapTransaction({
-        transaction: selfTransaction,
-        account: mockSnsSubAccount,
+        ...defaultParams,
+        transaction: createIcrcTransactionWithId({
+          ...defaultTransactionParams,
+          id: 112n,
+          from: mainAccount,
+          to: mainAccount,
+          amount: 400_000_000n,
+          fee: 10_000n,
+        }),
         toSelfTransaction: true,
       });
-      expect(data.isSend).toBe(false);
-      expect(data.isReceive).toBe(true);
-    });
-
-    it("adds fee to sent transactions", () => {
-      const data = mapTransaction({
-        transaction: transactionFromMainToSubaccount,
-        account: mockSnsMainAccount,
-        toSelfTransaction: false,
+      expect(data).toEqual({
+        ...defaultExpectedData,
+        domKey: "112-0",
+        headline: "Received",
+        isIncoming: true,
+        otherParty: mockSnsMainAccount.identifier,
+        // Does not include fee
+        tokenAmount: TokenAmount.fromE8s({
+          amount: 400_000_000n,
+          token: ICPToken,
+        }),
       });
-      expect(data.isSend).toBe(true);
-      const txData = transactionFromMainToSubaccount.transaction.transfer[0];
-      expect(data.displayAmount).toBe(txData.amount + txData.fee[0]);
     });
   };
 
@@ -241,17 +331,31 @@ describe("icrc-transaction utils", () => {
     testMapTransactionCommon(mapIcrcTransaction);
 
     it("maps burn transaction", () => {
+      const amount = 35_000_000n;
       const data = mapIcrcTransaction({
         transaction: {
           id: BigInt(1234),
-          transaction: createBurnTransaction({ from }),
+          transaction: createBurnTransaction({
+            from: mainAccount,
+            amount,
+          }),
         },
         account: mockCkBTCMainAccount,
         toSelfTransaction: false,
+        token: ICPToken,
+        transactionNames: en.transaction_names,
       });
-      expect(data.isSend).toBe(false);
-      expect(data.isReceive).toBe(false);
-      expect(data.type).toBe(AccountTransactionType.Burn);
+      expect(data).toEqual({
+        domKey: "1234-1",
+        headline: "Sent",
+        isIncoming: false,
+        otherParty: undefined,
+        timestamp: new Date(0),
+        tokenAmount: TokenAmount.fromE8s({
+          amount,
+          token: ICPToken,
+        }),
+      });
     });
   });
 
@@ -259,6 +363,7 @@ describe("icrc-transaction utils", () => {
     testMapTransactionCommon(mapCkbtcTransaction);
 
     it("Decodes BTC withdrawal address from cbor memo", () => {
+      const amount = 45_000_000n;
       const btcWithdrawalAddress = "1ASLxsAMbbt4gcrNc6v6qDBW4JkeWAtTeh";
       const kytFee = 1333;
       const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
@@ -267,14 +372,28 @@ describe("icrc-transaction utils", () => {
       const data = mapCkbtcTransaction({
         transaction: {
           id: BigInt(1234),
-          transaction: createBurnTransaction({ from, memo }),
+          transaction: createBurnTransaction({
+            amount,
+            from: mainAccount,
+            memo,
+          }),
         },
         account: mockCkBTCMainAccount,
         toSelfTransaction: false,
+        token: ICPToken,
+        transactionNames: en.transaction_names,
       });
-      expect(data.to).toBe(btcWithdrawalAddress);
-      expect(data.isSend).toBe(true);
-      expect(data.isReceive).toBe(false);
+      expect(data).toEqual({
+        domKey: "1234-1",
+        headline: "Sent",
+        isIncoming: false,
+        otherParty: btcWithdrawalAddress,
+        timestamp: new Date(0),
+        tokenAmount: TokenAmount.fromE8s({
+          amount,
+          token: ICPToken,
+        }),
+      });
     });
 
     it("Maps burn transaction without memo", () => {
@@ -285,18 +404,35 @@ describe("icrc-transaction utils", () => {
         errorLog.push(msg)
       );
 
+      const amount = 68_000_000n;
+
       const data = mapCkbtcTransaction({
         transaction: {
           id: BigInt(1234),
-          transaction: createBurnTransaction({ from }),
+          transaction: createBurnTransaction({
+            amount,
+            from: mainAccount,
+            memo: undefined,
+          }),
         },
         account: mockCkBTCMainAccount,
         toSelfTransaction: false,
+        token: ICPToken,
+        transactionNames: en.transaction_names,
       });
-      expect(data.isSend).toBe(false);
-      expect(data.isReceive).toBe(false);
-      expect(data.type).toBe(AccountTransactionType.Burn);
-      expect(data.to).toBeUndefined();
+
+      expect(data).toEqual({
+        domKey: "1234-1",
+        headline: "Sent",
+        isIncoming: false,
+        otherParty: undefined,
+        timestamp: new Date(0),
+        tokenAmount: TokenAmount.fromE8s({
+          amount,
+          token: ICPToken,
+        }),
+      });
+
       expect(errorLog).toEqual(["Failed to decode ckBTC burn memo"]);
     });
   });
