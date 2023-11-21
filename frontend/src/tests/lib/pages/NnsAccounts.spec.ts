@@ -38,6 +38,12 @@ describe("NnsAccounts", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     resetIdentity();
+    icpAccountsStore.setForTesting({
+      main: mockMainAccount,
+      subAccounts: [],
+      hardwareWallets: [],
+      certified: true,
+    });
   });
 
   describe("when tokens flag is enabled", () => {
@@ -81,12 +87,6 @@ describe("NnsAccounts", () => {
 
     describe("when there are accounts", () => {
       beforeEach(() => {
-        icpAccountsStore.setForTesting({
-          main: mockMainAccount,
-          subAccounts: [],
-          hardwareWallets: [],
-          certified: true,
-        });
         cancelPollAccounts();
       });
 
