@@ -40,8 +40,8 @@ describe("Accounts page", () => {
       it("renders tokens table for NNS accounts", async () => {
         const po = renderComponent();
 
-        // TODO: Test that the tokens table is rendered when we implement the derived store for visitors
         const pagePo = po.getSignInAccountsPo();
+        expect(await pagePo.hasTokensTable()).toBe(true);
         expect(await pagePo.hasEmptyCards()).toBe(false);
       });
     });
@@ -55,6 +55,7 @@ describe("Accounts page", () => {
         const po = renderComponent();
 
         const pagePo = po.getSignInAccountsPo();
+        expect(await pagePo.hasTokensTable()).toBe(false);
         expect(await pagePo.hasEmptyCards()).toBe(true);
       });
     });
