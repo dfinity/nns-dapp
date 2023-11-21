@@ -10,12 +10,15 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 
 ### Added
 ### Changed
-- Updated the SNS bindings used by the aggregator.
 ### Deprecated
 ### Removed
 ### Fixed
 ### Security
 
+
+## [Proposal 126006](https://nns.ic0.app/proposal/?u=qoctq-giaaa-aaaaa-aaaea-cai&proposal=126006)
+### Changed
+- Updated the SNS bindings used by the aggregator.
 
 ## [Proposal 125319](https://nns.ic0.app/proposal/?u=qoctq-giaaa-aaaaa-aaaea-cai&proposal=125319)
 ### Changed

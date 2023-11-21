@@ -116,7 +116,7 @@ describe("IcrcTransactionList", () => {
     const customIdentifier = "custom identifier";
     const customMapTransaction = (params) => ({
       ...mapIcrcTransaction(params),
-      from: customIdentifier,
+      otherParty: customIdentifier,
     });
 
     const po = renderComponent({

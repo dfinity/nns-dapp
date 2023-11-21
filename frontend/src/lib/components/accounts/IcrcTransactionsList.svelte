@@ -3,7 +3,7 @@
   import type { Principal } from "@dfinity/principal";
   import { InfiniteScroll, Spinner } from "@dfinity/gix-components";
   import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
-  import { isNullish } from "@dfinity/utils";
+  import { nonNullish } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import IcrcTransactionCard from "./IcrcTransactionCard.svelte";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
@@ -13,7 +13,6 @@
   } from "$lib/types/transaction";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import type { mapIcrcTransactionType } from "$lib/utils/icrc-transactions.utils";
-  import { toUiTransaction } from "$lib/utils//transactions.utils";
   import { flip } from "svelte/animate";
 
   export let account: Account;
@@ -26,38 +25,26 @@
   export let mapTransaction: mapIcrcTransactionType;
 
   let uiTransactions: UiTransaction[] = [];
-  $: uiTransactions = transactions.flatMap(
-    ({
-      transaction,
-      toSelfTransaction,
-    }: {
-      transaction: IcrcTransactionWithId;
-      toSelfTransaction: boolean;
-    }) => {
-      if (isNullish(token)) {
-        return [];
-      }
-      const mappedTransaction = mapTransaction({
+  $: uiTransactions = transactions
+    .map(
+      ({
         transaction,
-        account,
         toSelfTransaction,
-        governanceCanisterId,
-      });
-      if (isNullish(mappedTransaction)) {
-        return [];
-      }
-      return [
-        toUiTransaction({
-          transaction: mappedTransaction,
-          transactionId: transaction.id,
+      }: {
+        transaction: IcrcTransactionWithId;
+        toSelfTransaction: boolean;
+      }) =>
+        mapTransaction({
+          transaction,
+          account,
           toSelfTransaction,
+          governanceCanisterId,
           token,
           transactionNames: $i18n.transaction_names,
           fallbackDescriptions: descriptions,
-        }),
-      ];
-    }
-  );
+        })
+    )
+    .filter(nonNullish);
 </script>
 
 <div data-tid="transactions-list" class="container">

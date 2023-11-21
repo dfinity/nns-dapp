@@ -1,10 +1,12 @@
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
+import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+import type { UserTokenData } from "$lib/types/tokens-page";
 import { formatToken } from "$lib/utils/token.utils";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -13,12 +15,14 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { createUserToken } from "$tests/mocks/tokens-page.mock";
 import { NnsAccountsPo } from "$tests/page-objects/NnsAccounts.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
+import { TokenAmount } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 import type { SpyInstance } from "vitest";
 
@@ -26,8 +30,8 @@ vi.mock("$lib/api/nns-dapp.api");
 vi.mock("$lib/api/icp-ledger.api");
 
 describe("NnsAccounts", () => {
-  const renderComponent = () => {
-    const { container } = render(NnsAccounts);
+  const renderComponent = (userTokensData: UserTokenData[] = []) => {
+    const { container } = render(NnsAccounts, { props: { userTokensData } });
     return NnsAccountsPo.under(new JestPageObjectElement(container));
   };
 
@@ -43,9 +47,32 @@ describe("NnsAccounts", () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
     });
 
-    it("should render tokens table", async () => {
-      const po = renderComponent();
-      expect(await po.hasTokensTable()).toBe(true);
+    it("should render tokens table with rows", async () => {
+      const mainTokenData = createUserToken({
+        title: "Main",
+        balance: TokenAmount.fromE8s({
+          amount: 314000000n,
+          token: NNS_TOKEN_DATA,
+        }),
+      });
+      const subaccountTokenData = createUserToken({
+        title: "Subaccount test",
+        balance: TokenAmount.fromE8s({
+          amount: 222000000n,
+          token: NNS_TOKEN_DATA,
+        }),
+      });
+      const po = renderComponent([mainTokenData, subaccountTokenData]);
+      expect(await po.getTokensTablePo().getRowsData()).toEqual([
+        {
+          balance: "3.14 ICP",
+          projectName: "Main",
+        },
+        {
+          balance: "2.22 ICP",
+          projectName: "Subaccount test",
+        },
+      ]);
     });
   });
 
