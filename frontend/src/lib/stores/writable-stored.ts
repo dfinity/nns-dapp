@@ -6,6 +6,24 @@ type WritableStored<T> = Writable<T> & {
   unsubscribeStorage: Unsubscriber;
 };
 
+/** Returns the version field of the value if it has one, otherwise undefined. */
+const getVesion = <T>(value: T): number | undefined => {
+  if (
+    typeof value === "object" &&
+    value !== null &&
+    value.hasOwnProperty("version")
+  ) {
+    const version = Number(
+      (value as unknown as { version: number | string }).version
+    );
+    if (!isNaN(version)) {
+      return version;
+    }
+  }
+  // default
+  return undefined;
+};
+
 export const writableStored = <T>({
   key,
   defaultValue,
@@ -27,7 +45,13 @@ export const writableStored = <T>({
         storedValue !== undefined &&
         storedValue !== "undefined"
       ) {
-        return JSON.parse(storedValue) as T;
+        const parsedValue = JSON.parse(storedValue) as T;
+        if ((getVesion(defaultValue) ?? 0) > (getVesion(parsedValue) ?? 0)) {
+          // remove deprecated version from local storage
+          localStorage.removeItem(key);
+        } else {
+          return JSON.parse(storedValue) as T;
+        }
       }
     } catch (error: unknown) {
       console.error(error);
