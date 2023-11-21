@@ -190,7 +190,10 @@ describe("ckbtc-minter-services", () => {
 
     it("should handle no new UTXOs success", async () => {
       vi.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
-        throw new MinterNoNewUtxosError();
+        throw new MinterNoNewUtxosError({
+          required_confirmations: 12,
+          pending_utxos: [],
+        });
       });
 
       const spyOnToastsSuccess = vi.spyOn(toastsStore, "toastsSuccess");
@@ -271,7 +274,10 @@ describe("ckbtc-minter-services", () => {
 
       it("should not handle no new UTXOs success if no ui indicators", async () => {
         vi.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
-          throw new MinterNoNewUtxosError();
+          throw new MinterNoNewUtxosError({
+            required_confirmations: 12,
+            pending_utxos: [],
+          });
         });
 
         const spyOnToastsShow = vi.spyOn(toastsStore, "toastsShow");
