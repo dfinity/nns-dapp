@@ -13,51 +13,55 @@ import { isNullish, nonNullish, TokenAmount } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 import { nnsUniverseStore } from "./nns-universe.derived";
 
-const convertAccountToUserTokenData =
-  ({ nnsUniverse, i18nKeys }: { nnsUniverse: Universe; i18nKeys: I18n }) =>
-  (account?: Account): UserTokenData => {
-    const subtitleMap: Record<AccountType, string | undefined> = {
-      main: undefined,
-      subAccount: i18nKeys.accounts.subAccount,
-      hardwareWallet: i18nKeys.accounts.hardwareWallet,
-      // This is not used in the UI, but it's here for completeness
-      withdrawalAccount: i18nKeys.accounts.withdrawalAccount,
-    };
-    const title: string = isNullish(account)
-      ? i18nKeys.core.ic
-      : account.type === "main"
-      ? i18nKeys.accounts.main
-      : account.name ?? "";
-    return {
-      universeId: Principal.fromText(nnsUniverse.canisterId),
-      title,
-      subtitle: nonNullish(account) ? subtitleMap[account.type] : undefined,
-      // TODO: Add loading balance state
-      balance: nonNullish(account)
-        ? TokenAmount.fromE8s({
-            amount: account.balanceE8s,
-            token: NNS_TOKEN_DATA,
-          })
-        : new UnavailableTokenAmount(NNS_TOKEN_DATA),
-      logo: nnsUniverse.logo,
-      actions: nonNullish(account)
-        ? [UserTokenAction.Receive, UserTokenAction.Send]
-        : [],
-    };
+const convertAccountToUserTokenData = ({
+  nnsUniverse,
+  i18nObj: i18nObj,
+  account,
+}: {
+  nnsUniverse: Universe;
+  i18nObj: I18n;
+  account?: Account;
+}): UserTokenData => {
+  const subtitleMap: Record<AccountType, string | undefined> = i18nObj.accounts;
+  const title: string = isNullish(account)
+    ? i18nObj.core.ic
+    : account.type === "main"
+    ? i18nObj.accounts.main
+    : account.name ?? "";
+  return {
+    universeId: Principal.fromText(nnsUniverse.canisterId),
+    title,
+    subtitle: account && subtitleMap[account.type],
+    // TODO: Add loading balance state
+    balance: nonNullish(account)
+      ? TokenAmount.fromE8s({
+          amount: account.balanceE8s,
+          token: NNS_TOKEN_DATA,
+        })
+      : new UnavailableTokenAmount(NNS_TOKEN_DATA),
+    logo: nnsUniverse.logo,
+    actions: nonNullish(account)
+      ? [UserTokenAction.Receive, UserTokenAction.Send]
+      : [],
   };
+};
 
 export const icpTokensListUser = derived<
   [Readable<Universe>, IcpAccountsStore, Readable<I18n>],
   UserTokenData[]
 >(
   [nnsUniverseStore, icpAccountsStore, i18n],
-  ([nnsUniverse, icpAccounts, i18nKeys]) => [
-    convertAccountToUserTokenData({ nnsUniverse, i18nKeys })(icpAccounts.main),
-    ...(icpAccounts.subAccounts ?? []).map(
-      convertAccountToUserTokenData({ nnsUniverse, i18nKeys })
+  ([nnsUniverse, icpAccounts, i18nObj]) => [
+    convertAccountToUserTokenData({
+      nnsUniverse,
+      i18nObj,
+      account: icpAccounts.main,
+    }),
+    ...(icpAccounts.subAccounts ?? []).map((account) =>
+      convertAccountToUserTokenData({ nnsUniverse, i18nObj, account })
     ),
-    ...(icpAccounts.hardwareWallets ?? []).map(
-      convertAccountToUserTokenData({ nnsUniverse, i18nKeys })
+    ...(icpAccounts.hardwareWallets ?? []).map((account) =>
+      convertAccountToUserTokenData({ nnsUniverse, i18nObj, account })
     ),
   ]
 );
