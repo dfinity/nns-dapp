@@ -7,9 +7,9 @@
 
   export let account: Account;
 
-  const openBanxa = () => {
-    window.open("https://banxa.com/", "_blank", "width=400,height=600");
-  };
+  let url: string;
+  $: url =
+    "https://checkout.banxa.com/?fiatAmount=100&fiatType=USD&coinAmount=0.00244394&coinType=ICP&lockFiat=true&blockchain=BTC&orderMode=BUY";
 </script>
 
 <Modal testId="buy-icp-modal-component" on:nnsClose>
@@ -30,15 +30,16 @@
   </div>
 
   <div class="toolbar">
-    <button
-      class="primary full-width with-icon"
-      on:click={openBanxa}
+    <a
+      class="button primary full-width with-icon"
+      href={url}
+      target="_blank"
       data-tid="buy-icp-banxa-button"
       ><img
         src={BANXA_LOGO}
         alt={$i18n.accounts.banxa_logo_alt}
         draggable="false"
-      />{$i18n.accounts.buy_icp_banxa}</button
+      />{$i18n.accounts.buy_icp_banxa}</a
     >
   </div>
 </Modal>
@@ -59,7 +60,36 @@
     border-radius: var(--border-radius);
   }
 
-  button {
-    @include button.with-icon;
+  a.button {
+    box-sizing: border-box;
+
+    padding: var(--padding) var(--padding-2x);
+
+    border-radius: var(--border-radius);
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+
+    position: relative;
+    min-height: var(--button-min-height);
+
+    font-weight: var(--font-weight-bold);
+    text-decoration: none;
+
+    &.primary {
+      background: var(--primary);
+      color: var(--primary-contrast);
+
+      &:hover,
+      &:focus {
+        background: var(--primary-shade);
+      }
+    }
+    &.full-width {
+      width: 100%;
+    }
+
+    &.with-icon {
+      @include button.with-icon;
+    }
   }
 </style>
