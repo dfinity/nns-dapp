@@ -13,7 +13,6 @@
   } from "$lib/types/transaction";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import type { mapIcrcTransactionType } from "$lib/utils/icrc-transactions.utils";
-  import { toUiTransaction } from "$lib/utils//transactions.utils";
   import { flip } from "svelte/animate";
 
   export let account: Account;
