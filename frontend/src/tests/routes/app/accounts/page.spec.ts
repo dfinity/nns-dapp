@@ -41,7 +41,7 @@ describe("Accounts page", () => {
         const po = renderComponent();
 
         const pagePo = po.getSignInAccountsPo();
-        expect(await pagePo.getTokenNames()).toBe(["Internet Computer"]);
+        expect(await pagePo.getTokenNames()).toEqual(["Internet Computer"]);
         expect(await pagePo.hasEmptyCards()).toBe(false);
       });
     });
