@@ -8,8 +8,7 @@
   export let account: Account;
 
   let url: string;
-  $: url =
-    "https://checkout.banxa.com/?fiatAmount=100&fiatType=USD&coinAmount=0.00244394&coinType=ICP&lockFiat=true&blockchain=BTC&orderMode=BUY";
+  $: url = `https://checkout.banxa.com/?fiatAmount=100&fiatType=USD&coinAmount=0.00244394&coinType=ICP&lockFiat=true&blockchain=BTC&orderMode=BUY&walletAddress=${account.identifier}`;
 </script>
 
 <Modal testId="buy-icp-modal-component" on:nnsClose>
