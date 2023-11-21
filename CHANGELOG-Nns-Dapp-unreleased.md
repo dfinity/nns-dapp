@@ -50,6 +50,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Workflow to get the latest NNS and SNS canister candid files.
 * Try to prevent calls to global.fetch in unit tests.
 * Add `devenv_llorenc` and `devenv_dskloet` to list of networks.
+* Add optional version support to the storage records.
 
 #### Changed
 
