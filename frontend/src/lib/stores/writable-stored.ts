@@ -20,7 +20,7 @@ const isVersionedData = <T>(
   getVersion(data) !== undefined &&
   Object.hasOwn(data, "data");
 
-/** Writes the state (w/ the version) to local storage. */
+/** Writes the state (w/ or w/o the version) to local storage. */
 const writeData = <T>({
   key,
   data,
@@ -64,6 +64,7 @@ const getVersion = <T>(data: T | VersionedData<T>): number | undefined => {
   return undefined;
 };
 
+/** Reads the state (w/ or w/o the version) from local storage and returns the versioned state. */
 const readData = <T>(
   key: StoreLocalStorageKey
 ): { data: T | undefined; version: number | undefined } => {
@@ -100,7 +101,6 @@ export const writableStored = <T>({
   defaultValue: T;
   version?: number;
 }): WritableStored<T> => {
-  let actualVersion: number | undefined = defaultVersion;
   const getInitialValue = (): VersionedData<T> => {
     if (!browser) {
       return { data: defaultValue, version: defaultVersion };
@@ -112,8 +112,7 @@ export const writableStored = <T>({
       storedValue.data === undefined ||
       (defaultVersion ?? 0) > (storedValue.version ?? 0)
     ) {
-      // remove deprecated version from local storage
-      localStorage.removeItem(key);
+      // replace deprecated version in local storage
       writeData({ key, data: defaultValue, version: defaultVersion });
       return { data: defaultValue, version: defaultVersion };
     }
@@ -122,7 +121,8 @@ export const writableStored = <T>({
   };
 
   const initialValue = getInitialValue();
-  actualVersion = initialValue.version;
+  // preserve the version because there are only data in the store
+  // let actualVersion: number | undefined = initialValue.version;
   const store = writable<T>(initialValue.data);
 
   const unsubscribeStorage = store.subscribe((store: T) => {
@@ -130,7 +130,9 @@ export const writableStored = <T>({
       return;
     }
 
-    writeData({ key, data: store, version: actualVersion });
+    // We always rewrite the storage after version update, so it is safe to read it from the storage.
+    const version = readData(key).version;
+    writeData({ key, data: store, version });
   });
 
   const upgradeStateVersion = ({
@@ -142,7 +144,6 @@ export const writableStored = <T>({
   }) => {
     const storedValue = readData<T>(key);
     if ((version ?? 0) > (storedValue.version ?? 0)) {
-      actualVersion = version;
       store.set(newVersionValue);
       // rewrite local storage with the new version
       writeData({

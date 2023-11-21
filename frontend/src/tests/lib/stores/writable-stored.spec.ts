@@ -157,7 +157,7 @@ describe("writableStored", () => {
       ).toEqual(JSON.stringify({ data: upgradedValue, version: 1 }));
     });
 
-    it("should skip data upgrade from less then in stored version", () => {
+    it("should skip data upgrade when the storage version is newer", () => {
       // because of the error logging
       allowLoggingInOneTestForDebugging();
 
