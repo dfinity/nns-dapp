@@ -4,20 +4,17 @@
   import Row from "./TokensTableRow.svelte";
 
   export let userTokensData: UserTokenData[];
-  export let columnHeaders: [string, string] = [
-    $i18n.tokens.projects_header,
-    $i18n.tokens.balance_header,
-  ];
+  export let firstColumnHeader: string = $i18n.tokens.projects_header;
 </script>
 
 <div role="table" data-tid="tokens-table-component">
   <div role="rowgroup">
     <div role="row" class="header-row">
       <span role="columnheader" data-tid="column-header-1"
-        >{columnHeaders[0]}</span
+        >{firstColumnHeader}</span
       >
       <span role="columnheader" data-tid="column-header-2" class="header-right"
-        >{columnHeaders[1]}</span
+        >{$i18n.tokens.balance_header}</span
       >
       <span role="columnheader"></span>
     </div>

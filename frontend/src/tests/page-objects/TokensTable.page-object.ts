@@ -12,11 +12,8 @@ export class TokensTablePo extends BasePageObject {
     return new TokensTablePo(element.byTestId(TokensTablePo.TID));
   }
 
-  async getColumnHeaders(): Promise<[string, string]> {
-    return [
-      await this.getText("column-header-1"),
-      await this.getText("column-header-2"),
-    ];
+  async getFirstColumnHeader(): Promise<string> {
+    return this.getText("column-header-1");
   }
 
   getRows(): Promise<TokensTableRowPo[]> {

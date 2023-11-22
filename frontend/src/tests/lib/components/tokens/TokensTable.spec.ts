@@ -18,15 +18,15 @@ import type { Mock } from "vitest";
 describe("TokensTable", () => {
   const renderTable = ({
     userTokensData,
-    columnHeaders,
+    firstColumnHeader,
     onAction,
   }: {
     userTokensData: UserTokenData[];
-    columnHeaders?: [string, string];
+    firstColumnHeader?: string;
     onAction?: Mock;
   }) => {
     const { container, component } = render(TokensTable, {
-      props: { userTokensData, columnHeaders },
+      props: { userTokensData, firstColumnHeader },
     });
 
     component.$on("nnsAction", onAction);
@@ -50,23 +50,23 @@ describe("TokensTable", () => {
     expect(await po.getRows()).toHaveLength(2);
   });
 
-  it("should render the column headers 'Projects' and 'Balance' by default", async () => {
+  it("should render the column header 'Projects' by default", async () => {
     const token1 = createUserToken({
       universeId: OWN_CANISTER_ID,
     });
     const po = renderTable({ userTokensData: [token1] });
 
-    expect(await po.getColumnHeaders()).toEqual(["Projects", "Balance"]);
+    expect(await po.getFirstColumnHeader()).toEqual("Projects");
   });
 
-  it("should render the column headers from props", async () => {
-    const columnHeaders: [string, string] = ["Accounts", "Amount"];
+  it("should render the first column headers from props", async () => {
+    const firstColumnHeader = "Accounts";
     const token1 = createUserToken({
       universeId: OWN_CANISTER_ID,
     });
-    const po = renderTable({ userTokensData: [token1], columnHeaders });
+    const po = renderTable({ userTokensData: [token1], firstColumnHeader });
 
-    expect(await po.getColumnHeaders()).toEqual(columnHeaders);
+    expect(await po.getFirstColumnHeader()).toEqual(firstColumnHeader);
   });
 
   it("should render the balances of the tokens", async () => {
