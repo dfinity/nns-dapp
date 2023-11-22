@@ -9,7 +9,6 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
-  @use "@dfinity/gix-components/dist/styles/mixins/display";
 
   div {
     display: flex;
@@ -19,9 +18,8 @@
     column-gap: var(--padding-2x);
 
     @include media.min-width(small) {
-      @include display.space-between;
+      justify-content: space-between;
       flex-direction: row;
-      align-items: normal;
 
       margin: 0 0 var(--padding);
     }
