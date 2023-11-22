@@ -100,13 +100,13 @@
   {:else if nonNullish($snsProjectSelectedStore)}
     <SnsAccountsFooter />
   {/if}
-</TestIdWrapper>
 
-{#if $isCkBTCUniverseStore}
-  <CkBTCAccountsModals />
-{:else}
-  <AccountsModals />
-{/if}
+  {#if $isCkBTCUniverseStore}
+    <CkBTCAccountsModals />
+  {:else}
+    <AccountsModals />
+  {/if}
+</TestIdWrapper>
 
 <style lang="scss">
   main {

@@ -3,9 +3,15 @@
 
   export let testId: string | undefined = undefined;
   export let columns = 2;
+
+  let horizontalSpacing: string = "15%";
+  $: horizontalSpacing = columns <= 2 ? "15%" : "5%";
 </script>
 
-<footer data-tid={testId} style={`--footer-columns: ${columns}`}>
+<footer
+  data-tid={testId}
+  style={`--footer-columns: ${columns}; --horizontal-spacing: ${horizontalSpacing}`}
+>
   <Toolbar>
     <slot />
   </Toolbar>
@@ -27,6 +33,7 @@
     :global(.toolbar) {
       align-items: end;
       margin: 0 auto max(env(safe-area-inset-bottom), var(--padding-2x));
+      --actions-width: var(--horizontal-spacing);
     }
 
     :global(.main) {
@@ -48,7 +55,10 @@
       @include media.min-width(small) {
         grid-template-columns: repeat(
           var(--footer-columns),
-          minmax(calc(var(--footer-main-inner-width) / 2), 180px)
+          minmax(
+            calc(var(--footer-main-inner-width) / var(--footer-columns)),
+            180px
+          )
         );
 
         min-width: auto;
