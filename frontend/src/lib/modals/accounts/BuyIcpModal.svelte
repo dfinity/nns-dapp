@@ -7,8 +7,25 @@
 
   export let account: Account;
 
+  let queryParams: Record<string, string | number>;
+  $: queryParams = {
+    fiatAmount: 100,
+    fiatType: "USD",
+    coinAmount: 0.00244394,
+    coinType: "ICP",
+    lockFiat: "true",
+    blockchain: "BTC",
+    orderMode: "BUY",
+    backgroundColor: "2a1a47",
+    primaryColor: "9b6ef7",
+    secondaryColor: "8b55f6",
+    textColor: "ffffff",
+    walletAddress: account?.identifier,
+  };
   let url: string;
-  $: url = `https://checkout.banxa.com/?fiatAmount=100&fiatType=USD&coinAmount=0.00244394&coinType=ICP&lockFiat=true&blockchain=BTC&orderMode=BUY&walletAddress=${account.identifier}`;
+  $: url = `https://checkout.banxa.com/?${Object.entries(queryParams)
+    .map(([key, value]) => `${key}=${value}`)
+    .join("&")}`;
 </script>
 
 <Modal testId="buy-icp-modal-component" on:nnsClose>
