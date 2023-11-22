@@ -2,15 +2,21 @@
   import { i18n } from "$lib/stores/i18n";
   import type { NeuronId } from "@dfinity/nns";
   import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
-  import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import Hash from "$lib/components/ui/Hash.svelte";
+  import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
 
   export let proposer: NeuronId | undefined;
 
   let modalOpen = false;
-
   // TODO: For simplicity reason, currently we do not display the proposer details if not signed-in. We might want to improve the display of these information in the future.
+
+  const click = () => {
+    if ($authSignedInStore) {
+      modalOpen = true;
+    }
+  };
 </script>
 
 <TestIdWrapper testId="proposal-system-info-proposer-entry-component">
@@ -21,20 +27,15 @@
       >
 
       <svelte:fragment slot="value">
-        {#if $authSignedInStore}
-          <button
-            class="text"
-            on:click|stopPropagation={() => (modalOpen = true)}
-          >
-            <span class="value" data-tid="proposal-system-info-proposer-value"
-              >{proposer}</span
-            >
-          </button>
-        {:else}
-          <span class="value" data-tid="proposal-system-info-proposer-value"
-            >{proposer}</span
-          >
-        {/if}
+        <Hash
+          id="proposer-id"
+          text={`${proposer}`}
+          tagName="span"
+          showCopy
+          splitLength={6}
+          tooltipTop
+          on:nnsTextClick={click}
+        />
       </svelte:fragment>
 
       <svelte:fragment slot="info">
@@ -50,11 +51,3 @@
     {/if}
   {/if}
 </TestIdWrapper>
-
-<style lang="scss">
-  button {
-    margin: 0;
-    padding: 0;
-    font-size: inherit;
-  }
-</style>
