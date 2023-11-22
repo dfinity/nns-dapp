@@ -72,6 +72,9 @@ describe("writableStored", () => {
         StoreLocalStorageKey.ProposalFilters,
         JSON.stringify(storedState)
       );
+      expect(
+        window.localStorage.getItem(StoreLocalStorageKey.ProposalFilters)
+      ).toEqual(JSON.stringify(storedState));
       const store = writableStored({
         key: StoreLocalStorageKey.ProposalFilters,
         defaultValue,
@@ -179,26 +182,26 @@ describe("writableStored", () => {
         window.localStorage.getItem(StoreLocalStorageKey.ProposalFilters)
       ).toEqual(JSON.stringify(storedState));
     });
-  });
 
-  describe("unsubscribeStorage", () => {
-    it("unsubscribes storing in local storage", async () => {
-      const defaultValue = { filter: "new" };
-      const store = writableStored({
-        key: StoreLocalStorageKey.ProposalFilters,
-        defaultValue,
+    describe("unsubscribeStorage", () => {
+      it("unsubscribes storing in local storage", async () => {
+        const defaultValue = { filter: "new" };
+        const store = writableStored({
+          key: StoreLocalStorageKey.ProposalFilters,
+          defaultValue,
+        });
+        const newState = { filter: "old" };
+        store.set(newState);
+        expect(
+          window.localStorage.getItem(StoreLocalStorageKey.ProposalFilters)
+        ).toEqual(JSON.stringify(newState));
+
+        store.unsubscribeStorage();
+        store.set(defaultValue);
+        expect(
+          window.localStorage.getItem(StoreLocalStorageKey.ProposalFilters)
+        ).toEqual(JSON.stringify(newState));
       });
-      const newState = { filter: "old" };
-      store.set(newState);
-      expect(
-        window.localStorage.getItem(StoreLocalStorageKey.ProposalFilters)
-      ).toEqual(JSON.stringify(newState));
-
-      store.unsubscribeStorage();
-      store.set(defaultValue);
-      expect(
-        window.localStorage.getItem(StoreLocalStorageKey.ProposalFilters)
-      ).toEqual(JSON.stringify(newState));
     });
   });
 });
