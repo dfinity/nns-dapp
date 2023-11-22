@@ -103,6 +103,22 @@ describe("writableStored", () => {
       expect(get(store)).toEqual(storedState);
     });
 
+    it("should not replace value from local storage when it has older version", () => {
+      const storedState = { filter: "old" };
+      const defaultValue = { filter: "new" };
+      window.localStorage.setItem(
+        StoreLocalStorageKey.ProposalFilters,
+        JSON.stringify({ data: storedState, version: 2 })
+      );
+      const store = writableStored({
+        key: StoreLocalStorageKey.ProposalFilters,
+        defaultValue,
+        version: 1,
+      });
+
+      expect(get(store)).toEqual(storedState);
+    });
+
     it("should not replace value w/o version when there is a versioned value in the store", () => {
       const storedState = { filter: "old" };
       const defaultValue = { filter: "new" };
