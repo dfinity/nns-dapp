@@ -1,6 +1,7 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { SignInTokensPagePo } from "./SignInTokens.page-object";
+import { SnsTransactionModalPo } from "./SnsTransactionModal.page-object";
 import { TokensPagePo } from "./TokensPage.page-object";
 
 export class TokensRoutePo extends BasePageObject {
@@ -24,5 +25,16 @@ export class TokensRoutePo extends BasePageObject {
 
   hasTokensPage(): Promise<boolean> {
     return this.getTokensPagePo().isPresent();
+  }
+
+  getSnsTransactionModalPo(): SnsTransactionModalPo {
+    return SnsTransactionModalPo.under(this.root);
+  }
+
+  transferSnsTokens(params: {
+    destinationAddress: string;
+    amount: number;
+  }): Promise<void> {
+    return this.getSnsTransactionModalPo().transferToAddress(params);
   }
 }
