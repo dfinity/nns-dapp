@@ -1,37 +1,28 @@
-import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
-import CKTESTBTC_LOGO from "$lib/assets/ckTESTBTC.svg";
-import IC_LOGO_ROUNDED from "$lib/assets/icp-rounded.svg";
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
-import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { tokensListBaseStore } from "$lib/derived/tokens-list-base.derived";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { UserTokenData } from "$lib/types/tokens-page";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
-import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
+import {
+  mockCkBTCToken,
+  mockCkTESTBTCToken,
+} from "$tests/mocks/ckbtc-accounts.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import {
+  ckBTCTokenBase,
+  ckTESTBTCTokenBase,
+  icpTokenBase,
+} from "$tests/mocks/tokens-page.mock";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { TokenAmount } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("tokens-list-base.derived", () => {
-  const icpTokenBase: UserTokenData = {
-    universeId: OWN_CANISTER_ID,
-    title: "Internet Computer",
-    logo: IC_LOGO_ROUNDED,
-    balance: new UnavailableTokenAmount(NNS_TOKEN_DATA),
-    token: NNS_TOKEN_DATA,
-    feeE8s: TokenAmount.fromE8s({
-      amount: NNS_TOKEN_DATA.fee,
-      token: NNS_TOKEN_DATA,
-    }),
-    actions: [],
-  };
   const snsTetrisToken = mockSnsToken;
   const snsTetris = {
     rootCanisterId: rootCanisterIdMock,
@@ -70,35 +61,6 @@ describe("tokens-list-base.derived", () => {
     feeE8s: TokenAmount.fromE8s({
       amount: snsPacman.tokenMetadata.fee,
       token: snsPacman.tokenMetadata,
-    }),
-    actions: [],
-  };
-  const mockCkTESTBTCToken = {
-    ...mockCkBTCToken,
-    symbol: "ckTESTBTC",
-    name: "ckTESTBTC",
-  };
-  const ckBTCTokenBase: UserTokenData = {
-    universeId: CKBTC_UNIVERSE_CANISTER_ID,
-    title: "ckBTC",
-    logo: CKBTC_LOGO,
-    balance: new UnavailableTokenAmount(mockCkBTCToken),
-    token: mockCkBTCToken,
-    feeE8s: TokenAmount.fromE8s({
-      amount: mockCkBTCToken.fee,
-      token: mockCkBTCToken,
-    }),
-    actions: [],
-  };
-  const ckTESTBTCTokenBase: UserTokenData = {
-    universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
-    title: "ckTESTBTC",
-    logo: CKTESTBTC_LOGO,
-    balance: new UnavailableTokenAmount(mockCkTESTBTCToken),
-    token: mockCkTESTBTCToken,
-    feeE8s: TokenAmount.fromE8s({
-      amount: mockCkTESTBTCToken.fee,
-      token: mockCkTESTBTCToken,
     }),
     actions: [],
   };

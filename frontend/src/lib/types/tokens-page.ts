@@ -1,6 +1,6 @@
 import type { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import type { Principal } from "@dfinity/principal";
-import type { TokenAmount } from "@dfinity/utils";
+import type { Token, TokenAmount } from "@dfinity/utils";
 
 export enum UserTokenAction {
   Send = "send",
@@ -13,6 +13,9 @@ export type UserTokenData = {
   title: string;
   subtitle?: string;
   balance: TokenAmount | UnavailableTokenAmount;
+  token: Token;
+  // Fees are included in the metadata of ICRC tokens, but this is not a list of only ICRC tokens
+  feeE8s: TokenAmount;
   logo: string;
   actions: UserTokenAction[];
 };
