@@ -24,15 +24,11 @@ describe("Accounts page", () => {
     return AccountsPlusPagePo.under(new JestPageObjectElement(container));
   };
 
-  const openSpy = vi.fn();
-
   beforeEach(() => {
     vi.clearAllMocks();
     icpAccountsStore.resetForTesting();
     vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(mockAccountDetails);
     vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(314000000n);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (window as any).open = openSpy;
   });
 
   describe("not logged in", () => {
@@ -109,26 +105,18 @@ describe("Accounts page", () => {
         expect(await pagePo.hasTokensTable()).toBe(false);
       });
 
-      it("should be able to go and buy icp for the account", async () => {
+      it("should be able to get a link to buy ICP", async () => {
         const po = renderComponent();
 
         await runResolvedPromises();
 
         const pagePo = po.getAccountsPo();
         await pagePo.clickBuyICP();
-        await pagePo.clickBuyICP();
-
-        expect(openSpy).not.toHaveBeenCalled();
 
         const modalPo = pagePo.getBuyICPModalPo();
 
-        await modalPo.clickBanxa();
-
-        // TODO: Change with actual URL
-        expect(openSpy).toHaveBeenCalledWith(
-          "https://banxa.com/",
-          "_blank",
-          "width=400,height=600"
+        expect(await modalPo.getBanxaUrl()).toBe(
+          `https://checkout.banxa.com/?fiatAmount=100&fiatType=USD&coinAmount=0.00244394&coinType=ICP&lockFiat=true&blockchain=BTC&orderMode=BUY&backgroundColor=2a1a47&primaryColor=9b6ef7&secondaryColor=8b55f6&textColor=ffffff&walletAddress=${mockAccountDetails.account_identifier}`
         );
       });
     });

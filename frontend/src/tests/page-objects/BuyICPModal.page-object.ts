@@ -13,7 +13,7 @@ export class BuyICPModalPo extends BasePageObject {
     return HashPo.under(this.root).getText();
   }
 
-  clickBanxa(): Promise<void> {
-    return this.click("buy-icp-banxa-button");
+  getBanxaUrl(): Promise<string> {
+    return this.root.byTestId("buy-icp-banxa-button").getAttribute("href");
   }
 }
