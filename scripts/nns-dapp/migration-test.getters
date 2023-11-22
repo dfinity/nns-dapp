@@ -16,7 +16,7 @@ download_asset() {
 # The path to the local copy of the wasm used in the test.
 working_wasm() {
   local configuration_num
-  lint_configuration_num "${configuration_num:-}"
+  lint_configuration_num "${configuration_num:-}" || exit 1
   echo "$WORKDIR/nns-dapp-${configuration_num}_test.wasm.gz"
 }
 
@@ -24,13 +24,13 @@ working_wasm() {
 working_arguments() {
   local configuration_num
   configuration_num="${1:-}"
-  lint_configuration_num "${configuration_num:-}"
+  lint_configuration_num "${configuration_num:-}" || exit 1
   echo "$WORKDIR/nns-dapp-args-${configuration_num}.did"
 }
 
 # Gets a local copy of a Wasm from a path or GitHub release
 get_wasm() {
-  local configuration_num destination
+  local path_or_release destination
   path_or_release="${1:-}"
   destination="${2:-}"
   lint_wasm_path "$destination"
@@ -48,7 +48,7 @@ get_wasm() {
 
 # Gets a local copy of an arguments file from a local path or GitHub release
 get_argfile() {
-  local configuration_num destination
+  local path_or_release destination
   path_or_release="${1:-}"
   destination="${2:-}"
   lint_argfile_path "$destination"

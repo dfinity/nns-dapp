@@ -15,12 +15,24 @@ lint_configuration_num() {
 
 # Checks that a Wasm filename has the expected form.
 lint_wasm_path() {
-  local wasm_path
-  wasm_path="${1:-}"
-  [[ "${wasm_path:-}" = *.wasm.gz ]] || {
+  local path
+  path="${1:-}"
+  [[ "${path:-}" = *.wasm.gz ]] || {
     echo "ERROR: Invalid wasm path."
     echo "Expected:  A path ending in .wasm.gz"
-    echo "Actual:    '${wasm_path:-}'"
+    echo "Actual:    '${path:-}'"
+    exit 1
+  } >&2
+}
+
+# Checks that an arguments filename has the expected form.
+lint_argfile_path() {
+  local path
+  path="${1:-}"
+  [[ "${path:-}" = *.did ]] || {
+    echo "ERROR: Invalid argfile path."
+    echo "Expected:  A path ending in .did"
+    echo "Actual:    '${path:-}'"
     exit 1
   } >&2
 }
@@ -60,7 +72,8 @@ lint_wasm() {
     echo "ERROR: This test needs test builds of the Wasm."
     echo "Expected: Test methods including '$test_method'."
     echo "Actual:   The exported methods do not include '$test_method':"
-    echo "$wasm_info" | sed 's/^/wasm_info:  /g'
+    #shellcheck disable=SC2001
+    echo "${wasm_info}" | sed 's/^/wasm_info:  /g'
     exit 1
   } >&2
 }
