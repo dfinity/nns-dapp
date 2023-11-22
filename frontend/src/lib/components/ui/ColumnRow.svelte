@@ -21,6 +21,7 @@
     @include media.min-width(small) {
       @include display.space-between;
       flex-direction: row;
+      align-items: normal;
 
       margin: 0 0 var(--padding);
     }

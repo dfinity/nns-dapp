@@ -475,11 +475,6 @@
     "participateSwap": "Decentralization Swap",
     "approve": "Approve transfer"
   },
-  "ckbtc_transaction_names": {
-    "burn": "To: <span class=\"value\">BTC Network</span>",
-    "mint": "From: <span class=\"value\">BTC Network</span>",
-    "approve": "&ZeroWidthSpace;"
-  },
   "wallet": {
     "title": "Account",
     "address": "Address",
@@ -995,7 +990,8 @@
     "warning_transaction_description": "When sending your ckBTC to a BTC address, your transaction got stuck in the redeeming account. Visit the ckBTC accounts page to continue.",
     "checking_incomplete_btc_transfers": "Checking for incomplete BTC transfers",
     "all_btc_transfers_complete": "All transfers are complete",
-    "click_to_complete_btc_transfers": "Click here to complete BTC transfer for $amount ckBTC"
+    "click_to_complete_btc_transfers": "Click here to complete BTC transfer for $amount ckBTC",
+    "btc_network": "BTC Network"
   },
   "error__ckbtc": {
     "already_process": "The minter has already been notified and updating the balance is in progress.",

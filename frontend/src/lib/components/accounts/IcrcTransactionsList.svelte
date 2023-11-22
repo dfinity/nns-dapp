@@ -20,7 +20,6 @@
   export let loading: boolean;
   export let governanceCanisterId: Principal | undefined = undefined;
   export let completed = false;
-  export let descriptions: Record<string, string> | undefined = undefined;
   export let token: IcrcTokenMetadata | undefined;
   export let mapTransaction: mapIcrcTransactionType;
 
@@ -40,8 +39,7 @@
           toSelfTransaction,
           governanceCanisterId,
           token,
-          transactionNames: $i18n.transaction_names,
-          fallbackDescriptions: descriptions,
+          i18n: $i18n,
         })
     )
     .filter(nonNullish);

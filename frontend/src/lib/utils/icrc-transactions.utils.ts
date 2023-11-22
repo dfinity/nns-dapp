@@ -167,16 +167,14 @@ export const mapIcrcTransaction = ({
   toSelfTransaction,
   governanceCanisterId,
   token,
-  transactionNames,
-  fallbackDescriptions,
+  i18n,
 }: {
   transaction: IcrcTransactionWithId;
   account: Account;
   toSelfTransaction: boolean;
   governanceCanisterId?: Principal;
   token: Token | undefined;
-  transactionNames: I18nTransaction_names;
-  fallbackDescriptions?: Record<string, string>;
+  i18n: I18n;
 }): UiTransaction | undefined => {
   try {
     if (isNullish(token)) {
@@ -202,12 +200,9 @@ export const mapIcrcTransaction = ({
     const headline = transactionName({
       type,
       isReceive,
-      labels: transactionNames,
+      labels: i18n.transaction_names,
     });
     const otherParty = isReceive ? txInfo.from : txInfo.to;
-    const fallbackDescription = isNullish(otherParty)
-      ? fallbackDescriptions?.[type]
-      : undefined;
 
     // Timestamp is in nano seconds
     const timestampMilliseconds =
@@ -217,7 +212,6 @@ export const mapIcrcTransaction = ({
       isIncoming: isReceive,
       headline,
       otherParty,
-      fallbackDescription,
       tokenAmount: TokenAmount.fromE8s({
         amount: txInfo.amount + feeApplied,
         token,
@@ -244,17 +238,19 @@ export const mapCkbtcTransaction = (params: {
   toSelfTransaction: boolean;
   governanceCanisterId?: Principal;
   token: Token | undefined;
-  transactionNames: I18nTransaction_names;
-  fallbackDescriptions?: Record<string, string>;
+  i18n: I18n;
 }): UiTransaction | undefined => {
   const mappedTransaction = mapIcrcTransaction(params);
   if (isNullish(mappedTransaction)) {
     return mappedTransaction;
   }
   const {
+    i18n,
     transaction: { transaction },
   } = params;
-  if (transaction.burn.length === 1) {
+  if (transaction.mint.length === 1) {
+    mappedTransaction.otherParty = i18n.ckbtc.btc_network;
+  } else if (transaction.burn.length === 1) {
     const memo = transaction.burn[0].memo[0] as Uint8Array;
     try {
       const decodedMemo = Cbor.decode(memo) as CkbtcBurnMemo;
@@ -262,6 +258,7 @@ export const mapCkbtcTransaction = (params: {
       mappedTransaction.otherParty = withdrawalAddress;
     } catch (err) {
       console.error("Failed to decode ckBTC burn memo", memo, err);
+      mappedTransaction.otherParty = i18n.ckbtc.btc_network;
     }
   }
   return mappedTransaction;

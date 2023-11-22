@@ -138,7 +138,7 @@ describe("icrc-transaction utils", () => {
       account: mockSnsMainAccount,
       toSelfTransaction: false,
       token: ICPToken,
-      transactionNames: en.transaction_names,
+      i18n: en,
     };
     const defaultExpectedData = {
       domKey: "112-1",
@@ -343,7 +343,7 @@ describe("icrc-transaction utils", () => {
         account: mockCkBTCMainAccount,
         toSelfTransaction: false,
         token: ICPToken,
-        transactionNames: en.transaction_names,
+        i18n: en,
       });
       expect(data).toEqual({
         domKey: "1234-1",
@@ -381,7 +381,7 @@ describe("icrc-transaction utils", () => {
         account: mockCkBTCMainAccount,
         toSelfTransaction: false,
         token: ICPToken,
-        transactionNames: en.transaction_names,
+        i18n: en,
       });
       expect(data).toEqual({
         domKey: "1234-1",
@@ -418,14 +418,14 @@ describe("icrc-transaction utils", () => {
         account: mockCkBTCMainAccount,
         toSelfTransaction: false,
         token: ICPToken,
-        transactionNames: en.transaction_names,
+        i18n: en,
       });
 
       expect(data).toEqual({
         domKey: "1234-1",
         headline: "Sent",
         isIncoming: false,
-        otherParty: undefined,
+        otherParty: "BTC Network",
         timestamp: new Date(0),
         tokenAmount: TokenAmount.fromE8s({
           amount,

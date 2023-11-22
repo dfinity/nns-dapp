@@ -182,7 +182,7 @@ describe("CkBTCTransactionList", () => {
 
     expect(cards).toHaveLength(1);
     expect(await cards[0].getHeadline()).toEqual("Sent");
-    expect(await cards[0].getDescription()).toEqual("To: BTC Network");
+    expect(await cards[0].getIdentifier()).toEqual("To: BTC Network");
     expect(errorLog).toEqual(["Failed to decode ckBTC burn memo"]);
   });
 
@@ -250,6 +250,6 @@ describe("CkBTCTransactionList", () => {
     const { po } = renderComponent();
     const cards = await po.getTransactionCardPos();
 
-    expect(await cards[0].getDescription()).toEqual("From: BTC Network");
+    expect(await cards[0].getIdentifier()).toEqual("From: BTC Network");
   });
 });

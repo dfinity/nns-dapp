@@ -85,12 +85,6 @@
     canisterId: universeId,
     account,
   });
-
-  let descriptions: Record<string, string>;
-  $: descriptions = $i18n.ckbtc_transaction_names as unknown as Record<
-    string,
-    string
-  >;
 </script>
 
 <CkBTCWalletTransactionsObserver
@@ -105,7 +99,6 @@
     {transactions}
     {loading}
     {completed}
-    {descriptions}
     {token}
     mapTransaction={mapCkbtcTransaction}
   />

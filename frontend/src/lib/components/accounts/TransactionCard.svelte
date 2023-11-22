@@ -66,10 +66,6 @@
       <div slot="start" class="identifier">
         {#if nonNullish(otherParty)}
           <Identifier size="medium" {label} identifier={otherParty} />
-        {:else if nonNullish(fallbackDescription)}
-          <p data-tid="transaction-description">
-            <Html text={fallbackDescription} />
-          </p>
         {/if}
       </div>
 
