@@ -22,7 +22,8 @@
 
       <svelte:fragment slot="value">
         <Hash
-          id="proposer-id"
+          id="proposal-system-info-proposer-value"
+          testId="proposal-system-info-proposer-value"
           text={`${proposer}`}
           tagName="span"
           showCopy
