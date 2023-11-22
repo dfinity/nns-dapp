@@ -4,18 +4,27 @@ SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
 
 help_text() {
-  cat <<-EOF
+  cat <<-"EOF"
 	Tests:
 	  - Populating a given schema with large scale data
-	  - Migrating from one wasm+schema to another wasm+schema and back.
+	  - Migrating from one Wasm+schema to another Wasm+schema and back.
+
+	Note:
+	  - This test is primarily experimental at this time.
+	  - This test is based on the 'downgrade-upgrade' test.
+	  - Some or all of these changes may be migrated into the downgrade-upgrade test.
 	EOF
 }
 
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/../clap.bash"
 # Define options
-clap.define short=w long=wasm desc="The wasm built from the local code." variable=CURRENT_WASM default=""
-clap.define short=p long=prod desc="A test build of the production wasm" variable=PROD_WASM default=""
+clap.define short=w long=wasm1 desc="A test build of the first wasm.  May be a path or a named release." variable=FIRST_WASM default="out/nns-dapp_test.wasm.gz"
+clap.define short=W long=wasm2 desc="A test build of the second wasm.  May be a path or a named release." variable=SECOND_WASM default="prod"
+clap.define short=a long=args1 desc="A file containing the first init arguments." variable=FIRST_ARGFILE default="out/nns-dapp-arg-local.did"
+clap.define short=A long=args2 desc="A file containing the second init arguments." variable=SECOND_ARGFILE default="out/nns-dapp-arg-local.did"
+clap.define short=s long=schema1 desc="The schema for the first deployment.  Overrides the value in the argument file." variable=FIRST_SCHEMA default=""
+clap.define short=S long=schema2 desc="The schema for the second deployment.  Overrides the value in the argument file." variable=FIRST_SCHEMA default=""
 clap.define short=a long=accounts desc="Accounts will be created until there are at least this many." variable=NUM_TOY_ACCOUNTS default="220000"
 clap.define short=c long=chunk desc="The accounts are created in chunks of this size." variable=TOY_ACCOUNT_CHUNK_SIZE default="10000"
 # Source the output file ----------------------------------------------------------
