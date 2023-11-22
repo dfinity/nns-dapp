@@ -17,7 +17,6 @@
   import IcrcTransactionsList from "$lib/components/accounts/IcrcTransactionsList.svelte";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { CanisterId } from "$lib/types/canister";
-  import { i18n } from "$lib/stores/i18n";
   import { onMount } from "svelte";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import CkBTCWalletTransactionsObserver from "$lib/components/accounts/CkBTCWalletTransactionsObserver.svelte";
@@ -85,12 +84,6 @@
     canisterId: universeId,
     account,
   });
-
-  let descriptions: Record<string, string>;
-  $: descriptions = $i18n.ckbtc_transaction_names as unknown as Record<
-    string,
-    string
-  >;
 </script>
 
 <CkBTCWalletTransactionsObserver
@@ -105,7 +98,6 @@
     {transactions}
     {loading}
     {completed}
-    {descriptions}
     {token}
     mapTransaction={mapCkbtcTransaction}
   />
