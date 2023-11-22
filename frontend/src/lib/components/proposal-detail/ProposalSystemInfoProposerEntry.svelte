@@ -11,12 +11,6 @@
 
   let modalOpen = false;
   // TODO: For simplicity reason, currently we do not display the proposer details if not signed-in. We might want to improve the display of these information in the future.
-
-  const showVotingHistoryModal = () => {
-    if ($authSignedInStore) {
-      modalOpen = true;
-    }
-  };
 </script>
 
 <TestIdWrapper testId="proposal-system-info-proposer-entry-component">
@@ -34,7 +28,8 @@
           showCopy
           splitLength={6}
           tooltipTop
-          on:nnsHash={showVotingHistoryModal}
+          isClickable={$authSignedInStore}
+          on:nnsHash={() => (modalOpen = true)}
         />
       </svelte:fragment>
 

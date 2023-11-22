@@ -12,6 +12,7 @@
   export let className: string | undefined = undefined;
   export let splitLength: number | undefined = undefined;
   export let tooltipTop: boolean | undefined = undefined;
+  export let isClickable: boolean | undefined = undefined;
 
   const dispatcher = createEventDispatcher();
 
@@ -25,7 +26,8 @@
       this={tagName}
       data-tid={testId}
       class={className}
-      on:click|stopPropagation={() => dispatcher("nnsHash")}
+      role={isClickable ? "button" : undefined}
+      on:click|stopPropagation={() => isClickable && dispatcher("nnsHash")}
     >
       {shortenText}</svelte:element
     >
