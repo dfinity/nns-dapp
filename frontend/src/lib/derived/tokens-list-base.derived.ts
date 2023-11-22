@@ -23,6 +23,8 @@ const convertUniverseToBaseTokenData =
       universeId: Principal.fromText(universe.canisterId),
       title: universe.title,
       balance: new UnavailableTokenAmount(token),
+      token,
+      feeE8s: token.fee,
       logo: universe.logo,
       actions: [],
     };

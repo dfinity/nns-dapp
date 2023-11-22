@@ -24,6 +24,8 @@ describe("tokens-list-base.derived", () => {
     title: "Internet Computer",
     logo: IC_LOGO_ROUNDED,
     balance: new UnavailableTokenAmount(NNS_TOKEN_DATA),
+    token: NNS_TOKEN_DATA,
+    feeE8s: NNS_TOKEN_DATA.fee,
     actions: [],
   };
   const snsTetrisToken = mockSnsToken;
@@ -48,6 +50,8 @@ describe("tokens-list-base.derived", () => {
     title: snsTetris.projectName,
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/g3pce-2iaae/logo.png",
     balance: new UnavailableTokenAmount(snsTetris.tokenMetadata),
+    token: snsTetris.tokenMetadata,
+    feeE8s: snsTetris.tokenMetadata.fee,
     actions: [],
   };
   const pacmanTokenBase: UserTokenData = {
@@ -55,6 +59,8 @@ describe("tokens-list-base.derived", () => {
     title: snsPacman.projectName,
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/f7crg-kabae/logo.png",
     balance: new UnavailableTokenAmount(snsPacman.tokenMetadata),
+    token: snsPacman.tokenMetadata,
+    feeE8s: snsPacman.tokenMetadata.fee,
     actions: [],
   };
   const mockCkTESTBTCToken = {
@@ -67,6 +73,8 @@ describe("tokens-list-base.derived", () => {
     title: "ckBTC",
     logo: CKBTC_LOGO,
     balance: new UnavailableTokenAmount(mockCkBTCToken),
+    token: mockCkBTCToken,
+    feeE8s: mockCkBTCToken.fee,
     actions: [],
   };
   const ckTESTBTCTokenBase: UserTokenData = {
@@ -74,6 +82,8 @@ describe("tokens-list-base.derived", () => {
     title: "ckTESTBTC",
     logo: CKTESTBTC_LOGO,
     balance: new UnavailableTokenAmount(mockCkTESTBTCToken),
+    token: mockCkTESTBTCToken,
+    feeE8s: mockCkTESTBTCToken.fee,
     actions: [],
   };
 
