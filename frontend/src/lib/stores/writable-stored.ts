@@ -61,9 +61,7 @@ const getVersion = <T>(data: T | VersionedData<T>): number | undefined => {
 };
 
 /** Reads the state (w/ or w/o the version) from local storage and returns the versioned state. */
-const readData = <T>(
-  key: StoreLocalStorageKey
-): { data: T | undefined; version: number | undefined } => {
+const readData = <T>(key: StoreLocalStorageKey): VersionedData<T> => {
   // Do not break UI if local storage fails
   try {
     const storedValue = localStorage.getItem(key);
@@ -118,7 +116,7 @@ export const writableStored = <T>({
 
   const initialValue = getInitialValue();
   // preserve the version because there are only data in the store
-  // let actualVersion: number | undefined = initialValue.version;
+  let actualVersion: number | undefined = initialValue.version;
   const store = writable<T>(initialValue.data);
 
   const unsubscribeStorage = store.subscribe((store: T) => {
@@ -126,9 +124,7 @@ export const writableStored = <T>({
       return;
     }
 
-    // We always rewrite the storage after version update, so it is safe to read it from the storage.
-    const version = readData(key).version;
-    writeData({ key, data: store, version });
+    writeData({ key, data: store, version: actualVersion });
   });
 
   const upgradeStateVersion = ({
@@ -140,6 +136,7 @@ export const writableStored = <T>({
   }) => {
     const storedValue = readData<T>(key);
     if ((version ?? 0) > (storedValue.version ?? 0)) {
+      actualVersion = version;
       store.set(newVersionValue);
       // rewrite local storage with the new version
       writeData({
