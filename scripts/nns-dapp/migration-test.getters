@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Downloads a released asset
+download_asset() {
+  local release_name asset destination
+  release_name="$1"
+  asset="$2"
+  destination="$3"
+  curl -sSLf "https://github.com/dfinity/nns-dapp/releases/download/${release_name}/${asset}" | sponge "$destination" || {
+    echo "ERROR: Failed to download asset '${asset:-}' for release '${release_name}'."
+    exit 1
+  } >&2
+}
+
+# The path to the local copy of the wasm used in the test.
+working_wasm() {
+  local configuration_num
+  lint_configuration_num "${configuration_num:-}"
+  echo "$WORKDIR/nns-dapp-${configuration_num}_test.wasm.gz"
+}
+
+# The path to the arguments used in the test
+working_arguments() {
+  local configuration_num
+  configuration_num="${1:-}"
+  lint_configuration_num "${configuration_num:-}"
+  echo "$WORKDIR/nns-dapp-args-${configuration_num}.did"
+}
+
+# Gets a local copy of a Wasm from a path or GitHub release
+get_wasm() {
+  local configuration_num destination
+  path_or_release="${1:-}"
+  destination="${2:-}"
+  lint_wasm_path "$destination"
+
+  if [[ "${path_or_release:-}" = *.wasm.gz ]]; then
+    lint_wasm_path "${path_or_release:-}"
+    cp "${path_or_release}" "$destination"
+  else
+    lint_release_name "${path_or_release:-}"
+    download_asset "${path_or_release}" nns-dapp_test.wasm.gz "$destination"
+  fi
+  : Final sanity check
+  lint_wasm "$destination"
+}
+
+# Gets a local copy of an arguments file from a local path or GitHub release
+get_argfile() {
+  local configuration_num destination
+  path_or_release="${1:-}"
+  destination="${2:-}"
+  lint_argfile_path "$destination"
+
+  if [[ "${path_or_release:-}" = *.did ]]; then
+    lint_argfile_path "${path_or_release:-}"
+    cp "${path_or_release}" "$destination"
+  else
+    lint_release_name "${path_or_release:-}"
+    download_asset "${path_or_release}" nns-dapp-arg-local.did "$destination"
+  fi
+  : Final sanity check
+  lint_argfile "$destination"
+}

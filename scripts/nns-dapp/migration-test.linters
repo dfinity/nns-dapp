@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Checks that the configuration number is valid.
+lint_configuration_num() {
+  local configuration_num
+  configuration_num="${1:-}"
+  [[ "${configuration_num:-}" == 1 ]] || [[ "${configuration_num:-}" == 2 ]] || {
+    echo "ERROR: configuration_num is invalid."
+    echo "Expected: 1 or 2 (corresponding to the initial deployment and the upgrade respectively)"
+    echo "Actual:  '${configuration_num:-}'"
+    exit 1
+  } >&2
+}
+
+# Checks that a Wasm filename has the expected form.
+lint_wasm_path() {
+  local wasm_path
+  wasm_path="${1:-}"
+  [[ "${wasm_path:-}" = *.wasm.gz ]] || {
+    echo "ERROR: Invalid wasm path."
+    echo "Expected:  A path ending in .wasm.gz"
+    echo "Actual:    '${wasm_path:-}'"
+    exit 1
+  } >&2
+}
+
+# Gets the information, including exported methods, from a gzipped Wasm file.
+get_wasm_info() {
+  local wasm_path
+  wasm_path="${1:-}"
+  lint_wasm_path "${wasm_path:-}"
+  ic-wasm <(gunzip <"$wasm_path") info || {
+    echo "ERROR: Wasm file cannot be parsed"
+    echo "Expected: ic-wasm should be able to get the Wasm info"
+    echo "Actual:   See error messages above."
+    exit 1
+  } >&2
+}
+
+# Checks that a Wasm file appears to be well formed.
+lint_wasm() {
+  local wasm_path wasm_info
+  wasm_path="${1:-}"
+  test -e "${wasm_path:-1}" || {
+    echo "ERROR: Wasm file does not exist."
+    echo "Path: '${wasm_path:-}'"
+    exit 1
+  } >&2
+  data_type="$(file "${wasm_path:-}")"
+  [[ "${data_type:-}" = *gzip\ compressed\ data* ]] || {
+    echo "ERROR: Wasm file is not compressed"
+    echo "Expected:  gzip compressed data"
+    echo "Actual:    '${data_type:-}'"
+    exit 1
+  } >&2
+  wasm_info="$(get_wasm_info "$wasm_path")"
+  test_method="get_toy_account"
+  echo "${wasm_info:-}" | grep -q "$test_method" || {
+    echo "ERROR: This test needs test builds of the Wasm."
+    echo "Expected: Test methods including '$test_method'."
+    echo "Actual:   The exported methods do not include '$test_method':"
+    echo "$wasm_info" | sed 's/^/wasm_info:  /g'
+    exit 1
+  } >&2
+}
+
+# Checks that the release name is valid
+lint_release_name() {
+  local release_name
+  release_name="${1:-}"
+  git check-ref-format "refs/tags/${release_name:-}" || {
+    echo "ERROR: Invalid release name"
+    echo "Expected: A valid git tag name"
+    echo "Actual:   '${release_name:-}'"
+    exit 1
+  } >&2
+}
+
+# Checks that an argument is well formed candid
+lint_argfile() {
+  local argfile_path
+  argfile_path="${1:-}"
+  test -e "${argfile_path:-1}" || {
+    echo "ERROR: Arguments candid file does not exist."
+    echo "Path: '${argfile_path:-}'"
+    exit 1
+  } >&2
+  data_type="$(file "${argfile_path:-}")"
+  [[ "${data_type:-}" = *text* ]] || {
+    echo "ERROR: Arguments file should be ASCII or UTF8 text."
+    echo "Expected:  text"
+    echo "Actual:    '${data_type:-}'"
+    exit 1
+  } >&2
+  idl2json <"$argfile_path" >/dev/null || {
+    echo "ERROR: Failed to parse arguments as candid."
+    exit 1
+  } >&2
+}
