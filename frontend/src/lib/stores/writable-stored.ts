@@ -1,6 +1,6 @@
 import { browser } from "$app/environment";
 import type { StoreLocalStorageKey } from "$lib/constants/stores.constants";
-import { nonNullish } from "@dfinity/utils";
+import { jsonReplacer, jsonReviver, nonNullish } from "@dfinity/utils";
 import { writable, type Unsubscriber, type Writable } from "svelte/store";
 
 type WritableStored<T> = Writable<T> & {
@@ -32,15 +32,11 @@ const writeData = <T>({
 }) => {
   // Do not break UI if local storage fails
   try {
-    // TODO: can / should we replace this replacer with json.utils.jsonReplacer? is it possible without breaking changes?
-    const bigintStringify = (_key: string, value: unknown): unknown =>
-      typeof value === "bigint" ? `${value}` : value;
     // Data structure  `{ data, version }` vs `data` depends on version absence.
-
     const storeData: T | VersionedData<T> = nonNullish(version)
       ? { data, version }
       : data;
-    localStorage.setItem(key, JSON.stringify(storeData, bigintStringify));
+    localStorage.setItem(key, JSON.stringify(storeData, jsonReplacer));
   } catch (error: unknown) {
     console.error(error);
   }
@@ -77,7 +73,7 @@ const readData = <T>(
       storedValue !== undefined &&
       storedValue !== "undefined"
     ) {
-      const parsedValue = JSON.parse(storedValue) as T;
+      const parsedValue = JSON.parse(storedValue, jsonReviver);
 
       if (isVersionedData(parsedValue)) {
         return parsedValue;
