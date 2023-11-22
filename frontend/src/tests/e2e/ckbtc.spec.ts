@@ -46,7 +46,7 @@ test("Test accounts requirements", async ({ page, context }) => {
   expect(transactions).toHaveLength(1);
   const transaction = transactions[0];
 
-  expect(await transaction.getDescription()).toBe("From: BTC Network");
+  expect(await transaction.getIdentifier()).toBe("From: BTC Network");
   // 20 minus fees.
   expect(await transaction.getAmount()).toBe("+19.99986667");
 });
