@@ -1,0 +1,156 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+verify_healthy() {
+  dfx canister call nns-dapp get_stats
+  dfx canister call nns-dapp get_canisters
+}
+
+# Gets the number of transactions; this list may be pruned so is not invariant.
+get_transactions_count() {
+  dfx canister call nns-dapp get_stats | idl2json | jq -r '.transactions_count'
+}
+# Gets stats that should be invariant across upgrades
+get_upgrade_invariant_stats() {
+  dfx canister call nns-dapp get_stats | idl2json | jq '{accounts_count, neurons_created_count, neurons_topped_up_count, sub_accounts_count}'
+}
+# Gets some sample accounts
+sample_toy_accounts() {
+  seq 0 "$TOY_ACCOUNT_CHUNK_SIZE" "$((NUM_TOY_ACCOUNTS - 1))" | xargs -I{} dfx canister call nns-dapp get_toy_account "({})" --query
+}
+# Gets data that should be invariant across upgrades
+get_upgrade_invariants() {
+  echo "==== UPGRADE INVARIANT STATS ===="
+  get_upgrade_invariant_stats
+  echo "==== END ===="
+  echo "==== SAMPLE INVARIANT STATS ===="
+  sample_toy_accounts
+  echo "==== END ===="
+}
+
+# Verifies that the state is at least as large as expected.
+check_state_size() {
+  local invariants accounts_count expected_min_accounts
+  expected_min_accounts="$NUM_TOY_ACCOUNTS"
+  invariants="$(get_upgrade_invariant_stats)"
+  accounts_count="$(jq .accounts_count <<<"$invariants")"
+  if ((accounts_count < expected_min_accounts)); then
+    {
+      echo "ERROR: 'accounts_count' is smaller than expected."
+      printf "  Expected at least: %10d\n" "$expected_min_accounts"
+      printf "  Actual:            %10d\n" "$accounts_count"
+      printf "  State:\n%s\n" "$invariants"
+      exit 1
+    } >&2
+  fi
+}
+
+# Verifies that the number of transactions is reasonable.  Some may be pruned, but not a lot.
+check_num_transactions() {
+  # The toy state creates 3 transactions per account; see TRANSACTIONS_PER_ACCOUNT
+  # in: rs/backend/src/accounts_store/toy_data.rs
+  toy_transactions="$((NUM_TOY_ACCOUNTS * 3))"
+  # Note: Transactions MAY be pruned if the state is large enough, however in tests
+  # we should not make the state so large that, say, half the transactions are pruned.
+  # If that many are pruned, either the test is unrealistic or we should increase the
+  # amount of storage available.
+  expected_min_transactions="$((toy_transactions / 2))"
+  transactions_count="$(get_transactions_count)"
+  if ((transactions_count < expected_min_transactions)); then
+    {
+      echo "ERROR: 'transactions_count' is smaller than expected."
+      printf "  Expected at least: %10d\n" "$expected_min_transactions"
+      printf "  Actual:            %10d\n" "$transactions_count"
+      printf "  Note: Transactions MAY be pruned but if a lot are being pruned, there is insufficient memory."
+      exit 1
+    } >&2
+  fi
+}
+
+# Wait for the migration countdown to complete.
+wait_for_migration() {
+  local migration_countdown
+  for ((i = 0; i < 120; i++)); do
+    migration_countdown="$(dfx canister call nns-dapp get_stats --query | idl2json | jq '.migration_countdown[0] // 0')" # TODO: Remove the default when prod has migration countdown stats
+    echo "Migration countdown: $migration_countdown"
+    if ((migration_countdown == 0)); then
+      return
+    fi
+    sleep 1
+  done
+  {
+    echo "ERROR: Migration did not complete within the expected time."
+    echo "       For a migration to be considered complete, the migration_countdown should reach zero."
+    echo "       Here are the current stats:"
+    dfx canister call nns-dapp get_stats
+    exit 1
+  } >&2
+}
+
+# Installs the nns-dapp canister
+# - Creates the canister if it doesn't exist
+# - Installs the canister even if the wasm is the same
+install_nnsdapp() {
+  local wasm argfile
+  wasm="$1"
+  argfile="$2"
+  if dfx canister id nns-dapp >/dev/null 2>/dev/null; then
+    upgrade_nnsdapp "$wasm" "$argfile"
+  else
+    dfx canister create nns-dapp
+    dfx canister install nns-dapp --wasm "$wasm" --argument "$(cat "$argfile")" --yes
+    scripts/dfx-canister-check-wasm-hash --wasm "$wasm" --canister nns-dapp
+    verify_healthy
+  fi
+}
+
+# Installs the current build of nns-dapp
+# TODO: Record upgrade time
+# TODO: Record upgrade cycles
+# TODO: Record state size
+upgrade_nnsdapp() {
+  local wasm argfile
+  wasm="$1"
+  argfile="$2"
+  local prestate poststate
+  prestate="$(get_upgrade_invariants | tee /dev/stderr)"
+  # Check that the data is plausible
+  # TODO: Check that the prestate is not empty; first we need to populate the state.
+  # TODO: Consider storing all accounts data in a merkle tree so that we can check just the root hash.
+  dfx canister install --upgrade-unchanged nns-dapp --wasm "$wasm" --mode upgrade --argument "$(cat "$argfile")" --yes
+  scripts/dfx-canister-check-wasm-hash --wasm "$wasm" --canister nns-dapp
+  verify_healthy
+  wait_for_migration
+  verify_healthy
+  poststate="$(get_upgrade_invariants)"
+  if [[ "$prestate" != "$poststate" ]]; then
+    {
+      echo "ERROR: The upgrade changed the state of the canister."
+      echo "Prestate: $prestate"
+      echo "Poststate: $poststate"
+      echo "Diff:"
+      diff -u <(echo "$prestate") <(echo "$poststate") || true
+      exit 1
+    } >&2
+  fi
+}
+
+# This file is intended to be sourced, but if called directly, offer some help
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  if (($# == 0)) || [[ "${1:-}" == "--help" ]]; then
+    cat <<-EOF
+		A library of methods for getting and manipulating the nns-canister state.
+
+		Usage:
+		- Source this file from your code.
+		- You can also call this file directly.  Pass the function name
+		  you want to call and arguments.  This may be useful for
+		  ad-hoc runs but is not intended for production use.
+
+		A list of functions:
+		EOF
+    declare -F
+    exit 0
+  fi
+  "${@}"
+fi

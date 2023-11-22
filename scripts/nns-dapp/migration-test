@@ -20,6 +20,7 @@ help_text() {
 	  - idl2json
 	  - wasm files for the two deployments.
 	  - candid argument files (optional)
+	  - a running replica
 	EOF
 }
 
@@ -37,10 +38,12 @@ clap.define short=c long=chunk desc="The accounts are created in chunks of this 
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
+# Gets helper functions
 . "${BASH_SOURCE[0]}.linters"
 . "${BASH_SOURCE[0]}.getters"
-WORKDIR="$(realpath "$(mktemp -d nns-dapp-test-XXXXXX)")"
-# Print a stack trace
+. "${BASH_SOURCE[0]}.canister"
+
+# Prints a stack trace
 function print_stack() {
   local i stack_size func linen src
   stack_size=${#FUNCNAME[@]}
@@ -54,6 +57,8 @@ function print_stack() {
     printf "   at: %s %s %s\n" "$func" "$src" "$linen"
   done
 }
+
+# Clean up on exit - or print error details.
 on_exit() {
   exit_code=$?
   if ((exit_code == 0)); then
@@ -99,176 +104,28 @@ get_assets() {
   done
 }
 
-get_assets
-find "$WORKDIR"
+test_upgrade_downgrade() {
+  WORKDIR="$(realpath "$(mktemp -d nns-dapp-test-XXXXXX)")"
+  get_assets
+  find "$WORKDIR"
 
-exit 1
-
-verify_healthy() {
-  dfx canister call nns-dapp get_stats
-  dfx canister call nns-dapp get_canisters
-}
-
-get_current_wasm() {
-  ./scripts/docker-build --network local
-}
-
-get_prod_wasm() {
-  # Note: Using the test build allows us to get arbitrary test accounts from the canister.
-  if test -n "${PROD_WASM:-}"; then
-    test -f "${PROD_WASM}" || {
-      echo "ERROR: The specified production wasm file does not exist at: '$PROD_WASM'"
-      exit 1
-    } >&2
-  else
-    PROD_WASM="$(mktemp nns-dapp-prod-XXXXXX --suffix .wasm.gz)"
-    curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp_test.wasm.gz >"$PROD_WASM"
-  fi
-}
-
-# Gets the number of transactions; this list may be pruned so is not invariant.
-get_transactions_count() {
-  dfx canister call nns-dapp get_stats | idl2json | jq -r '.transactions_count'
-}
-# Gets stats that should be invariant across upgrades
-get_upgrade_invariant_stats() {
-  dfx canister call nns-dapp get_stats | idl2json | jq '{accounts_count, neurons_created_count, neurons_topped_up_count, sub_accounts_count}'
-}
-# Gets some sample accounts
-sample_toy_accounts() {
-  seq 0 "$TOY_ACCOUNT_CHUNK_SIZE" "$((NUM_TOY_ACCOUNTS - 1))" | xargs -I{} dfx canister call nns-dapp get_toy_account "({})" --query
-}
-# Gets data that should be invariant across upgrades
-get_upgrade_invariants() {
-  echo "==== UPGRADE INVARIANT STATS ===="
-  get_upgrade_invariant_stats
-  echo "==== END ===="
-  echo "==== SAMPLE INVARIANT STATS ===="
-  sample_toy_accounts
-  echo "==== END ===="
-}
-
-# Verifies that the state is at least as large as expected.
-check_state_size() {
-  local invariants accounts_count expected_min_accounts
-  expected_min_accounts="$NUM_TOY_ACCOUNTS"
-  invariants="$(get_upgrade_invariant_stats)"
-  accounts_count="$(jq .accounts_count <<<"$invariants")"
-  if ((accounts_count < expected_min_accounts)); then
-    {
-      echo "ERROR: 'accounts_count' is smaller than expected."
-      printf "  Expected at least: %10d\n" "$expected_min_accounts"
-      printf "  Actual:            %10d\n" "$accounts_count"
-      printf "  State:\n%s\n" "$invariants"
-      exit 1
-    } >&2
-  fi
-}
-
-# Verifies that the number of transactions is reasonable.  Some may be pruned, but not a lot.
-check_num_transactions() {
-  # The toy state creates 3 transactions per account; see TRANSACTIONS_PER_ACCOUNT
-  # in: rs/backend/src/accounts_store/toy_data.rs
-  toy_transactions="$((NUM_TOY_ACCOUNTS * 3))"
-  # Note: Transactions MAY be pruned if the state is large enough, however in tests
-  # we should not make the state so large that, say, half the transactions are pruned.
-  # If that many are pruned, either the test is unrealistic or we should increase the
-  # amount of storage available.
-  expected_min_transactions="$((toy_transactions / 2))"
-  transactions_count="$(get_transactions_count)"
-  if ((transactions_count < expected_min_transactions)); then
-    {
-      echo "ERROR: 'transactions_count' is smaller than expected."
-      printf "  Expected at least: %10d\n" "$expected_min_transactions"
-      printf "  Actual:            %10d\n" "$transactions_count"
-      printf "  Note: Transactions MAY be pruned but if a lot are being pruned, there is insufficient memory."
-      exit 1
-    } >&2
-  fi
-}
-
-# Wait for the migration countdown to complete.
-wait_for_migration() {
-  local migration_countdown
-  for ((i = 0; i < 120; i++)); do
-    migration_countdown="$(dfx canister call nns-dapp get_stats --query | idl2json | jq '.migration_countdown[0] // 0')" # TODO: Remove the default when prod has migration countdown stats
-    echo "Migration countdown: $migration_countdown"
-    if ((migration_countdown == 0)); then
-      return
-    fi
-    sleep 1
+  echo "Installing $(working_wasm 1)..."
+  install_nnsdapp "$(working_wasm 1)" "$(working_arguments 1)"
+  echo "Installing state..."
+  while (("$(dfx canister call nns-dapp get_stats | idl2json | jq -r .accounts_count)" < NUM_TOY_ACCOUNTS)); do
+    dfx canister call nns-dapp create_toy_accounts "($TOY_ACCOUNT_CHUNK_SIZE: nat)"
   done
-  {
-    echo "ERROR: Migration did not complete within the expected time."
-    echo "       For a migration to be considered complete, the migration_countdown should reach zero."
-    echo "       Here are the current stats:"
-    dfx canister call nns-dapp get_stats
-    exit 1
-  } >&2
+  verify_healthy
+  check_state_size
+  check_num_transactions
+  echo "Upgrading to $(working_wasm 2)..."
+  upgrade_nnsdapp "$(working_wasm 2)" "$(working_arguments 2)"
+  check_num_transactions
+  echo "Reverting to $(working_wasm 1)..."
+  upgrade_nnsdapp "$(working_wasm 1)" "$(working_arguments 1)"
+  verify_healthy
+  check_num_transactions
+  echo SUCCESS
 }
 
-# Installs the current build of nns-dapp
-# TODO: Record upgrade time
-# TODO: Record upgrade cycles
-# TODO: Record state size
-upgrade_nnsdapp() {
-  local prestate poststate
-  prestate="$(get_upgrade_invariants | tee /dev/stderr)"
-  # Check that the data is plausible
-  # TODO: Check that the prestate is not empty; first we need to populate the state.
-  # TODO: Consider storing all accounts data in a merkle tree so that we can check just the root hash.
-  dfx canister install --upgrade-unchanged nns-dapp --wasm "$1" --mode upgrade --argument "$(cat nns-dapp-arg-local.did)" --yes
-  scripts/dfx-canister-check-wasm-hash --wasm "$1" --canister nns-dapp
-  wait_for_migration
-  poststate="$(get_upgrade_invariants)"
-  if [[ "$prestate" != "$poststate" ]]; then
-    {
-      echo "ERROR: The upgrade changed the state of the canister."
-      echo "Prestate: $prestate"
-      echo "Poststate: $poststate"
-      echo "Diff:"
-      diff -u <(echo "$prestate") <(echo "$poststate") || true
-      exit 1
-    } >&2
-  fi
-}
-
-echo "Getting or building the wasm..."
-test -n "${CURRENT_WASM:-}" || {
-  CURRENT_WASM="out/nns-dapp_test.wasm.gz"
-  echo "Building $CURRENT_WASM..."
-  ./scripts/docker-build --network local
-}
-test -e "$CURRENT_WASM" || {
-  echo "ERROR: Wasm file not found at '$CURRENT_WASM'."
-  exit 1
-} >&2
-echo "Installing $CURRENT_WASM..."
-if dfx canister id nns-dapp >/dev/null 2>/dev/null; then
-  upgrade_nnsdapp "$CURRENT_WASM"
-else
-  dfx canister create nns-dapp
-  dfx canister install nns-dapp --wasm "$CURRENT_WASM" --argument "$(cat nns-dapp-arg-local.did)" --yes
-fi
-scripts/dfx-canister-check-wasm-hash --wasm "$CURRENT_WASM" --canister nns-dapp
-echo "Checking that the current wasm is healthy..."
-verify_healthy
-echo "Installing state"
-while (("$(dfx canister call nns-dapp get_stats | idl2json | jq -r .accounts_count)" < NUM_TOY_ACCOUNTS)); do
-  dfx canister call nns-dapp create_toy_accounts "($TOY_ACCOUNT_CHUNK_SIZE: nat)"
-done
-verify_healthy
-check_state_size
-check_num_transactions
-echo "Downloading and installing the prod wasm..."
-get_prod_wasm
-upgrade_nnsdapp "$PROD_WASM"
-echo "Checking that the rollback is healthy..."
-verify_healthy
-check_num_transactions
-echo "Rolling forwards..."
-upgrade_nnsdapp "$CURRENT_WASM"
-echo "Checking that the upgrade is healthy..."
-verify_healthy
-check_num_transactions
-echo SUCCESS
+test_upgrade_downgrade
