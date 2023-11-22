@@ -17,8 +17,6 @@
 
   let shortenText: string;
   $: shortenText = shortenWithMiddleEllipsis(text, splitLength);
-
-  $: console.log("text", text, shortenText);
 </script>
 
 <span data-tid="hash-component">
@@ -27,7 +25,7 @@
       this={tagName}
       data-tid={testId}
       class={className}
-      on:click|stopPropagation={() => dispatcher("nnsTextClick")}
+      on:click|stopPropagation={() => dispatcher("nnsHash")}
     >
       {shortenText}</svelte:element
     >

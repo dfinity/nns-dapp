@@ -12,7 +12,7 @@
   let modalOpen = false;
   // TODO: For simplicity reason, currently we do not display the proposer details if not signed-in. We might want to improve the display of these information in the future.
 
-  const click = () => {
+  const showVotingHistoryModal = () => {
     if ($authSignedInStore) {
       modalOpen = true;
     }
@@ -34,7 +34,7 @@
           showCopy
           splitLength={6}
           tooltipTop
-          on:nnsTextClick={click}
+          on:nnsHash={showVotingHistoryModal}
         />
       </svelte:fragment>
 
