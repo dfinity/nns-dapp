@@ -25,4 +25,8 @@ export class TokensPagePo extends BasePageObject {
   getRowsData(): Promise<TokensTableRowData[]> {
     return this.getTokensTable().getRowsData();
   }
+
+  clickSendOnRow(index: number): Promise<void> {
+    return this.getTokensTable().clickSendOnRow(index);
+  }
 }

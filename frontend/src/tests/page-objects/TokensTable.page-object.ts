@@ -25,4 +25,9 @@ export class TokensTablePo extends BasePageObject {
     const rows = await this.getRows();
     return Promise.all(rows.map((row) => row.getData()));
   }
+
+  async clickSendOnRow(index: number): Promise<void> {
+    const rows = await this.getRows();
+    return rows[index].click("send-button-component");
+  }
 }

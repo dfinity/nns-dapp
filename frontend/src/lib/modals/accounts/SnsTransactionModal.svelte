@@ -61,6 +61,7 @@
 
 {#if nonNullish(transactionFee) && nonNullish(token)}
   <TransactionModal
+    testId="sns-transaction-modal-component"
     {rootCanisterId}
     on:nnsSubmit={transfer}
     on:nnsClose

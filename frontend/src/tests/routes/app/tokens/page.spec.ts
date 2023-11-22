@@ -1,13 +1,19 @@
 import * as ckBTCLedgerApi from "$lib/api/ckbtc-ledger.api";
 import * as snsLedgerApi from "$lib/api/sns-ledger.api";
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
+import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { page } from "$mocks/$app/stores";
 import TokensRoute from "$routes/(app)/(nns)/tokens/+page.svelte";
-import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
+import {
+  mockIdentity,
+  resetIdentity,
+  setNoIdentity,
+} from "$tests/mocks/auth.store.mock";
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
@@ -21,6 +27,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AuthClient } from "@dfinity/auth-client";
+import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -67,6 +74,7 @@ describe("Tokens route", () => {
         ...mockCkBTCMainAccount,
         balanceE8s: ckBTCBalanceE8s,
       });
+      vi.spyOn(snsLedgerApi, "snsTransfer").mockResolvedValue(undefined);
       vi.spyOn(snsLedgerApi, "getSnsAccounts").mockImplementation(
         async ({ rootCanisterId }) => {
           if (rootCanisterId.toText() === rootCanisterIdTetris.toText()) {
@@ -114,6 +122,12 @@ describe("Tokens route", () => {
           token: mockSnsToken,
         },
       });
+      // TODO: Remove when we deprecate the store: https://dfinity.atlassian.net/browse/GIX-2060
+      transactionsFeesStore.setFee({
+        rootCanisterId: rootCanisterIdTetris,
+        fee: mockSnsToken.fee,
+        certified: true,
+      });
       icpAccountsStore.setForTesting({
         main: { ...mockMainAccount, balanceE8s: icpBalanceE8s },
       });
@@ -159,6 +173,39 @@ describe("Tokens route", () => {
             { projectName: "Tetris", balance: "2.22 TST" },
             { projectName: "Pacman", balance: "3.14 PCMN" },
           ]);
+        });
+
+        it("users can send SNS tokens", async () => {
+          const po = await renderPage();
+
+          const tokensPagePo = po.getTokensPagePo();
+
+          // The the first two rows are ICP and ckBTC.
+          await tokensPagePo.clickSendOnRow(2);
+
+          expect(await po.getSnsTransactionModalPo().isPresent()).toBe(true);
+
+          expect(snsLedgerApi.snsTransfer).not.toBeCalled();
+
+          const toAccount: IcrcAccount = {
+            owner: principal(1),
+          };
+          const amount = 2;
+
+          await po.transferSnsTokens({
+            amount,
+            destinationAddress: encodeIcrcAccount(toAccount),
+          });
+
+          expect(snsLedgerApi.snsTransfer).toBeCalledTimes(1);
+          expect(snsLedgerApi.snsTransfer).toBeCalledWith({
+            rootCanisterId: rootCanisterIdTetris,
+            fee: tetrisToken.fee,
+            to: toAccount,
+            amount: BigInt(amount * E8S_PER_ICP),
+            fromSubAccount: undefined,
+            identity: mockIdentity,
+          });
         });
       });
     });

@@ -122,10 +122,7 @@
     <SnsTransactionModal
       rootCanisterId={modal.data.universeId}
       token={modal.data.token}
-      transactionFee={TokenAmount.fromE8s({
-        amount: modal.data.feeE8s,
-        token: modal.data.token,
-      })}
+      transactionFee={modal.data.fee}
       on:nnsClose={closeModal}
     />
   {/if}
