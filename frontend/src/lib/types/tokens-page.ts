@@ -15,7 +15,7 @@ export type UserTokenData = {
   balance: TokenAmount | UnavailableTokenAmount;
   token: Token;
   // Fees are included in the metadata of ICRC tokens, but this is not a list of only ICRC tokens
-  feeE8s: TokenAmount;
+  fee: TokenAmount;
   logo: string;
   actions: UserTokenAction[];
 };

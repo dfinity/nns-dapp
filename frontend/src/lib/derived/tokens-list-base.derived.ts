@@ -24,7 +24,7 @@ const convertUniverseToBaseTokenData =
       title: universe.title,
       balance: new UnavailableTokenAmount(token),
       token,
-      feeE8s: TokenAmount.fromE8s({ amount: token.fee, token }),
+      fee: TokenAmount.fromE8s({ amount: token.fee, token }),
       logo: universe.logo,
       actions: [],
     };

@@ -46,7 +46,7 @@ describe("tokens-list-base.derived", () => {
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/g3pce-2iaae/logo.png",
     balance: new UnavailableTokenAmount(snsTetris.tokenMetadata),
     token: snsTetris.tokenMetadata,
-    feeE8s: TokenAmount.fromE8s({
+    fee: TokenAmount.fromE8s({
       amount: snsTetris.tokenMetadata.fee,
       token: snsTetris.tokenMetadata,
     }),
@@ -58,7 +58,7 @@ describe("tokens-list-base.derived", () => {
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/f7crg-kabae/logo.png",
     balance: new UnavailableTokenAmount(snsPacman.tokenMetadata),
     token: snsPacman.tokenMetadata,
-    feeE8s: TokenAmount.fromE8s({
+    fee: TokenAmount.fromE8s({
       amount: snsPacman.tokenMetadata.fee,
       token: snsPacman.tokenMetadata,
     }),

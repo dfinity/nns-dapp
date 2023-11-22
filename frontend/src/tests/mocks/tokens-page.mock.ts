@@ -19,7 +19,7 @@ export const icpTokenBase: UserTokenData = {
   logo: IC_LOGO_ROUNDED,
   balance: new UnavailableTokenAmount(NNS_TOKEN_DATA),
   token: NNS_TOKEN_DATA,
-  feeE8s: TokenAmount.fromE8s({
+  fee: TokenAmount.fromE8s({
     amount: NNS_TOKEN_DATA.fee,
     token: NNS_TOKEN_DATA,
   }),
@@ -37,7 +37,7 @@ export const ckBTCTokenBase: UserTokenData = {
   logo: CKBTC_LOGO,
   balance: new UnavailableTokenAmount(mockCkBTCToken),
   token: mockCkBTCToken,
-  feeE8s: TokenAmount.fromE8s({
+  fee: TokenAmount.fromE8s({
     amount: mockCkBTCToken.fee,
     token: mockCkBTCToken,
   }),
@@ -49,7 +49,7 @@ export const ckTESTBTCTokenBase: UserTokenData = {
   logo: CKTESTBTC_LOGO,
   balance: new UnavailableTokenAmount(mockCkTESTBTCToken),
   token: mockCkTESTBTCToken,
-  feeE8s: TokenAmount.fromE8s({
+  fee: TokenAmount.fromE8s({
     amount: mockCkTESTBTCToken.fee,
     token: mockCkTESTBTCToken,
   }),
@@ -65,7 +65,7 @@ export const userTokenPageMock: UserTokenData = {
   }),
   logo: "sns-logo.svg",
   token: snsTetrisToken,
-  feeE8s: TokenAmount.fromE8s({
+  fee: TokenAmount.fromE8s({
     amount: snsTetrisToken.fee,
     token: mockCkBTCToken,
   }),
@@ -89,7 +89,7 @@ export const userTokensPageMock: UserTokenData[] = [
       token: { name: "Test SNS", symbol: "SNS1" },
     }),
     token: snsTetrisToken,
-    feeE8s: TokenAmount.fromE8s({
+    fee: TokenAmount.fromE8s({
       amount: snsTetrisToken.fee,
       token: snsTetrisToken,
     }),
@@ -104,7 +104,7 @@ export const userTokensPageMock: UserTokenData[] = [
       token: { name: "Test SNS", symbol: "SNS2" },
     }),
     token: snsPackmanToken,
-    feeE8s: TokenAmount.fromE8s({
+    fee: TokenAmount.fromE8s({
       amount: snsPackmanToken.fee,
       token: snsPackmanToken,
     }),
@@ -115,5 +115,10 @@ export const userTokensPageMock: UserTokenData[] = [
 
 export const createUserToken = (params: Partial<UserTokenData> = {}) => ({
   ...userTokenPageMock,
+  ...params,
+});
+
+export const createIcpUserToken = (params: Partial<UserTokenData> = {}) => ({
+  ...icpTokenBase,
   ...params,
 });

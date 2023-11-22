@@ -15,21 +15,24 @@ import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
-import { ckBTCTokenBase, icpTokenBase } from "$tests/mocks/tokens-page.mock";
+import {
+  ckBTCTokenBase,
+  createIcpUserToken,
+  icpTokenBase,
+} from "$tests/mocks/tokens-page.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { TokenAmount } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("tokens-list-user.derived", () => {
-  const icpUserToken: UserTokenData = {
-    ...icpTokenBase,
+  const icpUserToken: UserTokenData = createIcpUserToken({
     balance: TokenAmount.fromE8s({
       amount: mockMainAccount.balanceE8s,
       token: NNS_TOKEN_DATA,
     }),
     actions: [UserTokenAction.GoToDetail],
-  };
+  });
   const snsTetrisToken = mockSnsToken;
   const snsTetris = {
     rootCanisterId: rootCanisterIdMock,
@@ -53,7 +56,7 @@ describe("tokens-list-user.derived", () => {
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/g3pce-2iaae/logo.png",
     balance: new UnavailableTokenAmount(snsTetris.tokenMetadata),
     token: snsTetris.tokenMetadata,
-    feeE8s: TokenAmount.fromE8s({
+    fee: TokenAmount.fromE8s({
       amount: snsTetris.tokenMetadata.fee,
       token: snsTetris.tokenMetadata,
     }),
@@ -73,7 +76,7 @@ describe("tokens-list-user.derived", () => {
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/f7crg-kabae/logo.png",
     balance: new UnavailableTokenAmount(snsPacman.tokenMetadata),
     token: snsPacman.tokenMetadata,
-    feeE8s: TokenAmount.fromE8s({
+    fee: TokenAmount.fromE8s({
       amount: snsPacman.tokenMetadata.fee,
       token: snsPacman.tokenMetadata,
     }),
