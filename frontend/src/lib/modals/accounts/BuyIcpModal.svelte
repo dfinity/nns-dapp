@@ -4,8 +4,25 @@
   import { i18n } from "$lib/stores/i18n";
   import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
   import BANXA_LOGO from "$lib/assets/banxa-logo.svg";
+  import { getCurrentTheme } from "$lib/services/theme.services";
 
   export let account: Account;
+
+  // TODO: Improve "light" colors
+  const customStyleParams: Record<string, string> =
+    getCurrentTheme() === "dark"
+      ? {
+          backgroundColor: "2a1a47",
+          primaryColor: "9b6ef7",
+          secondaryColor: "8b55f6",
+          textColor: "ffffff",
+        }
+      : {
+          backgroundColor: "cec4e8",
+          primaryColor: "7350df",
+          secondaryColor: "8c55f6",
+          textColor: "ffffff",
+        };
 
   let queryParams: Record<string, string | number>;
   $: queryParams = {
@@ -16,10 +33,7 @@
     lockFiat: "true",
     blockchain: "BTC",
     orderMode: "BUY",
-    backgroundColor: "2a1a47",
-    primaryColor: "9b6ef7",
-    secondaryColor: "8b55f6",
-    textColor: "ffffff",
+    ...customStyleParams,
     walletAddress: account?.identifier,
   };
   let url: string;
