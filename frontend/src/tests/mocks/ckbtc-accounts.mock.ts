@@ -9,6 +9,12 @@ export const mockCkBTCToken: IcrcTokenMetadata = {
   fee: BigInt(1),
 };
 
+export const mockCkTESTBTCToken = {
+  ...mockCkBTCToken,
+  symbol: "ckTESTBTC",
+  name: "ckTESTBTC",
+};
+
 export const mockCkBTCMainAccount: Account = {
   identifier: encodeIcrcAccount({
     owner: mockPrincipal,
