@@ -82,7 +82,7 @@
 {:else}
   <!-- A toast error is shown if there is an error fetching the transaction fee -->
   <!-- TODO: replace with busy spinner pattern as in <SnsIncreateStakeNeuronModal /> -->
-  <Modal on:nnsClose>
+  <Modal testId="sns-transaction-modal-component" on:nnsClose>
     <svelte:fragment slot="title"
       >{title ?? $i18n.accounts.send}</svelte:fragment
     ><Spinner /></Modal

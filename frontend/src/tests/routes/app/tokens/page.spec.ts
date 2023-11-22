@@ -180,8 +180,7 @@ describe("Tokens route", () => {
 
           const tokensPagePo = po.getTokensPagePo();
 
-          // The the first two rows are ICP and ckBTC.
-          await tokensPagePo.clickSendOnRow(2);
+          await tokensPagePo.clickSendOnRow("Tetris");
 
           expect(await po.getSnsTransactionModalPo().isPresent()).toBe(true);
 

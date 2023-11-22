@@ -1,4 +1,5 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { isNullish } from "@dfinity/utils";
 import {
   TokensTableRowPo,
   type TokensTableRowData,
@@ -26,8 +27,24 @@ export class TokensTablePo extends BasePageObject {
     return Promise.all(rows.map((row) => row.getData()));
   }
 
-  async clickSendOnRow(index: number): Promise<void> {
+  async findRowByName(
+    projectName: string
+  ): Promise<TokensTableRowPo | undefined> {
     const rows = await this.getRows();
-    return rows[index].click("send-button-component");
+    for (const row of rows) {
+      const name = await row.getProjectName();
+      if (name === projectName) {
+        return row;
+      }
+    }
+    return undefined;
+  }
+
+  async clickSendOnRow(projectName: string): Promise<void> {
+    const row = await this.findRowByName(projectName);
+    if (isNullish(row)) {
+      throw new Error(`Row with project name ${projectName} not found`);
+    }
+    return row.click("send-button-component");
   }
 }
