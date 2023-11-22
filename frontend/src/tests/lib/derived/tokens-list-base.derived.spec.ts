@@ -16,6 +16,7 @@ import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
+import { TokenAmount } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("tokens-list-base.derived", () => {
@@ -25,7 +26,10 @@ describe("tokens-list-base.derived", () => {
     logo: IC_LOGO_ROUNDED,
     balance: new UnavailableTokenAmount(NNS_TOKEN_DATA),
     token: NNS_TOKEN_DATA,
-    feeE8s: NNS_TOKEN_DATA.fee,
+    feeE8s: TokenAmount.fromE8s({
+      amount: NNS_TOKEN_DATA.fee,
+      token: NNS_TOKEN_DATA,
+    }),
     actions: [],
   };
   const snsTetrisToken = mockSnsToken;
@@ -51,7 +55,10 @@ describe("tokens-list-base.derived", () => {
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/g3pce-2iaae/logo.png",
     balance: new UnavailableTokenAmount(snsTetris.tokenMetadata),
     token: snsTetris.tokenMetadata,
-    feeE8s: snsTetris.tokenMetadata.fee,
+    feeE8s: TokenAmount.fromE8s({
+      amount: snsTetris.tokenMetadata.fee,
+      token: snsTetris.tokenMetadata,
+    }),
     actions: [],
   };
   const pacmanTokenBase: UserTokenData = {
@@ -60,7 +67,10 @@ describe("tokens-list-base.derived", () => {
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/f7crg-kabae/logo.png",
     balance: new UnavailableTokenAmount(snsPacman.tokenMetadata),
     token: snsPacman.tokenMetadata,
-    feeE8s: snsPacman.tokenMetadata.fee,
+    feeE8s: TokenAmount.fromE8s({
+      amount: snsPacman.tokenMetadata.fee,
+      token: snsPacman.tokenMetadata,
+    }),
     actions: [],
   };
   const mockCkTESTBTCToken = {
@@ -74,7 +84,10 @@ describe("tokens-list-base.derived", () => {
     logo: CKBTC_LOGO,
     balance: new UnavailableTokenAmount(mockCkBTCToken),
     token: mockCkBTCToken,
-    feeE8s: mockCkBTCToken.fee,
+    feeE8s: TokenAmount.fromE8s({
+      amount: mockCkBTCToken.fee,
+      token: mockCkBTCToken,
+    }),
     actions: [],
   };
   const ckTESTBTCTokenBase: UserTokenData = {
@@ -83,7 +96,10 @@ describe("tokens-list-base.derived", () => {
     logo: CKTESTBTC_LOGO,
     balance: new UnavailableTokenAmount(mockCkTESTBTCToken),
     token: mockCkTESTBTCToken,
-    feeE8s: mockCkTESTBTCToken.fee,
+    feeE8s: TokenAmount.fromE8s({
+      amount: mockCkTESTBTCToken.fee,
+      token: mockCkTESTBTCToken,
+    }),
     actions: [],
   };
 
