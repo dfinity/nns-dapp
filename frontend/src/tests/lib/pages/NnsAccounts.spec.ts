@@ -44,6 +44,7 @@ describe("NnsAccounts", () => {
       hardwareWallets: [],
       certified: true,
     });
+    overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
   });
 
   describe("when tokens flag is enabled", () => {
