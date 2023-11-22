@@ -13,6 +13,10 @@ export class TokensTablePo extends BasePageObject {
     return new TokensTablePo(element.byTestId(TokensTablePo.TID));
   }
 
+  async getFirstColumnHeader(): Promise<string> {
+    return this.getText("column-header-1");
+  }
+
   getRows(): Promise<TokensTableRowPo[]> {
     return TokensTableRowPo.allUnder(this.root);
   }
