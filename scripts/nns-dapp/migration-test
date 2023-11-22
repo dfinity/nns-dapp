@@ -19,8 +19,8 @@ help_text() {
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/../clap.bash"
 # Define options
-clap.define short=w long=wasm1 desc="A test build of the first wasm.  May be a .wasm.gz file or a named release." variable=FIRST_WASM default="out/nns-dapp_test.wasm.gz"
-clap.define short=W long=wasm2 desc="A test build of the second wasm.  May be a .wasm.gz file or a named release." variable=SECOND_WASM default="prod"
+clap.define short=w long=wasm1 desc="A test build of the first wasm.  May be a _test.wasm.gz file or a named release." variable=FIRST_WASM default="out/nns-dapp_test.wasm.gz"
+clap.define short=W long=wasm2 desc="A test build of the second wasm.  May be a _test.wasm.gz file or a named release." variable=SECOND_WASM default="prod"
 clap.define short=a long=args1 desc="A file containing the first init arguments." variable=FIRST_ARGFILE default="out/nns-dapp-arg-local.did"
 clap.define short=A long=args2 desc="A file containing the second init arguments." variable=SECOND_ARGFILE default="out/nns-dapp-arg-local.did"
 clap.define short=s long=schema1 desc="The schema for the first deployment.  Overrides the value in the argument file." variable=FIRST_SCHEMA default=""
@@ -48,10 +48,88 @@ on_exit() {
 }
 trap on_exit EXIT
 
+# Checks that the configuration number is valid.
+lint_configuration_num() {
+  local configuration_num
+  configuration_num="${1:-}"
+  [[ "${configuration_num:-}" == 1 ]] || [[ "${configuration_num:-}" == 2 ]] || {
+    echo "ERROR: configuration_num is invalid."
+    echo "Expected: 1 or 2 (corresponding to the initial deployment and the upgrade respectively)"
+    echo "Actual:  '${configuration_num:-}'"
+    exit 1
+  } >&2
+}
+
+# Checks that a local path points to a plausible _test.wasm.gz file.
+lint_wasm_path() {
+  local wasm_path
+  wasm_path="${1:-}"
+  [[ "${wasm_path:-}" = *_test.wasm.gz ]] || {
+    echo "ERROR: Invalid wasm path."
+    echo "Expected:  A path ending in _test.wasm.gz"
+    echo "Actual:    '${wasm_path:-}'"
+    exit 1
+  } >&2
+  test -e "${wasm_path:-1}" || {
+    echo "ERROR: Wasm file does not exist."
+    echo "Path: '${wasm_path:-}'"
+    exit 1
+  } >&2
+  data_type="$(file "${wasm_path:-}")"
+  [[ "${data_type:-}" = *gzip\ compressed\ data* ]]
+}
+
+# Checks that the release name is valid
+lint_release_name() {
+  local release_name
+  release_name="${1:-}"
+  git check-ref-format "refs/tags/${release_name:-}" || {
+    echo "ERROR: Invalid release name"
+    echo "Expected: A valid git tag name"
+    echo "Actual:   '${release_name:-}'"
+    exit 1
+  } >&2
+}
+
+# Downloads a released Wasm into the temporary working directory.
+download_wasm() {
+  local release_name destination
+  release_name="$1"
+  destination="$2"
+  curl -sSLf "https://github.com/dfinity/nns-dapp/releases/download/${release_name}/nns-dapp_test.wasm.gz" | sponge "$destination"
+}
+
+# The path to the local copy of the wasm used in the test.
+working_wasm() {
+  local configuration_num
+  lint_configuration_num "${configuration_num:-}"
+  echo "$WORKDIR/nns-dapp-${configuration_num}_test.wasm.gz"
+}
+
+# The path to the arguments used in the test
+working_arguments() {
+  local configuration_num
+  lint_configuration_num "${configuration_num:-}"
+  echo "$WORKDIR/nns-dapp-args-${configuration_num}.did"
+}
+
+
+# Gets a local copy of a wasm from a path or GitHub release
 get_wasm() {
-  local wasm_num path_or_release
+  local configuration_num destination
+  path_or_release="${1:-}"
+  destination="${2:-}"
+  lint_wasm_path "$destination"
 
-
+  if [[ "${wasm_path:-}" = *.wasm.gz ]]; then
+    lint_wasm_path "${path_or_release:-}"
+    cp "${path_or_release}" "$destination"
+  else
+    lint_release_name "${path_or_release:-}"
+    download_wasm "${path_or_release}" "$destination"
+  fi
+  : Final sanity check
+  lint_wasm_path "$destination"
 }
 
 exit 1
