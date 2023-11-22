@@ -1,5 +1,6 @@
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import { convertDtoToSnsSummary } from "$lib/utils/sns-aggregator-converters.utils";
+import { SnsSummaryWrapper } from "$lib/wrappers/sns-summary.wrappers";
 import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
 import type {
   SnsGetDerivedStateResponse,
@@ -126,10 +127,7 @@ const overrideDerivedState =
     if (isNullish(convertedData)) {
       return summary;
     }
-    return {
-      ...summary,
-      derived: convertedData,
-    };
+    return SnsSummaryWrapper.overrideDerivedState(summary, convertedData);
   };
 
 /**
@@ -142,21 +140,10 @@ const overrideLifecycle =
       return undefined;
     }
     const projectData = lifecycleStore[summary.rootCanisterId.toText()];
-    const lifecycle = fromNullable(projectData?.data.lifecycle ?? []);
-    if (isNullish(lifecycle)) {
+    if (isNullish(projectData?.data)) {
       return summary;
     }
-    const saleOpenTimestamp = fromNullable(
-      projectData?.data.decentralization_sale_open_timestamp_seconds ?? []
-    );
-    return {
-      ...summary,
-      swap: {
-        ...summary.swap,
-        lifecycle,
-        decentralization_sale_open_timestamp_seconds: saleOpenTimestamp,
-      },
-    };
+    return SnsSummaryWrapper.overrideLifecycle(summary, projectData.data);
   };
 
 /**

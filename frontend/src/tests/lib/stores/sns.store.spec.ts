@@ -10,6 +10,7 @@ import {
   snsSwapCommitmentsStore,
 } from "$lib/stores/sns.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
+import { SnsSummaryWrapper } from "$lib/wrappers/sns-summary.wrappers";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import {
   aggregatorSnsMockDto,
@@ -134,6 +135,12 @@ describe("sns.store", () => {
       snsAggregatorStore.setData([aggregatorSnsMockDto]);
 
       expect(get(snsSummariesStore)).toHaveLength(1);
+    });
+
+    it("returns instances of SnsSummaryWrapper", () => {
+      snsAggregatorStore.setData([aggregatorSnsMockDto]);
+
+      expect(get(snsSummariesStore)[0]).toBeInstanceOf(SnsSummaryWrapper);
     });
 
     it("derived state is overriden with data in snsDerivedStateStore", () => {
