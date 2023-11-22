@@ -30,6 +30,26 @@ clap.define short=c long=chunk desc="The accounts are created in chunks of this 
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
+WORKDIR="$(realpath "$(mktemp -d nns-dapp-test-XXXXXX)")"
+on_exit() {
+  exit_code=$?
+  if ((exit_code == 0)); then
+    rm -fr "$WORKDIR"
+  else
+    {
+      printf "\n\nERROR: exiting with code %s\n\n" $exit_code
+      printf "       %s\n" \
+        "The temporary working directory may assist with debugging:" \
+        "  '$WORKDIR'"
+      echo
+      exit $exit_code
+    } >&2
+  fi
+}
+trap on_exit EXIT
+
+exit 1
+
 verify_healthy() {
   dfx canister call nns-dapp get_stats
   dfx canister call nns-dapp get_canisters
