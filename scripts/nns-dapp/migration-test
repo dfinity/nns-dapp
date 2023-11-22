@@ -60,23 +60,56 @@ lint_configuration_num() {
   } >&2
 }
 
-# Checks that a local path points to a plausible _test.wasm.gz file.
+# Checks that a Wasm filename has the expected form.
 lint_wasm_path() {
   local wasm_path
   wasm_path="${1:-}"
-  [[ "${wasm_path:-}" = *_test.wasm.gz ]] || {
+  [[ "${wasm_path:-}" = *.wasm.gz ]] || {
     echo "ERROR: Invalid wasm path."
-    echo "Expected:  A path ending in _test.wasm.gz"
+    echo "Expected:  A path ending in .wasm.gz"
     echo "Actual:    '${wasm_path:-}'"
     exit 1
   } >&2
+}
+
+# Gets the information, including exported methods, from a gzipped Wasm file.
+get_wasm_info() {
+  local wasm_path
+  wasm_path="${1:-}"
+  lint_wasm_path "${wasm_path:-}"
+  ic-wasm <(gunzip <"$wasm_path") info || {
+    echo "ERROR: Wasm file cannot be parsed"
+    echo "Expected: ic-wasm should be able to get the Wasm info"
+    echo "Actual:   See error messages above."
+    exit 1
+  } >&2
+}
+
+# Checks that a Wasm file appears to be well formed.
+lint_wasm_file() {
+  local wasm_path wasm_info
+  wasm_path="${1:-}"
   test -e "${wasm_path:-1}" || {
     echo "ERROR: Wasm file does not exist."
     echo "Path: '${wasm_path:-}'"
     exit 1
   } >&2
   data_type="$(file "${wasm_path:-}")"
-  [[ "${data_type:-}" = *gzip\ compressed\ data* ]]
+  [[ "${data_type:-}" = *gzip\ compressed\ data* ]] || {
+    echo "ERROR: Wasm file is not compressed"
+    echo "Expected:  gzip compressed data"
+    echo "Actual:    '${data_type:-}'"
+    exit 1
+  } >&2
+  wasm_info="$(get_wasm_info "$wasm_path")"
+  test_method="get_toy_account"
+  echo "${wasm_info:-}" | grep -q "$test_method" || {
+    echo "ERROR: This test needs test builds of the Wasm."
+    echo "Expected: Test methods including '$test_method'."
+    echo "Actual:   The exported methods do not include '$test_method':"
+    echo "$wasm_info" | sed 's/^/wasm_info:  /g'
+    exit 1
+  } >&2
 }
 
 # Checks that the release name is valid
@@ -91,12 +124,16 @@ lint_release_name() {
   } >&2
 }
 
-# Downloads a released Wasm into the temporary working directory.
-download_wasm() {
-  local release_name destination
+# Downloads a released asset
+download_asset() {
+  local release_name asset destination
   release_name="$1"
-  destination="$2"
-  curl -sSLf "https://github.com/dfinity/nns-dapp/releases/download/${release_name}/nns-dapp_test.wasm.gz" | sponge "$destination"
+  asset="$2"
+  destination="$3"
+  curl -sSLf "https://github.com/dfinity/nns-dapp/releases/download/${release_name}/${asset}" | sponge "$destination" || {
+    echo "ERROR: Failed to download asset '${asset:-}' for release '${release_name}'."
+    exit 1
+  } >&2
 }
 
 # The path to the local copy of the wasm used in the test.
@@ -113,7 +150,6 @@ working_arguments() {
   echo "$WORKDIR/nns-dapp-args-${configuration_num}.did"
 }
 
-
 # Gets a local copy of a wasm from a path or GitHub release
 get_wasm() {
   local configuration_num destination
@@ -121,19 +157,32 @@ get_wasm() {
   destination="${2:-}"
   lint_wasm_path "$destination"
 
-  if [[ "${wasm_path:-}" = *.wasm.gz ]]; then
+  if [[ "${path_or_release:-}" = *.wasm.gz ]]; then
     lint_wasm_path "${path_or_release:-}"
     cp "${path_or_release}" "$destination"
   else
     lint_release_name "${path_or_release:-}"
-    download_wasm "${path_or_release}" "$destination"
+    download_asset "${path_or_release}" nns-dapp_test.wasm.gz "$destination"
+  fi
+  : Final sanity check
+  lint_wasm_file "$destination"
+}
+
+get_argfile() {
+  local configuration_num destination
+  path_or_release="${1:-}"
+  destination="${2:-}"
+  lint_argfile_path "$destination"
+
+  if [[ "${path_or_release:-}" = *.did ]]; then
+    lint_argfile_path "${path_or_release:-}"
+    cp "${path_or_release}" "$destination"
+  else
+    lint_release_name "${path_or_release:-}"
+    download_asset "${path_or_release}" nns-dapp_test.wasm.gz "$destination"
   fi
   : Final sanity check
   lint_wasm_path "$destination"
-}
-
-get_config() {
-
 }
 
 exit 1
