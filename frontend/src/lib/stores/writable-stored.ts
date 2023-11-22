@@ -138,12 +138,6 @@ export const writableStored = <T>({
     if ((version ?? 0) > (storedValue.version ?? 0)) {
       actualVersion = version;
       store.set(newVersionValue);
-      // rewrite local storage with the new version
-      writeData({
-        key,
-        data: newVersionValue,
-        version,
-      });
     } else {
       console.error("Same or newer version in store.");
     }
