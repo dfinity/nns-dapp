@@ -32,7 +32,13 @@
 
 {#if $ENABLE_MY_TOKENS}
   <TestIdWrapper testId="accounts-body">
-    <TokensTable {userTokensData} />
+    <TokensTable
+      {userTokensData}
+      columnHeaders={[
+        $i18n.tokens.accounts_header,
+        $i18n.tokens.balance_header,
+      ]}
+    />
   </TestIdWrapper>
 {:else}
   <div class="card-grid" data-tid="accounts-body">
