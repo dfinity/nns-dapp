@@ -7,6 +7,8 @@
 
   export let account: Account;
 
+  // TODO: Move this to a util function? Or a service?
+  // Wait until we have the final URL to do this.
   let queryParams: Record<string, string | number>;
   $: queryParams = {
     fiatAmount: 100,
@@ -23,8 +25,9 @@
     walletAddress: account?.identifier,
   };
   let url: string;
+  // TODO: Move base url to an env variable https://dfinity.atlassian.net/browse/GIX-2095
   $: url = `https://checkout.banxa.com/?${Object.entries(queryParams)
-    .map(([key, value]) => `${key}=${value}`)
+    .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
     .join("&")}`;
 </script>
 
@@ -51,7 +54,9 @@
       href={url}
       target="_blank"
       data-tid="buy-icp-banxa-button"
+      rel="noreferrer noopener"
       ><img
+        loading="lazy"
         src={BANXA_LOGO}
         alt={$i18n.accounts.banxa_logo_alt}
         draggable="false"
