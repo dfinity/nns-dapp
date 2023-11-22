@@ -24,7 +24,6 @@
   import { isUniverseCkBTC, isUniverseNns } from "$lib/utils/universe.utils";
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
   import type { UserTokenData } from "$lib/types/tokens-page";
-  import { TokenAmount } from "@dfinity/utils";
 
   onMount(() => {
     if (!$ENABLE_MY_TOKENS) {
