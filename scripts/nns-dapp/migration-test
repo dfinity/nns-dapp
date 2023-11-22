@@ -55,6 +55,22 @@ on_exit() {
 }
 trap on_exit EXIT
 
+# The path to the local copy of the wasm used in the test.
+working_wasm() {
+  local configuration_num
+  lint_configuration_num "${configuration_num:-}"
+  echo "$WORKDIR/nns-dapp-${configuration_num}_test.wasm.gz"
+}
+
+# The path to the arguments used in the test
+working_arguments() {
+  local configuration_num
+  configuration_num="${1:-}"
+  lint_configuration_num "${configuration_num:-}"
+  echo "$WORKDIR/nns-dapp-args-${configuration_num}.did"
+}
+
+
 exit 1
 
 verify_healthy() {

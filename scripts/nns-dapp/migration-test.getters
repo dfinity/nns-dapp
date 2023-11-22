@@ -63,3 +63,23 @@ get_argfile() {
   : Final sanity check
   lint_argfile "$destination"
 }
+
+# This file is intended to be sourced, but if called directly, offer some help
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  if (($# == 0)) || [[ "${1:-}" == "--help" ]]; then
+    cat <<-EOF
+		A library of methods for getting assets.
+
+		Usage:
+		- Source this file from your code.
+		- You can also call this file directly.  Pass the function name
+		  you want to call and arguments.  This may be useful for
+		  ad-hoc runs but is not intended for production use.
+
+		A list of functions:
+		EOF
+    declare -F
+    exit 0
+  fi
+  "${@}"
+fi
