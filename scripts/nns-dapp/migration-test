@@ -19,8 +19,8 @@ help_text() {
 # Source the clap.bash file ---------------------------------------------------
 source "$SOURCE_DIR/../clap.bash"
 # Define options
-clap.define short=w long=wasm1 desc="A test build of the first wasm.  May be a path or a named release." variable=FIRST_WASM default="out/nns-dapp_test.wasm.gz"
-clap.define short=W long=wasm2 desc="A test build of the second wasm.  May be a path or a named release." variable=SECOND_WASM default="prod"
+clap.define short=w long=wasm1 desc="A test build of the first wasm.  May be a .wasm.gz file or a named release." variable=FIRST_WASM default="out/nns-dapp_test.wasm.gz"
+clap.define short=W long=wasm2 desc="A test build of the second wasm.  May be a .wasm.gz file or a named release." variable=SECOND_WASM default="prod"
 clap.define short=a long=args1 desc="A file containing the first init arguments." variable=FIRST_ARGFILE default="out/nns-dapp-arg-local.did"
 clap.define short=A long=args2 desc="A file containing the second init arguments." variable=SECOND_ARGFILE default="out/nns-dapp-arg-local.did"
 clap.define short=s long=schema1 desc="The schema for the first deployment.  Overrides the value in the argument file." variable=FIRST_SCHEMA default=""
@@ -47,6 +47,12 @@ on_exit() {
   fi
 }
 trap on_exit EXIT
+
+get_wasm() {
+  local wasm_num path_or_release
+
+
+}
 
 exit 1
 
