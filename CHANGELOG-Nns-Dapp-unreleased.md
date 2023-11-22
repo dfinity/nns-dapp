@@ -24,6 +24,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Fix docker builds when there is no global config.
 * Fix "Expiration date" countdown label visibility.
+* Optimize nns proposal rendering for small devices.
 
 #### Security
 
