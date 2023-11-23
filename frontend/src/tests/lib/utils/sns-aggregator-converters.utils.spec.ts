@@ -1,10 +1,10 @@
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
+import { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import {
   convertDtoToSnsSummary,
   convertIcrc1Metadata,
   convertNervousFunction,
 } from "$lib/utils/sns-aggregator-converters.utils";
-import { SnsSummaryWrapper } from "$lib/wrappers/sns-summary.wrappers";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { Principal } from "@dfinity/principal";
 

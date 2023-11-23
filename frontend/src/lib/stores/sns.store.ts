@@ -1,6 +1,6 @@
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
+import { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { convertDtoToSnsSummary } from "$lib/utils/sns-aggregator-converters.utils";
-import { SnsSummaryWrapper } from "$lib/wrappers/sns-summary.wrappers";
 import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
 import type {
   SnsGetDerivedStateResponse,
