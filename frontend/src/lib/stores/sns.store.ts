@@ -143,7 +143,7 @@ const overrideLifecycle =
     if (isNullish(projectData?.data)) {
       return summary;
     }
-    return summary.overrideLifecycle(projectData.data);
+    return summary.overrideLifecycleResponse(projectData.data);
   };
 
 /**

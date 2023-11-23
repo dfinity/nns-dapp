@@ -65,7 +65,7 @@ export class SnsSummaryWrapper implements SnsSummary {
     });
   }
 
-  public overrideLifecycle(
+  public overrideLifecycleResponse(
     newLifecycle: SnsGetLifecycleResponse
   ): SnsSummaryWrapper {
     const lifecycle = fromNullable(newLifecycle.lifecycle ?? []);
