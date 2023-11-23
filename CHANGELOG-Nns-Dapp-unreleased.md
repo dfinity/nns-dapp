@@ -36,6 +36,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Experimental tests for schema migration.
+
 #### Changed
 
 * Update Rust to the latest stable version (1.74.0).
