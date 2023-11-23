@@ -16,6 +16,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Button to buy ICP with an external provider.
 * Enable ICRC-2 flow for BTC withdrawal.
+* Add ENABLE_CKETH feature flag.
 
 #### Changed
 

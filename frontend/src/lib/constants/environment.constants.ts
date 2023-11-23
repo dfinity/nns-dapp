@@ -46,6 +46,7 @@ export interface FeatureFlags<T> {
   ENABLE_SWAP_ICRC1: T;
   ENABLE_FULL_WIDTH_PROPOSAL: T;
   ENABLE_MY_TOKENS: T;
+  ENABLE_CKETH: T;
   ENABLE_CKBTC_ICRC2: T;
   // Used only in tests and set up in jest-setup.ts
   TEST_FLAG_EDITABLE: T;
