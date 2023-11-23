@@ -1,5 +1,5 @@
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
-import { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
+import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { convertDtoToSnsSummary } from "$lib/utils/sns-aggregator-converters.utils";
 import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
 import type {
@@ -127,7 +127,7 @@ const overrideDerivedState =
     if (isNullish(convertedData)) {
       return summary;
     }
-    return SnsSummaryWrapper.overrideDerivedState(summary, convertedData);
+    return summary.overrideDerivedState(convertedData);
   };
 
 /**
@@ -143,7 +143,7 @@ const overrideLifecycle =
     if (isNullish(projectData?.data)) {
       return summary;
     }
-    return SnsSummaryWrapper.overrideLifecycle(summary, projectData.data);
+    return summary.overrideLifecycle(projectData.data);
   };
 
 /**

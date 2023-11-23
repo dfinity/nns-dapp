@@ -56,18 +56,16 @@ export class SnsSummaryWrapper implements SnsSummary {
     return this.summary.lifecycle;
   }
 
-  static overrideDerivedState(
-    currentSummary: SnsSummaryWrapper,
+  public overrideDerivedState(
     newDerivedState: SnsSwapDerivedState
   ): SnsSummaryWrapper {
     return new SnsSummaryWrapper({
-      ...currentSummary.summary,
+      ...this.summary,
       derived: newDerivedState,
     });
   }
 
-  static overrideLifecycle(
-    currentSummary: SnsSummaryWrapper,
+  public overrideLifecycle(
     newLifecycle: SnsGetLifecycleResponse
   ): SnsSummaryWrapper {
     const lifecycle = fromNullable(newLifecycle.lifecycle ?? []);
@@ -75,12 +73,12 @@ export class SnsSummaryWrapper implements SnsSummary {
       newLifecycle.decentralization_sale_open_timestamp_seconds ?? []
     );
     if (isNullish(lifecycle)) {
-      return currentSummary;
+      return this;
     }
     return new SnsSummaryWrapper({
-      ...currentSummary.summary,
+      ...this.summary,
       swap: {
-        ...currentSummary.swap,
+        ...this.summary.swap,
         lifecycle,
         decentralization_sale_open_timestamp_seconds: saleOpenTimestamp,
       },
