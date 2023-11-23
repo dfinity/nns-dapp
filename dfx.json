@@ -288,7 +288,7 @@
           "ENABLE_SWAP_ICRC1": false,
           "ENABLE_MY_TOKENS": false,
           "ENABLE_FULL_WIDTH_PROPOSAL": true,
-          "ENABLE_CKBTC_ICRC2": false
+          "ENABLE_CKBTC_ICRC2": true
         }
       }
     },
