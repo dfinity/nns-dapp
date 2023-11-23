@@ -1,18 +1,9 @@
 <script lang="ts">
-  import type { Account } from "$lib/types/account";
-  import type { Principal } from "@dfinity/principal";
   import { InfiniteScroll, Spinner } from "@dfinity/gix-components";
-  import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
-  import { nonNullish } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import IcrcTransactionCard from "./IcrcTransactionCard.svelte";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
-  import type {
-    IcrcTransactionData,
-    UiTransaction,
-  } from "$lib/types/transaction";
-  import type { IcrcTokenMetadata } from "$lib/types/icrc";
-  import type { mapIcrcTransactionType } from "$lib/utils/icrc-transactions.utils";
+  import type { UiTransaction } from "$lib/types/transaction";
   import { flip } from "svelte/animate";
 
   export let transactions: UiTransaction[];

@@ -16,6 +16,7 @@
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import SnsWalletTransactionsObserver from "$lib/components/accounts/SnsWalletTransactionsObserver.svelte";
   import { nonNullish } from "@dfinity/utils";
+  import type { UiTransaction } from "$lib/types/transaction";
 
   export let account: Account;
   export let rootCanisterId: Principal;
