@@ -3,6 +3,7 @@
 
 <script lang="ts">
   import type { Account } from "$lib/types/account";
+  import type { UiTransaction } from "$lib/types/transaction";
   import {
     loadCkBTCAccountNextTransactions,
     loadCkBTCAccountTransactions,
@@ -24,7 +25,6 @@
   import { CKBTC_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/ckbtc.constants";
   import { waitForMilliseconds } from "$lib/utils/utils";
   import { nonNullish } from "@dfinity/utils";
-  import type { UiTransaction } from "$lib/types/transaction";
 
   export let indexCanisterId: CanisterId;
   export let universeId: UniverseCanisterId;
