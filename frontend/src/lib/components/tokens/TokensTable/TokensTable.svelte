@@ -3,13 +3,8 @@
   import type { UserTokenData, UserTokenLoading } from "$lib/types/tokens-page";
   import Row from "./TokensTableRow.svelte";
 
-<<<<<<< HEAD
-  export let userTokensData: UserTokenData[];
-  export let firstColumnHeader: string;
-=======
   export let userTokensData: Array<UserTokenData | UserTokenLoading>;
-  export let firstColumnHeader: string = $i18n.tokens.projects_header;
->>>>>>> 48ff8d063 (Untitled commit)
+  export let firstColumnHeader: string;
 </script>
 
 <div role="table" data-tid="tokens-table-component">
