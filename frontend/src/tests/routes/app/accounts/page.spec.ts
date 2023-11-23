@@ -54,6 +54,13 @@ describe("Accounts page", () => {
         expect(await pagePo.getTokenNames()).toEqual(["Internet Computer"]);
         expect(await pagePo.hasEmptyCards()).toBe(false);
       });
+
+      it("renders 'Accounts' as tokens first column", async () => {
+        const po = renderComponent();
+
+        const tablePo = po.getSignInAccountsPo().getTokensTablePo();
+        expect(await tablePo.getFirstColumnHeader()).toEqual("Accounts");
+      });
     });
 
     describe("tokens flag disabled", () => {
@@ -90,6 +97,16 @@ describe("Accounts page", () => {
 
         const pagePo = po.getAccountsPo().getNnsAccountsPo();
         expect(await pagePo.hasTokensTable()).toBe(true);
+      });
+
+      it("renders 'Accounts' as tokens table first column", async () => {
+        const po = renderComponent();
+
+        const tablePo = po
+          .getAccountsPo()
+          .getNnsAccountsPo()
+          .getTokensTablePo();
+        expect(await tablePo.getFirstColumnHeader()).toEqual("Accounts");
       });
     });
 

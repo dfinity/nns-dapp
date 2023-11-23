@@ -22,7 +22,10 @@
     </PageBanner>
 
     {#if userTokensData.length > 0}
-      <TokensTable {userTokensData} />
+      <TokensTable
+        {userTokensData}
+        firstColumnHeader={$i18n.tokens.accounts_header}
+      />
     {/if}
   </div>
 {:else}
