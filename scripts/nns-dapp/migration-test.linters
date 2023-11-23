@@ -128,13 +128,18 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
 
 		Usage:
 		- Source this file from your code.
-		- You can also call this file directly.  Pass the function name
-		  you want to call and arguments.  This may be useful for
+		- You can also call this file directly.  This may be useful for
 		  ad-hoc runs but is not intended for production use.
 
-		A list of functions:
+      Usage: scripts/nns-dapp/migration-test.linters <function> [arguments..]
+      e.g.:  scripts/nns-dapp/migration-test.linters lint_release_name 'fox trot'
+             ERROR: Invalid release name
+             Expected: A valid git tag name
+             Actual:   'fox trot'
+
+      A list of functions:
 		EOF
-    declare -F
+    declare -F | awk '{print "        " $3}'
     exit 0
   fi
   "${@}"
