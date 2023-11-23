@@ -1,6 +1,7 @@
 <script lang="ts">
   import { loadSnsAccountNextTransactions } from "$lib/services/sns-transactions.services";
   import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
+  import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import type { Principal } from "@dfinity/principal";
   import { onMount } from "svelte";
@@ -14,6 +15,7 @@
   } from "$lib/utils/icrc-transactions.utils";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import SnsWalletTransactionsObserver from "$lib/components/accounts/SnsWalletTransactionsObserver.svelte";
+  import { nonNullish } from "@dfinity/utils";
 
   export let account: Account;
   export let rootCanisterId: Principal;
@@ -60,17 +62,26 @@
     ({ rootCanisterId: currentId }) =>
       currentId.toText() === rootCanisterId.toText()
   )?.summary.governanceCanisterId;
+
+  let uiTransactions: UiTransaction[];
+  $: uiTransactions = transactions
+    .map((transaction: IcrcTransactionData) =>
+      mapIcrcTransaction({
+        ...transaction,
+        account,
+        governanceCanisterId,
+        token,
+        i18n: $i18n,
+      })
+    )
+    .filter(nonNullish);
 </script>
 
 <SnsWalletTransactionsObserver {account} {completed}>
   <IcrcTransactionsList
     on:nnsIntersect={loadMore}
-    {account}
-    {transactions}
+    transactions={uiTransactions}
     {loading}
-    {governanceCanisterId}
     {completed}
-    {token}
-    mapTransaction={mapIcrcTransaction}
   />
 </SnsWalletTransactionsObserver>

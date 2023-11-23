@@ -15,34 +15,9 @@
   import type { mapIcrcTransactionType } from "$lib/utils/icrc-transactions.utils";
   import { flip } from "svelte/animate";
 
-  export let account: Account;
-  export let transactions: IcrcTransactionData[];
+  export let transactions: UiTransaction[];
   export let loading: boolean;
-  export let governanceCanisterId: Principal | undefined = undefined;
   export let completed = false;
-  export let token: IcrcTokenMetadata | undefined;
-  export let mapTransaction: mapIcrcTransactionType;
-
-  let uiTransactions: UiTransaction[] = [];
-  $: uiTransactions = transactions
-    .map(
-      ({
-        transaction,
-        toSelfTransaction,
-      }: {
-        transaction: IcrcTransactionWithId;
-        toSelfTransaction: boolean;
-      }) =>
-        mapTransaction({
-          transaction,
-          account,
-          toSelfTransaction,
-          governanceCanisterId,
-          token,
-          i18n: $i18n,
-        })
-    )
-    .filter(nonNullish);
 </script>
 
 <div data-tid="transactions-list" class="container">
@@ -53,7 +28,7 @@
     <SkeletonCard cardType="info" />
   {:else}
     <InfiniteScroll on:nnsIntersect disabled={loading || completed}>
-      {#each uiTransactions as transaction (transaction.domKey)}
+      {#each transactions as transaction (transaction.domKey)}
         <div animate:flip={{ duration: 250 }}>
           <IcrcTransactionCard {transaction} />
         </div>

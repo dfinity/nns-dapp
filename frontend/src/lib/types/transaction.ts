@@ -87,8 +87,6 @@ export interface UiTransaction {
   headline: string;
   // Where the amount is going to or coming from.
   otherParty?: string;
-  // TODO: Remove fallbackDescription and always use otherParty.
-  fallbackDescription?: string;
   // Always positive.
   tokenAmount: TokenAmount;
   timestamp: Date;
