@@ -151,8 +151,8 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
 		- You can also call this file directly.  This may be useful for
 		  ad-hoc runs but is not intended for production use.
 
-      Usage: scripts/nns-dapp/migration-test.getters <function> [arguments..]
-      e.g.:  scripts/nns-dapp/migration-test.getters verify_healthy
+      Usage: scripts/nns-dapp/migration-test.canister <function> [arguments..]
+      e.g.:  scripts/nns-dapp/migration-test.canister verify_healthy
 
       A list of functions:
 		EOF
