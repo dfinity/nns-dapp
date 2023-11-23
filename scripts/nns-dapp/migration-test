@@ -47,14 +47,22 @@ source "$(clap.build)"
 function print_stack() {
   local i stack_size func linen src
   stack_size=${#FUNCNAME[@]}
-  # to avoid noise we start with 1 to skip the get_stack function
+  # Skip print_stack (index 0) and on_exit (index 1), so start at index 2.
+  # If, as we do, set -euo pipefail is set, the line number is typically 1 for the top entry in the stack (index 2)
+  # which is not very helpful but I guess it is worth keeping that stack entry.
+  # Entries further down the stack look OK.
   for ((i = 2; i < $stack_size; i++)); do
     func="${FUNCNAME[$((i))]}"
     [ x$func = x ] && func=MAIN
-    linen="${BASH_LINENO[$((i - 1))]}"
+    if ((i == 2)); then
+      linen="??" # Better nothing than misleading data.  BASH_LINENO is typically 1 in this case, which is wrong.
+    else
+      linen="${BASH_LINENO[$((i - 1))]}"
+    fi
     src="${BASH_SOURCE[$i]}"
     [ x"$src" = x ] && src=non_file_source
-    printf "   at: %s %s %s\n" "$func" "$src" "$linen"
+    # Note: This line format is compatible with MS Code's format.  Clicking on the filename+linenumber jumps to that location.
+    printf "   at: %s:%s: %s\n" "$src" "$linen" "$func"
   done
 }
 
