@@ -5,8 +5,6 @@ import { writable, type Unsubscriber, type Writable } from "svelte/store";
 
 type WritableStored<T> = Writable<T> & {
   unsubscribeStorage: Unsubscriber;
-  /** Update the store state and write it to local storage when the current version is older. */
-  upgradeStateVersion: (data: { newVersionValue: T; version: number }) => void;
 };
 
 type VersionedData<T> = { data: T | undefined; version: number | undefined };
@@ -115,8 +113,6 @@ export const writableStored = <T>({
   };
 
   const initialValue = getInitialValue();
-  // preserve the version because there are only data in the store
-  let actualVersion: number | undefined = initialValue.version;
   const store = writable<T>(initialValue.data);
 
   const unsubscribeStorage = store.subscribe((store: T) => {
@@ -124,28 +120,11 @@ export const writableStored = <T>({
       return;
     }
 
-    writeData({ key, data: store, version: actualVersion });
+    writeData({ key, data: store, version: initialValue.version });
   });
-
-  const upgradeStateVersion = ({
-    newVersionValue,
-    version,
-  }: {
-    newVersionValue: T;
-    version: number;
-  }) => {
-    const storedValue = readData<T>(key);
-    if ((version ?? 0) > (storedValue.version ?? 0)) {
-      actualVersion = version;
-      store.set(newVersionValue);
-    } else {
-      console.error("Same or newer version in store.");
-    }
-  };
 
   return {
     ...store,
     unsubscribeStorage,
-    upgradeStateVersion,
   };
 };
