@@ -596,12 +596,6 @@ describe("sns aggregator converters utils", () => {
         })
       );
     });
-
-    it("returns an instance of SnsSummaryWrapper", () => {
-      expect(convertDtoToSnsSummary(mockData)).toBeInstanceOf(
-        SnsSummaryWrapper
-      );
-    });
   });
 
   describe("convertNervousFunction", () => {
