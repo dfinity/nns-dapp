@@ -52,6 +52,13 @@ describe("NnsAccounts", () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
     });
 
+    it("renders 'Accounts' as tokens table first column", async () => {
+      const po = renderComponent();
+
+      const tablePo = po.getTokensTablePo();
+      expect(await tablePo.getFirstColumnHeader()).toEqual("Accounts");
+    });
+
     it("should render tokens table with rows", async () => {
       const mainTokenData = createUserToken({
         title: "Main",
