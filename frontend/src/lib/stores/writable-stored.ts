@@ -99,13 +99,11 @@ export const writableStored = <T>({
     }
 
     const storedValue = readData<T>(key);
-    // use default value if local storage is empty or obsolete
+    // Use always the default value when the versions do not match.
     if (
       storedValue.data === undefined ||
-      (defaultVersion ?? 0) > (storedValue.version ?? 0)
+      defaultVersion !== storedValue.version
     ) {
-      // replace deprecated version in local storage
-      writeData({ key, data: defaultValue, version: defaultVersion });
       return { data: defaultValue, version: defaultVersion };
     }
 
