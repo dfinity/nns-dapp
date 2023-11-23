@@ -38,6 +38,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Experimental tests for schema migration.
+* Add optional version support to the storage records.
 
 #### Changed
 
