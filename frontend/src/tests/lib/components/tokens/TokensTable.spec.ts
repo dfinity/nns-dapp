@@ -119,6 +119,20 @@ describe("TokensTable", () => {
     expect(await row1Po.getBalance()).toBe("-/- ckBTC");
   });
 
+  it("should render balance spinner if balance is loading", async () => {
+    const token1 = createUserToken({
+      universeId: OWN_CANISTER_ID,
+      balance: "loading",
+    });
+    const po = renderTable({ userTokensData: [token1] });
+
+    const rows = await po.getRows();
+    const row1Po = rows[0];
+
+    expect(await row1Po.getBalance()).toBe("");
+    expect(await row1Po.hasBalanceSpinner()).toBe(true);
+  });
+
   it("should render a button Send action", async () => {
     const po = renderTable({
       userTokensData: [

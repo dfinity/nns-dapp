@@ -14,6 +14,7 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { nonNullish } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
+  import { Spinner } from "@dfinity/gix-components";
 
   export let userTokenData: UserTokenData;
   export let index: number;
@@ -75,6 +76,10 @@
     {#if userTokenData.balance instanceof UnavailableTokenAmount}
       <span data-tid="token-value-label"
         >{`-/- ${userTokenData.balance.token.symbol}`}</span
+      >
+    {:else if userTokenData.balance === "loading"}
+      <span data-tid="token-value-label" class="balance-spinner"
+        ><Spinner inline size="tiny" /></span
       >
     {:else}
       <AmountDisplay singleLine amount={userTokenData.balance} />
@@ -176,6 +181,11 @@
       flex-direction: column;
       gap: var(--padding-0_5x);
     }
+  }
+
+  .balance-spinner {
+    display: flex;
+    align-items: center;
   }
 
   .actions {

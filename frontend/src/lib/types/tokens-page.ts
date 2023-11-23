@@ -12,7 +12,7 @@ export type UserTokenData = {
   universeId: Principal;
   title: string;
   subtitle?: string;
-  balance: TokenAmount | UnavailableTokenAmount;
+  balance: TokenAmount | UnavailableTokenAmount | "loading";
   token: Token;
   // Fees are included in the metadata of ICRC tokens, but this is not a list of only ICRC tokens
   fee: TokenAmount;
