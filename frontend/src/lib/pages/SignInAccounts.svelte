@@ -24,10 +24,7 @@
     {#if userTokensData.length > 0}
       <TokensTable
         {userTokensData}
-        columnHeaders={[
-          $i18n.tokens.accounts_header,
-          $i18n.tokens.balance_header,
-        ]}
+        firstColumnHeader={$i18n.tokens.accounts_header}
       />
     {/if}
   </div>

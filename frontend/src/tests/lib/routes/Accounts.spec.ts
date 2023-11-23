@@ -419,6 +419,13 @@ describe("Accounts", () => {
           },
         ]);
       });
+
+      it("renders 'Accounts' as tokens table first column", async () => {
+        const po = renderComponent();
+
+        const tablePo = po.getNnsAccountsPo().getTokensTablePo();
+        expect(await tablePo.getFirstColumnHeader()).toEqual("Accounts");
+      });
     });
   });
 });

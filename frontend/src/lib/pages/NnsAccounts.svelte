@@ -34,10 +34,7 @@
   <TestIdWrapper testId="accounts-body">
     <TokensTable
       {userTokensData}
-      columnHeaders={[
-        $i18n.tokens.accounts_header,
-        $i18n.tokens.balance_header,
-      ]}
+      firstColumnHeader={$i18n.tokens.accounts_header}
     />
   </TestIdWrapper>
 {:else}
