@@ -1,10 +1,8 @@
 import IcrcTransactionsList from "$lib/components/accounts/IcrcTransactionsList.svelte";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import type { UiTransaction } from "$lib/types/transaction";
-import {
-  mockIcrcTransactionsStoreSubscribe,
-  mockUiTransaction,
-} from "$tests/mocks/icrc-transactions.mock";
+import { mockIcrcTransactionsStoreSubscribe } from "$tests/mocks/icrc-transactions.mock";
+import { createMockUiTransaction } from "$tests/mocks/transaction.mock";
 import { IcrcTransactionsListPo } from "$tests/page-objects/IcrcTransactionsList.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
@@ -63,14 +61,8 @@ describe("IcrcTransactionList", () => {
   it("should render transactions", async () => {
     const po = renderComponent({
       transactions: [
-        {
-          ...mockUiTransaction,
-          domKey: "1-1",
-        },
-        {
-          ...mockUiTransaction,
-          domKey: "2-1",
-        },
+        createMockUiTransaction({ domKey: "1-1" }),
+        createMockUiTransaction({ domKey: "2-1" }),
       ],
       loading: false,
       completed: true,

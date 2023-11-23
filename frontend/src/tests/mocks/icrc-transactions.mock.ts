@@ -7,7 +7,7 @@ import type {
   IcrcTransactionWithId,
 } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
-import { ICPToken, TokenAmount, toNullable } from "@dfinity/utils";
+import { toNullable } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
 
 export interface IcrcCandidAccount {
@@ -208,12 +208,3 @@ export const mockIcrcTransactionsStoreSubscribe =
 
     return () => undefined;
   };
-
-export const mockUiTransaction = {
-  domKey: "123-1",
-  isIncoming: false,
-  headline: "Sent",
-  otherParty: "aaaaa-aa",
-  tokenAmount: TokenAmount.fromE8s({ amount: 330_000_000n, token: ICPToken }),
-  timestamp: new Date("2021-08-01T15:00:00.000Z"),
-};
