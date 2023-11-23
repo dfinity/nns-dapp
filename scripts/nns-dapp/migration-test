@@ -18,8 +18,8 @@ help_text() {
 	  - dfx
 	  - ic-wasm
 	  - idl2json
-	  - wasm files for the two deployments.
-	  - candid argument files (optional)
+	  - wasm files for the two deployments
+	  - candid argument files
 	  - a running replica
 	EOF
 }
