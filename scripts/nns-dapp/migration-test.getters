@@ -64,6 +64,14 @@ get_argfile() {
   lint_argfile "$destination"
 }
 
+# Sets the schema of an argfile.
+# Reads from stdin and writes to stdout.
+set_schema() {
+  local schema="${1:-}"
+  # TODO: Finalize support for compound types in yaml2candid.  Then this line can be simplified, as we don't need to remove and replace the enclosing brackets.
+  echo '( opt '; idl2json | schema="$schema" jq '.[0] | .schema = (env.schema)' | yaml2candid --did rs/backend/nns-dapp.did  --typ Config ; echo ")"
+}
+
 # This file is intended to be sourced, but if called directly, offer some help
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   if (($# == 0)) || [[ "${1:-}" == "--help" ]]; then
