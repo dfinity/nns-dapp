@@ -20,6 +20,7 @@ import type {
   CachedSwapInitParamsDto,
   CachedSwapParamsDto,
 } from "$lib/types/sns-aggregator";
+import { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import type { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import type {
@@ -407,7 +408,7 @@ export const convertDtoToSnsSummary = ({
   init,
   swap_params,
   lifecycle,
-}: CachedSnsDto): SnsSummary | undefined => {
+}: CachedSnsDto): SnsSummaryWrapper | undefined => {
   const partialSummary: PartialSummary = {
     rootCanisterId: Principal.from(root_canister_id),
     swapCanisterId: Principal.from(swap_canister_id),
@@ -425,5 +426,7 @@ export const convertDtoToSnsSummary = ({
     lifecycle: convertDtoToLifecycle(lifecycle),
   };
 
-  return isValidSummary(partialSummary) ? partialSummary : undefined;
+  return isValidSummary(partialSummary)
+    ? new SnsSummaryWrapper(partialSummary)
+    : undefined;
 };
