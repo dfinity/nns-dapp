@@ -44,6 +44,8 @@ export interface SnsSummarySwap {
   params: SnsParams;
   // We don't use it for now and keep it as the candid optional type
   open_sns_token_swap_proposal_id: [] | [bigint];
+  direct_participation_icp_e8s: [] | [bigint];
+  neurons_fund_participation_icp_e8s: [] | [bigint];
 }
 
 export interface SnsSummary {
