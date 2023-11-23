@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Verifies that the nns-dapp canister is healthy
 verify_healthy() {
   dfx canister call nns-dapp get_stats
   dfx canister call nns-dapp get_canisters
@@ -10,14 +11,17 @@ verify_healthy() {
 get_transactions_count() {
   dfx canister call nns-dapp get_stats | idl2json | jq -r '.transactions_count'
 }
+
 # Gets stats that should be invariant across upgrades
 get_upgrade_invariant_stats() {
   dfx canister call nns-dapp get_stats | idl2json | jq '{accounts_count, neurons_created_count, neurons_topped_up_count, sub_accounts_count}'
 }
+
 # Gets some sample accounts
 sample_toy_accounts() {
   seq 0 "$TOY_ACCOUNT_CHUNK_SIZE" "$((NUM_TOY_ACCOUNTS - 1))" | xargs -I{} dfx canister call nns-dapp get_toy_account "({})" --query
 }
+
 # Gets data that should be invariant across upgrades
 get_upgrade_invariants() {
   echo "==== UPGRADE INVARIANT STATS ===="
@@ -46,6 +50,7 @@ check_state_size() {
 }
 
 # Verifies that the number of transactions is reasonable.  Some may be pruned, but not a lot.
+# TODO: Unit Test
 check_num_transactions() {
   # The toy state creates 3 transactions per account; see TRANSACTIONS_PER_ACCOUNT
   # in: rs/backend/src/accounts_store/toy_data.rs

@@ -2,6 +2,7 @@
 set -euo pipefail
 
 # Checks that the configuration number is valid.
+# TODO: Unit Test
 lint_configuration_num() {
   local configuration_num
   configuration_num="${1:-}"
@@ -14,6 +15,7 @@ lint_configuration_num() {
 }
 
 # Checks that a Wasm filename has the expected form.
+# TODO: Unit Test
 lint_wasm_path() {
   local path
   path="${1:-}"
@@ -26,6 +28,7 @@ lint_wasm_path() {
 }
 
 # Checks that an arguments filename has the expected form.
+# TODO: Unit Test
 lint_argfile_path() {
   local path
   path="${1:-}"
@@ -38,6 +41,7 @@ lint_argfile_path() {
 }
 
 # Gets the information, including exported methods, from a gzipped Wasm file.
+# TODO: Unit Test
 get_wasm_info() {
   local wasm_path
   wasm_path="${1:-}"
@@ -51,6 +55,7 @@ get_wasm_info() {
 }
 
 # Checks that a Wasm file appears to be well formed.
+# TODO: Unit Test
 lint_wasm() {
   local wasm_path wasm_info
   wasm_path="${1:-}"
@@ -79,6 +84,7 @@ lint_wasm() {
 }
 
 # Checks that the release name is valid
+# TODO: Unit Test
 lint_release_name() {
   local release_name
   release_name="${1:-}"
@@ -91,6 +97,7 @@ lint_release_name() {
 }
 
 # Checks that an argument is well formed candid
+# TODO: Unit Test
 lint_argfile() {
   local argfile_path
   argfile_path="${1:-}"
@@ -113,6 +120,7 @@ lint_argfile() {
 }
 
 # This file is intended to be sourced, but if called directly, offer some help
+# TODO: Unit Test
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   if (($# == 0)) || [[ "${1:-}" == "--help" ]]; then
     cat <<-EOF

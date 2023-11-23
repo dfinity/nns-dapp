@@ -51,16 +51,16 @@ function print_stack() {
   # If, as we do, set -euo pipefail is set, the line number is typically 1 for the top entry in the stack (index 2)
   # which is not very helpful but I guess it is worth keeping that stack entry.
   # Entries further down the stack look OK.
-  for ((i = 2; i < $stack_size; i++)); do
+  for ((i = 2; i < stack_size; i++)); do
     func="${FUNCNAME[$((i))]}"
-    [ x$func = x ] && func=MAIN
+    func="${func:-MAIN}"
     if ((i == 2)); then
       linen="??" # Better nothing than misleading data.  BASH_LINENO is typically 1 in this case, which is wrong.
     else
       linen="${BASH_LINENO[$((i - 1))]}"
     fi
     src="${BASH_SOURCE[$i]}"
-    [ x"$src" = x ] && src=non_file_source
+    src="${src:-non_file_source}"
     # Note: This line format is compatible with MS Code's format.  Clicking on the filename+linenumber jumps to that location.
     printf "   at: %s:%s: %s\n" "$src" "$linen" "$func"
   done
@@ -111,7 +111,7 @@ get_assets() {
     get_wasm "${!WASM}" "$(working_wasm "$config")"
     get_argfile "${!ARGFILE}" "$(working_arguments "$config")"
     test -z "${!SCHEMA}" || {
-      set_schema "${!SCHEMA}" < "$(working_arguments "$config")" | sponge "$(working_arguments "$config")"
+      set_schema "${!SCHEMA}" <"$(working_arguments "$config")" | sponge "$(working_arguments "$config")"
     }
   done
 }
