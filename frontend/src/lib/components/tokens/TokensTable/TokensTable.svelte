@@ -4,7 +4,7 @@
   import Row from "./TokensTableRow.svelte";
 
   export let userTokensData: UserTokenData[];
-  export let firstColumnHeader: string = $i18n.tokens.projects_header;
+  export let firstColumnHeader: string;
 </script>
 
 <div role="table" data-tid="tokens-table-component">
