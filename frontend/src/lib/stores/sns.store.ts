@@ -113,7 +113,7 @@ const convertToDerivedState = (
  */
 const overrideDerivedState =
   (derivedStore: SnsDerivedStateData) =>
-  (summary: SnsSummary | undefined): SnsSummary | undefined => {
+  (summary: SnsSummaryWrapper | undefined): SnsSummaryWrapper | undefined => {
     if (isNullish(summary)) {
       return undefined;
     }
@@ -135,7 +135,7 @@ const overrideDerivedState =
  */
 const overrideLifecycle =
   (lifecycleStore: SnsLifecycleData) =>
-  (summary: SnsSummary | undefined): SnsSummary | undefined => {
+  (summary: SnsSummaryWrapper | undefined): SnsSummaryWrapper | undefined => {
     if (isNullish(summary)) {
       return undefined;
     }
@@ -163,7 +163,7 @@ export const snsSummariesStore = derived<
         .map(overrideDerivedState(derivedStates))
         // Lifecycle data is fetched after a participation. Therefore, we consider it as the latest data.
         .map(overrideLifecycle(lifecycles))
-        .filter((optionalSummary): optionalSummary is SnsSummary =>
+        .filter((optionalSummary): optionalSummary is SnsSummaryWrapper =>
           nonNullish(optionalSummary)
         ) ?? [];
 

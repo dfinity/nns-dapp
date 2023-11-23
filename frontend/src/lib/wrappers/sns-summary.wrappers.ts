@@ -14,58 +14,46 @@ import type {
 import { fromNullable, isNullish } from "@dfinity/utils";
 
 export class SnsSummaryWrapper implements SnsSummary {
-  public readonly rootCanisterId: Principal;
-  public readonly swapCanisterId: Principal;
-  public readonly governanceCanisterId: Principal;
-  public readonly ledgerCanisterId: Principal;
-  public readonly indexCanisterId: Principal;
-  public readonly metadata: SnsSummaryMetadata;
-  public readonly token: IcrcTokenMetadata;
-  public readonly swap: SnsSummarySwap;
-  public readonly derived: SnsSwapDerivedState;
-  public readonly init: SnsSwapInit;
-  public readonly swapParams: SnsParams;
-  public readonly lifecycle: SnsGetLifecycleResponse;
+  private readonly summary: SnsSummary;
 
-  constructor({
-    rootCanisterId,
-    swapCanisterId,
-    governanceCanisterId,
-    ledgerCanisterId,
-    indexCanisterId,
-    metadata,
-    token,
-    swap,
-    derived,
-    init,
-    swapParams,
-    lifecycle,
-  }: {
-    rootCanisterId: Principal;
-    swapCanisterId: Principal;
-    governanceCanisterId: Principal;
-    ledgerCanisterId: Principal;
-    indexCanisterId: Principal;
-    metadata: SnsSummaryMetadata;
-    token: IcrcTokenMetadata;
-    swap: SnsSummarySwap;
-    derived: SnsSwapDerivedState;
-    init: SnsSwapInit;
-    swapParams: SnsParams;
-    lifecycle: SnsGetLifecycleResponse;
-  }) {
-    this.rootCanisterId = rootCanisterId;
-    this.swapCanisterId = swapCanisterId;
-    this.governanceCanisterId = governanceCanisterId;
-    this.ledgerCanisterId = ledgerCanisterId;
-    this.indexCanisterId = indexCanisterId;
-    this.metadata = metadata;
-    this.token = token;
-    this.swap = swap;
-    this.derived = derived;
-    this.init = init;
-    this.swapParams = swapParams;
-    this.lifecycle = lifecycle;
+  constructor(summary: SnsSummary) {
+    this.summary = summary;
+  }
+  get rootCanisterId(): Principal {
+    return this.summary.rootCanisterId;
+  }
+  get swapCanisterId(): Principal {
+    return this.summary.swapCanisterId;
+  }
+  get governanceCanisterId(): Principal {
+    return this.summary.governanceCanisterId;
+  }
+  get ledgerCanisterId(): Principal {
+    return this.summary.ledgerCanisterId;
+  }
+  get indexCanisterId(): Principal {
+    return this.summary.indexCanisterId;
+  }
+  get metadata(): SnsSummaryMetadata {
+    return this.summary.metadata;
+  }
+  get token(): IcrcTokenMetadata {
+    return this.summary.token;
+  }
+  get swap(): SnsSummarySwap {
+    return this.summary.swap;
+  }
+  get derived(): SnsSwapDerivedState {
+    return this.summary.derived;
+  }
+  get init(): SnsSwapInit {
+    return this.summary.init;
+  }
+  get swapParams(): SnsParams {
+    return this.summary.swapParams;
+  }
+  get lifecycle(): SnsGetLifecycleResponse {
+    return this.summary.lifecycle;
   }
 
   static overrideDerivedState(
@@ -73,7 +61,7 @@ export class SnsSummaryWrapper implements SnsSummary {
     newDerivedState: SnsSwapDerivedState
   ): SnsSummaryWrapper {
     return new SnsSummaryWrapper({
-      ...currentSummary,
+      ...currentSummary.summary,
       derived: newDerivedState,
     });
   }
@@ -90,7 +78,7 @@ export class SnsSummaryWrapper implements SnsSummary {
       return currentSummary;
     }
     return new SnsSummaryWrapper({
-      ...currentSummary,
+      ...currentSummary.summary,
       swap: {
         ...currentSummary.swap,
         lifecycle,

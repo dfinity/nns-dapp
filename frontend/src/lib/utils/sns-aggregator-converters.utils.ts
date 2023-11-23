@@ -408,7 +408,7 @@ export const convertDtoToSnsSummary = ({
   init,
   swap_params,
   lifecycle,
-}: CachedSnsDto): SnsSummary | undefined => {
+}: CachedSnsDto): SnsSummaryWrapper | undefined => {
   const partialSummary: PartialSummary = {
     rootCanisterId: Principal.from(root_canister_id),
     swapCanisterId: Principal.from(swap_canister_id),
