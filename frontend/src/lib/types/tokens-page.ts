@@ -8,14 +8,29 @@ export enum UserTokenAction {
   Receive = "receive",
 }
 
-export type UserTokenData = {
+export type UserTokenBase = {
   universeId: Principal;
   title: string;
   subtitle?: string;
+  logo: string;
+  actions: UserTokenAction[];
+};
+
+/**
+ * By using two types, we can keep `token` and `fee` mandatory in `UserTokenData`.
+ *
+ * This makes it easy to manage opening modals and managing actions where those fields are mandatory
+ * but they are not present while loading because the data is not yet there.
+ *
+ */
+export type UserTokenLoading = UserTokenBase & {
+  balance: "loading";
+  actions: [];
+};
+
+export type UserTokenData = UserTokenBase & {
   balance: TokenAmount | UnavailableTokenAmount;
   token: Token;
   // Fees are included in the metadata of ICRC tokens, but this is not a list of only ICRC tokens
   fee: TokenAmount;
-  logo: string;
-  actions: UserTokenAction[];
 };

@@ -1,5 +1,9 @@
 <script lang="ts">
-  import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
+  import {
+    UserTokenAction,
+    type UserTokenData,
+    type UserTokenLoading,
+  } from "$lib/types/tokens-page";
   import {
     SvelteComponent,
     createEventDispatcher,
@@ -14,8 +18,10 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { nonNullish } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
+  import { Spinner } from "@dfinity/gix-components";
+  import { isUserTokenData } from "$lib/utils/user-token.utils";
 
-  export let userTokenData: UserTokenData;
+  export let userTokenData: UserTokenData | UserTokenLoading;
   export let index: number;
 
   const dispatcher = createEventDispatcher();
@@ -29,11 +35,18 @@
     [UserTokenAction.Send]: SendButton,
   };
 
-  const handleClick = () =>
-    dispatcher("nnsAction", {
-      type: ActionType.GoToTokenDetail,
-      data: userTokenData,
-    });
+  let userToken: UserTokenData | undefined;
+  $: userToken = isUserTokenData(userTokenData) ? userTokenData : undefined;
+
+  const handleClick = () => {
+    if (nonNullish(userToken)) {
+      // Actions can only be dispatched with `UserTokenData`
+      dispatcher("nnsAction", {
+        type: ActionType.GoToTokenDetail,
+        data: userToken,
+      });
+    }
+  };
 </script>
 
 <div
@@ -61,13 +74,15 @@
       </div>
     </div>
     <div class="title-actions actions mobile-only">
-      {#each userTokenData.actions as action}
-        <svelte:component
-          this={actionMapper[action]}
-          userToken={userTokenData}
-          on:nnsAction
-        />
-      {/each}
+      {#if nonNullish(userToken)}
+        {#each userToken.actions as action}
+          <svelte:component
+            this={actionMapper[action]}
+            {userToken}
+            on:nnsAction
+          />
+        {/each}
+      {/if}
     </div>
   </div>
   <div role="cell" class="mobile-row-cell left-cell">
@@ -76,18 +91,24 @@
       <span data-tid="token-value-label"
         >{`-/- ${userTokenData.balance.token.symbol}`}</span
       >
+    {:else if userTokenData.balance === "loading"}
+      <span data-tid="token-value-label" class="balance-spinner"
+        ><Spinner inline size="tiny" /></span
+      >
     {:else}
       <AmountDisplay singleLine amount={userTokenData.balance} />
     {/if}
   </div>
   <div role="cell" class="actions-cell actions">
-    {#each userTokenData.actions as action}
-      <svelte:component
-        this={actionMapper[action]}
-        userToken={userTokenData}
-        on:nnsAction
-      />
-    {/each}
+    {#if nonNullish(userToken)}
+      {#each userToken.actions as action}
+        <svelte:component
+          this={actionMapper[action]}
+          {userToken}
+          on:nnsAction
+        />
+      {/each}
+    {/if}
   </div>
 </div>
 
@@ -176,6 +197,11 @@
       flex-direction: column;
       gap: var(--padding-0_5x);
     }
+  }
+
+  .balance-spinner {
+    display: flex;
+    align-items: center;
   }
 
   .actions {
