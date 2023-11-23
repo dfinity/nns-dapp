@@ -1,11 +1,16 @@
 import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { ActionType } from "$lib/types/actions";
-import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
+import {
+  UserTokenAction,
+  type UserTokenData,
+  type UserTokenLoading,
+} from "$lib/types/tokens-page";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import {
   createUserToken,
+  createUserTokenLoading,
   userTokenPageMock,
 } from "$tests/mocks/tokens-page.mock";
 import { TokensTablePo } from "$tests/page-objects/TokensTable.page-object";
@@ -21,7 +26,7 @@ describe("TokensTable", () => {
     firstColumnHeader,
     onAction,
   }: {
-    userTokensData: UserTokenData[];
+    userTokensData: Array<UserTokenData | UserTokenLoading>;
     firstColumnHeader?: string;
     onAction?: Mock;
   }) => {
@@ -120,10 +125,7 @@ describe("TokensTable", () => {
   });
 
   it("should render balance spinner if balance is loading", async () => {
-    const token1 = createUserToken({
-      universeId: OWN_CANISTER_ID,
-      balance: "loading",
-    });
+    const token1 = createUserTokenLoading();
     const po = renderTable({ userTokensData: [token1] });
 
     const rows = await po.getRows();

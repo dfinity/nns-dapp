@@ -7,7 +7,11 @@ import {
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
-import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
+import {
+  UserTokenAction,
+  type UserTokenData,
+  type UserTokenLoading,
+} from "$lib/types/tokens-page";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { TokenAmount } from "@dfinity/utils";
 import { mockCkBTCToken, mockCkTESTBTCToken } from "./ckbtc-accounts.mock";
@@ -120,5 +124,20 @@ export const createUserToken = (params: Partial<UserTokenData> = {}) => ({
 
 export const createIcpUserToken = (params: Partial<UserTokenData> = {}) => ({
   ...icpTokenBase,
+  ...params,
+});
+
+export const defaultUserTokenLoading: UserTokenLoading = {
+  universeId: principal(0),
+  title: "Test SNS",
+  balance: "loading",
+  logo: "sns-logo.svg",
+  actions: [],
+};
+
+export const createUserTokenLoading = (
+  params: Partial<UserTokenLoading> = {}
+) => ({
+  ...defaultUserTokenLoading,
   ...params,
 });
