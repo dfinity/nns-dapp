@@ -148,6 +148,8 @@ export const mockSwap: SnsSummarySwap = {
   open_sns_token_swap_proposal_id: [BigInt(1000)],
   buyers: [],
   params: mockSnsParams,
+  direct_participation_icp_e8s: [],
+  neurons_fund_participation_icp_e8s: [],
 };
 
 export const mockQuerySwap: SnsSwap = {

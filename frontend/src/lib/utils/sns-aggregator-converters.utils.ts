@@ -28,7 +28,6 @@ import type {
   SnsNervousSystemFunction,
   SnsNeuronsFundParticipationConstraints,
   SnsParams,
-  SnsSwap,
   SnsSwapDerivedState,
   SnsSwapInit,
 } from "@dfinity/sns";
@@ -247,48 +246,6 @@ const convertSwapParams = (params: CachedSwapParamsDto): SnsParams => ({
   ),
 });
 
-const convertSwap = ({
-  lifecycle,
-  open_sns_token_swap_proposal_id,
-  init,
-  params,
-  decentralization_sale_open_timestamp_seconds,
-  finalize_swap_in_progress,
-  direct_participation_icp_e8s,
-  neurons_fund_participation_icp_e8s,
-}: CachedSnsSwapDto): SnsSwap => ({
-  auto_finalize_swap_response: [],
-  already_tried_to_auto_finalize: [],
-  lifecycle,
-  // TODO: Ask to Max, why isn't it there?
-  neuron_recipes: [],
-  // TODO: extend when needed
-  next_ticket_id: [],
-  purge_old_tickets_last_completion_timestamp_nanoseconds: [],
-  purge_old_tickets_next_principal: [],
-  // TODO: Ask to Max, why isn't it there?
-  cf_participants: [],
-  decentralization_sale_open_timestamp_seconds: toNullable(
-    convertOptionalNumToBigInt(decentralization_sale_open_timestamp_seconds)
-  ),
-  // TODO: Upgrade @dfinity/utils and use the fix for the optional boolean
-  finalize_swap_in_progress:
-    finalize_swap_in_progress === undefined ? [] : [finalize_swap_in_progress],
-  buyers: [],
-  open_sns_token_swap_proposal_id:
-    open_sns_token_swap_proposal_id !== undefined
-      ? toNullable(convertOptionalNumToBigInt(open_sns_token_swap_proposal_id))
-      : [],
-  init: toNullable(convertSwapInitParams(init)),
-  params: isNullish(params) ? [] : [convertSwapParams(params)],
-  direct_participation_icp_e8s: toNullable(
-    convertOptionalNumToBigInt(direct_participation_icp_e8s)
-  ),
-  neurons_fund_participation_icp_e8s: toNullable(
-    convertOptionalNumToBigInt(neurons_fund_participation_icp_e8s)
-  ),
-});
-
 const convertDerived = ({
   sns_tokens_per_icp,
   buyer_total_icp_e8s,
@@ -369,11 +326,40 @@ const convertDtoToSnsSummarySwap = (
     return undefined;
   }
   return {
-    ...convertSwap(swap),
+    auto_finalize_swap_response: [],
+    already_tried_to_auto_finalize: [],
+    lifecycle: swap.lifecycle,
+    // TODO: Ask to Max, why isn't it there?
+    neuron_recipes: [],
+    // TODO: extend when needed
+    next_ticket_id: [],
+    purge_old_tickets_last_completion_timestamp_nanoseconds: [],
+    purge_old_tickets_next_principal: [],
+    // TODO: Ask to Max, why isn't it there?
+    cf_participants: [],
     decentralization_sale_open_timestamp_seconds: convertOptionalNumToBigInt(
       swap.decentralization_sale_open_timestamp_seconds
     ),
+    // TODO: Upgrade @dfinity/utils and use the fix for the optional boolean
+    finalize_swap_in_progress:
+      swap.finalize_swap_in_progress === undefined
+        ? []
+        : [swap.finalize_swap_in_progress],
+    buyers: [],
+    open_sns_token_swap_proposal_id:
+      swap.open_sns_token_swap_proposal_id !== undefined
+        ? toNullable(
+            convertOptionalNumToBigInt(swap.open_sns_token_swap_proposal_id)
+          )
+        : [],
+    init: toNullable(convertSwapInitParams(swap.init)),
     params: convertSwapParams(swap.params),
+    direct_participation_icp_e8s: toNullable(
+      convertOptionalNumToBigInt(swap.direct_participation_icp_e8s)
+    ),
+    neurons_fund_participation_icp_e8s: toNullable(
+      convertOptionalNumToBigInt(swap.neurons_fund_participation_icp_e8s)
+    ),
   };
 };
 
