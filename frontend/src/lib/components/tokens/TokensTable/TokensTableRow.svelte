@@ -13,6 +13,7 @@
   import { UnavailableTokenAmount } from "$lib/utils/token.utils";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { nonNullish } from "@dfinity/utils";
+  import { i18n } from "$lib/stores/i18n";
 
   export let userTokenData: UserTokenData;
   export let index: number;
@@ -70,7 +71,7 @@
     </div>
   </div>
   <div role="cell" class="mobile-row-cell left-cell">
-    <span class="mobile-only">Balance</span>
+    <span class="mobile-only">{$i18n.tokens.balance_header}</span>
     {#if userTokenData.balance instanceof UnavailableTokenAmount}
       <span data-tid="token-value-label"
         >{`-/- ${userTokenData.balance.token.symbol}`}</span
