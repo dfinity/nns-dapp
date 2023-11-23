@@ -145,7 +145,7 @@ describe("Tokens route", () => {
         expect(await po.hasTokensPage()).toBe(true);
       });
 
-      it("renders 'Accounts' as tokens table first column", async () => {
+      it("renders 'Projects' as tokens table first column", async () => {
         const po = await renderPage();
 
         const tablePo = po.getTokensPagePo().getTokensTable();
@@ -228,7 +228,7 @@ describe("Tokens route", () => {
         expect(await po.hasTokensPage()).toBe(false);
       });
 
-      it("renders 'Accounts' as tokens table first column", async () => {
+      it("renders 'Projects' as tokens table first column", async () => {
         const po = await renderPage();
 
         const tablePo = po.getSignInTokensPagePo().getTokensTablePo();
