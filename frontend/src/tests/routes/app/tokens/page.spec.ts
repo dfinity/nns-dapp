@@ -145,6 +145,13 @@ describe("Tokens route", () => {
         expect(await po.hasTokensPage()).toBe(true);
       });
 
+      it("renders 'Projects' as tokens table first column", async () => {
+        const po = await renderPage();
+
+        const tablePo = po.getTokensPagePo().getTokensTable();
+        expect(await tablePo.getFirstColumnHeader()).toEqual("Projects");
+      });
+
       describe("when ckBTC is enabled", () => {
         beforeEach(() => {
           overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", true);
@@ -219,6 +226,13 @@ describe("Tokens route", () => {
 
         expect(await po.hasLoginPage()).toBe(true);
         expect(await po.hasTokensPage()).toBe(false);
+      });
+
+      it("renders 'Projects' as tokens table first column", async () => {
+        const po = await renderPage();
+
+        const tablePo = po.getSignInTokensPagePo().getTokensTablePo();
+        expect(await tablePo.getFirstColumnHeader()).toEqual("Projects");
       });
 
       describe("when ckBTC is enabled", () => {

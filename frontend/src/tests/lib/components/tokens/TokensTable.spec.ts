@@ -50,15 +50,6 @@ describe("TokensTable", () => {
     expect(await po.getRows()).toHaveLength(2);
   });
 
-  it("should render the column header 'Projects' by default", async () => {
-    const token1 = createUserToken({
-      universeId: OWN_CANISTER_ID,
-    });
-    const po = renderTable({ userTokensData: [token1] });
-
-    expect(await po.getFirstColumnHeader()).toEqual("Projects");
-  });
-
   it("should render the first column headers from props", async () => {
     const firstColumnHeader = "Accounts";
     const token1 = createUserToken({

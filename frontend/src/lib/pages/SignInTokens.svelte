@@ -16,7 +16,11 @@
     <SignIn slot="actions" />
   </PageBanner>
 
-  <TokensTable on:nnsAction {userTokensData} />
+  <TokensTable
+    on:nnsAction
+    {userTokensData}
+    firstColumnHeader={$i18n.tokens.projects_header}
+  />
 </div>
 
 <style lang="scss">
