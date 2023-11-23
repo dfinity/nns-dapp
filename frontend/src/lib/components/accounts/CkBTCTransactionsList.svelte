@@ -3,12 +3,14 @@
 
 <script lang="ts">
   import type { Account } from "$lib/types/account";
+  import type { UiTransaction } from "$lib/types/transaction";
   import {
     loadCkBTCAccountNextTransactions,
     loadCkBTCAccountTransactions,
   } from "$lib/services/ckbtc-transactions.services";
   import type { IcrcTransactionData } from "$lib/types/transaction";
   import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
+  import { i18n } from "$lib/stores/i18n";
   import {
     getSortedTransactionsFromStore,
     isIcrcTransactionsCompleted,
@@ -17,12 +19,12 @@
   import IcrcTransactionsList from "$lib/components/accounts/IcrcTransactionsList.svelte";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { CanisterId } from "$lib/types/canister";
-  import { i18n } from "$lib/stores/i18n";
   import { onMount } from "svelte";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import CkBTCWalletTransactionsObserver from "$lib/components/accounts/CkBTCWalletTransactionsObserver.svelte";
   import { CKBTC_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/ckbtc.constants";
   import { waitForMilliseconds } from "$lib/utils/utils";
+  import { nonNullish } from "@dfinity/utils";
 
   export let indexCanisterId: CanisterId;
   export let universeId: UniverseCanisterId;
@@ -86,11 +88,17 @@
     account,
   });
 
-  let descriptions: Record<string, string>;
-  $: descriptions = $i18n.ckbtc_transaction_names as unknown as Record<
-    string,
-    string
-  >;
+  let uiTransactions: UiTransaction[];
+  $: uiTransactions = transactions
+    .map((transaction: IcrcTransactionData) =>
+      mapCkbtcTransaction({
+        ...transaction,
+        account,
+        token,
+        i18n: $i18n,
+      })
+    )
+    .filter(nonNullish);
 </script>
 
 <CkBTCWalletTransactionsObserver
@@ -101,12 +109,8 @@
 >
   <IcrcTransactionsList
     on:nnsIntersect={loadNextTransactions}
-    {account}
-    {transactions}
+    transactions={uiTransactions}
     {loading}
     {completed}
-    {descriptions}
-    {token}
-    mapTransaction={mapCkbtcTransaction}
   />
 </CkBTCWalletTransactionsObserver>

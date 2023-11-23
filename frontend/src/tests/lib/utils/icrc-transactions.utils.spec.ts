@@ -16,6 +16,7 @@ import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
 import {
   createBurnTransaction,
   createIcrcTransactionWithId,
+  createMintTransaction,
 } from "$tests/mocks/icrc-transactions.mock";
 import {
   mockSnsMainAccount,
@@ -138,7 +139,7 @@ describe("icrc-transaction utils", () => {
       account: mockSnsMainAccount,
       toSelfTransaction: false,
       token: ICPToken,
-      transactionNames: en.transaction_names,
+      i18n: en,
     };
     const defaultExpectedData = {
       domKey: "112-1",
@@ -343,7 +344,7 @@ describe("icrc-transaction utils", () => {
         account: mockCkBTCMainAccount,
         toSelfTransaction: false,
         token: ICPToken,
-        transactionNames: en.transaction_names,
+        i18n: en,
       });
       expect(data).toEqual({
         domKey: "1234-1",
@@ -381,7 +382,7 @@ describe("icrc-transaction utils", () => {
         account: mockCkBTCMainAccount,
         toSelfTransaction: false,
         token: ICPToken,
-        transactionNames: en.transaction_names,
+        i18n: en,
       });
       expect(data).toEqual({
         domKey: "1234-1",
@@ -418,14 +419,14 @@ describe("icrc-transaction utils", () => {
         account: mockCkBTCMainAccount,
         toSelfTransaction: false,
         token: ICPToken,
-        transactionNames: en.transaction_names,
+        i18n: en,
       });
 
       expect(data).toEqual({
         domKey: "1234-1",
         headline: "Sent",
         isIncoming: false,
-        otherParty: undefined,
+        otherParty: "BTC Network",
         timestamp: new Date(0),
         tokenAmount: TokenAmount.fromE8s({
           amount,
@@ -434,6 +435,35 @@ describe("icrc-transaction utils", () => {
       });
 
       expect(errorLog).toEqual(["Failed to decode ckBTC burn memo"]);
+    });
+
+    it("Renders mint transaction as 'From: BTC Network'", () => {
+      const amount = 25_000_000n;
+
+      const data = mapCkbtcTransaction({
+        transaction: {
+          id: BigInt(1234),
+          transaction: createMintTransaction({
+            amount,
+            to: mainAccount,
+          }),
+        },
+        account: mockCkBTCMainAccount,
+        toSelfTransaction: false,
+        token: ICPToken,
+        i18n: en,
+      });
+      expect(data).toEqual({
+        domKey: "1234-1",
+        headline: "Received",
+        isIncoming: true,
+        otherParty: "BTC Network",
+        timestamp: new Date(0),
+        tokenAmount: TokenAmount.fromE8s({
+          amount,
+          token: ICPToken,
+        }),
+      });
     });
   });
 

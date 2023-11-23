@@ -4,6 +4,7 @@ import { NnsAccountsFooterPo } from "$tests/page-objects/NnsAccountsFooter.page-
 import { SnsAccountsPo } from "$tests/page-objects/SnsAccounts.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { BuyICPModalPo } from "./BuyICPModal.page-object";
 
 export class AccountsPo extends BasePageObject {
   private static readonly TID = "accounts-component";
@@ -28,7 +29,15 @@ export class AccountsPo extends BasePageObject {
     return NnsAccountsFooterPo.under(this.root);
   }
 
+  getBuyICPModalPo() {
+    return BuyICPModalPo.under(this.root);
+  }
+
   clickSend(): Promise<void> {
     return this.getNnsAccountsFooterPo().clickSend();
+  }
+
+  clickBuyICP(): Promise<void> {
+    return this.getNnsAccountsFooterPo().clickBuyICP();
   }
 }

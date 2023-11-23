@@ -38,13 +38,25 @@ describe("NnsAccounts", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     resetIdentity();
-    // TODO: Move this inside a describe with tokens flag disabled
+    icpAccountsStore.setForTesting({
+      main: mockMainAccount,
+      subAccounts: [],
+      hardwareWallets: [],
+      certified: true,
+    });
     overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
   });
 
   describe("when tokens flag is enabled", () => {
     beforeEach(() => {
       overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
+    });
+
+    it("renders 'Accounts' as tokens table first column", async () => {
+      const po = renderComponent();
+
+      const tablePo = po.getTokensTablePo();
+      expect(await tablePo.getFirstColumnHeader()).toEqual("Accounts");
     });
 
     it("should render tokens table with rows", async () => {
@@ -76,158 +88,159 @@ describe("NnsAccounts", () => {
     });
   });
 
-  // TODO: Move this inside a describe with tokens flag disabled
-  describe("when there are accounts", () => {
+  describe("when tokens flag is disabled", () => {
     beforeEach(() => {
-      icpAccountsStore.setForTesting({
-        main: mockMainAccount,
-        subAccounts: [],
-        hardwareWallets: [],
-        certified: true,
+      overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
+    });
+
+    describe("when there are accounts", () => {
+      beforeEach(() => {
+        cancelPollAccounts();
       });
-      cancelPollAccounts();
-    });
 
-    it("should render a main card", () => {
-      const { queryByTestId } = render(NnsAccounts);
+      it("should render a main card", () => {
+        const { queryByTestId } = render(NnsAccounts);
 
-      expect(queryByTestId("account-card")).not.toBeNull();
-    });
-
-    it("should render account icp in card too", () => {
-      const { container } = render(NnsAccounts);
-
-      const cardTitleRow = container.querySelector(
-        '[data-tid="account-card"] > div[data-tid="token-value-label"]'
-      );
-
-      expect(cardTitleRow?.textContent.trim()).toEqual(
-        `${formatToken({ value: mockMainAccount.balanceE8s })} ICP`
-      );
-    });
-
-    it("should render account identifier", () => {
-      const { getByText } = render(NnsAccounts);
-      getByText(mockMainAccount.identifier);
-    });
-
-    it("should render subaccount cards", () => {
-      icpAccountsStore.setForTesting({
-        main: mockMainAccount,
-        subAccounts: [mockSubAccount],
-        hardwareWallets: [],
-        certified: true,
+        expect(queryByTestId("account-card")).not.toBeNull();
       });
-      const { queryAllByTestId } = render(NnsAccounts);
 
-      const cards = queryAllByTestId("account-card");
+      it("should render account icp in card too", () => {
+        const { container } = render(NnsAccounts);
 
-      expect(cards).not.toBeNull();
-      expect(cards.length).toBe(2);
-    });
+        const cardTitleRow = container.querySelector(
+          '[data-tid="account-card"] > div[data-tid="token-value-label"]'
+        );
 
-    it("should render hardware wallet account cards", () => {
-      icpAccountsStore.setForTesting({
-        main: mockMainAccount,
-        subAccounts: [],
-        hardwareWallets: [mockHardwareWalletAccount],
-        certified: true,
+        expect(cardTitleRow?.textContent.trim()).toEqual(
+          `${formatToken({ value: mockMainAccount.balanceE8s })} ICP`
+        );
       });
-      const { queryAllByTestId } = render(NnsAccounts);
 
-      const cards = queryAllByTestId("account-card");
+      it("should render account identifier", () => {
+        const { getByText } = render(NnsAccounts);
+        getByText(mockMainAccount.identifier);
+      });
 
-      expect(cards).not.toBeNull();
-      expect(cards.length).toBe(2);
-    });
-  });
+      it("should render subaccount cards", () => {
+        icpAccountsStore.setForTesting({
+          main: mockMainAccount,
+          subAccounts: [mockSubAccount],
+          hardwareWallets: [],
+          certified: true,
+        });
+        const { queryAllByTestId } = render(NnsAccounts);
 
-  describe("summary", () => {
-    beforeAll(() => {
-      vi.clearAllMocks();
-      icpAccountsStore.setForTesting({
-        main: mockMainAccount,
-        subAccounts: [mockSubAccount],
-        hardwareWallets: [mockHardwareWalletAccount],
-        certified: true,
+        const cards = queryAllByTestId("account-card");
+
+        expect(cards).not.toBeNull();
+        expect(cards.length).toBe(2);
+      });
+
+      it("should render hardware wallet account cards", () => {
+        icpAccountsStore.setForTesting({
+          main: mockMainAccount,
+          subAccounts: [],
+          hardwareWallets: [mockHardwareWalletAccount],
+          certified: true,
+        });
+        const { queryAllByTestId } = render(NnsAccounts);
+
+        const cards = queryAllByTestId("account-card");
+
+        expect(cards).not.toBeNull();
+        expect(cards.length).toBe(2);
       });
     });
 
-    it("should contain a tooltip", () => {
-      const { container } = render(NnsAccounts);
+    describe("summary", () => {
+      beforeAll(() => {
+        vi.clearAllMocks();
+        icpAccountsStore.setForTesting({
+          main: mockMainAccount,
+          subAccounts: [mockSubAccount],
+          hardwareWallets: [mockHardwareWalletAccount],
+          certified: true,
+        });
+      });
 
-      expect(container.querySelector(".tooltip-wrapper")).toBeInTheDocument();
-    });
-  });
+      it("should contain a tooltip", () => {
+        const { container } = render(NnsAccounts);
 
-  describe("when no accounts", () => {
-    beforeEach(() => {
-      icpAccountsStore.resetForTesting();
-      const mainBalanceE8s = BigInt(10_000_000);
-      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
-        mainBalanceE8s
-      );
-      vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(
-        mockAccountDetails
-      );
-    });
-    it("should not render a token amount component nor zero", () => {
-      const { container } = render(NnsAccounts);
-
-      // The tooltip wraps the total amount
-      expect(
-        container.querySelector(".tooltip-wrapper")
-      ).not.toBeInTheDocument();
+        expect(container.querySelector(".tooltip-wrapper")).toBeInTheDocument();
+      });
     });
 
-    it("should load accounts", async () => {
-      const { queryByTestId } = render(NnsAccounts);
+    describe("when no accounts", () => {
+      beforeEach(() => {
+        icpAccountsStore.resetForTesting();
+        const mainBalanceE8s = BigInt(10_000_000);
+        vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+          mainBalanceE8s
+        );
+        vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(
+          mockAccountDetails
+        );
+      });
+      it("should not render a token amount component nor zero", () => {
+        const { container } = render(NnsAccounts);
 
-      expect(queryByTestId("account-card")).toBeNull();
+        // The tooltip wraps the total amount
+        expect(
+          container.querySelector(".tooltip-wrapper")
+        ).not.toBeInTheDocument();
+      });
 
-      await waitFor(() => expect(queryByTestId("account-card")).not.toBeNull());
+      it("should load accounts", async () => {
+        const { queryByTestId } = render(NnsAccounts);
+
+        expect(queryByTestId("account-card")).toBeNull();
+
+        await waitFor(() =>
+          expect(queryByTestId("account-card")).not.toBeNull()
+        );
+      });
     });
-  });
 
-  describe("when no accounts and user navigates away", () => {
-    let spyQueryAccount: SpyInstance;
-    beforeEach(() => {
-      icpAccountsStore.resetForTesting();
-      vi.clearAllTimers();
-      vi.clearAllMocks();
-      cancelPollAccounts();
-      const now = Date.now();
-      vi.useFakeTimers().setSystemTime(now);
-      const mainBalanceE8s = BigInt(10_000_000);
-      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
-        mainBalanceE8s
-      );
-      spyQueryAccount = vi
-        .spyOn(nnsDappApi, "queryAccount")
-        .mockRejectedValue(new Error("connection error"));
-      vi.spyOn(console, "error").mockImplementation(() => undefined);
-    });
+    describe("when no accounts and user navigates away", () => {
+      let spyQueryAccount: SpyInstance;
+      beforeEach(() => {
+        icpAccountsStore.resetForTesting();
+        vi.clearAllTimers();
+        vi.clearAllMocks();
+        cancelPollAccounts();
+        const now = Date.now();
+        vi.useFakeTimers().setSystemTime(now);
+        const mainBalanceE8s = BigInt(10_000_000);
+        vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+          mainBalanceE8s
+        );
+        spyQueryAccount = vi
+          .spyOn(nnsDappApi, "queryAccount")
+          .mockRejectedValue(new Error("connection error"));
+        vi.spyOn(console, "error").mockImplementation(() => undefined);
+      });
 
-    it("should stop polling", async () => {
-      const { unmount } = render(NnsAccounts);
+      it("should stop polling", async () => {
+        const { unmount } = render(NnsAccounts);
 
-      await runResolvedPromises();
-      let expectedCalls = 1;
-      expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
-
-      let retryDelay = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
-      const callsBeforeLeaving = 3;
-      while (expectedCalls < callsBeforeLeaving) {
-        await advanceTime(retryDelay);
-        retryDelay *= 2;
-        expectedCalls += 1;
+        await runResolvedPromises();
+        let expectedCalls = 1;
         expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
-      }
-      unmount();
 
-      // Even after waiting a long time there shouldn't be more calls.
-      await advanceTime(99 * retryDelay);
-      expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
+        let retryDelay = SYNC_ACCOUNTS_RETRY_SECONDS * 1000;
+        const callsBeforeLeaving = 3;
+        while (expectedCalls < callsBeforeLeaving) {
+          await advanceTime(retryDelay);
+          retryDelay *= 2;
+          expectedCalls += 1;
+          expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
+        }
+        unmount();
+
+        // Even after waiting a long time there shouldn't be more calls.
+        await advanceTime(99 * retryDelay);
+        expect(spyQueryAccount).toBeCalledTimes(expectedCalls);
+      });
     });
   });
 });

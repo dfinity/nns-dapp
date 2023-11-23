@@ -4,12 +4,7 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Identifier from "$lib/components/ui/Identifier.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import {
-    Html,
-    IconUp,
-    IconDown,
-    KeyValuePair,
-  } from "@dfinity/gix-components";
+  import { IconUp, IconDown, KeyValuePair } from "@dfinity/gix-components";
   import type { UiTransaction } from "$lib/types/transaction";
   import { nonNullish, type TokenAmount } from "@dfinity/utils";
   import { fade } from "svelte/transition";
@@ -20,16 +15,9 @@
   let tokenAmount: TokenAmount;
   let isIncoming: boolean;
   let otherParty: string | undefined;
-  let fallbackDescription: string | undefined;
   let timestamp: Date;
-  $: ({
-    headline,
-    tokenAmount,
-    isIncoming,
-    otherParty,
-    fallbackDescription,
-    timestamp,
-  } = transaction);
+  $: ({ headline, tokenAmount, isIncoming, otherParty, timestamp } =
+    transaction);
 
   let label: string;
   $: label = isIncoming
@@ -66,10 +54,6 @@
       <div slot="start" class="identifier">
         {#if nonNullish(otherParty)}
           <Identifier size="medium" {label} identifier={otherParty} />
-        {:else if nonNullish(fallbackDescription)}
-          <p data-tid="transaction-description">
-            <Html text={fallbackDescription} />
-          </p>
         {/if}
       </div>
 

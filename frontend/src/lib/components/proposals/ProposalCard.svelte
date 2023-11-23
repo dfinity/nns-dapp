@@ -144,7 +144,7 @@
 
     span,
     output {
-      @include text.truncate;
+      @include text.clamp(1);
     }
   }
 </style>

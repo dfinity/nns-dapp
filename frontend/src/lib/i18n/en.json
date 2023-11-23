@@ -172,6 +172,13 @@
     "main": "Main",
     "balance": "Available Balance",
     "send": "Send",
+    "buy_icp": "Buy ICP",
+    "buy_icp_banxa": "Buy ICP with Banxa",
+    "receiving_icp_address": "Receiving ICP Address",
+    "icp_token_utility": "ICP Token Utility",
+    "buy_icp_description": "<a href=\"https://internetcomputer.org/icp-tokens\" rel=\"noopener noreferrer\" aria-label=\"more info ICP token\" target=\"_blank\">ICP</a> is the native utility token of the Internet Computer Protocol. You can lock ICP into neurons to participate in the governance of the Internet Computer, swap it in SNS decentralization swaps or convert it into 'cycles' that are used to pay for resources of canister smart contracts.",
+    "buy_icp_note": "<strong>Disclaimer:</strong> Clicking the button below will take you to a third party website to complete your ICP transaction at your own risk.",
+    "banxa_logo_alt": "Banxa logo",
     "icp_transaction_description": "ICP Transaction",
     "sns_transaction_description": "$token Transaction",
     "ckbtc_transaction_description": "$token Transaction",
@@ -474,11 +481,6 @@
     "refundSwap": "Swap Refund",
     "participateSwap": "Decentralization Swap",
     "approve": "Approve transfer"
-  },
-  "ckbtc_transaction_names": {
-    "burn": "To: <span class=\"value\">BTC Network</span>",
-    "mint": "From: <span class=\"value\">BTC Network</span>",
-    "approve": "&ZeroWidthSpace;"
   },
   "wallet": {
     "title": "Account",
@@ -995,7 +997,8 @@
     "warning_transaction_description": "When sending your ckBTC to a BTC address, your transaction got stuck in the redeeming account. Visit the ckBTC accounts page to continue.",
     "checking_incomplete_btc_transfers": "Checking for incomplete BTC transfers",
     "all_btc_transfers_complete": "All transfers are complete",
-    "click_to_complete_btc_transfers": "Click here to complete BTC transfer for $amount ckBTC"
+    "click_to_complete_btc_transfers": "Click here to complete BTC transfer for $amount ckBTC",
+    "btc_network": "BTC Network"
   },
   "error__ckbtc": {
     "already_process": "The minter has already been notified and updating the balance is in progress.",
@@ -1040,6 +1043,9 @@
     "status_in_progress_detailed": "Checking for new transactions."
   },
   "tokens": {
-    "title": "Tokens"
+    "title": "Tokens",
+    "projects_header": "Projects",
+    "balance_header": "Balance",
+    "accounts_header": "Accounts"
   }
 }

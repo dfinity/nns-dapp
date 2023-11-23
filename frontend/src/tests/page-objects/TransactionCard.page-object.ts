@@ -25,10 +25,6 @@ export class TransactionCardPo extends BasePageObject {
     return this.getText("identifier");
   }
 
-  getDescription(): Promise<string> {
-    return this.getText("transaction-description");
-  }
-
   getDate(): Promise<string> {
     return this.getText("transaction-date");
   }

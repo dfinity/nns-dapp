@@ -1,0 +1,143 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+help_text() {
+  cat <<-"EOF"
+	Tests:
+	  - Populating a given schema with large scale data
+	  - Migrating from one Wasm+schema to another Wasm+schema and back.
+
+	Note:
+	  - This test is primarily experimental at this time.
+	  - This test is based on the 'downgrade-upgrade' test.
+	  - Some or all of these changes may be migrated into the downgrade-upgrade test.
+
+	Needs:
+	  - dfx
+	  - ic-wasm
+	  - idl2json
+	  - wasm files for the two deployments
+	  - candid argument files
+	  - a running replica
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/../clap.bash"
+# Define options
+clap.define short=w long=wasm1 desc="A test build of the first wasm.  May be a _test.wasm.gz file or a named release." variable=WASM1 default="out/nns-dapp_test.wasm.gz"
+clap.define short=W long=wasm2 desc="A test build of the second wasm.  May be a _test.wasm.gz file or a named release." variable=WASM2 default="out/nns-dapp_test.wasm.gz"
+clap.define short=a long=args1 desc="A file containing the first init arguments." variable=ARGFILE1 default="out/nns-dapp-arg-local.did"
+clap.define short=A long=args2 desc="A file containing the second init arguments." variable=ARGFILE2 default="out/nns-dapp-arg-local.did"
+clap.define short=s long=schema1 desc="The schema for the first deployment.  Overrides the value in the argument file." variable=SCHEMA1 default=""
+clap.define short=S long=schema2 desc="The schema for the second deployment.  Overrides the value in the argument file." variable=SCHEMA2 default=""
+clap.define short=a long=accounts desc="Accounts will be created until there are at least this many." variable=NUM_TOY_ACCOUNTS default="220000"
+clap.define short=c long=chunk desc="The accounts are created in chunks of this size." variable=TOY_ACCOUNT_CHUNK_SIZE default="10000"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+# Gets helper functions
+. "${BASH_SOURCE[0]}.linters"
+. "${BASH_SOURCE[0]}.getters"
+. "${BASH_SOURCE[0]}.canister"
+
+# Prints a stack trace
+function print_stack() {
+  local i stack_size func linen src
+  stack_size=${#FUNCNAME[@]}
+  # Skip print_stack (index 0) and on_exit (index 1), so start at index 2.
+  # If, as we do, set -euo pipefail is set, the line number is typically 1 for the top entry in the stack (index 2)
+  # which is not very helpful but it is worth keeping the filename and function name.
+  # Entries further down the stack are accurate.
+  for ((i = 2; i < stack_size; i++)); do
+    func="${FUNCNAME[$((i))]}"
+    func="${func:-MAIN}"
+    if ((i == 2)); then
+      linen="??" # Better nothing than misleading data.  BASH_LINENO is typically 1 in this case, which is wrong.
+    else
+      linen="${BASH_LINENO[$((i - 1))]}"
+    fi
+    src="${BASH_SOURCE[$i]}"
+    src="${src:-non_file_source}"
+    # Note: This line format is compatible with MS Code's format.  Clicking on the filename+linenumber jumps to that location.
+    printf "   at: %s:%s: %s\n" "$src" "$linen" "$func"
+  done
+}
+
+# Clean up on exit - or print error details.
+on_exit() {
+  exit_code=$?
+  if ((exit_code == 0)); then
+    rm -fr "$WORKDIR"
+  else
+    {
+      echo =============================================
+      print_stack
+      printf "\n\nERROR: exiting with code %s\n\n" $exit_code
+      printf "       %s\n" \
+        "The temporary working directory may assist with debugging:" \
+        "  '$WORKDIR'"
+      echo
+      exit $exit_code
+    } >&2
+  fi
+}
+trap on_exit EXIT
+
+# The path to the local copy of the wasm used in the test.
+working_wasm() {
+  local configuration_num
+  configuration_num="${1:-}"
+  lint_configuration_num "${configuration_num:-}"
+  echo "$WORKDIR/nns-dapp-${configuration_num}_test.wasm.gz"
+}
+
+# The path to the arguments used in the test
+working_arguments() {
+  local configuration_num
+  configuration_num="${1:-}"
+  lint_configuration_num "${configuration_num:-}"
+  echo "$WORKDIR/nns-dapp-args-${configuration_num}.did"
+}
+
+# Get the assets we need for the tests
+get_assets() {
+  for config in 1 2; do
+    WASM="WASM$config"
+    ARGFILE="ARGFILE$config"
+    SCHEMA="SCHEMA$config"
+    get_wasm "${!WASM}" "$(working_wasm "$config")"
+    get_argfile "${!ARGFILE}" "$(working_arguments "$config")"
+    test -z "${!SCHEMA}" || {
+      set_schema "${!SCHEMA}" <"$(working_arguments "$config")" | sponge "$(working_arguments "$config")"
+    }
+  done
+}
+
+test_upgrade_downgrade() {
+  WORKDIR="$(realpath "$(mktemp -d nns-dapp-test-XXXXXX)")"
+  get_assets
+  find "$WORKDIR"
+
+  echo "Installing $(working_wasm 1)..."
+  install_nnsdapp "$(working_wasm 1)" "$(working_arguments 1)"
+  echo "Installing state..."
+  while (("$(dfx canister call nns-dapp get_stats | idl2json | jq -r .accounts_count)" < NUM_TOY_ACCOUNTS)); do
+    dfx canister call nns-dapp create_toy_accounts "($TOY_ACCOUNT_CHUNK_SIZE: nat)"
+  done
+  verify_healthy
+  check_state_size
+  check_num_transactions
+  echo "Upgrading to $(working_wasm 2)..."
+  upgrade_nnsdapp "$(working_wasm 2)" "$(working_arguments 2)"
+  check_num_transactions
+  echo "Reverting to $(working_wasm 1)..."
+  upgrade_nnsdapp "$(working_wasm 1)" "$(working_arguments 1)"
+  verify_healthy
+  check_num_transactions
+  echo SUCCESS
+}
+
+test_upgrade_downgrade

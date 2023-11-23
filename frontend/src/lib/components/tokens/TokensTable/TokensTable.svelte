@@ -1,15 +1,21 @@
 <script lang="ts">
+  import { i18n } from "$lib/stores/i18n";
   import type { UserTokenData } from "$lib/types/tokens-page";
   import Row from "./TokensTableRow.svelte";
 
   export let userTokensData: UserTokenData[];
+  export let firstColumnHeader: string;
 </script>
 
 <div role="table" data-tid="tokens-table-component">
   <div role="rowgroup">
     <div role="row" class="header-row">
-      <span role="columnheader">Projects</span>
-      <span role="columnheader" class="header-right">Balance</span>
+      <span role="columnheader" data-tid="column-header-1"
+        >{firstColumnHeader}</span
+      >
+      <span role="columnheader" data-tid="column-header-2" class="header-right"
+        >{$i18n.tokens.balance_header}</span
+      >
       <span role="columnheader"></span>
     </div>
   </div>

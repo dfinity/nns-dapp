@@ -474,31 +474,6 @@ describe("transactions-utils", () => {
       });
     });
 
-    it("should use fallbackDescriptions", () => {
-      expect(
-        toUiTransaction({
-          ...defaultParams,
-          transaction: {
-            ...defaultTransaction,
-            type: AccountTransactionType.Burn,
-            isSend: false,
-            isReceive: false,
-            from: undefined,
-            to: undefined,
-          },
-          fallbackDescriptions: en.ckbtc_transaction_names as unknown as Record<
-            string,
-            string
-          >,
-        })
-      ).toEqual({
-        ...defaultExpectedUiTransaction,
-        headline: "Sent",
-        otherParty: undefined,
-        fallbackDescription: 'To: <span class="value">BTC Network</span>',
-      });
-    });
-
     it("should convert a to-self transaction", () => {
       expect(
         toUiTransaction({
