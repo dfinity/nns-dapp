@@ -10,7 +10,7 @@ describe("TransactionCard", () => {
   const defaultTransaction = {
     domKey: "234-0",
     isIncoming: false,
-    icon: "outgoing",
+    isPending: false,
     headline: "Sent",
     otherParty: "some-address",
     tokenAmount: TokenAmount.fromE8s({ amount: 123_000_000n, token: ICPToken }),
@@ -100,6 +100,17 @@ describe("TransactionCard", () => {
     expect(normalizeWhitespace(await po.getDate())).toBe(
       "Mar 14, 2021 12:00 AM"
     );
+    expect(await po.hasPendingIcon()).toBe(false);
+  });
+
+  it("displays pending transaction", async () => {
+    const po = renderComponent({
+      isPending: true,
+      timestamp: null,
+    });
+
+    expect(normalizeWhitespace(await po.getDate())).toBe("Pending...");
+    expect(await po.hasPendingIcon()).toBe(true);
   });
 
   it("displays identifier for received", async () => {

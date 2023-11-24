@@ -210,6 +210,7 @@ export const mapIcrcTransaction = ({
     return {
       domKey: `${transaction.id}-${toSelfTransaction ? "0" : "1"}`,
       isIncoming: isReceive,
+      isPending: false,
       headline,
       otherParty,
       tokenAmount: TokenAmount.fromE8s({
