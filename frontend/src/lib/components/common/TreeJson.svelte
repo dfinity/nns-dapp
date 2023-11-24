@@ -61,7 +61,6 @@
       <button
         class="icon-only expand-button"
         class:is-expandable={!collapsed}
-        data-tid={testId}
         aria-label={$i18n.core.toggle}
         tabindex="0"
         on:click|stopPropagation={toggle}
@@ -89,7 +88,7 @@
   {/if}
 {:else if isExpandable}
   <!-- expandable w/o children - key+{}|[] -->
-  <span data-tid={testId} class="key-value" class:key-is-index={keyIsIndex}>
+  <span class="key-value" class:key-is-index={keyIsIndex}>
     {#if keyLabel !== ""}<span
         class="key"
         class:root={keyRoot}
