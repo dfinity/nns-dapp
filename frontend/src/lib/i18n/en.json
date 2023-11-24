@@ -491,7 +491,8 @@
     "no_transactions": "No transactions",
     "icp_qrcode_aria_label": "A QR code that renders the address to receive ICP",
     "sns_qrcode_aria_label": "A QR code that renders the address to receive $tokenSymbol",
-    "token_address": "$tokenSymbol Address"
+    "token_address": "$tokenSymbol Address",
+    "pending_transaction_timestamp": "Pending..."
   },
   "busy_screen": {
     "pending_approval_hw": "Please use your hardware wallet to approve.",
