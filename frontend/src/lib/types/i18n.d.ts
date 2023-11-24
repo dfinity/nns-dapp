@@ -509,6 +509,7 @@ interface I18nWallet {
   icp_qrcode_aria_label: string;
   sns_qrcode_aria_label: string;
   token_address: string;
+  pending_transaction_timestamp: string;
 }
 
 interface I18nBusy_screen {

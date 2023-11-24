@@ -145,6 +145,7 @@ describe("icrc-transaction utils", () => {
       domKey: "112-1",
       headline: "Sent",
       isIncoming: false,
+      isPending: false,
       otherParty: mockSnsSubAccount.identifier,
       timestamp: defaultTimestamp,
       tokenAmount: TokenAmount.fromE8s({
@@ -350,6 +351,7 @@ describe("icrc-transaction utils", () => {
         domKey: "1234-1",
         headline: "Sent",
         isIncoming: false,
+        isPending: false,
         otherParty: undefined,
         timestamp: new Date(0),
         tokenAmount: TokenAmount.fromE8s({
@@ -388,6 +390,7 @@ describe("icrc-transaction utils", () => {
         domKey: "1234-1",
         headline: "Sent",
         isIncoming: false,
+        isPending: false,
         otherParty: btcWithdrawalAddress,
         timestamp: new Date(0),
         tokenAmount: TokenAmount.fromE8s({
@@ -426,6 +429,7 @@ describe("icrc-transaction utils", () => {
         domKey: "1234-1",
         headline: "Sent",
         isIncoming: false,
+        isPending: false,
         otherParty: "BTC Network",
         timestamp: new Date(0),
         tokenAmount: TokenAmount.fromE8s({
@@ -457,6 +461,7 @@ describe("icrc-transaction utils", () => {
         domKey: "1234-1",
         headline: "Received",
         isIncoming: true,
+        isPending: false,
         otherParty: "BTC Network",
         timestamp: new Date(0),
         tokenAmount: TokenAmount.fromE8s({

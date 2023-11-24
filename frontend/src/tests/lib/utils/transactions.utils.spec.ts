@@ -403,6 +403,7 @@ describe("transactions-utils", () => {
     const defaultExpectedUiTransaction: UiTransaction = {
       domKey: "123-1",
       isIncoming: false,
+      isPending: false,
       headline: "Sent",
       otherParty: defaultTo,
       tokenAmount: TokenAmount.fromE8s({
