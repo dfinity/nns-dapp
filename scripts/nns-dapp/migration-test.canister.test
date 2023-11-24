@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+set -euo pipefail
+. "${0%.test}"
+
+# Prints a section title
+title() {
+  cat <<-EOF
+
+	=============================================================================
+	   $*
+	=============================================================================
+	EOF
+}
+
+(
+  title List of schemas should match .did file
+  # TODO:  Support extracting this with idl2json rather than sed hackery.
+  # Sed hackery:
+  # - Get the SchemaLabel type definition, up to the closing brace.
+  # - Collect the payload lines in the hold space
+  # - At the end:
+  #   - Replace all separators with whitespace
+  #   - Keep just the text in the braces
+  #   - Print
+  # shellcheck disable=SC2016
+  #   - C2016: We really do want to use $ in the sed expression.
+  SCHEMAS_IN_DID_FILE="$(sed -n '/type SchemaLabel/,/^}/p' rs/backend/nns-dapp.did | sed -nE 'H;${g;s/[; \n]+/ /g;s/.*\{ *//g;s/ *\}.*//g;p}')"
+  [[ "$SCHEMAS_IN_DID_FILE" == "${SCHEMA_LABELS[*]}" ]] || {
+    echo "ERROR: List of schema labels in bash should match the labels in the .did file."
+    echo "Expected schema labels: ${SCHEMAS_IN_DID_FILE}"
+    echo "Actual schema labels:   ${SCHEMA_LABELS[*]}"
+    exit 1
+  } >&2
+)
+
+(
+  title Schema converters should give expected values
+  for index in "${!SCHEMA_LABELS[@]}"; do
+    EXPECTED_NAME="${SCHEMA_LABELS[$index]}"
+    ACTUAL_NAME="$(schema_name "$index")"
+    [[ "$EXPECTED_NAME" == "$ACTUAL_NAME" ]] || {
+      echo "ERROR: Failed to get the name of schema index '$index'."
+      echo "Expected: '$EXPECTED_NAME'"
+      echo "Expected: '$ACTUAL_NAME'"
+      exit 1
+    } >&2
+    ACTUAL_INDEX="$(schema_index "$EXPECTED_NAME")"
+    ((index == ACTUAL_INDEX)) || {
+      echo "ERROR: Failed to get the index of schema '$EXPECTED_NAME'."
+      echo "Expected: '$index'"
+      echo "Expected: '${ACTUAL_INDEX:-}'"
+      exit 1
+
+    }
+
+  done
+
+)
+
+echo "$(basename "$0") PASSED"
