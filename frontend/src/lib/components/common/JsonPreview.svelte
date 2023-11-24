@@ -62,7 +62,7 @@
         </div>
       {:else}
         <div data-tid="raw-json" in:fade>
-          <RawJson {json} />
+          <RawJson json={expandedData} />
         </div>
       {/if}
     </TestIdWrapper>
