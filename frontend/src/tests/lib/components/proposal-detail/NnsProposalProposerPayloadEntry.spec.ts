@@ -1,13 +1,12 @@
 import * as agent from "$lib/api/agent.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import NnsProposalProposerPayloadEntry from "$lib/components/proposal-detail/NnsProposalProposerPayloadEntry.svelte";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { jsonRepresentationStore } from "$lib/stores/json-representation.store";
 import { proposalPayloadsStore } from "$lib/stores/proposals.store";
 import {
   mockProposalInfo,
   proposalActionNnsFunction21,
 } from "$tests/mocks/proposal.mock";
-import { simplifyJson } from "$tests/utils/json.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import type { Proposal } from "@dfinity/nns";
@@ -32,8 +31,9 @@ describe("NnsProposalProposerPayloadEntry", () => {
     vi.clearAllMocks();
     proposalPayloadsStore.reset();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
-    // TODO(GIX-2030) remove this once the feature flag is removed
-    overrideFeatureFlagsStore.setFlag("ENABLE_FULL_WIDTH_PROPOSAL", false);
+
+    // switch to raw mode to simplify data validation
+    jsonRepresentationStore.setMode("raw");
   });
 
   it("should trigger getProposalPayload", async () => {
@@ -70,9 +70,7 @@ describe("NnsProposalProposerPayloadEntry", () => {
     });
 
     await runResolvedPromises();
-    const jsonElement = queryByTestId("json-wrapper");
-    expect(simplifyJson(jsonElement.textContent)).toBe(
-      simplifyJson(JSON.stringify({ a: nestedObj }))
-    );
+    const jsonElement = queryByTestId("raw-json");
+    expect(JSON.parse(jsonElement.textContent)).toEqual({ a: nestedObj });
   });
 });
