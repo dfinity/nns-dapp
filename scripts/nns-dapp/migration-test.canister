@@ -140,6 +140,67 @@ upgrade_nnsdapp() {
   fi
 }
 
+# TODO: Get this mapping from the candid file
+SCHEMA_LABELS=(
+  "Map"
+  "AccountsInStableMemory"
+)
+
+# Gets the name for a given schema index
+schema_name() {
+  local schema_index schema_name
+  schema_index="${1:-}"
+  schema_name="${SCHEMA_LABELS[$schema_index]:-}"
+  [ -n "${schema_name:-}" ] || {
+    echo "ERROR: Unknown schema index."
+    echo "Expected one of: ${!SCHEMA_LABELS[*]}"
+    echo "Actual:           ${schema_index}"
+    exit 1
+  } >&2
+  echo "$schema_name"
+}
+
+# Maps schema names to integers
+schema_index() {
+  local schema i
+  schema="${1:-}"
+  for i in "${!SCHEMA_LABELS[@]}"; do
+    if [[ "${SCHEMA_LABELS[$i]}" == "${schema}" ]]; then
+      echo "${i}"
+      return
+    fi
+  done
+  {
+    echo "ERROR: Unknown schema name."
+    echo "Expected one of: ${SCHEMA_LABELS[*]}"
+    echo "Actual:           ${schema}"
+    exit 1
+  } >&2
+}
+
+# Gets the deployed schema
+get_schema_name() {
+  local schema_index schema_name
+  schema_index="$(dfx canister call nns-dapp get_stats | idl2json | jq -e '.schema[0]')"
+  schema_name="$(schema_name "${schema_index:-}")"
+  echo "$schema_name"
+}
+
+# Verifies that the schema is as expected
+assert_schema_is() {
+  local expected_schema actual_schema
+  expected_schema="${1:-}"
+  actual_schema="$(get_schema_name)"
+  if [[ "${expected_schema}" != "${actual_schema}" ]]; then
+    {
+      echo "ERROR: Schema is not as expected."
+      echo "Expected: ${expected_schema}"
+      echo "Actual:   ${actual_schema}"
+      exit 1
+    } >&2
+  fi
+}
+
 # This file is intended to be sourced, but if called directly, offer some help
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   if (($# == 0)) || [[ "${1:-}" == "--help" ]]; then
