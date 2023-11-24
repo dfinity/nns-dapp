@@ -1,13 +1,13 @@
 import NnsProposalProposerActionsEntry from "$lib/components/proposal-detail/NnsProposalProposerActionsEntry.svelte";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { jsonRepresentationStore } from "$lib/stores/json-representation.store";
 import { proposalFirstActionKey } from "$lib/utils/proposals.utils";
 import {
   mockProposalInfo,
   proposalActionMotion,
-  proposalActionNnsFunction21,
-  proposalActionRewardNodeProvider,
 } from "$tests/mocks/proposal.mock";
-import type { Action, Proposal } from "@dfinity/nns";
+import { ProposalProposerActionsEntryPo } from "$tests/page-objects/ProposalProposerActionsEntry.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import type { Proposal } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
 const proposalWithMotionAction = {
@@ -15,94 +15,36 @@ const proposalWithMotionAction = {
   action: proposalActionMotion,
 } as Proposal;
 
-const proposalWithRewardNodeProviderAction = {
-  ...mockProposalInfo.proposal,
-  action: proposalActionRewardNodeProvider,
-} as Proposal;
-
-const actionWithUndefined = {
-  Motion: {
-    motionText: undefined,
-  },
-} as Action;
-
-const proposalWithActionWithUndefined = {
-  ...mockProposalInfo.proposal,
-  action: actionWithUndefined,
-} as Proposal;
-
 describe("NnsProposalProposerActionsEntry", () => {
-  // TODO(GIX-2030) remove this once the feature flag is removed
-  beforeEach(() =>
-    overrideFeatureFlagsStore.setFlag("ENABLE_FULL_WIDTH_PROPOSAL", false)
-  );
+  const renderComponent = (props) => {
+    const { container } = render(NnsProposalProposerActionsEntry, {
+      props,
+    });
 
-  it("should render action key", () => {
-    const { getByText } = render(NnsProposalProposerActionsEntry, {
-      props: {
-        proposal: proposalWithMotionAction,
-      },
+    return ProposalProposerActionsEntryPo.under(
+      new JestPageObjectElement(container)
+    );
+  };
+
+  // switch to raw mode to simplify data validation
+  beforeEach(() => jsonRepresentationStore.setMode("raw"));
+
+  it("should render action key", async () => {
+    const po = renderComponent({
+      proposal: proposalWithMotionAction,
     });
 
     const key = proposalFirstActionKey(proposalWithMotionAction) as string;
-    expect(getByText(key)).toBeInTheDocument();
+    expect(await po.getActionTitle()).toEqual(key);
   });
 
-  it("should render action fields", () => {
-    const { getByText } = render(NnsProposalProposerActionsEntry, {
-      props: {
-        proposal: proposalWithMotionAction,
-      },
+  it("should render action data", async () => {
+    const po = renderComponent({
+      proposal: proposalWithMotionAction,
     });
 
-    const [key, value] = Object.entries(
-      (proposalWithMotionAction?.action as { Motion: object }).Motion
-    )[0];
-    expect(getByText(key, { exact: false })).toBeInTheDocument();
-    expect(getByText(value, { exact: false })).toBeInTheDocument();
-  });
-
-  it("should render object fields as JSON", () => {
-    const nodeProviderActions = render(NnsProposalProposerActionsEntry, {
-      props: {
-        proposal: proposalWithRewardNodeProviderAction,
-      },
+    expect(JSON.parse(await po.getJsonPreviewPo().getRawText())).toEqual({
+      motionText: "Test motion",
     });
-
-    expect(nodeProviderActions.queryByTestId("json")).toBeInTheDocument();
-  });
-
-  it("should render undefined fields as 'undefined'", () => {
-    const { getByText } = render(NnsProposalProposerActionsEntry, {
-      props: {
-        proposal: proposalWithActionWithUndefined,
-      },
-    });
-
-    expect(getByText("undefined")).toBeInTheDocument();
-  });
-
-  it("should render nnsFunction id", () => {
-    const proposalWithNnsFunctionAction = {
-      ...mockProposalInfo.proposal,
-      action: proposalActionNnsFunction21,
-    } as Proposal;
-
-    const { getByText } = render(NnsProposalProposerActionsEntry, {
-      props: {
-        proposal: proposalWithNnsFunctionAction,
-      },
-    });
-
-    const [key, value] = Object.entries(
-      (
-        proposalWithNnsFunctionAction?.action as {
-          ExecuteNnsFunction: object;
-        }
-      ).ExecuteNnsFunction
-    )[0];
-
-    expect(getByText(key, { exact: false })).toBeInTheDocument();
-    expect(getByText(value)).toBeInTheDocument();
   });
 });
