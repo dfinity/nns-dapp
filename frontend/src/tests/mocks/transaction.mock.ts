@@ -81,6 +81,7 @@ export const mockTransactionSendDataFromMain: Transaction = {
 export const createMockUiTransaction = ({
   domKey = "123-1",
   isIncoming = false,
+  isPending = false,
   headline = "Sent",
   otherParty = "aaaaa-aa",
   tokenAmount = TokenAmount.fromE8s({
@@ -91,6 +92,7 @@ export const createMockUiTransaction = ({
 }: Partial<UiTransaction>): UiTransaction => ({
   domKey,
   isIncoming,
+  isPending,
   headline,
   otherParty,
   tokenAmount,

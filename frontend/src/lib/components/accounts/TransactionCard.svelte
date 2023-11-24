@@ -14,9 +14,10 @@
   let headline: string;
   let tokenAmount: TokenAmount;
   let isIncoming: boolean;
+  let isPending: boolean;
   let otherParty: string | undefined;
-  let timestamp: Date;
-  $: ({ headline, tokenAmount, isIncoming, otherParty, timestamp } =
+  let timestamp: Date | undefined;
+  $: ({ headline, tokenAmount, isIncoming, isPending, otherParty, timestamp } =
     transaction);
 
   let label: string;
@@ -24,12 +25,17 @@
     ? $i18n.wallet.direction_from
     : $i18n.wallet.direction_to;
 
-  let seconds: number;
-  $: seconds = timestamp.getTime() / 1000;
+  let seconds: number | undefined;
+  $: seconds = timestamp && timestamp.getTime() / 1000;
 </script>
 
 <article data-tid="transaction-card" transition:fade|global>
-  <div class="icon" class:send={!isIncoming}>
+  <div
+    class="icon"
+    data-tid="icon"
+    class:send={!isIncoming}
+    class:pending={isPending}
+  >
     {#if isIncoming}
       <IconDown size="24px" />
     {:else}
@@ -58,7 +64,13 @@
       </div>
 
       <div slot="end" class="date label" data-tid="transaction-date">
-        <DateSeconds {seconds} />
+        {#if nonNullish(seconds)}
+          <DateSeconds {seconds} />
+        {:else if isPending}
+          <p class="value pending">
+            {$i18n.wallet.pending_transaction_timestamp}
+          </p>
+        {/if}
       </div>
     </ColumnRow>
   </div>
@@ -97,6 +109,11 @@
     min-width: fit-content;
     text-align: right;
 
+    .pending {
+      // Because DateSeconds also has margin-top: 0.
+      margin-top: 0;
+    }
+
     @include media.min-width(small) {
       margin-top: var(--padding);
     }
@@ -124,6 +141,11 @@
     &.send {
       background: var(--background);
       color: var(--disable-contrast);
+    }
+
+    &.pending {
+      color: var(--pending-color);
+      background: var(--pending-background);
     }
   }
 
