@@ -205,6 +205,15 @@ jobs:
       - uses: actions/checkout@v3
       - name: Test chunking
         run: scripts/nns-dapp/split-assets.test
+  migration-test-utils-work:
+    name: Migration test utilities work
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Test migration utilities
+        run: |
+          set +x
+          scripts/nns-dapp/migration-test.getter.test
   dfx-nns-proposal-args-works:
     # TODO: Reenable (add it in line 338) once fixed, should it depend on mainnet?
     if: false
@@ -364,7 +373,27 @@ jobs:
       - name: Getting network config works
         run: scripts/network-config.test
   checks-pass:
-    needs: ["formatting", "spelling", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "ic-commit-consistency", "release-templating-works", "config-check", "asset-chunking-works", "docker-build-cli-flags", "download-nns-dapp-ci-wasm", "canister-ids-tool", "release-sop", "split-changelog", "past-changelog", "minor-version-bump-works", "version-match", "network-config"]
+    needs:
+      - formatting
+      - spelling
+      - cargo-tests
+      - svelte-lint
+      - svelte-tests
+      - shell-checks
+      - ic-commit-consistency
+      - release-templating-works
+      - config-check
+      - asset-chunking-works
+      - docker-build-cli-flags
+      - download-nns-dapp-ci-wasm
+      - canister-ids-tool
+      - release-sop
+      - split-changelog
+      - past-changelog
+      - minor-version-bump-works
+      - version-match
+      - network-config
+      - migration-test-utils-work
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
