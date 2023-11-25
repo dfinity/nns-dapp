@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+#
+# WARNING: This file tests backtraces including linenums.  If you change the line numbers in this file, you may need to update the expected stacktrace.
+set -euo pipefail
+. "${0%.test}"
+foo() {
+  bar "$@"
+}
+bar() {
+  bat "$@"
+}
+bat() {
+  ACTUAL_STACKTRACE="$(print_stack "$@")"
+  [[ "${ACTUAL_STACKTRACE:-}" == "${EXPECTED_STACKTRACE:-}" ]] || {
+    echo "ERROR: Actual stacktrace did not match expected stacktrace."
+    echo "Expected:"
+    echo "----------------------------------------------"
+    echo "$EXPECTED_STACKTRACE"
+    echo "----------------------------------------------"
+    echo "Actual:"
+    echo "----------------------------------------------"
+    echo "$ACTUAL_STACKTRACE"
+    echo "----------------------------------------------"
+    echo "Diff:"
+    diff -u <(echo "$EXPECTED_STACKTRACE") <(echo "$ACTUAL_STACKTRACE")
+    exit 1
+  } >&2
+}
+
+# Prints a section title
+title() {
+  cat <<-EOF
+
+	=============================================================================
+	   $*
+	=============================================================================
+	EOF
+}
+
+(
+  title "Should print a correct backtrace"
+  EXPECTED_STACKTRACE="$(
+    cat <<-EOF
+	   at: scripts/nns-dapp/migration-test.on-exit:??: print_stack
+	   at: scripts/nns-dapp/migration-test.on-exit.test:13: bat
+	   at: scripts/nns-dapp/migration-test.on-exit.test:10: bar
+	   at: scripts/nns-dapp/migration-test.on-exit.test:7: foo
+	   at: scripts/nns-dapp/migration-test.on-exit.test:51: main
+	EOF
+  )"
+  foo
+)
+
+(
+  title "Backtrace should skip the expected number of entries"
+  EXPECTED_STACKTRACE="$(
+    cat <<-EOF
+	   at: scripts/nns-dapp/migration-test.on-exit.test:10: bar
+	   at: scripts/nns-dapp/migration-test.on-exit.test:7: foo
+	   at: scripts/nns-dapp/migration-test.on-exit.test:63: main
+	EOF
+  )"
+  foo 2
+)
+
+echo "$(basename "$0") PASSED"
