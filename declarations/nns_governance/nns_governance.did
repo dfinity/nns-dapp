@@ -1,4 +1,4 @@
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-11-15_23-00/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-11-23_23-01/rs/nns/governance/canister/governance.did>
 type AccountIdentifier = record { hash : vec nat8 };
 type Action = variant {
   RegisterKnownNeuron : KnownNeuron;
