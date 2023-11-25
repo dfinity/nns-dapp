@@ -4,10 +4,10 @@
 set -euo pipefail
 . "${0%.test}"
 foo() {
-  bar "$@"
+  "$@"
 }
 bar() {
-  bat "$@"
+  "$@"
 }
 bat() {
   ACTUAL_STACKTRACE="$(print_stack "$@")"
@@ -25,6 +25,10 @@ bat() {
     diff -u <(echo "$EXPECTED_STACKTRACE") <(echo "$ACTUAL_STACKTRACE")
     exit 1
   } >&2
+}
+bail() {
+  false
+  on_exit
 }
 
 # Prints a section title
@@ -45,10 +49,10 @@ title() {
 	   at: scripts/nns-dapp/migration-test.on-exit.test:13: bat
 	   at: scripts/nns-dapp/migration-test.on-exit.test:10: bar
 	   at: scripts/nns-dapp/migration-test.on-exit.test:7: foo
-	   at: scripts/nns-dapp/migration-test.on-exit.test:51: main
+	   at: scripts/nns-dapp/migration-test.on-exit.test:55: main
 	EOF
   )"
-  foo
+  foo bar bat
 )
 
 (
@@ -57,10 +61,44 @@ title() {
     cat <<-EOF
 	   at: scripts/nns-dapp/migration-test.on-exit.test:10: bar
 	   at: scripts/nns-dapp/migration-test.on-exit.test:7: foo
-	   at: scripts/nns-dapp/migration-test.on-exit.test:63: main
+	   at: scripts/nns-dapp/migration-test.on-exit.test:67: main
 	EOF
   )"
-  foo 2
+  foo bar bat 2
+)
+
+(
+  title "on_exit should work"
+  EXPECTED="$(
+    cat <<-EOF
+	=============================================
+	   at: scripts/nns-dapp/migration-test.on-exit.test:31: bail
+	   at: scripts/nns-dapp/migration-test.on-exit.test:10: bar
+	   at: scripts/nns-dapp/migration-test.on-exit.test:7: foo
+	   at: scripts/nns-dapp/migration-test.on-exit.test:84: main
+
+
+	ERROR: exiting with code 1
+	EOF
+  )"
+  if ACTUAL="$(foo bar bail 2>&1)"; then
+    echo "ERROR: Expected exit 1"
+    exit 1
+  fi
+  [[ "${ACTUAL:-}" == "${EXPECTED:-}" ]] || {
+    echo "ERROR: Actual output did not match expected output."
+    echo "Expected:"
+    echo "----------------------------------------------"
+    echo "$EXPECTED"
+    echo "----------------------------------------------"
+    echo "Actual:"
+    echo "----------------------------------------------"
+    echo "$ACTUAL"
+    echo "----------------------------------------------"
+    echo "Diff:"
+    diff -u <(echo "$EXPECTED") <(echo "$ACTUAL")
+    exit 1
+  } >&2
 )
 
 echo "$(basename "$0") PASSED"
