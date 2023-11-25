@@ -91,11 +91,11 @@ impl State {
     /// - Deploy a release with a parser for the new schema.
     /// - Then, deploy a release that writes the new schema.
     /// This way it is possible to roll back after deploying the new schema.
-    pub fn post_upgrade() -> Self {
-        match Self::schema_version_from_stable_memory() {
-            None => Self::post_upgrade_unversioned(),
-            Some(version) => {
-                trap_with(&format!("Unknown schema version: {version:?}"));
+    pub fn post_upgrade(args_schema: Option<SchemaLabel>) -> Self {
+        match (Self::schema_version_from_stable_memory(), args_schema) {
+            (None, None) | (None, Some(SchemaLabel::Map)) => Self::post_upgrade_unversioned(),
+            other => {
+                trap_with(&format!("Unsupported schema pair: {other:?}"));
                 unreachable!();
             }
         }
