@@ -1,0 +1,42 @@
+# Prints a stack trace
+function print_stack() {
+  local i stack_size func linen src
+  stack_size=${#FUNCNAME[@]}
+  # Skip print_stack (index 0) and on_exit (index 1), so start at index 2.
+  # If, as we do, set -euo pipefail is set, the line number is typically 1 for the top entry in the stack (index 2)
+  # which is not very helpful but it is worth keeping the filename and function name.
+  # Entries further down the stack are accurate.
+  for ((i = 2; i < stack_size; i++)); do
+    func="${FUNCNAME[$((i))]}"
+    func="${func:-MAIN}"
+    if ((i == 2)); then
+      linen="??" # Better nothing than misleading data.  BASH_LINENO is typically 1 in this case, which is wrong.
+    else
+      linen="${BASH_LINENO[$((i - 1))]}"
+    fi
+    src="${BASH_SOURCE[$i]}"
+    src="${src:-non_file_source}"
+    # Note: This line format is compatible with MS Code's format.  Clicking on the filename+linenumber jumps to that location.
+    printf "   at: %s:%s: %s\n" "$src" "$linen" "$func"
+  done
+}
+
+# Clean up on exit - or print error details.
+# Usage:
+# - Optionally define on_exit_ok
+# - Optionally define on_exit_err
+# - After parsing arguments, run: trap on_exit EXIT
+on_exit() {
+  exit_code=$?
+  if ((exit_code = 0)); then
+    [[ $(type -t on_exit_ok) != function ]] || on_exit_ok
+  else
+    {
+      echo =============================================
+      print_stack
+      printf "\n\nERROR: exiting with code %s\n\n" $exit_code
+      [[ $(type -t on_exit_err) != function ]] || on_exit_err
+      exit $exit_code
+    } >&2
+  fi
+}
