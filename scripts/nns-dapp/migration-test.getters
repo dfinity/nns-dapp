@@ -69,15 +69,21 @@ get_argfile() {
   lint_argfile "$destination"
 }
 
+# Gets the schema from an argfile
+# Reads from stdin and writes to stdout.
+get_arguments_schema() {
+  idl2json | jq -r '.[0].schema[0] // {} | keys | .[0]'
+}
+
 # Sets the schema of an argfile.
 # Reads from stdin and writes to stdout.
 # TODO: Unit Test
-set_schema() {
+set_arguments_schema() {
   local schema="${1}" # TODO: Add linter for schema.
   # TODO: Finalize support for compound types in yaml2candid.  Then we can use something like this:
   # idl2json | schema="$schema" jq '.[0].schema = (env.schema)' | yaml2candid --did rs/backend/nns-dapp.did  --typ 'opt Config'
   # This is simple but can break if the format is not as expected:
-  awk -v schema="$schema" '/^ *schema *= *opt *variant/{ printf "  schema = opt variant { %s };\n", schema; next }{print}' out/nns-dapp-arg-local.did
+  awk -v schema="$schema" '/^ *schema *= *opt *variant/{ printf "  schema = opt variant { %s };\n", schema; next }{print}'
 }
 
 # This file is intended to be sourced, but if called directly, offer some help
