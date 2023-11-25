@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2030,SC2031,SC2001
+# Note regarding shellcheck: These tests create subshells with variables, it is intentional that the variables are not set globally.
 #
 # WARNING: This file tests backtraces including linenums.  If you change the line numbers in this file, you may need to update the expected stacktrace.
 set -euo pipefail
@@ -47,10 +49,10 @@ title() {
   EXPECTED_STACKTRACE="$(
     cat <<-EOF
 	   at: scripts/nns-dapp/migration-test.on-exit:??: print_stack
-	   at: scripts/nns-dapp/migration-test.on-exit.test:14: bat
-	   at: scripts/nns-dapp/migration-test.on-exit.test:11: bar
-	   at: scripts/nns-dapp/migration-test.on-exit.test:8: foo
-	   at: scripts/nns-dapp/migration-test.on-exit.test:56: main
+	   at: scripts/nns-dapp/migration-test.on-exit.test:16: bat
+	   at: scripts/nns-dapp/migration-test.on-exit.test:13: bar
+	   at: scripts/nns-dapp/migration-test.on-exit.test:10: foo
+	   at: scripts/nns-dapp/migration-test.on-exit.test:58: main
 	EOF
   )"
   foo bar bat
@@ -60,9 +62,9 @@ title() {
   title "Backtrace should skip the expected number of entries"
   EXPECTED_STACKTRACE="$(
     cat <<-EOF
-	   at: scripts/nns-dapp/migration-test.on-exit.test:11: bar
-	   at: scripts/nns-dapp/migration-test.on-exit.test:8: foo
-	   at: scripts/nns-dapp/migration-test.on-exit.test:68: main
+	   at: scripts/nns-dapp/migration-test.on-exit.test:13: bar
+	   at: scripts/nns-dapp/migration-test.on-exit.test:10: foo
+	   at: scripts/nns-dapp/migration-test.on-exit.test:70: main
 	EOF
   )"
   foo bar bat 2
@@ -73,10 +75,10 @@ title() {
   EXPECTED="$(
     cat <<-EOF
 	=============================================
-	   at: scripts/nns-dapp/migration-test.on-exit.test:32: bail
-	   at: scripts/nns-dapp/migration-test.on-exit.test:11: bar
-	   at: scripts/nns-dapp/migration-test.on-exit.test:8: foo
-	   at: scripts/nns-dapp/migration-test.on-exit.test:85: main
+	   at: scripts/nns-dapp/migration-test.on-exit.test:34: bail
+	   at: scripts/nns-dapp/migration-test.on-exit.test:13: bar
+	   at: scripts/nns-dapp/migration-test.on-exit.test:10: foo
+	   at: scripts/nns-dapp/migration-test.on-exit.test:87: main
 
 
 	ERROR: exiting with code 1
