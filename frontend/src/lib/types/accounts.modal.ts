@@ -1,6 +1,6 @@
 import type { Account } from "$lib/types/account";
 
-export type AccountsModalType = "nns-receive" | "sns-receive";
+export type AccountsModalType = "nns-receive" | "sns-receive" | "buy-icp";
 
 export interface AccountsModal {
   type: AccountsModalType;

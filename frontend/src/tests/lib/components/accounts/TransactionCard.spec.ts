@@ -10,7 +10,7 @@ describe("TransactionCard", () => {
   const defaultTransaction = {
     domKey: "234-0",
     isIncoming: false,
-    icon: "outgoing",
+    isPending: false,
     headline: "Sent",
     otherParty: "some-address",
     tokenAmount: TokenAmount.fromE8s({ amount: 123_000_000n, token: ICPToken }),
@@ -41,13 +41,11 @@ describe("TransactionCard", () => {
   it("renders burn description", async () => {
     const po = renderComponent({
       headline: "Sent",
-      fallbackDescription: "To: BTC Network",
-      otherParty: undefined,
+      otherParty: "BTC Network",
     });
 
     expect(await po.getHeadline()).toBe("Sent");
-    expect(await po.getDescription()).toBe("To: BTC Network");
-    expect(await po.getIdentifier()).toBe(null);
+    expect(await po.getIdentifier()).toBe("To: BTC Network");
   });
 
   it("renders ckBTC burn To:", async () => {
@@ -59,7 +57,6 @@ describe("TransactionCard", () => {
 
     expect(await po.getHeadline()).toBe("Sent");
     expect(await po.getIdentifier()).toBe("To: withdrwala-address");
-    expect(await po.getDescription()).toBe(null);
   });
 
   it("renders sent headline", async () => {
@@ -103,6 +100,17 @@ describe("TransactionCard", () => {
     expect(normalizeWhitespace(await po.getDate())).toBe(
       "Mar 14, 2021 12:00 AM"
     );
+    expect(await po.hasPendingIcon()).toBe(false);
+  });
+
+  it("displays pending transaction", async () => {
+    const po = renderComponent({
+      isPending: true,
+      timestamp: null,
+    });
+
+    expect(normalizeWhitespace(await po.getDate())).toBe("Pending...");
+    expect(await po.hasPendingIcon()).toBe(true);
   });
 
   it("displays identifier for received", async () => {

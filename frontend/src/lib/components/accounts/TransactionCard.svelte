@@ -4,12 +4,7 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Identifier from "$lib/components/ui/Identifier.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import {
-    Html,
-    IconUp,
-    IconDown,
-    KeyValuePair,
-  } from "@dfinity/gix-components";
+  import { IconUp, IconDown, KeyValuePair } from "@dfinity/gix-components";
   import type { UiTransaction } from "$lib/types/transaction";
   import { nonNullish, type TokenAmount } from "@dfinity/utils";
   import { fade } from "svelte/transition";
@@ -19,29 +14,28 @@
   let headline: string;
   let tokenAmount: TokenAmount;
   let isIncoming: boolean;
+  let isPending: boolean;
   let otherParty: string | undefined;
-  let fallbackDescription: string | undefined;
-  let timestamp: Date;
-  $: ({
-    headline,
-    tokenAmount,
-    isIncoming,
-    otherParty,
-    fallbackDescription,
-    timestamp,
-  } = transaction);
+  let timestamp: Date | undefined;
+  $: ({ headline, tokenAmount, isIncoming, isPending, otherParty, timestamp } =
+    transaction);
 
   let label: string;
   $: label = isIncoming
     ? $i18n.wallet.direction_from
     : $i18n.wallet.direction_to;
 
-  let seconds: number;
-  $: seconds = timestamp.getTime() / 1000;
+  let seconds: number | undefined;
+  $: seconds = timestamp && timestamp.getTime() / 1000;
 </script>
 
 <article data-tid="transaction-card" transition:fade|global>
-  <div class="icon" class:send={!isIncoming}>
+  <div
+    class="icon"
+    data-tid="icon"
+    class:send={!isIncoming}
+    class:pending={isPending}
+  >
     {#if isIncoming}
       <IconDown size="24px" />
     {:else}
@@ -66,15 +60,17 @@
       <div slot="start" class="identifier">
         {#if nonNullish(otherParty)}
           <Identifier size="medium" {label} identifier={otherParty} />
-        {:else if nonNullish(fallbackDescription)}
-          <p data-tid="transaction-description">
-            <Html text={fallbackDescription} />
-          </p>
         {/if}
       </div>
 
       <div slot="end" class="date label" data-tid="transaction-date">
-        <DateSeconds {seconds} />
+        {#if nonNullish(seconds)}
+          <DateSeconds {seconds} />
+        {:else if isPending}
+          <p class="value pending">
+            {$i18n.wallet.pending_transaction_timestamp}
+          </p>
+        {/if}
       </div>
     </ColumnRow>
   </div>
@@ -113,6 +109,11 @@
     min-width: fit-content;
     text-align: right;
 
+    .pending {
+      // Because DateSeconds also has margin-top: 0.
+      margin-top: 0;
+    }
+
     @include media.min-width(small) {
       margin-top: var(--padding);
     }
@@ -140,6 +141,11 @@
     &.send {
       background: var(--background);
       color: var(--disable-contrast);
+    }
+
+    &.pending {
+      color: var(--pending-color);
+      background: var(--pending-background);
     }
   }
 

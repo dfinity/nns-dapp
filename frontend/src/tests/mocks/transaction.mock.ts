@@ -1,7 +1,9 @@
 import type { Transaction as NnsTransaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import type { Transaction } from "$lib/types/transaction";
+import type { Transaction, UiTransaction } from "$lib/types/transaction";
 import { AccountTransactionType } from "$lib/types/transaction";
+import { TokenAmount } from "@dfinity/utils";
 import { mockMainAccount, mockSubAccount } from "./icp-accounts.store.mock";
+import { mockSnsToken } from "./sns-projects.mock";
 
 export const createMockSendTransaction = ({
   amount = 110000023n,
@@ -75,3 +77,24 @@ export const mockTransactionSendDataFromMain: Transaction = {
   displayAmount,
   date: new Date("03-14-2021"),
 };
+
+export const createMockUiTransaction = ({
+  domKey = "123-1",
+  isIncoming = false,
+  isPending = false,
+  headline = "Sent",
+  otherParty = "aaaaa-aa",
+  tokenAmount = TokenAmount.fromE8s({
+    amount: 330_000_000n,
+    token: mockSnsToken,
+  }),
+  timestamp = new Date("2021-08-01T15:00:00.000Z"),
+}: Partial<UiTransaction>): UiTransaction => ({
+  domKey,
+  isIncoming,
+  isPending,
+  headline,
+  otherParty,
+  tokenAmount,
+  timestamp,
+});

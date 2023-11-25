@@ -403,6 +403,7 @@ describe("transactions-utils", () => {
     const defaultExpectedUiTransaction: UiTransaction = {
       domKey: "123-1",
       isIncoming: false,
+      isPending: false,
       headline: "Sent",
       otherParty: defaultTo,
       tokenAmount: TokenAmount.fromE8s({
@@ -471,31 +472,6 @@ describe("transactions-utils", () => {
         ...defaultExpectedUiTransaction,
         headline: "Approve transfer",
         otherParty: undefined,
-      });
-    });
-
-    it("should use fallbackDescriptions", () => {
-      expect(
-        toUiTransaction({
-          ...defaultParams,
-          transaction: {
-            ...defaultTransaction,
-            type: AccountTransactionType.Burn,
-            isSend: false,
-            isReceive: false,
-            from: undefined,
-            to: undefined,
-          },
-          fallbackDescriptions: en.ckbtc_transaction_names as unknown as Record<
-            string,
-            string
-          >,
-        })
-      ).toEqual({
-        ...defaultExpectedUiTransaction,
-        headline: "Sent",
-        otherParty: undefined,
-        fallbackDescription: 'To: <span class="value">BTC Network</span>',
       });
     });
 

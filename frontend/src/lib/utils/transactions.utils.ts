@@ -150,14 +150,12 @@ export const toUiTransaction = ({
   toSelfTransaction,
   token,
   transactionNames,
-  fallbackDescriptions,
 }: {
   transaction: Transaction;
   transactionId: bigint;
   toSelfTransaction: boolean;
   token: Token;
   transactionNames: I18nTransaction_names;
-  fallbackDescriptions?: Record<string, string>;
 }): UiTransaction => {
   const isIncoming = transaction.isReceive || toSelfTransaction;
   const headline = transactionName({
@@ -166,16 +164,13 @@ export const toUiTransaction = ({
     labels: transactionNames,
   });
   const otherParty = isIncoming ? transaction.from : transaction.to;
-  const fallbackDescription = isNullish(otherParty)
-    ? fallbackDescriptions?.[transaction.type]
-    : undefined;
 
   return {
     domKey: `${transactionId}-${toSelfTransaction ? "0" : "1"}`,
     isIncoming,
+    isPending: false,
     headline,
     otherParty,
-    fallbackDescription,
     tokenAmount: TokenAmount.fromE8s({
       amount: transaction.displayAmount,
       token,

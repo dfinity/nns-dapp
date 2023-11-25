@@ -1,0 +1,7 @@
+// TODO: Move to gix-components https://dfinity.atlassian.net/browse/GIX-2108
+@mixin with-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--padding-0_5x);
+}

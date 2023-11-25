@@ -18,6 +18,7 @@ describe("IcrcTransactionCard", () => {
   const defaultTransaction = {
     domKey: "123-0",
     isIncoming: false,
+    isPending: false,
     icon: "outgoing",
     headline: "Sent",
     otherParty: "some-address",

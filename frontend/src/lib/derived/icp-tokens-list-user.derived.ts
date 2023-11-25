@@ -46,6 +46,11 @@ const convertAccountToUserTokenData = ({
         })
       : new UnavailableTokenAmount(NNS_TOKEN_DATA),
     logo: nnsUniverse.logo,
+    token: NNS_TOKEN_DATA,
+    fee: TokenAmount.fromE8s({
+      amount: NNS_TOKEN_DATA.fee,
+      token: NNS_TOKEN_DATA,
+    }),
     actions: nonNullish(account)
       ? [UserTokenAction.Receive, UserTokenAction.Send]
       : [],

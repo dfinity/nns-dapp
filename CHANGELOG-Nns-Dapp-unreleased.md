@@ -14,6 +14,10 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Button to buy ICP with an external provider.
+* Enable ICRC-2 flow for BTC withdrawal.
+* Add ENABLE_CKETH feature flag.
+
 #### Changed
 
 #### Deprecated
@@ -24,6 +28,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Fix docker builds when there is no global config.
 * Fix "Expiration date" countdown label visibility.
+* Optimize nns proposal rendering for small devices.
 
 #### Security
 
@@ -34,6 +39,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Experimental tests for schema migration.
+* Add optional version support to the storage records.
 
 #### Changed
 

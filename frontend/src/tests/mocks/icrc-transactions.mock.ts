@@ -108,6 +108,36 @@ const mockIcrcTransactionTransferToSelf: IcrcTransaction = {
   approve: [],
 };
 
+export const createMintTransaction = ({
+  timestamp = 12354n,
+  amount = 33n,
+  to = fakeAccount,
+  memo,
+  createdAt = 123n,
+}: {
+  timestamp?: bigint;
+  amount?: bigint;
+  to?: IcrcCandidAccount;
+  memo?: Uint8Array;
+  createdAt?: bigint;
+}): IcrcTransaction => {
+  return {
+    kind: "burn",
+    timestamp,
+    burn: [],
+    mint: [
+      {
+        amount,
+        to,
+        memo: toNullable(memo),
+        created_at_time: toNullable(createdAt),
+      },
+    ],
+    transfer: [],
+    approve: [],
+  };
+};
+
 export const createBurnTransaction = ({
   timestamp = 12354n,
   amount = 33n,

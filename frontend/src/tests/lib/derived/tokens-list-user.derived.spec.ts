@@ -1,6 +1,3 @@
-import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
-import IC_LOGO_ROUNDED from "$lib/assets/icp-rounded.svg";
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
@@ -18,27 +15,24 @@ import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import {
+  ckBTCTokenBase,
+  createIcpUserToken,
+  icpTokenBase,
+} from "$tests/mocks/tokens-page.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { TokenAmount } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("tokens-list-user.derived", () => {
-  const icpTokenBase: UserTokenData = {
-    universeId: OWN_CANISTER_ID,
-    title: "Internet Computer",
-    logo: IC_LOGO_ROUNDED,
-    balance: new UnavailableTokenAmount(NNS_TOKEN_DATA),
-    actions: [],
-  };
-  const icpUserToken: UserTokenData = {
-    ...icpTokenBase,
+  const icpUserToken: UserTokenData = createIcpUserToken({
     balance: TokenAmount.fromE8s({
       amount: mockMainAccount.balanceE8s,
       token: NNS_TOKEN_DATA,
     }),
     actions: [UserTokenAction.GoToDetail],
-  };
+  });
   const snsTetrisToken = mockSnsToken;
   const snsTetris = {
     rootCanisterId: rootCanisterIdMock,
@@ -61,6 +55,11 @@ describe("tokens-list-user.derived", () => {
     title: snsTetris.projectName,
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/g3pce-2iaae/logo.png",
     balance: new UnavailableTokenAmount(snsTetris.tokenMetadata),
+    token: snsTetris.tokenMetadata,
+    fee: TokenAmount.fromE8s({
+      amount: snsTetris.tokenMetadata.fee,
+      token: snsTetris.tokenMetadata,
+    }),
     actions: [],
   };
   const tetrisUserToken: UserTokenData = {
@@ -76,6 +75,11 @@ describe("tokens-list-user.derived", () => {
     title: snsPacman.projectName,
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/f7crg-kabae/logo.png",
     balance: new UnavailableTokenAmount(snsPacman.tokenMetadata),
+    token: snsPacman.tokenMetadata,
+    fee: TokenAmount.fromE8s({
+      amount: snsPacman.tokenMetadata.fee,
+      token: snsPacman.tokenMetadata,
+    }),
     actions: [],
   };
   const pacmanUserToken: UserTokenData = {
@@ -85,13 +89,6 @@ describe("tokens-list-user.derived", () => {
       token: snsPackmanToken,
     }),
     actions: [UserTokenAction.Receive, UserTokenAction.Send],
-  };
-  const ckBTCTokenBase: UserTokenData = {
-    universeId: CKBTC_UNIVERSE_CANISTER_ID,
-    title: "ckBTC",
-    logo: CKBTC_LOGO,
-    balance: new UnavailableTokenAmount(mockCkBTCToken),
-    actions: [],
   };
   const ckBTCUserToken: UserTokenData = {
     ...ckBTCTokenBase,

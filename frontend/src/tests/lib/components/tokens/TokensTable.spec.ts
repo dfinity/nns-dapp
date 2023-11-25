@@ -1,11 +1,16 @@
 import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { ActionType } from "$lib/types/actions";
-import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
+import {
+  UserTokenAction,
+  type UserTokenData,
+  type UserTokenLoading,
+} from "$lib/types/tokens-page";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import {
   createUserToken,
+  createUserTokenLoading,
   userTokenPageMock,
 } from "$tests/mocks/tokens-page.mock";
 import { TokensTablePo } from "$tests/page-objects/TokensTable.page-object";
@@ -18,13 +23,15 @@ import type { Mock } from "vitest";
 describe("TokensTable", () => {
   const renderTable = ({
     userTokensData,
+    firstColumnHeader,
     onAction,
   }: {
-    userTokensData: UserTokenData[];
+    userTokensData: Array<UserTokenData | UserTokenLoading>;
+    firstColumnHeader?: string;
     onAction?: Mock;
   }) => {
     const { container, component } = render(TokensTable, {
-      props: { userTokensData },
+      props: { userTokensData, firstColumnHeader },
     });
 
     component.$on("nnsAction", onAction);
@@ -46,6 +53,16 @@ describe("TokensTable", () => {
     const po = renderTable({ userTokensData: [token1, token2] });
 
     expect(await po.getRows()).toHaveLength(2);
+  });
+
+  it("should render the first column headers from props", async () => {
+    const firstColumnHeader = "Accounts";
+    const token1 = createUserToken({
+      universeId: OWN_CANISTER_ID,
+    });
+    const po = renderTable({ userTokensData: [token1], firstColumnHeader });
+
+    expect(await po.getFirstColumnHeader()).toEqual(firstColumnHeader);
   });
 
   it("should render the balances of the tokens", async () => {
@@ -105,6 +122,17 @@ describe("TokensTable", () => {
     const row1Po = rows[0];
 
     expect(await row1Po.getBalance()).toBe("-/- ckBTC");
+  });
+
+  it("should render balance spinner if balance is loading", async () => {
+    const token1 = createUserTokenLoading();
+    const po = renderTable({ userTokensData: [token1] });
+
+    const rows = await po.getRows();
+    const row1Po = rows[0];
+
+    expect(await row1Po.getBalance()).toBe("");
+    expect(await row1Po.hasBalanceSpinner()).toBe(true);
   });
 
   it("should render a button Send action", async () => {

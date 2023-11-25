@@ -181,6 +181,13 @@ interface I18nAccounts {
   main: string;
   balance: string;
   send: string;
+  buy_icp: string;
+  buy_icp_banxa: string;
+  receiving_icp_address: string;
+  icp_token_utility: string;
+  buy_icp_description: string;
+  buy_icp_note: string;
+  banxa_logo_alt: string;
   icp_transaction_description: string;
   sns_transaction_description: string;
   ckbtc_transaction_description: string;
@@ -492,12 +499,6 @@ interface I18nTransaction_names {
   approve: string;
 }
 
-interface I18nCkbtc_transaction_names {
-  burn: string;
-  mint: string;
-  approve: string;
-}
-
 interface I18nWallet {
   title: string;
   address: string;
@@ -508,6 +509,7 @@ interface I18nWallet {
   icp_qrcode_aria_label: string;
   sns_qrcode_aria_label: string;
   token_address: string;
+  pending_transaction_timestamp: string;
 }
 
 interface I18nBusy_screen {
@@ -1044,6 +1046,7 @@ interface I18nCkbtc {
   checking_incomplete_btc_transfers: string;
   all_btc_transfers_complete: string;
   click_to_complete_btc_transfers: string;
+  btc_network: string;
 }
 
 interface I18nError__ckbtc {
@@ -1094,6 +1097,9 @@ interface I18nSync {
 
 interface I18nTokens {
   title: string;
+  projects_header: string;
+  balance_header: string;
+  accounts_header: string;
 }
 
 interface I18nNeuron_state {
@@ -1310,7 +1316,6 @@ interface I18n {
   canisters: I18nCanisters;
   canister_detail: I18nCanister_detail;
   transaction_names: I18nTransaction_names;
-  ckbtc_transaction_names: I18nCkbtc_transaction_names;
   wallet: I18nWallet;
   busy_screen: I18nBusy_screen;
   proposal_detail: I18nProposal_detail;

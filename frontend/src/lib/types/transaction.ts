@@ -84,14 +84,13 @@ export interface UiTransaction {
   // Used in forEach for consistent rendering.
   domKey: string;
   isIncoming: boolean;
+  isPending: boolean;
   headline: string;
   // Where the amount is going to or coming from.
   otherParty?: string;
-  // TODO: Remove fallbackDescription and always use otherParty.
-  fallbackDescription?: string;
   // Always positive.
   tokenAmount: TokenAmount;
-  timestamp: Date;
+  timestamp?: Date;
 }
 
 export enum TransactionNetwork {

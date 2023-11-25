@@ -30,12 +30,12 @@ describe("ProposalMeta", () => {
   // Proposer description display in tested in ProposalSystemInfoSection.spec.ts
 
   it("should render proposer id", () => {
-    const { getByText } = render(ProposalSystemInfoProposerEntry, {
+    const { queryByTestId } = render(ProposalSystemInfoProposerEntry, {
       props,
     });
     expect(
-      getByText(new RegExp(`${mockProposalInfo.proposer?.toString()}$`))
-    ).toBeInTheDocument();
+      queryByTestId("proposal-system-info-proposer-value").textContent
+    ).toBe(`${mockProposalInfo.proposer?.toString().substring(0, 7)}`);
   });
 
   describe("signed in", () => {
@@ -46,11 +46,14 @@ describe("ProposalMeta", () => {
     });
 
     it("should open proposer modal", async () => {
-      const { container } = render(ProposalSystemInfoProposerEntry, {
-        props,
-      });
+      const { container, getByTestId } = render(
+        ProposalSystemInfoProposerEntry,
+        {
+          props,
+        }
+      );
 
-      const button = container.querySelector("button.text");
+      const button = getByTestId("proposal-system-info-proposer-value");
       expect(button).not.toBeNull();
       button && (await fireEvent.click(button));
 

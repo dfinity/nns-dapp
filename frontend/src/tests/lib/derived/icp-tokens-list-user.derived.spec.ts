@@ -1,34 +1,28 @@
-import IC_LOGO_ROUNDED from "$lib/assets/icp-rounded.svg";
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { icpTokensListUser } from "$lib/derived/icp-tokens-list-user.derived";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
-import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { createIcpUserToken } from "$tests/mocks/tokens-page.mock";
 import { TokenAmount } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("icp-tokens-list-user.derived", () => {
-  const icpTokenBase: UserTokenData = {
-    universeId: OWN_CANISTER_ID,
-    title: "Internet Computer",
-    logo: IC_LOGO_ROUNDED,
-    balance: new UnavailableTokenAmount(NNS_TOKEN_DATA),
+  const icpTokenUser: UserTokenData = createIcpUserToken({
     actions: [UserTokenAction.Receive, UserTokenAction.Send],
-  };
+  });
   const emptyUserTokenData: UserTokenData = {
-    ...icpTokenBase,
+    ...icpTokenUser,
     title: "Internet Computer",
     subtitle: undefined,
     actions: [],
   };
   const mainUserTokenData: UserTokenData = {
-    ...icpTokenBase,
+    ...icpTokenUser,
     balance: TokenAmount.fromE8s({
       amount: mockMainAccount.balanceE8s,
       token: NNS_TOKEN_DATA,
@@ -37,7 +31,7 @@ describe("icp-tokens-list-user.derived", () => {
     subtitle: undefined,
   };
   const subaccountUserTokenData: UserTokenData = {
-    ...icpTokenBase,
+    ...icpTokenUser,
     balance: TokenAmount.fromE8s({
       amount: mockSubAccount.balanceE8s,
       token: NNS_TOKEN_DATA,
@@ -46,7 +40,7 @@ describe("icp-tokens-list-user.derived", () => {
     subtitle: "Linked Account",
   };
   const hardwareWalletUserTokenData: UserTokenData = {
-    ...icpTokenBase,
+    ...icpTokenUser,
     balance: TokenAmount.fromE8s({
       amount: mockHardwareWalletAccount.balanceE8s,
       token: NNS_TOKEN_DATA,
