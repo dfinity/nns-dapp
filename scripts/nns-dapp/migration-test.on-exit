@@ -28,7 +28,7 @@ function print_stack() {
 # - After parsing arguments, run: trap on_exit EXIT
 on_exit() {
   exit_code=$?
-  if ((exit_code = 0)); then
+  if ((exit_code == 0)); then
     [[ $(type -t on_exit_ok) != function ]] || on_exit_ok
   else
     {
