@@ -201,6 +201,18 @@ assert_schema_is() {
   fi
 }
 
+# Verifies that the schema is as described, _if_ a schema is provided.
+assert_schema_maybe() {
+  local expected_schema
+  expected_schema="${1:-}"
+  if [[ -n "${expected_schema:-}" ]]; then
+    echo "Checking that th eschema is ${expected_schema}..."
+    assert_schema_is "${expected_schema}"
+  else
+    echo "Schema not provided so not checking it."
+  fi
+}
+
 # This file is intended to be sourced, but if called directly, offer some help
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   if (($# == 0)) || [[ "${1:-}" == "--help" ]]; then
