@@ -214,6 +214,7 @@ jobs:
         run: |
           set +x
           scripts/nns-dapp/migration-test.canister.test
+          scripts/nns-dapp/migration-test.getter.test
   dfx-nns-proposal-args-works:
     # TODO: Reenable (add it in line 338) once fixed, should it depend on mainnet?
     if: false
