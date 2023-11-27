@@ -25,6 +25,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Fix swallowed undefined fields in raw json view. 
+
 #### Security
 
 #### Not Published
