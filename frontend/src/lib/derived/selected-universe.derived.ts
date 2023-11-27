@@ -9,6 +9,10 @@ import {
   ENABLE_CKBTC,
   ENABLE_CKTESTBTC,
 } from "$lib/stores/feature-flags.store";
+import {
+  icrcCanistersStore,
+  type IcrcCanistersStoreData,
+} from "$lib/stores/icrc-canisters.store";
 import type { Universe, UniverseCanisterId } from "$lib/types/universe";
 import {
   isNonGovernanceTokenPath,
@@ -78,6 +82,23 @@ export const isNnsUniverseStore = derived(
 export const isCkBTCUniverseStore = derived(
   selectedUniverseIdStore,
   ($selectedProjectId: Principal) => isUniverseCkBTC($selectedProjectId)
+);
+
+/**
+ * Is the selected an ICRC Token?
+ */
+export const isIcrcTokenUniverseStore = derived(
+  [pageUniverseIdStore, pageStore, icrcCanistersStore],
+  ([canisterId, page, icrcTokensCanisters]: [
+    Principal,
+    Page,
+    IcrcCanistersStoreData,
+  ]) =>
+    isNonGovernanceTokenPath(page) &&
+    Object.values(icrcTokensCanisters).some(
+      ({ ledgerCanisterId }) =>
+        ledgerCanisterId.toText() === canisterId.toText()
+    )
 );
 
 export const selectedUniverseStore: Readable<Universe> = derived(
