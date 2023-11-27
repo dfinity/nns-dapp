@@ -66,6 +66,7 @@ impl StableState for State {
 impl State {
     /// The schema version, determined by the last version that was saved to stable memory.
     fn schema_version_from_stable_memory() -> Option<SchemaLabel> {
+        // TODO: Check whether there is a memorymanger at the root.  If so, get the schema from virtual memory.
         let memory = DefaultMemoryImpl::default();
         Self::schema_version_from_memory(&memory)
     }
@@ -95,15 +96,26 @@ impl State {
         // If we are unable to read the schema label, we assume that we have just the heap data serialized as candid.
         let current_schema = Self::schema_version_from_stable_memory().unwrap_or(SchemaLabel::Map);
         let desired_schema = args_schema.unwrap_or(current_schema);
+        if current_schema == desired_schema {
+            dfn_core::api::print(format!("Loading State: Requested to keep data as {current_schema:?}."));
+        } else {
+            dfn_core::api::print(format!(
+                "Loading State: Requested migration from {current_schema:?} to {desired_schema:?}."
+            ));
+        }
+        dfn_core::api::print(format!("Loading State: Unsupported migration from {current_schema:?} to {desired_schema:?}.  Keeping data in the existing form."));
         match (current_schema, desired_schema) {
             (SchemaLabel::Map, SchemaLabel::Map) => Self::recover_state_from_map(),
             (SchemaLabel::Map, SchemaLabel::AccountsInStableMemory) => {
-                dfn_core::api::print(format!("Unsupported migration from {current_schema:?} to {desired_schema:?}.  Keeping data in the existing form."));
+                dfn_core::api::print(format!("Loading State: Unsupported migration from {current_schema:?} to {desired_schema:?}.  Keeping data in the existing form."));
                 Self::recover_state_from_map()
+            }
+            (SchemaLabel::AccountsInStableMemory, SchemaLabel::AccountsInStableMemory) => {
+                accounts_in_stable_memory::recover_from_stable_memory()
             }
             (SchemaLabel::AccountsInStableMemory, _) => {
                 trap_with(&format!(
-                    "Unsupported migration from {current_schema:?} to {desired_schema:?}.  Bailing out..."
+                    "Loading State: Unsupported migration from {current_schema:?} to {desired_schema:?}.  Bailing out..."
                 ));
                 unreachable!();
             }
@@ -129,5 +141,49 @@ impl State {
             trap_with(&format!("Decoding stable memory failed. Error: {e:?}"));
             unreachable!();
         })
+    }
+}
+
+// State from/to the `SchemaLabel::AccountsInStableMemory` format.
+mod accounts_in_stable_memory {
+    use super::{trap_with, StableState, State};
+    use ic_stable_structures::{
+        memory_manager::{MemoryId, MemoryManager},
+        DefaultMemoryImpl, Memory,
+    };
+
+    /// Save any unsaved state to stable memory in the `SchemaLabel::AccountsInStableMemory` format.
+    pub fn save_in_stable_memory(state: &State) {
+        let bytes = state.encode(); // TODO: Test that this excludes the accounts data.
+        let length_field = u64::try_from(bytes.len())
+            .unwrap_or_else(|e| {
+                trap_with(&format!(
+                    "The serialized memory takes more than 2**64 bytes.  Amazing: {e:?}"
+                ));
+                unreachable!();
+            })
+            .to_be_bytes();
+        let heap_memory = get_heap_memory();
+        heap_memory.write(0, &length_field);
+        heap_memory.write(8, &bytes); // TODO: Prefix with size of memory.
+    }
+    /// Create the state from stable memory in the `SchemaLabel::AccountsInStableMemory` format.
+    pub fn recover_from_stable_memory() -> State {
+        let memory = get_heap_memory();
+        let candid_len = {
+            let mut length_field = [0u8; 8];
+            memory.read(0, &mut length_field);
+            u64::from_be_bytes(length_field) as usize
+        };
+        let candid_bytes = vec![0u8; candid_len];
+        State::decode(candid_bytes).unwrap_or_else(|e| {
+            trap_with(&format!("Decoding stable memory failed. Error: {e:?}"));
+            unreachable!();
+        })
+    }
+    /// Gets the stable memory partition for saving the heap.
+    fn get_heap_memory() -> impl Memory {
+        let mem_mgr = MemoryManager::init(DefaultMemoryImpl::default());
+        mem_mgr.get(MemoryId::new(1)) // TODO: Define a const for the heap memory ID.
     }
 }
