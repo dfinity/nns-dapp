@@ -26,6 +26,12 @@
   import AccountsModals from "$lib/modals/accounts/AccountsModals.svelte";
   import CkBTCAccountsModals from "$lib/modals/accounts/CkBTCAccountsModals.svelte";
   import { icpTokensListUser } from "$lib/derived/icp-tokens-list-user.derived";
+  import {
+    icrcCanistersStore,
+    type IcrcCanisters,
+    type IcrcCanistersStoreData,
+  } from "$lib/stores/icrc-canisters.store";
+  import { loadIcrcBalances } from "$lib/services/icrc-accounts.services";
 
   // TODO: This component is mounted twice. Understand why and fix it.
 
@@ -54,6 +60,19 @@
     });
   };
 
+  const loadIcrcAccountsBalances = async (
+    icrcCanistersData: IcrcCanistersStoreData
+  ) => {
+    const icrcCanisters: IcrcCanisters[] = Object.values(icrcCanistersData);
+    if (icrcCanisters.length === 0) {
+      return;
+    }
+
+    await loadIcrcBalances(
+      icrcCanisters.map(({ ledgerCanisterId }) => ledgerCanisterId)
+    );
+  };
+
   const loadCkBTCAccountsBalances = async (universes: Universe[]) => {
     // ckBTC is not enabled, information shall and cannot be fetched
     if (isArrayEmpty(universes)) {
@@ -77,6 +96,7 @@
     await Promise.allSettled([
       loadSnsAccountsBalances($snsProjectsCommittedStore),
       loadCkBTCAccountsBalances($ckBTCUniversesStore),
+      loadIcrcAccountsBalances($icrcCanistersStore),
     ]))();
 </script>
 
