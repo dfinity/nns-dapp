@@ -12,7 +12,7 @@ describe("$public/app-services", () => {
     vi.clearAllMocks();
   });
 
-  it("should init Sns and ckETH canister ids", async () => {
+  it("should init Sns", async () => {
     await initAppPublicData();
 
     await expect(loadSnsProjects).toHaveBeenCalledTimes(1);
