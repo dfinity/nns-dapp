@@ -26,12 +26,6 @@
   import AccountsModals from "$lib/modals/accounts/AccountsModals.svelte";
   import CkBTCAccountsModals from "$lib/modals/accounts/CkBTCAccountsModals.svelte";
   import { icpTokensListUser } from "$lib/derived/icp-tokens-list-user.derived";
-  import {
-    icrcCanistersStore,
-    type IcrcCanisters,
-    type IcrcCanistersStoreData,
-  } from "$lib/stores/icrc-canisters.store";
-  import { loadIcrcBalances } from "$lib/services/icrc-accounts.services";
 
   // TODO: This component is mounted twice. Understand why and fix it.
 
