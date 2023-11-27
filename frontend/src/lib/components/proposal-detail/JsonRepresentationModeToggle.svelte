@@ -13,10 +13,7 @@
     $jsonRepresentationModeStore === "tree" ? setRaw() : setTree();
 </script>
 
-<div
-  class="data-representation-toggle"
-  data-tid="data-representation-mode-toggle-component"
->
+<div class="data-representation-toggle" data-tid="data-representation-toggle">
   <button class="ghost" type="button" on:click={setTree} data-tid="toggle-tree"
     >{$i18n.proposal_detail.toggle_tree}</button
   >
