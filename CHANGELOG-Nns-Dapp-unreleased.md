@@ -14,7 +14,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Button to buy ICP with an external provider.
 * Enable ICRC-2 flow for BTC withdrawal.
 * Add ENABLE_CKETH feature flag.
 
@@ -25,10 +24,6 @@ proposal is successful, the changes it released will be moved from this file to
 #### Removed
 
 #### Fixed
-
-* Fix docker builds when there is no global config.
-* Fix "Expiration date" countdown label visibility.
-* Optimize nns proposal rendering for small devices.
 
 #### Security
 
@@ -43,15 +38,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-* Update Rust to the latest stable version (1.74.0).
-* Move the commands that derive aggregator code from NNS candid files.
-* Better text for rust update PRs.
-
 #### Deprecated
 
 #### Removed
-
-* References to static testnets.
 
 #### Fixed
 
