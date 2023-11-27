@@ -40,6 +40,7 @@ thread_local! {
     pub static STATE: State = State::default();
 }
 
+/// Memory layout consisting of a memory manager and some virtual memory.
 struct Partitions {
     pub memory_manager: MemoryManager<DefaultMemoryImpl>,
 }
@@ -59,8 +60,8 @@ impl Partitions {
         let memory_manager = MemoryManager::init(memory);
         Partitions { memory_manager }
     }
-    /// Gets an existing memory manager.
-    pub fn load(memory: DefaultMemoryImpl) -> Result<Self, DefaultMemoryImpl> {
+    /// Gets an existing memory manager, if there is one.  If not, returns the unmodified memory.
+    pub fn from(memory: DefaultMemoryImpl) -> Result<Self, DefaultMemoryImpl> {
         if Self::is_managed(&memory) {
             Ok(Self::init(memory))
         } else {
