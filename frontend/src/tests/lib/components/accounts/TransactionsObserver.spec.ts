@@ -1,4 +1,4 @@
-import IcrcTransactionsObserver from "$lib/components/accounts/IcrcTransactionsObserver.svelte";
+import TransactionsObserver from "$lib/components/accounts/TransactionsObserver.svelte";
 import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
 import type { TransactionsObserverData } from "$lib/types/icrc.observer";
 import type { PostMessageDataRequestTransactions } from "$lib/types/post-message.transactions";
@@ -6,7 +6,7 @@ import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { indexCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { render, waitFor } from "@testing-library/svelte";
 
-describe("IcrcTransactionsObserver", () => {
+describe("TransactionsObserver", () => {
   let spyPostMessage;
 
   beforeEach(() => {
@@ -30,7 +30,7 @@ describe("IcrcTransactionsObserver", () => {
   };
 
   it("should init worker with parameters", async () => {
-    render(IcrcTransactionsObserver, {
+    render(TransactionsObserver, {
       props: {
         data,
         callback: vi.fn(),
@@ -51,7 +51,7 @@ describe("IcrcTransactionsObserver", () => {
   });
 
   it("should stop worker on destroy", async () => {
-    const { unmount } = render(IcrcTransactionsObserver, {
+    const { unmount } = render(TransactionsObserver, {
       props: {
         data,
         callback: vi.fn(),

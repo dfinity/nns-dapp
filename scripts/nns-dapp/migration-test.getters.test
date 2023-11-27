@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2030,SC2031,SC2001
+# Note regarding shellcheck: These tests create subshells with variables, it is intentional that the variables are not set globally.
 set -euo pipefail
 . "${0%.test}"
 . "${0%.getters.test}.linters"

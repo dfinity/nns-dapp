@@ -1,5 +1,5 @@
 //! Rust code created from candid by: scripts/did2rs.sh --canister sns_wasm --out ic_sns_wasm.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug
-//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-11-15_23-00/rs/nns/sns-wasm/canister/sns-wasm.did>
+//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-11-23_23-01/rs/nns/sns-wasm/canister/sns-wasm.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -235,6 +235,31 @@ pub struct GetAllowedPrincipalsResponse {
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct GetDeployedSnsByProposalIdRequest {
+    pub proposal_id: u64,
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize, Default)]
+pub struct DeployedSns {
+    pub root_canister_id: Option<Principal>,
+    pub governance_canister_id: Option<Principal>,
+    pub index_canister_id: Option<Principal>,
+    pub swap_canister_id: Option<Principal>,
+    pub ledger_canister_id: Option<Principal>,
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub enum GetDeployedSnsByProposalIdResult {
+    Error(SnsWasmError),
+    DeployedSns(DeployedSns),
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct GetDeployedSnsByProposalIdResponse {
+    pub get_deployed_sns_by_proposal_id_result: Option<GetDeployedSnsByProposalIdResult>,
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct SnsVersion {
     pub archive_wasm_hash: serde_bytes::ByteBuf,
     pub root_wasm_hash: serde_bytes::ByteBuf,
@@ -292,15 +317,6 @@ pub struct InsertUpgradePathEntriesResponse {
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ListDeployedSnsesArg {}
-
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize, Default)]
-pub struct DeployedSns {
-    pub root_canister_id: Option<Principal>,
-    pub governance_canister_id: Option<Principal>,
-    pub index_canister_id: Option<Principal>,
-    pub swap_canister_id: Option<Principal>,
-    pub ledger_canister_id: Option<Principal>,
-}
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ListDeployedSnsesResponse {
@@ -376,6 +392,12 @@ impl Service {
         arg0: GetAllowedPrincipalsArg,
     ) -> CallResult<(GetAllowedPrincipalsResponse,)> {
         ic_cdk::call(self.0, "get_allowed_principals", (arg0,)).await
+    }
+    pub async fn get_deployed_sns_by_proposal_id(
+        &self,
+        arg0: GetDeployedSnsByProposalIdRequest,
+    ) -> CallResult<(GetDeployedSnsByProposalIdResponse,)> {
+        ic_cdk::call(self.0, "get_deployed_sns_by_proposal_id", (arg0,)).await
     }
     pub async fn get_latest_sns_version_pretty(&self, arg0: ()) -> CallResult<(Vec<(String, String)>,)> {
         ic_cdk::call(self.0, "get_latest_sns_version_pretty", (arg0,)).await
