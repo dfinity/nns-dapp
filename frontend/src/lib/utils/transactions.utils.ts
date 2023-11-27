@@ -168,6 +168,7 @@ export const toUiTransaction = ({
   return {
     domKey: `${transactionId}-${toSelfTransaction ? "0" : "1"}`,
     isIncoming,
+    isPending: false,
     headline,
     otherParty,
     tokenAmount: TokenAmount.fromE8s({

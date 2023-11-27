@@ -1,4 +1,4 @@
-//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-11-15_23-00/rs/nns/sns-wasm/canister/sns-wasm.did>
+//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-11-23_23-01/rs/nns/sns-wasm/canister/sns-wasm.did>
 type AddWasmRequest = record { hash : vec nat8; wasm : opt SnsWasm };
 type AddWasmResponse = record { result : opt Result };
 type AirdropDistribution = record { airdrop_neurons : vec NeuronDistribution };
@@ -44,6 +44,14 @@ type FractionalDeveloperVotingPower = record {
 };
 type GetAllowedPrincipalsResponse = record {
   allowed_principals : vec principal;
+};
+type GetDeployedSnsByProposalIdRequest = record { proposal_id : nat64 };
+type GetDeployedSnsByProposalIdResponse = record {
+  get_deployed_sns_by_proposal_id_result : opt GetDeployedSnsByProposalIdResult;
+};
+type GetDeployedSnsByProposalIdResult = variant {
+  Error : SnsWasmError;
+  DeployedSns : DeployedSns;
 };
 type GetNextSnsVersionRequest = record {
   governance_canister_id : opt principal;
@@ -201,6 +209,9 @@ service : (SnsWasmCanisterInitPayload) -> {
   add_wasm : (AddWasmRequest) -> (AddWasmResponse);
   deploy_new_sns : (DeployNewSnsRequest) -> (DeployNewSnsResponse);
   get_allowed_principals : (record {}) -> (GetAllowedPrincipalsResponse) query;
+  get_deployed_sns_by_proposal_id : (GetDeployedSnsByProposalIdRequest) -> (
+      GetDeployedSnsByProposalIdResponse,
+    ) query;
   get_latest_sns_version_pretty : (null) -> (vec record { text; text }) query;
   get_next_sns_version : (GetNextSnsVersionRequest) -> (
       GetNextSnsVersionResponse,

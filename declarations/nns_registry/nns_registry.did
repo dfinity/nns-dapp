@@ -1,4 +1,4 @@
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-11-15_23-00/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-11-23_23-01/rs/registry/canister/canister/registry.did>
 type AddApiBoundaryNodePayload = record {
   node_id : principal;
   domain : text;
@@ -196,17 +196,10 @@ type SetFirewallConfigPayload = record {
   firewall_config : text;
   ipv6_prefixes : vec text;
 };
-type SevFeatureStatus = variant {
-  SecureEnabled;
-  Disabled;
-  InsecureIntegrityEnabled;
-  SecureNoUpgradeEnabled;
-  InsecureEnabled;
-};
 type SubnetFeatures = record {
   canister_sandboxing : bool;
-  sev_status : opt SevFeatureStatus;
   http_requests : bool;
+  sev_enabled : opt bool;
 };
 type SubnetType = variant { application; verified_application; system };
 type UpdateApiBoundaryNodeDomainPayload = record {
