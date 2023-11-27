@@ -8,7 +8,7 @@ vi.mock("$lib/services/$public/sns.services", () => {
   };
 });
 
-vi.mock("$lib/services/cketh-canister.services", () => {
+vi.mock("$lib/services/cketh-canisters.services", () => {
   return {
     loadCkETHCanisters: vi.fn().mockResolvedValue(Promise.resolve()),
   };
