@@ -2,7 +2,7 @@ import * as ledgerApi from "$lib/api/icrc-ledger.api";
 import {
   getIcrcAccountIdentity,
   loadIcrcAccount,
-  loadIcrcBalances,
+  loadIcrcAccounts,
   loadIcrcToken,
 } from "$lib/services/icrc-accounts.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
@@ -34,6 +34,7 @@ describe("icrc-accounts-services", () => {
   };
 
   beforeEach(() => {
+    vi.clearAllMocks();
     resetIdentity();
     tokensStore.reset();
     icrcAccountsStore.reset();
@@ -79,6 +80,16 @@ describe("icrc-accounts-services", () => {
         certified: false,
         token: mockToken,
       });
+      expect(ledgerApi.queryIcrcToken).toHaveBeenCalledWith({
+        certified: false,
+        identity: mockIdentity,
+        canisterId: ledgerCanisterId,
+      });
+      expect(ledgerApi.queryIcrcToken).not.toHaveBeenCalledWith({
+        certified: true,
+        identity: mockIdentity,
+        canisterId: ledgerCanisterId,
+      });
     });
   });
 
@@ -95,6 +106,9 @@ describe("icrc-accounts-services", () => {
     });
 
     it("loads account in store with balance from api with query", async () => {
+      const userIcrcAccount = {
+        owner: mockIdentity.getPrincipal(),
+      };
       expect(get(icrcAccountsStore)[ledgerCanisterId.toText()]).toBeUndefined();
 
       await loadIcrcAccount({ ledgerCanisterId, certified: false });
@@ -103,10 +117,22 @@ describe("icrc-accounts-services", () => {
         accounts: [mockAccount],
         certified: false,
       });
+      expect(ledgerApi.queryIcrcBalance).toHaveBeenCalledWith({
+        certified: false,
+        identity: mockIdentity,
+        canisterId: ledgerCanisterId,
+        account: userIcrcAccount,
+      });
+      expect(ledgerApi.queryIcrcBalance).not.toHaveBeenCalledWith({
+        certified: true,
+        identity: mockIdentity,
+        canisterId: ledgerCanisterId,
+        account: userIcrcAccount,
+      });
     });
   });
 
-  describe("loadIcrcBalances", () => {
+  describe("loadIcrcAccounts", () => {
     it("loads tokens and accounts in stoers from api", async () => {
       expect(get(icrcAccountsStore)[ledgerCanisterId.toText()]).toBeUndefined();
       expect(
@@ -115,7 +141,7 @@ describe("icrc-accounts-services", () => {
       expect(get(tokensStore)[ledgerCanisterId.toText()]).toBeUndefined();
       expect(get(tokensStore)[ledgerCanisterId2.toText()]).toBeUndefined();
 
-      await loadIcrcBalances({
+      await loadIcrcAccounts({
         ledgerCanisterIds: [ledgerCanisterId, ledgerCanisterId2],
         certified: true,
       });
@@ -146,7 +172,7 @@ describe("icrc-accounts-services", () => {
       expect(get(tokensStore)[ledgerCanisterId.toText()]).toBeUndefined();
       expect(get(tokensStore)[ledgerCanisterId2.toText()]).toBeUndefined();
 
-      await loadIcrcBalances({
+      await loadIcrcAccounts({
         ledgerCanisterIds: [ledgerCanisterId, ledgerCanisterId2],
         certified: false,
       });

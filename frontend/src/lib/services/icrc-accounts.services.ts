@@ -32,7 +32,7 @@ export const getIcrcAccountIdentity = (_: Account): Promise<Identity> => {
 
 export const loadIcrcToken = ({
   ledgerCanisterId,
-  certified = false,
+  certified,
 }: {
   ledgerCanisterId: Principal;
   certified: boolean;
@@ -48,7 +48,7 @@ export const loadIcrcToken = ({
     onLoad: async ({ response: token, certified }) =>
       tokensStore.setToken({ certified, canisterId: ledgerCanisterId, token }),
     onError: ({ error: err, certified }) => {
-      if (certified && notForceCallStrategy()) {
+      if (!certified && notForceCallStrategy()) {
         return;
       }
 
@@ -94,7 +94,7 @@ const getIcrcMainIdentityAccount = async ({
 
 export const loadIcrcAccount = ({
   ledgerCanisterId,
-  certified = false,
+  certified,
 }: {
   ledgerCanisterId: Principal;
   certified: boolean;
@@ -129,9 +129,9 @@ export const loadIcrcAccount = ({
   });
 };
 
-export const loadIcrcBalances = async ({
+export const loadIcrcAccounts = async ({
   ledgerCanisterIds,
-  certified = false,
+  certified,
 }: {
   ledgerCanisterIds: Principal[];
   certified: boolean;
