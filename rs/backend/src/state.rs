@@ -93,7 +93,7 @@ impl State {
     /// This way it is possible to roll back after deploying the new schema.
     pub fn post_upgrade(args_schema: Option<SchemaLabel>) -> Self {
         match (Self::schema_version_from_stable_memory(), args_schema) {
-            (None, None) | (None, Some(SchemaLabel::Map)) => Self::post_upgrade_unversioned(),
+            (None, _) => Self::post_upgrade_unversioned(),
             other => {
                 trap_with(&format!("Unsupported schema pair: {other:?}"));
                 unreachable!();
