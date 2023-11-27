@@ -33,7 +33,7 @@
   import CkBTCWalletActions from "$lib/components/accounts/CkBTCWalletActions.svelte";
   import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
   import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
-  import CkBTCBalancesObserver from "$lib/components/accounts/CkBTCBalancesObserver.svelte";
+  import IcrcBalancesObserver from "$lib/components/accounts/IcrcBalancesObserver.svelte";
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
   import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
 
@@ -177,7 +177,7 @@
   <main class="legacy" data-tid="ckbtc-wallet">
     <section>
       {#if loaded && nonNullish(canisters) && nonNullish($selectedAccountStore.account) && nonNullish($selectedCkBTCUniverseIdStore) && nonNullish(token)}
-        <CkBTCBalancesObserver
+        <IcrcBalancesObserver
           universeId={$selectedCkBTCUniverseIdStore}
           accounts={[$selectedAccountStore.account]}
           reload={reloadOnlyAccountFromStore}
@@ -219,7 +219,7 @@
               token={token?.token}
             />
           </div>
-        </CkBTCBalancesObserver>
+        </IcrcBalancesObserver>
       {:else}
         <Spinner />
       {/if}

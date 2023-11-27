@@ -11,6 +11,32 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 126093
+
+### Application
+
+#### Added
+
+* Button to buy ICP with an external provider.
+
+#### Fixed
+
+* Fix docker builds when there is no global config.
+* Fix "Expiration date" countdown label visibility.
+* Optimize nns proposal rendering for small devices.
+
+### Operations
+
+#### Changed
+
+* Update Rust to the latest stable version (1.74.0).
+* Move the commands that derive aggregator code from NNS candid files.
+* Better text for rust update PRs.
+
+#### Removed
+
+* References to static testnets.
+
 ## Proposal 126004
 
 ### Application

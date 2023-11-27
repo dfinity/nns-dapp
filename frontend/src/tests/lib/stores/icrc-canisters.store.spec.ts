@@ -7,15 +7,15 @@ describe("icrc canisters store", () => {
     icrcCanistersStore.reset();
   });
 
-  const ledgerCansisterId = principal(0);
+  const ledgerCanisterId = principal(0);
   const indexCanisterId = principal(1);
 
   it("should store one set of canisters", () => {
-    icrcCanistersStore.setCanisters({ ledgerCansisterId, indexCanisterId });
+    icrcCanistersStore.setCanisters({ ledgerCanisterId, indexCanisterId });
 
     const store = get(icrcCanistersStore);
-    expect(store[ledgerCansisterId.toText()]).toEqual({
-      ledgerCansisterId,
+    expect(store[ledgerCanisterId.toText()]).toEqual({
+      ledgerCanisterId,
       indexCanisterId,
     });
   });
@@ -24,21 +24,21 @@ describe("icrc canisters store", () => {
     const ledgerCansisterId2 = principal(2);
     const indexCanisterId2 = principal(3);
     icrcCanistersStore.setCanisters({
-      ledgerCansisterId,
+      ledgerCanisterId,
       indexCanisterId,
     });
     icrcCanistersStore.setCanisters({
-      ledgerCansisterId: ledgerCansisterId2,
+      ledgerCanisterId: ledgerCansisterId2,
       indexCanisterId: indexCanisterId2,
     });
 
     const store = get(icrcCanistersStore);
-    expect(store[ledgerCansisterId.toText()]).toEqual({
-      ledgerCansisterId,
+    expect(store[ledgerCanisterId.toText()]).toEqual({
+      ledgerCanisterId,
       indexCanisterId,
     });
     expect(store[ledgerCansisterId2.toText()]).toEqual({
-      ledgerCansisterId: ledgerCansisterId2,
+      ledgerCanisterId: ledgerCansisterId2,
       indexCanisterId: indexCanisterId2,
     });
   });

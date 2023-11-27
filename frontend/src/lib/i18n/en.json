@@ -491,7 +491,8 @@
     "no_transactions": "No transactions",
     "icp_qrcode_aria_label": "A QR code that renders the address to receive ICP",
     "sns_qrcode_aria_label": "A QR code that renders the address to receive $tokenSymbol",
-    "token_address": "$tokenSymbol Address"
+    "token_address": "$tokenSymbol Address",
+    "pending_transaction_timestamp": "Pending..."
   },
   "busy_screen": {
     "pending_approval_hw": "Please use your hardware wallet to approve.",
@@ -998,7 +999,8 @@
     "checking_incomplete_btc_transfers": "Checking for incomplete BTC transfers",
     "all_btc_transfers_complete": "All transfers are complete",
     "click_to_complete_btc_transfers": "Click here to complete BTC transfer for $amount ckBTC",
-    "btc_network": "BTC Network"
+    "btc_network": "BTC Network",
+    "receiving_btc": "Receiving BTC"
   },
   "error__ckbtc": {
     "already_process": "The minter has already been notified and updating the balance is in progress.",
