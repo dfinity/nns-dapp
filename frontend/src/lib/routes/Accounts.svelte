@@ -84,7 +84,7 @@
     });
   };
 
-  const loadIcrcs = (icrcCanisters: IcrcCanistersStoreData) => {
+  const loadIcrcTokenAccounts = (icrcCanisters: IcrcCanistersStoreData) => {
     const ledgerCanisterIds = Object.values(icrcCanisters).map(
       ({ ledgerCanisterId }) => ledgerCanisterId
     );
@@ -96,7 +96,7 @@
     await Promise.allSettled([
       loadSnsAccountsBalances($snsProjectsCommittedStore),
       loadCkBTCAccountsBalances($ckBTCUniversesStore),
-      loadIcrcs($icrcCanistersStore),
+      loadIcrcTokenAccounts($icrcCanistersStore),
     ]))();
 </script>
 
