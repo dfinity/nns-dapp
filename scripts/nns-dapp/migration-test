@@ -43,12 +43,14 @@ clap.define short=a long=accounts desc="Accounts will be created until there are
 clap.define short=c long=chunk desc="The accounts are created in chunks of this size." variable=TOY_ACCOUNT_CHUNK_SIZE default="10000"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
-trap on_exit EXIT
 
 # Clean up on exit - or print error details.
+trap on_exit EXIT
+# Called by on_exit:
 on_exit_ok() {
   rm -fr "$WORKDIR"
 }
+# Called by on_exit:
 on_exit_err() {
   printf "       %s\n" \
     "The temporary working directory may assist with debugging:" \
