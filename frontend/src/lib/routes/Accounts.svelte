@@ -60,19 +60,6 @@
     });
   };
 
-  const loadIcrcAccountsBalances = async (
-    icrcCanistersData: IcrcCanistersStoreData
-  ) => {
-    const icrcCanisters: IcrcCanisters[] = Object.values(icrcCanistersData);
-    if (icrcCanisters.length === 0) {
-      return;
-    }
-
-    await loadIcrcBalances(
-      icrcCanisters.map(({ ledgerCanisterId }) => ledgerCanisterId)
-    );
-  };
-
   const loadCkBTCAccountsBalances = async (universes: Universe[]) => {
     // ckBTC is not enabled, information shall and cannot be fetched
     if (isArrayEmpty(universes)) {
@@ -96,7 +83,6 @@
     await Promise.allSettled([
       loadSnsAccountsBalances($snsProjectsCommittedStore),
       loadCkBTCAccountsBalances($ckBTCUniversesStore),
-      loadIcrcAccountsBalances($icrcCanistersStore),
     ]))();
 </script>
 
