@@ -86,7 +86,7 @@ const getIcrcMainIdentityAccount = async ({
   };
 };
 
-const loadIcrcAccount = (ledgerCanisterId: Principal) => {
+export const loadIcrcAccount = (ledgerCanisterId: Principal) => {
   return queryAndUpdate<Account, unknown>({
     strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
