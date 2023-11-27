@@ -28,16 +28,9 @@
   };
 </script>
 
-<div
-  class="content-cell-island markdown-container"
-  data-tid="json-preview-component"
->
+<div class="content-cell-island markdown-container" data-tid="json-wrapper">
   {#if $jsonRepresentationModeStore === "tree" && isExpandedAllVisible}
-    <button
-      data-tid="expand-tree"
-      class="ghost expand-all"
-      on:click={toggleExpanded}
-    >
+    <button class="ghost expand-all" on:click={toggleExpanded}>
       {#if isAllExpanded}
         <div in:fade>
           <IconCollapseAll />
@@ -56,14 +49,13 @@
       {#if $jsonRepresentationModeStore === "tree"}
         <div in:fade>
           <TreeJson
-            testId="tree-json"
             json={expandedData}
             defaultExpandedLevel={isAllExpanded ? Number.MAX_SAFE_INTEGER : 1}
           />
         </div>
       {:else}
         <div in:fade>
-          <RawJson testId="raw-json" json={expandedData} />
+          <RawJson {json} />
         </div>
       {/if}
     </TestIdWrapper>

@@ -3,7 +3,6 @@
   import { stringifyJson } from "$lib/utils/utils";
 
   export let json: unknown;
-  export let testId: string | undefined = undefined;
 
   let rawContent: string;
   $: rawContent = nonNullish(json)
@@ -11,7 +10,7 @@
     : `${json}`;
 </script>
 
-<pre data-tid={testId}>{rawContent}</pre>
+<pre>{rawContent}</pre>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
