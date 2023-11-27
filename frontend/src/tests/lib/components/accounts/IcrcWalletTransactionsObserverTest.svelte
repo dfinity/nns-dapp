@@ -1,5 +1,5 @@
 <script lang="ts">
-  import CkBTCWalletTransactionsObserver from "$lib/components/accounts/CkBTCWalletTransactionsObserver.svelte";
+  import IcrcWalletTransactionsObserver from "$lib/components/accounts/IcrcWalletTransactionsObserver.svelte";
   import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
   import {
     CKTESTBTC_INDEX_CANISTER_ID,
@@ -7,11 +7,11 @@
   } from "$lib/constants/ckbtc-canister-ids.constants";
 </script>
 
-<CkBTCWalletTransactionsObserver
+<IcrcWalletTransactionsObserver
   account={mockCkBTCMainAccount}
   completed={true}
   universeId={CKTESTBTC_UNIVERSE_CANISTER_ID}
   indexCanisterId={CKTESTBTC_INDEX_CANISTER_ID}
 >
   <div data-tid="test-observer" />
-</CkBTCWalletTransactionsObserver>
+</IcrcWalletTransactionsObserver>
