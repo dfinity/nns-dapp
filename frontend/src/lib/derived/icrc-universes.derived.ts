@@ -1,7 +1,7 @@
 import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
 import CKTESTBTC_LOGO from "$lib/assets/ckTESTBTC.svg";
 import {
-  CKETHTEST_UNIVERSE_CANISTER_ID,
+  CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
   CKETH_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
 import {
@@ -27,7 +27,7 @@ const convertIcrcCanistersToUniverse = ({
   const logo =
     universeId === CKETH_UNIVERSE_CANISTER_ID.toText()
       ? CKBTC_LOGO
-      : universeId === CKETHTEST_UNIVERSE_CANISTER_ID.toText()
+      : universeId === CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()
       ? CKTESTBTC_LOGO
       : undefined;
   if (isNullish(token) || isNullish(logo)) {

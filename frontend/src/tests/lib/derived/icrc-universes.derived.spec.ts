@@ -1,8 +1,9 @@
 import {
-  CKETHTEST_UNIVERSE_CANISTER_ID,
+  CKETHSEPOLIA_INDEX_CANISTER_ID,
+  CKETHSEPOLIA_LEDGER_CANISTER_ID,
+  CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
   CKETH_INDEX_CANISTER_ID,
   CKETH_UNIVERSE_CANISTER_ID,
-  CKTESTETH_INDEX_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
 import { icrcTokensUniversesStore } from "$lib/derived/icrc-universes.derived";
 import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
@@ -13,7 +14,7 @@ import {
 } from "$tests/mocks/cketh-accounts.mock";
 import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import {
-  ckETHTESTUniverseMock,
+  ckETHSEPOLIAUniverseMock,
   ckETHUniverseMock,
 } from "$tests/mocks/universe.mock";
 import { get } from "svelte/store";
@@ -38,7 +39,7 @@ describe("icrcTokensUniversesStore", () => {
         certified: true,
         token: mockCkETHToken,
       },
-      [CKETHTEST_UNIVERSE_CANISTER_ID.toText()]: {
+      [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: {
         certified: true,
         token: mockCkETHTESTToken,
       },
@@ -52,7 +53,7 @@ describe("icrcTokensUniversesStore", () => {
         certified: true,
         token: mockCkETHToken,
       },
-      [CKETHTEST_UNIVERSE_CANISTER_ID.toText()]: {
+      [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: {
         certified: true,
         token: mockCkETHTESTToken,
       },
@@ -62,12 +63,12 @@ describe("icrcTokensUniversesStore", () => {
       indexCanisterId: CKETH_INDEX_CANISTER_ID,
     });
     icrcCanistersStore.setCanisters({
-      ledgerCanisterId: CKETHTEST_UNIVERSE_CANISTER_ID,
-      indexCanisterId: CKTESTETH_INDEX_CANISTER_ID,
+      ledgerCanisterId: CKETHSEPOLIA_LEDGER_CANISTER_ID,
+      indexCanisterId: CKETHSEPOLIA_INDEX_CANISTER_ID,
     });
     expect(get(icrcTokensUniversesStore)).toEqual([
       ckETHUniverseMock,
-      ckETHTESTUniverseMock,
+      ckETHSEPOLIAUniverseMock,
     ]);
   });
 
