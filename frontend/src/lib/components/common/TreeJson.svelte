@@ -15,6 +15,7 @@
   export let _level = 0;
   // because the child doesn't know if its parent type
   export let _isArrayEntry: boolean | undefined = undefined;
+  export let testId: string | undefined = undefined;
 
   let keyLabel: string;
   let children: [string, unknown][];
@@ -24,8 +25,8 @@
   let emptyExpandableValue: "{ }" | "[ ]";
   let root: boolean;
   let keyRoot: boolean;
-  let testId: "json" | undefined;
   let valueType: TreeJsonValueType;
+  let testIdValue: string | undefined;
   $: {
     valueType = getTreeJsonValueRenderType(json);
     isExpandable = valueType === "object";
@@ -37,7 +38,7 @@
     root = _level === 0;
     // ignore 0 level wrapper
     keyRoot = _level <= 1;
-    testId = root ? "json" : undefined;
+    testIdValue = root ? testId : undefined;
   }
 
   let collapsed = true;
@@ -57,11 +58,11 @@
       class="key expandable"
       class:root={keyRoot}
       class:key-is-index={keyIsIndex}
+      data-tid={testIdValue}
     >
       <button
         class="icon-only expand-button"
         class:is-expandable={!collapsed}
-        data-tid={testId}
         aria-label={$i18n.core.toggle}
         tabindex="0"
         on:click|stopPropagation={toggle}
@@ -73,7 +74,7 @@
   {/if}
   {#if !collapsed}
     <!-- children of expandable-key -->
-    <ul class:root class:is-array={isArray} in:fade>
+    <ul class:root class:is-array={isArray} in:fade data-tid={testIdValue}>
       {#each children as [key, value]}
         <li class:root class:key-is-index={keyIsIndex}>
           <svelte:self
@@ -89,7 +90,11 @@
   {/if}
 {:else if isExpandable}
   <!-- expandable w/o children - key+{}|[] -->
-  <span data-tid={testId} class="key-value" class:key-is-index={keyIsIndex}>
+  <span
+    data-tid={testIdValue}
+    class="key-value"
+    class:key-is-index={keyIsIndex}
+  >
     {#if keyLabel !== ""}<span
         class="key"
         class:root={keyRoot}
