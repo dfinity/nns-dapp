@@ -4,7 +4,6 @@ import { displayAndCleanLogoutMsg } from "$lib/services/auth.services";
 import { authStore } from "$lib/stores/auth.store";
 import { layoutAuthReady } from "$lib/stores/layout.store";
 import { toastsError } from "$lib/stores/toasts.store";
-import { loadCkETHCanisters } from "../cketh-canisters.services";
 
 /**
  * Load the application public data that are available globally ("global stores").
@@ -13,7 +12,7 @@ import { loadCkETHCanisters } from "../cketh-canisters.services";
 export const initAppPublicData = (): Promise<
   [PromiseSettledResult<void[]>, PromiseSettledResult<void[]>]
 > => {
-  const initNns: Promise<void>[] = [loadCkETHCanisters()];
+  const initNns: Promise<void>[] = [];
   const initSns: Promise<void>[] = [loadSnsProjects()];
 
   /**
