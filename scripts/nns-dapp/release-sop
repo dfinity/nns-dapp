@@ -355,6 +355,7 @@ post_rc_on_slack() {
     echo "WASM hash: $WASM_HASH"
     echo "Change log: https://github.com/dfinity/nns-dapp/blob/release-candidate/CHANGELOG-Nns-Dapp-unreleased.md"
     echo "[QR Code](https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=$RC_URL)"
+    echo "[Use a VPN](https://www.notion.so/dfinityorg/NNS-dapp-on-DevEnv-2882138a87fa45c39bf0966591c3dd73#929a5ccd7edd4b428efbc765aedf4d84) to test on mobile."
     echo "Please try it out."
     echo
     echo -n "Then enter the Slack link: "
