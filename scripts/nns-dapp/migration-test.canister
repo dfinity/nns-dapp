@@ -37,7 +37,7 @@ check_state_size() {
   local invariants accounts_count expected_min_accounts
   expected_min_accounts="$NUM_TOY_ACCOUNTS"
   invariants="$(get_upgrade_invariant_stats)"
-  accounts_count="$(jq .accounts_count <<<"$invariants")"
+  accounts_count="$(jq -r .accounts_count <<<"$invariants")"
   if ((accounts_count < expected_min_accounts)); then
     {
       echo "ERROR: 'accounts_count' is smaller than expected."

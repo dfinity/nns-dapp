@@ -11,6 +11,7 @@ import { AccountTransactionType } from "$lib/types/transaction";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { transactionName } from "$lib/utils/transactions.utils";
 import { Cbor } from "@dfinity/agent";
+import type { PendingUtxo } from "@dfinity/ckbtc";
 import type {
   IcrcTransaction,
   IcrcTransactionWithId,
@@ -263,6 +264,32 @@ export const mapCkbtcTransaction = (params: {
     }
   }
   return mappedTransaction;
+};
+
+export const mapCkbtcPendingUtxo = ({
+  utxo,
+  token,
+  kytFee,
+  i18n,
+}: {
+  utxo: PendingUtxo;
+  token: Token;
+  kytFee: bigint;
+  i18n: I18n;
+}): UiTransaction => {
+  return {
+    domKey: `${uint8ArrayToHexString(Uint8Array.from(utxo.outpoint.txid))}-${
+      utxo.outpoint.vout
+    }`,
+    isIncoming: true,
+    isPending: true,
+    headline: i18n.ckbtc.receiving_btc,
+    otherParty: i18n.ckbtc.btc_network,
+    tokenAmount: TokenAmount.fromE8s({
+      amount: utxo.value - kytFee,
+      token: token,
+    }),
+  };
 };
 
 // TODO: use `oldestTxId` instead of sorting and getting the oldest element's id.

@@ -1047,6 +1047,7 @@ interface I18nCkbtc {
   all_btc_transfers_complete: string;
   click_to_complete_btc_transfers: string;
   btc_network: string;
+  receiving_btc: string;
 }
 
 interface I18nError__ckbtc {
