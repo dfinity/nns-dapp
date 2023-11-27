@@ -74,6 +74,9 @@ export const getIcrcToken = async ({
   return token;
 };
 
+/**
+ * Similar to `getIcrcToken` but it expects the canister id instead of the function that queries the metada.
+ */
 export const queryIcrcToken = async ({
   certified,
   identity,
