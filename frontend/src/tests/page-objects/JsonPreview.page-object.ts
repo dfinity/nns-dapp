@@ -33,6 +33,23 @@ export class JsonPreviewPo extends BasePageObject {
     return (await this.getTreeJson().getText())?.trim();
   }
 
+  async getExpandedTreeText(): Promise<string> {
+    const mode = get(jsonRepresentationModeStore);
+    // switch to raw mode to simplify data validation
+    jsonRepresentationStore.setMode("tree");
+    await runResolvedPromises();
+
+    await this.clickExpand();
+
+    const result = (await this.getTreeText())?.trim();
+
+    // restore mode
+    jsonRepresentationStore.setMode(mode);
+    await runResolvedPromises();
+
+    return result;
+  }
+
   async getRawText(): Promise<string> {
     return (await this.getRawJson().getText())?.trim();
   }
