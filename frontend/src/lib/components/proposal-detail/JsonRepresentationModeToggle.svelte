@@ -15,7 +15,7 @@
 
 <div
   class="data-representation-toggle"
-  data-tid="data-representation-mode-toggle-component"
+  data-tid="json-representation-mode-toggle-component"
 >
   <button class="ghost" type="button" on:click={setTree} data-tid="toggle-tree"
     >{$i18n.proposal_detail.toggle_tree}</button
