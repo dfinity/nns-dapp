@@ -1,5 +1,7 @@
+import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import {
   snsProjectsCommittedStore,
@@ -12,10 +14,15 @@ import { uncertifiedLoadSnsAccountsBalances } from "$lib/services/sns-accounts-b
 import { authStore } from "$lib/stores/auth.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { page } from "$mocks/$app/stores";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
   mockAccountsStoreData,
@@ -28,15 +35,20 @@ import {
   mockProjectSubscribe,
   mockSnsFullProject,
   mockSummary,
+  mockToken,
 } from "$tests/mocks/sns-projects.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 import WalletTest from "../pages/AccountsTest.svelte";
+
+vi.mock("$lib/api/icrc-ledger.api");
 
 vi.mock("$lib/services/sns-accounts.services", () => {
   return {
@@ -107,6 +119,7 @@ vi.mock("$lib/services/worker-balances.services", () => ({
 }));
 
 describe("Accounts", () => {
+  const balanceIcrcToken = 314000000n;
   beforeAll(() => {
     vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
@@ -120,6 +133,14 @@ describe("Accounts", () => {
   );
 
   beforeEach(() => {
+    tokensStore.reset();
+    icrcAccountsStore.reset();
+
+    vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
+    vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
+      balanceIcrcToken
+    );
+
     vi.spyOn(snsSelectedTransactionFeeStore, "subscribe").mockImplementation(
       mockSnsSelectedTransactionFeeStoreSubscribe()
     );
@@ -293,6 +314,30 @@ describe("Accounts", () => {
     await waitFor(() =>
       expect(uncertifiedLoadCkBTCAccountsBalance).toHaveBeenCalled()
     );
+  });
+
+  it("should load ckETH accounts", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
+
+    render(Accounts);
+
+    const mockAccount = {
+      identifier: encodeIcrcAccount({
+        owner: mockIdentity.getPrincipal(),
+      }),
+      principal: mockIdentity.getPrincipal(),
+      type: "main",
+      balanceE8s: balanceIcrcToken,
+    };
+
+    await waitFor(() => {
+      expect(
+        get(icrcAccountsStore)[CKETH_UNIVERSE_CANISTER_ID.toText()]
+      ).toEqual({
+        certified: false,
+        accounts: [mockAccount],
+      });
+    });
   });
 
   it("should render sns project name", () => {
