@@ -113,7 +113,7 @@ export const loadIcrcAccount = ({
         universeId: ledgerCanisterId,
       }),
     onError: ({ error: err, certified }) => {
-      if (certified && notForceCallStrategy()) {
+      if (!certified && notForceCallStrategy()) {
         return;
       }
 
