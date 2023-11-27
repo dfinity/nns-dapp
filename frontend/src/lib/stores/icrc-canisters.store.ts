@@ -4,7 +4,7 @@ import type { Readable } from "svelte/store";
 import { writable } from "svelte/store";
 
 export interface IcrcCanisters {
-  ledgerCansisterId: Principal;
+  ledgerCanisterId: Principal;
   indexCanisterId: Principal;
 }
 
@@ -36,11 +36,11 @@ const initIcrcCanistersStore = (): IcrcCanistersStore => {
   return {
     subscribe,
 
-    setCanisters({ ledgerCansisterId, indexCanisterId }: IcrcCanisters) {
+    setCanisters({ ledgerCanisterId, indexCanisterId }: IcrcCanisters) {
       update((state: IcrcCanistersStoreData) => ({
         ...state,
-        [ledgerCansisterId.toText()]: {
-          ledgerCansisterId,
+        [ledgerCanisterId.toText()]: {
+          ledgerCanisterId,
           indexCanisterId,
         },
       }));
