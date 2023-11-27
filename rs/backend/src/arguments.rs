@@ -15,7 +15,7 @@ use std::collections::HashMap;
 use crate::accounts_store::schema::SchemaLabel;
 
 /// `init` and `post_upgrade` arguments
-#[derive(Clone, Debug, Default, Eq, PartialEq, CandidType, Serialize, Deserialize)]
+#[derive(Debug, Default, Eq, PartialEq, CandidType, Serialize, Deserialize)]
 pub struct CanisterArguments {
     /// Values that are to be set in the web front end, by injecting them into JavaScript.
     pub args: Vec<(String, String)>,
