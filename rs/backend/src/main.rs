@@ -6,7 +6,7 @@ use crate::accounts_store::{
     RegisterHardwareWalletResponse, RenameCanisterRequest, RenameCanisterResponse, RenameSubAccountRequest,
     RenameSubAccountResponse, TransactionType,
 };
-use crate::arguments::{set_canister_arguments, CanisterArguments};
+use crate::arguments::{set_canister_arguments, CanisterArguments, CANISTER_ARGUMENTS};
 use crate::assets::{hash_bytes, insert_asset, insert_tar_xz, Asset};
 use crate::perf::PerformanceCount;
 use crate::periodic_tasks_runner::run_periodic_tasks;
@@ -69,18 +69,20 @@ fn pre_upgrade() {
 }
 
 #[post_upgrade]
-fn post_upgrade(args: Option<CanisterArguments>) {
-    dfn_core::api::print(format!("post_upgrade with args: {args:#?}"));
+fn post_upgrade(args_maybe: Option<CanisterArguments>) {
+    dfn_core::api::print(format!("post_upgrade with args: {args_maybe:#?}"));
+    set_canister_arguments(args_maybe);
+    // `set_canister_arguments(..)` will populate any missing data with defaults.  Be sure that we get that fully populated structure:
+    let schema = CANISTER_ARGUMENTS.with(|args| args.borrow().schema);
+    perf::record_instruction_count("post_upgrade after set_canister_arguments");
     // Saving the instruction counter now will not have the desired effect
     // as the storage is about to be wiped out and replaced with stable memory.
     let counter_before = PerformanceCount::new("post_upgrade start");
     STATE.with(|s| {
-        s.replace(State::post_upgrade());
+        s.replace(State::post_upgrade(schema));
     });
     perf::save_instruction_count(counter_before);
     perf::record_instruction_count("post_upgrade after state_recovery");
-    set_canister_arguments(args);
-    perf::record_instruction_count("post_upgrade after set_canister_arguments");
     assets::init_assets();
     perf::record_instruction_count("post_upgrade stop");
 }
