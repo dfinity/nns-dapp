@@ -69,6 +69,17 @@ describe("icrc-accounts-services", () => {
         certified: true,
         token: mockToken,
       });
+      expect(ledgerApi.queryIcrcToken).toHaveBeenCalledWith({
+        certified: false,
+        identity: mockIdentity,
+        canisterId: ledgerCanisterId,
+      });
+      expect(ledgerApi.queryIcrcToken).toHaveBeenCalledWith({
+        certified: true,
+        identity: mockIdentity,
+        canisterId: ledgerCanisterId,
+      });
+      expect(ledgerApi.queryIcrcToken).toHaveBeenCalledTimes(2);
     });
 
     it("loads token from api into store with query", async () => {
@@ -85,15 +96,15 @@ describe("icrc-accounts-services", () => {
         identity: mockIdentity,
         canisterId: ledgerCanisterId,
       });
-      expect(ledgerApi.queryIcrcToken).not.toHaveBeenCalledWith({
-        certified: true,
-        identity: mockIdentity,
-        canisterId: ledgerCanisterId,
-      });
+      expect(ledgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
     });
   });
 
   describe("loadIcrcAccount", () => {
+    const userIcrcAccount = {
+      owner: mockIdentity.getPrincipal(),
+    };
+
     it("loads account in store with balance from api", async () => {
       expect(get(icrcAccountsStore)[ledgerCanisterId.toText()]).toBeUndefined();
 
@@ -103,12 +114,22 @@ describe("icrc-accounts-services", () => {
         accounts: [mockAccount],
         certified: true,
       });
+      expect(ledgerApi.queryIcrcBalance).toHaveBeenCalledWith({
+        certified: false,
+        identity: mockIdentity,
+        canisterId: ledgerCanisterId,
+        account: userIcrcAccount,
+      });
+      expect(ledgerApi.queryIcrcBalance).toHaveBeenCalledWith({
+        certified: true,
+        identity: mockIdentity,
+        canisterId: ledgerCanisterId,
+        account: userIcrcAccount,
+      });
+      expect(ledgerApi.queryIcrcBalance).toHaveBeenCalledTimes(2);
     });
 
     it("loads account in store with balance from api with query", async () => {
-      const userIcrcAccount = {
-        owner: mockIdentity.getPrincipal(),
-      };
       expect(get(icrcAccountsStore)[ledgerCanisterId.toText()]).toBeUndefined();
 
       await loadIcrcAccount({ ledgerCanisterId, certified: false });
@@ -123,12 +144,7 @@ describe("icrc-accounts-services", () => {
         canisterId: ledgerCanisterId,
         account: userIcrcAccount,
       });
-      expect(ledgerApi.queryIcrcBalance).not.toHaveBeenCalledWith({
-        certified: true,
-        identity: mockIdentity,
-        canisterId: ledgerCanisterId,
-        account: userIcrcAccount,
-      });
+      expect(ledgerApi.queryIcrcBalance).toHaveBeenCalledTimes(1);
     });
   });
 
