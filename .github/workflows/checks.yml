@@ -210,9 +210,14 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
+      - name: Install cargo binstall
+        uses: ./.github/actions/install_binstall
+      - name: Install idl2json
+        run: cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)" && idl2json --version
       - name: Test migration utilities
         run: |
           set +x
+          scripts/nns-dapp/migration-test.getters.test
           scripts/nns-dapp/migration-test.on-exit.test
   dfx-nns-proposal-args-works:
     # TODO: Reenable (add it in line 338) once fixed, should it depend on mainnet?
