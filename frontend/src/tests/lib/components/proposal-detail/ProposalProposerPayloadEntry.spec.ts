@@ -1,32 +1,39 @@
 import ProposalProposerPayloadEntry from "$lib/components/proposal-detail/ProposalProposerPayloadEntry.svelte";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import { simplifyJson } from "$tests/utils/json.test-utils";
-import { render, waitFor } from "@testing-library/svelte";
-import { beforeEach } from "vitest";
+import { JsonPreviewPo } from "$tests/page-objects/JsonPreview.page-object";
+import { JsonRepresentationModeTogglePo } from "$tests/page-objects/JsonRepresentationModeToggle.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { render } from "@testing-library/svelte";
 
 describe("ProposalProposerPayloadEntry", () => {
-  // TODO(GIX-2030) remove this once the feature flag is removed
-  beforeEach(() =>
-    overrideFeatureFlagsStore.setFlag("ENABLE_FULL_WIDTH_PROPOSAL", false)
-  );
+  const payload = { b: "c" };
 
-  const nestedObj = { b: "c" };
-  const payloadWithJsonString = {
-    a: JSON.stringify(nestedObj),
-  };
-
-  it("should parse JSON strings and render them", async () => {
-    const { queryByTestId } = render(ProposalProposerPayloadEntry, {
+  it("should render payload", async () => {
+    const { container } = render(ProposalProposerPayloadEntry, {
       props: {
-        payload: payloadWithJsonString,
+        payload,
       },
     });
 
-    const jsonElement = queryByTestId("json-wrapper");
-    await waitFor(() =>
-      expect(simplifyJson(jsonElement.textContent)).toBe(
-        simplifyJson(JSON.stringify(payloadWithJsonString))
-      )
-    );
+    await runResolvedPromises();
+
+    const po = JsonPreviewPo.under(new JestPageObjectElement(container));
+    expect(await po.getRawObject()).toEqual({
+      b: "c",
+    });
+  });
+
+  it("should render json mode toggle", async () => {
+    const { container } = render(ProposalProposerPayloadEntry, {
+      props: {
+        payload,
+      },
+    });
+
+    expect(
+      await JsonRepresentationModeTogglePo.under(
+        new JestPageObjectElement(container)
+      ).isPresent()
+    ).toBe(true);
   });
 });
