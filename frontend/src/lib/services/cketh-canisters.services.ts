@@ -1,8 +1,8 @@
 import {
+  CKETHSEPOLIA_INDEX_CANISTER_ID,
+  CKETHSEPOLIA_LEDGER_CANISTER_ID,
   CKETH_INDEX_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
-  CKTESTETH_INDEX_CANISTER_ID,
-  CKTESTETH_LEDGER_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
 import {
   ENABLE_CKETH,
@@ -17,11 +17,11 @@ export const loadCkETHCanisters = async () => {
       ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
       indexCanisterId: CKETH_INDEX_CANISTER_ID,
     });
-    if (get(ENABLE_CKTESTBTC)) {
-      icrcCanistersStore.setCanisters({
-        ledgerCanisterId: CKTESTETH_LEDGER_CANISTER_ID,
-        indexCanisterId: CKTESTETH_INDEX_CANISTER_ID,
-      });
-    }
+  }
+  if (get(ENABLE_CKTESTBTC)) {
+    icrcCanistersStore.setCanisters({
+      ledgerCanisterId: CKETHSEPOLIA_LEDGER_CANISTER_ID,
+      indexCanisterId: CKETHSEPOLIA_INDEX_CANISTER_ID,
+    });
   }
 };
