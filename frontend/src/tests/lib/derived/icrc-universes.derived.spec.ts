@@ -47,7 +47,22 @@ describe("icrcTokensUniversesStore", () => {
     expect(get(icrcTokensUniversesStore)).toEqual([]);
   });
 
-  it("returns cketh universes if present in icrcCanistersStore", () => {
+  it("returns cket universes if present in icrcCanistersStore", () => {
+    tokensStore.setTokens({
+      [CKETH_UNIVERSE_CANISTER_ID.toText()]: {
+        certified: true,
+        token: mockCkETHToken,
+      },
+    });
+    icrcCanistersStore.setCanisters({
+      ledgerCanisterId: CKETH_UNIVERSE_CANISTER_ID,
+      indexCanisterId: CKETH_INDEX_CANISTER_ID,
+    });
+    expect(get(icrcTokensUniversesStore)).toEqual([ckETHUniverseMock]);
+  });
+
+  // TODO: Enable when we have ckETH mainnet canister ids
+  it.skip("returns cketh universes if present in icrcCanistersStore", () => {
     tokensStore.setTokens({
       [CKETH_UNIVERSE_CANISTER_ID.toText()]: {
         certified: true,
