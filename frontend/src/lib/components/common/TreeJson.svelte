@@ -26,7 +26,6 @@
   let root: boolean;
   let keyRoot: boolean;
   let valueType: TreeJsonValueType;
-  let testIdValue: string | undefined;
   $: {
     valueType = getTreeJsonValueRenderType(json);
     isExpandable = valueType === "object";
@@ -38,7 +37,6 @@
     root = _level === 0;
     // ignore 0 level wrapper
     keyRoot = _level <= 1;
-    testIdValue = root ? testId : undefined;
   }
 
   let collapsed = true;
@@ -58,7 +56,7 @@
       class="key expandable"
       class:root={keyRoot}
       class:key-is-index={keyIsIndex}
-      data-tid={testIdValue}
+      data-tid={testId}
     >
       <button
         class="icon-only expand-button"
@@ -74,7 +72,7 @@
   {/if}
   {#if !collapsed}
     <!-- children of expandable-key -->
-    <ul class:root class:is-array={isArray} in:fade data-tid={testIdValue}>
+    <ul class:root class:is-array={isArray} in:fade data-tid={testId}>
       {#each children as [key, value]}
         <li class:root class:key-is-index={keyIsIndex}>
           <svelte:self
@@ -90,11 +88,7 @@
   {/if}
 {:else if isExpandable}
   <!-- expandable w/o children - key+{}|[] -->
-  <span
-    data-tid={testIdValue}
-    class="key-value"
-    class:key-is-index={keyIsIndex}
-  >
+  <span data-tid={testId} class="key-value" class:key-is-index={keyIsIndex}>
     {#if keyLabel !== ""}<span
         class="key"
         class:root={keyRoot}
