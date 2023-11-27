@@ -14,7 +14,7 @@ import {
   isUniverseCkBTC,
   isUniverseCkTESTBTC,
   isUniverseNns,
-  pathSupportsCkBTC,
+  pathSupportsIcrcToken,
 } from "$lib/utils/universe.utils";
 import { Principal } from "@dfinity/principal";
 import { derived, type Readable } from "svelte/store";
@@ -48,7 +48,7 @@ export const selectedUniverseIdStore: Readable<Principal> = derived<
   [pageUniverseIdStore, pageStore, ENABLE_CKBTC, ENABLE_CKTESTBTC],
   ([canisterId, page, $ENABLE_CKBTC, $ENABLE_CKTESTBTC]) => {
     // ckBTC is only available on Accounts therefore we fallback to Nns if selected and user switch to another view
-    if (isUniverseCkBTC(canisterId) && !pathSupportsCkBTC(page)) {
+    if (isUniverseCkBTC(canisterId) && !pathSupportsIcrcToken(page)) {
       return OWN_CANISTER_ID;
     }
     if (
