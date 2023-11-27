@@ -5,6 +5,7 @@ use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
 use dfn_candid::Candid;
 use dfn_core::{api::trap_with, stable};
+use ic_stable_structures::memory_manager::MemoryManager;
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use on_wire::{FromWire, IntoWire};
 use std::cell::RefCell;
@@ -37,6 +38,35 @@ pub trait StableState: Sized {
 
 thread_local! {
     pub static STATE: State = State::default();
+}
+
+struct Partitions {
+    pub memory_manager: MemoryManager<DefaultMemoryImpl>,
+}
+impl Partitions {
+    fn is_managed(memory: &DefaultMemoryImpl) -> bool {
+        let memory_pages = memory.size();
+        if memory_pages == 0 {
+            return false;
+        }
+        // TODO: This is private in ic-stable-structures.  We should make it public, or have a public method for determining whether there is a memory manager at a given offset.
+        const MEMORY_MANAGER_MAGIC_BYTES: &[u8; 3] = b"MGR"; // From the spec: https://docs.rs/ic-stable-structures/0.6.0/ic_stable_structures/memory_manager/struct.MemoryManager.html#v1-layout
+        let mut actual_first_bytes = [0u8; MEMORY_MANAGER_MAGIC_BYTES.len()];
+        memory.read(0, &mut actual_first_bytes);
+        actual_first_bytes == *MEMORY_MANAGER_MAGIC_BYTES
+    }
+    pub fn init(memory: DefaultMemoryImpl) -> Self {
+        let memory_manager = MemoryManager::init(memory);
+        Partitions { memory_manager }
+    }
+    /// Gets an existing memory manager.
+    pub fn load(memory: DefaultMemoryImpl) -> Result<Self, DefaultMemoryImpl> {
+        if Self::is_managed(&memory) {
+            Ok(Self::init(memory))
+        } else {
+            Err(memory)
+        }
+    }
 }
 
 impl StableState for State {
