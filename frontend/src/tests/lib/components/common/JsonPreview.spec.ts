@@ -35,7 +35,7 @@ describe("JsonPreview", () => {
   it("should render data in raw view", async () => {
     jsonRepresentationStore.setMode("raw");
     const po = renderComponent({ test: "hello world" });
-    expect(JSON.parse(await po.getRawText())).toEqual({
+    expect(await po.getRawObject()).toEqual({
       test: "hello world",
     });
   });

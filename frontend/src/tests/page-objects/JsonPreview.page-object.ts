@@ -32,4 +32,13 @@ export class JsonPreviewPo extends BasePageObject {
   async getRawText(): Promise<string> {
     return (await this.getRawJson().getText())?.trim();
   }
+
+  async getRawObject(): Promise<object> {
+    try {
+      const text = (await this.getRawJson().getText())?.trim();
+      return JSON.parse(text);
+    } catch (e) {
+      console.error("Error parsing JSON: ", e);
+    }
+  }
 }
