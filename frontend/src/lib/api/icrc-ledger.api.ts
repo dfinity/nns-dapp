@@ -74,6 +74,48 @@ export const getIcrcToken = async ({
   return token;
 };
 
+export const queryIcrcToken = async ({
+  certified,
+  identity,
+  canisterId,
+}: {
+  certified: boolean;
+  identity: Identity;
+  canisterId: Principal;
+}): Promise<IcrcTokenMetadata> => {
+  const {
+    canister: { metadata },
+  } = await icrcLedgerCanister({ identity, canisterId });
+
+  const tokenData = await metadata({ certified });
+
+  const token = mapOptionalToken(tokenData);
+
+  if (isNullish(token)) {
+    throw new LedgerErrorKey("error.icrc_token_load");
+  }
+
+  return token;
+};
+
+export const queryIcrcBalance = async ({
+  identity,
+  certified,
+  canisterId,
+  account,
+}: {
+  identity: Identity;
+  certified: boolean;
+  canisterId: Principal;
+  account: IcrcAccount;
+}): Promise<bigint> => {
+  const {
+    canister: { balance },
+  } = await icrcLedgerCanister({ identity, canisterId });
+
+  return balance({ ...account, certified });
+};
+
 export interface IcrcTransferParams {
   to: IcrcAccount;
   amount: bigint;
