@@ -5,12 +5,16 @@ import {
   getSortedTransactionsFromStore,
   getUniqueTransactions,
   isIcrcTransactionsCompleted,
+  mapCkbtcPendingUtxo,
   mapCkbtcTransaction,
   mapIcrcTransaction,
   type mapIcrcTransactionType,
 } from "$lib/utils/icrc-transactions.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
-import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
+import {
+  mockCkBTCMainAccount,
+  mockCkBTCToken,
+} from "$tests/mocks/ckbtc-accounts.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
 import {
@@ -383,7 +387,7 @@ describe("icrc-transaction utils", () => {
         },
         account: mockCkBTCMainAccount,
         toSelfTransaction: false,
-        token: ICPToken,
+        token: mockCkBTCToken,
         i18n: en,
       });
       expect(data).toEqual({
@@ -395,7 +399,7 @@ describe("icrc-transaction utils", () => {
         timestamp: new Date(0),
         tokenAmount: TokenAmount.fromE8s({
           amount,
-          token: ICPToken,
+          token: mockCkBTCToken,
         }),
       });
     });
@@ -421,7 +425,7 @@ describe("icrc-transaction utils", () => {
         },
         account: mockCkBTCMainAccount,
         toSelfTransaction: false,
-        token: ICPToken,
+        token: mockCkBTCToken,
         i18n: en,
       });
 
@@ -434,7 +438,7 @@ describe("icrc-transaction utils", () => {
         timestamp: new Date(0),
         tokenAmount: TokenAmount.fromE8s({
           amount,
-          token: ICPToken,
+          token: mockCkBTCToken,
         }),
       });
 
@@ -454,7 +458,7 @@ describe("icrc-transaction utils", () => {
         },
         account: mockCkBTCMainAccount,
         toSelfTransaction: false,
-        token: ICPToken,
+        token: mockCkBTCToken,
         i18n: en,
       });
       expect(data).toEqual({
@@ -466,7 +470,39 @@ describe("icrc-transaction utils", () => {
         timestamp: new Date(0),
         tokenAmount: TokenAmount.fromE8s({
           amount,
-          token: ICPToken,
+          token: mockCkBTCToken,
+        }),
+      });
+    });
+  });
+
+  describe("mapCkbtcPendingUtxo", () => {
+    it("maps PendingUtxo to uiTransaction ", () => {
+      const amount = 23_000_000n;
+      const kytFee = 5_000n;
+      const utxo = {
+        outpoint: {
+          txid: new Uint8Array([2, 3, 2]),
+          vout: 2,
+        },
+        value: amount,
+        confirmations: 3,
+      };
+      const uiTransaction = mapCkbtcPendingUtxo({
+        utxo,
+        token: mockCkBTCToken,
+        kytFee,
+        i18n: en,
+      });
+      expect(uiTransaction).toEqual({
+        domKey: "020302-2",
+        isIncoming: true,
+        isPending: true,
+        headline: "Receiving BTC",
+        otherParty: "BTC Network",
+        tokenAmount: TokenAmount.fromE8s({
+          amount: amount - kytFee,
+          token: mockCkBTCToken,
         }),
       });
     });
