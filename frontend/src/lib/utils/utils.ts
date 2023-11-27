@@ -17,8 +17,9 @@ export const stringifyJson = (
     indentation?: number;
     devMode?: boolean;
   }
-): string =>
-  JSON.stringify(
+): string => {
+  const __UNDEFINED__ = "__UNDEFINED__";
+  const result = JSON.stringify(
     value,
     (_, value) => {
       switch (typeof value) {
@@ -56,10 +57,15 @@ export const stringifyJson = (
           return value.toString();
         }
       }
-      return value;
+      return value === undefined ? __UNDEFINED__ : value;
     },
     options?.indentation ?? 0
   );
+
+  return (
+    result?.replace(new RegExp(`"${__UNDEFINED__}"`, "g"), "undefined") ?? ""
+  );
+};
 
 /**
  * Returns only uniq elements of the list (uses JSON.stringify for comparation)

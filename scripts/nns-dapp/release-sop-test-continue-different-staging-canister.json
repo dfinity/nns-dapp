@@ -1,6 +1,10 @@
 {
   "args": [
-    "--continue"
+    "--continue",
+    "--test_network",
+    "devenv_user",
+    "--test_domain",
+    "user-ingress.devenv.dfinity.network"
   ],
   "behavior": [
     {
@@ -34,7 +38,7 @@
       "exitCode": 0
     },
     {
-      "command": "dfx canister id nns-dapp --network staging",
+      "command": "dfx canister id nns-dapp --network devenv_user",
       "stdout": "aaaaa-aa",
       "stderr": "",
       "exitCode": 0
@@ -62,13 +66,13 @@
     "scripts/nns-dapp/download-ci-wasm --commit tags/release-candidate --dir /home/runner/work/nns-dapp/release/ci --wasm-filename nns-dapp.wasm.gz: Was already done. Skipping.",
     "CI NNS-dapp WASM hash: Was already: \u001b[35m6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4\u001b[0m",
     "Local WASM hash: 6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
-    "scripts/canister_ids --remove --network staging --canister nns-dapp: Was already done. Skipping.",
+    "scripts/canister_ids --remove --network devenv_user --canister nns-dapp: Was already done. Skipping.",
     "dfx identity: Was already: \u001b[35mdefault: s2dw5-fmktb-knrnq-772tr-ca3g7-me224-st35j-f3eli-xx2vf-aoesd-2qe\u001b[0m",
-    "dfx canister create nns-dapp --network staging --no-wallet: Was already done. Skipping.",
-    "NNS-dapp staging canister ID: Was already: \u001b[35mjefp3-bqaaa-aaaaa-aacyq-cai\u001b[0m",
+    "dfx canister create nns-dapp --network devenv_user --no-wallet: Was already done. Skipping.",
+    "NNS-dapp devenv_user canister ID: Was already: \u001b[35mjefp3-bqaaa-aaaaa-aacyq-cai\u001b[0m",
     "Values don't match!",
-    "NNS-dapp staging canister ID: jefp3-bqaaa-aaaaa-aacyq-cai",
-    "Current NNS-dapp staging canister ID: aaaaa-aa"
+    "NNS-dapp devenv_user canister ID: jefp3-bqaaa-aaaaa-aacyq-cai",
+    "Current NNS-dapp devenv_user canister ID: aaaaa-aa"
   ],
   "expectedExitCode": 1
 }

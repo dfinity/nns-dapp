@@ -37,7 +37,7 @@ check_state_size() {
   local invariants accounts_count expected_min_accounts
   expected_min_accounts="$NUM_TOY_ACCOUNTS"
   invariants="$(get_upgrade_invariant_stats)"
-  accounts_count="$(jq .accounts_count <<<"$invariants")"
+  accounts_count="$(jq -r .accounts_count <<<"$invariants")"
   if ((accounts_count < expected_min_accounts)); then
     {
       echo "ERROR: 'accounts_count' is smaller than expected."
@@ -135,6 +135,67 @@ upgrade_nnsdapp() {
       echo "Poststate: $poststate"
       echo "Diff:"
       diff -u <(echo "$prestate") <(echo "$poststate") || true
+      exit 1
+    } >&2
+  fi
+}
+
+# TODO: Get this mapping from the candid file
+SCHEMA_LABELS=(
+  "Map"
+  "AccountsInStableMemory"
+)
+
+# Gets the name for a given schema index
+schema_name() {
+  local schema_index schema_name
+  schema_index="${1:-}"
+  schema_name="${SCHEMA_LABELS[$schema_index]:-}"
+  [ -n "${schema_name:-}" ] || {
+    echo "ERROR: Unknown schema index."
+    echo "Expected one of: ${!SCHEMA_LABELS[*]}"
+    echo "Actual:           ${schema_index}"
+    exit 1
+  } >&2
+  echo "$schema_name"
+}
+
+# Maps schema names to integers
+schema_index() {
+  local schema i
+  schema="${1:-}"
+  for i in "${!SCHEMA_LABELS[@]}"; do
+    if [[ "${SCHEMA_LABELS[$i]}" == "${schema}" ]]; then
+      echo "${i}"
+      return
+    fi
+  done
+  {
+    echo "ERROR: Unknown schema name."
+    echo "Expected one of: ${SCHEMA_LABELS[*]}"
+    echo "Actual:           ${schema}"
+    exit 1
+  } >&2
+}
+
+# Gets the deployed schema
+get_schema_name() {
+  local schema_index schema_name
+  schema_index="$(dfx canister call nns-dapp get_stats | idl2json | jq -e '.schema[0]')"
+  schema_name="$(schema_name "${schema_index:-}")"
+  echo "$schema_name"
+}
+
+# Verifies that the schema is as expected
+assert_schema_is() {
+  local expected_schema actual_schema
+  expected_schema="${1:-}"
+  actual_schema="$(get_schema_name)"
+  if [[ "${expected_schema}" != "${actual_schema}" ]]; then
+    {
+      echo "ERROR: Schema is not as expected."
+      echo "Expected: ${expected_schema}"
+      echo "Actual:   ${actual_schema}"
       exit 1
     } >&2
   fi

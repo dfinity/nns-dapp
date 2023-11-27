@@ -15,7 +15,7 @@
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
   import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
-  import CkBTCBalancesObserver from "$lib/components/accounts/CkBTCBalancesObserver.svelte";
+  import IcrcBalancesObserver from "$lib/components/accounts/IcrcBalancesObserver.svelte";
 
   let loading = false;
 
@@ -69,10 +69,7 @@
   {#if loading}
     <SkeletonCard size="medium" />
   {:else if nonNullish($selectedCkBTCUniverseIdStore)}
-    <CkBTCBalancesObserver
-      {accounts}
-      universeId={$selectedCkBTCUniverseIdStore}
-    >
+    <IcrcBalancesObserver {accounts} universeId={$selectedCkBTCUniverseIdStore}>
       {#each accounts as account}
         <AccountCard {account} token={token?.token}
           >{account.name ?? $i18n.accounts.main}</AccountCard
@@ -80,6 +77,6 @@
       {/each}
 
       <CkBTCWithdrawalAccount />
-    </CkBTCBalancesObserver>
+    </IcrcBalancesObserver>
   {/if}
 </div>

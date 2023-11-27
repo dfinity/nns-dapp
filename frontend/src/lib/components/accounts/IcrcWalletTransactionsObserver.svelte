@@ -3,7 +3,7 @@
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { Account } from "$lib/types/account";
   import type { TransactionsObserverData } from "$lib/types/icrc.observer";
-  import IcrcTransactionsObserver from "$lib/components/accounts/IcrcTransactionsObserver.svelte";
+  import TransactionsObserver from "$lib/components/accounts/TransactionsObserver.svelte";
   import type { TransactionsCallback } from "$lib/services/worker-transactions.services";
   import { isNullish } from "@dfinity/utils";
   import { addObservedIcrcTransactionsToStore } from "$lib/services/observer.services";
@@ -33,6 +33,6 @@
   };
 </script>
 
-<IcrcTransactionsObserver {data} {callback}>
+<TransactionsObserver {data} {callback}>
   <slot />
-</IcrcTransactionsObserver>
+</TransactionsObserver>
