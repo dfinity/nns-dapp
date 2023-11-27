@@ -9,9 +9,9 @@ import {
 import { AppPath } from "$lib/constants/routes.constants";
 import {
   createUniverse,
+  isNonGovernanceTokenPath,
   isUniverseCkBTC,
   isUniverseNns,
-  pathSupportsCkBTC,
   universeLogoAlt,
 } from "$lib/utils/universe.utils";
 import en from "$tests/mocks/i18n.mock";
@@ -24,33 +24,33 @@ import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { Principal } from "@dfinity/principal";
 
 describe("universes-utils", () => {
-  describe("pathSupportsCkBTC", () => {
-    it("should support ckBTC", () => {
+  describe("isNonGovernanceTokenPath", () => {
+    it("should support ICRC token", () => {
       expect(
-        pathSupportsCkBTC({
+        isNonGovernanceTokenPath({
           universe: "not used here",
           path: AppPath.Accounts,
         })
       ).toBeTruthy();
 
       expect(
-        pathSupportsCkBTC({
+        isNonGovernanceTokenPath({
           universe: "not used here",
           path: AppPath.Wallet,
         })
       ).toBeTruthy();
     });
 
-    it("should not support ckBTC", () => {
+    it("should not support ICRC Token", () => {
       expect(
-        pathSupportsCkBTC({
+        isNonGovernanceTokenPath({
           universe: "not used here",
           path: AppPath.Neurons,
         })
       ).toBe(false);
 
       expect(
-        pathSupportsCkBTC({
+        isNonGovernanceTokenPath({
           universe: "not used here",
           path: AppPath.Proposal,
         })
