@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { BalancesObserverData } from "$lib/types/icrc.observer";
   import { nonNullish } from "@dfinity/utils";
-  import IcrcBalancesObserver from "$lib/components/accounts/IcrcBalancesObserver.svelte";
+  import BalancesObserver from "$lib/components/accounts/BalancesObserver.svelte";
   import type { BalancesCallback } from "$lib/services/worker-balances.services";
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
   import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
@@ -43,7 +43,7 @@
 </script>
 
 {#if nonNullish(data)}
-  <IcrcBalancesObserver {data} {callback}>
+  <BalancesObserver {data} {callback}>
     <slot />
-  </IcrcBalancesObserver>
+  </BalancesObserver>
 {/if}
