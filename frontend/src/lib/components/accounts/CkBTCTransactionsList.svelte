@@ -21,7 +21,7 @@
   import type { CanisterId } from "$lib/types/canister";
   import { onMount } from "svelte";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
-  import CkBTCWalletTransactionsObserver from "$lib/components/accounts/CkBTCWalletTransactionsObserver.svelte";
+  import IcrcWalletTransactionsObserver from "$lib/components/accounts/IcrcWalletTransactionsObserver.svelte";
   import { CKBTC_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/ckbtc.constants";
   import { waitForMilliseconds } from "$lib/utils/utils";
   import { nonNullish } from "@dfinity/utils";
@@ -101,7 +101,7 @@
     .filter(nonNullish);
 </script>
 
-<CkBTCWalletTransactionsObserver
+<IcrcWalletTransactionsObserver
   {indexCanisterId}
   {account}
   {completed}
@@ -113,4 +113,4 @@
     {loading}
     {completed}
   />
-</CkBTCWalletTransactionsObserver>
+</IcrcWalletTransactionsObserver>
