@@ -30,9 +30,15 @@ export const getIcrcAccountIdentity = (_: Account): Promise<Identity> => {
   return getAuthenticatedIdentity();
 };
 
-export const loadIcrcToken = (ledgerCanisterId: Principal) => {
+export const loadIcrcToken = ({
+  ledgerCanisterId,
+  certified = false,
+}: {
+  ledgerCanisterId: Principal;
+  certified: boolean;
+}) => {
   return queryAndUpdate<IcrcTokenMetadata, unknown>({
-    strategy: FORCE_CALL_STRATEGY,
+    strategy: certified ? FORCE_CALL_STRATEGY : "query",
     request: ({ certified, identity }) =>
       queryIcrcToken({
         identity,
@@ -86,9 +92,15 @@ const getIcrcMainIdentityAccount = async ({
   };
 };
 
-export const loadIcrcAccount = (ledgerCanisterId: Principal) => {
+export const loadIcrcAccount = ({
+  ledgerCanisterId,
+  certified = false,
+}: {
+  ledgerCanisterId: Principal;
+  certified: boolean;
+}) => {
   return queryAndUpdate<Account, unknown>({
-    strategy: FORCE_CALL_STRATEGY,
+    strategy: certified ? FORCE_CALL_STRATEGY : "query",
     request: ({ certified, identity }) =>
       getIcrcMainIdentityAccount({
         identity,
@@ -117,13 +129,19 @@ export const loadIcrcAccount = (ledgerCanisterId: Principal) => {
   });
 };
 
-export const loadIcrcBalances = async (ledgerCanisterIds: Principal[]) => {
+export const loadIcrcBalances = async ({
+  ledgerCanisterIds,
+  certified = false,
+}: {
+  ledgerCanisterIds: Principal[];
+  certified: boolean;
+}) => {
   const results: PromiseSettledResult<[void, void]>[] =
     await Promise.allSettled(
       ledgerCanisterIds.map((ledgerCanisterId) =>
         Promise.all([
-          loadIcrcAccount(ledgerCanisterId),
-          loadIcrcToken(ledgerCanisterId),
+          loadIcrcAccount({ ledgerCanisterId, certified }),
+          loadIcrcToken({ ledgerCanisterId, certified }),
         ])
       )
     );
