@@ -53,5 +53,25 @@ describe("cketh-canisters.services", () => {
         });
       });
     });
+
+    describe("if cketh is disabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", false);
+      });
+
+      it("should load cketh canisters", async () => {
+        expect(get(icrcCanistersStore)).toEqual({});
+        await loadCkETHCanisters();
+        expect(get(icrcCanistersStore)).toEqual({});
+      });
+
+      it("should not load ckethtest canisters if cktestbtc is enabled", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", true);
+
+        expect(get(icrcCanistersStore)).toEqual({});
+        await loadCkETHCanisters();
+        expect(get(icrcCanistersStore)).toEqual({});
+      });
+    });
   });
 });
