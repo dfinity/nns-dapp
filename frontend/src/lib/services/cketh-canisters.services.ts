@@ -9,19 +9,25 @@ import {
   ENABLE_CKTESTBTC,
 } from "$lib/stores/feature-flags.store";
 import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
+import { isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 export const loadCkETHCanisters = async () => {
+  const storeData = get(icrcCanistersStore);
   if (get(ENABLE_CKETH)) {
-    icrcCanistersStore.setCanisters({
-      ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
-      indexCanisterId: CKETH_INDEX_CANISTER_ID,
-    });
+    if (isNullish(storeData[CKETH_LEDGER_CANISTER_ID.toText()])) {
+      icrcCanistersStore.setCanisters({
+        ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
+        indexCanisterId: CKETH_INDEX_CANISTER_ID,
+      });
+    }
   }
   if (get(ENABLE_CKTESTBTC)) {
-    icrcCanistersStore.setCanisters({
-      ledgerCanisterId: CKETHSEPOLIA_LEDGER_CANISTER_ID,
-      indexCanisterId: CKETHSEPOLIA_INDEX_CANISTER_ID,
-    });
+    if (isNullish(storeData[CKETHSEPOLIA_LEDGER_CANISTER_ID.toText()])) {
+      icrcCanistersStore.setCanisters({
+        ledgerCanisterId: CKETHSEPOLIA_LEDGER_CANISTER_ID,
+        indexCanisterId: CKETHSEPOLIA_INDEX_CANISTER_ID,
+      });
+    }
   }
 };
