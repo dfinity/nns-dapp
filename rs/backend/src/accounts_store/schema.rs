@@ -113,7 +113,6 @@ pub enum SchemaLabel {
     /// Every account is serialized separately and stored in a `StableBTreeMap`.  The remaining
     /// data, mostly consisting of transactions, is serialized into a single large blob in the
     /// `pre_upgrade` hook.
-    #[cfg(test)]
     AccountsInStableMemory = 1,
 }
 

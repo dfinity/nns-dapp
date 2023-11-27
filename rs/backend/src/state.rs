@@ -92,10 +92,19 @@ impl State {
     /// - Then, deploy a release that writes the new schema.
     /// This way it is possible to roll back after deploying the new schema.
     pub fn post_upgrade(args_schema: Option<SchemaLabel>) -> Self {
-        match (Self::schema_version_from_stable_memory(), args_schema) {
-            (None, _) => Self::post_upgrade_unversioned(),
-            other => {
-                trap_with(&format!("Unsupported schema pair: {other:?}"));
+        // If we are unable to read the schema label, we assume that we have just the heap data serialized as candid.
+        let current_schema = Self::schema_version_from_stable_memory().unwrap_or(SchemaLabel::Map);
+        let desired_schema = args_schema.unwrap_or(current_schema);
+        match (current_schema, desired_schema) {
+            (SchemaLabel::Map, SchemaLabel::Map) => Self::post_upgrade_unversioned(),
+            (SchemaLabel::Map, SchemaLabel::AccountsInStableMemory) => {
+                dfn_core::api::print(format!("Unsupported migration from {current_schema:?} to {desired_schema:?}.  Keeping data in the existing form."));
+                Self::post_upgrade_unversioned()
+            }
+            (SchemaLabel::AccountsInStableMemory, _) => {
+                trap_with(&format!(
+                    "Unsupported migration from {current_schema:?} to {desired_schema:?}.  Bailing out..."
+                ));
                 unreachable!();
             }
         }
