@@ -96,10 +96,10 @@ impl State {
         let current_schema = Self::schema_version_from_stable_memory().unwrap_or(SchemaLabel::Map);
         let desired_schema = args_schema.unwrap_or(current_schema);
         match (current_schema, desired_schema) {
-            (SchemaLabel::Map, SchemaLabel::Map) => Self::post_upgrade_unversioned(),
+            (SchemaLabel::Map, SchemaLabel::Map) => Self::restore_state_from_map(),
             (SchemaLabel::Map, SchemaLabel::AccountsInStableMemory) => {
                 dfn_core::api::print(format!("Unsupported migration from {current_schema:?} to {desired_schema:?}.  Keeping data in the existing form."));
-                Self::post_upgrade_unversioned()
+                Self::restore_state_from_map()
             }
             (SchemaLabel::AccountsInStableMemory, _) => {
                 trap_with(&format!(
@@ -111,19 +111,19 @@ impl State {
     }
     /// Save any unsaved state to stable memory.
     pub fn pre_upgrade(&self) {
-        self.pre_upgrade_unversioned()
+        self.save_as_map()
     }
 }
 
 // The unversioned schema.
 impl State {
     /// Save any unsaved state to stable memory.
-    fn pre_upgrade_unversioned(&self) {
+    fn save_as_map(&self) {
         let bytes = self.encode();
         stable::set(&bytes);
     }
     /// Create the state from stable memory in the `post_upgrade()` hook.
-    fn post_upgrade_unversioned() -> Self {
+    fn restore_state_from_map() -> Self {
         let bytes = stable::get();
         State::decode(bytes).unwrap_or_else(|e| {
             trap_with(&format!("Decoding stable memory failed. Error: {e:?}"));
