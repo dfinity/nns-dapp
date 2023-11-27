@@ -50,6 +50,10 @@ describe("utils", () => {
       );
     });
 
+    it("should preserve undefined values", () => {
+      expect(stringifyJson({ a: undefined })).toBe(`{"a":undefined}`);
+    });
+
     it("should support the indentation", () => {
       expect(stringifyJson(SAMPLE, { indentation: 2 })).toBe(
         JSON.stringify(SAMPLE, null, 2)
