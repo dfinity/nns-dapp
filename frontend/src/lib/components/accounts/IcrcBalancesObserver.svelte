@@ -1,34 +1,52 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
-  import type {
-    BalancesCallback,
-    BalancesWorker,
-  } from "$lib/services/worker-balances.services";
-  import { initBalancesWorker } from "$lib/services/worker-balances.services";
   import type { BalancesObserverData } from "$lib/types/icrc.observer";
+  import { nonNullish } from "@dfinity/utils";
+  import BalancesObserver from "$lib/components/accounts/BalancesObserver.svelte";
+  import type { BalancesCallback } from "$lib/services/worker-balances.services";
+  import type { Account } from "$lib/types/account";
+  import type { UniverseCanisterId } from "$lib/types/universe";
+  import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 
-  export let data: BalancesObserverData;
-  export let callback: BalancesCallback;
+  export let universeId: UniverseCanisterId;
+  export let accounts: Account[];
+  export let reload: (() => void) | undefined = undefined;
 
-  let worker: BalancesWorker | undefined;
+  const callback: BalancesCallback = ({ balances }) => {
+    const accounts = balances
+      .map(({ balance, accountIdentifier }) => {
+        const selectedAccount = $icrcAccountsStore[
+          universeId.toText()
+        ].accounts?.find(({ identifier }) => identifier === accountIdentifier);
 
-  onDestroy(() => worker?.stopBalancesTimer());
+        return nonNullish(selectedAccount)
+          ? ({
+              ...selectedAccount,
+              balanceE8s: balance,
+            } as Account)
+          : undefined;
+      })
+      .filter(nonNullish);
 
-  const initWorker = async () => {
-    worker?.stopBalancesTimer();
-
-    worker = await initBalancesWorker();
-
-    const { accounts, ledgerCanisterId } = data;
-
-    worker?.startBalancesTimer({
-      ledgerCanisterId,
-      accountIdentifiers: accounts.map(({ identifier }) => identifier),
-      callback,
+    icrcAccountsStore.update({
+      accounts: {
+        accounts,
+        certified: $icrcAccountsStore[universeId.toText()].certified,
+      },
+      universeId,
     });
+
+    reload?.();
   };
 
-  onMount(async () => await initWorker());
+  let data: BalancesObserverData;
+  $: data = {
+    accounts,
+    ledgerCanisterId: universeId.toText(),
+  };
 </script>
 
-<slot />
+{#if nonNullish(data)}
+  <BalancesObserver {data} {callback}>
+    <slot />
+  </BalancesObserver>
+{/if}

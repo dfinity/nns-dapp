@@ -9,7 +9,7 @@ import type {
 } from "$lib/types/post-message.transactions";
 import type { PostMessage } from "$lib/types/post-messages";
 import { page } from "$mocks/$app/stores";
-import CkBTCWalletTransactionsObserverTest from "$tests/lib/components/accounts/CkBTCWalletTransactionsObserverTest.svelte";
+import IcrcWalletTransactionsObserverTest from "$tests/lib/components/accounts/IcrcWalletTransactionsObserverTest.svelte";
 import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
 import {
   mockIcrcTransactionMint,
@@ -20,7 +20,7 @@ import { jsonReplacer } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
-describe("CkBTCWalletTransactionsObserver", () => {
+describe("IcrcWalletTransactionsObserver", () => {
   type TransactionsMessageEvent = MessageEvent<
     PostMessage<
       PostMessageDataResponseTransactions | PostMessageDataResponseSync
@@ -68,13 +68,13 @@ describe("CkBTCWalletTransactionsObserver", () => {
   });
 
   it("should init data and render slotted content", async () => {
-    const { getByTestId } = render(CkBTCWalletTransactionsObserverTest);
+    const { getByTestId } = render(IcrcWalletTransactionsObserverTest);
 
     await waitFor(() => expect(getByTestId("test-observer")).not.toBeNull());
   });
 
   it("should update account store on new sync message", async () => {
-    const { getByTestId } = render(CkBTCWalletTransactionsObserverTest);
+    const { getByTestId } = render(IcrcWalletTransactionsObserverTest);
 
     await waitFor(() => expect(getByTestId("test-observer")).not.toBeNull());
 
@@ -123,7 +123,7 @@ describe("CkBTCWalletTransactionsObserver", () => {
   });
 
   it("should populate error to sync store on error message from worker", async () => {
-    const { getByTestId } = render(CkBTCWalletTransactionsObserverTest);
+    const { getByTestId } = render(IcrcWalletTransactionsObserverTest);
 
     await waitFor(() => expect(getByTestId("test-observer")).not.toBeNull());
 
