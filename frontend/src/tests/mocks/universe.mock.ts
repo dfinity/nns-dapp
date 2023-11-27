@@ -6,6 +6,10 @@ import {
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
+import {
+  CKETHTEST_UNIVERSE_CANISTER_ID,
+  CKETH_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/cketh-canister-ids.constants";
 import type { Universe } from "$lib/types/universe";
 
 export const nnsUniverseMock: Universe = {
@@ -23,5 +27,17 @@ export const ckBTCUniverseMock: Universe = {
 export const ckTESTBTCUniverseMock: Universe = {
   canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID.toText(),
   title: "ckTESTBTC",
+  logo: CKTESTBTC_LOGO,
+};
+
+export const ckETHUniverseMock: Universe = {
+  canisterId: CKETH_UNIVERSE_CANISTER_ID.toText(),
+  title: "ckETH",
+  logo: CKBTC_LOGO,
+};
+
+export const ckETHTESTUniverseMock: Universe = {
+  canisterId: CKETHTEST_UNIVERSE_CANISTER_ID.toText(),
+  title: "ckETHTEST",
   logo: CKTESTBTC_LOGO,
 };
