@@ -35,6 +35,7 @@
   import { onMount } from "svelte";
   import { loadCkETHCanisters } from "$lib/services/cketh-canisters.services";
   import IcrcTokenAccounts from "$lib/pages/IcrcTokenAccounts.svelte";
+  import IcrcTokenAccountsFooter from "$lib/components/accounts/IcrcTokenAccountsFooter.svelte";
 
   // TODO: This component is mounted twice. Understand why and fix it.
 
@@ -86,12 +87,14 @@
     });
   };
 
-  const loadIcrcTokenAccounts = (icrcCanisters: IcrcCanistersStoreData) => {
+  const loadIcrcTokenAccounts = (
+    icrcCanisters: IcrcCanistersStoreData
+  ): Promise<void> => {
     const ledgerCanisterIds = Object.values(icrcCanisters).map(
       ({ ledgerCanisterId }) => ledgerCanisterId
     );
 
-    loadIcrcAccounts({ ledgerCanisterIds, certified: false });
+    return loadIcrcAccounts({ ledgerCanisterIds, certified: false });
   };
 
   $: (async () =>
@@ -121,6 +124,8 @@
     <NnsAccountsFooter />
   {:else if $isCkBTCUniverseStore}
     <CkBTCAccountsFooter />
+  {:else if $isIcrcTokenUniverseStore}
+    <IcrcTokenAccountsFooter />
   {:else if nonNullish($snsProjectSelectedStore)}
     <SnsAccountsFooter />
   {/if}
