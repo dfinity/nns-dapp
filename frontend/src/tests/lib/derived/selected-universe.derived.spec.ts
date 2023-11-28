@@ -9,6 +9,7 @@ import {
 import { AppPath } from "$lib/constants/routes.constants";
 import {
   isCkBTCUniverseStore,
+  isIcrcTokenUniverseStore,
   isNnsUniverseStore,
   selectedCkBTCUniverseIdStore,
   selectedUniverseIdStore,
@@ -16,10 +17,12 @@ import {
 } from "$lib/derived/selected-universe.derived";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { page } from "$mocks/$app/stores";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
+  principal,
 } from "$tests/mocks/sns-projects.mock";
 import {
   mockSnsCanisterId,
@@ -105,6 +108,46 @@ describe("selected universe derived stores", () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_CKBTC", false);
       overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
       expect(get(isCkBTCUniverseStore)).toBe(false);
+    });
+  });
+
+  describe("isIcrcTokenUniverseStore", () => {
+    const ledgerCanisterId = principal(0);
+
+    beforeEach(() => {
+      icrcCanistersStore.reset();
+    });
+
+    it("should be ICRC Token inside ICRC Token universe", () => {
+      page.mock({
+        data: { universe: ledgerCanisterId.toText() },
+        routeId: AppPath.Accounts,
+      });
+      icrcCanistersStore.setCanisters({
+        ledgerCanisterId,
+        indexCanisterId: principal(1),
+      });
+
+      expect(get(isIcrcTokenUniverseStore)).toEqual(true);
+    });
+
+    it("should not be ICRC Token on unsupported path", () => {
+      page.mock({
+        data: { universe: ledgerCanisterId.toText() },
+        routeId: AppPath.Neurons,
+      });
+      icrcCanistersStore.setCanisters({
+        ledgerCanisterId,
+        indexCanisterId: principal(1),
+      });
+
+      expect(get(isIcrcTokenUniverseStore)).toEqual(false);
+    });
+
+    it("should not be ICRC Token outside ckBTC universe", () => {
+      page.mock({ data: { universe: mockSnsCanisterIdText } });
+
+      expect(get(isIcrcTokenUniverseStore)).toEqual(false);
     });
   });
 

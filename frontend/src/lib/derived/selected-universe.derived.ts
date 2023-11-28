@@ -9,6 +9,10 @@ import {
   ENABLE_CKBTC,
   ENABLE_CKTESTBTC,
 } from "$lib/stores/feature-flags.store";
+import {
+  icrcCanistersStore,
+  type IcrcCanistersStoreData,
+} from "$lib/stores/icrc-canisters.store";
 import type { Universe, UniverseCanisterId } from "$lib/types/universe";
 import {
   isNonGovernanceTokenPath,
@@ -17,6 +21,7 @@ import {
   isUniverseNns,
 } from "$lib/utils/universe.utils";
 import { Principal } from "@dfinity/principal";
+import { nonNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 import { nnsUniverseStore } from "./nns-universe.derived";
 
@@ -78,6 +83,20 @@ export const isNnsUniverseStore = derived(
 export const isCkBTCUniverseStore = derived(
   selectedUniverseIdStore,
   ($selectedProjectId: Principal) => isUniverseCkBTC($selectedProjectId)
+);
+
+/**
+ * Is the selected universe an ICRC Token?
+ */
+export const isIcrcTokenUniverseStore = derived(
+  [pageUniverseIdStore, pageStore, icrcCanistersStore],
+  ([canisterId, page, icrcTokensCanisters]: [
+    Principal,
+    Page,
+    IcrcCanistersStoreData,
+  ]) =>
+    isNonGovernanceTokenPath(page) &&
+    nonNullish(icrcTokensCanisters[canisterId.toText()])
 );
 
 export const selectedUniverseStore: Readable<Universe> = derived(
