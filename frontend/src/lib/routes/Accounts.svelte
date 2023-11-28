@@ -86,7 +86,9 @@
     });
   };
 
-  const loadIcrcTokenAccounts = (icrcCanisters: IcrcCanistersStoreData): Promise<void> => {
+  const loadIcrcTokenAccounts = (
+    icrcCanisters: IcrcCanistersStoreData
+  ): Promise<void> => {
     const ledgerCanisterIds = Object.values(icrcCanisters).map(
       ({ ledgerCanisterId }) => ledgerCanisterId
     );
