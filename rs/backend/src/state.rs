@@ -78,7 +78,7 @@ impl From<DefaultMemoryImpl> for State {
     fn from(memory: DefaultMemoryImpl) -> Self {
         match Partitions::try_from(memory) {
             Ok(partitions) => Self::from(partitions),
-            Err(memory) => Self::recover_from_raw_memory(),
+            Err(_memory) => Self::recover_from_raw_memory(),
         }
     }
 }
@@ -136,7 +136,7 @@ impl State {
     /// - Deploy a release with a parser for the new schema.
     /// - Then, deploy a release that writes the new schema.
     /// This way it is possible to roll back after deploying the new schema.
-    pub fn post_upgrade(args_schema: Option<SchemaLabel>) -> Self {
+    pub fn post_upgrade(_args_schema: Option<SchemaLabel>) -> Self {
         unimplemented!()
         /*
         // If we are unable to read the schema label, we assume that we have just the heap data serialized as candid.
@@ -176,9 +176,6 @@ impl State {
 
 // State from/to the `SchemaLabel::AccountsInStableMemory` format.
 mod accounts_in_stable_memory {
-    use super::{trap_with, Partitions, StableState, State};
-    use ic_stable_structures::{
-        memory_manager::{MemoryId, MemoryManager},
-        DefaultMemoryImpl, Memory,
-    };
+    
+    
 }
