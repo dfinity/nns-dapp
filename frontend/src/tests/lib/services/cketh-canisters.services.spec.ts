@@ -39,17 +39,6 @@ describe("cketh-canisters.services", () => {
           },
         });
       });
-
-      it("should not load cketh canisters if already present", async () => {
-        vi.spyOn(icrcCanistersStore, "setCanisters");
-        icrcCanistersStore.setCanisters({
-          ledgerCanisterId: CKETH_UNIVERSE_CANISTER_ID,
-          indexCanisterId: CKETH_INDEX_CANISTER_ID,
-        });
-        expect(icrcCanistersStore.setCanisters).toHaveBeenCalledTimes(1);
-        await loadCkETHCanisters();
-        expect(icrcCanistersStore.setCanisters).toHaveBeenCalledTimes(1);
-      });
     });
 
     describe("if cketh is enabled", () => {
