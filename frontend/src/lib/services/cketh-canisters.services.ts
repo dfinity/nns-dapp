@@ -14,6 +14,8 @@ import { get } from "svelte/store";
 
 export const loadCkETHCanisters = async () => {
   const storeData = get(icrcCanistersStore);
+  // To avoid rerendering the UI and possibly triggering new requests
+  // We don't change the store if it's already filled.
   if (
     get(ENABLE_CKETH) &&
     isNullish(storeData[CKETH_LEDGER_CANISTER_ID.toText()])
