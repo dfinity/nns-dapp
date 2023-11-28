@@ -9,6 +9,11 @@ import type { IcrcBlockIndex } from "@dfinity/ledger-icrc";
 import { get } from "svelte/store";
 import type { IcrcTransferTokensUserParams } from "./icrc-accounts.services";
 
+export const loadCkBTCAccounts = async (params: {
+  handleError?: () => void;
+  universeId: UniverseCanisterId;
+}): Promise<void> => loadAccounts(params);
+
 export const ckBTCTransferTokens = async ({
   source,
   universeId,

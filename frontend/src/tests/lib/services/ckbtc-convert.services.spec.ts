@@ -3,13 +3,13 @@ import * as minterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as ledgerApi from "$lib/api/wallet-ledger.api";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import * as ckbtcAccountsServices from "$lib/services/ckbtc-accounts.services";
 import {
   convertCkBTCToBtc,
   convertCkBTCToBtcIcrc2,
   retrieveBtc,
 } from "$lib/services/ckbtc-convert.services";
 import { loadCkBTCWithdrawalAccount } from "$lib/services/ckbtc-withdrawal-accounts.services";
-import * as walletAccountsServices from "$lib/services/wallet-accounts.services";
 import { loadWalletTransactions } from "$lib/services/wallet-transactions.services";
 import { bitcoinConvertBlockIndexes } from "$lib/stores/bitcoin.store";
 import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-withdrawal-accounts.store";
@@ -109,7 +109,7 @@ describe("ckbtc-convert-services", () => {
 
     vi.spyOn(console, "error").mockImplementation(() => undefined);
     loadCkBTCAccountsSpy = vi
-      .spyOn(walletAccountsServices, "loadAccounts")
+      .spyOn(ckbtcAccountsServices, "loadCkBTCAccounts")
       .mockResolvedValue(undefined);
 
     vi.useFakeTimers().setSystemTime(now);

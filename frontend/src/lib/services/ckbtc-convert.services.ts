@@ -35,9 +35,11 @@ import { approveTransfer } from "../api/icrc-ledger.api";
 import { toastsError } from "../stores/toasts.store";
 import { numberToE8s } from "../utils/token.utils";
 import { getAuthenticatedIdentity } from "./auth.services";
-import { ckBTCTransferTokens } from "./ckbtc-accounts.services";
+import {
+  ckBTCTransferTokens,
+  loadCkBTCAccounts,
+} from "./ckbtc-accounts.services";
 import type { IcrcTransferTokensUserParams } from "./icrc-accounts.services";
-import { loadAccounts as loadCkBTCAccounts } from "./wallet-accounts.services";
 import { loadWalletTransactions } from "./wallet-transactions.services";
 
 export type ConvertCkBTCToBtcParams = Omit<
