@@ -60,6 +60,7 @@ impl From<Partitions> for State {
         dfn_core::api::print(format!("state::from<Partitions>: ()"));
         let metadata_memory = partitions.get(Partitions::METADATA_MEMORY_ID);
         let schema = Self::schema_version_from_memory(&metadata_memory);
+        dfn_core::api::print(format!("state::from<Partitions>: from_schema: {schema:#?}"));
         match schema {
             // We have managed memory, but were unable to read the schema label.  This is a bug.
             None => {
@@ -141,7 +142,11 @@ impl State {
     /// - Then, deploy a release that writes the new schema.
     /// This way it is possible to roll back after deploying the new schema.
     pub fn post_upgrade(args_schema: Option<SchemaLabel>) -> Self {
-        dfn_core::api::print(format!("START state::post_upgrade: {args_schema:#?}"));
+        dfn_core::api::print(format!("START state::post_upgrade"));
+        let current_schema = Self::schema_version_from_stable_memory().unwrap_or(SchemaLabel::Map);
+        let desired_schema = args_schema.unwrap_or(current_schema);
+        dfn_core::api::print(format!("START state::post_upgrade: current_schema: {current_schema:?}"));
+        dfn_core::api::print(format!("START state::post_upgrade: desired_schema: {desired_schema:?}"));
         Self::from(DefaultMemoryImpl::default())
 
         /*
