@@ -68,7 +68,8 @@ impl From<DefaultMemoryImpl> for Partitions {
 /// - The canister is upgraded.
 /// - The stable memory may contain a memory manager _or_ serialized heap data directly in raw memory.
 /// - This method gets the memory manager while being non-destructive if there is none.
-// Note: Woudl prefer to use TryFrom, but that causes a conflict I don't understand.
+// Note: Would prefer to use TryFrom, but that causes a conflict.  DefaultMemoryImpl a type alias which
+// may refer to a type that has a generic implementation of TryFrom.  This is frustrating.
 //impl TryFrom<DefaultMemoryImpl> for Partitions {
 //    type Error = DefaultMemoryImpl;
 impl Partitions {
