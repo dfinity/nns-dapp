@@ -1,7 +1,7 @@
 import {
   getIcrcAccount,
-  getIcrcToken,
   icrcLedgerCanister,
+  queryIcrcToken,
 } from "$lib/api/icrc-ledger.api";
 import type { Account, AccountType } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
@@ -42,25 +42,14 @@ export const getCkBTCAccount = async ({
   return account;
 };
 
-export const getCkBTCToken = async ({
-  identity,
-  certified,
-  canisterId,
-}: {
+export const getCkBTCToken = async (params: {
   identity: Identity;
   certified: boolean;
   canisterId: Principal;
 }): Promise<IcrcTokenMetadata> => {
   logWithTimestamp("Getting ckBTC token: call...");
 
-  const {
-    canister: { metadata: getMetadata },
-  } = await icrcLedgerCanister({ identity, canisterId });
-
-  const token = await getIcrcToken({
-    certified,
-    getMetadata,
-  });
+  const token = await queryIcrcToken(params);
 
   logWithTimestamp("Getting ckBTC token: done");
 

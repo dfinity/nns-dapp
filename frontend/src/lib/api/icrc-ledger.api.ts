@@ -56,6 +56,9 @@ export const getIcrcAccount = async ({
   };
 };
 
+/**
+ * @deprecated use queryIcrcToken
+ */
 export const getIcrcToken = async ({
   certified,
   getMetadata,
