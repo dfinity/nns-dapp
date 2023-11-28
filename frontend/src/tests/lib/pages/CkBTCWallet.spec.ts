@@ -71,7 +71,7 @@ vi.mock("$lib/api/icrc-ledger.api");
 vi.mock("$lib/api/icrc-index.api");
 
 const blockedApiPaths = [
-  "$lib/api/ckbtc-ledger.api",
+  "$lib/api/wallet-ledger.api",
   "$lib/api/ckbtc-minter.api",
   "$lib/api/icrc-ledger.api",
   "$lib/api/icrc-index.api",
