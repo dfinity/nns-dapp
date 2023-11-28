@@ -47,7 +47,7 @@ import {
 import type { Mock } from "vitest";
 import { mock } from "vitest-mock-extended";
 
-vi.mock("$lib/services/ckbtc-transactions.services");
+vi.mock("$lib/services/wallet-transactions.services");
 vi.mock("$lib/services/ckbtc-withdrawal-accounts.services");
 
 describe("ckbtc-convert-services", () => {

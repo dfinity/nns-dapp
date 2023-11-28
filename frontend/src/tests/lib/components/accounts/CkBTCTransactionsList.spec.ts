@@ -23,7 +23,7 @@ import {
 import { Cbor } from "@dfinity/agent";
 import { render } from "@testing-library/svelte";
 
-vi.mock("$lib/services/ckbtc-transactions.services", () => {
+vi.mock("$lib/services/wallet-transactions.services", () => {
   return {
     loadCkBTCAccountNextTransactions: vi.fn().mockResolvedValue(undefined),
     loadCkBTCAccountTransactions: vi.fn().mockResolvedValue(undefined),
