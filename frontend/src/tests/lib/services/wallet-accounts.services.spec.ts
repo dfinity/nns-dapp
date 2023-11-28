@@ -1,11 +1,11 @@
-import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
+import * as ledgerApi from "$lib/api/wallet-ledger.api";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { universesAccountsBalance } from "$lib/derived/universes-accounts-balance.derived";
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
-import * as services from "$lib/services/ckbtc-accounts-balance.services";
+import * as services from "$lib/services/wallet-accounts.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
@@ -23,7 +23,7 @@ vi.mock("$lib/stores/toasts.store", () => {
   };
 });
 
-describe("ckbtc-accounts-balance.services", () => {
+describe("wallet-accounts.services", () => {
   beforeEach(() => {
     resetIdentity();
   });
@@ -42,16 +42,16 @@ describe("ckbtc-accounts-balance.services", () => {
     ],
   };
 
-  it("should call api.getCkBTCAccounts and load balance in store", async () => {
-    vi.spyOn(ledgerApi, "getCkBTCToken").mockImplementation(() =>
+  it("should call api.getAccounts and load balance in store", async () => {
+    vi.spyOn(ledgerApi, "getToken").mockImplementation(() =>
       Promise.resolve(mockCkBTCToken)
     );
 
     const spyQuery = vi
-      .spyOn(ledgerApi, "getCkBTCAccount")
+      .spyOn(ledgerApi, "getAccount")
       .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
 
-    await services.uncertifiedLoadCkBTCAccountsBalance(params);
+    await services.uncertifiedLoadAccountsBalance(params);
 
     await tick();
 
@@ -64,16 +64,16 @@ describe("ckbtc-accounts-balance.services", () => {
     expect(spyQuery).toBeCalled();
   });
 
-  it("should call api.getCkBTCToken and load token in store", async () => {
+  it("should call api.getToken and load token in store", async () => {
     const spyQuery = vi
-      .spyOn(ledgerApi, "getCkBTCToken")
+      .spyOn(ledgerApi, "getToken")
       .mockImplementation(() => Promise.resolve(mockCkBTCToken));
 
-    vi.spyOn(ledgerApi, "getCkBTCAccount").mockImplementation(() =>
+    vi.spyOn(ledgerApi, "getAccount").mockImplementation(() =>
       Promise.resolve(mockCkBTCMainAccount)
     );
 
-    await services.uncertifiedLoadCkBTCAccountsBalance(params);
+    await services.uncertifiedLoadAccountsBalance(params);
 
     await tick();
 
@@ -92,9 +92,9 @@ describe("ckbtc-accounts-balance.services", () => {
 
   it("should toast error", async () => {
     vi.spyOn(console, "error").mockImplementation(() => undefined);
-    vi.spyOn(ledgerApi, "getCkBTCAccount").mockRejectedValue(new Error());
+    vi.spyOn(ledgerApi, "getAccount").mockRejectedValue(new Error());
 
-    await services.uncertifiedLoadCkBTCAccountsBalance(params);
+    await services.uncertifiedLoadAccountsBalance(params);
 
     expect(toastsError).toHaveBeenCalled();
   });

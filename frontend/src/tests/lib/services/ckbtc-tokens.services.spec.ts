@@ -1,4 +1,4 @@
-import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
+import * as ledgerApi from "$lib/api/wallet-ledger.api";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
@@ -27,7 +27,7 @@ describe("ckbtc-tokens-services", () => {
 
     it("should load token in the store", async () => {
       const spyGetToken = vi
-        .spyOn(ledgerApi, "getCkBTCToken")
+        .spyOn(ledgerApi, "getToken")
         .mockResolvedValue(mockCkBTCToken);
 
       await services.loadCkBTCToken({ universeId: CKBTC_UNIVERSE_CANISTER_ID });
@@ -64,7 +64,7 @@ describe("ckbtc-tokens-services", () => {
 
     it("should not reload token if already loaded", async () => {
       const spyGetToken = vi
-        .spyOn(ledgerApi, "getCkBTCToken")
+        .spyOn(ledgerApi, "getToken")
         .mockResolvedValue(mockCkBTCToken);
 
       await services.loadCkBTCToken({ universeId: CKBTC_UNIVERSE_CANISTER_ID });
@@ -80,7 +80,7 @@ describe("ckbtc-tokens-services", () => {
     };
     beforeEach(() => {
       tokensStore.reset();
-      vi.spyOn(ledgerApi, "getCkBTCToken").mockImplementation(
+      vi.spyOn(ledgerApi, "getToken").mockImplementation(
         async ({ canisterId }) => {
           if (canisterId.toText() === CKBTC_UNIVERSE_CANISTER_ID.toText()) {
             return mockCkBTCToken;

@@ -10,7 +10,10 @@ import type { Identity } from "@dfinity/agent";
 import type { IcrcAccount } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 
-export const getCkBTCAccount = async ({
+/**
+ * TODO: move to icrc-index once Sns migrated to icrcStore
+ */
+export const getAccount = async ({
   identity,
   certified,
   canisterId,
@@ -21,7 +24,7 @@ export const getCkBTCAccount = async ({
   canisterId: Principal;
   type: AccountType;
 } & IcrcAccount): Promise<Account> => {
-  logWithTimestamp("Getting ckBTC account: call...");
+  logWithTimestamp("Getting account: call...");
 
   const {
     canister: { balance },
@@ -37,12 +40,15 @@ export const getCkBTCAccount = async ({
     ...callParams,
   });
 
-  logWithTimestamp("Getting ckBTC account: done");
+  logWithTimestamp("Getting account: done");
 
   return account;
 };
 
-export const getCkBTCToken = async (params: {
+/**
+ * TODO: replace with icrc-index queryIcrcToken once Sns migrated to icrcStore
+ */
+export const getToken = async (params: {
   identity: Identity;
   certified: boolean;
   canisterId: Principal;

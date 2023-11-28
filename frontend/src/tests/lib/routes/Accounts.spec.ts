@@ -13,8 +13,8 @@ import {
 } from "$lib/derived/sns/sns-projects.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import Accounts from "$lib/routes/Accounts.svelte";
-import { uncertifiedLoadCkBTCAccountsBalance } from "$lib/services/ckbtc-accounts-balance.services";
 import { uncertifiedLoadSnsAccountsBalances } from "$lib/services/sns-accounts-balance.services";
+import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-accounts.services";
 import { authStore } from "$lib/stores/auth.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
@@ -312,7 +312,7 @@ describe("Accounts", () => {
     render(Accounts);
 
     await waitFor(() =>
-      expect(uncertifiedLoadCkBTCAccountsBalance).toHaveBeenCalled()
+      expect(uncertifiedLoadAccountsBalance).toHaveBeenCalled()
     );
   });
 
@@ -325,7 +325,7 @@ describe("Accounts", () => {
     render(Accounts);
 
     await waitFor(() =>
-      expect(uncertifiedLoadCkBTCAccountsBalance).toHaveBeenCalled()
+      expect(uncertifiedLoadAccountsBalance).toHaveBeenCalled()
     );
   });
 

@@ -1,5 +1,5 @@
-import * as ckbtcLedgerApi from "$lib/api/ckbtc-ledger.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
+import * as ckbtcLedgerApi from "$lib/api/wallet-ledger.api";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
@@ -41,7 +41,7 @@ describe("ckbtc-accounts-services", () => {
 
     it("should call api.getCkBTCAccount and load neurons in store", async () => {
       const spyQuery = vi
-        .spyOn(ckbtcLedgerApi, "getCkBTCAccount")
+        .spyOn(ckbtcLedgerApi, "getAccount")
         .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
 
       await loadCkBTCAccounts({ universeId: CKBTC_UNIVERSE_CANISTER_ID });
@@ -60,7 +60,7 @@ describe("ckbtc-accounts-services", () => {
 
     it("should call error callback", async () => {
       const spyQuery = vi
-        .spyOn(ckbtcLedgerApi, "getCkBTCAccount")
+        .spyOn(ckbtcLedgerApi, "getAccount")
         .mockRejectedValue(new Error());
 
       const spy = vi.fn();
@@ -92,7 +92,7 @@ describe("ckbtc-accounts-services", () => {
         completed: false,
       });
 
-      vi.spyOn(ckbtcLedgerApi, "getCkBTCAccount").mockImplementation(() =>
+      vi.spyOn(ckbtcLedgerApi, "getAccount").mockImplementation(() =>
         Promise.reject(undefined)
       );
 
@@ -116,11 +116,11 @@ describe("ckbtc-accounts-services", () => {
 
     it("should call ckBTC accounts and token and load them in store", async () => {
       const spyAccountsQuery = vi
-        .spyOn(ckbtcLedgerApi, "getCkBTCAccount")
+        .spyOn(ckbtcLedgerApi, "getAccount")
         .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
 
       const spyTokenQuery = vi
-        .spyOn(ckbtcLedgerApi, "getCkBTCToken")
+        .spyOn(ckbtcLedgerApi, "getToken")
         .mockImplementation(() => Promise.resolve(mockCkBTCToken));
 
       await services.syncCkBTCAccounts({
@@ -156,7 +156,7 @@ describe("ckbtc-accounts-services", () => {
       icrcAccountsStore.reset();
 
       spyAccounts = vi
-        .spyOn(ckbtcLedgerApi, "getCkBTCAccount")
+        .spyOn(ckbtcLedgerApi, "getAccount")
         .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
     });
 

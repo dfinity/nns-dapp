@@ -1,9 +1,9 @@
-import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
+import * as ledgerApi from "$lib/api/wallet-ledger.api";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
-import * as services from "$lib/services/ckbtc-accounts-loader.services";
 import { getCkBTCWithdrawalAccount } from "$lib/services/ckbtc-accounts-loader.services";
 import * as minterServices from "$lib/services/ckbtc-minter.services";
+import { getAccounts } from "$lib/services/wallet-loader.services";
 import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-withdrawal-accounts.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
@@ -25,10 +25,10 @@ describe("ckbtc-accounts-loader-services", () => {
   describe("getCkBTCAccounts", () => {
     it("should call get CkBTC account", async () => {
       const spyGetCkBTCAccount = vi
-        .spyOn(ledgerApi, "getCkBTCAccount")
+        .spyOn(ledgerApi, "getAccount")
         .mockResolvedValue(mockCkBTCMainAccount);
 
-      await services.getCkBTCAccounts({
+      await getAccounts({
         identity: mockIdentity,
         certified: true,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
@@ -89,7 +89,7 @@ describe("ckbtc-accounts-loader-services", () => {
 
       beforeEach(() => {
         spyGetCkBTCAccount = vi
-          .spyOn(ledgerApi, "getCkBTCAccount")
+          .spyOn(ledgerApi, "getAccount")
           .mockResolvedValue({
             ...mockCkBTCWithdrawalAccount,
             balanceE8s: mockAccountBalance.toE8s(),
@@ -198,7 +198,7 @@ describe("ckbtc-accounts-loader-services", () => {
 
       beforeEach(() => {
         vi.spyOn(console, "error").mockImplementation(() => undefined);
-        vi.spyOn(ledgerApi, "getCkBTCAccount").mockRejectedValue(new Error());
+        vi.spyOn(ledgerApi, "getAccount").mockRejectedValue(new Error());
 
         spyOnToastsError = vi.spyOn(toastsStore, "toastsError");
       });
