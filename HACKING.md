@@ -221,6 +221,8 @@ Because the e2e tests are using the `local` environment to perform, we cannot en
 
 Therefore, this flag should also be manually set to `true` in [dfx.json](./dfx.json) and the `.env` should be generated.
 
+Use `scripts/nns-dapp/test-config --update` to update `arg.did` and `env` files under `nns-dapp/test-config-assets`
+
 ## Mint bitcoin
 
 To mint bitcoin you should set up a local bitcoin network as display in the [documentation](https://internetcomputer.org/docs/current/developer-docs/integrations/bitcoin/local-development).
