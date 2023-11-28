@@ -1,8 +1,5 @@
 <script lang="ts">
-  import { writable } from "svelte/store";
-  import type { WalletStore } from "$lib/types/wallet.context";
-  import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
-  import { findAccount, hasAccounts } from "$lib/utils/accounts.utils";
+  import { hasAccounts } from "$lib/utils/accounts.utils";
   import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { loadCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
@@ -20,6 +17,8 @@
   import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
   import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
   import WalletPage from "$lib/components/accounts/WalletPage.svelte";
+  import { writable } from "svelte/store";
+  import type { WalletStore } from "$lib/types/wallet.context";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
@@ -27,8 +26,6 @@
     account: undefined,
     neurons: [],
   });
-
-  debugSelectedAccountStore(selectedAccountStore);
 
   let transactions: CkBTCTransactionsList;
   let wallet: WalletPage;
@@ -47,7 +44,7 @@
 
   // e.g. when a function such as a transfer is called and which also reload the data and populate the stores after execution
   const reloadAccountFromStore = () => {
-    setSelectedAccount();
+    wallet.setSelectedAccount();
     reloadTransactions();
   };
 
@@ -55,19 +52,6 @@
   // However, the UI displays skeletons while loading and the user can proceed with other operations during this time.
   // That is why we do not need to wait for the promise to resolve here.
   const reloadTransactions = () => transactions?.reloadTransactions?.();
-
-  const setSelectedAccount = () => {
-    selectedAccountStore.set({
-      account: findAccount({
-        identifier: accountIdentifier,
-        accounts: nonNullish($selectedCkBTCUniverseIdStore)
-          ? $icrcAccountsStore[$selectedCkBTCUniverseIdStore.toText()]
-              ?.accounts ?? []
-          : [],
-      }),
-      neurons: [],
-    });
-  };
 
   let canisters: CkBTCAdditionalCanisters | undefined = undefined;
   $: canisters = nonNullish($selectedCkBTCUniverseIdStore)
@@ -97,8 +81,9 @@
 
 <WalletPage
   {accountIdentifier}
-  {token}
+  token={token?.token}
   selectedUniverseId={$selectedCkBTCUniverseIdStore}
+  {selectedAccountStore}
   bind:this={wallet}
 >
   <svelte:fragment slot="header-actions">

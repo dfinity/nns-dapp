@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Island, Spinner } from "@dfinity/gix-components";
   import Separator from "$lib/components/ui/Separator.svelte";
-  import { writable } from "svelte/store";
+  import type { Writable } from "svelte/store";
   import type { WalletStore } from "$lib/types/wallet.context";
   import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
   import { findAccount, hasAccounts } from "$lib/utils/accounts.utils";
@@ -15,19 +15,15 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
-  import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
   import IcrcBalancesObserver from "$lib/components/accounts/IcrcBalancesObserver.svelte";
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
   import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
 
   export let accountIdentifier: string | undefined | null = undefined;
   export let selectedUniverseId: UniverseCanisterId | undefined;
-  export let token: TokensStoreUniverseData | undefined = undefined;
-
-  const selectedAccountStore = writable<WalletStore>({
-    account: undefined,
-    neurons: [],
-  });
+  export let token: IcrcTokenMetadata | undefined = undefined;
+  export let selectedAccountStore: Writable<WalletStore>;
 
   debugSelectedAccountStore(selectedAccountStore);
 
@@ -35,7 +31,7 @@
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
 
-  const setSelectedAccount = () => {
+  export const setSelectedAccount = () => {
     selectedAccountStore.set({
       account: findAccount({
         identifier: accountIdentifier,
@@ -124,7 +120,7 @@
               $i18n.accounts.main}
             balance={TokenAmount.fromE8s({
               amount: $selectedAccountStore.account.balanceE8s,
-              token: token?.token,
+              token,
             })}
           >
             <slot name="header-actions" />
