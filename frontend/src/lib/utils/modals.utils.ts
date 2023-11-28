@@ -1,4 +1,5 @@
 import type { AccountsModal } from "$lib/types/accounts.modal";
+import type { IcrcTokenModalProps } from "$lib/types/icrc-accounts.modal";
 import type {
   NnsNeuronModal,
   NnsNeuronModalData,
@@ -30,5 +31,11 @@ export const openWalletModal = (detail: WalletModal) =>
 export const openAccountsModal = (detail: AccountsModal) =>
   emit<AccountsModal>({
     message: "nnsAccountsModal",
+    detail,
+  });
+
+export const openIcrcTokenModal = (detail: IcrcTokenModalProps) =>
+  emit<IcrcTokenModalProps>({
+    message: "nnsIcrcTokenModal",
     detail,
   });

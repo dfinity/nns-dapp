@@ -6,7 +6,6 @@ export type IcrcTokenModalType = "icrc-send";
 export type IcrcTokenTransactionModalData = {
   universeId: UniverseCanisterId;
   token: IcrcTokenMetadata;
-  reloadAccountFromStore: (() => void) | undefined;
   loadTransactions: boolean;
 };
 

@@ -7,7 +7,7 @@
   import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { Account } from "$lib/types/account";
-  import { Modal, Spinner, type WizardStep } from "@dfinity/gix-components";
+  import type { WizardStep } from "@dfinity/gix-components";
   import type { TransactionInit } from "$lib/types/transaction";
   import { TokenAmount, nonNullish } from "@dfinity/utils";
   import type { Principal } from "@dfinity/principal";
@@ -19,7 +19,7 @@
   export let selectedAccount: Account | undefined = undefined;
   export let ledgerCanisterId: Principal;
   export let token: IcrcTokenMetadata;
-  export let transactionFee: TokenAmount | undefined;
+  export let transactionFee: TokenAmount;
 
   let transactionInit: TransactionInit = {
     sourceAccount: selectedAccount,
@@ -47,7 +47,7 @@
       destinationAddress,
       amount,
       ledgerCanisterId,
-      fee: token?.fee,
+      fee: token.fee,
     });
 
     stopBusy("accounts");
@@ -59,32 +59,20 @@
   };
 </script>
 
-{#if nonNullish(transactionFee) && nonNullish(token)}
-  <TransactionModal
-    testId="icrc-transaction-modal-component"
-    rootCanisterId={ledgerCanisterId}
-    on:nnsSubmit={transfer}
-    on:nnsClose
-    bind:currentStep
-    {token}
-    {transactionFee}
-    {transactionInit}
-  >
-    <svelte:fragment slot="title"
-      >{title ?? $i18n.accounts.send}</svelte:fragment
-    >
-    <p slot="description" class="value no-margin">
-      {replacePlaceholders($i18n.accounts.sns_transaction_description, {
-        $token: token.symbol,
-      })}
-    </p>
-  </TransactionModal>
-{:else}
-  <!-- A toast error is shown if there is an error fetching the transaction fee -->
-  <!-- TODO: replace with busy spinner pattern as in <SnsIncreateStakeNeuronModal /> -->
-  <Modal testId="sns-transaction-modal-component" on:nnsClose>
-    <svelte:fragment slot="title"
-      >{title ?? $i18n.accounts.send}</svelte:fragment
-    ><Spinner /></Modal
-  >
-{/if}
+<TransactionModal
+  testId="icrc-transaction-modal-component"
+  rootCanisterId={ledgerCanisterId}
+  on:nnsSubmit={transfer}
+  on:nnsClose
+  bind:currentStep
+  {token}
+  {transactionFee}
+  {transactionInit}
+>
+  <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>
+  <p slot="description" class="value no-margin">
+    {replacePlaceholders($i18n.accounts.sns_transaction_description, {
+      $token: token.symbol,
+    })}
+  </p>
+</TransactionModal>

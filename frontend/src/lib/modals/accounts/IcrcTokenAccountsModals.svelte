@@ -5,15 +5,22 @@
 
   let modal: IcrcTokenModalProps | undefined = undefined;
 
-  const onNnsCkBTCAccountsModal = ({
+  const closeModal = () => {
+    modal = undefined;
+  };
+
+  const onIcrcTokenAccountsModal = ({
     detail,
-  }: CustomEvent<IcrcTokenModalProps>) => (modal = detail);
+  }: CustomEvent<IcrcTokenModalProps>) => {
+    modal = detail;
+  };
 </script>
 
-<svelte:window on:nnsCkBTCAccountsModal={onNnsCkBTCAccountsModal} />
+<svelte:window on:nnsIcrcTokenModal={onIcrcTokenAccountsModal} />
 
 {#if modal?.type === "icrc-send"}
   <IcrcTokenTransactionModal
+    on:nnsClose={closeModal}
     ledgerCanisterId={modal.data.universeId}
     token={modal.data.token}
     transactionFee={TokenAmount.fromE8s({

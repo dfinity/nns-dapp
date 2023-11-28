@@ -37,7 +37,7 @@
   import { loadCkETHCanisters } from "$lib/services/cketh-canisters.services";
   import IcrcTokenAccounts from "$lib/pages/IcrcTokenAccounts.svelte";
   import IcrcTokenAccountsFooter from "$lib/components/accounts/IcrcTokenAccountsFooter.svelte";
-  import IcrcTokenTransactionModal from "$lib/modals/accounts/IcrcTokenTransactionModal.svelte";
+  import IcrcTokenAccountsModals from "$lib/modals/accounts/IcrcTokenAccountsModals.svelte";
 
   // TODO: This component is mounted twice. Understand why and fix it.
 
@@ -135,7 +135,7 @@
   {#if $isCkBTCUniverseStore}
     <CkBTCAccountsModals />
   {:else if $selectedIcrcTokenUniverseIdStore}
-    <IcrcTokenTransactionModal />
+    <IcrcTokenAccountsModals />
   {:else}
     <AccountsModals />
   {/if}
