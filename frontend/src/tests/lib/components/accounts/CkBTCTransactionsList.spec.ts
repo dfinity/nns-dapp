@@ -1,6 +1,6 @@
 import CkBTCTransactionsList from "$lib/components/accounts/CkBTCTransactionsList.svelte";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
-import * as services from "$lib/services/ckbtc-transactions.services";
+import * as services from "$lib/services/wallet-transactions.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import {
@@ -23,10 +23,10 @@ import {
 import { Cbor } from "@dfinity/agent";
 import { render } from "@testing-library/svelte";
 
-vi.mock("$lib/services/ckbtc-transactions.services", () => {
+vi.mock("$lib/services/wallet-transactions.services", () => {
   return {
-    loadCkBTCAccountNextTransactions: vi.fn().mockResolvedValue(undefined),
-    loadCkBTCAccountTransactions: vi.fn().mockResolvedValue(undefined),
+    loadWalletNextTransactions: vi.fn().mockResolvedValue(undefined),
+    loadWalletTransactions: vi.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -69,7 +69,7 @@ describe("CkBTCTransactionList", () => {
   });
 
   it("should call service to load transactions", () => {
-    const spy = vi.spyOn(services, "loadCkBTCAccountNextTransactions");
+    const spy = vi.spyOn(services, "loadWalletNextTransactions");
 
     renderComponent();
 
@@ -77,8 +77,8 @@ describe("CkBTCTransactionList", () => {
   });
 
   it("should call service to load transactions on imperative function call", async () => {
-    const spy = vi.spyOn(services, "loadCkBTCAccountNextTransactions");
-    const spyReload = vi.spyOn(services, "loadCkBTCAccountTransactions");
+    const spy = vi.spyOn(services, "loadWalletNextTransactions");
+    const spyReload = vi.spyOn(services, "loadWalletTransactions");
 
     let resolveLoadNext;
     spy.mockImplementation(

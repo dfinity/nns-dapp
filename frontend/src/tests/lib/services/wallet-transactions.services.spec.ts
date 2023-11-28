@@ -1,10 +1,10 @@
-import * as indexApi from "$lib/api/ckbtc-index.api";
+import * as indexApi from "$lib/api/wallet-index.api";
 import {
   CKBTC_INDEX_CANISTER_ID,
   CKBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
-import * as services from "$lib/services/ckbtc-transactions.services";
+import * as services from "$lib/services/wallet-transactions.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
@@ -12,7 +12,7 @@ import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
-describe("ckbtc-transactions-services", () => {
+describe("wallet-transactions-services", () => {
   beforeEach(() => {
     resetIdentity();
     icrcTransactionsStore.reset();
@@ -22,17 +22,17 @@ describe("ckbtc-transactions-services", () => {
     vi.clearAllMocks();
   });
 
-  describe("loadCkBTCAccountTransactions", () => {
+  describe("loadWalletTransactions", () => {
     it("loads transactions in the store", async () => {
       const spyGetTransactions = vi
-        .spyOn(indexApi, "getCkBTCTransactions")
+        .spyOn(indexApi, "getTransactions")
         .mockResolvedValue({
           oldestTxId: BigInt(1234),
           transactions: [mockIcrcTransactionWithId],
         });
       const start = BigInt(1234);
 
-      await services.loadCkBTCAccountTransactions({
+      await services.loadWalletTransactions({
         account: mockCkBTCMainAccount,
         start,
         indexCanisterId: CKBTC_INDEX_CANISTER_ID,
@@ -63,16 +63,16 @@ describe("ckbtc-transactions-services", () => {
     });
   });
 
-  describe("loadCkBTCAccountNextTransactions", () => {
+  describe("loadWalletNextTransactions", () => {
     it("loads transactions in the store", async () => {
       const spyGetTransactions = vi
-        .spyOn(indexApi, "getCkBTCTransactions")
+        .spyOn(indexApi, "getTransactions")
         .mockResolvedValue({
           oldestTxId: BigInt(1234),
           transactions: [mockIcrcTransactionWithId],
         });
 
-      await services.loadCkBTCAccountNextTransactions({
+      await services.loadWalletNextTransactions({
         account: mockCkBTCMainAccount,
         indexCanisterId: CKBTC_INDEX_CANISTER_ID,
         canisterId: CKBTC_UNIVERSE_CANISTER_ID,
@@ -102,7 +102,7 @@ describe("ckbtc-transactions-services", () => {
 
     it("uses store oldest transaction to set the start", async () => {
       const spyGetTransactions = vi
-        .spyOn(indexApi, "getCkBTCTransactions")
+        .spyOn(indexApi, "getTransactions")
         .mockResolvedValue({
           oldestTxId: BigInt(1234),
           transactions: [mockIcrcTransactionWithId],
@@ -118,7 +118,7 @@ describe("ckbtc-transactions-services", () => {
         completed: false,
       });
 
-      await services.loadCkBTCAccountNextTransactions({
+      await services.loadWalletNextTransactions({
         account: mockCkBTCMainAccount,
         indexCanisterId: CKBTC_INDEX_CANISTER_ID,
         canisterId: CKBTC_UNIVERSE_CANISTER_ID,

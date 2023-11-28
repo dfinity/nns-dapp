@@ -21,7 +21,7 @@ import { mockTokens } from "$tests/mocks/tokens.mock";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 
-vi.mock("$lib/services/ckbtc-transactions.services", () => {
+vi.mock("$lib/services/wallet-transactions.services", () => {
   return {
     loadCkBTCAccountTransactions: vi.fn().mockResolvedValue(undefined),
   };
