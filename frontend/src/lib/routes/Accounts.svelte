@@ -26,6 +26,13 @@
   import AccountsModals from "$lib/modals/accounts/AccountsModals.svelte";
   import CkBTCAccountsModals from "$lib/modals/accounts/CkBTCAccountsModals.svelte";
   import { icpTokensListUser } from "$lib/derived/icp-tokens-list-user.derived";
+  import {
+    icrcCanistersStore,
+    type IcrcCanistersStoreData,
+  } from "$lib/stores/icrc-canisters.store";
+  import { loadIcrcAccounts } from "$lib/services/icrc-accounts.services";
+  import { onMount } from "svelte";
+  import { loadCkETHCanisters } from "$lib/services/cketh-canisters.services";
 
   // TODO: This component is mounted twice. Understand why and fix it.
 
@@ -34,6 +41,10 @@
 
   let loadSnsAccountsBalancesRequested = false;
   let loadCkBTCAccountsBalancesRequested = false;
+
+  onMount(() => {
+    loadCkETHCanisters();
+  });
 
   const loadSnsAccountsBalances = async (projects: SnsFullProject[]) => {
     // We start when the projects are fetched
@@ -73,10 +84,19 @@
     });
   };
 
+  const loadIcrcTokenAccounts = (icrcCanisters: IcrcCanistersStoreData) => {
+    const ledgerCanisterIds = Object.values(icrcCanisters).map(
+      ({ ledgerCanisterId }) => ledgerCanisterId
+    );
+
+    loadIcrcAccounts({ ledgerCanisterIds, certified: false });
+  };
+
   $: (async () =>
     await Promise.allSettled([
       loadSnsAccountsBalances($snsProjectsCommittedStore),
       loadCkBTCAccountsBalances($ckBTCUniversesStore),
+      loadIcrcTokenAccounts($icrcCanistersStore),
     ]))();
 </script>
 
