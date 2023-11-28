@@ -5,8 +5,6 @@
   import JsonPreview from "$lib/components/common/JsonPreview.svelte";
   import { expandObject, stringifyJson } from "$lib/utils/utils";
   import { isNullish } from "@dfinity/utils";
-  import { ENABLE_FULL_WIDTH_PROPOSAL } from "$lib/stores/feature-flags.store";
-  import Json from "$lib/components/common/Json.svelte";
 
   // `undefined` means that the payload is not loaded yet
   // `null` means that the payload was not found
@@ -22,36 +20,21 @@
 
 <div class="content-cell-island">
   {#if expandedPayload !== undefined}
-    {#if $ENABLE_FULL_WIDTH_PROPOSAL}
-      <div class="header">
-        <h3
-          class="content-cell-title header-text"
-          data-tid="proposal-proposer-payload-entry-title"
-        >
-          {$i18n.proposal_detail.payload}
-          <Copy value={copyContent} />
-        </h3>
-
-        <TreeRawToggle />
-      </div>
-
-      <div class="content-cell-details">
-        <JsonPreview json={payload} />
-      </div>
-    {:else}
-      <h2
-        class="content-cell-title"
+    <div class="header">
+      <h3
+        class="content-cell-title header-text"
         data-tid="proposal-proposer-payload-entry-title"
       >
         {$i18n.proposal_detail.payload}
-      </h2>
-      <div class="content-cell-details">
-        <!-- `null` payload should be shown as `null` -->
-        <div class="json" data-tid="json-wrapper">
-          <Json json={expandedPayload} />
-        </div>
-      </div>
-    {/if}
+        <Copy value={copyContent} />
+      </h3>
+
+      <TreeRawToggle />
+    </div>
+
+    <div class="content-cell-details">
+      <JsonPreview json={payload} />
+    </div>
   {:else}
     <h2
       class="content-cell-title"
@@ -68,11 +51,6 @@
 </div>
 
 <style lang="scss">
-  // TODO(max): remove after flag is removed
-  .json {
-    word-break: break-word;
-  }
-
   .header {
     display: flex;
     justify-content: space-between;

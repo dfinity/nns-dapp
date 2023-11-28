@@ -1,5 +1,5 @@
 import * as agent from "$lib/api/agent.api";
-import { getCkBTCAccount, getCkBTCToken } from "$lib/api/ckbtc-ledger.api";
+import { getAccount, getToken } from "$lib/api/wallet-ledger.api";
 import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -10,7 +10,7 @@ import type { HttpAgent } from "@dfinity/agent";
 import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import { mock } from "vitest-mock-extended";
 
-describe("ckbtc-ledger api", () => {
+describe("wallet-ledger api", () => {
   const ledgerCanisterMock = mock<IcrcLedgerCanister>();
 
   beforeAll(() => {
@@ -27,13 +27,13 @@ describe("ckbtc-ledger api", () => {
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
-  describe("getCkBTCAccount", () => {
+  describe("getAccount", () => {
     it("returns main account with balance", async () => {
       const balance = BigInt(10_000_000);
 
       const balanceSpy = ledgerCanisterMock.balance.mockResolvedValue(balance);
 
-      const account = await getCkBTCAccount({
+      const account = await getAccount({
         certified: true,
         identity: mockIdentity,
         canisterId: CKBTC_LEDGER_CANISTER_ID,
@@ -54,7 +54,7 @@ describe("ckbtc-ledger api", () => {
       );
 
       const call = () =>
-        getCkBTCAccount({
+        getAccount({
           certified: true,
           identity: mockIdentity,
           canisterId: CKBTC_LEDGER_CANISTER_ID,
@@ -66,13 +66,13 @@ describe("ckbtc-ledger api", () => {
     });
   });
 
-  describe("getCkBTCToken", () => {
+  describe("getToken", () => {
     it("returns token metadata", async () => {
       const metadataSpy = ledgerCanisterMock.metadata.mockResolvedValue(
         mockQueryTokenResponse
       );
 
-      const token = await getCkBTCToken({
+      const token = await getToken({
         certified: true,
         identity: mockIdentity,
         canisterId: CKBTC_LEDGER_CANISTER_ID,
@@ -87,7 +87,7 @@ describe("ckbtc-ledger api", () => {
       ledgerCanisterMock.metadata.mockResolvedValue([]);
 
       const call = () =>
-        getCkBTCToken({
+        getToken({
           certified: true,
           identity: mockIdentity,
           canisterId: CKBTC_LEDGER_CANISTER_ID,

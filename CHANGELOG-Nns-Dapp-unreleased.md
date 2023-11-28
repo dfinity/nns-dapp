@@ -16,12 +16,15 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Enable ICRC-2 flow for BTC withdrawal.
 * Add ENABLE_CKETH feature flag.
+* Get ckETH canister IDs from environment/configuration.
 
 #### Changed
 
 #### Deprecated
 
 #### Removed
+
+* Remove the `ENABLE_FULL_WIDTH_PROPOSAL` feature flag.
 
 #### Fixed
 
@@ -38,6 +41,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Experimental tests for schema migration.
 * Add optional version support to the storage records.
 * Include ckETH canister IDs when importing from URL with `scripts/canister_ids`.
+* Include ckETH when generating args.did and .env.
 
 #### Changed
 

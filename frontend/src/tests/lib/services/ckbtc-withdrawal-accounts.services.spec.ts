@@ -1,4 +1,4 @@
-import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
+import * as ledgerApi from "$lib/api/wallet-ledger.api";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import * as minterServices from "$lib/services/ckbtc-minter.services";
 import { loadCkBTCWithdrawalAccount } from "$lib/services/ckbtc-withdrawal-accounts.services";
@@ -37,7 +37,7 @@ describe("ckbtc-withdrawal-accounts.services", () => {
 
     it("should call api.getCkBTCAccount and load neurons in store", async () => {
       const spyGetCkBTCAccount = vi
-        .spyOn(ledgerApi, "getCkBTCAccount")
+        .spyOn(ledgerApi, "getAccount")
         .mockResolvedValue(mockCkBTCWithdrawalAccount);
 
       await loadCkBTCWithdrawalAccount({
@@ -61,7 +61,7 @@ describe("ckbtc-withdrawal-accounts.services", () => {
     it("should not be affected by FORCE_CALL_STRATEGY", async () => {
       mockedConstants.FORCE_CALL_STRATEGY = "query";
       const spyGetCkBTCAccount = vi
-        .spyOn(ledgerApi, "getCkBTCAccount")
+        .spyOn(ledgerApi, "getAccount")
         .mockResolvedValue(mockCkBTCWithdrawalAccount);
 
       await loadCkBTCWithdrawalAccount({
@@ -91,7 +91,7 @@ describe("ckbtc-withdrawal-accounts.services", () => {
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
       });
 
-      vi.spyOn(ledgerApi, "getCkBTCAccount").mockImplementation(() =>
+      vi.spyOn(ledgerApi, "getAccount").mockImplementation(() =>
         Promise.reject(undefined)
       );
 

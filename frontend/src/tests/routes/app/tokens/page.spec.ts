@@ -1,5 +1,5 @@
-import * as ckBTCLedgerApi from "$lib/api/ckbtc-ledger.api";
 import * as snsLedgerApi from "$lib/api/sns-ledger.api";
+import * as ckBTCLedgerApi from "$lib/api/wallet-ledger.api";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
@@ -33,7 +33,7 @@ import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
 
-vi.mock("$lib/api/ckbtc-ledger.api");
+vi.mock("$lib/api/wallet-ledger.api");
 vi.mock("$lib/api/sns-ledger.api");
 
 describe("Tokens route", () => {
@@ -64,13 +64,11 @@ describe("Tokens route", () => {
     beforeEach(() => {
       vi.clearAllMocks();
       overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
-      vi.spyOn(ckBTCLedgerApi, "getCkBTCToken").mockResolvedValue(
-        mockCkBTCToken
-      );
+      vi.spyOn(ckBTCLedgerApi, "getToken").mockResolvedValue(mockCkBTCToken);
       vi.spyOn(AuthClient, "create").mockImplementation(
         async (): Promise<AuthClient> => mockAuthClient
       );
-      vi.spyOn(ckBTCLedgerApi, "getCkBTCAccount").mockResolvedValue({
+      vi.spyOn(ckBTCLedgerApi, "getAccount").mockResolvedValue({
         ...mockCkBTCMainAccount,
         balanceE8s: ckBTCBalanceE8s,
       });

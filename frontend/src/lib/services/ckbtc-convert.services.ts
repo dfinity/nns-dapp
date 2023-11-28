@@ -39,8 +39,8 @@ import {
   ckBTCTransferTokens,
   loadCkBTCAccounts,
 } from "./ckbtc-accounts.services";
-import { loadCkBTCAccountTransactions } from "./ckbtc-transactions.services";
 import type { IcrcTransferTokensUserParams } from "./icrc-accounts.services";
+import { loadWalletTransactions } from "./wallet-transactions.services";
 
 export type ConvertCkBTCToBtcParams = Omit<
   IcrcTransferTokensUserParams,
@@ -302,7 +302,7 @@ const reload = async ({
     ...(loadAccounts ? [loadCkBTCAccounts({ universeId })] : []),
     ...(nonNullish(source)
       ? [
-          loadCkBTCAccountTransactions({
+          loadWalletTransactions({
             account: source,
             canisterId: universeId,
             indexCanisterId,

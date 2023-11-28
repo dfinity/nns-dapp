@@ -5,6 +5,8 @@ import { SnsAccountsPo } from "$tests/page-objects/SnsAccounts.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { BuyICPModalPo } from "./BuyICPModal.page-object";
+import { IcrcTokenAccountsPo } from "./IcrcTokenAccounts.page-object";
+import { IcrcTokenAccountsFooterPo } from "./IcrcTokenAccountsFooter.page-object";
 
 export class AccountsPo extends BasePageObject {
   private static readonly TID = "accounts-component";
@@ -19,6 +21,14 @@ export class AccountsPo extends BasePageObject {
 
   getCkBTCAccountsPo(): CkBTCAccountsPo {
     return CkBTCAccountsPo.under(this.root);
+  }
+
+  getIcrcTokenAccountsPo(): IcrcTokenAccountsPo {
+    return IcrcTokenAccountsPo.under(this.root);
+  }
+
+  getIcrcTokenAccountsFooterPo(): IcrcTokenAccountsFooterPo {
+    return IcrcTokenAccountsFooterPo.under(this.root);
   }
 
   getSnsAccountsPo(): SnsAccountsPo {

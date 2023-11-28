@@ -13,8 +13,8 @@ import {
 } from "$lib/derived/sns/sns-projects.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import Accounts from "$lib/routes/Accounts.svelte";
-import { uncertifiedLoadCkBTCAccountsBalance } from "$lib/services/ckbtc-accounts-balance.services";
 import { uncertifiedLoadSnsAccountsBalances } from "$lib/services/sns-accounts-balance.services";
+import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-accounts.services";
 import { authStore } from "$lib/stores/auth.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
@@ -74,9 +74,9 @@ vi.mock("$lib/services/sns-accounts-balance.services", () => {
   };
 });
 
-vi.mock("$lib/services/ckbtc-accounts-balance.services", () => {
+vi.mock("$lib/services/wallet-accounts.services", () => {
   return {
-    uncertifiedLoadCkBTCAccountsBalance: vi.fn().mockResolvedValue(undefined),
+    uncertifiedLoadAccountsBalance: vi.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -126,6 +126,13 @@ vi.mock("$lib/services/worker-balances.services", () => ({
 
 describe("Accounts", () => {
   const balanceIcrcToken = 314000000n;
+
+  const renderComponent = () => {
+    const { container } = render(Accounts);
+
+    return AccountsPo.under(new JestPageObjectElement(container));
+  };
+
   beforeAll(() => {
     vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
@@ -305,7 +312,7 @@ describe("Accounts", () => {
     render(Accounts);
 
     await waitFor(() =>
-      expect(uncertifiedLoadCkBTCAccountsBalance).toHaveBeenCalled()
+      expect(uncertifiedLoadAccountsBalance).toHaveBeenCalled()
     );
   });
 
@@ -318,7 +325,7 @@ describe("Accounts", () => {
     render(Accounts);
 
     await waitFor(() =>
-      expect(uncertifiedLoadCkBTCAccountsBalance).toHaveBeenCalled()
+      expect(uncertifiedLoadAccountsBalance).toHaveBeenCalled()
     );
   });
 
@@ -361,13 +368,20 @@ describe("Accounts", () => {
     // It's called once when the component is mounted
     expect(icrcLedgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
     expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(1);
+  });
 
-    await runResolvedPromises();
+  it("should render IcrcTokenAccounts and IcrcTokenAccountsFooter component with ckETH enabled and universe ckETH", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
 
-    // `loadCkETHCanisters` doesn't change the store if it's already filled.
-    // Therefore, there are no more api calls.
-    expect(icrcLedgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
-    expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(1);
+    page.mock({
+      data: { universe: CKETH_UNIVERSE_CANISTER_ID.toText() },
+      routeId: AppPath.Accounts,
+    });
+
+    const po = renderComponent();
+
+    expect(await po.getIcrcTokenAccountsPo().isPresent()).toBe(true);
+    expect(await po.getIcrcTokenAccountsFooterPo().isPresent()).toBe(true);
   });
 
   it("should render sns project name", () => {
@@ -439,12 +453,6 @@ describe("Accounts", () => {
   });
 
   describe("when NNS universe", () => {
-    const renderComponent = () => {
-      const { container } = render(Accounts);
-
-      return AccountsPo.under(new JestPageObjectElement(container));
-    };
-
     beforeEach(() => {
       page.mock({
         data: { universe: OWN_CANISTER_ID_TEXT },

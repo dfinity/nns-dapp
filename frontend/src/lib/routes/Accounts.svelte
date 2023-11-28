@@ -4,6 +4,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import {
     isCkBTCUniverseStore,
+    isIcrcTokenUniverseStore,
     isNnsUniverseStore,
     selectedUniverseIdStore,
   } from "$lib/derived/selected-universe.derived";
@@ -16,7 +17,7 @@
   } from "$lib/derived/sns/sns-projects.derived";
   import { nonNullish } from "@dfinity/utils";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
-  import { uncertifiedLoadCkBTCAccountsBalance } from "$lib/services/ckbtc-accounts-balance.services";
+  import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-accounts.services";
   import CkBTCAccounts from "$lib/pages/CkBTCAccounts.svelte";
   import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
   import CkBTCAccountsFooter from "$lib/components/accounts/CkBTCAccountsFooter.svelte";
@@ -33,6 +34,8 @@
   import { loadIcrcAccounts } from "$lib/services/icrc-accounts.services";
   import { onMount } from "svelte";
   import { loadCkETHCanisters } from "$lib/services/cketh-canisters.services";
+  import IcrcTokenAccounts from "$lib/pages/IcrcTokenAccounts.svelte";
+  import IcrcTokenAccountsFooter from "$lib/components/accounts/IcrcTokenAccountsFooter.svelte";
 
   // TODO: This component is mounted twice. Understand why and fix it.
 
@@ -78,18 +81,20 @@
 
     loadCkBTCAccountsBalancesRequested = true;
 
-    await uncertifiedLoadCkBTCAccountsBalance({
+    await uncertifiedLoadAccountsBalance({
       universeIds: universes.map(({ canisterId }) => canisterId),
       excludeUniverseIds: [selectedUniverseId.toText()],
     });
   };
 
-  const loadIcrcTokenAccounts = (icrcCanisters: IcrcCanistersStoreData) => {
+  const loadIcrcTokenAccounts = (
+    icrcCanisters: IcrcCanistersStoreData
+  ): Promise<void> => {
     const ledgerCanisterIds = Object.values(icrcCanisters).map(
       ({ ledgerCanisterId }) => ledgerCanisterId
     );
 
-    loadIcrcAccounts({ ledgerCanisterIds, certified: false });
+    return loadIcrcAccounts({ ledgerCanisterIds, certified: false });
   };
 
   $: (async () =>
@@ -108,6 +113,8 @@
       <NnsAccounts userTokensData={$icpTokensListUser} />
     {:else if $isCkBTCUniverseStore}
       <CkBTCAccounts />
+    {:else if $isIcrcTokenUniverseStore}
+      <IcrcTokenAccounts />
     {:else if nonNullish($snsProjectSelectedStore)}
       <SnsAccounts />
     {/if}
@@ -117,6 +124,8 @@
     <NnsAccountsFooter />
   {:else if $isCkBTCUniverseStore}
     <CkBTCAccountsFooter />
+  {:else if $isIcrcTokenUniverseStore}
+    <IcrcTokenAccountsFooter />
   {:else if nonNullish($snsProjectSelectedStore)}
     <SnsAccountsFooter />
   {/if}

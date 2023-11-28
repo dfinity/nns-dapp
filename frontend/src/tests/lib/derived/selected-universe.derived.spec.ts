@@ -12,13 +12,16 @@ import {
   isIcrcTokenUniverseStore,
   isNnsUniverseStore,
   selectedCkBTCUniverseIdStore,
+  selectedIcrcTokenUniverseIdStore,
   selectedUniverseIdStore,
   selectedUniverseStore,
 } from "$lib/derived/selected-universe.derived";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
+import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
@@ -357,6 +360,90 @@ describe("selected universe derived stores", () => {
 
       const $store2 = get(selectedCkBTCUniverseIdStore);
       expect($store2.toText()).toEqual(CKBTC_UNIVERSE_CANISTER_ID.toText());
+    });
+  });
+
+  describe("selectedIcrcTokenUniverseIdStore", () => {
+    const ledgerCanisterId = principal(0);
+
+    beforeEach(() => {
+      icrcCanistersStore.reset();
+      tokensStore.reset();
+      icrcCanistersStore.setCanisters({
+        ledgerCanisterId,
+        indexCanisterId: principal(1),
+      });
+      tokensStore.setTokens({
+        [ledgerCanisterId.toText()]: {
+          certified: true,
+          token: mockCkETHToken,
+        },
+      });
+    });
+    it("should get undefined for NNS", () => {
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT },
+        routeId: AppPath.Accounts,
+      });
+
+      expect(get(selectedIcrcTokenUniverseIdStore)).toBeUndefined();
+    });
+
+    it("should get undefined for ckBTC", () => {
+      page.mock({
+        data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
+        routeId: AppPath.Accounts,
+      });
+      expect(get(selectedIcrcTokenUniverseIdStore)).toBeUndefined();
+    });
+
+    it("should get ICRC token universe id in Accounts", () => {
+      page.mock({
+        data: { universe: ledgerCanisterId.toText() },
+        routeId: AppPath.Accounts,
+      });
+
+      expect(get(selectedIcrcTokenUniverseIdStore)?.toText()).toBe(
+        ledgerCanisterId.toText()
+      );
+    });
+
+    it("should get ICRC token universe id in Wallet", () => {
+      page.mock({
+        data: { universe: ledgerCanisterId.toText() },
+        routeId: AppPath.Wallet,
+      });
+
+      expect(get(selectedIcrcTokenUniverseIdStore)?.toText()).toBe(
+        ledgerCanisterId.toText()
+      );
+    });
+
+    it("should return undefined when universe changes", () => {
+      page.mock({
+        data: { universe: ledgerCanisterId.toText() },
+        routeId: AppPath.Accounts,
+      });
+
+      expect(get(selectedIcrcTokenUniverseIdStore)?.toText()).toBe(
+        ledgerCanisterId.toText()
+      );
+
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT },
+        routeId: AppPath.Accounts,
+      });
+
+      expect(get(selectedIcrcTokenUniverseIdStore)).toBeUndefined();
+    });
+
+    it("should return undefined if not in Accounts or Wallet page", () => {
+      page.mock({
+        data: { universe: ledgerCanisterId.toText() },
+        routeId: AppPath.Neurons,
+      });
+
+      expect(get(selectedIcrcTokenUniverseIdStore)).toBeUndefined();
     });
   });
 });
