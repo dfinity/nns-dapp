@@ -1,7 +1,7 @@
 import CkBTCAccountsFooter from "$lib/components/accounts/CkBTCAccountsFooter.svelte";
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
-import * as services from "$lib/services/ckbtc-accounts.services";
+import * as services from "$lib/services/wallet-accounts.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
@@ -26,9 +26,9 @@ vi.mock("$lib/services/ckbtc-minter.services", async () => {
   };
 });
 
-vi.mock("$lib/services/ckbtc-accounts.services", () => {
+vi.mock("$lib/services/wallet-accounts.services", () => {
   return {
-    syncCkBTCAccounts: vi.fn().mockResolvedValue(undefined),
+    syncAccounts: vi.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -135,7 +135,7 @@ describe("CkBTCAccountsFooter", () => {
 
       await selectSegmentBTC(container);
 
-      const spy = vi.spyOn(services, "syncCkBTCAccounts");
+      const spy = vi.spyOn(services, "syncAccounts");
 
       fireEvent.click(
         getByTestId("reload-receive-account") as HTMLButtonElement
