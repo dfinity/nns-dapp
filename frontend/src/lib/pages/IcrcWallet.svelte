@@ -39,11 +39,11 @@
   {selectedAccountStore}
 >
   <svelte:fragment slot="page-content">
-    {#if nonNullish($selectedAccountStore.account) && nonNullish($selectedCkBTCUniverseIdStore) && nonNullish(indexCanisterId)}
+    {#if nonNullish($selectedAccountStore.account) && nonNullish($selectedIcrcTokenUniverseIdStore) && nonNullish(indexCanisterId)}
       <IcrcWalletTransactionsList
         account={$selectedAccountStore.account}
         {indexCanisterId}
-        universeId={$selectedCkBTCUniverseIdStore}
+        universeId={$selectedIcrcTokenUniverseIdStore}
         {token}
       />
     {/if}
