@@ -27,6 +27,8 @@ pub mod histogram;
 pub mod schema;
 use schema::{proxy::AccountsDbAsProxy, AccountsDbBTreeMapTrait, AccountsDbTrait};
 
+use self::schema::SchemaLabel;
+
 type TransactionIndex = u64;
 
 /// The data migration is more complicated if there are too many accounts.  With below this many
@@ -297,6 +299,9 @@ pub enum AddPendingTransactionResponse {
 }
 
 impl AccountsStore {
+    pub fn schema_label(&self) -> SchemaLabel {
+        self.accounts_db.schema_label()
+    }
     pub fn get_account(&self, caller: PrincipalId) -> Option<AccountDetails> {
         let account_identifier = AccountIdentifier::from(caller);
         if let Some(account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {

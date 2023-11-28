@@ -5,11 +5,13 @@ use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
 use core::cell::RefCell;
 use core::convert::TryFrom;
+use std::borrow::BorrowMut;
 use dfn_candid::Candid;
 use dfn_core::api::trap_with;
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use on_wire::{FromWire, IntoWire};
 use partitions::Partitions;
+use crate::accounts_store::schema::AccountsDbTrait;
 
 pub mod in_raw_memory;
 pub mod in_virtual_memory_map;
@@ -55,6 +57,7 @@ thread_local! {
 /// The state structure then owns everything on the heap and in stable memory.
 impl From<Partitions> for State {
     fn from(partitions: Partitions) -> Self {
+        dfn_core::api::print(format!("state::from<Partitions>: ()"));
         let metadata_memory = partitions.get(Partitions::METADATA_MEMORY_ID);
         let schema = Self::schema_version_from_memory(&metadata_memory);
         match schema {
@@ -76,6 +79,7 @@ impl From<Partitions> for State {
 /// Loads state from stable memory.
 impl From<DefaultMemoryImpl> for State {
     fn from(memory: DefaultMemoryImpl) -> Self {
+        dfn_core::api::print(format!("START state::from<DefaultMemoryImpl>: ())"));
         match Partitions::try_from(memory) {
             Ok(partitions) => Self::from(partitions),
             Err(_memory) => Self::recover_from_raw_memory(),
@@ -136,8 +140,10 @@ impl State {
     /// - Deploy a release with a parser for the new schema.
     /// - Then, deploy a release that writes the new schema.
     /// This way it is possible to roll back after deploying the new schema.
-    pub fn post_upgrade(_args_schema: Option<SchemaLabel>) -> Self {
-        unimplemented!()
+    pub fn post_upgrade(args_schema: Option<SchemaLabel>) -> Self {
+        dfn_core::api::print(format!("START state::post_upgrade: {args_schema:#?}"));
+        Self::from(DefaultMemoryImpl::default())
+
         /*
         // If we are unable to read the schema label, we assume that we have just the heap data serialized as candid.
         let current_schema = Self::schema_version_from_stable_memory().unwrap_or(SchemaLabel::Map);
@@ -171,5 +177,15 @@ impl State {
     /// Save any unsaved state to stable memory.
     pub fn pre_upgrade(&self) {
         self.save_to_raw_memory()
+    }
+    /// Save any unsaved state to stable memory.
+    pub fn save_to(&self, partitions: &Partitions) {
+        // I feel that the schema should not be specified all the way down here.
+        let schema = self.accounts_store.borrow().schema_label();
+        match schema {
+            SchemaLabel::Map => self.save_to_raw_memory(),
+            SchemaLabel::AccountsInStableMemory => unimplemented!(), // TODO: Betetr naming for this.  save_heap_to_managed_memory()?
+        }
+
     }
 }
