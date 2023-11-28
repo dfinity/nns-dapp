@@ -5,13 +5,11 @@ use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
 use core::cell::RefCell;
 use core::convert::TryFrom;
-use std::borrow::BorrowMut;
 use dfn_candid::Candid;
 use dfn_core::api::trap_with;
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use on_wire::{FromWire, IntoWire};
 use partitions::Partitions;
-use crate::accounts_store::schema::AccountsDbTrait;
 
 pub mod in_raw_memory;
 pub mod in_virtual_memory_map;
@@ -113,12 +111,6 @@ impl StableState for State {
 
 // Methods called on pre_upgrade and post_upgrade.
 impl State {
-    /// The schema version, determined by the last version that was saved to stable memory.
-    fn schema_version_from_stable_memory() -> Option<SchemaLabel> {
-        // TODO: Check whether there is a memorymanger at the root.  If so, get the schema from virtual memory.
-        let memory = DefaultMemoryImpl::default();
-        Self::schema_version_from_memory(&memory)
-    }
 
     /// The schema version, as stored in an arbitrary memory.
     fn schema_version_from_memory<M>(memory: &M) -> Option<SchemaLabel>
@@ -143,10 +135,6 @@ impl State {
     /// This way it is possible to roll back after deploying the new schema.
     pub fn post_upgrade(args_schema: Option<SchemaLabel>) -> Self {
         dfn_core::api::print(format!("START state::post_upgrade"));
-        let current_schema = Self::schema_version_from_stable_memory().unwrap_or(SchemaLabel::Map);
-        let desired_schema = args_schema.unwrap_or(current_schema);
-        dfn_core::api::print(format!("START state::post_upgrade: current_schema: {current_schema:?}"));
-        dfn_core::api::print(format!("START state::post_upgrade: desired_schema: {desired_schema:?}"));
         Self::from(DefaultMemoryImpl::default())
 
         /*
@@ -183,6 +171,7 @@ impl State {
     pub fn pre_upgrade(&self) {
         self.save_to_raw_memory()
     }
+    /*
     /// Save any unsaved state to stable memory.
     pub fn save_to(&self, partitions: &Partitions) {
         // I feel that the schema should not be specified all the way down here.
@@ -193,4 +182,5 @@ impl State {
         }
 
     }
+    */
 }

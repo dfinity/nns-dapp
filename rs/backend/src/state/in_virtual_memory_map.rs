@@ -7,6 +7,7 @@ use ic_stable_structures::{DefaultMemoryImpl, Memory};
 
 impl State {
     /// Save as Map in virtual memory.
+    /*
     pub fn save_to_map(&self, memory: DefaultMemoryImpl) {
         let bytes = self.encode();
         let len = bytes.len();
@@ -21,6 +22,7 @@ impl State {
         memory.write(0, &length_field);
         memory.write(8, &bytes);
     }
+    */
     /// Create the state from stable memory in the `SchemaLabel::Map` format.
     pub fn recover_from_map(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
         let candid_len = {

@@ -15,6 +15,7 @@ impl Partitions {
 
     /// Determines whether the given memory is managed by a memory manager.
     fn is_managed(memory: &DefaultMemoryImpl) -> bool {
+        dfn_core::api::print(format!("START memory is_managed: ()"));
         let memory_pages = memory.size();
         if memory_pages == 0 {
             return false;
@@ -23,7 +24,9 @@ impl Partitions {
         const MEMORY_MANAGER_MAGIC_BYTES: &[u8; 3] = b"MGR"; // From the spec: https://docs.rs/ic-stable-structures/0.6.0/ic_stable_structures/memory_manager/struct.MemoryManager.html#v1-layout
         let mut actual_first_bytes = [0u8; MEMORY_MANAGER_MAGIC_BYTES.len()];
         memory.read(0, &mut actual_first_bytes);
-        actual_first_bytes == *MEMORY_MANAGER_MAGIC_BYTES
+        let ans = actual_first_bytes == *MEMORY_MANAGER_MAGIC_BYTES;
+        dfn_core::api::print(format!("END memory is_managed: {}, {:?}", ans, String::from_utf8(actual_first_bytes.to_vec())));
+        ans
     }
     /// Gets a partition.
     pub fn get(&self, memory_id: MemoryId) -> VirtualMemory<DefaultMemoryImpl> {
@@ -37,6 +40,7 @@ impl From<DefaultMemoryImpl> for Partitions {
     ///
     /// Note: This is equivalent to `MemoryManager::init()`.
     fn from(memory: DefaultMemoryImpl) -> Self {
+        dfn_core::api::print(format!("START Partitions::from<DefaultMemoryImpl>: ()"));
         let memory_manager = MemoryManager::init(memory);
         Partitions { memory_manager }
     }
@@ -53,6 +57,7 @@ impl From<DefaultMemoryImpl> for Partitions {
 //    type Error = DefaultMemoryImpl;
 impl Partitions {
     fn try_from(memory: DefaultMemoryImpl) -> Result<Self, DefaultMemoryImpl> {
+        dfn_core::api::print(format!("START Partitions::try_from<DefaultMemoryImpl>: ()"));
         if Self::is_managed(&memory) {
             Ok(Self::from(memory))
         } else {
