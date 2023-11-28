@@ -27,14 +27,12 @@
   import AccountsModals from "$lib/modals/accounts/AccountsModals.svelte";
   import CkBTCAccountsModals from "$lib/modals/accounts/CkBTCAccountsModals.svelte";
   import { icpTokensListUser } from "$lib/derived/icp-tokens-list-user.derived";
-  import {
-    icrcCanistersStore,
-    type IcrcCanistersStoreData,
-  } from "$lib/stores/icrc-canisters.store";
-  import { loadIcrcAccounts } from "$lib/services/icrc-accounts.services";
   import { onMount } from "svelte";
   import { loadCkETHCanisters } from "$lib/services/cketh-canisters.services";
   import IcrcTokenAccounts from "$lib/pages/IcrcTokenAccounts.svelte";
+  import type { IcrcCanistersStoreData} from "$lib/stores/icrc-canisters.store";
+  import type {UniverseCanisterIdText} from "$lib/types/universe";
+  import {icrcCanistersStore} from "$lib/stores/icrc-canisters.store";
   import IcrcTokenAccountsFooter from "$lib/components/accounts/IcrcTokenAccountsFooter.svelte";
 
   // TODO: This component is mounted twice. Understand why and fix it.
@@ -44,6 +42,7 @@
 
   let loadSnsAccountsBalancesRequested = false;
   let loadCkBTCAccountsBalancesRequested = false;
+  let loadIcrcAccountsBalancesRequested = false;
 
   onMount(() => {
     loadCkETHCanisters();
@@ -69,11 +68,6 @@
   };
 
   const loadCkBTCAccountsBalances = async (universes: Universe[]) => {
-    // ckBTC is not enabled, information shall and cannot be fetched
-    if (isArrayEmpty(universes)) {
-      return;
-    }
-
     // We trigger the loading of the ckBTC Accounts Balances only once
     if (loadCkBTCAccountsBalancesRequested) {
       return;
@@ -81,20 +75,37 @@
 
     loadCkBTCAccountsBalancesRequested = true;
 
-    await uncertifiedLoadAccountsBalance({
-      universeIds: universes.map(({ canisterId }) => canisterId),
-      excludeUniverseIds: [selectedUniverseId.toText()],
-    });
+    await loadAccountsBalances(universes.map(({ canisterId }) => canisterId));
   };
 
-  const loadIcrcTokenAccounts = (
-    icrcCanisters: IcrcCanistersStoreData
-  ): Promise<void> => {
-    const ledgerCanisterIds = Object.values(icrcCanisters).map(
-      ({ ledgerCanisterId }) => ledgerCanisterId
-    );
+  const loadIcrcTokenAccounts = async (icrcCanisters: IcrcCanistersStoreData) => {
+    const universeIds = Object.keys(icrcCanisters);
 
-    return loadIcrcAccounts({ ledgerCanisterIds, certified: false });
+    // Nothing loaded yet or nothing to load
+    if (universeIds.length === 0) {
+      return;
+    }
+
+    // We trigger the loading of the Icrc Accounts Balances only once
+    if (loadIcrcAccountsBalancesRequested) {
+      return;
+    }
+
+    loadIcrcAccountsBalancesRequested = true;
+
+    await loadAccountsBalances(Object.keys(icrcCanisters));
+  };
+
+  const loadAccountsBalances = async (universeIds: UniverseCanisterIdText[]) => {
+    // Selected universes are empty, no information shall and can be fetched
+    if (isArrayEmpty(universeIds)) {
+      return;
+    }
+
+    await uncertifiedLoadAccountsBalance({
+      universeIds,
+      excludeUniverseIds: [selectedUniverseId.toText()],
+    });
   };
 
   $: (async () =>
