@@ -7,9 +7,11 @@ use core::cell::RefCell;
 use core::convert::TryFrom;
 use dfn_candid::Candid;
 use dfn_core::{api::trap_with, stable};
+use ic_stable_structures::memory_manager::VirtualMemory;
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use on_wire::{FromWire, IntoWire};
 use partitions::Partitions;
+use regex::bytes;
 pub mod partitions;
 #[cfg(test)]
 pub mod tests;
@@ -53,16 +55,18 @@ impl From<Partitions> for State {
     fn from(partitions: Partitions) -> Self {
         let metadata_memory = partitions.get(Partitions::METADATA_MEMORY_ID);
         let schema = Self::schema_version_from_memory(&metadata_memory);
-        unimplemented!()
-        /*
-                match schema {
-                    None | Some(SchemaLabel::Map) => Self::recover_state_from_map(partitions.get(Partitions::HEAP_MEMORY_ID)),
-                    Some(SchemaLabel::AccountsInStableMemory) => {
-                        let state = State::from_candid_memory(memory_manager.get(MemoryId::new(1)));
-                        state.partitions = Some(partitions);
-                    }
-                }
-        */
+        match schema {
+            // Classic storage: Heap is serialized as candid into raw, unmanaged stable memory.
+            None => Self::recover_from_raw_memory(),
+            // Heap is serialized as candid into managed stable memory.  May be used in transition but otherwise not very exciting.
+            Some(SchemaLabel::Map) => Self::recover_from_map(partitions.get(Partitions::HEAP_MEMORY_ID)),
+            // Accounts are in stable structures in one partition, the rest of the heap is serialized as candid in another partition.
+            Some(SchemaLabel::AccountsInStableMemory) => {
+                unimplemented!()
+                // let state = State::from_candid_memory(memory_manager.get(MemoryId::new(1)));
+                // state.partitions = Some(partitions);
+            }
+        }
     }
 }
 
@@ -75,7 +79,6 @@ impl From<DefaultMemoryImpl> for State {
         }
     }
 }
-
 
 impl StableState for State {
     fn encode(&self) -> Vec<u8> {
@@ -179,6 +182,42 @@ impl State {
     fn recover_from_raw_memory() -> Self {
         let bytes = stable::get();
         State::decode(bytes).unwrap_or_else(|e| {
+            trap_with(&format!("Decoding stable memory failed. Error: {e:?}"));
+            unreachable!();
+        })
+    }
+}
+
+// State from/to a stable memory partition in the `SchemaLabel::Map` format.
+impl State {
+    /// Save as Map in virtual memory.
+    fn save_to_map(&self,  memory: DefaultMemoryImpl) {
+        let bytes = self.encode();
+        let len = bytes.len();
+        let length_field = u64::try_from(len)
+            .unwrap_or_else(|e| {
+                trap_with(&format!(
+                    "The serialized memory takes more than 2**64 bytes.  Amazing: {e:?}"
+                ));
+                unreachable!();
+            })
+            .to_be_bytes();
+        memory.write(0, &length_field);
+        memory.write(8, &bytes);
+    }
+    /// Create the state from stable memory in the `SchemaLabel::Map` format.
+    fn recover_from_map(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
+        let candid_len = {
+            let mut length_field = [0u8; 8];
+            memory.read(0, &mut length_field);
+            u64::from_be_bytes(length_field) as usize
+        };
+        let candid_bytes = {
+            let mut candid_bytes = vec![0u8; candid_len];
+            memory.read(8, &mut candid_bytes);
+            candid_bytes
+        };
+        State::decode(candid_bytes).unwrap_or_else(|e| {
             trap_with(&format!("Decoding stable memory failed. Error: {e:?}"));
             unreachable!();
         })
