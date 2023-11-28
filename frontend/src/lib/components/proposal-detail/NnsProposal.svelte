@@ -80,18 +80,9 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-
   .proposal-data-section {
     display: flex;
     flex-direction: column;
     gap: var(--row-gap);
-  }
-
-  @include media.min-width(medium) {
-    // If this would be use elsewhere, we can extract some utility to gix-components
-    .content-b.expand-content-b {
-      grid-row-end: content-c;
-    }
   }
 </style>
