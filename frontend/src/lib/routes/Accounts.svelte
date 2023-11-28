@@ -4,6 +4,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import {
     isCkBTCUniverseStore,
+    isIcrcTokenUniverseStore,
     isNnsUniverseStore,
     selectedUniverseIdStore,
   } from "$lib/derived/selected-universe.derived";
@@ -33,6 +34,7 @@
   import { loadIcrcAccounts } from "$lib/services/icrc-accounts.services";
   import { onMount } from "svelte";
   import { loadCkETHCanisters } from "$lib/services/cketh-canisters.services";
+  import IcrcTokenAccounts from "$lib/pages/IcrcTokenAccounts.svelte";
 
   // TODO: This component is mounted twice. Understand why and fix it.
 
@@ -108,6 +110,8 @@
       <NnsAccounts userTokensData={$icpTokensListUser} />
     {:else if $isCkBTCUniverseStore}
       <CkBTCAccounts />
+    {:else if $isIcrcTokenUniverseStore}
+      <IcrcTokenAccounts />
     {:else if nonNullish($snsProjectSelectedStore)}
       <SnsAccounts />
     {/if}

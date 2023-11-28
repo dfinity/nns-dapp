@@ -126,6 +126,13 @@ vi.mock("$lib/services/worker-balances.services", () => ({
 
 describe("Accounts", () => {
   const balanceIcrcToken = 314000000n;
+
+  const renderComponent = () => {
+    const { container } = render(Accounts);
+
+    return AccountsPo.under(new JestPageObjectElement(container));
+  };
+
   beforeAll(() => {
     vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
@@ -363,6 +370,19 @@ describe("Accounts", () => {
     expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(1);
   });
 
+  it("should render IcrcTokenAccounts component with ckETH enabled and universe ckETH", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
+
+    page.mock({
+      data: { universe: CKETH_UNIVERSE_CANISTER_ID.toText() },
+      routeId: AppPath.Accounts,
+    });
+
+    const po = renderComponent();
+
+    expect(await po.getIcrcTokenAccountsPo().isPresent()).toBe(true);
+  });
+
   it("should render sns project name", () => {
     page.mock({
       data: { universe: mockSnsFullProject.rootCanisterId.toText() },
@@ -432,12 +452,6 @@ describe("Accounts", () => {
   });
 
   describe("when NNS universe", () => {
-    const renderComponent = () => {
-      const { container } = render(Accounts);
-
-      return AccountsPo.under(new JestPageObjectElement(container));
-    };
-
     beforeEach(() => {
       page.mock({
         data: { universe: OWN_CANISTER_ID_TEXT },
