@@ -66,7 +66,9 @@ impl From<Partitions> for State {
             // Heap is serialized as candid into managed stable memory.  May be used in transition but otherwise not very exciting.
             Some(SchemaLabel::Map) => Self::recover_from_map(partitions.get(Partitions::HEAP_MEMORY_ID)),
             // Accounts are in stable structures in one partition, the rest of the heap is serialized as candid in another partition.
-            Some(SchemaLabel::AccountsInStableMemory) => Self::recover_from_map(partitions.get(Partitions::HEAP_MEMORY_ID)),
+            Some(SchemaLabel::AccountsInStableMemory) => {
+                Self::recover_from_map(partitions.get(Partitions::HEAP_MEMORY_ID))
+            }
         }
     }
 }
