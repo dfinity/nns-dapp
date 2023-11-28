@@ -2,7 +2,6 @@ import { Principal } from "@dfinity/principal";
 
 // TODO: Fallback to ckETH canister IDs on mainnet. These are Sepolia canister IDs.
 const MAINNET_CKETH_LEDGER_CANISTER_ID = "apia6-jaaaa-aaaar-qabma-cai";
-// TODO: Change to Sepolia index canister
 const MAINNET_CKETH_INDEX_CANISTER_ID = "sh5u2-cqaaa-aaaar-qacna-cai";
 
 // TODO: Add ckETHTEST canister IDs on env vars https://dfinity.atlassian.net/browse/GIX-2137
