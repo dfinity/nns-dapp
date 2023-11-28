@@ -10,9 +10,9 @@ use dfn_core::{api::trap_with, stable};
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use on_wire::{FromWire, IntoWire};
 use partitions::Partitions;
+pub mod partitions;
 #[cfg(test)]
 pub mod tests;
-pub mod partitions;
 
 #[derive(Default, Debug, Eq, PartialEq)]
 pub struct State {
@@ -41,7 +41,6 @@ pub trait StableState: Sized {
 thread_local! {
     pub static STATE: State = State::default();
 }
-
 
 /// Loads state from given memory partitions.
 ///
