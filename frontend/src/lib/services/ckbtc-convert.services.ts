@@ -37,6 +37,7 @@ import { numberToE8s } from "../utils/token.utils";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { ckBTCTransferTokens } from "./ckbtc-accounts.services";
 import type { IcrcTransferTokensUserParams } from "./icrc-accounts.services";
+import { loadAccounts as loadCkBTCAccounts } from "./wallet-accounts.services";
 import { loadWalletTransactions } from "./wallet-transactions.services";
 
 export type ConvertCkBTCToBtcParams = Omit<
@@ -296,7 +297,7 @@ const reload = async ({
   // - if provided, the transactions of the account for which the transfer was executed
   // - the balance of the withdrawal account to display an information if some funds - from this transaction or another - are stuck and not been converted yet
   await Promise.all([
-    ...(loadAccounts ? [loadAccounts({ universeId })] : []),
+    ...(loadAccounts ? [loadCkBTCAccounts({ universeId })] : []),
     ...(nonNullish(source)
       ? [
           loadWalletTransactions({
