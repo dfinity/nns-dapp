@@ -6,12 +6,10 @@ use crate::perf::PerformanceCounts;
 use core::cell::RefCell;
 use core::convert::TryFrom;
 use dfn_candid::Candid;
-use dfn_core::{api::trap_with, stable};
-use ic_stable_structures::memory_manager::VirtualMemory;
+use dfn_core::api::trap_with;
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use on_wire::{FromWire, IntoWire};
 use partitions::Partitions;
-use regex::bytes;
 
 pub mod in_raw_memory;
 pub mod in_virtual_memory_map;
