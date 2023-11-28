@@ -56,8 +56,7 @@ thread_local! {
 impl From<Partitions> for State {
     fn from(partitions: Partitions) -> Self {
         dfn_core::api::print(format!("state::from<Partitions>: ()"));
-        let metadata_memory = partitions.get(Partitions::METADATA_MEMORY_ID);
-        let schema = Self::schema_version_from_memory(&metadata_memory);
+        let schema = partitions.schema_label();
         dfn_core::api::print(format!("state::from<Partitions>: from_schema: {schema:#?}"));
         match schema {
             // We have managed memory, but were unable to read the schema label.  This is a bug.
@@ -111,7 +110,6 @@ impl StableState for State {
 
 // Methods called on pre_upgrade and post_upgrade.
 impl State {
-
     /// The schema version, as stored in an arbitrary memory.
     fn schema_version_from_memory<M>(memory: &M) -> Option<SchemaLabel>
     where

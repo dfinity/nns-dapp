@@ -1,7 +1,7 @@
 //! State from/to a stable memory partition in the `SchemaLabel::Map` format.
 use super::State;
 use crate::state::StableState;
-use dfn_core::{api::trap_with};
+use dfn_core::api::trap_with;
 use ic_stable_structures::memory_manager::VirtualMemory;
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
 

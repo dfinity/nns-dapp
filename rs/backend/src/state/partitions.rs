@@ -3,6 +3,10 @@ use core::borrow::Borrow;
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
 
+use crate::accounts_store::schema::SchemaLabel;
+
+use super::State;
+
 /// Memory layout consisting of a memory manager and some virtual memory.
 pub struct Partitions {
     pub memory_manager: MemoryManager<DefaultMemoryImpl>,
@@ -25,9 +29,21 @@ impl Partitions {
         let mut actual_first_bytes = [0u8; MEMORY_MANAGER_MAGIC_BYTES.len()];
         memory.read(0, &mut actual_first_bytes);
         let ans = actual_first_bytes == *MEMORY_MANAGER_MAGIC_BYTES;
-        dfn_core::api::print(format!("END memory is_managed: {}, {:?}", ans, String::from_utf8(actual_first_bytes.to_vec())));
+        dfn_core::api::print(format!(
+            "END memory is_managed: {}, {:?}",
+            ans,
+            String::from_utf8(actual_first_bytes.to_vec())
+        ));
         ans
     }
+
+    /// Get the schema label
+    pub fn schema_label(&self) -> Option<SchemaLabel> {
+        dfn_core::api::print(format!("START Partitions::schema_label: ()"));
+        let metadata_memory = self.get(Self::METADATA_MEMORY_ID);
+        State::schema_version_from_memory(&metadata_memory)
+    }
+
     /// Gets a partition.
     pub fn get(&self, memory_id: MemoryId) -> VirtualMemory<DefaultMemoryImpl> {
         self.memory_manager.borrow().get(memory_id)
