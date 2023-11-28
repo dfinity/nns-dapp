@@ -181,43 +181,4 @@ mod accounts_in_stable_memory {
         memory_manager::{MemoryId, MemoryManager},
         DefaultMemoryImpl, Memory,
     };
-
-    /// Save any unsaved state to stable memory in the `SchemaLabel::AccountsInStableMemory` format.
-    pub fn save_in_stable_memory(state: &State) {
-        let bytes = state.encode(); // TODO: Test that this excludes the accounts data.
-        let length_field = u64::try_from(bytes.len())
-            .unwrap_or_else(|e| {
-                trap_with(&format!(
-                    "The serialized memory takes more than 2**64 bytes.  Amazing: {e:?}"
-                ));
-                unreachable!();
-            })
-            .to_be_bytes();
-        let heap_memory = get_heap_memory();
-        heap_memory.write(0, &length_field);
-        heap_memory.write(8, &bytes); // TODO: Prefix with size of memory.
-    }
-    /// Create the state from stable memory in the `SchemaLabel::AccountsInStableMemory` format.
-    pub fn recover_from_stable_memory(memory: DefaultMemoryImpl) -> State {
-        unimplemented!()
-        /*
-        let memory = get_heap_memory();
-        let candid_len = {
-            let mut length_field = [0u8; 8];
-            memory.read(0, &mut length_field);
-            u64::from_be_bytes(length_field) as usize
-        };
-        let candid_bytes = vec![0u8; candid_len];
-        let partitions = Partitions::from(memory).unwrap(); // TODO: Refactor so that there is no unwrap.
-        State::decode(candid_bytes).unwrap_or_else(|e| {
-            trap_with(&format!("Decoding stable memory failed. Error: {e:?}"));
-            unreachable!();
-        })
-        */
-    }
-    /// Gets the stable memory partition for saving the heap.
-    fn get_heap_memory() -> impl Memory {
-        let mem_mgr = MemoryManager::init(DefaultMemoryImpl::default());
-        mem_mgr.get(MemoryId::new(1)) // TODO: Define a const for the heap memory ID.
-    }
 }
