@@ -1,7 +1,11 @@
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
-import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
+import {
+  CKETH_INDEX_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
+  CKETH_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/cketh-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import {
   snsProjectsCommittedStore,
@@ -15,6 +19,7 @@ import { authStore } from "$lib/stores/auth.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
+import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
@@ -41,6 +46,7 @@ import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transa
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, waitFor } from "@testing-library/dom";
@@ -338,6 +344,30 @@ describe("Accounts", () => {
         accounts: [mockAccount],
       });
     });
+  });
+
+  it("should not refetch ckETH accounts if ckETH canisters are already loaded", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
+
+    icrcCanistersStore.setCanisters({
+      ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
+      indexCanisterId: CKETH_INDEX_CANISTER_ID,
+    });
+
+    render(Accounts);
+
+    await runResolvedPromises();
+
+    // It's called once when the component is mounted
+    expect(icrcLedgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
+    expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(1);
+
+    await runResolvedPromises();
+
+    // `loadCkETHCanisters` doesn't change the store if it's already filled.
+    // Therefore, there are no more api calls.
+    expect(icrcLedgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
+    expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(1);
   });
 
   it("should render sns project name", () => {
