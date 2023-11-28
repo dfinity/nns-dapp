@@ -7,11 +7,12 @@ use core::cell::RefCell;
 use core::convert::TryFrom;
 use dfn_candid::Candid;
 use dfn_core::{api::trap_with, stable};
-use ic_stable_structures::memory_manager::{MemoryId, MemoryManager};
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use on_wire::{FromWire, IntoWire};
+use partitions::Partitions;
 #[cfg(test)]
 pub mod tests;
+pub mod partitions;
 
 #[derive(Default, Debug, Eq, PartialEq)]
 pub struct State {
@@ -41,61 +42,6 @@ thread_local! {
     pub static STATE: State = State::default();
 }
 
-/// Memory layout consisting of a memory manager and some virtual memory.
-struct Partitions {
-    pub memory_manager: MemoryManager<DefaultMemoryImpl>,
-}
-impl Partitions {
-    /// The partition containing metadata such as schema version.
-    pub const METADATA_MEMORY_ID: MemoryId = MemoryId::new(0);
-    /// The partition containing heap data
-    pub const HEAP_MEMORY_ID: MemoryId = MemoryId::new(1);
-
-    /// Determines whether the given memory is managed by a memory manager.
-    fn is_managed(memory: &DefaultMemoryImpl) -> bool {
-        let memory_pages = memory.size();
-        if memory_pages == 0 {
-            return false;
-        }
-        // TODO: This is private in ic-stable-structures.  We should make it public, or have a public method for determining whether there is a memory manager at a given offset.
-        const MEMORY_MANAGER_MAGIC_BYTES: &[u8; 3] = b"MGR"; // From the spec: https://docs.rs/ic-stable-structures/0.6.0/ic_stable_structures/memory_manager/struct.MemoryManager.html#v1-layout
-        let mut actual_first_bytes = [0u8; MEMORY_MANAGER_MAGIC_BYTES.len()];
-        memory.read(0, &mut actual_first_bytes);
-        actual_first_bytes == *MEMORY_MANAGER_MAGIC_BYTES
-    }
-    /// Gets a partition.
-    fn get(&self, memory_id: MemoryId) -> DefaultMemoryImpl {
-        self.memory_manager.get(memory_id)
-    }
-}
-
-impl From<DefaultMemoryImpl> for Partitions {
-    /// Gets an existing memory manager, if there is one.  If not, creates a new memory manager,
-    /// obliterating any existing memory.
-    ///
-    /// Note: This is equivalent to `MemoryManager::init()`.
-    fn from(memory: DefaultMemoryImpl) -> Self {
-        let memory_manager = MemoryManager::init(memory);
-        Partitions { memory_manager }
-    }
-}
-
-/// Gets an existing memory manager, if there is one.  If not, returns the unmodified memory.
-///
-/// Typical usage:
-/// - The canister is upgraded.
-/// - The stable memory may contain a memory manager _or_ serialized heap data directly in raw memory.
-/// - This method gets the memory manager while being non-destructive if there is none.
-impl TryFrom<DefaultMemoryImpl> for Partitions {
-    type Error = DefaultMemoryImpl;
-    fn try_from(memory: DefaultMemoryImpl) -> Result<Self, Self::Error> {
-        if Self::is_managed(&memory) {
-            Ok(Self::from(memory))
-        } else {
-            Err(memory)
-        }
-    }
-}
 
 /// Loads state from given memory partitions.
 ///
@@ -105,16 +51,18 @@ impl TryFrom<DefaultMemoryImpl> for Partitions {
 /// The state structure then owns everything on the heap and in stable memory.
 impl From<Partitions> for State {
     fn from(partitions: Partitions) -> Self {
-        let memory_manager = partitions.memory_manager;
         let metadata_memory = partitions.get(Partitions::METADATA_MEMORY_ID);
-        let schema = Self::schema_version_from_memory(metadata_memory);
-        match schema {
-            None | Some(SchemaLabel::Map) => Self::recover_state_from_map(partitions.get(Partitions::HEAP_MEMORY_ID)),
-            Some(SchemaLabel::AccountsInStableMemory) => {
-                let state = State::from_candid_memory(memory_manager.get(MemoryId::new(1)));
-                state.partitions = Some(partitions);
-            }
-        }
+        let schema = Self::schema_version_from_memory(&metadata_memory);
+        unimplemented!()
+        /*
+                match schema {
+                    None | Some(SchemaLabel::Map) => Self::recover_state_from_map(partitions.get(Partitions::HEAP_MEMORY_ID)),
+                    Some(SchemaLabel::AccountsInStableMemory) => {
+                        let state = State::from_candid_memory(memory_manager.get(MemoryId::new(1)));
+                        state.partitions = Some(partitions);
+                    }
+                }
+        */
     }
 }
 
@@ -172,6 +120,8 @@ impl State {
     /// - Then, deploy a release that writes the new schema.
     /// This way it is possible to roll back after deploying the new schema.
     pub fn post_upgrade(args_schema: Option<SchemaLabel>) -> Self {
+        unimplemented!()
+        /*
         // If we are unable to read the schema label, we assume that we have just the heap data serialized as candid.
         let current_schema = Self::schema_version_from_stable_memory().unwrap_or(SchemaLabel::Map);
         let desired_schema = args_schema.unwrap_or(current_schema);
@@ -199,6 +149,7 @@ impl State {
                 unreachable!();
             }
         }
+        */
     }
     /// Save any unsaved state to stable memory.
     pub fn pre_upgrade(&self) {
@@ -248,6 +199,8 @@ mod accounts_in_stable_memory {
     }
     /// Create the state from stable memory in the `SchemaLabel::AccountsInStableMemory` format.
     pub fn recover_from_stable_memory(memory: DefaultMemoryImpl) -> State {
+        unimplemented!()
+        /*
         let memory = get_heap_memory();
         let candid_len = {
             let mut length_field = [0u8; 8];
@@ -260,6 +213,7 @@ mod accounts_in_stable_memory {
             trap_with(&format!("Decoding stable memory failed. Error: {e:?}"));
             unreachable!();
         })
+        */
     }
     /// Gets the stable memory partition for saving the heap.
     fn get_heap_memory() -> impl Memory {
@@ -270,9 +224,12 @@ mod accounts_in_stable_memory {
 
 impl From<DefaultMemoryImpl> for State {
     fn from(memory: DefaultMemoryImpl) -> Self {
+        unimplemented!()
+        /*
         match Partitions::from(memory) {
             Ok(partitions) => Self::from(partitions),
             Err(memory) => Self::recover_state_from_memory(memory),
         }
+        */
     }
 }
