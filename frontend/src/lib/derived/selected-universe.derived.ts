@@ -85,18 +85,24 @@ export const isCkBTCUniverseStore = derived(
   ($selectedProjectId: Principal) => isUniverseCkBTC($selectedProjectId)
 );
 
-/**
- * Is the selected universe an ICRC Token?
- */
-export const isIcrcTokenUniverseStore = derived(
+export const selectedIcrcTokenUniverseIdStore = derived(
   [pageUniverseIdStore, pageStore, icrcCanistersStore],
   ([canisterId, page, icrcTokensCanisters]: [
     Principal,
     Page,
     IcrcCanistersStoreData,
   ]) =>
-    isNonGovernanceTokenPath(page) &&
-    nonNullish(icrcTokensCanisters[canisterId.toText()])
+    isNonGovernanceTokenPath(page)
+      ? icrcTokensCanisters[canisterId.toText()]?.ledgerCanisterId
+      : undefined
+);
+
+/**
+ * Is the selected universe an ICRC Token?
+ */
+export const isIcrcTokenUniverseStore = derived(
+  selectedIcrcTokenUniverseIdStore,
+  (canisterId) => nonNullish(canisterId)
 );
 
 export const selectedUniverseStore: Readable<Universe> = derived(
