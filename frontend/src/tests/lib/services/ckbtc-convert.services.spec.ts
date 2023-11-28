@@ -9,8 +9,8 @@ import {
   convertCkBTCToBtcIcrc2,
   retrieveBtc,
 } from "$lib/services/ckbtc-convert.services";
-import { loadCkBTCAccountTransactions } from "$lib/services/ckbtc-transactions.services";
 import { loadCkBTCWithdrawalAccount } from "$lib/services/ckbtc-withdrawal-accounts.services";
+import { loadWalletTransactions } from "$lib/services/wallet-transactions.services";
 import { bitcoinConvertBlockIndexes } from "$lib/stores/bitcoin.store";
 import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-withdrawal-accounts.store";
 import * as toastsStore from "$lib/stores/toasts.store";
@@ -221,14 +221,14 @@ describe("ckbtc-convert-services", () => {
           it("should load transactions and withdrawal account", async () => {
             const updateProgressSpy = vi.fn();
             expect(loadCkBTCAccountsSpy).toBeCalledTimes(0);
-            expect(loadCkBTCAccountTransactions).toBeCalledTimes(0);
+            expect(loadWalletTransactions).toBeCalledTimes(0);
             expect(loadCkBTCWithdrawalAccount).toBeCalledTimes(0);
 
             await convert(updateProgressSpy);
 
             // We only test that the call is made here. Test should be covered by its respective service.
             expect(loadCkBTCAccountsSpy).not.toBeCalled();
-            expect(loadCkBTCAccountTransactions).toBeCalledTimes(1);
+            expect(loadWalletTransactions).toBeCalledTimes(1);
             expect(loadCkBTCWithdrawalAccount).toBeCalledTimes(1);
 
             expectAllStepsPerformed(updateProgressSpy);
@@ -421,7 +421,7 @@ describe("ckbtc-convert-services", () => {
       });
 
       // We only test that the call is made here. Test should be covered by its respective service.
-      expect(loadCkBTCAccountTransactions).not.toBeCalled();
+      expect(loadWalletTransactions).not.toBeCalled();
       expect(loadCkBTCWithdrawalAccount).toBeCalled();
 
       expectStepsPerformed({
@@ -476,7 +476,7 @@ describe("ckbtc-convert-services", () => {
         updateProgress: vi.fn(),
       });
 
-      expect(loadCkBTCAccountTransactions).not.toBeCalled();
+      expect(loadWalletTransactions).not.toBeCalled();
     });
 
     it("should reload withdrawal account on retrieve btc error too", async () => {
@@ -502,7 +502,7 @@ describe("ckbtc-convert-services", () => {
         updateProgress: vi.fn(),
       });
 
-      expect(loadCkBTCAccountTransactions).not.toBeCalled();
+      expect(loadWalletTransactions).not.toBeCalled();
     });
   });
 
@@ -573,7 +573,7 @@ describe("ckbtc-convert-services", () => {
       expect(approveTransferSpy).toBeCalledTimes(1);
       expect(retrieveBtcSpy).toBeCalledTimes(0);
       expect(loadCkBTCWithdrawalAccount).toBeCalledTimes(0);
-      expect(loadCkBTCAccountTransactions).toBeCalledTimes(0);
+      expect(loadWalletTransactions).toBeCalledTimes(0);
       expect(loadCkBTCAccountsSpy).toBeCalledTimes(0);
     });
 
@@ -605,7 +605,7 @@ describe("ckbtc-convert-services", () => {
       expect(approveTransferSpy).toBeCalledTimes(1);
       expect(retrieveBtcSpy).toBeCalledTimes(1);
       expect(loadCkBTCWithdrawalAccount).toBeCalledTimes(0);
-      expect(loadCkBTCAccountTransactions).toBeCalledTimes(0);
+      expect(loadWalletTransactions).toBeCalledTimes(0);
       expect(loadCkBTCAccountsSpy).toBeCalledTimes(0);
     });
 
@@ -637,7 +637,7 @@ describe("ckbtc-convert-services", () => {
         universeId: params.universeId,
       });
 
-      expect(loadCkBTCAccountTransactions).toBeCalledWith({
+      expect(loadWalletTransactions).toBeCalledWith({
         account: params.source,
         canisterId: params.universeId,
         indexCanisterId: mockCkBTCAdditionalCanisters.indexCanisterId,
@@ -650,7 +650,7 @@ describe("ckbtc-convert-services", () => {
       expect(approveTransferSpy).toBeCalledTimes(1);
       expect(retrieveBtcSpy).toBeCalledTimes(1);
       expect(loadCkBTCWithdrawalAccount).toBeCalledTimes(1);
-      expect(loadCkBTCAccountTransactions).toBeCalledTimes(1);
+      expect(loadWalletTransactions).toBeCalledTimes(1);
       expect(loadCkBTCAccountsSpy).toBeCalledTimes(1);
     });
 
@@ -683,7 +683,7 @@ describe("ckbtc-convert-services", () => {
       expect(approveTransferSpy).toBeCalledTimes(1);
       expect(retrieveBtcSpy).toBeCalledTimes(1);
       expect(loadCkBTCWithdrawalAccount).toBeCalledTimes(1);
-      expect(loadCkBTCAccountTransactions).toBeCalledTimes(1);
+      expect(loadWalletTransactions).toBeCalledTimes(1);
       expect(loadCkBTCAccountsSpy).toBeCalledTimes(1);
 
       expect(await convertPromise).toEqual({ success: true });
@@ -718,7 +718,7 @@ describe("ckbtc-convert-services", () => {
       expect(approveTransferSpy).toBeCalledTimes(1);
       expect(retrieveBtcSpy).toBeCalledTimes(1);
       expect(loadCkBTCWithdrawalAccount).toBeCalledTimes(1);
-      expect(loadCkBTCAccountTransactions).toBeCalledTimes(1);
+      expect(loadWalletTransactions).toBeCalledTimes(1);
 
       expect(await convertPromise).toEqual({ success: false });
       expect(spyOnToastsError).toBeCalledTimes(1);

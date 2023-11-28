@@ -10,18 +10,21 @@ import type { Agent, Identity } from "@dfinity/agent";
 import { IcrcIndexCanister } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 
-export const getCkBTCTransactions = async ({
+/**
+ * TODO: move to icrc-index once Sns migrated to icrcStore
+ */
+export const getTransactions = async ({
   identity,
   indexCanisterId: canisterId,
   ...rest
 }: Omit<GetTransactionsParams, "getTransactions" | "canisterId"> & {
   indexCanisterId: Principal;
 }): Promise<GetTransactionsResponse> => {
-  logWithTimestamp("Getting ckBTC accounts transactions: call...");
+  logWithTimestamp("Getting wallet transactions: call...");
 
   const {
     canister: { getTransactions },
-  } = await ckBTCIndexCanister({ identity, canisterId });
+  } = await indexCanister({ identity, canisterId });
 
   const results = await getIcrcTransactions({
     identity,
@@ -29,12 +32,12 @@ export const getCkBTCTransactions = async ({
     getTransactions,
   });
 
-  logWithTimestamp("Getting ckBTC account transactions: done");
+  logWithTimestamp("Getting wallet transactions: done");
 
   return results;
 };
 
-const ckBTCIndexCanister = async ({
+const indexCanister = async ({
   identity,
   canisterId,
 }: {

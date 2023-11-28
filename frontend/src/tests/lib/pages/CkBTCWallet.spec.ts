@@ -6,8 +6,8 @@ import {
   CKTESTBTC_MINTER_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
-import { CKBTC_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/ckbtc.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { WALLET_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/wallet.constants";
 import CkBTCWallet from "$lib/pages/CkBTCWallet.svelte";
 import * as services from "$lib/services/ckbtc-accounts.services";
 import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
@@ -301,7 +301,7 @@ describe("CkBTCWallet", () => {
       await runResolvedPromises();
       expect(icrcLedgerApi.icrcTransfer).toBeCalledTimes(1);
 
-      await advanceTime(CKBTC_TRANSACTIONS_RELOAD_DELAY + 1000);
+      await advanceTime(WALLET_TRANSACTIONS_RELOAD_DELAY + 1000);
 
       expect(icrcIndexApi.getTransactions).toBeCalledTimes(2);
     });
@@ -361,7 +361,7 @@ describe("CkBTCWallet", () => {
 
         expect(icrcIndexApi.getTransactions).toBeCalledTimes(2);
 
-        await advanceTime(CKBTC_TRANSACTIONS_RELOAD_DELAY + 1000);
+        await advanceTime(WALLET_TRANSACTIONS_RELOAD_DELAY + 1000);
 
         // This additional loading of transactions is not necessary.
         // TODO: Remove the double reloading and change the expected number of
@@ -425,7 +425,7 @@ describe("CkBTCWallet", () => {
 
         expect(icrcIndexApi.getTransactions).toBeCalledTimes(2);
 
-        await advanceTime(CKBTC_TRANSACTIONS_RELOAD_DELAY + 1000);
+        await advanceTime(WALLET_TRANSACTIONS_RELOAD_DELAY + 1000);
 
         // This additional loading of transactions is not necessary.
         // TODO: Remove the double reloading and change the expected number of

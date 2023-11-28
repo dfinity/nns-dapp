@@ -23,6 +23,9 @@ export interface GetTransactionsResponse
   oldestTxId?: bigint;
 }
 
+/**
+ * @deprecated to be replaced with similar function from wallet-index.api
+ */
 export const getTransactions = async ({
   maxResults: max_results,
   start,

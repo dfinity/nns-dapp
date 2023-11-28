@@ -1,12 +1,12 @@
 import * as agent from "$lib/api/agent.api";
-import { getCkBTCTransactions } from "$lib/api/ckbtc-index.api";
+import { getTransactions } from "$lib/api/wallet-index.api";
 import { CKBTC_INDEX_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import type { HttpAgent } from "@dfinity/agent";
 import { IcrcIndexCanister, type IcrcTransaction } from "@dfinity/ledger-icrc";
 import { mock } from "vitest-mock-extended";
 
-describe("ckbtc-index api", () => {
+describe("wallet-index api", () => {
   const indexCanisterMock = mock<IcrcIndexCanister>();
 
   beforeAll(() => {
@@ -36,7 +36,7 @@ describe("ckbtc-index api", () => {
     burn: [],
   } as unknown as IcrcTransaction;
 
-  describe("getCkBTCTransactions", () => {
+  describe("getTransactions", () => {
     it("should returns transactions", async () => {
       const id = BigInt(1);
 
@@ -46,7 +46,7 @@ describe("ckbtc-index api", () => {
           oldest_tx_id: [],
         });
 
-      const results = await getCkBTCTransactions(params);
+      const results = await getTransactions(params);
 
       expect(results.transactions.length).toBeGreaterThan(0);
 
@@ -63,7 +63,7 @@ describe("ckbtc-index api", () => {
         throw new Error();
       });
 
-      const call = () => getCkBTCTransactions(params);
+      const call = () => getTransactions(params);
 
       expect(call).rejects.toThrowError();
     });

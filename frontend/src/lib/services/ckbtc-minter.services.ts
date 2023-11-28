@@ -3,7 +3,7 @@ import {
   getBTCAddress as getBTCAddressAPI,
   updateBalance as updateBalanceAPI,
 } from "$lib/api/ckbtc-minter.api";
-import { CKBTC_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/ckbtc.constants";
+import { WALLET_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/wallet.constants";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
@@ -122,7 +122,7 @@ export const updateBalance = async ({
 
     // Workaround. Ultimately we want to poll to update balance and list of transactions
     await waitForMilliseconds(
-      deferReload ? CKBTC_TRANSACTIONS_RELOAD_DELAY : 0
+      deferReload ? WALLET_TRANSACTIONS_RELOAD_DELAY : 0
     );
 
     uiIndicators &&

@@ -5,9 +5,9 @@
   import type { Account } from "$lib/types/account";
   import type { UiTransaction } from "$lib/types/transaction";
   import {
-    loadCkBTCAccountNextTransactions,
-    loadCkBTCAccountTransactions,
-  } from "$lib/services/ckbtc-transactions.services";
+    loadWalletNextTransactions,
+    loadWalletTransactions,
+  } from "$lib/services/wallet-transactions.services";
   import type { IcrcTransactionData } from "$lib/types/transaction";
   import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
   import { i18n } from "$lib/stores/i18n";
@@ -22,7 +22,7 @@
   import { onMount } from "svelte";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import IcrcWalletTransactionsObserver from "$lib/components/accounts/IcrcWalletTransactionsObserver.svelte";
-  import { CKBTC_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/ckbtc.constants";
+  import { WALLET_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/wallet.constants";
   import { waitForMilliseconds } from "$lib/utils/utils";
   import { nonNullish } from "@dfinity/utils";
 
@@ -36,7 +36,7 @@
 
   const loadNextTransactions = async () => {
     loading = true;
-    await loadCkBTCAccountNextTransactions({
+    await loadWalletNextTransactions({
       account,
       canisterId: universeId,
       indexCanisterId,
@@ -61,9 +61,9 @@
     });
 
     // We optimistically try to fetch the new transaction the user just transferred by delaying the reload of the transactions.
-    await waitForMilliseconds(CKBTC_TRANSACTIONS_RELOAD_DELAY);
+    await waitForMilliseconds(WALLET_TRANSACTIONS_RELOAD_DELAY);
 
-    await loadCkBTCAccountTransactions({
+    await loadWalletTransactions({
       account,
       canisterId: universeId,
       indexCanisterId,
