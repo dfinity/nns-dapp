@@ -7,12 +7,10 @@
   import WalletPage from "$lib/components/accounts/WalletPage.svelte";
   import { writable } from "svelte/store";
   import type { WalletStore } from "$lib/types/wallet.context";
-  import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
   import IcrcWalletTransactionsList from "$lib/components/accounts/IcrcWalletTransactionsList.svelte";
   import type { CanisterId } from "$lib/types/canister";
   import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
-  import { IcrcTokenMetadata } from "$lib/types/icrc";
-  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { tokensStore } from "$lib/stores/tokens.store";
 
   export let accountIdentifier: string | undefined | null = undefined;
