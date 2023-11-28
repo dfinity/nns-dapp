@@ -15,8 +15,13 @@
   import AccountsModals from "$lib/modals/accounts/AccountsModals.svelte";
   import CkBTCAccountsModals from "$lib/modals/accounts/CkBTCAccountsModals.svelte";
   import IcrcWallet from "$lib/pages/IcrcWallet.svelte";
+  import {onMount} from "svelte";
+  import {loadCkETHCanisters} from "$lib/services/cketh-canisters.services";
 
   export let accountIdentifier: string | undefined | null = undefined;
+
+  // TODO: refactor this should not be loaded explicitely within this component or Accounts
+  onMount(loadCkETHCanisters)
 
   layoutTitleStore.set({
     title: $i18n.wallet.title,
