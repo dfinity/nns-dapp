@@ -370,7 +370,7 @@ describe("Accounts", () => {
     expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(1);
   });
 
-  it("should render IcrcTokenAccounts component with ckETH enabled and universe ckETH", async () => {
+  it("should render IcrcTokenAccounts and IcrcTokenAccountsFooter component with ckETH enabled and universe ckETH", async () => {
     overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
 
     page.mock({
@@ -381,6 +381,7 @@ describe("Accounts", () => {
     const po = renderComponent();
 
     expect(await po.getIcrcTokenAccountsPo().isPresent()).toBe(true);
+    expect(await po.getIcrcTokenAccountsFooterPo().isPresent()).toBe(true);
   });
 
   it("should render sns project name", () => {

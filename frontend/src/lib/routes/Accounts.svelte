@@ -35,6 +35,7 @@
   import { onMount } from "svelte";
   import { loadCkETHCanisters } from "$lib/services/cketh-canisters.services";
   import IcrcTokenAccounts from "$lib/pages/IcrcTokenAccounts.svelte";
+  import IcrcTokenAccountsFooter from "$lib/components/accounts/IcrcTokenAccountsFooter.svelte";
 
   // TODO: This component is mounted twice. Understand why and fix it.
 
@@ -121,6 +122,8 @@
     <NnsAccountsFooter />
   {:else if $isCkBTCUniverseStore}
     <CkBTCAccountsFooter />
+  {:else if $isIcrcTokenUniverseStore}
+    <IcrcTokenAccountsFooter />
   {:else if nonNullish($snsProjectSelectedStore)}
     <SnsAccountsFooter />
   {/if}
