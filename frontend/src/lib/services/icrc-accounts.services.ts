@@ -1,4 +1,5 @@
 import {
+  icrcTransfer,
   queryIcrcBalance,
   queryIcrcToken,
   type IcrcTransferParams,
@@ -211,4 +212,35 @@ export const transferTokens = async ({
 
     return { blockIndex: undefined };
   }
+};
+
+export const icrcTransferTokens = async ({
+  source,
+  destinationAddress,
+  amount,
+  fee,
+  ledgerCanisterId,
+}: IcrcTransferTokensUserParams & {
+  fee: bigint;
+  ledgerCanisterId: Principal;
+}): Promise<{ blockIndex: IcrcBlockIndex | undefined }> => {
+  return transferTokens({
+    source,
+    amount,
+    fee,
+    destinationAddress,
+    transfer: async (
+      params: {
+        identity: Identity;
+      } & IcrcTransferParams
+    ) =>
+      await icrcTransfer({
+        ...params,
+        canisterId: ledgerCanisterId,
+      }),
+    reloadAccounts: async () =>
+      await loadIcrcAccount({ ledgerCanisterId, certified: true }),
+    // TODO: Reload transactions after transfer in Wallet page
+    reloadTransactions: () => Promise.resolve(),
+  });
 };
