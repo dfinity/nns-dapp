@@ -8,17 +8,15 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
 describe("IcrcTransactionList", () => {
-  const renderComponent = (
-    {
-      transactions,
-      loading,
-      completed = false,
-    }: {
-      transactions: UiTransaction[];
-      loading?: boolean;
-      completed?: boolean;
-    }
-  ) => {
+  const renderComponent = ({
+    transactions,
+    loading,
+    completed = false,
+  }: {
+    transactions: UiTransaction[];
+    loading?: boolean;
+    completed?: boolean;
+  }) => {
     const { container } = render(IcrcTransactionsList, {
       props: {
         transactions,
