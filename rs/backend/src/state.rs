@@ -45,6 +45,7 @@ struct Partitions {
     pub memory_manager: MemoryManager<DefaultMemoryImpl>,
 }
 impl Partitions {
+    /// Determines whether the given memory is managed by a memory manager.
     fn is_managed(memory: &DefaultMemoryImpl) -> bool {
         let memory_pages = memory.size();
         if memory_pages == 0 {
@@ -56,14 +57,25 @@ impl Partitions {
         memory.read(0, &mut actual_first_bytes);
         actual_first_bytes == *MEMORY_MANAGER_MAGIC_BYTES
     }
-    pub fn init(memory: DefaultMemoryImpl) -> Self {
+}
+
+impl From<DefaultMemoryImpl> for Partitions {
+    /// Gets an existing memory manager, if there is one.  If not, creates a new memory manager,
+    /// obliterating any existing memory.
+    ///
+    /// Note: This is equivalent to `MemoryManager::init()`.
+    fn from(memory: DefaultMemoryImpl) -> Self {
         let memory_manager = MemoryManager::init(memory);
         Partitions { memory_manager }
     }
-    /// Gets an existing memory manager, if there is one.  If not, returns the unmodified memory.
-    pub fn from(memory: DefaultMemoryImpl) -> Result<Self, DefaultMemoryImpl> {
+}
+
+/// Gets an existing memory manager, if there is one.  If not, returns the unmodified memory.
+impl TryFrom<DefaultMemoryImpl> for Partitions {
+    type Error = DefaultMemoryImpl;
+    fn try_from(memory: DefaultMemoryImpl) -> Result<Self, Self::Error> {
         if Self::is_managed(&memory) {
-            Ok(Self::init(memory))
+            Ok(Self::from(memory))
         } else {
             Err(memory)
         }
@@ -177,7 +189,7 @@ impl State {
 
 // State from/to the `SchemaLabel::AccountsInStableMemory` format.
 mod accounts_in_stable_memory {
-    use super::{trap_with, StableState, State};
+    use super::{trap_with, Partitions, StableState, State};
     use ic_stable_structures::{
         memory_manager::{MemoryId, MemoryManager},
         DefaultMemoryImpl, Memory,
@@ -199,7 +211,7 @@ mod accounts_in_stable_memory {
         heap_memory.write(8, &bytes); // TODO: Prefix with size of memory.
     }
     /// Create the state from stable memory in the `SchemaLabel::AccountsInStableMemory` format.
-    pub fn recover_from_stable_memory() -> State {
+    pub fn recover_from_stable_memory(memory: DefaultMemoryImpl) -> State {
         let memory = get_heap_memory();
         let candid_len = {
             let mut length_field = [0u8; 8];
@@ -207,6 +219,7 @@ mod accounts_in_stable_memory {
             u64::from_be_bytes(length_field) as usize
         };
         let candid_bytes = vec![0u8; candid_len];
+        let partitions = Partitions::from(memory).unwrap(); // TODO: Refactor so that there is no unwrap.
         State::decode(candid_bytes).unwrap_or_else(|e| {
             trap_with(&format!("Decoding stable memory failed. Error: {e:?}"));
             unreachable!();
@@ -216,5 +229,30 @@ mod accounts_in_stable_memory {
     fn get_heap_memory() -> impl Memory {
         let mem_mgr = MemoryManager::init(DefaultMemoryImpl::default());
         mem_mgr.get(MemoryId::new(1)) // TODO: Define a const for the heap memory ID.
+    }
+}
+
+impl From<DefaultMemoryImpl> for State {
+    fn from(memory: DefaultMemoryImpl) -> Self {
+        match Partitions::from(memory) {
+            Ok(partitions) => Self::from(partitions),
+            Err(memory) => Self::recover_state_from_memory(memory),
+        }
+    }
+}
+
+impl From<Partitions> for State {
+    fn from(partitions: Partitions) -> Self {
+        let memory_manager = partitions.memory_manager;
+        let metadata_memory = memory_manager.get(MemoryId::new(0));
+        let schema = Self::schema_version_from_memory(memory);
+        match schema {
+            Some(SchemaLabel::Map) => Self::recover_state_from_map(memory_manager.get(MemoryId::new(1))),
+            Some(SchemaLabel::AccountsInStableMemory) => {
+                let state = State::from_candid_memory(memory_manager.get(MemoryId::new(1)));
+                state.partitions = Some(partitions);
+            }
+            None => Self::recover_state_from_memory(memory),
+        }
     }
 }
