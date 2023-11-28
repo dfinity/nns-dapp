@@ -72,7 +72,7 @@ impl From<DefaultMemoryImpl> for Partitions {
 //impl TryFrom<DefaultMemoryImpl> for Partitions {
 //    type Error = DefaultMemoryImpl;
 impl Partitions {
-    fn try_from(memory: DefaultMemoryImpl) -> Result<Self, DefaultMemoryImpl> {
+    pub fn try_from_memory(memory: DefaultMemoryImpl) -> Result<Self, DefaultMemoryImpl> {
         dfn_core::api::print(format!("START Partitions::try_from<DefaultMemoryImpl>: ()"));
         if Self::is_managed(&memory) {
             Ok(Self::from(memory))

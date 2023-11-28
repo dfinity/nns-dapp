@@ -78,7 +78,7 @@ impl From<Partitions> for State {
 impl From<DefaultMemoryImpl> for State {
     fn from(memory: DefaultMemoryImpl) -> Self {
         dfn_core::api::print(format!("START state::from<DefaultMemoryImpl>: ())"));
-        match Partitions::try_from(memory) {
+        match Partitions::try_from_memory(memory) {
             Ok(partitions) => Self::from(partitions),
             Err(_memory) => Self::recover_from_raw_memory(),
         }
@@ -131,8 +131,9 @@ impl State {
     /// - Deploy a release with a parser for the new schema.
     /// - Then, deploy a release that writes the new schema.
     /// This way it is possible to roll back after deploying the new schema.
-    pub fn post_upgrade(args_schema: Option<SchemaLabel>) -> Self {
-        dfn_core::api::print(format!("START state::post_upgrade"));
+    pub fn post_upgrade(requested_schema: Option<SchemaLabel>) -> Self {
+        dfn_core::api::print(format!("START state::post_upgrade to {requested_schema:?}"));
+
         Self::from(DefaultMemoryImpl::default())
 
         /*
