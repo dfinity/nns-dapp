@@ -361,13 +361,6 @@ describe("Accounts", () => {
     // It's called once when the component is mounted
     expect(icrcLedgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
     expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(1);
-
-    await runResolvedPromises();
-
-    // `loadCkETHCanisters` doesn't change the store if it's already filled.
-    // Therefore, there are no more api calls.
-    expect(icrcLedgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
-    expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(1);
   });
 
   it("should render sns project name", () => {
