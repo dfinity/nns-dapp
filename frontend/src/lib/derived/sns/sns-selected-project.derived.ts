@@ -1,4 +1,7 @@
-import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
+import {
+  isIcrcTokenUniverseStore,
+  selectedUniverseIdStore,
+} from "$lib/derived/selected-universe.derived";
 import {
   snsProjectsCommittedStore,
   snsProjectsStore,
@@ -12,13 +15,16 @@ import { derived, type Readable } from "svelte/store";
  * Returns undefined if the selected project is NNS or ckBTC, otherwise returns the selected project principal.
  */
 export const snsOnlyProjectStore = derived<
-  Readable<Principal>,
+  [Readable<Principal>, Readable<boolean>],
   Principal | undefined
->(selectedUniverseIdStore, ($selectedUniverseIdStore: Principal) =>
-  isUniverseNns($selectedUniverseIdStore) ||
-  isUniverseCkBTC($selectedUniverseIdStore)
-    ? undefined
-    : $selectedUniverseIdStore
+>(
+  [selectedUniverseIdStore, isIcrcTokenUniverseStore],
+  ([$selectedUniverseIdStore, isIcrcTokenUniverse]: [Principal, boolean]) =>
+    isUniverseNns($selectedUniverseIdStore) ||
+    isUniverseCkBTC($selectedUniverseIdStore) ||
+    isIcrcTokenUniverse
+      ? undefined
+      : $selectedUniverseIdStore
 );
 
 export const snsProjectSelectedStore: Readable<SnsFullProject | undefined> =

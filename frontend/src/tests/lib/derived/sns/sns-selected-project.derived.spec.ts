@@ -4,8 +4,11 @@ import {
   snsOnlyProjectStore,
   snsProjectSelectedStore,
 } from "$lib/derived/sns/sns-selected-project.derived";
+import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
+import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import {
   mockSnsSwapCommitment,
   principal,
@@ -23,6 +26,8 @@ describe("selected sns project derived stores", () => {
   });
 
   describe("snsOnlyProjectStore", () => {
+    const ledgerCanisterId = principal(0);
+
     beforeEach(() => {
       page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
       setSnsProjects([
@@ -31,6 +36,8 @@ describe("selected sns project derived stores", () => {
           lifecycle: SnsSwapLifecycle.Committed,
         },
       ]);
+      icrcCanistersStore.reset();
+      tokensStore.reset();
     });
 
     it("should be set by default undefined", () => {
@@ -56,6 +63,22 @@ describe("selected sns project derived stores", () => {
 
       const $store2 = get(snsOnlyProjectStore);
       expect($store2).toBeUndefined();
+    });
+
+    it("should return undefined if ICRC Token universe is selected", () => {
+      icrcCanistersStore.setCanisters({
+        ledgerCanisterId: ledgerCanisterId,
+        indexCanisterId: principal(3),
+      });
+      tokensStore.setTokens({
+        [ledgerCanisterId.toText()]: {
+          certified: true,
+          token: mockCkETHToken,
+        },
+      });
+      page.mock({ data: { universe: ledgerCanisterId.toText() } });
+
+      expect(get(snsOnlyProjectStore)).toBeUndefined();
     });
   });
 
