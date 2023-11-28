@@ -1,4 +1,4 @@
-//! State from/to a stable memory partition in the `SchemaLabel::Map` format.
+//! State from/to a stable memory partition in the `SchemaLabel::AccountsInStableMemory` format.
 use super::State;
 use crate::state::StableState;
 use dfn_core::api::trap_with;
@@ -6,9 +6,8 @@ use ic_stable_structures::memory_manager::VirtualMemory;
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
 
 impl State {
-    /// Save as Map in virtual memory.
-    /*
-    pub fn save_to_map(&self, memory: DefaultMemoryImpl) {
+    /// Save heap as candid in virtual memory.
+    pub fn save_heap_to_managed_memory(&self, memory: DefaultMemoryImpl) {
         let bytes = self.encode();
         let len = bytes.len();
         let length_field = u64::try_from(len)
@@ -22,9 +21,8 @@ impl State {
         memory.write(0, &length_field);
         memory.write(8, &bytes);
     }
-    */
     /// Create the state from stable memory in the `SchemaLabel::Map` format.
-    pub fn recover_from_map(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
+    pub fn recover_heap_from_managed_memory(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
         let candid_len = {
             let mut length_field = [0u8; 8];
             memory.read(0, &mut length_field);

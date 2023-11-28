@@ -11,8 +11,9 @@ use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use on_wire::{FromWire, IntoWire};
 use partitions::Partitions;
 
-pub mod in_raw_memory;
-pub mod in_virtual_memory_map;
+pub mod with_raw_memory;
+pub mod with_heap_in_virtual_memory;
+pub mod with_accounts_in_stable_memory;
 pub mod partitions;
 #[cfg(test)]
 pub mod tests;
@@ -68,7 +69,7 @@ impl From<Partitions> for State {
             Some(SchemaLabel::Map) => Self::recover_from_map(partitions.get(Partitions::HEAP_MEMORY_ID)),
             // Accounts are in stable structures in one partition, the rest of the heap is serialized as candid in another partition.
             Some(SchemaLabel::AccountsInStableMemory) => {
-                Self::recover_from_map(partitions.get(Partitions::HEAP_MEMORY_ID))
+                Self::recover_heap_from_managed_memory(partitions.get(Partitions::HEAP_MEMORY_ID))
             }
         }
     }
@@ -171,7 +172,7 @@ impl State {
         let schema = self.accounts_store.borrow().schema_label();
         match schema {
             SchemaLabel::Map => self.save_to_raw_memory(),
-            SchemaLabel::AccountsInStableMemory => unimplemented!(), // TODO: Better naming for this.  save_heap_to_managed_memory()?
+            SchemaLabel::AccountsInStableMemory => self.save_heap_to_managed_memory(DefaultMemoryImpl::default()), // TODO: Better naming for this.  save_heap_to_managed_memory()? TODO: Don't get managed memory afresh - get it from inside the state.
         }
 
     }
