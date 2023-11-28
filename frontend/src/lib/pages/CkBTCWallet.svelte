@@ -7,10 +7,6 @@
   import { findAccount, hasAccounts } from "$lib/utils/accounts.utils";
   import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
   import { TokenAmount, isNullish, nonNullish } from "@dfinity/utils";
-  import {
-    loadCkBTCAccounts,
-    syncCkBTCAccounts,
-  } from "$lib/services/ckbtc-accounts.services";
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { i18n } from "$lib/stores/i18n";
@@ -36,6 +32,10 @@
   import IcrcBalancesObserver from "$lib/components/accounts/IcrcBalancesObserver.svelte";
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
   import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
+  import {
+    loadAccounts,
+    syncAccounts,
+  } from "$lib/services/wallet-accounts.services";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
@@ -54,7 +54,7 @@
       return;
     }
 
-    await loadCkBTCAccounts({ universeId: $selectedCkBTCUniverseIdStore });
+    await loadAccounts({ universeId: $selectedCkBTCUniverseIdStore });
     await loadAccount($selectedCkBTCUniverseIdStore);
 
     reloadTransactions();
@@ -136,7 +136,7 @@
     }
 
     // Maybe the accounts were just not loaded yet in store, so we try to load the accounts in store
-    await syncCkBTCAccounts({ universeId });
+    await syncAccounts({ universeId });
 
     // And finally try to set the account again
     await loadAccount(universeId);

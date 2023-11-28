@@ -14,7 +14,7 @@ import {
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import Accounts from "$lib/routes/Accounts.svelte";
 import { uncertifiedLoadSnsAccountsBalances } from "$lib/services/sns-accounts-balance.services";
-import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-accounts.services";
+import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-uncertified-accounts.services";
 import { authStore } from "$lib/stores/auth.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";

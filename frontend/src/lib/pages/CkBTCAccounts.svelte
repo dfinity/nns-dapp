@@ -1,6 +1,5 @@
 <script lang="ts">
   import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-  import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import AccountCard from "$lib/components/accounts/AccountCard.svelte";
   import { i18n } from "$lib/stores/i18n";
@@ -16,6 +15,7 @@
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
   import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
   import IcrcBalancesObserver from "$lib/components/accounts/IcrcBalancesObserver.svelte";
+  import { syncAccounts as syncWalletAccounts } from "$lib/services/wallet-accounts.services";
 
   let loading = false;
 
@@ -37,7 +37,7 @@
     }
 
     loading = true;
-    await syncCkBTCAccounts({ universeId: selectedCkBTCUniverseId });
+    await syncWalletAccounts({ universeId: selectedCkBTCUniverseId });
     loading = false;
   };
 

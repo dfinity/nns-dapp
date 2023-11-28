@@ -1,7 +1,7 @@
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCAccounts from "$lib/pages/CkBTCAccounts.svelte";
-import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
+import { syncAccounts } from "$lib/services/wallet-accounts.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { formatToken } from "$lib/utils/token.utils";
@@ -81,7 +81,7 @@ describe("CkBTCAccounts", () => {
     it("should not load ckBTC accounts", () => {
       render(CkBTCAccounts);
 
-      expect(syncCkBTCAccounts).not.toHaveBeenCalled();
+      expect(syncAccounts).not.toHaveBeenCalled();
     });
 
     it("should render a main Account", async () => {
@@ -123,7 +123,7 @@ describe("CkBTCAccounts", () => {
     it("should call load ckBTC accounts", () => {
       render(CkBTCAccounts);
 
-      expect(syncCkBTCAccounts).toHaveBeenCalled();
+      expect(syncAccounts).toHaveBeenCalled();
     });
 
     it("should render skeletons while loading", () => {
