@@ -168,18 +168,11 @@ impl State {
     }
     /// Save any unsaved state to stable memory.
     pub fn pre_upgrade(&self) {
-        self.save_to_raw_memory()
-    }
-    /*
-    /// Save any unsaved state to stable memory.
-    pub fn save_to(&self, partitions: &Partitions) {
-        // I feel that the schema should not be specified all the way down here.
         let schema = self.accounts_store.borrow().schema_label();
         match schema {
             SchemaLabel::Map => self.save_to_raw_memory(),
-            SchemaLabel::AccountsInStableMemory => unimplemented!(), // TODO: Betetr naming for this.  save_heap_to_managed_memory()?
+            SchemaLabel::AccountsInStableMemory => unimplemented!(), // TODO: Better naming for this.  save_heap_to_managed_memory()?
         }
 
     }
-    */
 }
