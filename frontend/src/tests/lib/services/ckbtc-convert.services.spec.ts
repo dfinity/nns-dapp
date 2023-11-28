@@ -1,7 +1,7 @@
 import * as agent from "$lib/api/agent.api";
-import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
+import * as ledgerApi from "$lib/api/wallet-ledger.api";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import * as ckbtcAccountsServices from "$lib/services/ckbtc-accounts.services";
 import {
@@ -153,7 +153,7 @@ describe("ckbtc-convert-services", () => {
           minterCanisterMock.retrieveBtc.mockReset();
           tokensStore.setTokens(mockTokens);
           transferSpy.mockResolvedValue(123n);
-          vi.spyOn(ledgerApi, "getCkBTCAccount").mockImplementation(() =>
+          vi.spyOn(ledgerApi, "getAccount").mockImplementation(() =>
             Promise.resolve(mockCkBTCMainAccount)
           );
         });

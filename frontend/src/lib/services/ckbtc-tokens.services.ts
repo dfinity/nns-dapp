@@ -1,4 +1,4 @@
-import { getCkBTCToken } from "$lib/api/ckbtc-ledger.api";
+import { getToken } from "$lib/api/wallet-ledger.api";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
@@ -47,7 +47,7 @@ export const loadCkBTCToken = async ({
     strategy: FORCE_CALL_STRATEGY,
     identityType: "current",
     request: ({ certified, identity }) =>
-      getCkBTCToken({
+      getToken({
         identity,
         certified,
         canisterId: universeId,

@@ -3,10 +3,10 @@ import { icrcTransfer } from "$lib/api/icrc-ledger.api";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
-import { getCkBTCAccounts } from "$lib/services/ckbtc-accounts-loader.services";
 import { loadCkBTCToken } from "$lib/services/ckbtc-tokens.services";
 import { transferTokens } from "$lib/services/icrc-accounts.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
+import { getAccounts } from "$lib/services/wallet-loader.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
@@ -29,7 +29,7 @@ export const loadCkBTCAccounts = async ({
   return queryAndUpdate<Account[], unknown>({
     strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
-      getCkBTCAccounts({ identity, certified, universeId }),
+      getAccounts({ identity, certified, universeId }),
     onLoad: ({ response: accounts, certified }) =>
       icrcAccountsStore.set({
         universeId,

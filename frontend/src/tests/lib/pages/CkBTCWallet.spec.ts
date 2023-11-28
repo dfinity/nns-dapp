@@ -1,7 +1,7 @@
-import * as ckbtcLedgerApi from "$lib/api/ckbtc-ledger.api";
 import * as ckbtcMinterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
+import * as ckbtcLedgerApi from "$lib/api/wallet-ledger.api";
 import {
   CKTESTBTC_MINTER_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
@@ -65,13 +65,13 @@ vi.mock("$lib/services/worker-transactions.services", () => ({
   ),
 }));
 
-vi.mock("$lib/api/ckbtc-ledger.api");
+vi.mock("$lib/api/wallet-ledger.api");
 vi.mock("$lib/api/ckbtc-minter.api");
 vi.mock("$lib/api/icrc-ledger.api");
 vi.mock("$lib/api/icrc-index.api");
 
 const blockedApiPaths = [
-  "$lib/api/ckbtc-ledger.api",
+  "$lib/api/wallet-ledger.api",
   "$lib/api/ckbtc-minter.api",
   "$lib/api/icrc-ledger.api",
   "$lib/api/icrc-index.api",
@@ -157,12 +157,12 @@ describe("CkBTCWallet", () => {
         routeId: AppPath.Wallet,
       });
 
-      vi.mocked(ckbtcLedgerApi.getCkBTCAccount).mockImplementation(() => {
+      vi.mocked(ckbtcLedgerApi.getAccount).mockImplementation(() => {
         return new Promise<Account>((resolve) => {
           resolveAccounts = resolve;
         });
       });
-      vi.mocked(ckbtcLedgerApi.getCkBTCToken).mockResolvedValue(mockCkBTCToken);
+      vi.mocked(ckbtcLedgerApi.getToken).mockResolvedValue(mockCkBTCToken);
     });
 
     it("should render a spinner while loading", async () => {
@@ -175,8 +175,8 @@ describe("CkBTCWallet", () => {
 
     it("should call to load ckBTC accounts", async () => {
       await renderWallet();
-      expect(ckbtcLedgerApi.getCkBTCAccount).toBeCalled();
-      expect(ckbtcLedgerApi.getCkBTCToken).toBeCalled();
+      expect(ckbtcLedgerApi.getAccount).toBeCalled();
+      expect(ckbtcLedgerApi.getToken).toBeCalled();
     });
   });
 
@@ -215,7 +215,7 @@ describe("CkBTCWallet", () => {
           return Promise.resolve({ block_index: 3n });
         }
       );
-      vi.mocked(ckbtcLedgerApi.getCkBTCAccount).mockImplementation(() => {
+      vi.mocked(ckbtcLedgerApi.getAccount).mockImplementation(() => {
         return Promise.resolve({
           ...mockCkBTCMainAccount,
           ...(afterTransfer
