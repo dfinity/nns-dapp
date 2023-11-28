@@ -3,12 +3,13 @@ use crate::accounts_store::AccountsStore;
 use crate::assets::AssetHashes;
 use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
+use core::cell::RefCell;
+use core::convert::TryFrom;
 use dfn_candid::Candid;
 use dfn_core::{api::trap_with, stable};
-use ic_stable_structures::memory_manager::MemoryManager;
+use ic_stable_structures::memory_manager::{MemoryId, MemoryManager};
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use on_wire::{FromWire, IntoWire};
-use std::cell::RefCell;
 #[cfg(test)]
 pub mod tests;
 
@@ -45,6 +46,11 @@ struct Partitions {
     pub memory_manager: MemoryManager<DefaultMemoryImpl>,
 }
 impl Partitions {
+    /// The partition containing metadata such as schema version.
+    pub const METADATA_MEMORY_ID: MemoryId = MemoryId::new(0);
+    /// The partition containing heap data
+    pub const HEAP_MEMORY_ID: MemoryId = MemoryId::new(1);
+
     /// Determines whether the given memory is managed by a memory manager.
     fn is_managed(memory: &DefaultMemoryImpl) -> bool {
         let memory_pages = memory.size();
@@ -56,6 +62,10 @@ impl Partitions {
         let mut actual_first_bytes = [0u8; MEMORY_MANAGER_MAGIC_BYTES.len()];
         memory.read(0, &mut actual_first_bytes);
         actual_first_bytes == *MEMORY_MANAGER_MAGIC_BYTES
+    }
+    /// Gets a partition.
+    fn get(&self, memory_id: MemoryId) -> DefaultMemoryImpl {
+        self.memory_manager.get(memory_id)
     }
 }
 
@@ -71,6 +81,11 @@ impl From<DefaultMemoryImpl> for Partitions {
 }
 
 /// Gets an existing memory manager, if there is one.  If not, returns the unmodified memory.
+///
+/// Typical usage:
+/// - The canister is upgraded.
+/// - The stable memory may contain a memory manager _or_ serialized heap data directly in raw memory.
+/// - This method gets the memory manager while being non-destructive if there is none.
 impl TryFrom<DefaultMemoryImpl> for Partitions {
     type Error = DefaultMemoryImpl;
     fn try_from(memory: DefaultMemoryImpl) -> Result<Self, Self::Error> {
@@ -78,6 +93,27 @@ impl TryFrom<DefaultMemoryImpl> for Partitions {
             Ok(Self::from(memory))
         } else {
             Err(memory)
+        }
+    }
+}
+
+/// Loads state from given memory partitions.
+///
+/// Typical usage:
+/// - On upgrading acanister, get partitions from raw memory.
+/// - From the partitions, get the state.
+/// The state structure then owns everything on the heap and in stable memory.
+impl From<Partitions> for State {
+    fn from(partitions: Partitions) -> Self {
+        let memory_manager = partitions.memory_manager;
+        let metadata_memory = partitions.get(Partitions::METADATA_MEMORY_ID);
+        let schema = Self::schema_version_from_memory(metadata_memory);
+        match schema {
+            None | Some(SchemaLabel::Map) => Self::recover_state_from_map(partitions.get(Partitions::HEAP_MEMORY_ID)),
+            Some(SchemaLabel::AccountsInStableMemory) => {
+                let state = State::from_candid_memory(memory_manager.get(MemoryId::new(1)));
+                state.partitions = Some(partitions);
+            }
         }
     }
 }
@@ -237,22 +273,6 @@ impl From<DefaultMemoryImpl> for State {
         match Partitions::from(memory) {
             Ok(partitions) => Self::from(partitions),
             Err(memory) => Self::recover_state_from_memory(memory),
-        }
-    }
-}
-
-impl From<Partitions> for State {
-    fn from(partitions: Partitions) -> Self {
-        let memory_manager = partitions.memory_manager;
-        let metadata_memory = memory_manager.get(MemoryId::new(0));
-        let schema = Self::schema_version_from_memory(memory);
-        match schema {
-            Some(SchemaLabel::Map) => Self::recover_state_from_map(memory_manager.get(MemoryId::new(1))),
-            Some(SchemaLabel::AccountsInStableMemory) => {
-                let state = State::from_candid_memory(memory_manager.get(MemoryId::new(1)));
-                state.partitions = Some(partitions);
-            }
-            None => Self::recover_state_from_memory(memory),
         }
     }
 }
