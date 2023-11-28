@@ -86,12 +86,14 @@
     });
   };
 
-  const loadIcrcTokenAccounts = (icrcCanisters: IcrcCanistersStoreData) => {
+  const loadIcrcTokenAccounts = (
+    icrcCanisters: IcrcCanistersStoreData
+  ): Promise<void> => {
     const ledgerCanisterIds = Object.values(icrcCanisters).map(
       ({ ledgerCanisterId }) => ledgerCanisterId
     );
 
-    loadIcrcAccounts({ ledgerCanisterIds, certified: false });
+    return loadIcrcAccounts({ ledgerCanisterIds, certified: false });
   };
 
   $: (async () =>
