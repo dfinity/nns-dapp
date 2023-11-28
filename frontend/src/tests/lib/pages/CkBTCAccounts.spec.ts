@@ -17,9 +17,9 @@ import {
 } from "$tests/mocks/tokens.mock";
 import { render, waitFor } from "@testing-library/svelte";
 
-vi.mock("$lib/services/ckbtc-accounts.services", () => {
+vi.mock("$lib/services/wallet-accounts.services", () => {
   return {
-    syncCkBTCAccounts: vi.fn().mockResolvedValue(undefined),
+    syncAccounts: vi.fn().mockResolvedValue(undefined),
   };
 });
 
