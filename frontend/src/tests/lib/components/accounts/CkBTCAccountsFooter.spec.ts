@@ -26,7 +26,7 @@ vi.mock("$lib/services/ckbtc-minter.services", async () => {
   };
 });
 
-vi.mock("$lib/services/wallet-accounts.services", () => {
+vi.mock("$lib/services/wallet-uncertified-accounts.services", () => {
   return {
     syncAccounts: vi.fn().mockResolvedValue(undefined),
   };

@@ -74,7 +74,7 @@ vi.mock("$lib/services/sns-accounts-balance.services", () => {
   };
 });
 
-vi.mock("$lib/services/wallet-accounts.services", () => {
+vi.mock("$lib/services/wallet-uncertified-accounts.services", () => {
   return {
     uncertifiedLoadAccountsBalance: vi.fn().mockResolvedValue(undefined),
   };
