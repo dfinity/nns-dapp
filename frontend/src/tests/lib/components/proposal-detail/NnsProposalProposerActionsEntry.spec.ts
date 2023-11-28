@@ -70,6 +70,7 @@ describe("NnsProposalProposerActionsEntry", () => {
   });
 
   it("should render action data as JSON", async () => {
+    jsonRepresentationStore.setMode("raw");
     const po = renderComponent({
       proposal: proposalWithRewardNodeProviderAction,
     });
@@ -88,11 +89,14 @@ describe("NnsProposalProposerActionsEntry", () => {
   });
 
   it("should render action data as JSON tree", async () => {
+    jsonRepresentationStore.setMode("tree");
     const po = renderComponent({
       proposal: proposalWithRewardNodeProviderAction,
     });
 
-    expect(await po.getJsonPreviewPo().getExpandedTreeText()).toEqual(
+    await po.getJsonPreviewPo().clickExpand();
+
+    expect(await po.getJsonPreviewPo().getTreeText()).toEqual(
       `nodeProvider id "aaaaa-aa"  amountE8s 10000000  rewardMode  RewardToNeuron dissolveDelaySeconds 1000`
     );
   });

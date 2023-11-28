@@ -1,4 +1,5 @@
 import ProposalProposerActionsEntry from "$lib/components/proposal-detail/ProposalProposerActionsEntry.svelte";
+import { jsonRepresentationStore } from "$lib/stores/json-representation.store";
 import { ProposalProposerActionsEntryPo } from "$tests/page-objects/ProposalProposerActionsEntry.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
@@ -27,6 +28,7 @@ describe("ProposalProposerActionsEntry", () => {
   it("should render proposal actionData as json", async () => {
     const key = "keyTest";
     const value = "valueTest";
+    jsonRepresentationStore.setMode("raw");
     const po = renderComponent({
       actionKey: "testKey",
       actionData: { [key]: value },

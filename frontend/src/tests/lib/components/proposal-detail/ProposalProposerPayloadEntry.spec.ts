@@ -1,4 +1,5 @@
 import ProposalProposerPayloadEntry from "$lib/components/proposal-detail/ProposalProposerPayloadEntry.svelte";
+import { jsonRepresentationStore } from "$lib/stores/json-representation.store";
 import { JsonPreviewPo } from "$tests/page-objects/JsonPreview.page-object";
 import { JsonRepresentationModeTogglePo } from "$tests/page-objects/JsonRepresentationModeToggle.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -9,6 +10,7 @@ describe("ProposalProposerPayloadEntry", () => {
   const payload = { b: "c" };
 
   it("should render payload", async () => {
+    jsonRepresentationStore.setMode("raw");
     const { container } = render(ProposalProposerPayloadEntry, {
       props: {
         payload,

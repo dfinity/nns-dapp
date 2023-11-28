@@ -1,6 +1,7 @@
 import * as agent from "$lib/api/agent.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import NnsProposalProposerPayloadEntry from "$lib/components/proposal-detail/NnsProposalProposerPayloadEntry.svelte";
+import { jsonRepresentationStore } from "$lib/stores/json-representation.store";
 import { proposalPayloadsStore } from "$lib/stores/proposals.store";
 import {
   mockProposalInfo,
@@ -48,6 +49,7 @@ describe("NnsProposalProposerPayloadEntry", () => {
 
   it("should render payload", async () => {
     nnsDappMock.getProposalPayload.mockImplementation(async () => payload);
+    jsonRepresentationStore.setMode("raw");
     const { container } = render(NnsProposalProposerPayloadEntry, {
       props: {
         proposal: proposalWithNnsFunctionAction,
