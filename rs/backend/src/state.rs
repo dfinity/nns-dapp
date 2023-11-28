@@ -173,9 +173,3 @@ impl State {
         self.save_to_raw_memory()
     }
 }
-
-// State from/to the `SchemaLabel::AccountsInStableMemory` format.
-mod accounts_in_stable_memory {
-    
-    
-}
