@@ -27,6 +27,8 @@ reset_test_json_file() {
 
 test_index_html=$(mktemp canister.raw.XXXXXX)
 
+# data-cketh-index-canister-id is deliberately missing so that we can see that
+# it results in an empty string instead of a crash.
 cat >"$test_index_html" <<-EOF
 <html>
   <head>
@@ -35,7 +37,6 @@ cat >"$test_index_html" <<-EOF
         data-ckbtc-index-canister-id="tqtu6-byaaa-aaaaa-aaana-cai"
         data-ckbtc-ledger-canister-id="st75y-vaaaa-aaaaa-aaalq-cai"
         data-ckbtc-minter-canister-id="t6rzw-2iaaa-aaaaa-aaama-cai"
-        data-cketh-index-canister-id="of3vp-2eaaa-aaaaa-qabha-cai"
         data-cketh-ledger-canister-id="omy6t-mmaaa-aaaaa-qabgq-cai"
         data-cycles-minting-canister-id="rkp4c-7iaaa-aaaaa-aaaca-cai"
         data-dfx-network="staging"
@@ -156,7 +157,7 @@ if ! diff "$test_json_file" <(
     "staging": "t6rzw-2iaaa-aaaaa-aaama-cai"
   },
   "cketh_index": {
-    "staging": "of3vp-2eaaa-aaaaa-qabha-cai"
+    "staging": ""
   },
   "cketh_ledger": {
     "staging": "omy6t-mmaaa-aaaaa-qabgq-cai"
