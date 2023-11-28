@@ -117,7 +117,7 @@ get_value_from_html() {
   pattern="$key=\"([^\"]+)\""
   # E.g. find a line like `data-own-canister-id="lf43c-fyaaa-aaaaa-aacva-cai"`
   # and outputs the value between quotes.
-  grep -oE "$pattern" "$file" | sed -E "s/$pattern/\\1/" | head -1
+  grep -oE "$pattern" "$file" | sed -E "s/$pattern/\\1/" | head -1 || true
 }
 
 canister_id_from_url() {
@@ -145,6 +145,8 @@ if [ "$command" = "import-from-index-html" ]; then
   ckbtcIndex="$(get_value_from_html data-ckbtc-index-canister-id "$tmp_index_html")"
   ckbtcLedger="$(get_value_from_html data-ckbtc-ledger-canister-id "$tmp_index_html")"
   ckbtcMinter="$(get_value_from_html data-ckbtc-minter-canister-id "$tmp_index_html")"
+  ckethIndex="$(get_value_from_html data-cketh-index-canister-id "$tmp_index_html")"
+  ckethLedger="$(get_value_from_html data-cketh-ledger-canister-id "$tmp_index_html")"
   snsWasm="$(get_value_from_html data-wasm-canister-id "$tmp_index_html")"
   nnsDapp="$(get_value_from_html data-own-canister-id "$tmp_index_html")"
 
@@ -153,6 +155,8 @@ if [ "$command" = "import-from-index-html" ]; then
     .ckbtc_index[$network] = $ckbtcIndex |
     .ckbtc_ledger[$network] = $ckbtcLedger |
     .ckbtc_minter[$network] = $ckbtcMinter |
+    .cketh_index[$network] = $ckethIndex |
+    .cketh_ledger[$network] = $ckethLedger |
     .["nns-sns-wasm"][$network] = $snsWasm |
     .internet_identity[$network] = $internetIdentity |
     .["nns-dapp"][$network] = $nnsDapp |
@@ -161,6 +165,8 @@ if [ "$command" = "import-from-index-html" ]; then
     --arg ckbtcIndex "$ckbtcIndex" \
     --arg ckbtcLedger "$ckbtcLedger" \
     --arg ckbtcMinter "$ckbtcMinter" \
+    --arg ckethIndex "$ckethIndex" \
+    --arg ckethLedger "$ckethLedger" \
     --arg snsWasm "$snsWasm" \
     --arg internetIdentity "$internetIdentity" \
     --arg nnsDapp "$nnsDapp" \
