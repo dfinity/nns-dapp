@@ -45,8 +45,9 @@ thread_local! {
 /// Loads state from given memory partitions.
 ///
 /// Typical usage:
-/// - On upgrading acanister, get partitions from raw memory.
+/// - On upgrading a canister, get partitions from raw memory.
 /// - From the partitions, get the state.
+/// - Have a fallback to support the stable memory layout without partitions.
 /// The state structure then owns everything on the heap and in stable memory.
 impl From<Partitions> for State {
     fn from(partitions: Partitions) -> Self {
