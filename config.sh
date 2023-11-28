@@ -81,6 +81,14 @@ local_deployment_data="$(
   export CKBTC_MINTER_CANISTER_ID
   test -n "${CKBTC_MINTER_CANISTER_ID:-}" || unset CKBTC_MINTER_CANISTER_ID
 
+  : "Try to find the ckETH canister IDs"
+  CKETH_LEDGER_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id cketh_ledger 2>/dev/null || true)"
+  export CKETH_LEDGER_CANISTER_ID
+  test -n "${CKETH_LEDGER_CANISTER_ID:-}" || unset CKETH_LEDGER_CANISTER_ID
+  CKETH_INDEX_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id cketh_index 2>/dev/null || true)"
+  export CKETH_INDEX_CANISTER_ID
+  test -n "${CKETH_INDEX_CANISTER_ID:-}" || unset CKETH_INDEX_CANISTER_ID
+
   : "Get the governance canister ID - it should be defined"
   GOVERNANCE_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-governance)"
   export GOVERNANCE_CANISTER_ID
@@ -128,6 +136,8 @@ local_deployment_data="$(
     CKBTC_LEDGER_CANISTER_ID: env.CKBTC_LEDGER_CANISTER_ID,
     CKBTC_MINTER_CANISTER_ID: env.CKBTC_MINTER_CANISTER_ID,
     CKBTC_INDEX_CANISTER_ID: env.CKBTC_INDEX_CANISTER_ID,
+    CKETH_LEDGER_CANISTER_ID: env.CKETH_LEDGER_CANISTER_ID,
+    CKETH_INDEX_CANISTER_ID: env.CKETH_INDEX_CANISTER_ID,
     CYCLES_MINTING_CANISTER_ID: env.CYCLES_MINTING_CANISTER_ID,
     ROBOTS: env.ROBOTS,
     STATIC_HOST: env.STATIC_HOST,
@@ -171,6 +181,8 @@ aggregatorCanisterUrl=$(echo "$json" | jq -r '.SNS_AGGREGATOR_URL // ""')
 ckbtcLedgerCanisterId=$(echo "$json" | jq -r '.CKBTC_LEDGER_CANISTER_ID // ""')
 ckbtcMinterCanisterId=$(echo "$json" | jq -r '.CKBTC_MINTER_CANISTER_ID // ""')
 ckbtcIndexCanisterId=$(echo "$json" | jq -r '.CKBTC_INDEX_CANISTER_ID // ""')
+ckethLedgerCanisterId=$(echo "$json" | jq -r '.CKETH_LEDGER_CANISTER_ID // ""')
+ckethIndexCanisterId=$(echo "$json" | jq -r '.CKETH_INDEX_CANISTER_ID // ""')
 
 echo "VITE_DFX_NETWORK=$dfxNetwork
 VITE_CYCLES_MINTING_CANISTER_ID=$cmcCanisterId
@@ -186,7 +198,9 @@ VITE_IDENTITY_SERVICE_URL=$identityServiceUrl
 VITE_AGGREGATOR_CANISTER_URL=${aggregatorCanisterUrl:-}
 VITE_CKBTC_LEDGER_CANISTER_ID=${ckbtcLedgerCanisterId:-}
 VITE_CKBTC_MINTER_CANISTER_ID=${ckbtcMinterCanisterId:-}
-VITE_CKBTC_INDEX_CANISTER_ID=${ckbtcIndexCanisterId:-}" | tee "$ENV_FILE"
+VITE_CKBTC_INDEX_CANISTER_ID=${ckbtcIndexCanisterId:-}
+VITE_CKETH_LEDGER_CANISTER_ID=${ckethLedgerCanisterId:-}
+VITE_CKETH_INDEX_CANISTER_ID=${ckethIndexCanisterId:-}" | tee "$ENV_FILE"
 
 echo "$json" >"$JSON_OUT"
 {
@@ -218,6 +232,11 @@ CKBTC_MINTER_CANISTER_ID="${ckbtcMinterCanisterId:-}"
 export CKBTC_MINTER_CANISTER_ID
 CKBTC_INDEX_CANISTER_ID="${ckbtcIndexCanisterId:-}"
 export CKBTC_INDEX_CANISTER_ID
+
+CKETH_LEDGER_CANISTER_ID="${ckethLedgerCanisterId:-}"
+export CKETH_LEDGER_CANISTER_ID
+CKETH_INDEX_CANISTER_ID="${ckethIndexCanisterId:-}"
+export CKETH_INDEX_CANISTER_ID
 
 GOVERNANCE_CANISTER_ID="$governanceCanisterId"
 export GOVERNANCE_CANISTER_ID

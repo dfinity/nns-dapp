@@ -37,6 +37,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Experimental tests for schema migration.
 * Add optional version support to the storage records.
+* Include ckETH when generating args.did and .env.
 
 #### Changed
 
