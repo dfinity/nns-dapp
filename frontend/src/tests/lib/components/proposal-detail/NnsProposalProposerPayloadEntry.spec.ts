@@ -1,13 +1,14 @@
 import * as agent from "$lib/api/agent.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import NnsProposalProposerPayloadEntry from "$lib/components/proposal-detail/NnsProposalProposerPayloadEntry.svelte";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { jsonRepresentationStore } from "$lib/stores/json-representation.store";
 import { proposalPayloadsStore } from "$lib/stores/proposals.store";
 import {
   mockProposalInfo,
   proposalActionNnsFunction21,
 } from "$tests/mocks/proposal.mock";
-import { simplifyJson } from "$tests/utils/json.test-utils";
+import { JsonPreviewPo } from "$tests/page-objects/JsonPreview.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import type { Proposal } from "@dfinity/nns";
@@ -23,28 +24,16 @@ describe("NnsProposalProposerPayloadEntry", () => {
   const nnsDappMock = mock<NNSDappCanister>();
   vi.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
 
-  const nestedObj = { b: "c" };
-  const payloadWithJsonString = {
-    a: JSON.stringify(nestedObj),
-  };
+  const payload = { b: "c" };
 
   beforeEach(() => {
     vi.clearAllMocks();
     proposalPayloadsStore.reset();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
-    // TODO(GIX-2030) remove this once the feature flag is removed
-    overrideFeatureFlagsStore.setFlag("ENABLE_FULL_WIDTH_PROPOSAL", false);
   });
 
   it("should trigger getProposalPayload", async () => {
-    const nestedObj = { b: "c" };
-    const payloadWithJsonString = {
-      a: JSON.stringify(nestedObj),
-    };
-
-    nnsDappMock.getProposalPayload.mockImplementation(
-      async () => payloadWithJsonString
-    );
+    nnsDappMock.getProposalPayload.mockImplementation(async () => payload);
 
     expect(nnsDappMock.getProposalPayload).toBeCalledTimes(0);
     render(NnsProposalProposerPayloadEntry, {
@@ -58,21 +47,17 @@ describe("NnsProposalProposerPayloadEntry", () => {
     expect(nnsDappMock.getProposalPayload).toBeCalledTimes(1);
   });
 
-  it("should parse JSON strings and render them", async () => {
-    nnsDappMock.getProposalPayload.mockImplementation(
-      async () => payloadWithJsonString
-    );
-    const { queryByTestId } = render(NnsProposalProposerPayloadEntry, {
+  it("should render payload", async () => {
+    nnsDappMock.getProposalPayload.mockImplementation(async () => payload);
+    jsonRepresentationStore.setMode("raw");
+    const { container } = render(NnsProposalProposerPayloadEntry, {
       props: {
         proposal: proposalWithNnsFunctionAction,
         proposalId: mockProposalInfo.id,
       },
     });
-
     await runResolvedPromises();
-    const jsonElement = queryByTestId("json-wrapper");
-    expect(simplifyJson(jsonElement.textContent)).toBe(
-      simplifyJson(JSON.stringify({ a: nestedObj }))
-    );
+    const po = JsonPreviewPo.under(new JestPageObjectElement(container));
+    expect(await po.getRawObject()).toEqual(payload);
   });
 });
