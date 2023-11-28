@@ -1,5 +1,5 @@
-import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
-import CKTESTBTC_LOGO from "$lib/assets/ckTESTBTC.svg";
+import CKETH_LOGO from "$lib/assets/ckETH.svg";
+import CKSEPOLIAETH_LOGO from "$lib/assets/ckSepoliaETH.svg";
 import {
   CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
   CKETH_UNIVERSE_CANISTER_ID,
@@ -23,12 +23,11 @@ const convertIcrcCanistersToUniverse = ({
   const universeId = canisters.ledgerCanisterId.toText();
   const token = tokensData[universeId];
   // TODO: Read logo from token https://dfinity.atlassian.net/browse/GIX-2140
-  // TODO: Add ckETH and ckETHTEST logos
   const logo =
     universeId === CKETH_UNIVERSE_CANISTER_ID.toText()
-      ? CKBTC_LOGO
+      ? CKETH_LOGO
       : universeId === CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()
-      ? CKTESTBTC_LOGO
+      ? CKSEPOLIAETH_LOGO
       : undefined;
   if (isNullish(token) || isNullish(logo)) {
     return;
