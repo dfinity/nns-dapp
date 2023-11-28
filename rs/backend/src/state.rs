@@ -36,6 +36,7 @@ impl State {
     }
 }
 
+// TODO: Probably eliminate this trait, as serialization is now different depending on which schema is in use, making this fundamentally ambiguous.
 pub trait StableState: Sized {
     fn encode(&self) -> Vec<u8>;
     fn decode(bytes: Vec<u8>) -> Result<Self, String>;
@@ -57,16 +58,15 @@ impl From<Partitions> for State {
         let metadata_memory = partitions.get(Partitions::METADATA_MEMORY_ID);
         let schema = Self::schema_version_from_memory(&metadata_memory);
         match schema {
-            // Classic storage: Heap is serialized as candid into raw, unmanaged stable memory.
-            None => Self::recover_from_raw_memory(),
+            // We have managed memory, but were unable to read the schema label.  This is a bug.
+            None => {
+                trap_with(&format!("Decoding stable memory failed: Failed to get schema label.")); // TODO: Provide first bytes of the metadata memory.
+                unreachable!()
+            }
             // Heap is serialized as candid into managed stable memory.  May be used in transition but otherwise not very exciting.
             Some(SchemaLabel::Map) => Self::recover_from_map(partitions.get(Partitions::HEAP_MEMORY_ID)),
             // Accounts are in stable structures in one partition, the rest of the heap is serialized as candid in another partition.
-            Some(SchemaLabel::AccountsInStableMemory) => {
-                unimplemented!()
-                // let state = State::from_candid_memory(memory_manager.get(MemoryId::new(1)));
-                // state.partitions = Some(partitions);
-            }
+            Some(SchemaLabel::AccountsInStableMemory) => Self::recover_from_map(partitions.get(Partitions::HEAP_MEMORY_ID)),
         }
     }
 }
