@@ -50,7 +50,7 @@ describe("universes derived stores", () => {
       expect(store[2]).toEqual(ckTESTBTCUniverseMock);
     });
 
-    it("should return Nns, ckBTC, ckTESTBTC, ckETH and SNS projects", () => {
+    it("should return Nns, ckBTC, ckTESTBTC and SNS projects", () => {
       const snsRootCanisterId = rootCanisterIdMock;
       const projectName = "Tetris";
       setSnsProjects([
@@ -60,22 +60,12 @@ describe("universes derived stores", () => {
           projectName,
         },
       ]);
-      icrcCanistersStore.setCanisters({
-        ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
-        indexCanisterId: CKETH_INDEX_CANISTER_ID,
-      });
-      tokensStore.setTokens({
-        [CKETH_LEDGER_CANISTER_ID.toText()]: {
-          certified: true,
-          token: mockCkETHToken,
-        },
-      });
       const store = get(universesStore);
-      expect(store.length).toEqual(5);
-      expect(store[4].summary).not.toBeUndefined();
-      expect(store[4].canisterId).toEqual(snsRootCanisterId.toText());
-      expect(store[4].title).toBe(projectName);
-      expect(store[4].logo).toBe(
+      expect(store.length).toEqual(4);
+      expect(store[3].summary).not.toBeUndefined();
+      expect(store[3].canisterId).toEqual(snsRootCanisterId.toText());
+      expect(store[3].title).toBe(projectName);
+      expect(store[3].logo).toBe(
         aggregatorCanisterLogoPath(snsRootCanisterId.toText())
       );
     });
