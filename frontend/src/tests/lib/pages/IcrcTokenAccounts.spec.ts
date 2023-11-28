@@ -39,7 +39,8 @@ describe("IcrcTokenAccounts", () => {
     });
   });
 
-  it("renders Skeleton card while universe's store is undefined", async () => {
+  it("renders Skeleton card while the accounts are undefined", async () => {
+    icrcAccountsStore.reset();
     const po = renderComponent();
 
     expect(await po.hasSkeleton()).toBe(true);
