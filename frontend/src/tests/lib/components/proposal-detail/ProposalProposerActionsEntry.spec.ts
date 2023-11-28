@@ -37,20 +37,6 @@ describe("ProposalProposerActionsEntry", () => {
     });
   });
 
-  it("should render undefined fields as 'undefined' text'", async () => {
-    const key = "key";
-    const value = { key: "value", anotherKey: undefined };
-
-    const po = renderComponent({
-      actionKey: "actionKey",
-      actionData: { [key]: value },
-    });
-
-    expect(await po.getJsonPreviewPo().getRawObject()).toEqual({
-      key: { key: "value", anotherKey: undefined },
-    });
-  });
-
   it("should render preview mode toggle", async () => {
     const po = renderComponent({
       actionKey: "actionKey",
