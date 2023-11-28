@@ -12,7 +12,6 @@ use on_wire::{FromWire, IntoWire};
 use partitions::Partitions;
 
 pub mod with_raw_memory;
-pub mod with_heap_in_virtual_memory;
 pub mod with_accounts_in_stable_memory;
 pub mod partitions;
 #[cfg(test)]
@@ -65,8 +64,11 @@ impl From<Partitions> for State {
                 trap_with(&format!("Decoding stable memory failed: Failed to get schema label.")); // TODO: Provide first bytes of the metadata memory.
                 unreachable!()
             }
-            // Heap is serialized as candid into managed stable memory.  May be used in transition but otherwise not very exciting.
-            Some(SchemaLabel::Map) => Self::recover_from_map(partitions.get(Partitions::HEAP_MEMORY_ID)),
+            // The schema claims to read from raw memory, but we got the label from amnaged mamory.  This is a bug.
+            Some(SchemaLabel::Map) => {
+                trap_with(&format!("Decoding stable memory failed: Found label 'Map' in managed memory, but these are incompatible."));
+                unreachable!()
+            },
             // Accounts are in stable structures in one partition, the rest of the heap is serialized as candid in another partition.
             Some(SchemaLabel::AccountsInStableMemory) => {
                 Self::recover_heap_from_managed_memory(partitions.get(Partitions::HEAP_MEMORY_ID))
