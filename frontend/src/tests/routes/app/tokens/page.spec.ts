@@ -33,7 +33,7 @@ import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
 
-vi.mock("$lib/api/ckbtc-ledger.api");
+vi.mock("$lib/api/wallet-ledger.api");
 vi.mock("$lib/api/sns-ledger.api");
 
 describe("Tokens route", () => {

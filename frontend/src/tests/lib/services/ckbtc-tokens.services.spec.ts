@@ -12,7 +12,7 @@ import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
-vi.mock("$lib/api/ckbtc-ledger.api");
+vi.mock("$lib/api/wallet-ledger.api");
 
 describe("ckbtc-tokens-services", () => {
   beforeEach(() => {

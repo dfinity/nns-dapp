@@ -65,7 +65,7 @@ vi.mock("$lib/services/worker-transactions.services", () => ({
   ),
 }));
 
-vi.mock("$lib/api/ckbtc-ledger.api");
+vi.mock("$lib/api/wallet-ledger.api");
 vi.mock("$lib/api/ckbtc-minter.api");
 vi.mock("$lib/api/icrc-ledger.api");
 vi.mock("$lib/api/icrc-index.api");
