@@ -4,7 +4,6 @@ import { Principal } from "@dfinity/principal";
 const MAINNET_CKETH_LEDGER_CANISTER_ID = "apia6-jaaaa-aaaar-qabma-cai";
 const MAINNET_CKETH_INDEX_CANISTER_ID = "sh5u2-cqaaa-aaaar-qacna-cai";
 
-// TODO: Add ckETHTEST canister IDs on env vars https://dfinity.atlassian.net/browse/GIX-2137
 export const CKETHSEPOLIA_LEDGER_CANISTER_ID = Principal.fromText(
   "apia6-jaaaa-aaaar-qabma-cai"
 );
