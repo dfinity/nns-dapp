@@ -66,6 +66,17 @@ impl From<Partitions> for State {
     }
 }
 
+/// Loads state from stable memory.
+impl From<DefaultMemoryImpl> for State {
+    fn from(memory: DefaultMemoryImpl) -> Self {
+        match Partitions::try_from(memory) {
+            Ok(partitions) => Self::from(partitions),
+            Err(memory) => Self::recover_from_raw_memory(),
+        }
+    }
+}
+
+
 impl StableState for State {
     fn encode(&self) -> Vec<u8> {
         Candid((self.accounts_store.borrow().encode(), self.assets.borrow().encode()))
@@ -153,19 +164,19 @@ impl State {
     }
     /// Save any unsaved state to stable memory.
     pub fn pre_upgrade(&self) {
-        self.save_as_map()
+        self.save_to_raw_memory()
     }
 }
 
-// State from/to the `SchemaLabel::Map` format.
+// State from/to stable memory in the classic "Candid in raw memory" format.
 impl State {
     /// Save any unsaved state to stable memory in the `SchemaLabel::Map` format.
-    fn save_as_map(&self) {
+    fn save_to_raw_memory(&self) {
         let bytes = self.encode();
         stable::set(&bytes);
     }
     /// Create the state from stable memory in the `SchemaLabel::Map` format.
-    fn recover_state_from_map() -> Self {
+    fn recover_from_raw_memory() -> Self {
         let bytes = stable::get();
         State::decode(bytes).unwrap_or_else(|e| {
             trap_with(&format!("Decoding stable memory failed. Error: {e:?}"));
@@ -219,17 +230,5 @@ mod accounts_in_stable_memory {
     fn get_heap_memory() -> impl Memory {
         let mem_mgr = MemoryManager::init(DefaultMemoryImpl::default());
         mem_mgr.get(MemoryId::new(1)) // TODO: Define a const for the heap memory ID.
-    }
-}
-
-impl From<DefaultMemoryImpl> for State {
-    fn from(memory: DefaultMemoryImpl) -> Self {
-        unimplemented!()
-        /*
-        match Partitions::from(memory) {
-            Ok(partitions) => Self::from(partitions),
-            Err(memory) => Self::recover_state_from_memory(memory),
-        }
-        */
     }
 }
