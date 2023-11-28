@@ -21,6 +21,7 @@ import {
   isUniverseNns,
 } from "$lib/utils/universe.utils";
 import { Principal } from "@dfinity/principal";
+import { nonNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 import { nnsUniverseStore } from "./nns-universe.derived";
 
@@ -85,7 +86,7 @@ export const isCkBTCUniverseStore = derived(
 );
 
 /**
- * Is the selected an ICRC Token?
+ * Is the selected universe an ICRC Token?
  */
 export const isIcrcTokenUniverseStore = derived(
   [pageUniverseIdStore, pageStore, icrcCanistersStore],
@@ -95,10 +96,7 @@ export const isIcrcTokenUniverseStore = derived(
     IcrcCanistersStoreData,
   ]) =>
     isNonGovernanceTokenPath(page) &&
-    Object.values(icrcTokensCanisters).some(
-      ({ ledgerCanisterId }) =>
-        ledgerCanisterId.toText() === canisterId.toText()
-    )
+    nonNullish(icrcTokensCanisters[canisterId.toText()])
 );
 
 export const selectedUniverseStore: Readable<Universe> = derived(
