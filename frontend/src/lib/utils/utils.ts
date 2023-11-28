@@ -392,6 +392,11 @@ export const expandObject = (value: unknown): unknown => {
     return value.map(expandObject);
   }
   if (typeof value === "object") {
+    if (isPrincipal(value)) {
+      // Do not expand Principal to keep the prototype methods
+      return value;
+    }
+
     // to avoid mutating original object
     const result = { ...value };
     Object.keys(result).forEach(
