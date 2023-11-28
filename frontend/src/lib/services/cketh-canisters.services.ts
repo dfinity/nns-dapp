@@ -14,20 +14,22 @@ import { get } from "svelte/store";
 
 export const loadCkETHCanisters = async () => {
   const storeData = get(icrcCanistersStore);
-  if (get(ENABLE_CKETH)) {
-    if (isNullish(storeData[CKETH_LEDGER_CANISTER_ID.toText()])) {
-      icrcCanistersStore.setCanisters({
-        ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
-        indexCanisterId: CKETH_INDEX_CANISTER_ID,
-      });
-    }
+  if (
+    get(ENABLE_CKETH) &&
+    isNullish(storeData[CKETH_LEDGER_CANISTER_ID.toText()])
+  ) {
+    icrcCanistersStore.setCanisters({
+      ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
+      indexCanisterId: CKETH_INDEX_CANISTER_ID,
+    });
   }
-  if (get(ENABLE_CKTESTBTC)) {
-    if (isNullish(storeData[CKETHSEPOLIA_LEDGER_CANISTER_ID.toText()])) {
-      icrcCanistersStore.setCanisters({
-        ledgerCanisterId: CKETHSEPOLIA_LEDGER_CANISTER_ID,
-        indexCanisterId: CKETHSEPOLIA_INDEX_CANISTER_ID,
-      });
-    }
+  if (
+    get(ENABLE_CKTESTBTC) &&
+    isNullish(storeData[CKETHSEPOLIA_LEDGER_CANISTER_ID.toText()])
+  ) {
+    icrcCanistersStore.setCanisters({
+      ledgerCanisterId: CKETHSEPOLIA_LEDGER_CANISTER_ID,
+      indexCanisterId: CKETHSEPOLIA_INDEX_CANISTER_ID,
+    });
   }
 };
