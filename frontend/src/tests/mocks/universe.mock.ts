@@ -1,4 +1,6 @@
 import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
+import CKETH_LOGO from "$lib/assets/ckETH.svg";
+import CKSEPOLIAETH_LOGO from "$lib/assets/ckSepoliaETH.svg";
 import CKTESTBTC_LOGO from "$lib/assets/ckTESTBTC.svg";
 import IC_LOGO_ROUNDED from "$lib/assets/icp-rounded.svg";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
@@ -33,11 +35,11 @@ export const ckTESTBTCUniverseMock: Universe = {
 export const ckETHUniverseMock: Universe = {
   canisterId: CKETH_UNIVERSE_CANISTER_ID.toText(),
   title: "ckETH",
-  logo: CKBTC_LOGO,
+  logo: CKETH_LOGO,
 };
 
 export const ckETHSEPOLIAUniverseMock: Universe = {
   canisterId: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText(),
   title: "ckETHTEST",
-  logo: CKTESTBTC_LOGO,
+  logo: CKSEPOLIAETH_LOGO,
 };
