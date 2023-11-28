@@ -52,6 +52,12 @@ describe("JsonPreview", () => {
     expect(await po.getExpandButton().isPresent()).toBe(false);
   });
 
+  it("should render fields with undefined in raw view", async () => {
+    jsonRepresentationStore.setMode("raw");
+    const po = renderComponent({ test: undefined });
+    expect(await po.getRawText()).toBe(`{\n  "test": undefined\n}`);
+  });
+
   it("should not render expand button when there is no children", async () => {
     jsonRepresentationStore.setMode("tree");
     const po = renderComponent({ hello: "world" });
