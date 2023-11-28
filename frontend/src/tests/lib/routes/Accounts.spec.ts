@@ -74,9 +74,9 @@ vi.mock("$lib/services/sns-accounts-balance.services", () => {
   };
 });
 
-vi.mock("$lib/services/ckbtc-accounts-balance.services", () => {
+vi.mock("$lib/services/wallet-accounts.services", () => {
   return {
-    uncertifiedLoadCkBTCAccountsBalance: vi.fn().mockResolvedValue(undefined),
+    uncertifiedLoadAccountsBalance: vi.fn().mockResolvedValue(undefined),
   };
 });
 

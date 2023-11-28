@@ -3,12 +3,10 @@ import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { getCkBTCWithdrawalAccount } from "$lib/services/ckbtc-accounts-loader.services";
 import * as minterServices from "$lib/services/ckbtc-minter.services";
-import { getAccounts } from "$lib/services/wallet-loader.services";
 import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-withdrawal-accounts.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
-  mockCkBTCMainAccount,
   mockCkBTCToken,
   mockCkBTCWithdrawalAccount,
   mockCkBTCWithdrawalIcrcAccount,
@@ -20,30 +18,6 @@ import { waitFor } from "@testing-library/svelte";
 describe("ckbtc-accounts-loader-services", () => {
   afterEach(() => {
     vi.clearAllMocks();
-  });
-
-  describe("getCkBTCAccounts", () => {
-    it("should call get CkBTC account", async () => {
-      const spyGetCkBTCAccount = vi
-        .spyOn(ledgerApi, "getAccount")
-        .mockResolvedValue(mockCkBTCMainAccount);
-
-      await getAccounts({
-        identity: mockIdentity,
-        certified: true,
-        universeId: CKBTC_UNIVERSE_CANISTER_ID,
-      });
-
-      await waitFor(() =>
-        expect(spyGetCkBTCAccount).toBeCalledWith({
-          identity: mockIdentity,
-          certified: true,
-          canisterId: CKBTC_UNIVERSE_CANISTER_ID,
-          owner: mockIdentity.getPrincipal(),
-          type: "main",
-        })
-      );
-    });
   });
 
   describe("getCkBTCWithdrawalAccount", () => {
