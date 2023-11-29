@@ -75,21 +75,21 @@ fn should_be_able_to_get_partitions_from_managed_memory() {
     // Populate a partition with some data.
     let toy_metadata_fill = [9u8;WASM_PAGE_SIZE_IN_BYTES as usize];
     let metadata_memory = memory_manager.borrow().get(Partitions::METADATA_MEMORY_ID);
-    metadata_memory.grow(1);
+    //metadata_memory.grow(1);
     partitions.get(Partitions::METADATA_MEMORY_ID).grow(1);
     assert_eq!(
         Partitions::try_from_memory(toy_memory).expect("Failed to get partitions").get(Partitions::METADATA_MEMORY_ID).size(),
         1,
         "Metadata partition should have grown to 1."
     );
-/*
+
     assert_eq!(
         partitions.get(Partitions::HEAP_MEMORY_ID).size(),
         0,
         "Heap partition should still be empty."
     );
-
-    metadata_memory.write(0, &toy_metadata_fill);
+    partitions.get(Partitions::METADATA_MEMORY_ID).write(0, &toy_metadata_fill);
+/*
 
     assert_eq!(
         partitions.get(Partitions::METADATA_MEMORY_ID).size(),
