@@ -18,7 +18,7 @@ fn is_managed_should_recognize_memory_manager() {
     );
     let old_style_memory = setup_test_state().encode();
     toy_memory.write(0, &old_style_memory);
-    assert!(Partitions::is_managed(&toy_memory), "Random fill or old style memory should not be recognized as managed.  There _should_ be only a 2**24 bit chance of a false positive.");
+    assert!(!Partitions::is_managed(&toy_memory), "Random fill or old style memory should not be recognized as managed.  There _should_ be only a 2**24 bit chance of a false positive.");
     MemoryManager::init(Rc::clone(&toy_memory)); // Note: The clone() clones the Rc, not the memory.
     assert!(
         Partitions::is_managed(&toy_memory),
