@@ -21,7 +21,8 @@ import {
   type IcrcBlockIndex,
 } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
-import { isNullish } from "@dfinity/utils";
+import { isNullish, nonNullish } from "@dfinity/utils";
+import { get } from "svelte/store";
 import { queryAndUpdate } from "./utils.services";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -37,6 +38,12 @@ export const loadIcrcToken = ({
   ledgerCanisterId: Principal;
   certified: boolean;
 }) => {
+  const currentToken = get(tokensStore)[ledgerCanisterId.toText()];
+
+  if (nonNullish(currentToken) && (currentToken.certified || !certified)) {
+    return;
+  }
+
   return queryAndUpdate<IcrcTokenMetadata, unknown>({
     strategy: certified ? FORCE_CALL_STRATEGY : "query",
     request: ({ certified, identity }) =>
