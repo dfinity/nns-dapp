@@ -137,30 +137,6 @@ export const loadIcrcAccount = ({
   });
 };
 
-export const loadIcrcAccounts = async ({
-  ledgerCanisterIds,
-  certified,
-}: {
-  ledgerCanisterIds: Principal[];
-  certified: boolean;
-}) => {
-  const results: PromiseSettledResult<[void, void]>[] =
-    await Promise.allSettled(
-      ledgerCanisterIds.map((ledgerCanisterId) =>
-        Promise.all([
-          loadIcrcAccount({ ledgerCanisterId, certified }),
-          loadIcrcToken({ ledgerCanisterId, certified }),
-        ])
-      )
-    );
-
-  const error: boolean =
-    results.find(({ status }) => status === "rejected") !== undefined;
-  if (error) {
-    toastsError({ labelKey: "error.sns_accounts_balance_load" });
-  }
-};
-
 ///
 /// These following services are implicitly covered by their consumers' services testing - i.e. ckbtc-accounts.services.spec and sns-accounts.services.spec
 ///
