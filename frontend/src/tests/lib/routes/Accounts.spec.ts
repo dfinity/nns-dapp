@@ -626,6 +626,6 @@ describe("Accounts", () => {
       expect(container.querySelector("div.modal")).not.toBeNull()
     );
 
-    expect(getByTestId("logo").getAttribute("alt")).toEqual(`ckETHTEST logo`);
+    expect(getByTestId("logo").getAttribute("alt")).toEqual(`ckETH logo`);
   });
 });
