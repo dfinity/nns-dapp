@@ -106,8 +106,7 @@ describe("universes derived stores", () => {
       expect(store[2]).toEqual(ckETHUniverseMock);
     });
 
-    // TODO: GIX-2137 Enable when we have the ckETH canister ids in env vars
-    it.skip("should return Nns, ckBTC, ckETH and ckETHSEPOLIA", () => {
+    it("should return Nns, ckBTC, ckETH and ckETHSEPOLIA", () => {
       icrcCanistersStore.setCanisters({
         ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
         indexCanisterId: CKETH_INDEX_CANISTER_ID,
