@@ -29,6 +29,7 @@ import {
   SnsVote,
   type SnsAction,
   type SnsNeuron,
+  type SnsPercentage,
   type SnsProposalData,
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
@@ -638,8 +639,9 @@ describe("sns-proposals utils", () => {
 
   describe("fromPercentageBasisPoints", () => {
     it("should return basis points", () => {
-      // TODO(max): add `as SnsPercentage`
-      expect(fromPercentageBasisPoints([{ basis_points: [300n] }])).toBe(300n);
+      expect(
+        fromPercentageBasisPoints([{ basis_points: [300n] } as SnsPercentage])
+      ).toBe(300n);
     });
 
     it("should not break when no percentage provided", () => {
