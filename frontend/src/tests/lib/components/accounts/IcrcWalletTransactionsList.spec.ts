@@ -45,6 +45,20 @@ vi.mock("$lib/services/worker-transactions.services", () => ({
   ),
 }));
 
+const fakeHeadline = "Fake transaction";
+const fakeUiTransaction: UiTransaction = {
+  domKey: "1",
+  isIncoming: false,
+  isPending: false,
+  headline: fakeHeadline,
+  otherParty: "123",
+  tokenAmount: TokenAmount.fromE8s({
+    amount: 100_000_000n,
+    token: mockCkBTCToken,
+  }),
+  timestamp: new Date(),
+};
+
 describe("IcrcWalletTransactionList", () => {
   const renderComponent = (
     mapTransactions?: (
@@ -67,7 +81,7 @@ describe("IcrcWalletTransactionList", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
     vi.useFakeTimers().setSystemTime(new Date());
   });
 
@@ -169,20 +183,6 @@ describe("IcrcWalletTransactionList", () => {
       mockIcrcTransactionsStoreSubscribe(store)
     );
 
-    const fakeHeadline = "Fake transaction";
-    const fakeUiTransaction: UiTransaction = {
-      domKey: "1",
-      isIncoming: false,
-      isPending: false,
-      headline: fakeHeadline,
-      otherParty: "123",
-      tokenAmount: TokenAmount.fromE8s({
-        amount: 100_000_000n,
-        token: mockCkBTCToken,
-      }),
-      timestamp: new Date(),
-    };
-
     // Ignores actual transacitons and returns 3 fake transactions.
     const mapTransactions = (_: IcrcTransactionData[]): UiTransaction[] => [
       fakeUiTransaction,
@@ -204,5 +204,51 @@ describe("IcrcWalletTransactionList", () => {
     expect(await cards[0].getHeadline()).toBe(fakeHeadline);
     expect(await cards[1].getHeadline()).toBe(fakeHeadline);
     expect(await cards[2].getHeadline()).toBe(fakeHeadline);
+  });
+
+  it("should display skeletons until transaction are loaded even with additional mapped transaction", async () => {
+    const spyLoadNext = vi.spyOn(services, "loadWalletNextTransactions");
+
+    let resolveLoadNext;
+    spyLoadNext.mockImplementation(
+      () =>
+        new Promise<void>((resolve) => {
+          resolveLoadNext = resolve;
+        })
+    );
+
+    const store = {
+      [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
+        [mockCkBTCMainAccount.identifier]: {
+          transactions: [],
+          completed: false,
+          oldestTxId: BigInt(0),
+        },
+      },
+    };
+
+    vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(
+      mockIcrcTransactionsStoreSubscribe(store)
+    );
+
+    // Ignores actual transacitons and return a fake transactions.
+    const mapTransactions = (_: IcrcTransactionData[]): UiTransaction[] => [
+      fakeUiTransaction,
+    ];
+
+    const { po } = renderComponent(mapTransactions);
+
+    // The fake transactions is not yet displayed while transactions are still
+    // loading.
+    expect(await po.getSkeletonCardPo().isPresent()).toBe(true);
+    expect(await po.getTransactionCardPos()).toHaveLength(0);
+
+    resolveLoadNext();
+    await runResolvedPromises();
+
+    expect(await po.getSkeletonCardPo().isPresent()).toBe(false);
+    const cards = await po.getTransactionCardPos();
+    expect(cards).toHaveLength(1);
+    expect(await cards[0].getHeadline()).toBe(fakeHeadline);
   });
 });

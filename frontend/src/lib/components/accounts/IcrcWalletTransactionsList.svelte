@@ -103,8 +103,14 @@
     account,
   });
 
+  let mappedTransactions: UiTransaction[];
+  $: mappedTransactions = mapTransactions(transactions);
+
+  // If transactions haven't loaded yet, we want to display the skeletons,
+  // even if mapTransactions returns a non-empty list.
   let uiTransactions: UiTransaction[];
-  $: uiTransactions = mapTransactions(transactions);
+  $: uiTransactions =
+    transactions.length === 0 && loading ? [] : mappedTransactions;
 </script>
 
 <IcrcWalletTransactionsObserver
