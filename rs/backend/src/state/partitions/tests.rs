@@ -7,20 +7,18 @@ use std::rc::Rc;
 #[test]
 fn is_managed_should_recognize_memory_manager() {
     let toy_memory = DefaultMemoryImpl::default();
-    assert_eq!(
-        Partitions::is_managed(&toy_memory),
-        false,
+    assert!(
+        !Partitions::is_managed(&toy_memory),
         "Empty (zero pages) of memory should not be recognized as a memory manager."
     );
     toy_memory.grow(5);
-    assert_eq!(
-        Partitions::is_managed(&toy_memory),
-        false,
+    assert!(
+        !Partitions::is_managed(&toy_memory),
         "Blank, unpopulated memory should not be recognized as managed."
     );
     let old_style_memory = setup_test_state().encode();
     toy_memory.write(0, &old_style_memory);
-    assert_eq!(Partitions::is_managed(&toy_memory), false, "Random fill or old style memory should not be recognized as managed.  There _should_ be only a 2**24 bit chance of a false positive.");
+    assert!(Partitions::is_managed(&toy_memory), "Random fill or old style memory should not be recognized as managed.  There _should_ be only a 2**24 bit chance of a false positive.");
     MemoryManager::init(Rc::clone(&toy_memory)); // Note: The clone() clones the Rc, not the memory.
     assert!(
         Partitions::is_managed(&toy_memory),
@@ -84,7 +82,7 @@ fn partitins_should_get_correct_virtual_memory() {
     );
 
     // Grow a partition in the memory manager.  The partitions should grow with it.
-    let toy_metadata_fill = [9u8; WASM_PAGE_SIZE_IN_BYTES as usize];
+    let toy_metadata_fill = [9u8; WASM_PAGE_SIZE_IN_BYTES];
     memory_manager.get(Partitions::METADATA_MEMORY_ID).grow(1);
     let partitions = Partitions::try_from_memory(Rc::clone(&toy_memory))
         .expect("Failed to get partitions when one partition has grown");

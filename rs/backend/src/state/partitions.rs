@@ -2,8 +2,6 @@
 //!
 //! The memory manager will be at the root of the memory, however MemoryManager::init() cheerfully overwrites data it doesn't recognize.
 //! This code is here to protect the memory!
-use super::State;
-use crate::accounts_store::schema::SchemaLabel;
 use core::borrow::Borrow;
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
@@ -27,7 +25,6 @@ impl Partitions {
 
     /// Determines whether the given memory is managed by a memory manager.
     fn is_managed(memory: &DefaultMemoryImpl) -> bool {
-        dfn_core::api::print(format!("START memory is_managed: ()"));
         let memory_pages = memory.size();
         if memory_pages == 0 {
             return false;
@@ -57,7 +54,6 @@ impl From<DefaultMemoryImpl> for Partitions {
     ///
     /// Note: This is equivalent to `MemoryManager::init()`.
     fn from(memory: DefaultMemoryImpl) -> Self {
-        dfn_core::api::print(format!("START Partitions::from<DefaultMemoryImpl>: ()"));
         let memory_manager = MemoryManager::init(memory);
         Partitions { memory_manager }
     }
@@ -75,7 +71,6 @@ impl From<DefaultMemoryImpl> for Partitions {
 //    type Error = DefaultMemoryImpl;
 impl Partitions {
     pub fn try_from_memory(memory: DefaultMemoryImpl) -> Result<Self, DefaultMemoryImpl> {
-        dfn_core::api::print(format!("START Partitions::try_from<DefaultMemoryImpl>: ()"));
         if Self::is_managed(&memory) {
             Ok(Self::from(memory))
         } else {
