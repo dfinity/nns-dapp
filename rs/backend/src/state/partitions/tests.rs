@@ -29,7 +29,7 @@ fn is_managed_should_recognize_memory_manager() {
 }
 
 #[test]
-/// Assume that the memory manager works.  Verifies that if we use Partitions as a proxy for the memory manager, we get the same results.
+/// Assume that the memory manager works.  Verifies that if we populate memory with a memory manager, the partitions table will recognize it accurately.
 fn should_be_able_to_get_partitions_from_managed_memory() {
     fn should_contain(partitions: &Partitions, memory_id: MemoryId, expected_contents: &[u8]) {
         let memory = partitions.get(memory_id);
@@ -56,9 +56,6 @@ fn should_be_able_to_get_partitions_from_managed_memory() {
     // Create a memory manager.
     let memory_manager = MemoryManager::init(Rc::clone(&toy_memory));
     let partitions = Partitions::try_from_memory(std::rc::Rc::clone(&toy_memory));
-    let mut buf = [0u8;3];
-    toy_memory.read(0, &mut buf);
-    assert_eq!(buf, *b"MGR", "Expected memory to start with MGR.");
     assert!(
         partitions.is_ok(),
         "Managed memory should yield a partition table, even if it is empty."
