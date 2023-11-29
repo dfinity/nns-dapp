@@ -8,7 +8,7 @@ import {
   mapCkbtcPendingUtxo,
   mapCkbtcTransaction,
   mapIcrcTransaction,
-  type mapIcrcTransactionType,
+  type MapIcrcTransactionType,
 } from "$lib/utils/icrc-transactions.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
@@ -128,7 +128,7 @@ describe("icrc-transaction utils", () => {
     });
   });
 
-  const testMapTransactionCommon = (mapTransaction: mapIcrcTransactionType) => {
+  const testMapTransactionCommon = (mapTransaction: MapIcrcTransactionType) => {
     const defaultTimestamp = new Date("2023-01-01T00:00:00.000Z");
     const defaultTransactionParams = {
       id: 112n,
