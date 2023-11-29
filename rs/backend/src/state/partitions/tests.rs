@@ -89,7 +89,6 @@ fn should_be_able_to_get_partitions_from_managed_memory() {
         "Heap partition should still be empty."
     );
     partitions.get(Partitions::METADATA_MEMORY_ID).write(0, &toy_metadata_fill);
-/*
 
     assert_eq!(
         partitions.get(Partitions::METADATA_MEMORY_ID).size(),
@@ -103,6 +102,7 @@ fn should_be_able_to_get_partitions_from_managed_memory() {
     );
     
     should_contain(&partitions, Partitions::METADATA_MEMORY_ID, &toy_metadata_fill);
+/*
     
     // Populate another partition.
     let toy_heap_fill = b"bar".repeat(1000);
