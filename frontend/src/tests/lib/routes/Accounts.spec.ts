@@ -41,7 +41,7 @@ import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
-  mockSummary,
+  mockSummary, mockToken,
   principal,
 } from "$tests/mocks/sns-projects.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
@@ -55,6 +55,7 @@ import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import WalletTest from "../pages/AccountsTest.svelte";
+import {mockTokens} from "$tests/mocks/tokens.mock";
 
 vi.mock("$lib/api/icrc-ledger.api");
 
@@ -151,7 +152,7 @@ describe("Accounts", () => {
     tokensStore.reset();
     icrcAccountsStore.reset();
 
-    vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockCkETHToken);
+    vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
       balanceIcrcToken
     );
@@ -565,6 +566,10 @@ describe("Accounts", () => {
   });
 
   it("should open icrc receive modal", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
+
+    tokensStore.setTokens(mockTokens);
+
     page.mock({
       data: {
         universe: CKETH_UNIVERSE_CANISTER_ID.toText(),
