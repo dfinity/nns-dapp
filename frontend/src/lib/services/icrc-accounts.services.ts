@@ -47,6 +47,7 @@ export const loadIcrcToken = ({
 
   return queryAndUpdate<IcrcTokenMetadata, unknown>({
     strategy: certified ? FORCE_CALL_STRATEGY : "query",
+    identityType: "current",
     request: ({ certified, identity }) =>
       queryIcrcToken({
         identity,
@@ -135,30 +136,6 @@ export const loadIcrcAccount = ({
       tokensStore.resetUniverse(ledgerCanisterId);
     },
   });
-};
-
-export const loadIcrcAccounts = async ({
-  ledgerCanisterIds,
-  certified,
-}: {
-  ledgerCanisterIds: Principal[];
-  certified: boolean;
-}) => {
-  const results: PromiseSettledResult<[void, void]>[] =
-    await Promise.allSettled(
-      ledgerCanisterIds.map((ledgerCanisterId) =>
-        Promise.all([
-          loadIcrcAccount({ ledgerCanisterId, certified }),
-          loadIcrcToken({ ledgerCanisterId, certified }),
-        ])
-      )
-    );
-
-  const error: boolean =
-    results.find(({ status }) => status === "rejected") !== undefined;
-  if (error) {
-    toastsError({ labelKey: "error.sns_accounts_balance_load" });
-  }
 };
 
 ///

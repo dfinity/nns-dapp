@@ -61,8 +61,7 @@ describe("icrcTokensUniversesStore", () => {
     expect(get(icrcTokensUniversesStore)).toEqual([ckETHUniverseMock]);
   });
 
-  // TODO: Enable when we have ckETH mainnet canister ids
-  it.skip("returns ckETH and ckSEPOLIA universes if present in icrcCanistersStore", () => {
+  it("returns ckETH and ckSEPOLIA universes if present in icrcCanistersStore", () => {
     tokensStore.setTokens({
       [CKETH_UNIVERSE_CANISTER_ID.toText()]: {
         certified: true,

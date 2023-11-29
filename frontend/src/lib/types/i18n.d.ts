@@ -507,7 +507,7 @@ interface I18nWallet {
   direction_to: string;
   no_transactions: string;
   icp_qrcode_aria_label: string;
-  sns_qrcode_aria_label: string;
+  icrc_qrcode_aria_label: string;
   token_address: string;
   pending_transaction_timestamp: string;
 }
@@ -966,6 +966,7 @@ interface I18nUniverse {
   select_token: string;
   select_nervous_system: string;
   select: string;
+  universe_logo: string;
 }
 
 interface I18nSns_rewards_status {
@@ -1072,6 +1073,7 @@ interface I18nError__ckbtc {
   retrieve_btc_min_amount: string;
   retrieve_btc_min_amount_unknown: string;
   wait_ckbtc_info_parameters_certified: string;
+  icrc_no_universe: string;
 }
 
 interface I18nFeature_flags_prompt {

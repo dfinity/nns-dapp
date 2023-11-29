@@ -3,10 +3,9 @@ import { Principal } from "@dfinity/principal";
 
 const envVars = getEnvVars();
 
-// TODO: Fallback to ckETH canister IDs on mainnet. These are Sepolia canister IDs.
-// TODO: uncomment related mocks in tockens.mock.ts when correctly set.
-const MAINNET_CKETH_LEDGER_CANISTER_ID = "apia6-jaaaa-aaaar-qabma-cai";
-const MAINNET_CKETH_INDEX_CANISTER_ID = "sh5u2-cqaaa-aaaar-qacna-cai";
+// TODO: Fallback to ckETH canister IDs on mainnet.
+const MAINNET_CKETH_LEDGER_CANISTER_ID = "ss2fx-dyaaa-aaaar-qacoq-cai";
+const MAINNET_CKETH_INDEX_CANISTER_ID = "s3zol-vqaaa-aaaar-qacpa-cai";
 
 export const CKETHSEPOLIA_LEDGER_CANISTER_ID = Principal.fromText(
   "apia6-jaaaa-aaaar-qabma-cai"
@@ -16,7 +15,6 @@ export const CKETHSEPOLIA_INDEX_CANISTER_ID = Principal.fromText(
   "sh5u2-cqaaa-aaaar-qacna-cai"
 );
 
-// TODO: Add ckETH canister IDs on env vars https://dfinity.atlassian.net/browse/GIX-2137
 export const CKETH_LEDGER_CANISTER_ID = Principal.fromText(
   envVars.ckethLedgerCanisterId ?? MAINNET_CKETH_LEDGER_CANISTER_ID
 );

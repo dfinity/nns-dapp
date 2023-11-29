@@ -4,11 +4,13 @@ import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.co
 import { AppPath } from "$lib/constants/routes.constants";
 import Wallet from "$lib/routes/Wallet.svelte";
 import { authStore } from "$lib/stores/auth.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { page } from "$mocks/$app/stores";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsFullProject, principal } from "$tests/mocks/sns-projects.mock";
+import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
@@ -40,6 +42,7 @@ vi.mock("$lib/services/ckbtc-info.services", () => {
 
 describe("Wallet", () => {
   beforeEach(() => {
+    setCkETHCanisters();
     setSnsProjects([
       {
         rootCanisterId: mockSnsFullProject.rootCanisterId,
@@ -47,6 +50,7 @@ describe("Wallet", () => {
       },
     ]);
     icpAccountsStore.setForTesting(mockAccountsStoreData);
+    overrideFeatureFlagsStore.reset();
   });
 
   beforeAll(() => {

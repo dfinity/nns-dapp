@@ -1,61 +1,128 @@
+import {
+  CKETHSEPOLIA_INDEX_CANISTER_ID,
+  CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/cketh-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import IcrcTokenAccounts from "$lib/pages/IcrcTokenAccounts.svelte";
+import { syncAccounts } from "$lib/services/wallet-accounts.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { tokensStore } from "$lib/stores/tokens.store";
+import { formatToken } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
-import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
-import { mockIcrcMainAccount } from "$tests/mocks/icrc-accounts.mock";
-import { principal } from "$tests/mocks/sns-projects.mock";
-import { IcrcTokenAccountsPo } from "$tests/page-objects/IcrcTokenAccounts.page-object";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { render } from "@testing-library/svelte";
+import {
+  mockCkETHMainAccount,
+  mockCkETHTESTToken,
+} from "$tests/mocks/cketh-accounts.mock";
+import en from "$tests/mocks/i18n.mock";
+import {
+  mockTokensSubscribe,
+  mockUniversesTokens,
+} from "$tests/mocks/tokens.mock";
+import { render, waitFor } from "@testing-library/svelte";
+
+vi.mock("$lib/services/wallet-accounts.services", () => {
+  return {
+    syncAccounts: vi.fn().mockResolvedValue(undefined),
+  };
+});
+
+vi.mock("$lib/services/worker-balances.services", () => ({
+  initBalancesWorker: vi.fn(() =>
+    Promise.resolve({
+      startBalancesTimer: () => {
+        // Do nothing
+      },
+      stopBalancesTimer: () => {
+        // Do nothing
+      },
+    })
+  ),
+}));
 
 describe("IcrcTokenAccounts", () => {
-  const ledgerCanisterId = principal(0);
-
-  const renderComponent = () => {
-    const { container } = render(IcrcTokenAccounts);
-
-    return IcrcTokenAccountsPo.under(new JestPageObjectElement(container));
-  };
-
   beforeEach(() => {
-    icrcAccountsStore.reset();
-    tokensStore.reset();
-    icrcCanistersStore.setCanisters({
-      ledgerCanisterId,
-      indexCanisterId: principal(1),
-    });
-    tokensStore.setTokens({
-      [ledgerCanisterId.toText()]: {
-        certified: true,
-        token: mockCkETHToken,
-      },
-    });
+    vi.clearAllMocks();
+    vi.spyOn(tokensStore, "subscribe").mockImplementation(
+      mockTokensSubscribe(mockUniversesTokens)
+    );
+
     page.mock({
-      data: { universe: ledgerCanisterId.toText() },
+      data: { universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText() },
       routeId: AppPath.Accounts,
     });
-  });
 
-  it("renders Skeleton card while the accounts are undefined", async () => {
-    icrcAccountsStore.reset();
-    const po = renderComponent();
-
-    expect(await po.hasSkeleton()).toBe(true);
-  });
-
-  it("renders AccountCard with balance", async () => {
-    icrcAccountsStore.set({
-      universeId: ledgerCanisterId,
-      accounts: {
-        accounts: [mockIcrcMainAccount],
-        certified: true,
-      },
+    icrcCanistersStore.setCanisters({
+      ledgerCanisterId: CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
+      indexCanisterId: CKETHSEPOLIA_INDEX_CANISTER_ID,
     });
-    const po = renderComponent();
+  });
 
-    expect(await po.getAccountCardPos()).toHaveLength(1);
+  describe("when there are accounts in the store", () => {
+    beforeEach(() => {
+      icrcAccountsStore.set({
+        accounts: {
+          accounts: [mockCkETHMainAccount],
+          certified: true,
+        },
+        universeId: CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
+      });
+    });
+
+    it("should not load Icrc accounts", () => {
+      render(IcrcTokenAccounts);
+
+      expect(syncAccounts).not.toHaveBeenCalled();
+    });
+
+    it("should render a main Account", async () => {
+      const { getByText } = render(IcrcTokenAccounts);
+
+      await waitFor(() =>
+        expect(getByText(en.accounts.main)).toBeInTheDocument()
+      );
+    });
+
+    it("should render balance in card", async () => {
+      const { container } = render(IcrcTokenAccounts);
+
+      const cardTitleRow = container.querySelector(
+        '[data-tid="account-card"] > div[data-tid="token-value-label"]'
+      );
+
+      expect(cardTitleRow?.textContent.trim()).toEqual(
+        `${formatToken({
+          value: mockCkETHMainAccount.balanceE8s,
+        })} ${mockCkETHTESTToken.symbol}`
+      );
+    });
+
+    it("should render account cards", async () => {
+      const { getAllByTestId } = render(IcrcTokenAccounts);
+
+      await waitFor(() =>
+        expect(getAllByTestId("account-card").length).toBeGreaterThan(0)
+      );
+    });
+  });
+
+  describe("when no accounts", () => {
+    beforeEach(() => {
+      icrcAccountsStore.reset();
+    });
+
+    it("should call load accounts", () => {
+      render(IcrcTokenAccounts);
+
+      // TODO: this should assert that the API are called https://dfinity.atlassian.net/browse/GIX-2150
+      expect(syncAccounts).toHaveBeenCalled();
+    });
+
+    it("should render skeletons while loading", () => {
+      const { container } = render(IcrcTokenAccounts);
+      expect(
+        container.querySelector('[data-tid="skeleton-card"]')
+      ).not.toBeNull();
+    });
   });
 });
