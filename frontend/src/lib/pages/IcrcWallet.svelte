@@ -1,7 +1,7 @@
 <script lang="ts">
   import { selectedIcrcTokenUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { nonNullish } from "@dfinity/utils";
-  import WalletPage from "$lib/components/accounts/WalletPage.svelte";
+  import IcrcWalletPage from "$lib/components/accounts/IcrcWalletPage.svelte";
   import { writable } from "svelte/store";
   import type { WalletStore } from "$lib/types/wallet.context";
   import IcrcWalletTransactionsList from "$lib/components/accounts/IcrcWalletTransactionsList.svelte";
@@ -29,7 +29,7 @@
     : undefined;
 </script>
 
-<WalletPage
+<IcrcWalletPage
   {accountIdentifier}
   {token}
   selectedUniverseId={$selectedIcrcTokenUniverseIdStore}
@@ -45,4 +45,4 @@
       />
     {/if}
   </svelte:fragment>
-</WalletPage>
+</IcrcWalletPage>

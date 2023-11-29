@@ -16,7 +16,7 @@
   import CkBTCWalletActions from "$lib/components/accounts/CkBTCWalletActions.svelte";
   import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
   import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
-  import WalletPage from "$lib/components/accounts/WalletPage.svelte";
+  import IcrcWalletPage from "$lib/components/accounts/IcrcWalletPage.svelte";
   import { writable } from "svelte/store";
   import type { WalletStore } from "$lib/types/wallet.context";
 
@@ -28,7 +28,7 @@
   });
 
   let transactions: CkBTCTransactionsList;
-  let wallet: WalletPage;
+  let wallet: IcrcWalletPage;
 
   // e.g. is called from "Receive" modal after user click "Done"
   const reloadAccount = async () => {
@@ -79,7 +79,7 @@
     }))();
 </script>
 
-<WalletPage
+<IcrcWalletPage
   {accountIdentifier}
   token={token?.token}
   selectedUniverseId={$selectedCkBTCUniverseIdStore}
@@ -123,4 +123,4 @@
       />
     {/if}
   </svelte:fragment>
-</WalletPage>
+</IcrcWalletPage>
