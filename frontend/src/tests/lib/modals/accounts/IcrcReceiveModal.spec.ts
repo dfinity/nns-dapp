@@ -1,10 +1,10 @@
-import SnsReceiveModal from "$lib/modals/accounts/IcrcReceiveModal.svelte";
+import IcrcReceiveModal from "$lib/modals/accounts/IcrcReceiveModal.svelte";
 import type { Account } from "$lib/types/account";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 
-describe("SnsReceiveModal", () => {
+describe("IcrcReceiveModal", () => {
   const reloadSpy = vi.fn();
   const tokenSymbol = "TST";
 
@@ -20,7 +20,7 @@ describe("SnsReceiveModal", () => {
     tokenSymbol: string;
   }) =>
     renderModal({
-      component: SnsReceiveModal,
+      component: IcrcReceiveModal,
       props: {
         data: {
           account,
