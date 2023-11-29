@@ -5,6 +5,7 @@ import { authStore } from "$lib/stores/auth.store";
 import { layoutAuthReady } from "$lib/stores/layout.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { loadCkETHCanisters } from "../cketh-canisters.services";
+import { watchIcrcTokensLoadTokenData } from "../icrc-tokens.services";
 
 /**
  * Load the application public data that are available globally ("global stores").
@@ -13,6 +14,7 @@ import { loadCkETHCanisters } from "../cketh-canisters.services";
 export const initAppPublicData = (): Promise<
   [PromiseSettledResult<void>, PromiseSettledResult<void>]
 > => {
+  watchIcrcTokensLoadTokenData({ certified: false });
   /**
    * If one of the promises fails, we don't want to block the app.
    */
