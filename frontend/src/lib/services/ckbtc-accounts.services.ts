@@ -1,13 +1,13 @@
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
 import { icrcTransferTokens } from "$lib/services/icrc-accounts.services";
 import { loadAccounts } from "$lib/services/wallet-accounts.services";
+import { toastsError } from "$lib/stores/toasts.store";
 import type { UniverseCanisterId } from "$lib/types/universe";
+import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import type { IcrcBlockIndex } from "@dfinity/ledger-icrc";
 import { isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import type { IcrcTransferTokensUserParams } from "./icrc-accounts.services";
-import {toastsError} from "$lib/stores/toasts.store";
-import {ledgerErrorToToastError} from "$lib/utils/sns-ledger.utils";
 
 export const loadCkBTCAccounts = async (params: {
   handleError?: () => void;
@@ -26,10 +26,10 @@ export const ckBTCTransferTokens = async ({
 
   if (isNullish(fee)) {
     toastsError(
-        ledgerErrorToToastError({
-          fallbackErrorLabelKey: "error.transaction_error",
-          err: new Error("error.transaction_fee_not_found")
-        })
+      ledgerErrorToToastError({
+        fallbackErrorLabelKey: "error.transaction_error",
+        err: new Error("error.transaction_fee_not_found"),
+      })
     );
 
     return { blockIndex: undefined };
