@@ -1,5 +1,4 @@
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
-import * as ckbtcLedgerApi from "$lib/api/wallet-ledger.api";
 import * as walletLedgerApi from "$lib/api/wallet-ledger.api";
 import {
   CKTESTBTC_INDEX_CANISTER_ID,
@@ -19,11 +18,11 @@ import {
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockUniversesTokens } from "$tests/mocks/tokens.mock";
-import { IcrcWalletPo } from "$tests/page-objects/IcrcWallet.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
+import {IcrcWalletPo} from "$tests/page-objects/IcrcWallet.page-object";
 
 const expectedBalanceAfterTransfer = 11_111n;
 
@@ -104,7 +103,7 @@ describe("IcrcWallet", () => {
         routeId: AppPath.Wallet,
       });
 
-      vi.mocked(ckbtcLedgerApi.getAccount).mockImplementation(() => {
+      vi.mocked(walletLedgerApi.getAccount).mockImplementation(() => {
         return new Promise<Account>((resolve) => {
           resolveAccounts = resolve;
         });
