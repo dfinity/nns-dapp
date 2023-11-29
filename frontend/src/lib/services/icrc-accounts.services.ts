@@ -164,6 +164,7 @@ export interface IcrcTransferTokensUserParams {
   amount: number;
 }
 
+// TODO: use `wallet-accounts.services`
 export const transferTokens = async ({
   source,
   destinationAddress,
@@ -240,7 +241,7 @@ export const icrcTransferTokens = async ({
       }),
     reloadAccounts: async () =>
       await loadIcrcAccount({ ledgerCanisterId, certified: true }),
-    // TODO: Reload transactions after transfer in Wallet page
+    // Web workders take care of refreshing transactions
     reloadTransactions: () => Promise.resolve(),
   });
 };

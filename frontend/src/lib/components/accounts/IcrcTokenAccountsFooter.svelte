@@ -4,28 +4,28 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { selectedIcrcTokenUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { openIcrcTokenModal } from "$lib/utils/modals.utils";
-  import type { Principal } from "@dfinity/principal";
   import { tokensStore } from "$lib/stores/tokens.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { toastsError } from "$lib/stores/toasts.store";
+  import type { UniverseCanisterId } from "$lib/types/universe";
 
-  let ledgerCanisterId: Principal | undefined;
-  $: ledgerCanisterId = $selectedIcrcTokenUniverseIdStore;
+  let universeId: UniverseCanisterId | undefined;
+  $: universeId = $selectedIcrcTokenUniverseIdStore;
 
   let token: IcrcTokenMetadata | undefined;
-  $: token = nonNullish(ledgerCanisterId)
-    ? $tokensStore[ledgerCanisterId.toText()]?.token
+  $: token = nonNullish(universeId)
+    ? $tokensStore[universeId.toText()]?.token
     : undefined;
 
   const openSendModal = () => {
-    if (isNullish(ledgerCanisterId) || isNullish(token)) {
+    if (isNullish(universeId) || isNullish(token)) {
       toastsError({ labelKey: "error.icrc_token_load" });
       return;
     }
     openIcrcTokenModal({
       type: "icrc-send",
       data: {
-        universeId: ledgerCanisterId,
+        universeId,
         token,
         loadTransactions: false,
       },
