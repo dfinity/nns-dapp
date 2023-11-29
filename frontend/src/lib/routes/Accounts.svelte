@@ -17,7 +17,7 @@
   } from "$lib/derived/sns/sns-projects.derived";
   import { nonNullish } from "@dfinity/utils";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
-  import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-accounts.services";
+  import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-uncertified-accounts.services";
   import CkBTCAccounts from "$lib/pages/CkBTCAccounts.svelte";
   import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
   import CkBTCAccountsFooter from "$lib/components/accounts/CkBTCAccountsFooter.svelte";
