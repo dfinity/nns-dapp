@@ -33,8 +33,6 @@
     type IcrcCanistersStoreData,
   } from "$lib/stores/icrc-canisters.store";
   import { loadIcrcAccounts } from "$lib/services/icrc-accounts.services";
-  import { onMount } from "svelte";
-  import { loadCkETHCanisters } from "$lib/services/cketh-canisters.services";
   import IcrcTokenAccounts from "$lib/pages/IcrcTokenAccounts.svelte";
   import IcrcTokenAccountsFooter from "$lib/components/accounts/IcrcTokenAccountsFooter.svelte";
   import IcrcTokenAccountsModals from "$lib/modals/accounts/IcrcTokenAccountsModals.svelte";
@@ -46,10 +44,6 @@
 
   let loadSnsAccountsBalancesRequested = false;
   let loadCkBTCAccountsBalancesRequested = false;
-
-  onMount(() => {
-    loadCkETHCanisters();
-  });
 
   const loadSnsAccountsBalances = async (projects: SnsFullProject[]) => {
     // We start when the projects are fetched

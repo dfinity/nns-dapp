@@ -47,6 +47,7 @@ import {
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
@@ -150,6 +151,7 @@ describe("Accounts", () => {
   beforeEach(() => {
     tokensStore.reset();
     icrcAccountsStore.reset();
+    setCkETHCanisters();
 
     vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockCkETHToken);
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
