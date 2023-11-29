@@ -7,7 +7,7 @@
   import { findAccount, hasAccounts } from "$lib/utils/accounts.utils";
   import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
   import { TokenAmount, isNullish, nonNullish } from "@dfinity/utils";
-  import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
+  import { syncAccounts as syncWalletAccounts } from "$lib/services/wallet-accounts.services";
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { i18n } from "$lib/stores/i18n";
@@ -92,7 +92,7 @@
     }
 
     // Maybe the accounts were just not loaded yet in store, so we try to load the accounts in store
-    await syncCkBTCAccounts({ universeId });
+    await syncWalletAccounts({ universeId });
 
     // And finally try to set the account again
     await loadAccount(universeId);

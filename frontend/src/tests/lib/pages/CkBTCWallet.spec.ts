@@ -9,7 +9,7 @@ import {
 import { AppPath } from "$lib/constants/routes.constants";
 import { WALLET_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/wallet.constants";
 import CkBTCWallet from "$lib/pages/CkBTCWallet.svelte";
-import * as services from "$lib/services/ckbtc-accounts.services";
+import * as services from "$lib/services/wallet-accounts.services";
 import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
@@ -451,7 +451,7 @@ describe("CkBTCWallet", () => {
 
       await receiveModalPo.selectBitcoin();
 
-      const spy = vi.spyOn(services, "loadCkBTCAccounts");
+      const spy = vi.spyOn(services, "loadAccounts");
 
       await receiveModalPo.clickFinish();
 
