@@ -7,6 +7,7 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 import { BuyICPModalPo } from "./BuyICPModal.page-object";
 import { IcrcTokenAccountsPo } from "./IcrcTokenAccounts.page-object";
 import { IcrcTokenAccountsFooterPo } from "./IcrcTokenAccountsFooter.page-object";
+import { IcrcTokenTransactionModalPo } from "./IcrcTokenTransactionModal.page-object";
 
 export class AccountsPo extends BasePageObject {
   private static readonly TID = "accounts-component";
@@ -27,6 +28,10 @@ export class AccountsPo extends BasePageObject {
     return IcrcTokenAccountsPo.under(this.root);
   }
 
+  getIcrcTokenTransactionModalPo() {
+    return IcrcTokenTransactionModalPo.under(this.root);
+  }
+
   getIcrcTokenAccountsFooterPo(): IcrcTokenAccountsFooterPo {
     return IcrcTokenAccountsFooterPo.under(this.root);
   }
@@ -45,6 +50,10 @@ export class AccountsPo extends BasePageObject {
 
   clickSend(): Promise<void> {
     return this.getNnsAccountsFooterPo().clickSend();
+  }
+
+  clickCkETHSend(): Promise<void> {
+    return this.getIcrcTokenAccountsFooterPo().clickSend();
   }
 
   clickBuyICP(): Promise<void> {
