@@ -194,7 +194,9 @@
       "wasm": "target/ic/ckbtc_ledger.wasm",
       "type": "custom",
       "remote": {
-        "id": {}
+        "id": {
+          "mainnet": "ss2fx-dyaaa-aaaar-qacoq-cai"
+        }
       }
     },
     "cketh_index": {
@@ -205,7 +207,9 @@
       "wasm": "target/ic/ckbtc_index.wasm",
       "type": "custom",
       "remote": {
-        "id": {}
+        "id": {
+          "mainnet": "s3zol-vqaaa-aaaar-qacpa-cai"
+        }
       }
     },
     "tvl": {
