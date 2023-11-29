@@ -1,4 +1,7 @@
 //! Stable Memory Layout
+//!
+//! The memory manager will be at the root of the memory, however MemoryManager::init() cheerfully overwrites data it doesn't recognize.
+//! This code is here to protect the memory!
 use super::State;
 use crate::accounts_store::schema::SchemaLabel;
 use core::borrow::Borrow;
@@ -14,8 +17,12 @@ pub struct Partitions {
 }
 impl Partitions {
     /// The partition containing metadata such as schema version.
+    ///
+    /// Note: This ID is guaranteed to be stable across deployments.
     pub const METADATA_MEMORY_ID: MemoryId = MemoryId::new(0);
-    /// The partition containing heap data
+    /// The partition containing heap data.
+    ///
+    /// Note: This ID is guaranteed to be stable across deployments.
     pub const HEAP_MEMORY_ID: MemoryId = MemoryId::new(1);
 
     /// Determines whether the given memory is managed by a memory manager.
@@ -36,13 +43,6 @@ impl Partitions {
             String::from_utf8(actual_first_bytes.to_vec())
         ));
         ans
-    }
-
-    /// Get the schema label
-    pub fn schema_label(&self) -> Option<SchemaLabel> {
-        dfn_core::api::print(format!("START Partitions::schema_label: ()"));
-        let metadata_memory = self.get(Self::METADATA_MEMORY_ID);
-        State::schema_version_from_memory(&metadata_memory)
     }
 
     /// Gets a partition.
