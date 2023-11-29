@@ -6,10 +6,7 @@
   } from "$lib/types/accounts.modal";
   import NnsReceiveModal from "$lib/modals/accounts/NnsReceiveModal.svelte";
   import { nonNullish } from "@dfinity/utils";
-  import SnsReceiveModal from "$lib/modals/accounts/SnsReceiveModal.svelte";
-  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
-  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
-  import IC_LOGO from "$lib/assets/icp.svg";
+  import IcrcReceiveModal from "$lib/modals/accounts/IcrcReceiveModal.svelte";
   import BuyIcpModal from "./BuyIcpModal.svelte";
   import type { Account } from "$lib/types/account";
 
@@ -39,12 +36,6 @@
   <NnsReceiveModal on:nnsClose={close} {data} />
 {/if}
 
-{#if type === "sns-receive" && nonNullish(data)}
-  <SnsReceiveModal
-    on:nnsClose={close}
-    {data}
-    universeId={$snsOnlyProjectStore}
-    logo={$selectedUniverseStore?.summary?.metadata.logo ?? IC_LOGO}
-    tokenSymbol={$selectedUniverseStore?.summary?.token.symbol}
-  />
+{#if type === "icrc-receive" && nonNullish(data)}
+  <IcrcReceiveModal on:nnsClose={close} {data} />
 {/if}

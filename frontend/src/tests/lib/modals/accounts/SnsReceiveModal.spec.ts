@@ -1,4 +1,4 @@
-import SnsReceiveModal from "$lib/modals/accounts/SnsReceiveModal.svelte";
+import SnsReceiveModal from "$lib/modals/accounts/IcrcReceiveModal.svelte";
 import type { Account } from "$lib/types/account";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";

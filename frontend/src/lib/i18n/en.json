@@ -490,7 +490,7 @@
     "direction_to": "To:",
     "no_transactions": "No transactions",
     "icp_qrcode_aria_label": "A QR code that renders the address to receive ICP",
-    "sns_qrcode_aria_label": "A QR code that renders the address to receive $tokenSymbol",
+    "icrc_qrcode_aria_label": "A QR code that renders the address to receive $tokenSymbol",
     "token_address": "$tokenSymbol Address",
     "pending_transaction_timestamp": "Pending..."
   },
@@ -1023,7 +1023,8 @@
     "deposit_fee": "Sorry, the Inter-network Fee cannot be fetched.",
     "retrieve_btc_min_amount": "The amount falls below the minimum of $amount ckBTC required for converting to BTC.",
     "retrieve_btc_min_amount_unknown": "The minimum amount of ckBTC required for converting to BTC is unknown.",
-    "wait_ckbtc_info_parameters_certified": "Please wait until the ckBTC parameters have been certified."
+    "wait_ckbtc_info_parameters_certified": "Please wait until the ckBTC parameters have been certified.",
+    "icrc_no_universe": "An Icrc environment should be provided to execute this feature"
   },
   "feature_flags_prompt": {
     "override_true": "Enter the number for the feature you want to enable.",

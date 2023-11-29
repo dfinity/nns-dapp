@@ -165,7 +165,7 @@
     >
 
     <ReceiveButton
-      type="sns-receive"
+      type="icrc-receive"
       account={$selectedAccountStore.account}
       reload={reloadAccount}
       testId="receive-sns"
