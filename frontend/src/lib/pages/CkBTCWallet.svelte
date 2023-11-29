@@ -37,7 +37,7 @@
     }
 
     await loadCkBTCAccounts({ universeId: $selectedCkBTCUniverseIdStore });
-    await wallet.loadAccount($selectedCkBTCUniverseIdStore);
+    await wallet.loadAccount?.($selectedCkBTCUniverseIdStore);
 
     reloadTransactions();
   };
