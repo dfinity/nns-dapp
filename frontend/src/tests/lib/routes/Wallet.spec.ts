@@ -1,5 +1,6 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import Wallet from "$lib/routes/Wallet.svelte";
 import { authStore } from "$lib/stores/auth.store";
@@ -94,6 +95,20 @@ describe("Wallet", () => {
         accountIdentifier: principal(0).toText(),
       },
     });
-    expect(getByTestId("ckbtc-wallet")).toBeInTheDocument();
+    expect(getByTestId("ckbtc-wallet-component")).toBeInTheDocument();
+  });
+
+  it("should render an Icrc wallet", () => {
+    page.mock({
+      data: { universe: CKETH_UNIVERSE_CANISTER_ID.toText() },
+      routeId: AppPath.Wallet,
+    });
+
+    const { getByTestId } = render(Wallet, {
+      props: {
+        accountIdentifier: principal(0).toText(),
+      },
+    });
+    expect(getByTestId("icrc-wallet-component")).toBeInTheDocument();
   });
 });
