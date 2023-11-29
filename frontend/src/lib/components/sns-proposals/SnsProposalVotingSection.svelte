@@ -2,7 +2,7 @@
   import {
     type SnsProposalData,
     SnsProposalRewardStatus,
-    SnsTally,
+    type SnsTally,
   } from "@dfinity/sns";
   import SnsVotingCard from "$lib/components/sns-proposals/SnsVotingCard.svelte";
   import VotesResults from "$lib/components/proposal-detail/VotesResults.svelte";
