@@ -12,15 +12,13 @@ describe("IcrcReceiveModal", () => {
     vi.clearAllMocks();
   });
 
-  const renderReceiveModal = (
-    {
-      account = mockSnsMainAccount,
-      tokenSymbol,
-    }: {
-      account?: Account;
-      tokenSymbol: string;
-    }
-  ) =>
+  const renderReceiveModal = ({
+    account = mockSnsMainAccount,
+    tokenSymbol,
+  }: {
+    account?: Account;
+    tokenSymbol: string;
+  }) =>
     renderModal({
       component: IcrcReceiveModal,
       props: {
