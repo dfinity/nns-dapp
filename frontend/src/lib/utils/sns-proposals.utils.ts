@@ -1,6 +1,7 @@
 import { SNS_MIN_NUMBER_VOTES_FOR_PROPOSAL_RATIO } from "$lib/constants/sns-proposals.constants";
 import { i18n } from "$lib/stores/i18n";
 import type {
+  BasisPoints,
   UniversalProposalStatus,
   VotingNeuron,
 } from "$lib/types/proposals";
@@ -21,6 +22,7 @@ import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
 } from "@dfinity/sns";
+import type { Percentage } from "@dfinity/sns/dist/candid/sns_governance";
 import { fromDefinedNullable, fromNullable, isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { nowInSeconds } from "./date.utils";
@@ -67,6 +69,9 @@ export type SnsProposalDataMap = {
   // Mapped from Nervous Functions
   type?: string;
   typeDescription?: string;
+
+  minimumYesProportionOfTotal: BasisPoints;
+  minimumYesProportionOfExercised: BasisPoints;
 };
 
 // TODO: Return also a type and the type description that for now maps to the topic
@@ -153,8 +158,24 @@ export const mapProposalInfo = ({
     // Mapped from Nervous Functions
     type: nsFunction?.name,
     typeDescription: nsFunction?.description[0],
+
+    minimumYesProportionOfTotal: minimumYesProportionOfTotal(proposalData),
+    minimumYesProportionOfExercised:
+      minimumYesProportionOfExercised(proposalData),
   };
 };
+
+export const minimumYesProportionOfTotal = (
+  proposal: SnsProposalData
+): bigint =>
+  fromPercentageBasicPoints(proposal.minimum_yes_proportion_of_total) ??
+  MINIMUM_YES_PROPORTION_OF_TOTAL_VOTING_POWER;
+
+export const minimumYesProportionOfExercised = (
+  proposal: SnsProposalData
+): bigint =>
+  fromPercentageBasicPoints(proposal.minimum_yes_proportion_of_exercised) ??
+  MINIMUM_YES_PROPORTION_OF_EXERCISED_VOTING_POWER;
 
 /**
  * Returns whether the proposal is accepted or not based on the data.
@@ -410,3 +431,8 @@ export const getUniversalProposalStatus = (
 
   return statusType;
 };
+
+export const fromPercentageBasicPoints = (
+  value?: [] | [Percentage]
+): bigint | undefined =>
+  value?.length === 1 ? fromNullable(value?.[0].basis_points) : undefined;
