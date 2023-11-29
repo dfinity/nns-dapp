@@ -25,7 +25,6 @@ import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
 } from "@dfinity/sns";
-import type { Percentage } from "@dfinity/sns/dist/candid/sns_governance";
 import { fromDefinedNullable, fromNullable, isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { nowInSeconds } from "./date.utils";
@@ -468,7 +467,12 @@ export const getUniversalProposalStatus = (
   return statusType;
 };
 
+// TODO(max): replace `{ basis_points: [] | [bigint] }` with SnsPercentage type
 export const fromPercentageBasisPoints = (
-  value?: [] | [Percentage]
-): bigint | undefined =>
-  value?.length === 1 ? fromNullable(value?.[0].basis_points) : undefined;
+  value: [] | [{ basis_points: [] | [bigint] }] | undefined
+): bigint | undefined => {
+  const percentage = fromNullable(value ?? []);
+  return isNullish(percentage)
+    ? undefined
+    : fromNullable(percentage.basis_points);
+};

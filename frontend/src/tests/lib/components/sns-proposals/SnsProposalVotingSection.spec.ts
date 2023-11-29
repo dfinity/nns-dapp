@@ -1,7 +1,9 @@
 import SnsProposalVotingSection from "$lib/components/sns-proposals/SnsProposalVotingSection.svelte";
+import { mapProposalInfo } from "$lib/utils/sns-proposals.utils";
+import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { SnsProposalVotingSectionPo } from "$tests/page-objects/SnsProposalVotingSection.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { SnsProposalData } from "@dfinity/sns";
 import { fromDefinedNullable } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
@@ -18,6 +20,10 @@ describe("SnsProposalVotingSection", () => {
       },
     ],
   };
+  const proposalDataMap = mapProposalInfo({
+    proposalData: proposal,
+    nsFunctions: [{ ...nervousSystemFunctionMock }],
+  });
 
   it("should render vote results", async () => {
     const { container } = render(SnsProposalVotingSection, {
@@ -28,6 +34,7 @@ describe("SnsProposalVotingSection", () => {
         proposal: {
           ...proposal,
         },
+        proposalDataMap,
       },
     });
 

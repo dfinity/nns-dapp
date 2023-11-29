@@ -2,6 +2,7 @@ import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
 import {
   ballotVotingPower,
+  fromPercentageBasisPoints,
   getUniversalProposalStatus,
   isAccepted,
   lastProposalId,
@@ -632,6 +633,17 @@ describe("sns-proposals utils", () => {
           })
         )
       ).toBe("rejected");
+    });
+  });
+
+  describe("fromPercentageBasisPoints", () => {
+    it("should return basis points", () => {
+      // TODO(max): add `as SnsPercentage`
+      expect(fromPercentageBasisPoints([{ basis_points: [300n] }])).toBe(300n);
+    });
+
+    it("should not break when no percentage provided", () => {
+      expect(fromPercentageBasisPoints(undefined)).toBe(undefined);
     });
   });
 });
