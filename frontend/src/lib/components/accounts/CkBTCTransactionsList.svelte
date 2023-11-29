@@ -9,7 +9,10 @@
   } from "$lib/stores/ckbtc-info.store";
   import { ckbtcPendingUtxosStore } from "$lib/stores/ckbtc-pending-utxos.store";
   import type { Account } from "$lib/types/account";
-  import { mapCkbtcTransaction, mapCkbtcPendingUtxo } from "$lib/utils/icrc-transactions.utils";
+  import {
+    mapCkbtcTransaction,
+    mapCkbtcPendingUtxo,
+  } from "$lib/utils/icrc-transactions.utils";
   import type {
     UiTransaction,
     IcrcTransactionData,
