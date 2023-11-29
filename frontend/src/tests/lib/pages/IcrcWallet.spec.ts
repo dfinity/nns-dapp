@@ -19,7 +19,7 @@ import {
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockUniversesTokens } from "$tests/mocks/tokens.mock";
-import { CkBTCWalletPo } from "$tests/page-objects/CkBTCWallet.page-object";
+import { IcrcWalletPo } from "$tests/page-objects/IcrcWallet.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
@@ -70,10 +70,10 @@ describe("IcrcWallet", () => {
     accountIdentifier: mockCkBTCMainAccount.identifier,
   };
 
-  const renderWallet = async (): Promise<CkBTCWalletPo> => {
+  const renderWallet = async (): Promise<IcrcWalletPo> => {
     const { container } = render(IcrcWallet, props);
     await runResolvedPromises();
-    return CkBTCWalletPo.under(new JestPageObjectElement(container));
+    return IcrcWalletPo.under(new JestPageObjectElement(container));
   };
 
   beforeEach(() => {

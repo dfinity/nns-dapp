@@ -80,6 +80,7 @@
 </script>
 
 <IcrcWalletPage
+  testId="ckbtc-wallet-component"
   {accountIdentifier}
   token={token?.token}
   selectedUniverseId={$selectedCkBTCUniverseIdStore}

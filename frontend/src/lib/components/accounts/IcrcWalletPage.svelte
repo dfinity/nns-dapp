@@ -20,6 +20,7 @@
   import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
 
+  export let testId: string;
   export let accountIdentifier: string | undefined | null = undefined;
   export let selectedUniverseId: UniverseCanisterId | undefined;
   export let token: IcrcTokenMetadata | undefined = undefined;
@@ -102,8 +103,8 @@
   $: accountIdentifier, (async () => await loadData(selectedUniverseId))();
 </script>
 
-<Island testId="ckbtc-wallet-component">
-  <main class="legacy" data-tid="ckbtc-wallet">
+<Island {testId}>
+  <main class="legacy">
     <section>
       {#if loaded && nonNullish($selectedAccountStore.account) && nonNullish(selectedUniverseId) && nonNullish(token)}
         <IcrcBalancesObserver

@@ -30,6 +30,7 @@
 </script>
 
 <IcrcWalletPage
+  testId="icrc-wallet-component"
   {accountIdentifier}
   {token}
   selectedUniverseId={$selectedIcrcTokenUniverseIdStore}
