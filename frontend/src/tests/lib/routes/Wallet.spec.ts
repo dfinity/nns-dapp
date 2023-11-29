@@ -101,7 +101,7 @@ describe("Wallet", () => {
     icpAccountsStore.setForTesting(mockAccountsStoreData);
     overrideFeatureFlagsStore.reset();
     vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(1234n);
-    // Called only after a transfer (for now)
+    // Called only after a transfer (for now GIX-2150)
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
       balanceAfterTransfer
     );
