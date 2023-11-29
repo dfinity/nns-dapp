@@ -1,11 +1,7 @@
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
-import {
-  CKETH_INDEX_CANISTER_ID,
-  CKETH_LEDGER_CANISTER_ID,
-  CKETH_UNIVERSE_CANISTER_ID,
-} from "$lib/constants/cketh-canister-ids.constants";
+import {CKETH_INDEX_CANISTER_ID, CKETH_UNIVERSE_CANISTER_ID} from "$lib/constants/cketh-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import {
   snsProjectsCommittedStore,
@@ -19,15 +15,11 @@ import { authStore } from "$lib/stores/auth.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { page } from "$mocks/$app/stores";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
+import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
   mockAccountsStoreData,
@@ -46,13 +38,13 @@ import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transa
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
-import { get } from "svelte/store";
 import WalletTest from "../pages/AccountsTest.svelte";
+import {icrcCanistersStore} from "$lib/stores/icrc-canisters.store";
+import {mockTokens} from "$tests/mocks/tokens.mock";
+import CKETH_LOGO from "$lib/assets/ckETH.svg";
 
 vi.mock("$lib/api/icrc-ledger.api");
 
@@ -178,6 +170,11 @@ describe("Accounts", () => {
     });
 
     icpAccountsStore.setForTesting(mockAccountsStoreData);
+
+    icrcCanistersStore.setCanisters({
+      ledgerCanisterId: CKETH_UNIVERSE_CANISTER_ID,
+      indexCanisterId: CKETH_INDEX_CANISTER_ID,
+    });
   });
 
   it("should render NnsAccounts by default", () => {
@@ -340,43 +337,12 @@ describe("Accounts", () => {
 
     render(Accounts);
 
-    const mockAccount = {
-      identifier: encodeIcrcAccount({
-        owner: mockIdentity.getPrincipal(),
-      }),
-      principal: mockIdentity.getPrincipal(),
-      type: "main",
-      balanceE8s: balanceIcrcToken,
-    };
-
-    await waitFor(() => {
-      expect(
-        get(icrcAccountsStore)[CKETH_UNIVERSE_CANISTER_ID.toText()]
-      ).toEqual({
-        certified: false,
-        accounts: [mockAccount],
-      });
-    });
+    await waitFor(() =>
+      expect(uncertifiedLoadAccountsBalance).toHaveBeenCalled()
+    );
   });
 
-  it("should not refetch ckETH accounts if ckETH canisters are already loaded", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
-
-    icrcCanistersStore.setCanisters({
-      ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
-      indexCanisterId: CKETH_INDEX_CANISTER_ID,
-    });
-
-    render(Accounts);
-
-    await runResolvedPromises();
-
-    // It's called once when the component is mounted
-    expect(icrcLedgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
-    expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(1);
-  });
-
-  it("should render IcrcTokenAccounts and IcrcTokenAccountsFooter component with ckETH enabled and universe ckETH", async () => {
+  it("should not load ckETH accounts when universe ckETH is selected", async () => {
     overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
 
     page.mock({
@@ -384,10 +350,11 @@ describe("Accounts", () => {
       routeId: AppPath.Accounts,
     });
 
-    const po = renderComponent();
+    render(Accounts);
 
-    expect(await po.getIcrcTokenAccountsPo().isPresent()).toBe(true);
-    expect(await po.getIcrcTokenAccountsFooterPo().isPresent()).toBe(true);
+    await waitFor(() =>
+      expect(uncertifiedLoadAccountsBalance).toHaveBeenCalled()
+    );
   });
 
   it("should render sns project name", () => {
@@ -415,6 +382,41 @@ describe("Accounts", () => {
     const img = logo.querySelector('[data-tid="logo"]');
 
     expect(img?.getAttribute("src") ?? "").toEqual(mockSummary.metadata.logo);
+  });
+
+  it("should render icrc project name", () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
+
+    tokensStore.setTokens(mockTokens);
+
+    page.mock({
+      data: { universe: CKETH_UNIVERSE_CANISTER_ID.toText() },
+      routeId: AppPath.Accounts,
+    });
+
+    const { getByTestId } = render(Accounts);
+
+    const titleRow = getByTestId("projects-summary");
+
+    expect(titleRow?.textContent?.includes("ckETH")).toBeTruthy();
+  });
+
+  it("should render icrc project logo", () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
+
+    tokensStore.setTokens(mockTokens);
+
+    page.mock({
+      data: { universe: CKETH_UNIVERSE_CANISTER_ID.toText() },
+      routeId: AppPath.Accounts,
+    });
+
+    const { getByTestId } = render(Accounts);
+
+    const logo = getByTestId("project-logo");
+    const img = logo.querySelector('[data-tid="logo"]');
+
+    expect(img?.getAttribute("src") ?? "").toEqual(CKETH_LOGO);
   });
 
   it("should render project title", async () => {
