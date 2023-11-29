@@ -1,8 +1,8 @@
 //! Tests for stable memory layout code.
-use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
-use std::rc::Rc;
 use super::*;
 use crate::state::{tests::setup_test_state, StableState};
+use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
+use std::rc::Rc;
 
 #[test]
 fn is_managed_should_recognize_memory_manager() {
@@ -28,19 +28,9 @@ fn is_managed_should_recognize_memory_manager() {
     );
 }
 
+/// If memory contains a memory manager, we should be able to get a partition table from it.
 #[test]
-/// Assume that the memory manager works.  Verifies that if we populate memory with a memory manager, the partitions table will recognize it accurately.
 fn should_be_able_to_get_partitions_from_managed_memory() {
-    fn should_contain(partitions: &Partitions, memory_id: MemoryId, expected_contents: &[u8]) {
-        let memory = partitions.get(memory_id);
-        let mut actual_contents = vec![0u8; expected_contents.len()];
-        memory.read(0, &mut actual_contents);
-        assert_eq!(
-            expected_contents, actual_contents,
-            "Partition {:?} should contain the expected contents.",
-            memory_id
-        );
-    }
     // Prepare some memory.
     let toy_memory = DefaultMemoryImpl::default();
     assert!(
@@ -54,15 +44,34 @@ fn should_be_able_to_get_partitions_from_managed_memory() {
         "Blank memory should not yield a partition table."
     );
     // Create a memory manager.
-    let memory_manager = MemoryManager::init(Rc::clone(&toy_memory));
+    MemoryManager::init(Rc::clone(&toy_memory));
     let partitions = Partitions::try_from_memory(std::rc::Rc::clone(&toy_memory));
     assert!(
         partitions.is_ok(),
         "Managed memory should yield a partition table, even if it is empty."
     );
-    // Check that the partitions are at least basically functional and refer to the same memory that was provided:
-    // The partitions should be empty:
-    let partitions = partitions.unwrap();
+}
+
+/// The virtual memory in a partition table should correspond to that created by a memory manager.
+#[test]
+fn partitins_should_get_correct_virtual_memory() {
+    /// Checks that the contents of virtual memory is as we expect.
+    fn should_contain(partitions: &Partitions, memory_id: MemoryId, expected_contents: &[u8]) {
+        let memory = partitions.get(memory_id);
+        let mut actual_contents = vec![0u8; expected_contents.len()];
+        memory.read(0, &mut actual_contents);
+        assert_eq!(
+            expected_contents, actual_contents,
+            "Partition {:?} should contain the expected contents.",
+            memory_id
+        );
+    }
+
+    // Prepare some memory.
+    let toy_memory = DefaultMemoryImpl::default();
+    let memory_manager = MemoryManager::init(Rc::clone(&toy_memory));
+    // At this stage, partitions should be empty.
+    let partitions = Partitions::try_from_memory(Rc::clone(&toy_memory)).expect("Failed to get empty partitions");
     assert_eq!(
         partitions.get(Partitions::METADATA_MEMORY_ID).size(),
         0,
@@ -73,22 +82,32 @@ fn should_be_able_to_get_partitions_from_managed_memory() {
         0,
         "Heap partition should be empty."
     );
-    // Populate a partition with some data.
-    let toy_metadata_fill = [9u8;WASM_PAGE_SIZE_IN_BYTES as usize];
-    //metadata_memory.grow(1);
-    partitions.get(Partitions::METADATA_MEMORY_ID).grow(1);
+
+    // Grow a partition in the memory manager.  The partitions should grow with it.
+    let toy_metadata_fill = [9u8; WASM_PAGE_SIZE_IN_BYTES as usize];
+    memory_manager.get(Partitions::METADATA_MEMORY_ID).grow(1);
+    let partitions = Partitions::try_from_memory(Rc::clone(&toy_memory))
+        .expect("Failed to get partitions when one partition has grown");
     assert_eq!(
-        Partitions::try_from_memory(toy_memory).expect("Failed to get partitions").get(Partitions::METADATA_MEMORY_ID).size(),
+        Partitions::try_from_memory(Rc::clone(&toy_memory))
+            .expect("Failed to get partitions")
+            .get(Partitions::METADATA_MEMORY_ID)
+            .size(),
         1,
         "Metadata partition should have grown to 1."
     );
-
     assert_eq!(
         partitions.get(Partitions::HEAP_MEMORY_ID).size(),
         0,
         "Heap partition should still be empty."
     );
-    partitions.get(Partitions::METADATA_MEMORY_ID).write(0, &toy_metadata_fill);
+
+    // Populate a partition with the memory manager.  The partitions should be able to read the data back.
+    memory_manager
+        .get(Partitions::METADATA_MEMORY_ID)
+        .write(0, &toy_metadata_fill);
+    let partitions = Partitions::try_from_memory(Rc::clone(&toy_memory))
+        .expect("Failed to get partitions when one partition is populated");
     assert_eq!(
         partitions.get(Partitions::METADATA_MEMORY_ID).size(),
         1,
@@ -98,30 +117,32 @@ fn should_be_able_to_get_partitions_from_managed_memory() {
         partitions.get(Partitions::HEAP_MEMORY_ID).size(),
         0,
         "Heap partition should still be empty."
-    );    
+    );
     should_contain(&partitions, Partitions::METADATA_MEMORY_ID, &toy_metadata_fill);
 
-    // Populate another partition.
+    // Populate another partition via partitions.  The memory manager should reflect the change.
     let toy_heap_fill = b"bar".repeat(1000);
-    partitions.get(Partitions::HEAP_MEMORY_ID).grow(2);
+    memory_manager.get(Partitions::HEAP_MEMORY_ID).grow(2);
+    let partitions = Partitions::try_from_memory(Rc::clone(&toy_memory))
+        .expect("Failed to get partitions when one partition is populated");
     assert_eq!(
-        partitions.get(Partitions::METADATA_MEMORY_ID).size(),
+        memory_manager.get(Partitions::METADATA_MEMORY_ID).size(),
         1,
         "Metadata partition should still be 1."
     );
     assert_eq!(
-        partitions.get(Partitions::HEAP_MEMORY_ID).size(),
+        memory_manager.get(Partitions::HEAP_MEMORY_ID).size(),
         2,
         "Heap partition should have grown to 2."
     );
     partitions.get(Partitions::HEAP_MEMORY_ID).write(0, &toy_heap_fill[..]);
     assert_eq!(
-        partitions.get(Partitions::METADATA_MEMORY_ID).size(),
+        memory_manager.get(Partitions::METADATA_MEMORY_ID).size(),
         1,
         "Metadata partition should still be 1."
     );
     assert_eq!(
-        partitions.get(Partitions::HEAP_MEMORY_ID).size(),
+        memory_manager.get(Partitions::HEAP_MEMORY_ID).size(),
         2,
         "Heap partition should still be 2."
     );
