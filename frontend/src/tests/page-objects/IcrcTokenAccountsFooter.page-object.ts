@@ -9,4 +9,8 @@ export class IcrcTokenAccountsFooterPo extends BaseAccountsPo {
       element.byTestId(IcrcTokenAccountsFooterPo.TID)
     );
   }
+
+  async clickSend(): Promise<void> {
+    return this.click("open-new-icrc-token-transaction");
+  }
 }

@@ -2,10 +2,10 @@ import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import {
-  CKETH_INDEX_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
   CKETH_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import {
   snsProjectsCommittedStore,
@@ -19,7 +19,6 @@ import { authStore } from "$lib/stores/auth.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
@@ -28,6 +27,7 @@ import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
+import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
   mockAccountsStoreData,
@@ -40,11 +40,12 @@ import {
   mockProjectSubscribe,
   mockSnsFullProject,
   mockSummary,
-  mockToken,
+  principal,
 } from "$tests/mocks/sns-projects.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
@@ -148,11 +149,13 @@ describe("Accounts", () => {
   beforeEach(() => {
     tokensStore.reset();
     icrcAccountsStore.reset();
+    setCkETHCanisters();
 
-    vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
+    vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockCkETHToken);
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
       balanceIcrcToken
     );
+    vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(1234n);
 
     vi.spyOn(snsSelectedTransactionFeeStore, "subscribe").mockImplementation(
       mockSnsSelectedTransactionFeeStoreSubscribe()
@@ -359,21 +362,42 @@ describe("Accounts", () => {
     });
   });
 
-  it("should not refetch ckETH accounts if ckETH canisters are already loaded", async () => {
+  it("should make ckETH transactions from ckETH universe", async () => {
     overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
 
-    icrcCanistersStore.setCanisters({
-      ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
-      indexCanisterId: CKETH_INDEX_CANISTER_ID,
+    page.mock({
+      data: { universe: CKETH_UNIVERSE_CANISTER_ID.toText() },
+      routeId: AppPath.Accounts,
     });
 
-    render(Accounts);
+    const po = renderComponent();
 
     await runResolvedPromises();
 
-    // It's called once when the component is mounted
-    expect(icrcLedgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
-    expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(1);
+    await po.clickCkETHSend();
+
+    const modalPo = po.getIcrcTokenTransactionModalPo();
+
+    expect(await modalPo.isPresent()).toBe(true);
+
+    const toAccount = {
+      owner: principal(2),
+    };
+    const amount = 2;
+
+    await modalPo.transferToAddress({
+      destinationAddress: encodeIcrcAccount(toAccount),
+      amount,
+    });
+
+    expect(icrcLedgerApi.icrcTransfer).toHaveBeenCalledTimes(1);
+    expect(icrcLedgerApi.icrcTransfer).toHaveBeenCalledWith({
+      identity: mockIdentity,
+      canisterId: CKETH_LEDGER_CANISTER_ID,
+      amount: BigInt(amount * E8S_PER_ICP),
+      to: toAccount,
+      fee: mockCkETHToken.fee,
+    });
   });
 
   it("should render IcrcTokenAccounts and IcrcTokenAccountsFooter component with ckETH enabled and universe ckETH", async () => {
