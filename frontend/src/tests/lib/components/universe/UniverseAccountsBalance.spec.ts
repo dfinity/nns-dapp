@@ -6,7 +6,7 @@ import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { formatToken } from "$lib/utils/token.utils";
-import { createUniverse } from "$lib/utils/universe.utils";
+import { createSnsUniverse } from "$lib/utils/universe.utils";
 import { page } from "$mocks/$app/stores";
 import {
   mockCkBTCMainAccount,
@@ -53,7 +53,7 @@ describe("UniverseAccountsBalance", () => {
   });
 
   // Not the same sns canister id to test that the balance is not displayed
-  const universe = createUniverse(mockSnsFullProject.summary);
+  const universe = createSnsUniverse(mockSnsFullProject.summary);
 
   describe("no balance", () => {
     it("should render skeleton while loading", () => {

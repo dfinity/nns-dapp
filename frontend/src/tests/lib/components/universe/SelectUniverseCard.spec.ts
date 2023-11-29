@@ -3,7 +3,7 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import type { Universe } from "$lib/types/universe";
-import { createUniverse } from "$lib/utils/universe.utils";
+import { createSnsUniverse } from "$lib/utils/universe.utils";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -20,7 +20,7 @@ import { render } from "@testing-library/svelte";
 
 describe("SelectUniverseCard", () => {
   const props = { universe: nnsUniverseMock, selected: false };
-  const mockSnsUniverse: Universe = createUniverse(mockSummary);
+  const mockSnsUniverse: Universe = createSnsUniverse(mockSummary);
 
   const renderComponent = (props) => {
     const { container } = render(SelectUniverseCard, props);

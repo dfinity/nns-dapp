@@ -56,9 +56,10 @@ export const universeLogoAlt = ({ summary, canisterId }: Universe): string => {
   return i18nObj.auth.ic_logo;
 };
 
-export const createUniverse = (summary: SnsSummary): Universe => ({
+export const createSnsUniverse = (summary: SnsSummary): Universe => ({
   canisterId: summary.rootCanisterId.toText(),
   summary,
   title: summary.metadata.name,
   logo: summary.metadata.logo,
+  governance: true,
 });

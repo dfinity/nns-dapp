@@ -10,5 +10,6 @@ export const ckTESTBTCUniverseStore: Readable<Universe> = derived(
     canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID.toText(),
     title: $i18n.ckbtc.test_title,
     logo: CKTESTBTC_LOGO,
+    governance: false,
   })
 );

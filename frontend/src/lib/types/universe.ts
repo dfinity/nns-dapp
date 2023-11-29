@@ -9,4 +9,5 @@ export interface Universe {
   summary?: SnsSummary;
   title: string;
   logo: string;
+  governance: boolean;
 }

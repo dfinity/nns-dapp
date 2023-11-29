@@ -8,4 +8,5 @@ export const nnsUniverseStore: Readable<Universe> = derived(i18n, ($i18n) => ({
   canisterId: OWN_CANISTER_ID_TEXT,
   title: $i18n.core.ic,
   logo: IC_LOGO_ROUNDED,
+  governance: true,
 }));

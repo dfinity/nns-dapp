@@ -4,7 +4,7 @@ import {
   type SnsFullProject,
 } from "$lib/derived/sns/sns-projects.derived";
 import type { Universe } from "$lib/types/universe";
-import { createUniverse } from "$lib/utils/universe.utils";
+import { createSnsUniverse } from "$lib/utils/universe.utils";
 import { derived, type Readable } from "svelte/store";
 import { icrcTokensUniversesStore } from "./icrc-universes.derived";
 import { nnsUniverseStore } from "./nns-universe.derived";
@@ -33,6 +33,6 @@ export const universesStore = derived<
     nnsUniverse,
     ...ckBTCUniverses,
     ...icrcUniverses,
-    ...(projects.map(({ summary }) => createUniverse(summary)) ?? []),
+    ...(projects.map(({ summary }) => createSnsUniverse(summary)) ?? []),
   ]
 );

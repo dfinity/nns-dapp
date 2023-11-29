@@ -8,7 +8,7 @@ import {
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import {
-  createUniverse,
+  createSnsUniverse,
   isNonGovernanceTokenPath,
   isUniverseCkBTC,
   isUniverseNns,
@@ -146,7 +146,7 @@ describe("universes-utils", () => {
         logo,
       });
 
-      const universe = createUniverse(summary);
+      const universe = createSnsUniverse(summary);
       expect(universe).toEqual({
         canisterId: rootCanisterId.toText(),
         summary,

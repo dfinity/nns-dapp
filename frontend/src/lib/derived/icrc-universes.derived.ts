@@ -32,10 +32,12 @@ const convertIcrcCanistersToUniverse = ({
   if (isNullish(token) || isNullish(logo)) {
     return;
   }
+
   return {
     canisterId: universeId,
     title: token.token.name,
     logo,
+    governance: false,
   };
 };
 
