@@ -1,4 +1,7 @@
-import { SNS_MIN_NUMBER_VOTES_FOR_PROPOSAL_RATIO } from "$lib/constants/sns-proposals.constants";
+import {
+  MINIMUM_YES_PROPORTION_OF_EXERCISED_VOTING_POWER,
+  MINIMUM_YES_PROPORTION_OF_TOTAL_VOTING_POWER,
+} from "$lib/constants/proposals.constants";
 import { i18n } from "$lib/stores/i18n";
 import type {
   BasisPoints,
@@ -6,7 +9,7 @@ import type {
   VotingNeuron,
 } from "$lib/types/proposals";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
-import type { Vote } from "@dfinity/nns";
+import { Vote } from "@dfinity/nns";
 import type {
   SnsAction,
   SnsBallot,
@@ -180,20 +183,53 @@ export const minimumYesProportionOfExercised = (
 /**
  * Returns whether the proposal is accepted or not based on the data.
  *
- * Reference: https://github.com/dfinity/ic/blob/226ab04e0984367da356bbe27c90447863d33a27/rs/sns/governance/src/proposal.rs#L931
+ * Reference: https://github.com/dfinity/ic/blob/dc2c20b26eaddb459698e4f9a30e521c21fb3d6e/rs/sns/governance/src/proposal.rs#L1095
  * @param {SnsProposalData} proposal
  * @returns {boolean}
  */
-export const isAccepted = ({ latest_tally }: SnsProposalData): boolean => {
+export const isAccepted = (proposal: SnsProposalData): boolean => {
+  const { latest_tally } = proposal;
   const tally = fromNullable(latest_tally);
+
   if (tally === undefined) {
     return false;
   }
-  return (
-    Number(tally.yes) >=
-      Number(tally.no) * SNS_MIN_NUMBER_VOTES_FOR_PROPOSAL_RATIO &&
-    tally.yes > tally.no
-  );
+
+  const { yes, no, total } = tally;
+  const majorityMet =
+    majorityDecision({
+      yes,
+      no,
+      total: yes + no,
+      requiredYesOfTotalBasisPoints: minimumYesProportionOfExercised(proposal),
+    }) == Vote.Yes;
+  const quorumMet =
+    yes * 10_000n >= total * minimumYesProportionOfTotal(proposal);
+
+  return quorumMet && majorityMet;
+};
+
+// Reference: https://gitlab.com/dfinity-lab/public/ic/-/blob/8db486b531b2993dad9c6eed015f34fc2378fc3e/rs/sns/governance/src/proposal.rs#L1239
+const majorityDecision = ({
+  yes,
+  no,
+  total,
+  requiredYesOfTotalBasisPoints,
+}: {
+  yes: bigint;
+  no: bigint;
+  total: bigint;
+  requiredYesOfTotalBasisPoints: bigint;
+}): Vote => {
+  const requiredNoOfTotalBasisPoints = 10_000n - requiredYesOfTotalBasisPoints;
+
+  if (yes * 10_000n > total * requiredYesOfTotalBasisPoints) {
+    return Vote.Yes;
+  } else if (no * 10_000n >= total * requiredNoOfTotalBasisPoints) {
+    return Vote.No;
+  } else {
+    return Vote.Unspecified;
+  }
 };
 
 /**
