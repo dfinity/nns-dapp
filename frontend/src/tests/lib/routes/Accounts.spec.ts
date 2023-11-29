@@ -145,7 +145,6 @@ describe("Accounts", () => {
     tokensStore.reset();
     icrcAccountsStore.reset();
     setCkETHCanisters();
-    overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
 
     vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
