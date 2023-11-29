@@ -12,13 +12,15 @@ describe("IcrcReceiveModal", () => {
     vi.clearAllMocks();
   });
 
-  const renderReceiveModal = ({
-    account = mockSnsMainAccount,
-    tokenSymbol,
-  }: {
-    account?: Account;
-    tokenSymbol: string;
-  }) =>
+  const renderReceiveModal = (
+    {
+      account = mockSnsMainAccount,
+      tokenSymbol,
+    }: {
+      account?: Account;
+      tokenSymbol: string;
+    }
+  ) =>
     renderModal({
       component: IcrcReceiveModal,
       props: {
@@ -26,10 +28,10 @@ describe("IcrcReceiveModal", () => {
           account,
           reload: reloadSpy,
           canSelectAccount: false,
+          universeId: rootCanisterIdMock,
+          tokenSymbol,
+          logo: "logo.svg",
         },
-        universeId: rootCanisterIdMock,
-        tokenSymbol,
-        logo: "logo.svg",
       },
     });
 
