@@ -2,6 +2,10 @@ import IcrcWalletTransactionsList from "$lib/components/accounts/IcrcWalletTrans
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import * as services from "$lib/services/wallet-transactions.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
+import type {
+  IcrcTransactionData,
+  UiTransaction,
+} from "$lib/types/transaction";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import {
   mockCkBTCMainAccount,
@@ -18,6 +22,7 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
+import { TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 vi.mock("$lib/services/wallet-transactions.services", () => {
@@ -41,13 +46,18 @@ vi.mock("$lib/services/worker-transactions.services", () => ({
 }));
 
 describe("IcrcWalletTransactionList", () => {
-  const renderComponent = () => {
+  const renderComponent = (
+    mapTransactions?: (
+      txs: IcrcTransactionData[]
+    ) => UiTransaction[] | undefined
+  ) => {
     const { container, component } = render(IcrcWalletTransactionsList, {
       props: {
         account: mockCkBTCMainAccount,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
         indexCanisterId: mockCkBTCAdditionalCanisters.indexCanisterId,
         token: mockCkBTCToken,
+        mapTransactions,
       },
     });
     return {
@@ -142,5 +152,57 @@ describe("IcrcWalletTransactionList", () => {
     const { po } = renderComponent();
 
     expect(await po.getTransactionCardPos()).toHaveLength(2);
+  });
+
+  it("should use custom mapTransactions", async () => {
+    const store = {
+      [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
+        [mockCkBTCMainAccount.identifier]: {
+          transactions: [mockIcrcTransactionWithId],
+          completed: false,
+          oldestTxId: BigInt(0),
+        },
+      },
+    };
+
+    vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(
+      mockIcrcTransactionsStoreSubscribe(store)
+    );
+
+    const fakeHeadline = "Fake transaction";
+    const fakeUiTransaction: UiTransaction = {
+      domKey: "1",
+      isIncoming: false,
+      isPending: false,
+      headline: fakeHeadline,
+      otherParty: "123",
+      tokenAmount: TokenAmount.fromE8s({
+        amount: 100_000_000n,
+        token: mockCkBTCToken,
+      }),
+      timestamp: new Date(),
+    };
+
+    // Ignores actual transacitons and returns 3 fake transactions.
+    const mapTransactions = (_: IcrcTransactionData[]): UiTransaction[] => [
+      fakeUiTransaction,
+      {
+        ...fakeUiTransaction,
+        domKey: "2",
+      },
+      {
+        ...fakeUiTransaction,
+        domKey: "3",
+      },
+    ];
+
+    const { po } = renderComponent(mapTransactions);
+
+    const cards = await po.getTransactionCardPos();
+
+    expect(cards).toHaveLength(3);
+    expect(await cards[0].getHeadline()).toBe(fakeHeadline);
+    expect(await cards[1].getHeadline()).toBe(fakeHeadline);
+    expect(await cards[2].getHeadline()).toBe(fakeHeadline);
   });
 });
