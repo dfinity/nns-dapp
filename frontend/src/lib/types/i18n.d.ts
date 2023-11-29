@@ -966,6 +966,7 @@ interface I18nUniverse {
   select_token: string;
   select_nervous_system: string;
   select: string;
+  universe_logo: string;
 }
 
 interface I18nSns_rewards_status {

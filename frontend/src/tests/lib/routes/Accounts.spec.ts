@@ -2,6 +2,7 @@ import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import {
+  CKETH_INDEX_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
   CKETH_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
@@ -19,6 +20,7 @@ import { authStore } from "$lib/stores/auth.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
+import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
@@ -39,9 +41,11 @@ import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
-  mockSummary, mockToken,
+  mockSummary,
+  mockToken,
   principal,
 } from "$tests/mocks/sns-projects.mock";
+import { mockTokens } from "$tests/mocks/tokens.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -54,7 +58,6 @@ import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import WalletTest from "../pages/AccountsTest.svelte";
-import {mockTokens} from "$tests/mocks/tokens.mock";
 
 vi.mock("$lib/api/icrc-ledger.api");
 
@@ -570,8 +573,6 @@ describe("Accounts", () => {
       expect(container.querySelector("div.modal")).not.toBeNull()
     );
 
-    expect(getByTestId("logo").getAttribute("alt")).toEqual(
-      `ckETH project logo`
-    );
+    expect(getByTestId("logo").getAttribute("alt")).toEqual(`ckETHTEST logo`);
   });
 });

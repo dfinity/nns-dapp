@@ -925,7 +925,8 @@
   "universe": {
     "select_token": "Select Token",
     "select_nervous_system": "Select Nervous System",
-    "select": "Select"
+    "select": "Select",
+    "universe_logo": "$universe logo"
   },
   "sns_rewards_status": {
     "0": "Unknown",
