@@ -4,7 +4,7 @@ import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
-import { waitFor } from "@testing-library/svelte";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { get } from "svelte/store";
 
 vi.mock("$lib/api/icrc-ledger.api");
@@ -39,12 +39,12 @@ describe("icrc-tokens.services", () => {
         indexCanisterId,
       });
 
-      await waitFor(() =>
-        expect(get(tokensStore)[ledgerCanisterId1.toText()]).toEqual({
-          certified: false,
-          token: token1,
-        })
-      );
+      await runResolvedPromises();
+
+      expect(get(tokensStore)[ledgerCanisterId1.toText()]).toEqual({
+        certified: false,
+        token: token1,
+      });
     });
 
     it("should load multiple tokens when icrcCanistersStore is updated multiple times", async () => {
@@ -60,12 +60,12 @@ describe("icrc-tokens.services", () => {
         indexCanisterId,
       });
 
-      await waitFor(() =>
-        expect(get(tokensStore)[ledgerCanisterId1.toText()]).toEqual({
-          certified: false,
-          token: token1,
-        })
-      );
+      await runResolvedPromises();
+
+      expect(get(tokensStore)[ledgerCanisterId1.toText()]).toEqual({
+        certified: false,
+        token: token1,
+      });
 
       expect(get(tokensStore)[ledgerCanisterId2.toText()]).toEqual({
         certified: false,
@@ -73,7 +73,7 @@ describe("icrc-tokens.services", () => {
       });
     });
 
-    it.only("should load tokens with certified data when logged in", async () => {
+    it("should load tokens with certified data when logged in", async () => {
       resetIdentity();
       watchIcrcTokensLoadTokenData({ certified: true });
 
@@ -82,12 +82,12 @@ describe("icrc-tokens.services", () => {
         indexCanisterId,
       });
 
-      await waitFor(async () =>
-        expect(get(tokensStore)[ledgerCanisterId1.toText()]).toEqual({
-          certified: true,
-          token: token1,
-        })
-      );
+      await runResolvedPromises();
+
+      expect(get(tokensStore)[ledgerCanisterId1.toText()]).toEqual({
+        certified: true,
+        token: token1,
+      });
     });
   });
 });
