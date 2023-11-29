@@ -18,10 +18,10 @@
   {#each $selectableUniversesStore as universe (universe.canisterId)}
     <div in:blur>
       <SelectUniverseCard
-              {universe}
-              {role}
-              selected={universe.canisterId === selectedCanisterId}
-              on:click={() => dispatch("nnsSelectUniverse", universe.canisterId)}
+        {universe}
+        {role}
+        selected={universe.canisterId === selectedCanisterId}
+        on:click={() => dispatch("nnsSelectUniverse", universe.canisterId)}
       />
     </div>
   {/each}
