@@ -13,7 +13,10 @@ import type { Universe } from "$lib/types/universe";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 
-const convertIcrcCanistersToUniverse = ({
+/**
+ * Convert an icrc token provided in icrcCanisterStore to a non governance token universe.
+ */
+const convertIcrcCanistersToTokenUniverse = ({
   canisters,
   tokensData,
 }: {
@@ -46,7 +49,7 @@ export const icrcTokensUniversesStore: Readable<Universe[]> = derived(
   ([icrcCanisters, tokensData]) =>
     Object.values(icrcCanisters)
       .map((canisters: IcrcCanisters) =>
-        convertIcrcCanistersToUniverse({ canisters, tokensData })
+        convertIcrcCanistersToTokenUniverse({ canisters, tokensData })
       )
       .filter((universe): universe is Universe => nonNullish(universe))
 );
