@@ -6,6 +6,7 @@
   import VotesResultsMajorityDescription from "$lib/components/proposal-detail/VotesResultsMajorityDescription.svelte";
   import { nonNullish } from "@dfinity/utils";
   import { nowInSeconds } from "$lib/utils/date.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
   const formatVotingPower = (value: number) =>
     `${formatNumber(value, {
@@ -60,7 +61,7 @@
     </div>
     <div
       class="progressbar-container"
-      style="--absolute-majority: {absoluteMajorityPercent}%; --simple-majority:{simpleMajorityPercent}%"
+      style={`--absolute-majority: ${absoluteMajorityPercent}%; --simple-majority:${simpleMajorityPercent}%;`}
     >
       <div class="majority absolute-majority">
         <div class="majority-icon absolute-majority"></div>
@@ -111,7 +112,15 @@
         {$i18n.proposal_detail__vote.simple_majority}
       </h4>
       <p class="description">
-        {$i18n.proposal_detail__vote.simple_majority_description}
+        {replacePlaceholders(
+          $i18n.proposal_detail__vote.simple_majority_description,
+          {
+            $simple_majority: formatPercentage(simpleMajorityPercent / 100, {
+              minFraction: 0,
+              maxFraction: 2,
+            }),
+          }
+        )}
       </p>
     </VotesResultsMajorityDescription>
   </div>
@@ -222,9 +231,6 @@
   }
 
   .progressbar-container .majority {
-    --absolute-majority: 50%;
-    --simple-majority: 3%;
-
     position: absolute;
     background: var(--card-background);
     width: calc(var(--padding) / 4);
