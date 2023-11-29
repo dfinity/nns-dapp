@@ -171,13 +171,13 @@ export const mapProposalInfo = ({
 export const minimumYesProportionOfTotal = (
   proposal: SnsProposalData
 ): bigint =>
-  fromPercentageBasicPoints(proposal.minimum_yes_proportion_of_total) ??
+  fromPercentageBasisPoints(proposal.minimum_yes_proportion_of_total) ??
   MINIMUM_YES_PROPORTION_OF_TOTAL_VOTING_POWER;
 
 export const minimumYesProportionOfExercised = (
   proposal: SnsProposalData
 ): bigint =>
-  fromPercentageBasicPoints(proposal.minimum_yes_proportion_of_exercised) ??
+  fromPercentageBasisPoints(proposal.minimum_yes_proportion_of_exercised) ??
   MINIMUM_YES_PROPORTION_OF_EXERCISED_VOTING_POWER;
 
 /**
@@ -468,7 +468,7 @@ export const getUniversalProposalStatus = (
   return statusType;
 };
 
-export const fromPercentageBasicPoints = (
+export const fromPercentageBasisPoints = (
   value?: [] | [Percentage]
 ): bigint | undefined =>
   value?.length === 1 ? fromNullable(value?.[0].basis_points) : undefined;
