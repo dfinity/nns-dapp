@@ -3,7 +3,10 @@ import {
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
-import { CKETHSEPOLIA_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
+import {
+  CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
+  CKETH_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/cketh-canister-ids.constants";
 import { NNS_TOKEN } from "$lib/constants/tokens.constants";
 import type { TokensStoreData } from "$lib/stores/tokens.store";
 import { mockCkETHTESTToken } from "$tests/mocks/cketh-accounts.mock";
@@ -20,10 +23,10 @@ export const mockTokens = {
     token: mockCkBTCToken,
     certified: true,
   },
-  // [CKETH_UNIVERSE_CANISTER_ID.toText()]: {
-  //   token: mockCkETHToken,
-  //   certified: true,
-  // },
+  [CKETH_UNIVERSE_CANISTER_ID.toText()]: {
+    token: mockCkETHTESTToken,
+    certified: true,
+  },
   [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: {
     token: mockCkETHTESTToken,
     certified: true,
