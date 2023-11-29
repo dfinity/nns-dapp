@@ -27,6 +27,7 @@
 </script>
 
 <IcrcAccountsPage
+  testId="ckbtc-accounts-body"
   selectedUniverseId={$selectedCkBTCUniverseIdStore}
   token={token?.token}
 >

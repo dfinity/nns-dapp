@@ -1,7 +1,11 @@
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
+import CKETH_LOGO from "$lib/assets/ckETH.svg";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
-import {CKETH_INDEX_CANISTER_ID, CKETH_UNIVERSE_CANISTER_ID} from "$lib/constants/cketh-canister-ids.constants";
+import {
+  CKETH_INDEX_CANISTER_ID,
+  CKETH_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/cketh-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import {
   snsProjectsCommittedStore,
@@ -15,6 +19,7 @@ import { authStore } from "$lib/stores/auth.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
+import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
@@ -34,6 +39,7 @@ import {
   mockSummary,
   mockToken,
 } from "$tests/mocks/sns-projects.mock";
+import { mockTokens } from "$tests/mocks/tokens.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -42,9 +48,6 @@ import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import WalletTest from "../pages/AccountsTest.svelte";
-import {icrcCanistersStore} from "$lib/stores/icrc-canisters.store";
-import {mockTokens} from "$tests/mocks/tokens.mock";
-import CKETH_LOGO from "$lib/assets/ckETH.svg";
 
 vi.mock("$lib/api/icrc-ledger.api");
 

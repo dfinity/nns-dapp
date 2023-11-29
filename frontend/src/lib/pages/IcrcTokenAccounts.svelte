@@ -12,6 +12,7 @@
 </script>
 
 <IcrcAccountsPage
+  testId="icrc-accounts-body"
   selectedUniverseId={$selectedIcrcTokenUniverseIdStore}
   {token}
 />

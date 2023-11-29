@@ -11,6 +11,7 @@
   import IcrcBalancesObserver from "$lib/components/accounts/IcrcBalancesObserver.svelte";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
 
+  export let testId: string;
   export let selectedUniverseId: UniverseCanisterId | undefined;
   export let token: IcrcTokenMetadata | undefined = undefined;
 
@@ -40,7 +41,7 @@
     : [];
 </script>
 
-<div class="card-grid" data-tid="ckbtc-accounts-body">
+<div class="card-grid" data-tid={testId}>
   {#if loading}
     <SkeletonCard size="medium" />
   {:else if nonNullish(selectedUniverseId)}
