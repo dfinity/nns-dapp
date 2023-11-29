@@ -11,15 +11,12 @@ import { loadCkETHCanisters } from "../cketh-canisters.services";
  * These data can be read by any users without being signed-in.
  */
 export const initAppPublicData = (): Promise<
-  [PromiseSettledResult<void[]>, PromiseSettledResult<void[]>]
+  [PromiseSettledResult<void>, PromiseSettledResult<void>]
 > => {
-  const initNns: Promise<void>[] = [loadCkETHCanisters()];
-  const initSns: Promise<void>[] = [loadSnsProjects()];
-
   /**
-   * If Nns load but Sns load fails it is "fine" to go on because Nns are core features.
+   * If one of the promises fails, we don't want to block the app.
    */
-  return Promise.allSettled([Promise.all(initNns), Promise.all(initSns)]);
+  return Promise.allSettled([loadCkETHCanisters(), loadSnsProjects()]);
 };
 
 const syncAuthStore = async () => {

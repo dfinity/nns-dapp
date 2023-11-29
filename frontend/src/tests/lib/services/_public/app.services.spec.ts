@@ -32,6 +32,18 @@ describe("$public/app-services", () => {
     await expect(loadSnsProjects).toHaveBeenCalledTimes(1);
   });
 
+  describe("when ENABLE_CKETH and ENABLE_CKTESTBTC are disabled", () => {
+    beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", false);
+      overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
+    });
+    it("should not load ckETH canisters in store", async () => {
+      await initAppPublicData();
+
+      expect(get(icrcCanistersStore)).toEqual({});
+    });
+  });
+
   describe("when ENABLE_CKETH is enabled", () => {
     beforeEach(() => {
       overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
