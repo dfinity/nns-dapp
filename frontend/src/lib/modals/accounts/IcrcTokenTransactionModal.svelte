@@ -60,7 +60,7 @@
 </script>
 
 <TransactionModal
-  testId="icrc-transaction-modal-component"
+  testId="icrc-token-transaction-modal-component"
   rootCanisterId={ledgerCanisterId}
   on:nnsSubmit={transfer}
   on:nnsClose

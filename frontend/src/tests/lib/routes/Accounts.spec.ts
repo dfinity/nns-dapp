@@ -6,6 +6,7 @@ import {
   CKETH_LEDGER_CANISTER_ID,
   CKETH_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import {
   snsProjectsCommittedStore,
@@ -28,6 +29,7 @@ import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
+import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
   mockAccountsStoreData,
@@ -40,7 +42,7 @@ import {
   mockProjectSubscribe,
   mockSnsFullProject,
   mockSummary,
-  mockToken,
+  principal,
 } from "$tests/mocks/sns-projects.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
@@ -149,10 +151,11 @@ describe("Accounts", () => {
     tokensStore.reset();
     icrcAccountsStore.reset();
 
-    vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
+    vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockCkETHToken);
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
       balanceIcrcToken
     );
+    vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(1234n);
 
     vi.spyOn(snsSelectedTransactionFeeStore, "subscribe").mockImplementation(
       mockSnsSelectedTransactionFeeStoreSubscribe()
@@ -374,6 +377,44 @@ describe("Accounts", () => {
     // It's called once when the component is mounted
     expect(icrcLedgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
     expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(1);
+  });
+
+  it("should make ckETH transactions from ckETH universe", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
+
+    page.mock({
+      data: { universe: CKETH_UNIVERSE_CANISTER_ID.toText() },
+      routeId: AppPath.Accounts,
+    });
+
+    const po = renderComponent();
+
+    await runResolvedPromises();
+
+    await po.clickCkETHSend();
+
+    const modalPo = po.getIcrcTokenTransactionModalPo();
+
+    expect(await modalPo.isPresent()).toBe(true);
+
+    const toAccount = {
+      owner: principal(2),
+    };
+    const amount = 2;
+
+    await modalPo.transferToAddress({
+      destinationAddress: encodeIcrcAccount(toAccount),
+      amount,
+    });
+
+    expect(icrcLedgerApi.icrcTransfer).toHaveBeenCalledTimes(1);
+    expect(icrcLedgerApi.icrcTransfer).toHaveBeenCalledWith({
+      identity: mockIdentity,
+      canisterId: CKETH_LEDGER_CANISTER_ID,
+      amount: BigInt(amount * E8S_PER_ICP),
+      to: toAccount,
+      fee: mockCkETHToken.fee,
+    });
   });
 
   it("should render IcrcTokenAccounts and IcrcTokenAccountsFooter component with ckETH enabled and universe ckETH", async () => {
