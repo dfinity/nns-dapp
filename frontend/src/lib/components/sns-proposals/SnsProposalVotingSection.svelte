@@ -1,19 +1,24 @@
 <script lang="ts">
-  import type { SnsProposalData, SnsTally } from "@dfinity/sns";
-  import { SnsProposalRewardStatus } from "@dfinity/sns";
+  import {
+    type SnsProposalData,
+    SnsProposalRewardStatus,
+    SnsTally,
+  } from "@dfinity/sns";
   import SnsVotingCard from "$lib/components/sns-proposals/SnsVotingCard.svelte";
   import VotesResults from "$lib/components/proposal-detail/VotesResults.svelte";
-  import { fromDefinedNullable } from "@dfinity/utils";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
-  import { snsRewardStatus } from "$lib/utils/sns-proposals.utils";
+  import type { SnsProposalDataMap } from "$lib/utils/sns-proposals.utils";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { basisPointsToPercent } from "$lib/utils/sns.utils";
+  import { fromDefinedNullable } from "@dfinity/utils";
 
   export let proposal: SnsProposalData;
+  export let proposalDataMap: SnsProposalDataMap;
   export let reloadProposal: () => Promise<void>;
 
   let settled = false;
   $: settled =
-    snsRewardStatus(proposal) ===
+    proposalDataMap.rewardStatus ===
     SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED;
 
   let tally: SnsTally;
@@ -24,10 +29,25 @@
   $: no = Number(tally.no) / E8S_PER_ICP;
   let total = 0;
   $: total = Number(tally.total) / E8S_PER_ICP;
+
+  let absoluteMajorityPercent = 0;
+  $: absoluteMajorityPercent = basisPointsToPercent(
+    proposalDataMap.minimumYesProportionOfTotal
+  );
+  let simpleMajorityPercent = 0;
+  $: simpleMajorityPercent = basisPointsToPercent(
+    proposalDataMap.minimumYesProportionOfExercised
+  );
 </script>
 
 <TestIdWrapper testId="sns-proposal-voting-section-component">
-  <VotesResults {yes} {no} {total} />
+  <VotesResults
+    {yes}
+    {no}
+    {total}
+    {absoluteMajorityPercent}
+    {simpleMajorityPercent}
+  />
 
   {#if !settled}
     <SnsVotingCard {proposal} {reloadProposal} />

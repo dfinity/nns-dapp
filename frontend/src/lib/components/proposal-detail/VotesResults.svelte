@@ -17,6 +17,8 @@
   export let no: number;
   export let total: number;
   export let deadlineTimestampSeconds: bigint | undefined = undefined;
+  export let absoluteMajorityPercent: number = 50;
+  export let simpleMajorityPercent: number = 3;
 
   let yesProportion: number;
   $: yesProportion = total ? yes / total : 0;
@@ -56,7 +58,10 @@
         >{formatPercentage(noProportion)}</span
       >
     </div>
-    <div class="progressbar-container">
+    <div
+      class="progressbar-container"
+      style="--absolute-majority: {absoluteMajorityPercent}%; --simple-majority:{simpleMajorityPercent}%"
+    >
       <div class="majority absolute-majority">
         <div class="majority-icon absolute-majority"></div>
       </div>
@@ -216,18 +221,21 @@
     }
   }
 
-  .majority {
+  .progressbar-container .majority {
+    --absolute-majority: 50%;
+    --simple-majority: 3%;
+
     position: absolute;
     background: var(--card-background);
     width: calc(var(--padding) / 4);
     height: var(--padding-1_5x);
 
     &.absolute-majority {
-      left: 50%;
+      left: var(--absolute-majority);
       transform: translateX(-50%);
     }
     &.simple-majority {
-      left: 3%;
+      left: var(--simple-majority);
       transform: translateX(-50%);
     }
 

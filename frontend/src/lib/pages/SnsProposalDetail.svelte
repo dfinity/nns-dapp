@@ -231,7 +231,11 @@
             <SnsProposalSystemInfoSection {proposalDataMap} />
           </div>
           <div slot="end">
-            <SnsProposalVotingSection {proposal} {reloadProposal} />
+            <SnsProposalVotingSection
+              {proposal}
+              {proposalDataMap}
+              {reloadProposal}
+            />
           </div>
         </SplitBlock>
       </div>
