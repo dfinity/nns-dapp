@@ -30,9 +30,9 @@
   import { onMount } from "svelte";
   import { loadCkETHCanisters } from "$lib/services/cketh-canisters.services";
   import IcrcTokenAccounts from "$lib/pages/IcrcTokenAccounts.svelte";
-  import type { IcrcCanistersStoreData} from "$lib/stores/icrc-canisters.store";
-  import type {UniverseCanisterIdText} from "$lib/types/universe";
-  import {icrcCanistersStore} from "$lib/stores/icrc-canisters.store";
+  import type { IcrcCanistersStoreData } from "$lib/stores/icrc-canisters.store";
+  import type { UniverseCanisterIdText } from "$lib/types/universe";
+  import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
   import IcrcTokenAccountsFooter from "$lib/components/accounts/IcrcTokenAccountsFooter.svelte";
 
   // TODO: This component is mounted twice. Understand why and fix it.
@@ -78,7 +78,9 @@
     await loadAccountsBalances(universes.map(({ canisterId }) => canisterId));
   };
 
-  const loadIcrcTokenAccounts = async (icrcCanisters: IcrcCanistersStoreData) => {
+  const loadIcrcTokenAccounts = async (
+    icrcCanisters: IcrcCanistersStoreData
+  ) => {
     const universeIds = Object.keys(icrcCanisters);
 
     // Nothing loaded yet or nothing to load
@@ -96,7 +98,9 @@
     await loadAccountsBalances(Object.keys(icrcCanisters));
   };
 
-  const loadAccountsBalances = async (universeIds: UniverseCanisterIdText[]) => {
+  const loadAccountsBalances = async (
+    universeIds: UniverseCanisterIdText[]
+  ) => {
     // Selected universes are empty, no information shall and can be fetched
     if (isArrayEmpty(universeIds)) {
       return;
