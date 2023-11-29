@@ -1,13 +1,13 @@
-import type { IcrcTransferParams } from "$lib/api/icrc-ledger.api";
-import { icrcTransfer } from "$lib/api/icrc-ledger.api";
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
-import { transferTokens } from "$lib/services/icrc-accounts.services";
+import { icrcTransferTokens } from "$lib/services/icrc-accounts.services";
 import { loadAccounts } from "$lib/services/wallet-accounts.services";
 import type { UniverseCanisterId } from "$lib/types/universe";
-import type { Identity } from "@dfinity/agent";
 import type { IcrcBlockIndex } from "@dfinity/ledger-icrc";
+import { isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import type { IcrcTransferTokensUserParams } from "./icrc-accounts.services";
+import {toastsError} from "$lib/stores/toasts.store";
+import {ledgerErrorToToastError} from "$lib/utils/sns-ledger.utils";
 
 export const loadCkBTCAccounts = async (params: {
   handleError?: () => void;
@@ -15,7 +15,6 @@ export const loadCkBTCAccounts = async (params: {
 }): Promise<void> => loadAccounts(params);
 
 export const ckBTCTransferTokens = async ({
-  source,
   universeId,
   ...rest
 }: IcrcTransferTokensUserParams & {
@@ -25,20 +24,20 @@ export const ckBTCTransferTokens = async ({
 }> => {
   const fee = get(ckBTCTokenStore)[universeId.toText()]?.token.fee;
 
-  return transferTokens({
-    source,
+  if (isNullish(fee)) {
+    toastsError(
+        ledgerErrorToToastError({
+          fallbackErrorLabelKey: "error.transaction_error",
+          err: new Error("error.transaction_fee_not_found")
+        })
+    );
+
+    return { blockIndex: undefined };
+  }
+
+  return icrcTransferTokens({
+    ledgerCanisterId: universeId,
     fee,
     ...rest,
-    transfer: async (
-      params: {
-        identity: Identity;
-      } & IcrcTransferParams
-    ) =>
-      await icrcTransfer({
-        ...params,
-        canisterId: universeId,
-      }),
-    reloadAccounts: async () => await loadAccounts({ universeId }),
-    reloadTransactions: async () => Promise.resolve(),
   });
 };

@@ -32,13 +32,15 @@ export const getIcrcAccountIdentity = (_: Account): Promise<Identity> => {
   return getAuthenticatedIdentity();
 };
 
-export const loadIcrcToken = ({
-  ledgerCanisterId,
-  certified,
-}: {
-  ledgerCanisterId: Principal;
-  certified: boolean;
-}) => {
+export const loadIcrcToken = (
+  {
+    ledgerCanisterId,
+    certified,
+  }: {
+    ledgerCanisterId: Principal;
+    certified: boolean;
+  }
+) => {
   const currentToken = get(tokensStore)[ledgerCanisterId.toText()];
 
   if (nonNullish(currentToken) && (currentToken.certified || !certified)) {
@@ -72,15 +74,17 @@ export const loadIcrcToken = ({
   });
 };
 
-const getIcrcMainIdentityAccount = async ({
-  ledgerCanisterId,
-  identity,
-  certified,
-}: {
-  ledgerCanisterId: Principal;
-  identity: Identity;
-  certified: boolean;
-}): Promise<Account> => {
+const getIcrcMainIdentityAccount = async (
+  {
+    ledgerCanisterId,
+    identity,
+    certified,
+  }: {
+    ledgerCanisterId: Principal;
+    identity: Identity;
+    certified: boolean;
+  }
+): Promise<Account> => {
   const account: IcrcAccount = {
     owner: identity.getPrincipal(),
   };
@@ -100,13 +104,15 @@ const getIcrcMainIdentityAccount = async ({
   };
 };
 
-export const loadIcrcAccount = ({
-  ledgerCanisterId,
-  certified,
-}: {
-  ledgerCanisterId: Principal;
-  certified: boolean;
-}) => {
+export const loadIcrcAccount = (
+  {
+    ledgerCanisterId,
+    certified,
+  }: {
+    ledgerCanisterId: Principal;
+    certified: boolean;
+  }
+) => {
   return queryAndUpdate<Account, unknown>({
     strategy: certified ? FORCE_CALL_STRATEGY : "query",
     request: ({ certified, identity }) =>
@@ -137,13 +143,15 @@ export const loadIcrcAccount = ({
   });
 };
 
-export const loadIcrcAccounts = async ({
-  ledgerCanisterIds,
-  certified,
-}: {
-  ledgerCanisterIds: Principal[];
-  certified: boolean;
-}) => {
+export const loadIcrcAccounts = async (
+  {
+    ledgerCanisterIds,
+    certified,
+  }: {
+    ledgerCanisterIds: Principal[];
+    certified: boolean;
+  }
+) => {
   const results: PromiseSettledResult<[void, void]>[] =
     await Promise.allSettled(
       ledgerCanisterIds.map((ledgerCanisterId) =>
@@ -171,25 +179,26 @@ export interface IcrcTransferTokensUserParams {
   amount: number;
 }
 
-// TODO: use `wallet-accounts.services`
-export const transferTokens = async ({
-  source,
-  destinationAddress,
-  amount,
-  fee,
-  transfer,
-  reloadAccounts,
-  reloadTransactions,
-}: IcrcTransferTokensUserParams & {
-  fee: bigint | undefined;
-  transfer: (
-    params: {
-      identity: Identity;
-    } & IcrcTransferParams
-  ) => Promise<IcrcBlockIndex>;
-  reloadAccounts: () => Promise<void>;
-  reloadTransactions: () => Promise<void>;
-}): Promise<{ blockIndex: IcrcBlockIndex | undefined }> => {
+export const transferTokens = async (
+  {
+    source,
+    destinationAddress,
+    amount,
+    fee,
+    transfer,
+    reloadAccounts,
+    reloadTransactions,
+  }: IcrcTransferTokensUserParams & {
+    fee: bigint | undefined;
+    transfer: (
+      params: {
+        identity: Identity;
+      } & IcrcTransferParams
+    ) => Promise<IcrcBlockIndex>;
+    reloadAccounts: () => Promise<void>;
+    reloadTransactions: () => Promise<void>;
+  }
+): Promise<{ blockIndex: IcrcBlockIndex | undefined }> => {
   try {
     if (isNullish(fee)) {
       throw new Error("error.transaction_fee_not_found");
@@ -222,21 +231,16 @@ export const transferTokens = async ({
   }
 };
 
-export const icrcTransferTokens = async ({
-  source,
-  destinationAddress,
-  amount,
-  fee,
-  ledgerCanisterId,
-}: IcrcTransferTokensUserParams & {
-  fee: bigint;
-  ledgerCanisterId: Principal;
-}): Promise<{ blockIndex: IcrcBlockIndex | undefined }> => {
-  return transferTokens({
-    source,
-    amount,
-    fee,
-    destinationAddress,
+export const icrcTransferTokens = async (
+  {
+    ledgerCanisterId,
+    ...rest
+  }: IcrcTransferTokensUserParams & {
+    fee: bigint;
+    ledgerCanisterId: Principal;
+  }
+): Promise<{ blockIndex: IcrcBlockIndex | undefined }> =>
+  transferTokens({
     transfer: async (
       params: {
         identity: Identity;
@@ -248,7 +252,7 @@ export const icrcTransferTokens = async ({
       }),
     reloadAccounts: async () =>
       await loadIcrcAccount({ ledgerCanisterId, certified: true }),
-    // Web workders take care of refreshing transactions
+    // Web workers take care of refreshing transactions
     reloadTransactions: () => Promise.resolve(),
+    ...rest,
   });
-};
