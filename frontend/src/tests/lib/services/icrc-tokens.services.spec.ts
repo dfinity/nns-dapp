@@ -2,7 +2,6 @@ import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import { watchIcrcTokensLoadTokenData } from "$lib/services/icrc-tokens.services";
 import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { get } from "svelte/store";
@@ -32,7 +31,7 @@ describe("icrc-tokens.services", () => {
     });
 
     it("should load tokens when icrcCanistersStore is updated", async () => {
-      watchIcrcTokensLoadTokenData({ certified: false });
+      watchIcrcTokensLoadTokenData();
 
       icrcCanistersStore.setCanisters({
         ledgerCanisterId: ledgerCanisterId1,
@@ -48,7 +47,7 @@ describe("icrc-tokens.services", () => {
     });
 
     it("should load multiple tokens when icrcCanistersStore is updated multiple times", async () => {
-      watchIcrcTokensLoadTokenData({ certified: false });
+      watchIcrcTokensLoadTokenData();
 
       icrcCanistersStore.setCanisters({
         ledgerCanisterId: ledgerCanisterId1,
@@ -70,23 +69,6 @@ describe("icrc-tokens.services", () => {
       expect(get(tokensStore)[ledgerCanisterId2.toText()]).toEqual({
         certified: false,
         token: token2,
-      });
-    });
-
-    it("should load tokens with certified data when logged in", async () => {
-      resetIdentity();
-      watchIcrcTokensLoadTokenData({ certified: true });
-
-      icrcCanistersStore.setCanisters({
-        ledgerCanisterId: ledgerCanisterId1,
-        indexCanisterId,
-      });
-
-      await runResolvedPromises();
-
-      expect(get(tokensStore)[ledgerCanisterId1.toText()]).toEqual({
-        certified: true,
-        token: token1,
       });
     });
   });

@@ -14,7 +14,7 @@ import { watchIcrcTokensLoadTokenData } from "../icrc-tokens.services";
 export const initAppPublicData = (): Promise<
   [PromiseSettledResult<void>, PromiseSettledResult<void>]
 > => {
-  watchIcrcTokensLoadTokenData({ certified: false });
+  watchIcrcTokensLoadTokenData();
   /**
    * If one of the promises fails, we don't want to block the app.
    */
