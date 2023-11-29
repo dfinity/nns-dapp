@@ -6,6 +6,7 @@
     isCkBTCUniverseStore,
     isIcrcTokenUniverseStore,
     isNnsUniverseStore,
+    selectedIcrcTokenUniverseIdStore,
     selectedUniverseIdStore,
   } from "$lib/derived/selected-universe.derived";
   import SnsAccounts from "$lib/pages/SnsAccounts.svelte";
@@ -34,6 +35,7 @@
   import type { UniverseCanisterIdText } from "$lib/types/universe";
   import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
   import IcrcTokenAccountsFooter from "$lib/components/accounts/IcrcTokenAccountsFooter.svelte";
+  import IcrcTokenAccountsModals from "$lib/modals/accounts/IcrcTokenAccountsModals.svelte";
 
   // TODO: This component is mounted twice. Understand why and fix it.
 
@@ -147,6 +149,8 @@
 
   {#if $isCkBTCUniverseStore}
     <CkBTCAccountsModals />
+  {:else if $selectedIcrcTokenUniverseIdStore}
+    <IcrcTokenAccountsModals />
   {:else}
     <AccountsModals />
   {/if}
