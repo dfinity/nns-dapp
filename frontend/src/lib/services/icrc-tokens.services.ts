@@ -9,6 +9,7 @@ export const watchIcrcTokensLoadTokenData = ({
 }): Unsubscriber => {
   return icrcCanistersStore.subscribe((canistersData) => {
     Object.values(canistersData).forEach(({ ledgerCanisterId }) => {
+      // `loadIcrcToken` does nothing if the token is already loaded.
       loadIcrcToken({ ledgerCanisterId, certified });
     });
   });

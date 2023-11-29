@@ -47,6 +47,7 @@ export const loadIcrcToken = ({
 
   return queryAndUpdate<IcrcTokenMetadata, unknown>({
     strategy: certified ? FORCE_CALL_STRATEGY : "query",
+    identityType: "current",
     request: ({ certified, identity }) =>
       queryIcrcToken({
         identity,
