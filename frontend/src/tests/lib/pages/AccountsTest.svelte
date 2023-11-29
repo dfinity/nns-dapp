@@ -1,6 +1,6 @@
 <script lang="ts">
   import AccountsModals from "$lib/modals/accounts/AccountsModals.svelte";
-  import { SvelteComponent } from "svelte";
+  import type { SvelteComponent } from "svelte";
   import { nonNullish } from "@dfinity/utils";
 
   export let testComponent: typeof SvelteComponent;
