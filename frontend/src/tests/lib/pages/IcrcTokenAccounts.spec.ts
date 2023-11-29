@@ -114,6 +114,7 @@ describe("IcrcTokenAccounts", () => {
     it("should call load accounts", () => {
       render(IcrcTokenAccounts);
 
+      // TODO: this should assert that the API are called https://dfinity.atlassian.net/browse/GIX-2150
       expect(syncAccounts).toHaveBeenCalled();
     });
 
