@@ -405,7 +405,7 @@ describe("Accounts", () => {
     expect(titleRow?.textContent?.includes("ckETH")).toBeTruthy();
   });
 
-  it("should render icrc project logo", () => {
+  it("should render related icrc project logo", () => {
     overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
 
     tokensStore.setTokens(mockTokens);
