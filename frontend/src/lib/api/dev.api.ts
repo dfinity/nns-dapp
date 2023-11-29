@@ -137,6 +137,7 @@ export const acquireICPTs = async ({
   });
 };
 
+// TODO: Reuse the new `acquireIcrcTokens` instead of SNS specific function.
 export const acquireSnsTokens = async ({
   account,
   e8s,
