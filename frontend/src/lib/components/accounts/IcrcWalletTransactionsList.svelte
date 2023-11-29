@@ -3,19 +3,20 @@
 
 <script lang="ts">
   import type { Account } from "$lib/types/account";
-  import type { UiTransaction } from "$lib/types/transaction";
+  import type {
+    UiTransaction,
+    IcrcTransactionData,
+  } from "$lib/types/transaction";
   import {
     loadWalletNextTransactions,
     loadWalletTransactions,
   } from "$lib/services/wallet-transactions.services";
-  import type { IcrcTransactionData } from "$lib/types/transaction";
   import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
   import { i18n } from "$lib/stores/i18n";
   import {
     getSortedTransactionsFromStore,
     isIcrcTransactionsCompleted,
     mapIcrcTransaction,
-    type MapIcrcTransactionType,
   } from "$lib/utils/icrc-transactions.utils";
   import IcrcTransactionsList from "$lib/components/accounts/IcrcTransactionsList.svelte";
   import type { UniverseCanisterId } from "$lib/types/universe";
@@ -31,9 +32,9 @@
   export let universeId: UniverseCanisterId;
   export let account: Account;
   export let token: IcrcTokenMetadata | undefined;
-  export let mapTransactions: (IcrcTransactionData) => UiTransaction = (
-    transactions
-  ) =>
+  export let mapTransactions = (
+    transactions: IcrcTransactionData[]
+  ): UiTransaction[] =>
     transactions
       .map((transaction: IcrcTransactionData) =>
         mapIcrcTransaction({

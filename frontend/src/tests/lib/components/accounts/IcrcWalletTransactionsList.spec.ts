@@ -184,9 +184,7 @@ describe("IcrcWalletTransactionList", () => {
     };
 
     // Ignores actual transacitons and returns 3 fake transactions.
-    const mapTransactions = (
-      transactionData: IcrcTransactionData[]
-    ): UiTransaction[] => [
+    const mapTransactions = (_: IcrcTransactionData[]): UiTransaction[] => [
       fakeUiTransaction,
       {
         ...fakeUiTransaction,
