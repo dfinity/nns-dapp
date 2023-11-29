@@ -51,6 +51,7 @@ describe("Wallet", () => {
       },
     ]);
     icpAccountsStore.setForTesting(mockAccountsStoreData);
+    overrideFeatureFlagsStore.reset();
     icrcCanistersStore.reset();
   });
 
