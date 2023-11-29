@@ -1,6 +1,5 @@
 <script lang="ts">
   import {
-    selectedCkBTCUniverseIdStore,
     selectedIcrcTokenUniverseIdStore,
   } from "$lib/derived/selected-universe.derived";
   import { nonNullish } from "@dfinity/utils";
