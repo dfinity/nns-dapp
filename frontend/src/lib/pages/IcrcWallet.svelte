@@ -1,7 +1,5 @@
 <script lang="ts">
-  import {
-    selectedIcrcTokenUniverseIdStore,
-  } from "$lib/derived/selected-universe.derived";
+  import { selectedIcrcTokenUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { nonNullish } from "@dfinity/utils";
   import WalletPage from "$lib/components/accounts/WalletPage.svelte";
   import { writable } from "svelte/store";
