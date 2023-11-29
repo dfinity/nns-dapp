@@ -7,7 +7,7 @@
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
   import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
-  import AccountsPage from "$lib/components/accounts/AccountsPage.svelte";
+  import IcrcAccountsPage from "$lib/components/accounts/IcrcAccountsPage.svelte";
 
   let token: TokensStoreUniverseData | undefined = undefined;
   $: token = nonNullish($selectedCkBTCUniverseIdStore)
@@ -26,9 +26,9 @@
     }))();
 </script>
 
-<AccountsPage
+<IcrcAccountsPage
   selectedUniverseId={$selectedCkBTCUniverseIdStore}
   token={token?.token}
 >
   <CkBTCWithdrawalAccount slot="additional-accounts" />
-</AccountsPage>
+</IcrcAccountsPage>

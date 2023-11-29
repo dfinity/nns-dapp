@@ -3,7 +3,7 @@
   import { tokensStore } from "$lib/stores/tokens.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { nonNullish } from "@dfinity/utils";
-  import AccountsPage from "$lib/components/accounts/AccountsPage.svelte";
+  import IcrcAccountsPage from "$lib/components/accounts/IcrcAccountsPage.svelte";
 
   let token: IcrcTokenMetadata | undefined;
   $: token = nonNullish($selectedIcrcTokenUniverseIdStore)
@@ -11,4 +11,7 @@
     : undefined;
 </script>
 
-<AccountsPage selectedUniverseId={$selectedIcrcTokenUniverseIdStore} {token} />
+<IcrcAccountsPage
+  selectedUniverseId={$selectedIcrcTokenUniverseIdStore}
+  {token}
+/>
