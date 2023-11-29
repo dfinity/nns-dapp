@@ -1,4 +1,5 @@
 import type { UniverseCanisterId } from "$lib/types/universe";
+import type { Account } from "./account";
 import type { IcrcTokenMetadata } from "./icrc";
 
 // TODO: https://dfinity.atlassian.net/browse/GIX-2150 to be refactored:
@@ -11,6 +12,7 @@ export type IcrcTokenTransactionModalData = {
   universeId: UniverseCanisterId;
   token: IcrcTokenMetadata;
   loadTransactions: boolean;
+  sourceAccount?: Account;
 };
 
 export interface IcrcTokenModalProps {

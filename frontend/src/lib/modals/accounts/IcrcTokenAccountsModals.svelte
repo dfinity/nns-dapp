@@ -27,5 +27,6 @@
       amount: modal.data.token.fee,
       token: modal.data.token,
     })}
+    selectedAccount={modal.data.sourceAccount}
   />
 {/if}

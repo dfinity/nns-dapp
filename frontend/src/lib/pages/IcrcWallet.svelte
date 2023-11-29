@@ -9,6 +9,7 @@
   import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { tokensStore } from "$lib/stores/tokens.store";
+  import IcrcTokenWalletFooter from "$lib/components/accounts/IcrcTokenWalletFooter.svelte";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
@@ -42,6 +43,16 @@
         account={$selectedAccountStore.account}
         {indexCanisterId}
         universeId={$selectedIcrcTokenUniverseIdStore}
+        {token}
+      />
+    {/if}
+  </svelte:fragment>
+
+  <svelte:fragment slot="footer-actions">
+    {#if nonNullish($selectedAccountStore.account) && nonNullish(token) && nonNullish($selectedIcrcTokenUniverseIdStore)}
+      <IcrcTokenWalletFooter
+        universeId={$selectedIcrcTokenUniverseIdStore}
+        account={$selectedAccountStore.account}
         {token}
       />
     {/if}
