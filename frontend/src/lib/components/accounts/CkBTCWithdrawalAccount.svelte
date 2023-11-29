@@ -31,7 +31,7 @@
       ? CKBTC_ADDITIONAL_CANISTERS[$selectedCkBTCUniverseIdStore.toText()]
       : undefined;
 
-    if (isNullish(canisters)) {
+    if (isNullish(canisters) || isNullish($selectedCkBTCUniverseIdStore)) {
       return;
     }
 

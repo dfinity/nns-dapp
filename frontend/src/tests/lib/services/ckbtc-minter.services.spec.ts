@@ -277,8 +277,6 @@ describe("ckbtc-minter-services", () => {
         .spyOn(minterApi, "updateBalance")
         .mockResolvedValue(mockUpdateBalanceOk);
 
-      const spyOnToastsSuccess = vi.spyOn(toastsStore, "toastsSuccess");
-
       const result = await services.updateBalance(params);
 
       expect(result).toEqual({ success: true });
