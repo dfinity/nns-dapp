@@ -43,6 +43,7 @@ import { mockTokens } from "$tests/mocks/tokens.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, waitFor } from "@testing-library/dom";
@@ -143,6 +144,7 @@ describe("Accounts", () => {
   beforeEach(() => {
     tokensStore.reset();
     icrcAccountsStore.reset();
+    setCkETHCanisters();
 
     vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
@@ -360,6 +362,83 @@ describe("Accounts", () => {
       expect(uncertifiedLoadAccountsBalance).toHaveBeenCalled()
     );
   });
+
+  // TODO: redo https://dfinity.atlassian.net/browse/GIX-2150
+  // it("should load ckETH accounts", async () => {
+  //   overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
+  //
+  //   render(Accounts);
+  //
+  //   const mockAccount = {
+  //     identifier: encodeIcrcAccount({
+  //       owner: mockIdentity.getPrincipal(),
+  //     }),
+  //     principal: mockIdentity.getPrincipal(),
+  //     type: "main",
+  //     balanceE8s: balanceIcrcToken,
+  //   };
+  //
+  //   await waitFor(() => {
+  //     expect(
+  //         get(icrcAccountsStore)[CKETH_UNIVERSE_CANISTER_ID.toText()]
+  //     ).toEqual({
+  //       certified: false,
+  //       accounts: [mockAccount],
+  //     });
+  //   });
+  // });
+  //
+  // it("should make ckETH transactions from ckETH universe", async () => {
+  //   overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
+  //
+  //   page.mock({
+  //     data: { universe: CKETH_UNIVERSE_CANISTER_ID.toText() },
+  //     routeId: AppPath.Accounts,
+  //   });
+  //
+  //   const po = renderComponent();
+  //
+  //   await runResolvedPromises();
+  //
+  //   await po.clickCkETHSend();
+  //
+  //   const modalPo = po.getIcrcTokenTransactionModalPo();
+  //
+  //   expect(await modalPo.isPresent()).toBe(true);
+  //
+  //   const toAccount = {
+  //     owner: principal(2),
+  //   };
+  //   const amount = 2;
+  //
+  //   await modalPo.transferToAddress({
+  //     destinationAddress: encodeIcrcAccount(toAccount),
+  //     amount,
+  //   });
+  //
+  //   expect(icrcLedgerApi.icrcTransfer).toHaveBeenCalledTimes(1);
+  //   expect(icrcLedgerApi.icrcTransfer).toHaveBeenCalledWith({
+  //     identity: mockIdentity,
+  //     canisterId: CKETH_LEDGER_CANISTER_ID,
+  //     amount: BigInt(amount * E8S_PER_ICP),
+  //     to: toAccount,
+  //     fee: mockCkETHToken.fee,
+  //   });
+  // });
+  //
+  // it("should render IcrcTokenAccounts and IcrcTokenAccountsFooter component with ckETH enabled and universe ckETH", async () => {
+  //   overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
+  //
+  //   page.mock({
+  //     data: { universe: CKETH_UNIVERSE_CANISTER_ID.toText() },
+  //     routeId: AppPath.Accounts,
+  //   });
+  //
+  //   const po = renderComponent();
+  //
+  //   expect(await po.getIcrcTokenAccountsPo().isPresent()).toBe(true);
+  //   expect(await po.getIcrcTokenAccountsFooterPo().isPresent()).toBe(true);
+  // });
 
   it("should render sns project name", () => {
     page.mock({
