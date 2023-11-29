@@ -14,7 +14,7 @@ import {
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import Accounts from "$lib/routes/Accounts.svelte";
 import { uncertifiedLoadSnsAccountsBalances } from "$lib/services/sns-accounts-balance.services";
-import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-accounts.services";
+import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-uncertified-accounts.services";
 import { authStore } from "$lib/stores/auth.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
@@ -45,7 +45,7 @@ import {
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
@@ -62,9 +62,9 @@ vi.mock("$lib/services/sns-accounts.services", () => {
   };
 });
 
-vi.mock("$lib/services/ckbtc-accounts.services", () => {
+vi.mock("$lib/services/wallet-accounts.services", () => {
   return {
-    syncCkBTCAccounts: vi.fn().mockResolvedValue(undefined),
+    syncAccounts: vi.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -74,7 +74,7 @@ vi.mock("$lib/services/sns-accounts-balance.services", () => {
   };
 });
 
-vi.mock("$lib/services/wallet-accounts.services", () => {
+vi.mock("$lib/services/wallet-uncertified-accounts.services", () => {
   return {
     uncertifiedLoadAccountsBalance: vi.fn().mockResolvedValue(undefined),
   };
@@ -158,6 +158,13 @@ describe("Accounts", () => {
       mockSnsSelectedTransactionFeeStoreSubscribe()
     );
 
+    setSnsProjects([
+      {
+        rootCanisterId: mockSnsFullProject.rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+    ]);
+
     // Reset to default value
     page.mock({
       data: { universe: OWN_CANISTER_ID_TEXT },
@@ -171,7 +178,6 @@ describe("Accounts", () => {
     });
 
     icpAccountsStore.setForTesting(mockAccountsStoreData);
-    resetSnsProjects();
   });
 
   it("should render NnsAccounts by default", () => {

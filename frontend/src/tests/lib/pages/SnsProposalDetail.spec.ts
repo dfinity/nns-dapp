@@ -18,12 +18,14 @@ import {
 } from "$tests/mocks/sns-proposals.mock";
 import { SnsProposalDetailPo } from "$tests/page-objects/SnsProposalDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
 import {
   SnsNeuronPermissionType,
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
+  SnsSwapLifecycle,
   SnsVote,
 } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
@@ -55,6 +57,12 @@ describe("SnsProposalDetail", () => {
       authStore.setForTesting(undefined);
       snsFunctionsStore.reset();
       page.mock({ data: { universe: rootCanisterId.toText() } });
+      setSnsProjects([
+        {
+          rootCanisterId,
+          lifecycle: SnsSwapLifecycle.Committed,
+        },
+      ]);
     });
 
     it("should show skeleton while loading proposal", async () => {

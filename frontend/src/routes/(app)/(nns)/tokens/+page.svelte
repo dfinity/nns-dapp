@@ -19,7 +19,7 @@
   import { uncertifiedLoadSnsAccountsBalances } from "$lib/services/sns-accounts-balance.services";
   import type { Universe } from "$lib/types/universe";
   import { isArrayEmpty } from "$lib/utils/utils";
-  import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-accounts.services";
+  import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-uncertified-accounts.services";
   import { ckBTCUniversesStore } from "$lib/derived/ckbtc-universes.derived";
   import { isUniverseCkBTC, isUniverseNns } from "$lib/utils/universe.utils";
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";

@@ -1,5 +1,4 @@
 import { AppPath } from "$lib/constants/routes.constants";
-import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { syncStore } from "$lib/stores/sync.store";
 import type { PostMessageDataResponseSync } from "$lib/types/post-message.sync";
@@ -16,11 +15,9 @@ import {
 } from "$tests/mocks/icrc-transactions.mock";
 import { PostMessageMock } from "$tests/mocks/post-message.mocks";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
-import {
-  mockProjectSubscribe,
-  mockSnsFullProject,
-} from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { jsonReplacer } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -43,14 +40,12 @@ describe("SnsWalletTransactionsObserver", () => {
   };
 
   beforeEach(() => {
-    vi.spyOn(snsProjectsStore, "subscribe").mockImplementation(
-      mockProjectSubscribe([
-        {
-          ...mockSnsFullProject,
-          rootCanisterId: rootCanisterIdMock,
-        },
-      ])
-    );
+    setSnsProjects([
+      {
+        rootCanisterId: rootCanisterIdMock,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+    ]);
 
     icrcTransactionsStore.addTransactions(transaction);
 

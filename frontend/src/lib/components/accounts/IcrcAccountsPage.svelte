@@ -1,6 +1,6 @@
 <script lang="ts">
   import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-  import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
+  import { syncAccounts as syncWalletAccounts } from "$lib/services/wallet-accounts.services";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import AccountCard from "$lib/components/accounts/AccountCard.svelte";
   import { i18n } from "$lib/stores/i18n";
@@ -28,7 +28,7 @@
     }
 
     loading = true;
-    await syncCkBTCAccounts({ universeId });
+    await syncWalletAccounts({ universeId });
     loading = false;
   };
 
