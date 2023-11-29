@@ -45,7 +45,7 @@ import {
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
@@ -158,6 +158,13 @@ describe("Accounts", () => {
       mockSnsSelectedTransactionFeeStoreSubscribe()
     );
 
+    setSnsProjects([
+      {
+        rootCanisterId: mockSnsFullProject.rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+    ]);
+
     // Reset to default value
     page.mock({
       data: { universe: OWN_CANISTER_ID_TEXT },
@@ -171,7 +178,6 @@ describe("Accounts", () => {
     });
 
     icpAccountsStore.setForTesting(mockAccountsStoreData);
-    resetSnsProjects();
   });
 
   it("should render NnsAccounts by default", () => {

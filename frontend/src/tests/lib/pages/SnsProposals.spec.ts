@@ -11,11 +11,14 @@ import {
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
+  SnsSwapLifecycle,
   type SnsProposalData,
 } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
@@ -33,6 +36,8 @@ describe("SnsProposals", () => {
     )[0];
 
   const rootCanisterId = mockPrincipal;
+  const functionName = "test_function";
+  const functionId = BigInt(3);
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -41,17 +46,23 @@ describe("SnsProposals", () => {
     snsFiltersStore.reset();
     // Reset to default value
     page.mock({ data: { universe: rootCanisterId.toText() } });
+    setSnsProjects([
+      {
+        rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+        nervousFunctions: [
+          {
+            ...nervousSystemFunctionMock,
+            name: functionName,
+            id: functionId,
+          },
+        ],
+      },
+    ]);
   });
 
   describe("logged in user", () => {
-    const functionName = "test_function";
-    const functionId = BigInt(3);
     beforeEach(() => {
-      fakeSnsGovernanceApi.addNervousSystemFunctionWith({
-        rootCanisterId,
-        name: functionName,
-        id: functionId,
-      });
       vi.spyOn(authStore, "subscribe").mockImplementation(
         mockAuthStoreSubscribe
       );
@@ -141,9 +152,6 @@ describe("SnsProposals", () => {
         identity: new AnonymousIdentity(),
         rootCanisterId,
       });
-      fakeSnsGovernanceApi.addNervousSystemFunctionWith({
-        rootCanisterId,
-      });
     });
 
     describe("Matching results", () => {
@@ -189,10 +197,6 @@ describe("SnsProposals", () => {
         rootCanisterId,
         ...proposals[1],
         action: functionId,
-      });
-      fakeSnsGovernanceApi.addNervousSystemFunctionWith({
-        rootCanisterId,
-        id: functionId,
       });
     });
 
