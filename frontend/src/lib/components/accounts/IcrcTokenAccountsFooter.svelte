@@ -50,7 +50,7 @@
   };
 </script>
 
-{#if nonNullish($selectedIcrcTokenUniverseIdStore) && nonNullish(universeId)}
+{#if nonNullish($selectedIcrcTokenUniverseIdStore)}
   <Footer testId="icrc-token-accounts-footer-component">
     <button
       class="primary full-width"

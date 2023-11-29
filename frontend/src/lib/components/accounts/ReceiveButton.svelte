@@ -11,7 +11,7 @@
   export let account: Account | undefined = undefined;
   export let reload: (() => Promise<void>) | undefined = undefined;
   export let canSelectAccount = false;
-  export let universeId: UniverseCanisterId;
+  export let universeId: UniverseCanisterId | undefined;
   export let logo: string;
   export let tokenSymbol: string | undefined = undefined;
 

@@ -42,7 +42,7 @@
   />
 {/if}
 
-{#if nonNullish($snsProjectAccountsStore) && nonNullish($snsOnlyProjectStore)}
+{#if nonNullish($snsProjectAccountsStore)}
   <Footer>
     <button
       class="primary full-width"

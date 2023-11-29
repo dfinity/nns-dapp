@@ -9,7 +9,7 @@
 
   export let data: AccountsReceiveModalData;
 
-  let universeId: UniverseCanisterId;
+  let universeId: UniverseCanisterId | undefined;
   let tokenSymbol: string | undefined;
   let logo: string;
   let account: Account | undefined;

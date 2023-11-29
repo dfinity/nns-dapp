@@ -33,6 +33,7 @@
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
   import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
+  import IC_LOGO from "$lib/assets/icp.svg";
 
   let showModal: "send" | undefined = undefined;
 
@@ -169,6 +170,9 @@
       account={$selectedAccountStore.account}
       reload={reloadAccount}
       testId="receive-sns"
+      universeId={$snsOnlyProjectStore}
+      logo={$selectedUniverseStore?.summary?.metadata.logo ?? IC_LOGO}
+      tokenSymbol={$selectedUniverseStore?.summary?.token.symbol}
     />
   </Footer>
 </Island>

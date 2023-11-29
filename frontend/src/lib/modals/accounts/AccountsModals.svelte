@@ -1,6 +1,7 @@
 <script lang="ts">
   import type {
     AccountsModal,
+    AccountsModalData,
     AccountsModalType,
     AccountsReceiveModalData,
   } from "$lib/types/accounts.modal";
@@ -10,20 +11,27 @@
   import BuyIcpModal from "./BuyIcpModal.svelte";
   import type { Account } from "$lib/types/account";
 
-  let modal: AccountsModal | undefined;
+  let modal:
+    | AccountsModal<AccountsReceiveModalData | AccountsModalData>
+    | undefined;
   const close = () => (modal = undefined);
 
   let type: AccountsModalType | undefined;
   $: type = modal?.type;
 
   let data: AccountsReceiveModalData | undefined;
-  $: data = (modal as AccountsModal | undefined)?.data;
+  $: data = (modal as AccountsModal<AccountsReceiveModalData> | undefined)
+    ?.data;
 
   let account: Account | undefined;
-  $: account = (modal as AccountsModal | undefined)?.data?.account;
+  $: account = (modal as AccountsModal<AccountsModalData> | undefined)?.data
+    ?.account;
 
-  const onNnsAccountsModal = ({ detail }: CustomEvent<AccountsModal>) =>
-    (modal = detail);
+  const onNnsAccountsModal = ({
+    detail,
+  }: CustomEvent<
+    AccountsModal<AccountsReceiveModalData | AccountsModalData>
+  >) => (modal = detail);
 </script>
 
 <svelte:window on:nnsAccountsModal={onNnsAccountsModal} />
