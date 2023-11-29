@@ -94,6 +94,6 @@ describe("Wallet", () => {
         accountIdentifier: principal(0).toText(),
       },
     });
-    expect(getByTestId("ckbtc-wallet")).toBeInTheDocument();
+    expect(getByTestId("ckbtc-wallet-component")).toBeInTheDocument();
   });
 });
