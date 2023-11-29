@@ -46,9 +46,13 @@ describe("cketh-canisters.services", () => {
           ledgerCanisterId: CKETH_UNIVERSE_CANISTER_ID,
           indexCanisterId: CKETH_INDEX_CANISTER_ID,
         });
-        expect(icrcCanistersStore.setCanisters).toHaveBeenCalledTimes(1);
+        icrcCanistersStore.setCanisters({
+          ledgerCanisterId: CKETHSEPOLIA_LEDGER_CANISTER_ID,
+          indexCanisterId: CKETHSEPOLIA_INDEX_CANISTER_ID,
+        });
+        expect(icrcCanistersStore.setCanisters).toHaveBeenCalledTimes(2);
         await loadCkETHCanisters();
-        expect(icrcCanistersStore.setCanisters).toHaveBeenCalledTimes(1);
+        expect(icrcCanistersStore.setCanisters).toHaveBeenCalledTimes(2);
       });
     });
 
