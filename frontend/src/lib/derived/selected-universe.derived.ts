@@ -11,6 +11,7 @@ import {
 } from "$lib/stores/feature-flags.store";
 import {
   icrcCanistersStore,
+  type IcrcCanistersStore,
   type IcrcCanistersStoreData,
 } from "$lib/stores/icrc-canisters.store";
 import type { Universe, UniverseCanisterId } from "$lib/types/universe";
@@ -47,13 +48,35 @@ const pageUniverseIdStore: Readable<Principal> = derived(
 );
 
 export const selectedUniverseIdStore: Readable<Principal> = derived<
-  [Readable<Principal>, Readable<Page>, Readable<boolean>, Readable<boolean>],
+  [
+    Readable<Principal>,
+    Readable<Page>,
+    Readable<boolean>,
+    Readable<boolean>,
+    IcrcCanistersStore,
+  ],
   Principal
 >(
-  [pageUniverseIdStore, pageStore, ENABLE_CKBTC, ENABLE_CKTESTBTC],
-  ([canisterId, page, $ENABLE_CKBTC, $ENABLE_CKTESTBTC]) => {
-    // ckBTC is only available on Accounts therefore we fallback to Nns if selected and user switch to another view
-    if (isUniverseCkBTC(canisterId) && !isNonGovernanceTokenPath(page)) {
+  [
+    pageUniverseIdStore,
+    pageStore,
+    ENABLE_CKBTC,
+    ENABLE_CKTESTBTC,
+    icrcCanistersStore,
+  ],
+  ([
+    canisterId,
+    page,
+    $ENABLE_CKBTC,
+    $ENABLE_CKTESTBTC,
+    $icrcCanistersStore,
+  ]) => {
+    // ckBTC and Icrc token are only available on Accounts therefore we fallback to Nns if selected and user switch to another view
+    if (
+      (isUniverseCkBTC(canisterId) ||
+        nonNullish($icrcCanistersStore[canisterId.toText()])) &&
+      !isNonGovernanceTokenPath(page)
+    ) {
       return OWN_CANISTER_ID;
     }
     if (
