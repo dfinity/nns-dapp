@@ -1,5 +1,9 @@
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
 import * as walletLedgerApi from "$lib/api/wallet-ledger.api";
+import {
+  CKETHSEPOLIA_INDEX_CANISTER_ID,
+  CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/cketh-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import IcrcWallet from "$lib/pages/IcrcWallet.svelte";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
@@ -11,7 +15,7 @@ import { page } from "$mocks/$app/stores";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCkETHMainAccount,
-  mockCkETHToken,
+  mockCkETHTESTToken,
 } from "$tests/mocks/cketh-accounts.mock";
 import { mockUniversesTokens } from "$tests/mocks/tokens.mock";
 import { IcrcWalletPo } from "$tests/page-objects/IcrcWallet.page-object";
@@ -19,7 +23,6 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
-import {CKETH_INDEX_CANISTER_ID, CKETH_UNIVERSE_CANISTER_ID} from "$lib/constants/cketh-canister-ids.constants";
 
 const expectedBalanceAfterTransfer = 11_111n;
 
@@ -84,8 +87,8 @@ describe("IcrcWallet", () => {
     });
 
     icrcCanistersStore.setCanisters({
-      ledgerCanisterId: CKETH_UNIVERSE_CANISTER_ID,
-      indexCanisterId: CKETH_INDEX_CANISTER_ID,
+      ledgerCanisterId: CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
+      indexCanisterId: CKETHSEPOLIA_INDEX_CANISTER_ID,
     });
   });
 
@@ -96,7 +99,7 @@ describe("IcrcWallet", () => {
       icrcAccountsStore.reset();
 
       page.mock({
-        data: { universe: CKETH_UNIVERSE_CANISTER_ID.toText() },
+        data: { universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText() },
         routeId: AppPath.Wallet,
       });
 
@@ -105,7 +108,7 @@ describe("IcrcWallet", () => {
           resolveAccounts = resolve;
         });
       });
-      vi.mocked(walletLedgerApi.getToken).mockResolvedValue(mockCkETHToken);
+      vi.mocked(walletLedgerApi.getToken).mockResolvedValue(mockCkETHTESTToken);
     });
 
     it("should render a spinner while loading", async () => {
@@ -135,13 +138,13 @@ describe("IcrcWallet", () => {
           accounts: [mockCkETHMainAccount],
           certified: true,
         },
-        universeId: CKETH_UNIVERSE_CANISTER_ID,
+        universeId: CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
       });
 
       tokensStore.setTokens(mockUniversesTokens);
 
       page.mock({
-        data: { universe: CKETH_UNIVERSE_CANISTER_ID.toText() },
+        data: { universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText() },
         routeId: AppPath.Wallet,
       });
 
@@ -162,7 +165,7 @@ describe("IcrcWallet", () => {
     it("should render Icrc token name", async () => {
       const po = await renderWallet();
 
-      expect(await po.getWalletPageHeaderPo().getUniverse()).toBe("ckETH");
+      expect(await po.getWalletPageHeaderPo().getUniverse()).toBe("ckETHTEST");
     });
 
     it("should render `Main` as subtitle", async () => {
@@ -175,7 +178,7 @@ describe("IcrcWallet", () => {
       const po = await renderWallet();
 
       expect(await po.getWalletPageHeadingPo().getTitle()).toBe(
-        "11'112'222.33 ckETH"
+        "11'112'222.33 ckETHTEST"
       );
     });
   });
