@@ -355,6 +355,7 @@ describe("Accounts", () => {
 
     render(Accounts);
 
+    // TODO: "api for a check on the service" https://dfinity.atlassian.net/browse/GIX-2150
     await waitFor(() =>
       expect(uncertifiedLoadAccountsBalance).toHaveBeenCalled()
     );
