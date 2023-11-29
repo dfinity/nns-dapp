@@ -13,6 +13,7 @@ export type IcrcTokenTransactionModalData = {
   token: IcrcTokenMetadata;
   loadTransactions: boolean;
   sourceAccount?: Account;
+  reloadSourceAccount?: () => void;
 };
 
 export interface IcrcTokenModalProps {

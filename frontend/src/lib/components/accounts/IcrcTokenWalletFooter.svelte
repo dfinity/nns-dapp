@@ -14,7 +14,7 @@
   export let universeId: UniverseCanisterId;
   export let token: IcrcTokenMetadata;
   export let account: Account;
-  export let reloadAccount: () => Promise<void>;
+  export let reloadSourceAccount: (() => Promise<void>) | undefined = undefined;
 
   const openSendModal = () => {
     if (isNullish(universeId) || isNullish(token)) {
@@ -28,6 +28,7 @@
         token,
         loadTransactions: false,
         sourceAccount: account,
+        reloadSourceAccount,
       },
     });
   };
@@ -43,7 +44,7 @@
   <ReceiveButton
     type="icrc-receive"
     {account}
-    reload={reloadAccount}
+    reload={reloadSourceAccount}
     testId="receive-icrc"
     {universeId}
     logo={$selectedUniverseStore?.logo ?? IC_LOGO}
