@@ -277,10 +277,17 @@ describe("ckbtc-minter-services", () => {
         .spyOn(minterApi, "updateBalance")
         .mockResolvedValue(mockUpdateBalanceOk);
 
+      const spyOnToastsSuccess = vi.spyOn(toastsStore, "toastsSuccess");
+
       const result = await services.updateBalance(params);
 
       expect(result).toEqual({ success: true });
       expect(updateBalanceSpy).toBeCalledTimes(3);
+
+      expect(spyOnToastsSuccess).toBeCalledTimes(1);
+      expect(spyOnToastsSuccess).toBeCalledWith({
+        labelKey: "ckbtc.ckbtc_balance_updated",
+      });
     });
 
     it("should return generic error even if no ui indicators", async () => {
