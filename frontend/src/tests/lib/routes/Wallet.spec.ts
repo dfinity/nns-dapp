@@ -9,6 +9,7 @@ import { page } from "$mocks/$app/stores";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsFullProject, principal } from "$tests/mocks/sns-projects.mock";
+import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
@@ -40,6 +41,7 @@ vi.mock("$lib/services/ckbtc-info.services", () => {
 
 describe("Wallet", () => {
   beforeEach(() => {
+    setCkETHCanisters();
     setSnsProjects([
       {
         rootCanisterId: mockSnsFullProject.rootCanisterId,
