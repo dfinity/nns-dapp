@@ -91,6 +91,7 @@
     {#if nonNullish(canisters)}
       <CkBTCWalletActions
         reload={reloadAccount}
+        universeId={$selectedCkBTCUniverseIdStore}
         minterCanisterId={canisters.minterCanisterId}
       />
     {/if}
