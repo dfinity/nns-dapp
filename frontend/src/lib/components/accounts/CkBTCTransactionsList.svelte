@@ -2,6 +2,7 @@
 <svelte:options accessors />
 
 <script lang="ts">
+  import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import { mapCkbtcTransaction } from "$lib/utils/icrc-transactions.utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
@@ -17,6 +18,18 @@
   export const reloadTransactions = () => transactions?.reloadTransactions?.();
 
   let transactions: IcrcWalletTransactionsList;
+
+  const mapTransactions = (
+    transactionData: IcrcTransactionData[]
+  ): UiTransaction[] =>
+    transactionData.map((transaction: IcrcTransactionData) =>
+      mapCkbtcTransaction({
+        ...transaction,
+        account,
+        token,
+        i18n: $i18n,
+      })
+    );
 </script>
 
 <IcrcWalletTransactionsList
@@ -25,5 +38,5 @@
   {account}
   {universeId}
   {token}
-  mapTransaction={mapCkbtcTransaction}
+  {mapTransactions}
 />

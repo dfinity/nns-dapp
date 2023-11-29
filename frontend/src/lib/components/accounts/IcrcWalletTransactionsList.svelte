@@ -31,7 +31,19 @@
   export let universeId: UniverseCanisterId;
   export let account: Account;
   export let token: IcrcTokenMetadata | undefined;
-  export let mapTransaction: MapIcrcTransactionType = mapIcrcTransaction;
+  export let mapTransactions: (IcrcTransactionData) => UiTransaction = (
+    transactions
+  ) =>
+    transactions
+      .map((transaction: IcrcTransactionData) =>
+        mapIcrcTransaction({
+          ...transaction,
+          account,
+          token,
+          i18n: $i18n,
+        })
+      )
+      .filter(nonNullish);
 
   // Expose for test purpose only
   export let loading = true;
@@ -91,16 +103,7 @@
   });
 
   let uiTransactions: UiTransaction[];
-  $: uiTransactions = transactions
-    .map((transaction: IcrcTransactionData) =>
-      mapTransaction({
-        ...transaction,
-        account,
-        token,
-        i18n: $i18n,
-      })
-    )
-    .filter(nonNullish);
+  $: uiTransactions = mapTransactions(transactions);
 </script>
 
 <IcrcWalletTransactionsObserver
