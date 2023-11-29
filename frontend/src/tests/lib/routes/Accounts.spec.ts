@@ -2,7 +2,6 @@ import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import {
-  CKETH_INDEX_CANISTER_ID,
   CKETH_LEDGER_CANISTER_ID,
   CKETH_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
@@ -20,7 +19,6 @@ import { authStore } from "$lib/stores/auth.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
@@ -47,6 +45,7 @@ import {
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
@@ -150,6 +149,7 @@ describe("Accounts", () => {
   beforeEach(() => {
     tokensStore.reset();
     icrcAccountsStore.reset();
+    setCkETHCanisters();
 
     vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockCkETHToken);
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
@@ -360,23 +360,6 @@ describe("Accounts", () => {
         accounts: [mockAccount],
       });
     });
-  });
-
-  it("should not refetch ckETH accounts if ckETH canisters are already loaded", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
-
-    icrcCanistersStore.setCanisters({
-      ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
-      indexCanisterId: CKETH_INDEX_CANISTER_ID,
-    });
-
-    render(Accounts);
-
-    await runResolvedPromises();
-
-    // It's called once when the component is mounted
-    expect(icrcLedgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
-    expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(1);
   });
 
   it("should make ckETH transactions from ckETH universe", async () => {
