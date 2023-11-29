@@ -98,6 +98,62 @@ describe("icrc-accounts-services", () => {
       });
       expect(ledgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
     });
+
+    it("doesn't load token from api into store if requested certified false and already present", async () => {
+      tokensStore.setToken({
+        canisterId: ledgerCanisterId,
+        token: mockToken,
+        certified: false,
+      });
+      expect(ledgerApi.queryIcrcToken).not.toBeCalled();
+
+      await loadIcrcToken({ ledgerCanisterId, certified: false });
+
+      expect(ledgerApi.queryIcrcToken).not.toBeCalled();
+    });
+
+    it("doesn't load token from api into store if requested certified true and already store is loaded with certified data", async () => {
+      tokensStore.setToken({
+        canisterId: ledgerCanisterId,
+        token: mockToken,
+        certified: true,
+      });
+      expect(ledgerApi.queryIcrcToken).not.toBeCalled();
+
+      await loadIcrcToken({ ledgerCanisterId, certified: true });
+
+      expect(ledgerApi.queryIcrcToken).not.toBeCalled();
+    });
+
+    it("doesn't load token from api into store if requested certified false and already store is loaded with certified data", async () => {
+      tokensStore.setToken({
+        canisterId: ledgerCanisterId,
+        token: mockToken,
+        certified: true,
+      });
+      expect(ledgerApi.queryIcrcToken).not.toBeCalled();
+
+      await loadIcrcToken({ ledgerCanisterId, certified: false });
+
+      expect(ledgerApi.queryIcrcToken).not.toBeCalled();
+    });
+
+    it("loads token from api into store if requested certified true and store has certified false", async () => {
+      tokensStore.setToken({
+        canisterId: ledgerCanisterId,
+        token: mockToken,
+        certified: false,
+      });
+      expect(ledgerApi.queryIcrcToken).not.toBeCalled();
+
+      await loadIcrcToken({ ledgerCanisterId, certified: true });
+
+      expect(ledgerApi.queryIcrcToken).toHaveBeenCalledTimes(2);
+      expect(get(tokensStore)[ledgerCanisterId.toText()]).toEqual({
+        certified: true,
+        token: mockToken,
+      });
+    });
   });
 
   describe("loadIcrcAccount", () => {
