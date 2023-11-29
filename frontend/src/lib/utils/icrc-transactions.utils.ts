@@ -229,7 +229,7 @@ export const mapIcrcTransaction = ({
   }
 };
 
-export type mapIcrcTransactionType = typeof mapIcrcTransaction;
+export type MapIcrcTransactionType = typeof mapIcrcTransaction;
 
 // The memo will decode to: [0, [ withdrawalAddress, kytFee, status]]
 type CkbtcBurnMemo = [0, [string, number, number | null | undefined]];
