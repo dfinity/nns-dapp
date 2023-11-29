@@ -8,22 +8,23 @@
   import { nonNullish } from "@dfinity/utils";
 
   export let data: AccountsReceiveModalData;
-  export let universeId: UniverseCanisterId | undefined;
-  export let tokenSymbol: string | undefined;
-  export let logo: string;
 
+  let universeId: UniverseCanisterId | undefined;
+  let tokenSymbol: string | undefined;
+  let logo: string;
   let account: Account | undefined;
   let reload: (() => Promise<void>) | undefined;
   let canSelectAccount: boolean;
 
-  $: ({ account, reload, canSelectAccount } = data);
+  $: ({ account, reload, canSelectAccount, universeId, tokenSymbol, logo } =
+    data);
 </script>
 
 {#if nonNullish(universeId) && nonNullish(tokenSymbol)}
   <ReceiveModal
     {account}
     on:nnsClose
-    qrCodeLabel={replacePlaceholders($i18n.wallet.sns_qrcode_aria_label, {
+    qrCodeLabel={replacePlaceholders($i18n.wallet.icrc_qrcode_aria_label, {
       $tokenSymbol: tokenSymbol,
     })}
     {logo}

@@ -9,6 +9,8 @@
   import { syncAccounts } from "$lib/services/icp-accounts.services";
   import { openAccountsModal } from "$lib/utils/modals.utils";
   import { IconAdd } from "@dfinity/gix-components";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import IC_LOGO from "$lib/assets/icp.svg";
 
   let modal: "NewTransaction" | undefined = undefined;
   const openNewTransaction = () => (modal = "NewTransaction");
@@ -42,7 +44,13 @@
         data-tid="open-new-transaction">{$i18n.accounts.send}</button
       >
 
-      <ReceiveButton type="nns-receive" canSelectAccount {reload} />
+      <ReceiveButton
+        type="nns-receive"
+        canSelectAccount
+        {reload}
+        universeId={OWN_CANISTER_ID}
+        logo={IC_LOGO}
+      />
 
       <button
         class="primary full-width with-icon"

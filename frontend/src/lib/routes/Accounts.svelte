@@ -143,9 +143,10 @@
 
   {#if $isCkBTCUniverseStore}
     <CkBTCAccountsModals />
-  {:else if $selectedIcrcTokenUniverseIdStore}
-    <IcrcTokenAccountsModals />
   {:else}
+    {#if $selectedIcrcTokenUniverseIdStore}
+      <IcrcTokenAccountsModals />
+    {/if}
     <AccountsModals />
   {/if}
 </TestIdWrapper>
