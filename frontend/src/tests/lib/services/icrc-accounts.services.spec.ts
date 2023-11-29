@@ -31,10 +31,6 @@ describe("icrc-accounts-services", () => {
     type: "main",
     balanceE8s,
   };
-  const mockAccount2 = {
-    ...mockAccount,
-    balanceE8s: balanceE8s2,
-  };
 
   beforeEach(() => {
     vi.clearAllMocks();
