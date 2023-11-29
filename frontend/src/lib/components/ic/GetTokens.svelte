@@ -10,25 +10,34 @@
     getTestBalance,
     getTokens,
     getBTC,
+    getIcrcTokens,
   } from "$lib/services/dev.services";
   import { Spinner, IconAccountBalance } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
-  import { isCkBTCUniverseStore } from "$lib/derived/selected-universe.derived";
+  import {
+    isCkBTCUniverseStore,
+    selectedIcrcTokenUniverseIdStore,
+  } from "$lib/derived/selected-universe.derived";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
   import type { Principal } from "@dfinity/principal";
   import { ICPToken, nonNullish } from "@dfinity/utils";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { browser } from "$app/environment";
+  import { getIcrcTokenTestAccountBalance } from "$lib/api/dev.api";
+  import { tokensStore } from "$lib/stores/tokens.store";
 
   let visible = false;
   let transferring = false;
 
   let inputValue: number | undefined = undefined;
 
-  let selectedProjectId: Principal | undefined;
-  $: selectedProjectId = $snsOnlyProjectStore;
+  let snsSelectedProjectId: Principal | undefined;
+  $: snsSelectedProjectId = $snsOnlyProjectStore;
+
+  let icrcSelectedProjectId: Principal | undefined;
+  $: icrcSelectedProjectId = $selectedIcrcTokenUniverseIdStore;
 
   const onSubmit = async () => {
     if (invalidForm || inputValue === undefined) {
@@ -42,10 +51,15 @@
 
     try {
       // Default to transfer ICPs if the test account's balance of the selected universe is 0.
-      if (nonNullish(selectedProjectId) && tokenBalanceE8s > 0n) {
+      if (nonNullish(snsSelectedProjectId) && tokenBalanceE8s > 0n) {
         await getTokens({
           tokens: inputValue,
-          rootCanisterId: selectedProjectId,
+          rootCanisterId: snsSelectedProjectId,
+        });
+      } else if (nonNullish(icrcSelectedProjectId)) {
+        await getIcrcTokens({
+          tokens: inputValue,
+          ledgerCanisterId: icrcSelectedProjectId,
         });
       } else if ($isCkBTCUniverseStore) {
         await getBTC({
@@ -78,18 +92,29 @@
 
   // Check the balance of the test account in that universe.
   let tokenBalanceE8s = 0n;
-  $: selectedProjectId,
+  $: snsSelectedProjectId,
     (async () => {
       // This was executed at build time and it depends on `window` in `base64ToUInt8Array` helper inside dev.api.ts
-      if (browser && nonNullish(selectedProjectId)) {
-        tokenBalanceE8s = await getTestBalance(selectedProjectId);
+      if (browser) {
+        if (nonNullish(snsSelectedProjectId)) {
+          tokenBalanceE8s = await getTestBalance(snsSelectedProjectId);
+        }
+        if (nonNullish(icrcSelectedProjectId)) {
+          tokenBalanceE8s = await getIcrcTokenTestAccountBalance(
+            icrcSelectedProjectId
+          );
+        }
       }
     })();
 
   // If the SNS test account balance is 0, don't show a button that won't work. Show the ICP token instead.
   let tokenSymbol: string;
   $: tokenSymbol =
-    nonNullish(selectedProjectId) && tokenBalanceE8s > 0n
+    nonNullish(icrcSelectedProjectId) &&
+    $tokensStore[icrcSelectedProjectId?.toText()]?.token &&
+    tokenBalanceE8s > 0n
+      ? $tokensStore[icrcSelectedProjectId?.toText()].token.symbol
+      : nonNullish(snsSelectedProjectId) && tokenBalanceE8s > 0n
       ? $snsTokenSymbolSelectedStore?.symbol ?? ICPToken.symbol
       : $isCkBTCUniverseStore
       ? $i18n.ckbtc.btc
@@ -97,7 +122,7 @@
 
   let buttonTestId: string;
   $: buttonTestId =
-    nonNullish(selectedProjectId) && tokenBalanceE8s > 0n
+    nonNullish(snsSelectedProjectId) && tokenBalanceE8s > 0n
       ? "get-sns-button"
       : $isCkBTCUniverseStore
       ? "get-btc-button"
