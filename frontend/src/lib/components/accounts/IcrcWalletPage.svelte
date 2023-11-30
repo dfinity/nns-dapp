@@ -17,15 +17,11 @@
   import { goto } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
   import type { UniverseCanisterId } from "$lib/types/universe";
-  import {
-    selectedCkBTCUniverseIdStore,
-    selectedUniverseStore,
-  } from "$lib/derived/selected-universe.derived";
+  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import IcrcBalancesObserver from "$lib/components/accounts/IcrcBalancesObserver.svelte";
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
   import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
-  import { loadCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
 
   export let testId: string;
   export let accountIdentifier: string | undefined | null = undefined;

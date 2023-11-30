@@ -10,7 +10,6 @@
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import IC_LOGO from "$lib/assets/icp.svg";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
-  import { createEventDispatcher } from "svelte";
 
   export let universeId: UniverseCanisterId;
   export let token: IcrcTokenMetadata;
