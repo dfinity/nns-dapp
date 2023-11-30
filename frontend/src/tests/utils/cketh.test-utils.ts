@@ -17,3 +17,8 @@ export const setCkETHCanisters = () => {
     token: mockCkETHToken,
   });
 };
+
+export const resetCkETHCanisters = () => {
+  icrcCanistersStore.reset();
+  tokensStore.reset();
+};

@@ -34,6 +34,8 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
     ckbtcIndexCanisterId: "n5wcd-faaaa-aaaar-qaaea-cai",
     ckbtcLedgerCanisterId: "mxzaz-hqaaa-aaaar-qaada-cai",
     cyclesMintingCanisterId: "rkp4c-7iaaa-aaaaa-aaaca-cai",
+    ckethLedgerCanisterId: "ss2fx-dyaaa-aaaar-qacoq-cai",
+    ckethIndexCanisterId: "s3zol-vqaaa-aaaar-qacpa-cai",
     dfxNetwork: "testnet",
     featureFlags: JSON.stringify({
       ENABLE_CKBTC: true,
