@@ -22,7 +22,7 @@ import {
   type IcrcBlockIndex,
 } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
-import { isNullish, nonNullish } from "@dfinity/utils";
+import { isNullish, nonNullish, type Token } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { queryAndUpdate } from "./utils.services";
 
@@ -146,6 +146,7 @@ export interface IcrcTransferTokensUserParams {
   source: Account;
   destinationAddress: string;
   amount: number;
+  token?: Token;
 }
 
 // TODO: use `wallet-accounts.services`
@@ -153,6 +154,7 @@ export const transferTokens = async ({
   source,
   destinationAddress,
   amount,
+  token,
   fee,
   transfer,
   reloadAccounts,
@@ -172,7 +174,7 @@ export const transferTokens = async ({
       throw new Error("error.transaction_fee_not_found");
     }
 
-    const amountE8s = numberToE8s(amount);
+    const amountE8s = numberToE8s(amount, token);
     const identity: Identity = await getIcrcAccountIdentity(source);
     const to = decodeIcrcAccount(destinationAddress);
 
@@ -203,6 +205,7 @@ export const icrcTransferTokens = async ({
   source,
   destinationAddress,
   amount,
+  token,
   fee,
   ledgerCanisterId,
 }: IcrcTransferTokensUserParams & {
@@ -212,6 +215,7 @@ export const icrcTransferTokens = async ({
   return transferTokens({
     source,
     amount,
+    token,
     fee,
     destinationAddress,
     transfer: async (
