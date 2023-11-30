@@ -1,6 +1,6 @@
-import { getCkBTCToken } from "$lib/api/ckbtc-ledger.api";
-import { getCkBTCAccounts } from "$lib/services/ckbtc-accounts-loader.services";
+import { getToken } from "$lib/api/wallet-ledger.api";
 import { queryAndUpdate } from "$lib/services/utils.services";
+import { getAccounts } from "$lib/services/wallet-loader.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
@@ -15,12 +15,10 @@ import { Principal } from "@dfinity/principal";
 /**
  * This function performs only an insecure "query" and does not toast the error but throw it so that all errors are collected by its caller.
  */
-const loadCkBTCAccountsBalance = (
-  universeId: UniverseCanisterId
-): Promise<void> => {
+const loadAccountsBalance = (universeId: UniverseCanisterId): Promise<void> => {
   return queryAndUpdate<Account[], unknown>({
     request: ({ certified, identity }) =>
-      getCkBTCAccounts({ identity, certified, universeId }),
+      getAccounts({ identity, certified, universeId }),
     onLoad: ({ response: accounts, certified }) =>
       icrcAccountsStore.set({
         universeId,
@@ -33,7 +31,7 @@ const loadCkBTCAccountsBalance = (
       console.error(err);
       throw err;
     },
-    logMessage: "Syncing ckBTC Accounts Balance",
+    logMessage: "Syncing Accounts Balance",
     strategy: "query",
   });
 };
@@ -41,10 +39,10 @@ const loadCkBTCAccountsBalance = (
 /**
  * This function performs only an insecure "query" and does not toast the error but throw it so that all errors are collected by its caller.
  */
-const loadCkBTCToken = (universeId: UniverseCanisterId): Promise<void> => {
+const loadToken = (universeId: UniverseCanisterId): Promise<void> => {
   return queryAndUpdate<IcrcTokenMetadata, unknown>({
     request: ({ certified, identity }) =>
-      getCkBTCToken({ identity, certified, canisterId: universeId }),
+      getToken({ identity, certified, canisterId: universeId }),
     onLoad: ({ response: token, certified }) =>
       tokensStore.setToken({
         canisterId: universeId,
@@ -55,21 +53,21 @@ const loadCkBTCToken = (universeId: UniverseCanisterId): Promise<void> => {
       console.error(err);
       throw err;
     },
-    logMessage: "Syncing ckBTC token",
+    logMessage: "Syncing token",
     strategy: "query",
   });
 };
 
 /**
- * Load ckBTC accounts balances and token
+ * Load Icrc accounts balances and token
  *
- * ⚠️ WARNING: this feature only performs "query" calls. Effective "update" is performed when the ckBTC universe is manually selected either through the token navigation switcher or accessed directly via the browser url.
+ * ⚠️ WARNING: this feature only performs "query" calls. Effective "update" is performed when the universe is manually selected either through the token navigation switcher or accessed directly via the browser url.
  *
  * @param {universeIds: UniverseCanisterId[]; excludeUniverseIds: RootCanisterIdText[] | undefined} params
- * @param {UniverseCanisterId[]} params.universeIds The ckBTC (ckBTC or ckTESTBTC) environment for which the balances should be loaded.
+ * @param {UniverseCanisterId[]} params.universeIds The Icrc environment for which the balances should be loaded.
  * @param {RootCanisterIdText[] | undefined} params.excludeUniverseIds As the balance is also loaded by loadSnsAccounts() - to perform query and UPDATE call - this variable can be used to avoid to perform unnecessary query and per extension to override data in the balance store.
  */
-export const uncertifiedLoadCkBTCAccountsBalance = async ({
+export const uncertifiedLoadAccountsBalance = async ({
   universeIds,
   excludeUniverseIds = [],
 }: {
@@ -84,8 +82,8 @@ export const uncertifiedLoadCkBTCAccountsBalance = async ({
         ) ?? []
       ).map((universeId) =>
         Promise.all([
-          loadCkBTCAccountsBalance(Principal.fromText(universeId)),
-          loadCkBTCToken(Principal.fromText(universeId)),
+          loadAccountsBalance(Principal.fromText(universeId)),
+          loadToken(Principal.fromText(universeId)),
         ])
       )
     );

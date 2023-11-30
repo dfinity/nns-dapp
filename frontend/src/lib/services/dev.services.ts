@@ -1,6 +1,7 @@
 import { getBTCAddress } from "$lib/api/ckbtc-minter.api";
 import {
   acquireICPTs,
+  acquireIcrcTokens,
   acquireSnsTokens,
   getTestAccountBalance,
   receiveMockBtc,
@@ -10,6 +11,7 @@ import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import type { IcpAccountsStoreData } from "$lib/stores/icp-accounts.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import {
   snsAccountsStore,
   type SnsAccountsStoreData,
@@ -19,6 +21,7 @@ import type { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { syncAccounts } from "./icp-accounts.services";
+import { loadIcrcAccount } from "./icrc-accounts.services";
 import { loadSnsAccounts } from "./sns-accounts.services";
 
 export const getTestBalance = getTestAccountBalance;
@@ -92,4 +95,31 @@ export const getBTC = async ({ amount }: { amount: number }) => {
     btcAddress,
     amountE8s: BigInt(amount * E8S_PER_ICP),
   });
+};
+
+export const getIcrcTokens = async ({
+  tokens,
+  ledgerCanisterId,
+}: {
+  tokens: number;
+  ledgerCanisterId: Principal;
+}) => {
+  // Accounts are loaded when user visits the Accounts page, so we need to load them here.
+  await loadIcrcAccount({ ledgerCanisterId, certified: false });
+  const store = get(icrcAccountsStore);
+  const { accounts } = store[ledgerCanisterId.toText()];
+  const main = accounts.find((account) => account.type === "main");
+
+  if (!main) {
+    throw new Error("No account found to send tokens");
+  }
+
+  await acquireIcrcTokens({
+    e8s: BigInt(tokens * E8S_PER_ICP),
+    account: main,
+    ledgerCanisterId,
+  });
+
+  // Reload accounts to sync tokens that have been transferred
+  await loadIcrcAccount({ ledgerCanisterId, certified: true });
 };

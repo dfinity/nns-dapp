@@ -8,9 +8,13 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { toastsError } from "$lib/stores/toasts.store";
-  import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
+  import {
+    selectedUniverseIdStore,
+    selectedUniverseStore,
+  } from "$lib/derived/selected-universe.derived";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
+  import IC_LOGO from "$lib/assets/icp.svg";
 
   // TODO: Support adding subaccounts
   let modal: "NewTransaction" | undefined = undefined;
@@ -47,10 +51,13 @@
     >
 
     <ReceiveButton
-      type="sns-receive"
+      type="icrc-receive"
       canSelectAccount
       testId="receive-sns"
       {reload}
+      universeId={$snsOnlyProjectStore}
+      logo={$selectedUniverseStore?.summary?.metadata.logo ?? IC_LOGO}
+      tokenSymbol={$selectedUniverseStore?.summary?.token.symbol}
     />
   </Footer>
 {/if}

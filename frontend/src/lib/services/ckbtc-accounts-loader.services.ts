@@ -1,18 +1,16 @@
-import { getCkBTCAccount } from "$lib/api/ckbtc-ledger.api";
+import { getAccount } from "$lib/api/wallet-ledger.api";
 import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
 import { getWithdrawalAccount as getWithdrawalAccountServices } from "$lib/services/ckbtc-minter.services";
 import type { CkBTCBTCWithdrawalAccount } from "$lib/stores/ckbtc-withdrawal-accounts.store";
 import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-withdrawal-accounts.store";
 import { i18n } from "$lib/stores/i18n";
 import { toastsError } from "$lib/stores/toasts.store";
-import type { Account, AccountType } from "$lib/types/account";
 import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { toToastError } from "$lib/utils/error.utils";
 import type { Identity } from "@dfinity/agent";
 import type { IcrcAccount } from "@dfinity/ledger-icrc";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
-import type { Principal } from "@dfinity/principal";
 import {
   assertNonNullish,
   fromNullable,
@@ -20,31 +18,6 @@ import {
   nonNullish,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
-
-export const getCkBTCAccounts = async ({
-  identity,
-  certified,
-  universeId,
-}: {
-  identity: Identity;
-  certified: boolean;
-  universeId: Principal;
-}): Promise<Account[]> => {
-  // TODO: Support subaccounts
-  const mainAccount: { owner: Principal; type: AccountType } = {
-    owner: identity.getPrincipal(),
-    type: "main",
-  };
-
-  const account = await getCkBTCAccount({
-    identity,
-    certified,
-    canisterId: universeId,
-    ...mainAccount,
-  });
-
-  return [account];
-};
 
 /**
  * 1. If not yet loaded, get the ckBTC withdrawal account from the minter, otherwise use the existing value in store.
@@ -111,7 +84,7 @@ export const getCkBTCWithdrawalAccount = async ({
     : await getWithdrawalAccount();
 
   try {
-    const account = await getCkBTCAccount({
+    const account = await getAccount({
       identity,
       certified,
       canisterId: universeId,

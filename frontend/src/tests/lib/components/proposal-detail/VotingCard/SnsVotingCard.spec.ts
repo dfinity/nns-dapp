@@ -18,12 +18,14 @@ import {
 } from "$tests/mocks/sns-neurons.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { mockSnsCanisterId } from "$tests/mocks/sns.api.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { NeuronState, Vote } from "@dfinity/nns";
 import type { SnsNeuron, SnsProposalData } from "@dfinity/sns";
 import {
   SnsNeuronPermissionType,
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
+  SnsSwapLifecycle,
   SnsVote,
   type SnsBallot,
 } from "@dfinity/sns";
@@ -120,6 +122,13 @@ describe("SnsVotingCard", () => {
     spyRegisterVote.mockClear();
 
     page.mock({ data: { universe: mockSnsCanisterId.toText() } });
+
+    setSnsProjects([
+      {
+        rootCanisterId: mockSnsCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+    ]);
 
     snsParametersStore.setParameters({
       rootCanisterId: mockSnsCanisterId,

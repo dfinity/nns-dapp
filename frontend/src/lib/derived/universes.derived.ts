@@ -6,20 +6,33 @@ import {
 import type { Universe } from "$lib/types/universe";
 import { createUniverse } from "$lib/utils/universe.utils";
 import { derived, type Readable } from "svelte/store";
+import { icrcTokensUniversesStore } from "./icrc-universes.derived";
 import { nnsUniverseStore } from "./nns-universe.derived";
 
 export const universesStore = derived<
-  [Readable<Universe>, Readable<SnsFullProject[]>, Readable<Universe[]>],
+  [
+    Readable<Universe>,
+    Readable<SnsFullProject[]>,
+    Readable<Universe[]>,
+    Readable<Universe[]>,
+  ],
   Universe[]
 >(
-  [nnsUniverseStore, snsProjectsCommittedStore, ckBTCUniversesStore],
-  ([nnsUniverse, projects, ckBTCUniverses]: [
+  [
+    nnsUniverseStore,
+    snsProjectsCommittedStore,
+    ckBTCUniversesStore,
+    icrcTokensUniversesStore,
+  ],
+  ([nnsUniverse, projects, ckBTCUniverses, icrcUniverses]: [
     Universe,
     SnsFullProject[],
+    Universe[],
     Universe[],
   ]) => [
     nnsUniverse,
     ...ckBTCUniverses,
+    ...icrcUniverses,
     ...(projects.map(({ summary }) => createUniverse(summary)) ?? []),
   ]
 );

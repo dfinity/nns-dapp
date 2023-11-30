@@ -13,7 +13,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
 
-vi.mock("$lib/api/ckbtc-ledger.api");
+vi.mock("$lib/api/wallet-ledger.api");
 vi.mock("$lib/api/icp-ledger.api");
 vi.mock("$lib/api/nns-dapp.api");
 vi.mock("$lib/api/sns-ledger.api");

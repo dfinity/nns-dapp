@@ -1,32 +1,29 @@
 import CkBTCTransactionsList from "$lib/components/accounts/CkBTCTransactionsList.svelte";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
-import * as services from "$lib/services/ckbtc-transactions.services";
+import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
+import { ckbtcPendingUtxosStore } from "$lib/stores/ckbtc-pending-utxos.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
+import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import {
   createBurnTransaction,
   mockIcrcTransactionMint,
-  mockIcrcTransactionWithId,
-  mockIcrcTransactionWithIdToSelf,
   mockIcrcTransactionsStoreSubscribe,
 } from "$tests/mocks/icrc-transactions.mock";
 import { IcrcTransactionsListPo } from "$tests/page-objects/IcrcTransactionsList.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import {
-  advanceTime,
-  runResolvedPromises,
-} from "$tests/utils/timers.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Cbor } from "@dfinity/agent";
 import { render } from "@testing-library/svelte";
 
-vi.mock("$lib/services/ckbtc-transactions.services", () => {
+vi.mock("$lib/services/wallet-transactions.services", () => {
   return {
-    loadCkBTCAccountNextTransactions: vi.fn().mockResolvedValue(undefined),
-    loadCkBTCAccountTransactions: vi.fn().mockResolvedValue(undefined),
+    loadWalletNextTransactions: vi.fn().mockResolvedValue(undefined),
+    loadWalletTransactions: vi.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -60,91 +57,13 @@ describe("CkBTCTransactionList", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
+    ckbtcPendingUtxosStore.reset();
     vi.useFakeTimers().setSystemTime(new Date());
   });
 
   afterAll(() => {
     vi.useRealTimers();
-  });
-
-  it("should call service to load transactions", () => {
-    const spy = vi.spyOn(services, "loadCkBTCAccountNextTransactions");
-
-    renderComponent();
-
-    expect(spy).toBeCalled();
-  });
-
-  it("should call service to load transactions on imperative function call", async () => {
-    const spy = vi.spyOn(services, "loadCkBTCAccountNextTransactions");
-    const spyReload = vi.spyOn(services, "loadCkBTCAccountTransactions");
-
-    let resolveLoadNext;
-    spy.mockImplementation(
-      () =>
-        new Promise<void>((resolve) => {
-          resolveLoadNext = resolve;
-        })
-    );
-
-    const { po, reload } = renderComponent();
-
-    await runResolvedPromises();
-    expect(await po.getSkeletonCardPo().isPresent()).toBe(true);
-    resolveLoadNext();
-    await runResolvedPromises();
-    await po.getSkeletonCardPo().waitForAbsent();
-
-    expect(spy).toBeCalledTimes(1);
-    expect(spyReload).toBeCalledTimes(0);
-
-    reload();
-
-    await advanceTime(5000);
-
-    expect(spy).toBeCalledTimes(1);
-    expect(spyReload).toBeCalledTimes(1);
-  });
-
-  it("should render transactions from store", async () => {
-    const store = {
-      [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
-        [mockCkBTCMainAccount.identifier]: {
-          transactions: [mockIcrcTransactionWithId],
-          completed: false,
-          oldestTxId: BigInt(0),
-        },
-      },
-    };
-
-    vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(
-      mockIcrcTransactionsStoreSubscribe(store)
-    );
-
-    const { po } = renderComponent();
-
-    expect(await po.getTransactionCardPos()).toHaveLength(1);
-  });
-
-  it("should render to-self transactions from store as duplicate", async () => {
-    const store = {
-      [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
-        [mockCkBTCMainAccount.identifier]: {
-          transactions: [mockIcrcTransactionWithIdToSelf],
-          completed: false,
-          oldestTxId: BigInt(0),
-        },
-      },
-    };
-
-    vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(
-      mockIcrcTransactionsStoreSubscribe(store)
-    );
-
-    const { po } = renderComponent();
-
-    expect(await po.getTransactionCardPos()).toHaveLength(2);
   });
 
   it("should render description burn to btc network", async () => {
@@ -251,5 +170,44 @@ describe("CkBTCTransactionList", () => {
     const cards = await po.getTransactionCardPos();
 
     expect(await cards[0].getIdentifier()).toEqual("From: BTC Network");
+  });
+
+  it("should render pending UTXOs", async () => {
+    const amount = 1000_000n;
+    const kytFee = 4_000n;
+    const utxo = {
+      outpoint: {
+        txid: new Uint8Array([2, 5, 5]),
+        vout: 1,
+      },
+      value: amount,
+      confirmations: 4,
+    };
+    ckbtcPendingUtxosStore.setUtxos({
+      universeId: CKBTC_UNIVERSE_CANISTER_ID,
+      utxos: [utxo],
+    });
+
+    ckBTCInfoStore.setInfo({
+      canisterId: CKBTC_UNIVERSE_CANISTER_ID,
+      certified: true,
+      info: {
+        ...mockCkBTCMinterInfo,
+        kyt_fee: kytFee,
+      },
+    });
+
+    const { po } = renderComponent();
+    await runResolvedPromises();
+    const cards = await po.getTransactionCardPos();
+
+    expect(cards).toHaveLength(1);
+    const card = cards[0];
+    expect(await card.hasPendingIcon()).toBe(true);
+    expect(await card.getHeadline()).toBe("Receiving BTC");
+    expect(await card.getIdentifier()).toBe("From: BTC Network");
+    // 0.01 deposited minus 0.00004 KYT fee.
+    expect(await card.getAmount()).toBe("+0.00996");
+    expect(await card.getDate()).toBe("Pending...");
   });
 });

@@ -186,6 +186,32 @@
         }
       }
     },
+    "cketh_ledger": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/cketh_ledger.did",
+      "wasm": "target/ic/ckbtc_ledger.wasm",
+      "type": "custom",
+      "remote": {
+        "id": {
+          "mainnet": "ss2fx-dyaaa-aaaar-qacoq-cai"
+        }
+      }
+    },
+    "cketh_index": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/ckbtc_index.did",
+      "wasm": "target/ic/ckbtc_index.wasm",
+      "type": "custom",
+      "remote": {
+        "id": {
+          "mainnet": "s3zol-vqaaa-aaaar-qacpa-cai"
+        }
+      }
+    },
     "tvl": {
       "build": [
         "true"
@@ -258,6 +284,19 @@
       ],
       "type": "persistent"
     },
+    "devenv_mstr": {
+      "config": {
+        "HOST": "https://mstr-ingress.devenv.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_CKBTC": true,
+          "ENABLE_CKTESTBTC": false
+        }
+      },
+      "providers": [
+        "https://mstr-ingress.devenv.dfinity.network"
+      ],
+      "type": "persistent"
+    },
     "local": {
       "config": {
         "FETCH_ROOT_KEY": true,
@@ -288,7 +327,6 @@
           "ENABLE_SWAP_ICRC1": false,
           "ENABLE_MY_TOKENS": false,
           "ENABLE_CKETH": false,
-          "ENABLE_FULL_WIDTH_PROPOSAL": true,
           "ENABLE_CKBTC_ICRC2": true
         }
       }

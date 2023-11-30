@@ -1,25 +1,25 @@
+import { getEnvVars } from "$lib/utils/env-vars.utils";
 import { Principal } from "@dfinity/principal";
 
-// TODO: Fallback to ckETH canister IDs on mainnet. These are Sepolia canister IDs.
-const MAINNET_CKETH_LEDGER_CANISTER_ID = "apia6-jaaaa-aaaar-qabma-cai";
-// TODO: Change to Sepolia index canister
-const MAINNET_CKETH_INDEX_CANISTER_ID = "apia6-jaaaa-aaaar-qabma-cai";
+const envVars = getEnvVars();
 
-// TODO: Add ckETHTEST canister IDs on env vars https://dfinity.atlassian.net/browse/GIX-2137
+// TODO: Fallback to ckETH canister IDs on mainnet.
+const MAINNET_CKETH_LEDGER_CANISTER_ID = "ss2fx-dyaaa-aaaar-qacoq-cai";
+const MAINNET_CKETH_INDEX_CANISTER_ID = "s3zol-vqaaa-aaaar-qacpa-cai";
+
 export const CKETHSEPOLIA_LEDGER_CANISTER_ID = Principal.fromText(
   "apia6-jaaaa-aaaar-qabma-cai"
 );
 
 export const CKETHSEPOLIA_INDEX_CANISTER_ID = Principal.fromText(
-  "apia6-jaaaa-aaaar-qabma-cai"
+  "sh5u2-cqaaa-aaaar-qacna-cai"
 );
 
-// TODO: Add ckETH canister IDs on env vars https://dfinity.atlassian.net/browse/GIX-2137
 export const CKETH_LEDGER_CANISTER_ID = Principal.fromText(
-  MAINNET_CKETH_LEDGER_CANISTER_ID
+  envVars.ckethLedgerCanisterId ?? MAINNET_CKETH_LEDGER_CANISTER_ID
 );
 export const CKETH_INDEX_CANISTER_ID = Principal.fromText(
-  MAINNET_CKETH_INDEX_CANISTER_ID
+  envVars.ckethIndexCanisterId ?? MAINNET_CKETH_INDEX_CANISTER_ID
 );
 
 // Universes: the universe === the ledger canister ID

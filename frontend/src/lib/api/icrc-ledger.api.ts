@@ -30,6 +30,9 @@ import {
   uint8ArrayToArrayOfNumber,
 } from "@dfinity/utils";
 
+/**
+ * @deprecated replace with getAccount function of wallet-ledger.api
+ */
 export const getIcrcAccount = async ({
   owner,
   subaccount,
@@ -56,6 +59,9 @@ export const getIcrcAccount = async ({
   };
 };
 
+/**
+ * @deprecated use queryIcrcToken
+ */
 export const getIcrcToken = async ({
   certified,
   getMetadata,

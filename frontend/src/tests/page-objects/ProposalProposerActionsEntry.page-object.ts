@@ -1,5 +1,6 @@
+import { JsonPreviewPo } from "$tests/page-objects/JsonPreview.page-object";
+import { JsonRepresentationModeTogglePo } from "$tests/page-objects/JsonRepresentationModeToggle.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
-import { JsonPo } from "$tests/page-objects/Json.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class ProposalProposerActionsEntryPo extends BasePageObject {
@@ -15,13 +16,11 @@ export class ProposalProposerActionsEntryPo extends BasePageObject {
     return this.root.querySelector("h2").getText();
   }
 
-  getFieldsText(): Promise<string> {
-    return this.root
-      .byTestId("proposal-proposer-actions-entry-fields")
-      .getText();
+  getJsonRepresentationModeTogglePo(): JsonRepresentationModeTogglePo {
+    return JsonRepresentationModeTogglePo.under(this.root);
   }
 
-  getJsonPos(): Promise<JsonPo[]> {
-    return JsonPo.allUnder(this.root);
+  getJsonPreviewPo(): JsonPreviewPo {
+    return JsonPreviewPo.under(this.root);
   }
 }

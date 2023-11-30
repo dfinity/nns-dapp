@@ -53,6 +53,8 @@ export const mockSnsProposal: SnsProposalData = {
   is_eligible_for_rewards: true,
   executed_timestamp_seconds: BigInt(0),
   reward_event_end_timestamp_seconds: [],
+  minimum_yes_proportion_of_exercised: [],
+  minimum_yes_proportion_of_total: [],
 };
 
 const acceptedTally: SnsTally = {
