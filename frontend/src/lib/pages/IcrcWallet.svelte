@@ -13,13 +13,6 @@
 
   export let accountIdentifier: string | undefined | null = undefined;
 
-  let wallet: IcrcWalletPage;
-
-  // e.g. when a function such as a transfer is called and which also reload the data and populate the stores after execution
-  const reloadAccount = async () => {
-    wallet.setSelectedAccount();
-  };
-
   const selectedAccountStore = writable<WalletStore>({
     account: undefined,
     neurons: [],
@@ -37,6 +30,9 @@
     : undefined;
 
   let transactions: IcrcWalletTransactionsList;
+  let wallet: IcrcWalletPage;
+
+  const reloadAccount = async () => await wallet.reloadAccount?.();
   const reloadTransactions = () => transactions?.reloadTransactions?.();
 </script>
 
@@ -66,9 +62,9 @@
       <IcrcTokenWalletFooter
         universeId={$selectedIcrcTokenUniverseIdStore}
         account={$selectedAccountStore.account}
+        {token}
         {reloadAccount}
         {reloadTransactions}
-        {token}
       />
     {/if}
   </svelte:fragment>

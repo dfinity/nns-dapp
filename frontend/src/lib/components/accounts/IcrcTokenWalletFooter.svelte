@@ -14,12 +14,12 @@
   export let universeId: UniverseCanisterId;
   export let token: IcrcTokenMetadata;
   export let account: Account;
-  export let reloadAccount: (() => Promise<void>) | undefined = undefined;
-  export let reloadTransactions: (() => Promise<void>) | undefined = undefined;
+  export let reloadAccount: () => Promise<void>;
+  export let reloadTransactions: () => Promise<void>;
 
   const reloadSourceAccount = async () => {
-    await reloadAccount?.();
-    await reloadTransactions?.();
+    await reloadAccount();
+    await reloadTransactions();
   };
 
   const openSendModal = () => {
