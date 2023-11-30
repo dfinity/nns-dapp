@@ -15,6 +15,12 @@
   export let token: IcrcTokenMetadata;
   export let account: Account;
   export let reloadAccount: () => Promise<void>;
+  export let reloadTransactions: () => Promise<void>;
+
+  const reloadSourceAccount = async () => {
+    await reloadAccount();
+    await reloadTransactions();
+  };
 
   const openSendModal = () => {
     if (isNullish(universeId) || isNullish(token)) {
@@ -28,6 +34,7 @@
         token,
         loadTransactions: false,
         sourceAccount: account,
+        reloadSourceAccount,
       },
     });
   };

@@ -3,6 +3,7 @@ import { CkBTCWalletPo } from "$tests/page-objects/CkBTCWallet.page-object";
 import { NnsWalletPo } from "$tests/page-objects/NnsWallet.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { IcrcTokenTransactionModalPo } from "./IcrcTokenTransactionModal.page-object";
+import { IcrcWalletPo } from "./IcrcWallet.page-object";
 
 export class WalletPo extends BasePageObject {
   private static readonly TID = "wallet-component";
@@ -17,6 +18,10 @@ export class WalletPo extends BasePageObject {
 
   getCkBTCWalletPo(): CkBTCWalletPo {
     return CkBTCWalletPo.under(this.root);
+  }
+
+  getIcrcWalletPo() {
+    return IcrcWalletPo.under(this.root);
   }
 
   // TODO: GIX-2150 Use POs all the levels
