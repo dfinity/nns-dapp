@@ -5,6 +5,7 @@
 use core::borrow::Borrow;
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
+use std::rc::Rc;
 
 #[cfg(test)]
 pub mod tests;
@@ -12,6 +13,11 @@ pub mod tests;
 /// Memory layout consisting of a memory manager and some virtual memory.
 pub struct Partitions {
     pub memory_manager: MemoryManager<DefaultMemoryImpl>,
+    /// Note: DO NOT USE THIS.  The memory manager consumes a memory instance
+    /// but has no method for returning it.  If we wish to convert a `DefaultMemoryImpl`
+    /// to `Partitions` and back again, we need to keep a reference to the memory to
+    /// provide when we convert back.
+    memory: DefaultMemoryImpl,
 }
 impl Partitions {
     /// The partition containing metadata such as schema version.
@@ -46,6 +52,30 @@ impl Partitions {
     pub fn get(&self, memory_id: MemoryId) -> VirtualMemory<DefaultMemoryImpl> {
         self.memory_manager.borrow().get(memory_id)
     }
+
+    /// Copies a reference to memory.  Note:  Does NOT copy the undrlying memory.
+    ///
+    /// Note:
+    /// - Canister stable memory is, in Rust, a stateless struct that makes API calls.  It implements Copy.
+    /// - Vector memory uses an `Rc` so we use Rc::clone() to copy the reference.
+    pub fn copy_memory_reference(memory: &DefaultMemoryImpl) -> DefaultMemoryImpl {
+        // Empty structure that makes API calls.  Can be cloned.
+        #[cfg(target_arch = "wasm32")]
+        let ans = (*memory).clone();
+        // Reference counted pointer.  Make a copy of the pointer.
+        #[cfg(not(target_arch = "wasm32"))]
+        let ans = Rc::clone(memory);
+        ans
+    }
+
+    /// Returns the raw memory, discarding the partitions data structure in RAM.
+    ///
+    /// Note: The memory manager is still represented in the uinderlying memory,
+    /// so converting from `Partitions` to `DefaultMemoryImpl` and back again
+    /// returns to the original state.
+    pub fn to_memory(self) -> DefaultMemoryImpl {
+        self.memory
+    }
 }
 
 impl From<DefaultMemoryImpl> for Partitions {
@@ -54,8 +84,8 @@ impl From<DefaultMemoryImpl> for Partitions {
     ///
     /// Note: This is equivalent to `MemoryManager::init()`.
     fn from(memory: DefaultMemoryImpl) -> Self {
-        let memory_manager = MemoryManager::init(memory);
-        Partitions { memory_manager }
+        let memory_manager = MemoryManager::init(Self::copy_memory_reference(&memory));
+        Partitions { memory_manager, memory }
     }
 }
 
@@ -65,10 +95,9 @@ impl From<DefaultMemoryImpl> for Partitions {
 /// - The canister is upgraded.
 /// - The stable memory may contain a memory manager _or_ serialized heap data directly in raw memory.
 /// - This method gets the memory manager while being non-destructive if there is none.
-// Note: Would prefer to use TryFrom, but that causes a conflict.  DefaultMemoryImpl a type alias which
-// may refer to a type that has a generic implementation of TryFrom.  This is frustrating.
-//impl TryFrom<DefaultMemoryImpl> for Partitions {
-//    type Error = DefaultMemoryImpl;
+///
+/// Note: Would prefer to use TryFrom, but that causes a conflict.  DefaultMemoryImpl a type alias which
+/// may refer to a type that has a generic implementation of TryFrom.  This is frustrating.
 impl Partitions {
     pub fn try_from_memory(memory: DefaultMemoryImpl) -> Result<Self, DefaultMemoryImpl> {
         if Self::is_managed(&memory) {
