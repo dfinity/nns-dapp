@@ -10,12 +10,9 @@ import { page } from "$mocks/$app/stores";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { advanceTime } from "$tests/utils/timers.test-utils";
+import { MinterNoNewUtxosError } from "@dfinity/ckbtc";
 import { waitFor } from "@testing-library/dom";
 import { fireEvent, render } from "@testing-library/svelte";
-
-vi.mock("$lib/api/ckbtc-minter.api", () => ({
-  updateBalance: vi.fn().mockResolvedValue(undefined),
-}));
 
 describe("CkBTCWalletActions", () => {
   const now = Date.now();
@@ -30,12 +27,19 @@ describe("CkBTCWalletActions", () => {
   beforeEach(() => {
     resetIdentity();
     vi.useFakeTimers().setSystemTime(now);
+    vi.spyOn(api, "updateBalance").mockRejectedValue(
+      new MinterNoNewUtxosError({
+        required_confirmations: 12,
+        pending_utxos: [],
+      })
+    );
   });
   afterEach(() => {
     vi.clearAllTimers();
   });
 
   const props = {
+    universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
     minterCanisterId: CKTESTBTC_MINTER_CANISTER_ID,
     reload: () => Promise.resolve(),
   };
