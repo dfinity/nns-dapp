@@ -73,7 +73,7 @@ impl Partitions {
     /// Note: The memory manager is still represented in the uinderlying memory,
     /// so converting from `Partitions` to `DefaultMemoryImpl` and back again
     /// returns to the original state.
-    pub fn to_memory(self) -> DefaultMemoryImpl {
+    pub fn into_memory(self) -> DefaultMemoryImpl {
         self.memory
     }
 }

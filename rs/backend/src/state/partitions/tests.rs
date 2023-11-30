@@ -173,7 +173,7 @@ fn should_be_able_to_convert_memory_to_partitions_and_back() {
     let memory_hash_before = hash_memory(&toy_memory);
     // Load the memory into partitions and back again.
     let partitions = Partitions::try_from_memory(Rc::clone(&toy_memory)).expect("Failed to get partitions");
-    let toy_memory_after = partitions.to_memory();
+    let toy_memory_after = partitions.into_memory();
     let memory_hash_after = hash_memory(&toy_memory_after);
     assert_eq!(
         memory_hash_before, memory_hash_after,
