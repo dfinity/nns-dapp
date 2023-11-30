@@ -39,6 +39,7 @@
     <CkBTCAccountsModals />
   {:else if $isIcrcTokenUniverseStore}
     <IcrcTokenAccountsModals />
+    <AccountsModals />
   {:else}
     <AccountsModals />
   {/if}

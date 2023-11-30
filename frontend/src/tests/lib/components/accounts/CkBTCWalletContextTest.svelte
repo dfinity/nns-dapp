@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { SvelteComponent } from "svelte";
+  import type { SvelteComponent } from "svelte";
   import { WalletStore } from "$lib/types/wallet.context";
   import type { Account } from "$lib/types/account";
   import { writable } from "svelte/store";

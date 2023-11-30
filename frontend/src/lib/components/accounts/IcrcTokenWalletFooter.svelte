@@ -7,10 +7,14 @@
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
+  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
+  import IC_LOGO from "$lib/assets/icp.svg";
+  import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
 
   export let universeId: UniverseCanisterId;
   export let token: IcrcTokenMetadata;
   export let account: Account;
+  export let reloadAccount: () => Promise<void>;
 
   const openSendModal = () => {
     if (isNullish(universeId) || isNullish(token)) {
@@ -29,11 +33,20 @@
   };
 </script>
 
-<Footer testId="ckbtc-wallet-footer-component">
+<Footer testId="icrc-wallet-footer-component">
   <button
     class="primary full-width"
     on:click={openSendModal}
     data-tid="open-new-icrc-token-transaction">{$i18n.accounts.send}</button
   >
-  <!-- TODO: Add Receive button GIX-2124 -->
+
+  <ReceiveButton
+    type="icrc-receive"
+    {account}
+    reload={reloadAccount}
+    testId="receive-icrc"
+    {universeId}
+    logo={$selectedUniverseStore?.logo ?? IC_LOGO}
+    tokenSymbol={token?.symbol}
+  />
 </Footer>
