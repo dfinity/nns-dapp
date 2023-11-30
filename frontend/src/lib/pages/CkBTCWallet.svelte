@@ -1,7 +1,7 @@
 <script lang="ts">
   import { hasAccounts } from "$lib/utils/accounts.utils";
   import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import CkBTCTransactionsList from "$lib/components/accounts/CkBTCTransactionsList.svelte";
   import {
     ckBTCTokenFeeStore,
@@ -18,6 +18,7 @@
   import IcrcWalletPage from "$lib/components/accounts/IcrcWalletPage.svelte";
   import { writable } from "svelte/store";
   import type { WalletStore } from "$lib/types/wallet.context";
+  import { loadAccounts } from "$lib/services/wallet-accounts.services";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
@@ -29,7 +30,14 @@
   let transactions: CkBTCTransactionsList;
   let wallet: IcrcWalletPage;
 
-  const reloadAccount = async () => await wallet.reloadAccount?.();
+  const reloadAccount = async () => {
+    if (isNullish($selectedCkBTCUniverseIdStore)) {
+      return;
+    }
+
+    await loadAccounts({ universeId: $selectedCkBTCUniverseIdStore });
+    await wallet.reloadAccount?.();
+  };
 
   // e.g. when a function such as a transfer is called and which also reload the data and populate the stores after execution
   const reloadAccountFromStore = () => {
