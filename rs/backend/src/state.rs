@@ -9,6 +9,8 @@ use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use on_wire::{FromWire, IntoWire};
 use std::cell::RefCell;
 #[cfg(test)]
+pub mod partitions;
+#[cfg(test)]
 pub mod tests;
 
 #[derive(Default, Debug, Eq, PartialEq)]

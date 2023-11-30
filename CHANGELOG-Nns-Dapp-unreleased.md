@@ -35,6 +35,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Not Published
 
+* Structure to protect Rust access to stable memory.
+
 ### Operations
 
 #### Added
