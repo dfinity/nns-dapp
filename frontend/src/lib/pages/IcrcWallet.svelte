@@ -9,6 +9,7 @@
   import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { tokensStore } from "$lib/stores/tokens.store";
+  import IcrcTokenWalletFooter from "$lib/components/accounts/IcrcTokenWalletFooter.svelte";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
@@ -27,6 +28,12 @@
   $: token = nonNullish($selectedIcrcTokenUniverseIdStore)
     ? $tokensStore[$selectedIcrcTokenUniverseIdStore.toText()]?.token
     : undefined;
+
+  let transactions: IcrcWalletTransactionsList;
+  let wallet: IcrcWalletPage;
+
+  const reloadAccount = async () => await wallet.reloadAccount?.();
+  const reloadTransactions = () => transactions?.reloadTransactions?.();
 </script>
 
 <IcrcWalletPage
@@ -35,6 +42,8 @@
   {token}
   selectedUniverseId={$selectedIcrcTokenUniverseIdStore}
   {selectedAccountStore}
+  bind:this={wallet}
+  {reloadTransactions}
 >
   <svelte:fragment slot="page-content">
     {#if nonNullish($selectedAccountStore.account) && nonNullish($selectedIcrcTokenUniverseIdStore) && nonNullish(indexCanisterId)}
@@ -43,6 +52,18 @@
         {indexCanisterId}
         universeId={$selectedIcrcTokenUniverseIdStore}
         {token}
+        bind:this={transactions}
+      />
+    {/if}
+  </svelte:fragment>
+
+  <svelte:fragment slot="footer-actions">
+    {#if nonNullish($selectedAccountStore.account) && nonNullish(token) && nonNullish($selectedIcrcTokenUniverseIdStore)}
+      <IcrcTokenWalletFooter
+        universeId={$selectedIcrcTokenUniverseIdStore}
+        account={$selectedAccountStore.account}
+        {token}
+        {reloadAccount}
       />
     {/if}
   </svelte:fragment>
