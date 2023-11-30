@@ -28,6 +28,12 @@
   $: token = nonNullish($selectedIcrcTokenUniverseIdStore)
     ? $tokensStore[$selectedIcrcTokenUniverseIdStore.toText()]?.token
     : undefined;
+
+  let transactions: IcrcWalletTransactionsList;
+  let wallet: IcrcWalletPage;
+
+  const reloadAccount = async () => await wallet.reloadAccount?.();
+  const reloadTransactions = () => transactions?.reloadTransactions?.();
 </script>
 
 <IcrcWalletPage
@@ -36,6 +42,8 @@
   {token}
   selectedUniverseId={$selectedIcrcTokenUniverseIdStore}
   {selectedAccountStore}
+  bind:this={wallet}
+  {reloadTransactions}
 >
   <svelte:fragment slot="page-content">
     {#if nonNullish($selectedAccountStore.account) && nonNullish($selectedIcrcTokenUniverseIdStore) && nonNullish(indexCanisterId)}
@@ -44,6 +52,7 @@
         {indexCanisterId}
         universeId={$selectedIcrcTokenUniverseIdStore}
         {token}
+        bind:this={transactions}
       />
     {/if}
   </svelte:fragment>
@@ -54,6 +63,7 @@
         universeId={$selectedIcrcTokenUniverseIdStore}
         account={$selectedAccountStore.account}
         {token}
+        {reloadAccount}
       />
     {/if}
   </svelte:fragment>

@@ -1,8 +1,7 @@
 <script lang="ts">
   import { hasAccounts } from "$lib/utils/accounts.utils";
   import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-  import { isNullish, nonNullish } from "@dfinity/utils";
-  import { loadCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
+  import { nonNullish } from "@dfinity/utils";
   import CkBTCTransactionsList from "$lib/components/accounts/CkBTCTransactionsList.svelte";
   import {
     ckBTCTokenFeeStore,
@@ -30,17 +29,7 @@
   let transactions: CkBTCTransactionsList;
   let wallet: IcrcWalletPage;
 
-  // e.g. is called from "Receive" modal after user click "Done"
-  const reloadAccount = async () => {
-    if (isNullish($selectedCkBTCUniverseIdStore)) {
-      return;
-    }
-
-    await loadCkBTCAccounts({ universeId: $selectedCkBTCUniverseIdStore });
-    await wallet.loadAccount?.($selectedCkBTCUniverseIdStore);
-
-    reloadTransactions();
-  };
+  const reloadAccount = async () => await wallet.reloadAccount?.();
 
   // e.g. when a function such as a transfer is called and which also reload the data and populate the stores after execution
   const reloadAccountFromStore = () => {
@@ -86,6 +75,7 @@
   selectedUniverseId={$selectedCkBTCUniverseIdStore}
   {selectedAccountStore}
   bind:this={wallet}
+  {reloadTransactions}
 >
   <svelte:fragment slot="header-actions">
     {#if nonNullish(canisters)}

@@ -7,30 +7,53 @@
   import { findAccount, hasAccounts } from "$lib/utils/accounts.utils";
   import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
   import { TokenAmount, isNullish, nonNullish } from "@dfinity/utils";
-  import { syncAccounts as syncWalletAccounts } from "$lib/services/wallet-accounts.services";
+  import {
+    loadAccounts,
+    syncAccounts as syncWalletAccounts,
+  } from "$lib/services/wallet-accounts.services";
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
   import type { UniverseCanisterId } from "$lib/types/universe";
-  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
+  import {
+    selectedCkBTCUniverseIdStore,
+    selectedUniverseStore,
+  } from "$lib/derived/selected-universe.derived";
   import IcrcBalancesObserver from "$lib/components/accounts/IcrcBalancesObserver.svelte";
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
   import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import { loadCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
 
   export let testId: string;
   export let accountIdentifier: string | undefined | null = undefined;
   export let selectedUniverseId: UniverseCanisterId | undefined;
   export let token: IcrcTokenMetadata | undefined = undefined;
   export let selectedAccountStore: Writable<WalletStore>;
+  export let reloadTransactions: () => Promise<void>;
 
   debugSelectedAccountStore(selectedAccountStore);
 
   const reloadOnlyAccountFromStore = () => setSelectedAccount();
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
+
+  // e.g. is called from "Receive" modal after user click "Done"
+  export const reloadAccount = async () => {
+    if (isNullish(selectedUniverseId)) {
+      return;
+    }
+
+    await loadAccounts({ universeId: selectedUniverseId });
+    await loadAccount(selectedUniverseId);
+
+    // transactions?.reloadTransactions?.() returns a promise.
+    // However, the UI displays skeletons while loading and the user can proceed with other operations during this time.
+    // That is why we do not need to wait for the promise to resolve here.
+    reloadTransactions();
+  };
 
   export const setSelectedAccount = () => {
     selectedAccountStore.set({
