@@ -1,6 +1,6 @@
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
 import { IcrcMetadataResponseEntries } from "@dfinity/ledger-icrc";
-import { mockQueryTokenResponse } from "./sns-projects.mock";
+import { mockQueryTokenResponse, mockSnsToken } from "./sns-projects.mock";
 
 describe("icrc-tokens.utils", () => {
   describe("mapOptionalToken", () => {
@@ -36,6 +36,19 @@ describe("icrc-tokens.utils", () => {
         )
       );
       expect(token).toBeUndefined();
+    });
+
+    it("should return token with decimals and logo", () => {
+      const logo = "data:image/svg+xml;base64...";
+      const token = mapOptionalToken([
+        ...mockQueryTokenResponse,
+        [IcrcMetadataResponseEntries.LOGO, { Text: logo }],
+      ]);
+      expect(token).toEqual({
+        ...mockSnsToken,
+        decimals: 8n,
+        logo,
+      });
     });
   });
 });
