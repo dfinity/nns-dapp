@@ -45,7 +45,7 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
       ENABLE_STAKE_NEURON_ICRC1: true,
       ENABLE_SWAP_ICRC1: true,
       ENABLE_MY_TOKENS: false,
-      ENABLE_CKETH: false,
+      ENABLE_CKETH: true,
       ENABLE_CKBTC_ICRC2: true,
       TEST_FLAG_EDITABLE: true,
       TEST_FLAG_NOT_EDITABLE: true,
