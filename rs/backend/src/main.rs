@@ -17,8 +17,8 @@ use dfn_core::{over, over_async};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use ic_stable_structures::DefaultMemoryImpl;
 use icp_ledger::AccountIdentifier;
-use std::borrow::Borrow;
 pub use serde::Serialize;
+use std::borrow::Borrow;
 
 #[cfg(any(test, feature = "toy_data_gen"))]
 use ic_base_types::PrincipalId;
@@ -43,7 +43,7 @@ type Cycles = u128;
 #[init]
 fn init(args: Option<CanisterArguments>) {
     dfn_core::api::print(format!("init with args: {args:#?}"));
-    set_canister_arguments(args); // Populates 
+    set_canister_arguments(args); // Populates
     perf::record_instruction_count("init after set_canister_arguments");
     CANISTER_ARGUMENTS.with(|args| {
         let args = args.borrow();
@@ -51,7 +51,7 @@ fn init(args: Option<CanisterArguments>) {
         let stable_memory = DefaultMemoryImpl::default();
         let partitions_maybe = Partitions::new_for_schema(stable_memory, schema);
         let state = State::new(schema, partitions_maybe);
-        STATE.with(|s| s.replace(state));    
+        STATE.with(|s| s.replace(state));
     });
     // Legacy:
     assets::init_assets();

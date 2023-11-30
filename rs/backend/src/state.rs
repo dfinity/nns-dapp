@@ -57,9 +57,7 @@ impl State {
             }
             SchemaLabel::AccountsInStableMemory => {
                 let partitions = partitions_maybe.unwrap_or_else(|memory| {
-                    trap_with(&format!(
-                        "New state: Partitions should have been prepared."
-                    ));
+                    trap_with(&format!("New state: Partitions should have been prepared."));
                     unreachable!();
                 });
                 //let accounts_store = StableBTreeMap::new(partitions.get(Partitions::ACCOUNTS_MEMORY_ID));
