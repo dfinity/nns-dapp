@@ -15,6 +15,7 @@
   import AccountsModals from "$lib/modals/accounts/AccountsModals.svelte";
   import CkBTCAccountsModals from "$lib/modals/accounts/CkBTCAccountsModals.svelte";
   import IcrcWallet from "$lib/pages/IcrcWallet.svelte";
+  import IcrcTokenAccountsModals from "$lib/modals/accounts/IcrcTokenAccountsModals.svelte";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
@@ -36,6 +37,8 @@
 
   {#if $isCkBTCUniverseStore}
     <CkBTCAccountsModals />
+  {:else if $isIcrcTokenUniverseStore}
+    <IcrcTokenAccountsModals />
   {:else}
     <AccountsModals />
   {/if}

@@ -2,12 +2,18 @@
   import { i18n } from "$lib/stores/i18n";
   import Footer from "$lib/components/layout/Footer.svelte";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import { selectedIcrcTokenUniverseIdStore } from "$lib/derived/selected-universe.derived";
+  import {
+    selectedIcrcTokenUniverseIdStore,
+    selectedUniverseStore,
+  } from "$lib/derived/selected-universe.derived";
   import { openIcrcTokenModal } from "$lib/utils/modals.utils";
   import { tokensStore } from "$lib/stores/tokens.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { toastsError } from "$lib/stores/toasts.store";
   import type { UniverseCanisterId } from "$lib/types/universe";
+  import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
+  import { syncAccounts } from "$lib/services/wallet-accounts.services";
+  import IC_LOGO from "$lib/assets/icp.svg";
 
   let universeId: UniverseCanisterId | undefined;
   $: universeId = $selectedIcrcTokenUniverseIdStore;
@@ -31,6 +37,17 @@
       },
     });
   };
+
+  const reload = async () => {
+    if (isNullish(universeId)) {
+      toastsError({
+        labelKey: "error.icrc_no_universe",
+      });
+      return;
+    }
+
+    await syncAccounts({ universeId });
+  };
 </script>
 
 {#if nonNullish($selectedIcrcTokenUniverseIdStore)}
@@ -40,6 +57,15 @@
       on:click={openSendModal}
       data-tid="open-new-icrc-token-transaction">{$i18n.accounts.send}</button
     >
-    <!-- TODO: Add Receive button GIX-2124 -->
+
+    <ReceiveButton
+      type="icrc-receive"
+      canSelectAccount
+      testId="receive-icrc"
+      {reload}
+      {universeId}
+      logo={$selectedUniverseStore?.logo ?? IC_LOGO}
+      tokenSymbol={token?.symbol}
+    />
   </Footer>
 {/if}

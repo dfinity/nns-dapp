@@ -8,6 +8,7 @@ import type { Page } from "$lib/derived/page.derived";
 import { i18n } from "$lib/stores/i18n";
 import type { SnsSummary } from "$lib/types/sns";
 import type { Universe } from "$lib/types/universe";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { isSelectedPath } from "$lib/utils/navigation.utils";
 import type { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
@@ -38,7 +39,11 @@ export const isUniverseCkTESTBTC = (
   (typeof canisterId === "string" ? canisterId : canisterId.toText()) ===
     CKTESTBTC_UNIVERSE_CANISTER_ID.toText();
 
-export const universeLogoAlt = ({ summary, canisterId }: Universe): string => {
+export const universeLogoAlt = ({
+  summary,
+  canisterId,
+  title,
+}: Universe): string => {
   const i18nObj = get(i18n);
 
   if (nonNullish(summary?.metadata.name)) {
@@ -53,7 +58,9 @@ export const universeLogoAlt = ({ summary, canisterId }: Universe): string => {
     return i18nObj.ckbtc.logo;
   }
 
-  return i18nObj.auth.ic_logo;
+  return replacePlaceholders(i18nObj.universe.universe_logo, {
+    $universe: title,
+  });
 };
 
 export const createUniverse = (summary: SnsSummary): Universe => ({

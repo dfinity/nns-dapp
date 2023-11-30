@@ -31,7 +31,7 @@
       ? CKBTC_ADDITIONAL_CANISTERS[$selectedCkBTCUniverseIdStore.toText()]
       : undefined;
 
-    if (isNullish(canisters)) {
+    if (isNullish(canisters) || isNullish($selectedCkBTCUniverseIdStore)) {
       return;
     }
 
@@ -41,6 +41,7 @@
 
     // Because updateBalance is not related to withdrawal account, we do not really care if the call succeed or not except displaying potential errors in a toast.
     await updateBalanceService({
+      universeId: $selectedCkBTCUniverseIdStore,
       minterCanisterId,
       reload: undefined,
       uiIndicators: false,

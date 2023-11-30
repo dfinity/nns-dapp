@@ -1,6 +1,7 @@
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import {
   CKBTC_MINTER_CANISTER_ID,
+  CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_MINTER_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -8,6 +9,7 @@ import { AppPath } from "$lib/constants/routes.constants";
 import * as services from "$lib/services/ckbtc-minter.services";
 import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import * as busyStore from "$lib/stores/busy.store";
+import { ckbtcPendingUtxosStore } from "$lib/stores/ckbtc-pending-utxos.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { ApiErrorKey } from "$lib/types/api.errors";
 import { page } from "$mocks/$app/stores";
@@ -76,6 +78,7 @@ describe("ckbtc-minter-services", () => {
     });
 
     const params = {
+      universeId: CKBTC_UNIVERSE_CANISTER_ID,
       minterCanisterId: CKBTC_MINTER_CANISTER_ID,
       reload: undefined,
     };
@@ -202,7 +205,88 @@ describe("ckbtc-minter-services", () => {
 
       expect(result).toEqual({ success: true });
       expect(spyOnToastsSuccess).toHaveBeenCalledWith({
-        labelKey: en.error__ckbtc.no_new_confirmed_btc,
+        labelKey: "error__ckbtc.no_new_confirmed_btc",
+      });
+
+      expect(get(ckbtcPendingUtxosStore)).toEqual({
+        [CKBTC_UNIVERSE_CANISTER_ID.toText()]: [],
+      });
+    });
+
+    it("should add pending UTXO to store", async () => {
+      const pendingUtxo = {
+        outpoint: { txid: new Uint8Array([3, 5, 7]), vout: 0 },
+        value: 760_000n,
+        confirmations: 10,
+      };
+      vi.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
+        throw new MinterNoNewUtxosError({
+          required_confirmations: 12,
+          pending_utxos: [[pendingUtxo]],
+        });
+      });
+
+      const spyOnToastsSuccess = vi.spyOn(toastsStore, "toastsSuccess");
+
+      const result = await services.updateBalance(params);
+
+      expect(result).toEqual({ success: true });
+
+      expect(spyOnToastsSuccess).toBeCalledTimes(1);
+      expect(spyOnToastsSuccess).toBeCalledWith({
+        labelKey: "error__ckbtc.no_new_confirmed_btc",
+      });
+
+      expect(get(ckbtcPendingUtxosStore)).toEqual({
+        [CKBTC_UNIVERSE_CANISTER_ID.toText()]: [pendingUtxo],
+      });
+    });
+
+    it("should fetch pending UTXOs after success", async () => {
+      const pendingUtxo = {
+        outpoint: { txid: new Uint8Array([3, 5, 7]), vout: 0 },
+        value: 760_000n,
+        confirmations: 10,
+      };
+      vi.spyOn(minterApi, "updateBalance")
+        .mockResolvedValueOnce(mockUpdateBalanceOk)
+        .mockImplementation(async () => {
+          throw new MinterNoNewUtxosError({
+            required_confirmations: 12,
+            pending_utxos: [[pendingUtxo]],
+          });
+        });
+
+      const spyOnToastsSuccess = vi.spyOn(toastsStore, "toastsSuccess");
+
+      const result = await services.updateBalance(params);
+
+      expect(result).toEqual({ success: true });
+      expect(spyOnToastsSuccess).toBeCalledTimes(1);
+      expect(spyOnToastsSuccess).toBeCalledWith({
+        labelKey: "ckbtc.ckbtc_balance_updated",
+      });
+
+      expect(get(ckbtcPendingUtxosStore)).toEqual({
+        [CKBTC_UNIVERSE_CANISTER_ID.toText()]: [pendingUtxo],
+      });
+    });
+
+    it("should stop after 3 times success", async () => {
+      const updateBalanceSpy = vi
+        .spyOn(minterApi, "updateBalance")
+        .mockResolvedValue(mockUpdateBalanceOk);
+
+      const spyOnToastsSuccess = vi.spyOn(toastsStore, "toastsSuccess");
+
+      const result = await services.updateBalance(params);
+
+      expect(result).toEqual({ success: true });
+      expect(updateBalanceSpy).toBeCalledTimes(3);
+
+      expect(spyOnToastsSuccess).toBeCalledTimes(1);
+      expect(spyOnToastsSuccess).toBeCalledWith({
+        labelKey: "ckbtc.ckbtc_balance_updated",
       });
     });
 

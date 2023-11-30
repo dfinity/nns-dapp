@@ -145,6 +145,7 @@ describe("Accounts", () => {
     tokensStore.reset();
     icrcAccountsStore.reset();
     setCkETHCanisters();
+    overrideFeatureFlagsStore.reset();
 
     vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
@@ -601,5 +602,30 @@ describe("Accounts", () => {
         expect(await tablePo.getFirstColumnHeader()).toEqual("Accounts");
       });
     });
+  });
+
+  it("should open icrc receive modal", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
+
+    tokensStore.setTokens(mockTokens);
+
+    page.mock({
+      data: {
+        universe: CKETH_UNIVERSE_CANISTER_ID.toText(),
+        routeId: AppPath.Accounts,
+      },
+    });
+
+    const { getByTestId, container } = render(WalletTest, {
+      props: { testComponent: Accounts },
+    });
+
+    fireEvent.click(getByTestId("receive-icrc") as HTMLButtonElement);
+
+    await waitFor(() =>
+      expect(container.querySelector("div.modal")).not.toBeNull()
+    );
+
+    expect(getByTestId("logo").getAttribute("alt")).toEqual(`ckETH logo`);
   });
 });
