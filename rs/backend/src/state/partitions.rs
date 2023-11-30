@@ -12,7 +12,7 @@ use std::rc::Rc;
 #[cfg(test)]
 pub mod tests;
 
-/// Memory layout consisting of a memory manager and some virtual memory.
+/// Stable memory layout: A wrapper for a memory manager with additional safety checks and functionality.
 pub struct Partitions {
     pub memory_manager: MemoryManager<DefaultMemoryImpl>,
     /// Note: DO NOT USE THIS.  The memory manager consumes a memory instance
@@ -22,14 +22,16 @@ pub struct Partitions {
     memory: DefaultMemoryImpl,
 }
 impl Partitions {
-    /// The partition containing metadata such as schema version.
+    /// The virtual memory containing metadata such as schema version.
     ///
     /// Note: This ID is guaranteed to be stable across deployments.
     pub const METADATA_MEMORY_ID: MemoryId = MemoryId::new(0);
-    /// The partition containing heap data.
+    /// The virtual memory containing heap data.
     ///
     /// Note: This ID is guaranteed to be stable across deployments.
     pub const HEAP_MEMORY_ID: MemoryId = MemoryId::new(1);
+    /// The virtual memory containing accounts.
+    pub const ACCOUNTS_MEMORY_ID: MemoryId = MemoryId::new(2);
 
     /// Determines whether the given memory is managed by a memory manager.
     fn is_managed(memory: &DefaultMemoryImpl) -> bool {

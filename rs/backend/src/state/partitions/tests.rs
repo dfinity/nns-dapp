@@ -167,8 +167,8 @@ fn should_be_able_to_convert_memory_to_partitions_and_back() {
     {
         toy_memory.grow(5);
         let memory_manager = MemoryManager::init(Partitions::copy_memory_reference(&toy_memory));
-        memory_manager.get(Partitions::METADATA_MEMORY_ID).grow(1);
-        memory_manager.get(Partitions::METADATA_MEMORY_ID).write(0, b"foo");
+        memory_manager.get(Partitions::ACCOUNTS_MEMORY_ID).grow(1);
+        memory_manager.get(Partitions::ACCOUNTS_MEMORY_ID).write(0, b"foo");
     }
     let memory_hash_before = hash_memory(&toy_memory);
     // Load the memory into partitions and back again.
