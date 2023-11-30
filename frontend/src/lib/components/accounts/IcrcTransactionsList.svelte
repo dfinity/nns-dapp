@@ -30,3 +30,9 @@
     {/if}
   {/if}
 </div>
+
+<style lang="scss">
+  div {
+    --card-info-spacing: 0 0 var(--padding-2x);
+  }
+</style>
