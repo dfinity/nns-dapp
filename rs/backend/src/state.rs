@@ -55,20 +55,20 @@ thread_local! {
 /// The state structure then owns everything on the heap and in stable memory.
 impl From<Partitions> for State {
     fn from(partitions: Partitions) -> Self {
-        dfn_core::api::print(format!("state::from<Partitions>: ()"));
+        dfn_core::api::print("state::from<Partitions>: ()");
         let schema = partitions.schema_label();
         dfn_core::api::print(format!("state::from<Partitions>: from_schema: {schema:#?}"));
         match schema {
             // We have managed memory, but were unable to read the schema label.  This is a bug.
             None => {
-                trap_with(&format!("Decoding stable memory failed: Failed to get schema label.")); // TODO: Provide first bytes of the metadata memory.
+                trap_with("Decoding stable memory failed: Failed to get schema label."); // TODO: Provide first bytes of the metadata memory.
                 unreachable!()
             }
             // The schema claims to read from raw memory, but we got the label from amnaged mamory.  This is a bug.
             Some(SchemaLabel::Map) => {
-                trap_with(&format!(
-                    "Decoding stable memory failed: Found label 'Map' in managed memory, but these are incompatible."
-                ));
+                trap_with(
+                    "Decoding stable memory failed: Found label 'Map' in managed memory, but these are incompatible.",
+                );
                 unreachable!()
             }
             // Accounts are in stable structures in one partition, the rest of the heap is serialized as candid in another partition.
@@ -82,7 +82,7 @@ impl From<Partitions> for State {
 /// Loads state from stable memory.
 impl From<DefaultMemoryImpl> for State {
     fn from(memory: DefaultMemoryImpl) -> Self {
-        dfn_core::api::print(format!("START state::from<DefaultMemoryImpl>: ())"));
+        dfn_core::api::print("START state::from<DefaultMemoryImpl>: ())");
         match Partitions::try_from_memory(memory) {
             Ok(partitions) => Self::from(partitions),
             Err(_memory) => Self::recover_from_raw_memory(),

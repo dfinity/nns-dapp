@@ -114,12 +114,12 @@ impl Partitions {
         bytes_to_read
     }
     /// Reads a buffer, if possible.
-    pub fn try_read(&self, memory_id: MemoryId, offset: u64, buffer: &mut [u8]) -> Result<(), ()> {
+    pub fn try_read(&self, memory_id: MemoryId, offset: u64, buffer: &mut [u8]) -> Result<(), &'static str> {
         let memory = self.get(memory_id);
         let bytes_in_memory =
             memory.size() * u64::try_from(WASM_PAGE_SIZE_IN_BYTES).expect("Wasm page size is too large");
         if offset + u64::try_from(buffer.len()).unwrap() >= bytes_in_memory {
-            return Err(());
+            return Err("Insufficient memory to read");
         }
         memory.read(offset, buffer);
         Ok(())
