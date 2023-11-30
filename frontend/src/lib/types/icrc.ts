@@ -8,7 +8,6 @@ export interface IcrcTokenMetadata extends Token {
   fee: bigint;
   decimals?: bigint;
   logo?: string;
-  // TODO: integrate "decimals" to replace ICP_DISPLAYED_DECIMALS_DETAILED
 }
 
 export type IcrcAccountIdentifierText = string;

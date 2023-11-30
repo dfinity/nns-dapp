@@ -113,6 +113,103 @@ describe("token-utils", () => {
     );
   });
 
+  it("should format token with tokenDecimals", () => {
+    const tokenDecimals = 18n;
+    expect(
+      formatToken({ value: BigInt(1000000000000000000), tokenDecimals })
+    ).toEqual("1.00");
+    expect(formatToken({ value: BigInt(1012300000000000000) })).toEqual(
+      "10.12"
+    );
+    expect(formatToken({ value: BigInt(200000000000000000000) })).toEqual(
+      "200.00"
+    );
+    expect(
+      formatToken({
+        value: BigInt(1000000000000),
+        detailed: true,
+        tokenDecimals,
+      })
+    ).toEqual("0.000001");
+    expect(
+      formatToken({
+        value: BigInt(1000000000000000000),
+        detailed: true,
+        tokenDecimals,
+      })
+    ).toEqual("1.00");
+    expect(
+      formatToken({
+        value: BigInt(10000000000000000000),
+        detailed: true,
+        tokenDecimals,
+      })
+    ).toEqual("10.00");
+    expect(
+      formatToken({
+        value: BigInt(10100000000000000000),
+        detailed: true,
+        tokenDecimals,
+      })
+    ).toEqual("10.10");
+    expect(
+      formatToken({
+        value: BigInt(10123000000000000000),
+        detailed: true,
+        tokenDecimals,
+      })
+    ).toEqual("10.123");
+    expect(
+      formatToken({
+        value: BigInt(1),
+        detailed: "height_decimals",
+        tokenDecimals,
+      })
+    ).toEqual("0.00000001");
+    expect(
+      formatToken({
+        value: BigInt(10),
+        detailed: "height_decimals",
+        tokenDecimals,
+      })
+    ).toEqual("0.00000010");
+    expect(
+      formatToken({
+        value: BigInt(100),
+        detailed: "height_decimals",
+        tokenDecimals,
+      })
+    ).toEqual("0.00000100");
+    expect(
+      formatToken({
+        value: BigInt(100000000),
+        detailed: "height_decimals",
+        tokenDecimals,
+      })
+    ).toEqual("1.00000000");
+    expect(
+      formatToken({
+        value: BigInt(1000000000),
+        detailed: "height_decimals",
+        tokenDecimals,
+      })
+    ).toEqual("10.00000000");
+    expect(
+      formatToken({
+        value: BigInt(1010000000),
+        detailed: "height_decimals",
+        tokenDecimals,
+      })
+    ).toEqual("10.10000000");
+    expect(
+      formatToken({
+        value: BigInt(1012300000),
+        detailed: "height_decimals",
+        tokenDecimals,
+      })
+    ).toEqual("10.12300000");
+  });
+
   describe("sumAmountE8s", () => {
     it("should sum amounts of E8s values", () => {
       const icp0 = 0n;

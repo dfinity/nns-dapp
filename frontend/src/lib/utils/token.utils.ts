@@ -1,14 +1,14 @@
 import {
+  DEFAULT_TOKEN_DECIMALS,
   E8S_PER_ICP,
   ICP_DISPLAYED_DECIMALS,
-  ICP_DISPLAYED_DECIMALS_DETAILED,
-  ICP_DISPLAYED_HEIGHT_DECIMALS,
 } from "$lib/constants/icp.constants";
 import { ICPToken, TokenAmount, type Token } from "@dfinity/utils";
 
-const countDecimals = (value: number): number => {
+const countDecimals = (value: number, decimals: number): number => {
   // "1e-7" -> 0.00000001
-  const asText = value.toFixed(10).replace(/0*$/, "");
+  // TODO: GIX-2150
+  const asText = value.toFixed(decimals + 2).replace(/0*$/, "");
   const split: string[] = asText.split(".");
 
   return Math.max(split[1]?.length ?? 0, ICP_DISPLAYED_DECIMALS);
@@ -34,34 +34,41 @@ type RoundMode =
  * - However, if ICP value is lower than 0.01 then it should be as it is without tailing 0s up to 8 decimals (e.g., 0.000003 is displayed as 0.000003)
  *
  * Jira GIX-1563:
- * - However, if requested, some amount might be displayed with a fix length of 8 decimals, regardless if leading zero or no leading zero
+ * - However, if requested, some amount might be displayed with a fix length of the number of decimals, regardless if leading zero or no leading zero
  */
 export const formatToken = ({
   value,
   detailed = false,
   roundingMode,
+  tokenDecimals = DEFAULT_TOKEN_DECIMALS,
 }: {
   value: bigint;
   detailed?: boolean | "height_decimals";
   roundingMode?: RoundMode;
+  tokenDecimals?: bigint;
 }): string => {
   if (value === BigInt(0)) {
     return "0";
   }
+  const tokenDecimalsNumber = Number(tokenDecimals);
 
-  const converted = Number(value) / E8S_PER_ICP;
+  const converted = Number(value) / 10 ** tokenDecimalsNumber;
 
   const decimalsICP = (): number =>
     converted < 0.01
-      ? Math.max(countDecimals(converted), ICP_DISPLAYED_DECIMALS)
+      ? Math.max(
+          countDecimals(converted, tokenDecimalsNumber),
+          ICP_DISPLAYED_DECIMALS
+        )
       : detailed
-      ? Math.min(countDecimals(converted), ICP_DISPLAYED_DECIMALS_DETAILED)
+      ? Math.min(
+          countDecimals(converted, tokenDecimalsNumber),
+          tokenDecimalsNumber
+        )
       : ICP_DISPLAYED_DECIMALS;
 
   const decimals =
-    detailed === "height_decimals"
-      ? ICP_DISPLAYED_HEIGHT_DECIMALS
-      : decimalsICP();
+    detailed === "height_decimals" ? tokenDecimalsNumber : decimalsICP();
 
   return new Intl.NumberFormat("en-US", {
     minimumFractionDigits: decimals,
