@@ -11,11 +11,11 @@ use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use on_wire::{FromWire, IntoWire};
 use partitions::Partitions;
 
-pub mod with_raw_memory;
-pub mod with_accounts_in_stable_memory;
 pub mod partitions;
 #[cfg(test)]
 pub mod tests;
+pub mod with_accounts_in_stable_memory;
+pub mod with_raw_memory;
 
 #[derive(Default, Debug, Eq, PartialEq)]
 pub struct State {
@@ -66,9 +66,11 @@ impl From<Partitions> for State {
             }
             // The schema claims to read from raw memory, but we got the label from amnaged mamory.  This is a bug.
             Some(SchemaLabel::Map) => {
-                trap_with(&format!("Decoding stable memory failed: Found label 'Map' in managed memory, but these are incompatible."));
+                trap_with(&format!(
+                    "Decoding stable memory failed: Found label 'Map' in managed memory, but these are incompatible."
+                ));
                 unreachable!()
-            },
+            }
             // Accounts are in stable structures in one partition, the rest of the heap is serialized as candid in another partition.
             Some(SchemaLabel::AccountsInStableMemory) => {
                 Self::recover_heap_from_managed_memory(partitions.get(Partitions::HEAP_MEMORY_ID))
@@ -176,6 +178,5 @@ impl State {
             SchemaLabel::Map => self.save_to_raw_memory(),
             SchemaLabel::AccountsInStableMemory => self.save_heap_to_managed_memory(DefaultMemoryImpl::default()), // TODO: Better naming for this.  save_heap_to_managed_memory()? TODO: Don't get managed memory afresh - get it from inside the state.
         }
-
     }
 }

@@ -5,6 +5,7 @@
 //!
 //! This code also stores virtual memory IDs and other memory functions.
 use core::borrow::Borrow;
+use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use std::rc::Rc;
@@ -32,7 +33,7 @@ impl Partitions {
     /// Note: This ID is guaranteed to be stable across deployments.
     pub const HEAP_MEMORY_ID: MemoryId = MemoryId::new(1);
     /// The virtual memory containing accounts.
-    /// 
+    ///
     /// Note: This ID is guaranteed to be stable across deployments.
     pub const ACCOUNTS_MEMORY_ID: MemoryId = MemoryId::new(2);
 
@@ -82,6 +83,20 @@ impl Partitions {
     /// returns to the original state.
     pub fn into_memory(self) -> DefaultMemoryImpl {
         self.memory
+    }
+
+    /// Writes, growing the memory if necessary.
+    pub fn growing_write(&self, memory_id: MemoryId, offset: u64, bytes: &[u8]) {
+        let memory = self.get(memory_id);
+        let min_pages = u64::try_from(
+            (usize::try_from(offset).unwrap() + bytes.len() + WASM_PAGE_SIZE_IN_BYTES - 1) / WASM_PAGE_SIZE_IN_BYTES,
+        )
+        .expect("That is a large number of pages");
+        let current_pages = memory.size();
+        if current_pages < min_pages {
+            memory.grow(min_pages - current_pages);
+        }
+        memory.write(offset, bytes)
     }
 }
 
