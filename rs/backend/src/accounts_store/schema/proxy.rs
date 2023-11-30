@@ -19,6 +19,7 @@ use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTr
 #[derive(Default, Debug)]
 pub struct AccountsDbAsProxy {
     map: AccountsDbAsMap,
+    stable: Option<AccountsDbAsMap>, // TODO: DEfine a database using teh new expandable memory.
 }
 
 impl AccountsDbAsProxy {
@@ -32,6 +33,7 @@ impl AccountsDbBTreeMapTrait for AccountsDbAsProxy {
     fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
         Self {
             map: AccountsDbAsMap::from_map(map),
+            stable: None,
         }
     }
     fn as_map(&self) -> &BTreeMap<Vec<u8>, Account> {
