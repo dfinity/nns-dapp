@@ -128,8 +128,8 @@
     justify-content: center;
     align-items: center;
 
-    background: var(--positive-emphasis-light);
-    color: var(--positive-emphasis);
+    background: var(--check-tint);
+    color: var(--check);
 
     border-radius: var(--border-radius);
 
@@ -146,18 +146,6 @@
     &.pending {
       color: var(--pending-color);
       background: var(--pending-background);
-    }
-  }
-
-  @include media.dark-theme {
-    .icon {
-      background: rgba(var(--positive-emphasis-rgb), 0.3);
-      color: var(--positive-emphasis);
-
-      &.send {
-        background: var(--background);
-        color: var(--disable-contrast);
-      }
     }
   }
 </style>
