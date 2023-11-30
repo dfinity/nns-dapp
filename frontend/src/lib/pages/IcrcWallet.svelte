@@ -16,7 +16,7 @@
   let wallet: IcrcWalletPage;
 
   // e.g. when a function such as a transfer is called and which also reload the data and populate the stores after execution
-  const reloadAccount = () => {
+  const reloadAccount = async () => {
     wallet.setSelectedAccount();
   };
 
@@ -66,9 +66,9 @@
       <IcrcTokenWalletFooter
         universeId={$selectedIcrcTokenUniverseIdStore}
         account={$selectedAccountStore.account}
-        reloadSourceAccount={reloadAccount}
-        {token}
         {reloadAccount}
+        {reloadTransactions}
+        {token}
       />
     {/if}
   </svelte:fragment>
