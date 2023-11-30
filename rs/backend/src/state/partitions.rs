@@ -1,6 +1,6 @@
 //! Stable Memory Layout
 //!
-//! The memory manager will be at the root of the memory, however MemoryManager::init() cheerfully overwrites data it doesn't recognize.
+//! The memory manager will be at the root of the memory, however `MemoryManager::init()` cheerfully overwrites data it doesn't recognize.
 //! This code is here to protect the memory!
 //!
 //! This code also stores virtual memory IDs and other memory functions.
@@ -57,11 +57,11 @@ impl Partitions {
         self.memory_manager.borrow().get(memory_id)
     }
 
-    /// Copies a reference to memory.  Note:  Does NOT copy the undrlying memory.
+    /// Copies a reference to memory.  Note:  Does NOT copy the underlying memory.
     ///
     /// Note:
-    /// - Canister stable memory is, in Rust, a stateless struct that makes API calls.  It implements Copy.
-    /// - Vector memory uses an `Rc` so we use Rc::clone() to copy the reference.
+    /// - Canister stable memory is, in Rust, a stateless `struct` that makes API calls.  It implements Copy.
+    /// - Vector memory uses an `Rc` so we use `Rc::clone()` to copy the reference.
     pub fn copy_memory_reference(memory: &DefaultMemoryImpl) -> DefaultMemoryImpl {
         // Empty structure that makes API calls.  Can be cloned.
         #[cfg(target_arch = "wasm32")]
@@ -74,7 +74,7 @@ impl Partitions {
 
     /// Returns the raw memory, discarding the partitions data structure in RAM.
     ///
-    /// Note: The memory manager is still represented in the uinderlying memory,
+    /// Note: The memory manager is still represented in the underlying memory,
     /// so converting from `Partitions` to `DefaultMemoryImpl` and back again
     /// returns to the original state.
     pub fn into_memory(self) -> DefaultMemoryImpl {
@@ -100,8 +100,8 @@ impl From<DefaultMemoryImpl> for Partitions {
 /// - The stable memory may contain a memory manager _or_ serialized heap data directly in raw memory.
 /// - This method gets the memory manager while being non-destructive if there is none.
 ///
-/// Note: Would prefer to use TryFrom, but that causes a conflict.  DefaultMemoryImpl a type alias which
-/// may refer to a type that has a generic implementation of TryFrom.  This is frustrating.
+/// Note: Would prefer to use `TryFrom`, but that causes a conflict.  `DefaultMemoryImpl` a type alias which
+/// may refer to a type that has a generic implementation of `TryFrom`.  This is frustrating.
 impl Partitions {
     pub fn try_from_memory(memory: DefaultMemoryImpl) -> Result<Self, DefaultMemoryImpl> {
         if Self::is_managed(&memory) {
