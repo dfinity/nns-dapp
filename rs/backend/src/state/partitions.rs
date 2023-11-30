@@ -98,6 +98,32 @@ impl Partitions {
         }
         memory.write(offset, bytes)
     }
+    /// Reads as much data as available to the buffer
+    ///
+    /// # Returns
+    /// The number of bytes read.
+    pub fn read_available(&self, memory_id: MemoryId, offset: u64, buffer: &mut [u8]) -> u64 {
+        let memory = self.get(memory_id);
+        let bytes_in_memory =
+            memory.size() * u64::try_from(WASM_PAGE_SIZE_IN_BYTES).expect("Wasm page size is too large");
+        if offset >= bytes_in_memory {
+            return 0;
+        }
+        let bytes_to_read = u64::min(bytes_in_memory - offset, u64::try_from(buffer.len()).unwrap());
+        memory.read(offset, &mut buffer[0..bytes_to_read as usize]);
+        bytes_to_read
+    }
+    /// Reads a buffer, if possible.
+    pub fn try_read(&self, memory_id: MemoryId, offset: u64, buffer: &mut [u8]) -> Result<(), ()> {
+        let memory = self.get(memory_id);
+        let bytes_in_memory =
+            memory.size() * u64::try_from(WASM_PAGE_SIZE_IN_BYTES).expect("Wasm page size is too large");
+        if offset + u64::try_from(buffer.len()).unwrap() >= bytes_in_memory {
+            return Err(());
+        }
+        memory.read(offset, buffer);
+        Ok(())
+    }
 }
 
 impl From<DefaultMemoryImpl> for Partitions {
