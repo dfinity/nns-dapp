@@ -47,6 +47,7 @@
       source: sourceAccount,
       destinationAddress,
       amount,
+      token,
       ledgerCanisterId,
       fee: token.fee,
     });
