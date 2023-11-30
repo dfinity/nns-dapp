@@ -31,6 +31,8 @@ impl Partitions {
     /// Note: This ID is guaranteed to be stable across deployments.
     pub const HEAP_MEMORY_ID: MemoryId = MemoryId::new(1);
     /// The virtual memory containing accounts.
+    /// 
+    /// Note: This ID is guaranteed to be stable across deployments.
     pub const ACCOUNTS_MEMORY_ID: MemoryId = MemoryId::new(2);
 
     /// Determines whether the given memory is managed by a memory manager.

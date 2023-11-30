@@ -53,7 +53,7 @@ fn should_be_able_to_get_partitions_from_managed_memory() {
 
 /// The virtual memory in a partition table should correspond to that created by a memory manager.
 #[test]
-fn partitins_should_get_correct_virtual_memory() {
+fn partitions_should_get_correct_virtual_memory() {
     /// Checks that the contents of virtual memory is as we expect.
     fn should_contain(partitions: &Partitions, memory_id: MemoryId, expected_contents: &[u8]) {
         let memory = partitions.get(memory_id);
