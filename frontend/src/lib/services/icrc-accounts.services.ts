@@ -224,7 +224,7 @@ export const icrcTransferTokens = async ({
         canisterId: ledgerCanisterId,
       }),
     reloadAccounts: async () =>
-      await loadIcrcAccount({ ledgerCanisterId, certified: true }),
+      loadIcrcAccount({ ledgerCanisterId, certified: true }),
     // Web workders take care of refreshing transactions
     reloadTransactions: () => Promise.resolve(),
   });
