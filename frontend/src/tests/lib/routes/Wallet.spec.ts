@@ -171,7 +171,7 @@ describe("Wallet", () => {
   });
 
   // TODO: GIX-2150 Mock API layer instead of services for the setup
-  it.only("user can transfer ckETH tokens", async () => {
+  it("user can transfer ckETH tokens and balance is refreshed", async () => {
     overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
     page.mock({
       data: { universe: CKETH_UNIVERSE_CANISTER_ID.toText() },
