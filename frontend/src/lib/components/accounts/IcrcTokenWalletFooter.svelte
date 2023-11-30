@@ -33,7 +33,7 @@
   };
 </script>
 
-<Footer testId="ckbtc-wallet-footer-component">
+<Footer testId="icrc-wallet-footer-component">
   <button
     class="primary full-width"
     on:click={openSendModal}
