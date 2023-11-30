@@ -2,6 +2,8 @@
 //!
 //! The memory manager will be at the root of the memory, however MemoryManager::init() cheerfully overwrites data it doesn't recognize.
 //! This code is here to protect the memory!
+//!
+//! This code also stores virtual memory IDs and other memory functions.
 use core::borrow::Borrow;
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
