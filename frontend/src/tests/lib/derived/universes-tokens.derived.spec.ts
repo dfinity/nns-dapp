@@ -57,6 +57,7 @@ describe("universes-tokens", () => {
         token: {
           name: mockCkBTCToken.name,
           symbol: mockCkBTCToken.symbol,
+          decimals: mockCkBTCToken.decimals,
         },
       });
 
