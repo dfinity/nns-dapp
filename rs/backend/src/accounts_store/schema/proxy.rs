@@ -31,7 +31,6 @@ pub enum AccountsDb {
     UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap),
 }
 
-
 impl Default for AccountsDbAsProxy {
     fn default() -> Self {
         Self::new_with_map()
@@ -47,6 +46,7 @@ impl AccountsDbAsProxy {
         }
     }
     pub fn new_with_unbounded_stable_btree_map(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
+        dfn_core::api::print("New Proxy: AccountsInStableMemory");
         Self {
             authoritative_db: AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::new(memory)),
             second_db: None,

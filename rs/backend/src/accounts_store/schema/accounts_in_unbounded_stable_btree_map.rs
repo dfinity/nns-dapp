@@ -22,6 +22,7 @@ impl AccountsDbAsUnboundedStableBTreeMap {
         }
     }
     /// Loads a database.
+    #[cfg(any())] // Always false
     pub fn load(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
         Self {
             accounts: StableBTreeMap::load(memory),

@@ -4,10 +4,9 @@ use crate::assets::AssetHashes;
 use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
 use core::cell::RefCell;
-use core::convert::TryFrom;
 use dfn_candid::Candid;
 use dfn_core::api::trap_with;
-use ic_stable_structures::{DefaultMemoryImpl, Memory};
+use ic_stable_structures::DefaultMemoryImpl;
 use on_wire::{FromWire, IntoWire};
 use partitions::Partitions;
 use std::borrow::BorrowMut;
@@ -15,6 +14,11 @@ use std::borrow::BorrowMut;
 pub mod partitions;
 #[cfg(test)]
 pub mod tests;
+#[cfg(test)]
+use core::convert::TryFrom;
+#[cfg(test)]
+use ic_stable_structures::Memory;
+
 pub mod with_accounts_in_stable_memory;
 pub mod with_raw_memory;
 
@@ -143,6 +147,7 @@ impl StableState for State {
 // Methods called on pre_upgrade and post_upgrade.
 impl State {
     /// The schema version, as stored in an arbitrary memory.
+    #[cfg(test)]
     fn schema_version_from_memory<M>(memory: &M) -> Option<SchemaLabel>
     where
         M: Memory,

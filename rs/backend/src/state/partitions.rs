@@ -21,6 +21,7 @@ pub struct Partitions {
     /// but has no method for returning it.  If we wish to convert a `DefaultMemoryImpl`
     /// to `Partitions` and back again, we need to keep a reference to the memory to
     /// provide when we convert back.
+    #[cfg(any())]
     memory: DefaultMemoryImpl,
 }
 impl Partitions {
@@ -81,6 +82,7 @@ impl Partitions {
     /// Note: The memory manager is still represented in the underlying memory,
     /// so converting from `Partitions` to `DefaultMemoryImpl` and back again
     /// returns to the original state.
+    #[cfg(any())]
     pub fn into_memory(self) -> DefaultMemoryImpl {
         self.memory
     }
@@ -102,6 +104,7 @@ impl Partitions {
     ///
     /// # Returns
     /// The number of bytes read.
+    #[cfg(any())]
     pub fn read_available(&self, memory_id: MemoryId, offset: u64, buffer: &mut [u8]) -> u64 {
         let memory = self.get(memory_id);
         let bytes_in_memory =
@@ -133,7 +136,11 @@ impl From<DefaultMemoryImpl> for Partitions {
     /// Note: This is equivalent to `MemoryManager::init()`.
     fn from(memory: DefaultMemoryImpl) -> Self {
         let memory_manager = MemoryManager::init(Self::copy_memory_reference(&memory));
-        Partitions { memory_manager, memory }
+        Partitions {
+            memory_manager,
+            #[cfg(any())]
+            memory,
+        }
     }
 }
 
