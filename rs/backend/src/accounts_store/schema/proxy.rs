@@ -2,7 +2,7 @@
 //!
 //! The proxy manages migrations from one implementation to another.
 use std::collections::BTreeMap;
-use ic_stable_structures::DefaultMemoryImpl;
+use ic_stable_structures::{DefaultMemoryImpl, memory_manager::VirtualMemory};
 
 use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
 use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel};
@@ -21,13 +21,13 @@ use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTr
 #[derive(Default, Debug)]
 pub struct AccountsDbAsProxy {
     authoritative_schema: SchemaLabel,
-    map: AccountsDbAsMap,
+    map: AccountsDbAsMap,  // TODO: Make this optional.
     unbounded_stable_btree_map: Option<AccountsDbAsUnboundedStableBTreeMap>, // TODO: Define a database using the new expandable memory.
 }
 
 // Constructors
 impl AccountsDbAsProxy {
-    pub fn new_unbounded_stable_btree_map(memory: DefaultMemoryImpl) -> Self {
+    pub fn new_with_unbounded_stable_btree_map(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
         Self {
             authoritative_schema: SchemaLabel::AccountsInStableMemory, // TODO: Rename schema label to AccountsInUnboundedStableBTreeMap.
             map: AccountsDbAsMap::default(),

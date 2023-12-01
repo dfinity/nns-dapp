@@ -7,23 +7,23 @@
 
 
 use super::{Account, AccountsDbTrait, SchemaLabel};
-use ic_stable_structures::{btreemap::BTreeMap as StableBTreeMap, DefaultMemoryImpl};
+use ic_stable_structures::{btreemap::BTreeMap as StableBTreeMap, DefaultMemoryImpl, memory_manager::VirtualMemory};
 use std::fmt;
 
 // TODO: Implement Eq and PartialEq for ic_stable_structures::btreemap::BTreeMap, as this makes testing easier.  It is unlikely that Eq will be used on any large data dataset.
 pub struct AccountsDbAsUnboundedStableBTreeMap {
-    accounts: StableBTreeMap<Vec<u8>, Account,  DefaultMemoryImpl>,
+    accounts: StableBTreeMap<Vec<u8>, Account,  VirtualMemory<DefaultMemoryImpl>>,
 }
 
 impl AccountsDbAsUnboundedStableBTreeMap {
     /// Creates a new, empty database.
-    pub fn new(memory: DefaultMemoryImpl) -> Self {
+    pub fn new(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
         Self {
             accounts: StableBTreeMap::new(memory),
         }
     }
     /// Loads a database.
-    pub fn load(memory: DefaultMemoryImpl) -> Self {
+    pub fn load(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
         Self {
             accounts: StableBTreeMap::load(memory),
         }
