@@ -10,7 +10,6 @@ import {
   numberToUlps,
   sumAmountE8s,
 } from "$lib/utils/token.utils";
-import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 
 describe("token-utils", () => {
@@ -261,19 +260,6 @@ describe("token-utils", () => {
       expect(numberToE8s(1)).toBe(BigInt(100_000_000));
       expect(numberToE8s(3.14)).toBe(BigInt(314_000_000));
       expect(numberToE8s(0.14)).toBe(BigInt(14_000_000));
-    });
-
-    // TODO: Enable when we upgrade ic-js with TokenAmount supporting decimals.
-    it.skip("converts number to e8s with token", () => {
-      expect(numberToE8s(1.14, mockCkETHToken)).toBe(
-        BigInt(1_140_000_000_000_000_000)
-      );
-      expect(numberToE8s(1, mockCkETHToken)).toBe(
-        BigInt(1_000_000_000_000_000_000)
-      );
-      expect(numberToE8s(3.14, mockCkETHToken)).toBe(
-        BigInt(3_140_000_000_000_000_000)
-      );
     });
   });
 
