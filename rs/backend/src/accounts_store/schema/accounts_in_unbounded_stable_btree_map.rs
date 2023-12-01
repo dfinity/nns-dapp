@@ -8,6 +8,7 @@
 
 use super::{Account, AccountsDbTrait, SchemaLabel};
 use ic_stable_structures::{btreemap::BTreeMap as StableBTreeMap, DefaultMemoryImpl};
+use std::fmt;
 
 // TODO: Implement Eq and PartialEq for ic_stable_structures::btreemap::BTreeMap, as this makes testing easier.  It is unlikely that Eq will be used on any large data dataset.
 pub struct AccountsDbAsUnboundedStableBTreeMap {
@@ -51,5 +52,11 @@ impl AccountsDbTrait for AccountsDbAsUnboundedStableBTreeMap {
     }
     fn schema_label(&self) -> SchemaLabel {
         SchemaLabel::Map
+    }
+}
+
+impl fmt::Debug for AccountsDbAsUnboundedStableBTreeMap {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
+        write!(f, "AccountsDbAsUnboundedStableBTreeMap {{ accounts: StableBTreeMap{{..}} }}")
     }
 }
