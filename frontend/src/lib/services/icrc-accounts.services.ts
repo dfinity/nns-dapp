@@ -154,7 +154,6 @@ export const transferTokens = async ({
   source,
   destinationAddress,
   amount,
-  token,
   fee,
   transfer,
   reloadAccounts,
@@ -174,7 +173,8 @@ export const transferTokens = async ({
       throw new Error("error.transaction_fee_not_found");
     }
 
-    const amountE8s = numberToE8s(amount, token);
+    // TODO: Change to use `numberToUlps` instead.
+    const amountE8s = numberToE8s(amount);
     const identity: Identity = await getIcrcAccountIdentity(source);
     const to = decodeIcrcAccount(destinationAddress);
 
