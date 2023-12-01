@@ -2,13 +2,13 @@ import {
   DEFAULT_TOKEN_DECIMALS,
   E8S_PER_ICP,
   ICP_DISPLAYED_DECIMALS,
+  ICP_DISPLAYED_HEIGHT_DECIMALS,
 } from "$lib/constants/icp.constants";
 import { ICPToken, TokenAmount, type Token } from "@dfinity/utils";
 
-const countDecimals = (value: number, decimals: number): number => {
+const countDecimals = (value: number): number => {
   // "1e-7" -> 0.00000001
-  // TODO: GIX-2150
-  const asText = value.toFixed(decimals + 2).replace(/0*$/, "");
+  const asText = value.toFixed(10).replace(/0*$/, "");
   const split: string[] = asText.split(".");
 
   return Math.max(split[1]?.length ?? 0, ICP_DISPLAYED_DECIMALS);
@@ -28,10 +28,11 @@ type RoundMode =
 
 /**
  * Jira L2-666:
- * - If ICP is zero then 0 should be displayed - i.e. without decimals
- * - ICP with round number (12.0) should be displayed 12.00
- * - ICP should be displayed with max. 2 decimals (12.1 → 12.10, 12.12353 → 12.12, 12.00003 → 12.00) in Accounts, but with up to 8 decimals without tailing 0s in transaction details.
- * - However, if ICP value is lower than 0.01 then it should be as it is without tailing 0s up to 8 decimals (e.g., 0.000003 is displayed as 0.000003)
+ * - If token amount is zero then 0 should be displayed - i.e. without decimals
+ * - Token amount with round number (12.0) should be displayed 12.00
+ * - Token amount should be displayed with max. 2 decimals (12.1 → 12.10, 12.12353 → 12.12, 12.00003 → 12.00) in Accounts, but with up to 8 decimals without tailing 0s in transaction details.
+ * - However, if token amount value is lower than 0.01 then it should be as it is without tailing 0s up to 8 decimals (e.g., 0.000003 is displayed as 0.000003)
+ * - When converting the token amount, it should take into account the decimals for that specific token (e.g., 1 ICP = 10^8 E8s, 1 ckETH = 10^18 E8s)
  *
  * Jira GIX-1563:
  * - However, if requested, some amount might be displayed with a fix length of the number of decimals, regardless if leading zero or no leading zero
@@ -45,30 +46,30 @@ export const formatToken = ({
   value: bigint;
   detailed?: boolean | "height_decimals";
   roundingMode?: RoundMode;
-  tokenDecimals?: bigint;
+  tokenDecimals?: number;
 }): string => {
   if (value === BigInt(0)) {
     return "0";
   }
-  const tokenDecimalsNumber = Number(tokenDecimals);
 
-  const converted = Number(value) / 10 ** tokenDecimalsNumber;
+  const converted = Number(value) / 10 ** tokenDecimals;
 
   const decimalsICP = (): number =>
     converted < 0.01
-      ? Math.max(
-          countDecimals(converted, tokenDecimalsNumber),
-          ICP_DISPLAYED_DECIMALS
-        )
+      ? Math.max(countDecimals(converted), ICP_DISPLAYED_DECIMALS)
       : detailed
-      ? Math.min(
-          countDecimals(converted, tokenDecimalsNumber),
-          tokenDecimalsNumber
-        )
+      ? Math.min(countDecimals(converted), ICP_DISPLAYED_HEIGHT_DECIMALS)
       : ICP_DISPLAYED_DECIMALS;
 
   const decimals =
-    detailed === "height_decimals" ? tokenDecimalsNumber : decimalsICP();
+    detailed === "height_decimals"
+      ? ICP_DISPLAYED_HEIGHT_DECIMALS
+      : decimalsICP();
+
+  // If the number is smaller than 0.{0 #decimal times}1, eg: 0.000000001 (for 8 decimals).
+  if (Number(converted.toFixed(decimals)) === 0) {
+    return "0";
+  }
 
   return new Intl.NumberFormat("en-US", {
     minimumFractionDigits: decimals,
