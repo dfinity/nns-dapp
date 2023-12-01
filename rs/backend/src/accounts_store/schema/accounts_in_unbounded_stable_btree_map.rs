@@ -5,9 +5,9 @@
 //! with values that are [`ic_stable_structures::storable::Bound::Unbounded`](https://docs.rs/ic-stable-structures/0.6.0/ic_stable_structures/storable/enum.Bound.html#variant.Unbounded)
 //! as described on the [dfinity forum](https://forum.dfinity.org/t/stable-structures-removing-the-bounded-size-requirement/21167).
 
-use super::{Account, AccountsDbTrait, SchemaLabel};
+use super::{Account, AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel};
 use ic_stable_structures::{btreemap::BTreeMap as StableBTreeMap, memory_manager::VirtualMemory, DefaultMemoryImpl};
-use std::fmt;
+use std::{collections::BTreeMap, fmt};
 
 // TODO: Implement Eq and PartialEq for ic_stable_structures::btreemap::BTreeMap, as this makes testing easier.  It is unlikely that Eq will be used on any large data dataset.
 pub struct AccountsDbAsUnboundedStableBTreeMap {
@@ -44,6 +44,10 @@ impl AccountsDbTrait for AccountsDbAsUnboundedStableBTreeMap {
     }
     fn db_accounts_len(&self) -> u64 {
         self.accounts.len() as u64
+    }
+    fn iter(&self) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
+        let iterator = self.accounts.iter();
+        Box::new(iterator)
     }
     fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
         let iterator = self.accounts.iter().map(|(_key, value)| value);

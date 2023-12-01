@@ -95,8 +95,14 @@ pub trait AccountsDbTrait {
         }
     }
 
+    /// Iterates over entries in the data store.
+    fn iter(&self) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_>;
+
     /// Iterates over accounts in the data store.
-    fn values(&self) -> Box<dyn Iterator<Item = Account> + '_>;
+    fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
+        let iterator = self.iter().map(|(_key, value)| value);
+        Box::new(iterator)
+    }
 
     /// Gets the label of the storage schema.
     fn schema_label(&self) -> SchemaLabel;
@@ -139,5 +145,5 @@ pub trait AccountsDbBTreeMapTrait {
     /// Creates a database from a map of accounts.
     fn from_map(map: std::collections::BTreeMap<Vec<u8>, Account>) -> Self;
     /// Provides the accounts as a map.
-    fn as_map(&self) -> &std::collections::BTreeMap<Vec<u8>, Account>;
+    fn as_map(&self) -> std::collections::BTreeMap<Vec<u8>, Account>;
 }
