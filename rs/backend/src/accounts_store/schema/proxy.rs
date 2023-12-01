@@ -3,6 +3,8 @@
 //! The proxy manages migrations from one implementation to another.
 use std::collections::BTreeMap;
 
+use nns_dapp::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
+
 use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel};
 
 /// An accounts database delegates API calls to underlying implementations.
@@ -20,7 +22,7 @@ use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTr
 pub struct AccountsDbAsProxy {
     authoritative_schema: SchemaLabel,
     map: AccountsDbAsMap,
-    stable: Option<AccountsDbAsMap>, // TODO: Define a database using the new expandable memory.
+    stable: Option<AccountsDbAsUnboundedStableBTreeMap>, // TODO: Define a database using the new expandable memory.
 }
 
 impl AccountsDbAsProxy {
