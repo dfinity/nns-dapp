@@ -74,7 +74,7 @@ describe("TokensTable", () => {
       universeId: principal(0),
       balance: TokenAmount.fromE8s({
         amount: 114000000n,
-        token: { name: "Tetris", symbol: "TETRIS" },
+        token: { name: "Tetris", symbol: "TETRIS", decimals: 8 },
       }),
     });
     const po = renderTable({ userTokensData: [token1, token2] });
@@ -98,7 +98,7 @@ describe("TokensTable", () => {
       universeId: principal(0),
       balance: TokenAmount.fromE8s({
         amount: 114000000n,
-        token: { name: "Tetris", symbol: "TETRIS" },
+        token: { name: "Tetris", symbol: "TETRIS", decimals: 8 },
       }),
     });
     const po = renderTable({ userTokensData: [token1, token2] });
@@ -114,7 +114,11 @@ describe("TokensTable", () => {
   it("should render specific text if balance not available", async () => {
     const token1 = createUserToken({
       universeId: OWN_CANISTER_ID,
-      balance: new UnavailableTokenAmount({ name: "ckBTC", symbol: "ckBTC" }),
+      balance: new UnavailableTokenAmount({
+        name: "ckBTC",
+        symbol: "ckBTC",
+        decimals: 8,
+      }),
     });
     const po = renderTable({ userTokensData: [token1] });
 
