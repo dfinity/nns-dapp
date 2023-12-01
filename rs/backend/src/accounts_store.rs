@@ -13,21 +13,21 @@ use ic_ledger_core::timestamp::TimeStamp;
 use ic_ledger_core::tokens::SignedTokens;
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::{CYCLES_MINTING_CANISTER_ID, GOVERNANCE_CANISTER_ID};
-use ic_stable_structures::{Storable, storable::Bound};
+use ic_stable_structures::{storable::Bound, Storable};
 use icp_ledger::Operation::{self, Approve, Burn, Mint, Transfer, TransferFrom};
 use icp_ledger::{AccountIdentifier, BlockIndex, Memo, Subaccount, Tokens};
 use itertools::Itertools;
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
-use std::borrow::Cow;
+use std::borrow::{Cow, BorrowMut};
 use std::cmp::{min, Ordering};
 use std::collections::{BTreeMap, HashMap, HashSet, VecDeque};
 use std::ops::RangeTo;
 use std::time::{Duration, SystemTime};
 
+pub mod constructors;
 pub mod histogram;
 pub mod schema;
-pub mod constructors;
 use schema::{proxy::AccountsDbAsProxy, AccountsDbBTreeMapTrait, AccountsDbTrait};
 
 use self::schema::SchemaLabel;
@@ -82,10 +82,12 @@ pub struct Account {
 impl Storable for Account {
     const BOUND: Bound = Bound::Unbounded;
     fn to_bytes(&self) -> Cow<'_, [u8]> {
-        unimplemented!()
+        let account_serialized = Candid((self,)).into_bytes().expect("Failed to serialize account");
+        account_serialized.to_owned().into()
     }
     fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
-        unimplemented!()
+        let (account,) = Candid::from_bytes(bytes.as_ref().to_owned()).map(|c| c.0).expect("Failed to parse account from store.");
+        account
     }
 }
 

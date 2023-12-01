@@ -5,12 +5,12 @@ use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
 use core::cell::RefCell;
 use core::convert::TryFrom;
-use std::borrow::BorrowMut;
 use dfn_candid::Candid;
 use dfn_core::api::trap_with;
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use on_wire::{FromWire, IntoWire};
 use partitions::Partitions;
+use std::borrow::BorrowMut;
 
 pub mod partitions;
 #[cfg(test)]
@@ -61,7 +61,8 @@ impl State {
                     trap_with(&format!("New state: Partitions should have been prepared."));
                     unreachable!();
                 });
-                let accounts_store = AccountsStore::new_with_unbounded_stable_btree_map(partitions.get(Partitions::ACCOUNTS_MEMORY_ID));
+                let accounts_store =
+                    AccountsStore::new_with_unbounded_stable_btree_map(partitions.get(Partitions::ACCOUNTS_MEMORY_ID));
                 state.borrow_mut().accounts_store.replace(accounts_store);
                 //let accounts_store = StableBTreeMap::new(partitions.get(Partitions::ACCOUNTS_MEMORY_ID));
                 //state.accounts_store.borrow_mut().accounts_db

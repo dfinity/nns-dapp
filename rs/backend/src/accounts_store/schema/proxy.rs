@@ -1,11 +1,11 @@
 //! Accounts DB that delegates API calls to underlying implementations.
 //!
 //! The proxy manages migrations from one implementation to another.
+use ic_stable_structures::{memory_manager::VirtualMemory, DefaultMemoryImpl};
 use std::collections::BTreeMap;
-use ic_stable_structures::{DefaultMemoryImpl, memory_manager::VirtualMemory};
 
-use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
 use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel};
+use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
 
 /// An accounts database delegates API calls to underlying implementations.
 ///
@@ -21,7 +21,7 @@ use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTr
 #[derive(Default, Debug)]
 pub struct AccountsDbAsProxy {
     authoritative_schema: SchemaLabel,
-    map: AccountsDbAsMap,  // TODO: Make this optional.
+    map: AccountsDbAsMap, // TODO: Make this optional.
     unbounded_stable_btree_map: Option<AccountsDbAsUnboundedStableBTreeMap>, // TODO: Define a database using the new expandable memory.
 }
 
@@ -68,14 +68,22 @@ impl AccountsDbTrait for AccountsDbAsProxy {
     fn db_contains_account(&self, account_key: &[u8]) -> bool {
         match self.authoritative_schema {
             SchemaLabel::Map => self.map.db_contains_account(account_key),
-            SchemaLabel::AccountsInStableMemory => self.unbounded_stable_btree_map.as_ref().unwrap().db_contains_account(account_key), // TODO: Need a way of getting the authoritative database without unwrap.
+            SchemaLabel::AccountsInStableMemory => self
+                .unbounded_stable_btree_map
+                .as_ref()
+                .unwrap()
+                .db_contains_account(account_key), // TODO: Need a way of getting the authoritative database without unwrap.
         }
     }
     // Gets an account from the authoritative database.
     fn db_get_account(&self, account_key: &[u8]) -> Option<Account> {
         match self.authoritative_schema {
             SchemaLabel::Map => self.map.db_get_account(account_key),
-            SchemaLabel::AccountsInStableMemory => self.unbounded_stable_btree_map.as_ref().unwrap().db_get_account(account_key), // TODO: Need a way of getting the authoritative database without unwrap.
+            SchemaLabel::AccountsInStableMemory => self
+                .unbounded_stable_btree_map
+                .as_ref()
+                .unwrap()
+                .db_get_account(account_key), // TODO: Need a way of getting the authoritative database without unwrap.
         }
     }
     // Removes an account from all underlying databases.
