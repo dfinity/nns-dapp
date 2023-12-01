@@ -7,9 +7,9 @@ import {
   formatToken,
   getMaxTransactionAmount,
   numberToE8s,
+  numberToUlps,
   sumAmountE8s,
 } from "$lib/utils/token.utils";
-import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 
 describe("token-utils", () => {
@@ -261,17 +261,41 @@ describe("token-utils", () => {
       expect(numberToE8s(3.14)).toBe(BigInt(314_000_000));
       expect(numberToE8s(0.14)).toBe(BigInt(14_000_000));
     });
+  });
 
-    // TODO: Enable when we upgrade ic-js with TokenAmount supporting decimals.
-    it.skip("converts number to e8s with token", () => {
-      expect(numberToE8s(1.14, mockCkETHToken)).toBe(
-        BigInt(1_140_000_000_000_000_000)
-      );
-      expect(numberToE8s(1, mockCkETHToken)).toBe(
-        BigInt(1_000_000_000_000_000_000)
-      );
-      expect(numberToE8s(3.14, mockCkETHToken)).toBe(
-        BigInt(3_140_000_000_000_000_000)
+  describe("numberToUlps", () => {
+    it("converts number to e8s", () => {
+      const token = {
+        decimals: 8,
+        symbol: "TEST",
+        name: "Test",
+      };
+      expect(numberToUlps({ amount: 1.14, token })).toBe(114_000_000n);
+      expect(numberToUlps({ amount: 1, token })).toBe(100_000_000n);
+      expect(numberToUlps({ amount: 3.14, token })).toBe(314_000_000n);
+      expect(numberToUlps({ amount: 0.14, token })).toBe(14_000_000n);
+    });
+
+    it("converts number to ulps with token", () => {
+      const token = {
+        decimals: 18,
+        symbol: "TEST",
+        name: "Test",
+      };
+      // TODO: Move these outside the call once they pass.
+      const call = () => {
+        expect(numberToUlps({ amount: 1.14, token })).toBe(
+          1_140_000_000_000_000_000n
+        );
+        expect(numberToUlps({ amount: 1, token })).toBe(
+          1_000_000_000_000_000_000n
+        );
+        expect(numberToUlps({ amount: 3.14, token })).toBe(
+          3_140_000_000_000_000_000n
+        );
+      };
+      expect(call).toThrowError(
+        "Use TokenAmountV2 for number of decimals other than 8"
       );
     });
   });

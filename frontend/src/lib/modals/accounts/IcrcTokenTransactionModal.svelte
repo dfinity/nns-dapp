@@ -6,6 +6,7 @@
   import type { NewTransaction } from "$lib/types/transaction";
   import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { numberToUlps } from "$lib/utils/token.utils";
   import type { Account } from "$lib/types/account";
   import type { WizardStep } from "@dfinity/gix-components";
   import type { TransactionInit } from "$lib/types/transaction";
@@ -46,8 +47,7 @@
     const { blockIndex } = await icrcTransferTokens({
       source: sourceAccount,
       destinationAddress,
-      amount,
-      token,
+      amountUlps: numberToUlps({ amount, token }),
       ledgerCanisterId,
       fee: token.fee,
     });

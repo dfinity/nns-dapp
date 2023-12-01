@@ -13,7 +13,6 @@ import type { Account } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { notForceCallStrategy } from "$lib/utils/env.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
-import { numberToE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import {
   decodeIcrcAccount,
@@ -22,7 +21,7 @@ import {
   type IcrcBlockIndex,
 } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
-import { isNullish, nonNullish, type Token } from "@dfinity/utils";
+import { isNullish, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { queryAndUpdate } from "./utils.services";
 
@@ -145,16 +144,14 @@ export const loadIcrcAccount = ({
 export interface IcrcTransferTokensUserParams {
   source: Account;
   destinationAddress: string;
-  amount: number;
-  token?: Token;
+  amountUlps: bigint;
 }
 
 // TODO: use `wallet-accounts.services`
 export const transferTokens = async ({
   source,
   destinationAddress,
-  amount,
-  token,
+  amountUlps,
   fee,
   transfer,
   reloadAccounts,
@@ -174,7 +171,6 @@ export const transferTokens = async ({
       throw new Error("error.transaction_fee_not_found");
     }
 
-    const amountE8s = numberToE8s(amount, token);
     const identity: Identity = await getIcrcAccountIdentity(source);
     const to = decodeIcrcAccount(destinationAddress);
 
@@ -182,7 +178,7 @@ export const transferTokens = async ({
       identity,
       to,
       fromSubAccount: source.subAccount,
-      amount: amountE8s,
+      amount: amountUlps,
       fee,
     });
 
@@ -204,8 +200,7 @@ export const transferTokens = async ({
 export const icrcTransferTokens = async ({
   source,
   destinationAddress,
-  amount,
-  token,
+  amountUlps,
   fee,
   ledgerCanisterId,
 }: IcrcTransferTokensUserParams & {
@@ -214,8 +209,7 @@ export const icrcTransferTokens = async ({
 }): Promise<{ blockIndex: IcrcBlockIndex | undefined }> => {
   return transferTokens({
     source,
-    amount,
-    token,
+    amountUlps,
     fee,
     destinationAddress,
     transfer: async (

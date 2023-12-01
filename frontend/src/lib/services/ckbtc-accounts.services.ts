@@ -3,11 +3,12 @@ import { icrcTransfer } from "$lib/api/icrc-ledger.api";
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
 import { transferTokens } from "$lib/services/icrc-accounts.services";
 import { loadAccounts } from "$lib/services/wallet-accounts.services";
+import type { Account } from "$lib/types/account";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import type { Identity } from "@dfinity/agent";
 import type { IcrcBlockIndex } from "@dfinity/ledger-icrc";
 import { get } from "svelte/store";
-import type { IcrcTransferTokensUserParams } from "./icrc-accounts.services";
+import { numberToE8s } from "../utils/token.utils";
 
 export const loadCkBTCAccounts = async (params: {
   handleError?: () => void;
@@ -16,10 +17,14 @@ export const loadCkBTCAccounts = async (params: {
 
 export const ckBTCTransferTokens = async ({
   source,
+  destinationAddress,
   universeId,
-  ...rest
-}: IcrcTransferTokensUserParams & {
+  amount,
+}: {
+  source: Account;
+  destinationAddress: string;
   universeId: UniverseCanisterId;
+  amount: number;
 }): Promise<{
   blockIndex: IcrcBlockIndex | undefined;
 }> => {
@@ -27,8 +32,9 @@ export const ckBTCTransferTokens = async ({
 
   return transferTokens({
     source,
+    destinationAddress,
+    amountUlps: numberToE8s(amount),
     fee,
-    ...rest,
     transfer: async (
       params: {
         identity: Identity;
