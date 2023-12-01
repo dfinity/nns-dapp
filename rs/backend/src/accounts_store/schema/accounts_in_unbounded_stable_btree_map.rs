@@ -67,3 +67,13 @@ impl fmt::Debug for AccountsDbAsUnboundedStableBTreeMap {
         )
     }
 }
+
+// TODO: Implement for tests only
+impl AccountsDbBTreeMapTrait for AccountsDbAsUnboundedStableBTreeMap {
+    fn as_map(&self) -> BTreeMap<Vec<u8>, Account> {
+        self.iter().collect()
+    }
+    fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
+        unimplemented!() // Need memory to do this, so the method doesn't make sense.
+    }
+}

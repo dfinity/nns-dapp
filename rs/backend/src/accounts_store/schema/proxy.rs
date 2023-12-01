@@ -19,9 +19,87 @@ use std::collections::BTreeMap;
 /// - Accounts are stored as a map.  No migrations are undertaken.
 #[derive(Debug)]
 pub struct AccountsDbAsProxy {
-    authoritative_schema: SchemaLabel,
-    map: Option<AccountsDbAsMap>, // TODO: Make this optional.
-    unbounded_stable_btree_map: Option<AccountsDbAsUnboundedStableBTreeMap>, // TODO: Define a database using the new expandable memory.
+    authoritative_db: AccountsDb,
+    second_db: Option<AccountsDb>,
+}
+
+#[derive(Debug)]
+
+pub enum AccountsDb {
+    Map(AccountsDbAsMap),
+    UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap),
+}
+
+impl AccountsDbBTreeMapTrait for AccountsDb {
+    fn as_map(&self) -> BTreeMap<Vec<u8>, Account> {
+        match self {
+            AccountsDb::Map(map_db) => map_db.as_map(),
+            AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => {
+                unbounded_stable_btree_map_db.as_map()
+            }
+        }
+    }
+    fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
+        AccountsDb::Map(AccountsDbAsMap::from_map(map))
+    }
+}
+
+// TODO: This is boilerplate.  can it be eliminated with a macro?
+impl AccountsDbTrait for AccountsDb {
+    fn schema_label(&self) -> SchemaLabel {
+        match &self {
+            AccountsDb::Map(map_db) => map_db.schema_label(),
+            AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => {
+                unbounded_stable_btree_map_db.schema_label()
+            }
+        }
+    }
+    fn db_insert_account(&mut self, account_key: &[u8], account: Account) {
+        match self {
+            AccountsDb::Map(map_db) => map_db.db_insert_account(account_key, account),
+            AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => {
+                unbounded_stable_btree_map_db.db_insert_account(account_key, account)
+            }
+        }
+    }
+    fn db_contains_account(&self, account_key: &[u8]) -> bool {
+        match self {
+            AccountsDb::Map(map_db) => map_db.db_contains_account(account_key),
+            AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => {
+                unbounded_stable_btree_map_db.db_contains_account(account_key)
+            }
+        }
+    }
+    fn db_get_account(&self, account_key: &[u8]) -> Option<Account> {
+        match self {
+            AccountsDb::Map(map_db) => map_db.db_get_account(account_key),
+            AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => {
+                unbounded_stable_btree_map_db.db_get_account(account_key)
+            }
+        }
+    }
+    fn db_remove_account(&mut self, account_key: &[u8]) {
+        match self {
+            AccountsDb::Map(map_db) => map_db.db_remove_account(account_key),
+            AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => {
+                unbounded_stable_btree_map_db.db_remove_account(account_key)
+            }
+        }
+    }
+    fn db_accounts_len(&self) -> u64 {
+        match self {
+            AccountsDb::Map(map_db) => map_db.db_accounts_len(),
+            AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => {
+                unbounded_stable_btree_map_db.db_accounts_len()
+            }
+        }
+    }
+    fn iter(&self) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
+        match self {
+            AccountsDb::Map(map_db) => map_db.iter(),
+            AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => unbounded_stable_btree_map_db.iter(),
+        }
+    }
 }
 
 impl Default for AccountsDbAsProxy {
@@ -34,16 +112,14 @@ impl Default for AccountsDbAsProxy {
 impl AccountsDbAsProxy {
     pub fn new_with_map() -> Self {
         Self {
-            authoritative_schema: SchemaLabel::Map,
-            map: Some(AccountsDbAsMap::default()),
-            unbounded_stable_btree_map: None,
+            authoritative_db: AccountsDb::Map(AccountsDbAsMap::default()),
+            second_db: None,
         }
     }
     pub fn new_with_unbounded_stable_btree_map(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
         Self {
-            authoritative_schema: SchemaLabel::AccountsInStableMemory, // TODO: Rename schema label to AccountsInUnboundedStableBTreeMap.
-            map: None,
-            unbounded_stable_btree_map: Some(AccountsDbAsUnboundedStableBTreeMap::new(memory)),
+            authoritative_db: AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::new(memory)),
+            second_db: None,
         }
     }
 }
@@ -58,24 +134,16 @@ impl AccountsDbAsProxy {
 impl AccountsDbBTreeMapTrait for AccountsDbAsProxy {
     fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
         Self {
-            authoritative_schema: SchemaLabel::Map,
-            map: Some(AccountsDbAsMap::from_map(map)),
-            unbounded_stable_btree_map: None,
+            authoritative_db: AccountsDb::Map(AccountsDbAsMap::from_map(map)),
+            second_db: None,
         }
     }
     fn as_map(&self) -> BTreeMap<Vec<u8>, Account> {
-        match self.authoritative_schema {
-            SchemaLabel::Map => self
-                .map
-                .as_ref()
-                .expect("Authoritative database of type Map doesn't exist")
-                .as_map(),
-            SchemaLabel::AccountsInStableMemory => self
-                .unbounded_stable_btree_map
-                .as_ref()
-                .expect("Authoritative database of type AccountsInStableMemory does not exist.")
-                .iter()
-                .collect(),
+        match &self.authoritative_db {
+            AccountsDb::Map(map_db) => map_db.as_map(),
+            AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => {
+                unbounded_stable_btree_map_db.as_map()
+            }
         }
     }
 }
@@ -83,88 +151,51 @@ impl AccountsDbBTreeMapTrait for AccountsDbAsProxy {
 impl AccountsDbTrait for AccountsDbAsProxy {
     // Inserts into all the underlying databases.
     fn db_insert_account(&mut self, account_key: &[u8], account: Account) {
-        if let Some(db) = self.unbounded_stable_btree_map.as_mut() {
-            db.db_insert_account(account_key, account.clone());
-        }
-        if let Some(db) = &mut self.map {
-            db.db_insert_account(account_key, account);
-        }
+        self.authoritative_db.db_insert_account(account_key, account.clone());
+        self.second_db
+            .as_mut()
+            .map(|db| db.db_insert_account(account_key, account));
     }
     // Checks the authoritative database.
     fn db_contains_account(&self, account_key: &[u8]) -> bool {
-        match self.authoritative_schema {
-            SchemaLabel::Map => self
-                .map
-                .as_ref()
-                .expect("Authoritative db doesn't exist")
-                .db_contains_account(account_key),
-            SchemaLabel::AccountsInStableMemory => self
-                .unbounded_stable_btree_map
-                .as_ref()
-                .unwrap()
-                .db_contains_account(account_key), // TODO: Need a way of getting the authoritative database without unwrap.
-        }
+        self.authoritative_db.db_contains_account(account_key)
     }
     // Gets an account from the authoritative database.
     fn db_get_account(&self, account_key: &[u8]) -> Option<Account> {
-        match self.authoritative_schema {
-            SchemaLabel::Map => self
-                .map
-                .as_ref()
-                .expect("Authoritative db doesn't exist")
-                .db_get_account(account_key),
-            SchemaLabel::AccountsInStableMemory => self
-                .unbounded_stable_btree_map
-                .as_ref()
-                .unwrap()
-                .db_get_account(account_key), // TODO: Need a way of getting the authoritative database without unwrap.
-        }
+        self.authoritative_db.db_get_account(account_key)
     }
     // Removes an account from all underlying databases.
     fn db_remove_account(&mut self, account_key: &[u8]) {
-        if let Some(db) = &mut self.map {
-            db.db_remove_account(account_key);
-        }
-        if let Some(db) = self.unbounded_stable_btree_map.as_mut() {
+        self.authoritative_db.db_remove_account(account_key);
+        if let Some(db) = self.second_db.as_mut() {
             db.db_remove_account(account_key);
         }
     }
-    // Gets the lengtrh from the authoritative database.
+    // Gets the length from the authoritative database.
     fn db_accounts_len(&self) -> u64 {
-        match self.authoritative_schema {
-            SchemaLabel::Map => self
-                .map
-                .as_ref()
-                .expect("Authoritative db doesn't exist")
-                .db_accounts_len(),
-            SchemaLabel::AccountsInStableMemory => self.unbounded_stable_btree_map.as_ref().unwrap().db_accounts_len(), // TODO: Need a way of getting the authoritative database without unwrap.
-        }
+        self.authoritative_db.db_accounts_len()
     }
     // Iterates over the entries of the authoritative database.
     fn iter(&self) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
-        match self.authoritative_schema {
-            SchemaLabel::Map => self.map.as_ref().expect("Authoritative db doesn't exist").iter(),
-            SchemaLabel::AccountsInStableMemory => self.unbounded_stable_btree_map.as_ref().unwrap().iter(), // TODO: Need a way of getting the authoritative database without unwrap.
-        }
+        self.authoritative_db.iter()
     }
     // Iterates over the values of the authoritative database.
     fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
-        match self.authoritative_schema {
-            SchemaLabel::Map => self.map.as_ref().expect("Authoritative db doesn't exist").values(),
-            SchemaLabel::AccountsInStableMemory => self.unbounded_stable_btree_map.as_ref().unwrap().values(), // TODO: Need a way of getting the authoritative database without unwrap.
-        }
+        self.authoritative_db.values()
     }
     fn schema_label(&self) -> SchemaLabel {
-        self.authoritative_schema
+        self.authoritative_db.schema_label()
     }
 }
 
 /// Check whether two account databases contain the same data.
 ///
 /// It should be possible to use this to confirm that data has been preserved during a migration.
+///
+/// TODO: This is needed in tests only.  Disable otherwise.
 impl PartialEq for AccountsDbAsProxy {
     fn eq(&self, other: &Self) -> bool {
-        self.map == other.map
+        self.authoritative_db.as_map() == other.authoritative_db.as_map()
     }
 }
 impl Eq for AccountsDbAsProxy {}
