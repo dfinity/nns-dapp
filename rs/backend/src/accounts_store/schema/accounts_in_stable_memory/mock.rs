@@ -84,6 +84,9 @@ impl AccountsDbTrait for MockS1DataStorage {
     fn db_accounts_len(&self) -> u64 {
         self.aism_accounts_len()
     }
+    fn iter(&self) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
+        self.aism_iter()
+    }
     fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
         self.aism_values()
     }
