@@ -4,6 +4,7 @@ import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { assertCkBTCUserInputAmount } from "$lib/utils/ckbtc.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatToken } from "$lib/utils/token.utils";
+import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
@@ -19,6 +20,7 @@ describe("ckbtc.utils", () => {
     networkBtc: true,
     sourceAccount: mockMainAccount,
     amount: 0.002,
+    token: mockCkBTCToken,
     transactionFee: 1n,
     infoData: {
       info: {

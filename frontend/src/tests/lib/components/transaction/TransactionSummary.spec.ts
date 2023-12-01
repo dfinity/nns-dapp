@@ -19,7 +19,7 @@ describe("TransactionSummary", () => {
     transactionFee,
   };
 
-  const e8s = numberToE8s(amount);
+  const e8s = numberToE8s({ amount, token });
 
   it("should render sending amount", () => {
     const { getByTestId } = render(TransactionSummary, {

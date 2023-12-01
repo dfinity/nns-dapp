@@ -7,7 +7,6 @@
   } from "$lib/types/sns-neuron-detail.context";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import type { E8s } from "@dfinity/nns";
-  import type { Token } from "@dfinity/utils";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
   import DissolveSnsNeuronModal from "$lib/modals/sns/neurons/DissolveSnsNeuronModal.svelte";
@@ -34,6 +33,7 @@
   import SnsActiveDisbursementsModal from "$lib/modals/sns/neurons/SnsActiveDisbursementsModal.svelte";
   import SnsDisburseMaturityModal from "$lib/modals/sns/neurons/SnsDisburseMaturityModal.svelte";
   import AddMaturityModal from "$lib/modals/sns/neurons/AddMaturityModal.svelte";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
 
   // Modal events
 
@@ -62,8 +62,8 @@
   let neuronState: NeuronState | undefined;
   $: neuronState = isNullish(neuron) ? undefined : getSnsNeuronState(neuron);
 
-  let token: Token;
-  $: token = $snsTokenSymbolSelectedStore as Token;
+  let token: IcrcTokenMetadata;
+  $: token = $snsTokenSymbolSelectedStore as IcrcTokenMetadata;
 
   let parameters: SnsNervousSystemParameters | undefined;
   $: parameters = nonNullish(rootCanisterId)
@@ -192,9 +192,10 @@
     />
   {/if}
 
-  {#if type === "dev-add-maturity" && IS_TESTNET && nonNullish(rootCanisterId) && nonNullish(neuronId)}
+  {#if type === "dev-add-maturity" && IS_TESTNET && nonNullish(rootCanisterId) && nonNullish(neuronId) && nonNullish(token)}
     <AddMaturityModal
       {rootCanisterId}
+      {token}
       {neuronId}
       {reloadNeuron}
       on:nnsClose={close}

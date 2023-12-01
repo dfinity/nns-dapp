@@ -7,6 +7,7 @@
   import { numberToE8s } from "$lib/utils/token.utils";
   import { addMaturity } from "$lib/services/nns-neurons-dev.services";
   import type { NeuronInfo } from "@dfinity/nns";
+  import { ICPToken } from "@dfinity/utils";
 
   export let neuron: NeuronInfo;
 
@@ -30,7 +31,7 @@
 
     await addMaturity({
       neuron,
-      amountE8s: numberToE8s(inputValue),
+      amountE8s: numberToE8s({ amount: inputValue, token: ICPToken }),
     });
 
     dispatcher("nnsClose");

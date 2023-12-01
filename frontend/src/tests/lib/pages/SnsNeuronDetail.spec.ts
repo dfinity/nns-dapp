@@ -31,6 +31,7 @@ import {
   createMockSnsNeuron,
   mockSnsNeuron,
 } from "$tests/mocks/sns-neurons.mock";
+import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { SnsNeuronDetailPo } from "$tests/page-objects/SnsNeuronDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -111,7 +112,10 @@ describe("SnsNeuronDetail", () => {
       fakeSnsGovernanceApi.addNeuronWith({
         rootCanisterId,
         id: [validNeuronId],
-        cached_neuron_stake_e8s: numberToE8s(neuronStake),
+        cached_neuron_stake_e8s: numberToE8s({
+          amount: neuronStake,
+          token: mockSnsToken,
+        }),
       });
     });
 
@@ -145,7 +149,10 @@ describe("SnsNeuronDetail", () => {
       fakeSnsGovernanceApi.addNeuronWith({
         rootCanisterId,
         id: [validNeuronId],
-        cached_neuron_stake_e8s: numberToE8s(neuronStake),
+        cached_neuron_stake_e8s: numberToE8s({
+          amount: neuronStake,
+          token: mockSnsToken,
+        }),
       });
       const po = await renderComponent(props);
 
@@ -155,7 +162,10 @@ describe("SnsNeuronDetail", () => {
       fakeSnsGovernanceApi.setNeuronWith({
         rootCanisterId,
         id: [validNeuronId],
-        cached_neuron_stake_e8s: numberToE8s(neuronStake + amountToStake),
+        cached_neuron_stake_e8s: numberToE8s({
+          amount: neuronStake + amountToStake,
+          token: mockSnsToken,
+        }),
       });
 
       await po.increaseStake(amountToStake);
@@ -166,7 +176,7 @@ describe("SnsNeuronDetail", () => {
       expect(increaseStakeNeuron).toHaveBeenCalledTimes(1);
       expect(increaseStakeNeuron).toHaveBeenCalledWith({
         neuronId: validNeuronId,
-        stakeE8s: numberToE8s(amountToStake),
+        stakeE8s: numberToE8s({ amount: amountToStake, token: mockSnsToken }),
         rootCanisterId,
         identity: mockIdentity,
         source: mainAccount,
@@ -186,7 +196,10 @@ describe("SnsNeuronDetail", () => {
       fakeSnsGovernanceApi.addNeuronWith({
         rootCanisterId,
         id: [validNeuronId],
-        cached_neuron_stake_e8s: numberToE8s(neuronStake),
+        cached_neuron_stake_e8s: numberToE8s({
+          amount: neuronStake,
+          token: mockSnsToken,
+        }),
         permissions: [
           {
             principal: [mockIdentity.getPrincipal()],
@@ -205,7 +218,10 @@ describe("SnsNeuronDetail", () => {
       fakeSnsGovernanceApi.addNeuronWith({
         rootCanisterId,
         id: [validNeuronId],
-        cached_neuron_stake_e8s: numberToE8s(neuronStake),
+        cached_neuron_stake_e8s: numberToE8s({
+          amount: neuronStake,
+          token: mockSnsToken,
+        }),
         permissions: [
           {
             principal: [mockIdentity.getPrincipal()],
@@ -228,7 +244,10 @@ describe("SnsNeuronDetail", () => {
       fakeSnsGovernanceApi.addNeuronWith({
         rootCanisterId,
         id: [validNeuronId],
-        cached_neuron_stake_e8s: numberToE8s(neuronStake),
+        cached_neuron_stake_e8s: numberToE8s({
+          amount: neuronStake,
+          token: mockSnsToken,
+        }),
         permissions: [
           {
             principal: [mockIdentity.getPrincipal()],
@@ -254,7 +273,10 @@ describe("SnsNeuronDetail", () => {
       fakeSnsGovernanceApi.addNeuronWith({
         rootCanisterId,
         id: [validNeuronId],
-        cached_neuron_stake_e8s: numberToE8s(neuronStake),
+        cached_neuron_stake_e8s: numberToE8s({
+          amount: neuronStake,
+          token: mockSnsToken,
+        }),
         permissions: [
           {
             principal: [mockIdentity.getPrincipal()],

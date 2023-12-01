@@ -1,4 +1,5 @@
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import {
   convertIcpToTCycles,
   convertTCyclesToIcpNumber,
@@ -255,22 +256,28 @@ describe("token-utils", () => {
   });
 
   describe("numberToE8s", () => {
-    it("converts number to e8s", () => {
-      expect(numberToE8s(1.14)).toBe(BigInt(114_000_000));
-      expect(numberToE8s(1)).toBe(BigInt(100_000_000));
-      expect(numberToE8s(3.14)).toBe(BigInt(314_000_000));
-      expect(numberToE8s(0.14)).toBe(BigInt(14_000_000));
+    it("converts number to e8s with 8 decimals", () => {
+      const token: IcrcTokenMetadata = {
+        name: "ICP",
+        symbol: "ICP",
+        fee: 10_000n,
+        decimals: 8n,
+      };
+      expect(numberToE8s({ amount: 1.14, token })).toBe(BigInt(114_000_000));
+      expect(numberToE8s({ amount: 1, token })).toBe(BigInt(100_000_000));
+      expect(numberToE8s({ amount: 3.14, token })).toBe(BigInt(314_000_000));
+      expect(numberToE8s({ amount: 0.14, token })).toBe(BigInt(14_000_000));
     });
 
     // TODO: Enable when we upgrade ic-js with TokenAmount supporting decimals.
     it.skip("converts number to e8s with token", () => {
-      expect(numberToE8s(1.14, mockCkETHToken)).toBe(
+      expect(numberToE8s({ amount: 1.14, token: mockCkETHToken })).toBe(
         BigInt(1_140_000_000_000_000_000)
       );
-      expect(numberToE8s(1, mockCkETHToken)).toBe(
+      expect(numberToE8s({ amount: 1, token: mockCkETHToken })).toBe(
         BigInt(1_000_000_000_000_000_000)
       );
-      expect(numberToE8s(3.14, mockCkETHToken)).toBe(
+      expect(numberToE8s({ amount: 3.14, token: mockCkETHToken })).toBe(
         BigInt(3_140_000_000_000_000_000)
       );
     });

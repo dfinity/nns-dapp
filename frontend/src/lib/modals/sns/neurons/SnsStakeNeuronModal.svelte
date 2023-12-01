@@ -76,6 +76,7 @@
     const { success } = await stakeNeuron({
       rootCanisterId,
       amount: detail.amount,
+      token,
       account: detail.sourceAccount,
     });
 

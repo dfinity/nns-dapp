@@ -5,7 +5,9 @@ import { TransactionNetwork } from "$lib/types/transaction";
 import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
 import en from "$tests/mocks/i18n.mock";
+import { ICPToken } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 
 describe("BitcoinEstimatedFee", () => {
@@ -23,6 +25,7 @@ describe("BitcoinEstimatedFee", () => {
 
   const props = {
     minterCanisterId: CKBTC_MINTER_CANISTER_ID,
+    token: mockCkBTCToken,
   };
 
   it("should not display estimated fee if no network selected", () => {
@@ -90,7 +93,7 @@ describe("BitcoinEstimatedFee", () => {
 
     await waitFor(() =>
       expect(spyEstimateFee).toHaveBeenCalledWith({
-        amount: numberToE8s(amount),
+        amount: numberToE8s({ amount, token: ICPToken }),
         certified: false,
         identity: mockIdentity,
         canisterId: CKBTC_MINTER_CANISTER_ID,

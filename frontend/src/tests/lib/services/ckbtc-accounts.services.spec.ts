@@ -6,7 +6,10 @@ import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
-import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
+import {
+  mockCkBTCMainAccount,
+  mockCkBTCToken,
+} from "$tests/mocks/ckbtc-accounts.mock";
 import { mockTokens } from "$tests/mocks/tokens.mock";
 
 vi.mock("$lib/services/wallet-transactions.services", () => {
@@ -47,6 +50,7 @@ describe("ckbtc-accounts-services", () => {
         source: mockCkBTCMainAccount,
         destinationAddress: "aaaaa-aa",
         amount: 1,
+        token: mockCkBTCToken,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
       });
 
@@ -69,6 +73,7 @@ describe("ckbtc-accounts-services", () => {
         source: mockCkBTCMainAccount,
         destinationAddress: "aaaaa-aa",
         amount: 1,
+        token: mockCkBTCToken,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
       });
 
@@ -91,6 +96,7 @@ describe("ckbtc-accounts-services", () => {
         source: mockCkBTCMainAccount,
         destinationAddress: "aaaaa-aa",
         amount: 1,
+        token: mockCkBTCToken,
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
       });
 

@@ -25,7 +25,6 @@ import {
   type SnsSwapInit,
   type SnsTransferableAmount,
 } from "@dfinity/sns";
-import type { Token } from "@dfinity/utils";
 import { nonNullish, toNullable } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
 
@@ -483,7 +482,7 @@ export const mockQueryMetadata: QuerySnsMetadata = {
   token: mockQueryTokenResponse,
 };
 
-export const mockTokenStore = (run?: Subscriber<Token>) => {
+export const mockTokenStore = (run?: Subscriber<IcrcTokenMetadata>) => {
   run?.(mockSnsToken);
   return () => undefined;
 };

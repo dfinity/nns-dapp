@@ -10,7 +10,12 @@
   import type { Account } from "$lib/types/account";
   import { Modal, Spinner, type WizardStep } from "@dfinity/gix-components";
   import type { TransactionInit } from "$lib/types/transaction";
-  import { TokenAmount, nonNullish, type Token } from "@dfinity/utils";
+  import {
+    TokenAmount,
+    nonNullish,
+    type Token,
+    assertNonNullish,
+  } from "@dfinity/utils";
   import type { Principal } from "@dfinity/principal";
 
   // TODO: Refactor to expect as props the rootCanisterId, transactionFee and token.
@@ -42,10 +47,13 @@
       initiator: "accounts",
     });
 
+    assertNonNullish(token);
+
     const { blockIndex } = await snsTransferTokens({
       source: sourceAccount,
       destinationAddress,
       amount,
+      token,
       loadTransactions,
       rootCanisterId,
     });

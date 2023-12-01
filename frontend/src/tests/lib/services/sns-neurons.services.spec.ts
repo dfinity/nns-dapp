@@ -36,7 +36,7 @@ import {
   mockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
-import { mockTokenStore } from "$tests/mocks/sns-projects.mock";
+import { mockSnsToken, mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import {
@@ -676,6 +676,7 @@ describe("sns-neurons-services", () => {
       const { success } = await stakeNeuron({
         rootCanisterId: mockPrincipal,
         amount: 2,
+        token: mockSnsToken,
         account: mockSnsMainAccount,
       });
 
@@ -694,6 +695,7 @@ describe("sns-neurons-services", () => {
       const { success } = await stakeNeuron({
         rootCanisterId: mockPrincipal,
         amount: 2,
+        token: mockSnsToken,
         account: mockSnsMainAccount,
       });
 
@@ -710,6 +712,7 @@ describe("sns-neurons-services", () => {
 
       const rootCanisterId = mockPrincipal;
       const amount = 2;
+      const token = mockSnsToken;
       const identity = mockIdentity;
       const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
       const account = mockSnsMainAccount;
@@ -718,6 +721,7 @@ describe("sns-neurons-services", () => {
       const { success } = await increaseStakeNeuron({
         rootCanisterId,
         amount,
+        token,
         account,
         neuronId,
       });
@@ -727,7 +731,7 @@ describe("sns-neurons-services", () => {
       expect(spyOnIncreaseStakeNeuron).toBeCalledWith({
         neuronId,
         rootCanisterId,
-        stakeE8s: numberToE8s(amount),
+        stakeE8s: numberToE8s({ amount, token }),
         identity,
         source: identifier,
       });

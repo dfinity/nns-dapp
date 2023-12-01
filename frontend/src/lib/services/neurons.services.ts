@@ -53,7 +53,7 @@ import { numberToE8s } from "$lib/utils/token.utils";
 import { AnonymousIdentity, type Identity } from "@dfinity/agent";
 import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { isNullish } from "@dfinity/utils";
+import { ICPToken, isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
 import {
@@ -193,7 +193,7 @@ export const stakeNeuron = async ({
   loadNeuron?: boolean;
 }): Promise<NeuronId | undefined> => {
   try {
-    const stake = numberToE8s(amount);
+    const stake = numberToE8s({ amount, token: ICPToken });
     assertEnoughAccountFunds({
       account,
       amountE8s: stake,
@@ -623,7 +623,7 @@ export const splitNeuron = async ({
     }
 
     const feeE8s = get(mainTransactionFeeE8sStore);
-    const amountE8s = numberToE8s(amount) + feeE8s;
+    const amountE8s = numberToE8s({ amount, token: ICPToken }) + feeE8s;
 
     if (!isEnoughToStakeNeuron({ stakeE8s: amountE8s, feeE8s })) {
       throw new NotEnoughAmountError();

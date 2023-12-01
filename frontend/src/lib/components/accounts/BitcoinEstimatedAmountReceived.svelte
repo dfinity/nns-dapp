@@ -11,8 +11,10 @@
     ckBTCInfoStore,
     type CkBTCInfoStoreUniverseData,
   } from "$lib/stores/ckbtc-info.store";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
 
   export let amount: number | undefined = undefined;
+  export let ckBTCToken: IcrcTokenMetadata;
   export let bitcoinEstimatedFee: bigint | undefined | null = undefined;
   export let universeId: UniverseCanisterId;
 
@@ -31,10 +33,13 @@
   $: token = {
     symbol: $i18n.ckbtc.btc,
     name: bitcoinLabel,
+    decimals: ckBTCToken.decimals,
   };
 
   let amountE8s = BigInt(0);
-  $: amountE8s = nonNullish(amount) ? numberToE8s(amount) : BigInt(0);
+  $: amountE8s = nonNullish(amount)
+    ? numberToE8s({ amount, token: ckBTCToken })
+    : BigInt(0);
 
   let estimatedFee = BigInt(0);
   $: estimatedFee =

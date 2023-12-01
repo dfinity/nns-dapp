@@ -8,9 +8,11 @@
   import type { CanisterId } from "$lib/types/canister";
   import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
   import type { EstimateWithdrawalFee } from "@dfinity/ckbtc";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
 
   export let minterCanisterId: CanisterId;
   export let amount: number | undefined = undefined;
+  export let token: IcrcTokenMetadata;
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
 
   export let bitcoinEstimatedFee: bigint | undefined | null = undefined;
@@ -30,7 +32,7 @@
     await estimateFeeService({
       minterCanisterId,
       params: {
-        amount: nonNullish(amount) ? numberToE8s(amount) : undefined,
+        amount: nonNullish(amount) ? numberToE8s({ amount, token }) : undefined,
         certified: false,
       },
       callback,

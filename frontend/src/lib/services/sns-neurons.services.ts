@@ -32,6 +32,7 @@ import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { notForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
@@ -62,6 +63,7 @@ import {
   fromNullable,
   isNullish,
   nonNullish,
+  type Token,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
@@ -345,7 +347,7 @@ export const splitNeuron = async ({
     ]?.fee;
     assertNonNullish(transactionFee, "fee not defined");
 
-    const amountE8s = numberToE8s(amount);
+    const amountE8s = numberToE8s({ amount, token });
     const amountAndFee = amountE8s + transactionFee;
 
     // minimum validation
@@ -512,11 +514,13 @@ export const updateDelay = async ({
 export const increaseStakeNeuron = async ({
   rootCanisterId,
   amount,
+  token,
   account,
   neuronId,
 }: {
   rootCanisterId: Principal;
   amount: number;
+  token: IcrcTokenMetadata;
   account: Account;
   neuronId: SnsNeuronId;
 }): Promise<{ success: boolean }> => {
@@ -524,7 +528,7 @@ export const increaseStakeNeuron = async ({
     // TODO: Get identity depending on account to support HW accounts
     const identity = await getAuthenticatedIdentity();
 
-    const stakeE8s = numberToE8s(amount);
+    const stakeE8s = numberToE8s({ amount, token });
     await increaseStakeNeuronApi({
       // We can cast it because we already checked that the neuron id is not undefined
       neuronId,
@@ -551,16 +555,18 @@ export const increaseStakeNeuron = async ({
 export const stakeNeuron = async ({
   rootCanisterId,
   amount,
+  token,
   account,
 }: {
   rootCanisterId: Principal;
+  token: Token;
   amount: number;
   account: Account;
 }): Promise<{ success: boolean }> => {
   try {
     // TODO: Get identity depending on account to support HW accounts
     const identity = await getAuthenticatedIdentity();
-    const stakeE8s = numberToE8s(amount);
+    const stakeE8s = numberToE8s({ amount, token });
 
     const fee = get(transactionsFeesStore).projects[rootCanisterId.toText()]
       ?.fee;

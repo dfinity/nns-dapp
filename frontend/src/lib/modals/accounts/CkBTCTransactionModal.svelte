@@ -100,6 +100,7 @@
       source: sourceAccount,
       destinationAddress,
       amount,
+      token,
       universeId,
     });
 
@@ -125,6 +126,7 @@
       amount,
       universeId,
       canisters,
+      token,
       updateProgress,
     };
 
@@ -182,6 +184,7 @@
       networkBtc,
       sourceAccount: selectedAccount,
       amount,
+      token,
       transactionFee: fee.toE8s(),
       infoData,
     });
@@ -217,6 +220,7 @@
   <svelte:fragment slot="additional-info-form">
     <BitcoinEstimatedFee
       {selectedNetwork}
+      {token}
       amount={userAmount}
       minterCanisterId={canisters.minterCanisterId}
       bind:bitcoinEstimatedFee
@@ -228,6 +232,7 @@
   <svelte:fragment slot="received-amount">
     {#if networkBtc}
       <BitcoinEstimatedAmountReceived
+        ckBTCToken={token}
         {bitcoinEstimatedFee}
         {universeId}
         amount={userAmount}

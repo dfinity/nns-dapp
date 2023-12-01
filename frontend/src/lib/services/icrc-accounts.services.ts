@@ -146,7 +146,7 @@ export interface IcrcTransferTokensUserParams {
   source: Account;
   destinationAddress: string;
   amount: number;
-  token?: Token;
+  token: Token;
 }
 
 // TODO: use `wallet-accounts.services`
@@ -174,7 +174,7 @@ export const transferTokens = async ({
       throw new Error("error.transaction_fee_not_found");
     }
 
-    const amountE8s = numberToE8s(amount, token);
+    const amountE8s = numberToE8s({ amount, token });
     const identity: Identity = await getIcrcAccountIdentity(source);
     const to = decodeIcrcAccount(destinationAddress);
 

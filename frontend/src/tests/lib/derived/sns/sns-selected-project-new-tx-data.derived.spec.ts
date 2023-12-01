@@ -29,10 +29,6 @@ describe("selected-project-new-transaction-data derived store", () => {
     });
 
     it("returns the data for the a new Tx from the current universe", () => {
-      const token = {
-        name: "name",
-        symbol: "symbol",
-      };
       snsSwapCommitmentsStore.setSwapCommitment({
         swapCommitment: mockSnsSwapCommitment(rootCanisterId),
         certified: true,
@@ -41,7 +37,7 @@ describe("selected-project-new-transaction-data derived store", () => {
         {
           rootCanisterId,
           lifecycle: SnsSwapLifecycle.Committed,
-          tokenMetadata: token,
+          tokenMetadata: mockSnsToken,
         },
       ]);
 
@@ -58,7 +54,7 @@ describe("selected-project-new-transaction-data derived store", () => {
       expect(storeData.rootCanisterId.toText()).toEqual(
         rootCanisterId.toText()
       );
-      expect(storeData.token).toEqual(token);
+      expect(storeData.token).toEqual(mockSnsToken);
       expect(storeData.transactionFee.toE8s()).toEqual(fee);
     });
 

@@ -9,6 +9,7 @@ import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
+import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import type { HttpAgent } from "@dfinity/agent";
 import { waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
@@ -155,6 +156,7 @@ describe("sns-accounts-services", () => {
         source: mockSnsMainAccount,
         destinationAddress: "aaaaa-aa",
         amount: 1,
+        token: mockSnsToken,
         loadTransactions: false,
       });
 
@@ -178,6 +180,7 @@ describe("sns-accounts-services", () => {
         source: mockSnsMainAccount,
         destinationAddress: "aaaaa-aa",
         amount: 1,
+        token: mockSnsToken,
         loadTransactions: true,
       });
 
@@ -203,6 +206,7 @@ describe("sns-accounts-services", () => {
         source: mockSnsMainAccount,
         destinationAddress: "aaaaa-aa",
         amount: 1,
+        token: mockSnsToken,
         loadTransactions: false,
       });
 
@@ -224,6 +228,7 @@ describe("sns-accounts-services", () => {
         source: mockSnsMainAccount,
         destinationAddress: "aaaaa-aa",
         amount: 1,
+        token: mockSnsToken,
         loadTransactions: false,
       });
 

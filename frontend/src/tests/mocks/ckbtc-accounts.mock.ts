@@ -6,6 +6,7 @@ import { mockPrincipal } from "./auth.store.mock";
 export const mockCkBTCToken: IcrcTokenMetadata = {
   name: "Test account",
   symbol: "ckBTC",
+  decimals: 8n,
   fee: BigInt(1),
 };
 

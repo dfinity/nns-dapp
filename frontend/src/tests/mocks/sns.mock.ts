@@ -5,7 +5,6 @@ import {
 } from "$lib/types/project-detail.context";
 import type { SnsSummary, SnsSwapCommitment, SnsTicket } from "$lib/types/sns";
 import { nowInSeconds } from "$lib/utils/date.utils";
-import { numberToE8s } from "$lib/utils/token.utils";
 import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
 import type { Principal } from "@dfinity/principal";
 import type { TokenAmount } from "@dfinity/utils";
@@ -33,7 +32,7 @@ export const snsTicketMock = ({
         subaccount: toNullable(subaccount),
       },
     ],
-    amount_icp_e8s: numberToE8s(10),
+    amount_icp_e8s: 1000000000n,
   },
 });
 

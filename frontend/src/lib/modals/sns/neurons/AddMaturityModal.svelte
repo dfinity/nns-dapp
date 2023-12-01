@@ -8,8 +8,10 @@
   import { numberToE8s } from "$lib/utils/token.utils";
   import { addMaturity } from "$lib/services/sns-neurons-dev.services";
   import type { SnsNeuronId } from "@dfinity/sns";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
 
   export let neuronId: SnsNeuronId;
+  export let token: IcrcTokenMetadata;
   export let rootCanisterId: Principal;
   export let reloadNeuron: () => Promise<void>;
 
@@ -35,7 +37,7 @@
     await addMaturity({
       rootCanisterId,
       neuronId,
-      amountE8s: numberToE8s(inputValue),
+      amountE8s: numberToE8s({ amount: inputValue, token }),
     });
     await reloadNeuron();
 

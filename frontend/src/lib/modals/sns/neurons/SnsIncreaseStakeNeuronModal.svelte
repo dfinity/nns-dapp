@@ -1,6 +1,6 @@
 <script lang="ts">
   import SnsTransactionModal from "$lib/modals/sns/neurons/SnsTransactionModal.svelte";
-  import type { TokenAmount, Token } from "@dfinity/utils";
+  import type { TokenAmount } from "@dfinity/utils";
   import type { Principal } from "@dfinity/principal";
   import type { WizardStep } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
@@ -17,9 +17,10 @@
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import type { IcrcTokenMetadata } from "$lib/types/icrc";
 
   export let neuronId: SnsNeuronId;
-  export let token: Token;
+  export let token: IcrcTokenMetadata;
   export let rootCanisterId: Principal;
   export let reloadNeuron: () => Promise<void>;
 
@@ -58,6 +59,7 @@
     const { success } = await increaseStakeNeuron({
       rootCanisterId,
       amount,
+      token,
       account,
       neuronId,
     });

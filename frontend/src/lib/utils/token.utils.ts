@@ -155,8 +155,13 @@ export const convertTCyclesToIcpNumber = ({
  * @returns {bigint}
  * @throws {Error} If the amount has more than 8 decimals.
  */
-// TODO: GIX-2150 Make `token` mandatory.
-export const numberToE8s = (amount: number, token: Token = ICPToken): bigint =>
+export const numberToE8s = ({
+  amount,
+  token,
+}: {
+  amount: number;
+  token: Token;
+}): bigint =>
   TokenAmount.fromNumber({
     amount,
     token,

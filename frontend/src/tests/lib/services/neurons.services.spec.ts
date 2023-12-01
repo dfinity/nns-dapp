@@ -41,6 +41,7 @@ import { toastsStore } from "@dfinity/gix-components";
 import { LedgerCanister } from "@dfinity/ledger-icp";
 import { Topic, type NeuronInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import { ICPToken } from "@dfinity/utils";
 import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
 import { tick } from "svelte";
 import { get } from "svelte/store";
@@ -1437,7 +1438,9 @@ describe("neurons-services", () => {
       });
 
       expect(spySplitNeuron).toBeCalledWith({
-        amount: numberToE8s(2.2) + BigInt(DEFAULT_TRANSACTION_FEE_E8S),
+        amount:
+          numberToE8s({ amount: 2.2, token: ICPToken }) +
+          BigInt(DEFAULT_TRANSACTION_FEE_E8S),
         identity: mockIdentity,
         neuronId: controlledNeuron.neuronId,
       });
@@ -1459,7 +1462,7 @@ describe("neurons-services", () => {
       expect(spySplitNeuron).toBeCalledWith({
         identity: mockIdentity,
         neuronId: controlledNeuron.neuronId,
-        amount: numberToE8s(amountWithFee),
+        amount: numberToE8s({ amount: amountWithFee, token: ICPToken }),
       });
     });
 

@@ -47,6 +47,7 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
+import { ICPToken } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -471,7 +472,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       describe("successful participation", () => {
         const formattedAmountICP = "5.00";
         const amountICP = 5;
-        const amountE8s = numberToE8s(amountICP);
+        const amountE8s = numberToE8s({ amount: amountICP, token: ICPToken });
         const finalCommitment = {
           icp: [
             {

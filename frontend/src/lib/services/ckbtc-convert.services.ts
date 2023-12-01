@@ -62,6 +62,7 @@ export const convertCkBTCToBtcIcrc2 = async ({
   amount,
   source,
   universeId,
+  token,
   canisters: { minterCanisterId, indexCanisterId },
   updateProgress,
 }: ConvertCkBTCToBtcParams &
@@ -76,7 +77,7 @@ export const convertCkBTCToBtcIcrc2 = async ({
     await approveTransfer({
       identity,
       canisterId: universeId,
-      amount: numberToE8s(amount),
+      amount: numberToE8s({ amount, token }),
       // 5 minutes should be long enough to perform the transfer but if it
       // doesn't succeed we don't want the approval to remain valid
       // indefinitely.
@@ -90,7 +91,7 @@ export const convertCkBTCToBtcIcrc2 = async ({
       identity,
       canisterId: minterCanisterId,
       address: destinationAddress,
-      amount: numberToE8s(amount),
+      amount: numberToE8s({ amount, token }),
     });
   } catch (err: unknown) {
     toastsError(toastRetrieveBtcError(err));
@@ -122,6 +123,7 @@ export const convertCkBTCToBtcIcrc2 = async ({
 export const convertCkBTCToBtc = async ({
   destinationAddress,
   amount,
+  token,
   source,
   universeId,
   canisters: { minterCanisterId, indexCanisterId },
@@ -178,6 +180,7 @@ export const convertCkBTCToBtc = async ({
   const { blockIndex } = await ckBTCTransferTokens({
     source,
     amount,
+    token,
     destinationAddress: ledgerAddress,
     universeId,
   });
@@ -192,6 +195,7 @@ export const convertCkBTCToBtc = async ({
   return await retrieveBtcAndReload({
     destinationAddress,
     amount,
+    token,
     source,
     universeId,
     canisters: { minterCanisterId, indexCanisterId },
@@ -211,6 +215,7 @@ export const convertCkBTCToBtc = async ({
 export const retrieveBtc = async ({
   destinationAddress,
   amount,
+  token,
   universeId,
   canisters: { minterCanisterId, indexCanisterId },
   updateProgress,
@@ -222,6 +227,7 @@ export const retrieveBtc = async ({
   return await retrieveBtcAndReload({
     destinationAddress,
     amount,
+    token,
     universeId,
     canisters: { minterCanisterId, indexCanisterId },
     updateProgress,
@@ -233,6 +239,7 @@ const retrieveBtcAndReload = async ({
   amount,
   source,
   universeId,
+  token,
   canisters: { minterCanisterId, indexCanisterId },
   updateProgress,
   blockIndex,
@@ -253,7 +260,7 @@ const retrieveBtcAndReload = async ({
     await retrieveBtcAPI({
       identity,
       address: bitcoinAddress,
-      amount: numberToE8s(amount),
+      amount: numberToE8s({ amount, token }),
       canisterId: minterCanisterId,
     });
   } catch (err: unknown) {

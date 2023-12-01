@@ -2,6 +2,7 @@ import type { CkBTCInfoStoreUniverseData } from "$lib/stores/ckbtc-info.store";
 import { i18n } from "$lib/stores/i18n";
 import type { Account } from "$lib/types/account";
 import { CkBTCErrorRetrieveBtcMinAmount } from "$lib/types/ckbtc.errors";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
 import { notForceCallStrategy } from "$lib/utils/env.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -13,12 +14,14 @@ export const assertCkBTCUserInputAmount = ({
   networkBtc,
   sourceAccount,
   amount,
+  token,
   transactionFee,
   infoData,
 }: {
   networkBtc: boolean;
   sourceAccount: Account | undefined;
   amount: number | undefined;
+  token: IcrcTokenMetadata;
   transactionFee: bigint;
   infoData: CkBTCInfoStoreUniverseData | undefined;
 }) => {
@@ -36,7 +39,7 @@ export const assertCkBTCUserInputAmount = ({
     return;
   }
 
-  const amountE8s = numberToE8s(amount);
+  const amountE8s = numberToE8s({ amount, token });
 
   // No additional check if amount is zero because user might be entering a value such as 0.00000...
   if (amountE8s === BigInt(0)) {

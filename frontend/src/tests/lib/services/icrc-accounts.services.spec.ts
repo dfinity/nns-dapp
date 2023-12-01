@@ -215,6 +215,7 @@ describe("icrc-accounts-services", () => {
       await icrcTransferTokens({
         source: mockIcrcMainAccount,
         amount,
+        token: mockToken,
         destinationAddress: encodeIcrcAccount(destinationAccount),
         fee,
         ledgerCanisterId,
@@ -238,6 +239,7 @@ describe("icrc-accounts-services", () => {
           subAccount: mockSubAccountArray,
         },
         amount,
+        token: mockToken,
         destinationAddress: encodeIcrcAccount(destinationAccount),
         fee,
         ledgerCanisterId,
@@ -270,6 +272,7 @@ describe("icrc-accounts-services", () => {
       await icrcTransferTokens({
         source: mockIcrcMainAccount,
         amount,
+        token: mockToken,
         destinationAddress: encodeIcrcAccount(destinationAccount),
         fee,
         ledgerCanisterId,

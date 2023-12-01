@@ -59,6 +59,7 @@ describe("ckbtc-convert-services", () => {
     source: mockCkBTCMainAccount,
     destinationAddress: mockBTCAddressTestnet,
     amount: 1,
+    token: mockCkBTCToken,
     universeId: CKBTC_UNIVERSE_CANISTER_ID,
     canisters: mockCkBTCAdditionalCanisters,
   };
@@ -147,7 +148,10 @@ describe("ckbtc-convert-services", () => {
 
       describe("transfer tokens succeed", () => {
         const transferSpy = ledgerCanisterMock.transfer;
-        const amountE8s = numberToE8s(params.amount);
+        const amountE8s = numberToE8s({
+          amount: params.amount,
+          token: params.token,
+        });
 
         beforeEach(() => {
           minterCanisterMock.retrieveBtc.mockReset();
@@ -417,7 +421,7 @@ describe("ckbtc-convert-services", () => {
 
       expect(retrieveBtcSpy).toBeCalledWith({
         address: mockBTCAddressTestnet,
-        amount: numberToE8s(params.amount),
+        amount: numberToE8s({ amount: params.amount, token: params.token }),
       });
 
       // We only test that the call is made here. Test should be covered by its respective service.
@@ -565,7 +569,7 @@ describe("ckbtc-convert-services", () => {
       expect(approveTransferSpy).toBeCalledWith({
         identity: mockIdentity,
         canisterId: params.universeId,
-        amount: numberToE8s(params.amount),
+        amount: numberToE8s({ amount: params.amount, token: params.token }),
         expiresAt: BigInt(now) * 1_000_000n + 5n * 60n * 1_000_000_000n,
         spender: mockCkBTCAdditionalCanisters.minterCanisterId,
       });
@@ -599,7 +603,7 @@ describe("ckbtc-convert-services", () => {
         identity: mockIdentity,
         canisterId: mockCkBTCAdditionalCanisters.minterCanisterId,
         address: params.destinationAddress,
-        amount: numberToE8s(params.amount),
+        amount: numberToE8s({ amount: params.amount, token: params.token }),
       });
 
       expect(approveTransferSpy).toBeCalledTimes(1);
