@@ -5,6 +5,7 @@ use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTr
 use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
 use ic_stable_structures::{memory_manager::VirtualMemory, DefaultMemoryImpl};
 use std::collections::BTreeMap;
+mod enum_boilerplate;
 
 /// An accounts database delegates API calls to underlying implementations.
 ///
@@ -30,77 +31,6 @@ pub enum AccountsDb {
     UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap),
 }
 
-impl AccountsDbBTreeMapTrait for AccountsDb {
-    fn as_map(&self) -> BTreeMap<Vec<u8>, Account> {
-        match self {
-            AccountsDb::Map(map_db) => map_db.as_map(),
-            AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => {
-                unbounded_stable_btree_map_db.as_map()
-            }
-        }
-    }
-    fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
-        AccountsDb::Map(AccountsDbAsMap::from_map(map))
-    }
-}
-
-// TODO: This is boilerplate.  can it be eliminated with a macro?
-impl AccountsDbTrait for AccountsDb {
-    fn schema_label(&self) -> SchemaLabel {
-        match &self {
-            AccountsDb::Map(map_db) => map_db.schema_label(),
-            AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => {
-                unbounded_stable_btree_map_db.schema_label()
-            }
-        }
-    }
-    fn db_insert_account(&mut self, account_key: &[u8], account: Account) {
-        match self {
-            AccountsDb::Map(map_db) => map_db.db_insert_account(account_key, account),
-            AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => {
-                unbounded_stable_btree_map_db.db_insert_account(account_key, account)
-            }
-        }
-    }
-    fn db_contains_account(&self, account_key: &[u8]) -> bool {
-        match self {
-            AccountsDb::Map(map_db) => map_db.db_contains_account(account_key),
-            AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => {
-                unbounded_stable_btree_map_db.db_contains_account(account_key)
-            }
-        }
-    }
-    fn db_get_account(&self, account_key: &[u8]) -> Option<Account> {
-        match self {
-            AccountsDb::Map(map_db) => map_db.db_get_account(account_key),
-            AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => {
-                unbounded_stable_btree_map_db.db_get_account(account_key)
-            }
-        }
-    }
-    fn db_remove_account(&mut self, account_key: &[u8]) {
-        match self {
-            AccountsDb::Map(map_db) => map_db.db_remove_account(account_key),
-            AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => {
-                unbounded_stable_btree_map_db.db_remove_account(account_key)
-            }
-        }
-    }
-    fn db_accounts_len(&self) -> u64 {
-        match self {
-            AccountsDb::Map(map_db) => map_db.db_accounts_len(),
-            AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => {
-                unbounded_stable_btree_map_db.db_accounts_len()
-            }
-        }
-    }
-    fn iter(&self) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
-        match self {
-            AccountsDb::Map(map_db) => map_db.iter(),
-            AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => unbounded_stable_btree_map_db.iter(),
-        }
-    }
-}
 
 impl Default for AccountsDbAsProxy {
     fn default() -> Self {
