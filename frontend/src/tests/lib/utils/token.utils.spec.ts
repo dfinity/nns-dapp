@@ -7,6 +7,7 @@ import {
   formatToken,
   getMaxTransactionAmount,
   numberToE8s,
+  numberToUlps,
   sumAmountE8s,
 } from "$lib/utils/token.utils";
 import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
@@ -271,6 +272,38 @@ describe("token-utils", () => {
         BigInt(1_000_000_000_000_000_000)
       );
       expect(numberToE8s(3.14, mockCkETHToken)).toBe(
+        BigInt(3_140_000_000_000_000_000)
+      );
+    });
+  });
+
+  describe("numberToUlps", () => {
+    it("converts number to e8s", () => {
+      const token = {
+        decimals: 8n,
+        symbol: "TEST",
+        name: "Test",
+      };
+      expect(numberToUlps({ amount: 1.14, token })).toBe(BigInt(114_000_000));
+      expect(numberToUlps({ amount: 1, token })).toBe(BigInt(100_000_000));
+      expect(numberToUlps({ amount: 3.14, token })).toBe(BigInt(314_000_000));
+      expect(numberToUlps({ amount: 0.14, token })).toBe(BigInt(14_000_000));
+    });
+
+    // TODO: Enable when we upgrade ic-js with TokenAmountV2 supporting decimals.
+    it.skip("converts number to e8s with token", () => {
+      const token = {
+        decimals: 18n,
+        symbol: "TEST",
+        name: "Test",
+      };
+      expect(numberToUlps({ amount: 1.14, token })).toBe(
+        BigInt(1_140_000_000_000_000_000)
+      );
+      expect(numberToUlps({ amount: 1, token })).toBe(
+        BigInt(1_000_000_000_000_000_000)
+      );
+      expect(numberToUlps({ amount: 3.14, token })).toBe(
         BigInt(3_140_000_000_000_000_000)
       );
     });
