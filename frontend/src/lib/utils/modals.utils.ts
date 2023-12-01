@@ -28,8 +28,8 @@ export const openWalletModal = (detail: WalletModal) =>
     detail,
   });
 
-export const openAccountsModal = (detail: AccountsModal) =>
-  emit<AccountsModal>({
+export const openAccountsModal = <T>(detail: AccountsModal<T>) =>
+  emit<AccountsModal<T>>({
     message: "nnsAccountsModal",
     detail,
   });

@@ -20,6 +20,7 @@
   export let ledgerCanisterId: Principal;
   export let token: IcrcTokenMetadata;
   export let transactionFee: TokenAmount;
+  export let reloadSourceAccount: (() => void) | undefined = undefined;
 
   let transactionInit: TransactionInit = {
     sourceAccount: selectedAccount,
@@ -46,6 +47,7 @@
       source: sourceAccount,
       destinationAddress,
       amount,
+      token,
       ledgerCanisterId,
       fee: token.fee,
     });
@@ -53,6 +55,7 @@
     stopBusy("accounts");
 
     if (nonNullish(blockIndex)) {
+      reloadSourceAccount?.();
       toastsSuccess({ labelKey: "accounts.transaction_success" });
       dispatcher("nnsClose");
     }

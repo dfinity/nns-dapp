@@ -17,6 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Enable ICRC-2 flow for BTC withdrawal.
 * Add ENABLE_CKETH feature flag.
 * Get ckETH canister IDs from environment/configuration.
+* Display BTC deposits with 1-11 confirmations as "pending".
 
 #### Changed
 
@@ -33,6 +34,8 @@ proposal is successful, the changes it released will be moved from this file to
 #### Security
 
 #### Not Published
+
+* Structure to protect Rust access to stable memory.
 
 ### Operations
 

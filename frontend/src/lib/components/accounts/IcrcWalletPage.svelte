@@ -25,12 +25,27 @@
   export let selectedUniverseId: UniverseCanisterId | undefined;
   export let token: IcrcTokenMetadata | undefined = undefined;
   export let selectedAccountStore: Writable<WalletStore>;
+  export let reloadTransactions: () => Promise<void>;
 
   debugSelectedAccountStore(selectedAccountStore);
 
   const reloadOnlyAccountFromStore = () => setSelectedAccount();
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
+
+  // e.g. is called from "Receive" modal after user click "Done"
+  export const reloadAccount = async () => {
+    if (isNullish(selectedUniverseId)) {
+      return;
+    }
+
+    await loadAccount(selectedUniverseId);
+
+    // transactions?.reloadTransactions?.() returns a promise.
+    // However, the UI displays skeletons while loading and the user can proceed with other operations during this time.
+    // That is why we do not need to wait for the promise to resolve here.
+    reloadTransactions();
+  };
 
   export const setSelectedAccount = () => {
     selectedAccountStore.set({

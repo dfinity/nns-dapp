@@ -46,6 +46,8 @@
   import HardwareWalletShowActionButton from "$lib/components/accounts/HardwareWalletShowActionButton.svelte";
   import RenameSubAccountButton from "$lib/components/accounts/RenameSubAccountButton.svelte";
   import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import IC_LOGO from "$lib/assets/icp.svg";
 
   onMount(() => {
     pollAccounts();
@@ -211,6 +213,8 @@
         type="nns-receive"
         account={$selectedAccountStore.account}
         reload={reloadAccount}
+        universeId={OWN_CANISTER_ID}
+        logo={IC_LOGO}
       />
     </Footer>
   </Island>

@@ -34,6 +34,8 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
     ckbtcIndexCanisterId: "n5wcd-faaaa-aaaar-qaaea-cai",
     ckbtcLedgerCanisterId: "mxzaz-hqaaa-aaaar-qaada-cai",
     cyclesMintingCanisterId: "rkp4c-7iaaa-aaaaa-aaaca-cai",
+    ckethLedgerCanisterId: "ss2fx-dyaaa-aaaar-qacoq-cai",
+    ckethIndexCanisterId: "s3zol-vqaaa-aaaar-qacpa-cai",
     dfxNetwork: "testnet",
     featureFlags: JSON.stringify({
       ENABLE_CKBTC: true,
@@ -43,7 +45,7 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
       ENABLE_STAKE_NEURON_ICRC1: true,
       ENABLE_SWAP_ICRC1: true,
       ENABLE_MY_TOKENS: false,
-      ENABLE_CKETH: false,
+      ENABLE_CKETH: true,
       ENABLE_CKBTC_ICRC2: true,
       TEST_FLAG_EDITABLE: true,
       TEST_FLAG_NOT_EDITABLE: true,

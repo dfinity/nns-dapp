@@ -22,7 +22,7 @@ import {
   type IcrcBlockIndex,
 } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
-import { isNullish, nonNullish } from "@dfinity/utils";
+import { isNullish, nonNullish, type Token } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { queryAndUpdate } from "./utils.services";
 
@@ -47,6 +47,7 @@ export const loadIcrcToken = ({
 
   return queryAndUpdate<IcrcTokenMetadata, unknown>({
     strategy: certified ? FORCE_CALL_STRATEGY : "query",
+    identityType: "current",
     request: ({ certified, identity }) =>
       queryIcrcToken({
         identity,
@@ -137,30 +138,6 @@ export const loadIcrcAccount = ({
   });
 };
 
-export const loadIcrcAccounts = async ({
-  ledgerCanisterIds,
-  certified,
-}: {
-  ledgerCanisterIds: Principal[];
-  certified: boolean;
-}) => {
-  const results: PromiseSettledResult<[void, void]>[] =
-    await Promise.allSettled(
-      ledgerCanisterIds.map((ledgerCanisterId) =>
-        Promise.all([
-          loadIcrcAccount({ ledgerCanisterId, certified }),
-          loadIcrcToken({ ledgerCanisterId, certified }),
-        ])
-      )
-    );
-
-  const error: boolean =
-    results.find(({ status }) => status === "rejected") !== undefined;
-  if (error) {
-    toastsError({ labelKey: "error.sns_accounts_balance_load" });
-  }
-};
-
 ///
 /// These following services are implicitly covered by their consumers' services testing - i.e. ckbtc-accounts.services.spec and sns-accounts.services.spec
 ///
@@ -169,6 +146,7 @@ export interface IcrcTransferTokensUserParams {
   source: Account;
   destinationAddress: string;
   amount: number;
+  token?: Token;
 }
 
 // TODO: use `wallet-accounts.services`
@@ -176,6 +154,7 @@ export const transferTokens = async ({
   source,
   destinationAddress,
   amount,
+  token,
   fee,
   transfer,
   reloadAccounts,
@@ -195,7 +174,7 @@ export const transferTokens = async ({
       throw new Error("error.transaction_fee_not_found");
     }
 
-    const amountE8s = numberToE8s(amount);
+    const amountE8s = numberToE8s(amount, token);
     const identity: Identity = await getIcrcAccountIdentity(source);
     const to = decodeIcrcAccount(destinationAddress);
 
@@ -226,6 +205,7 @@ export const icrcTransferTokens = async ({
   source,
   destinationAddress,
   amount,
+  token,
   fee,
   ledgerCanisterId,
 }: IcrcTransferTokensUserParams & {
@@ -235,6 +215,7 @@ export const icrcTransferTokens = async ({
   return transferTokens({
     source,
     amount,
+    token,
     fee,
     destinationAddress,
     transfer: async (
@@ -247,7 +228,7 @@ export const icrcTransferTokens = async ({
         canisterId: ledgerCanisterId,
       }),
     reloadAccounts: async () =>
-      await loadIcrcAccount({ ledgerCanisterId, certified: true }),
+      loadIcrcAccount({ ledgerCanisterId, certified: true }),
     // Web workders take care of refreshing transactions
     reloadTransactions: () => Promise.resolve(),
   });

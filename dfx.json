@@ -194,7 +194,9 @@
       "wasm": "target/ic/ckbtc_ledger.wasm",
       "type": "custom",
       "remote": {
-        "id": {}
+        "id": {
+          "mainnet": "ss2fx-dyaaa-aaaar-qacoq-cai"
+        }
       }
     },
     "cketh_index": {
@@ -205,7 +207,9 @@
       "wasm": "target/ic/ckbtc_index.wasm",
       "type": "custom",
       "remote": {
-        "id": {}
+        "id": {
+          "mainnet": "s3zol-vqaaa-aaaar-qacpa-cai"
+        }
       }
     },
     "tvl": {
@@ -277,6 +281,19 @@
       },
       "providers": [
         "https://dskloet-ingress.devenv.dfinity.network"
+      ],
+      "type": "persistent"
+    },
+    "devenv_mstr": {
+      "config": {
+        "HOST": "https://mstr-ingress.devenv.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_CKBTC": true,
+          "ENABLE_CKTESTBTC": false
+        }
+      },
+      "providers": [
+        "https://mstr-ingress.devenv.dfinity.network"
       ],
       "type": "persistent"
     },

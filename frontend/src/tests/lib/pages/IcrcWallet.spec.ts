@@ -12,6 +12,7 @@ import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
+import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCkETHMainAccount,
@@ -19,6 +20,7 @@ import {
 } from "$tests/mocks/cketh-accounts.mock";
 import { mockUniversesTokens } from "$tests/mocks/tokens.mock";
 import { IcrcWalletPo } from "$tests/page-objects/IcrcWallet.page-object";
+import { ReceiveModalPo } from "$tests/page-objects/ReceiveModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
@@ -69,10 +71,29 @@ describe("IcrcWallet", () => {
     accountIdentifier: mockCkETHMainAccount.identifier,
   };
 
+  const modalProps = {
+    ...props,
+    testComponent: IcrcWallet,
+  };
+
   const renderWallet = async (): Promise<IcrcWalletPo> => {
     const { container } = render(IcrcWallet, props);
     await runResolvedPromises();
     return IcrcWalletPo.under(new JestPageObjectElement(container));
+  };
+
+  const renderWalletAndModal = async (): Promise<{
+    walletPo: IcrcWalletPo;
+    receiveModalPo: ReceiveModalPo;
+  }> => {
+    const { container } = render(AccountsTest, modalProps);
+    await runResolvedPromises();
+    return {
+      walletPo: IcrcWalletPo.under(new JestPageObjectElement(container)),
+      receiveModalPo: ReceiveModalPo.under(
+        new JestPageObjectElement(container)
+      ),
+    };
   };
 
   beforeEach(() => {
@@ -180,6 +201,29 @@ describe("IcrcWallet", () => {
       expect(await po.getWalletPageHeadingPo().getTitle()).toBe(
         "11'112'222.33 ckETHTEST"
       );
+    });
+
+    it("should open receive modal", async () => {
+      const { walletPo, receiveModalPo } = await renderWalletAndModal();
+
+      expect(await receiveModalPo.isPresent()).toBe(false);
+      await walletPo.getWalletFooterPo().clickReceiveButton();
+      expect(await receiveModalPo.isPresent()).toBe(true);
+    });
+
+    it("should reload on close receive modal", async () => {
+      const { walletPo, receiveModalPo } = await renderWalletAndModal();
+
+      expect(await receiveModalPo.isPresent()).toBe(false);
+      await walletPo.getWalletFooterPo().clickReceiveButton();
+      expect(await receiveModalPo.isPresent()).toBe(true);
+
+      // TODO GIX-2150: receiveModalPo.clickFinish() to be debugged
+      // const spy = vi.spyOn(services, "loadAccounts");
+
+      // await receiveModalPo.clickFinish();
+
+      // await waitFor(() => expect(spy).toHaveBeenCalled());
     });
   });
 });

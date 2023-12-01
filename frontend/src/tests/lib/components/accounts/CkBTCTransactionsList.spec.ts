@@ -1,11 +1,14 @@
 import CkBTCTransactionsList from "$lib/components/accounts/CkBTCTransactionsList.svelte";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
+import { ckbtcPendingUtxosStore } from "$lib/stores/ckbtc-pending-utxos.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
+import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import {
   createBurnTransaction,
   mockIcrcTransactionMint,
@@ -13,6 +16,7 @@ import {
 } from "$tests/mocks/icrc-transactions.mock";
 import { IcrcTransactionsListPo } from "$tests/page-objects/IcrcTransactionsList.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Cbor } from "@dfinity/agent";
 import { render } from "@testing-library/svelte";
 
@@ -53,7 +57,8 @@ describe("CkBTCTransactionList", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
+    ckbtcPendingUtxosStore.reset();
     vi.useFakeTimers().setSystemTime(new Date());
   });
 
@@ -165,5 +170,44 @@ describe("CkBTCTransactionList", () => {
     const cards = await po.getTransactionCardPos();
 
     expect(await cards[0].getIdentifier()).toEqual("From: BTC Network");
+  });
+
+  it("should render pending UTXOs", async () => {
+    const amount = 1000_000n;
+    const kytFee = 4_000n;
+    const utxo = {
+      outpoint: {
+        txid: new Uint8Array([2, 5, 5]),
+        vout: 1,
+      },
+      value: amount,
+      confirmations: 4,
+    };
+    ckbtcPendingUtxosStore.setUtxos({
+      universeId: CKBTC_UNIVERSE_CANISTER_ID,
+      utxos: [utxo],
+    });
+
+    ckBTCInfoStore.setInfo({
+      canisterId: CKBTC_UNIVERSE_CANISTER_ID,
+      certified: true,
+      info: {
+        ...mockCkBTCMinterInfo,
+        kyt_fee: kytFee,
+      },
+    });
+
+    const { po } = renderComponent();
+    await runResolvedPromises();
+    const cards = await po.getTransactionCardPos();
+
+    expect(cards).toHaveLength(1);
+    const card = cards[0];
+    expect(await card.hasPendingIcon()).toBe(true);
+    expect(await card.getHeadline()).toBe("Receiving BTC");
+    expect(await card.getIdentifier()).toBe("From: BTC Network");
+    // 0.01 deposited minus 0.00004 KYT fee.
+    expect(await card.getAmount()).toBe("+0.00996");
+    expect(await card.getDate()).toBe("Pending...");
   });
 });

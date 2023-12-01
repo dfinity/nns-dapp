@@ -15,13 +15,9 @@
   import AccountsModals from "$lib/modals/accounts/AccountsModals.svelte";
   import CkBTCAccountsModals from "$lib/modals/accounts/CkBTCAccountsModals.svelte";
   import IcrcWallet from "$lib/pages/IcrcWallet.svelte";
-  import { onMount } from "svelte";
-  import { loadCkETHCanisters } from "$lib/services/cketh-canisters.services";
+  import IcrcTokenAccountsModals from "$lib/modals/accounts/IcrcTokenAccountsModals.svelte";
 
   export let accountIdentifier: string | undefined | null = undefined;
-
-  // TODO: refactor this should not be loaded explicitely within this component or Accounts
-  onMount(loadCkETHCanisters);
 
   layoutTitleStore.set({
     title: $i18n.wallet.title,
@@ -41,6 +37,9 @@
 
   {#if $isCkBTCUniverseStore}
     <CkBTCAccountsModals />
+  {:else if $isIcrcTokenUniverseStore}
+    <IcrcTokenAccountsModals />
+    <AccountsModals />
   {:else}
     <AccountsModals />
   {/if}

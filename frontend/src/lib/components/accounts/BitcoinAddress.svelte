@@ -60,7 +60,7 @@
     $min: `${minConfirmations ?? ""}`,
   })}
 
-  <CkBTCWalletActions inline {minterCanisterId} {reload} />
+  <CkBTCWalletActions inline {universeId} {minterCanisterId} {reload} />
 
   {$i18n.ckbtc.incoming_bitcoin_network_part_2}
   <a
