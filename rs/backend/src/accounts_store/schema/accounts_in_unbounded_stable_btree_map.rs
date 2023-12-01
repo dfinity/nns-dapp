@@ -17,13 +17,13 @@ pub struct AccountsDbAsUnboundedStableBTreeMap {
 
 impl AccountsDbAsUnboundedStableBTreeMap {
     /// Creates a new, empty database.
-    fn new(memory: DefaultMemoryImpl) -> Self {
+    pub fn new(memory: DefaultMemoryImpl) -> Self {
         Self {
             accounts: StableBTreeMap::new(memory),
         }
     }
     /// Loads a database.
-    fn load(memory: DefaultMemoryImpl) -> Self {
+    pub fn load(memory: DefaultMemoryImpl) -> Self {
         Self {
             accounts: StableBTreeMap::load(memory),
         }

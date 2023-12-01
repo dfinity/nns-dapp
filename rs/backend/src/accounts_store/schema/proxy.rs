@@ -2,9 +2,9 @@
 //!
 //! The proxy manages migrations from one implementation to another.
 use std::collections::BTreeMap;
+use ic_stable_structures::DefaultMemoryImpl;
 
 use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
-
 use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel};
 
 /// An accounts database delegates API calls to underlying implementations.
@@ -22,7 +22,18 @@ use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTr
 pub struct AccountsDbAsProxy {
     authoritative_schema: SchemaLabel,
     map: AccountsDbAsMap,
-    stable: Option<AccountsDbAsUnboundedStableBTreeMap>, // TODO: Define a database using the new expandable memory.
+    unbounded_stable_btree_map: Option<AccountsDbAsUnboundedStableBTreeMap>, // TODO: Define a database using the new expandable memory.
+}
+
+// Constructors
+impl AccountsDbAsProxy {
+    pub fn new_unbounded_stable_btree_map(memory: DefaultMemoryImpl) -> Self {
+        Self {
+            authoritative_schema: SchemaLabel::AccountsInStableMemory, // TODO: Rename schema label to AccountsInUnboundedStableBTreeMap.
+            map: AccountsDbAsMap::default(),
+            unbounded_stable_btree_map: Some(AccountsDbAsUnboundedStableBTreeMap::new(memory)),
+        }
+    }
 }
 
 impl AccountsDbAsProxy {
@@ -37,7 +48,7 @@ impl AccountsDbBTreeMapTrait for AccountsDbAsProxy {
         Self {
             authoritative_schema: SchemaLabel::Map,
             map: AccountsDbAsMap::from_map(map),
-            stable: None,
+            unbounded_stable_btree_map: None,
         }
     }
     fn as_map(&self) -> &BTreeMap<Vec<u8>, Account> {
@@ -48,7 +59,7 @@ impl AccountsDbBTreeMapTrait for AccountsDbAsProxy {
 impl AccountsDbTrait for AccountsDbAsProxy {
     // Inserts into all the underlying databases.
     fn db_insert_account(&mut self, account_key: &[u8], account: Account) {
-        if let Some(db) = self.stable.as_mut() {
+        if let Some(db) = self.unbounded_stable_btree_map.as_mut() {
             db.db_insert_account(account_key, account.clone());
         }
         self.map.db_insert_account(account_key, account);
@@ -57,20 +68,20 @@ impl AccountsDbTrait for AccountsDbAsProxy {
     fn db_contains_account(&self, account_key: &[u8]) -> bool {
         match self.authoritative_schema {
             SchemaLabel::Map => self.map.db_contains_account(account_key),
-            SchemaLabel::AccountsInStableMemory => self.stable.as_ref().unwrap().db_contains_account(account_key), // TODO: Need a way of getting the authoritative database without unwrap.
+            SchemaLabel::AccountsInStableMemory => self.unbounded_stable_btree_map.as_ref().unwrap().db_contains_account(account_key), // TODO: Need a way of getting the authoritative database without unwrap.
         }
     }
     // Gets an account from the authoritative database.
     fn db_get_account(&self, account_key: &[u8]) -> Option<Account> {
         match self.authoritative_schema {
             SchemaLabel::Map => self.map.db_get_account(account_key),
-            SchemaLabel::AccountsInStableMemory => self.stable.as_ref().unwrap().db_get_account(account_key), // TODO: Need a way of getting the authoritative database without unwrap.
+            SchemaLabel::AccountsInStableMemory => self.unbounded_stable_btree_map.as_ref().unwrap().db_get_account(account_key), // TODO: Need a way of getting the authoritative database without unwrap.
         }
     }
     // Removes an account from all underlying databases.
     fn db_remove_account(&mut self, account_key: &[u8]) {
         self.map.db_remove_account(account_key);
-        if let Some(db) = self.stable.as_mut() {
+        if let Some(db) = self.unbounded_stable_btree_map.as_mut() {
             db.db_remove_account(account_key);
         }
     }
@@ -78,14 +89,14 @@ impl AccountsDbTrait for AccountsDbAsProxy {
     fn db_accounts_len(&self) -> u64 {
         match self.authoritative_schema {
             SchemaLabel::Map => self.map.db_accounts_len(),
-            SchemaLabel::AccountsInStableMemory => self.stable.as_ref().unwrap().db_accounts_len(), // TODO: Need a way of getting the authoritative database without unwrap.
+            SchemaLabel::AccountsInStableMemory => self.unbounded_stable_btree_map.as_ref().unwrap().db_accounts_len(), // TODO: Need a way of getting the authoritative database without unwrap.
         }
     }
     // Iterates over the values of the authoritative database.
     fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
         match self.authoritative_schema {
             SchemaLabel::Map => self.map.values(),
-            SchemaLabel::AccountsInStableMemory => self.stable.as_ref().unwrap().values(), // TODO: Need a way of getting the authoritative database without unwrap.
+            SchemaLabel::AccountsInStableMemory => self.unbounded_stable_btree_map.as_ref().unwrap().values(), // TODO: Need a way of getting the authoritative database without unwrap.
         }
     }
     fn schema_label(&self) -> SchemaLabel {
