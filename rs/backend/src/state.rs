@@ -63,7 +63,7 @@ impl State {
             SchemaLabel::AccountsInStableMemory => {
                 dfn_core::api::print("New State: AccountsInStableMemory");
                 let partitions = partitions_maybe.unwrap_or_else(|_memory| {
-                    trap_with(&format!("New state: Partitions should have been prepared."));
+                    trap_with("New state: Partitions should have been prepared.");
                     unreachable!();
                 });
                 let accounts_store =

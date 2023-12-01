@@ -82,9 +82,9 @@ impl AccountsDbTrait for AccountsDbAsProxy {
     // Inserts into all the underlying databases.
     fn db_insert_account(&mut self, account_key: &[u8], account: Account) {
         self.authoritative_db.db_insert_account(account_key, account.clone());
-        self.second_db
-            .as_mut()
-            .map(|db| db.db_insert_account(account_key, account));
+        if let Some(db) = &mut self.second_db {
+            db.db_insert_account(account_key, account);
+        }
     }
     // Checks the authoritative database.
     fn db_contains_account(&self, account_key: &[u8]) -> bool {

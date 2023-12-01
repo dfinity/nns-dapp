@@ -44,7 +44,7 @@ impl AccountsDbTrait for AccountsDbAsUnboundedStableBTreeMap {
         self.accounts.remove(&account_key.to_vec());
     }
     fn db_accounts_len(&self) -> u64 {
-        self.accounts.len() as u64
+        self.accounts.len()
     }
     fn iter(&self) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
         let iterator = self.accounts.iter();
