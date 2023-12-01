@@ -57,7 +57,7 @@ impl State {
                 state
             }
             SchemaLabel::AccountsInStableMemory => {
-                let partitions = partitions_maybe.unwrap_or_else(|memory| {
+                let partitions = partitions_maybe.unwrap_or_else(|_memory| {
                     trap_with(&format!("New state: Partitions should have been prepared."));
                     unreachable!();
                 });
