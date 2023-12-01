@@ -58,7 +58,8 @@ impl fmt::Debug for AccountsDbAsUnboundedStableBTreeMap {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         write!(
             f,
-            "AccountsDbAsUnboundedStableBTreeMap {{ accounts: StableBTreeMap{{..}} }}"
+            "AccountsDbAsUnboundedStableBTreeMap {{ accounts: StableBTreeMap{{.. {} entries}} }}",
+            self.accounts.len()
         )
     }
 }

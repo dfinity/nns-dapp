@@ -69,6 +69,7 @@ fn pre_upgrade() {
         stats::gibibytes(stats::wasm_memory_size_bytes())
     ));
     STATE.with(|s| {
+        dfn_core::api::print(format!("pre_upgrade accounts_store: {:#?}", s.accounts_store.borrow()));
         s.pre_upgrade();
     });
     dfn_core::api::print(format!(
