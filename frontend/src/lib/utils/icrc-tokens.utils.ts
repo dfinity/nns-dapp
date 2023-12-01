@@ -24,7 +24,10 @@ export const mapOptionalToken = (
           acc = { ...acc, ...("Nat" in value && { fee: value.Nat }) };
           break;
         case IcrcMetadataResponseEntries.DECIMALS:
-          acc = { ...acc, ...("Nat" in value && { decimals: value.Nat }) };
+          acc = {
+            ...acc,
+            ...("Nat" in value && { decimals: Number(value.Nat) }),
+          };
           break;
         case IcrcMetadataResponseEntries.LOGO:
           acc = { ...acc, ...("Text" in value && { logo: value.Text }) };

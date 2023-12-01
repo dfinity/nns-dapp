@@ -466,7 +466,7 @@ export const mockSnsToken: IcrcTokenMetadata = {
   symbol: "TST",
   name: "Tetris",
   fee: BigInt(40_000),
-  decimals: 8n,
+  decimals: 8,
 };
 
 export const mockQueryTokenResponse: IcrcTokenMetadataResponse = [
