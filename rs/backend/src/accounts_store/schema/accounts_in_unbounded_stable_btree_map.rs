@@ -6,25 +6,25 @@
 //! as described on the [dfinity forum](https://forum.dfinity.org/t/stable-structures-removing-the-bounded-size-requirement/21167).
 
 
-use super::{Account, AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel};
-use ic_stable_structures::{btreemap::BTreeMap, DefaultMemoryImpl};
+use super::{Account, AccountsDbTrait, SchemaLabel};
+use ic_stable_structures::{btreemap::BTreeMap as StableBTreeMap, DefaultMemoryImpl};
 
 // TODO: Implement Eq and PartialEq for ic_stable_structures::btreemap::BTreeMap, as this makes testing easier.  It is unlikely that Eq will be used on any large data dataset.
 pub struct AccountsDbAsUnboundedStableBTreeMap {
-    accounts: BTreeMap<Vec<u8>, Account,  DefaultMemoryImpl>,
+    accounts: StableBTreeMap<Vec<u8>, Account,  DefaultMemoryImpl>,
 }
 
 impl AccountsDbAsUnboundedStableBTreeMap {
     /// Creates a new, empty database.
     fn new(memory: DefaultMemoryImpl) -> Self {
         Self {
-            accounts: BTreeMap::new(memory),
+            accounts: StableBTreeMap::new(memory),
         }
     }
     /// Loads a database.
     fn load(memory: DefaultMemoryImpl) -> Self {
         Self {
-            accounts: BTreeMap::load(memory),
+            accounts: StableBTreeMap::load(memory),
         }
     }
 }

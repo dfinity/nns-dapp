@@ -5,7 +5,7 @@
 pub mod accounts_in_stable_memory;
 pub mod map;
 pub mod proxy;
-pub mod accounts_in_stable_memory_v2;
+pub mod accounts_in_unbounded_stable_btree_map;
 
 // Mechanics
 use crate::accounts_store::Account;
