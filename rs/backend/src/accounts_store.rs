@@ -13,11 +13,13 @@ use ic_ledger_core::timestamp::TimeStamp;
 use ic_ledger_core::tokens::SignedTokens;
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::{CYCLES_MINTING_CANISTER_ID, GOVERNANCE_CANISTER_ID};
+use ic_stable_structures::{Storable, storable::Bound};
 use icp_ledger::Operation::{self, Approve, Burn, Mint, Transfer, TransferFrom};
 use icp_ledger::{AccountIdentifier, BlockIndex, Memo, Subaccount, Tokens};
 use itertools::Itertools;
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
+use std::borrow::Cow;
 use std::cmp::{min, Ordering};
 use std::collections::{BTreeMap, HashMap, HashSet, VecDeque};
 use std::ops::RangeTo;
@@ -74,6 +76,16 @@ pub struct Account {
     sub_accounts: HashMap<u8, NamedSubAccount>,
     hardware_wallet_accounts: Vec<NamedHardwareWalletAccount>,
     canisters: Vec<NamedCanister>,
+}
+
+impl Storable for Account {
+    const BOUND: Bound = Bound::Unbounded;
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
+        unimplemented!()
+    }
+    fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
+        unimplemented!()
+    }
 }
 
 #[derive(CandidType, Deserialize, Debug, Eq, PartialEq, Clone)]
