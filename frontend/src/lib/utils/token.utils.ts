@@ -147,6 +147,7 @@ export const convertTCyclesToIcpNumber = ({
 }): number => tCycles / (Number(exchangeRate) / NUMBER_XDR_PER_ONE_ICP);
 
 /**
+ * @deprecated Use `numberToUlps` instead.
  * Returns the number of E8s for the given amount.
  *
  * E8s have a precision of 8 decimals. An error is thrown if the amount has more than 8 decimals.
