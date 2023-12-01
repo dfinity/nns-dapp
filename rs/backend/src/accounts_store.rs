@@ -19,7 +19,7 @@ use icp_ledger::{AccountIdentifier, BlockIndex, Memo, Subaccount, Tokens};
 use itertools::Itertools;
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
-use std::borrow::{Cow};
+use std::borrow::Cow;
 use std::cmp::{min, Ordering};
 use std::collections::{BTreeMap, HashMap, HashSet, VecDeque};
 use std::ops::RangeTo;
@@ -86,7 +86,9 @@ impl Storable for Account {
         account_serialized.to_owned().into()
     }
     fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
-        let (account,) = Candid::from_bytes(bytes.as_ref().to_owned()).map(|c| c.0).expect("Failed to parse account from store.");
+        let (account,) = Candid::from_bytes(bytes.as_ref().to_owned())
+            .map(|c| c.0)
+            .expect("Failed to parse account from store.");
         account
     }
 }

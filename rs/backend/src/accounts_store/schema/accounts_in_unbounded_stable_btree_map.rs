@@ -7,9 +7,7 @@
 
 use super::{Account, AccountsDbTrait, SchemaLabel};
 use ic_stable_structures::{btreemap::BTreeMap as StableBTreeMap, memory_manager::VirtualMemory, DefaultMemoryImpl};
-use std::{fmt};
-
-
+use std::fmt;
 
 // TODO: Implement Eq and PartialEq for ic_stable_structures::btreemap::BTreeMap, as this makes testing easier.  It is unlikely that Eq will be used on any large data dataset.
 pub struct AccountsDbAsUnboundedStableBTreeMap {
