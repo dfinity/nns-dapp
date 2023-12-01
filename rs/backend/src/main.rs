@@ -18,7 +18,6 @@ use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use ic_stable_structures::DefaultMemoryImpl;
 use icp_ledger::AccountIdentifier;
 pub use serde::Serialize;
-use std::borrow::Borrow;
 
 #[cfg(any(test, feature = "toy_data_gen"))]
 use ic_base_types::PrincipalId;
