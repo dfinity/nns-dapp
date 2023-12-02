@@ -162,6 +162,23 @@ export const numberToE8s = (amount: number, token: Token = ICPToken): bigint =>
     token,
   }).toE8s();
 
+/**
+ * Returns the number of Ulps for the given amount.
+ *
+ * The precision is given by the token.
+ *
+ * @param {Object} params
+ * @param {number} parms.amount
+ * @param {token} params.token
+ * @returns {bigint}
+ * @throws {Error} If the amount has more than number of decimals in the token.
+ */
+// TODO: Use TokenAmountV2
+export const numberToUlps = (params: {
+  amount: number;
+  token: Token;
+}): bigint => TokenAmount.fromNumber(params).toE8s();
+
 export class UnavailableTokenAmount {
   public token: Token;
 
