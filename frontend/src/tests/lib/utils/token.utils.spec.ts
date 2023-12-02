@@ -282,20 +282,14 @@ describe("token-utils", () => {
         symbol: "TEST",
         name: "Test",
       };
-      // TODO: Move these outside the call once they pass.
-      const call = () => {
-        expect(numberToUlps({ amount: 1.14, token })).toBe(
-          1_140_000_000_000_000_000n
-        );
-        expect(numberToUlps({ amount: 1, token })).toBe(
-          1_000_000_000_000_000_000n
-        );
-        expect(numberToUlps({ amount: 3.14, token })).toBe(
-          3_140_000_000_000_000_000n
-        );
-      };
-      expect(call).toThrowError(
-        "Use TokenAmountV2 for number of decimals other than 8"
+      expect(numberToUlps({ amount: 1.14, token })).toBe(
+        1_140_000_000_000_000_000n
+      );
+      expect(numberToUlps({ amount: 1, token })).toBe(
+        1_000_000_000_000_000_000n
+      );
+      expect(numberToUlps({ amount: 3.14, token })).toBe(
+        3_140_000_000_000_000_000n
       );
     });
   });
