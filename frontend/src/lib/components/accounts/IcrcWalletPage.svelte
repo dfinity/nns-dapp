@@ -6,7 +6,7 @@
   import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
   import { findAccount, hasAccounts } from "$lib/utils/accounts.utils";
   import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-  import { TokenAmount, isNullish, nonNullish } from "@dfinity/utils";
+  import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
   import { syncAccounts as syncWalletAccounts } from "$lib/services/wallet-accounts.services";
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -134,7 +134,7 @@
           <WalletPageHeading
             accountName={$selectedAccountStore.account.name ??
               $i18n.accounts.main}
-            balance={TokenAmount.fromE8s({
+            balance={TokenAmountV2.fromUlps({
               amount: $selectedAccountStore.account.balanceE8s,
               token,
             })}

@@ -4,7 +4,13 @@ import {
   ICP_DISPLAYED_DECIMALS_DETAILED,
   ICP_DISPLAYED_HEIGHT_DECIMALS,
 } from "$lib/constants/icp.constants";
-import { ICPToken, TokenAmount, type Token } from "@dfinity/utils";
+import {
+  ICPToken,
+  TokenAmount,
+  TokenAmountV2,
+  isNullish,
+  type Token,
+} from "@dfinity/utils";
 
 const countDecimals = (value: number): number => {
   // "1e-7" -> 0.00000001
@@ -74,6 +80,37 @@ export const formatToken = ({
   })
     .format(converted)
     .replace(/,/g, "'");
+};
+
+// TODO: This drops decimals after the 8th decimal place. Decide if this is the
+// desired behavior.
+export const formatTokenV2 = ({
+  value,
+  detailed = false,
+  roundingMode,
+}: {
+  value?: TokenAmount | TokenAmountV2;
+  detailed?: boolean | "height_decimals";
+  roundingMode?: RoundMode;
+}): string => {
+  let e8s;
+  if (isNullish(value)) {
+    e8s = 0n;
+  } else if (value instanceof TokenAmount) {
+    e8s = value.toE8s();
+  } else {
+    const decimals = value.token.decimals;
+    const ulps = value.toUlps();
+    if (decimals === 8) {
+      e8s = ulps;
+    } else if (decimals < 8) {
+      e8s = ulps * 10n ** BigInt(8 - decimals);
+    } else {
+      // decimals > 8, we truncate
+      e8s = ulps / 10n ** BigInt(decimals - 8);
+    }
+  }
+  return formatToken({ value: e8s, detailed, roundingMode });
 };
 
 export const sumAmountE8s = (...amountE8s: bigint[]): bigint =>
@@ -173,11 +210,20 @@ export const numberToE8s = (amount: number, token: Token = ICPToken): bigint =>
  * @returns {bigint}
  * @throws {Error} If the amount has more than number of decimals in the token.
  */
-// TODO: Use TokenAmountV2
 export const numberToUlps = (params: {
   amount: number;
   token: Token;
-}): bigint => TokenAmount.fromNumber(params).toE8s();
+}): bigint => TokenAmountV2.fromNumber(params).toUlps();
+
+export const toTokenAmountV2 = (tokenAmount: TokenAmount | TokenAmountV2) => {
+  if (tokenAmount instanceof TokenAmountV2) {
+    return tokenAmount;
+  }
+  return TokenAmountV2.fromUlps({
+    amount: tokenAmount.toE8s(),
+    token: tokenAmount.token,
+  });
+};
 
 export class UnavailableTokenAmount {
   public token: Token;
