@@ -30,13 +30,13 @@
   let total = 0;
   $: total = Number(tally.total) / E8S_PER_ICP;
 
-  let absoluteMajorityPercent = 0;
-  $: absoluteMajorityPercent = basisPointsToPercent(
-    proposalDataMap.minimumYesProportionOfTotal
-  );
-  let simpleMajorityPercent = 0;
-  $: simpleMajorityPercent = basisPointsToPercent(
+  let immediateMajorityPercent = 0;
+  $: immediateMajorityPercent = basisPointsToPercent(
     proposalDataMap.minimumYesProportionOfExercised
+  );
+  let standardMajorityPercent = 0;
+  $: standardMajorityPercent = basisPointsToPercent(
+    proposalDataMap.minimumYesProportionOfTotal
   );
 </script>
 
@@ -45,8 +45,8 @@
     {yes}
     {no}
     {total}
-    {absoluteMajorityPercent}
-    {simpleMajorityPercent}
+    {immediateMajorityPercent}
+    {standardMajorityPercent}
   />
 
   {#if !settled}

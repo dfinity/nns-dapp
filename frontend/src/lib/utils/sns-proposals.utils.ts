@@ -172,14 +172,17 @@ export const mapProposalInfo = ({
 export const minimumYesProportionOfTotal = (
   proposal: SnsProposalData
 ): bigint =>
-  fromPercentageBasisPoints(proposal.minimum_yes_proportion_of_total) ??
+  // `minimum_yes_proportion_of_total` property could be missing in older canister versions
+  fromPercentageBasisPoints(proposal.minimum_yes_proportion_of_total ?? []) ??
   MINIMUM_YES_PROPORTION_OF_TOTAL_VOTING_POWER;
 
 export const minimumYesProportionOfExercised = (
   proposal: SnsProposalData
 ): bigint =>
-  fromPercentageBasisPoints(proposal.minimum_yes_proportion_of_exercised) ??
-  MINIMUM_YES_PROPORTION_OF_EXERCISED_VOTING_POWER;
+  // `minimum_yes_proportion_of_exercised` property could be missing in older canister versions
+  fromPercentageBasisPoints(
+    proposal.minimum_yes_proportion_of_exercised ?? []
+  ) ?? MINIMUM_YES_PROPORTION_OF_EXERCISED_VOTING_POWER;
 
 /**
  * Returns whether the proposal is accepted or not based on the data.
@@ -470,14 +473,14 @@ export const getUniversalProposalStatus = (
 };
 
 export const fromPercentageBasisPoints = (
-  value: [] | [SnsPercentage] | undefined
+  value: [] | [SnsPercentage]
 ): bigint | undefined => {
-  const percentage = fromNullable(value ?? []);
+  const percentage = fromNullable(value);
   return isNullish(percentage)
     ? undefined
     : fromNullable(percentage.basis_points);
 };
 
-export const isSuperMajority = (absoluteMajorityPercent: number): boolean =>
-  absoluteMajorityPercent !==
+export const isSuperMajority = (immediateMajorityPercent: number): boolean =>
+  immediateMajorityPercent !==
   basisPointsToPercent(MINIMUM_YES_PROPORTION_OF_EXERCISED_VOTING_POWER);

@@ -26,15 +26,14 @@ import {
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
-  type SnsTally,
   SnsVote,
   type SnsAction,
   type SnsNeuron,
   type SnsPercentage,
   type SnsProposalData,
+  type SnsTally,
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
-import type {Percentage} from "@dfinity/nns";
 
 describe("sns-proposals utils", () => {
   const acceptedTally = {
@@ -651,10 +650,22 @@ describe("sns-proposals utils", () => {
     });
   });
 
+  describe("fromPercentageBasisPoints", () => {
+    it("should return basis points", () => {
+      expect(
+        fromPercentageBasisPoints([{ basis_points: [300n] } as SnsPercentage])
+      ).toBe(300n);
+    });
+
+    it("should not break when no percentage provided", () => {
+      expect(fromPercentageBasisPoints(undefined)).toBe(undefined);
+    });
+  });
+
   describe("isAccepted", () => {
     const from_percentage = (percentage: number): SnsPercentage => ({
-        basis_points: [BigInt(percentage * 100)],
-    })
+      basis_points: [BigInt(percentage * 100)],
+    });
 
     // Copy of https://gitlab.com/dfinity-lab/public/ic/-/blob/11b6d0797c89937541ef079d54b6320274c07236/rs/sns/governance/tests/proposal.rs#L693
     it("calculates isAccepted", () => {
@@ -670,9 +681,7 @@ describe("sns-proposals utils", () => {
         ],
         proposal_creation_timestamp_seconds: 1n,
         initial_voting_period_seconds: 10n,
-        minimum_yes_proportion_of_total: [
-          from_percentage(0),
-        ],
+        minimum_yes_proportion_of_total: [from_percentage(0)],
       } as SnsProposalData;
 
       const p1 = {
@@ -687,9 +696,7 @@ describe("sns-proposals utils", () => {
         ],
         proposal_creation_timestamp_seconds: 1n,
         initial_voting_period_seconds: 10n,
-        minimum_yes_proportion_of_total: [
-          from_percentage(0),
-        ],
+        minimum_yes_proportion_of_total: [from_percentage(0)],
       } as SnsProposalData;
 
       const p2 = {
@@ -704,9 +711,7 @@ describe("sns-proposals utils", () => {
         ],
         proposal_creation_timestamp_seconds: 1n,
         initial_voting_period_seconds: 10n,
-        minimum_yes_proportion_of_total: [
-          from_percentage(10),
-        ],
+        minimum_yes_proportion_of_total: [from_percentage(10)],
       } as SnsProposalData;
 
       const p3 = {
@@ -721,9 +726,7 @@ describe("sns-proposals utils", () => {
         ],
         proposal_creation_timestamp_seconds: 1n,
         initial_voting_period_seconds: 10n,
-        minimum_yes_proportion_of_total: [
-          from_percentage(20),
-        ],
+        minimum_yes_proportion_of_total: [from_percentage(20)],
       } as SnsProposalData;
 
       const p4 = {
@@ -738,9 +741,7 @@ describe("sns-proposals utils", () => {
         ],
         proposal_creation_timestamp_seconds: 1n,
         initial_voting_period_seconds: 10n,
-        minimum_yes_proportion_of_total: [
-          from_percentage(30),
-        ],
+        minimum_yes_proportion_of_total: [from_percentage(30)],
       } as SnsProposalData;
 
       expect(isAccepted(p0)).toBe(false);

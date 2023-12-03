@@ -24,8 +24,8 @@
   export let no: number;
   export let total: number;
   export let deadlineTimestampSeconds: bigint | undefined = undefined;
-  export let absoluteMajorityPercent: number = 50;
-  export let simpleMajorityPercent: number = 3;
+  export let immediateMajorityPercent: number = 50;
+  export let standardMajorityPercent: number = 3;
 
   let yesProportion: number;
   $: yesProportion = total ? yes / total : 0;
@@ -39,37 +39,37 @@
     deadlineTimestampSeconds > BigInt(nowInSeconds());
 
   let superMajorityMode: boolean;
-  $: superMajorityMode = isSuperMajority(absoluteMajorityPercent);
+  $: superMajorityMode = isSuperMajority(immediateMajorityPercent);
 
   let immediateMajorityTitle: string;
   $: immediateMajorityTitle = superMajorityMode
-    ? $i18n.proposal_detail__vote.absolute_super_majority
-    : $i18n.proposal_detail__vote.absolute_majority;
+    ? $i18n.proposal_detail__vote.immediate_super_majority
+    : $i18n.proposal_detail__vote.immediate_majority;
 
   let immediateMajorityDescription: string;
   $: immediateMajorityDescription = superMajorityMode
     ? replacePlaceholders(
-        $i18n.proposal_detail__vote.absolute_super_majority_description,
+        $i18n.proposal_detail__vote.immediate_super_majority_description,
         {
-          $absolute_majority: formatPercent(absoluteMajorityPercent),
-          $absolute_majority_no: formatPercent(100 - absoluteMajorityPercent),
+          $immediate_majority: formatPercent(immediateMajorityPercent),
+          $no_immediate_majority: formatPercent(100 - immediateMajorityPercent),
         }
       )
-    : $i18n.proposal_detail__vote.absolute_majority_description;
+    : $i18n.proposal_detail__vote.immediate_majority_description;
 
   let standardMajorityTitle: string;
   $: standardMajorityTitle = superMajorityMode
-    ? $i18n.proposal_detail__vote.simple_super_majority
-    : $i18n.proposal_detail__vote.simple_majority;
+    ? $i18n.proposal_detail__vote.standard_super_majority
+    : $i18n.proposal_detail__vote.standard_majority;
 
   let standardMajorityDescription: string;
   $: standardMajorityDescription = replacePlaceholders(
     superMajorityMode
-      ? $i18n.proposal_detail__vote.simple_super_majority_description
-      : $i18n.proposal_detail__vote.simple_majority_description,
+      ? $i18n.proposal_detail__vote.standard_super_majority_description
+      : $i18n.proposal_detail__vote.standard_majority_description,
     {
-      $absolute_majority: formatPercent(simpleMajorityPercent),
-      $simple_majority: formatPercent(simpleMajorityPercent),
+      $immediate_majority: formatPercent(immediateMajorityPercent),
+      $standard_majority: formatPercent(standardMajorityPercent),
     }
   );
 </script>
@@ -102,7 +102,7 @@
     </div>
     <div
       class="progressbar-container"
-      style={`--absolute-majority: ${absoluteMajorityPercent}%; --simple-majority:${simpleMajorityPercent}%;`}
+      style={`--absolute-majority: ${immediateMajorityPercent}%; --simple-majority:${standardMajorityPercent}%;`}
     >
       <div class="majority absolute-majority">
         <div class="majority-icon absolute-majority"></div>

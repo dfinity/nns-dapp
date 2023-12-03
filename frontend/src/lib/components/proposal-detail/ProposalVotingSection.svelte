@@ -24,12 +24,12 @@
   $: no = Number(proposalInfo?.latestTally?.no ?? 0) / E8S_PER_ICP;
   let total: number;
   $: total = Number(proposalInfo?.latestTally?.total ?? 0) / E8S_PER_ICP;
-  let absoluteMajorityPercent = 0;
-  $: absoluteMajorityPercent = basisPointsToPercent(
+  let immediateMajorityPercent = 0;
+  $: immediateMajorityPercent = basisPointsToPercent(
     MINIMUM_YES_PROPORTION_OF_EXERCISED_VOTING_POWER
   );
-  let simpleMajorityPercent = 0;
-  $: simpleMajorityPercent = basisPointsToPercent(
+  let standardMajorityPercent = 0;
+  $: standardMajorityPercent = basisPointsToPercent(
     MINIMUM_YES_PROPORTION_OF_TOTAL_VOTING_POWER
   );
 </script>
@@ -39,8 +39,8 @@
   {no}
   {total}
   deadlineTimestampSeconds={proposalInfo.deadlineTimestampSeconds}
-  {absoluteMajorityPercent}
-  {simpleMajorityPercent}
+  {immediateMajorityPercent}
+  {standardMajorityPercent}
 />
 
 {#if !settled}

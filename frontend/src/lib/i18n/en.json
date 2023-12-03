@@ -562,14 +562,14 @@
     "vote_status_registering": "Neurons registered: $completed/$amount. Keep the dapp open until completed.",
     "vote_status_updating": "Updating proposal state...",
     "expiration": "Expiration date",
-    "absolute_majority": "Immediate Majority Decision",
-    "absolute_majority_description": "A proposal is immediately adopted or rejected if, before the voting period ends, more than half of the total voting power votes Yes or No, respectively.",
-    "absolute_super_majority": "Immediate Supermajority Decision",
-    "absolute_super_majority_description": "A proposal is immediately adopted or rejected if, before the voting period ends, more than 🚧67% $absolute_majority of the total voting power votes Yes, or more than 🚧33% $absolute_majority_no votes No, respectively.",
-    "simple_majority": "Standard Majority Decision",
-    "simple_majority_description": "At the end of the voting period, a proposal is adopted if it receives more than half of the votes cast, provided these votes represent at least 🚧3% $simple_majority of the total voting power. Otherwise, it is rejected. Before a proposal is decided, the voting period can be extended in order to “wait for quiet”. Such voting period extensions occur when a proposal’s voting results turn from either a Yes majority to a No majority or vice versa.",
-    "simple_super_majority": "Standard Supermajority Decision",
-    "simple_super_majority_description": "At the end of the voting period, a proposal is adopted if it receives more than 🚧67% $absolute_majority of the votes cast, provided these votes represent at least 🚧20% $simple_majority of the total voting power. Otherwise, it is rejected. Before a proposal is decided, the voting period can be extended in order to “wait for quiet”. Such voting period extensions occur when a proposal’s voting results turn from either a Yes majority to a No majority or vice versa."
+    "immediate_majority": "Immediate Majority Decision",
+    "immediate_majority_description": "A proposal is immediately adopted or rejected if, before the voting period ends, more than half of the total voting power votes Yes or No, respectively.",
+    "immediate_super_majority": "Immediate Supermajority Decision",
+    "immediate_super_majority_description": "A proposal is immediately adopted or rejected if, before the voting period ends, more than $immediate_majority of the total voting power votes Yes, or more than $no_immediate_majority votes No, respectively.",
+    "standard_majority": "Standard Majority Decision",
+    "standard_majority_description": "At the end of the voting period, a proposal is adopted if it receives more than half of the votes cast, provided these votes represent at least $standard_majority of the total voting power. Otherwise, it is rejected. Before a proposal is decided, the voting period can be extended in order to “wait for quiet”. Such voting period extensions occur when a proposal’s voting results turn from either a Yes majority to a No majority or vice versa.",
+    "standard_super_majority": "Standard Supermajority Decision",
+    "standard_super_majority_description": "At the end of the voting period, a proposal is adopted if it receives more than $immediate_majority of the votes cast, provided these votes represent at least $standard_majority of the total voting power. Otherwise, it is rejected. Before a proposal is decided, the voting period can be extended in order to “wait for quiet”. Such voting period extensions occur when a proposal’s voting results turn from either a Yes majority to a No majority or vice versa."
   },
   "proposal_detail__ineligible": {
     "headline": "Ineligible Neurons",
