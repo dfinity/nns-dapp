@@ -7,11 +7,17 @@
   import { nonNullish } from "@dfinity/utils";
   import { nowInSeconds } from "$lib/utils/date.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { isSuperMajority } from "$lib/utils/sns-proposals.utils";
 
   const formatVotingPower = (value: number) =>
     `${formatNumber(value, {
       minFraction: 0,
       maxFraction: 0,
+    })}`;
+  const formatPercent = (value: number) =>
+    `${formatPercentage(value / 100, {
+      minFraction: 0,
+      maxFraction: 2,
     })}`;
 
   export let yes: number;
@@ -31,6 +37,41 @@
   $: showExpirationDate =
     nonNullish(deadlineTimestampSeconds) &&
     deadlineTimestampSeconds > BigInt(nowInSeconds());
+
+  let superMajorityMode: boolean;
+  $: superMajorityMode = isSuperMajority(absoluteMajorityPercent);
+
+  let immediateMajorityTitle: string;
+  $: immediateMajorityTitle = superMajorityMode
+    ? $i18n.proposal_detail__vote.absolute_super_majority
+    : $i18n.proposal_detail__vote.absolute_majority;
+
+  let immediateMajorityDescription: string;
+  $: immediateMajorityDescription = superMajorityMode
+    ? replacePlaceholders(
+        $i18n.proposal_detail__vote.absolute_super_majority_description,
+        {
+          $absolute_majority: formatPercent(absoluteMajorityPercent),
+          $absolute_majority_no: formatPercent(100 - absoluteMajorityPercent),
+        }
+      )
+    : $i18n.proposal_detail__vote.absolute_majority_description;
+
+  let standardMajorityTitle: string;
+  $: standardMajorityTitle = superMajorityMode
+    ? $i18n.proposal_detail__vote.simple_super_majority
+    : $i18n.proposal_detail__vote.simple_majority;
+
+  let standardMajorityDescription: string;
+  $: standardMajorityDescription = replacePlaceholders(
+    superMajorityMode
+      ? $i18n.proposal_detail__vote.simple_super_majority_description
+      : $i18n.proposal_detail__vote.simple_majority_description,
+    {
+      $absolute_majority: formatPercent(simpleMajorityPercent),
+      $simple_majority: formatPercent(simpleMajorityPercent),
+    }
+  );
 </script>
 
 <ProposalContentCell testId="votes-results-component">
@@ -100,28 +141,16 @@
     <VotesResultsMajorityDescription>
       <h4 class="description" slot="title">
         <div class="majority-icon absolute-majority"></div>
-        {$i18n.proposal_detail__vote.absolute_majority}
+        {immediateMajorityTitle}
       </h4>
-      <p class="description">
-        {$i18n.proposal_detail__vote.absolute_majority_description}
-      </p>
+      <p class="description">{immediateMajorityDescription}</p>
     </VotesResultsMajorityDescription>
     <VotesResultsMajorityDescription>
       <h4 class="description" slot="title">
         <div class="majority-icon simple-majority"></div>
-        {$i18n.proposal_detail__vote.simple_majority}
+        {standardMajorityTitle}
       </h4>
-      <p class="description">
-        {replacePlaceholders(
-          $i18n.proposal_detail__vote.simple_majority_description,
-          {
-            $simple_majority: formatPercentage(simpleMajorityPercent / 100, {
-              minFraction: 0,
-              maxFraction: 2,
-            }),
-          }
-        )}
-      </p>
+      <p class="description">{standardMajorityDescription}</p>
     </VotesResultsMajorityDescription>
   </div>
 </ProposalContentCell>

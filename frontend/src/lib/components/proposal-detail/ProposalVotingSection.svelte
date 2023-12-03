@@ -26,11 +26,11 @@
   $: total = Number(proposalInfo?.latestTally?.total ?? 0) / E8S_PER_ICP;
   let absoluteMajorityPercent = 0;
   $: absoluteMajorityPercent = basisPointsToPercent(
-    MINIMUM_YES_PROPORTION_OF_TOTAL_VOTING_POWER
+    MINIMUM_YES_PROPORTION_OF_EXERCISED_VOTING_POWER
   );
   let simpleMajorityPercent = 0;
   $: simpleMajorityPercent = basisPointsToPercent(
-    MINIMUM_YES_PROPORTION_OF_EXERCISED_VOTING_POWER
+    MINIMUM_YES_PROPORTION_OF_TOTAL_VOTING_POWER
   );
 </script>
 

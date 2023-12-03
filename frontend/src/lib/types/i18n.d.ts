@@ -584,8 +584,12 @@ interface I18nProposal_detail__vote {
   expiration: string;
   absolute_majority: string;
   absolute_majority_description: string;
+  absolute_super_majority: string;
+  absolute_super_majority_description: string;
   simple_majority: string;
   simple_majority_description: string;
+  simple_super_majority: string;
+  simple_super_majority_description: string;
 }
 
 interface I18nProposal_detail__ineligible {
