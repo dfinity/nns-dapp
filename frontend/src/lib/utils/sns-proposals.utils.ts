@@ -9,6 +9,7 @@ import type {
   VotingNeuron,
 } from "$lib/types/proposals";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
+import { basisPointsToPercent } from "$lib/utils/sns.utils";
 import { Vote } from "@dfinity/nns";
 import type {
   SnsAction,
@@ -476,3 +477,7 @@ export const fromPercentageBasisPoints = (
     ? undefined
     : fromNullable(percentage.basis_points);
 };
+
+export const isSuperMajority = (absoluteMajorityPercent: number): boolean =>
+  absoluteMajorityPercent !==
+  basisPointsToPercent(MINIMUM_YES_PROPORTION_OF_EXERCISED_VOTING_POWER);
