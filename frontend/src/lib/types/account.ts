@@ -22,6 +22,7 @@ export interface Account {
   identifier: AccountIdentifierText;
   // Main and HardwareWallet accounts have Principal
   principal?: Principal;
+  // TODO: GIX-2154 Rename E8s to Ulps.
   balanceE8s: bigint;
   // Subaccounts and HardwareWallets have name and subAccount
   name?: string;

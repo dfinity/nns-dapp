@@ -10,7 +10,7 @@
   import type { Account } from "$lib/types/account";
   import type { WizardStep } from "@dfinity/gix-components";
   import type { TransactionInit } from "$lib/types/transaction";
-  import { TokenAmount, nonNullish } from "@dfinity/utils";
+  import { TokenAmountV2, nonNullish } from "@dfinity/utils";
   import type { Principal } from "@dfinity/principal";
   import { icrcTransferTokens } from "$lib/services/icrc-accounts.services";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
@@ -20,7 +20,7 @@
   export let selectedAccount: Account | undefined = undefined;
   export let ledgerCanisterId: Principal;
   export let token: IcrcTokenMetadata;
-  export let transactionFee: TokenAmount;
+  export let transactionFee: TokenAmountV2;
   export let reloadSourceAccount: (() => void) | undefined = undefined;
 
   let transactionInit: TransactionInit = {

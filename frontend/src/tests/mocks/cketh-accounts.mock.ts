@@ -7,16 +7,14 @@ export const mockCkETHToken: IcrcTokenMetadata = {
   name: "ckETH",
   symbol: "ckETH",
   fee: 10_000n,
-  // TODO: Set to 18 and use TokenAmountV2.
-  decimals: 8,
+  decimals: 18,
 };
 
 export const mockCkETHTESTToken: IcrcTokenMetadata = {
   symbol: "ckETHTEST",
   name: "ckETHTEST",
   fee: 10_000n,
-  // TODO: Set to 18 and use TokenAmountV2.
-  decimals: 8,
+  decimals: 18,
 };
 
 export const mockCkETHMainAccount: Account = {
