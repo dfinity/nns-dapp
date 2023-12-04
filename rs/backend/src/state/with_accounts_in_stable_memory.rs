@@ -11,7 +11,7 @@ impl State {
     pub fn save_heap_to_managed_memory(&self) {
         dfn_core::api::print("START state::save_heap: ()");
         let bytes = self.encode();
-        if let Ok(partitions) = self.partitions_maybe.as_ref() {
+        if let Ok(partitions) = self.partitions_maybe.borrow().as_ref() {
             let memory = partitions.get(Partitions::HEAP_MEMORY_ID);
             let len = bytes.len();
             let length_field = u64::try_from(len)

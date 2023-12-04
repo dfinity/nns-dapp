@@ -25,6 +25,7 @@ pub struct Partitions {
     #[cfg(test)]
     memory: DefaultMemoryImpl,
 }
+
 impl Partitions {
     /// The virtual memory containing metadata such as schema version.
     ///

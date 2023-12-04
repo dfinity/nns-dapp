@@ -31,7 +31,7 @@ pub struct State {
     pub assets: RefCell<Assets>,
     pub asset_hashes: RefCell<AssetHashes>,
     pub performance: RefCell<PerformanceCounts>,
-    pub partitions_maybe: Result<Partitions, DefaultMemoryImpl>,
+    pub partitions_maybe: RefCell<Result<Partitions, DefaultMemoryImpl>>,
 }
 
 impl PartialEq for State {
@@ -51,7 +51,7 @@ impl Default for State {
             assets: RefCell::new(Assets::default()),
             asset_hashes: RefCell::new(AssetHashes::default()),
             performance: RefCell::new(PerformanceCounts::default()),
-            partitions_maybe: Err(DefaultMemoryImpl::default()),
+            partitions_maybe: RefCell::new(Err(DefaultMemoryImpl::default())),
         }
     }
 }
@@ -70,7 +70,7 @@ impl core::fmt::Debug for State {
             "  args_schema: {:?}",
             &CANISTER_ARGUMENTS.with(|args| args.borrow().schema)
         )?;
-        writeln!(f, "  partitioned: {:?}", self.partitions_maybe.is_ok())?;
+        writeln!(f, "  partitioned: {:?}", self.partitions_maybe.borrow().is_ok())?;
         writeln!(f, "  accounts_store: ...")?;
         writeln!(f, "}}")
     }
@@ -78,15 +78,23 @@ impl core::fmt::Debug for State {
 
 impl State {
     pub fn replace(&self, new_state: State) {
-        self.accounts_store.replace(new_state.accounts_store.take());
-        self.assets.replace(new_state.assets.take());
-        self.asset_hashes.replace(new_state.asset_hashes.take());
-        self.performance.replace(new_state.performance.take());
-        self.partitions_maybe = new_state.partitions_maybe;
+        let State {
+            accounts_store,
+            assets,
+            asset_hashes,
+            performance,
+            partitions_maybe,
+        } = new_state;
+        let partitions_maybe = partitions_maybe.into_inner();
+        self.accounts_store.replace(accounts_store.into_inner());
+        self.assets.replace(assets.into_inner());
+        self.asset_hashes.replace(asset_hashes.into_inner());
+        self.performance.replace(performance.into_inner());
+        let _junk = self.partitions_maybe.replace(partitions_maybe);
     }
     /// Gets the authoritative schema.  This is the schema that is in stable memory.
     pub fn schema_label(&self) -> SchemaLabel {
-        match self.partitions_maybe.as_ref() {
+        match self.partitions_maybe.borrow().as_ref() {
             Ok(partitions) => {
                 dfn_core::api::print(format!(
                     "State: schema_label for mannaged memory: {:?}",
@@ -123,7 +131,7 @@ impl State {
                     assets: RefCell::new(Assets::default()),
                     asset_hashes: RefCell::new(AssetHashes::default()),
                     performance: RefCell::new(PerformanceCounts::default()),
-                    partitions_maybe: Err(memory),
+                    partitions_maybe: RefCell::new(Err(memory)),
                 }
             }
             SchemaLabel::AccountsInStableMemory => {
@@ -136,7 +144,7 @@ impl State {
                     assets: RefCell::new(Assets::default()),
                     asset_hashes: RefCell::new(AssetHashes::default()),
                     performance: RefCell::new(PerformanceCounts::default()),
-                    partitions_maybe: Ok(partitions),
+                    partitions_maybe: RefCell::new(Ok(partitions)),
                 }
             }
         };
@@ -148,6 +156,7 @@ impl State {
         assert_eq!(
             state
                 .partitions_maybe
+                .borrow()
                 .as_ref()
                 .map(|partitions| partitions.schema_label())
                 .unwrap_or_default(),
@@ -229,7 +238,7 @@ impl StableState for State {
             assets: RefCell::new(assets),
             asset_hashes: RefCell::new(asset_hashes),
             performance: RefCell::new(performance),
-            partitions_maybe: Err(DefaultMemoryImpl::default()),
+            partitions_maybe: RefCell::new(Err(DefaultMemoryImpl::default())),
         })
     }
 }
