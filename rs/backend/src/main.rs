@@ -99,7 +99,6 @@ fn post_upgrade(args_maybe: Option<CanisterArguments>) {
         // Imp[ortant:  Here we are recreating stable memory, ignoring any arguments.]
         let state = State::from(stable_memory); // TODO: Consistency about whether partitions are created here or in State.  I propose in State.
         let state = state.with_arguments_maybe(args_maybe.as_ref());
-        // TODO: Apply arguments.
         s.replace(state);
     });
     perf::save_instruction_count(counter_before);
