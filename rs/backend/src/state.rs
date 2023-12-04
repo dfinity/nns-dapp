@@ -206,7 +206,13 @@ impl From<Partitions> for State {
             }
             // Accounts are in stable structures in one partition, the rest of the heap is serialized as candid in another partition.
             SchemaLabel::AccountsInStableMemory => {
-                Self::recover_heap_from_managed_memory(partitions.get(Partitions::HEAP_MEMORY_ID))
+                let state = Self::recover_heap_from_managed_memory(partitions.get(Partitions::HEAP_MEMORY_ID));
+                state
+                    .partitions_maybe
+                    .replace(Ok(partitions))
+                    .map(|_| ())
+                    .unwrap_or_default();
+                state
             }
         }
     }
