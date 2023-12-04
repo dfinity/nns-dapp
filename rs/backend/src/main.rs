@@ -79,6 +79,17 @@ fn pre_upgrade() {
     STATE.with(|s| {
         dfn_core::api::print(format!("pre_upgrade accounts_store: {:#?}", s.accounts_store.borrow()));
         s.pre_upgrade();
+        let state_schema = s.schema_label();
+        let stable_schema = s.partitions_maybe.as_ref().map(|partitions| partitions.schema_label());
+        let args_schema = CANISTER_ARGUMENTS.with(|args| args.borrow().schema);
+        let accounts_schema = s.accounts_store.borrow().schema_label();
+        dfn_core::api::print(format!(
+            "pre_upgrade state_schema: {state_schema:?} stable_schema: {stable_schema:?} args_schema: {args_schema:?} accounts_schema: {accounts_schema:?}",
+            state_schema = state_schema,
+            stable_schema = stable_schema,
+            args_schema = args_schema,
+            accounts_schema = accounts_schema,
+        ));
     });
     dfn_core::api::print(format!(
         "pre_upgrade instruction_counter after saving state: {} stable_memory_size_gib: {} wasm_memory_size_gib: {}",
@@ -104,8 +115,6 @@ fn post_upgrade(args_maybe: Option<CanisterArguments>) {
     perf::save_instruction_count(counter_before);
     perf::record_instruction_count("post_upgrade after state_recovery");
     set_canister_arguments(args_maybe);
-    // `set_canister_arguments(..)` will populate any missing data with defaults.  Be sure that we get that fully populated structure:
-    let _schema = CANISTER_ARGUMENTS.with(|args| args.borrow().schema); // TODO: Move arguments into State.
     perf::record_instruction_count("post_upgrade after set_canister_arguments");
     // Saving the instruction counter now will not have the desired effect
     // as the storage is about to be wiped out and replaced with stable memory.

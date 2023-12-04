@@ -70,10 +70,19 @@ impl State {
     }
     /// Gets the authoritative schema.  This is the schema that is in stable memory.
     pub fn schema_label(&self) -> SchemaLabel {
-        self.partitions_maybe
-            .as_ref()
-            .map(|partitions| partitions.schema_label())
-            .unwrap_or_default()
+        match self.partitions_maybe.as_ref() {
+            Ok(partitions) => {
+                dfn_core::api::print(format!(
+                    "State: schema_label for mannaged memory: {:?}",
+                    partitions.schema_label()
+                ));
+                partitions.schema_label()
+            }
+            Err(_memory) => {
+                dfn_core::api::print("State: schema_label for raw memory is: Map");
+                SchemaLabel::Map
+            }
+        }
     }
 }
 
