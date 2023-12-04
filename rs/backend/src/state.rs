@@ -68,6 +68,13 @@ impl State {
         self.asset_hashes.replace(new_state.asset_hashes.take());
         self.performance.replace(new_state.performance.take());
     }
+    /// Gets the authoritative schema.  This is the schema that is in stable memory.
+    pub fn schema_label(&self) -> SchemaLabel {
+        self.partitions_maybe
+            .as_ref()
+            .map(|partitions| partitions.schema_label())
+            .unwrap_or_default()
+    }
 }
 
 // TODO: Probably eliminate this trait, as serialization is now different depending on which schema is in use, making this fundamentally ambiguous.
@@ -204,21 +211,10 @@ impl StableState for State {
 
 // Methods called on pre_upgrade and post_upgrade.
 impl State {
-    /// The schema version, as stored in an arbitrary memory.
-    #[cfg(test)]
-    fn schema_version_from_memory<M>(memory: &M) -> Option<SchemaLabel>
-    where
-        M: Memory,
-    {
-        let mut schema_label_bytes = [0u8; SchemaLabel::MAX_BYTES];
-        memory.read(0, &mut schema_label_bytes);
-        SchemaLabel::try_from(&schema_label_bytes[..]).ok()
-    }
-
     /// Save any unsaved state to stable memory.
     pub fn pre_upgrade(&self) {
-        let schema = self.accounts_store.borrow().schema_label();
-        dfn_core::api::print(format!("START State pre_upgrade to: {:?}", &schema));
+        let schema = self.schema_label();
+        dfn_core::api::print(format!("START State pre_upgrade from: {:?} (accounts: {:?})", &schema, self.accounts_store.borrow().schema_label()));
         match schema {
             SchemaLabel::Map => self.save_to_raw_memory(),
             SchemaLabel::AccountsInStableMemory => self.save_heap_to_managed_memory(), // TODO: Better naming for this.  save_heap_to_managed_memory()? TODO: Don't get managed memory afresh - get it from inside the state.
