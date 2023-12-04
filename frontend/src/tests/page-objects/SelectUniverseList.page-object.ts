@@ -4,10 +4,14 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class SelectUniverseListPo extends BasePageObject {
   private static readonly TID = "select-universe-list-component";
+  // TODO: GIX-2150 Find a better way to identify SNS projects.
+  // There will be multiple ckETH projects and arbitrary ICRC tokens in the future.
   private static readonly NON_SNS_NAMES = [
     "Internet Computer",
     "ckBTC",
     "ckTESTBTC",
+    "ckETH",
+    "ckETHSepolia",
   ];
 
   static under(element: PageObjectElement): SelectUniverseListPo {
