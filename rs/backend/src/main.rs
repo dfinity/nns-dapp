@@ -11,6 +11,7 @@ use crate::assets::{hash_bytes, insert_asset, insert_tar_xz, Asset};
 use crate::perf::PerformanceCount;
 use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
+use accounts_store::schema::SchemaLabel;
 pub use candid::{CandidType, Deserialize};
 use dfn_candid::{candid, candid_one};
 use dfn_core::{over, over_async};
@@ -50,6 +51,7 @@ fn init(args: Option<CanisterArguments>) {
         let stable_memory = DefaultMemoryImpl::default();
         let partitions_maybe = Partitions::new_for_schema(stable_memory, schema);
         let state = State::new(schema, partitions_maybe);
+        let state = state.with_arguments(&args);
         STATE.with(|s| s.replace(state));
     });
     // Legacy:
@@ -83,19 +85,25 @@ fn pre_upgrade() {
 #[post_upgrade]
 fn post_upgrade(args_maybe: Option<CanisterArguments>) {
     dfn_core::api::print(format!("post_upgrade with args: {args_maybe:#?}"));
-    set_canister_arguments(args_maybe);
-    // `set_canister_arguments(..)` will populate any missing data with defaults.  Be sure that we get that fully populated structure:
-    let schema = CANISTER_ARGUMENTS.with(|args| args.borrow().schema);
-    perf::record_instruction_count("post_upgrade after set_canister_arguments");
-    // Saving the instruction counter now will not have the desired effect
-    // as the storage is about to be wiped out and replaced with stable memory.
     let counter_before = PerformanceCount::new("post_upgrade start");
     STATE.with(|s| {
-        s.replace(State::post_upgrade(schema));
+        let stable_memory = DefaultMemoryImpl::default();
+        // Imp[ortant:  Here we are recreating stable memory, ignoring any arguments.]
+        let state = State::from(stable_memory); // TODO: Consistency about whether partitions are created here or in State.  I propose in State.
+        let state = state.with_arguments_maybe(args_maybe.as_ref());
+        // TODO: Apply arguments.
+        s.replace(state);
     });
     perf::save_instruction_count(counter_before);
     perf::record_instruction_count("post_upgrade after state_recovery");
-    assets::init_assets();
+    set_canister_arguments(args_maybe);
+    // `set_canister_arguments(..)` will populate any missing data with defaults.  Be sure that we get that fully populated structure:
+    let schema = CANISTER_ARGUMENTS.with(|args| args.borrow().schema); // TODO: Move arguments into State.
+    perf::record_instruction_count("post_upgrade after set_canister_arguments");
+    // Saving the instruction counter now will not have the desired effect
+    // as the storage is about to be wiped out and replaced with stable memory.
+
+    assets::init_assets(); // TODO: Move this inside State::from (and State::new_with_memory)
     perf::record_instruction_count("post_upgrade stop");
 }
 
@@ -285,6 +293,21 @@ pub fn get_stats() {
 
 fn get_stats_impl() -> stats::Stats {
     STATE.with(stats::get_stats)
+}
+
+/// Returns stats about the canister.
+///
+/// These stats include things such as the number of accounts registered, the memory usage, the
+/// number of neurons created, etc.
+#[export_name = "canister_query get_stats"]
+pub fn get_stable_schema() {
+    over(candid, |()| get_stable_schema_impl());
+}
+
+fn get_stable_schema_impl() -> Option<Option<SchemaLabel>> {
+    let memory = DefaultMemoryImpl::default();
+    let partitions_maybe = Partitions::try_from_memory(memory);
+    partitions_maybe.map(|partitions| partitions.schema_label()).ok()
 }
 
 /// Makes a histogram of the number of sub-accounts etc per account.

@@ -1,5 +1,6 @@
 use crate::accounts_store::schema::SchemaLabel;
 use crate::accounts_store::AccountsStore;
+use crate::arguments::CanisterArguments;
 use crate::assets::AssetHashes;
 use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
@@ -52,7 +53,7 @@ thread_local! {
 }
 
 impl State {
-    /// Creates new state as specified in the arguments.
+    /// Creates new state with the specified schema.
     pub fn new(schema: SchemaLabel, partitions_maybe: Result<Partitions, DefaultMemoryImpl>) -> Self {
         let mut state = Self::default();
         match schema {
@@ -73,6 +74,19 @@ impl State {
                 //state.accounts_store.borrow_mut().accounts_db
                 state
             }
+        }
+    }
+    /// Applies the specified arguments to the state.
+    pub fn with_arguments(self, _arguments: &CanisterArguments) -> Self {
+        // TODO: If a migration is needed, kick it off.
+        // TODO: Initialize assets and asset_hashes
+        self
+    }
+    /// Applies the specified arguments, if provided
+    pub fn with_arguments_maybe(self, arguments_maybe: Option<&CanisterArguments>) -> Self {
+        match arguments_maybe {
+            Some(arguments) => self.with_arguments(arguments),
+            None => self,
         }
     }
 }
@@ -168,6 +182,8 @@ impl State {
     /// - Deploy a release with a parser for the new schema.
     /// - Then, deploy a release that writes the new schema.
     /// This way it is possible to roll back after deploying the new schema.
+    ///
+    /// TODO: This can be deleted.
     pub fn post_upgrade(requested_schema: Option<SchemaLabel>) -> Self {
         dfn_core::api::print(format!("START state::post_upgrade to {requested_schema:?}"));
 
