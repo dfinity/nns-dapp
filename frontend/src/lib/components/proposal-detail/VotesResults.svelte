@@ -102,13 +102,13 @@
     </div>
     <div
       class="progressbar-container"
-      style={`--absolute-majority: ${immediateMajorityPercent}%; --simple-majority:${standardMajorityPercent}%;`}
+      style={`--immediate-majority: ${immediateMajorityPercent}%; --standard-majority:${standardMajorityPercent}%;`}
     >
-      <div class="majority absolute-majority">
-        <div class="majority-icon absolute-majority"></div>
+      <div class="majority immediate-majority">
+        <div class="majority-icon immediate-majority"></div>
       </div>
-      <div class="majority simple-majority">
-        <div class="majority-icon simple-majority"></div>
+      <div class="majority standard-majority">
+        <div class="majority-icon standard-majority"></div>
       </div>
       <div
         class="progressbar"
@@ -140,14 +140,14 @@
   <div class="legends">
     <VotesResultsMajorityDescription testId="immediate-majority-toggle">
       <h4 data-tid="immediate-majority-title" class="description" slot="title" >
-        <div  class="majority-icon absolute-majority"></div>
+        <div  class="majority-icon immediate-majority"></div>
         {immediateMajorityTitle}
       </h4>
       <p data-tid="immediate-majority-description" class="description">{immediateMajorityDescription}</p>
     </VotesResultsMajorityDescription>
     <VotesResultsMajorityDescription testId="standard-majority-toggle">
       <h4 data-tid="standard-majority-title" class="description" slot="title">
-        <div  class="majority-icon simple-majority"></div>
+        <div  class="majority-icon standard-majority"></div>
         {standardMajorityTitle}
       </h4>
       <p data-tid="standard-majority-description" class="description">{standardMajorityDescription}</p>
@@ -251,10 +251,10 @@
     height: var(--padding);
     border-radius: 50%;
 
-    &.absolute-majority {
+    &.immediate-majority {
       background: var(--purple-600);
     }
-    &.simple-majority {
+    &.standard-majority {
       background: var(--orange);
     }
   }
@@ -265,12 +265,12 @@
     width: calc(var(--padding) / 4);
     height: var(--padding-1_5x);
 
-    &.absolute-majority {
-      left: var(--absolute-majority);
+    &.immediate-majority {
+      left: var(--immediate-majority);
       transform: translateX(-50%);
     }
-    &.simple-majority {
-      left: var(--simple-majority);
+    &.standard-majority {
+      left: var(--standard-majority);
       transform: translateX(-50%);
     }
 
