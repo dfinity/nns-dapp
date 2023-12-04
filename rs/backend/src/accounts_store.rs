@@ -1102,6 +1102,8 @@ impl AccountsStore {
         stats.transactions_to_process_queue_length = self.multi_part_transactions_processor.get_queue_length();
         stats.schema = Some(self.accounts_db.schema_label() as u32);
         stats.migration_countdown = Some(self.accounts_db.migration_countdown());
+
+        dfn_core::api::print(format!("AccountsStore: get_stats: Schema set to: {:?}", stats.schema));
     }
 
     pub fn get_histogram(&self) -> AccountsStoreHistogram {

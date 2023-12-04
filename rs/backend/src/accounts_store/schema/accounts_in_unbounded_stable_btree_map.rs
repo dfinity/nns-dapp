@@ -55,7 +55,7 @@ impl AccountsDbTrait for AccountsDbAsUnboundedStableBTreeMap {
         Box::new(iterator)
     }
     fn schema_label(&self) -> SchemaLabel {
-        SchemaLabel::Map
+        SchemaLabel::AccountsInStableMemory
     }
 }
 

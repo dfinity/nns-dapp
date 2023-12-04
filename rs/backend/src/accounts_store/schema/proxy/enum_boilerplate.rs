@@ -22,9 +22,7 @@ impl AccountsDbTrait for AccountsDb {
     fn schema_label(&self) -> SchemaLabel {
         match &self {
             AccountsDb::Map(map_db) => map_db.schema_label(),
-            AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => {
-                unbounded_stable_btree_map_db.schema_label()
-            }
+            AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => unbounded_stable_btree_map_db.schema_label(),
         }
     }
     fn db_insert_account(&mut self, account_key: &[u8], account: Account) {
