@@ -205,137 +205,137 @@ describe("neurons-services", () => {
   });
 
   describe("stake new neuron", () => {
-      it("should stake a neuron from main account", async () => {
-        expect(spyStakeNeuron).not.toBeCalled();
-        const newNeuronId = await stakeNeuron({
-          amount: 10,
-          account: mockMainAccount,
-        });
-
-        expect(spyStakeNeuron).toBeCalledWith({
-          controller: mockIdentity.getPrincipal(),
-          fromSubAccount: undefined,
-          identity: mockIdentity,
-          ledgerCanisterIdentity: mockIdentity,
-          stake: BigInt(10 * E8S_PER_ICP),
-        });
-        expect(spyStakeNeuron).toBeCalledTimes(1);
-        expect(newNeuronId).toEqual(mockNeuron.neuronId);
-        expect(spyStakeNeuronIcrc1).not.toBeCalled();
+    it("should stake a neuron from main account", async () => {
+      expect(spyStakeNeuron).not.toBeCalled();
+      const newNeuronId = await stakeNeuron({
+        amount: 10,
+        account: mockMainAccount,
       });
 
-      it("should stake and load a neuron from subaccount", async () => {
-        expect(spyStakeNeuron).not.toBeCalled();
-        const newNeuronId = await stakeNeuron({
-          amount: 10,
-          account: mockSubAccount,
-        });
+      expect(spyStakeNeuron).toBeCalledWith({
+        controller: mockIdentity.getPrincipal(),
+        fromSubAccount: undefined,
+        identity: mockIdentity,
+        ledgerCanisterIdentity: mockIdentity,
+        stake: BigInt(10 * E8S_PER_ICP),
+      });
+      expect(spyStakeNeuron).toBeCalledTimes(1);
+      expect(newNeuronId).toEqual(mockNeuron.neuronId);
+      expect(spyStakeNeuronIcrc1).not.toBeCalled();
+    });
 
-        expect(spyStakeNeuron).toBeCalledWith({
-          controller: mockIdentity.getPrincipal(),
-          fromSubAccount: mockSubAccount.subAccount,
-          identity: mockIdentity,
-          ledgerCanisterIdentity: mockIdentity,
-          stake: BigInt(10 * E8S_PER_ICP),
-        });
-        expect(spyStakeNeuron).toBeCalledTimes(1);
-        expect(newNeuronId).toEqual(mockNeuron.neuronId);
-        expect(spyStakeNeuronIcrc1).not.toBeCalled();
+    it("should stake and load a neuron from subaccount", async () => {
+      expect(spyStakeNeuron).not.toBeCalled();
+      const newNeuronId = await stakeNeuron({
+        amount: 10,
+        account: mockSubAccount,
       });
 
-      it("should stake neuron from hardware wallet", async () => {
-        const mockHardkwareWalletIdentity = {
-          getPrincipal: () => mockHardwareWalletAccount.principal,
-        } as unknown as Identity;
-        setAccountIdentity(mockHardkwareWalletIdentity);
+      expect(spyStakeNeuron).toBeCalledWith({
+        controller: mockIdentity.getPrincipal(),
+        fromSubAccount: mockSubAccount.subAccount,
+        identity: mockIdentity,
+        ledgerCanisterIdentity: mockIdentity,
+        stake: BigInt(10 * E8S_PER_ICP),
+      });
+      expect(spyStakeNeuron).toBeCalledTimes(1);
+      expect(newNeuronId).toEqual(mockNeuron.neuronId);
+      expect(spyStakeNeuronIcrc1).not.toBeCalled();
+    });
 
-        expect(spyStakeNeuron).not.toBeCalled();
+    it("should stake neuron from hardware wallet", async () => {
+      const mockHardkwareWalletIdentity = {
+        getPrincipal: () => mockHardwareWalletAccount.principal,
+      } as unknown as Identity;
+      setAccountIdentity(mockHardkwareWalletIdentity);
 
-        const newNeuronId = await stakeNeuron({
-          amount: 10,
-          account: mockHardwareWalletAccount,
-        });
+      expect(spyStakeNeuron).not.toBeCalled();
 
-        expect(spyStakeNeuron).toBeCalledWith({
-          controller: mockHardwareWalletAccount.principal,
-          identity: new AnonymousIdentity(),
-          fromSubAccount: undefined,
-          ledgerCanisterIdentity: mockHardkwareWalletIdentity,
-          stake: BigInt(10 * E8S_PER_ICP),
-        });
-        expect(spyStakeNeuron).toBeCalledTimes(1);
-        expect(newNeuronId).toEqual(mockNeuron.neuronId);
-        expect(spyStakeNeuronIcrc1).not.toBeCalled();
+      const newNeuronId = await stakeNeuron({
+        amount: 10,
+        account: mockHardwareWalletAccount,
       });
 
-      it(`stakeNeuron return undefined if amount less than ${
-        E8S_PER_ICP / E8S_PER_ICP
-      } ICP`, async () => {
-        vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
-          mock<LedgerCanister>()
-        );
+      expect(spyStakeNeuron).toBeCalledWith({
+        controller: mockHardwareWalletAccount.principal,
+        identity: new AnonymousIdentity(),
+        fromSubAccount: undefined,
+        ledgerCanisterIdentity: mockHardkwareWalletIdentity,
+        stake: BigInt(10 * E8S_PER_ICP),
+      });
+      expect(spyStakeNeuron).toBeCalledTimes(1);
+      expect(newNeuronId).toEqual(mockNeuron.neuronId);
+      expect(spyStakeNeuronIcrc1).not.toBeCalled();
+    });
 
-        const response = await stakeNeuron({
-          amount: 0.1,
-          account: mockMainAccount,
-        });
+    it(`stakeNeuron return undefined if amount less than ${
+      E8S_PER_ICP / E8S_PER_ICP
+    } ICP`, async () => {
+      vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
+        mock<LedgerCanister>()
+      );
 
-        expect(response).toBeUndefined();
-        expectToastError(en.error.amount_not_enough_stake_neuron);
-        expect(spyStakeNeuron).not.toBeCalled();
-        expect(spyStakeNeuronIcrc1).not.toBeCalled();
+      const response = await stakeNeuron({
+        amount: 0.1,
+        account: mockMainAccount,
       });
 
-      it("stake neuron should return undefined if amount not valid", async () => {
-        vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
-          mock<LedgerCanister>()
-        );
+      expect(response).toBeUndefined();
+      expectToastError(en.error.amount_not_enough_stake_neuron);
+      expect(spyStakeNeuron).not.toBeCalled();
+      expect(spyStakeNeuronIcrc1).not.toBeCalled();
+    });
 
-        const response = await stakeNeuron({
-          amount: NaN,
-          account: mockMainAccount,
-        });
+    it("stake neuron should return undefined if amount not valid", async () => {
+      vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
+        mock<LedgerCanister>()
+      );
 
-        expect(response).toBeUndefined();
-        expectToastError("Invalid number NaN");
-        expect(spyStakeNeuron).not.toBeCalled();
-        expect(spyStakeNeuronIcrc1).not.toBeCalled();
+      const response = await stakeNeuron({
+        amount: NaN,
+        account: mockMainAccount,
       });
 
-      it("stake neuron should return undefined if not enough funds in account", async () => {
-        vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
-          mock<LedgerCanister>()
-        );
+      expect(response).toBeUndefined();
+      expectToastError("Invalid number NaN");
+      expect(spyStakeNeuron).not.toBeCalled();
+      expect(spyStakeNeuronIcrc1).not.toBeCalled();
+    });
 
-        // 10 ICPs
-        const amount = 10;
-        const response = await stakeNeuron({
-          amount,
-          account: {
-            ...mockMainAccount,
-            balanceE8s: BigInt(amount - 1),
-          },
-        });
+    it("stake neuron should return undefined if not enough funds in account", async () => {
+      vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
+        mock<LedgerCanister>()
+      );
 
-        expect(response).toBeUndefined();
-        expectToastError(en.error.insufficient_funds);
-        expect(spyStakeNeuron).not.toBeCalled();
-        expect(spyStakeNeuronIcrc1).not.toBeCalled();
+      // 10 ICPs
+      const amount = 10;
+      const response = await stakeNeuron({
+        amount,
+        account: {
+          ...mockMainAccount,
+          balanceE8s: BigInt(amount - 1),
+        },
       });
 
-      it("should not stake neuron if no identity", async () => {
-        setNoAccountIdentity();
+      expect(response).toBeUndefined();
+      expectToastError(en.error.insufficient_funds);
+      expect(spyStakeNeuron).not.toBeCalled();
+      expect(spyStakeNeuronIcrc1).not.toBeCalled();
+    });
 
-        const response = await stakeNeuron({
-          amount: 10,
-          account: mockMainAccount,
-        });
+    it("should not stake neuron if no identity", async () => {
+      setNoAccountIdentity();
 
-        expect(response).toBeUndefined();
-        expectToastError("Cannot read properties of null");
-        expect(spyStakeNeuron).not.toBeCalled();
-        expect(spyStakeNeuronIcrc1).not.toBeCalled();
+      const response = await stakeNeuron({
+        amount: 10,
+        account: mockMainAccount,
       });
+
+      expect(response).toBeUndefined();
+      expectToastError("Cannot read properties of null");
+      expect(spyStakeNeuron).not.toBeCalled();
+      expect(spyStakeNeuronIcrc1).not.toBeCalled();
+    });
   });
 
   describe("list neurons", () => {
