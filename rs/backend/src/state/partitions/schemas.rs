@@ -7,6 +7,8 @@ use crate::state::SchemaLabel;
 
 impl Partitions {
     /// Writes the schema label to the metadata partition.
+    /// 
+    /// Note: This MUST be called by every constructor.
     fn set_schema_label(&self, schema: SchemaLabel) {
         let schema_label_bytes = SchemaLabelBytes::from(schema);
         self.growing_write(Self::METADATA_MEMORY_ID, 0, &schema_label_bytes[..]);
