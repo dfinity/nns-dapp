@@ -159,7 +159,7 @@ impl From<Partitions> for State {
         let schema = partitions.schema_label();
         dfn_core::api::print(format!("state::from<Partitions>: from_schema: {schema:#?}"));
         match schema {
-            // The schema claims to read from raw memory, but we got the label from amnaged mamory.  This is a bug.
+            // The schema claims to read from raw memory, but we got the label from amnaged memory.  This is a bug.
             SchemaLabel::Map => {
                 trap_with(
                     "Decoding stable memory failed: Found label 'Map' in managed memory, but these are incompatible.",
