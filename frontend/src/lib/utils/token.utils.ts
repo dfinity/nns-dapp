@@ -20,6 +20,26 @@ const countDecimals = (value: number): number => {
   return Math.max(split[1]?.length ?? 0, ICP_DISPLAYED_DECIMALS);
 };
 
+/**
+ * Truncates the given amount to 8 decimals.
+ *
+ * This is used to then convert the amount to a string or to a number afterwards.
+ */
+const ulpsToE8s = ({
+  ulps,
+  decimals,
+}: {
+  ulps: bigint;
+  decimals: number;
+}): bigint => {
+  if (decimals === 8) {
+    return ulps;
+  } else if (decimals < 8) {
+    return ulps * 10n ** BigInt(8 - decimals);
+  }
+  return ulps / 10n ** BigInt(decimals - 8);
+};
+
 // Source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat
 type RoundMode =
   | "ceil"
@@ -101,14 +121,7 @@ export const formatTokenV2 = ({
   } else {
     const decimals = value.token.decimals;
     const ulps = value.toUlps();
-    if (decimals === 8) {
-      e8s = ulps;
-    } else if (decimals < 8) {
-      e8s = ulps * 10n ** BigInt(8 - decimals);
-    } else {
-      // decimals > 8, we truncate
-      e8s = ulps / 10n ** BigInt(decimals - 8);
-    }
+    e8s = ulpsToE8s({ ulps, decimals });
   }
   return formatToken({ value: e8s, detailed, roundingMode });
 };
@@ -149,16 +162,23 @@ export const getMaxTransactionAmount = ({
   balance = BigInt(0),
   fee = BigInt(0),
   maxAmount,
+  token,
 }: {
   balance?: bigint;
   fee?: bigint;
   maxAmount?: bigint;
+  token: Token;
 }): number => {
+  const maxUserAmount = ulpsToE8s({
+    ulps: balance - fee,
+    decimals: token.decimals,
+  });
   if (maxAmount === undefined) {
-    return Math.max(Number(balance - fee), 0) / E8S_PER_ICP;
+    return Math.max(Number(maxUserAmount), 0) / E8S_PER_ICP;
   }
+  const maxAmountE8s = ulpsToE8s({ ulps: maxAmount, decimals: token.decimals });
   return (
-    Math.min(Number(maxAmount), Math.max(Number(balance - fee), 0)) /
+    Math.min(Number(maxAmountE8s), Math.max(Number(maxUserAmount), 0)) /
     E8S_PER_ICP
   );
 };
