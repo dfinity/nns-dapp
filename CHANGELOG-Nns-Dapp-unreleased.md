@@ -18,6 +18,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Add ENABLE_CKETH feature flag.
 * Get ckETH canister IDs from environment/configuration.
 * Display BTC deposits with 1-11 confirmations as "pending".
+* Sns dynamic voting proportions.
 
 #### Changed
 
