@@ -29,7 +29,12 @@ import {
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { Cbor } from "@dfinity/agent";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
-import { ICPToken, TokenAmountV2, toNullable } from "@dfinity/utils";
+import {
+  ICPToken,
+  TokenAmount,
+  TokenAmountV2,
+  toNullable,
+} from "@dfinity/utils";
 
 describe("icrc-transaction utils", () => {
   const subAccount = {
@@ -500,7 +505,7 @@ describe("icrc-transaction utils", () => {
         isPending: true,
         headline: "Receiving BTC",
         otherParty: "BTC Network",
-        tokenAmount: TokenAmountV2.fromUlps({
+        tokenAmount: TokenAmount.fromE8s({
           amount: amount - kytFee,
           token: mockCkBTCToken,
         }),
