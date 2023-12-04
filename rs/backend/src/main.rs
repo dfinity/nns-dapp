@@ -80,9 +80,9 @@ fn pre_upgrade() {
         stats::gibibytes(stats::wasm_memory_size_bytes())
     ));
     STATE.with(|s| {
-        dfn_core::api::print(format!("pre_upgrade state before: {s:?}",));
+        dfn_core::api::print(format!("pre_upgrade state before: {s:?}"));
         s.pre_upgrade();
-        dfn_core::api::print(format!("pre_upgrade state after: {s:?}",));
+        dfn_core::api::print(format!("pre_upgrade state after: {s:?}"));
     });
     dfn_core::api::print(format!(
         "pre_upgrade instruction_counter after saving state: {} stable_memory_size_gib: {} wasm_memory_size_gib: {}",

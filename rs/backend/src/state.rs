@@ -78,6 +78,7 @@ impl core::fmt::Debug for State {
 
 impl State {
     pub fn replace(&self, new_state: State) {
+        dfn_core::api::print(format!("Replacing state with: {new_state:?}"));
         let State {
             accounts_store,
             assets,
@@ -90,7 +91,10 @@ impl State {
         self.assets.replace(assets.into_inner());
         self.asset_hashes.replace(asset_hashes.into_inner());
         self.performance.replace(performance.into_inner());
-        let _junk = self.partitions_maybe.replace(partitions_maybe);
+        self.partitions_maybe
+            .replace(partitions_maybe)
+            .map(|_| ())
+            .unwrap_or_default();
     }
     /// Gets the authoritative schema.  This is the schema that is in stable memory.
     pub fn schema_label(&self) -> SchemaLabel {
