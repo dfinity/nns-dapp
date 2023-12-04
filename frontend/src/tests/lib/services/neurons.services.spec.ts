@@ -205,11 +205,6 @@ describe("neurons-services", () => {
   });
 
   describe("stake new neuron", () => {
-    describe("with ENABLE_STAKE_NEURON_ICRC1 disabled", () => {
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_STAKE_NEURON_ICRC1", false);
-      });
-
       it("should stake a neuron from main account", async () => {
         expect(spyStakeNeuron).not.toBeCalled();
         const newNeuronId = await stakeNeuron({
@@ -341,7 +336,6 @@ describe("neurons-services", () => {
         expect(spyStakeNeuron).not.toBeCalled();
         expect(spyStakeNeuronIcrc1).not.toBeCalled();
       });
-    });
   });
 
   describe("list neurons", () => {
