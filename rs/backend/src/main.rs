@@ -47,7 +47,7 @@ type Cycles = u128;
 /// - The state will be set for the appropraiet
 #[init]
 fn init(args: Option<CanisterArguments>) {
-    dfn_core::api::print(format!("init with args: {args:#?}"));
+    dfn_core::api::print(format!("START init with args: {args:#?}"));
     set_canister_arguments(args); // Populates
     perf::record_instruction_count("init after set_canister_arguments");
     CANISTER_ARGUMENTS.with(|args| {
@@ -61,6 +61,8 @@ fn init(args: Option<CanisterArguments>) {
     // Legacy:
     assets::init_assets();
     perf::record_instruction_count("init stop");
+    dfn_core::api::print("END init with args");
+
 }
 
 /// Redundant function, never called but required as this is `main.rs`.
