@@ -14,7 +14,11 @@
 >
   <div slot="header" class="description">
     <slot name="title" />
-    <button data-tid={testId} class="icon" on:click|stopPropagation={toggleContent}>
+    <button
+      data-tid={testId}
+      class="icon"
+      on:click|stopPropagation={toggleContent}
+    >
       <IconInfo />
     </button>
   </div>

@@ -24,6 +24,7 @@
   $: no = Number(proposalInfo?.latestTally?.no ?? 0) / E8S_PER_ICP;
   let total: number;
   $: total = Number(proposalInfo?.latestTally?.total ?? 0) / E8S_PER_ICP;
+  // Use default majority proportion values for nns for now
   let immediateMajorityPercent = 0;
   $: immediateMajorityPercent = basisPointsToPercent(
     MINIMUM_YES_PROPORTION_OF_EXERCISED_VOTING_POWER

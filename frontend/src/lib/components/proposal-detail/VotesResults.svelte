@@ -139,18 +139,22 @@
 
   <div class="legends">
     <VotesResultsMajorityDescription testId="immediate-majority-toggle">
-      <h4 data-tid="immediate-majority-title" class="description" slot="title" >
-        <div  class="majority-icon immediate-majority"></div>
+      <h4 data-tid="immediate-majority-title" class="description" slot="title">
+        <div class="majority-icon immediate-majority"></div>
         {immediateMajorityTitle}
       </h4>
-      <p data-tid="immediate-majority-description" class="description">{immediateMajorityDescription}</p>
+      <p data-tid="immediate-majority-description" class="description">
+        {immediateMajorityDescription}
+      </p>
     </VotesResultsMajorityDescription>
     <VotesResultsMajorityDescription testId="standard-majority-toggle">
       <h4 data-tid="standard-majority-title" class="description" slot="title">
-        <div  class="majority-icon standard-majority"></div>
+        <div class="majority-icon standard-majority"></div>
         {standardMajorityTitle}
       </h4>
-      <p data-tid="standard-majority-description" class="description">{standardMajorityDescription}</p>
+      <p data-tid="standard-majority-description" class="description">
+        {standardMajorityDescription}
+      </p>
     </VotesResultsMajorityDescription>
   </div>
 </ProposalContentCell>
