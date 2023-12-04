@@ -62,7 +62,6 @@ fn init(args: Option<CanisterArguments>) {
     assets::init_assets();
     perf::record_instruction_count("init stop");
     dfn_core::api::print("END init with args");
-
 }
 
 /// Redundant function, never called but required as this is `main.rs`.
@@ -70,6 +69,7 @@ fn main() {}
 
 #[pre_upgrade]
 fn pre_upgrade() {
+    dfn_core::api::print("START pre-upgrade");
     dfn_core::api::print(format!(
         "pre_upgrade instruction_counter before saving state: {} stable_memory_size_gib: {} wasm_memory_size_gib: {}",
         ic_cdk::api::instruction_counter(),
@@ -86,6 +86,7 @@ fn pre_upgrade() {
         stats::gibibytes(stats::stable_memory_size_bytes()),
         stats::gibibytes(stats::wasm_memory_size_bytes())
     ));
+    dfn_core::api::print("END pre-upgrade");
 }
 
 #[post_upgrade]
@@ -111,6 +112,7 @@ fn post_upgrade(args_maybe: Option<CanisterArguments>) {
 
     assets::init_assets(); // TODO: Move this inside State::from (and State::new_with_memory)
     perf::record_instruction_count("post_upgrade stop");
+    dfn_core::api::print("STOP post-upgrade");
 }
 
 #[export_name = "canister_query http_request"]

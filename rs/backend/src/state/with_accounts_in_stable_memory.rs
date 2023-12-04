@@ -1,6 +1,6 @@
 //! State from/to a stable memory partition in the `SchemaLabel::AccountsInStableMemory` format.
-use super::State;
 use super::partitions::Partitions;
+use super::State;
 use crate::state::StableState;
 use dfn_core::api::trap_with;
 use ic_stable_structures::memory_manager::VirtualMemory;
@@ -23,7 +23,7 @@ impl State {
                 })
                 .to_be_bytes();
             memory.write(0, &length_field);
-            memory.write(8, &bytes);    
+            memory.write(8, &bytes);
         } else {
             dfn_core::api::print("END state::save_heap: ()");
             trap_with("No memory manager found.  Cannot save heap.");

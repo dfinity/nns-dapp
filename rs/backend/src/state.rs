@@ -214,7 +214,11 @@ impl State {
     /// Save any unsaved state to stable memory.
     pub fn pre_upgrade(&self) {
         let schema = self.schema_label();
-        dfn_core::api::print(format!("START State pre_upgrade from: {:?} (accounts: {:?})", &schema, self.accounts_store.borrow().schema_label()));
+        dfn_core::api::print(format!(
+            "START State pre_upgrade from: {:?} (accounts: {:?})",
+            &schema,
+            self.accounts_store.borrow().schema_label()
+        ));
         match schema {
             SchemaLabel::Map => self.save_to_raw_memory(),
             SchemaLabel::AccountsInStableMemory => self.save_heap_to_managed_memory(), // TODO: Better naming for this.  save_heap_to_managed_memory()? TODO: Don't get managed memory afresh - get it from inside the state.
