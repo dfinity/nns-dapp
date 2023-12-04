@@ -11,7 +11,7 @@ impl Partitions {
         let schema_label_bytes = SchemaLabelBytes::from(schema);
         self.growing_write(Self::METADATA_MEMORY_ID, 0, &schema_label_bytes[..]);
     }
-    pub fn schema_label(&self) -> Option<SchemaLabel> {
+    pub fn schema_label(&self) -> Option<SchemaLabel> { // TODO: Make this return a SchemaLabel instead of an Option<SchemaLabel>
         let mut schema_label_bytes = [0u8; SchemaLabel::MAX_BYTES];
         self.try_read(Self::METADATA_MEMORY_ID, 0, &mut schema_label_bytes)
             .ok()

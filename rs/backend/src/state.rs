@@ -83,7 +83,7 @@ thread_local! {
 impl State {
     /// Creates new state with the specified schema.
     pub fn new(schema: SchemaLabel, memory: DefaultMemoryImpl) -> Self {
-        match schema {
+        let state = match schema {
             SchemaLabel::Map => {
                 dfn_core::api::print("New State: Map");
                 State {
@@ -108,7 +108,10 @@ impl State {
                     partitions_maybe: Ok(partitions),
                 }
             }
-        }
+        };
+        assert_eq!(state.accounts_store.borrow().schema_label(), schema, "Accounts store does not have the expected schema");
+        assert_eq!(state.partitions_maybe.as_ref().ok().and_then(|partitions| partitions.schema_label()).unwrap_or_default(), schema, "Mmeory  is not partitioned as expected"); // TODO: Better assertion
+        state
     }
     /// Applies the specified arguments to the state.
     pub fn with_arguments(self, _arguments: &CanisterArguments) -> Self {

@@ -40,6 +40,11 @@ mod time;
 
 type Cycles = u128;
 
+/// Initializes the canister.
+/// 
+/// # Guarantees
+/// - The stable memory will be set up for the requested schema.
+/// - The state will be set for the appropraiet 
 #[init]
 fn init(args: Option<CanisterArguments>) {
     dfn_core::api::print(format!("init with args: {args:#?}"));
