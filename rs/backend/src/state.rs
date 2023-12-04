@@ -208,6 +208,10 @@ impl From<Partitions> for State {
             SchemaLabel::AccountsInStableMemory => {
                 let state = Self::recover_heap_from_managed_memory(partitions.get(Partitions::HEAP_MEMORY_ID));
                 state
+                    .accounts_store
+                    .borrow_mut()
+                    .load_unbounded_stable_btree_map(partitions.get(Partitions::ACCOUNTS_MEMORY_ID));
+                state
                     .partitions_maybe
                     .replace(Ok(partitions))
                     .map(|_| ())

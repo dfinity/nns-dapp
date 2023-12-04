@@ -52,6 +52,13 @@ impl AccountsDbAsProxy {
             second_db: None,
         }
     }
+    pub fn load_with_unbounded_stable_btree_map(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
+        dfn_core::api::print("Load Proxy: AccountsInStableMemory");
+        Self {
+            authoritative_db: AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::load(memory)),
+            second_db: None,
+        }
+    }
 }
 
 impl AccountsDbAsProxy {

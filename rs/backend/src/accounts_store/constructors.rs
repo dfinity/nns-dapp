@@ -10,4 +10,8 @@ impl AccountsStore {
             ..Default::default()
         }
     }
+    pub fn load_unbounded_stable_btree_map(&mut self, memory: VirtualMemory<DefaultMemoryImpl>) {
+        dfn_core::api::print("Load AccountsDb: AccountsInStableMemory");
+        self.accounts_db = AccountsDbAsProxy::load_with_unbounded_stable_btree_map(memory);
+    }
 }
