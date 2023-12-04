@@ -322,11 +322,8 @@
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
           "ENABLE_ICP_ICRC": false,
-          "ENABLE_INSTANT_UNLOCK": false,
-          "ENABLE_STAKE_NEURON_ICRC1": false,
-          "ENABLE_SWAP_ICRC1": false,
           "ENABLE_MY_TOKENS": false,
-          "ENABLE_CKETH": false,
+          "ENABLE_CKETH": true,
           "ENABLE_CKBTC_ICRC2": true
         }
       }

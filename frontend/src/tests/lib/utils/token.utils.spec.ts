@@ -12,6 +12,7 @@ import {
   sumAmountE8s,
   toTokenAmountV2,
 } from "$lib/utils/token.utils";
+import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import { ICPToken, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 
 describe("token-utils", () => {
@@ -342,41 +343,47 @@ describe("token-utils", () => {
 
   it("getMaxTransactionAmount should max taking into account fee, maxAmount and converte it to a number", () => {
     const fee = BigInt(DEFAULT_TRANSACTION_FEE_E8S);
-    expect(getMaxTransactionAmount({ fee })).toEqual(0);
+    expect(getMaxTransactionAmount({ fee, token: ICPToken })).toEqual(0);
     expect(
       getMaxTransactionAmount({
         balance: BigInt(0),
         fee,
+        token: ICPToken,
       })
     ).toEqual(0);
     expect(
       getMaxTransactionAmount({
         balance: BigInt(10_000),
         fee,
+        token: ICPToken,
       })
     ).toEqual(0);
     expect(
       getMaxTransactionAmount({
         balance: BigInt(11_000),
         fee,
+        token: ICPToken,
       })
     ).toEqual(0.00001);
     expect(
       getMaxTransactionAmount({
         balance: BigInt(100_000_000),
         fee,
+        token: ICPToken,
       })
     ).toEqual(0.9999);
     expect(
       getMaxTransactionAmount({
         balance: BigInt(1_000_000_000),
         maxAmount: BigInt(500_000_000),
+        token: ICPToken,
       })
     ).toEqual(5);
     expect(
       getMaxTransactionAmount({
         balance: BigInt(1_000_000_000),
         fee,
+        token: ICPToken,
         maxAmount: BigInt(500_000_000),
       })
     ).toEqual(5);
@@ -384,6 +391,7 @@ describe("token-utils", () => {
       getMaxTransactionAmount({
         balance: BigInt(100_000_000),
         fee,
+        token: ICPToken,
         maxAmount: BigInt(500_000_000),
       })
     ).toEqual(0.9999);
@@ -391,6 +399,7 @@ describe("token-utils", () => {
       getMaxTransactionAmount({
         balance: BigInt(0),
         fee,
+        token: ICPToken,
         maxAmount: BigInt(500_000_000),
       })
     ).toEqual(0);
@@ -398,8 +407,28 @@ describe("token-utils", () => {
       getMaxTransactionAmount({
         balance: BigInt(0),
         fee,
+        token: ICPToken,
       })
     ).toEqual(0);
+  });
+
+  it("getMaxTransactionAmount should truncate tokens with more than 8 decimals to 8 decimals", () => {
+    expect(
+      getMaxTransactionAmount({
+        balance: 20_000_000_000_000_000_000n,
+        fee: 2_000_000_000_000n,
+        token: mockCkETHToken,
+        maxAmount: 2_000_000_000_000_000_000n,
+      })
+    ).toEqual(2);
+    expect(
+      getMaxTransactionAmount({
+        balance: 20_000_000_000_000_000_000n,
+        fee: 2_000_000_000_000n,
+        token: mockCkETHToken,
+        maxAmount: 200_000_000_000_000_000_000n,
+      })
+    ).toEqual(19.999998);
   });
 
   describe("convertIcpToTCycles", () => {
