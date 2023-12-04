@@ -98,7 +98,7 @@ fn post_upgrade(args_maybe: Option<CanisterArguments>) {
     perf::record_instruction_count("post_upgrade after state_recovery");
     set_canister_arguments(args_maybe);
     // `set_canister_arguments(..)` will populate any missing data with defaults.  Be sure that we get that fully populated structure:
-    let schema = CANISTER_ARGUMENTS.with(|args| args.borrow().schema); // TODO: Move arguments into State.
+    let _schema = CANISTER_ARGUMENTS.with(|args| args.borrow().schema); // TODO: Move arguments into State.
     perf::record_instruction_count("post_upgrade after set_canister_arguments");
     // Saving the instruction counter now will not have the desired effect
     // as the storage is about to be wiped out and replaced with stable memory.
@@ -299,7 +299,7 @@ fn get_stats_impl() -> stats::Stats {
 ///
 /// These stats include things such as the number of accounts registered, the memory usage, the
 /// number of neurons created, etc.
-#[export_name = "canister_query get_stats"]
+#[export_name = "canister_query get_stable_schema"]
 pub fn get_stable_schema() {
     over(candid, |()| get_stable_schema_impl());
 }

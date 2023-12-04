@@ -171,54 +171,6 @@ impl State {
         SchemaLabel::try_from(&schema_label_bytes[..]).ok()
     }
 
-    /// Create the state from stable memory in the `post_upgrade()` hook.
-    ///
-    /// Note: The stable memory may have been created by any of these schemas:
-    /// - The previous schema, when first migrating from the previous schema to the current schema.
-    /// - The current schema, if upgrading without changing the schema.
-    /// - The next schema, if a new schema was deployed and we need to roll back.
-    ///
-    /// Note: Changing the schema requires at least two deployments:
-    /// - Deploy a release with a parser for the new schema.
-    /// - Then, deploy a release that writes the new schema.
-    /// This way it is possible to roll back after deploying the new schema.
-    ///
-    /// TODO: This can be deleted.
-    pub fn post_upgrade(requested_schema: Option<SchemaLabel>) -> Self {
-        dfn_core::api::print(format!("START state::post_upgrade to {requested_schema:?}"));
-
-        Self::from(DefaultMemoryImpl::default())
-
-        /*
-        // If we are unable to read the schema label, we assume that we have just the heap data serialized as candid.
-        let current_schema = Self::schema_version_from_stable_memory().unwrap_or(SchemaLabel::Map);
-        let desired_schema = args_schema.unwrap_or(current_schema);
-        if current_schema == desired_schema {
-            dfn_core::api::print(format!("Loading State: Requested to keep data as {current_schema:?}."));
-        } else {
-            dfn_core::api::print(format!(
-                "Loading State: Requested migration from {current_schema:?} to {desired_schema:?}."
-            ));
-        }
-        dfn_core::api::print(format!("Loading State: Unsupported migration from {current_schema:?} to {desired_schema:?}.  Keeping data in the existing form."));
-        match (current_schema, desired_schema) {
-            (SchemaLabel::Map, SchemaLabel::Map) => Self::recover_state_from_map(),
-            (SchemaLabel::Map, SchemaLabel::AccountsInStableMemory) => {
-                dfn_core::api::print(format!("Loading State: Unsupported migration from {current_schema:?} to {desired_schema:?}.  Keeping data in the existing form."));
-                Self::recover_state_from_map()
-            }
-            (SchemaLabel::AccountsInStableMemory, SchemaLabel::AccountsInStableMemory) => {
-                accounts_in_stable_memory::recover_from_stable_memory()
-            }
-            (SchemaLabel::AccountsInStableMemory, _) => {
-                trap_with(&format!(
-                    "Loading State: Unsupported migration from {current_schema:?} to {desired_schema:?}.  Bailing out..."
-                ));
-                unreachable!();
-            }
-        }
-        */
-    }
     /// Save any unsaved state to stable memory.
     pub fn pre_upgrade(&self) {
         let schema = self.accounts_store.borrow().schema_label();

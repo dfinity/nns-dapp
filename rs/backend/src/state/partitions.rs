@@ -8,6 +8,7 @@ use core::borrow::Borrow;
 use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
+#[cfg(not(target_arch = "wasm32"))]
 use std::rc::Rc;
 
 pub mod schemas;
@@ -21,7 +22,7 @@ pub struct Partitions {
     /// but has no method for returning it.  If we wish to convert a `DefaultMemoryImpl`
     /// to `Partitions` and back again, we need to keep a reference to the memory to
     /// provide when we convert back.
-    #[cfg(any())]
+    #[cfg(test)]
     memory: DefaultMemoryImpl,
 }
 impl Partitions {
@@ -82,7 +83,7 @@ impl Partitions {
     /// Note: The memory manager is still represented in the underlying memory,
     /// so converting from `Partitions` to `DefaultMemoryImpl` and back again
     /// returns to the original state.
-    #[cfg(any())]
+    #[cfg(test)]
     pub fn into_memory(self) -> DefaultMemoryImpl {
         self.memory
     }
@@ -138,7 +139,7 @@ impl From<DefaultMemoryImpl> for Partitions {
         let memory_manager = MemoryManager::init(Self::copy_memory_reference(&memory));
         Partitions {
             memory_manager,
-            #[cfg(any())]
+            #[cfg(test)]
             memory,
         }
     }
