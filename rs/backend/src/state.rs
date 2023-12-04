@@ -209,7 +209,7 @@ impl StableState for State {
     }
 }
 
-// Methods called on pre_upgrade and post_upgrade.
+// Methods called on pre_upgrade.
 impl State {
     /// Save any unsaved state to stable memory.
     pub fn pre_upgrade(&self) {
