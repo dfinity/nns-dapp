@@ -8,6 +8,7 @@
   import { nowInSeconds } from "$lib/utils/date.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isSuperMajority } from "$lib/utils/sns-proposals.utils";
+  import { Html } from "@dfinity/gix-components";
 
   const formatVotingPower = (value: number) =>
     `${formatNumber(value, {
@@ -19,6 +20,12 @@
       minFraction: 0,
       maxFraction: 2,
     })}`;
+  const immediateMajorityIcon = `<span class="inline-maturity-icon immediate-majority"></span>`;
+  const standardMajorityIcon = `<span class="inline-maturity-icon standard-majority"></span>`;
+  const iconifyDescription = (description: string) =>
+    description
+      .replace(/\$icon_immediate_majority/g, immediateMajorityIcon)
+      .replace(/\$icon_standard_majority/g, standardMajorityIcon);
 
   export let yes: number;
   export let no: number;
@@ -144,7 +151,7 @@
         {immediateMajorityTitle}
       </h4>
       <p data-tid="immediate-majority-description" class="description">
-        {immediateMajorityDescription}
+        <Html text={iconifyDescription(immediateMajorityDescription)} />
       </p>
     </VotesResultsMajorityDescription>
     <VotesResultsMajorityDescription testId="standard-majority-toggle">
@@ -153,7 +160,7 @@
         {standardMajorityTitle}
       </h4>
       <p data-tid="standard-majority-description" class="description">
-        {standardMajorityDescription}
+        <Html text={iconifyDescription(standardMajorityDescription)} />
       </p>
     </VotesResultsMajorityDescription>
   </div>
@@ -316,10 +323,26 @@
     font-size: $font-size-medium;
   }
 
-  .legends {
+  .votes-results-legends {
     margin-top: var(--padding);
     display: flex;
     flex-direction: column;
     row-gap: var(--padding-0_5x);
   }
+
+  // dynamic description icon styles
+  :global(.votes-results-legends .inline-maturity-icon) {
+    display: inline-block;
+    margin: 0 var(--padding-0_5x);
+    width: var(--padding);
+    height: var(--padding);
+    border-radius: 50%;
+  }
+  :global(.votes-results-legends .inline-maturity-icon.immediate-majority) {
+    background: var(--purple-600);
+  }
+  :global(.votes-results-legends .inline-maturity-icon.standard-majority) {
+    background: var(--orange);
+  }
+
 </style>
