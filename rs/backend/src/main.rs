@@ -57,6 +57,7 @@ fn init(args: Option<CanisterArguments>) {
         let state = State::new(schema, stable_memory);
         let state = state.with_arguments(&args);
         STATE.with(|s| s.replace(state));
+        dfn_core::api::print(format!("init state: {s:?}",));
     });
     // Legacy:
     assets::init_assets();
@@ -77,9 +78,9 @@ fn pre_upgrade() {
         stats::gibibytes(stats::wasm_memory_size_bytes())
     ));
     STATE.with(|s| {
-        dfn_core::api::print(format!("pre_upgrade accounts_store: {:#?}", s.accounts_store.borrow()));
+        dfn_core::api::print(format!("pre_upgrade state before: {s:?}",));
         s.pre_upgrade();
-        dfn_core::api::print(format!("pre_upgrade state: {s:?}",));
+        dfn_core::api::print(format!("pre_upgrade state after: {s:?}",));
     });
     dfn_core::api::print(format!(
         "pre_upgrade instruction_counter after saving state: {} stable_memory_size_gib: {} wasm_memory_size_gib: {}",

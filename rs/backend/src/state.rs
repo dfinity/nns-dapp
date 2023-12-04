@@ -70,7 +70,7 @@ impl core::fmt::Debug for State {
             "  args_schema: {:?}",
             &CANISTER_ARGUMENTS.with(|args| args.borrow().schema)
         )?;
-        writeln!(f, "  accounts_store: {:?}", &self.accounts_store)?;
+        writeln!(f, "  accounts_store: ...")?;
         writeln!(f, "}}")
     }
 }
