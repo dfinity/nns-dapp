@@ -70,6 +70,7 @@ impl core::fmt::Debug for State {
             "  args_schema: {:?}",
             &CANISTER_ARGUMENTS.with(|args| args.borrow().schema)
         )?;
+        writeln!(f, "  partitioned: {:?}", self.partitions_maybe.is_ok())?;
         writeln!(f, "  accounts_store: ...")?;
         writeln!(f, "}}")
     }
@@ -81,6 +82,7 @@ impl State {
         self.assets.replace(new_state.assets.take());
         self.asset_hashes.replace(new_state.asset_hashes.take());
         self.performance.replace(new_state.performance.take());
+        self.partitions_maybe.replace(new_state.partitions_maybe);
     }
     /// Gets the authoritative schema.  This is the schema that is in stable memory.
     pub fn schema_label(&self) -> SchemaLabel {
