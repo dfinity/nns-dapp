@@ -20,6 +20,7 @@ import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import {
   TokenAmount,
+  TokenAmountV2,
   fromNullable,
   isNullish,
   nonNullish,
@@ -214,7 +215,7 @@ export const mapIcrcTransaction = ({
       isPending: false,
       headline,
       otherParty,
-      tokenAmount: TokenAmount.fromE8s({
+      tokenAmount: TokenAmountV2.fromUlps({
         amount: txInfo.amount + feeApplied,
         token,
       }),

@@ -1,9 +1,10 @@
 import TransactionCard from "$lib/components/accounts/TransactionCard.svelte";
 import type { UiTransaction } from "$lib/types/transaction";
+import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import { TransactionCardPo } from "$tests/page-objects/TransactionCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
-import { ICPToken, TokenAmount } from "@dfinity/utils";
+import { ICPToken, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("TransactionCard", () => {
@@ -129,5 +130,17 @@ describe("TransactionCard", () => {
     });
 
     expect(await po.getIdentifier()).toBe("To: to-address");
+  });
+
+  it("supports differnt decimals than 8", async () => {
+    const po = renderComponent({
+      tokenAmount: TokenAmountV2.fromUlps({
+        amount: 1230000000000000000n,
+        token: mockCkETHToken,
+      }),
+      isIncoming: true,
+    });
+
+    expect(await po.getAmount()).toBe("+1.23");
   });
 });

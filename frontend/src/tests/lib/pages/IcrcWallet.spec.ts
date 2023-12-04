@@ -199,7 +199,7 @@ describe("IcrcWallet", () => {
       const po = await renderWallet();
 
       expect(await po.getWalletPageHeadingPo().getTitle()).toBe(
-        "0.00111122 ckETHTEST"
+        "123.00 ckETHTEST"
       );
     });
 
