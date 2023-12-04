@@ -221,7 +221,7 @@ impl State {
         dfn_core::api::print(format!("START State pre_upgrade to: {:?}", &schema));
         match schema {
             SchemaLabel::Map => self.save_to_raw_memory(),
-            SchemaLabel::AccountsInStableMemory => self.save_heap_to_managed_memory(DefaultMemoryImpl::default()), // TODO: Better naming for this.  save_heap_to_managed_memory()? TODO: Don't get managed memory afresh - get it from inside the state.
+            SchemaLabel::AccountsInStableMemory => self.save_heap_to_managed_memory(), // TODO: Better naming for this.  save_heap_to_managed_memory()? TODO: Don't get managed memory afresh - get it from inside the state.
         }
     }
 }
