@@ -41,6 +41,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
+* Remove `.gitattributes`.
+
 #### Fixed
 
 #### Security
