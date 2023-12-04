@@ -5,6 +5,7 @@ use crate::assets::AssetHashes;
 use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
 use core::cell::RefCell;
+use std::path::Display;
 use dfn_candid::Candid;
 use dfn_core::api::trap_with;
 use ic_stable_structures::DefaultMemoryImpl;
@@ -23,7 +24,6 @@ use ic_stable_structures::Memory;
 pub mod with_accounts_in_stable_memory;
 pub mod with_raw_memory;
 
-#[derive(Default, Debug, Eq, PartialEq)]
 pub struct State {
     // NOTE: When adding new persistent fields here, ensure that these fields
     // are being persisted in the `replace` method below.
@@ -31,6 +31,35 @@ pub struct State {
     pub assets: RefCell<Assets>,
     pub asset_hashes: RefCell<AssetHashes>,
     pub performance: RefCell<PerformanceCounts>,
+    pub memory_maybe: Result<Partitions, DefaultMemoryImpl>,
+}
+
+impl PartialEq for State {
+    fn eq(&self, other: &Self) -> bool {
+        (self.accounts_store == other.accounts_store)
+            && (self.assets == other.assets)
+            && (self.asset_hashes == other.asset_hashes)
+            && (self.performance == other.performance)
+    }
+}
+impl Eq for State {}
+
+impl Default for State {
+    fn default() -> Self {
+        Self {
+            accounts_store: RefCell::new(AccountsStore::default()),
+            assets: RefCell::new(Assets::default()),
+            asset_hashes: RefCell::new(AssetHashes::default()),
+            performance: RefCell::new(PerformanceCounts::default()),
+            memory_maybe: Err(DefaultMemoryImpl::default()),
+        }
+    }
+}
+
+impl core::fmt::Debug for State {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "(State: {:?})", &self.accounts_store)
+    }
 }
 
 impl State {
@@ -55,7 +84,14 @@ thread_local! {
 impl State {
     /// Creates new state with the specified schema.
     pub fn new(schema: SchemaLabel, partitions_maybe: Result<Partitions, DefaultMemoryImpl>) -> Self {
-        let mut state = Self::default();
+        let mut state = State {
+            accounts_store: RefCell::new(AccountsStore::default()),
+            assets: RefCell::new(Assets::default()),
+            asset_hashes: RefCell::new(AssetHashes::default()),
+            performance: RefCell::new(PerformanceCounts::default()),
+            memory_maybe: Err(DefaultMemoryImpl::default()),
+        };
+
         match schema {
             SchemaLabel::Map => {
                 dfn_core::api::print("New State: Map");
@@ -154,6 +190,7 @@ impl StableState for State {
             assets: RefCell::new(assets),
             asset_hashes: RefCell::new(asset_hashes),
             performance: RefCell::new(performance),
+            memory_maybe: Err(DefaultMemoryImpl::default()),
         })
     }
 }
@@ -174,6 +211,7 @@ impl State {
     /// Save any unsaved state to stable memory.
     pub fn pre_upgrade(&self) {
         let schema = self.accounts_store.borrow().schema_label();
+        dfn_core::api::print(format!("START State pre_upgrade to: {:?}", &schema));
         match schema {
             SchemaLabel::Map => self.save_to_raw_memory(),
             SchemaLabel::AccountsInStableMemory => self.save_heap_to_managed_memory(DefaultMemoryImpl::default()), // TODO: Better naming for this.  save_heap_to_managed_memory()? TODO: Don't get managed memory afresh - get it from inside the state.

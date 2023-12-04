@@ -304,10 +304,15 @@ pub fn get_stable_schema() {
     over(candid, |()| get_stable_schema_impl());
 }
 
-fn get_stable_schema_impl() -> Option<Option<SchemaLabel>> {
+fn get_stable_schema_impl() -> String {
     let memory = DefaultMemoryImpl::default();
     let partitions_maybe = Partitions::try_from_memory(memory);
-    partitions_maybe.map(|partitions| partitions.schema_label()).ok()
+    let partitioning = partitions_maybe.map(|partitions| partitions.schema_label()).ok();
+    STATE.with(|s| {
+        let ram_schema = s.accounts_store.borrow().schema_label();
+
+        format!("{:?} {:?}", ram_schema, partitioning)
+    })
 }
 
 /// Makes a histogram of the number of sub-accounts etc per account.

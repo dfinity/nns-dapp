@@ -189,6 +189,8 @@ get_schema_name() {
 # Verifies that the schema is as expected
 assert_schema_is() {
   local expected_schema actual_schema
+  echo ===== SCHEMA IN STABLE MEMORY =======
+  dfx canister call nns-dapp get_stable_schema
   expected_schema="${1:-}"
   actual_schema="$(get_schema_name)"
   if [[ "${expected_schema}" != "${actual_schema}" ]]; then

@@ -8,6 +8,7 @@ use ic_stable_structures::{DefaultMemoryImpl, Memory};
 impl State {
     /// Save heap as candid in virtual memory.
     pub fn save_heap_to_managed_memory(&self, memory: DefaultMemoryImpl) {
+        dfn_core::api::print("START state::save_heap_to_managed_memory: ()");
         let bytes = self.encode();
         let len = bytes.len();
         let length_field = u64::try_from(len)
