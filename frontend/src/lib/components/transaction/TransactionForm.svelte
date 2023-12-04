@@ -67,6 +67,7 @@
     balance: selectedAccount?.balanceE8s,
     fee: toTokenAmountV2(transactionFee).toUlps(),
     maxAmount,
+    token,
   });
   const addMax = () => (amount = max);
 
