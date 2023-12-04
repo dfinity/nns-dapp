@@ -20,6 +20,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
+* Remove the `ENABLE_FULL_WIDTH_PROPOSAL` feature flag.
 * Remove logic for using ICRC-1 when staking a neuron.
 
 #### Fixed
