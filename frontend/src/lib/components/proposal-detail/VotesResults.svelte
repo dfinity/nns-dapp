@@ -24,8 +24,8 @@
   export let no: number;
   export let total: number;
   export let deadlineTimestampSeconds: bigint | undefined = undefined;
-  export let immediateMajorityPercent: number = 50;
-  export let standardMajorityPercent: number = 3;
+  export let immediateMajorityPercent: number;
+  export let standardMajorityPercent: number;
 
   let yesProportion: number;
   $: yesProportion = total ? yes / total : 0;
