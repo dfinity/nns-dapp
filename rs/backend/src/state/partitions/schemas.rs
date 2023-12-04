@@ -21,10 +21,12 @@ impl Partitions {
         self.try_read(Self::METADATA_MEMORY_ID, 0, &mut schema_label_bytes)
             .expect("Metadata memory is not populated");
         dfn_core::api::print(format!("Read schema label bytes as: {:?}", schema_label_bytes));
-        SchemaLabel::try_from(&schema_label_bytes[..]).unwrap_or_else(|err| {
+        let schema_label = SchemaLabel::try_from(&schema_label_bytes[..]).unwrap_or_else(|err| {
             dfn_core::api::trap_with(&format!("Unknown schema: {:?}", err));
             unreachable!()
-        })
+        });
+        dfn_core::api::print(format!("Partitions schema label: {schema_label:?}"));
+        schema_label
     }
     /// Gets the memory partitioned appropriately for the given schema.
     ///

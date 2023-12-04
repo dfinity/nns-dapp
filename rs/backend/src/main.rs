@@ -58,7 +58,7 @@ fn init(args: Option<CanisterArguments>) {
         let state = state.with_arguments(&args);
         STATE.with(|s| {
             s.replace(state);
-            dfn_core::api::print(format!("init state: {s:?}",));
+            dfn_core::api::print(format!("init state after: {s:?}"));
         });
     });
     // Legacy:
