@@ -17,6 +17,7 @@ import {
   type SnsAccountsStoreData,
 } from "$lib/stores/sns-accounts.store";
 import type { IcpAccount } from "$lib/types/account";
+import { numberToUlps } from "$lib/utils/token.utils";
 import type { Principal } from "@dfinity/principal";
 import { nonNullish, type Token } from "@dfinity/utils";
 import { get } from "svelte/store";
@@ -117,7 +118,7 @@ export const getIcrcTokens = async ({
   }
 
   await acquireIcrcTokens({
-    e8s: BigInt(tokens * 10 ** token.decimals),
+    ulps: numberToUlps({ amount: tokens, token }),
     account: main,
     ledgerCanisterId,
   });
