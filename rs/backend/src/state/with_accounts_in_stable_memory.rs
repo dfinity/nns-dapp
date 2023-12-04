@@ -12,7 +12,6 @@ impl State {
         dfn_core::api::print("START state::save_heap: ()");
         let bytes = self.encode();
         if let Ok(partitions) = self.partitions_maybe.borrow().as_ref() {
-            let memory = partitions.get(Partitions::HEAP_MEMORY_ID);
             let len = bytes.len();
             let length_field = u64::try_from(len)
                 .unwrap_or_else(|e| {
@@ -22,8 +21,8 @@ impl State {
                     unreachable!();
                 })
                 .to_be_bytes();
-            memory.write(0, &length_field);
-            memory.write(8, &bytes);
+            partitions.growing_write(Partitions::HEAP_MEMORY_ID, 0, &length_field);
+            partitions.growing_write(Partitions::HEAP_MEMORY_ID, 8, &bytes);
         } else {
             dfn_core::api::print("END state::save_heap: ()");
             trap_with("No memory manager found.  Cannot save heap.");
