@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { TokenAmount } from "@dfinity/utils";
-  import { formatToken } from "$lib/utils/token.utils";
+  import type { TokenAmount, TokenAmountV2 } from "@dfinity/utils";
+  import { formatTokenV2 } from "$lib/utils/token.utils";
   import { Copy } from "@dfinity/gix-components";
 
   // TODO: should we expose two properties - an amount in bigint and a token Token - and build the TokenAmount.fromE8s in this component?
-  export let amount: TokenAmount;
+  export let amount: TokenAmount | TokenAmountV2;
   export let label: string | undefined = undefined;
   export let inline = false;
   export let singleLine = false;
@@ -31,12 +31,12 @@
     data-tid="token-value"
     class="value"
     class:tabular-num={detailed === "height_decimals"}
-    >{`${sign}${formatToken({ value: amount.toE8s(), detailed })}`}</span
+    >{`${sign}${formatTokenV2({ value: amount, detailed })}`}</span
   >
   <span class="label">{label !== undefined ? label : amount.token.symbol}</span
   >{#if copy}
     {" "}
-    <Copy value={formatToken({ value: amount.toE8s(), detailed: true })} />
+    <Copy value={formatTokenV2({ value: amount, detailed: true })} />
   {/if}
 </div>
 

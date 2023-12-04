@@ -8,10 +8,13 @@
     invalidAddress,
     isAccountHardwareWallet,
   } from "$lib/utils/accounts.utils";
-  import { getMaxTransactionAmount } from "$lib/utils/token.utils";
+  import {
+    getMaxTransactionAmount,
+    toTokenAmountV2,
+  } from "$lib/utils/token.utils";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
   import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
-  import { TokenAmount, type Token } from "@dfinity/utils";
+  import { TokenAmount, TokenAmountV2, type Token } from "@dfinity/utils";
   import { NotEnoughAmountError } from "$lib/types/common.errors";
   import type { Principal } from "@dfinity/principal";
   import { translate } from "$lib/utils/i18n.utils";
@@ -34,7 +37,7 @@
   export let amount: number | undefined = undefined;
   export let disableContinue = false;
   export let token: Token;
-  export let transactionFee: TokenAmount;
+  export let transactionFee: TokenAmountV2 | TokenAmount;
   // TODO: Handle min and max validations inline: https://dfinity.atlassian.net/browse/L2-798
   export let maxAmount: bigint | undefined = undefined;
   export let skipHardwareWallets = false;
@@ -62,7 +65,7 @@
   let max = 0;
   $: max = getMaxTransactionAmount({
     balance: selectedAccount?.balanceE8s,
-    fee: transactionFee.toE8s(),
+    fee: toTokenAmountV2(transactionFee).toUlps(),
     maxAmount,
   });
   const addMax = () => (amount = max);
@@ -89,10 +92,10 @@
       return;
     }
     try {
-      const tokens = TokenAmount.fromNumber({ amount, token });
+      const tokens = TokenAmountV2.fromNumber({ amount, token });
       assertEnoughAccountFunds({
         account: selectedAccount,
-        amountE8s: tokens.toE8s() + transactionFee.toE8s(),
+        amountE8s: tokens.toUlps() + toTokenAmountV2(transactionFee).toUlps(),
       });
       errorMessage = validateAmount({ amount, selectedAccount });
     } catch (error: unknown) {

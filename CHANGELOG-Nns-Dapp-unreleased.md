@@ -14,10 +14,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Enable ICRC-2 flow for BTC withdrawal.
-* Add ENABLE_CKETH feature flag.
-* Get ckETH canister IDs from environment/configuration.
-* Display BTC deposits with 1-11 confirmations as "pending".
 * Sns dynamic voting proportions.
 
 #### Changed
@@ -26,30 +22,17 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
-* Remove the `ENABLE_FULL_WIDTH_PROPOSAL` feature flag.
-
 #### Fixed
-
-* Fix swallowed undefined fields in raw json view. 
 
 #### Security
 
 #### Not Published
 
-* Structure to protect Rust access to stable memory.
-
 ### Operations
 
 #### Added
 
-* Experimental tests for schema migration.
-* Add optional version support to the storage records.
-* Include ckETH canister IDs when importing from URL with `scripts/canister_ids`.
-* Include ckETH when generating args.did and .env.
-
 #### Changed
-
-* Adapt `release-sop` script to work with DevEnv instead of staging.
 
 #### Deprecated
 

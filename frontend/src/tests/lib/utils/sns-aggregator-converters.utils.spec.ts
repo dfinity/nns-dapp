@@ -305,7 +305,7 @@ describe("sns aggregator converters utils", () => {
             fee: 100000n,
             name: "CatalyzeDAO",
             symbol: "CAT",
-            decimals: 8n,
+            decimals: 8,
           },
           swap: {
             already_tried_to_auto_finalize: [],

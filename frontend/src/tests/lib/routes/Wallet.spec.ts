@@ -5,7 +5,6 @@ import {
   CKETH_LEDGER_CANISTER_ID,
   CKETH_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import Wallet from "$lib/routes/Wallet.svelte";
 import { authStore } from "$lib/stores/auth.store";
@@ -85,10 +84,6 @@ vi.mock("$lib/services/worker-transactions.services", () => ({
 }));
 
 describe("Wallet", () => {
-  const amount = 2;
-  const amountE8s = BigInt(amount * E8S_PER_ICP);
-  const balanceAfterTransfer = 111000000n;
-  const balanceBeforeTransfer = balanceAfterTransfer + amountE8s;
   beforeEach(() => {
     setCkETHCanisters();
     setSnsProjects([
@@ -101,10 +96,6 @@ describe("Wallet", () => {
     icpAccountsStore.setForTesting(mockAccountsStoreData);
     overrideFeatureFlagsStore.reset();
     vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(1234n);
-    // Called only after a transfer (for now GIX-2150)
-    vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
-      balanceAfterTransfer
-    );
   });
 
   beforeAll(() => {
@@ -172,7 +163,19 @@ describe("Wallet", () => {
 
   // TODO: GIX-2150 Mock API layer instead of services for the setup
   it("user can transfer ckETH tokens and balance is refreshed", async () => {
+    const amount = 2;
+    const E18S_PER_TOKEN = 10n ** 18n;
+    const amountE18s = BigInt(amount) * E18S_PER_TOKEN;
+    const balanceAfterTransfer = 1110000000000000000n;
+    const balanceBeforeTransfer = balanceAfterTransfer + amountE18s;
+
     overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
+
+    // Called only after a transfer (for now GIX-2150)
+    vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
+      balanceAfterTransfer
+    );
+
     page.mock({
       data: { universe: CKETH_UNIVERSE_CANISTER_ID.toText() },
       routeId: AppPath.Wallet,
@@ -232,7 +235,7 @@ describe("Wallet", () => {
     expect(icrcLedgerApi.icrcTransfer).toHaveBeenCalledWith({
       identity: mockIdentity,
       canisterId: CKETH_LEDGER_CANISTER_ID,
-      amount: BigInt(amount * E8S_PER_ICP),
+      amount: amountE18s,
       to: toAccount,
       fee: mockCkETHToken.fee,
     });

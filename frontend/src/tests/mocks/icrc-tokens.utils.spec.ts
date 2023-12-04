@@ -46,7 +46,7 @@ describe("icrc-tokens.utils", () => {
       ]);
       expect(token).toEqual({
         ...mockSnsToken,
-        decimals: 8n,
+        decimals: 8,
         logo,
       });
     });

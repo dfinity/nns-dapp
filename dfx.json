@@ -340,7 +340,7 @@
         "BINSTALL_VERSION": "1.3.0",
         "DIDC_VERSION": "2023-11-16",
         "CARGO_SORT_VERSION": "1.0.9",
-        "SNSDEMO_RELEASE": "release-2023-11-22",
+        "SNSDEMO_RELEASE": "release-2023-12-04",
         "IC_COMMIT": "release-2023-11-23_23-01"
       },
       "packtool": ""

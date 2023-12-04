@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { nonNullish, type TokenAmount } from "@dfinity/utils";
+  import { nonNullish, type TokenAmount, TokenAmountV2 } from "@dfinity/utils";
   import PageHeading from "../common/PageHeading.svelte";
   import { SkeletonText } from "@dfinity/gix-components";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
@@ -9,19 +9,19 @@
   import type { IntersectingDetail } from "$lib/types/intersection.types";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { i18n } from "$lib/stores/i18n";
-  import { formatToken } from "$lib/utils/token.utils";
+  import { formatTokenV2 } from "$lib/utils/token.utils";
   import IdentifierHash from "../ui/IdentifierHash.svelte";
   import Tooltip from "../ui/Tooltip.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
-  export let balance: TokenAmount | undefined = undefined;
+  export let balance: TokenAmount | TokenAmountV2 | undefined = undefined;
   export let accountName: string;
   export let principal: Principal | undefined = undefined;
 
   let detailedAccountBalance: string | undefined;
   $: detailedAccountBalance = nonNullish(balance)
-    ? formatToken({
-        value: balance.toE8s(),
+    ? formatTokenV2({
+        value: balance,
         detailed: true,
       })
     : undefined;
@@ -36,8 +36,8 @@
       header:
         intersecting && nonNullish(balance)
           ? $i18n.wallet.title
-          : `${accountName} - ${formatToken({
-              value: balance?.toE8s() ?? 0n,
+          : `${accountName} - ${formatTokenV2({
+              value: balance,
             })} ${balance?.token.symbol}`,
     });
   };

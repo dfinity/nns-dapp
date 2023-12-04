@@ -6,7 +6,6 @@ import type { Token } from "@dfinity/utils";
  */
 export interface IcrcTokenMetadata extends Token {
   fee: bigint;
-  decimals?: bigint;
   logo?: string;
   // TODO: integrate "decimals" to replace ICP_DISPLAYED_DECIMALS_DETAILED
 }

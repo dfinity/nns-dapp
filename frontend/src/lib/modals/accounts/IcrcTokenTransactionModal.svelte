@@ -6,10 +6,11 @@
   import type { NewTransaction } from "$lib/types/transaction";
   import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { numberToUlps } from "$lib/utils/token.utils";
   import type { Account } from "$lib/types/account";
   import type { WizardStep } from "@dfinity/gix-components";
   import type { TransactionInit } from "$lib/types/transaction";
-  import { TokenAmount, nonNullish } from "@dfinity/utils";
+  import { TokenAmountV2, nonNullish } from "@dfinity/utils";
   import type { Principal } from "@dfinity/principal";
   import { icrcTransferTokens } from "$lib/services/icrc-accounts.services";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
@@ -19,7 +20,7 @@
   export let selectedAccount: Account | undefined = undefined;
   export let ledgerCanisterId: Principal;
   export let token: IcrcTokenMetadata;
-  export let transactionFee: TokenAmount;
+  export let transactionFee: TokenAmountV2;
   export let reloadSourceAccount: (() => void) | undefined = undefined;
 
   let transactionInit: TransactionInit = {
@@ -46,8 +47,7 @@
     const { blockIndex } = await icrcTransferTokens({
       source: sourceAccount,
       destinationAddress,
-      amount,
-      token,
+      amountUlps: numberToUlps({ amount, token }),
       ledgerCanisterId,
       fee: token.fee,
     });

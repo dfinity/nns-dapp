@@ -204,7 +204,6 @@ describe("icrc-accounts-services", () => {
   });
 
   describe("icrcTransferTokens", () => {
-    const amount = 10;
     const amountE8s = BigInt(10 * E8S_PER_ICP);
     const fee = 10_000n;
     const destinationAccount = {
@@ -214,7 +213,7 @@ describe("icrc-accounts-services", () => {
     it("calls icrcTransfer from icrc ledger api", async () => {
       await icrcTransferTokens({
         source: mockIcrcMainAccount,
-        amount,
+        amountUlps: amountE8s,
         destinationAddress: encodeIcrcAccount(destinationAccount),
         fee,
         ledgerCanisterId,
@@ -237,7 +236,7 @@ describe("icrc-accounts-services", () => {
           type: "subAccount",
           subAccount: mockSubAccountArray,
         },
-        amount,
+        amountUlps: amountE8s,
         destinationAddress: encodeIcrcAccount(destinationAccount),
         fee,
         ledgerCanisterId,
@@ -269,7 +268,7 @@ describe("icrc-accounts-services", () => {
 
       await icrcTransferTokens({
         source: mockIcrcMainAccount,
-        amount,
+        amountUlps: amountE8s,
         destinationAddress: encodeIcrcAccount(destinationAccount),
         fee,
         ledgerCanisterId,
