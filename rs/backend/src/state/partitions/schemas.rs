@@ -11,11 +11,12 @@ impl Partitions {
         let schema_label_bytes = SchemaLabelBytes::from(schema);
         self.growing_write(Self::METADATA_MEMORY_ID, 0, &schema_label_bytes[..]);
     }
-    pub fn schema_label(&self) -> Option<SchemaLabel> { // TODO: Make this return a SchemaLabel instead of an Option<SchemaLabel>
+    pub fn schema_label(&self) -> SchemaLabel { // TODO: Make this return a SchemaLabel instead of an Option<SchemaLabel>
         let mut schema_label_bytes = [0u8; SchemaLabel::MAX_BYTES];
         self.try_read(Self::METADATA_MEMORY_ID, 0, &mut schema_label_bytes)
-            .ok()
-            .and_then(|_| SchemaLabel::try_from(&schema_label_bytes[..]).ok())
+            .expect("Metadata memory is not populated");
+
+        SchemaLabel::try_from(&schema_label_bytes[..]).expect("Unrecognized schema label.") // TODO: In the error, include the schema label bytes
     }
     /// Gets the memory partitioned appropriately for the given schema.
     ///

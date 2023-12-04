@@ -109,7 +109,7 @@ impl State {
             }
         };
         assert_eq!(state.accounts_store.borrow().schema_label(), schema, "Accounts store does not have the expected schema");
-        assert_eq!(state.partitions_maybe.as_ref().ok().and_then(|partitions| partitions.schema_label()).unwrap_or_default(), schema, "Mmeory  is not partitioned as expected"); // TODO: Better assertion
+        assert_eq!(state.partitions_maybe.as_ref().map(|partitions| partitions.schema_label()).unwrap_or_default(), schema, "Memory is not partitioned as expected"); // TODO: Better assertion
         state
     }
     /// Applies the specified arguments to the state.
@@ -140,20 +140,15 @@ impl From<Partitions> for State {
         let schema = partitions.schema_label();
         dfn_core::api::print(format!("state::from<Partitions>: from_schema: {schema:#?}"));
         match schema {
-            // We have managed memory, but were unable to read the schema label.  This is a bug.
-            None => {
-                trap_with("Decoding stable memory failed: Failed to get schema label."); // TODO: Provide first bytes of the metadata memory.
-                unreachable!()
-            }
             // The schema claims to read from raw memory, but we got the label from amnaged mamory.  This is a bug.
-            Some(SchemaLabel::Map) => {
+            SchemaLabel::Map => {
                 trap_with(
                     "Decoding stable memory failed: Found label 'Map' in managed memory, but these are incompatible.",
                 );
                 unreachable!()
             }
             // Accounts are in stable structures in one partition, the rest of the heap is serialized as candid in another partition.
-            Some(SchemaLabel::AccountsInStableMemory) => {
+            SchemaLabel::AccountsInStableMemory => {
                 Self::recover_heap_from_managed_memory(partitions.get(Partitions::HEAP_MEMORY_ID))
             }
         }
