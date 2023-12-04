@@ -20,6 +20,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
+* Remove logic for using ICRC-1 when staking a neuron.
+
 #### Fixed
 
 #### Security
