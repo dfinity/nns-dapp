@@ -11,7 +11,7 @@ use crate::assets::{hash_bytes, insert_asset, insert_tar_xz, Asset};
 use crate::perf::PerformanceCount;
 use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
-use accounts_store::schema::SchemaLabel;
+
 pub use candid::{CandidType, Deserialize};
 use dfn_candid::{candid, candid_one};
 use dfn_core::{over, over_async};

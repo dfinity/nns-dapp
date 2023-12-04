@@ -5,13 +5,12 @@ use crate::assets::AssetHashes;
 use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
 use core::cell::RefCell;
-use std::path::Display;
+
 use dfn_candid::Candid;
 use dfn_core::api::trap_with;
 use ic_stable_structures::DefaultMemoryImpl;
 use on_wire::{FromWire, IntoWire};
 use partitions::Partitions;
-use std::borrow::BorrowMut;
 
 pub mod partitions;
 #[cfg(test)]
@@ -31,7 +30,7 @@ pub struct State {
     pub assets: RefCell<Assets>,
     pub asset_hashes: RefCell<AssetHashes>,
     pub performance: RefCell<PerformanceCounts>,
-    pub memory_maybe: Result<Partitions, DefaultMemoryImpl>,
+    pub partitions_maybe: Result<Partitions, DefaultMemoryImpl>,
 }
 
 impl PartialEq for State {
@@ -51,7 +50,7 @@ impl Default for State {
             assets: RefCell::new(Assets::default()),
             asset_hashes: RefCell::new(AssetHashes::default()),
             performance: RefCell::new(PerformanceCounts::default()),
-            memory_maybe: Err(DefaultMemoryImpl::default()),
+            partitions_maybe: Err(DefaultMemoryImpl::default()),
         }
     }
 }
@@ -92,12 +91,13 @@ impl State {
                     assets: RefCell::new(Assets::default()),
                     asset_hashes: RefCell::new(AssetHashes::default()),
                     performance: RefCell::new(PerformanceCounts::default()),
-                    memory_maybe: Err(memory),
+                    partitions_maybe: Err(memory),
                 }
             }
             SchemaLabel::AccountsInStableMemory => {
                 dfn_core::api::print("New State: AccountsInStableMemory");
                 let partitions = Partitions::from(memory);
+                partitions.set_schema_label(schema);
                 let accounts_store =
                     AccountsStore::new_with_unbounded_stable_btree_map(partitions.get(Partitions::ACCOUNTS_MEMORY_ID));
                 State {
@@ -105,7 +105,7 @@ impl State {
                     assets: RefCell::new(Assets::default()),
                     asset_hashes: RefCell::new(AssetHashes::default()),
                     performance: RefCell::new(PerformanceCounts::default()),
-                    memory_maybe: Ok(partitions),
+                    partitions_maybe: Ok(partitions),
                 }
             }
         }
@@ -188,7 +188,7 @@ impl StableState for State {
             assets: RefCell::new(assets),
             asset_hashes: RefCell::new(asset_hashes),
             performance: RefCell::new(performance),
-            memory_maybe: Err(DefaultMemoryImpl::default()),
+            partitions_maybe: Err(DefaultMemoryImpl::default()),
         })
     }
 }

@@ -11,6 +11,7 @@ pub fn setup_test_state() -> State {
         assets: RefCell::new(Assets::default()),
         asset_hashes: RefCell::new(AssetHashes::default()),
         performance: RefCell::new(PerformanceCounts::test_data()),
+        partitions_maybe: Err(VectorMemory::default()),
     }
 }
 
