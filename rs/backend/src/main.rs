@@ -79,17 +79,7 @@ fn pre_upgrade() {
     STATE.with(|s| {
         dfn_core::api::print(format!("pre_upgrade accounts_store: {:#?}", s.accounts_store.borrow()));
         s.pre_upgrade();
-        let state_schema = s.schema_label();
-        let stable_schema = s.partitions_maybe.as_ref().map(|partitions| partitions.schema_label());
-        let args_schema = CANISTER_ARGUMENTS.with(|args| args.borrow().schema);
-        let accounts_schema = s.accounts_store.borrow().schema_label();
-        dfn_core::api::print(format!(
-            "pre_upgrade state_schema: {state_schema:?} stable_schema: {stable_schema:?} args_schema: {args_schema:?} accounts_schema: {accounts_schema:?}",
-            state_schema = state_schema,
-            stable_schema = stable_schema,
-            args_schema = args_schema,
-            accounts_schema = accounts_schema,
-        ));
+        dfn_core::api::print(format!("pre_upgrade state: {s:?}",));
     });
     dfn_core::api::print(format!(
         "pre_upgrade instruction_counter after saving state: {} stable_memory_size_gib: {} wasm_memory_size_gib: {}",

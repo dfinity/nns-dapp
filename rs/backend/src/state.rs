@@ -1,6 +1,7 @@
 use crate::accounts_store::schema::SchemaLabel;
 use crate::accounts_store::AccountsStore;
 use crate::arguments::CanisterArguments;
+use crate::arguments::CANISTER_ARGUMENTS;
 use crate::assets::AssetHashes;
 use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
@@ -57,7 +58,20 @@ impl Default for State {
 
 impl core::fmt::Debug for State {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "(State: {:?})", &self.accounts_store)
+        writeln!(f, "State {{")?;
+        writeln!(f, "  state_schema: {:?}", &self.schema_label())?;
+        writeln!(
+            f,
+            "  accounts_schema: {:?}",
+            &self.accounts_store.borrow().schema_label()
+        )?;
+        writeln!(
+            f,
+            "  args_schema: {:?}",
+            &CANISTER_ARGUMENTS.with(|args| args.borrow().schema)
+        )?;
+        writeln!(f, "  accounts_store: {:?}", &self.accounts_store)?;
+        writeln!(f, "}}")
     }
 }
 
