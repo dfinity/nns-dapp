@@ -20,13 +20,13 @@ impl Partitions {
     /// Gets the memory partitioned appropriately for the given schema.
     ///
     /// If a schema uses raw memory, the memory is returned.
-    pub fn new_for_schema(memory: DefaultMemoryImpl, schema: SchemaLabel) -> Result<Partitions, DefaultMemoryImpl> {
+    pub fn new_for_schema(memory: DefaultMemoryImpl, schema: SchemaLabel) -> Partitions {
         match schema {
-            SchemaLabel::Map => Err(memory),
+            SchemaLabel::Map => panic!("Map schema does not use partitions"),
             SchemaLabel::AccountsInStableMemory => {
                 let partitions = Partitions::from(memory);
                 partitions.set_schema_label(schema);
-                Ok(partitions)
+                partitions
             }
         }
     }

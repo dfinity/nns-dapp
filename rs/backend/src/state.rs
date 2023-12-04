@@ -96,7 +96,7 @@ impl State {
             }
             SchemaLabel::AccountsInStableMemory => {
                 dfn_core::api::print("New State: AccountsInStableMemory");
-                let partitions = Partitions::new_for_schema(memory, schema).expect("Expected partitions for AccountsInStableMemory");
+                let partitions = Partitions::new_for_schema(memory, schema);
                 let accounts_store =
                     AccountsStore::new_with_unbounded_stable_btree_map(partitions.get(Partitions::ACCOUNTS_MEMORY_ID));
                 State {
