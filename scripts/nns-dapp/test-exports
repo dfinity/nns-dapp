@@ -41,6 +41,6 @@ if diff <(sort "$GOLDEN_FILE") <(wasm_exports "$DFX_WASM_PATH" | sort); then
   echo "Exports match"
 else
   echo "Exports do not match"
-  echo "If this looks correct, run '$0 --wasm $DFX_WASM_PATH --update-golden' to update the golden file"
+  echo "If this looks correct, run '$0 --wasm $DFX_WASM_PATH --update-golden --flavour $DFX_FLAVOUR' to update the golden file"
   exit 1
 fi
