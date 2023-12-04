@@ -14,11 +14,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Enable ICRC-2 flow for BTC withdrawal.
-* Add ENABLE_CKETH feature flag.
 * Support for CkETH token.
-* Get ckETH canister IDs from environment/configuration.
-* Display BTC deposits with 1-11 confirmations as "pending".
 
 #### Changed
 
