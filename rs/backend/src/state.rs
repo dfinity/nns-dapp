@@ -108,8 +108,20 @@ impl State {
                 }
             }
         };
-        assert_eq!(state.accounts_store.borrow().schema_label(), schema, "Accounts store does not have the expected schema");
-        assert_eq!(state.partitions_maybe.as_ref().map(|partitions| partitions.schema_label()).unwrap_or_default(), schema, "Memory is not partitioned as expected"); // TODO: Better assertion
+        assert_eq!(
+            state.accounts_store.borrow().schema_label(),
+            schema,
+            "Accounts store does not have the expected schema"
+        );
+        assert_eq!(
+            state
+                .partitions_maybe
+                .as_ref()
+                .map(|partitions| partitions.schema_label())
+                .unwrap_or_default(),
+            schema,
+            "Memory is not partitioned as expected"
+        ); // TODO: Better assertion
         state
     }
     /// Applies the specified arguments to the state.
