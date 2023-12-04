@@ -82,7 +82,7 @@ impl State {
         self.assets.replace(new_state.assets.take());
         self.asset_hashes.replace(new_state.asset_hashes.take());
         self.performance.replace(new_state.performance.take());
-        self.partitions_maybe.replace(new_state.partitions_maybe);
+        self.partitions_maybe = new_state.partitions_maybe;
     }
     /// Gets the authoritative schema.  This is the schema that is in stable memory.
     pub fn schema_label(&self) -> SchemaLabel {
