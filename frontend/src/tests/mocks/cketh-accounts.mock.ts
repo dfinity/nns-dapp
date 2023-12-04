@@ -21,7 +21,7 @@ export const mockCkETHMainAccount: Account = {
   identifier: encodeIcrcAccount({
     owner: mockPrincipal,
   }),
-  balanceE8s: 1111222233334444n,
+  balanceE8s: 123000000000000000000n,
   principal: mockPrincipal,
   type: "main",
 };

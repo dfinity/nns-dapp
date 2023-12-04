@@ -29,7 +29,7 @@ import {
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { Cbor } from "@dfinity/agent";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
-import { ICPToken, TokenAmount, toNullable } from "@dfinity/utils";
+import { ICPToken, TokenAmountV2, toNullable } from "@dfinity/utils";
 
 describe("icrc-transaction utils", () => {
   const subAccount = {
@@ -152,7 +152,7 @@ describe("icrc-transaction utils", () => {
       isPending: false,
       otherParty: mockSnsSubAccount.identifier,
       timestamp: defaultTimestamp,
-      tokenAmount: TokenAmount.fromE8s({
+      tokenAmount: TokenAmountV2.fromUlps({
         amount: 100_010_000n,
         token: ICPToken,
       }),
@@ -176,7 +176,7 @@ describe("icrc-transaction utils", () => {
         isIncoming: false,
         otherParty: mockSnsSubAccount.identifier,
         // Includes fee
-        tokenAmount: TokenAmount.fromE8s({
+        tokenAmount: TokenAmountV2.fromUlps({
           amount: 200_010_000n,
           token: ICPToken,
         }),
@@ -253,7 +253,7 @@ describe("icrc-transaction utils", () => {
         isIncoming: true,
         otherParty: mockSnsMainAccount.identifier,
         // Does not include fee
-        tokenAmount: TokenAmount.fromE8s({
+        tokenAmount: TokenAmountV2.fromUlps({
           amount: 300_000_000n,
           token: ICPToken,
         }),
@@ -297,7 +297,7 @@ describe("icrc-transaction utils", () => {
         ...defaultExpectedData,
         domKey: "1234-1",
         headline: "Approve transfer",
-        tokenAmount: TokenAmount.fromE8s({
+        tokenAmount: TokenAmountV2.fromUlps({
           amount: 10_000n,
           token: ICPToken,
         }),
@@ -325,7 +325,7 @@ describe("icrc-transaction utils", () => {
         isIncoming: true,
         otherParty: mockSnsMainAccount.identifier,
         // Does not include fee
-        tokenAmount: TokenAmount.fromE8s({
+        tokenAmount: TokenAmountV2.fromUlps({
           amount: 400_000_000n,
           token: ICPToken,
         }),
@@ -358,7 +358,7 @@ describe("icrc-transaction utils", () => {
         isPending: false,
         otherParty: undefined,
         timestamp: new Date(0),
-        tokenAmount: TokenAmount.fromE8s({
+        tokenAmount: TokenAmountV2.fromUlps({
           amount,
           token: ICPToken,
         }),
@@ -397,7 +397,7 @@ describe("icrc-transaction utils", () => {
         isPending: false,
         otherParty: btcWithdrawalAddress,
         timestamp: new Date(0),
-        tokenAmount: TokenAmount.fromE8s({
+        tokenAmount: TokenAmountV2.fromUlps({
           amount,
           token: mockCkBTCToken,
         }),
@@ -436,7 +436,7 @@ describe("icrc-transaction utils", () => {
         isPending: false,
         otherParty: "BTC Network",
         timestamp: new Date(0),
-        tokenAmount: TokenAmount.fromE8s({
+        tokenAmount: TokenAmountV2.fromUlps({
           amount,
           token: mockCkBTCToken,
         }),
@@ -468,7 +468,7 @@ describe("icrc-transaction utils", () => {
         isPending: false,
         otherParty: "BTC Network",
         timestamp: new Date(0),
-        tokenAmount: TokenAmount.fromE8s({
+        tokenAmount: TokenAmountV2.fromUlps({
           amount,
           token: mockCkBTCToken,
         }),
@@ -500,7 +500,7 @@ describe("icrc-transaction utils", () => {
         isPending: true,
         headline: "Receiving BTC",
         otherParty: "BTC Network",
-        tokenAmount: TokenAmount.fromE8s({
+        tokenAmount: TokenAmountV2.fromUlps({
           amount: amount - kytFee,
           token: mockCkBTCToken,
         }),

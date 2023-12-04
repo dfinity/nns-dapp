@@ -1,5 +1,6 @@
 import ProjectAccountsBalance from "$lib/components/universe/UniverseAccountsBalance.svelte";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
@@ -12,6 +13,7 @@ import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
+import { mockCkETHMainAccount } from "$tests/mocks/cketh-accounts.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
   mockAccountsStoreSubscribe,
@@ -30,7 +32,11 @@ import {
   mockTokensSubscribe,
   mockUniversesTokens,
 } from "$tests/mocks/tokens.mock";
-import { ckBTCUniverseMock, nnsUniverseMock } from "$tests/mocks/universe.mock";
+import {
+  ckBTCUniverseMock,
+  ckETHUniverseMock,
+  nnsUniverseMock,
+} from "$tests/mocks/universe.mock";
 import { render } from "@testing-library/svelte";
 
 describe("UniverseAccountsBalance", () => {
@@ -154,6 +160,33 @@ describe("UniverseAccountsBalance", () => {
           detailed: false,
         })} ${mockCkBTCToken.symbol}`
       );
+    });
+
+    it("should render a total balance for ckETH", () => {
+      const totalBalanceUlps = 123000000000000000000n;
+
+      icrcAccountsStore.set({
+        accounts: {
+          accounts: [
+            {
+              ...mockCkETHMainAccount,
+              balanceE8s: totalBalanceUlps,
+            },
+          ],
+          certified: true,
+        },
+        universeId: CKETH_UNIVERSE_CANISTER_ID,
+      });
+
+      const { getByTestId } = render(ProjectAccountsBalance, {
+        props: {
+          universe: ckETHUniverseMock,
+        },
+      });
+
+      const balance: HTMLElement | null = getByTestId("token-value-label");
+
+      expect(balance?.textContent.trim() ?? "").toEqual("123.00 ckETH");
     });
   });
 });

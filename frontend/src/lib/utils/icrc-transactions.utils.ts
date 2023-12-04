@@ -19,7 +19,6 @@ import type {
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import {
-  TokenAmount,
   TokenAmountV2,
   fromNullable,
   isNullish,
@@ -286,7 +285,7 @@ export const mapCkbtcPendingUtxo = ({
     isPending: true,
     headline: i18n.ckbtc.receiving_btc,
     otherParty: i18n.ckbtc.btc_network,
-    tokenAmount: TokenAmount.fromE8s({
+    tokenAmount: TokenAmountV2.fromUlps({
       amount: utxo.value - kytFee,
       token: token,
     }),
