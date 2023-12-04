@@ -21,7 +21,7 @@
   } from "$lib/derived/selected-universe.derived";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
   import type { Principal } from "@dfinity/principal";
-  import { ICPToken, nonNullish } from "@dfinity/utils";
+  import { ICPToken, nonNullish, type Token } from "@dfinity/utils";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { browser } from "$app/environment";
@@ -38,6 +38,11 @@
 
   let icrcSelectedProjectId: Principal | undefined;
   $: icrcSelectedProjectId = $selectedIcrcTokenUniverseIdStore;
+
+  let token: Token | undefined;
+  $: token = nonNullish(icrcSelectedProjectId)
+    ? $tokensStore[icrcSelectedProjectId?.toText()]?.token
+    : undefined;
 
   const onSubmit = async () => {
     if (invalidForm || inputValue === undefined) {
@@ -56,9 +61,10 @@
           tokens: inputValue,
           rootCanisterId: snsSelectedProjectId,
         });
-      } else if (nonNullish(icrcSelectedProjectId)) {
+      } else if (nonNullish(icrcSelectedProjectId) && nonNullish(token)) {
         await getIcrcTokens({
           tokens: inputValue,
+          token,
           ledgerCanisterId: icrcSelectedProjectId,
         });
       } else if ($isCkBTCUniverseStore) {
