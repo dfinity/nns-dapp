@@ -49,8 +49,7 @@ fn init(args: Option<CanisterArguments>) {
         let args = args.borrow();
         let schema = args.schema.unwrap_or_default();
         let stable_memory = DefaultMemoryImpl::default();
-        let partitions_maybe = Partitions::new_for_schema(stable_memory, schema);
-        let state = State::new(schema, partitions_maybe);
+        let state = State::new(schema, stable_memory);
         let state = state.with_arguments(&args);
         STATE.with(|s| s.replace(state));
     });

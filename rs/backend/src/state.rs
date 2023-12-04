@@ -83,32 +83,30 @@ thread_local! {
 
 impl State {
     /// Creates new state with the specified schema.
-    pub fn new(schema: SchemaLabel, partitions_maybe: Result<Partitions, DefaultMemoryImpl>) -> Self {
-        let mut state = State {
-            accounts_store: RefCell::new(AccountsStore::default()),
-            assets: RefCell::new(Assets::default()),
-            asset_hashes: RefCell::new(AssetHashes::default()),
-            performance: RefCell::new(PerformanceCounts::default()),
-            memory_maybe: Err(DefaultMemoryImpl::default()),
-        };
-
+    pub fn new(schema: SchemaLabel, memory: DefaultMemoryImpl) -> Self {
         match schema {
             SchemaLabel::Map => {
                 dfn_core::api::print("New State: Map");
-                state
+                State {
+                    accounts_store: RefCell::new(AccountsStore::default()),
+                    assets: RefCell::new(Assets::default()),
+                    asset_hashes: RefCell::new(AssetHashes::default()),
+                    performance: RefCell::new(PerformanceCounts::default()),
+                    memory_maybe: Err(memory),
+                }
             }
             SchemaLabel::AccountsInStableMemory => {
                 dfn_core::api::print("New State: AccountsInStableMemory");
-                let partitions = partitions_maybe.unwrap_or_else(|_memory| {
-                    trap_with("New state: Partitions should have been prepared.");
-                    unreachable!();
-                });
+                let partitions = Partitions::from(memory);
                 let accounts_store =
                     AccountsStore::new_with_unbounded_stable_btree_map(partitions.get(Partitions::ACCOUNTS_MEMORY_ID));
-                state.borrow_mut().accounts_store.replace(accounts_store);
-                //let accounts_store = StableBTreeMap::new(partitions.get(Partitions::ACCOUNTS_MEMORY_ID));
-                //state.accounts_store.borrow_mut().accounts_db
-                state
+                State {
+                    accounts_store: RefCell::new(accounts_store),
+                    assets: RefCell::new(Assets::default()),
+                    asset_hashes: RefCell::new(AssetHashes::default()),
+                    performance: RefCell::new(PerformanceCounts::default()),
+                    memory_maybe: Ok(partitions),
+                }
             }
         }
     }
