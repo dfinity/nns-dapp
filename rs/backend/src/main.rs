@@ -56,8 +56,10 @@ fn init(args: Option<CanisterArguments>) {
         let stable_memory = DefaultMemoryImpl::default();
         let state = State::new(schema, stable_memory);
         let state = state.with_arguments(&args);
-        STATE.with(|s| s.replace(state));
-        dfn_core::api::print(format!("init state: {s:?}",));
+        STATE.with(|s| {
+            s.replace(state);
+            dfn_core::api::print(format!("init state: {s:?}",));
+        });
     });
     // Legacy:
     assets::init_assets();
