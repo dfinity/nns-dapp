@@ -1,5 +1,4 @@
 import {
-  E8S_PER_ICP,
   ICP_DISPLAYED_DECIMALS,
   ICP_DISPLAYED_DECIMALS_DETAILED,
   ICP_DISPLAYED_HEIGHT_DECIMALS,
@@ -11,6 +10,9 @@ import {
   isNullish,
   type Token,
 } from "@dfinity/utils";
+
+// Should be used internally in the helpers only.
+const E8S_PER_ICP = 100_000_000;
 
 const countDecimals = (value: number): number => {
   // "1e-7" -> 0.00000001
@@ -169,16 +171,16 @@ export const getMaxTransactionAmount = ({
   maxAmount?: bigint;
   token: Token;
 }): number => {
-  const maxUserAmount = ulpsToE8s({
+  const maxUserAmountE8s = ulpsToE8s({
     ulps: balance - fee,
     decimals: token.decimals,
   });
   if (maxAmount === undefined) {
-    return Math.max(Number(maxUserAmount), 0) / E8S_PER_ICP;
+    return Math.max(Number(maxUserAmountE8s), 0) / E8S_PER_ICP;
   }
   const maxAmountE8s = ulpsToE8s({ ulps: maxAmount, decimals: token.decimals });
   return (
-    Math.min(Number(maxAmountE8s), Math.max(Number(maxUserAmount), 0)) /
+    Math.min(Number(maxAmountE8s), Math.max(Number(maxUserAmountE8s), 0)) /
     E8S_PER_ICP
   );
 };

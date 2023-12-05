@@ -15,9 +15,11 @@
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { splitNeuron } from "$lib/services/sns-neurons.services";
-  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import type { SnsNervousSystemParameters } from "@dfinity/sns";
-  import { formattedTransactionFee } from "$lib/utils/token.utils";
+  import {
+    formattedTransactionFee,
+    ulpsToNumber,
+  } from "$lib/utils/token.utils";
 
   export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;
@@ -44,8 +46,10 @@
   $: max =
     stakeE8s === 0n
       ? 0
-      : Number(stakeE8s - transactionFee - neuronMinimumStake) /
-        Number(E8S_PER_ICP);
+      : ulpsToNumber({
+          ulps: stakeE8s - transactionFee - neuronMinimumStake,
+          token,
+        });
 
   let validForm: boolean;
   $: validForm = isValidInputAmount({ amount, max });

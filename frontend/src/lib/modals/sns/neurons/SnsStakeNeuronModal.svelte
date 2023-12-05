@@ -16,8 +16,8 @@
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
   import type { SnsNervousSystemParameters } from "@dfinity/sns";
-  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import { nonNullish } from "@dfinity/utils";
+  import { ulpsToNumber } from "$lib/utils/token.utils";
 
   export let token: Token;
   export let rootCanisterId: Principal;
@@ -44,9 +44,10 @@
   let minimumStake: number | undefined;
   $: minimumStake =
     parameters !== undefined
-      ? Number(
-          mapNervousSystemParameters(parameters).neuron_minimum_stake_e8s
-        ) / E8S_PER_ICP
+      ? ulpsToNumber({
+          ulps: mapNervousSystemParameters(parameters).neuron_minimum_stake_e8s,
+          token,
+        })
       : undefined;
   let checkMinimumStake: ValidateAmountFn;
   $: checkMinimumStake = ({ amount }) => {
