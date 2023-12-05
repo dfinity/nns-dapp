@@ -144,10 +144,10 @@
     </span>
   </div>
 
-  <div class="legends">
+  <div class="votes-results-legends">
+    <h3>There are two ways a proposal can be decided:</h3>
     <VotesResultsMajorityDescription testId="immediate-majority-toggle">
       <h4 data-tid="immediate-majority-title" class="description" slot="title">
-        <div class="majority-icon immediate-majority"></div>
         {immediateMajorityTitle}
       </h4>
       <p data-tid="immediate-majority-description" class="description">
@@ -156,7 +156,6 @@
     </VotesResultsMajorityDescription>
     <VotesResultsMajorityDescription testId="standard-majority-toggle">
       <h4 data-tid="standard-majority-title" class="description" slot="title">
-        <div class="majority-icon standard-majority"></div>
         {standardMajorityTitle}
       </h4>
       <p data-tid="standard-majority-description" class="description">
@@ -174,6 +173,10 @@
 
   .title {
     @include fonts.h3(true);
+  }
+
+  h3 {
+    @include fonts.small(false);
   }
 
   .votes-info {

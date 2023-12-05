@@ -563,13 +563,14 @@
     "vote_status_updating": "Updating proposal state...",
     "expiration": "Expiration date",
     "immediate_majority": "Immediate Majority Decision",
-    "immediate_majority_description": "A proposal is immediately adopted or rejected if, before the voting period ends, more than half of the total voting power votes Yes or No, respectively.",
+    "immediate_majority_description": "A proposal is immediately adopted or rejected if, before the voting period ends, more than half of the total voting power votes Yes, or at least half votes No, respectively (indicated by $icon_immediate_majority delimiter above).",
     "immediate_super_majority": "Immediate Supermajority Decision",
-    "immediate_super_majority_description": "A proposal is immediately adopted or rejected if, before the voting period ends, more than $icon_immediate_majority$immediate_majority of the total voting power votes Yes, or more than $no_immediate_majority votes No, respectively.",
+    "immediate_super_majority_description": "A proposal is immediately adopted or rejected if, before the voting period ends, more than $immediate_majority of the total voting power votes Yes, or at least $no_immediate_majority votes No, respectively (indicated by $icon_immediate_majority delimiter above).",
     "standard_majority": "Standard Majority Decision",
-    "standard_majority_description": "At the end of the voting period, a proposal is adopted if it receives more than half of the votes cast, provided these votes represent at least $icon_standard_majority$standard_majority of the total voting power. Otherwise, it is rejected. Before a proposal is decided, the voting period can be extended in order to “wait for quiet”. Such voting period extensions occur when a proposal’s voting results turn from either a Yes majority to a No majority or vice versa.",
+    "standard_majority_description": "A proposal is immediately adopted or rejected if, before the voting period ends, more than half of the total voting power votes Yes, or at least half votes No, respectively (indicated by $icon_immediate_majority delimiter above).",
     "standard_super_majority": "Standard Supermajority Decision",
-    "standard_super_majority_description": "At the end of the voting period, a proposal is adopted if it receives more than $immediate_majority of the votes cast, provided these votes represent at least $icon_standard_majority$standard_majority of the total voting power. Otherwise, it is rejected. Before a proposal is decided, the voting period can be extended in order to “wait for quiet”. Such voting period extensions occur when a proposal’s voting results turn from either a Yes majority to a No majority or vice versa."
+    "standard_super_majority_description": "At the end of the voting period, a proposal is adopted if it receives more than $immediate_majority of the votes cast, provided these votes represent at least $standard_majority of the total voting power (indicated by $icon_standard_majority delimiter above). Otherwise, it is rejected. Before a proposal is decided, the voting period can be extended in order to “wait for quiet”. Such voting period extensions occur when a proposal’s voting results turn from either a Yes majority to a No majority or vice versa.",
+    "decision_intro": "There are two ways a proposal can be decided:"
   },
   "proposal_detail__ineligible": {
     "headline": "Ineligible Neurons",
