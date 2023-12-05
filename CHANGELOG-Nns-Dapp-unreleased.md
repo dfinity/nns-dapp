@@ -28,6 +28,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Security
 
+* Bump css-tools dev dependency to fix minor vulnerability.
+
 #### Not Published
 
 ### Operations
