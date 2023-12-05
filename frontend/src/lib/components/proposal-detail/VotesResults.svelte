@@ -16,7 +16,7 @@
   export let yes: number;
   export let no: number;
   export let total: number;
-  export let deadlineTimestampSeconds: bigint | undefined = undefined;
+  export let deadlineTimestampSeconds: bigint | undefined;
 
   let yesProportion: number;
   $: yesProportion = total ? yes / total : 0;
