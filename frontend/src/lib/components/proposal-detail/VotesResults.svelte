@@ -154,7 +154,7 @@
   <div class="votes-results-legends">
     <h3 class="description">{$i18n.proposal_detail__vote.decision_intro}</h3>
     <VotesResultsMajorityDescription testId="immediate-majority-toggle">
-      <h4 data-tid="immediate-majority-title" class="description" slot="title">
+      <h4 data-tid="immediate-majority-title" slot="title">
         {immediateMajorityTitle}
       </h4>
       <p data-tid="immediate-majority-description" class="description majority-description">
@@ -162,7 +162,7 @@
       </p>
     </VotesResultsMajorityDescription>
     <VotesResultsMajorityDescription testId="standard-majority-toggle">
-      <h4 data-tid="standard-majority-title" class="description" slot="title">
+      <h4 data-tid="standard-majority-title" slot="title">
         {standardMajorityTitle}
       </h4>
       <p data-tid="standard-majority-description" class="description majority-description">
@@ -183,6 +183,7 @@
   }
 
   h3 {
+    margin-bottom: var(--padding);
     @include fonts.standard(false);
   }
 
