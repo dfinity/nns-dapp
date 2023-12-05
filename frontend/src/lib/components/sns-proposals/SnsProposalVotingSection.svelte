@@ -5,10 +5,14 @@
   import VotesResults from "$lib/components/proposal-detail/VotesResults.svelte";
   import { fromDefinedNullable } from "@dfinity/utils";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
-  import { snsRewardStatus } from "$lib/utils/sns-proposals.utils";
+  import {
+    type SnsProposalDataMap,
+    snsRewardStatus,
+  } from "$lib/utils/sns-proposals.utils";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let proposal: SnsProposalData;
+  export let proposalDataMap: SnsProposalDataMap;
   export let reloadProposal: () => Promise<void>;
 
   let settled = false;
@@ -24,10 +28,13 @@
   $: no = Number(tally.no) / E8S_PER_ICP;
   let total = 0;
   $: total = Number(tally.total) / E8S_PER_ICP;
+  let deadlineTimestampSeconds: bigint | undefined;
+  $: deadlineTimestampSeconds =
+    proposalDataMap.current_deadline_timestamp_seconds;
 </script>
 
 <TestIdWrapper testId="sns-proposal-voting-section-component">
-  <VotesResults {yes} {no} {total} />
+  <VotesResults {yes} {no} {total} {deadlineTimestampSeconds} />
 
   {#if !settled}
     <SnsVotingCard {proposal} {reloadProposal} />
