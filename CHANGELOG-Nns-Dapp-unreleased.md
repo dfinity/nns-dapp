@@ -39,6 +39,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+- Move ic-wasm installation into a GitHub action.
+
 #### Deprecated
 
 #### Removed
