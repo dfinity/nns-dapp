@@ -12,7 +12,6 @@
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
   import BitcoinAddress from "$lib/components/accounts/BitcoinAddress.svelte";
-  import CkBTCWalletActions from "$lib/components/accounts/CkBTCWalletActions.svelte";
   import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
   import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
   import IcrcWalletPage from "$lib/components/accounts/IcrcWalletPage.svelte";

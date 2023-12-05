@@ -101,24 +101,26 @@
     {/if}
   </div>
 
-  <div class="content-cell-details address-section">
-    <div>
-      <div class="content-cell-title">{$i18n.ckbtc.bitcoin_address_title}</div>
-      {#if nonNullish(btcAddress)}
-        <div class="address">
-          <span class="value" data-tid="btc-address">{btcAddress}</span>
-          <Copy value={btcAddress} />
-        </div>
-      {:else}
-        <div class="skeleton">
-          <SkeletonText />
-        </div>
-      {/if}
+  <div class="address-section">
+    <div class="content-cell-details">
+      <div>
+        <div class="content-cell-title">{$i18n.ckbtc.bitcoin_address_title}</div>
+        {#if nonNullish(btcAddress)}
+          <div class="address">
+            <span class="value" data-tid="btc-address">{btcAddress}</span>
+            <Copy value={btcAddress} />
+          </div>
+        {:else}
+          <div class="skeleton">
+            <SkeletonText />
+          </div>
+        {/if}
+      </div>
     </div>
-  </div>
-  <div class="content-cell-details">
-    <div class="button">
-      <CkBTCWalletActions {universeId} {minterCanisterId} {reload} />
+    <div class="content-cell-details">
+      <div class="button">
+        <CkBTCWalletActions {universeId} {minterCanisterId} {reload} />
+      </div>
     </div>
   </div>
 </div>
