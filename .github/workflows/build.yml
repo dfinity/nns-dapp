@@ -117,6 +117,41 @@ jobs:
         run: ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp_test.wasm.gz
       - name: Count upgrade cycles
         run: scripts/nns-dapp/estimate-upgrade-cycles | tee -a $GITHUB_STEP_SUMMARY
+  test-upgrade-map:
+    needs: build
+    runs-on: ubuntu-20.04
+    timeout-minutes: 40
+    steps:
+      - name: Checkout nns-dapp
+        uses: actions/checkout@v3
+      - name: Get nns-dapp_test
+        uses: actions/download-artifact@v3
+        with:
+          name: nns-dapp_test
+      - name: Start snapshot environment
+        uses: ./.github/actions/start_dfx_snapshot
+        with:
+          nns_dapp_wasm: 'nns-dapp_test.wasm.gz'
+      - name: Downgrade nns-dapp to prod and upgrade back again
+        run: ./scripts/nns-dapp/migration-test --schema1 Map --schema2 Map --accounts 10000 --wasm1 nns-dapp_test.wasm.gz --wasm2 nns-dapp_test.wasm.gz
+  test-upgrade-stable:
+    needs: build
+    runs-on: ubuntu-20.04
+    timeout-minutes: 40
+    steps:
+      - name: Checkout nns-dapp
+        uses: actions/checkout@v3
+      - name: Get nns-dapp_test
+        uses: actions/download-artifact@v3
+        with:
+          name: nns-dapp_test
+      - name: Start snapshot environment
+        uses: ./.github/actions/start_dfx_snapshot
+        with:
+          nns_dapp_wasm: 'nns-dapp_test.wasm.gz'
+      - name: Downgrade nns-dapp to prod and upgrade back again
+        run: ./scripts/nns-dapp/migration-test --schema1 AccountsInStableMemory --schema2 AccountsInStableMemory --accounts 10000 --wasm1 nns-dapp_test.wasm.gz --wasm2 nns-dapp_test.wasm.gz
+  # TODO: stable <-> map
   test-test-account-api:
     needs: build
     runs-on: ubuntu-20.04
