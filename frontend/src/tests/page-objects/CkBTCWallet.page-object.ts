@@ -1,3 +1,4 @@
+import { BitcoinAddressPo } from "$tests/page-objects/BitcoinAddress.page-object";
 import { CkBTCWalletFooterPo } from "$tests/page-objects/CkBTCWalletFooter.page-object";
 import { IcrcTransactionsListPo } from "$tests/page-objects/IcrcTransactionsList.page-object";
 import { WalletPageHeaderPo } from "$tests/page-objects/WalletPageHeader.page-object";
@@ -28,8 +29,12 @@ export class CkBTCWalletPo extends BasePageObject {
     return CkBTCWalletFooterPo.under(this.root);
   }
 
+  getBitcoinAddressPo(): BitcoinAddressPo {
+    return BitcoinAddressPo.under(this.root);
+  }
+
   clickRefreshBalance(): Promise<void> {
-    return this.click("manual-refresh-balance");
+    return this.getBitcoinAddressPo().getUpdateBalanceButton().click();
   }
 
   hasSpinner(): Promise<boolean> {

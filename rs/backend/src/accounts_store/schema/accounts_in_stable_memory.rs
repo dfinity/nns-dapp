@@ -139,6 +139,14 @@ pub trait AccountsInStableMemoryTrait {
     /// Equivalent of [`super::AccountsDbTrait::db_accounts_len`].
     fn aism_accounts_len(&self) -> u64;
 
+    /// Equivalent of [`super::AccountsDbTrait::iter`].
+    fn aism_iter(&self) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
+        Box::new(
+            self.aism_keys()
+                .filter_map(|key| self.aism_get_account(&key).map(|value| (key, value))),
+        )
+    }
+
     /// Equivalent of [`super::AccountsDbTrait::values`].
     fn aism_values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
         Box::new(self.aism_keys().filter_map(|key| self.aism_get_account(&key)))
