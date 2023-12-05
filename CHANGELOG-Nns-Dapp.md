@@ -11,6 +11,21 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 126313
+
+### Application
+
+#### Added
+
+* Support for CkETH token.
+
+#### Removed
+
+* Remove the `ENABLE_FULL_WIDTH_PROPOSAL` feature flag.
+* Remove logic for using ICRC-1 when staking a neuron.
+
+### Operations
+
 ## Proposal 126305
 
 ### Application
