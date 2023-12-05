@@ -16,7 +16,10 @@ import {
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
-import { render, waitFor } from "@testing-library/svelte";
+import { BitcoinAddressPo } from "$tests/page-objects/BitcoinAddress.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { render } from "@testing-library/svelte";
 
 describe("BitcoinAddress", () => {
   beforeAll(() => {
@@ -31,6 +34,12 @@ describe("BitcoinAddress", () => {
     minterCanisterId: CKTESTBTC_MINTER_CANISTER_ID,
     universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
     reload: vi.fn(),
+  };
+
+  const renderComponent = async () => {
+    const { container } = render(BitcoinAddress, { props });
+    await runResolvedPromises();
+    return BitcoinAddressPo.under(new JestPageObjectElement(container));
   };
 
   beforeEach(() => {
@@ -50,14 +59,12 @@ describe("BitcoinAddress", () => {
     });
 
     it("should load bitcoin address on mount", async () => {
-      render(BitcoinAddress, { props });
+      await renderComponent();
 
-      await waitFor(() =>
-        expect(spyGetAddress).toBeCalledWith({
-          identity: mockIdentity,
-          canisterId: CKTESTBTC_MINTER_CANISTER_ID,
-        })
-      );
+      expect(spyGetAddress).toBeCalledWith({
+        identity: mockIdentity,
+        canisterId: CKTESTBTC_MINTER_CANISTER_ID,
+      });
     });
 
     it("should also load bitcoin address on mount if no match", async () => {
@@ -68,20 +75,33 @@ describe("BitcoinAddress", () => {
 
       bitcoinAddressStore.set(data);
 
-      render(BitcoinAddress, { props });
+      await renderComponent();
 
-      await waitFor(() =>
-        expect(spyGetAddress).toBeCalledWith({
-          identity: mockIdentity,
-          canisterId: CKTESTBTC_MINTER_CANISTER_ID,
-        })
-      );
+      expect(spyGetAddress).toBeCalledWith({
+        identity: mockIdentity,
+        canisterId: CKTESTBTC_MINTER_CANISTER_ID,
+      });
     });
 
     it("should render a spinner while loading", async () => {
-      const { getByTestId } = render(BitcoinAddress, { props });
+      let resolveBtcAddress;
 
-      await waitFor(() => expect(getByTestId("spinner")).not.toBeNull());
+      spyGetAddress = vi.spyOn(minterApi, "getBTCAddress").mockImplementation(
+        () =>
+          new Promise<string>((resolve) => {
+            resolveBtcAddress = async () => {
+              resolve(mockBTCAddressTestnet);
+              await runResolvedPromises();
+            };
+          })
+      );
+
+      bitcoinAddressStore.reset();
+      const po = await renderComponent();
+
+      expect(await po.hasSpinner()).toBe(true);
+      await resolveBtcAddress();
+      expect(await po.hasSpinner()).toBe(false);
     });
   });
 
@@ -106,54 +126,44 @@ describe("BitcoinAddress", () => {
         .spyOn(minterApi, "getBTCAddress")
         .mockResolvedValue(mockBTCAddressTestnet);
 
-      render(BitcoinAddress, { props });
+      await renderComponent();
 
-      await waitFor(() => expect(spyGetAddress).not.toHaveBeenCalled());
+      expect(spyGetAddress).not.toHaveBeenCalled();
     });
 
-    it("should not render a spinner when loaded", () => {
-      const { getByTestId } = render(BitcoinAddress, { props });
+    it("should not render a spinner when loaded", async () => {
+      const po = await renderComponent();
 
-      expect(() => getByTestId("spinner")).toThrow();
+      expect(await po.hasSpinner()).toBe(false);
     });
 
     it("should display a sentence info", async () => {
-      const { getByText } = render(BitcoinAddress, { props });
+      const po = await renderComponent();
 
-      await waitFor(() =>
-        expect(
-          getByText(
-            "Incoming Bitcoin network transactions require 12 confirmations. Then click",
-            { exact: false }
-          )
-        ).toBeInTheDocument()
+      expect(await po.getText()).toContain(
+        "Incoming Bitcoin network transactions require 12 confirmations. Then click Refresh Balance to update your ckBTC balance. Check status on a"
       );
-      expect(
-        getByText("to update your ckBTC balance. Check status on a", {
-          exact: false,
-        })
-      ).toBeInTheDocument();
     });
 
-    it("should display a link to block explorer", () => {
-      const { getByTestId } = render(BitcoinAddress, { props });
+    it("should display a link to block explorer", async () => {
+      const po = await renderComponent();
 
-      const link = getByTestId("block-explorer-link");
+      const link = po.getBlockExplorerLink();
 
-      expect(link).not.toBeNull();
-      expect(link?.getAttribute("href")).toEqual(
+      expect(await link.isPresent()).toBe(true);
+      expect(await link.getAttribute("href")).toBe(
         `${BITCOIN_BLOCK_EXPLORER_TESTNET_URL}/${data.btcAddress}`
       );
-      expect(link?.getAttribute("target")).toEqual("_blank");
-      expect(link?.getAttribute("rel")).toContain("noopener");
-      expect(link?.getAttribute("rel")).toContain("noreferrer");
+      expect(await link.getAttribute("target")).toBe("_blank");
+      const rel = await link.getAttribute("rel");
+      expect(rel).toContain("noopener");
+      expect(rel).toContain("noreferrer");
     });
 
-    it("should display a call to action to refresh balance", () => {
-      const { getByTestId } = render(BitcoinAddress, { props });
+    it("should display a call to action to refresh balance", async () => {
+      const po = await renderComponent();
 
-      const action = getByTestId("manual-refresh-balance");
-      expect(action).not.toBeNull();
+      expect(await po.hasUpdateBalanceButton()).toBe(true);
     });
   });
 
@@ -167,15 +177,12 @@ describe("BitcoinAddress", () => {
       bitcoinAddressStore.set(data);
     });
 
-    it("should display a sentence info with empty instead of the number of confirmations", () => {
-      const { getByText } = render(BitcoinAddress, { props });
+    it("should display a sentence info with empty instead of the number of confirmations", async () => {
+      const po = await renderComponent();
 
-      expect(
-        getByText(
-          "Incoming Bitcoin network transactions require confirmations. Then click",
-          { exact: false }
-        )
-      ).toBeInTheDocument();
+      expect(await po.getText()).toContain(
+        "Incoming Bitcoin network transactions require  confirmations. Then click"
+      );
     });
   });
 });

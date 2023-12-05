@@ -203,6 +203,7 @@ export const mockToken: IcrcTokenMetadata = {
   name: "Tetris",
   symbol: "TET",
   fee: BigInt(0),
+  decimals: 8,
 };
 
 export const mockLifecycleResponse: SnsGetLifecycleResponse = {
@@ -242,6 +243,7 @@ export const mockSnsSummaryList: SnsSummary[] = [
       name: "Pacman",
       symbol: "PAC",
       fee: BigInt(0),
+      decimals: 8,
     },
     swap: mockSwap,
     derived: mockDerived,
@@ -266,6 +268,7 @@ export const mockSnsSummaryList: SnsSummary[] = [
       name: "Mario",
       symbol: "SPM",
       fee: BigInt(0),
+      decimals: 8,
     },
     swap: mockSwap,
     derived: mockDerived,
@@ -290,6 +293,7 @@ export const mockSnsSummaryList: SnsSummary[] = [
       name: "Kong",
       symbol: "DKG",
       fee: BigInt(0),
+      decimals: 8,
     },
     swap: mockSwap,
     derived: mockDerived,
@@ -466,6 +470,7 @@ export const mockSnsToken: IcrcTokenMetadata = {
   symbol: "TST",
   name: "Tetris",
   fee: BigInt(40_000),
+  decimals: 8,
 };
 
 export const mockQueryTokenResponse: IcrcTokenMetadataResponse = [

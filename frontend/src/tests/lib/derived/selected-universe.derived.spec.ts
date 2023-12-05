@@ -176,6 +176,103 @@ describe("selected universe derived stores", () => {
       expect($store2.toText()).toEqual(mockSnsCanisterIdText);
     });
 
+    const ckBTCTestData = [
+      {
+        universeName: "ckBTC",
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        expectedUniverseName: "ckBTC",
+        expectedUniverseId: CKBTC_UNIVERSE_CANISTER_ID,
+        routeId: AppPath.Accounts,
+      },
+      {
+        universeName: "ckBTC",
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        expectedUniverseName: "ckBTC",
+        expectedUniverseId: CKBTC_UNIVERSE_CANISTER_ID,
+        routeId: AppPath.Wallet,
+      },
+      {
+        universeName: "ckBTC",
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        expectedUniverseName: "NNS",
+        expectedUniverseId: OWN_CANISTER_ID,
+        routeId: AppPath.Neurons,
+      },
+      {
+        universeName: "ckBTC",
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        expectedUniverseName: "NNS",
+        expectedUniverseId: OWN_CANISTER_ID,
+        routeId: AppPath.Proposals,
+      },
+    ];
+
+    ckBTCTestData.forEach((data) => {
+      it(`should return ${data.expectedUniverseName} universe id for ${data.universeName} in ${data.routeId} page`, () => {
+        page.mock({
+          data: {
+            universe: data.universeId.toText(),
+          },
+          routeId: data.routeId,
+        });
+
+        expect(get(selectedUniverseIdStore).toText()).toEqual(
+          data.expectedUniverseId.toText()
+        );
+      });
+    });
+
+    const icrcCanisterId = principal(0);
+    const IcrcTokenTestData = [
+      {
+        universeName: "IcrcToken",
+        universeId: icrcCanisterId,
+        expectedUniverseName: "IcrcToken",
+        expectedUniverseId: icrcCanisterId,
+        routeId: AppPath.Accounts,
+      },
+      {
+        universeName: "IcrcToken",
+        universeId: icrcCanisterId,
+        expectedUniverseName: "IcrcToken",
+        expectedUniverseId: icrcCanisterId,
+        routeId: AppPath.Wallet,
+      },
+      {
+        universeName: "IcrcToken",
+        universeId: icrcCanisterId,
+        expectedUniverseName: "NNS",
+        expectedUniverseId: OWN_CANISTER_ID,
+        routeId: AppPath.Neurons,
+      },
+      {
+        universeName: "IcrcToken",
+        universeId: icrcCanisterId,
+        expectedUniverseName: "NNS",
+        expectedUniverseId: OWN_CANISTER_ID,
+        routeId: AppPath.Proposals,
+      },
+    ];
+
+    IcrcTokenTestData.forEach((data) => {
+      it(`should return ${data.expectedUniverseName} universe id for ${data.universeName} in ${data.routeId} page`, () => {
+        page.mock({
+          data: {
+            universe: data.universeId.toText(),
+          },
+          routeId: data.routeId,
+        });
+        icrcCanistersStore.setCanisters({
+          ledgerCanisterId: icrcCanisterId,
+          indexCanisterId: principal(1),
+        });
+
+        expect(get(selectedUniverseIdStore).toText()).toEqual(
+          data.expectedUniverseId.toText()
+        );
+      });
+    });
+
     it("returns OWN_CANISTER_ID if context is not a valid principal id", () => {
       const $store1 = get(selectedUniverseIdStore);
 

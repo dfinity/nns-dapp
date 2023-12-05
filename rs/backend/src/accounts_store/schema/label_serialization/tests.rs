@@ -21,7 +21,7 @@ fn unknown_schema_label_should_fail() {
         "Test error: The bytes actually correspond to a legitimate schema label."
     );
     let label_bytes = SchemaLabel::with_checksum(invalid_label_bytes_without_checksum);
-    assert_eq!(Err(SchemaLabelError::InvalidLabel), SchemaLabel::try_from(&label_bytes));
+    assert_eq!(Err(SchemaLabelError::InvalidLabel(1768515945)), SchemaLabel::try_from(&label_bytes));
 }
 
 #[test]

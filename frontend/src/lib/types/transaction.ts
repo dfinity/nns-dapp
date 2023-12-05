@@ -1,5 +1,5 @@
 import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
-import type { TokenAmount } from "@dfinity/utils";
+import type { TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 import type { Account } from "./account";
 
 export type NewTransaction = {
@@ -89,7 +89,7 @@ export interface UiTransaction {
   // Where the amount is going to or coming from.
   otherParty?: string;
   // Always positive.
-  tokenAmount: TokenAmount;
+  tokenAmount: TokenAmount | TokenAmountV2;
   timestamp?: Date;
 }
 

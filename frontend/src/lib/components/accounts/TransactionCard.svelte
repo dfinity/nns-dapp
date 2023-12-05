@@ -6,13 +6,17 @@
   import { i18n } from "$lib/stores/i18n";
   import { IconUp, IconDown, KeyValuePair } from "@dfinity/gix-components";
   import type { UiTransaction } from "$lib/types/transaction";
-  import { nonNullish, type TokenAmount } from "@dfinity/utils";
+  import {
+    nonNullish,
+    type TokenAmount,
+    type TokenAmountV2,
+  } from "@dfinity/utils";
   import { fade } from "svelte/transition";
 
   export let transaction: UiTransaction;
 
   let headline: string;
-  let tokenAmount: TokenAmount;
+  let tokenAmount: TokenAmount | TokenAmountV2;
   let isIncoming: boolean;
   let isPending: boolean;
   let otherParty: string | undefined;
@@ -128,8 +132,8 @@
     justify-content: center;
     align-items: center;
 
-    background: var(--positive-emphasis-light);
-    color: var(--positive-emphasis);
+    background: var(--check-tint);
+    color: var(--check);
 
     border-radius: var(--border-radius);
 
@@ -146,18 +150,6 @@
     &.pending {
       color: var(--pending-color);
       background: var(--pending-background);
-    }
-  }
-
-  @include media.dark-theme {
-    .icon {
-      background: rgba(var(--positive-emphasis-rgb), 0.3);
-      color: var(--positive-emphasis);
-
-      &.send {
-        background: var(--background);
-        color: var(--disable-contrast);
-      }
     }
   }
 </style>

@@ -2,23 +2,23 @@
   import { nonNullish } from "@dfinity/utils";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { SkeletonText } from "@dfinity/gix-components";
-  import { TokenAmount, type Token } from "@dfinity/utils";
+  import { TokenAmountV2, type Token } from "@dfinity/utils";
   import { universesAccountsBalance } from "$lib/derived/universes-accounts-balance.derived";
   import type { Universe } from "$lib/types/universe";
   import { tokensStore } from "$lib/stores/tokens.store";
 
   export let universe: Universe;
 
-  let balanceE8s: bigint | undefined;
-  $: balanceE8s = $universesAccountsBalance[universe.canisterId]?.balanceE8s;
+  let balanceUlps: bigint | undefined;
+  $: balanceUlps = $universesAccountsBalance[universe.canisterId]?.balanceE8s;
 
   let token: Token | undefined;
   $: token = $tokensStore[universe.canisterId]?.token;
 
-  let balance: TokenAmount | undefined;
+  let balance: TokenAmountV2 | undefined;
   $: balance =
-    nonNullish(balanceE8s) && nonNullish(token)
-      ? TokenAmount.fromE8s({ amount: balanceE8s, token })
+    nonNullish(balanceUlps) && nonNullish(token)
+      ? TokenAmountV2.fromUlps({ amount: balanceUlps, token })
       : undefined;
 </script>
 

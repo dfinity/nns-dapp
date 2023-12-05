@@ -5,7 +5,6 @@ import {
   CKETH_LEDGER_CANISTER_ID,
   CKETH_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import Wallet from "$lib/routes/Wallet.svelte";
 import { authStore } from "$lib/stores/auth.store";
@@ -26,6 +25,7 @@ import { WalletPo } from "$tests/page-objects/Wallet.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
@@ -92,6 +92,7 @@ describe("Wallet", () => {
         lifecycle: SnsSwapLifecycle.Committed,
       },
     ]);
+    setCkETHCanisters();
     icpAccountsStore.setForTesting(mockAccountsStoreData);
     overrideFeatureFlagsStore.reset();
     vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(1234n);
@@ -161,8 +162,20 @@ describe("Wallet", () => {
   });
 
   // TODO: GIX-2150 Mock API layer instead of services for the setup
-  it("user can transfer ckETH tokens", async () => {
+  it("user can transfer ckETH tokens and balance is refreshed", async () => {
+    const amount = 2;
+    const E18S_PER_TOKEN = 10n ** 18n;
+    const amountE18s = BigInt(amount) * E18S_PER_TOKEN;
+    const balanceAfterTransfer = 1110000000000000000n;
+    const balanceBeforeTransfer = balanceAfterTransfer + amountE18s;
+
     overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
+
+    // Called only after a transfer (for now GIX-2150)
+    vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
+      balanceAfterTransfer
+    );
+
     page.mock({
       data: { universe: CKETH_UNIVERSE_CANISTER_ID.toText() },
       routeId: AppPath.Wallet,
@@ -171,7 +184,12 @@ describe("Wallet", () => {
     icrcAccountsStore.set({
       universeId: CKETH_UNIVERSE_CANISTER_ID,
       accounts: {
-        accounts: [mockIcrcMainAccount],
+        accounts: [
+          {
+            ...mockIcrcMainAccount,
+            balanceE8s: balanceBeforeTransfer,
+          },
+        ],
         certified: true,
       },
     });
@@ -190,29 +208,40 @@ describe("Wallet", () => {
 
     const po = WalletPo.under(new JestPageObjectElement(container));
 
+    await runResolvedPromises();
+
+    const pagePo = po.getIcrcWalletPo();
+    expect(await pagePo.getWalletPageHeadingPo().getTitle()).toBe("3.11 ckETH");
+
     await po.clickSendCkETH();
 
     const modalPo = po.getIcrcTokenTransactionModalPo();
-
     expect(await modalPo.isPresent()).toBe(true);
 
     const toAccount = {
       owner: principal(2),
     };
-    const amount = 2;
+
+    expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(0);
 
     await modalPo.transferToAddress({
       destinationAddress: encodeIcrcAccount(toAccount),
       amount,
     });
 
+    await runResolvedPromises();
+
     expect(icrcLedgerApi.icrcTransfer).toHaveBeenCalledTimes(1);
     expect(icrcLedgerApi.icrcTransfer).toHaveBeenCalledWith({
       identity: mockIdentity,
       canisterId: CKETH_LEDGER_CANISTER_ID,
-      amount: BigInt(amount * E8S_PER_ICP),
+      amount: amountE18s,
       to: toAccount,
       fee: mockCkETHToken.fee,
     });
+    // Query + Update calls
+    expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(2);
+
+    expect(await pagePo.getWalletPageHeadingPo().getTitle()).toBe("1.11 ckETH");
   });
 });

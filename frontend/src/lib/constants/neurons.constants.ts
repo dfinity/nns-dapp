@@ -1,10 +1,10 @@
 import { SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
 import { enumValues } from "$lib/utils/enum.utils";
 import { Topic } from "@dfinity/nns";
-import { E8S_PER_ICP } from "./icp.constants";
 
+export const ULPS_PER_MATURITY = 100_000_000;
 export const MAX_NEURONS_MERGED = 2;
-export const MIN_NEURON_STAKE = E8S_PER_ICP;
+export const MIN_NEURON_STAKE = 100_000_000;
 export const MAX_CONCURRENCY = 10;
 export const MATURITY_MODULATION_VARIANCE_PERCENTAGE = 0.95;
 // Neuron ids are random u64. Max digits of a u64 is 20.

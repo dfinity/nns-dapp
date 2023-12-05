@@ -64,6 +64,7 @@
         account={$selectedAccountStore.account}
         {token}
         {reloadAccount}
+        {reloadTransactions}
       />
     {/if}
   </svelte:fragment>
