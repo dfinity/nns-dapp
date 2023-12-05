@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { TokenAmount, Token } from "@dfinity/utils";
+  import type { TokenAmountV2, TokenAmount, Token } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
   import { busy } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
@@ -13,7 +13,7 @@
 
   export let transaction: NewTransaction;
   export let disableSubmit: boolean;
-  export let transactionFee: TokenAmount;
+  export let transactionFee: TokenAmountV2 | TokenAmount;
   export let token: Token;
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
   export let showLedgerFee = true;

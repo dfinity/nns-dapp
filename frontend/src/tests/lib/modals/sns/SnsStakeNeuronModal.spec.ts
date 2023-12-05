@@ -32,7 +32,7 @@ vi.mock("$lib/services/sns-neurons.services", () => {
 });
 
 describe("SnsStakeNeuronModal", () => {
-  const token = { name: "SNS", symbol: "SNS" };
+  const token = { name: "SNS", symbol: "SNS", decimals: 8 };
   const renderTransactionModal = () =>
     renderModal({
       component: SnsStakeNeuronModal,

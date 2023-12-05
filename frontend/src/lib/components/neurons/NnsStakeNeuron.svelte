@@ -61,6 +61,7 @@
   $: max = getMaxTransactionAmount({
     balance: account?.balanceE8s ?? 0n,
     fee: $transactionsFeesStore.main,
+    token: ICPToken,
   });
 
   const stakeMaximum = () => (amount = max);

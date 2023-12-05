@@ -47,6 +47,7 @@ export const ckBTCTokenFeeStore = derived<
               token: {
                 name: value.token.name,
                 symbol: value.token.symbol,
+                decimals: value.token.decimals,
               },
             })
           : undefined,

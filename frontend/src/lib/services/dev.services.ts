@@ -17,8 +17,9 @@ import {
   type SnsAccountsStoreData,
 } from "$lib/stores/sns-accounts.store";
 import type { IcpAccount } from "$lib/types/account";
+import { numberToUlps } from "$lib/utils/token.utils";
 import type { Principal } from "@dfinity/principal";
-import { nonNullish } from "@dfinity/utils";
+import { nonNullish, type Token } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { syncAccounts } from "./icp-accounts.services";
 import { loadIcrcAccount } from "./icrc-accounts.services";
@@ -100,9 +101,11 @@ export const getBTC = async ({ amount }: { amount: number }) => {
 export const getIcrcTokens = async ({
   tokens,
   ledgerCanisterId,
+  token,
 }: {
   tokens: number;
   ledgerCanisterId: Principal;
+  token: Token;
 }) => {
   // Accounts are loaded when user visits the Accounts page, so we need to load them here.
   await loadIcrcAccount({ ledgerCanisterId, certified: false });
@@ -115,7 +118,7 @@ export const getIcrcTokens = async ({
   }
 
   await acquireIcrcTokens({
-    e8s: BigInt(tokens * E8S_PER_ICP),
+    ulps: numberToUlps({ amount: tokens, token }),
     account: main,
     ledgerCanisterId,
   });

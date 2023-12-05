@@ -28,9 +28,11 @@
     : $i18n.ckbtc.bitcoin;
 
   let token: Token;
+  // TODO: Use the ckBTC Token object from the tokens store.
   $: token = {
     symbol: $i18n.ckbtc.btc,
     name: bitcoinLabel,
+    decimals: 8,
   };
 
   let amountE8s = BigInt(0);

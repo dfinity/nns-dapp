@@ -1,5 +1,4 @@
 import * as ledgerApi from "$lib/api/icrc-ledger.api";
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import IcrcTokenTransactionModal from "$lib/modals/accounts/IcrcTokenTransactionModal.svelte";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
@@ -16,14 +15,14 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { IcrcTokenTransactionModalPo } from "$tests/page-objects/IcrcTokenTransactionModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
-import { TokenAmount } from "@dfinity/utils";
+import { TokenAmountV2 } from "@dfinity/utils";
 
 vi.mock("$lib/api/icrc-ledger.api");
 
 describe("IcrcTokenTransactionModal", () => {
   const ledgerCanisterId = mockPrincipal;
   const token = mockCkETHToken;
-  const transactionFee = TokenAmount.fromE8s({
+  const transactionFee = TokenAmountV2.fromUlps({
     amount: token.fee,
     token,
   });
@@ -43,7 +42,12 @@ describe("IcrcTokenTransactionModal", () => {
     icrcAccountsStore.set({
       universeId: ledgerCanisterId,
       accounts: {
-        accounts: [mockIcrcMainAccount],
+        accounts: [
+          {
+            ...mockIcrcMainAccount,
+            balanceE8s: 1000n * 10n ** 18n,
+          },
+        ],
         certified: true,
       },
     });
@@ -75,7 +79,7 @@ describe("IcrcTokenTransactionModal", () => {
     expect(ledgerApi.icrcTransfer).toHaveBeenCalledWith({
       identity: mockIdentity,
       canisterId: ledgerCanisterId,
-      amount: BigInt(amount * E8S_PER_ICP),
+      amount: BigInt(amount) * 10n ** 18n,
       to: toAccount,
       fee: token.fee,
     });

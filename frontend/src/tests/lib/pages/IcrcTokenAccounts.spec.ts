@@ -8,7 +8,7 @@ import { syncAccounts } from "$lib/services/wallet-accounts.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenV2 } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import {
   mockCkETHMainAccount,
@@ -19,6 +19,7 @@ import {
   mockTokensSubscribe,
   mockUniversesTokens,
 } from "$tests/mocks/tokens.mock";
+import { TokenAmountV2 } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 
 vi.mock("$lib/services/wallet-accounts.services", () => {
@@ -91,8 +92,11 @@ describe("IcrcTokenAccounts", () => {
       );
 
       expect(cardTitleRow?.textContent.trim()).toEqual(
-        `${formatToken({
-          value: mockCkETHMainAccount.balanceE8s,
+        `${formatTokenV2({
+          value: TokenAmountV2.fromUlps({
+            amount: mockCkETHMainAccount.balanceE8s,
+            token: mockCkETHTESTToken,
+          }),
         })} ${mockCkETHTESTToken.symbol}`
       );
     });
