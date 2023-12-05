@@ -9,7 +9,7 @@
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import type { SnsProposalDataMap } from "$lib/utils/sns-proposals.utils";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import { basisPointsToPercent } from "$lib/utils/sns.utils";
+  import { basisPointsToPercent } from "$lib/utils/utils";
   import { fromDefinedNullable } from "@dfinity/utils";
 
   export let proposal: SnsProposalData;

@@ -4,7 +4,7 @@ import {
   MINIMUM_YES_PROPORTION_OF_TOTAL_VOTING_POWER,
 } from "$lib/constants/proposals.constants";
 import { nowInSeconds } from "$lib/utils/date.utils";
-import { basisPointsToPercent } from "$lib/utils/sns.utils";
+import { basisPointsToPercent } from "$lib/utils/utils";
 import en from "$tests/mocks/i18n.mock";
 import { VotesResultPo } from "$tests/page-objects/VotesResults.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";

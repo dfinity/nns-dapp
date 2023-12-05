@@ -1,6 +1,5 @@
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import type { SnsTicketsStoreData } from "$lib/stores/sns-tickets.store";
-import type { BasisPoints } from "$lib/types/proposals";
 import type { TicketStatus } from "$lib/types/sale";
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
 import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp";
@@ -172,6 +171,3 @@ export const swapEndedMoreThanOneWeekAgo = ({
   const oneWeekAgoInSeconds = BigInt(nowInSeconds - SECONDS_IN_DAY * 7);
   return oneWeekAgoInSeconds > summary.swap.params.swap_due_timestamp_seconds;
 };
-
-export const basisPointsToPercent = (basisPoints: BasisPoints): number =>
-  Number(basisPoints) / 100;

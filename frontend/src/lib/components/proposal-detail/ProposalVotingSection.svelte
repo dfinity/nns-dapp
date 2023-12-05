@@ -4,7 +4,7 @@
   import VotingCard from "./VotingCard/VotingCard.svelte";
   import { ProposalRewardStatus } from "@dfinity/nns";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
-  import { basisPointsToPercent } from "$lib/utils/sns.utils";
+  import { basisPointsToPercent } from "$lib/utils/utils";
   import {
     MINIMUM_YES_PROPORTION_OF_EXERCISED_VOTING_POWER,
     MINIMUM_YES_PROPORTION_OF_TOTAL_VOTING_POWER,

@@ -9,7 +9,7 @@ import type {
   VotingNeuron,
 } from "$lib/types/proposals";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
-import { basisPointsToPercent } from "$lib/utils/sns.utils";
+import { basisPointsToPercent } from "$lib/utils/utils";
 import { Vote } from "@dfinity/nns";
 import type {
   SnsAction,
@@ -213,6 +213,8 @@ export const isAccepted = (proposal: SnsProposalData): boolean => {
   return quorumMet && majorityMet;
 };
 
+// Considers the amount of 'yes' and 'no' voting power in relation to the total voting power,
+// based on a percentage threshold that must be met or exceeded for a decision.
 // Reference: https://gitlab.com/dfinity-lab/public/ic/-/blob/8db486b531b2993dad9c6eed015f34fc2378fc3e/rs/sns/governance/src/proposal.rs#L1239
 const majorityDecision = ({
   yes,
@@ -225,6 +227,7 @@ const majorityDecision = ({
   total: bigint;
   requiredYesOfTotalBasisPoints: bigint;
 }): Vote => {
+  // 10_000n is 100% in basis points
   const requiredNoOfTotalBasisPoints = 10_000n - requiredYesOfTotalBasisPoints;
 
   if (yes * 10_000n > total * requiredYesOfTotalBasisPoints) {
