@@ -1,8 +1,8 @@
-use super::{AssetHashes, Assets, Memory, PerformanceCounts, StableState, State};
-use crate::accounts_store::schema::{SchemaLabel, SchemaLabelBytes};
+use super::{AssetHashes, Assets, PerformanceCounts, StableState, State};
+
 use ic_stable_structures::VectorMemory;
 use std::cell::RefCell;
-use strum::IntoEnumIterator;
+
 
 /// Creates a populated test state for testing.
 pub fn setup_test_state() -> State {
