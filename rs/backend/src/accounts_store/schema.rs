@@ -94,8 +94,14 @@ pub trait AccountsDbTrait {
         }
     }
 
+    /// Iterates over entries in the data store.
+    fn iter(&self) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_>;
+
     /// Iterates over accounts in the data store.
-    fn values(&self) -> Box<dyn Iterator<Item = Account> + '_>;
+    fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
+        let iterator = self.iter().map(|(_key, value)| value);
+        Box::new(iterator)
+    }
 
     /// Gets the label of the storage schema.
     fn schema_label(&self) -> SchemaLabel;

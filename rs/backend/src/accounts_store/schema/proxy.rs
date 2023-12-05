@@ -40,24 +40,35 @@ impl AccountsDbBTreeMapTrait for AccountsDbAsProxy {
 }
 
 impl AccountsDbTrait for AccountsDbAsProxy {
+    // Inserts into all the underlying databases.
     fn db_insert_account(&mut self, account_key: &[u8], account: Account) {
         self.map.db_insert_account(account_key, account);
     }
+    // Checks the authoritative database.
     fn db_contains_account(&self, account_key: &[u8]) -> bool {
         self.map.db_contains_account(account_key)
     }
+    // Gets an account from the authoritative database.
     fn db_get_account(&self, account_key: &[u8]) -> Option<Account> {
         self.map.db_get_account(account_key)
     }
+    // Removes an account from all underlying databases.
     fn db_remove_account(&mut self, account_key: &[u8]) {
         self.map.db_remove_account(account_key);
     }
+    // Gets the length from the authoritative database.
     fn db_accounts_len(&self) -> u64 {
         self.map.db_accounts_len()
     }
+    // Iterates over the entries of the authoritative database.
+    fn iter(&self) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
+        self.map.iter()
+    }
+    // Iterates over the values of the authoritative database.
     fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
         self.map.values()
     }
+    // The authoritative schema label.
     fn schema_label(&self) -> SchemaLabel {
         self.map.schema_label()
     }
