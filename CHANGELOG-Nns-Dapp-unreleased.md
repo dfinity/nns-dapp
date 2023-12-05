@@ -44,4 +44,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- Update the correct flavour of golden file when the NNS Dapp canister API changes.
+
 #### Security
