@@ -7,12 +7,14 @@ export const mockCkBTCToken: IcrcTokenMetadata = {
   name: "Test account",
   symbol: "ckBTC",
   fee: BigInt(1),
+  decimals: 8,
 };
 
 export const mockCkTESTBTCToken = {
   ...mockCkBTCToken,
   symbol: "ckTESTBTC",
   name: "ckTESTBTC",
+  decimals: 8,
 };
 
 export const mockCkBTCMainAccount: Account = {

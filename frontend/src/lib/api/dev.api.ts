@@ -171,11 +171,11 @@ export const acquireSnsTokens = async ({
 
 export const acquireIcrcTokens = async ({
   account,
-  e8s,
+  ulps,
   ledgerCanisterId,
 }: {
   account: Account;
-  e8s: bigint;
+  ulps: bigint;
   ledgerCanisterId: Principal;
 }): Promise<void> => {
   assertTestnet();
@@ -188,7 +188,7 @@ export const acquireIcrcTokens = async ({
   });
 
   await canister.transfer({
-    amount: e8s,
+    amount: ulps,
     to: {
       owner: account.principal as Principal,
       subaccount:

@@ -90,7 +90,7 @@ export const userTokensPageMock: UserTokenData[] = [
     title: "Test SNS",
     balance: TokenAmount.fromE8s({
       amount: 2160000000n,
-      token: { name: "Test SNS", symbol: "SNS1" },
+      token: { name: "Test SNS", symbol: "SNS1", decimals: 8 },
     }),
     token: snsTetrisToken,
     fee: TokenAmount.fromE8s({
@@ -105,7 +105,7 @@ export const userTokensPageMock: UserTokenData[] = [
     title: "Test SNS 2",
     balance: TokenAmount.fromE8s({
       amount: 1180000000n,
-      token: { name: "Test SNS", symbol: "SNS2" },
+      token: { name: "Test SNS", symbol: "SNS2", decimals: 8 },
     }),
     token: snsPackmanToken,
     fee: TokenAmount.fromE8s({

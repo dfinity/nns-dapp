@@ -17,7 +17,7 @@ vi.mock("$lib/services/sns-accounts.services", () => {
 
 describe("SnsTransactionModal", () => {
   const rootCanisterId = mockPrincipal;
-  const token = { name: "Test", symbol: "TST" };
+  const token = { name: "Test", symbol: "TST", decimals: 8 };
   const transactionFee = TokenAmount.fromE8s({
     amount: BigInt(10_000),
     token,
