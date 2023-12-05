@@ -1037,9 +1037,11 @@ interface I18nCkbtc {
   about_thirty_minutes: string;
   transaction_success_about_thirty_minutes: string;
   loading_address: string;
-  incoming_bitcoin_network_part_1: string;
-  incoming_bitcoin_network_part_2: string;
+  receive_btc_title: string;
+  ckbtc_buzz_words: string;
+  incoming_bitcoin_network: string;
   block_explorer: string;
+  bitcoin_address_title: string;
   refresh_balance: string;
   confirmations: string;
   warning_transaction_failed: string;
