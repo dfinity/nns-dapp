@@ -157,7 +157,10 @@
       <h4 data-tid="immediate-majority-title" slot="title">
         {immediateMajorityTitle}
       </h4>
-      <p data-tid="immediate-majority-description" class="description majority-description">
+      <p
+        data-tid="immediate-majority-description"
+        class="description majority-description"
+      >
         <Html text={iconifyDescription(immediateMajorityDescription)} />
       </p>
     </VotesResultsMajorityDescription>
@@ -165,7 +168,10 @@
       <h4 data-tid="standard-majority-title" slot="title">
         {standardMajorityTitle}
       </h4>
-      <p data-tid="standard-majority-description" class="description majority-description">
+      <p
+        data-tid="standard-majority-description"
+        class="description majority-description"
+      >
         <Html text={iconifyDescription(standardMajorityDescription)} />
       </p>
     </VotesResultsMajorityDescription>
