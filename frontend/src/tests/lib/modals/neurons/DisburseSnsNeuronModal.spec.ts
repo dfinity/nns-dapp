@@ -62,6 +62,8 @@ describe("DisburseSnsNeuronModal", () => {
   });
 
   it("should display modal", async () => {
+    page.mock({ data: { universe: principalString, neuron: "12344" } });
+
     const { container } = await renderDisburseModal(mockSnsNeuron);
 
     expect(container.querySelector("div.modal")).not.toBeNull();

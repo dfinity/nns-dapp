@@ -7,21 +7,21 @@ export const mockCkETHToken: IcrcTokenMetadata = {
   name: "ckETH",
   symbol: "ckETH",
   fee: 10_000n,
-  decimals: 18n,
+  decimals: 18,
 };
 
 export const mockCkETHTESTToken: IcrcTokenMetadata = {
   symbol: "ckETHTEST",
   name: "ckETHTEST",
   fee: 10_000n,
-  decimals: 18n,
+  decimals: 18,
 };
 
 export const mockCkETHMainAccount: Account = {
   identifier: encodeIcrcAccount({
     owner: mockPrincipal,
   }),
-  balanceE8s: 1111222233334444n,
+  balanceE8s: 123000000000000000000n,
   principal: mockPrincipal,
   type: "main",
 };

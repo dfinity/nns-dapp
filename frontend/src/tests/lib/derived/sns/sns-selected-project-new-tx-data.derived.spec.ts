@@ -32,6 +32,7 @@ describe("selected-project-new-transaction-data derived store", () => {
       const token = {
         name: "name",
         symbol: "symbol",
+        decimals: 8,
       };
       snsSwapCommitmentsStore.setSwapCommitment({
         swapCommitment: mockSnsSwapCommitment(rootCanisterId),

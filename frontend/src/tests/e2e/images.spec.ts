@@ -71,6 +71,8 @@ test("Test images load on accounts page", async ({ page, context }) => {
       // Universe selector in main layout
       "ckBTC.svg",
       // Universe selector in main layout
+      "ckETH.svg",
+      // Universe selector in main layout
       "icp-rounded.svg",
       // Hidden title in main layout
       "icp-rounded.svg",

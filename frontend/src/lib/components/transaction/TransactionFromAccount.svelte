@@ -5,7 +5,7 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import type { Account } from "$lib/types/account";
   import type { Principal } from "@dfinity/principal";
-  import { TokenAmount, type Token } from "@dfinity/utils";
+  import { TokenAmountV2, type Token } from "@dfinity/utils";
   import { nonNullish } from "@dfinity/utils";
 
   export let rootCanisterId: Principal;
@@ -34,7 +34,7 @@
       {#if nonNullish(selectedAccount)}
         <AmountDisplay
           singleLine
-          amount={TokenAmount.fromE8s({
+          amount={TokenAmountV2.fromUlps({
             amount: selectedAccount.balanceE8s,
             token,
           })}

@@ -1,18 +1,19 @@
 <script lang="ts">
-  import { TokenAmount, type Token } from "@dfinity/utils";
+  import { TokenAmount, TokenAmountV2, type Token } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import { IconSouth, KeyValuePair } from "@dfinity/gix-components";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { toTokenAmountV2 } from "$lib/utils/token.utils";
 
   export let amount: number;
   export let token: Token;
-  export let transactionFee: TokenAmount;
+  export let transactionFee: TokenAmount | TokenAmountV2;
   export let showLedgerFee = true;
 
   // If we made it this far, the number is valid.
-  let tokenAmount: TokenAmount;
-  $: tokenAmount = TokenAmount.fromNumber({
+  let tokenAmount: TokenAmountV2;
+  $: tokenAmount = TokenAmountV2.fromNumber({
     amount,
     token,
   });
@@ -26,10 +27,11 @@
   );
 
   let totalDeducted: bigint;
-  $: totalDeducted = tokenAmount.toE8s() + transactionFee.toE8s();
+  $: totalDeducted =
+    tokenAmount.toUlps() + toTokenAmountV2(transactionFee).toUlps();
 
-  let tokenTotalDeducted: TokenAmount;
-  $: tokenTotalDeducted = TokenAmount.fromE8s({
+  let tokenTotalDeducted: TokenAmountV2;
+  $: tokenTotalDeducted = TokenAmountV2.fromUlps({
     amount: totalDeducted,
     token,
   });
