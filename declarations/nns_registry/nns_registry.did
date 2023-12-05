@@ -1,4 +1,4 @@
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-11-23_23-01/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-11-29_23-01/rs/registry/canister/canister/registry.did>
 type AddApiBoundaryNodePayload = record {
   node_id : principal;
   domain : text;
