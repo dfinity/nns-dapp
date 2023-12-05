@@ -32,7 +32,7 @@
       ? 0
       : ulpsToNumber({
           ulps: stakeE8s - BigInt($mainTransactionFeeStore),
-          decimals: ICPToken.decimals,
+          token: ICPToken,
         });
 
   let validForm: boolean;
