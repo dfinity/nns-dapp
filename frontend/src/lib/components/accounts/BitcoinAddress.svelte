@@ -178,16 +178,19 @@
   }
 
   .qr-code {
+    --qr-code-size: calc(16 * var(--padding));
+    --qr-code-logo-size: calc(5 * var(--padding));
+
     grid-area: qr;
     background: white;
-    width: calc(16 * var(--padding));
-    height: calc(16 * var(--padding));
+    width: var(--qr-code-size);
+    height: var(--qr-code-size);
     border: var(--padding) solid white;
     border-radius: var(--border-radius);
 
     .logo {
-      width: calc(5 * var(--padding));
-      height: calc(5 * var(--padding));
+      width: var(--qr-code-logo-size);
+      height: var(--qr-code-logo-size);
       background: white;
       display: flex;
       justify-content: center;
