@@ -63,8 +63,6 @@
     <div class="content-cell-details info-section">
       <p class="description">
         {$i18n.ckbtc.ckbtc_buzz_words}
-      </p>
-      <p class="description">
         {replacePlaceholders($i18n.ckbtc.incoming_bitcoin_network, {
           $min: `${minConfirmations ?? ""}`,
         })}
@@ -151,6 +149,7 @@
 
   .info-section {
     grid-area: info;
+    margin-bottom: var(--padding);
   }
 
   .address-section {

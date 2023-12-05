@@ -85,16 +85,6 @@
   bind:this={wallet}
   {reloadTransactions}
 >
-  <svelte:fragment slot="header-actions">
-    {#if nonNullish(canisters) && nonNullish($selectedCkBTCUniverseIdStore)}
-      <CkBTCWalletActions
-        reload={reloadAccount}
-        universeId={$selectedCkBTCUniverseIdStore}
-        minterCanisterId={canisters.minterCanisterId}
-      />
-    {/if}
-  </svelte:fragment>
-
   <svelte:fragment slot="info-card">
     {#if nonNullish($selectedAccountStore.account) && nonNullish($selectedCkBTCUniverseIdStore) && nonNullish(canisters)}
       <BitcoinAddress
