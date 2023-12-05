@@ -152,7 +152,7 @@
   </div>
 
   <div class="votes-results-legends">
-    <h3>There are two ways a proposal can be decided:</h3>
+    <h3>{$i18n.proposal_detail__vote.decision_intro}</h3>
     <VotesResultsMajorityDescription testId="immediate-majority-toggle">
       <h4 data-tid="immediate-majority-title" class="description" slot="title">
         {immediateMajorityTitle}
