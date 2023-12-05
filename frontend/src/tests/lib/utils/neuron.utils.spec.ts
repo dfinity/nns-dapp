@@ -2153,7 +2153,9 @@ describe("neuron-utils", () => {
           cachedNeuronStake: BigInt(MIN_NEURON_STAKE * 2),
         },
       };
-      expect(validTopUpAmount({ neuron, amount: 0.001 })).toBe(true);
+      expect(validTopUpAmount({ neuron, amount: 0.001, token: ICPToken })).toBe(
+        true
+      );
     });
 
     it("should return true if amount to top is large enough", () => {
@@ -2167,7 +2169,8 @@ describe("neuron-utils", () => {
       expect(
         validTopUpAmount({
           neuron,
-          amount: (MIN_NEURON_STAKE * 2) / E8S_PER_ICP,
+          amount: 2,
+          token: ICPToken,
         })
       ).toBe(true);
     });
@@ -2183,7 +2186,8 @@ describe("neuron-utils", () => {
       expect(
         validTopUpAmount({
           neuron,
-          amount: MIN_NEURON_STAKE / 2 / E8S_PER_ICP - 10,
+          amount: 0.4,
+          token: ICPToken,
         })
       ).toBe(false);
     });

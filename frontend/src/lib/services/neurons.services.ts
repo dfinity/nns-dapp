@@ -52,6 +52,7 @@ import { numberToE8s } from "$lib/utils/token.utils";
 import { AnonymousIdentity, type Identity } from "@dfinity/agent";
 import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import { ICPToken } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
 import {
@@ -983,7 +984,7 @@ export const topUpNeuron = async ({
 
   // TODO: Check the amount when the user enters amount in the input field.
   // https://dfinity.atlassian.net/browse/GIX-798
-  if (!validTopUpAmount({ neuron, amount })) {
+  if (!validTopUpAmount({ neuron, amount, token: ICPToken })) {
     toastsError({
       labelKey: "error.amount_not_enough_top_up_neuron",
     });

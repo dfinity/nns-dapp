@@ -44,7 +44,12 @@ import {
   type ProposalInfo,
   type RewardEvent,
 } from "@dfinity/nns";
-import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
+import {
+  fromNullable,
+  isNullish,
+  nonNullish,
+  type Token,
+} from "@dfinity/utils";
 import type { ComponentType } from "svelte";
 import {
   getAccountByPrincipal,
@@ -53,7 +58,7 @@ import {
 import { nowInSeconds } from "./date.utils";
 import { formatNumber } from "./format.utils";
 import { getVotingBallot, getVotingPower } from "./proposals.utils";
-import { formatToken } from "./token.utils";
+import { formatToken, numberToUlps } from "./token.utils";
 import { isDefined } from "./utils";
 
 export type StateInfo = {
@@ -820,7 +825,7 @@ export const hasEnoughMaturityToStake = ({ fullNeuron }: NeuronInfo): boolean =>
   (fullNeuron?.maturityE8sEquivalent ?? BigInt(0)) > BigInt(0);
 
 export const minNeuronSplittable = (fee: number): number =>
-  2 * E8S_PER_ICP + fee;
+  2 * MIN_NEURON_STAKE + fee;
 
 export const neuronCanBeSplit = ({
   neuron,
@@ -858,13 +863,15 @@ export const neuronVoting = ({
 export const validTopUpAmount = ({
   amount,
   neuron,
+  token,
 }: {
   neuron: NeuronInfo;
   amount: number;
+  token: Token;
 }): boolean => {
-  const amountE8s = BigInt(Math.floor(amount * E8S_PER_ICP));
-  const neuronStakeE8s = neuron.fullNeuron?.cachedNeuronStake ?? BigInt(0);
-  return amountE8s + neuronStakeE8s > MIN_NEURON_STAKE;
+  const amountUlps = numberToUlps({ amount, token });
+  const neuronStakeUlps = neuron.fullNeuron?.cachedNeuronStake ?? BigInt(0);
+  return amountUlps + neuronStakeUlps > MIN_NEURON_STAKE;
 };
 
 export const neuronAge = ({ ageSeconds }: NeuronInfo): bigint =>
