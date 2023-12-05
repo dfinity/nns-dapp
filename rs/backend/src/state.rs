@@ -17,8 +17,6 @@ pub mod partitions;
 #[cfg(test)]
 pub mod tests;
 
-
-
 pub mod with_accounts_in_stable_memory;
 pub mod with_raw_memory;
 

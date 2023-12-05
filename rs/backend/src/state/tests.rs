@@ -3,7 +3,6 @@ use super::{AssetHashes, Assets, PerformanceCounts, StableState, State};
 use ic_stable_structures::VectorMemory;
 use std::cell::RefCell;
 
-
 /// Creates a populated test state for testing.
 pub fn setup_test_state() -> State {
     State {
