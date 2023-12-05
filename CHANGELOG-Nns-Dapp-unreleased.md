@@ -29,6 +29,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Security
 
+* Fix dependency vulnerability.
+
 #### Not Published
 
 ### Operations
