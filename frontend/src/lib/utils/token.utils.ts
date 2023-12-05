@@ -235,6 +235,22 @@ export const numberToUlps = (params: {
   token: Token;
 }): bigint => TokenAmountV2.fromNumber(params).toUlps();
 
+/**
+ * Returns the number of tokens for a given amount of ulps and token.
+ *
+ * Precision up to 8 decimals to avoid problems with JS numbers.
+ */
+export const ulpsToNumber = ({
+  ulps,
+  token: { decimals },
+}: {
+  ulps: bigint;
+  token: Token;
+}): number => {
+  const e8s = ulpsToE8s({ ulps, decimals });
+  return Number(e8s) / 100_000_000;
+};
+
 export const toTokenAmountV2 = (tokenAmount: TokenAmount | TokenAmountV2) => {
   if (tokenAmount instanceof TokenAmountV2) {
     return tokenAmount;
