@@ -3,7 +3,7 @@ set -euo pipefail
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
 
-help_text() {
+print_help() {
   cat <<-"EOF"
 	Tests:
 	  - Populating a given schema with large scale data
