@@ -15,6 +15,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Iterator over AccountsDbs.
+* Display expiration date for sns proposals.
 * Card with BTC deposit address and QR code in ckBTC wallet.
 
 #### Changed
