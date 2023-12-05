@@ -40,6 +40,12 @@
   let noProportion: number;
   $: noProportion = total ? no / total : 0;
 
+  let hintText: string;
+  $: hintText = replacePlaceholders($i18n.proposal_detail__vote.votes_hint, {
+    $immediate_majority: formatPercent(immediateMajorityPercent),
+    $cast_votes: formatPercent((yes / (yes + no)) * 100),
+  });
+
   let showExpirationDate: boolean = true;
   $: showExpirationDate =
     nonNullish(deadlineTimestampSeconds) &&
@@ -91,16 +97,7 @@
         >{formatPercentage(yesProportion)}</span
       >
     </div>
-    <div class="remain" data-tid="remain">
-      {#if showExpirationDate}
-        <span class="caption description">
-          {$i18n.proposal_detail__vote.expiration}
-        </span>
-        <div class="caption value">
-          <Countdown {deadlineTimestampSeconds} />
-        </div>
-      {/if}
-    </div>
+    <div class="hint" data-tid="hint"><span>{hintText}</span></div>
     <div class="no no-percent">
       <span class="caption">{$i18n.core.no}</span>
       <span class="percentage" data-tid="reject-percentage"
@@ -142,6 +139,16 @@
       >
       <span data-tid="reject">{formatVotingPower(no)}</span>
     </span>
+    <div class="remain" data-tid="remain">
+      {#if showExpirationDate}
+        <span class="caption description">
+          {$i18n.proposal_detail__vote.expiration}
+        </span>
+        <div class="caption value">
+          <Countdown {deadlineTimestampSeconds} />
+        </div>
+      {/if}
+    </div>
   </div>
 
   <div class="votes-results-legends">
@@ -185,16 +192,16 @@
 
     // 5 columns for mobile to give more space for the ".remain" section
     grid-template-areas:
-      "yes-percent yes-percent _ no-percent no-percent"
-      "progressbar progressbar progressbar progressbar progressbar"
-      "yes-value remain remain remain no-value";
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+      "yes-percent hint no-percent"
+      "progressbar progressbar progressbar"
+      "yes-value remain no-value";
+    grid-template-columns: 1fr 1fr 1fr;
 
     @include media.min-width(small) {
       grid-template-areas:
-        "yes-percent remain no-percent"
+        "yes-percent hint no-percent"
         "progressbar progressbar progressbar"
-        "yes-value _ no-value";
+        "yes-value remain no-value";
       grid-template-columns: 1fr 1fr 1fr;
       row-gap: var(--padding-0_5x);
     }
@@ -209,6 +216,15 @@
       display: flex;
       flex-direction: column;
       align-items: end;
+    }
+    .hint {
+      grid-area: hint;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+
+      @include fonts.small(false);
     }
     .remain {
       grid-area: remain;

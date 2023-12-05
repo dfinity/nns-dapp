@@ -590,6 +590,8 @@ interface I18nProposal_detail__vote {
   standard_majority_description: string;
   standard_super_majority: string;
   standard_super_majority_description: string;
+  decision_intro: string;
+  votes_hint: string;
 }
 
 interface I18nProposal_detail__ineligible {
