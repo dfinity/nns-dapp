@@ -14,7 +14,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Support for CkETH token.
+* Iterator over AccountsDbs.
 * Display expiration date for sns proposals.
 * Card with BTC deposit address and QR code in ckBTC wallet.
 
@@ -23,8 +23,6 @@ proposal is successful, the changes it released will be moved from this file to
 #### Deprecated
 
 #### Removed
-
-* Remove logic for using ICRC-1 when staking a neuron.
 
 #### Fixed
 
