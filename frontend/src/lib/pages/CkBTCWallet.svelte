@@ -12,7 +12,6 @@
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
   import BitcoinAddress from "$lib/components/accounts/BitcoinAddress.svelte";
-  import CkBTCWalletActions from "$lib/components/accounts/CkBTCWalletActions.svelte";
   import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
   import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
   import IcrcWalletPage from "$lib/components/accounts/IcrcWalletPage.svelte";
@@ -85,17 +84,7 @@
   bind:this={wallet}
   {reloadTransactions}
 >
-  <svelte:fragment slot="header-actions">
-    {#if nonNullish(canisters) && nonNullish($selectedCkBTCUniverseIdStore)}
-      <CkBTCWalletActions
-        reload={reloadAccount}
-        universeId={$selectedCkBTCUniverseIdStore}
-        minterCanisterId={canisters.minterCanisterId}
-      />
-    {/if}
-  </svelte:fragment>
-
-  <svelte:fragment slot="page-content">
+  <svelte:fragment slot="info-card">
     {#if nonNullish($selectedAccountStore.account) && nonNullish($selectedCkBTCUniverseIdStore) && nonNullish(canisters)}
       <BitcoinAddress
         account={$selectedAccountStore.account}
@@ -103,7 +92,11 @@
         minterCanisterId={canisters.minterCanisterId}
         reload={reloadAccount}
       />
+    {/if}
+  </svelte:fragment>
 
+  <svelte:fragment slot="page-content">
+    {#if nonNullish($selectedAccountStore.account) && nonNullish($selectedCkBTCUniverseIdStore) && nonNullish(canisters)}
       <CkBTCTransactionsList
         bind:this={transactions}
         account={$selectedAccountStore.account}

@@ -9,7 +9,19 @@ export class BitcoinAddressPo extends BasePageObject {
     return new BitcoinAddressPo(element.byTestId(BitcoinAddressPo.TID));
   }
 
-  async hasSpinner(): Promise<boolean> {
+  getAddress(): Promise<string> {
+    return this.getText("btc-address");
+  }
+
+  hasAddress(): Promise<boolean> {
+    return this.isPresent("btc-address");
+  }
+
+  hasSkeletonText(): Promise<boolean> {
+    return this.isPresent("skeleton-text");
+  }
+
+  hasSpinner(): Promise<boolean> {
     return this.isPresent("spinner");
   }
 
@@ -23,5 +35,9 @@ export class BitcoinAddressPo extends BasePageObject {
 
   hasUpdateBalanceButton(): Promise<boolean> {
     return this.getUpdateBalanceButton().isPresent();
+  }
+
+  hasQrCode(): Promise<boolean> {
+    return this.isPresent("qr-code");
   }
 }

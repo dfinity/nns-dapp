@@ -100,8 +100,14 @@ describe("BitcoinAddress", () => {
       const po = await renderComponent();
 
       expect(await po.hasSpinner()).toBe(true);
+      expect(await po.hasSkeletonText()).toBe(true);
+      expect(await po.hasQrCode()).toBe(false);
+      expect(await po.hasAddress()).toBe(false);
       await resolveBtcAddress();
       expect(await po.hasSpinner()).toBe(false);
+      expect(await po.hasSkeletonText()).toBe(false);
+      expect(await po.hasQrCode()).toBe(true);
+      expect(await po.hasAddress()).toBe(true);
     });
   });
 
@@ -135,13 +141,15 @@ describe("BitcoinAddress", () => {
       const po = await renderComponent();
 
       expect(await po.hasSpinner()).toBe(false);
+      expect(await po.hasSkeletonText()).toBe(false);
+      expect(await po.hasQrCode()).toBe(true);
     });
 
     it("should display a sentence info", async () => {
       const po = await renderComponent();
 
       expect(await po.getText()).toContain(
-        "Incoming Bitcoin network transactions require 12 confirmations. Then click Refresh Balance to update your ckBTC balance. Check status on a"
+        "incoming Bitcoin transactions require 12 confirmations. Check status on a"
       );
     });
 
@@ -158,6 +166,12 @@ describe("BitcoinAddress", () => {
       const rel = await link.getAttribute("rel");
       expect(rel).toContain("noopener");
       expect(rel).toContain("noreferrer");
+    });
+
+    it("should display the BTC address", async () => {
+      const po = await renderComponent();
+
+      expect(await po.getAddress()).toBe(data.btcAddress);
     });
 
     it("should display a call to action to refresh balance", async () => {
@@ -181,7 +195,7 @@ describe("BitcoinAddress", () => {
       const po = await renderComponent();
 
       expect(await po.getText()).toContain(
-        "Incoming Bitcoin network transactions require  confirmations. Then click"
+        "incoming Bitcoin transactions require  confirmations."
       );
     });
   });
