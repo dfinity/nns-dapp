@@ -152,12 +152,12 @@
   </div>
 
   <div class="votes-results-legends">
-    <h3>{$i18n.proposal_detail__vote.decision_intro}</h3>
+    <h3 class="description">{$i18n.proposal_detail__vote.decision_intro}</h3>
     <VotesResultsMajorityDescription testId="immediate-majority-toggle">
       <h4 data-tid="immediate-majority-title" class="description" slot="title">
         {immediateMajorityTitle}
       </h4>
-      <p data-tid="immediate-majority-description" class="description">
+      <p data-tid="immediate-majority-description" class="description majority-description">
         <Html text={iconifyDescription(immediateMajorityDescription)} />
       </p>
     </VotesResultsMajorityDescription>
@@ -165,7 +165,7 @@
       <h4 data-tid="standard-majority-title" class="description" slot="title">
         {standardMajorityTitle}
       </h4>
-      <p data-tid="standard-majority-description" class="description">
+      <p data-tid="standard-majority-description" class="description majority-description">
         <Html text={iconifyDescription(standardMajorityDescription)} />
       </p>
     </VotesResultsMajorityDescription>
@@ -183,7 +183,7 @@
   }
 
   h3 {
-    @include fonts.small(false);
+    @include fonts.standard(false);
   }
 
   .votes-info {
@@ -342,8 +342,12 @@
     font-size: $font-size-medium;
   }
 
+  .majority-description {
+    margin: 0 0 var(--padding);
+  }
+
   .votes-results-legends {
-    margin-top: var(--padding);
+    margin-top: var(--padding-2x);
     display: flex;
     flex-direction: column;
     row-gap: var(--padding-0_5x);
@@ -363,5 +367,4 @@
   :global(.votes-results-legends .inline-maturity-icon.standard-majority) {
     background: var(--orange);
   }
-
 </style>
