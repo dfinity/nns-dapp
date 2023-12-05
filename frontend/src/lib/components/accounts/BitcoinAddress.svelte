@@ -9,7 +9,13 @@
   import { nonNullish } from "@dfinity/utils";
   import type { BtcAddressText } from "$lib/types/bitcoin";
   import { i18n } from "$lib/stores/i18n";
-  import { SkeletonText, Spinner, QRCode, Copy } from "@dfinity/gix-components";
+  import {
+    SkeletonText,
+    Spinner,
+    QRCode,
+    Copy,
+    Html,
+  } from "@dfinity/gix-components";
   import {
     BITCOIN_BLOCK_EXPLORER_MAINNET_URL,
     BITCOIN_BLOCK_EXPLORER_TESTNET_URL,
@@ -63,9 +69,11 @@
     <div class="content-cell-details info-section">
       <p class="description">
         {$i18n.ckbtc.ckbtc_buzz_words}
-        {replacePlaceholders($i18n.ckbtc.incoming_bitcoin_network, {
-          $min: `${minConfirmations ?? ""}`,
-        })}
+        <Html
+          text={replacePlaceholders($i18n.ckbtc.incoming_bitcoin_network, {
+            $min: `${minConfirmations ?? ""}`,
+          })}
+        />
         <a
           data-tid="block-explorer-link"
           href={btcAddressLoaded ? blockExplorerUrl : ""}

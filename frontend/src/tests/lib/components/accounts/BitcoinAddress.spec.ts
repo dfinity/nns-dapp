@@ -149,7 +149,7 @@ describe("BitcoinAddress", () => {
       const po = await renderComponent();
 
       expect(await po.getText()).toContain(
-        "Incoming Bitcoin network transactions require 12 confirmations. Check status on a"
+        "incoming Bitcoin transactions require 12 confirmations. Check status on a"
       );
     });
 
@@ -195,7 +195,7 @@ describe("BitcoinAddress", () => {
       const po = await renderComponent();
 
       expect(await po.getText()).toContain(
-        "Incoming Bitcoin network transactions require  confirmations."
+        "incoming Bitcoin transactions require  confirmations."
       );
     });
   });
