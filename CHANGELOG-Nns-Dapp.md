@@ -21,7 +21,6 @@ here after a successful release.
 
 #### Removed
 
-* Remove the `ENABLE_FULL_WIDTH_PROPOSAL` feature flag.
 * Remove logic for using ICRC-1 when staking a neuron.
 
 ### Operations
