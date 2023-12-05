@@ -15,6 +15,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Support for CkETH token.
+* Iterator over AccountsDbs.
 * Card with BTC deposit address and QR code in ckBTC wallet.
 
 #### Changed
