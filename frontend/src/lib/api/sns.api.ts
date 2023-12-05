@@ -325,7 +325,7 @@ export const stakeNeuron = async ({
   source: IcrcAccount;
   fee: bigint;
 }): Promise<SnsNeuronId> => {
-  logWithTimestamp(`Staking neuron with ${Number(stakeE8s)}: call...`);
+  logWithTimestamp(`Staking neuron with ${stakeE8s}: call...`);
 
   const { stakeNeuron: stakeNeuronApi } = await wrapper({
     identity,
@@ -342,7 +342,7 @@ export const stakeNeuron = async ({
     fee,
   });
 
-  logWithTimestamp(`Staking neuron with ${Number(stakeE8s)}: complete`);
+  logWithTimestamp(`Staking neuron with ${stakeE8s}: complete`);
   return newNeuronId;
 };
 
@@ -359,7 +359,7 @@ export const increaseStakeNeuron = async ({
   identity: Identity;
   source: IcrcAccount;
 }): Promise<void> => {
-  logWithTimestamp(`Increase stake neuron with ${Number(stakeE8s)}: call...`);
+  logWithTimestamp(`Increase stake neuron with ${stakeE8s}: call...`);
 
   const { increaseStakeNeuron: increaseStakeNeuronApi } = await wrapper({
     identity,
@@ -373,5 +373,5 @@ export const increaseStakeNeuron = async ({
     neuronId,
   });
 
-  logWithTimestamp(`Increase stake neuron with ${Number(stakeE8s)}: complete`);
+  logWithTimestamp(`Increase stake neuron with ${stakeE8s}: complete`);
 };

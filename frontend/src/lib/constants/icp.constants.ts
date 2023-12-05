@@ -1,5 +1,4 @@
 export const E8S_PER_ICP = 100_000_000;
-export const ULPS_PER_MATURITY = 100_000_000;
 export const DEFAULT_TRANSACTION_FEE_E8S = 10_000;
 export const ONE_TRILLION = 1_000_000_000_000;
 

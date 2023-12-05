@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import { ULPS_PER_MATURITY } from "$lib/constants/icp.constants";
+  import { ULPS_PER_MATURITY } from "$lib/constants/neurons.constants";
   import {
     MIN_NEURON_STAKE,
     MATURITY_MODULATION_VARIANCE_PERCENTAGE,

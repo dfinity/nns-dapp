@@ -2,6 +2,7 @@ import { SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
 import { enumValues } from "$lib/utils/enum.utils";
 import { Topic } from "@dfinity/nns";
 
+export const ULPS_PER_MATURITY = 100_000_000;
 export const MAX_NEURONS_MERGED = 2;
 export const MIN_NEURON_STAKE = 100_000_000;
 export const MAX_CONCURRENCY = 10;
