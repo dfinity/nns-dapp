@@ -6,10 +6,7 @@ import {
   getTestAccountBalance,
   receiveMockBtc,
 } from "$lib/api/dev.api";
-import {
-  CKBTC_MINTER_CANISTER_ID,
-  CKBTC_UNIVERSE_CANISTER_ID,
-} from "$lib/constants/ckbtc-canister-ids.constants";
+import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import type { IcpAccountsStoreData } from "$lib/stores/icp-accounts.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
@@ -76,8 +73,11 @@ export const getTokens = async ({
   const main = accounts.find((account) => account.type === "main");
   const token = get(tokensStore)[rootCanisterId.toText()]?.token;
 
-  if (!main || !token) {
-    throw new Error("No account or token found to send tokens");
+  if (!main) {
+    throw new Error("No account found to send tokens");
+  }
+  if (!token) {
+    throw new Error("No token found to send tokens");
   }
 
   await acquireSnsTokens({
@@ -90,16 +90,24 @@ export const getTokens = async ({
   await loadSnsAccounts({ rootCanisterId });
 };
 
+// Not clear whether BTC should use the same token as ckBTC, that's why we have a separate token here.
+// Not exported to not be used outside the dev services.
+const BTC_TOKEN = {
+  decimals: 8,
+  id: "btc",
+  name: "Bitcoin",
+  symbol: "BTC",
+};
+
 export const getBTC = async ({ amount }: { amount: number }) => {
   const identity = await getAuthenticatedIdentity();
-  const token = get(tokensStore)[CKBTC_UNIVERSE_CANISTER_ID.toText()]?.token;
   const btcAddress = await getBTCAddress({
     canisterId: CKBTC_MINTER_CANISTER_ID,
     identity,
   });
   await receiveMockBtc({
     btcAddress,
-    amountE8s: numberToUlps({ amount, token }),
+    amountE8s: numberToUlps({ amount, token: BTC_TOKEN }),
   });
 };
 

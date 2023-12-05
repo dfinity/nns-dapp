@@ -44,12 +44,7 @@ import {
   type ProposalInfo,
   type RewardEvent,
 } from "@dfinity/nns";
-import {
-  fromNullable,
-  isNullish,
-  nonNullish,
-  type Token,
-} from "@dfinity/utils";
+import { ICPToken, fromNullable, isNullish, nonNullish } from "@dfinity/utils";
 import type { ComponentType } from "svelte";
 import {
   getAccountByPrincipal,
@@ -863,13 +858,11 @@ export const neuronVoting = ({
 export const validTopUpAmount = ({
   amount,
   neuron,
-  token,
 }: {
   neuron: NeuronInfo;
   amount: number;
-  token: Token;
 }): boolean => {
-  const amountUlps = numberToUlps({ amount, token });
+  const amountUlps = numberToUlps({ amount, token: ICPToken });
   const neuronStakeUlps = neuron.fullNeuron?.cachedNeuronStake ?? BigInt(0);
   return amountUlps + neuronStakeUlps > MIN_NEURON_STAKE;
 };
