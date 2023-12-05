@@ -1,4 +1,6 @@
 <script lang="ts">
+  import BITCOIN_LOGO from "$lib/assets/bitcoin.svg";
+  import Logo from "$lib/components/ui/Logo.svelte";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { CanisterId } from "$lib/types/canister";
@@ -7,7 +9,7 @@
   import { nonNullish } from "@dfinity/utils";
   import type { BtcAddressText } from "$lib/types/bitcoin";
   import { i18n } from "$lib/stores/i18n";
-  import { Spinner } from "@dfinity/gix-components";
+  import { SkeletonText, Spinner, QRCode, Copy } from "@dfinity/gix-components";
   import {
     BITCOIN_BLOCK_EXPLORER_MAINNET_URL,
     BITCOIN_BLOCK_EXPLORER_TESTNET_URL,
@@ -32,7 +34,7 @@
 
   // We load the BTC address once per session
   let btcAddressLoaded = false;
-  $: btcAddressLoaded = nonNullish($bitcoinAddressStore[identifier]);
+  $: btcAddressLoaded = nonNullish(btcAddress);
 
   let blockExplorerUrl: string;
   $: blockExplorerUrl = `${
@@ -51,34 +53,81 @@
   let minConfirmations: number | undefined;
   $: minConfirmations =
     $ckBTCInfoStore[universeId.toText()]?.info.min_confirmations;
-
-  // TODO: incoming_bitcoin_network_part_1 comes before incoming_bitcoin_network_part_2. It would be more worth creating a component or directive that can replace placeholders of the i18n with Svelte components
 </script>
 
-<p class="description" data-tid="bitcoin-address-component">
-  {replacePlaceholders($i18n.ckbtc.incoming_bitcoin_network_part_1, {
-    $min: `${minConfirmations ?? ""}`,
-  })}
+<div class="grid" data-tid="bitcoin-address-component">
+  <div class="info-section">
+    <h4 class="content-cell-title">
+      {$i18n.ckbtc.receive_btc_title}
+    </h4>
+    <div class="content-cell-details info-section">
+      <p class="description">
+        {$i18n.ckbtc.ckbtc_buzz_words}
+      </p>
+      <p class="description">
+        {replacePlaceholders($i18n.ckbtc.incoming_bitcoin_network, {
+          $min: `${minConfirmations ?? ""}`,
+        })}
+        <a
+          data-tid="block-explorer-link"
+          href={btcAddressLoaded ? blockExplorerUrl : ""}
+          rel="noopener noreferrer external"
+          target="_blank"
+          aria-disabled={!btcAddressLoaded}
+          >{$i18n.ckbtc.block_explorer}
+          {#if !btcAddressLoaded}
+            <div class="spinner">
+              <Spinner size="tiny" inline />
+            </div>
+          {/if}
+        </a>.
+      </p>
+    </div>
+  </div>
 
-  <CkBTCWalletActions inline {universeId} {minterCanisterId} {reload} />
-
-  {$i18n.ckbtc.incoming_bitcoin_network_part_2}
-  <a
-    data-tid="block-explorer-link"
-    href={btcAddressLoaded ? blockExplorerUrl : ""}
-    rel="noopener noreferrer external"
-    target="_blank"
-    aria-disabled={!btcAddressLoaded}
-    >{$i18n.ckbtc.block_explorer}
-    {#if !btcAddressLoaded}
-      <div class="spinner">
-        <Spinner size="tiny" inline />
-      </div>
+  <div class="qr-code">
+    {#if nonNullish(btcAddress)}
+      <QRCode value={btcAddress}>
+        <div class="logo" slot="logo">
+          <Logo
+            src={BITCOIN_LOGO}
+            size="medium"
+            framed={false}
+            testId="logo"
+            alt="ckBTC logo"
+          />
+        </div>
+      </QRCode>
+    {:else}
+      <Spinner />
     {/if}
-  </a>.
-</p>
+  </div>
+
+  <div class="content-cell-details address-section">
+    <div>
+      <div class="content-cell-title">{$i18n.ckbtc.bitcoin_address_title}</div>
+      {#if nonNullish(btcAddress)}
+        <div class="address">
+          <span class="value" data-tid="btc-address">{btcAddress}</span>
+          <Copy value={btcAddress} />
+        </div>
+      {:else}
+        <div class="skeleton">
+          <SkeletonText />
+        </div>
+      {/if}
+    </div>
+  </div>
+  <div class="content-cell-details">
+    <div class="button">
+      <CkBTCWalletActions {universeId} {minterCanisterId} {reload} />
+    </div>
+  </div>
+</div>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+
   div {
     position: relative;
   }
@@ -100,7 +149,64 @@
     width: 0.8rem;
   }
 
-  .description {
-    margin-bottom: var(--padding-2x);
+  .info-section {
+    grid-area: info;
+  }
+
+  .address-section {
+    grid-area: addr;
+    .skeleton {
+      // To make the skeleton text, match the height of the address when it has
+      // a copy button, which is 32px high, to avoid jumping when the address
+      // is loaded.
+      height: 32px;
+      // To prevent the margin on the skeleton interfering with the height of
+      // the container.
+      overflow: hidden;
+    }
+
+    .address {
+      word-break: break-all;
+      display: flex;
+      align-items: center;
+      gap: var(--padding);
+      margin: 0;
+    }
+  }
+
+  .qr-code {
+    grid-area: qr;
+    background: white;
+    width: calc(16 * var(--padding));
+    height: calc(16 * var(--padding));
+    border: var(--padding) solid white;
+    border-radius: var(--border-radius);
+
+    .logo {
+      width: calc(5 * var(--padding));
+      height: calc(5 * var(--padding));
+      background: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  .grid {
+    display: grid;
+    grid-template-areas:
+      "info"
+      "qr"
+      "addr";
+  }
+
+  @include media.min-width(small) {
+    .grid {
+      grid-template-areas:
+        "info qr"
+        "addr qr";
+      grid-template-columns: 1fr auto;
+      column-gap: var(--padding-2x);
+    }
   }
 </style>

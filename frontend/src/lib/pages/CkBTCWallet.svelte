@@ -95,7 +95,7 @@
     {/if}
   </svelte:fragment>
 
-  <svelte:fragment slot="page-content">
+  <svelte:fragment slot="info-card">
     {#if nonNullish($selectedAccountStore.account) && nonNullish($selectedCkBTCUniverseIdStore) && nonNullish(canisters)}
       <BitcoinAddress
         account={$selectedAccountStore.account}
@@ -103,7 +103,11 @@
         minterCanisterId={canisters.minterCanisterId}
         reload={reloadAccount}
       />
+    {/if}
+  </svelte:fragment>
 
+  <svelte:fragment slot="page-content">
+    {#if nonNullish($selectedAccountStore.account) && nonNullish($selectedCkBTCUniverseIdStore) && nonNullish(canisters)}
       <CkBTCTransactionsList
         bind:this={transactions}
         account={$selectedAccountStore.account}
