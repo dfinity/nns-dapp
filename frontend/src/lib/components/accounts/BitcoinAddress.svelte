@@ -104,7 +104,9 @@
   <div class="address-section">
     <div class="content-cell-details">
       <div>
-        <div class="content-cell-title">{$i18n.ckbtc.bitcoin_address_title}</div>
+        <div class="content-cell-title">
+          {$i18n.ckbtc.bitcoin_address_title}
+        </div>
         {#if nonNullish(btcAddress)}
           <div class="address">
             <span class="value" data-tid="btc-address">{btcAddress}</span>
