@@ -142,6 +142,12 @@
             <slot name="header-actions" />
           </WalletPageHeading>
 
+          {#if $$slots["info-card"]}
+            <div class="content-cell-island info-card">
+              <slot name="info-card" />
+            </div>
+          {/if}
+
           <Separator spacing="none" />
 
           <!-- Transactions and the explanation go together. -->
@@ -163,5 +169,9 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-4x);
+  }
+
+  .info-card {
+    background-color: var(--island-card-background);
   }
 </style>
