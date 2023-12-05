@@ -556,17 +556,17 @@ describe("token-utils", () => {
     it("converts ulps with more than 8 decimals to token", () => {
       const token = {
         ...mockSnsToken,
-        decimals: 12,
+        decimals: 18,
       };
       expect(
         ulpsToNumber({
-          ulps: 1_140_000_000_000n,
+          ulps: 1_140_000_000_000_000_000n,
           token,
         })
       ).toBe(1.14);
       expect(
         ulpsToNumber({
-          ulps: 1_142_345_670_000n,
+          ulps: 1_142_345_670_000_000_000n,
           token,
         })
       ).toBe(1.14234567);
@@ -578,13 +578,13 @@ describe("token-utils", () => {
       ).toBe(0);
       expect(
         ulpsToNumber({
-          ulps: 40_000_000_000n,
+          ulps: 40_000_000_000_000_000n,
           token,
         })
       ).toBe(0.04);
       expect(
         ulpsToNumber({
-          ulps: 10_000_000_000_000_000n,
+          ulps: 10_000_000_000_000_000_000_000n,
           token,
         })
       ).toBe(10_000);
@@ -630,14 +630,27 @@ describe("token-utils", () => {
     it("truncates ulps with more than 8 decimals to 8 decimals", () => {
       const token = {
         ...mockSnsToken,
-        decimals: 12,
+        decimals: 18,
       };
       expect(
         ulpsToNumber({
-          ulps: 1_142_345_678_912n,
+          ulps: 1_142_345_678_912_345_678n,
           token,
         })
       ).toBe(1.14234567);
+    });
+
+    it("doesn't convert with token of 0 decimals", () => {
+      const token = {
+        ...mockSnsToken,
+        decimals: 0,
+      };
+      expect(
+        ulpsToNumber({
+          ulps: 1142n,
+          token,
+        })
+      ).toBe(1142);
     });
   });
 });
