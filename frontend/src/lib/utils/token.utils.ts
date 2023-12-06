@@ -255,6 +255,9 @@ export function toTokenAmountV2(amount: TokenAmount): TokenAmountV2;
 export function toTokenAmountV2(amount: TokenAmountV2): TokenAmountV2;
 export function toTokenAmountV2(amount: undefined): undefined;
 export function toTokenAmountV2(
+  amount: TokenAmount | TokenAmountV2
+): TokenAmountV2;
+export function toTokenAmountV2(
   amount: TokenAmount | TokenAmountV2 | undefined
 ): TokenAmountV2 | undefined;
 export function toTokenAmountV2(

@@ -21,12 +21,7 @@
     snsOnlyProjectStore,
     snsProjectSelectedStore,
   } from "$lib/derived/sns/sns-selected-project.derived";
-  import {
-    TokenAmount,
-    TokenAmountV2,
-    isNullish,
-    nonNullish,
-  } from "@dfinity/utils";
+  import { TokenAmount, isNullish, nonNullish } from "@dfinity/utils";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import { loadSnsAccountTransactions } from "$lib/services/sns-transactions.services";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";

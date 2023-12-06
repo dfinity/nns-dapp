@@ -5,7 +5,7 @@
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
-  import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { toastsError } from "$lib/stores/toasts.store";
   import {
