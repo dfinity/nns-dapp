@@ -1049,6 +1049,8 @@ interface I18nCkbtc {
   checking_incomplete_btc_transfers: string;
   all_btc_transfers_complete: string;
   click_to_complete_btc_transfers: string;
+  btc_received: string;
+  btc_sent: string;
   btc_network: string;
   receiving_btc: string;
 }

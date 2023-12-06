@@ -397,7 +397,7 @@ describe("icrc-transaction utils", () => {
       });
       expect(data).toEqual({
         domKey: "1234-1",
-        headline: "Sent",
+        headline: "BTC Sent",
         isIncoming: false,
         isPending: false,
         otherParty: btcWithdrawalAddress,
@@ -436,7 +436,7 @@ describe("icrc-transaction utils", () => {
 
       expect(data).toEqual({
         domKey: "1234-1",
-        headline: "Sent",
+        headline: "BTC Sent",
         isIncoming: false,
         isPending: false,
         otherParty: "BTC Network",
@@ -468,7 +468,7 @@ describe("icrc-transaction utils", () => {
       });
       expect(data).toEqual({
         domKey: "1234-1",
-        headline: "Received",
+        headline: "BTC Received",
         isIncoming: true,
         isPending: false,
         otherParty: "BTC Network",
