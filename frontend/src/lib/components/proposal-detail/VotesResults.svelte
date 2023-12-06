@@ -40,11 +40,13 @@
   let noProportion: number;
   $: noProportion = total ? no / total : 0;
 
+  let yesNoSum: number;
+  $: yesNoSum = yes + no;
   let hintText: string;
-  $: hintText = replacePlaceholders($i18n.proposal_detail__vote.votes_hint, {
+  $: hintText = yesNoSum > 0 ? replacePlaceholders($i18n.proposal_detail__vote.votes_hint, {
     $immediate_majority: formatPercent(immediateMajorityPercent),
-    $cast_votes: formatPercent((yes / (yes + no)) * 100),
-  });
+    $cast_votes: formatPercent((yes / yesNoSum) * 100),
+  }) : "";
 
   let showExpirationDate: boolean = true;
   $: showExpirationDate =
@@ -97,7 +99,11 @@
         >{formatPercentage(yesProportion)}</span
       >
     </div>
-    <div class="hint" data-tid="hint"><span>{hintText}</span></div>
+    <div class="hint">
+      {#if yesNoSum > 0}
+        <p data-tid="hint">{hintText}</p>
+      {/if}
+    </div>
     <div class="no no-percent">
       <span class="caption">{$i18n.core.no}</span>
       <span class="percentage" data-tid="reject-percentage"
@@ -154,7 +160,7 @@
   <div class="votes-results-legends">
     <h3 class="description">{$i18n.proposal_detail__vote.decision_intro}</h3>
     <VotesResultsMajorityDescription testId="immediate-majority-toggle">
-      <h4 data-tid="immediate-majority-title" slot="title">
+      <h4 data-tid="immediate-majority-title" slot="title" class="description">
         {immediateMajorityTitle}
       </h4>
       <p
@@ -165,7 +171,7 @@
       </p>
     </VotesResultsMajorityDescription>
     <VotesResultsMajorityDescription testId="standard-majority-toggle">
-      <h4 data-tid="standard-majority-title" slot="title">
+      <h4 data-tid="standard-majority-title" slot="title" class="description">
         {standardMajorityTitle}
       </h4>
       <p
@@ -182,15 +188,8 @@
   @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
-  $font-size-medium: 0.875rem;
-
   .title {
     @include fonts.h3(true);
-  }
-
-  h3 {
-    margin-bottom: var(--padding);
-    @include fonts.standard(false);
   }
 
   .votes-info {
@@ -339,14 +338,18 @@
     }
   }
 
+  h3 {
+    margin-bottom: var(--padding);
+    @include fonts.small;
+  }
+
   h4 {
     margin: 0;
     display: inline-flex;
     align-items: center;
     column-gap: var(--padding-0_5x);
 
-    @include fonts.standard;
-    font-size: $font-size-medium;
+    @include fonts.small;
   }
 
   .majority-description {
