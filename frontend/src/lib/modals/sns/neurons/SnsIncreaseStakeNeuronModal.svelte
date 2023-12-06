@@ -1,6 +1,6 @@
 <script lang="ts">
   import SnsTransactionModal from "$lib/modals/sns/neurons/SnsTransactionModal.svelte";
-  import type { TokenAmount, Token } from "@dfinity/utils";
+  import type { Token, TokenAmountV2 } from "@dfinity/utils";
   import type { Principal } from "@dfinity/principal";
   import type { WizardStep } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
@@ -17,6 +17,7 @@
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { toTokenAmountV2 } from "$lib/utils/token.utils";
 
   export let neuronId: SnsNeuronId;
   export let token: Token;
@@ -81,8 +82,8 @@
   $: governanceCanisterId =
     $snsProjectSelectedStore?.summary.governanceCanisterId;
 
-  let transactionFee: TokenAmount | undefined;
-  $: transactionFee = $snsSelectedTransactionFeeStore;
+  let transactionFee: TokenAmountV2 | undefined = undefined;
+  $: transactionFee = toTokenAmountV2($snsSelectedTransactionFeeStore);
 
   let loading = true;
   $: loading =

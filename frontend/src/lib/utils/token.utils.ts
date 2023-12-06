@@ -251,7 +251,21 @@ export const ulpsToNumber = ({
   return Number(e8s) / 100_000_000;
 };
 
-export const toTokenAmountV2 = (tokenAmount: TokenAmount | TokenAmountV2) => {
+export function toTokenAmountV2(amount: TokenAmount): TokenAmountV2;
+export function toTokenAmountV2(amount: TokenAmountV2): TokenAmountV2;
+export function toTokenAmountV2(amount: undefined): undefined;
+export function toTokenAmountV2(
+  amount: TokenAmount | TokenAmountV2
+): TokenAmountV2;
+export function toTokenAmountV2(
+  amount: TokenAmount | TokenAmountV2 | undefined
+): TokenAmountV2 | undefined;
+export function toTokenAmountV2(
+  tokenAmount: TokenAmount | TokenAmountV2 | undefined
+): TokenAmountV2 | undefined {
+  if (isNullish(tokenAmount)) {
+    return undefined;
+  }
   if (tokenAmount instanceof TokenAmountV2) {
     return tokenAmount;
   }
@@ -259,7 +273,7 @@ export const toTokenAmountV2 = (tokenAmount: TokenAmount | TokenAmountV2) => {
     amount: tokenAmount.toE8s(),
     token: tokenAmount.token,
   });
-};
+}
 
 export class UnavailableTokenAmount {
   public token: Token;
