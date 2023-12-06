@@ -140,11 +140,11 @@ export const acquireICPTs = async ({
 // TODO: Reuse the new `acquireIcrcTokens` instead of SNS specific function.
 export const acquireSnsTokens = async ({
   account,
-  e8s,
+  ulps,
   rootCanisterId,
 }: {
   account: Account;
-  e8s: bigint;
+  ulps: bigint;
   rootCanisterId: Principal;
 }): Promise<void> => {
   assertTestnet();
@@ -158,7 +158,7 @@ export const acquireSnsTokens = async ({
   });
 
   await transfer({
-    amount: e8s,
+    amount: ulps,
     to: {
       owner: account.principal as Principal,
       subaccount:
