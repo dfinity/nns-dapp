@@ -125,6 +125,7 @@ export const anonymizeNeuronInfo = async (
 
   const {
     neuronId,
+    neuronType,
     dissolveDelaySeconds,
     recentBallots,
     createdTimestampSeconds,
@@ -140,6 +141,7 @@ export const anonymizeNeuronInfo = async (
     neuronId: await cutAndAnonymize(neuronId),
     dissolveDelaySeconds,
     recentBallots,
+    neuronType,
     createdTimestampSeconds,
     state,
     joinedCommunityFundTimestampSeconds,
@@ -177,6 +179,7 @@ export const anonymizeFullNeuron = async (
     stakedMaturityE8sEquivalent,
     controller,
     recentBallots,
+    neuronType,
     kycVerified,
     notForProfit,
     cachedNeuronStake,
@@ -199,6 +202,7 @@ export const anonymizeFullNeuron = async (
     // principal string
     controller: anonymiseAvailability(controller),
     recentBallots,
+    neuronType,
     kycVerified: kycVerified,
     notForProfit,
     cachedNeuronStake: await anonymizeAmount(cachedNeuronStake),
