@@ -1,12 +1,10 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
-  import { getNeuronTags, type NeuronTag } from "$lib/utils/neuron.utils";
+  import { getNeuronTags } from "$lib/utils/neuron.utils";
   import { authStore } from "$lib/stores/auth.store";
   import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
-  import { Tag } from "@dfinity/gix-components";
-  import { nonNullish } from "@dfinity/utils";
-  import NeuronTypeTag from "$lib/components/ui/NeuronTypeTag.svelte";
+  import NeuronTag from "$lib/components/ui/NeuronTag.svelte";
 
   export let neuron: NeuronInfo;
   export let tagName: "p" | "h3" = "p";
@@ -28,7 +26,7 @@
   >
 
   {#each neuronTags as tag}
-    <small class="label" data-tid="neuron-tag">{tag.text}</small>
+    <NeuronTag {tag} />
   {/each}
 </div>
 
