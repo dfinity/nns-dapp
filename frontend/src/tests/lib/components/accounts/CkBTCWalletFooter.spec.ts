@@ -36,7 +36,7 @@ describe("CkBTCWalletFooter", () => {
     });
   });
 
-  const renderWalletActions = (account?: Account) =>
+  const renderFooter = (account?: Account) =>
     render(CkBTCWalletContextTest, {
       props: {
         account,
@@ -45,13 +45,13 @@ describe("CkBTCWalletFooter", () => {
     });
 
   it("should render a receive button", () => {
-    const { getByTestId } = renderWalletActions(mockCkBTCMainAccount);
+    const { getByTestId } = renderFooter(mockCkBTCMainAccount);
 
     expect(getByTestId("receive-ckbtc")).not.toBeNull();
   });
 
   it("should render a disabled receive button if not account", () => {
-    const { getByTestId } = renderWalletActions(undefined);
+    const { getByTestId } = renderFooter(undefined);
 
     expect(
       getByTestId("receive-ckbtc").getAttribute("disabled")
@@ -60,7 +60,7 @@ describe("CkBTCWalletFooter", () => {
 
   it("should open receive modal", async () => {
     const { getByTestId, container } =
-      renderWalletActions(mockCkBTCMainAccount);
+      renderFooter(mockCkBTCMainAccount);
 
     fireEvent.click(getByTestId("receive-ckbtc") as HTMLButtonElement);
 
@@ -71,7 +71,7 @@ describe("CkBTCWalletFooter", () => {
 
   it("should open transaction modal", async () => {
     const { getByTestId, container } =
-      renderWalletActions(mockCkBTCMainAccount);
+      renderFooter(mockCkBTCMainAccount);
 
     fireEvent.click(getByTestId("open-ckbtc-transaction") as HTMLButtonElement);
 
