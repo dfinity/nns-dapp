@@ -1,7 +1,6 @@
 <script lang="ts">
   import {
     UserTokenAction,
-    type UserTokenBase,
     type UserTokenData,
     type UserTokenLoading,
   } from "$lib/types/tokens-page";
@@ -22,7 +21,7 @@
   import { Spinner } from "@dfinity/gix-components";
   import { isUserTokenData } from "$lib/utils/user-token.utils";
 
-  export let userTokenData: UserTokenData | UserTokenLoading | UserTokenBase;
+  export let userTokenData: UserTokenData | UserTokenLoading;
   export let index: number;
 
   const dispatcher = createEventDispatcher();

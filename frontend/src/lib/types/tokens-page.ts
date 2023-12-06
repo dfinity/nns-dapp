@@ -40,6 +40,4 @@ export type UserTokenData = UserTokenBase & {
   fee: TokenAmount;
 };
 
-export type UserTokenTableData = Array<
-  UserTokenData | UserTokenLoading | UserTokenBase
->;
+export type UserTokenTableData = Array<UserTokenData | UserTokenLoading>;
