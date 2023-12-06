@@ -329,7 +329,7 @@
     "edit_delay": "Edit Delay",
     "merge_neurons_article_title": "IC NNS Neurons Can Now Be Merged",
     "cannot_merge_neuron_community": "Neurons that joined the Neurons' Fund can't be merged.",
-    "cannot_merge_neuron_seed": "Sorry, currently seed neurons can't be merged.",
+    "cannot_merge_neuron_seed": "Seed neurons cannot be merged.",
     "cannot_merge_neuron_spawning": "Neurons that are spawning can't be merged.",
     "cannot_merge_neuron_hotkey": "You cannot merge neurons controlled by a hotkey.",
     "cannot_merge_neuron_state": "Only locked neurons can be merged.",
