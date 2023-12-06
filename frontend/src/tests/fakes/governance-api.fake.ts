@@ -12,7 +12,7 @@ import {
 } from "$tests/utils/module.test-utils";
 import type { Identity } from "@dfinity/agent";
 import type { KnownNeuron, NeuronInfo, RewardEvent } from "@dfinity/nns";
-import { NeuronState } from "@dfinity/nns";
+import { NeuronState, NeuronType } from "@dfinity/nns";
 import { isNullish, nonNullish } from "@dfinity/utils";
 
 const modulePath = "$lib/api/governance.api";
@@ -143,6 +143,7 @@ async function simulateMergeNeurons({
 
 export type FakeNeuronParams = {
   neuronId?: bigint;
+  neuronType?: NeuronType;
   controller?: string;
   stake?: bigint;
 };
@@ -164,6 +165,7 @@ export { getNeuron, pause, resume };
 export const addNeuronWith = ({
   identity = mockIdentity,
   neuronId,
+  neuronType,
   controller,
   stake,
 }: { identity?: Identity } & Partial<FakeNeuronParams>) => {
@@ -171,6 +173,10 @@ export const addNeuronWith = ({
   if (neuronId) {
     neuron.neuronId = neuronId;
     neuron.fullNeuron.id = neuronId;
+  }
+  if (neuronType) {
+    neuron.neuronType = neuronType;
+    neuron.fullNeuron.neuronType = neuronType;
   }
   if (stake) {
     neuron.fullNeuron.cachedNeuronStake = stake;
