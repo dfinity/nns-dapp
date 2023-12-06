@@ -8,7 +8,7 @@ import {
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
 import { createIcpUserToken } from "$tests/mocks/tokens-page.mock";
-import { TokenAmount } from "@dfinity/utils";
+import { TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("icp-tokens-list-user.derived", () => {
@@ -23,7 +23,7 @@ describe("icp-tokens-list-user.derived", () => {
   };
   const mainUserTokenData: UserTokenData = {
     ...icpTokenUser,
-    balance: TokenAmount.fromE8s({
+    balance: TokenAmountV2.fromUlps({
       amount: mockMainAccount.balanceE8s,
       token: NNS_TOKEN_DATA,
     }),
@@ -32,7 +32,7 @@ describe("icp-tokens-list-user.derived", () => {
   };
   const subaccountUserTokenData: UserTokenData = {
     ...icpTokenUser,
-    balance: TokenAmount.fromE8s({
+    balance: TokenAmountV2.fromUlps({
       amount: mockSubAccount.balanceE8s,
       token: NNS_TOKEN_DATA,
     }),
@@ -41,7 +41,7 @@ describe("icp-tokens-list-user.derived", () => {
   };
   const hardwareWalletUserTokenData: UserTokenData = {
     ...icpTokenUser,
-    balance: TokenAmount.fromE8s({
+    balance: TokenAmountV2.fromUlps({
       amount: mockHardwareWalletAccount.balanceE8s,
       token: NNS_TOKEN_DATA,
     }),
