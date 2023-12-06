@@ -636,6 +636,9 @@ const sameController = (neurons: NeuronInfo[]): boolean =>
 const sameId = (neurons: NeuronInfo[]): boolean =>
   new Set(neurons.map(({ neuronId }) => neuronId)).size === 1;
 
+const sameNeuronType = (neurons: NeuronInfo[]): boolean =>
+  new Set(neurons.map(({ neuronType }) => neuronType)).size === 1;
+
 /**
  * Receives multiple lists of followees sorted by id.
  *
@@ -691,6 +694,12 @@ export const canBeMerged = (
     return {
       isValid: false,
       messageKey: "error.merge_neurons_same_id",
+    };
+  }
+  if (!sameNeuronType(neurons)) {
+    return {
+      isValid: false,
+      messageKey: "error.merge_neurons_different_type",
     };
   }
   if (!sameController(neurons)) {
