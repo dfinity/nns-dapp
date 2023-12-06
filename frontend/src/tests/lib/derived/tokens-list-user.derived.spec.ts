@@ -22,12 +22,12 @@ import {
 } from "$tests/mocks/tokens-page.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
-import { TokenAmount } from "@dfinity/utils";
+import { TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("tokens-list-user.derived", () => {
   const icpUserToken: UserTokenData = createIcpUserToken({
-    balance: TokenAmount.fromE8s({
+    balance: TokenAmountV2.fromUlps({
       amount: mockMainAccount.balanceE8s,
       token: NNS_TOKEN_DATA,
     }),
@@ -56,7 +56,7 @@ describe("tokens-list-user.derived", () => {
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/g3pce-2iaae/logo.png",
     balance: new UnavailableTokenAmount(snsTetris.tokenMetadata),
     token: snsTetris.tokenMetadata,
-    fee: TokenAmount.fromE8s({
+    fee: TokenAmountV2.fromUlps({
       amount: snsTetris.tokenMetadata.fee,
       token: snsTetris.tokenMetadata,
     }),
@@ -64,7 +64,7 @@ describe("tokens-list-user.derived", () => {
   };
   const tetrisUserToken: UserTokenData = {
     ...tetrisTokenBase,
-    balance: TokenAmount.fromE8s({
+    balance: TokenAmountV2.fromUlps({
       amount: mockSnsMainAccount.balanceE8s,
       token: snsTetrisToken,
     }),
@@ -76,7 +76,7 @@ describe("tokens-list-user.derived", () => {
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/f7crg-kabae/logo.png",
     balance: new UnavailableTokenAmount(snsPacman.tokenMetadata),
     token: snsPacman.tokenMetadata,
-    fee: TokenAmount.fromE8s({
+    fee: TokenAmountV2.fromUlps({
       amount: snsPacman.tokenMetadata.fee,
       token: snsPacman.tokenMetadata,
     }),
@@ -84,7 +84,7 @@ describe("tokens-list-user.derived", () => {
   };
   const pacmanUserToken: UserTokenData = {
     ...pacmanTokenBase,
-    balance: TokenAmount.fromE8s({
+    balance: TokenAmountV2.fromUlps({
       amount: mockSnsMainAccount.balanceE8s,
       token: snsPackmanToken,
     }),
@@ -92,7 +92,7 @@ describe("tokens-list-user.derived", () => {
   };
   const ckBTCUserToken: UserTokenData = {
     ...ckBTCTokenBase,
-    balance: TokenAmount.fromE8s({
+    balance: TokenAmountV2.fromUlps({
       amount: mockCkBTCMainAccount.balanceE8s,
       token: mockCkBTCToken,
     }),
