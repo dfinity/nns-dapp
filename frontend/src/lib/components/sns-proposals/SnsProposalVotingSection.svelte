@@ -30,6 +30,10 @@
   let total = 0;
   $: total = Number(tally.total) / E8S_PER_ICP;
 
+  let deadlineTimestampSeconds: bigint | undefined;
+  $: deadlineTimestampSeconds =
+    proposalDataMap.current_deadline_timestamp_seconds;
+
   let immediateMajorityPercent = 0;
   $: immediateMajorityPercent = basisPointsToPercent(
     proposalDataMap.minimumYesProportionOfExercised
@@ -47,6 +51,7 @@
     {total}
     {immediateMajorityPercent}
     {standardMajorityPercent}
+    {deadlineTimestampSeconds}
   />
 
   {#if !settled}

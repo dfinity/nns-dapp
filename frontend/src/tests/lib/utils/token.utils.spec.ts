@@ -11,8 +11,10 @@ import {
   numberToUlps,
   sumAmountE8s,
   toTokenAmountV2,
+  ulpsToNumber,
 } from "$lib/utils/token.utils";
 import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
+import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { ICPToken, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 
 describe("token-utils", () => {
@@ -497,6 +499,8 @@ describe("token-utils", () => {
       expect(numberToUlps({ amount: 1, token })).toBe(100_000_000n);
       expect(numberToUlps({ amount: 3.14, token })).toBe(314_000_000n);
       expect(numberToUlps({ amount: 0.14, token })).toBe(14_000_000n);
+      // TODO: Expect data after upgrading ic-js
+      expect(() => numberToUlps({ amount: 0.00000002, token })).toThrow();
     });
 
     it("converts number to ulps with token", () => {
@@ -514,6 +518,141 @@ describe("token-utils", () => {
       expect(numberToUlps({ amount: 3.14, token })).toBe(
         3_140_000_000_000_000_000n
       );
+    });
+  });
+
+  describe("ulpsToNumber", () => {
+    it("converts e8s to amount of tokens", () => {
+      expect(
+        ulpsToNumber({
+          ulps: 114_000_000n,
+          token: ICPToken,
+        })
+      ).toBe(1.14);
+      expect(
+        ulpsToNumber({
+          ulps: 114_234_567n,
+          token: ICPToken,
+        })
+      ).toBe(1.14234567);
+      expect(
+        ulpsToNumber({
+          ulps: 0n,
+          token: ICPToken,
+        })
+      ).toBe(0);
+      expect(
+        ulpsToNumber({
+          ulps: 4_000_000n,
+          token: ICPToken,
+        })
+      ).toBe(0.04);
+      expect(
+        ulpsToNumber({
+          ulps: 1_000_000_000_000n,
+          token: ICPToken,
+        })
+      ).toBe(10_000);
+    });
+
+    it("converts ulps with more than 8 decimals to token", () => {
+      const token = {
+        ...mockSnsToken,
+        decimals: 18,
+      };
+      expect(
+        ulpsToNumber({
+          ulps: 1_140_000_000_000_000_000n,
+          token,
+        })
+      ).toBe(1.14);
+      expect(
+        ulpsToNumber({
+          ulps: 1_142_345_670_000_000_000n,
+          token,
+        })
+      ).toBe(1.14234567);
+      expect(
+        ulpsToNumber({
+          ulps: 0n,
+          token,
+        })
+      ).toBe(0);
+      expect(
+        ulpsToNumber({
+          ulps: 40_000_000_000_000_000n,
+          token,
+        })
+      ).toBe(0.04);
+      expect(
+        ulpsToNumber({
+          ulps: 10_000_000_000_000_000_000_000n,
+          token,
+        })
+      ).toBe(10_000);
+    });
+
+    it("converts ulps with less than 8 decimals to token", () => {
+      const token = {
+        ...mockSnsToken,
+        decimals: 4,
+      };
+      expect(
+        ulpsToNumber({
+          ulps: 11_400n,
+          token,
+        })
+      ).toBe(1.14);
+      expect(
+        ulpsToNumber({
+          ulps: 11_423n,
+          token,
+        })
+      ).toBe(1.1423);
+      expect(
+        ulpsToNumber({
+          ulps: 0n,
+          token,
+        })
+      ).toBe(0);
+      expect(
+        ulpsToNumber({
+          ulps: 400n,
+          token,
+        })
+      ).toBe(0.04);
+      expect(
+        ulpsToNumber({
+          ulps: 100_000_000n,
+          token,
+        })
+      ).toBe(10_000);
+    });
+
+    it("truncates ulps with more than 8 decimals to 8 decimals", () => {
+      const token = {
+        ...mockSnsToken,
+        decimals: 18,
+      };
+      expect(
+        ulpsToNumber({
+          ulps: 1_142_345_678_912_345_678n,
+          token,
+        })
+      ).toBe(1.14234567);
+    });
+
+    it("doesn't convert with token of 0 decimals", () => {
+      const token = {
+        ...mockSnsToken,
+        decimals: 0,
+      };
+      expect(
+        ulpsToNumber({
+          ulps: 1142n,
+          token,
+        })
+      ).toBe(1142);
     });
   });
 });

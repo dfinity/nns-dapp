@@ -457,5 +457,12 @@ describe("CkBTCWallet", () => {
 
       await waitFor(() => expect(spy).toHaveBeenCalled());
     });
+
+    it("should display the bitcoin address", async () => {
+      const { walletPo } = await renderWalletAndModal();
+      expect(await walletPo.getCkBTCInfoCardPo().getAddress()).toBe(
+        mockBTCAddressTestnet
+      );
+    });
   });
 });

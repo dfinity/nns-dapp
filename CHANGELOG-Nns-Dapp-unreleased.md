@@ -16,6 +16,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Support for CkETH token.
 * Sns dynamic voting proportions.
+* Iterator over AccountsDbs.
+* Display expiration date for sns proposals.
+* Card with BTC deposit address and QR code in ckBTC wallet.
 
 #### Changed
 
@@ -23,12 +26,11 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
-* Remove the `ENABLE_FULL_WIDTH_PROPOSAL` feature flag.
-* Remove logic for using ICRC-1 when staking a neuron.
-
 #### Fixed
 
 #### Security
+
+* Bump css-tools dev dependency to fix minor vulnerability.
 
 #### Not Published
 
@@ -42,6 +44,11 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
+* Remove `.gitattributes`.
+
 #### Fixed
+
+* Provide missing global config in cache-filling workflow.
+* Update the correct flavour of golden file when the NNS Dapp canister API changes.
 
 #### Security
