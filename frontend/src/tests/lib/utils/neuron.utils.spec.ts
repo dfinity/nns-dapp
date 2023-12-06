@@ -2167,7 +2167,7 @@ describe("neuron-utils", () => {
       expect(
         validTopUpAmount({
           neuron,
-          amount: (MIN_NEURON_STAKE * 2) / E8S_PER_ICP,
+          amount: 2,
         })
       ).toBe(true);
     });
@@ -2183,7 +2183,7 @@ describe("neuron-utils", () => {
       expect(
         validTopUpAmount({
           neuron,
-          amount: MIN_NEURON_STAKE / 2 / E8S_PER_ICP - 10,
+          amount: 0.4,
         })
       ).toBe(false);
     });

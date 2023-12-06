@@ -6,6 +6,7 @@ runs:
   steps:
     - name: Determine ic-wasm version
       id: ic-wasm-version
+      shell: bash
       run: |
         echo "IC_WASM_VERSION=$(jq -r '.defaults.build.config.IC_WASM_VERSION' dfx.json)" >> "$GITHUB_OUTPUT"
         echo "IC_WASM_PATH=/home/runner/.cargo/bin/ic-wasm" >> "$GITHUB_OUTPUT"
@@ -19,6 +20,7 @@ runs:
       uses: ./.github/actions/install_binstall
     - name: Install ic-wasm
       if: steps.cache-ic-wasm.outputs.cache-hit != 'true'
+      shell: bash
       run: |
         cargo binstall --no-confirm "ic-wasm@${{ steps.ic-wasm-version.outputs.IC_WASM_VERSION }}"
         command -v ic-wasm || {

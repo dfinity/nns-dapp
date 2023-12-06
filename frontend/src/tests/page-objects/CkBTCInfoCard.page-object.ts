@@ -2,11 +2,11 @@ import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class BitcoinAddressPo extends BasePageObject {
+export class CkBTCInfoCardPo extends BasePageObject {
   private static readonly TID = "bitcoin-address-component";
 
-  static under(element: PageObjectElement): BitcoinAddressPo {
-    return new BitcoinAddressPo(element.byTestId(BitcoinAddressPo.TID));
+  static under(element: PageObjectElement): CkBTCInfoCardPo {
+    return new CkBTCInfoCardPo(element.byTestId(CkBTCInfoCardPo.TID));
   }
 
   getAddress(): Promise<string> {

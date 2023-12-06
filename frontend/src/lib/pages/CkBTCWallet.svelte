@@ -11,7 +11,7 @@
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
-  import BitcoinAddress from "$lib/components/accounts/BitcoinAddress.svelte";
+  import CkBTCInfoCard from "$lib/components/accounts/CkBTCInfoCard.svelte";
   import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
   import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
   import IcrcWalletPage from "$lib/components/accounts/IcrcWalletPage.svelte";
@@ -86,7 +86,7 @@
 >
   <svelte:fragment slot="info-card">
     {#if nonNullish($selectedAccountStore.account) && nonNullish($selectedCkBTCUniverseIdStore) && nonNullish(canisters)}
-      <BitcoinAddress
+      <CkBTCInfoCard
         account={$selectedAccountStore.account}
         universeId={$selectedCkBTCUniverseIdStore}
         minterCanisterId={canisters.minterCanisterId}

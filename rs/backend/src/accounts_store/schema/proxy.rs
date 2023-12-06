@@ -86,40 +86,41 @@ impl AccountsDbBTreeMapTrait for AccountsDbAsProxy {
 }
 
 impl AccountsDbTrait for AccountsDbAsProxy {
-    // Inserts into all the underlying databases.
+    /// Inserts into all the underlying databases.
     fn db_insert_account(&mut self, account_key: &[u8], account: Account) {
         self.authoritative_db.db_insert_account(account_key, account.clone());
         if let Some(db) = &mut self.second_db {
             db.db_insert_account(account_key, account);
         }
     }
-    // Checks the authoritative database.
+    /// Checks the authoritative database.
     fn db_contains_account(&self, account_key: &[u8]) -> bool {
         self.authoritative_db.db_contains_account(account_key)
     }
-    // Gets an account from the authoritative database.
+    /// Gets an account from the authoritative database.
     fn db_get_account(&self, account_key: &[u8]) -> Option<Account> {
         self.authoritative_db.db_get_account(account_key)
     }
-    // Removes an account from all underlying databases.
+    /// Removes an account from all underlying databases.
     fn db_remove_account(&mut self, account_key: &[u8]) {
         self.authoritative_db.db_remove_account(account_key);
         if let Some(db) = self.second_db.as_mut() {
             db.db_remove_account(account_key);
         }
     }
-    // Gets the length from the authoritative database.
+    /// Gets the length from the authoritative database.
     fn db_accounts_len(&self) -> u64 {
         self.authoritative_db.db_accounts_len()
     }
-    // Iterates over the entries of the authoritative database.
+    /// Iterates over the entries of the authoritative database.
     fn iter(&self) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
-        self.authoritative_db.iter()
+        self.map.iter()
     }
-    // Iterates over the values of the authoritative database.
+    /// Iterates over the values of the authoritative database.
     fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
         self.authoritative_db.values()
     }
+    /// The authoritative schema label.
     fn schema_label(&self) -> SchemaLabel {
         let schema_label = self.authoritative_db.schema_label();
         dfn_core::api::print(format!(

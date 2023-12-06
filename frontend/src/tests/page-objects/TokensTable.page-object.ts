@@ -51,4 +51,8 @@ export class TokensTablePo extends BasePageObject {
     }
     return row.click("send-button-component");
   }
+
+  getLastRowText(): Promise<string> {
+    return this.getText("last-row");
+  }
 }
