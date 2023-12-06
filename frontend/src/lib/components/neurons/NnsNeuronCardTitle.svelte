@@ -23,10 +23,7 @@
 <div class="title" data-tid="neuron-card-title">
   <svelte:element this={tagName} data-tid="neuron-id"
     ><div class="neuron-id">
-      {#if nonNullish(neuron.neuronType)}<NeuronTypeTag
-          type={neuron.neuronType}
-          top
-        />{/if}<span>{neuron.neuronId}</span>
+      <span>{neuron.neuronId}</span>
     </div></svelte:element
   >
 
@@ -42,16 +39,26 @@
   .neuron-id {
     display: flex;
     align-items: center;
-    gap: var(--padding);
+    flex-wrap: wrap;
+    gap: var(--padding-0_5x);
   }
 
   .title {
     @include card.stacked-title;
-    word-break: break-word;
+
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: var(--padding-0_5x);
   }
 
   p {
-    margin: 0 0 var(--padding-0_5x);
+    flex: 1 0 auto;
+    margin: var(--padding-0_5x) 0;
     @include fonts.standard(true);
+    word-break: break-word;
   }
 </style>

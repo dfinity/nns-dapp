@@ -32,6 +32,7 @@ import {
 } from "@dfinity/gix-components";
 import {
   NeuronState,
+  NeuronType,
   Topic,
   Vote,
   ineligibleNeurons,
@@ -248,6 +249,12 @@ export const getSpawningTimeInSeconds = (
 export const formatVotingPower = (value: bigint | number): string =>
   formatNumber(Number(value) / E8S_PER_ICP);
 
+export const isSeedNeuron = (neuron: NeuronInfo): boolean =>
+  neuron.neuronType === NeuronType.Seed;
+
+export const isEctNeuron = (neuron: NeuronInfo): boolean =>
+  neuron.neuronType === NeuronType.Ect;
+
 export const hasJoinedCommunityFund = (neuron: NeuronInfo): boolean =>
   neuron.joinedCommunityFundTimestampSeconds !== undefined;
 
@@ -363,6 +370,7 @@ export const isHotKeyControllable = ({
 
 export type NeuronTag = {
   text: string;
+  description?: string;
 };
 
 export const getNeuronTags = ({
@@ -377,6 +385,19 @@ export const getNeuronTags = ({
   i18n: I18n;
 }): NeuronTag[] => {
   const tags: NeuronTag[] = [];
+
+  if (isSeedNeuron(neuron)) {
+    tags.push({
+      text: i18n.neuron_types.seed,
+      description: i18n.neuron_types.seedDescription,
+    });
+  } else if (isEctNeuron(neuron)) {
+    tags.push({
+      text: i18n.neuron_types.ect,
+      description: i18n.neuron_types.ectDescription,
+    });
+  }
+
   if (hasJoinedCommunityFund(neuron)) {
     tags.push({ text: i18n.neurons.community_fund });
   }

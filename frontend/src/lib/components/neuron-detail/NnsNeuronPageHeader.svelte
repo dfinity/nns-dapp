@@ -9,9 +9,6 @@
   import { i18n } from "$lib/stores/i18n";
   import type { IntersectingDetail } from "$lib/types/intersection.types";
   import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
-  import { Tag } from "@dfinity/gix-components";
-  import NeuronTypeTag from "$lib/components/ui/NeuronTypeTag.svelte";
-  import { nonNullish } from "@dfinity/utils";
 
   export let neuron: NeuronInfo;
 
@@ -38,9 +35,6 @@
     use:onIntersection
     on:nnsIntersecting={updateLayoutTitle}
   >
-    {#if nonNullish(neuron.neuronType)}<NeuronTypeTag
-        type={neuron.neuronType}
-      />{/if}
     <IdentifierHash
       identifier={neuron.neuronId.toString()}
       splitLength={MAX_NEURON_ID_DIGITS / 2}
