@@ -368,7 +368,7 @@ export const isHotKeyControllable = ({
   ) !== undefined &&
   fullNeuron.controller !== identity?.getPrincipal().toText();
 
-export type NeuronTag = {
+export type NeuronTagData = {
   text: string;
   description?: string;
 };
@@ -383,8 +383,8 @@ export const getNeuronTags = ({
   identity?: Identity | null;
   accounts: IcpAccountsStoreData;
   i18n: I18n;
-}): NeuronTag[] => {
-  const tags: NeuronTag[] = [];
+}): NeuronTagData[] => {
+  const tags: NeuronTagData[] = [];
 
   if (isSeedNeuron(neuron)) {
     tags.push({

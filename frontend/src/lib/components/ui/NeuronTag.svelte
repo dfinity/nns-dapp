@@ -2,10 +2,10 @@
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { Tag } from "@dfinity/gix-components";
-  import type { NeuronTag } from "$lib/utils/neuron.utils";
+  import type { NeuronTagData } from "$lib/utils/neuron.utils";
   import { nonNullish } from "@dfinity/utils";
 
-  export let tag: NeuronTag;
+  export let tag: NeuronTagData;
 
   let text: string;
   $: text = tag.text;
