@@ -7,7 +7,6 @@ import {
   receiveMockBtc,
 } from "$lib/api/dev.api";
 import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import type { IcpAccountsStoreData } from "$lib/stores/icp-accounts.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
@@ -16,10 +15,11 @@ import {
   snsAccountsStore,
   type SnsAccountsStoreData,
 } from "$lib/stores/sns-accounts.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import type { IcpAccount } from "$lib/types/account";
 import { numberToUlps } from "$lib/utils/token.utils";
 import type { Principal } from "@dfinity/principal";
-import { nonNullish, type Token } from "@dfinity/utils";
+import { ICPToken, nonNullish, type Token } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { syncAccounts } from "./icp-accounts.services";
 import { loadIcrcAccount } from "./icrc-accounts.services";
@@ -52,7 +52,7 @@ export const getICPs = async (icps: number) => {
   }
 
   await acquireICPTs({
-    e8s: BigInt(icps * E8S_PER_ICP),
+    e8s: numberToUlps({ amount: icps, token: ICPToken }),
     accountIdentifier: main.identifier,
   });
 
@@ -71,19 +71,31 @@ export const getTokens = async ({
   const store: SnsAccountsStoreData = get(snsAccountsStore);
   const { accounts } = store[rootCanisterId.toText()];
   const main = accounts.find((account) => account.type === "main");
+  const token = get(tokensStore)[rootCanisterId.toText()]?.token;
 
   if (!main) {
     throw new Error("No account found to send tokens");
   }
+  if (!token) {
+    throw new Error("No token found to send tokens");
+  }
 
   await acquireSnsTokens({
-    e8s: BigInt(tokens * E8S_PER_ICP),
+    ulps: numberToUlps({ amount: tokens, token }),
     account: main,
     rootCanisterId,
   });
 
   // Reload accounts to sync tokens that have been transferred
   await loadSnsAccounts({ rootCanisterId });
+};
+
+// Not clear whether BTC should use the same token as ckBTC, that's why we have a separate token here.
+// Not exported to not be used outside the dev services.
+const BTC_TOKEN: Token = {
+  decimals: 8,
+  name: "Bitcoin",
+  symbol: "BTC",
 };
 
 export const getBTC = async ({ amount }: { amount: number }) => {
@@ -94,7 +106,7 @@ export const getBTC = async ({ amount }: { amount: number }) => {
   });
   await receiveMockBtc({
     btcAddress,
-    amountE8s: BigInt(amount * E8S_PER_ICP),
+    amountE8s: numberToUlps({ amount, token: BTC_TOKEN }),
   });
 };
 
