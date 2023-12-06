@@ -1,7 +1,9 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import type { UserTokenData, UserTokenLoading } from "$lib/types/tokens-page";
+  import { nonNullish } from "@dfinity/utils";
   import Row from "./TokensTableRow.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let userTokensData: Array<UserTokenData | UserTokenLoading>;
   export let firstColumnHeader: string;
@@ -26,6 +28,11 @@
       </div>
     {/each}
   </div>
+  {#if nonNullish($$slots["last-row"])}
+    <TestIdWrapper testId="last-row">
+      <slot name="last-row" />
+    </TestIdWrapper>
+  {/if}
 </div>
 
 <style lang="scss">

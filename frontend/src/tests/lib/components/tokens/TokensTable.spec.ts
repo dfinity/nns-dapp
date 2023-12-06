@@ -19,6 +19,7 @@ import { createActionEvent } from "$tests/utils/actions.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 import type { Mock } from "vitest";
+import TokensTableTest from "./TokensTableTest.svelte";
 
 describe("TokensTable", () => {
   const renderTable = ({
@@ -63,6 +64,20 @@ describe("TokensTable", () => {
     const po = renderTable({ userTokensData: [token1], firstColumnHeader });
 
     expect(await po.getFirstColumnHeader()).toEqual(firstColumnHeader);
+  });
+
+  it("should render the last-row slot", async () => {
+    const lastRowText = "Add Account";
+    const token1 = createUserToken({
+      universeId: OWN_CANISTER_ID,
+    });
+    const { container } = render(TokensTableTest, {
+      props: { userTokensData: [token1], lastRowText },
+    });
+
+    const po = TokensTablePo.under(new JestPageObjectElement(container));
+
+    expect(await po.getLastRowText()).toEqual(lastRowText);
   });
 
   it("should render the balances of the tokens", async () => {
