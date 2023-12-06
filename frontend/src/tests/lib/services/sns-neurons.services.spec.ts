@@ -1,6 +1,5 @@
 import * as governanceApi from "$lib/api/sns-governance.api";
 import * as api from "$lib/api/sns.api";
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
@@ -1210,7 +1209,7 @@ describe("sns-neurons-services", () => {
         neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
         identity: mockIdentity,
         rootCanisterId: mockPrincipal,
-        amount: BigInt(amount * E8S_PER_ICP) + transactionFee,
+        amount: 1_000_000_000n + transactionFee,
         memo: 0n,
       });
     });

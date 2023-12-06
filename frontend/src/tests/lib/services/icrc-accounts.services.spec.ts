@@ -1,5 +1,4 @@
 import * as ledgerApi from "$lib/api/icrc-ledger.api";
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import {
   getIcrcAccountIdentity,
   icrcTransferTokens,
@@ -204,7 +203,7 @@ describe("icrc-accounts-services", () => {
   });
 
   describe("icrcTransferTokens", () => {
-    const amountE8s = BigInt(10 * E8S_PER_ICP);
+    const amountE8s = 1_000_000_000n;
     const fee = 10_000n;
     const destinationAccount = {
       owner: principal(2),

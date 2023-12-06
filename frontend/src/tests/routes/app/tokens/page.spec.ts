@@ -1,6 +1,5 @@
 import * as snsLedgerApi from "$lib/api/sns-ledger.api";
 import * as ckBTCLedgerApi from "$lib/api/wallet-ledger.api";
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
@@ -206,7 +205,7 @@ describe("Tokens route", () => {
             rootCanisterId: rootCanisterIdTetris,
             fee: tetrisToken.fee,
             to: toAccount,
-            amount: BigInt(amount * E8S_PER_ICP),
+            amount: 200000000n,
             fromSubAccount: undefined,
             identity: mockIdentity,
           });

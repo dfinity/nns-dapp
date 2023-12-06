@@ -421,7 +421,7 @@ describe("Accounts", () => {
   //   expect(icrcLedgerApi.icrcTransfer).toHaveBeenCalledWith({
   //     identity: mockIdentity,
   //     canisterId: CKETH_LEDGER_CANISTER_ID,
-  //     amount: BigInt(amount * E8S_PER_ICP),
+  //     amount: 200000000n,
   //     to: toAccount,
   //     fee: mockCkETHToken.fee,
   //   });
