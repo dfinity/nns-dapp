@@ -65,7 +65,7 @@ describe("tokens-list-base.derived", () => {
       const universeTokens = get(tokensListVisitorsStore);
 
       universeTokens.forEach((token) => {
-        expect(token.actions).toEqual([UserTokenAction.GoToDetail]);
+        expect(token.actions).toEqual([{ type: UserTokenAction.GoToDetail }]);
       });
     });
   });

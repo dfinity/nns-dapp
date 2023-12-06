@@ -1,7 +1,11 @@
-import type { UserTokenData, UserTokenLoading } from "$lib/types/tokens-page";
+import type {
+  UserTokenBase,
+  UserTokenData,
+  UserTokenLoading,
+} from "$lib/types/tokens-page";
 
 export const isUserTokenData = (
-  userToken: UserTokenData | UserTokenLoading
+  userToken: UserTokenData | UserTokenLoading | UserTokenBase
 ): userToken is UserTokenData => {
-  return userToken.balance !== "loading";
+  return "balance" in userToken && userToken.balance !== "loading";
 };

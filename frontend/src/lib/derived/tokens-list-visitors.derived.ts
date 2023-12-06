@@ -4,7 +4,7 @@ import { tokensListBaseStore } from "./tokens-list-base.derived";
 
 const addVisitorActions = (data: UserTokenData): UserTokenData => ({
   ...data,
-  actions: [UserTokenAction.GoToDetail],
+  actions: [{ type: UserTokenAction.GoToDetail }],
 });
 
 export const tokensListVisitorsStore = derived<

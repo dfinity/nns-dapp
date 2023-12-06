@@ -73,17 +73,20 @@ export const userTokenPageMock: UserTokenData = {
     amount: snsTetrisToken.fee,
     token: mockCkBTCToken,
   }),
-  actions: [UserTokenAction.Send, UserTokenAction.Receive],
+  actions: [{ type: UserTokenAction.Send }, { type: UserTokenAction.Receive }],
 };
 
 export const userTokensPageMock: UserTokenData[] = [
   {
     ...icpTokenBase,
-    actions: [UserTokenAction.GoToDetail],
+    actions: [{ type: UserTokenAction.GoToDetail }],
   },
   {
     ...ckBTCTokenBase,
-    actions: [UserTokenAction.Send, UserTokenAction.Receive],
+    actions: [
+      { type: UserTokenAction.Send },
+      { type: UserTokenAction.Receive },
+    ],
   },
   {
     universeId: principal(0),
@@ -98,7 +101,10 @@ export const userTokensPageMock: UserTokenData[] = [
       token: snsTetrisToken,
     }),
     logo: "sns-logo.svg",
-    actions: [UserTokenAction.Send, UserTokenAction.Receive],
+    actions: [
+      { type: UserTokenAction.Send },
+      { type: UserTokenAction.Receive },
+    ],
   },
   {
     universeId: principal(1),
@@ -113,7 +119,10 @@ export const userTokensPageMock: UserTokenData[] = [
       token: snsPackmanToken,
     }),
     logo: "sns-logo-2.svg",
-    actions: [UserTokenAction.Send, UserTokenAction.Receive],
+    actions: [
+      { type: UserTokenAction.Send },
+      { type: UserTokenAction.Receive },
+    ],
   },
 ];
 

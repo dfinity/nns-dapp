@@ -1,9 +1,9 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import type { UserTokenData, UserTokenLoading } from "$lib/types/tokens-page";
+  import type { UserTokenTableData } from "$lib/types/tokens-page";
   import Row from "./TokensTableRow.svelte";
 
-  export let userTokensData: Array<UserTokenData | UserTokenLoading>;
+  export let userTokensData: UserTokenTableData;
   export let firstColumnHeader: string;
 </script>
 

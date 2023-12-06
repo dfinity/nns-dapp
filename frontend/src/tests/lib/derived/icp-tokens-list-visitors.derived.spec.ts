@@ -6,7 +6,7 @@ import { get } from "svelte/store";
 
 describe("icp-tokens-list-visitors.derived", () => {
   const icpTokenVisitor: UserTokenData = createIcpUserToken({
-    actions: [UserTokenAction.GoToDetail],
+    actions: [{ type: UserTokenAction.GoToDetail }],
   });
 
   describe("icpTokensListVisitors", () => {

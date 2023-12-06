@@ -21,6 +21,6 @@ export const icpTokensListVisitors = derived<
       amount: NNS_TOKEN_DATA.fee,
       token: NNS_TOKEN_DATA,
     }),
-    actions: [UserTokenAction.GoToDetail],
+    actions: [{ type: UserTokenAction.GoToDetail }],
   },
 ]);

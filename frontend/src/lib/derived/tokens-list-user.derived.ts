@@ -42,8 +42,11 @@ const addActions = (userTokenData: UserTokenData): UserTokenData => ({
       ? []
       : [
           ...(userTokenData.universeId.toText() === OWN_CANISTER_ID_TEXT
-            ? [UserTokenAction.GoToDetail]
-            : [UserTokenAction.Receive, UserTokenAction.Send]),
+            ? [{ type: UserTokenAction.GoToDetail }]
+            : [
+                { type: UserTokenAction.Receive },
+                { type: UserTokenAction.Send },
+              ]),
         ],
 });
 

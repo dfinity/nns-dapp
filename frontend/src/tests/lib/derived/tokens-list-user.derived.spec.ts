@@ -31,7 +31,7 @@ describe("tokens-list-user.derived", () => {
       amount: mockMainAccount.balanceE8s,
       token: NNS_TOKEN_DATA,
     }),
-    actions: [UserTokenAction.GoToDetail],
+    actions: [{ type: UserTokenAction.GoToDetail }],
   });
   const snsTetrisToken = mockSnsToken;
   const snsTetris = {
@@ -68,7 +68,10 @@ describe("tokens-list-user.derived", () => {
       amount: mockSnsMainAccount.balanceE8s,
       token: snsTetrisToken,
     }),
-    actions: [UserTokenAction.Receive, UserTokenAction.Send],
+    actions: [
+      { type: UserTokenAction.Receive },
+      { type: UserTokenAction.Send },
+    ],
   };
   const pacmanTokenBase: UserTokenData = {
     universeId: snsPacman.rootCanisterId,
@@ -88,7 +91,10 @@ describe("tokens-list-user.derived", () => {
       amount: mockSnsMainAccount.balanceE8s,
       token: snsPackmanToken,
     }),
-    actions: [UserTokenAction.Receive, UserTokenAction.Send],
+    actions: [
+      { type: UserTokenAction.Receive },
+      { type: UserTokenAction.Send },
+    ],
   };
   const ckBTCUserToken: UserTokenData = {
     ...ckBTCTokenBase,
@@ -96,7 +102,10 @@ describe("tokens-list-user.derived", () => {
       amount: mockCkBTCMainAccount.balanceE8s,
       token: mockCkBTCToken,
     }),
-    actions: [UserTokenAction.Receive, UserTokenAction.Send],
+    actions: [
+      { type: UserTokenAction.Receive },
+      { type: UserTokenAction.Send },
+    ],
   };
 
   describe("tokensListBaseStore", () => {

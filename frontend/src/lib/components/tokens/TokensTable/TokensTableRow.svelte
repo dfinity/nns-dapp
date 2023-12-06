@@ -77,7 +77,7 @@
       {#if nonNullish(userToken)}
         {#each userToken.actions as action}
           <svelte:component
-            this={actionMapper[action]}
+            this={actionMapper[action.type]}
             {userToken}
             on:nnsAction
           />
@@ -103,7 +103,7 @@
     {#if nonNullish(userToken)}
       {#each userToken.actions as action}
         <svelte:component
-          this={actionMapper[action]}
+          this={actionMapper[action.type]}
           {userToken}
           on:nnsAction
         />

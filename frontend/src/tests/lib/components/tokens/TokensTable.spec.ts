@@ -143,7 +143,7 @@ describe("TokensTable", () => {
     const po = renderTable({
       userTokensData: [
         createUserToken({
-          actions: [UserTokenAction.Send],
+          actions: [{ type: UserTokenAction.Send }],
         }),
       ],
     });
@@ -160,7 +160,7 @@ describe("TokensTable", () => {
     const po = renderTable({
       userTokensData: [
         createUserToken({
-          actions: [UserTokenAction.Receive],
+          actions: [{ type: UserTokenAction.Receive }],
         }),
       ],
     });
@@ -177,7 +177,7 @@ describe("TokensTable", () => {
     const po = renderTable({
       userTokensData: [
         createUserToken({
-          actions: [UserTokenAction.GoToDetail],
+          actions: [{ type: UserTokenAction.GoToDetail }],
         }),
       ],
     });
@@ -212,7 +212,7 @@ describe("TokensTable", () => {
   it("should trigger event when clicking in Send action", async () => {
     const handleAction = vi.fn();
     const userToken = createUserToken({
-      actions: [UserTokenAction.Send],
+      actions: [{ type: UserTokenAction.Send }],
     });
     const po = renderTable({
       userTokensData: [userToken],
@@ -235,7 +235,7 @@ describe("TokensTable", () => {
   it("should trigger event when clicking in Receive action", async () => {
     const handleAction = vi.fn();
     const userToken = createUserToken({
-      actions: [UserTokenAction.Receive],
+      actions: [{ type: UserTokenAction.Receive }],
     });
     const po = renderTable({
       userTokensData: [userToken],
@@ -258,7 +258,7 @@ describe("TokensTable", () => {
   it("should trigger event when clicking in GoToDetail action", async () => {
     const handleAction = vi.fn();
     const userToken = createUserToken({
-      actions: [UserTokenAction.GoToDetail],
+      actions: [{ type: UserTokenAction.GoToDetail }],
     });
     const po = renderTable({
       userTokensData: [userToken],

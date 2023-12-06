@@ -13,7 +13,10 @@ import { get } from "svelte/store";
 
 describe("icp-tokens-list-user.derived", () => {
   const icpTokenUser: UserTokenData = createIcpUserToken({
-    actions: [UserTokenAction.Receive, UserTokenAction.Send],
+    actions: [
+      { type: UserTokenAction.Receive },
+      { type: UserTokenAction.Send },
+    ],
   });
   const emptyUserTokenData: UserTokenData = {
     ...icpTokenUser,

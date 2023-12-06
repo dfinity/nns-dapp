@@ -5,7 +5,11 @@ import {
   type IcpAccountsStore,
 } from "$lib/stores/icp-accounts.store";
 import type { Account, AccountType } from "$lib/types/account";
-import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
+import {
+  UserTokenAction,
+  type UserTokenData,
+  type UserTokenTableData,
+} from "$lib/types/tokens-page";
 import type { Universe } from "$lib/types/universe";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { Principal } from "@dfinity/principal";
@@ -52,14 +56,14 @@ const convertAccountToUserTokenData = ({
       token: NNS_TOKEN_DATA,
     }),
     actions: nonNullish(account)
-      ? [UserTokenAction.Receive, UserTokenAction.Send]
+      ? [{ type: UserTokenAction.Receive }, { type: UserTokenAction.Send }]
       : [],
   };
 };
 
 export const icpTokensListUser = derived<
   [Readable<Universe>, IcpAccountsStore, Readable<I18n>],
-  UserTokenData[]
+  UserTokenTableData
 >(
   [nnsUniverseStore, icpAccountsStore, i18n],
   ([nnsUniverse, icpAccounts, i18nObj]) => [

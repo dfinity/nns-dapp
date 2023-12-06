@@ -8,12 +8,17 @@ export enum UserTokenAction {
   Receive = "receive",
 }
 
+export type UserTokenActionData = {
+  type: UserTokenAction;
+  label?: string;
+};
+
 export type UserTokenBase = {
   universeId: Principal;
   title: string;
   subtitle?: string;
   logo: string;
-  actions: UserTokenAction[];
+  actions: UserTokenActionData[];
 };
 
 /**
@@ -34,3 +39,7 @@ export type UserTokenData = UserTokenBase & {
   // Fees are included in the metadata of ICRC tokens, but this is not a list of only ICRC tokens
   fee: TokenAmount;
 };
+
+export type UserTokenTableData = Array<
+  UserTokenData | UserTokenLoading | UserTokenBase
+>;
