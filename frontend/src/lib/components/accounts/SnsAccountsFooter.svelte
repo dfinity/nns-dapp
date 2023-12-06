@@ -5,7 +5,7 @@
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
-  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { toastsError } from "$lib/stores/toasts.store";
   import {
@@ -15,6 +15,7 @@
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import IC_LOGO from "$lib/assets/icp.svg";
+  import { toTokenAmountV2 } from "$lib/utils/token.utils";
 
   // TODO: Support adding subaccounts
   let modal: "NewTransaction" | undefined = undefined;
@@ -31,13 +32,18 @@
 
     await syncSnsAccounts({ rootCanisterId: $snsOnlyProjectStore });
   };
+
+  let transactionFee: TokenAmountV2 | undefined = undefined;
+  $: transactionFee = nonNullish($snsSelectedTransactionFeeStore)
+    ? toTokenAmountV2($snsSelectedTransactionFeeStore)
+    : undefined;
 </script>
 
 {#if modal === "NewTransaction"}
   <SnsTransactionModal
     rootCanisterId={$selectedUniverseIdStore}
     token={$snsTokenSymbolSelectedStore}
-    transactionFee={$snsSelectedTransactionFeeStore}
+    {transactionFee}
     on:nnsClose={closeModal}
   />
 {/if}

@@ -10,7 +10,7 @@
   import type { Account } from "$lib/types/account";
   import { Modal, Spinner, type WizardStep } from "@dfinity/gix-components";
   import type { TransactionInit } from "$lib/types/transaction";
-  import { TokenAmount, nonNullish, type Token } from "@dfinity/utils";
+  import { nonNullish, type Token, TokenAmountV2 } from "@dfinity/utils";
   import type { Principal } from "@dfinity/principal";
 
   // TODO: Refactor to expect as props the rootCanisterId, transactionFee and token.
@@ -19,7 +19,7 @@
   export let loadTransactions = false;
   export let rootCanisterId: Principal;
   export let token: Token | undefined;
-  export let transactionFee: TokenAmount | undefined;
+  export let transactionFee: TokenAmountV2 | undefined;
 
   let transactionInit: TransactionInit = {
     sourceAccount: selectedAccount,
