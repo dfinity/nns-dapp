@@ -32,18 +32,13 @@
 
     await syncSnsAccounts({ rootCanisterId: $snsOnlyProjectStore });
   };
-
-  let transactionFee: TokenAmountV2 | undefined = undefined;
-  $: transactionFee = nonNullish($snsSelectedTransactionFeeStore)
-    ? toTokenAmountV2($snsSelectedTransactionFeeStore)
-    : undefined;
 </script>
 
 {#if modal === "NewTransaction"}
   <SnsTransactionModal
     rootCanisterId={$selectedUniverseIdStore}
     token={$snsTokenSymbolSelectedStore}
-    {transactionFee}
+    transactionFee={toTokenAmountV2($snsSelectedTransactionFeeStore)}
     on:nnsClose={closeModal}
   />
 {/if}

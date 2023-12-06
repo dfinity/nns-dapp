@@ -125,11 +125,6 @@
   $: token = nonNullish($snsOnlyProjectStore)
     ? $tokensStore[$snsOnlyProjectStore.toText()]?.token
     : undefined;
-
-  let transactionFee: TokenAmountV2 | undefined = undefined;
-  $: transactionFee = nonNullish($snsSelectedTransactionFeeStore)
-    ? toTokenAmountV2($snsSelectedTransactionFeeStore)
-    : undefined;
 </script>
 
 <Island>
@@ -195,7 +190,7 @@
     rootCanisterId={$snsOnlyProjectStore}
     loadTransactions
     {token}
-    {transactionFee}
+    transactionFee={toTokenAmountV2($snsSelectedTransactionFeeStore)}
   />
 {/if}
 

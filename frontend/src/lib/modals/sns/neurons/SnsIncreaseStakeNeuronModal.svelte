@@ -83,9 +83,7 @@
     $snsProjectSelectedStore?.summary.governanceCanisterId;
 
   let transactionFee: TokenAmountV2 | undefined = undefined;
-  $: transactionFee = nonNullish($snsSelectedTransactionFeeStore)
-    ? toTokenAmountV2($snsSelectedTransactionFeeStore)
-    : undefined;
+  $: transactionFee = toTokenAmountV2($snsSelectedTransactionFeeStore);
 
   let loading = true;
   $: loading =
