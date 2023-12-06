@@ -22,7 +22,7 @@ import {
   getSnsNeuronIdAsHexString,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
-import { numberToE8s } from "$lib/utils/token.utils";
+import { numberToE8s, numberToUlps } from "$lib/utils/token.utils";
 import { bytesToHexString } from "$lib/utils/utils";
 import {
   mockIdentity,
@@ -35,7 +35,7 @@ import {
   mockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
-import { mockTokenStore } from "$tests/mocks/sns-projects.mock";
+import { mockSnsToken, mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import {
@@ -1209,7 +1209,7 @@ describe("sns-neurons-services", () => {
         neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
         identity: mockIdentity,
         rootCanisterId: mockPrincipal,
-        amount: 1_000_000_000n + transactionFee,
+        amount: numberToUlps({ amount, token: mockSnsToken }) + transactionFee,
         memo: 0n,
       });
     });

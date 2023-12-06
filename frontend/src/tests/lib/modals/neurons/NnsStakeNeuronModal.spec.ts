@@ -39,7 +39,7 @@ import { mock } from "vitest-mock-extended";
 vi.mock("$lib/api/nns-dapp.api");
 vi.mock("$lib/api/icp-ledger.api");
 const neuronStake = 2.2;
-const neuronStakeE8s = 220000000n;
+const neuronStakeE8s = 220_000_000n;
 const newNeuron: NeuronInfo = {
   ...mockNeuron,
   dissolveDelaySeconds: BigInt(0),

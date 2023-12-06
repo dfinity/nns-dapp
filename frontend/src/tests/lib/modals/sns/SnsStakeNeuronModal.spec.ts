@@ -86,7 +86,7 @@ describe("SnsStakeNeuronModal", () => {
     const minimumAmount = 1;
     const snsParameters: SnsNervousSystemParameters = {
       ...snsNervousSystemParametersMock,
-      neuron_minimum_stake_e8s: [100000000n],
+      neuron_minimum_stake_e8s: [100_000_000n],
     };
     snsParametersStore.setParameters({
       rootCanisterId: mockPrincipal,

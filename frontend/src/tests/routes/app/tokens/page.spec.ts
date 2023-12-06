@@ -6,6 +6,7 @@ import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { numberToUlps } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import TokensRoute from "$routes/(app)/(nns)/tokens/+page.svelte";
 import {
@@ -205,7 +206,7 @@ describe("Tokens route", () => {
             rootCanisterId: rootCanisterIdTetris,
             fee: tetrisToken.fee,
             to: toAccount,
-            amount: 200000000n,
+            amount: numberToUlps({ amount, token: tetrisToken }),
             fromSubAccount: undefined,
             identity: mockIdentity,
           });

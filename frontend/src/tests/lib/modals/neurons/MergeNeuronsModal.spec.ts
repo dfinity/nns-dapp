@@ -95,13 +95,13 @@ describe("MergeNeuronsModal", () => {
       neuronId: BigInt(10),
       state: NeuronState.Locked,
       controller,
-      stake: 1200000000n,
+      stake: 1_200_000_000n,
     };
     const mergeableNeuron2 = {
       neuronId: BigInt(11),
       state: NeuronState.Locked,
       controller,
-      stake: 3400000000n,
+      stake: 3_400_000_000n,
     };
     const mergeableNeurons = [mergeableNeuron1, mergeableNeuron2];
 
@@ -252,7 +252,9 @@ describe("MergeNeuronsModal", () => {
       expect(await mergedNeuronCard.isPresent()).toBe(true);
       expect(await mergedNeuronCard.getStake()).toBe("46.00 ICP");
       // Just to show where the 46 is coming from:
-      expect(mergeableNeuron1.stake + mergeableNeuron2.stake).toBe(4600000000n);
+      expect(mergeableNeuron1.stake + mergeableNeuron2.stake).toBe(
+        4_600_000_000n
+      );
 
       // Make sure no actual merge happened.
       expect(mergeNeurons).not.toBeCalled();
