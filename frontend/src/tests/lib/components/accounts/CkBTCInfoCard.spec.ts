@@ -1,5 +1,5 @@
 import * as minterApi from "$lib/api/ckbtc-minter.api";
-import BitcoinAddress from "$lib/components/accounts/BitcoinAddress.svelte";
+import CkBTCInfoCard from "$lib/components/accounts/CkBTCInfoCard.svelte";
 import { BITCOIN_BLOCK_EXPLORER_TESTNET_URL } from "$lib/constants/bitcoin.constants";
 import {
   CKTESTBTC_MINTER_CANISTER_ID,
@@ -16,12 +16,12 @@ import {
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
-import { BitcoinAddressPo } from "$tests/page-objects/BitcoinAddress.page-object";
+import { CkBTCInfoCardPo } from "$tests/page-objects/CkBTCInfoCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
 
-describe("BitcoinAddress", () => {
+describe("CkBTCInfoCard", () => {
   beforeAll(() => {
     page.mock({
       data: { universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() },
@@ -37,9 +37,9 @@ describe("BitcoinAddress", () => {
   };
 
   const renderComponent = async () => {
-    const { container } = render(BitcoinAddress, { props });
+    const { container } = render(CkBTCInfoCard, { props });
     await runResolvedPromises();
-    return BitcoinAddressPo.under(new JestPageObjectElement(container));
+    return CkBTCInfoCardPo.under(new JestPageObjectElement(container));
   };
 
   beforeEach(() => {

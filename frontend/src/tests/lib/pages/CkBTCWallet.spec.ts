@@ -460,7 +460,7 @@ describe("CkBTCWallet", () => {
 
     it("should display the bitcoin address", async () => {
       const { walletPo } = await renderWalletAndModal();
-      expect(await walletPo.getBitcoinAddressPo().getAddress()).toBe(
+      expect(await walletPo.getCkBTCInfoCardPo().getAddress()).toBe(
         mockBTCAddressTestnet
       );
     });
