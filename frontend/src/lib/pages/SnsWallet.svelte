@@ -34,6 +34,7 @@
   import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import IC_LOGO from "$lib/assets/icp.svg";
+  import { toTokenAmountV2 } from "$lib/utils/token.utils";
 
   let showModal: "send" | undefined = undefined;
 
@@ -184,7 +185,7 @@
     rootCanisterId={$snsOnlyProjectStore}
     loadTransactions
     {token}
-    transactionFee={$snsSelectedTransactionFeeStore}
+    transactionFee={toTokenAmountV2($snsSelectedTransactionFeeStore)}
   />
 {/if}
 

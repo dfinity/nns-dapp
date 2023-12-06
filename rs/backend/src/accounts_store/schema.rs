@@ -1,8 +1,6 @@
 //! Data storage schemas.
 
 // Schemas
-#[cfg(test)]
-pub mod accounts_in_stable_memory;
 pub mod accounts_in_unbounded_stable_btree_map;
 pub mod map;
 pub mod proxy;

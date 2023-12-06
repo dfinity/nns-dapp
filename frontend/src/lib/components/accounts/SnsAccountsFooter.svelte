@@ -15,6 +15,7 @@
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import IC_LOGO from "$lib/assets/icp.svg";
+  import { toTokenAmountV2 } from "$lib/utils/token.utils";
 
   // TODO: Support adding subaccounts
   let modal: "NewTransaction" | undefined = undefined;
@@ -37,7 +38,7 @@
   <SnsTransactionModal
     rootCanisterId={$selectedUniverseIdStore}
     token={$snsTokenSymbolSelectedStore}
-    transactionFee={$snsSelectedTransactionFeeStore}
+    transactionFee={toTokenAmountV2($snsSelectedTransactionFeeStore)}
     on:nnsClose={closeModal}
   />
 {/if}

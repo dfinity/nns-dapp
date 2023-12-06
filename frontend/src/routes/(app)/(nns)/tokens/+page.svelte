@@ -24,6 +24,7 @@
   import { isUniverseCkBTC, isUniverseNns } from "$lib/utils/universe.utils";
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
   import type { UserTokenData } from "$lib/types/tokens-page";
+  import { toTokenAmountV2 } from "$lib/utils/token.utils";
 
   onMount(() => {
     if (!$ENABLE_MY_TOKENS) {
@@ -121,7 +122,7 @@
     <SnsTransactionModal
       rootCanisterId={modal.data.universeId}
       token={modal.data.token}
-      transactionFee={modal.data.fee}
+      transactionFee={toTokenAmountV2(modal.data.fee)}
       on:nnsClose={closeModal}
     />
   {/if}
