@@ -59,8 +59,7 @@ describe("CkBTCWalletFooter", () => {
   });
 
   it("should open receive modal", async () => {
-    const { getByTestId, container } =
-      renderFooter(mockCkBTCMainAccount);
+    const { getByTestId, container } = renderFooter(mockCkBTCMainAccount);
 
     fireEvent.click(getByTestId("receive-ckbtc") as HTMLButtonElement);
 
@@ -70,8 +69,7 @@ describe("CkBTCWalletFooter", () => {
   });
 
   it("should open transaction modal", async () => {
-    const { getByTestId, container } =
-      renderFooter(mockCkBTCMainAccount);
+    const { getByTestId, container } = renderFooter(mockCkBTCMainAccount);
 
     fireEvent.click(getByTestId("open-ckbtc-transaction") as HTMLButtonElement);
 

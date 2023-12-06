@@ -22,7 +22,7 @@
   } from "$lib/constants/bitcoin.constants";
   import { onMount } from "svelte";
   import { loadBtcAddress } from "$lib/services/ckbtc-minter.services";
-  import CkBTCWalletActions from "$lib/components/accounts/CkBTCWalletActions.svelte";
+  import CkBTCUpdateBalanceButton from "$lib/components/accounts/CkBTCUpdateBalanceButton.svelte";
   import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
@@ -129,7 +129,7 @@
     </div>
     <div class="content-cell-details">
       <div class="button">
-        <CkBTCWalletActions {universeId} {minterCanisterId} {reload} />
+        <CkBTCUpdateBalanceButton {universeId} {minterCanisterId} {reload} />
       </div>
     </div>
   </div>

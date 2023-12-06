@@ -1,5 +1,5 @@
 import * as api from "$lib/api/ckbtc-minter.api";
-import CkBTCWalletActions from "$lib/components/accounts/CkBTCWalletActions.svelte";
+import CkBTCUpdateBalanceButton from "$lib/components/accounts/CkBTCUpdateBalanceButton.svelte";
 import {
   CKTESTBTC_MINTER_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
@@ -14,7 +14,7 @@ import { MinterNoNewUtxosError } from "@dfinity/ckbtc";
 import { waitFor } from "@testing-library/dom";
 import { fireEvent, render } from "@testing-library/svelte";
 
-describe("CkBTCWalletActions", () => {
+describe("CkBTCUpdateBalanceButton", () => {
   const now = Date.now();
 
   beforeAll(() => {
@@ -45,7 +45,7 @@ describe("CkBTCWalletActions", () => {
   };
 
   it("should render action", () => {
-    const { getByTestId } = render(CkBTCWalletActions, { props });
+    const { getByTestId } = render(CkBTCUpdateBalanceButton, { props });
 
     const button = getByTestId("manual-refresh-balance");
 
@@ -56,7 +56,7 @@ describe("CkBTCWalletActions", () => {
   it("should call update balance", async () => {
     const spyUpdateBalance = vi.spyOn(api, "updateBalance");
 
-    const { getByTestId } = render(CkBTCWalletActions, { props });
+    const { getByTestId } = render(CkBTCUpdateBalanceButton, { props });
 
     const button = getByTestId("manual-refresh-balance");
 
@@ -71,7 +71,7 @@ describe("CkBTCWalletActions", () => {
   it("should call reload", async () => {
     const spyReload = vi.fn();
 
-    const { getByTestId } = render(CkBTCWalletActions, {
+    const { getByTestId } = render(CkBTCUpdateBalanceButton, {
       props: {
         ...props,
         reload: spyReload,
