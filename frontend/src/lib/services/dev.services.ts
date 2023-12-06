@@ -81,7 +81,7 @@ export const getTokens = async ({
   }
 
   await acquireSnsTokens({
-    e8s: numberToUlps({ amount: tokens, token }),
+    ulps: numberToUlps({ amount: tokens, token }),
     account: main,
     rootCanisterId,
   });
@@ -92,9 +92,8 @@ export const getTokens = async ({
 
 // Not clear whether BTC should use the same token as ckBTC, that's why we have a separate token here.
 // Not exported to not be used outside the dev services.
-const BTC_TOKEN = {
+const BTC_TOKEN: Token = {
   decimals: 8,
-  id: "btc",
   name: "Bitcoin",
   symbol: "BTC",
 };
