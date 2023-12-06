@@ -74,6 +74,7 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/interaction";
+  @use "../themes/mixins/button";
 
   .add-account-row {
     @include interaction.tappable;
@@ -92,6 +93,10 @@
 
     &:hover {
       background-color: var(--table-row-background-hover);
+    }
+
+    & button.with-icon {
+      @include button.with-icon;
     }
   }
 </style>
