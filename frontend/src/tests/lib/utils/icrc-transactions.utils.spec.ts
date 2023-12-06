@@ -18,6 +18,7 @@ import {
 import en from "$tests/mocks/i18n.mock";
 import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
 import {
+  createApproveTransaction,
   createBurnTransaction,
   createIcrcTransactionWithId,
   createMintTransaction,
@@ -28,7 +29,10 @@ import {
 } from "$tests/mocks/sns-accounts.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { Cbor } from "@dfinity/agent";
-import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
+import {
+  encodeIcrcAccount,
+  type IcrcTransactionWithId,
+} from "@dfinity/ledger-icrc";
 import {
   ICPToken,
   TokenAmount,
@@ -270,30 +274,17 @@ describe("icrc-transaction utils", () => {
         ...defaultParams,
         transaction: {
           id: BigInt(1234),
-          transaction: {
-            kind: "approve",
+          transaction: createApproveTransaction({
             timestamp:
               BigInt(defaultTimestamp.getTime()) *
               BigInt(NANO_SECONDS_IN_MILLISECOND),
-            approve: [
-              {
-                from: mainAccount,
-                amount: BigInt(100_000_000),
-                spender: subAccount,
-                fee: [10_000n],
-                memo: [],
-                created_at_time: [
-                  BigInt(defaultTimestamp.getTime()) *
-                    BigInt(NANO_SECONDS_IN_MILLISECOND),
-                ],
-                expected_allowance: [],
-                expires_at: [],
-              },
-            ],
-            transfer: [],
-            burn: [],
-            mint: [],
-          },
+            from: mainAccount,
+            amount: 100_000_000n,
+            spender: subAccount,
+            createdAt:
+              BigInt(defaultTimestamp.getTime()) *
+              BigInt(NANO_SECONDS_IN_MILLISECOND),
+          }),
         },
         account: mockCkBTCMainAccount,
         toSelfTransaction: false,
@@ -374,7 +365,7 @@ describe("icrc-transaction utils", () => {
   describe("mapCkbtcTransaction", () => {
     testMapTransactionCommon(mapCkbtcTransaction);
 
-    it("Decodes BTC withdrawal address from cbor memo", () => {
+    it("Decodes BTC withdrawal address from cbor memo on Burn transaction", () => {
       const amount = 45_000_000n;
       const btcWithdrawalAddress = "1ASLxsAMbbt4gcrNc6v6qDBW4JkeWAtTeh";
       const kytFee = 1333;
@@ -448,6 +439,98 @@ describe("icrc-transaction utils", () => {
       });
 
       expect(errorLog).toEqual(["Failed to decode ckBTC burn memo"]);
+    });
+
+    it("Merges Approve transaction with corresponding Burn transaction", () => {
+      const burnAmount = 200_000_000n;
+      const approveFee = 13n;
+
+      const approveTx = {
+        id: 101n,
+        transaction: createApproveTransaction({
+          fee: approveFee,
+        }),
+      } as IcrcTransactionWithId;
+      const burnTx = {
+        id: 102n,
+        transaction: createBurnTransaction({
+          amount: burnAmount,
+        }),
+      } as IcrcTransactionWithId;
+
+      const burnUiTransaction = mapCkbtcTransaction({
+        transaction: burnTx,
+        account: mockCkBTCMainAccount,
+        toSelfTransaction: false,
+        token: mockCkBTCToken,
+        i18n: en,
+      });
+      const approveUiTransaction = mapCkbtcTransaction({
+        transaction: approveTx,
+        prevTransaction: burnTx,
+        prevUiTransaction: burnUiTransaction,
+        account: mockCkBTCMainAccount,
+        toSelfTransaction: false,
+        token: mockCkBTCToken,
+        i18n: en,
+      });
+      expect(burnUiTransaction.tokenAmount).toEqual(
+        TokenAmountV2.fromUlps({
+          amount: burnAmount + approveFee,
+          token: mockCkBTCToken,
+        })
+      );
+      // The approve transaction was merged into the burn transaction so is not
+      // rendered separately.
+      expect(approveUiTransaction).toBeUndefined();
+    });
+
+    it("Does not merge Approve transaction with normal Transfer transaction", () => {
+      const transferAmount = 400_000_000n;
+      const approveFee = 13n;
+      const transferFee = 10n;
+
+      const approveTx = {
+        id: 101n,
+        transaction: createApproveTransaction({
+          fee: approveFee,
+          from: mainAccount,
+        }),
+      } as IcrcTransactionWithId;
+      const transferTx = createIcrcTransactionWithId({
+        id: 102n,
+        amount: transferAmount,
+        fee: transferFee,
+      }) as IcrcTransactionWithId;
+
+      const transferUiTransaction = mapCkbtcTransaction({
+        transaction: transferTx,
+        account: mockCkBTCMainAccount,
+        toSelfTransaction: false,
+        token: mockCkBTCToken,
+        i18n: en,
+      });
+      const approveUiTransaction = mapCkbtcTransaction({
+        transaction: approveTx,
+        prevTransaction: transferTx,
+        prevUiTransaction: transferUiTransaction,
+        account: mockCkBTCMainAccount,
+        toSelfTransaction: false,
+        token: mockCkBTCToken,
+        i18n: en,
+      });
+      expect(transferUiTransaction.tokenAmount).toEqual(
+        TokenAmountV2.fromUlps({
+          amount: transferAmount + transferFee,
+          token: mockCkBTCToken,
+        })
+      );
+      expect(approveUiTransaction.tokenAmount).toEqual(
+        TokenAmountV2.fromUlps({
+          amount: approveFee,
+          token: mockCkBTCToken,
+        })
+      );
     });
 
     it("Renders mint transaction as 'From: BTC Network'", () => {

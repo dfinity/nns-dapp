@@ -22,6 +22,7 @@
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import IcrcWalletTransactionsList from "$lib/components/accounts/IcrcWalletTransactionsList.svelte";
   import type { PendingUtxo } from "@dfinity/ckbtc";
+  import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
   import { nonNullish, isNullish } from "@dfinity/utils";
 
   export let indexCanisterId: CanisterId;
@@ -75,15 +76,23 @@
   const mapTransactions = (
     transactionData: IcrcTransactionData[]
   ): UiTransaction[] => {
+    let prevTransaction: IcrcTransactionWithId | undefined = undefined;
+    let prevUiTransaction: UiTransaction | undefined = undefined;
     const completedTransactions = transactionData
-      .map((transaction: IcrcTransactionData) =>
-        mapCkbtcTransaction({
-          ...transaction,
+      .map(({ transaction, toSelfTransaction }: IcrcTransactionData) => {
+        const uiTransaction = mapCkbtcTransaction({
+          transaction,
+          toSelfTransaction,
+          prevTransaction,
+          prevUiTransaction,
           account,
           token,
           i18n: $i18n,
-        })
-      )
+        });
+        prevTransaction = transaction;
+        prevUiTransaction = uiTransaction;
+        return uiTransaction;
+      })
       .filter(nonNullish);
     return [...pendingTransactions, ...completedTransactions];
   };

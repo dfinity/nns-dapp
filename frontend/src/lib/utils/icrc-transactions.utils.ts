@@ -235,8 +235,14 @@ export type MapIcrcTransactionType = typeof mapIcrcTransaction;
 // The memo will decode to: [0, [ withdrawalAddress, kytFee, status]]
 type CkbtcBurnMemo = [0, [string, number, number | null | undefined]];
 
+// Note: Transaction are expected to be mapped in reverse chronological order.
+// Some transactions might merge themselves into previous transactions, because
+// they are conceptually part of the same event, so it's important that they
+// appear in the expected order.
 export const mapCkbtcTransaction = (params: {
   transaction: IcrcTransactionWithId;
+  prevTransaction?: IcrcTransactionWithId;
+  prevUiTransaction?: UiTransaction;
   account: Account;
   toSelfTransaction: boolean;
   governanceCanisterId?: Principal;
@@ -262,6 +268,21 @@ export const mapCkbtcTransaction = (params: {
     } catch (err) {
       console.error("Failed to decode ckBTC burn memo", memo, err);
       mappedTransaction.otherParty = i18n.ckbtc.btc_network;
+    }
+  } else if (transaction.approve.length === 1) {
+    const { prevTransaction, prevUiTransaction } = params;
+    if (
+      transaction.approve[0].fee.length === 1 &&
+      prevTransaction?.transaction.burn.length === 1 &&
+      prevUiTransaction?.tokenAmount instanceof TokenAmountV2
+    ) {
+      prevUiTransaction.tokenAmount = TokenAmountV2.fromUlps({
+        amount:
+          prevUiTransaction.tokenAmount.toUlps() +
+          transaction.approve[0].fee[0],
+        token: prevUiTransaction.tokenAmount.token,
+      });
+      return undefined;
     }
   }
   return mappedTransaction;
