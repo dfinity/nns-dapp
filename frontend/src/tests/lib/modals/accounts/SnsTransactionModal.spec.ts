@@ -6,7 +6,7 @@ import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { testTransferTokens } from "$tests/utils/transaction-modal.test-utils";
-import { TokenAmount } from "@dfinity/utils";
+import { TokenAmountV2 } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 
 vi.mock("$lib/services/sns-accounts.services", () => {
@@ -18,7 +18,7 @@ vi.mock("$lib/services/sns-accounts.services", () => {
 describe("SnsTransactionModal", () => {
   const rootCanisterId = mockPrincipal;
   const token = { name: "Test", symbol: "TST", decimals: 8 };
-  const transactionFee = TokenAmount.fromE8s({
+  const transactionFee = TokenAmountV2.fromUlps({
     amount: BigInt(10_000),
     token,
   });
