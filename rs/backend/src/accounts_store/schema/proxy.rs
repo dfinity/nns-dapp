@@ -114,7 +114,7 @@ impl AccountsDbTrait for AccountsDbAsProxy {
     }
     /// Iterates over the entries of the authoritative database.
     fn iter(&self) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
-        self.map.iter()
+        self.authoritative_db.iter()
     }
     /// Iterates over the values of the authoritative database.
     fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
