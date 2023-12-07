@@ -96,14 +96,15 @@ wait_for_migration() {
 # - Creates the canister if it doesn't exist
 # - Installs the canister even if the wasm is the same
 install_nnsdapp() {
-  local wasm argfile
+  local wasm argfile argument
   wasm="$1"
   argfile="$2"
+  argument="$(cat argfile)"
   if dfx canister id nns-dapp >/dev/null 2>/dev/null; then
     upgrade_nnsdapp "$wasm" "$argfile"
   else
     dfx canister create nns-dapp
-    dfx canister install nns-dapp --wasm "$wasm" --argument "$(cat "$argfile")" --yes
+    dfx canister install nns-dapp --wasm "$wasm" --argument "$argument" --yes --upgrade-unchanged
     scripts/dfx-canister-check-wasm-hash --wasm "$wasm" --canister nns-dapp
     verify_healthy
   fi
@@ -114,15 +115,15 @@ install_nnsdapp() {
 # TODO: Record upgrade cycles
 # TODO: Record state size
 upgrade_nnsdapp() {
-  local wasm argfile
+  local prestate poststate wasm argfile argument
   wasm="$1"
   argfile="$2"
-  local prestate poststate
+  argument="$(cat argfile)"
   prestate="$(get_upgrade_invariants | tee /dev/stderr)"
   # Check that the data is plausible
   # TODO: Check that the prestate is not empty; first we need to populate the state.
   # TODO: Consider storing all accounts data in a merkle tree so that we can check just the root hash.
-  dfx canister install --upgrade-unchanged nns-dapp --wasm "$wasm" --mode upgrade --argument "$(cat "$argfile")" --yes
+  dfx canister install --upgrade-unchanged nns-dapp --wasm "$wasm" --mode upgrade --argument "$argument" --yes
   scripts/dfx-canister-check-wasm-hash --wasm "$wasm" --canister nns-dapp
   verify_healthy
   wait_for_migration
