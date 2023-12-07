@@ -173,7 +173,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v3
         with:
-          name: dfx-logs
+          name: dfx-${{ github.jobs[github.job].name }}.log
           path: dfx.log
   # TODO: stable <-> map
   test-test-account-api:
