@@ -6,10 +6,7 @@ import {
   SECONDS_IN_HOUR,
   SECONDS_IN_YEAR,
 } from "$lib/constants/constants";
-import {
-  DEFAULT_TRANSACTION_FEE_E8S,
-  E8S_PER_ICP,
-} from "$lib/constants/icp.constants";
+import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import {
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
@@ -2215,7 +2212,7 @@ describe("neuron-utils", () => {
   describe("minNeuronSplittable", () => {
     it("returns fee plus two ICPs", () => {
       const received = minNeuronSplittable(10_000);
-      expect(received).toBe(10_000 + 2 * E8S_PER_ICP);
+      expect(received).toBe(10_000 + 200_000_000);
     });
   });
 

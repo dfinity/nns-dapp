@@ -12,7 +12,7 @@
   import type { Principal } from "@dfinity/principal";
   import { stakeNeuron } from "$lib/services/sns-neurons.services";
   import { toastsSuccess } from "$lib/stores/toasts.store";
-  import SnsTransactionModal from "$lib/modals/sns/neurons/SnsTransactionModal.svelte";
+  import SnsNeuronTransactionModal from "$lib/modals/sns/neurons/SnsNeuronTransactionModal.svelte";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
   import type { SnsNervousSystemParameters } from "@dfinity/sns";
@@ -93,7 +93,7 @@
   };
 </script>
 
-<SnsTransactionModal
+<SnsNeuronTransactionModal
   testId="sns-stake-neuron-modal-component"
   {rootCanisterId}
   on:nnsSubmit={stake}
@@ -108,4 +108,4 @@
   <p slot="description" class="value no-margin">
     {stakeNeuronText}
   </p>
-</SnsTransactionModal>
+</SnsNeuronTransactionModal>

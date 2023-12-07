@@ -128,6 +128,7 @@ export const anonymizeNeuronInfo = async (
     neuronType,
     dissolveDelaySeconds,
     recentBallots,
+    neuronType,
     createdTimestampSeconds,
     state,
     joinedCommunityFundTimestampSeconds,

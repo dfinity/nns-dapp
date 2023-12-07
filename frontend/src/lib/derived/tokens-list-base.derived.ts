@@ -7,7 +7,7 @@ import type { UserTokenData } from "$lib/types/tokens-page";
 import type { Universe } from "$lib/types/universe";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { Principal } from "@dfinity/principal";
-import { isNullish, nonNullish, TokenAmount } from "@dfinity/utils";
+import { isNullish, nonNullish, TokenAmountV2 } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 import { universesStore } from "./universes.derived";
 
@@ -24,7 +24,7 @@ const convertUniverseToBaseTokenData =
       title: universe.title,
       balance: new UnavailableTokenAmount(token),
       token,
-      fee: TokenAmount.fromE8s({ amount: token.fee, token }),
+      fee: TokenAmountV2.fromUlps({ amount: token.fee, token }),
       logo: universe.logo,
       actions: [],
     };

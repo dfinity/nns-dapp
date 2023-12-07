@@ -1010,6 +1010,8 @@
     "checking_incomplete_btc_transfers": "Checking for incomplete BTC transfers",
     "all_btc_transfers_complete": "All transfers are complete",
     "click_to_complete_btc_transfers": "Click here to complete BTC transfer for $amount ckBTC",
+    "btc_received": "BTC Received",
+    "btc_sent": "BTC Sent",
     "btc_network": "BTC Network",
     "receiving_btc": "Receiving BTC"
   },

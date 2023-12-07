@@ -6,11 +6,16 @@ import {
   neuronsPathStore,
   proposalsPathStore,
 } from "$lib/derived/paths.derived";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { page } from "$mocks/$app/stores";
 import { mockSnsCanisterIdText } from "$tests/mocks/sns.api.mock";
 import { get } from "svelte/store";
 
 describe("paths derived stores", () => {
+  beforeEach(() => {
+    overrideFeatureFlagsStore.reset();
+  });
+
   describe("accountsPathStore", () => {
     it("should return NNS accounts path as default", () => {
       page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
@@ -28,6 +33,16 @@ describe("paths derived stores", () => {
       expect($store).toBe(
         `${AppPath.Accounts}/?${UNIVERSE_PARAM}=${mockSnsCanisterIdText}`
       );
+    });
+
+    describe("when My Tokens feature is enabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
+      });
+
+      it("should return the tokens path", () => {
+        expect(get(accountsPathStore)).toBe(AppPath.Tokens);
+      });
     });
   });
 

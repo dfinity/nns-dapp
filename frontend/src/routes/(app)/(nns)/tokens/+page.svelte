@@ -17,7 +17,7 @@
     type SnsFullProject,
   } from "$lib/derived/sns/sns-projects.derived";
   import { uncertifiedLoadSnsAccountsBalances } from "$lib/services/sns-accounts-balance.services";
-  import type { Universe } from "$lib/types/universe";
+  import type { Universe, UniverseCanisterIdText } from "$lib/types/universe";
   import { isArrayEmpty } from "$lib/utils/utils";
   import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-uncertified-accounts.services";
   import { ckBTCUniversesStore } from "$lib/derived/ckbtc-universes.derived";
@@ -25,6 +25,10 @@
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
   import type { UserTokenData } from "$lib/types/tokens-page";
   import { toTokenAmountV2 } from "$lib/utils/token.utils";
+  import {
+    icrcCanistersStore,
+    type IcrcCanistersStoreData,
+  } from "$lib/stores/icrc-canisters.store";
 
   onMount(() => {
     if (!$ENABLE_MY_TOKENS) {
@@ -56,11 +60,6 @@
   };
 
   const loadCkBTCAccountsBalances = async (universes: Universe[]) => {
-    // ckBTC is not enabled, information shall and cannot be fetched
-    if (isArrayEmpty(universes)) {
-      return;
-    }
-
     // We trigger the loading of the ckBTC Accounts Balances only once
     if (loadCkBTCAccountsBalancesRequested) {
       return;
@@ -68,8 +67,25 @@
 
     loadCkBTCAccountsBalancesRequested = true;
 
+    await loadAccountsBalances(universes.map(({ canisterId }) => canisterId));
+  };
+
+  const loadIcrcTokenAccounts = async (
+    icrcCanisters: IcrcCanistersStoreData
+  ) => {
+    await loadAccountsBalances(Object.keys(icrcCanisters));
+  };
+
+  const loadAccountsBalances = async (
+    universeIds: UniverseCanisterIdText[]
+  ) => {
+    // Selected universes are empty, no information shall and can be fetched
+    if (isArrayEmpty(universeIds)) {
+      return;
+    }
+
     await uncertifiedLoadAccountsBalance({
-      universeIds: universes.map(({ canisterId }) => canisterId),
+      universeIds,
       excludeUniverseIds: [],
     });
   };
@@ -79,6 +95,7 @@
       await Promise.allSettled([
         loadSnsAccountsBalances($snsProjectsCommittedStore),
         loadCkBTCAccountsBalances($ckBTCUniversesStore),
+        loadIcrcTokenAccounts($icrcCanistersStore),
       ]);
     }
   })();

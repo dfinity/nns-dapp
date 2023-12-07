@@ -1,9 +1,6 @@
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as api from "$lib/api/governance.api";
-import {
-  DEFAULT_TRANSACTION_FEE_E8S,
-  E8S_PER_ICP,
-} from "$lib/constants/icp.constants";
+import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import { MIN_NEURON_STAKE } from "$lib/constants/neurons.constants";
 import * as authServices from "$lib/services/auth.services";
 import {
@@ -217,7 +214,7 @@ describe("neurons-services", () => {
         fromSubAccount: undefined,
         identity: mockIdentity,
         ledgerCanisterIdentity: mockIdentity,
-        stake: BigInt(10 * E8S_PER_ICP),
+        stake: 1_000_000_000n,
       });
       expect(spyStakeNeuron).toBeCalledTimes(1);
       expect(newNeuronId).toEqual(mockNeuron.neuronId);
@@ -236,7 +233,7 @@ describe("neurons-services", () => {
         fromSubAccount: mockSubAccount.subAccount,
         identity: mockIdentity,
         ledgerCanisterIdentity: mockIdentity,
-        stake: BigInt(10 * E8S_PER_ICP),
+        stake: 1_000_000_000n,
       });
       expect(spyStakeNeuron).toBeCalledTimes(1);
       expect(newNeuronId).toEqual(mockNeuron.neuronId);
@@ -261,16 +258,14 @@ describe("neurons-services", () => {
         identity: new AnonymousIdentity(),
         fromSubAccount: undefined,
         ledgerCanisterIdentity: mockHardkwareWalletIdentity,
-        stake: BigInt(10 * E8S_PER_ICP),
+        stake: 1_000_000_000n,
       });
       expect(spyStakeNeuron).toBeCalledTimes(1);
       expect(newNeuronId).toEqual(mockNeuron.neuronId);
       expect(spyStakeNeuronIcrc1).not.toBeCalled();
     });
 
-    it(`stakeNeuron return undefined if amount less than ${
-      E8S_PER_ICP / E8S_PER_ICP
-    } ICP`, async () => {
+    it("stakeNeuron return undefined if amount less than 1 ICP", async () => {
       vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
         mock<LedgerCanister>()
       );
@@ -1301,10 +1296,8 @@ describe("neurons-services", () => {
     it("should add transaction fee to the amount", async () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
       const amount = 2.2;
-      const transactionFee = DEFAULT_TRANSACTION_FEE_E8S / E8S_PER_ICP;
-      // To avoid rounding errors, we round the amount with the fee to the nearest 8 decimals
-      const amountWithFee =
-        Math.round((amount + transactionFee) * E8S_PER_ICP) / E8S_PER_ICP;
+      const amountE8s = 220_000_000n;
+      const transactionFee = DEFAULT_TRANSACTION_FEE_E8S;
       await services.splitNeuron({
         neuron: controlledNeuron,
         amount,
@@ -1313,7 +1306,7 @@ describe("neurons-services", () => {
       expect(spySplitNeuron).toBeCalledWith({
         identity: mockIdentity,
         neuronId: controlledNeuron.neuronId,
-        amount: numberToE8s(amountWithFee),
+        amount: amountE8s + BigInt(transactionFee),
       });
     });
 
