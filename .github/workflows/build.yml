@@ -134,7 +134,7 @@ jobs:
       - name: Start snapshot environment
         uses: ./.github/actions/start_dfx_snapshot
         with:
-          nns_dapp_wasm: 'nns-dapp_test.wasm.gz'
+          nns_dapp_wasm: 'out/nns-dapp_test.wasm.gz'
       - name: Put assets in the default location
         run: |
           ls
@@ -158,7 +158,7 @@ jobs:
       - name: Start snapshot environment
         uses: ./.github/actions/start_dfx_snapshot
         with:
-          nns_dapp_wasm: 'nns-dapp_test.wasm.gz'
+          nns_dapp_wasm: 'out/nns-dapp_test.wasm.gz'
       - name: Downgrade nns-dapp to prod and upgrade back again
         run: ./scripts/nns-dapp/migration-test --schema1 AccountsInStableMemory --schema2 AccountsInStableMemory --accounts 10000
   # TODO: stable <-> map
