@@ -6,7 +6,7 @@ import {
 } from "$lib/stores/tokens.store";
 import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
-import { isNullish, TokenAmount } from "@dfinity/utils";
+import { isNullish, TokenAmountV2 } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 import { tokensListBaseStore } from "./tokens-list-base.derived";
 import {
@@ -28,7 +28,7 @@ const addBalance =
     if (isNullish(token) || isNullish(balanceE8s)) {
       return userTokenData;
     }
-    const balance = TokenAmount.fromE8s({ amount: balanceE8s, token });
+    const balance = TokenAmountV2.fromUlps({ amount: balanceE8s, token });
     return {
       ...userTokenData,
       balance,

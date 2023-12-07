@@ -1,7 +1,6 @@
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
 import { mergeNeurons } from "$lib/api/governance.api";
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import MergeNeuronsModal from "$lib/modals/neurons/MergeNeuronsModal.svelte";
 import * as authServices from "$lib/services/auth.services";
 import { listNeurons } from "$lib/services/neurons.services";
@@ -96,13 +95,13 @@ describe("MergeNeuronsModal", () => {
       neuronId: BigInt(10),
       state: NeuronState.Locked,
       controller,
-      stake: BigInt(12 * E8S_PER_ICP),
+      stake: 1_200_000_000n,
     };
     const mergeableNeuron2 = {
       neuronId: BigInt(11),
       state: NeuronState.Locked,
       controller,
-      stake: BigInt(34 * E8S_PER_ICP),
+      stake: 3_400_000_000n,
     };
     const mergeableNeurons = [mergeableNeuron1, mergeableNeuron2];
 
@@ -254,7 +253,7 @@ describe("MergeNeuronsModal", () => {
       expect(await mergedNeuronCard.getStake()).toBe("46.00 ICP");
       // Just to show where the 46 is coming from:
       expect(mergeableNeuron1.stake + mergeableNeuron2.stake).toBe(
-        BigInt(46 * E8S_PER_ICP)
+        4_600_000_000n
       );
 
       // Make sure no actual merge happened.

@@ -1,12 +1,12 @@
 import * as snsLedgerApi from "$lib/api/sns-ledger.api";
 import * as ckBTCLedgerApi from "$lib/api/wallet-ledger.api";
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { numberToUlps } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import TokensRoute from "$routes/(app)/(nns)/tokens/+page.svelte";
 import {
@@ -206,7 +206,7 @@ describe("Tokens route", () => {
             rootCanisterId: rootCanisterIdTetris,
             fee: tetrisToken.fee,
             to: toAccount,
-            amount: BigInt(amount * E8S_PER_ICP),
+            amount: numberToUlps({ amount, token: tetrisToken }),
             fromSubAccount: undefined,
             identity: mockIdentity,
           });

@@ -19,7 +19,7 @@ import {
 } from "$tests/mocks/tokens-page.mock";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
-import { TokenAmount } from "@dfinity/utils";
+import { TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("tokens-list-base.derived", () => {
@@ -46,7 +46,7 @@ describe("tokens-list-base.derived", () => {
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/g3pce-2iaae/logo.png",
     balance: new UnavailableTokenAmount(snsTetris.tokenMetadata),
     token: snsTetris.tokenMetadata,
-    fee: TokenAmount.fromE8s({
+    fee: TokenAmountV2.fromUlps({
       amount: snsTetris.tokenMetadata.fee,
       token: snsTetris.tokenMetadata,
     }),
@@ -58,7 +58,7 @@ describe("tokens-list-base.derived", () => {
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/f7crg-kabae/logo.png",
     balance: new UnavailableTokenAmount(snsPacman.tokenMetadata),
     token: snsPacman.tokenMetadata,
-    fee: TokenAmount.fromE8s({
+    fee: TokenAmountV2.fromUlps({
       amount: snsPacman.tokenMetadata.fee,
       token: snsPacman.tokenMetadata,
     }),
