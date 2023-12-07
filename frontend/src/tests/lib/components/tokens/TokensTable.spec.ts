@@ -133,12 +133,22 @@ describe("TokensTable", () => {
       balance: TokenAmount.fromE8s({ amount: 314000000n, token: ICPToken }),
       rowHref: href,
     });
-    const po = renderTable({ userTokensData: [token1] });
+    const token2 = createUserToken({
+      universeId: principal(0),
+      balance: TokenAmount.fromE8s({
+        amount: 114000000n,
+        token: { name: "Tetris", symbol: "TETRIS", decimals: 8 },
+      }),
+      rowHref: undefined,
+    });
+    const po = renderTable({ userTokensData: [token1, token2] });
 
     const rows = await po.getRows();
     const row1Po = rows[0];
+    const row2Po = rows[1];
 
     expect(await row1Po.getHref()).toBe(href);
+    expect(await row2Po.getHref()).toBeNull();
   });
 
   it("should render specific text if balance not available", async () => {
