@@ -220,7 +220,7 @@ describe("CkBTCTransactionList", () => {
     expect(cards).toHaveLength(1);
     const card = cards[0];
 
-    expect(await card.getHeadline()).toBe("Sent");
+    expect(await card.getHeadline()).toBe("BTC Sent");
     expect(await card.getIdentifier()).toBe(`To: ${btcWithdrawalAddress}`);
     // This is the burned amount + approve fee. The KYT fee is deducted after
     // burning.

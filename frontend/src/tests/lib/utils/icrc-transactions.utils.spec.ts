@@ -565,7 +565,7 @@ describe("icrc-transaction utils", () => {
 
       const burnUiTransaction = uiTransactions[0];
 
-      expect(burnUiTransaction.headline).toBe("Sent");
+      expect(burnUiTransaction.headline).toBe("BTC Sent");
       expect(burnUiTransaction.tokenAmount).toEqual(
         TokenAmountV2.fromUlps({
           amount: burnAmount + approveFee,
