@@ -131,18 +131,25 @@ jobs:
           path: out
       - name: Install ic-wasm
         uses: ./.github/actions/install_ic_wasm
-      - name: Install sponge
-        run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
-      - name: Start snapshot environment
-        uses: ./.github/actions/start_dfx_snapshot
-        with:
-          nns_dapp_wasm: 'out/nns-dapp_test.wasm.gz'
+      - name: Install tools
+        run: |
+          sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
+          DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+          cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)" && idl2json --version
+      - name: Start dfx
+        run: dfx start --background &>test-upgrade-map-dfx.log &
       - name: Put assets in the default location
         run: |
           ls
           ls out
       - name: Downgrade nns-dapp to prod and upgrade back again
         run: ./scripts/nns-dapp/migration-test --schema1 Map --schema2 Map --accounts 10000
+      - name: Upload dfx logs
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-upgrade-map-dfx.log
+          path: test-upgrade-map-dfx.log
   test-upgrade-stable:
     needs: build
     runs-on: ubuntu-20.04
@@ -157,22 +164,21 @@ jobs:
           path: out
       - name: Install ic-wasm
         uses: ./.github/actions/install_ic_wasm
-      - name: Install sponge
-        run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
-      - name: Start snapshot environment
-        id: start_snapshot
-        uses: ./.github/actions/start_dfx_snapshot
-        with:
-          nns_dapp_wasm: 'out/nns-dapp_test.wasm.gz'
-          logfile: 'test-upgrade-stable-dfx.log'
+      - name: Install tools
+        run: |
+          sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
+          DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+          cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)" && idl2json --version
+      - name: Start dfx
+        run: dfx start --background &>test-upgrade-stable-dfx.log &
       - name: Downgrade nns-dapp to prod and upgrade back again
         run: ./scripts/nns-dapp/migration-test --schema1 AccountsInStableMemory --schema2 AccountsInStableMemory --accounts 10000
       - name: Upload dfx logs
         if: failure()
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ steps.start_snapshot.outputs.logfile }}
-          path: ${{ steps.start_snapshot.outputs.logfile }}
+          name: test-upgrade-stable-dfx.log
+          path: test-upgrade-stable-dfx.log
   # TODO: stable <-> map
   test-test-account-api:
     needs: build
