@@ -1,4 +1,5 @@
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
@@ -11,23 +12,29 @@ import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
+import {
+  mockCkETHMainAccount,
+  mockCkETHToken,
+} from "$tests/mocks/cketh-accounts.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import {
   ckBTCTokenBase,
+  ckETHTokenBase,
   createIcpUserToken,
   icpTokenBase,
 } from "$tests/mocks/tokens-page.mock";
+import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
-import { TokenAmount } from "@dfinity/utils";
+import { TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("tokens-list-user.derived", () => {
   const icpUserToken: UserTokenData = createIcpUserToken({
-    balance: TokenAmount.fromE8s({
+    balance: TokenAmountV2.fromUlps({
       amount: mockMainAccount.balanceE8s,
       token: NNS_TOKEN_DATA,
     }),
@@ -56,7 +63,7 @@ describe("tokens-list-user.derived", () => {
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/g3pce-2iaae/logo.png",
     balance: new UnavailableTokenAmount(snsTetris.tokenMetadata),
     token: snsTetris.tokenMetadata,
-    fee: TokenAmount.fromE8s({
+    fee: TokenAmountV2.fromUlps({
       amount: snsTetris.tokenMetadata.fee,
       token: snsTetris.tokenMetadata,
     }),
@@ -64,7 +71,7 @@ describe("tokens-list-user.derived", () => {
   };
   const tetrisUserToken: UserTokenData = {
     ...tetrisTokenBase,
-    balance: TokenAmount.fromE8s({
+    balance: TokenAmountV2.fromUlps({
       amount: mockSnsMainAccount.balanceE8s,
       token: snsTetrisToken,
     }),
@@ -76,7 +83,7 @@ describe("tokens-list-user.derived", () => {
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/f7crg-kabae/logo.png",
     balance: new UnavailableTokenAmount(snsPacman.tokenMetadata),
     token: snsPacman.tokenMetadata,
-    fee: TokenAmount.fromE8s({
+    fee: TokenAmountV2.fromUlps({
       amount: snsPacman.tokenMetadata.fee,
       token: snsPacman.tokenMetadata,
     }),
@@ -84,7 +91,7 @@ describe("tokens-list-user.derived", () => {
   };
   const pacmanUserToken: UserTokenData = {
     ...pacmanTokenBase,
-    balance: TokenAmount.fromE8s({
+    balance: TokenAmountV2.fromUlps({
       amount: mockSnsMainAccount.balanceE8s,
       token: snsPackmanToken,
     }),
@@ -92,9 +99,17 @@ describe("tokens-list-user.derived", () => {
   };
   const ckBTCUserToken: UserTokenData = {
     ...ckBTCTokenBase,
-    balance: TokenAmount.fromE8s({
+    balance: TokenAmountV2.fromUlps({
       amount: mockCkBTCMainAccount.balanceE8s,
       token: mockCkBTCToken,
+    }),
+    actions: [UserTokenAction.Receive, UserTokenAction.Send],
+  };
+  const ckETHUserToken: UserTokenData = {
+    ...ckETHTokenBase,
+    balance: TokenAmountV2.fromUlps({
+      amount: mockCkETHMainAccount.balanceE8s,
+      token: mockCkETHToken,
     }),
     actions: [UserTokenAction.Receive, UserTokenAction.Send],
   };
@@ -107,6 +122,7 @@ describe("tokens-list-user.derived", () => {
       tokensStore.reset();
 
       setSnsProjects([snsTetris, snsPacman]);
+      setCkETHCanisters();
       tokensStore.setTokens({
         [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
           token: mockCkBTCToken,
@@ -127,6 +143,7 @@ describe("tokens-list-user.derived", () => {
       expect(get(tokensListUserStore)).toEqual([
         icpTokenBase,
         ckBTCTokenBase,
+        ckETHTokenBase,
         tetrisTokenBase,
         pacmanTokenBase,
       ]);
@@ -139,6 +156,7 @@ describe("tokens-list-user.derived", () => {
       expect(get(tokensListUserStore)).toEqual([
         icpUserToken,
         ckBTCTokenBase,
+        ckETHTokenBase,
         tetrisTokenBase,
         pacmanTokenBase,
       ]);
@@ -155,6 +173,24 @@ describe("tokens-list-user.derived", () => {
       expect(get(tokensListUserStore)).toEqual([
         icpTokenBase,
         ckBTCUserToken,
+        ckETHTokenBase,
+        tetrisTokenBase,
+        pacmanTokenBase,
+      ]);
+    });
+
+    it("should return balance and Send and Receive actions if ckETH balance is present", () => {
+      icrcAccountsStore.set({
+        accounts: {
+          accounts: [mockCkETHMainAccount],
+          certified: true,
+        },
+        universeId: CKETH_UNIVERSE_CANISTER_ID,
+      });
+      expect(get(tokensListUserStore)).toEqual([
+        icpTokenBase,
+        ckBTCTokenBase,
+        ckETHUserToken,
         tetrisTokenBase,
         pacmanTokenBase,
       ]);
@@ -169,6 +205,7 @@ describe("tokens-list-user.derived", () => {
       expect(get(tokensListUserStore)).toEqual([
         icpTokenBase,
         ckBTCTokenBase,
+        ckETHTokenBase,
         tetrisUserToken,
         pacmanTokenBase,
       ]);
@@ -185,6 +222,13 @@ describe("tokens-list-user.derived", () => {
         },
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
       });
+      icrcAccountsStore.set({
+        accounts: {
+          accounts: [mockCkETHMainAccount],
+          certified: true,
+        },
+        universeId: CKETH_UNIVERSE_CANISTER_ID,
+      });
       snsAccountsStore.setAccounts({
         accounts: [mockSnsMainAccount],
         certified: true,
@@ -198,6 +242,7 @@ describe("tokens-list-user.derived", () => {
       expect(get(tokensListUserStore)).toEqual([
         icpUserToken,
         ckBTCUserToken,
+        ckETHUserToken,
         tetrisUserToken,
         pacmanUserToken,
       ]);

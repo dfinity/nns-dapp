@@ -1,4 +1,5 @@
 import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
+import CKETH_LOGO from "$lib/assets/ckETH.svg";
 import CKTESTBTC_LOGO from "$lib/assets/ckTESTBTC.svg";
 import IC_LOGO_ROUNDED from "$lib/assets/icp-rounded.svg";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
@@ -6,6 +7,7 @@ import {
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
+import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import {
   UserTokenAction,
@@ -13,8 +15,9 @@ import {
   type UserTokenLoading,
 } from "$lib/types/tokens-page";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
-import { TokenAmount } from "@dfinity/utils";
+import { TokenAmountV2 } from "@dfinity/utils";
 import { mockCkBTCToken, mockCkTESTBTCToken } from "./ckbtc-accounts.mock";
+import { mockCkETHToken } from "./cketh-accounts.mock";
 import { mockSnsToken, principal } from "./sns-projects.mock";
 
 export const icpTokenBase: UserTokenData = {
@@ -23,7 +26,7 @@ export const icpTokenBase: UserTokenData = {
   logo: IC_LOGO_ROUNDED,
   balance: new UnavailableTokenAmount(NNS_TOKEN_DATA),
   token: NNS_TOKEN_DATA,
-  fee: TokenAmount.fromE8s({
+  fee: TokenAmountV2.fromUlps({
     amount: NNS_TOKEN_DATA.fee,
     token: NNS_TOKEN_DATA,
   }),
@@ -41,9 +44,21 @@ export const ckBTCTokenBase: UserTokenData = {
   logo: CKBTC_LOGO,
   balance: new UnavailableTokenAmount(mockCkBTCToken),
   token: mockCkBTCToken,
-  fee: TokenAmount.fromE8s({
+  fee: TokenAmountV2.fromUlps({
     amount: mockCkBTCToken.fee,
     token: mockCkBTCToken,
+  }),
+  actions: [],
+};
+export const ckETHTokenBase: UserTokenData = {
+  universeId: CKETH_UNIVERSE_CANISTER_ID,
+  title: "ckETH",
+  logo: CKETH_LOGO,
+  balance: new UnavailableTokenAmount(mockCkETHToken),
+  token: mockCkETHToken,
+  fee: TokenAmountV2.fromUlps({
+    amount: mockCkETHToken.fee,
+    token: mockCkETHToken,
   }),
   actions: [],
 };
@@ -53,7 +68,7 @@ export const ckTESTBTCTokenBase: UserTokenData = {
   logo: CKTESTBTC_LOGO,
   balance: new UnavailableTokenAmount(mockCkTESTBTCToken),
   token: mockCkTESTBTCToken,
-  fee: TokenAmount.fromE8s({
+  fee: TokenAmountV2.fromUlps({
     amount: mockCkTESTBTCToken.fee,
     token: mockCkTESTBTCToken,
   }),
@@ -63,13 +78,13 @@ export const ckTESTBTCTokenBase: UserTokenData = {
 export const userTokenPageMock: UserTokenData = {
   universeId: principal(0),
   title: "Test SNS",
-  balance: TokenAmount.fromE8s({
+  balance: TokenAmountV2.fromUlps({
     amount: 2160000000n,
     token: snsTetrisToken,
   }),
   logo: "sns-logo.svg",
   token: snsTetrisToken,
-  fee: TokenAmount.fromE8s({
+  fee: TokenAmountV2.fromUlps({
     amount: snsTetrisToken.fee,
     token: mockCkBTCToken,
   }),
@@ -88,12 +103,12 @@ export const userTokensPageMock: UserTokenData[] = [
   {
     universeId: principal(0),
     title: "Test SNS",
-    balance: TokenAmount.fromE8s({
+    balance: TokenAmountV2.fromUlps({
       amount: 2160000000n,
       token: { name: "Test SNS", symbol: "SNS1", decimals: 8 },
     }),
     token: snsTetrisToken,
-    fee: TokenAmount.fromE8s({
+    fee: TokenAmountV2.fromUlps({
       amount: snsTetrisToken.fee,
       token: snsTetrisToken,
     }),
@@ -103,12 +118,12 @@ export const userTokensPageMock: UserTokenData[] = [
   {
     universeId: principal(1),
     title: "Test SNS 2",
-    balance: TokenAmount.fromE8s({
+    balance: TokenAmountV2.fromUlps({
       amount: 1180000000n,
       token: { name: "Test SNS", symbol: "SNS2", decimals: 8 },
     }),
     token: snsPackmanToken,
-    fee: TokenAmount.fromE8s({
+    fee: TokenAmountV2.fromUlps({
       amount: snsPackmanToken.fee,
       token: snsPackmanToken,
     }),

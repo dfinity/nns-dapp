@@ -1,6 +1,5 @@
 import * as governanceApi from "$lib/api/sns-governance.api";
 import * as api from "$lib/api/sns.api";
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
@@ -23,7 +22,7 @@ import {
   getSnsNeuronIdAsHexString,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
-import { numberToE8s } from "$lib/utils/token.utils";
+import { numberToE8s, numberToUlps } from "$lib/utils/token.utils";
 import { bytesToHexString } from "$lib/utils/utils";
 import {
   mockIdentity,
@@ -36,7 +35,7 @@ import {
   mockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
-import { mockTokenStore } from "$tests/mocks/sns-projects.mock";
+import { mockSnsToken, mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import {
@@ -1210,7 +1209,7 @@ describe("sns-neurons-services", () => {
         neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
         identity: mockIdentity,
         rootCanisterId: mockPrincipal,
-        amount: BigInt(amount * E8S_PER_ICP) + transactionFee,
+        amount: numberToUlps({ amount, token: mockSnsToken }) + transactionFee,
         memo: 0n,
       });
     });
