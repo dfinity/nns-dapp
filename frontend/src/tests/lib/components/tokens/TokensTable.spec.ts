@@ -126,6 +126,21 @@ describe("TokensTable", () => {
     expect(await row2Po.getSubtitle()).toBeNull();
   });
 
+  it("should render href link if rowHref is present", async () => {
+    const href = "/accounts";
+    const token1 = createUserToken({
+      universeId: OWN_CANISTER_ID,
+      balance: TokenAmount.fromE8s({ amount: 314000000n, token: ICPToken }),
+      rowHref: href,
+    });
+    const po = renderTable({ userTokensData: [token1] });
+
+    const rows = await po.getRows();
+    const row1Po = rows[0];
+
+    expect(await row1Po.getHref()).toBe(href);
+  });
+
   it("should render specific text if balance not available", async () => {
     const token1 = createUserToken({
       universeId: OWN_CANISTER_ID,
