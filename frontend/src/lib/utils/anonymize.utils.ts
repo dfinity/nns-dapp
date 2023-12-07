@@ -125,7 +125,6 @@ export const anonymizeNeuronInfo = async (
 
   const {
     neuronId,
-    neuronType,
     dissolveDelaySeconds,
     recentBallots,
     neuronType,
