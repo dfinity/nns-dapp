@@ -150,7 +150,7 @@ jobs:
       - name: Get nns-dapp_test
         uses: actions/download-artifact@v3
         with:
-          name:out
+          name: out
       - name: Install ic-wasm
         uses: ./.github/actions/install_ic_wasm
       - name: Start snapshot environment
