@@ -208,7 +208,7 @@ impl State {
                         .partitions_maybe
                         .borrow()
                         .as_ref()
-                        .unwrap()
+                        .map_err(|_|"foo").unwrap()
                         .get(Partitions::ACCOUNTS_MEMORY_ID);
                     AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::new(vm))
                 }

@@ -99,7 +99,7 @@ install_nnsdapp() {
   local wasm argfile argument
   wasm="$1"
   argfile="$2"
-  argument="$(cat argfile)"
+  argument="$(cat "$argfile")"
   if dfx canister id nns-dapp >/dev/null 2>/dev/null; then
     upgrade_nnsdapp "$wasm" "$argfile"
   else
@@ -118,7 +118,7 @@ upgrade_nnsdapp() {
   local prestate poststate wasm argfile argument
   wasm="$1"
   argfile="$2"
-  argument="$(cat argfile)"
+  argument="$(cat "$argfile")"
   prestate="$(get_upgrade_invariants | tee /dev/stderr)"
   # Check that the data is plausible
   # TODO: Check that the prestate is not empty; first we need to populate the state.
