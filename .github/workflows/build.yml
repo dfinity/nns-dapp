@@ -25,10 +25,6 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
-      - name: Test get job name
-        run: |
-          echo "Job name is $GITHUB_JOB"
-          echo "How about ${{ github.jobs[github.job].name }}"
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
       - name: Skip build for testing
