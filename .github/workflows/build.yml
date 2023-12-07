@@ -171,8 +171,8 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ github.steps.start_snapshot.inputs.logfile }}
-          path: ${{ github.steps.start_snapshot.inputs.logfile }}
+          name: ${{ steps.start_snapshot.inputs.logfile }}
+          path: ${{ steps.start_snapshot.inputs.logfile }}
   # TODO: stable <-> map
   test-test-account-api:
     needs: build
