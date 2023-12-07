@@ -1,6 +1,5 @@
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
 import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
@@ -12,6 +11,7 @@ import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import type { Account } from "$lib/types/account";
 import { TransactionNetwork } from "$lib/types/transaction";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import { ulpsToNumber } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
@@ -445,10 +445,10 @@ describe("CkBTCTransactionModal", () => {
       "input[name='amount']"
     );
     expect(input?.value).toEqual(
-      `${
-        Number(mockCkBTCMainAccount.balanceE8s - mockCkBTCToken.fee) /
-        E8S_PER_ICP
-      }`
+      `${ulpsToNumber({
+        ulps: mockCkBTCMainAccount.balanceE8s - mockCkBTCToken.fee,
+        token: mockCkBTCToken,
+      })}`
     );
   };
 
@@ -602,7 +602,10 @@ describe("CkBTCTransactionModal", () => {
         "input[name='amount']"
       );
       expect(input?.value).toEqual(
-        `${Number(mockCkBTCWithdrawalAccount.balanceE8s) / E8S_PER_ICP}`
+        `${ulpsToNumber({
+          ulps: mockCkBTCWithdrawalAccount.balanceE8s,
+          token: mockCkBTCToken,
+        })}`
       );
     });
   });
