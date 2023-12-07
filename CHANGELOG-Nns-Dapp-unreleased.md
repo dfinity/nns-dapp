@@ -21,6 +21,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Render BTC deposits/withdrawals as "BTC Received"/"BTC Sent".
+
 #### Deprecated
 
 #### Removed
