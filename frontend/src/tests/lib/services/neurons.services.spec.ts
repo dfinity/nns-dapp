@@ -1296,7 +1296,7 @@ describe("neurons-services", () => {
     it("should add transaction fee to the amount", async () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
       const amount = 2.2;
-      const amountE8s = 220000000n;
+      const amountE8s = 220_000_000n;
       const transactionFee = DEFAULT_TRANSACTION_FEE_E8S;
       await services.splitNeuron({
         neuron: controlledNeuron,
