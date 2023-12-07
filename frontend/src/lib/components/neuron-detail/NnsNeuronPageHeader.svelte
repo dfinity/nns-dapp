@@ -48,10 +48,4 @@
     // This is needed to align in the center the UniversePageSummary and the IdentifierHash in mobile view.
     padding-left: var(--padding-1_5x);
   }
-
-  .description {
-    display: flex;
-    align-items: center;
-    gap: var(--padding);
-  }
 </style>
