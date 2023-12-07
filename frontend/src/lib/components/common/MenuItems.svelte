@@ -43,7 +43,7 @@
       href: $accountsPathStore,
       selected: isSelectedPath({
         currentPath: $pageStore.path,
-        paths: [AppPath.Accounts, AppPath.Wallet],
+        paths: [AppPath.Accounts, AppPath.Wallet, AppPath.Tokens],
       }),
       label: "tokens",
       icon: IconWallet,
