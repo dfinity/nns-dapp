@@ -15,13 +15,11 @@
 </script>
 
 <TestIdWrapper testId="neuron-tag">
-  <div>
-    {#if nonNullish(tag.description)}
-      <Tooltip id="neuron-type-tag-tooltip" text={description}>
-        <Tag>{text}</Tag>
-      </Tooltip>
-    {:else}
+  {#if nonNullish(tag.description)}
+    <Tooltip id="neuron-type-tag-tooltip" text={description}>
       <Tag>{text}</Tag>
-    {/if}
-  </div>
+    </Tooltip>
+  {:else}
+    <Tag>{text}</Tag>
+  {/if}
 </TestIdWrapper>
