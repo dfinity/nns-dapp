@@ -25,6 +25,10 @@ inputs:
     description: "Passed as --mode with the dfx canister install command"
     required: false
     default: "reinstall"
+  logfile:
+    description: "The name of the logfile to write to"
+    required: false
+    default: "dfx.log"
 runs:
   using: "composite"
   steps:
@@ -80,3 +84,8 @@ runs:
       shell: bash
       run: |
         dfx canister install sns_aggregator --wasm ${{ inputs.sns_aggregator_wasm }} --upgrade-unchanged --mode ${{ inputs.sns_aggregator_install_mode }} --yes
+    - name: Start logging
+      shell: bash
+      run: |
+        dfx stop
+        dfx start --background --log file --logfile ${{ inputs.logfile }}

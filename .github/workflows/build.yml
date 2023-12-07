@@ -25,6 +25,10 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
+      - name: Test get job name
+        run: |
+          echo "Job name is $GITHUB_JOB"
+          echo "How about ${{ github.jobs[github.job].name }}"
       - name: Checkout nns-dapp
         uses: actions/checkout@v3
       - name: Skip build for testing
@@ -165,6 +169,12 @@ jobs:
           nns_dapp_wasm: 'out/nns-dapp_test.wasm.gz'
       - name: Downgrade nns-dapp to prod and upgrade back again
         run: ./scripts/nns-dapp/migration-test --schema1 AccountsInStableMemory --schema2 AccountsInStableMemory --accounts 10000
+      - name: Upload dfx logs
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: dfx-logs
+          path: dfx.log
   # TODO: stable <-> map
   test-test-account-api:
     needs: build
