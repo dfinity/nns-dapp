@@ -20,9 +20,9 @@
 
 <div class="title" data-tid="neuron-card-title">
   <svelte:element this={tagName} data-tid="neuron-id"
-    ><div class="neuron-id">
+    ><span class="neuron-id">
       <span>{neuron.neuronId}</span>
-    </div></svelte:element
+    </span></svelte:element
   >
 
   {#each neuronTags as tag}
