@@ -160,18 +160,19 @@ jobs:
       - name: Install sponge
         run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
       - name: Start snapshot environment
+        id: start_snapshot
         uses: ./.github/actions/start_dfx_snapshot
         with:
           nns_dapp_wasm: 'out/nns-dapp_test.wasm.gz'
-          logfile: 'dfx-${{ github.jobs[github.job].name }}.log'
+          logfile: 'test-upgrade-stable-dfx.log'
       - name: Downgrade nns-dapp to prod and upgrade back again
         run: ./scripts/nns-dapp/migration-test --schema1 AccountsInStableMemory --schema2 AccountsInStableMemory --accounts 10000
       - name: Upload dfx logs
         if: failure()
         uses: actions/upload-artifact@v3
         with:
-          name: 'dfx-${{ github.jobs[github.job].name }}-log'
-          path: 'dfx-${{ github.jobs[github.job].name }}.log'
+          name: ${{ github.steps.start_snapshot.inputs.logfile }}
+          path: ${{ github.steps.start_snapshot.inputs.logfile }}
   # TODO: stable <-> map
   test-test-account-api:
     needs: build
