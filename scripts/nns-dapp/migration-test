@@ -85,6 +85,11 @@ get_assets() {
     test -z "${!SCHEMA}" || {
       set_arguments_schema "${!SCHEMA}" <"$(working_arguments "$config")" | sponge "$(working_arguments "$config")"
     }
+    echo "========== SCHEMA =========="
+    echo "Requested schema: ${!SCHEMA}"
+    echo "========== ARGUMENTS =========="
+    cat "$(working_arguments "$config")"
+    echo "=============END==============="
   done
 }
 
