@@ -1,4 +1,5 @@
 import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
+import CKETH_LOGO from "$lib/assets/ckETH.svg";
 import CKTESTBTC_LOGO from "$lib/assets/ckTESTBTC.svg";
 import IC_LOGO_ROUNDED from "$lib/assets/icp-rounded.svg";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
@@ -6,6 +7,7 @@ import {
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
+import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import {
   UserTokenAction,
@@ -15,6 +17,7 @@ import {
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { TokenAmountV2 } from "@dfinity/utils";
 import { mockCkBTCToken, mockCkTESTBTCToken } from "./ckbtc-accounts.mock";
+import { mockCkETHToken } from "./cketh-accounts.mock";
 import { mockSnsToken, principal } from "./sns-projects.mock";
 
 export const icpTokenBase: UserTokenData = {
@@ -44,6 +47,18 @@ export const ckBTCTokenBase: UserTokenData = {
   fee: TokenAmountV2.fromUlps({
     amount: mockCkBTCToken.fee,
     token: mockCkBTCToken,
+  }),
+  actions: [],
+};
+export const ckETHTokenBase: UserTokenData = {
+  universeId: CKETH_UNIVERSE_CANISTER_ID,
+  title: "ckETH",
+  logo: CKETH_LOGO,
+  balance: new UnavailableTokenAmount(mockCkETHToken),
+  token: mockCkETHToken,
+  fee: TokenAmountV2.fromUlps({
+    amount: mockCkETHToken.fee,
+    token: mockCkETHToken,
   }),
   actions: [],
 };
