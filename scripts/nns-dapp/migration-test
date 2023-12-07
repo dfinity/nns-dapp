@@ -15,6 +15,7 @@ print_help() {
 	  - Some or all of these changes may be migrated into the downgrade-upgrade test.
 
 	Needs:
+	  - sponge
 	  - dfx
 	  - ic-wasm
 	  - idl2json

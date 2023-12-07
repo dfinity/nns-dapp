@@ -131,6 +131,8 @@ jobs:
           path: out
       - name: Install ic-wasm
         uses: ./.github/actions/install_ic_wasm
+      - name: Install sponge
+        run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
       - name: Start snapshot environment
         uses: ./.github/actions/start_dfx_snapshot
         with:
@@ -155,6 +157,8 @@ jobs:
           path: out
       - name: Install ic-wasm
         uses: ./.github/actions/install_ic_wasm
+      - name: Install sponge
+        run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
       - name: Start snapshot environment
         uses: ./.github/actions/start_dfx_snapshot
         with:
