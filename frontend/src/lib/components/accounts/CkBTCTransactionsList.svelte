@@ -10,7 +10,7 @@
   import { ckbtcPendingUtxosStore } from "$lib/stores/ckbtc-pending-utxos.store";
   import type { Account } from "$lib/types/account";
   import {
-    mapCkbtcTransaction,
+    mapCkbtcTransactions,
     mapCkbtcPendingUtxo,
   } from "$lib/utils/icrc-transactions.utils";
   import type {
@@ -22,7 +22,7 @@
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import IcrcWalletTransactionsList from "$lib/components/accounts/IcrcWalletTransactionsList.svelte";
   import type { PendingUtxo } from "@dfinity/ckbtc";
-  import { nonNullish, isNullish } from "@dfinity/utils";
+  import { isNullish } from "@dfinity/utils";
 
   export let indexCanisterId: CanisterId;
   export let universeId: UniverseCanisterId;
@@ -75,16 +75,12 @@
   const mapTransactions = (
     transactionData: IcrcTransactionData[]
   ): UiTransaction[] => {
-    const completedTransactions = transactionData
-      .map((transaction: IcrcTransactionData) =>
-        mapCkbtcTransaction({
-          ...transaction,
-          account,
-          token,
-          i18n: $i18n,
-        })
-      )
-      .filter(nonNullish);
+    const completedTransactions = mapCkbtcTransactions({
+      transactionData,
+      account,
+      token,
+      i18n: $i18n,
+    });
     return [...pendingTransactions, ...completedTransactions];
   };
 </script>
