@@ -1,6 +1,6 @@
 import type { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import type { Principal } from "@dfinity/principal";
-import type { Token, TokenAmount } from "@dfinity/utils";
+import type { Token, TokenAmountV2 } from "@dfinity/utils";
 
 export enum UserTokenAction {
   Send = "send",
@@ -29,8 +29,8 @@ export type UserTokenLoading = UserTokenBase & {
 };
 
 export type UserTokenData = UserTokenBase & {
-  balance: TokenAmount | UnavailableTokenAmount;
+  balance: TokenAmountV2 | UnavailableTokenAmount;
   token: Token;
   // Fees are included in the metadata of ICRC tokens, but this is not a list of only ICRC tokens
-  fee: TokenAmount;
+  fee: TokenAmountV2;
 };
