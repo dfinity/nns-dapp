@@ -1,5 +1,6 @@
 import { NANO_SECONDS_IN_MILLISECOND } from "$lib/constants/constants";
 import type { IcrcTransactionsStoreData } from "$lib/stores/icrc-transactions.store";
+import type { IcrcTransactionData } from "$lib/types/transaction";
 import {
   getOldestTxIdFromStore,
   getSortedTransactionsFromStore,
@@ -7,6 +8,7 @@ import {
   isIcrcTransactionsCompleted,
   mapCkbtcPendingUtxo,
   mapCkbtcTransaction,
+  mapCkbtcTransactions,
   mapIcrcTransaction,
   type MapIcrcTransactionType,
 } from "$lib/utils/icrc-transactions.utils";
@@ -29,10 +31,7 @@ import {
 } from "$tests/mocks/sns-accounts.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { Cbor } from "@dfinity/agent";
-import {
-  encodeIcrcAccount,
-  type IcrcTransactionWithId,
-} from "@dfinity/ledger-icrc";
+import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import {
   ICPToken,
   TokenAmount,
@@ -441,98 +440,6 @@ describe("icrc-transaction utils", () => {
       expect(errorLog).toEqual(["Failed to decode ckBTC burn memo"]);
     });
 
-    it("Merges Approve transaction with corresponding Burn transaction", () => {
-      const burnAmount = 200_000_000n;
-      const approveFee = 13n;
-
-      const approveTx = {
-        id: 101n,
-        transaction: createApproveTransaction({
-          fee: approveFee,
-        }),
-      } as IcrcTransactionWithId;
-      const burnTx = {
-        id: 102n,
-        transaction: createBurnTransaction({
-          amount: burnAmount,
-        }),
-      } as IcrcTransactionWithId;
-
-      const burnUiTransaction = mapCkbtcTransaction({
-        transaction: burnTx,
-        account: mockCkBTCMainAccount,
-        toSelfTransaction: false,
-        token: mockCkBTCToken,
-        i18n: en,
-      });
-      const approveUiTransaction = mapCkbtcTransaction({
-        transaction: approveTx,
-        prevTransaction: burnTx,
-        prevUiTransaction: burnUiTransaction,
-        account: mockCkBTCMainAccount,
-        toSelfTransaction: false,
-        token: mockCkBTCToken,
-        i18n: en,
-      });
-      expect(burnUiTransaction.tokenAmount).toEqual(
-        TokenAmountV2.fromUlps({
-          amount: burnAmount + approveFee,
-          token: mockCkBTCToken,
-        })
-      );
-      // The approve transaction was merged into the burn transaction so is not
-      // rendered separately.
-      expect(approveUiTransaction).toBeUndefined();
-    });
-
-    it("Does not merge Approve transaction with normal Transfer transaction", () => {
-      const transferAmount = 400_000_000n;
-      const approveFee = 13n;
-      const transferFee = 10n;
-
-      const approveTx = {
-        id: 101n,
-        transaction: createApproveTransaction({
-          fee: approveFee,
-          from: mainAccount,
-        }),
-      } as IcrcTransactionWithId;
-      const transferTx = createIcrcTransactionWithId({
-        id: 102n,
-        amount: transferAmount,
-        fee: transferFee,
-      }) as IcrcTransactionWithId;
-
-      const transferUiTransaction = mapCkbtcTransaction({
-        transaction: transferTx,
-        account: mockCkBTCMainAccount,
-        toSelfTransaction: false,
-        token: mockCkBTCToken,
-        i18n: en,
-      });
-      const approveUiTransaction = mapCkbtcTransaction({
-        transaction: approveTx,
-        prevTransaction: transferTx,
-        prevUiTransaction: transferUiTransaction,
-        account: mockCkBTCMainAccount,
-        toSelfTransaction: false,
-        token: mockCkBTCToken,
-        i18n: en,
-      });
-      expect(transferUiTransaction.tokenAmount).toEqual(
-        TokenAmountV2.fromUlps({
-          amount: transferAmount + transferFee,
-          token: mockCkBTCToken,
-        })
-      );
-      expect(approveUiTransaction.tokenAmount).toEqual(
-        TokenAmountV2.fromUlps({
-          amount: approveFee,
-          token: mockCkBTCToken,
-        })
-      );
-    });
-
     it("Renders mint transaction as 'From: BTC Network'", () => {
       const amount = 25_000_000n;
 
@@ -561,6 +468,146 @@ describe("icrc-transaction utils", () => {
           token: mockCkBTCToken,
         }),
       });
+    });
+  });
+
+  describe("mapCkbtcTransactions", () => {
+    it("maps multiple transactions", () => {
+      const sentTx: IcrcTransactionData = {
+        transaction: createIcrcTransactionWithId({
+          id: 104n,
+          from: mainAccount,
+          to: subAccount,
+          amount: 200_000_000n,
+          fee: 10_000n,
+        }),
+        toSelfTransaction: false,
+      };
+      const receivedTx: IcrcTransactionData = {
+        transaction: createIcrcTransactionWithId({
+          id: 103n,
+          from: subAccount,
+          to: mainAccount,
+          amount: 300_000_000n,
+          fee: 10_000n,
+        }),
+        toSelfTransaction: false,
+      };
+
+      const uiTransactions = mapCkbtcTransactions({
+        transactionData: [sentTx, receivedTx],
+        account: mockCkBTCMainAccount,
+        token: mockCkBTCToken,
+        i18n: en,
+      });
+
+      expect(uiTransactions).toEqual([
+        {
+          domKey: "104-1",
+          headline: "Sent",
+          isIncoming: false,
+          isPending: false,
+          otherParty: mockSnsSubAccount.identifier,
+          timestamp: new Date(0),
+          tokenAmount: TokenAmountV2.fromUlps({
+            amount: 200010000n,
+            token: mockCkBTCToken,
+          }),
+        },
+        {
+          domKey: "103-1",
+          headline: "Received",
+          isIncoming: true,
+          isPending: false,
+          otherParty: mockSnsSubAccount.identifier,
+          timestamp: new Date(0),
+          tokenAmount: TokenAmountV2.fromUlps({
+            amount: 300000000n,
+            token: mockCkBTCToken,
+          }),
+        },
+      ]);
+    });
+
+    it("Merges Approve transaction with corresponding Burn transaction", () => {
+      const burnAmount = 200_000_000n;
+      const approveFee = 13n;
+
+      const approveTx: IcrcTransactionData = {
+        transaction: {
+          id: 101n,
+          transaction: createApproveTransaction({
+            fee: approveFee,
+          }),
+        },
+        toSelfTransaction: false,
+      };
+      const burnTx: IcrcTransactionData = {
+        transaction: {
+          id: 102n,
+          transaction: createBurnTransaction({
+            amount: burnAmount,
+          }),
+        },
+        toSelfTransaction: false,
+      };
+
+      const uiTransactions = mapCkbtcTransactions({
+        transactionData: [burnTx, approveTx],
+        account: mockCkBTCMainAccount,
+        token: mockCkBTCToken,
+        i18n: en,
+      });
+
+      // The approve transaction was merged into the burn transaction so is not
+      // rendered separately.
+      expect(uiTransactions.length).toEqual(1);
+
+      const burnUiTransaction = uiTransactions[0];
+
+      expect(burnUiTransaction.headline).toBe("Sent");
+      expect(burnUiTransaction.tokenAmount).toEqual(
+        TokenAmountV2.fromUlps({
+          amount: burnAmount + approveFee,
+          token: mockCkBTCToken,
+        })
+      );
+    });
+
+    it("Does not merge Approve transaction with normal Transfer transaction", () => {
+      const transferAmount = 400_000_000n;
+      const approveFee = 13n;
+      const transferFee = 10n;
+
+      const approveTx: IcrcTransactionData = {
+        transaction: {
+          id: 101n,
+          transaction: createApproveTransaction({
+            fee: approveFee,
+            from: mainAccount,
+          }),
+        },
+        toSelfTransaction: false,
+      };
+      const transferTx: IcrcTransactionData = {
+        transaction: createIcrcTransactionWithId({
+          id: 102n,
+          amount: transferAmount,
+          fee: transferFee,
+        }),
+        toSelfTransaction: false,
+      };
+
+      const uiTransactions = mapCkbtcTransactions({
+        transactionData: [transferTx, approveTx],
+        account: mockCkBTCMainAccount,
+        token: mockCkBTCToken,
+        i18n: en,
+      });
+
+      expect(uiTransactions.length).toEqual(2);
+      expect(uiTransactions[0].headline).toBe("Sent");
+      expect(uiTransactions[1].headline).toBe("Approve transfer");
     });
   });
 

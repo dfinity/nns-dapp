@@ -10,7 +10,7 @@
   import { ckbtcPendingUtxosStore } from "$lib/stores/ckbtc-pending-utxos.store";
   import type { Account } from "$lib/types/account";
   import {
-    mapCkbtcTransaction,
+    mapCkbtcTransactions,
     mapCkbtcPendingUtxo,
   } from "$lib/utils/icrc-transactions.utils";
   import type {
@@ -22,8 +22,7 @@
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import IcrcWalletTransactionsList from "$lib/components/accounts/IcrcWalletTransactionsList.svelte";
   import type { PendingUtxo } from "@dfinity/ckbtc";
-  import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
-  import { nonNullish, isNullish, TokenAmountV2 } from "@dfinity/utils";
+  import { isNullish } from "@dfinity/utils";
 
   export let indexCanisterId: CanisterId;
   export let universeId: UniverseCanisterId;
@@ -76,41 +75,12 @@
   const mapTransactions = (
     transactionData: IcrcTransactionData[]
   ): UiTransaction[] => {
-    let prevTransaction: IcrcTransactionWithId | undefined = undefined;
-    let prevUiTransaction: UiTransaction | undefined = undefined;
-    // Note: Transaction are expected to be mapped in reverse chronological
-    // order. Some transactions might merge themselves into previous
-    // transactions, because they are conceptually part of the same event, so
-    // it's important that they appear in the expected order.
-    const completedTransactions = transactionData
-      .map(({ transaction, toSelfTransaction }: IcrcTransactionData) => {
-        if (
-          transaction.transaction.approve.length === 1 &&
-          transaction.transaction.approve[0].fee.length === 1 &&
-          prevTransaction?.transaction.burn.length === 1 &&
-          prevUiTransaction?.tokenAmount instanceof TokenAmountV2
-        ) {
-          prevUiTransaction.tokenAmount = TokenAmountV2.fromUlps({
-            amount:
-              prevUiTransaction.tokenAmount.toUlps() +
-              transaction.transaction.approve[0].fee[0],
-            token: prevUiTransaction.tokenAmount.token,
-          });
-          prevTransaction = transaction;
-          return undefined;
-        }
-        const uiTransaction = mapCkbtcTransaction({
-          transaction,
-          toSelfTransaction,
-          account,
-          token,
-          i18n: $i18n,
-        });
-        prevTransaction = transaction;
-        prevUiTransaction = uiTransaction;
-        return uiTransaction;
-      })
-      .filter(nonNullish);
+    const completedTransactions = mapCkbtcTransactions({
+      transactionData,
+      account,
+      token,
+      i18n: $i18n,
+    });
     return [...pendingTransactions, ...completedTransactions];
   };
 </script>

@@ -267,6 +267,54 @@ export const mapCkbtcTransaction = (params: {
   return mappedTransaction;
 };
 
+// Note: Transaction are expected to be mapped in reverse chronological order.
+// Some transactions might merge themselves into previous transactions, because
+// they are conceptually part of the same event, so it's important that they
+// appear in the expected order.
+export const mapCkbtcTransactions = ({
+  transactionData,
+  account,
+  token,
+  i18n,
+}: {
+  transactionData: IcrcTransactionData[];
+  account: Account;
+  token: Token | undefined;
+  i18n: I18n;
+}): UiTransaction[] => {
+  let prevTransaction: IcrcTransactionWithId | undefined = undefined;
+  let prevUiTransaction: UiTransaction | undefined = undefined;
+  return transactionData
+    .map(({ transaction, toSelfTransaction }: IcrcTransactionData) => {
+      if (
+        transaction.transaction.approve.length === 1 &&
+        transaction.transaction.approve[0].fee.length === 1 &&
+        prevTransaction?.transaction.burn.length === 1 &&
+        prevUiTransaction?.tokenAmount instanceof TokenAmountV2
+      ) {
+        prevUiTransaction.tokenAmount = TokenAmountV2.fromUlps({
+          amount:
+            prevUiTransaction.tokenAmount.toUlps() +
+            transaction.transaction.approve[0].fee[0],
+          token: prevUiTransaction.tokenAmount.token,
+        });
+        prevTransaction = transaction;
+        return undefined;
+      }
+      const uiTransaction = mapCkbtcTransaction({
+        transaction,
+        toSelfTransaction,
+        account,
+        token,
+        i18n,
+      });
+      prevTransaction = transaction;
+      prevUiTransaction = uiTransaction;
+      return uiTransaction;
+    })
+    .filter(nonNullish);
+};
+
 export const mapCkbtcPendingUtxo = ({
   utxo,
   token,
