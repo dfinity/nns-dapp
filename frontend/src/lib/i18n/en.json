@@ -92,6 +92,7 @@
     "merge_neurons_same_id": "Two neurons with the same id can't be merged.",
     "merge_neurons_not_same_controller": "Two neurons need to have the same controller.",
     "merge_neurons_not_same_manage_neuron_followees": "Two neurons need to have the same followee on the topic of \"Manage Neuron\".",
+    "merge_neurons_different_types": "Only neurons of the same type can be merged.",
     "neuron_account_not_found": "Sorry, the neuron has no account associated.",
     "governance_error": "Sorry, there was an error. Please try again.",
     "not_mergeable": "This neuron can't be merged.",

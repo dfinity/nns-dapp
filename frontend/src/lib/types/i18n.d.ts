@@ -96,6 +96,7 @@ interface I18nError {
   merge_neurons_same_id: string;
   merge_neurons_not_same_controller: string;
   merge_neurons_not_same_manage_neuron_followees: string;
+  merge_neurons_different_types: string;
   neuron_account_not_found: string;
   governance_error: string;
   not_mergeable: string;

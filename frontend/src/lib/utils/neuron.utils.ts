@@ -699,7 +699,7 @@ export const canBeMerged = (
   if (!sameNeuronType(neurons)) {
     return {
       isValid: false,
-      messageKey: "error.merge_neurons_different_type",
+      messageKey: "error.merge_neurons_different_types",
     };
   }
   if (!sameController(neurons)) {
