@@ -82,5 +82,5 @@ runs:
     - name: Install sns_aggregator
       if: ${{ inputs.sns_aggregator_wasm }}
       shell: bash
-      run: |
+      run: |-
         dfx canister install sns_aggregator --wasm ${{ inputs.sns_aggregator_wasm }} --upgrade-unchanged --mode ${{ inputs.sns_aggregator_install_mode }} --yes
