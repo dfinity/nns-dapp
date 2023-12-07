@@ -67,7 +67,7 @@ runs:
       shell: bash
       run: |
         curl -fL --retry 5 ${{ steps.snsdemo_snapshot.outputs.url }} > state.tar.xz
-        dfx-snapshot-restore --snapshot state.tar.xz --verbose
+        dfx-snapshot-restore --snapshot state.tar.xz --verbose &> '${{ inputs.logfile }}'
         dfx identity use snsdemo8
         dfx-sns-demo-healthcheck
     - name: Install nns-dapp
@@ -84,8 +84,3 @@ runs:
       shell: bash
       run: |
         dfx canister install sns_aggregator --wasm ${{ inputs.sns_aggregator_wasm }} --upgrade-unchanged --mode ${{ inputs.sns_aggregator_install_mode }} --yes
-    - name: Start logging
-      shell: bash
-      run: |
-        dfx stop
-        dfx start --background &> '${{ inputs.logfile }}' &
