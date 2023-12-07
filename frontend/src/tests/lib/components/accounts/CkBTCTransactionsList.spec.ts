@@ -66,7 +66,7 @@ describe("CkBTCTransactionList", () => {
     vi.useRealTimers();
   });
 
-  it("should render description burn to btc network", async () => {
+  it("should render burn without memo as BTC Sent to BTC Network", async () => {
     const errorLog = [];
     vi.spyOn(console, "error").mockImplementation((msg) => {
       errorLog.push(msg);
@@ -100,12 +100,12 @@ describe("CkBTCTransactionList", () => {
     const cards = await po.getTransactionCardPos();
 
     expect(cards).toHaveLength(1);
-    expect(await cards[0].getHeadline()).toEqual("Sent");
+    expect(await cards[0].getHeadline()).toEqual("BTC Sent");
     expect(await cards[0].getIdentifier()).toEqual("To: BTC Network");
     expect(errorLog).toEqual(["Failed to decode ckBTC burn memo"]);
   });
 
-  it("should render description burn to btc address", async () => {
+  it("should render burn as BTC Sent to withdrawal address", async () => {
     const btcWithdrawalAddress = "1ASLxsAMbbt4gcrNc6v6qDBW4JkeWAtTeh";
     const kytFee = 1334;
     const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
@@ -140,7 +140,7 @@ describe("CkBTCTransactionList", () => {
     const cards = await po.getTransactionCardPos();
 
     expect(cards).toHaveLength(1);
-    expect(await cards[0].getHeadline()).toEqual("Sent");
+    expect(await cards[0].getHeadline()).toEqual("BTC Sent");
     expect(await cards[0].getIdentifier()).toEqual(
       `To: ${btcWithdrawalAddress}`
     );

@@ -252,8 +252,10 @@ export const mapCkbtcTransaction = (params: {
     transaction: { transaction },
   } = params;
   if (transaction.mint.length === 1) {
+    mappedTransaction.headline = i18n.ckbtc.btc_received;
     mappedTransaction.otherParty = i18n.ckbtc.btc_network;
   } else if (transaction.burn.length === 1) {
+    mappedTransaction.headline = i18n.ckbtc.btc_sent;
     const memo = transaction.burn[0].memo[0] as Uint8Array;
     try {
       const decodedMemo = Cbor.decode(memo) as CkbtcBurnMemo;
