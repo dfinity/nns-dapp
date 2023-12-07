@@ -1,3 +1,6 @@
+use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
+use crate::accounts_store::schema::map::AccountsDbAsMap;
+use crate::accounts_store::schema::proxy::AccountsDb;
 use crate::accounts_store::schema::SchemaLabel;
 use crate::accounts_store::AccountsStore;
 use crate::arguments::CanisterArguments;
@@ -166,9 +169,12 @@ impl State {
         state
     }
     /// Applies the specified arguments to the state.
-    pub fn with_arguments(self, _arguments: &CanisterArguments) -> Self {
+    pub fn with_arguments(mut self, arguments: &CanisterArguments) -> Self {
         // TODO: If a migration is needed, kick it off.
         // TODO: Initialize assets and asset_hashes
+        if let Some(schema) = arguments.schema {
+            self.start_migration_to(schema);
+        }
         self
     }
     /// Applies the specified arguments, if provided
@@ -176,6 +182,30 @@ impl State {
         match arguments_maybe {
             Some(arguments) => self.with_arguments(arguments),
             None => self,
+        }
+    }
+    /// Starts a migration, if needed.
+    pub fn start_migration_to(&mut self, schema: SchemaLabel) {
+        let schema_now = self.schema_label();
+        if schema_now == schema {
+            dfn_core::api::print(format!(
+                "start_migration_to: No migration needed.  Schema is already {schema:?}."
+            ));
+            return;
+        } else {
+            let new_accounts_db = match schema {
+                SchemaLabel::Map => AccountsDb::Map(AccountsDbAsMap::default()),
+                SchemaLabel::AccountsInStableMemory => {
+                    AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::new(
+                        self.partitions_maybe
+                            .borrow()
+                            .as_ref()
+                            .unwrap()
+                            .get(Partitions::ACCOUNTS_MEMORY_ID),
+                    ))
+                }
+            };
+            self.accounts_store.borrow_mut().migrate_accounts_to(new_accounts_db);
         }
     }
 }

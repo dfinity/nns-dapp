@@ -66,6 +66,16 @@ impl AccountsDbAsProxy {
     pub fn migration_countdown(&self) -> u32 {
         0
     }
+    /// Starts a migration, if needed.
+    pub fn migrate_accounts_to(&mut self, accounts_db: AccountsDb) {
+        self.second_db = Some(accounts_db);
+        // TODO: Start a timer to do the migration.
+        // Placeholder:
+        for (key, account) in self.authoritative_db.iter() {
+            self.second_db.as_mut().unwrap().db_insert_account(&key, account);
+        }
+        self.authoritative_db = self.second_db.take().unwrap();
+    }
 }
 
 impl AccountsDbBTreeMapTrait for AccountsDbAsProxy {

@@ -30,6 +30,7 @@ pub mod histogram;
 pub mod schema;
 use schema::{proxy::AccountsDbAsProxy, AccountsDbBTreeMapTrait, AccountsDbTrait};
 
+use self::schema::proxy::AccountsDb;
 use self::schema::SchemaLabel;
 
 type TransactionIndex = u64;
@@ -318,6 +319,9 @@ pub enum AddPendingTransactionResponse {
 impl AccountsStore {
     pub fn schema_label(&self) -> SchemaLabel {
         self.accounts_db.schema_label()
+    }
+    pub fn migrate_accounts_to(&mut self, accounts_db: AccountsDb) {
+        self.accounts_db.migrate_accounts_to(accounts_db);
     }
     pub fn get_account(&self, caller: PrincipalId) -> Option<AccountDetails> {
         let account_identifier = AccountIdentifier::from(caller);
