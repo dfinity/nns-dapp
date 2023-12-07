@@ -132,7 +132,7 @@ describe("navigation-utils", () => {
       );
     });
 
-    it("should build accounts url", () => {
+    it("should build accounts url when tokens not enabled", () => {
       expect(
         buildAccountsUrl({
           universe: OWN_CANISTER_ID_TEXT,
@@ -140,6 +140,15 @@ describe("navigation-utils", () => {
       ).toEqual(
         `${AppPath.Accounts}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
       );
+    });
+
+    it("should build accounts url when tokens is enabled", () => {
+      expect(
+        buildAccountsUrl({
+          universe: OWN_CANISTER_ID_TEXT,
+          tokensEnabled: true,
+        })
+      ).toEqual(AppPath.Tokens);
     });
 
     it("should build neurons url", () => {
