@@ -88,4 +88,4 @@ runs:
       shell: bash
       run: |
         dfx stop
-        dfx start --background --log file --logfile ${{ inputs.logfile }}
+        dfx start --background &> '${{ inputs.logfile }}' &
