@@ -47,8 +47,16 @@ const buildUrl = ({
     .map(([key, value]) => `&${key}=${value}`)
     .join("")}`;
 
-export const buildAccountsUrl = ({ universe }: { universe: string }) =>
-  buildUrl({ path: AppPath.Accounts, universe });
+export const buildAccountsUrl = ({
+  universe,
+  tokensEnabled,
+}: {
+  universe: string;
+  tokensEnabled?: boolean;
+}) =>
+  tokensEnabled
+    ? AppPath.Tokens
+    : buildUrl({ path: AppPath.Accounts, universe });
 export const buildNeuronsUrl = ({ universe }: { universe: string }) =>
   buildUrl({ path: AppPath.Neurons, universe });
 export const buildProposalsUrl = ({ universe }: { universe: string }) =>
