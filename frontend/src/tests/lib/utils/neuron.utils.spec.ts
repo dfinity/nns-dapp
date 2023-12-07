@@ -64,6 +64,7 @@ import {
   votedNeuronDetails,
   type IneligibleNeuronData,
   type InvalidState,
+  type NeuronTagData,
 } from "$lib/utils/neuron.utils";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -82,6 +83,7 @@ import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import type { WizardStep } from "@dfinity/gix-components";
 import {
   NeuronState,
+  NeuronType,
   Topic,
   Vote,
   type BallotInfo,
@@ -1131,9 +1133,17 @@ describe("neuron-utils", () => {
       hardwareWallets: [],
     };
 
-    const hotkeyTag = { text: "Hotkey control" };
-    const hwTag = { text: "Hardware Wallet" };
-    const nfTag = { text: "Neurons' fund" };
+    const hotkeyTag = { text: "Hotkey control" } as NeuronTagData;
+    const hwTag = { text: "Hardware Wallet" } as NeuronTagData;
+    const nfTag = { text: "Neurons' fund" } as NeuronTagData;
+    const seedTag = {
+      text: "Seed",
+      description: "Seed Neuron",
+    } as NeuronTagData;
+    const ectTag = {
+      text: "ECT",
+      description: "Early Contributor Token Neuron",
+    } as NeuronTagData;
     it("returns 'hotkey' if neuron is controllable by hotkey and hardware wallet is not the controller", () => {
       const neuron = {
         ...mockNeuron,
@@ -1285,6 +1295,66 @@ describe("neuron-utils", () => {
           i18n: en,
         })
       ).toEqual([nfTag, hwTag]);
+    });
+
+    it("returns 'Seed'", () => {
+      const neuron: NeuronInfo = {
+        ...mockNeuron,
+        neuronType: NeuronType.Seed,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          neuronType: NeuronType.Seed,
+        },
+      };
+      expect(
+        getNeuronTags({
+          neuron: neuron,
+          identity: mockIdentity,
+          accounts: accountsWithHW,
+          i18n: en,
+        })
+      ).toEqual([seedTag]);
+    });
+
+    it("returns 'Ect'", () => {
+      const neuron: NeuronInfo = {
+        ...mockNeuron,
+        neuronType: NeuronType.Ect,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          neuronType: NeuronType.Ect,
+        },
+      };
+      expect(
+        getNeuronTags({
+          neuron: neuron,
+          identity: mockIdentity,
+          accounts: accountsWithHW,
+          i18n: en,
+        })
+      ).toEqual([ectTag]);
+    });
+
+    it("returns 'Seed' and 'Neurons' Fund' and 'Hardware Wallet'", () => {
+      const neuron: NeuronInfo = {
+        ...mockNeuron,
+        neuronType: NeuronType.Seed,
+        joinedCommunityFundTimestampSeconds: 123445n,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          neuronType: NeuronType.Seed,
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+          controller: mockHardwareWalletAccount.principal?.toText(),
+        },
+      };
+      expect(
+        getNeuronTags({
+          neuron: neuron,
+          identity: mockIdentity,
+          accounts: accountsWithHW,
+          i18n: en,
+        })
+      ).toEqual([seedTag, nfTag, hwTag]);
     });
   });
 
@@ -1821,6 +1891,45 @@ describe("neuron-utils", () => {
         },
       };
       expect(canBeMerged([neuron, neuron2]).isValid).toBe(false);
+    });
+
+    it("return invalid if two neurons have different neuron types", () => {
+      const neuron = {
+        ...mockNeuron,
+        neuronType: NeuronType.Seed,
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        neuronId: BigInt(444),
+        neuronType: undefined,
+      };
+      expect(canBeMerged([neuron, neuron2]).isValid).toBe(false);
+    });
+
+    it("return valid if two neurons have same neuron type", () => {
+      const neuron = {
+        ...mockNeuron,
+        neuronType: NeuronType.Ect,
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        neuronId: BigInt(444),
+        neuronType: NeuronType.Ect,
+      };
+      expect(canBeMerged([neuron, neuron2]).isValid).toBe(true);
+    });
+
+    it("return valid if two neurons are default type", () => {
+      const neuron = {
+        ...mockNeuron,
+        neuronType: undefined,
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        neuronId: BigInt(444),
+        neuronType: undefined,
+      };
+      expect(canBeMerged([neuron, neuron2]).isValid).toBe(true);
     });
   });
 
