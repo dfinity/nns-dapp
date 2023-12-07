@@ -26,6 +26,7 @@ import {
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
+  mockCkTESTBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import {
   mockCkETHMainAccount,
@@ -86,9 +87,9 @@ describe("Tokens route", () => {
         async ({ canisterId }) => {
           const tokenMap = {
             [CKBTC_UNIVERSE_CANISTER_ID.toText()]: mockCkBTCToken,
-            [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: mockCkBTCToken,
+            [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: mockCkTESTBTCToken,
             [CKETH_UNIVERSE_CANISTER_ID.toText()]: mockCkETHToken,
-            [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: mockCkETHToken,
+            [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: mockCkTESTBTCToken,
           };
           if (isNullish(tokenMap[canisterId.toText()])) {
             throw new Error(

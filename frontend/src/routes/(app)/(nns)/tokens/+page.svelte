@@ -39,7 +39,6 @@
 
   let loadSnsAccountsBalancesRequested = false;
   let loadCkBTCAccountsBalancesRequested = false;
-  let loadIcrcAccountsBalancesRequested = false;
 
   const loadSnsAccountsBalances = async (projects: SnsFullProject[]) => {
     // We start when the projects are fetched
@@ -74,20 +73,6 @@
   const loadIcrcTokenAccounts = async (
     icrcCanisters: IcrcCanistersStoreData
   ) => {
-    const universeIds = Object.keys(icrcCanisters);
-
-    // Nothing loaded yet or nothing to load
-    if (universeIds.length === 0) {
-      return;
-    }
-
-    // We trigger the loading of the Icrc Accounts Balances only once
-    if (loadIcrcAccountsBalancesRequested) {
-      return;
-    }
-
-    loadIcrcAccountsBalancesRequested = true;
-
     await loadAccountsBalances(Object.keys(icrcCanisters));
   };
 
