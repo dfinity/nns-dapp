@@ -30,9 +30,15 @@ describe("Accounts layout", () => {
         queryByTestId("select-universe-nav-title")
       ).not.toBeInTheDocument();
     });
+
+    it("should render back button", () => {
+      const { queryByTestId } = render(AccountsLayout);
+
+      expect(queryByTestId("back")).toBeInTheDocument();
+    });
   });
 
-  describe("when tokens flag is enabled", () => {
+  describe("when tokens flag is disabled", () => {
     beforeEach(() => {
       overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
     });
@@ -41,6 +47,12 @@ describe("Accounts layout", () => {
       const { queryByTestId } = render(AccountsLayout);
 
       expect(queryByTestId("select-universe-nav-title")).toBeInTheDocument();
+    });
+
+    it("should not render back button", () => {
+      const { queryByTestId } = render(AccountsLayout);
+
+      expect(queryByTestId("back")).not.toBeInTheDocument();
     });
   });
 });
