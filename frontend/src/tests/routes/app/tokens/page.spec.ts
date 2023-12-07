@@ -1,9 +1,18 @@
 import * as snsLedgerApi from "$lib/api/sns-ledger.api";
-import * as ckBTCLedgerApi from "$lib/api/wallet-ledger.api";
+import * as walletLedgerApi from "$lib/api/wallet-ledger.api";
+import {
+  CKBTC_UNIVERSE_CANISTER_ID,
+  CKTESTBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
+import {
+  CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
+  CKETH_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/cketh-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { numberToUlps } from "$lib/utils/token.utils";
@@ -18,17 +27,23 @@ import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
+import {
+  mockCkETHMainAccount,
+  mockCkETHToken,
+} from "$tests/mocks/cketh-accounts.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { TokensRoutePo } from "$tests/page-objects/TokensRoute.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AuthClient } from "@dfinity/auth-client";
 import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
+import { isNullish } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
@@ -50,6 +65,7 @@ describe("Tokens route", () => {
   const tetrisBalanceE8s = 222000000n;
   const pacmanBalanceE8s = 314000000n;
   const ckBTCBalanceE8s = 444556699n;
+  const ckETHBalanceUlps = 4_140_000_000_000_000_000n;
   const icpBalanceE8s = 123456789n;
 
   const renderPage = async () => {
@@ -63,15 +79,56 @@ describe("Tokens route", () => {
   describe("when feature flag enabled", () => {
     beforeEach(() => {
       vi.clearAllMocks();
+      icrcAccountsStore.reset();
+      tokensStore.reset();
       overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
-      vi.spyOn(ckBTCLedgerApi, "getToken").mockResolvedValue(mockCkBTCToken);
+      vi.spyOn(walletLedgerApi, "getToken").mockImplementation(
+        async ({ canisterId }) => {
+          const tokenMap = {
+            [CKBTC_UNIVERSE_CANISTER_ID.toText()]: mockCkBTCToken,
+            [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: mockCkBTCToken,
+            [CKETH_UNIVERSE_CANISTER_ID.toText()]: mockCkETHToken,
+            [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: mockCkETHToken,
+          };
+          if (isNullish(tokenMap[canisterId.toText()])) {
+            throw new Error(
+              `Token not found for canister ${canisterId.toText()}`
+            );
+          }
+          return tokenMap[canisterId.toText()];
+        }
+      );
       vi.spyOn(AuthClient, "create").mockImplementation(
         async (): Promise<AuthClient> => mockAuthClient
       );
-      vi.spyOn(ckBTCLedgerApi, "getAccount").mockResolvedValue({
-        ...mockCkBTCMainAccount,
-        balanceE8s: ckBTCBalanceE8s,
-      });
+      vi.spyOn(walletLedgerApi, "getAccount").mockImplementation(
+        async ({ canisterId }) => {
+          const accountMap = {
+            [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
+              ...mockCkBTCMainAccount,
+              balanceE8s: ckBTCBalanceE8s,
+            },
+            [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: {
+              ...mockCkBTCMainAccount,
+              balanceE8s: ckBTCBalanceE8s,
+            },
+            [CKETH_UNIVERSE_CANISTER_ID.toText()]: {
+              ...mockCkETHMainAccount,
+              balanceE8s: ckETHBalanceUlps,
+            },
+            [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: {
+              ...mockCkETHMainAccount,
+              balanceE8s: ckETHBalanceUlps,
+            },
+          };
+          if (isNullish(accountMap[canisterId.toText()])) {
+            throw new Error(
+              `Account not found for canister ${canisterId.toText()}`
+            );
+          }
+          return accountMap[canisterId.toText()];
+        }
+      );
       vi.spyOn(snsLedgerApi, "snsTransfer").mockResolvedValue(undefined);
       vi.spyOn(snsLedgerApi, "getSnsAccounts").mockImplementation(
         async ({ rootCanisterId }) => {
@@ -120,6 +177,7 @@ describe("Tokens route", () => {
           token: mockSnsToken,
         },
       });
+      setCkETHCanisters();
       // TODO: Remove when we deprecate the store: https://dfinity.atlassian.net/browse/GIX-2060
       transactionsFeesStore.setFee({
         rootCanisterId: rootCanisterIdTetris,
@@ -156,25 +214,27 @@ describe("Tokens route", () => {
           overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
         });
 
-        it("should render ICP, ckBTC and SNS tokens", async () => {
+        it("should render ICP, ckBTC, ckETH and SNS tokens", async () => {
           const po = await renderPage();
 
           const tokensPagePo = po.getTokensPagePo();
           expect(await tokensPagePo.getTokenNames()).toEqual([
             "Internet Computer",
             "ckBTC",
+            "ckETH",
             "Tetris",
             "Pacman",
           ]);
         });
 
-        it("should render ICP, ckBTC and SNS token balances", async () => {
+        it("should render ICP, ckBTC, ckETH and SNS token balances", async () => {
           const po = await renderPage();
 
           const tokensPagePo = po.getTokensPagePo();
           expect(await tokensPagePo.getRowsData()).toEqual([
             { projectName: "Internet Computer", balance: "1.23 ICP" },
             { projectName: "ckBTC", balance: "4.45 ckBTC" },
+            { projectName: "ckETH", balance: "4.14 ckETH" },
             { projectName: "Tetris", balance: "2.22 TST" },
             { projectName: "Pacman", balance: "3.14 PCMN" },
           ]);
@@ -246,6 +306,7 @@ describe("Tokens route", () => {
           expect(await signInPo.getTokenNames()).toEqual([
             "Internet Computer",
             "ckBTC",
+            "ckETH",
             "Tetris",
             "Pacman",
           ]);
@@ -264,6 +325,7 @@ describe("Tokens route", () => {
           const signInPo = po.getSignInTokensPagePo();
           expect(await signInPo.getTokenNames()).toEqual([
             "Internet Computer",
+            "ckETH",
             "Tetris",
             "Pacman",
           ]);
