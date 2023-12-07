@@ -191,7 +191,6 @@ impl State {
             dfn_core::api::print(format!(
                 "start_migration_to: No migration needed.  Schema is already {schema:?}."
             ));
-            return;
         } else {
             let new_accounts_db = match schema {
                 SchemaLabel::Map => AccountsDb::Map(AccountsDbAsMap::default()),
@@ -208,7 +207,8 @@ impl State {
                         .partitions_maybe
                         .borrow()
                         .as_ref()
-                        .map_err(|_|"foo").unwrap()
+                        .map_err(|_| "foo")
+                        .unwrap()
                         .get(Partitions::ACCOUNTS_MEMORY_ID);
                     AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::new(vm))
                 }
