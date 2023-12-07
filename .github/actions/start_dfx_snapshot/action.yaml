@@ -29,6 +29,10 @@ inputs:
     description: "The name of the logfile to write to"
     required: false
     default: "dfx.log"
+outputs:
+  logfile:
+    description: The path to the dfx log file
+    value: ${{ inputs.logfile }}
 runs:
   using: "composite"
   steps:
