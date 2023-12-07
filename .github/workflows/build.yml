@@ -135,7 +135,7 @@ jobs:
         with:
           nns_dapp_wasm: 'nns-dapp_test.wasm.gz'
       - name: Downgrade nns-dapp to prod and upgrade back again
-        run: ./scripts/nns-dapp/migration-test --schema1 Map --schema2 Map --accounts 10000 --wasm1 nns-dapp_test.wasm.gz --wasm2 nns-dapp_test.wasm.gz
+        run: ./scripts/nns-dapp/migration-test --schema1 Map --schema2 Map --accounts 10000 --wasm1 nns-dapp_test.wasm.gz --wasm2 nns-dapp_test.wasm.gz --args1 nns-dapp-arg-local.did --args2 nns-dapp-arg-local.did
   test-upgrade-stable:
     needs: build
     runs-on: ubuntu-20.04
@@ -154,7 +154,7 @@ jobs:
         with:
           nns_dapp_wasm: 'nns-dapp_test.wasm.gz'
       - name: Downgrade nns-dapp to prod and upgrade back again
-        run: ./scripts/nns-dapp/migration-test --schema1 AccountsInStableMemory --schema2 AccountsInStableMemory --accounts 10000 --wasm1 nns-dapp_test.wasm.gz --wasm2 nns-dapp_test.wasm.gz
+        run: ./scripts/nns-dapp/migration-test --schema1 AccountsInStableMemory --schema2 AccountsInStableMemory --accounts 10000 --wasm1 nns-dapp_test.wasm.gz --wasm2 nns-dapp_test.wasm.gz --args1 nns-dapp-arg-local.did --args2 nns-dapp-arg-local.did
   # TODO: stable <-> map
   test-test-account-api:
     needs: build
