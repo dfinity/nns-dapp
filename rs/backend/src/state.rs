@@ -196,13 +196,21 @@ impl State {
             let new_accounts_db = match schema {
                 SchemaLabel::Map => AccountsDb::Map(AccountsDbAsMap::default()),
                 SchemaLabel::AccountsInStableMemory => {
-                    AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::new(
+                    // If the memory isn't partitioned, partition it now.
+                    if let Err(memory) = self.partitions_maybe.borrow().as_ref() {
+                        let partitions = Partitions::new_for_schema(Partitions::copy_memory_reference(memory), schema);
                         self.partitions_maybe
-                            .borrow()
-                            .as_ref()
-                            .unwrap()
-                            .get(Partitions::ACCOUNTS_MEMORY_ID),
-                    ))
+                            .replace(Ok(partitions))
+                            .map(|_| ())
+                            .unwrap_or_default();
+                    }
+                    let vm = self
+                        .partitions_maybe
+                        .borrow()
+                        .as_ref()
+                        .unwrap()
+                        .get(Partitions::ACCOUNTS_MEMORY_ID);
+                    AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::new(vm))
                 }
             };
             self.accounts_store.borrow_mut().migrate_accounts_to(new_accounts_db);
