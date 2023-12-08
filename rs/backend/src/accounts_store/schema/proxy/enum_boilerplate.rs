@@ -73,4 +73,12 @@ impl AccountsDbTrait for AccountsDb {
             AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => unbounded_stable_btree_map_db.iter(),
         }
     }
+    fn range(&self, key_range: impl RangeBounds<Vec<u8>>) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
+        match self {
+            AccountsDb::Map(map_db) => map_db.range(key_range),
+            AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => {
+                unbounded_stable_btree_map_db.range(key_range)
+            }
+        }
+    }
 }

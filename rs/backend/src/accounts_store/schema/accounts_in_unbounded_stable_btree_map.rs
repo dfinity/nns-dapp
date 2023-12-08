@@ -6,6 +6,7 @@
 //! as described on the [dfinity forum](https://forum.dfinity.org/t/stable-structures-removing-the-bounded-size-requirement/21167).
 
 use super::{Account, AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel};
+use core::ops::RangeBounds;
 use ic_stable_structures::{btreemap::BTreeMap as StableBTreeMap, memory_manager::VirtualMemory, DefaultMemoryImpl};
 use std::{collections::BTreeMap, fmt};
 
@@ -51,6 +52,10 @@ impl AccountsDbTrait for AccountsDbAsUnboundedStableBTreeMap {
     }
     fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
         let iterator = self.accounts.iter().map(|(_key, value)| value);
+        Box::new(iterator)
+    }
+    fn range(&self, key_range: impl RangeBounds<Vec<u8>>) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
+        let iterator = self.accounts.range(key_range);
         Box::new(iterator)
     }
     fn schema_label(&self) -> SchemaLabel {

@@ -3,6 +3,7 @@
 //! The proxy manages migrations from one implementation to another.
 use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel};
 use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
+use core::ops::RangeBounds;
 use ic_stable_structures::{memory_manager::VirtualMemory, DefaultMemoryImpl};
 use std::collections::BTreeMap;
 mod enum_boilerplate;
@@ -142,6 +143,10 @@ impl AccountsDbTrait for AccountsDbAsProxy {
             "AccountsDb::Proxy: authoritative schema label: {schema_label:#?}"
         ));
         schema_label
+    }
+    /// Iterates over a range of accounts in the authoritative db.
+    fn range(&self, key_range: impl RangeBounds<Vec<u8>>) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
+        self.authoritative_db.range(key_range)
     }
 }
 
