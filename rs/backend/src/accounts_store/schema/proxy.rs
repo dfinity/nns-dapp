@@ -25,7 +25,8 @@ pub struct AccountsDbAsProxy {
     second_db: Option<AccountsDb>,
     // TODO: Make a struct that holds all the migration data.
     next_to_migrate: Option<Vec<u8>>,
-    migration_countdown: u32,
+    // An estimate of how many blocks are still needed to complete the migration.
+    approximate_blocks_for_migration: u32,
 }
 
 #[derive(Debug)]
@@ -48,7 +49,7 @@ impl AccountsDbAsProxy {
             authoritative_db: AccountsDb::Map(AccountsDbAsMap::default()),
             second_db: None,
             next_to_migrate: None,
-            migration_countdown: 0,
+            approximate_blocks_for_migration: 0,
         }
     }
     pub fn new_with_unbounded_stable_btree_map(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
@@ -57,7 +58,7 @@ impl AccountsDbAsProxy {
             authoritative_db: AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::new(memory)),
             second_db: None,
             next_to_migrate: None,
-            migration_countdown: 0,
+            approximate_blocks_for_migration: 0,
         }
     }
     pub fn load_with_unbounded_stable_btree_map(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
@@ -66,7 +67,7 @@ impl AccountsDbAsProxy {
             authoritative_db: AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::load(memory)),
             second_db: None,
             next_to_migrate: None,
-            migration_countdown: 0,
+            approximate_blocks_for_migration: 0,
         }
     }
 }
@@ -79,16 +80,14 @@ impl AccountsDbAsProxy {
     pub const MIGRATION_FINALIZATION_STEP_SIZE: u32 = 1;
     /// Migration countdown; when it reaches zero, the migration is complete.
     pub fn migration_countdown(&self) -> u32 {
-        self.migration_countdown
+        self.second_db.as_ref().map_or(0, |_db| Self::MIGRATION_FINALIZATION_STEP_SIZE + self.approximate_blocks_for_migration)
     }
     /// Starts a migration, if needed.
     pub fn start_migrating_accounts_to(&mut self, accounts_db: AccountsDb) {
         self.second_db = Some(accounts_db);
         self.next_to_migrate = self.authoritative_db.iter().next().map(|(key, _account)| key.clone());
         // At every heartbeat we migrate a few accounts:
-        let approximate_blocks_for_account_migration =
-            (self.authoritative_db.db_accounts_len() as u32) / Self::MIGRATION_STEP_SIZE;
-        self.migration_countdown = approximate_blocks_for_account_migration + Self::MIGRATION_FINALIZATION_STEP_SIZE;
+        self.approximate_blocks_for_migration = (self.authoritative_db.db_accounts_len() as u32) / Self::MIGRATION_STEP_SIZE;
     }
 
     /// Advances the migration by one step.
@@ -99,7 +98,7 @@ impl AccountsDbAsProxy {
                 self.second_db.as_mut().unwrap().db_insert_account(&key, account);
             }
             self.next_to_migrate = range.next().map(|(key, _account)| key.clone());
-            self.migration_countdown = u32::max(1, self.migration_countdown - Self::MIGRATION_STEP_SIZE);
+            self.approximate_blocks_for_migration = self.approximate_blocks_for_migration.saturating_sub(Self::MIGRATION_STEP_SIZE);
         } else {
             self.complete_migration();
         }
@@ -109,7 +108,7 @@ impl AccountsDbAsProxy {
     pub fn complete_migration(&mut self) {
         self.authoritative_db = self.second_db.take().unwrap();
         self.next_to_migrate = None;
-        self.migration_countdown = 0;
+        self.approximate_blocks_for_migration = 0;
     }
 }
 
@@ -119,7 +118,7 @@ impl AccountsDbBTreeMapTrait for AccountsDbAsProxy {
             authoritative_db: AccountsDb::Map(AccountsDbAsMap::from_map(map)),
             second_db: None,
             next_to_migrate: None,
-            migration_countdown: 0,
+            approximate_blocks_for_migration: 0,
         }
     }
     fn as_map(&self) -> BTreeMap<Vec<u8>, Account> {
