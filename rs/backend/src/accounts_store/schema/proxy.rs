@@ -22,10 +22,16 @@ mod enum_boilerplate;
 #[derive(Debug)]
 pub struct AccountsDbAsProxy {
     authoritative_db: AccountsDb,
-    second_db: Option<AccountsDb>,
-    // TODO: Make a struct that holds all the migration data.
+    migration: Option<Migration>,
+}
+
+#[derive(Debug)]
+struct Migration {
+    /// The database being migrated to
+    db: AccountsDb,
+    /// The next account to migrate.
     next_to_migrate: Option<Vec<u8>>,
-    // An estimate of how many blocks are still needed to complete the migration.
+    /// An estimate of how many blocks are still needed to complete the migration.
     approximate_blocks_for_migration: u32,
 }
 
@@ -47,27 +53,21 @@ impl AccountsDbAsProxy {
     pub fn new_with_map() -> Self {
         Self {
             authoritative_db: AccountsDb::Map(AccountsDbAsMap::default()),
-            second_db: None,
-            next_to_migrate: None,
-            approximate_blocks_for_migration: 0,
+            migration: None,
         }
     }
     pub fn new_with_unbounded_stable_btree_map(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
         dfn_core::api::print("New Proxy: AccountsInStableMemory");
         Self {
             authoritative_db: AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::new(memory)),
-            second_db: None,
-            next_to_migrate: None,
-            approximate_blocks_for_migration: 0,
+            migration: None,
         }
     }
     pub fn load_with_unbounded_stable_btree_map(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
         dfn_core::api::print("Load Proxy: AccountsInStableMemory");
         Self {
             authoritative_db: AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::load(memory)),
-            second_db: None,
-            next_to_migrate: None,
-            approximate_blocks_for_migration: 0,
+            migration: None,
         }
     }
 }
@@ -80,35 +80,45 @@ impl AccountsDbAsProxy {
     pub const MIGRATION_FINALIZATION_STEP_SIZE: u32 = 1;
     /// Migration countdown; when it reaches zero, the migration is complete.
     pub fn migration_countdown(&self) -> u32 {
-        self.second_db.as_ref().map_or(0, |_db| Self::MIGRATION_FINALIZATION_STEP_SIZE + self.approximate_blocks_for_migration)
+        self.migration.as_ref().map_or(0, |migration| {
+            Self::MIGRATION_FINALIZATION_STEP_SIZE + migration.approximate_blocks_for_migration
+        })
     }
     /// Starts a migration, if needed.
     pub fn start_migrating_accounts_to(&mut self, accounts_db: AccountsDb) {
-        self.second_db = Some(accounts_db);
-        self.next_to_migrate = self.authoritative_db.iter().next().map(|(key, _account)| key.clone());
-        // At every heartbeat we migrate a few accounts:
-        self.approximate_blocks_for_migration = (self.authoritative_db.db_accounts_len() as u32) / Self::MIGRATION_STEP_SIZE;
+        self.migration = Some(Migration {
+            db: accounts_db,
+            next_to_migrate: self.authoritative_db.iter().next().map(|(key, _account)| key.clone()),
+            // At every heartbeat we migrate a few accounts:
+            approximate_blocks_for_migration: (self.authoritative_db.db_accounts_len() as u32)
+                / Self::MIGRATION_STEP_SIZE,
+        });
     }
 
     /// Advances the migration by one step.
     pub fn step_migration(&mut self) {
-        if let Some(next_to_migrate) = &self.next_to_migrate {
-            let mut range = self.authoritative_db.range(next_to_migrate.clone()..);
-            for (key, account) in (&mut range).take(Self::MIGRATION_STEP_SIZE as usize) {
-                self.second_db.as_mut().unwrap().db_insert_account(&key, account);
+        if let Some(migration) = &mut self.migration {
+            if let Some(next_to_migrate) = &migration.next_to_migrate {
+                self.authoritative_db.db_remove_account(next_to_migrate);
+                let mut range = self.authoritative_db.range(next_to_migrate.clone()..);
+                for (key, account) in (&mut range).take(Self::MIGRATION_STEP_SIZE as usize) {
+                    migration.db.db_insert_account(&key, account);
+                }
+                migration.next_to_migrate = range.next().map(|(key, _account)| key.clone());
+                migration.approximate_blocks_for_migration = migration
+                    .approximate_blocks_for_migration
+                    .saturating_sub(Self::MIGRATION_STEP_SIZE);
+            } else {
+                self.complete_migration();
             }
-            self.next_to_migrate = range.next().map(|(key, _account)| key.clone());
-            self.approximate_blocks_for_migration = self.approximate_blocks_for_migration.saturating_sub(Self::MIGRATION_STEP_SIZE);
-        } else {
-            self.complete_migration();
         }
     }
 
-    /// Completes the migration.
+    /// Completes any migration in progress.
     pub fn complete_migration(&mut self) {
-        self.authoritative_db = self.second_db.take().unwrap();
-        self.next_to_migrate = None;
-        self.approximate_blocks_for_migration = 0;
+        if let Some(migration) = self.migration.take() {
+            self.authoritative_db = migration.db;
+        }
     }
 }
 
@@ -116,9 +126,7 @@ impl AccountsDbBTreeMapTrait for AccountsDbAsProxy {
     fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
         Self {
             authoritative_db: AccountsDb::Map(AccountsDbAsMap::from_map(map)),
-            second_db: None,
-            next_to_migrate: None,
-            approximate_blocks_for_migration: 0,
+            migration: None,
         }
     }
     fn as_map(&self) -> BTreeMap<Vec<u8>, Account> {
@@ -135,8 +143,8 @@ impl AccountsDbTrait for AccountsDbAsProxy {
     /// Inserts into all the underlying databases.
     fn db_insert_account(&mut self, account_key: &[u8], account: Account) {
         self.authoritative_db.db_insert_account(account_key, account.clone());
-        if let Some(db) = &mut self.second_db {
-            db.db_insert_account(account_key, account);
+        if let Some(migration) = &mut self.migration {
+            migration.db.db_insert_account(account_key, account);
         }
     }
     /// Checks the authoritative database.
@@ -150,8 +158,8 @@ impl AccountsDbTrait for AccountsDbAsProxy {
     /// Removes an account from all underlying databases.
     fn db_remove_account(&mut self, account_key: &[u8]) {
         self.authoritative_db.db_remove_account(account_key);
-        if let Some(db) = self.second_db.as_mut() {
-            db.db_remove_account(account_key);
+        if let Some(migration) = self.migration.as_mut() {
+            migration.db.db_remove_account(account_key);
         }
     }
     /// Gets the length from the authoritative database.
