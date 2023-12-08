@@ -484,6 +484,7 @@ export const fromPercentageBasisPoints = (
     : fromNullable(percentage.basis_points);
 };
 
+// Is a proposal with variable voting-participation thresholds
 export const isSuperMajority = (immediateMajorityPercent: number): boolean =>
   immediateMajorityPercent !==
   basisPointsToPercent(MINIMUM_YES_PROPORTION_OF_EXERCISED_VOTING_POWER);

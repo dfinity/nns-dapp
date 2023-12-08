@@ -43,10 +43,13 @@
   let yesNoSum: number;
   $: yesNoSum = yes + no;
   let hintText: string;
-  $: hintText = yesNoSum > 0 ? replacePlaceholders($i18n.proposal_detail__vote.votes_hint, {
-    $immediate_majority: formatPercent(immediateMajorityPercent),
-    $cast_votes: formatPercent((yes / yesNoSum) * 100),
-  }) : "";
+  $: hintText =
+    yesNoSum > 0
+      ? replacePlaceholders($i18n.proposal_detail__vote.votes_hint, {
+          $immediate_majority: formatPercent(immediateMajorityPercent),
+          $cast_votes: formatPercent((yes / yesNoSum) * 100),
+        })
+      : "";
 
   let showExpirationDate: boolean = true;
   $: showExpirationDate =
