@@ -92,6 +92,7 @@
     "merge_neurons_same_id": "Two neurons with the same id can't be merged.",
     "merge_neurons_not_same_controller": "Two neurons need to have the same controller.",
     "merge_neurons_not_same_manage_neuron_followees": "Two neurons need to have the same followee on the topic of \"Manage Neuron\".",
+    "merge_neurons_different_types": "Only neurons of the same type can be merged.",
     "neuron_account_not_found": "Sorry, the neuron has no account associated.",
     "governance_error": "Sorry, there was an error. Please try again.",
     "not_mergeable": "This neuron can't be merged.",
@@ -262,6 +263,12 @@
     "transaction_time": "Transaction Time",
     "transaction_time_seconds": "Seconds"
   },
+  "neuron_types": {
+    "seed": "Seed",
+    "seedDescription": "Seed Neuron",
+    "ect": "ECT",
+    "ectDescription": "Early Contributor Token Neuron"
+  },
   "neurons": {
     "title": "Neurons",
     "text": "Earn rewards by staking your ICP in neurons. Neurons allow you to participate in governance on the Internet Computer by voting on Network Nervous System (NNS) proposals.",
@@ -323,6 +330,7 @@
     "edit_delay": "Edit Delay",
     "merge_neurons_article_title": "IC NNS Neurons Can Now Be Merged",
     "cannot_merge_neuron_community": "Neurons that joined the Neurons' Fund can't be merged.",
+    "cannot_merge_neuron_seed": "Seed neurons cannot be merged.",
     "cannot_merge_neuron_spawning": "Neurons that are spawning can't be merged.",
     "cannot_merge_neuron_hotkey": "You cannot merge neurons controlled by a hotkey.",
     "cannot_merge_neuron_state": "Only locked neurons can be merged.",
@@ -358,8 +366,8 @@
   },
   "follow_neurons": {
     "description": "Follow neurons to automate your voting, and receive the maximum voting rewards. You can follow neurons on specific topics or all topics.",
-    "topic_0_title": "All Except Governance, and SNS & Neurons' Fund",
-    "topic_0_subtitle": "Follow neurons on all proposal topics except the governance topic, and SNS & Neurons' Fund.",
+    "topic_0_title": "All Except Governance, Seed, and SNS & Neurons' Fund",
+    "topic_0_subtitle": "Follow neurons on all proposal topics except the governance and the seed topics, and SNS & Neurons' Fund.",
     "topic_1_title": "Manage Neuron",
     "topic_1_subtitle": "Proposals that manage specific neurons, for example making them perform actions.",
     "topic_2_title": "Exchange Rate",
@@ -1008,6 +1016,8 @@
     "checking_incomplete_btc_transfers": "Checking for incomplete BTC transfers",
     "all_btc_transfers_complete": "All transfers are complete",
     "click_to_complete_btc_transfers": "Click here to complete BTC transfer for $amount ckBTC",
+    "btc_received": "BTC Received",
+    "btc_sent": "BTC Sent",
     "btc_network": "BTC Network",
     "receiving_btc": "Receiving BTC"
   },

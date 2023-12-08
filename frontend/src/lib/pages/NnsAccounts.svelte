@@ -15,6 +15,7 @@
   import { ENABLE_MY_TOKENS } from "$lib/stores/feature-flags.store";
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { IconAdd } from "@dfinity/gix-components";
 
   onMount(() => {
     if (!$ENABLE_MY_TOKENS) {
@@ -35,7 +36,14 @@
     <TokensTable
       {userTokensData}
       firstColumnHeader={$i18n.tokens.accounts_header}
-    />
+    >
+      <div slot="last-row" class="add-account-row">
+        <!-- TODO: Add functionality to "Add Account" -->
+        <button class="ghost with-icon"
+          ><IconAdd />{$i18n.accounts.add_account}</button
+        >
+      </div>
+    </TokensTable>
   </TestIdWrapper>
 {:else}
   <div class="card-grid" data-tid="accounts-body">
@@ -63,3 +71,32 @@
     {/if}
   </div>
 {/if}
+
+<style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/interaction";
+  @use "../themes/mixins/button";
+
+  .add-account-row {
+    @include interaction.tappable;
+
+    grid-column: 1 / -1;
+
+    display: grid;
+    align-items: center;
+    justify-content: center;
+
+    padding: var(--padding-2x);
+
+    background: var(--table-row-background);
+    border: 1px dashed var(--primary);
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+
+    &:hover {
+      background-color: var(--table-row-background-hover);
+    }
+
+    & button.with-icon {
+      @include button.with-icon;
+    }
+  }
+</style>

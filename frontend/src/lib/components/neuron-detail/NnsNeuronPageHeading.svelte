@@ -6,7 +6,7 @@
     formatVotingPower,
     getNeuronTags,
     neuronStake,
-    type NeuronTag,
+    type NeuronTagData,
   } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { i18n } from "$lib/stores/i18n";
@@ -30,7 +30,7 @@
   $: canVote =
     neuron.dissolveDelaySeconds > BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE);
 
-  let neuronTags: NeuronTag[];
+  let neuronTags: NeuronTagData[];
   $: neuronTags = getNeuronTags({
     neuron,
     identity: $authStore.identity,

@@ -500,7 +500,7 @@ describe("token-utils", () => {
       expect(numberToUlps({ amount: 3.14, token })).toBe(314_000_000n);
       expect(numberToUlps({ amount: 0.14, token })).toBe(14_000_000n);
       // TODO: Expect data after upgrading ic-js
-      expect(() => numberToUlps({ amount: 0.00000002, token })).toThrow();
+      expect(numberToUlps({ amount: 0.00000002, token })).toBe(2n);
     });
 
     it("converts number to ulps with token", () => {
