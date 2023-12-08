@@ -42,14 +42,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Install cargo binstall
-        uses: ./.github/actions/install_binstall
       - name: Install spellcheck
         run: |
           cd /
           sudo apt-get update
           sudo apt-get install -yy hunspell hunspell-en-gb hunspell-en-us clang libclang-dev
-          cargo binstall --pkg-url="{ repo }/releases/download/v{ version }/{ name }-v{ version }-{ target }" --strategies crate-meta-data --version 0.13.1 cargo-spellcheck -y --force --pkg-fmt bin
+          cargo install --locked --target x86_64-unknown-linux-gnu cargo-spellcheck@0.13.1
       - name: Spellcheck Rust
         run: cargo spellcheck
       - name: Spellcheck changelog
