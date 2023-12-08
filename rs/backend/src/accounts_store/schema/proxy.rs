@@ -120,7 +120,6 @@ impl AccountsDbAsProxy {
                     "Stepping migration: {:?} -> {:?}",
                     self.authoritative_db, migration.db
                 ));
-                self.authoritative_db.db_remove_account(next_to_migrate);
                 let mut range = self.authoritative_db.range(next_to_migrate.clone()..);
                 for (key, account) in (&mut range).take(Self::MIGRATION_STEP_SIZE as usize) {
                     migration.db.db_insert_account(&key, account);
