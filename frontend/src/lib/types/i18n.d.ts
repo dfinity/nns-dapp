@@ -600,7 +600,9 @@ interface I18nProposal_detail__vote {
   standard_super_majority: string;
   standard_super_majority_description: string;
   decision_intro: string;
-  votes_hint: string;
+  super_majority_decision_intro: string;
+  cast_votes: string;
+  cast_votes_needs: string;
 }
 
 interface I18nProposal_detail__ineligible {
