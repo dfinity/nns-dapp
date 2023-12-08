@@ -3,6 +3,7 @@
 //! The proxy manages migrations from one implementation to another.
 use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel};
 use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
+use core::fmt;
 use core::ops::RangeBounds;
 use ic_stable_structures::{memory_manager::VirtualMemory, DefaultMemoryImpl};
 use std::collections::BTreeMap;
@@ -25,12 +26,18 @@ pub struct AccountsDbAsProxy {
     migration: Option<Migration>,
 }
 
-#[derive(Debug)]
 struct Migration {
     /// The database being migrated to
     db: AccountsDb,
     /// The next account to migrate.
     next_to_migrate: Option<Vec<u8>>,
+}
+
+impl fmt::Debug for Migration {
+    /// Summarizes the accounts DB contents for debug printouts.
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        self.db.fmt(f)
+    }
 }
 
 #[derive(Debug)]
