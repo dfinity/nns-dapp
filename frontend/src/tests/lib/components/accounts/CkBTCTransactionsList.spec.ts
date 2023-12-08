@@ -10,6 +10,7 @@ import {
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import {
+  createApproveTransaction,
   createBurnTransaction,
   mockIcrcTransactionMint,
   mockIcrcTransactionsStoreSubscribe,
@@ -66,7 +67,7 @@ describe("CkBTCTransactionList", () => {
     vi.useRealTimers();
   });
 
-  it("should render description burn to btc network", async () => {
+  it("should render burn without memo as BTC Sent to BTC Network", async () => {
     const errorLog = [];
     vi.spyOn(console, "error").mockImplementation((msg) => {
       errorLog.push(msg);
@@ -100,12 +101,12 @@ describe("CkBTCTransactionList", () => {
     const cards = await po.getTransactionCardPos();
 
     expect(cards).toHaveLength(1);
-    expect(await cards[0].getHeadline()).toEqual("Sent");
+    expect(await cards[0].getHeadline()).toEqual("BTC Sent");
     expect(await cards[0].getIdentifier()).toEqual("To: BTC Network");
     expect(errorLog).toEqual(["Failed to decode ckBTC burn memo"]);
   });
 
-  it("should render description burn to btc address", async () => {
+  it("should render burn as BTC Sent to withdrawal address", async () => {
     const btcWithdrawalAddress = "1ASLxsAMbbt4gcrNc6v6qDBW4JkeWAtTeh";
     const kytFee = 1334;
     const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
@@ -140,7 +141,7 @@ describe("CkBTCTransactionList", () => {
     const cards = await po.getTransactionCardPos();
 
     expect(cards).toHaveLength(1);
-    expect(await cards[0].getHeadline()).toEqual("Sent");
+    expect(await cards[0].getHeadline()).toEqual("BTC Sent");
     expect(await cards[0].getIdentifier()).toEqual(
       `To: ${btcWithdrawalAddress}`
     );
@@ -170,6 +171,60 @@ describe("CkBTCTransactionList", () => {
     const cards = await po.getTransactionCardPos();
 
     expect(await cards[0].getIdentifier()).toEqual("From: BTC Network");
+  });
+
+  it("should merge Approve with corresponding Burn", async () => {
+    const btcWithdrawalAddress = "1ASLxsAMbbt4gcrNc6v6qDBW4JkeWAtTeh";
+    const kytFee = 3000;
+    const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
+    const burnMemo = new Uint8Array(Cbor.encode(decodedMemo));
+
+    const burnAmount = 300_000_000n;
+    const approveFee = 14n;
+
+    const store = {
+      [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
+        [mockCkBTCMainAccount.identifier]: {
+          transactions: [
+            {
+              id: 201n,
+              transaction: createBurnTransaction({
+                amount: burnAmount,
+                from: {
+                  owner: mockCkBTCMainAccount.principal,
+                  subaccount: [],
+                },
+                memo: burnMemo,
+              }),
+            },
+            {
+              id: 202n,
+              transaction: createApproveTransaction({
+                fee: approveFee,
+              }),
+            },
+          ],
+          completed: false,
+          oldestTxId: BigInt(0),
+        },
+      },
+    };
+
+    vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(
+      mockIcrcTransactionsStoreSubscribe(store)
+    );
+
+    const { po } = renderComponent();
+    const cards = await po.getTransactionCardPos();
+
+    expect(cards).toHaveLength(1);
+    const card = cards[0];
+
+    expect(await card.getHeadline()).toBe("BTC Sent");
+    expect(await card.getIdentifier()).toBe(`To: ${btcWithdrawalAddress}`);
+    // This is the burned amount + approve fee. The KYT fee is deducted after
+    // burning.
+    expect(await card.getAmount()).toBe("-3.00000014");
   });
 
   it("should render pending UTXOs", async () => {

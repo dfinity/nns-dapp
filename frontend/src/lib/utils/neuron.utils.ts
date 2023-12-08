@@ -32,6 +32,7 @@ import {
 } from "@dfinity/gix-components";
 import {
   NeuronState,
+  NeuronType,
   Topic,
   Vote,
   ineligibleNeurons,
@@ -248,6 +249,12 @@ export const getSpawningTimeInSeconds = (
 export const formatVotingPower = (value: bigint | number): string =>
   formatNumber(Number(value) / E8S_PER_ICP);
 
+export const isSeedNeuron = (neuron: NeuronInfo): boolean =>
+  neuron.neuronType === NeuronType.Seed;
+
+export const isEctNeuron = (neuron: NeuronInfo): boolean =>
+  neuron.neuronType === NeuronType.Ect;
+
 export const hasJoinedCommunityFund = (neuron: NeuronInfo): boolean =>
   neuron.joinedCommunityFundTimestampSeconds !== undefined;
 
@@ -361,8 +368,9 @@ export const isHotKeyControllable = ({
   ) !== undefined &&
   fullNeuron.controller !== identity?.getPrincipal().toText();
 
-export type NeuronTag = {
+export type NeuronTagData = {
   text: string;
+  description?: string;
 };
 
 export const getNeuronTags = ({
@@ -375,8 +383,21 @@ export const getNeuronTags = ({
   identity?: Identity | null;
   accounts: IcpAccountsStoreData;
   i18n: I18n;
-}): NeuronTag[] => {
-  const tags: NeuronTag[] = [];
+}): NeuronTagData[] => {
+  const tags: NeuronTagData[] = [];
+
+  if (isSeedNeuron(neuron)) {
+    tags.push({
+      text: i18n.neuron_types.seed,
+      description: i18n.neuron_types.seedDescription,
+    });
+  } else if (isEctNeuron(neuron)) {
+    tags.push({
+      text: i18n.neuron_types.ect,
+      description: i18n.neuron_types.ectDescription,
+    });
+  }
+
   if (hasJoinedCommunityFund(neuron)) {
     tags.push({ text: i18n.neurons.community_fund });
   }
@@ -615,6 +636,9 @@ const sameController = (neurons: NeuronInfo[]): boolean =>
 const sameId = (neurons: NeuronInfo[]): boolean =>
   new Set(neurons.map(({ neuronId }) => neuronId)).size === 1;
 
+const sameNeuronType = (neurons: NeuronInfo[]): boolean =>
+  new Set(neurons.map(({ neuronType }) => neuronType)).size === 1;
+
 /**
  * Receives multiple lists of followees sorted by id.
  *
@@ -670,6 +694,12 @@ export const canBeMerged = (
     return {
       isValid: false,
       messageKey: "error.merge_neurons_same_id",
+    };
+  }
+  if (!sameNeuronType(neurons)) {
+    return {
+      isValid: false,
+      messageKey: "error.merge_neurons_different_types",
     };
   }
   if (!sameController(neurons)) {

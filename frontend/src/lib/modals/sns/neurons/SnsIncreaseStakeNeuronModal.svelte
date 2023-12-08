@@ -1,5 +1,5 @@
 <script lang="ts">
-  import SnsTransactionModal from "$lib/modals/sns/neurons/SnsTransactionModal.svelte";
+  import SnsNeuronTransactionModal from "$lib/modals/sns/neurons/SnsNeuronTransactionModal.svelte";
   import type { Token, TokenAmountV2 } from "@dfinity/utils";
   import type { Principal } from "@dfinity/principal";
   import type { WizardStep } from "@dfinity/gix-components";
@@ -103,7 +103,7 @@
 
 <TestIdWrapper testId="sns-increase-stake-neuron-modal-component">
   {#if !loading && nonNullish(governanceCanisterId) && nonNullish(transactionFee)}
-    <SnsTransactionModal
+    <SnsNeuronTransactionModal
       {rootCanisterId}
       on:nnsSubmit={increaseStake}
       on:nnsClose
@@ -120,6 +120,6 @@
           $token: $snsTokenSymbolSelectedStore?.symbol ?? "",
         })}
       </p>
-    </SnsTransactionModal>
+    </SnsNeuronTransactionModal>
   {/if}
 </TestIdWrapper>

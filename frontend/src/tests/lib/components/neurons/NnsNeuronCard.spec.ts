@@ -16,7 +16,7 @@ import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronCardPo } from "$tests/page-objects/NnsNeuronCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { Neuron } from "@dfinity/nns";
-import { NeuronState } from "@dfinity/nns";
+import { NeuronState, NeuronType } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
 
 describe("NnsNeuronCard", () => {
@@ -158,6 +158,29 @@ describe("NnsNeuronCard", () => {
     const po = NnsNeuronCardPo.under(new JestPageObjectElement(container));
 
     expect(await po.getNeuronTags()).toEqual(["Hardware Wallet"]);
+  });
+
+  it("renders neuron type tag when not default", async () => {
+    icpAccountsStore.setForTesting({
+      main: mockMainAccount,
+      subAccounts: [],
+    });
+    const { container } = render(NnsNeuronCard, {
+      props: {
+        neuron: {
+          ...mockNeuron,
+          neuronType: NeuronType.Seed,
+          fullNeuron: {
+            ...mockFullNeuron,
+            neuronType: NeuronType.Seed,
+          },
+        },
+      },
+    });
+
+    const po = NnsNeuronCardPo.under(new JestPageObjectElement(container));
+
+    expect(await po.getNeuronTags()).toEqual(["Seed Seed Neuron"]);
   });
 
   it("renders proper text when status is LOCKED", async () => {

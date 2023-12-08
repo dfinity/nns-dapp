@@ -14,6 +14,7 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronPageHeadingPo } from "$tests/page-objects/NnsNeuronPageHeading.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { NeuronInfo } from "@dfinity/nns";
+import { NeuronType } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
 describe("NnsNeuronPageHeading", () => {
@@ -129,5 +130,22 @@ describe("NnsNeuronPageHeading", () => {
     });
 
     expect(await po.getNeuronTags()).toEqual(["Hardware Wallet"]);
+  });
+
+  it("should render neuron type tag", async () => {
+    icpAccountsStore.setForTesting({
+      main: mockMainAccount,
+      subAccounts: [],
+    });
+    const po = renderComponent({
+      ...mockNeuron,
+      neuronType: NeuronType.Ect,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        neuronType: NeuronType.Ect,
+      },
+    });
+
+    expect(await po.getNeuronTags()).toEqual(["ECT"]);
   });
 });

@@ -138,6 +138,44 @@ export const createMintTransaction = ({
   };
 };
 
+export const createApproveTransaction = ({
+  timestamp = 12354n,
+  amount = 33_000_000n,
+  fee = 10_000n,
+  from = fakeAccount,
+  memo,
+  createdAt = 123n,
+  spender = fakeAccount,
+}: {
+  timestamp?: bigint;
+  amount?: bigint;
+  fee?: bigint;
+  from?: IcrcCandidAccount;
+  memo?: Uint8Array;
+  createdAt?: bigint;
+  spender?: IcrcCandidAccount;
+}): IcrcTransaction => {
+  return {
+    kind: "approve",
+    timestamp,
+    approve: [
+      {
+        amount,
+        from,
+        memo: toNullable(memo),
+        fee: toNullable(fee),
+        created_at_time: toNullable(createdAt),
+        spender: spender,
+        expected_allowance: [],
+        expires_at: [],
+      },
+    ],
+    burn: [],
+    mint: [],
+    transfer: [],
+  };
+};
+
 export const createBurnTransaction = ({
   timestamp = 12354n,
   amount = 33n,

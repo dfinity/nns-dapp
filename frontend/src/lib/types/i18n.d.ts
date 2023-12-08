@@ -96,6 +96,7 @@ interface I18nError {
   merge_neurons_same_id: string;
   merge_neurons_not_same_controller: string;
   merge_neurons_not_same_manage_neuron_followees: string;
+  merge_neurons_different_types: string;
   neuron_account_not_found: string;
   governance_error: string;
   not_mergeable: string;
@@ -272,6 +273,13 @@ interface I18nAccounts {
   transaction_time_seconds: string;
 }
 
+interface I18nNeuron_types {
+  seed: string;
+  seedDescription: string;
+  ect: string;
+  ectDescription: string;
+}
+
 interface I18nNeurons {
   title: string;
   text: string;
@@ -333,6 +341,7 @@ interface I18nNeurons {
   edit_delay: string;
   merge_neurons_article_title: string;
   cannot_merge_neuron_community: string;
+  cannot_merge_neuron_seed: string;
   cannot_merge_neuron_spawning: string;
   cannot_merge_neuron_hotkey: string;
   cannot_merge_neuron_state: string;
@@ -1049,6 +1058,8 @@ interface I18nCkbtc {
   checking_incomplete_btc_transfers: string;
   all_btc_transfers_complete: string;
   click_to_complete_btc_transfers: string;
+  btc_received: string;
+  btc_sent: string;
   btc_network: string;
   receiving_btc: string;
 }
@@ -1314,6 +1325,7 @@ interface I18n {
   header: I18nHeader;
   auth: I18nAuth;
   accounts: I18nAccounts;
+  neuron_types: I18nNeuron_types;
   neurons: I18nNeurons;
   new_followee: I18nNew_followee;
   follow_neurons: I18nFollow_neurons;
