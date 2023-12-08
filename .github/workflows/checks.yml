@@ -47,7 +47,7 @@ jobs:
           cd /
           sudo apt-get update
           sudo apt-get install -yy hunspell hunspell-en-gb hunspell-en-us clang libclang-dev
-          cargo install --target x86_64-unknown-linux-gnu cargo-spellcheck
+          cargo install --locked --target x86_64-unknown-linux-gnu cargo-spellcheck
       - name: Spellcheck Rust
         run: cargo spellcheck
       - name: Spellcheck changelog
