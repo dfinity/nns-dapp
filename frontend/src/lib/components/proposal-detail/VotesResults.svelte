@@ -161,29 +161,41 @@
   </div>
 
   <div class="votes-results-legends">
-    <h3 class="description">{$i18n.proposal_detail__vote.decision_intro}</h3>
-    <VotesResultsMajorityDescription testId="immediate-majority-toggle">
-      <h4 data-tid="immediate-majority-title" slot="title" class="description">
-        {immediateMajorityTitle}
-      </h4>
-      <p
-        data-tid="immediate-majority-description"
-        class="description majority-description"
-      >
-        <Html text={iconifyDescription(immediateMajorityDescription)} />
-      </p>
-    </VotesResultsMajorityDescription>
-    <VotesResultsMajorityDescription testId="standard-majority-toggle">
-      <h4 data-tid="standard-majority-title" slot="title" class="description">
-        {standardMajorityTitle}
-      </h4>
-      <p
-        data-tid="standard-majority-description"
-        class="description majority-description"
-      >
-        <Html text={iconifyDescription(standardMajorityDescription)} />
-      </p>
-    </VotesResultsMajorityDescription>
+    <h3 class="description">
+      {superMajorityMode
+        ? $i18n.proposal_detail__vote.super_majority_decision_intro
+        : $i18n.proposal_detail__vote.decision_intro}
+    </h3>
+    <ul>
+      <li>
+        <VotesResultsMajorityDescription testId="immediate-majority-toggle">
+          <h4
+            data-tid="immediate-majority-title"
+            slot="title"
+            class="description"
+          >
+            {immediateMajorityTitle}
+          </h4>
+          <p data-tid="immediate-majority-description" class="description">
+            <Html text={iconifyDescription(immediateMajorityDescription)} />
+          </p>
+        </VotesResultsMajorityDescription>
+      </li>
+      <li>
+        <VotesResultsMajorityDescription testId="standard-majority-toggle">
+          <h4
+            data-tid="standard-majority-title"
+            slot="title"
+            class="description"
+          >
+            {standardMajorityTitle}
+          </h4>
+          <p data-tid="standard-majority-description" class="description">
+            <Html text={iconifyDescription(standardMajorityDescription)} />
+          </p>
+        </VotesResultsMajorityDescription>
+      </li>
+    </ul>
   </div>
 </ProposalContentCell>
 
@@ -342,7 +354,6 @@
   }
 
   h3 {
-    margin-bottom: var(--padding);
     @include fonts.small;
   }
 
@@ -355,18 +366,18 @@
     @include fonts.small;
   }
 
-  .majority-description {
-    margin: 0 0 var(--padding);
-  }
-
   .votes-results-legends {
     margin-top: var(--padding-2x);
     display: flex;
     flex-direction: column;
     row-gap: var(--padding-0_5x);
+
+    ul::marker {
+      color: var(--description-color);
+    }
   }
 
-  // dynamic description icon styles
+  // Dynamic description icon styles. Applied to the i18n html content.
   :global(.votes-results-legends .inline-maturity-icon) {
     display: inline-block;
     margin: 0 var(--padding-0_5x);
