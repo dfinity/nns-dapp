@@ -264,15 +264,6 @@
       flex-direction: column;
       align-items: end;
     }
-    .hint {
-      grid-area: hint;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-
-      @include fonts.small(false);
-    }
     .remain {
       grid-area: remain;
       display: flex;
@@ -400,8 +391,11 @@
     flex-direction: column;
     row-gap: var(--padding-0_5x);
 
-    ul::marker {
-      color: var(--description-color);
+    li {
+      list-style: circle;
+      &::marker {
+        color: var(--description-color);
+      }
     }
   }
 
