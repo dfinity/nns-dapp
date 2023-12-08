@@ -93,10 +93,15 @@ impl AccountsDbAsProxy {
     }
     /// Starts a migration, if needed.
     pub fn start_migrating_accounts_to(&mut self, accounts_db: AccountsDb) {
-        self.migration = Some(Migration {
+        let migration = Migration {
             db: accounts_db,
             next_to_migrate: self.authoritative_db.iter().next().map(|(key, _account)| key.clone()),
-        });
+        };
+        dfn_core::api::print(format!(
+            "Starting account migration: {:?} -> {:?}",
+            self.authoritative_db, migration.db
+        ));
+        self.migration = Some(migration);
     }
 
     /// Advances the migration by one step.
@@ -120,7 +125,7 @@ impl AccountsDbAsProxy {
         if let Some(migration) = self.migration.take() {
             dfn_core::api::print(format!(
                 "Account migration complete: {:?} -> {:?}",
-                migration.db, self.authoritative_db
+                self.authoritative_db, migration.db
             ));
             self.authoritative_db = migration.db;
         }

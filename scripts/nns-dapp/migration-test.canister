@@ -90,6 +90,7 @@ wait_for_migration() {
     dfx canister call nns-dapp get_stats
     exit 1
   } >&2
+  sleep 5 # TODO: This is just a guess.  If it helps, figure out why and wait on the actual event.
 }
 
 # Installs the nns-dapp canister
