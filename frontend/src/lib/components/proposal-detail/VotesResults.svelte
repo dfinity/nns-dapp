@@ -142,20 +142,24 @@
             {$i18n.proposal_detail__vote.voting_power}
           </span>
         </span>
-        <span>
-          <span class="yes" data-tid="adopt-cast-votes">
-            {formatPercent(castVotesYes)}
+        {#if superMajorityMode}
+          <span>
+            <span class="yes" data-tid="adopt-cast-votes">
+              {formatPercent(castVotesYes)}
+            </span>
+            <span class="label description">
+              {$i18n.proposal_detail__vote.cast_votes}
+            </span>
           </span>
-          <span class="label description">
-            {$i18n.proposal_detail__vote.cast_votes}
-          </span>
+        {/if}
+      </span>
+      {#if superMajorityMode}
+        <span data-tid="cast-votes-need" class="description">
+          {replacePlaceholders($i18n.proposal_detail__vote.cast_votes_needs, {
+            $immediate_majority: formatPercent(immediateMajorityPercent),
+          })}
         </span>
-      </span>
-      <span data-tid="cast-votes-need" class="description">
-        {replacePlaceholders($i18n.proposal_detail__vote.cast_votes_needs, {
-          $immediate_majority: formatPercent(immediateMajorityPercent),
-        })}
-      </span>
+      {/if}
     </span>
     <span class="no-value caption">
       <span class="yes-no-value">
@@ -167,14 +171,16 @@
             {$i18n.proposal_detail__vote.voting_power}
           </span>
         </span>
-        <span class="value-content">
-          <span class="no" data-tid="reject-cast-votes">
-            {formatPercent(castVotesNo)}
+        {#if superMajorityMode}
+          <span class="value-content">
+            <span class="no" data-tid="reject-cast-votes">
+              {formatPercent(castVotesNo)}
+            </span>
+            <span class="label description">
+              {$i18n.proposal_detail__vote.cast_votes}
+            </span>
           </span>
-          <span class="label description">
-            {$i18n.proposal_detail__vote.cast_votes}
-          </span>
-        </span>
+        {/if}
       </span>
     </span>
     <div class="remain" data-tid="remain">
