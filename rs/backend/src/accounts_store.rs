@@ -5,6 +5,7 @@ use crate::state::StableState;
 use crate::stats::Stats;
 use crate::time::time_millis;
 use candid::CandidType;
+use core::fmt;
 use dfn_candid::Candid;
 use histogram::AccountsStoreHistogram;
 use ic_base_types::{CanisterId, PrincipalId};
@@ -40,7 +41,7 @@ type TransactionIndex = u64;
 const PRE_MIGRATION_LIMIT: u64 = 230_000;
 
 /// Accounts, transactions and related data.
-#[derive(Default, Debug, Eq, PartialEq)]
+#[derive(Default, Eq, PartialEq)]
 pub struct AccountsStore {
     // TODO(NNS1-720): Use AccountIdentifier directly as the key for this HashMap
     accounts_db: schema::proxy::AccountsDbAsProxy,
@@ -57,6 +58,26 @@ pub struct AccountsStore {
     hardware_wallet_accounts_count: u64,
     last_ledger_sync_timestamp_nanos: u64,
     neurons_topped_up_count: u64,
+}
+
+impl fmt::Debug for AccountsStore {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "AccountsStore{{accounts_db: {:?}, hardware_wallets_and_sub_accounts: HashMap[{:?}], pending_transactions: HashMap[{:?}], transactions: VecDeque[{:?}], neuron_accounts: HashMap[{:?}], block_height_synced_up_to: {:?}, multi_part_transactions_processor: {:?}, sub_accounts_count: {:?}, hardware_wallet_accounts_count: {:?}, last_ledger_sync_timestamp_nanos: {:?}, neurons_topped_up_count: {:?}}}",
+            self.accounts_db,
+            self.hardware_wallets_and_sub_accounts.len(),
+            self.pending_transactions.len(),
+            self.transactions.len(),
+            self.neuron_accounts.len(),
+            self.block_height_synced_up_to,
+            self.multi_part_transactions_processor,
+            self.sub_accounts_count,
+            self.hardware_wallet_accounts_count,
+            self.last_ledger_sync_timestamp_nanos,
+            self.neurons_topped_up_count,
+        )
+    }
 }
 
 /// An abstraction over sub-accounts and hardware wallets.

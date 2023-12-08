@@ -34,8 +34,9 @@ struct Migration {
 }
 
 impl fmt::Debug for Migration {
-    /// Summarizes the accounts DB contents for debug printouts.
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // Note: The `next_to_migrate` field is rarely interesting so is omitted.
+        //       The database type and number of entries suffices.
         self.db.fmt(f)
     }
 }
@@ -115,6 +116,10 @@ impl AccountsDbAsProxy {
     pub fn step_migration(&mut self) {
         if let Some(migration) = &mut self.migration {
             if let Some(next_to_migrate) = &migration.next_to_migrate {
+                dfn_core::api::print(format!(
+                    "Stepping migration: {:?} -> {:?}",
+                    self.authoritative_db, migration.db
+                ));
                 self.authoritative_db.db_remove_account(next_to_migrate);
                 let mut range = self.authoritative_db.range(next_to_migrate.clone()..);
                 for (key, account) in (&mut range).take(Self::MIGRATION_STEP_SIZE as usize) {
