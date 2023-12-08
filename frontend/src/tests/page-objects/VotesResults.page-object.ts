@@ -52,6 +52,16 @@ export class VotesResultPo extends BasePageObject {
   }
 
   /** @returns formatted text */
+  async getAdoptCastVotesValue(): Promise<string> {
+    return this.root.byTestId("adopt-cast-votes").getText();
+  }
+
+  /** @returns formatted text */
+  async getRejectCastVotesValue(): Promise<string> {
+    return this.root.byTestId("reject-cast-votes").getText();
+  }
+
+  /** @returns formatted text */
   async getExpirationDateText(): Promise<string> {
     return assertNonNullish(this.root.byTestId("remain").getText());
   }

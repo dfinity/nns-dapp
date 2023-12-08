@@ -54,6 +54,32 @@ describe("VotesResults", () => {
     expect(await votesResultPo.getRejectVotingPower()).toEqual(noCount);
   });
 
+  it('should not render "Adopt cast votes" value for default proposals', async () => {
+    const votesResultPo = renderComponent();
+    expect(await votesResultPo.getAdoptCastVotesValue()).toBeNull();
+  });
+
+  it('should not render "Reject cast votes" value for default proposals', async () => {
+    const votesResultPo = renderComponent();
+    expect(await votesResultPo.getRejectCastVotesValue()).toBeNull();
+  });
+
+  it('should render "Adopt cast votes" value for critical proposal', async () => {
+    const votesResultPo = renderComponent({
+      immediateMajorityPercent: 67,
+      standardMajorityPercent: 20,
+    });
+    expect(await votesResultPo.getAdoptCastVotesValue()).toEqual("40%");
+  });
+
+  it('should render "Reject cast votes" value for critical proposal', async () => {
+    const votesResultPo = renderComponent({
+      immediateMajorityPercent: 67,
+      standardMajorityPercent: 20,
+    });
+    expect(await votesResultPo.getRejectCastVotesValue()).toEqual("60%");
+  });
+
   it("should render progressbar", async () => {
     const votesResultPo = renderComponent();
 
