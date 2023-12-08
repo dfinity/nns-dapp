@@ -213,7 +213,9 @@ impl State {
                     AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::new(vm))
                 }
             };
-            self.accounts_store.borrow_mut().migrate_accounts_to(new_accounts_db);
+            self.accounts_store
+                .borrow_mut()
+                .start_migrating_accounts_to(new_accounts_db);
         }
     }
 }

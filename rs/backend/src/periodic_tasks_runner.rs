@@ -20,6 +20,10 @@ const PRUNE_TRANSACTIONS_COUNT: u32 = 1000;
 pub async fn run_periodic_tasks() {
     ledger_sync::sync_transactions().await;
 
+    STATE.with(|state| {
+        state.accounts_store.borrow_mut().step_migration();
+    });
+
     let maybe_transaction_to_process =
         STATE.with(|s| s.accounts_store.borrow_mut().try_take_next_transaction_to_process());
     if let Some((block_height, transaction_to_process)) = maybe_transaction_to_process {

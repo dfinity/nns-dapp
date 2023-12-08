@@ -67,7 +67,7 @@ impl AccountsDbAsProxy {
         0
     }
     /// Starts a migration, if needed.
-    pub fn migrate_accounts_to(&mut self, accounts_db: AccountsDb) {
+    pub fn start_migrating_accounts_to(&mut self, accounts_db: AccountsDb) {
         self.second_db = Some(accounts_db);
         // TODO: Start a timer to do the migration.
         // Placeholder:
@@ -75,6 +75,11 @@ impl AccountsDbAsProxy {
             self.second_db.as_mut().unwrap().db_insert_account(&key, account);
         }
         self.authoritative_db = self.second_db.take().unwrap();
+    }
+
+    /// Advances the migration by one step.
+    pub fn step_migration(&mut self) {
+        unimplemented!()
     }
 }
 
