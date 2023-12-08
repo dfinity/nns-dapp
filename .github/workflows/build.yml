@@ -137,7 +137,7 @@ jobs:
           DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
           cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)" && idl2json --version
       - name: Start dfx
-        run: dfx start --background &>test-upgrade-map-dfx.log &
+        run: dfx start --clean --background &>test-upgrade-map-dfx.log
       - name: Put assets in the default location
         run: |
           ls
@@ -170,7 +170,7 @@ jobs:
           DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
           cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)" && idl2json --version
       - name: Start dfx
-        run: dfx start --background &>test-upgrade-stable-dfx.log &
+        run: dfx start --clean --background &>test-upgrade-stable-dfx.log
       - name: Downgrade nns-dapp to prod and upgrade back again
         run: ./scripts/nns-dapp/migration-test --schema1 AccountsInStableMemory --schema2 AccountsInStableMemory --accounts 10000
       - name: Upload dfx logs
