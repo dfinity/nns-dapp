@@ -23,6 +23,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Render BTC deposits/withdrawals as "BTC Received"/"BTC Sent".
+* Update Rust version: `1.74.0` -> `1.74.1`
 
 #### Deprecated
 
