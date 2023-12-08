@@ -31,8 +31,6 @@ struct Migration {
     db: AccountsDb,
     /// The next account to migrate.
     next_to_migrate: Option<Vec<u8>>,
-    /// An estimate of how many blocks are still needed to complete the migration.
-    approximate_blocks_for_migration: u32,
 }
 
 #[derive(Debug)]
@@ -74,14 +72,23 @@ impl AccountsDbAsProxy {
 
 impl AccountsDbAsProxy {
     /// The number of accounts to move per heartbeat.
-    pub const MIGRATION_STEP_SIZE: u32 = 5;
+    pub const MIGRATION_STEP_SIZE: u32 = 10;
     /// The progress meter count reserved for finalizing a migration.
     /// Note: This must be positive and should correspond to a reasonable estimate of the number of blocks needed to complete the migration.
-    pub const MIGRATION_FINALIZATION_STEP_SIZE: u32 = 1;
+    pub const MIGRATION_FINALIZATION_BLOCKS: u32 = 1;
     /// Migration countdown; when it reaches zero, the migration is complete.
+    ///
+    /// Note: This is a rough estimate of the number of blocks needed to complete the migration.
     pub fn migration_countdown(&self) -> u32 {
         self.migration.as_ref().map_or(0, |migration| {
-            Self::MIGRATION_FINALIZATION_STEP_SIZE + migration.approximate_blocks_for_migration
+            Self::MIGRATION_FINALIZATION_BLOCKS
+                + u32::try_from(
+                    self.authoritative_db
+                        .db_accounts_len()
+                        .saturating_sub(migration.db.db_accounts_len()),
+                )
+                .expect("Huge difference in accounts count")
+                    / Self::MIGRATION_STEP_SIZE
         })
     }
     /// Starts a migration, if needed.
@@ -89,9 +96,6 @@ impl AccountsDbAsProxy {
         self.migration = Some(Migration {
             db: accounts_db,
             next_to_migrate: self.authoritative_db.iter().next().map(|(key, _account)| key.clone()),
-            // At every heartbeat we migrate a few accounts:
-            approximate_blocks_for_migration: (self.authoritative_db.db_accounts_len() as u32)
-                / Self::MIGRATION_STEP_SIZE,
         });
     }
 
@@ -105,9 +109,6 @@ impl AccountsDbAsProxy {
                     migration.db.db_insert_account(&key, account);
                 }
                 migration.next_to_migrate = range.next().map(|(key, _account)| key.clone());
-                migration.approximate_blocks_for_migration = migration
-                    .approximate_blocks_for_migration
-                    .saturating_sub(Self::MIGRATION_STEP_SIZE);
             } else {
                 self.complete_migration();
             }
@@ -117,6 +118,10 @@ impl AccountsDbAsProxy {
     /// Completes any migration in progress.
     pub fn complete_migration(&mut self) {
         if let Some(migration) = self.migration.take() {
+            dfn_core::api::print(format!(
+                "Account migration complete: {:?} -> {:?}",
+                migration.db, self.authoritative_db
+            ));
             self.authoritative_db = migration.db;
         }
     }
