@@ -42,14 +42,10 @@
 
   let yesNoSum: number;
   $: yesNoSum = yes + no;
-  let hintText: string;
-  $: hintText =
-    yesNoSum > 0
-      ? replacePlaceholders($i18n.proposal_detail__vote.votes_hint, {
-          $immediate_majority: formatPercent(immediateMajorityPercent),
-          $cast_votes: formatPercent((yes / yesNoSum) * 100),
-        })
-      : "";
+  let castVotesYes: number;
+  $: castVotesYes = yesNoSum > 0 ? (yes / yesNoSum) * 100 : 0;
+  let castVotesNo: number;
+  $: castVotesNo = yesNoSum > 0 ? (no / yesNoSum) * 100 : 0;
 
   let showExpirationDate: boolean = true;
   $: showExpirationDate =
@@ -136,17 +132,50 @@
         <div class="no" style={`width: ${noProportion * 100}%`}></div>
       </div>
     </div>
-    <span class="yes-value yes caption">
-      <span class="label description"
-        >{$i18n.proposal_detail__vote.voting_power}&nbsp;</span
-      >
-      <span data-tid="adopt">{formatVotingPower(yes)}</span>
+    <span class="yes-value caption">
+      <span class="yes-no-value">
+        <span>
+          <span class="yes" data-tid="adopt">
+            {formatVotingPower(yes)}
+          </span>
+          <span class="label description">
+            {$i18n.proposal_detail__vote.voting_power}
+          </span>
+        </span>
+        <span>
+          <span class="yes" data-tid="adopt-cast-votes">
+            {formatPercent(castVotesYes)}
+          </span>
+          <span class="label description">
+            {$i18n.proposal_detail__vote.cast_votes}
+          </span>
+        </span>
+      </span>
+      <span data-tid="cast-votes-need" class="description">
+        {replacePlaceholders($i18n.proposal_detail__vote.cast_votes_needs, {
+          $immediate_majority: formatPercent(immediateMajorityPercent),
+        })}
+      </span>
     </span>
-    <span class="no-value no caption">
-      <span class="label description"
-        >{$i18n.proposal_detail__vote.voting_power}&nbsp;</span
-      >
-      <span data-tid="reject">{formatVotingPower(no)}</span>
+    <span class="no-value caption">
+      <span class="yes-no-value">
+        <span class="value-content">
+          <span class="no" data-tid="reject">
+            {formatVotingPower(no)}
+          </span>
+          <span class="label description">
+            {$i18n.proposal_detail__vote.voting_power}
+          </span>
+        </span>
+        <span class="value-content">
+          <span class="no" data-tid="reject-cast-votes">
+            {formatPercent(castVotesNo)}
+          </span>
+          <span class="label description">
+            {$i18n.proposal_detail__vote.cast_votes}
+          </span>
+        </span>
+      </span>
     </span>
     <div class="remain" data-tid="remain">
       {#if showExpirationDate}
@@ -251,7 +280,7 @@
       grid-area: remain;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: start;
       text-align: center;
     }
     .progressbar-container {
@@ -265,15 +294,17 @@
         height: calc(var(--padding) * 0.75);
       }
     }
+    .yes-no-value {
+      display: flex;
+      flex-direction: column;
+      gap: var(--padding-0_5x);
+    }
     .yes-value {
       grid-area: yes-value;
-      display: flex;
-      justify-content: flex-start;
     }
     .no-value {
       grid-area: no-value;
-      display: flex;
-      justify-content: flex-end;
+      text-align: right;
     }
     // yes-value and no-value mobile/desktop
     .label {
