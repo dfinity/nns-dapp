@@ -98,11 +98,6 @@
         >{formatPercentage(yesProportion)}</span
       >
     </div>
-    <div class="hint">
-      {#if yesNoSum > 0}
-        <p data-tid="hint">{hintText}</p>
-      {/if}
-    </div>
     <div class="no no-percent">
       <span class="caption">{$i18n.core.no}</span>
       <span class="percentage" data-tid="reject-percentage"
@@ -248,17 +243,12 @@
 
     // 5 columns for mobile to give more space for the ".remain" section
     grid-template-areas:
-      "yes-percent hint no-percent"
+      "yes-percent _ no-percent"
       "progressbar progressbar progressbar"
       "yes-value remain no-value";
     grid-template-columns: 1fr 1fr 1fr;
 
     @include media.min-width(small) {
-      grid-template-areas:
-        "yes-percent hint no-percent"
-        "progressbar progressbar progressbar"
-        "yes-value remain no-value";
-      grid-template-columns: 1fr 1fr 1fr;
       row-gap: var(--padding-0_5x);
     }
     .yes-percent {
