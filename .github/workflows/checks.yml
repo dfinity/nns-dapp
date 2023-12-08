@@ -259,6 +259,11 @@ jobs:
         run: sudo snap install yq
       - name: Install sponge
         run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
+      - name: Get node version
+        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
       - name: Bumping the package versions works
         run: ./scripts/nns-dapp/bump-patch.test
       - name: Set git user
