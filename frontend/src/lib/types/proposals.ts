@@ -26,3 +26,6 @@ export interface VotingNeuron {
   neuronIdString: string;
   votingPower: bigint;
 }
+
+// 100% -> 10000 basis points
+export type BasisPoints = bigint;

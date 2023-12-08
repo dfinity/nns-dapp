@@ -14,6 +14,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Sns dynamic voting proportions.
 * Iterator over AccountsDbs.
 * Display expiration date for sns proposals.
 * Neuron type support.
