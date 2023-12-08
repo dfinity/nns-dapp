@@ -52,6 +52,7 @@
     nonNullish(deadlineTimestampSeconds) &&
     deadlineTimestampSeconds > BigInt(nowInSeconds());
 
+  // TODO(max): refactor to "isCritical", isSuperMajority -> isCriticalProposal
   let superMajorityMode: boolean;
   $: superMajorityMode = isSuperMajority(immediateMajorityPercent);
 
