@@ -86,7 +86,8 @@ impl AccountsDbAsProxy {
         self.second_db = Some(accounts_db);
         self.next_to_migrate = self.authoritative_db.iter().next().map(|(key, _account)| key.clone());
         // At every heartbeat we migrate a few accounts:
-        let approximate_blocks_for_account_migration = (self.authoritative_db.db_accounts_len() as u32) / Self::MIGRATION_STEP_SIZE;
+        let approximate_blocks_for_account_migration =
+            (self.authoritative_db.db_accounts_len() as u32) / Self::MIGRATION_STEP_SIZE;
         self.migration_countdown = approximate_blocks_for_account_migration + Self::MIGRATION_FINALIZATION_STEP_SIZE;
     }
 
