@@ -72,6 +72,11 @@ impl AccountsDbAsProxy {
 }
 
 impl AccountsDbAsProxy {
+    /// The number of accounts to move per heartbeat.
+    pub const MIGRATION_STEP_SIZE: u32 = 5;
+    /// The progress meter count reserved for finalizing a migration.
+    /// Note: This must be positive and should correspond to a reasonable estimate of the number of blocks needed to complete the migration.
+    pub const MIGRATION_FINALIZATION_STEP_SIZE: u32 = 1;
     /// Migration countdown; when it reaches zero, the migration is complete.
     pub fn migration_countdown(&self) -> u32 {
         self.migration_countdown
@@ -80,22 +85,20 @@ impl AccountsDbAsProxy {
     pub fn start_migrating_accounts_to(&mut self, accounts_db: AccountsDb) {
         self.second_db = Some(accounts_db);
         self.next_to_migrate = self.authoritative_db.iter().next().map(|(key, _account)| key.clone());
-        // TODO: Start a timer to do the migration.
-        // Placeholder:
-        for (key, account) in self.authoritative_db.iter() {
-            self.second_db.as_mut().unwrap().db_insert_account(&key, account);
-        }
-        self.authoritative_db = self.second_db.take().unwrap();
+        // At every heartbeat we migrate a few accounts:
+        let approximate_blocks_for_account_migration = (self.authoritative_db.db_accounts_len() as u32) / Self::MIGRATION_STEP_SIZE;
+        self.migration_countdown = approximate_blocks_for_account_migration + Self::MIGRATION_FINALIZATION_STEP_SIZE;
     }
 
     /// Advances the migration by one step.
     pub fn step_migration(&mut self) {
         if let Some(next_to_migrate) = &self.next_to_migrate {
             let mut range = self.authoritative_db.range(next_to_migrate.clone()..);
-            for (key, account) in (&mut range).take(5) {
+            for (key, account) in (&mut range).take(Self::MIGRATION_STEP_SIZE as usize) {
                 self.second_db.as_mut().unwrap().db_insert_account(&key, account);
             }
             self.next_to_migrate = range.next().map(|(key, _account)| key.clone());
+            self.migration_countdown = u32::max(1, self.migration_countdown - Self::MIGRATION_STEP_SIZE);
         } else {
             self.complete_migration();
         }
@@ -104,6 +107,8 @@ impl AccountsDbAsProxy {
     /// Completes the migration.
     pub fn complete_migration(&mut self) {
         self.authoritative_db = self.second_db.take().unwrap();
+        self.next_to_migrate = None;
+        self.migration_countdown = 0;
     }
 }
 
