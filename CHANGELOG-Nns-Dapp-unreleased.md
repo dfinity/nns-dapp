@@ -53,5 +53,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Provide missing global config in cache-filling workflow.
 * Update the correct flavour of golden file when the NNS Dapp canister API changes.
+* Specify the node version to use in the version bump test.
 
 #### Security
