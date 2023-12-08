@@ -59,11 +59,7 @@ impl core::fmt::Debug for State {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(f, "State {{")?;
         writeln!(f, "  state_schema: {:?}", &self.schema_label())?;
-        writeln!(
-            f,
-            "  accounts_schema: {:?}",
-            &self.accounts_store.borrow().schema_label()
-        )?;
+        writeln!(f, "  accounts: {:?}", &self.accounts_store.borrow())?;
         writeln!(
             f,
             "  args_schema: {:?}",
