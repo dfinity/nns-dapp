@@ -23,6 +23,9 @@ mod enum_boilerplate;
 pub struct AccountsDbAsProxy {
     authoritative_db: AccountsDb,
     second_db: Option<AccountsDb>,
+    // TODO: Make a struct that holds all the migration data.
+    next_to_migrate: Option<Vec<u8>>,
+    migration_countdown: u32,
 }
 
 #[derive(Debug)]
@@ -44,6 +47,8 @@ impl AccountsDbAsProxy {
         Self {
             authoritative_db: AccountsDb::Map(AccountsDbAsMap::default()),
             second_db: None,
+            next_to_migrate: None,
+            migration_countdown: 0,
         }
     }
     pub fn new_with_unbounded_stable_btree_map(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
@@ -51,6 +56,8 @@ impl AccountsDbAsProxy {
         Self {
             authoritative_db: AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::new(memory)),
             second_db: None,
+            next_to_migrate: None,
+            migration_countdown: 0,
         }
     }
     pub fn load_with_unbounded_stable_btree_map(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
@@ -58,6 +65,8 @@ impl AccountsDbAsProxy {
         Self {
             authoritative_db: AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::load(memory)),
             second_db: None,
+            next_to_migrate: None,
+            migration_countdown: 0,
         }
     }
 }
@@ -65,11 +74,12 @@ impl AccountsDbAsProxy {
 impl AccountsDbAsProxy {
     /// Migration countdown; when it reaches zero, the migration is complete.
     pub fn migration_countdown(&self) -> u32 {
-        0
+        self.migration_countdown
     }
     /// Starts a migration, if needed.
     pub fn start_migrating_accounts_to(&mut self, accounts_db: AccountsDb) {
         self.second_db = Some(accounts_db);
+        self.next_to_migrate = self.authoritative_db.iter().next().map(|(key, _account)| key.clone());
         // TODO: Start a timer to do the migration.
         // Placeholder:
         for (key, account) in self.authoritative_db.iter() {
@@ -80,7 +90,20 @@ impl AccountsDbAsProxy {
 
     /// Advances the migration by one step.
     pub fn step_migration(&mut self) {
-        unimplemented!()
+        if let Some(next_to_migrate) = &self.next_to_migrate {
+            let mut range = self.authoritative_db.range(next_to_migrate.clone()..);
+            for (key, account) in (&mut range).take(5) {
+                self.second_db.as_mut().unwrap().db_insert_account(&key, account);
+            }
+            self.next_to_migrate = range.next().map(|(key, _account)| key.clone());
+        } else {
+            self.complete_migration();
+        }
+    }
+
+    /// Completes the migration.
+    pub fn complete_migration(&mut self) {
+        self.authoritative_db = self.second_db.take().unwrap();
     }
 }
 
@@ -89,6 +112,8 @@ impl AccountsDbBTreeMapTrait for AccountsDbAsProxy {
         Self {
             authoritative_db: AccountsDb::Map(AccountsDbAsMap::from_map(map)),
             second_db: None,
+            next_to_migrate: None,
+            migration_countdown: 0,
         }
     }
     fn as_map(&self) -> BTreeMap<Vec<u8>, Account> {
