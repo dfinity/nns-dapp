@@ -17,13 +17,17 @@
   import type { SnsParams } from "@dfinity/sns";
   import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
   import { nonNullish } from "@dfinity/utils";
-  import { swapSaleBuyerCount } from "$lib/utils/sns-swap.utils";
+  import {
+    maxNeuronFundCommitmentE8s,
+    swapSaleBuyerCount,
+  } from "$lib/utils/sns-swap.utils";
   import {
     getProjectCommitmentSplit,
     isCommitmentSplitWithNeuronsFund,
     type ProjectCommitmentSplit,
   } from "$lib/utils/projects.utils";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
+  import NfCommitmentProgressBar from "$lib/components/project-detail/NfCommitmentProgressBar.svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -58,6 +62,7 @@
     swapMetrics: $snsSwapMetricsStore,
     derivedState: summary.derived,
   });
+
 </script>
 
 <TestIdWrapper testId="project-commitment-component">
@@ -73,8 +78,8 @@
   {/if}
   {#if isCommitmentSplitWithNeuronsFund(projectCommitments)}
     <KeyValuePair testId="sns-project-current-direct-commitment">
-      <span slot="key" class="direct-participation">
-        {$i18n.sns_project_detail.current_direct_commitment}
+      <span slot="key" class="commitment-progress-bar-title">
+        <span>{$i18n.sns_project_detail.current_direct_commitment}</span>
       </span>
 
       <AmountDisplay
@@ -94,35 +99,46 @@
         color="primary"
       />
     </div>
-    <!-- Extra div is needed because KeyValuePairInfo renders two components. -->
-    <!-- The spacing between component is set using flex in the parent. -->
-    <div>
-      <KeyValuePairInfo testId="sns-project-current-nf-commitment">
-        <svelte:fragment slot="key">
-          {$i18n.sns_project_detail.current_nf_commitment}
-        </svelte:fragment>
+    {#if projectCommitments.isNFParticipating && nonNullish(projectCommitments.nfCommitmentE8s)}
+      <!-- Extra div is needed because KeyValuePairInfo renders two components. -->
+      <!-- The spacing between component is set using flex in the parent. -->
+      <div>
+        <KeyValuePairInfo testId="sns-project-current-nf-commitment">
+          <span
+            slot="key"
+            class="commitment-progress-bar-title commitment-progress-bar-title__nf"
+          >
+            <span>{$i18n.sns_project_detail.current_nf_commitment}</span>
+          </span>
 
-        <div slot="info" class="description">
-          <Html
-            text={$i18n.sns_project_detail.current_nf_commitment_description}
-          />
-        </div>
-
-        <svelte:fragment slot="value">
-          {#if projectCommitments.isNFParticipating && nonNullish(projectCommitments.nfCommitmentE8s)}
-            <AmountDisplay
-              amount={TokenAmount.fromE8s({
-                amount: projectCommitments.nfCommitmentE8s,
-                token: ICPToken,
-              })}
-              singleLine
+          <div slot="info" class="description">
+            <Html
+              text={$i18n.sns_project_detail.current_nf_commitment_description}
             />
-          {:else}
-            <span>{$i18n.sns_project_detail.not_participating}</span>
-          {/if}
-        </svelte:fragment>
-      </KeyValuePairInfo>
-    </div>
+          </div>
+
+          <svelte:fragment slot="value">
+            {#if projectCommitments.isNFParticipating && nonNullish(projectCommitments.nfCommitmentE8s)}
+              <AmountDisplay
+                amount={TokenAmount.fromE8s({
+                  amount: projectCommitments.nfCommitmentE8s,
+                  token: ICPToken,
+                })}
+                singleLine
+              />
+            {:else}
+              <span>{$i18n.sns_project_detail.not_participating}</span>
+            {/if}
+          </svelte:fragment>
+        </KeyValuePairInfo>
+      </div>
+      <div data-tid="sns-project-nf-commitment-progress">
+        <NfCommitmentProgressBar
+          maxDirectParticipationE8s={projectCommitments.maxDirectCommitmentE8s}
+          nfCommitmentE8s={projectCommitments.nfCommitmentE8s}
+        />
+      </div>
+    {/if}
   {/if}
   <KeyValuePair testId="sns-project-current-commitment">
     <span slot="key">
@@ -144,10 +160,16 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  .direct-participation {
+  @use "@dfinity/gix-components/dist/styles/mixins/text";
+
+  .commitment-progress-bar-title {
     display: flex;
     align-items: center;
     gap: var(--padding-0_5x);
+
+    span {
+      @include text.clamp(1);
+    }
 
     // This is the dot with the participation color next to the label
     &::before {
@@ -159,6 +181,12 @@
 
       border-radius: var(--padding);
       background: var(--primary);
+    }
+
+    &__nf {
+      &::before {
+        background: var(--warning-emphasis);
+      }
     }
   }
 </style>
