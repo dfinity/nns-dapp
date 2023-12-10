@@ -100,7 +100,7 @@
       height: 0;
       border-left: var(--triangle-sides-border);
       border-right: var(--triangle-sides-border);
-      border-top: var(--triangle-size) solid var(--positive-emphasis);
+      border-top: var(--triangle-size) solid var(--primary);
 
       top: calc(-1 * var(--padding-0_5x));
     }
@@ -119,7 +119,7 @@
     width: var(--line-width);
     height: var(--padding-1_5x);
 
-    background-color: var(--positive-emphasis);
+    background-color: var(--primary);
   }
 
   .value-labels {
@@ -140,9 +140,9 @@
   .value-label-min {
     align-items: flex-start;
 
-    color: var(--positive-emphasis);
-    --amount-color: var(--positive-emphasis);
-    --label-color: var(--positive-emphasis);
+    color: var(--primary);
+    --amount-color: var(--primary);
+    --label-color: var(--primary);
   }
 
   .value-label-max {
