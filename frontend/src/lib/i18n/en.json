@@ -746,6 +746,7 @@
     "max_commitment_goal": "Max. Direct Commitment",
     "min_nf_commitment_goal": "Min. Neurons’ Fund Commitment",
     "max_nf_commitment_goal": "Max. Neurons’ Fund Commitment",
+    "min_participation_reached": "🎉 Minimum participation has been reached, the swap is successful.",
     "deadline": "Deadline",
     "starts": "Starts in",
     "user_commitment": "My Commitment",

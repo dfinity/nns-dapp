@@ -771,6 +771,7 @@ interface I18nSns_project_detail {
   max_commitment_goal: string;
   min_nf_commitment_goal: string;
   max_nf_commitment_goal: string;
+  min_participation_reached: string;
   deadline: string;
   starts: string;
   user_commitment: string;

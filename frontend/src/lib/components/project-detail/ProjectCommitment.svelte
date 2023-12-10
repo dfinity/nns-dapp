@@ -17,10 +17,7 @@
   import type { SnsParams } from "@dfinity/sns";
   import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
   import { nonNullish } from "@dfinity/utils";
-  import {
-    maxNeuronFundCommitmentE8s,
-    swapSaleBuyerCount,
-  } from "$lib/utils/sns-swap.utils";
+  import { swapSaleBuyerCount } from "$lib/utils/sns-swap.utils";
   import {
     getProjectCommitmentSplit,
     isCommitmentSplitWithNeuronsFund,
@@ -63,6 +60,14 @@
     derivedState: summary.derived,
   });
 
+  let isMinParticipationReached: boolean;
+  $: isMinParticipationReached = isCommitmentSplitWithNeuronsFund(
+    projectCommitments
+  )
+    ? projectCommitments.directCommitmentE8s >=
+      projectCommitments.minDirectCommitmentE8s
+    : false;
+
 </script>
 
 <TestIdWrapper testId="project-commitment-component">
@@ -75,6 +80,11 @@
         >{saleBuyerCount}</span
       >
     </KeyValuePair>
+  {/if}
+  {#if isMinParticipationReached}
+    <p class="content-cell-island markdown-container">
+      {$i18n.sns_project_detail.min_participation_reached}
+    </p>
   {/if}
   {#if isCommitmentSplitWithNeuronsFund(projectCommitments)}
     <KeyValuePair testId="sns-project-current-direct-commitment">
@@ -188,5 +198,13 @@
         background: var(--warning-emphasis);
       }
     }
+  }
+
+  // TODO(max): rename and move to gix-components
+  .markdown-container {
+    margin: 0;
+    // custom island styles
+    background: var(--card-background-disabled);
+    color: var(--description-color);
   }
 </style>
