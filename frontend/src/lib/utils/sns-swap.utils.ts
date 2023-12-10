@@ -1,3 +1,5 @@
+import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+import { MAX_THEORETICAL_NEURONS_FUND_PARTICIPATION_AMOUNT_ICP } from "$lib/constants/sns.constants";
 import type { SnsSwapMetricsStoreData } from "$lib/stores/sns-swap-metrics.store";
 import type { Principal } from "@dfinity/principal";
 import type { SnsSwapDerivedState } from "@dfinity/sns";
@@ -36,3 +38,14 @@ export const hasBuyersCount = (
   }
   return nonNullish(fromNullable(derived.direct_participant_count));
 };
+
+// 10% of the max direct participation amount but not more than the theoretical max
+export const maxNeuronFundCommitmentE8s = (
+  maxDirectParticipationE8s: bigint
+): bigint =>
+  BigInt(
+    Math.min(
+      Number(maxDirectParticipationE8s) * 0.1,
+      MAX_THEORETICAL_NEURONS_FUND_PARTICIPATION_AMOUNT_ICP * E8S_PER_ICP
+    )
+  );

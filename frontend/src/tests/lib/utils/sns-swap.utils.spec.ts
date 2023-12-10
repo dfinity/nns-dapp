@@ -1,4 +1,8 @@
-import { hasBuyersCount, swapSaleBuyerCount } from "$lib/utils/sns-swap.utils";
+import {
+  hasBuyersCount,
+  maxNeuronFundCommitmentE8s,
+  swapSaleBuyerCount,
+} from "$lib/utils/sns-swap.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockDerived } from "$tests/mocks/sns-projects.mock";
 import { Principal } from "@dfinity/principal";
@@ -115,6 +119,18 @@ describe("sns-swap utils", () => {
 
     it("should return false if derived state has no buyers count", () => {
       expect(hasBuyersCount(derivedWithoutBuyersCount)).toBe(false);
+    });
+  });
+
+  describe("maxNeuronFundCommitmentE8s", () => {
+    it("should return 10% of direct commitment", () => {
+      expect(maxNeuronFundCommitmentE8s(1000000n)).toBe(100000n);
+    });
+
+    it("should return theoretical maximum", () => {
+      expect(maxNeuronFundCommitmentE8s(9_000_000_000_000_000n)).toBe(
+        33_300_000_000_000n
+      );
     });
   });
 });
