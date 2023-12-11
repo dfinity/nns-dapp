@@ -34,9 +34,7 @@
   const openAddAccountModal = () => {
     openAccountsModal({
       type: "add-icp-account",
-      data: {
-        account: undefined,
-      },
+      data: undefined,
     });
   };
 </script>
@@ -57,9 +55,7 @@
         aria-label={$i18n.accounts.add_account}
         tabindex={userTokensData.length + 1}
       >
-        <button
-          class="ghost with-icon"
-          on:click|stopPropagation={openAddAccountModal}
+        <button class="ghost with-icon"
           ><IconAdd />{$i18n.accounts.add_account}</button
         >
       </div>
