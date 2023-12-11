@@ -57,6 +57,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Provide missing global config in cache-filling workflow.
 * Update the correct flavour of golden file when the NNS Dapp canister API changes.
 * Specify the node version to use in the version bump test.
+* Summarize the `AccountsStore` contents in its `Debug` representation rather than trying to print its entire contents.
 * Lock the spellcheck version and its dependencies.
 * Keep `dfx start` logs in CI.
 
