@@ -30,6 +30,10 @@ export class TokensTableRowPo extends BasePageObject {
     return balanceElement.byTestId("spinner").isPresent();
   }
 
+  getHref(): Promise<string | null> {
+    return this.root.getAttribute("href");
+  }
+
   getSubtitle(): Promise<string | null> {
     return this.getText("project-subtitle");
   }
