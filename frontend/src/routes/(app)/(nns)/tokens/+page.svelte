@@ -29,6 +29,8 @@
     icrcCanistersStore,
     type IcrcCanistersStoreData,
   } from "$lib/stores/icrc-canisters.store";
+  import CkBtcTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
+  import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
 
   onMount(() => {
     if (!$ENABLE_MY_TOKENS) {
@@ -141,6 +143,16 @@
       token={modal.data.token}
       transactionFee={toTokenAmountV2(modal.data.fee)}
       on:nnsClose={closeModal}
+    />
+  {/if}
+
+  {#if modal?.type === "ckbtc-send"}
+    <CkBtcTransactionModal
+      on:nnsClose={closeModal}
+      token={modal.data.token}
+      transactionFee={modal.data.fee}
+      universeId={modal.data.universeId}
+      canisters={CKBTC_ADDITIONAL_CANISTERS[modal.data.universeId.toText()]}
     />
   {/if}
 </TestIdWrapper>

@@ -1,3 +1,4 @@
+import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as snsLedgerApi from "$lib/api/sns-ledger.api";
 import * as walletLedgerApi from "$lib/api/wallet-ledger.api";
 import {
@@ -51,6 +52,7 @@ import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/api/wallet-ledger.api");
 vi.mock("$lib/api/sns-ledger.api");
+vi.mock("$lib/api/icrc-ledger.api");
 
 describe("Tokens route", () => {
   const mockAuthClient = mock<AuthClient>();
@@ -157,6 +159,7 @@ describe("Tokens route", () => {
           return pacmanToken;
         }
       );
+      vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(1234n);
 
       setSnsProjects([
         {
@@ -268,6 +271,38 @@ describe("Tokens route", () => {
             fee: tetrisToken.fee,
             to: toAccount,
             amount: numberToUlps({ amount, token: tetrisToken }),
+            fromSubAccount: undefined,
+            identity: mockIdentity,
+          });
+        });
+
+        it("users can send ckBTC tokens", async () => {
+          const po = await renderPage();
+
+          const tokensPagePo = po.getTokensPagePo();
+
+          await tokensPagePo.clickSendOnRow("ckBTC");
+
+          expect(await po.getCkBTCTransactionModalPo().isPresent()).toBe(true);
+
+          expect(icrcLedgerApi.icrcTransfer).not.toBeCalled();
+
+          const toAccount: IcrcAccount = {
+            owner: principal(1),
+          };
+          const amount = 2;
+
+          await po.transferCkBTCTokens({
+            amount,
+            destinationAddress: encodeIcrcAccount(toAccount),
+          });
+
+          expect(icrcLedgerApi.icrcTransfer).toBeCalledTimes(1);
+          expect(icrcLedgerApi.icrcTransfer).toBeCalledWith({
+            canisterId: CKBTC_UNIVERSE_CANISTER_ID,
+            fee: mockCkBTCToken.fee,
+            to: toAccount,
+            amount: numberToUlps({ amount, token: mockCkBTCToken }),
             fromSubAccount: undefined,
             identity: mockIdentity,
           });
