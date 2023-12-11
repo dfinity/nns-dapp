@@ -10,6 +10,7 @@
   import IcrcReceiveModal from "$lib/modals/accounts/IcrcReceiveModal.svelte";
   import BuyIcpModal from "./BuyIcpModal.svelte";
   import type { Account } from "$lib/types/account";
+  import AddAccountModal from "./AddAccountModal.svelte";
 
   let modal:
     | AccountsModal<AccountsReceiveModalData | AccountsModalData>
@@ -46,4 +47,8 @@
 
 {#if type === "icrc-receive" && nonNullish(data)}
   <IcrcReceiveModal on:nnsClose={close} {data} />
+{/if}
+
+{#if type === "add-icp-account"}
+  <AddAccountModal on:nnsClose={close} />
 {/if}
