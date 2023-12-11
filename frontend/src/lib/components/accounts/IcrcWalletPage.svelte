@@ -135,7 +135,7 @@
             accountName={$selectedAccountStore.account.name ??
               $i18n.accounts.main}
             balance={TokenAmountV2.fromUlps({
-              amount: $selectedAccountStore.account.balanceE8s,
+              amount: $selectedAccountStore.account.balanceUlps,
               token,
             })}
           >

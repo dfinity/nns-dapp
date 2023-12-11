@@ -161,7 +161,7 @@ describe("SnsWallet", () => {
           ?.textContent.trim()
       ).toEqual(
         `${formatToken({
-          value: mockSnsMainAccount.balanceE8s,
+          value: mockSnsMainAccount.balanceUlps,
         })} ${mockSnsToken.symbol}`
       );
     });

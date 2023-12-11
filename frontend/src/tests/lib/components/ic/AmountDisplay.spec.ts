@@ -6,7 +6,7 @@ import { render } from "@testing-library/svelte";
 
 describe("AmountDisplay", () => {
   const tokenAmount = TokenAmount.fromE8s({
-    amount: mockMainAccount.balanceE8s,
+    amount: mockMainAccount.balanceUlps,
     token: ICPToken,
   });
 
@@ -22,7 +22,7 @@ describe("AmountDisplay", () => {
     const value = container.querySelector("span:first-of-type");
 
     expect(value?.textContent).toEqual(
-      `${formatToken({ value: mockMainAccount.balanceE8s })}`
+      `${formatToken({ value: mockMainAccount.balanceUlps })}`
     );
   });
 
@@ -44,7 +44,7 @@ describe("AmountDisplay", () => {
     const value = container.querySelector("span:first-of-type");
 
     expect(value?.textContent).toEqual(
-      `+${formatToken({ value: mockMainAccount.balanceE8s })}`
+      `+${formatToken({ value: mockMainAccount.balanceUlps })}`
     );
     expect(container.querySelector(".plus-sign")).toBeInTheDocument();
   });
@@ -59,7 +59,7 @@ describe("AmountDisplay", () => {
     const value = container.querySelector("span:first-of-type");
 
     expect(value?.textContent).toEqual(
-      `-${formatToken({ value: mockMainAccount.balanceE8s })}`
+      `-${formatToken({ value: mockMainAccount.balanceUlps })}`
     );
   });
 
@@ -75,7 +75,7 @@ describe("AmountDisplay", () => {
 
     expect(value?.textContent).toEqual(
       `${formatToken({
-        value: mockMainAccount.balanceE8s,
+        value: mockMainAccount.balanceUlps,
         detailed: true,
       })}`
     );

@@ -45,7 +45,7 @@ describe("IcrcTokenTransactionModal", () => {
         accounts: [
           {
             ...mockIcrcMainAccount,
-            balanceE8s: 1000n * 10n ** 18n,
+            balanceUlps: 1000n * 10n ** 18n,
           },
         ],
         certified: true,

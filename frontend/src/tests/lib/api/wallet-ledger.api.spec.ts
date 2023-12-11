@@ -43,7 +43,7 @@ describe("wallet-ledger api", () => {
 
       expect(account).not.toBeUndefined();
 
-      expect(account?.balanceE8s).toEqual(balance);
+      expect(account?.balanceUlps).toEqual(balance);
 
       expect(balanceSpy).toBeCalled();
     });

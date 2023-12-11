@@ -132,7 +132,7 @@ export const loadAccounts = async ({
           })
         : account.account_identifier,
       icpIdentifier: account.account_identifier,
-      balanceE8s: await getAccountBalance(account.account_identifier),
+      balanceUlps: await getAccountBalance(account.account_identifier),
       type,
       ...("sub_account" in account && { subAccount: account.sub_account }),
       ...("name" in account && { name: account.name }),

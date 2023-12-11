@@ -49,7 +49,7 @@ describe("icrc-ledger api", () => {
 
       expect(account).not.toBeUndefined();
 
-      expect(account.balanceE8s).toEqual(BigInt(10_000_000));
+      expect(account.balanceUlps).toEqual(BigInt(10_000_000));
 
       expect(account.principal.toText()).toEqual(
         mockIdentity.getPrincipal().toText()
