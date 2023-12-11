@@ -12,8 +12,10 @@
 
 <!-- This component renders the label about user commitment. If user effectively participate to swap should be tested where it is consumed -->
 
-{#if canParticipate}
-  {$i18n.sns_project_detail.user_current_commitment}
-{:else}
-  {$i18n.sns_project_detail.user_commitment}
-{/if}
+<span class="description">
+  {#if canParticipate}
+    {$i18n.sns_project_detail.user_current_commitment}
+  {:else}
+    {$i18n.sns_project_detail.user_commitment}
+  {/if}
+</span>

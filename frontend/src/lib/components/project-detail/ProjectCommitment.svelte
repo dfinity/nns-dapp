@@ -67,13 +67,12 @@
     ? projectCommitments.directCommitmentE8s >=
       projectCommitments.minDirectCommitmentE8s
     : false;
-
 </script>
 
 <TestIdWrapper testId="project-commitment-component">
   {#if nonNullish(saleBuyerCount)}
     <KeyValuePair>
-      <span slot="key">
+      <span slot="key" class="description">
         {$i18n.sns_project_detail.current_sale_buyer_count}
       </span>
       <span slot="value" data-tid="sns-project-current-sale-buyer-count"
@@ -87,38 +86,44 @@
     </p>
   {/if}
   {#if isCommitmentSplitWithNeuronsFund(projectCommitments)}
-    <KeyValuePair testId="sns-project-current-direct-commitment">
-      <span slot="key" class="commitment-progress-bar-title">
-        <span>{$i18n.sns_project_detail.current_direct_commitment}</span>
-      </span>
+    <div class="commitment-progress-container">
+      <KeyValuePair testId="sns-project-current-direct-commitment">
+        <span slot="key" class="commitment-progress-bar-title">
+          <span class="description"
+            >{$i18n.sns_project_detail.current_direct_commitment}</span
+          >
+        </span>
 
-      <AmountDisplay
-        slot="value"
-        amount={TokenAmount.fromE8s({
-          amount: projectCommitments.directCommitmentE8s,
-          token: ICPToken,
-        })}
-        singleLine
-      />
-    </KeyValuePair>
-    <div data-tid="sns-project-commitment-progress">
-      <CommitmentProgressBar
-        participationE8s={projectCommitments.directCommitmentE8s}
-        max={projectCommitments.maxDirectCommitmentE8s}
-        minimumIndicator={projectCommitments.minDirectCommitmentE8s}
-        color="primary"
-      />
+        <AmountDisplay
+          slot="value"
+          amount={TokenAmount.fromE8s({
+            amount: projectCommitments.directCommitmentE8s,
+            token: ICPToken,
+          })}
+          singleLine
+        />
+      </KeyValuePair>
+      <div data-tid="sns-project-commitment-progress">
+        <CommitmentProgressBar
+          participationE8s={projectCommitments.directCommitmentE8s}
+          max={projectCommitments.maxDirectCommitmentE8s}
+          minimumIndicator={projectCommitments.minDirectCommitmentE8s}
+          color="primary"
+        />
+      </div>
     </div>
     {#if projectCommitments.isNFParticipating && nonNullish(projectCommitments.nfCommitmentE8s)}
       <!-- Extra div is needed because KeyValuePairInfo renders two components. -->
       <!-- The spacing between component is set using flex in the parent. -->
-      <div>
+      <div class="commitment-progress-container">
         <KeyValuePairInfo testId="sns-project-current-nf-commitment">
           <span
             slot="key"
             class="commitment-progress-bar-title commitment-progress-bar-title__nf"
           >
-            <span>{$i18n.sns_project_detail.current_nf_commitment}</span>
+            <span class="description"
+              >{$i18n.sns_project_detail.current_nf_commitment}</span
+            >
           </span>
 
           <div slot="info" class="description">
@@ -141,8 +146,6 @@
             {/if}
           </svelte:fragment>
         </KeyValuePairInfo>
-      </div>
-      <div data-tid="sns-project-nf-commitment-progress">
         <NfCommitmentProgressBar
           maxDirectParticipationE8s={projectCommitments.maxDirectCommitmentE8s}
           nfCommitmentE8s={projectCommitments.nfCommitmentE8s}
@@ -151,10 +154,9 @@
     {/if}
   {/if}
   <KeyValuePair testId="sns-project-current-commitment">
-    <span slot="key">
+    <span slot="key" class="description">
       {$i18n.sns_project_detail.current_overall_commitment}
     </span>
-
     <AmountDisplay slot="value" amount={buyersTotalCommitmentIcp} singleLine />
   </KeyValuePair>
   {#if !isCommitmentSplitWithNeuronsFund(projectCommitments)}
@@ -171,6 +173,13 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/text";
+
+  // custom gap between text and the bar
+  .commitment-progress-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+  }
 
   .commitment-progress-bar-title {
     display: flex;
