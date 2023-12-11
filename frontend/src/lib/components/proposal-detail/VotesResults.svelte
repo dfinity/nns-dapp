@@ -197,7 +197,7 @@
         ? $i18n.proposal_detail__vote.super_majority_decision_intro
         : $i18n.proposal_detail__vote.decision_intro}
     </h3>
-    <ul>
+    <ol>
       <li>
         <VotesResultsMajorityDescription testId="immediate-majority-toggle">
           <h4
@@ -226,7 +226,7 @@
           </p>
         </VotesResultsMajorityDescription>
       </li>
-    </ul>
+    </ol>
   </div>
 </ProposalContentCell>
 
@@ -391,8 +391,11 @@
     flex-direction: column;
     row-gap: var(--padding-0_5x);
 
+    ol {
+      margin: 0;
+    }
+
     li {
-      list-style: circle;
       &::marker {
         color: var(--description-color);
       }
