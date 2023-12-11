@@ -31,6 +31,9 @@
   } from "$lib/stores/icrc-canisters.store";
   import CkBtcTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
+  import { updateBalance } from "$lib/services/ckbtc-minter.services";
+  import { nonNullish } from "@dfinity/utils";
+  import { Principal } from "@dfinity/principal";
 
   onMount(() => {
     if (!$ENABLE_MY_TOKENS) {
@@ -66,6 +69,24 @@
     if (loadCkBTCAccountsBalancesRequested) {
       return;
     }
+
+    /**
+     * Calling updateBalance because users are confused about when and how to call it and product required to add this additional call within this process.
+     * That way, when user navigate once per session to the ckBTC accounts page, the call is also triggered.
+     *
+     * There is also an "Update Balance"
+     */
+    universes.forEach((universe: Universe) => {
+      const ckBTCCanisters = CKBTC_ADDITIONAL_CANISTERS[universe.canisterId];
+      if (nonNullish(ckBTCCanisters.minterCanisterId)) {
+        updateBalance({
+          universeId: Principal.fromText(universe.canisterId),
+          minterCanisterId: ckBTCCanisters.minterCanisterId,
+          reload: undefined,
+          uiIndicators: false,
+        });
+      }
+    });
 
     loadCkBTCAccountsBalancesRequested = true;
 
