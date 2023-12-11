@@ -19,6 +19,7 @@ export const createCanisterWorker = async <T>({
   const agent = new HttpAgent({
     identity,
     host,
+    verifyQuerySignatures: false,
   });
 
   if (fetchRootKey) {

@@ -44,6 +44,7 @@ const getTestAccountAgent = async (): Promise<Agent> => {
   const agent: Agent = new HttpAgent({
     host: HOST,
     identity,
+    verifyQuerySignatures: false,
   });
   await agent.fetchRootKey();
 
@@ -359,6 +360,7 @@ export const receiveMockBtc = async ({
 }) => {
   const agent = new HttpAgent({
     host: HOST,
+    verifyQuerySignatures: false,
   });
   await agent.fetchRootKey();
   const actor = Actor.createActor(mockBitcoinIdlFactory, {
