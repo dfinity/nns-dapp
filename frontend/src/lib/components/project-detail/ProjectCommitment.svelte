@@ -112,46 +112,47 @@
         />
       </div>
     </div>
-    {#if projectCommitments.isNFParticipating && nonNullish(projectCommitments.nfCommitmentE8s)}
-      <!-- Extra div is needed because KeyValuePairInfo renders two components. -->
-      <!-- The spacing between component is set using flex in the parent. -->
-      <div class="commitment-progress-container">
-        <KeyValuePairInfo testId="sns-project-current-nf-commitment">
-          <span
-            slot="key"
-            class="commitment-progress-bar-title commitment-progress-bar-title__nf"
+
+    <!-- Extra div is needed because KeyValuePairInfo renders two components. -->
+    <!-- The spacing between component is set using flex in the parent. -->
+    <div class="commitment-progress-container">
+      <KeyValuePairInfo testId="sns-project-current-nf-commitment">
+        <span
+          slot="key"
+          class="commitment-progress-bar-title commitment-progress-bar-title__nf"
+        >
+          <span class="description"
+            >{$i18n.sns_project_detail.current_nf_commitment}</span
           >
-            <span class="description"
-              >{$i18n.sns_project_detail.current_nf_commitment}</span
-            >
-          </span>
+        </span>
 
-          <div slot="info" class="description">
-            <Html
-              text={$i18n.sns_project_detail.current_nf_commitment_description}
+        <div slot="info" class="description">
+          <Html
+            text={$i18n.sns_project_detail.current_nf_commitment_description}
+          />
+        </div>
+
+        <svelte:fragment slot="value">
+          {#if projectCommitments.isNFParticipating && nonNullish(projectCommitments.nfCommitmentE8s)}
+            <AmountDisplay
+              amount={TokenAmount.fromE8s({
+                amount: projectCommitments.nfCommitmentE8s,
+                token: ICPToken,
+              })}
+              singleLine
             />
-          </div>
-
-          <svelte:fragment slot="value">
-            {#if projectCommitments.isNFParticipating && nonNullish(projectCommitments.nfCommitmentE8s)}
-              <AmountDisplay
-                amount={TokenAmount.fromE8s({
-                  amount: projectCommitments.nfCommitmentE8s,
-                  token: ICPToken,
-                })}
-                singleLine
-              />
-            {:else}
-              <span>{$i18n.sns_project_detail.not_participating}</span>
-            {/if}
-          </svelte:fragment>
-        </KeyValuePairInfo>
+          {:else}
+            <span>{$i18n.sns_project_detail.not_participating}</span>
+          {/if}
+        </svelte:fragment>
+      </KeyValuePairInfo>
+      {#if projectCommitments.isNFParticipating && nonNullish(projectCommitments.nfCommitmentE8s)}
         <NfCommitmentProgressBar
           maxDirectParticipationE8s={projectCommitments.maxDirectCommitmentE8s}
           nfCommitmentE8s={projectCommitments.nfCommitmentE8s}
         />
-      </div>
-    {/if}
+      {/if}
+    </div>
   {/if}
   <KeyValuePair testId="sns-project-current-commitment">
     <span slot="key" class="description">

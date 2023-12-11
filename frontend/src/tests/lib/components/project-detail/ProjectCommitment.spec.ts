@@ -98,6 +98,15 @@ describe("ProjectCommitment", () => {
       expect(await progressBarPo.getCommitmentE8s()).toBe(directCommitment);
     });
 
+    it("should render a progress bar with NF participation", async () => {
+      const po = renderComponent(summary);
+      const progressBarPo = po.getNfCommitmentProgressBarPo();
+      expect(await progressBarPo.getCommitmentE8s()).toBe(nfCommitment);
+      expect(await progressBarPo.getMinCommitment()).toBe("0 ICP");
+      // 10% of maxDirectParticipation
+      expect(await progressBarPo.getMaxCommitment()).toBe(`100.00 ICP`);
+    });
+
     it("should render detailed participation if neurons fund participation is available", async () => {
       const po = renderComponent(summary);
       expect(await po.getNeuronsFundParticipation()).toEqual("100.00 ICP");

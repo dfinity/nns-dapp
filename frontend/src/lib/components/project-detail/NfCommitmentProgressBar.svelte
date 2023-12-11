@@ -15,7 +15,7 @@
 <ProgressBar
   max={Number(max)}
   value={Number(nfCommitmentE8s)}
-  testId="commitment-progress-bar-component"
+  testId="nf-commitment-progress-bar-component"
   color="warning"
 >
   <div class="info" slot="bottom">
@@ -24,7 +24,7 @@
         <span>
           {$i18n.sns_project_detail.min_nf_commitment_goal}
         </span>
-        <span data-tid="nf-commitment-min-indicator-value">
+        <span data-tid="commitment-min-indicator-value">
           <AmountDisplay
             amount={TokenAmount.fromE8s({
               amount: 0n,
@@ -38,7 +38,7 @@
         <span>
           {$i18n.sns_project_detail.max_nf_commitment_goal}
         </span>
-        <span data-tid="nf-commitment-max-indicator-value">
+        <span data-tid="commitment-max-indicator-value">
           <AmountDisplay
             amount={TokenAmount.fromE8s({ amount: max, token: ICPToken })}
             singleLine

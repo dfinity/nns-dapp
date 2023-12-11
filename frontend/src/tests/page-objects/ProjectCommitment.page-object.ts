@@ -1,3 +1,4 @@
+import { NfCommitmentProgressBarPo } from "$tests/page-objects/NfCommitmentProgressBarPo.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { CommitmentProgressBarPo } from "./CommitmentProgressBarPo.page-object";
@@ -20,6 +21,10 @@ export class ProjectCommitmentPo extends BasePageObject {
 
   getMinCommitment(): Promise<string> {
     return this.getCommitmentProgressBarPo().getMinCommitment();
+  }
+
+  getNfCommitmentProgressBarPo(): NfCommitmentProgressBarPo {
+    return NfCommitmentProgressBarPo.under(this.root);
   }
 
   async getParticipantsCount(): Promise<number> {
