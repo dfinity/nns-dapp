@@ -120,6 +120,7 @@ describe("ProjectCommitment", () => {
       neuronsFundCommitment: nfCommitment,
       minDirectParticipation: 10000000000n,
       maxDirectParticipation: 100000000000n,
+      maxNFParticipation: 200000000000n,
     });
 
     it("should render a progress bar with direct participation", async () => {
@@ -131,10 +132,11 @@ describe("ProjectCommitment", () => {
     it("should render a progress bar with NF participation", async () => {
       const po = renderComponent(summary);
       const progressBarPo = po.getNfCommitmentProgressBarPo();
+
+      expect(await progressBarPo.isPresent()).toBe(true);
       expect(await progressBarPo.getCommitmentE8s()).toBe(nfCommitment);
       expect(await progressBarPo.getMinCommitment()).toBe("0 ICP");
-      // 10% of maxDirectParticipation
-      expect(await progressBarPo.getMaxCommitment()).toBe(`100.00 ICP`);
+      expect(await progressBarPo.getMaxCommitment()).toBe(`2'000.00 ICP`);
     });
 
     it("should render detailed participation if neurons fund participation is available", async () => {
