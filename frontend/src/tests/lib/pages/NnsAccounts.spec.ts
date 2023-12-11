@@ -86,6 +86,26 @@ describe("NnsAccounts", () => {
         },
       ]);
     });
+
+    it("should render add account row with tabindex 1 more than number of accounts", async () => {
+      const mainTokenData = createUserToken({
+        title: "Main",
+        balance: TokenAmount.fromE8s({
+          amount: 314000000n,
+          token: NNS_TOKEN_DATA,
+        }),
+      });
+      const subaccountTokenData = createUserToken({
+        title: "Subaccount test",
+        balance: TokenAmount.fromE8s({
+          amount: 222000000n,
+          token: NNS_TOKEN_DATA,
+        }),
+      });
+      const po = renderComponent([mainTokenData, subaccountTokenData]);
+      // There are two accounts before the add account row
+      expect(await po.getAddAccountRowTabindex()).toBe("3");
+    });
   });
 
   describe("when tokens flag is disabled", () => {
