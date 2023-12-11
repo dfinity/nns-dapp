@@ -1,3 +1,4 @@
+import * as ckBTCMinterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as snsLedgerApi from "$lib/api/sns-ledger.api";
 import * as walletLedgerApi from "$lib/api/wallet-ledger.api";
@@ -43,6 +44,7 @@ import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AuthClient } from "@dfinity/auth-client";
+import { MinterNoNewUtxosError, type UpdateBalanceOk } from "@dfinity/ckbtc";
 import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { isNullish } from "@dfinity/utils";
@@ -53,6 +55,7 @@ import { mock } from "vitest-mock-extended";
 vi.mock("$lib/api/wallet-ledger.api");
 vi.mock("$lib/api/sns-ledger.api");
 vi.mock("$lib/api/icrc-ledger.api");
+vi.mock("$lib/api/ckbtc-minter.api");
 
 describe("Tokens route", () => {
   const mockAuthClient = mock<AuthClient>();
@@ -67,16 +70,19 @@ describe("Tokens route", () => {
   };
   const tetrisBalanceE8s = 222000000n;
   const pacmanBalanceE8s = 314000000n;
-  const ckBTCBalanceE8s = 444556699n;
+  const ckBTCDefaultBalanceE8s = 444556699n;
+  let ckBTCBalanceE8s = ckBTCDefaultBalanceE8s;
   const amountCkBTCTransaction = 2;
   const amountCkBTCTransactionUlps = numberToUlps({
     amount: amountCkBTCTransaction,
     token: mockCkBTCToken,
   });
-  let ckBTCTransactionPerformed = false;
-  const ckBTCNewBalanceE8s = ckBTCBalanceE8s - amountCkBTCTransactionUlps;
   const ckETHBalanceUlps = 4_140_000_000_000_000_000n;
   const icpBalanceE8s = 123456789n;
+  const noPendingUtxos = new MinterNoNewUtxosError({
+    pending_utxos: [],
+    required_confirmations: 0,
+  });
 
   const renderPage = async () => {
     const { container } = render(TokensRoute);
@@ -91,7 +97,7 @@ describe("Tokens route", () => {
       vi.clearAllMocks();
       icrcAccountsStore.reset();
       tokensStore.reset();
-      ckBTCTransactionPerformed = false;
+      ckBTCBalanceE8s = ckBTCDefaultBalanceE8s;
       overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
       vi.spyOn(walletLedgerApi, "getToken").mockImplementation(
         async ({ canisterId }) => {
@@ -117,9 +123,7 @@ describe("Tokens route", () => {
           const accountMap = {
             [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
               ...mockCkBTCMainAccount,
-              balanceUlps: ckBTCTransactionPerformed
-                ? ckBTCNewBalanceE8s
-                : ckBTCBalanceE8s,
+              balanceUlps: ckBTCBalanceE8s,
             },
             [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: {
               ...mockCkBTCMainAccount,
@@ -170,6 +174,9 @@ describe("Tokens route", () => {
         }
       );
       vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(1234n);
+      vi.spyOn(ckBTCMinterApi, "updateBalance").mockRejectedValue(
+        noPendingUtxos
+      );
 
       setSnsProjects([
         {
@@ -254,6 +261,51 @@ describe("Tokens route", () => {
           ]);
         });
 
+        it("should update the ckBTC balance in the background", async () => {
+          const completedUtxos = [
+            {
+              Minted: {
+                minted_amount: 10000000n,
+                block_index: 12345n,
+                utxo: {
+                  height: 123,
+                  value: 10000000n,
+                  outpoint: { txid: [], vout: 12 },
+                },
+              },
+            },
+          ];
+
+          let resolveUpdateBalance;
+          let rejectUpdateBalance;
+          vi.spyOn(ckBTCMinterApi, "updateBalance").mockImplementation(() => {
+            return new Promise<UpdateBalanceOk>((resolve, reject) => {
+              resolveUpdateBalance = resolve;
+              rejectUpdateBalance = reject;
+            });
+          });
+          const po = await renderPage();
+          const tokensPagePo = po.getTokensPagePo();
+          expect(await tokensPagePo.getRowData("ckBTC")).toEqual({
+            projectName: "ckBTC",
+            balance: "4.45 ckBTC",
+          });
+
+          // Just add some e8s to test that the balance is updated.
+          ckBTCBalanceE8s = ckBTCBalanceE8s + 100_000_000n;
+          await resolveUpdateBalance(completedUtxos);
+          await runResolvedPromises();
+          await rejectUpdateBalance(noPendingUtxos);
+          await runResolvedPromises();
+
+          expect(await tokensPagePo.getRowData("ckBTC")).toEqual({
+            projectName: "ckBTC",
+            balance: "5.45 ckBTC",
+          });
+          // After a successful call, there is another to check whether more pending UTxOs are available.
+          expect(ckBTCMinterApi.updateBalance).toBeCalledTimes(2);
+        });
+
         it("users can send SNS tokens", async () => {
           const po = await renderPage();
 
@@ -311,7 +363,7 @@ describe("Tokens route", () => {
             destinationAddress: encodeIcrcAccount(toAccount),
           });
 
-          ckBTCTransactionPerformed = true;
+          ckBTCBalanceE8s = ckBTCBalanceE8s - amountCkBTCTransactionUlps;
           await runResolvedPromises();
 
           expect(icrcLedgerApi.icrcTransfer).toBeCalledTimes(1);
