@@ -308,7 +308,7 @@ describe("neurons-services", () => {
         amount,
         account: {
           ...mockMainAccount,
-          balanceE8s: BigInt(amount - 1),
+          balanceUlps: BigInt(amount - 1),
         },
       });
 

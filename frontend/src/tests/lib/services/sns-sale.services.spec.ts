@@ -1031,7 +1031,7 @@ describe("sns-api", () => {
       const postprocessSpy = vi.fn().mockResolvedValue(undefined);
       const upgradeProgressSpy = vi.fn().mockResolvedValue(undefined);
 
-      expect(get(icpAccountsStore).main.balanceE8s).not.toEqual(newBalanceE8s);
+      expect(get(icpAccountsStore).main.balanceUlps).not.toEqual(newBalanceE8s);
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
@@ -1042,7 +1042,7 @@ describe("sns-api", () => {
         ticket: testTicket,
       });
 
-      expect(get(icpAccountsStore).main.balanceE8s).toEqual(newBalanceE8s);
+      expect(get(icpAccountsStore).main.balanceUlps).toEqual(newBalanceE8s);
     });
 
     it("should update subaccounts's balance in the store", async () => {
@@ -1058,7 +1058,7 @@ describe("sns-api", () => {
       const postprocessSpy = vi.fn().mockResolvedValue(undefined);
       const upgradeProgressSpy = vi.fn().mockResolvedValue(undefined);
 
-      expect(get(icpAccountsStore).main.balanceE8s).not.toEqual(newBalanceE8s);
+      expect(get(icpAccountsStore).main.balanceUlps).not.toEqual(newBalanceE8s);
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
@@ -1069,7 +1069,7 @@ describe("sns-api", () => {
         ticket: snsTicket.ticket,
       });
 
-      expect(get(icpAccountsStore).subAccounts[0].balanceE8s).toEqual(
+      expect(get(icpAccountsStore).subAccounts[0].balanceUlps).toEqual(
         newBalanceE8s
       );
     });

@@ -16,7 +16,7 @@
   let identifier: string;
   let balanceUlps: bigint;
 
-  $: ({ identifier, balanceE8s: balanceUlps } = account);
+  $: ({ identifier, balanceUlps } = account);
 
   let href: string | undefined;
   $: href =

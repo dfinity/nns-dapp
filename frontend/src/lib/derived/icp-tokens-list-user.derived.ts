@@ -41,7 +41,7 @@ const convertAccountToUserTokenData = ({
     // TODO: Add loading balance state
     balance: nonNullish(account)
       ? TokenAmountV2.fromUlps({
-          amount: account.balanceE8s,
+          amount: account.balanceUlps,
           token: NNS_TOKEN_DATA,
         })
       : new UnavailableTokenAmount(NNS_TOKEN_DATA),

@@ -35,7 +35,7 @@ import { get } from "svelte/store";
 describe("tokens-list-user.derived", () => {
   const icpUserToken: UserTokenData = createIcpUserToken({
     balance: TokenAmountV2.fromUlps({
-      amount: mockMainAccount.balanceE8s,
+      amount: mockMainAccount.balanceUlps,
       token: NNS_TOKEN_DATA,
     }),
     actions: [UserTokenAction.GoToDetail],
@@ -72,7 +72,7 @@ describe("tokens-list-user.derived", () => {
   const tetrisUserToken: UserTokenData = {
     ...tetrisTokenBase,
     balance: TokenAmountV2.fromUlps({
-      amount: mockSnsMainAccount.balanceE8s,
+      amount: mockSnsMainAccount.balanceUlps,
       token: snsTetrisToken,
     }),
     actions: [UserTokenAction.Receive, UserTokenAction.Send],
@@ -92,7 +92,7 @@ describe("tokens-list-user.derived", () => {
   const pacmanUserToken: UserTokenData = {
     ...pacmanTokenBase,
     balance: TokenAmountV2.fromUlps({
-      amount: mockSnsMainAccount.balanceE8s,
+      amount: mockSnsMainAccount.balanceUlps,
       token: snsPackmanToken,
     }),
     actions: [UserTokenAction.Receive, UserTokenAction.Send],
@@ -100,7 +100,7 @@ describe("tokens-list-user.derived", () => {
   const ckBTCUserToken: UserTokenData = {
     ...ckBTCTokenBase,
     balance: TokenAmountV2.fromUlps({
-      amount: mockCkBTCMainAccount.balanceE8s,
+      amount: mockCkBTCMainAccount.balanceUlps,
       token: mockCkBTCToken,
     }),
     actions: [UserTokenAction.Receive, UserTokenAction.Send],
@@ -108,7 +108,7 @@ describe("tokens-list-user.derived", () => {
   const ckETHUserToken: UserTokenData = {
     ...ckETHTokenBase,
     balance: TokenAmountV2.fromUlps({
-      amount: mockCkETHMainAccount.balanceE8s,
+      amount: mockCkETHMainAccount.balanceUlps,
       token: mockCkETHToken,
     }),
     actions: [UserTokenAction.Receive, UserTokenAction.Send],

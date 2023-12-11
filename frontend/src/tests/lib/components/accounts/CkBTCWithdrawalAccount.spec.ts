@@ -152,7 +152,7 @@ describe("CkBTCWithdrawalAccount", () => {
         const { getByText } = render(CkBTCWithdrawalAccount);
 
         const balance = formatToken({
-          value: mockCkBTCWithdrawalAccount.balanceE8s,
+          value: mockCkBTCWithdrawalAccount.balanceUlps,
           detailed: true,
         });
 
@@ -185,7 +185,7 @@ describe("CkBTCWithdrawalAccount", () => {
           account: {
             account: {
               ...mockCkBTCWithdrawalAccount,
-              balanceE8s: balanceZero,
+              balanceUlps: balanceZero,
             },
             certified: true,
           },
@@ -211,7 +211,7 @@ describe("CkBTCWithdrawalAccount", () => {
 
         vi.spyOn(ledgerApi, "getAccount").mockResolvedValue({
           ...mockCkBTCWithdrawalAccount,
-          balanceE8s: balanceZero,
+          balanceUlps: balanceZero,
         });
       });
 

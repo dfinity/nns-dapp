@@ -107,19 +107,19 @@ describe("Tokens route", () => {
           const accountMap = {
             [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
               ...mockCkBTCMainAccount,
-              balanceE8s: ckBTCBalanceE8s,
+              balanceUlps: ckBTCBalanceE8s,
             },
             [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: {
               ...mockCkBTCMainAccount,
-              balanceE8s: ckBTCBalanceE8s,
+              balanceUlps: ckBTCBalanceE8s,
             },
             [CKETH_UNIVERSE_CANISTER_ID.toText()]: {
               ...mockCkETHMainAccount,
-              balanceE8s: ckETHBalanceUlps,
+              balanceUlps: ckETHBalanceUlps,
             },
             [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: {
               ...mockCkETHMainAccount,
-              balanceE8s: ckETHBalanceUlps,
+              balanceUlps: ckETHBalanceUlps,
             },
           };
           if (isNullish(accountMap[canisterId.toText()])) {
@@ -137,14 +137,14 @@ describe("Tokens route", () => {
             return [
               {
                 ...mockSnsMainAccount,
-                balanceE8s: tetrisBalanceE8s,
+                balanceUlps: tetrisBalanceE8s,
               },
             ];
           }
           return [
             {
               ...mockSnsMainAccount,
-              balanceE8s: pacmanBalanceE8s,
+              balanceUlps: pacmanBalanceE8s,
             },
           ];
         }
@@ -186,7 +186,7 @@ describe("Tokens route", () => {
         certified: true,
       });
       icpAccountsStore.setForTesting({
-        main: { ...mockMainAccount, balanceE8s: icpBalanceE8s },
+        main: { ...mockMainAccount, balanceUlps: icpBalanceE8s },
       });
     });
 

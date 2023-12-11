@@ -187,7 +187,7 @@ describe("Wallet", () => {
         accounts: [
           {
             ...mockIcrcMainAccount,
-            balanceE8s: balanceBeforeTransfer,
+            balanceUlps: balanceBeforeTransfer,
           },
         ],
         certified: true,

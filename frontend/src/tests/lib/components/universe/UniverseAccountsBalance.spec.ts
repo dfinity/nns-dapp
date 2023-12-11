@@ -96,9 +96,9 @@ describe("UniverseAccountsBalance", () => {
       const balance: HTMLElement | null = getByTestId("token-value-label");
 
       const totalBalance =
-        mockMainAccount.balanceE8s +
-        mockSubAccount.balanceE8s +
-        mockHardwareWalletAccount.balanceE8s;
+        mockMainAccount.balanceUlps +
+        mockSubAccount.balanceUlps +
+        mockHardwareWalletAccount.balanceUlps;
 
       expect(balance?.textContent.trim() ?? "").toEqual(
         `${formatToken({
@@ -111,7 +111,7 @@ describe("UniverseAccountsBalance", () => {
     it("should render a total balance for Sns", () => {
       const rootCanisterId = mockSnsFullProject.rootCanisterId;
 
-      const totalBalance = mockSnsMainAccount.balanceE8s;
+      const totalBalance = mockSnsMainAccount.balanceUlps;
 
       snsAccountsStore.setAccounts({
         rootCanisterId,
@@ -136,7 +136,7 @@ describe("UniverseAccountsBalance", () => {
     });
 
     it("should render a total balance for ckBTC", () => {
-      const totalBalance = mockCkBTCMainAccount.balanceE8s;
+      const totalBalance = mockCkBTCMainAccount.balanceUlps;
 
       icrcAccountsStore.set({
         accounts: {
@@ -170,7 +170,7 @@ describe("UniverseAccountsBalance", () => {
           accounts: [
             {
               ...mockCkETHMainAccount,
-              balanceE8s: totalBalanceUlps,
+              balanceUlps: totalBalanceUlps,
             },
           ],
           certified: true,

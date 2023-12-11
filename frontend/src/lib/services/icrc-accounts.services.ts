@@ -85,7 +85,7 @@ const getIcrcMainIdentityAccount = async ({
     owner: identity.getPrincipal(),
   };
 
-  const balanceE8s = await queryIcrcBalance({
+  const balanceUlps = await queryIcrcBalance({
     identity,
     canisterId: ledgerCanisterId,
     certified,
@@ -95,7 +95,7 @@ const getIcrcMainIdentityAccount = async ({
   return {
     identifier: encodeIcrcAccount(account),
     principal: account.owner,
-    balanceE8s,
+    balanceUlps,
     type: "main",
   };
 };

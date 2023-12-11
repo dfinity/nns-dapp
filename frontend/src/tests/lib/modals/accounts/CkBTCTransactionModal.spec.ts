@@ -446,7 +446,7 @@ describe("CkBTCTransactionModal", () => {
     );
     expect(input?.value).toEqual(
       `${ulpsToNumber({
-        ulps: mockCkBTCMainAccount.balanceE8s - mockCkBTCToken.fee,
+        ulps: mockCkBTCMainAccount.balanceUlps - mockCkBTCToken.fee,
         token: mockCkBTCToken,
       })}`
     );
@@ -603,7 +603,7 @@ describe("CkBTCTransactionModal", () => {
       );
       expect(input?.value).toEqual(
         `${ulpsToNumber({
-          ulps: mockCkBTCWithdrawalAccount.balanceE8s,
+          ulps: mockCkBTCWithdrawalAccount.balanceUlps,
           token: mockCkBTCToken,
         })}`
       );

@@ -24,7 +24,7 @@ describe("icp-tokens-list-user.derived", () => {
   const mainUserTokenData: UserTokenData = {
     ...icpTokenUser,
     balance: TokenAmountV2.fromUlps({
-      amount: mockMainAccount.balanceE8s,
+      amount: mockMainAccount.balanceUlps,
       token: NNS_TOKEN_DATA,
     }),
     title: "Main",
@@ -33,7 +33,7 @@ describe("icp-tokens-list-user.derived", () => {
   const subaccountUserTokenData: UserTokenData = {
     ...icpTokenUser,
     balance: TokenAmountV2.fromUlps({
-      amount: mockSubAccount.balanceE8s,
+      amount: mockSubAccount.balanceUlps,
       token: NNS_TOKEN_DATA,
     }),
     title: mockSubAccount.name,
@@ -42,7 +42,7 @@ describe("icp-tokens-list-user.derived", () => {
   const hardwareWalletUserTokenData: UserTokenData = {
     ...icpTokenUser,
     balance: TokenAmountV2.fromUlps({
-      amount: mockHardwareWalletAccount.balanceE8s,
+      amount: mockHardwareWalletAccount.balanceUlps,
       token: NNS_TOKEN_DATA,
     }),
     title: mockHardwareWalletAccount.name,
