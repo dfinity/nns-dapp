@@ -48,6 +48,7 @@ const canisters = async ({
   const agent = new HttpAgent({
     identity,
     host,
+    verifyQuerySignatures: false,
   });
 
   if (fetchRootKey) {
