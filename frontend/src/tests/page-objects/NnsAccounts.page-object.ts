@@ -18,6 +18,19 @@ export class NnsAccountsPo extends BaseAccountsPo {
     return this.getTokensTablePo().isPresent();
   }
 
+  getAddAccountRow(): PageObjectElement {
+    return this.root.byTestId("add-account-row");
+  }
+
+  getAddAccountRowTabindex(): Promise<string> {
+    return this.getAddAccountRow().getAttribute("tabindex");
+  }
+
+  // Only when MY_TOKENS_ENABLED=true
+  clickAddAccount(): Promise<void> {
+    return this.getAddAccountRow().click();
+  }
+
   getNnsAddAccountPo(): NnsAddAccountPo {
     return NnsAddAccountPo.under(this.root);
   }

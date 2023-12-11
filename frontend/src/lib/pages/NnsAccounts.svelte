@@ -16,6 +16,7 @@
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { IconAdd } from "@dfinity/gix-components";
+  import { openAccountsModal } from "$lib/utils/modals.utils";
 
   onMount(() => {
     if (!$ENABLE_MY_TOKENS) {
@@ -29,6 +30,13 @@
 
   // TODO: Remove default value when we remove the feature flag
   export let userTokensData: UserTokenData[] = [];
+
+  const openAddAccountModal = () => {
+    openAccountsModal({
+      type: "add-icp-account",
+      data: undefined,
+    });
+  };
 </script>
 
 {#if $ENABLE_MY_TOKENS}
@@ -37,8 +45,16 @@
       {userTokensData}
       firstColumnHeader={$i18n.tokens.accounts_header}
     >
-      <div slot="last-row" class="add-account-row">
-        <!-- TODO: Add functionality to "Add Account" -->
+      <div
+        slot="last-row"
+        class="add-account-row"
+        data-tid="add-account-row"
+        on:click={openAddAccountModal}
+        on:keypress={openAddAccountModal}
+        role="button"
+        aria-label={$i18n.accounts.add_account}
+        tabindex={userTokensData.length + 1}
+      >
         <button class="ghost with-icon"
           ><IconAdd />{$i18n.accounts.add_account}</button
         >

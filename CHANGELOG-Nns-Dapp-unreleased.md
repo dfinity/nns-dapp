@@ -45,6 +45,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Allow npm greater than v10 in frontend project.
+
 #### Deprecated
 
 #### Removed
