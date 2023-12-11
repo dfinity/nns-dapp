@@ -31,7 +31,7 @@ import {
   testTransferTokens,
 } from "$tests/utils/transaction-modal.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { TokenAmount } from "@dfinity/utils";
+import { TokenAmountV2 } from "@dfinity/utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import { SvelteComponent, tick } from "svelte";
 import { get } from "svelte/store";
@@ -47,7 +47,7 @@ describe("CkBTCTransactionModal", () => {
       props: {
         selectedAccount,
         token: mockCkBTCToken,
-        transactionFee: TokenAmount.fromE8s({
+        transactionFee: TokenAmountV2.fromUlps({
           amount: mockCkBTCToken.fee,
           token: mockCkBTCToken,
         }),
