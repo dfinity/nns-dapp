@@ -82,7 +82,8 @@
         updateBalance({
           universeId: Principal.fromText(universe.canisterId),
           minterCanisterId: ckBTCCanisters.minterCanisterId,
-          reload: undefined,
+          reload: () => loadAccountsBalances([universe.canisterId]),
+          deferReload: false,
           uiIndicators: false,
         });
       }
