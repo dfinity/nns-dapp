@@ -44,6 +44,14 @@ export class TokensTablePo extends BasePageObject {
     return undefined;
   }
 
+  async getRowData(projectName: string): Promise<TokensTableRowData> {
+    const row = await this.findRowByName(projectName);
+    if (isNullish(row)) {
+      throw new Error(`Row with project name ${projectName} not found`);
+    }
+    return row.getData();
+  }
+
   async clickSendOnRow(projectName: string): Promise<void> {
     const row = await this.findRowByName(projectName);
     if (isNullish(row)) {

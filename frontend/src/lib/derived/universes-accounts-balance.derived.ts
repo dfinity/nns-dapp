@@ -14,7 +14,7 @@ import { sumAccounts, sumNnsAccounts } from "$lib/utils/accounts.utils";
 import { derived } from "svelte/store";
 
 export interface UniverseAccountsBalance {
-  // TODO: Rename to balanceUlps
+  // TODO GIX-2154: Rename to balanceUlps
   balanceE8s: bigint | undefined;
   certified: boolean;
 }

@@ -6,7 +6,7 @@ export const mockIcrcMainAccount: Account = {
   identifier: encodeIcrcAccount({
     owner: mockPrincipal,
   }),
-  balanceE8s: 890156712340000n,
+  balanceUlps: 890156712340000n,
   principal: mockPrincipal,
   type: "main",
 };

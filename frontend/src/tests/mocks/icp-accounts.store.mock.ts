@@ -13,7 +13,7 @@ export const mockMainAccount: IcpAccount = {
     "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
   icpIdentifier:
     "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
-  balanceE8s: 123456789010000n,
+  balanceUlps: 123456789010000n,
   principal: Principal.fromText("aaaaa-aa"),
   type: "main",
 };
@@ -28,7 +28,7 @@ export const mockSubAccount: IcpAccount = {
     "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
   icpIdentifier:
     "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
-  balanceE8s: 123456789010000n,
+  balanceUlps: 123456789010000n,
   subAccount: mockSubAccountArray,
   name: "test subaccount",
   type: "subAccount",
@@ -43,7 +43,7 @@ export const mockHardwareWalletAccount: IcpAccount = {
     "646f4d2d6fcb6fab5ba1547647526b666553467ecb5cb28c8d9ddf451c8f4c21",
   icpIdentifier:
     "646f4d2d6fcb6fab5ba1547647526b666553467ecb5cb28c8d9ddf451c8f4c21",
-  balanceE8s: 123456789010000n,
+  balanceUlps: 123456789010000n,
   principal: hardwareWalletPrincipal,
   name: "hardware wallet account test",
   type: "hardwareWallet",

@@ -10,7 +10,7 @@
   } from "$lib/derived/universes-tokens.derived";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
-  import type { TokenAmount } from "@dfinity/utils";
+  import type { TokenAmountV2 } from "@dfinity/utils";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 
   export let data: CkBTCTransactionModalData;
@@ -32,7 +32,7 @@
   let token: TokensStoreUniverseData | undefined = undefined;
   $: token = $ckBTCTokenStore[universeId.toText()];
 
-  let transactionFee: TokenAmount | undefined = undefined;
+  let transactionFee: TokenAmountV2 | undefined = undefined;
   $: transactionFee = $ckBTCTokenFeeStore[universeId.toText()];
 </script>
 

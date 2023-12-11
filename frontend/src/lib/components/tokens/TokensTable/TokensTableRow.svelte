@@ -49,7 +49,9 @@
   };
 </script>
 
-<div
+<svelte:element
+  this={nonNullish(userTokenData.rowHref) ? "a" : "div"}
+  href={userTokenData.rowHref}
   role="row"
   tabindex={index + 1}
   on:keypress={handleClick}
@@ -110,14 +112,14 @@
       {/each}
     {/if}
   </div>
-</div>
+</svelte:element>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/interaction";
   @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "../../../themes/mixins/grid-table";
 
-  div[role="row"] {
+  [role="row"] {
     @include interaction.tappable;
 
     // If we use grid-template-areas, we need to specify all the areas.
@@ -126,6 +128,8 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-2x);
+
+    text-decoration: none;
 
     @include media.min-width(medium) {
       @include grid-table.row;

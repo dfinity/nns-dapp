@@ -14,6 +14,7 @@ export type UserTokenBase = {
   subtitle?: string;
   logo: string;
   actions: UserTokenAction[];
+  rowHref?: string;
 };
 
 /**

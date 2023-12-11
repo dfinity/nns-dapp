@@ -376,7 +376,7 @@ describe("Accounts", () => {
   //     }),
   //     principal: mockIdentity.getPrincipal(),
   //     type: "main",
-  //     balanceE8s: balanceIcrcToken,
+  //     balanceUlps: balanceIcrcToken,
   //   };
   //
   //   await waitFor(() => {
@@ -561,18 +561,18 @@ describe("Accounts", () => {
         icpAccountsStore.setForTesting({
           main: {
             ...mockMainAccount,
-            balanceE8s: 314000000n,
+            balanceUlps: 314000000n,
           },
           subAccounts: [
             {
               ...mockSubAccount,
-              balanceE8s: 123456789000000n,
+              balanceUlps: 123456789000000n,
             },
           ],
           hardwareWallets: [
             {
               ...mockHardwareWalletAccount,
-              balanceE8s: 222000000n,
+              balanceUlps: 222000000n,
             },
           ],
         });

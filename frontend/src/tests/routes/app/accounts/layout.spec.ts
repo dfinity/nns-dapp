@@ -1,7 +1,10 @@
+import { AppPath } from "$lib/constants/routes.constants";
+import { pageStore } from "$lib/derived/page.derived";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
+import { page } from "$mocks/$app/stores";
 import AccountsLayout from "$routes/(app)/(u)/(accounts)/+layout.svelte";
-import { render } from "@testing-library/svelte";
+import { fireEvent, render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("Accounts layout", () => {
@@ -30,9 +33,27 @@ describe("Accounts layout", () => {
         queryByTestId("select-universe-nav-title")
       ).not.toBeInTheDocument();
     });
+
+    it("should render back button", () => {
+      const { queryByTestId } = render(AccountsLayout);
+
+      expect(queryByTestId("back")).toBeInTheDocument();
+    });
+
+    it("back button should navigate to tokens page", async () => {
+      page.mock({
+        routeId: AppPath.Accounts,
+      });
+      const { queryByTestId } = render(AccountsLayout);
+
+      expect(get(pageStore).path).toEqual(AppPath.Accounts);
+      await fireEvent.click(queryByTestId("back"));
+
+      expect(get(pageStore).path).toEqual(AppPath.Tokens);
+    });
   });
 
-  describe("when tokens flag is enabled", () => {
+  describe("when tokens flag is disabled", () => {
     beforeEach(() => {
       overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
     });
@@ -41,6 +62,12 @@ describe("Accounts layout", () => {
       const { queryByTestId } = render(AccountsLayout);
 
       expect(queryByTestId("select-universe-nav-title")).toBeInTheDocument();
+    });
+
+    it("should not render back button", () => {
+      const { queryByTestId } = render(AccountsLayout);
+
+      expect(queryByTestId("back")).not.toBeInTheDocument();
     });
   });
 });

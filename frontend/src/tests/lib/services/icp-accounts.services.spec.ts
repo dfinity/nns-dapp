@@ -226,7 +226,7 @@ describe("icp-accounts.services", () => {
         mockAccountDetails
       );
       vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
-        mockMainAccount.balanceE8s
+        mockMainAccount.balanceUlps
       );
       const certified = true;
       const result = await loadAccounts({
@@ -256,7 +256,7 @@ describe("icp-accounts.services", () => {
         account_identifier: mockMainAccount.identifier,
       });
       vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
-        mockHardwareWalletAccount.balanceE8s
+        mockHardwareWalletAccount.balanceUlps
       );
       const certified = true;
 
@@ -307,7 +307,7 @@ describe("icp-accounts.services", () => {
         }).toHex(),
       });
       vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
-        mockHardwareWalletAccount.balanceE8s
+        mockHardwareWalletAccount.balanceUlps
       );
       const certified = true;
 
@@ -354,7 +354,7 @@ describe("icp-accounts.services", () => {
       const mockAccounts = {
         main: {
           ...mockMainAccount,
-          balanceE8s: mainBalanceE8s,
+          balanceUlps: mainBalanceE8s,
         },
         subAccounts: [],
         hardwareWallets: [],
@@ -402,7 +402,7 @@ describe("icp-accounts.services", () => {
       const mockAccounts = {
         main: {
           ...mockMainAccount,
-          balanceE8s: mainBalanceE8s,
+          balanceUlps: mainBalanceE8s,
         },
         subAccounts: [],
         hardwareWallets: [],
@@ -469,7 +469,7 @@ describe("icp-accounts.services", () => {
       }) => ({
         main: {
           ...mockMainAccount,
-          balanceE8s: mainBalanceE8s,
+          balanceUlps: mainBalanceE8s,
         },
         subAccounts: [],
         hardwareWallets: [],
@@ -514,7 +514,7 @@ describe("icp-accounts.services", () => {
       }) => ({
         main: {
           ...mockMainAccount,
-          balanceE8s: mainBalanceE8s,
+          balanceUlps: mainBalanceE8s,
         },
         subAccounts: [],
         hardwareWallets: [],
@@ -555,8 +555,8 @@ describe("icp-accounts.services", () => {
       icpAccountsStore.setForTesting({
         main: mockMainAccount,
       });
-      expect(get(icpAccountsStore).main.balanceE8s).toEqual(
-        mockMainAccount.balanceE8s
+      expect(get(icpAccountsStore).main.balanceUlps).toEqual(
+        mockMainAccount.balanceUlps
       );
       await loadBalance({ accountIdentifier: mockMainAccount.identifier });
 
@@ -572,7 +572,7 @@ describe("icp-accounts.services", () => {
       });
       expect(queryAccountBalanceSpy).toBeCalledTimes(2);
 
-      expect(get(icpAccountsStore).main.balanceE8s).toEqual(newBalanceE8s);
+      expect(get(icpAccountsStore).main.balanceUlps).toEqual(newBalanceE8s);
     });
 
     it("should not show error if only query fails", async () => {
@@ -636,7 +636,7 @@ describe("icp-accounts.services", () => {
       }) => ({
         main: {
           ...mockMainAccount,
-          balanceE8s: mainBalanceE8s,
+          balanceUlps: mainBalanceE8s,
         },
         subAccounts: [],
         hardwareWallets: [],
@@ -710,7 +710,7 @@ describe("icp-accounts.services", () => {
       const mockAccounts = {
         main: {
           ...mockMainAccount,
-          balanceE8s: mainBalanceE8s,
+          balanceUlps: mainBalanceE8s,
         },
         subAccounts: [],
         hardwareWallets: [],
@@ -1161,7 +1161,7 @@ describe("icp-accounts.services", () => {
     const mockAccounts = {
       main: {
         ...mockMainAccount,
-        balanceE8s: mainBalanceE8s,
+        balanceUlps: mainBalanceE8s,
       },
       subAccounts: [],
       hardwareWallets: [],
