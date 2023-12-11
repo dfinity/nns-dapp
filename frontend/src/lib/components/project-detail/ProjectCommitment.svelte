@@ -153,7 +153,7 @@
           {/if}
         </svelte:fragment>
       </KeyValuePairInfo>
-      {#if projectCommitments.isNFParticipating && nonNullish(projectCommitments.nfCommitmentE8s)}
+      {#if projectCommitments.isNFParticipating && nonNullish(projectCommitments.nfCommitmentE8s) && nonNullish(maxNfParticipation)}
         <NfCommitmentProgressBar
           maxCommitmentE8s={maxNfParticipation}
           commitmentE8s={projectCommitments.nfCommitmentE8s}

@@ -3,7 +3,6 @@
   import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import { ProgressBar } from "@dfinity/gix-components";
-  import { formatTokenV2 } from "$lib/utils/token.utils";
 
   export let maxCommitmentE8s: bigint;
   export let commitmentE8s: bigint;
@@ -23,7 +22,7 @@
         </span>
         <span data-tid="commitment-min-indicator-value">
           <AmountDisplay
-            amount={TokenAmountV2.fromE8s({
+            amount={TokenAmountV2.fromUlps({
               amount: 0n,
               token: ICPToken,
             })}
@@ -37,7 +36,7 @@
         </span>
         <span data-tid="commitment-max-indicator-value">
           <AmountDisplay
-            amount={formatTokenV2.fromE8s({
+            amount={TokenAmountV2.fromUlps({
               amount: maxCommitmentE8s,
               token: ICPToken,
             })}
