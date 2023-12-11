@@ -74,7 +74,7 @@ describe("Tokens route", () => {
     token: mockCkBTCToken,
   });
   let ckBTCTransactionPerformed = false;
-  const ckBTCNewBalanceE8s = 444556699n - amountCkBTCTransactionUlps;
+  const ckBTCNewBalanceE8s = ckBTCBalanceE8s - amountCkBTCTransactionUlps;
   const ckETHBalanceUlps = 4_140_000_000_000_000_000n;
   const icpBalanceE8s = 123456789n;
 
