@@ -3,18 +3,14 @@
   import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import { ProgressBar } from "@dfinity/gix-components";
-  import { maxNeuronFundCommitmentE8s } from "$lib/utils/sns-swap.utils";
 
-  export let maxDirectParticipationE8s: bigint;
-  export let nfCommitmentE8s: bigint;
-
-  let max: bigint;
-  $: max = maxNeuronFundCommitmentE8s(maxDirectParticipationE8s);
+  export let maxCommitmentE8s: bigint;
+  export let commitmentE8s: bigint;
 </script>
 
 <ProgressBar
-  max={Number(max)}
-  value={Number(nfCommitmentE8s)}
+  max={Number(maxCommitmentE8s)}
+  value={Number(commitmentE8s)}
   testId="nf-commitment-progress-bar-component"
   color="warning"
 >

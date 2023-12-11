@@ -25,6 +25,7 @@
   } from "$lib/utils/projects.utils";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
   import NfCommitmentProgressBar from "$lib/components/project-detail/NfCommitmentProgressBar.svelte";
+  import { getMaxNeuronsFundParticipation } from "$lib/getters/sns-summary";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -67,6 +68,9 @@
     ? projectCommitments.directCommitmentE8s >=
       projectCommitments.minDirectCommitmentE8s
     : false;
+
+  let maxNfParticipation: bigint | undefined;
+  $: maxNfParticipation = getMaxNeuronsFundParticipation(summary);
 </script>
 
 <TestIdWrapper testId="project-commitment-component">
@@ -151,8 +155,8 @@
       </KeyValuePairInfo>
       {#if projectCommitments.isNFParticipating && nonNullish(projectCommitments.nfCommitmentE8s)}
         <NfCommitmentProgressBar
-          maxDirectParticipationE8s={projectCommitments.maxDirectCommitmentE8s}
-          nfCommitmentE8s={projectCommitments.nfCommitmentE8s}
+          maxCommitmentE8s={maxNfParticipation}
+          commitmentE8s={projectCommitments.nfCommitmentE8s}
         />
       {/if}
     </div>
