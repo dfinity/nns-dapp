@@ -81,7 +81,10 @@
     </KeyValuePair>
   {/if}
   {#if isMinParticipationReached}
-    <p class="content-cell-island markdown-container">
+    <p
+      data-tid="min-participation-reached"
+      class="content-cell-island markdown-container"
+    >
       {$i18n.sns_project_detail.min_participation_reached}
     </p>
   {/if}
@@ -160,6 +163,7 @@
     </span>
     <AmountDisplay slot="value" amount={buyersTotalCommitmentIcp} singleLine />
   </KeyValuePair>
+  <!-- deprecated -->
   {#if !isCommitmentSplitWithNeuronsFund(projectCommitments)}
     <div data-tid="sns-project-commitment-progress">
       <CommitmentProgressBar

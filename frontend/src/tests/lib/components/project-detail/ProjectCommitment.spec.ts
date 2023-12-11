@@ -81,6 +81,36 @@ describe("ProjectCommitment", () => {
     expect(po.getCurrentTotalCommitment()).resolves.toEqual("500.00 ICP");
   });
 
+  it("should hide success message when current commitment is less then the min participation goal", async () => {
+    const directCommitment = 1000000000n;
+    const summary = createSummary({
+      currentTotalCommitment: directCommitment,
+      neuronsFundCommitment: 0n,
+      directCommitment,
+      minDirectParticipation: 10000000000n,
+      maxDirectParticipation: 100000000000n,
+    });
+    const po = renderComponent(summary);
+
+    expect(await po.getGoalReachedMessage()).toEqual(null);
+  });
+
+  it("should render success message when current commitment reaches the min participation goal", async () => {
+    const directCommitment = 30000000000n;
+    const summary = createSummary({
+      currentTotalCommitment: directCommitment,
+      neuronsFundCommitment: 0n,
+      directCommitment,
+      minDirectParticipation: 10000000000n,
+      maxDirectParticipation: 100000000000n,
+    });
+    const po = renderComponent(summary);
+
+    expect(await po.getGoalReachedMessage()).toEqual(
+      "🎉 Minimum participation has been reached, the swap is successful."
+    );
+  });
+
   describe("when Neurons' Fund enhancements fields are available", () => {
     const nfCommitment = 10000000000n;
     const directCommitment = 30000000000n;

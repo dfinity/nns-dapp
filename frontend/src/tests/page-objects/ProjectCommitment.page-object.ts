@@ -31,6 +31,10 @@ export class ProjectCommitmentPo extends BasePageObject {
     return Number(await this.getText("sns-project-current-sale-buyer-count"));
   }
 
+  async getGoalReachedMessage(): Promise<string> {
+    return this.getText("min-participation-reached");
+  }
+
   async getCurrentTotalCommitment(): Promise<string> {
     return KeyValuePairPo.under({
       element: this.root,
