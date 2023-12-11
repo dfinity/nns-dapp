@@ -149,6 +149,7 @@
   {#if modal?.type === "ckbtc-send"}
     <CkBtcTransactionModal
       on:nnsClose={closeModal}
+      on:nnsTransfer={closeModal}
       token={modal.data.token}
       transactionFee={modal.data.fee}
       universeId={modal.data.universeId}

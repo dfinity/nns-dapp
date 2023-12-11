@@ -68,6 +68,13 @@ describe("Tokens route", () => {
   const tetrisBalanceE8s = 222000000n;
   const pacmanBalanceE8s = 314000000n;
   const ckBTCBalanceE8s = 444556699n;
+  const amountCkBTCTransaction = 2;
+  const amountCkBTCTransactionUlps = numberToUlps({
+    amount: amountCkBTCTransaction,
+    token: mockCkBTCToken,
+  });
+  let ckBTCTransactionPerformed = false;
+  const ckBTCNewBalanceE8s = 444556699n - amountCkBTCTransactionUlps;
   const ckETHBalanceUlps = 4_140_000_000_000_000_000n;
   const icpBalanceE8s = 123456789n;
 
@@ -84,6 +91,7 @@ describe("Tokens route", () => {
       vi.clearAllMocks();
       icrcAccountsStore.reset();
       tokensStore.reset();
+      ckBTCTransactionPerformed = false;
       overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
       vi.spyOn(walletLedgerApi, "getToken").mockImplementation(
         async ({ canisterId }) => {
@@ -109,7 +117,9 @@ describe("Tokens route", () => {
           const accountMap = {
             [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
               ...mockCkBTCMainAccount,
-              balanceUlps: ckBTCBalanceE8s,
+              balanceUlps: ckBTCTransactionPerformed
+                ? ckBTCNewBalanceE8s
+                : ckBTCBalanceE8s,
             },
             [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: {
               ...mockCkBTCMainAccount,
@@ -281,6 +291,11 @@ describe("Tokens route", () => {
 
           const tokensPagePo = po.getTokensPagePo();
 
+          expect(await tokensPagePo.getRowData("ckBTC")).toEqual({
+            projectName: "ckBTC",
+            balance: "4.45 ckBTC",
+          });
+
           await tokensPagePo.clickSendOnRow("ckBTC");
 
           expect(await po.getCkBTCTransactionModalPo().isPresent()).toBe(true);
@@ -290,21 +305,28 @@ describe("Tokens route", () => {
           const toAccount: IcrcAccount = {
             owner: principal(1),
           };
-          const amount = 2;
 
           await po.transferCkBTCTokens({
-            amount,
+            amount: amountCkBTCTransaction,
             destinationAddress: encodeIcrcAccount(toAccount),
           });
+
+          ckBTCTransactionPerformed = true;
+          await runResolvedPromises();
 
           expect(icrcLedgerApi.icrcTransfer).toBeCalledTimes(1);
           expect(icrcLedgerApi.icrcTransfer).toBeCalledWith({
             canisterId: CKBTC_UNIVERSE_CANISTER_ID,
             fee: mockCkBTCToken.fee,
             to: toAccount,
-            amount: numberToUlps({ amount, token: mockCkBTCToken }),
+            amount: amountCkBTCTransactionUlps,
             fromSubAccount: undefined,
             identity: mockIdentity,
+          });
+
+          expect(await tokensPagePo.getRowData("ckBTC")).toEqual({
+            projectName: "ckBTC",
+            balance: "2.45 ckBTC",
           });
         });
       });
