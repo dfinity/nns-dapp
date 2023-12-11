@@ -70,16 +70,13 @@ describe("Tokens route", () => {
   };
   const tetrisBalanceE8s = 222000000n;
   const pacmanBalanceE8s = 314000000n;
-  const ckBTCBalanceE8s = 444556699n;
+  const ckBTCDefaultBalanceE8s = 444556699n;
+  let ckBTCBalanceE8s = ckBTCDefaultBalanceE8s;
   const amountCkBTCTransaction = 2;
   const amountCkBTCTransactionUlps = numberToUlps({
     amount: amountCkBTCTransaction,
     token: mockCkBTCToken,
   });
-  let ckBTCTransactionPerformed = false;
-  let btcReceived = false;
-  const ckBTCNewBalanceE8s = ckBTCBalanceE8s - amountCkBTCTransactionUlps;
-  const ckBTCNewBalanceReceivedBTC = ckBTCBalanceE8s + 100_000_000n;
   const ckETHBalanceUlps = 4_140_000_000_000_000_000n;
   const icpBalanceE8s = 123456789n;
   const noPendingUtxos = new MinterNoNewUtxosError({
@@ -100,8 +97,7 @@ describe("Tokens route", () => {
       vi.clearAllMocks();
       icrcAccountsStore.reset();
       tokensStore.reset();
-      ckBTCTransactionPerformed = false;
-      btcReceived = false;
+      ckBTCBalanceE8s = ckBTCDefaultBalanceE8s;
       overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
       vi.spyOn(walletLedgerApi, "getToken").mockImplementation(
         async ({ canisterId }) => {
@@ -127,11 +123,7 @@ describe("Tokens route", () => {
           const accountMap = {
             [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
               ...mockCkBTCMainAccount,
-              balanceUlps: ckBTCTransactionPerformed
-                ? ckBTCNewBalanceE8s
-                : btcReceived
-                ? ckBTCNewBalanceReceivedBTC
-                : ckBTCBalanceE8s,
+              balanceUlps: ckBTCBalanceE8s,
             },
             [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: {
               ...mockCkBTCMainAccount,
@@ -299,7 +291,8 @@ describe("Tokens route", () => {
             balance: "4.45 ckBTC",
           });
 
-          btcReceived = true;
+          // Just add some e8s to test that the balance is updated.
+          ckBTCBalanceE8s = ckBTCBalanceE8s + 100_000_000n;
           await resolveUpdateBalance(completedUtxos);
           await runResolvedPromises();
           await rejectUpdateBalance(noPendingUtxos);
@@ -370,7 +363,7 @@ describe("Tokens route", () => {
             destinationAddress: encodeIcrcAccount(toAccount),
           });
 
-          ckBTCTransactionPerformed = true;
+          ckBTCBalanceE8s = ckBTCBalanceE8s - amountCkBTCTransactionUlps;
           await runResolvedPromises();
 
           expect(icrcLedgerApi.icrcTransfer).toBeCalledTimes(1);

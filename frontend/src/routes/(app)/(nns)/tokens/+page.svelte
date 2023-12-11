@@ -72,7 +72,7 @@
 
     /**
      * Calling updateBalance because users are confused about when and how to call it and product required to add this additional call within this process.
-     * That way, when user navigate once per session to the ckBTC accounts page, the call is also triggered.
+     * That way, when user navigates to the Tokens page, the call is also triggered.
      *
      * There is also a "Check for incoming BTC" button in the Wallet page.
      */
