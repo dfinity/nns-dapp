@@ -82,7 +82,7 @@ const initIcpAccountsStore = (): IcpAccountsStore => {
             }
             const mapNewBalance = (account: IcpAccount) => {
               return account.identifier === accountIdentifier
-                ? { ...account, balanceE8s }
+                ? { ...account, balanceUlps: balanceE8s }
                 : account;
             };
             return {

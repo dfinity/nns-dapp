@@ -10,7 +10,7 @@
 
   let amount: TokenAmountV2;
   $: amount = TokenAmountV2.fromUlps({
-    amount: account.balanceE8s,
+    amount: account.balanceUlps,
     token,
   });
 </script>

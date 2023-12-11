@@ -25,6 +25,14 @@ inputs:
     description: "Passed as --mode with the dfx canister install command"
     required: false
     default: "reinstall"
+  logfile:
+    description: "The name of the logfile to write to"
+    required: false
+    default: "dfx.log"
+outputs:
+  logfile:
+    description: The path to the dfx log file
+    value: ${{ inputs.logfile }}
 runs:
   using: "composite"
   steps:
@@ -63,7 +71,7 @@ runs:
       shell: bash
       run: |
         curl -fL --retry 5 ${{ steps.snsdemo_snapshot.outputs.url }} > state.tar.xz
-        dfx-snapshot-restore --snapshot state.tar.xz --verbose
+        dfx-snapshot-restore --snapshot state.tar.xz --verbose &> '${{ inputs.logfile }}'
         dfx identity use snsdemo8
         dfx-sns-demo-healthcheck
     - name: Install nns-dapp

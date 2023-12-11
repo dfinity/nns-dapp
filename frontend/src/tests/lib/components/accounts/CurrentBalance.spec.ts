@@ -8,7 +8,7 @@ import { render } from "@testing-library/svelte";
 describe("CurrentBalance", () => {
   const props = {
     balance: TokenAmount.fromE8s({
-      amount: mockMainAccount.balanceE8s,
+      amount: mockMainAccount.balanceUlps,
       token: ICPToken,
     }),
   };
@@ -27,7 +27,7 @@ describe("CurrentBalance", () => {
     const icp: HTMLSpanElement | null = queryByTestId("token-value");
 
     expect(icp?.innerHTML).toEqual(
-      `${formatToken({ value: mockMainAccount.balanceE8s })}`
+      `${formatToken({ value: mockMainAccount.balanceUlps })}`
     );
     expect(getByText(`ICP`)).toBeTruthy();
   });

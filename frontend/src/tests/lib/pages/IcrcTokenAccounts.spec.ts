@@ -94,7 +94,7 @@ describe("IcrcTokenAccounts", () => {
       expect(cardTitleRow?.textContent.trim()).toEqual(
         `${formatTokenV2({
           value: TokenAmountV2.fromUlps({
-            amount: mockCkETHMainAccount.balanceE8s,
+            amount: mockCkETHMainAccount.balanceUlps,
             token: mockCkETHTESTToken,
           }),
         })} ${mockCkETHTESTToken.symbol}`

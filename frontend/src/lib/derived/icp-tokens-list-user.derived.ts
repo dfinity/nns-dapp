@@ -7,6 +7,7 @@ import {
 import type { Account, AccountType } from "$lib/types/account";
 import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
 import type { Universe } from "$lib/types/universe";
+import { buildWalletUrl } from "$lib/utils/navigation.utils";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { Principal } from "@dfinity/principal";
 import { isNullish, nonNullish, TokenAmountV2 } from "@dfinity/utils";
@@ -41,7 +42,7 @@ const convertAccountToUserTokenData = ({
     // TODO: Add loading balance state
     balance: nonNullish(account)
       ? TokenAmountV2.fromUlps({
-          amount: account.balanceE8s,
+          amount: account.balanceUlps,
           token: NNS_TOKEN_DATA,
         })
       : new UnavailableTokenAmount(NNS_TOKEN_DATA),
@@ -51,6 +52,12 @@ const convertAccountToUserTokenData = ({
       amount: NNS_TOKEN_DATA.fee,
       token: NNS_TOKEN_DATA,
     }),
+    rowHref: nonNullish(account)
+      ? buildWalletUrl({
+          universe: nnsUniverse.canisterId.toString(),
+          account: account?.identifier,
+        })
+      : undefined,
     actions: nonNullish(account)
       ? [UserTokenAction.Receive, UserTokenAction.Send]
       : [],

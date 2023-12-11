@@ -64,7 +64,7 @@
 
   let max = 0;
   $: max = getMaxTransactionAmount({
-    balance: selectedAccount?.balanceE8s,
+    balance: selectedAccount?.balanceUlps,
     fee: toTokenAmountV2(transactionFee).toUlps(),
     maxAmount,
     token,

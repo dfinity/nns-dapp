@@ -104,12 +104,13 @@ export const anonymizeAccount = async (
     return account as undefined | null;
   }
 
-  const { identifier, principal, balanceE8s, name, type, subAccount } = account;
+  const { identifier, principal, balanceUlps, name, type, subAccount } =
+    account;
 
   return {
     identifier: await cutAndAnonymize(identifier),
     principal: anonymiseAvailability(principal),
-    balanceE8s: await anonymizeAmount(balanceE8s),
+    balanceUlps: await anonymizeAmount(balanceUlps),
     name: name,
     type: type,
     subAccount: await cutAndAnonymize(subAccount?.join("")),

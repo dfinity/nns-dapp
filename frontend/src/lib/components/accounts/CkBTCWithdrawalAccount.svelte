@@ -84,10 +84,10 @@
   $: loading =
     loadingBalance ||
     (nonNullish(account) &&
-      (isNullish(account.balanceE8s) || isNullish(account.identifier)));
+      (isNullish(account.balanceUlps) || isNullish(account.identifier)));
 
   let accountBalance: bigint;
-  $: accountBalance = account?.balanceE8s ?? 0n;
+  $: accountBalance = account?.balanceUlps ?? 0n;
 
   let detailedAccountBalance: string;
   $: detailedAccountBalance = formatToken({

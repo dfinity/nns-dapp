@@ -1,11 +1,19 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
+  authStore,
+  type AuthStore,
+  type AuthStoreData,
+} from "$lib/stores/auth.store";
+import {
   tokensStore,
   type TokensStore,
   type TokensStoreData,
 } from "$lib/stores/tokens.store";
 import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
+import { buildAccountsUrl, buildWalletUrl } from "$lib/utils/navigation.utils";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
+import { isUniverseNns } from "$lib/utils/universe.utils";
+import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { isNullish, TokenAmountV2 } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 import { tokensListBaseStore } from "./tokens-list-base.derived";
@@ -47,15 +55,39 @@ const addActions = (userTokenData: UserTokenData): UserTokenData => ({
         ],
 });
 
+const addHref = ({
+  userTokenData,
+  authData,
+}: {
+  userTokenData: UserTokenData;
+  authData: AuthStoreData;
+}): UserTokenData => ({
+  ...userTokenData,
+  rowHref: isNullish(authData.identity)
+    ? undefined
+    : isUniverseNns(userTokenData.universeId)
+    ? buildAccountsUrl({ universe: userTokenData.universeId.toText() })
+    : buildWalletUrl({
+        universe: userTokenData.universeId.toText(),
+        account: encodeIcrcAccount({
+          owner: authData.identity.getPrincipal(),
+        }),
+      }),
+});
+
 export const tokensListUserStore = derived<
   [
     Readable<UserTokenData[]>,
     Readable<UniversesAccountsBalanceReadableStore>,
     TokensStore,
+    AuthStore,
   ],
   UserTokenData[]
 >(
-  [tokensListBaseStore, universesAccountsBalance, tokensStore],
-  ([tokensList, balances, tokens]) =>
-    tokensList.map(addBalance({ balances, tokens })).map(addActions)
+  [tokensListBaseStore, universesAccountsBalance, tokensStore, authStore],
+  ([tokensList, balances, tokens, authData]) =>
+    tokensList
+      .map(addBalance({ balances, tokens }))
+      .map(addActions)
+      .map((userTokenData) => addHref({ userTokenData, authData }))
 );

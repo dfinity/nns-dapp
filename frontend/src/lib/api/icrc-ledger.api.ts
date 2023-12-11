@@ -46,7 +46,7 @@ export const getIcrcAccount = async ({
   QueryParams): Promise<Account> => {
   const account = { owner, subaccount };
 
-  const balanceE8s = await getBalance({ ...account, certified });
+  const balanceUlps = await getBalance({ ...account, certified });
 
   return {
     identifier: encodeIcrcAccount(account),
@@ -54,7 +54,7 @@ export const getIcrcAccount = async ({
     ...(nonNullish(subaccount) && {
       subAccount: uint8ArrayToArrayOfNumber(new Uint8Array(subaccount)),
     }),
-    balanceE8s,
+    balanceUlps,
     type,
   };
 };

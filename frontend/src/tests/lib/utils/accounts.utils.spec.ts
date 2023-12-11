@@ -562,7 +562,7 @@ describe("accounts-utils", () => {
         assertEnoughAccountFunds({
           account: {
             ...mockMainAccount,
-            balanceE8s: amountE8s,
+            balanceUlps: amountE8s,
           },
           amountE8s: amountE8s + BigInt(10_000),
         });
@@ -575,7 +575,7 @@ describe("accounts-utils", () => {
         assertEnoughAccountFunds({
           account: {
             ...mockMainAccount,
-            balanceE8s: amountE8s,
+            balanceUlps: amountE8s,
           },
           amountE8s: amountE8s - BigInt(10_000),
         });
@@ -631,9 +631,9 @@ describe("accounts-utils", () => {
   describe("sumNnsAccounts", () => {
     it("should sum accounts balance", () => {
       let totalBalance =
-        mockMainAccount.balanceE8s +
-        mockSubAccount.balanceE8s +
-        mockHardwareWalletAccount.balanceE8s;
+        mockMainAccount.balanceUlps +
+        mockSubAccount.balanceUlps +
+        mockHardwareWalletAccount.balanceUlps;
 
       expect(
         sumNnsAccounts({
@@ -643,7 +643,7 @@ describe("accounts-utils", () => {
         })
       ).toEqual(totalBalance);
 
-      totalBalance = mockMainAccount.balanceE8s + mockSubAccount.balanceE8s;
+      totalBalance = mockMainAccount.balanceUlps + mockSubAccount.balanceUlps;
 
       expect(
         sumNnsAccounts({
@@ -653,7 +653,7 @@ describe("accounts-utils", () => {
         })
       ).toEqual(totalBalance);
 
-      totalBalance = mockMainAccount.balanceE8s;
+      totalBalance = mockMainAccount.balanceUlps;
 
       expect(
         sumNnsAccounts({
@@ -668,13 +668,13 @@ describe("accounts-utils", () => {
   describe("sumAccounts", () => {
     it("should sum accounts balance", () => {
       let totalBalance =
-        mockSnsMainAccount.balanceE8s + mockSnsSubAccount.balanceE8s;
+        mockSnsMainAccount.balanceUlps + mockSnsSubAccount.balanceUlps;
 
       expect(sumAccounts([mockSnsMainAccount, mockSnsSubAccount])).toEqual(
         totalBalance
       );
 
-      totalBalance = mockSnsMainAccount.balanceE8s;
+      totalBalance = mockSnsMainAccount.balanceUlps;
 
       expect(sumAccounts([mockSnsMainAccount])).toEqual(totalBalance);
     });
