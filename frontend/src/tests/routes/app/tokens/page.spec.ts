@@ -328,6 +328,7 @@ describe("Tokens route", () => {
             projectName: "ckBTC",
             balance: "2.45 ckBTC",
           });
+          expect(await po.getCkBTCTransactionModalPo().isPresent()).toBe(false);
         });
       });
     });
