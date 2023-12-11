@@ -233,8 +233,8 @@
           <div slot="end">
             <SnsProposalVotingSection
               {proposal}
-              {reloadProposal}
               {proposalDataMap}
+              {reloadProposal}
             />
           </div>
         </SplitBlock>

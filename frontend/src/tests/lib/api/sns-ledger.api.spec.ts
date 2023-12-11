@@ -65,7 +65,7 @@ describe("sns-ledger api", () => {
       const main = accounts.find(({ type }) => type === "main");
       expect(main).not.toBeUndefined();
 
-      expect(main?.balanceE8s).toEqual(mainBalance);
+      expect(main?.balanceUlps).toEqual(mainBalance);
 
       expect(balanceSpy).toBeCalled();
     });

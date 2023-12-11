@@ -176,7 +176,7 @@
           />
           <WalletPageHeading
             balance={TokenAmount.fromE8s({
-              amount: $selectedAccountStore.account.balanceE8s,
+              amount: $selectedAccountStore.account.balanceUlps,
               token: ICPToken,
             })}
             accountName={name}

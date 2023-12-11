@@ -28,7 +28,7 @@ describe("icrc-accounts-services", () => {
     }),
     principal: mockIdentity.getPrincipal(),
     type: "main",
-    balanceE8s,
+    balanceUlps: balanceE8s,
   };
 
   beforeEach(() => {
@@ -255,7 +255,7 @@ describe("icrc-accounts-services", () => {
     it("should load balance after transfer", async () => {
       const initialAccount = {
         ...mockIcrcMainAccount,
-        balanceE8s: balanceE8s + amountE8s,
+        balanceUlps: balanceE8s + amountE8s,
       };
       icrcAccountsStore.set({
         universeId: ledgerCanisterId,
@@ -276,7 +276,7 @@ describe("icrc-accounts-services", () => {
       const finalAccount =
         get(icrcAccountsStore)[ledgerCanisterId.toText()]?.accounts[0];
 
-      expect(finalAccount.balanceE8s).toEqual(balanceE8s);
+      expect(finalAccount.balanceUlps).toEqual(balanceE8s);
     });
   });
 });

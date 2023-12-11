@@ -109,7 +109,7 @@ describe("ckbtc.utils", () => {
           ulps:
             RETRIEVE_BTC_MIN_AMOUNT +
             params.transactionFee +
-            params.sourceAccount.balanceE8s,
+            params.sourceAccount.balanceUlps,
           token: mockCkBTCToken,
         }),
       })

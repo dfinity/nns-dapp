@@ -2,6 +2,7 @@ import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
 import {
   ballotVotingPower,
+  fromPercentageBasisPoints,
   getUniversalProposalStatus,
   isAccepted,
   lastProposalId,
@@ -28,7 +29,9 @@ import {
   SnsVote,
   type SnsAction,
   type SnsNeuron,
+  type SnsPercentage,
   type SnsProposalData,
+  type SnsTally,
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 
@@ -632,6 +635,120 @@ describe("sns-proposals utils", () => {
           })
         )
       ).toBe("rejected");
+    });
+  });
+
+  describe("fromPercentageBasisPoints", () => {
+    it("should return basis points", () => {
+      expect(
+        fromPercentageBasisPoints([{ basis_points: [300n] } as SnsPercentage])
+      ).toBe(300n);
+    });
+
+    it("should not break when no percentage provided", () => {
+      expect(fromPercentageBasisPoints(undefined)).toBe(undefined);
+    });
+  });
+
+  describe("fromPercentageBasisPoints", () => {
+    it("should return basis points", () => {
+      expect(
+        fromPercentageBasisPoints([{ basis_points: [300n] } as SnsPercentage])
+      ).toBe(300n);
+    });
+
+    it("should not break when no percentage provided", () => {
+      expect(fromPercentageBasisPoints(undefined)).toBe(undefined);
+    });
+  });
+
+  describe("isAccepted", () => {
+    const from_percentage = (percentage: number): SnsPercentage => ({
+      basis_points: [BigInt(percentage * 100)],
+    });
+
+    // Copy of https://gitlab.com/dfinity-lab/public/ic/-/blob/11b6d0797c89937541ef079d54b6320274c07236/rs/sns/governance/tests/proposal.rs#L693
+    it("calculates isAccepted", () => {
+      const p0 = {
+        ...mockSnsProposal,
+        latest_tally: [
+          {
+            yes: 0n,
+            no: 0n,
+            total: 10n,
+            timestamp_seconds: 1n,
+          } as SnsTally,
+        ],
+        proposal_creation_timestamp_seconds: 1n,
+        initial_voting_period_seconds: 10n,
+        minimum_yes_proportion_of_total: [from_percentage(0)],
+      } as SnsProposalData;
+
+      const p1 = {
+        ...mockSnsProposal,
+        latest_tally: [
+          {
+            yes: 2n,
+            no: 0n,
+            total: 10n,
+            timestamp_seconds: 1n,
+          } as SnsTally,
+        ],
+        proposal_creation_timestamp_seconds: 1n,
+        initial_voting_period_seconds: 10n,
+        minimum_yes_proportion_of_total: [from_percentage(0)],
+      } as SnsProposalData;
+
+      const p2 = {
+        ...mockSnsProposal,
+        latest_tally: [
+          {
+            yes: 2n,
+            no: 0n,
+            total: 10n,
+            timestamp_seconds: 1n,
+          } as SnsTally,
+        ],
+        proposal_creation_timestamp_seconds: 1n,
+        initial_voting_period_seconds: 10n,
+        minimum_yes_proportion_of_total: [from_percentage(10)],
+      } as SnsProposalData;
+
+      const p3 = {
+        ...mockSnsProposal,
+        latest_tally: [
+          {
+            yes: 2n,
+            no: 0n,
+            total: 10n,
+            timestamp_seconds: 1n,
+          } as SnsTally,
+        ],
+        proposal_creation_timestamp_seconds: 1n,
+        initial_voting_period_seconds: 10n,
+        minimum_yes_proportion_of_total: [from_percentage(20)],
+      } as SnsProposalData;
+
+      const p4 = {
+        ...mockSnsProposal,
+        latest_tally: [
+          {
+            yes: 2n,
+            no: 0n,
+            total: 10n,
+            timestamp_seconds: 1n,
+          } as SnsTally,
+        ],
+        proposal_creation_timestamp_seconds: 1n,
+        initial_voting_period_seconds: 10n,
+        minimum_yes_proportion_of_total: [from_percentage(30)],
+      } as SnsProposalData;
+
+      expect(isAccepted(p0)).toBe(false);
+      expect(isAccepted(p1)).toBe(true);
+      expect(isAccepted(p2)).toBe(true);
+      expect(isAccepted(p3)).toBe(true);
+      expect(isAccepted(p4)).toBe(false);
     });
   });
 });

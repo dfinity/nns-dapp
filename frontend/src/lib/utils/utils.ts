@@ -1,5 +1,6 @@
 import { toastsError, toastsHide } from "$lib/stores/toasts.store";
 import type { PngDataUrl } from "$lib/types/assets";
+import type { BasisPoints } from "$lib/types/proposals";
 import type { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
 import { errorToString } from "./error.utils";
@@ -476,3 +477,6 @@ export const splitE8sIntoChunks = (value: unknown): string[] => {
 
   return chunks;
 };
+
+export const basisPointsToPercent = (basisPoints: BasisPoints): number =>
+  Number(basisPoints) / 100;

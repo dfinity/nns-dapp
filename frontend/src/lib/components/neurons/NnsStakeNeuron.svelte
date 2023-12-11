@@ -59,7 +59,7 @@
 
   let max = 0;
   $: max = getMaxTransactionAmount({
-    balance: account?.balanceE8s ?? 0n,
+    balance: account?.balanceUlps ?? 0n,
     fee: $transactionsFeesStore.main,
     token: ICPToken,
   });

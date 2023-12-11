@@ -66,7 +66,7 @@ describe("ckbtc-accounts-loader-services", () => {
           .spyOn(ledgerApi, "getAccount")
           .mockResolvedValue({
             ...mockCkBTCWithdrawalAccount,
-            balanceE8s: mockAccountBalance.toE8s(),
+            balanceUlps: mockAccountBalance.toE8s(),
           });
       });
 
@@ -77,7 +77,7 @@ describe("ckbtc-accounts-loader-services", () => {
         });
 
         expect(result.identifier).toBeUndefined();
-        expect(result.balanceE8s).toBeUndefined();
+        expect(result.balanceUlps).toBeUndefined();
 
         expect(spyGetCkBTCAccount).not.toHaveBeenCalled();
       });
@@ -97,7 +97,7 @@ describe("ckbtc-accounts-loader-services", () => {
         });
 
         expect(result.identifier).toEqual(mockCkBTCWithdrawalIdentifier);
-        expect(result.balanceE8s).toEqual(mockAccountBalance.toE8s());
+        expect(result.balanceUlps).toEqual(mockAccountBalance.toE8s());
 
         expect(spyGetCkBTCAccount).toHaveBeenCalledWith({
           identity: params.identity,
@@ -124,7 +124,7 @@ describe("ckbtc-accounts-loader-services", () => {
           const result = await getCkBTCWithdrawalAccount(params);
 
           expect(result.identifier).toEqual(mockCkBTCWithdrawalIdentifier);
-          expect(result.balanceE8s).toEqual(mockAccountBalance.toE8s());
+          expect(result.balanceUlps).toEqual(mockAccountBalance.toE8s());
 
           expect(spyGetCkBTCAccount).toHaveBeenCalledWith({
             identity: params.identity,

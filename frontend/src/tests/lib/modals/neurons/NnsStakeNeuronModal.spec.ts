@@ -306,7 +306,7 @@ describe("NnsStakeNeuronModal", () => {
         icpAccountIdentifier: selectedAccountIdentifier,
       });
       // New balance is set in the store.
-      expect(get(icpAccountsStore).main.balanceE8s).toEqual(newBalanceE8s);
+      expect(get(icpAccountsStore).main.balanceUlps).toEqual(newBalanceE8s);
     });
 
     it("should be able to change dissolve delay in the confirmation screen", async () => {

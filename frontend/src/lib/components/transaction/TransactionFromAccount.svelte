@@ -35,7 +35,7 @@
         <AmountDisplay
           singleLine
           amount={TokenAmountV2.fromUlps({
-            amount: selectedAccount.balanceE8s,
+            amount: selectedAccount.balanceUlps,
             token,
           })}
         />

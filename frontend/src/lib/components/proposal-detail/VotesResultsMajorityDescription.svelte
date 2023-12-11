@@ -1,6 +1,8 @@
 <script lang="ts">
   import { Collapsible, IconInfo } from "@dfinity/gix-components";
 
+  export let testId: string;
+
   let toggleContent: () => void;
 </script>
 
@@ -12,7 +14,11 @@
 >
   <div slot="header" class="description">
     <slot name="title" />
-    <button class="icon" on:click|stopPropagation={toggleContent}>
+    <button
+      data-tid={testId}
+      class="icon"
+      on:click|stopPropagation={toggleContent}
+    >
       <IconInfo />
     </button>
   </div>

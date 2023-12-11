@@ -6,17 +6,33 @@
   import VotesResultsMajorityDescription from "$lib/components/proposal-detail/VotesResultsMajorityDescription.svelte";
   import { nonNullish } from "@dfinity/utils";
   import { nowInSeconds } from "$lib/utils/date.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { isSuperMajority } from "$lib/utils/sns-proposals.utils";
+  import { Html } from "@dfinity/gix-components";
 
   const formatVotingPower = (value: number) =>
     `${formatNumber(value, {
       minFraction: 0,
       maxFraction: 0,
     })}`;
+  const formatPercent = (value: number) =>
+    `${formatPercentage(value / 100, {
+      minFraction: 0,
+      maxFraction: 2,
+    })}`;
+  const immediateMajorityIcon = `<span class="inline-maturity-icon immediate-majority"></span>`;
+  const standardMajorityIcon = `<span class="inline-maturity-icon standard-majority"></span>`;
+  const iconifyDescription = (description: string) =>
+    description
+      .replace(/\$icon_immediate_majority/g, immediateMajorityIcon)
+      .replace(/\$icon_standard_majority/g, standardMajorityIcon);
 
   export let yes: number;
   export let no: number;
   export let total: number;
-  export let deadlineTimestampSeconds: bigint | undefined;
+  export let deadlineTimestampSeconds: bigint | undefined = undefined;
+  export let immediateMajorityPercent: number;
+  export let standardMajorityPercent: number;
 
   let yesProportion: number;
   $: yesProportion = total ? yes / total : 0;
@@ -24,10 +40,56 @@
   let noProportion: number;
   $: noProportion = total ? no / total : 0;
 
+  let yesNoSum: number;
+  $: yesNoSum = yes + no;
+  let hintText: string;
+  $: hintText =
+    yesNoSum > 0
+      ? replacePlaceholders($i18n.proposal_detail__vote.votes_hint, {
+          $immediate_majority: formatPercent(immediateMajorityPercent),
+          $cast_votes: formatPercent((yes / yesNoSum) * 100),
+        })
+      : "";
+
   let showExpirationDate: boolean = true;
   $: showExpirationDate =
     nonNullish(deadlineTimestampSeconds) &&
     deadlineTimestampSeconds > BigInt(nowInSeconds());
+
+  let superMajorityMode: boolean;
+  $: superMajorityMode = isSuperMajority(immediateMajorityPercent);
+
+  let immediateMajorityTitle: string;
+  $: immediateMajorityTitle = superMajorityMode
+    ? $i18n.proposal_detail__vote.immediate_super_majority
+    : $i18n.proposal_detail__vote.immediate_majority;
+
+  let immediateMajorityDescription: string;
+  $: immediateMajorityDescription = superMajorityMode
+    ? replacePlaceholders(
+        $i18n.proposal_detail__vote.immediate_super_majority_description,
+        {
+          $immediate_majority: formatPercent(immediateMajorityPercent),
+          $no_immediate_majority: formatPercent(100 - immediateMajorityPercent),
+        }
+      )
+    : $i18n.proposal_detail__vote.immediate_majority_description;
+
+  let standardMajorityTitle: string;
+  $: standardMajorityTitle = superMajorityMode
+    ? $i18n.proposal_detail__vote.standard_super_majority
+    : $i18n.proposal_detail__vote.standard_majority;
+
+  let standardMajorityDescription: string;
+  $: standardMajorityDescription = replacePlaceholders(
+    superMajorityMode
+      ? $i18n.proposal_detail__vote.standard_super_majority_description
+      : $i18n.proposal_detail__vote.standard_majority_description,
+    {
+      $immediate_majority: formatPercent(immediateMajorityPercent),
+      $standard_majority: formatPercent(standardMajorityPercent),
+    }
+  );
 </script>
 
 <ProposalContentCell testId="votes-results-component">
@@ -40,14 +102,9 @@
         >{formatPercentage(yesProportion)}</span
       >
     </div>
-    <div class="remain" data-tid="remain">
-      {#if showExpirationDate}
-        <span class="caption description">
-          {$i18n.proposal_detail__vote.expiration}
-        </span>
-        <div class="caption value">
-          <Countdown {deadlineTimestampSeconds} />
-        </div>
+    <div class="hint">
+      {#if yesNoSum > 0}
+        <p data-tid="hint">{hintText}</p>
       {/if}
     </div>
     <div class="no no-percent">
@@ -56,12 +113,15 @@
         >{formatPercentage(noProportion)}</span
       >
     </div>
-    <div class="progressbar-container">
-      <div class="majority absolute-majority">
-        <div class="majority-icon absolute-majority"></div>
+    <div
+      class="progressbar-container"
+      style={`--immediate-majority: ${immediateMajorityPercent}%; --standard-majority:${standardMajorityPercent}%;`}
+    >
+      <div class="majority immediate-majority">
+        <div class="majority-icon immediate-majority"></div>
       </div>
-      <div class="majority simple-majority">
-        <div class="majority-icon simple-majority"></div>
+      <div class="majority standard-majority">
+        <div class="majority-icon standard-majority"></div>
       </div>
       <div
         class="progressbar"
@@ -88,25 +148,40 @@
       >
       <span data-tid="reject">{formatVotingPower(no)}</span>
     </span>
+    <div class="remain" data-tid="remain">
+      {#if showExpirationDate}
+        <span class="caption description">
+          {$i18n.proposal_detail__vote.expiration}
+        </span>
+        <div class="caption value">
+          <Countdown {deadlineTimestampSeconds} />
+        </div>
+      {/if}
+    </div>
   </div>
 
-  <div class="legends">
-    <VotesResultsMajorityDescription>
-      <h4 class="description" slot="title">
-        <div class="majority-icon absolute-majority"></div>
-        {$i18n.proposal_detail__vote.absolute_majority}
+  <div class="votes-results-legends">
+    <h3 class="description">{$i18n.proposal_detail__vote.decision_intro}</h3>
+    <VotesResultsMajorityDescription testId="immediate-majority-toggle">
+      <h4 data-tid="immediate-majority-title" slot="title" class="description">
+        {immediateMajorityTitle}
       </h4>
-      <p class="description">
-        {$i18n.proposal_detail__vote.absolute_majority_description}
+      <p
+        data-tid="immediate-majority-description"
+        class="description majority-description"
+      >
+        <Html text={iconifyDescription(immediateMajorityDescription)} />
       </p>
     </VotesResultsMajorityDescription>
-    <VotesResultsMajorityDescription>
-      <h4 class="description" slot="title">
-        <div class="majority-icon simple-majority"></div>
-        {$i18n.proposal_detail__vote.simple_majority}
+    <VotesResultsMajorityDescription testId="standard-majority-toggle">
+      <h4 data-tid="standard-majority-title" slot="title" class="description">
+        {standardMajorityTitle}
       </h4>
-      <p class="description">
-        {$i18n.proposal_detail__vote.simple_majority_description}
+      <p
+        data-tid="standard-majority-description"
+        class="description majority-description"
+      >
+        <Html text={iconifyDescription(standardMajorityDescription)} />
       </p>
     </VotesResultsMajorityDescription>
   </div>
@@ -115,8 +190,6 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
-
-  $font-size-medium: 0.875rem;
 
   .title {
     @include fonts.h3(true);
@@ -128,16 +201,16 @@
 
     // 5 columns for mobile to give more space for the ".remain" section
     grid-template-areas:
-      "yes-percent yes-percent _ no-percent no-percent"
-      "progressbar progressbar progressbar progressbar progressbar"
-      "yes-value remain remain remain no-value";
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+      "yes-percent hint no-percent"
+      "progressbar progressbar progressbar"
+      "yes-value remain no-value";
+    grid-template-columns: 1fr 1fr 1fr;
 
     @include media.min-width(small) {
       grid-template-areas:
-        "yes-percent remain no-percent"
+        "yes-percent hint no-percent"
         "progressbar progressbar progressbar"
-        "yes-value _ no-value";
+        "yes-value remain no-value";
       grid-template-columns: 1fr 1fr 1fr;
       row-gap: var(--padding-0_5x);
     }
@@ -152,6 +225,15 @@
       display: flex;
       flex-direction: column;
       align-items: end;
+    }
+    .hint {
+      grid-area: hint;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+
+      @include fonts.small(false);
     }
     .remain {
       grid-area: remain;
@@ -208,26 +290,26 @@
     height: var(--padding);
     border-radius: 50%;
 
-    &.absolute-majority {
+    &.immediate-majority {
       background: var(--purple-600);
     }
-    &.simple-majority {
+    &.standard-majority {
       background: var(--orange);
     }
   }
 
-  .majority {
+  .progressbar-container .majority {
     position: absolute;
     background: var(--card-background);
     width: calc(var(--padding) / 4);
     height: var(--padding-1_5x);
 
-    &.absolute-majority {
-      left: 50%;
+    &.immediate-majority {
+      left: var(--immediate-majority);
       transform: translateX(-50%);
     }
-    &.simple-majority {
-      left: 3%;
+    &.standard-majority {
+      left: var(--standard-majority);
       transform: translateX(-50%);
     }
 
@@ -259,20 +341,43 @@
     }
   }
 
+  h3 {
+    margin-bottom: var(--padding);
+    @include fonts.small;
+  }
+
   h4 {
     margin: 0;
     display: inline-flex;
     align-items: center;
     column-gap: var(--padding-0_5x);
 
-    @include fonts.standard;
-    font-size: $font-size-medium;
+    @include fonts.small;
   }
 
-  .legends {
-    margin-top: var(--padding);
+  .majority-description {
+    margin: 0 0 var(--padding);
+  }
+
+  .votes-results-legends {
+    margin-top: var(--padding-2x);
     display: flex;
     flex-direction: column;
     row-gap: var(--padding-0_5x);
+  }
+
+  // dynamic description icon styles
+  :global(.votes-results-legends .inline-maturity-icon) {
+    display: inline-block;
+    margin: 0 var(--padding-0_5x);
+    width: var(--padding);
+    height: var(--padding);
+    border-radius: 50%;
+  }
+  :global(.votes-results-legends .inline-maturity-icon.immediate-majority) {
+    background: var(--purple-600);
+  }
+  :global(.votes-results-legends .inline-maturity-icon.standard-majority) {
+    background: var(--orange);
   }
 </style>

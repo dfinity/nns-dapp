@@ -126,6 +126,7 @@ export const formatTokenV2 = ({
   return formatToken({ value: e8s, detailed, roundingMode });
 };
 
+// TODO GIX-2154: Rename to sumAmounts.
 export const sumAmountE8s = (...amountE8s: bigint[]): bigint =>
   amountE8s.reduce<bigint>((acc, amount) => acc + amount, BigInt(0));
 
