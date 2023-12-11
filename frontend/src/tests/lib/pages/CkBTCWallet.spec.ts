@@ -219,7 +219,7 @@ describe("CkBTCWallet", () => {
         return Promise.resolve({
           ...mockCkBTCMainAccount,
           ...(afterTransfer
-            ? { balanceE8s: expectedBalanceAfterTransfer }
+            ? { balanceUlps: expectedBalanceAfterTransfer }
             : {}),
         });
       });
