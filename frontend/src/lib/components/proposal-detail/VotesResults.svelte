@@ -7,7 +7,7 @@
   import { nonNullish } from "@dfinity/utils";
   import { nowInSeconds } from "$lib/utils/date.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { isSuperMajority } from "$lib/utils/sns-proposals.utils";
+  import { isCriticalProposal } from "$lib/utils/sns-proposals.utils";
   import { Html } from "@dfinity/gix-components";
 
   const formatVotingPower = (value: number) =>
@@ -52,17 +52,16 @@
     nonNullish(deadlineTimestampSeconds) &&
     deadlineTimestampSeconds > BigInt(nowInSeconds());
 
-  // TODO(max): refactor to "isCritical", isSuperMajority -> isCriticalProposal
-  let superMajorityMode: boolean;
-  $: superMajorityMode = isSuperMajority(immediateMajorityPercent);
+  let isCriticalProposalMode: boolean;
+  $: isCriticalProposalMode = isCriticalProposal(immediateMajorityPercent);
 
   let immediateMajorityTitle: string;
-  $: immediateMajorityTitle = superMajorityMode
+  $: immediateMajorityTitle = isCriticalProposalMode
     ? $i18n.proposal_detail__vote.immediate_super_majority
     : $i18n.proposal_detail__vote.immediate_majority;
 
   let immediateMajorityDescription: string;
-  $: immediateMajorityDescription = superMajorityMode
+  $: immediateMajorityDescription = isCriticalProposalMode
     ? replacePlaceholders(
         $i18n.proposal_detail__vote.immediate_super_majority_description,
         {
@@ -73,13 +72,13 @@
     : $i18n.proposal_detail__vote.immediate_majority_description;
 
   let standardMajorityTitle: string;
-  $: standardMajorityTitle = superMajorityMode
+  $: standardMajorityTitle = isCriticalProposalMode
     ? $i18n.proposal_detail__vote.standard_super_majority
     : $i18n.proposal_detail__vote.standard_majority;
 
   let standardMajorityDescription: string;
   $: standardMajorityDescription = replacePlaceholders(
-    superMajorityMode
+    isCriticalProposalMode
       ? $i18n.proposal_detail__vote.standard_super_majority_description
       : $i18n.proposal_detail__vote.standard_majority_description,
     {
@@ -138,7 +137,7 @@
             {$i18n.proposal_detail__vote.voting_power}
           </span>
         </span>
-        {#if superMajorityMode}
+        {#if isCriticalProposalMode}
           <span>
             <span class="yes" data-tid="adopt-cast-votes">
               {formatPercent(castVotesYes)}
@@ -149,7 +148,7 @@
           </span>
         {/if}
       </span>
-      {#if superMajorityMode}
+      {#if isCriticalProposalMode}
         <span data-tid="cast-votes-need" class="description">
           {replacePlaceholders($i18n.proposal_detail__vote.cast_votes_needs, {
             $immediate_majority: formatPercent(immediateMajorityPercent),
@@ -167,7 +166,7 @@
             {$i18n.proposal_detail__vote.voting_power}
           </span>
         </span>
-        {#if superMajorityMode}
+        {#if isCriticalProposalMode}
           <span class="value-content">
             <span class="no" data-tid="reject-cast-votes">
               {formatPercent(castVotesNo)}
@@ -193,7 +192,7 @@
 
   <div class="votes-results-legends">
     <h3 class="description">
-      {superMajorityMode
+      {isCriticalProposalMode
         ? $i18n.proposal_detail__vote.super_majority_decision_intro
         : $i18n.proposal_detail__vote.decision_intro}
     </h3>
