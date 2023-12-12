@@ -1,5 +1,5 @@
 //! Slowly changing information about an SNS
-use crate::types::ic_sns_governance::ListNervousSystemFunctionsResponse;
+use crate::types::ic_sns_governance::{ListNervousSystemFunctionsResponse, NervousSystemParameters};
 use crate::types::ic_sns_root::ListSnsCanistersResponse;
 use crate::types::ic_sns_swap::{
     DerivedState, GetDerivedStateResponse, GetInitResponse, GetLifecycleResponse, GetSaleParametersResponse,
@@ -24,8 +24,10 @@ pub struct SlowSnsData {
     pub list_sns_canisters: ListSnsCanistersResponse,
     /// Governance metadata such as token name and logo.
     pub meta: SlowMetadata,
-    /// Governance parameters such as tokenomics.
+    /// Governance functions.
     pub parameters: ListNervousSystemFunctionsResponse,
+    /// Governance parameters such as tokenomics.
+    pub nervous_system_parameters: Option<NervousSystemParameters>,
     /// Decentralisation state
     pub swap_state: SlowSwapState,
     /// Ledger metadata.  The ledger keeps track of who owns how many tokens.
@@ -47,21 +49,38 @@ pub struct SlowSnsData {
 
 impl From<&UpstreamData> for SlowSnsData {
     fn from(upstream: &UpstreamData) -> Self {
+        let UpstreamData {
+            index,
+            canister_ids,
+            list_sns_canisters,
+            meta: _,
+            parameters,
+            nervous_system_parameters,
+            swap_state,
+            icrc1_metadata,
+            icrc1_fee,
+            icrc1_total_supply,
+            swap_params,
+            init,
+            derived_state,
+            lifecycle,
+        } = upstream;
         SlowSnsData {
-            index: upstream.index,
-            canister_ids: upstream.canister_ids.clone(),
-            list_sns_canisters: upstream.list_sns_canisters.clone(),
+            index: *index,
+            canister_ids: canister_ids.clone(),
+            list_sns_canisters: list_sns_canisters.clone(),
             meta: SlowMetadata::from(upstream),
-            parameters: upstream.parameters.clone(),
-            swap_state: SlowSwapState::from(&upstream.swap_state),
-            icrc1_metadata: upstream.icrc1_metadata.clone(),
-            icrc1_fee: upstream.icrc1_fee.clone(),
+            parameters: parameters.clone(),
+            nervous_system_parameters: nervous_system_parameters.clone(),
+            swap_state: SlowSwapState::from(swap_state),
+            icrc1_metadata: icrc1_metadata.clone(),
+            icrc1_fee: icrc1_fee.clone(),
             // Fallback to 0 if conversion to u64 fails.
-            icrc1_total_supply: upstream.icrc1_total_supply.0.to_u64().unwrap_or(0),
-            swap_params: upstream.swap_params.clone(),
-            init: upstream.init.clone(),
-            derived_state: upstream.derived_state.clone(),
-            lifecycle: upstream.lifecycle.clone(),
+            icrc1_total_supply: icrc1_total_supply.0.to_u64().unwrap_or(0),
+            swap_params: swap_params.clone(),
+            init: init.clone(),
+            derived_state: derived_state.clone(),
+            lifecycle: lifecycle.clone(),
         }
     }
 }
