@@ -35,5 +35,3 @@ export type UserTokenData = UserTokenBase & {
   // Fees are included in the metadata of ICRC tokens, but this is not a list of only ICRC tokens
   fee: TokenAmountV2;
 };
-
-export type UserToken = UserTokenLoading | UserTokenData;
