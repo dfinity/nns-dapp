@@ -54,6 +54,32 @@ describe("VotesResults", () => {
     expect(await votesResultPo.getRejectVotingPower()).toEqual(noCount);
   });
 
+  it('should not render "Adopt cast votes" value for default proposals', async () => {
+    const votesResultPo = renderComponent();
+    expect(await votesResultPo.getAdoptCastVotesValue()).toBeNull();
+  });
+
+  it('should not render "Reject cast votes" value for default proposals', async () => {
+    const votesResultPo = renderComponent();
+    expect(await votesResultPo.getRejectCastVotesValue()).toBeNull();
+  });
+
+  it('should render "Adopt cast votes" value for critical proposal', async () => {
+    const votesResultPo = renderComponent({
+      immediateMajorityPercent: 67,
+      standardMajorityPercent: 20,
+    });
+    expect(await votesResultPo.getAdoptCastVotesValue()).toEqual("40%");
+  });
+
+  it('should render "Reject cast votes" value for critical proposal', async () => {
+    const votesResultPo = renderComponent({
+      immediateMajorityPercent: 67,
+      standardMajorityPercent: 20,
+    });
+    expect(await votesResultPo.getRejectCastVotesValue()).toEqual("60%");
+  });
+
   it("should render progressbar", async () => {
     const votesResultPo = renderComponent();
 
@@ -102,10 +128,10 @@ describe("VotesResults", () => {
       await po.expandMajorityDescriptions();
 
       expect(await po.getImmediateMajorityDescription()).toBe(
-        "A proposal is immediately adopted or rejected if, before the voting period ends, more than half of the total voting power votes Yes, or at least half votes No, respectively (indicated by  delimiter above)."
+        "A proposal is immediately adopted or rejected if, before the voting period ends, more than half of the total voting power votes Yes, or at least half votes No, respectively (indicated by )."
       );
       expect(await po.getStandardMajorityDescription()).toBe(
-        "At the end of the voting period, a proposal is adopted if it receives more than half of the votes cast, provided these votes represent at least 3% of the total voting power (indicated by  delimiter above). Otherwise, it is rejected. Before a proposal is decided, the voting period can be extended in order to “wait for quiet”. Such voting period extensions occur when a proposal’s voting results turn from either a Yes majority to a No majority or vice versa."
+        "At the end of the voting period, a proposal is adopted if more than half of the votes cast are Yes votes, provided these votes represent at least 3% of the total voting power (indicated by ). Otherwise, it is rejected. Before a proposal is decided, the voting period can be extended in order to “wait for quiet”. Such voting period extensions occur when a proposal’s voting results turn from either a Yes majority to a No majority or vice versa."
       );
     });
 
@@ -132,10 +158,10 @@ describe("VotesResults", () => {
       await po.expandMajorityDescriptions();
 
       expect(await po.getImmediateMajorityDescription()).toBe(
-        "A proposal is immediately adopted or rejected if, before the voting period ends, more than 67% of the total voting power votes Yes, or at least 33% votes No, respectively (indicated by  delimiter above)."
+        "A critical proposal is immediately adopted or rejected if, before the voting period ends, more than 67% of the total voting power votes Yes, or at least 33% votes No, respectively (indicated by )."
       );
       expect(await po.getStandardMajorityDescription()).toBe(
-        "At the end of the voting period, a proposal is adopted if it receives more than 67% of the votes cast, provided these votes represent at least 20% of the total voting power (indicated by  delimiter above). Otherwise, it is rejected. Before a proposal is decided, the voting period can be extended in order to “wait for quiet”. Such voting period extensions occur when a proposal’s voting results turn from either a Yes majority to a No majority or vice versa."
+        "At the end of the voting period, a critical proposal is adopted if more than 67% of the votes cast are Yes votes, provided these votes represent at least 20% of the total voting power (indicated by ). Otherwise, it is rejected. Before a proposal is decided, the voting period can be extended in order to “wait for quiet”. Such voting period extensions occur when a proposal’s voting results turn from either a Yes majority to a No majority or vice versa."
       );
     });
   });

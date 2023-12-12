@@ -37,21 +37,26 @@ export class VotesResultPo extends BasePageObject {
     );
   }
 
-  /** @returns formatted text */
   async getAdoptVotingPower(): Promise<number> {
     return Number(
       await assertNonNullish(this.root.byTestId("adopt").getText())
     );
   }
 
-  /** @returns formatted text */
   async getRejectVotingPower(): Promise<number> {
     return Number(
       await assertNonNullish(this.root.byTestId("reject").getText())
     );
   }
 
-  /** @returns formatted text */
+  async getAdoptCastVotesValue(): Promise<string> {
+    return this.root.byTestId("adopt-cast-votes").getText();
+  }
+
+  async getRejectCastVotesValue(): Promise<string> {
+    return this.root.byTestId("reject-cast-votes").getText();
+  }
+
   async getExpirationDateText(): Promise<string> {
     return assertNonNullish(this.root.byTestId("remain").getText());
   }
