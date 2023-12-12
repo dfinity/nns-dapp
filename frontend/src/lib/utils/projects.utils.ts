@@ -419,7 +419,9 @@ export type FullProjectCommitmentSplit = {
   isNFParticipating: boolean;
 };
 export type ProjectCommitmentSplit =
+  // old projects
   | { totalCommitmentE8s: bigint }
+  // new projects
   | FullProjectCommitmentSplit;
 
 export const getProjectCommitmentSplit = (

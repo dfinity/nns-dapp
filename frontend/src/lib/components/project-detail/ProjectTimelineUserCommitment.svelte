@@ -51,7 +51,7 @@
 {/if}
 {#if isOpen && nonNullish(durationTillDeadline)}
   <KeyValuePair>
-    <span slot="key">
+    <span slot="key" class="description">
       {$i18n.sns_project_detail.deadline}
     </span>
     <Value slot="value">
@@ -61,7 +61,7 @@
 {/if}
 {#if isAdopted && nonNullish(durationTillStart)}
   <KeyValuePair>
-    <span slot="key">
+    <span slot="key" class="description">
       {$i18n.sns_project_detail.starts}
     </span>
     <Value slot="value">

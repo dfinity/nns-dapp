@@ -20,6 +20,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Neuron type support.
 * Card with BTC deposit address and QR code in ckBTC wallet.
 * Merge Approve transfer with BTC "Sent" transaction in transaction list.
+* Display Neurons' Fund commitment progress bar.
 
 #### Changed
 
