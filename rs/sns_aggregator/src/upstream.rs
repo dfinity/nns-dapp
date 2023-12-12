@@ -230,11 +230,7 @@ pub async fn get_lifecycle(swap_canister_id: Principal) -> Result<GetLifecycleRe
 pub async fn get_nervous_system_parameters(
     governance_canister_id: Principal,
 ) -> Result<NervousSystemParameters, (RejectionCode, String)> {
-    ic_cdk::api::call::call(
-        governance_canister_id,
-        "get_nervous_system_parameters",
-        (),
-    )
-    .await
-    .map(|response: (_,)| response.0)
+    ic_cdk::api::call::call(governance_canister_id, "get_nervous_system_parameters", ())
+        .await
+        .map(|response: (_,)| response.0)
 }
