@@ -204,7 +204,7 @@
             slot="title"
             class="description"
           >
-            {immediateMajorityTitle}
+            <span>{immediateMajorityTitle}</span>
           </h4>
           <p data-tid="immediate-majority-description" class="description">
             <Html text={iconifyDescription(immediateMajorityDescription)} />
@@ -218,7 +218,7 @@
             slot="title"
             class="description"
           >
-            {standardMajorityTitle}
+            <span>{standardMajorityTitle}</span>
           </h4>
           <p data-tid="standard-majority-description" class="description">
             <Html text={iconifyDescription(standardMajorityDescription)} />
@@ -232,6 +232,7 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "@dfinity/gix-components/dist/styles/mixins/text";
 
   .title {
     @include fonts.h3(true);
@@ -372,16 +373,12 @@
   }
 
   h3 {
-    @include fonts.small;
+    @include fonts.standard;
   }
 
   h4 {
     margin: 0;
-    display: inline-flex;
-    align-items: center;
-    column-gap: var(--padding-0_5x);
-
-    @include fonts.small;
+    @include fonts.standard;
   }
 
   .votes-results-legends {
@@ -395,8 +392,14 @@
     }
 
     li {
+      margin: var(--padding-0_5x) 0;
+
       &::marker {
         color: var(--description-color);
+      }
+
+      p {
+        margin: 0 0 var(--padding-2x);
       }
     }
   }
