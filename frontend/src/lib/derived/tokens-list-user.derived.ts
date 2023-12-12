@@ -37,8 +37,12 @@ const convertToUserTokenData = ({
   baseTokenData: UserTokenBase;
   authData: AuthStoreData;
 }): UserTokenData | undefined => {
-  const balanceE8s = balances[baseTokenData.universeId.toText()]?.balanceE8s;
+  const balanceUlps = balances[baseTokenData.universeId.toText()]?.balanceE8s;
   const token = tokens[baseTokenData.universeId.toText()]?.token;
+  if (isNullish(token)) {
+    // TODO: GIX-2062 Add loading state
+    return undefined;
+  }
   const rowHref = isNullish(authData.identity)
     ? undefined
     : isUniverseNns(baseTokenData.universeId)
@@ -49,12 +53,8 @@ const convertToUserTokenData = ({
           owner: authData.identity.getPrincipal(),
         }),
       });
-  if (isNullish(token)) {
-    // TODO: GIX-2062 Add loading state
-    return undefined;
-  }
   const fee = TokenAmountV2.fromUlps({ amount: token.fee, token });
-  if (isNullish(balanceE8s)) {
+  if (isNullish(balanceUlps)) {
     return {
       ...baseTokenData,
       balance: new UnavailableTokenAmount(token),
@@ -63,20 +63,17 @@ const convertToUserTokenData = ({
       rowHref,
     };
   }
-  const balance = TokenAmountV2.fromUlps({ amount: balanceE8s, token });
+  const balance = TokenAmountV2.fromUlps({ amount: balanceUlps, token });
   return {
     ...baseTokenData,
     token,
     fee,
     balance,
-    actions:
-      balance instanceof UnavailableTokenAmount
-        ? []
-        : [
-            ...(baseTokenData.universeId.toText() === OWN_CANISTER_ID_TEXT
-              ? [UserTokenAction.GoToDetail]
-              : [UserTokenAction.Receive, UserTokenAction.Send]),
-          ],
+    actions: [
+      ...(baseTokenData.universeId.toText() === OWN_CANISTER_ID_TEXT
+        ? [UserTokenAction.GoToDetail]
+        : [UserTokenAction.Receive, UserTokenAction.Send]),
+    ],
     rowHref,
   };
 };
