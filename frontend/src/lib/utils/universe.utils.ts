@@ -6,6 +6,7 @@ import {
 import { AppPath } from "$lib/constants/routes.constants";
 import type { Page } from "$lib/derived/page.derived";
 import { i18n } from "$lib/stores/i18n";
+import type { IcrcCanistersStoreData } from "$lib/stores/icrc-canisters.store";
 import type { SnsSummary } from "$lib/types/sns";
 import type { Universe } from "$lib/types/universe";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -38,6 +39,14 @@ export const isUniverseCkTESTBTC = (
   nonNullish(canisterId) &&
   (typeof canisterId === "string" ? canisterId : canisterId.toText()) ===
     CKTESTBTC_UNIVERSE_CANISTER_ID.toText();
+
+export const isIcrcTokenUniverse = ({
+  universeId,
+  icrcCanisters,
+}: {
+  universeId: Principal;
+  icrcCanisters: IcrcCanistersStoreData;
+}): boolean => nonNullish(icrcCanisters[universeId.toText()]);
 
 export const universeLogoAlt = ({
   summary,

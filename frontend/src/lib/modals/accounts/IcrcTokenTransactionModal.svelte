@@ -10,16 +10,13 @@
   import type { Account } from "$lib/types/account";
   import type { WizardStep } from "@dfinity/gix-components";
   import type { TransactionInit } from "$lib/types/transaction";
-  import { TokenAmountV2, nonNullish } from "@dfinity/utils";
+  import { TokenAmountV2, nonNullish, type Token } from "@dfinity/utils";
   import type { Principal } from "@dfinity/principal";
   import { icrcTransferTokens } from "$lib/services/icrc-accounts.services";
-  import type { IcrcTokenMetadata } from "$lib/types/icrc";
 
-  // TODO: Refactor to expect as props the rootCanisterId, transactionFee and token.
-  // This way we can reuse this component in a dashboard page.
   export let selectedAccount: Account | undefined = undefined;
   export let ledgerCanisterId: Principal;
-  export let token: IcrcTokenMetadata;
+  export let token: Token;
   export let transactionFee: TokenAmountV2;
   export let reloadSourceAccount: (() => void) | undefined = undefined;
 
@@ -49,7 +46,7 @@
       destinationAddress,
       amountUlps: numberToUlps({ amount, token }),
       ledgerCanisterId,
-      fee: token.fee,
+      fee: transactionFee.toUlps(),
     });
 
     stopBusy("accounts");

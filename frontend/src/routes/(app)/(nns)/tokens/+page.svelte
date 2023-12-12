@@ -21,7 +21,11 @@
   import { isArrayEmpty } from "$lib/utils/utils";
   import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-uncertified-accounts.services";
   import { ckBTCUniversesStore } from "$lib/derived/ckbtc-universes.derived";
-  import { isUniverseCkBTC, isUniverseNns } from "$lib/utils/universe.utils";
+  import {
+    isIcrcTokenUniverse,
+    isUniverseCkBTC,
+    isUniverseNns,
+  } from "$lib/utils/universe.utils";
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
   import type { UserTokenData } from "$lib/types/tokens-page";
   import { toTokenAmountV2 } from "$lib/utils/token.utils";
@@ -34,6 +38,7 @@
   import { updateBalance } from "$lib/services/ckbtc-minter.services";
   import { nonNullish } from "@dfinity/utils";
   import { Principal } from "@dfinity/principal";
+  import IcrcTokenTransactionModal from "$lib/modals/accounts/IcrcTokenTransactionModal.svelte";
 
   onMount(() => {
     if (!$ENABLE_MY_TOKENS) {
@@ -125,7 +130,10 @@
   })();
 
   let modal:
-    | { type: "sns-send" | "nns-send" | "ckbtc-send"; data: UserTokenData }
+    | {
+        type: "sns-send" | "nns-send" | "ckbtc-send" | "icrc-send";
+        data: UserTokenData;
+      }
     | undefined;
   const closeModal = () => {
     modal = undefined;
@@ -141,6 +149,13 @@
         modal = { type: "nns-send", data: detail.data };
       } else if (isUniverseCkBTC(detail.data.universeId)) {
         modal = { type: "ckbtc-send", data: detail.data };
+      } else if (
+        isIcrcTokenUniverse({
+          universeId: detail.data.universeId,
+          icrcCanisters: $icrcCanistersStore,
+        })
+      ) {
+        modal = { type: "icrc-send", data: detail.data };
       } else {
         // Default to SNS, this might change when we have more universe sources
         modal = { type: "sns-send", data: detail.data };
@@ -176,6 +191,15 @@
       transactionFee={modal.data.fee}
       universeId={modal.data.universeId}
       canisters={CKBTC_ADDITIONAL_CANISTERS[modal.data.universeId.toText()]}
+    />
+  {/if}
+
+  {#if modal?.type === "icrc-send"}
+    <IcrcTokenTransactionModal
+      on:nnsClose={closeModal}
+      ledgerCanisterId={modal.data.universeId}
+      token={modal.data.token}
+      transactionFee={modal.data.fee}
     />
   {/if}
 </TestIdWrapper>

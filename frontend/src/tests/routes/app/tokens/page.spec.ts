@@ -77,7 +77,13 @@ describe("Tokens route", () => {
     amount: amountCkBTCTransaction,
     token: mockCkBTCToken,
   });
-  const ckETHBalanceUlps = 4_140_000_000_000_000_000n;
+  const ckETHDefaultBalanceUlps = 4_140_000_000_000_000_000n;
+  let ckETHBalanceUlps = ckETHDefaultBalanceUlps;
+  const amountCkETHTransaction = 2;
+  const amountCkETHTransactionUlps = numberToUlps({
+    amount: amountCkETHTransaction,
+    token: mockCkETHToken,
+  });
   const icpBalanceE8s = 123456789n;
   const noPendingUtxos = new MinterNoNewUtxosError({
     pending_utxos: [],
@@ -98,6 +104,7 @@ describe("Tokens route", () => {
       icrcAccountsStore.reset();
       tokensStore.reset();
       ckBTCBalanceE8s = ckBTCDefaultBalanceE8s;
+      ckETHBalanceUlps = ckETHDefaultBalanceUlps;
       overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
       vi.spyOn(walletLedgerApi, "getToken").mockImplementation(
         async ({ canisterId }) => {
@@ -174,6 +181,20 @@ describe("Tokens route", () => {
         }
       );
       vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(1234n);
+      vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
+        async ({ canisterId }) => {
+          const balanceMap = {
+            [CKETH_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
+            [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
+          };
+          if (isNullish(balanceMap[canisterId.toText()])) {
+            throw new Error(
+              `Balance not found for canister ${canisterId.toText()}`
+            );
+          }
+          return balanceMap[canisterId.toText()];
+        }
+      );
       vi.spyOn(ckBTCMinterApi, "updateBalance").mockRejectedValue(
         noPendingUtxos
       );
@@ -381,6 +402,57 @@ describe("Tokens route", () => {
             balance: "2.45 ckBTC",
           });
           expect(await po.getCkBTCTransactionModalPo().isPresent()).toBe(false);
+        });
+
+        it("users can send ckETH tokens", async () => {
+          const po = await renderPage();
+
+          const tokensPagePo = po.getTokensPagePo();
+
+          await tokensPagePo.clickSendOnRow("ckETH");
+
+          expect(await tokensPagePo.getRowData("ckETH")).toEqual({
+            projectName: "ckETH",
+            balance: "4.14 ckETH",
+          });
+
+          await tokensPagePo.clickSendOnRow("ckETH");
+
+          expect(await po.getIcrcTokenTransactionModal().isPresent()).toBe(
+            true
+          );
+
+          expect(icrcLedgerApi.icrcTransfer).not.toBeCalled();
+
+          const toAccount: IcrcAccount = {
+            owner: principal(1),
+          };
+
+          ckETHBalanceUlps -= amountCkETHTransactionUlps;
+          await po.transferIcrcTokens({
+            amount: amountCkETHTransaction,
+            destinationAddress: encodeIcrcAccount(toAccount),
+          });
+
+          await runResolvedPromises();
+
+          expect(icrcLedgerApi.icrcTransfer).toBeCalledTimes(1);
+          expect(icrcLedgerApi.icrcTransfer).toBeCalledWith({
+            canisterId: CKETH_UNIVERSE_CANISTER_ID,
+            fee: mockCkETHToken.fee,
+            to: toAccount,
+            amount: amountCkETHTransactionUlps,
+            fromSubAccount: undefined,
+            identity: mockIdentity,
+          });
+
+          expect(await tokensPagePo.getRowData("ckETH")).toEqual({
+            projectName: "ckETH",
+            balance: "2.14 ckETH",
+          });
+          expect(await po.getIcrcTokenTransactionModal().isPresent()).toBe(
+            false
+          );
         });
       });
     });
