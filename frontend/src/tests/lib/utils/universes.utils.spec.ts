@@ -5,8 +5,10 @@ import {
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
+import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import {
   createUniverse,
+  isIcrcTokenUniverse,
   isNonGovernanceTokenPath,
   isUniverseCkBTC,
   isUniverseNns,
@@ -17,6 +19,7 @@ import {
   createSummary,
   mockSnsFullProject,
   mockSummary,
+  principal,
 } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { Principal } from "@dfinity/principal";
@@ -148,6 +151,51 @@ describe("universes-utils", () => {
         title: projectName,
         logo,
       });
+    });
+  });
+
+  describe("isIcrcTokenUniverse", () => {
+    beforeEach(() => {
+      icrcCanistersStore.reset();
+    });
+
+    it("should return true if universe is in ICRC Canisters store", () => {
+      const universeId = principal(0);
+      icrcCanistersStore.setCanisters({
+        ledgerCanisterId: universeId,
+        indexCanisterId: principal(1),
+      });
+      expect(
+        isIcrcTokenUniverse({
+          universeId,
+          icrcCanisters: get(icrcCanistersStore),
+        })
+      ).toBe(true);
+    });
+
+    it("should return false if universe is not in ICRC Canisters store", () => {
+      const universeId = principal(0);
+      icrcCanistersStore.setCanisters({
+        ledgerCanisterId: universeId,
+        indexCanisterId: principal(1),
+      });
+      expect(
+        isIcrcTokenUniverse({
+          universeId: principal(2),
+          icrcCanisters: get(icrcCanistersStore),
+        })
+      ).toBe(false);
+    });
+
+    it("should return false when ICRC Canisters store is empty", () => {
+      const universeId = principal(0);
+      icrcCanistersStore.reset();
+      expect(
+        isIcrcTokenUniverse({
+          universeId,
+          icrcCanisters: get(icrcCanistersStore),
+        })
+      ).toBe(false);
     });
   });
 });
