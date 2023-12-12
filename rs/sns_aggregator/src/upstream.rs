@@ -233,7 +233,7 @@ pub async fn get_nervous_system_parameters(
     ic_cdk::api::call::call(
         governance_canister_id,
         "get_nervous_system_parameters",
-        (EmptyRecord {},),
+        (),
     )
     .await
     .map(|response: (_,)| response.0)
