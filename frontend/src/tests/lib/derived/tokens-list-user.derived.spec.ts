@@ -118,6 +118,12 @@ describe("tokens-list-user.derived", () => {
   };
   const ckBTCTokenNoBalance: UserTokenData = {
     ...ckBTCTokenBase,
+    balance: new UnavailableTokenAmount(mockCkBTCToken),
+    token: mockCkBTCToken,
+    fee: TokenAmountV2.fromUlps({
+      amount: mockCkBTCToken.fee,
+      token: mockCkBTCToken,
+    }),
     rowHref: buildWalletUrl({
       universe: ckBTCTokenBase.universeId.toText(),
       account: identityMainAccountIdentifier,
@@ -133,6 +139,12 @@ describe("tokens-list-user.derived", () => {
   };
   const ckETHTokenNobalance: UserTokenData = {
     ...ckETHTokenBase,
+    balance: new UnavailableTokenAmount(mockCkETHToken),
+    token: mockCkETHToken,
+    fee: TokenAmountV2.fromUlps({
+      amount: mockCkETHToken.fee,
+      token: mockCkETHToken,
+    }),
     rowHref: buildWalletUrl({
       universe: ckETHTokenBase.universeId.toText(),
       account: identityMainAccountIdentifier,
