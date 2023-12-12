@@ -12,7 +12,7 @@
 <button
   class="icon"
   data-tid="receive-button-component"
-  on:click|stopPropagation={() => {
+  on:click|preventDefault|stopPropagation={() => {
     dispatcher("nnsAction", { type: ActionType.Receive, data: userToken });
   }}
 >

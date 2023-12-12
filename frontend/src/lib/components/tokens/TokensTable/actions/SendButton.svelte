@@ -12,7 +12,8 @@
 <button
   class="icon"
   data-tid="send-button-component"
-  on:click|stopPropagation={() => {
+  on:click|preventDefault|stopPropagation={() => {
+    console.log("userToken", userToken);
     dispatcher("nnsAction", { type: ActionType.Send, data: userToken });
   }}
 >
