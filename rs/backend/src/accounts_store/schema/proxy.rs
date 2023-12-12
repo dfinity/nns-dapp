@@ -4,6 +4,7 @@
 use std::collections::BTreeMap;
 mod enum_boilerplate;
 use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel};
+use std::fmt;
 
 /// An accounts database delegates API calls to underlying implementations.
 ///
@@ -19,15 +20,28 @@ use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTr
 #[derive(Debug)]
 pub struct AccountsDbAsProxy {
     authoritative_db: AccountsDb,
-    second_db: Option<AccountsDb>,
+    migration: Option<Migration>,
 }
 
 impl Default for AccountsDbAsProxy {
     fn default() -> Self {
-        Self {
-            authoritative_db: AccountsDb::Map(AccountsDbAsMap::default()),
-            second_db: None,
-        }
+        Self::new_with_map()
+    }
+}
+
+struct Migration {
+    /// The database being migrated to
+    db: AccountsDb,
+    // This is used in the next PR that implements the migration:
+    // /// The next account to migrate.
+    // next_to_migrate: Option<Vec<u8>>,
+}
+
+impl fmt::Debug for Migration {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // Note: The `next_to_migrate` field is rarely interesting so is omitted.
+        //       The database type and number of entries suffices.
+        self.db.fmt(f)
     }
 }
 
@@ -37,6 +51,14 @@ pub enum AccountsDb {
 }
 
 impl AccountsDbAsProxy {
+    /// Creates a new proxy usinga map as the underlying storage.
+    pub fn new_with_map() -> Self {
+        Self {
+            authoritative_db: AccountsDb::Map(AccountsDbAsMap::default()),
+            migration: None,
+        }
+    }
+
     /// Migration countdown; when it reaches zero, the migration is complete.
     pub fn migration_countdown(&self) -> u32 {
         0
@@ -47,7 +69,7 @@ impl AccountsDbBTreeMapTrait for AccountsDbAsProxy {
     fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
         Self {
             authoritative_db: AccountsDb::Map(AccountsDbAsMap::from_map(map)),
-            second_db: None,
+            migration: None,
         }
     }
     fn as_map(&self) -> &BTreeMap<Vec<u8>, Account> {
@@ -61,8 +83,8 @@ impl AccountsDbTrait for AccountsDbAsProxy {
     /// Inserts into all the underlying databases.
     fn db_insert_account(&mut self, account_key: &[u8], account: Account) {
         self.authoritative_db.db_insert_account(account_key, account.clone());
-        if let Some(db) = &mut self.second_db {
-            db.db_insert_account(account_key, account);
+        if let Some(migration) = &mut self.migration {
+            migration.db.db_insert_account(account_key, account);
         }
     }
     /// Checks the authoritative database.
@@ -76,8 +98,8 @@ impl AccountsDbTrait for AccountsDbAsProxy {
     /// Removes an account from all underlying databases.
     fn db_remove_account(&mut self, account_key: &[u8]) {
         self.authoritative_db.db_remove_account(account_key);
-        if let Some(db) = self.second_db.as_mut() {
-            db.db_remove_account(account_key);
+        if let Some(migration) = self.migration.as_mut() {
+            migration.db.db_remove_account(account_key);
         }
     }
     /// Gets the length from the authoritative database.

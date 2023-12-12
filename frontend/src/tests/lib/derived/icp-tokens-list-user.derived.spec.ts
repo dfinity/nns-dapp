@@ -1,7 +1,9 @@
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { icpTokensListUser } from "$lib/derived/icp-tokens-list-user.derived";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
+import { buildWalletUrl } from "$lib/utils/navigation.utils";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
@@ -29,6 +31,10 @@ describe("icp-tokens-list-user.derived", () => {
     }),
     title: "Main",
     subtitle: undefined,
+    rowHref: buildWalletUrl({
+      universe: OWN_CANISTER_ID_TEXT,
+      account: mockMainAccount.identifier,
+    }),
   };
   const subaccountUserTokenData: UserTokenData = {
     ...icpTokenUser,
@@ -38,6 +44,10 @@ describe("icp-tokens-list-user.derived", () => {
     }),
     title: mockSubAccount.name,
     subtitle: "Linked Account",
+    rowHref: buildWalletUrl({
+      universe: OWN_CANISTER_ID_TEXT,
+      account: mockSubAccount.identifier,
+    }),
   };
   const hardwareWalletUserTokenData: UserTokenData = {
     ...icpTokenUser,
@@ -47,6 +57,10 @@ describe("icp-tokens-list-user.derived", () => {
     }),
     title: mockHardwareWalletAccount.name,
     subtitle: "Hardware Wallet",
+    rowHref: buildWalletUrl({
+      universe: OWN_CANISTER_ID_TEXT,
+      account: mockHardwareWalletAccount.identifier,
+    }),
   };
 
   describe("icpTokensListVisitors", () => {

@@ -1,7 +1,11 @@
 import type { Account } from "$lib/types/account";
 import type { UniverseCanisterId } from "$lib/types/universe";
 
-export type AccountsModalType = "nns-receive" | "icrc-receive" | "buy-icp";
+export type AccountsModalType =
+  | "nns-receive"
+  | "icrc-receive"
+  | "buy-icp"
+  | "add-icp-account";
 
 export interface AccountsModalData {
   account: Account | undefined;

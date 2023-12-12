@@ -29,6 +29,11 @@
     icrcCanistersStore,
     type IcrcCanistersStoreData,
   } from "$lib/stores/icrc-canisters.store";
+  import CkBtcTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
+  import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
+  import { updateBalance } from "$lib/services/ckbtc-minter.services";
+  import { nonNullish } from "@dfinity/utils";
+  import { Principal } from "@dfinity/principal";
 
   onMount(() => {
     if (!$ENABLE_MY_TOKENS) {
@@ -64,6 +69,25 @@
     if (loadCkBTCAccountsBalancesRequested) {
       return;
     }
+
+    /**
+     * Calling updateBalance because users are confused about when and how to call it and product required to add this additional call within this process.
+     * That way, when user navigates to the Tokens page, the call is also triggered.
+     *
+     * There is also a "Check for incoming BTC" button in the Wallet page.
+     */
+    universes.forEach((universe: Universe) => {
+      const ckBTCCanisters = CKBTC_ADDITIONAL_CANISTERS[universe.canisterId];
+      if (nonNullish(ckBTCCanisters.minterCanisterId)) {
+        updateBalance({
+          universeId: Principal.fromText(universe.canisterId),
+          minterCanisterId: ckBTCCanisters.minterCanisterId,
+          reload: () => loadAccountsBalances([universe.canisterId]),
+          deferReload: false,
+          uiIndicators: false,
+        });
+      }
+    });
 
     loadCkBTCAccountsBalancesRequested = true;
 
@@ -141,6 +165,17 @@
       token={modal.data.token}
       transactionFee={toTokenAmountV2(modal.data.fee)}
       on:nnsClose={closeModal}
+    />
+  {/if}
+
+  {#if modal?.type === "ckbtc-send"}
+    <CkBtcTransactionModal
+      on:nnsClose={closeModal}
+      on:nnsTransfer={closeModal}
+      token={modal.data.token}
+      transactionFee={modal.data.fee}
+      universeId={modal.data.universeId}
+      canisters={CKBTC_ADDITIONAL_CANISTERS[modal.data.universeId.toText()]}
     />
   {/if}
 </TestIdWrapper>
