@@ -428,12 +428,12 @@ describe("Tokens route", () => {
             owner: principal(1),
           };
 
+          ckETHBalanceUlps -= amountCkETHTransactionUlps;
           await po.transferIcrcTokens({
             amount: amountCkETHTransaction,
             destinationAddress: encodeIcrcAccount(toAccount),
           });
 
-          ckETHBalanceUlps = ckETHBalanceUlps - amountCkETHTransactionUlps;
           await runResolvedPromises();
 
           expect(icrcLedgerApi.icrcTransfer).toBeCalledTimes(1);

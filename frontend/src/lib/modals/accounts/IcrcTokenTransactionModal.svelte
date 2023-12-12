@@ -14,8 +14,6 @@
   import type { Principal } from "@dfinity/principal";
   import { icrcTransferTokens } from "$lib/services/icrc-accounts.services";
 
-  // TODO: Refactor to expect as props the rootCanisterId, transactionFee and token.
-  // This way we can reuse this component in a dashboard page.
   export let selectedAccount: Account | undefined = undefined;
   export let ledgerCanisterId: Principal;
   export let token: Token;
