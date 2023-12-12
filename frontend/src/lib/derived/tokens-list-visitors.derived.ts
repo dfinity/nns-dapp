@@ -5,8 +5,8 @@ import {
 } from "$lib/stores/tokens.store";
 import {
   UserTokenAction,
-  type UserToken,
   type UserTokenBase,
+  type UserTokenData,
 } from "$lib/types/tokens-page";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { isNullish, nonNullish, TokenAmountV2 } from "@dfinity/utils";
@@ -19,7 +19,7 @@ const convertToUserToken = ({
 }: {
   tokenBaseData: UserTokenBase;
   tokensStore: TokensStoreData;
-}): UserToken | undefined => {
+}): UserTokenData | undefined => {
   const token = tokensStore[tokenBaseData.universeId.toText()]?.token;
   if (isNullish(token)) {
     // TODO: GIX-2062 Add loading state
@@ -36,9 +36,9 @@ const convertToUserToken = ({
 
 export const tokensListVisitorsStore = derived<
   [Readable<UserTokenBase[]>, TokensStore],
-  UserToken[]
+  UserTokenData[]
 >([tokensListBaseStore, tokensStore], ([tokensData, tokensStore]) =>
   tokensData
     .map((tokenBaseData) => convertToUserToken({ tokensStore, tokenBaseData }))
-    .filter((data): data is UserToken => nonNullish(data))
+    .filter((data): data is UserTokenData => nonNullish(data))
 );

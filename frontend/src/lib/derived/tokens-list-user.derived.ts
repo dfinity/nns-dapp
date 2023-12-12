@@ -11,8 +11,8 @@ import {
 } from "$lib/stores/tokens.store";
 import {
   UserTokenAction,
-  type UserToken,
   type UserTokenBase,
+  type UserTokenData,
 } from "$lib/types/tokens-page";
 import { buildAccountsUrl, buildWalletUrl } from "$lib/utils/navigation.utils";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
@@ -36,7 +36,7 @@ const convertToUserTokenData = ({
   tokens: TokensStoreData;
   baseTokenData: UserTokenBase;
   authData: AuthStoreData;
-}): UserToken | undefined => {
+}): UserTokenData | undefined => {
   const balanceE8s = balances[baseTokenData.universeId.toText()]?.balanceE8s;
   const token = tokens[baseTokenData.universeId.toText()]?.token;
   const rowHref = isNullish(authData.identity)
@@ -53,13 +53,13 @@ const convertToUserTokenData = ({
     // TODO: GIX-2062 Add loading state
     return undefined;
   }
+  const fee = TokenAmountV2.fromUlps({ amount: token.fee, token });
   if (isNullish(balanceE8s)) {
-    // TODO: GIX-2062 Add loading state
     return {
       ...baseTokenData,
       balance: new UnavailableTokenAmount(token),
       token,
-      fee: TokenAmountV2.fromUlps({ amount: token.fee, token }),
+      fee,
       rowHref,
     };
   }
@@ -67,7 +67,7 @@ const convertToUserTokenData = ({
   return {
     ...baseTokenData,
     token,
-    fee: TokenAmountV2.fromUlps({ amount: token.fee, token }),
+    fee,
     balance,
     actions:
       balance instanceof UnavailableTokenAmount
@@ -88,7 +88,7 @@ export const tokensListUserStore = derived<
     TokensStore,
     AuthStore,
   ],
-  UserToken[]
+  UserTokenData[]
 >(
   [tokensListBaseStore, universesAccountsBalance, tokensStore, authStore],
   ([tokensList, balances, tokens, authData]) =>
@@ -96,5 +96,5 @@ export const tokensListUserStore = derived<
       .map((baseTokenData) =>
         convertToUserTokenData({ baseTokenData, balances, tokens, authData })
       )
-      .filter((data): data is UserToken => nonNullish(data))
+      .filter((data): data is UserTokenData => nonNullish(data))
 );
