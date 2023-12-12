@@ -204,7 +204,7 @@
             slot="title"
             class="description"
           >
-            <span>{immediateMajorityTitle}</span>
+            {immediateMajorityTitle}
           </h4>
           <p data-tid="immediate-majority-description" class="description">
             <Html text={iconifyDescription(immediateMajorityDescription)} />
@@ -218,7 +218,7 @@
             slot="title"
             class="description"
           >
-            <span>{standardMajorityTitle}</span>
+            {standardMajorityTitle}
           </h4>
           <p data-tid="standard-majority-description" class="description">
             <Html text={iconifyDescription(standardMajorityDescription)} />
@@ -232,7 +232,6 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
-  @use "@dfinity/gix-components/dist/styles/mixins/text";
 
   .title {
     @include fonts.h3(true);
