@@ -1,6 +1,7 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { CkBTCTransactionModalPo } from "./CkBTCTransactionModal.page-object";
+import { IcrcTokenTransactionModalPo } from "./IcrcTokenTransactionModal.page-object";
 import { SignInTokensPagePo } from "./SignInTokens.page-object";
 import { SnsTransactionModalPo } from "./SnsTransactionModal.page-object";
 import { TokensPagePo } from "./TokensPage.page-object";
@@ -48,5 +49,16 @@ export class TokensRoutePo extends BasePageObject {
     amount: number;
   }): Promise<void> {
     return this.getCkBTCTransactionModalPo().transferToAddress(params);
+  }
+
+  getIcrcTokenTransactionModal(): IcrcTokenTransactionModalPo {
+    return IcrcTokenTransactionModalPo.under(this.root);
+  }
+
+  transferIcrcTokens(params: {
+    destinationAddress: string;
+    amount: number;
+  }): Promise<void> {
+    return this.getIcrcTokenTransactionModal().transferToAddress(params);
   }
 }
