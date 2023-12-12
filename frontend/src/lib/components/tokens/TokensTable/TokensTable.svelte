@@ -1,11 +1,11 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import type { UserTokenData, UserTokenLoading } from "$lib/types/tokens-page";
+  import type { UserToken } from "$lib/types/tokens-page";
   import { nonNullish } from "@dfinity/utils";
   import Row from "./TokensTableRow.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
-  export let userTokensData: Array<UserTokenData | UserTokenLoading>;
+  export let userTokensData: Array<UserToken>;
   export let firstColumnHeader: string;
 </script>
 
