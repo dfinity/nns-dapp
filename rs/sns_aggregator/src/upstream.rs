@@ -4,6 +4,7 @@ use std::str::FromStr;
 use crate::convert_canister_id;
 use crate::fast_scheduler::FastScheduler;
 use crate::state::{State, STATE};
+use crate::types::ic_sns_governance::NervousSystemParameters;
 use crate::types::ic_sns_swap::{
     GetDerivedStateResponse, GetInitResponse, GetLifecycleResponse, GetSaleParametersResponse,
 };
@@ -167,6 +168,12 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         .map_err(|err| crate::state::log(format!("Failed to get lifecycle: {err:?}")))
         .ok();
 
+    let nervous_system_parameters: Option<NervousSystemParameters> =
+        get_nervous_system_parameters(governance_canister_id)
+            .await
+            .map_err(|err| crate::state::log(format!("Failed to get nervous system parameters: {err:?}")))
+            .ok();
+
     crate::state::log("Yay, got an SNS status".to_string());
     // If the SNS sale will open, collect data when it does.
     FastScheduler::global_schedule_sns(&swap_state);
@@ -177,6 +184,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         list_sns_canisters,
         meta,
         parameters,
+        nervous_system_parameters,
         swap_state,
         icrc1_metadata,
         icrc1_fee,
@@ -216,4 +224,17 @@ pub async fn get_lifecycle(swap_canister_id: Principal) -> Result<GetLifecycleRe
     ic_cdk::api::call::call(swap_canister_id, "get_lifecycle", (EmptyRecord {},))
         .await
         .map(|response: (_,)| response.0)
+}
+
+/// Gets the SNS nervous system parameters.
+pub async fn get_nervous_system_parameters(
+    governance_canister_id: Principal,
+) -> Result<NervousSystemParameters, (RejectionCode, String)> {
+    ic_cdk::api::call::call(
+        governance_canister_id,
+        "get_nervous_system_parameters",
+        (EmptyRecord {},),
+    )
+    .await
+    .map(|response: (_,)| response.0)
 }
