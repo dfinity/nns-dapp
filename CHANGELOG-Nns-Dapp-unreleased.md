@@ -36,6 +36,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * Limit the size of proposal payload rendering errors, as otherwise the error can become too large to return.
+* Provide a fallback if proposal payloads don't have the expected type.
 
 #### Security
 

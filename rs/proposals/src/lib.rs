@@ -142,7 +142,7 @@ const IDL2JSON_OPTIONS: Idl2JsonOptions = Idl2JsonOptions {
     prog: Vec::new(), // These are the type definitions used in proposal payloads.  If we have them, it would be nice to use them.  Do we?
 };
 
-/// Rust types can include things such as functions.  IDL types, sent over a wire, cannot.  Given that we want an IDLType from a more general type we need toconvert th egeneral type to the more specialized type.
+/// Rust types can include things such as functions.  IDL types, sent over a wire, cannot.  Given that we want an IDLType from a more general type we need toconvert the general type to the more specialized type.
 fn type_2_idltype(ty: Type) -> Result<IDLType, String> {
     match ty {
         Type::Null => Ok(IDLType::PrimT(parser_types::PrimType::Null)),
