@@ -160,11 +160,11 @@ local_deployment_data="$(
 : "- construct ledger and governance canister URLs"
 # TODO: I believe that the following can be discarded now.
 json=$(HOST=$(dfx-canister-url --network "$DFX_NETWORK" --type api) jq -s --sort-keys '
-  (.[0].defaults.network.config // {}) * .[1] * (.[2].config // {}) |
+  (.[0].defaults.network.config // {}) * (.[1].config // {}) * .[2] |
   .DFX_NETWORK = env.DFX_NETWORK |
   . as $config |
   .HOST=env.HOST
-    ' dfx.json <(echo "$local_deployment_data") <(network_config))
+    ' dfx.json <(network_config) <(echo "$local_deployment_data"))
 
 dfxNetwork=$(echo "$json" | jq -r ".DFX_NETWORK")
 cmcCanisterId=$(echo "$json" | jq -r ".CYCLES_MINTING_CANISTER_ID")
