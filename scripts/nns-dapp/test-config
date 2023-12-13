@@ -16,14 +16,25 @@ print_help() {
 source "$SOURCE_DIR/clap.bash"
 # Define options
 clap.define short=u long=update desc="Update the reference files" variable=UPDATE nargs=0 default="false"
+clap.define short=n long=network desc="The network to test" variable=DFX_NETWORK default=""
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
 : "Move to the root of the repo."
 cd "$SOURCE_DIR/.."
 
+if test -z "${DFX_NETWORK:-}" ; then
+	NETWORKS=(mainnet app)
+else
+	NETWORKS=( "$DFX_NETWORK" )
+fi
+
+replace_canister_id() {
+	awk -v id="$(dfx canister id --network "$DFX_NETWORK" nns-dapp)" '{gsub("{OWN_CANISTER_ID}", id, $0);print $0}'
+}
+
 # shellcheck disable=SC2043
-for DFX_NETWORK in mainnet app; do
+for DFX_NETWORK in "${NETWORKS[@]}"; do
   export DFX_NETWORK
 
   : "Create the config"
@@ -45,7 +56,7 @@ for DFX_NETWORK in mainnet app; do
   else
     for file in INSTALL_ARG_FILE FRONTEND_ARG_FILE; do
       reference_file="REFERENCE_$file"
-      diff "${!file}" "${!reference_file}" || {
+      diff "${!file}" <(replace_canister_id < "${!reference_file}") || {
         echo "ERROR: '${!file}' should match '${!reference_file}'"
         echo "If the change is intentional, please update the reference files with '$0 --update'."
         exit 1
