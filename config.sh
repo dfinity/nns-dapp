@@ -120,13 +120,6 @@ local_deployment_data="$(
   STATIC_HOST="$(dfx-canister-url --network "$DFX_NETWORK" --type static)"
   export API_HOST STATIC_HOST
 
-  : "Determine whether we need to fetch the root key"
-  case "${DFX_NETWORK:-}" in
-  mainnet | ic) FETCH_ROOT_KEY=false ;;
-  *) FETCH_ROOT_KEY=true ;;
-  esac
-  export FETCH_ROOT_KEY
-
   : "Put any values we found in JSON.  Omit any that are undefined."
   jq -n '{
     OWN_CANISTER_ID: env.OWN_CANISTER_ID,
@@ -142,7 +135,6 @@ local_deployment_data="$(
     ROBOTS: env.ROBOTS,
     STATIC_HOST: env.STATIC_HOST,
     API_HOST: env.API_HOST,
-    FETCH_ROOT_KEY: env.FETCH_ROOT_KEY,
     WASM_CANISTER_ID: env.WASM_CANISTER_ID,
     TVL_CANISTER_ID: env.TVL_CANISTER_ID,
     GOVERNANCE_CANISTER_ID: env.GOVERNANCE_CANISTER_ID
