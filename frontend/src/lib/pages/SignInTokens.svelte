@@ -2,10 +2,10 @@
   import SignIn from "$lib/components/common/SignIn.svelte";
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import type { UserTokenData } from "$lib/types/tokens-page";
+  import type { UserToken } from "$lib/types/tokens-page";
   import { PageBanner, IconAccountsPage } from "@dfinity/gix-components";
 
-  export let userTokensData: UserTokenData[];
+  export let userTokensData: UserToken[];
 </script>
 
 <div class="content" data-tid="sign-in-tokens-page-component">
