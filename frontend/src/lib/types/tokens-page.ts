@@ -1,3 +1,11 @@
+/**
+ * This file contains types related to the tokens page and TokensTable.
+ *
+ * - `UserTokenBase` is not used directly, but it is used to create the `UserTokenLoading` and `UserTokenData` types.
+ * - `UserTokenLoading` is to render a loading row in the tokens table. Used when either balance or token are not present.
+ * - `UserTokenData` is used to render a row in the tokens table. Used when both balance and token are present.
+ * - `UserTokenAction` is a list of actions supported by the tokens page and hardcoded in the TokensTable.
+ */
 import type { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import type { Principal } from "@dfinity/principal";
 import type { Token, TokenAmountV2 } from "@dfinity/utils";
