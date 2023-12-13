@@ -469,6 +469,73 @@ describe("icrc-transaction utils", () => {
         }),
       });
     });
+
+    it("Renders a reimbursement transaction", () => {
+      const amount = 41_000_000n;
+      const kytFee = 1331;
+      const decodedMemo = [2, [kytFee, 1, 123]];
+      const memo = new Uint8Array(Cbor.encode(decodedMemo));
+
+      const data = mapCkbtcTransaction({
+        transaction: {
+          id: BigInt(1234),
+          transaction: createMintTransaction({
+            amount,
+            to: mainAccount,
+            memo,
+          }),
+        },
+        account: mockCkBTCMainAccount,
+        toSelfTransaction: false,
+        token: mockCkBTCToken,
+        i18n: en,
+      });
+      expect(data).toEqual({
+        domKey: "1234-1",
+        headline: "Reimbursement",
+        isIncoming: true,
+        isPending: false,
+        isReimbursement: true,
+        otherParty: "BTC Network",
+        timestamp: new Date(0),
+        tokenAmount: TokenAmountV2.fromUlps({
+          amount,
+          token: mockCkBTCToken,
+        }),
+      });
+    });
+
+    it("Renders a legacy mint memo as standard incoming BTC", () => {
+      const amount = 41_000_000n;
+      const txIdMemo = new Uint8Array(32).fill(99);
+
+      const data = mapCkbtcTransaction({
+        transaction: {
+          id: BigInt(1234),
+          transaction: createMintTransaction({
+            amount,
+            to: mainAccount,
+            memo: txIdMemo,
+          }),
+        },
+        account: mockCkBTCMainAccount,
+        toSelfTransaction: false,
+        token: mockCkBTCToken,
+        i18n: en,
+      });
+      expect(data).toEqual({
+        domKey: "1234-1",
+        headline: "BTC Received",
+        isIncoming: true,
+        isPending: false,
+        otherParty: "BTC Network",
+        timestamp: new Date(0),
+        tokenAmount: TokenAmountV2.fromUlps({
+          amount,
+          token: mockCkBTCToken,
+        }),
+      });
+    });
   });
 
   describe("mapCkbtcTransactions", () => {

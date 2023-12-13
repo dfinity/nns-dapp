@@ -4,7 +4,12 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Identifier from "$lib/components/ui/Identifier.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { IconUp, IconDown, KeyValuePair } from "@dfinity/gix-components";
+  import {
+    IconReimbursed,
+    IconUp,
+    IconDown,
+    KeyValuePair,
+  } from "@dfinity/gix-components";
   import type { UiTransaction } from "$lib/types/transaction";
   import {
     nonNullish,
@@ -19,10 +24,18 @@
   let tokenAmount: TokenAmount | TokenAmountV2;
   let isIncoming: boolean;
   let isPending: boolean;
+  let isReimbursement: boolean | undefined;
   let otherParty: string | undefined;
   let timestamp: Date | undefined;
-  $: ({ headline, tokenAmount, isIncoming, isPending, otherParty, timestamp } =
-    transaction);
+  $: ({
+    headline,
+    tokenAmount,
+    isIncoming,
+    isPending,
+    isReimbursement,
+    otherParty,
+    timestamp,
+  } = transaction);
 
   let label: string;
   $: label = isIncoming
@@ -39,8 +52,11 @@
     data-tid="icon"
     class:send={!isIncoming}
     class:pending={isPending}
+    class:reimbursed={isReimbursement}
   >
-    {#if isIncoming}
+    {#if isReimbursement}
+      <IconReimbursed size="24px" />
+    {:else if isIncoming}
       <IconDown size="24px" />
     {:else}
       <IconUp size="24px" />
@@ -150,6 +166,11 @@
     &.pending {
       color: var(--pending-color);
       background: var(--pending-background);
+    }
+
+    &.reimbursed {
+      color: var(--alert);
+      background: var(--alert-tint);
     }
   }
 </style>

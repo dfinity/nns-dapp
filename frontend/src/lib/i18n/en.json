@@ -1024,7 +1024,8 @@
     "btc_received": "BTC Received",
     "btc_sent": "BTC Sent",
     "btc_network": "BTC Network",
-    "receiving_btc": "Receiving BTC"
+    "receiving_btc": "Receiving BTC",
+    "reimbursement": "Reimbursement"
   },
   "error__ckbtc": {
     "already_process": "The minter has already been notified and updating the balance is in progress.",
