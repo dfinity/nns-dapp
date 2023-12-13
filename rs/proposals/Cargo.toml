@@ -5,23 +5,23 @@ version = { workspace = true }
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-candid = "0.8.1"
+candid = "0.9.11"
 hex = "0.4.3"
 serde = "1.0.193"
 serde_bytes = "0.11.12"
 serde_json = "1.0.108"
 
-cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-dfn_candid = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-dfn_core = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-ic-base-types = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
+cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "release-2023-11-15_23-00" }
+dfn_candid = { git = "https://github.com/dfinity/ic", rev = "release-2023-11-15_23-00" }
+dfn_core = { git = "https://github.com/dfinity/ic", rev = "release-2023-11-15_23-00" }
+ic-base-types = { git = "https://github.com/dfinity/ic", rev = "release-2023-11-15_23-00" }
 ic-btc-interface = { git = "https://github.com/dfinity/bitcoin-canister", rev = "b1693619e3d4dbc00d8c79e9b6886e1db48b21f7" }
-ic-crypto-sha2 = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-ic-ic00-types = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-ic-nervous-system-root = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
-ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2023-08-01_23-01" }
+ic-crypto-sha2 = { git = "https://github.com/dfinity/ic", rev = "release-2023-11-15_23-00" }
+ic-ic00-types = { git = "https://github.com/dfinity/ic", rev = "release-2023-11-15_23-00" }
+ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "release-2023-11-15_23-00" }
+ic-nervous-system-root = { git = "https://github.com/dfinity/ic", rev = "release-2023-11-15_23-00" }
+ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "release-2023-11-15_23-00" }
+ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2023-11-15_23-00" }
 
 ic-cdk = { workspace = true }
 ic-cdk-macros = { workspace = true }

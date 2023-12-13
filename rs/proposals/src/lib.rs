@@ -12,6 +12,7 @@ use std::cell::RefCell;
 use std::collections::BTreeMap;
 use std::fmt::Debug;
 use std::ops::DerefMut;
+use serde_bytes::ByteBuf;
 
 pub mod canisters;
 
@@ -140,13 +141,13 @@ pub fn process_proposal_payload(proposal_info: ProposalInfo) -> Json {
     }
 }
 
-fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<String, String> {
-    fn transform<In, Out>(payload_bytes: &[u8]) -> Result<String, String>
+fn transform_payload_to_json(nns_function: i32, payload_bytes: &ByteBuf) -> Result<String, String> {
+    fn transform<In, Out>(payload_bytes: &ByteBuf) -> Result<String, String>
     where
         In: CandidType + DeserializeOwned + Into<Out>,
         Out: Serialize,
     {
-        let payload: In = candid::decode_one(payload_bytes).map_err(debug)?;
+        let payload: In = candid::decode_one(payload_bytes.into_vec()).map_err(debug)?;
         let payload_transformed: Out = payload.into();
         let json = serde_json::to_string(&payload_transformed).map_err(debug)?;
         if json.len() <= CACHE_ITEM_SIZE_LIMIT {
@@ -156,7 +157,7 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         }
     }
 
-    fn identity<Out>(payload_bytes: &[u8]) -> Result<String, String>
+    fn identity<Out>(payload_bytes: &ByteBuf) -> Result<String, String>
     where
         Out: CandidType + Serialize + DeserializeOwned,
     {
@@ -223,7 +224,6 @@ mod def {
     use ic_base_types::{CanisterId, PrincipalId};
     use ic_crypto_sha2::Sha256;
     use ic_ic00_types::CanisterInstallMode;
-    use ic_nervous_system_common::MethodAuthzChange;
     use serde::{Deserialize, Serialize};
     use std::convert::TryFrom;
     use std::fmt::Write;
@@ -238,7 +238,7 @@ mod def {
 
     // NNS function 3 - AddNNSCanister
     // https://github.com/dfinity/ic/blob/fba1b63a8c6bd1d49510c10f85fe6d1668089422/rs/nervous_system/root/src/lib.rs#L192
-    pub type AddNnsCanisterProposal = ic_nervous_system_root::change_canister::AddCanisterProposal;
+    pub type AddNnsCanisterProposal = ic_nervous_system_root::change_canister::AddCanisterRequest;
 
     // replace `wasm_module` with `wasm_module_hash`
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -254,7 +254,6 @@ mod def {
         #[serde(serialize_with = "serialize_optional_nat")]
         pub query_allocation: Option<candid::Nat>,
         pub initial_cycles: u64,
-        pub authz_changes: Vec<MethodAuthzChange>,
     }
 
     impl From<AddNnsCanisterProposal> for AddNnsCanisterProposalTrimmed {
@@ -271,14 +270,13 @@ mod def {
                 memory_allocation: payload.memory_allocation,
                 query_allocation: payload.query_allocation,
                 initial_cycles: payload.initial_cycles,
-                authz_changes: payload.authz_changes,
             }
         }
     }
 
     // NNS function 4 - UpgradeNNSCanister
     // https://github.com/dfinity/ic/blob/fba1b63a8c6bd1d49510c10f85fe6d1668089422/rs/nervous_system/root/src/lib.rs#L75
-    pub type ChangeNnsCanisterProposal = ic_nervous_system_root::change_canister::ChangeCanisterProposal;
+    pub type ChangeNnsCanisterProposal = ic_nervous_system_root::change_canister::ChangeCanisterRequest;
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct ChangeNnsCanisterProposalTrimmed {
@@ -294,7 +292,6 @@ mod def {
         pub memory_allocation: Option<candid::Nat>,
         #[serde(serialize_with = "serialize_optional_nat")]
         pub query_allocation: Option<candid::Nat>,
-        pub authz_changes: Vec<MethodAuthzChange>,
     }
 
     impl From<ChangeNnsCanisterProposal> for ChangeNnsCanisterProposalTrimmed {
@@ -312,7 +309,6 @@ mod def {
                 compute_allocation: payload.compute_allocation,
                 memory_allocation: payload.memory_allocation,
                 query_allocation: payload.query_allocation,
-                authz_changes: payload.authz_changes,
             }
         }
     }
@@ -395,7 +391,7 @@ mod def {
 
     // NNS function 17 - StopOrStartNNSCanister
     // https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/nervous_system/root/src/lib.rs#L258
-    pub type StopOrStartNnsCanisterProposal = ic_nervous_system_root::change_canister::StopOrStartCanisterProposal;
+    pub type StopOrStartNnsCanisterProposal = ic_nervous_system_root::change_canister::StopOrStartCanisterRequest;
 
     // NNS function 18 - RemoveNodes
     // https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/node_management/do_remove_nodes.rs#L96
@@ -482,10 +478,10 @@ mod def {
         fn from(payload: AddWasmRequest) -> Self {
             AddWasmRequestTrimmed {
                 wasm: payload.wasm.map(|w| SnsWasmTrimmed {
-                    wasm_hash: calculate_hash_string(&w.wasm),
+                    wasm_hash: calculate_hash_string(&w.wasm.into_vec()),
                     canister_type: w.canister_type,
                 }),
-                hash: format_bytes(&payload.hash),
+                hash: format_bytes(&payload.hash.into_vec()),
             }
         }
     }
@@ -579,12 +575,12 @@ mod def {
     impl From<SnsVersion> for SnsVersionHumanReadable {
         fn from(payload: SnsVersion) -> Self {
             SnsVersionHumanReadable {
-                root_wasm_hash: format_bytes(&payload.root_wasm_hash),
-                governance_wasm_hash: format_bytes(&payload.governance_wasm_hash),
-                ledger_wasm_hash: format_bytes(&payload.ledger_wasm_hash),
-                swap_wasm_hash: format_bytes(&payload.swap_wasm_hash),
-                archive_wasm_hash: format_bytes(&payload.archive_wasm_hash),
-                index_wasm_hash: format_bytes(&payload.index_wasm_hash),
+                root_wasm_hash: format_bytes(&payload.root_wasm_hash.into_vec()),
+                governance_wasm_hash: format_bytes(&payload.governance_wasm_hash.into_vec()),
+                ledger_wasm_hash: format_bytes(&payload.ledger_wasm_hash.into_vec()),
+                swap_wasm_hash: format_bytes(&payload.swap_wasm_hash.into_vec()),
+                archive_wasm_hash: format_bytes(&payload.archive_wasm_hash.into_vec()),
+                index_wasm_hash: format_bytes(&payload.index_wasm_hash.into_vec()),
             }
         }
     }
