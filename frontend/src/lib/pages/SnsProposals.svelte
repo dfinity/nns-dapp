@@ -34,14 +34,8 @@
       await loadSnsNervousSystemFunctions(selectedProjectCanisterId);
     }
   };
-  $: if (
-    currentProjectCanisterId !== undefined &&
-    $functionsStore !== undefined
-  ) {
-    loadSnsFilters({
-      rootCanisterId: currentProjectCanisterId,
-      snsFunctions: $functionsStore,
-    });
+  $: if (currentProjectCanisterId !== undefined) {
+    loadSnsFilters(currentProjectCanisterId);
   }
 
   $: onSnsProjectChanged($snsOnlyProjectStore);

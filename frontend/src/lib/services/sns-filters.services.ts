@@ -11,6 +11,7 @@ import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 // TODO: Set default filters
+// The "types" filter data is set in a lazy way, when the user opens the "types" filter, because it needs the nsFunctions to be loaded
 export const loadSnsFilters = async (rootCanisterId: Principal) => {
   const filtersProjectStoreData = get(snsFiltersStore)[rootCanisterId.toText()];
   if (nonNullish(filtersProjectStoreData)) {
