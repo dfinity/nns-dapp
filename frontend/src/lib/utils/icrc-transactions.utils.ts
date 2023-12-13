@@ -240,6 +240,7 @@ const MINT_TYPE_KYT_FAIL = 2;
 // The memo will decode to either:
 // * Convert: [0, [ tx_id, vout, kyt_fee]]
 // * KytFail: [2, [ kyt_fee, kyt_status, block_index]]
+// Source: https://github.com/dfinity/ic/blob/c22a5aebd4f26ae2e4016de55e3f7aa00d086479/rs/bitcoin/ckbtc/minter/src/memo.rs#L25
 type CkbtcMintMemo =
   | [0, [Uint8Array?, number?, number?]]
   | [2, [number, number?, number?]];
