@@ -22,6 +22,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Merge Approve transfer with BTC "Sent" transaction in transaction list.
 * Display Neurons' Fund commitment progress bar.
 * `range()` method to `AccountsDbTrait`.
+* Render ckBTC Reimbursement transactions.
 
 #### Changed
 
@@ -34,6 +35,8 @@ proposal is successful, the changes it released will be moved from this file to
 #### Removed
 
 #### Fixed
+
+* Limit the size of proposal payload rendering errors, as otherwise the error can become too large to return.
 
 #### Security
 

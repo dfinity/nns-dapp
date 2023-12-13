@@ -1,5 +1,5 @@
 //! Rust code created from candid by: scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-11-29_23-01/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-12-06_23-01+p2p/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -208,6 +208,14 @@ pub struct DeregisterDappCanisters {
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct MintSnsTokens {
+    pub to_principal: Option<Principal>,
+    pub to_subaccount: Option<Subaccount>,
+    pub memo: Option<u64>,
+    pub amount_e8s: Option<u64>,
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ManageSnsMetadata {
     pub url: Option<String>,
     pub logo: Option<String>,
@@ -236,6 +244,7 @@ pub enum Action {
     TransferSnsTreasuryFunds(TransferSnsTreasuryFunds),
     UpgradeSnsControlledCanister(UpgradeSnsControlledCanister),
     DeregisterDappCanisters(DeregisterDappCanisters),
+    MintSnsTokens(MintSnsTokens),
     Unspecified(EmptyRecord),
     ManageSnsMetadata(ManageSnsMetadata),
     ExecuteGenericNervousSystemFunction(ExecuteGenericNervousSystemFunction),
