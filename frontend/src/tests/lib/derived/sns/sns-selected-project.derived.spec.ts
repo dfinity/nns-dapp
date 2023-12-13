@@ -4,7 +4,9 @@ import {
   snsOnlyProjectStore,
   snsProjectSelectedStore,
 } from "$lib/derived/sns/sns-selected-project.derived";
+import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
 import {
   mockSnsSwapCommitment,
@@ -31,9 +33,12 @@ describe("selected sns project derived stores", () => {
           lifecycle: SnsSwapLifecycle.Committed,
         },
       ]);
+      icrcCanistersStore.reset();
+      tokensStore.reset();
     });
 
-    it("should be set by default undefined", () => {
+    it("should be set to undefined if NNS Universe", () => {
+      page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
       const $store = get(snsOnlyProjectStore);
 
       expect($store).toBeUndefined();
@@ -56,6 +61,12 @@ describe("selected sns project derived stores", () => {
 
       const $store2 = get(snsOnlyProjectStore);
       expect($store2).toBeUndefined();
+    });
+
+    it("should return undefined if universe not valid SNS root canister id", () => {
+      page.mock({ data: { universe: principal(1).toText() } });
+
+      expect(get(snsOnlyProjectStore)).toBeUndefined();
     });
   });
 

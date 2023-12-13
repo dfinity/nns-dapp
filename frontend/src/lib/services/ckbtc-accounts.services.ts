@@ -1,78 +1,30 @@
 import type { IcrcTransferParams } from "$lib/api/icrc-ledger.api";
 import { icrcTransfer } from "$lib/api/icrc-ledger.api";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
-import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
-import { getCkBTCAccounts } from "$lib/services/ckbtc-accounts-loader.services";
-import { loadCkBTCToken } from "$lib/services/ckbtc-tokens.services";
 import { transferTokens } from "$lib/services/icrc-accounts.services";
-import { queryAndUpdate } from "$lib/services/utils.services";
-import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
-import { toastsError } from "$lib/stores/toasts.store";
+import { loadAccounts } from "$lib/services/wallet-accounts.services";
 import type { Account } from "$lib/types/account";
 import type { UniverseCanisterId } from "$lib/types/universe";
-import { notForceCallStrategy } from "$lib/utils/env.utils";
-import { toToastError } from "$lib/utils/error.utils";
 import type { Identity } from "@dfinity/agent";
 import type { IcrcBlockIndex } from "@dfinity/ledger-icrc";
 import { get } from "svelte/store";
-import type { IcrcTransferTokensUserParams } from "./icrc-accounts.services";
+import { numberToE8s } from "../utils/token.utils";
 
-export const loadCkBTCAccounts = async ({
-  handleError,
-  universeId,
-}: {
+export const loadCkBTCAccounts = async (params: {
   handleError?: () => void;
   universeId: UniverseCanisterId;
-}): Promise<void> => {
-  return queryAndUpdate<Account[], unknown>({
-    strategy: FORCE_CALL_STRATEGY,
-    request: ({ certified, identity }) =>
-      getCkBTCAccounts({ identity, certified, universeId }),
-    onLoad: ({ response: accounts, certified }) =>
-      icrcAccountsStore.set({
-        universeId,
-        accounts: {
-          accounts,
-          certified,
-        },
-      }),
-    onError: ({ error: err, certified }) => {
-      console.error(err);
-
-      if (!certified && notForceCallStrategy()) {
-        return;
-      }
-
-      // hide unproven data
-      icrcAccountsStore.reset();
-      icrcTransactionsStore.resetUniverse(CKBTC_UNIVERSE_CANISTER_ID);
-
-      toastsError(
-        toToastError({
-          err,
-          fallbackErrorLabelKey: "error.accounts_load",
-        })
-      );
-
-      handleError?.();
-    },
-    logMessage: "Syncing ckBTC Accounts",
-  });
-};
-
-export const syncCkBTCAccounts = async (params: {
-  handleError?: () => void;
-  universeId: UniverseCanisterId;
-}) => await Promise.all([loadCkBTCAccounts(params), loadCkBTCToken(params)]);
+}): Promise<void> => loadAccounts(params);
 
 export const ckBTCTransferTokens = async ({
   source,
+  destinationAddress,
   universeId,
-  ...rest
-}: IcrcTransferTokensUserParams & {
+  amount,
+}: {
+  source: Account;
+  destinationAddress: string;
   universeId: UniverseCanisterId;
+  amount: number;
 }): Promise<{
   blockIndex: IcrcBlockIndex | undefined;
 }> => {
@@ -80,8 +32,9 @@ export const ckBTCTransferTokens = async ({
 
   return transferTokens({
     source,
+    destinationAddress,
+    amountUlps: numberToE8s(amount),
     fee,
-    ...rest,
     transfer: async (
       params: {
         identity: Identity;
@@ -91,7 +44,7 @@ export const ckBTCTransferTokens = async ({
         ...params,
         canisterId: universeId,
       }),
-    reloadAccounts: async () => await loadCkBTCAccounts({ universeId }),
+    reloadAccounts: async () => await loadAccounts({ universeId }),
     reloadTransactions: async () => Promise.resolve(),
   });
 };

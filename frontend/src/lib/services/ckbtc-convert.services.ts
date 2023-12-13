@@ -39,13 +39,12 @@ import {
   ckBTCTransferTokens,
   loadCkBTCAccounts,
 } from "./ckbtc-accounts.services";
-import { loadCkBTCAccountTransactions } from "./ckbtc-transactions.services";
 import type { IcrcTransferTokensUserParams } from "./icrc-accounts.services";
+import { loadWalletTransactions } from "./wallet-transactions.services";
 
-export type ConvertCkBTCToBtcParams = Omit<
-  IcrcTransferTokensUserParams,
-  "source"
-> & {
+export type ConvertCkBTCToBtcParams = {
+  destinationAddress: string;
+  amount: number;
   universeId: UniverseCanisterId;
   canisters: CkBTCAdditionalCanisters;
   updateProgress: (step: ConvertBtcStep) => void;
@@ -236,13 +235,15 @@ const retrieveBtcAndReload = async ({
   canisters: { minterCanisterId, indexCanisterId },
   updateProgress,
   blockIndex,
-}: Omit<IcrcTransferTokensUserParams, "source"> &
-  Partial<Pick<IcrcTransferTokensUserParams, "source">> & {
-    universeId: UniverseCanisterId;
-    canisters: CkBTCAdditionalCanisters;
-    updateProgress: (step: ConvertBtcStep) => void;
-    blockIndex?: bigint;
-  }): Promise<{
+}: {
+  source?: Account;
+  destinationAddress: string;
+  amount: number;
+  universeId: UniverseCanisterId;
+  canisters: CkBTCAdditionalCanisters;
+  updateProgress: (step: ConvertBtcStep) => void;
+  blockIndex?: bigint;
+}): Promise<{
   success: boolean;
 }> => {
   updateProgress(ConvertBtcStep.SEND_BTC);
@@ -302,7 +303,7 @@ const reload = async ({
     ...(loadAccounts ? [loadCkBTCAccounts({ universeId })] : []),
     ...(nonNullish(source)
       ? [
-          loadCkBTCAccountTransactions({
+          loadWalletTransactions({
             account: source,
             canisterId: universeId,
             indexCanisterId,

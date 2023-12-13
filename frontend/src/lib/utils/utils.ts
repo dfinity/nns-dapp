@@ -1,5 +1,6 @@
 import { toastsError, toastsHide } from "$lib/stores/toasts.store";
 import type { PngDataUrl } from "$lib/types/assets";
+import type { BasisPoints } from "$lib/types/proposals";
 import type { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
 import { errorToString } from "./error.utils";
@@ -17,8 +18,9 @@ export const stringifyJson = (
     indentation?: number;
     devMode?: boolean;
   }
-): string =>
-  JSON.stringify(
+): string => {
+  const __UNDEFINED__ = "__UNDEFINED__";
+  const result = JSON.stringify(
     value,
     (_, value) => {
       switch (typeof value) {
@@ -56,10 +58,15 @@ export const stringifyJson = (
           return value.toString();
         }
       }
-      return value;
+      return value === undefined ? __UNDEFINED__ : value;
     },
     options?.indentation ?? 0
   );
+
+  return (
+    result?.replace(new RegExp(`"${__UNDEFINED__}"`, "g"), "undefined") ?? ""
+  );
+};
 
 /**
  * Returns only uniq elements of the list (uses JSON.stringify for comparation)
@@ -386,6 +393,11 @@ export const expandObject = (value: unknown): unknown => {
     return value.map(expandObject);
   }
   if (typeof value === "object") {
+    if (isPrincipal(value)) {
+      // Do not expand Principal to keep the prototype methods
+      return value;
+    }
+
     // to avoid mutating original object
     const result = { ...value };
     Object.keys(result).forEach(
@@ -465,3 +477,6 @@ export const splitE8sIntoChunks = (value: unknown): string[] => {
 
   return chunks;
 };
+
+export const basisPointsToPercent = (basisPoints: BasisPoints): number =>
+  Number(basisPoints) / 100;

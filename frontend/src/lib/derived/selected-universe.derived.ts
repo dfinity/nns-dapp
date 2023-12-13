@@ -9,14 +9,20 @@ import {
   ENABLE_CKBTC,
   ENABLE_CKTESTBTC,
 } from "$lib/stores/feature-flags.store";
+import {
+  icrcCanistersStore,
+  type IcrcCanistersStore,
+  type IcrcCanistersStoreData,
+} from "$lib/stores/icrc-canisters.store";
 import type { Universe, UniverseCanisterId } from "$lib/types/universe";
 import {
+  isNonGovernanceTokenPath,
   isUniverseCkBTC,
   isUniverseCkTESTBTC,
   isUniverseNns,
-  pathSupportsCkBTC,
 } from "$lib/utils/universe.utils";
 import { Principal } from "@dfinity/principal";
+import { nonNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 import { nnsUniverseStore } from "./nns-universe.derived";
 
@@ -42,13 +48,27 @@ const pageUniverseIdStore: Readable<Principal> = derived(
 );
 
 export const selectedUniverseIdStore: Readable<Principal> = derived<
-  [Readable<Principal>, Readable<Page>, Readable<boolean>, Readable<boolean>],
+  [
+    Readable<Principal>,
+    Readable<Page>,
+    IcrcCanistersStore,
+    Readable<boolean>,
+    Readable<boolean>,
+  ],
   Principal
 >(
-  [pageUniverseIdStore, pageStore, ENABLE_CKBTC, ENABLE_CKTESTBTC],
-  ([canisterId, page, $ENABLE_CKBTC, $ENABLE_CKTESTBTC]) => {
-    // ckBTC is only available on Accounts therefore we fallback to Nns if selected and user switch to another view
-    if (isUniverseCkBTC(canisterId) && !pathSupportsCkBTC(page)) {
+  [
+    pageUniverseIdStore,
+    pageStore,
+    icrcCanistersStore,
+    ENABLE_CKBTC,
+    ENABLE_CKTESTBTC,
+  ],
+  ([canisterId, page, icrcCanisters, $ENABLE_CKBTC, $ENABLE_CKTESTBTC]) => {
+    const isCkBTC = isUniverseCkBTC(canisterId);
+    const isIcrcToken = nonNullish(icrcCanisters[canisterId.toText()]);
+    // ckBTC and ICRC Tokens are only available on Accounts therefore we fallback to Nns if selected and user switch to another view
+    if ((isCkBTC || isIcrcToken) && !isNonGovernanceTokenPath(page)) {
       return OWN_CANISTER_ID;
     }
     if (
@@ -78,6 +98,27 @@ export const isNnsUniverseStore = derived(
 export const isCkBTCUniverseStore = derived(
   selectedUniverseIdStore,
   ($selectedProjectId: Principal) => isUniverseCkBTC($selectedProjectId)
+);
+
+export const selectedIcrcTokenUniverseIdStore = derived(
+  [pageUniverseIdStore, pageStore, icrcCanistersStore],
+  ([$pageUniverseIdStore, $page, $icrcCanistersStore]: [
+    Principal,
+    Page,
+    IcrcCanistersStoreData,
+  ]) =>
+    isNonGovernanceTokenPath($page)
+      ? $icrcCanistersStore[$pageUniverseIdStore.toText()]?.ledgerCanisterId
+      : undefined
+);
+
+/**
+ * Is the selected universe an ICRC Token?
+ */
+export const isIcrcTokenUniverseStore = derived(
+  selectedIcrcTokenUniverseIdStore,
+  ($selectedIcrcTokenUniverseIdStore) =>
+    nonNullish($selectedIcrcTokenUniverseIdStore)
 );
 
 export const selectedUniverseStore: Readable<Universe> = derived(

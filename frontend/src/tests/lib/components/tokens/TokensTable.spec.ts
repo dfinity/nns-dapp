@@ -1,30 +1,39 @@
 import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { AppPath } from "$lib/constants/routes.constants";
 import { ActionType } from "$lib/types/actions";
-import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
+import {
+  UserTokenAction,
+  type UserTokenData,
+  type UserTokenLoading,
+} from "$lib/types/tokens-page";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import {
   createUserToken,
+  createUserTokenLoading,
   userTokenPageMock,
 } from "$tests/mocks/tokens-page.mock";
 import { TokensTablePo } from "$tests/page-objects/TokensTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { createActionEvent } from "$tests/utils/actions.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
-import { render } from "@testing-library/svelte";
+import { render, waitFor } from "@testing-library/svelte";
 import type { Mock } from "vitest";
+import TokensTableTest from "./TokensTableTest.svelte";
 
 describe("TokensTable", () => {
   const renderTable = ({
     userTokensData,
+    firstColumnHeader,
     onAction,
   }: {
-    userTokensData: UserTokenData[];
+    userTokensData: Array<UserTokenData | UserTokenLoading>;
+    firstColumnHeader?: string;
     onAction?: Mock;
   }) => {
     const { container, component } = render(TokensTable, {
-      props: { userTokensData },
+      props: { userTokensData, firstColumnHeader },
     });
 
     component.$on("nnsAction", onAction);
@@ -48,6 +57,30 @@ describe("TokensTable", () => {
     expect(await po.getRows()).toHaveLength(2);
   });
 
+  it("should render the first column headers from props", async () => {
+    const firstColumnHeader = "Accounts";
+    const token1 = createUserToken({
+      universeId: OWN_CANISTER_ID,
+    });
+    const po = renderTable({ userTokensData: [token1], firstColumnHeader });
+
+    expect(await po.getFirstColumnHeader()).toEqual(firstColumnHeader);
+  });
+
+  it("should render the last-row slot", async () => {
+    const lastRowText = "Add Account";
+    const token1 = createUserToken({
+      universeId: OWN_CANISTER_ID,
+    });
+    const { container } = render(TokensTableTest, {
+      props: { userTokensData: [token1], lastRowText },
+    });
+
+    const po = TokensTablePo.under(new JestPageObjectElement(container));
+
+    expect(await po.getLastRowText()).toEqual(lastRowText);
+  });
+
   it("should render the balances of the tokens", async () => {
     const token1 = createUserToken({
       universeId: OWN_CANISTER_ID,
@@ -57,7 +90,7 @@ describe("TokensTable", () => {
       universeId: principal(0),
       balance: TokenAmount.fromE8s({
         amount: 114000000n,
-        token: { name: "Tetris", symbol: "TETRIS" },
+        token: { name: "Tetris", symbol: "TETRIS", decimals: 8 },
       }),
     });
     const po = renderTable({ userTokensData: [token1, token2] });
@@ -70,10 +103,63 @@ describe("TokensTable", () => {
     expect(await row2Po.getBalance()).toBe("1.14 TETRIS");
   });
 
+  it("should render the subtitle if present", async () => {
+    const subtitle = "Hardware Wallet";
+    const token1 = createUserToken({
+      universeId: OWN_CANISTER_ID,
+      balance: TokenAmount.fromE8s({ amount: 314000000n, token: ICPToken }),
+      subtitle,
+    });
+    const token2 = createUserToken({
+      universeId: principal(0),
+      balance: TokenAmount.fromE8s({
+        amount: 114000000n,
+        token: { name: "Tetris", symbol: "TETRIS", decimals: 8 },
+      }),
+    });
+    const po = renderTable({ userTokensData: [token1, token2] });
+
+    const rows = await po.getRows();
+    const row1Po = rows[0];
+    const row2Po = rows[1];
+
+    expect(await row1Po.getSubtitle()).toBe(subtitle);
+    expect(await row2Po.getSubtitle()).toBeNull();
+  });
+
+  it("should render href link if rowHref is present", async () => {
+    const href = "/accounts";
+    const token1 = createUserToken({
+      universeId: OWN_CANISTER_ID,
+      balance: TokenAmount.fromE8s({ amount: 314000000n, token: ICPToken }),
+      rowHref: href,
+    });
+    const token2 = createUserToken({
+      universeId: principal(0),
+      balance: TokenAmount.fromE8s({
+        amount: 114000000n,
+        token: { name: "Tetris", symbol: "TETRIS", decimals: 8 },
+      }),
+      rowHref: undefined,
+    });
+    const po = renderTable({ userTokensData: [token1, token2] });
+
+    const rows = await po.getRows();
+    const row1Po = rows[0];
+    const row2Po = rows[1];
+
+    expect(await row1Po.getHref()).toBe(href);
+    expect(await row2Po.getHref()).toBeNull();
+  });
+
   it("should render specific text if balance not available", async () => {
     const token1 = createUserToken({
       universeId: OWN_CANISTER_ID,
-      balance: new UnavailableTokenAmount({ name: "ckBTC", symbol: "ckBTC" }),
+      balance: new UnavailableTokenAmount({
+        name: "ckBTC",
+        symbol: "ckBTC",
+        decimals: 8,
+      }),
     });
     const po = renderTable({ userTokensData: [token1] });
 
@@ -81,6 +167,17 @@ describe("TokensTable", () => {
     const row1Po = rows[0];
 
     expect(await row1Po.getBalance()).toBe("-/- ckBTC");
+  });
+
+  it("should render balance spinner if balance is loading", async () => {
+    const token1 = createUserTokenLoading();
+    const po = renderTable({ userTokensData: [token1] });
+
+    const rows = await po.getRows();
+    const row1Po = rows[0];
+
+    expect(await row1Po.getBalance()).toBe("");
+    expect(await row1Po.hasBalanceSpinner()).toBe(true);
   });
 
   it("should render a button Send action", async () => {
@@ -174,6 +271,60 @@ describe("TokensTable", () => {
         data: userToken,
       })
     );
+  });
+
+  it("clicking in a Send action should not trigger the row link", async () => {
+    const userToken = createUserToken({
+      actions: [UserTokenAction.Send],
+      rowHref: AppPath.Neurons,
+    });
+
+    const po = renderTable({
+      userTokensData: [userToken],
+      onAction: vi.fn(),
+    });
+
+    const rows = await po.getRows();
+    const rowPo = rows[0];
+
+    const sendButton = rowPo.getSendButton();
+
+    let isClicked = false;
+    sendButton.addEventListener("click", (event) => {
+      expect(event.defaultPrevented).toBe(true);
+      isClicked = true;
+    });
+
+    await sendButton.click();
+
+    await waitFor(() => expect(isClicked).toBe(true));
+  });
+
+  it("clicking in a Receive action should not trigger the row link", async () => {
+    const userToken = createUserToken({
+      actions: [UserTokenAction.Receive],
+      rowHref: AppPath.Neurons,
+    });
+
+    const po = renderTable({
+      userTokensData: [userToken],
+      onAction: vi.fn(),
+    });
+
+    const rows = await po.getRows();
+    const rowPo = rows[0];
+
+    const receiveButton = rowPo.getReceiveButton();
+
+    let isClicked = false;
+    receiveButton.addEventListener("click", (event) => {
+      expect(event.defaultPrevented).toBe(true);
+      isClicked = true;
+    });
+
+    await receiveButton.click();
+
+    await waitFor(() => expect(isClicked).toBe(true));
   });
 
   it("should trigger event when clicking in Receive action", async () => {

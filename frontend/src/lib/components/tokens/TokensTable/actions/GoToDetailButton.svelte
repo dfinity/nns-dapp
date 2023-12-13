@@ -10,7 +10,7 @@
 </script>
 
 <button
-  class="icon"
+  class="icon-only"
   data-tid="go-to-detail-button-component"
   on:click|stopPropagation={() => {
     dispatcher("nnsAction", {

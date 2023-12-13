@@ -7,6 +7,10 @@
   import { nonNullish } from "@dfinity/utils";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import { syncAccounts } from "$lib/services/icp-accounts.services";
+  import { openAccountsModal } from "$lib/utils/modals.utils";
+  import { IconAdd } from "@dfinity/gix-components";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import IC_LOGO from "$lib/assets/icp.svg";
 
   let modal: "NewTransaction" | undefined = undefined;
   const openNewTransaction = () => (modal = "NewTransaction");
@@ -14,6 +18,17 @@
 
   // TODO: for performance reason use `loadBalance` to reload specific account
   const reload = async () => await syncAccounts();
+
+  const openBuyIcpModal = () => {
+    openAccountsModal({
+      type: "buy-icp",
+      data: {
+        account: $icpAccountsStore.main,
+        reload,
+        canSelectAccount: false,
+      },
+    });
+  };
 </script>
 
 <TestIdWrapper testId="nns-accounts-footer-component">
@@ -22,14 +37,35 @@
   {/if}
 
   {#if nonNullish($icpAccountsStore)}
-    <Footer>
+    <Footer columns={3}>
       <button
-        class="primary full-width"
+        class="secondary full-width"
         on:click={openNewTransaction}
         data-tid="open-new-transaction">{$i18n.accounts.send}</button
       >
 
-      <ReceiveButton type="nns-receive" canSelectAccount {reload} />
+      <ReceiveButton
+        type="nns-receive"
+        canSelectAccount
+        {reload}
+        universeId={OWN_CANISTER_ID}
+        logo={IC_LOGO}
+      />
+
+      <button
+        class="primary full-width with-icon"
+        on:click={openBuyIcpModal}
+        data-tid="buy-icp-button"
+      >
+        <IconAdd />{$i18n.accounts.buy_icp}
+      </button>
     </Footer>
   {/if}
 </TestIdWrapper>
+
+<style lang="scss">
+  @use "../../themes/mixins/button";
+  button {
+    @include button.with-icon;
+  }
+</style>

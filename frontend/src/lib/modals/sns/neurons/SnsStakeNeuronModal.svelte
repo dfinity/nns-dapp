@@ -8,11 +8,11 @@
   } from "$lib/types/transaction";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { WizardStep } from "@dfinity/gix-components";
-  import type { TokenAmount, Token } from "@dfinity/utils";
+  import type { Token, TokenAmountV2 } from "@dfinity/utils";
   import type { Principal } from "@dfinity/principal";
   import { stakeNeuron } from "$lib/services/sns-neurons.services";
   import { toastsSuccess } from "$lib/stores/toasts.store";
-  import SnsTransactionModal from "$lib/modals/sns/neurons/SnsTransactionModal.svelte";
+  import SnsNeuronTransactionModal from "$lib/modals/sns/neurons/SnsNeuronTransactionModal.svelte";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
   import type { SnsNervousSystemParameters } from "@dfinity/sns";
@@ -22,7 +22,7 @@
   export let token: Token;
   export let rootCanisterId: Principal;
   export let governanceCanisterId: Principal;
-  export let transactionFee: TokenAmount;
+  export let transactionFee: TokenAmountV2;
 
   let currentStep: WizardStep | undefined;
 
@@ -93,7 +93,7 @@
   };
 </script>
 
-<SnsTransactionModal
+<SnsNeuronTransactionModal
   testId="sns-stake-neuron-modal-component"
   {rootCanisterId}
   on:nnsSubmit={stake}
@@ -108,4 +108,4 @@
   <p slot="description" class="value no-margin">
     {stakeNeuronText}
   </p>
-</SnsTransactionModal>
+</SnsNeuronTransactionModal>

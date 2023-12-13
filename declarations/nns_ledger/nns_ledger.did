@@ -1,4 +1,4 @@
-//! Candid for canister `nns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-11-08_23-01/rs/rosetta-api/icp_ledger/ledger.did>
+//! Candid for canister `nns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-12-06_23-01+p2p/rs/rosetta-api/icp_ledger/ledger.did>
 // This is the official Ledger interface that is guaranteed to be backward compatible.
 
 // Amount of tokens, measured in 10^-8 of a token.

@@ -25,10 +25,6 @@ export class TransactionCardPo extends BasePageObject {
     return this.getText("identifier");
   }
 
-  getDescription(): Promise<string> {
-    return this.getText("transaction-description");
-  }
-
   getDate(): Promise<string> {
     return this.getText("transaction-date");
   }
@@ -39,5 +35,10 @@ export class TransactionCardPo extends BasePageObject {
 
   getAmount(): Promise<string> {
     return this.getAmountDisplayPo().getAmount();
+  }
+
+  async hasPendingIcon(): Promise<boolean> {
+    const classNames = await this.root.byTestId("icon").getClasses();
+    return classNames.includes("pending");
   }
 }

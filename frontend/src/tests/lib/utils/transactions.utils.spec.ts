@@ -1,16 +1,17 @@
-import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import type { Transaction as NnsTransaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import {
   AccountTransactionType,
   TransactionNetwork,
+  type Transaction,
+  type UiTransaction,
 } from "$lib/types/transaction";
 import { enumKeys } from "$lib/utils/enum.utils";
-import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import {
   isTransactionNetworkBtc,
   mapNnsTransaction,
   mapToSelfTransaction,
-  showTransactionFee,
+  toUiTransaction,
   transactionDisplayAmount,
   transactionName,
   transactionType,
@@ -21,61 +22,14 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
-import { principal } from "$tests/mocks/sns-projects.mock";
+import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import {
   mockReceivedFromMainAccountTransaction,
   mockSentToSubAccountTransaction,
 } from "$tests/mocks/transaction.mock";
-import { ICPToken } from "@dfinity/utils";
+import { ICPToken, TokenAmount } from "@dfinity/utils";
 
 describe("transactions-utils", () => {
-  describe("showTransactionFee", () => {
-    it("should be false for received transactions", () => {
-      expect(
-        showTransactionFee({
-          type: AccountTransactionType.Send,
-          isReceive: true,
-        })
-      ).toBe(false);
-      expect(
-        showTransactionFee({
-          type: AccountTransactionType.Mint,
-          isReceive: true,
-        })
-      ).toBe(false);
-    });
-
-    it("should be false for sent Mint and Burn", () => {
-      expect(
-        showTransactionFee({
-          type: AccountTransactionType.Mint,
-          isReceive: false,
-        })
-      ).toBe(false);
-      expect(
-        showTransactionFee({
-          type: AccountTransactionType.Burn,
-          isReceive: false,
-        })
-      ).toBe(false);
-    });
-
-    it("should be true for Sent", () => {
-      expect(
-        showTransactionFee({
-          type: AccountTransactionType.Send,
-          isReceive: false,
-        })
-      ).toBeTruthy();
-      expect(
-        showTransactionFee({
-          type: AccountTransactionType.StakeNeuron,
-          isReceive: false,
-        })
-      ).toBeTruthy();
-    });
-  });
-
   describe("transactionType", () => {
     it("determines type by transaction_type value", () => {
       expect(
@@ -150,7 +104,7 @@ describe("transactions-utils", () => {
         controller: mockMainAccount.principal,
         swapCanisterId,
       });
-      const swapTransaction: Transaction = {
+      const swapTransaction: NnsTransaction = {
         ...mockReceivedFromMainAccountTransaction,
         transfer: {
           Send: {
@@ -174,7 +128,7 @@ describe("transactions-utils", () => {
         controller: mockMainAccount.principal,
         swapCanisterId,
       });
-      const swapTransaction: Transaction = {
+      const swapTransaction: NnsTransaction = {
         ...mockReceivedFromMainAccountTransaction,
         transfer: {
           Receive: {
@@ -207,7 +161,7 @@ describe("transactions-utils", () => {
             ...mockSentToSubAccountTransaction,
             Burn: null,
             transaction_type: [],
-          } as unknown as Transaction,
+          } as unknown as NnsTransaction,
         })
       ).toBe(AccountTransactionType.Burn);
       expect(
@@ -216,7 +170,7 @@ describe("transactions-utils", () => {
             ...mockSentToSubAccountTransaction,
             Mint: null,
             transaction_type: [],
-          } as unknown as Transaction,
+          } as unknown as NnsTransaction,
         })
       ).toBe(AccountTransactionType.Mint);
     });
@@ -377,7 +331,7 @@ describe("transactions-utils", () => {
         controller: mockMainAccount.principal,
         swapCanisterId,
       });
-      const swapTransaction: Transaction = {
+      const swapTransaction: NnsTransaction = {
         ...mockReceivedFromMainAccountTransaction,
         transfer: {
           Send: {
@@ -402,7 +356,7 @@ describe("transactions-utils", () => {
         controller: mockMainAccount.principal,
         swapCanisterId,
       });
-      const swapTransaction: Transaction = {
+      const swapTransaction: NnsTransaction = {
         ...mockReceivedFromMainAccountTransaction,
         transfer: {
           Receive: {
@@ -419,6 +373,169 @@ describe("transactions-utils", () => {
         swapCanisterAccounts: new Set([swapCanisterAccount.toHex()]),
       });
       expect(type).toBe(AccountTransactionType.RefundSwap);
+    });
+  });
+
+  describe("toUiTransaction", () => {
+    const defaultDate = new Date("2021-01-01 00:00:00");
+    const defaultAmount = 100_000_000n;
+    const defaultFrom = "from-address";
+    const defaultTo = "to-address";
+
+    const defaultTransaction: Transaction = {
+      type: AccountTransactionType.Send,
+      isReceive: false,
+      isSend: true,
+      from: defaultFrom,
+      to: defaultTo,
+      displayAmount: defaultAmount,
+      date: defaultDate,
+    };
+
+    const defaultParams = {
+      transaction: defaultTransaction,
+      transactionId: 123n,
+      toSelfTransaction: false,
+      token: ICPToken,
+      transactionNames: en.transaction_names,
+    };
+
+    const defaultExpectedUiTransaction: UiTransaction = {
+      domKey: "123-1",
+      isIncoming: false,
+      isPending: false,
+      headline: "Sent",
+      otherParty: defaultTo,
+      tokenAmount: TokenAmount.fromE8s({
+        amount: defaultAmount,
+        token: ICPToken,
+      }),
+      timestamp: defaultDate,
+    };
+
+    it("should convert the default transaction", () => {
+      expect(toUiTransaction(defaultParams)).toEqual(
+        defaultExpectedUiTransaction
+      );
+    });
+
+    it("should convert a sent transaction", () => {
+      expect(
+        toUiTransaction({
+          ...defaultParams,
+          transaction: {
+            ...defaultTransaction,
+            isSend: true,
+            isReceive: false,
+          },
+        })
+      ).toEqual({
+        ...defaultExpectedUiTransaction,
+        isIncoming: false,
+        headline: "Sent",
+        otherParty: defaultTo,
+      });
+    });
+
+    it("should convert a received transaction", () => {
+      expect(
+        toUiTransaction({
+          ...defaultParams,
+          transaction: {
+            ...defaultTransaction,
+            isReceive: true,
+            isSend: false,
+          },
+        })
+      ).toEqual({
+        ...defaultExpectedUiTransaction,
+        isIncoming: true,
+        headline: "Received",
+        otherParty: defaultFrom,
+      });
+    });
+
+    it("should convert an approve transaction", () => {
+      expect(
+        toUiTransaction({
+          ...defaultParams,
+          transaction: {
+            ...defaultTransaction,
+            type: AccountTransactionType.Approve,
+            isSend: false,
+            isReceive: false,
+            from: undefined,
+            to: undefined,
+          },
+        })
+      ).toEqual({
+        ...defaultExpectedUiTransaction,
+        headline: "Approve transfer",
+        otherParty: undefined,
+      });
+    });
+
+    it("should convert a to-self transaction", () => {
+      expect(
+        toUiTransaction({
+          ...defaultParams,
+          transactionId: 129n,
+          toSelfTransaction: true,
+        })
+      ).toEqual({
+        ...defaultExpectedUiTransaction,
+        domKey: "129-0",
+        isIncoming: true,
+        headline: "Received",
+        otherParty: defaultFrom,
+      });
+    });
+
+    it("should convert amount", () => {
+      const amount = 728_000_000n;
+      expect(
+        toUiTransaction({
+          ...defaultParams,
+          transaction: {
+            ...defaultTransaction,
+            displayAmount: amount,
+          },
+        })
+      ).toEqual({
+        ...defaultExpectedUiTransaction,
+        tokenAmount: TokenAmount.fromE8s({ amount, token: ICPToken }),
+      });
+    });
+
+    it("should convert token", () => {
+      expect(
+        toUiTransaction({
+          ...defaultParams,
+          token: mockToken,
+        })
+      ).toEqual({
+        ...defaultExpectedUiTransaction,
+        tokenAmount: TokenAmount.fromE8s({
+          amount: defaultAmount,
+          token: mockToken,
+        }),
+      });
+    });
+
+    it("should convert timestamp", () => {
+      const timestamp = new Date("2021-03-04 12:56:47");
+      expect(
+        toUiTransaction({
+          ...defaultParams,
+          transaction: {
+            ...defaultTransaction,
+            date: timestamp,
+          },
+        })
+      ).toEqual({
+        ...defaultExpectedUiTransaction,
+        timestamp,
+      });
     });
   });
 
@@ -462,14 +579,8 @@ describe("transactions-utils", () => {
             type: key as AccountTransactionType,
             isReceive: false,
             labels: en.transaction_names,
-            tokenSymbol: ICPToken.symbol,
           })
-        ).toBe(
-          replacePlaceholders(
-            en.transaction_names[key as AccountTransactionType],
-            { $tokenSymbol: ICPToken.symbol }
-          )
-        );
+        ).toBe(en.transaction_names[key as AccountTransactionType]);
       }
     });
 
@@ -479,13 +590,8 @@ describe("transactions-utils", () => {
           type: AccountTransactionType.Send,
           isReceive: true,
           labels: en.transaction_names,
-          tokenSymbol: ICPToken.symbol,
         })
-      ).toBe(
-        replacePlaceholders(en.transaction_names.receive, {
-          $tokenSymbol: ICPToken.symbol,
-        })
-      );
+      ).toBe(en.transaction_names.receive);
     });
 
     it("returns raw type if not label", () => {
@@ -494,7 +600,6 @@ describe("transactions-utils", () => {
           type: "test" as AccountTransactionType,
           isReceive: true,
           labels: en.transaction_names,
-          tokenSymbol: ICPToken.symbol,
         })
       ).toBe("test");
     });

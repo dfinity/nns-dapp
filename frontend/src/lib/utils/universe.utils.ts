@@ -6,14 +6,16 @@ import {
 import { AppPath } from "$lib/constants/routes.constants";
 import type { Page } from "$lib/derived/page.derived";
 import { i18n } from "$lib/stores/i18n";
+import type { IcrcCanistersStoreData } from "$lib/stores/icrc-canisters.store";
 import type { SnsSummary } from "$lib/types/sns";
 import type { Universe } from "$lib/types/universe";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { isSelectedPath } from "$lib/utils/navigation.utils";
 import type { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
-export const pathSupportsCkBTC = ({ path }: Page): boolean =>
+export const isNonGovernanceTokenPath = ({ path }: Page): boolean =>
   isSelectedPath({
     currentPath: path,
     paths: [AppPath.Accounts, AppPath.Wallet],
@@ -38,7 +40,19 @@ export const isUniverseCkTESTBTC = (
   (typeof canisterId === "string" ? canisterId : canisterId.toText()) ===
     CKTESTBTC_UNIVERSE_CANISTER_ID.toText();
 
-export const universeLogoAlt = ({ summary, canisterId }: Universe): string => {
+export const isIcrcTokenUniverse = ({
+  universeId,
+  icrcCanisters,
+}: {
+  universeId: Principal;
+  icrcCanisters: IcrcCanistersStoreData;
+}): boolean => nonNullish(icrcCanisters[universeId.toText()]);
+
+export const universeLogoAlt = ({
+  summary,
+  canisterId,
+  title,
+}: Universe): string => {
   const i18nObj = get(i18n);
 
   if (nonNullish(summary?.metadata.name)) {
@@ -53,7 +67,9 @@ export const universeLogoAlt = ({ summary, canisterId }: Universe): string => {
     return i18nObj.ckbtc.logo;
   }
 
-  return i18nObj.auth.ic_logo;
+  return replacePlaceholders(i18nObj.universe.universe_logo, {
+    $universe: title,
+  });
 };
 
 export const createUniverse = (summary: SnsSummary): Universe => ({

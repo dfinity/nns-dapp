@@ -14,13 +14,19 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Render withdrawal address on ckBTC burn transactions.
+* Sns dynamic voting proportions.
+* Iterator over AccountsDbs.
+* Display expiration date for sns proposals.
+* Neuron type support.
+* Card with BTC deposit address and QR code in ckBTC wallet.
+* Merge Approve transfer with BTC "Sent" transaction in transaction list.
+* Display Neurons' Fund commitment progress bar.
 
 #### Changed
 
-* New icons for sent/received transactions.
-* Increase the pre-migration account limit.
-* Use "From:" instead of "Source:" for received transactions.
+* Render BTC deposits/withdrawals as "BTC Received"/"BTC Sent".
+* Update Rust version: `1.74.0` -> `1.74.1`
+* Provide space for migration state in the `ProxyDb`.
 
 #### Deprecated
 
@@ -28,12 +34,11 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
-* Add missing "Rename" button in the subaccount page.
-* Fix disappearing "Received" half of to-self transactions.
-* Fix debug store that wasn't working.
-* Fix the stuck loading issue with the Sns proposal.
+* Limit the size of proposal payload rendering errors, as otherwise the error can become too large to return.
 
 #### Security
+
+* Bump css-tools dev dependency to fix minor vulnerability.
 
 #### Not Published
 
@@ -41,32 +46,23 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Add a workflow to update the SNS aggregator bindings regularly.
-* Added support for global network config.
-* Cron job to update proposal types.
-* Enable dependabot for Rust updates.
-* Workflow to get the latest NNS and SNS canister candid files.
-* Try to prevent calls to global.fetch in unit tests.
-* Add `devenv_llorenc` and `devenv_dskloet` to list of networks.
-
 #### Changed
 
-* Update `ic-wasm` to the latest version.
-* Factor out the `snsdemo` installation.
-* Make the location of the snsdemo checkout configurable.
-* Add `prod` and `aggregator-prod` to the list of public releases.
-* Update `dfx` to `v0.15.1`.
-* Update the URL of the app subnet to what dfx v15 expects.
-* Use a unique branch when updating the snsdemo release, didc, IC candid files or rust.
-* Better checks that the network is defined.
+* Allow npm greater than v10 in frontend project.
 
 #### Deprecated
 
 #### Removed
 
+* Remove `.gitattributes`.
+
 #### Fixed
 
-* Remove accidentally committed (empty) directory and fix commit patterns.
-* Fix local deployments with `dfx 0.15.1`.
+* Provide missing global config in cache-filling workflow.
+* Update the correct flavour of golden file when the NNS Dapp canister API changes.
+* Specify the node version to use in the version bump test.
+* Summarize the `AccountsStore` contents in its `Debug` representation rather than trying to print its entire contents.
+* Lock the spellcheck version and its dependencies.
+* Keep `dfx start` logs in CI.
 
 #### Security

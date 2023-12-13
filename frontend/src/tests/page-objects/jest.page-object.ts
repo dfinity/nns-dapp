@@ -180,4 +180,12 @@ export class JestPageObjectElement implements PageObjectElement {
     await this.waitFor();
     return this.element?.innerHTML ?? "";
   }
+
+  async addEventListener(
+    eventType: string,
+    fn: (e: Event) => void
+  ): Promise<void> {
+    await this.waitFor();
+    this.element?.addEventListener(eventType, fn);
+  }
 }

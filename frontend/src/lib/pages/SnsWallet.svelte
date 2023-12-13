@@ -33,6 +33,8 @@
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
   import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
+  import IC_LOGO from "$lib/assets/icp.svg";
+  import { toTokenAmountV2 } from "$lib/utils/token.utils";
 
   let showModal: "send" | undefined = undefined;
 
@@ -135,7 +137,7 @@
           />
           <WalletPageHeading
             balance={TokenAmount.fromE8s({
-              amount: $selectedAccountStore.account.balanceE8s,
+              amount: $selectedAccountStore.account.balanceUlps,
               token,
             })}
             accountName={$selectedAccountStore.account.name ??
@@ -165,10 +167,13 @@
     >
 
     <ReceiveButton
-      type="sns-receive"
+      type="icrc-receive"
       account={$selectedAccountStore.account}
       reload={reloadAccount}
       testId="receive-sns"
+      universeId={$snsOnlyProjectStore}
+      logo={$selectedUniverseStore?.summary?.metadata.logo ?? IC_LOGO}
+      tokenSymbol={$selectedUniverseStore?.summary?.token.symbol}
     />
   </Footer>
 </Island>
@@ -180,7 +185,7 @@
     rootCanisterId={$snsOnlyProjectStore}
     loadTransactions
     {token}
-    transactionFee={$snsSelectedTransactionFeeStore}
+    transactionFee={toTokenAmountV2($snsSelectedTransactionFeeStore)}
   />
 {/if}
 

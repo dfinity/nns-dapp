@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+TOP_DIR="$(git rev-parse --show-toplevel)"
+cd "$TOP_DIR"
+
+if [ "$(git status --porcelain)" != "" ]; then
+  echo "$0 should only be run on a clean branch."
+  exit 1
+fi
+
+scripts/sns/aggregator/mk_nns_patch.sh
+
+if ! git diff --staged --exit-code; then
+  echo "FAILED: Patch files should be updated to reflect current differences."
+  echo
+  echo "To resolve:"
+  echo "- Check that the rust files are as you wish them to be."
+  echo "  The rust files should be as close to the pure didc output"
+  echo "  as possible."
+  echo "- Run 'scripts/sns/aggregator/mk_nns_patch.sh' to update patch files."
+  echo "  The patch files should be as small as possible."
+  echo "  If they look unnecessarily large, adapt the rust to minimize the patch."
+  git reset --hard HEAD >/dev/null
+  exit 1
+fi
+
+echo "SUCCESS: Patch files are unchanged."

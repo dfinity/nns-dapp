@@ -1,14 +1,12 @@
-import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
+import * as ledgerApi from "$lib/api/wallet-ledger.api";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
-import * as services from "$lib/services/ckbtc-accounts-loader.services";
 import { getCkBTCWithdrawalAccount } from "$lib/services/ckbtc-accounts-loader.services";
 import * as minterServices from "$lib/services/ckbtc-minter.services";
 import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-withdrawal-accounts.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
-  mockCkBTCMainAccount,
   mockCkBTCToken,
   mockCkBTCWithdrawalAccount,
   mockCkBTCWithdrawalIcrcAccount,
@@ -20,30 +18,6 @@ import { waitFor } from "@testing-library/svelte";
 describe("ckbtc-accounts-loader-services", () => {
   afterEach(() => {
     vi.clearAllMocks();
-  });
-
-  describe("getCkBTCAccounts", () => {
-    it("should call get CkBTC account", async () => {
-      const spyGetCkBTCAccount = vi
-        .spyOn(ledgerApi, "getCkBTCAccount")
-        .mockResolvedValue(mockCkBTCMainAccount);
-
-      await services.getCkBTCAccounts({
-        identity: mockIdentity,
-        certified: true,
-        universeId: CKBTC_UNIVERSE_CANISTER_ID,
-      });
-
-      await waitFor(() =>
-        expect(spyGetCkBTCAccount).toBeCalledWith({
-          identity: mockIdentity,
-          certified: true,
-          canisterId: CKBTC_UNIVERSE_CANISTER_ID,
-          owner: mockIdentity.getPrincipal(),
-          type: "main",
-        })
-      );
-    });
   });
 
   describe("getCkBTCWithdrawalAccount", () => {
@@ -89,10 +63,10 @@ describe("ckbtc-accounts-loader-services", () => {
 
       beforeEach(() => {
         spyGetCkBTCAccount = vi
-          .spyOn(ledgerApi, "getCkBTCAccount")
+          .spyOn(ledgerApi, "getAccount")
           .mockResolvedValue({
             ...mockCkBTCWithdrawalAccount,
-            balanceE8s: mockAccountBalance.toE8s(),
+            balanceUlps: mockAccountBalance.toE8s(),
           });
       });
 
@@ -103,7 +77,7 @@ describe("ckbtc-accounts-loader-services", () => {
         });
 
         expect(result.identifier).toBeUndefined();
-        expect(result.balanceE8s).toBeUndefined();
+        expect(result.balanceUlps).toBeUndefined();
 
         expect(spyGetCkBTCAccount).not.toHaveBeenCalled();
       });
@@ -123,7 +97,7 @@ describe("ckbtc-accounts-loader-services", () => {
         });
 
         expect(result.identifier).toEqual(mockCkBTCWithdrawalIdentifier);
-        expect(result.balanceE8s).toEqual(mockAccountBalance.toE8s());
+        expect(result.balanceUlps).toEqual(mockAccountBalance.toE8s());
 
         expect(spyGetCkBTCAccount).toHaveBeenCalledWith({
           identity: params.identity,
@@ -150,7 +124,7 @@ describe("ckbtc-accounts-loader-services", () => {
           const result = await getCkBTCWithdrawalAccount(params);
 
           expect(result.identifier).toEqual(mockCkBTCWithdrawalIdentifier);
-          expect(result.balanceE8s).toEqual(mockAccountBalance.toE8s());
+          expect(result.balanceUlps).toEqual(mockAccountBalance.toE8s());
 
           expect(spyGetCkBTCAccount).toHaveBeenCalledWith({
             identity: params.identity,
@@ -198,7 +172,7 @@ describe("ckbtc-accounts-loader-services", () => {
 
       beforeEach(() => {
         vi.spyOn(console, "error").mockImplementation(() => undefined);
-        vi.spyOn(ledgerApi, "getCkBTCAccount").mockRejectedValue(new Error());
+        vi.spyOn(ledgerApi, "getAccount").mockRejectedValue(new Error());
 
         spyOnToastsError = vi.spyOn(toastsStore, "toastsError");
       });

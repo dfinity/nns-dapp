@@ -32,14 +32,14 @@ describe("universes-accounts-balance.derived", () => {
   it("should derive a balance of Nns accounts", () => {
     const balances = get(universesAccountsBalance);
     expect(balances[OWN_CANISTER_ID_TEXT].balanceE8s).toEqual(
-      mockMainAccount.balanceE8s
+      mockMainAccount.balanceUlps
     );
   });
 
   it("should derive a balance of Sns accounts", () => {
     const balances = get(universesAccountsBalance);
     expect(balances[rootCanisterId.toText()].balanceE8s).toEqual(
-      mockSnsMainAccount.balanceE8s
+      mockSnsMainAccount.balanceUlps
     );
   });
 });

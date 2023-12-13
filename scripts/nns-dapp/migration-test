@@ -1,0 +1,131 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-"EOF"
+	Tests:
+	  - Populating a given schema with large scale data
+	  - Migrating from one Wasm+schema to another Wasm+schema and back.
+
+	Note:
+	  - This test is primarily experimental at this time.
+	  - This test is based on the 'downgrade-upgrade' test.
+	  - Some or all of these changes may be migrated into the downgrade-upgrade test.
+
+	Needs:
+	  - dfx
+	  - ic-wasm
+	  - idl2json
+	  - wasm files for the two deployments
+	  - candid argument files
+	  - a running replica
+	EOF
+}
+
+# Gets helper functions
+. "${BASH_SOURCE[0]}.linters"
+. "${BASH_SOURCE[0]}.getters"
+. "${BASH_SOURCE[0]}.canister"
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/../clap.bash"
+# Define options
+clap.define short=w long=wasm1 desc="A test build of the first wasm.  May be a _test.wasm.gz file or a named release." variable=WASM1 default="out/nns-dapp_test.wasm.gz"
+clap.define short=W long=wasm2 desc="A test build of the second wasm.  May be a _test.wasm.gz file or a named release." variable=WASM2 default="out/nns-dapp_test.wasm.gz"
+clap.define short=a long=args1 desc="A file containing the first init arguments." variable=ARGFILE1 default="out/nns-dapp-arg-local.did"
+clap.define short=A long=args2 desc="A file containing the second init arguments." variable=ARGFILE2 default="out/nns-dapp-arg-local.did"
+clap.define short=s long=schema1 desc="The schema for the first deployment.  Overrides the value in the argument file.  Options: ${SCHEMA_LABELS[*]}" variable=SCHEMA1 default=""
+clap.define short=S long=schema2 desc="The schema for the second deployment.  Overrides the value in the argument file.  Options: ${SCHEMA_LABELS[*]}" variable=SCHEMA2 default=""
+clap.define short=a long=accounts desc="Accounts will be created until there are at least this many." variable=NUM_TOY_ACCOUNTS default="220000"
+clap.define short=c long=chunk desc="The accounts are created in chunks of this size." variable=TOY_ACCOUNT_CHUNK_SIZE default="10000"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+# Clean up on exit - or print error details.
+. "${BASH_SOURCE[0]}.on-exit"
+trap on_exit EXIT
+# Called by on_exit:
+on_exit_ok() {
+  rm -fr "$WORKDIR"
+}
+# Called by on_exit:
+on_exit_err() {
+  printf "       %s\n" \
+    "The temporary working directory may assist with debugging:" \
+    "  '$WORKDIR'"
+}
+
+# The path to the local copy of the wasm used in the test.
+working_wasm() {
+  local configuration_num
+  configuration_num="${1:-}"
+  lint_configuration_num "${configuration_num:-}"
+  echo "$WORKDIR/nns-dapp-${configuration_num}_test.wasm.gz"
+}
+
+# The path to the arguments used in the test
+working_arguments() {
+  local configuration_num
+  configuration_num="${1:-}"
+  lint_configuration_num "${configuration_num:-}"
+  echo "$WORKDIR/nns-dapp-args-${configuration_num}.did"
+}
+
+# Get the assets we need for the tests
+get_assets() {
+  for config in 1 2; do
+    WASM="WASM$config"
+    ARGFILE="ARGFILE$config"
+    SCHEMA="SCHEMA$config"
+    get_wasm "${!WASM}" "$(working_wasm "$config")"
+    get_argfile "${!ARGFILE}" "$(working_arguments "$config")"
+    test -z "${!SCHEMA}" || {
+      set_arguments_schema "${!SCHEMA}" <"$(working_arguments "$config")" | sponge "$(working_arguments "$config")"
+    }
+  done
+}
+
+install_wasm1() {
+  echo "Installing $(working_wasm 1)..."
+  install_nnsdapp "$(working_wasm 1)" "$(working_arguments 1)"
+  verify_healthy
+  test -z "${SCHEMA1:-}" || assert_schema_is "${SCHEMA1}"
+}
+populate() {
+  echo "Installing state..."
+  while (("$(dfx canister call nns-dapp get_stats | idl2json | jq -r .accounts_count)" < NUM_TOY_ACCOUNTS)); do
+    dfx canister call nns-dapp create_toy_accounts "($TOY_ACCOUNT_CHUNK_SIZE: nat)"
+  done
+  verify_healthy
+  check_state_size
+  check_num_transactions
+  test -z "${SCHEMA1:-}" || assert_schema_is "${SCHEMA1}"
+}
+upgrade_to_wasm2() {
+  echo "Upgrading to $(working_wasm 2)..."
+  upgrade_nnsdapp "$(working_wasm 2)" "$(working_arguments 2)"
+  check_num_transactions
+  test -z "${SCHEMA2:-}" || assert_schema_is "${SCHEMA2}"
+}
+downgrade_to_wasm1() {
+  echo "Reverting to $(working_wasm 1)..."
+  upgrade_nnsdapp "$(working_wasm 1)" "$(working_arguments 1)"
+  verify_healthy
+  check_num_transactions
+  test -z "${SCHEMA1:-}" || assert_schema_is "${SCHEMA1}"
+}
+
+test_upgrade_downgrade() {
+  WORKDIR="$(realpath "$(mktemp -d nns-dapp-test-XXXXXX)")"
+  get_assets
+  find "$WORKDIR"
+  install_wasm1
+  populate
+  upgrade_to_wasm2
+  downgrade_to_wasm1
+  echo SUCCESS
+}
+
+test_upgrade_downgrade

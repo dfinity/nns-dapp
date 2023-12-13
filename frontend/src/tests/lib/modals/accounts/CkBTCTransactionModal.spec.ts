@@ -1,6 +1,5 @@
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
 import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
@@ -12,6 +11,7 @@ import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import type { Account } from "$lib/types/account";
 import { TransactionNetwork } from "$lib/types/transaction";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import { ulpsToNumber } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
@@ -31,12 +31,13 @@ import {
   testTransferTokens,
 } from "$tests/utils/transaction-modal.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { TokenAmount } from "@dfinity/utils";
+import { TokenAmountV2 } from "@dfinity/utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import { SvelteComponent, tick } from "svelte";
 import { get } from "svelte/store";
 
 vi.mock("$lib/services/ckbtc-accounts.services");
+vi.mock("$lib/services/wallet-accounts.services");
 vi.mock("$lib/services/ckbtc-convert.services");
 
 describe("CkBTCTransactionModal", () => {
@@ -46,7 +47,7 @@ describe("CkBTCTransactionModal", () => {
       props: {
         selectedAccount,
         token: mockCkBTCToken,
-        transactionFee: TokenAmount.fromE8s({
+        transactionFee: TokenAmountV2.fromUlps({
           amount: mockCkBTCToken.fee,
           token: mockCkBTCToken,
         }),
@@ -444,10 +445,10 @@ describe("CkBTCTransactionModal", () => {
       "input[name='amount']"
     );
     expect(input?.value).toEqual(
-      `${
-        Number(mockCkBTCMainAccount.balanceE8s - mockCkBTCToken.fee) /
-        E8S_PER_ICP
-      }`
+      `${ulpsToNumber({
+        ulps: mockCkBTCMainAccount.balanceUlps - mockCkBTCToken.fee,
+        token: mockCkBTCToken,
+      })}`
     );
   };
 
@@ -601,7 +602,10 @@ describe("CkBTCTransactionModal", () => {
         "input[name='amount']"
       );
       expect(input?.value).toEqual(
-        `${Number(mockCkBTCWithdrawalAccount.balanceE8s) / E8S_PER_ICP}`
+        `${ulpsToNumber({
+          ulps: mockCkBTCWithdrawalAccount.balanceUlps,
+          token: mockCkBTCToken,
+        })}`
       );
     });
   });

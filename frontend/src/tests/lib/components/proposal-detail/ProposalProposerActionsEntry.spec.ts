@@ -1,15 +1,10 @@
 import ProposalProposerActionsEntry from "$lib/components/proposal-detail/ProposalProposerActionsEntry.svelte";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { jsonRepresentationStore } from "$lib/stores/json-representation.store";
 import { ProposalProposerActionsEntryPo } from "$tests/page-objects/ProposalProposerActionsEntry.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
 describe("ProposalProposerActionsEntry", () => {
-  // TODO(GIX-2030) remove this once the feature flag is removed
-  beforeEach(() =>
-    overrideFeatureFlagsStore.setFlag("ENABLE_FULL_WIDTH_PROPOSAL", false)
-  );
-
   const renderComponent = (props) => {
     const { container } = render(ProposalProposerActionsEntry, {
       props,
@@ -30,50 +25,26 @@ describe("ProposalProposerActionsEntry", () => {
     expect(await po.getActionTitle()).toBe(actionKey);
   });
 
-  it("should render action fields", async () => {
+  it("should render proposal actionData as json", async () => {
     const key = "keyTest";
     const value = "valueTest";
+    jsonRepresentationStore.setMode("raw");
     const po = renderComponent({
       actionKey: "testKey",
       actionData: { [key]: value },
     });
 
-    expect((await po.getFieldsText()).replaceAll(" ", "")).toBe(
-      '{keyTest:"valueTest"}'
-    );
+    expect(await po.getJsonPreviewPo().getRawObject()).toEqual({
+      keyTest: "valueTest",
+    });
   });
 
-  it("should render object fields as JSON", async () => {
-    const key = "key";
-    const value = { key: "value" };
-    const key2 = "key2";
-    const value2 = { key2: "value2" };
+  it("should render preview mode toggle", async () => {
     const po = renderComponent({
       actionKey: "actionKey",
-      actionData: {
-        [key]: value,
-        [key2]: value2,
-      },
+      actionData: {},
     });
 
-    const jsonPos = await po.getJsonPos();
-    expect(jsonPos.length).toBe(1);
-    expect((await jsonPos[0].getText()).replaceAll(" ", "")).toEqual(
-      '{key:{key:"value"}key2:{key2:"value2"}}'
-    );
-  });
-
-  it("should render undefined fields as 'undefined' text'", async () => {
-    const key = "key";
-    const value = { key: "value", anotherKey: undefined };
-
-    const po = renderComponent({
-      actionKey: "actionKey",
-      actionData: { [key]: value },
-    });
-
-    expect((await po.getFieldsText()).replaceAll(" ", "")).toBe(
-      '{key:{key:"value"anotherKey:undefined}}'
-    );
+    expect(await po.getJsonRepresentationModeTogglePo().isPresent()).toBe(true);
   });
 });

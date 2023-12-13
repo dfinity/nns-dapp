@@ -5,23 +5,87 @@
   import Countdown from "$lib/components/proposals/Countdown.svelte";
   import VotesResultsMajorityDescription from "$lib/components/proposal-detail/VotesResultsMajorityDescription.svelte";
   import { nonNullish } from "@dfinity/utils";
+  import { nowInSeconds } from "$lib/utils/date.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { isCriticalProposal } from "$lib/utils/sns-proposals.utils";
+  import { Html } from "@dfinity/gix-components";
 
   const formatVotingPower = (value: number) =>
     `${formatNumber(value, {
       minFraction: 0,
       maxFraction: 0,
     })}`;
+  const formatPercent = (value: number) =>
+    `${formatPercentage(value / 100, {
+      minFraction: 0,
+      maxFraction: 2,
+    })}`;
+  const immediateMajorityIcon = `<span class="inline-maturity-icon immediate-majority"></span>`;
+  const standardMajorityIcon = `<span class="inline-maturity-icon standard-majority"></span>`;
+  const iconifyDescription = (description: string) =>
+    description
+      .replace(/\$icon_immediate_majority/g, immediateMajorityIcon)
+      .replace(/\$icon_standard_majority/g, standardMajorityIcon);
 
   export let yes: number;
   export let no: number;
   export let total: number;
   export let deadlineTimestampSeconds: bigint | undefined = undefined;
+  export let immediateMajorityPercent: number;
+  export let standardMajorityPercent: number;
 
   let yesProportion: number;
   $: yesProportion = total ? yes / total : 0;
 
   let noProportion: number;
   $: noProportion = total ? no / total : 0;
+
+  let yesNoSum: number;
+  $: yesNoSum = yes + no;
+  let castVotesYes: number;
+  $: castVotesYes = yesNoSum > 0 ? (yes / yesNoSum) * 100 : 0;
+  let castVotesNo: number;
+  $: castVotesNo = yesNoSum > 0 ? (no / yesNoSum) * 100 : 0;
+
+  let showExpirationDate: boolean = true;
+  $: showExpirationDate =
+    nonNullish(deadlineTimestampSeconds) &&
+    deadlineTimestampSeconds > BigInt(nowInSeconds());
+
+  let isCriticalProposalMode: boolean;
+  $: isCriticalProposalMode = isCriticalProposal(immediateMajorityPercent);
+
+  let immediateMajorityTitle: string;
+  $: immediateMajorityTitle = isCriticalProposalMode
+    ? $i18n.proposal_detail__vote.immediate_super_majority
+    : $i18n.proposal_detail__vote.immediate_majority;
+
+  let immediateMajorityDescription: string;
+  $: immediateMajorityDescription = isCriticalProposalMode
+    ? replacePlaceholders(
+        $i18n.proposal_detail__vote.immediate_super_majority_description,
+        {
+          $immediate_majority: formatPercent(immediateMajorityPercent),
+          $no_immediate_majority: formatPercent(100 - immediateMajorityPercent),
+        }
+      )
+    : $i18n.proposal_detail__vote.immediate_majority_description;
+
+  let standardMajorityTitle: string;
+  $: standardMajorityTitle = isCriticalProposalMode
+    ? $i18n.proposal_detail__vote.standard_super_majority
+    : $i18n.proposal_detail__vote.standard_majority;
+
+  let standardMajorityDescription: string;
+  $: standardMajorityDescription = replacePlaceholders(
+    isCriticalProposalMode
+      ? $i18n.proposal_detail__vote.standard_super_majority_description
+      : $i18n.proposal_detail__vote.standard_majority_description,
+    {
+      $immediate_majority: formatPercent(immediateMajorityPercent),
+      $standard_majority: formatPercent(standardMajorityPercent),
+    }
+  );
 </script>
 
 <ProposalContentCell testId="votes-results-component">
@@ -34,28 +98,21 @@
         >{formatPercentage(yesProportion)}</span
       >
     </div>
-    <div class="remain">
-      {#if nonNullish(deadlineTimestampSeconds) && deadlineTimestampSeconds > 0n}
-        <span class="caption description"
-          >{$i18n.proposal_detail__vote.expiration}</span
-        >
-        <div class="caption value">
-          <Countdown {deadlineTimestampSeconds} />
-        </div>
-      {/if}
-    </div>
     <div class="no no-percent">
       <span class="caption">{$i18n.core.no}</span>
       <span class="percentage" data-tid="reject-percentage"
         >{formatPercentage(noProportion)}</span
       >
     </div>
-    <div class="progressbar-container">
-      <div class="majority absolute-majority">
-        <div class="majority-icon absolute-majority"></div>
+    <div
+      class="progressbar-container"
+      style={`--immediate-majority: ${immediateMajorityPercent}%; --standard-majority:${standardMajorityPercent}%;`}
+    >
+      <div class="majority immediate-majority">
+        <div class="majority-icon immediate-majority"></div>
       </div>
-      <div class="majority simple-majority">
-        <div class="majority-icon simple-majority"></div>
+      <div class="majority standard-majority">
+        <div class="majority-icon standard-majority"></div>
       </div>
       <div
         class="progressbar"
@@ -70,47 +127,111 @@
         <div class="no" style={`width: ${noProportion * 100}%`}></div>
       </div>
     </div>
-    <span class="yes-value yes caption">
-      <span class="label description"
-        >{$i18n.proposal_detail__vote.voting_power}&nbsp;</span
-      >
-      <span data-tid="adopt">{formatVotingPower(yes)}</span>
+    <span class="yes-value caption">
+      <span class="yes-no-value">
+        <span>
+          <span class="yes" data-tid="adopt">
+            {formatVotingPower(yes)}
+          </span>
+          <span class="label description">
+            {$i18n.proposal_detail__vote.voting_power}
+          </span>
+        </span>
+        {#if isCriticalProposalMode}
+          <span>
+            <span class="yes" data-tid="adopt-cast-votes">
+              {formatPercent(castVotesYes)}
+            </span>
+            <span class="label description">
+              {$i18n.proposal_detail__vote.cast_votes}
+            </span>
+          </span>
+        {/if}
+      </span>
+      {#if isCriticalProposalMode}
+        <span data-tid="cast-votes-need" class="description">
+          {replacePlaceholders($i18n.proposal_detail__vote.cast_votes_needs, {
+            $immediate_majority: formatPercent(immediateMajorityPercent),
+          })}
+        </span>
+      {/if}
     </span>
-    <span class="no-value no caption">
-      <span class="label description"
-        >{$i18n.proposal_detail__vote.voting_power}&nbsp;</span
-      >
-      <span data-tid="reject">{formatVotingPower(no)}</span>
+    <span class="no-value caption">
+      <span class="yes-no-value">
+        <span class="value-content">
+          <span class="no" data-tid="reject">
+            {formatVotingPower(no)}
+          </span>
+          <span class="label description">
+            {$i18n.proposal_detail__vote.voting_power}
+          </span>
+        </span>
+        {#if isCriticalProposalMode}
+          <span class="value-content">
+            <span class="no" data-tid="reject-cast-votes">
+              {formatPercent(castVotesNo)}
+            </span>
+            <span class="label description">
+              {$i18n.proposal_detail__vote.cast_votes}
+            </span>
+          </span>
+        {/if}
+      </span>
     </span>
+    <div class="remain" data-tid="remain">
+      {#if showExpirationDate}
+        <span class="caption description">
+          {$i18n.proposal_detail__vote.expiration}
+        </span>
+        <div class="caption value">
+          <Countdown {deadlineTimestampSeconds} />
+        </div>
+      {/if}
+    </div>
   </div>
 
-  <div class="legends">
-    <VotesResultsMajorityDescription>
-      <h4 class="description" slot="title">
-        <div class="majority-icon absolute-majority"></div>
-        {$i18n.proposal_detail__vote.absolute_majority}
-      </h4>
-      <p class="description">
-        {$i18n.proposal_detail__vote.absolute_majority_description}
-      </p>
-    </VotesResultsMajorityDescription>
-    <VotesResultsMajorityDescription>
-      <h4 class="description" slot="title">
-        <div class="majority-icon simple-majority"></div>
-        {$i18n.proposal_detail__vote.simple_majority}
-      </h4>
-      <p class="description">
-        {$i18n.proposal_detail__vote.simple_majority_description}
-      </p>
-    </VotesResultsMajorityDescription>
+  <div class="votes-results-legends">
+    <h3 class="description">
+      {isCriticalProposalMode
+        ? $i18n.proposal_detail__vote.super_majority_decision_intro
+        : $i18n.proposal_detail__vote.decision_intro}
+    </h3>
+    <ol>
+      <li>
+        <VotesResultsMajorityDescription testId="immediate-majority-toggle">
+          <h4
+            data-tid="immediate-majority-title"
+            slot="title"
+            class="description"
+          >
+            {immediateMajorityTitle}
+          </h4>
+          <p data-tid="immediate-majority-description" class="description">
+            <Html text={iconifyDescription(immediateMajorityDescription)} />
+          </p>
+        </VotesResultsMajorityDescription>
+      </li>
+      <li>
+        <VotesResultsMajorityDescription testId="standard-majority-toggle">
+          <h4
+            data-tid="standard-majority-title"
+            slot="title"
+            class="description"
+          >
+            {standardMajorityTitle}
+          </h4>
+          <p data-tid="standard-majority-description" class="description">
+            <Html text={iconifyDescription(standardMajorityDescription)} />
+          </p>
+        </VotesResultsMajorityDescription>
+      </li>
+    </ol>
   </div>
 </ProposalContentCell>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
-
-  $font-size-medium: 0.875rem;
 
   .title {
     @include fonts.h3(true);
@@ -122,17 +243,12 @@
 
     // 5 columns for mobile to give more space for the ".remain" section
     grid-template-areas:
-      "yes-percent yes-percent _ no-percent no-percent"
-      "progressbar progressbar progressbar progressbar progressbar"
-      "yes-value remain remain remain no-value";
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+      "yes-percent _ no-percent"
+      "progressbar progressbar progressbar"
+      "yes-value remain no-value";
+    grid-template-columns: 1fr 1fr 1fr;
 
     @include media.min-width(small) {
-      grid-template-areas:
-        "yes-percent remain no-percent"
-        "progressbar progressbar progressbar"
-        "yes-value _ no-value";
-      grid-template-columns: 1fr 1fr 1fr;
       row-gap: var(--padding-0_5x);
     }
     .yes-percent {
@@ -151,7 +267,7 @@
       grid-area: remain;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: start;
       text-align: center;
     }
     .progressbar-container {
@@ -165,15 +281,17 @@
         height: calc(var(--padding) * 0.75);
       }
     }
+    .yes-no-value {
+      display: flex;
+      flex-direction: column;
+      gap: var(--padding-0_5x);
+    }
     .yes-value {
       grid-area: yes-value;
-      display: flex;
-      justify-content: flex-start;
     }
     .no-value {
       grid-area: no-value;
-      display: flex;
-      justify-content: flex-end;
+      text-align: right;
     }
     // yes-value and no-value mobile/desktop
     .label {
@@ -202,26 +320,26 @@
     height: var(--padding);
     border-radius: 50%;
 
-    &.absolute-majority {
+    &.immediate-majority {
       background: var(--purple-600);
     }
-    &.simple-majority {
+    &.standard-majority {
       background: var(--orange);
     }
   }
 
-  .majority {
+  .progressbar-container .majority {
     position: absolute;
     background: var(--card-background);
     width: calc(var(--padding) / 4);
     height: var(--padding-1_5x);
 
-    &.absolute-majority {
-      left: 50%;
+    &.immediate-majority {
+      left: var(--immediate-majority);
       transform: translateX(-50%);
     }
-    &.simple-majority {
-      left: 3%;
+    &.standard-majority {
+      left: var(--standard-majority);
       transform: translateX(-50%);
     }
 
@@ -253,20 +371,50 @@
     }
   }
 
-  h4 {
-    margin: 0;
-    display: inline-flex;
-    align-items: center;
-    column-gap: var(--padding-0_5x);
-
+  h3 {
     @include fonts.standard;
-    font-size: $font-size-medium;
   }
 
-  .legends {
-    margin-top: var(--padding);
+  h4 {
+    margin: 0;
+    @include fonts.standard;
+  }
+
+  .votes-results-legends {
+    margin-top: var(--padding-2x);
     display: flex;
     flex-direction: column;
     row-gap: var(--padding-0_5x);
+
+    ol {
+      margin: 0;
+    }
+
+    li {
+      margin: var(--padding-0_5x) 0;
+
+      &::marker {
+        color: var(--description-color);
+      }
+
+      p {
+        margin: 0 0 var(--padding-2x);
+      }
+    }
+  }
+
+  // Dynamic description icon styles. Applied to the i18n html content.
+  :global(.votes-results-legends .inline-maturity-icon) {
+    display: inline-block;
+    margin: 0 var(--padding-0_5x);
+    width: var(--padding);
+    height: var(--padding);
+    border-radius: 50%;
+  }
+  :global(.votes-results-legends .inline-maturity-icon.immediate-majority) {
+    background: var(--purple-600);
+  }
+  :global(.votes-results-legends .inline-maturity-icon.standard-majority) {
+    background: var(--orange);
   }
 </style>

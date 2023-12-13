@@ -1,5 +1,5 @@
 //! Rust code created from candid by: scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-11-08_23-01/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-11-29_23-01/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(clippy::missing_docs_in_private_items)]
 #![allow(non_camel_case_types)]
@@ -145,19 +145,10 @@ pub enum Result1 {
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
-pub enum SevFeatureStatus {
-    SecureEnabled,
-    Disabled,
-    InsecureIntegrityEnabled,
-    SecureNoUpgradeEnabled,
-    InsecureEnabled,
-}
-
-#[derive(Serialize, CandidType, Deserialize)]
 pub struct SubnetFeatures {
     pub canister_sandboxing: bool,
-    pub sev_status: Option<SevFeatureStatus>,
     pub http_requests: bool,
+    pub sev_enabled: Option<bool>,
 }
 
 #[derive(Serialize, CandidType, Deserialize)]

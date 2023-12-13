@@ -148,6 +148,8 @@ export const mockSwap: SnsSummarySwap = {
   open_sns_token_swap_proposal_id: [BigInt(1000)],
   buyers: [],
   params: mockSnsParams,
+  direct_participation_icp_e8s: [],
+  neurons_fund_participation_icp_e8s: [],
 };
 
 export const mockQuerySwap: SnsSwap = {
@@ -201,6 +203,12 @@ export const mockToken: IcrcTokenMetadata = {
   name: "Tetris",
   symbol: "TET",
   fee: BigInt(0),
+  decimals: 8,
+};
+
+export const mockLifecycleResponse: SnsGetLifecycleResponse = {
+  lifecycle: [SnsSwapLifecycle.Open],
+  decentralization_sale_open_timestamp_seconds: [],
 };
 
 export const mockSnsSummaryList: SnsSummary[] = [
@@ -214,6 +222,9 @@ export const mockSnsSummaryList: SnsSummary[] = [
     token: mockToken,
     swap: mockSwap,
     derived: mockDerived,
+    init: mockInit,
+    swapParams: mockSnsParams,
+    lifecycle: mockLifecycleResponse,
   },
   {
     rootCanisterId: principal(1),
@@ -232,9 +243,13 @@ export const mockSnsSummaryList: SnsSummary[] = [
       name: "Pacman",
       symbol: "PAC",
       fee: BigInt(0),
+      decimals: 8,
     },
     swap: mockSwap,
     derived: mockDerived,
+    init: mockInit,
+    swapParams: mockSnsParams,
+    lifecycle: mockLifecycleResponse,
   },
   {
     rootCanisterId: principal(2),
@@ -253,9 +268,13 @@ export const mockSnsSummaryList: SnsSummary[] = [
       name: "Mario",
       symbol: "SPM",
       fee: BigInt(0),
+      decimals: 8,
     },
     swap: mockSwap,
     derived: mockDerived,
+    init: mockInit,
+    swapParams: mockSnsParams,
+    lifecycle: mockLifecycleResponse,
   },
   {
     rootCanisterId: principal(3),
@@ -274,9 +293,13 @@ export const mockSnsSummaryList: SnsSummary[] = [
       name: "Kong",
       symbol: "DKG",
       fee: BigInt(0),
+      decimals: 8,
     },
     swap: mockSwap,
     derived: mockDerived,
+    init: mockInit,
+    swapParams: mockSnsParams,
+    lifecycle: mockLifecycleResponse,
   },
 ];
 
@@ -447,6 +470,7 @@ export const mockSnsToken: IcrcTokenMetadata = {
   symbol: "TST",
   name: "Tetris",
   fee: BigInt(40_000),
+  decimals: 8,
 };
 
 export const mockQueryTokenResponse: IcrcTokenMetadataResponse = [
@@ -473,9 +497,4 @@ export const mockUniverse: Universe = {
   summary: mockSnsFullProject.summary,
   title: mockSnsFullProject.summary.metadata.name,
   logo: mockSnsFullProject.summary.metadata.logo,
-};
-
-export const mockLifecycleResponse: SnsGetLifecycleResponse = {
-  lifecycle: [SnsSwapLifecycle.Open],
-  decentralization_sale_open_timestamp_seconds: [],
 };

@@ -1,9 +1,9 @@
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { CkBTCErrorRetrieveBtcMinAmount } from "$lib/types/ckbtc.errors";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { assertCkBTCUserInputAmount } from "$lib/utils/ckbtc.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatToken, ulpsToNumber } from "$lib/utils/token.utils";
+import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
@@ -83,7 +83,11 @@ describe("ckbtc.utils", () => {
     expect(() =>
       assertCkBTCUserInputAmount({
         ...params,
-        amount: Number(RETRIEVE_BTC_MIN_AMOUNT) / E8S_PER_ICP - 0.00001,
+        amount:
+          ulpsToNumber({
+            ulps: RETRIEVE_BTC_MIN_AMOUNT,
+            token: mockCkBTCToken,
+          }) - 0.00001,
       })
     ).toThrow(
       new CkBTCErrorRetrieveBtcMinAmount(
@@ -101,10 +105,13 @@ describe("ckbtc.utils", () => {
     expect(() =>
       assertCkBTCUserInputAmount({
         ...params,
-        amount:
-          Number(RETRIEVE_BTC_MIN_AMOUNT) / E8S_PER_ICP +
-          Number(params.transactionFee) / E8S_PER_ICP +
-          Number(params.sourceAccount.balanceE8s) / E8S_PER_ICP,
+        amount: ulpsToNumber({
+          ulps:
+            RETRIEVE_BTC_MIN_AMOUNT +
+            params.transactionFee +
+            params.sourceAccount.balanceUlps,
+          token: mockCkBTCToken,
+        }),
       })
     ).toThrow(new NotEnoughAmountError("error.insufficient_funds"));
   });

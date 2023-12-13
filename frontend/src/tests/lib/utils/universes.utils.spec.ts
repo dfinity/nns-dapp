@@ -1,17 +1,17 @@
-import {
-  OWN_CANISTER_ID,
-  OWN_CANISTER_ID_TEXT,
-} from "$lib/constants/canister-ids.constants";
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
+import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import {
   createUniverse,
+  isIcrcTokenUniverse,
+  isNonGovernanceTokenPath,
   isUniverseCkBTC,
   isUniverseNns,
-  pathSupportsCkBTC,
   universeLogoAlt,
 } from "$lib/utils/universe.utils";
 import en from "$tests/mocks/i18n.mock";
@@ -19,38 +19,40 @@ import {
   createSummary,
   mockSnsFullProject,
   mockSummary,
+  principal,
 } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { Principal } from "@dfinity/principal";
+import { get } from "svelte/store";
 
 describe("universes-utils", () => {
-  describe("pathSupportsCkBTC", () => {
-    it("should support ckBTC", () => {
+  describe("isNonGovernanceTokenPath", () => {
+    it("should support ICRC token", () => {
       expect(
-        pathSupportsCkBTC({
+        isNonGovernanceTokenPath({
           universe: "not used here",
           path: AppPath.Accounts,
         })
       ).toBeTruthy();
 
       expect(
-        pathSupportsCkBTC({
+        isNonGovernanceTokenPath({
           universe: "not used here",
           path: AppPath.Wallet,
         })
       ).toBeTruthy();
     });
 
-    it("should not support ckBTC", () => {
+    it("should not support ICRC Token", () => {
       expect(
-        pathSupportsCkBTC({
+        isNonGovernanceTokenPath({
           universe: "not used here",
           path: AppPath.Neurons,
         })
       ).toBe(false);
 
       expect(
-        pathSupportsCkBTC({
+        isNonGovernanceTokenPath({
           universe: "not used here",
           path: AppPath.Proposal,
         })
@@ -125,13 +127,9 @@ describe("universes-utils", () => {
     });
 
     it("should render alt NNS", () => {
-      expect(
-        universeLogoAlt({
-          canisterId: OWN_CANISTER_ID_TEXT,
-          title: "Tetris",
-          logo: "https://logo.png",
-        })
-      ).toEqual(en.auth.ic_logo);
+      const universe = get(nnsUniverseStore);
+
+      expect(universeLogoAlt(universe)).toEqual(en.auth.ic_logo);
     });
   });
 
@@ -153,6 +151,51 @@ describe("universes-utils", () => {
         title: projectName,
         logo,
       });
+    });
+  });
+
+  describe("isIcrcTokenUniverse", () => {
+    beforeEach(() => {
+      icrcCanistersStore.reset();
+    });
+
+    it("should return true if universe is in ICRC Canisters store", () => {
+      const universeId = principal(0);
+      icrcCanistersStore.setCanisters({
+        ledgerCanisterId: universeId,
+        indexCanisterId: principal(1),
+      });
+      expect(
+        isIcrcTokenUniverse({
+          universeId,
+          icrcCanisters: get(icrcCanistersStore),
+        })
+      ).toBe(true);
+    });
+
+    it("should return false if universe is not in ICRC Canisters store", () => {
+      const universeId = principal(0);
+      icrcCanistersStore.setCanisters({
+        ledgerCanisterId: universeId,
+        indexCanisterId: principal(1),
+      });
+      expect(
+        isIcrcTokenUniverse({
+          universeId: principal(2),
+          icrcCanisters: get(icrcCanistersStore),
+        })
+      ).toBe(false);
+    });
+
+    it("should return false when ICRC Canisters store is empty", () => {
+      const universeId = principal(0);
+      icrcCanistersStore.reset();
+      expect(
+        isIcrcTokenUniverse({
+          universeId,
+          icrcCanisters: get(icrcCanistersStore),
+        })
+      ).toBe(false);
     });
   });
 });

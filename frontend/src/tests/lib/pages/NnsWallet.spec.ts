@@ -136,7 +136,7 @@ describe("NnsWallet", () => {
 
       expect(getByTestId("token-value-label")?.textContent.trim()).toEqual(
         `${formatToken({
-          value: mockMainAccount.balanceE8s,
+          value: mockMainAccount.balanceUlps,
         })} ${ICPToken.symbol}`
       );
     });

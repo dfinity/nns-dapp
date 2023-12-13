@@ -5,11 +5,13 @@ import type { Account } from "$lib/types/account";
 import type {
   IcrcTransactionData,
   IcrcTransactionInfo,
-  Transaction,
+  UiTransaction,
 } from "$lib/types/transaction";
 import { AccountTransactionType } from "$lib/types/transaction";
 import type { UniverseCanisterId } from "$lib/types/universe";
+import { transactionName } from "$lib/utils/transactions.utils";
 import { Cbor } from "@dfinity/agent";
+import type { PendingUtxo } from "@dfinity/ckbtc";
 import type {
   IcrcTransaction,
   IcrcTransactionWithId,
@@ -17,12 +19,14 @@ import type {
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import {
+  TokenAmount,
+  TokenAmountV2,
   fromNullable,
   isNullish,
   nonNullish,
   uint8ArrayToHexString,
+  type Token,
 } from "@dfinity/utils";
-import { showTransactionFee } from "./transactions.utils";
 
 const isToSelf = (transaction: IcrcTransaction): boolean => {
   if (transaction.transfer.length !== 1) {
@@ -39,7 +43,8 @@ const isToSelf = (transaction: IcrcTransaction): boolean => {
   }
   return (
     nonNullish(toSub) &&
-    uint8ArrayToHexString(fromSub) === uint8ArrayToHexString(toSub)
+    uint8ArrayToHexString(new Uint8Array(fromSub)) ===
+      uint8ArrayToHexString(new Uint8Array(toSub))
   );
 };
 
@@ -163,13 +168,21 @@ export const mapIcrcTransaction = ({
   account,
   toSelfTransaction,
   governanceCanisterId,
+  token,
+  i18n,
 }: {
   transaction: IcrcTransactionWithId;
   account: Account;
   toSelfTransaction: boolean;
   governanceCanisterId?: Principal;
-}): Transaction | undefined => {
+  token: Token | undefined;
+  i18n: I18n;
+}): UiTransaction | undefined => {
   try {
+    if (isNullish(token)) {
+      return undefined;
+    }
+
     const type = getIcrcTransactionType({
       transaction: transaction.transaction,
       governanceCanisterId,
@@ -182,25 +195,31 @@ export const mapIcrcTransaction = ({
     }
     const isReceive =
       toSelfTransaction === true || txInfo.from !== account.identifier;
-    const isSend = nonNullish(txInfo.to) && txInfo.to !== account.identifier;
-    const useFee =
-      toSelfTransaction === true
-        ? false
-        : showTransactionFee({ type, isReceive });
+    const useFee = !isReceive;
     const feeApplied =
       useFee && txInfo.fee !== undefined ? txInfo.fee : BigInt(0);
+
+    const headline = transactionName({
+      type,
+      isReceive,
+      labels: i18n.transaction_names,
+    });
+    const otherParty = isReceive ? txInfo.from : txInfo.to;
 
     // Timestamp is in nano seconds
     const timestampMilliseconds =
       Number(transaction.transaction.timestamp) / NANO_SECONDS_IN_MILLISECOND;
     return {
-      type,
-      isReceive,
-      isSend,
-      from: txInfo.from,
-      to: txInfo.to,
-      displayAmount: txInfo.amount + feeApplied,
-      date: new Date(timestampMilliseconds),
+      domKey: `${transaction.id}-${toSelfTransaction ? "0" : "1"}`,
+      isIncoming: isReceive,
+      isPending: false,
+      headline,
+      otherParty,
+      tokenAmount: TokenAmountV2.fromUlps({
+        amount: txInfo.amount + feeApplied,
+        token,
+      }),
+      timestamp: new Date(timestampMilliseconds),
     };
   } catch (err) {
     toastsError({
@@ -211,7 +230,7 @@ export const mapIcrcTransaction = ({
   }
 };
 
-export type mapIcrcTransactionType = typeof mapIcrcTransaction;
+export type MapIcrcTransactionType = typeof mapIcrcTransaction;
 
 // The memo will decode to: [0, [ withdrawalAddress, kytFee, status]]
 type CkbtcBurnMemo = [0, [string, number, number | null | undefined]];
@@ -221,26 +240,107 @@ export const mapCkbtcTransaction = (params: {
   account: Account;
   toSelfTransaction: boolean;
   governanceCanisterId?: Principal;
-}): Transaction | undefined => {
+  token: Token | undefined;
+  i18n: I18n;
+}): UiTransaction | undefined => {
   const mappedTransaction = mapIcrcTransaction(params);
   if (isNullish(mappedTransaction)) {
     return mappedTransaction;
   }
   const {
+    i18n,
     transaction: { transaction },
   } = params;
-  if (transaction.burn.length === 1) {
+  if (transaction.mint.length === 1) {
+    mappedTransaction.headline = i18n.ckbtc.btc_received;
+    mappedTransaction.otherParty = i18n.ckbtc.btc_network;
+  } else if (transaction.burn.length === 1) {
+    mappedTransaction.headline = i18n.ckbtc.btc_sent;
     const memo = transaction.burn[0].memo[0] as Uint8Array;
     try {
       const decodedMemo = Cbor.decode(memo) as CkbtcBurnMemo;
       const withdrawalAddress = decodedMemo[1][0];
-      mappedTransaction.to = withdrawalAddress;
-      mappedTransaction.isSend = true;
+      mappedTransaction.otherParty = withdrawalAddress;
     } catch (err) {
       console.error("Failed to decode ckBTC burn memo", memo, err);
+      mappedTransaction.otherParty = i18n.ckbtc.btc_network;
     }
   }
   return mappedTransaction;
+};
+
+// Note: Transaction are expected to be mapped in reverse chronological order.
+// Some transactions might merge themselves into previous transactions, because
+// they are conceptually part of the same event, so it's important that they
+// appear in the expected order.
+export const mapCkbtcTransactions = ({
+  transactionData,
+  account,
+  token,
+  i18n,
+}: {
+  transactionData: IcrcTransactionData[];
+  account: Account;
+  token: Token | undefined;
+  i18n: I18n;
+}): UiTransaction[] => {
+  let prevTransaction: IcrcTransactionWithId | undefined = undefined;
+  let prevUiTransaction: UiTransaction | undefined = undefined;
+  return transactionData
+    .map(({ transaction, toSelfTransaction }: IcrcTransactionData) => {
+      if (
+        transaction.transaction.approve.length === 1 &&
+        transaction.transaction.approve[0].fee.length === 1 &&
+        prevTransaction?.transaction.burn.length === 1 &&
+        prevUiTransaction?.tokenAmount instanceof TokenAmountV2
+      ) {
+        prevUiTransaction.tokenAmount = TokenAmountV2.fromUlps({
+          amount:
+            prevUiTransaction.tokenAmount.toUlps() +
+            transaction.transaction.approve[0].fee[0],
+          token: prevUiTransaction.tokenAmount.token,
+        });
+        prevTransaction = transaction;
+        return undefined;
+      }
+      const uiTransaction = mapCkbtcTransaction({
+        transaction,
+        toSelfTransaction,
+        account,
+        token,
+        i18n,
+      });
+      prevTransaction = transaction;
+      prevUiTransaction = uiTransaction;
+      return uiTransaction;
+    })
+    .filter(nonNullish);
+};
+
+export const mapCkbtcPendingUtxo = ({
+  utxo,
+  token,
+  kytFee,
+  i18n,
+}: {
+  utxo: PendingUtxo;
+  token: Token;
+  kytFee: bigint;
+  i18n: I18n;
+}): UiTransaction => {
+  return {
+    domKey: `${uint8ArrayToHexString(Uint8Array.from(utxo.outpoint.txid))}-${
+      utxo.outpoint.vout
+    }`,
+    isIncoming: true,
+    isPending: true,
+    headline: i18n.ckbtc.receiving_btc,
+    otherParty: i18n.ckbtc.btc_network,
+    tokenAmount: TokenAmount.fromE8s({
+      amount: utxo.value - kytFee,
+      token: token,
+    }),
+  };
 };
 
 // TODO: use `oldestTxId` instead of sorting and getting the oldest element's id.

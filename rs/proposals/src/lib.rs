@@ -134,7 +134,7 @@ fn decode_arg(arg: &[u8], arg_types: IDLTypes) -> String {
 pub fn process_proposal_payload(proposal_info: ProposalInfo) -> Json {
     if let Some(Action::ExecuteNnsFunction(f)) = proposal_info.proposal.as_ref().and_then(|p| p.action.as_ref()) {
         transform_payload_to_json(f.nns_function, &f.payload)
-            .unwrap_or_else(|e| serde_json::to_string(&format!("Unable to deserialize payload: {e}")).unwrap())
+            .unwrap_or_else(|e| serde_json::to_string(&format!("Unable to deserialize payload: {e:.400}")).unwrap())
     } else {
         serde_json::to_string("Proposal has no payload").unwrap()
     }

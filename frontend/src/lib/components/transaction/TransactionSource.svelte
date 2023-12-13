@@ -3,14 +3,14 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { KeyValuePair } from "@dfinity/gix-components";
   import type { Account } from "$lib/types/account";
-  import { TokenAmount, type Token } from "@dfinity/utils";
+  import { TokenAmountV2, type Token } from "@dfinity/utils";
 
   export let account: Account;
   export let token: Token;
 
-  let amount: TokenAmount;
-  $: amount = TokenAmount.fromE8s({
-    amount: account.balanceE8s,
+  let amount: TokenAmountV2;
+  $: amount = TokenAmountV2.fromUlps({
+    amount: account.balanceUlps,
     token,
   });
 </script>

@@ -47,7 +47,7 @@ jobs:
           cd /
           sudo apt-get update
           sudo apt-get install -yy hunspell hunspell-en-gb hunspell-en-us clang libclang-dev
-          cargo install --target x86_64-unknown-linux-gnu cargo-spellcheck
+          cargo install --locked --target x86_64-unknown-linux-gnu cargo-spellcheck@0.13.1
       - name: Spellcheck Rust
         run: cargo spellcheck
       - name: Spellcheck changelog
@@ -205,6 +205,21 @@ jobs:
       - uses: actions/checkout@v3
       - name: Test chunking
         run: scripts/nns-dapp/split-assets.test
+  migration-test-utils-work:
+    name: Migration test utilities work
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install cargo binstall
+        uses: ./.github/actions/install_binstall
+      - name: Install idl2json
+        run: cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)" && idl2json --version
+      - name: Test migration utilities
+        run: |
+          set +x
+          scripts/nns-dapp/migration-test.getters.test
+          scripts/nns-dapp/migration-test.on-exit.test
+          scripts/nns-dapp/migration-test.canister.test
   dfx-nns-proposal-args-works:
     # TODO: Reenable (add it in line 338) once fixed, should it depend on mainnet?
     if: false
@@ -244,6 +259,11 @@ jobs:
         run: sudo snap install yq
       - name: Install sponge
         run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
+      - name: Get node version
+        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
       - name: Bumping the package versions works
         run: ./scripts/nns-dapp/bump-patch.test
       - name: Set git user
@@ -364,7 +384,27 @@ jobs:
       - name: Getting network config works
         run: scripts/network-config.test
   checks-pass:
-    needs: ["formatting", "spelling", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "ic-commit-consistency", "release-templating-works", "config-check", "asset-chunking-works", "docker-build-cli-flags", "download-nns-dapp-ci-wasm", "canister-ids-tool", "release-sop", "split-changelog", "past-changelog", "minor-version-bump-works", "version-match", "network-config"]
+    needs:
+      - formatting
+      - spelling
+      - cargo-tests
+      - svelte-lint
+      - svelte-tests
+      - shell-checks
+      - ic-commit-consistency
+      - release-templating-works
+      - config-check
+      - asset-chunking-works
+      - docker-build-cli-flags
+      - download-nns-dapp-ci-wasm
+      - canister-ids-tool
+      - release-sop
+      - split-changelog
+      - past-changelog
+      - minor-version-bump-works
+      - version-match
+      - network-config
+      - migration-test-utils-work
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:

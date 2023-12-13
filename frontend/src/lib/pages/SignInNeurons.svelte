@@ -6,7 +6,7 @@
   import { PageBanner, IconNeuronsPage } from "@dfinity/gix-components";
 </script>
 
-<main class="sign-in">
+<main>
   <SummaryUniverse />
 
   <div class="content">

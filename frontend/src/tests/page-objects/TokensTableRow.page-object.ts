@@ -25,6 +25,19 @@ export class TokensTableRowPo extends BasePageObject {
     return this.getText("token-value-label");
   }
 
+  hasBalanceSpinner(): Promise<boolean> {
+    const balanceElement = this.root.byTestId("token-value-label");
+    return balanceElement.byTestId("spinner").isPresent();
+  }
+
+  getHref(): Promise<string | null> {
+    return this.root.getAttribute("href");
+  }
+
+  getSubtitle(): Promise<string | null> {
+    return this.getText("project-subtitle");
+  }
+
   async getData(): Promise<TokensTableRowData> {
     const projectName = await this.getProjectName();
     const balance = await this.getBalance();

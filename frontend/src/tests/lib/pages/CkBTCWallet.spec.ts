@@ -1,15 +1,15 @@
-import * as ckbtcLedgerApi from "$lib/api/ckbtc-ledger.api";
 import * as ckbtcMinterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
+import * as ckbtcLedgerApi from "$lib/api/wallet-ledger.api";
 import {
   CKTESTBTC_MINTER_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
-import { CKBTC_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/ckbtc.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { WALLET_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/wallet.constants";
 import CkBTCWallet from "$lib/pages/CkBTCWallet.svelte";
-import * as services from "$lib/services/ckbtc-accounts.services";
+import * as services from "$lib/services/wallet-accounts.services";
 import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
@@ -65,13 +65,13 @@ vi.mock("$lib/services/worker-transactions.services", () => ({
   ),
 }));
 
-vi.mock("$lib/api/ckbtc-ledger.api");
+vi.mock("$lib/api/wallet-ledger.api");
 vi.mock("$lib/api/ckbtc-minter.api");
 vi.mock("$lib/api/icrc-ledger.api");
 vi.mock("$lib/api/icrc-index.api");
 
 const blockedApiPaths = [
-  "$lib/api/ckbtc-ledger.api",
+  "$lib/api/wallet-ledger.api",
   "$lib/api/ckbtc-minter.api",
   "$lib/api/icrc-ledger.api",
   "$lib/api/icrc-index.api",
@@ -157,12 +157,12 @@ describe("CkBTCWallet", () => {
         routeId: AppPath.Wallet,
       });
 
-      vi.mocked(ckbtcLedgerApi.getCkBTCAccount).mockImplementation(() => {
+      vi.mocked(ckbtcLedgerApi.getAccount).mockImplementation(() => {
         return new Promise<Account>((resolve) => {
           resolveAccounts = resolve;
         });
       });
-      vi.mocked(ckbtcLedgerApi.getCkBTCToken).mockResolvedValue(mockCkBTCToken);
+      vi.mocked(ckbtcLedgerApi.getToken).mockResolvedValue(mockCkBTCToken);
     });
 
     it("should render a spinner while loading", async () => {
@@ -175,8 +175,8 @@ describe("CkBTCWallet", () => {
 
     it("should call to load ckBTC accounts", async () => {
       await renderWallet();
-      expect(ckbtcLedgerApi.getCkBTCAccount).toBeCalled();
-      expect(ckbtcLedgerApi.getCkBTCToken).toBeCalled();
+      expect(ckbtcLedgerApi.getAccount).toBeCalled();
+      expect(ckbtcLedgerApi.getToken).toBeCalled();
     });
   });
 
@@ -215,11 +215,11 @@ describe("CkBTCWallet", () => {
           return Promise.resolve({ block_index: 3n });
         }
       );
-      vi.mocked(ckbtcLedgerApi.getCkBTCAccount).mockImplementation(() => {
+      vi.mocked(ckbtcLedgerApi.getAccount).mockImplementation(() => {
         return Promise.resolve({
           ...mockCkBTCMainAccount,
           ...(afterTransfer
-            ? { balanceE8s: expectedBalanceAfterTransfer }
+            ? { balanceUlps: expectedBalanceAfterTransfer }
             : {}),
         });
       });
@@ -301,7 +301,7 @@ describe("CkBTCWallet", () => {
       await runResolvedPromises();
       expect(icrcLedgerApi.icrcTransfer).toBeCalledTimes(1);
 
-      await advanceTime(CKBTC_TRANSACTIONS_RELOAD_DELAY + 1000);
+      await advanceTime(WALLET_TRANSACTIONS_RELOAD_DELAY + 1000);
 
       expect(icrcIndexApi.getTransactions).toBeCalledTimes(2);
     });
@@ -361,7 +361,7 @@ describe("CkBTCWallet", () => {
 
         expect(icrcIndexApi.getTransactions).toBeCalledTimes(2);
 
-        await advanceTime(CKBTC_TRANSACTIONS_RELOAD_DELAY + 1000);
+        await advanceTime(WALLET_TRANSACTIONS_RELOAD_DELAY + 1000);
 
         // This additional loading of transactions is not necessary.
         // TODO: Remove the double reloading and change the expected number of
@@ -425,7 +425,7 @@ describe("CkBTCWallet", () => {
 
         expect(icrcIndexApi.getTransactions).toBeCalledTimes(2);
 
-        await advanceTime(CKBTC_TRANSACTIONS_RELOAD_DELAY + 1000);
+        await advanceTime(WALLET_TRANSACTIONS_RELOAD_DELAY + 1000);
 
         // This additional loading of transactions is not necessary.
         // TODO: Remove the double reloading and change the expected number of
@@ -451,11 +451,18 @@ describe("CkBTCWallet", () => {
 
       await receiveModalPo.selectBitcoin();
 
-      const spy = vi.spyOn(services, "loadCkBTCAccounts");
+      const spy = vi.spyOn(services, "loadAccounts");
 
       await receiveModalPo.clickFinish();
 
       await waitFor(() => expect(spy).toHaveBeenCalled());
+    });
+
+    it("should display the bitcoin address", async () => {
+      const { walletPo } = await renderWalletAndModal();
+      expect(await walletPo.getCkBTCInfoCardPo().getAddress()).toBe(
+        mockBTCAddressTestnet
+      );
     });
   });
 });

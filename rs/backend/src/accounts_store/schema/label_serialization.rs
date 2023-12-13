@@ -21,7 +21,7 @@ impl SchemaLabel {
     /// The number of bytes needed to store the schema label and its checksum.
     pub const MAX_BYTES: usize = Self::CHECKSUM_OFFSET + Self::CHECKSUM_BYTES;
     /// String used to distinguish this checksum from checksums for other purposes.
-    pub const DOMAIN_SEPARATOR: &[u8; 12] = b"schema-label";
+    pub const DOMAIN_SEPARATOR: &'static [u8; 12] = b"schema-label";
 
     /// Checksum of the label.
     fn checksum(self_bytes: &[u8; Self::LABEL_BYTES]) -> [u8; Self::CHECKSUM_BYTES] {

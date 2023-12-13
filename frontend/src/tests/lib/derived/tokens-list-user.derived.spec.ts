@@ -1,44 +1,56 @@
-import CKBTC_LOGO from "$lib/assets/ckBTC.svg";
-import IC_LOGO_ROUNDED from "$lib/assets/icp-rounded.svg";
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
+import { authStore } from "$lib/stores/auth.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
+import { buildAccountsUrl, buildWalletUrl } from "$lib/utils/navigation.utils";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
+import {
+  mockCkETHMainAccount,
+  mockCkETHToken,
+} from "$tests/mocks/cketh-accounts.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import {
+  ckBTCTokenBase,
+  ckETHTokenBase,
+  createIcpUserToken,
+} from "$tests/mocks/tokens-page.mock";
+import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
-import { TokenAmount } from "@dfinity/utils";
+import { TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("tokens-list-user.derived", () => {
-  const icpTokenBase: UserTokenData = {
-    universeId: OWN_CANISTER_ID,
-    title: "Internet Computer",
-    logo: IC_LOGO_ROUNDED,
-    balance: new UnavailableTokenAmount(NNS_TOKEN_DATA),
-    actions: [],
-  };
-  const icpUserToken: UserTokenData = {
-    ...icpTokenBase,
-    balance: TokenAmount.fromE8s({
-      amount: mockMainAccount.balanceE8s,
+  const icpUserTokenNoBalance: UserTokenData = createIcpUserToken({
+    rowHref: buildAccountsUrl({ universe: OWN_CANISTER_ID_TEXT }),
+  });
+  const identityMainAccountIdentifier = encodeIcrcAccount({
+    owner: mockIdentity.getPrincipal(),
+  });
+  const icpUserToken: UserTokenData = createIcpUserToken({
+    balance: TokenAmountV2.fromUlps({
+      amount: mockMainAccount.balanceUlps,
       token: NNS_TOKEN_DATA,
     }),
     actions: [UserTokenAction.GoToDetail],
-  };
+    rowHref: buildAccountsUrl({ universe: OWN_CANISTER_ID_TEXT }),
+  });
   const snsTetrisToken = mockSnsToken;
   const snsTetris = {
     rootCanisterId: rootCanisterIdMock,
@@ -56,60 +68,107 @@ describe("tokens-list-user.derived", () => {
     lifecycle: SnsSwapLifecycle.Committed,
     tokenMetadata: snsPackmanToken,
   };
-  const tetrisTokenBase: UserTokenData = {
+  const tetrisTokenNoBalance: UserTokenData = {
     universeId: snsTetris.rootCanisterId,
     title: snsTetris.projectName,
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/g3pce-2iaae/logo.png",
     balance: new UnavailableTokenAmount(snsTetris.tokenMetadata),
+    token: snsTetris.tokenMetadata,
+    fee: TokenAmountV2.fromUlps({
+      amount: snsTetris.tokenMetadata.fee,
+      token: snsTetris.tokenMetadata,
+    }),
     actions: [],
+    rowHref: buildWalletUrl({
+      universe: snsTetris.rootCanisterId.toText(),
+      account: identityMainAccountIdentifier,
+    }),
   };
   const tetrisUserToken: UserTokenData = {
-    ...tetrisTokenBase,
-    balance: TokenAmount.fromE8s({
-      amount: mockSnsMainAccount.balanceE8s,
+    ...tetrisTokenNoBalance,
+    balance: TokenAmountV2.fromUlps({
+      amount: mockSnsMainAccount.balanceUlps,
       token: snsTetrisToken,
     }),
     actions: [UserTokenAction.Receive, UserTokenAction.Send],
   };
-  const pacmanTokenBase: UserTokenData = {
+  const pacmanTokenNoBalance: UserTokenData = {
     universeId: snsPacman.rootCanisterId,
     title: snsPacman.projectName,
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/f7crg-kabae/logo.png",
     balance: new UnavailableTokenAmount(snsPacman.tokenMetadata),
+    token: snsPacman.tokenMetadata,
+    fee: TokenAmountV2.fromUlps({
+      amount: snsPacman.tokenMetadata.fee,
+      token: snsPacman.tokenMetadata,
+    }),
     actions: [],
+    rowHref: buildWalletUrl({
+      universe: snsPacman.rootCanisterId.toText(),
+      account: identityMainAccountIdentifier,
+    }),
   };
   const pacmanUserToken: UserTokenData = {
-    ...pacmanTokenBase,
-    balance: TokenAmount.fromE8s({
-      amount: mockSnsMainAccount.balanceE8s,
+    ...pacmanTokenNoBalance,
+    balance: TokenAmountV2.fromUlps({
+      amount: mockSnsMainAccount.balanceUlps,
       token: snsPackmanToken,
     }),
     actions: [UserTokenAction.Receive, UserTokenAction.Send],
   };
-  const ckBTCTokenBase: UserTokenData = {
-    universeId: CKBTC_UNIVERSE_CANISTER_ID,
-    title: "ckBTC",
-    logo: CKBTC_LOGO,
+  const ckBTCTokenNoBalance: UserTokenData = {
+    ...ckBTCTokenBase,
     balance: new UnavailableTokenAmount(mockCkBTCToken),
-    actions: [],
+    token: mockCkBTCToken,
+    fee: TokenAmountV2.fromUlps({
+      amount: mockCkBTCToken.fee,
+      token: mockCkBTCToken,
+    }),
+    rowHref: buildWalletUrl({
+      universe: ckBTCTokenBase.universeId.toText(),
+      account: identityMainAccountIdentifier,
+    }),
   };
   const ckBTCUserToken: UserTokenData = {
-    ...ckBTCTokenBase,
-    balance: TokenAmount.fromE8s({
-      amount: mockCkBTCMainAccount.balanceE8s,
+    ...ckBTCTokenNoBalance,
+    balance: TokenAmountV2.fromUlps({
+      amount: mockCkBTCMainAccount.balanceUlps,
       token: mockCkBTCToken,
     }),
     actions: [UserTokenAction.Receive, UserTokenAction.Send],
   };
+  const ckETHTokenNobalance: UserTokenData = {
+    ...ckETHTokenBase,
+    balance: new UnavailableTokenAmount(mockCkETHToken),
+    token: mockCkETHToken,
+    fee: TokenAmountV2.fromUlps({
+      amount: mockCkETHToken.fee,
+      token: mockCkETHToken,
+    }),
+    rowHref: buildWalletUrl({
+      universe: ckETHTokenBase.universeId.toText(),
+      account: identityMainAccountIdentifier,
+    }),
+  };
+  const ckETHUserToken: UserTokenData = {
+    ...ckETHTokenNobalance,
+    balance: TokenAmountV2.fromUlps({
+      amount: mockCkETHMainAccount.balanceUlps,
+      token: mockCkETHToken,
+    }),
+    actions: [UserTokenAction.Receive, UserTokenAction.Send],
+  };
 
-  describe("tokensListBaseStore", () => {
+  describe("tokensListUserStore", () => {
     beforeEach(() => {
       icpAccountsStore.resetForTesting();
       icrcAccountsStore.reset();
       snsAccountsStore.reset();
       tokensStore.reset();
+      authStore.setForTesting(mockIdentity);
 
       setSnsProjects([snsTetris, snsPacman]);
+      setCkETHCanisters();
       tokensStore.setTokens({
         [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
           token: mockCkBTCToken,
@@ -128,10 +187,11 @@ describe("tokens-list-user.derived", () => {
 
     it("should return UnavailableBalance and no actions if no balance", () => {
       expect(get(tokensListUserStore)).toEqual([
-        icpTokenBase,
-        ckBTCTokenBase,
-        tetrisTokenBase,
-        pacmanTokenBase,
+        icpUserTokenNoBalance,
+        ckBTCTokenNoBalance,
+        ckETHTokenNobalance,
+        tetrisTokenNoBalance,
+        pacmanTokenNoBalance,
       ]);
     });
 
@@ -141,9 +201,10 @@ describe("tokens-list-user.derived", () => {
       });
       expect(get(tokensListUserStore)).toEqual([
         icpUserToken,
-        ckBTCTokenBase,
-        tetrisTokenBase,
-        pacmanTokenBase,
+        ckBTCTokenNoBalance,
+        ckETHTokenNobalance,
+        tetrisTokenNoBalance,
+        pacmanTokenNoBalance,
       ]);
     });
 
@@ -156,10 +217,28 @@ describe("tokens-list-user.derived", () => {
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
       });
       expect(get(tokensListUserStore)).toEqual([
-        icpTokenBase,
+        icpUserTokenNoBalance,
         ckBTCUserToken,
-        tetrisTokenBase,
-        pacmanTokenBase,
+        ckETHTokenNobalance,
+        tetrisTokenNoBalance,
+        pacmanTokenNoBalance,
+      ]);
+    });
+
+    it("should return balance and Send and Receive actions if ckETH balance is present", () => {
+      icrcAccountsStore.set({
+        accounts: {
+          accounts: [mockCkETHMainAccount],
+          certified: true,
+        },
+        universeId: CKETH_UNIVERSE_CANISTER_ID,
+      });
+      expect(get(tokensListUserStore)).toEqual([
+        icpUserTokenNoBalance,
+        ckBTCTokenNoBalance,
+        ckETHUserToken,
+        tetrisTokenNoBalance,
+        pacmanTokenNoBalance,
       ]);
     });
 
@@ -170,10 +249,11 @@ describe("tokens-list-user.derived", () => {
         rootCanisterId: snsTetris.rootCanisterId,
       });
       expect(get(tokensListUserStore)).toEqual([
-        icpTokenBase,
-        ckBTCTokenBase,
+        icpUserTokenNoBalance,
+        ckBTCTokenNoBalance,
+        ckETHTokenNobalance,
         tetrisUserToken,
-        pacmanTokenBase,
+        pacmanTokenNoBalance,
       ]);
     });
 
@@ -188,6 +268,13 @@ describe("tokens-list-user.derived", () => {
         },
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
       });
+      icrcAccountsStore.set({
+        accounts: {
+          accounts: [mockCkETHMainAccount],
+          certified: true,
+        },
+        universeId: CKETH_UNIVERSE_CANISTER_ID,
+      });
       snsAccountsStore.setAccounts({
         accounts: [mockSnsMainAccount],
         certified: true,
@@ -201,6 +288,7 @@ describe("tokens-list-user.derived", () => {
       expect(get(tokensListUserStore)).toEqual([
         icpUserToken,
         ckBTCUserToken,
+        ckETHUserToken,
         tetrisUserToken,
         pacmanUserToken,
       ]);

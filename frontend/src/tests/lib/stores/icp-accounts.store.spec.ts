@@ -108,8 +108,8 @@ describe("icpAccountsStore", () => {
     it("should set balance for main account", () => {
       accountsStoreSet({ main: mockMainAccount, subAccounts: [] });
 
-      expect(get(icpAccountsStore)?.main.balanceE8s).toEqual(
-        mockMainAccount.balanceE8s
+      expect(get(icpAccountsStore)?.main.balanceUlps).toEqual(
+        mockMainAccount.balanceUlps
       );
       const newBalanceE8s = BigInt(100);
       accountsStoreSetBalance({
@@ -117,7 +117,7 @@ describe("icpAccountsStore", () => {
         balanceE8s: newBalanceE8s,
       });
 
-      expect(get(icpAccountsStore)?.main.balanceE8s).toEqual(newBalanceE8s);
+      expect(get(icpAccountsStore)?.main.balanceUlps).toEqual(newBalanceE8s);
     });
 
     it("should set balance for subaccount", () => {
@@ -126,8 +126,8 @@ describe("icpAccountsStore", () => {
         subAccounts: [mockSubAccount],
       });
 
-      expect(get(icpAccountsStore)?.subAccounts[0].balanceE8s).toEqual(
-        mockSubAccount.balanceE8s
+      expect(get(icpAccountsStore)?.subAccounts[0].balanceUlps).toEqual(
+        mockSubAccount.balanceUlps
       );
       const newBalanceE8s = BigInt(100);
       accountsStoreSetBalance({
@@ -136,8 +136,8 @@ describe("icpAccountsStore", () => {
       });
 
       const store = get(icpAccountsStore);
-      expect(store?.subAccounts[0].balanceE8s).toEqual(newBalanceE8s);
-      expect(store.main.balanceE8s).toEqual(mockMainAccount.balanceE8s);
+      expect(store?.subAccounts[0].balanceUlps).toEqual(newBalanceE8s);
+      expect(store.main.balanceUlps).toEqual(mockMainAccount.balanceUlps);
     });
 
     it("should set balance for hw account", () => {
@@ -147,8 +147,8 @@ describe("icpAccountsStore", () => {
         hardwareWallets: [mockHardwareWalletAccount],
       });
 
-      expect(get(icpAccountsStore)?.hardwareWallets[0].balanceE8s).toEqual(
-        mockHardwareWalletAccount.balanceE8s
+      expect(get(icpAccountsStore)?.hardwareWallets[0].balanceUlps).toEqual(
+        mockHardwareWalletAccount.balanceUlps
       );
       const newBalanceE8s = BigInt(100);
       accountsStoreSetBalance({
@@ -156,7 +156,7 @@ describe("icpAccountsStore", () => {
         balanceE8s: newBalanceE8s,
       });
 
-      expect(get(icpAccountsStore)?.hardwareWallets[0].balanceE8s).toEqual(
+      expect(get(icpAccountsStore)?.hardwareWallets[0].balanceUlps).toEqual(
         newBalanceE8s
       );
     });
@@ -175,13 +175,13 @@ describe("icpAccountsStore", () => {
       });
 
       const store = get(icpAccountsStore);
-      expect(store?.hardwareWallets[0].balanceE8s).toEqual(
-        mockHardwareWalletAccount.balanceE8s
+      expect(store?.hardwareWallets[0].balanceUlps).toEqual(
+        mockHardwareWalletAccount.balanceUlps
       );
-      expect(store?.subAccounts[0].balanceE8s).toEqual(
-        mockSubAccount.balanceE8s
+      expect(store?.subAccounts[0].balanceUlps).toEqual(
+        mockSubAccount.balanceUlps
       );
-      expect(store?.main.balanceE8s).toEqual(mockMainAccount.balanceE8s);
+      expect(store?.main.balanceUlps).toEqual(mockMainAccount.balanceUlps);
     });
 
     it("should reapply set balance on new data from an older request", () => {
@@ -193,12 +193,12 @@ describe("icpAccountsStore", () => {
       const dataWithBalances = ({ mainBalance, subBalance, certified }) => ({
         main: {
           ...mockMainAccount,
-          balanceE8s: mainBalance,
+          balanceUlps: mainBalance,
         },
         subAccounts: [
           {
             ...mockSubAccount,
-            balanceE8s: subBalance,
+            balanceUlps: subBalance,
           },
         ],
         certified,
@@ -211,8 +211,8 @@ describe("icpAccountsStore", () => {
         mainBalance: bigint;
         subBalance: bigint;
       }) => {
-        expect(get(icpAccountsStore)?.main.balanceE8s).toEqual(mainBalance);
-        expect(get(icpAccountsStore)?.subAccounts[0].balanceE8s).toEqual(
+        expect(get(icpAccountsStore)?.main.balanceUlps).toEqual(mainBalance);
+        expect(get(icpAccountsStore)?.subAccounts[0].balanceUlps).toEqual(
           subBalance
         );
       };

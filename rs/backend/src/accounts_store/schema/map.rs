@@ -25,6 +25,10 @@ impl AccountsDbTrait for AccountsDbAsMap {
     fn db_accounts_len(&self) -> u64 {
         self.accounts.len() as u64
     }
+    fn iter(&self) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
+        let iterator = self.accounts.iter().map(|(key, val)| (key.clone(), val.clone()));
+        Box::new(iterator)
+    }
     fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
         let iterator = self.accounts.values().cloned();
         Box::new(iterator)

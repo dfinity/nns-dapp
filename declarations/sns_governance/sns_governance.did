@@ -1,4 +1,4 @@
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-11-08_23-01/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-12-06_23-01+p2p/rs/sns/governance/canister/governance.did>
 type Account = record { owner : opt principal; subaccount : opt Subaccount };
 type Action = variant {
   ManageNervousSystemParameters : NervousSystemParameters;
@@ -9,6 +9,7 @@ type Action = variant {
   TransferSnsTreasuryFunds : TransferSnsTreasuryFunds;
   UpgradeSnsControlledCanister : UpgradeSnsControlledCanister;
   DeregisterDappCanisters : DeregisterDappCanisters;
+  MintSnsTokens : MintSnsTokens;
   Unspecified : record {};
   ManageSnsMetadata : ManageSnsMetadata;
   ExecuteGenericNervousSystemFunction : ExecuteGenericNervousSystemFunction;
@@ -243,6 +244,12 @@ type MergeMaturityResponse = record {
   merged_maturity_e8s : nat64;
   new_stake_e8s : nat64;
 };
+type MintSnsTokens = record {
+  to_principal : opt principal;
+  to_subaccount : opt Subaccount;
+  memo : opt nat64;
+  amount_e8s : opt nat64;
+};
 type Motion = record { motion_text : text };
 type NervousSystemFunction = record {
   id : nat64;
@@ -341,6 +348,7 @@ type ProposalData = record {
   proposal : opt Proposal;
   proposer : opt NeuronId;
   wait_for_quiet_state : opt WaitForQuietState;
+  minimum_yes_proportion_of_exercised : opt Percentage;
   is_eligible_for_rewards : bool;
   executed_timestamp_seconds : nat64;
 };
@@ -357,6 +365,7 @@ type RewardEvent = record {
   rounds_since_last_distribution : opt nat64;
   actual_timestamp_seconds : nat64;
   end_timestamp_seconds : opt nat64;
+  total_available_e8s_equivalent : opt nat64;
   distributed_e8s_equivalent : nat64;
   round : nat64;
   settled_proposals : vec ProposalId;

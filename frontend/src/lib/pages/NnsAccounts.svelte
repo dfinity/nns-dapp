@@ -11,37 +11,108 @@
     pollAccounts,
   } from "$lib/services/icp-accounts.services";
   import { ICPToken } from "@dfinity/utils";
+  import type { UserTokenData } from "$lib/types/tokens-page";
+  import { ENABLE_MY_TOKENS } from "$lib/stores/feature-flags.store";
+  import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { IconAdd } from "@dfinity/gix-components";
+  import { openAccountsModal } from "$lib/utils/modals.utils";
 
   onMount(() => {
-    pollAccounts();
+    if (!$ENABLE_MY_TOKENS) {
+      pollAccounts();
+    }
   });
 
   onDestroy(() => {
     cancelPollAccounts();
   });
+
+  // TODO: Remove default value when we remove the feature flag
+  export let userTokensData: UserTokenData[] = [];
+
+  const openAddAccountModal = () => {
+    openAccountsModal({
+      type: "add-icp-account",
+      data: undefined,
+    });
+  };
 </script>
 
-<div class="card-grid" data-tid="accounts-body">
-  {#if nonNullish($icpAccountsStore?.main)}
-    <!-- Workaround: Type checker does not get $accountsStore.main is defined here -->
-    {@const mainAccount = $icpAccountsStore.main}
-
-    <AccountCard account={mainAccount} token={ICPToken}
-      >{$i18n.accounts.main}</AccountCard
+{#if $ENABLE_MY_TOKENS}
+  <TestIdWrapper testId="accounts-body">
+    <TokensTable
+      {userTokensData}
+      firstColumnHeader={$i18n.tokens.accounts_header}
     >
-    {#each $icpAccountsStore.subAccounts ?? [] as subAccount}
-      <AccountCard account={subAccount} token={ICPToken}
-        >{subAccount.name}</AccountCard
+      <div
+        slot="last-row"
+        class="add-account-row"
+        data-tid="add-account-row"
+        on:click={openAddAccountModal}
+        on:keypress={openAddAccountModal}
+        role="button"
+        aria-label={$i18n.accounts.add_account}
+        tabindex={userTokensData.length + 1}
       >
-    {/each}
-    {#each $icpAccountsStore.hardwareWallets ?? [] as walletAccount}
-      <AccountCard account={walletAccount} token={ICPToken}
-        >{walletAccount.name}</AccountCard
-      >
-    {/each}
+        <button class="ghost with-icon"
+          ><IconAdd />{$i18n.accounts.add_account}</button
+        >
+      </div>
+    </TokensTable>
+  </TestIdWrapper>
+{:else}
+  <div class="card-grid" data-tid="accounts-body">
+    {#if nonNullish($icpAccountsStore?.main)}
+      <!-- Workaround: Type checker does not get $accountsStore.main is defined here -->
+      {@const mainAccount = $icpAccountsStore.main}
 
-    <NnsAddAccount />
-  {:else}
-    <SkeletonCard size="medium" />
-  {/if}
-</div>
+      <AccountCard account={mainAccount} token={ICPToken}
+        >{$i18n.accounts.main}</AccountCard
+      >
+      {#each $icpAccountsStore.subAccounts ?? [] as subAccount}
+        <AccountCard account={subAccount} token={ICPToken}
+          >{subAccount.name}</AccountCard
+        >
+      {/each}
+      {#each $icpAccountsStore.hardwareWallets ?? [] as walletAccount}
+        <AccountCard account={walletAccount} token={ICPToken}
+          >{walletAccount.name}</AccountCard
+        >
+      {/each}
+
+      <NnsAddAccount />
+    {:else}
+      <SkeletonCard size="medium" />
+    {/if}
+  </div>
+{/if}
+
+<style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/interaction";
+  @use "../themes/mixins/button";
+
+  .add-account-row {
+    @include interaction.tappable;
+
+    grid-column: 1 / -1;
+
+    display: grid;
+    align-items: center;
+    justify-content: center;
+
+    padding: var(--padding-2x);
+
+    background: var(--table-row-background);
+    border: 1px dashed var(--primary);
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+
+    &:hover {
+      background-color: var(--table-row-background-hover);
+    }
+
+    & button.with-icon {
+      @include button.with-icon;
+    }
+  }
+</style>

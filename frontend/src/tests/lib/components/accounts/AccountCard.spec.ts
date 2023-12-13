@@ -47,7 +47,7 @@ describe("AccountCard", () => {
     );
 
     expect(balance?.textContent).toEqual(
-      `${formatToken({ value: mockMainAccount.balanceE8s })}`
+      `${formatToken({ value: mockMainAccount.balanceUlps })}`
     );
   });
 

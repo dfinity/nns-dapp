@@ -67,6 +67,7 @@
         {:else}
           <Tooltip
             id={`disabled-mergeable-neuron-${neuron.neuronId}`}
+            center
             text={translate({ labelKey: messageKey ?? "error.not_mergeable" })}
           >
             <NnsNeuronCard disabled role="checkbox" {neuron} />

@@ -11,6 +11,131 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 126313
+
+### Application
+
+#### Added
+
+* Support for CkETH token.
+
+#### Removed
+
+* Remove logic for using ICRC-1 when staking a neuron.
+
+### Operations
+
+## Proposal 126305
+
+### Application
+
+#### Added
+
+* Enable ICRC-2 flow for BTC withdrawal.
+* Add ENABLE_CKETH feature flag.
+* Get ckETH canister IDs from environment/configuration.
+* Display BTC deposits with 1-11 confirmations as "pending".
+
+#### Removed
+
+* Remove the `ENABLE_FULL_WIDTH_PROPOSAL` feature flag.
+
+#### Fixed
+
+* Fix swallowed undefined fields in raw json view. 
+
+#### Not Published
+
+* Structure to protect Rust access to stable memory.
+
+### Operations
+
+#### Added
+
+* Experimental tests for schema migration.
+* Add optional version support to the storage records.
+* Include ckETH canister IDs when importing from URL with `scripts/canister_ids`.
+* Include ckETH when generating args.did and .env.
+
+#### Changed
+
+* Adapt `release-sop` script to work with DevEnv instead of staging.
+
+## Proposal 126093
+
+### Application
+
+#### Added
+
+* Button to buy ICP with an external provider.
+
+#### Fixed
+
+* Fix docker builds when there is no global config.
+* Fix "Expiration date" countdown label visibility.
+* Optimize nns proposal rendering for small devices.
+
+### Operations
+
+#### Changed
+
+* Update Rust to the latest stable version (1.74.0).
+* Move the commands that derive aggregator code from NNS candid files.
+* Better text for rust update PRs.
+
+#### Removed
+
+* References to static testnets.
+
+## Proposal 126004
+
+### Application
+
+#### Added
+
+* Render withdrawal address on ckBTC burn transactions.
+
+#### Changed
+
+* New icons for sent/received transactions.
+* Increase the pre-migration account limit.
+* Use "From:" instead of "Source:" for received transactions.
+
+#### Fixed
+
+* Add missing "Rename" button in the subaccount page.
+* Fix disappearing "Received" half of to-self transactions.
+* Fix debug store that wasn't working.
+* Fix the stuck loading issue with the Sns proposal.
+
+### Operations
+
+#### Added
+
+* Add a workflow to update the SNS aggregator bindings regularly.
+* Added support for global network config.
+* Cron job to update proposal types.
+* Enable dependabot for Rust updates.
+* Workflow to get the latest NNS and SNS canister candid files.
+* Try to prevent calls to global.fetch in unit tests.
+* Add `devenv_llorenc` and `devenv_dskloet` to list of networks.
+
+#### Changed
+
+* Update `ic-wasm` to the latest version.
+* Factor out the `snsdemo` installation.
+* Make the location of the snsdemo checkout configurable.
+* Add `prod` and `aggregator-prod` to the list of public releases.
+* Update `dfx` to `v0.15.1`.
+* Update the URL of the app subnet to what dfx v15 expects.
+* Use a unique branch when updating the snsdemo release, didc, IC candid files or rust.
+* Better checks that the network is defined.
+
+#### Fixed
+
+* Remove accidentally committed (empty) directory and fix commit patterns.
+* Fix local deployments with `dfx 0.15.1`.
+
 ## Proposal 125580
 
 ### Application

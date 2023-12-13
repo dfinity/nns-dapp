@@ -1,4 +1,3 @@
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import SnsStakeNeuronModal from "$lib/modals/sns/neurons/SnsStakeNeuronModal.svelte";
@@ -32,7 +31,7 @@ vi.mock("$lib/services/sns-neurons.services", () => {
 });
 
 describe("SnsStakeNeuronModal", () => {
-  const token = { name: "SNS", symbol: "SNS" };
+  const token = { name: "SNS", symbol: "SNS", decimals: 8 };
   const renderTransactionModal = () =>
     renderModal({
       component: SnsStakeNeuronModal,
@@ -87,7 +86,7 @@ describe("SnsStakeNeuronModal", () => {
     const minimumAmount = 1;
     const snsParameters: SnsNervousSystemParameters = {
       ...snsNervousSystemParametersMock,
-      neuron_minimum_stake_e8s: [BigInt(minimumAmount * E8S_PER_ICP)],
+      neuron_minimum_stake_e8s: [100_000_000n],
     };
     snsParametersStore.setParameters({
       rootCanisterId: mockPrincipal,

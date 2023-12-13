@@ -261,6 +261,7 @@ describe("TransactionModal", () => {
         token: {
           symbol: "TST",
           name: "Test token",
+          decimals: 8,
         },
       });
       const { getByText, getByTestId } = await renderEnter10ICPAndNext({
@@ -292,6 +293,7 @@ describe("TransactionModal", () => {
         token: {
           symbol: "TST",
           name: "Test token",
+          decimals: 8,
         },
       });
       const { getByTestId } = await renderEnter10ICPAndNext({
@@ -311,6 +313,7 @@ describe("TransactionModal", () => {
         token: {
           symbol: "TST",
           name: "Test token",
+          decimals: 8,
         },
       });
       const { getByTestId } = await renderEnter10ICPAndNext({

@@ -1,5 +1,5 @@
-import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
 import * as minterApi from "$lib/api/ckbtc-minter.api";
+import * as ledgerApi from "$lib/api/wallet-ledger.api";
 import CkBTCWithdrawalAccount from "$lib/components/accounts/CkBTCWithdrawalAccount.svelte";
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -64,7 +64,7 @@ describe("CkBTCWithdrawalAccount", () => {
 
     beforeEach(() => {
       spyGetCkBTCAccount = vi
-        .spyOn(ledgerApi, "getCkBTCAccount")
+        .spyOn(ledgerApi, "getAccount")
         .mockResolvedValue(mockCkBTCWithdrawalAccount);
     });
 
@@ -152,7 +152,7 @@ describe("CkBTCWithdrawalAccount", () => {
         const { getByText } = render(CkBTCWithdrawalAccount);
 
         const balance = formatToken({
-          value: mockCkBTCWithdrawalAccount.balanceE8s,
+          value: mockCkBTCWithdrawalAccount.balanceUlps,
           detailed: true,
         });
 
@@ -185,7 +185,7 @@ describe("CkBTCWithdrawalAccount", () => {
           account: {
             account: {
               ...mockCkBTCWithdrawalAccount,
-              balanceE8s: balanceZero,
+              balanceUlps: balanceZero,
             },
             certified: true,
           },
@@ -209,9 +209,9 @@ describe("CkBTCWithdrawalAccount", () => {
           subaccount: [mockCkBTCWithdrawalIcrcAccount.subaccount],
         });
 
-        vi.spyOn(ledgerApi, "getCkBTCAccount").mockResolvedValue({
+        vi.spyOn(ledgerApi, "getAccount").mockResolvedValue({
           ...mockCkBTCWithdrawalAccount,
-          balanceE8s: balanceZero,
+          balanceUlps: balanceZero,
         });
       });
 
@@ -291,7 +291,7 @@ describe("CkBTCWithdrawalAccount", () => {
     let spyUpdateBalance;
 
     beforeEach(() => {
-      vi.spyOn(ledgerApi, "getCkBTCAccount").mockResolvedValue(
+      vi.spyOn(ledgerApi, "getAccount").mockResolvedValue(
         mockCkBTCWithdrawalAccount
       );
 

@@ -34,7 +34,6 @@
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { i18n } from "$lib/stores/i18n";
   import { authStore } from "$lib/stores/auth.store";
-  import { ENABLE_FULL_WIDTH_PROPOSAL } from "$lib/stores/feature-flags.store";
   import { SplitBlock } from "@dfinity/gix-components";
   import { navigateToProposal } from "$lib/utils/proposals.utils";
   import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
@@ -225,38 +224,24 @@
   {/if}
 
   {#if !updating && nonNullish(proposal) && nonNullish(proposalDataMap) && nonNullish(universeCanisterId)}
-    {#if $ENABLE_FULL_WIDTH_PROPOSAL}
-      <div class="proposal-data-section">
-        <div class="content-cell-island">
-          <SplitBlock>
-            <div slot="start">
-              <SnsProposalSystemInfoSection {proposalDataMap} />
-            </div>
-            <div slot="end">
-              <SnsProposalVotingSection {proposal} {reloadProposal} />
-            </div>
-          </SplitBlock>
-        </div>
-        <SnsProposalSummarySection {proposal} />
-        <SnsProposalPayloadSection {proposal} />
-      </div>
-    {:else}
-      <!-- TODO(GIX-1957): remove this block after the full-width proposal is enabled -->
-      <div class="content-grid">
-        <div class="content-a content-cell-island">
-          <SnsProposalSystemInfoSection {proposalDataMap} />
-        </div>
-        <div class="content-b expand-content-b">
-          <div class="content-cell-island">
-            <SnsProposalVotingSection {proposal} {reloadProposal} />
+    <div class="proposal-data-section">
+      <div class="content-cell-island">
+        <SplitBlock>
+          <div slot="start">
+            <SnsProposalSystemInfoSection {proposalDataMap} />
           </div>
-        </div>
-        <div class="content-c proposal-data-section">
-          <SnsProposalSummarySection {proposal} />
-          <SnsProposalPayloadSection {proposal} />
-        </div>
+          <div slot="end">
+            <SnsProposalVotingSection
+              {proposal}
+              {proposalDataMap}
+              {reloadProposal}
+            />
+          </div>
+        </SplitBlock>
       </div>
-    {/if}
+      <SnsProposalSummarySection {proposal} />
+      <SnsProposalPayloadSection {proposal} />
+    </div>
   {:else}
     <div class="content-grid">
       <div class="content-a">
@@ -269,18 +254,9 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-
   .proposal-data-section {
     display: flex;
     flex-direction: column;
     gap: var(--row-gap);
-  }
-
-  @include media.min-width(medium) {
-    // If this would be use elsewhere, we can extract some utility to gix-components
-    .content-b.expand-content-b {
-      grid-row-end: content-c;
-    }
   }
 </style>

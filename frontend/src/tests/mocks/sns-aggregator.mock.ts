@@ -17,6 +17,7 @@ export const aggregatorTokenMock: IcrcTokenMetadata = {
   name: "CatalyzeDAO",
   symbol: "CAT",
   fee: 100000n,
+  decimals: 8,
 };
 
 export const aggregatorSnsMockDto: CachedSnsDto = {

@@ -2,7 +2,7 @@
   import { Card } from "@dfinity/gix-components";
 </script>
 
-<div class="card-grid">
+<div class="card-grid" data-tid="empty-cards-component">
   <Card disabled>
     <div class="card-item" />
   </Card>

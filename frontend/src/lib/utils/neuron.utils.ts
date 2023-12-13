@@ -32,6 +32,7 @@ import {
 } from "@dfinity/gix-components";
 import {
   NeuronState,
+  NeuronType,
   Topic,
   Vote,
   ineligibleNeurons,
@@ -44,7 +45,7 @@ import {
   type ProposalInfo,
   type RewardEvent,
 } from "@dfinity/nns";
-import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
+import { ICPToken, fromNullable, isNullish, nonNullish } from "@dfinity/utils";
 import type { ComponentType } from "svelte";
 import {
   getAccountByPrincipal,
@@ -53,7 +54,7 @@ import {
 import { nowInSeconds } from "./date.utils";
 import { formatNumber } from "./format.utils";
 import { getVotingBallot, getVotingPower } from "./proposals.utils";
-import { formatToken } from "./token.utils";
+import { formatToken, numberToUlps } from "./token.utils";
 import { isDefined } from "./utils";
 
 export type StateInfo = {
@@ -248,6 +249,12 @@ export const getSpawningTimeInSeconds = (
 export const formatVotingPower = (value: bigint | number): string =>
   formatNumber(Number(value) / E8S_PER_ICP);
 
+export const isSeedNeuron = (neuron: NeuronInfo): boolean =>
+  neuron.neuronType === NeuronType.Seed;
+
+export const isEctNeuron = (neuron: NeuronInfo): boolean =>
+  neuron.neuronType === NeuronType.Ect;
+
 export const hasJoinedCommunityFund = (neuron: NeuronInfo): boolean =>
   neuron.joinedCommunityFundTimestampSeconds !== undefined;
 
@@ -361,8 +368,9 @@ export const isHotKeyControllable = ({
   ) !== undefined &&
   fullNeuron.controller !== identity?.getPrincipal().toText();
 
-export type NeuronTag = {
+export type NeuronTagData = {
   text: string;
+  description?: string;
 };
 
 export const getNeuronTags = ({
@@ -375,8 +383,21 @@ export const getNeuronTags = ({
   identity?: Identity | null;
   accounts: IcpAccountsStoreData;
   i18n: I18n;
-}): NeuronTag[] => {
-  const tags: NeuronTag[] = [];
+}): NeuronTagData[] => {
+  const tags: NeuronTagData[] = [];
+
+  if (isSeedNeuron(neuron)) {
+    tags.push({
+      text: i18n.neuron_types.seed,
+      description: i18n.neuron_types.seedDescription,
+    });
+  } else if (isEctNeuron(neuron)) {
+    tags.push({
+      text: i18n.neuron_types.ect,
+      description: i18n.neuron_types.ectDescription,
+    });
+  }
+
   if (hasJoinedCommunityFund(neuron)) {
     tags.push({ text: i18n.neurons.community_fund });
   }
@@ -615,6 +636,9 @@ const sameController = (neurons: NeuronInfo[]): boolean =>
 const sameId = (neurons: NeuronInfo[]): boolean =>
   new Set(neurons.map(({ neuronId }) => neuronId)).size === 1;
 
+const sameNeuronType = (neurons: NeuronInfo[]): boolean =>
+  new Set(neurons.map(({ neuronType }) => neuronType)).size === 1;
+
 /**
  * Receives multiple lists of followees sorted by id.
  *
@@ -670,6 +694,12 @@ export const canBeMerged = (
     return {
       isValid: false,
       messageKey: "error.merge_neurons_same_id",
+    };
+  }
+  if (!sameNeuronType(neurons)) {
+    return {
+      isValid: false,
+      messageKey: "error.merge_neurons_different_types",
     };
   }
   if (!sameController(neurons)) {
@@ -820,7 +850,7 @@ export const hasEnoughMaturityToStake = ({ fullNeuron }: NeuronInfo): boolean =>
   (fullNeuron?.maturityE8sEquivalent ?? BigInt(0)) > BigInt(0);
 
 export const minNeuronSplittable = (fee: number): number =>
-  2 * E8S_PER_ICP + fee;
+  2 * MIN_NEURON_STAKE + fee;
 
 export const neuronCanBeSplit = ({
   neuron,
@@ -862,9 +892,9 @@ export const validTopUpAmount = ({
   neuron: NeuronInfo;
   amount: number;
 }): boolean => {
-  const amountE8s = BigInt(Math.floor(amount * E8S_PER_ICP));
-  const neuronStakeE8s = neuron.fullNeuron?.cachedNeuronStake ?? BigInt(0);
-  return amountE8s + neuronStakeE8s > MIN_NEURON_STAKE;
+  const amountUlps = numberToUlps({ amount, token: ICPToken });
+  const neuronStakeUlps = neuron.fullNeuron?.cachedNeuronStake ?? BigInt(0);
+  return amountUlps + neuronStakeUlps > MIN_NEURON_STAKE;
 };
 
 export const neuronAge = ({ ageSeconds }: NeuronInfo): bigint =>

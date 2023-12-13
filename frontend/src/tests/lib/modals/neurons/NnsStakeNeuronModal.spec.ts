@@ -1,7 +1,6 @@
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import NnsStakeNeuronModal from "$lib/modals/neurons/NnsStakeNeuronModal.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
 import {
@@ -40,7 +39,7 @@ import { mock } from "vitest-mock-extended";
 vi.mock("$lib/api/nns-dapp.api");
 vi.mock("$lib/api/icp-ledger.api");
 const neuronStake = 2.2;
-const neuronStakeE8s = BigInt(Math.round(neuronStake * E8S_PER_ICP));
+const neuronStakeE8s = 220_000_000n;
 const newNeuron: NeuronInfo = {
   ...mockNeuron,
   dissolveDelaySeconds: BigInt(0),
@@ -307,7 +306,7 @@ describe("NnsStakeNeuronModal", () => {
         icpAccountIdentifier: selectedAccountIdentifier,
       });
       // New balance is set in the store.
-      expect(get(icpAccountsStore).main.balanceE8s).toEqual(newBalanceE8s);
+      expect(get(icpAccountsStore).main.balanceUlps).toEqual(newBalanceE8s);
     });
 
     it("should be able to change dissolve delay in the confirmation screen", async () => {

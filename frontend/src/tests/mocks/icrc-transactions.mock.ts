@@ -1,3 +1,4 @@
+import { NANO_SECONDS_IN_MILLISECOND } from "$lib/constants/constants";
 import type { IcrcTransactionsStoreData } from "$lib/stores/icrc-transactions.store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
@@ -20,17 +21,22 @@ export const createIcrcTransactionWithId = ({
   to,
   fee,
   amount,
+  timestamp = new Date(0),
+  memo,
 }: {
   id?: bigint;
   to?: IcrcCandidAccount;
   from?: IcrcCandidAccount;
   fee?: bigint;
   amount?: bigint;
+  timestamp?: Date;
+  memo?: Uint8Array;
 }): IcrcTransactionWithId => ({
   id: id ?? 123n,
   transaction: {
     kind: "transfer",
-    timestamp: BigInt(12354),
+    timestamp:
+      BigInt(timestamp.getTime()) * BigInt(NANO_SECONDS_IN_MILLISECOND),
     burn: [],
     mint: [],
     transfer: [
@@ -43,7 +49,7 @@ export const createIcrcTransactionWithId = ({
           owner: mockPrincipal,
           subaccount: [] as [],
         },
-        memo: [],
+        memo: toNullable(memo),
         created_at_time: [BigInt(123)],
         amount: amount ?? BigInt(33),
         fee: [fee ?? BigInt(1)],
@@ -100,6 +106,74 @@ const mockIcrcTransactionTransferToSelf: IcrcTransaction = {
     },
   ],
   approve: [],
+};
+
+export const createMintTransaction = ({
+  timestamp = 12354n,
+  amount = 33n,
+  to = fakeAccount,
+  memo,
+  createdAt = 123n,
+}: {
+  timestamp?: bigint;
+  amount?: bigint;
+  to?: IcrcCandidAccount;
+  memo?: Uint8Array;
+  createdAt?: bigint;
+}): IcrcTransaction => {
+  return {
+    kind: "burn",
+    timestamp,
+    burn: [],
+    mint: [
+      {
+        amount,
+        to,
+        memo: toNullable(memo),
+        created_at_time: toNullable(createdAt),
+      },
+    ],
+    transfer: [],
+    approve: [],
+  };
+};
+
+export const createApproveTransaction = ({
+  timestamp = 12354n,
+  amount = 33_000_000n,
+  fee = 10_000n,
+  from = fakeAccount,
+  memo,
+  createdAt = 123n,
+  spender = fakeAccount,
+}: {
+  timestamp?: bigint;
+  amount?: bigint;
+  fee?: bigint;
+  from?: IcrcCandidAccount;
+  memo?: Uint8Array;
+  createdAt?: bigint;
+  spender?: IcrcCandidAccount;
+}): IcrcTransaction => {
+  return {
+    kind: "approve",
+    timestamp,
+    approve: [
+      {
+        amount,
+        from,
+        memo: toNullable(memo),
+        fee: toNullable(fee),
+        created_at_time: toNullable(createdAt),
+        spender: spender,
+        expected_allowance: [],
+        expires_at: [],
+      },
+    ],
+    burn: [],
+    mint: [],
+    transfer: [],
+  };
 };
 
 export const createBurnTransaction = ({

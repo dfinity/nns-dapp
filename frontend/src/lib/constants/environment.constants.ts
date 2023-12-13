@@ -41,11 +41,8 @@ export interface FeatureFlags<T> {
   ENABLE_CKBTC: T;
   ENABLE_CKTESTBTC: T;
   ENABLE_ICP_ICRC: T;
-  ENABLE_INSTANT_UNLOCK: T;
-  ENABLE_STAKE_NEURON_ICRC1: T;
-  ENABLE_SWAP_ICRC1: T;
-  ENABLE_FULL_WIDTH_PROPOSAL: T;
   ENABLE_MY_TOKENS: T;
+  ENABLE_CKETH: T;
   ENABLE_CKBTC_ICRC2: T;
   // Used only in tests and set up in jest-setup.ts
   TEST_FLAG_EDITABLE: T;
@@ -61,7 +58,7 @@ export type FeatureKey = keyof FeatureFlags<boolean>;
  */
 export const FEATURE_FLAG_ENVIRONMENT: FeatureFlags<boolean> = JSON.parse(
   envVars?.featureFlags ??
-    '{"ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_ICP_ICRC": false, "ENABLE_STAKE_NEURON_ICRC1": false, "ENABLE_INSTANT_UNLOCK": false}'
+    '{"ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_ICP_ICRC": false}'
 );
 
 export const IS_TESTNET: boolean =

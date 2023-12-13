@@ -1,18 +1,25 @@
 import type { Account } from "$lib/types/account";
+import type { UniverseCanisterId } from "$lib/types/universe";
 
-export type AccountsModalType = "nns-receive" | "sns-receive";
+export type AccountsModalType =
+  | "nns-receive"
+  | "icrc-receive"
+  | "buy-icp"
+  | "add-icp-account";
 
-export interface AccountsModal {
-  type: AccountsModalType;
-}
-
-export interface AccountsReceiveModalData {
+export interface AccountsModalData {
   account: Account | undefined;
   reload: (() => Promise<void>) | undefined;
   canSelectAccount: boolean;
 }
 
-export interface AccountsModal {
+export interface AccountsReceiveModalData extends AccountsModalData {
+  universeId: UniverseCanisterId | undefined;
+  tokenSymbol: string | undefined;
+  logo: string;
+}
+
+export interface AccountsModal<T> {
   type: AccountsModalType;
-  data: AccountsReceiveModalData;
+  data: T;
 }

@@ -8,19 +8,20 @@
   export let userTokensData: UserTokenData[];
 </script>
 
-<main class="sign-in" data-tid="sign-in-tokens-page-component">
-  <div class="content">
-    <PageBanner>
-      <IconAccountsPage slot="image" />
-      <svelte:fragment slot="title">{$i18n.auth_accounts.title}</svelte:fragment
-      >
-      <p class="description" slot="description">{$i18n.auth_accounts.text}</p>
-      <SignIn slot="actions" />
-    </PageBanner>
+<div class="content" data-tid="sign-in-tokens-page-component">
+  <PageBanner>
+    <IconAccountsPage slot="image" />
+    <svelte:fragment slot="title">{$i18n.auth_accounts.title}</svelte:fragment>
+    <p class="description" slot="description">{$i18n.auth_accounts.text}</p>
+    <SignIn slot="actions" />
+  </PageBanner>
 
-    <TokensTable on:nnsAction {userTokensData} />
-  </div>
-</main>
+  <TokensTable
+    on:nnsAction
+    {userTokensData}
+    firstColumnHeader={$i18n.tokens.projects_header}
+  />
+</div>
 
 <style lang="scss">
   .content {

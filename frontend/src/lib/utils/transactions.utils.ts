@@ -3,13 +3,13 @@ import type {
   Transaction as NnsTransaction,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { Account } from "$lib/types/account";
-import type { Transaction } from "$lib/types/transaction";
+import type { Transaction, UiTransaction } from "$lib/types/transaction";
 import {
   AccountTransactionType,
   TransactionNetwork,
 } from "$lib/types/transaction";
-import { isNullish } from "@dfinity/utils";
-import { replacePlaceholders } from "./i18n.utils";
+import type { Token } from "@dfinity/utils";
+import { TokenAmount, isNullish } from "@dfinity/utils";
 import { stringifyJson } from "./utils";
 
 export const transactionType = ({
@@ -68,25 +68,6 @@ export const transactionType = ({
   throw new Error(
     "Unknown TransactionType: " + JSON.stringify(transactionType)
   );
-};
-
-export const showTransactionFee = ({
-  type,
-  isReceive,
-}: {
-  type: AccountTransactionType;
-  isReceive: boolean;
-}): boolean => {
-  if (isReceive) {
-    return false;
-  }
-  switch (type) {
-    case AccountTransactionType.Mint:
-    case AccountTransactionType.Burn:
-      return false;
-    default:
-      return true;
-  }
 };
 
 export const transactionDisplayAmount = ({
@@ -149,11 +130,7 @@ export const mapNnsTransaction = ({
   const date = new Date(Number(timestamp.timestamp_nanos / BigInt(1e6)));
   const isReceive = toSelfTransaction === true || from !== account.identifier;
   const isSend = to !== account.identifier;
-  // (from==to workaround) in case of transaction duplication we replace one of the transaction to `Received`, and it doesn't need to show fee because paid fee is already shown in the `Send` one.
-  const useFee =
-    toSelfTransaction === true
-      ? false
-      : showTransactionFee({ type, isReceive });
+  const useFee = !isReceive;
   const displayAmount = transactionDisplayAmount({ useFee, amount, fee });
 
   return {
@@ -167,6 +144,41 @@ export const mapNnsTransaction = ({
   };
 };
 
+export const toUiTransaction = ({
+  transaction,
+  transactionId,
+  toSelfTransaction,
+  token,
+  transactionNames,
+}: {
+  transaction: Transaction;
+  transactionId: bigint;
+  toSelfTransaction: boolean;
+  token: Token;
+  transactionNames: I18nTransaction_names;
+}): UiTransaction => {
+  const isIncoming = transaction.isReceive || toSelfTransaction;
+  const headline = transactionName({
+    type: transaction.type,
+    isReceive: isIncoming,
+    labels: transactionNames,
+  });
+  const otherParty = isIncoming ? transaction.from : transaction.to;
+
+  return {
+    domKey: `${transactionId}-${toSelfTransaction ? "0" : "1"}`,
+    isIncoming,
+    isPending: false,
+    headline,
+    otherParty,
+    tokenAmount: TokenAmount.fromE8s({
+      amount: transaction.displayAmount,
+      token,
+    }),
+    timestamp: transaction.date,
+  };
+};
+
 /**
  * Note: We used to display the token symbol within the transaction labels that is why this function uses replacePlaceholders.
  * Although it was decided to not render such symbol anymore, we keep the code as it in case this would change in the future.
@@ -175,21 +187,16 @@ export const transactionName = ({
   type,
   isReceive,
   labels,
-  tokenSymbol,
 }: {
   type: AccountTransactionType;
   isReceive: boolean;
   labels: I18nTransaction_names;
-  tokenSymbol: string;
 }): string =>
-  replacePlaceholders(
-    type === AccountTransactionType.Send
-      ? isReceive
-        ? labels.receive
-        : labels.send
-      : labels[type] ?? type,
-    { $tokenSymbol: tokenSymbol }
-  );
+  type === AccountTransactionType.Send
+    ? isReceive
+      ? labels.receive
+      : labels.send
+    : labels[type] ?? type;
 
 /** (from==to workaround) Set `mapToSelfNnsTransaction: true` when sender and receiver are the same account (e.g. transmitting from `main` to `main` account) */
 export const mapToSelfTransaction = (

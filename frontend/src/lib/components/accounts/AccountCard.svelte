@@ -5,7 +5,7 @@
   import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
   import AccountBadge from "./AccountBadge.svelte";
   import { nonNullish } from "@dfinity/utils";
-  import { TokenAmount, type Token } from "@dfinity/utils";
+  import { TokenAmountV2, type Token } from "@dfinity/utils";
   import { buildWalletUrl } from "$lib/utils/navigation.utils";
   import { pageStore } from "$lib/derived/page.derived";
 
@@ -14,9 +14,9 @@
   export let role: "button" | "link" = "link";
 
   let identifier: string;
-  let balanceE8s: bigint;
+  let balanceUlps: bigint;
 
-  $: ({ identifier, balanceE8s } = account);
+  $: ({ identifier, balanceUlps } = account);
 
   let href: string | undefined;
   $: href =
@@ -40,8 +40,8 @@
   {#if nonNullish(token)}
     <AmountDisplay
       title
-      amount={TokenAmount.fromE8s({
-        amount: balanceE8s,
+      amount={TokenAmountV2.fromUlps({
+        amount: balanceUlps,
         token,
       })}
     />

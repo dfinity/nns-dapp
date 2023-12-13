@@ -1,4 +1,5 @@
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
+import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { convertDtoToSnsSummary } from "$lib/utils/sns-aggregator-converters.utils";
 import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
 import type {
@@ -112,7 +113,7 @@ const convertToDerivedState = (
  */
 const overrideDerivedState =
   (derivedStore: SnsDerivedStateData) =>
-  (summary: SnsSummary | undefined): SnsSummary | undefined => {
+  (summary: SnsSummaryWrapper | undefined): SnsSummaryWrapper | undefined => {
     if (isNullish(summary)) {
       return undefined;
     }
@@ -126,10 +127,7 @@ const overrideDerivedState =
     if (isNullish(convertedData)) {
       return summary;
     }
-    return {
-      ...summary,
-      derived: convertedData,
-    };
+    return summary.overrideDerivedState(convertedData);
   };
 
 /**
@@ -137,26 +135,15 @@ const overrideDerivedState =
  */
 const overrideLifecycle =
   (lifecycleStore: SnsLifecycleData) =>
-  (summary: SnsSummary | undefined): SnsSummary | undefined => {
+  (summary: SnsSummaryWrapper | undefined): SnsSummaryWrapper | undefined => {
     if (isNullish(summary)) {
       return undefined;
     }
     const projectData = lifecycleStore[summary.rootCanisterId.toText()];
-    const lifecycle = fromNullable(projectData?.data.lifecycle ?? []);
-    if (isNullish(lifecycle)) {
+    if (isNullish(projectData?.data)) {
       return summary;
     }
-    const saleOpenTimestamp = fromNullable(
-      projectData?.data.decentralization_sale_open_timestamp_seconds ?? []
-    );
-    return {
-      ...summary,
-      swap: {
-        ...summary.swap,
-        lifecycle,
-        decentralization_sale_open_timestamp_seconds: saleOpenTimestamp,
-      },
-    };
+    return summary.overrideLifecycleResponse(projectData.data);
   };
 
 /**
@@ -176,7 +163,7 @@ export const snsSummariesStore = derived<
         .map(overrideDerivedState(derivedStates))
         // Lifecycle data is fetched after a participation. Therefore, we consider it as the latest data.
         .map(overrideLifecycle(lifecycles))
-        .filter((optionalSummary): optionalSummary is SnsSummary =>
+        .filter((optionalSummary): optionalSummary is SnsSummaryWrapper =>
           nonNullish(optionalSummary)
         ) ?? [];
 

@@ -6,6 +6,7 @@
   import SnsStakeNeuronModal from "$lib/modals/sns/neurons/SnsStakeNeuronModal.svelte";
   import { snsSelectedProjectNewTxData } from "$lib/derived/sns/sns-selected-project-new-tx-data.derived";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
+  import { toTokenAmountV2 } from "$lib/utils/token.utils";
 
   type ModalKey = "stake-neuron";
   let showModal: ModalKey | undefined = undefined;
@@ -29,7 +30,9 @@
         token={$snsSelectedProjectNewTxData.token}
         on:nnsClose={closeModal}
         rootCanisterId={$snsSelectedProjectNewTxData.rootCanisterId}
-        transactionFee={$snsSelectedProjectNewTxData.transactionFee}
+        transactionFee={toTokenAmountV2(
+          $snsSelectedProjectNewTxData.transactionFee
+        )}
         governanceCanisterId={$snsProjectSelectedStore.summary
           .governanceCanisterId}
       />

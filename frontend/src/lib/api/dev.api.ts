@@ -76,6 +76,23 @@ export const getTestAccountBalance = async (
   });
 };
 
+export const getIcrcTokenTestAccountBalance = async (
+  ledgerCanisterId: Principal
+): Promise<bigint> => {
+  assertTestnet();
+
+  const agent = await getTestAccountAgent();
+
+  const canister = IcrcLedgerCanister.create({
+    agent,
+    canisterId: ledgerCanisterId,
+  });
+
+  return canister.balance({
+    owner: Principal.fromText(testAccountPrincipal),
+  });
+};
+
 /*
  * Gives the caller the specified amount of (fake) ICPs.
  * Should/can only be used on testnets.
@@ -120,13 +137,14 @@ export const acquireICPTs = async ({
   });
 };
 
+// TODO: Reuse the new `acquireIcrcTokens` instead of SNS specific function.
 export const acquireSnsTokens = async ({
   account,
-  e8s,
+  ulps,
   rootCanisterId,
 }: {
   account: Account;
-  e8s: bigint;
+  ulps: bigint;
   rootCanisterId: Principal;
 }): Promise<void> => {
   assertTestnet();
@@ -140,7 +158,37 @@ export const acquireSnsTokens = async ({
   });
 
   await transfer({
-    amount: e8s,
+    amount: ulps,
+    to: {
+      owner: account.principal as Principal,
+      subaccount:
+        account.subAccount === undefined
+          ? []
+          : toNullable(arrayOfNumberToUint8Array(account.subAccount)),
+    },
+  });
+};
+
+export const acquireIcrcTokens = async ({
+  account,
+  ulps,
+  ledgerCanisterId,
+}: {
+  account: Account;
+  ulps: bigint;
+  ledgerCanisterId: Principal;
+}): Promise<void> => {
+  assertTestnet();
+
+  const agent = await getTestAccountAgent();
+
+  const canister = IcrcLedgerCanister.create({
+    agent,
+    canisterId: ledgerCanisterId,
+  });
+
+  await canister.transfer({
+    amount: ulps,
     to: {
       owner: account.principal as Principal,
       subaccount:

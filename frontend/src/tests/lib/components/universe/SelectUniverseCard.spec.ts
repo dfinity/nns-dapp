@@ -135,18 +135,18 @@ describe("SelectUniverseCard", () => {
       icpAccountsStore.setForTesting({
         main: {
           ...mockMainAccount,
-          balanceE8s: 100_000_000n,
+          balanceUlps: 100_000_000n,
         },
         subAccounts: [
           {
             ...mockSubAccount,
-            balanceE8s: 200_000_000n,
+            balanceUlps: 200_000_000n,
           },
         ],
         hardwareWallets: [
           {
             ...mockHardwareWalletAccount,
-            balanceE8s: 400_000_000n,
+            balanceUlps: 400_000_000n,
           },
         ],
         certified: true,

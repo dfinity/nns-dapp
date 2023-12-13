@@ -22,7 +22,7 @@ export interface Account {
   identifier: AccountIdentifierText;
   // Main and HardwareWallet accounts have Principal
   principal?: Principal;
-  balanceE8s: bigint;
+  balanceUlps: bigint;
   // Subaccounts and HardwareWallets have name and subAccount
   name?: string;
   subAccount?: SubAccountArray;

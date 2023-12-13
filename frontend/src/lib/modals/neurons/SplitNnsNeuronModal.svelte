@@ -5,9 +5,11 @@
   import { TokenAmount, ICPToken } from "@dfinity/utils";
   import { isValidInputAmount, neuronStake } from "$lib/utils/neuron.utils";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
-  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import { i18n } from "$lib/stores/i18n";
-  import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
+  import {
+    formattedTransactionFeeICP,
+    ulpsToNumber,
+  } from "$lib/utils/token.utils";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { createEventDispatcher } from "svelte";
   import { splitNeuron } from "$lib/services/neurons.services";
@@ -28,7 +30,10 @@
   $: max =
     stakeE8s === BigInt(0)
       ? 0
-      : (Number(stakeE8s) - $mainTransactionFeeStore) / E8S_PER_ICP;
+      : ulpsToNumber({
+          ulps: stakeE8s - BigInt($mainTransactionFeeStore),
+          token: ICPToken,
+        });
 
   let validForm: boolean;
   $: validForm = isValidInputAmount({ amount, max });

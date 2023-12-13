@@ -9,7 +9,7 @@ import type {
 } from "$lib/stores/tokens.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
-import { TokenAmount, nonNullish } from "@dfinity/utils";
+import { TokenAmountV2, nonNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 
 export const nnsTokenStore = derived<
@@ -35,18 +35,19 @@ export const ckBTCTokenFeeStore = derived<
       Record<UniverseCanisterIdText, TokensStoreUniverseData | undefined>
     >,
   ],
-  Record<UniverseCanisterIdText, TokenAmount | undefined>
+  Record<UniverseCanisterIdText, TokenAmountV2 | undefined>
 >([ckBTCTokenStore], ([$ckBTCTokenStore]) =>
   Object.entries($ckBTCTokenStore).reduce(
     (acc, [key, value]) => ({
       ...acc,
       [key]:
         nonNullish(value) && nonNullish(value?.token)
-          ? TokenAmount.fromE8s({
+          ? TokenAmountV2.fromUlps({
               amount: value.token.fee,
               token: {
                 name: value.token.name,
                 symbol: value.token.symbol,
+                decimals: value.token.decimals,
               },
             })
           : undefined,

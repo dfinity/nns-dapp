@@ -1,12 +1,26 @@
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import {
+  CKETHSEPOLIA_INDEX_CANISTER_ID,
+  CKETHSEPOLIA_LEDGER_CANISTER_ID,
+  CKETH_INDEX_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
+} from "$lib/constants/cketh-canister-ids.constants";
 import { universesStore } from "$lib/derived/universes.derived";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import { aggregatorCanisterLogoPath } from "$lib/utils/sns-aggregator-converters.utils";
+import {
+  mockCkETHTESTToken,
+  mockCkETHToken,
+} from "$tests/mocks/cketh-accounts.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import {
   ckBTCUniverseMock,
+  ckETHSEPOLIAUniverseMock,
+  ckETHUniverseMock,
   ckTESTBTCUniverseMock,
   nnsUniverseMock,
 } from "$tests/mocks/universe.mock";
@@ -18,6 +32,8 @@ describe("universes derived stores", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     resetSnsProjects();
+    icrcCanistersStore.reset();
+    tokensStore.reset();
   });
 
   describe("ckBTC both enabled", () => {
@@ -68,6 +84,55 @@ describe("universes derived stores", () => {
       expect(store[0].canisterId).toEqual(OWN_CANISTER_ID.toText());
       expect(store[1].summary).toBeUndefined();
       expect(store[1].canisterId).toEqual(CKBTC_UNIVERSE_CANISTER_ID.toText());
+    });
+
+    it("should return Nns, ckBTC and ckETH", () => {
+      icrcCanistersStore.setCanisters({
+        ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
+        indexCanisterId: CKETH_INDEX_CANISTER_ID,
+      });
+      tokensStore.setTokens({
+        [CKETH_LEDGER_CANISTER_ID.toText()]: {
+          certified: true,
+          token: mockCkETHToken,
+        },
+      });
+      const store = get(universesStore);
+      expect(store.length).toEqual(3);
+      expect(store[0].summary).toBeUndefined();
+      expect(store[0].canisterId).toEqual(OWN_CANISTER_ID.toText());
+      expect(store[1].summary).toBeUndefined();
+      expect(store[1].canisterId).toEqual(CKBTC_UNIVERSE_CANISTER_ID.toText());
+      expect(store[2]).toEqual(ckETHUniverseMock);
+    });
+
+    it("should return Nns, ckBTC, ckETH and ckETHSEPOLIA", () => {
+      icrcCanistersStore.setCanisters({
+        ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
+        indexCanisterId: CKETH_INDEX_CANISTER_ID,
+      });
+      icrcCanistersStore.setCanisters({
+        ledgerCanisterId: CKETHSEPOLIA_LEDGER_CANISTER_ID,
+        indexCanisterId: CKETHSEPOLIA_INDEX_CANISTER_ID,
+      });
+      tokensStore.setTokens({
+        [CKETH_LEDGER_CANISTER_ID.toText()]: {
+          certified: true,
+          token: mockCkETHToken,
+        },
+        [CKETHSEPOLIA_LEDGER_CANISTER_ID.toText()]: {
+          certified: true,
+          token: mockCkETHTESTToken,
+        },
+      });
+      const store = get(universesStore);
+      expect(store.length).toEqual(4);
+      expect(store[0].summary).toBeUndefined();
+      expect(store[0].canisterId).toEqual(OWN_CANISTER_ID.toText());
+      expect(store[1].summary).toBeUndefined();
+      expect(store[1].canisterId).toEqual(CKBTC_UNIVERSE_CANISTER_ID.toText());
+      expect(store[2]).toEqual(ckETHUniverseMock);
+      expect(store[3]).toEqual(ckETHSEPOLIAUniverseMock);
     });
   });
 

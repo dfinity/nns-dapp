@@ -7,13 +7,21 @@ export const mockCkBTCToken: IcrcTokenMetadata = {
   name: "Test account",
   symbol: "ckBTC",
   fee: BigInt(1),
+  decimals: 8,
+};
+
+export const mockCkTESTBTCToken = {
+  ...mockCkBTCToken,
+  symbol: "ckTESTBTC",
+  name: "ckTESTBTC",
+  decimals: 8,
 };
 
 export const mockCkBTCMainAccount: Account = {
   identifier: encodeIcrcAccount({
     owner: mockPrincipal,
   }),
-  balanceE8s: 444556698700000n,
+  balanceUlps: 444556698700000n,
   principal: mockPrincipal,
   type: "main",
 };
@@ -26,7 +34,7 @@ export const mockCkBTCWithdrawalIcrcAccount = decodeIcrcAccount(
 
 export const mockCkBTCWithdrawalAccount: Account = {
   identifier: mockCkBTCWithdrawalIdentifier,
-  balanceE8s: 98711100000n,
+  balanceUlps: 98711100000n,
   principal: mockCkBTCWithdrawalIcrcAccount.owner,
   type: "withdrawalAccount",
 };

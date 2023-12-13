@@ -12,8 +12,7 @@
   import type { Account } from "$lib/types/account";
   import type { WizardStep } from "@dfinity/gix-components";
   import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
-  import { TokenAmount } from "@dfinity/utils";
-  import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import { TokenAmountV2, type Token } from "@dfinity/utils";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
@@ -41,8 +40,8 @@
 
   export let canisters: CkBTCAdditionalCanisters;
   export let universeId: UniverseCanisterId;
-  export let token: IcrcTokenMetadata;
-  export let transactionFee: TokenAmount;
+  export let token: Token;
+  export let transactionFee: TokenAmountV2;
 
   let withdrawalAccount = selectedAccount?.type === "withdrawalAccount";
 
@@ -57,9 +56,9 @@
   };
 
   // If ckBTC are converted to BTC from the withdrawal account there is no transfer to the ckBTC ledger, therefore no related fee will be applied
-  let fee: TokenAmount;
+  let fee: TokenAmountV2;
   $: fee = withdrawalAccount
-    ? TokenAmount.fromE8s({
+    ? TokenAmountV2.fromUlps({
         amount: 0n,
         token: transactionFee.token,
       })
@@ -182,7 +181,7 @@
       networkBtc,
       sourceAccount: selectedAccount,
       amount,
-      transactionFee: fee.toE8s(),
+      transactionFee: fee.toUlps(),
       infoData,
     });
 

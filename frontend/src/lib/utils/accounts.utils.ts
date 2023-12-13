@@ -196,12 +196,13 @@ export const getAccountsByRootCanister = ({
  */
 export const assertEnoughAccountFunds = ({
   account,
+  // TODO: GIX-2154 rename to amountUlps
   amountE8s,
 }: {
   account: Account;
   amountE8s: bigint;
 }): void => {
-  if (account.balanceE8s < amountE8s) {
+  if (account.balanceUlps < amountE8s) {
     throw new NotEnoughAmountError("error.insufficient_funds");
   }
 };
@@ -226,11 +227,13 @@ export const accountName = ({
 export const sumNnsAccounts = (
   accounts: IcpAccountsStoreData | undefined
 ): bigint | undefined =>
-  accounts?.main?.balanceE8s !== undefined
+  accounts?.main?.balanceUlps !== undefined
     ? sumAmountE8s(
-        accounts?.main?.balanceE8s,
-        ...(accounts?.subAccounts || []).map(({ balanceE8s }) => balanceE8s),
-        ...(accounts?.hardwareWallets || []).map(({ balanceE8s }) => balanceE8s)
+        accounts?.main?.balanceUlps,
+        ...(accounts?.subAccounts || []).map(({ balanceUlps }) => balanceUlps),
+        ...(accounts?.hardwareWallets || []).map(
+          ({ balanceUlps }) => balanceUlps
+        )
       )
     : undefined;
 
@@ -239,7 +242,7 @@ export const sumAccounts = (
 ): bigint | undefined =>
   isNullish(accounts) || accounts.length === 0
     ? undefined
-    : sumAmountE8s(...accounts.map(({ balanceE8s }) => balanceE8s));
+    : sumAmountE8s(...accounts.map(({ balanceUlps }) => balanceUlps));
 
 export const hasAccounts = (accounts: Account[]): boolean =>
   accounts.length > 0;
@@ -270,7 +273,7 @@ const maybeIcrcToIcpAccountIdentifier = (
   const { owner: principal, subaccount } = decodeIcrcAccount(accountIdentifier);
 
   const sub = nonNullish(subaccount)
-    ? SubAccount.fromBytes(subaccount)
+    ? SubAccount.fromBytes(new Uint8Array(subaccount))
     : undefined;
 
   if (sub instanceof Error) {

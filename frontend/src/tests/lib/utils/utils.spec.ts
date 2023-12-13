@@ -27,7 +27,6 @@ import {
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { get } from "svelte/store";
-import { beforeEach } from "vitest";
 
 describe("utils", () => {
   beforeEach(() => {
@@ -48,6 +47,10 @@ describe("utils", () => {
       expect(stringifyJson({ a: BigInt(123) })).toBe(
         JSON.stringify({ a: "123" })
       );
+    });
+
+    it("should preserve undefined values", () => {
+      expect(stringifyJson({ a: undefined })).toBe(`{"a":undefined}`);
     });
 
     it("should support the indentation", () => {
