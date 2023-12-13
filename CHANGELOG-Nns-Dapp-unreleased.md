@@ -34,6 +34,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Limit the size of proposal payload rendering errors, as otherwise the error can become too large to return.
+
 #### Security
 
 * Bump css-tools dev dependency to fix minor vulnerability.
