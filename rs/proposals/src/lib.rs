@@ -1,7 +1,8 @@
 use crate::canisters::nns_governance::api::{Action, ProposalInfo};
 use crate::def::*;
-use candid::parser::types::{IDLType, IDLTypes};
+use candid::parser::types::{self as parser_types, IDLType, IDLTypes};
 use candid::{CandidType, Deserialize, IDLArgs};
+use candid::types::Type;
 use ic_base_types::CanisterId;
 use ic_nns_constants::{GOVERNANCE_CANISTER_ID, IDENTITY_CANISTER_ID};
 use idl2json::candid_types::internal_candid_type_to_idl_type;
@@ -118,12 +119,7 @@ fn decode_arg(arg: &[u8], arg_types: IDLTypes) -> String {
     // TODO: Test muti-value payloads
     match IDLArgs::from_bytes(arg) {
         Ok(idl_args) => {
-            let options = Idl2JsonOptions {
-                bytes_as: Some(BytesFormat::Hex),
-                long_bytes_as: None,
-                prog: Vec::new(), // These are the type definitions used in proposal payloads.  If we have them, it would be nice to use them.  Do we?
-            };
-            let json_value = idl_args2json_with_weak_names(&idl_args, &arg_types, &options);
+            let json_value = idl_args2json_with_weak_names(&idl_args, &arg_types, &IDL2JSON_OPTIONS);
             serde_json::to_string(&json_value).expect("Failed to serialize JSON")
         }
         Err(_) => "[]".to_owned(),
@@ -140,8 +136,55 @@ pub fn process_proposal_payload(proposal_info: ProposalInfo) -> Json {
     }
 }
 
+const IDL2JSON_OPTIONS: Idl2JsonOptions = Idl2JsonOptions {
+                bytes_as: Some(BytesFormat::Hex),
+                long_bytes_as: None,
+                prog: Vec::new(), // These are the type definitions used in proposal payloads.  If we have them, it would be nice to use them.  Do we?
+            };
+
+fn type_2_idltype(ty: Type) -> Result<IDLType, String> {
+    match ty {
+        Type::Null => Ok(IDLType::PrimT(parser_types::PrimType::Null)),
+        Type::Bool => Ok(IDLType::PrimT(parser_types::PrimType::Bool)),
+        Type::Nat => Ok(IDLType::PrimT(parser_types::PrimType::Nat)),
+        Type::Int => Ok(IDLType::PrimT(parser_types::PrimType::Int)),
+        Type::Nat8 => Ok(IDLType::PrimT(parser_types::PrimType::Nat8)),
+        Type::Nat16 => Ok(IDLType::PrimT(parser_types::PrimType::Nat16)),
+        Type::Nat32 => Ok(IDLType::PrimT(parser_types::PrimType::Nat32)),
+        Type::Nat64 => Ok(IDLType::PrimT(parser_types::PrimType::Nat64)),
+        Type::Int8 => Ok(IDLType::PrimT(parser_types::PrimType::Int8)),
+        Type::Int16 => Ok(IDLType::PrimT(parser_types::PrimType::Int16)),
+        Type::Int32 => Ok(IDLType::PrimT(parser_types::PrimType::Int32)),
+        Type::Int64 => Ok(IDLType::PrimT(parser_types::PrimType::Int64)),
+        Type::Float32 => Ok(IDLType::PrimT(parser_types::PrimType::Float32)),
+        Type::Float64 => Ok(IDLType::PrimT(parser_types::PrimType::Float64)),
+        Type::Text => Ok(IDLType::PrimT(parser_types::PrimType::Text)),
+        
+        Type::Record(fields) => {
+            let mut idl_fields = Vec::with_capacity(fields.len());
+            for field in fields {
+                idl_fields.push(parser_types::TypeField{label: field.id, typ: type_2_idltype(field.ty)?});
+            }
+            Ok(IDLType::RecordT(idl_fields))
+        }
+        Type::Vec(ty) => Ok(IDLType::VecT(Box::new(type_2_idltype(*ty)?))),
+        other => Err(format!("Unsupported type: {other:.30}")),
+    }
+}
+
 fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<String, String> {
-    fn transform<In, Out>(payload_bytes: &[u8]) -> Result<String, String>
+    fn candid_fallback<In>(payload_bytes: &[u8]) -> Result<String, String>
+    where
+        In: CandidType
+
+    {
+            let candid_type = IDLTypes{args: vec![ type_2_idltype(In::ty())?]};
+            let payload_idl = IDLArgs::from_bytes(payload_bytes).map_err(debug)?;
+            let json_value = idl_args2json_with_weak_names(&payload_idl, &candid_type, &IDL2JSON_OPTIONS);
+            serde_json::to_string(&json_value).map_err(|_|"Failed to serialize JSON".to_string())
+    }
+
+    fn try_transform<In, Out>(payload_bytes: &[u8]) -> Result<String, String>
     where
         In: CandidType + DeserializeOwned + Into<Out>,
         Out: Serialize,
@@ -155,7 +198,12 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
             Err("Payload too large".to_string())
         }
     }
-
+    fn transform<In, Out>(payload_bytes: &[u8]) -> Result<String, String>
+    where
+        In: CandidType + DeserializeOwned + Into<Out>,
+        Out: Serialize, {
+        try_transform::<In, Out>(payload_bytes).or_else(|_| candid_fallback::<In>(payload_bytes))
+        }
     fn identity<Out>(payload_bytes: &[u8]) -> Result<String, String>
     where
         Out: CandidType + Serialize + DeserializeOwned,
