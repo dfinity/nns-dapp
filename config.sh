@@ -48,9 +48,9 @@ local_deployment_data="$(
   : "- may be set by dfx as an env var"
   : "- may be deployed locally"
   LOCALLY_DEPLOYED_NNS_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-dapp 2>/dev/null || true)"
-  test -n "${CANISTER_ID:-}" || CANISTER_ID="$LOCALLY_DEPLOYED_NNS_CANISTER_ID"
-  export CANISTER_ID
-  test -n "${CANISTER_ID:-}" || unset CANISTER_ID
+  test -n "${OWN_CANISTER_ID:-}" || OWN_CANISTER_ID="$LOCALLY_DEPLOYED_NNS_CANISTER_ID"
+  export OWN_CANISTER_ID
+  test -n "${OWN_CANISTER_ID:-}" || unset OWN_CANISTER_ID
 
   : "Try to find the internet_identity URL"
   : "- may be deployed locally"
@@ -129,7 +129,7 @@ local_deployment_data="$(
 
   : "Put any values we found in JSON.  Omit any that are undefined."
   jq -n '{
-    OWN_CANISTER_ID: env.CANISTER_ID,
+    OWN_CANISTER_ID: env.OWN_CANISTER_ID,
     IDENTITY_SERVICE_URL: env.IDENTITY_SERVICE_URL,
     SNS_AGGREGATOR_URL: env.SNS_AGGREGATOR_URL,
     LEDGER_CANISTER_ID: env.LEDGER_CANISTER_ID,
