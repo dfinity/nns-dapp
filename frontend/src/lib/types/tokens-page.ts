@@ -5,6 +5,7 @@
  * - `UserTokenLoading` is to render a loading row in the tokens table. Used when either balance or token are not present.
  * - `UserTokenData` is used to render a row in the tokens table. Used when both balance and token are present.
  * - `UserTokenAction` is a list of actions supported by the tokens page and hardcoded in the TokensTable.
+ * - `UserToken` is the union of `UserTokenLoading` and `UserTokenData`.
  */
 import type { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import type { Principal } from "@dfinity/principal";
