@@ -29,6 +29,8 @@ else
   NETWORKS=("$DFX_NETWORK")
 fi
 
+# Replaces the string '{OWN_CANISTER_ID}' in templates with the canister ID obtained dynamically using dfx.
+# Note: Only the local network has these dynamic templates.  Mainnet and app have fixed canister IDs.
 replace_canister_id() {
   awk -v id="$(dfx canister id --network "$DFX_NETWORK" nns-dapp)" '{gsub("{OWN_CANISTER_ID}", id, $0);print $0}'
 }
