@@ -138,10 +138,11 @@ pub fn process_proposal_payload(proposal_info: ProposalInfo) -> Json {
 
 const IDL2JSON_OPTIONS: Idl2JsonOptions = Idl2JsonOptions {
                 bytes_as: Some(BytesFormat::Hex),
-                long_bytes_as: None,
+                long_bytes_as: Some((256, BytesFormat::Sha256)),
                 prog: Vec::new(), // These are the type definitions used in proposal payloads.  If we have them, it would be nice to use them.  Do we?
             };
 
+              /// Rust types can include things such as functions.  IDL types, sent over a wire, cannot.  Given that we want an IDLType from a more general type we need toconvert th egeneral type to the more specialized type.
 fn type_2_idltype(ty: Type) -> Result<IDLType, String> {
     match ty {
         Type::Null => Ok(IDLType::PrimT(parser_types::PrimType::Null)),
@@ -159,7 +160,9 @@ fn type_2_idltype(ty: Type) -> Result<IDLType, String> {
         Type::Float32 => Ok(IDLType::PrimT(parser_types::PrimType::Float32)),
         Type::Float64 => Ok(IDLType::PrimT(parser_types::PrimType::Float64)),
         Type::Text => Ok(IDLType::PrimT(parser_types::PrimType::Text)),
-        
+        Type::Reserved => Ok(IDLType::PrimT(parser_types::PrimType::Reserved)),
+        Type::Opt(ty) => Ok(IDLType::OptT(Box::new(type_2_idltype(*ty)?))),
+        Type::Vec(ty) => Ok(IDLType::VecT(Box::new(type_2_idltype(*ty)?))),
         Type::Record(fields) => {
             let mut idl_fields = Vec::with_capacity(fields.len());
             for field in fields {
@@ -167,8 +170,15 @@ fn type_2_idltype(ty: Type) -> Result<IDLType, String> {
             }
             Ok(IDLType::RecordT(idl_fields))
         }
-        Type::Vec(ty) => Ok(IDLType::VecT(Box::new(type_2_idltype(*ty)?))),
-        other => Err(format!("Unsupported type: {other:.30}")),
+        Type::Variant(variants) => {
+            let mut idl_variants = Vec::with_capacity(variants.len());
+            for variant in variants {
+                idl_variants.push(parser_types::TypeField{label: variant.id, typ: type_2_idltype(variant.ty)?});
+            }
+            Ok(IDLType::VariantT(idl_variants))
+        }
+        Type::Principal => Ok(IDLType::PrincipalT),
+        Type::Empty | Type::Knot(_) | Type::Var(_) | Type::Unknown | Type::Func(_) | Type::Service(_)| Type::Class(_, _) => Err(format!("Unsupported type: {ty:.30}")),
     }
 }
 
