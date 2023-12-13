@@ -1,8 +1,8 @@
 use crate::canisters::nns_governance::api::{Action, ProposalInfo};
 use crate::def::*;
 use candid::parser::types::{self as parser_types, IDLType, IDLTypes};
-use candid::{CandidType, Deserialize, IDLArgs};
 use candid::types::Type;
+use candid::{CandidType, Deserialize, IDLArgs};
 use ic_base_types::CanisterId;
 use ic_nns_constants::{GOVERNANCE_CANISTER_ID, IDENTITY_CANISTER_ID};
 use idl2json::candid_types::internal_candid_type_to_idl_type;
@@ -137,12 +137,12 @@ pub fn process_proposal_payload(proposal_info: ProposalInfo) -> Json {
 }
 
 const IDL2JSON_OPTIONS: Idl2JsonOptions = Idl2JsonOptions {
-                bytes_as: Some(BytesFormat::Hex),
-                long_bytes_as: Some((256, BytesFormat::Sha256)),
-                prog: Vec::new(), // These are the type definitions used in proposal payloads.  If we have them, it would be nice to use them.  Do we?
-            };
+    bytes_as: Some(BytesFormat::Hex),
+    long_bytes_as: Some((256, BytesFormat::Sha256)),
+    prog: Vec::new(), // These are the type definitions used in proposal payloads.  If we have them, it would be nice to use them.  Do we?
+};
 
-              /// Rust types can include things such as functions.  IDL types, sent over a wire, cannot.  Given that we want an IDLType from a more general type we need toconvert th egeneral type to the more specialized type.
+/// Rust types can include things such as functions.  IDL types, sent over a wire, cannot.  Given that we want an IDLType from a more general type we need toconvert th egeneral type to the more specialized type.
 fn type_2_idltype(ty: Type) -> Result<IDLType, String> {
     match ty {
         Type::Null => Ok(IDLType::PrimT(parser_types::PrimType::Null)),
@@ -166,32 +166,45 @@ fn type_2_idltype(ty: Type) -> Result<IDLType, String> {
         Type::Record(fields) => {
             let mut idl_fields = Vec::with_capacity(fields.len());
             for field in fields {
-                idl_fields.push(parser_types::TypeField{label: field.id, typ: type_2_idltype(field.ty)?});
+                idl_fields.push(parser_types::TypeField {
+                    label: field.id,
+                    typ: type_2_idltype(field.ty)?,
+                });
             }
             Ok(IDLType::RecordT(idl_fields))
         }
         Type::Variant(variants) => {
             let mut idl_variants = Vec::with_capacity(variants.len());
             for variant in variants {
-                idl_variants.push(parser_types::TypeField{label: variant.id, typ: type_2_idltype(variant.ty)?});
+                idl_variants.push(parser_types::TypeField {
+                    label: variant.id,
+                    typ: type_2_idltype(variant.ty)?,
+                });
             }
             Ok(IDLType::VariantT(idl_variants))
         }
         Type::Principal => Ok(IDLType::PrincipalT),
-        Type::Empty | Type::Knot(_) | Type::Var(_) | Type::Unknown | Type::Func(_) | Type::Service(_)| Type::Class(_, _) => Err(format!("Unsupported type: {ty:.30}")),
+        Type::Empty
+        | Type::Knot(_)
+        | Type::Var(_)
+        | Type::Unknown
+        | Type::Func(_)
+        | Type::Service(_)
+        | Type::Class(_, _) => Err(format!("Unsupported type: {ty:.30}")),
     }
 }
 
 fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<String, String> {
     fn candid_fallback<In>(payload_bytes: &[u8]) -> Result<String, String>
     where
-        In: CandidType
-
+        In: CandidType,
     {
-            let candid_type = IDLTypes{args: vec![ type_2_idltype(In::ty())?]};
-            let payload_idl = IDLArgs::from_bytes(payload_bytes).map_err(debug)?;
-            let json_value = idl_args2json_with_weak_names(&payload_idl, &candid_type, &IDL2JSON_OPTIONS);
-            serde_json::to_string(&json_value).map_err(|_|"Failed to serialize JSON".to_string())
+        let candid_type = IDLTypes {
+            args: vec![type_2_idltype(In::ty())?],
+        };
+        let payload_idl = IDLArgs::from_bytes(payload_bytes).map_err(debug)?;
+        let json_value = idl_args2json_with_weak_names(&payload_idl, &candid_type, &IDL2JSON_OPTIONS);
+        serde_json::to_string(&json_value).map_err(|_| "Failed to serialize JSON".to_string())
     }
 
     fn try_transform<In, Out>(payload_bytes: &[u8]) -> Result<String, String>
@@ -211,9 +224,10 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
     fn transform<In, Out>(payload_bytes: &[u8]) -> Result<String, String>
     where
         In: CandidType + DeserializeOwned + Into<Out>,
-        Out: Serialize, {
+        Out: Serialize,
+    {
         try_transform::<In, Out>(payload_bytes).or_else(|_| candid_fallback::<In>(payload_bytes))
-        }
+    }
     fn identity<Out>(payload_bytes: &[u8]) -> Result<String, String>
     where
         Out: CandidType + Serialize + DeserializeOwned,
