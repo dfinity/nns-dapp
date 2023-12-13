@@ -181,8 +181,6 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/text";
-
   // custom gap between text and the bar
   .commitment-progress-container {
     display: flex;
@@ -195,14 +193,11 @@
     align-items: center;
     gap: var(--padding-0_5x);
 
-    span {
-      @include text.clamp(1);
-    }
-
     // This is the dot with the participation color next to the label
     &::before {
       content: "";
       display: block;
+      flex-shrink: 0;
 
       height: var(--padding);
       width: var(--padding);
