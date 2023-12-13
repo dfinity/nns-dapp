@@ -235,6 +235,33 @@ export type MapIcrcTransactionType = typeof mapIcrcTransaction;
 // The memo will decode to: [0, [ withdrawalAddress, kytFee, status]]
 type CkbtcBurnMemo = [0, [string, number, number | null | undefined]];
 
+const MINT_TYPE_KYT_FAIL = 2;
+
+// The memo will decode to either:
+// * Convert: [0, [ tx_id, vout, kyt_fee]]
+// * KytFail: [2, [ kyt_fee, kyt_status, block_index]]
+type CkbtcMintMemo =
+  | [0, [Uint8Array?, number?, number?]]
+  | [2, [number, number?, number?]];
+
+const isCkbtcReimbursementMintMemo = (
+  memo: Uint8Array | number[] | undefined
+) => {
+  // Legacy minting transaction have a memo of length 0 or 32.
+  // We ignore them.
+  if (isNullish(memo) || memo.length === 0 || memo.length === 32) {
+    return false;
+  }
+  try {
+    const decodedMemo = Cbor.decode(new Uint8Array(memo)) as CkbtcMintMemo;
+    const mintType = decodedMemo[0];
+    return mintType === MINT_TYPE_KYT_FAIL;
+  } catch (err) {
+    console.error("Failed to decode ckBTC mint memo", memo, err);
+    return false;
+  }
+};
+
 export const mapCkbtcTransaction = (params: {
   transaction: IcrcTransactionWithId;
   account: Account;
@@ -252,8 +279,14 @@ export const mapCkbtcTransaction = (params: {
     transaction: { transaction },
   } = params;
   if (transaction.mint.length === 1) {
-    mappedTransaction.headline = i18n.ckbtc.btc_received;
+    const memo = transaction.mint[0].memo[0];
     mappedTransaction.otherParty = i18n.ckbtc.btc_network;
+    if (isCkbtcReimbursementMintMemo(memo)) {
+      mappedTransaction.headline = i18n.ckbtc.reimbursement;
+      mappedTransaction.isReimbursement = true;
+    } else {
+      mappedTransaction.headline = i18n.ckbtc.btc_received;
+    }
   } else if (transaction.burn.length === 1) {
     mappedTransaction.headline = i18n.ckbtc.btc_sent;
     const memo = transaction.burn[0].memo[0] as Uint8Array;

@@ -114,6 +114,14 @@ describe("TransactionCard", () => {
     expect(await po.hasPendingIcon()).toBe(true);
   });
 
+  it("displays reimbursement transaction", async () => {
+    const po = renderComponent({
+      isReimbursement: true,
+    });
+
+    expect(await po.hasReimbursementIcon()).toBe(true);
+  });
+
   it("displays identifier for received", async () => {
     const po = renderComponent({
       isIncoming: true,
