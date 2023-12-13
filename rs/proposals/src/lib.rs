@@ -223,7 +223,6 @@ mod def {
     use ic_base_types::{CanisterId, PrincipalId};
     use ic_crypto_sha2::Sha256;
     use ic_ic00_types::CanisterInstallMode;
-    use ic_nervous_system_common::MethodAuthzChange;
     use serde::{Deserialize, Serialize};
     use std::convert::TryFrom;
     use std::fmt::Write;
@@ -237,8 +236,22 @@ mod def {
     pub type AddNodesToSubnetPayload = crate::canisters::nns_registry::api::AddNodesToSubnetPayload;
 
     // NNS function 3 - AddNNSCanister
-    // https://github.com/dfinity/ic/blob/fba1b63a8c6bd1d49510c10f85fe6d1668089422/rs/nervous_system/root/src/lib.rs#L192
-    pub type AddNnsCanisterProposal = ic_nervous_system_root::change_canister::AddCanisterProposal;
+    // https://github.com/dfinity/ic/blob/a8e25a31ae9c649708405f2d4c3d058fdd730be2/rs/nervous_system/root/src/change_canister.rs#L137
+    // Renamed to AddNnsCanisterProposal
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct AddNnsCanisterProposal {
+        pub name: String,
+        #[serde(with = "serde_bytes")]
+        pub wasm_module: Vec<u8>,
+        pub arg: Vec<u8>,
+        #[serde(serialize_with = "serialize_optional_nat")]
+        pub compute_allocation: Option<candid::Nat>,
+        #[serde(serialize_with = "serialize_optional_nat")]
+        pub memory_allocation: Option<candid::Nat>,
+        #[serde(serialize_with = "serialize_optional_nat")]
+        pub query_allocation: Option<candid::Nat>,
+        pub initial_cycles: u64,
+    }
 
     // replace `wasm_module` with `wasm_module_hash`
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -254,7 +267,6 @@ mod def {
         #[serde(serialize_with = "serialize_optional_nat")]
         pub query_allocation: Option<candid::Nat>,
         pub initial_cycles: u64,
-        pub authz_changes: Vec<MethodAuthzChange>,
     }
 
     impl From<AddNnsCanisterProposal> for AddNnsCanisterProposalTrimmed {
@@ -271,14 +283,30 @@ mod def {
                 memory_allocation: payload.memory_allocation,
                 query_allocation: payload.query_allocation,
                 initial_cycles: payload.initial_cycles,
-                authz_changes: payload.authz_changes,
             }
         }
     }
 
     // NNS function 4 - UpgradeNNSCanister
-    // https://github.com/dfinity/ic/blob/fba1b63a8c6bd1d49510c10f85fe6d1668089422/rs/nervous_system/root/src/lib.rs#L75
-    pub type ChangeNnsCanisterProposal = ic_nervous_system_root::change_canister::ChangeCanisterProposal;
+    // https://github.com/dfinity/ic/blob/a8e25a31ae9c649708405f2d4c3d058fdd730be2/rs/nervous_system/root/src/change_canister.rs#L19
+    // Renamed to ChangeNnsCanisterProposal
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct ChangeNnsCanisterProposal {
+        pub stop_before_installing: bool,
+        pub mode: CanisterInstallMode,
+        pub canister_id: CanisterId,
+        #[serde(with = "serde_bytes")]
+        pub wasm_module: Vec<u8>,
+        #[serde(with = "serde_bytes")]
+        pub arg: Vec<u8>,
+
+        #[serde(serialize_with = "serialize_optional_nat")]
+        pub compute_allocation: Option<candid::Nat>,
+        #[serde(serialize_with = "serialize_optional_nat")]
+        pub memory_allocation: Option<candid::Nat>,
+        #[serde(serialize_with = "serialize_optional_nat")]
+        pub query_allocation: Option<candid::Nat>,
+    }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct ChangeNnsCanisterProposalTrimmed {
@@ -294,7 +322,6 @@ mod def {
         pub memory_allocation: Option<candid::Nat>,
         #[serde(serialize_with = "serialize_optional_nat")]
         pub query_allocation: Option<candid::Nat>,
-        pub authz_changes: Vec<MethodAuthzChange>,
     }
 
     impl From<ChangeNnsCanisterProposal> for ChangeNnsCanisterProposalTrimmed {
@@ -312,7 +339,6 @@ mod def {
                 compute_allocation: payload.compute_allocation,
                 memory_allocation: payload.memory_allocation,
                 query_allocation: payload.query_allocation,
-                authz_changes: payload.authz_changes,
             }
         }
     }
