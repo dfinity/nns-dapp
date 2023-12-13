@@ -600,7 +600,9 @@ interface I18nProposal_detail__vote {
   standard_super_majority: string;
   standard_super_majority_description: string;
   decision_intro: string;
-  votes_hint: string;
+  super_majority_decision_intro: string;
+  cast_votes: string;
+  cast_votes_needs: string;
 }
 
 interface I18nProposal_detail__ineligible {
@@ -769,6 +771,9 @@ interface I18nSns_project_detail {
   current_sale_buyer_count: string;
   min_commitment_goal: string;
   max_commitment_goal: string;
+  min_nf_commitment_goal: string;
+  max_nf_commitment_goal: string;
+  min_participation_reached: string;
   deadline: string;
   starts: string;
   user_commitment: string;

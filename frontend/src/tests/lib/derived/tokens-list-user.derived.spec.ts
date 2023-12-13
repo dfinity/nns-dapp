@@ -1,13 +1,17 @@
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
+import { authStore } from "$lib/stores/auth.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
+import { buildAccountsUrl, buildWalletUrl } from "$lib/utils/navigation.utils";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
@@ -24,21 +28,28 @@ import {
   ckBTCTokenBase,
   ckETHTokenBase,
   createIcpUserToken,
-  icpTokenBase,
 } from "$tests/mocks/tokens-page.mock";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("tokens-list-user.derived", () => {
+  const icpUserTokenNoBalance: UserTokenData = createIcpUserToken({
+    rowHref: buildAccountsUrl({ universe: OWN_CANISTER_ID_TEXT }),
+  });
+  const identityMainAccountIdentifier = encodeIcrcAccount({
+    owner: mockIdentity.getPrincipal(),
+  });
   const icpUserToken: UserTokenData = createIcpUserToken({
     balance: TokenAmountV2.fromUlps({
       amount: mockMainAccount.balanceUlps,
       token: NNS_TOKEN_DATA,
     }),
     actions: [UserTokenAction.GoToDetail],
+    rowHref: buildAccountsUrl({ universe: OWN_CANISTER_ID_TEXT }),
   });
   const snsTetrisToken = mockSnsToken;
   const snsTetris = {
@@ -57,7 +68,7 @@ describe("tokens-list-user.derived", () => {
     lifecycle: SnsSwapLifecycle.Committed,
     tokenMetadata: snsPackmanToken,
   };
-  const tetrisTokenBase: UserTokenData = {
+  const tetrisTokenNoBalance: UserTokenData = {
     universeId: snsTetris.rootCanisterId,
     title: snsTetris.projectName,
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/g3pce-2iaae/logo.png",
@@ -68,16 +79,20 @@ describe("tokens-list-user.derived", () => {
       token: snsTetris.tokenMetadata,
     }),
     actions: [],
+    rowHref: buildWalletUrl({
+      universe: snsTetris.rootCanisterId.toText(),
+      account: identityMainAccountIdentifier,
+    }),
   };
   const tetrisUserToken: UserTokenData = {
-    ...tetrisTokenBase,
+    ...tetrisTokenNoBalance,
     balance: TokenAmountV2.fromUlps({
       amount: mockSnsMainAccount.balanceUlps,
       token: snsTetrisToken,
     }),
     actions: [UserTokenAction.Receive, UserTokenAction.Send],
   };
-  const pacmanTokenBase: UserTokenData = {
+  const pacmanTokenNoBalance: UserTokenData = {
     universeId: snsPacman.rootCanisterId,
     title: snsPacman.projectName,
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/f7crg-kabae/logo.png",
@@ -88,25 +103,55 @@ describe("tokens-list-user.derived", () => {
       token: snsPacman.tokenMetadata,
     }),
     actions: [],
+    rowHref: buildWalletUrl({
+      universe: snsPacman.rootCanisterId.toText(),
+      account: identityMainAccountIdentifier,
+    }),
   };
   const pacmanUserToken: UserTokenData = {
-    ...pacmanTokenBase,
+    ...pacmanTokenNoBalance,
     balance: TokenAmountV2.fromUlps({
       amount: mockSnsMainAccount.balanceUlps,
       token: snsPackmanToken,
     }),
     actions: [UserTokenAction.Receive, UserTokenAction.Send],
   };
-  const ckBTCUserToken: UserTokenData = {
+  const ckBTCTokenNoBalance: UserTokenData = {
     ...ckBTCTokenBase,
+    balance: new UnavailableTokenAmount(mockCkBTCToken),
+    token: mockCkBTCToken,
+    fee: TokenAmountV2.fromUlps({
+      amount: mockCkBTCToken.fee,
+      token: mockCkBTCToken,
+    }),
+    rowHref: buildWalletUrl({
+      universe: ckBTCTokenBase.universeId.toText(),
+      account: identityMainAccountIdentifier,
+    }),
+  };
+  const ckBTCUserToken: UserTokenData = {
+    ...ckBTCTokenNoBalance,
     balance: TokenAmountV2.fromUlps({
       amount: mockCkBTCMainAccount.balanceUlps,
       token: mockCkBTCToken,
     }),
     actions: [UserTokenAction.Receive, UserTokenAction.Send],
   };
-  const ckETHUserToken: UserTokenData = {
+  const ckETHTokenNobalance: UserTokenData = {
     ...ckETHTokenBase,
+    balance: new UnavailableTokenAmount(mockCkETHToken),
+    token: mockCkETHToken,
+    fee: TokenAmountV2.fromUlps({
+      amount: mockCkETHToken.fee,
+      token: mockCkETHToken,
+    }),
+    rowHref: buildWalletUrl({
+      universe: ckETHTokenBase.universeId.toText(),
+      account: identityMainAccountIdentifier,
+    }),
+  };
+  const ckETHUserToken: UserTokenData = {
+    ...ckETHTokenNobalance,
     balance: TokenAmountV2.fromUlps({
       amount: mockCkETHMainAccount.balanceUlps,
       token: mockCkETHToken,
@@ -114,12 +159,13 @@ describe("tokens-list-user.derived", () => {
     actions: [UserTokenAction.Receive, UserTokenAction.Send],
   };
 
-  describe("tokensListBaseStore", () => {
+  describe("tokensListUserStore", () => {
     beforeEach(() => {
       icpAccountsStore.resetForTesting();
       icrcAccountsStore.reset();
       snsAccountsStore.reset();
       tokensStore.reset();
+      authStore.setForTesting(mockIdentity);
 
       setSnsProjects([snsTetris, snsPacman]);
       setCkETHCanisters();
@@ -141,11 +187,11 @@ describe("tokens-list-user.derived", () => {
 
     it("should return UnavailableBalance and no actions if no balance", () => {
       expect(get(tokensListUserStore)).toEqual([
-        icpTokenBase,
-        ckBTCTokenBase,
-        ckETHTokenBase,
-        tetrisTokenBase,
-        pacmanTokenBase,
+        icpUserTokenNoBalance,
+        ckBTCTokenNoBalance,
+        ckETHTokenNobalance,
+        tetrisTokenNoBalance,
+        pacmanTokenNoBalance,
       ]);
     });
 
@@ -155,10 +201,10 @@ describe("tokens-list-user.derived", () => {
       });
       expect(get(tokensListUserStore)).toEqual([
         icpUserToken,
-        ckBTCTokenBase,
-        ckETHTokenBase,
-        tetrisTokenBase,
-        pacmanTokenBase,
+        ckBTCTokenNoBalance,
+        ckETHTokenNobalance,
+        tetrisTokenNoBalance,
+        pacmanTokenNoBalance,
       ]);
     });
 
@@ -171,11 +217,11 @@ describe("tokens-list-user.derived", () => {
         universeId: CKBTC_UNIVERSE_CANISTER_ID,
       });
       expect(get(tokensListUserStore)).toEqual([
-        icpTokenBase,
+        icpUserTokenNoBalance,
         ckBTCUserToken,
-        ckETHTokenBase,
-        tetrisTokenBase,
-        pacmanTokenBase,
+        ckETHTokenNobalance,
+        tetrisTokenNoBalance,
+        pacmanTokenNoBalance,
       ]);
     });
 
@@ -188,11 +234,11 @@ describe("tokens-list-user.derived", () => {
         universeId: CKETH_UNIVERSE_CANISTER_ID,
       });
       expect(get(tokensListUserStore)).toEqual([
-        icpTokenBase,
-        ckBTCTokenBase,
+        icpUserTokenNoBalance,
+        ckBTCTokenNoBalance,
         ckETHUserToken,
-        tetrisTokenBase,
-        pacmanTokenBase,
+        tetrisTokenNoBalance,
+        pacmanTokenNoBalance,
       ]);
     });
 
@@ -203,11 +249,11 @@ describe("tokens-list-user.derived", () => {
         rootCanisterId: snsTetris.rootCanisterId,
       });
       expect(get(tokensListUserStore)).toEqual([
-        icpTokenBase,
-        ckBTCTokenBase,
-        ckETHTokenBase,
+        icpUserTokenNoBalance,
+        ckBTCTokenNoBalance,
+        ckETHTokenNobalance,
         tetrisUserToken,
-        pacmanTokenBase,
+        pacmanTokenNoBalance,
       ]);
     });
 

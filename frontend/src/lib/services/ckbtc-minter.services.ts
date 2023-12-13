@@ -166,9 +166,9 @@ export const updateBalance = async ({
     ckbtcPendingUtxosStore.setUtxos({ universeId, utxos: pending });
 
     // Workaround. Ultimately we want to poll to update balance and list of transactions
-    await waitForMilliseconds(
-      deferReload ? WALLET_TRANSACTIONS_RELOAD_DELAY : 0
-    );
+    if (deferReload) {
+      await waitForMilliseconds(WALLET_TRANSACTIONS_RELOAD_DELAY);
+    }
 
     if (uiIndicators) {
       if (completed.length > 0) {

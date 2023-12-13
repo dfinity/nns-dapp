@@ -113,6 +113,7 @@ jobs:
         uses: ./.github/actions/start_dfx_snapshot
         with:
           nns_dapp_wasm: 'nns-dapp_test.wasm.gz'
+          logfile: 'dfx-test-downgrade-upgrade.log'
       - name: Downgrade nns-dapp to prod and upgrade back again
         run: ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp_test.wasm.gz
       - name: Count upgrade cycles
@@ -225,6 +226,7 @@ jobs:
         uses: ./.github/actions/start_dfx_snapshot
         with:
           nns_dapp_wasm: 'nns-dapp_test.wasm.gz'
+          logfile: 'dfx-test-test-account-api.log'
       - name: Check that test accounts can be created and read
         run: ./scripts/nns-dapp/test-account.test
   test-rest:
@@ -251,6 +253,7 @@ jobs:
         with:
           nns_dapp_wasm: 'nns-dapp.wasm.gz'
           sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
+          logfile: 'dfx-test-rest.log'
       - name: Add go and SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
@@ -387,6 +390,7 @@ jobs:
         uses: ./.github/actions/start_dfx_snapshot
         with:
           sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
+          logfile: 'dfx-aggregator-test.log'
       - name: Get the earliest data from the sns aggregator
         run: |
           AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"

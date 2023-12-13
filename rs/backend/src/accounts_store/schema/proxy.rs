@@ -26,6 +26,12 @@ pub struct AccountsDbAsProxy {
     migration: Option<Migration>,
 }
 
+impl Default for AccountsDbAsProxy {
+    fn default() -> Self {
+        Self::new_with_map()
+    }
+}
+
 struct Migration {
     /// The database being migrated to
     db: AccountsDb,
@@ -46,12 +52,6 @@ impl fmt::Debug for Migration {
 pub enum AccountsDb {
     Map(AccountsDbAsMap),
     UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap),
-}
-
-impl Default for AccountsDbAsProxy {
-    fn default() -> Self {
-        Self::new_with_map()
-    }
 }
 
 // Constructors
@@ -84,6 +84,7 @@ impl AccountsDbAsProxy {
     /// The progress meter count reserved for finalizing a migration.
     /// Note: This must be positive and should correspond to a reasonable estimate of the number of blocks needed to complete the migration.
     pub const MIGRATION_FINALIZATION_BLOCKS: u32 = 1;
+
     /// Migration countdown; when it reaches zero, the migration is complete.
     ///
     /// Note: This is a rough estimate of the number of blocks needed to complete the migration.

@@ -81,6 +81,36 @@ describe("ProjectCommitment", () => {
     expect(po.getCurrentTotalCommitment()).resolves.toEqual("500.00 ICP");
   });
 
+  it("should hide success message when current commitment is less then the min participation goal", async () => {
+    const directCommitment = 1000000000n;
+    const summary = createSummary({
+      currentTotalCommitment: directCommitment,
+      neuronsFundCommitment: 0n,
+      directCommitment,
+      minDirectParticipation: 10000000000n,
+      maxDirectParticipation: 100000000000n,
+    });
+    const po = renderComponent(summary);
+
+    expect(await po.getGoalReachedMessage()).toEqual(null);
+  });
+
+  it("should render success message when current commitment reaches the min participation goal", async () => {
+    const directCommitment = 30000000000n;
+    const summary = createSummary({
+      currentTotalCommitment: directCommitment,
+      neuronsFundCommitment: 0n,
+      directCommitment,
+      minDirectParticipation: 10000000000n,
+      maxDirectParticipation: 100000000000n,
+    });
+    const po = renderComponent(summary);
+
+    expect(await po.getGoalReachedMessage()).toEqual(
+      "🎉 Minimum participation has been reached, the swap is successful."
+    );
+  });
+
   describe("when Neurons' Fund enhancements fields are available", () => {
     const nfCommitment = 10000000000n;
     const directCommitment = 30000000000n;
@@ -90,12 +120,23 @@ describe("ProjectCommitment", () => {
       neuronsFundCommitment: nfCommitment,
       minDirectParticipation: 10000000000n,
       maxDirectParticipation: 100000000000n,
+      maxNFParticipation: 200000000000n,
     });
 
     it("should render a progress bar with direct participation", async () => {
       const po = renderComponent(summary);
       const progressBarPo = po.getCommitmentProgressBarPo();
       expect(await progressBarPo.getCommitmentE8s()).toBe(directCommitment);
+    });
+
+    it("should render a progress bar with NF participation", async () => {
+      const po = renderComponent(summary);
+      const progressBarPo = po.getNfCommitmentProgressBarPo();
+
+      expect(await progressBarPo.isPresent()).toBe(true);
+      expect(await progressBarPo.getCommitmentE8s()).toBe(nfCommitment);
+      expect(await progressBarPo.getMinCommitment()).toBe("0 ICP");
+      expect(await progressBarPo.getMaxCommitment()).toBe(`2'000.00 ICP`);
     });
 
     it("should render detailed participation if neurons fund participation is available", async () => {

@@ -9,6 +9,9 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 ## Unreleased
 
 ### Added
+
+- Include SNS nervous system parameters.
+
 ### Changed
 ### Deprecated
 ### Removed

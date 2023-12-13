@@ -11,67 +11,51 @@ import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.co
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import {
   UserTokenAction,
+  type UserTokenBase,
   type UserTokenData,
   type UserTokenLoading,
 } from "$lib/types/tokens-page";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { TokenAmountV2 } from "@dfinity/utils";
-import { mockCkBTCToken, mockCkTESTBTCToken } from "./ckbtc-accounts.mock";
-import { mockCkETHToken } from "./cketh-accounts.mock";
+import { mockCkBTCToken } from "./ckbtc-accounts.mock";
 import { mockSnsToken, principal } from "./sns-projects.mock";
 
-export const icpTokenBase: UserTokenData = {
+export const icpTokenBase: UserTokenBase = {
   universeId: OWN_CANISTER_ID,
   title: "Internet Computer",
   logo: IC_LOGO_ROUNDED,
+  actions: [],
+};
+const icpTokenNoBalance: UserTokenData = {
+  ...icpTokenBase,
   balance: new UnavailableTokenAmount(NNS_TOKEN_DATA),
   token: NNS_TOKEN_DATA,
   fee: TokenAmountV2.fromUlps({
     amount: NNS_TOKEN_DATA.fee,
     token: NNS_TOKEN_DATA,
   }),
-  actions: [],
 };
 const snsTetrisToken = mockSnsToken;
 const snsPackmanToken = {
   ...mockSnsToken,
   symbol: "PAC",
 };
-
-export const ckBTCTokenBase: UserTokenData = {
+export const ckBTCTokenBase: UserTokenBase = {
   universeId: CKBTC_UNIVERSE_CANISTER_ID,
   title: "ckBTC",
   logo: CKBTC_LOGO,
-  balance: new UnavailableTokenAmount(mockCkBTCToken),
-  token: mockCkBTCToken,
-  fee: TokenAmountV2.fromUlps({
-    amount: mockCkBTCToken.fee,
-    token: mockCkBTCToken,
-  }),
   actions: [],
 };
-export const ckETHTokenBase: UserTokenData = {
+export const ckETHTokenBase: UserTokenBase = {
   universeId: CKETH_UNIVERSE_CANISTER_ID,
   title: "ckETH",
   logo: CKETH_LOGO,
-  balance: new UnavailableTokenAmount(mockCkETHToken),
-  token: mockCkETHToken,
-  fee: TokenAmountV2.fromUlps({
-    amount: mockCkETHToken.fee,
-    token: mockCkETHToken,
-  }),
   actions: [],
 };
-export const ckTESTBTCTokenBase: UserTokenData = {
+export const ckTESTBTCTokenBase: UserTokenBase = {
   universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
   title: "ckTESTBTC",
   logo: CKTESTBTC_LOGO,
-  balance: new UnavailableTokenAmount(mockCkTESTBTCToken),
-  token: mockCkTESTBTCToken,
-  fee: TokenAmountV2.fromUlps({
-    amount: mockCkTESTBTCToken.fee,
-    token: mockCkTESTBTCToken,
-  }),
   actions: [],
 };
 
@@ -93,11 +77,17 @@ export const userTokenPageMock: UserTokenData = {
 
 export const userTokensPageMock: UserTokenData[] = [
   {
-    ...icpTokenBase,
+    ...icpTokenNoBalance,
     actions: [UserTokenAction.GoToDetail],
   },
   {
     ...ckBTCTokenBase,
+    balance: new UnavailableTokenAmount(mockCkBTCToken),
+    token: mockCkBTCToken,
+    fee: TokenAmountV2.fromUlps({
+      amount: mockCkBTCToken.fee,
+      token: mockCkBTCToken,
+    }),
     actions: [UserTokenAction.Send, UserTokenAction.Receive],
   },
   {
@@ -138,7 +128,7 @@ export const createUserToken = (params: Partial<UserTokenData> = {}) => ({
 });
 
 export const createIcpUserToken = (params: Partial<UserTokenData> = {}) => ({
-  ...icpTokenBase,
+  ...icpTokenNoBalance,
   ...params,
 });
 

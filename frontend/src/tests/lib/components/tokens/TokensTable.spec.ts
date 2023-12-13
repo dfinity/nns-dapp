@@ -1,5 +1,6 @@
 import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { AppPath } from "$lib/constants/routes.constants";
 import { ActionType } from "$lib/types/actions";
 import {
   UserTokenAction,
@@ -17,7 +18,7 @@ import { TokensTablePo } from "$tests/page-objects/TokensTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { createActionEvent } from "$tests/utils/actions.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
-import { render } from "@testing-library/svelte";
+import { render, waitFor } from "@testing-library/svelte";
 import type { Mock } from "vitest";
 import TokensTableTest from "./TokensTableTest.svelte";
 
@@ -270,6 +271,60 @@ describe("TokensTable", () => {
         data: userToken,
       })
     );
+  });
+
+  it("clicking in a Send action should not trigger the row link", async () => {
+    const userToken = createUserToken({
+      actions: [UserTokenAction.Send],
+      rowHref: AppPath.Neurons,
+    });
+
+    const po = renderTable({
+      userTokensData: [userToken],
+      onAction: vi.fn(),
+    });
+
+    const rows = await po.getRows();
+    const rowPo = rows[0];
+
+    const sendButton = rowPo.getSendButton();
+
+    let isClicked = false;
+    sendButton.addEventListener("click", (event) => {
+      expect(event.defaultPrevented).toBe(true);
+      isClicked = true;
+    });
+
+    await sendButton.click();
+
+    await waitFor(() => expect(isClicked).toBe(true));
+  });
+
+  it("clicking in a Receive action should not trigger the row link", async () => {
+    const userToken = createUserToken({
+      actions: [UserTokenAction.Receive],
+      rowHref: AppPath.Neurons,
+    });
+
+    const po = renderTable({
+      userTokensData: [userToken],
+      onAction: vi.fn(),
+    });
+
+    const rows = await po.getRows();
+    const rowPo = rows[0];
+
+    const receiveButton = rowPo.getReceiveButton();
+
+    let isClicked = false;
+    receiveButton.addEventListener("click", (event) => {
+      expect(event.defaultPrevented).toBe(true);
+      isClicked = true;
+    });
+
+    await receiveButton.click();
+
+    await waitFor(() => expect(isClicked).toBe(true));
   });
 
   it("should trigger event when clicking in Receive action", async () => {

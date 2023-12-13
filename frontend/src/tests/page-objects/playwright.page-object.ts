@@ -123,4 +123,8 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
   async innerHtmlForDebugging(): Promise<string> {
     return "not implemeneted";
   }
+
+  async addEventListener(): Promise<void> {
+    throw new Error("Not implement");
+  }
 }

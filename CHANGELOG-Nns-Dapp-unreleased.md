@@ -20,11 +20,13 @@ proposal is successful, the changes it released will be moved from this file to
 * Neuron type support.
 * Card with BTC deposit address and QR code in ckBTC wallet.
 * Merge Approve transfer with BTC "Sent" transaction in transaction list.
+* Display Neurons' Fund commitment progress bar.
 
 #### Changed
 
 * Render BTC deposits/withdrawals as "BTC Received"/"BTC Sent".
 * Update Rust version: `1.74.0` -> `1.74.1`
+* Provide space for migration state in the `ProxyDb`.
 
 #### Deprecated
 
@@ -44,7 +46,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-- Move ic-wasm installation into a GitHub action.
+* Allow npm greater than v10 in frontend project.
 
 #### Deprecated
 
@@ -57,6 +59,8 @@ proposal is successful, the changes it released will be moved from this file to
 * Provide missing global config in cache-filling workflow.
 * Update the correct flavour of golden file when the NNS Dapp canister API changes.
 * Specify the node version to use in the version bump test.
+* Summarize the `AccountsStore` contents in its `Debug` representation rather than trying to print its entire contents.
 * Lock the spellcheck version and its dependencies.
+* Keep `dfx start` logs in CI.
 
 #### Security

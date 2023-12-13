@@ -21,7 +21,11 @@
   import { isArrayEmpty } from "$lib/utils/utils";
   import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-uncertified-accounts.services";
   import { ckBTCUniversesStore } from "$lib/derived/ckbtc-universes.derived";
-  import { isUniverseCkBTC, isUniverseNns } from "$lib/utils/universe.utils";
+  import {
+    isIcrcTokenUniverse,
+    isUniverseCkBTC,
+    isUniverseNns,
+  } from "$lib/utils/universe.utils";
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
   import type { UserTokenData } from "$lib/types/tokens-page";
   import { toTokenAmountV2 } from "$lib/utils/token.utils";
@@ -29,6 +33,12 @@
     icrcCanistersStore,
     type IcrcCanistersStoreData,
   } from "$lib/stores/icrc-canisters.store";
+  import CkBtcTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
+  import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
+  import { updateBalance } from "$lib/services/ckbtc-minter.services";
+  import { nonNullish } from "@dfinity/utils";
+  import { Principal } from "@dfinity/principal";
+  import IcrcTokenTransactionModal from "$lib/modals/accounts/IcrcTokenTransactionModal.svelte";
 
   onMount(() => {
     if (!$ENABLE_MY_TOKENS) {
@@ -64,6 +74,25 @@
     if (loadCkBTCAccountsBalancesRequested) {
       return;
     }
+
+    /**
+     * Calling updateBalance because users are confused about when and how to call it and product required to add this additional call within this process.
+     * That way, when user navigates to the Tokens page, the call is also triggered.
+     *
+     * There is also a "Check for incoming BTC" button in the Wallet page.
+     */
+    universes.forEach((universe: Universe) => {
+      const ckBTCCanisters = CKBTC_ADDITIONAL_CANISTERS[universe.canisterId];
+      if (nonNullish(ckBTCCanisters.minterCanisterId)) {
+        updateBalance({
+          universeId: Principal.fromText(universe.canisterId),
+          minterCanisterId: ckBTCCanisters.minterCanisterId,
+          reload: () => loadAccountsBalances([universe.canisterId]),
+          deferReload: false,
+          uiIndicators: false,
+        });
+      }
+    });
 
     loadCkBTCAccountsBalancesRequested = true;
 
@@ -101,7 +130,10 @@
   })();
 
   let modal:
-    | { type: "sns-send" | "nns-send" | "ckbtc-send"; data: UserTokenData }
+    | {
+        type: "sns-send" | "nns-send" | "ckbtc-send" | "icrc-send";
+        data: UserTokenData;
+      }
     | undefined;
   const closeModal = () => {
     modal = undefined;
@@ -117,6 +149,13 @@
         modal = { type: "nns-send", data: detail.data };
       } else if (isUniverseCkBTC(detail.data.universeId)) {
         modal = { type: "ckbtc-send", data: detail.data };
+      } else if (
+        isIcrcTokenUniverse({
+          universeId: detail.data.universeId,
+          icrcCanisters: $icrcCanistersStore,
+        })
+      ) {
+        modal = { type: "icrc-send", data: detail.data };
       } else {
         // Default to SNS, this might change when we have more universe sources
         modal = { type: "sns-send", data: detail.data };
@@ -141,6 +180,26 @@
       token={modal.data.token}
       transactionFee={toTokenAmountV2(modal.data.fee)}
       on:nnsClose={closeModal}
+    />
+  {/if}
+
+  {#if modal?.type === "ckbtc-send"}
+    <CkBtcTransactionModal
+      on:nnsClose={closeModal}
+      on:nnsTransfer={closeModal}
+      token={modal.data.token}
+      transactionFee={modal.data.fee}
+      universeId={modal.data.universeId}
+      canisters={CKBTC_ADDITIONAL_CANISTERS[modal.data.universeId.toText()]}
+    />
+  {/if}
+
+  {#if modal?.type === "icrc-send"}
+    <IcrcTokenTransactionModal
+      on:nnsClose={closeModal}
+      ledgerCanisterId={modal.data.universeId}
+      token={modal.data.token}
+      transactionFee={modal.data.fee}
     />
   {/if}
 </TestIdWrapper>

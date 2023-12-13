@@ -29,6 +29,13 @@
   @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
+  div {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--padding-0_5x);
+  }
+
   .icon {
     padding: 0;
     color: var(--description-color);
