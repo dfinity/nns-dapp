@@ -1,10 +1,9 @@
 <script lang="ts">
-  import { nonNullish } from "@dfinity/utils";
+  import { TokenAmountV2, nonNullish, type Token } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import { numberToE8s } from "$lib/utils/token.utils";
   import TransactionReceivedTokenAmount from "$lib/components/transaction/TransactionReceivedTokenAmount.svelte";
   import BitcoinFeeDisplay from "$lib/components/accounts/BitcoinFeeDisplay.svelte";
-  import { TokenAmount, type Token } from "@dfinity/utils";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import {
@@ -50,8 +49,8 @@
       ? amountE8s - estimatedFee
       : BigInt(0);
 
-  let tokenEstimatedAmount: TokenAmount;
-  $: tokenEstimatedAmount = TokenAmount.fromE8s({
+  let tokenEstimatedAmount: TokenAmountV2;
+  $: tokenEstimatedAmount = TokenAmountV2.fromUlps({
     amount: estimatedAmount,
     token,
   });

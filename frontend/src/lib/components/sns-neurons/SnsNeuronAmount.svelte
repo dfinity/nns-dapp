@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TokenAmount } from "@dfinity/utils";
+  import { TokenAmountV2 } from "@dfinity/utils";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { getSnsNeuronStake } from "$lib/utils/sns-neuron.utils";
   import type { SnsNeuron } from "@dfinity/sns";
@@ -8,10 +8,10 @@
 
   export let neuron: SnsNeuron;
 
-  let neuronStake: TokenAmount | undefined;
+  let neuronStake: TokenAmountV2 | undefined;
   $: neuronStake =
     $snsTokenSymbolSelectedStore !== undefined
-      ? TokenAmount.fromE8s({
+      ? TokenAmountV2.fromUlps({
           amount: getSnsNeuronStake(neuron),
           // If we got here is because the token symbol is present.
           // The projects without token are discarded filtered out.

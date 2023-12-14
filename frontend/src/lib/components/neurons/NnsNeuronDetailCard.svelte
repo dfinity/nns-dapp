@@ -1,7 +1,7 @@
 <script lang="ts">
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { secondsToDuration } from "@dfinity/utils";
+  import { ICPToken, TokenAmountV2, secondsToDuration } from "@dfinity/utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
     formatVotingPower,
@@ -12,13 +12,12 @@
   } from "$lib/utils/neuron.utils";
   import { Card, KeyValuePair } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { ICPToken, TokenAmount } from "@dfinity/utils";
 
   export let neuron: NeuronInfo;
   export let testId = "nns-neuron-detail-card-component";
 
-  let stake: TokenAmount;
-  $: stake = TokenAmount.fromE8s({
+  let stake: TokenAmountV2;
+  $: stake = TokenAmountV2.fromUlps({
     amount: neuronStake(neuron),
     token: ICPToken,
   });

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import { TokenAmount, ICPToken } from "@dfinity/utils";
+  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import { isSpawning, neuronStake } from "$lib/utils/neuron.utils";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
@@ -9,8 +9,8 @@
   export let neuron: NeuronInfo;
   export let proposerNeuron = false;
 
-  let neuronICP: TokenAmount;
-  $: neuronICP = TokenAmount.fromE8s({
+  let neuronICP: TokenAmountV2;
+  $: neuronICP = TokenAmountV2.fromUlps({
     amount: neuronStake(neuron),
     token: ICPToken,
   });
@@ -22,7 +22,7 @@
   <AmountDisplay
     title
     label={$i18n.neurons.voting_power}
-    amount={TokenAmount.fromE8s({
+    amount={TokenAmountV2.fromUlps({
       amount: neuron.votingPower,
       token: ICPToken,
     })}
