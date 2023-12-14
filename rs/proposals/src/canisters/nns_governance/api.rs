@@ -1,5 +1,5 @@
 //! Rust code created from candid by: scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-11-29_23-01/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-12-06_23-01+p2p/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(clippy::missing_docs_in_private_items)]
 #![allow(non_camel_case_types)]
@@ -477,6 +477,20 @@ pub struct MakingSnsProposal {
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct SeedAccount {
+    pub error_count: u64,
+    pub account_id: String,
+    pub neuron_type: i32,
+    pub tag_end_timestamp_seconds: Option<u64>,
+    pub tag_start_timestamp_seconds: Option<u64>,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct SeedAccounts {
+    pub accounts: Vec<SeedAccount>,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct MostRecentMonthlyNodeProviderRewards {
     pub timestamp: u64,
     pub rewards: Vec<RewardNodeProvider>,
@@ -491,24 +505,34 @@ pub struct GovernanceCachedMetrics {
     pub dissolving_neurons_staked_maturity_e8s_equivalent_buckets: Vec<(u64, f64)>,
     pub neurons_with_invalid_stake_count: u64,
     pub not_dissolving_neurons_count_buckets: Vec<(u64, u64)>,
+    pub ect_neuron_count: u64,
     pub total_supply_icp: u64,
     pub neurons_with_less_than_6_months_dissolve_delay_count: u64,
     pub dissolved_neurons_count: u64,
     pub community_fund_total_maturity_e8s_equivalent: u64,
+    pub total_staked_e8s_seed: u64,
+    pub total_staked_maturity_e8s_equivalent_ect: u64,
     pub total_staked_e8s: u64,
     pub not_dissolving_neurons_count: u64,
     pub total_locked_e8s: u64,
     pub neurons_fund_total_active_neurons: u64,
     pub total_staked_maturity_e8s_equivalent: u64,
+    pub not_dissolving_neurons_e8s_buckets_ect: Vec<(u64, f64)>,
+    pub total_staked_e8s_ect: u64,
     pub not_dissolving_neurons_staked_maturity_e8s_equivalent_sum: u64,
     pub dissolved_neurons_e8s: u64,
+    pub dissolving_neurons_e8s_buckets_seed: Vec<(u64, f64)>,
     pub neurons_with_less_than_6_months_dissolve_delay_e8s: u64,
     pub not_dissolving_neurons_staked_maturity_e8s_equivalent_buckets: Vec<(u64, f64)>,
     pub dissolving_neurons_count_buckets: Vec<(u64, u64)>,
+    pub dissolving_neurons_e8s_buckets_ect: Vec<(u64, f64)>,
     pub dissolving_neurons_count: u64,
     pub dissolving_neurons_e8s_buckets: Vec<(u64, f64)>,
+    pub total_staked_maturity_e8s_equivalent_seed: u64,
     pub community_fund_total_staked_e8s: u64,
+    pub not_dissolving_neurons_e8s_buckets_seed: Vec<(u64, f64)>,
     pub timestamp_seconds: u64,
+    pub seed_neuron_count: u64,
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
@@ -739,6 +763,7 @@ pub struct Neuron {
     pub controller: Option<Principal>,
     pub recent_ballots: Vec<BallotInfo>,
     pub kyc_verified: bool,
+    pub neuron_type: Option<i32>,
     pub not_for_profit: bool,
     pub maturity_e8s_equivalent: u64,
     pub cached_neuron_stake_e8s: u64,
@@ -760,6 +785,7 @@ pub struct Neuron {
 pub struct Governance {
     pub default_followees: Vec<(i32, Followees)>,
     pub making_sns_proposal: Option<MakingSnsProposal>,
+    pub seed_accounts: Option<SeedAccounts>,
     pub most_recent_monthly_node_provider_rewards: Option<MostRecentMonthlyNodeProviderRewards>,
     pub maturity_modulation_last_updated_at_timestamp_seconds: Option<u64>,
     pub wait_for_quiet_threshold_seconds: u64,
@@ -819,6 +845,7 @@ pub enum Result4 {
 pub struct NeuronInfo {
     pub dissolve_delay_seconds: u64,
     pub recent_ballots: Vec<BallotInfo>,
+    pub neuron_type: Option<i32>,
     pub created_timestamp_seconds: u64,
     pub state: i32,
     pub stake_e8s: u64,

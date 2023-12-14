@@ -1,9 +1,9 @@
 //! An accounts DB implemented as a hash map.
 
 use super::{Account, AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel};
+use core::fmt;
 use core::ops::RangeBounds;
 use std::collections::BTreeMap;
-use std::fmt;
 
 #[derive(Default, Eq, PartialEq)]
 pub struct AccountsDbAsMap {

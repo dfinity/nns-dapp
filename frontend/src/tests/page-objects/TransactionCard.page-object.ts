@@ -41,4 +41,9 @@ export class TransactionCardPo extends BasePageObject {
     const classNames = await this.root.byTestId("icon").getClasses();
     return classNames.includes("pending");
   }
+
+  async hasReimbursementIcon(): Promise<boolean> {
+    const classNames = await this.root.byTestId("icon").getClasses();
+    return classNames.includes("reimbursed");
+  }
 }
