@@ -31,6 +31,16 @@ describe("FiltersButton", () => {
     expect(getByTestId("spinner")).not.toBeNull();
   });
 
+  it("should be disabled when spinner", () => {
+    const { container } = render(FiltersButton, {
+      totalFilters: 1,
+      activeFilters: 1,
+      showSpinner: true,
+    });
+
+    expect(container.querySelector("button").disabled).toBe(true);
+  });
+
   it("should render a text for the number of filters", () => {
     const { container } = render(FiltersButton, {
       totalFilters: 7,

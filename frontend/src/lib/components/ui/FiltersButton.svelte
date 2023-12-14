@@ -13,7 +13,12 @@
   const filter = () => dispatch("nnsFilter");
 </script>
 
-<button data-tid={testId} on:click={filter} class="secondary">
+<button
+  data-tid={testId}
+  on:click={filter}
+  class="secondary"
+  disabled={showSpinner}
+>
   <IconFilter />
   <slot />
   {#if showSpinner}
