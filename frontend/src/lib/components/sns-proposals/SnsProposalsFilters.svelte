@@ -19,6 +19,7 @@
   let filtersStore: ProjectFiltersStoreData | undefined;
   $: filtersStore = $snsFiltersStore[rootCanisterId.toText()];
 
+  // TODO(max): "topics" to "types"
   const openFilters = (filtersModal: "topics" | "rewards" | "status") => {
     modal = filtersModal;
   };
@@ -35,8 +36,10 @@
     activeFilters={filtersStore?.topics.filter(({ checked }) => checked)
       .length ?? 0}
     on:nnsFilter={() => openFilters("topics")}
-    >{$i18n.voting.topics}</FiltersButton
+    showSpinner={filtersStore?.topics.length === 0}
   >
+    {$i18n.voting.topics}
+  </FiltersButton>
   <FiltersButton
     testId="filters-by-rewards"
     totalFilters={filtersStore?.rewardStatus.length ?? 0}
