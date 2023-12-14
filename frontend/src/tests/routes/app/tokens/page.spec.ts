@@ -68,7 +68,8 @@ describe("Tokens route", () => {
     ...mockSnsToken,
     symbol: "PCMN",
   };
-  const tetrisBalanceE8s = 222000000n;
+  const tetrisDefaultBalanceE8s = 222000000n;
+  let tetrisBalanceE8s = tetrisDefaultBalanceE8s;
   const pacmanBalanceE8s = 314000000n;
   const ckBTCDefaultBalanceE8s = 444556699n;
   let ckBTCBalanceE8s = ckBTCDefaultBalanceE8s;
@@ -105,6 +106,7 @@ describe("Tokens route", () => {
       tokensStore.reset();
       ckBTCBalanceE8s = ckBTCDefaultBalanceE8s;
       ckETHBalanceUlps = ckETHDefaultBalanceUlps;
+      tetrisBalanceE8s = tetrisDefaultBalanceE8s;
       overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
       vi.spyOn(walletLedgerApi, "getToken").mockImplementation(
         async ({ canisterId }) => {
@@ -384,6 +386,56 @@ describe("Tokens route", () => {
           });
         });
 
+        it("should update balance after using the ckETH receive modal", async () => {
+          const po = await renderPage();
+
+          const tokensPagePo = await po.getTokensPagePo();
+
+          expect(await tokensPagePo.getRowData("ckETH")).toEqual({
+            projectName: "ckETH",
+            balance: "4.14 ckETH",
+          });
+
+          await tokensPagePo.clickReceiveOnRow("ckETH");
+          const modalPo = po.getReceiveModalPo();
+          expect(await modalPo.isPresent()).toBe(true);
+
+          ckETHBalanceUlps += 1_000_000_000_000_000_000n;
+          await modalPo.clickFinish();
+
+          await runResolvedPromises();
+
+          expect(await tokensPagePo.getRowData("ckETH")).toEqual({
+            projectName: "ckETH",
+            balance: "5.14 ckETH",
+          });
+        });
+
+        it("should update balance after using the SNS receive modal", async () => {
+          const po = await renderPage();
+
+          const tokensPagePo = await po.getTokensPagePo();
+
+          expect(await tokensPagePo.getRowData("Tetris")).toEqual({
+            projectName: "Tetris",
+            balance: "2.22 TST",
+          });
+
+          await tokensPagePo.clickReceiveOnRow("Tetris");
+          const modalPo = po.getReceiveModalPo();
+          expect(await modalPo.isPresent()).toBe(true);
+
+          tetrisBalanceE8s += 100_000_000n;
+          await modalPo.clickFinish();
+
+          await runResolvedPromises();
+
+          expect(await tokensPagePo.getRowData("Tetris")).toEqual({
+            projectName: "Tetris",
+            balance: "3.22 TST",
+          });
+        });
+
         it("users can send ckBTC tokens", async () => {
           const po = await renderPage();
 
@@ -433,8 +485,6 @@ describe("Tokens route", () => {
           const po = await renderPage();
 
           const tokensPagePo = po.getTokensPagePo();
-
-          await tokensPagePo.clickSendOnRow("ckETH");
 
           expect(await tokensPagePo.getRowData("ckETH")).toEqual({
             projectName: "ckETH",

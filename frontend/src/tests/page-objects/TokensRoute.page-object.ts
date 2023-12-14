@@ -3,6 +3,7 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 import { CkBTCReceiveModalPo } from "./CkBTCReceiveModal.page-object";
 import { CkBTCTransactionModalPo } from "./CkBTCTransactionModal.page-object";
 import { IcrcTokenTransactionModalPo } from "./IcrcTokenTransactionModal.page-object";
+import { ReceiveModalPo } from "./ReceiveModal.page-object";
 import { SignInTokensPagePo } from "./SignInTokens.page-object";
 import { SnsTransactionModalPo } from "./SnsTransactionModal.page-object";
 import { TokensPagePo } from "./TokensPage.page-object";
@@ -36,6 +37,10 @@ export class TokensRoutePo extends BasePageObject {
 
   getCkBTCReceiveModalPo(): CkBTCReceiveModalPo {
     return CkBTCReceiveModalPo.under(this.root);
+  }
+
+  getReceiveModalPo(): ReceiveModalPo {
+    return ReceiveModalPo.under(this.root);
   }
 
   transferSnsTokens(params: {
