@@ -7,7 +7,7 @@ import type {
 } from "$lib/types/account";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { TransactionNetwork } from "$lib/types/transaction";
-import { sumAmountE8s } from "$lib/utils/token.utils";
+import { sumAmounts } from "$lib/utils/token.utils";
 import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
 import { BtcNetwork, parseBtcAddress, type BtcAddress } from "@dfinity/ckbtc";
 import {
@@ -227,7 +227,7 @@ export const sumNnsAccounts = (
   accounts: IcpAccountsStoreData | undefined
 ): bigint | undefined =>
   accounts?.main?.balanceUlps !== undefined
-    ? sumAmountE8s(
+    ? sumAmounts(
         accounts?.main?.balanceUlps,
         ...(accounts?.subAccounts || []).map(({ balanceUlps }) => balanceUlps),
         ...(accounts?.hardwareWallets || []).map(
@@ -241,7 +241,7 @@ export const sumAccounts = (
 ): bigint | undefined =>
   isNullish(accounts) || accounts.length === 0
     ? undefined
-    : sumAmountE8s(...accounts.map(({ balanceUlps }) => balanceUlps));
+    : sumAmounts(...accounts.map(({ balanceUlps }) => balanceUlps));
 
 export const hasAccounts = (accounts: Account[]): boolean =>
   accounts.length > 0;
