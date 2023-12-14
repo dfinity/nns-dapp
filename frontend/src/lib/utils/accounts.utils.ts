@@ -196,13 +196,12 @@ export const getAccountsByRootCanister = ({
  */
 export const assertEnoughAccountFunds = ({
   account,
-  // TODO: GIX-2154 rename to amountUlps
-  amountE8s,
+  amountUlps,
 }: {
   account: Account;
-  amountE8s: bigint;
+  amountUlps: bigint;
 }): void => {
-  if (account.balanceUlps < amountE8s) {
+  if (account.balanceUlps < amountUlps) {
     throw new NotEnoughAmountError("error.insufficient_funds");
   }
 };

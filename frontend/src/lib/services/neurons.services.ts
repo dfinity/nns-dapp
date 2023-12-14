@@ -194,7 +194,7 @@ export const stakeNeuron = async ({
     const stake = numberToE8s(amount);
     assertEnoughAccountFunds({
       account,
-      amountE8s: stake,
+      amountUlps: stake,
     });
 
     if (!isEnoughToStakeNeuron({ stakeE8s: stake })) {
