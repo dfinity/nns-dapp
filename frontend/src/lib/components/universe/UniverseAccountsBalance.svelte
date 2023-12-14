@@ -10,7 +10,7 @@
   export let universe: Universe;
 
   let balanceUlps: bigint | undefined;
-  $: balanceUlps = $universesAccountsBalance[universe.canisterId]?.balanceE8s;
+  $: balanceUlps = $universesAccountsBalance[universe.canisterId]?.balanceUlps;
 
   let token: Token | undefined;
   $: token = $tokensStore[universe.canisterId]?.token;
