@@ -14,9 +14,9 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import GetTokens from "$lib/components/ic/GetTokens.svelte";
   import {
-    accountsPathStore,
     canistersPathStore,
     neuronsPathStore,
+    tokensPathStore,
     proposalsPathStore,
   } from "$lib/derived/paths.derived";
   import { keyOf } from "$lib/utils/utils";
@@ -40,7 +40,7 @@
   $: routes = [
     {
       context: "accounts",
-      href: $accountsPathStore,
+      href: $tokensPathStore,
       selected: isSelectedPath({
         currentPath: $pageStore.path,
         paths: [AppPath.Accounts, AppPath.Wallet, AppPath.Tokens],

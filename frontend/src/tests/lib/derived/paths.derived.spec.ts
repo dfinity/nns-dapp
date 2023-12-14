@@ -5,6 +5,7 @@ import {
   canistersPathStore,
   neuronsPathStore,
   proposalsPathStore,
+  tokensPathStore,
 } from "$lib/derived/paths.derived";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { page } from "$mocks/$app/stores";
@@ -14,6 +15,34 @@ import { get } from "svelte/store";
 describe("paths derived stores", () => {
   beforeEach(() => {
     overrideFeatureFlagsStore.reset();
+  });
+
+  describe("tokensPathStore", () => {
+    describe("when My Tokens feature is enabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
+      });
+
+      it("should return the tokens path if universe is not NNS", () => {
+        page.mock({ data: { universe: mockSnsCanisterIdText } });
+
+        expect(get(tokensPathStore)).toBe(AppPath.Tokens);
+      });
+    });
+
+    describe("when My Tokens feature is disabled", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
+      });
+
+      it("should return the accounts path", () => {
+        page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
+
+        expect(get(tokensPathStore)).toBe(
+          `${AppPath.Accounts}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
+        );
+      });
+    });
   });
 
   describe("accountsPathStore", () => {
