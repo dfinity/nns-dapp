@@ -40,8 +40,18 @@ describe("paths derived stores", () => {
         overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
       });
 
-      it("should return the tokens path", () => {
+      it("should return the tokens path if universe is not NNS", () => {
+        page.mock({ data: { universe: mockSnsCanisterIdText } });
+
         expect(get(accountsPathStore)).toBe(AppPath.Tokens);
+      });
+
+      it("should return the NNS accounts path if universe is NNS", () => {
+        page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
+
+        expect(get(accountsPathStore)).toBe(
+          `${AppPath.Accounts}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
+        );
       });
     });
   });

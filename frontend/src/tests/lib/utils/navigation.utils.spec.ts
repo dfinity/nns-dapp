@@ -20,7 +20,7 @@ import {
   isSelectedPath,
   reloadRouteData,
 } from "$lib/utils/navigation.utils";
-import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import { mockSnsFullProject, principal } from "$tests/mocks/sns-projects.mock";
 
 describe("navigation-utils", () => {
   describe("reload", () => {
@@ -133,19 +133,50 @@ describe("navigation-utils", () => {
     });
 
     it("should build accounts url when tokens not enabled", () => {
+      const universe = principal(0).toText();
+      expect(
+        buildAccountsUrl({
+          universe,
+        })
+      ).toEqual(`${AppPath.Accounts}/?${UNIVERSE_PARAM}=${universe}`);
+    });
+
+    it("should build accounts url when tokens is enabled", () => {
+      const universe = principal(0).toText();
+      expect(
+        buildAccountsUrl({
+          universe,
+          tokensEnabled: true,
+        })
+      ).toEqual(AppPath.Tokens);
+    });
+
+    it("should build accounts url for NNS even with tokens enabled", () => {
       expect(
         buildAccountsUrl({
           universe: OWN_CANISTER_ID_TEXT,
+          tokensEnabled: true,
         })
       ).toEqual(
         `${AppPath.Accounts}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
       );
     });
 
-    it("should build accounts url when tokens is enabled", () => {
+    it("should build accounts url for NNS if universe is not a valid principal string and tokens are not enabled", () => {
       expect(
         buildAccountsUrl({
-          universe: OWN_CANISTER_ID_TEXT,
+          universe: "not-valid",
+          tokensEnabled: false,
+        })
+      ).toEqual(
+        `${AppPath.Accounts}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
+      );
+    });
+
+    it("should build Tokens path if universe is not a valid principal string and tokens are enabled", () => {
+      expect(
+        buildAccountsUrl({
+          universe: "not-valid",
           tokensEnabled: true,
         })
       ).toEqual(AppPath.Tokens);

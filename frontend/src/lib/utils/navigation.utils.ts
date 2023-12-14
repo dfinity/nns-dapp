@@ -1,3 +1,4 @@
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   ACCOUNT_PARAM,
   AppPath,
@@ -7,6 +8,8 @@ import {
   UNIVERSE_PARAM,
 } from "$lib/constants/routes.constants";
 import type { NeuronId, ProposalId } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import { isUniverseNns } from "./universe.utils";
 import { isArrayEmpty } from "./utils";
 
 // If the previous page is a particular detail page and if we have data in store, we don't reset and query the data in store after the route is mounted.
@@ -53,10 +56,19 @@ export const buildAccountsUrl = ({
 }: {
   universe: string;
   tokensEnabled?: boolean;
-}) =>
-  tokensEnabled
-    ? AppPath.Tokens
-    : buildUrl({ path: AppPath.Accounts, universe });
+}) => {
+  try {
+    // `Principal.fromText` throws if the text is not a valid principal
+    const universePrincipal = Principal.fromText(universe);
+    return tokensEnabled && !isUniverseNns(universePrincipal)
+      ? AppPath.Tokens
+      : buildUrl({ path: AppPath.Accounts, universe });
+  } catch (error) {
+    return tokensEnabled
+      ? AppPath.Tokens
+      : buildUrl({ path: AppPath.Accounts, universe: OWN_CANISTER_ID_TEXT });
+  }
+};
 export const buildNeuronsUrl = ({ universe }: { universe: string }) =>
   buildUrl({ path: AppPath.Neurons, universe });
 export const buildProposalsUrl = ({ universe }: { universe: string }) =>
