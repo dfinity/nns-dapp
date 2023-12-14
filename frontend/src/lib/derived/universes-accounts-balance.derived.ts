@@ -14,8 +14,7 @@ import { sumAccounts, sumNnsAccounts } from "$lib/utils/accounts.utils";
 import { derived } from "svelte/store";
 
 export interface UniverseAccountsBalance {
-  // TODO GIX-2154: Rename to balanceUlps
-  balanceE8s: bigint | undefined;
+  balanceUlps: bigint | undefined;
   certified: boolean;
 }
 
@@ -31,14 +30,14 @@ export const universesAccountsBalance = derived<
   [icpAccountsStore, snsAccountsStore, icrcAccountsStore],
   ([$accountsStore, $snsAccountsStore, $icrcAccountsStore]) => ({
     [OWN_CANISTER_ID_TEXT]: {
-      balanceE8s: sumNnsAccounts($accountsStore),
+      balanceUlps: sumNnsAccounts($accountsStore),
       certified: $accountsStore.certified ?? false,
     },
     ...Object.entries($icrcAccountsStore).reduce(
       (acc, [canisterId, { accounts, certified }]) => ({
         ...acc,
         [canisterId]: {
-          balanceE8s: sumAccounts(accounts),
+          balanceUlps: sumAccounts(accounts),
           certified,
         },
       }),
@@ -48,7 +47,7 @@ export const universesAccountsBalance = derived<
       (acc, [rootCanisterId, { accounts, certified }]) => ({
         ...acc,
         [rootCanisterId]: {
-          balanceE8s: sumAccounts(accounts),
+          balanceUlps: sumAccounts(accounts),
           certified,
         },
       }),
