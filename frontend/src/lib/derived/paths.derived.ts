@@ -13,12 +13,9 @@ import { derived, type Readable } from "svelte/store";
 export const tokensPathStore = derived<
   [Readable<Page>, Readable<boolean>],
   string
->([pageStore, ENABLE_MY_TOKENS], ([{ universe }, isTokensEnabled]) => {
-  if (isTokensEnabled) {
-    return AppPath.Tokens;
-  }
-  return buildAccountsUrl({ universe });
-});
+>([pageStore, ENABLE_MY_TOKENS], ([{ universe }, isTokensEnabled]) =>
+  isTokensEnabled ? AppPath.Tokens : buildAccountsUrl({ universe })
+);
 
 export const accountsPathStore = derived<Readable<Page>, string>(
   pageStore,
