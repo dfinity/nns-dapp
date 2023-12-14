@@ -33,4 +33,8 @@ export class TokensPagePo extends BasePageObject {
   clickSendOnRow(projectName: string): Promise<void> {
     return this.getTokensTable().clickSendOnRow(projectName);
   }
+
+  clickReceiveOnRow(projectName: string): Promise<void> {
+    return this.getTokensTable().clickReceiveOnRow(projectName);
+  }
 }
