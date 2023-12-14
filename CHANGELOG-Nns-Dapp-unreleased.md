@@ -68,5 +68,6 @@ proposal is successful, the changes it released will be moved from this file to
 * Summarize the `AccountsStore` contents in its `Debug` representation rather than trying to print its entire contents.
 * Lock the spellcheck version and its dependencies.
 * Keep `dfx start` logs in CI.
+* Let canister IDs provided by the dfx cli override fixed canister IDs in config files.  Needed for local deployments.
 
 #### Security
