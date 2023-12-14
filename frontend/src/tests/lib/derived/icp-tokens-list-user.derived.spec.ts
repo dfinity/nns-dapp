@@ -2,14 +2,21 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { icpTokensListUser } from "$lib/derived/icp-tokens-list-user.derived";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
-import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
+import {
+  UserTokenAction,
+  type UserTokenData,
+  type UserTokenLoading,
+} from "$lib/types/tokens-page";
 import { buildWalletUrl } from "$lib/utils/navigation.utils";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
-import { createIcpUserToken } from "$tests/mocks/tokens-page.mock";
+import {
+  createIcpUserToken,
+  icpTokenBase,
+} from "$tests/mocks/tokens-page.mock";
 import { TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
 
@@ -17,10 +24,10 @@ describe("icp-tokens-list-user.derived", () => {
   const icpTokenUser: UserTokenData = createIcpUserToken({
     actions: [UserTokenAction.Receive, UserTokenAction.Send],
   });
-  const emptyUserTokenData: UserTokenData = {
-    ...icpTokenUser,
-    title: "Internet Computer",
-    subtitle: undefined,
+  const loadingUserTokenData: UserTokenLoading = {
+    ...icpTokenBase,
+    title: "Main",
+    balance: "loading",
     actions: [],
   };
   const mainUserTokenData: UserTokenData = {
@@ -69,7 +76,7 @@ describe("icp-tokens-list-user.derived", () => {
     });
 
     it("should return empty if no accounts", () => {
-      expect(get(icpTokensListUser)).toEqual([emptyUserTokenData]);
+      expect(get(icpTokensListUser)).toEqual([loadingUserTokenData]);
     });
 
     it("should return only main if no subaccounts and no subaccounts", () => {
