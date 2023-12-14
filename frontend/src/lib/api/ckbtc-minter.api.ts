@@ -10,6 +10,7 @@ import {
   type MinterParams,
   type RetrieveBtcOk,
   type RetrieveBtcParams,
+  type RetrieveBtcStatusV2WithId,
   type UpdateBalanceOk,
   type WithdrawalAccount,
 } from "@dfinity/ckbtc";
@@ -121,6 +122,28 @@ export const retrieveBtcWithApproval = async ({
   const result = await retrieveBtcWithApprovalApi(params);
 
   logWithTimestamp("Retrieve BTC with approval: done");
+
+  return result;
+};
+
+export const retrieveBtcStatusV2ByAccount = async ({
+  identity,
+  canisterId,
+  certified,
+}: {
+  identity: Identity;
+  canisterId: Principal;
+  certified: boolean;
+}): Promise<RetrieveBtcStatusV2WithId[]> => {
+  logWithTimestamp("Retrieve btc status V2 by account: call...");
+
+  const {
+    canister: { retrieveBtcStatusV2ByAccount: retrieveBtcStatusV2ByAccountApi },
+  } = await ckBTCMinterCanister({ identity, canisterId });
+
+  const result = await retrieveBtcStatusV2ByAccountApi({ certified });
+
+  logWithTimestamp("Retrieve btc status V2 by account: done...");
 
   return result;
 };

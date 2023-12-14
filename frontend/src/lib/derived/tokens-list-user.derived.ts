@@ -36,7 +36,7 @@ const convertToUserTokenData = ({
   baseTokenData: UserTokenBase;
   authData: AuthStoreData;
 }): UserToken => {
-  const balanceUlps = balances[baseTokenData.universeId.toText()]?.balanceE8s;
+  const balanceUlps = balances[baseTokenData.universeId.toText()]?.balanceUlps;
   const token = tokens[baseTokenData.universeId.toText()]?.token;
   const rowHref = isNullish(authData.identity)
     ? undefined

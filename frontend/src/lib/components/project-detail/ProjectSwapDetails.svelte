@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TokenAmount, ICPToken } from "@dfinity/utils";
+  import { TokenAmount, ICPToken, TokenAmountV2 } from "@dfinity/utils";
   import {
     getDeniedCountries,
     getMaxNeuronsFundParticipation,
@@ -36,19 +36,19 @@
     token,
   } = summary);
 
-  let minCommitmentIcp: TokenAmount;
-  $: minCommitmentIcp = TokenAmount.fromE8s({
+  let minCommitmentIcp: TokenAmountV2;
+  $: minCommitmentIcp = TokenAmountV2.fromUlps({
     amount: params.min_participant_icp_e8s,
     token: ICPToken,
   });
-  let maxCommitmentIcp: TokenAmount;
-  $: maxCommitmentIcp = TokenAmount.fromE8s({
+  let maxCommitmentIcp: TokenAmountV2;
+  $: maxCommitmentIcp = TokenAmountV2.fromUlps({
     amount: params.max_participant_icp_e8s,
     token: ICPToken,
   });
 
-  let snsTokens: TokenAmount;
-  $: snsTokens = TokenAmount.fromE8s({
+  let snsTokens: TokenAmountV2;
+  $: snsTokens = TokenAmountV2.fromUlps({
     amount: params.sns_token_e8s,
     token,
   });
@@ -106,7 +106,7 @@
       <span slot="key">{$i18n.sns_project_detail.max_nf_commitment} </span>
       <AmountDisplay
         slot="value"
-        amount={TokenAmount.fromE8s({
+        amount={TokenAmountV2.fromUlps({
           amount: maxNFParticipation,
           token: ICPToken,
         })}

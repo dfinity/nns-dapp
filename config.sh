@@ -48,9 +48,9 @@ local_deployment_data="$(
   : "- may be set by dfx as an env var"
   : "- may be deployed locally"
   LOCALLY_DEPLOYED_NNS_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-dapp 2>/dev/null || true)"
-  test -n "${CANISTER_ID:-}" || CANISTER_ID="$LOCALLY_DEPLOYED_NNS_CANISTER_ID"
-  export CANISTER_ID
-  test -n "${CANISTER_ID:-}" || unset CANISTER_ID
+  test -n "${OWN_CANISTER_ID:-}" || OWN_CANISTER_ID="$LOCALLY_DEPLOYED_NNS_CANISTER_ID"
+  export OWN_CANISTER_ID
+  test -n "${OWN_CANISTER_ID:-}" || unset OWN_CANISTER_ID
 
   : "Try to find the internet_identity URL"
   : "- may be deployed locally"
@@ -120,16 +120,9 @@ local_deployment_data="$(
   STATIC_HOST="$(dfx-canister-url --network "$DFX_NETWORK" --type static)"
   export API_HOST STATIC_HOST
 
-  : "Determine whether we need to fetch the root key"
-  case "${DFX_NETWORK:-}" in
-  mainnet | ic) FETCH_ROOT_KEY=false ;;
-  *) FETCH_ROOT_KEY=true ;;
-  esac
-  export FETCH_ROOT_KEY
-
   : "Put any values we found in JSON.  Omit any that are undefined."
   jq -n '{
-    OWN_CANISTER_ID: env.CANISTER_ID,
+    OWN_CANISTER_ID: env.OWN_CANISTER_ID,
     IDENTITY_SERVICE_URL: env.IDENTITY_SERVICE_URL,
     SNS_AGGREGATOR_URL: env.SNS_AGGREGATOR_URL,
     LEDGER_CANISTER_ID: env.LEDGER_CANISTER_ID,
@@ -142,7 +135,6 @@ local_deployment_data="$(
     ROBOTS: env.ROBOTS,
     STATIC_HOST: env.STATIC_HOST,
     API_HOST: env.API_HOST,
-    FETCH_ROOT_KEY: env.FETCH_ROOT_KEY,
     WASM_CANISTER_ID: env.WASM_CANISTER_ID,
     TVL_CANISTER_ID: env.TVL_CANISTER_ID,
     GOVERNANCE_CANISTER_ID: env.GOVERNANCE_CANISTER_ID
@@ -160,11 +152,11 @@ local_deployment_data="$(
 : "- construct ledger and governance canister URLs"
 # TODO: I believe that the following can be discarded now.
 json=$(HOST=$(dfx-canister-url --network "$DFX_NETWORK" --type api) jq -s --sort-keys '
-  (.[0].defaults.network.config // {}) * .[1] * (.[2].config // {}) |
+  (.[0].defaults.network.config // {}) * (.[1].config // {}) * .[2] |
   .DFX_NETWORK = env.DFX_NETWORK |
   . as $config |
   .HOST=env.HOST
-    ' dfx.json <(echo "$local_deployment_data") <(network_config))
+    ' dfx.json <(network_config) <(echo "$local_deployment_data"))
 
 dfxNetwork=$(echo "$json" | jq -r ".DFX_NETWORK")
 cmcCanisterId=$(echo "$json" | jq -r ".CYCLES_MINTING_CANISTER_ID")
