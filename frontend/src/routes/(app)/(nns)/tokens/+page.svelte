@@ -123,10 +123,8 @@
     });
   };
 
-  const reloadCkBTC = () => {
-    return loadAccountsBalances(
-      $ckBTCUniversesStore.map(({ canisterId }) => canisterId)
-    );
+  const createReloadAccountBalance = (universeId: Principal) => () => {
+    return loadAccountsBalances([universeId.toText()]);
   };
 
   $: (async () => {
@@ -244,7 +242,7 @@
         account,
         universeId: modal.data.universeId,
         canSelectAccount: false,
-        reload: reloadCkBTC,
+        reload: createReloadAccountBalance(modal.data.universeId),
       }}
       on:nnsClose={closeModal}
     />
