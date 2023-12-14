@@ -9,7 +9,7 @@ import {
   getMaxTransactionAmount,
   numberToE8s,
   numberToUlps,
-  sumAmountE8s,
+  sumAmounts,
   toTokenAmountV2,
   ulpsToNumber,
 } from "$lib/utils/token.utils";
@@ -311,7 +311,7 @@ describe("token-utils", () => {
     });
   });
 
-  describe("sumAmountE8s", () => {
+  describe("sumAmounts", () => {
     it("should sum amounts of E8s values", () => {
       const icp0 = 0n;
       const icp1 = 100000000n;
@@ -321,10 +321,10 @@ describe("token-utils", () => {
       const icp35 = 350000000n;
       const icp6 = 600000000n;
 
-      expect(sumAmountE8s(icp0, icp1)).toEqual(icp1);
-      expect(sumAmountE8s(icp1, icp2)).toEqual(icp3);
-      expect(sumAmountE8s(icp1, icp2, icp3)).toEqual(icp6);
-      expect(sumAmountE8s(icp15, icp2)).toEqual(icp35);
+      expect(sumAmounts(icp0, icp1)).toEqual(icp1);
+      expect(sumAmounts(icp1, icp2)).toEqual(icp3);
+      expect(sumAmounts(icp1, icp2, icp3)).toEqual(icp6);
+      expect(sumAmounts(icp15, icp2)).toEqual(icp35);
     });
   });
 
