@@ -96,7 +96,7 @@
       const tokens = TokenAmountV2.fromNumber({ amount, token });
       assertEnoughAccountFunds({
         account: selectedAccount,
-        amountE8s: tokens.toUlps() + toTokenAmountV2(transactionFee).toUlps(),
+        amountUlps: tokens.toUlps() + toTokenAmountV2(transactionFee).toUlps(),
       });
       errorMessage = validateAmount({ amount, selectedAccount });
     } catch (error: unknown) {
