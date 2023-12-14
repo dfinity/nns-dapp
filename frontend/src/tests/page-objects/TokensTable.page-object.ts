@@ -52,12 +52,32 @@ export class TokensTablePo extends BasePageObject {
     return row.getData();
   }
 
-  async clickSendOnRow(projectName: string): Promise<void> {
+  async clickButtonOnRow({
+    testId,
+    projectName,
+  }: {
+    testId: string;
+    projectName: string;
+  }): Promise<void> {
     const row = await this.findRowByName(projectName);
     if (isNullish(row)) {
       throw new Error(`Row with project name ${projectName} not found`);
     }
-    return row.click("send-button-component");
+    return row.click(testId);
+  }
+
+  async clickSendOnRow(projectName: string): Promise<void> {
+    return this.clickButtonOnRow({
+      testId: "send-button-component",
+      projectName,
+    });
+  }
+
+  async clickReceiveOnRow(projectName: string): Promise<void> {
+    return this.clickButtonOnRow({
+      testId: "receive-button-component",
+      projectName,
+    });
   }
 
   getLastRowText(): Promise<string> {

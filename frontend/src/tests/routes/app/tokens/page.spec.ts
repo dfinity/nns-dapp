@@ -282,6 +282,31 @@ describe("Tokens route", () => {
           ]);
         });
 
+        it("should update balance after using the receive modal", async () => {
+          const po = await renderPage();
+
+          const tokensPagePo = await po.getTokensPagePo();
+
+          expect(await tokensPagePo.getRowData("ckBTC")).toEqual({
+            projectName: "ckBTC",
+            balance: "4.45 ckBTC",
+          });
+
+          await tokensPagePo.clickReceiveOnRow("ckBTC");
+          const modalPo = po.getCkBTCReceiveModalPo();
+          expect(await modalPo.isPresent()).toBe(true);
+
+          ckBTCBalanceE8s += 100_000_000n;
+          await modalPo.clickFinish();
+
+          await runResolvedPromises();
+
+          expect(await tokensPagePo.getRowData("ckBTC")).toEqual({
+            projectName: "ckBTC",
+            balance: "5.45 ckBTC",
+          });
+        });
+
         it("should update the ckBTC balance in the background", async () => {
           const completedUtxos = [
             {
