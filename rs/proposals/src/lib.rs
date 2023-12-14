@@ -1,6 +1,7 @@
 use crate::canisters::nns_governance::api::{Action, ProposalInfo};
 use crate::def::*;
-use candid::parser::types::{IDLType, IDLTypes};
+use candid::parser::types::{self as parser_types, IDLType, IDLTypes};
+use candid::types::Type;
 use candid::{CandidType, Deserialize, IDLArgs};
 use ic_base_types::CanisterId;
 use ic_nns_constants::{GOVERNANCE_CANISTER_ID, IDENTITY_CANISTER_ID};
@@ -118,12 +119,7 @@ fn decode_arg(arg: &[u8], arg_types: IDLTypes) -> String {
     // TODO: Test muti-value payloads
     match IDLArgs::from_bytes(arg) {
         Ok(idl_args) => {
-            let options = Idl2JsonOptions {
-                bytes_as: Some(BytesFormat::Hex),
-                long_bytes_as: None,
-                prog: Vec::new(), // These are the type definitions used in proposal payloads.  If we have them, it would be nice to use them.  Do we?
-            };
-            let json_value = idl_args2json_with_weak_names(&idl_args, &arg_types, &options);
+            let json_value = idl_args2json_with_weak_names(&idl_args, &arg_types, &IDL2JSON_OPTIONS);
             serde_json::to_string(&json_value).expect("Failed to serialize JSON")
         }
         Err(_) => "[]".to_owned(),
@@ -134,14 +130,84 @@ fn decode_arg(arg: &[u8], arg_types: IDLTypes) -> String {
 pub fn process_proposal_payload(proposal_info: ProposalInfo) -> Json {
     if let Some(Action::ExecuteNnsFunction(f)) = proposal_info.proposal.as_ref().and_then(|p| p.action.as_ref()) {
         transform_payload_to_json(f.nns_function, &f.payload)
-            .unwrap_or_else(|e| serde_json::to_string(&format!("Unable to deserialize payload: {e}")).unwrap())
+            .unwrap_or_else(|e| serde_json::to_string(&format!("Unable to deserialize payload: {e:.400}")).unwrap())
     } else {
         serde_json::to_string("Proposal has no payload").unwrap()
     }
 }
 
+const IDL2JSON_OPTIONS: Idl2JsonOptions = Idl2JsonOptions {
+    bytes_as: Some(BytesFormat::Hex),
+    long_bytes_as: Some((256, BytesFormat::Sha256)),
+    prog: Vec::new(), // These are the type definitions used in proposal payloads.  If we have them, it would be nice to use them.  Do we?
+};
+
+/// Rust types can include things such as functions.  IDL types, sent over a wire, cannot.  Given that we want an IDLType from a more general type we need toconvert the general type to the more specialized type.
+fn type_2_idltype(ty: Type) -> Result<IDLType, String> {
+    match ty {
+        Type::Null => Ok(IDLType::PrimT(parser_types::PrimType::Null)),
+        Type::Bool => Ok(IDLType::PrimT(parser_types::PrimType::Bool)),
+        Type::Nat => Ok(IDLType::PrimT(parser_types::PrimType::Nat)),
+        Type::Int => Ok(IDLType::PrimT(parser_types::PrimType::Int)),
+        Type::Nat8 => Ok(IDLType::PrimT(parser_types::PrimType::Nat8)),
+        Type::Nat16 => Ok(IDLType::PrimT(parser_types::PrimType::Nat16)),
+        Type::Nat32 => Ok(IDLType::PrimT(parser_types::PrimType::Nat32)),
+        Type::Nat64 => Ok(IDLType::PrimT(parser_types::PrimType::Nat64)),
+        Type::Int8 => Ok(IDLType::PrimT(parser_types::PrimType::Int8)),
+        Type::Int16 => Ok(IDLType::PrimT(parser_types::PrimType::Int16)),
+        Type::Int32 => Ok(IDLType::PrimT(parser_types::PrimType::Int32)),
+        Type::Int64 => Ok(IDLType::PrimT(parser_types::PrimType::Int64)),
+        Type::Float32 => Ok(IDLType::PrimT(parser_types::PrimType::Float32)),
+        Type::Float64 => Ok(IDLType::PrimT(parser_types::PrimType::Float64)),
+        Type::Text => Ok(IDLType::PrimT(parser_types::PrimType::Text)),
+        Type::Reserved => Ok(IDLType::PrimT(parser_types::PrimType::Reserved)),
+        Type::Opt(ty) => Ok(IDLType::OptT(Box::new(type_2_idltype(*ty)?))),
+        Type::Vec(ty) => Ok(IDLType::VecT(Box::new(type_2_idltype(*ty)?))),
+        Type::Record(fields) => {
+            let mut idl_fields = Vec::with_capacity(fields.len());
+            for field in fields {
+                idl_fields.push(parser_types::TypeField {
+                    label: field.id,
+                    typ: type_2_idltype(field.ty)?,
+                });
+            }
+            Ok(IDLType::RecordT(idl_fields))
+        }
+        Type::Variant(variants) => {
+            let mut idl_variants = Vec::with_capacity(variants.len());
+            for variant in variants {
+                idl_variants.push(parser_types::TypeField {
+                    label: variant.id,
+                    typ: type_2_idltype(variant.ty)?,
+                });
+            }
+            Ok(IDLType::VariantT(idl_variants))
+        }
+        Type::Principal => Ok(IDLType::PrincipalT),
+        Type::Empty
+        | Type::Knot(_)
+        | Type::Var(_)
+        | Type::Unknown
+        | Type::Func(_)
+        | Type::Service(_)
+        | Type::Class(_, _) => Err(format!("Unsupported type: {ty:.30}")),
+    }
+}
+
 fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<String, String> {
-    fn transform<In, Out>(payload_bytes: &[u8]) -> Result<String, String>
+    fn candid_fallback<In>(payload_bytes: &[u8]) -> Result<String, String>
+    where
+        In: CandidType,
+    {
+        let candid_type = IDLTypes {
+            args: vec![type_2_idltype(In::ty())?],
+        };
+        let payload_idl = IDLArgs::from_bytes(payload_bytes).map_err(debug)?;
+        let json_value = idl_args2json_with_weak_names(&payload_idl, &candid_type, &IDL2JSON_OPTIONS);
+        serde_json::to_string(&json_value).map_err(|_| "Failed to serialize JSON".to_string())
+    }
+
+    fn try_transform<In, Out>(payload_bytes: &[u8]) -> Result<String, String>
     where
         In: CandidType + DeserializeOwned + Into<Out>,
         Out: Serialize,
@@ -155,7 +221,13 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
             Err("Payload too large".to_string())
         }
     }
-
+    fn transform<In, Out>(payload_bytes: &[u8]) -> Result<String, String>
+    where
+        In: CandidType + DeserializeOwned + Into<Out>,
+        Out: Serialize,
+    {
+        try_transform::<In, Out>(payload_bytes).or_else(|_| candid_fallback::<In>(payload_bytes))
+    }
     fn identity<Out>(payload_bytes: &[u8]) -> Result<String, String>
     where
         Out: CandidType + Serialize + DeserializeOwned,
@@ -223,7 +295,6 @@ mod def {
     use ic_base_types::{CanisterId, PrincipalId};
     use ic_crypto_sha2::Sha256;
     use ic_ic00_types::CanisterInstallMode;
-    use ic_nervous_system_common::MethodAuthzChange;
     use serde::{Deserialize, Serialize};
     use std::convert::TryFrom;
     use std::fmt::Write;
@@ -237,8 +308,22 @@ mod def {
     pub type AddNodesToSubnetPayload = crate::canisters::nns_registry::api::AddNodesToSubnetPayload;
 
     // NNS function 3 - AddNNSCanister
-    // https://github.com/dfinity/ic/blob/fba1b63a8c6bd1d49510c10f85fe6d1668089422/rs/nervous_system/root/src/lib.rs#L192
-    pub type AddNnsCanisterProposal = ic_nervous_system_root::change_canister::AddCanisterProposal;
+    // https://github.com/dfinity/ic/blob/a8e25a31ae9c649708405f2d4c3d058fdd730be2/rs/nervous_system/root/src/change_canister.rs#L137
+    // Renamed to AddNnsCanisterProposal
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct AddNnsCanisterProposal {
+        pub name: String,
+        #[serde(with = "serde_bytes")]
+        pub wasm_module: Vec<u8>,
+        pub arg: Vec<u8>,
+        #[serde(serialize_with = "serialize_optional_nat")]
+        pub compute_allocation: Option<candid::Nat>,
+        #[serde(serialize_with = "serialize_optional_nat")]
+        pub memory_allocation: Option<candid::Nat>,
+        #[serde(serialize_with = "serialize_optional_nat")]
+        pub query_allocation: Option<candid::Nat>,
+        pub initial_cycles: u64,
+    }
 
     // replace `wasm_module` with `wasm_module_hash`
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -254,7 +339,6 @@ mod def {
         #[serde(serialize_with = "serialize_optional_nat")]
         pub query_allocation: Option<candid::Nat>,
         pub initial_cycles: u64,
-        pub authz_changes: Vec<MethodAuthzChange>,
     }
 
     impl From<AddNnsCanisterProposal> for AddNnsCanisterProposalTrimmed {
@@ -271,14 +355,30 @@ mod def {
                 memory_allocation: payload.memory_allocation,
                 query_allocation: payload.query_allocation,
                 initial_cycles: payload.initial_cycles,
-                authz_changes: payload.authz_changes,
             }
         }
     }
 
     // NNS function 4 - UpgradeNNSCanister
-    // https://github.com/dfinity/ic/blob/fba1b63a8c6bd1d49510c10f85fe6d1668089422/rs/nervous_system/root/src/lib.rs#L75
-    pub type ChangeNnsCanisterProposal = ic_nervous_system_root::change_canister::ChangeCanisterProposal;
+    // https://github.com/dfinity/ic/blob/a8e25a31ae9c649708405f2d4c3d058fdd730be2/rs/nervous_system/root/src/change_canister.rs#L19
+    // Renamed to ChangeNnsCanisterProposal
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct ChangeNnsCanisterProposal {
+        pub stop_before_installing: bool,
+        pub mode: CanisterInstallMode,
+        pub canister_id: CanisterId,
+        #[serde(with = "serde_bytes")]
+        pub wasm_module: Vec<u8>,
+        #[serde(with = "serde_bytes")]
+        pub arg: Vec<u8>,
+
+        #[serde(serialize_with = "serialize_optional_nat")]
+        pub compute_allocation: Option<candid::Nat>,
+        #[serde(serialize_with = "serialize_optional_nat")]
+        pub memory_allocation: Option<candid::Nat>,
+        #[serde(serialize_with = "serialize_optional_nat")]
+        pub query_allocation: Option<candid::Nat>,
+    }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct ChangeNnsCanisterProposalTrimmed {
@@ -294,7 +394,6 @@ mod def {
         pub memory_allocation: Option<candid::Nat>,
         #[serde(serialize_with = "serialize_optional_nat")]
         pub query_allocation: Option<candid::Nat>,
-        pub authz_changes: Vec<MethodAuthzChange>,
     }
 
     impl From<ChangeNnsCanisterProposal> for ChangeNnsCanisterProposalTrimmed {
@@ -312,7 +411,6 @@ mod def {
                 compute_allocation: payload.compute_allocation,
                 memory_allocation: payload.memory_allocation,
                 query_allocation: payload.query_allocation,
-                authz_changes: payload.authz_changes,
             }
         }
     }

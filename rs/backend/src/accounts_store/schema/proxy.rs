@@ -4,7 +4,8 @@
 use std::collections::BTreeMap;
 mod enum_boilerplate;
 use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel};
-use std::fmt;
+use core::fmt;
+use core::ops::RangeBounds;
 
 /// An accounts database delegates API calls to underlying implementations.
 ///
@@ -121,6 +122,10 @@ impl AccountsDbTrait for AccountsDbAsProxy {
             "AccountsDb::Proxy: authoritative schema label: {schema_label:#?}"
         ));
         schema_label
+    }
+    /// Iterates over a range of accounts in the authoritative db.
+    fn range(&self, key_range: impl RangeBounds<Vec<u8>>) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
+        self.authoritative_db.range(key_range)
     }
 }
 

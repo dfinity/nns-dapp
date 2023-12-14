@@ -7,6 +7,7 @@ pub mod proxy;
 // Mechanics
 use crate::accounts_store::Account;
 use candid::{CandidType, Deserialize};
+use core::ops::RangeBounds;
 use serde::Serialize;
 use strum_macros::EnumIter;
 mod label_serialization;
@@ -100,6 +101,9 @@ pub trait AccountsDbTrait {
         let iterator = self.iter().map(|(_key, value)| value);
         Box::new(iterator)
     }
+
+    /// Returns an iterator over the entries in the map where keys belong to the specified range.
+    fn range(&self, key_range: impl RangeBounds<Vec<u8>>) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_>;
 
     /// Gets the label of the storage schema.
     fn schema_label(&self) -> SchemaLabel;

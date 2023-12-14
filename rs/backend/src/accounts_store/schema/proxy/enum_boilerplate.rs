@@ -51,4 +51,9 @@ impl AccountsDbTrait for AccountsDb {
             AccountsDb::Map(map_db) => map_db.iter(),
         }
     }
+    fn range(&self, key_range: impl RangeBounds<Vec<u8>>) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
+        match self {
+            AccountsDb::Map(map_db) => map_db.range(key_range),
+        }
+    }
 }

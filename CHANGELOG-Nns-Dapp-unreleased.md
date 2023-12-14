@@ -21,18 +21,24 @@ proposal is successful, the changes it released will be moved from this file to
 * Card with BTC deposit address and QR code in ckBTC wallet.
 * Merge Approve transfer with BTC "Sent" transaction in transaction list.
 * Display Neurons' Fund commitment progress bar.
+* `range()` method to `AccountsDbTrait`.
+* Render ckBTC Reimbursement transactions.
 
 #### Changed
 
 * Render BTC deposits/withdrawals as "BTC Received"/"BTC Sent".
 * Update Rust version: `1.74.0` -> `1.74.1`
 * Provide space for migration state in the `ProxyDb`.
+* Rename "Launch Pad" to "Launchpad".
 
 #### Deprecated
 
 #### Removed
 
 #### Fixed
+
+* Limit the size of proposal payload rendering errors, as otherwise the error can become too large to return.
+* Provide a fallback if proposal payloads don't have the expected type.
 
 #### Security
 

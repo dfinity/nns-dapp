@@ -2,9 +2,9 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import type { UserTokenData } from "$lib/types/tokens-page";
+  import type { UserToken } from "$lib/types/tokens-page";
 
-  export let userTokensData: UserTokenData[];
+  export let userTokensData: UserToken[];
 </script>
 
 <TestIdWrapper testId="tokens-page-component">

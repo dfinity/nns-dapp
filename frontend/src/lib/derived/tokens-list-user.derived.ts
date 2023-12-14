@@ -11,14 +11,13 @@ import {
 } from "$lib/stores/tokens.store";
 import {
   UserTokenAction,
+  type UserToken,
   type UserTokenBase,
-  type UserTokenData,
 } from "$lib/types/tokens-page";
 import { buildAccountsUrl, buildWalletUrl } from "$lib/utils/navigation.utils";
-import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { isUniverseNns } from "$lib/utils/universe.utils";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
-import { isNullish, nonNullish, TokenAmountV2 } from "@dfinity/utils";
+import { isNullish, TokenAmountV2 } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 import { tokensListBaseStore } from "./tokens-list-base.derived";
 import {
@@ -36,13 +35,9 @@ const convertToUserTokenData = ({
   tokens: TokensStoreData;
   baseTokenData: UserTokenBase;
   authData: AuthStoreData;
-}): UserTokenData | undefined => {
+}): UserToken => {
   const balanceUlps = balances[baseTokenData.universeId.toText()]?.balanceE8s;
   const token = tokens[baseTokenData.universeId.toText()]?.token;
-  if (isNullish(token)) {
-    // TODO: GIX-2062 Add loading state
-    return undefined;
-  }
   const rowHref = isNullish(authData.identity)
     ? undefined
     : isUniverseNns(baseTokenData.universeId)
@@ -53,16 +48,14 @@ const convertToUserTokenData = ({
           owner: authData.identity.getPrincipal(),
         }),
       });
-  const fee = TokenAmountV2.fromUlps({ amount: token.fee, token });
-  if (isNullish(balanceUlps)) {
+  if (isNullish(token) || isNullish(balanceUlps)) {
     return {
       ...baseTokenData,
-      balance: new UnavailableTokenAmount(token),
-      token,
-      fee,
-      rowHref,
+      balance: "loading",
+      actions: [],
     };
   }
+  const fee = TokenAmountV2.fromUlps({ amount: token.fee, token });
   const balance = TokenAmountV2.fromUlps({ amount: balanceUlps, token });
   return {
     ...baseTokenData,
@@ -85,13 +78,11 @@ export const tokensListUserStore = derived<
     TokensStore,
     AuthStore,
   ],
-  UserTokenData[]
+  UserToken[]
 >(
   [tokensListBaseStore, universesAccountsBalance, tokensStore, authStore],
   ([tokensList, balances, tokens, authData]) =>
-    tokensList
-      .map((baseTokenData) =>
-        convertToUserTokenData({ baseTokenData, balances, tokens, authData })
-      )
-      .filter((data): data is UserTokenData => nonNullish(data))
+    tokensList.map((baseTokenData) =>
+      convertToUserTokenData({ baseTokenData, balances, tokens, authData })
+    )
 );
