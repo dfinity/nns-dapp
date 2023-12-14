@@ -12,12 +12,23 @@ describe("FiltersButton", () => {
   });
 
   it("should render an icon", () => {
-    const { container } = render(FiltersButton, {
+    const { container, getByTestId } = render(FiltersButton, {
       totalFilters: 1,
       activeFilters: 1,
     });
 
     expect(container.querySelector("svg")).not.toBeNull();
+    expect(() => getByTestId("spinner")).toThrow();
+  });
+
+  it("should render a spinner", () => {
+    const { getByTestId } = render(FiltersButton, {
+      totalFilters: 1,
+      activeFilters: 1,
+      showSpinner: true,
+    });
+
+    expect(getByTestId("spinner")).not.toBeNull();
   });
 
   it("should render a text for the number of filters", () => {
