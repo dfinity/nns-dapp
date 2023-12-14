@@ -38,7 +38,7 @@ const convertAccountToUserTokenData = ({
   if (isNullish(account)) {
     return {
       universeId: Principal.fromText(nnsUniverse.canisterId),
-      title,
+      title: i18nObj.accounts.main,
       balance: "loading",
       logo: nnsUniverse.logo,
       actions: [],

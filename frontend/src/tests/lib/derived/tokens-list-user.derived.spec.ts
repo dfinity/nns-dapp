@@ -59,6 +59,7 @@ describe("tokens-list-user.derived", () => {
   });
   const icpUserTokenLoading: UserTokenLoading = {
     ...icpTokenBase,
+    title: "Main",
     balance: "loading",
     actions: [],
   };
