@@ -11,7 +11,7 @@
     pollAccounts,
   } from "$lib/services/icp-accounts.services";
   import { ICPToken } from "@dfinity/utils";
-  import type { UserTokenData } from "$lib/types/tokens-page";
+  import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
   import { ENABLE_MY_TOKENS } from "$lib/stores/feature-flags.store";
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
@@ -29,7 +29,7 @@
   });
 
   // TODO: Remove default value when we remove the feature flag
-  export let userTokensData: UserTokenData[] = [];
+  export let userTokensData: UserToken[] = [];
 
   const openAddAccountModal = () => {
     openAccountsModal({
