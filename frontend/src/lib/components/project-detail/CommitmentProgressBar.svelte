@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { TokenAmount, ICPToken, nonNullish } from "@dfinity/utils";
+  import {
+    TokenAmount,
+    ICPToken,
+    nonNullish,
+    TokenAmountV2,
+  } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import { ProgressBar } from "@dfinity/gix-components";
@@ -53,7 +58,7 @@
           </span>
           <span data-tid="commitment-min-indicator-value">
             <AmountDisplay
-              amount={TokenAmount.fromE8s({
+              amount={TokenAmountV2.fromUlps({
                 amount: minimumIndicator,
                 token: ICPToken,
               })}
@@ -67,7 +72,7 @@
           </span>
           <span data-tid="commitment-max-indicator-value">
             <AmountDisplay
-              amount={TokenAmount.fromE8s({ amount: max, token: ICPToken })}
+              amount={TokenAmountV2.fromUlps({ amount: max, token: ICPToken })}
               singleLine
             />
           </span>
