@@ -43,6 +43,7 @@
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
   import type { Account } from "$lib/types/account";
+  import IcrcReceiveModal from "$lib/modals/accounts/IcrcReceiveModal.svelte";
 
   onMount(() => {
     if (!$ENABLE_MY_TOKENS) {
@@ -124,6 +125,15 @@
   };
 
   const createReloadAccountBalance = (universeId: Principal) => () => {
+    const isSnsProject = $snsProjectsCommittedStore.some(
+      ({ rootCanisterId }) => rootCanisterId.toText() === universeId.toText()
+    );
+    if (isSnsProject) {
+      return uncertifiedLoadSnsAccountsBalances({
+        rootCanisterIds: [universeId],
+        excludeRootCanisterIds: [],
+      });
+    }
     return loadAccountsBalances([universeId.toText()]);
   };
 
@@ -142,6 +152,7 @@
     | "nns-send"
     | "ckbtc-send"
     | "icrc-send"
+    | "icrc-receive"
     | "ckbtc-receive";
   let modal:
     | {
@@ -191,6 +202,8 @@
     if (detail.type === ActionType.Receive) {
       if (isUniverseCkBTC(detail.data.universeId)) {
         modal = { type: "ckbtc-receive", data: detail.data };
+      } else {
+        modal = { type: "icrc-receive", data: detail.data };
       }
     }
   };
@@ -243,6 +256,20 @@
         universeId: modal.data.universeId,
         canSelectAccount: false,
         reload: createReloadAccountBalance(modal.data.universeId),
+      }}
+      on:nnsClose={closeModal}
+    />
+  {/if}
+
+  {#if modal?.type === "icrc-receive" && nonNullish(account)}
+    <IcrcReceiveModal
+      data={{
+        account,
+        universeId: modal.data.universeId,
+        canSelectAccount: false,
+        reload: createReloadAccountBalance(modal.data.universeId),
+        tokenSymbol: modal.data.token.symbol,
+        logo: modal.data.logo,
       }}
       on:nnsClose={closeModal}
     />
