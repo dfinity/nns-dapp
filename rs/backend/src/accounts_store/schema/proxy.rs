@@ -135,7 +135,7 @@ impl AccountsDbTrait for AccountsDbAsProxy {
 #[cfg(test)]
 impl PartialEq for AccountsDbAsProxy {
     fn eq(&self, other: &Self) -> bool {
-        self.authoritative_db.as_map() == other.authoritative_db.as_map()
+        self.authoritative_db.range(..).eq(other.authoritative_db.range(..))
     }
 }
 #[cfg(test)]
