@@ -180,7 +180,9 @@ const loadSnsWrappers = async ({
   if (error) {
     const rejectedReasons = results
       .filter(({ status }) => status === "rejected")
-      .map((wrapper) => wrapper.reason);
+      .map((wrapper) =>
+        "reason" in wrapper ? wrapper.reason : "Reason not present"
+      );
     console.error("Rejected SNSes:", rejectedReasons);
     // Ignoring. SNSes will be filtered out below.
   }
