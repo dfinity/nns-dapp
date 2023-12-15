@@ -41,7 +41,7 @@ fn migration_steps_should_work(accounts_db: &mut AccountsDbAsProxy, new_accounts
             accounts_db.step_migration();
         }
     }
-    // The next step should comp[lete the migration.
+    // The next step should complete the migration.
     accounts_db.step_migration();
     assert_eq!(*accounts_db, reference_db);
     assert!(
