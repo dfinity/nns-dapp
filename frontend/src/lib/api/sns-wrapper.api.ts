@@ -178,10 +178,10 @@ const loadSnsWrappers = async ({
   const error: boolean =
     results.find(({ status }) => status === "rejected") !== undefined;
   if (error) {
-    const rejectedCanisterIds = results
+    const rejectedReasons = results
       .filter(({ status }) => status === "rejected")
-      .map((wrapper) => wrapper.value.root.id.toText());
-    console.error("Rejected SNSes:", rejectedCanisterIds);
+      .map((wrapper) => wrapper.reason);
+    console.error("Rejected SNSes:", rejectedReasons);
     // Ignoring. SNSes will be filtered out below.
   }
 
