@@ -178,7 +178,11 @@ const loadSnsWrappers = async ({
   const error: boolean =
     results.find(({ status }) => status === "rejected") !== undefined;
   if (error) {
-    throw new ApiErrorKey("error__sns.init");
+    const rejectedCanisterIds = results
+      .filter(({ status }) => status === "rejected")
+      .map((wrapper) => wrapper.value.root.id.toText());
+    console.error("Rejected SNSes:", rejectedCanisterIds);
+    // Ignoring. SNSes will be filtered out below.
   }
 
   return (
