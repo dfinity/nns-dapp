@@ -11,9 +11,6 @@ impl AccountsDbAsProxy {
     /// Migration countdown; when it reaches zero, the migration is complete.
     ///
     /// Note: This is a rough estimate of the number of blocks needed to complete the migration.
-    ///
-    /// # Panics
-    /// - If the migration countdown is too large to fit in a `u32`.
     pub fn migration_countdown(&self) -> u32 {
         self.migration.as_ref().map_or(0, |migration| {
             let accounts_to_migrate = self
@@ -21,8 +18,8 @@ impl AccountsDbAsProxy {
                 .db_accounts_len()
                 .saturating_sub(migration.db.db_accounts_len());
             let blocks_for_migration = accounts_to_migrate.div_ceil(u64::from(Self::MIGRATION_STEP_SIZE));
-            let blocks_for_migration = u32::try_from(blocks_for_migration).expect("Migration will take forever");
-            Self::MIGRATION_FINALIZATION_BLOCKS + blocks_for_migration
+            let blocks_for_migration = u32::try_from(blocks_for_migration).unwrap_or(u32::MAX);
+            blocks_for_migration.saturating_add(Self::MIGRATION_FINALIZATION_BLOCKS)
         })
     }
     /// Starts a migration, if needed.
