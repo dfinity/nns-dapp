@@ -132,11 +132,13 @@ impl AccountsDbTrait for AccountsDbAsProxy {
 /// Check whether two account databases contain the same data.
 ///
 /// It should be possible to use this to confirm that data has been preserved during a migration.
+#[cfg(test)]
 impl PartialEq for AccountsDbAsProxy {
     fn eq(&self, other: &Self) -> bool {
-        self.authoritative_db.as_map() == other.authoritative_db.as_map()
+        self.authoritative_db.range(..).eq(other.authoritative_db.range(..))
     }
 }
+#[cfg(test)]
 impl Eq for AccountsDbAsProxy {}
 
 #[cfg(test)]
