@@ -3,5 +3,7 @@ disallowed-macros = [
     "std::println",
     "std::eprint",
     "std::eprintln",
+]
+disallowed-methods = [
     "dfn_core::api::print",
 ]
