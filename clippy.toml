@@ -1,0 +1,3 @@
+disallowed-macros = [
+    "std::println",
+]
