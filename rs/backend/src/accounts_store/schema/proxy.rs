@@ -1,11 +1,13 @@
 //! Accounts DB that delegates API calls to underlying implementations.
 //!
 //! The proxy manages migrations from one implementation to another.
-use std::collections::BTreeMap;
-mod enum_boilerplate;
 use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel};
 use core::fmt;
 use core::ops::RangeBounds;
+use ic_cdk::println;
+use std::collections::BTreeMap;
+
+mod enum_boilerplate;
 
 /// An accounts database delegates API calls to underlying implementations.
 ///
@@ -118,9 +120,7 @@ impl AccountsDbTrait for AccountsDbAsProxy {
     /// The authoritative schema label.
     fn schema_label(&self) -> SchemaLabel {
         let schema_label = self.authoritative_db.schema_label();
-        dfn_core::api::print(format!(
-            "AccountsDb::Proxy: authoritative schema label: {schema_label:#?}"
-        ));
+        println!("AccountsDb::Proxy: authoritative schema label: {schema_label:#?}");
         schema_label
     }
     /// Iterates over a range of accounts in the authoritative db.

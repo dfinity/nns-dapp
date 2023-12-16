@@ -2,6 +2,7 @@ use crate::canisters::ledger;
 use crate::state::STATE;
 use candid::Principal;
 use dfn_core::CanisterId;
+use ic_cdk::println;
 use ic_ledger_core::block::BlockType;
 use ic_ledger_core::Tokens;
 use ic_nns_constants::LEDGER_CANISTER_ID;
@@ -98,7 +99,7 @@ async fn get_blocks(from: BlockIndex, tip_of_chain: BlockIndex) -> Result<Vec<(B
                                 },
                             },
                         };
-                        ic_cdk::println!(
+                        println!(
                             "Replacing block {} with dummy block {:?} because of error: {}",
                             range.start() + (index as u64),
                             &dummy,
