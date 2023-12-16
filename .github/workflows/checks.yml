@@ -283,10 +283,17 @@ jobs:
           } >&2
           # TODO: Verify that the commits contain the expected changes.
   download-nns-dapp-ci-wasm:
+    # Please keep the name short enough that name + OS is not truncated in the browser view.
+    # A maximal example: xxxxxxxxxxxxxxxxx (ubuntu-20.04)
+    name: "Get CI Wasm"
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-13]
+        os:
+          - ubuntu-20.04
+          - macos-13
+          - macos-13-xlarge
+          # Note: macos-13-xlarge runs on M1 silicon while macos-13 runs on Intel.
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -295,9 +302,16 @@ jobs:
           if command -v brew ; then
             brew install bash
             brew install coreutils
+            # Brew has changed the installation location for Apple Silicon (M1/M2) to be /opt/homebrew/bin, see https://docs.brew.sh/Installation.
+            # Normally in GitHub, additions to the path are with:
+            #  echo "/some/path" >> $GITHUB_PATH
+            # This does not work with the latest mac, that tries _very_ hard to force its own, often decade old, tools on users.
+            # You will need to update your path in every step(!!) before use like this:
+            # export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:/opt/homebrew/bin:$PATH"
           fi
       - name: Download NNS-dapp CI wasm
         run: |
+          export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:/opt/homebrew/bin:$PATH"
           MAIN_COMMIT="$(git ls-remote --refs https://github.com/dfinity/nns-dapp.git main | awk '{print $1}')"
           scripts/nns-dapp/download-ci-wasm.test --commit "$MAIN_COMMIT"
     env:
@@ -307,7 +321,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-13]
+        os:
+          - ubuntu-20.04
+          - macos-13
+          - macos-13-xlarge
+          # Note: macos-13-xlarge runs on M1 silicon while macos-13 runs on Intel.
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -316,13 +334,21 @@ jobs:
           if command -v brew ; then
             brew install bash
           fi
-      - run: scripts/canister_ids.test
+          echo "/usr/local/bin" >> $GITHUB_PATH
+          bash --version
+      - run: |
+          export PATH="/opt/homebrew/bin:$PATH"
+          scripts/canister_ids.test
   release-sop:
     name: Test release-sop script
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-13]
+        os:
+          - ubuntu-20.04
+          - macos-13
+          - macos-13-xlarge
+          # Note: macos-13-xlarge runs on M1 silicon while macos-13 runs on Intel.
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -331,13 +357,21 @@ jobs:
           if command -v brew ; then
             brew install bash
           fi
-      - run: scripts/nns-dapp/release-sop.test
+          echo "/usr/local/bin" >> $GITHUB_PATH
+          bash --version
+      - run: |
+          export PATH="/opt/homebrew/bin:$PATH"
+          scripts/nns-dapp/release-sop.test
   split-changelog:
     name: Test split-changelog script
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-13]
+        os:
+          - ubuntu-20.04
+          - macos-13
+          - macos-13-xlarge
+          # Note: macos-13-xlarge runs on M1 silicon while macos-13 runs on Intel.
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -346,20 +380,32 @@ jobs:
           if command -v brew ; then
             brew install bash
           fi
-      - run: scripts/nns-dapp/split-changelog.test
+          echo "/usr/local/bin" >> $GITHUB_PATH
+          bash --version
+      - run: |
+          export PATH="/opt/homebrew/bin:$PATH"
+          scripts/nns-dapp/split-changelog.test
   past-changelog:
     name: Test that no new change log entries are added to past releases.
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-13]
+        os:
+          - ubuntu-20.04
+          - macos-13
+          - macos-13-xlarge
+          # Note: macos-13-xlarge runs on M1 silicon while macos-13 runs on Intel.
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - run: scripts/past-changelog-test
-      - run: scripts/past-changelog-test.test
+      - run: |
+          export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:/opt/homebrew/bin:$PATH"
+          scripts/past-changelog-test
+      - run: |
+          export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:/opt/homebrew/bin:$PATH"
+          scripts/past-changelog-test.test
   version-match:
     name: The nns-dapp npm and cargo versions should match
     runs-on: ubuntu-20.04
