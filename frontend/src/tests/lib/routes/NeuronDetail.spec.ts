@@ -112,14 +112,21 @@ describe("NeuronDetail", () => {
     });
 
     it("should load if sns projects are loaded after initial rendering", async () => {
+      fakeSnsGovernanceApi.pause();
       const { container } = render(NeuronDetail, { neuronId: testSnsNeuronId });
       const po = NeuronDetailPo.under(new JestPageObjectElement(container));
+      // No loading data until we load the SNS projects.
+      fakeSnsGovernanceApi.resume();
       expect(await po.isContentLoaded()).toBe(false);
+      fakeSnsGovernanceApi.pause();
 
       // Load SNS projects after rendering to make sure we don't load
       // NnsNeuronDetail instead, which was a bug we had.
       await loadSnsProjects();
-      expect(await po.isContentLoaded()).toBe(true);
+      fakeSnsGovernanceApi.resume();
+      await waitFor(async () => {
+        expect(await po.isContentLoaded()).toBe(true);
+      });
 
       expect(await po.hasNnsNeuronDetailPo()).toBe(false);
       expect(await po.hasSnsNeuronDetailPo()).toBe(true);
