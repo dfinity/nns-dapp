@@ -64,7 +64,7 @@ const convertToUserTokenData = ({
       : mainAccount.balanceUlps,
     token,
   });
-  // For ICP, the row represents all the ICP accounts. Therefore, we don't want to set on accountIdentifier.
+  // For ICP, the row represents all the ICP accounts. Therefore, we don't want to set the accountIdentifier.
   const accountIdentifier = isUniverseNns(baseTokenData.universeId)
     ? undefined
     : mainAccount.identifier;
@@ -93,11 +93,11 @@ export const tokensListUserStore = derived<
   UserToken[]
 >(
   [tokensListBaseStore, universesAccountsStore, tokensStore, authStore],
-  ([tokensList, balances, tokens, authData]) =>
+  ([tokensList, accounts, tokens, authData]) =>
     tokensList.map((baseTokenData) =>
       convertToUserTokenData({
         baseTokenData,
-        accounts: balances,
+        accounts,
         tokens,
         authData,
       })
