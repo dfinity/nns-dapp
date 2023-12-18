@@ -163,4 +163,21 @@ describe("DayInput", () => {
 
     expect(inputElement.value).toBe("365.5");
   });
+
+  it("should apply disabled state", async () => {
+    const { container, queryByTestId } = render(DayInput, {
+      props: {
+        ...defaultProps,
+        disabled: true,
+      },
+    });
+
+    const inputElement = container.querySelector("input");
+    const minButton = queryByTestId("min-button");
+    const maxButton = queryByTestId("max-button");
+
+    expect(inputElement.getAttribute("disabled")).not.toBeNull();
+    expect(minButton.getAttribute("disabled")).not.toBeNull();
+    expect(maxButton.getAttribute("disabled")).not.toBeNull();
+  });
 });
