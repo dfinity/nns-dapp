@@ -24,6 +24,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Remaining wrong dissolve delay error message after min/max click.
+
 #### Security
 
 #### Not Published
