@@ -125,6 +125,9 @@ describe("NeuronDetail", () => {
       // Load SNS projects after rendering to make sure we don't load
       // NnsNeuronDetail instead, which was a bug we had.
       await loadSnsProjects();
+      await runResolvedPromises();
+      expect(await po.isContentLoaded()).toBe(false);
+
       fakeSnsGovernanceApi.resume();
       await runResolvedPromises();
       expect(await po.isContentLoaded()).toBe(true);
