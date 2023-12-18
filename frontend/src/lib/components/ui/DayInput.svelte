@@ -40,6 +40,9 @@
     seconds = maxInSeconds;
     days = secondsToDays(seconds);
   };
+
+  let disabled = false;
+  $: disabled = savedSeconds === maxInSeconds;
 </script>
 
 <InputWithError
@@ -51,7 +54,8 @@
   {errorMessage}
   on:nnsInput={showError}
   on:blur={showError}
+  {disabled}
 >
-  <MinButton on:click={setMin} slot="start" />
-  <MaxButton on:click={setMax} slot="end" />
+  <MinButton on:click={setMin} slot="start" {disabled} />
+  <MaxButton on:click={setMax} slot="end" {disabled} />
 </InputWithError>
