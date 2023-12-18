@@ -180,7 +180,7 @@ describe("SNS public services", () => {
       expect(feesStore.projects[rootCanisterId]).not.toBeUndefined();
     });
 
-    it("build SNS wrappers' certified cache before loading the aggregator store", () => {
+    it("SNS certified calls after aggregator store is filled don't trigger a call to list_sns_canisters", () => {
       vi.spyOn(aggregatorApi, "querySnsProjects").mockImplementation(() =>
         Promise.resolve([aggregatorSnsMockDto, aggregatorSnsMockDto])
       );
@@ -204,7 +204,7 @@ describe("SNS public services", () => {
       });
     });
 
-    it("build SNS wrappers' uncertified cache before loading the aggregator store", () => {
+    it("SNS uncertified calls after aggregator store is filled don't trigger a call to list_sns_canisters", () => {
       vi.spyOn(aggregatorApi, "querySnsProjects").mockImplementation(() =>
         Promise.resolve([aggregatorSnsMockDto, aggregatorSnsMockDto])
       );

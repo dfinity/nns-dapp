@@ -63,6 +63,7 @@ export const loadSnsProjects = async (): Promise<void> => {
     // To get the SNS canister ids, we need to call the root canister id.
     // This call is not necessary because the canister ids are already provided by the SNS aggregator.
     // Set aggregator store after building the wrappers' caches to avoid calls to the root canister when the SNS wrapper is initialized.
+    // As soon as the aggregator store is filled, SNS components may start rendering, resulting in calls on the SNS wrappers.
     snsAggregatorStore.setData(aggregatorData);
     snsTotalTokenSupplyStore.setTotalTokenSupplies(
       aggregatorData.map(({ icrc1_total_supply, canister_ids }) => ({
