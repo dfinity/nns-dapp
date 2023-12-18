@@ -11,6 +11,59 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 126734
+
+### Application
+
+#### Added
+
+* Sns dynamic voting proportions.
+* Iterator over AccountsDbs.
+* Display expiration date for sns proposals.
+* Neuron type support.
+* Card with BTC deposit address and QR code in ckBTC wallet.
+* Merge Approve transfer with BTC "Sent" transaction in transaction list.
+* Display Neurons' Fund commitment progress bar.
+* `range()` method to `AccountsDbTrait`.
+* Render ckBTC Reimbursement transactions.
+
+#### Changed
+
+* Render BTC deposits/withdrawals as "BTC Received"/"BTC Sent".
+* Update Rust version: `1.74.0` -> `1.74.1`
+* Provide space for migration state in the `ProxyDb`.
+* Rename "Launch Pad" to "Launchpad".
+
+#### Fixed
+
+* Limit the size of proposal payload rendering errors, as otherwise the error can become too large to return.
+* Provide a fallback if proposal payloads don't have the expected type.
+* Temporary work-around for broken SNS.
+
+#### Security
+
+* Bump css-tools dev dependency to fix minor vulnerability.
+
+### Operations
+
+#### Changed
+
+* Allow npm greater than v10 in frontend project.
+
+#### Removed
+
+* Remove `.gitattributes`.
+
+#### Fixed
+
+* Provide missing global config in cache-filling workflow.
+* Update the correct flavour of golden file when the NNS Dapp canister API changes.
+* Specify the node version to use in the version bump test.
+* Summarize the `AccountsStore` contents in its `Debug` representation rather than trying to print its entire contents.
+* Lock the spellcheck version and its dependencies.
+* Keep `dfx start` logs in CI.
+* Let canister IDs provided by the dfx cli override fixed canister IDs in config files.  Needed for local deployments.
+
 ## Proposal 126313
 
 ### Application
