@@ -14,29 +14,27 @@ import {
   type UserToken,
   type UserTokenBase,
 } from "$lib/types/tokens-page";
+import { sumAccounts } from "$lib/utils/accounts.utils";
 import { buildAccountsUrl, buildWalletUrl } from "$lib/utils/navigation.utils";
 import { isUniverseNns } from "$lib/utils/universe.utils";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { isNullish, TokenAmountV2 } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
+import type { UniversesAccounts } from "./accounts-list.derived";
 import { tokensListBaseStore } from "./tokens-list-base.derived";
-import {
-  universesAccountsBalance,
-  type UniversesAccountsBalanceReadableStore,
-} from "./universes-accounts-balance.derived";
+import { universesAccountsStore } from "./universes-accounts.derived";
 
 const convertToUserTokenData = ({
-  balances,
+  accounts,
   tokens,
   baseTokenData,
   authData,
 }: {
-  balances: UniversesAccountsBalanceReadableStore;
+  accounts: UniversesAccounts;
   tokens: TokensStoreData;
   baseTokenData: UserTokenBase;
   authData: AuthStoreData;
 }): UserToken => {
-  const balanceUlps = balances[baseTokenData.universeId.toText()]?.balanceUlps;
   const token = tokens[baseTokenData.universeId.toText()]?.token;
   const rowHref = isNullish(authData.identity)
     ? undefined
@@ -48,7 +46,9 @@ const convertToUserTokenData = ({
           owner: authData.identity.getPrincipal(),
         }),
       });
-  if (isNullish(token) || isNullish(balanceUlps)) {
+  const accountsList = accounts[baseTokenData.universeId.toText()];
+  const mainAccount = accountsList?.find(({ type }) => type === "main");
+  if (isNullish(token) || isNullish(accountsList) || isNullish(mainAccount)) {
     return {
       ...baseTokenData,
       balance: "loading",
@@ -56,7 +56,18 @@ const convertToUserTokenData = ({
     };
   }
   const fee = TokenAmountV2.fromUlps({ amount: token.fee, token });
-  const balance = TokenAmountV2.fromUlps({ amount: balanceUlps, token });
+  // For ICP we show the sum of all ICP accounts.
+  // For other tokens we show the main account balance because subaccounts are not yet supported.
+  const balance = TokenAmountV2.fromUlps({
+    amount: isUniverseNns(baseTokenData.universeId)
+      ? sumAccounts(accountsList)
+      : mainAccount.balanceUlps,
+    token,
+  });
+  // For ICP, the row represents all the ICP accounts. Therefore, we don't want to set on accountIdentifier.
+  const accountIdentifier = isUniverseNns(baseTokenData.universeId)
+    ? undefined
+    : mainAccount.identifier;
   return {
     ...baseTokenData,
     token,
@@ -67,6 +78,7 @@ const convertToUserTokenData = ({
         ? [UserTokenAction.GoToDetail]
         : [UserTokenAction.Receive, UserTokenAction.Send]),
     ],
+    accountIdentifier,
     rowHref,
   };
 };
@@ -74,15 +86,20 @@ const convertToUserTokenData = ({
 export const tokensListUserStore = derived<
   [
     Readable<UserTokenBase[]>,
-    Readable<UniversesAccountsBalanceReadableStore>,
+    Readable<UniversesAccounts>,
     TokensStore,
     AuthStore,
   ],
   UserToken[]
 >(
-  [tokensListBaseStore, universesAccountsBalance, tokensStore, authStore],
+  [tokensListBaseStore, universesAccountsStore, tokensStore, authStore],
   ([tokensList, balances, tokens, authData]) =>
     tokensList.map((baseTokenData) =>
-      convertToUserTokenData({ baseTokenData, balances, tokens, authData })
+      convertToUserTokenData({
+        baseTokenData,
+        accounts: balances,
+        tokens,
+        authData,
+      })
     )
 );

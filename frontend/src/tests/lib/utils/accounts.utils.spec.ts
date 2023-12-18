@@ -678,6 +678,14 @@ describe("accounts-utils", () => {
 
       expect(sumAccounts([mockSnsMainAccount])).toEqual(totalBalance);
     });
+
+    it("should return undefined if no accounts", () => {
+      expect(sumAccounts(undefined)).toBeUndefined();
+    });
+
+    it("should return 0 if accounts list is empty", () => {
+      expect(sumAccounts([])).toBe(0n);
+    });
   });
 
   describe("hasAccounts", () => {

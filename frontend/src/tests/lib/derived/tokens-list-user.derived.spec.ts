@@ -56,6 +56,7 @@ describe("tokens-list-user.derived", () => {
     }),
     actions: [UserTokenAction.GoToDetail],
     rowHref: buildAccountsUrl({ universe: OWN_CANISTER_ID_TEXT }),
+    accountIdentifier: undefined,
   });
   const icpUserTokenLoading: UserTokenLoading = {
     ...icpTokenBase,
@@ -102,6 +103,7 @@ describe("tokens-list-user.derived", () => {
       universe: snsTetris.rootCanisterId.toText(),
       account: identityMainAccountIdentifier,
     }),
+    accountIdentifier: mockSnsMainAccount.identifier,
   };
   const pacmanTokenLoading: UserTokenLoading = {
     universeId: snsPacman.rootCanisterId,
@@ -126,6 +128,7 @@ describe("tokens-list-user.derived", () => {
       universe: snsPacman.rootCanisterId.toText(),
       account: identityMainAccountIdentifier,
     }),
+    accountIdentifier: mockSnsMainAccount.identifier,
   };
   const ckBTCTokenLoading: UserTokenLoading = {
     ...ckBTCTokenBase,
@@ -153,6 +156,7 @@ describe("tokens-list-user.derived", () => {
       universe: ckBTCTokenBase.universeId.toText(),
       account: identityMainAccountIdentifier,
     }),
+    accountIdentifier: mockCkBTCMainAccount.identifier,
   };
   const ckETHTokenLoading: UserTokenLoading = {
     ...ckETHTokenBase,
@@ -175,6 +179,7 @@ describe("tokens-list-user.derived", () => {
       account: identityMainAccountIdentifier,
     }),
     actions: [UserTokenAction.Receive, UserTokenAction.Send],
+    accountIdentifier: mockCkETHMainAccount.identifier,
   };
 
   describe("tokensListUserStore", () => {
