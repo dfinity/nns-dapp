@@ -5,7 +5,8 @@ use core::fmt;
 use core::ops::RangeBounds;
 use std::collections::BTreeMap;
 
-#[derive(Default, Eq, PartialEq)]
+#[derive(Default)]
+#[cfg_attr(test, derive(Eq, PartialEq))]
 pub struct AccountsDbAsMap {
     accounts: BTreeMap<Vec<u8>, Account>,
 }

@@ -30,6 +30,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Update Rust version: `1.74.0` -> `1.74.1`
 * Provide space for migration state in the `ProxyDb`.
 * Rename "Launch Pad" to "Launchpad".
+* Use `ic_cdk::println` instead of the `dfn_core` equivalent.
 
 #### Deprecated
 
@@ -39,6 +40,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Limit the size of proposal payload rendering errors, as otherwise the error can become too large to return.
 * Provide a fallback if proposal payloads don't have the expected type.
+* Temporary work-around for broken SNS.
 
 #### Security
 
@@ -53,6 +55,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Allow npm greater than v10 in frontend project.
+* Apply clippy only to target `wasm32-unknown-unknown` but prohibit `std::println` and variants for that target.
 
 #### Deprecated
 

@@ -61,6 +61,7 @@ const convertAccountToUserTokenData = ({
       universe: nnsUniverse.canisterId.toString(),
       account: account?.identifier,
     }),
+    accountIdentifier: account.identifier,
     actions: [UserTokenAction.Receive, UserTokenAction.Send],
   };
 };

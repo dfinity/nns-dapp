@@ -138,7 +138,7 @@ pub type SchemaLabelBytes = [u8; SchemaLabel::MAX_BYTES];
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum SchemaLabelError {
     InvalidChecksum,
-    InvalidLabel,
+    InvalidLabel(u32),
     InsufficientBytes,
 }
 
