@@ -68,15 +68,11 @@ export class TokensTableRowPo extends BasePageObject {
     return this.getReceiveButton().click();
   }
 
-  getGoToDetailButton(): PageObjectElement {
-    return this.root.byTestId("go-to-detail-button-component");
+  getGoToDetailIcon(): PageObjectElement {
+    return this.root.byTestId("go-to-detail-icon-component");
   }
 
-  hasGoToDetailButton(): Promise<boolean> {
-    return this.getGoToDetailButton().isPresent();
-  }
-
-  clickGoToDetail(): Promise<void> {
-    return this.getGoToDetailButton().click();
+  hasGoToDetailIcon(): Promise<boolean> {
+    return this.getGoToDetailIcon().isPresent();
   }
 }
