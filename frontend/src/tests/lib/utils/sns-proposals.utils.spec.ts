@@ -1,5 +1,5 @@
 import type { Filter, SnsProposalTypeFilterData } from "$lib/types/filters";
-import { SNS_SPECIFIC_PROPOSAL_TYPE_ID } from "$lib/types/filters";
+import { ALL_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
 import {
@@ -682,9 +682,9 @@ describe("sns-proposals utils", () => {
       checked: true,
     };
     const snsSpecificFilterEntry: Filter<SnsProposalTypeFilterData> = {
-      id: SNS_SPECIFIC_PROPOSAL_TYPE_ID,
+      id: ALL_GENERIC_PROPOSAL_TYPES_ID,
       name: "string",
-      value: SNS_SPECIFIC_PROPOSAL_TYPE_ID,
+      value: ALL_GENERIC_PROPOSAL_TYPES_ID,
       checked: true,
     };
 

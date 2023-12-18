@@ -1,9 +1,9 @@
-import type { SnsNervousSystemFunction } from "@dfinity/sns";
+// artificial proposal type id to filter by all generic SNS types
+export const ALL_GENERIC_PROPOSAL_TYPES_ID = "sns_specific";
 
-export const SNS_SPECIFIC_PROPOSAL_TYPE_ID = "sns_specific";
 export type SnsProposalTypeFilterData =
-  | SnsNervousSystemFunction
-  | typeof SNS_SPECIFIC_PROPOSAL_TYPE_ID;
+  | keyof I18nSns_types
+  | typeof ALL_GENERIC_PROPOSAL_TYPES_ID;
 
 export type Filter<T> = {
   name: string;
