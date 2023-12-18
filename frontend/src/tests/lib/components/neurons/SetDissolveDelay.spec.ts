@@ -183,6 +183,43 @@ describe("SetDissolveDelay", () => {
         en.neurons.dissolve_delay_above_maximum
       );
     });
+
+    it("hide error message on min/max click", async () => {
+      const projectMinDays = 183;
+      const minProjectDelayInSeconds = projectMinDays * SECONDS_IN_DAY;
+      const maxProjectDelayInSeconds = SECONDS_IN_EIGHT_YEARS;
+      const { container, component } = render(SetDissolveDelay, {
+        props: {
+          ...defaultComponentProps,
+          neuronDissolveDelaySeconds: 0n,
+          minProjectDelayInSeconds,
+          maxProjectDelayInSeconds,
+          delayInSeconds: 0,
+        },
+      });
+      const po = SetDissolveDelayPo.under(new JestPageObjectElement(container));
+
+      expect(await po.getUpdateButtonPo().isDisabled()).toBe(true);
+      expect(await po.getErrorMessage()).toBe(null);
+
+      await po.enterDays(0);
+      expect(await po.getErrorMessage()).toBe(
+        en.neurons.dissolve_delay_below_current
+      );
+
+      await po.clickMin();
+      expect(getDelayInSeconds(component)).toBe(minProjectDelayInSeconds);
+      expect(await po.getErrorMessage()).toBe(null);
+
+      await po.enterDays(Number.MAX_SAFE_INTEGER);
+      expect(await po.getErrorMessage()).toBe(
+        en.neurons.dissolve_delay_below_current
+      );
+
+      await po.clickMax();
+      expect(getDelayInSeconds(component)).toBe(maxProjectDelayInSeconds);
+      expect(await po.getErrorMessage()).toBe(null);
+    });
   });
 
   it("can set same number of days when current number of days is fractional", async () => {
