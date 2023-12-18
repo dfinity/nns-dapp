@@ -948,7 +948,7 @@
     "universe_logo": "$universe logo"
   },
   "sns_types": {
-    "sns_specific": "SNS-specific proposals",
+    "sns_specific": "All SNS-specific proposals",
     "1": "Motion",
     "2": "Manage nervous system parameters",
     "3": "Upgrade SNS controlled canister",
