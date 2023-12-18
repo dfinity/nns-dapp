@@ -5,7 +5,6 @@
   import type { Filter, SnsProposalTypeFilterData } from "$lib/types/filters";
   import type { Principal } from "@dfinity/principal";
   import { createEventDispatcher } from "svelte";
-  import type { SnsNervousSystemFunction } from "@dfinity/sns";
 
   export let rootCanisterId: Principal;
   export let filters: Filter<SnsProposalTypeFilterData>[] = [];
@@ -33,7 +32,7 @@
   const onChange = ({
     detail: { filter },
   }: CustomEvent<{
-    filter: Filter<SnsNervousSystemFunction> | undefined;
+    filter: Filter<SnsProposalTypeFilterData> | undefined;
   }>) => {
     if (filter === undefined) {
       return;

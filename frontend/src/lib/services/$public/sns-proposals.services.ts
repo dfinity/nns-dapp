@@ -150,6 +150,10 @@ export const loadSnsProposals = async ({
   beforeProposalId?: SnsProposalId;
 }): Promise<void> => {
   const filters = get(snsSelectedFiltersStore)[rootCanisterId.toText()];
+  const excludeType = toExcludeTypeParameter({
+    filter: filters.topics,
+    snsFunctions,
+  });
   return queryAndUpdate<SnsProposalData[], unknown>({
     identityType: "current",
     request: ({ certified, identity }) =>
@@ -159,11 +163,8 @@ export const loadSnsProposals = async ({
           beforeProposal: beforeProposalId,
           includeStatus:
             filters?.decisionStatus.map(({ value }) => value) ?? [],
+          excludeType,
           // TODO: add filter by reward status
-          excludeType: toExcludeTypeParameter({
-            filter: filters.topics,
-            snsFunctions,
-          }),
         },
         identity,
         certified,

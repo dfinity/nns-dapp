@@ -2,9 +2,10 @@ import {
   MINIMUM_YES_PROPORTION_OF_EXERCISED_VOTING_POWER,
   MINIMUM_YES_PROPORTION_OF_TOTAL_VOTING_POWER,
 } from "$lib/constants/proposals.constants";
+import { ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID } from "$lib/constants/sns-proposals.constants";
 import { i18n } from "$lib/stores/i18n";
 import type { Filter, SnsProposalTypeFilterData } from "$lib/types/filters";
-import { SNS_SPECIFIC_PROPOSAL_TYPE_ID } from "$lib/types/filters";
+import { ALL_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
 import type {
   BasisPoints,
   UniversalProposalStatus,
@@ -481,7 +482,10 @@ export const getUniversalProposalStatus = (
   return statusType;
 };
 
-// TODO(max): add tests (w/ and w/o GenericNervousSystemFunction)
+// TODO(max): add tests (w/ and w/o GenericNervousSystemFunction, no AllTopics)
+/**
+ * Returns the proposal type ids that should be excluded from the response.
+ */
 export const toExcludeTypeParameter = ({
   filter,
   snsFunctions,
@@ -493,30 +497,65 @@ export const toExcludeTypeParameter = ({
   if (filter.length === 0) {
     return [];
   }
-
-  // Ignore the "All Topics" entry
-  const validSnsFunctions = snsFunctions.filter(({ id }) => id !== 0n);
-
-  // Filter by snsFunctions instead of filter to have snsFunctions as the source of truth (e.g. spoiled local storage values)
-  const excludeNativeNsFunctionIds = validSnsFunctions
+  const nativeNsFunctionIds = snsFunctions
     .filter(isNativeNervousSystemFunction)
-    .filter(
-      ({ id }) =>
-        !filter.some(
-          ({ checked, value }) =>
-            checked && (value as SnsNervousSystemFunction)?.id === id
-        )
-    )
+    .map(({ id }) => id);
+  const isNativeNsFunctionSelected = (nsFunctionId: bigint) =>
+    filter.some(({ id, checked }) => id === nsFunctionId.toString() && checked);
+  const excludedNativeNsFunctionIds = nativeNsFunctionIds.filter(
+    (id) => !isNativeNsFunctionSelected(id)
+  );
+  const genericNsFunctionIds = snsFunctions
+    .filter(isGenericNervousSystemFunction)
     .map(({ id }) => id);
   const isGenericNsFunctionChecked = filter.some(
-    ({ checked, value }) => value === SNS_SPECIFIC_PROPOSAL_TYPE_ID && checked
+    ({ id, checked }) => id === ALL_GENERIC_PROPOSAL_TYPES_ID && checked
   );
-  const excludeGenericNsFunctionIds = isGenericNsFunctionChecked
+  const excludedGenericNsFunctionIds = isGenericNsFunctionChecked
     ? []
-    : validSnsFunctions
-        .filter(isGenericNervousSystemFunction)
-        .map(({ id }) => id);
-  return [...excludeNativeNsFunctionIds, ...excludeGenericNsFunctionIds];
+    : genericNsFunctionIds;
+
+  return (
+    [...excludedNativeNsFunctionIds, ...excludedGenericNsFunctionIds]
+      // never exclude { 0n: "All Topics"}
+      .filter((id) => id !== ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID)
+  );
+};
+
+// TODO(max): unit test me! (w/ and w/o GenericNervousSystemFunction, no AllTopics)
+// Generate new "type" filter data, but preserve the checked state of the current filter state
+export const generateSnsProposalTypeFilterData = ({
+  nsFunctions,
+  currentFilterState,
+}: {
+  nsFunctions: SnsNervousSystemFunction[];
+  currentFilterState: Filter<SnsProposalTypeFilterData>[];
+}): Filter<SnsProposalTypeFilterData>[] => {
+  const i18nKeys = get(i18n);
+  const nativeNsFunctionIds = nsFunctions
+    .filter(isNativeNervousSystemFunction)
+    // ignore { 0n: "All Topics"}
+    .filter(({ id }) => id !== ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID)
+    .map(({ id }) => `${id}`);
+  const hasGenericNsFunctions =
+    nsFunctions.filter(isGenericNervousSystemFunction).length > 0;
+  const filterableIds = hasGenericNsFunctions
+    ? [...nativeNsFunctionIds, ALL_GENERIC_PROPOSAL_TYPES_ID]
+    : nativeNsFunctionIds;
+  const mapToFilterData = (id: string): Filter<SnsProposalTypeFilterData> => ({
+    id,
+    value: id as keyof typeof i18nKeys.sns_types,
+    name:
+      i18nKeys.sns_types[id as keyof typeof i18nKeys.sns_types] ??
+      i18nKeys.core.unspecified,
+    checked:
+      // transfer only unchecked entries to preselect new items that are not in the current filter state
+      currentFilterState.find(({ id: stateId }) => id === stateId)?.checked ===
+      false
+        ? false
+        : true,
+  });
+  return filterableIds.map(mapToFilterData);
 };
 
 export const fromPercentageBasisPoints = (

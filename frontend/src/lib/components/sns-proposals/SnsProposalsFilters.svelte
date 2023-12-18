@@ -11,6 +11,11 @@
   import FiltersButton from "../ui/FiltersButton.svelte";
   import SnsFilterRewardsModal from "$lib/modals/sns/proposals/SnsFilterRewardsModal.svelte";
   import SnsFilterTypesModal from "$lib/modals/sns/proposals/SnsFilterTypesModal.svelte";
+  import type { SnsNervousSystemFunction } from "@dfinity/sns";
+  import { nonNullish } from "@dfinity/utils";
+  import { generateSnsProposalTypeFilterData } from "$lib/utils/sns-proposals.utils";
+
+  export let nsFunctions: SnsNervousSystemFunction[] | undefined;
 
   let modal: "topics" | "rewards" | "status" | undefined = undefined;
 
@@ -18,6 +23,17 @@
   $: rootCanisterId = $selectedUniverseIdStore;
   let filtersStore: ProjectFiltersStoreData | undefined;
   $: filtersStore = $snsFiltersStore[rootCanisterId.toText()];
+
+  $: if (nonNullish(nsFunctions)) {
+    // update the filters store with the new types
+    snsFiltersStore.setType({
+      rootCanisterId,
+      types: generateSnsProposalTypeFilterData({
+        nsFunctions,
+        currentFilterState: filtersStore.topics,
+      }),
+    });
+  }
 
   // TODO(max): "topics" to "types"
   const openFilters = (filtersModal: "topics" | "rewards" | "status") => {

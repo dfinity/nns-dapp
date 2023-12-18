@@ -15,7 +15,7 @@
   export let loadingNextPage = false;
 </script>
 
-<SnsProposalsFilters />
+<SnsProposalsFilters {nsFunctions} />
 {#if proposals === undefined}
   <LoadingProposals />
 {:else if proposals.length === 0}
