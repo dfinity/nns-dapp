@@ -42,6 +42,7 @@ describe("icp-tokens-list-user.derived", () => {
       universe: OWN_CANISTER_ID_TEXT,
       account: mockMainAccount.identifier,
     }),
+    accountIdentifier: mockMainAccount.identifier,
   };
   const subaccountUserTokenData: UserTokenData = {
     ...icpTokenUser,
@@ -55,6 +56,7 @@ describe("icp-tokens-list-user.derived", () => {
       universe: OWN_CANISTER_ID_TEXT,
       account: mockSubAccount.identifier,
     }),
+    accountIdentifier: mockSubAccount.identifier,
   };
   const hardwareWalletUserTokenData: UserTokenData = {
     ...icpTokenUser,
@@ -68,6 +70,7 @@ describe("icp-tokens-list-user.derived", () => {
       universe: OWN_CANISTER_ID_TEXT,
       account: mockHardwareWalletAccount.identifier,
     }),
+    accountIdentifier: mockHardwareWalletAccount.identifier,
   };
 
   describe("icpTokensListVisitors", () => {
