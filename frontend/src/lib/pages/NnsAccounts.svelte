@@ -4,10 +4,11 @@
   import { i18n } from "$lib/stores/i18n";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { onDestroy, onMount } from "svelte";
   import {
     cancelPollAccounts,
+    loadBalance,
     pollAccounts,
   } from "$lib/services/icp-accounts.services";
   import { ICPToken } from "@dfinity/utils";
@@ -17,6 +18,9 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { IconAdd } from "@dfinity/gix-components";
   import { openAccountsModal } from "$lib/utils/modals.utils";
+  import { ActionType, type Action } from "$lib/types/actions";
+  import { findAccount } from "$lib/utils/accounts.utils";
+  import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 
   onMount(() => {
     if (!$ENABLE_MY_TOKENS) {
@@ -37,6 +41,29 @@
       data: undefined,
     });
   };
+
+  const handleAction = ({ detail }: { detail: Action }) => {
+    if (detail.type === ActionType.Receive) {
+      const account = findAccount({
+        identifier: detail.data.accountIdentifier,
+        accounts: $nnsAccountsListStore,
+      });
+      if (isNullish(account)) {
+        return;
+      }
+      openAccountsModal({
+        type: "nns-receive",
+        data: {
+          account,
+          reload: () => loadBalance({ accountIdentifier: account.identifier }),
+          canSelectAccount: false,
+          universeId: detail.data.universeId,
+          tokenSymbol: detail.data.token.symbol,
+          logo: detail.data.logo,
+        },
+      });
+    }
+  };
 </script>
 
 {#if $ENABLE_MY_TOKENS}
@@ -44,6 +71,7 @@
     <TokensTable
       {userTokensData}
       firstColumnHeader={$i18n.tokens.accounts_header}
+      on:nnsAction={handleAction}
     >
       <div
         slot="last-row"
