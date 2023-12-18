@@ -74,7 +74,6 @@ jobs:
 
             # Changes
             * Updated `snsdemo` version in `dfx.json`.
-            * Ensured that the `dfx` version and IC commit in `dfx.json` match `snsdemo`.
 
             # Tests
             CI should pass.
