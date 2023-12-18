@@ -95,11 +95,11 @@
     <div>
       <DayInput
         bind:seconds={delayInSeconds}
+        savedSeconds={Number(neuronDissolveDelaySeconds)}
         maxInSeconds={maxDelayInSeconds}
-        minInSeconds={Math.max(
-          Number(neuronDissolveDelaySeconds),
-          minProjectDelayInSeconds
-        )}
+        minInSeconds={neuronDissolveDelaySeconds >= minProjectDelayInSeconds
+          ? Number(neuronDissolveDelaySeconds) + 1
+          : minProjectDelayInSeconds}
         placeholderLabelKey="neurons.dissolve_delay_placeholder"
         name="dissolve_delay"
         {getInputError}

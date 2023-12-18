@@ -5,6 +5,7 @@
   import { daysToSeconds, secondsToDays } from "$lib/utils/date.utils";
 
   export let seconds: number;
+  export let savedSeconds: number;
   export let maxInSeconds: number;
   export let minInSeconds: number;
   export let placeholderLabelKey = "core.amount";
