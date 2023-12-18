@@ -14,6 +14,7 @@ use crate::{
 use anyhow::anyhow;
 use ic_cdk::api::management_canister::provisional::CanisterId;
 use ic_cdk::api::time;
+use ic_cdk::println;
 use ic_cdk_timers::TimerId;
 use std::cell::RefCell;
 use std::collections::VecDeque;
@@ -120,7 +121,7 @@ thread_local! {
 
 /// Log to console and store for retrieval by query calls.
 pub fn log(message: String) {
-    ic_cdk::api::print(&message);
+    println!("{}", &message);
     let now = time();
     let message = format!("{now}: {message}");
     STATE.with(|state| {
