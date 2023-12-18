@@ -11,38 +11,31 @@ import {
 } from "$lib/stores/tokens.store";
 import {
   UserTokenAction,
+  type UserToken,
   type UserTokenBase,
-  type UserTokenData,
 } from "$lib/types/tokens-page";
+import { sumAccounts } from "$lib/utils/accounts.utils";
 import { buildAccountsUrl, buildWalletUrl } from "$lib/utils/navigation.utils";
-import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { isUniverseNns } from "$lib/utils/universe.utils";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
-import { isNullish, nonNullish, TokenAmountV2 } from "@dfinity/utils";
+import { isNullish, TokenAmountV2 } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
+import type { UniversesAccounts } from "./accounts-list.derived";
 import { tokensListBaseStore } from "./tokens-list-base.derived";
-import {
-  universesAccountsBalance,
-  type UniversesAccountsBalanceReadableStore,
-} from "./universes-accounts-balance.derived";
+import { universesAccountsStore } from "./universes-accounts.derived";
 
 const convertToUserTokenData = ({
-  balances,
+  accounts,
   tokens,
   baseTokenData,
   authData,
 }: {
-  balances: UniversesAccountsBalanceReadableStore;
+  accounts: UniversesAccounts;
   tokens: TokensStoreData;
   baseTokenData: UserTokenBase;
   authData: AuthStoreData;
-}): UserTokenData | undefined => {
-  const balanceUlps = balances[baseTokenData.universeId.toText()]?.balanceE8s;
+}): UserToken => {
   const token = tokens[baseTokenData.universeId.toText()]?.token;
-  if (isNullish(token)) {
-    // TODO: GIX-2062 Add loading state
-    return undefined;
-  }
   const rowHref = isNullish(authData.identity)
     ? undefined
     : isUniverseNns(baseTokenData.universeId)
@@ -53,17 +46,28 @@ const convertToUserTokenData = ({
           owner: authData.identity.getPrincipal(),
         }),
       });
-  const fee = TokenAmountV2.fromUlps({ amount: token.fee, token });
-  if (isNullish(balanceUlps)) {
+  const accountsList = accounts[baseTokenData.universeId.toText()];
+  const mainAccount = accountsList?.find(({ type }) => type === "main");
+  if (isNullish(token) || isNullish(accountsList) || isNullish(mainAccount)) {
     return {
       ...baseTokenData,
-      balance: new UnavailableTokenAmount(token),
-      token,
-      fee,
-      rowHref,
+      balance: "loading",
+      actions: [],
     };
   }
-  const balance = TokenAmountV2.fromUlps({ amount: balanceUlps, token });
+  const fee = TokenAmountV2.fromUlps({ amount: token.fee, token });
+  // For ICP we show the sum of all ICP accounts.
+  // For other tokens we show the main account balance because subaccounts are not yet supported.
+  const balance = TokenAmountV2.fromUlps({
+    amount: isUniverseNns(baseTokenData.universeId)
+      ? sumAccounts(accountsList)
+      : mainAccount.balanceUlps,
+    token,
+  });
+  // For ICP, the row represents all the ICP accounts. Therefore, we don't want to set the accountIdentifier.
+  const accountIdentifier = isUniverseNns(baseTokenData.universeId)
+    ? undefined
+    : mainAccount.identifier;
   return {
     ...baseTokenData,
     token,
@@ -74,6 +78,7 @@ const convertToUserTokenData = ({
         ? [UserTokenAction.GoToDetail]
         : [UserTokenAction.Receive, UserTokenAction.Send]),
     ],
+    accountIdentifier,
     rowHref,
   };
 };
@@ -81,17 +86,20 @@ const convertToUserTokenData = ({
 export const tokensListUserStore = derived<
   [
     Readable<UserTokenBase[]>,
-    Readable<UniversesAccountsBalanceReadableStore>,
+    Readable<UniversesAccounts>,
     TokensStore,
     AuthStore,
   ],
-  UserTokenData[]
+  UserToken[]
 >(
-  [tokensListBaseStore, universesAccountsBalance, tokensStore, authStore],
-  ([tokensList, balances, tokens, authData]) =>
-    tokensList
-      .map((baseTokenData) =>
-        convertToUserTokenData({ baseTokenData, balances, tokens, authData })
-      )
-      .filter((data): data is UserTokenData => nonNullish(data))
+  [tokensListBaseStore, universesAccountsStore, tokensStore, authStore],
+  ([tokensList, accounts, tokens, authData]) =>
+    tokensList.map((baseTokenData) =>
+      convertToUserTokenData({
+        baseTokenData,
+        accounts,
+        tokens,
+        authData,
+      })
+    )
 );

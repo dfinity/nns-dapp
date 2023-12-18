@@ -126,9 +126,8 @@ export const formatTokenV2 = ({
   return formatToken({ value: e8s, detailed, roundingMode });
 };
 
-// TODO GIX-2154: Rename to sumAmounts.
-export const sumAmountE8s = (...amountE8s: bigint[]): bigint =>
-  amountE8s.reduce<bigint>((acc, amount) => acc + amount, BigInt(0));
+export const sumAmounts = (...amounts: bigint[]): bigint =>
+  amounts.reduce<bigint>((acc, amount) => acc + amount, BigInt(0));
 
 // To make the fixed transaction fee readable, we do not display it with 8 digits but only till the last digit that is not zero
 // e.g. not 0.00010000 but 0.0001

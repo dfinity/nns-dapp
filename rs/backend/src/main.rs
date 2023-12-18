@@ -14,6 +14,7 @@ use crate::state::{StableState, State, STATE};
 pub use candid::{CandidType, Deserialize};
 use dfn_candid::{candid, candid_one};
 use dfn_core::{over, over_async};
+use ic_cdk::println;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use icp_ledger::AccountIdentifier;
 pub use serde::Serialize;
@@ -39,7 +40,7 @@ type Cycles = u128;
 
 #[init]
 fn init(args: Option<CanisterArguments>) {
-    dfn_core::api::print(format!("init with args: {args:#?}"));
+    println!("init with args: {args:#?}");
     set_canister_arguments(args);
     perf::record_instruction_count("init after set_canister_arguments");
     assets::init_assets();
@@ -51,26 +52,26 @@ fn main() {}
 
 #[pre_upgrade]
 fn pre_upgrade() {
-    dfn_core::api::print(format!(
+    println!(
         "pre_upgrade instruction_counter before saving state: {} stable_memory_size_gib: {} wasm_memory_size_gib: {}",
         ic_cdk::api::instruction_counter(),
         stats::gibibytes(stats::stable_memory_size_bytes()),
         stats::gibibytes(stats::wasm_memory_size_bytes())
-    ));
+    );
     STATE.with(|s| {
         s.pre_upgrade();
     });
-    dfn_core::api::print(format!(
+    println!(
         "pre_upgrade instruction_counter after saving state: {} stable_memory_size_gib: {} wasm_memory_size_gib: {}",
         ic_cdk::api::instruction_counter(),
         stats::gibibytes(stats::stable_memory_size_bytes()),
         stats::gibibytes(stats::wasm_memory_size_bytes())
-    ));
+    );
 }
 
 #[post_upgrade]
 fn post_upgrade(args: Option<CanisterArguments>) {
-    dfn_core::api::print(format!("post_upgrade with args: {args:#?}"));
+    println!("post_upgrade with args: {args:#?}");
     // Saving the instruction counter now will not have the desired effect
     // as the storage is about to be wiped out and replaced with stable memory.
     let counter_before = PerformanceCount::new("post_upgrade start");

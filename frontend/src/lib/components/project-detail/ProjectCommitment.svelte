@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TokenAmount, ICPToken } from "@dfinity/utils";
+  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
   import type { SnsSummary } from "$lib/types/sns";
   import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
@@ -48,8 +48,8 @@
   let buyersTotalCommitment: bigint;
   $: buyersTotalCommitment = projectCommitments.totalCommitmentE8s;
 
-  let buyersTotalCommitmentIcp: TokenAmount;
-  $: buyersTotalCommitmentIcp = TokenAmount.fromE8s({
+  let buyersTotalCommitmentIcp: TokenAmountV2;
+  $: buyersTotalCommitmentIcp = TokenAmountV2.fromUlps({
     amount: buyersTotalCommitment,
     token: ICPToken,
   });
@@ -103,7 +103,7 @@
 
         <AmountDisplay
           slot="value"
-          amount={TokenAmount.fromE8s({
+          amount={TokenAmountV2.fromUlps({
             amount: projectCommitments.directCommitmentE8s,
             token: ICPToken,
           })}
@@ -142,7 +142,7 @@
         <svelte:fragment slot="value">
           {#if projectCommitments.isNFParticipating && nonNullish(projectCommitments.nfCommitmentE8s)}
             <AmountDisplay
-              amount={TokenAmount.fromE8s({
+              amount={TokenAmountV2.fromUlps({
                 amount: projectCommitments.nfCommitmentE8s,
                 token: ICPToken,
               })}
@@ -181,8 +181,6 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/text";
-
   // custom gap between text and the bar
   .commitment-progress-container {
     display: flex;
@@ -195,14 +193,11 @@
     align-items: center;
     gap: var(--padding-0_5x);
 
-    span {
-      @include text.clamp(1);
-    }
-
     // This is the dot with the participation color next to the label
     &::before {
       content: "";
       display: block;
+      flex-shrink: 0;
 
       height: var(--padding);
       width: var(--padding);

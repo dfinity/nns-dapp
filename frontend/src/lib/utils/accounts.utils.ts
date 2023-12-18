@@ -7,7 +7,7 @@ import type {
 } from "$lib/types/account";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { TransactionNetwork } from "$lib/types/transaction";
-import { sumAmountE8s } from "$lib/utils/token.utils";
+import { sumAmounts } from "$lib/utils/token.utils";
 import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
 import { BtcNetwork, parseBtcAddress, type BtcAddress } from "@dfinity/ckbtc";
 import {
@@ -196,13 +196,12 @@ export const getAccountsByRootCanister = ({
  */
 export const assertEnoughAccountFunds = ({
   account,
-  // TODO: GIX-2154 rename to amountUlps
-  amountE8s,
+  amountUlps,
 }: {
   account: Account;
-  amountE8s: bigint;
+  amountUlps: bigint;
 }): void => {
-  if (account.balanceUlps < amountE8s) {
+  if (account.balanceUlps < amountUlps) {
     throw new NotEnoughAmountError("error.insufficient_funds");
   }
 };
@@ -228,7 +227,7 @@ export const sumNnsAccounts = (
   accounts: IcpAccountsStoreData | undefined
 ): bigint | undefined =>
   accounts?.main?.balanceUlps !== undefined
-    ? sumAmountE8s(
+    ? sumAmounts(
         accounts?.main?.balanceUlps,
         ...(accounts?.subAccounts || []).map(({ balanceUlps }) => balanceUlps),
         ...(accounts?.hardwareWallets || []).map(
@@ -237,12 +236,15 @@ export const sumNnsAccounts = (
       )
     : undefined;
 
-export const sumAccounts = (
+export function sumAccounts(acconts: Account[]): bigint;
+export function sumAccounts(acconts: Account[] | undefined): bigint | undefined;
+export function sumAccounts(
   accounts: Account[] | undefined
-): bigint | undefined =>
-  isNullish(accounts) || accounts.length === 0
+): bigint | undefined {
+  return isNullish(accounts)
     ? undefined
-    : sumAmountE8s(...accounts.map(({ balanceUlps }) => balanceUlps));
+    : sumAmounts(...accounts.map(({ balanceUlps }) => balanceUlps));
+}
 
 export const hasAccounts = (accounts: Account[]): boolean =>
   accounts.length > 0;

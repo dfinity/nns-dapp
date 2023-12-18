@@ -445,7 +445,7 @@ export const initiateSnsSaleParticipation = async ({
     const transactionFee = get(transactionsFeesStore).main;
     assertEnoughAccountFunds({
       account,
-      amountE8s: amount.toE8s() + transactionFee,
+      amountUlps: amount.toE8s() + transactionFee,
     });
 
     const project = getProjectFromStore(rootCanisterId);

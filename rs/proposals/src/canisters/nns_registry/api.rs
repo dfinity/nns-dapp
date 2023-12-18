@@ -1,5 +1,5 @@
 //! Rust code created from candid by: scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-11-29_23-01/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-12-13_23-01/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(clippy::missing_docs_in_private_items)]
 #![allow(non_camel_case_types)]
@@ -55,6 +55,7 @@ pub struct AddNodePayload {
     pub prometheus_metrics_endpoint: String,
     pub http_endpoint: String,
     pub idkg_dealing_encryption_pk: Option<serde_bytes::ByteBuf>,
+    pub public_ipv4_config: Option<Vec<String>>,
     pub xnet_endpoint: String,
     pub chip_id: Option<serde_bytes::ByteBuf>,
     pub committee_signing_pk: serde_bytes::ByteBuf,
@@ -369,6 +370,14 @@ pub struct UpdateNodeDirectlyPayload {
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct UpdateNodeIPv4ConfigDirectlyPayload {
+    pub node_id: Principal,
+    pub gateway_ip_addrs: Vec<String>,
+    pub prefix_length: u32,
+    pub ip_addr: String,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateNodeOperatorConfigPayload {
     pub node_operator_id: Option<Principal>,
     pub set_ipv6_to_none: Option<bool>,
@@ -566,6 +575,12 @@ impl Service {
     }
     pub async fn update_node_directly(&self, arg0: UpdateNodeDirectlyPayload) -> CallResult<(Result1,)> {
         ic_cdk::call(self.0, "update_node_directly", (arg0,)).await
+    }
+    pub async fn update_node_ipv_4_config_directly(
+        &self,
+        arg0: UpdateNodeIPv4ConfigDirectlyPayload,
+    ) -> CallResult<(Result1,)> {
+        ic_cdk::call(self.0, "update_node_ipv4_config_directly", (arg0,)).await
     }
     pub async fn update_node_operator_config(&self, arg0: UpdateNodeOperatorConfigPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "update_node_operator_config", (arg0,)).await

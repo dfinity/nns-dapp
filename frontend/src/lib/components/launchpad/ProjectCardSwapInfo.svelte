@@ -9,7 +9,7 @@
     durationTillSwapDeadline,
     durationTillSwapStart,
   } from "$lib/utils/projects.utils";
-  import { TokenAmount, ICPToken } from "@dfinity/utils";
+  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import { secondsToDuration } from "@dfinity/utils";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
@@ -41,11 +41,11 @@
   let durationTillStart: bigint | undefined;
   $: durationTillStart = durationTillSwapStart(swap);
 
-  let myCommitment: TokenAmount | undefined = undefined;
+  let myCommitment: TokenAmountV2 | undefined = undefined;
   $: {
     const commitmentE8s = getCommitmentE8s(swapCommitment);
     if (nonNullish(commitmentE8s) && commitmentE8s > BigInt(0)) {
-      myCommitment = TokenAmount.fromE8s({
+      myCommitment = TokenAmountV2.fromUlps({
         amount: commitmentE8s,
         token: ICPToken,
       });

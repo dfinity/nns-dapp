@@ -1,10 +1,12 @@
 //! An accounts DB implemented as a hash map.
 
 use super::{Account, AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel};
+use core::fmt;
+use core::ops::RangeBounds;
 use std::collections::BTreeMap;
-use std::fmt;
 
-#[derive(Default, Eq, PartialEq)]
+#[derive(Default)]
+#[cfg_attr(test, derive(Eq, PartialEq))]
 pub struct AccountsDbAsMap {
     accounts: BTreeMap<Vec<u8>, Account>,
 }
@@ -31,6 +33,13 @@ impl AccountsDbTrait for AccountsDbAsMap {
     }
     fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
         let iterator = self.accounts.values().cloned();
+        Box::new(iterator)
+    }
+    fn range(&self, key_range: impl RangeBounds<Vec<u8>>) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
+        let iterator = self
+            .accounts
+            .range(key_range)
+            .map(|(key, val)| (key.clone(), val.clone()));
         Box::new(iterator)
     }
     fn schema_label(&self) -> SchemaLabel {

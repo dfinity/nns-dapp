@@ -1088,6 +1088,7 @@ interface I18nCkbtc {
   btc_sent: string;
   btc_network: string;
   receiving_btc: string;
+  reimbursement: string;
 }
 
 interface I18nError__ckbtc {

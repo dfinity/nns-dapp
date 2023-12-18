@@ -79,7 +79,7 @@ export const createCanister = async ({
     if (!(icpAmount instanceof TokenAmount)) {
       throw new LedgerErrorMessage("error.amount_not_valid");
     }
-    assertEnoughAccountFunds({ amountE8s: icpAmount.toE8s(), account });
+    assertEnoughAccountFunds({ amountUlps: icpAmount.toE8s(), account });
 
     const identity = await getAccountIdentity(account.identifier);
     const canisterId = await createCanisterApi({
@@ -139,7 +139,7 @@ export const topUpCanister = async ({
     if (!(icpAmount instanceof TokenAmount)) {
       throw new LedgerErrorMessage("error.amount_not_valid");
     }
-    assertEnoughAccountFunds({ amountE8s: icpAmount.toE8s(), account });
+    assertEnoughAccountFunds({ amountUlps: icpAmount.toE8s(), account });
 
     const identity = await getAccountIdentity(account.identifier);
     await topUpCanisterApi({

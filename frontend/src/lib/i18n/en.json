@@ -144,7 +144,7 @@
     "canisters": "My Canisters",
     "neurons": "My Neuron Staking",
     "voting": "Vote on Proposals",
-    "launchpad": "Launch Pad",
+    "launchpad": "Launchpad",
     "settings": "Settings"
   },
   "header": {
@@ -160,7 +160,7 @@
     "wallet": "Wallet",
     "stake": "Stake Neurons",
     "earn": "Vote & earn rewards",
-    "launchpad": "SNS Launch Pad",
+    "launchpad": "SNS Launchpad",
     "ic_logo": "Internet Computer logo",
     "dashboard": "Dashboard",
     "voting_rewards": "Voting rewards",
@@ -716,7 +716,7 @@
     "created": "Date created"
   },
   "sns_launchpad": {
-    "header": "Launch Pad",
+    "header": "Launchpad",
     "committed_projects": "Launched",
     "no_committed_projects": "No launched projects so far.",
     "no_opening_soon_projects": "No projects opening soon.",
@@ -1038,7 +1038,8 @@
     "btc_received": "BTC Received",
     "btc_sent": "BTC Sent",
     "btc_network": "BTC Network",
-    "receiving_btc": "Receiving BTC"
+    "receiving_btc": "Receiving BTC",
+    "reimbursement": "Reimbursement"
   },
   "error__ckbtc": {
     "already_process": "The minter has already been notified and updating the balance is in progress.",

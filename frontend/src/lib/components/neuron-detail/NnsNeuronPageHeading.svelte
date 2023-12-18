@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import { TokenAmount, ICPToken } from "@dfinity/utils";
+  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
   import {
     formatVotingPower,
     getNeuronTags,
@@ -19,8 +19,8 @@
 
   export let neuron: NeuronInfo;
 
-  let amount: TokenAmount;
-  $: amount = TokenAmount.fromE8s({
+  let amount: TokenAmountV2;
+  $: amount = TokenAmountV2.fromUlps({
     amount: neuronStake(neuron),
     token: ICPToken,
   });

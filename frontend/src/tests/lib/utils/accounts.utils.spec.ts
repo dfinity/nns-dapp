@@ -564,7 +564,7 @@ describe("accounts-utils", () => {
             ...mockMainAccount,
             balanceUlps: amountE8s,
           },
-          amountE8s: amountE8s + BigInt(10_000),
+          amountUlps: amountE8s + BigInt(10_000),
         });
       }).toThrow();
     });
@@ -577,7 +577,7 @@ describe("accounts-utils", () => {
             ...mockMainAccount,
             balanceUlps: amountE8s,
           },
-          amountE8s: amountE8s - BigInt(10_000),
+          amountUlps: amountE8s - BigInt(10_000),
         });
       }).not.toThrow();
     });
@@ -677,6 +677,14 @@ describe("accounts-utils", () => {
       totalBalance = mockSnsMainAccount.balanceUlps;
 
       expect(sumAccounts([mockSnsMainAccount])).toEqual(totalBalance);
+    });
+
+    it("should return undefined if no accounts", () => {
+      expect(sumAccounts(undefined)).toBeUndefined();
+    });
+
+    it("should return 0 if accounts list is empty", () => {
+      expect(sumAccounts([])).toBe(0n);
     });
   });
 

@@ -72,7 +72,7 @@ export const assertCkBTCUserInputAmount = ({
 
   assertEnoughAccountFunds({
     account: sourceAccount,
-    amountE8s: amountE8s + transactionFee,
+    amountUlps: amountE8s + transactionFee,
   });
 
   // This assertion is primarily intended to handle edge cases.

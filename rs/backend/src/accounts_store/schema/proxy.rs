@@ -1,10 +1,13 @@
 //! Accounts DB that delegates API calls to underlying implementations.
 //!
 //! The proxy manages migrations from one implementation to another.
-use std::collections::BTreeMap;
-mod enum_boilerplate;
 use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel};
-use std::fmt;
+use core::fmt;
+use core::ops::RangeBounds;
+use ic_cdk::println;
+use std::collections::BTreeMap;
+
+mod enum_boilerplate;
 
 /// An accounts database delegates API calls to underlying implementations.
 ///
@@ -117,21 +120,25 @@ impl AccountsDbTrait for AccountsDbAsProxy {
     /// The authoritative schema label.
     fn schema_label(&self) -> SchemaLabel {
         let schema_label = self.authoritative_db.schema_label();
-        dfn_core::api::print(format!(
-            "AccountsDb::Proxy: authoritative schema label: {schema_label:#?}"
-        ));
+        println!("AccountsDb::Proxy: authoritative schema label: {schema_label:#?}");
         schema_label
+    }
+    /// Iterates over a range of accounts in the authoritative db.
+    fn range(&self, key_range: impl RangeBounds<Vec<u8>>) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
+        self.authoritative_db.range(key_range)
     }
 }
 
 /// Check whether two account databases contain the same data.
 ///
 /// It should be possible to use this to confirm that data has been preserved during a migration.
+#[cfg(test)]
 impl PartialEq for AccountsDbAsProxy {
     fn eq(&self, other: &Self) -> bool {
-        self.authoritative_db.as_map() == other.authoritative_db.as_map()
+        self.authoritative_db.range(..).eq(other.authoritative_db.range(..))
     }
 }
+#[cfg(test)]
 impl Eq for AccountsDbAsProxy {}
 
 #[cfg(test)]

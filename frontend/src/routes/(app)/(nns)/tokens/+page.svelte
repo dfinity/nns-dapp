@@ -39,6 +39,11 @@
   import { nonNullish } from "@dfinity/utils";
   import { Principal } from "@dfinity/principal";
   import IcrcTokenTransactionModal from "$lib/modals/accounts/IcrcTokenTransactionModal.svelte";
+  import CkBtcReceiveModal from "$lib/modals/accounts/CkBTCReceiveModal.svelte";
+  import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
+  import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
+  import type { Account } from "$lib/types/account";
+  import IcrcReceiveModal from "$lib/modals/accounts/IcrcReceiveModal.svelte";
 
   onMount(() => {
     if (!$ENABLE_MY_TOKENS) {
@@ -119,6 +124,19 @@
     });
   };
 
+  const createReloadAccountBalance = (universeId: Principal) => () => {
+    const isSnsProject = $snsProjectsCommittedStore.some(
+      ({ rootCanisterId }) => rootCanisterId.toText() === universeId.toText()
+    );
+    if (isSnsProject) {
+      return uncertifiedLoadSnsAccountsBalances({
+        rootCanisterIds: [universeId],
+        excludeRootCanisterIds: [],
+      });
+    }
+    return loadAccountsBalances([universeId.toText()]);
+  };
+
   $: (async () => {
     if ($authSignedInStore) {
       await Promise.allSettled([
@@ -129,15 +147,35 @@
     }
   })();
 
+  type ModalType =
+    | "sns-send"
+    | "nns-send"
+    | "ckbtc-send"
+    | "icrc-send"
+    | "icrc-receive"
+    | "ckbtc-receive";
   let modal:
     | {
-        type: "sns-send" | "nns-send" | "ckbtc-send" | "icrc-send";
+        type: ModalType;
         data: UserTokenData;
       }
     | undefined;
   const closeModal = () => {
     modal = undefined;
   };
+
+  let ckBTCCanisters: CkBTCAdditionalCanisters | undefined;
+  $: ckBTCCanisters =
+    modal && isUniverseCkBTC(modal.data.universeId)
+      ? CKBTC_ADDITIONAL_CANISTERS[modal?.data.universeId.toText()]
+      : undefined;
+
+  let account: Account | undefined;
+  $: account =
+    modal &&
+    $universesAccountsStore[modal.data.universeId.toText()].find(
+      ({ type }) => type === "main"
+    );
 
   const handleAction = ({ detail }: { detail: Action }) => {
     // Any action from non-signed in user should be trigger a login
@@ -159,6 +197,13 @@
       } else {
         // Default to SNS, this might change when we have more universe sources
         modal = { type: "sns-send", data: detail.data };
+      }
+    }
+    if (detail.type === ActionType.Receive) {
+      if (isUniverseCkBTC(detail.data.universeId)) {
+        modal = { type: "ckbtc-receive", data: detail.data };
+      } else {
+        modal = { type: "icrc-receive", data: detail.data };
       }
     }
   };
@@ -200,6 +245,33 @@
       ledgerCanisterId={modal.data.universeId}
       token={modal.data.token}
       transactionFee={modal.data.fee}
+    />
+  {/if}
+
+  {#if modal?.type === "ckbtc-receive" && nonNullish(ckBTCCanisters) && nonNullish(account)}
+    <CkBtcReceiveModal
+      data={{
+        canisters: ckBTCCanisters,
+        account,
+        universeId: modal.data.universeId,
+        canSelectAccount: false,
+        reload: createReloadAccountBalance(modal.data.universeId),
+      }}
+      on:nnsClose={closeModal}
+    />
+  {/if}
+
+  {#if modal?.type === "icrc-receive" && nonNullish(account)}
+    <IcrcReceiveModal
+      data={{
+        account,
+        universeId: modal.data.universeId,
+        canSelectAccount: false,
+        reload: createReloadAccountBalance(modal.data.universeId),
+        tokenSymbol: modal.data.token.symbol,
+        logo: modal.data.logo,
+      }}
+      on:nnsClose={closeModal}
     />
   {/if}
 </TestIdWrapper>

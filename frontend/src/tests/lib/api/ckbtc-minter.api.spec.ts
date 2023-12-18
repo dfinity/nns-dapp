@@ -5,6 +5,7 @@ import {
   getWithdrawalAccount,
   minterInfo,
   retrieveBtc,
+  retrieveBtcStatusV2ByAccount,
   retrieveBtcWithApproval,
   updateBalance,
 } from "$lib/api/ckbtc-minter.api";
@@ -16,7 +17,11 @@ import {
   mockUpdateBalanceOk,
 } from "$tests/mocks/ckbtc-minter.mock";
 import type { HttpAgent } from "@dfinity/agent";
-import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
+import {
+  CkBTCMinterCanister,
+  type RetrieveBtcOk,
+  type RetrieveBtcStatusV2WithId,
+} from "@dfinity/ckbtc";
 import { mock } from "vitest-mock-extended";
 
 describe("ckbtc-minter api", () => {
@@ -191,6 +196,38 @@ describe("ckbtc-minter api", () => {
         });
 
       expect(call).rejects.toThrowError();
+    });
+  });
+
+  describe("retrieveBtcStatusV2ByAccount", () => {
+    it("returns result", async () => {
+      const statuses: RetrieveBtcStatusV2WithId[] = [
+        {
+          id: 135n,
+          status: {
+            Confirmed: { txid: [1, 2, 3] },
+          },
+        },
+      ];
+
+      const spy =
+        minterCanisterMock.retrieveBtcStatusV2ByAccount.mockResolvedValue(
+          statuses
+        );
+
+      const statusesParams = {
+        certified: true,
+      };
+
+      const result = await retrieveBtcStatusV2ByAccount({
+        ...params,
+        ...statusesParams,
+      });
+
+      expect(result).toEqual(statuses);
+
+      expect(spy).toBeCalledTimes(1);
+      expect(spy).toBeCalledWith(statusesParams);
     });
   });
 
