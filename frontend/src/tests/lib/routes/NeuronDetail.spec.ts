@@ -118,6 +118,7 @@ describe("NeuronDetail", () => {
       const po = NeuronDetailPo.under(new JestPageObjectElement(container));
       // No loading data until we load the SNS projects.
       fakeSnsGovernanceApi.resume();
+      await runResolvedPromises();
       expect(await po.isContentLoaded()).toBe(false);
       fakeSnsGovernanceApi.pause();
 
