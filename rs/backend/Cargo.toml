@@ -26,7 +26,7 @@ tar = "0.4.40"
 # but, 0.4.20 doesn't satisfy ic. We get the followig error when deploying the canister:
 # The Replica returned an error: code 5, message: "Wasm module of canister vo5te-2aaaa-aaaaa-aaazq-cai is not valid: Wasm module has an invalid import section. Module imports function '__wbindgen_describe' from '__wbindgen_placeholder__' that is not exported by the runtime."
 # 0.4.19 works and satisfies ic.
-chrono = "=0.4.19"
+chrono = "=0.4.31"
 
 cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 dfn_candid = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
