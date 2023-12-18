@@ -227,6 +227,19 @@ describe("SetDissolveDelay", () => {
     expect(getDelayInSeconds(component)).toBe(200 * SECONDS_IN_DAY);
   });
 
+  it("should disable input when maximum is already selected", async () => {
+    const delayInSeconds = defaultComponentProps.maxDelayInSeconds;
+    const po = renderComponent({
+      ...defaultComponentProps,
+      neuronDissolveDelaySeconds: BigInt(delayInSeconds),
+      delayInSeconds,
+    });
+
+    expect(await po.getInputWithErrorPo().isDisabled()).toBe(true);
+    expect(await po.getMaxButtonPo().isDisabled()).toBe(true);
+    expect(await po.getMinButtonPo().isDisabled()).toBe(true);
+  });
+
   const minMaxDaysPairs = [
     { min: 50, max: 500 },
     { min: 50.5, max: 500.5 },
