@@ -59,6 +59,9 @@ export const loadSnsProjects = async (): Promise<void> => {
       })
     );
 
+    // Calls to SNS canisters are done through an SNS Wrapper that first needs to be initialized with all the SNS canister ids.
+    // To get the SNS canister ids, we need to call the root canister id.
+    // This call is not necessary because the canister ids are already provided by the SNS aggregator.
     // Set aggregator store after building the wrappers' caches to avoid calls to the root canister when the SNS wrapper is initialized.
     snsAggregatorStore.setData(aggregatorData);
     snsTotalTokenSupplyStore.setTotalTokenSupplies(
