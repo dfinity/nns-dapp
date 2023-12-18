@@ -14,6 +14,7 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { resetSnsProjects } from "$tests/utils/sns.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
@@ -124,9 +125,8 @@ describe("NeuronDetail", () => {
       // NnsNeuronDetail instead, which was a bug we had.
       await loadSnsProjects();
       fakeSnsGovernanceApi.resume();
-      await waitFor(async () => {
-        expect(await po.isContentLoaded()).toBe(true);
-      });
+      await runResolvedPromises();
+      expect(await po.isContentLoaded()).toBe(true);
 
       expect(await po.hasNnsNeuronDetailPo()).toBe(false);
       expect(await po.hasSnsNeuronDetailPo()).toBe(true);
