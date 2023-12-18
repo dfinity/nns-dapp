@@ -11,7 +11,11 @@ const expectImagesLoaded = async ({ page, sources }) => {
   // We only look at the basename (stripping path and content hash extension)
   // because the rest might differ depending on the environment.
   const baseImageSources = imageSources.map((src) =>
-    src.replace(/.*\//, "").replace(/\.[0-9A-Za-z]{8}\./, ".")
+    src
+      .replace(/.*\//, "")
+      .split(".")
+      .filter((_, i) => i !== 1) // Remove hash from src. e.g. "logo-onchain-light.L_mfZB1R.svg" -> "logo-onchain-light.svg"
+      .join(".")
   );
   baseImageSources.sort();
   expect(baseImageSources).toEqual(sources);
