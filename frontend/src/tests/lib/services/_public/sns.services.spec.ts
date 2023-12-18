@@ -1,6 +1,7 @@
 import * as agent from "$lib/api/agent.api";
 import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import * as governanceApi from "$lib/api/sns-governance.api";
+import { clearWrapperCache, wrapper } from "$lib/api/sns-wrapper.api";
 import {
   loadSnsNervousSystemFunctions,
   loadSnsProjects,
@@ -14,6 +15,7 @@ import { tokensStore } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import {
   mockAuthStoreSubscribe,
+  mockIdentity,
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
 import {
@@ -24,9 +26,16 @@ import {
 } from "$tests/mocks/sns-aggregator.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
-import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import {
+  deployedSnsMock,
+  governanceCanisterIdMock,
+  ledgerCanisterIdMock,
+  rootCanisterIdMock,
+  swapCanisterIdMock,
+} from "$tests/mocks/sns.api.mock";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
+import { nonNullish } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
@@ -37,6 +46,28 @@ vi.mock("$lib/api/sns-governance.api");
 vi.mock("$lib/stores/toasts.store", () => {
   return {
     toastsError: vi.fn(),
+  };
+});
+
+const listSnsesSpy = vi.fn().mockResolvedValue(deployedSnsMock);
+const initSnsWrapperSpy = vi.fn().mockResolvedValue(
+  Promise.resolve({
+    canisterIds: {
+      rootCanisterId: rootCanisterIdMock,
+      ledgerCanisterId: ledgerCanisterIdMock,
+      governanceCanisterId: governanceCanisterIdMock,
+      swapCanisterId: swapCanisterIdMock,
+    },
+  })
+);
+vi.mock("$lib/proxy/api.import.proxy", () => {
+  return {
+    importSnsWasmCanister: vi.fn().mockImplementation(() => ({
+      create: () => ({
+        listSnses: listSnsesSpy,
+      }),
+    })),
+    importInitSnsWrapper: vi.fn().mockImplementation(() => initSnsWrapperSpy),
   };
 });
 
@@ -124,6 +155,7 @@ describe("SNS public services", () => {
       snsFunctionsStore.reset();
       transactionsFeesStore.reset();
       snsAggregatorStore.reset();
+      clearWrapperCache();
       vi.clearAllMocks();
       vi.spyOn(authStore, "subscribe").mockImplementation(
         mockAuthStoreSubscribe
@@ -146,6 +178,54 @@ describe("SNS public services", () => {
       expect(functionsStore[rootCanisterId]).not.toBeUndefined();
       const feesStore = get(transactionsFeesStore);
       expect(feesStore.projects[rootCanisterId]).not.toBeUndefined();
+    });
+
+    it("build SNS wrappers' certified cache before loading the aggregator store", () => {
+      vi.spyOn(aggregatorApi, "querySnsProjects").mockImplementation(() =>
+        Promise.resolve([aggregatorSnsMockDto, aggregatorSnsMockDto])
+      );
+
+      return new Promise<void>((done) => {
+        snsAggregatorStore.subscribe(async ({ data }) => {
+          // There is an initial call to subscribe with undefined data
+          if (nonNullish(data)) {
+            await wrapper({
+              identity: mockIdentity,
+              rootCanisterId:
+                aggregatorSnsMockDto.canister_ids.root_canister_id,
+              certified: true,
+            });
+            expect(listSnsesSpy).not.toBeCalled();
+            done();
+          }
+        });
+
+        loadSnsProjects();
+      });
+    });
+
+    it("build SNS wrappers' uncertified cache before loading the aggregator store", () => {
+      vi.spyOn(aggregatorApi, "querySnsProjects").mockImplementation(() =>
+        Promise.resolve([aggregatorSnsMockDto, aggregatorSnsMockDto])
+      );
+
+      return new Promise<void>((done) => {
+        snsAggregatorStore.subscribe(async ({ data }) => {
+          // There is an initial call to subscribe with undefined data
+          if (nonNullish(data)) {
+            await wrapper({
+              identity: mockIdentity,
+              rootCanisterId:
+                aggregatorSnsMockDto.canister_ids.root_canister_id,
+              certified: false,
+            });
+            expect(listSnsesSpy).not.toBeCalled();
+            done();
+          }
+        });
+
+        loadSnsProjects();
+      });
     });
 
     it("should load sns aggregator store", async () => {

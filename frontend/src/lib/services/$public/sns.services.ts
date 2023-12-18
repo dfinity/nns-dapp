@@ -31,7 +31,6 @@ import { getCurrentIdentity } from "../auth.services";
 export const loadSnsProjects = async (): Promise<void> => {
   try {
     const aggregatorData = await querySnsProjects();
-    snsAggregatorStore.setData(aggregatorData);
     const identity = getCurrentIdentity();
     // We load the wrappers to avoid making calls to SNS-W and Root canister for each project.
     // The SNS Aggregator gives us the canister ids of the SNS projects.
@@ -59,6 +58,9 @@ export const loadSnsProjects = async (): Promise<void> => {
         });
       })
     );
+
+    // Set aggregator store after building the wrappers' caches to avoid calls to the root canister when the SNS wrapper is initialized.
+    snsAggregatorStore.setData(aggregatorData);
     snsTotalTokenSupplyStore.setTotalTokenSupplies(
       aggregatorData.map(({ icrc1_total_supply, canister_ids }) => ({
         rootCanisterId: Principal.fromText(canister_ids.root_canister_id),
