@@ -21,6 +21,7 @@
   import { ActionType, type Action } from "$lib/types/actions";
   import { findAccount } from "$lib/utils/accounts.utils";
   import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
+  import { toastsError } from "$lib/stores/toasts.store";
 
   onMount(() => {
     if (!$ENABLE_MY_TOKENS) {
@@ -47,7 +48,14 @@
       identifier: detail.data.accountIdentifier,
       accounts: $nnsAccountsListStore,
     });
+    // Edge case: There wouldn't be a row to click on without an account
     if (isNullish(account)) {
+      toastsError({
+        labelKey: "error.account_not_found",
+        substitutions: {
+          $account_identifier: detail.data.accountIdentifier ?? "",
+        },
+      });
       return;
     }
 
