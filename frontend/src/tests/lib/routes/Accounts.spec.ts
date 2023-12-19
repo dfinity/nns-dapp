@@ -27,7 +27,10 @@ import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { page } from "$mocks/$app/stores";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
   mockAccountDetails,
@@ -51,6 +54,7 @@ import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
+import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import WalletTest from "../pages/AccountsTest.svelte";
@@ -167,6 +171,7 @@ describe("Accounts", () => {
       balanceIcrcToken
     );
     vi.spyOn(accountsApi, "createSubAccount").mockResolvedValue(undefined);
+    vi.spyOn(icpLedgerApi, "sendICP").mockResolvedValue(1234n);
     vi.spyOn(icpLedgerApi, "queryAccountBalance").mockImplementation(
       async ({ icpAccountIdentifier }) => {
         if (icpAccountIdentifier === mockMainAccount.identifier) {
@@ -749,9 +754,11 @@ describe("Accounts", () => {
         expect(await modalPo.isPresent()).toBe(true);
 
         mainAccountBalance = 114000000n;
+        const amount = 2;
+        const destinationAddress = mockSubAccount.identifier;
         modalPo.transferToAddress({
-          destinationAddress: mockSubAccount.identifier,
-          amount: 2,
+          destinationAddress,
+          amount,
         });
 
         await runResolvedPromises();
@@ -761,6 +768,13 @@ describe("Accounts", () => {
           projectName: "Main",
         });
         expect(await modalPo.isPresent()).toBe(false);
+        expect(icpLedgerApi.sendICP).toHaveBeenCalledTimes(1);
+        expect(icpLedgerApi.sendICP).toHaveBeenCalledWith({
+          identity: mockIdentity,
+          to: destinationAddress,
+          amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
+          fromSubaccount: undefined,
+        });
       });
     });
   });
