@@ -30,13 +30,15 @@ describe("TransactionCard", () => {
     return TransactionCardPo.under(new JestPageObjectElement(container));
   };
 
-  it("renders received headline", async () => {
+  it("renders received transaction", async () => {
     const headline = "Received";
     const po = renderComponent({
       headline,
+      isIncoming: true,
     });
 
     expect(await po.getHeadline()).toBe(headline);
+    expect(await po.hasReceivedIcon()).toBe(true);
   });
 
   it("renders burn description", async () => {
@@ -60,13 +62,15 @@ describe("TransactionCard", () => {
     expect(await po.getIdentifier()).toBe("To: withdrwala-address");
   });
 
-  it("renders sent headline", async () => {
+  it("renders sent transaction", async () => {
     const headline = "Sent";
     const po = renderComponent({
       headline,
+      isIncoming: false,
     });
 
     expect(await po.getHeadline()).toBe(headline);
+    expect(await po.hasSentIcon()).toBe(true);
   });
 
   it("renders transaction ICPs with - sign", async () => {
@@ -101,17 +105,18 @@ describe("TransactionCard", () => {
     expect(normalizeWhitespace(await po.getDate())).toBe(
       "Mar 14, 2021 12:00 AM"
     );
-    expect(await po.hasPendingIcon()).toBe(false);
+    expect(await po.hasPendingReceiveIcon()).toBe(false);
   });
 
-  it("displays pending transaction", async () => {
+  it("displays pending recevie transaction", async () => {
     const po = renderComponent({
       isPending: true,
+      isIncoming: true,
       timestamp: null,
     });
 
     expect(normalizeWhitespace(await po.getDate())).toBe("Pending...");
-    expect(await po.hasPendingIcon()).toBe(true);
+    expect(await po.hasPendingReceiveIcon()).toBe(true);
   });
 
   it("displays reimbursement transaction", async () => {
