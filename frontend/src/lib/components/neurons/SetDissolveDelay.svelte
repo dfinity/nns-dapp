@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { formatToken } from "$lib/utils/token.utils";
+  import { formatToken, formatTokenV2 } from "$lib/utils/token.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { Html } from "@dfinity/gix-components";
   import { valueSpan } from "$lib/utils/utils";
@@ -67,7 +67,7 @@
       <Html
         text={replacePlaceholders($i18n.sns_neurons.token_stake, {
           $amount: valueSpan(
-            formatToken({ value: neuronStake.toUlps(), detailed: true })
+            formatTokenV2({ value: neuronStake, detailed: true })
           ),
           $token: neuronStake.token.symbol,
         })}
