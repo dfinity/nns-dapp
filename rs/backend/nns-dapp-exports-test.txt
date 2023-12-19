@@ -11,6 +11,7 @@ canister_query get_stats
 canister_query get_toy_account
 canister_query get_transactions
 canister_query http_request
+canister_update <ic-cdk internal> timer_executor
 canister_update add_account
 canister_update add_assets_tar_xz
 canister_update add_pending_notify_swap
@@ -20,7 +21,6 @@ canister_update create_sub_account
 canister_update create_toy_accounts
 canister_update detach_canister
 canister_update get_proposal_payload
-canister_update <ic-cdk internal> timer_executor
 canister_update register_hardware_wallet
 canister_update rename_canister
 canister_update rename_sub_account
