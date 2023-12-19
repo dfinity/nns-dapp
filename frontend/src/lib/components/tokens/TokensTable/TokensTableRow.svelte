@@ -10,7 +10,7 @@
     type ComponentType,
   } from "svelte";
   import Logo from "../../ui/Logo.svelte";
-  import GoToDetailButton from "./actions/GoToDetailButton.svelte";
+  import GoToDetailIcon from "./actions/GoToDetailIcon.svelte";
   import ReceiveButton from "./actions/ReceiveButton.svelte";
   import SendButton from "./actions/SendButton.svelte";
   import { ActionType } from "$lib/types/actions";
@@ -30,7 +30,7 @@
     UserTokenAction,
     ComponentType<SvelteComponent<{ userToken: UserTokenData }>>
   > = {
-    [UserTokenAction.GoToDetail]: GoToDetailButton,
+    [UserTokenAction.GoToDetail]: GoToDetailIcon,
     [UserTokenAction.Receive]: ReceiveButton,
     [UserTokenAction.Send]: SendButton,
   };

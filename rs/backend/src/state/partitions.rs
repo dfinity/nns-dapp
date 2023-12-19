@@ -6,6 +6,7 @@
 //! This code also stores virtual memory IDs and other memory functions.
 use core::borrow::Borrow;
 use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
+use ic_cdk::println;
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
 #[cfg(not(target_arch = "wasm32"))]
@@ -51,11 +52,11 @@ impl Partitions {
         let mut actual_first_bytes = [0u8; MEMORY_MANAGER_MAGIC_BYTES.len()];
         memory.read(0, &mut actual_first_bytes);
         let ans = actual_first_bytes == *MEMORY_MANAGER_MAGIC_BYTES;
-        dfn_core::api::print(format!(
+        println!(
             "END memory is_managed: {}, {:?}",
             ans,
             String::from_utf8(actual_first_bytes.to_vec())
-        ));
+        );
         ans
     }
 

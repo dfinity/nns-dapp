@@ -15,6 +15,7 @@ use crate::state::{StableState, State, STATE};
 pub use candid::{CandidType, Deserialize};
 use dfn_candid::{candid, candid_one};
 use dfn_core::{over, over_async};
+use ic_cdk::println;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use ic_stable_structures::DefaultMemoryImpl;
 use icp_ledger::AccountIdentifier;
@@ -47,8 +48,8 @@ type Cycles = u128;
 /// - The state will be set for the appropraiet
 #[init]
 fn init(args: Option<CanisterArguments>) {
-    dfn_core::api::print(format!("START init with args: {args:#?}"));
-    set_canister_arguments(args); // Populates
+    println!("init with args: {args:#?}");
+    set_canister_arguments(args);
     perf::record_instruction_count("init after set_canister_arguments");
     CANISTER_ARGUMENTS.with(|args| {
         let args = args.borrow();
@@ -72,30 +73,32 @@ fn main() {}
 
 #[pre_upgrade]
 fn pre_upgrade() {
-    dfn_core::api::print("START pre-upgrade");
-    dfn_core::api::print(format!(
+    println!("START pre-upgrade");
+    println!(
         "pre_upgrade instruction_counter before saving state: {} stable_memory_size_gib: {} wasm_memory_size_gib: {}",
         ic_cdk::api::instruction_counter(),
         stats::gibibytes(stats::stable_memory_size_bytes()),
         stats::gibibytes(stats::wasm_memory_size_bytes())
-    ));
+    );
     STATE.with(|s| {
         dfn_core::api::print(format!("pre_upgrade state before: {s:?}"));
         s.pre_upgrade();
         dfn_core::api::print(format!("pre_upgrade state after: {s:?}"));
     });
-    dfn_core::api::print(format!(
+    println!(
         "pre_upgrade instruction_counter after saving state: {} stable_memory_size_gib: {} wasm_memory_size_gib: {}",
         ic_cdk::api::instruction_counter(),
         stats::gibibytes(stats::stable_memory_size_bytes()),
         stats::gibibytes(stats::wasm_memory_size_bytes())
-    ));
+    );
     dfn_core::api::print("END pre-upgrade");
 }
 
 #[post_upgrade]
 fn post_upgrade(args_maybe: Option<CanisterArguments>) {
-    dfn_core::api::print(format!("post_upgrade with args: {args_maybe:#?}"));
+    println!("post_upgrade with args: {args_maybe:#?}");
+    // Saving the instruction counter now will not have the desired effect
+    // as the storage is about to be wiped out and replaced with stable memory.
     let counter_before = PerformanceCount::new("post_upgrade start");
     STATE.with(|s| {
         let stable_memory = DefaultMemoryImpl::default();

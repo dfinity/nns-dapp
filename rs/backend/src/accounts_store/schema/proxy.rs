@@ -5,8 +5,10 @@ use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTr
 use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
 use core::fmt;
 use core::ops::RangeBounds;
+use ic_cdk::println;
 use ic_stable_structures::{memory_manager::VirtualMemory, DefaultMemoryImpl};
 use std::collections::BTreeMap;
+
 mod enum_boilerplate;
 
 /// An accounts database delegates API calls to underlying implementations.
@@ -199,9 +201,7 @@ impl AccountsDbTrait for AccountsDbAsProxy {
     /// The authoritative schema label.
     fn schema_label(&self) -> SchemaLabel {
         let schema_label = self.authoritative_db.schema_label();
-        dfn_core::api::print(format!(
-            "AccountsDb::Proxy: authoritative schema label: {schema_label:#?}"
-        ));
+        println!("AccountsDb::Proxy: authoritative schema label: {schema_label:#?}");
         schema_label
     }
     /// Iterates over a range of accounts in the authoritative db.
@@ -215,11 +215,13 @@ impl AccountsDbTrait for AccountsDbAsProxy {
 /// It should be possible to use this to confirm that data has been preserved during a migration.
 ///
 /// TODO: This is needed in tests only.  Disable otherwise.
+#[cfg(test)]
 impl PartialEq for AccountsDbAsProxy {
     fn eq(&self, other: &Self) -> bool {
-        self.authoritative_db.as_map() == other.authoritative_db.as_map()
+        self.authoritative_db.range(..).eq(other.authoritative_db.range(..))
     }
 }
+#[cfg(test)]
 impl Eq for AccountsDbAsProxy {}
 
 #[cfg(test)]

@@ -9,6 +9,7 @@ import { BuyICPModalPo } from "./BuyICPModal.page-object";
 import { IcrcTokenAccountsPo } from "./IcrcTokenAccounts.page-object";
 import { IcrcTokenAccountsFooterPo } from "./IcrcTokenAccountsFooter.page-object";
 import { IcrcTokenTransactionModalPo } from "./IcrcTokenTransactionModal.page-object";
+import { ReceiveModalPo } from "./ReceiveModal.page-object";
 
 export class AccountsPo extends BasePageObject {
   private static readonly TID = "accounts-component";
@@ -51,6 +52,10 @@ export class AccountsPo extends BasePageObject {
 
   getAddAccountModalPo() {
     return AddAccountModalPo.under(this.root);
+  }
+
+  getReceiveModalPo() {
+    return ReceiveModalPo.under(this.root);
   }
 
   clickSend(): Promise<void> {

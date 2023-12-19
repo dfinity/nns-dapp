@@ -33,6 +33,7 @@ pub struct State {
     pub partitions_maybe: RefCell<Result<Partitions, DefaultMemoryImpl>>,
 }
 
+#[cfg(test)]
 impl PartialEq for State {
     fn eq(&self, other: &Self) -> bool {
         (self.accounts_store == other.accounts_store)
@@ -41,6 +42,7 @@ impl PartialEq for State {
             && (self.performance == other.performance)
     }
 }
+#[cfg(test)]
 impl Eq for State {}
 
 impl Default for State {
