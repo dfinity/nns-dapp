@@ -8,7 +8,7 @@ import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -160,7 +160,7 @@ describe("SnsWallet", () => {
           .querySelector('[data-tid="token-value-label"]')
           ?.textContent.trim()
       ).toEqual(
-        `${formatToken({
+        `${formatTokenE8s({
           value: mockSnsMainAccount.balanceUlps,
         })} ${mockSnsToken.symbol}`
       );

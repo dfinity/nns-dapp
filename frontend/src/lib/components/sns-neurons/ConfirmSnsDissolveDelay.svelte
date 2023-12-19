@@ -3,7 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { secondsToDuration } from "@dfinity/utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatToken } from "$lib/utils/token.utils";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
   import { valueSpan } from "$lib/utils/utils";
   import { Html, busy } from "@dfinity/gix-components";
@@ -61,7 +61,7 @@
       <Html
         text={replacePlaceholders($i18n.sns_neurons.token_stake, {
           $amount: valueSpan(
-            formatToken({ value: neuronStake, detailed: true })
+            formatTokenE8s({ value: neuronStake, detailed: true })
           ),
           $token: token.symbol,
         })}

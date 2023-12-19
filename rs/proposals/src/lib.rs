@@ -1,7 +1,7 @@
 use crate::canisters::nns_governance::api::{Action, ProposalInfo};
 use crate::def::*;
 use candid::parser::types::{self as parser_types, IDLType, IDLTypes};
-use candid::types::Type;
+use candid::types::{self as candid_types, Type};
 use candid::{CandidType, Deserialize, IDLArgs};
 use ic_base_types::CanisterId;
 use ic_nns_constants::{GOVERNANCE_CANISTER_ID, IDENTITY_CANISTER_ID};
@@ -142,7 +142,13 @@ const IDL2JSON_OPTIONS: Idl2JsonOptions = Idl2JsonOptions {
     prog: Vec::new(), // These are the type definitions used in proposal payloads.  If we have them, it would be nice to use them.  Do we?
 };
 
-/// Rust types can include things such as functions.  IDL types, sent over a wire, cannot.  Given that we want an IDLType from a more general type we need toconvert the general type to the more specialized type.
+/// Convert a Candid `Type` to a candid `IDLType`. `idl2json` uses `IDLType`.
+///
+/// Notes:
+/// - `IDLType` does not exist in Candid v10.  This converion may well not be needed in the future.
+///
+/// # Errors
+/// - Does not support: `Type::Empty`, `Type::Knot(_)`, `Type::Unknown`
 fn type_2_idltype(ty: Type) -> Result<IDLType, String> {
     match ty {
         Type::Null => Ok(IDLType::PrimT(parser_types::PrimType::Null)),
@@ -184,13 +190,23 @@ fn type_2_idltype(ty: Type) -> Result<IDLType, String> {
             Ok(IDLType::VariantT(idl_variants))
         }
         Type::Principal => Ok(IDLType::PrincipalT),
-        Type::Empty
-        | Type::Knot(_)
-        | Type::Var(_)
-        | Type::Unknown
-        | Type::Func(_)
-        | Type::Service(_)
-        | Type::Class(_, _) => Err(format!("Unsupported type: {ty:.30}")),
+        Type::Var(name) => Ok(IDLType::VarT(name)),
+        Type::Func(candid_types::Function { modes, args, rets }) => Ok(IDLType::FuncT(parser_types::FuncType {
+            modes,
+            args: args.into_iter().map(type_2_idltype).collect::<Result<Vec<_>, _>>()?,
+            rets: rets.into_iter().map(type_2_idltype).collect::<Result<Vec<_>, _>>()?,
+        })),
+        Type::Class(yin, yang) => Ok(IDLType::ClassT(
+            yin.into_iter().map(type_2_idltype).collect::<Result<Vec<_>, _>>()?,
+            Box::new(type_2_idltype(*yang)?),
+        )),
+        Type::Service(bindings) => Ok(IDLType::ServT(
+            bindings
+                .into_iter()
+                .map(|(id, typ)| type_2_idltype(typ).map(|typ| parser_types::Binding { id, typ }))
+                .collect::<Result<Vec<_>, _>>()?,
+        )),
+        Type::Empty | Type::Knot(_) | Type::Unknown => Err(format!("Unsupported type: {ty:.30}")),
     }
 }
 

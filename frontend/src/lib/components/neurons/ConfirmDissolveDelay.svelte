@@ -5,7 +5,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { secondsToDuration } from "@dfinity/utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatToken } from "$lib/utils/token.utils";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
   import {
     formatVotingPower,
     neuronStake,
@@ -55,7 +55,9 @@
     <p>
       <Html
         text={replacePlaceholders($i18n.neurons.amount_icp_stake, {
-          $amount: valueSpan(formatToken({ value: neuronICP, detailed: true })),
+          $amount: valueSpan(
+            formatTokenE8s({ value: neuronICP, detailed: true })
+          ),
         })}
       />
     </p>

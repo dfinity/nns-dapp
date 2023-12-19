@@ -1,5 +1,6 @@
 use super::histogram::AccountsStoreHistogram;
 use super::*;
+use crate::accounts_store::toy_data::{toy_account, ToyAccountSize};
 use crate::multi_part_transactions_processor::MultiPartTransactionToBeProcessed;
 use icp_ledger::Tokens;
 use std::str::FromStr;
@@ -1810,4 +1811,24 @@ pub fn test_store_histogram() -> AccountsStoreHistogram {
     *ans.total_hardware_wallet_transactions(0) += 2; // Therefore neither has any hardware wallet transactions.
     *ans.canisters(0) += 2; // Neither test account has canisters.
     ans
+}
+
+/// Stored accounts should be recovered with the same value.
+///
+/// Note: Given that account implement CandidType this is little more than a formality.
+#[test]
+fn accounts_should_implement_storable() {
+    let account = toy_account(
+        1,
+        ToyAccountSize {
+            sub_accounts: 2,
+            canisters: 3,
+            default_account_transactions: 4,
+            sub_account_transactions: 5,
+            hardware_wallets: 6,
+        },
+    );
+    let bytes = account.to_bytes();
+    let parsed = Account::from_bytes(bytes);
+    assert_eq!(account, parsed);
 }

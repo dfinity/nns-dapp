@@ -2,7 +2,7 @@ import NnsNeuronCard from "$lib/components/neurons/NnsNeuronCard.svelte";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
@@ -78,7 +78,7 @@ describe("NnsNeuronCard", () => {
       },
     });
 
-    const stakeText = formatToken({
+    const stakeText = formatTokenE8s({
       value:
         (mockNeuron.fullNeuron as Neuron).cachedNeuronStake -
         (mockNeuron.fullNeuron as Neuron).neuronFees,
@@ -257,7 +257,7 @@ describe("NnsNeuronCard", () => {
         proposerNeuron: true,
       },
     });
-    const votingValue = formatToken({
+    const votingValue = formatTokenE8s({
       value: mockNeuron.votingPower,
       detailed: true,
     });

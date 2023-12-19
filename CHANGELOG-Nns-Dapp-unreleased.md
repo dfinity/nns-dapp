@@ -14,9 +14,12 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+- Disable dissolve delay editing when the maximum is reached.
+- Implement `Storable` for accounts.
+
 #### Changed
 
-* Use `ic_cdk::println` instead of the `dfn_core` equivalent.
+- Use `ic_cdk::println` instead of the `dfn_core` equivalent.
 
 #### Deprecated
 
@@ -24,7 +27,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
-* Remaining wrong dissolve delay error message after min/max click.
+- Remaining wrong dissolve delay error message after min/max click.
+- Avoid unnecessary calls to SNS root canister ids to get the canister ids.
+- Min dissolve delay button updates not only for the first time.
 
 #### Security
 
@@ -36,11 +41,13 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-* Apply clippy only to target `wasm32-unknown-unknown` but prohibit `std::println` and variants for that target.
+- Apply clippy only to target `wasm32-unknown-unknown` but prohibit `std::println` and variants for that target.
 
 #### Deprecated
 
 #### Removed
+
+* Remove `past-changelog-test`.
 
 #### Fixed
 
