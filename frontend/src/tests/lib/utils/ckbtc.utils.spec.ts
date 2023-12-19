@@ -2,7 +2,7 @@ import { CkBTCErrorRetrieveBtcMinAmount } from "$lib/types/ckbtc.errors";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { assertCkBTCUserInputAmount } from "$lib/utils/ckbtc.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
-import { formatToken, ulpsToNumber } from "$lib/utils/token.utils";
+import { formatTokenE8s, ulpsToNumber } from "$lib/utils/token.utils";
 import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -92,7 +92,7 @@ describe("ckbtc.utils", () => {
     ).toThrow(
       new CkBTCErrorRetrieveBtcMinAmount(
         replacePlaceholders(en.error__ckbtc.retrieve_btc_min_amount, {
-          $amount: formatToken({
+          $amount: formatTokenE8s({
             value: RETRIEVE_BTC_MIN_AMOUNT,
             detailed: true,
           }),

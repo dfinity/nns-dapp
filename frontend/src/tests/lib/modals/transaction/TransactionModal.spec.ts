@@ -6,7 +6,7 @@ import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import type { Account } from "$lib/types/account";
 import type { ValidateAmountFn } from "$lib/types/transaction";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import {
   mockAuthStoreSubscribe,
   mockPrincipal,
@@ -244,7 +244,7 @@ describe("TransactionModal", () => {
       ).toBeTruthy();
       expect(
         getByText(
-          formatToken({
+          formatTokenE8s({
             value: TokenAmount.fromE8s({
               amount: BigInt(DEFAULT_TRANSACTION_FEE_E8S),
               token: ICPToken,
@@ -276,7 +276,7 @@ describe("TransactionModal", () => {
       ).toBeTruthy();
       expect(
         getByText(
-          formatToken({
+          formatTokenE8s({
             value: TokenAmount.fromE8s({
               amount: fee.toE8s(),
               token: ICPToken,

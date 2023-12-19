@@ -6,7 +6,7 @@
   } from "$lib/utils/neuron.utils";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatToken } from "$lib/utils/token.utils";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
@@ -36,7 +36,7 @@
     text={replacePlaceholders(
       $i18n.neuron_detail.split_neuron_disabled_tooltip,
       {
-        $amount: formatToken({
+        $amount: formatTokenE8s({
           value: BigInt(minNeuronSplittable($mainTransactionFeeStore)),
           detailed: true,
         }),

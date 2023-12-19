@@ -1,6 +1,6 @@
 import NnsNeuronInfo from "$lib/components/neurons/NnsNeuronInfo.svelte";
 import { neuronStake } from "$lib/utils/neuron.utils";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { render } from "@testing-library/svelte";
 
@@ -23,7 +23,9 @@ describe("NnsNeuronInfo", () => {
     });
 
     expect(
-      getByText(formatToken({ value: neuronStake(mockNeuron), detailed: true }))
+      getByText(
+        formatTokenE8s({ value: neuronStake(mockNeuron), detailed: true })
+      )
     ).toBeInTheDocument();
   });
 });

@@ -75,7 +75,7 @@ import { SALE_PARTICIPATION_RETRY_SECONDS } from "../constants/sns.constants";
 import { snsTicketsStore } from "../stores/sns-tickets.store";
 import { nanoSecondsToDateTime } from "../utils/date.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
-import { formatToken } from "../utils/token.utils";
+import { formatTokenE8s } from "../utils/token.utils";
 
 let toastId: symbol | undefined;
 export const hidePollingToast = (): void => {
@@ -281,8 +281,8 @@ const handleNewSaleTicketError = ({
         toastsError({
           labelKey: "error__sns.sns_sale_invalid_amount",
           substitutions: {
-            $min: formatToken({ value: min_amount_icp_e8s_included }),
-            $max: formatToken({ value: max_amount_icp_e8s_included }),
+            $min: formatTokenE8s({ value: min_amount_icp_e8s_included }),
+            $max: formatTokenE8s({ value: max_amount_icp_e8s_included }),
           },
         });
         return;
@@ -597,7 +597,7 @@ const notifyParticipationAndRemoveTicket = async ({
         level: "warn",
         labelKey: "error__sns.sns_sale_committed_not_equal_to_amount",
         substitutions: {
-          $amount: formatToken({ value: icp_accepted_participation_e8s }),
+          $amount: formatTokenE8s({ value: icp_accepted_participation_e8s }),
         },
         duration: DEFAULT_TOAST_DURATION_MILLIS,
       });

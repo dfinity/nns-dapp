@@ -3,7 +3,7 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import type { Account } from "$lib/types/account";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { buildWalletUrl } from "$lib/utils/navigation.utils";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import type { Token } from "@dfinity/utils";
 import { ICPToken } from "@dfinity/utils";
@@ -47,7 +47,7 @@ describe("AccountCard", () => {
     );
 
     expect(balance?.textContent).toEqual(
-      `${formatToken({ value: mockMainAccount.balanceUlps })}`
+      `${formatTokenE8s({ value: mockMainAccount.balanceUlps })}`
     );
   });
 

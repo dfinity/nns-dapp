@@ -17,7 +17,7 @@
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import SnsNeuronStateItemAction from "./SnsNeuronStateItemAction.svelte";
   import SnsNeuronDissolveDelayItemAction from "./SnsNeuronDissolveDelayItemAction.svelte";
-  import { formatToken } from "$lib/utils/token.utils";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
   import { secondsToDuration } from "@dfinity/utils";
   import { Html, Section } from "@dfinity/gix-components";
   import { Principal } from "@dfinity/principal";
@@ -50,7 +50,7 @@
       {replacePlaceholders(
         $i18n.neuron_detail.voting_power_section_description_expanded,
         {
-          $stake: formatToken({
+          $stake: formatTokenE8s({
             value: getSnsNeuronStake(neuron),
           }),
           $maturityStaked: formattedStakedMaturity(neuron),

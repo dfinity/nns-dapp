@@ -1,5 +1,5 @@
 import TransactionSource from "$lib/components/transaction/TransactionSource.svelte";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import en from "$tests/mocks/i18n.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { ICPToken } from "@dfinity/utils";
@@ -23,7 +23,7 @@ describe("TransactionSource", () => {
     });
 
     expect(getByTestId("token-value")?.textContent ?? "").toEqual(
-      `${formatToken({
+      `${formatTokenE8s({
         value: mockMainAccount.balanceUlps,
         detailed: "height_decimals",
       })}`
