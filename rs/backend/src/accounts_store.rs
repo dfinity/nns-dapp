@@ -105,14 +105,10 @@ pub struct Account {
 impl Storable for Account {
     const BOUND: Bound = Bound::Unbounded;
     fn to_bytes(&self) -> Cow<'_, [u8]> {
-        let account_serialized = Candid((self,)).into_bytes().expect("Failed to serialize account");
-        account_serialized.to_owned().into()
+        candid::encode_one(self).expect("Failed to serialize account").into()
     }
     fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
-        let (account,) = Candid::from_bytes(bytes.as_ref().to_owned())
-            .map(|c| c.0)
-            .expect("Failed to parse account from store.");
-        account
+        candid::decode_one(&bytes).expect("Failed to parse account from store.")
     }
 }
 

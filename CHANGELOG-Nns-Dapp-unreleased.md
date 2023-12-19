@@ -15,6 +15,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 - Disable dissolve delay editing when the maximum is reached.
+- Implement `Storable` for accounts.
 
 #### Changed
 
@@ -45,6 +46,8 @@ proposal is successful, the changes it released will be moved from this file to
 #### Deprecated
 
 #### Removed
+
+* Remove `past-changelog-test`.
 
 #### Fixed
 

@@ -8,14 +8,14 @@ import en from "$tests/mocks/i18n.mock";
 import { SetDissolveDelayPo } from "$tests/page-objects/SetDissolveDelay.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronState } from "@dfinity/nns";
-import { ICPToken, TokenAmount } from "@dfinity/utils";
+import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { expect } from "@playwright/test";
 import { render } from "@testing-library/svelte";
 
 const defaultComponentProps = {
   neuronState: NeuronState.Locked,
   neuronDissolveDelaySeconds: 0,
-  neuronStake: TokenAmount.fromE8s({
+  neuronStake: TokenAmountV2.fromUlps({
     amount: BigInt(200_000_000),
     token: ICPToken,
   }),

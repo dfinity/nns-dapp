@@ -9,7 +9,7 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import type { Principal } from "@dfinity/principal";
   import { isValidInputAmount } from "$lib/utils/neuron.utils";
-  import { TokenAmount } from "@dfinity/utils";
+  import { TokenAmountV2 } from "@dfinity/utils";
   import { fromDefinedNullable } from "@dfinity/utils";
   import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
@@ -17,7 +17,7 @@
   import { splitNeuron } from "$lib/services/sns-neurons.services";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import type { SnsNervousSystemParameters } from "@dfinity/sns";
-  import { formattedTransactionFee } from "$lib/utils/token.utils";
+  import { formatToken } from "$lib/utils/token.utils";
 
   export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;
@@ -31,8 +31,8 @@
   let stakeE8s: E8s;
   $: stakeE8s = getSnsNeuronStake(neuron);
 
-  let balance: TokenAmount;
-  $: balance = TokenAmount.fromE8s({ amount: stakeE8s, token });
+  let balance: TokenAmountV2;
+  $: balance = TokenAmountV2.fromUlps({ amount: stakeE8s, token });
 
   let neuronMinimumStake: bigint;
   $: neuronMinimumStake = fromDefinedNullable(
@@ -100,9 +100,9 @@
       <p class="label">{$i18n.neurons.transaction_fee}</p>
       <p>
         <Value>
-          {formattedTransactionFee(
-            TokenAmount.fromE8s({ amount: transactionFee, token })
-          )}
+          {formatToken({
+            value: transactionFee,
+          })}
         </Value>
         {token.symbol}
       </p>
