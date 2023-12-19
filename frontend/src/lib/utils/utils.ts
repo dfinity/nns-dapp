@@ -36,6 +36,11 @@ export const stringifyJson = (
             return asText === "[object Object]" ? value : asText;
           }
 
+          // For proposal rendering, historically we display {principal: "1234"}, but in stringified JSON, principals are now encoded as {"__principal__": "1234"}.
+          if (nonNullish(value) && "__principal__" in value) {
+            return value["__principal__"];
+          }
+
           // optimistic hash stringifying
           if (Array.isArray(value) && isHash(value)) {
             return bytesToHexString(value);
