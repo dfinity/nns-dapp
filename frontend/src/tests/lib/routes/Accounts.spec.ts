@@ -133,7 +133,8 @@ describe("Accounts", () => {
   const newSubaccountName = "test";
   const subaccountBalanceDefault = 0n;
   let subaccountBalance = subaccountBalanceDefault;
-  const mainAccountBalance = 314000000n;
+  const mainAccountBalanceDefault = 314000000n;
+  let mainAccountBalance = mainAccountBalanceDefault;
 
   const renderComponent = () => {
     const { container } = render(Accounts);
@@ -159,6 +160,7 @@ describe("Accounts", () => {
     setCkETHCanisters();
     overrideFeatureFlagsStore.reset();
     subaccountBalance = subaccountBalanceDefault;
+    mainAccountBalance = mainAccountBalanceDefault;
 
     vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
@@ -719,6 +721,46 @@ describe("Accounts", () => {
           balance: "2.20 ICP",
           projectName: "test subaccount",
         });
+      });
+
+      it("user can open the send modal from footer and make a transaction", async () => {
+        icpAccountsStore.setForTesting({
+          main: {
+            ...mockMainAccount,
+            balanceUlps: mainAccountBalance,
+          },
+          subAccounts: [],
+          hardwareWallets: [],
+        });
+        const po = renderComponent();
+
+        const tablePo = po.getNnsAccountsPo().getTokensTablePo();
+        expect(await tablePo.getRowData("Main")).toEqual({
+          balance: "3.14 ICP",
+          projectName: "Main",
+        });
+
+        const footerPo = po.getNnsAccountsFooterPo();
+        expect(await footerPo.isPresent()).toBe(true);
+
+        await footerPo.clickSend();
+
+        const modalPo = po.getIcpTransactionModalPo();
+        expect(await modalPo.isPresent()).toBe(true);
+
+        mainAccountBalance = 114000000n;
+        modalPo.transferToAddress({
+          destinationAddress: mockSubAccount.identifier,
+          amount: 2,
+        });
+
+        await runResolvedPromises();
+
+        expect(await tablePo.getRowData("Main")).toEqual({
+          balance: "1.14 ICP",
+          projectName: "Main",
+        });
+        expect(await modalPo.isPresent()).toBe(false);
       });
     });
   });
