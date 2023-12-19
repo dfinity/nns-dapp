@@ -3,20 +3,6 @@
 //! Each function is implemented by calling the same function on the applicable variant.  There is probably a macro for this.
 use super::*;
 
-impl AccountsDbBTreeMapTrait for AccountsDb {
-    fn as_map(&self) -> BTreeMap<Vec<u8>, Account> {
-        match self {
-            AccountsDb::Map(map_db) => map_db.as_map(),
-            AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => {
-                unbounded_stable_btree_map_db.as_map()
-            }
-        }
-    }
-    fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
-        AccountsDb::Map(AccountsDbAsMap::from_map(map))
-    }
-}
-
 // TODO: This is boilerplate.  can it be eliminated with a macro?
 impl AccountsDbTrait for AccountsDb {
     fn schema_label(&self) -> SchemaLabel {

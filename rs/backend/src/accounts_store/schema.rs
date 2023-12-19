@@ -147,5 +147,5 @@ pub trait AccountsDbBTreeMapTrait {
     /// Creates a database from a map of accounts.
     fn from_map(map: std::collections::BTreeMap<Vec<u8>, Account>) -> Self;
     /// Provides the accounts as a map.
-    fn as_map(&self) -> std::collections::BTreeMap<Vec<u8>, Account>;
+    fn as_map(&self) -> &std::collections::BTreeMap<Vec<u8>, Account>;
 }

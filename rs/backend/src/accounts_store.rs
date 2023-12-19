@@ -29,7 +29,7 @@ use std::time::{Duration, SystemTime};
 pub mod constructors;
 pub mod histogram;
 pub mod schema;
-use schema::{proxy::AccountsDbAsProxy, AccountsDbBTreeMapTrait, AccountsDbTrait};
+use schema::{proxy::AccountsDbAsProxy, AccountsDbTrait};
 
 use self::schema::proxy::AccountsDb;
 use self::schema::SchemaLabel;

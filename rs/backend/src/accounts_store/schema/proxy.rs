@@ -146,19 +146,17 @@ impl AccountsDbAsProxy {
     }
 }
 
-impl AccountsDbBTreeMapTrait for AccountsDbAsProxy {
-    fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
+impl AccountsDbAsProxy {
+    pub fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
         Self {
             authoritative_db: AccountsDb::Map(AccountsDbAsMap::from_map(map)),
             migration: None,
         }
     }
-    fn as_map(&self) -> BTreeMap<Vec<u8>, Account> {
+    pub fn as_map(&self) -> Option<&BTreeMap<Vec<u8>, Account>> {
         match &self.authoritative_db {
-            AccountsDb::Map(map_db) => map_db.as_map(),
-            AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => {
-                unbounded_stable_btree_map_db.as_map()
-            }
+            AccountsDb::Map(map_db) => Some(map_db.as_map()),
+            AccountsDb::UnboundedStableBTreeMap(_) => None,
         }
     }
 }

@@ -51,8 +51,8 @@ impl AccountsDbBTreeMapTrait for AccountsDbAsMap {
     fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
         Self { accounts: map }
     }
-    fn as_map(&self) -> BTreeMap<Vec<u8>, Account> {
-        self.accounts.clone()
+    fn as_map(&self) -> &BTreeMap<Vec<u8>, Account> {
+        &self.accounts
     }
 }
 

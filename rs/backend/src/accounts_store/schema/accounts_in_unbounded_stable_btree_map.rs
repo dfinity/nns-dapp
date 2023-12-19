@@ -5,10 +5,10 @@
 //! with values that are [`ic_stable_structures::storable::Bound::Unbounded`](https://docs.rs/ic-stable-structures/0.6.0/ic_stable_structures/storable/enum.Bound.html#variant.Unbounded)
 //! as described on the [dfinity forum](https://forum.dfinity.org/t/stable-structures-removing-the-bounded-size-requirement/21167).
 
-use super::{Account, AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel};
+use super::{Account, AccountsDbTrait, SchemaLabel};
 use core::ops::RangeBounds;
 use ic_stable_structures::{btreemap::BTreeMap as StableBTreeMap, memory_manager::VirtualMemory, DefaultMemoryImpl};
-use std::{collections::BTreeMap, fmt};
+use std::fmt;
 
 // TODO: Implement Eq and PartialEq for ic_stable_structures::btreemap::BTreeMap, as this makes testing easier.  It is unlikely that Eq will be used on any large data dataset.
 pub struct AccountsDbAsUnboundedStableBTreeMap {
@@ -70,15 +70,5 @@ impl fmt::Debug for AccountsDbAsUnboundedStableBTreeMap {
             "AccountsDbAsUnboundedStableBTreeMap {{ accounts: StableBTreeMap{{.. {} entries}} }}",
             self.accounts.len()
         )
-    }
-}
-
-// TODO: Implement for tests only
-impl AccountsDbBTreeMapTrait for AccountsDbAsUnboundedStableBTreeMap {
-    fn as_map(&self) -> BTreeMap<Vec<u8>, Account> {
-        self.iter().collect()
-    }
-    fn from_map(_map: BTreeMap<Vec<u8>, Account>) -> Self {
-        unimplemented!() // Need memory to do this, so the method doesn't make sense.
     }
 }
