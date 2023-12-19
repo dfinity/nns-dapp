@@ -236,12 +236,15 @@ export const sumNnsAccounts = (
       )
     : undefined;
 
-export const sumAccounts = (
+export function sumAccounts(acconts: Account[]): bigint;
+export function sumAccounts(acconts: Account[] | undefined): bigint | undefined;
+export function sumAccounts(
   accounts: Account[] | undefined
-): bigint | undefined =>
-  isNullish(accounts) || accounts.length === 0
+): bigint | undefined {
+  return isNullish(accounts)
     ? undefined
     : sumAmounts(...accounts.map(({ balanceUlps }) => balanceUlps));
+}
 
 export const hasAccounts = (accounts: Account[]): boolean =>
   accounts.length > 0;

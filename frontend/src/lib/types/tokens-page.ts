@@ -40,6 +40,8 @@ export type UserTokenLoading = UserTokenBase & {
 
 export type UserTokenData = UserTokenBase & {
   balance: TokenAmountV2 | UnavailableTokenAmount;
+  // Identifier of the account related to the row (only if the row represents one account, not multiple)
+  accountIdentifier?: string;
   token: Token;
   // Fees are included in the metadata of ICRC tokens, but this is not a list of only ICRC tokens
   fee: TokenAmountV2;

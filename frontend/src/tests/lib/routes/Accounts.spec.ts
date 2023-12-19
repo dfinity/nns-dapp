@@ -131,7 +131,8 @@ vi.mock("$lib/services/worker-balances.services", () => ({
 describe("Accounts", () => {
   const balanceIcrcToken = 314000000n;
   const newSubaccountName = "test";
-  const subaccountBalance = 0n;
+  const subaccountBalanceDefault = 0n;
+  let subaccountBalance = subaccountBalanceDefault;
   const mainAccountBalance = 314000000n;
 
   const renderComponent = () => {
@@ -157,6 +158,7 @@ describe("Accounts", () => {
     icrcAccountsStore.reset();
     setCkETHCanisters();
     overrideFeatureFlagsStore.reset();
+    subaccountBalance = subaccountBalanceDefault;
 
     vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
@@ -676,6 +678,47 @@ describe("Accounts", () => {
             projectName: newSubaccountName,
           },
         ]);
+      });
+
+      it("user can open receive modal and refresh balance", async () => {
+        icpAccountsStore.setForTesting({
+          main: {
+            ...mockMainAccount,
+            balanceUlps: mainAccountBalance,
+          },
+          subAccounts: [
+            {
+              ...mockSubAccount,
+              balanceUlps: subaccountBalance,
+            },
+          ],
+          hardwareWallets: [],
+        });
+        const po = renderComponent();
+
+        const tablePo = po.getNnsAccountsPo().getTokensTablePo();
+        expect(await tablePo.getRowData(mockSubAccount.name)).toEqual({
+          balance: "0 ICP",
+          projectName: "test subaccount",
+        });
+
+        await tablePo.clickReceiveOnRow(mockSubAccount.name);
+
+        const modalPo = po.getReceiveModalPo();
+        expect(await modalPo.isPresent()).toBe(true);
+
+        subaccountBalance = 220000000n;
+        await modalPo.clickFinish();
+
+        await runResolvedPromises();
+        // The modal needs another tick to be removed from the DOM
+        await runResolvedPromises();
+
+        expect(await modalPo.isPresent()).toBe(false);
+        expect(await tablePo.getRowData(mockSubAccount.name)).toEqual({
+          balance: "2.20 ICP",
+          projectName: "test subaccount",
+        });
       });
     });
   });
