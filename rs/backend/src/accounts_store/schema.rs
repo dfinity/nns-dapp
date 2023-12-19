@@ -134,7 +134,7 @@ impl Default for SchemaLabel {
 /// Schema Label as written to stable memory.
 pub type SchemaLabelBytes = [u8; SchemaLabel::MAX_BYTES];
 
-/// Errors that can occur when deserializing a schema label.
+/// Errors that can occur when de-serializing a schema label.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum SchemaLabelError {
     InvalidChecksum,
