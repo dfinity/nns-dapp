@@ -8,13 +8,14 @@ import en from "$tests/mocks/i18n.mock";
 import { SetDissolveDelayPo } from "$tests/page-objects/SetDissolveDelay.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronState } from "@dfinity/nns";
-import { ICPToken, TokenAmount } from "@dfinity/utils";
+import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+import { expect } from "@playwright/test";
 import { render } from "@testing-library/svelte";
 
 const defaultComponentProps = {
   neuronState: NeuronState.Locked,
   neuronDissolveDelaySeconds: 0,
-  neuronStake: TokenAmount.fromE8s({
+  neuronStake: TokenAmountV2.fromUlps({
     amount: BigInt(200_000_000),
     token: ICPToken,
   }),
@@ -253,6 +254,38 @@ describe("SetDissolveDelay", () => {
 
     await po.enterDays(200);
     expect(getDelayInSeconds(component)).toBe(200 * SECONDS_IN_DAY);
+  });
+
+  it("should disable input when maximum is already selected", async () => {
+    const delayInSeconds = defaultComponentProps.maxDelayInSeconds;
+    const po = renderComponent({
+      ...defaultComponentProps,
+      neuronDissolveDelaySeconds: BigInt(delayInSeconds),
+      delayInSeconds,
+    });
+
+    expect(await po.getInputWithErrorPo().isDisabled()).toBe(true);
+    expect(await po.getMaxButtonPo().isDisabled()).toBe(true);
+    expect(await po.getMinButtonPo().isDisabled()).toBe(true);
+  });
+
+  it("should not increase dissolve delay with multiple Min clicks", async () => {
+    const delayInSeconds = 0;
+    const minProjectDelayInDays = 185;
+    const po = renderComponent({
+      ...defaultComponentProps,
+      minProjectDelayInSeconds: minProjectDelayInDays * SECONDS_IN_DAY,
+      neuronDissolveDelaySeconds: BigInt(delayInSeconds),
+      delayInSeconds,
+    });
+
+    expect(await po.getDays()).toBe(0);
+    await po.clickMin();
+    expect(await po.getDays()).toBe(minProjectDelayInDays);
+
+    // after the next min click the value should remain
+    await po.clickMin();
+    expect(await po.getDays()).toBe(minProjectDelayInDays);
   });
 
   const minMaxDaysPairs = [

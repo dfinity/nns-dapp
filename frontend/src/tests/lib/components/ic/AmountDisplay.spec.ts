@@ -1,5 +1,5 @@
 import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
@@ -22,7 +22,7 @@ describe("AmountDisplay", () => {
     const value = container.querySelector("span:first-of-type");
 
     expect(value?.textContent).toEqual(
-      `${formatToken({ value: mockMainAccount.balanceUlps })}`
+      `${formatTokenE8s({ value: mockMainAccount.balanceUlps })}`
     );
   });
 
@@ -44,7 +44,7 @@ describe("AmountDisplay", () => {
     const value = container.querySelector("span:first-of-type");
 
     expect(value?.textContent).toEqual(
-      `+${formatToken({ value: mockMainAccount.balanceUlps })}`
+      `+${formatTokenE8s({ value: mockMainAccount.balanceUlps })}`
     );
     expect(container.querySelector(".plus-sign")).toBeInTheDocument();
   });
@@ -59,7 +59,7 @@ describe("AmountDisplay", () => {
     const value = container.querySelector("span:first-of-type");
 
     expect(value?.textContent).toEqual(
-      `-${formatToken({ value: mockMainAccount.balanceUlps })}`
+      `-${formatTokenE8s({ value: mockMainAccount.balanceUlps })}`
     );
   });
 
@@ -74,7 +74,7 @@ describe("AmountDisplay", () => {
     const value = container.querySelector("span:first-of-type");
 
     expect(value?.textContent).toEqual(
-      `${formatToken({
+      `${formatTokenE8s({
         value: mockMainAccount.balanceUlps,
         detailed: true,
       })}`

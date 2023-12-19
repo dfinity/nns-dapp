@@ -62,7 +62,7 @@ type RoundMode =
  * Jira GIX-1563:
  * - However, if requested, some amount might be displayed with a fix length of 8 decimals, regardless if leading zero or no leading zero
  */
-export const formatToken = ({
+export const formatTokenE8s = ({
   value,
   detailed = false,
   roundingMode,
@@ -123,7 +123,7 @@ export const formatTokenV2 = ({
     const ulps = value.toUlps();
     e8s = ulpsToE8s({ ulps, decimals });
   }
-  return formatToken({ value: e8s, detailed, roundingMode });
+  return formatTokenE8s({ value: e8s, detailed, roundingMode });
 };
 
 export const sumAmounts = (...amounts: bigint[]): bigint =>
@@ -132,20 +132,10 @@ export const sumAmounts = (...amounts: bigint[]): bigint =>
 // To make the fixed transaction fee readable, we do not display it with 8 digits but only till the last digit that is not zero
 // e.g. not 0.00010000 but 0.0001
 export const formattedTransactionFeeICP = (fee: number | bigint): string =>
-  formatToken({
+  formatTokenE8s({
     value: TokenAmount.fromE8s({
       amount: BigInt(fee),
       token: ICPToken,
-    }).toE8s(),
-  });
-
-// To make the fixed transaction fee readable, we do not display it with 8 digits but only till the last digit that is not zero
-// e.g. not 0.00010000 but 0.0001
-export const formattedTransactionFee = (fee: TokenAmount): string =>
-  formatToken({
-    value: TokenAmount.fromE8s({
-      amount: fee.toE8s(),
-      token: fee.token,
     }).toE8s(),
   });
 

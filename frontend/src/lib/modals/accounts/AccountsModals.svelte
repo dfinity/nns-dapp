@@ -11,6 +11,7 @@
   import BuyIcpModal from "./BuyIcpModal.svelte";
   import type { Account } from "$lib/types/account";
   import AddAccountModal from "./AddAccountModal.svelte";
+  import IcpTransactionModal from "./IcpTransactionModal.svelte";
 
   let modal:
     | AccountsModal<AccountsReceiveModalData | AccountsModalData>
@@ -43,6 +44,10 @@
 
 {#if type === "nns-receive" && nonNullish(data)}
   <NnsReceiveModal on:nnsClose={close} {data} />
+{/if}
+
+{#if type === "nns-send"}
+  <IcpTransactionModal on:nnsClose={close} selectedAccount={account} />
 {/if}
 
 {#if type === "icrc-receive" && nonNullish(data)}

@@ -3,7 +3,7 @@
   import { createEventDispatcher } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatToken } from "$lib/utils/token.utils";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
   import {
     formattedMaturity,
     isEnoughToStakeNeuron,
@@ -40,7 +40,7 @@
         <Html
           text={replacePlaceholders($i18n.neurons.amount_icp_stake, {
             $amount: valueSpan(
-              formatToken({ value: neuronICP, detailed: true })
+              formatTokenE8s({ value: neuronICP, detailed: true })
             ),
           })}
         />

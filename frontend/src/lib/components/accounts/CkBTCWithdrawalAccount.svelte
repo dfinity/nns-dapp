@@ -10,7 +10,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { Spinner, IconClock, IconCheck } from "@dfinity/gix-components";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatToken } from "$lib/utils/token.utils";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
   import { toastsError } from "$lib/stores/toasts.store";
   import { emit } from "$lib/utils/events.utils";
@@ -88,7 +88,7 @@
   $: accountBalance = account?.balanceUlps ?? 0n;
 
   let detailedAccountBalance: string;
-  $: detailedAccountBalance = formatToken({
+  $: detailedAccountBalance = formatTokenE8s({
     value: accountBalance,
     detailed: true,
   });

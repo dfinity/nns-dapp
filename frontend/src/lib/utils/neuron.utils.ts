@@ -54,7 +54,7 @@ import {
 import { nowInSeconds } from "./date.utils";
 import { formatNumber } from "./format.utils";
 import { getVotingBallot, getVotingPower } from "./proposals.utils";
-import { formatToken, numberToUlps } from "./token.utils";
+import { formatTokenE8s, numberToUlps } from "./token.utils";
 import { isDefined } from "./utils";
 
 export type StateInfo = {
@@ -290,7 +290,7 @@ export const formattedStakedMaturity = ({ fullNeuron }: NeuronInfo): string =>
   formatMaturity(fullNeuron?.stakedMaturityE8sEquivalent);
 
 export const formatMaturity = (value?: bigint): string =>
-  formatToken({
+  formatTokenE8s({
     value: isNullish(value) ? BigInt(0) : value,
   });
 

@@ -347,19 +347,6 @@ jobs:
             brew install bash
           fi
       - run: scripts/nns-dapp/split-changelog.test
-  past-changelog:
-    name: Test that no new change log entries are added to past releases.
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-20.04, macos-13]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - run: scripts/past-changelog-test
-      - run: scripts/past-changelog-test.test
   version-match:
     name: The nns-dapp npm and cargo versions should match
     runs-on: ubuntu-20.04
@@ -400,7 +387,6 @@ jobs:
       - canister-ids-tool
       - release-sop
       - split-changelog
-      - past-changelog
       - minor-version-bump-works
       - version-match
       - network-config

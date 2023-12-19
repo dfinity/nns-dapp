@@ -44,7 +44,7 @@ import {
   nextMemo,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
-import { formatToken, numberToE8s } from "$lib/utils/token.utils";
+import { formatTokenE8s, numberToE8s } from "$lib/utils/token.utils";
 import { hexStringToBytes } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
@@ -359,7 +359,7 @@ export const splitNeuron = async ({
       toastsError({
         labelKey: "error__sns.sns_amount_not_enough_stake_neuron",
         substitutions: {
-          $minimum: formatToken({ value: neuronMinimumStake }),
+          $minimum: formatTokenE8s({ value: neuronMinimumStake }),
           $token: token.symbol,
         },
       });
