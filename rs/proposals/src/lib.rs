@@ -142,7 +142,7 @@ const IDL2JSON_OPTIONS: Idl2JsonOptions = Idl2JsonOptions {
     prog: Vec::new(), // These are the type definitions used in proposal payloads.  If we have them, it would be nice to use them.  Do we?
 };
 
-/// Convert a Candid `Type` to an `IDLType`.  In candid 9 and earlier, `IDLType` is 
+/// Convert a Candid `Type` to a candid `IDLType`. `idl2json` uses `IDLType`.
 /// 
 /// Notes:
 /// - `IDLType` does not exist in Candid v10.  This converion may well not be needed in the future.
