@@ -7,7 +7,6 @@ canister_query get_account
 canister_query get_canisters
 canister_query get_exceptional_transactions
 canister_query get_histogram
-canister_query get_stable_schema
 canister_query get_stats
 canister_query get_transactions
 canister_query http_request

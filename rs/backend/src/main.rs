@@ -23,7 +23,6 @@ pub use serde::Serialize;
 
 #[cfg(any(test, feature = "toy_data_gen"))]
 use ic_base_types::PrincipalId;
-use state::partitions::Partitions;
 
 mod accounts_store;
 mod arguments;
@@ -305,26 +304,6 @@ pub fn get_stats() {
 
 fn get_stats_impl() -> stats::Stats {
     STATE.with(stats::get_stats)
-}
-
-/// Returns stats about the canister.
-///
-/// These stats include things such as the number of accounts registered, the memory usage, the
-/// number of neurons created, etc.
-#[export_name = "canister_query get_stable_schema"]
-pub fn get_stable_schema() {
-    over(candid, |()| get_stable_schema_impl());
-}
-
-fn get_stable_schema_impl() -> String {
-    let memory = DefaultMemoryImpl::default();
-    let partitions_maybe = Partitions::try_from_memory(memory);
-    let partitioning = partitions_maybe.map(|partitions| partitions.schema_label()).ok();
-    STATE.with(|s| {
-        let ram_schema = s.accounts_store.borrow().schema_label();
-
-        format!("{:?} {:?}", ram_schema, partitioning)
-    })
 }
 
 /// Makes a histogram of the number of sub-accounts etc per account.
