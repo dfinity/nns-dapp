@@ -1,12 +1,15 @@
+import * as agent from "$lib/api/agent.api";
 import * as proposalsApi from "$lib/api/proposals.api";
 import { authStore } from "$lib/stores/auth.store";
 import { LaunchpadPo } from "$tests/page-objects/Launchpad.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import Launchpad from "$tests/workflows/Launchpad/LaunchpadWithLayout.svelte";
+import type { HttpAgent } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
 import { isNullish } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import { mock } from "vitest-mock-extended";
 import snsPage0 from "./sns-agg-page-0-2023-09-29-1545.json";
 import snsPage1 from "./sns-agg-page-1-2023-09-29-1545.json";
 
@@ -20,6 +23,8 @@ describe("Launchpad", () => {
     vi.spyOn(proposalsApi, "queryProposals").mockImplementation(() =>
       Promise.resolve([])
     );
+
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
 
     // Depends on the `snsAggregatorUrl` set in `vi-setup.ts`.
     const aggUrlRegex =
