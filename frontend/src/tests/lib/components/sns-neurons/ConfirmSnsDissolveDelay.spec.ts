@@ -8,7 +8,7 @@ import {
   getSnsNeuronStake,
   snsNeuronVotingPower,
 } from "$lib/utils/sns-neuron.utils";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
@@ -89,7 +89,7 @@ describe("ConfirmSnsDissolveDelay", () => {
 
     expect(
       getByText(
-        formatToken({
+        formatTokenE8s({
           value: getSnsNeuronStake(mockSnsNeuron),
           detailed: true,
         })

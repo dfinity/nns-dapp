@@ -2,7 +2,7 @@ import SplitSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/Spli
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { openSnsNeuronModal } from "$lib/utils/modals.utils";
 import { minNeuronSplittable } from "$lib/utils/sns-neuron.utils";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import en from "$tests/mocks/i18n.mock";
 import {
   createMockSnsNeuron,
@@ -97,7 +97,7 @@ describe("SplitSnsNeuronButton", () => {
     const tooltip = replacePlaceholders(
       en.neuron_detail.split_neuron_disabled_tooltip,
       {
-        $amount: formatToken({
+        $amount: formatTokenE8s({
           value: minNeuronSplittable({
             fee: transactionFee,
             neuronMinimumStake,

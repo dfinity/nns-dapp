@@ -21,6 +21,7 @@
   import { ActionType, type Action } from "$lib/types/actions";
   import { findAccount } from "$lib/utils/accounts.utils";
   import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
+  import { toastsError } from "$lib/stores/toasts.store";
 
   onMount(() => {
     if (!$ENABLE_MY_TOKENS) {
@@ -43,14 +44,22 @@
   };
 
   const handleAction = ({ detail }: { detail: Action }) => {
-    if (detail.type === ActionType.Receive) {
-      const account = findAccount({
-        identifier: detail.data.accountIdentifier,
-        accounts: $nnsAccountsListStore,
+    const account = findAccount({
+      identifier: detail.data.accountIdentifier,
+      accounts: $nnsAccountsListStore,
+    });
+    // Edge case: There wouldn't be a row to click on without an account
+    if (isNullish(account)) {
+      toastsError({
+        labelKey: "error.account_not_found",
+        substitutions: {
+          $account_identifier: detail.data.accountIdentifier ?? "",
+        },
       });
-      if (isNullish(account)) {
-        return;
-      }
+      return;
+    }
+
+    if (detail.type === ActionType.Receive) {
       openAccountsModal({
         type: "nns-receive",
         data: {
@@ -60,6 +69,15 @@
           universeId: detail.data.universeId,
           tokenSymbol: detail.data.token.symbol,
           logo: detail.data.logo,
+        },
+      });
+    }
+
+    if (detail.type === ActionType.Send) {
+      openAccountsModal({
+        type: "nns-send",
+        data: {
+          account,
         },
       });
     }

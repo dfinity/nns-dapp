@@ -1,7 +1,7 @@
 import { toastsError, toastsHide } from "$lib/stores/toasts.store";
 import type { PngDataUrl } from "$lib/types/assets";
 import type { BasisPoints } from "$lib/types/proposals";
-import type { Principal } from "@dfinity/principal";
+import { JSON_KEY_PRINCIPAL, type Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
 import { errorToString } from "./error.utils";
 
@@ -34,6 +34,11 @@ export const stringifyJson = (
             const asText = value.toString();
             // To not stringify NOT Principal instance that contains _isPrincipal field
             return asText === "[object Object]" ? value : asText;
+          }
+
+          // For proposal rendering, historically we display {principal: "1234"}, but in stringified JSON, principals are now encoded as {"__principal__": "1234"}.
+          if (nonNullish(value) && JSON_KEY_PRINCIPAL in value) {
+            return value[JSON_KEY_PRINCIPAL];
           }
 
           // optimistic hash stringifying

@@ -20,7 +20,7 @@ import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { nanoSecondsToDateTime } from "$lib/utils/date.utils";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
@@ -662,8 +662,8 @@ describe("sns-api", () => {
         expect.objectContaining({
           labelKey: "error__sns.sns_sale_invalid_amount",
           substitutions: {
-            $min: formatToken({ value: min_amount_icp_e8s_included }),
-            $max: formatToken({ value: max_amount_icp_e8s_included }),
+            $min: formatTokenE8s({ value: min_amount_icp_e8s_included }),
+            $max: formatTokenE8s({ value: max_amount_icp_e8s_included }),
           },
         })
       );
