@@ -8,6 +8,8 @@ import { mock } from "vitest-mock-extended";
 describe("Home page", () => {
   beforeEach(() => {
     overrideFeatureFlagsStore.reset();
+
+    // TODO: agent mocked because some calls to global.fetch were exposed when we migrated to agent-js v0.20.2
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 

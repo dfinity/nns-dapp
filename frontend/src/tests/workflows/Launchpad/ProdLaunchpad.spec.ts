@@ -24,6 +24,7 @@ describe("Launchpad", () => {
       Promise.resolve([])
     );
 
+    // TODO: agent mocked because some calls to global.fetch were exposed when we migrated to agent-js v0.20.2
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
 
     // Depends on the `snsAggregatorUrl` set in `vi-setup.ts`.
