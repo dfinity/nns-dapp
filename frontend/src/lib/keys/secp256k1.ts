@@ -1,45 +1,9 @@
 import {
   concat,
-  fromHex,
   uint8ToBuf,
   type DerEncodedPublicKey,
   type PublicKey,
 } from "@dfinity/agent";
-
-declare type KeyLike =
-  | PublicKey
-  | DerEncodedPublicKey
-  | ArrayBuffer
-  | ArrayBufferView;
-
-function isObject(value: unknown) {
-  return value !== null && typeof value === "object";
-}
-
-/**
- * Returns a true ArrayBuffer from an ArrayBufferLike object.
- * @param bufLike a buffer-like object
- * @returns ArrayBuffer
- */
-export function bufFromBufLike(
-  bufLike:
-    | ArrayBuffer
-    | Uint8Array
-    | DataView
-    | ArrayBufferView
-    | ArrayBufferLike
-): ArrayBuffer {
-  if (bufLike instanceof Uint8Array) {
-    return uint8ToBuf(bufLike);
-  }
-  if (bufLike instanceof ArrayBuffer) {
-    return bufLike;
-  }
-  if ("buffer" in bufLike) {
-    return bufLike.buffer;
-  }
-  return new Uint8Array(bufLike);
-}
 
 // TODO(L2-433): should we use @dfinity/identity-ledgerhq the implementation is 100% similar
 
@@ -48,39 +12,6 @@ export function bufFromBufLike(
 // This implementation is adjusted from the Ed25519PublicKey.
 // The RAW_KEY_LENGTH and DER_PREFIX are modified accordingly
 export class Secp256k1PublicKey implements PublicKey {
-  /**
-   * Construct Secp256k1PublicKey from an existing PublicKey
-   * @param {unknown} maybeKey - existing PublicKey, ArrayBuffer, DerEncodedPublicKey, or hex string
-   * @returns {Secp256k1PublicKey} Instance of Secp256k1PublicKey
-   */
-  public static from(maybeKey: unknown): Secp256k1PublicKey {
-    if (typeof maybeKey === "string") {
-      const key = fromHex(maybeKey);
-      return this.fromRaw(key);
-    } else if (isObject(maybeKey)) {
-      const key = maybeKey as KeyLike;
-      if (
-        isObject(key) &&
-        Object.hasOwnProperty.call(key, "__derEncodedPublicKey__")
-      ) {
-        return this.fromDer(key as DerEncodedPublicKey);
-      } else if (ArrayBuffer.isView(key)) {
-        const view = key as ArrayBufferView;
-        return this.fromRaw(bufFromBufLike(view.buffer));
-      } else if (key instanceof ArrayBuffer) {
-        return this.fromRaw(key);
-      } else if ("rawKey" in key) {
-        return this.fromRaw(key.rawKey as ArrayBuffer);
-      } else if ("derKey" in key) {
-        return this.fromDer(key.derKey as DerEncodedPublicKey);
-      } else if ("toDer" in key) {
-        return this.fromDer(key.toDer() as ArrayBuffer);
-      }
-    }
-    throw new Error(
-      "Cannot construct Secp256k1PublicKey from the provided key."
-    );
-  }
   public static fromRaw(rawKey: ArrayBuffer): Secp256k1PublicKey {
     return new Secp256k1PublicKey(rawKey);
   }
@@ -170,7 +101,7 @@ export class Secp256k1PublicKey implements PublicKey {
 
   // `fromRaw` and `fromDer` should be used for instantiation, not this constructor.
   private constructor(key: ArrayBuffer) {
-    this.#rawKey = bufFromBufLike(key);
+    this.#rawKey = key;
     this.#derKey = Secp256k1PublicKey.derEncode(key);
   }
 
