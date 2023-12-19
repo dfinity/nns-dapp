@@ -43,14 +43,15 @@
   };
 
   const handleAction = ({ detail }: { detail: Action }) => {
+    const account = findAccount({
+      identifier: detail.data.accountIdentifier,
+      accounts: $nnsAccountsListStore,
+    });
+    if (isNullish(account)) {
+      return;
+    }
+
     if (detail.type === ActionType.Receive) {
-      const account = findAccount({
-        identifier: detail.data.accountIdentifier,
-        accounts: $nnsAccountsListStore,
-      });
-      if (isNullish(account)) {
-        return;
-      }
       openAccountsModal({
         type: "nns-receive",
         data: {
@@ -60,6 +61,15 @@
           universeId: detail.data.universeId,
           tokenSymbol: detail.data.token.symbol,
           logo: detail.data.logo,
+        },
+      });
+    }
+
+    if (detail.type === ActionType.Send) {
+      openAccountsModal({
+        type: "nns-send",
+        data: {
+          account,
         },
       });
     }

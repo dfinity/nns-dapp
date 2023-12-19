@@ -776,6 +776,49 @@ describe("Accounts", () => {
           fromSubaccount: undefined,
         });
       });
+
+      it("user can open the send modal from tokens table and make a transaction", async () => {
+        subaccountBalance = 220000000n;
+        icpAccountsStore.setForTesting({
+          main: {
+            ...mockMainAccount,
+            balanceUlps: mainAccountBalance,
+          },
+          subAccounts: [
+            {
+              ...mockSubAccount,
+              balanceUlps: subaccountBalance,
+            },
+          ],
+          hardwareWallets: [],
+        });
+        const po = renderComponent();
+
+        const tablePo = po.getNnsAccountsPo().getTokensTablePo();
+        expect(await tablePo.getRowData(mockSubAccount.name)).toEqual({
+          balance: "2.20 ICP",
+          projectName: "test subaccount",
+        });
+
+        await tablePo.clickSendOnRow(mockSubAccount.name);
+
+        const modalPo = po.getIcpTransactionModalPo();
+        expect(await modalPo.isPresent()).toBe(true);
+
+        subaccountBalance = 120000000n;
+        modalPo.transferToAddress({
+          destinationAddress: mockMainAccount.identifier,
+          amount: 1,
+        });
+
+        await runResolvedPromises();
+
+        expect(await tablePo.getRowData(mockSubAccount.name)).toEqual({
+          balance: "1.20 ICP",
+          projectName: "test subaccount",
+        });
+        expect(await modalPo.isPresent()).toBe(false);
+      });
     });
   });
 
