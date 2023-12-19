@@ -30,6 +30,7 @@ proposal is successful, the changes it released will be moved from this file to
 - Remaining wrong dissolve delay error message after min/max click.
 - Avoid unnecessary calls to SNS root canister ids to get the canister ids.
 - Min dissolve delay button updates not only for the first time.
+- Fix scrollbar in multiline toast message. 
 
 #### Security
 
