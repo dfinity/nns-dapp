@@ -18,7 +18,11 @@ import {
   SnsGovernanceTestCanister,
   type SnsNeuronId,
 } from "@dfinity/sns";
-import { arrayOfNumberToUint8Array, toNullable } from "@dfinity/utils";
+import {
+  arrayOfNumberToUint8Array,
+  createAgent as createAgentUtils,
+  toNullable,
+} from "@dfinity/utils";
 import { createAgent } from "./agent.api";
 import { governanceCanister } from "./governance.api";
 import { initSns, wrapper } from "./sns-wrapper.api";
@@ -41,11 +45,11 @@ const getTestAccountAgent = async (): Promise<Agent> => {
     base64ToUInt8Array(privateKey)
   );
 
-  const agent: Agent = new HttpAgent({
+  const agent = await createAgentUtils({
     host: HOST,
     identity,
+    fetchRootKey: true,
   });
-  await agent.fetchRootKey();
 
   return agent;
 };
@@ -359,6 +363,7 @@ export const receiveMockBtc = async ({
 }) => {
   const agent = new HttpAgent({
     host: HOST,
+    verifyQuerySignatures: false,
   });
   await agent.fetchRootKey();
   const actor = Actor.createActor(mockBitcoinIdlFactory, {
