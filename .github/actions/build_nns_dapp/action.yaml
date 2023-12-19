@@ -68,7 +68,7 @@ runs:
     - name: Hash artefacts
       shell: bash
       # Note:
-      # * sha256sum prints the hash of each file;
+      # * `sha256sum` prints the hash of each file;
       # * The `wc -c` in the awk code gets the size in bytes of each file;
       # * The AWK code also adds a header and footer;
       # * `column -t` formats the data as a table;

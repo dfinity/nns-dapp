@@ -43,7 +43,7 @@ jobs:
         run: |
           set -x
           echo snsdemo needs an update
-          # Install didc
+          # Install `didc`
           snsdemo/bin/dfx-software-didc-install --release "$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
           # Install sponge
           sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge

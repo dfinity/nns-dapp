@@ -21,6 +21,8 @@ GIX
 Dapp
 clippy
 dapp
+dockerfile
+dockerfiles
 4xx
 5xx
 sha256
@@ -34,3 +36,5 @@ Zondax
 E2E
 Vitest
 npm
+PR
+PRs
