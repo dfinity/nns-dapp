@@ -14,6 +14,7 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { resetSnsProjects } from "$tests/utils/sns.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
@@ -114,11 +115,19 @@ describe("NeuronDetail", () => {
     it("should load if sns projects are loaded after initial rendering", async () => {
       const { container } = render(NeuronDetail, { neuronId: testSnsNeuronId });
       const po = NeuronDetailPo.under(new JestPageObjectElement(container));
+      // No loading data until we load the SNS projects.
+      await runResolvedPromises();
       expect(await po.isContentLoaded()).toBe(false);
 
+      fakeSnsGovernanceApi.pause();
       // Load SNS projects after rendering to make sure we don't load
       // NnsNeuronDetail instead, which was a bug we had.
       await loadSnsProjects();
+      await runResolvedPromises();
+      expect(await po.isContentLoaded()).toBe(false);
+
+      fakeSnsGovernanceApi.resume();
+      await runResolvedPromises();
       expect(await po.isContentLoaded()).toBe(true);
 
       expect(await po.hasNnsNeuronDetailPo()).toBe(false);
