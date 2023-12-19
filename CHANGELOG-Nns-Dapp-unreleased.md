@@ -14,6 +14,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+- Disable dissolve delay editing when the maximum is reached.
+
 #### Changed
 
 - Use `ic_cdk::println` instead of the `dfn_core` equivalent.
@@ -26,6 +28,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 - Remaining wrong dissolve delay error message after min/max click.
 - Avoid unnecessary calls to SNS root canister ids to get the canister ids.
+- Min dissolve delay button updates not only for the first time.
 
 #### Security
 
