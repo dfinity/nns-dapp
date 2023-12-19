@@ -8,12 +8,12 @@
   import NeuronStateRemainingTime from "$lib/components/neurons/NeuronStateRemainingTime.svelte";
   import DayInput from "$lib/components/ui/DayInput.svelte";
   import type { NeuronState } from "@dfinity/nns";
-  import { type TokenAmount, nonNullish } from "@dfinity/utils";
+  import { nonNullish, type TokenAmountV2 } from "@dfinity/utils";
   import RangeDissolveDelay from "./RangeDissolveDelay.svelte";
 
   export let neuronState: NeuronState;
   export let neuronDissolveDelaySeconds: bigint;
-  export let neuronStake: TokenAmount;
+  export let neuronStake: TokenAmountV2;
   export let delayInSeconds = 0;
   export let minProjectDelayInSeconds: number;
   export let maxDelayInSeconds = 0;
@@ -67,7 +67,7 @@
       <Html
         text={replacePlaceholders($i18n.sns_neurons.token_stake, {
           $amount: valueSpan(
-            formatToken({ value: neuronStake.toE8s(), detailed: true })
+            formatToken({ value: neuronStake.toUlps(), detailed: true })
           ),
           $token: neuronStake.token.symbol,
         })}
