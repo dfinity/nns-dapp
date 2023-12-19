@@ -13,7 +13,7 @@ import {
   type NeuronIneligibilityReason,
 } from "$lib/utils/neuron.utils";
 import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, Vote, type E8s, type NeuronInfo } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
@@ -482,7 +482,7 @@ export const hasAutoStakeMaturityOn = (
 export const formattedMaturity = (
   neuron: SnsNeuron | null | undefined
 ): string =>
-  formatToken({
+  formatTokenE8s({
     value: neuron?.maturity_e8s_equivalent ?? BigInt(0),
   });
 
@@ -491,7 +491,7 @@ export const formattedMaturity = (
  * @param {SnsNeuron} neuron The neuron that contains the `maturity_e8s_equivalent` and `staked_maturity_e8s_equivalent` which will be summed and formatted
  */
 export const formattedTotalMaturity = (neuron: SnsNeuron): string =>
-  formatToken({
+  formatTokenE8s({
     value:
       neuron.maturity_e8s_equivalent +
       totalDisbursingMaturity(neuron) +
@@ -536,7 +536,7 @@ export const hasStakedMaturity = (
 export const formattedStakedMaturity = (
   neuron: SnsNeuron | null | undefined
 ): string =>
-  formatToken({
+  formatTokenE8s({
     value:
       fromNullable(neuron?.staked_maturity_e8s_equivalent ?? []) ?? BigInt(0),
   });

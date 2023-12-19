@@ -2,7 +2,7 @@ import BitcoinEstimatedAmountReceived from "$lib/components/accounts/BitcoinEsti
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
 import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import en from "$tests/mocks/i18n.mock";
 import { render } from "@testing-library/svelte";
@@ -135,7 +135,7 @@ describe("BitcoinEstimatedAmountReceived", () => {
 
     const element = getByTestId("bitcoin-estimated-amount-value");
     expect((element?.textContent ?? "").trim()).toEqual(
-      `${formatToken({
+      `${formatTokenE8s({
         value: 0n,
         detailed: "height_decimals",
       })} ${en.ckbtc.btc}`
@@ -153,7 +153,7 @@ describe("BitcoinEstimatedAmountReceived", () => {
 
     const element = getByTestId("bitcoin-estimated-amount-value");
     expect((element?.textContent ?? "").trim()).toEqual(
-      `${formatToken({
+      `${formatTokenE8s({
         value: 0n,
         detailed: "height_decimals",
       })} ${en.ckbtc.btc}`
@@ -180,7 +180,7 @@ describe("BitcoinEstimatedAmountReceived", () => {
 
     const element = getByTestId("bitcoin-estimated-amount-value");
 
-    const resultBtc = `${formatToken({
+    const resultBtc = `${formatTokenE8s({
       value: 987_000n,
       detailed: "height_decimals",
     })} ${en.ckbtc.btc}`;

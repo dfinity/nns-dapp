@@ -9,7 +9,7 @@ import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-withdrawal-accou
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import CkBTCAccountsTest from "$tests/lib/components/accounts/CkBTCAccountsTest.svelte";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
@@ -151,7 +151,7 @@ describe("CkBTCWithdrawalAccount", () => {
       it("should render a call to action if balance is bigger than zero", async () => {
         const { getByText } = render(CkBTCWithdrawalAccount);
 
-        const balance = formatToken({
+        const balance = formatTokenE8s({
           value: mockCkBTCWithdrawalAccount.balanceUlps,
           detailed: true,
         });

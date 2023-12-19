@@ -1,5 +1,5 @@
 import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import en from "$tests/mocks/i18n.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
@@ -27,7 +27,7 @@ describe("CurrentBalance", () => {
     const icp: HTMLSpanElement | null = queryByTestId("token-value");
 
     expect(icp?.innerHTML).toEqual(
-      `${formatToken({ value: mockMainAccount.balanceUlps })}`
+      `${formatTokenE8s({ value: mockMainAccount.balanceUlps })}`
     );
     expect(getByText(`ICP`)).toBeTruthy();
   });

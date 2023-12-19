@@ -17,7 +17,7 @@
   import { splitNeuron } from "$lib/services/sns-neurons.services";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import type { SnsNervousSystemParameters } from "@dfinity/sns";
-  import { formatToken } from "$lib/utils/token.utils";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
 
   export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;
@@ -100,7 +100,7 @@
       <p class="label">{$i18n.neurons.transaction_fee}</p>
       <p>
         <Value>
-          {formatToken({
+          {formatTokenE8s({
             value: transactionFee,
           })}
         </Value>

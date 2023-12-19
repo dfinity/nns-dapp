@@ -24,7 +24,7 @@ import {
 import { nowInSeconds } from "./date.utils";
 import type { I18nSubstitutions } from "./i18n.utils";
 import { getCommitmentE8s } from "./sns.utils";
-import { formatToken } from "./token.utils";
+import { formatTokenE8s } from "./token.utils";
 import { stringifyJson } from "./utils";
 
 export const filterProjectsStatus = ({
@@ -230,7 +230,7 @@ export const validParticipation = ({
       valid: false,
       labelKey: "error__sns.not_enough_amount",
       substitutions: {
-        $amount: formatToken({
+        $amount: formatTokenE8s({
           value: project.summary.swap.params.min_participant_icp_e8s,
           detailed: true,
         }),
@@ -246,11 +246,11 @@ export const validParticipation = ({
       valid: false,
       labelKey: "error__sns.commitment_too_large",
       substitutions: {
-        $newCommitment: formatToken({ value: amount.toE8s() }),
-        $currentCommitment: formatToken({
+        $newCommitment: formatTokenE8s({ value: amount.toE8s() }),
+        $currentCommitment: formatTokenE8s({
           value: getCommitmentE8s(project.swapCommitment) ?? BigInt(0),
         }),
-        $maxCommitment: formatToken({
+        $maxCommitment: formatTokenE8s({
           value: project.summary.swap.params.max_participant_icp_e8s,
         }),
       },
@@ -266,8 +266,8 @@ export const validParticipation = ({
       valid: false,
       labelKey: "error__sns.commitment_exceeds_current_allowed",
       substitutions: {
-        $commitment: formatToken({ value: totalCommitment }),
-        $remainingCommitment: formatToken({
+        $commitment: formatTokenE8s({ value: totalCommitment }),
+        $remainingCommitment: formatTokenE8s({
           value:
             project.summary.swap.params.max_icp_e8s -
             project.summary.derived.buyer_total_icp_e8s,

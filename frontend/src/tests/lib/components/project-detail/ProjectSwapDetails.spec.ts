@@ -1,7 +1,7 @@
 import ProjectSwapDetails from "$lib/components/project-detail/ProjectSwapDetails.svelte";
 import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import {
   createSummary,
   mockSnsFullProject,
@@ -124,7 +124,7 @@ describe("ProjectSwapDetails", () => {
     });
 
     expect(await po.getTotalSupply()).toMatch(
-      formatToken({ value: totalSupply })
+      formatTokenE8s({ value: totalSupply })
     );
   });
 
