@@ -806,9 +806,11 @@ describe("Accounts", () => {
         expect(await modalPo.isPresent()).toBe(true);
 
         subaccountBalance = 120000000n;
+        const amount = 1;
+        const destinationAddress = mockMainAccount.identifier;
         modalPo.transferToAddress({
-          destinationAddress: mockMainAccount.identifier,
-          amount: 1,
+          destinationAddress,
+          amount,
         });
 
         await runResolvedPromises();
@@ -818,6 +820,13 @@ describe("Accounts", () => {
           projectName: "test subaccount",
         });
         expect(await modalPo.isPresent()).toBe(false);
+        expect(icpLedgerApi.sendICP).toHaveBeenCalledTimes(1);
+        expect(icpLedgerApi.sendICP).toHaveBeenCalledWith({
+          identity: mockIdentity,
+          to: destinationAddress,
+          amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
+          fromSubAccount: mockSubAccount.subAccount,
+        });
       });
     });
   });
