@@ -258,7 +258,7 @@ describe("CkBTCTransactionList", () => {
 
     expect(cards).toHaveLength(1);
     const card = cards[0];
-    expect(await card.hasPendingIcon()).toBe(true);
+    expect(await card.hasPendingReceiveIcon()).toBe(true);
     expect(await card.getHeadline()).toBe("Receiving BTC");
     expect(await card.getIdentifier()).toBe("From: BTC Network");
     // 0.01 deposited minus 0.00004 KYT fee.
