@@ -192,7 +192,7 @@ describe("TokensTable", () => {
     const rows = await po.getRows();
     const rowPo = rows[0];
 
-    expect(await rowPo.hasGoToDetailButton()).toBe(false);
+    expect(await rowPo.hasGoToDetailIcon()).toBe(false);
     expect(await rowPo.hasReceiveButton()).toBe(false);
     expect(await rowPo.hasSendButton()).toBe(true);
   });
@@ -209,7 +209,7 @@ describe("TokensTable", () => {
     const rows = await po.getRows();
     const rowPo = rows[0];
 
-    expect(await rowPo.hasGoToDetailButton()).toBe(false);
+    expect(await rowPo.hasGoToDetailIcon()).toBe(false);
     expect(await rowPo.hasReceiveButton()).toBe(true);
     expect(await rowPo.hasSendButton()).toBe(false);
   });
@@ -226,7 +226,7 @@ describe("TokensTable", () => {
     const rows = await po.getRows();
     const rowPo = rows[0];
 
-    expect(await rowPo.hasGoToDetailButton()).toBe(true);
+    expect(await rowPo.hasGoToDetailIcon()).toBe(true);
     expect(await rowPo.hasReceiveButton()).toBe(false);
     expect(await rowPo.hasSendButton()).toBe(false);
   });
@@ -345,29 +345,6 @@ describe("TokensTable", () => {
     expect(handleAction).toHaveBeenCalledWith(
       createActionEvent({
         type: ActionType.Receive,
-        data: userToken,
-      })
-    );
-  });
-
-  it("should trigger event when clicking in GoToDetail action", async () => {
-    const handleAction = vi.fn();
-    const userToken = createUserToken({
-      actions: [UserTokenAction.GoToDetail],
-    });
-    const po = renderTable({
-      userTokensData: [userToken],
-      onAction: handleAction,
-    });
-
-    expect(handleAction).not.toHaveBeenCalled();
-    const rows = await po.getRows();
-    await rows[0].clickGoToDetail();
-
-    expect(handleAction).toHaveBeenCalledTimes(1);
-    expect(handleAction).toHaveBeenCalledWith(
-      createActionEvent({
-        type: ActionType.GoToTokenDetail,
         data: userToken,
       })
     );

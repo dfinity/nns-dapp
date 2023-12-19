@@ -27,7 +27,10 @@ import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { page } from "$mocks/$app/stores";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
   mockAccountDetails,
@@ -51,6 +54,7 @@ import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
+import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import WalletTest from "../pages/AccountsTest.svelte";
@@ -131,8 +135,10 @@ vi.mock("$lib/services/worker-balances.services", () => ({
 describe("Accounts", () => {
   const balanceIcrcToken = 314000000n;
   const newSubaccountName = "test";
-  const subaccountBalance = 0n;
-  const mainAccountBalance = 314000000n;
+  const subaccountBalanceDefault = 0n;
+  let subaccountBalance = subaccountBalanceDefault;
+  const mainAccountBalanceDefault = 314000000n;
+  let mainAccountBalance = mainAccountBalanceDefault;
 
   const renderComponent = () => {
     const { container } = render(Accounts);
@@ -157,12 +163,15 @@ describe("Accounts", () => {
     icrcAccountsStore.reset();
     setCkETHCanisters();
     overrideFeatureFlagsStore.reset();
+    subaccountBalance = subaccountBalanceDefault;
+    mainAccountBalance = mainAccountBalanceDefault;
 
     vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
       balanceIcrcToken
     );
     vi.spyOn(accountsApi, "createSubAccount").mockResolvedValue(undefined);
+    vi.spyOn(icpLedgerApi, "sendICP").mockResolvedValue(1234n);
     vi.spyOn(icpLedgerApi, "queryAccountBalance").mockImplementation(
       async ({ icpAccountIdentifier }) => {
         if (icpAccountIdentifier === mockMainAccount.identifier) {
@@ -676,6 +685,96 @@ describe("Accounts", () => {
             projectName: newSubaccountName,
           },
         ]);
+      });
+
+      it("user can open receive modal and refresh balance", async () => {
+        icpAccountsStore.setForTesting({
+          main: {
+            ...mockMainAccount,
+            balanceUlps: mainAccountBalance,
+          },
+          subAccounts: [
+            {
+              ...mockSubAccount,
+              balanceUlps: subaccountBalance,
+            },
+          ],
+          hardwareWallets: [],
+        });
+        const po = renderComponent();
+
+        const tablePo = po.getNnsAccountsPo().getTokensTablePo();
+        expect(await tablePo.getRowData(mockSubAccount.name)).toEqual({
+          balance: "0 ICP",
+          projectName: "test subaccount",
+        });
+
+        await tablePo.clickReceiveOnRow(mockSubAccount.name);
+
+        const modalPo = po.getReceiveModalPo();
+        expect(await modalPo.isPresent()).toBe(true);
+
+        subaccountBalance = 220000000n;
+        await modalPo.clickFinish();
+
+        await runResolvedPromises();
+        // The modal needs another tick to be removed from the DOM
+        await runResolvedPromises();
+
+        expect(await modalPo.isPresent()).toBe(false);
+        expect(await tablePo.getRowData(mockSubAccount.name)).toEqual({
+          balance: "2.20 ICP",
+          projectName: "test subaccount",
+        });
+      });
+
+      it("user can open the send modal from footer and make a transaction", async () => {
+        icpAccountsStore.setForTesting({
+          main: {
+            ...mockMainAccount,
+            balanceUlps: mainAccountBalance,
+          },
+          subAccounts: [],
+          hardwareWallets: [],
+        });
+        const po = renderComponent();
+
+        const tablePo = po.getNnsAccountsPo().getTokensTablePo();
+        expect(await tablePo.getRowData("Main")).toEqual({
+          balance: "3.14 ICP",
+          projectName: "Main",
+        });
+
+        const footerPo = po.getNnsAccountsFooterPo();
+        expect(await footerPo.isPresent()).toBe(true);
+
+        await footerPo.clickSend();
+
+        const modalPo = po.getIcpTransactionModalPo();
+        expect(await modalPo.isPresent()).toBe(true);
+
+        mainAccountBalance = 114000000n;
+        const amount = 2;
+        const destinationAddress = mockSubAccount.identifier;
+        modalPo.transferToAddress({
+          destinationAddress,
+          amount,
+        });
+
+        await runResolvedPromises();
+
+        expect(await tablePo.getRowData("Main")).toEqual({
+          balance: "1.14 ICP",
+          projectName: "Main",
+        });
+        expect(await modalPo.isPresent()).toBe(false);
+        expect(icpLedgerApi.sendICP).toHaveBeenCalledTimes(1);
+        expect(icpLedgerApi.sendICP).toHaveBeenCalledWith({
+          identity: mockIdentity,
+          to: destinationAddress,
+          amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
+          fromSubaccount: undefined,
+        });
       });
     });
   });

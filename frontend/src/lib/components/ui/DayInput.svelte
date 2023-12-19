@@ -5,6 +5,7 @@
   import { daysToSeconds, secondsToDays } from "$lib/utils/date.utils";
 
   export let seconds: number;
+  export let disabled: boolean = false;
   export let maxInSeconds: number;
   export let minInSeconds: number;
   export let placeholderLabelKey = "core.amount";
@@ -33,11 +34,13 @@
   const setMin = () => {
     seconds = minInSeconds;
     days = secondsToDays(seconds);
+    showError();
   };
 
   const setMax = () => {
     seconds = maxInSeconds;
     days = secondsToDays(seconds);
+    showError();
   };
 </script>
 
@@ -50,7 +53,8 @@
   {errorMessage}
   on:nnsInput={showError}
   on:blur={showError}
+  {disabled}
 >
-  <MinButton on:click={setMin} slot="start" />
-  <MaxButton on:click={setMax} slot="end" />
+  <MinButton on:click={setMin} slot="start" {disabled} />
+  <MaxButton on:click={setMax} slot="end" {disabled} />
 </InputWithError>

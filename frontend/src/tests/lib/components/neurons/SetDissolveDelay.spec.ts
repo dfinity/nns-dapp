@@ -9,6 +9,7 @@ import { SetDissolveDelayPo } from "$tests/page-objects/SetDissolveDelay.page-ob
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronState } from "@dfinity/nns";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
+import { expect } from "@playwright/test";
 import { render } from "@testing-library/svelte";
 
 const defaultComponentProps = {
@@ -183,6 +184,34 @@ describe("SetDissolveDelay", () => {
         en.neurons.dissolve_delay_above_maximum
       );
     });
+
+    it("hide error message on min/max click", async () => {
+      const projectMinDays = 183;
+      const minProjectDelayInSeconds = projectMinDays * SECONDS_IN_DAY;
+      const maxProjectDelayInSeconds = SECONDS_IN_EIGHT_YEARS;
+      const po = renderComponent({
+        neuronDissolveDelaySeconds: 10n,
+        minProjectDelayInSeconds,
+        maxDelayInSeconds: maxProjectDelayInSeconds,
+        delayInSeconds: 10,
+      });
+
+      await po.enterDays(projectMinDays - 1);
+      expect(await po.getErrorMessage()).toBe(
+        en.neurons.dissolve_delay_below_minimum
+      );
+
+      await po.clickMin();
+      expect(await po.getErrorMessage()).toBe(null);
+
+      await po.enterDays(maxProjectDelayInSeconds + 1);
+      expect(await po.getErrorMessage()).toBe(
+        en.neurons.dissolve_delay_above_maximum
+      );
+
+      await po.clickMax();
+      expect(await po.getErrorMessage()).toBe(null);
+    });
   });
 
   it("can set same number of days when current number of days is fractional", async () => {
@@ -225,6 +254,38 @@ describe("SetDissolveDelay", () => {
 
     await po.enterDays(200);
     expect(getDelayInSeconds(component)).toBe(200 * SECONDS_IN_DAY);
+  });
+
+  it("should disable input when maximum is already selected", async () => {
+    const delayInSeconds = defaultComponentProps.maxDelayInSeconds;
+    const po = renderComponent({
+      ...defaultComponentProps,
+      neuronDissolveDelaySeconds: BigInt(delayInSeconds),
+      delayInSeconds,
+    });
+
+    expect(await po.getInputWithErrorPo().isDisabled()).toBe(true);
+    expect(await po.getMaxButtonPo().isDisabled()).toBe(true);
+    expect(await po.getMinButtonPo().isDisabled()).toBe(true);
+  });
+
+  it("should not increase dissolve delay with multiple Min clicks", async () => {
+    const delayInSeconds = 0;
+    const minProjectDelayInDays = 185;
+    const po = renderComponent({
+      ...defaultComponentProps,
+      minProjectDelayInSeconds: minProjectDelayInDays * SECONDS_IN_DAY,
+      neuronDissolveDelaySeconds: BigInt(delayInSeconds),
+      delayInSeconds,
+    });
+
+    expect(await po.getDays()).toBe(0);
+    await po.clickMin();
+    expect(await po.getDays()).toBe(minProjectDelayInDays);
+
+    // after the next min click the value should remain
+    await po.clickMin();
+    expect(await po.getDays()).toBe(minProjectDelayInDays);
   });
 
   const minMaxDaysPairs = [

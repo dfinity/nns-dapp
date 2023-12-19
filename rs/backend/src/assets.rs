@@ -10,6 +10,7 @@ use dfn_core::api::ic0::time;
 use flate2::read::GzDecoder;
 use flate2::write::GzEncoder;
 use flate2::Compression;
+use ic_cdk::println;
 use ic_certified_map::{labeled, labeled_hash, AsHashTree, Hash, RbTree};
 use serde::{Deserialize, Serialize};
 use serde_bytes::ByteBuf;
@@ -379,7 +380,7 @@ pub fn init_assets() {
 ///       as it would force the data to be copied into a new vector, even when the
 ///       original is no longer needed.
 pub fn insert_tar_xz(compressed: Vec<u8>) {
-    dfn_core::api::print("Inserting assets...");
+    println!("Inserting assets...");
     let mut num_assets = 0;
     let mut decompressed = Vec::new();
     lzma_rs::xz_decompress(&mut compressed.as_ref(), &mut decompressed).unwrap();
@@ -422,7 +423,7 @@ pub fn insert_tar_xz(compressed: Vec<u8>) {
         }
         update_root_hash(&state.asset_hashes.borrow_mut());
     });
-    dfn_core::api::print(format!("Inserted {num_assets} assets."));
+    println!("Inserted {num_assets} assets.");
 }
 
 impl StableState for Assets {
