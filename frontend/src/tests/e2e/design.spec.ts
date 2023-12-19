@@ -49,7 +49,7 @@ test.describe("Design", () => {
       await appPo.getAccountsPo().waitFor();
       await appPo.getAccountsPo().getNnsAccountsPo().waitForContentLoaded();
 
-      replaceContent({
+      await replaceContent({
         page,
         selectors: [
           '[data-tid="identifier"]',
