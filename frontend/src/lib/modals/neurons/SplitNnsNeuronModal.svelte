@@ -2,7 +2,7 @@
   import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
   import { Modal, Value, busy } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { TokenAmount, ICPToken } from "@dfinity/utils";
+  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
   import { isValidInputAmount, neuronStake } from "$lib/utils/neuron.utils";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
   import { i18n } from "$lib/stores/i18n";
@@ -23,8 +23,8 @@
   let stakeE8s: bigint;
   $: stakeE8s = neuronStake(neuron);
 
-  let balance: TokenAmount;
-  $: balance = TokenAmount.fromE8s({ amount: stakeE8s, token: ICPToken });
+  let balance: TokenAmountV2;
+  $: balance = TokenAmountV2.fromUlps({ amount: stakeE8s, token: ICPToken });
 
   let max = 0;
   $: max =
