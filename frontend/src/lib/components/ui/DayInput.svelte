@@ -34,11 +34,13 @@
   const setMin = () => {
     seconds = minInSeconds;
     days = secondsToDays(seconds);
+    showError();
   };
 
   const setMax = () => {
     seconds = maxInSeconds;
     days = secondsToDays(seconds);
+    showError();
   };
 </script>
 

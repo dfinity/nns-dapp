@@ -184,6 +184,34 @@ describe("SetDissolveDelay", () => {
         en.neurons.dissolve_delay_above_maximum
       );
     });
+
+    it("hide error message on min/max click", async () => {
+      const projectMinDays = 183;
+      const minProjectDelayInSeconds = projectMinDays * SECONDS_IN_DAY;
+      const maxProjectDelayInSeconds = SECONDS_IN_EIGHT_YEARS;
+      const po = renderComponent({
+        neuronDissolveDelaySeconds: 10n,
+        minProjectDelayInSeconds,
+        maxDelayInSeconds: maxProjectDelayInSeconds,
+        delayInSeconds: 10,
+      });
+
+      await po.enterDays(projectMinDays - 1);
+      expect(await po.getErrorMessage()).toBe(
+        en.neurons.dissolve_delay_below_minimum
+      );
+
+      await po.clickMin();
+      expect(await po.getErrorMessage()).toBe(null);
+
+      await po.enterDays(maxProjectDelayInSeconds + 1);
+      expect(await po.getErrorMessage()).toBe(
+        en.neurons.dissolve_delay_above_maximum
+      );
+
+      await po.clickMax();
+      expect(await po.getErrorMessage()).toBe(null);
+    });
   });
 
   it("can set same number of days when current number of days is fractional", async () => {
