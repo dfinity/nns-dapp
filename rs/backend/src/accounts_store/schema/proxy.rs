@@ -93,7 +93,8 @@ impl AccountsDbAsProxy {
             migration: None,
         }
     }
-    pub fn as_map(&self) -> Option<&BTreeMap<Vec<u8>, Account>> {
+    /// Provides a reference to the underlying map, if that is how accounts are stored.
+    pub fn as_map_maybe(&self) -> Option<&BTreeMap<Vec<u8>, Account>> {
         match &self.authoritative_db {
             AccountsDb::Map(map_db) => Some(map_db.as_map()),
             AccountsDb::UnboundedStableBTreeMap(_) => None,

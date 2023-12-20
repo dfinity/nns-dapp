@@ -25,14 +25,12 @@ use std::cmp::{min, Ordering};
 use std::collections::{BTreeMap, HashMap, HashSet, VecDeque};
 use std::ops::RangeTo;
 use std::time::{Duration, SystemTime};
+use schema::{SchemaLabel, proxy::{AccountsDb, AccountsDbAsProxy}, AccountsDbTrait};
 
 pub mod constructors;
 pub mod histogram;
 pub mod schema;
-use schema::{proxy::AccountsDbAsProxy, AccountsDbTrait};
 
-use self::schema::proxy::AccountsDb;
-use self::schema::SchemaLabel;
 
 type TransactionIndex = u64;
 
@@ -1584,8 +1582,9 @@ impl AccountsStore {
 
 impl StableState for AccountsStore {
     fn encode(&self) -> Vec<u8> {
+        let empty_accounts = BTreeMap::<Vec<u8>, Account>::new();
         Candid((
-            &self.accounts_db.as_map(),
+            &self.accounts_db.as_map_maybe().unwrap_or(&empty_accounts),
             &self.hardware_wallets_and_sub_accounts,
             // TODO: Remove pending_transactions
             HashMap::<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>::new(),
