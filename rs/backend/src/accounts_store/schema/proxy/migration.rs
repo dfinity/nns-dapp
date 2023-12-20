@@ -32,7 +32,6 @@ impl AccountsDbAsProxy {
     ///
     /// # Panics
     /// - If the new database is not empty.
-    #[cfg(test)]
     pub fn start_migrating_accounts_to(&mut self, accounts_db: AccountsDb) {
         assert!(
             accounts_db.db_accounts_len() == 0,
@@ -50,7 +49,6 @@ impl AccountsDbAsProxy {
     }
 
     /// Advances the migration by one step.
-    #[cfg(test)]
     pub fn step_migration(&mut self) {
         if let Some(migration) = &mut self.migration {
             if let Some(next_to_migrate) = &migration.next_to_migrate {
@@ -70,7 +68,6 @@ impl AccountsDbAsProxy {
     }
 
     /// Completes any migration in progress.
-    #[cfg(test)]
     pub fn complete_migration(&mut self) {
         if let Some(migration) = self.migration.take() {
             dfn_core::api::print(format!(

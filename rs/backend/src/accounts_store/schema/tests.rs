@@ -311,7 +311,7 @@ where
     }
     assert_eq!(accounts_db.db_accounts_len(), accounts.len() as u64);
     // Verify that the database returns the same map.
-    assert_eq!(accounts_db.as_map(), accounts);
+    assert_eq!(accounts_db.as_map(), &accounts);
 }
 
 /// Tests common functionality of `AccountsDbTrait` implementations.
