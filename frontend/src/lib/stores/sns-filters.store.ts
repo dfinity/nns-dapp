@@ -19,11 +19,11 @@ export interface SnsFiltersStoreData {
 }
 
 export interface SnsFiltersStore extends Readable<SnsFiltersStoreData> {
-  setType: (data: {
+  setTypes: (data: {
     rootCanisterId: Principal;
     types: Filter<SnsProposalTypeFilterData>[];
   }) => void;
-  setCheckType: (data: {
+  setCheckTypes: (data: {
     rootCanisterId: Principal;
     checkedTypes: SnsProposalTypeFilterData[];
   }) => void;
@@ -68,7 +68,7 @@ export const initSnsFiltersStore = (): SnsFiltersStore => {
   return {
     subscribe,
 
-    setType({
+    setTypes({
       rootCanisterId,
       types,
     }: {
@@ -89,7 +89,7 @@ export const initSnsFiltersStore = (): SnsFiltersStore => {
       });
     },
 
-    setCheckType({
+    setCheckTypes({
       rootCanisterId,
       checkedTypes,
     }: {

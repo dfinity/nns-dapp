@@ -24,7 +24,7 @@ export const loadSnsFilters = async (rootCanisterId: Principal) => {
     decisionStatus: [],
   };
 
-  snsFiltersStore.setType({
+  snsFiltersStore.setTypes({
     rootCanisterId,
     types: defaultFiltersProjectData.types,
   });

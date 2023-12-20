@@ -117,12 +117,12 @@ describe("sns-filters store", () => {
     });
 
     it("should setTypes in different projects", () => {
-      snsFiltersStore.setType({ rootCanisterId, types: [...types] });
+      snsFiltersStore.setTypes({ rootCanisterId, types: [...types] });
 
       const projectStore = get(snsFiltersStore)[rootCanisterId.toText()];
       expect(projectStore.types).toEqual(types);
 
-      snsFiltersStore.setType({
+      snsFiltersStore.setTypes({
         rootCanisterId: rootCanisterId2,
         types: [...types],
       });
@@ -254,7 +254,7 @@ describe("sns-filters store", () => {
 
     it("setTypes should check filters in different projects", () => {
       // Project rootCanisterId
-      snsFiltersStore.setType({
+      snsFiltersStore.setTypes({
         rootCanisterId,
         types: unCheckedTypes,
       });
@@ -265,7 +265,7 @@ describe("sns-filters store", () => {
 
       const typeValues = types.map(({ value }) => value);
       // rootCanisterId: all checked
-      snsFiltersStore.setCheckType({
+      snsFiltersStore.setCheckTypes({
         rootCanisterId,
         checkedTypes: typeValues,
       });
@@ -275,7 +275,7 @@ describe("sns-filters store", () => {
       ).toEqual(typeValues.length);
 
       // Project rootCanisterId2
-      snsFiltersStore.setType({
+      snsFiltersStore.setTypes({
         rootCanisterId: rootCanisterId2,
         types: unCheckedTypes,
       });
@@ -285,7 +285,7 @@ describe("sns-filters store", () => {
       ).toEqual(0);
 
       // rootCanisterId2: 1 checked
-      snsFiltersStore.setCheckType({
+      snsFiltersStore.setCheckTypes({
         rootCanisterId: rootCanisterId2,
         checkedTypes: [typeValues[0]],
       });
@@ -301,7 +301,7 @@ describe("sns-filters store", () => {
       ).toEqual(typeValues.length);
 
       // Uncheck from Project 2
-      snsFiltersStore.setCheckType({
+      snsFiltersStore.setCheckTypes({
         rootCanisterId,
         checkedTypes: [typeValues[1]],
       });
