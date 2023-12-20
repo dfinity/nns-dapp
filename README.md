@@ -30,7 +30,7 @@ Some useful links:
 
 - [HACKING](/HACKING.md) provides guidance for local development and offers helpful resources for developers.
 - [BUILD.md](/BUILD.md) contains information about build reproducibility, tools, and pipelines.
-- The [SNS aggregator](https://3r4gx-wqaaa-aaaaq-aaaia-cai.ic0.app/) is a back-end canister that provides fast, certified data about Service Nervous Systems (SNS).
+- The [SNS aggregator](https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io/) is a back-end canister that provides fast, certified data about Service Nervous Systems (SNS).
 
 ## Getting Help
 
