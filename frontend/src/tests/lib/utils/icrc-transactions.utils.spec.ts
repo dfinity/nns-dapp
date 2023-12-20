@@ -31,7 +31,10 @@ import {
 } from "$tests/mocks/sns-accounts.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { Cbor } from "@dfinity/agent";
-import type { RetrieveBtcStatusV2 } from "@dfinity/ckbtc";
+import type {
+  RetrieveBtcStatusV2,
+  RetrieveBtcStatusV2WithId,
+} from "@dfinity/ckbtc";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import {
   ICPToken,
@@ -77,6 +80,31 @@ describe("icrc-transaction utils", () => {
   const selfTransaction = createIcrcTransactionWithId({
     from: subAccount,
     to: subAccount,
+  });
+  const retrieveBtcStatusReimbursed = (amount): RetrieveBtcStatusV2 => ({
+    Reimbursed: {
+      account: {
+        owner: mockPrincipal,
+        subaccount: [],
+      },
+      mint_block_index: 1256n,
+      amount,
+      reason: {
+        CallFailed: null,
+      },
+    },
+  });
+  const retrieveBtcStatusPending: RetrieveBtcStatusV2 = {
+    Pending: null,
+  };
+  const retrieveBtcStatusConfirmed: RetrieveBtcStatusV2 = {
+    Confirmed: {
+      txid: new Uint8Array([1, 2, 1, 1]),
+    },
+  };
+
+  beforeEach(() => {
+    vi.restoreAllMocks();
   });
 
   beforeEach(() => {
@@ -517,10 +545,6 @@ describe("icrc-transaction utils", () => {
       const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
       const memo = new Uint8Array(Cbor.encode(decodedMemo));
 
-      const retrieveBtcStatus: RetrieveBtcStatusV2 = {
-        Pending: null,
-      };
-
       const data = mapCkbtcTransaction({
         transaction: {
           id: BigInt(1234),
@@ -534,7 +558,7 @@ describe("icrc-transaction utils", () => {
         toSelfTransaction: false,
         token: mockCkBTCToken,
         i18n: en,
-        retrieveBtcStatus,
+        retrieveBtcStatus: retrieveBtcStatusPending,
       });
       expect(data).toEqual({
         domKey: "1234-1",
@@ -557,12 +581,6 @@ describe("icrc-transaction utils", () => {
       const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
       const memo = new Uint8Array(Cbor.encode(decodedMemo));
 
-      const retrieveBtcStatus: RetrieveBtcStatusV2 = {
-        Confirmed: {
-          txid: new Uint8Array([1, 2, 1, 1]),
-        },
-      };
-
       const data = mapCkbtcTransaction({
         transaction: {
           id: BigInt(1234),
@@ -576,7 +594,7 @@ describe("icrc-transaction utils", () => {
         toSelfTransaction: false,
         token: mockCkBTCToken,
         i18n: en,
-        retrieveBtcStatus,
+        retrieveBtcStatus: retrieveBtcStatusConfirmed,
       });
       expect(data).toEqual({
         domKey: "1234-1",
@@ -599,19 +617,7 @@ describe("icrc-transaction utils", () => {
       const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
       const memo = new Uint8Array(Cbor.encode(decodedMemo));
 
-      const retrieveBtcStatus: RetrieveBtcStatusV2 = {
-        Reimbursed: {
-          account: {
-            owner: mockPrincipal,
-            subaccount: [],
-          },
-          mint_block_index: 1256n,
-          amount,
-          reason: {
-            CallFailed: null,
-          },
-        },
-      };
+      const retrieveBtcStatus = retrieveBtcStatusReimbursed(amount);
 
       const data = mapCkbtcTransaction({
         transaction: {
@@ -704,6 +710,7 @@ describe("icrc-transaction utils", () => {
         account: mockCkBTCMainAccount,
         token: mockCkBTCToken,
         i18n: en,
+        retrieveBtcStatuses: [],
       });
 
       expect(uiTransactions).toEqual([
@@ -768,6 +775,7 @@ describe("icrc-transaction utils", () => {
         account: mockCkBTCMainAccount,
         token: mockCkBTCToken,
         i18n: en,
+        retrieveBtcStatuses: [],
       });
 
       // The approve transaction was merged into the burn transaction so is not
@@ -814,11 +822,122 @@ describe("icrc-transaction utils", () => {
         account: mockCkBTCMainAccount,
         token: mockCkBTCToken,
         i18n: en,
+        retrieveBtcStatuses: [],
       });
 
       expect(uiTransactions.length).toEqual(2);
       expect(uiTransactions[0].headline).toBe("Sent");
       expect(uiTransactions[1].headline).toBe("Approve transfer");
+    });
+
+    it("takes BTC retrieve status into account", () => {
+      const btcWithdrawalAddress = "1ASLxsAMbbt4gcrNc6v6qDBW4JkeWAtTeh";
+      const kytFee = 1333;
+      const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
+      const memo = new Uint8Array(Cbor.encode(decodedMemo));
+
+      const failedTxId = 131n;
+      const failedAmount = 170_000_000n;
+      const pendingTxId = 137n;
+      const pendingAmount = 180_000_000n;
+      const confirmedTxId = 139n;
+      const confirmedAmount = 190_000_000n;
+
+      const failedTx: IcrcTransactionData = {
+        transaction: {
+          id: failedTxId,
+          transaction: createBurnTransaction({
+            from: mainAccount,
+            amount: failedAmount,
+            memo,
+          }),
+        },
+        toSelfTransaction: false,
+      };
+      const pendingTx: IcrcTransactionData = {
+        transaction: {
+          id: pendingTxId,
+          transaction: createBurnTransaction({
+            from: mainAccount,
+            amount: pendingAmount,
+            memo,
+          }),
+        },
+        toSelfTransaction: false,
+      };
+      const confirmedTx: IcrcTransactionData = {
+        transaction: {
+          id: confirmedTxId,
+          transaction: createBurnTransaction({
+            from: mainAccount,
+            amount: confirmedAmount,
+            memo,
+          }),
+        },
+        toSelfTransaction: false,
+      };
+      const statuses: RetrieveBtcStatusV2WithId[] = [
+        {
+          id: failedTxId,
+          status: retrieveBtcStatusReimbursed(failedAmount),
+        },
+        {
+          id: pendingTxId,
+          status: retrieveBtcStatusPending,
+        },
+        {
+          id: confirmedTxId,
+          status: retrieveBtcStatusConfirmed,
+        },
+      ];
+
+      const uiTransactions = mapCkbtcTransactions({
+        transactionData: [confirmedTx, pendingTx, failedTx],
+        account: mockCkBTCMainAccount,
+        token: mockCkBTCToken,
+        i18n: en,
+        retrieveBtcStatuses: statuses,
+      });
+
+      expect(uiTransactions).toEqual([
+        {
+          domKey: `${confirmedTxId}-1`,
+          headline: "BTC Sent",
+          isIncoming: false,
+          isPending: false,
+          otherParty: btcWithdrawalAddress,
+          timestamp: new Date(0),
+          tokenAmount: TokenAmountV2.fromUlps({
+            amount: confirmedAmount,
+            token: mockCkBTCToken,
+          }),
+        },
+        {
+          domKey: `${pendingTxId}-1`,
+          headline: "Sending BTC",
+          isIncoming: false,
+          isPending: true,
+          otherParty: btcWithdrawalAddress,
+          timestamp: new Date(0),
+          tokenAmount: TokenAmountV2.fromUlps({
+            amount: pendingAmount,
+            token: mockCkBTCToken,
+          }),
+        },
+        {
+          domKey: `${failedTxId}-1`,
+          headline: "Sending BTC failed",
+          isIncoming: false,
+          isPending: false,
+          isFailed: true,
+          otherParty: btcWithdrawalAddress,
+          timestamp: new Date(0),
+          tokenAmount: TokenAmountV2.fromUlps({
+            amount: failedAmount,
+            token: mockCkBTCToken,
+          }),
+        },
+      ]);
     });
   });
 
