@@ -9,8 +9,7 @@ import { derived, type Readable } from "svelte/store";
 import { writableStored } from "./writable-stored";
 
 export interface ProjectFiltersStoreData {
-  // TODO(max): rename to types
-  topics: Filter<SnsProposalTypeFilterData>[];
+  types: Filter<SnsProposalTypeFilterData>[];
   rewardStatus: Filter<SnsProposalRewardStatus>[];
   decisionStatus: Filter<SnsProposalDecisionStatus>[];
 }
@@ -48,7 +47,7 @@ export interface SnsFiltersStore extends Readable<SnsFiltersStoreData> {
 }
 
 const defaultProjectData: ProjectFiltersStoreData = {
-  topics: [],
+  types: [],
   rewardStatus: [],
   decisionStatus: [],
 };
@@ -62,6 +61,7 @@ export const initSnsFiltersStore = (): SnsFiltersStore => {
   const { subscribe, set, update } = writableStored<SnsFiltersStoreData>({
     key: StoreLocalStorageKey.SnsProposalFilters,
     defaultValue: {},
+    // version: 1,
   });
 
   return {
@@ -82,7 +82,7 @@ export const initSnsFiltersStore = (): SnsFiltersStore => {
           ...currentState,
           [rootCanisterId.toText()]: {
             ...projectFilters,
-            topics: types,
+            types,
           },
         };
       });
@@ -103,7 +103,7 @@ export const initSnsFiltersStore = (): SnsFiltersStore => {
           ...currentState,
           [rootCanisterId.toText()]: {
             ...projectFilters,
-            topics: projectFilters.topics.map((type) => ({
+            types: projectFilters.types.map((type) => ({
               ...type,
               checked: checkedTypes.includes(type.value),
             })),
@@ -218,7 +218,7 @@ export const snsSelectedFiltersStore = derived<
     (acc, [rootCanisterIdText, filters]) => ({
       ...acc,
       [rootCanisterIdText]: {
-        topics: filters.topics.filter(({ checked }) => checked),
+        topics: filters.types.filter(({ checked }) => checked),
         rewardStatus: filters.rewardStatus.filter(({ checked }) => checked),
         decisionStatus: filters.decisionStatus.filter(({ checked }) => checked),
       },

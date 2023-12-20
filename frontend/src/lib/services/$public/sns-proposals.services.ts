@@ -151,7 +151,7 @@ export const loadSnsProposals = async ({
 }): Promise<void> => {
   const filters = get(snsSelectedFiltersStore)[rootCanisterId.toText()];
   const excludeType = toExcludeTypeParameter({
-    filter: filters.topics,
+    filter: filters.types,
     snsFunctions,
   });
   return queryAndUpdate<SnsProposalData[], unknown>({

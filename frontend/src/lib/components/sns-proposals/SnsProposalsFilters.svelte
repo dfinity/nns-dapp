@@ -17,26 +17,25 @@
 
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;
 
-  let modal: "topics" | "rewards" | "status" | undefined = undefined;
+  let modal: "types" | "rewards" | "status" | undefined = undefined;
 
   let rootCanisterId: Principal;
   $: rootCanisterId = $selectedUniverseIdStore;
   let filtersStore: ProjectFiltersStoreData | undefined;
   $: filtersStore = $snsFiltersStore[rootCanisterId.toText()];
 
-  $: if (nonNullish(nsFunctions)) {
+  $: if (nonNullish(nsFunctions) && nonNullish(filtersStore)) {
     // update the filters store with the new types
     snsFiltersStore.setType({
       rootCanisterId,
       types: generateSnsProposalTypeFilterData({
         nsFunctions,
-        currentFilterState: filtersStore.topics,
+        currentFilterState: filtersStore.types,
       }),
     });
   }
 
-  // TODO(max): "topics" to "types"
-  const openFilters = (filtersModal: "topics" | "rewards" | "status") => {
+  const openFilters = (filtersModal: "types" | "rewards" | "status") => {
     modal = filtersModal;
   };
 
@@ -48,11 +47,11 @@
 <FiltersWrapper>
   <FiltersButton
     testId="filters-by-types"
-    totalFilters={filtersStore?.topics.length ?? 0}
-    activeFilters={filtersStore?.topics.filter(({ checked }) => checked)
+    totalFilters={filtersStore?.types.length ?? 0}
+    activeFilters={filtersStore?.types.filter(({ checked }) => checked)
       .length ?? 0}
-    on:nnsFilter={() => openFilters("topics")}
-    showSpinner={filtersStore?.topics.length === 0}
+    on:nnsFilter={() => openFilters("types")}
+    showSpinner={filtersStore?.types.length === 0}
   >
     {$i18n.voting.topics}
   </FiltersButton>
@@ -74,9 +73,9 @@
   >
 </FiltersWrapper>
 
-{#if modal === "topics"}
+{#if modal === "types"}
   <SnsFilterTypesModal
-    filters={filtersStore?.topics}
+    filters={filtersStore?.types}
     {rootCanisterId}
     on:nnsClose={close}
   />
