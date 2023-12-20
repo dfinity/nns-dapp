@@ -189,11 +189,12 @@ export const updateBalance = async ({
     return { success: true };
   } catch (error: unknown) {
     const err = mapUpdateBalanceError(error);
-
-    toastsError({
-      labelKey: "error__ckbtc.update_balance",
-      err,
-    });
+    if (uiIndicators) {
+      toastsError({
+        labelKey: "error__ckbtc.update_balance",
+        err,
+      });
+    }
 
     return { success: false, err };
   } finally {
