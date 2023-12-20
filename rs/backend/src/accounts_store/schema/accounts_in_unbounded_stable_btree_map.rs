@@ -109,6 +109,7 @@ mod tests {
     use crate::accounts_store::schema::AccountsDbTrait;
     use ic_stable_structures::memory_manager::{MemoryId, MemoryManager};
 
+    // Test that the AccountsDbTrait implementation works.
     test_accounts_db!(AccountsDbAsUnboundedStableBTreeMap::default());
 
     #[test]
