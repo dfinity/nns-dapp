@@ -8,7 +8,6 @@ import { Principal } from "@dfinity/principal";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
-  type SnsNervousSystemFunction,
 } from "@dfinity/sns";
 import { get } from "svelte/store";
 
@@ -57,23 +56,13 @@ describe("sns-filters store", () => {
       id: "1",
       name: "type-1",
       checked: false,
-      value: {
-        id: 1n,
-        name: "One",
-        description: ["description"],
-        function_type: [{ NativeNervousSystemFunction: {} }],
-      } as SnsNervousSystemFunction,
+      value: "1",
     },
     {
       id: "2",
       name: "type-2",
       checked: false,
-      value: {
-        id: 2n,
-        name: "Two",
-        description: ["description"],
-        function_type: [{ NativeNervousSystemFunction: {} }],
-      } as SnsNervousSystemFunction,
+      value: "2",
     },
   ];
   const unCheckedTypes: Filter<SnsProposalTypeFilterId>[] = types.map(
