@@ -5,10 +5,7 @@ import {
   type IcrcCanistersStoreData,
 } from "$lib/stores/icrc-canisters.store";
 import type { Universe } from "$lib/types/universe";
-import {
-  isNonGovernanceTokenPath,
-  isUniverseCkBTC,
-} from "$lib/utils/universe.utils";
+import { isAllTokensPath, isUniverseCkBTC } from "$lib/utils/universe.utils";
 import { isNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 import { universesStore } from "./universes.derived";
@@ -27,7 +24,7 @@ export const selectableUniversesStore = derived<
     // The rest show all universes except for ckBTC, and ICRC Tokens
     universes.filter(
       ({ canisterId }) =>
-        isNonGovernanceTokenPath(page) ||
+        isAllTokensPath(page) ||
         (!isUniverseCkBTC(canisterId) && isNullish(icrcCanisters[canisterId]))
     )
 );

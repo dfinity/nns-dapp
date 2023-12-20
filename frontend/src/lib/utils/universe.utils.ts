@@ -15,7 +15,7 @@ import type { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
-export const isNonGovernanceTokenPath = ({ path }: Page): boolean =>
+export const isAllTokensPath = ({ path }: Page): boolean =>
   isSelectedPath({
     currentPath: path,
     paths: [AppPath.Accounts, AppPath.Wallet],
