@@ -24,15 +24,16 @@
   let filtersStore: ProjectFiltersStoreData | undefined;
   $: filtersStore = $snsFiltersStore[rootCanisterId.toText()];
 
-  $: if (nonNullish(nsFunctions) && nonNullish(filtersStore)) {
-    // update the filters store with the new types
+  $: if (nonNullish(nsFunctions)) {
+    // Always update type filters in case of backend changes
     snsFiltersStore.setType({
       rootCanisterId,
       types: generateSnsProposalTypeFilterData({
         nsFunctions,
-        currentFilterState: filtersStore.types,
+        currentFilterState: filtersStore?.types ?? [],
       }),
     });
+    filtersStore = $snsFiltersStore[rootCanisterId.toText()];
   }
 
   const openFilters = (filtersModal: "types" | "rewards" | "status") => {
