@@ -145,7 +145,7 @@ const IDL2JSON_OPTIONS: Idl2JsonOptions = Idl2JsonOptions {
 /// Convert a Candid `Type` to a candid `IDLType`. `idl2json` uses `IDLType`.
 ///
 /// Notes:
-/// - `IDLType` does not exist in Candid v10.  This converion may well not be needed in the future.
+/// - `IDLType` does not exist in Candid `v10`.  This conversion may well not be needed in the future.
 ///
 /// # Errors
 /// - Does not support: `Type::Empty`, `Type::Knot(_)`, `Type::Unknown`
