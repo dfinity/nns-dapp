@@ -50,7 +50,7 @@ This means that we need to upgrade the candid files and related, and synchronize
 
 #### How To Upgrade IC Dependencies
 
-The Internet Computer dependencies are in the [Cargo.toml](./rs/backend/Cargo.toml) of the backend project. They are the ones that point to `git = "https://github.com/dfinity/ic"`. For example:
+The Internet Computer dependencies are in the [`Cargo.toml`](./rs/backend/Cargo.toml) of the `backend` project. They are the ones that point to `git = "https://github.com/dfinity/ic"`. For example:
 
 ```
 ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
@@ -102,14 +102,14 @@ Yet, a proposal of that topic won't be rendered properly until the changes are m
 **Changes in nns-js:**
 
 - Add to topic entry in the [governance enum](https://github.com/dfinity/ic-js/blob/main/packages/nns/src/enums/governance.enums.ts#L15).
-- Add topic entry in the `Topic` for [proto files](https://github.com/dfinity/ic-js/tree/main/packages/nns/proto). You can search for `TOPIC_NEURON_MANAGEMENT` to better see where to add them.
+- Add topic entry in the `Topic` for [protobuf files](https://github.com/dfinity/ic-js/tree/main/packages/nns/proto). You can search for `TOPIC_NEURON_MANAGEMENT` to better see where to add them.
 
 **Changes in nns-dapp:**
 
-- Add i18n labels in `en.governance.json`. "topics" and "topics_description".
-- Add i18n labels in `en.json`: "follow_neurons.topic_XX_title" and "follow_neurons.topic_XX_description"
+- Add i18n labels in `en.governance.json`: `topics` and `topics_description`.
+- Add i18n labels in `en.json`: `follow_neurons.topic_XX_title` and `follow_neurons.topic_XX_description`
 
-The topic descriptions can be found in [governance.proto](https://github.com/dfinity/ic/blob/master/rs/nns/governance/proto/ic_nns_governance/pb/v1/governance.proto) in IC repo.
+The topic descriptions can be found in [`governance.proto`](https://github.com/dfinity/ic/blob/master/rs/nns/governance/proto/ic_nns_governance/pb/v1/governance.proto) in IC repo.
 
 ### Upgrade dependencies: Ledger ICP App
 
@@ -153,13 +153,13 @@ changes are made and released.
 
 ### 3. Install a new governance canister
 
-Here we explain how to do it on dfx network `local`. It's possible to do the
+Here we explain how to do it on `dfx` network `local`. It's possible to do the
 same on testnet but that's not described here.
 
 First you need to determine from which commit you want to install the governance
 canister. This can be the commit that added the new proposal type or the latest
 commit which provides built artifacts. The latter you can get by running
-`newest_sha_with_disk_image.sh` in the ic repo.
+`newest_sha_with_disk_image.sh` in the `ic` repo.
 
 1. `git clone git@github.com:dfinity/ic.git`
 2. `cd ic`
@@ -168,7 +168,7 @@ commit which provides built artifacts. The latter you can get by running
 5. `echo $IC_COMMIT`
 
 The governance canister is installed by `dfx` when you run `dfx nns install`.
-However, if there is a version of the canister in the dfx cache, that version
+However, if there is a version of the canister in the `dfx` cache, that version
 is the one that will be used. So we first need to remove the canister from the
 cache and then run `dfx nns install`.
 
@@ -247,7 +247,7 @@ the proposal.
 
 You'll need to make a 1-line change in the `ic-js`
 [repository](https://github.com/dfinity/ic-js) to add the new NNS function to
-the [NnsFunction
+the [`NnsFunction`
 enum](https://github.com/dfinity/ic-js/blame/main/packages/nns/src/enums/governance.enums.ts#:~:text=export%20enum%20NnsFunction%20%7B)
 in `packages/nns/src/enums/governance.enums.ts`. Use the name and number that
 you noted down above in the section "Verify that the intended change is for a
@@ -257,11 +257,11 @@ new NNS function".
 
 You'll need to change the following files:
 
-1. [rs/backend/Cargo.toml](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/Cargo.toml)
-2. [frontend/src/lib/i18n/en.governance.json](https://github.com/dfinity/nns-dapp/blob/main/frontend/src/lib/i18n/en.governance.json)
-3. [rs/backend/src/proposals.rs](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/src/proposals.rs)
+1. [`rs/backend/Cargo.toml`](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/Cargo.toml)
+2. [`frontend/src/lib/i18n/en.governance.json`](https://github.com/dfinity/nns-dapp/blob/main/frontend/src/lib/i18n/en.governance.json)
+3. [`rs/backend/src/proposals.rs`](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/src/proposals.rs)
 
-##### Cargo.toml
+##### `Cargo.toml`
 
 For each dependency that has `git = "https://github.com/dfinity/ic"`, change
 the value of `rev =` to the commit you decided to use above in the section
@@ -277,7 +277,7 @@ add do the following:
 2. Then look for the `Cargo.toml` in the parent directory of the `/src/`
    directory.
 3. In the `Cargo.toml` file you should find the package name. For example for
-   [this Cargo.toml
+   [this `Cargo.toml`
    file](https://github.com/dfinity/bitcoin-canister/blob/master/interface/Cargo.toml),
    it's `ic-btc-interface`.
 4. Use that name to add a line in `rs/backend/Cargo.toml` like this:
@@ -295,17 +295,17 @@ ic-btc-interface = { git = "https://github.com/dfinity/bitcoin-canister", rev="2
 **Note**: The updated dependencies might have breaking changes which need to
 be fixed when building nns-dapp later.
 
-##### en.governance.json
+##### `en.governance.json`
 
 In `en.governance.json`, you'll have to add entries to 2 different maps:
-[nns_functions](https://github.com/dfinity/nns-dapp/blob/main/frontend/src/lib/i18n/en.governance.json#:~:text=%22nns_functions%22%3A%20%7B) and
-[nns_functions_description](https://github.com/dfinity/nns-dapp/blob/main/frontend/src/lib/i18n/en.governance.json#:~:text=%22nns_functions_description%22%3A%20%7B).
+[`nns_functions`](https://github.com/dfinity/nns-dapp/blob/main/frontend/src/lib/i18n/en.governance.json#:~:text=%22nns_functions%22%3A%20%7B) and
+[`nns_functions_description`](https://github.com/dfinity/nns-dapp/blob/main/frontend/src/lib/i18n/en.governance.json#:~:text=%22nns_functions_description%22%3A%20%7B).
 
 As the key in both maps, use the name that you noted down before and also used
 in the enum in the ic-js repo.
 
 For `nns_functions` use a label that's more or less the enum value name but
-human readable. For example, for `BitcoinSetConfig` use "Set Bitcoin Config".
+human readable. For example, for `BitcoinSetConfig` use `"Set Bitcoin Config"`.
 
 For `nns_functions_description` you might be able to find a good description
 as a comment on the [enum value definition](https://github.com/dfinity/ic/blame/master/rs/nns/governance/src/gen/ic_nns_governance.pb.v1.rs#:~:text=pub%20enum%20NnsFunction%20%7B).
@@ -313,7 +313,7 @@ If not, you'll just have to ask someone for a good description. This
 description will be displayed when someone clicks on the (i) icon on the
 proposal detail page.
 
-##### proposals.rs
+##### `proposals.rs`
 
 You will need to know the fully qualified name of the proposal type you are
 adding. If you have the name of the type and the file it is defined in, you
@@ -326,7 +326,7 @@ find the fully qualified name as follows:
    hyphens with underscores.
 
 For example for
-[BitcoinSetConfigProposal](https://github.com/dfinity/ic/blame/ae00aff1373e9f6db375ff7076250a20bbf3eea0/rs/nns/governance/src/governance.rs#L8930),
+[`BitcoinSetConfigProposal`](https://github.com/dfinity/ic/blame/ae00aff1373e9f6db375ff7076250a20bbf3eea0/rs/nns/governance/src/governance.rs#L8930),
 you would get `ic_nns_governance::governance::BitcoinSetConfigProposal`.
 
 If you're lucky, the new type can be used as-is. But in some cases a
@@ -334,8 +334,8 @@ transformation to the type is required to render it in a human readable way.
 
 If no transformation is required:
 
-1. Add a new entry to [match
-   nns_function](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/src/proposals.rs#:~:text=match%20nns_function%20%7B).
+1. Add a new entry to [`match
+   nns_function`](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/src/proposals.rs#:~:text=match%20nns_function%20%7B).
    Use the number you noted down above in the section "Verify that the intended
    change is for a new NNS function". And use the (non-fully qualified) name of
    the new proposal type. For example:
@@ -359,8 +359,8 @@ pub type UpdateElectedReplicaVersionsPayload =
 
 If a transformation is required:
 
-1. Add a new entry to [match
-   nns_function](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/src/proposals.rs#:~:text=match%20nns_function%20%7B).
+1. Add a new entry to [`match
+   nns_function`](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/src/proposals.rs#:~:text=match%20nns_function%20%7B).
    Use the number you noted down above in the section "Verify that the intended
    change is for a new NNS function". And use the (non-fully qualified) name of
    the new proposal type, and then repeat it with the `HumanReadable` suffix.

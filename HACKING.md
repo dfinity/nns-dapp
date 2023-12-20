@@ -29,7 +29,7 @@ That is why we are providing a `./config.sh` script that generate the above envi
 To run the dapp against canisters deployed locally on a simulated IC network, use the steps below, or run `./scripts/dev-local.sh` which guides you through these steps
 
 - Make sure you have a clean local replica running with `dfx start --clean`. This will stay running so use a separate terminal for this.
-- Deploy the NNS backend canisters locally with `dfx nns install`
+- Deploy the NNS back-end canisters locally with `dfx nns install`
 - From the last line of output of `dfx nns install` note down the value URL for `nns-dapp`
 - Run `DFX_NETWORK=local ./config.sh` to populate the `./frontend/.env` file.
 - Manually edit the `./frontend/.env` and replace `null` with the nns-dapp canister id from the URL you noted down before.
@@ -46,15 +46,15 @@ To run the dapp against canisters deployed locally on a simulated IC network, us
 - In the `./frontend/` folder, first run `npm ci` and then `npm run dev` to serve the application.
 
 With this setup, you can work on the frontend code without building the
-nns-dapp canister. If you want to change the backend code, you can deploy it
+nns-dapp canister. If you want to change the back-end code, you can deploy it
 with `dfx deploy nns-dapp` and it replace the provided canister.
 
-Once you have a running replica with nns installed and a fixed
+Once you have a running replica with NNS installed and a fixed
 `./frontend/.env` file, don't have to take all the steps every time.
 
 ## Testnet
 
-The [canister_ids.json] data provides the list of canister IDs available for various test environments.
+The [`canister_ids.json`] data provides the list of canister IDs available for various test environments.
 
 ## Preview
 
@@ -70,7 +70,7 @@ npm run preview
 
 To develop and run locally the dapp against a testnet, proceed as following:
 
-- Copy the [canister_ids.json] to the root of your local project
+- Copy the [`canister_ids.json`] to the root of your local project
 - Run `DFX_NETWORK=<testnet_name> ./config.sh` to populate the `.env` file
 - Start `npm run dev` in the `./frontend/` folder to serve the application
 
@@ -78,10 +78,10 @@ e.g. replace `<testnet_name>` with `small11`
 
 ## Requirements
 
-The `dfx` version installed locally should match the one defined in [dfx.json](https://github.com/dfinity/nns-dapp/blob/main/dfx.json). If not, you will have to either upgrade or manually change the version in the local file. In such case, please do not commit the change!
+The `dfx` version installed locally should match the one defined in [`dfx.json`](https://github.com/dfinity/nns-dapp/blob/main/dfx.json). If not, you will have to either upgrade or manually change the version in the local file. In such case, please do not commit the change!
 
-[canister_ids.json]: https://github.com/dfinity/nns-dapp/blob/testnets/testnets/canister_ids.json
-[package.json]: https://github.com/dfinity/nns-dapp/blob/main/frontend/package.json
+[`canister_ids.json`]: https://github.com/dfinity/nns-dapp/blob/testnets/testnets/canister_ids.json
+[`package.json`]: https://github.com/dfinity/nns-dapp/blob/main/frontend/package.json
 
 ## Dependencies
 
@@ -91,7 +91,7 @@ In this guide, we will walk you through the process of checking for newer depend
 
 1. Install `npm-check-updates`:
 
-First, make sure you have Node.js and npm (Node Package Manager) installed on your system. If not, you can download and install them from the official Node.js website (https://nodejs.org).
+First, make sure you have Node.js and npm (Node Package Manager) installed on your system. If not, you can download and install them from the official Node.js website [](https://nodejs.org).
 
 To install the `npm-check-updates` tool, open your terminal and run the following command:
 
@@ -153,7 +153,7 @@ To deploy a local Bitcoin network, the [documentation](https://internetcomputer.
 
 As ckBTC is not yet implemented in our pipeline, enabling it in `dfx.json` has not yet be done neither - i.e. it needs to be manually configured for testing / development purpose:
 
-Add following in `defaults` of [dfx.json](./dfx.json).
+Add following in `defaults` of [`dfx.json`](./dfx.json).
 
 ```
 "bitcoin": {
@@ -168,15 +168,15 @@ Add following in `defaults` of [dfx.json](./dfx.json).
 
 Deploying ckBTC ledger, index and minter are as well not yet automated.
 
-Their Wasm and candid file can be downloaded with a script which finds place in [./scripts/ckbtc/download-ckbtc](./scripts/ckbtc/download-ckbtc).
+Their Wasm and candid file can be downloaded with a script which finds place in [`./scripts/ckbtc/download-ckbtc`](./scripts/ckbtc/download-ckbtc).
 
 ```
 ./scripts/ckbtc/download-ckbtc
 ```
 
-To deploy the canisters locally, a script is provided in [./scripts/ckbtc/deploy-ckbtc](./scripts/ckbtc/deploy-ckbtc) as well.
+To deploy the canisters locally, a script is provided in [`./scripts/ckbtc/deploy-ckbtc`](./scripts/ckbtc/deploy-ckbtc) as well.
 
-However, it requires first to manually edit [dfx.json](./dfx.json).
+However, it requires first to manually edit [`dfx.json`](./dfx.json).
 
 e.g. in `canisters`:
 
@@ -211,7 +211,7 @@ Once set, the script can be executed.
 DFX_NETWORK=local ./scripts/ckbtc/deploy-ckbtc
 ```
 
-After deployment, their respective IDs shall be collected and updated in [ckbtc-canister-ids.constants.ts](./frontend/src/lib/constants/ckbtc-canister-ids.constants.ts).
+After deployment, their respective IDs shall be collected and updated in [`ckbtc-canister-ids.constants.ts`](./frontend/src/lib/constants/ckbtc-canister-ids.constants.ts).
 
 Likewise, as the configuration is not yet automated, there are no `.env` variable that are yet generated.
 
@@ -219,7 +219,7 @@ Likewise, as the configuration is not yet automated, there are no `.env` variabl
 
 Because the e2e tests are using the `local` environment to perform, we cannot enable the `ENABLE_CKBTC` and `ENABLE_CKTESTBTC` per default.
 
-Therefore, this flag should also be manually set to `true` in [dfx.json](./dfx.json) and the `.env` should be generated.
+Therefore, this flag should also be manually set to `true` in [`dfx.json`](./dfx.json) and the `.env` should be generated.
 
 Use `scripts/nns-dapp/test-config --update` to update `arg.did` and `env` files under `nns-dapp/test-config-assets`
 

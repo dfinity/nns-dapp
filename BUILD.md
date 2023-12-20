@@ -25,7 +25,7 @@ environment. The following steps _should_ build the official Wasm image.
   brew install git
   ```
 - [Docker](https://www.docker.com/) is a container environment. It lets you build the nns-dapp code in a sandbox, fairly reliably, and without you having to install a lot of custom tools that you may not trust. Please use [one of the official installers](https://docs.docker.com/get-docker/).
-- [Docker buildx](https://github.com/docker/buildx) is an extension that makes it easier to compile under docker. `buildx` is included in the standard docker installer for Mac desktops. If you have installed docker for an os-x server, please follow [the official guide](https://docs.docker.com/build/install-buildx/).
+- [Docker `buildx`](https://github.com/docker/buildx) is an extension that makes it easier to compile under docker. `buildx` is included in the standard docker installer for Mac desktops. If you have installed docker for an os-x server, please follow [the official guide](https://docs.docker.com/build/install-buildx/).
 - [Rosetta]() allows Mac M1 and M2 processors to run programs that use the AMD64 instruction set. If you have an M1 or M2 CPU, please:
   - Install Rosetta:
     ```sh
@@ -44,7 +44,7 @@ environment. The following steps _should_ build the official Wasm image.
   apt-get install git
   ```
 - [Docker](https://www.docker.com/) is a container environment. It lets you build the nns-dapp code in a sandbox, fairly reliably, and without you having to install a lot of custom tools that you may not trust. Please use [one of the official installers](https://docs.docker.com/get-docker/).
-- [Docker buildx](https://github.com/docker/buildx) is an extension that makes it easier to compile under docker. `buildx` is included in recent docker releases. You can check whether it is installed with:
+- [Docker `buildx`](https://github.com/docker/buildx) is an extension that makes it easier to compile under docker. `buildx` is included in recent docker releases. You can check whether it is installed with:
 
   ```sh
   $ docker build --help
@@ -53,7 +53,7 @@ environment. The following steps _should_ build the official Wasm image.
   ...
   ```
 
-  If you do not have buildx installed, please follow [the official guide](https://docs.docker.com/build/install-buildx/). In particular, to install version `0.10.4` on a x86-64 Linux machine:
+  If you do not have `buildx` installed, please follow [the official guide](https://docs.docker.com/build/install-buildx/). In particular, to install version `0.10.4` on a x86-64 Linux machine:
 
   ```sh
   wget https://github.com/docker/buildx/releases/download/v0.10.4/buildx-v0.10.4.linux-amd64
@@ -76,7 +76,7 @@ When you have the tools installed, you can build the container with:
   git checkout THE_COMMIT
   ```
 - Verify that docker is running. If not, please start it.
-  - Mac: Press cmd+space and enter docker
+  - Mac: Press `cmd`+`space` and enter docker
   - Ubuntu: `pgrep docker || sudo systemctl start docker`
 - Now you can build:
   ```sh

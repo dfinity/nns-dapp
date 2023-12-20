@@ -18,7 +18,7 @@ This will run only the e2e tests which have `account` in the filename.
 
 Some of the tests will require a specific environment, such as an existing SNS
 project. The environment that we run against on CI is created by
-[.github/workflows/run.yml](https://github.com/dfinity/snsdemo/blob/main/.github/workflows/run.yml)
+[`.github/workflows/run.yml`](https://github.com/dfinity/snsdemo/blob/main/.github/workflows/run.yml)
 in the snsdemo repository. After setting up the environment, it creates a
 snapshot of the replica state, which is then used for CI by the nns-dapp repo.
 

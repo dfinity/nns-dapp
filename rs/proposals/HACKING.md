@@ -36,7 +36,7 @@ If the APIs of canisters controlled by the NNS have changed, proposal payloads m
     - Note: The above routine is likely to change soon. When it does, the command above needs to be updated.
     - Note: The command may require some manual intervention if the upstream changes are too radical.
   - You can update just a few canisters by manually by getting the corresponding `.did` files from the relevant upstream repositories. You will have to make any corresponding changes manually.
-- Update the rust code derived from the `.did` files by running: `./scripts/proposals/did2rs` Alternatively, run the "Update Proposals" github action.
+- Update the rust code derived from the `.did` files by running: `./scripts/proposals/did2rs` Alternatively, run the "Update Proposals" GitHub action.
 
 ### Test the changes
 
