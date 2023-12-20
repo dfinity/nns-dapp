@@ -79,6 +79,10 @@ describe("icrc-transaction utils", () => {
     to: subAccount,
   });
 
+  beforeEach(() => {
+    vi.restoreAllMocks();
+  });
+
   describe("getSortedTransactionsFromStore", () => {
     it("should return transactions sorted by date", () => {
       const transactions = [secondTx, oldestTx, recentTx];
@@ -731,6 +735,11 @@ describe("icrc-transaction utils", () => {
     });
 
     it("Merges Approve transaction with corresponding Burn transaction", () => {
+      const btcWithdrawalAddress = "1ASLxsAMbbt4gcrNc6v6qDBW4JkeWAtTeh";
+      const kytFee = 1333;
+      const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
+      const memo = new Uint8Array(Cbor.encode(decodedMemo));
+
       const burnAmount = 200_000_000n;
       const approveFee = 13n;
 
@@ -748,6 +757,7 @@ describe("icrc-transaction utils", () => {
           id: 102n,
           transaction: createBurnTransaction({
             amount: burnAmount,
+            memo,
           }),
         },
         toSelfTransaction: false,
