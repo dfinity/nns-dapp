@@ -222,7 +222,7 @@ jobs:
           name: nns-dapp_test
       - name: Start empty nns-dapp
         # As long as the snapshot environment can be installed with no accounts, we can use that.
-        # The snapshot action also installs idl2json and jq; commands that we will need.
+        # The snapshot action also installs `idl2json` and `jq`; commands that we will need.
         uses: ./.github/actions/start_dfx_snapshot
         with:
           nns_dapp_wasm: 'nns-dapp_test.wasm.gz'

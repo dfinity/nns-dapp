@@ -31,6 +31,7 @@ import {
 } from "$tests/mocks/sns-accounts.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { Cbor } from "@dfinity/agent";
+import type { RetrieveBtcStatusV2 } from "@dfinity/ckbtc";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import {
   ICPToken,
@@ -76,6 +77,10 @@ describe("icrc-transaction utils", () => {
   const selfTransaction = createIcrcTransactionWithId({
     from: subAccount,
     to: subAccount,
+  });
+
+  beforeEach(() => {
+    vi.restoreAllMocks();
   });
 
   describe("getSortedTransactionsFromStore", () => {
@@ -505,6 +510,139 @@ describe("icrc-transaction utils", () => {
       });
     });
 
+    it("Renders a pending burn transaction as pending", () => {
+      const amount = 76_000_000n;
+      const btcWithdrawalAddress = "1ASLxsAMbbt4gcrNc6v6qDBW4JkeWAtTeh";
+      const kytFee = 1333;
+      const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
+      const memo = new Uint8Array(Cbor.encode(decodedMemo));
+
+      const retrieveBtcStatus: RetrieveBtcStatusV2 = {
+        Pending: null,
+      };
+
+      const data = mapCkbtcTransaction({
+        transaction: {
+          id: BigInt(1234),
+          transaction: createBurnTransaction({
+            amount,
+            from: mainAccount,
+            memo,
+          }),
+        },
+        account: mockCkBTCMainAccount,
+        toSelfTransaction: false,
+        token: mockCkBTCToken,
+        i18n: en,
+        retrieveBtcStatus,
+      });
+      expect(data).toEqual({
+        domKey: "1234-1",
+        headline: "Sending BTC",
+        isIncoming: false,
+        isPending: true,
+        otherParty: btcWithdrawalAddress,
+        timestamp: new Date(0),
+        tokenAmount: TokenAmountV2.fromUlps({
+          amount,
+          token: mockCkBTCToken,
+        }),
+      });
+    });
+
+    it("Renders a confirmed burn transaction as sent", () => {
+      const amount = 76_000_000n;
+      const btcWithdrawalAddress = "1ASLxsAMbbt4gcrNc6v6qDBW4JkeWAtTeh";
+      const kytFee = 1333;
+      const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
+      const memo = new Uint8Array(Cbor.encode(decodedMemo));
+
+      const retrieveBtcStatus: RetrieveBtcStatusV2 = {
+        Confirmed: {
+          txid: new Uint8Array([1, 2, 1, 1]),
+        },
+      };
+
+      const data = mapCkbtcTransaction({
+        transaction: {
+          id: BigInt(1234),
+          transaction: createBurnTransaction({
+            amount,
+            from: mainAccount,
+            memo,
+          }),
+        },
+        account: mockCkBTCMainAccount,
+        toSelfTransaction: false,
+        token: mockCkBTCToken,
+        i18n: en,
+        retrieveBtcStatus,
+      });
+      expect(data).toEqual({
+        domKey: "1234-1",
+        headline: "BTC Sent",
+        isIncoming: false,
+        isPending: false,
+        otherParty: btcWithdrawalAddress,
+        timestamp: new Date(0),
+        tokenAmount: TokenAmountV2.fromUlps({
+          amount,
+          token: mockCkBTCToken,
+        }),
+      });
+    });
+
+    it("Renders a reimbursed burn transaction as failed", () => {
+      const amount = 75_000_000n;
+      const btcWithdrawalAddress = "1ASLxsAMbbt4gcrNc6v6qDBW4JkeWAtTeh";
+      const kytFee = 1333;
+      const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
+      const memo = new Uint8Array(Cbor.encode(decodedMemo));
+
+      const retrieveBtcStatus: RetrieveBtcStatusV2 = {
+        Reimbursed: {
+          account: {
+            owner: mockPrincipal,
+            subaccount: [],
+          },
+          mint_block_index: 1256n,
+          amount,
+          reason: {
+            CallFailed: null,
+          },
+        },
+      };
+
+      const data = mapCkbtcTransaction({
+        transaction: {
+          id: BigInt(1234),
+          transaction: createBurnTransaction({
+            amount,
+            from: mainAccount,
+            memo,
+          }),
+        },
+        account: mockCkBTCMainAccount,
+        toSelfTransaction: false,
+        token: mockCkBTCToken,
+        i18n: en,
+        retrieveBtcStatus,
+      });
+      expect(data).toEqual({
+        domKey: "1234-1",
+        headline: "Sending BTC failed",
+        isIncoming: false,
+        isPending: false,
+        isFailed: true,
+        otherParty: btcWithdrawalAddress,
+        timestamp: new Date(0),
+        tokenAmount: TokenAmountV2.fromUlps({
+          amount,
+          token: mockCkBTCToken,
+        }),
+      });
+    });
+
     it("Renders a legacy mint memo as standard incoming BTC", () => {
       const amount = 41_000_000n;
       const txIdMemo = new Uint8Array(32).fill(99);
@@ -597,6 +735,11 @@ describe("icrc-transaction utils", () => {
     });
 
     it("Merges Approve transaction with corresponding Burn transaction", () => {
+      const btcWithdrawalAddress = "1ASLxsAMbbt4gcrNc6v6qDBW4JkeWAtTeh";
+      const kytFee = 1333;
+      const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
+      const memo = new Uint8Array(Cbor.encode(decodedMemo));
+
       const burnAmount = 200_000_000n;
       const approveFee = 13n;
 
@@ -614,6 +757,7 @@ describe("icrc-transaction utils", () => {
           id: 102n,
           transaction: createBurnTransaction({
             amount: burnAmount,
+            memo,
           }),
         },
         toSelfTransaction: false,

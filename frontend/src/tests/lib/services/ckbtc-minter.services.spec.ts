@@ -359,6 +359,30 @@ describe("ckbtc-minter-services", () => {
         expect(spyOnToastsShow).not.toHaveBeenCalled();
       });
 
+      it("should not toast error on error if no ui indicators", async () => {
+        const spyUpdateBalance = vi
+          .spyOn(minterApi, "updateBalance")
+          .mockImplementation(async () => {
+            throw new MinterAlreadyProcessingError();
+          });
+
+        const spyOnToastsError = vi.spyOn(toastsStore, "toastsError");
+
+        await services.updateBalance({
+          ...params,
+          uiIndicators: false,
+        });
+
+        await waitFor(() =>
+          expect(spyUpdateBalance).toBeCalledWith({
+            identity: mockIdentity,
+            canisterId: CKBTC_MINTER_CANISTER_ID,
+          })
+        );
+
+        expect(spyOnToastsError).not.toHaveBeenCalled();
+      });
+
       it("should not handle no new UTXOs success if no ui indicators", async () => {
         vi.spyOn(minterApi, "updateBalance").mockImplementation(async () => {
           throw new MinterNoNewUtxosError({

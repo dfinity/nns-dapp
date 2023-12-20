@@ -11,7 +11,7 @@ import { AccountTransactionType } from "$lib/types/transaction";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { transactionName } from "$lib/utils/transactions.utils";
 import { Cbor } from "@dfinity/agent";
-import type { PendingUtxo } from "@dfinity/ckbtc";
+import type { PendingUtxo, RetrieveBtcStatusV2 } from "@dfinity/ckbtc";
 import type {
   IcrcTransaction,
   IcrcTransactionWithId,
@@ -270,6 +270,7 @@ export const mapCkbtcTransaction = (params: {
   governanceCanisterId?: Principal;
   token: Token | undefined;
   i18n: I18n;
+  retrieveBtcStatus?: RetrieveBtcStatusV2;
 }): UiTransaction | undefined => {
   const mappedTransaction = mapIcrcTransaction(params);
   if (isNullish(mappedTransaction)) {
@@ -290,6 +291,25 @@ export const mapCkbtcTransaction = (params: {
     }
   } else if (transaction.burn.length === 1) {
     mappedTransaction.headline = i18n.ckbtc.btc_sent;
+    const status = params.retrieveBtcStatus;
+    if (status) {
+      if ("Reimbursed" in status || "AmmountTooLow" in status) {
+        mappedTransaction.headline = i18n.ckbtc.sending_btc_failed;
+        mappedTransaction.isFailed = true;
+      } else if (
+        "Pending" in status ||
+        "Signing" in status ||
+        "Sending" in status ||
+        "Submitted" in status ||
+        "WillReimburse" in status
+      ) {
+        mappedTransaction.headline = i18n.ckbtc.sending_btc;
+        mappedTransaction.isPending = true;
+      } else if (!("Confirmed" in status)) {
+        console.error("Unknown retrieveBtcStatusV2:", status);
+        // Leave the transaction as "Sent".
+      }
+    }
     const memo = transaction.burn[0].memo[0] as Uint8Array;
     try {
       const decodedMemo = Cbor.decode(memo) as CkbtcBurnMemo;

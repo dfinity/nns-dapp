@@ -10,6 +10,9 @@ use ic_stable_structures::{memory_manager::VirtualMemory, DefaultMemoryImpl};
 use std::collections::BTreeMap;
 
 mod enum_boilerplate;
+mod migration;
+#[cfg(test)]
+mod tests;
 
 /// An accounts database delegates API calls to underlying implementations.
 ///
@@ -221,16 +224,3 @@ impl PartialEq for AccountsDbAsProxy {
 }
 #[cfg(test)]
 impl Eq for AccountsDbAsProxy {}
-
-#[cfg(test)]
-mod tests {
-    use super::super::tests::{assert_map_conversions_work, test_accounts_db};
-    use super::AccountsDbAsProxy;
-
-    test_accounts_db!(AccountsDbAsProxy::default());
-
-    #[test]
-    fn map_conversions_should_work() {
-        assert_map_conversions_work::<AccountsDbAsProxy>();
-    }
-}

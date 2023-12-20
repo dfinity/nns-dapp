@@ -141,6 +141,7 @@
   },
   "navigation": {
     "tokens": "My Tokens",
+    "universe_tokens": "My $tokenSymbol Tokens",
     "canisters": "My Canisters",
     "neurons": "My Neuron Staking",
     "voting": "Vote on Proposals",
@@ -1025,7 +1026,9 @@
     "btc_sent": "BTC Sent",
     "btc_network": "BTC Network",
     "receiving_btc": "Receiving BTC",
-    "reimbursement": "Reimbursement"
+    "reimbursement": "Reimbursement",
+    "sending_btc": "Sending BTC",
+    "sending_btc_failed": "Sending BTC failed"
   },
   "error__ckbtc": {
     "already_process": "The minter has already been notified and updating the balance is in progress.",

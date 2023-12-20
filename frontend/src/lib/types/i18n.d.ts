@@ -147,6 +147,7 @@ interface I18nWarning {
 
 interface I18nNavigation {
   tokens: string;
+  universe_tokens: string;
   canisters: string;
   neurons: string;
   voting: string;
@@ -1074,6 +1075,8 @@ interface I18nCkbtc {
   btc_network: string;
   receiving_btc: string;
   reimbursement: string;
+  sending_btc: string;
+  sending_btc_failed: string;
 }
 
 interface I18nError__ckbtc {
