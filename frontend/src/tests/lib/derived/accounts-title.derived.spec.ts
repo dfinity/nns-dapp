@@ -31,7 +31,6 @@ describe("accountsTitleStore", () => {
   });
 
   it("returns the token of the universe in the title", () => {
-    // the ICP token is hardcoded in the `tokensStore`, so it will always be found
     page.mock({
       routeId: AppPath.Accounts,
       data: { universe: rootCanisterIdMock.toText() },
