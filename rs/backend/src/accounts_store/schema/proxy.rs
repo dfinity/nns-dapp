@@ -8,6 +8,9 @@ use ic_cdk::println;
 use std::collections::BTreeMap;
 
 mod enum_boilerplate;
+mod migration;
+#[cfg(test)]
+mod tests;
 
 /// An accounts database delegates API calls to underlying implementations.
 ///
@@ -35,9 +38,9 @@ impl Default for AccountsDbAsProxy {
 struct Migration {
     /// The database being migrated to
     db: AccountsDb,
-    // This is used in the next PR that implements the migration:
-    // /// The next account to migrate.
-    // next_to_migrate: Option<Vec<u8>>,
+    /// The next account to migrate.
+    #[cfg(test)]
+    next_to_migrate: Option<Vec<u8>>,
 }
 
 impl fmt::Debug for Migration {
@@ -53,6 +56,7 @@ pub enum AccountsDb {
     Map(AccountsDbAsMap),
 }
 
+// Constructors
 impl AccountsDbAsProxy {
     /// Creates a new proxy usinga map as the underlying storage.
     pub fn new_with_map() -> Self {
@@ -60,11 +64,6 @@ impl AccountsDbAsProxy {
             authoritative_db: AccountsDb::Map(AccountsDbAsMap::default()),
             migration: None,
         }
-    }
-
-    /// Migration countdown; when it reaches zero, the migration is complete.
-    pub fn migration_countdown(&self) -> u32 {
-        0
     }
 }
 
@@ -140,16 +139,3 @@ impl PartialEq for AccountsDbAsProxy {
 }
 #[cfg(test)]
 impl Eq for AccountsDbAsProxy {}
-
-#[cfg(test)]
-mod tests {
-    use super::super::tests::{assert_map_conversions_work, test_accounts_db};
-    use super::AccountsDbAsProxy;
-
-    test_accounts_db!(AccountsDbAsProxy::default());
-
-    #[test]
-    fn map_conversions_should_work() {
-        assert_map_conversions_work::<AccountsDbAsProxy>();
-    }
-}
