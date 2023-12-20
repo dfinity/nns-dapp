@@ -22,21 +22,17 @@
   import type { Readable } from "svelte/store";
 
   let currentProjectCanisterId: Principal | undefined = undefined;
-  let functionsStore: Readable<SnsNervousSystemFunction[] | undefined>;
   const onSnsProjectChanged = async (
     selectedProjectCanisterId: Principal | undefined
   ) => {
     currentProjectCanisterId = selectedProjectCanisterId;
     if (nonNullish(selectedProjectCanisterId)) {
-      functionsStore = createSnsNsFunctionsProjectStore(
-        currentProjectCanisterId
-      );
-      await loadSnsNervousSystemFunctions(selectedProjectCanisterId);
+      await Promise.all([
+        loadSnsNervousSystemFunctions(selectedProjectCanisterId),
+        loadSnsFilters(selectedProjectCanisterId),
+      ]);
     }
   };
-  $: if (currentProjectCanisterId !== undefined) {
-    loadSnsFilters(currentProjectCanisterId);
-  }
 
   $: onSnsProjectChanged($snsOnlyProjectStore);
 
@@ -46,11 +42,11 @@
     if (
       nonNullish(currentProjectCanisterId) &&
       nonNullish(filters[currentProjectCanisterId.toText()]) &&
-      nonNullish($functionsStore)
+      nonNullish($nsFunctionsStore)
     ) {
       await loadSnsProposals({
         rootCanisterId: currentProjectCanisterId,
-        snsFunctions: $functionsStore,
+        snsFunctions: $nsFunctionsStore,
       });
     }
   };
@@ -59,7 +55,7 @@
   // TODO(e2e): cover this with e2e tests.
   $: $snsOnlyProjectStore,
     $snsFiltersStore,
-    $functionsStore,
+    $nsFunctionsStore,
     (() => fetchProposals($snsFiltersStore))();
 
   let loadingNextPage = false;
@@ -68,7 +64,7 @@
     const selectedProjectCanisterId = $snsOnlyProjectStore;
     if (
       selectedProjectCanisterId !== undefined &&
-      nonNullish($functionsStore)
+      nonNullish($nsFunctionsStore)
     ) {
       const beforeProposalId = nonNullish(currentProjectCanisterId)
         ? lastProposalId(
@@ -80,7 +76,7 @@
       loadingNextPage = true;
       await loadSnsProposals({
         rootCanisterId: selectedProjectCanisterId,
-        snsFunctions: $functionsStore,
+        snsFunctions: $nsFunctionsStore,
         beforeProposalId,
       });
       loadingNextPage = false;

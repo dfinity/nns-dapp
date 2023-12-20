@@ -61,7 +61,8 @@ export const initSnsFiltersStore = (): SnsFiltersStore => {
   const { subscribe, set, update } = writableStored<SnsFiltersStoreData>({
     key: StoreLocalStorageKey.SnsProposalFilters,
     defaultValue: {},
-    // version: 1,
+    // to reset the state w/o "types"
+    version: 1,
   });
 
   return {
@@ -218,7 +219,7 @@ export const snsSelectedFiltersStore = derived<
     (acc, [rootCanisterIdText, filters]) => ({
       ...acc,
       [rootCanisterIdText]: {
-        topics: filters.types.filter(({ checked }) => checked),
+        types: filters.types.filter(({ checked }) => checked),
         rewardStatus: filters.rewardStatus.filter(({ checked }) => checked),
         decisionStatus: filters.decisionStatus.filter(({ checked }) => checked),
       },

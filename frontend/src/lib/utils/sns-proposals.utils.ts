@@ -547,6 +547,7 @@ export const generateSnsProposalTypeFilterData = ({
     value: id as keyof typeof i18nKeys.sns_types,
     name:
       i18nKeys.sns_types[id as keyof typeof i18nKeys.sns_types] ??
+      // TODO(max): first use native names as fallback
       i18nKeys.core.unspecified,
     checked:
       // transfer only unchecked entries to preselect new items that are not in the current filter state
