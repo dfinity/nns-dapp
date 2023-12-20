@@ -11,6 +11,12 @@ impl AccountsDbAsProxy {
     /// Migration countdown; when it reaches zero, the migration is complete.
     ///
     /// Note: This is a rough estimate of the number of blocks needed to complete the migration.
+    ///       The approximation is caused by the following:
+    ///       - If an entry is added or modified ahead of the "next to migrate" entry, the element will still be migrated but the delta between the size of the authoritative db and the new db will reduce by one.
+    ///         This approximation is unlikely to be an issue but if it is, it can be corrected for with a small increase in complexity:
+    ///         When performing CRUD, apply the operation to the new database ONLY if either:
+    ///         - `next_to_migrate` is `None` (i.e. the migration is complete)
+    ///         - The key is strictly less than `next_to_migrate`.
     pub fn migration_countdown(&self) -> u32 {
         self.migration.as_ref().map_or(0, |migration| {
             let accounts_to_migrate = self
