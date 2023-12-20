@@ -305,7 +305,7 @@ export const mapCkbtcTransaction = (params: {
       ) {
         mappedTransaction.headline = i18n.ckbtc.sending_btc;
         mappedTransaction.isPending = true;
-      } else if (!("Confiremd" in status)) {
+      } else if (!("Confirmed" in status)) {
         console.error("Unknown retrieveBtcStatusV2:", status);
         // Leave the transaction as "Sent".
       }
