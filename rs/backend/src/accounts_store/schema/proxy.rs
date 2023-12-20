@@ -1,7 +1,10 @@
 //! Accounts DB that delegates API calls to underlying implementations.
 //!
 //! The proxy manages migrations from one implementation to another.
-use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel};
+use super::{
+    accounts_in_unbounded_stable_btree_map::ProductionMemoryType, map::AccountsDbAsMap, Account,
+    AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel,
+};
 use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
 use core::fmt;
 use core::ops::RangeBounds;
@@ -56,7 +59,7 @@ impl fmt::Debug for Migration {
 
 pub enum AccountsDb {
     Map(AccountsDbAsMap),
-    UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap),
+    UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap<ProductionMemoryType>),
 }
 
 // Constructors

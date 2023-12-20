@@ -7,30 +7,49 @@
 
 use super::{Account, AccountsDbTrait, SchemaLabel};
 use core::ops::RangeBounds;
-use ic_stable_structures::{btreemap::BTreeMap as StableBTreeMap, memory_manager::VirtualMemory, DefaultMemoryImpl};
+use ic_stable_structures::memory_manager::VirtualMemory;
+use ic_stable_structures::DefaultMemoryImpl;
+use ic_stable_structures::{btreemap::BTreeMap as StableBTreeMap, Memory};
 use std::fmt;
 
-// TODO: Implement Eq and PartialEq for ic_stable_structures::btreemap::BTreeMap, as this makes testing easier.  It is unlikely that Eq will be used on any large data dataset.
-pub struct AccountsDbAsUnboundedStableBTreeMap {
-    accounts: StableBTreeMap<Vec<u8>, Account, VirtualMemory<DefaultMemoryImpl>>,
+pub type ProductionMemoryType = VirtualMemory<DefaultMemoryImpl>;
+
+pub struct AccountsDbAsUnboundedStableBTreeMap<M>
+where
+    M: Memory,
+{
+    accounts: StableBTreeMap<Vec<u8>, Account, M>,
 }
 
-impl AccountsDbAsUnboundedStableBTreeMap {
+impl<M> AccountsDbAsUnboundedStableBTreeMap<M>
+where
+    M: Memory,
+{
     /// Creates a new, empty database.
-    pub fn new(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
+    pub fn new(memory: M) -> Self {
         Self {
             accounts: StableBTreeMap::new(memory),
         }
     }
     /// Loads a database.
-    pub fn load(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
+    pub fn load(memory: M) -> Self {
         Self {
             accounts: StableBTreeMap::load(memory),
         }
     }
 }
 
-impl AccountsDbTrait for AccountsDbAsUnboundedStableBTreeMap {
+#[cfg(test)]
+impl Default for AccountsDbAsUnboundedStableBTreeMap<DefaultMemoryImpl> {
+    fn default() -> Self {
+        Self::new(DefaultMemoryImpl::default())
+    }
+}
+
+impl<M> AccountsDbTrait for AccountsDbAsUnboundedStableBTreeMap<M>
+where
+    M: Memory,
+{
     fn db_insert_account(&mut self, account_key: &[u8], account: Account) {
         self.accounts.insert(account_key.to_vec(), account);
     }
@@ -63,12 +82,54 @@ impl AccountsDbTrait for AccountsDbAsUnboundedStableBTreeMap {
     }
 }
 
-impl fmt::Debug for AccountsDbAsUnboundedStableBTreeMap {
+impl<M> fmt::Debug for AccountsDbAsUnboundedStableBTreeMap<M>
+where
+    M: Memory,
+{
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         write!(
             f,
             "AccountsDbAsUnboundedStableBTreeMap {{ accounts: StableBTreeMap{{.. {} entries}} }}",
             self.accounts.len()
         )
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::super::tests::test_accounts_db;
+    use super::AccountsDbAsUnboundedStableBTreeMap;
+    use super::*;
+    use crate::accounts_store::schema::tests::toy_account;
+    use crate::accounts_store::schema::AccountsDbTrait;
+    use ic_stable_structures::memory_manager::{MemoryId, MemoryManager};
+    use std::collections::BTreeMap as StdBTreeMap;
+
+    // Test that the AccountsDbTrait implementation works.
+    test_accounts_db!(AccountsDbAsUnboundedStableBTreeMap::default());
+
+    #[test]
+    fn should_be_able_to_load_existing_database() {
+        // Prepare a virtual memory, as in production.
+        let raw_memory = DefaultMemoryImpl::default();
+        raw_memory.grow(5);
+        let memory_manager = MemoryManager::init(raw_memory);
+        let random_memory_id = MemoryId::new(9);
+        // ... and some accounts to store.
+        let accounts: StdBTreeMap<_, _> = vec![(b"key"[..].to_owned(), toy_account(1, 2))].into_iter().collect();
+        // Store the accounts in a new database.
+        let mut new_db = AccountsDbAsUnboundedStableBTreeMap::new(memory_manager.get(random_memory_id));
+        for (key, account) in accounts.iter() {
+            new_db.db_insert_account(&key, account.clone());
+        }
+        let new_accounts: StdBTreeMap<_, _> = new_db.range(..).collect();
+        assert_eq!(accounts, new_accounts, "Failed to store accounts in new database.");
+        // Load the accounts from a new database using the same memory.
+        let loaded_db = AccountsDbAsUnboundedStableBTreeMap::load(memory_manager.get(random_memory_id));
+        let loaded_accounts: StdBTreeMap<_, _> = loaded_db.range(..).collect();
+        assert_eq!(
+            new_accounts, loaded_accounts,
+            "Failed to load accounts from existing stable memory."
+        );
     }
 }
