@@ -15,6 +15,11 @@ import type { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
+/**
+ * Returns whether the path is either Wallet or Accounts.
+ *
+ * Those are the only paths that support all tokens.
+ */
 export const isAllTokensPath = ({ path }: Page): boolean =>
   isSelectedPath({
     currentPath: path,
