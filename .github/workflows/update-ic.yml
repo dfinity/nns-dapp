@@ -68,9 +68,9 @@ jobs:
       - name: Update candid files
         if: ${{ steps.update.outputs.updated == '1' }}
         run: |
-          # Install didc
+          # Install `didc`
           snsdemo/bin/dfx-software-didc-install --release "$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
-          # Update didc
+          # Update `didc`
           scripts/update_ic_commit -c "${{ steps.update.outputs.release }}"
           # Show changes
           echo "Git status:"

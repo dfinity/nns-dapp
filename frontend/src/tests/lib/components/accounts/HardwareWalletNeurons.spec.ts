@@ -1,5 +1,5 @@
 import HardwareWalletNeurons from "$lib/components/accounts/HardwareWalletNeurons.svelte";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import { mockNeuronStake } from "$tests/mocks/hardware-wallet-neurons.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
@@ -39,14 +39,14 @@ describe("HardwareWalletNeurons", () => {
 
     expect(
       getByText(
-        formatToken({
+        formatTokenE8s({
           value: (mockNeuron.fullNeuron as Neuron).cachedNeuronStake,
         })
       )
     ).toBeInTheDocument();
     expect(
       getByText(
-        formatToken({
+        formatTokenE8s({
           value: (mockNeuronStake.fullNeuron as Neuron).cachedNeuronStake,
         })
       )

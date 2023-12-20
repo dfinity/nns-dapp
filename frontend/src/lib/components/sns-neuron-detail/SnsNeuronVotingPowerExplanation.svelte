@@ -10,7 +10,7 @@
     getSnsNeuronStake,
   } from "$lib/utils/sns-neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatToken } from "$lib/utils/token.utils";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
 
   export let neuron: SnsNeuron;
@@ -30,7 +30,7 @@
   <Html
     text={replacePlaceholders(votingPowerMessage, {
       $token: token.symbol,
-      $stake: formatToken({
+      $stake: formatTokenE8s({
         value: getSnsNeuronStake(neuron),
         detailed: true,
       }),

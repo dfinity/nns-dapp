@@ -37,13 +37,32 @@ export class TransactionCardPo extends BasePageObject {
     return this.getAmountDisplayPo().getAmount();
   }
 
-  async hasPendingIcon(): Promise<boolean> {
+  async hasIconClass(className: string): Promise<boolean> {
     const classNames = await this.root.byTestId("icon").getClasses();
-    return classNames.includes("pending");
+    return classNames.includes(className);
+  }
+
+  async hasSentIcon(): Promise<boolean> {
+    const hasIcon = await this.isPresent("icon-up");
+    const hasClass = await this.hasIconClass("send");
+    return hasIcon && hasClass;
+  }
+
+  async hasReceivedIcon(): Promise<boolean> {
+    const hasIcon = await this.isPresent("icon-down");
+    const hasClass = await this.hasIconClass("send");
+    return hasIcon && !hasClass;
+  }
+
+  async hasPendingReceiveIcon(): Promise<boolean> {
+    const hasIcon = await this.isPresent("icon-down");
+    const hasClass = await this.hasIconClass("pending");
+    return hasIcon && hasClass;
   }
 
   async hasReimbursementIcon(): Promise<boolean> {
-    const classNames = await this.root.byTestId("icon").getClasses();
-    return classNames.includes("reimbursed");
+    const hasIcon = await this.isPresent("icon-reimbursed");
+    const hasClass = await this.hasIconClass("reimbursed");
+    return hasIcon && hasClass;
   }
 }

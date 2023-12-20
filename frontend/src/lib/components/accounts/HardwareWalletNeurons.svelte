@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { formatToken } from "$lib/utils/token.utils";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
   import HardwareWalletNeuronAddHotkeyButton from "./HardwareWalletNeuronAddHotkeyButton.svelte";
   import { getContext } from "svelte";
   import type {
@@ -29,7 +29,7 @@
     </p>
 
     <p>
-      {formatToken({ value: fullNeuron?.cachedNeuronStake ?? BigInt(0) })}
+      {formatTokenE8s({ value: fullNeuron?.cachedNeuronStake ?? BigInt(0) })}
     </p>
 
     <p class="hotkey">

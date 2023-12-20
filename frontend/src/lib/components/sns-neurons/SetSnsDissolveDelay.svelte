@@ -3,7 +3,7 @@
   import type { Token } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { isNullish } from "@dfinity/utils";
+  import { TokenAmountV2, isNullish } from "@dfinity/utils";
   import type { SnsNeuron } from "@dfinity/sns";
   import {
     getSnsLockedTimeInSeconds,
@@ -16,7 +16,6 @@
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import type { Principal } from "@dfinity/principal";
   import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
-  import { TokenAmount } from "@dfinity/utils";
   import SetDissolveDelay from "$lib/components/neurons/SetDissolveDelay.svelte";
   import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
   import Hash from "$lib/components/ui/Hash.svelte";
@@ -32,8 +31,8 @@
   let snsParameters: SnsNervousSystemParameters | undefined;
   $: snsParameters = $snsParametersStore[rootCanisterId.toText()]?.parameters;
 
-  let neuronStake: TokenAmount;
-  $: neuronStake = TokenAmount.fromE8s({
+  let neuronStake: TokenAmountV2;
+  $: neuronStake = TokenAmountV2.fromUlps({
     amount: getSnsNeuronStake(neuron),
     token,
   });

@@ -10,6 +10,7 @@ import * as services from "$lib/services/ckbtc-minter.services";
 import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import * as busyStore from "$lib/stores/busy.store";
 import { ckbtcPendingUtxosStore } from "$lib/stores/ckbtc-pending-utxos.store";
+import { ckbtcRetrieveBtcStatusesStore } from "$lib/stores/ckbtc-retrieve-btc-statuses.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { ApiErrorKey } from "$lib/types/api.errors";
 import { page } from "$mocks/$app/stores";
@@ -20,6 +21,7 @@ import {
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockUpdateBalanceOk } from "$tests/mocks/ckbtc-minter.mock";
 import en from "$tests/mocks/i18n.mock";
+import type { RetrieveBtcStatusV2WithId } from "@dfinity/ckbtc";
 import {
   MinterAlreadyProcessingError,
   MinterGenericError,
@@ -33,6 +35,7 @@ import { get } from "svelte/store";
 describe("ckbtc-minter-services", () => {
   beforeEach(() => {
     resetIdentity();
+    ckbtcRetrieveBtcStatusesStore.reset();
   });
 
   afterEach(() => {
@@ -430,6 +433,84 @@ describe("ckbtc-minter-services", () => {
           canisterId: CKBTC_MINTER_CANISTER_ID,
         })
       );
+    });
+  });
+
+  describe("loadRetrieveBtcStatuses", () => {
+    it("should call retrieveBtcStatusV2ByAccount and fill the store", async () => {
+      const statuses: RetrieveBtcStatusV2WithId[] = [
+        {
+          id: 673n,
+          status: {
+            Pending: null,
+          },
+        },
+        {
+          id: 677n,
+          status: {
+            Confirmed: { txid: new Uint8Array([7, 6, 7, 8]) },
+          },
+        },
+      ];
+      const spy = vi
+        .spyOn(minterApi, "retrieveBtcStatusV2ByAccount")
+        .mockResolvedValue(statuses);
+
+      expect(get(ckbtcRetrieveBtcStatusesStore)).toEqual({});
+
+      await services.loadRetrieveBtcStatuses({
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        minterCanisterId: CKBTC_MINTER_CANISTER_ID,
+      });
+
+      expect(get(ckbtcRetrieveBtcStatusesStore)).toEqual({
+        [CKBTC_UNIVERSE_CANISTER_ID.toText()]: statuses,
+      });
+
+      expect(spy).toBeCalledTimes(1);
+      expect(spy).toBeCalledWith({
+        identity: mockIdentity,
+        canisterId: CKBTC_MINTER_CANISTER_ID,
+        certified: false,
+      });
+    });
+
+    it("should work with a different universe", async () => {
+      const statuses: RetrieveBtcStatusV2WithId[] = [
+        {
+          id: 674n,
+          status: {
+            Pending: null,
+          },
+        },
+        {
+          id: 678n,
+          status: {
+            Confirmed: { txid: new Uint8Array([5, 6, 7, 8]) },
+          },
+        },
+      ];
+      const spy = vi
+        .spyOn(minterApi, "retrieveBtcStatusV2ByAccount")
+        .mockResolvedValue(statuses);
+
+      expect(get(ckbtcRetrieveBtcStatusesStore)).toEqual({});
+
+      await services.loadRetrieveBtcStatuses({
+        universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+        minterCanisterId: CKTESTBTC_MINTER_CANISTER_ID,
+      });
+
+      expect(get(ckbtcRetrieveBtcStatusesStore)).toEqual({
+        [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: statuses,
+      });
+
+      expect(spy).toBeCalledTimes(1);
+      expect(spy).toBeCalledWith({
+        identity: mockIdentity,
+        canisterId: CKTESTBTC_MINTER_CANISTER_ID,
+        certified: false,
+      });
     });
   });
 });

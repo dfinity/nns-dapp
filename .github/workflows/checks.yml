@@ -49,7 +49,7 @@ jobs:
           sudo apt-get install -yy hunspell hunspell-en-gb hunspell-en-us clang libclang-dev
           cargo install --locked --target x86_64-unknown-linux-gnu cargo-spellcheck@0.13.1
       - name: Spellcheck Rust
-        run: cargo spellcheck
+        run: cargo spellcheck --code 1
       - name: Spellcheck changelog
         run: scripts/spellcheck-changelog
   cargo-tests:
@@ -221,7 +221,7 @@ jobs:
           scripts/nns-dapp/migration-test.on-exit.test
           scripts/nns-dapp/migration-test.canister.test
   dfx-nns-proposal-args-works:
-    # TODO: Reenable (add it in line 338) once fixed, should it depend on mainnet?
+    # TODO: Re-enable (add it in line 338) once fixed, should it depend on mainnet?
     if: false
     name: Can get NNS proposal args
     runs-on: ubuntu-20.04
