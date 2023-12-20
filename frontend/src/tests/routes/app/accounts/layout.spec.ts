@@ -1,23 +1,55 @@
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
 import AccountsLayout from "$routes/(app)/(u)/(accounts)/+layout.svelte";
+import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { fireEvent, render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("Accounts layout", () => {
   beforeEach(() => {
     layoutTitleStore.set({ title: "" });
+    tokensStore.reset();
+    page.mock({
+      routeId: AppPath.Accounts,
+      data: {
+        universe: OWN_CANISTER_ID_TEXT,
+      },
+    });
   });
 
-  it("should set title and header layout to 'My Tokens'", () => {
+  it("should set title and header layout to 'My ICP Tokens' when NNS Universe", () => {
     render(AccountsLayout);
 
     expect(get(layoutTitleStore)).toEqual({
-      title: "My Tokens",
-      header: "My Tokens",
+      title: "My ICP Tokens",
+      header: "My ICP Tokens",
+    });
+  });
+
+  it("should set title and header layout taking into account universe token", () => {
+    page.mock({
+      routeId: AppPath.Accounts,
+      data: { universe: rootCanisterIdMock.toText() },
+    });
+    tokensStore.setToken({
+      canisterId: rootCanisterIdMock,
+      token: {
+        ...mockSnsToken,
+        symbol: "TTRS",
+      },
+    });
+
+    render(AccountsLayout);
+
+    expect(get(layoutTitleStore)).toEqual({
+      title: "My TTRS Tokens",
+      header: "My TTRS Tokens",
     });
   });
 
