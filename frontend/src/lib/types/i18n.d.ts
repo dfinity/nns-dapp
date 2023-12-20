@@ -147,6 +147,7 @@ interface I18nWarning {
 
 interface I18nNavigation {
   tokens: string;
+  universe_tokens: string;
   canisters: string;
   neurons: string;
   voting: string;
