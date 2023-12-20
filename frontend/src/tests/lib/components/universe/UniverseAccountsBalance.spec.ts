@@ -6,7 +6,7 @@ import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import { createUniverse } from "$lib/utils/universe.utils";
 import { page } from "$mocks/$app/stores";
 import {
@@ -101,7 +101,7 @@ describe("UniverseAccountsBalance", () => {
         mockHardwareWalletAccount.balanceUlps;
 
       expect(balance?.textContent.trim() ?? "").toEqual(
-        `${formatToken({
+        `${formatTokenE8s({
           value: totalBalance,
           detailed: false,
         })} ${en.core.icp}`
@@ -128,7 +128,7 @@ describe("UniverseAccountsBalance", () => {
       const balance: HTMLElement | null = getByTestId("token-value-label");
 
       expect(balance?.textContent.trim() ?? "").toEqual(
-        `${formatToken({
+        `${formatTokenE8s({
           value: totalBalance,
           detailed: false,
         })} ${mockSnsToken.symbol}`
@@ -155,7 +155,7 @@ describe("UniverseAccountsBalance", () => {
       const balance: HTMLElement | null = getByTestId("token-value-label");
 
       expect(balance?.textContent.trim() ?? "").toEqual(
-        `${formatToken({
+        `${formatTokenE8s({
           value: totalBalance,
           detailed: false,
         })} ${mockCkBTCToken.symbol}`

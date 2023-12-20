@@ -6,6 +6,7 @@ import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { AddAccountModalPo } from "./AddAccountModal.page-object";
 import { BuyICPModalPo } from "./BuyICPModal.page-object";
+import { IcpTransactionModalPo } from "./IcpTransactionModal.page-object";
 import { IcrcTokenAccountsPo } from "./IcrcTokenAccounts.page-object";
 import { IcrcTokenAccountsFooterPo } from "./IcrcTokenAccountsFooter.page-object";
 import { IcrcTokenTransactionModalPo } from "./IcrcTokenTransactionModal.page-object";
@@ -52,6 +53,10 @@ export class AccountsPo extends BasePageObject {
 
   getAddAccountModalPo() {
     return AddAccountModalPo.under(this.root);
+  }
+
+  getIcpTransactionModalPo() {
+    return IcpTransactionModalPo.under(this.root);
   }
 
   getReceiveModalPo() {

@@ -7,7 +7,7 @@ import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
 import { authStore } from "$lib/stores/auth.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
@@ -135,7 +135,7 @@ describe("NnsWallet", () => {
       );
 
       expect(getByTestId("token-value-label")?.textContent.trim()).toEqual(
-        `${formatToken({
+        `${formatTokenE8s({
           value: mockMainAccount.balanceUlps,
         })} ${ICPToken.symbol}`
       );

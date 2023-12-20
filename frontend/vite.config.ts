@@ -14,6 +14,7 @@ const config: UserConfig = {
   build: {
     target: "es2020",
     sourcemap: "hidden",
+    assetsInlineLimit: 0,
     rollupOptions: {
       output: {
         manualChunks: (id) => {

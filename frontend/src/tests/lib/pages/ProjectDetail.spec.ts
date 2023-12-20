@@ -19,7 +19,7 @@ import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { userCountryStore } from "$lib/stores/user-country.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
-import { formatToken, numberToE8s } from "$lib/utils/token.utils";
+import { formatTokenE8s, numberToE8s } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import * as fakeLocationApi from "$tests/fakes/location-api.fake";
 import {
@@ -406,7 +406,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           queryByTestId("sns-user-commitment")?.querySelector(
             "[data-tid='token-value']"
           )?.innerHTML
-        ).toMatch(formatToken({ value: userCommitment }));
+        ).toMatch(formatTokenE8s({ value: userCommitment }));
       });
 
       describe("no open ticket and no commitment", () => {
@@ -639,7 +639,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           queryByTestId("sns-user-commitment")?.querySelector(
             "[data-tid='token-value']"
           )?.innerHTML
-        ).toMatch(formatToken({ value: testTicket.amount_icp_e8s }));
+        ).toMatch(formatTokenE8s({ value: testTicket.amount_icp_e8s }));
         expect(snsApi.querySnsSwapCommitment).toBeCalledTimes(3);
       });
     });
@@ -750,7 +750,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           queryByTestId("sns-user-commitment")?.querySelector(
             "[data-tid='token-value']"
           )?.innerHTML
-        ).toMatch(formatToken({ value: userCommitment }));
+        ).toMatch(formatTokenE8s({ value: userCommitment }));
       });
     });
   });

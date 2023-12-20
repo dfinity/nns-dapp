@@ -7,7 +7,7 @@ import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import type { UserTokenData } from "$lib/types/tokens-page";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockAccountDetails,
@@ -132,7 +132,7 @@ describe("NnsAccounts", () => {
         );
 
         expect(cardTitleRow?.textContent.trim()).toEqual(
-          `${formatToken({ value: mockMainAccount.balanceUlps })} ICP`
+          `${formatTokenE8s({ value: mockMainAccount.balanceUlps })} ICP`
         );
       });
 

@@ -1,5 +1,5 @@
 import TransactionReceivedTokenAmount from "$lib/components/transaction/TransactionReceivedTokenAmount.svelte";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import en from "$tests/mocks/i18n.mock";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
@@ -17,7 +17,7 @@ describe("TransactionReceivedTokenAmount", () => {
 
     expect(
       getByText(
-        formatToken({ value: amount.toE8s(), detailed: "height_decimals" })
+        formatTokenE8s({ value: amount.toE8s(), detailed: "height_decimals" })
       )
     ).toBeInTheDocument();
 
@@ -48,7 +48,7 @@ describe("TransactionReceivedTokenAmount", () => {
     });
 
     expect(getByTestId(testId)?.textContent).toContain(
-      `${formatToken({ value: amount.toE8s(), detailed: true })}`
+      `${formatTokenE8s({ value: amount.toE8s(), detailed: true })}`
     );
   });
 });

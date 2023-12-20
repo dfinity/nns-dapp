@@ -5,7 +5,7 @@ import { CkBTCErrorRetrieveBtcMinAmount } from "$lib/types/ckbtc.errors";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
 import { notForceCallStrategy } from "$lib/utils/env.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
-import { formatToken, numberToE8s } from "$lib/utils/token.utils";
+import { formatTokenE8s, numberToE8s } from "$lib/utils/token.utils";
 import { isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
@@ -62,7 +62,7 @@ export const assertCkBTCUserInputAmount = ({
     } = get(i18n);
     throw new CkBTCErrorRetrieveBtcMinAmount(
       replacePlaceholders(retrieve_btc_min_amount, {
-        $amount: formatToken({
+        $amount: formatTokenE8s({
           value: retrieveBtcMinAmount,
           detailed: true,
         }),

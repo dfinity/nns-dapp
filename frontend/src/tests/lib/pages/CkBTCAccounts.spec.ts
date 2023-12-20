@@ -4,7 +4,7 @@ import CkBTCAccounts from "$lib/pages/CkBTCAccounts.svelte";
 import { syncAccounts } from "$lib/services/wallet-accounts.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import {
   mockCkBTCMainAccount,
@@ -100,7 +100,7 @@ describe("CkBTCAccounts", () => {
       );
 
       expect(cardTitleRow?.textContent.trim()).toEqual(
-        `${formatToken({
+        `${formatTokenE8s({
           value: mockCkBTCMainAccount.balanceUlps,
         })} ${mockCkBTCToken.symbol}`
       );

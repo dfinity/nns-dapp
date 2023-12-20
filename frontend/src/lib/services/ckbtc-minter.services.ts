@@ -9,6 +9,7 @@ import { queryAndUpdate } from "$lib/services/utils.services";
 import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import { ckbtcPendingUtxosStore } from "$lib/stores/ckbtc-pending-utxos.store";
+import { ckbtcRetrieveBtcStatusesStore } from "$lib/stores/ckbtc-retrieve-btc-statuses.store";
 import { i18n } from "$lib/stores/i18n";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import type { CanisterId } from "$lib/types/canister";
@@ -30,7 +31,10 @@ import {
 } from "@dfinity/ckbtc";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { getWithdrawalAccount as getWithdrawalAccountAPI } from "../api/ckbtc-minter.api";
+import {
+  getWithdrawalAccount as getWithdrawalAccountAPI,
+  retrieveBtcStatusV2ByAccount,
+} from "../api/ckbtc-minter.api";
 
 const getBTCAddress = async (minterCanisterId: CanisterId): Promise<string> => {
   const identity = await getAuthenticatedIdentity();
@@ -250,4 +254,23 @@ export const getWithdrawalAccount = async ({
 
     return undefined;
   }
+};
+
+export const loadRetrieveBtcStatuses = async ({
+  universeId,
+  minterCanisterId,
+}: {
+  universeId: UniverseCanisterId;
+  minterCanisterId: CanisterId;
+}): Promise<void> => {
+  const identity = await getAuthenticatedIdentity();
+  const statuses = await retrieveBtcStatusV2ByAccount({
+    identity,
+    canisterId: minterCanisterId,
+    certified: false,
+  });
+  ckbtcRetrieveBtcStatusesStore.setForUniverse({
+    universeId,
+    statuses,
+  });
 };

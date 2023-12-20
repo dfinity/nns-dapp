@@ -94,7 +94,7 @@ export const setFeatureFlag = ({
     { featureFlag, value }
   );
 
-export const replaceContent = ({
+export const replaceContent = async ({
   page,
   selectors,
   innerHtml,
@@ -102,8 +102,8 @@ export const replaceContent = ({
   page: Page;
   selectors: string[];
   innerHtml: string;
-}) => {
-  page.evaluate(
+}): Promise<void> => {
+  await page.evaluate(
     ({ selectors, innerHtml }) =>
       document.querySelectorAll(selectors.join(", ")).forEach((el) => {
         el.innerHTML = innerHtml;

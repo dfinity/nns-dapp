@@ -3,7 +3,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { neuronStake } from "$lib/utils/neuron.utils";
-  import { formatToken } from "$lib/utils/token.utils";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
   import { valueSpan } from "$lib/utils/utils";
   import { Html } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
@@ -24,7 +24,7 @@
       <Html
         text={replacePlaceholders($i18n.neurons.amount_icp_stake, {
           $amount: valueSpan(
-            formatToken({ value: neuronStake(neuron), detailed: true })
+            formatTokenE8s({ value: neuronStake(neuron), detailed: true })
           ),
         })}
       />

@@ -143,7 +143,36 @@ describe("DayInput", () => {
     expect(inputElement.value).toBe("30");
   });
 
-  it("should take into accout the max when rounding up", async () => {
+  it("should update error message after Min/Max click", async () => {
+    const initialSeconds = SECONDS_IN_DAY;
+    const minInSeconds = SECONDS_IN_DAY * 30;
+    const maxInSeconds = SECONDS_IN_YEAR;
+    const getInputError = vi.fn(() => null);
+
+    const { queryByTestId } = render(DayInputTest, {
+      props: {
+        seconds: initialSeconds,
+        maxInSeconds,
+        minInSeconds,
+        getInputError,
+      },
+    });
+
+    const minButton = queryByTestId("min-button");
+    const maxButton = queryByTestId("max-button");
+
+    expect(getInputError).toBeCalledTimes(0);
+
+    await fireEvent.click(minButton);
+
+    expect(getInputError).toBeCalledTimes(1);
+
+    await fireEvent.click(maxButton);
+
+    expect(getInputError).toBeCalledTimes(2);
+  });
+
+  it("should take into account the max when rounding up", async () => {
     // This is a fraction that if rounded up would be 366 days.
     const initialSeconds = SECONDS_IN_DAY * 365 + 10;
     // But the max is 365.5 days
@@ -162,5 +191,22 @@ describe("DayInput", () => {
     const inputElement = container.querySelector("input");
 
     expect(inputElement.value).toBe("365.5");
+  });
+
+  it("should apply disabled state", async () => {
+    const { container, queryByTestId } = render(DayInput, {
+      props: {
+        ...defaultProps,
+        disabled: true,
+      },
+    });
+
+    const inputElement = container.querySelector("input");
+    const minButton = queryByTestId("min-button");
+    const maxButton = queryByTestId("max-button");
+
+    expect(inputElement.getAttribute("disabled")).not.toBeNull();
+    expect(minButton.getAttribute("disabled")).not.toBeNull();
+    expect(maxButton.getAttribute("disabled")).not.toBeNull();
   });
 });

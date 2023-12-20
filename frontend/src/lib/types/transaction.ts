@@ -85,6 +85,7 @@ export interface UiTransaction {
   domKey: string;
   isIncoming: boolean;
   isPending: boolean;
+  isFailed?: boolean;
   isReimbursement?: boolean;
   headline: string;
   // Where the amount is going to or coming from.
