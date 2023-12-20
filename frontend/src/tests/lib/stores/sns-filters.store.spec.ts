@@ -2,7 +2,7 @@ import {
   snsFiltersStore,
   snsSelectedFiltersStore,
 } from "$lib/stores/sns-filters.store";
-import type { Filter, SnsProposalTypeFilterData } from "$lib/types/filters";
+import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { Principal } from "@dfinity/principal";
 import {
@@ -52,7 +52,7 @@ describe("sns-filters store", () => {
     checked: false,
   }));
 
-  const types: Filter<SnsProposalTypeFilterData>[] = [
+  const types: Filter<SnsProposalTypeFilterId>[] = [
     {
       id: "1",
       name: "type-1",
@@ -76,7 +76,7 @@ describe("sns-filters store", () => {
       } as SnsNervousSystemFunction,
     },
   ];
-  const unCheckedTypes: Filter<SnsProposalTypeFilterData>[] = types.map(
+  const unCheckedTypes: Filter<SnsProposalTypeFilterId>[] = types.map(
     (type) => ({
       ...type,
       checked: false,

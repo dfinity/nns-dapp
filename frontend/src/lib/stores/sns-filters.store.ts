@@ -1,5 +1,5 @@
 import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
-import type { Filter, SnsProposalTypeFilterData } from "$lib/types/filters";
+import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
 import type { Principal } from "@dfinity/principal";
 import type {
   SnsProposalDecisionStatus,
@@ -9,7 +9,7 @@ import { derived, type Readable } from "svelte/store";
 import { writableStored } from "./writable-stored";
 
 export interface ProjectFiltersStoreData {
-  types: Filter<SnsProposalTypeFilterData>[];
+  types: Filter<SnsProposalTypeFilterId>[];
   rewardStatus: Filter<SnsProposalRewardStatus>[];
   decisionStatus: Filter<SnsProposalDecisionStatus>[];
 }
@@ -21,11 +21,11 @@ export interface SnsFiltersStoreData {
 export interface SnsFiltersStore extends Readable<SnsFiltersStoreData> {
   setTypes: (data: {
     rootCanisterId: Principal;
-    types: Filter<SnsProposalTypeFilterData>[];
+    types: Filter<SnsProposalTypeFilterId>[];
   }) => void;
   setCheckTypes: (data: {
     rootCanisterId: Principal;
-    checkedTypes: SnsProposalTypeFilterData[];
+    checkedTypes: SnsProposalTypeFilterId[];
   }) => void;
   setDecisionStatus: (data: {
     rootCanisterId: Principal;
@@ -73,7 +73,7 @@ export const initSnsFiltersStore = (): SnsFiltersStore => {
       types,
     }: {
       rootCanisterId: Principal;
-      types: Filter<SnsProposalTypeFilterData>[];
+      types: Filter<SnsProposalTypeFilterId>[];
     }) {
       update((currentState: SnsFiltersStoreData) => {
         const projectFilters =
@@ -94,7 +94,7 @@ export const initSnsFiltersStore = (): SnsFiltersStore => {
       checkedTypes,
     }: {
       rootCanisterId: Principal;
-      checkedTypes: SnsProposalTypeFilterData[];
+      checkedTypes: SnsProposalTypeFilterId[];
     }) {
       update((currentState: SnsFiltersStoreData) => {
         const projectFilters =
