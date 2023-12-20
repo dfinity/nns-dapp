@@ -141,6 +141,7 @@
   },
   "navigation": {
     "tokens": "My Tokens",
+    "universe_tokens": "My $tokenSymbol Tokens",
     "canisters": "My Canisters",
     "neurons": "My Neuron Staking",
     "voting": "Vote on Proposals",
