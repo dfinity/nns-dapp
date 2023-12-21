@@ -55,9 +55,7 @@ pub struct AccountsStore {
     neuron_accounts: HashMap<AccountIdentifier, NeuronDetails>,
     block_height_synced_up_to: Option<BlockIndex>,
     multi_part_transactions_processor: MultiPartTransactionsProcessor,
-
-    sub_accounts_count: u64,
-    hardware_wallet_accounts_count: u64,
+    accounts_db_stats: AccountsDbStats,
     last_ledger_sync_timestamp_nanos: u64,
     neurons_topped_up_count: u64,
 }
@@ -66,7 +64,7 @@ impl fmt::Debug for AccountsStore {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "AccountsStore{{accounts_db: {:?}, hardware_wallets_and_sub_accounts: HashMap[{:?}], pending_transactions: HashMap[{:?}], transactions: VecDeque[{:?}], neuron_accounts: HashMap[{:?}], block_height_synced_up_to: {:?}, multi_part_transactions_processor: {:?}, sub_accounts_count: {:?}, hardware_wallet_accounts_count: {:?}, last_ledger_sync_timestamp_nanos: {:?}, neurons_topped_up_count: {:?}}}",
+            "AccountsStore{{accounts_db: {:?}, hardware_wallets_and_sub_accounts: HashMap[{:?}], pending_transactions: HashMap[{:?}], transactions: VecDeque[{:?}], neuron_accounts: HashMap[{:?}], block_height_synced_up_to: {:?}, multi_part_transactions_processor: {:?}, accounts_db_stats: {:?}, last_ledger_sync_timestamp_nanos: {:?}, neurons_topped_up_count: {:?}}}",
             self.accounts_db,
             self.hardware_wallets_and_sub_accounts.len(),
             self.pending_transactions.len(),
@@ -74,12 +72,17 @@ impl fmt::Debug for AccountsStore {
             self.neuron_accounts.len(),
             self.block_height_synced_up_to,
             self.multi_part_transactions_processor,
-            self.sub_accounts_count,
-            self.hardware_wallet_accounts_count,
+            self.accounts_db_stats,
             self.last_ledger_sync_timestamp_nanos,
             self.neurons_topped_up_count,
         )
     }
+}
+
+#[derive(Default, CandidType, Deserialize, Debug)]
+pub struct AccountsDbStats {
+    pub sub_accounts_count: u64,
+    pub hardware_wallet_accounts_count: u64,
 }
 
 /// An abstraction over sub-accounts and hardware wallets.
@@ -519,7 +522,7 @@ impl AccountsStore {
                     sub_account_identifier,
                     AccountWrapper::SubAccount(account_identifier, sub_account_id),
                 );
-                self.sub_accounts_count += 1;
+                self.accounts_db_stats.sub_accounts_count += 1;
             }
 
             response
@@ -592,7 +595,7 @@ impl AccountsStore {
                 self.accounts_db
                     .db_insert_account(&account_identifier.to_vec(), account);
 
-                self.hardware_wallet_accounts_count += 1;
+                self.accounts_db_stats.hardware_wallet_accounts_count += 1;
                 self.link_hardware_wallet_to_account(account_identifier, hardware_wallet_account_identifier);
                 RegisterHardwareWalletResponse::Ok
             }
@@ -1113,8 +1116,8 @@ impl AccountsStore {
             Duration::from_nanos(timestamp_now_nanos - self.last_ledger_sync_timestamp_nanos);
 
         stats.accounts_count = self.accounts_db.db_accounts_len();
-        stats.sub_accounts_count = self.sub_accounts_count;
-        stats.hardware_wallet_accounts_count = self.hardware_wallet_accounts_count;
+        stats.sub_accounts_count = self.accounts_db_stats.sub_accounts_count;
+        stats.hardware_wallet_accounts_count = self.accounts_db_stats.hardware_wallet_accounts_count;
         stats.transactions_count = self.transactions.len() as u64;
         stats.block_height_synced_up_to = self.block_height_synced_up_to;
         stats.earliest_transaction_timestamp_nanos =
@@ -1597,7 +1600,7 @@ impl StableState for AccountsStore {
             &self.multi_part_transactions_processor,
             &self.last_ledger_sync_timestamp_nanos,
             &self.neurons_topped_up_count,
-            Some((self.sub_accounts_count, self.hardware_wallet_accounts_count)), // TODO: Make more flexible.  TODO: Keep this data in the accountsdb.
+            Some(&self.accounts_db_stats),
         ))
         .into_bytes()
         .unwrap()
@@ -1627,7 +1630,7 @@ impl StableState for AccountsStore {
             MultiPartTransactionsProcessor,
             u64,
             u64,
-            Option<(u64, u64)>, // TODO: Make more flexible.
+            Option<AccountsDbStats>,
         ) = Candid::from_bytes(bytes).map(|c| c.0)?;
 
         // Remove duplicate transactions from hardware wallet accounts
@@ -1644,7 +1647,7 @@ impl StableState for AccountsStore {
             }
         }
 
-        let (sub_accounts_count, hardware_wallet_accounts_count) = match accounts_db_stats_maybe {
+        let accounts_db_stats = match accounts_db_stats_maybe {
             Some(counts) => counts,
             None => {
                 let mut sub_accounts_count: u64 = 0;
@@ -1653,7 +1656,10 @@ impl StableState for AccountsStore {
                     sub_accounts_count += account.sub_accounts.len() as u64;
                     hardware_wallet_accounts_count += account.hardware_wallet_accounts.len() as u64;
                 }
-                (sub_accounts_count, hardware_wallet_accounts_count)
+                AccountsDbStats {
+                    sub_accounts_count,
+                    hardware_wallet_accounts_count,
+                }
             }
         };
 
@@ -1665,8 +1671,7 @@ impl StableState for AccountsStore {
             neuron_accounts,
             block_height_synced_up_to,
             multi_part_transactions_processor,
-            sub_accounts_count,
-            hardware_wallet_accounts_count,
+            accounts_db_stats,
             last_ledger_sync_timestamp_nanos,
             neurons_topped_up_count,
         })
