@@ -2,18 +2,18 @@
   import FilterModal from "$lib/modals/common/FilterModal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { snsFiltersStore } from "$lib/stores/sns-filters.store";
-  import type { Filter, SnsProposalTypeFilterData } from "$lib/types/filters";
+  import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
   import type { Principal } from "@dfinity/principal";
   import { createEventDispatcher } from "svelte";
 
   export let rootCanisterId: Principal;
-  export let filters: Filter<SnsProposalTypeFilterData>[] = [];
+  export let filters: Filter<SnsProposalTypeFilterId>[] = [];
 
   // This is a temporary value to be used inside the modal. It's initialized based on the prop filters;
-  let selectedFilters: Array<SnsProposalTypeFilterData> =
+  let selectedFilters: Array<SnsProposalTypeFilterId> =
     filters.filter((item) => item.checked).map(({ value }) => value) ?? [];
   // This is a temporary value to be used inside the modal
-  let filtersValues: Filter<SnsProposalTypeFilterData>[];
+  let filtersValues: Filter<SnsProposalTypeFilterId>[];
   $: filtersValues = filters.map((filter) => ({
     ...filter,
     checked: selectedFilters.includes(filter.value),
@@ -32,7 +32,7 @@
   const onChange = ({
     detail: { filter },
   }: CustomEvent<{
-    filter: Filter<SnsProposalTypeFilterData> | undefined;
+    filter: Filter<SnsProposalTypeFilterId> | undefined;
   }>) => {
     if (filter === undefined) {
       return;

@@ -1,5 +1,5 @@
-import type { Filter, SnsProposalTypeFilterData } from "$lib/types/filters";
-import { ALL_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
+import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
+import { ALL_SNS_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
 import {
@@ -675,16 +675,16 @@ describe("sns-proposals utils", () => {
       genericNsFunction,
     ];
     // Prepare type filters
-    const nativeFilterEntry: Filter<SnsProposalTypeFilterData> = {
+    const nativeFilterEntry: Filter<SnsProposalTypeFilterId> = {
       id: "1",
       name: "string",
       value: nativeNsFunction,
       checked: true,
     };
-    const snsSpecificFilterEntry: Filter<SnsProposalTypeFilterData> = {
-      id: ALL_GENERIC_PROPOSAL_TYPES_ID,
+    const snsSpecificFilterEntry: Filter<SnsProposalTypeFilterId> = {
+      id: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
       name: "string",
-      value: ALL_GENERIC_PROPOSAL_TYPES_ID,
+      value: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
       checked: true,
     };
 

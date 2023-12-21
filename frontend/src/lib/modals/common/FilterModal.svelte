@@ -3,7 +3,7 @@
   import { createEventDispatcher } from "svelte";
   import { Checkbox } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import type { Filter, SnsProposalTypeFilterData } from "$lib/types/filters";
+  import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
   import { onMount } from "svelte";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { isNullish } from "@dfinity/utils";
@@ -18,7 +18,7 @@
   } from "@dfinity/nns";
 
   type FiltersData =
-    | SnsProposalTypeFilterData
+    | SnsProposalTypeFilterId
     | SnsProposalRewardStatus
     | Topic
     | ProposalRewardStatus

@@ -4,8 +4,8 @@ import {
 } from "$lib/constants/proposals.constants";
 import { ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID } from "$lib/constants/sns-proposals.constants";
 import { i18n } from "$lib/stores/i18n";
-import type { Filter, SnsProposalTypeFilterData } from "$lib/types/filters";
-import { ALL_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
+import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
+import { ALL_SNS_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
 import type {
   BasisPoints,
   UniversalProposalStatus,
@@ -490,7 +490,7 @@ export const toExcludeTypeParameter = ({
   filter,
   snsFunctions,
 }: {
-  filter: Filter<SnsProposalTypeFilterData>[];
+  filter: Filter<SnsProposalTypeFilterId>[];
   snsFunctions: SnsNervousSystemFunction[];
 }): bigint[] => {
   // If no filter is selected, return all functions
@@ -509,7 +509,7 @@ export const toExcludeTypeParameter = ({
     .filter(isGenericNervousSystemFunction)
     .map(({ id }) => id);
   const isGenericNsFunctionChecked = filter.some(
-    ({ id, checked }) => id === ALL_GENERIC_PROPOSAL_TYPES_ID && checked
+    ({ id, checked }) => id === ALL_SNS_GENERIC_PROPOSAL_TYPES_ID && checked
   );
   const excludedGenericNsFunctionIds = isGenericNsFunctionChecked
     ? []
@@ -529,8 +529,8 @@ export const generateSnsProposalTypeFilterData = ({
   currentFilterState,
 }: {
   nsFunctions: SnsNervousSystemFunction[];
-  currentFilterState: Filter<SnsProposalTypeFilterData>[];
-}): Filter<SnsProposalTypeFilterData>[] => {
+  currentFilterState: Filter<SnsProposalTypeFilterId>[];
+}): Filter<SnsProposalTypeFilterId>[] => {
   const i18nKeys = get(i18n);
   const nativeNsFunctionIds = nsFunctions
     .filter(isNativeNervousSystemFunction)
@@ -540,11 +540,11 @@ export const generateSnsProposalTypeFilterData = ({
   const hasGenericNsFunctions =
     nsFunctions.filter(isGenericNervousSystemFunction).length > 0;
   const filterableIds = hasGenericNsFunctions
-    ? [...nativeNsFunctionIds, ALL_GENERIC_PROPOSAL_TYPES_ID]
+    ? [...nativeNsFunctionIds, ALL_SNS_GENERIC_PROPOSAL_TYPES_ID]
     : nativeNsFunctionIds;
-  const mapToFilterData = (id: string): Filter<SnsProposalTypeFilterData> => ({
+  const mapToFilterData = (id: string): Filter<SnsProposalTypeFilterId> => ({
     id,
-    value: id as keyof typeof i18nKeys.sns_types,
+    value: id,
     name:
       i18nKeys.sns_types[id as keyof typeof i18nKeys.sns_types] ??
       // TODO(max): first use native names as fallback
