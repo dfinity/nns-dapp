@@ -18,10 +18,17 @@ export const loadSnsFilters = async (rootCanisterId: Principal) => {
   }
   const i18nKeys = get(i18n);
   const defaultFiltersProjectData = {
-    topics: [],
+    // Because types are based on the nsFunctions, they will be updated after initialization
+    types: [],
     rewardStatus: [],
     decisionStatus: [],
   };
+
+  snsFiltersStore.setTypes({
+    rootCanisterId,
+    types: defaultFiltersProjectData.types,
+  });
+
   // Load decision status, these are harcoded based on enum values
   const mapDecisionStatus = (
     value: SnsProposalDecisionStatus
