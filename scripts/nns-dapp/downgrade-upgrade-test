@@ -107,7 +107,7 @@ check_num_transactions() {
 # Wait for the migration countdown to complete.
 wait_for_migration() {
   local migration_countdown
-  for ((i = 0; i < 120; i++)); do
+  for ((i = 0; i < 1200; i++)); do
     migration_countdown="$(dfx canister call nns-dapp get_stats --query | idl2json | jq '.migration_countdown[0] // 0')" # TODO: Remove the default when prod has migration countdown stats
     echo "Migration countdown: $migration_countdown"
     if ((migration_countdown == 0)); then
