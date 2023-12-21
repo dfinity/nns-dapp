@@ -11,7 +11,7 @@ impl From<AccountsDb> for AccountsStore {
 }
 
 impl AccountsStore {
-    /// Adds an accounts_db to the store.
+    /// Adds an `accounts_db` to the store.
     pub fn with_accounts_db(&mut self, accounts_db: AccountsDb) {
         self.accounts_db = AccountsDbAsProxy::from(accounts_db);
     }
