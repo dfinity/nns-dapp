@@ -74,7 +74,7 @@ impl fmt::Debug for AccountsStore {
     }
 }
 
-#[derive(Default, CandidType, Deserialize, Debug)]
+#[derive(Default, CandidType, Deserialize, Debug, Eq, PartialEq)]
 pub struct AccountsDbStats {
     pub sub_accounts_count: u64,
     pub hardware_wallet_accounts_count: u64,
