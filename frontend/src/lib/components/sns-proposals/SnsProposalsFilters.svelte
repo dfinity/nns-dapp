@@ -53,7 +53,7 @@
       .length ?? 0}
     on:nnsFilter={() => openFilters("types")}
   >
-    {$i18n.voting.topics}
+    {$i18n.voting.types}
   </FiltersButton>
   <FiltersButton
     testId="filters-by-rewards"

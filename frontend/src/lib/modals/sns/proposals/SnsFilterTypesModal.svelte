@@ -61,5 +61,5 @@
   on:nnsClearSelection={clear}
   filters={filtersValues}
 >
-  <span slot="title">{$i18n.voting.topics}</span>
+  <span slot="title">{$i18n.voting.types}</span>
 </FilterModal>
