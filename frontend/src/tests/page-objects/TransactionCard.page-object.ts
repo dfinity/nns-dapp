@@ -62,7 +62,13 @@ export class TransactionCardPo extends BasePageObject {
 
   async hasReimbursementIcon(): Promise<boolean> {
     const hasIcon = await this.isPresent("icon-reimbursed");
-    const hasClass = await this.hasIconClass("reimbursed");
+    const hasClass = await this.hasIconClass("failed");
+    return hasIcon && hasClass;
+  }
+
+  async hasFailedIcon(): Promise<boolean> {
+    const hasIcon = await this.isPresent("icon-error-outline");
+    const hasClass = await this.hasIconClass("failed");
     return hasIcon && hasClass;
   }
 }

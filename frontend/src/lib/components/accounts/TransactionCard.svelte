@@ -6,6 +6,7 @@
   import { i18n } from "$lib/stores/i18n";
   import {
     IconReimbursed,
+    IconErrorOutline,
     IconUp,
     IconDown,
     KeyValuePair,
@@ -24,6 +25,7 @@
   let tokenAmount: TokenAmount | TokenAmountV2;
   let isIncoming: boolean;
   let isPending: boolean;
+  let isFailed: boolean | undefined;
   let isReimbursement: boolean | undefined;
   let otherParty: string | undefined;
   let timestamp: Date | undefined;
@@ -32,6 +34,7 @@
     tokenAmount,
     isIncoming,
     isPending,
+    isFailed,
     isReimbursement,
     otherParty,
     timestamp,
@@ -52,9 +55,11 @@
     data-tid="icon"
     class:send={!isIncoming}
     class:pending={isPending}
-    class:reimbursed={isReimbursement}
+    class:failed={isFailed || isReimbursement}
   >
-    {#if isReimbursement}
+    {#if isFailed}
+      <IconErrorOutline size="24px" />
+    {:else if isReimbursement}
       <IconReimbursed size="24px" />
     {:else if isIncoming}
       <IconDown size="24px" />
@@ -168,7 +173,7 @@
       background: var(--pending-background);
     }
 
-    &.reimbursed {
+    &.failed {
       color: var(--alert);
       background: var(--alert-tint);
     }
