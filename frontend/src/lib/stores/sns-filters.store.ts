@@ -1,8 +1,7 @@
 import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
-import type { Filter } from "$lib/types/filters";
+import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
 import type { Principal } from "@dfinity/principal";
 import type {
-  SnsNervousSystemFunction,
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
 } from "@dfinity/sns";
@@ -10,7 +9,7 @@ import { derived, type Readable } from "svelte/store";
 import { writableStored } from "./writable-stored";
 
 export interface ProjectFiltersStoreData {
-  topics: Filter<SnsNervousSystemFunction>[];
+  types: Filter<SnsProposalTypeFilterId>[];
   rewardStatus: Filter<SnsProposalRewardStatus>[];
   decisionStatus: Filter<SnsProposalDecisionStatus>[];
 }
@@ -20,6 +19,14 @@ export interface SnsFiltersStoreData {
 }
 
 export interface SnsFiltersStore extends Readable<SnsFiltersStoreData> {
+  setTypes: (data: {
+    rootCanisterId: Principal;
+    types: Filter<SnsProposalTypeFilterId>[];
+  }) => void;
+  setCheckTypes: (data: {
+    rootCanisterId: Principal;
+    checkedTypes: SnsProposalTypeFilterId[];
+  }) => void;
   setDecisionStatus: (data: {
     rootCanisterId: Principal;
     decisionStatus: Filter<SnsProposalDecisionStatus>[];
@@ -40,7 +47,7 @@ export interface SnsFiltersStore extends Readable<SnsFiltersStoreData> {
 }
 
 const defaultProjectData: ProjectFiltersStoreData = {
-  topics: [],
+  types: [],
   rewardStatus: [],
   decisionStatus: [],
 };
@@ -54,10 +61,57 @@ export const initSnsFiltersStore = (): SnsFiltersStore => {
   const { subscribe, set, update } = writableStored<SnsFiltersStoreData>({
     key: StoreLocalStorageKey.SnsProposalFilters,
     defaultValue: {},
+    // to reset the state w/o "types"
+    version: 1,
   });
 
   return {
     subscribe,
+
+    setTypes({
+      rootCanisterId,
+      types,
+    }: {
+      rootCanisterId: Principal;
+      types: Filter<SnsProposalTypeFilterId>[];
+    }) {
+      update((currentState: SnsFiltersStoreData) => {
+        const projectFilters =
+          currentState[rootCanisterId.toText()] || defaultProjectData;
+
+        return {
+          ...currentState,
+          [rootCanisterId.toText()]: {
+            ...projectFilters,
+            types,
+          },
+        };
+      });
+    },
+
+    setCheckTypes({
+      rootCanisterId,
+      checkedTypes,
+    }: {
+      rootCanisterId: Principal;
+      checkedTypes: SnsProposalTypeFilterId[];
+    }) {
+      update((currentState: SnsFiltersStoreData) => {
+        const projectFilters =
+          currentState[rootCanisterId.toText()] || defaultProjectData;
+
+        return {
+          ...currentState,
+          [rootCanisterId.toText()]: {
+            ...projectFilters,
+            types: projectFilters.types.map((type) => ({
+              ...type,
+              checked: checkedTypes.includes(type.value),
+            })),
+          },
+        };
+      });
+    },
 
     setDecisionStatus({
       rootCanisterId,
@@ -165,7 +219,7 @@ export const snsSelectedFiltersStore = derived<
     (acc, [rootCanisterIdText, filters]) => ({
       ...acc,
       [rootCanisterIdText]: {
-        topics: filters.topics.filter(({ checked }) => checked),
+        types: filters.types.filter(({ checked }) => checked),
         rewardStatus: filters.rewardStatus.filter(({ checked }) => checked),
         decisionStatus: filters.decisionStatus.filter(({ checked }) => checked),
       },
