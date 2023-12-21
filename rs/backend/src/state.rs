@@ -92,6 +92,7 @@ impl State {
             .replace(partitions_maybe)
             .map(|_| ())
             .unwrap_or_default();
+        println!("Replace state complete:\n {self:?}");
     }
     /// Gets the authoritative schema.  This is the schema that is in stable memory.
     pub fn schema_label(&self) -> SchemaLabel {

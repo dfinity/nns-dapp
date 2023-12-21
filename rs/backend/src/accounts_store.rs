@@ -1597,12 +1597,14 @@ impl StableState for AccountsStore {
             &self.multi_part_transactions_processor,
             &self.last_ledger_sync_timestamp_nanos,
             &self.neurons_topped_up_count,
+            Some((self.sub_accounts_count, self.hardware_wallet_accounts_count)), // TODO: Make more flexible.  TODO: Keep this data in the accountsdb.
         ))
         .into_bytes()
         .unwrap()
     }
 
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
+        // TODO: Write a schema ID field first.
         #[allow(clippy::type_complexity)]
         let (
             mut accounts,
@@ -1614,6 +1616,7 @@ impl StableState for AccountsStore {
             multi_part_transactions_processor,
             last_ledger_sync_timestamp_nanos,
             neurons_topped_up_count,
+            accounts_db_stats_maybe,
         ): (
             BTreeMap<Vec<u8>, Account>,
             HashMap<AccountIdentifier, AccountWrapper>,
@@ -1624,6 +1627,7 @@ impl StableState for AccountsStore {
             MultiPartTransactionsProcessor,
             u64,
             u64,
+            Option<(u64, u64)>, // TODO: Make more flexible.
         ) = Candid::from_bytes(bytes).map(|c| c.0)?;
 
         // Remove duplicate transactions from hardware wallet accounts
@@ -1640,12 +1644,18 @@ impl StableState for AccountsStore {
             }
         }
 
-        let mut sub_accounts_count: u64 = 0;
-        let mut hardware_wallet_accounts_count: u64 = 0;
-        for account in accounts.values() {
-            sub_accounts_count += account.sub_accounts.len() as u64;
-            hardware_wallet_accounts_count += account.hardware_wallet_accounts.len() as u64;
-        }
+        let (sub_accounts_count, hardware_wallet_accounts_count) = match accounts_db_stats_maybe {
+            Some(counts) => counts,
+            None => {
+                let mut sub_accounts_count: u64 = 0;
+                let mut hardware_wallet_accounts_count: u64 = 0;
+                for account in accounts.values() {
+                    sub_accounts_count += account.sub_accounts.len() as u64;
+                    hardware_wallet_accounts_count += account.hardware_wallet_accounts.len() as u64;
+                }
+                (sub_accounts_count, hardware_wallet_accounts_count)
+            }
+        };
 
         Ok(AccountsStore {
             accounts_db: AccountsDbAsProxy::from_map(accounts),
