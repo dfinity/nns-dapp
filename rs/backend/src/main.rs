@@ -58,13 +58,13 @@ fn init(args: Option<CanisterArguments>) {
         let state = state.with_arguments(&args);
         STATE.with(|s| {
             s.replace(state);
-            dfn_core::api::print(format!("init state after: {s:?}"));
+            println!("init state after: {s:?}");
         });
     });
     // Legacy:
     assets::init_assets();
     perf::record_instruction_count("init stop");
-    dfn_core::api::print("END init with args");
+    println!("END init with args");
 }
 
 /// Redundant function, never called but required as this is `main.rs`.
@@ -80,9 +80,9 @@ fn pre_upgrade() {
         stats::gibibytes(stats::wasm_memory_size_bytes())
     );
     STATE.with(|s| {
-        dfn_core::api::print(format!("pre_upgrade state before: {s:?}"));
+        println!("pre_upgrade state before: {s:?}");
         s.pre_upgrade();
-        dfn_core::api::print(format!("pre_upgrade state after: {s:?}"));
+        println!("pre_upgrade state after: {s:?}");
     });
     println!(
         "pre_upgrade instruction_counter after saving state: {} stable_memory_size_gib: {} wasm_memory_size_gib: {}",
@@ -90,7 +90,7 @@ fn pre_upgrade() {
         stats::gibibytes(stats::stable_memory_size_bytes()),
         stats::gibibytes(stats::wasm_memory_size_bytes())
     );
-    dfn_core::api::print("END pre-upgrade");
+    println!("END pre-upgrade");
 }
 
 #[post_upgrade]
@@ -115,7 +115,7 @@ fn post_upgrade(args_maybe: Option<CanisterArguments>) {
 
     assets::init_assets(); // TODO: Move this inside State::from (and State::new_with_memory)
     perf::record_instruction_count("post_upgrade stop");
-    dfn_core::api::print("STOP post-upgrade");
+    println!("STOP post-upgrade");
 }
 
 #[export_name = "canister_query http_request"]
