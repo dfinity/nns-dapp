@@ -28,7 +28,11 @@ use std::time::{Duration, SystemTime};
 
 pub mod histogram;
 pub mod schema;
-use schema::{proxy::AccountsDbAsProxy, AccountsDbTrait};
+use schema::{
+    map::AccountsDbAsMap,
+    proxy::{AccountsDb, AccountsDbAsProxy},
+    AccountsDbBTreeMapTrait, AccountsDbTrait,
+};
 
 type TransactionIndex = u64;
 
@@ -1630,8 +1634,10 @@ impl StableState for AccountsStore {
             hardware_wallet_accounts_count += account.hardware_wallet_accounts.len() as u64;
         }
 
+        let accounts_db = AccountsDb::Map(AccountsDbAsMap::from_map(accounts));
+
         Ok(AccountsStore {
-            accounts_db: AccountsDbAsProxy::from_map(accounts),
+            accounts_db: AccountsDbAsProxy::from(accounts_db),
             hardware_wallets_and_sub_accounts,
             pending_transactions,
             transactions,

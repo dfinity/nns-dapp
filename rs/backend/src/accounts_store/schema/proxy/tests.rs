@@ -1,3 +1,4 @@
+use ic_stable_structures::{memory_manager, Memory};
 use proptest::proptest;
 use rand::seq::IteratorRandom;
 use rand::{Rng, SeedableRng};
@@ -6,6 +7,7 @@ use strum_macros::EnumIter;
 
 use crate::accounts_store::schema::tests::toy_account;
 use crate::accounts_store::{CanisterId, NamedCanister};
+use crate::state::partitions::Partitions;
 
 use super::super::tests::test_accounts_db;
 use super::*;
@@ -16,7 +18,9 @@ fn migration_steps_should_work(accounts_db: &mut AccountsDbAsProxy, new_accounts
     // During the migration, the accounts db should behave as if no migration were in progress,
     // regardless of what CRUD operations are performed.  We check this by running another database
     // with the same contents but no migration.
-    let reference_db = AccountsDbAsProxy::from_map(accounts_db.range(..).collect());
+    let reference_db = AccountsDbAsProxy::from(AccountsDb::Map(AccountsDbAsMap::from_map(
+        accounts_db.range(..).collect(),
+    )));
     assert_eq!(*accounts_db, reference_db);
     // Start the migration.
     accounts_db.start_migrating_accounts_to(new_accounts_db);
@@ -157,6 +161,8 @@ fn assert_migration_works_with_other_operations<R>(
         0,
         "Test setup failure: The new database should be empty."
     );
+    // Check which schema we are moving to.
+    let expected_final_schema_label = new_accounts_db.schema_label();
     // Start migration.
     accounts_db.start_migrating_accounts_to(new_accounts_db);
     // Perform operations.
@@ -168,6 +174,10 @@ fn assert_migration_works_with_other_operations<R>(
     }
     // Migration should now be complete.
     assert!(accounts_db.migration.is_none());
+    assert!(
+        accounts_db.schema_label() == expected_final_schema_label,
+        "The final schema should be {expected_final_schema_label:#?}"
+    );
 }
 
 fn assert_map_to_map_migration_works_with_other_operations<R>(rng: &mut R)
@@ -188,10 +198,62 @@ where
     assert_migration_works_with_other_operations(&mut accounts_db, &mut reference_db, new_accounts_db, rng);
 }
 
+fn assert_map_to_stable_migration_works_with_other_operations<R>(rng: &mut R)
+where
+    R: Rng,
+{
+    let mut accounts_db = AccountsDbAsProxy::default();
+    let mut reference_db = AccountsDbAsProxy::default();
+    let raw_memory = DefaultMemoryImpl::default();
+    raw_memory.grow(5);
+    let memory_manager = memory_manager::MemoryManager::init(raw_memory);
+    let new_accounts_db = AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::new(
+        memory_manager.get(Partitions::ACCOUNTS_MEMORY_ID),
+    ));
+    // Insert some accounts
+    let number_of_accounts_to_migrate: u32 = rng.gen_range(0..40);
+    for _ in 0..number_of_accounts_to_migrate {
+        Operation::Insert.perform(&mut accounts_db, &mut reference_db, rng);
+    }
+    // Test migration
+    assert_migration_works_with_other_operations(&mut accounts_db, &mut reference_db, new_accounts_db, rng);
+}
+
+fn assert_stable_to_map_migration_works_with_other_operations<R>(rng: &mut R)
+where
+    R: Rng,
+{
+    let raw_memory = DefaultMemoryImpl::default();
+    raw_memory.grow(5);
+    let memory_manager = memory_manager::MemoryManager::init(raw_memory);
+    let accounts_db = AccountsDbAsUnboundedStableBTreeMap::new(memory_manager.get(Partitions::ACCOUNTS_MEMORY_ID));
+    let mut accounts_db = AccountsDbAsProxy::from(AccountsDb::UnboundedStableBTreeMap(accounts_db));
+    let mut reference_db = AccountsDbAsProxy::default();
+    let new_accounts_db = AccountsDb::Map(AccountsDbAsMap::default());
+    // Insert some accounts
+    let number_of_accounts_to_migrate: u32 = rng.gen_range(0..40);
+    for _ in 0..number_of_accounts_to_migrate {
+        Operation::Insert.perform(&mut accounts_db, &mut reference_db, rng);
+    }
+    // Test migration
+    assert_migration_works_with_other_operations(&mut accounts_db, &mut reference_db, new_accounts_db, rng);
+}
+
 proptest! {
     #[test]
     fn map_to_map_migration_should_work_with_other_operations(seed: u64) {
         let mut rng = rand::rngs::StdRng::seed_from_u64(seed);
         assert_map_to_map_migration_works_with_other_operations(&mut rng);
     }
+    #[test]
+    fn map_to_stable_migration_should_work_with_other_operations(seed: u64) {
+        let mut rng = rand::rngs::StdRng::seed_from_u64(seed);
+        assert_map_to_stable_migration_works_with_other_operations(&mut rng);
+    }
+    #[test]
+    fn stable_to_map_migration_should_work_with_other_operations(seed: u64) {
+        let mut rng = rand::rngs::StdRng::seed_from_u64(seed);
+        assert_stable_to_map_migration_works_with_other_operations(&mut rng);
+    }
+
 }
