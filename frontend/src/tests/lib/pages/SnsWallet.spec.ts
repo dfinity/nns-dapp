@@ -57,6 +57,15 @@ vi.mock("$lib/services/worker-balances.services", () => ({
 }));
 
 describe("SnsWallet", () => {
+  const testTokenSymbol = "OOO";
+  const testTokenName = "Out of office";
+
+  const testToken = {
+    ...mockSnsToken,
+    name: testTokenName,
+    symbol: testTokenSymbol,
+  };
+
   const props = {
     accountIdentifier: mockSnsMainAccount.identifier,
   };
@@ -76,7 +85,7 @@ describe("SnsWallet", () => {
       transactions: [mockIcrcTransactionWithId],
     });
     vi.spyOn(snsLedgerApi, "transactionFee").mockResolvedValue(fee);
-    vi.spyOn(snsLedgerApi, "getSnsToken").mockResolvedValue(mockSnsToken);
+    vi.spyOn(snsLedgerApi, "getSnsToken").mockResolvedValue(testToken);
     vi.spyOn(snsLedgerApi, "snsTransfer").mockResolvedValue(10n);
 
     setSnsProjects([
@@ -84,6 +93,7 @@ describe("SnsWallet", () => {
         rootCanisterId,
         lifecycle: SnsSwapLifecycle.Committed,
         projectName,
+        tokenMetadata: testToken,
       },
     ]);
     page.mock({ data: { universe: rootCanisterIdText } });
@@ -162,7 +172,7 @@ describe("SnsWallet", () => {
       ).toEqual(
         `${formatTokenE8s({
           value: mockSnsMainAccount.balanceUlps,
-        })} ${mockSnsToken.symbol}`
+        })} ${testToken.symbol}`
       );
     });
 
@@ -233,13 +243,19 @@ describe("SnsWallet", () => {
 
       await testAccountsModal({ result, testId: "receive-sns" });
 
-      const { getByTestId } = result;
+      const { container, getByTestId } = result;
 
       expect(getByTestId("receive-modal")).not.toBeNull();
 
-      expect(getByTestId("logo").getAttribute("alt")).toEqual(
-        `${projectName} project logo`
-      );
+      await waitFor(() => {
+        expect(getByTestId("qr-code")).not.toBeNull();
+      });
+
+      expect(
+        container
+          .querySelector("[data-tid=receive-modal] [data-tid=logo]")
+          .getAttribute("alt")
+      ).toEqual(testTokenSymbol);
     });
 
     it("should reload account after finish receiving tokens", async () => {
