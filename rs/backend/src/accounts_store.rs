@@ -19,18 +19,20 @@ use icp_ledger::Operation::{self, Approve, Burn, Mint, Transfer, TransferFrom};
 use icp_ledger::{AccountIdentifier, BlockIndex, Memo, Subaccount, Tokens};
 use itertools::Itertools;
 use on_wire::{FromWire, IntoWire};
+use schema::{
+    proxy::{AccountsDb, AccountsDbAsProxy},
+    AccountsDbTrait, SchemaLabel,
+};
 use serde::Deserialize;
 use std::borrow::Cow;
 use std::cmp::{min, Ordering};
 use std::collections::{BTreeMap, HashMap, HashSet, VecDeque};
 use std::ops::RangeTo;
 use std::time::{Duration, SystemTime};
-use schema::{SchemaLabel, proxy::{AccountsDb, AccountsDbAsProxy}, AccountsDbTrait};
 
 pub mod constructors;
 pub mod histogram;
 pub mod schema;
-
 
 type TransactionIndex = u64;
 
