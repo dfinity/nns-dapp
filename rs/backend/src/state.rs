@@ -192,21 +192,17 @@ impl State {
             let new_accounts_db = match schema {
                 SchemaLabel::Map => AccountsDb::Map(AccountsDbAsMap::default()),
                 SchemaLabel::AccountsInStableMemory => {
+                    let mut partitions_maybe = self.partitions_maybe.borrow_mut();
                     // If the memory isn't partitioned, partition it now.
-                    {
-                        let mut partitions_maybe = self.partitions_maybe.borrow_mut();
-                        if let Err(memory) = partitions_maybe.as_ref().map_err(Partitions::copy_memory_reference) {
-                            println!("start_migration_to: Creating new partitions for schema {schema:?}.");
-                            *partitions_maybe = Ok(Partitions::new_for_schema(memory, schema));
-                        };
-                    }
-                    let vm = self
-                        .partitions_maybe
-                        .borrow()
+                    if let Err(memory) = partitions_maybe.as_ref().map_err(Partitions::copy_memory_reference) {
+                        println!("start_migration_to: Creating new partitions for schema {schema:?}.");
+                        *partitions_maybe = Ok(Partitions::new_for_schema(memory, schema));
+                    };
+                    let vm = partitions_maybe
                         .as_ref()
-                        .map_err(|_| "foo")
-                        .unwrap()
-                        .get(Partitions::ACCOUNTS_MEMORY_ID);
+                        .map(|partitions| partitions.get(Partitions::ACCOUNTS_MEMORY_ID))
+                        .map_err(|_| "Cannot fail as we just created the partitions")
+                        .unwrap();
                     AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::new(vm))
                 }
             };
