@@ -1142,7 +1142,6 @@ interface I18nSync {
 }
 
 interface I18nTokens {
-  title: string;
   projects_header: string;
   balance_header: string;
   accounts_header: string;

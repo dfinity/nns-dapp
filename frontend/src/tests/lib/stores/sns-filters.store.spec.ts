@@ -2,7 +2,7 @@ import {
   snsFiltersStore,
   snsSelectedFiltersStore,
 } from "$lib/stores/sns-filters.store";
-import type { Filter, SnsProposalTypeFilterData } from "$lib/types/filters";
+import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { Principal } from "@dfinity/principal";
 import {
@@ -52,31 +52,21 @@ describe("sns-filters store", () => {
     checked: false,
   }));
 
-  const types: Filter<SnsProposalTypeFilterData>[] = [
+  const types: Filter<SnsProposalTypeFilterId>[] = [
     {
       id: "1",
       name: "type-1",
       checked: false,
-      value: {
-        id: 1n,
-        name: "One",
-        description: ["description"],
-        function_type: [{ NativeNervousSystemFunction: {} }],
-      } as SnsNervousSystemFunction,
+      value: "1",
     },
     {
       id: "2",
       name: "type-2",
       checked: false,
-      value: {
-        id: 2n,
-        name: "Two",
-        description: ["description"],
-        function_type: [{ NativeNervousSystemFunction: {} }],
-      } as SnsNervousSystemFunction,
+      value: "2",
     },
   ];
-  const unCheckedTypes: Filter<SnsProposalTypeFilterData>[] = types.map(
+  const unCheckedTypes: Filter<SnsProposalTypeFilterId>[] = types.map(
     (type) => ({
       ...type,
       checked: false,
@@ -117,12 +107,12 @@ describe("sns-filters store", () => {
     });
 
     it("should setTypes in different projects", () => {
-      snsFiltersStore.setType({ rootCanisterId, types: [...types] });
+      snsFiltersStore.setTypes({ rootCanisterId, types: [...types] });
 
       const projectStore = get(snsFiltersStore)[rootCanisterId.toText()];
       expect(projectStore.types).toEqual(types);
 
-      snsFiltersStore.setType({
+      snsFiltersStore.setTypes({
         rootCanisterId: rootCanisterId2,
         types: [...types],
       });
@@ -254,7 +244,7 @@ describe("sns-filters store", () => {
 
     it("setTypes should check filters in different projects", () => {
       // Project rootCanisterId
-      snsFiltersStore.setType({
+      snsFiltersStore.setTypes({
         rootCanisterId,
         types: unCheckedTypes,
       });
@@ -265,7 +255,7 @@ describe("sns-filters store", () => {
 
       const typeValues = types.map(({ value }) => value);
       // rootCanisterId: all checked
-      snsFiltersStore.setCheckType({
+      snsFiltersStore.setCheckTypes({
         rootCanisterId,
         checkedTypes: typeValues,
       });
@@ -275,7 +265,7 @@ describe("sns-filters store", () => {
       ).toEqual(typeValues.length);
 
       // Project rootCanisterId2
-      snsFiltersStore.setType({
+      snsFiltersStore.setTypes({
         rootCanisterId: rootCanisterId2,
         types: unCheckedTypes,
       });
@@ -285,7 +275,7 @@ describe("sns-filters store", () => {
       ).toEqual(0);
 
       // rootCanisterId2: 1 checked
-      snsFiltersStore.setCheckType({
+      snsFiltersStore.setCheckTypes({
         rootCanisterId: rootCanisterId2,
         checkedTypes: [typeValues[0]],
       });
@@ -301,7 +291,7 @@ describe("sns-filters store", () => {
       ).toEqual(typeValues.length);
 
       // Uncheck from Project 2
-      snsFiltersStore.setCheckType({
+      snsFiltersStore.setCheckTypes({
         rootCanisterId,
         checkedTypes: [typeValues[1]],
       });

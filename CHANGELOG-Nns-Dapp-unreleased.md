@@ -17,6 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 - Disable dissolve delay editing when the maximum is reached.
 - Implement `Storable` for accounts.
 - `UnboundedStableBTreeMap` as an account storage medium.
+- Save accounts in the `pre_upgrade` hook only when accounts are stored in the heap.
 - Migration functions.
 
 #### Changed

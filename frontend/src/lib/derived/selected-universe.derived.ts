@@ -16,7 +16,7 @@ import {
 } from "$lib/stores/icrc-canisters.store";
 import type { Universe, UniverseCanisterId } from "$lib/types/universe";
 import {
-  isNonGovernanceTokenPath,
+  isAllTokensPath,
   isUniverseCkBTC,
   isUniverseCkTESTBTC,
   isUniverseNns,
@@ -68,7 +68,7 @@ export const selectedUniverseIdStore: Readable<Principal> = derived<
     const isCkBTC = isUniverseCkBTC(canisterId);
     const isIcrcToken = nonNullish(icrcCanisters[canisterId.toText()]);
     // ckBTC and ICRC Tokens are only available on Accounts therefore we fallback to Nns if selected and user switch to another view
-    if ((isCkBTC || isIcrcToken) && !isNonGovernanceTokenPath(page)) {
+    if ((isCkBTC || isIcrcToken) && !isAllTokensPath(page)) {
       return OWN_CANISTER_ID;
     }
     if (
@@ -107,7 +107,7 @@ export const selectedIcrcTokenUniverseIdStore = derived(
     Page,
     IcrcCanistersStoreData,
   ]) =>
-    isNonGovernanceTokenPath($page)
+    isAllTokensPath($page)
       ? $icrcCanistersStore[$pageUniverseIdStore.toText()]?.ledgerCanisterId
       : undefined
 );

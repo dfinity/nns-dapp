@@ -19,13 +19,13 @@ export const loadSnsFilters = async (rootCanisterId: Principal) => {
   }
   const i18nKeys = get(i18n);
   const defaultFiltersProjectData = {
-    // types will be preset in a lazy way
+    // Because types are based on the nsFunctions, they will be updated after initialization
     types: [],
     rewardStatus: [],
     decisionStatus: [],
   };
 
-  snsFiltersStore.setType({
+  snsFiltersStore.setTypes({
     rootCanisterId,
     types: defaultFiltersProjectData.types,
   });

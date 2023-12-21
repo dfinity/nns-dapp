@@ -1088,7 +1088,6 @@
     "status_in_progress_detailed": "Checking for new transactions."
   },
   "tokens": {
-    "title": "Tokens",
     "projects_header": "Projects",
     "balance_header": "Balance",
     "accounts_header": "Accounts"

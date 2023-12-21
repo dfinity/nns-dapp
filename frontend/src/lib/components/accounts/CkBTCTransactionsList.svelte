@@ -80,6 +80,8 @@
       account,
       token,
       i18n: $i18n,
+      // TODO GIX-2079: Pass actual statuses.
+      retrieveBtcStatuses: [],
     });
     return [...pendingTransactions, ...completedTransactions];
   };

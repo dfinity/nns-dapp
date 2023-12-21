@@ -1,9 +1,10 @@
 // artificial proposal type id to filter by all generic SNS types
-export const ALL_GENERIC_PROPOSAL_TYPES_ID = "sns_specific";
+export const ALL_SNS_GENERIC_PROPOSAL_TYPES_ID = "all_sns_generic_types";
 
-export type SnsProposalTypeFilterData =
-  | keyof I18nSns_types
-  | typeof ALL_GENERIC_PROPOSAL_TYPES_ID;
+// Stringified nsFunction id.
+export type SnsProposalTypeFilterId =
+  | string
+  | typeof ALL_SNS_GENERIC_PROPOSAL_TYPES_ID;
 
 export type Filter<T> = {
   name: string;
