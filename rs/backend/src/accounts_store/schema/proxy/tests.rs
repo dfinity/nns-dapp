@@ -205,7 +205,6 @@ where
     let mut accounts_db = AccountsDbAsProxy::default();
     let mut reference_db = AccountsDbAsProxy::default();
     let raw_memory = DefaultMemoryImpl::default();
-    raw_memory.grow(5);
     let memory_manager = memory_manager::MemoryManager::init(raw_memory);
     let new_accounts_db = AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::new(
         memory_manager.get(Partitions::ACCOUNTS_MEMORY_ID),
@@ -224,7 +223,6 @@ where
     R: Rng,
 {
     let raw_memory = DefaultMemoryImpl::default();
-    raw_memory.grow(5);
     let memory_manager = memory_manager::MemoryManager::init(raw_memory);
     let accounts_db = AccountsDbAsUnboundedStableBTreeMap::new(memory_manager.get(Partitions::ACCOUNTS_MEMORY_ID));
     let mut accounts_db = AccountsDbAsProxy::from(AccountsDb::UnboundedStableBTreeMap(accounts_db));
