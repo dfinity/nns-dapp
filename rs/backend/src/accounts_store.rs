@@ -28,7 +28,7 @@ use std::time::{Duration, SystemTime};
 
 pub mod histogram;
 pub mod schema;
-use schema::{proxy::AccountsDbAsProxy, AccountsDbBTreeMapTrait, AccountsDbTrait};
+use schema::{proxy::AccountsDbAsProxy, AccountsDbTrait};
 
 type TransactionIndex = u64;
 
@@ -1568,8 +1568,9 @@ impl AccountsStore {
 
 impl StableState for AccountsStore {
     fn encode(&self) -> Vec<u8> {
+        let empty_accounts = BTreeMap::<Vec<u8>, Account>::new();
         Candid((
-            &self.accounts_db.as_map(),
+            &self.accounts_db.as_map_maybe().unwrap_or(&empty_accounts),
             &self.hardware_wallets_and_sub_accounts,
             // TODO: Remove pending_transactions
             HashMap::<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>::new(),

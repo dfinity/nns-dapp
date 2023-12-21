@@ -5,18 +5,12 @@ use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
 use crate::accounts_store::schema::tests::toy_account;
-use crate::accounts_store::schema::AccountsDbBTreeMapTrait;
 use crate::accounts_store::{CanisterId, NamedCanister};
 
-use super::super::tests::{assert_map_conversions_work, test_accounts_db};
+use super::super::tests::test_accounts_db;
 use super::*;
 
 test_accounts_db!(AccountsDbAsProxy::default());
-
-#[test]
-fn map_conversions_should_work() {
-    assert_map_conversions_work::<AccountsDbAsProxy>();
-}
 
 fn migration_steps_should_work(accounts_db: &mut AccountsDbAsProxy, new_accounts_db: AccountsDb) {
     // During the migration, the accounts db should behave as if no migration were in progress,
