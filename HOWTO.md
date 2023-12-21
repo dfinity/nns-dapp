@@ -334,8 +334,7 @@ transformation to the type is required to render it in a human readable way.
 
 If no transformation is required:
 
-1. Add a new entry to [`match
-   nns_function`](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/src/proposals.rs#:~:text=match%20nns_function%20%7B).
+1. Add a new entry to [`match nns_function`](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/src/proposals.rs#:~:text=match%20nns_function%20%7B).
    Use the number you noted down above in the section "Verify that the intended
    change is for a new NNS function". And use the (non-fully qualified) name of
    the new proposal type. For example:
@@ -360,7 +359,7 @@ pub type UpdateElectedReplicaVersionsPayload =
 If a transformation is required:
 
 1. Add a new entry to [`match
-   nns_function`](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/src/proposals.rs#:~:text=match%20nns_function%20%7B).
+nns_function`](https://github.com/dfinity/nns-dapp/blob/main/rs/backend/src/proposals.rs#:~:text=match%20nns_function%20%7B).
    Use the number you noted down above in the section "Verify that the intended
    change is for a new NNS function". And use the (non-fully qualified) name of
    the new proposal type, and then repeat it with the `HumanReadable` suffix.
