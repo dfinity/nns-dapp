@@ -258,9 +258,6 @@ describe("SnsWallet", () => {
 
       await walletPo.clickReceiveButton();
 
-      runResolvedPromises();
-      expect(await receiveModalPo.isPresent()).toBe(true);
-
       await receiveModalPo.waitForQrCode();
 
       expect(await receiveModalPo.getTokenAddressLabel()).toBe("OOO Address");
