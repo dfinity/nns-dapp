@@ -6,6 +6,10 @@ use core::fmt;
 use core::ops::RangeBounds;
 use ic_cdk::println;
 use std::collections::BTreeMap;
+#[cfg(test)]
+use super::accounts_in_unbounded_stable_btree_map::{AccountsDbAsUnboundedStableBTreeMap, ProductionMemoryType};
+#[cfg(test)]
+use ic_stable_structures::{DefaultMemoryImpl, memory_manager::VirtualMemory};
 
 mod enum_boilerplate;
 mod migration;
@@ -54,11 +58,13 @@ impl fmt::Debug for Migration {
 #[derive(Debug)]
 pub enum AccountsDb {
     Map(AccountsDbAsMap),
+    #[cfg(test)]
+    UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap<ProductionMemoryType>),
 }
 
 // Constructors
 impl AccountsDbAsProxy {
-    /// Creates a new proxy usinga map as the underlying storage.
+    /// Creates a new proxy using a map as the underlying storage.
     pub fn new_with_map() -> Self {
         Self {
             authoritative_db: AccountsDb::Map(AccountsDbAsMap::default()),
@@ -75,6 +81,24 @@ impl AccountsDbAsProxy {
     pub fn as_map_maybe(&self) -> Option<&BTreeMap<Vec<u8>, Account>> {
         match &self.authoritative_db {
             AccountsDb::Map(map_db) => Some(map_db.as_map()),
+            #[cfg(test)]
+            AccountsDb::UnboundedStableBTreeMap(_) => None,
+        }
+    }
+    #[cfg(test)]
+    pub fn new_with_unbounded_stable_btree_map(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
+        println!("New Proxy: AccountsInStableMemory");
+        Self {
+            authoritative_db: AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::new(memory)),
+            migration: None,
+        }
+    }
+    #[cfg(test)]
+    pub fn load_with_unbounded_stable_btree_map(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
+        println!("Load Proxy: AccountsInStableMemory");
+        Self {
+            authoritative_db: AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::load(memory)),
+            migration: None,
         }
     }
 }

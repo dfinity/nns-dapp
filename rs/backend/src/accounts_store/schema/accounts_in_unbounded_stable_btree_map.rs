@@ -12,10 +12,12 @@ use ic_stable_structures::DefaultMemoryImpl;
 use ic_stable_structures::{btreemap::BTreeMap as StableBTreeMap, Memory};
 #[cfg(test)]
 use std::collections::BTreeMap as StdBTreeMap;
+#[cfg(test)]
+use ic_stable_structures::memory_manager::VirtualMemory;
 use std::fmt;
 
-// TODO: Uncomment when used.
-// type ProductionMemoryType = VirtualMemory<DefaultMemoryImpl>;
+#[cfg(test)]
+pub type ProductionMemoryType = VirtualMemory<DefaultMemoryImpl>;
 
 pub struct AccountsDbAsUnboundedStableBTreeMap<M>
 where
