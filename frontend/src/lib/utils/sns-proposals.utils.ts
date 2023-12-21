@@ -526,37 +526,45 @@ export const toExcludeTypeParameter = ({
 // Generate new "type" filter data, but preserve the checked state of the current filter state
 export const generateSnsProposalTypeFilterData = ({
   nsFunctions,
-  currentFilterState,
+  typesFilterState,
 }: {
   nsFunctions: SnsNervousSystemFunction[];
-  currentFilterState: Filter<SnsProposalTypeFilterId>[];
+  typesFilterState: Filter<SnsProposalTypeFilterId>[];
 }): Filter<SnsProposalTypeFilterId>[] => {
-  const i18nKeys = get(i18n);
-  const nativeNsFunctionIds = nsFunctions
+  // transfer only unchecked entries to preselect new items that are not in the current filter state
+  const getCheckedState = (id: string) =>
+    typesFilterState.find(({ id: stateId }) => id === stateId)?.checked ===
+    false
+      ? false
+      : true;
+  const nativeNsFunctionEntries = nsFunctions
     .filter(isNativeNervousSystemFunction)
     // ignore { 0n: "All Topics"}
     .filter(({ id }) => id !== ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID)
-    .map(({ id }) => `${id}`);
-  const hasGenericNsFunctions =
-    nsFunctions.filter(isGenericNervousSystemFunction).length > 0;
-  const filterableIds = hasGenericNsFunctions
-    ? [...nativeNsFunctionIds, ALL_SNS_GENERIC_PROPOSAL_TYPES_ID]
-    : nativeNsFunctionIds;
-  const mapToFilterData = (id: string): Filter<SnsProposalTypeFilterId> => ({
-    id,
-    value: id,
-    name:
-      i18nKeys.sns_types[id as keyof typeof i18nKeys.sns_types] ??
-      // TODO(max): first use native names as fallback
-      i18nKeys.core.unspecified,
-    checked:
+    .map((entry) => ({
+      ...entry,
+      id: `${entry.id}`,
+    }))
+    .map(({ id, name }) => ({
+      id,
+      value: id,
+      name: name,
       // transfer only unchecked entries to preselect new items that are not in the current filter state
-      currentFilterState.find(({ id: stateId }) => id === stateId)?.checked ===
-      false
-        ? false
-        : true,
-  });
-  return filterableIds.map(mapToFilterData);
+      checked: getCheckedState(id),
+    }));
+  const genericNsFunctionEntries =
+    nsFunctions.filter(isGenericNervousSystemFunction).length > 0
+      ? [
+          // "All Generic" entry
+          {
+            id: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
+            value: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
+            name: get(i18n).sns_types.sns_specific,
+            checked: getCheckedState(ALL_SNS_GENERIC_PROPOSAL_TYPES_ID),
+          },
+        ]
+      : [];
+  return [...nativeNsFunctionEntries, ...genericNsFunctionEntries];
 };
 
 export const fromPercentageBasisPoints = (

@@ -991,17 +991,6 @@ interface I18nUniverse {
 }
 
 interface I18nSns_types {
-  1: string;
-  2: string;
-  3: string;
-  4: string;
-  5: string;
-  6: string;
-  7: string;
-  8: string;
-  9: string;
-  10: string;
-  11: string;
   sns_specific: string;
 }
 
