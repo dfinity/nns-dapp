@@ -9,7 +9,7 @@ import userEvent from "@testing-library/user-event";
 export class JestPageObjectElement implements PageObjectElement {
   // The element represented by JestPageObjectElement is found by applying the
   // selector to the base element.
-  private baseElement: Element;
+  private readonly baseElement: Element;
   private readonly selector: string | undefined;
 
   constructor(element: Element, params?: { selector: string }) {
