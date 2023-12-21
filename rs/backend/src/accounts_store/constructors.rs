@@ -1,18 +1,18 @@
 //! Account store constructors.
 use super::*;
-use ic_cdk::println;
-use ic_stable_structures::{memory_manager::VirtualMemory, DefaultMemoryImpl};
 
-impl AccountsStore {
-    pub fn new_with_unbounded_stable_btree_map(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
-        println!("New AccountsStore: AccountsInStableMemory");
+impl From<AccountsDb> for AccountsStore {
+    fn from(db: AccountsDb) -> Self {
         AccountsStore {
-            accounts_db: AccountsDbAsProxy::new_with_unbounded_stable_btree_map(memory),
+            accounts_db: AccountsDbAsProxy::from(db),
             ..Default::default()
         }
     }
-    pub fn load_unbounded_stable_btree_map(&mut self, memory: VirtualMemory<DefaultMemoryImpl>) {
-        println!("Load AccountsDb: AccountsInStableMemory");
-        self.accounts_db = AccountsDbAsProxy::load_with_unbounded_stable_btree_map(memory);
+}
+
+impl AccountsStore {
+    /// Adds an accounts_db to the store.
+    pub fn with_accounts_db(&mut self, accounts_db: AccountsDb) {
+        self.accounts_db = AccountsDbAsProxy::from(accounts_db);
     }
 }

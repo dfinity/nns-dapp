@@ -16,7 +16,9 @@ fn migration_steps_should_work(accounts_db: &mut AccountsDbAsProxy, new_accounts
     // During the migration, the accounts db should behave as if no migration were in progress,
     // regardless of what CRUD operations are performed.  We check this by running another database
     // with the same contents but no migration.
-    let reference_db = AccountsDbAsProxy::from_map(accounts_db.range(..).collect());
+    let reference_db = AccountsDbAsProxy::from(AccountsDb::Map(AccountsDbAsMap::from_map(
+        accounts_db.range(..).collect(),
+    )));
     assert_eq!(*accounts_db, reference_db);
     // Start the migration.
     accounts_db.start_migrating_accounts_to(new_accounts_db);

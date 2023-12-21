@@ -139,8 +139,9 @@ impl State {
             SchemaLabel::AccountsInStableMemory => {
                 println!("New State: AccountsInStableMemory");
                 let partitions = Partitions::new_for_schema(memory, schema);
-                let accounts_store =
-                    AccountsStore::new_with_unbounded_stable_btree_map(partitions.get(Partitions::ACCOUNTS_MEMORY_ID));
+                let accounts_store = AccountsStore::from(AccountsDb::UnboundedStableBTreeMap(
+                    AccountsDbAsUnboundedStableBTreeMap::new(partitions.get(Partitions::ACCOUNTS_MEMORY_ID)),
+                ));
                 State {
                     accounts_store: RefCell::new(accounts_store),
                     assets: RefCell::new(Assets::default()),
@@ -236,10 +237,10 @@ impl From<Partitions> for State {
             // Accounts are in stable structures in one partition, the rest of the heap is serialized as candid in another partition.
             SchemaLabel::AccountsInStableMemory => {
                 let state = Self::recover_heap_from_managed_memory(partitions.get(Partitions::HEAP_MEMORY_ID));
-                state
-                    .accounts_store
-                    .borrow_mut()
-                    .load_unbounded_stable_btree_map(partitions.get(Partitions::ACCOUNTS_MEMORY_ID));
+                let accounts_db = AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::load(
+                    partitions.get(Partitions::ACCOUNTS_MEMORY_ID),
+                ));
+                state.accounts_store.borrow_mut().with_accounts_db(accounts_db);
                 state
                     .partitions_maybe
                     .replace(Ok(partitions))

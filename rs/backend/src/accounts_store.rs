@@ -31,6 +31,9 @@ use std::collections::{BTreeMap, HashMap, HashSet, VecDeque};
 use std::ops::RangeTo;
 use std::time::{Duration, SystemTime};
 
+use self::schema::map::AccountsDbAsMap;
+use self::schema::AccountsDbBTreeMapTrait;
+
 pub mod constructors;
 pub mod histogram;
 pub mod schema;
@@ -1663,8 +1666,10 @@ impl StableState for AccountsStore {
             }
         };
 
+        let accounts_db = AccountsDb::Map(AccountsDbAsMap::from_map(accounts));
+
         Ok(AccountsStore {
-            accounts_db: AccountsDbAsProxy::from_map(accounts),
+            accounts_db: AccountsDbAsProxy::from(accounts_db),
             hardware_wallets_and_sub_accounts,
             pending_transactions,
             transactions,
