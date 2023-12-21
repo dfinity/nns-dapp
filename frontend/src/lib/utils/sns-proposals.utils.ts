@@ -482,7 +482,6 @@ export const getUniversalProposalStatus = (
   return statusType;
 };
 
-// TODO(max): add tests (w/ and w/o GenericNervousSystemFunction, no AllTopics)
 /**
  * Returns the proposal type ids that should be excluded from the response.
  */

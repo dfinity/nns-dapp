@@ -20,7 +20,12 @@ import {
   sortSnsProposalsById,
   toExcludeTypeParameter,
 } from "$lib/utils/sns-proposals.utils";
-import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
+import {
+  allTopicsNervousSystemFunctionMock,
+  genericNervousSystemFunctionMock,
+  nativeNervousSystemFunctionMock,
+  nervousSystemFunctionMock,
+} from "$tests/mocks/sns-functions.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import {
   createSnsProposal,
@@ -37,8 +42,8 @@ import {
   type SnsProposalData,
   type SnsTally,
 } from "@dfinity/sns";
-import type { GenericNervousSystemFunction } from "@dfinity/sns/dist/candid/sns_governance";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
+import { expect } from "@playwright/test";
 import { beforeEach } from "vitest";
 
 describe("sns-proposals utils", () => {
@@ -645,40 +650,16 @@ describe("sns-proposals utils", () => {
   });
 
   describe("toExcludeTypeParameter", () => {
-    // Prepare sns functions
-    const allTopicsNativeNsFunction: SnsNervousSystemFunction = {
-      id: 0n,
-      name: "All Topics",
-      description: ["string"],
-      function_type: [{ NativeNervousSystemFunction: {} }],
-    };
-    const nativeNsFunction: SnsNervousSystemFunction = {
-      id: 1n,
-      name: "name",
-      description: ["string"],
-      function_type: [{ NativeNervousSystemFunction: {} }],
-    };
-    const genericNsFunction: SnsNervousSystemFunction = {
-      id: 1001n,
-      name: "name",
-      description: ["string"],
-      function_type: [
-        {
-          GenericNervousSystemFunction:
-            {} as unknown as GenericNervousSystemFunction,
-        },
-      ],
-    };
     const snsFunctions: SnsNervousSystemFunction[] = [
-      allTopicsNativeNsFunction,
-      nativeNsFunction,
-      genericNsFunction,
+      allTopicsNervousSystemFunctionMock,
+      nativeNervousSystemFunctionMock,
+      genericNervousSystemFunctionMock,
     ];
     // Prepare type filters
     const nativeFilterEntry: Filter<SnsProposalTypeFilterId> = {
       id: "1",
       name: "string",
-      value: nativeNsFunction,
+      value: "1",
       checked: true,
     };
     const snsSpecificFilterEntry: Filter<SnsProposalTypeFilterId> = {
