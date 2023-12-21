@@ -26,11 +26,11 @@
 
   $: if (nonNullish(nsFunctions)) {
     // Always update type filters in case of backend changes
-    snsFiltersStore.setType({
+    snsFiltersStore.setTypes({
       rootCanisterId,
       types: generateSnsProposalTypeFilterData({
         nsFunctions,
-        currentFilterState: filtersStore?.types ?? [],
+        typesFilterState: filtersStore?.types ?? [],
       }),
     });
     filtersStore = $snsFiltersStore[rootCanisterId.toText()];

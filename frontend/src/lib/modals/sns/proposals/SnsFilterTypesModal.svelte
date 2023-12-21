@@ -22,7 +22,7 @@
   const dispatch = createEventDispatcher();
   let filter: () => void;
   $: filter = () => {
-    snsFiltersStore.setCheckType({
+    snsFiltersStore.setCheckTypes({
       checkedTypes: selectedFilters,
       rootCanisterId,
     });
