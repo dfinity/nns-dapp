@@ -147,6 +147,7 @@ interface I18nWarning {
 
 interface I18nNavigation {
   tokens: string;
+  universe_tokens: string;
   canisters: string;
   neurons: string;
   voting: string;
@@ -1126,7 +1127,6 @@ interface I18nSync {
 }
 
 interface I18nTokens {
-  title: string;
   projects_header: string;
   balance_header: string;
   accounts_header: string;
