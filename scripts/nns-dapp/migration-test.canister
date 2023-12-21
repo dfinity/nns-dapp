@@ -127,6 +127,7 @@ upgrade_nnsdapp() {
   dfx canister install --upgrade-unchanged nns-dapp --wasm "$wasm" --mode upgrade --argument "$argument" --yes
   scripts/dfx-canister-check-wasm-hash --wasm "$wasm" --canister nns-dapp
   verify_healthy
+  sleep 5 # TODO: Wait for the upgrade to complete.
   wait_for_migration
   verify_healthy
   poststate="$(get_upgrade_invariants)"

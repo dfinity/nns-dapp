@@ -75,7 +75,7 @@ impl core::fmt::Debug for State {
 
 impl State {
     pub fn replace(&self, new_state: State) {
-        println!("Replacing state with: {new_state:?}");
+        println!("Replacing state:\n {self:?}\nwith:\n{new_state:?}");
         let State {
             accounts_store,
             assets,
