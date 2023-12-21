@@ -7,7 +7,7 @@ import { expect, test } from "@playwright/test";
 
 test("Test neuron voting", async ({ page, context }) => {
   await page.goto("/accounts");
-  await expect(page).toHaveTitle("My Tokens / NNS Dapp");
+  await expect(page).toHaveTitle("My ICP Tokens / NNS Dapp");
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);

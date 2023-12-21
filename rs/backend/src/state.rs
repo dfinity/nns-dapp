@@ -193,17 +193,12 @@ impl State {
                 SchemaLabel::Map => AccountsDb::Map(AccountsDbAsMap::default()),
                 SchemaLabel::AccountsInStableMemory => {
                     // If the memory isn't partitioned, partition it now.
-                    if let Err(memory) = self
-                        .partitions_maybe
-                        .borrow()
-                        .as_ref()
-                        .map_err(Partitions::copy_memory_reference)
                     {
-                        let partitions = Partitions::new_for_schema(memory, schema);
-                        self.partitions_maybe
-                            .replace(Ok(partitions))
-                            .map(|_| ())
-                            .unwrap_or_default();
+                        let mut partitions_maybe = self.partitions_maybe.borrow_mut();
+                        if let Err(memory) = partitions_maybe.as_ref().map_err(Partitions::copy_memory_reference) {
+                            println!("start_migration_to: Creating new partitions for schema {schema:?}.");
+                            *partitions_maybe = Ok(Partitions::new_for_schema(memory, schema));
+                        };
                     }
                     let vm = self
                         .partitions_maybe

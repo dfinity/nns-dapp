@@ -84,9 +84,6 @@ impl AccountsDbAsProxy {
             migration: None,
         }
     }
-}
-
-impl AccountsDbAsProxy {
     pub fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
         Self {
             authoritative_db: AccountsDb::Map(AccountsDbAsMap::from_map(map)),

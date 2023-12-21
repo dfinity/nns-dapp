@@ -11,7 +11,11 @@ import { AccountTransactionType } from "$lib/types/transaction";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { transactionName } from "$lib/utils/transactions.utils";
 import { Cbor } from "@dfinity/agent";
-import type { PendingUtxo, RetrieveBtcStatusV2 } from "@dfinity/ckbtc";
+import type {
+  PendingUtxo,
+  RetrieveBtcStatusV2,
+  RetrieveBtcStatusV2WithId,
+} from "@dfinity/ckbtc";
 import type {
   IcrcTransaction,
   IcrcTransactionWithId,
@@ -332,14 +336,22 @@ export const mapCkbtcTransactions = ({
   account,
   token,
   i18n,
+  retrieveBtcStatuses,
 }: {
   transactionData: IcrcTransactionData[];
   account: Account;
   token: Token | undefined;
   i18n: I18n;
+  retrieveBtcStatuses: RetrieveBtcStatusV2WithId[];
 }): UiTransaction[] => {
   let prevTransaction: IcrcTransactionWithId | undefined = undefined;
   let prevUiTransaction: UiTransaction | undefined = undefined;
+  const statusById = new Map<bigint, RetrieveBtcStatusV2>();
+  for (const { id, status } of retrieveBtcStatuses) {
+    if (status) {
+      statusById.set(id, status);
+    }
+  }
   return transactionData
     .map(({ transaction, toSelfTransaction }: IcrcTransactionData) => {
       if (
@@ -363,6 +375,7 @@ export const mapCkbtcTransactions = ({
         account,
         token,
         i18n,
+        retrieveBtcStatus: statusById.get(transaction.id),
       });
       prevTransaction = transaction;
       prevUiTransaction = uiTransaction;
