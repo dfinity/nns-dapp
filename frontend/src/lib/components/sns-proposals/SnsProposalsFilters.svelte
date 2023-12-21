@@ -52,7 +52,6 @@
     activeFilters={filtersStore?.types.filter(({ checked }) => checked)
       .length ?? 0}
     on:nnsFilter={() => openFilters("types")}
-    showSpinner={filtersStore?.types.length === 0}
   >
     {$i18n.voting.topics}
   </FiltersButton>
