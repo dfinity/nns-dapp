@@ -73,7 +73,7 @@ impl Partitions {
     pub fn copy_memory_reference(memory: &DefaultMemoryImpl) -> DefaultMemoryImpl {
         // Empty structure that makes API calls.  Can be cloned.
         #[cfg(target_arch = "wasm32")]
-        let ans = (*memory).clone();
+        let ans = *memory;
         // Reference counted pointer.  Make a copy of the pointer.
         #[cfg(not(target_arch = "wasm32"))]
         let ans = Rc::clone(memory);
