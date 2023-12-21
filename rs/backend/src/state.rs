@@ -98,7 +98,7 @@ impl State {
         match self.partitions_maybe.borrow().as_ref() {
             Ok(partitions) => {
                 println!(
-                    "State: schema_label for mannaged memory: {:?}",
+                    "State: schema_label for managed memory: {:?}",
                     partitions.schema_label()
                 );
                 partitions.schema_label()
