@@ -521,7 +521,6 @@ export const toExcludeTypeParameter = ({
   );
 };
 
-// TODO(max): unit test me! (w/ and w/o GenericNervousSystemFunction, no AllTopics)
 // Generate new "type" filter data, but preserve the checked state of the current filter state
 export const generateSnsProposalTypeFilterData = ({
   nsFunctions,
@@ -532,10 +531,8 @@ export const generateSnsProposalTypeFilterData = ({
 }): Filter<SnsProposalTypeFilterId>[] => {
   // transfer only unchecked entries to preselect new items that are not in the current filter state
   const getCheckedState = (id: string) =>
-    typesFilterState.find(({ id: stateId }) => id === stateId)?.checked ===
-    false
-      ? false
-      : true;
+    typesFilterState.find(({ id: stateId }) => id === stateId)?.checked !==
+    false;
   const nativeNsFunctionEntries = nsFunctions
     .filter(isNativeNervousSystemFunction)
     // ignore { 0n: "All Topics"}
