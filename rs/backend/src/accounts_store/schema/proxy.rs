@@ -71,14 +71,14 @@ impl AccountsDbAsProxy {
         }
     }
     pub fn new_with_unbounded_stable_btree_map(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
-        dfn_core::api::print("New Proxy: AccountsInStableMemory");
+        println!("New Proxy: AccountsInStableMemory");
         Self {
             authoritative_db: AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::new(memory)),
             migration: None,
         }
     }
     pub fn load_with_unbounded_stable_btree_map(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
-        dfn_core::api::print("Load Proxy: AccountsInStableMemory");
+        println!("Load Proxy: AccountsInStableMemory");
         Self {
             authoritative_db: AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::load(memory)),
             migration: None,

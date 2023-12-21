@@ -9,6 +9,7 @@ use core::fmt;
 use dfn_candid::Candid;
 use histogram::AccountsStoreHistogram;
 use ic_base_types::{CanisterId, PrincipalId};
+use ic_cdk::println;
 use ic_crypto_sha::Sha256;
 use ic_ledger_core::timestamp::TimeStamp;
 use ic_ledger_core::tokens::SignedTokens;
@@ -1129,7 +1130,7 @@ impl AccountsStore {
         stats.schema = Some(self.accounts_db.schema_label() as u32);
         stats.migration_countdown = Some(self.accounts_db.migration_countdown());
 
-        dfn_core::api::print(format!("AccountsStore: get_stats: Schema set to: {:?}", stats.schema));
+        println!("AccountsStore: get_stats: Schema set to: {:?}", stats.schema);
     }
 
     pub fn get_histogram(&self) -> AccountsStoreHistogram {

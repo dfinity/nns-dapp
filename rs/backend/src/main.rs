@@ -44,7 +44,7 @@ type Cycles = u128;
 ///
 /// # Guarantees
 /// - The stable memory will be set up for the requested schema.
-/// - The state will be set for the appropraiet
+/// - The state will be set for the appropriate schema.
 #[init]
 fn init(args: Option<CanisterArguments>) {
     println!("init with args: {args:#?}");

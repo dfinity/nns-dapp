@@ -9,9 +9,9 @@ use crate::assets::AssetHashes;
 use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
 use core::cell::RefCell;
-
 use dfn_candid::Candid;
 use dfn_core::api::trap_with;
+use ic_cdk::println;
 use ic_stable_structures::DefaultMemoryImpl;
 use on_wire::{FromWire, IntoWire};
 use partitions::Partitions;
@@ -75,7 +75,7 @@ impl core::fmt::Debug for State {
 
 impl State {
     pub fn replace(&self, new_state: State) {
-        dfn_core::api::print(format!("Replacing state with: {new_state:?}"));
+        println!("Replacing state with: {new_state:?}");
         let State {
             accounts_store,
             assets,
@@ -97,14 +97,14 @@ impl State {
     pub fn schema_label(&self) -> SchemaLabel {
         match self.partitions_maybe.borrow().as_ref() {
             Ok(partitions) => {
-                dfn_core::api::print(format!(
+                println!(
                     "State: schema_label for mannaged memory: {:?}",
                     partitions.schema_label()
-                ));
+                );
                 partitions.schema_label()
             }
             Err(_memory) => {
-                dfn_core::api::print("State: schema_label for raw memory is: Map");
+                println!("State: schema_label for raw memory is: Map");
                 SchemaLabel::Map
             }
         }
@@ -126,7 +126,7 @@ impl State {
     pub fn new(schema: SchemaLabel, memory: DefaultMemoryImpl) -> Self {
         let state = match schema {
             SchemaLabel::Map => {
-                dfn_core::api::print("New State: Map");
+                println!("New State: Map");
                 State {
                     accounts_store: RefCell::new(AccountsStore::default()),
                     assets: RefCell::new(Assets::default()),
@@ -136,7 +136,7 @@ impl State {
                 }
             }
             SchemaLabel::AccountsInStableMemory => {
-                dfn_core::api::print("New State: AccountsInStableMemory");
+                println!("New State: AccountsInStableMemory");
                 let partitions = Partitions::new_for_schema(memory, schema);
                 let accounts_store =
                     AccountsStore::new_with_unbounded_stable_btree_map(partitions.get(Partitions::ACCOUNTS_MEMORY_ID));
@@ -186,9 +186,7 @@ impl State {
     pub fn start_migration_to(&mut self, schema: SchemaLabel) {
         let schema_now = self.schema_label();
         if schema_now == schema {
-            dfn_core::api::print(format!(
-                "start_migration_to: No migration needed.  Schema is already {schema:?}."
-            ));
+            println!("start_migration_to: No migration needed.  Schema is already {schema:?}.");
         } else {
             let new_accounts_db = match schema {
                 SchemaLabel::Map => AccountsDb::Map(AccountsDbAsMap::default()),
@@ -227,9 +225,9 @@ impl State {
 /// The state structure then owns everything on the heap and in stable memory.
 impl From<Partitions> for State {
     fn from(partitions: Partitions) -> Self {
-        dfn_core::api::print("state::from<Partitions>: ()");
+        println!("state::from<Partitions>: ()");
         let schema = partitions.schema_label();
-        dfn_core::api::print(format!("state::from<Partitions>: from_schema: {schema:#?}"));
+        println!("state::from<Partitions>: from_schema: {schema:#?}");
         match schema {
             // The schema claims to read from raw memory, but we got the label from amnaged memory.  This is a bug.
             SchemaLabel::Map => {
@@ -259,7 +257,7 @@ impl From<Partitions> for State {
 /// Loads state from stable memory.
 impl From<DefaultMemoryImpl> for State {
     fn from(memory: DefaultMemoryImpl) -> Self {
-        dfn_core::api::print("START state::from<DefaultMemoryImpl>: ())");
+        println!("START state::from<DefaultMemoryImpl>: ())");
         match Partitions::try_from_memory(memory) {
             Ok(partitions) => Self::from(partitions),
             Err(_memory) => Self::recover_from_raw_memory(),
@@ -296,11 +294,11 @@ impl State {
     /// Save any unsaved state to stable memory.
     pub fn pre_upgrade(&self) {
         let schema = self.schema_label();
-        dfn_core::api::print(format!(
+        println!(
             "START State pre_upgrade from: {:?} (accounts: {:?})",
             &schema,
             self.accounts_store.borrow().schema_label()
-        ));
+        );
         match schema {
             SchemaLabel::Map => self.save_to_raw_memory(),
             SchemaLabel::AccountsInStableMemory => self.save_heap_to_managed_memory(), // TODO: Better naming for this.  save_heap_to_managed_memory()? TODO: Don't get managed memory afresh - get it from inside the state.

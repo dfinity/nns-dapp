@@ -1,5 +1,6 @@
 //! Code for migration from the authoritative database to a new database.
 use super::*;
+use ic_cdk::println;
 
 impl AccountsDbAsProxy {
     /// The number of accounts to move per heartbeat.
@@ -41,10 +42,10 @@ impl AccountsDbAsProxy {
             db: accounts_db,
             next_to_migrate: self.authoritative_db.iter().next().map(|(key, _account)| key.clone()),
         };
-        dfn_core::api::print(format!(
+        println!(
             "Starting account migration: {:?} -> {:?}",
             self.authoritative_db, migration.db
-        ));
+        );
         self.migration = Some(migration);
     }
 
@@ -52,10 +53,7 @@ impl AccountsDbAsProxy {
     pub fn step_migration(&mut self) {
         if let Some(migration) = &mut self.migration {
             if let Some(next_to_migrate) = &migration.next_to_migrate {
-                dfn_core::api::print(format!(
-                    "Stepping migration: {:?} -> {:?}",
-                    self.authoritative_db, migration.db
-                ));
+                println!("Stepping migration: {:?} -> {:?}", self.authoritative_db, migration.db);
                 let mut range = self.authoritative_db.range(next_to_migrate.clone()..);
                 for (key, account) in (&mut range).take(Self::MIGRATION_STEP_SIZE as usize) {
                     migration.db.db_insert_account(&key, account);
@@ -70,10 +68,10 @@ impl AccountsDbAsProxy {
     /// Completes any migration in progress.
     pub fn complete_migration(&mut self) {
         if let Some(migration) = self.migration.take() {
-            dfn_core::api::print(format!(
+            println!(
                 "Account migration complete: {:?} -> {:?}",
                 self.authoritative_db, migration.db
-            ));
+            );
             self.authoritative_db = migration.db;
         }
     }

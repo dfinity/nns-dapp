@@ -3,13 +3,14 @@ use super::partitions::Partitions;
 use super::State;
 use crate::state::StableState;
 use dfn_core::api::trap_with;
+use ic_cdk::println;
 use ic_stable_structures::memory_manager::VirtualMemory;
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
 
 impl State {
     /// Save heap to raw or virtual memory.
     pub fn save_heap_to_managed_memory(&self) {
-        dfn_core::api::print("START state::save_heap: ()");
+        println!("START state::save_heap: ()");
         let bytes = self.encode();
         if let Ok(partitions) = self.partitions_maybe.borrow().as_ref() {
             let len = bytes.len();
@@ -24,7 +25,7 @@ impl State {
             partitions.growing_write(Partitions::HEAP_MEMORY_ID, 0, &length_field);
             partitions.growing_write(Partitions::HEAP_MEMORY_ID, 8, &bytes);
         } else {
-            dfn_core::api::print("END state::save_heap: ()");
+            println!("END state::save_heap: ()");
             trap_with("No memory manager found.  Cannot save heap.");
             unreachable!();
         }
