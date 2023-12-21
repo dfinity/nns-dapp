@@ -43,7 +43,9 @@
 
   {#if addressSelected && qrCodeRendered}
     <div data-tid="qr-address-label" class="address-block">
-      <p class="label no-margin"><slot name="address-label" /></p>
+      <p class="label no-margin" data-tid="token-address-label">
+        <slot name="address-label" />
+      </p>
       <div class="address">
         <span class="value" data-tid="qrcode-display-address">{address}</span>
         <Copy value={address ?? ""} />
