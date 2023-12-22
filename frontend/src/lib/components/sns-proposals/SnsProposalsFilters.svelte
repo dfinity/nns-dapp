@@ -12,7 +12,7 @@
   import SnsFilterRewardsModal from "$lib/modals/sns/proposals/SnsFilterRewardsModal.svelte";
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
   import { nonNullish } from "@dfinity/utils";
-  import { generateSnsProposalTypeFilterData } from "$lib/utils/sns-proposals.utils";
+  import { generateSnsProposalTypesFilterData } from "$lib/utils/sns-proposals.utils";
   import { IS_TEST_ENV } from "$lib/constants/mockable.constants";
 
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;
@@ -28,7 +28,7 @@
     // Always update type filters in case of backend changes
     snsFiltersStore.setTypes({
       rootCanisterId,
-      types: generateSnsProposalTypeFilterData({
+      types: generateSnsProposalTypesFilterData({
         nsFunctions,
         typesFilterState: filtersStore?.types ?? [],
       }),

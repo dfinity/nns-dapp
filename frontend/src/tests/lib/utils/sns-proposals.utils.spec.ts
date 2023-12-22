@@ -5,7 +5,7 @@ import { enumValues } from "$lib/utils/enum.utils";
 import {
   ballotVotingPower,
   fromPercentageBasisPoints,
-  generateSnsProposalTypeFilterData,
+  generateSnsProposalTypesFilterData,
   getUniversalProposalStatus,
   isAccepted,
   lastProposalId,
@@ -669,7 +669,7 @@ describe("sns-proposals utils", () => {
         ];
 
         expect(
-          generateSnsProposalTypeFilterData({
+          generateSnsProposalTypesFilterData({
             nsFunctions,
             typesFilterState: [],
           })
@@ -684,7 +684,7 @@ describe("sns-proposals utils", () => {
         ];
 
         expect(
-          generateSnsProposalTypeFilterData({
+          generateSnsProposalTypesFilterData({
             nsFunctions,
             typesFilterState: [],
           })
@@ -699,7 +699,7 @@ describe("sns-proposals utils", () => {
         ];
 
         expect(
-          generateSnsProposalTypeFilterData({
+          generateSnsProposalTypesFilterData({
             nsFunctions,
             typesFilterState: [],
           })
@@ -715,7 +715,7 @@ describe("sns-proposals utils", () => {
         ];
 
         expect(
-          generateSnsProposalTypeFilterData({
+          generateSnsProposalTypesFilterData({
             nsFunctions,
             typesFilterState: [],
           })
@@ -759,7 +759,7 @@ describe("sns-proposals utils", () => {
         ];
 
         expect(
-          generateSnsProposalTypeFilterData({
+          generateSnsProposalTypesFilterData({
             nsFunctions,
             typesFilterState,
           })
@@ -807,7 +807,7 @@ describe("sns-proposals utils", () => {
         ];
 
         expect(
-          generateSnsProposalTypeFilterData({
+          generateSnsProposalTypesFilterData({
             nsFunctions,
             typesFilterState,
           })
