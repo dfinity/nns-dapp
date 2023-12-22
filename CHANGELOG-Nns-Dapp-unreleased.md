@@ -21,6 +21,7 @@ proposal is successful, the changes it released will be moved from this file to
 - Save account stats in the `pre_upgrade` hook rather than recomputing them in the `post_upgrade` hook.
 - Migration functions.
 - Render pending and failed BTC withdrawal transaction as such.
+- Add `ENABLE_SNS_TYPES_FILTER` feature flag.
 
 #### Changed
 
