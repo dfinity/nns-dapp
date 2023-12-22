@@ -20,6 +20,7 @@ import { SnsWalletPo } from "$tests/page-objects/SnsWallet.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
@@ -84,6 +85,7 @@ describe("SnsWallet", () => {
     vi.clearAllMocks();
     snsAccountsStore.reset();
     transactionsFeesStore.reset();
+    toastsStore.reset();
     vi.spyOn(snsIndexApi, "getSnsTransactions").mockResolvedValue({
       oldestTxId: BigInt(1234),
       transactions: [mockIcrcTransactionWithId],
@@ -299,6 +301,12 @@ describe("SnsWallet", () => {
         path: AppPath.Accounts,
         universe: rootCanisterIdText,
       });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: 'Sorry, the account "" was not found',
+        },
+      ]);
     });
 
     it("should nagigate to accounts when account identifier is invalid", async () => {
@@ -313,6 +321,12 @@ describe("SnsWallet", () => {
         path: AppPath.Accounts,
         universe: rootCanisterIdText,
       });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: 'Sorry, the account "invalid-account-identifier" was not found',
+        },
+      ]);
     });
 
     it("should stay on the wallet page when account identifier is valid", async () => {
@@ -327,6 +341,7 @@ describe("SnsWallet", () => {
         path: AppPath.Wallet,
         universe: rootCanisterIdText,
       });
+      expect(get(toastsStore)).toEqual([]);
     });
   });
 });
