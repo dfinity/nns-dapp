@@ -1,11 +1,6 @@
 (opt record{
   args = vec {
     record{ 0="API_HOST"; 1="http://localhost:8080" };
-    record{ 0="CKBTC_INDEX_CANISTER_ID"; 1="c5kvi-uuaaa-aaaaa-qaaia-cai" };
-    record{ 0="CKBTC_LEDGER_CANISTER_ID"; 1="aovwi-4maaa-aaaaa-qaagq-cai" };
-    record{ 0="CKBTC_MINTER_CANISTER_ID"; 1="ahw5u-keaaa-aaaaa-qaaha-cai" };
-    record{ 0="CKETH_INDEX_CANISTER_ID"; 1="ctiya-peaaa-aaaaa-qaaja-cai" };
-    record{ 0="CKETH_LEDGER_CANISTER_ID"; 1="c2lt4-zmaaa-aaaaa-qaaiq-cai" };
     record{ 0="CYCLES_MINTING_CANISTER_ID"; 1="rkp4c-7iaaa-aaaaa-aaaca-cai" };
     record{ 0="DFX_NETWORK"; 1="local" };
     record{ 0="FEATURE_FLAGS"; 1="{\"ENABLE_CKBTC\":true,\"ENABLE_CKBTC_ICRC2\":true,\"ENABLE_CKETH\":true,\"ENABLE_CKTESTBTC\":false,\"ENABLE_ICP_ICRC\":false,\"ENABLE_MY_TOKENS\":false,\"ENABLE_SNS\":true,\"ENABLE_SNS_2\":true,\"ENABLE_SNS_TYPES_FILTER\":false}" };
@@ -14,9 +9,9 @@
     record{ 0="HOST"; 1="http://localhost:8080" };
     record{ 0="IDENTITY_SERVICE_URL"; 1="http://qhbym-qaaaa-aaaaa-aaafq-cai.localhost:8080" };
     record{ 0="LEDGER_CANISTER_ID"; 1="ryjl3-tyaaa-aaaaa-aaaba-cai" };
-    record{ 0="OWN_CANISTER_ID"; 1="qsgjb-riaaa-aaaaa-aaaga-cai" };
+    record{ 0="OWN_CANISTER_ID"; 1="{OWN_CANISTER_ID}" };
     record{ 0="ROBOTS"; 1="<meta name=\"robots\" content=\"noindex, nofollow\" />" };
-    record{ 0="SNS_AGGREGATOR_URL"; 1="http://bkyz2-fmaaa-aaaaa-qaaaq-cai.localhost:8080" };
+    record{ 0="SNS_AGGREGATOR_URL"; 1="http://sns_aggregator.localhost:8080" };
     record{ 0="STATIC_HOST"; 1="http://localhost:8080" };
     record{ 0="TVL_CANISTER_ID"; 1="" };
     record{ 0="WASM_CANISTER_ID"; 1="qaa6y-5yaaa-aaaaa-aaafa-cai" };
