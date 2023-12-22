@@ -17,6 +17,10 @@ import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { createFinalizationStatusMock } from "$tests/mocks/sns-finalization-status.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import {
+  genericNervousSystemFunctionMock,
+  nativeNervousSystemFunctionMock,
+} from "$tests/mocks/sns-functions.mock";
+import {
   createBuyersState,
   createSummary,
   mockDerivedResponse,
@@ -341,35 +345,29 @@ sale_participants_count ${saleBuyerCount} 1677707139456
 
   describe("isNativeNervousSystemFunction", () => {
     it("should return true for NativeNervousSystemFunction", () => {
-      const nsFunction = {
-        ...nervousSystemFunctionMock,
-        function_type: [{ NativeNervousSystemFunction: {} }],
-      } as SnsNervousSystemFunction;
-      expect(isNativeNervousSystemFunction(nsFunction)).toBe(true);
+      expect(
+        isNativeNervousSystemFunction(nativeNervousSystemFunctionMock)
+      ).toBe(true);
     });
+
     it("should return false for not NativeNervousSystemFunction", () => {
-      const nsFunction = {
-        ...nervousSystemFunctionMock,
-        function_type: [{ GenericNervousSystemFunction: {} }],
-      } as SnsNervousSystemFunction;
-      expect(isNativeNervousSystemFunction(nsFunction)).toBe(false);
+      expect(
+        isNativeNervousSystemFunction(genericNervousSystemFunctionMock)
+      ).toBe(false);
     });
   });
 
   describe("isGenericNervousSystemFunction", () => {
     it("should return true for GenericNervousSystemFunction", () => {
-      const nsFunction = {
-        ...nervousSystemFunctionMock,
-        function_type: [{ GenericNervousSystemFunction: {} }],
-      } as SnsNervousSystemFunction;
-      expect(isGenericNervousSystemFunction(nsFunction)).toBe(true);
+      expect(
+        isGenericNervousSystemFunction(genericNervousSystemFunctionMock)
+      ).toBe(true);
     });
+
     it("should return false for not GenericNervousSystemFunction", () => {
-      const nsFunction = {
-        ...nervousSystemFunctionMock,
-        function_type: [{ NativeNervousSystemFunction: {} }],
-      } as SnsNervousSystemFunction;
-      expect(isGenericNervousSystemFunction(nsFunction)).toBe(false);
+      expect(
+        isGenericNervousSystemFunction(nativeNervousSystemFunctionMock)
+      ).toBe(false);
     });
   });
 });

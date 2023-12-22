@@ -2,6 +2,7 @@ import CkBTCTransactionsList from "$lib/components/accounts/CkBTCTransactionsLis
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
 import { ckbtcPendingUtxosStore } from "$lib/stores/ckbtc-pending-utxos.store";
+import { ckbtcRetrieveBtcStatusesStore } from "$lib/stores/ckbtc-retrieve-btc-statuses.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import {
@@ -19,6 +20,7 @@ import { IcrcTransactionsListPo } from "$tests/page-objects/IcrcTransactionsList
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Cbor } from "@dfinity/agent";
+import type { RetrieveBtcStatusV2 } from "@dfinity/ckbtc";
 import { render } from "@testing-library/svelte";
 
 vi.mock("$lib/services/wallet-transactions.services", () => {
@@ -60,6 +62,7 @@ describe("CkBTCTransactionList", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     ckbtcPendingUtxosStore.reset();
+    ckbtcRetrieveBtcStatusesStore.reset();
     vi.useFakeTimers().setSystemTime(new Date());
   });
 
@@ -142,6 +145,74 @@ describe("CkBTCTransactionList", () => {
 
     expect(cards).toHaveLength(1);
     expect(await cards[0].getHeadline()).toEqual("BTC Sent");
+    expect(await cards[0].getIdentifier()).toEqual(
+      `To: ${btcWithdrawalAddress}`
+    );
+  });
+
+  it("should render burn tx with failed status as failed", async () => {
+    const btcWithdrawalAddress = "1ASLxsAMbbt4gcrNc6v6qDBW4JkeWAtTeh";
+    const kytFee = 1334;
+    const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
+    const memo = new Uint8Array(Cbor.encode(decodedMemo));
+
+    const amount = 278_000n;
+    const transactionId = 742n;
+    const failedStatus: RetrieveBtcStatusV2 = {
+      Reimbursed: {
+        account: {
+          owner: mockCkBTCMainAccount.principal,
+          subaccount: [],
+        },
+        mint_block_index: 744n,
+        amount: amount - BigInt(kytFee),
+        reason: {
+          CallFailed: null,
+        },
+      },
+    };
+    ckbtcRetrieveBtcStatusesStore.setForUniverse({
+      universeId: CKBTC_UNIVERSE_CANISTER_ID,
+      statuses: [
+        {
+          id: transactionId,
+          status: failedStatus,
+        },
+      ],
+    });
+
+    const store = {
+      [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
+        [mockCkBTCMainAccount.identifier]: {
+          transactions: [
+            {
+              id: transactionId,
+              transaction: createBurnTransaction({
+                amount,
+                memo,
+                from: {
+                  owner: mockCkBTCMainAccount.principal,
+                  subaccount: [],
+                },
+              }),
+            },
+          ],
+          completed: false,
+          oldestTxId: 0n,
+        },
+      },
+    };
+
+    vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(
+      mockIcrcTransactionsStoreSubscribe(store)
+    );
+
+    const { po } = renderComponent();
+    const cards = await po.getTransactionCardPos();
+
+    expect(cards).toHaveLength(1);
+    expect(await cards[0].getHeadline()).toBe("Sending BTC failed");
+    expect(await cards[0].hasFailedIcon()).toBe(true);
     expect(await cards[0].getIdentifier()).toEqual(
       `To: ${btcWithdrawalAddress}`
     );

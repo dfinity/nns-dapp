@@ -178,12 +178,9 @@ export const swapEndedMoreThanOneWeekAgo = ({
  */
 export const isNativeNervousSystemFunction = (
   nsFunction: SnsNervousSystemFunction
-): boolean => {
-  return (
-    Object.keys(fromNullable(nsFunction.function_type) ?? {})?.[0] ===
-    "NativeNervousSystemFunction"
-  );
-};
+): boolean =>
+  "NativeNervousSystemFunction" in
+  (fromNullable(nsFunction.function_type) ?? {});
 
 /**
  * Returns true if the FunctionType is GenericNervousSystemFunction (custom per sns).
@@ -191,5 +188,5 @@ export const isNativeNervousSystemFunction = (
 export const isGenericNervousSystemFunction = (
   nsFunction: SnsNervousSystemFunction
 ): boolean =>
-  Object.keys(fromNullable(nsFunction.function_type) ?? {})?.[0] ===
-  "GenericNervousSystemFunction";
+  "GenericNervousSystemFunction" in
+  (fromNullable(nsFunction.function_type) ?? {});
