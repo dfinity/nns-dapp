@@ -169,7 +169,7 @@ const checkNeuronsSubaccounts = async ({
   for (let index = 0; index < MAX_NEURONS_SUBACCOUNTS; index++) {
     try {
       // In case there is an error getting the balance, the loop stops.
-      currentBalance = BigInt(0);
+      currentBalance = 0n;
       const subaccount = neuronSubaccount({
         controller,
         index,
@@ -216,7 +216,7 @@ const checkNeuronsSubaccounts = async ({
         }
       }
       // If the balance is 0 and there is no neuron in that subaccount, stop checking.
-      if (currentBalance === BigInt(0) && neuronNotFound) {
+      if (currentBalance === 0n && neuronNotFound) {
         break;
       }
     } catch (error) {

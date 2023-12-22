@@ -7,7 +7,7 @@
 
   export let deadlineTimestampSeconds: bigint | undefined;
 
-  const ZERO = BigInt(0);
+  const ZERO = 0n;
 
   let clear: NodeJS.Timeout | undefined;
   let countdown: bigint | undefined = undefined;
@@ -36,10 +36,7 @@
 
     // No need to schedule an update if the countdown is longer than an hour plus the auth session duration because even if we refresh,
     // the display value would remain the same until the end of the session
-    if (
-      countdown >
-      AUTH_SESSION_DURATION / BigInt(1_000_000_000) + BigInt(3600)
-    ) {
+    if (countdown > AUTH_SESSION_DURATION / 1_000_000_000n + 3_600n) {
       clearCountdown();
       return;
     }
@@ -57,7 +54,7 @@
    */
   const nextTimeout = () => {
     const frequency: "minutes" | "seconds" =
-      (countdown ?? ZERO) > BigInt(3600) ? "minutes" : "seconds";
+      (countdown ?? ZERO) > 3_600n ? "minutes" : "seconds";
     clear = setTimeout(
       next,
       frequency === "minutes" ? 60000 : 1000

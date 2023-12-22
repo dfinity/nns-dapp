@@ -123,8 +123,8 @@ export const neuronVotingPower = ({
   const dissolveDelay =
     newDissolveDelayInSeconds ?? neuron.dissolveDelaySeconds;
   const stakeE8s =
-    (neuron.fullNeuron?.cachedNeuronStake ?? BigInt(0)) +
-    (neuron.fullNeuron?.stakedMaturityE8sEquivalent ?? BigInt(0));
+    (neuron.fullNeuron?.cachedNeuronStake ?? 0n) +
+    (neuron.fullNeuron?.stakedMaturityE8sEquivalent ?? 0n);
   return votingPower({
     stakeE8s,
     dissolveDelay,
@@ -163,7 +163,7 @@ export const votingPower = ({
   minDissolveDelaySeconds = SECONDS_IN_HALF_YEAR,
 }: VotingPowerParams): bigint => {
   if (dissolveDelay < minDissolveDelaySeconds) {
-    return BigInt(0);
+    return 0n;
   }
   const dissolveDelayMultiplier = bonusMultiplier({
     amount: dissolveDelay,
@@ -278,8 +278,8 @@ export const formattedMaturity = ({ fullNeuron }: NeuronInfo): string =>
  */
 export const formattedTotalMaturity = ({ fullNeuron }: NeuronInfo): string =>
   formatMaturity(
-    (fullNeuron?.maturityE8sEquivalent ?? BigInt(0)) +
-      (fullNeuron?.stakedMaturityE8sEquivalent ?? BigInt(0))
+    (fullNeuron?.maturityE8sEquivalent ?? 0n) +
+      (fullNeuron?.stakedMaturityE8sEquivalent ?? 0n)
   );
 
 /**
@@ -291,7 +291,7 @@ export const formattedStakedMaturity = ({ fullNeuron }: NeuronInfo): string =>
 
 export const formatMaturity = (value?: bigint): string =>
   formatTokenE8s({
-    value: isNullish(value) ? BigInt(0) : value,
+    value: isNullish(value) ? 0n : value,
   });
 
 export const sortNeuronsByCreatedTimestamp = (
@@ -444,7 +444,7 @@ export const canUserManageNeuronFundParticipation = ({
 export const neuronStake = (neuron: NeuronInfo): bigint =>
   neuron.fullNeuron?.cachedNeuronStake !== undefined
     ? neuron.fullNeuron?.cachedNeuronStake - neuron.fullNeuron?.neuronFees
-    : BigInt(0);
+    : 0n;
 
 export interface FolloweesNeuron {
   neuronId: NeuronId;
@@ -498,7 +498,7 @@ export const isValidInputAmount = ({
 
 export const isEnoughToStakeNeuron = ({
   stakeE8s,
-  feeE8s = BigInt(0),
+  feeE8s = 0n,
 }: {
   stakeE8s: bigint;
   feeE8s?: bigint;
@@ -847,7 +847,7 @@ export const votedNeuronDetails = ({
     ) as CompactNeuronInfo[];
 
 export const hasEnoughMaturityToStake = ({ fullNeuron }: NeuronInfo): boolean =>
-  (fullNeuron?.maturityE8sEquivalent ?? BigInt(0)) > BigInt(0);
+  (fullNeuron?.maturityE8sEquivalent ?? 0n) > 0n;
 
 export const minNeuronSplittable = (fee: number): number =>
   2 * MIN_NEURON_STAKE + fee;
@@ -893,7 +893,7 @@ export const validTopUpAmount = ({
   amount: number;
 }): boolean => {
   const amountUlps = numberToUlps({ amount, token: ICPToken });
-  const neuronStakeUlps = neuron.fullNeuron?.cachedNeuronStake ?? BigInt(0);
+  const neuronStakeUlps = neuron.fullNeuron?.cachedNeuronStake ?? 0n;
   return amountUlps + neuronStakeUlps > MIN_NEURON_STAKE;
 };
 

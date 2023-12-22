@@ -44,7 +44,7 @@
   let myCommitment: TokenAmountV2 | undefined = undefined;
   $: {
     const commitmentE8s = getCommitmentE8s(swapCommitment);
-    if (nonNullish(commitmentE8s) && commitmentE8s > BigInt(0)) {
+    if (nonNullish(commitmentE8s) && commitmentE8s > 0n) {
       myCommitment = TokenAmountV2.fromUlps({
         amount: commitmentE8s,
         token: ICPToken,
