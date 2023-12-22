@@ -13,6 +13,7 @@
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
   import CkBTCInfoCard from "$lib/components/accounts/CkBTCInfoCard.svelte";
   import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
+  import { loadRetrieveBtcStatuses } from "$lib/services/ckbtc-minter.services";
   import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
   import IcrcWalletPage from "$lib/components/accounts/IcrcWalletPage.svelte";
   import { writable } from "svelte/store";
@@ -47,7 +48,15 @@
   // transactions?.reloadTransactions?.() returns a promise.
   // However, the UI displays skeletons while loading and the user can proceed with other operations during this time.
   // That is why we do not need to wait for the promise to resolve here.
-  const reloadTransactions = () => transactions?.reloadTransactions?.();
+  const reloadTransactions = () => {
+    $selectedCkBTCUniverseIdStore &&
+      canisters &&
+      loadRetrieveBtcStatuses({
+        universeId: $selectedCkBTCUniverseIdStore,
+        minterCanisterId: canisters?.minterCanisterId,
+      });
+    return transactions?.reloadTransactions?.();
+  };
 
   let canisters: CkBTCAdditionalCanisters | undefined = undefined;
   $: canisters = nonNullish($selectedCkBTCUniverseIdStore)
@@ -73,6 +82,13 @@
       universeId: $selectedCkBTCUniverseIdStore,
       minterCanisterId: canisters?.minterCanisterId,
     }))();
+
+  $: $selectedCkBTCUniverseIdStore &&
+    canisters &&
+    loadRetrieveBtcStatuses({
+      universeId: $selectedCkBTCUniverseIdStore,
+      minterCanisterId: canisters?.minterCanisterId,
+    });
 </script>
 
 <IcrcWalletPage
