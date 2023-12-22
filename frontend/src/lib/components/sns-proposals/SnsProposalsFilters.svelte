@@ -10,15 +10,32 @@
   import FiltersWrapper from "../proposals/FiltersWrapper.svelte";
   import FiltersButton from "../ui/FiltersButton.svelte";
   import SnsFilterRewardsModal from "$lib/modals/sns/proposals/SnsFilterRewardsModal.svelte";
+  import type { SnsNervousSystemFunction } from "@dfinity/sns";
+  import { nonNullish } from "@dfinity/utils";
+  import { generateSnsProposalTypeFilterData } from "$lib/utils/sns-proposals.utils";
 
-  let modal: "topics" | "rewards" | "status" | undefined = undefined;
+  export let nsFunctions: SnsNervousSystemFunction[] | undefined;
+
+  let modal: "types" | "rewards" | "status" | undefined = undefined;
 
   let rootCanisterId: Principal;
   $: rootCanisterId = $selectedUniverseIdStore;
   let filtersStore: ProjectFiltersStoreData | undefined;
   $: filtersStore = $snsFiltersStore[rootCanisterId.toText()];
 
-  const openFilters = (filtersModal: "topics" | "rewards" | "status") => {
+  $: if (nonNullish(nsFunctions)) {
+    // Always update type filters in case of backend changes
+    snsFiltersStore.setTypes({
+      rootCanisterId,
+      types: generateSnsProposalTypeFilterData({
+        nsFunctions,
+        typesFilterState: filtersStore?.types ?? [],
+      }),
+    });
+    filtersStore = $snsFiltersStore[rootCanisterId.toText()];
+  }
+
+  const openFilters = (filtersModal: "types" | "rewards" | "status") => {
     modal = filtersModal;
   };
 
@@ -28,6 +45,15 @@
 </script>
 
 <FiltersWrapper>
+  <FiltersButton
+    testId="filters-by-types"
+    totalFilters={filtersStore?.types.length ?? 0}
+    activeFilters={filtersStore?.types.filter(({ checked }) => checked)
+      .length ?? 0}
+    on:nnsFilter={() => openFilters("types")}
+  >
+    {$i18n.voting.types}
+  </FiltersButton>
   <FiltersButton
     testId="filters-by-rewards"
     totalFilters={filtersStore?.rewardStatus.length ?? 0}

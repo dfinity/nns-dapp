@@ -404,6 +404,7 @@
     "title": "Voting",
     "text": "The Internet Computer network runs under the control of the Network Nervous System, which adopts proposals and automatically executes corresponding actions. Anyone can submit a proposal, which are decided as the result of voting activity by neurons.",
     "topics": "Topics",
+    "types": "Types",
     "rewards": "Reward Status",
     "status": "Proposal Status",
     "hide_unavailable_proposals": "Show only proposals you can still vote for",
@@ -947,6 +948,9 @@
     "select_nervous_system": "Select Nervous System",
     "select": "Select",
     "universe_logo": "$universe logo"
+  },
+  "sns_types": {
+    "sns_specific": "All SNS-specific proposals"
   },
   "sns_rewards_status": {
     "0": "Unknown",
