@@ -130,6 +130,11 @@ impl Partitions {
         memory.read(offset, buffer);
         Ok(())
     }
+    /// Gets the underlying memory.
+    #[cfg(test)]
+    pub fn into_inner(self) -> DefaultMemoryImpl {
+        self.memory
+    }
 }
 
 impl From<DefaultMemoryImpl> for Partitions {

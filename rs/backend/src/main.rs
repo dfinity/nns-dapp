@@ -81,7 +81,7 @@ fn pre_upgrade() {
     );
     STATE.with(|s| {
         println!("pre_upgrade state before: {s:?}");
-        s.pre_upgrade();
+        s.save();
         println!("pre_upgrade state after: {s:?}");
     });
     println!(

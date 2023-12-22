@@ -1,3 +1,25 @@
+//! The canister state - most of it!
+//!
+//! # Example
+//!
+//! ```
+//! use ic_stable_structures::DefaultMemoryImpl;
+//! use nns_dapp::state::{State, partitions::Partitions};
+//! use nns_dapp::accounts_store::schema::SchemaLabel;
+//! let memory = DefaultMemoryImpl::default();
+//! let memory_after_upgrade = Partitions::copy_memory_reference(&memory); // The same memory.
+//! let schema = SchemaLabel::AccountsInStableMemory;
+//! // On init, the state is created using a schema specified in the init arguments:
+//! let state = State::new(schema, memory);
+//! // The state is backed by stable memory.  Pre-upgrade, any state that is not already in stable memory must be saved.
+//! state.save();
+//! // Post-upgrade state can then be restored from memory.
+//! let new_state = State::from(memory_after_upgrade);
+//! // In unit tests you can check that the state is the same:
+//! #[cfg(test)]
+//! assert_eq!(state, new_state);
+//! ```
+//! state.save();
 use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
 use crate::accounts_store::schema::map::AccountsDbAsMap;
 use crate::accounts_store::schema::proxy::AccountsDb;
@@ -290,7 +312,7 @@ impl StableState for State {
 // Methods called on pre_upgrade.
 impl State {
     /// Save any unsaved state to stable memory.
-    pub fn pre_upgrade(&self) {
+    pub fn save(&self) {
         let schema = self.schema_label();
         println!(
             "START State pre_upgrade from: {:?} (accounts: {:?})",
