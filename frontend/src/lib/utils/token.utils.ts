@@ -71,7 +71,7 @@ export const formatTokenE8s = ({
   detailed?: boolean | "height_decimals";
   roundingMode?: RoundMode;
 }): string => {
-  if (value === BigInt(0)) {
+  if (value === 0n) {
     return "0";
   }
 
@@ -127,7 +127,7 @@ export const formatTokenV2 = ({
 };
 
 export const sumAmounts = (...amounts: bigint[]): bigint =>
-  amounts.reduce<bigint>((acc, amount) => acc + amount, BigInt(0));
+  amounts.reduce<bigint>((acc, amount) => acc + amount, 0n);
 
 // To make the fixed transaction fee readable, we do not display it with 8 digits but only till the last digit that is not zero
 // e.g. not 0.00010000 but 0.0001
@@ -149,8 +149,8 @@ export const formattedTransactionFeeICP = (fee: number | bigint): string =>
  * @returns {number} The maximum amount for the transaction.
  */
 export const getMaxTransactionAmount = ({
-  balance = BigInt(0),
-  fee = BigInt(0),
+  balance = 0n,
+  fee = 0n,
   maxAmount,
   token,
 }: {

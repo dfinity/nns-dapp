@@ -212,7 +212,7 @@ export const selectedNeuronsVotingPower = ({
   neurons
     .filter(({ neuronIdString }) => selectedIds.includes(neuronIdString))
     .map(({ votingPower }) => votingPower)
-    .reduce((sum, votingPower) => sum + votingPower, BigInt(0));
+    .reduce((sum, votingPower) => sum + votingPower, 0n);
 
 /**
  * Generate new selected neuron id list after new neurons response w/o spoiling the previously done user selection
@@ -534,12 +534,12 @@ export const updateProposalVote = ({
       ...(proposalInfo.latestTally as Tally),
       yes:
         vote === Vote.Yes
-          ? (proposalInfo.latestTally?.yes ?? BigInt(0)) + votingPower
-          : proposalInfo.latestTally?.yes ?? BigInt(0),
+          ? (proposalInfo.latestTally?.yes ?? 0n) + votingPower
+          : proposalInfo.latestTally?.yes ?? 0n,
       no:
         vote === Vote.No
-          ? (proposalInfo.latestTally?.no ?? BigInt(0)) + votingPower
-          : proposalInfo.latestTally?.no ?? BigInt(0),
+          ? (proposalInfo.latestTally?.no ?? 0n) + votingPower
+          : proposalInfo.latestTally?.no ?? 0n,
     },
   };
 };

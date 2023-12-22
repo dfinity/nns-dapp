@@ -118,7 +118,7 @@
     <span slot="key">{$i18n.sns_project_detail.sale_end} </span>
     <DateSeconds
       slot="value"
-      seconds={Number(params.swap_due_timestamp_seconds ?? BigInt(0))}
+      seconds={Number(params.swap_due_timestamp_seconds ?? 0n)}
       tagName="span"
     />
   </KeyValuePair>

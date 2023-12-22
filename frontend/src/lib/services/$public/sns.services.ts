@@ -187,7 +187,7 @@ export const loadSnsNervousSystemFunctions = async (
       // TODO: Ideally, the name from the backend is user-friendly.
       // https://dfinity.atlassian.net/browse/GIX-1169
       const snsNervousSystemFunctions = nsFunctions.map((nsFunction) => {
-        if (nsFunction.id === BigInt(0)) {
+        if (nsFunction.id === 0n) {
           const translationKeys = get(i18n);
           return {
             ...nsFunction,
