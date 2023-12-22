@@ -47,6 +47,7 @@ export interface FeatureFlags<T> {
   // Used only in tests and set up in jest-setup.ts
   TEST_FLAG_EDITABLE: T;
   TEST_FLAG_NOT_EDITABLE: T;
+  ENABLE_SNS_TYPES_FILTER: T;
 }
 
 export type FeatureKey = keyof FeatureFlags<boolean>;

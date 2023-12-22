@@ -330,7 +330,8 @@
           "ENABLE_ICP_ICRC": false,
           "ENABLE_MY_TOKENS": false,
           "ENABLE_CKETH": true,
-          "ENABLE_CKBTC_ICRC2": true
+          "ENABLE_CKBTC_ICRC2": true,
+          "ENABLE_SNS_TYPES_FILTER": false
         }
       }
     },
