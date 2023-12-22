@@ -21,6 +21,7 @@ import {
   sortSnsProposalsById,
 } from "$lib/utils/sns-proposals.utils";
 import {
+  allTopicsNervousSystemFunctionMock,
   genericNervousSystemFunctionMock,
   nativeNervousSystemFunctionMock,
   nervousSystemFunctionMock,
@@ -661,8 +662,23 @@ describe("sns-proposals utils", () => {
     };
 
     describe("generateSnsProposalTypeFilterData", () => {
-      it('should use nsFunctions to create filter entries w/o "All Topic"', () => {
+      it("should use nsFunctions to create filter entries", () => {
         const nsFunctions: SnsNervousSystemFunction[] = [
+          nativeNervousSystemFunctionMock,
+          nativeNervousSystemFunctionMock,
+        ];
+
+        expect(
+          generateSnsProposalTypeFilterData({
+            nsFunctions,
+            typesFilterState: [],
+          })
+        ).toStrictEqual([filterEntry, filterEntry]);
+      });
+
+      it('should ignore "All Topic" ns function', () => {
+        const nsFunctions: SnsNervousSystemFunction[] = [
+          allTopicsNervousSystemFunctionMock,
           nativeNervousSystemFunctionMock,
           nativeNervousSystemFunctionMock,
         ];
