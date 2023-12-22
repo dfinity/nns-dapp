@@ -145,7 +145,7 @@
       }
     },
     "bitcoin": {
-      "remote" : {
+      "remote": {
         "id": {
           "mainnet": "ghsi2-tqaaa-aaaan-aaaca-cai"
         }
