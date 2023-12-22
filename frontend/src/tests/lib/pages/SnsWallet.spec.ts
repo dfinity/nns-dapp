@@ -1,5 +1,7 @@
 import * as snsIndexApi from "$lib/api/sns-index.api";
 import * as snsLedgerApi from "$lib/api/sns-ledger.api";
+import { AppPath } from "$lib/constants/routes.constants";
+import { pageStore } from "$lib/derived/page.derived";
 import SnsWallet from "$lib/pages/SnsWallet.svelte";
 import * as workerBalances from "$lib/services/worker-balances.services";
 import * as workerTransactions from "$lib/services/worker-transactions.services";
@@ -21,6 +23,7 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 vi.mock("$lib/api/sns-ledger.api");
 vi.mock("$lib/api/sns-index.api");
@@ -70,7 +73,7 @@ describe("SnsWallet", () => {
   const fee = 10_000n;
   const projectName = "Tetris";
 
-  const renderComponent = async () => {
+  const renderComponent = async (props: { accountIdentifier: string }) => {
     const { container } = render(SnsWallet, props);
     await runResolvedPromises();
     return SnsWalletPo.under(new JestPageObjectElement(container));
@@ -97,7 +100,10 @@ describe("SnsWallet", () => {
         tokenMetadata: testToken,
       },
     ]);
-    page.mock({ data: { universe: rootCanisterIdText } });
+    page.mock({
+      data: { universe: rootCanisterIdText },
+      routeId: AppPath.Wallet,
+    });
   });
 
   describe("loading accounts", () => {
@@ -113,7 +119,7 @@ describe("SnsWallet", () => {
     });
 
     it("should hide spinner when account is loaded", async () => {
-      const po = await renderComponent();
+      const po = await renderComponent(props);
 
       await runResolvedPromises();
       expect(await po.hasSpinner()).toBe(true);
@@ -134,19 +140,19 @@ describe("SnsWallet", () => {
     });
 
     it("should render sns project name", async () => {
-      const po = await renderComponent();
+      const po = await renderComponent(props);
 
       expect(await po.getWalletPageHeaderPo().getUniverse()).toBe(projectName);
     });
 
     it("should render transactions", async () => {
-      const po = await renderComponent();
+      const po = await renderComponent(props);
 
       expect(await po.getIcrcTransactionsListPo().isPresent()).toBe(true);
     });
 
     it("should render 'Main' as subtitle", async () => {
-      const po = await renderComponent();
+      const po = await renderComponent(props);
 
       expect(await po.getWalletPageHeadingPo().getSubtitle()).toBe("Main");
     });
@@ -159,13 +165,13 @@ describe("SnsWallet", () => {
         },
       ]);
 
-      const po = await renderComponent();
+      const po = await renderComponent(props);
 
       expect(await po.getWalletPageHeadingPo().getTitle()).toBe("22.33 OOO");
     });
 
     it("should open new transaction modal", async () => {
-      const po = await renderComponent();
+      const po = await renderComponent(props);
 
       await runResolvedPromises();
       expect(await po.getSnsTransactionModalPo().isPresent()).toBe(false);
@@ -177,7 +183,7 @@ describe("SnsWallet", () => {
     });
 
     it("should make a new transaction", async () => {
-      const po = await renderComponent();
+      const po = await renderComponent(props);
 
       await po.clickSendButton();
 
@@ -266,7 +272,7 @@ describe("SnsWallet", () => {
     it("should init worker that sync the balance", async () => {
       const spy = vi.spyOn(workerBalances, "initBalancesWorker");
 
-      await renderComponent();
+      await renderComponent(props);
 
       expect(spy).toHaveBeenCalledTimes(1);
     });
@@ -274,11 +280,53 @@ describe("SnsWallet", () => {
     it("should init worker that sync the transactions", async () => {
       const spy = vi.spyOn(workerTransactions, "initTransactionsWorker");
 
-      const po = await renderComponent();
+      const po = await renderComponent(props);
 
       expect(await po.getIcrcTransactionsListPo().isPresent()).toBe(true);
 
       expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    it("should nagigate to accounts when account identifier is missing", async () => {
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Wallet,
+        universe: rootCanisterIdText,
+      });
+      await renderComponent({
+        accountIdentifier: undefined,
+      });
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Accounts,
+        universe: rootCanisterIdText,
+      });
+    });
+
+    it("should nagigate to accounts when account identifier is invalid", async () => {
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Wallet,
+        universe: rootCanisterIdText,
+      });
+      await renderComponent({
+        accountIdentifier: "invalid-account-identifier",
+      });
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Accounts,
+        universe: rootCanisterIdText,
+      });
+    });
+
+    it("should stay on the wallet page when account identifier is valid", async () => {
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Wallet,
+        universe: rootCanisterIdText,
+      });
+      await renderComponent({
+        accountIdentifier: mockSnsMainAccount.identifier,
+      });
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Wallet,
+        universe: rootCanisterIdText,
+      });
     });
   });
 });
