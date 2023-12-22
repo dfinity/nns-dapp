@@ -484,6 +484,7 @@ export const getUniversalProposalStatus = (
 
 /**
  * Returns the proposal type ids that should be excluded from the response.
+ * snsFunctions are needed to process "All Generic" entry (when not selected, include all generic ids).
  */
 export const toExcludeTypeParameter = ({
   filter,

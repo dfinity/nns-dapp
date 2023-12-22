@@ -8,7 +8,6 @@ import { Principal } from "@dfinity/principal";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
-  type SnsNervousSystemFunction,
 } from "@dfinity/sns";
 import { get } from "svelte/store";
 
