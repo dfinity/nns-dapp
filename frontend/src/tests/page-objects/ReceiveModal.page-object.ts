@@ -11,4 +11,16 @@ export class ReceiveModalPo extends BasePageObject {
   clickFinish(): Promise<void> {
     return this.click("reload-receive-account");
   }
+
+  waitForQrCode(): Promise<void> {
+    return this.waitFor("qr-code");
+  }
+
+  async getLogoAltText(): Promise<string> {
+    return this.root.byTestId("logo").getAttribute("alt");
+  }
+
+  async getTokenAddressLabel(): Promise<string> {
+    return this.getText("token-address-label");
+  }
 }
