@@ -6,13 +6,19 @@ import {
   getCommitmentE8s,
   getSwapCanisterAccount,
   hasOpenTicketInProcess,
+  isGenericNervousSystemFunction,
   isInternalRefreshBuyerTokensError,
+  isNativeNervousSystemFunction,
   isSnsFinalizing,
   parseSnsSwapSaleBuyerCount,
   swapEndedMoreThanOneWeekAgo,
 } from "$lib/utils/sns.utils";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { createFinalizationStatusMock } from "$tests/mocks/sns-finalization-status.mock";
+import {
+  genericNervousSystemFunctionMock,
+  nativeNervousSystemFunctionMock,
+} from "$tests/mocks/sns-functions.mock";
 import {
   createBuyersState,
   createSummary,
@@ -332,6 +338,32 @@ sale_participants_count ${saleBuyerCount} 1677707139456
       expect(
         swapEndedMoreThanOneWeekAgo({ summary: summary1, nowInSeconds })
       ).toBe(true);
+    });
+  });
+
+  describe("isNativeNervousSystemFunction", () => {
+    it("should return true for NativeNervousSystemFunction", () => {
+      expect(
+        isNativeNervousSystemFunction(nativeNervousSystemFunctionMock)
+      ).toBe(true);
+    });
+    it("should return false for not NativeNervousSystemFunction", () => {
+      expect(
+        isNativeNervousSystemFunction(genericNervousSystemFunctionMock)
+      ).toBe(false);
+    });
+  });
+
+  describe("isGenericNervousSystemFunction", () => {
+    it("should return true for GenericNervousSystemFunction", () => {
+      expect(
+        isGenericNervousSystemFunction(genericNervousSystemFunctionMock)
+      ).toBe(true);
+    });
+    it("should return false for not GenericNervousSystemFunction", () => {
+      expect(
+        isGenericNervousSystemFunction(nativeNervousSystemFunctionMock)
+      ).toBe(false);
     });
   });
 });
