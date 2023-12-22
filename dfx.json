@@ -144,6 +144,13 @@
         }
       }
     },
+    "bitcoin": {
+      "remote" : {
+        "id": {
+          "mainnet": "ghsi2-tqaaa-aaaan-aaaca-cai"
+        }
+      }
+    },
     "ckbtc_ledger": {
       "build": [
         "true"
