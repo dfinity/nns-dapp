@@ -512,8 +512,8 @@ export const generateSnsProposalTypeFilterData = ({
     }));
   const genericNsFunctionEntries: Filter<SnsProposalTypeFilterId>[] =
     nsFunctions.filter(isGenericNervousSystemFunction).length > 0
-      ? [
-          // "All Generic" entry
+      ? // Replace all generic entries w/ a single "All Generic"
+        [
           {
             id: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
             value: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
