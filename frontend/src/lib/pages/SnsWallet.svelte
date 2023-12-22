@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { buildAccountsUrl } from "$lib/utils/navigation.utils";
+  import { goto } from "$app/navigation";
+  import { hasAccounts } from "$lib/utils/accounts.utils";
   import type { Principal } from "@dfinity/principal";
   import { Spinner, busy } from "@dfinity/gix-components";
   import { setContext } from "svelte";
@@ -62,6 +65,13 @@
     store: selectedAccountStore,
   });
 
+  const goBack = (): Promise<void> =>
+    goto(
+      buildAccountsUrl({
+        universe: $selectedUniverseStore.canisterId,
+      })
+    );
+
   export let accountIdentifier: string | undefined | null = undefined;
 
   const load = () => {
@@ -74,6 +84,19 @@
         account: selectedAccount,
         neurons: [],
       });
+    }
+    // Accounts are loaded in store but no account identifier is matching
+    if (
+      hasAccounts($snsProjectAccountsStore ?? []) &&
+      isNullish($selectedAccountStore.account)
+    ) {
+      toastsError({
+        labelKey: replacePlaceholders($i18n.error.account_not_found, {
+          $account_identifier: accountIdentifier ?? "",
+        }),
+      });
+
+      goBack();
     }
   };
 
