@@ -482,7 +482,8 @@ export const getUniversalProposalStatus = (
   return statusType;
 };
 
-// Generate new "type" filter data, but preserve the checked state of the current filter state
+// Generate new "types" filter data, but preserve the checked state of the current filter state
+// `nsFunctions` can be changed on the backend, and to display recently created proposal types, new entries should be preselected.
 export const generateSnsProposalTypeFilterData = ({
   nsFunctions,
   typesFilterState,
@@ -494,7 +495,7 @@ export const generateSnsProposalTypeFilterData = ({
   const getCheckedState = (id: string) =>
     typesFilterState.find(({ id: stateId }) => id === stateId)?.checked !==
     false;
-  const nativeNsFunctionEntries = nsFunctions
+  const nativeNsFunctionEntries: Filter<SnsProposalTypeFilterId>[] = nsFunctions
     .filter(isNativeNervousSystemFunction)
     // ignore { 0n: "All Topics"}
     .filter(({ id }) => id !== ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID)
@@ -509,7 +510,7 @@ export const generateSnsProposalTypeFilterData = ({
       // transfer only unchecked entries to preselect new items that are not in the current filter state
       checked: getCheckedState(id),
     }));
-  const genericNsFunctionEntries =
+  const genericNsFunctionEntries: Filter<SnsProposalTypeFilterId>[] =
     nsFunctions.filter(isGenericNervousSystemFunction).length > 0
       ? [
           // "All Generic" entry
