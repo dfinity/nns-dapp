@@ -44,6 +44,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+Entry for bitcoin canister in `dfx.json`.
+
 #### Changed
 
 - Apply clippy only to target `wasm32-unknown-unknown` but prohibit `std::println` and variants for that target.
