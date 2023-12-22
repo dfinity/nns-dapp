@@ -2,6 +2,7 @@
 <svelte:options accessors />
 
 <script lang="ts">
+  import { ckbtcRetrieveBtcStatusesStore } from "$lib/stores/ckbtc-retrieve-btc-statuses.store";
   import { i18n } from "$lib/stores/i18n";
   import {
     ckBTCInfoStore,
@@ -80,8 +81,8 @@
       account,
       token,
       i18n: $i18n,
-      // TODO GIX-2079: Pass actual statuses.
-      retrieveBtcStatuses: [],
+      retrieveBtcStatuses:
+        $ckbtcRetrieveBtcStatusesStore[universeId.toText()] || [],
     });
     return [...pendingTransactions, ...completedTransactions];
   };
