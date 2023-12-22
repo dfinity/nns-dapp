@@ -53,7 +53,7 @@
       canisters &&
       loadRetrieveBtcStatuses({
         universeId: $selectedCkBTCUniverseIdStore,
-        minterCanisterId: canisters?.minterCanisterId,
+        minterCanisterId: canisters.minterCanisterId,
       });
     return transactions?.reloadTransactions?.();
   };
@@ -87,7 +87,7 @@
     canisters &&
     loadRetrieveBtcStatuses({
       universeId: $selectedCkBTCUniverseIdStore,
-      minterCanisterId: canisters?.minterCanisterId,
+      minterCanisterId: canisters.minterCanisterId,
     });
 </script>
 
