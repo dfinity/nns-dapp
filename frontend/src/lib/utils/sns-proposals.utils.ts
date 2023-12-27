@@ -261,15 +261,15 @@ export const snsDecisionStatus = (
     executed_timestamp_seconds,
     failed_timestamp_seconds,
   } = proposal;
-  if (decided_timestamp_seconds === BigInt(0)) {
+  if (decided_timestamp_seconds === 0n) {
     return SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN;
   }
 
   if (isAccepted(proposal)) {
-    if (executed_timestamp_seconds > BigInt(0)) {
+    if (executed_timestamp_seconds > 0n) {
       return SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED;
     }
-    if (failed_timestamp_seconds > BigInt(0)) {
+    if (failed_timestamp_seconds > 0n) {
       return SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_FAILED;
     }
     return SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_ADOPTED;
@@ -291,7 +291,7 @@ export const snsRewardStatus = ({
   wait_for_quiet_state,
   is_eligible_for_rewards,
 }: SnsProposalData): SnsProposalRewardStatus => {
-  if (reward_event_round > BigInt(0)) {
+  if (reward_event_round > 0n) {
     return SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED;
   }
 
@@ -333,10 +333,7 @@ export const sortSnsProposalsById = (
   proposals === undefined
     ? undefined
     : [...proposals].sort(({ id: idA }, { id: idB }) =>
-        (fromNullable(idA)?.id ?? BigInt(0)) >
-        (fromNullable(idB)?.id ?? BigInt(0))
-          ? -1
-          : 1
+        (fromNullable(idA)?.id ?? 0n) > (fromNullable(idB)?.id ?? 0n) ? -1 : 1
       );
 
 const getAction = (proposal: SnsProposalData): SnsAction | undefined =>

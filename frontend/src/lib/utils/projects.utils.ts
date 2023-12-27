@@ -109,7 +109,7 @@ export const currentUserMaxCommitment = ({
     swap.params.max_icp_e8s - derived.buyer_total_icp_e8s;
   const remainingUserCommitment =
     swap.params.max_participant_icp_e8s -
-    (getCommitmentE8s(swapCommitment) ?? BigInt(0));
+    (getCommitmentE8s(swapCommitment) ?? 0n);
   return remainingProjectCommitment < remainingUserCommitment
     ? remainingProjectCommitment
     : remainingUserCommitment;
@@ -130,7 +130,7 @@ const commitmentTooSmall = ({
   amount: TokenAmount;
 }): boolean =>
   summary.swap.params.min_participant_icp_e8s >
-  amount.toE8s() + (getCommitmentE8s(swapCommitment) ?? BigInt(0));
+  amount.toE8s() + (getCommitmentE8s(swapCommitment) ?? 0n);
 const commitmentTooLarge = ({
   summary,
   amountE8s,
@@ -163,14 +163,14 @@ export const canUserParticipateToSwap = ({
   summary: SnsSummary | undefined | null;
   swapCommitment: SnsSwapCommitment | undefined | null;
 }): boolean => {
-  const myCommitment = getCommitmentE8s(swapCommitment) ?? BigInt(0);
+  const myCommitment = getCommitmentE8s(swapCommitment) ?? 0n;
 
   return (
     summary !== undefined &&
     summary !== null &&
     isProjectOpen(summary) &&
     // Whether user can still participate with 1 e8
-    !commitmentTooLarge({ summary, amountE8s: myCommitment + BigInt(1) })
+    !commitmentTooLarge({ summary, amountE8s: myCommitment + 1n })
   );
 };
 
@@ -203,7 +203,7 @@ export const hasUserParticipatedToSwap = ({
   swapCommitment,
 }: {
   swapCommitment: SnsSwapCommitment | undefined | null;
-}): boolean => (getCommitmentE8s(swapCommitment) ?? BigInt(0)) > BigInt(0);
+}): boolean => (getCommitmentE8s(swapCommitment) ?? 0n) > 0n;
 
 export const validParticipation = ({
   project,
@@ -238,7 +238,7 @@ export const validParticipation = ({
     };
   }
   const totalCommitment =
-    (getCommitmentE8s(project.swapCommitment) ?? BigInt(0)) + amount.toE8s();
+    (getCommitmentE8s(project.swapCommitment) ?? 0n) + amount.toE8s();
   if (
     commitmentTooLarge({ summary: project.summary, amountE8s: totalCommitment })
   ) {
@@ -248,7 +248,7 @@ export const validParticipation = ({
       substitutions: {
         $newCommitment: formatTokenE8s({ value: amount.toE8s() }),
         $currentCommitment: formatTokenE8s({
-          value: getCommitmentE8s(project.swapCommitment) ?? BigInt(0),
+          value: getCommitmentE8s(project.swapCommitment) ?? 0n,
         }),
         $maxCommitment: formatTokenE8s({
           value: project.summary.swap.params.max_participant_icp_e8s,
@@ -359,7 +359,7 @@ export const participateButtonStatus = ({
   // Whether user can still participate with 1 e8
   const userReachedMaxCommitment = commitmentTooLarge({
     summary,
-    amountE8s: currentCommitment + BigInt(1),
+    amountE8s: currentCommitment + 1n,
   });
   if (userReachedMaxCommitment) {
     return "disabled-max-participation";

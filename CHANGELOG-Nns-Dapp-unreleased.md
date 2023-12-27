@@ -20,6 +20,8 @@ proposal is successful, the changes it released will be moved from this file to
 - Save accounts in the `pre_upgrade` hook only when accounts are stored in the heap.
 - Save account stats in the `pre_upgrade` hook rather than recomputing them in the `post_upgrade` hook.
 - Migration functions.
+- Render pending and failed BTC withdrawal transaction as such.
+- Add `ENABLE_SNS_TYPES_FILTER` feature flag.
 
 #### Changed
 
@@ -35,6 +37,7 @@ proposal is successful, the changes it released will be moved from this file to
 - Avoid unnecessary calls to SNS root canister ids to get the canister ids.
 - Min dissolve delay button updates not only for the first time.
 - Fix scrollbar in multiline toast message. 
+- Go back to accounts page for incorrect account identifier in SNS wallet page.
 
 #### Security
 

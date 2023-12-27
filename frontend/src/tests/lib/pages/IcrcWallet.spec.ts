@@ -5,6 +5,7 @@ import {
   CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { pageStore } from "$lib/derived/page.derived";
 import IcrcWallet from "$lib/pages/IcrcWallet.svelte";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
@@ -25,6 +26,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 const expectedBalanceAfterTransfer = 11_111n;
 
@@ -76,7 +78,9 @@ describe("IcrcWallet", () => {
     testComponent: IcrcWallet,
   };
 
-  const renderWallet = async (): Promise<IcrcWalletPo> => {
+  const renderWallet = async (props: {
+    accountIdentifier: string;
+  }): Promise<IcrcWalletPo> => {
     const { container } = render(IcrcWallet, props);
     await runResolvedPromises();
     return IcrcWalletPo.under(new JestPageObjectElement(container));
@@ -133,7 +137,7 @@ describe("IcrcWallet", () => {
     });
 
     it("should render a spinner while loading", async () => {
-      const po = await renderWallet();
+      const po = await renderWallet(props);
       expect(await po.hasSpinner()).toBe(true);
       resolveAccounts(mockCkETHMainAccount);
       await runResolvedPromises();
@@ -141,7 +145,7 @@ describe("IcrcWallet", () => {
     });
 
     it("should call to load Icrc accounts", async () => {
-      await renderWallet();
+      await renderWallet(props);
       expect(walletLedgerApi.getAccount).toBeCalled();
       expect(walletLedgerApi.getToken).toBeCalled();
     });
@@ -184,19 +188,19 @@ describe("IcrcWallet", () => {
     });
 
     it("should render Icrc token name", async () => {
-      const po = await renderWallet();
+      const po = await renderWallet(props);
 
       expect(await po.getWalletPageHeaderPo().getUniverse()).toBe("ckETHTEST");
     });
 
     it("should render `Main` as subtitle", async () => {
-      const po = await renderWallet();
+      const po = await renderWallet(props);
 
       expect(await po.getWalletPageHeadingPo().getSubtitle()).toBe("Main");
     });
 
     it("should render a balance with token", async () => {
-      const po = await renderWallet();
+      const po = await renderWallet(props);
 
       expect(await po.getWalletPageHeadingPo().getTitle()).toBe(
         "123.00 ckETHTEST"
@@ -224,6 +228,30 @@ describe("IcrcWallet", () => {
       // await receiveModalPo.clickFinish();
 
       // await waitFor(() => expect(spy).toHaveBeenCalled());
+    });
+
+    it("should nagigate to accounts when account identifier is missing", async () => {
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+      await renderWallet({
+        accountIdentifier: undefined,
+      });
+      expect(get(pageStore).path).toEqual(AppPath.Accounts);
+    });
+
+    it("should nagigate to accounts when account identifier is invalid", async () => {
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+      await renderWallet({
+        accountIdentifier: "invalid-account-identifier",
+      });
+      expect(get(pageStore).path).toEqual(AppPath.Accounts);
+    });
+
+    it("should stay on the wallet page when account identifier is valid", async () => {
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+      await renderWallet({
+        accountIdentifier: mockCkETHMainAccount.identifier,
+      });
+      expect(get(pageStore).path).toEqual(AppPath.Wallet);
     });
   });
 });

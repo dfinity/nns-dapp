@@ -31,7 +31,7 @@ export const sortedProposals: Readable<ProposalsStore> = derived(
   [proposalsStore],
   ([{ proposals, certified }]) => ({
     proposals: proposals.sort(({ id: proposalIdA }, { id: proposalIdB }) =>
-      Number((proposalIdB ?? BigInt(0)) - (proposalIdA ?? BigInt(0)))
+      Number((proposalIdB ?? 0n) - (proposalIdA ?? 0n))
     ),
     certified,
   })

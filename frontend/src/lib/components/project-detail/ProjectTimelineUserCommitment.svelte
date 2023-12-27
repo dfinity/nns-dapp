@@ -38,8 +38,7 @@
   $: isAdopted = swap.lifecycle === SnsSwapLifecycle.Adopted;
 
   let hasParticipated: boolean;
-  $: hasParticipated =
-    nonNullish(myCommitment) && myCommitment.toE8s() > BigInt(0);
+  $: hasParticipated = nonNullish(myCommitment) && myCommitment.toE8s() > 0n;
 
   let dataIsRendered: boolean;
   $: dataIsRendered = isOpen || isAdopted || hasParticipated;

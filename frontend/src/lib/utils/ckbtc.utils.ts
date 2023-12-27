@@ -39,7 +39,7 @@ export const assertCkBTCUserInputAmount = ({
   const amountE8s = numberToE8s(amount);
 
   // No additional check if amount is zero because user might be entering a value such as 0.00000...
-  if (amountE8s === BigInt(0)) {
+  if (amountE8s === 0n) {
     return;
   }
 

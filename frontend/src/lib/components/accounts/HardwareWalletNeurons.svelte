@@ -29,7 +29,7 @@
     </p>
 
     <p>
-      {formatTokenE8s({ value: fullNeuron?.cachedNeuronStake ?? BigInt(0) })}
+      {formatTokenE8s({ value: fullNeuron?.cachedNeuronStake ?? 0n })}
     </p>
 
     <p class="hotkey">
