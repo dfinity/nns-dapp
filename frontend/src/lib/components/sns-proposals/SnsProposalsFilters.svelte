@@ -13,7 +13,7 @@
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
   import { nonNullish } from "@dfinity/utils";
   import { generateSnsProposalTypesFilterData } from "$lib/utils/sns-proposals.utils";
-  import { IS_TEST_ENV } from "$lib/constants/mockable.constants";
+  import { ENABLE_SNS_TYPES_FILTER } from "$lib/stores/feature-flags.store";
 
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;
 
@@ -46,7 +46,7 @@
 </script>
 
 <FiltersWrapper>
-  {#if IS_TEST_ENV}
+  {#if $ENABLE_SNS_TYPES_FILTER}
     <FiltersButton
       testId="filters-by-types"
       totalFilters={filtersStore?.types.length ?? 0}
