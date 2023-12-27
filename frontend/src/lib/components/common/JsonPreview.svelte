@@ -29,7 +29,7 @@
 </script>
 
 <div
-  class="content-cell-island markdown-container"
+  class="content-cell-island content-cell-island--highlighted container"
   data-tid="json-preview-component"
 >
   {#if $jsonRepresentationModeStore === "tree" && isExpandedAllVisible}
@@ -51,7 +51,7 @@
       {/if}
     </button>
   {/if}
-  <div class="json-container">
+  <div class="json-wrapper">
     <TestIdWrapper testId="json-wrapper">
       {#if $jsonRepresentationModeStore === "tree"}
         <div in:fade>
@@ -72,6 +72,13 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
+
+  .container {
+    // reset "content-cell-island" padding
+    padding: 0;
+    // to place expand-all button
+    position: relative;
+  }
 
   .expand-all {
     padding: 0;
@@ -94,22 +101,10 @@
     }
   }
 
-  .json-container {
+  .json-wrapper {
     // json content scrolling
     overflow-x: auto;
     // same as "content-cell-island"
     padding: var(--padding-2x);
-  }
-
-  // TODO(max): rename and move to gix-components
-  .markdown-container {
-    // custom island styles
-    background: var(--card-background-disabled);
-    color: var(--description-color);
-
-    // reset "content-cell-island" padding
-    padding: 0;
-    // to place expand-all button
-    position: relative;
   }
 </style>

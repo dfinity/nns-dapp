@@ -87,7 +87,7 @@
   {#if isMinParticipationReached}
     <p
       data-tid="min-participation-reached"
-      class="content-cell-island markdown-container"
+      class="content-cell-island content-cell-island--highlighted min-participation-reached"
     >
       {$i18n.sns_project_detail.min_participation_reached}
     </p>
@@ -213,11 +213,7 @@
     }
   }
 
-  // TODO(max): rename and move to gix-components
-  .markdown-container {
+  .min-participation-reached {
     margin: 0;
-    // custom island styles
-    background: var(--card-background-disabled);
-    color: var(--description-color);
   }
 </style>
