@@ -7,7 +7,6 @@
   import RawJson from "$lib/components/common/RawJson.svelte";
   import { fade } from "svelte/transition";
   import { jsonRepresentationModeStore } from "$lib/derived/json-representation.derived";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   const DEFAULT_EXPANDED_LEVEL = 1;
 
