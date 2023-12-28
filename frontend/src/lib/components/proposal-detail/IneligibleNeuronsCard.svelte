@@ -39,7 +39,6 @@
 
 {#if visible}
   <ProposalContentCell>
-    <h4 slot="start">{$i18n.proposal_detail__ineligible.headline}</h4>
     <p class="description">
       {replacePlaceholders($i18n.proposal_detail__ineligible.text, {
         $minDissolveDelay: secondsToDissolveDelayDuration(

@@ -117,6 +117,11 @@
       proposal: proposalInfo,
     });
   }
+  let votedVotingPower: bigint;
+  $: votedVotingPower = neuronsVotedForProposal.reduce(
+    (sum, { votingPower }) => sum + votingPower,
+    0n
+  );
 
   let ineligibleNeurons: IneligibleNeuronData[];
   $: ineligibleNeurons = filterIneligibleNnsNeurons({
@@ -141,10 +146,15 @@
             />
           {/if}
 
-          <VotingNeuronSelect>
+          <VotingNeuronSelect
+            ineligibleNeuronCount={ineligibleNeurons.length}
+            votedNeuronCount={neuronsVotedForProposal.length}
+            {votedVotingPower}
+          >
             <VotingNeuronSelectList disabled={voteRegistration !== undefined} />
-            <MyVotes {neuronsVotedForProposal} />
+            <MyVotes slot="voted-neurons" {neuronsVotedForProposal} />
             <IneligibleNeuronsCard
+              slot="ineligible-neurons"
               {ineligibleNeurons}
               minSnsDissolveDelaySeconds={BigInt(
                 NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE

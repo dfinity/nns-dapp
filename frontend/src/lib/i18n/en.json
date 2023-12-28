@@ -521,6 +521,7 @@
     "proposer_description": "The ID of the neuron that submitted the proposal.",
     "open_voting_prefix": "Voting open:",
     "my_votes": "My Votes",
+    "neurons_voted": "$count neurons voted",
     "loading_neurons": "Loading your neurons...",
     "unknown_nns_function": "Unknown nnsFunction",
     "nns_function_name": "nnsFunctionName",
@@ -554,6 +555,8 @@
   "proposal_detail__vote": {
     "headline": "Cast Vote",
     "neurons": "Neurons",
+    "vote_with_neurons": "Vote with $votable_count/$all_count Neurons",
+    "voting_power_value": "Voting power: $value",
     "voting_power": "Voting power",
     "vote_progress": "Vote Progress",
     "total": "Total",
@@ -585,8 +588,8 @@
     "cast_votes_needs": "(Yes needs $immediate_majority)"
   },
   "proposal_detail__ineligible": {
-    "headline": "Ineligible Neurons",
-    "text": "The following neurons had a dissolve delay of less than $minDissolveDelay at the time the proposal was submitted, or were created after the proposal was submitted, and therefore are not eligible to vote on it:",
+    "headline": "$count Ineligible neurons",
+    "text": "The following neurons are not eligible to vote.",
     "reason_since": "created after the proposal",
     "reason_no_permission": "no voting permission",
     "reason_short": "dissolve delay < $minDissolveDelay"

@@ -9,6 +9,11 @@
   import { formatVotingPower } from "$lib/utils/neuron.utils";
   import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
   import VotingNeuronSelectContainer from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelectContainer.svelte";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+
+  export let ineligibleNeuronCount: number;
+  export let votedNeuronCount: number;
+  export let votedVotingPower: bigint;
 
   let totalNeuronsVotingPower: bigint;
 
@@ -17,8 +22,14 @@
     selectedIds: $votingNeuronSelectStore.selectedIds,
   });
 
-  let toggleContent: () => void;
-  let expanded: boolean;
+  let toggleVotableContent: () => void;
+  let expandedVotableNeurons: boolean;
+
+  let toggleVotedContent: () => void;
+  let expandedVotedNeurons: boolean;
+
+  let toggleIneligibleContent: () => void;
+  let expandedIneligibleNeurons: boolean;
 
   let totalVotingNeurons: number;
   $: totalVotingNeurons = $votingNeuronSelectStore.neurons.length;
@@ -26,34 +37,36 @@
   let selectedVotingNeurons: number;
   $: selectedVotingNeurons = $votingNeuronSelectStore.selectedIds.length;
 
-  let displayNeuronsInfo: boolean;
-  $: displayNeuronsInfo = totalVotingNeurons > 0;
+  let displayVotingNeurons: boolean;
+  $: displayVotingNeurons = totalVotingNeurons > 0;
 </script>
 
 <Collapsible
+  testId="votable-neurons"
   expandButton={false}
   externalToggle={true}
-  bind:toggleContent
-  bind:expanded
+  bind:toggleContent={toggleVotableContent}
+  bind:expanded={expandedVotableNeurons}
   wrapHeight
 >
-  <div slot="header" class="total" class:expanded>
+  <div slot="header" class="total" class:expanded={expandedVotableNeurons}>
     <div class="total-neurons">
-      <span class="value" data-tid="voting-collapsible-toolbar-neurons"
-        >{$i18n.proposal_detail__vote
-          .neurons}{#if displayNeuronsInfo}&nbsp;({selectedVotingNeurons}/{totalVotingNeurons})
-        {/if}
+      <span class="value" data-tid="voting-collapsible-toolbar-neurons">
+        {replacePlaceholders($i18n.proposal_detail__vote.vote_with_neurons, {
+          $votable_count: selectedVotingNeurons,
+          $all_count: totalVotingNeurons,
+        })}
       </span>
       <button
         class="icon"
-        class:expanded
-        on:click|stopPropagation={toggleContent}
+        class:expanded={expandedVotableNeurons}
+        on:click|stopPropagation={toggleVotableContent}
       >
         <IconExpandCircleDown />
       </button>
     </div>
 
-    {#if displayNeuronsInfo}
+    {#if displayVotingNeurons}
       <div
         class="total-voting-power"
         data-tid="voting-collapsible-toolbar-voting-power"
@@ -70,6 +83,73 @@
 
   <VotingNeuronSelectContainer>
     <slot />
+  </VotingNeuronSelectContainer>
+</Collapsible>
+
+<Collapsible
+  testId="voted-neurons"
+  expandButton={false}
+  externalToggle={true}
+  bind:toggleContent={toggleVotedContent}
+  bind:expanded={expandedVotedNeurons}
+  wrapHeight
+>
+  <div slot="header" class="total" class:expanded={expandedVotedNeurons}>
+    <div class="total-neurons">
+      <span class="value" data-tid="voting-collapsible-toolbar-neurons">
+        {replacePlaceholders($i18n.proposal_detail.neurons_voted, {
+          $count: votedNeuronCount,
+        })}
+      </span>
+      <button
+        class="icon"
+        class:expanded={expandedVotedNeurons}
+        on:click|stopPropagation={toggleVotedContent}
+      >
+        <IconExpandCircleDown />
+      </button>
+    </div>
+
+    <div class="total-voting-power">
+      <span class="label">{$i18n.proposal_detail__vote.voting_power}</span>
+      <Value testId="voted-voting-power"
+        >{formatVotingPower(votedVotingPower)}</Value
+      >
+    </div>
+  </div>
+
+  <VotingNeuronSelectContainer>
+    <slot name="voted-neurons" />
+  </VotingNeuronSelectContainer>
+</Collapsible>
+
+<Collapsible
+  testId="ineligible-neurons"
+  expandButton={false}
+  externalToggle={true}
+  bind:toggleContent={toggleIneligibleContent}
+  bind:expanded={expandedIneligibleNeurons}
+  wrapHeight
+>
+  <div slot="header" class="total" class:expanded={expandedIneligibleNeurons}>
+    <div class="total-neurons">
+      <span class="value" data-tid="voting-collapsible-toolbar-neurons">
+        {replacePlaceholders($i18n.proposal_detail__ineligible.headline, {
+          $count: ineligibleNeuronCount,
+        })}
+      </span>
+      <button
+        class="icon"
+        class:expanded={expandedIneligibleNeurons}
+        on:click|stopPropagation={toggleIneligibleContent}
+      >
+        <IconExpandCircleDown />
+      </button>
+    </div>
+  </div>
+
+  <VotingNeuronSelectContainer>
+    <slot name="ineligible-neurons" />
   </VotingNeuronSelectContainer>
 </Collapsible>
 

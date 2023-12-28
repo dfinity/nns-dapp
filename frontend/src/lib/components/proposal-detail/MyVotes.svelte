@@ -35,7 +35,6 @@
 
 {#if neuronsVotedForProposal.length}
   <ProposalContentCell>
-    <h4 slot="start">{$i18n.proposal_detail.my_votes}</h4>
     <ul>
       {#each neuronsVotedForProposal as neuron}
         <li
