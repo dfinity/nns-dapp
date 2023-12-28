@@ -87,7 +87,7 @@
   {#if isMinParticipationReached}
     <p
       data-tid="min-participation-reached"
-      class="content-cell-island content-cell-island--highlighted min-participation-reached"
+      class="content-cell-island__card min-participation-reached"
     >
       {$i18n.sns_project_detail.min_participation_reached}
     </p>

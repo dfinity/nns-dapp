@@ -29,7 +29,7 @@
 </script>
 
 <div
-  class="content-cell-island content-cell-island--highlighted container"
+  class="content-cell-island__card container"
   data-tid="json-preview-component"
 >
   {#if $jsonRepresentationModeStore === "tree" && isExpandedAllVisible}

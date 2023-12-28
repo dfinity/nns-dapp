@@ -14,9 +14,7 @@
   {/if}
 
   {#if nonNullish(summary) && summary !== ""}
-    <div
-      class="content-cell-island content-cell-island--highlighted markdown-container"
-    >
+    <div class="content-cell-island__card markdown-container">
       <Markdown text={summary} />
     </div>
   {/if}
