@@ -60,11 +60,21 @@
   @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   ul {
+    li {
+      :global(.checkbox) {
+        padding: 0;
+      }
+      :global(label) {
+        margin: 0;
+      }
+    }
+
     list-style: none;
     padding: var(--padding-1_5x) 0;
 
     // checkbox restyling
     --checkbox-padding: var(--padding);
+    //margin: 0 calc(-1 * var(--padding));
 
     :global(label) {
       margin-left: var(--padding-0_5x);

@@ -175,14 +175,22 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
 
-  .container:not(.signedIn) {
+  .container {
     display: flex;
-    justify-content: center;
-    padding: var(--padding-2x) 0;
 
-    @include media.min-width(large) {
-      display: block;
-      padding: 0;
+    &.signedIn {
+      flex-direction: column;
+      gap: var(--padding-3x);
+    }
+
+    &:not(.signedIn) {
+      justify-content: center;
+      padding: var(--padding-2x) 0;
+
+      @include media.min-width(large) {
+        display: block;
+        padding: 0;
+      }
     }
   }
 
