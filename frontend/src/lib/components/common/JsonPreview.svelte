@@ -51,22 +51,20 @@
       {/if}
     </button>
   {/if}
-  <div class="json-wrapper">
-    <TestIdWrapper testId="json-wrapper">
-      {#if $jsonRepresentationModeStore === "tree"}
-        <div in:fade>
-          <TreeJson
-            testId="tree-json"
-            json={expandedData}
-            defaultExpandedLevel={isAllExpanded ? Number.MAX_SAFE_INTEGER : 1}
-          />
-        </div>
-      {:else}
-        <div in:fade>
-          <RawJson testId="raw-json" {json} />
-        </div>
-      {/if}
-    </TestIdWrapper>
+  <div data-tid="json-wrapper" class="json-wrapper">
+    {#if $jsonRepresentationModeStore === "tree"}
+      <div in:fade>
+        <TreeJson
+          testId="tree-json"
+          json={expandedData}
+          defaultExpandedLevel={isAllExpanded ? Number.MAX_SAFE_INTEGER : 1}
+        />
+      </div>
+    {:else}
+      <div in:fade>
+        <RawJson testId="raw-json" {json} />
+      </div>
+    {/if}
   </div>
 </div>
 
