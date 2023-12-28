@@ -140,6 +140,12 @@
     });
   }
 
+  let votedVotingPower: bigint;
+  $: votedVotingPower = neuronsVotedForProposal.reduce(
+    (sum, { votingPower }) => sum + votingPower,
+    0n
+  );
+
   // ineligible neurons data
   let ineligibleNeurons: IneligibleNeuronData[];
   $: ineligibleNeurons = nonNullish($authStore.identity)
@@ -175,12 +181,17 @@
               />
             {/if}
 
-            <VotingNeuronSelect>
+            <VotingNeuronSelect
+              ineligibleNeuronCount={ineligibleNeurons.length}
+              votedNeuronCount={neuronsVotedForProposal.length}
+              {votedVotingPower}
+            >
               <VotingNeuronSelectList
                 disabled={voteRegistration !== undefined}
               />
-              <MyVotes {neuronsVotedForProposal} />
+              <MyVotes slot="voted-neurons" {neuronsVotedForProposal} />
               <IneligibleNeuronsCard
+                slot="ineligible-neurons"
                 {ineligibleNeurons}
                 {minSnsDissolveDelaySeconds}
               />
