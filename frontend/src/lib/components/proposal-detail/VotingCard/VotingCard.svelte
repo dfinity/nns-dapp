@@ -118,10 +118,11 @@
     });
   }
   let votedVotingPower: bigint;
-  $: votedVotingPower = neuronsVotedForProposal.reduce(
-    (sum, { votingPower }) => sum + votingPower,
-    0n
-  );
+  $: votedVotingPower =
+    neuronsVotedForProposal?.reduce(
+      (sum, { votingPower }) => sum + votingPower,
+      0n
+    ) ?? 0n;
 
   let ineligibleNeurons: IneligibleNeuronData[];
   $: ineligibleNeurons = filterIneligibleNnsNeurons({
