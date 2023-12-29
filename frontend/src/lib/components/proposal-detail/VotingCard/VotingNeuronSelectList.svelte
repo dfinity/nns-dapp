@@ -1,6 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { Checkbox } from "@dfinity/gix-components";
+  import { Checkbox, KeyValuePair } from "@dfinity/gix-components";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
   import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
@@ -17,81 +17,59 @@
   <ul>
     {#each $votingNeuronSelectStore.neurons as neuron}
       <li>
-        <Checkbox
-          inputId={neuron.neuronIdString}
-          checked={$votingNeuronSelectStore.selectedIds.includes(
-            neuron.neuronIdString
-          )}
-          on:nnsChange={() => toggleSelection(neuron.neuronIdString)}
-          text="block"
-          {disabled}
-        >
-          <span
-            class="neuron-id value"
-            aria-label={replacePlaceholders(
-              $i18n.proposal_detail__vote.cast_vote_neuronId,
-              {
-                $neuronId: neuron.neuronIdString,
-              }
-            )}
-            title={neuron.neuronIdString}
-            >{shortenWithMiddleEllipsis(
-              neuron.neuronIdString,
-              SNS_NEURON_ID_DISPLAY_LENGTH
-            )}</span
-          >
-          <span
-            class="voting-power value"
-            data-tid="voting-neuron-select-voting-power"
-            aria-label={replacePlaceholders(
-              $i18n.proposal_detail__vote.cast_vote_votingPower,
-              {
-                $votingPower: formatVotingPower(neuron.votingPower),
-              }
-            )}>{formatVotingPower(neuron.votingPower)}</span
-          >
-        </Checkbox>
+        <KeyValuePair>
+          <span slot="key" class="label">
+            <span
+              aria-label={replacePlaceholders(
+                $i18n.proposal_detail__vote.cast_vote_neuronId,
+                {
+                  $neuronId: neuron.neuronIdString,
+                }
+              )}
+              title={neuron.neuronIdString}
+              >{shortenWithMiddleEllipsis(
+                neuron.neuronIdString,
+                SNS_NEURON_ID_DISPLAY_LENGTH
+              )}</span
+            >
+          </span>
+          <span slot="value" class="value">
+            <Checkbox
+              inputId={neuron.neuronIdString}
+              checked={$votingNeuronSelectStore.selectedIds.includes(
+                neuron.neuronIdString
+              )}
+              on:nnsChange={() => toggleSelection(neuron.neuronIdString)}
+              {disabled}
+            >
+              <span
+                class="value"
+                data-tid="voting-neuron-select-voting-power"
+                aria-label={replacePlaceholders(
+                  $i18n.proposal_detail__vote.cast_vote_votingPower,
+                  {
+                    $votingPower: formatVotingPower(neuron.votingPower),
+                  }
+                )}>{formatVotingPower(neuron.votingPower)}</span
+              >
+            </Checkbox>
+          </span>
+        </KeyValuePair>
       </li>
     {/each}
   </ul>
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-
   ul {
-    li {
-      :global(.checkbox) {
-        padding: 0;
-      }
-      :global(label) {
-        margin: 0;
-      }
-    }
-
     list-style: none;
-    padding: var(--padding-1_5x) 0;
+    padding: 0;
 
-    // checkbox restyling
-    --checkbox-padding: var(--padding);
-    //margin: 0 calc(-1 * var(--padding));
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2x);
+    margin-top: var(--padding);
 
-    :global(label) {
-      margin-left: var(--padding-0_5x);
-
-      display: flex;
-      justify-content: space-between;
-      grid-gap: var(--padding);
-
-      order: 1;
-    }
-  }
-
-  span {
-    word-break: break-word;
-  }
-
-  .voting-power {
-    text-align: right;
+    --checkbox-padding: 0;
   }
 </style>

@@ -1,7 +1,12 @@
 <script lang="ts">
   import { Vote } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
-  import { IconThumbDown, IconThumbUp, Value } from "@dfinity/gix-components";
+  import {
+    IconThumbDown,
+    IconThumbUp,
+    KeyValuePair,
+    Value,
+  } from "@dfinity/gix-components";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
     formatVotingPower,
@@ -34,51 +39,47 @@
 </script>
 
 {#if neuronsVotedForProposal.length}
-  <ProposalContentCell>
-    <ul>
-      {#each neuronsVotedForProposal as neuron}
-        <li
-          data-tid="neuron-data"
-          aria-label={voteMapper({
-            neuron: neuron.idString,
-            vote: neuron.vote,
-          })}
-          title={voteMapper({ neuron: neuron.idString, vote: neuron.vote })}
-        >
-          <p class="value" title={neuron.idString}>
+  <ul>
+    {#each neuronsVotedForProposal as neuron}
+      <li
+        data-tid="neuron-data"
+        aria-label={voteMapper({
+          neuron: neuron.idString,
+          vote: neuron.vote,
+        })}
+        title={voteMapper({ neuron: neuron.idString, vote: neuron.vote })}
+      >
+        <KeyValuePair>
+          <span slot="key" class="value" title={neuron.idString}>
             {shortenWithMiddleEllipsis(
               neuron.idString,
               SNS_NEURON_ID_DISPLAY_LENGTH
             )}
-          </p>
-          <p class="vote-details" data-tid="my-votes-voting-power">
+          </span>
+          <span
+            slot="value"
+            class="vote-details"
+            data-tid="my-votes-voting-power"
+          >
             <Value>{formatVotingPower(neuron.votingPower)}</Value>
             {#if voteIconMapper[neuron.vote]}
               <svelte:component this={voteIconMapper[neuron.vote]} />
             {/if}
-          </p>
-        </li>
-      {/each}
-    </ul>
-  </ProposalContentCell>
+          </span>
+        </KeyValuePair>
+      </li>
+    {/each}
+  </ul>
 {/if}
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-
   ul {
-    list-style-type: none;
+    list-style: none;
     padding: 0;
-  }
 
-  li {
     display: flex;
-    justify-content: space-between;
-
-    .vote-details {
-      display: flex;
-      align-items: center;
-      gap: var(--padding);
-    }
+    flex-direction: column;
+    gap: var(--padding-2x);
+    margin-top: var(--padding);
   }
 </style>

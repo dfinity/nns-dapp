@@ -1,6 +1,5 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import ProposalContentCell from "./ProposalContentCell.svelte";
   import type { IneligibleNeuronData } from "$lib/utils/neuron.utils";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
@@ -38,40 +37,50 @@
 </script>
 
 {#if visible}
-  <ProposalContentCell>
-    <p class="description">
-      {replacePlaceholders($i18n.proposal_detail__ineligible.text, {
-        $minDissolveDelay: secondsToDissolveDelayDuration(
-          minSnsDissolveDelaySeconds
-        ),
-      })}
-    </p>
-    <ul>
-      {#each ineligibleNeurons as neuron}
-        <li class="value" title={neuron.neuronIdString}>
+  <p class="description">
+    {replacePlaceholders($i18n.proposal_detail__ineligible.text, {
+      $minDissolveDelay: secondsToDissolveDelayDuration(
+        minSnsDissolveDelaySeconds
+      ),
+    })}
+  </p>
+  <ul>
+    {#each ineligibleNeurons as neuron}
+      <li class="value" title={neuron.neuronIdString}>
+        <span class="label">
           {shortenWithMiddleEllipsis(
             neuron.neuronIdString,
             SNS_NEURON_ID_DISPLAY_LENGTH
-          )}<small>{reasonText(neuron)}</small>
-        </li>
-      {/each}
-    </ul>
-  </ProposalContentCell>
+          )}
+        </span>
+        <small class="value">{reasonText(neuron)}</small>
+      </li>
+    {/each}
+  </ul>
 {/if}
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
 
+  p {
+    margin: var(--padding-2x) 0;
+  }
+
   ul {
     list-style: none;
     padding: 0;
+    margin-top: var(--padding);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2x);
   }
 
   li {
-    margin: var(--padding-2x) 0;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    gap: var(--padding);
 
     @include media.min-width(small) {
       flex-direction: row;
