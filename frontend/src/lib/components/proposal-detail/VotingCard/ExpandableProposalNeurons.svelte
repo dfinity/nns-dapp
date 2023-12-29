@@ -7,43 +7,47 @@
   let expanded: boolean;
 </script>
 
-<Collapsible
-  {testId}
-  expandButton={false}
-  externalToggle={true}
-  bind:toggleContent
-  bind:expanded
-  wrapHeight
->
-  <div slot="header" class="total" class:expanded>
-    <div class="total-neurons">
-      <span class="value" data-tid="voting-collapsible-toolbar-neurons">
-        <slot name="start" />
-      </span>
-      <button
-        class="icon"
-        class:expanded
-        on:click|stopPropagation={toggleContent}
-      >
-        <IconExpandCircleDown />
-      </button>
+<div class="container">
+  <Collapsible
+    {testId}
+    expandButton={false}
+    externalToggle={true}
+    bind:toggleContent
+    bind:expanded
+    wrapHeight
+  >
+    <div slot="header" class="header" class:expanded>
+      <div class="header-entry">
+        <span class="value">
+          <slot name="start" />
+        </span>
+        <button
+          class="icon"
+          class:expanded
+          on:click|stopPropagation={toggleContent}
+        >
+          <IconExpandCircleDown />
+        </button>
+      </div>
+
+      <div class="header-entry">
+        <slot name="end" />
+      </div>
     </div>
 
-    <div
-      class="total-voting-power"
-      data-tid="voting-collapsible-toolbar-voting-power"
-    >
-      <slot name="end" />
-    </div>
-  </div>
-
-  <slot />
-</Collapsible>
+    <slot />
+  </Collapsible>
+</div>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
 
-  .total {
+  .container {
+    padding-bottom: var(--padding-2x);
+    border-bottom: 1px solid var(--tertiary);
+  }
+
+  .header {
     display: flex;
     justify-content: space-between;
     gap: var(--padding);
@@ -56,8 +60,7 @@
     }
   }
 
-  .total-neurons,
-  .total-voting-power {
+  .header-entry {
     display: flex;
     align-items: center;
     gap: var(--padding);

@@ -23,37 +23,30 @@
 
   let selectedVotingNeurons: number;
   $: selectedVotingNeurons = $votingNeuronSelectStore.selectedIds.length;
-
-  let displayVotingNeurons: boolean;
-  $: displayVotingNeurons = totalVotingNeurons > 0;
 </script>
 
-<div class="list-container">
-  <div class="list">
+<div class="container">
+  {#if totalVotingNeurons > 0}
     <ExpandableProposalNeurons testId="votable-neurons">
-      <svelte:fragment slot="start">
+      <div slot="start" data-tid="voting-collapsible-toolbar-neurons">
         {replacePlaceholders($i18n.proposal_detail__vote.vote_with_neurons, {
           $votable_count: selectedVotingNeurons,
           $all_count: totalVotingNeurons,
         })}
-      </svelte:fragment>
+      </div>
       <svelte:fragment slot="end">
-        {#if displayVotingNeurons}
-          <span class="label">{$i18n.proposal_detail__vote.voting_power}</span>
-          <Value
-            >{formatVotingPower(
-              totalNeuronsVotingPower === undefined
-                ? 0n
-                : totalNeuronsVotingPower
-            )}</Value
-          >
-        {/if}
+        <span class="label">{$i18n.proposal_detail__vote.voting_power}</span>
+        <Value testId="voting-collapsible-toolbar-voting-power"
+          >{formatVotingPower(
+            totalNeuronsVotingPower === undefined ? 0n : totalNeuronsVotingPower
+          )}</Value
+        >
       </svelte:fragment>
       <slot />
     </ExpandableProposalNeurons>
-  </div>
+  {/if}
 
-  <div class="list">
+  {#if votedNeuronCount > 0}
     <ExpandableProposalNeurons testId="votable-neurons">
       <svelte:fragment slot="start">
         {replacePlaceholders($i18n.proposal_detail.neurons_voted, {
@@ -68,9 +61,9 @@
       </svelte:fragment>
       <slot name="voted-neurons" />
     </ExpandableProposalNeurons>
-  </div>
+  {/if}
 
-  <div class="list">
+  {#if ineligibleNeuronCount > 0}
     <ExpandableProposalNeurons testId="votable-neurons">
       <svelte:fragment slot="start">
         {replacePlaceholders($i18n.proposal_detail__ineligible.headline, {
@@ -79,20 +72,13 @@
       </svelte:fragment>
       <slot name="ineligible-neurons" />
     </ExpandableProposalNeurons>
-  </div>
+  {/if}
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-
-  .list-container {
+  .container {
     display: flex;
     flex-direction: column;
     gap: var(--padding-3x);
-
-    & > div {
-      padding-bottom: var(--padding-2x);
-      border-bottom: 1px solid var(--tertiary);
-    }
   }
 </style>

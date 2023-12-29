@@ -175,6 +175,7 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
 
+  // TODO(max): combine w/ sns version?
   .container {
     display: flex;
 
