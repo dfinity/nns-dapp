@@ -2,7 +2,6 @@ import VotingNeuronSelect from "$lib/components/proposal-detail/VotingCard/Votin
 import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
 import { formatVotingPower } from "$lib/utils/neuron.utils";
 import { nnsNeuronToVotingNeuron } from "$lib/utils/proposals.utils";
-import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { Vote, type NeuronInfo } from "@dfinity/nns";
@@ -45,46 +44,116 @@ describe("VotingNeuronSelect", () => {
   });
 
   it("should display total voting power of ballots not of neurons", async () => {
-    const { queryByText } = render(VotingNeuronSelect);
-    const ballotsVotingPower = formatVotingPower(
-      ballots[0].votingPower + ballots[1].votingPower + ballots[2].votingPower
-    );
-    expect(queryByText(ballotsVotingPower)).toBeInTheDocument();
+    const { getByTestId } = render(VotingNeuronSelect, {
+      props: {
+        ineligibleNeuronCount: 1,
+        votedNeuronCount: 1,
+        votedVotingPower: 1n,
+      },
+    });
+    expect(
+      getByTestId("voting-collapsible-toolbar-voting-power").textContent
+    ).toBe("897.00");
   });
 
   it("should not display total voting power of neurons", async () => {
-    const { queryByText } = render(VotingNeuronSelect);
+    const { getByTestId } = render(VotingNeuronSelect, {
+      props: {
+        ineligibleNeuronCount: 1,
+        votedNeuronCount: 1,
+        votedVotingPower: 1n,
+      },
+    });
     const neuronsVotingPower = formatVotingPower(
       neurons[0].votingPower + neurons[1].votingPower + neurons[2].votingPower
     );
-    expect(queryByText(neuronsVotingPower)).toBeNull();
+    expect(
+      getByTestId("voting-collapsible-toolbar-voting-power").textContent
+    ).not.toBe(neuronsVotingPower);
   });
 
   it("should recalculate total voting power after selection", async () => {
-    const { getByText } = render(VotingNeuronSelect);
-
-    votingNeuronSelectStore.toggleSelection(`${neurons[1].neuronId}`);
-    const total = formatVotingPower(
-      ballots[0].votingPower + ballots[2].votingPower
-    );
-
-    waitFor(() => expect(getByText(total)).toBeInTheDocument());
-  });
-
-  describe("No selectable neurons", () => {
-    beforeEach(() => {
-      votingNeuronSelectStore.set([]);
+    const { getByTestId } = render(VotingNeuronSelect, {
+      props: {
+        ineligibleNeuronCount: 1,
+        votedNeuronCount: 1,
+        votedVotingPower: 1n,
+      },
     });
 
-    it("should display no neurons information", () => {
-      const { getByTestId } = render(VotingNeuronSelect);
-
+    votingNeuronSelectStore.toggleSelection(`${neurons[1].neuronId}`);
+    // ballots[0].votingPower + ballots[2].votingPower
+    await waitFor(() =>
       expect(
-        getByTestId("voting-collapsible-toolbar-neurons")?.textContent?.trim()
-      ).toEqual(en.proposal_detail__vote.neurons);
-      expect(() =>
-        getByTestId("voting-collapsible-toolbar-voting-power")
-      ).toThrow();
+        getByTestId("voting-collapsible-toolbar-voting-power").textContent
+      ).toBe("598.00")
+    );
+  });
+
+  describe("Visibility", () => {
+    beforeEach(() => {
+      votingNeuronSelectStore.set(
+        neurons.map((neuron) =>
+          nnsNeuronToVotingNeuron({ neuron, proposal: proposalInfo })
+        )
+      );
+    });
+
+    it("should display all neuron blocks", () => {
+      const { queryByTestId } = render(VotingNeuronSelect, {
+        props: {
+          ineligibleNeuronCount: 1,
+          votedNeuronCount: 1,
+          votedVotingPower: 1n,
+        },
+      });
+
+      expect(queryByTestId("votable-neurons")).toBeInTheDocument();
+      expect(queryByTestId("voted-neurons")).toBeInTheDocument();
+      expect(queryByTestId("ineligible-neurons")).toBeInTheDocument();
+    });
+
+    it("should not display votable neurons block", () => {
+      votingNeuronSelectStore.reset();
+      const { queryByTestId } = render(VotingNeuronSelect, {
+        props: {
+          ineligibleNeuronCount: 1,
+          votedNeuronCount: 1,
+          votedVotingPower: 1n,
+        },
+      });
+
+      expect(queryByTestId("votable-neurons")).not.toBeInTheDocument();
+      expect(queryByTestId("voted-neurons")).toBeInTheDocument();
+      expect(queryByTestId("ineligible-neurons")).toBeInTheDocument();
+    });
+
+    it("should not display voted neurons block", () => {
+      const { queryByTestId } = render(VotingNeuronSelect, {
+        props: {
+          ineligibleNeuronCount: 1,
+          votedNeuronCount: 0,
+          votedVotingPower: 1n,
+        },
+      });
+
+      expect(queryByTestId("votable-neurons")).toBeInTheDocument();
+      expect(queryByTestId("voted-neurons")).not.toBeInTheDocument();
+      expect(queryByTestId("ineligible-neurons")).toBeInTheDocument();
+    });
+
+    it("should not display ineligible neurons block", () => {
+      const { queryByTestId } = render(VotingNeuronSelect, {
+        props: {
+          ineligibleNeuronCount: 0,
+          votedNeuronCount: 1,
+          votedVotingPower: 1n,
+        },
+      });
+
+      expect(queryByTestId("votable-neurons")).toBeInTheDocument();
+      expect(queryByTestId("voted-neurons")).toBeInTheDocument();
+      expect(queryByTestId("ineligible-neurons")).not.toBeInTheDocument();
     });
   });
 
@@ -101,21 +170,31 @@ describe("VotingNeuronSelect", () => {
     );
 
     it("should display voting power", () => {
-      const { getByTestId } = render(VotingNeuronSelect);
+      const { getByTestId } = render(VotingNeuronSelect, {
+        props: {
+          ineligibleNeuronCount: 1,
+          votedNeuronCount: 1,
+          votedVotingPower: 1n,
+        },
+      });
 
       expect(
-        getByTestId("voting-collapsible-toolbar-voting-power")
-      ).not.toBeNull();
+        getByTestId("voting-collapsible-toolbar-voting-power").textContent
+      ).toBe("897.00");
     });
 
     it("should display selectable neurons for voting power", () => {
-      const { getByTestId } = render(VotingNeuronSelect);
+      const { getByTestId } = render(VotingNeuronSelect, {
+        props: {
+          ineligibleNeuronCount: 1,
+          votedNeuronCount: 1,
+          votedVotingPower: 1n,
+        },
+      });
 
       expect(
-        getByTestId("voting-collapsible-toolbar-neurons")
-          ?.textContent?.trim()
-          .includes(`(${neurons.length}/${neurons.length})`)
-      ).toBeTruthy();
+        getByTestId("voting-collapsible-toolbar-neurons")?.textContent
+      ).toBe(`Vote with 3/3 Neurons`);
     });
   });
 });

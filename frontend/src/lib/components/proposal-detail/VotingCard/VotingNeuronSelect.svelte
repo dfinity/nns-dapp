@@ -47,7 +47,7 @@
   {/if}
 
   {#if votedNeuronCount > 0}
-    <ExpandableProposalNeurons testId="votable-neurons">
+    <ExpandableProposalNeurons testId="voted-neurons">
       <svelte:fragment slot="start">
         {replacePlaceholders($i18n.proposal_detail.neurons_voted, {
           $count: votedNeuronCount,
@@ -64,7 +64,7 @@
   {/if}
 
   {#if ineligibleNeuronCount > 0}
-    <ExpandableProposalNeurons testId="votable-neurons">
+    <ExpandableProposalNeurons testId="ineligible-neurons">
       <svelte:fragment slot="start">
         {replacePlaceholders($i18n.proposal_detail__ineligible.headline, {
           $count: ineligibleNeuronCount,
