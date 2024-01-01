@@ -11,5 +11,8 @@
     margin-top: var(--padding);
 
     --checkbox-padding: 0;
+
+    // fix unexpected scrollbars in voted and ineligible list.
+    line-height: normal;
   }
 </style>
