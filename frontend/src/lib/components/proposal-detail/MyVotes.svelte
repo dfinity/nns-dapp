@@ -15,6 +15,7 @@
   import ProposalContentCell from "./ProposalContentCell.svelte";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
+  import VotingCardNeuronList from "$lib/components/proposal-detail/VotingCard/VotingCardNeuronList.svelte";
 
   export let neuronsVotedForProposal: CompactNeuronInfo[] = [];
 
@@ -39,7 +40,7 @@
 </script>
 
 {#if neuronsVotedForProposal.length}
-  <ul>
+  <VotingCardNeuronList>
     {#each neuronsVotedForProposal as neuron}
       <li
         data-tid="neuron-data"
@@ -69,17 +70,5 @@
         </KeyValuePair>
       </li>
     {/each}
-  </ul>
+  </VotingCardNeuronList>
 {/if}
-
-<style lang="scss">
-  ul {
-    list-style: none;
-    padding: 0;
-
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding-2x);
-    margin-top: var(--padding);
-  }
-</style>

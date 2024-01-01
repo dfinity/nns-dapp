@@ -7,6 +7,7 @@
   import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
   import type { NeuronIneligibilityReason } from "$lib/utils/neuron.utils";
   import { nonNullish } from "@dfinity/utils";
+  import VotingCardNeuronList from "$lib/components/proposal-detail/VotingCard/VotingCardNeuronList.svelte";
 
   export let ineligibleNeurons: IneligibleNeuronData[] = [];
   export let minSnsDissolveDelaySeconds: bigint;
@@ -44,7 +45,7 @@
       ),
     })}
   </p>
-  <ul>
+  <VotingCardNeuronList>
     {#each ineligibleNeurons as neuron}
       <li class="value" title={neuron.neuronIdString}>
         <span class="label">
@@ -56,7 +57,7 @@
         <small class="value">{reasonText(neuron)}</small>
       </li>
     {/each}
-  </ul>
+  </VotingCardNeuronList>
 {/if}
 
 <style lang="scss">
@@ -64,16 +65,6 @@
 
   p {
     margin: var(--padding-2x) 0;
-  }
-
-  ul {
-    list-style: none;
-    padding: 0;
-    margin-top: var(--padding);
-
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding-2x);
   }
 
   li {
