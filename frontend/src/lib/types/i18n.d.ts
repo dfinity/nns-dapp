@@ -541,6 +541,7 @@ interface I18nProposal_detail {
   proposer_description: string;
   open_voting_prefix: string;
   my_votes: string;
+  neurons_voted: string;
   loading_neurons: string;
   unknown_nns_function: string;
   nns_function_name: string;
@@ -575,6 +576,8 @@ interface I18nProposal_detail {
 interface I18nProposal_detail__vote {
   headline: string;
   neurons: string;
+  vote_with_neurons: string;
+  voting_power_value: string;
   voting_power: string;
   vote_progress: string;
   total: string;
