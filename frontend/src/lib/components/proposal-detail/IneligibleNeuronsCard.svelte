@@ -65,6 +65,9 @@
 
   p {
     margin: var(--padding-2x) 0;
+
+    // fix unexpected scrollbars in voted and ineligible list
+    line-height: normal;
   }
 
   li {
