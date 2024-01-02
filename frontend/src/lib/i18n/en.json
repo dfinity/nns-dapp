@@ -520,7 +520,6 @@
     "proposer_prefix": "Proposer",
     "proposer_description": "The ID of the neuron that submitted the proposal.",
     "open_voting_prefix": "Voting open:",
-    "my_votes": "My Votes",
     "neurons_voted": "$count neurons voted",
     "loading_neurons": "Loading your neurons...",
     "unknown_nns_function": "Unknown nnsFunction",
@@ -554,7 +553,6 @@
   },
   "proposal_detail__vote": {
     "headline": "Cast Vote",
-    "neurons": "Neurons",
     "vote_with_neurons": "Vote with $votable_count/$all_count Neurons",
     "voting_power_value": "Voting power: $value",
     "voting_power": "Voting power",
