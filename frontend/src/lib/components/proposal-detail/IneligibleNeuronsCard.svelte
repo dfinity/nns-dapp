@@ -38,7 +38,7 @@
 </script>
 
 {#if visible}
-  <p class="description">
+  <p class="description" data-tid="ineligible-neurons-description">
     {replacePlaceholders($i18n.proposal_detail__ineligible.text, {
       $minDissolveDelay: secondsToDissolveDelayDuration(
         minSnsDissolveDelaySeconds
