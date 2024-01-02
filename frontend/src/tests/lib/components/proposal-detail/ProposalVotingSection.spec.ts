@@ -78,9 +78,7 @@ describe("ProposalVotingSection", () => {
         queryByText(en.proposal_detail.voting_results)
       ).toBeInTheDocument();
       expect(getByTestId("voting-confirmation-toolbar")).toBeInTheDocument();
-      expect(
-        queryByText(en.proposal_detail__ineligible.headline)
-      ).toBeInTheDocument();
+      expect(getByTestId("voting-neuron-select")).toBeInTheDocument();
     });
 
     it("should not render vote blocks if reward status has settled", () => {
