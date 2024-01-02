@@ -30,8 +30,8 @@
     <ExpandableProposalNeurons testId="votable-neurons">
       <div slot="start" data-tid="voting-collapsible-toolbar-neurons">
         {replacePlaceholders($i18n.proposal_detail__vote.vote_with_neurons, {
-          $votable_count: selectedVotingNeurons,
-          $all_count: totalVotingNeurons,
+          $votable_count: `${selectedVotingNeurons}`,
+          $all_count: `${totalVotingNeurons}`,
         })}
       </div>
       <svelte:fragment slot="end">
@@ -50,7 +50,7 @@
     <ExpandableProposalNeurons testId="voted-neurons">
       <svelte:fragment slot="start">
         {replacePlaceholders($i18n.proposal_detail.neurons_voted, {
-          $count: votedNeuronCount,
+          $count: `${votedNeuronCount}`,
         })}
       </svelte:fragment>
       <svelte:fragment slot="end">
@@ -67,7 +67,7 @@
     <ExpandableProposalNeurons testId="ineligible-neurons">
       <svelte:fragment slot="start">
         {replacePlaceholders($i18n.proposal_detail__ineligible.headline, {
-          $count: ineligibleNeuronCount,
+          $count: `${ineligibleNeuronCount}`,
         })}
       </svelte:fragment>
       <slot name="ineligible-neurons" />
