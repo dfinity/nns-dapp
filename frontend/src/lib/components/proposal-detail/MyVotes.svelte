@@ -12,7 +12,6 @@
     formatVotingPower,
     type CompactNeuronInfo,
   } from "$lib/utils/neuron.utils";
-  import ProposalContentCell from "./ProposalContentCell.svelte";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
   import VotingCardNeuronList from "$lib/components/proposal-detail/VotingCard/VotingCardNeuronList.svelte";

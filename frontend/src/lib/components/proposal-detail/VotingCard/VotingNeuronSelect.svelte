@@ -25,7 +25,7 @@
   $: selectedVotingNeurons = $votingNeuronSelectStore.selectedIds.length;
 </script>
 
-<div class="container">
+<div class="container" data-tid="voting-neuron-select">
   {#if totalVotingNeurons > 0}
     <ExpandableProposalNeurons testId="votable-neurons">
       <div slot="start" data-tid="voting-collapsible-toolbar-neurons">
