@@ -13,7 +13,6 @@
     type IneligibleNeuronData,
     neuronsVotingPower,
   } from "$lib/utils/neuron.utils";
-  import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import VotingNeuronSelect from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelect.svelte";
 
