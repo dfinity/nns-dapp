@@ -59,9 +59,10 @@
           <span
             slot="value"
             class="vote-details"
+            class:rejected={neuron.vote === Vote.No}
             data-tid="my-votes-voting-power"
           >
-            <Value>{formatVotingPower(neuron.votingPower)}</Value>
+            <span>{formatVotingPower(neuron.votingPower)}</span>
             {#if voteIconMapper[neuron.vote]}
               <svelte:component this={voteIconMapper[neuron.vote]} />
             {/if}
@@ -71,3 +72,17 @@
     {/each}
   </VotingCardNeuronList>
 {/if}
+
+<style lang="scss">
+  .vote-details {
+    display: flex;
+    align-items: center;
+    gap: var(--padding);
+
+    color: var(--positive-emphasis);
+
+    &.rejected {
+      color: var(--negative-emphasis);
+    }
+  }
+</style>
