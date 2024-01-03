@@ -22,6 +22,7 @@ proposal is successful, the changes it released will be moved from this file to
 - Migration functions.
 - Render pending and failed BTC withdrawal transaction as such.
 - Add `ENABLE_SNS_TYPES_FILTER` feature flag.
+- Redesign proposal detail neurons block (collapsible).
 
 #### Changed
 
