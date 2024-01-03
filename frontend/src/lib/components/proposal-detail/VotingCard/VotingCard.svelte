@@ -180,6 +180,14 @@
   .container {
     display: flex;
 
+    // add scrollbars for too long content
+    max-height: 100vh;
+    overflow-y: auto;
+
+    @include media.min-width(large) {
+      max-height: none;
+    }
+
     // mobile extra padding
     padding: var(--padding) var(--padding-2x);
     @include media.min-width(large) {
