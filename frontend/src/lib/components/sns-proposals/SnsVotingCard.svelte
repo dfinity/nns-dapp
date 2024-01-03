@@ -1,8 +1,4 @@
 <script lang="ts">
-  import { BottomSheet } from "@dfinity/gix-components";
-  import { i18n } from "$lib/stores/i18n";
-  import SignInGuard from "$lib/components/common/SignInGuard.svelte";
-  import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
   import type {
     SnsNervousSystemParameters,
     SnsNeuron,
@@ -30,24 +26,16 @@
     votableSnsNeurons,
     votedSnsNeuronDetails,
   } from "$lib/utils/sns-neuron.utils";
-  import VotingConfirmationToolbar from "$lib/components/proposal-detail/VotingCard/VotingConfirmationToolbar.svelte";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { registerSnsVotes } from "$lib/services/sns-vote-registration.services";
   import { Principal } from "@dfinity/principal";
-  import VotingNeuronSelect from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelect.svelte";
-  import VotingNeuronSelectList from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelectList.svelte";
   import type {
     CompactNeuronInfo,
     IneligibleNeuronData,
   } from "$lib/utils/neuron.utils";
-  import MyVotes from "$lib/components/proposal-detail/MyVotes.svelte";
   import { ineligibleSnsNeurons } from "$lib/utils/sns-neuron.utils";
-  import IneligibleNeuronsCard from "$lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
   import { authStore } from "$lib/stores/auth.store";
-  import TestIdWrapper from "../common/TestIdWrapper.svelte";
   import { neuronsVotingPower } from "$lib/utils/neuron.utils";
-  import { definedNeuronsStore } from "$lib/stores/neurons.store";
   import VotingCard from "$lib/components/proposal-detail/VotingCard/VotingCard.svelte";
 
   export let proposal: SnsProposalData;
