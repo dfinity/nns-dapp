@@ -108,8 +108,6 @@
       proposal: proposalInfo,
     });
   }
-  let votedVotingPower: bigint;
-  $: votedVotingPower = neuronsVotingPower(neuronsVotedForProposal);
 
   let ineligibleNeurons: IneligibleNeuronData[];
   $: ineligibleNeurons = filterIneligibleNnsNeurons({

@@ -131,9 +131,6 @@
     });
   }
 
-  let votedVotingPower: bigint;
-  $: votedVotingPower = neuronsVotingPower(neuronsVotedForProposal);
-
   // ineligible neurons data
   let ineligibleNeurons: IneligibleNeuronData[];
   $: ineligibleNeurons = nonNullish($authStore.identity)
