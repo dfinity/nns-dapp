@@ -313,7 +313,7 @@ describe("Accounts", () => {
 
     transactionsFeesStore.setFee({
       rootCanisterId: mockSnsFullProject.rootCanisterId,
-      fee: BigInt(10_000),
+      fee: 10_000n,
       certified: true,
     });
     const { queryByTestId, getByTestId } = render(Accounts);

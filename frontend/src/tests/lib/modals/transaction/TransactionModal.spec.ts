@@ -257,7 +257,7 @@ describe("TransactionModal", () => {
 
     it("should move to the last step and render passed transaction fee", async () => {
       const fee = TokenAmount.fromE8s({
-        amount: BigInt(20_000),
+        amount: 20_000n,
         token: {
           symbol: "TST",
           name: "Test token",
@@ -289,7 +289,7 @@ describe("TransactionModal", () => {
 
     it("should move to the last step and show ledger fees", async () => {
       const fee = TokenAmount.fromE8s({
-        amount: BigInt(20_000),
+        amount: 20_000n,
         token: {
           symbol: "TST",
           name: "Test token",
@@ -309,7 +309,7 @@ describe("TransactionModal", () => {
 
     it("should move to the last step and hide ledger fees", async () => {
       const fee = TokenAmount.fromE8s({
-        amount: BigInt(20_000),
+        amount: 20_000n,
         token: {
           symbol: "TST",
           name: "Test token",

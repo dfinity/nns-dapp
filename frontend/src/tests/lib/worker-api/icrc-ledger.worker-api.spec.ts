@@ -28,7 +28,7 @@ describe("icrc-ledger.worker-api", () => {
   };
 
   it("should return balance", async () => {
-    const balance = BigInt(10_000_000);
+    const balance = 10_000_000n;
 
     const balanceSpy = ledgerCanisterMock.balance.mockResolvedValue(balance);
 

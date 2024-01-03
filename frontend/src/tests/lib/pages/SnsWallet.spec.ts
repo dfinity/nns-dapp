@@ -87,7 +87,7 @@ describe("SnsWallet", () => {
     transactionsFeesStore.reset();
     toastsStore.reset();
     vi.spyOn(snsIndexApi, "getSnsTransactions").mockResolvedValue({
-      oldestTxId: BigInt(1234),
+      oldestTxId: 1_234n,
       transactions: [mockIcrcTransactionWithId],
     });
     vi.spyOn(snsLedgerApi, "transactionFee").mockResolvedValue(fee);
@@ -204,7 +204,7 @@ describe("SnsWallet", () => {
       expect(snsLedgerApi.snsTransfer).toHaveBeenCalledWith({
         identity: mockIdentity,
         rootCanisterId,
-        amount: 200000000n,
+        amount: 200000_000n,
         fromSubaccount: undefined,
         fee,
         to: destinationAccount,

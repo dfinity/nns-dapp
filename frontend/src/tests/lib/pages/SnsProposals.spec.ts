@@ -37,7 +37,7 @@ describe("SnsProposals", () => {
 
   const rootCanisterId = mockPrincipal;
   const functionName = "test_function";
-  const functionId = BigInt(3);
+  const functionId = 3n;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -171,13 +171,13 @@ describe("SnsProposals", () => {
     const proposals: SnsProposalData[] = [
       createSnsProposal({
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
-        proposalId: BigInt(1),
+        proposalId: 1n,
         rewardStatus:
           SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
       }),
       createSnsProposal({
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED,
-        proposalId: BigInt(2),
+        proposalId: 2n,
         rewardStatus: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED,
       }),
     ];
@@ -185,7 +185,7 @@ describe("SnsProposals", () => {
       vi.spyOn(authStore, "subscribe").mockImplementation(
         mockAuthStoreNoIdentitySubscribe
       );
-      const functionId = BigInt(3);
+      const functionId = 3n;
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,

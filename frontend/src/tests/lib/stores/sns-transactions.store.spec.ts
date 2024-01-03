@@ -16,7 +16,7 @@ describe("SNS Transactions store", () => {
         canisterId: mockPrincipal,
         transactions: [mockIcrcTransactionWithId],
         accountIdentifier: mockSnsMainAccount.identifier,
-        oldestTxId: BigInt(10),
+        oldestTxId: 10n,
         completed: false,
       });
 
@@ -32,7 +32,7 @@ describe("SNS Transactions store", () => {
         canisterId: mockPrincipal,
         transactions: [mockIcrcTransactionWithId],
         accountIdentifier: mockSnsMainAccount.identifier,
-        oldestTxId: BigInt(10),
+        oldestTxId: 10n,
         completed: false,
       });
 
@@ -40,7 +40,7 @@ describe("SNS Transactions store", () => {
         canisterId: mockPrincipal,
         transactions: [mockIcrcTransactionWithId],
         accountIdentifier: mockSnsSubAccount.identifier,
-        oldestTxId: BigInt(10),
+        oldestTxId: 10n,
         completed: false,
       });
 
@@ -58,28 +58,28 @@ describe("SNS Transactions store", () => {
     it("should not add duplicated transactions", () => {
       const tx1 = {
         ...mockIcrcTransactionWithId,
-        id: BigInt(1),
+        id: 1n,
       };
       const tx2 = {
         ...mockIcrcTransactionWithId,
-        id: BigInt(2),
+        id: 2n,
       };
       const tx3 = {
         ...mockIcrcTransactionWithId,
-        id: BigInt(3),
+        id: 3n,
       };
       icrcTransactionsStore.addTransactions({
         canisterId: mockPrincipal,
         transactions: [tx1, tx2],
         accountIdentifier: mockSnsMainAccount.identifier,
-        oldestTxId: BigInt(10),
+        oldestTxId: 10n,
         completed: false,
       });
       icrcTransactionsStore.addTransactions({
         canisterId: mockPrincipal,
         transactions: [tx1, tx3],
         accountIdentifier: mockSnsMainAccount.identifier,
-        oldestTxId: BigInt(10),
+        oldestTxId: 10n,
         completed: false,
       });
 
@@ -93,17 +93,17 @@ describe("SNS Transactions store", () => {
     it("should not change txOldestId if not oldest", () => {
       const tx1 = {
         ...mockIcrcTransactionWithId,
-        id: BigInt(1),
+        id: 1n,
       };
       const tx2 = {
         ...mockIcrcTransactionWithId,
-        id: BigInt(2),
+        id: 2n,
       };
       const tx3 = {
         ...mockIcrcTransactionWithId,
-        id: BigInt(3),
+        id: 3n,
       };
-      const oldestTxId = BigInt(1);
+      const oldestTxId = 1n;
       icrcTransactionsStore.addTransactions({
         canisterId: mockPrincipal,
         transactions: [tx1, tx2],
@@ -115,7 +115,7 @@ describe("SNS Transactions store", () => {
         canisterId: mockPrincipal,
         transactions: [tx1, tx3],
         accountIdentifier: mockSnsMainAccount.identifier,
-        oldestTxId: BigInt(3),
+        oldestTxId: 3n,
         completed: false,
       });
 
@@ -131,7 +131,7 @@ describe("SNS Transactions store", () => {
         canisterId: mockPrincipal,
         transactions: [mockIcrcTransactionWithId],
         accountIdentifier: mockSnsMainAccount.identifier,
-        oldestTxId: BigInt(10),
+        oldestTxId: 10n,
         completed: false,
       });
 
@@ -153,7 +153,7 @@ describe("SNS Transactions store", () => {
         canisterId: mockPrincipal,
         transactions: [mockIcrcTransactionWithId],
         accountIdentifier: mockSnsMainAccount.identifier,
-        oldestTxId: BigInt(10),
+        oldestTxId: 10n,
         completed: false,
       });
       const accountsInStore = get(icrcTransactionsStore);
@@ -166,7 +166,7 @@ describe("SNS Transactions store", () => {
         canisterId: principal2,
         transactions: [mockIcrcTransactionWithId],
         accountIdentifier: mockSnsMainAccount.identifier,
-        oldestTxId: BigInt(10),
+        oldestTxId: 10n,
         completed: false,
       });
       const accountsInStore2 = get(icrcTransactionsStore);

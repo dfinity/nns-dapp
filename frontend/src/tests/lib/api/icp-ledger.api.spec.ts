@@ -25,16 +25,16 @@ describe("icp-ledger.api", () => {
 
     const { identifier: accountIdentifier } = mockMainAccount;
     const amount = TokenAmount.fromE8s({
-      amount: BigInt(11_000),
+      amount: 11_000n,
       token: ICPToken,
     });
 
     const now = Date.now();
-    const nowInBigIntNanoSeconds = BigInt(now) * BigInt(1_000_000);
+    const nowInBigIntNanoSeconds = BigInt(now) * 1_000_000n;
 
     beforeEach(() => {
       const ledgerMock = mock<LedgerCanister>();
-      ledgerMock.transfer.mockResolvedValue(BigInt(0));
+      ledgerMock.transfer.mockResolvedValue(0n);
       vi.useFakeTimers().setSystemTime(now);
 
       vi.spyOn(LedgerCanister, "create").mockImplementation(
@@ -79,7 +79,7 @@ describe("icp-ledger.api", () => {
     });
 
     it("should call ledger to send ICP with memo", async () => {
-      const memo = BigInt(444555);
+      const memo = 444_555n;
       await sendICP({
         identity: mockIdentity,
         to: accountIdentifier,
@@ -96,8 +96,8 @@ describe("icp-ledger.api", () => {
     });
 
     it("should call ledger to send ICP with createdAt", async () => {
-      const memo = BigInt(444555);
-      const createdAt = BigInt(123456);
+      const memo = 444_555n;
+      const createdAt = 123_456n;
       await sendICP({
         identity: mockIdentity,
         to: accountIdentifier,
@@ -120,16 +120,16 @@ describe("icp-ledger.api", () => {
 
     const owner = mockIdentity.getPrincipal();
     const amount = TokenAmount.fromE8s({
-      amount: BigInt(11_000),
+      amount: 11_000n,
       token: ICPToken,
     });
 
     const now = Date.now();
-    const nowInBigIntNanoSeconds = BigInt(now) * BigInt(1_000_000);
+    const nowInBigIntNanoSeconds = BigInt(now) * 1_000_000n;
 
     beforeEach(() => {
       const ledgerMock = mock<LedgerCanister>();
-      ledgerMock.icrc1Transfer.mockResolvedValue(BigInt(0));
+      ledgerMock.icrc1Transfer.mockResolvedValue(0n);
       vi.useFakeTimers().setSystemTime(now);
 
       vi.spyOn(LedgerCanister, "create").mockImplementation(
@@ -156,7 +156,7 @@ describe("icp-ledger.api", () => {
     });
 
     it("should call ledger to send ICP with fee", async () => {
-      const fee = 15000n;
+      const fee = 15_000n;
       await sendIcpIcrc1({
         identity: mockIdentity,
         to: { owner },
@@ -215,7 +215,7 @@ describe("icp-ledger.api", () => {
 
     it("should call ledger to send ICP with createdAt", async () => {
       const icrc1Memo = Uint8Array.from([4, 4, 5, 5]);
-      const createdAt = BigInt(123456);
+      const createdAt = 123_456n;
       await sendIcpIcrc1({
         identity: mockIdentity,
         to: { owner },
@@ -252,7 +252,7 @@ describe("icp-ledger.api", () => {
   });
 
   describe("transactionFee", () => {
-    const fee = BigInt(10_000);
+    const fee = 10_000n;
     const ledgerMock = mock<LedgerCanister>();
     ledgerMock.transactionFee.mockResolvedValue(fee);
 
@@ -270,7 +270,7 @@ describe("icp-ledger.api", () => {
   });
 
   describe("queryAccountBalance", () => {
-    const balance = BigInt(10_000_000);
+    const balance = 10_000_000n;
     const ledgerMock = mock<LedgerCanister>();
     ledgerMock.accountBalance.mockResolvedValue(balance);
 

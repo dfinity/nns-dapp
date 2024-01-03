@@ -9,7 +9,7 @@ describe("TransactionSummary", () => {
   const amount = 123456.789;
   const token = ICPToken;
   const transactionFee = TokenAmount.fromE8s({
-    amount: BigInt(10_000),
+    amount: 10_000n,
     token,
   });
 

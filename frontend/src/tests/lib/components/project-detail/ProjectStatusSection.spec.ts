@@ -59,7 +59,7 @@ describe("ProjectStatusSection", () => {
       summary: mockSnsFullProject.summary,
       swapCommitment: {
         rootCanisterId: mockSnsFullProject.rootCanisterId,
-        myCommitment: createBuyersState(BigInt(2_500_000_000)),
+        myCommitment: createBuyersState(2_500_000_000n),
       },
     });
     expect(await po.getCommitmentAmount()).toBe("25.00");

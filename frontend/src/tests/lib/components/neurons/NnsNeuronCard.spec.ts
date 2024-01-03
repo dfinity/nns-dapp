@@ -111,7 +111,7 @@ describe("NnsNeuronCard", () => {
       props: {
         neuron: {
           ...mockNeuron,
-          joinedCommunityFundTimestampSeconds: BigInt(1000),
+          joinedCommunityFundTimestampSeconds: 1_000n,
         },
       },
     });

@@ -7,12 +7,12 @@ import SelectCyclesCanisterTest from "./SelectCyclesCanisterTest.svelte";
 
 vitest.mock("$lib/services/canisters.services", () => {
   return {
-    getIcpToCyclesExchangeRate: vitest.fn().mockResolvedValue(BigInt(10_000)),
+    getIcpToCyclesExchangeRate: vitest.fn().mockResolvedValue(10_000n),
   };
 });
 
 describe("SelectCyclesCanister", () => {
-  const props = { icpToCyclesExchangeRate: BigInt(10_000) };
+  const props = { icpToCyclesExchangeRate: 10_000n };
   it("renders button", () => {
     const { queryByText } = render(SelectCyclesCanisterTest, { props });
 

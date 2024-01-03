@@ -40,7 +40,7 @@ describe("NnsWallet", () => {
   const props = {
     accountIdentifier: mockMainAccount.identifier,
   };
-  const mainBalanceE8s = BigInt(10_000_000);
+  const mainBalanceE8s = 10_000_000n;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -289,7 +289,7 @@ describe("NnsWallet", () => {
     beforeEach(() => {
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);
-      const mainBalanceE8s = BigInt(10_000_000);
+      const mainBalanceE8s = 10_000_000n;
       vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
         mainBalanceE8s
       );
