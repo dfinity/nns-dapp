@@ -35,7 +35,6 @@
   } from "$lib/utils/neuron.utils";
   import { ineligibleSnsNeurons } from "$lib/utils/sns-neuron.utils";
   import { authStore } from "$lib/stores/auth.store";
-  import { neuronsVotingPower } from "$lib/utils/neuron.utils";
   import VotingCard from "$lib/components/proposal-detail/VotingCard/VotingCard.svelte";
 
   export let proposal: SnsProposalData;

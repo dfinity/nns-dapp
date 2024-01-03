@@ -25,7 +25,6 @@
     type CompactNeuronInfo,
     filterIneligibleNnsNeurons,
     type IneligibleNeuronData,
-    neuronsVotingPower,
     votedNeuronDetails,
   } from "$lib/utils/neuron.utils";
   import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
