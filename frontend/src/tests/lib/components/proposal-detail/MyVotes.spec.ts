@@ -101,4 +101,16 @@ describe("MyVotes", () => {
 
     expect(element?.getAttribute("aria-label")).toBeTruthy();
   });
+
+  it("should add colour class", () => {
+    const rejectedVotedCount = (neurons: CompactNeuronInfo[]) =>
+      render(MyVotes, {
+        props: {
+          neuronsVotedForProposal: neurons,
+        },
+      }).container.querySelectorAll(".rejected").length;
+
+    expect(rejectedVotedCount([yesVoted])).toBe(0);
+    expect(rejectedVotedCount([noVoted])).toBe(1);
+  });
 });

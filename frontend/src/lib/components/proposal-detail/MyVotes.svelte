@@ -5,7 +5,6 @@
     IconThumbDown,
     IconThumbUp,
     KeyValuePair,
-    Value,
   } from "@dfinity/gix-components";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
