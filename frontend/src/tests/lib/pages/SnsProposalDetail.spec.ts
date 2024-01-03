@@ -35,7 +35,7 @@ vi.mock("$lib/api/sns-governance.api");
 
 describe("SnsProposalDetail", () => {
   fakeSnsGovernanceApi.install();
-  const proposalId = { id: BigInt(3) };
+  const proposalId = { id: 3n };
   const rootCanisterId = mockCanisterId;
 
   const renderComponent = async () => {
@@ -66,7 +66,7 @@ describe("SnsProposalDetail", () => {
     });
 
     it("should show skeleton while loading proposal", async () => {
-      const proposalId = { id: BigInt(3) };
+      const proposalId = { id: 3n };
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,
@@ -135,7 +135,7 @@ describe("SnsProposalDetail", () => {
     });
 
     it("should render the name of the nervous function as title", async () => {
-      const functionId = BigInt(12);
+      const functionId = 12n;
       const functionName = "test function";
       fakeSnsGovernanceApi.addNervousSystemFunctionWith({
         rootCanisterId,

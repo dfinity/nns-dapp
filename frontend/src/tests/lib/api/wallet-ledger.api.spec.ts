@@ -29,7 +29,7 @@ describe("wallet-ledger api", () => {
 
   describe("getAccount", () => {
     it("returns main account with balance", async () => {
-      const balance = BigInt(10_000_000);
+      const balance = 10_000_000n;
 
       const balanceSpy = ledgerCanisterMock.balance.mockResolvedValue(balance);
 

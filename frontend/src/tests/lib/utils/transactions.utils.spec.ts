@@ -108,8 +108,8 @@ describe("transactions-utils", () => {
         ...mockReceivedFromMainAccountTransaction,
         transfer: {
           Send: {
-            fee: { e8s: BigInt(10000) },
-            amount: { e8s: BigInt(110000000) },
+            fee: { e8s: 10_000n },
+            amount: { e8s: 110_000_000n },
             to: swapCanisterAccount.toHex(),
           },
         },
@@ -132,8 +132,8 @@ describe("transactions-utils", () => {
         ...mockReceivedFromMainAccountTransaction,
         transfer: {
           Receive: {
-            fee: { e8s: BigInt(10000) },
-            amount: { e8s: BigInt(110000000) },
+            fee: { e8s: 10_000n },
+            amount: { e8s: 110_000_000n },
             from: swapCanisterAccount.toHex(),
           },
         },
@@ -194,17 +194,17 @@ describe("transactions-utils", () => {
       const transactions = mapToSelfTransaction([
         {
           ...mockSentToSubAccountTransaction,
-          timestamp: { timestamp_nanos: BigInt("111") },
+          timestamp: { timestamp_nanos: 111n },
         },
         mockReceivedFromMainAccountTransaction,
         mockReceivedFromMainAccountTransaction,
         {
           ...mockSentToSubAccountTransaction,
-          timestamp: { timestamp_nanos: BigInt("222") },
+          timestamp: { timestamp_nanos: 222n },
         },
         {
           ...mockSentToSubAccountTransaction,
-          timestamp: { timestamp_nanos: BigInt("333") },
+          timestamp: { timestamp_nanos: 333n },
         },
         mockSentToSubAccountTransaction,
         mockSentToSubAccountTransaction,
@@ -335,8 +335,8 @@ describe("transactions-utils", () => {
         ...mockReceivedFromMainAccountTransaction,
         transfer: {
           Send: {
-            fee: { e8s: BigInt(10000) },
-            amount: { e8s: BigInt(110000000) },
+            fee: { e8s: 10_000n },
+            amount: { e8s: 110_000_000n },
             to: swapCanisterAccount.toHex(),
           },
         },
@@ -360,8 +360,8 @@ describe("transactions-utils", () => {
         ...mockReceivedFromMainAccountTransaction,
         transfer: {
           Receive: {
-            fee: { e8s: BigInt(10000) },
-            amount: { e8s: BigInt(110000000) },
+            fee: { e8s: 10_000n },
+            amount: { e8s: 110_000_000n },
             from: swapCanisterAccount.toHex(),
           },
         },
@@ -547,7 +547,7 @@ describe("transactions-utils", () => {
           amount: 222n,
           fee: 333n,
         })
-      ).toBe(BigInt(222 + 333));
+      ).toBe(222n + 333n);
     });
 
     it("should calculate without fee", () => {
@@ -557,14 +557,14 @@ describe("transactions-utils", () => {
           amount: 222n,
           fee: 333n,
         })
-      ).toBe(BigInt(222));
+      ).toBe(222n);
     });
 
     it("should throw when no fee", () => {
       expect(() =>
         transactionDisplayAmount({
           useFee: true,
-          amount: BigInt(222),
+          amount: 222n,
           fee: undefined,
         })
       ).toThrow();

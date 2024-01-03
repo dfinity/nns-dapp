@@ -75,7 +75,7 @@ describe("ProjectDetail", () => {
   const rootCanisterId = mockCanisterId;
   const userCountryCode = "CH";
   const notUserCountryCode = "US";
-  const newBalance = BigInt(10_000_000_000);
+  const newBalance = 10_000_000_000n;
   const saleBuyerCount = 1_000_000;
   const rawMetricsText = `
 # TYPE sale_buyer_count gauge
@@ -106,7 +106,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
     vi.spyOn(snsApi, "querySnsDerivedState").mockResolvedValue({
       sns_tokens_per_icp: [1],
-      buyer_total_icp_e8s: [BigInt(200_000_000)],
+      buyer_total_icp_e8s: [200_000_000n],
       cf_participant_count: [],
       direct_participant_count: [],
       cf_neuron_count: [],
@@ -345,7 +345,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
       vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
       vi.spyOn(snsApi, "querySnsLifecycle").mockResolvedValue({
-        decentralization_sale_open_timestamp_seconds: [BigInt(11231312)],
+        decentralization_sale_open_timestamp_seconds: [11_231_312n],
         lifecycle: [SnsSwapLifecycle.Open],
       });
 
@@ -373,22 +373,22 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           icp_accepted_participation_e8s: testTicket.amount_icp_e8s,
           icp_ledger_account_balance_e8s: testTicket.amount_icp_e8s,
         });
-        vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(BigInt(10));
+        vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(10n);
         vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
-          BigInt(1_000_000_000)
+          1_000_000_000n
         );
       });
 
       it("should show user's commitment", async () => {
-        const userCommitment = BigInt(100_000_000);
+        const userCommitment = 100_000_000n;
         vi.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
           rootCanisterId,
           myCommitment: {
             icp: [
               {
-                transfer_start_timestamp_seconds: BigInt(123444),
+                transfer_start_timestamp_seconds: 123_444n,
                 amount_e8s: userCommitment,
-                transfer_success_timestamp_seconds: BigInt(123445),
+                transfer_success_timestamp_seconds: 123_445n,
                 transfer_fee_paid_e8s: [],
                 amount_transferred_e8s: [],
               },
@@ -475,9 +475,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         const finalCommitment = {
           icp: [
             {
-              transfer_start_timestamp_seconds: BigInt(123444),
+              transfer_start_timestamp_seconds: 123_444n,
               amount_e8s: amountE8s,
-              transfer_success_timestamp_seconds: BigInt(123445),
+              transfer_success_timestamp_seconds: 123_445n,
             },
           ],
           has_created_neuron_recipes: [],
@@ -595,9 +595,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         const finalCommitment = {
           icp: [
             {
-              transfer_start_timestamp_seconds: BigInt(123444),
+              transfer_start_timestamp_seconds: 123_444n,
               amount_e8s: testTicket.amount_icp_e8s,
-              transfer_success_timestamp_seconds: BigInt(123445),
+              transfer_success_timestamp_seconds: 123_445n,
             },
           ],
           has_created_neuron_recipes: [],
@@ -685,7 +685,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       const props = {
         rootCanisterId: rootCanisterId.toText(),
       };
-      const userCommitment = BigInt(100_000_000);
+      const userCommitment = 100_000_000n;
       beforeEach(() => {
         setSnsProjects([
           {
@@ -700,9 +700,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           myCommitment: {
             icp: [
               {
-                transfer_start_timestamp_seconds: BigInt(123444),
+                transfer_start_timestamp_seconds: 123_444n,
                 amount_e8s: userCommitment,
-                transfer_success_timestamp_seconds: BigInt(123445),
+                transfer_success_timestamp_seconds: 123_445n,
                 transfer_fee_paid_e8s: [],
                 amount_transferred_e8s: [],
               },

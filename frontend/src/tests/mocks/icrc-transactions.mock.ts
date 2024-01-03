@@ -50,9 +50,9 @@ export const createIcrcTransactionWithId = ({
           subaccount: [] as [],
         },
         memo: toNullable(memo),
-        created_at_time: [BigInt(123)],
-        amount: amount ?? BigInt(33),
-        fee: [fee ?? BigInt(1)],
+        created_at_time: [123n],
+        amount: amount ?? 33n,
+        fee: [fee ?? 1n],
         spender: [],
       },
     ],
@@ -72,7 +72,7 @@ const fakeSubAccount = {
 
 const mockIcrcTransactionTransfer: IcrcTransaction = {
   kind: "transfer",
-  timestamp: BigInt(12354),
+  timestamp: 12_354n,
   burn: [],
   mint: [],
   transfer: [
@@ -80,9 +80,9 @@ const mockIcrcTransactionTransfer: IcrcTransaction = {
       to: fakeSubAccount,
       from: fakeAccount,
       memo: [],
-      created_at_time: [BigInt(123)],
-      amount: BigInt(33),
-      fee: [BigInt(1)],
+      created_at_time: [123n],
+      amount: 33n,
+      fee: [1n],
       spender: [],
     },
   ],
@@ -91,7 +91,7 @@ const mockIcrcTransactionTransfer: IcrcTransaction = {
 
 const mockIcrcTransactionTransferToSelf: IcrcTransaction = {
   kind: "transfer",
-  timestamp: BigInt(12354),
+  timestamp: 12_354n,
   burn: [],
   mint: [],
   transfer: [
@@ -99,9 +99,9 @@ const mockIcrcTransactionTransferToSelf: IcrcTransaction = {
       to: fakeAccount,
       from: fakeAccount,
       memo: [],
-      created_at_time: [BigInt(123)],
-      amount: BigInt(33),
-      fee: [BigInt(1)],
+      created_at_time: [123n],
+      amount: 33n,
+      fee: [1n],
       spender: [],
     },
   ],
@@ -109,7 +109,7 @@ const mockIcrcTransactionTransferToSelf: IcrcTransaction = {
 };
 
 export const createMintTransaction = ({
-  timestamp = 12354n,
+  timestamp = 12_354n,
   amount = 33n,
   to = fakeAccount,
   memo,
@@ -139,7 +139,7 @@ export const createMintTransaction = ({
 };
 
 export const createApproveTransaction = ({
-  timestamp = 12354n,
+  timestamp = 12_354n,
   amount = 33_000_000n,
   fee = 10_000n,
   from = fakeAccount,
@@ -177,7 +177,7 @@ export const createApproveTransaction = ({
 };
 
 export const createBurnTransaction = ({
-  timestamp = 12354n,
+  timestamp = 12_354n,
   amount = 33n,
   from = fakeAccount,
   memo,
@@ -215,13 +215,13 @@ export const mockIcrcTransactionBurn: IcrcTransaction = createBurnTransaction(
 
 export const mockIcrcTransactionMint: IcrcTransaction = {
   kind: "mint",
-  timestamp: BigInt(12354),
+  timestamp: 12_354n,
   burn: [],
   mint: [
     {
-      amount: BigInt(33),
+      amount: 33n,
       memo: [],
-      created_at_time: [BigInt(123)],
+      created_at_time: [123n],
       to: fakeAccount,
     },
   ],
@@ -230,12 +230,12 @@ export const mockIcrcTransactionMint: IcrcTransaction = {
 };
 
 export const mockIcrcTransactionWithId: IcrcTransactionWithId = {
-  id: BigInt(123),
+  id: 123n,
   transaction: mockIcrcTransactionTransfer,
 };
 
 export const mockIcrcTransactionWithIdToSelf: IcrcTransactionWithId = {
-  id: BigInt(124),
+  id: 124n,
   transaction: mockIcrcTransactionTransferToSelf,
 };
 

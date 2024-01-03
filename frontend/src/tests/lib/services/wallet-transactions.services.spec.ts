@@ -27,10 +27,10 @@ describe("wallet-transactions-services", () => {
       const spyGetTransactions = vi
         .spyOn(indexApi, "getTransactions")
         .mockResolvedValue({
-          oldestTxId: BigInt(1234),
+          oldestTxId: 1_234n,
           transactions: [mockIcrcTransactionWithId],
         });
-      const start = BigInt(1234);
+      const start = 1_234n;
 
       await services.loadWalletTransactions({
         account: mockCkBTCMainAccount,
@@ -68,7 +68,7 @@ describe("wallet-transactions-services", () => {
       const spyGetTransactions = vi
         .spyOn(indexApi, "getTransactions")
         .mockResolvedValue({
-          oldestTxId: BigInt(1234),
+          oldestTxId: 1_234n,
           transactions: [mockIcrcTransactionWithId],
         });
 
@@ -104,11 +104,11 @@ describe("wallet-transactions-services", () => {
       const spyGetTransactions = vi
         .spyOn(indexApi, "getTransactions")
         .mockResolvedValue({
-          oldestTxId: BigInt(1234),
+          oldestTxId: 1_234n,
           transactions: [mockIcrcTransactionWithId],
         });
 
-      const oldestTxId = BigInt(1234);
+      const oldestTxId = 1_234n;
 
       icrcTransactionsStore.addTransactions({
         canisterId: CKBTC_UNIVERSE_CANISTER_ID,

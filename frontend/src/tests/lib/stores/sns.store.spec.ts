@@ -74,19 +74,19 @@ describe("sns.store", () => {
       const proposals = [
         {
           ...mockProposalInfo,
-          id: BigInt(111),
+          id: 111n,
           deadlineTimestampSeconds: BigInt(Math.round(nowSeconds + 10000)),
           status: ProposalStatus.Rejected,
         },
         {
           ...mockProposalInfo,
-          id: BigInt(222),
+          id: 222n,
           deadlineTimestampSeconds: BigInt(Math.round(nowSeconds - 10000)),
           status: ProposalStatus.Open,
         },
         {
           ...mockProposalInfo,
-          id: BigInt(222),
+          id: 222n,
           deadlineTimestampSeconds: BigInt(Math.round(nowSeconds + 10000)),
           status: ProposalStatus.Accepted,
         },

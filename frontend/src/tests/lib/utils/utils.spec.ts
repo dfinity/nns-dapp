@@ -44,9 +44,7 @@ describe("utils", () => {
     });
 
     it("should stringify JSON with bigint", () => {
-      expect(stringifyJson({ a: BigInt(123) })).toBe(
-        JSON.stringify({ a: "123" })
-      );
+      expect(stringifyJson({ a: 123n })).toBe(JSON.stringify({ a: "123" }));
     });
 
     it("should preserve undefined values", () => {
@@ -62,7 +60,7 @@ describe("utils", () => {
     it("should convert bigints to function call in devMode", () => {
       expect(
         stringifyJson(
-          { value: BigInt("123456789012345678901234567890") },
+          { value: 123_456_789_012_345_678_901_234_567_890n },
           { devMode: true }
         )
       ).toBe(`{"value":"BigInt('123456789012345678901234567890')"}`);
@@ -930,7 +928,9 @@ describe("utils", () => {
 
     it("returns true for bigint", () => {
       expect(
-        typeOfLikeANumber(99999999999999999999999999999999999999999999n)
+        typeOfLikeANumber(
+          99_999_999_999_999_999_999_999_999_999_999_999_999_999_999n
+        )
       ).toBe(true);
     });
 
@@ -979,10 +979,13 @@ describe("utils", () => {
     });
 
     it("should split bigints", () => {
-      expect(splitE8sIntoChunks(12345678n)).toStrictEqual(["12345678"]);
-      expect(splitE8sIntoChunks(1234567890n)).toStrictEqual(["12", "34567890"]);
-      expect(splitE8sIntoChunks(123456789n)).toStrictEqual(["1", "23456789"]);
-      expect(splitE8sIntoChunks(12345678901234567890n)).toStrictEqual([
+      expect(splitE8sIntoChunks(12_345_678n)).toStrictEqual(["12345678"]);
+      expect(splitE8sIntoChunks(1_234_567_890n)).toStrictEqual([
+        "12",
+        "34567890",
+      ]);
+      expect(splitE8sIntoChunks(123_456_789n)).toStrictEqual(["1", "23456789"]);
+      expect(splitE8sIntoChunks(12_345_678_901_234_567_890n)).toStrictEqual([
         "1234",
         "56789012",
         "34567890",

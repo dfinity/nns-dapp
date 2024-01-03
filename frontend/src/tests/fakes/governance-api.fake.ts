@@ -107,7 +107,7 @@ async function mergeNeurons({
   // merge happened.
   targetNeuron.fullNeuron.cachedNeuronStake +=
     sourceNeuron.fullNeuron.cachedNeuronStake;
-  sourceNeuron.fullNeuron.cachedNeuronStake = BigInt(0);
+  sourceNeuron.fullNeuron.cachedNeuronStake = 0n;
 }
 
 async function simulateMergeNeurons({

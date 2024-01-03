@@ -67,7 +67,8 @@ describe("Json", () => {
 
   it("should render bigint", () =>
     testJsonRender({
-      bigint: BigInt("12345678901234567890123456789012345678901234567890"),
+      bigint:
+        12_345_678_901_234_567_890_123_456_789_012_345_678_901_234_567_890n,
     }));
 
   it("should render function", () =>
