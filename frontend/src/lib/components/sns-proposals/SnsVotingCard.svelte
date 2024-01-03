@@ -46,6 +46,7 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { authStore } from "$lib/stores/auth.store";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
+  import { neuronsVotingPower } from "$lib/utils/neuron.utils";
 
   export let proposal: SnsProposalData;
   export let reloadProposal: () => Promise<void>;
@@ -141,11 +142,7 @@
   }
 
   let votedVotingPower: bigint;
-  $: votedVotingPower =
-    neuronsVotedForProposal?.reduce(
-      (sum, { votingPower }) => sum + votingPower,
-      0n
-    ) ?? 0n;
+  $: votedVotingPower = neuronsVotingPower(neuronsVotedForProposal);
 
   // ineligible neurons data
   let ineligibleNeurons: IneligibleNeuronData[];

@@ -35,6 +35,7 @@
     type CompactNeuronInfo,
     filterIneligibleNnsNeurons,
     type IneligibleNeuronData,
+    neuronsVotingPower,
     votedNeuronDetails,
   } from "$lib/utils/neuron.utils";
   import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
@@ -118,11 +119,7 @@
     });
   }
   let votedVotingPower: bigint;
-  $: votedVotingPower =
-    neuronsVotedForProposal?.reduce(
-      (sum, { votingPower }) => sum + votingPower,
-      0n
-    ) ?? 0n;
+  $: votedVotingPower = neuronsVotingPower(neuronsVotedForProposal);
 
   let ineligibleNeurons: IneligibleNeuronData[];
   $: ineligibleNeurons = filterIneligibleNnsNeurons({

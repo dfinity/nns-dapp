@@ -57,11 +57,13 @@ import {
   neuronCanBeSplit,
   neuronStake,
   neuronVotingPower,
+  neuronsVotingPower,
   sortNeuronsByCreatedTimestamp,
   topicsToFollow,
   userAuthorizedNeuron,
   validTopUpAmount,
   votedNeuronDetails,
+  type CompactNeuronInfo,
   type IneligibleNeuronData,
   type InvalidState,
   type NeuronTagData,
@@ -2137,6 +2139,24 @@ describe("neuron-utils", () => {
         proposal,
       });
       expect(expected).toHaveLength(1);
+    });
+  });
+
+  describe("votedNeuronDetails", () => {
+    it("should return neurons voting power", () => {
+      const neurons = [
+        {
+          idString: "100",
+          votingPower: 100n,
+          vote: Vote.No,
+        },
+        {
+          idString: "200",
+          votingPower: 200n,
+          vote: Vote.Yes,
+        },
+      ] as CompactNeuronInfo[];
+      expect(neuronsVotingPower(neurons)).toBe(300n);
     });
   });
 
