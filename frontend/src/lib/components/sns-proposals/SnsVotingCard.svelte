@@ -47,6 +47,8 @@
   import { authStore } from "$lib/stores/auth.store";
   import TestIdWrapper from "../common/TestIdWrapper.svelte";
   import { neuronsVotingPower } from "$lib/utils/neuron.utils";
+  import { definedNeuronsStore } from "$lib/stores/neurons.store";
+  import VotingCard from "$lib/components/proposal-detail/VotingCard/VotingCard.svelte";
 
   export let proposal: SnsProposalData;
   export let reloadProposal: () => Promise<void>;
@@ -164,82 +166,18 @@
       : fromDefinedNullable(
           snsParameters.neuron_minimum_dissolve_delay_to_vote_seconds
         );
+
+  let hasNeurons = false;
+  $: hasNeurons = $sortedSnsUserNeuronsStore.length > 0;
 </script>
 
-<TestIdWrapper testId="sns-voting-card-component">
-  <BottomSheet>
-    <div class="container" class:signedIn={$authSignedInStore}>
-      <SignInGuard>
-        {#if $sortedSnsUserNeuronsStore.length > 0}
-          {#if neuronsReady}
-            {#if visible}
-              <VotingConfirmationToolbar
-                {voteRegistration}
-                on:nnsConfirm={vote}
-              />
-            {/if}
-
-            <VotingNeuronSelect
-              ineligibleNeuronCount={ineligibleNeurons.length}
-              votedNeuronCount={neuronsVotedForProposal.length}
-              {votedVotingPower}
-            >
-              <VotingNeuronSelectList
-                disabled={voteRegistration !== undefined}
-              />
-              <MyVotes slot="voted-neurons" {neuronsVotedForProposal} />
-              <IneligibleNeuronsCard
-                slot="ineligible-neurons"
-                {ineligibleNeurons}
-                {minSnsDissolveDelaySeconds}
-              />
-            </VotingNeuronSelect>
-          {:else}
-            <div class="loader">
-              <SpinnerText>{$i18n.proposal_detail.loading_neurons}</SpinnerText>
-            </div>
-          {/if}
-        {/if}
-        <span slot="signin-cta">{$i18n.proposal_detail.sign_in}</span>
-      </SignInGuard>
-    </div>
-  </BottomSheet>
-</TestIdWrapper>
-
-<style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-
-  .container {
-    display: flex;
-
-    // mobile extra padding
-    padding: var(--padding) var(--padding-2x);
-    @include media.min-width(large) {
-      padding: 0 var(--padding) 0 0;
-    }
-
-    &.signedIn {
-      flex-direction: column;
-      gap: var(--padding-3x);
-    }
-
-    &:not(.signedIn) {
-      justify-content: center;
-      padding: var(--padding-2x) 0;
-
-      @include media.min-width(large) {
-        display: block;
-        padding: 0;
-      }
-    }
-  }
-
-  .loader {
-    // Observed values that match bottom sheet height
-    padding: var(--padding-3x) var(--padding-2x);
-
-    @include media.min-width(large) {
-      padding: var(--padding-3x) 0;
-    }
-  }
-</style>
+<VotingCard
+  {hasNeurons}
+  {visible}
+  {neuronsReady}
+  {voteRegistration}
+  {neuronsVotedForProposal}
+  {ineligibleNeurons}
+  {minSnsDissolveDelaySeconds}
+  on:nnsConfirm={vote}
+/>

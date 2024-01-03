@@ -53,8 +53,6 @@
     justify-content: space-between;
     gap: var(--padding);
     width: 100%;
-    //margin-bottom: var(--padding-3x);
-    //padding: var(--padding) var(--padding-2x);
 
     @include media.min-width(large) {
       padding: 0 var(--padding) 0 0;
