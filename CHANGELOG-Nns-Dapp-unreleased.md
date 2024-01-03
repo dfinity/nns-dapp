@@ -38,6 +38,7 @@ proposal is successful, the changes it released will be moved from this file to
 - Min dissolve delay button updates not only for the first time.
 - Fix scrollbar in multiline toast message. 
 - Go back to accounts page for incorrect account identifier in SNS wallet page.
+- Stay on the same universe when navigating back from wallet to the accounts page.
 
 #### Security
 

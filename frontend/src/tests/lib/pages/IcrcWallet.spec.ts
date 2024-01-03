@@ -14,6 +14,7 @@ import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
 import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
+import WalletTest from "$tests/lib/pages/WalletTest.svelte";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCkETHMainAccount,
@@ -25,6 +26,7 @@ import { ReceiveModalPo } from "$tests/page-objects/ReceiveModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -81,7 +83,10 @@ describe("IcrcWallet", () => {
   const renderWallet = async (props: {
     accountIdentifier: string;
   }): Promise<IcrcWalletPo> => {
-    const { container } = render(IcrcWallet, props);
+    const { container } = render(WalletTest, {
+      ...props,
+      testComponent: IcrcWallet,
+    });
     await runResolvedPromises();
     return IcrcWalletPo.under(new JestPageObjectElement(container));
   };
@@ -105,6 +110,7 @@ describe("IcrcWallet", () => {
     vi.clearAllTimers();
     tokensStore.reset();
     overrideFeatureFlagsStore.reset();
+    toastsStore.reset();
     resetIdentity();
 
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
@@ -231,27 +237,58 @@ describe("IcrcWallet", () => {
     });
 
     it("should nagigate to accounts when account identifier is missing", async () => {
-      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Wallet,
+        universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText(),
+      });
       await renderWallet({
         accountIdentifier: undefined,
       });
-      expect(get(pageStore).path).toEqual(AppPath.Accounts);
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Accounts,
+        universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText(),
+      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: 'Sorry, the account "" was not found',
+        },
+      ]);
     });
 
     it("should nagigate to accounts when account identifier is invalid", async () => {
-      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Wallet,
+        universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText(),
+      });
       await renderWallet({
         accountIdentifier: "invalid-account-identifier",
       });
-      expect(get(pageStore).path).toEqual(AppPath.Accounts);
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Accounts,
+        universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText(),
+      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: 'Sorry, the account "invalid-account-identifier" was not found',
+        },
+      ]);
     });
 
     it("should stay on the wallet page when account identifier is valid", async () => {
-      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Wallet,
+        universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText(),
+      });
       await renderWallet({
         accountIdentifier: mockCkETHMainAccount.identifier,
       });
-      expect(get(pageStore).path).toEqual(AppPath.Wallet);
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Wallet,
+        universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText(),
+      });
+      expect(get(toastsStore)).toEqual([]);
     });
   });
 });
