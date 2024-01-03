@@ -14,6 +14,7 @@
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
   import VotingCardNeuronList from "$lib/components/proposal-detail/VotingCard/VotingCardNeuronList.svelte";
+  import { fade } from "svelte/transition";
 
   export let neuronsVotedForProposal: CompactNeuronInfo[] = [];
 
@@ -47,6 +48,7 @@
           vote: neuron.vote,
         })}
         title={voteMapper({ neuron: neuron.idString, vote: neuron.vote })}
+        in:fade
       >
         <KeyValuePair>
           <span slot="key" class="value" title={neuron.idString}>

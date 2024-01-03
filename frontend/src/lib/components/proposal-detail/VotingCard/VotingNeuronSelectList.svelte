@@ -7,6 +7,7 @@
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
   import VotingCardNeuronList from "$lib/components/proposal-detail/VotingCard/VotingCardNeuronList.svelte";
+  import { fade } from "svelte/transition";
 
   export let disabled: boolean;
 
@@ -17,7 +18,7 @@
 {#if $votingNeuronSelectStore.neurons.length > 0}
   <VotingCardNeuronList>
     {#each $votingNeuronSelectStore.neurons as neuron}
-      <li>
+      <li in:fade>
         <KeyValuePair>
           <span slot="key" class="label">
             <span
