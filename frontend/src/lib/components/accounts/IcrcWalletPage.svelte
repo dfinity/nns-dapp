@@ -5,8 +5,7 @@
   import type { WalletStore } from "$lib/types/wallet.context";
   import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
   import {
-    mainAccount,
-    findAccount,
+    findAccountOrDefaultToMain,
     hasAccounts,
   } from "$lib/utils/accounts.utils";
   import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
@@ -60,13 +59,10 @@
     const accounts = nonNullish(selectedUniverseId)
       ? $icrcAccountsStore[selectedUniverseId.toText()]?.accounts ?? []
       : [];
-    // If there is no accountIdentifier specified, default to the main account.
-    const account = isNullish(accountIdentifier)
-      ? mainAccount(accounts)
-      : findAccount({
-          identifier: accountIdentifier,
-          accounts,
-        });
+    const account = findAccountOrDefaultToMain({
+      identifier: accountIdentifier,
+      accounts,
+    });
     selectedAccountStore.set({
       account,
       neurons: [],

@@ -2,7 +2,7 @@
   import { buildAccountsUrl } from "$lib/utils/navigation.utils";
   import { goto } from "$app/navigation";
   import { hasAccounts } from "$lib/utils/accounts.utils";
-  import { mainAccount, findAccount } from "$lib/utils/accounts.utils";
+  import { findAccountOrDefaultToMain } from "$lib/utils/accounts.utils";
   import type { Principal } from "@dfinity/principal";
   import { Spinner, busy } from "@dfinity/gix-components";
   import { setContext } from "svelte";
@@ -77,13 +77,10 @@
 
   const load = () => {
     const accounts = $snsProjectAccountsStore ?? [];
-    // If there is no accountIdentifier specified, default to the main account.
-    const selectedAccount = isNullish(accountIdentifier)
-      ? mainAccount(accounts)
-      : findAccount({
-          identifier: accountIdentifier,
-          accounts,
-        });
+    const selectedAccount = findAccountOrDefaultToMain({
+      identifier: accountIdentifier,
+      accounts,
+    });
     selectedAccountStore.set({
       account: selectedAccount,
       neurons: [],

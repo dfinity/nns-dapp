@@ -6,6 +6,7 @@ import {
   emptyAddress,
   filterHardwareWalletAccounts,
   findAccount,
+  findAccountOrDefaultToMain,
   getAccountByPrincipal,
   getAccountByRootCanister,
   getAccountsByRootCanister,
@@ -596,6 +597,37 @@ describe("accounts-utils", () => {
         mockSnsSubAccount,
       ];
       expect(mainAccount(accounts)).toEqual(mockSnsMainAccount);
+    });
+  });
+
+  describe("findAccountOrDefaultToMain", () => {
+    const accounts = [mockMainAccount, mockSubAccount];
+
+    it("should return main account if no identifier is provided", () => {
+      expect(
+        findAccountOrDefaultToMain({ identifier: undefined, accounts })
+      ).toBe(mockMainAccount);
+    });
+
+    it("should find no account if not matches", () => {
+      expect(
+        findAccountOrDefaultToMain({ identifier: "aaa", accounts })
+      ).toBeUndefined();
+    });
+
+    it("should return corresponding account", () => {
+      expect(
+        findAccountOrDefaultToMain({
+          identifier: mockMainAccount.identifier,
+          accounts,
+        })
+      ).toEqual(mockMainAccount);
+      expect(
+        findAccountOrDefaultToMain({
+          identifier: mockSubAccount.identifier,
+          accounts,
+        })
+      ).toEqual(mockSubAccount);
     });
   });
 

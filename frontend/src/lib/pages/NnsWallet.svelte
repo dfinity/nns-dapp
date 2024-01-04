@@ -23,8 +23,7 @@
   } from "$lib/types/wallet.context";
   import {
     accountName,
-    findAccount,
-    mainAccount,
+    findAccountOrDefaultToMain,
     isAccountHardwareWallet,
   } from "$lib/utils/accounts.utils";
   import {
@@ -121,13 +120,10 @@
     identifier: string | undefined | null;
     accounts: Account[];
   }) => {
-    // If there is no accountIdentifier specified, default to the main account.
-    const account = isNullish(identifier)
-      ? mainAccount(accounts)
-      : findAccount({
-          identifier,
-          accounts,
-        });
+    const account = findAccountOrDefaultToMain({
+      identifier,
+      accounts,
+    });
     selectedAccountStore.set({
       account,
       neurons: [],
