@@ -6,8 +6,10 @@
   import type { IneligibleNeuronData } from "$lib/utils/neuron.utils";
 
   export let ineligibleNeurons: IneligibleNeuronData[] = [];
-  export let ineligibleNeuronCount: number;
   export let minSnsDissolveDelaySeconds: bigint;
+
+  let ineligibleNeuronCount: number;
+  $: ineligibleNeuronCount = ineligibleNeurons.length;
 </script>
 
 {#if ineligibleNeuronCount > 0}

@@ -4,14 +4,19 @@
   import {
     type CompactNeuronInfo,
     formatVotingPower,
+    neuronsVotingPower,
   } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import ExpandableProposalNeurons from "$lib/components/proposal-detail/VotingCard/ExpandableProposalNeurons.svelte";
   import MyVotes from "$lib/components/proposal-detail/MyVotes.svelte";
 
   export let neuronsVotedForProposal: CompactNeuronInfo[];
-  export let votedNeuronCount: number;
-  export let votedVotingPower: bigint;
+
+  let votedVotingPower: bigint;
+  $: votedVotingPower = neuronsVotingPower(neuronsVotedForProposal);
+
+  let votedNeuronCount: number;
+  $: votedNeuronCount = neuronsVotedForProposal.length;
 </script>
 
 {#if votedNeuronCount > 0}

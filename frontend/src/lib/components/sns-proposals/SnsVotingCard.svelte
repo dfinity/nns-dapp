@@ -122,7 +122,7 @@
     }
   };
 
-  let neuronsVotedForProposal: CompactNeuronInfo[];
+  let neuronsVotedForProposal: CompactNeuronInfo[] = [];
   $: if ($sortedSnsUserNeuronsStore.length > 0) {
     neuronsVotedForProposal = votedSnsNeuronDetails({
       neurons: $sortedSnsUserNeuronsStore,

@@ -8,7 +8,6 @@
   import {
     type CompactNeuronInfo,
     type IneligibleNeuronData,
-    neuronsVotingPower,
   } from "$lib/utils/neuron.utils";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import VotedNeuronList from "$lib/components/proposal-detail/VotingCard/VotedNeuronList.svelte";
@@ -22,15 +21,6 @@
   export let neuronsVotedForProposal: CompactNeuronInfo[];
   export let ineligibleNeurons: IneligibleNeuronData[];
   export let minSnsDissolveDelaySeconds: bigint;
-
-  let votedVotingPower: bigint;
-  $: votedVotingPower = neuronsVotingPower(neuronsVotedForProposal);
-
-  let ineligibleNeuronCount: number;
-  $: ineligibleNeuronCount = ineligibleNeurons.length;
-
-  let votedNeuronCount: number;
-  $: votedNeuronCount = neuronsVotedForProposal.length;
 </script>
 
 <BottomSheet>
@@ -47,19 +37,14 @@
           {/if}
           <div class="neuron-groups" data-tid="voting-neuron-select">
             <VotableNeuronList {voteRegistration} />
-            <VotedNeuronList
-              {votedNeuronCount}
-              {votedVotingPower}
-              {neuronsVotedForProposal}
-            />
+            <VotedNeuronList {neuronsVotedForProposal} />
             <IneligibleNeuronList
-              {ineligibleNeuronCount}
               {ineligibleNeurons}
               {minSnsDissolveDelaySeconds}
             />
           </div>
         {:else}
-          <div class="loader">
+          <div class="loader" data-tid="loading-neurons-spinner">
             <SpinnerText>{$i18n.proposal_detail.loading_neurons}</SpinnerText>
           </div>
         {/if}

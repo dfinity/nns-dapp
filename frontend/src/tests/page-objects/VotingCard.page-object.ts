@@ -13,12 +13,28 @@ export class VotingCardPo extends BasePageObject {
     return new VotingCardPo(element.byTestId(VotingCardPo.TID));
   }
 
+  getVotableNeurons(): PageObjectElement {
+    return this.root.byTestId("votable-neurons");
+  }
+
+  getVotedNeurons(): PageObjectElement {
+    return this.root.byTestId("voted-neurons");
+  }
+
+  getIneligibleNeurons(): PageObjectElement {
+    return this.root.byTestId("ineligible-neurons");
+  }
+
   getVoteYesButtonPo(): ButtonPo {
     return this.getButton("vote-yes");
   }
 
-  getVoteNoButtonPo(): ButtonPo {
-    return this.getButton("vote-no");
+  getSignInButtonPo(): ButtonPo {
+    return this.getButton("login-button");
+  }
+
+  getSpinnerPo(): PageObjectElement {
+    return this.root.byTestId("loading-neurons-spinner");
   }
 
   getConfirmYesButtonPo(): ButtonPo {
