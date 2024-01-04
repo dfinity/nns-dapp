@@ -1,20 +1,19 @@
 <script lang="ts">
   import VotingConfirmationToolbar from "./VotingConfirmationToolbar.svelte";
-  import { type VoteRegistrationStoreEntry } from "$lib/stores/vote-registration.store";
+  import type { VoteRegistrationStoreEntry } from "$lib/stores/vote-registration.store";
   import { BottomSheet } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
-  import MyVotes from "$lib/components/proposal-detail/MyVotes.svelte";
-  import IneligibleNeuronsCard from "$lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
-  import VotingNeuronSelectList from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelectList.svelte";
   import {
     type CompactNeuronInfo,
     type IneligibleNeuronData,
     neuronsVotingPower,
   } from "$lib/utils/neuron.utils";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import VotingNeuronSelect from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelect.svelte";
+  import VotedNeuronList from "$lib/components/proposal-detail/VotingCard/VotedNeuronList.svelte";
+  import IneligibleNeuronList from "$lib/components/proposal-detail/VotingCard/IneligibleNeuronList.svelte";
+  import VotableNeuronList from "$lib/components/proposal-detail/VotingCard/VotableNeuronList.svelte";
 
   export let hasNeurons: boolean;
   export let visible: boolean;
@@ -26,6 +25,12 @@
 
   let votedVotingPower: bigint;
   $: votedVotingPower = neuronsVotingPower(neuronsVotedForProposal);
+
+  let ineligibleNeuronCount: number;
+  $: ineligibleNeuronCount = ineligibleNeurons.length;
+
+  let votedNeuronCount: number;
+  $: votedNeuronCount = neuronsVotedForProposal.length;
 </script>
 
 <BottomSheet>
@@ -40,20 +45,19 @@
           {#if visible}
             <VotingConfirmationToolbar {voteRegistration} on:nnsConfirm />
           {/if}
-
-          <VotingNeuronSelect
-            ineligibleNeuronCount={ineligibleNeurons.length}
-            votedNeuronCount={neuronsVotedForProposal.length}
-            {votedVotingPower}
-          >
-            <VotingNeuronSelectList disabled={voteRegistration !== undefined} />
-            <MyVotes slot="voted-neurons" {neuronsVotedForProposal} />
-            <IneligibleNeuronsCard
-              slot="ineligible-neurons"
+          <div class="neuron-groups" data-tid="voting-neuron-select">
+            <VotableNeuronList {voteRegistration} />
+            <VotedNeuronList
+              {votedNeuronCount}
+              {votedVotingPower}
+              {neuronsVotedForProposal}
+            />
+            <IneligibleNeuronList
+              {ineligibleNeuronCount}
               {ineligibleNeurons}
               {minSnsDissolveDelaySeconds}
             />
-          </VotingNeuronSelect>
+          </div>
         {:else}
           <div class="loader">
             <SpinnerText>{$i18n.proposal_detail.loading_neurons}</SpinnerText>
@@ -98,6 +102,12 @@
         padding: 0;
       }
     }
+  }
+
+  .neuron-groups {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-3x);
   }
 
   .loader {
