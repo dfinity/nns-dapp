@@ -5,7 +5,7 @@ import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 vi.mock("$lib/proxy/api.import.proxy");
 const getTransactionsSpy = vi.fn().mockResolvedValue({
   transactions: [],
-  oldest_tx_id: BigInt(2),
+  oldest_tx_id: 2n,
 });
 vi.mock("$lib/api/sns-wrapper.api", () => {
   return {
@@ -24,7 +24,7 @@ describe("sns-index api", () => {
         account: {
           owner: mockPrincipal,
         },
-        maxResults: BigInt(10),
+        maxResults: 10n,
       });
 
       expect(result.transactions).toBeDefined();

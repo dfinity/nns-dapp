@@ -11,11 +11,11 @@ describe("SNS Neurons stores", () => {
     it("should set neurons for a project", () => {
       const neurons: SnsNeuron[] = [
         createMockSnsNeuron({
-          stake: BigInt(1_000_000_000),
+          stake: 1_000_000_000n,
           id: [1, 5, 3, 9, 1, 1, 1],
         }),
         createMockSnsNeuron({
-          stake: BigInt(2_000_000_000),
+          stake: 2_000_000_000n,
           id: [1, 5, 3, 9, 9, 3, 2],
         }),
       ];
@@ -32,11 +32,11 @@ describe("SNS Neurons stores", () => {
     it("should reset neurons for a project", () => {
       const neurons: SnsNeuron[] = [
         createMockSnsNeuron({
-          stake: BigInt(1_000_000_000),
+          stake: 1_000_000_000n,
           id: [1, 5, 3, 9, 1, 1, 1],
         }),
         createMockSnsNeuron({
-          stake: BigInt(2_000_000_000),
+          stake: 2_000_000_000n,
           id: [1, 5, 3, 9, 9, 3, 2],
         }),
       ];
@@ -54,11 +54,11 @@ describe("SNS Neurons stores", () => {
     it("should add neurons for another project", () => {
       const neurons1: SnsNeuron[] = [
         createMockSnsNeuron({
-          stake: BigInt(1_000_000_000),
+          stake: 1_000_000_000n,
           id: [1, 5, 3, 9, 1, 1, 1],
         }),
         createMockSnsNeuron({
-          stake: BigInt(2_000_000_000),
+          stake: 2_000_000_000n,
           id: [1, 5, 3, 9, 9, 3, 2],
         }),
       ];
@@ -69,11 +69,11 @@ describe("SNS Neurons stores", () => {
       });
       const neurons2: SnsNeuron[] = [
         createMockSnsNeuron({
-          stake: BigInt(1_000_000_000),
+          stake: 1_000_000_000n,
           id: [1, 5, 3, 4, 1, 1, 1],
         }),
         createMockSnsNeuron({
-          stake: BigInt(2_000_000_000),
+          stake: 2_000_000_000n,
           id: [1, 5, 2, 9, 9, 3, 2],
         }),
       ];
@@ -90,15 +90,15 @@ describe("SNS Neurons stores", () => {
 
     it("should add neurons to a project with neurons", () => {
       const neuron1 = createMockSnsNeuron({
-        stake: BigInt(1_000_000_000),
+        stake: 1_000_000_000n,
         id: [1, 5, 3, 9, 1, 1, 1],
       });
       const neuron2 = createMockSnsNeuron({
-        stake: BigInt(2_000_000_000),
+        stake: 2_000_000_000n,
         id: [1, 5, 3, 9, 9, 3, 2],
       });
       const neuron3 = createMockSnsNeuron({
-        stake: BigInt(2_000_000_000),
+        stake: 2_000_000_000n,
         id: [1, 5, 2, 9, 9, 3, 2],
       });
       const neurons1: SnsNeuron[] = [neuron1, neuron2];

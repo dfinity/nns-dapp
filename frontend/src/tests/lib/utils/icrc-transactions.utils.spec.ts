@@ -57,24 +57,24 @@ describe("icrc-transaction utils", () => {
     from: mainAccount,
   });
   const recentTx = {
-    id: BigInt(1234),
+    id: 1_234n,
     transaction: {
       ...transactionFromMainToSubaccount.transaction,
-      timestamp: BigInt(3000),
+      timestamp: 3_000n,
     },
   };
   const secondTx = {
-    id: BigInt(1235),
+    id: 1_235n,
     transaction: {
       ...transactionFromMainToSubaccount.transaction,
-      timestamp: BigInt(2000),
+      timestamp: 2_000n,
     },
   };
   const oldestTx = {
-    id: BigInt(1236),
+    id: 1_236n,
     transaction: {
       ...transactionFromMainToSubaccount.transaction,
-      timestamp: BigInt(1000),
+      timestamp: 1_000n,
     },
   };
   const selfTransaction = createIcrcTransactionWithId({
@@ -87,7 +87,7 @@ describe("icrc-transaction utils", () => {
         owner: mockPrincipal,
         subaccount: [],
       },
-      mint_block_index: 1256n,
+      mint_block_index: 1_256n,
       amount,
       reason: {
         CallFailed: null,
@@ -119,7 +119,7 @@ describe("icrc-transaction utils", () => {
           [mockSnsMainAccount.identifier]: {
             transactions,
             completed: false,
-            oldestTxId: BigInt(1234),
+            oldestTxId: 1_234n,
           },
         },
       };
@@ -148,7 +148,7 @@ describe("icrc-transaction utils", () => {
           [mockSnsMainAccount.identifier]: {
             transactions: [selfTransaction],
             completed: false,
-            oldestTxId: BigInt(1234),
+            oldestTxId: 1_234n,
           },
         },
       };
@@ -305,7 +305,7 @@ describe("icrc-transaction utils", () => {
       const data = mapTransaction({
         ...defaultParams,
         transaction: {
-          id: BigInt(1234),
+          id: 1_234n,
           transaction: createApproveTransaction({
             timestamp:
               BigInt(defaultTimestamp.getTime()) *
@@ -368,7 +368,7 @@ describe("icrc-transaction utils", () => {
       const amount = 35_000_000n;
       const data = mapIcrcTransaction({
         transaction: {
-          id: BigInt(1234),
+          id: 1_234n,
           transaction: createBurnTransaction({
             from: mainAccount,
             amount,
@@ -406,7 +406,7 @@ describe("icrc-transaction utils", () => {
 
       const data = mapCkbtcTransaction({
         transaction: {
-          id: BigInt(1234),
+          id: 1_234n,
           transaction: createBurnTransaction({
             amount,
             from: mainAccount,
@@ -444,7 +444,7 @@ describe("icrc-transaction utils", () => {
 
       const data = mapCkbtcTransaction({
         transaction: {
-          id: BigInt(1234),
+          id: 1_234n,
           transaction: createBurnTransaction({
             amount,
             from: mainAccount,
@@ -478,7 +478,7 @@ describe("icrc-transaction utils", () => {
 
       const data = mapCkbtcTransaction({
         transaction: {
-          id: BigInt(1234),
+          id: 1_234n,
           transaction: createMintTransaction({
             amount,
             to: mainAccount,
@@ -511,7 +511,7 @@ describe("icrc-transaction utils", () => {
 
       const data = mapCkbtcTransaction({
         transaction: {
-          id: BigInt(1234),
+          id: 1_234n,
           transaction: createMintTransaction({
             amount,
             to: mainAccount,
@@ -547,7 +547,7 @@ describe("icrc-transaction utils", () => {
 
       const data = mapCkbtcTransaction({
         transaction: {
-          id: BigInt(1234),
+          id: 1_234n,
           transaction: createBurnTransaction({
             amount,
             from: mainAccount,
@@ -583,7 +583,7 @@ describe("icrc-transaction utils", () => {
 
       const data = mapCkbtcTransaction({
         transaction: {
-          id: BigInt(1234),
+          id: 1_234n,
           transaction: createBurnTransaction({
             amount,
             from: mainAccount,
@@ -621,7 +621,7 @@ describe("icrc-transaction utils", () => {
 
       const data = mapCkbtcTransaction({
         transaction: {
-          id: BigInt(1234),
+          id: 1_234n,
           transaction: createBurnTransaction({
             amount,
             from: mainAccount,
@@ -655,7 +655,7 @@ describe("icrc-transaction utils", () => {
 
       const data = mapCkbtcTransaction({
         transaction: {
-          id: BigInt(1234),
+          id: 1_234n,
           transaction: createMintTransaction({
             amount,
             to: mainAccount,
@@ -722,7 +722,7 @@ describe("icrc-transaction utils", () => {
           otherParty: mockSnsSubAccount.identifier,
           timestamp: new Date(0),
           tokenAmount: TokenAmountV2.fromUlps({
-            amount: 200010000n,
+            amount: 200_010_000n,
             token: mockCkBTCToken,
           }),
         },
@@ -734,7 +734,7 @@ describe("icrc-transaction utils", () => {
           otherParty: mockSnsSubAccount.identifier,
           timestamp: new Date(0),
           tokenAmount: TokenAmountV2.fromUlps({
-            amount: 300000000n,
+            amount: 300_000_000n,
             token: mockCkBTCToken,
           }),
         },
@@ -975,24 +975,24 @@ describe("icrc-transaction utils", () => {
 
   describe("getOldestTransactionId", () => {
     const recentTx = {
-      id: BigInt(1234),
+      id: 1_234n,
       transaction: {
         ...transactionFromMainToSubaccount.transaction,
-        timestamp: BigInt(3000),
+        timestamp: 3_000n,
       },
     };
     const secondTx = {
-      id: BigInt(1235),
+      id: 1_235n,
       transaction: {
         ...transactionFromMainToSubaccount.transaction,
-        timestamp: BigInt(2000),
+        timestamp: 2_000n,
       },
     };
     const oldestTx = {
-      id: BigInt(1236),
+      id: 1_236n,
       transaction: {
         ...transactionFromMainToSubaccount.transaction,
-        timestamp: BigInt(1000),
+        timestamp: 1_000n,
       },
     };
 
@@ -1004,7 +1004,7 @@ describe("icrc-transaction utils", () => {
           [mockSnsMainAccount.identifier]: {
             transactions,
             completed: false,
-            oldestTxId: BigInt(1234),
+            oldestTxId: 1_234n,
           },
         },
       };
@@ -1035,7 +1035,7 @@ describe("icrc-transaction utils", () => {
           [mockSnsMainAccount.identifier]: {
             transactions,
             completed: false,
-            oldestTxId: BigInt(1234),
+            oldestTxId: 1_234n,
           },
         },
       };
@@ -1057,12 +1057,12 @@ describe("icrc-transaction utils", () => {
           [mockSnsMainAccount.identifier]: {
             transactions: [transactionFromMainToSubaccount],
             completed: false,
-            oldestTxId: BigInt(1234),
+            oldestTxId: 1_234n,
           },
           [mockSnsSubAccount.identifier]: {
             transactions: [transactionFromMainToSubaccount],
             completed: true,
-            oldestTxId: BigInt(1234),
+            oldestTxId: 1_234n,
           },
         },
       };

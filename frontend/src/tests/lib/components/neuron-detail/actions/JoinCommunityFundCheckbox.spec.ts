@@ -54,7 +54,7 @@ describe("JoinCommunityFundCheckbox", () => {
   it("renders checked if neuron is part of the fund", () => {
     const neuron = {
       ...mockNeuron,
-      joinedCommunityFundTimestampSeconds: BigInt(1200),
+      joinedCommunityFundTimestampSeconds: 1_200n,
     };
 
     const { queryByTestId } = render(NeuronContextActionsTest, {
@@ -117,7 +117,7 @@ describe("JoinCommunityFundCheckbox", () => {
   it("allows neuron to leave community fund", async () => {
     const neuron = {
       ...mockNeuron,
-      joinedCommunityFundTimestampSeconds: BigInt(10),
+      joinedCommunityFundTimestampSeconds: 10n,
     };
 
     const { container, queryByTestId } = render(NeuronContextActionsTest, {

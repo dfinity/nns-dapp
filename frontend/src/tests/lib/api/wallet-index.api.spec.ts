@@ -28,7 +28,7 @@ describe("wallet-index api", () => {
     account: {
       owner: mockPrincipal,
     },
-    maxResults: BigInt(10),
+    maxResults: 10n,
     indexCanisterId: CKBTC_INDEX_CANISTER_ID,
   };
 
@@ -38,7 +38,7 @@ describe("wallet-index api", () => {
 
   describe("getTransactions", () => {
     it("should returns transactions", async () => {
-      const id = BigInt(1);
+      const id = 1n;
 
       const getTransactionsSpy =
         indexCanisterMock.getTransactions.mockResolvedValue({

@@ -204,13 +204,11 @@ describe("canisters-api", () => {
 
   describe("getIcpToCyclesExchangeRate", () => {
     it("should call CMC to get conversion rate", async () => {
-      mockCMCCanister.getIcpToCyclesConversionRate.mockResolvedValue(
-        BigInt(10_000)
-      );
+      mockCMCCanister.getIcpToCyclesConversionRate.mockResolvedValue(10_000n);
 
       const response = await getIcpToCyclesExchangeRate(mockIdentity);
       expect(mockCMCCanister.getIcpToCyclesConversionRate).toBeCalled();
-      expect(response).toEqual(BigInt(10_000));
+      expect(response).toEqual(10_000n);
     });
   });
 
@@ -223,7 +221,7 @@ describe("canisters-api", () => {
     });
 
     it("should make a transfer, notify and attach the canister", async () => {
-      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
+      mockLedgerCanister.transfer.mockResolvedValue(10n);
       mockCMCCanister.notifyCreateCanister.mockResolvedValue(
         mockCanisterDetails.id
       );
@@ -245,7 +243,7 @@ describe("canisters-api", () => {
     });
 
     it("should attach the canister if name max length", async () => {
-      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
+      mockLedgerCanister.transfer.mockResolvedValue(10n);
       mockCMCCanister.notifyCreateCanister.mockResolvedValue(
         mockCanisterDetails.id
       );
@@ -267,7 +265,7 @@ describe("canisters-api", () => {
     });
 
     it("should notify twice if the first call returns Processing", async () => {
-      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
+      mockLedgerCanister.transfer.mockResolvedValue(10n);
       mockCMCCanister.notifyCreateCanister
         .mockRejectedValueOnce(new ProcessingError())
         .mockResolvedValue(mockCanisterDetails.id);
@@ -284,7 +282,7 @@ describe("canisters-api", () => {
     });
 
     it("handles creating from subaccounts", async () => {
-      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
+      mockLedgerCanister.transfer.mockResolvedValue(10n);
       mockCMCCanister.notifyCreateCanister.mockResolvedValue(
         mockCanisterDetails.id
       );
@@ -368,8 +366,8 @@ describe("canisters-api", () => {
     });
 
     it("should make a transfer and notify", async () => {
-      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
-      mockCMCCanister.notifyTopUp.mockResolvedValue(BigInt(10));
+      mockLedgerCanister.transfer.mockResolvedValue(10n);
+      mockCMCCanister.notifyTopUp.mockResolvedValue(10n);
 
       await topUpCanister({
         identity: mockIdentity,
@@ -384,10 +382,10 @@ describe("canisters-api", () => {
     });
 
     it("should notify twice if the first returns ProcessingError", async () => {
-      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
+      mockLedgerCanister.transfer.mockResolvedValue(10n);
       mockCMCCanister.notifyTopUp
         .mockRejectedValueOnce(new ProcessingError())
-        .mockResolvedValue(BigInt(10));
+        .mockResolvedValue(10n);
 
       await topUpCanister({
         identity: mockIdentity,
@@ -401,8 +399,8 @@ describe("canisters-api", () => {
     });
 
     it("should make a transfer from subaccounts", async () => {
-      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
-      mockCMCCanister.notifyTopUp.mockResolvedValue(BigInt(10));
+      mockLedgerCanister.transfer.mockResolvedValue(10n);
+      mockCMCCanister.notifyTopUp.mockResolvedValue(10n);
 
       const toSubAccount = principalToSubAccount(mockCanisterDetails.id);
       // To create a canister you need to send ICP to an account owned by the CMC, so that the CMC can burn those funds.

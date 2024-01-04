@@ -110,8 +110,8 @@ describe("neuron-utils", () => {
     }) as TokenAmount;
     const neuron = {
       ...mockNeuron,
-      ageSeconds: BigInt(0),
-      dissolveDelaySeconds: BigInt(0),
+      ageSeconds: 0n,
+      dissolveDelaySeconds: 0n,
       fullNeuron: {
         ...mockFullNeuron,
         cachedNeuronStake: tokenStake.toE8s(),
@@ -121,9 +121,9 @@ describe("neuron-utils", () => {
       expect(
         neuronVotingPower({
           neuron: mockNeuron,
-          newDissolveDelayInSeconds: BigInt(100),
+          newDissolveDelayInSeconds: 100n,
         })
-      ).toBe(BigInt(0));
+      ).toBe(0n);
     });
 
     it("should return more than stake when delay more than six months", () => {
@@ -146,7 +146,7 @@ describe("neuron-utils", () => {
         neuronVotingPower({
           neuron: agedNeuron,
         })
-      ).toBe(tokenStake.toE8s() * BigInt(2));
+      ).toBe(tokenStake.toE8s() * 2n);
     });
 
     it("should take into account age bonus", () => {
@@ -158,7 +158,7 @@ describe("neuron-utils", () => {
 
       const notSoAgedNeuron = {
         ...neuron,
-        ageSeconds: BigInt(2),
+        ageSeconds: 2n,
         dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
       };
       const powerWithAge = neuronVotingPower({
@@ -193,7 +193,7 @@ describe("neuron-utils", () => {
         dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR * 1.5),
         fullNeuron: {
           ...mockFullNeuron,
-          cachedNeuronStake: BigInt(200_000_000),
+          cachedNeuronStake: 200_000_000n,
         },
       };
       const power = neuronVotingPower({
@@ -205,15 +205,15 @@ describe("neuron-utils", () => {
 
   describe("formatVotingPower", () => {
     it("should format", () => {
-      expect(formatVotingPower(BigInt(0))).toBe("0.00");
-      expect(formatVotingPower(BigInt(100000000))).toBe("1.00");
-      expect(formatVotingPower(BigInt(9999900000))).toBe("100.00");
+      expect(formatVotingPower(0n)).toBe("0.00");
+      expect(formatVotingPower(100_000_000n)).toBe("1.00");
+      expect(formatVotingPower(9_999_900_000n)).toBe("100.00");
     });
   });
 
   describe("dissolveDelayMultiplier", () => {
     it("be 1 when dissolve is 0", () => {
-      expect(dissolveDelayMultiplier(BigInt(0))).toBe(1);
+      expect(dissolveDelayMultiplier(0n)).toBe(1);
     });
 
     it("be 2 when dissolve is eight years", () => {
@@ -233,7 +233,7 @@ describe("neuron-utils", () => {
       expect(
         dissolveDelayMultiplier(BigInt(SECONDS_IN_HALF_YEAR))
       ).toBeGreaterThan(1);
-      expect(dissolveDelayMultiplier(BigInt(1000))).toBeGreaterThan(1);
+      expect(dissolveDelayMultiplier(1_000n)).toBeGreaterThan(1);
     });
 
     it("returns expected multiplier for one year", () => {
@@ -243,7 +243,7 @@ describe("neuron-utils", () => {
 
   describe("ageMultiplier", () => {
     it("be 1 when age is 0", () => {
-      expect(ageMultiplier(BigInt(0))).toBe(1);
+      expect(ageMultiplier(0n)).toBe(1);
     });
 
     it("be 1.25 when age is four years", () => {
@@ -257,7 +257,7 @@ describe("neuron-utils", () => {
 
     it("returns more than 1 with positive age", () => {
       expect(ageMultiplier(BigInt(SECONDS_IN_HALF_YEAR))).toBeGreaterThan(1);
-      expect(ageMultiplier(BigInt(1000))).toBeGreaterThan(1);
+      expect(ageMultiplier(1_000n)).toBeGreaterThan(1);
     });
 
     it("returns expected multiplier for one year", () => {
@@ -305,7 +305,7 @@ describe("neuron-utils", () => {
     it("returns whether the stake is valid or not", () => {
       const fullNeuronWithEnoughStake = {
         ...mockFullNeuron,
-        cachedNeuronStake: BigInt(3_000_000_000),
+        cachedNeuronStake: 3_000_000_000n,
       };
       const neuronWithEnoughStake = {
         ...mockNeuron,
@@ -315,8 +315,8 @@ describe("neuron-utils", () => {
 
       const fullNeuronWithEnoughStakeInMaturity = {
         ...mockFullNeuron,
-        cachedNeuronStake: BigInt(100_000_000),
-        maturityE8sEquivalent: BigInt(3_000_000_000),
+        cachedNeuronStake: 100_000_000n,
+        maturityE8sEquivalent: 3_000_000_000n,
       };
       const neuronWithEnoughStakeInMaturity = {
         ...mockNeuron,
@@ -347,7 +347,7 @@ describe("neuron-utils", () => {
     it("returns true when neuron has joined community", () => {
       const joinedNeuron = {
         ...mockNeuron,
-        joinedCommunityFundTimestampSeconds: BigInt(100),
+        joinedCommunityFundTimestampSeconds: 100n,
       };
       expect(hasJoinedCommunityFund(joinedNeuron)).toBe(true);
     });
@@ -496,7 +496,7 @@ describe("neuron-utils", () => {
         fullNeuron: {
           ...mockFullNeuron,
           cachedNeuronStake: stake.toE8s(),
-          maturityE8sEquivalent: stake.toE8s() / BigInt(2),
+          maturityE8sEquivalent: stake.toE8s() / 2n,
         },
       };
       expect(formattedMaturity(neuron)).toBe("1.00");
@@ -512,7 +512,7 @@ describe("neuron-utils", () => {
         fullNeuron: {
           ...mockFullNeuron,
           cachedNeuronStake: stake.toE8s(),
-          maturityE8sEquivalent: BigInt(0),
+          maturityE8sEquivalent: 0n,
         },
       };
       expect(formattedMaturity(neuron)).toBe("0");
@@ -538,7 +538,7 @@ describe("neuron-utils", () => {
         fullNeuron: {
           ...mockFullNeuron,
           maturityE8sEquivalent: stake.toE8s(),
-          stakedMaturityE8sEquivalent: stake.toE8s() / BigInt(2),
+          stakedMaturityE8sEquivalent: stake.toE8s() / 2n,
         },
       };
       expect(formattedTotalMaturity(neuron)).toBe("3.00");
@@ -554,7 +554,7 @@ describe("neuron-utils", () => {
         fullNeuron: {
           ...mockFullNeuron,
           maturityE8sEquivalent: stake.toE8s(),
-          stakedMaturityE8sEquivalent: BigInt(0),
+          stakedMaturityE8sEquivalent: 0n,
         },
       };
 
@@ -570,7 +570,7 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          maturityE8sEquivalent: BigInt(0),
+          maturityE8sEquivalent: 0n,
           stakedMaturityE8sEquivalent: stake.toE8s(),
         },
       };
@@ -597,7 +597,7 @@ describe("neuron-utils", () => {
         fullNeuron: {
           ...mockFullNeuron,
           cachedNeuronStake: stake.toE8s(),
-          stakedMaturityE8sEquivalent: stake.toE8s() / BigInt(2),
+          stakedMaturityE8sEquivalent: stake.toE8s() / 2n,
         },
       };
       expect(formattedStakedMaturity(neuron)).toBe("1.00");
@@ -613,7 +613,7 @@ describe("neuron-utils", () => {
         fullNeuron: {
           ...mockFullNeuron,
           cachedNeuronStake: stake.toE8s(),
-          stakedMaturityE8sEquivalent: BigInt(0),
+          stakedMaturityE8sEquivalent: 0n,
         },
       };
       expect(formattedStakedMaturity(neuron)).toBe("0");
@@ -622,9 +622,9 @@ describe("neuron-utils", () => {
 
   describe("sortNeuronsByCreatedTimestamp", () => {
     it("should sort neurons by createdTimestampSeconds", () => {
-      const neuron1 = { ...mockNeuron, createdTimestampSeconds: BigInt(1) };
-      const neuron2 = { ...mockNeuron, createdTimestampSeconds: BigInt(2) };
-      const neuron3 = { ...mockNeuron, createdTimestampSeconds: BigInt(3) };
+      const neuron1 = { ...mockNeuron, createdTimestampSeconds: 1n };
+      const neuron2 = { ...mockNeuron, createdTimestampSeconds: 2n };
+      const neuron3 = { ...mockNeuron, createdTimestampSeconds: 3n };
       expect(sortNeuronsByCreatedTimestamp([])).toEqual([]);
       expect(sortNeuronsByCreatedTimestamp([neuron1])).toEqual([neuron1]);
       expect(
@@ -828,11 +828,11 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          cachedNeuronStake: BigInt(100),
-          neuronFees: BigInt(10),
+          cachedNeuronStake: 100n,
+          neuronFees: 10n,
         },
       };
-      expect(neuronStake(neuron)).toBe(BigInt(90));
+      expect(neuronStake(neuron)).toBe(90n);
     });
 
     it("should return 0n when stake is not available", () => {
@@ -840,7 +840,7 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: undefined,
       };
-      expect(neuronStake(neuron)).toBe(BigInt(0));
+      expect(neuronStake(neuron)).toBe(0n);
     });
   });
 
@@ -851,7 +851,7 @@ describe("neuron-utils", () => {
     };
     const ballotWithProposalId: BallotInfo = {
       vote: Vote.Yes,
-      proposalId: BigInt(0),
+      proposalId: 0n,
     };
 
     it("should filter out ballots w/o proposalIds", () => {
@@ -899,15 +899,15 @@ describe("neuron-utils", () => {
           followees: [
             {
               topic: Topic.ExchangeRate,
-              followees: [BigInt(0), BigInt(1)],
+              followees: [0n, 1n],
             },
             {
               topic: Topic.Kyc,
-              followees: [BigInt(1)],
+              followees: [1n],
             },
             {
               topic: Topic.Governance,
-              followees: [BigInt(0), BigInt(1), BigInt(2)],
+              followees: [0n, 1n, 2n],
             },
           ],
         },
@@ -915,15 +915,15 @@ describe("neuron-utils", () => {
 
       expect(followeesNeurons(neuron)).toStrictEqual([
         {
-          neuronId: BigInt(0),
+          neuronId: 0n,
           topics: [Topic.ExchangeRate, Topic.Governance],
         },
         {
-          neuronId: BigInt(1),
+          neuronId: 1n,
           topics: [Topic.ExchangeRate, Topic.Kyc, Topic.Governance],
         },
         {
-          neuronId: BigInt(2),
+          neuronId: 2n,
           topics: [Topic.Governance],
         },
       ]);
@@ -1017,24 +1017,22 @@ describe("neuron-utils", () => {
 
   describe("isEnoughToStakeNeuron", () => {
     it("return true if enough ICP to create a neuron", () => {
-      expect(isEnoughToStakeNeuron({ stakeE8s: BigInt(300_000_000) })).toBe(
-        true
-      );
+      expect(isEnoughToStakeNeuron({ stakeE8s: 300_000_000n })).toBe(true);
     });
     it("returns false if not enough ICP to create a neuron", () => {
-      expect(isEnoughToStakeNeuron({ stakeE8s: BigInt(10_000) })).toBe(false);
+      expect(isEnoughToStakeNeuron({ stakeE8s: 10_000n })).toBe(false);
     });
 
     it("takes into account fee", () => {
       expect(
         isEnoughToStakeNeuron({
-          stakeE8s: BigInt(100_000_000),
-          feeE8s: BigInt(10_000),
+          stakeE8s: 100_000_000n,
+          feeE8s: 10_000n,
         })
       ).toBe(false);
       expect(
         isEnoughToStakeNeuron({
-          stakeE8s: BigInt(100_000_000),
+          stakeE8s: 100_000_000n,
         })
       ).toBe(true);
     });
@@ -1242,7 +1240,7 @@ describe("neuron-utils", () => {
     it("returns 'Neurons' Fund' if neuron is part of Neurons' Fund", () => {
       const neuron: NeuronInfo = {
         ...mockNeuron,
-        joinedCommunityFundTimestampSeconds: 123445n,
+        joinedCommunityFundTimestampSeconds: 123_445n,
         fullNeuron: {
           ...mockNeuron.fullNeuron,
         },
@@ -1260,7 +1258,7 @@ describe("neuron-utils", () => {
     it("returns 'Neurons' Fund' and 'Hotkey Control'", () => {
       const neuron: NeuronInfo = {
         ...mockNeuron,
-        joinedCommunityFundTimestampSeconds: 123445n,
+        joinedCommunityFundTimestampSeconds: 123_445n,
         fullNeuron: {
           ...mockNeuron.fullNeuron,
           hotKeys: [mockIdentity.getPrincipal().toText()],
@@ -1280,7 +1278,7 @@ describe("neuron-utils", () => {
     it("returns 'Neurons' Fund' and 'Hardware Wallet'", () => {
       const neuron: NeuronInfo = {
         ...mockNeuron,
-        joinedCommunityFundTimestampSeconds: 123445n,
+        joinedCommunityFundTimestampSeconds: 123_445n,
         fullNeuron: {
           ...mockNeuron.fullNeuron,
           hotKeys: [mockIdentity.getPrincipal().toText()],
@@ -1339,7 +1337,7 @@ describe("neuron-utils", () => {
       const neuron: NeuronInfo = {
         ...mockNeuron,
         neuronType: NeuronType.Seed,
-        joinedCommunityFundTimestampSeconds: 123445n,
+        joinedCommunityFundTimestampSeconds: 123_445n,
         fullNeuron: {
           ...mockNeuron.fullNeuron,
           neuronType: NeuronType.Seed,
@@ -1398,7 +1396,7 @@ describe("neuron-utils", () => {
 
   describe("allHaveSameFollowees", () => {
     it("returns true if same followees", () => {
-      const followees = [BigInt(4), BigInt(6), BigInt(9)];
+      const followees = [4n, 6n, 9n];
       expect(allHaveSameFollowees([followees, [...followees]])).toBe(true);
     });
 
@@ -1407,13 +1405,13 @@ describe("neuron-utils", () => {
     });
 
     it("returns false if not same followees", () => {
-      const followees1 = [BigInt(4), BigInt(6), BigInt(9)];
-      const followees2 = [BigInt(1), BigInt(6), BigInt(9)];
+      const followees1 = [4n, 6n, 9n];
+      const followees2 = [1n, 6n, 9n];
       expect(allHaveSameFollowees([followees1, followees2])).toBe(false);
     });
 
     it("returns false if not the same amount", () => {
-      const followees = [BigInt(4), BigInt(6), BigInt(9)];
+      const followees = [4n, 6n, 9n];
       expect(allHaveSameFollowees([followees, followees.slice(1)])).toBe(false);
     });
   });
@@ -1425,7 +1423,7 @@ describe("neuron-utils", () => {
         state: NeuronState.Spawning,
         fullNeuron: {
           ...mockFullNeuron,
-          spawnAtTimesSeconds: BigInt(123123113),
+          spawnAtTimesSeconds: 123_123_113n,
         },
       };
       expect(isSpawning(neuron)).toBe(true);
@@ -1459,11 +1457,11 @@ describe("neuron-utils", () => {
       };
       const neuron2 = {
         ...neuron,
-        neuronId: BigInt(444),
+        neuronId: 444n,
       };
       const neuron3 = {
         ...neuron,
-        neuronId: BigInt(445),
+        neuronId: 445n,
       };
       const wrappedNeurons = mapMergeableNeurons({
         neurons: [neuron, neuron2, neuron3],
@@ -1490,8 +1488,8 @@ describe("neuron-utils", () => {
       };
       const neuron2 = {
         ...mockNeuron,
-        neuronId: BigInt(444),
-        joinedCommunityFundTimestampSeconds: BigInt(1234),
+        neuronId: 444n,
+        joinedCommunityFundTimestampSeconds: 1_234n,
         fullNeuron: {
           ...mockFullNeuron,
           controller: "not-user",
@@ -1581,15 +1579,15 @@ describe("neuron-utils", () => {
       };
       const neuronFollowingManageNeuron = {
         ...neuron,
-        neuronId: BigInt(444),
+        neuronId: 444n,
         fullNeuron: {
           ...neuron.fullNeuron,
-          followees: [{ topic: Topic.ManageNeuron, followees: [BigInt(444)] }],
+          followees: [{ topic: Topic.ManageNeuron, followees: [444n] }],
         },
       };
       const neuron3 = {
         ...neuron,
-        neuronId: BigInt(445),
+        neuronId: 445n,
       };
       const wrappedNeurons = mapMergeableNeurons({
         neurons: [neuron, neuronFollowingManageNeuron, neuron3],
@@ -1615,7 +1613,7 @@ describe("neuron-utils", () => {
       };
       const notSameControllerNeuron = {
         ...neuron,
-        neuronId: BigInt(444),
+        neuronId: 444n,
         fullNeuron: {
           ...neuron.fullNeuron,
           controller: mainAccountController,
@@ -1623,7 +1621,7 @@ describe("neuron-utils", () => {
       };
       const neuron3 = {
         ...neuron,
-        neuronId: BigInt(445),
+        neuronId: 445n,
       };
       const wrappedNeurons = mapMergeableNeurons({
         neurons: [neuron, notSameControllerNeuron, neuron3],
@@ -1651,15 +1649,15 @@ describe("neuron-utils", () => {
       };
       const neuronFollowingManageNeuron = {
         ...neuron,
-        neuronId: BigInt(444),
+        neuronId: 444n,
         fullNeuron: {
           ...neuron.fullNeuron,
-          followees: [{ topic: Topic.ManageNeuron, followees: [BigInt(444)] }],
+          followees: [{ topic: Topic.ManageNeuron, followees: [444n] }],
         },
       };
       const neuron3 = {
         ...neuron,
-        neuronId: BigInt(445),
+        neuronId: 445n,
       };
       const wrappedNeurons = mapMergeableNeurons({
         neurons: [neuron, neuronFollowingManageNeuron, neuron3],
@@ -1686,23 +1684,23 @@ describe("neuron-utils", () => {
       };
       const neuronFollowingManageNeuron = {
         ...neuron,
-        neuronId: BigInt(444),
+        neuronId: 444n,
         fullNeuron: {
           ...neuron.fullNeuron,
-          followees: [{ topic: Topic.ManageNeuron, followees: [BigInt(444)] }],
+          followees: [{ topic: Topic.ManageNeuron, followees: [444n] }],
         },
       };
       const neuron3 = {
         ...neuron,
-        neuronId: BigInt(445),
+        neuronId: 445n,
       };
       const neuron4 = {
         ...neuron,
-        neuronId: BigInt(455),
+        neuronId: 455n,
       };
       const neuron5 = {
         ...neuron,
-        neuronId: BigInt(465),
+        neuronId: 465n,
       };
       const wrappedNeurons = mapMergeableNeurons({
         neurons: [
@@ -1736,7 +1734,7 @@ describe("neuron-utils", () => {
       };
       const neuron2 = {
         ...mockNeuron,
-        neuronId: BigInt(444),
+        neuronId: 444n,
         fullNeuron: {
           ...mockFullNeuron,
           controller: "same",
@@ -1765,7 +1763,7 @@ describe("neuron-utils", () => {
       };
       const neuron2 = {
         ...mockNeuron,
-        neuronId: BigInt(444),
+        neuronId: 444n,
         fullNeuron: {
           ...mockFullNeuron,
           controller: "controller-2",
@@ -1783,21 +1781,21 @@ describe("neuron-utils", () => {
           followees: [
             {
               topic: Topic.ManageNeuron,
-              followees: [BigInt(10), BigInt(40)],
+              followees: [10n, 40n],
             },
           ],
         },
       };
       const neuron2 = {
         ...mockNeuron,
-        neuronId: BigInt(444),
+        neuronId: 444n,
         fullNeuron: {
           ...mockFullNeuron,
           controller: "controller",
           followees: [
             {
               topic: Topic.ManageNeuron,
-              followees: [BigInt(10)],
+              followees: [10n],
             },
           ],
         },
@@ -1814,21 +1812,21 @@ describe("neuron-utils", () => {
           followees: [
             {
               topic: Topic.ManageNeuron,
-              followees: [BigInt(40), BigInt(10)],
+              followees: [40n, 10n],
             },
           ],
         },
       };
       const neuron2 = {
         ...mockNeuron,
-        neuronId: BigInt(444),
+        neuronId: 444n,
         fullNeuron: {
           ...mockFullNeuron,
           controller: "controller",
           followees: [
             {
               topic: Topic.ManageNeuron,
-              followees: [BigInt(10), BigInt(40)],
+              followees: [10n, 40n],
             },
           ],
         },
@@ -1845,14 +1843,14 @@ describe("neuron-utils", () => {
           followees: [
             {
               topic: Topic.ManageNeuron,
-              followees: [BigInt(40), BigInt(10)],
+              followees: [40n, 10n],
             },
           ],
         },
       };
       const neuron2 = {
         ...mockNeuron,
-        neuronId: BigInt(444),
+        neuronId: 444n,
         fullNeuron: {
           ...mockFullNeuron,
           controller: "controller",
@@ -1871,21 +1869,21 @@ describe("neuron-utils", () => {
           followees: [
             {
               topic: Topic.ManageNeuron,
-              followees: [BigInt(40), BigInt(10)],
+              followees: [40n, 10n],
             },
           ],
         },
       };
       const neuron2 = {
         ...mockNeuron,
-        neuronId: BigInt(444),
+        neuronId: 444n,
         fullNeuron: {
           ...mockFullNeuron,
           controller: "controller",
           followees: [
             {
               topic: Topic.ManageNeuron,
-              followees: [BigInt(40), BigInt(200)],
+              followees: [40n, 200n],
             },
           ],
         },
@@ -1900,7 +1898,7 @@ describe("neuron-utils", () => {
       };
       const neuron2 = {
         ...mockNeuron,
-        neuronId: BigInt(444),
+        neuronId: 444n,
         neuronType: undefined,
       };
       expect(canBeMerged([neuron, neuron2]).isValid).toBe(false);
@@ -1913,7 +1911,7 @@ describe("neuron-utils", () => {
       };
       const neuron2 = {
         ...mockNeuron,
-        neuronId: BigInt(444),
+        neuronId: 444n,
         neuronType: NeuronType.Ect,
       };
       expect(canBeMerged([neuron, neuron2]).isValid).toBe(true);
@@ -1926,7 +1924,7 @@ describe("neuron-utils", () => {
       };
       const neuron2 = {
         ...mockNeuron,
-        neuronId: BigInt(444),
+        neuronId: 444n,
         neuronType: undefined,
       };
       expect(canBeMerged([neuron, neuron2]).isValid).toBe(true);
@@ -1937,15 +1935,15 @@ describe("neuron-utils", () => {
     const followees = [
       {
         topic: Topic.ExchangeRate,
-        followees: [BigInt(0), BigInt(1)],
+        followees: [0n, 1n],
       },
       {
         topic: Topic.Kyc,
-        followees: [BigInt(1)],
+        followees: [1n],
       },
       {
         topic: Topic.Governance,
-        followees: [BigInt(0), BigInt(1), BigInt(2)],
+        followees: [0n, 1n, 2n],
       },
     ];
     const neuron = {
@@ -1998,7 +1996,7 @@ describe("neuron-utils", () => {
         followees: [
           {
             topic: Topic.ExchangeRate,
-            followees: [BigInt(0), BigInt(1)],
+            followees: [0n, 1n],
           },
         ],
       },
@@ -2017,7 +2015,7 @@ describe("neuron-utils", () => {
         followees: [
           {
             topic: Topic.ManageNeuron,
-            followees: [BigInt(0), BigInt(1)],
+            followees: [0n, 1n],
           },
         ],
       },
@@ -2067,17 +2065,17 @@ describe("neuron-utils", () => {
 
   describe("votedNeuronDetails", () => {
     it("should return array of CompactNeuronInfo", () => {
-      const neuronId1 = BigInt(10_000);
-      const neuronId2 = BigInt(20_000);
-      const proposalId = BigInt(1111);
+      const neuronId1 = 10_000n;
+      const neuronId2 = 20_000n;
+      const proposalId = 1_111n;
       const ballot1 = {
         neuronId: neuronId1,
-        votingPower: BigInt(40),
+        votingPower: 40n,
         vote: Vote.No,
       };
       const ballot2 = {
         neuronId: neuronId2,
-        votingPower: BigInt(50),
+        votingPower: 50n,
         vote: Vote.Yes,
       };
       const neuron1 = {
@@ -2109,9 +2107,9 @@ describe("neuron-utils", () => {
     });
 
     it("should filters out neurons without vote", () => {
-      const neuronId1 = BigInt(10_000);
-      const neuronId2 = BigInt(20_000);
-      const proposalId = BigInt(1111);
+      const neuronId1 = 10_000n;
+      const neuronId2 = 20_000n;
+      const proposalId = 1_111n;
       const neuron1 = {
         ...mockNeuron,
         neuronId: neuronId1,
@@ -2124,7 +2122,7 @@ describe("neuron-utils", () => {
       };
       const ballot1 = {
         neuronId: neuronId1,
-        votingPower: BigInt(40),
+        votingPower: 40n,
         vote: Vote.No,
       };
       const proposal = {
@@ -2146,8 +2144,8 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          cachedNeuronStake: BigInt(1_000_000_000),
-          neuronFees: BigInt(10),
+          cachedNeuronStake: 1_000_000_000n,
+          neuronFees: 10n,
         },
       };
       expect(neuronCanBeSplit({ neuron, fee: 10_000 })).toBe(true);
@@ -2158,8 +2156,8 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          cachedNeuronStake: BigInt(100),
-          neuronFees: BigInt(10),
+          cachedNeuronStake: 100n,
+          neuronFees: 10n,
         },
       };
       expect(neuronCanBeSplit({ neuron, fee: 10_000 })).toBe(false);
@@ -2180,7 +2178,7 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          maturityE8sEquivalent: BigInt(0),
+          maturityE8sEquivalent: 0n,
         },
       };
       expect(hasEnoughMaturityToStake(neuron)).toBe(false);
@@ -2191,7 +2189,7 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          maturityE8sEquivalent: BigInt(1000),
+          maturityE8sEquivalent: 1_000n,
         },
       };
       expect(hasEnoughMaturityToStake(neuron)).toBe(true);
@@ -2219,7 +2217,7 @@ describe("neuron-utils", () => {
   describe("getNeuronById", () => {
     afterEach(() => neuronsStore.setNeurons({ neurons: [], certified: true }));
     it("returns neuron when present in store", () => {
-      const neuronId = BigInt(1234);
+      const neuronId = 1_234n;
       const neuron = {
         ...mockNeuron,
         neuronId,
@@ -2231,10 +2229,10 @@ describe("neuron-utils", () => {
     });
 
     it("returns undefined when not present in store", () => {
-      const neuronId = BigInt(1234);
+      const neuronId = 1_234n;
       const neuron = {
         ...mockNeuron,
-        neuronId: BigInt(1235),
+        neuronId: 1_235n,
       };
       neuronsStore.setNeurons({ neurons: [neuron], certified: true });
       const store = get(neuronsStore);
@@ -2243,7 +2241,7 @@ describe("neuron-utils", () => {
     });
 
     it("returns undefined if no neurons in store", () => {
-      const neuronId = BigInt(1234);
+      const neuronId = 1_234n;
       const store = get(neuronsStore);
       const received = getNeuronById({ neuronsStore: store, neuronId });
       expect(received).toBeUndefined();
@@ -2267,7 +2265,7 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          cachedNeuronStake: BigInt(10),
+          cachedNeuronStake: 10n,
         },
       };
       expect(
@@ -2310,7 +2308,7 @@ describe("neuron-utils", () => {
   });
 
   describe("filterIneligibleNnsNeurons", () => {
-    const proposalTimestampSeconds = BigInt(100);
+    const proposalTimestampSeconds = 100n;
     const testProposalInfo = {
       ...mockProposalInfo,
       proposalTimestampSeconds,
@@ -2318,19 +2316,19 @@ describe("neuron-utils", () => {
         {
           neuronId: 3n,
           vote: Vote.Yes,
-          votingPower: 12345n,
+          votingPower: 12_345n,
         },
       ],
     } as ProposalInfo;
     const testSinceNeuron = {
       ...mockNeuron,
       neuronId: 1n,
-      createdTimestampSeconds: proposalTimestampSeconds + BigInt(1),
+      createdTimestampSeconds: proposalTimestampSeconds + 1n,
     } as NeuronInfo;
     const testShortNeuron = {
       ...mockNeuron,
       neuronId: 2n,
-      createdTimestampSeconds: proposalTimestampSeconds - BigInt(1),
+      createdTimestampSeconds: proposalTimestampSeconds - 1n,
     } as NeuronInfo;
     const testVotedNeuron = {
       ...mockNeuron,
@@ -2379,26 +2377,28 @@ describe("neuron-utils", () => {
     it("should return last distribution timestamp w/o rollovers", () => {
       const testRewardEvent = {
         ...mockRewardEvent,
-        actual_timestamp_seconds: 12234455555n,
+        actual_timestamp_seconds: 12_234_455_555n,
         settled_proposals: [
           {
             id: 0n,
           },
         ],
       } as RewardEvent;
-      expect(maturityLastDistribution(testRewardEvent)).toEqual(12234455555n);
+      expect(maturityLastDistribution(testRewardEvent)).toEqual(
+        12_234_455_555n
+      );
     });
 
     it("should return last distribution timestamp after 3 rollovers", () => {
       const testRewardEvent = {
         ...mockRewardEvent,
-        actual_timestamp_seconds: 12234455555n,
+        actual_timestamp_seconds: 12_234_455_555n,
         rounds_since_last_distribution: [3n],
         settled_proposals: [],
       } as RewardEvent;
       const threeDays = BigInt(3 * SECONDS_IN_DAY);
       expect(maturityLastDistribution(testRewardEvent)).toEqual(
-        12234455555n - threeDays
+        12_234_455_555n - threeDays
       );
     });
   });

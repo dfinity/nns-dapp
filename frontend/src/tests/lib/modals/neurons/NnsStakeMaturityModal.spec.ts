@@ -25,7 +25,7 @@ describe("NnsStakeMaturityModal", () => {
     ...mockNeuron,
     fullNeuron: {
       ...mockFullNeuron,
-      maturityE8sEquivalent: BigInt(1_000_000),
+      maturityE8sEquivalent: 1_000_000n,
     },
   };
   const neuronHW = {

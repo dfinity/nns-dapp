@@ -33,7 +33,7 @@ export class MockGovernanceCanister extends GovernanceCanister {
       // mock getProposal call
       return {
         proposals: this.proposals.filter(
-          ({ id }) => id === (request.beforeProposal as bigint) - BigInt(1)
+          ({ id }) => id === (request.beforeProposal as bigint) - 1n
         ),
       };
     }

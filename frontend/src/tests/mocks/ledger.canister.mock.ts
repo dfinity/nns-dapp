@@ -20,7 +20,7 @@ export class MockLedgerCanister extends LedgerCanister {
     accountIdentifier: AccountIdentifier;
     certified?: boolean | undefined;
   }): Promise<bigint> => {
-    return BigInt(1);
+    return 1n;
   };
 
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
@@ -31,6 +31,6 @@ export class MockLedgerCanister extends LedgerCanister {
     fee?: bigint | undefined;
     fromSubAccount?: number[] | undefined;
   }): Promise<BlockHeight> => {
-    return BigInt(0);
+    return 0n;
   };
 }

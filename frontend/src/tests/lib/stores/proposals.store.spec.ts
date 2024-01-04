@@ -38,10 +38,10 @@ describe("proposals-store", () => {
 
     it("should push proposals with certified-version replacement", () => {
       const queryProposals = generateMockProposals(10, {
-        proposalTimestampSeconds: BigInt(0),
+        proposalTimestampSeconds: 0n,
       });
       const updateProposals = generateMockProposals(10, {
-        proposalTimestampSeconds: BigInt(1),
+        proposalTimestampSeconds: 1n,
       });
       proposalsStore.setProposals({
         proposals: queryProposals,
@@ -79,7 +79,7 @@ describe("proposals-store", () => {
     it("should replace proposals", () => {
       const allProposals = generateMockProposals(10);
       const replacedProposals = generateMockProposals(10, {
-        proposalTimestampSeconds: BigInt(666),
+        proposalTimestampSeconds: 666n,
       });
       proposalsStore.setProposals({ proposals: allProposals, certified: true });
       proposalsStore.replaceProposals(replacedProposals);
@@ -190,26 +190,26 @@ describe("proposals-store", () => {
   describe("proposalPayloadStore", () => {
     it("should store a payload", () => {
       proposalPayloadsStore.setPayload({
-        proposalId: BigInt(0),
+        proposalId: 0n,
         payload: null,
       });
 
-      expect(get(proposalPayloadsStore).get(BigInt(0))).toBeNull();
+      expect(get(proposalPayloadsStore).get(0n)).toBeNull();
     });
 
     it("should throw on initial map set", () => {
-      const call = () => get(proposalPayloadsStore).set(BigInt(0), null);
+      const call = () => get(proposalPayloadsStore).set(0n, null);
 
       expect(call).toThrow();
     });
 
     it("should throw on map set after update", () => {
       proposalPayloadsStore.setPayload({
-        proposalId: BigInt(0),
+        proposalId: 0n,
         payload: null,
       });
 
-      const call = () => get(proposalPayloadsStore).set(BigInt(0), null);
+      const call = () => get(proposalPayloadsStore).set(0n, null);
 
       expect(call).toThrow();
     });

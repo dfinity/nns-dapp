@@ -24,10 +24,10 @@ describe("sns-transactions-services", () => {
       const spyGetTransactions = vi
         .spyOn(indexApi, "getSnsTransactions")
         .mockResolvedValue({
-          oldestTxId: BigInt(1234),
+          oldestTxId: 1_234n,
           transactions: [mockIcrcTransactionWithId],
         });
-      const start = BigInt(1234);
+      const start = 1_234n;
       const canisterId = Principal.fromText("tmxop-wyaaa-aaaaa-aaapa-cai");
       await services.loadSnsAccountTransactions({
         canisterId,
@@ -68,7 +68,7 @@ describe("sns-transactions-services", () => {
       const spyGetTransactions = vi
         .spyOn(indexApi, "getSnsTransactions")
         .mockResolvedValue({
-          oldestTxId: BigInt(1234),
+          oldestTxId: 1_234n,
           transactions: [mockIcrcTransactionWithId],
         });
       const canisterId = Principal.fromText("tmxop-wyaaa-aaaaa-aaapa-cai");
@@ -101,11 +101,11 @@ describe("sns-transactions-services", () => {
       const spyGetTransactions = vi
         .spyOn(indexApi, "getSnsTransactions")
         .mockResolvedValue({
-          oldestTxId: BigInt(1234),
+          oldestTxId: 1_234n,
           transactions: [mockIcrcTransactionWithId],
         });
       const canisterId = Principal.fromText("tmxop-wyaaa-aaaaa-aaapa-cai");
-      const oldestTxId = BigInt(1234);
+      const oldestTxId = 1_234n;
       icrcTransactionsStore.addTransactions({
         canisterId,
         accountIdentifier: mockSnsMainAccount.identifier,

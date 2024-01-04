@@ -26,7 +26,7 @@ describe("snsSelectedTransactionFeeStore", () => {
     setSnsProjects([projectParams]);
     page.mock({ data: { universe } });
 
-    const fee = BigInt(10_000);
+    const fee = 10_000n;
     transactionsFeesStore.setFee({
       rootCanisterId,
       fee,

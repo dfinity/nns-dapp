@@ -557,27 +557,27 @@ describe("accounts-utils", () => {
 
   describe("assertEnoughAccountFunds", () => {
     it("should throw if not enough balance", () => {
-      const amountE8s = BigInt(1_000_000_000);
+      const amountE8s = 1_000_000_000n;
       expect(() => {
         assertEnoughAccountFunds({
           account: {
             ...mockMainAccount,
             balanceUlps: amountE8s,
           },
-          amountUlps: amountE8s + BigInt(10_000),
+          amountUlps: amountE8s + 10_000n,
         });
       }).toThrow();
     });
 
     it("should not throw if not enough balance", () => {
-      const amountE8s = BigInt(1_000_000_000);
+      const amountE8s = 1_000_000_000n;
       expect(() => {
         assertEnoughAccountFunds({
           account: {
             ...mockMainAccount,
             balanceUlps: amountE8s,
           },
-          amountUlps: amountE8s - BigInt(10_000),
+          amountUlps: amountE8s - 10_000n,
         });
       }).not.toThrow();
     });

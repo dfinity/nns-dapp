@@ -8,7 +8,7 @@ export const mockSnsSelectedTransactionFeeStoreSubscribe =
       notDefined
         ? undefined
         : TokenAmount.fromE8s({
-            amount: BigInt(10_000),
+            amount: 10_000n,
             token: { name: "Test", symbol: "TST", decimals: 8 },
           })
     );
