@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { Account } from "$lib/types/account";
   import { onDestroy, onMount, setContext } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
@@ -23,6 +24,7 @@
   import {
     accountName,
     findAccount,
+    mainAccount,
     isAccountHardwareWallet,
   } from "$lib/utils/accounts.utils";
   import {
@@ -112,15 +114,32 @@
     }
   };
 
+  const setSelectedAccount = ({
+    identifier,
+    accounts,
+  }: {
+    identifier: string | undefined | null;
+    accounts: Account[];
+  }) => {
+    // If there is no accountIdentifier specified, default to the main account.
+    const account = isNullish(identifier)
+      ? mainAccount(accounts)
+      : findAccount({
+          identifier,
+          accounts,
+        });
+    selectedAccountStore.set({
+      account,
+      neurons: [],
+    });
+  };
+
   // We need an object to handle case where the identifier does not exist and the wallet page is loaded directly
   // First call: identifier is set, accounts store is empty, selectedAccount is undefined
   // Second call: identifier is set, accounts store is set, selectedAccount is still undefined
-  $: selectedAccountStore.set({
-    account: findAccount({
-      identifier: accountIdentifier,
-      accounts: $nnsAccountsListStore,
-    }),
-    neurons: [],
+  $: setSelectedAccount({
+    identifier: accountIdentifier,
+    accounts: $nnsAccountsListStore,
   });
 
   $: (async () => await accountDidUpdate($selectedAccountStore))();
