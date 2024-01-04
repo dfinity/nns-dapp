@@ -289,7 +289,7 @@ describe("SnsWallet", () => {
       expect(spy).toHaveBeenCalledTimes(1);
     });
 
-    it("should nagigate to accounts when account identifier is missing", async () => {
+    it("should navigate to accounts when account identifier is missing", async () => {
       expect(get(pageStore)).toEqual({
         path: AppPath.Wallet,
         universe: rootCanisterIdText,
@@ -309,7 +309,7 @@ describe("SnsWallet", () => {
       ]);
     });
 
-    it("should nagigate to accounts when account identifier is invalid", async () => {
+    it("should navigate to accounts when account identifier is invalid", async () => {
       expect(get(pageStore)).toEqual({
         path: AppPath.Wallet,
         universe: rootCanisterIdText,
