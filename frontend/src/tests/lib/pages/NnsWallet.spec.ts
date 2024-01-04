@@ -3,10 +3,14 @@ import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { AppPath } from "$lib/constants/routes.constants";
+import { pageStore } from "$lib/derived/page.derived";
 import NnsWallet from "$lib/pages/NnsWallet.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
 import { authStore } from "$lib/stores/auth.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+import { page } from "$mocks/$app/stores";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import {
   mockAccountDetails,
@@ -23,8 +27,10 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
 import { Principal } from "@dfinity/principal";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 import type { SpyInstance } from "vitest";
 import AccountsTest from "./AccountsTest.svelte";
 
@@ -43,12 +49,18 @@ describe("NnsWallet", () => {
     vi.clearAllTimers();
     cancelPollAccounts();
     icpAccountsStore.resetForTesting();
+    toastsStore.reset();
 
     vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
     vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
       mainBalanceE8s
     );
     vi.spyOn(accountsApi, "getTransactions").mockResolvedValue([]);
+
+    page.mock({
+      data: { universe: OWN_CANISTER_ID_TEXT },
+      routeId: AppPath.Wallet,
+    });
   });
 
   const renderWallet = async (props) => {
@@ -246,6 +258,61 @@ describe("NnsWallet", () => {
 
       expect(accountsApi.getTransactions).toBeCalledTimes(4);
       expect(ledgerApi.queryAccountBalance).toBeCalledTimes(2);
+    });
+
+    it("should navigate to accounts when account identifier is missing", async () => {
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Wallet,
+        universe: OWN_CANISTER_ID_TEXT,
+      });
+      await renderWallet({
+        accountIdentifier: undefined,
+      });
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Accounts,
+        universe: OWN_CANISTER_ID_TEXT,
+      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: 'Sorry, the account "" was not found',
+        },
+      ]);
+    });
+
+    it("should navigate to accounts when account identifier is invalid", async () => {
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Wallet,
+        universe: OWN_CANISTER_ID_TEXT,
+      });
+      await renderWallet({
+        accountIdentifier: "invalid-account-identifier",
+      });
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Accounts,
+        universe: OWN_CANISTER_ID_TEXT,
+      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: 'Sorry, the account "invalid-account-identifier" was not found',
+        },
+      ]);
+    });
+
+    it("should stay on the wallet page when account identifier is valid", async () => {
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Wallet,
+        universe: OWN_CANISTER_ID_TEXT,
+      });
+      await renderWallet({
+        accountIdentifier: mockMainAccount.identifier,
+      });
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Wallet,
+        universe: OWN_CANISTER_ID_TEXT,
+      });
+      expect(get(toastsStore)).toEqual([]);
     });
   });
 

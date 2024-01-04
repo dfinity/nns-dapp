@@ -236,7 +236,7 @@ describe("IcrcWallet", () => {
       // await waitFor(() => expect(spy).toHaveBeenCalled());
     });
 
-    it("should nagigate to accounts when account identifier is missing", async () => {
+    it("should navigate to accounts when account identifier is missing", async () => {
       expect(get(pageStore)).toEqual({
         path: AppPath.Wallet,
         universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText(),
@@ -256,7 +256,7 @@ describe("IcrcWallet", () => {
       ]);
     });
 
-    it("should nagigate to accounts when account identifier is invalid", async () => {
+    it("should navigate to accounts when account identifier is invalid", async () => {
       expect(get(pageStore)).toEqual({
         path: AppPath.Wallet,
         universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText(),
