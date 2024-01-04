@@ -153,7 +153,7 @@ const shouldInvalidateCacheOnFailure = async <P, R>({
 };
 
 describe("neurons api-service", () => {
-  const neuronId = BigInt(12);
+  const neuronId = 12n;
 
   beforeEach(() => {
     vi.resetAllMocks();
@@ -184,13 +184,13 @@ describe("neurons api-service", () => {
     it("should call queryNeuron api", async () => {
       expect(
         await governanceApiService.queryNeuron({
-          neuronId: BigInt(1),
+          neuronId: 1n,
           ...params,
         })
       ).toEqual(neuron1);
       expect(
         await governanceApiService.queryNeuron({
-          neuronId: BigInt(2),
+          neuronId: 2n,
           ...params,
         })
       ).toEqual(neuron2);
@@ -199,7 +199,7 @@ describe("neurons api-service", () => {
 
     it("should fail if queryNeuron api fails", async () => {
       expect(() =>
-        governanceApiService.queryNeuron({ neuronId: BigInt(999), ...params })
+        governanceApiService.queryNeuron({ neuronId: 999n, ...params })
       ).rejects.toThrow("No neuron with id 999");
       expect(api.queryNeuron).toHaveBeenCalledTimes(1);
     });
@@ -208,7 +208,7 @@ describe("neurons api-service", () => {
       await shouldNotInvalidateCache({
         apiFunc: api.queryNeuron,
         apiServiceFunc: governanceApiService.queryNeuron,
-        params: { neuronId: BigInt(1), ...params },
+        params: { neuronId: 1n, ...params },
       });
     });
   });
@@ -455,7 +455,7 @@ describe("neurons api-service", () => {
     const rewardEvent1: RewardEvent = mockRewardEvent;
     const rewardEvent2: RewardEvent = {
       ...rewardEvent1,
-      rounds_since_last_distribution: [BigInt(2_000)],
+      rounds_since_last_distribution: [2_000n],
     };
     beforeEach(() => {
       vi.spyOn(api, "queryLastestRewardEvent").mockImplementation(
@@ -603,7 +603,7 @@ describe("neurons api-service", () => {
       neuronId,
       identity: mockIdentity,
       toAccount: mockMainAccount.identifier,
-      amount: BigInt(10_000_000),
+      amount: 10_000_000n,
     };
 
     it("should call disburse api", () => {
@@ -750,8 +750,8 @@ describe("neurons api-service", () => {
   describe("mergeNeurons", () => {
     const params = {
       identity: mockIdentity,
-      sourceNeuronId: BigInt(2),
-      targetNeuronId: BigInt(20),
+      sourceNeuronId: 2n,
+      targetNeuronId: 20n,
     };
 
     it("should call mergeNeurons api", () => {
@@ -812,7 +812,7 @@ describe("neurons api-service", () => {
       neuronId,
       identity: mockIdentity,
       topic: Topic.ExchangeRate,
-      followees: [BigInt(2), BigInt(20)],
+      followees: [2n, 20n],
     };
 
     it("should call setFollowees api", () => {
@@ -841,8 +841,8 @@ describe("neurons api-service", () => {
   describe("simulateMergeNeurons", () => {
     const params = {
       identity: mockIdentity,
-      sourceNeuronId: BigInt(3),
-      targetNeuronId: BigInt(21),
+      sourceNeuronId: 3n,
+      targetNeuronId: 21n,
     };
 
     it("should call simulateMergeNeurons api", () => {
@@ -902,7 +902,7 @@ describe("neurons api-service", () => {
     const params = {
       neuronId,
       identity: mockIdentity,
-      amount: BigInt(10_000_000),
+      amount: 10_000_000n,
     };
 
     it("should call splitNeuron api", async () => {
@@ -962,7 +962,7 @@ describe("neurons api-service", () => {
   describe("stakeNeuron", () => {
     const params = {
       identity: mockIdentity,
-      stake: BigInt(10_000_000),
+      stake: 10_000_000n,
       controller: mockPrincipal,
       ledgerCanisterIdentity: mockIdentity,
       fromSubaccount: new Uint8Array(),
@@ -995,7 +995,7 @@ describe("neurons api-service", () => {
   describe("stakeNeuronIcrc1", () => {
     const params = {
       identity: mockIdentity,
-      stake: BigInt(10_000_000),
+      stake: 10_000_000n,
       controller: mockPrincipal,
       ledgerCanisterIdentity: mockIdentity,
       fromSubaccount: new Uint8Array(),

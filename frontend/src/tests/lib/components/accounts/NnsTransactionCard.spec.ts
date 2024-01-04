@@ -60,8 +60,8 @@ describe("NnsTransactionCard", () => {
       ...mockReceivedFromMainAccountTransaction,
       transfer: {
         Send: {
-          fee: { e8s: BigInt(10000) },
-          amount: { e8s: BigInt(110000000) },
+          fee: { e8s: 10_000n },
+          amount: { e8s: 110_000_000n },
           to: swapCanisterAccount.toHex(),
         },
       },

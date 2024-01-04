@@ -112,7 +112,7 @@ describe("ProjectSwapDetails", () => {
   });
 
   it("should render total token supply if present", async () => {
-    const totalSupply = BigInt(2_000_000_000);
+    const totalSupply = 2_000_000_000n;
     const totalTokensSupply = TokenAmount.fromE8s({
       amount: totalSupply,
       token: mockSummary.token,

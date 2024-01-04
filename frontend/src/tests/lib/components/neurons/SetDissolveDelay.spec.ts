@@ -16,7 +16,7 @@ const defaultComponentProps = {
   neuronState: NeuronState.Locked,
   neuronDissolveDelaySeconds: 0,
   neuronStake: TokenAmountV2.fromUlps({
-    amount: BigInt(200_000_000),
+    amount: 200_000_000n,
     token: ICPToken,
   }),
   delayInSeconds: 0,

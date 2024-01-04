@@ -227,7 +227,7 @@ async function getNeuronBalance({
     // the fake.
     return neuron.cached_neuron_stake_e8s;
   }
-  return BigInt(0);
+  return 0n;
 }
 
 async function refreshNeuron(params: {

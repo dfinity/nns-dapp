@@ -8,7 +8,7 @@ describe("VoteConfirmationModal", () => {
     const { container, getByText } = render(VoteConfirmationModal, {
       props: {
         voteType: Vote.Yes,
-        votingPower: BigInt(4000000000),
+        votingPower: 4_000_000_000n,
       },
     });
     expect(
@@ -23,7 +23,7 @@ describe("VoteConfirmationModal", () => {
     const { container, getByText } = render(VoteConfirmationModal, {
       props: {
         voteType: Vote.No,
-        votingPower: BigInt(4000000000),
+        votingPower: 4_000_000_000n,
       },
     });
     expect(
@@ -38,7 +38,7 @@ describe("VoteConfirmationModal", () => {
     const { getByText } = render(VoteConfirmationModal, {
       props: {
         voteType: Vote.No,
-        votingPower: BigInt(4000000000),
+        votingPower: 4_000_000_000n,
       },
     });
     expect(getByText("40.00", { exact: false })).toBeInTheDocument();
@@ -48,7 +48,7 @@ describe("VoteConfirmationModal", () => {
     const { container } = render(VoteConfirmationModal, {
       props: {
         voteType: Vote.No,
-        votingPower: BigInt(4000000000),
+        votingPower: 4_000_000_000n,
       },
     });
     expect(

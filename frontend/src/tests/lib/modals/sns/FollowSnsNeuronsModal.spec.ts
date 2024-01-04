@@ -49,15 +49,15 @@ describe("FollowSnsNeuronsModal", () => {
   it("displays the functions to follow", () => {
     const function0: SnsNervousSystemFunction = {
       ...nervousSystemFunctionMock,
-      id: BigInt(0),
+      id: 0n,
     };
     const function1: SnsNervousSystemFunction = {
       ...nervousSystemFunctionMock,
-      id: BigInt(1),
+      id: 1n,
     };
     const function2: SnsNervousSystemFunction = {
       ...nervousSystemFunctionMock,
-      id: BigInt(2),
+      id: 2n,
     };
     snsFunctionsStore.setProjectFunctions({
       rootCanisterId,

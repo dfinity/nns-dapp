@@ -22,7 +22,7 @@ describe("ProposalSystemInfoSection", () => {
   fakeSnsGovernanceApi.install();
 
   const rootCanisterId = mockCanisterId;
-  const testNervousFunctionId = BigInt(1);
+  const testNervousFunctionId = 1n;
   const testNervousFunctionName = "test function";
   const nervousFunction = {
     ...nervousSystemFunctionMock,
@@ -53,7 +53,7 @@ describe("ProposalSystemInfoSection", () => {
     const openProposal = {
       ...createSnsProposal({
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
-        proposalId: BigInt(2),
+        proposalId: 2n,
       }),
       action: testNervousFunctionId,
     };
@@ -142,7 +142,7 @@ describe("ProposalSystemInfoSection", () => {
     const adoptedProposal = {
       ...createSnsProposal({
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_ADOPTED,
-        proposalId: BigInt(2),
+        proposalId: 2n,
       }),
     };
     const props = {
@@ -174,7 +174,7 @@ describe("ProposalSystemInfoSection", () => {
     const executedProposal = {
       ...createSnsProposal({
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED,
-        proposalId: BigInt(2),
+        proposalId: 2n,
       }),
     };
     const props = {
@@ -207,7 +207,7 @@ describe("ProposalSystemInfoSection", () => {
     const failedProposal = {
       ...createSnsProposal({
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_FAILED,
-        proposalId: BigInt(2),
+        proposalId: 2n,
       }),
     };
     const props = {

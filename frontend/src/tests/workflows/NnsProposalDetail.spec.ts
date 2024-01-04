@@ -31,7 +31,7 @@ const proposal = {
     {
       neuronId: mockNeuron.neuronId,
       vote: Vote.Yes,
-      votingPower: BigInt(10_000_000),
+      votingPower: 10_000_000n,
     },
   ],
 };

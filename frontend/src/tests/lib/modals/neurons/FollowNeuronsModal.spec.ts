@@ -26,7 +26,7 @@ describe("FollowNeuronsModal", () => {
       followees: [
         {
           topic: Topic.ExchangeRate,
-          followees: [BigInt(27), BigInt(28)],
+          followees: [27n, 28n],
         },
       ],
     },

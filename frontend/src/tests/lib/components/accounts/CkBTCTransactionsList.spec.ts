@@ -80,7 +80,7 @@ describe("CkBTCTransactionList", () => {
         [mockCkBTCMainAccount.identifier]: {
           transactions: [
             {
-              id: BigInt(123),
+              id: 123n,
               transaction: createBurnTransaction({
                 // Missing memo should result in fallback description.
                 from: {
@@ -91,7 +91,7 @@ describe("CkBTCTransactionList", () => {
             },
           ],
           completed: false,
-          oldestTxId: BigInt(0),
+          oldestTxId: 0n,
         },
       },
     };
@@ -120,7 +120,7 @@ describe("CkBTCTransactionList", () => {
         [mockCkBTCMainAccount.identifier]: {
           transactions: [
             {
-              id: BigInt(123),
+              id: 123n,
               transaction: createBurnTransaction({
                 memo,
                 from: {
@@ -131,7 +131,7 @@ describe("CkBTCTransactionList", () => {
             },
           ],
           completed: false,
-          oldestTxId: BigInt(0),
+          oldestTxId: 0n,
         },
       },
     };
@@ -224,12 +224,12 @@ describe("CkBTCTransactionList", () => {
         [mockCkBTCMainAccount.identifier]: {
           transactions: [
             {
-              id: BigInt(123),
+              id: 123n,
               transaction: mockIcrcTransactionMint,
             },
           ],
           completed: false,
-          oldestTxId: BigInt(0),
+          oldestTxId: 0n,
         },
       },
     };
@@ -276,7 +276,7 @@ describe("CkBTCTransactionList", () => {
             },
           ],
           completed: false,
-          oldestTxId: BigInt(0),
+          oldestTxId: 0n,
         },
       },
     };
