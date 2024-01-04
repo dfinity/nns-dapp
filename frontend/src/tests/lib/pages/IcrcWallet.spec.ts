@@ -236,24 +236,23 @@ describe("IcrcWallet", () => {
       // await waitFor(() => expect(spy).toHaveBeenCalled());
     });
 
-    it("should navigate to accounts when account identifier is missing", async () => {
+    it("should default to main account when account identifier is missing", async () => {
       expect(get(pageStore)).toEqual({
         path: AppPath.Wallet,
         universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText(),
       });
-      await renderWallet({
+      const po = await renderWallet({
         accountIdentifier: undefined,
       });
       expect(get(pageStore)).toEqual({
-        path: AppPath.Accounts,
+        path: AppPath.Wallet,
         universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText(),
       });
-      expect(get(toastsStore)).toMatchObject([
-        {
-          level: "error",
-          text: 'Sorry, the account "" was not found',
-        },
-      ]);
+      expect(get(toastsStore)).toEqual([]);
+
+      expect(await po.getWalletPageHeaderPo().getWalletAddress()).toBe(
+        mockCkETHMainAccount.identifier
+      );
     });
 
     it("should navigate to accounts when account identifier is invalid", async () => {

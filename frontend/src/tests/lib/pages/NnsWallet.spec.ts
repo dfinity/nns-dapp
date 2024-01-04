@@ -119,15 +119,16 @@ describe("NnsWallet", () => {
     });
 
     it("should render a spinner while loading", async () => {
+      const resolveQueryAccount = pauseQueryAccountBalance();
       const po = await renderWallet({});
 
+      await runResolvedPromises();
       expect(await po.hasSpinner()).toBe(true);
-    });
 
-    it("new transaction action should be disabled while loading", async () => {
-      const po = await renderWallet({});
+      resolveQueryAccount();
 
-      expect(await po.getSendButtonPo().isDisabled()).toBe(true);
+      await runResolvedPromises();
+      expect(await po.hasSpinner()).toBe(false);
     });
 
     it("new transaction should remain disabled if route is valid but store is not loaded", async () => {
@@ -265,19 +266,18 @@ describe("NnsWallet", () => {
         path: AppPath.Wallet,
         universe: OWN_CANISTER_ID_TEXT,
       });
-      await renderWallet({
+      const po = await renderWallet({
         accountIdentifier: undefined,
       });
       expect(get(pageStore)).toEqual({
-        path: AppPath.Accounts,
+        path: AppPath.Wallet,
         universe: OWN_CANISTER_ID_TEXT,
       });
-      expect(get(toastsStore)).toMatchObject([
-        {
-          level: "error",
-          text: 'Sorry, the account "" was not found',
-        },
-      ]);
+      expect(get(toastsStore)).toEqual([]);
+
+      expect(await po.getWalletPageHeaderPo().getWalletAddress()).toBe(
+        mockMainAccount.identifier
+      );
     });
 
     it("should navigate to accounts when account identifier is invalid", async () => {
