@@ -26,6 +26,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 - Use `ic_cdk::println` instead of the `dfn_core` equivalent.
+- Default to main account on wallet page when `account` parameter is missing from the URL.
 
 #### Deprecated
 
