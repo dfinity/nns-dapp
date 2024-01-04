@@ -16,7 +16,7 @@ Clone the project on your computer and install the libraries:
 npm ci
 ```
 
-Then proceed as displayed in the [HACKING.md](/HACKING.md) documentation.
+Then proceed as displayed in the [`HACKING.md`](/HACKING.md) documentation.
 
 ## Testing
 
