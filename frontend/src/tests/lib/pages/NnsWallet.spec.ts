@@ -77,21 +77,6 @@ describe("NnsWallet", () => {
     };
   };
 
-  const testToolbarButton = ({
-    container,
-    disabled,
-  }: {
-    container: HTMLElement;
-    disabled: boolean;
-  }) => {
-    const button = container.querySelector("footer div.toolbar button");
-
-    expect(button).not.toBeNull();
-    expect((button as HTMLButtonElement).hasAttribute("disabled")).toEqual(
-      disabled
-    );
-  };
-
   describe("no accounts", () => {
     beforeEach(() => {
       vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(
