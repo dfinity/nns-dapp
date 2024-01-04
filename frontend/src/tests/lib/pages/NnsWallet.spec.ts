@@ -1,6 +1,7 @@
 import * as accountsApi from "$lib/api/accounts.api";
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
+import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import NnsWallet from "$lib/pages/NnsWallet.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
@@ -24,7 +25,6 @@ import {
 } from "$tests/utils/timers.test-utils";
 import { Principal } from "@dfinity/principal";
 import { render } from "@testing-library/svelte";
-import { tick } from "svelte";
 import type { SpyInstance } from "vitest";
 import AccountsTest from "./AccountsTest.svelte";
 
@@ -51,10 +51,10 @@ describe("NnsWallet", () => {
     vi.spyOn(accountsApi, "getTransactions").mockResolvedValue([]);
   });
 
-  const renderWallet = (props) => {
+  const renderWallet = async (props) => {
     const { container } = render(NnsWallet, props);
-    const po = NnsWalletPo.under(new JestPageObjectElement(container));
-    return po;
+    await runResolvedPromises();
+    return NnsWalletPo.under(new JestPageObjectElement(container));
   };
 
   const renderWalletAndModals = async (
@@ -77,6 +77,28 @@ describe("NnsWallet", () => {
     };
   };
 
+  const pauseQueryAccountBalance = () => {
+    let resolveQueryBalance;
+    vi.spyOn(ledgerApi, "queryAccountBalance").mockImplementation(
+      () =>
+        new Promise<bigint>((resolve) => {
+          resolveQueryBalance = () => resolve(mainBalanceE8s);
+        })
+    );
+    return () => resolveQueryBalance();
+  };
+
+  const pauseGetTransactions = () => {
+    let resolveGetTransactions;
+    vi.spyOn(accountsApi, "getTransactions").mockImplementation(
+      () =>
+        new Promise<Transaction[]>((resolve) => {
+          resolveGetTransactions = () => resolve([]);
+        })
+    );
+    return () => resolveGetTransactions();
+  };
+
   describe("no accounts", () => {
     beforeEach(() => {
       vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(
@@ -85,39 +107,33 @@ describe("NnsWallet", () => {
     });
 
     it("should render a spinner while loading", async () => {
-      const po = renderWallet({});
+      const po = await renderWallet({});
 
       expect(await po.hasSpinner()).toBe(true);
     });
 
     it("new transaction action should be disabled while loading", async () => {
-      const po = renderWallet({});
+      const po = await renderWallet({});
 
       expect(await po.getSendButtonPo().isDisabled()).toBe(true);
     });
 
     it("new transaction should remain disabled if route is valid but store is not loaded", async () => {
-      const po = renderWallet(props);
+      const resolveQueryBalance = pauseQueryAccountBalance();
+      const po = await renderWallet(props);
 
-      // init
+      await runResolvedPromises();
       expect(await po.getSendButtonPo().isDisabled()).toBe(true);
 
-      await tick();
+      resolveQueryBalance();
 
-      // route set triggers get account
-      expect(await po.getSendButtonPo().isDisabled()).toBe(true);
+      await runResolvedPromises();
+      expect(await po.getSendButtonPo().isDisabled()).toBe(false);
     });
 
     it("should show new accounts after being loaded", async () => {
-      let resolveQueryBalance;
-      vi.spyOn(ledgerApi, "queryAccountBalance").mockImplementation(
-        () =>
-          new Promise<bigint>((resolve) => {
-            resolveQueryBalance = () => resolve(mainBalanceE8s);
-          })
-      );
-
-      const po = renderWallet(props);
+      const resolveQueryBalance = pauseQueryAccountBalance();
+      const po = await renderWallet(props);
 
       await runResolvedPromises();
       expect(await po.getWalletPageHeadingPo().isPresent()).toBe(false);
@@ -135,7 +151,7 @@ describe("NnsWallet", () => {
     });
 
     it("should render nns project name", async () => {
-      const po = renderWallet(props);
+      const po = await renderWallet(props);
 
       expect(await po.getWalletPageHeaderPo().getUniverse()).toBe(
         "Internet Computer"
@@ -150,13 +166,13 @@ describe("NnsWallet", () => {
           balanceUlps: 432_100_000n,
         },
       });
-      const po = renderWallet(props);
+      const po = await renderWallet(props);
 
       expect(await po.getWalletPageHeadingPo().getTitle()).toBe("4.32 ICP");
     });
 
     it("should enable new transaction action for route and store", async () => {
-      const po = renderWallet(props);
+      const po = await renderWallet(props);
 
       expect(await po.getSendButtonPo().isDisabled()).toBe(false);
     });
@@ -184,11 +200,20 @@ describe("NnsWallet", () => {
     });
 
     it("should display SkeletonCard while loading transactions", async () => {
-      const po = renderWallet(props);
+      const resolveGetTransactions = pauseGetTransactions();
+      const po = await renderWallet(props);
 
+      await runResolvedPromises();
       expect(
         await po.getTransactionListPo().getSkeletonCardPo().isPresent()
       ).toBe(true);
+
+      resolveGetTransactions();
+
+      await runResolvedPromises();
+      expect(
+        await po.getTransactionListPo().getSkeletonCardPo().isPresent()
+      ).toBe(false);
     });
 
     it("should open receive modal", async () => {
@@ -237,7 +262,7 @@ describe("NnsWallet", () => {
     };
 
     it("should Rename button", async () => {
-      const po = renderWallet(props);
+      const po = await renderWallet(props);
 
       expect(await po.getRenameButtonPo().isPresent()).toBe(true);
     });
@@ -268,7 +293,7 @@ describe("NnsWallet", () => {
     });
 
     it("should display principal", async () => {
-      const po = renderWallet(props);
+      const po = await renderWallet(props);
 
       expect(await po.getWalletPageHeadingPo().getPrincipal()).toBe(
         testHwPrincipalText
@@ -276,7 +301,7 @@ describe("NnsWallet", () => {
     });
 
     it("should display hardware wallet buttons", async () => {
-      const po = renderWallet(props);
+      const po = await renderWallet(props);
       expect(await po.getListNeuronsButtonPo().isPresent()).toBe(true);
       expect(await po.getShowHardwareWalletButtonPo().isPresent()).toBe(true);
     });
