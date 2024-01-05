@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { nonNullish, type TokenAmount, TokenAmountV2 } from "@dfinity/utils";
+  import {
+    isNullish,
+    nonNullish,
+    type TokenAmount,
+    TokenAmountV2,
+  } from "@dfinity/utils";
   import PageHeading from "../common/PageHeading.svelte";
   import { SkeletonText } from "@dfinity/gix-components";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
@@ -34,7 +39,7 @@
     layoutTitleStore.set({
       title: $i18n.wallet.title,
       header:
-        intersecting && nonNullish(balance)
+        intersecting || isNullish(balance)
           ? $i18n.wallet.title
           : `${accountName} - ${formatTokenV2({
               value: balance,
