@@ -16,17 +16,17 @@ import { describe } from "vitest";
 describe("VotingCard", () => {
   const neuron1 = {
     ...mockNeuron,
-    neuronId: BigInt(111),
+    neuronId: 111n,
     votingPower: 10_000_000_000n,
   };
   const neuron2 = {
     ...mockNeuron,
-    neuronId: BigInt(222),
+    neuronId: 222n,
     votingPower: 30_000_000_000n,
   };
   const neuron3 = {
     ...mockNeuron,
-    neuronId: BigInt(333),
+    neuronId: 333n,
     votingPower: 50_000_000_000n,
   };
   const neurons: NeuronInfo[] = [neuron1, neuron2, neuron3];
