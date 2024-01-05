@@ -87,7 +87,7 @@ describe("SnsWallet", () => {
     transactionsFeesStore.reset();
     toastsStore.reset();
     vi.spyOn(snsIndexApi, "getSnsTransactions").mockResolvedValue({
-      oldestTxId: BigInt(1234),
+      oldestTxId: 1_234n,
       transactions: [mockIcrcTransactionWithId],
     });
     vi.spyOn(snsLedgerApi, "transactionFee").mockResolvedValue(fee);
@@ -204,7 +204,7 @@ describe("SnsWallet", () => {
       expect(snsLedgerApi.snsTransfer).toHaveBeenCalledWith({
         identity: mockIdentity,
         rootCanisterId,
-        amount: 200000000n,
+        amount: 200000_000n,
         fromSubaccount: undefined,
         fee,
         to: destinationAccount,
@@ -289,27 +289,26 @@ describe("SnsWallet", () => {
       expect(spy).toHaveBeenCalledTimes(1);
     });
 
-    it("should nagigate to accounts when account identifier is missing", async () => {
+    it("should default to main account when account identifier is missing", async () => {
       expect(get(pageStore)).toEqual({
         path: AppPath.Wallet,
         universe: rootCanisterIdText,
       });
-      await renderComponent({
+      const po = await renderComponent({
         accountIdentifier: undefined,
       });
       expect(get(pageStore)).toEqual({
-        path: AppPath.Accounts,
+        path: AppPath.Wallet,
         universe: rootCanisterIdText,
       });
-      expect(get(toastsStore)).toMatchObject([
-        {
-          level: "error",
-          text: 'Sorry, the account "" was not found',
-        },
-      ]);
+      expect(get(toastsStore)).toEqual([]);
+
+      expect(await po.getWalletPageHeaderPo().getWalletAddress()).toBe(
+        mockSnsMainAccount.identifier
+      );
     });
 
-    it("should nagigate to accounts when account identifier is invalid", async () => {
+    it("should navigate to accounts when account identifier is invalid", async () => {
       expect(get(pageStore)).toEqual({
         path: AppPath.Wallet,
         universe: rootCanisterIdText,

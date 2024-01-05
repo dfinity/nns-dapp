@@ -31,7 +31,7 @@ describe("ConfirmationModal", () => {
   it("should render leave text if neuron is part of the Neurons' Fund", async () => {
     const neuron: NeuronInfo = {
       ...controlledNeuron,
-      joinedCommunityFundTimestampSeconds: BigInt(123444),
+      joinedCommunityFundTimestampSeconds: 123_444n,
     };
     const po = renderComponent(neuron);
     expect(await po.getContentText()).toBe(

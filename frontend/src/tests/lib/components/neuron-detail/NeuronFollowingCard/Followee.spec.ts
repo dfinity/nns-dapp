@@ -7,7 +7,7 @@ import FolloweeTest from "./FolloweeTest.svelte";
 
 describe("Followee", () => {
   const followee = {
-    neuronId: BigInt(111),
+    neuronId: 111n,
     topics: [Topic.ExchangeRate, Topic.Governance, Topic.Kyc],
   };
 

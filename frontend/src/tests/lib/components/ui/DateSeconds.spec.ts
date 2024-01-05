@@ -3,7 +3,7 @@ import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
 import { render } from "@testing-library/svelte";
 
 describe("DateSeconds", () => {
-  const seconds = Number(BigInt("0"));
+  const seconds = 0;
 
   const test = ({
     container,

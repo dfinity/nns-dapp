@@ -17,15 +17,15 @@ describe("SnsNeuron footer", () => {
   beforeEach(() => {
     const mockNeuron2 = {
       ...mockNeuron,
-      neuronId: BigInt(223),
+      neuronId: 223n,
     };
     const spawningNeuron = {
       ...mockNeuron,
       state: NeuronState.Spawning,
-      neuronId: BigInt(223),
+      neuronId: 223n,
       fullNeuron: {
         ...mockFullNeuron,
-        spawnAtTimesSeconds: BigInt(12312313),
+        spawnAtTimesSeconds: 12_312_313n,
       },
     };
     vi.spyOn(neuronsStore, "subscribe").mockImplementation(
@@ -39,7 +39,7 @@ describe("SnsNeuron footer", () => {
         token: mockSnsFullProject.summary.token,
         rootCanisterId: mockSnsFullProject.rootCanisterId,
         transactionFee: TokenAmount.fromE8s({
-          amount: BigInt(10_000),
+          amount: 10_000n,
           token: mockSnsFullProject.summary.token,
         }),
       })

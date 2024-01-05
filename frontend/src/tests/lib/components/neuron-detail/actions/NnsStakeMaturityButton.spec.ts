@@ -33,7 +33,7 @@ describe("NnsStakeMaturityButton", () => {
           ...mockNeuron,
           fullNeuron: {
             ...mockNeuron.fullNeuron,
-            maturityE8sEquivalent: BigInt(0),
+            maturityE8sEquivalent: 0n,
           },
         },
         testComponent: NnsStakeMaturityButton,

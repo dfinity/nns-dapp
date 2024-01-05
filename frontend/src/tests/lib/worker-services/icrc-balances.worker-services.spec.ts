@@ -37,7 +37,7 @@ describe("balances.worker-services", () => {
   };
 
   it("should return balances for accounts", async () => {
-    const balance = BigInt(10_000_000);
+    const balance = 10_000_000n;
 
     const balanceSpy = ledgerCanisterMock.balance.mockResolvedValue(balance);
 

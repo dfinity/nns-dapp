@@ -8,15 +8,15 @@ import { get } from "svelte/store";
 describe("SNS Proposals stores", () => {
   const snsProposal1: SnsProposalData = {
     ...mockSnsProposal,
-    id: [{ id: BigInt(2) }],
+    id: [{ id: 2n }],
   };
   const snsProposal2: SnsProposalData = {
     ...mockSnsProposal,
-    id: [{ id: BigInt(2) }],
+    id: [{ id: 2n }],
   };
   const snsProposal3: SnsProposalData = {
     ...mockSnsProposal,
-    id: [{ id: BigInt(3) }],
+    id: [{ id: 3n }],
   };
   describe("snsProposalsStore", () => {
     afterEach(() => snsProposalsStore.reset());

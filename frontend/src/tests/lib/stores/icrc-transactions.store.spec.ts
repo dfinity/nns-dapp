@@ -13,7 +13,7 @@ describe("icrc-transactions", () => {
       canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
       transactions: [mockIcrcTransactionWithId],
       accountIdentifier: mockCkBTCMainAccount.identifier,
-      oldestTxId: BigInt(10),
+      oldestTxId: 10n,
       completed: false,
     });
 
@@ -31,7 +31,7 @@ describe("icrc-transactions", () => {
       canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
       transactions: [mockIcrcTransactionWithId],
       accountIdentifier: mockCkBTCWithdrawalAccount.identifier,
-      oldestTxId: BigInt(10),
+      oldestTxId: 10n,
       completed: false,
     });
 
@@ -66,7 +66,7 @@ describe("icrc-transactions", () => {
       canisterId,
       transactions: [mockIcrcTransactionWithId],
       accountIdentifier: identifier,
-      oldestTxId: BigInt(10),
+      oldestTxId: 10n,
       completed: false,
     });
 
@@ -79,7 +79,7 @@ describe("icrc-transactions", () => {
       canisterId,
       transactions: [mockIcrcTransactionWithId, mockIcrcTransactionWithId],
       accountIdentifier: identifier,
-      oldestTxId: BigInt(10),
+      oldestTxId: 10n,
       completed: false,
     });
 

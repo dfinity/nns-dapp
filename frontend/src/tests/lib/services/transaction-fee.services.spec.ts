@@ -5,7 +5,7 @@ import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { get } from "svelte/store";
 
 describe("transactionFee-services", () => {
-  const fee = BigInt(30_000);
+  const fee = 30_000n;
 
   beforeEach(() => {
     resetIdentity();
@@ -40,7 +40,7 @@ describe("transactionFee-services", () => {
       it("it should not call api if the fee is in the store is certified", async () => {
         transactionsFeesStore.setFee({
           rootCanisterId: mockPrincipal,
-          fee: BigInt(10_000),
+          fee: 10_000n,
           certified: true,
         });
         await loadSnsTransactionFee({ rootCanisterId: mockPrincipal });
@@ -51,7 +51,7 @@ describe("transactionFee-services", () => {
       it("it should call api if the fee is in the store is not certified", async () => {
         transactionsFeesStore.setFee({
           rootCanisterId: mockPrincipal,
-          fee: BigInt(10_000),
+          fee: 10_000n,
           certified: false,
         });
         await loadSnsTransactionFee({ rootCanisterId: mockPrincipal });

@@ -27,6 +27,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 - Use `ic_cdk::println` instead of the `dfn_core` equivalent.
+- Default to main account on wallet page when `account` parameter is missing from the URL.
 
 #### Deprecated
 
@@ -39,6 +40,7 @@ proposal is successful, the changes it released will be moved from this file to
 - Min dissolve delay button updates not only for the first time.
 - Fix scrollbar in multiline toast message. 
 - Go back to accounts page for incorrect account identifier in SNS wallet page.
+- Stay on the same universe when navigating back from wallet to the accounts page.
 
 #### Security
 
