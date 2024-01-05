@@ -78,7 +78,7 @@ describe("VotingCard", () => {
     );
   });
 
-  it("should SignIn button", async () => {
+  it("should display SignIn button", async () => {
     const po = await renderComponent();
 
     expect(await po.getSignInButtonPo().isPresent()).toBe(true);
