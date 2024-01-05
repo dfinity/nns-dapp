@@ -63,6 +63,9 @@
     // add scrollbars for too long content
     overflow-y: auto;
     max-height: 100vh;
+    /* mobile viewport bug fix */
+    max-height: -webkit-fill-available;
+
     @include media.min-width(large) {
       max-height: none;
     }
