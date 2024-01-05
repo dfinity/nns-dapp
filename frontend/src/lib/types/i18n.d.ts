@@ -1078,6 +1078,7 @@ interface I18nCkbtc {
   reimbursement: string;
   sending_btc: string;
   sending_btc_failed: string;
+  sign_in_for_address: string;
 }
 
 interface I18nError__ckbtc {
