@@ -63,8 +63,15 @@
     // add scrollbars for too long content
     overflow-y: auto;
     max-height: 100vh;
-    /* mobile viewport bug fix */
-    max-height: -webkit-fill-available;
+
+    /** Fix for iOS Safari 100vh issue
+     @src: https://github.com/postcss/postcss-100vh-fix
+     */
+    // Avoid Chrome to see Safari hack
+    @supports (-webkit-touch-callout: none) {
+      // The hack for Safari
+      max-height: -webkit-fill-available;
+    }
 
     @include media.min-width(large) {
       max-height: none;
