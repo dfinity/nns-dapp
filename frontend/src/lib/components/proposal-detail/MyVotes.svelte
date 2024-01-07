@@ -1,11 +1,7 @@
 <script lang="ts">
   import { Vote } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
-  import {
-    IconThumbDown,
-    IconThumbUp,
-    KeyValuePair,
-  } from "@dfinity/gix-components";
+  import { KeyValuePair } from "@dfinity/gix-components";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
     formatVotingPower,
@@ -15,14 +11,9 @@
   import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
   import VotingCardNeuronList from "$lib/components/proposal-detail/VotingCard/VotingCardNeuronList.svelte";
   import { fade } from "svelte/transition";
+  import VoteResultIcon from "$lib/components/proposal-detail/VotingCard/VoteResultIcon.svelte";
 
   export let neuronsVotedForProposal: CompactNeuronInfo[] = [];
-
-  const voteIconMapper = {
-    [Vote.No]: IconThumbDown,
-    [Vote.Yes]: IconThumbUp,
-    [Vote.Unspecified]: undefined,
-  };
 
   const voteMapper = ({ neuron, vote }: { neuron: string; vote: Vote }) => {
     const stringMapper = {
@@ -64,9 +55,7 @@
             data-tid="my-votes-voting-power"
           >
             <span>{formatVotingPower(neuron.votingPower)}</span>
-            {#if voteIconMapper[neuron.vote]}
-              <svelte:component this={voteIconMapper[neuron.vote]} />
-            {/if}
+            <VoteResultIcon vote={neuron.vote} />
           </span>
         </KeyValuePair>
       </li>
