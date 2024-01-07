@@ -46,6 +46,10 @@
   .container {
     padding-bottom: var(--padding-2x);
     border-bottom: 1px solid var(--tertiary);
+
+    &:last-of-type {
+      border-bottom: none;
+    }
   }
 
   .header {
