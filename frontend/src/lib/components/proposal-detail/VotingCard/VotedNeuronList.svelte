@@ -26,15 +26,14 @@
     ({ vote }) => neuronsVotedForProposal[0]?.vote !== vote
   )
     ? Vote.Unspecified
-    : neuronsVotedForProposal?.[0].vote ?? Vote.Unspecified;
-
-  $: console.log("allVotedVote", allVotedVote, neuronsVotedForProposal);
+    : neuronsVotedForProposal[0]?.vote ?? Vote.Unspecified;
 </script>
 
 {#if votedNeuronCount > 0}
   <ExpandableProposalNeurons testId="voted-neurons">
     <svelte:fragment slot="start">
       <span
+        data-tid="voted-neurons-headline"
         class="headline"
         class:yes={allVotedVote === Vote.Yes}
         class:no={allVotedVote === Vote.No}

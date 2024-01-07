@@ -45,6 +45,11 @@ describe("VotingCard", () => {
     votingPower: 200n,
     vote: Vote.Yes,
   };
+  const noVoted: CompactNeuronInfo = {
+    idString: "200",
+    votingPower: 200n,
+    vote: Vote.No,
+  };
 
   const renderComponent = async (props = {}) => {
     const { container } = render(VotingCard, {
@@ -140,6 +145,39 @@ describe("VotingCard", () => {
       expect(await po.getVotableNeurons().isPresent()).toBe(true);
       expect(await po.getVotedNeurons().isPresent()).toBe(true);
       expect(await po.getIneligibleNeurons().isPresent()).toBe(false);
+    });
+
+    describe("Voted neurons headline state", () => {
+      it("should display Yes state when all voted yes", async () => {
+        const po = await renderComponent({
+          neuronsVotedForProposal: [yesVoted],
+        });
+
+        expect(await po.getVotedNeuronHeadlineYesIcon().isPresent()).toBe(true);
+        expect(await po.getVotedNeuronHeadlineNoIcon().isPresent()).toBe(false);
+      });
+
+      it("should display No state when all voted yes", async () => {
+        const po = await renderComponent({
+          neuronsVotedForProposal: [noVoted],
+        });
+
+        expect(await po.getVotedNeuronHeadlineNoIcon().isPresent()).toBe(true);
+        expect(await po.getVotedNeuronHeadlineYesIcon().isPresent()).toBe(
+          false
+        );
+      });
+
+      it("should not display a voting state when all not voted the same", async () => {
+        const po = await renderComponent({
+          neuronsVotedForProposal: [yesVoted, noVoted],
+        });
+
+        expect(await po.getVotedNeuronHeadlineYesIcon().isPresent()).toBe(
+          false
+        );
+        expect(await po.getVotedNeuronHeadlineNoIcon().isPresent()).toBe(false);
+      });
     });
   });
 });
