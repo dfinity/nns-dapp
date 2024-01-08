@@ -6,7 +6,7 @@
   import MainWrapper from "$lib/components/tokens/MainWrapper.svelte";
 </script>
 
-<LayoutList title={$i18n.tokens.title}>
+<LayoutList title={$i18n.navigation.tokens}>
   <Layout>
     <Content>
       <MainWrapper>

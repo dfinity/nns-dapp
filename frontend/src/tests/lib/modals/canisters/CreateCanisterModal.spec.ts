@@ -25,7 +25,7 @@ import { tick } from "svelte";
 
 vi.mock("$lib/services/canisters.services", () => {
   return {
-    getIcpToCyclesExchangeRate: vi.fn().mockResolvedValue(BigInt(10_000)),
+    getIcpToCyclesExchangeRate: vi.fn().mockResolvedValue(10_000n),
     createCanister: vi
       .fn()
       .mockImplementation(() => Promise.resolve(mockCanister.canister_id)),

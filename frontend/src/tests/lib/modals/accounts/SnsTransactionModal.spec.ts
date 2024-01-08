@@ -19,7 +19,7 @@ describe("SnsTransactionModal", () => {
   const rootCanisterId = mockPrincipal;
   const token = { name: "Test", symbol: "TST", decimals: 8 };
   const transactionFee = TokenAmountV2.fromUlps({
-    amount: BigInt(10_000),
+    amount: 10_000n,
     token,
   });
   const renderTransactionModal = (selectedAccount?: Account) =>

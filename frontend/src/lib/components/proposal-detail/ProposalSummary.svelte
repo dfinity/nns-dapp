@@ -14,7 +14,7 @@
   {/if}
 
   {#if nonNullish(summary) && summary !== ""}
-    <div class="content-cell-island markdown-container">
+    <div class="content-cell-island__card markdown-container">
       <Markdown text={summary} />
     </div>
   {/if}
@@ -27,12 +27,8 @@
   .markdown {
     overflow-wrap: break-word;
 
-    // TODO(max): rename and move to gix-components
     .markdown-container {
       margin-top: var(--padding-2x);
-      // custom island styles
-      background: var(--card-background-disabled);
-      color: var(--description-color);
     }
 
     :global(.markdown-container > :last-child) {

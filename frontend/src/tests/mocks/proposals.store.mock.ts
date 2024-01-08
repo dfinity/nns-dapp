@@ -16,14 +16,14 @@ export const deadlineTimestampSeconds = BigInt(
 
 export const mockProposals: ProposalInfo[] = [
   {
-    id: BigInt(404),
+    id: 404n,
     proposal: {
       title: "Proposal1",
       summary:
         "Initialize datacenter records. For more info about this proposal, read the forum announcement: https://forum.dfinity.org/t/improvements-to-node-provider-remuneration/10553",
       action: {
         RegisterKnownNeuron: {
-          id: [{ id: BigInt(1) }],
+          id: [{ id: 1n }],
           known_neuron_data: [
             {
               name: "test",
@@ -42,11 +42,11 @@ export const mockProposals: ProposalInfo[] = [
         neuronId: mockNeuron.neuronId,
       } as Ballot,
     ],
-    proposer: BigInt(123456789),
+    proposer: 123_456_789n,
     deadlineTimestampSeconds,
   },
   {
-    id: BigInt(303),
+    id: 303n,
     proposal: {
       title: "Proposal2",
       summary:
@@ -61,7 +61,7 @@ export const mockProposals: ProposalInfo[] = [
         neuronId: mockNeuron.neuronId,
       } as Ballot,
     ],
-    proposer: BigInt(987654321),
+    proposer: 987_654_321n,
     deadlineTimestampSeconds,
   },
 ] as unknown as ProposalInfo[];

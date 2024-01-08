@@ -20,7 +20,7 @@ import AddCyclesModalTest from "./AddCyclesModalTest.svelte";
 
 vi.mock("$lib/services/canisters.services", () => {
   return {
-    getIcpToCyclesExchangeRate: vi.fn().mockResolvedValue(BigInt(100_000)),
+    getIcpToCyclesExchangeRate: vi.fn().mockResolvedValue(100_000n),
     topUpCanister: vi.fn().mockResolvedValue({ success: true }),
   };
 });

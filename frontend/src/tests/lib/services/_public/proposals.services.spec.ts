@@ -162,7 +162,7 @@ describe("proposals-services", () => {
 
       beforeEach(() => {
         spyQueryProposal.mockImplementation(() =>
-          Promise.resolve({ ...mockProposals[0], id: BigInt(666) })
+          Promise.resolve({ ...mockProposals[0], id: 666n })
         );
         proposalsStore.setProposals({
           proposals: mockProposals,
@@ -174,10 +174,10 @@ describe("proposals-services", () => {
         expect(spyQueryProposal).not.toBeCalled();
         let result;
         await loadProposal({
-          proposalId: BigInt(666),
+          proposalId: 666n,
           setProposal: (proposal: ProposalInfo) => (result = proposal),
         });
-        expect(result?.id).toBe(BigInt(666));
+        expect(result?.id).toBe(666n);
         expect(spyQueryProposal).toBeCalledTimes(2);
       });
     });
@@ -195,7 +195,7 @@ describe("proposals-services", () => {
         expect(toastsShow).not.toBeCalled();
 
         await loadProposal({
-          proposalId: BigInt(0),
+          proposalId: 0n,
           setProposal: vi.fn,
         });
         expect(toastsShow).toBeCalledTimes(1);
@@ -282,16 +282,16 @@ describe("proposals-services", () => {
       const spyQueryProposal = vi
         .spyOn(api, "queryProposal")
         .mockImplementation(() =>
-          Promise.resolve({ ...mockProposals[0], id: BigInt(666) })
+          Promise.resolve({ ...mockProposals[0], id: 666n })
         );
       expect(spyQueryProposal).not.toBeCalled();
 
       let result;
       await loadProposal({
-        proposalId: BigInt(666),
+        proposalId: 666n,
         setProposal: (proposal: ProposalInfo) => (result = proposal),
       });
-      expect(result?.id).toBe(BigInt(666));
+      expect(result?.id).toBe(666n);
       expect(spyQueryProposal).toBeCalledTimes(1);
     });
   });
@@ -341,19 +341,19 @@ describe("proposals-services", () => {
 
     it("should call queryProposalPayload", async () => {
       expect(spyQueryProposalPayload).not.toBeCalled();
-      await loadProposalPayload({ proposalId: BigInt(0) });
+      await loadProposalPayload({ proposalId: 0n });
       expect(spyQueryProposalPayload).toBeCalledTimes(1);
     });
 
     it("should update proposalPayloadsStore", async () => {
       const spyOnSetPayload = vi.spyOn(proposalPayloadsStore, "setPayload");
       expect(spyOnSetPayload).not.toBeCalled();
-      await loadProposalPayload({ proposalId: BigInt(0) });
+      await loadProposalPayload({ proposalId: 0n });
 
       expect(spyOnSetPayload).toBeCalledTimes(2);
       expect(spyOnSetPayload).toHaveBeenLastCalledWith({
         payload: { data: "test" },
-        proposalId: BigInt(0),
+        proposalId: 0n,
       });
     });
 
@@ -364,9 +364,9 @@ describe("proposals-services", () => {
         throw new ProposalPayloadNotFoundError();
       });
 
-      await loadProposalPayload({ proposalId: BigInt(0) });
+      await loadProposalPayload({ proposalId: 0n });
 
-      expect(get(proposalPayloadsStore).get(BigInt(0))).toBeNull();
+      expect(get(proposalPayloadsStore).get(0n)).toBeNull();
     });
 
     it("should update proposalPayloadsStore with null if the payload was not found", async () => {
@@ -376,9 +376,9 @@ describe("proposals-services", () => {
         throw new ProposalPayloadTooLargeError();
       });
 
-      await loadProposalPayload({ proposalId: BigInt(0) });
+      await loadProposalPayload({ proposalId: 0n });
 
-      expect(get(proposalPayloadsStore).get(BigInt(0))).toEqual({
+      expect(get(proposalPayloadsStore).get(0n)).toEqual({
         error: "Payload too large",
       });
     });

@@ -31,6 +31,10 @@ import {
 } from "$tests/mocks/sns-accounts.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { Cbor } from "@dfinity/agent";
+import type {
+  RetrieveBtcStatusV2,
+  RetrieveBtcStatusV2WithId,
+} from "@dfinity/ckbtc";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import {
   ICPToken,
@@ -53,29 +57,58 @@ describe("icrc-transaction utils", () => {
     from: mainAccount,
   });
   const recentTx = {
-    id: BigInt(1234),
+    id: 1_234n,
     transaction: {
       ...transactionFromMainToSubaccount.transaction,
-      timestamp: BigInt(3000),
+      timestamp: 3_000n,
     },
   };
   const secondTx = {
-    id: BigInt(1235),
+    id: 1_235n,
     transaction: {
       ...transactionFromMainToSubaccount.transaction,
-      timestamp: BigInt(2000),
+      timestamp: 2_000n,
     },
   };
   const oldestTx = {
-    id: BigInt(1236),
+    id: 1_236n,
     transaction: {
       ...transactionFromMainToSubaccount.transaction,
-      timestamp: BigInt(1000),
+      timestamp: 1_000n,
     },
   };
   const selfTransaction = createIcrcTransactionWithId({
     from: subAccount,
     to: subAccount,
+  });
+  const retrieveBtcStatusReimbursed = (amount): RetrieveBtcStatusV2 => ({
+    Reimbursed: {
+      account: {
+        owner: mockPrincipal,
+        subaccount: [],
+      },
+      mint_block_index: 1_256n,
+      amount,
+      reason: {
+        CallFailed: null,
+      },
+    },
+  });
+  const retrieveBtcStatusPending: RetrieveBtcStatusV2 = {
+    Pending: null,
+  };
+  const retrieveBtcStatusConfirmed: RetrieveBtcStatusV2 = {
+    Confirmed: {
+      txid: new Uint8Array([1, 2, 1, 1]),
+    },
+  };
+
+  beforeEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  beforeEach(() => {
+    vi.restoreAllMocks();
   });
 
   describe("getSortedTransactionsFromStore", () => {
@@ -86,7 +119,7 @@ describe("icrc-transaction utils", () => {
           [mockSnsMainAccount.identifier]: {
             transactions,
             completed: false,
-            oldestTxId: BigInt(1234),
+            oldestTxId: 1_234n,
           },
         },
       };
@@ -115,7 +148,7 @@ describe("icrc-transaction utils", () => {
           [mockSnsMainAccount.identifier]: {
             transactions: [selfTransaction],
             completed: false,
-            oldestTxId: BigInt(1234),
+            oldestTxId: 1_234n,
           },
         },
       };
@@ -272,7 +305,7 @@ describe("icrc-transaction utils", () => {
       const data = mapTransaction({
         ...defaultParams,
         transaction: {
-          id: BigInt(1234),
+          id: 1_234n,
           transaction: createApproveTransaction({
             timestamp:
               BigInt(defaultTimestamp.getTime()) *
@@ -335,7 +368,7 @@ describe("icrc-transaction utils", () => {
       const amount = 35_000_000n;
       const data = mapIcrcTransaction({
         transaction: {
-          id: BigInt(1234),
+          id: 1_234n,
           transaction: createBurnTransaction({
             from: mainAccount,
             amount,
@@ -373,7 +406,7 @@ describe("icrc-transaction utils", () => {
 
       const data = mapCkbtcTransaction({
         transaction: {
-          id: BigInt(1234),
+          id: 1_234n,
           transaction: createBurnTransaction({
             amount,
             from: mainAccount,
@@ -411,7 +444,7 @@ describe("icrc-transaction utils", () => {
 
       const data = mapCkbtcTransaction({
         transaction: {
-          id: BigInt(1234),
+          id: 1_234n,
           transaction: createBurnTransaction({
             amount,
             from: mainAccount,
@@ -445,7 +478,7 @@ describe("icrc-transaction utils", () => {
 
       const data = mapCkbtcTransaction({
         transaction: {
-          id: BigInt(1234),
+          id: 1_234n,
           transaction: createMintTransaction({
             amount,
             to: mainAccount,
@@ -478,7 +511,7 @@ describe("icrc-transaction utils", () => {
 
       const data = mapCkbtcTransaction({
         transaction: {
-          id: BigInt(1234),
+          id: 1_234n,
           transaction: createMintTransaction({
             amount,
             to: mainAccount,
@@ -505,13 +538,124 @@ describe("icrc-transaction utils", () => {
       });
     });
 
+    it("Renders a pending burn transaction as pending", () => {
+      const amount = 76_000_000n;
+      const btcWithdrawalAddress = "1ASLxsAMbbt4gcrNc6v6qDBW4JkeWAtTeh";
+      const kytFee = 1333;
+      const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
+      const memo = new Uint8Array(Cbor.encode(decodedMemo));
+
+      const data = mapCkbtcTransaction({
+        transaction: {
+          id: 1_234n,
+          transaction: createBurnTransaction({
+            amount,
+            from: mainAccount,
+            memo,
+          }),
+        },
+        account: mockCkBTCMainAccount,
+        toSelfTransaction: false,
+        token: mockCkBTCToken,
+        i18n: en,
+        retrieveBtcStatus: retrieveBtcStatusPending,
+      });
+      expect(data).toEqual({
+        domKey: "1234-1",
+        headline: "Sending BTC",
+        isIncoming: false,
+        isPending: true,
+        otherParty: btcWithdrawalAddress,
+        timestamp: new Date(0),
+        tokenAmount: TokenAmountV2.fromUlps({
+          amount,
+          token: mockCkBTCToken,
+        }),
+      });
+    });
+
+    it("Renders a confirmed burn transaction as sent", () => {
+      const amount = 76_000_000n;
+      const btcWithdrawalAddress = "1ASLxsAMbbt4gcrNc6v6qDBW4JkeWAtTeh";
+      const kytFee = 1333;
+      const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
+      const memo = new Uint8Array(Cbor.encode(decodedMemo));
+
+      const data = mapCkbtcTransaction({
+        transaction: {
+          id: 1_234n,
+          transaction: createBurnTransaction({
+            amount,
+            from: mainAccount,
+            memo,
+          }),
+        },
+        account: mockCkBTCMainAccount,
+        toSelfTransaction: false,
+        token: mockCkBTCToken,
+        i18n: en,
+        retrieveBtcStatus: retrieveBtcStatusConfirmed,
+      });
+      expect(data).toEqual({
+        domKey: "1234-1",
+        headline: "BTC Sent",
+        isIncoming: false,
+        isPending: false,
+        otherParty: btcWithdrawalAddress,
+        timestamp: new Date(0),
+        tokenAmount: TokenAmountV2.fromUlps({
+          amount,
+          token: mockCkBTCToken,
+        }),
+      });
+    });
+
+    it("Renders a reimbursed burn transaction as failed", () => {
+      const amount = 75_000_000n;
+      const btcWithdrawalAddress = "1ASLxsAMbbt4gcrNc6v6qDBW4JkeWAtTeh";
+      const kytFee = 1333;
+      const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
+      const memo = new Uint8Array(Cbor.encode(decodedMemo));
+
+      const retrieveBtcStatus = retrieveBtcStatusReimbursed(amount);
+
+      const data = mapCkbtcTransaction({
+        transaction: {
+          id: 1_234n,
+          transaction: createBurnTransaction({
+            amount,
+            from: mainAccount,
+            memo,
+          }),
+        },
+        account: mockCkBTCMainAccount,
+        toSelfTransaction: false,
+        token: mockCkBTCToken,
+        i18n: en,
+        retrieveBtcStatus,
+      });
+      expect(data).toEqual({
+        domKey: "1234-1",
+        headline: "Sending BTC failed",
+        isIncoming: false,
+        isPending: false,
+        isFailed: true,
+        otherParty: btcWithdrawalAddress,
+        timestamp: new Date(0),
+        tokenAmount: TokenAmountV2.fromUlps({
+          amount,
+          token: mockCkBTCToken,
+        }),
+      });
+    });
+
     it("Renders a legacy mint memo as standard incoming BTC", () => {
       const amount = 41_000_000n;
       const txIdMemo = new Uint8Array(32).fill(99);
 
       const data = mapCkbtcTransaction({
         transaction: {
-          id: BigInt(1234),
+          id: 1_234n,
           transaction: createMintTransaction({
             amount,
             to: mainAccount,
@@ -566,6 +710,7 @@ describe("icrc-transaction utils", () => {
         account: mockCkBTCMainAccount,
         token: mockCkBTCToken,
         i18n: en,
+        retrieveBtcStatuses: [],
       });
 
       expect(uiTransactions).toEqual([
@@ -577,7 +722,7 @@ describe("icrc-transaction utils", () => {
           otherParty: mockSnsSubAccount.identifier,
           timestamp: new Date(0),
           tokenAmount: TokenAmountV2.fromUlps({
-            amount: 200010000n,
+            amount: 200_010_000n,
             token: mockCkBTCToken,
           }),
         },
@@ -589,7 +734,7 @@ describe("icrc-transaction utils", () => {
           otherParty: mockSnsSubAccount.identifier,
           timestamp: new Date(0),
           tokenAmount: TokenAmountV2.fromUlps({
-            amount: 300000000n,
+            amount: 300_000_000n,
             token: mockCkBTCToken,
           }),
         },
@@ -597,6 +742,11 @@ describe("icrc-transaction utils", () => {
     });
 
     it("Merges Approve transaction with corresponding Burn transaction", () => {
+      const btcWithdrawalAddress = "1ASLxsAMbbt4gcrNc6v6qDBW4JkeWAtTeh";
+      const kytFee = 1333;
+      const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
+      const memo = new Uint8Array(Cbor.encode(decodedMemo));
+
       const burnAmount = 200_000_000n;
       const approveFee = 13n;
 
@@ -614,6 +764,7 @@ describe("icrc-transaction utils", () => {
           id: 102n,
           transaction: createBurnTransaction({
             amount: burnAmount,
+            memo,
           }),
         },
         toSelfTransaction: false,
@@ -624,6 +775,7 @@ describe("icrc-transaction utils", () => {
         account: mockCkBTCMainAccount,
         token: mockCkBTCToken,
         i18n: en,
+        retrieveBtcStatuses: [],
       });
 
       // The approve transaction was merged into the burn transaction so is not
@@ -670,11 +822,122 @@ describe("icrc-transaction utils", () => {
         account: mockCkBTCMainAccount,
         token: mockCkBTCToken,
         i18n: en,
+        retrieveBtcStatuses: [],
       });
 
       expect(uiTransactions.length).toEqual(2);
       expect(uiTransactions[0].headline).toBe("Sent");
       expect(uiTransactions[1].headline).toBe("Approve transfer");
+    });
+
+    it("takes BTC retrieve status into account", () => {
+      const btcWithdrawalAddress = "1ASLxsAMbbt4gcrNc6v6qDBW4JkeWAtTeh";
+      const kytFee = 1333;
+      const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
+      const memo = new Uint8Array(Cbor.encode(decodedMemo));
+
+      const failedTxId = 131n;
+      const failedAmount = 170_000_000n;
+      const pendingTxId = 137n;
+      const pendingAmount = 180_000_000n;
+      const confirmedTxId = 139n;
+      const confirmedAmount = 190_000_000n;
+
+      const failedTx: IcrcTransactionData = {
+        transaction: {
+          id: failedTxId,
+          transaction: createBurnTransaction({
+            from: mainAccount,
+            amount: failedAmount,
+            memo,
+          }),
+        },
+        toSelfTransaction: false,
+      };
+      const pendingTx: IcrcTransactionData = {
+        transaction: {
+          id: pendingTxId,
+          transaction: createBurnTransaction({
+            from: mainAccount,
+            amount: pendingAmount,
+            memo,
+          }),
+        },
+        toSelfTransaction: false,
+      };
+      const confirmedTx: IcrcTransactionData = {
+        transaction: {
+          id: confirmedTxId,
+          transaction: createBurnTransaction({
+            from: mainAccount,
+            amount: confirmedAmount,
+            memo,
+          }),
+        },
+        toSelfTransaction: false,
+      };
+      const statuses: RetrieveBtcStatusV2WithId[] = [
+        {
+          id: failedTxId,
+          status: retrieveBtcStatusReimbursed(failedAmount),
+        },
+        {
+          id: pendingTxId,
+          status: retrieveBtcStatusPending,
+        },
+        {
+          id: confirmedTxId,
+          status: retrieveBtcStatusConfirmed,
+        },
+      ];
+
+      const uiTransactions = mapCkbtcTransactions({
+        transactionData: [confirmedTx, pendingTx, failedTx],
+        account: mockCkBTCMainAccount,
+        token: mockCkBTCToken,
+        i18n: en,
+        retrieveBtcStatuses: statuses,
+      });
+
+      expect(uiTransactions).toEqual([
+        {
+          domKey: `${confirmedTxId}-1`,
+          headline: "BTC Sent",
+          isIncoming: false,
+          isPending: false,
+          otherParty: btcWithdrawalAddress,
+          timestamp: new Date(0),
+          tokenAmount: TokenAmountV2.fromUlps({
+            amount: confirmedAmount,
+            token: mockCkBTCToken,
+          }),
+        },
+        {
+          domKey: `${pendingTxId}-1`,
+          headline: "Sending BTC",
+          isIncoming: false,
+          isPending: true,
+          otherParty: btcWithdrawalAddress,
+          timestamp: new Date(0),
+          tokenAmount: TokenAmountV2.fromUlps({
+            amount: pendingAmount,
+            token: mockCkBTCToken,
+          }),
+        },
+        {
+          domKey: `${failedTxId}-1`,
+          headline: "Sending BTC failed",
+          isIncoming: false,
+          isPending: false,
+          isFailed: true,
+          otherParty: btcWithdrawalAddress,
+          timestamp: new Date(0),
+          tokenAmount: TokenAmountV2.fromUlps({
+            amount: failedAmount,
+            token: mockCkBTCToken,
+          }),
+        },
+      ]);
     });
   });
 
@@ -712,24 +975,24 @@ describe("icrc-transaction utils", () => {
 
   describe("getOldestTransactionId", () => {
     const recentTx = {
-      id: BigInt(1234),
+      id: 1_234n,
       transaction: {
         ...transactionFromMainToSubaccount.transaction,
-        timestamp: BigInt(3000),
+        timestamp: 3_000n,
       },
     };
     const secondTx = {
-      id: BigInt(1235),
+      id: 1_235n,
       transaction: {
         ...transactionFromMainToSubaccount.transaction,
-        timestamp: BigInt(2000),
+        timestamp: 2_000n,
       },
     };
     const oldestTx = {
-      id: BigInt(1236),
+      id: 1_236n,
       transaction: {
         ...transactionFromMainToSubaccount.transaction,
-        timestamp: BigInt(1000),
+        timestamp: 1_000n,
       },
     };
 
@@ -741,7 +1004,7 @@ describe("icrc-transaction utils", () => {
           [mockSnsMainAccount.identifier]: {
             transactions,
             completed: false,
-            oldestTxId: BigInt(1234),
+            oldestTxId: 1_234n,
           },
         },
       };
@@ -772,7 +1035,7 @@ describe("icrc-transaction utils", () => {
           [mockSnsMainAccount.identifier]: {
             transactions,
             completed: false,
-            oldestTxId: BigInt(1234),
+            oldestTxId: 1_234n,
           },
         },
       };
@@ -794,12 +1057,12 @@ describe("icrc-transaction utils", () => {
           [mockSnsMainAccount.identifier]: {
             transactions: [transactionFromMainToSubaccount],
             completed: false,
-            oldestTxId: BigInt(1234),
+            oldestTxId: 1_234n,
           },
           [mockSnsSubAccount.identifier]: {
             transactions: [transactionFromMainToSubaccount],
             completed: true,
-            oldestTxId: BigInt(1234),
+            oldestTxId: 1_234n,
           },
         },
       };

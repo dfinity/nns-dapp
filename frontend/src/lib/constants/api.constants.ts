@@ -1,11 +1,11 @@
 export const DFINITY_NEURON = {
-  id: BigInt(27),
+  id: 27n,
   name: "DFINITY Foundation",
   description: undefined,
 };
 
 export const IC_NEURON = {
-  id: BigInt(28),
+  id: 28n,
   name: "Internet Computer Association",
   description: undefined,
 };

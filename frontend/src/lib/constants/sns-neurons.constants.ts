@@ -13,6 +13,6 @@ export const MANAGE_HOTKEY_PERMISSIONS = [
   SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_MANAGE_PRINCIPALS,
 ];
 
-export const UNSPECIFIED_FUNCTION_ID = BigInt(0);
+export const UNSPECIFIED_FUNCTION_ID = 0n;
 
 export const SNS_NEURON_ID_DISPLAY_LENGTH = 14;

@@ -46,7 +46,7 @@ jobs:
           add-paths: rs/proposals/src/canisters/*/api.rs
           delete-branch: true
           title: 'Update proposal rendering'
-          # Note: It is _likely_ but not guaranteed that the .did files match the IC_COMMIT in dfx.json.  The files in the PR have a header that give this information reliably.
+          # Note: It is _likely_ but not guaranteed that the .did files match the `IC_COMMIT` in `dfx.json`.  The files in the PR have a header that give this information reliably.
           #       We do _not_ put a commit in the PR title as it could be misleading.
           body: |
             # Motivation

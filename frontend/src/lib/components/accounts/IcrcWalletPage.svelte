@@ -4,7 +4,10 @@
   import type { Writable } from "svelte/store";
   import type { WalletStore } from "$lib/types/wallet.context";
   import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
-  import { findAccount, hasAccounts } from "$lib/utils/accounts.utils";
+  import {
+    findAccountOrDefaultToMain,
+    hasAccounts,
+  } from "$lib/utils/accounts.utils";
   import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
   import { syncAccounts as syncWalletAccounts } from "$lib/services/wallet-accounts.services";
@@ -12,7 +15,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import { buildAccountsUrl } from "$lib/utils/navigation.utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import IcrcBalancesObserver from "$lib/components/accounts/IcrcBalancesObserver.svelte";
@@ -31,7 +34,12 @@
 
   const reloadOnlyAccountFromStore = () => setSelectedAccount();
 
-  const goBack = (): Promise<void> => goto(AppPath.Accounts);
+  const goBack = async (): Promise<void> =>
+    goto(
+      buildAccountsUrl({
+        universe: $selectedUniverseStore.canisterId,
+      })
+    );
 
   // e.g. is called from "Receive" modal after user click "Done"
   export const reloadAccount = async () => {
@@ -48,13 +56,15 @@
   };
 
   export const setSelectedAccount = () => {
+    const accounts = nonNullish(selectedUniverseId)
+      ? $icrcAccountsStore[selectedUniverseId.toText()]?.accounts ?? []
+      : [];
+    const account = findAccountOrDefaultToMain({
+      identifier: accountIdentifier,
+      accounts,
+    });
     selectedAccountStore.set({
-      account: findAccount({
-        identifier: accountIdentifier,
-        accounts: nonNullish(selectedUniverseId)
-          ? $icrcAccountsStore[selectedUniverseId.toText()]?.accounts ?? []
-          : [],
-      }),
+      account,
       neurons: [],
     });
   };

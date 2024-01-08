@@ -15,7 +15,7 @@ import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
 vi.mock("$lib/services/neurons.services", () => {
   return {
-    removeHotkey: vi.fn().mockResolvedValue(BigInt(10)),
+    removeHotkey: vi.fn().mockResolvedValue(10n),
     getNeuronFromStore: vi.fn(),
   };
 });

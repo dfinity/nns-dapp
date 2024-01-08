@@ -22,7 +22,7 @@ vi.mock("$lib/api/governance.api");
 describe("NeuronDetail", () => {
   fakeGovernanceApi.install();
 
-  const neuronId = BigInt(314);
+  const neuronId = 314n;
   const latestRewardEventTimestamp = Math.floor(
     new Date("1992-05-22T21:00:00").getTime() / 1000
   );

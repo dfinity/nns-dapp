@@ -119,7 +119,7 @@ describe("sns-api", () => {
     derived: [
       {
         sns_tokens_per_icp: 1,
-        buyer_total_icp_e8s: BigInt(1_000_000_000),
+        buyer_total_icp_e8s: 1_000_000_000n,
       },
     ],
   };
@@ -917,7 +917,7 @@ describe("sns-api", () => {
       const account = {
         ...mockMainAccount,
         balance: TokenAmount.fromE8s({
-          amount: BigInt(1_000_000_000_000),
+          amount: 1_000_000_000_000n,
           token: ICPToken,
         }),
       };
@@ -939,7 +939,7 @@ describe("sns-api", () => {
       expect(spyOnNewSaleTicketApi).toBeCalledTimes(1);
       expect(spyOnNewSaleTicketApi).toBeCalledWith(
         expect.objectContaining({
-          amount_icp_e8s: 100000000n,
+          amount_icp_e8s: 100_000_000n,
         })
       );
       expect(spyOnSendICP).toBeCalledTimes(1);
@@ -967,7 +967,7 @@ describe("sns-api", () => {
       const account = {
         ...mockMainAccount,
         balance: TokenAmount.fromE8s({
-          amount: BigInt(1_000_000_000_000),
+          amount: 1_000_000_000_000n,
           token: ICPToken,
         }),
       };

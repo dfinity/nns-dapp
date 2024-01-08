@@ -8,8 +8,8 @@ import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
 import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import {
   createUniverse,
+  isAllTokensPath,
   isIcrcTokenUniverse,
-  isNonGovernanceTokenPath,
   isUniverseCkBTC,
   isUniverseNns,
   universeLogoAlt,
@@ -26,17 +26,17 @@ import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 
 describe("universes-utils", () => {
-  describe("isNonGovernanceTokenPath", () => {
+  describe("isAllTokensPath", () => {
     it("should support ICRC token", () => {
       expect(
-        isNonGovernanceTokenPath({
+        isAllTokensPath({
           universe: "not used here",
           path: AppPath.Accounts,
         })
       ).toBeTruthy();
 
       expect(
-        isNonGovernanceTokenPath({
+        isAllTokensPath({
           universe: "not used here",
           path: AppPath.Wallet,
         })
@@ -45,14 +45,14 @@ describe("universes-utils", () => {
 
     it("should not support ICRC Token", () => {
       expect(
-        isNonGovernanceTokenPath({
+        isAllTokensPath({
           universe: "not used here",
           path: AppPath.Neurons,
         })
       ).toBe(false);
 
       expect(
-        isNonGovernanceTokenPath({
+        isAllTokensPath({
           universe: "not used here",
           path: AppPath.Proposal,
         })

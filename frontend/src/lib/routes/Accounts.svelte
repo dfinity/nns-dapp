@@ -34,6 +34,7 @@
   import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
   import IcrcTokenAccountsFooter from "$lib/components/accounts/IcrcTokenAccountsFooter.svelte";
   import IcrcTokenAccountsModals from "$lib/modals/accounts/IcrcTokenAccountsModals.svelte";
+  import { ENABLE_MY_TOKENS } from "$lib/stores/feature-flags.store";
 
   // TODO: This component is mounted twice. Understand why and fix it.
 
@@ -117,7 +118,8 @@
 </script>
 
 <TestIdWrapper testId="accounts-component">
-  <main>
+  <!-- TODO: Remove the `main` element and the rest of unused elements when removing flag ENABLE_MY_TOKENS -->
+  <main class:noPadding={$ENABLE_MY_TOKENS}>
     <SummaryUniverse />
 
     {#if $isNnsUniverseStore}
@@ -154,5 +156,9 @@
 <style lang="scss">
   main {
     padding-bottom: var(--footer-height);
+
+    &.noPadding {
+      padding: 0;
+    }
   }
 </style>

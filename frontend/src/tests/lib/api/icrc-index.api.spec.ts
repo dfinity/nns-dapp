@@ -8,7 +8,7 @@ describe("icrc-index api", () => {
     account: {
       owner: mockPrincipal,
     },
-    maxResults: BigInt(10),
+    maxResults: 10n,
   };
 
   const transaction = {
@@ -17,7 +17,7 @@ describe("icrc-index api", () => {
 
   describe("getTransactions", () => {
     it("returns list of transaction", async () => {
-      const transactions = [{ transaction, id: BigInt(1) }];
+      const transactions = [{ transaction, id: 1n }];
 
       const getTransactionsSpy = vi.fn().mockResolvedValue({
         transactions,

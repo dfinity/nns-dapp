@@ -12,7 +12,7 @@ import { fireEvent } from "@testing-library/svelte";
 
 vi.mock("$lib/services/neurons.services", () => {
   return {
-    spawnNeuron: vi.fn().mockResolvedValue(BigInt(10)),
+    spawnNeuron: vi.fn().mockResolvedValue(10n),
     getNeuronFromStore: vi.fn(),
   };
 });
@@ -22,7 +22,7 @@ describe("SpawnNeuronModal", () => {
     ...mockNeuron,
     fullNeuron: {
       ...mockFullNeuron,
-      maturityE8sEquivalent: BigInt(10_000_000),
+      maturityE8sEquivalent: 10_000_000n,
     },
   };
 
@@ -67,7 +67,7 @@ describe("SpawnNeuronModal", () => {
           ...neuron,
           fullNeuron: {
             ...neuron.fullNeuron,
-            maturityE8sEquivalent: BigInt(1_000_000),
+            maturityE8sEquivalent: 1_000_000n,
           },
         },
       },

@@ -19,7 +19,7 @@
 
   let disabled: boolean;
   $: disabled = !isEnoughToStakeNeuron({
-    stakeE8s: neuron.fullNeuron?.maturityE8sEquivalent ?? BigInt(0),
+    stakeE8s: neuron.fullNeuron?.maturityE8sEquivalent ?? 0n,
   });
 
   const dispatcher = createEventDispatcher();

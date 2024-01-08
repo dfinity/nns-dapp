@@ -453,8 +453,7 @@ const anonymizeBuyer = async ([buyer, state]: [
     icp: [
       {
         ...state.icp[0],
-        amount_e8s:
-          (await anonymizeAmount(state.icp[0]?.amount_e8s)) ?? BigInt(0),
+        amount_e8s: (await anonymizeAmount(state.icp[0]?.amount_e8s)) ?? 0n,
       } as SnsTransferableAmount,
     ],
     has_created_neuron_recipes: state.has_created_neuron_recipes,

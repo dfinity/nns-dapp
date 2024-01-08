@@ -115,9 +115,9 @@ describe("secondsToDissolveDelayDuration", () => {
   });
 
   it("should display 2 years, 9 months, 11 days", () => {
-    expect(secondsToDissolveDelayDuration(BigInt(87654321))).toContain("2");
-    expect(secondsToDissolveDelayDuration(BigInt(87654321))).toContain("9");
-    expect(secondsToDissolveDelayDuration(BigInt(87654321))).toContain("11");
+    expect(secondsToDissolveDelayDuration(87_654_321n)).toContain("2");
+    expect(secondsToDissolveDelayDuration(87_654_321n)).toContain("9");
+    expect(secondsToDissolveDelayDuration(87_654_321n)).toContain("11");
   });
 });
 
@@ -138,7 +138,7 @@ describe("secondsToDate", () => {
 
 describe("secondsToDateTime", () => {
   it("should return formatted start date and time in 1970", () => {
-    expect(normalizeWhitespace(secondsToDateTime(BigInt(0)))).toEqual(
+    expect(normalizeWhitespace(secondsToDateTime(0n))).toEqual(
       "Jan 1, 1970 12:00 AM"
     );
   });
@@ -155,7 +155,7 @@ describe("secondsToDateTime", () => {
 
 describe("nanoSecondsToDateTime", () => {
   it("should return formatted start date and time in 1970", () => {
-    expect(normalizeWhitespace(nanoSecondsToDateTime(BigInt(0)))).toEqual(
+    expect(normalizeWhitespace(nanoSecondsToDateTime(0n))).toEqual(
       "Jan 1, 1970 12:00 AM"
     );
   });

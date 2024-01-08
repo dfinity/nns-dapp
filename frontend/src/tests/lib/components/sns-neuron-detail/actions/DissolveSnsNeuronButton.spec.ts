@@ -96,7 +96,7 @@ describe("DissolveSnsNeuronButton", () => {
     const { container, queryByTestId } = render(DissolveSnsNeuronButtonTest, {
       props: {
         neuron: createMockSnsNeuron({
-          stake: BigInt(10_000_000_000),
+          stake: 10_000_000_000n,
           id: [1, 2, 2, 9, 9, 3, 2],
           state: NeuronState.Dissolving,
         }),

@@ -67,7 +67,7 @@
         framed
       />
       <div class="title-wrapper">
-        <span data-tid="project-name">{userTokenData.title}</span>
+        <h5 data-tid="project-name">{userTokenData.title}</h5>
         {#if nonNullish(userTokenData.subtitle)}
           <span data-tid="project-subtitle" class="description"
             >{userTokenData.subtitle}</span
@@ -118,6 +118,10 @@
   @use "@dfinity/gix-components/dist/styles/mixins/interaction";
   @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "../../../themes/mixins/grid-table";
+
+  h5 {
+    margin: 0;
+  }
 
   [role="row"] {
     @include interaction.tappable;
