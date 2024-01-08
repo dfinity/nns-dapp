@@ -1377,6 +1377,7 @@ interface I18n {
   auth_canisters: I18nAuth_canisters;
   auth_sns: I18nAuth_sns;
   universe: I18nUniverse;
+  sns_types: I18nSns_types;
   sns_rewards_status: I18nSns_rewards_status;
   sns_rewards_description: I18nSns_rewards_description;
   sns_status: I18nSns_status;
