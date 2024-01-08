@@ -6,7 +6,7 @@ import { WalletPageHeadingPo } from "$tests/page-objects/WalletPageHeading.page-
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { Principal } from "@dfinity/principal";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
-import { render, waitFor } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("WalletPageHeading", () => {
@@ -106,9 +106,7 @@ describe("WalletPageHeading", () => {
     dispatchIntersecting({ element, intersecting });
 
     const title = get(layoutTitleStore);
-    await waitFor(() =>
-      expect(title).toEqual({ title: en.wallet.title, header: expectedHeader })
-    );
+    expect(title).toEqual({ title: en.wallet.title, header: expectedHeader });
   };
 
   it("should render account name and balance if title not intersecting viewport", async () => {
@@ -125,6 +123,15 @@ describe("WalletPageHeading", () => {
       intersecting: true,
       expectedHeader: en.wallet.title,
       balance,
+      accountName,
+    });
+  });
+
+  it("should render a static title if title is not intersecting viewport but balance is undefined", async () => {
+    await testTitle({
+      intersecting: true,
+      expectedHeader: en.wallet.title,
+      balance: undefined,
       accountName,
     });
   });

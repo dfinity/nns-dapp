@@ -1,4 +1,4 @@
-//! Rust code created from candid by: scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug
+//! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
 //! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-12-13_23-01/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]

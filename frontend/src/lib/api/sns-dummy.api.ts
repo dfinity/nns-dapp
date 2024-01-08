@@ -46,7 +46,7 @@ const nsFunctionProposal1 = {
   action: [
     {
       AddGenericNervousSystemFunction: {
-        id: BigInt(1002),
+        id: 1_002n,
         name: "Dummy System Function",
         description: ["This is a dummy system function."],
         function_type: [
@@ -75,7 +75,7 @@ const nsFunctionProposal2 = {
   action: [
     {
       AddGenericNervousSystemFunction: {
-        id: BigInt(1003),
+        id: 1_003n,
         name: "Dummy System Function 2",
         description: ["This is the second dummy system function."],
         function_type: [
@@ -106,7 +106,7 @@ const executeNSFunctionProposal = {
   action: [
     {
       ExecuteGenericNervousSystemFunction: {
-        function_id: BigInt(1002),
+        function_id: 1_002n,
         payload: new Uint8Array(),
       },
     },
@@ -121,7 +121,7 @@ const executeNSFunctionProposal = {
 //     "# Summary\nThis is a dummy proposal to remove a *nervous system function*.",
 //   action: [
 //     {
-//       RemoveGenericNervousSystemFunction: BigInt(1002),
+//       RemoveGenericNervousSystemFunction: 1_002n,
 //     },
 //   ] as [SnsAction],
 // };
@@ -163,8 +163,8 @@ const transferFundsProposal = {
         from_treasury: 1,
         to_principal: [Principal.fromText("pin7y-wyaaa-aaaaa-aacpa-cai")],
         to_subaccount: [],
-        memo: [BigInt(33333)],
-        amount_e8s: BigInt(100_000_000_000),
+        memo: [33_333n],
+        amount_e8s: 100_000_000_000n,
       },
     },
   ] as [SnsAction],

@@ -20,7 +20,7 @@ describe("snsTotalSupplyTokenAmountStore", () => {
       ({ rootCanisterId }) => rootCanisterId
     );
     setSnsProjects(projectsParams);
-    const totalSupplyBase = BigInt(10_000_000_000);
+    const totalSupplyBase = 10_000_000_000n;
     const totalSupplies = rootCanisterIds.map((rootCanisterId, index) => ({
       rootCanisterId,
       totalSupply: totalSupplyBase * BigInt(index + 1),

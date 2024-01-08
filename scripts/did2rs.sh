@@ -63,7 +63,7 @@ cd "$GIT_ROOT"
 ##########################
 {
   # The first line should be a comment declaring how the rust file was created.
-  echo "//! Rust code created from candid by: $STRIPPED_COMMAND"
+  echo "//! Rust code created from candid by: \`$STRIPPED_COMMAND\`"
 
   # We preserve lines starting `//!` at the head of the .did file.
   # These are used to provide information about provenance.

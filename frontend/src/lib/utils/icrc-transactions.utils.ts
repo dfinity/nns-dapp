@@ -11,7 +11,11 @@ import { AccountTransactionType } from "$lib/types/transaction";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { transactionName } from "$lib/utils/transactions.utils";
 import { Cbor } from "@dfinity/agent";
-import type { PendingUtxo } from "@dfinity/ckbtc";
+import type {
+  PendingUtxo,
+  RetrieveBtcStatusV2,
+  RetrieveBtcStatusV2WithId,
+} from "@dfinity/ckbtc";
 import type {
   IcrcTransaction,
   IcrcTransactionWithId,
@@ -196,8 +200,7 @@ export const mapIcrcTransaction = ({
     const isReceive =
       toSelfTransaction === true || txInfo.from !== account.identifier;
     const useFee = !isReceive;
-    const feeApplied =
-      useFee && txInfo.fee !== undefined ? txInfo.fee : BigInt(0);
+    const feeApplied = useFee && txInfo.fee !== undefined ? txInfo.fee : 0n;
 
     const headline = transactionName({
       type,
@@ -270,6 +273,7 @@ export const mapCkbtcTransaction = (params: {
   governanceCanisterId?: Principal;
   token: Token | undefined;
   i18n: I18n;
+  retrieveBtcStatus?: RetrieveBtcStatusV2;
 }): UiTransaction | undefined => {
   const mappedTransaction = mapIcrcTransaction(params);
   if (isNullish(mappedTransaction)) {
@@ -290,6 +294,25 @@ export const mapCkbtcTransaction = (params: {
     }
   } else if (transaction.burn.length === 1) {
     mappedTransaction.headline = i18n.ckbtc.btc_sent;
+    const status = params.retrieveBtcStatus;
+    if (status) {
+      if ("Reimbursed" in status || "AmmountTooLow" in status) {
+        mappedTransaction.headline = i18n.ckbtc.sending_btc_failed;
+        mappedTransaction.isFailed = true;
+      } else if (
+        "Pending" in status ||
+        "Signing" in status ||
+        "Sending" in status ||
+        "Submitted" in status ||
+        "WillReimburse" in status
+      ) {
+        mappedTransaction.headline = i18n.ckbtc.sending_btc;
+        mappedTransaction.isPending = true;
+      } else if (!("Confirmed" in status)) {
+        console.error("Unknown retrieveBtcStatusV2:", status);
+        // Leave the transaction as "Sent".
+      }
+    }
     const memo = transaction.burn[0].memo[0] as Uint8Array;
     try {
       const decodedMemo = Cbor.decode(memo) as CkbtcBurnMemo;
@@ -312,14 +335,22 @@ export const mapCkbtcTransactions = ({
   account,
   token,
   i18n,
+  retrieveBtcStatuses,
 }: {
   transactionData: IcrcTransactionData[];
   account: Account;
   token: Token | undefined;
   i18n: I18n;
+  retrieveBtcStatuses: RetrieveBtcStatusV2WithId[];
 }): UiTransaction[] => {
   let prevTransaction: IcrcTransactionWithId | undefined = undefined;
   let prevUiTransaction: UiTransaction | undefined = undefined;
+  const statusById = new Map<bigint, RetrieveBtcStatusV2>();
+  for (const { id, status } of retrieveBtcStatuses) {
+    if (status) {
+      statusById.set(id, status);
+    }
+  }
   return transactionData
     .map(({ transaction, toSelfTransaction }: IcrcTransactionData) => {
       if (
@@ -343,6 +374,7 @@ export const mapCkbtcTransactions = ({
         account,
         token,
         i18n,
+        retrieveBtcStatus: statusById.get(transaction.id),
       });
       prevTransaction = transaction;
       prevUiTransaction = uiTransaction;

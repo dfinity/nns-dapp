@@ -73,7 +73,7 @@
       description={$i18n.proposal_detail.created_description}
     />
 
-    {#if decided_timestamp_seconds > BigInt(0)}
+    {#if decided_timestamp_seconds > 0n}
       <ProposalSystemInfoEntry
         labelKey="decided_prefix"
         testId="proposal-system-info-decided"
@@ -82,7 +82,7 @@
       />
     {/if}
 
-    {#if executed_timestamp_seconds > BigInt(0)}
+    {#if executed_timestamp_seconds > 0n}
       <ProposalSystemInfoEntry
         labelKey="executed_prefix"
         testId="proposal-system-info-executed"
@@ -91,7 +91,7 @@
       />
     {/if}
 
-    {#if failed_timestamp_seconds > BigInt(0)}
+    {#if failed_timestamp_seconds > 0n}
       <ProposalSystemInfoEntry
         labelKey="failed_prefix"
         testId="proposal-system-info-failed"

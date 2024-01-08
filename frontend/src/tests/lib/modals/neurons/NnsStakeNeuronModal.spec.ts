@@ -42,8 +42,8 @@ const neuronStake = 2.2;
 const neuronStakeE8s = 220_000_000n;
 const newNeuron: NeuronInfo = {
   ...mockNeuron,
-  dissolveDelaySeconds: BigInt(0),
-  ageSeconds: BigInt(0),
+  dissolveDelaySeconds: 0n,
+  ageSeconds: 0n,
   fullNeuron: {
     ...mockFullNeuron,
     cachedNeuronStake: neuronStakeE8s,
@@ -86,7 +86,7 @@ describe("NnsStakeNeuronModal", () => {
 
   describe("main account selection", () => {
     let queryBalanceSpy: SpyInstance;
-    const newBalanceE8s = BigInt(10_000_000);
+    const newBalanceE8s = 10_000_000n;
     beforeEach(() => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
       icpAccountsStore.setForTesting({
@@ -532,7 +532,7 @@ describe("NnsStakeNeuronModal", () => {
     beforeEach(() => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
       icpAccountsStore.resetForTesting();
-      const mainBalanceE8s = BigInt(10_000_000);
+      const mainBalanceE8s = 10_000_000n;
       vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
         mainBalanceE8s
       );
@@ -560,7 +560,7 @@ describe("NnsStakeNeuronModal", () => {
       vi.clearAllTimers();
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);
-      const mainBalanceE8s = BigInt(10_000_000);
+      const mainBalanceE8s = 10_000_000n;
       vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
         mainBalanceE8s
       );

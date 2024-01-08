@@ -110,7 +110,7 @@ vi.mock("$lib/proxy/icp-ledger.services.proxy", () => {
 describe("neurons-services", () => {
   const notControlledNeuron = {
     ...mockNeuron,
-    neuronId: BigInt(123),
+    neuronId: 123n,
     fullNeuron: {
       ...mockFullNeuron,
       controller: "not-controller",
@@ -118,7 +118,7 @@ describe("neurons-services", () => {
   };
   const controlledNeuron = {
     ...mockNeuron,
-    neuronId: BigInt(1234),
+    neuronId: 1_234n,
     fullNeuron: {
       ...mockFullNeuron,
       controller: mockIdentity.getPrincipal().toText(),
@@ -126,13 +126,13 @@ describe("neurons-services", () => {
   };
   const sameControlledNeuron = {
     ...mockNeuron,
-    neuronId: BigInt(1234555),
+    neuronId: 1_234_555n,
     fullNeuron: {
       ...mockFullNeuron,
       controller: mockIdentity.getPrincipal().toText(),
     },
   };
-  const newSpawnedNeuronId = BigInt(1234);
+  const newSpawnedNeuronId = 1_234n;
 
   const neurons = [sameControlledNeuron, controlledNeuron];
 
@@ -190,7 +190,7 @@ describe("neurons-services", () => {
     );
     spyAddHotkey.mockResolvedValue();
     spyRemoveHotkey.mockResolvedValue();
-    spySplitNeuron.mockResolvedValue(BigInt(11));
+    spySplitNeuron.mockResolvedValue(11n);
     spyStartDissolving.mockResolvedValue();
     spyStopDissolving.mockResolvedValue();
     spySetFollowees.mockResolvedValue();
@@ -411,7 +411,7 @@ describe("neurons-services", () => {
       setNoIdentity();
 
       await updateDelay({
-        neuronId: BigInt(10),
+        neuronId: 10n,
         dissolveDelayInSeconds: 12000,
       });
 
@@ -476,7 +476,7 @@ describe("neurons-services", () => {
     it("should call leaveCommunity find if neuron is in the fund already", async () => {
       const neuron = {
         ...controlledNeuron,
-        joinedCommunityFundTimestampSeconds: BigInt(2000),
+        joinedCommunityFundTimestampSeconds: 2_000n,
       };
       neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
       expect(spyLeaveCommunityFund).not.toBeCalled();
@@ -872,7 +872,7 @@ describe("neurons-services", () => {
     it("should not merge neurons if different controllers", async () => {
       const neuron = {
         ...mockNeuron,
-        neuronId: BigInt(5555),
+        neuronId: 5_555n,
         fullNeuron: {
           ...mockFullNeuron,
           controller: "another",
@@ -914,7 +914,7 @@ describe("neurons-services", () => {
       });
       const neuron1 = {
         ...mockNeuron,
-        neuronId: BigInt(5555),
+        neuronId: 5_555n,
         fullNeuron: {
           ...mockFullNeuron,
           controller: smallerVersionIdentity.getPrincipal().toText(),
@@ -922,7 +922,7 @@ describe("neurons-services", () => {
       };
       const neuron2 = {
         ...mockNeuron,
-        neuronId: BigInt(5556),
+        neuronId: 5_556n,
         fullNeuron: {
           ...mockFullNeuron,
           controller: smallerVersionIdentity.getPrincipal().toText(),
@@ -983,7 +983,7 @@ describe("neurons-services", () => {
     it("should not simulate merging neurons if different controllers", async () => {
       const neuron = {
         ...mockNeuron,
-        neuronId: BigInt(5555),
+        neuronId: 5_555n,
         fullNeuron: {
           ...mockFullNeuron,
           controller: "another",
@@ -1012,7 +1012,7 @@ describe("neurons-services", () => {
       const hwPrincipal = mockHardwareWalletAccount.principal.toText();
       const neuron1 = {
         ...mockNeuron,
-        neuronId: BigInt(5555),
+        neuronId: 5_555n,
         fullNeuron: {
           ...mockFullNeuron,
           controller: hwPrincipal,
@@ -1020,7 +1020,7 @@ describe("neurons-services", () => {
       };
       const neuron2 = {
         ...mockNeuron,
-        neuronId: BigInt(5556),
+        neuronId: 5_556n,
         fullNeuron: {
           ...mockFullNeuron,
           controller: hwPrincipal,
@@ -1227,7 +1227,7 @@ describe("neurons-services", () => {
     it("should not update neuron if no identity", async () => {
       setNoIdentity();
 
-      await startDissolving(BigInt(10));
+      await startDissolving(10n);
 
       expectToastError(en.error.missing_identity);
       expect(spyStartDissolving).not.toBeCalled();
@@ -1257,7 +1257,7 @@ describe("neurons-services", () => {
     it("should not update neuron if no identity", async () => {
       setNoIdentity();
 
-      await stopDissolving(BigInt(10));
+      await stopDissolving(10n);
 
       expectToastError(en.error.missing_identity);
       expect(spyStopDissolving).not.toBeCalled();
@@ -1345,7 +1345,7 @@ describe("neurons-services", () => {
       });
       const neuron = {
         ...mockNeuron,
-        neuronId: BigInt(5555),
+        neuronId: 5_555n,
         fullNeuron: {
           ...mockFullNeuron,
           controller: smallerVersionIdentity.getPrincipal().toText(),
@@ -1370,7 +1370,7 @@ describe("neurons-services", () => {
 
   describe("add followee", () => {
     it("should add the followee to next call", async () => {
-      const followee = BigInt(8);
+      const followee = 8n;
       neuronsStore.setNeurons({ neurons, certified: true });
       const topic = Topic.ExchangeRate;
 
@@ -1413,7 +1413,7 @@ describe("neurons-services", () => {
 
     it("should not call api if trying follow a neuron already added", async () => {
       const topic = Topic.ExchangeRate;
-      const followee = BigInt(10);
+      const followee = 10n;
       const neuron = {
         ...controlledNeuron,
         fullNeuron: {
@@ -1434,7 +1434,7 @@ describe("neurons-services", () => {
     });
 
     it("should not call api if no identity", async () => {
-      const followee = BigInt(8);
+      const followee = 8n;
       neuronsStore.setNeurons({ neurons, certified: true });
       const topic = Topic.ExchangeRate;
 
@@ -1455,7 +1455,7 @@ describe("neurons-services", () => {
         neurons: [notControlledNeuron],
         certified: true,
       });
-      const followee = BigInt(8);
+      const followee = 8n;
       const topic = Topic.ExchangeRate;
 
       await addFollowee({
@@ -1469,7 +1469,7 @@ describe("neurons-services", () => {
     });
 
     it("should call api if not controlled by user but controlled by hotkey", async () => {
-      const followee = BigInt(8);
+      const followee = 8n;
       const topic = Topic.ExchangeRate;
       const hotkeyNeuron = {
         ...notControlledNeuron,
@@ -1500,7 +1500,7 @@ describe("neurons-services", () => {
     });
 
     it("should not call api if not controlled by user but controlled by hotkey for topic Manage Neuron", async () => {
-      const followee = BigInt(8);
+      const followee = 8n;
       const topic = Topic.ManageNeuron;
       const hotkeyNeuron = {
         ...notControlledNeuron,
@@ -1525,7 +1525,7 @@ describe("neurons-services", () => {
   });
 
   describe("remove followee", () => {
-    const followee = BigInt(8);
+    const followee = 8n;
     const topic = Topic.ExchangeRate;
     const neuronFollowing = {
       ...controlledNeuron,
@@ -1535,7 +1535,7 @@ describe("neurons-services", () => {
       },
     };
     it("should remove the followee to next call", async () => {
-      const followee = BigInt(8);
+      const followee = 8n;
       const topic = Topic.ExchangeRate;
       const neuronFollowing = {
         ...controlledNeuron,
@@ -1578,7 +1578,7 @@ describe("neurons-services", () => {
     });
 
     it("should not call api if user not controller nor hotkey", async () => {
-      const followee = BigInt(8);
+      const followee = 8n;
       const topic = Topic.ExchangeRate;
       const notControlled = {
         ...notControlledNeuron,
@@ -1602,7 +1602,7 @@ describe("neurons-services", () => {
     });
 
     it("should call api if user not controller but controlled by hotkey", async () => {
-      const followee = BigInt(8);
+      const followee = 8n;
       const topic = Topic.ExchangeRate;
       const hotkeyNeuron = {
         ...notControlledNeuron,
@@ -1633,7 +1633,7 @@ describe("neurons-services", () => {
     });
 
     it("should not call api if user not controller but controlled by hotkey and topic is manage neuron", async () => {
-      const followee = BigInt(8);
+      const followee = 8n;
       const topic = Topic.ManageNeuron;
       const hotkeyNeuron = {
         ...notControlledNeuron,
@@ -1692,7 +1692,7 @@ describe("neurons-services", () => {
     });
 
     it("should call setNeuron even if the neuron doesn't have fullNeuron", async () => {
-      const neuronId = BigInt(333333);
+      const neuronId = 333_333n;
       const publicInfoNeuron = {
         ...mockNeuron,
         neuronId,

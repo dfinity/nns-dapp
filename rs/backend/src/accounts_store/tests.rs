@@ -1815,7 +1815,7 @@ pub fn test_store_histogram() -> AccountsStoreHistogram {
 
 /// Stored accounts should be recovered with the same value.
 ///
-/// Note: Given that account implement CandidType this is little more than a formality.
+/// Note: Given that account implement `CandidType` this is little more than a formality.
 #[test]
 fn accounts_should_implement_storable() {
     let account = toy_account(

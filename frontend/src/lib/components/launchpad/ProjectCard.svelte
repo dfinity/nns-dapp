@@ -38,8 +38,7 @@
   $: commitmentE8s = getCommitmentE8s(swapCommitment);
 
   let userHasParticipated: boolean;
-  $: userHasParticipated =
-    nonNullish(commitmentE8s) && commitmentE8s > BigInt(0);
+  $: userHasParticipated = nonNullish(commitmentE8s) && commitmentE8s > 0n;
 
   let href: string;
   $: href = `${AppPath.Project}/?project=${project.rootCanisterId.toText()}`;

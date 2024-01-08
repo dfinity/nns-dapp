@@ -39,7 +39,7 @@ describe("SnsNeurons", () => {
       id: [1, 2, 6],
       stake: neuronNFStake,
     }),
-    source_nns_neuron_id: [BigInt(123)],
+    source_nns_neuron_id: [123n],
   };
   const projectName = "Tetris";
   const getNeuronBalanceMock = async ({ neuronId }) => {

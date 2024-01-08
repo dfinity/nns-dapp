@@ -1,3 +1,4 @@
+import * as ckbtcMinterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -31,6 +32,7 @@ import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
 vi.mock("$lib/api/icrc-ledger.api");
+vi.mock("$lib/api/ckbtc-minter.api");
 
 vi.mock("$lib/services/sns-accounts.services", () => {
   return {
@@ -96,6 +98,9 @@ describe("Wallet", () => {
     icpAccountsStore.setForTesting(mockAccountsStoreData);
     overrideFeatureFlagsStore.reset();
     vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(1234n);
+    vi.mocked(ckbtcMinterApi.retrieveBtcStatusV2ByAccount).mockResolvedValue(
+      []
+    );
   });
 
   beforeAll(() => {

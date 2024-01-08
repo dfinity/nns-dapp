@@ -1,13 +1,20 @@
 //! Accounts DB that delegates API calls to underlying implementations.
 //!
 //! The proxy manages migrations from one implementation to another.
+#[cfg(test)]
+use super::accounts_in_unbounded_stable_btree_map::{AccountsDbAsUnboundedStableBTreeMap, ProductionMemoryType};
 use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel};
 use core::fmt;
 use core::ops::RangeBounds;
 use ic_cdk::println;
+#[cfg(test)]
+use ic_stable_structures::DefaultMemoryImpl;
 use std::collections::BTreeMap;
 
 mod enum_boilerplate;
+mod migration;
+#[cfg(test)]
+mod tests;
 
 /// An accounts database delegates API calls to underlying implementations.
 ///
@@ -28,16 +35,16 @@ pub struct AccountsDbAsProxy {
 
 impl Default for AccountsDbAsProxy {
     fn default() -> Self {
-        Self::new_with_map()
+        AccountsDb::Map(AccountsDbAsMap::default()).into()
     }
 }
 
 struct Migration {
     /// The database being migrated to
     db: AccountsDb,
-    // This is used in the next PR that implements the migration:
-    // /// The next account to migrate.
-    // next_to_migrate: Option<Vec<u8>>,
+    /// The next account to migrate.
+    #[cfg(test)]
+    next_to_migrate: Option<Vec<u8>>,
 }
 
 impl fmt::Debug for Migration {
@@ -48,36 +55,30 @@ impl fmt::Debug for Migration {
     }
 }
 
+impl From<AccountsDb> for AccountsDbAsProxy {
+    fn from(db: AccountsDb) -> Self {
+        AccountsDbAsProxy {
+            authoritative_db: db,
+            migration: None,
+        }
+    }
+}
+
 #[derive(Debug)]
 pub enum AccountsDb {
     Map(AccountsDbAsMap),
+    #[cfg(test)]
+    UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap<ProductionMemoryType>),
 }
 
+// Constructors
 impl AccountsDbAsProxy {
-    /// Creates a new proxy usinga map as the underlying storage.
-    pub fn new_with_map() -> Self {
-        Self {
-            authoritative_db: AccountsDb::Map(AccountsDbAsMap::default()),
-            migration: None,
-        }
-    }
-
-    /// Migration countdown; when it reaches zero, the migration is complete.
-    pub fn migration_countdown(&self) -> u32 {
-        0
-    }
-}
-
-impl AccountsDbBTreeMapTrait for AccountsDbAsProxy {
-    fn from_map(map: BTreeMap<Vec<u8>, Account>) -> Self {
-        Self {
-            authoritative_db: AccountsDb::Map(AccountsDbAsMap::from_map(map)),
-            migration: None,
-        }
-    }
-    fn as_map(&self) -> &BTreeMap<Vec<u8>, Account> {
+    /// Provides a reference to the underlying map, if that is how accounts are stored.
+    pub fn as_map_maybe(&self) -> Option<&BTreeMap<Vec<u8>, Account>> {
         match &self.authoritative_db {
-            AccountsDb::Map(map_db) => map_db.as_map(),
+            AccountsDb::Map(map_db) => Some(map_db.as_map()),
+            #[cfg(test)]
+            AccountsDb::UnboundedStableBTreeMap(_) => None,
         }
     }
 }
@@ -140,16 +141,3 @@ impl PartialEq for AccountsDbAsProxy {
 }
 #[cfg(test)]
 impl Eq for AccountsDbAsProxy {}
-
-#[cfg(test)]
-mod tests {
-    use super::super::tests::{assert_map_conversions_work, test_accounts_db};
-    use super::AccountsDbAsProxy;
-
-    test_accounts_db!(AccountsDbAsProxy::default());
-
-    #[test]
-    fn map_conversions_should_work() {
-        assert_map_conversions_work::<AccountsDbAsProxy>();
-    }
-}

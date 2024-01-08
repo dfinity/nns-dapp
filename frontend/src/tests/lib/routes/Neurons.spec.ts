@@ -27,7 +27,7 @@ vi.mock("$lib/api/sns.api");
 
 const testCommittedSnsCanisterId = Principal.fromHex("897654");
 const testOpenSnsCanisterId = Principal.fromHex("567812");
-const testNnsNeuronId = BigInt(543);
+const testNnsNeuronId = 543n;
 
 describe("Neurons", () => {
   fakeGovernanceApi.install();

@@ -6,13 +6,19 @@ import {
   getCommitmentE8s,
   getSwapCanisterAccount,
   hasOpenTicketInProcess,
+  isGenericNervousSystemFunction,
   isInternalRefreshBuyerTokensError,
+  isNativeNervousSystemFunction,
   isSnsFinalizing,
   parseSnsSwapSaleBuyerCount,
   swapEndedMoreThanOneWeekAgo,
 } from "$lib/utils/sns.utils";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { createFinalizationStatusMock } from "$tests/mocks/sns-finalization-status.mock";
+import {
+  genericNervousSystemFunctionMock,
+  nativeNervousSystemFunctionMock,
+} from "$tests/mocks/sns-functions.mock";
 import {
   createBuyersState,
   createSummary,
@@ -61,7 +67,7 @@ describe("sns-utils", () => {
           has_created_neuron_recipes: [],
         },
       };
-      expect(getCommitmentE8s(commitment)).toEqual(BigInt(0));
+      expect(getCommitmentE8s(commitment)).toEqual(0n);
     });
 
     it("returns 0 if no user commitment", () => {
@@ -69,7 +75,7 @@ describe("sns-utils", () => {
         rootCanisterId: mockPrincipal,
         myCommitment: undefined,
       };
-      expect(getCommitmentE8s(commitment)).toEqual(BigInt(0));
+      expect(getCommitmentE8s(commitment)).toEqual(0n);
     });
 
     it("returns undefined if commitment not loaded", () => {
@@ -271,9 +277,9 @@ sale_participants_count ${saleBuyerCount} 1677707139456
       ).toEqual({
         buyer_total_icp_e8s: BigInt(100 * 100000000),
         sns_tokens_per_icp: 1,
-        cf_participant_count: [BigInt(100)],
-        direct_participant_count: [BigInt(300)],
-        cf_neuron_count: [BigInt(200)],
+        cf_participant_count: [100n],
+        direct_participant_count: [300n],
+        cf_neuron_count: [200n],
         direct_participation_icp_e8s: [],
         neurons_fund_participation_icp_e8s: [],
       });
@@ -332,6 +338,32 @@ sale_participants_count ${saleBuyerCount} 1677707139456
       expect(
         swapEndedMoreThanOneWeekAgo({ summary: summary1, nowInSeconds })
       ).toBe(true);
+    });
+  });
+
+  describe("isNativeNervousSystemFunction", () => {
+    it("should return true for NativeNervousSystemFunction", () => {
+      expect(
+        isNativeNervousSystemFunction(nativeNervousSystemFunctionMock)
+      ).toBe(true);
+    });
+    it("should return false for not NativeNervousSystemFunction", () => {
+      expect(
+        isNativeNervousSystemFunction(genericNervousSystemFunctionMock)
+      ).toBe(false);
+    });
+  });
+
+  describe("isGenericNervousSystemFunction", () => {
+    it("should return true for GenericNervousSystemFunction", () => {
+      expect(
+        isGenericNervousSystemFunction(genericNervousSystemFunctionMock)
+      ).toBe(true);
+    });
+    it("should return false for not GenericNervousSystemFunction", () => {
+      expect(
+        isGenericNervousSystemFunction(nativeNervousSystemFunctionMock)
+      ).toBe(false);
     });
   });
 });

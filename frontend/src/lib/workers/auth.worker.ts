@@ -111,7 +111,7 @@ const emitExpirationTime = (delegation: DelegationChain) => {
 
   // 1_000_000 as NANO_SECONDS_IN_MILLISECOND. Constant not imported to not break prod build.
   const authRemainingTime =
-    new Date(Number(expirationTime / BigInt(1_000_000))).getTime() - Date.now();
+    new Date(Number(expirationTime / 1_000_000n)).getTime() - Date.now();
 
   postMessage({
     msg: "nnsDelegationRemainingTime",

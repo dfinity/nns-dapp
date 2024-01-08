@@ -11,7 +11,6 @@ import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
-import en from "$tests/mocks/i18n.mock";
 import {
   createMockSnsNeuron,
   snsNervousSystemParametersMock,
@@ -245,6 +244,26 @@ describe("SnsVotingCard", () => {
     expect(queryByTestId("vote-no")).toBeInTheDocument();
   });
 
+  it("should display votable neurons", async () => {
+    snsNeuronsStore.setNeurons({
+      rootCanisterId: mockSnsCanisterId,
+      neurons: [
+        ...testNeurons,
+        // voted neuron
+        {
+          ...createMockSnsNeuron({
+            id: [3],
+            state: NeuronState.Locked,
+          }),
+        },
+      ],
+      certified: true,
+    });
+
+    const { getByTestId } = renderVotingCard();
+    expect(getByTestId("votable-neurons")).toBeInTheDocument();
+  });
+
   it("should display my votes", async () => {
     snsNeuronsStore.setNeurons({
       rootCanisterId: mockSnsCanisterId,
@@ -261,8 +280,28 @@ describe("SnsVotingCard", () => {
       certified: true,
     });
 
-    const { getByText } = renderVotingCard();
-    expect(getByText(en.proposal_detail.my_votes)).toBeInTheDocument();
+    const { getByTestId } = renderVotingCard();
+    expect(getByTestId("voted-neurons")).toBeInTheDocument();
+  });
+
+  it("should display ineligible neurons", async () => {
+    snsNeuronsStore.setNeurons({
+      rootCanisterId: mockSnsCanisterId,
+      neurons: [
+        ...testNeurons,
+        // voted neuron
+        {
+          ...createMockSnsNeuron({
+            id: [3],
+            state: NeuronState.Unspecified,
+          }),
+        },
+      ],
+      certified: true,
+    });
+
+    const { getByTestId } = renderVotingCard();
+    expect(getByTestId("ineligible-neurons")).toBeInTheDocument();
   });
 
   it("should display my votes with ballot voting power", async () => {
@@ -315,8 +354,8 @@ describe("SnsVotingCard", () => {
       certified: true,
     });
 
-    const { getByText } = renderVotingCard();
-    expect(getByText(en.proposal_detail.my_votes)).toBeInTheDocument();
+    const { getByTestId } = renderVotingCard();
+    expect(getByTestId("voted-neurons")).toBeInTheDocument();
   });
 
   describe("voting", () => {

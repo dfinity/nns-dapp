@@ -41,7 +41,7 @@ describe("IncreaseNeuronStakeModal", () => {
     });
 
     it("should fetch accounts and render account selector", async () => {
-      const mainBalanceE8s = BigInt(10_000_000);
+      const mainBalanceE8s = 10_000_000n;
       vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
         mainBalanceE8s
       );

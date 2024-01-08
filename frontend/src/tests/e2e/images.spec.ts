@@ -45,7 +45,7 @@ test.describe.configure({ retries: 2 });
 
 test("Test images load on accounts page", async ({ page, context }) => {
   await page.goto("/accounts");
-  await expect(page).toHaveTitle("My Tokens / NNS Dapp");
+  await expect(page).toHaveTitle("My ICP Tokens / NNS Dapp");
 
   await step("Check images before signing");
   await expectImagesLoaded({

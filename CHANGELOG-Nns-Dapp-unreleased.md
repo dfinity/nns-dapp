@@ -16,10 +16,19 @@ proposal is successful, the changes it released will be moved from this file to
 
 - Disable dissolve delay editing when the maximum is reached.
 - Implement `Storable` for accounts.
+- `UnboundedStableBTreeMap` as an account storage medium.
+- Save accounts in the `pre_upgrade` hook only when accounts are stored in the heap.
+- Save account stats in the `pre_upgrade` hook rather than recomputing them in the `post_upgrade` hook.
+- Migration functions.
+- Render pending and failed BTC withdrawal transaction as such.
+- Add `ENABLE_SNS_TYPES_FILTER` feature flag.
+- Redesign proposal detail neurons block (collapsible).
+- Display status in "voted neurons" headline.
 
 #### Changed
 
 - Use `ic_cdk::println` instead of the `dfn_core` equivalent.
+- Default to main account on wallet page when `account` parameter is missing from the URL.
 
 #### Deprecated
 
@@ -31,6 +40,8 @@ proposal is successful, the changes it released will be moved from this file to
 - Avoid unnecessary calls to SNS root canister ids to get the canister ids.
 - Min dissolve delay button updates not only for the first time.
 - Fix scrollbar in multiline toast message. 
+- Go back to accounts page for incorrect account identifier in SNS wallet page.
+- Stay on the same universe when navigating back from wallet to the accounts page.
 
 #### Security
 
@@ -39,6 +50,8 @@ proposal is successful, the changes it released will be moved from this file to
 ### Operations
 
 #### Added
+
+Entry for bitcoin canister in `dfx.json`.
 
 #### Changed
 

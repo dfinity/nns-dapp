@@ -6,8 +6,8 @@ import { mockMainAccount, mockSubAccount } from "./icp-accounts.store.mock";
 import { mockSnsToken } from "./sns-projects.mock";
 
 export const createMockSendTransaction = ({
-  amount = 110000023n,
-  fee = 10000n,
+  amount = 110_000_023n,
+  fee = 10_000n,
   to = mockSubAccount.identifier,
 }: {
   amount?: bigint;
@@ -15,9 +15,9 @@ export const createMockSendTransaction = ({
   to?: string;
 }): NnsTransaction => ({
   transaction_type: [{ Transfer: null }],
-  memo: BigInt(0),
-  timestamp: { timestamp_nanos: BigInt("0") },
-  block_height: BigInt(208),
+  memo: 0n,
+  timestamp: { timestamp_nanos: 0n },
+  block_height: 208n,
   transfer: {
     Send: {
       to,
@@ -32,8 +32,8 @@ export const mockSentToSubAccountTransaction = createMockSendTransaction({
 });
 
 export const createMockReceiveTransaction = ({
-  amount = 110000000n,
-  fee = 10000n,
+  amount = 110_000_000n,
+  fee = 10_000n,
   from = mockMainAccount.identifier,
 }: {
   amount?: bigint;
@@ -41,9 +41,9 @@ export const createMockReceiveTransaction = ({
   from?: string;
 }): NnsTransaction => ({
   transaction_type: [{ Transfer: null }],
-  memo: BigInt(0),
-  timestamp: { timestamp_nanos: BigInt("1652121288218078256") },
-  block_height: BigInt(208),
+  memo: 0n,
+  timestamp: { timestamp_nanos: 1_652_121_288_218_078_256n },
+  block_height: 208n,
   transfer: {
     Receive: {
       fee: { e8s: fee },
@@ -56,7 +56,7 @@ export const createMockReceiveTransaction = ({
 export const mockReceivedFromMainAccountTransaction =
   createMockReceiveTransaction({ from: mockMainAccount.identifier });
 
-const displayAmount = 11000000000000000n;
+const displayAmount = 11_000_000_000_000_000n;
 
 export const mockTransactionReceiveDataFromMain: Transaction = {
   type: AccountTransactionType.Send,

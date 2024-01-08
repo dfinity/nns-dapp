@@ -147,6 +147,7 @@ interface I18nWarning {
 
 interface I18nNavigation {
   tokens: string;
+  universe_tokens: string;
   canisters: string;
   neurons: string;
   voting: string;
@@ -539,7 +540,7 @@ interface I18nProposal_detail {
   proposer_prefix: string;
   proposer_description: string;
   open_voting_prefix: string;
-  my_votes: string;
+  neurons_voted: string;
   loading_neurons: string;
   unknown_nns_function: string;
   nns_function_name: string;
@@ -573,7 +574,8 @@ interface I18nProposal_detail {
 
 interface I18nProposal_detail__vote {
   headline: string;
-  neurons: string;
+  vote_with_neurons: string;
+  voting_power_value: string;
   voting_power: string;
   vote_progress: string;
   total: string;
@@ -1074,6 +1076,9 @@ interface I18nCkbtc {
   btc_network: string;
   receiving_btc: string;
   reimbursement: string;
+  sending_btc: string;
+  sending_btc_failed: string;
+  sign_in_for_address: string;
 }
 
 interface I18nError__ckbtc {
@@ -1124,7 +1129,6 @@ interface I18nSync {
 }
 
 interface I18nTokens {
-  title: string;
   projects_header: string;
   balance_header: string;
   accounts_header: string;
