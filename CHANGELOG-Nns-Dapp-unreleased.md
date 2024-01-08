@@ -35,8 +35,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-Entry for bitcoin canister in `dfx.json`.
-
 #### Changed
 
 #### Deprecated
