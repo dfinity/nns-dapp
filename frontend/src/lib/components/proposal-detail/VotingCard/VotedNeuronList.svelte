@@ -41,9 +41,7 @@
         {replacePlaceholders($i18n.proposal_detail.neurons_voted, {
           $count: `${votedNeuronCount}`,
         })}
-        {#if allVotedVote !== Vote.Unspecified}
-          <VoteResultIcon vote={allVotedVote} />
-        {/if}
+        <VoteResultIcon vote={allVotedVote} />
       </span>
     </svelte:fragment>
     <svelte:fragment slot="end">
