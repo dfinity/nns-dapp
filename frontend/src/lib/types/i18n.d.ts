@@ -991,6 +991,10 @@ interface I18nUniverse {
   universe_logo: string;
 }
 
+interface I18nSns_types {
+  sns_specific: string;
+}
+
 interface I18nSns_rewards_status {
   0: string;
   1: string;
