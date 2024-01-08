@@ -1,5 +1,5 @@
 import * as agent from "$lib/api/agent.api";
-import VotingCard from "$lib/components/proposal-detail/VotingCard/VotingCard.svelte";
+import NnsVotingCard from "$lib/components/proposal-detail/VotingCard/NnsVotingCard.svelte";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -58,7 +58,7 @@ describe("VotingCard", () => {
             proposal: proposalInfo,
           }),
         } as SelectedProposalContext,
-        Component: VotingCard,
+        Component: NnsVotingCard,
       },
     });
 

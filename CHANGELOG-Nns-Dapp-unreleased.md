@@ -22,10 +22,13 @@ proposal is successful, the changes it released will be moved from this file to
 - Migration functions.
 - Render pending and failed BTC withdrawal transaction as such.
 - Add `ENABLE_SNS_TYPES_FILTER` feature flag.
+- Redesign proposal detail neurons block (collapsible).
+- Display status in "voted neurons" headline.
 
 #### Changed
 
 - Use `ic_cdk::println` instead of the `dfn_core` equivalent.
+- Default to main account on wallet page when `account` parameter is missing from the URL.
 
 #### Deprecated
 

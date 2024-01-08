@@ -2,6 +2,7 @@
   import { buildAccountsUrl } from "$lib/utils/navigation.utils";
   import { goto } from "$app/navigation";
   import { hasAccounts } from "$lib/utils/accounts.utils";
+  import { findAccountOrDefaultToMain } from "$lib/utils/accounts.utils";
   import type { Principal } from "@dfinity/principal";
   import { Spinner, busy } from "@dfinity/gix-components";
   import { setContext } from "svelte";
@@ -75,16 +76,15 @@
   export let accountIdentifier: string | undefined | null = undefined;
 
   const load = () => {
-    if (nonNullish(accountIdentifier)) {
-      const selectedAccount = $snsProjectAccountsStore?.find(
-        ({ identifier }) => identifier === accountIdentifier
-      );
-
-      selectedAccountStore.set({
-        account: selectedAccount,
-        neurons: [],
-      });
-    }
+    const accounts = $snsProjectAccountsStore ?? [];
+    const selectedAccount = findAccountOrDefaultToMain({
+      identifier: accountIdentifier,
+      accounts,
+    });
+    selectedAccountStore.set({
+      account: selectedAccount,
+      neurons: [],
+    });
     // Accounts are loaded in store but no account identifier is matching
     if (
       hasAccounts($snsProjectAccountsStore ?? []) &&

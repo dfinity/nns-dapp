@@ -20,23 +20,22 @@
     BITCOIN_BLOCK_EXPLORER_MAINNET_URL,
     BITCOIN_BLOCK_EXPLORER_TESTNET_URL,
   } from "$lib/constants/bitcoin.constants";
-  import { onMount } from "svelte";
   import { loadBtcAddress } from "$lib/services/ckbtc-minter.services";
   import CkBTCUpdateBalanceButton from "$lib/components/accounts/CkBTCUpdateBalanceButton.svelte";
   import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
 
-  export let account: Account;
+  export let account: Account | undefined;
   export let minterCanisterId: CanisterId;
   export let universeId: UniverseCanisterId;
   export let reload: () => Promise<void>;
 
-  let identifier: IcrcAccountIdentifierText;
-  $: ({ identifier } = account);
+  let identifier: IcrcAccountIdentifierText | undefined;
+  $: identifier = account?.identifier;
 
   let btcAddress: undefined | BtcAddressText;
-  $: btcAddress = $bitcoinAddressStore[identifier];
+  $: btcAddress = identifier && $bitcoinAddressStore[identifier];
 
   // We load the BTC address once per session
   let btcAddressLoaded = false;
@@ -49,12 +48,11 @@
       : BITCOIN_BLOCK_EXPLORER_MAINNET_URL
   }/${btcAddress ?? ""}`;
 
-  onMount(() =>
+  $: identifier &&
     loadBtcAddress({
       minterCanisterId,
-      identifier: account.identifier,
-    })
-  );
+      identifier,
+    });
 
   let minConfirmations: number | undefined;
   $: minConfirmations =
@@ -69,43 +67,47 @@
     <div class="content-cell-details info-section">
       <p class="description">
         {$i18n.ckbtc.ckbtc_buzz_words}
-        <Html
-          text={replacePlaceholders($i18n.ckbtc.incoming_bitcoin_network, {
-            $min: `${minConfirmations ?? ""}`,
-          })}
-        />
-        <a
-          data-tid="block-explorer-link"
-          href={btcAddressLoaded ? blockExplorerUrl : ""}
-          rel="noopener noreferrer external"
-          target="_blank"
-          aria-disabled={!btcAddressLoaded}
-          >{$i18n.ckbtc.block_explorer}
-          {#if !btcAddressLoaded}
-            <div class="spinner">
-              <Spinner size="tiny" inline />
-            </div>
-          {/if}
-        </a>.
+        {#if nonNullish(account)}
+          <Html
+            text={replacePlaceholders($i18n.ckbtc.incoming_bitcoin_network, {
+              $min: `${minConfirmations ?? ""}`,
+            })}
+          />
+          <a
+            data-tid="block-explorer-link"
+            href={btcAddressLoaded ? blockExplorerUrl : ""}
+            rel="noopener noreferrer external"
+            target="_blank"
+            aria-disabled={!btcAddressLoaded}
+            >{$i18n.ckbtc.block_explorer}
+            {#if !btcAddressLoaded}
+              <div class="spinner">
+                <Spinner size="tiny" inline />
+              </div>
+            {/if}
+          </a>.
+        {/if}
       </p>
     </div>
   </div>
 
   <div class="qr-code">
-    {#if nonNullish(btcAddress)}
-      <QRCode value={btcAddress}>
-        <div class="logo" slot="logo">
-          <Logo
-            src={BITCOIN_LOGO}
-            size="medium"
-            framed={false}
-            testId="logo"
-            alt="ckBTC logo"
-          />
-        </div>
-      </QRCode>
-    {:else}
-      <Spinner />
+    {#if nonNullish(account)}
+      {#if nonNullish(btcAddress)}
+        <QRCode value={btcAddress}>
+          <div class="logo" slot="logo">
+            <Logo
+              src={BITCOIN_LOGO}
+              size="medium"
+              framed={false}
+              testId="logo"
+              alt="ckBTC logo"
+            />
+          </div>
+        </QRCode>
+      {:else}
+        <Spinner />
+      {/if}
     {/if}
   </div>
 
@@ -115,23 +117,31 @@
         <div class="content-cell-title">
           {$i18n.ckbtc.bitcoin_address_title}
         </div>
-        {#if nonNullish(btcAddress)}
-          <div class="address">
-            <span class="value" data-tid="btc-address">{btcAddress}</span>
-            <Copy value={btcAddress} />
-          </div>
+        {#if nonNullish(account)}
+          {#if nonNullish(btcAddress)}
+            <div class="address">
+              <span class="value" data-tid="btc-address">{btcAddress}</span>
+              <Copy value={btcAddress} />
+            </div>
+          {:else}
+            <div class="skeleton">
+              <SkeletonText />
+            </div>
+          {/if}
         {:else}
-          <div class="skeleton">
-            <SkeletonText />
-          </div>
+          <p class="description" data-tid="sign-in-for-address">
+            {$i18n.ckbtc.sign_in_for_address}
+          </p>
         {/if}
       </div>
     </div>
-    <div class="content-cell-details">
-      <div class="button">
-        <CkBTCUpdateBalanceButton {universeId} {minterCanisterId} {reload} />
+    {#if nonNullish(account)}
+      <div class="content-cell-details">
+        <div class="button">
+          <CkBTCUpdateBalanceButton {universeId} {minterCanisterId} {reload} />
+        </div>
       </div>
-    </div>
+    {/if}
   </div>
 </div>
 

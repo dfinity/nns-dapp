@@ -4,7 +4,10 @@
   import type { Writable } from "svelte/store";
   import type { WalletStore } from "$lib/types/wallet.context";
   import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
-  import { findAccount, hasAccounts } from "$lib/utils/accounts.utils";
+  import {
+    findAccountOrDefaultToMain,
+    hasAccounts,
+  } from "$lib/utils/accounts.utils";
   import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
   import { syncAccounts as syncWalletAccounts } from "$lib/services/wallet-accounts.services";
@@ -53,13 +56,15 @@
   };
 
   export const setSelectedAccount = () => {
+    const accounts = nonNullish(selectedUniverseId)
+      ? $icrcAccountsStore[selectedUniverseId.toText()]?.accounts ?? []
+      : [];
+    const account = findAccountOrDefaultToMain({
+      identifier: accountIdentifier,
+      accounts,
+    });
     selectedAccountStore.set({
-      account: findAccount({
-        identifier: accountIdentifier,
-        accounts: nonNullish(selectedUniverseId)
-          ? $icrcAccountsStore[selectedUniverseId.toText()]?.accounts ?? []
-          : [],
-      }),
+      account,
       neurons: [],
     });
   };
