@@ -21,6 +21,18 @@ export class VotingCardPo extends BasePageObject {
     return this.root.byTestId("voted-neurons");
   }
 
+  getVotedNeuronHeadline(): PageObjectElement {
+    return this.getVotedNeurons().byTestId("voted-neurons-headline");
+  }
+
+  getVotedNeuronHeadlineYesIcon(): PageObjectElement {
+    return this.getVotedNeuronHeadline().byTestId("thumb-up");
+  }
+
+  getVotedNeuronHeadlineNoIcon(): PageObjectElement {
+    return this.getVotedNeuronHeadline().byTestId("thumb-down");
+  }
+
   getIneligibleNeurons(): PageObjectElement {
     return this.root.byTestId("ineligible-neurons");
   }
