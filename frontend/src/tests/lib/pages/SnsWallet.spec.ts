@@ -29,6 +29,8 @@ import { get } from "svelte/store";
 vi.mock("$lib/api/sns-ledger.api");
 vi.mock("$lib/api/sns-index.api");
 
+let balancesObserverCallback;
+
 vi.mock("$lib/services/worker-transactions.services", () => ({
   initTransactionsWorker: vi.fn(() =>
     Promise.resolve({
@@ -45,8 +47,8 @@ vi.mock("$lib/services/worker-transactions.services", () => ({
 vi.mock("$lib/services/worker-balances.services", () => ({
   initBalancesWorker: vi.fn(() =>
     Promise.resolve({
-      startBalancesTimer: () => {
-        // Do nothing
+      startBalancesTimer: ({ callback }) => {
+        balancesObserverCallback = callback;
       },
       stopBalancesTimer: () => {
         // Do nothing
@@ -341,6 +343,34 @@ describe("SnsWallet", () => {
         universe: rootCanisterIdText,
       });
       expect(get(toastsStore)).toEqual([]);
+    });
+
+    it("should display the balance from the observer", async () => {
+      const oldBalance = 123_000_000n;
+      const newBalance = 456_000_000n;
+
+      vi.spyOn(snsLedgerApi, "getSnsAccounts").mockResolvedValue([
+        {
+          ...mockSnsMainAccount,
+          balanceUlps: oldBalance,
+        },
+      ]);
+
+      const po = await renderComponent(props);
+
+      expect(await po.getWalletPageHeadingPo().getTitle()).toBe("1.23 OOO");
+
+      balancesObserverCallback({
+        balances: [
+          {
+            balance: newBalance,
+            accountIdentifier: mockSnsMainAccount.identifier,
+          },
+        ],
+      });
+
+      await runResolvedPromises();
+      expect(await po.getWalletPageHeadingPo().getTitle()).toBe("4.56 OOO");
     });
   });
 });

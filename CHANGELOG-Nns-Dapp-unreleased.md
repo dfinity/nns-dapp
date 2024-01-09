@@ -28,6 +28,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * Reverted the upgrade to SvelteKit 2 as it breaks iOS 15.
+* Auto updating wallet balances
 
 #### Security
 

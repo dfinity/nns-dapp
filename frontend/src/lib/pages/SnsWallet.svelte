@@ -155,28 +155,27 @@
             rootCanisterId={$snsOnlyProjectStore}
             accounts={[$selectedAccountStore.account]}
             ledgerCanisterId={$snsProjectSelectedStore.summary.ledgerCanisterId}
-          >
-            <WalletPageHeader
-              universe={$selectedUniverseStore}
-              walletAddress={$selectedAccountStore.account.identifier}
-            />
-            <WalletPageHeading
-              balance={TokenAmount.fromE8s({
-                amount: $selectedAccountStore.account.balanceUlps,
-                token,
-              })}
-              accountName={$selectedAccountStore.account.name ??
-                $i18n.accounts.main}
-            />
+          />
+          <WalletPageHeader
+            universe={$selectedUniverseStore}
+            walletAddress={$selectedAccountStore.account.identifier}
+          />
+          <WalletPageHeading
+            balance={TokenAmount.fromE8s({
+              amount: $selectedAccountStore.account.balanceUlps,
+              token,
+            })}
+            accountName={$selectedAccountStore.account.name ??
+              $i18n.accounts.main}
+          />
 
-            <Separator spacing="none" />
+          <Separator spacing="none" />
 
-            <SnsTransactionsList
-              rootCanisterId={$snsOnlyProjectStore}
-              account={$selectedAccountStore.account}
-              {token}
-            />
-          </SnsBalancesObserver>
+          <SnsTransactionsList
+            rootCanisterId={$snsOnlyProjectStore}
+            account={$selectedAccountStore.account}
+            {token}
+          />
         {:else}
           <Spinner />
         {/if}
