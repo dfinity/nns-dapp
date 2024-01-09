@@ -6,38 +6,35 @@ import { expect, test } from "@playwright/test";
 const expectImagesLoaded = async ({ page, sources }) => {
   const images = page.locator("img");
   const imageSources = await Promise.all(
-    (await images.all()).map((img) => img.getAttribute("src"))
+      (await images.all()).map((img) => img.getAttribute("src"))
   );
   // We only look at the basename (stripping path and content hash extension)
   // because the rest might differ depending on the environment.
-  const baseImageSources = imageSources.map((src) => {
-    const split = src.replace(/.*\//, "").split(".");
-    // Remove hash if existing from src. e.g. "logo-onchain-light.L_mfZB1R.svg" -> "logo-onchain-light.svg"
-    const { 0: filename, [split.length - 1]: extension } = split;
-    return `${filename}.${extension}`;
-  });
+  const baseImageSources = imageSources.map((src) =>
+      src.replace(/.*\//, "").replace(/\.[0-9a-f]{8}\./, ".")
+  );
   baseImageSources.sort();
   expect(baseImageSources).toEqual(sources);
 
   await page.waitForFunction(
-    async (expectedImageCount) => {
-      const images = Array.from(document.querySelectorAll("img"));
-      if (images.length !== expectedImageCount) {
-        return false;
-      }
-      // The browser might decide not to load images that are outside the
-      // viewport.
-      for (const img of images) {
-        img.scrollIntoView();
-        // We need to rerender between scrolling otherwise it will scroll all
-        // the way to the bottom before the page is rerendered and if the list
-        // is long, it might skip over some images.
-        await new Promise((resolve) => setTimeout(resolve, 0));
-      }
-      return images.every((img) => img.complete);
-    },
-    sources.length,
-    { timeout: 10000 }
+      async (expectedImageCount) => {
+        const images = Array.from(document.querySelectorAll("img"));
+        if (images.length !== expectedImageCount) {
+          return false;
+        }
+        // The browser might decide not to load images that are outside the
+        // viewport.
+        for (const img of images) {
+          img.scrollIntoView();
+          // We need to rerender between scrolling otherwise it will scroll all
+          // the way to the bottom before the page is rerendered and if the list
+          // is long, it might skip over some images.
+          await new Promise((resolve) => setTimeout(resolve, 0));
+        }
+        return images.every((img) => img.complete);
+      },
+      sources.length,
+      { timeout: 10000 }
   );
 };
 
@@ -45,7 +42,7 @@ test.describe.configure({ retries: 2 });
 
 test("Test images load on accounts page", async ({ page, context }) => {
   await page.goto("/accounts");
-  await expect(page).toHaveTitle("My ICP Tokens / NNS Dapp");
+  await expect(page).toHaveTitle("My Tokens / NNS Dapp");
 
   await step("Check images before signing");
   await expectImagesLoaded({

@@ -14,7 +14,6 @@ const config: UserConfig = {
   build: {
     target: "es2020",
     sourcemap: "hidden",
-    assetsInlineLimit: 0,
     rollupOptions: {
       output: {
         manualChunks: (id) => {
@@ -30,17 +29,17 @@ const config: UserConfig = {
           ];
 
           if (
-            ["@sveltejs", "svelte", "@dfinity/gix-components", ...lazy].find(
-              (lib) => folder.includes(lib)
-            ) === undefined &&
-            folder.includes("node_modules")
+              ["@sveltejs", "svelte", "@dfinity/gix-components", ...lazy].find(
+                  (lib) => folder.includes(lib)
+              ) === undefined &&
+              folder.includes("node_modules")
           ) {
             return "vendor";
           }
 
           if (
-            lazy.find((lib) => folder.includes(lib)) !== undefined &&
-            folder.includes("node_modules")
+              lazy.find((lib) => folder.includes(lib)) !== undefined &&
+              folder.includes("node_modules")
           ) {
             return "lazy";
           }
