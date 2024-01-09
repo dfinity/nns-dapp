@@ -32,11 +32,13 @@ import { get } from "svelte/store";
 
 const expectedBalanceAfterTransfer = 11_111n;
 
+let balancesObserverCallback;
+
 vi.mock("$lib/services/worker-balances.services", () => ({
   initBalancesWorker: vi.fn(() =>
     Promise.resolve({
-      startBalancesTimer: () => {
-        // Do nothing
+      startBalancesTimer: ({ callback }) => {
+        balancesObserverCallback = callback;
       },
       stopBalancesTimer: () => {
         // Do nothing
@@ -288,6 +290,29 @@ describe("IcrcWallet", () => {
         universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText(),
       });
       expect(get(toastsStore)).toEqual([]);
+    });
+
+    it("should display the balance from the observer", async () => {
+      const po = await renderWallet(props);
+      await runResolvedPromises();
+
+      expect(await po.getWalletPageHeadingPo().getTitle()).toBe(
+        "123.00 ckETHTEST"
+      );
+
+      balancesObserverCallback({
+        balances: [
+          {
+            balance: 3_330_000_000_000_000_000n,
+            accountIdentifier: mockCkETHMainAccount.identifier,
+          },
+        ],
+      });
+
+      await runResolvedPromises();
+      expect(await po.getWalletPageHeadingPo().getTitle()).toBe(
+        "3.33 ckETHTEST"
+      );
     });
   });
 });

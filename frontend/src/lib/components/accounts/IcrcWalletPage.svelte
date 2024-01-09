@@ -136,35 +136,34 @@
           universeId={selectedUniverseId}
           accounts={[$selectedAccountStore.account]}
           reload={reloadOnlyAccountFromStore}
+        />
+        <WalletPageHeader
+          universe={$selectedUniverseStore}
+          walletAddress={$selectedAccountStore.account.identifier}
+        />
+        <WalletPageHeading
+          accountName={$selectedAccountStore.account.name ??
+            $i18n.accounts.main}
+          balance={TokenAmountV2.fromUlps({
+            amount: $selectedAccountStore.account.balanceUlps,
+            token,
+          })}
         >
-          <WalletPageHeader
-            universe={$selectedUniverseStore}
-            walletAddress={$selectedAccountStore.account.identifier}
-          />
-          <WalletPageHeading
-            accountName={$selectedAccountStore.account.name ??
-              $i18n.accounts.main}
-            balance={TokenAmountV2.fromUlps({
-              amount: $selectedAccountStore.account.balanceUlps,
-              token,
-            })}
-          >
-            <slot name="header-actions" />
-          </WalletPageHeading>
+          <slot name="header-actions" />
+        </WalletPageHeading>
 
-          {#if $$slots["info-card"]}
-            <div class="content-cell-island info-card">
-              <slot name="info-card" />
-            </div>
-          {/if}
-
-          <Separator spacing="none" />
-
-          <!-- Transactions and the explanation go together. -->
-          <div>
-            <slot name="page-content" />
+        {#if $$slots["info-card"]}
+          <div class="content-cell-island info-card">
+            <slot name="info-card" />
           </div>
-        </IcrcBalancesObserver>
+        {/if}
+
+        <Separator spacing="none" />
+
+        <!-- Transactions and the explanation go together. -->
+        <div>
+          <slot name="page-content" />
+        </div>
       {:else}
         <Spinner />
       {/if}
