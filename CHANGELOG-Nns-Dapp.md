@@ -11,6 +11,12 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+### Application
+
+#### Fixed
+
+* SvelteKit v2 rollback to v1 for iOS <= v15 compatibility.
+
 ## Proposal 126861
 
 ### Application
