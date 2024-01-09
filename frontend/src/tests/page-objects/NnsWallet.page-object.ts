@@ -1,4 +1,4 @@
-import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { IcpTransactionModalPo } from "$tests/page-objects/IcpTransactionModal.page-object";
 import { TransactionListPo } from "$tests/page-objects/TransactionList.page-object";
 import { WalletPageHeaderPo } from "$tests/page-objects/WalletPageHeader.page-object";
