@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import SetNnsDissolveDelay from "$lib/components/neurons/SetNnsDissolveDelay.svelte";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { render } from "@testing-library/svelte";

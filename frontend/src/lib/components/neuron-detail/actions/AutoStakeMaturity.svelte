@@ -6,23 +6,14 @@
   export let disabled = false;
 </script>
 
-<div class="auto-stake">
-  <Checkbox
-    preventDefault
-    inputId="auto-stake-maturity-checkbox"
-    checked={hasAutoStakeOn}
-    on:nnsChange
-    {disabled}
-  >
-    <span>{$i18n.neuron_detail.auto_stake_maturity}</span>
-  </Checkbox>
-</div>
-
-<style lang="scss">
-  .auto-stake {
-    padding: var(--padding-2x) 0 0;
-
-    --checkbox-label-order: 1;
-    --checkbox-padding: var(--padding) 0;
-  }
-</style>
+<Checkbox
+  preventDefault
+  testId="auto-stake-maturity-checkbox-component"
+  inputId="auto-stake-maturity-checkbox"
+  checked={hasAutoStakeOn}
+  on:nnsChange
+  {disabled}
+  --checkbox-label-order="1"
+>
+  <span>{$i18n.neuron_detail.auto_stake_maturity}</span>
+</Checkbox>

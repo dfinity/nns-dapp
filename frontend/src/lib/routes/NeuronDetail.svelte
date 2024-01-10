@@ -10,7 +10,9 @@
 
   export let neuronId: string | null | undefined;
 
-  layoutTitleStore.set($i18n.neuron_detail.title);
+  layoutTitleStore.set({
+    title: $i18n.neuron_detail.title,
+  });
 </script>
 
 <TestIdWrapper testId="neuron-detail-component">

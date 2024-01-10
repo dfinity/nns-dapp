@@ -8,24 +8,24 @@ describe("initTransactionsWorker", () => {
   let spyPostMessage;
 
   beforeEach(() => {
-    spyPostMessage = jest.fn();
+    spyPostMessage = vi.fn();
 
-    jest.mock("$lib/workers/transactions.worker?worker", () => {
-      return class TransactionsWorker {
+    vi.doMock("$lib/workers/transactions.worker?worker", () => ({
+      default: class TransactionsWorker {
         postMessage(data: {
           msg: "nnsStartTransactionsTimer";
           data: PostMessageDataRequestTransactions;
         }) {
           spyPostMessage(data);
         }
-      };
-    });
+      },
+    }));
   });
 
   it("should start worker with params", async () => {
     const worker = await initTransactionsWorker();
 
-    const callback = jest.fn();
+    const callback = vi.fn();
 
     const params = {
       indexCanisterId: indexCanisterIdMock.toText(),

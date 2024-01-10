@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SplitNeuronButton from "$lib/components/neuron-detail/actions/SplitNnsNeuronButton.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
@@ -10,7 +6,7 @@ import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
 describe("SplitNeuronButton", () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("renders split neuron message", () => {
@@ -31,7 +27,7 @@ describe("SplitNeuronButton", () => {
           ...mockNeuron,
           fullNeuron: {
             ...mockFullNeuron,
-            cachedNeuronStake: BigInt(10),
+            cachedNeuronStake: 10n,
           },
         },
         testComponent: SplitNeuronButton,
@@ -51,7 +47,7 @@ describe("SplitNeuronButton", () => {
           ...mockNeuron,
           fullNeuron: {
             ...mockFullNeuron,
-            cachedNeuronStake: BigInt(1_000_000_000),
+            cachedNeuronStake: 1_000_000_000n,
           },
         },
         testComponent: SplitNeuronButton,

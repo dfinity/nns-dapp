@@ -12,7 +12,7 @@ test -e frontend/.env || {
 ###################
 # frontend # (output: frontend/public/)
 ###################
-(cd "$TOPLEVEL/frontend" && npm ci && npm run build)
+(cd "$TOPLEVEL/frontend" && npm ci && npm run build --node-options="--max-old-space-size=4096")
 
 #################
 # assets.tar.xz #
@@ -68,7 +68,7 @@ find . -type f | xargs -I{} gzip -fn "{}"
   --owner=0 \
   --group=0 \
   --numeric-owner \
-  --format=ustar \
+  --format=gnu \
   --exclude .last_build_id \
   -f "$TOPLEVEL/assets.tar.xz" \
   .

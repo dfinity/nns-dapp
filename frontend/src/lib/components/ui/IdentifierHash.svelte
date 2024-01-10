@@ -2,6 +2,7 @@
   import Hash from "$lib/components/ui/Hash.svelte";
 
   export let identifier: string;
+  export let splitLength: number | undefined = undefined;
 </script>
 
 <Hash
@@ -10,4 +11,5 @@
   testId="identifier"
   text={identifier}
   showCopy
+  {splitLength}
 />

@@ -1,0 +1,9 @@
+disallowed-macros = [
+    "std::print",
+    "std::println",
+    "std::eprint",
+    "std::eprintln",
+]
+disallowed-methods = [
+    "dfn_core::api::print",
+]

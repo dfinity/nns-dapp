@@ -16,7 +16,17 @@ clean_config() {
   echo "Compare generated config against expected values for specific networks"
   ./scripts/nns-dapp/test-config
 )
-
+(
+  echo "Compare generated config with local deployments"
+  # Note: Unlike on mainnet, canister IDs can change.  The test will adapt the expected values with the actual canister ID.
+  # We will deploy twice to make sure that the local canister ID changes.
+  dfx start --clean --background
+  for ((i = 0; i < 2; i++)); do
+    dfx canister create nns-dapp
+    scripts/nns-dapp/test-config --network local
+    dfx canister delete nns-dapp --yes
+  done
+)
 (
   echo "Network parameter is in config"
   for DFX_NETWORK in mainnet local; do

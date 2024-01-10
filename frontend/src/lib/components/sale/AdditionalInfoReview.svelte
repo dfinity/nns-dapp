@@ -6,27 +6,15 @@
   const toggleAccept = () => (accepted = !accepted);
 </script>
 
-<div class="additional-info-review" data-tid="additional-info-review-component">
-  <Checkbox
-    text="block"
-    inputId="agree"
-    checked={accepted}
-    on:nnsChange={toggleAccept}
-  >
-    {$i18n.sns_project_detail.understand_agree}
-  </Checkbox>
-</div>
-
-<style lang="scss">
-  .additional-info-review {
-    display: flex;
-    flex-direction: column;
-    --checkbox-label-order: 1;
-    --padding: var(--padding-2x);
-    --checkbox-padding: var(--padding) 0;
-
-    :global(label) {
-      order: 1;
-    }
-  }
-</style>
+<Checkbox
+  testId="additional-info-review-component"
+  text="block"
+  inputId="agree"
+  checked={accepted}
+  on:nnsChange={toggleAccept}
+  --checkbox-align-items="flex-start"
+  --checkbox-label-order="1"
+  --checkbox-padding="var(--padding)"
+>
+  {$i18n.sns_project_detail.understand_agree}
+</Checkbox>

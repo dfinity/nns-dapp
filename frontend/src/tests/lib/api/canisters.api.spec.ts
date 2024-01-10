@@ -19,16 +19,20 @@ import {
 import { CYCLES_MINTING_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
-import { mockSubAccount } from "$tests/mocks/accounts.store.mock";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCanisterDetails,
   mockCanisterSettings,
 } from "$tests/mocks/canisters.mock";
+import { mockSubAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { CMCCanister, ProcessingError } from "@dfinity/cmc";
-import { AccountIdentifier, LedgerCanister, SubAccount } from "@dfinity/nns";
+import {
+  AccountIdentifier,
+  LedgerCanister,
+  SubAccount,
+} from "@dfinity/ledger-icp";
 import { ICPToken, TokenAmount, principalToSubAccount } from "@dfinity/utils";
-import { mock } from "jest-mock-extended";
+import { mock } from "vitest-mock-extended";
 
 describe("canisters-api", () => {
   const mockNNSDappCanister = mock<NNSDappCanister>();
@@ -36,34 +40,30 @@ describe("canisters-api", () => {
   const mockICManagementCanister = mock<ICManagementCanister>();
   const mockLedgerCanister = mock<LedgerCanister>();
 
-  afterAll(() => {
-    jest.resetAllMocks();
-    jest.clearAllTimers();
-  });
-
   beforeEach(() => {
-    jest.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.resetAllMocks();
+    vi.clearAllTimers();
+
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
     const now = Date.now();
-    jest.useFakeTimers().setSystemTime(now);
+    vi.useFakeTimers().setSystemTime(now);
 
-    jest
-      .spyOn(NNSDappCanister, "create")
-      .mockImplementation((): NNSDappCanister => mockNNSDappCanister);
+    vi.spyOn(NNSDappCanister, "create").mockImplementation(
+      (): NNSDappCanister => mockNNSDappCanister
+    );
 
-    jest.spyOn(CMCCanister, "create").mockImplementation(() => mockCMCCanister);
+    vi.spyOn(CMCCanister, "create").mockImplementation(() => mockCMCCanister);
 
-    jest
-      .spyOn(ICManagementCanister, "create")
-      .mockImplementation(() => mockICManagementCanister);
+    vi.spyOn(ICManagementCanister, "create").mockImplementation(
+      () => mockICManagementCanister
+    );
 
-    jest
-      .spyOn(LedgerCanister, "create")
-      .mockImplementation(() => mockLedgerCanister);
+    vi.spyOn(LedgerCanister, "create").mockImplementation(
+      () => mockLedgerCanister
+    );
   });
 
   describe("queryCanisters", () => {
-    afterEach(() => jest.clearAllMocks());
-
     it("should call the canister to list the canisters 🤪", async () => {
       await queryCanisters({ identity: mockIdentity, certified: true });
 
@@ -72,24 +72,25 @@ describe("canisters-api", () => {
   });
 
   describe("attachCanister", () => {
-    afterEach(() => jest.clearAllMocks());
-
     it("should call the nns dapp canister to attach the canister id", async () => {
+      expect(mockNNSDappCanister.attachCanister).not.toBeCalled();
       await attachCanister({
         identity: mockIdentity,
         canisterId: mockCanisterDetails.id,
         name: "test name",
       });
 
-      expect(mockNNSDappCanister.attachCanister).toBeCalled();
+      expect(mockNNSDappCanister.attachCanister).toBeCalledTimes(1);
     });
 
     it("should call the nns dapp canister to attach the canister id with empty string as name when not present", async () => {
+      expect(mockNNSDappCanister.attachCanister).not.toBeCalled();
       await attachCanister({
         identity: mockIdentity,
         canisterId: mockCanisterDetails.id,
       });
 
+      expect(mockNNSDappCanister.attachCanister).toBeCalledTimes(1);
       expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
         canisterId: mockCanisterDetails.id,
         name: "",
@@ -98,6 +99,7 @@ describe("canisters-api", () => {
 
     it("should fail to attach if name is longer than max", async () => {
       const longName = "a".repeat(MAX_CANISTER_NAME_LENGTH + 1);
+      expect(mockNNSDappCanister.attachCanister).not.toBeCalled();
       const call = () =>
         attachCanister({
           identity: mockIdentity,
@@ -115,8 +117,6 @@ describe("canisters-api", () => {
   });
 
   describe("renameCanister", () => {
-    beforeEach(() => jest.clearAllMocks());
-
     it("should call the nns dapp canister to rename the canister", async () => {
       await renameCanister({
         identity: mockIdentity,
@@ -146,8 +146,6 @@ describe("canisters-api", () => {
   });
 
   describe("updateSettings", () => {
-    afterEach(() => jest.clearAllMocks());
-
     it("should call the ic management canister to update settings", async () => {
       mockICManagementCanister.updateSettings.mockResolvedValue(undefined);
       await updateSettings({
@@ -177,8 +175,6 @@ describe("canisters-api", () => {
   });
 
   describe("detachCanister", () => {
-    afterEach(() => jest.clearAllMocks());
-
     it("should call the nns dapp canister to detach the canister id", async () => {
       await detachCanister({
         identity: mockIdentity,
@@ -208,27 +204,24 @@ describe("canisters-api", () => {
 
   describe("getIcpToCyclesExchangeRate", () => {
     it("should call CMC to get conversion rate", async () => {
-      mockCMCCanister.getIcpToCyclesConversionRate.mockResolvedValue(
-        BigInt(10_000)
-      );
+      mockCMCCanister.getIcpToCyclesConversionRate.mockResolvedValue(10_000n);
 
       const response = await getIcpToCyclesExchangeRate(mockIdentity);
       expect(mockCMCCanister.getIcpToCyclesConversionRate).toBeCalled();
-      expect(response).toEqual(BigInt(10_000));
+      expect(response).toEqual(10_000n);
     });
   });
 
   describe("createCanister", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      jest.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
+      vi.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
       // Avoid to print errors during test
-      jest.spyOn(console, "log").mockImplementation(() => undefined);
+      vi.spyOn(console, "log").mockImplementation(() => undefined);
     });
 
     it("should make a transfer, notify and attach the canister", async () => {
-      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
+      mockLedgerCanister.transfer.mockResolvedValue(10n);
       mockCMCCanister.notifyCreateCanister.mockResolvedValue(
         mockCanisterDetails.id
       );
@@ -250,7 +243,7 @@ describe("canisters-api", () => {
     });
 
     it("should attach the canister if name max length", async () => {
-      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
+      mockLedgerCanister.transfer.mockResolvedValue(10n);
       mockCMCCanister.notifyCreateCanister.mockResolvedValue(
         mockCanisterDetails.id
       );
@@ -272,7 +265,7 @@ describe("canisters-api", () => {
     });
 
     it("should notify twice if the first call returns Processing", async () => {
-      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
+      mockLedgerCanister.transfer.mockResolvedValue(10n);
       mockCMCCanister.notifyCreateCanister
         .mockRejectedValueOnce(new ProcessingError())
         .mockResolvedValue(mockCanisterDetails.id);
@@ -289,7 +282,7 @@ describe("canisters-api", () => {
     });
 
     it("handles creating from subaccounts", async () => {
-      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
+      mockLedgerCanister.transfer.mockResolvedValue(10n);
       mockCMCCanister.notifyCreateCanister.mockResolvedValue(
         mockCanisterDetails.id
       );
@@ -366,16 +359,15 @@ describe("canisters-api", () => {
 
   describe("topUpCanister", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      jest.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
+      vi.spyOn(global, "setTimeout").mockImplementation((cb: any) => cb());
       // Avoid to print errors during test
-      jest.spyOn(console, "log").mockImplementation(() => undefined);
+      vi.spyOn(console, "log").mockImplementation(() => undefined);
     });
 
     it("should make a transfer and notify", async () => {
-      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
-      mockCMCCanister.notifyTopUp.mockResolvedValue(BigInt(10));
+      mockLedgerCanister.transfer.mockResolvedValue(10n);
+      mockCMCCanister.notifyTopUp.mockResolvedValue(10n);
 
       await topUpCanister({
         identity: mockIdentity,
@@ -390,10 +382,10 @@ describe("canisters-api", () => {
     });
 
     it("should notify twice if the first returns ProcessingError", async () => {
-      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
+      mockLedgerCanister.transfer.mockResolvedValue(10n);
       mockCMCCanister.notifyTopUp
         .mockRejectedValueOnce(new ProcessingError())
-        .mockResolvedValue(BigInt(10));
+        .mockResolvedValue(10n);
 
       await topUpCanister({
         identity: mockIdentity,
@@ -407,8 +399,8 @@ describe("canisters-api", () => {
     });
 
     it("should make a transfer from subaccounts", async () => {
-      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
-      mockCMCCanister.notifyTopUp.mockResolvedValue(BigInt(10));
+      mockLedgerCanister.transfer.mockResolvedValue(10n);
+      mockCMCCanister.notifyTopUp.mockResolvedValue(10n);
 
       const toSubAccount = principalToSubAccount(mockCanisterDetails.id);
       // To create a canister you need to send ICP to an account owned by the CMC, so that the CMC can burn those funds.

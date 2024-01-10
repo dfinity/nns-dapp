@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsProposalsFilters from "$lib/components/sns-proposals/SnsProposalsFilters.svelte";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 

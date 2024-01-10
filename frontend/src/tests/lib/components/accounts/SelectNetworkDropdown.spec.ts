@@ -1,20 +1,16 @@
-/**
- * @jest-environment jsdom
- */
-
 import SelectNetworkDropdown from "$lib/components/accounts/SelectNetworkDropdown.svelte";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { TransactionNetwork } from "$lib/types/transaction";
-import en from "$tests/mocks/i18n.mock";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import {
   mockBTCAddressMainnet,
   mockBTCAddressTestnet,
   mockCkBTCAddress,
-} from "../../../mocks/ckbtc-accounts.mock";
+} from "$tests/mocks/ckbtc-accounts.mock";
+import en from "$tests/mocks/i18n.mock";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("SelectNetworkDropdown", () => {
   const props = { universeId: CKBTC_UNIVERSE_CANISTER_ID };
@@ -31,7 +27,7 @@ describe("SelectNetworkDropdown", () => {
     const option = container.querySelector("option[disabled]");
 
     expect(option).not.toBeNull();
-    expect(option?.getAttribute("value")).toEqual("undefined");
+    expect(option?.getAttribute("value")).toEqual("");
   });
 
   it("should display an option to select ICP", () => {

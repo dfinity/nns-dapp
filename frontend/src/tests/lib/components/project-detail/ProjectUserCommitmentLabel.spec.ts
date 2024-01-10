@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ProjectUserCommitmentLabel from "$lib/components/project-detail/ProjectUserCommitmentLabel.svelte";
 import en from "$tests/mocks/i18n.mock";
 import {

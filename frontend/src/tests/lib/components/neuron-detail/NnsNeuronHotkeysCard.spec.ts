@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsNeuronHotkeysCard from "$lib/components/neuron-detail/NnsNeuronHotkeysCard.svelte";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
@@ -17,10 +13,10 @@ import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
-jest.mock("$lib/services/neurons.services", () => {
+vi.mock("$lib/services/neurons.services", () => {
   return {
-    removeHotkey: jest.fn().mockResolvedValue(BigInt(10)),
-    getNeuronFromStore: jest.fn(),
+    removeHotkey: vi.fn().mockResolvedValue(10n),
+    getNeuronFromStore: vi.fn(),
   };
 });
 
@@ -46,11 +42,10 @@ describe("NnsNeuronHotkeysCard", () => {
     },
   };
 
-  beforeAll(() =>
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
-  );
+  beforeEach(() => {
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    vi.clearAllMocks();
+  });
 
   it("renders hotkeys title", () => {
     const { queryByText } = render(NeuronContextActionsTest, {
@@ -143,7 +138,6 @@ describe("NnsNeuronHotkeysCard", () => {
     const firstButton = removeButtons[0];
 
     await fireEvent.click(firstButton);
-    expect(removeHotkey).toBeCalled();
 
     await waitFor(() =>
       expect(
@@ -151,7 +145,9 @@ describe("NnsNeuronHotkeysCard", () => {
       ).toBeInTheDocument()
     );
     const confirmButton = queryByTestId("confirm-yes");
+    expect(removeHotkey).not.toBeCalled();
     confirmButton && fireEvent.click(confirmButton);
+    expect(removeHotkey).toBeCalled();
 
     await waitFor(() => expect(get(pageStore).path).toEqual(AppPath.Neurons));
   });

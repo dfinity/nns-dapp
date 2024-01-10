@@ -3,9 +3,11 @@
   import { debounce } from "@dfinity/utils";
 
   export let id: string;
+  export let testId = "tooltip-component";
   export let text = "";
   export let noWrap = false;
   export let top = false;
+  export let center = false;
   export let containerSelector = "main";
 
   let tooltipComponent: HTMLDivElement | undefined = undefined;
@@ -14,11 +16,16 @@
   let tooltipStyle: string | undefined = undefined;
 
   const setPosition = debounce(() => {
+    // The debounce might effectively happen after the component has been destroyed, this is particularly the case in unit tests.
+    // That is why we are using a guard to avoid to perform any logic in case the Tooltip does not exist anymore.
+    if (destroyed) {
+      return;
+    }
+
     // We need the main reference because at the moment the scrollbar is displayed in that element therefore it's the way to get to know the real width - i.e. window width - scrollbar width
     const main: HTMLElement | null = document.querySelector(containerSelector);
 
     if (
-      destroyed ||
       main === null ||
       tooltipComponent === undefined ||
       target === undefined
@@ -27,11 +34,10 @@
       return;
     }
 
-    const { innerWidth } = window;
-
     const SCROLLBAR_FALLBACK_WIDTH = 20;
 
     const { clientWidth, offsetWidth } = main;
+    const { left: containerLeft } = main.getBoundingClientRect();
     const scrollbarWidth =
       offsetWidth - clientWidth > 0
         ? offsetWidth - clientWidth
@@ -43,8 +49,11 @@
 
     const { width: tooltipWidth } = tooltipComponent.getBoundingClientRect();
 
-    const spaceLeft = targetCenter - (innerWidth - clientWidth) / 2;
-    const spaceRight = innerWidth - scrollbarWidth - targetCenter;
+    // Space at the left of the center of the target until the containerSelector.
+    const spaceLeft = targetCenter - containerLeft;
+    // Space at the right of the center of the target until the containerSelector.
+    const spaceRight =
+      containerLeft + clientWidth - scrollbarWidth - targetCenter;
 
     const overflowLeft = spaceLeft > 0 ? tooltipWidth / 2 - spaceLeft : 0;
     const overflowRight = spaceRight > 0 ? tooltipWidth / 2 - spaceRight : 0;
@@ -57,14 +66,15 @@
 
     // If tooltip overflow both on left and right, we only set the left anchor.
     // It would need the width to be maximized to window screen too but it seems to be an acceptable edge case.
-    tooltipStyle =
-      overflowLeft > 0
-        ? `--tooltip-transform-x: calc(-50% + ${overflowLeft}px)`
-        : overflowRight > 0
-        ? `--tooltip-transform-x: calc(-50% - ${overflowRight}px)`
-        : leftToMainCenter
-        ? `--tooltip-transform-x: 0`
-        : undefined;
+    tooltipStyle = center
+      ? `--tooltip-transform-x: calc(-50%)`
+      : overflowLeft > 0
+      ? `--tooltip-transform-x: calc(-50% + ${overflowLeft}px)`
+      : overflowRight > 0
+      ? `--tooltip-transform-x: calc(-50% - ${overflowRight}px)`
+      : leftToMainCenter
+      ? `--tooltip-transform-x: 0`
+      : undefined;
   });
 
   $: innerWidth, tooltipComponent, target, setPosition();
@@ -75,7 +85,7 @@
 
 <svelte:window bind:innerWidth />
 
-<div class="tooltip-wrapper" data-tid="tooltip-component">
+<div class="tooltip-wrapper" data-tid={testId}>
   <div class="tooltip-target" aria-describedby={id} bind:this={target}>
     <slot />
   </div>
@@ -115,7 +125,9 @@
 
     opacity: 0;
     visibility: hidden;
-    transition: opacity 150ms, visibility 150ms;
+    transition:
+      opacity 150ms,
+      visibility 150ms;
 
     padding: 4px 6px;
     border-radius: 4px;

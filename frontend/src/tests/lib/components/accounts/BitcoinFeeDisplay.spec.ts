@@ -1,12 +1,8 @@
-/**
- * @jest-environment jsdom
- */
-
 import BitcoinFeeDisplay from "$lib/components/accounts/BitcoinFeeDisplay.svelte";
 import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
-import BitcoinFeeDisplayTest from "$tests/lib/components/accounts/BitcoinFeeDisplayTest.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { render } from "@testing-library/svelte";
+import BitcoinFeeDisplayTest from "./BitcoinFeeDisplayTest.svelte";
 
 describe("BitcoinFeeDisplay", () => {
   const testId = "bitcoin-estimated-fee-display";

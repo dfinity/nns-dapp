@@ -5,7 +5,7 @@ import { CkBTCErrorRetrieveBtcMinAmount } from "$lib/types/ckbtc.errors";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
 import { notForceCallStrategy } from "$lib/utils/env.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
-import { formatToken, numberToE8s } from "$lib/utils/token.utils";
+import { formatTokenE8s, numberToE8s } from "$lib/utils/token.utils";
 import { isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
@@ -39,7 +39,7 @@ export const assertCkBTCUserInputAmount = ({
   const amountE8s = numberToE8s(amount);
 
   // No additional check if amount is zero because user might be entering a value such as 0.00000...
-  if (amountE8s === BigInt(0)) {
+  if (amountE8s === 0n) {
     return;
   }
 
@@ -62,7 +62,7 @@ export const assertCkBTCUserInputAmount = ({
     } = get(i18n);
     throw new CkBTCErrorRetrieveBtcMinAmount(
       replacePlaceholders(retrieve_btc_min_amount, {
-        $amount: formatToken({
+        $amount: formatTokenE8s({
           value: retrieveBtcMinAmount,
           detailed: true,
         }),
@@ -72,7 +72,7 @@ export const assertCkBTCUserInputAmount = ({
 
   assertEnoughAccountFunds({
     account: sourceAccount,
-    amountE8s: amountE8s + transactionFee,
+    amountUlps: amountE8s + transactionFee,
   });
 
   // This assertion is primarily intended to handle edge cases.

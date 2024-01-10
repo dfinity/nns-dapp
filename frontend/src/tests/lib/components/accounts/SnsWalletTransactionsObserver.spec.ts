@@ -1,9 +1,4 @@
-/**
- * @jest-environment jsdom
- */
-
 import { AppPath } from "$lib/constants/routes.constants";
-import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { syncStore } from "$lib/stores/sync.store";
 import type { PostMessageDataResponseSync } from "$lib/types/post-message.sync";
@@ -12,7 +7,6 @@ import type {
   PostMessageDataResponseTransactions,
 } from "$lib/types/post-message.transactions";
 import type { PostMessage } from "$lib/types/post-messages";
-import { jsonReplacer } from "$lib/utils/json.utils";
 import { page } from "$mocks/$app/stores";
 import SnsWalletTransactionsObserverTest from "$tests/lib/components/accounts/SnsWalletTransactionsObserverTest.svelte";
 import {
@@ -21,11 +15,10 @@ import {
 } from "$tests/mocks/icrc-transactions.mock";
 import { PostMessageMock } from "$tests/mocks/post-message.mocks";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
-import {
-  mockProjectSubscribe,
-  mockSnsFullProject,
-} from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import { jsonReplacer } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -42,19 +35,17 @@ describe("SnsWalletTransactionsObserver", () => {
     canisterId: rootCanisterIdMock,
     transactions: [mockIcrcTransactionWithId],
     accountIdentifier: mockSnsMainAccount.identifier,
-    oldestTxId: BigInt(10),
+    oldestTxId: 10n,
     completed: false,
   };
 
   beforeEach(() => {
-    jest.spyOn(snsProjectsStore, "subscribe").mockImplementation(
-      mockProjectSubscribe([
-        {
-          ...mockSnsFullProject,
-          rootCanisterId: rootCanisterIdMock,
-        },
-      ])
-    );
+    setSnsProjects([
+      {
+        rootCanisterId: rootCanisterIdMock,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+    ]);
 
     icrcTransactionsStore.addTransactions(transaction);
 
@@ -65,8 +56,8 @@ describe("SnsWalletTransactionsObserver", () => {
 
     postMessageMock = new PostMessageMock();
 
-    jest.mock("$lib/workers/transactions.worker?worker", () => {
-      return class TransactionsWorker {
+    vi.doMock("$lib/workers/transactions.worker?worker", () => ({
+      default: class TransactionsWorker {
         constructor() {
           postMessageMock.subscribe(async (msg) => await this.onmessage(msg));
         }
@@ -81,8 +72,8 @@ describe("SnsWalletTransactionsObserver", () => {
         onmessage = async (_params: TransactionsMessageEvent) => {
           // Nothing here
         };
-      };
-    });
+      },
+    }));
   });
 
   it("should init data and render slotted content", async () => {

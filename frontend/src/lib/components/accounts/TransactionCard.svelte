@@ -3,71 +3,79 @@
   import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Identifier from "$lib/components/ui/Identifier.svelte";
-  import type { Token } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
-  import { transactionName } from "$lib/utils/transactions.utils";
-  import { Html, IconNorthEast, KeyValuePair } from "@dfinity/gix-components";
-  import type {
-    Transaction,
-    AccountTransactionType,
-  } from "$lib/types/transaction";
-  import { nonNullish } from "@dfinity/utils";
-  import { TokenAmount } from "@dfinity/utils";
+  import {
+    IconReimbursed,
+    IconErrorOutline,
+    IconUp,
+    IconDown,
+    KeyValuePair,
+  } from "@dfinity/gix-components";
+  import type { UiTransaction } from "$lib/types/transaction";
+  import {
+    nonNullish,
+    type TokenAmount,
+    type TokenAmountV2,
+  } from "@dfinity/utils";
   import { fade } from "svelte/transition";
 
-  export let transaction: Transaction;
-  export let toSelfTransaction = false;
-  export let token: Token;
-  export let descriptions: Record<string, string> | undefined = undefined;
-
-  let type: AccountTransactionType;
-  let isReceive: boolean;
-  let isSend: boolean;
-  let from: string | undefined;
-  let to: string | undefined;
-  let displayAmount: bigint;
-  let date: Date;
-  $: ({ type, isReceive, isSend, from, to, displayAmount, date } = transaction);
+  export let transaction: UiTransaction;
 
   let headline: string;
-  $: headline = transactionName({
-    type,
-    isReceive: isReceive || toSelfTransaction,
-    labels: $i18n.transaction_names,
-    tokenSymbol: token.symbol,
-  });
+  let tokenAmount: TokenAmount | TokenAmountV2;
+  let isIncoming: boolean;
+  let isPending: boolean;
+  let isFailed: boolean | undefined;
+  let isReimbursement: boolean | undefined;
+  let otherParty: string | undefined;
+  let timestamp: Date | undefined;
+  $: ({
+    headline,
+    tokenAmount,
+    isIncoming,
+    isPending,
+    isFailed,
+    isReimbursement,
+    otherParty,
+    timestamp,
+  } = transaction);
 
-  let label: string | undefined;
-  $: label =
-    isReceive || toSelfTransaction
-      ? $i18n.wallet.direction_from
-      : isSend
-      ? $i18n.wallet.direction_to
-      : undefined;
+  let label: string;
+  $: label = isIncoming
+    ? $i18n.wallet.direction_from
+    : $i18n.wallet.direction_to;
 
-  let description: string | undefined;
-  $: description = descriptions?.[type];
-
-  let identifier: string | undefined;
-  $: identifier = isReceive ? from : to;
-
-  let seconds: number;
-  $: seconds = date.getTime() / 1000;
+  let seconds: number | undefined;
+  $: seconds = timestamp && timestamp.getTime() / 1000;
 </script>
 
-<article data-tid="transaction-card" transition:fade>
-  <div class="icon" class:send={!isReceive}>
-    <IconNorthEast size="24px" />
+<article data-tid="transaction-card" transition:fade|global>
+  <div
+    class="icon"
+    data-tid="icon"
+    class:send={!isIncoming}
+    class:pending={isPending}
+    class:failed={isFailed || isReimbursement}
+  >
+    {#if isFailed}
+      <IconErrorOutline size="24px" />
+    {:else if isReimbursement}
+      <IconReimbursed size="24px" />
+    {:else if isIncoming}
+      <IconDown size="24px" />
+    {:else}
+      <IconUp size="24px" />
+    {/if}
   </div>
 
   <div class="transaction">
     <KeyValuePair>
-      <h3 slot="key" class="value title">{headline}</h3>
+      <h3 slot="key" class="value title" data-tid="headline">{headline}</h3>
 
       <AmountDisplay
         slot="value"
-        amount={TokenAmount.fromE8s({ amount: displayAmount, token })}
-        sign={isReceive || toSelfTransaction ? "+" : "-"}
+        amount={tokenAmount}
+        sign={isIncoming ? "+" : "-"}
         detailed
         inline
       />
@@ -75,17 +83,19 @@
 
     <ColumnRow>
       <div slot="start" class="identifier">
-        {#if nonNullish(description)}
-          <p data-tid="transaction-description"><Html text={description} /></p>
-        {/if}
-
-        {#if nonNullish(identifier)}
-          <Identifier size="medium" {label} {identifier} />
+        {#if nonNullish(otherParty)}
+          <Identifier size="medium" {label} identifier={otherParty} />
         {/if}
       </div>
 
       <div slot="end" class="date label" data-tid="transaction-date">
-        <DateSeconds {seconds} />
+        {#if nonNullish(seconds)}
+          <DateSeconds {seconds} />
+        {:else if isPending}
+          <p class="value pending">
+            {$i18n.wallet.pending_transaction_timestamp}
+          </p>
+        {/if}
       </div>
     </ColumnRow>
   </div>
@@ -124,6 +134,11 @@
     min-width: fit-content;
     text-align: right;
 
+    .pending {
+      // Because DateSeconds also has margin-top: 0.
+      margin-top: 0;
+    }
+
     @include media.min-width(small) {
       margin-top: var(--padding);
     }
@@ -138,10 +153,8 @@
     justify-content: center;
     align-items: center;
 
-    transform: rotate(90deg);
-
-    background: var(--positive-emphasis-light);
-    color: var(--positive-emphasis);
+    background: var(--check-tint);
+    color: var(--check);
 
     border-radius: var(--border-radius);
 
@@ -151,21 +164,18 @@
     margin: var(--padding-0_5x) 0;
 
     &.send {
-      transform: rotate(270deg);
       background: var(--background);
       color: var(--disable-contrast);
     }
-  }
 
-  @include media.dark-theme {
-    .icon {
-      background: rgba(var(--positive-emphasis-rgb), 0.3);
-      color: var(--positive-emphasis);
+    &.pending {
+      color: var(--pending-color);
+      background: var(--pending-background);
+    }
 
-      &.send {
-        background: var(--card-background);
-        color: var(--disable-contrast);
-      }
+    &.failed {
+      color: var(--alert);
+      background: var(--alert-tint);
     }
   }
 </style>

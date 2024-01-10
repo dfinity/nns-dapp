@@ -1,14 +1,10 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { registerSnsVotes } from "$lib/services/sns-vote-registration.services";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
-import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
@@ -37,9 +33,9 @@ describe("sns-vote-registration-services", () => {
       state: NeuronState.Locked,
     }),
   ];
-  const spyOnToastsUpdate = jest.spyOn(toastsStore, "toastsUpdate");
-  const spyOnToastsShow = jest.spyOn(toastsStore, "toastsShow");
-  const spyOnToastsError = jest.spyOn(toastsStore, "toastsError");
+  const spyOnToastsUpdate = vi.spyOn(toastsStore, "toastsUpdate");
+  const spyOnToastsShow = vi.spyOn(toastsStore, "toastsShow");
+  const spyOnToastsError = vi.spyOn(toastsStore, "toastsError");
   const proposal: SnsProposalData = {
     ...mockSnsProposal,
     id: [{ id: 123n }],
@@ -71,7 +67,8 @@ describe("sns-vote-registration-services", () => {
     });
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    resetIdentity();
+    vi.clearAllMocks();
 
     snsFunctionsStore.setProjectFunctions({
       rootCanisterId,
@@ -92,12 +89,12 @@ describe("sns-vote-registration-services", () => {
 
   describe("registerSnsVotes", () => {
     it("should make an sns registerVote api call per neuron", async () => {
-      const spyRegisterVoteApi = jest
+      const spyRegisterVoteApi = vi
         .spyOn(snsGovernanceApi, "registerVote")
         .mockResolvedValue();
       await callRegisterVote({
         vote: SnsVote.Yes,
-        reloadProposalCallback: jest.fn(),
+        reloadProposalCallback: vi.fn(),
       });
 
       const votableNeuronCount = neurons.length;
@@ -116,10 +113,10 @@ describe("sns-vote-registration-services", () => {
     });
 
     it("should call updateProposalContext after single neuron voting", async () => {
-      const spyRegisterVoteApi = jest
+      const spyRegisterVoteApi = vi
         .spyOn(snsGovernanceApi, "registerVote")
         .mockResolvedValue();
-      const spyReloadProposalCallback = jest.fn();
+      const spyReloadProposalCallback = vi.fn();
 
       callRegisterVote({
         vote: SnsVote.Yes,
@@ -137,10 +134,10 @@ describe("sns-vote-registration-services", () => {
     });
 
     it("should call updateProposalContext with optimistically updated proposal", async () => {
-      const spyRegisterVoteApi = jest
+      const spyRegisterVoteApi = vi
         .spyOn(snsGovernanceApi, "registerVote")
         .mockResolvedValue();
-      const spyReloadProposalCallback = jest.fn();
+      const spyReloadProposalCallback = vi.fn();
 
       await callRegisterVote({
         vote: SnsVote.Yes,
@@ -165,10 +162,10 @@ describe("sns-vote-registration-services", () => {
     });
 
     it("should display a correct error details", async () => {
-      const spyRegisterVoteApi = jest
+      const spyRegisterVoteApi = vi
         .spyOn(snsGovernanceApi, "registerVote")
         .mockRejectedValue(new Error("test error"));
-      const spyReloadProposalCallback = jest.fn();
+      const spyReloadProposalCallback = vi.fn();
 
       await callRegisterVote({
         vote: SnsVote.Yes,

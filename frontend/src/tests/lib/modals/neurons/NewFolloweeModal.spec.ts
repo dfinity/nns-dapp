@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NewFolloweeModal from "$lib/modals/neurons/NewFolloweeModal.svelte";
 import { addFollowee, removeFollowee } from "$lib/services/neurons.services";
 import { authStore } from "$lib/stores/auth.store";
@@ -17,16 +13,16 @@ import { Topic } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 
-jest.mock("$lib/services/neurons.services", () => {
+vi.mock("$lib/services/neurons.services", () => {
   return {
-    addFollowee: jest.fn().mockResolvedValue(undefined),
-    removeFollowee: jest.fn().mockResolvedValue(undefined),
+    addFollowee: vi.fn().mockResolvedValue(undefined),
+    removeFollowee: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/known-neurons.services", () => {
+vi.mock("$lib/services/known-neurons.services", () => {
   return {
-    listKnownNeurons: jest.fn(),
+    listKnownNeurons: vi.fn(),
   };
 });
 
@@ -44,14 +40,12 @@ describe("NewFolloweeModal", () => {
     },
   };
   beforeEach(() => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
   afterEach(() => {
     knownNeuronsStore.setNeurons([]);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
   it("renders an input for a neuron address", () => {
     const { container } = render(NewFolloweeModal, {
@@ -81,7 +75,7 @@ describe("NewFolloweeModal", () => {
     const formElement = container.querySelector("form");
     expect(formElement).toBeInTheDocument();
 
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     component.$on("nnsClose", onClose);
 
     formElement && (await fireEvent.submit(formElement));
@@ -134,7 +128,7 @@ describe("NewFolloweeModal", () => {
 
     expect(followButton).toBeInTheDocument();
 
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     component.$on("nnsClose", onClose);
 
     followButton && (await fireEvent.click(followButton));
@@ -157,7 +151,7 @@ describe("NewFolloweeModal", () => {
 
     expect(knownNeuronElement).toBeInTheDocument();
 
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     component.$on("nnsClose", onClose);
 
     const knownNeuronButton = knownNeuronElement?.querySelector("button");

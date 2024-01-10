@@ -1,8 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import SnsStakeNeuronModal from "$lib/modals/sns/neurons/SnsStakeNeuronModal.svelte";
@@ -29,21 +24,21 @@ import { TokenAmount } from "@dfinity/utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
 
-jest.mock("$lib/services/sns-neurons.services", () => {
+vi.mock("$lib/services/sns-neurons.services", () => {
   return {
-    stakeNeuron: jest.fn().mockResolvedValue({ success: true }),
+    stakeNeuron: vi.fn().mockResolvedValue({ success: true }),
   };
 });
 
 describe("SnsStakeNeuronModal", () => {
-  const token = { name: "SNS", symbol: "SNS" };
+  const token = { name: "SNS", symbol: "SNS", decimals: 8 };
   const renderTransactionModal = () =>
     renderModal({
       component: SnsStakeNeuronModal,
       props: {
         token,
         transactionFee: TokenAmount.fromE8s({
-          amount: BigInt(10_000),
+          amount: 10_000n,
           token,
         }),
         rootCanisterId: mockPrincipal,
@@ -51,25 +46,23 @@ describe("SnsStakeNeuronModal", () => {
       },
     });
 
-  beforeAll(() =>
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
-  );
+  beforeAll(() => {
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+  });
 
   beforeEach(() => {
-    jest
-      .spyOn(snsAccountsStore, "subscribe")
-      .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
-    jest
-      .spyOn(snsSelectedTransactionFeeStore, "subscribe")
-      .mockImplementation(mockSnsSelectedTransactionFeeStoreSubscribe());
-    jest
-      .spyOn(selectedUniverseIdStore, "subscribe")
-      .mockImplementation((run: Subscriber<Principal>): (() => void) => {
+    vi.spyOn(snsAccountsStore, "subscribe").mockImplementation(
+      mockSnsAccountsStoreSubscribe(mockPrincipal)
+    );
+    vi.spyOn(snsSelectedTransactionFeeStore, "subscribe").mockImplementation(
+      mockSnsSelectedTransactionFeeStoreSubscribe()
+    );
+    vi.spyOn(selectedUniverseIdStore, "subscribe").mockImplementation(
+      (run: Subscriber<Principal>): (() => void) => {
         run(mockPrincipal);
         return () => undefined;
-      });
+      }
+    );
 
     page.mock({ data: { universe: mockPrincipal.toText() } });
 
@@ -93,7 +86,7 @@ describe("SnsStakeNeuronModal", () => {
     const minimumAmount = 1;
     const snsParameters: SnsNervousSystemParameters = {
       ...snsNervousSystemParametersMock,
-      neuron_minimum_stake_e8s: [BigInt(minimumAmount * E8S_PER_ICP)],
+      neuron_minimum_stake_e8s: [100_000_000n],
     };
     snsParametersStore.setParameters({
       rootCanisterId: mockPrincipal,

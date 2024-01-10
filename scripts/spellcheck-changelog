@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-"EOF"
+
+	Check spelling in the CHANGELOGs.
+
+	To configure the spell checker or add words to the custom dictionary, see:
+	`.config/spellcheck.md`
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+# For NNS-dapp, check the 'unreleased' file:
+cargo spellcheck --code 1 CHANGELOG-Nns-Dapp-unreleased.md
+
+# For the aggregator, check everything before the first proposal:
+file=CHANGELOG-Sns_Aggregator.md
+unreleased="$(mktemp --suffix=.md)" # File with unreleased changelog entries.
+sed -E '/^#+.*Proposal/q' "$file" >"$unreleased"
+cargo spellcheck --code 1 "$unreleased" | awk -v tmp="$unreleased" -v orig="$file" '{gsub(tmp,orig,$0);print}'
+rm "$unreleased"

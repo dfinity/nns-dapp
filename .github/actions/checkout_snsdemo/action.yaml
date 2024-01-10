@@ -1,0 +1,70 @@
+name: 'Clone the snsdemo repository'
+description: |
+  Ensures that the snsdemo repository is checked out at the commit specified in `dfx.json`.
+
+  * If the snsdemo repository is already present: Checks that the repo is checked
+    out at the expected commit.  If not, this fails with an error message.
+  * Otherwise: Clones the snsdemo repository at the commit specified in `dfx.json`
+inputs:
+  token:
+    description: "Github access token used to clone"
+    required: true
+  path:
+    description: "Where to check out the repository"
+    default: "snsdemo"
+outputs:
+  ref:
+    description: The snsdemo reference that was checked out
+    value: ${{ steps.snsdemo_ref.outputs.ref }}
+runs:
+  using: "composite"
+  steps:
+    - name: Check whether the snsdemo repo is already present
+      shell: bash
+      id: have_snsdemo
+      run: |
+        # Check that the directory exists and is a git repository.
+        if test -d "${{ inputs.path }}/.git"
+        # Note: This is useful information to log, so let's `tee`.
+        then echo have_snsdemo=true | tee -a "$GITHUB_OUTPUT"
+        else echo have_snsdemo=false | tee -a "$GITHUB_OUTPUT"
+        fi
+    - name: Determine snsdemo ref
+      id: snsdemo_ref
+      shell: bash
+      run: |
+        SNSDEMO_RELEASE="$(jq -r .defaults.build.config.SNSDEMO_RELEASE dfx.json)"
+        echo "ref=$SNSDEMO_RELEASE" >> "$GITHUB_OUTPUT"
+    - name: Check that the existing repo has the expected commit.
+      if: ${{ steps.have_snsdemo.outputs.have_snsdemo == 'true' }}
+      shell: bash
+      run: |
+        set -euxo pipefail
+        echo "Read have_snsdemo as ${{ steps.have_snsdemo.outputs.have_snsdemo }}"
+        cd "${{ inputs.path }}"
+        git fetch --tags || true # This can fail as long as we get the ref we need.
+        expected_commit="$(git rev-parse "${{ steps.snsdemo_ref.outputs.ref }}" || echo COMMIT_FOR_REF_IS_NOT_KNOWN)"
+        actual_commit="$(git rev-parse HEAD)"
+        if [[ "${expected_commit:-}" == "${actual_commit:-}" ]]
+        then
+          echo "OK: snsdemo is already checked out at the requested commit."
+          echo "Snsdemo path:     ${{ inputs.path }}"
+          echo "              ==  $PWD"
+          echo "Requested ref:    ${{ steps.snsdemo_ref.outputs.ref }}"
+          echo "Requested commit: $expected_commit"
+        else
+          echo "ERROR: snsdemo is already checked out but not at the requested commit."
+          echo "Snsdemo path:     ${{ inputs.path }}"
+          echo "              ==  $PWD"
+          echo "Requested ref:    ${{ steps.snsdemo_ref.outputs.ref }}"
+          echo "Requested commit: ${expected_commit:-}  (May be missing in the case of a partial clone)"
+          echo "Actual commit:    ${actual_commit:-}"
+          exit 1
+        fi
+    - name: Get snsdemo
+      if: ${{ steps.have_snsdemo.outputs.have_snsdemo == 'false' }}
+      uses: actions/checkout@v3
+      with:
+        repository: 'dfinity/snsdemo'
+        path: '${{ inputs.path }}'
+        ref: ${{ steps.snsdemo_ref.outputs.ref }}

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import {
   startDissolving,
   stopDissolving,
@@ -12,17 +8,17 @@ import { NeuronState } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
 import DissolveActionButtonTest from "./DissolveActionButtonTest.svelte";
 
-jest.mock("$lib/services/neurons.services", () => {
+vi.mock("$lib/services/neurons.services", () => {
   return {
-    startDissolving: jest.fn().mockResolvedValue(undefined),
-    stopDissolving: jest.fn().mockResolvedValue(undefined),
-    getNeuronFromStore: jest.fn(),
+    startDissolving: vi.fn().mockResolvedValue(undefined),
+    stopDissolving: vi.fn().mockResolvedValue(undefined),
+    getNeuronFromStore: vi.fn(),
   };
 });
 
 describe("DissolveActionButton", () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("renders start dissolve message when neuron is locked", () => {
@@ -30,7 +26,7 @@ describe("DissolveActionButton", () => {
       props: {
         neuron: {
           ...mockNeuron,
-          neuronId: BigInt(10),
+          neuronId: 10n,
           state: NeuronState.Locked,
         },
       },
@@ -44,7 +40,7 @@ describe("DissolveActionButton", () => {
       props: {
         neuron: {
           ...mockNeuron,
-          neuronId: BigInt(10),
+          neuronId: 10n,
           state: NeuronState.Dissolving,
         },
       },
@@ -58,7 +54,7 @@ describe("DissolveActionButton", () => {
       props: {
         neuron: {
           ...mockNeuron,
-          neuronId: BigInt(10),
+          neuronId: 10n,
           state: NeuronState.Locked,
         },
       },
@@ -86,7 +82,7 @@ describe("DissolveActionButton", () => {
       props: {
         neuron: {
           ...mockNeuron,
-          neuronId: BigInt(10),
+          neuronId: 10n,
           state: NeuronState.Dissolving,
         },
       },

@@ -1,3 +1,4 @@
+import * as agent from "$lib/api/agent.api";
 import {
   queryProposal,
   queryProposalPayload,
@@ -8,8 +9,9 @@ import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
+import type { HttpAgent } from "@dfinity/agent";
 import { GovernanceCanister } from "@dfinity/nns";
-import { mock } from "jest-mock-extended";
+import { mock } from "vitest-mock-extended";
 
 describe("proposals-api", () => {
   const mockGovernanceCanister: MockGovernanceCanister =
@@ -18,11 +20,12 @@ describe("proposals-api", () => {
   let spyListProposals;
 
   beforeEach(() => {
-    jest
-      .spyOn(GovernanceCanister, "create")
-      .mockImplementation((): GovernanceCanister => mockGovernanceCanister);
+    vi.spyOn(GovernanceCanister, "create").mockImplementation(
+      (): GovernanceCanister => mockGovernanceCanister
+    );
 
-    spyListProposals = jest.spyOn(mockGovernanceCanister, "listProposals");
+    spyListProposals = vi.spyOn(mockGovernanceCanister, "listProposals");
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   afterEach(() => spyListProposals.mockClear());
@@ -68,6 +71,7 @@ describe("proposals-api", () => {
           excludeTopic: [],
           includeRewardStatus: DEFAULT_PROPOSALS_FILTERS.rewards,
           includeStatus: DEFAULT_PROPOSALS_FILTERS.status,
+          includeAllManageNeuronProposals: false,
           limit: 100,
         },
       });
@@ -76,7 +80,7 @@ describe("proposals-api", () => {
 
   describe("load", () => {
     it("should call the canister to get proposalInfo", async () => {
-      const proposalId = BigInt(404);
+      const proposalId = 404n;
       const certified = false;
 
       const proposal = await queryProposal({
@@ -95,6 +99,7 @@ describe("proposals-api", () => {
           excludeTopic: [],
           includeRewardStatus: [],
           includeStatus: [],
+          includeAllManageNeuronProposals: false,
           limit: 1,
         },
       });
@@ -104,18 +109,17 @@ describe("proposals-api", () => {
   describe("queryProposalPayload", () => {
     const nnsDappMock = mock<NNSDappCanister>();
     nnsDappMock.getProposalPayload.mockResolvedValue({});
-    jest.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
+    vi.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
 
-    afterAll(jest.clearAllMocks);
+    afterAll(() => {
+      vi.clearAllMocks();
+    });
 
     it("should call the canister to get proposal payload", async () => {
-      const spyGetProposalPayload = jest.spyOn(
-        nnsDappMock,
-        "getProposalPayload"
-      );
+      const spyGetProposalPayload = vi.spyOn(nnsDappMock, "getProposalPayload");
 
       await queryProposalPayload({
-        proposalId: BigInt(0),
+        proposalId: 0n,
         identity: mockIdentity,
       });
 

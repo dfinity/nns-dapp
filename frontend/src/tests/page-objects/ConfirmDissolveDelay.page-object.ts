@@ -1,4 +1,4 @@
-import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -12,10 +12,7 @@ export class ConfirmDissolveDelayPo extends BasePageObject {
   }
 
   getConfirmButtonPo(): ButtonPo {
-    return ButtonPo.under({
-      element: this.root,
-      testId: "confirm-delay-button",
-    });
+    return this.getButton("confirm-delay-button");
   }
 
   clickConfirm(): Promise<void> {

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import Hash from "$lib/components/ui/Hash.svelte";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { render } from "@testing-library/svelte";
@@ -17,6 +13,18 @@ describe("Hash", () => {
 
     const small = getByTestId(testId);
     expect(small?.textContent).toEqual(shortenWithMiddleEllipsis(identifier));
+  });
+
+  it("should use the splitLength prop", () => {
+    const splitLength = 3;
+    const { getByTestId } = render(Hash, {
+      props: { text: identifier, testId, id: identifier, splitLength },
+    });
+
+    const small = getByTestId(testId);
+    expect(small?.textContent).toEqual(
+      shortenWithMiddleEllipsis(identifier, splitLength)
+    );
   });
 
   it("should render a tooltip with all identifier", () => {

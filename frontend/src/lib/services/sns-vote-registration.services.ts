@@ -1,5 +1,6 @@
 import { registerVote as registerSnsVoteApi } from "$lib/api/sns-governance.api";
 import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
+import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
 import { getSnsNeuronIdentity } from "$lib/services/sns-neurons.services";
 import {
   manageVotesRegistration,
@@ -7,7 +8,6 @@ import {
   updateVoteRegistrationToastMessage,
   voteRegistrationByProposal,
 } from "$lib/services/vote-registration.services";
-import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
@@ -49,8 +49,8 @@ export const registerSnsVotes = async ({
   vote: SnsVote;
   updateProposalCallback: (proposal: SnsProposalData) => void;
 }): Promise<void> => {
-  const nsFunctions: SnsNervousSystemFunction[] =
-    get(snsFunctionsStore)[universeCanisterId.toText()]?.nsFunctions;
+  const nsFunctionsStore = createSnsNsFunctionsProjectStore(universeCanisterId);
+  const nsFunctions: SnsNervousSystemFunction[] = get(nsFunctionsStore) ?? [];
   const proposalType =
     mapSnsProposal({ proposalData: proposal, nsFunctions }).type ?? "";
 
@@ -106,8 +106,8 @@ const snsNeuronRegistrationComplete = async ({
     proposalIdString,
     universeCanisterId,
   });
-  const nsFunctions: SnsNervousSystemFunction[] =
-    get(snsFunctionsStore)[universeCanisterId.toText()]?.nsFunctions;
+  const nsFunctionsStore = createSnsNsFunctionsProjectStore(universeCanisterId);
+  const nsFunctions: SnsNervousSystemFunction[] = get(nsFunctionsStore) ?? [];
   const proposalType =
     mapSnsProposal({ proposalData: proposal, nsFunctions }).type ?? "";
 
@@ -186,8 +186,8 @@ const registerSnsNeuronsVote = async ({
 }) => {
   const identity = await getSnsNeuronIdentity();
   const proposalId = fromDefinedNullable(proposal.id);
-  const nsFunctions: SnsNervousSystemFunction[] =
-    get(snsFunctionsStore)[universeCanisterId.toText()]?.nsFunctions;
+  const nsFunctionsStore = createSnsNsFunctionsProjectStore(universeCanisterId);
+  const nsFunctions: SnsNervousSystemFunction[] = get(nsFunctionsStore) ?? [];
   const proposalType =
     mapSnsProposal({ proposalData: proposal, nsFunctions }).type ?? "";
   const successfulVotedNeurons: SnsNeuron[] = [];

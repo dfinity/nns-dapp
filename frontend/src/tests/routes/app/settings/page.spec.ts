@@ -1,20 +1,16 @@
-/**
- * @jest-environment jsdom
- */
-
 import { authStore } from "$lib/stores/auth.store";
 import SettingsPage from "$routes/(app)/(nns)/settings/+page.svelte";
 import {
   authStoreMock,
+  mockIdentity,
   mutableMockAuthStoreSubscribe,
 } from "$tests/mocks/auth.store.mock";
 import { render } from "@testing-library/svelte";
-import { mockIdentity } from "../../../mocks/auth.store.mock";
 
 describe("Settings page", () => {
-  jest
-    .spyOn(authStore, "subscribe")
-    .mockImplementation(mutableMockAuthStoreSubscribe);
+  vi.spyOn(authStore, "subscribe").mockImplementation(
+    mutableMockAuthStoreSubscribe
+  );
 
   describe("not signed in", () => {
     beforeAll(() => {

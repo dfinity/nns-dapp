@@ -125,7 +125,7 @@ describe("voting-store", () => {
         ({
           neuronIdString,
           votingPower: 0n,
-        } as VotingNeuron)
+        }) as VotingNeuron
     );
 
     it("should set neurons", () => {

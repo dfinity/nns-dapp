@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import FollowSnsTopicSection from "$lib/components/sns-neuron-detail/FollowSnsTopicSection.svelte";
 import { removeFollowee } from "$lib/services/sns-neurons.services";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
@@ -16,12 +13,12 @@ import type { SnsNeuron } from "@dfinity/sns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 
-jest.mock("$lib/services/sns-neurons.services", () => ({
-  removeFollowee: jest.fn().mockReturnValue({ success: true }),
+vi.mock("$lib/services/sns-neurons.services", () => ({
+  removeFollowee: vi.fn().mockReturnValue({ success: true }),
 }));
 
 describe("FollowSnsTopicSection", () => {
-  const reload = jest.fn();
+  const reload = vi.fn();
   const followee1 = createMockSnsNeuron({ id: [1, 2, 3] });
   const followee2 = createMockSnsNeuron({ id: [5, 6, 7] });
   const followees = [followee1.id[0], followee2.id[0]];

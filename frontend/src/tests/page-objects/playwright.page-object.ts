@@ -4,7 +4,7 @@ import { expect, type Locator, type Page } from "@playwright/test";
 export class PlaywrightPageObjectElement implements PageObjectElement {
   readonly locator: Locator;
 
-  constructor(locator: Locator | Page) {
+  constructor(locator: Locator) {
     this.locator = locator;
   }
 
@@ -80,6 +80,10 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     return classNames?.split(" ");
   }
 
+  isChecked(): Promise<boolean> {
+    return this.locator.isChecked();
+  }
+
   async isPresent(): Promise<boolean> {
     return (await this.locator.count()) > 0;
   }
@@ -96,11 +100,31 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     return this.locator.click();
   }
 
+  input(_value: string): Promise<void> {
+    throw new Error("Not implement");
+  }
+
   typeText(text: string): Promise<void> {
     return this.locator.type(text);
   }
 
-  selectOption(text: string): Promise<void> {
-    return this.locator.selectOption(text);
+  async selectOption(text: string): Promise<void> {
+    await this.locator.selectOption(text);
+  }
+
+  async isVisible(): Promise<boolean> {
+    throw new Error("Not implement");
+  }
+
+  async blur(): Promise<void> {
+    throw new Error("Not implement");
+  }
+
+  async innerHtmlForDebugging(): Promise<string> {
+    return "not implemeneted";
+  }
+
+  async addEventListener(): Promise<void> {
+    throw new Error("Not implement");
   }
 }

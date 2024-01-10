@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import VestingTooltipWrapper from "$lib/components/sns-neuron-detail/VestingTooltipWrapper.svelte";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { VestingTooltipWrapperPo } from "$tests/page-objects/VestingTooltipWrapper.page-object";

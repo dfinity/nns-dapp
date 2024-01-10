@@ -4,6 +4,7 @@ import * as services from "$lib/services/sns-accounts-balance.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   mockSnsSummaryList,
@@ -12,15 +13,19 @@ import {
 import { tick } from "svelte";
 import { get } from "svelte/store";
 
-jest.mock("$lib/stores/toasts.store", () => {
+vi.mock("$lib/stores/toasts.store", () => {
   return {
-    toastsError: jest.fn(),
+    toastsError: vi.fn(),
   };
 });
 
 describe("sns-accounts-balance.services", () => {
+  beforeEach(() => {
+    resetIdentity();
+  });
+
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     snsAccountsStore.reset();
     tokensStore.reset();
@@ -33,11 +38,11 @@ describe("sns-accounts-balance.services", () => {
   };
 
   it("should call api.getSnsAccounts and load balance in store", async () => {
-    jest
-      .spyOn(ledgerApi, "getSnsToken")
-      .mockImplementation(() => Promise.resolve(mockSnsToken));
+    vi.spyOn(ledgerApi, "getSnsToken").mockImplementation(() =>
+      Promise.resolve(mockSnsToken)
+    );
 
-    const spyQuery = jest
+    const spyQuery = vi
       .spyOn(ledgerApi, "getSnsAccounts")
       .mockImplementation(() => Promise.resolve([mockSnsMainAccount]));
 
@@ -50,20 +55,20 @@ describe("sns-accounts-balance.services", () => {
     const store = get(universesAccountsBalance);
     // Nns + 1 Sns
     expect(Object.keys(store)).toHaveLength(2);
-    expect(store[summary.rootCanisterId.toText()].balanceE8s).toEqual(
-      mockSnsMainAccount.balanceE8s
+    expect(store[summary.rootCanisterId.toText()].balanceUlps).toEqual(
+      mockSnsMainAccount.balanceUlps
     );
     expect(spyQuery).toBeCalled();
   });
 
   it("should call api.getSnsToken and load it in store", async () => {
-    const spyQuery = jest
+    const spyQuery = vi
       .spyOn(ledgerApi, "getSnsToken")
       .mockImplementation(() => Promise.resolve(mockSnsToken));
 
-    jest
-      .spyOn(ledgerApi, "getSnsAccounts")
-      .mockImplementation(() => Promise.resolve([mockSnsMainAccount]));
+    vi.spyOn(ledgerApi, "getSnsAccounts").mockImplementation(() =>
+      Promise.resolve([mockSnsMainAccount])
+    );
 
     await services.uncertifiedLoadSnsAccountsBalances({
       rootCanisterIds: [mockSnsMainAccount.principal],
@@ -82,8 +87,8 @@ describe("sns-accounts-balance.services", () => {
   });
 
   it("should toast error", async () => {
-    jest.spyOn(console, "error").mockImplementation(() => undefined);
-    jest.spyOn(ledgerApi, "getSnsAccounts").mockRejectedValue(new Error());
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.spyOn(ledgerApi, "getSnsAccounts").mockRejectedValue(new Error());
 
     await services.uncertifiedLoadSnsAccountsBalances({
       rootCanisterIds: [mockSnsMainAccount.principal],

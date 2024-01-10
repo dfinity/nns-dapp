@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ProposalSystemInfoSection from "$lib/components/proposal-detail/ProposalSystemInfoSection.svelte";
 import { secondsToDateTime } from "$lib/utils/date.utils";
 import { getNnsFunctionKey, mapProposalInfo } from "$lib/utils/proposals.utils";
@@ -37,7 +33,9 @@ describe("ProposalSystemInfoSection", () => {
 
     const { container } = renderResult;
     expect(container.querySelector("h1")).not.toBeNull();
-    expect(container.querySelector("h1")?.textContent).toEqual(type);
+    expect(container.querySelector("h1")?.textContent).toEqual(
+      "Proposal Details"
+    );
   });
 
   const expectRenderedInfo = async ({
@@ -60,10 +58,10 @@ describe("ProposalSystemInfoSection", () => {
     expect(description).not.toBeUndefined();
 
     await waitFor(() =>
-      expect(getByTestId(`${testId}-value`)?.textContent).toEqual(value)
+      expect(getByTestId(`${testId}-value`)?.textContent?.trim()).toEqual(value)
     );
     await waitFor(() =>
-      expect(getByTestId(`${testId}-description`)?.textContent).toEqual(
+      expect(getByTestId(`${testId}-description`)?.textContent?.trim()).toEqual(
         description
       )
     );

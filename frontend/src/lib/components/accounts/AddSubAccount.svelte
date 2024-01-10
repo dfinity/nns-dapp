@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { createEventDispatcher, getContext } from "svelte";
-  import { addSubAccount } from "$lib/services/accounts.services";
+  import { addSubAccount } from "$lib/services/icp-accounts.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { busy } from "@dfinity/gix-components";
   import {

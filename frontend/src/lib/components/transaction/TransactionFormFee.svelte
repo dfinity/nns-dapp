@@ -1,9 +1,9 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
-  import type { TokenAmount } from "@dfinity/utils";
+  import type { TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 
-  export let transactionFee: TokenAmount;
+  export let transactionFee: TokenAmount | TokenAmountV2;
 </script>
 
 <div data-tid="transaction-form-fee">

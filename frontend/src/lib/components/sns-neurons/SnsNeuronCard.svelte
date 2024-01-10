@@ -11,16 +11,16 @@
   import SnsNeuronStateRemainingTime from "$lib/components/sns-neurons/SnsNeuronStateRemainingTime.svelte";
 
   export let neuron: SnsNeuron;
-  export let role: "link" | undefined = undefined;
   export let cardType: CardType = "card";
   export let ariaLabel: string | undefined = undefined;
+  export let href: string | undefined = undefined;
 
   let neuronState: NeuronState;
   $: neuronState = getSnsNeuronState(neuron);
 </script>
 
 <TestIdWrapper testId="sns-neuron-card-component">
-  <NeuronCardContainer on:click {role} {cardType} {ariaLabel}>
+  <NeuronCardContainer on:click {href} {cardType} {ariaLabel}>
     <SnsNeuronCardTitle slot="start" {neuron} tagName="p" />
 
     <div class="content">

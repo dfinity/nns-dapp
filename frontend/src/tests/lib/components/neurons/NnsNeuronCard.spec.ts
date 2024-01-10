@@ -1,26 +1,31 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsNeuronCard from "$lib/components/neurons/NnsNeuronCard.svelte";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
-import { formatToken } from "$lib/utils/token.utils";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import {
+  mockHardwareWalletAccount,
+  mockMainAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
+import { NnsNeuronCardPo } from "$tests/page-objects/NnsNeuronCard.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { Neuron } from "@dfinity/nns";
-import { NeuronState } from "@dfinity/nns";
+import { NeuronState, NeuronType } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
 
 describe("NnsNeuronCard", () => {
-  beforeAll(() => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+  const nowInSeconds = 1689843195;
+  beforeEach(() => {
+    vi.useFakeTimers().setSystemTime(nowInSeconds * 1000);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+
+    icpAccountsStore.resetForTesting();
   });
 
   it("renders a Card", () => {
@@ -34,7 +39,7 @@ describe("NnsNeuronCard", () => {
   });
 
   it("is clickable", async () => {
-    const spyClick = jest.fn();
+    const spyClick = vi.fn();
     const { container, component } = render(NnsNeuronCard, {
       props: {
         neuron: mockNeuron,
@@ -73,7 +78,7 @@ describe("NnsNeuronCard", () => {
       },
     });
 
-    const stakeText = formatToken({
+    const stakeText = formatTokenE8s({
       value:
         (mockNeuron.fullNeuron as Neuron).cachedNeuronStake -
         (mockNeuron.fullNeuron as Neuron).neuronFees,
@@ -106,7 +111,7 @@ describe("NnsNeuronCard", () => {
       props: {
         neuron: {
           ...mockNeuron,
-          joinedCommunityFundTimestampSeconds: BigInt(1000),
+          joinedCommunityFundTimestampSeconds: 1_000n,
         },
       },
     });
@@ -129,6 +134,53 @@ describe("NnsNeuronCard", () => {
     });
 
     expect(getByText(en.neurons.hotkey_control)).toBeInTheDocument();
+  });
+
+  it("renders the hardware wallet label and not hotkey when neuron is controlled by hardware wallet", async () => {
+    icpAccountsStore.setForTesting({
+      main: mockMainAccount,
+      subAccounts: [],
+      hardwareWallets: [mockHardwareWalletAccount],
+    });
+    const { container } = render(NnsNeuronCard, {
+      props: {
+        neuron: {
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockFullNeuron,
+            hotKeys: [mockIdentity.getPrincipal().toText()],
+            controller: mockHardwareWalletAccount.principal.toText(),
+          },
+        },
+      },
+    });
+
+    const po = NnsNeuronCardPo.under(new JestPageObjectElement(container));
+
+    expect(await po.getNeuronTags()).toEqual(["Hardware Wallet"]);
+  });
+
+  it("renders neuron type tag when not default", async () => {
+    icpAccountsStore.setForTesting({
+      main: mockMainAccount,
+      subAccounts: [],
+    });
+    const { container } = render(NnsNeuronCard, {
+      props: {
+        neuron: {
+          ...mockNeuron,
+          neuronType: NeuronType.Seed,
+          fullNeuron: {
+            ...mockFullNeuron,
+            neuronType: NeuronType.Seed,
+          },
+        },
+      },
+    });
+
+    const po = NnsNeuronCardPo.under(new JestPageObjectElement(container));
+
+    expect(await po.getNeuronTags()).toEqual(["Seed Seed Neuron"]);
   });
 
   it("renders proper text when status is LOCKED", async () => {
@@ -178,7 +230,7 @@ describe("NnsNeuronCard", () => {
   });
 
   it("renders proper text when status is DISSOLVING", async () => {
-    const ONE_YEAR_FROM_NOW = SECONDS_IN_YEAR + Math.round(Date.now() / 1000);
+    const ONE_YEAR_FROM_NOW = nowInSeconds + SECONDS_IN_YEAR;
     const { getByText } = render(NnsNeuronCard, {
       props: {
         neuron: {
@@ -205,7 +257,7 @@ describe("NnsNeuronCard", () => {
         proposerNeuron: true,
       },
     });
-    const votingValue = formatToken({
+    const votingValue = formatTokenE8s({
       value: mockNeuron.votingPower,
       detailed: true,
     });

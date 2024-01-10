@@ -28,8 +28,8 @@ import {
 } from "$lib/utils/error.utils";
 import type { Principal } from "@dfinity/principal";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
-import { getAccountIdentity, loadBalance } from "./accounts.services";
 import { getAuthenticatedIdentity } from "./auth.services";
+import { getAccountIdentity, loadBalance } from "./icp-accounts.services";
 import { queryAndUpdate } from "./utils.services";
 
 export const listCanisters = async ({
@@ -79,7 +79,7 @@ export const createCanister = async ({
     if (!(icpAmount instanceof TokenAmount)) {
       throw new LedgerErrorMessage("error.amount_not_valid");
     }
-    assertEnoughAccountFunds({ amountE8s: icpAmount.toE8s(), account });
+    assertEnoughAccountFunds({ amountUlps: icpAmount.toE8s(), account });
 
     const identity = await getAccountIdentity(account.identifier);
     const canisterId = await createCanisterApi({
@@ -139,7 +139,7 @@ export const topUpCanister = async ({
     if (!(icpAmount instanceof TokenAmount)) {
       throw new LedgerErrorMessage("error.amount_not_valid");
     }
-    assertEnoughAccountFunds({ amountE8s: icpAmount.toE8s(), account });
+    assertEnoughAccountFunds({ amountUlps: icpAmount.toE8s(), account });
 
     const identity = await getAccountIdentity(account.identifier);
     await topUpCanisterApi({

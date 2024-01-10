@@ -9,7 +9,7 @@
   import {
     loadSnsLifecycle,
     loadSnsSwapCommitment,
-    loadSnsTotalCommitment,
+    loadSnsDerivedState,
     watchSnsTotalCommitment,
   } from "$lib/services/sns.services";
   import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
@@ -25,10 +25,7 @@
   import { debugSelectedProjectStore } from "$lib/derived/debug.derived";
   import { goto } from "$app/navigation";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import {
-    loadSnsSwapMetrics,
-    watchSnsMetrics,
-  } from "$lib/services/sns-swap-metrics.services";
+  import { loadSnsSwapMetrics } from "$lib/services/sns-swap-metrics.services";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
   import SaleInProgressModal from "$lib/modals/sns/sale/SaleInProgressModal.svelte";
@@ -45,6 +42,8 @@
   import { userCountryIsNeeded } from "$lib/utils/projects.utils";
   import { loadUserCountry } from "$lib/services/user-country.services";
   import { hasBuyersCount } from "$lib/utils/sns-swap.utils";
+  import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
+  import ProjectProposal from "$lib/components/project-detail/ProjectProposal.svelte";
 
   export let rootCanisterId: string | undefined | null;
 
@@ -69,7 +68,7 @@
     }
 
     await Promise.all([
-      loadSnsTotalCommitment({ rootCanisterId, strategy: "update" }),
+      loadSnsDerivedState({ rootCanisterId, strategy: "update" }),
       loadSnsLifecycle({ rootCanisterId }),
       loadSnsSwapCommitment({
         rootCanisterId,
@@ -79,10 +78,9 @@
         },
         forceFetch: true,
       }),
-      loadSnsSwapMetrics({
-        forceFetch: true,
+      loadSnsFinalizationStatus({
         rootCanisterId: Principal.fromText(rootCanisterId),
-        swapCanisterId,
+        forceFetch: true,
       }),
     ]);
   };
@@ -144,7 +142,9 @@
   // Set up watchers and load the data in stores
   /////////////////////////////////
 
-  $: layoutTitleStore.set($projectDetailStore?.summary?.metadata.name ?? "");
+  $: layoutTitleStore.set({
+    title: $projectDetailStore?.summary?.metadata.name ?? "",
+  });
 
   let enableOpenProjectWatchers = false;
   $: enableOpenProjectWatchers =
@@ -173,6 +173,15 @@
     loadUserCountry();
   }
 
+  $: if (
+    nonNullish(rootCanisterId) &&
+    $projectDetailStore.summary?.swap.lifecycle === SnsSwapLifecycle.Committed
+  ) {
+    loadSnsFinalizationStatus({
+      rootCanisterId: Principal.fromText(rootCanisterId),
+    });
+  }
+
   let derivedStateHasBuyersCount: boolean | undefined;
   $: derivedStateHasBuyersCount = hasBuyersCount(
     $projectDetailStore?.summary?.derived
@@ -187,21 +196,13 @@
     nonNullish(derivedStateHasBuyersCount) &&
     !areWatchersSet
   ) {
-    // TODO: Remove once all SNS support the buyers count in derived state
     if (!derivedStateHasBuyersCount) {
-      // We load the metrics to have them initially available before setInterval starts
+      // TODO: Remove once Dragginz, OC and SONIC support new fields in in SnsGetDerivedStateResponse
       loadSnsSwapMetrics({
         rootCanisterId: Principal.fromText(rootCanisterId),
         swapCanisterId,
         forceFetch: false,
       });
-      if (enableOpenProjectWatchers) {
-        unsubscribeWatchMetrics?.();
-        unsubscribeWatchMetrics = watchSnsMetrics({
-          rootCanisterId: Principal.fromText(rootCanisterId),
-          swapCanisterId: swapCanisterId,
-        });
-      }
     }
 
     if (enableOpenProjectWatchers) {
@@ -300,17 +301,20 @@
 <TestIdWrapper testId="project-detail-component">
   <main>
     <div class="stretch-mobile">
+      <ProjectMetadataSection />
       <div class="content-grid">
         <div class="content-a">
-          <ProjectMetadataSection />
-        </div>
-
-        <div class="content-c">
           <ProjectInfoSection />
         </div>
-        <div class="content-d">
+        <div class="content-b">
           <ProjectStatusSection />
         </div>
+
+        {#if nonNullish($projectDetailStore.summary)}
+          <div class="content-c">
+            <ProjectProposal summary={$projectDetailStore.summary} />
+          </div>
+        {/if}
       </div>
     </div>
   </main>
@@ -327,9 +331,7 @@
 
     display: flex;
     align-items: stretch;
-
-    @include media.min-width(large) {
-      display: block;
-    }
+    flex-direction: column;
+    gap: var(--row-gap);
   }
 </style>

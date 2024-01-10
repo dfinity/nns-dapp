@@ -1,33 +1,71 @@
 <script lang="ts">
-  import Json from "../common/Json.svelte";
+  import { Copy } from "@dfinity/gix-components";
+  import TreeRawToggle from "$lib/components/proposal-detail/JsonRepresentationModeToggle.svelte";
+  import { stringifyJson } from "$lib/utils/utils";
+  import JsonPreview from "$lib/components/common/JsonPreview.svelte";
 
   export let actionKey: string | undefined;
   export let actionData: unknown | undefined;
+
+  let copyContent = "";
+  $: copyContent = stringifyJson(actionData, { indentation: 2 }) ?? "";
 </script>
 
 <div
   class="content-cell-island"
   data-tid="proposal-proposer-actions-entry-component"
 >
-  <h2
-    class="content-cell-title"
-    data-tid="proposal-proposer-actions-entry-title"
-  >
-    {actionKey ?? ""}
-  </h2>
+  <div class="header">
+    <div class="title-copy">
+      <h2
+        class="content-cell-title header-text"
+        data-tid="proposal-proposer-actions-entry-title"
+      >
+        {actionKey ?? ""}
+      </h2>
+      <Copy value={copyContent} />
+    </div>
+    <div class="toggle">
+      <TreeRawToggle />
+    </div>
+  </div>
 
   <div
     class="content-cell-details"
     data-tid="proposal-proposer-actions-entry-fields"
   >
-    <Json json={actionData} />
+    <JsonPreview json={actionData} />
   </div>
 </div>
 
 <style lang="scss">
-  .content-cell-details {
-    overflow-x: auto;
-    // get rid of vertical scroll
-    padding-bottom: 1px;
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "@dfinity/gix-components/dist/styles/mixins/text";
+
+  .header-text {
+    display: flex;
+    align-items: center;
+    @include fonts.h3;
+
+    @include text.clamp(1);
+  }
+
+  .toggle {
+    // compensate toggle and toggle inner buttons padding. Is important when cols wrap on mobile.
+    margin: 0 calc(var(--padding-0_5x) * -2);
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    flex-wrap: wrap;
+    row-gap: var(--padding);
+
+    .title-copy {
+      display: flex;
+      align-items: center;
+    }
   }
 </style>

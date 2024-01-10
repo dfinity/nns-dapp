@@ -1,17 +1,13 @@
-/**
- * @jest-environment jsdom
- */
-
 import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { ICPToken, TokenAmount } from "@dfinity/utils";
+import { ICPToken, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 import ConfirmDisburseNeuronTest from "./ConfirmDisburseNeuronTest.svelte";
 
-jest.mock("$lib/services/neurons.services", () => {
+vi.mock("$lib/services/neurons.services", () => {
   return {
-    disburse: jest.fn().mockResolvedValue({ success: true }),
-    getNeuronFromStore: jest.fn(),
+    disburse: vi.fn().mockResolvedValue({ success: true }),
+    getNeuronFromStore: vi.fn(),
   };
 });
 
@@ -19,7 +15,7 @@ describe("ConfirmDisburseNeuron", () => {
   const amount = 6.66;
   const fee = 1.11;
   const props = {
-    amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
+    amount: TokenAmountV2.fromNumber({ amount, token: ICPToken }),
     source: "test source",
     destinationAddress: "test destination",
     loading: false,

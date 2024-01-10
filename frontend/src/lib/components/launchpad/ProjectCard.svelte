@@ -8,15 +8,24 @@
   import { Spinner } from "@dfinity/gix-components";
   import ProjectCardSwapInfo from "./ProjectCardSwapInfo.svelte";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
-  import { goto } from "$app/navigation";
   import SignedInOnly from "$lib/components/common/SignedInOnly.svelte";
   import { nonNullish } from "@dfinity/utils";
+  import { onMount } from "svelte";
+  import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
+  import type { Readable } from "svelte/store";
+  import { createIsSnsFinalizingStore } from "$lib/stores/sns-finalization-status.store";
+  import type { Principal } from "@dfinity/principal";
 
   export let project: SnsFullProject;
 
+  onMount(() => {
+    loadSnsFinalizationStatus({ rootCanisterId: project.rootCanisterId });
+  });
+
   let summary: SnsSummary;
   let swapCommitment: SnsSwapCommitment | undefined;
-  $: ({ summary, swapCommitment } = project);
+  let rootCanisterId: Principal;
+  $: ({ summary, swapCommitment, rootCanisterId } = project);
 
   let logo: string;
   let name: string;
@@ -25,36 +34,32 @@
     metadata: { logo, name, description },
   } = summary);
 
-  let title: string;
-  $: title = `${$i18n.sns_project.project} ${name}`;
-
   let commitmentE8s: bigint | undefined;
   $: commitmentE8s = getCommitmentE8s(swapCommitment);
 
   let userHasParticipated: boolean;
-  $: userHasParticipated =
-    nonNullish(commitmentE8s) && commitmentE8s > BigInt(0);
+  $: userHasParticipated = nonNullish(commitmentE8s) && commitmentE8s > 0n;
 
-  const showProject = async () =>
-    await goto(
-      `${AppPath.Project}/?project=${project.rootCanisterId.toText()}`
-    );
+  let href: string;
+  $: href = `${AppPath.Project}/?project=${project.rootCanisterId.toText()}`;
+
+  let isFinalizingStore: Readable<boolean>;
+  $: isFinalizingStore = createIsSnsFinalizingStore(rootCanisterId);
 </script>
 
 <Card
   testId="project-card-component"
-  role="link"
-  on:click={showProject}
+  {href}
   theme={userHasParticipated ? "highlighted" : undefined}
 >
   <div class="title" slot="start">
-    <Logo src={logo} alt={$i18n.sns_launchpad.project_logo} />
-    <h3 data-tid="project-name">{title}</h3>
+    <Logo src={logo} alt={$i18n.sns_launchpad.project_logo} size="big" />
+    <h3 data-tid="project-name">{name}</h3>
   </div>
 
-  <p class="value description">{description}</p>
+  <p data-tid="project-description" class="value description">{description}</p>
 
-  <ProjectCardSwapInfo {project} />
+  <ProjectCardSwapInfo isFinalizing={$isFinalizingStore} {project} />
 
   <SignedInOnly>
     <!-- TODO L2-751: handle fetching errors -->
@@ -72,7 +77,7 @@
   .title {
     display: flex;
     gap: var(--padding-1_5x);
-    align-items: flex-start;
+    align-items: center;
     margin-bottom: var(--padding);
 
     h3 {

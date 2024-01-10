@@ -16,6 +16,10 @@ export class TransactionFormPo extends BasePageObject {
     return TransactionFromAccountPo.under(this.root);
   }
 
+  getSourceAccounts(): Promise<string[]> {
+    return this.getTransactionFromAccountPo().getAccounts();
+  }
+
   getSelectDestinationAddressPo(): SelectDestinationAddressPo {
     return SelectDestinationAddressPo.under(this.root);
   }
@@ -48,6 +52,18 @@ export class TransactionFormPo extends BasePageObject {
     amount: number;
   }): Promise<void> {
     await this.getSelectDestinationAddressPo().selectAccount(accountName);
+    await this.enterAmount(amount);
+    await this.clickContinue();
+  }
+
+  async transferToAddress({
+    destinationAddress,
+    amount,
+  }: {
+    destinationAddress: string;
+    amount: number;
+  }): Promise<void> {
+    await this.getSelectDestinationAddressPo().enterAddress(destinationAddress);
     await this.enterAmount(amount);
     await this.clickContinue();
   }

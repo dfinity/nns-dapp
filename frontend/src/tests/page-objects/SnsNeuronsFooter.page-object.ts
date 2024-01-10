@@ -1,5 +1,5 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
-import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { SnsStakeNeuronModalPo } from "$tests/page-objects/SnsStakeNeuronModal.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -11,10 +11,7 @@ export class SnsNeuronsFooterPo extends BasePageObject {
   }
 
   getStakeNeuronsButtonPo(): ButtonPo {
-    return ButtonPo.under({
-      element: this.root,
-      testId: "stake-sns-neuron-button",
-    });
+    return this.getButton("stake-sns-neuron-button");
   }
 
   getSnsStakeNeuronModalPo(): SnsStakeNeuronModalPo {

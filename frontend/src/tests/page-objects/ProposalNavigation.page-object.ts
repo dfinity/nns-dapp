@@ -1,4 +1,6 @@
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { ProposalStatusTagPo } from "$tests/page-objects/ProposalStatusTag.page-object";
+import { UniverseLogoPo } from "$tests/page-objects/UniverseLogo.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -19,6 +21,26 @@ export class ProposalNavigationPo extends BasePageObject {
 
   getOlderButtonPo(): ButtonPo {
     return this.getButton("proposal-nav-older");
+  }
+
+  getLogoPo(): UniverseLogoPo {
+    return UniverseLogoPo.under(this.root);
+  }
+
+  getLogoSource(): Promise<string> {
+    return this.getLogoPo().getLogoSource();
+  }
+
+  getProposalStatusTag(): ProposalStatusTagPo {
+    return ProposalStatusTagPo.under(this.root);
+  }
+
+  getProposalStatus(): Promise<string> {
+    return this.getProposalStatusTag().getText();
+  }
+
+  getTitle(): Promise<string> {
+    return this.root.byTestId("title").getText();
   }
 
   async isNewerButtonHidden(): Promise<boolean> {

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { AdditionalInfoFormPo } from "$tests/page-objects/AdditionalInfoForm.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";

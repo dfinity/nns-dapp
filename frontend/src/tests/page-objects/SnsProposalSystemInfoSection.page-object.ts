@@ -18,53 +18,67 @@ export class SnsProposalSystemInfoSectionPo extends BasePageObject {
     return this.root.querySelector("h1").getText();
   }
 
-  getTypeText(): Promise<string> {
-    return KeyValuePairPo.under({
-      element: this.root,
-      testId: "proposal-system-info-type",
-    }).getValueText();
+  async getTypeText(): Promise<string> {
+    return (
+      await KeyValuePairPo.under({
+        element: this.root,
+        testId: "proposal-system-info-type",
+      }).getValueText()
+    )?.trim();
   }
 
-  getDecisionStatusText(): Promise<string> {
-    return KeyValuePairPo.under({
-      element: this.root,
-      testId: "proposal-system-info-status",
-    }).getValueText();
+  async getDecisionStatusText(): Promise<string> {
+    return (
+      await KeyValuePairPo.under({
+        element: this.root,
+        testId: "proposal-system-info-status",
+      }).getValueText()
+    )?.trim();
   }
 
-  getRewardStatusText(): Promise<string> {
-    return KeyValuePairPo.under({
-      element: this.root,
-      testId: "proposal-system-info-reward",
-    }).getValueText();
+  async getRewardStatusText(): Promise<string> {
+    return (
+      await KeyValuePairPo.under({
+        element: this.root,
+        testId: "proposal-system-info-reward",
+      }).getValueText()
+    )?.trim();
   }
 
-  getCreatedText(): Promise<string> {
-    return KeyValuePairPo.under({
-      element: this.root,
-      testId: "proposal-system-info-created",
-    }).getValueText();
+  async getCreatedText(): Promise<string> {
+    return (
+      await KeyValuePairPo.under({
+        element: this.root,
+        testId: "proposal-system-info-created",
+      }).getValueText()
+    )?.trim();
   }
 
-  getDecidedText(): Promise<string> {
-    return KeyValuePairPo.under({
-      element: this.root,
-      testId: "proposal-system-info-decided",
-    }).getValueText();
+  async getDecidedText(): Promise<string | undefined> {
+    return (
+      await KeyValuePairPo.under({
+        element: this.root,
+        testId: "proposal-system-info-decided",
+      }).getValueText()
+    )?.trim();
   }
 
-  getExecutedText(): Promise<string> {
-    return KeyValuePairPo.under({
-      element: this.root,
-      testId: "proposal-system-info-executed",
-    }).getValueText();
+  async getExecutedText(): Promise<string | undefined> {
+    return (
+      await KeyValuePairPo.under({
+        element: this.root,
+        testId: "proposal-system-info-executed",
+      }).getValueText()
+    )?.trim();
   }
 
-  getFailedText(): Promise<string> {
-    return KeyValuePairPo.under({
-      element: this.root,
-      testId: "proposal-system-info-failed",
-    }).getValueText();
+  async getFailedText(): Promise<string | undefined> {
+    return (
+      await KeyValuePairPo.under({
+        element: this.root,
+        testId: "proposal-system-info-failed",
+      }).getValueText()
+    )?.trim();
   }
 
   getProposerText(): Promise<string> {

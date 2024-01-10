@@ -1,67 +1,72 @@
-/**
- * @jest-environment jsdom
- */
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   snsCommittedProjectSelectedStore,
   snsOnlyProjectStore,
   snsProjectSelectedStore,
 } from "$lib/derived/sns/sns-selected-project.derived";
-import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
+import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
+import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
-import { mockSnsSwapCommitment } from "$tests/mocks/sns-projects.mock";
 import {
-  snsResponseFor,
-  snsResponsesForLifecycle,
-} from "$tests/mocks/sns-response.mock";
-import {
-  mockSnsCanisterId,
-  mockSnsCanisterIdText,
-} from "$tests/mocks/sns.api.mock";
+  mockSnsSwapCommitment,
+  principal,
+} from "$tests/mocks/sns-projects.mock";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 
 describe("selected sns project derived stores", () => {
+  const rootCanisterId = principal(0);
+  const rootCanisterIdText = rootCanisterId.toText();
   beforeEach(() => {
-    snsQueryStore.reset();
+    resetSnsProjects();
   });
 
   describe("snsOnlyProjectStore", () => {
     beforeEach(() => {
       page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
-
-      snsQueryStore.setData(
-        snsResponseFor({
-          principal: mockSnsCanisterId,
+      setSnsProjects([
+        {
+          rootCanisterId,
           lifecycle: SnsSwapLifecycle.Committed,
-        })
-      );
+        },
+      ]);
+      icrcCanistersStore.reset();
+      tokensStore.reset();
     });
 
-    it("should be set by default undefined", () => {
+    it("should be set to undefined if NNS Universe", () => {
+      page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
       const $store = get(snsOnlyProjectStore);
 
       expect($store).toBeUndefined();
     });
 
     it("should return project principal if an sns project is selected", () => {
-      page.mock({ data: { universe: mockSnsCanisterIdText } });
+      page.mock({ data: { universe: rootCanisterIdText } });
       const $store = get(snsOnlyProjectStore);
 
-      expect($store?.toText()).toBe(mockSnsCanisterIdText);
+      expect($store?.toText()).toBe(rootCanisterIdText);
     });
 
     it("should return undefined if nns is selected after sns project", () => {
-      page.mock({ data: { universe: mockSnsCanisterIdText } });
+      page.mock({ data: { universe: rootCanisterIdText } });
 
       const $store = get(snsOnlyProjectStore);
-      expect($store?.toText()).toBe(mockSnsCanisterIdText);
+      expect($store?.toText()).toBe(rootCanisterIdText);
 
       page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
 
       const $store2 = get(snsOnlyProjectStore);
       expect($store2).toBeUndefined();
+    });
+
+    it("should return undefined if universe not valid SNS root canister id", () => {
+      page.mock({ data: { universe: principal(1).toText() } });
+
+      expect(get(snsOnlyProjectStore)).toBeUndefined();
     });
   });
 
@@ -71,19 +76,17 @@ describe("selected sns project derived stores", () => {
     });
 
     it("returns the SNS project of the current universe", () => {
-      const projectData = snsResponsesForLifecycle({
-        lifecycles: [SnsSwapLifecycle.Committed],
-      });
-      const rootCanisterIdText = projectData[0][0].rootCanisterId;
+      setSnsProjects([
+        {
+          rootCanisterId,
+          lifecycle: SnsSwapLifecycle.Committed,
+        },
+      ]);
 
       snsSwapCommitmentsStore.setSwapCommitment({
-        swapCommitment: mockSnsSwapCommitment(
-          Principal.fromText(rootCanisterIdText)
-        ),
+        swapCommitment: mockSnsSwapCommitment(rootCanisterId),
         certified: true,
       });
-
-      snsQueryStore.setData(projectData);
 
       page.mock({ data: { universe: rootCanisterIdText } });
 
@@ -92,20 +95,18 @@ describe("selected sns project derived stores", () => {
     });
 
     it("returns undefined if the project doesn't exist", () => {
-      const projectData = snsResponsesForLifecycle({
-        lifecycles: [SnsSwapLifecycle.Committed],
-      });
-      const rootCanisterIdText = projectData[0][0].rootCanisterId;
+      setSnsProjects([
+        {
+          rootCanisterId,
+          lifecycle: SnsSwapLifecycle.Committed,
+        },
+      ]);
       const nonExistentProjectIdText = Principal.fromHex("123456").toText();
 
       snsSwapCommitmentsStore.setSwapCommitment({
-        swapCommitment: mockSnsSwapCommitment(
-          Principal.fromText(rootCanisterIdText)
-        ),
+        swapCommitment: mockSnsSwapCommitment(rootCanisterId),
         certified: true,
       });
-
-      snsQueryStore.setData(projectData);
 
       page.mock({ data: { universe: nonExistentProjectIdText } });
 
@@ -125,19 +126,17 @@ describe("selected sns project derived stores", () => {
     });
 
     it("returns the SNS project of the current universe", () => {
-      const projectData = snsResponsesForLifecycle({
-        lifecycles: [SnsSwapLifecycle.Committed],
-      });
-      const rootCanisterIdText = projectData[0][0].rootCanisterId;
+      setSnsProjects([
+        {
+          rootCanisterId,
+          lifecycle: SnsSwapLifecycle.Committed,
+        },
+      ]);
 
       snsSwapCommitmentsStore.setSwapCommitment({
-        swapCommitment: mockSnsSwapCommitment(
-          Principal.fromText(rootCanisterIdText)
-        ),
+        swapCommitment: mockSnsSwapCommitment(rootCanisterId),
         certified: true,
       });
-
-      snsQueryStore.setData(projectData);
 
       page.mock({ data: { universe: rootCanisterIdText } });
 
@@ -146,20 +145,18 @@ describe("selected sns project derived stores", () => {
     });
 
     it("returns undefined if the project doesn't exist", () => {
-      const projectData = snsResponsesForLifecycle({
-        lifecycles: [SnsSwapLifecycle.Committed],
-      });
-      const rootCanisterIdText = projectData[0][0].rootCanisterId;
+      setSnsProjects([
+        {
+          rootCanisterId,
+          lifecycle: SnsSwapLifecycle.Committed,
+        },
+      ]);
       const nonExistentProjectIdText = Principal.fromHex("123456").toText();
 
       snsSwapCommitmentsStore.setSwapCommitment({
-        swapCommitment: mockSnsSwapCommitment(
-          Principal.fromText(rootCanisterIdText)
-        ),
+        swapCommitment: mockSnsSwapCommitment(rootCanisterId),
         certified: true,
       });
-
-      snsQueryStore.setData(projectData);
 
       page.mock({ data: { universe: nonExistentProjectIdText } });
 
@@ -168,19 +165,17 @@ describe("selected sns project derived stores", () => {
     });
 
     it("returns undefined if the project isn't committed", () => {
-      const projectData = snsResponsesForLifecycle({
-        lifecycles: [SnsSwapLifecycle.Open],
-      });
-      const rootCanisterIdText = projectData[0][0].rootCanisterId;
+      setSnsProjects([
+        {
+          rootCanisterId,
+          lifecycle: SnsSwapLifecycle.Open,
+        },
+      ]);
 
       snsSwapCommitmentsStore.setSwapCommitment({
-        swapCommitment: mockSnsSwapCommitment(
-          Principal.fromText(rootCanisterIdText)
-        ),
+        swapCommitment: mockSnsSwapCommitment(rootCanisterId),
         certified: true,
       });
-
-      snsQueryStore.setData(projectData);
 
       page.mock({ data: { universe: rootCanisterIdText } });
 

@@ -1,9 +1,11 @@
+//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-12-13_23-01/rs/sns/root/canister/root.did>
 type CanisterCallError = record { code : opt int32; description : text };
 type CanisterIdRecord = record { canister_id : principal };
+type CanisterInstallMode = variant { reinstall; upgrade; install };
 type CanisterStatusResult = record {
-  controller : principal;
   status : CanisterStatusType;
   memory_size : nat;
+  cycles : nat;
   settings : DefiniteCanisterSettings;
   module_hash : opt vec nat8;
 };
@@ -19,6 +21,16 @@ type CanisterStatusType = variant { stopped; stopping; running };
 type CanisterSummary = record {
   status : opt CanisterStatusResultV2;
   canister_id : opt principal;
+};
+type ChangeCanisterRequest = record {
+  arg : vec nat8;
+  wasm_module : vec nat8;
+  stop_before_installing : bool;
+  mode : CanisterInstallMode;
+  canister_id : principal;
+  query_allocation : opt nat;
+  memory_allocation : opt nat;
+  compute_allocation : opt nat;
 };
 type DefiniteCanisterSettings = record { controllers : vec principal };
 type DefiniteCanisterSettingsArgs = record {
@@ -69,6 +81,7 @@ type SnsRootCanister = record {
 };
 service : (SnsRootCanister) -> {
   canister_status : (CanisterIdRecord) -> (CanisterStatusResult);
+  change_canister : (ChangeCanisterRequest) -> ();
   get_build_metadata : () -> (text) query;
   get_sns_canisters_summary : (GetSnsCanistersSummaryRequest) -> (
       GetSnsCanistersSummaryResponse,

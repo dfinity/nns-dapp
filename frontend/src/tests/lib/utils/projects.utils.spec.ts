@@ -6,14 +6,17 @@ import {
   canUserParticipateToSwap,
   commitmentExceedsAmountLeft,
   currentUserMaxCommitment,
+  differentSummaries,
   durationTillSwapDeadline,
   durationTillSwapStart,
   filterActiveProjects,
   filterCommittedProjects,
   filterProjectsStatus,
+  getProjectCommitmentSplit,
   hasUserParticipatedToSwap,
   participateButtonStatus,
   projectRemainingAmount,
+  snsProjectDashboardUrl,
   userCountryIsNeeded,
   validParticipation,
 } from "$lib/utils/projects.utils";
@@ -29,6 +32,7 @@ import {
   principal,
   summaryForLifecycle,
 } from "$tests/mocks/sns-projects.mock";
+import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 
@@ -40,6 +44,10 @@ describe("project-utils", () => {
   const summaryNoRestricted: SnsSummary = createSummary({
     lifecycle: SnsSwapLifecycle.Open,
     restrictedCountries: [],
+  });
+
+  beforeEach(() => {
+    vi.clearAllMocks();
   });
 
   describe("filter", () => {
@@ -162,11 +170,11 @@ describe("project-utils", () => {
   describe("durationTillSwapDeadline", () => {
     const now = Date.now();
     beforeEach(() => {
-      jest.useFakeTimers().setSystemTime(now);
+      vi.useFakeTimers().setSystemTime(now);
     });
 
     afterAll(() => {
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
     it("should return duration until swap deadline", () => {
       const dueSeconds = 3600;
@@ -185,11 +193,11 @@ describe("project-utils", () => {
   describe("durationTillSwapStart", () => {
     const now = Date.now();
     beforeEach(() => {
-      jest.useFakeTimers().setSystemTime(now);
+      vi.useFakeTimers().setSystemTime(now);
     });
 
     afterAll(() => {
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
     it("should return duration until swap deadline", () => {
       const dueSeconds = 3600;
@@ -270,6 +278,7 @@ describe("project-utils", () => {
               icp: [
                 createTransferableAmount(mockSnsParams.max_participant_icp_e8s),
               ],
+              has_created_neuron_recipes: [],
             },
           },
         })
@@ -288,7 +297,7 @@ describe("project-utils", () => {
 
   describe("userCountryIsNeeded", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
     });
 
     it("country not needed", () => {
@@ -408,6 +417,7 @@ describe("project-utils", () => {
               icp: [
                 createTransferableAmount(mockSnsParams.max_participant_icp_e8s),
               ],
+              has_created_neuron_recipes: [],
             },
           },
           loggedIn: true,
@@ -449,6 +459,7 @@ describe("project-utils", () => {
             ...mockSwapCommitment,
             myCommitment: {
               icp: [],
+              has_created_neuron_recipes: [],
             },
           },
         })
@@ -458,24 +469,26 @@ describe("project-utils", () => {
 
   describe("currentUserMaxCommitment", () => {
     it("returns the user maximum when no participation yet", () => {
-      const projectMax = BigInt(10_000_000_000);
-      const userMax = BigInt(1_000_000_000);
+      const projectMax = 10_000_000_000n;
+      const userMax = 1_000_000_000n;
       const validProject: SnsFullProject = {
         ...mockSnsFullProject,
         summary: {
           ...mockSnsFullProject.summary,
           derived: {
-            buyer_total_icp_e8s: BigInt(0),
+            buyer_total_icp_e8s: 0n,
             sns_tokens_per_icp: 1,
             cf_participant_count: [],
             direct_participant_count: [],
             cf_neuron_count: [],
+            direct_participation_icp_e8s: [],
+            neurons_fund_participation_icp_e8s: [],
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
             params: {
               ...mockSnsFullProject.summary.swap.params,
-              min_participant_icp_e8s: BigInt(100_000_000),
+              min_participant_icp_e8s: 100_000_000n,
               max_participant_icp_e8s: userMax,
               max_icp_e8s: projectMax,
             },
@@ -487,9 +500,9 @@ describe("project-utils", () => {
     });
 
     it("returns the remainder to the user maximum if already participated", () => {
-      const projectMax = BigInt(10_000_000_000);
-      const userMax = BigInt(1_000_000_000);
-      const userCommitment = BigInt(400_000_000);
+      const projectMax = 10_000_000_000n;
+      const userMax = 1_000_000_000n;
+      const userCommitment = 400_000_000n;
       const validProject: SnsFullProject = {
         ...mockSnsFullProject,
         summary: {
@@ -500,12 +513,14 @@ describe("project-utils", () => {
             cf_participant_count: [],
             direct_participant_count: [],
             cf_neuron_count: [],
+            direct_participation_icp_e8s: [],
+            neurons_fund_participation_icp_e8s: [],
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
             params: {
               ...mockSnsFullProject.summary.swap.params,
-              min_participant_icp_e8s: BigInt(100_000_000),
+              min_participant_icp_e8s: 100_000_000n,
               max_participant_icp_e8s: userMax,
               max_icp_e8s: projectMax,
             },
@@ -515,6 +530,7 @@ describe("project-utils", () => {
           ...(mockSnsFullProject.swapCommitment as SnsSwapCommitment),
           myCommitment: {
             icp: [createTransferableAmount(userCommitment)],
+            has_created_neuron_recipes: [],
           },
         },
       };
@@ -524,9 +540,9 @@ describe("project-utils", () => {
     });
 
     it("returns the remainder to the project maximum if remainder lower than user max", () => {
-      const projectMax = BigInt(10_000_000_000);
-      const userMax = BigInt(1_000_000_000);
-      const projectCommitment = BigInt(9_500_000_000);
+      const projectMax = 10_000_000_000n;
+      const userMax = 1_000_000_000n;
+      const projectCommitment = 9_500_000_000n;
       const validProject: SnsFullProject = {
         ...mockSnsFullProject,
         summary: {
@@ -537,12 +553,14 @@ describe("project-utils", () => {
             cf_participant_count: [],
             direct_participant_count: [],
             cf_neuron_count: [],
+            direct_participation_icp_e8s: [],
+            neurons_fund_participation_icp_e8s: [],
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
             params: {
               ...mockSnsFullProject.summary.swap.params,
-              min_participant_icp_e8s: BigInt(100_000_000),
+              min_participant_icp_e8s: 100_000_000n,
               max_participant_icp_e8s: userMax,
               max_icp_e8s: projectMax,
             },
@@ -556,10 +574,10 @@ describe("project-utils", () => {
     });
 
     it("returns the remainder to the user maximum even when current commitment minus max is lower than maximum per user", () => {
-      const projectMax = BigInt(10_000_000_000);
-      const userMax = BigInt(1_000_000_000);
-      const projectCommitment = BigInt(9_200_000_000);
-      const userCommitment = BigInt(400_000_000);
+      const projectMax = 10_000_000_000n;
+      const userMax = 1_000_000_000n;
+      const projectCommitment = 9_200_000_000n;
+      const userCommitment = 400_000_000n;
       const validProject: SnsFullProject = {
         ...mockSnsFullProject,
         summary: {
@@ -570,12 +588,14 @@ describe("project-utils", () => {
             cf_participant_count: [],
             direct_participant_count: [],
             cf_neuron_count: [],
+            direct_participation_icp_e8s: [],
+            neurons_fund_participation_icp_e8s: [],
           },
           swap: {
             ...mockSnsFullProject.summary.swap,
             params: {
               ...mockSnsFullProject.summary.swap.params,
-              min_participant_icp_e8s: BigInt(100_000_000),
+              min_participant_icp_e8s: 100_000_000n,
               max_participant_icp_e8s: userMax,
               max_icp_e8s: projectMax,
             },
@@ -585,6 +605,7 @@ describe("project-utils", () => {
           ...(mockSnsFullProject.swapCommitment as SnsSwapCommitment),
           myCommitment: {
             icp: [createTransferableAmount(userCommitment)],
+            has_created_neuron_recipes: [],
           },
         },
       };
@@ -596,8 +617,8 @@ describe("project-utils", () => {
 
   describe("projectRemainingAmount", () => {
     it("returns remaining amount taking into account current commitment", () => {
-      const projectMax = BigInt(10_000_000_000);
-      const projectCommitment = BigInt(9_200_000_000);
+      const projectMax = 10_000_000_000n;
+      const projectCommitment = 9_200_000_000n;
       const summary: SnsSummary = {
         ...mockSnsFullProject.summary,
         derived: {
@@ -606,13 +627,15 @@ describe("project-utils", () => {
           cf_participant_count: [],
           direct_participant_count: [],
           cf_neuron_count: [],
+          direct_participation_icp_e8s: [],
+          neurons_fund_participation_icp_e8s: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
           params: {
             ...mockSnsFullProject.summary.swap.params,
-            min_participant_icp_e8s: BigInt(100_000_000),
-            max_participant_icp_e8s: BigInt(1_000_000_000),
+            min_participant_icp_e8s: 100_000_000n,
+            max_participant_icp_e8s: 1_000_000_000n,
             max_icp_e8s: projectMax,
           },
         },
@@ -624,33 +647,36 @@ describe("project-utils", () => {
   });
 
   describe("validParticipation", () => {
-    const validAmountE8s = BigInt(1_000_000_000);
+    const validAmountE8s = 1_000_000_000n;
     const validProject: SnsFullProject = {
       ...mockSnsFullProject,
       summary: {
         ...mockSnsFullProject.summary,
         derived: {
-          buyer_total_icp_e8s: BigInt(0),
+          buyer_total_icp_e8s: 0n,
           sns_tokens_per_icp: 1,
           cf_participant_count: [],
           direct_participant_count: [],
           cf_neuron_count: [],
+          direct_participation_icp_e8s: [],
+          neurons_fund_participation_icp_e8s: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
           lifecycle: SnsSwapLifecycle.Open,
           params: {
             ...mockSnsFullProject.summary.swap.params,
-            min_participant_icp_e8s: validAmountE8s - BigInt(10_000),
-            max_participant_icp_e8s: validAmountE8s + BigInt(10_000),
-            max_icp_e8s: validAmountE8s + BigInt(10_000),
+            min_participant_icp_e8s: validAmountE8s - 10_000n,
+            max_participant_icp_e8s: validAmountE8s + 10_000n,
+            max_icp_e8s: validAmountE8s + 10_000n,
           },
         },
       },
       swapCommitment: {
         ...(mockSnsFullProject.swapCommitment as SnsSwapCommitment),
         myCommitment: {
-          icp: [createTransferableAmount(BigInt(0))],
+          icp: [createTransferableAmount(0n)],
+          has_created_neuron_recipes: [],
         },
       },
     };
@@ -724,7 +750,7 @@ describe("project-utils", () => {
       const { valid } = validParticipation({
         project,
         amount: TokenAmount.fromE8s({
-          amount: validAmountE8s + BigInt(10_000),
+          amount: validAmountE8s + 10_000n,
           token: ICPToken,
         }),
       });
@@ -740,7 +766,7 @@ describe("project-utils", () => {
             ...validProject.summary.swap,
             params: {
               ...validProject.summary.swap.params,
-              max_participant_icp_e8s: validAmountE8s * BigInt(2),
+              max_participant_icp_e8s: validAmountE8s * 2n,
             },
           },
         },
@@ -748,13 +774,14 @@ describe("project-utils", () => {
           ...(validProject.swapCommitment as SnsSwapCommitment),
           myCommitment: {
             icp: [createTransferableAmount(validAmountE8s)],
+            has_created_neuron_recipes: [],
           },
         },
       };
       const { valid } = validParticipation({
         project,
         amount: TokenAmount.fromE8s({
-          amount: validAmountE8s + BigInt(10_000),
+          amount: validAmountE8s + 10_000n,
           token: ICPToken,
         }),
       });
@@ -762,9 +789,9 @@ describe("project-utils", () => {
     });
 
     it("returns false if amount is larger than project remainder to get to maximum", () => {
-      const maxE8s = BigInt(1_000_000_000);
-      const participationE8s = BigInt(100_000_000);
-      const currentE8s = BigInt(950_000_000);
+      const maxE8s = 1_000_000_000n;
+      const participationE8s = 100_000_000n;
+      const currentE8s = 950_000_000n;
       const project: SnsFullProject = {
         ...validProject,
         summary: {
@@ -775,6 +802,8 @@ describe("project-utils", () => {
             cf_participant_count: [],
             direct_participant_count: [],
             cf_neuron_count: [],
+            direct_participation_icp_e8s: [],
+            neurons_fund_participation_icp_e8s: [],
           },
           swap: {
             ...validProject.summary.swap,
@@ -796,12 +825,12 @@ describe("project-utils", () => {
     });
 
     it("returns false if amount is smaller than project remainder to get to maximum, but larger than user remainder until max", () => {
-      const maxProject = BigInt(100_000_000_000);
-      const minPerUser = BigInt(100_000_000);
-      const maxPerUser = BigInt(2_000_000_000);
-      const currentProjectParticipation = BigInt(99_500_000_000);
-      const currentUserParticipation = BigInt(800_000_000);
-      const newParticipation = BigInt(600_000_000);
+      const maxProject = 100_000_000_000n;
+      const minPerUser = 100_000_000n;
+      const maxPerUser = 2_000_000_000n;
+      const currentProjectParticipation = 99_500_000_000n;
+      const currentUserParticipation = 800_000_000n;
+      const newParticipation = 600_000_000n;
       const project: SnsFullProject = {
         ...validProject,
         summary: {
@@ -812,6 +841,8 @@ describe("project-utils", () => {
             cf_participant_count: [],
             direct_participant_count: [],
             cf_neuron_count: [],
+            direct_participation_icp_e8s: [],
+            neurons_fund_participation_icp_e8s: [],
           },
           swap: {
             ...validProject.summary.swap,
@@ -827,6 +858,7 @@ describe("project-utils", () => {
           ...(validProject.swapCommitment as SnsSwapCommitment),
           myCommitment: {
             icp: [createTransferableAmount(currentUserParticipation)],
+            has_created_neuron_recipes: [],
           },
         },
       };
@@ -842,19 +874,21 @@ describe("project-utils", () => {
   });
 
   describe("validParticipation", () => {
-    const maxProject = BigInt(100_000_000_000);
-    const minPerUser = BigInt(100_000_000);
-    const maxPerUser = BigInt(2_000_000_000);
+    const maxProject = 100_000_000_000n;
+    const minPerUser = 100_000_000n;
+    const maxPerUser = 2_000_000_000n;
     const project: SnsFullProject = {
       ...mockSnsFullProject,
       summary: {
         ...mockSnsFullProject.summary,
         derived: {
-          buyer_total_icp_e8s: BigInt(0),
+          buyer_total_icp_e8s: 0n,
           sns_tokens_per_icp: 1,
           cf_participant_count: [],
           direct_participant_count: [],
           cf_neuron_count: [],
+          direct_participation_icp_e8s: [],
+          neurons_fund_participation_icp_e8s: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -886,11 +920,12 @@ describe("project-utils", () => {
         ...(mockSnsFullProject.swapCommitment as SnsSwapCommitment),
         myCommitment: {
           icp: [createTransferableAmount(initialAmountUser)],
+          has_created_neuron_recipes: [],
         },
       };
 
       // User can participate with amount less than min
-      const secondAmountUser = BigInt(10);
+      const secondAmountUser = 10n;
       const { valid: v2 } = validParticipation({
         project,
         amount: TokenAmount.fromE8s({
@@ -947,7 +982,7 @@ describe("project-utils", () => {
       const { valid: v7 } = validParticipation({
         project,
         amount: TokenAmount.fromE8s({
-          amount: maxPerUser - initialAmountUser + BigInt(10_000),
+          amount: maxPerUser - initialAmountUser + 10_000n,
           token: ICPToken,
         }),
       });
@@ -957,9 +992,9 @@ describe("project-utils", () => {
 
   describe("commitmentExceedsAmountLeft", () => {
     it("returns true if amount is larger than maximum left", () => {
-      const maxE8s = BigInt(1_000_000_000);
-      const participationE8s = BigInt(100_000_000);
-      const currentE8s = BigInt(950_000_000);
+      const maxE8s = 1_000_000_000n;
+      const participationE8s = 100_000_000n;
+      const currentE8s = 950_000_000n;
       const summary: SnsSummary = {
         ...mockSnsFullProject.summary,
         derived: {
@@ -968,6 +1003,8 @@ describe("project-utils", () => {
           cf_participant_count: [],
           direct_participant_count: [],
           cf_neuron_count: [],
+          direct_participation_icp_e8s: [],
+          neurons_fund_participation_icp_e8s: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -985,9 +1022,9 @@ describe("project-utils", () => {
     });
 
     it("returns false if amount is smaller than maximum left", () => {
-      const maxE8s = BigInt(1_000_000_000);
-      const participationE8s = BigInt(100_000_000);
-      const currentE8s = BigInt(850_000_000);
+      const maxE8s = 1_000_000_000n;
+      const participationE8s = 100_000_000n;
+      const currentE8s = 850_000_000n;
       const summary: SnsSummary = {
         ...mockSnsFullProject.summary,
         derived: {
@@ -996,6 +1033,8 @@ describe("project-utils", () => {
           cf_participant_count: [],
           direct_participant_count: [],
           cf_neuron_count: [],
+          direct_participation_icp_e8s: [],
+          neurons_fund_participation_icp_e8s: [],
         },
         swap: {
           ...mockSnsFullProject.summary.swap,
@@ -1040,7 +1079,7 @@ describe("project-utils", () => {
           subaccount: [],
         },
       ],
-      amount_icp_e8s: BigInt(1000_000_000),
+      amount_icp_e8s: 1_000_000_000n,
     };
 
     it("returns 'logged-out' if user is not logged in", () => {
@@ -1132,9 +1171,10 @@ describe("project-utils", () => {
         myCommitment: {
           icp: [
             createTransferableAmount(
-              summary.swap.params.max_participant_icp_e8s + BigInt(1)
+              summary.swap.params.max_participant_icp_e8s + 1n
             ),
           ],
+          has_created_neuron_recipes: [],
         },
       };
       expect(
@@ -1217,6 +1257,186 @@ describe("project-utils", () => {
           })
         ).toBe("enabled");
       });
+    });
+  });
+
+  describe("differentSummaries", () => {
+    it("should return empty array for the same summaries", () => {
+      expect(
+        differentSummaries([summaryUsRestricted], [summaryUsRestricted])
+      ).toHaveLength(0);
+    });
+
+    it("should return the different summaries", () => {
+      const sameButDifferent: SnsSummary = {
+        ...summaryNoRestricted,
+        token: {
+          ...summaryNoRestricted.token,
+          name: "not the same",
+        },
+      };
+      expect(
+        differentSummaries(
+          [summaryUsRestricted, sameButDifferent],
+          [summaryUsRestricted, summaryNoRestricted]
+        )
+      ).toEqual([sameButDifferent]);
+    });
+  });
+
+  describe("getProjectCommitmentSplit", () => {
+    const nfCommitment = 10_000_000_000n;
+    const directCommitment = 20_000_000_000n;
+
+    describe("when NF participation is present", () => {
+      it("returns the commitments split if min-max direct participations are present", () => {
+        const minDirectParticipation = 10_000_000_000n;
+        const maxDirectParticipation = 100_000_000_000n;
+        const summary = createSummary({
+          currentTotalCommitment: directCommitment + nfCommitment,
+          directCommitment,
+          neuronsFundCommitment: nfCommitment,
+          minDirectParticipation,
+          maxDirectParticipation,
+        });
+
+        expect(getProjectCommitmentSplit(summary)).toEqual({
+          totalCommitmentE8s: directCommitment + nfCommitment,
+          directCommitmentE8s: directCommitment,
+          nfCommitmentE8s: nfCommitment,
+          minDirectCommitmentE8s: minDirectParticipation,
+          maxDirectCommitmentE8s: maxDirectParticipation,
+          isNFParticipating: true,
+        });
+      });
+
+      it("returns the full commitment if min direct participation is not present", () => {
+        const summary = createSummary({
+          currentTotalCommitment: directCommitment + nfCommitment,
+          directCommitment,
+          neuronsFundCommitment: nfCommitment,
+          minDirectParticipation: undefined,
+          maxDirectParticipation: 100_000_000_000n,
+        });
+        expect(getProjectCommitmentSplit(summary)).toEqual({
+          totalCommitmentE8s: 30_000_000_000n,
+        });
+      });
+
+      it("returns the full commitment if max direct participation is not present", () => {
+        const summary = createSummary({
+          currentTotalCommitment: directCommitment + nfCommitment,
+          directCommitment,
+          neuronsFundCommitment: nfCommitment,
+          minDirectParticipation: 100_000_000_000n,
+          maxDirectParticipation: undefined,
+        });
+        expect(getProjectCommitmentSplit(summary)).toEqual({
+          totalCommitmentE8s: 30_000_000_000n,
+        });
+      });
+    });
+
+    describe("when NF participation is 0", () => {
+      it("returns the commitments split if NF participation is present even when 0", () => {
+        const directCommitment = 20_000_000_000n;
+        const minDirectParticipation = 10_000_000_000n;
+        const maxDirectParticipation = 100_000_000_000n;
+        const summary = createSummary({
+          currentTotalCommitment: directCommitment,
+          directCommitment,
+          neuronsFundCommitment: 0n,
+          minDirectParticipation,
+          maxDirectParticipation,
+        });
+        expect(getProjectCommitmentSplit(summary)).toEqual({
+          totalCommitmentE8s: 20_000_000_000n,
+          directCommitmentE8s: 20_000_000_000n,
+          nfCommitmentE8s: 0n,
+          minDirectCommitmentE8s: minDirectParticipation,
+          maxDirectCommitmentE8s: maxDirectParticipation,
+          isNFParticipating: true,
+        });
+      });
+    });
+
+    describe("when direct participation is not present", () => {
+      it("returns the overall commitments even if nf commitment and min-max direct participations are present", () => {
+        const minDirectParticipation = 10_000_000_000n;
+        const maxDirectParticipation = 100_000_000_000n;
+
+        const currentTotalCommitment = 30_000_000_000n;
+        const summary = createSummary({
+          currentTotalCommitment,
+          directCommitment: undefined,
+          neuronsFundCommitment: 10n,
+          minDirectParticipation,
+          maxDirectParticipation,
+        });
+
+        expect(getProjectCommitmentSplit(summary)).toEqual({
+          totalCommitmentE8s: currentTotalCommitment,
+        });
+      });
+    });
+
+    describe("when neurons fund participation is not present", () => {
+      it("returns the overall commitments even if nf commitment and min-max direct participations are present", () => {
+        const minDirectParticipation = 10_000_000_000n;
+        const maxDirectParticipation = 100_000_000_000n;
+
+        const summary = createSummary({
+          currentTotalCommitment: nfCommitment + directCommitment,
+          directCommitment: directCommitment,
+          neuronsFundCommitment: nfCommitment,
+          minDirectParticipation,
+          maxDirectParticipation,
+          neuronsFundIsParticipating: [],
+        });
+
+        expect(getProjectCommitmentSplit(summary)).toEqual({
+          totalCommitmentE8s: nfCommitment + directCommitment,
+        });
+      });
+    });
+
+    describe("when NF enhancement fields are present, but NF is not participating", () => {
+      it("returns the commitments split with NF as `null`", () => {
+        const minDirectParticipation = 10_000_000_000n;
+        const maxDirectParticipation = 100_000_000_000n;
+        const summary = createSummary({
+          currentTotalCommitment: directCommitment,
+          directCommitment,
+          neuronsFundCommitment: undefined,
+          minDirectParticipation,
+          maxDirectParticipation,
+          neuronsFundIsParticipating: [false],
+        });
+
+        expect(getProjectCommitmentSplit(summary)).toEqual({
+          totalCommitmentE8s: directCommitment,
+          directCommitmentE8s: directCommitment,
+          nfCommitmentE8s: undefined,
+          minDirectCommitmentE8s: minDirectParticipation,
+          maxDirectCommitmentE8s: maxDirectParticipation,
+          isNFParticipating: false,
+        });
+      });
+    });
+  });
+
+  describe("snsProjectDashboardUrl", () => {
+    it("returns a link to the dashboard", () => {
+      expect(snsProjectDashboardUrl(Principal.fromText("aaaaa-aa"))).toBe(
+        "https://dashboard.internetcomputer.org/sns/aaaaa-aa"
+      );
+      expect(
+        snsProjectDashboardUrl(
+          Principal.fromText("pin7y-wyaaa-aaaaa-aacpa-cai")
+        )
+      ).toBe(
+        "https://dashboard.internetcomputer.org/sns/pin7y-wyaaa-aaaaa-aacpa-cai"
+      );
     });
   });
 });

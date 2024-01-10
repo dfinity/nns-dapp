@@ -1,6 +1,7 @@
 import * as api from "$lib/api/canisters.api";
-import * as ledgerApi from "$lib/api/ledger.api";
+import * as ledgerApi from "$lib/api/icp-ledger.api";
 import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
+import * as authServices from "$lib/services/auth.services";
 import {
   addController,
   attachCanister,
@@ -16,8 +17,8 @@ import {
 } from "$lib/services/canisters.services";
 import { canistersStore } from "$lib/stores/canisters.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
-import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import {
+  mockGetIdentity,
   mockIdentity,
   mockIdentityErrorMsg,
   resetIdentity,
@@ -29,74 +30,82 @@ import {
   mockCanisters,
 } from "$tests/mocks/canisters.mock";
 import en from "$tests/mocks/i18n.mock";
+import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
+import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
+import type { SpyInstance } from "vitest";
 
-jest.mock("$lib/api/ledger.api");
-jest.mock("$lib/api/canisters.api");
-const blockedApiPaths = ["$lib/api/canisters.api", "$lib/api/ledger.api"];
+vi.mock("$lib/api/icp-ledger.api");
+vi.mock("$lib/api/canisters.api");
+const blockedApiPaths = ["$lib/api/canisters.api", "$lib/api/icp-ledger.api"];
 
 describe("canisters-services", () => {
   blockAllCallsTo(blockedApiPaths);
 
-  const newBalanceE8s = BigInt(100_000_000);
-  const exchangeRate = BigInt(10_000);
-  let spyQueryCanisters: jest.SpyInstance;
-  let spyQueryAccountBalance: jest.SpyInstance;
-  let spyAttachCanister: jest.SpyInstance;
-  let spyRenameCanister: jest.SpyInstance;
-  let spyDetachCanister: jest.SpyInstance;
-  let spyUpdateSettings: jest.SpyInstance;
-  let spyCreateCanister: jest.SpyInstance;
-  let spyTopUpCanister: jest.SpyInstance;
-  let spyQueryCanisterDetails: jest.SpyInstance;
-  let spyGetExchangeRate: jest.SpyInstance;
+  const newBalanceE8s = 100_000_000n;
+  const exchangeRate = 10_000n;
+  let spyQueryCanisters: SpyInstance;
+  let spyQueryAccountBalance: SpyInstance;
+  let spyAttachCanister: SpyInstance;
+  let spyRenameCanister: SpyInstance;
+  let spyDetachCanister: SpyInstance;
+  let spyUpdateSettings: SpyInstance;
+  let spyCreateCanister: SpyInstance;
+  let spyTopUpCanister: SpyInstance;
+  let spyQueryCanisterDetails: SpyInstance;
+  let spyGetExchangeRate: SpyInstance;
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.clearAllMocks();
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
 
     toastsStore.reset();
     canistersStore.setCanisters({ canisters: [], certified: true });
 
-    spyQueryCanisters = jest
+    spyQueryCanisters = vi
       .spyOn(api, "queryCanisters")
       .mockImplementation(() => Promise.resolve(mockCanisters));
-    spyQueryAccountBalance = jest
+    spyQueryAccountBalance = vi
       .spyOn(ledgerApi, "queryAccountBalance")
       .mockResolvedValue(newBalanceE8s);
-    spyAttachCanister = jest
+    spyAttachCanister = vi
       .spyOn(api, "attachCanister")
       .mockImplementation(() => Promise.resolve(undefined));
 
-    spyRenameCanister = jest
+    spyRenameCanister = vi
       .spyOn(api, "renameCanister")
       .mockImplementation(() => Promise.resolve(undefined));
 
-    spyDetachCanister = jest
+    spyDetachCanister = vi
       .spyOn(api, "detachCanister")
       .mockImplementation(() => Promise.resolve(undefined));
 
-    spyUpdateSettings = jest
+    spyUpdateSettings = vi
       .spyOn(api, "updateSettings")
       .mockImplementation(() => Promise.resolve(undefined));
 
-    spyCreateCanister = jest
+    spyCreateCanister = vi
       .spyOn(api, "createCanister")
       .mockImplementation(() => Promise.resolve(mockCanisterDetails.id));
 
-    spyTopUpCanister = jest
+    spyTopUpCanister = vi
       .spyOn(api, "topUpCanister")
       .mockImplementation(() => Promise.resolve(undefined));
 
-    spyQueryCanisterDetails = jest
+    spyQueryCanisterDetails = vi
       .spyOn(api, "queryCanisterDetails")
       .mockImplementation(() => Promise.resolve(mockCanisterDetails));
 
-    spyGetExchangeRate = jest
+    spyGetExchangeRate = vi
       .spyOn(api, "getIcpToCyclesExchangeRate")
       .mockImplementation(() => Promise.resolve(exchangeRate));
+
+    resetIdentity();
+    vi.spyOn(authServices, "getAuthenticatedIdentity").mockImplementation(
+      mockGetIdentity
+    );
   });
 
   describe("listCanisters", () => {
@@ -418,7 +427,7 @@ describe("canisters-services", () => {
     it("should call api to create a canister", async () => {
       const account = {
         ...mockMainAccount,
-        balanceE8s: 500000000n,
+        balanceUlps: 500000000n,
       };
       const canisterId = await createCanister({
         amount: 3,
@@ -427,13 +436,13 @@ describe("canisters-services", () => {
       expect(canisterId).not.toBeUndefined();
       expect(spyCreateCanister).toBeCalled();
       expect(spyQueryCanisters).toBeCalled();
-      expect(spyQueryAccountBalance).toBeCalled();
+      await waitFor(() => expect(spyQueryAccountBalance).toBeCalled());
     });
 
     it("should not call api if account doesn't have enough funds", async () => {
       const account = {
         ...mockMainAccount,
-        balanceE8s: 200000000n,
+        balanceUlps: 200000000n,
       };
       const canisterId = await createCanister({
         amount: 3,
@@ -448,7 +457,7 @@ describe("canisters-services", () => {
     it("should show toast error if account doesn't have enough funds", async () => {
       const account = {
         ...mockMainAccount,
-        balanceE8s: 200000000n,
+        balanceUlps: 200000000n,
       };
       const canisterId = await createCanister({
         amount: 3,
@@ -483,7 +492,7 @@ describe("canisters-services", () => {
     it("should call api to top up a canister", async () => {
       const account = {
         ...mockMainAccount,
-        balanceE8s: 500000000n,
+        balanceUlps: 500000000n,
       };
       const { success } = await topUpCanister({
         amount: 3,
@@ -492,13 +501,13 @@ describe("canisters-services", () => {
       });
       expect(success).toBe(true);
       expect(spyTopUpCanister).toBeCalled();
-      expect(spyQueryAccountBalance).toBeCalled();
+      await waitFor(() => expect(spyQueryAccountBalance).toBeCalled());
     });
 
     it("should not call api if account doesn't have enough funds", async () => {
       const account = {
         ...mockMainAccount,
-        balanceE8s: 200000000n,
+        balanceUlps: 200000000n,
       };
       const { success } = await topUpCanister({
         amount: 3,
@@ -513,7 +522,7 @@ describe("canisters-services", () => {
     it("should show toast error if account doesn't have enough funds", async () => {
       const account = {
         ...mockMainAccount,
-        balanceE8s: 200000000n,
+        balanceUlps: 200000000n,
       };
       const { success } = await topUpCanister({
         amount: 3,

@@ -1,186 +1,16 @@
-import DEFAULT_SNS_LOGO from "$lib/assets/sns-logo-default.svg";
+import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import type { SnsTicketsStoreData } from "$lib/stores/sns-tickets.store";
-import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { TicketStatus } from "$lib/types/sale";
+import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
+import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp";
+import type { Principal } from "@dfinity/principal";
 import type {
-  SnsSummary,
-  SnsSummaryMetadata,
-  SnsSummarySwap,
-  SnsSwapCommitment,
-} from "$lib/types/sns";
-import type {
-  QuerySns,
-  QuerySnsMetadata,
-  QuerySnsSwapState,
-} from "$lib/types/sns.query";
-import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
-import { AccountIdentifier, SubAccount } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
-import type {
-  SnsGetMetadataResponse,
-  SnsParams,
-  SnsSwap,
-  SnsSwapDerivedState,
+  SnsGetAutoFinalizationStatusResponse,
+  SnsGetDerivedStateResponse,
+  SnsNervousSystemFunction,
 } from "@dfinity/sns";
+import type { DerivedState } from "@dfinity/sns/dist/candid/sns_swap";
 import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
-import { isPngAsset } from "./utils";
-
-type OptionalSnsSummarySwap = Omit<SnsSummarySwap, "params"> & {
-  params?: SnsParams;
-};
-
-type OptionalSummary = QuerySns & {
-  metadata?: SnsSummaryMetadata;
-  token?: IcrcTokenMetadata;
-  swap?: OptionalSnsSummarySwap;
-  derived?: SnsSwapDerivedState;
-  swapCanisterId?: Principal;
-  governanceCanisterId?: Principal;
-  ledgerCanisterId?: Principal;
-  indexCanisterId?: Principal;
-};
-
-type ValidSummary = Required<Omit<OptionalSummary, "swap">> & {
-  swap: SnsSummarySwap;
-};
-
-/**
- * Sort Sns summaries according their swap end dates. Sooner end dates first.
- * @param summaries
- */
-const sortSnsSummaries = (summaries: SnsSummary[]): SnsSummary[] =>
-  summaries.sort(
-    (
-      {
-        swap: {
-          params: { swap_due_timestamp_seconds: endTimeWindowA },
-        },
-      }: SnsSummary,
-      {
-        swap: {
-          params: { swap_due_timestamp_seconds: endTimeWindowB },
-        },
-      }: SnsSummary
-    ) => (endTimeWindowA < endTimeWindowB ? -1 : 1)
-  );
-
-/**
- * Metadata is given only if all its properties are defined.
- */
-const mapOptionalMetadata = ({
-  logo,
-  url,
-  name,
-  description,
-}: SnsGetMetadataResponse): SnsSummaryMetadata | undefined => {
-  const nullishLogo = fromNullable(logo);
-  const nullishUrl = fromNullable(url);
-  const nullishName = fromNullable(name);
-  const nullishDescription = fromNullable(description);
-
-  if (
-    nullishUrl === undefined ||
-    nullishName === undefined ||
-    nullishDescription === undefined
-  ) {
-    return undefined;
-  }
-
-  // We have to check if the logo is a png asset for security reasons.
-  // Default logo can be svg.
-  return {
-    logo: isPngAsset(nullishLogo) ? nullishLogo : DEFAULT_SNS_LOGO,
-    url: nullishUrl,
-    name: nullishName,
-    description: nullishDescription,
-  } as SnsSummaryMetadata;
-};
-
-/**
- * Maps the properties of the SnsSwap type to the properties of the SnsSummarySwap type.
- * For now, the only property is extracted from candid optional type is `params`.
- */
-const mapOptionalSwap = (
-  swapData: SnsSwap | undefined
-): OptionalSnsSummarySwap | undefined =>
-  swapData === undefined
-    ? undefined
-    : {
-        ...swapData,
-        decentralization_sale_open_timestamp_seconds: fromNullable(
-          swapData.decentralization_sale_open_timestamp_seconds
-        ),
-        params: fromNullable(swapData.params),
-      };
-
-/**
- * 1. Concat Sns queries for metadata and swap state.
- * 2. Filter those Sns without metadata, swap and derived information
- * 3. Sort according swap start date
- *
- * Note from NNS team about mandatory swap and derived data that are defined as optional in Candid:
- *
- * Swap state and Derived State should always be populated.
- * They are optional as that is the best strategy for backwards compatibility from the protobuf side, which is what we derive our candid APIs from.
- * If either of those are missing, that would indicate a bigger issue with the swap canister and can be safely ignored from the nns-dapp.
- *
- * Note about mandatory Metadata:
- *
- * Having mandatory metadata values is the cleanest solution from code perspective but also from feature perspective, user need information to invest in sales they trust.
- * This might evolve in the future but at least for a first version it is the best approach for above reasons.
- *
- */
-export const mapAndSortSnsQueryToSummaries = ({
-  metadata,
-  swaps,
-}: {
-  metadata: QuerySnsMetadata[];
-  swaps: QuerySnsSwapState[];
-}): SnsSummary[] => {
-  const allSummaries: OptionalSummary[] = metadata.map(
-    ({ rootCanisterId, metadata, token, ...rest }: QuerySnsMetadata) => {
-      const swapState = swaps.find(
-        ({ rootCanisterId: swapRootCanisterId }: QuerySnsSwapState) =>
-          swapRootCanisterId === rootCanisterId
-      );
-
-      const swapData = fromNullable(swapState?.swap ?? []);
-      return {
-        ...rest,
-        rootCanisterId,
-        metadata: mapOptionalMetadata(metadata),
-        token: mapOptionalToken(token),
-        swapCanisterId: swapState?.swapCanisterId,
-        governanceCanisterId: swapState?.governanceCanisterId,
-        ledgerCanisterId: swapState?.ledgerCanisterId,
-        indexCanisterId: swapState?.indexCanisterId,
-        swap: mapOptionalSwap(swapData),
-        derived: fromNullable(swapState?.derived ?? []),
-      };
-    }
-  );
-
-  // Only those that have valid metadata, toke, sale and derived information are - and can be - considered as valid
-  const validSwapSummaries: ValidSummary[] = allSummaries.filter(
-    (entry: OptionalSummary): entry is ValidSummary =>
-      entry.swap !== undefined &&
-      entry.swap.params !== undefined &&
-      entry.swapCanisterId !== undefined &&
-      entry.governanceCanisterId !== undefined &&
-      entry.ledgerCanisterId !== undefined &&
-      entry.indexCanisterId !== undefined &&
-      entry.derived !== undefined &&
-      entry.metadata !== undefined &&
-      entry.token !== undefined
-  );
-
-  return sortSnsSummaries(
-    validSwapSummaries.map(({ rootCanisterId, ...rest }) => ({
-      rootCanisterId: Principal.fromText(rootCanisterId),
-      ...rest,
-    }))
-  );
-};
 
 export const getSwapCanisterAccount = ({
   controller,
@@ -200,7 +30,7 @@ export const getSwapCanisterAccount = ({
 
 /**
  * Returns `undefined` if swapCommitment is not present yet.
- * Returns `BigInt(0)` if myCommitment is present but user has no commitment or amount is not present either.
+ * Returns `0n` if myCommitment is present but user has no commitment or amount is not present either.
  * Returns commitment e8s if commitment is defined.
  */
 export const getCommitmentE8s = (
@@ -210,8 +40,7 @@ export const getCommitmentE8s = (
     return undefined;
   }
   return (
-    fromNullable(swapCommitment?.myCommitment?.icp ?? [])?.amount_e8s ??
-    BigInt(0)
+    fromNullable(swapCommitment?.myCommitment?.icp ?? [])?.amount_e8s ?? 0n
   );
 };
 
@@ -294,3 +123,69 @@ export const parseSnsSwapSaleBuyerCount = (
   );
   return isNaN(value) ? undefined : value;
 };
+
+/**
+ * An SNS is in finalization state if:
+ *
+ * 1. `has_auto_finalize_been_attempted` is true
+ * 2. `auto_finalize_swap_response` is empty
+ */
+export const isSnsFinalizing = (
+  finalizationStatus: SnsGetAutoFinalizationStatusResponse
+): boolean => {
+  const { has_auto_finalize_been_attempted, auto_finalize_swap_response } =
+    finalizationStatus;
+
+  return (
+    Boolean(fromNullable(has_auto_finalize_been_attempted)) &&
+    isNullish(fromNullable(auto_finalize_swap_response))
+  );
+};
+
+export const convertDerivedStateResponseToDerivedState = (
+  derivedState: SnsGetDerivedStateResponse
+): DerivedState | undefined => {
+  const sns_tokens_per_icp = fromNullable(derivedState.sns_tokens_per_icp);
+  const buyer_total_icp_e8s = fromNullable(derivedState.buyer_total_icp_e8s);
+  // This is not expected, but in case it happens, we want to fail fast.
+  if (sns_tokens_per_icp === undefined || buyer_total_icp_e8s === undefined) {
+    return;
+  }
+  return {
+    ...derivedState,
+    sns_tokens_per_icp,
+    buyer_total_icp_e8s,
+  };
+};
+
+/**
+ * Returns true if the swap has ended more than one week ago.
+ */
+export const swapEndedMoreThanOneWeekAgo = ({
+  summary,
+  nowInSeconds,
+}: {
+  summary: SnsSummary;
+  nowInSeconds: number;
+}) => {
+  const oneWeekAgoInSeconds = BigInt(nowInSeconds - SECONDS_IN_DAY * 7);
+  return oneWeekAgoInSeconds > summary.swap.params.swap_due_timestamp_seconds;
+};
+
+/**
+ * Returns true if the FunctionType is NativeNervousSystemFunction (same for all same-version snses).
+ */
+export const isNativeNervousSystemFunction = (
+  nsFunction: SnsNervousSystemFunction
+): boolean =>
+  "NativeNervousSystemFunction" in
+  (fromNullable(nsFunction.function_type) ?? {});
+
+/**
+ * Returns true if the FunctionType is GenericNervousSystemFunction (custom per sns).
+ */
+export const isGenericNervousSystemFunction = (
+  nsFunction: SnsNervousSystemFunction
+): boolean =>
+  "GenericNervousSystemFunction" in
+  (fromNullable(nsFunction.function_type) ?? {});

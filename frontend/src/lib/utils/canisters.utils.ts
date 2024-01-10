@@ -89,3 +89,12 @@ export const errorCanisterNameMessage = (name: string | undefined) => {
   }
   return undefined;
 };
+
+export const areEnoughCyclesSelected = ({
+  amountCycles,
+  minimumCycles,
+}: {
+  minimumCycles: number | undefined;
+  amountCycles: number | undefined;
+}): boolean =>
+  (amountCycles ?? 0) >= (minimumCycles ?? 0) && (amountCycles ?? 0) > 0;

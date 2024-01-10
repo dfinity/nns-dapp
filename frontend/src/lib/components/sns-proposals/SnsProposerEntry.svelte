@@ -11,9 +11,9 @@
   $: proposerText = subaccountToHexString(proposer.id);
 </script>
 
-<KeyValuePairInfo testId="proposal-system-info-proposer">
-  <svelte:fragment slot="key"
-    >{$i18n.proposal_detail.proposer_prefix}</svelte:fragment
+<KeyValuePairInfo testId="proposal-system-info-proposer" alignIconRight>
+  <span class="description" slot="key"
+    >{$i18n.proposal_detail.proposer_prefix}</span
   >
 
   <svelte:fragment slot="value">
@@ -22,6 +22,7 @@
       tagName="span"
       text={proposerText}
       id="proposer-id"
+      showCopy
     />
   </svelte:fragment>
 

@@ -5,14 +5,14 @@ import { userCountryStore } from "$lib/stores/user-country.store";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { get } from "svelte/store";
 
-jest.mock("$lib/api/location.api");
+vi.mock("$lib/api/location.api");
 
 describe("location services", () => {
   blockAllCallsTo(["$lib/api/location.api"]);
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.clearAllMocks();
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
   });
 
   describe("loadUserLocation", () => {
@@ -23,9 +23,9 @@ describe("location services", () => {
       expect(get(userCountryStore)).toBe(NOT_LOADED);
 
       const countryCode = "CH";
-      jest
-        .spyOn(locationApi, "queryUserCountryLocation")
-        .mockResolvedValue(countryCode);
+      vi.spyOn(locationApi, "queryUserCountryLocation").mockResolvedValue(
+        countryCode
+      );
 
       await loadUserCountry();
 
@@ -35,9 +35,9 @@ describe("location services", () => {
     it("should set the location store to error if api fails", async () => {
       expect(get(userCountryStore)).toBe(NOT_LOADED);
 
-      jest
-        .spyOn(locationApi, "queryUserCountryLocation")
-        .mockRejectedValue(new Error("test"));
+      vi.spyOn(locationApi, "queryUserCountryLocation").mockRejectedValue(
+        new Error("test")
+      );
 
       await loadUserCountry();
 
@@ -48,7 +48,7 @@ describe("location services", () => {
 
     it("should not call api if location store is already set", async () => {
       const countryCode = "CH";
-      const apiFn = jest
+      const apiFn = vi
         .spyOn(locationApi, "queryUserCountryLocation")
         .mockResolvedValue(countryCode);
       userCountryStore.set({ isoCode: countryCode });
@@ -60,7 +60,7 @@ describe("location services", () => {
 
     it("should not call api if location store has an error", async () => {
       const countryCode = "CH";
-      const apiFn = jest
+      const apiFn = vi
         .spyOn(locationApi, "queryUserCountryLocation")
         .mockResolvedValue(countryCode);
       userCountryStore.set(new Error("test"));

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   ACCOUNT_PARAM,
@@ -24,7 +20,7 @@ import {
   isSelectedPath,
   reloadRouteData,
 } from "$lib/utils/navigation.utils";
-import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import { mockSnsFullProject, principal } from "$tests/mocks/sns-projects.mock";
 
 describe("navigation-utils", () => {
   describe("reload", () => {
@@ -66,7 +62,7 @@ describe("navigation-utils", () => {
       expect(
         reloadRouteData({
           expectedPreviousPath: AppPath.Canister,
-          effectivePreviousPath: AppPath.Authentication,
+          effectivePreviousPath: AppPath.Accounts,
           currentData: ["test"],
         })
       ).toBeTruthy();
@@ -137,13 +133,12 @@ describe("navigation-utils", () => {
     });
 
     it("should build accounts url", () => {
+      const universe = principal(0).toText();
       expect(
         buildAccountsUrl({
-          universe: OWN_CANISTER_ID_TEXT,
+          universe,
         })
-      ).toEqual(
-        `${AppPath.Accounts}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
-      );
+      ).toEqual(`${AppPath.Accounts}/?${UNIVERSE_PARAM}=${universe}`);
     });
 
     it("should build neurons url", () => {
@@ -214,7 +209,7 @@ describe("navigation-utils", () => {
     it("should not match selected path", () => {
       expect(
         isSelectedPath({
-          currentPath: AppPath.Authentication,
+          currentPath: AppPath.Neuron,
           paths: [AppPath.Accounts, AppPath.Wallet],
         })
       ).toBe(false);

@@ -1,6 +1,7 @@
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 import type { Identity } from "@dfinity/agent";
+import type { IcrcAccount } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import type {
   SnsListProposalsParams,
@@ -247,25 +248,28 @@ export const stopDissolving = async ({
   logWithTimestamp(`Stop dissolving sns neuron complete.`);
 };
 
-export const increaseDissolveDelay = async ({
+export const setDissolveDelay = async ({
   identity,
   rootCanisterId,
   neuronId,
-  additionalDissolveDelaySeconds,
+  dissolveTimestampSeconds,
 }: {
   identity: Identity;
   rootCanisterId: Principal;
   neuronId: SnsNeuronId;
-  additionalDissolveDelaySeconds: number;
+  dissolveTimestampSeconds: number;
 }): Promise<void> => {
   logWithTimestamp(`Increase sns dissolve delay call...`);
 
-  const { increaseDissolveDelay } = await wrapper({
+  const { setDissolveTimestamp } = await wrapper({
     identity,
     rootCanisterId: rootCanisterId.toText(),
     certified: true,
   });
-  await increaseDissolveDelay({ neuronId, additionalDissolveDelaySeconds });
+  await setDissolveTimestamp({
+    neuronId,
+    dissolveTimestampSeconds: BigInt(dissolveTimestampSeconds),
+  });
 
   logWithTimestamp(`Increase sns dissolve delay complete.`);
 };
@@ -338,7 +342,7 @@ export const claimNeuron = async ({
   identity: Identity;
   memo: bigint;
   controller: Principal;
-  subaccount: Uint8Array;
+  subaccount: Uint8Array | number[];
 }): Promise<SnsNeuronId> => {
   logWithTimestamp(`Claiming neuron call...`);
 
@@ -461,6 +465,36 @@ export const stakeMaturity = async ({
   });
 
   logWithTimestamp(`Stake maturity: complete`);
+};
+
+export const disburseMaturity = async ({
+  neuronId,
+  rootCanisterId,
+  identity,
+  percentageToDisburse,
+  toAccount,
+}: {
+  neuronId: SnsNeuronId;
+  rootCanisterId: Principal;
+  identity: Identity;
+  percentageToDisburse: number;
+  toAccount?: IcrcAccount;
+}): Promise<void> => {
+  logWithTimestamp(`Disburse maturity: call...`);
+
+  const { disburseMaturity: percentageToDisburseApi } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+
+  await percentageToDisburseApi({
+    neuronId,
+    percentageToDisburse,
+    toAccount,
+  });
+
+  logWithTimestamp(`Disburse maturity: complete`);
 };
 
 export const registerVote = async ({

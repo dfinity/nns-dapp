@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { render } from "@testing-library/svelte";

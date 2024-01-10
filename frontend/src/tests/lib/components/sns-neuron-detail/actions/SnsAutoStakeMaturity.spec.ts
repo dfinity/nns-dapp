@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsAutoStakeMaturity from "$lib/components/sns-neuron-detail/actions/SnsAutoStakeMaturity.svelte";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { toggleAutoStakeMaturity } from "$lib/services/sns-neurons.services";
@@ -10,23 +6,23 @@ import en from "$tests/mocks/i18n.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { toastsStore } from "@dfinity/gix-components";
-import { fireEvent, render } from "@testing-library/svelte";
+import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
-jest.mock("$lib/services/sns-neurons.services", () => {
+vi.mock("$lib/services/sns-neurons.services", () => {
   return {
-    toggleAutoStakeMaturity: jest.fn().mockResolvedValue({ success: true }),
+    toggleAutoStakeMaturity: vi.fn().mockResolvedValue({ success: true }),
   };
 });
 
 describe("SnsAutoStakeMaturity", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     toastsStore.reset();
-    jest
-      .spyOn(snsTokenSymbolSelectedStore, "subscribe")
-      .mockImplementation(mockTokenStore);
+    vi.spyOn(snsTokenSymbolSelectedStore, "subscribe").mockImplementation(
+      mockTokenStore
+    );
   });
 
   it("renders checkbox", () => {
@@ -129,6 +125,7 @@ describe("SnsAutoStakeMaturity", () => {
 
   it("should call toggleAutoStakeMaturity neuron service on confirmation", async () => {
     await toggleAutoStake({ neuronAutoStakeMaturity: undefined });
+    await waitFor(() => expect(get(toastsStore)[0]).toBeDefined());
     expect(get(toastsStore)[0]).toMatchObject({
       level: "success",
       text: en.neuron_detail.auto_stake_maturity_on_success,
@@ -137,6 +134,7 @@ describe("SnsAutoStakeMaturity", () => {
 
   it("should show success message when disabling", async () => {
     await toggleAutoStake({ neuronAutoStakeMaturity: true });
+    await waitFor(() => expect(get(toastsStore)[0]).toBeDefined());
     expect(get(toastsStore)[0]).toMatchObject({
       level: "success",
       text: en.neuron_detail.auto_stake_maturity_off_success,

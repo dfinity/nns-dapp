@@ -1,12 +1,8 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsProposals from "$lib/pages/SnsProposals.svelte";
 import { authStore } from "$lib/stores/auth.store";
+import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
-import { snsQueryStore } from "$lib/stores/sns.store";
 import { page } from "$mocks/$app/stores";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import {
@@ -15,8 +11,9 @@ import {
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import { snsResponseFor } from "$tests/mocks/sns-response.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
 import {
   SnsProposalDecisionStatus,
@@ -26,7 +23,7 @@ import {
 } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
-jest.mock("$lib/api/sns-governance.api");
+vi.mock("$lib/api/sns-governance.api");
 
 describe("SnsProposals", () => {
   fakeSnsGovernanceApi.install();
@@ -39,34 +36,36 @@ describe("SnsProposals", () => {
     )[0];
 
   const rootCanisterId = mockPrincipal;
+  const functionName = "test_function";
+  const functionId = 3n;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     snsProposalsStore.reset();
     snsFunctionsStore.reset();
-    snsQueryStore.reset();
-    snsQueryStore.setData(
-      snsResponseFor({
-        principal: rootCanisterId,
-        lifecycle: SnsSwapLifecycle.Committed,
-      })
-    );
+    snsFiltersStore.reset();
     // Reset to default value
     page.mock({ data: { universe: rootCanisterId.toText() } });
+    setSnsProjects([
+      {
+        rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+        nervousFunctions: [
+          {
+            ...nervousSystemFunctionMock,
+            name: functionName,
+            id: functionId,
+          },
+        ],
+      },
+    ]);
   });
 
   describe("logged in user", () => {
-    const functionName = "test_function";
-    const functionId = BigInt(3);
     beforeEach(() => {
-      fakeSnsGovernanceApi.addNervousSystemFunctionWith({
-        rootCanisterId,
-        name: functionName,
-        id: functionId,
-      });
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreSubscribe
+      );
     });
 
     describe("Matching results", () => {
@@ -84,7 +83,9 @@ describe("SnsProposals", () => {
           expect(queryByTestId("proposal-card")).toBeInTheDocument()
         );
 
-        expect(queryByTestId("proposal-type").innerHTML).toMatch(functionName);
+        expect(queryByTestId("proposal-card-heading").textContent).toMatch(
+          functionName
+        );
       });
 
       it("should load decision status filters", async () => {
@@ -144,14 +145,11 @@ describe("SnsProposals", () => {
 
   describe("when not logged in", () => {
     beforeEach(() => {
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreNoIdentitySubscribe
+      );
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
-        rootCanisterId,
-      });
-      fakeSnsGovernanceApi.addNervousSystemFunctionWith({
         rootCanisterId,
       });
     });
@@ -173,21 +171,21 @@ describe("SnsProposals", () => {
     const proposals: SnsProposalData[] = [
       createSnsProposal({
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
-        proposalId: BigInt(1),
+        proposalId: 1n,
         rewardStatus:
           SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
       }),
       createSnsProposal({
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED,
-        proposalId: BigInt(2),
+        proposalId: 2n,
         rewardStatus: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED,
       }),
     ];
     beforeEach(() => {
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
-      const functionId = BigInt(3);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreNoIdentitySubscribe
+      );
+      const functionId = 3n;
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,
@@ -199,10 +197,6 @@ describe("SnsProposals", () => {
         rootCanisterId,
         ...proposals[1],
         action: functionId,
-      });
-      fakeSnsGovernanceApi.addNervousSystemFunctionWith({
-        rootCanisterId,
-        id: functionId,
       });
     });
 

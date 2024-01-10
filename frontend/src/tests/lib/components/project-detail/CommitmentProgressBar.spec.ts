@@ -1,44 +1,65 @@
-/**
- * @jest-environment jsdom
- */
-
 import CommitmentProgressBar from "$lib/components/project-detail/CommitmentProgressBar.svelte";
+import { CommitmentProgressBarPo } from "$tests/page-objects/CommitmentProgressBarPo.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
 describe("CommitmentProgressBar", () => {
+  const color: "primary" | "warning" = "primary";
   const props = {
-    value: BigInt(1327),
-    max: BigInt(3000),
-    minimumIndicator: BigInt(1500),
+    participationE8s: 1_500n,
+    max: 3_000n,
+    minimumIndicator: 1_500n,
+    color,
   };
-  it("should progress bar", async () => {
+
+  const renderComponent = (props: {
+    participationE8s: bigint;
+    max: bigint;
+    minimumIndicator?: bigint;
+    color: "primary" | "warning";
+  }) => {
     const { container } = render(CommitmentProgressBar, { props });
-    expect(container.querySelector("progress")).toBeInTheDocument();
+    return CommitmentProgressBarPo.under(new JestPageObjectElement(container));
+  };
+
+  it("should render direct participation value in progress bar if no NF participation", async () => {
+    const po = renderComponent({
+      ...props,
+      participationE8s: 150_000_000n,
+    });
+    expect(await po.getCommitmentE8s()).toBe(150000_000n);
   });
 
-  it("should display maximum and minimum indicators", async () => {
-    const { queryByTestId } = render(CommitmentProgressBar, { props });
-    expect(queryByTestId("commitment-max-indicator")).toBeInTheDocument();
-    expect(queryByTestId("commitment-min-indicator")).toBeInTheDocument();
+  it("should display minimum indicators", async () => {
+    const po = renderComponent(props);
+    expect(await po.hasMinCommitmentIndicator()).toBe(true);
+  });
+
+  it("should use the color prop", async () => {
+    const color1 = "warning";
+    const po = renderComponent({
+      ...props,
+      color: color1,
+    });
+    expect(await po.getColor()).toBe(color1);
   });
 
   it("should not display minimum indicators if not provided", async () => {
-    const { queryByTestId } = render(CommitmentProgressBar, {
-      props: {
-        value: props.value,
-        max: props.max,
-      },
+    const po = renderComponent({
+      participationE8s: props.participationE8s,
+      max: props.max,
+      color,
     });
-    expect(queryByTestId("commitment-min-indicator")).not.toBeInTheDocument();
+    expect(await po.hasMinCommitmentIndicator()).toBe(false);
   });
 
   it("should display maximum and minimum indicators values", async () => {
-    const { queryByTestId } = render(CommitmentProgressBar, { props });
-    expect(
-      queryByTestId("commitment-max-indicator-value")?.textContent.trim()
-    ).toEqual(`${Number(props.max) / 100000000} ICP`);
-    expect(
-      queryByTestId("commitment-min-indicator-value")?.textContent.trim()
-    ).toEqual(`${Number(props.minimumIndicator) / 100000000} ICP`);
+    const po = renderComponent({
+      ...props,
+      max: 3_000_000_000n,
+      minimumIndicator: 150_000_000n,
+    });
+    expect(await po.getMinCommitment()).toBe("1.50 ICP");
+    expect(await po.getMaxCommitment()).toBe("30.00 ICP");
   });
 });

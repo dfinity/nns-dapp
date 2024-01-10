@@ -5,7 +5,7 @@
     SkeletonText,
   } from "@dfinity/gix-components";
   import Hash from "$lib/components/ui/Hash.svelte";
-  import { secondsToDuration } from "$lib/utils/date.utils";
+  import { secondsToDuration } from "@dfinity/utils";
   import { authRemainingTimeStore, authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import { debounce, nonNullish } from "@dfinity/utils";
@@ -19,7 +19,15 @@
   $: remainingTimeMilliseconds = $authRemainingTimeStore;
 
   // Defer the title to avoid a visual glitch where the title moves from left to center in the header if navigation happens from Accounts page
-  onMount(debounce(() => layoutTitleStore.set($i18n.navigation.settings), 500));
+  onMount(
+    debounce(
+      () =>
+        layoutTitleStore.set({
+          title: $i18n.navigation.settings,
+        }),
+      500
+    )
+  );
 </script>
 
 <Island>
@@ -49,7 +57,10 @@
             {#if nonNullish(remainingTimeMilliseconds)}
               {remainingTimeMilliseconds <= 0
                 ? "0"
-                : secondsToDuration(BigInt(remainingTimeMilliseconds) / 1000n)}
+                : secondsToDuration({
+                    seconds: BigInt(remainingTimeMilliseconds) / 1000n,
+                    i18n: $i18n.time,
+                  })}
             {:else}
               <div class="skeleton"><SkeletonText /></div>
             {/if}

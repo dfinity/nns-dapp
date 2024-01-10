@@ -37,7 +37,13 @@
   };
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
+<WizardModal
+  {steps}
+  bind:currentStep
+  bind:this={modal}
+  on:nnsClose
+  testId="increase-dissolve-delay-modal-component"
+>
   <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
   {#if currentStep?.name === "SetDissolveDelay"}
     <SetNnsDissolveDelay
@@ -56,7 +62,7 @@
     <ConfirmDissolveDelay
       confirmButtonText={$i18n.neurons.confirm_update_delay}
       {neuron}
-      {delayInSeconds}
+      delayInSeconds={BigInt(Math.round(delayInSeconds))}
       on:nnsUpdated={closeModal}
       on:nnsBack={modal.back}
     />

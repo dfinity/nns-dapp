@@ -2,6 +2,7 @@
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { Copy } from "@dfinity/gix-components";
   import Tooltip from "./Tooltip.svelte";
+  import { createEventDispatcher } from "svelte";
 
   export let tagName: "h3" | "p" | "span" | "h5" = "h3";
   export let testId: string | undefined = undefined;
@@ -9,25 +10,46 @@
   export let text: string;
   export let showCopy = false;
   export let className: string | undefined = undefined;
+  export let splitLength: number | undefined = undefined;
+  export let tooltipTop: boolean | undefined = undefined;
+  export let isClickable: boolean | undefined = undefined;
+
+  const dispatcher = createEventDispatcher();
 
   let shortenText: string;
-  $: shortenText = shortenWithMiddleEllipsis(text);
+  $: shortenText = shortenWithMiddleEllipsis(text, splitLength);
 </script>
 
 <span data-tid="hash-component">
-  <Tooltip {id} {text}>
-    <svelte:element this={tagName} data-tid={testId} class={className}>
+  <Tooltip top={tooltipTop} {id} {text}>
+    <svelte:element
+      this={tagName}
+      data-tid={testId}
+      class={className}
+      role={isClickable ? "button" : undefined}
+      on:click|stopPropagation={() => isClickable && dispatcher("nnsHash")}
+    >
       {shortenText}</svelte:element
     >
   </Tooltip>
   {#if showCopy}
-    <Copy value={text} />
+    <div class="copy">
+      <Copy value={text} />
+    </div>
   {/if}
 </span>
 
 <style lang="scss">
   span {
+    align-items: center;
     display: inline-flex;
     gap: var(--padding-0_5x);
+
+    .copy {
+      align-items: center;
+      display: inline-flex;
+      // Make sure the icon doesn't increase the line height.
+      max-height: 0;
+    }
   }
 </style>

@@ -1,232 +1,42 @@
+import { SECONDS_IN_DAY, SECONDS_IN_MONTH } from "$lib/constants/constants";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import {
+  convertDerivedStateResponseToDerivedState,
   getCommitmentE8s,
   getSwapCanisterAccount,
   hasOpenTicketInProcess,
+  isGenericNervousSystemFunction,
   isInternalRefreshBuyerTokensError,
-  mapAndSortSnsQueryToSummaries,
+  isNativeNervousSystemFunction,
+  isSnsFinalizing,
   parseSnsSwapSaleBuyerCount,
+  swapEndedMoreThanOneWeekAgo,
 } from "$lib/utils/sns.utils";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { createFinalizationStatusMock } from "$tests/mocks/sns-finalization-status.mock";
+import {
+  genericNervousSystemFunctionMock,
+  nativeNervousSystemFunctionMock,
+} from "$tests/mocks/sns-functions.mock";
 import {
   createBuyersState,
-  mockDerived,
-  mockQueryMetadata,
-  mockQueryMetadataResponse,
-  mockQuerySwap,
-  mockSnsParams,
-  mockSnsSummaryList,
-  mockSummary,
+  createSummary,
+  mockDerivedResponse,
   principal,
 } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
-import { IcrcMetadataResponseEntries } from "@dfinity/ledger";
-import { AccountIdentifier } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
+import { AccountIdentifier } from "@dfinity/ledger-icp";
+import type {
+  SnsGetAutoFinalizationStatusResponse,
+  SnsGetDerivedStateResponse,
+} from "@dfinity/sns";
 import { get } from "svelte/store";
 
 describe("sns-utils", () => {
   beforeEach(() => {
     snsTicketsStore.reset();
-  });
-
-  describe("concat sns summaries", () => {
-    it("should return empty for undefined summary", () => {
-      const summaries = mapAndSortSnsQueryToSummaries({
-        metadata: [],
-        swaps: [],
-      });
-
-      expect(summaries.length).toEqual(0);
-    });
-
-    it("should return empty for undefined swap query", () => {
-      const summaries = mapAndSortSnsQueryToSummaries({
-        metadata: [mockQueryMetadata],
-        swaps: [],
-      });
-
-      expect(summaries.length).toEqual(0);
-    });
-
-    it("should return empty for undefined params property in the swap", () => {
-      const summaries = mapAndSortSnsQueryToSummaries({
-        metadata: [mockQueryMetadata],
-        swaps: [
-          {
-            rootCanisterId: "1234",
-            swapCanisterId: Principal.fromText("aaaaa-aa"),
-            governanceCanisterId: Principal.fromText("aaaaa-aa"),
-            ledgerCanisterId: Principal.fromText("aaaaa-aa"),
-            indexCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [
-              {
-                ...mockQuerySwap,
-                params: [],
-              },
-            ],
-            derived: [mockDerived],
-            certified: true,
-          },
-        ],
-      });
-
-      expect(summaries.length).toEqual(0);
-    });
-
-    it("should return empty for undefined derived info", () => {
-      const summaries = mapAndSortSnsQueryToSummaries({
-        metadata: [mockQueryMetadata],
-        swaps: [
-          {
-            rootCanisterId: "1234",
-            swapCanisterId: Principal.fromText("aaaaa-aa"),
-            governanceCanisterId: Principal.fromText("aaaaa-aa"),
-            ledgerCanisterId: Principal.fromText("aaaaa-aa"),
-            indexCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [mockQuerySwap],
-            derived: [],
-            certified: true,
-          },
-        ],
-      });
-
-      expect(summaries.length).toEqual(0);
-    });
-
-    it("should concat summaries and swaps", () => {
-      const summaries = mapAndSortSnsQueryToSummaries({
-        metadata: [mockQueryMetadata],
-        swaps: [
-          {
-            rootCanisterId: mockSummary.rootCanisterId.toText(),
-            swapCanisterId: Principal.fromText("aaaaa-aa"),
-            governanceCanisterId: Principal.fromText("aaaaa-aa"),
-            ledgerCanisterId: Principal.fromText("aaaaa-aa"),
-            indexCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [mockQuerySwap],
-            derived: [mockDerived],
-            certified: true,
-          },
-        ],
-      });
-
-      expect(summaries.length).toEqual(1);
-    });
-
-    it("should return empty for partially undefined metadata", () => {
-      const summaries = mapAndSortSnsQueryToSummaries({
-        metadata: [
-          {
-            ...mockQueryMetadata,
-            metadata: {
-              ...mockQueryMetadataResponse,
-              name: [],
-            },
-          },
-        ],
-        swaps: [
-          {
-            rootCanisterId: mockSummary.rootCanisterId.toText(),
-            swapCanisterId: Principal.fromText("aaaaa-aa"),
-            governanceCanisterId: Principal.fromText("aaaaa-aa"),
-            ledgerCanisterId: Principal.fromText("aaaaa-aa"),
-            indexCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [mockQuerySwap],
-            derived: [mockDerived],
-            certified: true,
-          },
-        ],
-      });
-
-      expect(summaries.length).toEqual(0);
-    });
-
-    it("should return empty for partially undefined token", () => {
-      const summaries = mapAndSortSnsQueryToSummaries({
-        metadata: [
-          {
-            ...mockQueryMetadata,
-            token: [[IcrcMetadataResponseEntries.DECIMALS, { Nat: BigInt(8) }]],
-          },
-        ],
-        swaps: [
-          {
-            rootCanisterId: mockSummary.rootCanisterId.toText(),
-            swapCanisterId: Principal.fromText("aaaaa-aa"),
-            governanceCanisterId: Principal.fromText("aaaaa-aa"),
-            ledgerCanisterId: Principal.fromText("aaaaa-aa"),
-            indexCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [mockQuerySwap],
-            derived: [mockDerived],
-            certified: true,
-          },
-        ],
-      });
-
-      expect(summaries.length).toEqual(0);
-    });
-  });
-
-  describe("sort sns summaries", () => {
-    it("should sort summaries and swaps", () => {
-      const summaries = mapAndSortSnsQueryToSummaries({
-        metadata: [
-          mockQueryMetadata,
-          { ...mockQueryMetadata, rootCanisterId: principal(1).toText() },
-        ],
-        swaps: [
-          {
-            rootCanisterId: mockSummary.rootCanisterId.toText(),
-            swapCanisterId: Principal.fromText("aaaaa-aa"),
-            governanceCanisterId: Principal.fromText("aaaaa-aa"),
-            ledgerCanisterId: Principal.fromText("aaaaa-aa"),
-            indexCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [
-              {
-                ...mockQuerySwap,
-                params: [
-                  {
-                    ...mockSnsParams,
-                    swap_due_timestamp_seconds: BigInt(5),
-                  },
-                ],
-              },
-            ],
-            derived: [mockDerived],
-            certified: true,
-          },
-          {
-            rootCanisterId: mockSnsSummaryList[1].rootCanisterId.toText(),
-            swapCanisterId: Principal.fromText("aaaaa-aa"),
-            governanceCanisterId: Principal.fromText("aaaaa-aa"),
-            ledgerCanisterId: Principal.fromText("aaaaa-aa"),
-            indexCanisterId: Principal.fromText("aaaaa-aa"),
-            swap: [
-              {
-                ...mockQuerySwap,
-                params: [
-                  {
-                    ...mockSnsParams,
-                    swap_due_timestamp_seconds: BigInt(2),
-                  },
-                ],
-              },
-            ],
-            derived: [mockDerived],
-            certified: true,
-          },
-        ],
-      });
-
-      expect(summaries.length).toEqual(2);
-
-      expect(summaries[0].rootCanisterId.toText()).toEqual(
-        mockSnsSummaryList[1].rootCanisterId.toText()
-      );
-    });
   });
 
   describe("getSwapCanisterAccount", () => {
@@ -254,9 +64,10 @@ describe("sns-utils", () => {
         rootCanisterId: mockPrincipal,
         myCommitment: {
           icp: [],
+          has_created_neuron_recipes: [],
         },
       };
-      expect(getCommitmentE8s(commitment)).toEqual(BigInt(0));
+      expect(getCommitmentE8s(commitment)).toEqual(0n);
     });
 
     it("returns 0 if no user commitment", () => {
@@ -264,7 +75,7 @@ describe("sns-utils", () => {
         rootCanisterId: mockPrincipal,
         myCommitment: undefined,
       };
-      expect(getCommitmentE8s(commitment)).toEqual(BigInt(0));
+      expect(getCommitmentE8s(commitment)).toEqual(0n);
     });
 
     it("returns undefined if commitment not loaded", () => {
@@ -417,6 +228,141 @@ sale_participants_count ${saleBuyerCount} 1677707139456
         isInternalRefreshBuyerTokensError(
           "The swap has already reached its target"
         )
+      ).toBe(false);
+    });
+  });
+
+  describe("isSnsFinalizing", () => {
+    it("returns true if finalizing", () => {
+      const finalizingResponse = createFinalizationStatusMock(true);
+
+      expect(isSnsFinalizing(finalizingResponse)).toBe(true);
+    });
+
+    it("returns false if not finalizing because not attempted", () => {
+      const finalizingResponse: SnsGetAutoFinalizationStatusResponse = {
+        is_auto_finalize_enabled: [true],
+        auto_finalize_swap_response: [],
+        has_auto_finalize_been_attempted: [false],
+      };
+
+      expect(isSnsFinalizing(finalizingResponse)).toBe(false);
+    });
+
+    it("returns false if not finalizing because it finished", () => {
+      const finalizingResponse: SnsGetAutoFinalizationStatusResponse = {
+        is_auto_finalize_enabled: [true],
+        auto_finalize_swap_response: [
+          {
+            set_dapp_controllers_call_result: [],
+            settle_community_fund_participation_result: [],
+            error_message: [],
+            set_mode_call_result: [],
+            sweep_icp_result: [],
+            claim_neuron_result: [],
+            sweep_sns_result: [],
+          },
+        ],
+        has_auto_finalize_been_attempted: [true],
+      };
+
+      expect(isSnsFinalizing(finalizingResponse)).toBe(false);
+    });
+  });
+
+  describe("convertDerivedStateResponseToDerivedState", () => {
+    it("returns derived state type", () => {
+      expect(
+        convertDerivedStateResponseToDerivedState(mockDerivedResponse)
+      ).toEqual({
+        buyer_total_icp_e8s: BigInt(100 * 100000000),
+        sns_tokens_per_icp: 1,
+        cf_participant_count: [100n],
+        direct_participant_count: [300n],
+        cf_neuron_count: [200n],
+        direct_participation_icp_e8s: [],
+        neurons_fund_participation_icp_e8s: [],
+      });
+    });
+
+    it("returns undefined if any of the mandatory fields is missing", () => {
+      const missingBuyerTotalIcpE8s: SnsGetDerivedStateResponse = {
+        ...mockDerivedResponse,
+        buyer_total_icp_e8s: [],
+      };
+      const missingSnsPerIcp: SnsGetDerivedStateResponse = {
+        ...mockDerivedResponse,
+        sns_tokens_per_icp: [],
+      };
+      expect(
+        convertDerivedStateResponseToDerivedState(missingBuyerTotalIcpE8s)
+      ).toBeUndefined();
+      expect(
+        convertDerivedStateResponseToDerivedState(missingSnsPerIcp)
+      ).toBeUndefined();
+    });
+  });
+
+  describe("swapEndedMoreThanOneWeekAgo", () => {
+    const nowInSeconds = Math.floor(Date.now() / 1000);
+
+    it("should return false if swap ended less than one week ago", () => {
+      const summary = createSummary({
+        swapDueTimestampSeconds: BigInt(nowInSeconds - SECONDS_IN_DAY),
+      });
+      expect(swapEndedMoreThanOneWeekAgo({ summary, nowInSeconds })).toBe(
+        false
+      );
+      const summary1 = createSummary({
+        swapDueTimestampSeconds: BigInt(nowInSeconds - 1),
+      });
+      expect(
+        swapEndedMoreThanOneWeekAgo({ summary: summary1, nowInSeconds })
+      ).toBe(false);
+      const summary2 = createSummary({
+        swapDueTimestampSeconds: BigInt(nowInSeconds + SECONDS_IN_DAY),
+      });
+      expect(
+        swapEndedMoreThanOneWeekAgo({ summary: summary2, nowInSeconds })
+      ).toBe(false);
+    });
+
+    it("should return true if swap ended more than one week ago", () => {
+      const summary = createSummary({
+        swapDueTimestampSeconds: BigInt(nowInSeconds - SECONDS_IN_DAY * 7 - 1),
+      });
+      expect(swapEndedMoreThanOneWeekAgo({ summary, nowInSeconds })).toBe(true);
+      const summary1 = createSummary({
+        swapDueTimestampSeconds: BigInt(nowInSeconds - SECONDS_IN_MONTH),
+      });
+      expect(
+        swapEndedMoreThanOneWeekAgo({ summary: summary1, nowInSeconds })
+      ).toBe(true);
+    });
+  });
+
+  describe("isNativeNervousSystemFunction", () => {
+    it("should return true for NativeNervousSystemFunction", () => {
+      expect(
+        isNativeNervousSystemFunction(nativeNervousSystemFunctionMock)
+      ).toBe(true);
+    });
+    it("should return false for not NativeNervousSystemFunction", () => {
+      expect(
+        isNativeNervousSystemFunction(genericNervousSystemFunctionMock)
+      ).toBe(false);
+    });
+  });
+
+  describe("isGenericNervousSystemFunction", () => {
+    it("should return true for GenericNervousSystemFunction", () => {
+      expect(
+        isGenericNervousSystemFunction(genericNervousSystemFunctionMock)
+      ).toBe(true);
+    });
+    it("should return false for not GenericNervousSystemFunction", () => {
+      expect(
+        isGenericNervousSystemFunction(nativeNervousSystemFunctionMock)
       ).toBe(false);
     });
   });

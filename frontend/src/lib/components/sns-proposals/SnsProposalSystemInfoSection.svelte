@@ -1,23 +1,14 @@
 <script lang="ts">
-  import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
   import { i18n } from "$lib/stores/i18n";
-  import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
   import { secondsToDateTime } from "$lib/utils/date.utils";
-  import { mapProposalInfo } from "$lib/utils/sns-proposals.utils";
-  import type { Principal } from "@dfinity/principal";
-  import type {
-    SnsNervousSystemFunction,
-    SnsNeuronId,
-    SnsProposalData,
-  } from "@dfinity/sns";
+  import type { SnsProposalDataMap } from "$lib/utils/sns-proposals.utils";
+  import type { SnsNeuronId } from "@dfinity/sns";
   import { nonNullish } from "@dfinity/utils";
   import ProposalSystemInfoEntry from "../proposal-detail/ProposalSystemInfoEntry.svelte";
   import SnsProposerEntry from "./SnsProposerEntry.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
-  export let proposal: SnsProposalData;
-  export let rootCanisterId: Principal;
-
-  $: loadSnsNervousSystemFunctions(rootCanisterId);
+  export let proposalDataMap: SnsProposalDataMap;
 
   let type: string | undefined;
   let typeDescription: string | undefined;
@@ -31,10 +22,6 @@
   let failed_timestamp_seconds: bigint;
   let proposer: SnsNeuronId | undefined;
 
-  let nsFunctions: SnsNervousSystemFunction[];
-  $: nsFunctions =
-    $snsFunctionsStore[rootCanisterId.toText()]?.nsFunctions || [];
-
   $: ({
     type,
     typeDescription,
@@ -47,14 +34,13 @@
     executed_timestamp_seconds,
     failed_timestamp_seconds,
     proposer,
-  } = mapProposalInfo({ proposalData: proposal, nsFunctions }));
+  } = proposalDataMap);
 </script>
 
-<div
-  class="content-cell-island"
-  data-tid="proposal-system-info-details-component"
->
-  <h1 class="content-cell-title">{type ?? ""}</h1>
+<TestIdWrapper testId="proposal-system-info-details-component">
+  <h1 class="content-cell-title">
+    {$i18n.proposal_detail.headline}
+  </h1>
 
   <div class="content-cell-details">
     {#if nonNullish(type)}
@@ -87,7 +73,7 @@
       description={$i18n.proposal_detail.created_description}
     />
 
-    {#if decided_timestamp_seconds > BigInt(0)}
+    {#if decided_timestamp_seconds > 0n}
       <ProposalSystemInfoEntry
         labelKey="decided_prefix"
         testId="proposal-system-info-decided"
@@ -96,7 +82,7 @@
       />
     {/if}
 
-    {#if executed_timestamp_seconds > BigInt(0)}
+    {#if executed_timestamp_seconds > 0n}
       <ProposalSystemInfoEntry
         labelKey="executed_prefix"
         testId="proposal-system-info-executed"
@@ -105,7 +91,7 @@
       />
     {/if}
 
-    {#if failed_timestamp_seconds > BigInt(0)}
+    {#if failed_timestamp_seconds > 0n}
       <ProposalSystemInfoEntry
         labelKey="failed_prefix"
         testId="proposal-system-info-failed"
@@ -118,4 +104,12 @@
       <SnsProposerEntry {proposer} />
     {/if}
   </div>
-</div>
+</TestIdWrapper>
+
+<style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
+  h1 {
+    @include fonts.h3;
+  }
+</style>

@@ -7,12 +7,22 @@ use icp_ledger::BlockIndex;
 use serde::Deserialize;
 #[cfg(test)]
 mod tests;
+#[cfg(target_arch = "wasm32")]
+use core::arch::wasm32::memory_size as wasm_memory_size;
+#[cfg(target_arch = "wasm32")]
+use ic_cdk::api::stable::stable64_size;
+#[cfg(target_arch = "wasm32")]
+use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
+const GIBIBYTE: u64 = 1 << 30;
 
+/// Returns basic stats for frequent monitoring.
 pub fn get_stats(state: &State) -> Stats {
     let mut ans = Stats::default();
     // Collect values from various subcomponents
     state.accounts_store.borrow().get_stats(&mut ans);
     state.performance.borrow().get_stats(&mut ans);
+    ans.stable_memory_size_bytes = Some(stable_memory_size_bytes());
+    ans.wasm_memory_size_bytes = Some(wasm_memory_size_bytes());
     // Return all the values
     ans
 }
@@ -33,6 +43,14 @@ pub struct Stats {
     pub neurons_topped_up_count: u64,
     pub transactions_to_process_queue_length: u32,
     pub performance_counts: Vec<PerformanceCount>,
+    // TODO: After a transition period, these two can be required rather than being optional.
+    //       The transition period can be considered over when most deployments, including
+    //       production, CI and snsdemo populate these fields.
+    pub stable_memory_size_bytes: Option<u64>,
+    pub wasm_memory_size_bytes: Option<u64>,
+    pub schema: Option<u32>,              // The numeric form of a SchemaLabel.
+    pub migration_countdown: Option<u32>, // When non-zero, a migration is in progress.
+    pub exceptional_transactions_count: Option<u32>,
 }
 
 pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
@@ -72,5 +90,61 @@ pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
         stats.seconds_since_last_ledger_sync as f64,
         "Number of seconds since last ledger sync.",
     )?;
+    w.encode_gauge(
+        "nns_dapp_stable_memory_size_gib",
+        gibibytes(stable_memory_size_bytes()),
+        "Amount of stable memory used by this canister, in binary gigabytes",
+    )?;
+    w.encode_gauge(
+        "nns_dapp_wasm_memory_size_gib",
+        gibibytes(wasm_memory_size_bytes()),
+        "Amount of wasm memory used by this canister, in binary gigabytes",
+    )?;
+    w.encode_gauge(
+        "nns_dapp_schema",
+        stats.schema.unwrap_or(0) as f64,
+        "The nns-dapp schema version",
+    )?;
+    w.encode_gauge(
+        "nns_dapp_migration_countdown",
+        stats.migration_countdown.unwrap_or(0) as f64,
+        "When non-zero, a migration is in progress.",
+    )?;
+    w.encode_gauge(
+        "exceptional_transactions_count",
+        stats.exceptional_transactions_count.unwrap_or(0) as f64,
+        "The number of exceptional transactions in the canister log.",
+    )?;
     Ok(())
+}
+
+/// The stable memory size in bytes
+pub fn stable_memory_size_bytes() -> u64 {
+    #[cfg(target_arch = "wasm32")]
+    {
+        stable64_size() * (WASM_PAGE_SIZE_IN_BYTES as u64)
+    }
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        0
+    }
+}
+
+/// The WASM memory size in bytes
+pub fn wasm_memory_size_bytes() -> u64 {
+    #[cfg(target_arch = "wasm32")]
+    {
+        (wasm_memory_size(0) as u64) * (WASM_PAGE_SIZE_IN_BYTES as u64)
+    }
+    // This can happen only for test builds.  When compiled for a canister, the target is
+    // always wasm32.
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        0
+    }
+}
+
+/// Convert bytes to binary gigabytes
+pub fn gibibytes(bytes: u64) -> f64 {
+    (bytes as f64) / (GIBIBYTE as f64)
 }

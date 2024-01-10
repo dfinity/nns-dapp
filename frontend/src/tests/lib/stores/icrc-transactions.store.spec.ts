@@ -13,7 +13,7 @@ describe("icrc-transactions", () => {
       canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
       transactions: [mockIcrcTransactionWithId],
       accountIdentifier: mockCkBTCMainAccount.identifier,
-      oldestTxId: BigInt(10),
+      oldestTxId: 10n,
       completed: false,
     });
 
@@ -31,7 +31,7 @@ describe("icrc-transactions", () => {
       canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
       transactions: [mockIcrcTransactionWithId],
       accountIdentifier: mockCkBTCWithdrawalAccount.identifier,
-      oldestTxId: BigInt(10),
+      oldestTxId: 10n,
       completed: false,
     });
 
@@ -56,5 +56,36 @@ describe("icrc-transactions", () => {
         mockCkBTCMainAccount.identifier
       ]
     ).toBeUndefined();
+  });
+
+  it("should dedupe transactions", () => {
+    const canisterId = CKTESTBTC_UNIVERSE_CANISTER_ID;
+    const identifier = mockCkBTCMainAccount.identifier;
+
+    icrcTransactionsStore.addTransactions({
+      canisterId,
+      transactions: [mockIcrcTransactionWithId],
+      accountIdentifier: identifier,
+      oldestTxId: 10n,
+      completed: false,
+    });
+
+    expect(
+      get(icrcTransactionsStore)[canisterId.toText()][identifier].transactions
+        .length
+    ).toBe(1);
+
+    icrcTransactionsStore.addTransactions({
+      canisterId,
+      transactions: [mockIcrcTransactionWithId, mockIcrcTransactionWithId],
+      accountIdentifier: identifier,
+      oldestTxId: 10n,
+      completed: false,
+    });
+
+    expect(
+      get(icrcTransactionsStore)[canisterId.toText()][identifier].transactions
+        .length
+    ).toBe(1);
   });
 });

@@ -1,14 +1,10 @@
-/**
- * @jest-environment jsdom
- */
-
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import en from "$tests/mocks/i18n.mock";
 import { fireEvent, render } from "@testing-library/svelte";
 import LayoutTest from "./LayoutTest.svelte";
 
-jest.mock("$lib/services/$public/worker-metrics.services", () => ({
-  initMetricsWorker: jest.fn(() =>
+vi.mock("$lib/services/$public/worker-metrics.services", () => ({
+  initMetricsWorker: vi.fn(() =>
     Promise.resolve({
       startMetricsTimer: () => {
         // Do nothing
@@ -22,9 +18,13 @@ jest.mock("$lib/services/$public/worker-metrics.services", () => ({
 
 describe("Layout", () => {
   describe("Main layout", () => {
-    beforeAll(() => layoutTitleStore.set("the header"));
+    beforeAll(() =>
+      layoutTitleStore.set({
+        title: "the header",
+      })
+    );
 
-    afterAll(() => layoutTitleStore.set(""));
+    afterAll(() => layoutTitleStore.set({ title: "" }));
 
     it("should render a menu button", () => {
       const { getByTestId } = render(LayoutTest, { props: { spy: undefined } });
@@ -42,7 +42,7 @@ describe("Layout", () => {
   });
 
   describe("Detail layout", () => {
-    const spyBackClick = jest.fn();
+    const spyBackClick = vi.fn();
     let container, getByText, queryByTestId;
 
     beforeEach(() => {

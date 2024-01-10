@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import type { LedgerCanister } from "@dfinity/ledger-icp";
 import type {
-  LedgerCanister,
   ListProposalsRequest,
   ListProposalsResponse,
   NeuronId,
@@ -33,7 +33,7 @@ export class MockGovernanceCanister extends GovernanceCanister {
       // mock getProposal call
       return {
         proposals: this.proposals.filter(
-          ({ id }) => id === (request.beforeProposal as bigint) - BigInt(1)
+          ({ id }) => id === (request.beforeProposal as bigint) - 1n
         ),
       };
     }

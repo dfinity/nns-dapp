@@ -5,13 +5,17 @@
   import { createEventDispatcher } from "svelte";
   import { disburse } from "$lib/services/sns-neurons.services";
   import type { SnsNeuron } from "@dfinity/sns";
-  import { fromDefinedNullable } from "@dfinity/utils";
+  import {
+    TokenAmountV2,
+    fromDefinedNullable,
+    type Token,
+    type TokenAmount,
+  } from "@dfinity/utils";
   import {
     getSnsNeuronIdAsHexString,
     getSnsNeuronStake,
   } from "$lib/utils/sns-neuron.utils";
   import type { Principal } from "@dfinity/principal";
-  import { TokenAmount, type Token } from "@dfinity/utils";
   import ConfirmDisburseNeuron from "$lib/components/neuron-detail/ConfirmDisburseNeuron.svelte";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import {
@@ -36,8 +40,8 @@
   let source: string;
   $: source = getSnsNeuronIdAsHexString(neuron);
 
-  let amount: TokenAmount;
-  $: amount = TokenAmount.fromE8s({
+  let amount: TokenAmountV2;
+  $: amount = TokenAmountV2.fromUlps({
     amount: getSnsNeuronStake(neuron),
     token: $snsTokenSymbolSelectedStore as Token,
   });
@@ -96,6 +100,8 @@
 
     stopBusy("disburse-sns-neuron");
 
+    dispatcher("nnsClose");
+
     if (success) {
       toastsSuccess({
         labelKey: "neuron_detail.disburse_success",
@@ -103,8 +109,6 @@
 
       await goto($neuronsPathStore, { replaceState: true });
     }
-
-    dispatcher("nnsClose");
   };
 </script>
 

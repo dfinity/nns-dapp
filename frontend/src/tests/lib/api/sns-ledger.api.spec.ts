@@ -11,25 +11,25 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 
-jest.mock("$lib/proxy/api.import.proxy");
-const mainBalance = BigInt(10_000_000);
-const fee = BigInt(10_000);
-const transactionFeeSpy = jest.fn().mockResolvedValue(fee);
-const transferSpy = jest.fn().mockResolvedValue(BigInt(10));
+vi.mock("$lib/proxy/api.import.proxy");
+const mainBalance = 10_000_000n;
+const fee = 10_000n;
+const transactionFeeSpy = vi.fn().mockResolvedValue(fee);
+const transferSpy = vi.fn().mockResolvedValue(10n);
 
 let metadataReturn = mockQueryTokenResponse;
 const setMetadataError = () => (metadataReturn = []);
 const setMetadataSuccess = () => (metadataReturn = mockQueryTokenResponse);
-const metadataSpy = jest
+const metadataSpy = vi
   .fn()
   .mockImplementation(() => Promise.resolve(metadataReturn));
 
 let balanceReturn = Promise.resolve(mainBalance);
 const setBalanceError = () => (balanceReturn = Promise.reject(new Error()));
 const setBalanceSuccess = () => (balanceReturn = Promise.resolve(mainBalance));
-const balanceSpy = jest.fn().mockImplementation(() => balanceReturn);
+const balanceSpy = vi.fn().mockImplementation(() => balanceReturn);
 
-jest.mock("$lib/api/sns-wrapper.api", () => {
+vi.mock("$lib/api/sns-wrapper.api", () => {
   return {
     wrapper: () => ({
       balance: balanceSpy,
@@ -65,7 +65,7 @@ describe("sns-ledger api", () => {
       const main = accounts.find(({ type }) => type === "main");
       expect(main).not.toBeUndefined();
 
-      expect(main?.balanceE8s).toEqual(mainBalance);
+      expect(main?.balanceUlps).toEqual(mainBalance);
 
       expect(balanceSpy).toBeCalled();
     });
@@ -103,9 +103,9 @@ describe("sns-ledger api", () => {
         identity: mockIdentity,
         rootCanisterId: rootCanisterIdMock,
         to: { owner: mockIdentity.getPrincipal() },
-        amount: BigInt(10_000_000),
-        createdAt: BigInt(123456),
-        fee: BigInt(10_000),
+        amount: 10_000_000n,
+        createdAt: 123_456n,
+        fee: 10_000n,
       });
 
       expect(transferSpy).toBeCalled();

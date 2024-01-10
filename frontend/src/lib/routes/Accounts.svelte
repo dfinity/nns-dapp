@@ -4,7 +4,9 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import {
     isCkBTCUniverseStore,
+    isIcrcTokenUniverseStore,
     isNnsUniverseStore,
+    selectedIcrcTokenUniverseIdStore,
     selectedUniverseIdStore,
   } from "$lib/derived/selected-universe.derived";
   import SnsAccounts from "$lib/pages/SnsAccounts.svelte";
@@ -16,19 +18,23 @@
   } from "$lib/derived/sns/sns-projects.derived";
   import { nonNullish } from "@dfinity/utils";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
-  import { uncertifiedLoadCkBTCAccountsBalance } from "$lib/services/ckbtc-accounts-balance.services";
+  import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-uncertified-accounts.services";
   import CkBTCAccounts from "$lib/pages/CkBTCAccounts.svelte";
   import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
-  import type { Account } from "$lib/types/account";
-  import { goto } from "$app/navigation";
-  import { buildWalletUrl } from "$lib/utils/navigation.utils";
-  import { pageStore } from "$lib/derived/page.derived";
   import CkBTCAccountsFooter from "$lib/components/accounts/CkBTCAccountsFooter.svelte";
   import { ckBTCUniversesStore } from "$lib/derived/ckbtc-universes.derived";
   import type { Universe } from "$lib/types/universe";
   import { isArrayEmpty } from "$lib/utils/utils";
   import AccountsModals from "$lib/modals/accounts/AccountsModals.svelte";
   import CkBTCAccountsModals from "$lib/modals/accounts/CkBTCAccountsModals.svelte";
+  import { icpTokensListUser } from "$lib/derived/icp-tokens-list-user.derived";
+  import IcrcTokenAccounts from "$lib/pages/IcrcTokenAccounts.svelte";
+  import type { IcrcCanistersStoreData } from "$lib/stores/icrc-canisters.store";
+  import type { UniverseCanisterIdText } from "$lib/types/universe";
+  import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
+  import IcrcTokenAccountsFooter from "$lib/components/accounts/IcrcTokenAccountsFooter.svelte";
+  import IcrcTokenAccountsModals from "$lib/modals/accounts/IcrcTokenAccountsModals.svelte";
+  import { ENABLE_MY_TOKENS } from "$lib/stores/feature-flags.store";
 
   // TODO: This component is mounted twice. Understand why and fix it.
 
@@ -37,6 +43,7 @@
 
   let loadSnsAccountsBalancesRequested = false;
   let loadCkBTCAccountsBalancesRequested = false;
+  let loadIcrcAccountsBalancesRequested = false;
 
   const loadSnsAccountsBalances = async (projects: SnsFullProject[]) => {
     // We start when the projects are fetched
@@ -58,11 +65,6 @@
   };
 
   const loadCkBTCAccountsBalances = async (universes: Universe[]) => {
-    // ckBTC is not enabled, information shall and cannot be fetched
-    if (isArrayEmpty(universes)) {
-      return;
-    }
-
     // We trigger the loading of the ckBTC Accounts Balances only once
     if (loadCkBTCAccountsBalancesRequested) {
       return;
@@ -70,8 +72,39 @@
 
     loadCkBTCAccountsBalancesRequested = true;
 
-    await uncertifiedLoadCkBTCAccountsBalance({
-      universeIds: universes.map(({ canisterId }) => canisterId),
+    await loadAccountsBalances(universes.map(({ canisterId }) => canisterId));
+  };
+
+  const loadIcrcTokenAccounts = async (
+    icrcCanisters: IcrcCanistersStoreData
+  ) => {
+    const universeIds = Object.keys(icrcCanisters);
+
+    // Nothing loaded yet or nothing to load
+    if (universeIds.length === 0) {
+      return;
+    }
+
+    // We trigger the loading of the Icrc Accounts Balances only once
+    if (loadIcrcAccountsBalancesRequested) {
+      return;
+    }
+
+    loadIcrcAccountsBalancesRequested = true;
+
+    await loadAccountsBalances(Object.keys(icrcCanisters));
+  };
+
+  const loadAccountsBalances = async (
+    universeIds: UniverseCanisterIdText[]
+  ) => {
+    // Selected universes are empty, no information shall and can be fetched
+    if (isArrayEmpty(universeIds)) {
+      return;
+    }
+
+    await uncertifiedLoadAccountsBalance({
+      universeIds,
       excludeUniverseIds: [selectedUniverseId.toText()],
     });
   };
@@ -80,27 +113,23 @@
     await Promise.allSettled([
       loadSnsAccountsBalances($snsProjectsCommittedStore),
       loadCkBTCAccountsBalances($ckBTCUniversesStore),
+      loadIcrcTokenAccounts($icrcCanistersStore),
     ]))();
-
-  const goToWallet = async ({ identifier }: Account) =>
-    await goto(
-      buildWalletUrl({
-        universe: $pageStore.universe,
-        account: identifier,
-      })
-    );
 </script>
 
 <TestIdWrapper testId="accounts-component">
-  <main>
+  <!-- TODO: Remove the `main` element and the rest of unused elements when removing flag ENABLE_MY_TOKENS -->
+  <main class:noPadding={$ENABLE_MY_TOKENS}>
     <SummaryUniverse />
 
     {#if $isNnsUniverseStore}
-      <NnsAccounts {goToWallet} />
+      <NnsAccounts userTokensData={$icpTokensListUser} />
     {:else if $isCkBTCUniverseStore}
-      <CkBTCAccounts {goToWallet} />
+      <CkBTCAccounts />
+    {:else if $isIcrcTokenUniverseStore}
+      <IcrcTokenAccounts />
     {:else if nonNullish($snsProjectSelectedStore)}
-      <SnsAccounts {goToWallet} />
+      <SnsAccounts />
     {/if}
   </main>
 
@@ -108,19 +137,28 @@
     <NnsAccountsFooter />
   {:else if $isCkBTCUniverseStore}
     <CkBTCAccountsFooter />
+  {:else if $isIcrcTokenUniverseStore}
+    <IcrcTokenAccountsFooter />
   {:else if nonNullish($snsProjectSelectedStore)}
     <SnsAccountsFooter />
   {/if}
-</TestIdWrapper>
 
-{#if $isCkBTCUniverseStore}
-  <CkBTCAccountsModals />
-{:else}
-  <AccountsModals />
-{/if}
+  {#if $isCkBTCUniverseStore}
+    <CkBTCAccountsModals />
+  {:else}
+    {#if $selectedIcrcTokenUniverseIdStore}
+      <IcrcTokenAccountsModals />
+    {/if}
+    <AccountsModals />
+  {/if}
+</TestIdWrapper>
 
 <style lang="scss">
   main {
     padding-bottom: var(--footer-height);
+
+    &.noPadding {
+      padding: 0;
+    }
   }
 </style>

@@ -3,12 +3,12 @@ import {
   resetNeuronsApiService,
 } from "$lib/api-services/governance.api-service";
 import * as api from "$lib/api/governance.api";
-import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import {
   createMockIdentity,
   mockIdentity,
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
+import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import {
   createMockKnownNeuron,
   createMockNeuron,
@@ -17,8 +17,9 @@ import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { Topic, Vote } from "@dfinity/nns";
 import type { RewardEvent } from "@dfinity/nns/dist/candid/governance";
+import type { Mock } from "vitest";
 
-jest.mock("$lib/api/governance.api");
+vi.mock("$lib/api/governance.api");
 
 const neuron1 = createMockNeuron(1);
 const neuron2 = createMockNeuron(2);
@@ -39,7 +40,7 @@ const shouldNotInvalidateCache = async <P, R>({
   apiServiceFunc: (params: P) => Promise<R>;
   params: P;
 }) => {
-  jest.spyOn(api, "queryNeurons").mockResolvedValue(neurons);
+  vi.spyOn(api, "queryNeurons").mockResolvedValue(neurons);
 
   const qParams = { identity: identity1, certified: true };
   expect(api.queryNeurons).toHaveBeenCalledTimes(0);
@@ -67,8 +68,8 @@ const shouldInvalidateCache = async <P, R>({
   const apiPromise = new Promise<void>((resolve) => {
     resolveApi = resolve;
   });
-  (apiFunc as jest.Mock).mockReturnValue(apiPromise);
-  jest.spyOn(api, "queryNeurons").mockResolvedValue(neurons);
+  (apiFunc as Mock).mockReturnValue(apiPromise);
+  vi.spyOn(api, "queryNeurons").mockResolvedValue(neurons);
 
   const qParams = { identity: identity1, certified: true };
   expect(api.queryNeurons).toHaveBeenCalledTimes(0);
@@ -112,8 +113,8 @@ const shouldInvalidateCacheOnFailure = async <P, R>({
   const apiPromise = new Promise<void>((_, reject) => {
     rejectApi = reject;
   });
-  (apiFunc as jest.Mock).mockReturnValue(apiPromise);
-  jest.spyOn(api, "queryNeurons").mockResolvedValue(neurons);
+  (apiFunc as Mock).mockReturnValue(apiPromise);
+  vi.spyOn(api, "queryNeurons").mockResolvedValue(neurons);
 
   const qParams = { identity: identity1, certified: true };
   expect(api.queryNeurons).toHaveBeenCalledTimes(0);
@@ -137,7 +138,7 @@ const shouldInvalidateCacheOnFailure = async <P, R>({
 
   try {
     await servicePromise;
-    fail("The call should have failed.");
+    expect.unreachable("The call should have failed.");
   } catch (error) {
     expect(error.message).toEqual(apiErrorMessage);
   }
@@ -152,30 +153,30 @@ const shouldInvalidateCacheOnFailure = async <P, R>({
 };
 
 describe("neurons api-service", () => {
-  const neuronId = BigInt(12);
+  const neuronId = 12n;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.resetAllMocks();
     resetNeuronsApiService();
   });
 
   afterAll(() => {
-    jest.useRealTimers();
+    vi.useRealTimers();
   });
 
   // Read calls
 
   describe("queryNeuron", () => {
     beforeEach(() => {
-      jest
-        .spyOn(api, "queryNeuron")
-        .mockImplementation(async ({ neuronId }: api.ApiQueryNeuronParams) => {
+      vi.spyOn(api, "queryNeuron").mockImplementation(
+        async ({ neuronId }: api.ApiQueryNeuronParams) => {
           const neuron = neurons.find((n) => n.neuronId === neuronId);
           if (!neuron) {
             throw new Error(`No neuron with id ${neuronId}`);
           }
           return neuron;
-        });
+        }
+      );
     });
 
     const params = { identity: mockIdentity, certified: true };
@@ -183,13 +184,13 @@ describe("neurons api-service", () => {
     it("should call queryNeuron api", async () => {
       expect(
         await governanceApiService.queryNeuron({
-          neuronId: BigInt(1),
+          neuronId: 1n,
           ...params,
         })
       ).toEqual(neuron1);
       expect(
         await governanceApiService.queryNeuron({
-          neuronId: BigInt(2),
+          neuronId: 2n,
           ...params,
         })
       ).toEqual(neuron2);
@@ -198,7 +199,7 @@ describe("neurons api-service", () => {
 
     it("should fail if queryNeuron api fails", async () => {
       expect(() =>
-        governanceApiService.queryNeuron({ neuronId: BigInt(999), ...params })
+        governanceApiService.queryNeuron({ neuronId: 999n, ...params })
       ).rejects.toThrow("No neuron with id 999");
       expect(api.queryNeuron).toHaveBeenCalledTimes(1);
     });
@@ -207,16 +208,15 @@ describe("neurons api-service", () => {
       await shouldNotInvalidateCache({
         apiFunc: api.queryNeuron,
         apiServiceFunc: governanceApiService.queryNeuron,
-        params: { neuronId: BigInt(1), ...params },
+        params: { neuronId: 1n, ...params },
       });
     });
   });
 
   describe("queryNeurons", () => {
     beforeEach(() => {
-      jest
-        .spyOn(api, "queryNeurons")
-        .mockImplementation(async ({ identity }: api.ApiQueryParams) => {
+      vi.spyOn(api, "queryNeurons").mockImplementation(
+        async ({ identity }: api.ApiQueryParams) => {
           if (identity === identity1) {
             return [neuron1];
           }
@@ -224,7 +224,8 @@ describe("neurons api-service", () => {
             return [neuron2];
           }
           throw new Error(`Unknown identity: ${identity.getPrincipal()}`);
-        });
+        }
+      );
     });
 
     const params = { certified: true };
@@ -294,7 +295,10 @@ describe("neurons api-service", () => {
         await governanceApiService.queryNeurons({ ...params, certified: true })
       ).toEqual([neuron1]);
       expect(
-        await governanceApiService.queryNeurons({ ...params, certified: false })
+        await governanceApiService.queryNeurons({
+          ...params,
+          certified: false,
+        })
       ).toEqual([neuron1]);
       expect(api.queryNeurons).toHaveBeenCalledWith({
         ...params,
@@ -305,7 +309,7 @@ describe("neurons api-service", () => {
 
     it("should not cache error responses", async () => {
       const params = { identity: identity1, certified: true };
-      jest.spyOn(api, "queryNeurons").mockRejectedValueOnce(new Error("500"));
+      vi.spyOn(api, "queryNeurons").mockRejectedValueOnce(new Error("500"));
 
       expect(() => governanceApiService.queryNeurons(params)).rejects.toThrow(
         "500"
@@ -317,19 +321,19 @@ describe("neurons api-service", () => {
     });
 
     it("should expire its cache after 5 minutes", async () => {
-      jest.useFakeTimers();
-      jest.setSystemTime(new Date("2020-8-1 21:55:00"));
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date("2020-8-1 21:55:00"));
 
       const params = { identity: identity1, certified: true };
       expect(await governanceApiService.queryNeurons(params)).toEqual([
         neuron1,
       ]);
-      jest.setSystemTime(new Date("2020-8-1 21:59:59"));
+      vi.setSystemTime(new Date("2020-8-1 21:59:59"));
       expect(await governanceApiService.queryNeurons(params)).toEqual([
         neuron1,
       ]);
       expect(api.queryNeurons).toHaveBeenCalledTimes(1);
-      jest.setSystemTime(new Date("2020-8-1 22:00:01"));
+      vi.setSystemTime(new Date("2020-8-1 22:00:01"));
       expect(await governanceApiService.queryNeurons(params)).toEqual([
         neuron1,
       ]);
@@ -339,7 +343,7 @@ describe("neurons api-service", () => {
 
   describe("queryKnownNeurons", () => {
     beforeEach(() => {
-      jest.spyOn(api, "queryKnownNeurons").mockResolvedValue([knownNeuron1]);
+      vi.spyOn(api, "queryKnownNeurons").mockResolvedValue([knownNeuron1]);
     });
 
     const certifiedParams = { identity: identity1, certified: true };
@@ -357,9 +361,9 @@ describe("neurons api-service", () => {
     });
 
     it("should fail if queryKnownNeurons api fails", async () => {
-      jest
-        .spyOn(api, "queryKnownNeurons")
-        .mockRejectedValueOnce(new Error("500"));
+      vi.spyOn(api, "queryKnownNeurons").mockRejectedValueOnce(
+        new Error("500")
+      );
 
       expect(() =>
         governanceApiService.queryKnownNeurons(certifiedParams)
@@ -414,9 +418,9 @@ describe("neurons api-service", () => {
     });
 
     it("should not cache error responses", async () => {
-      jest
-        .spyOn(api, "queryKnownNeurons")
-        .mockRejectedValueOnce(new Error("500"));
+      vi.spyOn(api, "queryKnownNeurons").mockRejectedValueOnce(
+        new Error("500")
+      );
 
       expect(() =>
         governanceApiService.queryKnownNeurons(certifiedParams)
@@ -428,18 +432,18 @@ describe("neurons api-service", () => {
     });
 
     it("should expire its cache after 5 minutes", async () => {
-      jest.useFakeTimers();
-      jest.setSystemTime(new Date("2020-8-1 21:55:00"));
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date("2020-8-1 21:55:00"));
 
       expect(
         await governanceApiService.queryKnownNeurons(certifiedParams)
       ).toEqual([knownNeuron1]);
-      jest.setSystemTime(new Date("2020-8-1 21:59:59"));
+      vi.setSystemTime(new Date("2020-8-1 21:59:59"));
       expect(
         await governanceApiService.queryKnownNeurons(certifiedParams)
       ).toEqual([knownNeuron1]);
       expect(api.queryKnownNeurons).toHaveBeenCalledTimes(1);
-      jest.setSystemTime(new Date("2020-8-1 22:00:01"));
+      vi.setSystemTime(new Date("2020-8-1 22:00:01"));
       expect(
         await governanceApiService.queryKnownNeurons(certifiedParams)
       ).toEqual([knownNeuron1]);
@@ -451,12 +455,11 @@ describe("neurons api-service", () => {
     const rewardEvent1: RewardEvent = mockRewardEvent;
     const rewardEvent2: RewardEvent = {
       ...rewardEvent1,
-      rounds_since_last_distribution: [BigInt(2_000)],
+      rounds_since_last_distribution: [2_000n],
     };
     beforeEach(() => {
-      jest
-        .spyOn(api, "queryLastestRewardEvent")
-        .mockImplementation(async ({ identity }: api.ApiQueryParams) => {
+      vi.spyOn(api, "queryLastestRewardEvent").mockImplementation(
+        async ({ identity }: api.ApiQueryParams) => {
           if (identity === identity1) {
             return rewardEvent1;
           }
@@ -464,7 +467,8 @@ describe("neurons api-service", () => {
             return rewardEvent2;
           }
           throw new Error(`Unknown identity: ${identity.getPrincipal()}`);
-        });
+        }
+      );
     });
 
     const params = { certified: true };
@@ -569,7 +573,7 @@ describe("neurons api-service", () => {
     };
 
     it("should call claimOrRefreshNeuron api", async () => {
-      jest.spyOn(api, "claimOrRefreshNeuron").mockResolvedValueOnce(neuronId);
+      vi.spyOn(api, "claimOrRefreshNeuron").mockResolvedValueOnce(neuronId);
       expect(await governanceApiService.claimOrRefreshNeuron(params)).toEqual(
         neuronId
       );
@@ -599,7 +603,7 @@ describe("neurons api-service", () => {
       neuronId,
       identity: mockIdentity,
       toAccount: mockMainAccount.identifier,
-      amount: BigInt(10_000_000),
+      amount: 10_000_000n,
     };
 
     it("should call disburse api", () => {
@@ -746,8 +750,8 @@ describe("neurons api-service", () => {
   describe("mergeNeurons", () => {
     const params = {
       identity: mockIdentity,
-      sourceNeuronId: BigInt(2),
-      targetNeuronId: BigInt(20),
+      sourceNeuronId: 2n,
+      targetNeuronId: 20n,
     };
 
     it("should call mergeNeurons api", () => {
@@ -808,7 +812,7 @@ describe("neurons api-service", () => {
       neuronId,
       identity: mockIdentity,
       topic: Topic.ExchangeRate,
-      followees: [BigInt(2), BigInt(20)],
+      followees: [2n, 20n],
     };
 
     it("should call setFollowees api", () => {
@@ -837,8 +841,8 @@ describe("neurons api-service", () => {
   describe("simulateMergeNeurons", () => {
     const params = {
       identity: mockIdentity,
-      sourceNeuronId: BigInt(3),
-      targetNeuronId: BigInt(21),
+      sourceNeuronId: 3n,
+      targetNeuronId: 21n,
     };
 
     it("should call simulateMergeNeurons api", () => {
@@ -871,7 +875,7 @@ describe("neurons api-service", () => {
     };
 
     it("should call spawnNeuron api", async () => {
-      jest.spyOn(api, "spawnNeuron").mockResolvedValueOnce(neuronId);
+      vi.spyOn(api, "spawnNeuron").mockResolvedValueOnce(neuronId);
       expect(await governanceApiService.spawnNeuron(params)).toEqual(neuronId);
       expect(api.spawnNeuron).toHaveBeenCalledWith(params);
       expect(api.spawnNeuron).toHaveBeenCalledTimes(1);
@@ -898,11 +902,11 @@ describe("neurons api-service", () => {
     const params = {
       neuronId,
       identity: mockIdentity,
-      amount: BigInt(10_000_000),
+      amount: 10_000_000n,
     };
 
     it("should call splitNeuron api", async () => {
-      jest.spyOn(api, "splitNeuron").mockResolvedValueOnce(neuronId);
+      vi.spyOn(api, "splitNeuron").mockResolvedValueOnce(neuronId);
       expect(await governanceApiService.splitNeuron(params)).toEqual(neuronId);
       expect(api.splitNeuron).toHaveBeenCalledWith(params);
       expect(api.splitNeuron).toHaveBeenCalledTimes(1);
@@ -958,14 +962,14 @@ describe("neurons api-service", () => {
   describe("stakeNeuron", () => {
     const params = {
       identity: mockIdentity,
-      stake: BigInt(10_000_000),
+      stake: 10_000_000n,
       controller: mockPrincipal,
       ledgerCanisterIdentity: mockIdentity,
       fromSubaccount: new Uint8Array(),
     };
 
     it("should call stakeNeuron api", async () => {
-      jest.spyOn(api, "stakeNeuron").mockResolvedValueOnce(neuronId);
+      vi.spyOn(api, "stakeNeuron").mockResolvedValueOnce(neuronId);
       expect(await governanceApiService.stakeNeuron(params)).toEqual(neuronId);
       expect(api.stakeNeuron).toHaveBeenCalledWith(params);
       expect(api.stakeNeuron).toHaveBeenCalledTimes(1);
@@ -983,6 +987,41 @@ describe("neurons api-service", () => {
       await shouldInvalidateCacheOnFailure({
         apiFunc: api.stakeNeuron,
         apiServiceFunc: governanceApiService.stakeNeuron,
+        params,
+      });
+    });
+  });
+
+  describe("stakeNeuronIcrc1", () => {
+    const params = {
+      identity: mockIdentity,
+      stake: 10_000_000n,
+      controller: mockPrincipal,
+      ledgerCanisterIdentity: mockIdentity,
+      fromSubaccount: new Uint8Array(),
+    };
+
+    it("should call stakeNeuronIcrc1 api", async () => {
+      vi.spyOn(api, "stakeNeuronIcrc1").mockResolvedValueOnce(neuronId);
+      expect(await governanceApiService.stakeNeuronIcrc1(params)).toEqual(
+        neuronId
+      );
+      expect(api.stakeNeuronIcrc1).toHaveBeenCalledWith(params);
+      expect(api.stakeNeuronIcrc1).toHaveBeenCalledTimes(1);
+    });
+
+    it("should invalidate the cache", async () => {
+      await shouldInvalidateCache({
+        apiFunc: api.stakeNeuronIcrc1,
+        apiServiceFunc: governanceApiService.stakeNeuronIcrc1,
+        params,
+      });
+    });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
+        apiFunc: api.stakeNeuronIcrc1,
+        apiServiceFunc: governanceApiService.stakeNeuronIcrc1,
         params,
       });
     });

@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
 import LinkCanisterModal from "$lib/modals/canisters/LinkCanisterModal.svelte";
 import { attachCanister } from "$lib/services/canisters.services";
@@ -11,20 +8,24 @@ import { nonNullish } from "@dfinity/utils";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 
-jest.mock("$lib/services/canisters.services", () => {
+vi.mock("$lib/services/canisters.services", () => {
   return {
-    attachCanister: jest.fn().mockResolvedValue({ success: true }),
+    attachCanister: vi.fn().mockResolvedValue({ success: true }),
   };
 });
 
-jest.mock("$lib/stores/toasts.store", () => {
+vi.mock("$lib/stores/toasts.store", () => {
   return {
-    toastsShow: jest.fn(),
-    toastsSuccess: jest.fn(),
+    toastsShow: vi.fn(),
+    toastsSuccess: vi.fn(),
   };
 });
 
 describe("LinkCanisterModal", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it("should display modal", () => {
     const { container } = render(LinkCanisterModal);
 
@@ -62,9 +63,10 @@ describe("LinkCanisterModal", () => {
       principalText: "aaaaa-aa",
     });
 
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     component.$on("nnsClose", onClose);
 
+    expect(attachCanister).not.toBeCalled();
     await clickByTestId(queryByTestId, "link-canister-button");
     expect(attachCanister).toBeCalled();
 
@@ -78,10 +80,11 @@ describe("LinkCanisterModal", () => {
 
     await fillForm({
       container,
-      name: "test",
-      principalText: "z".repeat(MAX_CANISTER_NAME_LENGTH),
+      name: "z".repeat(MAX_CANISTER_NAME_LENGTH),
+      principalText: "aaaaa-aa",
     });
 
+    expect(attachCanister).not.toBeCalled();
     await clickByTestId(queryByTestId, "link-canister-button");
     expect(attachCanister).toBeCalled();
   });
@@ -91,7 +94,7 @@ describe("LinkCanisterModal", () => {
       component: LinkCanisterModal,
     });
 
-    const onClose = jest.fn();
+    const onClose = vi.fn();
     component.$on("nnsClose", onClose);
 
     await clickByTestId(queryByTestId, "cancel-button");

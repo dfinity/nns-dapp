@@ -9,9 +9,9 @@
   export let description: string | undefined;
 </script>
 
-<KeyValuePairInfo {testId}>
-  <svelte:fragment slot="key"
-    >{keyOf({ obj: $i18n.proposal_detail, key: labelKey })}</svelte:fragment
+<KeyValuePairInfo {testId} alignIconRight>
+  <span slot="key" class="description"
+    >{keyOf({ obj: $i18n.proposal_detail, key: labelKey })}</span
   >
   <span class="value" slot="value" data-tid={`${testId}-value`}>{value}</span>
 

@@ -38,13 +38,13 @@ export const SNS_AGGREGATOR_CANISTER_URL: string | undefined =
   snsAggregatorUrl(snsAggregatorUrlEnv);
 
 export interface FeatureFlags<T> {
-  ENABLE_SNS_VOTING: T;
-  ENABLE_SNS_AGGREGATOR: T;
   ENABLE_CKBTC: T;
   ENABLE_CKTESTBTC: T;
-  ENABLE_SIMULATE_MERGE_NEURONS: T;
-  ENABLE_NEURON_SETTINGS: T;
-  ENABLE_INSTANT_UNLOCK: T;
+  ENABLE_ICP_ICRC: T;
+  ENABLE_MY_TOKENS: T;
+  ENABLE_CKETH: T;
+  ENABLE_CKBTC_ICRC2: T;
+  ENABLE_SNS_TYPES_FILTER: T;
   // Used only in tests and set up in jest-setup.ts
   TEST_FLAG_EDITABLE: T;
   TEST_FLAG_NOT_EDITABLE: T;
@@ -59,7 +59,7 @@ export type FeatureKey = keyof FeatureFlags<boolean>;
  */
 export const FEATURE_FLAG_ENVIRONMENT: FeatureFlags<boolean> = JSON.parse(
   envVars?.featureFlags ??
-    '{"ENABLE_SNS_VOTING": true, "ENABLE_SNS_AGGREGATOR": true, "ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_SIMULATE_MERGE_NEURONS": false, "ENABLE_NEURON_SETTINGS": false, "ENABLE_INSTANT_UNLOCK": false}'
+    '{"ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_ICP_ICRC": false}'
 );
 
 export const IS_TESTNET: boolean =

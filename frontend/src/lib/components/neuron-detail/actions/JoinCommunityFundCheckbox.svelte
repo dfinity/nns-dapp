@@ -11,6 +11,7 @@
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
 
   export let neuron: NeuronInfo;
+  export let disabled = false;
 
   let isCommunityFund: boolean;
   $: isCommunityFund = hasJoinedCommunityFund(neuron);
@@ -21,6 +22,7 @@
 </script>
 
 <Checkbox
+  {disabled}
   preventDefault
   inputId="join-community-fund-checkbox"
   checked={isCommunityFund}

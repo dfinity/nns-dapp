@@ -1,4 +1,4 @@
-import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -13,20 +13,48 @@ export class VotingCardPo extends BasePageObject {
     return new VotingCardPo(element.byTestId(VotingCardPo.TID));
   }
 
-  getVoteYesButtonPo(): ButtonPo {
-    return ButtonPo.under({ element: this.root, testId: "vote-yes" });
+  getVotableNeurons(): PageObjectElement {
+    return this.root.byTestId("votable-neurons");
   }
 
-  getVoteNoButtonPo(): ButtonPo {
-    return ButtonPo.under({ element: this.root, testId: "vote-no" });
+  getVotedNeurons(): PageObjectElement {
+    return this.root.byTestId("voted-neurons");
+  }
+
+  getVotedNeuronHeadline(): PageObjectElement {
+    return this.getVotedNeurons().byTestId("voted-neurons-headline");
+  }
+
+  getVotedNeuronHeadlineYesIcon(): PageObjectElement {
+    return this.getVotedNeuronHeadline().byTestId("thumb-up");
+  }
+
+  getVotedNeuronHeadlineNoIcon(): PageObjectElement {
+    return this.getVotedNeuronHeadline().byTestId("thumb-down");
+  }
+
+  getIneligibleNeurons(): PageObjectElement {
+    return this.root.byTestId("ineligible-neurons");
+  }
+
+  getVoteYesButtonPo(): ButtonPo {
+    return this.getButton("vote-yes");
+  }
+
+  getSignInButtonPo(): ButtonPo {
+    return this.getButton("login-button");
+  }
+
+  getSpinnerPo(): PageObjectElement {
+    return this.root.byTestId("loading-neurons-spinner");
   }
 
   getConfirmYesButtonPo(): ButtonPo {
-    return ButtonPo.under({ element: this.root, testId: "confirm-yes" });
+    return this.getButton("confirm-yes");
   }
 
   getConfirmNoButtonPo(): ButtonPo {
-    return ButtonPo.under({ element: this.root, testId: "confirm-no" });
+    return this.getButton("confirm-no");
   }
 
   waitForVotingComplete(): Promise<void> {

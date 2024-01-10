@@ -1,12 +1,10 @@
-/**
- * @jest-environment jsdom
- */
-
+import * as agent from "$lib/api/agent.api";
 import {
   getOpenTicket,
   newSaleTicket,
   notifyParticipation,
   notifyPaymentFailure,
+  queryFinalizationStatus,
 } from "$lib/api/sns-sale.api";
 import {
   importInitSnsWrapper,
@@ -22,11 +20,17 @@ import {
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
+import type { HttpAgent } from "@dfinity/agent";
 import type { SnsWasmCanisterOptions } from "@dfinity/nns";
-import { SnsSwapCanister } from "@dfinity/sns";
-import { mock } from "jest-mock-extended";
+import {
+  SnsSwapCanister,
+  UnsupportedMethodError,
+  type SnsGetAutoFinalizationStatusResponse,
+} from "@dfinity/sns";
+import type { Mock } from "vitest";
+import { mock } from "vitest-mock-extended";
 
-jest.mock("$lib/proxy/api.import.proxy");
+vi.mock("$lib/proxy/api.import.proxy");
 
 describe("sns-sale.api", () => {
   const ticket = snsTicketMock({
@@ -34,26 +38,27 @@ describe("sns-sale.api", () => {
     owner: mockPrincipal,
   });
 
-  const getOpenTicketSpy = jest.fn().mockResolvedValue(ticket.ticket);
-  const newSaleTicketSpy = jest.fn().mockResolvedValue(ticket.ticket);
-  const notifyPaymentFailureSpy = jest.fn().mockResolvedValue(ticket.ticket);
+  const getOpenTicketSpy = vi.fn().mockResolvedValue(ticket.ticket);
+  const newSaleTicketSpy = vi.fn().mockResolvedValue(ticket.ticket);
+  const notifyPaymentFailureSpy = vi.fn().mockResolvedValue(ticket.ticket);
+  const finalizationStatusSpy = vi.fn();
   const participationResponse = {
     icp_accepted_participation_e8s: 666n,
   };
-  const notifyParticipationSpy = jest
+  const notifyParticipationSpy = vi
     .fn()
     .mockResolvedValue(participationResponse);
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    (importSnsWasmCanister as jest.Mock).mockResolvedValue({
+    vi.clearAllMocks();
+    (importSnsWasmCanister as Mock).mockResolvedValue({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       create: (options: SnsWasmCanisterOptions) => ({
         listSnses: () => Promise.resolve(deployedSnsMock),
       }),
     });
 
-    (importInitSnsWrapper as jest.Mock).mockResolvedValue(() =>
+    (importInitSnsWrapper as Mock).mockResolvedValue(() =>
       Promise.resolve({
         canisterIds: {
           rootCanisterId: rootCanisterIdMock,
@@ -65,8 +70,10 @@ describe("sns-sale.api", () => {
         newSaleTicket: newSaleTicketSpy,
         notifyPaymentFailure: notifyPaymentFailureSpy,
         notifyParticipation: notifyParticipationSpy,
+        getFinalizationStatus: finalizationStatusSpy,
       })
     );
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   it("should query open ticket", async () => {
@@ -76,9 +83,9 @@ describe("sns-sale.api", () => {
     }).ticket;
     const snsSwapCanister = mock<SnsSwapCanister>();
     snsSwapCanister.getOpenTicket.mockResolvedValue(apiTicket);
-    jest
-      .spyOn(SnsSwapCanister, "create")
-      .mockImplementation((): SnsSwapCanister => snsSwapCanister);
+    vi.spyOn(SnsSwapCanister, "create").mockImplementation(
+      (): SnsSwapCanister => snsSwapCanister
+    );
     const result = await getOpenTicket({
       identity: mockIdentity,
       swapCanisterId: swapCanisterIdMock,
@@ -125,6 +132,63 @@ describe("sns-sale.api", () => {
     expect(notifyParticipationSpy).toHaveBeenCalledWith({
       buyer: mockPrincipal.toText(),
       confirmation_text: [confirmationText],
+    });
+  });
+
+  describe("queryFinalizationStatus", () => {
+    it("should return the finalization status", async () => {
+      const response: SnsGetAutoFinalizationStatusResponse = {
+        auto_finalize_swap_response: [],
+        has_auto_finalize_been_attempted: [false],
+        is_auto_finalize_enabled: [false],
+      };
+      finalizationStatusSpy.mockResolvedValue(response);
+
+      expect(finalizationStatusSpy).toBeCalledTimes(0);
+      const result = await queryFinalizationStatus({
+        identity: mockIdentity,
+        rootCanisterId: rootCanisterIdMock,
+        certified: false,
+      });
+
+      expect(result).toEqual(response);
+      expect(finalizationStatusSpy).toBeCalledTimes(1);
+      expect(finalizationStatusSpy).toBeCalledWith({});
+    });
+
+    it("should return undefined if method is not supported", async () => {
+      finalizationStatusSpy.mockRejectedValue(
+        new UnsupportedMethodError("get_auto_finalization_status")
+      );
+
+      expect(finalizationStatusSpy).toBeCalledTimes(0);
+      const result = await queryFinalizationStatus({
+        identity: mockIdentity,
+        rootCanisterId: rootCanisterIdMock,
+        certified: false,
+      });
+
+      expect(result).toBeUndefined();
+      expect(finalizationStatusSpy).toBeCalledTimes(1);
+      expect(finalizationStatusSpy).toBeCalledWith({});
+    });
+
+    it("should raise error if api call fails", async () => {
+      const errorMessage = `Any other message`;
+      const error = new Error(errorMessage);
+      finalizationStatusSpy.mockRejectedValue(error);
+
+      expect(finalizationStatusSpy).toBeCalledTimes(0);
+      const call = () =>
+        queryFinalizationStatus({
+          identity: mockIdentity,
+          rootCanisterId: rootCanisterIdMock,
+          certified: false,
+        });
+
+      await expect(call).rejects.toThrow(error);
+      expect(finalizationStatusSpy).toBeCalledTimes(1);
+      expect(finalizationStatusSpy).toBeCalledWith({});
     });
   });
 });

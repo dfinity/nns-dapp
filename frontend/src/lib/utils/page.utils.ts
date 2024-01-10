@@ -1,6 +1,6 @@
 import { AppPath, ROUTE_ID_GROUPS } from "$lib/constants/routes.constants";
 import { isNullish } from "@dfinity/utils";
-import type { Navigation } from "@sveltejs/kit";
+import type { AfterNavigate } from "@sveltejs/kit";
 
 /**
  * Returns an AppPath for a given path.
@@ -13,7 +13,7 @@ import type { Navigation } from "@sveltejs/kit";
  */
 export const pathForRouteId = (routeId: string | null | undefined): AppPath => {
   if (isNullish(routeId)) {
-    return AppPath.Authentication;
+    return AppPath.Accounts;
   }
 
   const routeIdWithoutGroups = (routeId: string): string =>
@@ -33,10 +33,12 @@ export const pathForRouteId = (routeId: string | null | undefined): AppPath => {
   // TODO: solve eslint type checking
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore-line
-  return AppPath[key as keyof AppPath] ?? AppPath.Authentication;
+  return AppPath[key as keyof AppPath] ?? AppPath.Accounts;
 };
 
-export const referrerPathForNav = ({ from }: Navigation): AppPath | undefined =>
+export const referrerPathForNav = ({
+  from,
+}: AfterNavigate): AppPath | undefined =>
   from?.route.id !== null && from?.route.id !== undefined
     ? pathForRouteId(from.route.id)
     : undefined;

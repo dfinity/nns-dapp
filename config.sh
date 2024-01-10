@@ -29,6 +29,9 @@ ENV_FILE=${ENV_OUTPUT_FILE:-$PWD/frontend/.env}
 JSON_OUT="deployment-config.json"
 CANDID_ARGS_FILE="nns-dapp-arg-${DFX_NETWORK}.did"
 
+: "Get network configuration functions"
+. scripts/network-config
+
 first_not_null() {
   for x in "$@"; do
     if [ "$x" != "null" ]; then
@@ -45,19 +48,14 @@ local_deployment_data="$(
   : "- may be set by dfx as an env var"
   : "- may be deployed locally"
   LOCALLY_DEPLOYED_NNS_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-dapp 2>/dev/null || true)"
-  test -n "${CANISTER_ID:-}" || CANISTER_ID="$LOCALLY_DEPLOYED_NNS_CANISTER_ID"
-  export CANISTER_ID
-  test -n "${CANISTER_ID:-}" || unset CANISTER_ID
+  test -n "${OWN_CANISTER_ID:-}" || OWN_CANISTER_ID="$LOCALLY_DEPLOYED_NNS_CANISTER_ID"
+  export OWN_CANISTER_ID
+  test -n "${OWN_CANISTER_ID:-}" || unset OWN_CANISTER_ID
 
   : "Try to find the internet_identity URL"
   : "- may be deployed locally"
   IDENTITY_SERVICE_URL="$(dfx-canister-url --network "$DFX_NETWORK" internet_identity)"
   export IDENTITY_SERVICE_URL
-
-  : "Get the own canister URL"
-  # TODO: Delete, as it is used only in the CSP, where it can be replaced by 'self'.
-  OWN_CANISTER_URL="$(dfx-canister-url --network "$DFX_NETWORK" nns-dapp)"
-  export OWN_CANISTER_URL
 
   : "Get the SNS wasm canister ID, if it exists"
   : "- may be set as an env var"
@@ -83,6 +81,14 @@ local_deployment_data="$(
   export CKBTC_MINTER_CANISTER_ID
   test -n "${CKBTC_MINTER_CANISTER_ID:-}" || unset CKBTC_MINTER_CANISTER_ID
 
+  : "Try to find the ckETH canister IDs"
+  CKETH_LEDGER_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id cketh_ledger 2>/dev/null || true)"
+  export CKETH_LEDGER_CANISTER_ID
+  test -n "${CKETH_LEDGER_CANISTER_ID:-}" || unset CKETH_LEDGER_CANISTER_ID
+  CKETH_INDEX_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id cketh_index 2>/dev/null || true)"
+  export CKETH_INDEX_CANISTER_ID
+  test -n "${CKETH_INDEX_CANISTER_ID:-}" || unset CKETH_INDEX_CANISTER_ID
+
   : "Get the governance canister ID - it should be defined"
   GOVERNANCE_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-governance)"
   export GOVERNANCE_CANISTER_ID
@@ -100,7 +106,7 @@ local_deployment_data="$(
   export TVL_CANISTER_ID
 
   : "Define the robots text, if any"
-  if [[ "$DFX_NETWORK" == "local" ]] || [[ "$DFX_NETWORK" == "testnet" ]]; then
+  if [[ "$DFX_NETWORK" == "mainnet" ]]; then
     ROBOTS=''
   else
     # shellcheck disable=SC2089 # yes, we really want the backslash
@@ -114,28 +120,21 @@ local_deployment_data="$(
   STATIC_HOST="$(dfx-canister-url --network "$DFX_NETWORK" --type static)"
   export API_HOST STATIC_HOST
 
-  : "Determine whether we need to fetch the root key"
-  case "${DFX_NETWORK:-}" in
-  mainnet | ic) FETCH_ROOT_KEY=false ;;
-  *) FETCH_ROOT_KEY=true ;;
-  esac
-  export FETCH_ROOT_KEY
-
   : "Put any values we found in JSON.  Omit any that are undefined."
   jq -n '{
-    OWN_CANISTER_ID: env.CANISTER_ID,
-    OWN_CANISTER_URL: env.OWN_CANISTER_URL,
+    OWN_CANISTER_ID: env.OWN_CANISTER_ID,
     IDENTITY_SERVICE_URL: env.IDENTITY_SERVICE_URL,
     SNS_AGGREGATOR_URL: env.SNS_AGGREGATOR_URL,
     LEDGER_CANISTER_ID: env.LEDGER_CANISTER_ID,
     CKBTC_LEDGER_CANISTER_ID: env.CKBTC_LEDGER_CANISTER_ID,
     CKBTC_MINTER_CANISTER_ID: env.CKBTC_MINTER_CANISTER_ID,
     CKBTC_INDEX_CANISTER_ID: env.CKBTC_INDEX_CANISTER_ID,
+    CKETH_LEDGER_CANISTER_ID: env.CKETH_LEDGER_CANISTER_ID,
+    CKETH_INDEX_CANISTER_ID: env.CKETH_INDEX_CANISTER_ID,
     CYCLES_MINTING_CANISTER_ID: env.CYCLES_MINTING_CANISTER_ID,
     ROBOTS: env.ROBOTS,
     STATIC_HOST: env.STATIC_HOST,
     API_HOST: env.API_HOST,
-    FETCH_ROOT_KEY: env.FETCH_ROOT_KEY,
     WASM_CANISTER_ID: env.WASM_CANISTER_ID,
     TVL_CANISTER_ID: env.TVL_CANISTER_ID,
     GOVERNANCE_CANISTER_ID: env.GOVERNANCE_CANISTER_ID
@@ -153,13 +152,11 @@ local_deployment_data="$(
 : "- construct ledger and governance canister URLs"
 # TODO: I believe that the following can be discarded now.
 json=$(HOST=$(dfx-canister-url --network "$DFX_NETWORK" --type api) jq -s --sort-keys '
-  (.[0].defaults.network.config // {}) * .[1] * (.[0].networks[env.DFX_NETWORK].config // {}) |
+  (.[0].defaults.network.config // {}) * (.[1].config // {}) * .[2] |
   .DFX_NETWORK = env.DFX_NETWORK |
   . as $config |
-  .HOST=env.HOST |
-  .OWN_CANISTER_URL=( if (.OWN_CANISTER_URL == null) then (.HOST | sub("^(?<p>https?://)";"\(.p)\($config.OWN_CANISTER_ID).")) else .OWN_CANISTER_URL end ) |
-  .OWN_CANISTER_URL=(.OWN_CANISTER_URL | sub("OWN_CANISTER_ID"; $config.OWN_CANISTER_ID))
-' dfx.json <(echo "$local_deployment_data"))
+  .HOST=env.HOST
+    ' dfx.json <(network_config) <(echo "$local_deployment_data"))
 
 dfxNetwork=$(echo "$json" | jq -r ".DFX_NETWORK")
 cmcCanisterId=$(echo "$json" | jq -r ".CYCLES_MINTING_CANISTER_ID")
@@ -168,7 +165,6 @@ governanceCanisterId=$(echo "$json" | jq -r ".GOVERNANCE_CANISTER_ID")
 tvlCanisterId=$(echo "$json" | jq -r ".TVL_CANISTER_ID")
 ledgerCanisterId=$(echo "$json" | jq -r ".LEDGER_CANISTER_ID")
 ownCanisterId=$(echo "$json" | jq -r ".OWN_CANISTER_ID")
-ownCanisterUrl=$(echo "$json" | jq -r ".OWN_CANISTER_URL")
 fetchRootKey=$(echo "$json" | jq -r ".FETCH_ROOT_KEY")
 featureFlags=$(echo "$json" | jq -r ".FEATURE_FLAGS" | jq tostring)
 host=$(echo "$json" | jq -r ".HOST")
@@ -177,6 +173,8 @@ aggregatorCanisterUrl=$(echo "$json" | jq -r '.SNS_AGGREGATOR_URL // ""')
 ckbtcLedgerCanisterId=$(echo "$json" | jq -r '.CKBTC_LEDGER_CANISTER_ID // ""')
 ckbtcMinterCanisterId=$(echo "$json" | jq -r '.CKBTC_MINTER_CANISTER_ID // ""')
 ckbtcIndexCanisterId=$(echo "$json" | jq -r '.CKBTC_INDEX_CANISTER_ID // ""')
+ckethLedgerCanisterId=$(echo "$json" | jq -r '.CKETH_LEDGER_CANISTER_ID // ""')
+ckethIndexCanisterId=$(echo "$json" | jq -r '.CKETH_INDEX_CANISTER_ID // ""')
 
 echo "VITE_DFX_NETWORK=$dfxNetwork
 VITE_CYCLES_MINTING_CANISTER_ID=$cmcCanisterId
@@ -185,7 +183,6 @@ VITE_GOVERNANCE_CANISTER_ID=$governanceCanisterId
 VITE_TVL_CANISTER_ID=$tvlCanisterId
 VITE_LEDGER_CANISTER_ID=$ledgerCanisterId
 VITE_OWN_CANISTER_ID=$ownCanisterId
-VITE_OWN_CANISTER_URL=$ownCanisterUrl
 VITE_FETCH_ROOT_KEY=$fetchRootKey
 VITE_FEATURE_FLAGS=$featureFlags
 VITE_HOST=$host
@@ -193,7 +190,9 @@ VITE_IDENTITY_SERVICE_URL=$identityServiceUrl
 VITE_AGGREGATOR_CANISTER_URL=${aggregatorCanisterUrl:-}
 VITE_CKBTC_LEDGER_CANISTER_ID=${ckbtcLedgerCanisterId:-}
 VITE_CKBTC_MINTER_CANISTER_ID=${ckbtcMinterCanisterId:-}
-VITE_CKBTC_INDEX_CANISTER_ID=${ckbtcIndexCanisterId:-}" | tee "$ENV_FILE"
+VITE_CKBTC_INDEX_CANISTER_ID=${ckbtcIndexCanisterId:-}
+VITE_CKETH_LEDGER_CANISTER_ID=${ckethLedgerCanisterId:-}
+VITE_CKETH_INDEX_CANISTER_ID=${ckethIndexCanisterId:-}" | tee "$ENV_FILE"
 
 echo "$json" >"$JSON_OUT"
 {
@@ -202,11 +201,14 @@ echo "$json" >"$JSON_OUT"
 } >&2
 
 # Creates the candid arguments passed when the canister is installed.
+#
+# Note: If you change the schema, please consider also updating the `SchemaLabel` default in the Rust code.
 cat <<EOF >"$CANDID_ARGS_FILE"
 (opt record{
   args = vec {
 $(jq -r 'to_entries | .[] | "    record{ 0=\(.key | tojson); 1=\(.value | tostring | tojson) };"' "$JSON_OUT")
   };
+  schema = opt variant { Map };
 })
 EOF
 
@@ -223,6 +225,11 @@ export CKBTC_MINTER_CANISTER_ID
 CKBTC_INDEX_CANISTER_ID="${ckbtcIndexCanisterId:-}"
 export CKBTC_INDEX_CANISTER_ID
 
+CKETH_LEDGER_CANISTER_ID="${ckethLedgerCanisterId:-}"
+export CKETH_LEDGER_CANISTER_ID
+CKETH_INDEX_CANISTER_ID="${ckethIndexCanisterId:-}"
+export CKETH_INDEX_CANISTER_ID
+
 GOVERNANCE_CANISTER_ID="$governanceCanisterId"
 export GOVERNANCE_CANISTER_ID
 
@@ -234,8 +241,6 @@ export LEDGER_CANISTER_ID
 
 OWN_CANISTER_ID="$ownCanisterId"
 export OWN_CANISTER_ID
-OWN_CANISTER_URL="$ownCanisterUrl"
-export OWN_CANISTER_URL
 
 HOST="$host"
 export HOST

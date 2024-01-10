@@ -9,12 +9,19 @@ export class SimpleBasePageObject {
     this.root = root;
   }
 
-  isPresent(): Promise<boolean> {
-    return this.root.isPresent();
+  getElement(tid: string | undefined = undefined): PageObjectElement {
+    if (isNullish(tid)) {
+      return this.root;
+    }
+    return this.root.byTestId(tid);
   }
 
-  waitFor(): Promise<void> {
-    return this.root.waitFor();
+  isPresent(tid: string | undefined = undefined): Promise<boolean> {
+    return this.getElement(tid).isPresent();
+  }
+
+  waitFor(tid: string | undefined = undefined): Promise<void> {
+    return this.getElement(tid).waitFor();
   }
 
   waitForAbsent(timeout?: number): Promise<void> {
@@ -22,16 +29,10 @@ export class SimpleBasePageObject {
   }
 
   click(tid: string | undefined = undefined): Promise<void> {
-    if (isNullish(tid)) {
-      return this.root.click();
-    }
-    return this.root.byTestId(tid).click();
+    return this.getElement(tid).click();
   }
 
   getText(tid: string | undefined = undefined): Promise<string> {
-    if (isNullish(tid)) {
-      return this.root.getText();
-    }
-    return this.root.byTestId(tid).getText();
+    return this.getElement(tid).getText();
   }
 }

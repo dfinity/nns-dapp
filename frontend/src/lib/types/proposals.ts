@@ -5,6 +5,14 @@ export type ProposalsFilters =
   | typeof ProposalRewardStatus
   | typeof ProposalStatus;
 
+export type UniversalProposalStatus =
+  | "unknown"
+  | "open"
+  | "rejected"
+  | "adopted"
+  | "executed"
+  | "failed";
+
 export interface ProposalsFilterModalProps {
   category: "topics" | "rewards" | "status";
   filters: ProposalsFilters;
@@ -18,3 +26,6 @@ export interface VotingNeuron {
   neuronIdString: string;
   votingPower: bigint;
 }
+
+// 100% -> 10000 basis points
+export type BasisPoints = bigint;

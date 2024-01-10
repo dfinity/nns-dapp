@@ -10,7 +10,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { Spinner, IconClock, IconCheck } from "@dfinity/gix-components";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatToken } from "$lib/utils/token.utils";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
   import { CKBTC_ADDITIONAL_CANISTERS } from "$lib/constants/ckbtc-additional-canister-ids.constants";
   import { toastsError } from "$lib/stores/toasts.store";
   import { emit } from "$lib/utils/events.utils";
@@ -23,15 +23,13 @@
   /**
    * Calling updateBalance has nothing to do with the withdrawal account but, because users are confused about when and how to call it, product required to add this additional call within this process.
    * That way, when user navigate once per session to the ckBTC accounts page, the call is also triggered.
-   *
-   * TODO(GIX-1320): to be removed when ckBTC update_balance is replaced by track_balance
    */
   const updateBalance = async () => {
     const canisters = nonNullish($selectedCkBTCUniverseIdStore)
       ? CKBTC_ADDITIONAL_CANISTERS[$selectedCkBTCUniverseIdStore.toText()]
       : undefined;
 
-    if (isNullish(canisters)) {
+    if (isNullish(canisters) || isNullish($selectedCkBTCUniverseIdStore)) {
       return;
     }
 
@@ -41,6 +39,7 @@
 
     // Because updateBalance is not related to withdrawal account, we do not really care if the call succeed or not except displaying potential errors in a toast.
     await updateBalanceService({
+      universeId: $selectedCkBTCUniverseIdStore,
       minterCanisterId,
       reload: undefined,
       uiIndicators: false,
@@ -83,13 +82,13 @@
   $: loading =
     loadingBalance ||
     (nonNullish(account) &&
-      (isNullish(account.balanceE8s) || isNullish(account.identifier)));
+      (isNullish(account.balanceUlps) || isNullish(account.identifier)));
 
   let accountBalance: bigint;
-  $: accountBalance = account?.balanceE8s ?? 0n;
+  $: accountBalance = account?.balanceUlps ?? 0n;
 
   let detailedAccountBalance: string;
-  $: detailedAccountBalance = formatToken({
+  $: detailedAccountBalance = formatTokenE8s({
     value: accountBalance,
     detailed: true,
   });
@@ -176,7 +175,7 @@
         })}</span
       >
     {:else}
-      <div><IconCheck size="36px" /></div>
+      <div data-tid="all-btc-transfers-complete"><IconCheck size="36px" /></div>
       <span class="value">{$i18n.ckbtc.all_btc_transfers_complete}</span>
     {/if}
   </button>

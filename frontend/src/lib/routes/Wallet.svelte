@@ -1,6 +1,7 @@
 <script lang="ts">
   import {
     isCkBTCUniverseStore,
+    isIcrcTokenUniverseStore,
     isNnsUniverseStore,
   } from "$lib/derived/selected-universe.derived";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
@@ -13,10 +14,14 @@
   import CkBTCWallet from "$lib/pages/CkBTCWallet.svelte";
   import AccountsModals from "$lib/modals/accounts/AccountsModals.svelte";
   import CkBTCAccountsModals from "$lib/modals/accounts/CkBTCAccountsModals.svelte";
+  import IcrcWallet from "$lib/pages/IcrcWallet.svelte";
+  import IcrcTokenAccountsModals from "$lib/modals/accounts/IcrcTokenAccountsModals.svelte";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
-  layoutTitleStore.set($i18n.wallet.title);
+  layoutTitleStore.set({
+    title: $i18n.wallet.title,
+  });
 </script>
 
 <TestIdWrapper testId="wallet-component">
@@ -24,12 +29,17 @@
     <NnsWallet {accountIdentifier} />
   {:else if $isCkBTCUniverseStore}
     <CkBTCWallet {accountIdentifier} />
+  {:else if $isIcrcTokenUniverseStore}
+    <IcrcWallet {accountIdentifier} />
   {:else if nonNullish($snsProjectSelectedStore)}
     <SnsWallet {accountIdentifier} />
   {/if}
 
   {#if $isCkBTCUniverseStore}
     <CkBTCAccountsModals />
+  {:else if $isIcrcTokenUniverseStore}
+    <IcrcTokenAccountsModals />
+    <AccountsModals />
   {:else}
     <AccountsModals />
   {/if}

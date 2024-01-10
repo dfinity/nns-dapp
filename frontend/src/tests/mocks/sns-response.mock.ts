@@ -1,5 +1,6 @@
 import type { SnsSummarySwap } from "$lib/types/sns";
 import type { QuerySnsMetadata, QuerySnsSwapState } from "$lib/types/sns.query";
+import type { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import type {
   SnsSwap,
@@ -10,7 +11,8 @@ import { nonNullish, toNullable } from "@dfinity/utils";
 import {
   mockDerived,
   mockInit,
-  mockQueryMetadata,
+  mockQueryMetadataResponse,
+  mockQueryTokenResponse,
   principal,
   summaryForLifecycle,
 } from "./sns-projects.mock";
@@ -32,6 +34,8 @@ const swapToQuerySwap = (swap: SnsSummarySwap): [SnsSwap] => [
     next_ticket_id: [],
     purge_old_tickets_last_completion_timestamp_nanoseconds: [],
     purge_old_tickets_next_principal: [],
+    direct_participation_icp_e8s: [],
+    neurons_fund_participation_icp_e8s: [],
   },
 ];
 
@@ -41,16 +45,26 @@ export const snsResponseFor = ({
   certified = false,
   restrictedCountries,
   directParticipantCount,
+  projectName,
+  tokenMetadata,
 }: {
   principal: Principal;
   lifecycle: SnsSwapLifecycle;
   certified?: boolean;
   restrictedCountries?: string[];
   directParticipantCount?: [] | [bigint];
+  projectName?: string;
+  tokenMetadata?: IcrcTokenMetadataResponse;
 }): [QuerySnsMetadata[], QuerySnsSwapState[]] => [
   [
     {
-      ...mockQueryMetadata,
+      metadata: {
+        ...mockQueryMetadataResponse,
+        name: nonNullish(projectName)
+          ? [projectName]
+          : mockQueryMetadataResponse.name,
+      },
+      token: tokenMetadata ?? mockQueryTokenResponse,
       rootCanisterId: principal.toText(),
       certified,
     },
@@ -85,7 +99,7 @@ export const snsResponseFor = ({
   ],
 ];
 
-const mergeSnsResponses = (
+export const mergeSnsResponses = (
   responses: [QuerySnsMetadata[], QuerySnsSwapState[]][]
 ): [QuerySnsMetadata[], QuerySnsSwapState[]] => {
   const metadata = responses.flatMap(([meta, _]) => meta);

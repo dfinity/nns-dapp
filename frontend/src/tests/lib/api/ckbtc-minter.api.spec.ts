@@ -1,9 +1,12 @@
+import * as agent from "$lib/api/agent.api";
 import {
   estimateFee,
   getBTCAddress,
   getWithdrawalAccount,
   minterInfo,
   retrieveBtc,
+  retrieveBtcStatusV2ByAccount,
+  retrieveBtcWithApproval,
   updateBalance,
 } from "$lib/api/ckbtc-minter.api";
 import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -13,19 +16,30 @@ import {
   mockCkBTCMinterInfo,
   mockUpdateBalanceOk,
 } from "$tests/mocks/ckbtc-minter.mock";
-import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
-import mock from "jest-mock-extended/lib/Mock";
+import type { HttpAgent } from "@dfinity/agent";
+import {
+  CkBTCMinterCanister,
+  type RetrieveBtcOk,
+  type RetrieveBtcStatusV2WithId,
+} from "@dfinity/ckbtc";
+import { mock } from "vitest-mock-extended";
 
 describe("ckbtc-minter api", () => {
   const minterCanisterMock = mock<CkBTCMinterCanister>();
 
   beforeAll(() => {
-    jest
-      .spyOn(CkBTCMinterCanister, "create")
-      .mockImplementation(() => minterCanisterMock);
+    vi.spyOn(CkBTCMinterCanister, "create").mockImplementation(
+      () => minterCanisterMock
+    );
   });
 
-  afterAll(() => jest.clearAllMocks());
+  afterAll(() => {
+    vi.clearAllMocks();
+  });
+
+  beforeEach(() => {
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+  });
 
   const params = {
     identity: mockIdentity,
@@ -138,6 +152,82 @@ describe("ckbtc-minter api", () => {
       const call = () => retrieveBtc(retrieveParams);
 
       expect(call).rejects.toThrowError();
+    });
+  });
+
+  describe("retrieveBtcWithApproval", () => {
+    const retrieveWithApprovalParams = {
+      address: mockBTCAddressTestnet,
+      amount: 123n,
+    };
+
+    it("returns successfully when btc are retrieved", async () => {
+      const ok: RetrieveBtcOk = {
+        block_index: 1n,
+      };
+
+      const retrieveBtcWithApprovalSpy =
+        minterCanisterMock.retrieveBtcWithApproval.mockResolvedValue(ok);
+
+      const result = await retrieveBtcWithApproval({
+        ...params,
+        ...retrieveWithApprovalParams,
+      });
+
+      expect(result).toEqual(ok);
+
+      expect(retrieveBtcWithApprovalSpy).toBeCalledTimes(1);
+      expect(retrieveBtcWithApprovalSpy).toBeCalledWith(
+        retrieveWithApprovalParams
+      );
+    });
+
+    it("bubble errors", () => {
+      minterCanisterMock.retrieveBtcWithApproval.mockImplementation(
+        async () => {
+          throw new Error();
+        }
+      );
+
+      const call = () =>
+        retrieveBtcWithApproval({
+          ...params,
+          ...retrieveWithApprovalParams,
+        });
+
+      expect(call).rejects.toThrowError();
+    });
+  });
+
+  describe("retrieveBtcStatusV2ByAccount", () => {
+    it("returns result", async () => {
+      const statuses: RetrieveBtcStatusV2WithId[] = [
+        {
+          id: 135n,
+          status: {
+            Confirmed: { txid: [1, 2, 3] },
+          },
+        },
+      ];
+
+      const spy =
+        minterCanisterMock.retrieveBtcStatusV2ByAccount.mockResolvedValue(
+          statuses
+        );
+
+      const statusesParams = {
+        certified: true,
+      };
+
+      const result = await retrieveBtcStatusV2ByAccount({
+        ...params,
+        ...statusesParams,
+      });
+
+      expect(result).toEqual(statuses);
+
+      expect(spy).toBeCalledTimes(1);
+      expect(spy).toBeCalledWith(statusesParams);
     });
   });
 

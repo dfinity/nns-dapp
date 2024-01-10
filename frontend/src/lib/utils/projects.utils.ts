@@ -1,6 +1,11 @@
 import { NOT_LOADED } from "$lib/constants/stores.constants";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
-import { getDeniedCountries } from "$lib/getters/sns-summary";
+import {
+  getDeniedCountries,
+  getMaxDirectParticipation,
+  getMinDirectParticipation,
+  getNeuronsFundParticipation,
+} from "$lib/getters/sns-summary";
 import type { Country } from "$lib/types/location";
 import type {
   SnsSummary,
@@ -8,13 +13,19 @@ import type {
   SnsSwapCommitment,
 } from "$lib/types/sns";
 import type { StoreData } from "$lib/types/store";
+import type { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
-import type { TokenAmount } from "@dfinity/utils";
-import { isNullish, nonNullish } from "@dfinity/utils";
+import {
+  fromNullable,
+  isNullish,
+  nonNullish,
+  type TokenAmount,
+} from "@dfinity/utils";
 import { nowInSeconds } from "./date.utils";
 import type { I18nSubstitutions } from "./i18n.utils";
 import { getCommitmentE8s } from "./sns.utils";
-import { formatToken } from "./token.utils";
+import { formatTokenE8s } from "./token.utils";
+import { stringifyJson } from "./utils";
 
 export const filterProjectsStatus = ({
   swapLifecycle,
@@ -98,7 +109,7 @@ export const currentUserMaxCommitment = ({
     swap.params.max_icp_e8s - derived.buyer_total_icp_e8s;
   const remainingUserCommitment =
     swap.params.max_participant_icp_e8s -
-    (getCommitmentE8s(swapCommitment) ?? BigInt(0));
+    (getCommitmentE8s(swapCommitment) ?? 0n);
   return remainingProjectCommitment < remainingUserCommitment
     ? remainingProjectCommitment
     : remainingUserCommitment;
@@ -119,7 +130,7 @@ const commitmentTooSmall = ({
   amount: TokenAmount;
 }): boolean =>
   summary.swap.params.min_participant_icp_e8s >
-  amount.toE8s() + (getCommitmentE8s(swapCommitment) ?? BigInt(0));
+  amount.toE8s() + (getCommitmentE8s(swapCommitment) ?? 0n);
 const commitmentTooLarge = ({
   summary,
   amountE8s,
@@ -152,14 +163,14 @@ export const canUserParticipateToSwap = ({
   summary: SnsSummary | undefined | null;
   swapCommitment: SnsSwapCommitment | undefined | null;
 }): boolean => {
-  const myCommitment = getCommitmentE8s(swapCommitment) ?? BigInt(0);
+  const myCommitment = getCommitmentE8s(swapCommitment) ?? 0n;
 
   return (
     summary !== undefined &&
     summary !== null &&
     isProjectOpen(summary) &&
     // Whether user can still participate with 1 e8
-    !commitmentTooLarge({ summary, amountE8s: myCommitment + BigInt(1) })
+    !commitmentTooLarge({ summary, amountE8s: myCommitment + 1n })
   );
 };
 
@@ -192,7 +203,7 @@ export const hasUserParticipatedToSwap = ({
   swapCommitment,
 }: {
   swapCommitment: SnsSwapCommitment | undefined | null;
-}): boolean => (getCommitmentE8s(swapCommitment) ?? BigInt(0)) > BigInt(0);
+}): boolean => (getCommitmentE8s(swapCommitment) ?? 0n) > 0n;
 
 export const validParticipation = ({
   project,
@@ -219,14 +230,15 @@ export const validParticipation = ({
       valid: false,
       labelKey: "error__sns.not_enough_amount",
       substitutions: {
-        $amount: formatToken({
+        $amount: formatTokenE8s({
           value: project.summary.swap.params.min_participant_icp_e8s,
+          detailed: true,
         }),
       },
     };
   }
   const totalCommitment =
-    (getCommitmentE8s(project.swapCommitment) ?? BigInt(0)) + amount.toE8s();
+    (getCommitmentE8s(project.swapCommitment) ?? 0n) + amount.toE8s();
   if (
     commitmentTooLarge({ summary: project.summary, amountE8s: totalCommitment })
   ) {
@@ -234,11 +246,11 @@ export const validParticipation = ({
       valid: false,
       labelKey: "error__sns.commitment_too_large",
       substitutions: {
-        $newCommitment: formatToken({ value: amount.toE8s() }),
-        $currentCommitment: formatToken({
-          value: getCommitmentE8s(project.swapCommitment) ?? BigInt(0),
+        $newCommitment: formatTokenE8s({ value: amount.toE8s() }),
+        $currentCommitment: formatTokenE8s({
+          value: getCommitmentE8s(project.swapCommitment) ?? 0n,
         }),
-        $maxCommitment: formatToken({
+        $maxCommitment: formatTokenE8s({
           value: project.summary.swap.params.max_participant_icp_e8s,
         }),
       },
@@ -254,8 +266,8 @@ export const validParticipation = ({
       valid: false,
       labelKey: "error__sns.commitment_exceeds_current_allowed",
       substitutions: {
-        $commitment: formatToken({ value: totalCommitment }),
-        $remainingCommitment: formatToken({
+        $commitment: formatTokenE8s({ value: totalCommitment }),
+        $remainingCommitment: formatTokenE8s({
           value:
             project.summary.swap.params.max_icp_e8s -
             project.summary.derived.buyer_total_icp_e8s,
@@ -347,7 +359,7 @@ export const participateButtonStatus = ({
   // Whether user can still participate with 1 e8
   const userReachedMaxCommitment = commitmentTooLarge({
     summary,
-    amountE8s: currentCommitment + BigInt(1),
+    amountE8s: currentCommitment + 1n,
   });
   if (userReachedMaxCommitment) {
     return "disabled-max-participation";
@@ -372,3 +384,83 @@ export const participateButtonStatus = ({
 
   return "enabled";
 };
+
+export const differentSummaries = (
+  summaries1: SnsSummary[],
+  summaries2: SnsSummary[]
+): SnsSummary[] =>
+  summaries1.filter((summary1) => {
+    const summary2 = summaries2.find(
+      ({ rootCanisterId }) =>
+        rootCanisterId.toText() === summary1.rootCanisterId.toText()
+    );
+    // We compare the inner fields because the order when stringifying it might be different
+    return (
+      stringifyJson(summary1.swap) !== stringifyJson(summary2?.swap) ||
+      stringifyJson(summary1.derived) !== stringifyJson(summary2?.derived) ||
+      stringifyJson(summary1.token) !== stringifyJson(summary2?.token) ||
+      stringifyJson(summary1.metadata) !== stringifyJson(summary2?.metadata) ||
+      summary1.governanceCanisterId.toText() !==
+        summary2?.governanceCanisterId.toText() ||
+      summary1.swapCanisterId.toText() !== summary2?.swapCanisterId.toText() ||
+      summary1.rootCanisterId.toText() !== summary2?.rootCanisterId.toText() ||
+      summary1.ledgerCanisterId.toText() !==
+        summary2?.ledgerCanisterId.toText() ||
+      summary1.indexCanisterId.toText() !== summary2?.indexCanisterId.toText()
+    );
+  });
+
+export type FullProjectCommitmentSplit = {
+  totalCommitmentE8s: bigint;
+  directCommitmentE8s: bigint;
+  nfCommitmentE8s?: bigint;
+  minDirectCommitmentE8s: bigint;
+  maxDirectCommitmentE8s: bigint;
+  isNFParticipating: boolean;
+};
+export type ProjectCommitmentSplit =
+  // old projects
+  | { totalCommitmentE8s: bigint }
+  // new projects
+  | FullProjectCommitmentSplit;
+
+export const getProjectCommitmentSplit = (
+  summary: SnsSummary
+): ProjectCommitmentSplit => {
+  const nfCommitmentE8s = getNeuronsFundParticipation(summary);
+  const directCommitmentE8s = fromNullable(
+    summary.derived.direct_participation_icp_e8s
+  );
+  const minDirectCommitmentE8s = getMinDirectParticipation(summary);
+  const maxDirectCommitmentE8s = getMaxDirectParticipation(summary);
+  const isNFParticipating = fromNullable(
+    summary.init?.neurons_fund_participation ?? []
+  );
+
+  if (
+    nonNullish(isNFParticipating) &&
+    nonNullish(directCommitmentE8s) &&
+    nonNullish(minDirectCommitmentE8s) &&
+    nonNullish(maxDirectCommitmentE8s)
+  ) {
+    return {
+      totalCommitmentE8s: summary.derived.buyer_total_icp_e8s,
+      directCommitmentE8s,
+      nfCommitmentE8s: isNFParticipating ? nfCommitmentE8s : undefined,
+      isNFParticipating,
+      minDirectCommitmentE8s,
+      maxDirectCommitmentE8s,
+    };
+  }
+  return {
+    totalCommitmentE8s: summary.derived.buyer_total_icp_e8s,
+  };
+};
+
+export const isCommitmentSplitWithNeuronsFund = (
+  commitmentSplit: ProjectCommitmentSplit
+): commitmentSplit is FullProjectCommitmentSplit =>
+  "nfCommitmentE8s" in commitmentSplit;
+
+export const snsProjectDashboardUrl = (rootCanisterId: Principal): string =>
+  `https://dashboard.internetcomputer.org/sns/${rootCanisterId.toText()}`;

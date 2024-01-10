@@ -10,9 +10,8 @@
   import { i18n } from "$lib/stores/i18n";
   import { canistersStore } from "$lib/stores/canisters.store";
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
-  import { SkeletonText, busy, Island } from "@dfinity/gix-components";
+  import { busy, Island } from "@dfinity/gix-components";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import CyclesCard from "$lib/components/canister-detail/CyclesCard.svelte";
   import ControllersCard from "$lib/components/canister-detail/ControllersCard.svelte";
   import { writable } from "svelte/store";
   import {
@@ -23,20 +22,22 @@
   import { debugSelectedCanisterStore } from "$lib/derived/debug.derived";
   import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
 
-  import UnlinkCanisterButton from "$lib/components/canister-detail/UnlinkCanisterButton.svelte";
   import { toastsError } from "$lib/stores/toasts.store";
   import { getCanisterFromStore } from "$lib/utils/canisters.utils";
   import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
-  import CanisterCardTitle from "$lib/components/canisters/CanisterCardTitle.svelte";
-  import CanisterCardSubTitle from "$lib/components/canisters/CanisterCardSubTitle.svelte";
   import Footer from "$lib/components/layout/Footer.svelte";
   import { goto } from "$app/navigation";
   import CanisterDetailModals from "$lib/modals/canisters/CanisterDetailModals.svelte";
   import { emit } from "$lib/utils/events.utils";
   import type { CanisterDetailModal } from "$lib/types/canister-detail.modal";
-  import RenameCanisterButton from "$lib/components/canister-detail/RenameCanisterButton.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import CanisterPageHeader from "$lib/components/canister-detail/CanisterPageHeader.svelte";
+  import CanisterPageHeading from "$lib/components/canister-detail/CanisterPageHeading.svelte";
+  import Separator from "$lib/components/ui/Separator.svelte";
+  import SkeletonHeader from "$lib/components/ui/SkeletonHeader.svelte";
+  import SkeletonHeading from "$lib/components/ui/SkeletonHeading.svelte";
+  import { nonNullish } from "@dfinity/utils";
 
   // BEGIN: loading and navigation
 
@@ -189,30 +190,25 @@
   <Island>
     <main class="legacy">
       <section>
-        {#if canisterInfo !== undefined}
-          <CanisterCardTitle canister={canisterInfo} titleTag="h1" />
-          <CanisterCardSubTitle canister={canisterInfo} />
-          <div class="actions">
-            <UnlinkCanisterButton canisterId={canisterInfo.canister_id} />
-            <RenameCanisterButton />
-          </div>
+        {#if nonNullish(canisterInfo)}
+          <CanisterPageHeader canister={canisterInfo} />
+          <CanisterPageHeading
+            canister={canisterInfo}
+            {canisterDetails}
+            isController={$selectedCanisterStore.controller}
+          />
+          <Separator spacing="none" />
         {:else}
-          <div class="loader-title">
-            <SkeletonText tagName="h1" />
-          </div>
-          <div class="loader-subtitle">
-            <SkeletonText />
-          </div>
+          <SkeletonHeader />
+          <SkeletonHeading />
         {/if}
         {#if canisterDetails !== undefined}
-          <CyclesCard cycles={canisterDetails.cycles} />
           <ControllersCard />
         {:else if errorKey !== undefined}
           <CardInfo testId="canister-details-error-card">
             <p class="error-message">{translate({ labelKey: errorKey })}</p>
           </CardInfo>
         {:else}
-          <SkeletonCard cardType="info" />
           <SkeletonCard cardType="info" />
         {/if}
       </section>
@@ -234,33 +230,13 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
 
-  .actions {
-    margin-bottom: var(--padding-3x);
+  section {
     display: flex;
-    justify-content: end;
-    gap: var(--padding-2x);
+    flex-direction: column;
+    gap: var(--padding-4x);
   }
 
   .error-message {
     margin: 0;
-  }
-
-  .loader-title {
-    width: 100%;
-    margin-top: var(--padding);
-    margin-bottom: var(--padding-2x);
-
-    @include media.min-width(medium) {
-      width: 50%;
-    }
-  }
-
-  .loader-subtitle {
-    width: 100%;
-    margin-bottom: var(--padding-3x);
-
-    @include media.min-width(medium) {
-      width: 35%;
-    }
   }
 </style>

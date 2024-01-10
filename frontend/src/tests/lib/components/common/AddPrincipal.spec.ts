@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import AddPrincipal from "$lib/components/common/AddPrincipal.svelte";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { fireEvent } from "@testing-library/dom";

@@ -4,10 +4,14 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class SelectUniverseListPo extends BasePageObject {
   private static readonly TID = "select-universe-list-component";
+  // TODO: GIX-2150 Find a better way to identify SNS projects.
+  // There will be multiple ckETH projects and arbitrary ICRC tokens in the future.
   private static readonly NON_SNS_NAMES = [
     "Internet Computer",
     "ckBTC",
     "ckTESTBTC",
+    "ckETH",
+    "ckETHSepolia",
   ];
 
   static under(element: PageObjectElement): SelectUniverseListPo {
@@ -47,5 +51,17 @@ export class SelectUniverseListPo extends BasePageObject {
       }
     }
     return snsCards;
+  }
+
+  async goToCkbtcUniverse(): Promise<void> {
+    const cards = await this.getSelectUniverseCardPos();
+    const names = await Promise.all(cards.map((card) => card.getName()));
+    for (let i = 0; i < names.length; i++) {
+      if (names[i] === "ckBTC") {
+        await cards[i].click();
+        return;
+      }
+    }
+    throw new Error("ckBTC card not found");
   }
 }

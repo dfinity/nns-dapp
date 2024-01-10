@@ -1,24 +1,20 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { daysToSeconds, secondsToDays } from "$lib/utils/date.utils";
-  import { formatToken } from "$lib/utils/token.utils";
-  import { formatVotingPower } from "$lib/utils/neuron.utils";
+  import { formatTokenV2 } from "$lib/utils/token.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { InputRange, Html } from "@dfinity/gix-components";
-  import { isDefined, valueSpan } from "$lib/utils/utils";
+  import { Html } from "@dfinity/gix-components";
+  import { valueSpan } from "$lib/utils/utils";
   import NeuronStateRemainingTime from "$lib/components/neurons/NeuronStateRemainingTime.svelte";
   import DayInput from "$lib/components/ui/DayInput.svelte";
-  import { daysToDuration } from "$lib/utils/date.utils";
   import type { NeuronState } from "@dfinity/nns";
-  import type { TokenAmount } from "@dfinity/utils";
-  import { SECONDS_IN_DAY } from "$lib/constants/constants";
+  import { nonNullish, type TokenAmountV2 } from "@dfinity/utils";
+  import RangeDissolveDelay from "./RangeDissolveDelay.svelte";
 
   export let neuronState: NeuronState;
   export let neuronDissolveDelaySeconds: bigint;
-  export let neuronStake: TokenAmount;
+  export let neuronStake: TokenAmountV2;
   export let delayInSeconds = 0;
-  export let minDelayInSeconds = 0;
   export let minProjectDelayInSeconds: number;
   export let maxDelayInSeconds = 0;
   // sns and nns calculates voting power differently
@@ -27,58 +23,34 @@
 
   const dispatch = createEventDispatcher();
 
-  let delayInDays = 0;
-  $: delayInSeconds, (() => (delayInDays = secondsToDays(delayInSeconds)))();
-
-  let minDelayInDays = 0;
-  $: minDelayInDays = secondsToDays(minDelayInSeconds);
-
-  let maxDelayInDays = 0;
-  $: maxDelayInDays = secondsToDays(maxDelayInSeconds);
-
   let votingPower: number;
   $: votingPower = calculateVotingPower(delayInSeconds);
 
-  let inputError: string | undefined;
-
   let disableUpdate: boolean;
-  $: disableUpdate =
-    delayInSeconds < minProjectDelayInSeconds ||
-    delayInSeconds <= minDelayInSeconds ||
-    delayInSeconds > maxDelayInSeconds;
+  $: disableUpdate = shouldUpdateBeDisabled(delayInSeconds);
 
-  const keepDelaysInBounds = () => {
-    if (delayInSeconds < minDelayInSeconds) {
-      delayInSeconds = minDelayInSeconds;
-    }
-
+  const getInputError = (delayInSeconds: number) => {
     if (delayInSeconds > maxDelayInSeconds) {
-      delayInSeconds = maxDelayInSeconds;
+      return $i18n.neurons.dissolve_delay_above_maximum;
     }
-  };
-  const setMin = () => {
-    delayInSeconds = Math.max(
-      minDelayInSeconds + SECONDS_IN_DAY,
-      minProjectDelayInSeconds
-    );
-    keepDelaysInBounds();
-  };
-  const setMax = () => {
-    delayInSeconds = maxDelayInSeconds;
-    keepDelaysInBounds();
-  };
-  const updateInputError = () => {
-    if (delayInDays > maxDelayInDays) {
-      inputError = $i18n.neurons.dissolve_delay_above_maximum;
-    } else if (delayInDays < minDelayInDays) {
-      inputError = $i18n.neurons.dissolve_delay_below_minimum;
-    } else if (isDefined(inputError)) {
-      // clear the error
-      inputError = undefined;
+    if (delayInSeconds <= neuronDissolveDelaySeconds) {
+      return $i18n.neurons.dissolve_delay_below_current;
     }
+    if (delayInSeconds < minProjectDelayInSeconds) {
+      return $i18n.neurons.dissolve_delay_below_minimum;
+    }
+    return undefined;
+  };
 
-    delayInSeconds = daysToSeconds(delayInDays);
+  const shouldUpdateBeDisabled = (delayInSeconds: number): boolean => {
+    const error = getInputError(delayInSeconds);
+    // It's allowed to set the dissolve delay below the project minimum but we
+    // still show a warning message to the user.
+    return (
+      nonNullish(error) && error !== $i18n.neurons.dissolve_delay_below_minimum
+    );
   };
+
   const cancel = () => dispatch("nnsCancel");
   const goToConfirmation = () => dispatch("nnsConfirmDelay");
 </script>
@@ -95,7 +67,7 @@
       <Html
         text={replacePlaceholders($i18n.sns_neurons.token_stake, {
           $amount: valueSpan(
-            formatToken({ value: neuronStake.toE8s(), detailed: true })
+            formatTokenV2({ value: neuronStake, detailed: true })
           ),
           $token: neuronStake.token.symbol,
         })}
@@ -122,40 +94,20 @@
     <p class="subtitle">{$i18n.neurons.dissolve_delay_label}</p>
     <div>
       <DayInput
-        bind:days={delayInDays}
-        on:nnsMin={setMin}
-        on:nnsMax={setMax}
-        on:nnsInput={updateInputError}
-        on:blur={updateInputError}
-        errorMessage={inputError}
+        bind:seconds={delayInSeconds}
+        disabled={Number(neuronDissolveDelaySeconds) === maxDelayInSeconds}
+        maxInSeconds={maxDelayInSeconds}
+        minInSeconds={Math.max(
+          Number(neuronDissolveDelaySeconds) + 1,
+          minProjectDelayInSeconds
+        )}
         placeholderLabelKey="neurons.dissolve_delay_placeholder"
         name="dissolve_delay"
+        {getInputError}
       />
     </div>
     <div class="range">
-      <InputRange
-        ariaLabel={$i18n.neuron_detail.dissolve_delay_range}
-        min={0}
-        max={maxDelayInSeconds}
-        bind:value={delayInSeconds}
-        handleInput={keepDelaysInBounds}
-      />
-      <div class="details">
-        <div>
-          <p class="label">
-            {formatVotingPower(votingPower)}
-          </p>
-          <p>{$i18n.neurons.voting_power}</p>
-        </div>
-        <div>
-          {#if delayInSeconds > 0}
-            <p class="label">{daysToDuration(delayInDays)}</p>
-          {:else}
-            <p class="label">{$i18n.neurons.no_delay}</p>
-          {/if}
-          <p>{$i18n.neurons.dissolve_delay_title}</p>
-        </div>
-      </div>
+      <RangeDissolveDelay {maxDelayInSeconds} {delayInSeconds} {votingPower} />
     </div>
   </div>
 
@@ -185,11 +137,5 @@
 
   .select-delay-container {
     width: 100%;
-
-    .details {
-      margin-top: var(--padding);
-      display: flex;
-      justify-content: space-around;
-    }
   }
 </style>

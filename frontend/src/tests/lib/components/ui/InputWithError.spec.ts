@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import InputWithError from "$lib/components/ui/InputWithError.svelte";
 import { render } from "@testing-library/svelte";
 

@@ -3,7 +3,7 @@ import type {
   GetAccountTransactionsParams,
   IcrcAccount,
   IcrcGetTransactions,
-} from "@dfinity/ledger";
+} from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import { fromNullable } from "@dfinity/utils";
 
@@ -23,6 +23,9 @@ export interface GetTransactionsResponse
   oldestTxId?: bigint;
 }
 
+/**
+ * @deprecated to be replaced with similar function from wallet-index.api
+ */
 export const getTransactions = async ({
   maxResults: max_results,
   start,

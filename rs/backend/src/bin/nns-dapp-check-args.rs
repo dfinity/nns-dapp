@@ -1,5 +1,6 @@
 //! Code for testing arguments
 use candid::Decode;
+use ic_cdk::println;
 use nns_dapp::arguments::CanisterArguments;
 use std::env::args;
 use std::fs;

@@ -1,5 +1,5 @@
 //! Data types for storing upstream SNS data.
-use super::ic_sns_governance::{GetMetadataResponse, ListNervousSystemFunctionsResponse};
+use super::ic_sns_governance::{GetMetadataResponse, ListNervousSystemFunctionsResponse, NervousSystemParameters};
 use super::ic_sns_ledger::Value as Icrc1Value;
 use super::ic_sns_root::ListSnsCanistersResponse;
 use super::ic_sns_swap::{GetSaleParametersResponse, GetStateResponse};
@@ -42,8 +42,10 @@ pub struct UpstreamData {
     pub list_sns_canisters: ListSnsCanistersResponse,
     /// Governance metadata such as token name and logo.
     pub meta: GetMetadataResponse,
-    /// Governance parameters such as tokenomics.
+    /// Governance functions.
     pub parameters: ListNervousSystemFunctionsResponse,
+    /// Governance parameters such as tokenomics.
+    pub nervous_system_parameters: Option<NervousSystemParameters>,
     /// Decentralisation state
     pub swap_state: GetStateResponse,
     /// Ledger metadata.  The ledger keeps track of who owns how many tokens.

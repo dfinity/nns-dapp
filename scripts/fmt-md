@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$(realpath "$0")")/.." || exit
+
+print_help() {
+  cat <<-EOF
+
+	Formats markdown files.
+	EOF
+  # TODO: Consider using clap.  If not, describe flags here.
+}
+
+list_files() {
+  git ls-files "${@}" | filter
+}
+
+# Selects eligible files; filenames are read from stdin, one line per filename.
+# TODO: Formatting fails in the frontend directory, due to some npx or prettier magic.  Fix.
+# TODO: Remove the union merge rule for one week, to help PRs that struggle to merge correctly.
+filter() {
+  grep -E '[.]md$' | grep -v frontend | grep -v CHANGELOG
+}
+
+case "${1:-}" in
+--help) print_help && exit 0 ;;
+--list | -l) list_files ;;
+--check | -c) list_files | xargs npx prettier --check ;;
+--modified | -m) list_files --modified | xargs npx prettier --write ;;
+"") list_files | xargs npx prettier --write ;;
+--)
+  shift 1
+  for file in "$@"; do npx prettier --write "$file"; done
+  ;;
+*) for file in "$@"; do npx prettier --write "$file"; done ;;
+esac

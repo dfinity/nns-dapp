@@ -1,4 +1,3 @@
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import type {
   QueryRootCanisterId,
@@ -8,7 +7,7 @@ import type {
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
-import type { IcrcAccount } from "@dfinity/ledger";
+import type { IcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import type {
   SnsGetDerivedStateResponse,
@@ -326,9 +325,7 @@ export const stakeNeuron = async ({
   source: IcrcAccount;
   fee: bigint;
 }): Promise<SnsNeuronId> => {
-  logWithTimestamp(
-    `Staking neuron with ${Number(stakeE8s) / E8S_PER_ICP}: call...`
-  );
+  logWithTimestamp(`Staking neuron with ${stakeE8s}: call...`);
 
   const { stakeNeuron: stakeNeuronApi } = await wrapper({
     identity,
@@ -345,9 +342,7 @@ export const stakeNeuron = async ({
     fee,
   });
 
-  logWithTimestamp(
-    `Staking neuron with ${Number(stakeE8s) / E8S_PER_ICP}: complete`
-  );
+  logWithTimestamp(`Staking neuron with ${stakeE8s}: complete`);
   return newNeuronId;
 };
 
@@ -364,9 +359,7 @@ export const increaseStakeNeuron = async ({
   identity: Identity;
   source: IcrcAccount;
 }): Promise<void> => {
-  logWithTimestamp(
-    `Increase stake neuron with ${Number(stakeE8s) / E8S_PER_ICP}: call...`
-  );
+  logWithTimestamp(`Increase stake neuron with ${stakeE8s}: call...`);
 
   const { increaseStakeNeuron: increaseStakeNeuronApi } = await wrapper({
     identity,
@@ -380,7 +373,5 @@ export const increaseStakeNeuron = async ({
     neuronId,
   });
 
-  logWithTimestamp(
-    `Increase stake neuron with ${Number(stakeE8s) / E8S_PER_ICP}: complete`
-  );
+  logWithTimestamp(`Increase stake neuron with ${stakeE8s}: complete`);
 };

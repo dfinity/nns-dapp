@@ -1,9 +1,6 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import SnsVotingCard from "$lib/components/sns-proposals/SnsVotingCard.svelte";
+import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
@@ -14,29 +11,31 @@ import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
-import en from "$tests/mocks/i18n.mock";
 import {
   createMockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { mockSnsCanisterId } from "$tests/mocks/sns.api.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { NeuronState, Vote } from "@dfinity/nns";
 import type { SnsNeuron, SnsProposalData } from "@dfinity/sns";
 import {
   SnsNeuronPermissionType,
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
+  SnsSwapLifecycle,
   SnsVote,
   type SnsBallot,
 } from "@dfinity/sns";
 import type { NeuronPermission } from "@dfinity/sns/dist/candid/sns_governance";
 import { fromDefinedNullable } from "@dfinity/utils";
-import { fireEvent, screen } from "@testing-library/dom";
+import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 
 describe("SnsVotingCard", () => {
+  const nowInSeconds = 1689843195;
   const testBallots: [string, SnsBallot][] = [
     [
       "01",
@@ -63,13 +62,15 @@ describe("SnsVotingCard", () => {
       },
     ],
   ];
+  const neuronCreatedAt = BigInt(nowInSeconds - SECONDS_IN_DAY * 2);
+  const proposalCreatedAt = BigInt(nowInSeconds - SECONDS_IN_DAY);
   const testProposal: SnsProposalData = {
     ...createSnsProposal({
       proposalId: 123n,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
       rewardStatus: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
       ballots: testBallots,
-      createdAt: BigInt(Math.round(Date.now() / 1000)),
+      createdAt: proposalCreatedAt,
     }),
   };
   const permissionsWithTypeVote = [
@@ -86,6 +87,7 @@ describe("SnsVotingCard", () => {
       ...createMockSnsNeuron({
         id: [1],
         state: NeuronState.Locked,
+        createdTimestampSeconds: neuronCreatedAt,
       }),
       permissions: permissionsWithTypeVote,
     },
@@ -93,14 +95,15 @@ describe("SnsVotingCard", () => {
       ...createMockSnsNeuron({
         id: [2],
         state: NeuronState.Locked,
+        createdTimestampSeconds: neuronCreatedAt,
       }),
       permissions: permissionsWithTypeVote,
     },
   ];
-  const spyRegisterVote = jest
+  const spyRegisterVote = vi
     .spyOn(snsGovernanceApi, "registerVote")
     .mockResolvedValue();
-  const spyOnReloadProposal = jest.fn();
+  const spyOnReloadProposal = vi.fn();
   const renderVotingCard = (proposal = testProposal) =>
     render(SnsVotingCard, {
       props: {
@@ -110,15 +113,21 @@ describe("SnsVotingCard", () => {
     });
 
   beforeEach(() => {
+    vi.useFakeTimers().setSystemTime(nowInSeconds * 1000);
     snsNeuronsStore.reset();
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
 
     spyOnReloadProposal.mockClear();
     spyRegisterVote.mockClear();
 
     page.mock({ data: { universe: mockSnsCanisterId.toText() } });
+
+    setSnsProjects([
+      {
+        rootCanisterId: mockSnsCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+    ]);
 
     snsParametersStore.setParameters({
       rootCanisterId: mockSnsCanisterId,
@@ -223,7 +232,7 @@ describe("SnsVotingCard", () => {
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED,
       rewardStatus: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
       ballots: testBallots,
-      createdAt: BigInt(Math.round(Date.now() / 1000)),
+      createdAt: proposalCreatedAt,
     });
     snsNeuronsStore.setNeurons({
       rootCanisterId: mockSnsCanisterId,
@@ -233,6 +242,26 @@ describe("SnsVotingCard", () => {
     const { queryByTestId } = renderVotingCard(executedProposal);
     expect(queryByTestId("vote-yes")).toBeInTheDocument();
     expect(queryByTestId("vote-no")).toBeInTheDocument();
+  });
+
+  it("should display votable neurons", async () => {
+    snsNeuronsStore.setNeurons({
+      rootCanisterId: mockSnsCanisterId,
+      neurons: [
+        ...testNeurons,
+        // voted neuron
+        {
+          ...createMockSnsNeuron({
+            id: [3],
+            state: NeuronState.Locked,
+          }),
+        },
+      ],
+      certified: true,
+    });
+
+    const { getByTestId } = renderVotingCard();
+    expect(getByTestId("votable-neurons")).toBeInTheDocument();
   });
 
   it("should display my votes", async () => {
@@ -251,8 +280,28 @@ describe("SnsVotingCard", () => {
       certified: true,
     });
 
-    const { getByText } = renderVotingCard();
-    expect(getByText(en.proposal_detail.my_votes)).toBeInTheDocument();
+    const { getByTestId } = renderVotingCard();
+    expect(getByTestId("voted-neurons")).toBeInTheDocument();
+  });
+
+  it("should display ineligible neurons", async () => {
+    snsNeuronsStore.setNeurons({
+      rootCanisterId: mockSnsCanisterId,
+      neurons: [
+        ...testNeurons,
+        // voted neuron
+        {
+          ...createMockSnsNeuron({
+            id: [3],
+            state: NeuronState.Unspecified,
+          }),
+        },
+      ],
+      certified: true,
+    });
+
+    const { getByTestId } = renderVotingCard();
+    expect(getByTestId("ineligible-neurons")).toBeInTheDocument();
   });
 
   it("should display my votes with ballot voting power", async () => {
@@ -305,8 +354,8 @@ describe("SnsVotingCard", () => {
       certified: true,
     });
 
-    const { getByText } = renderVotingCard();
-    expect(getByText(en.proposal_detail.my_votes)).toBeInTheDocument();
+    const { getByTestId } = renderVotingCard();
+    expect(getByTestId("voted-neurons")).toBeInTheDocument();
   });
 
   describe("voting", () => {
@@ -317,13 +366,17 @@ describe("SnsVotingCard", () => {
         certified: true,
       });
 
-      renderVotingCard();
+      const { queryByTestId } = renderVotingCard();
 
       expect(spyRegisterVote).toBeCalledTimes(0);
       expect(spyOnReloadProposal).toBeCalledTimes(0);
 
-      await fireEvent.click(screen.queryByTestId("vote-yes") as Element);
-      await fireEvent.click(screen.queryByTestId("confirm-yes") as Element);
+      await fireEvent.click(queryByTestId("vote-yes") as Element);
+      await fireEvent.click(queryByTestId("confirm-yes") as Element);
+
+      // w/o restoreRealTimers() waitFor calls the callback only twice (instead of till the end of the timeout/5000ms)
+      // this bug makes the spyOnReloadProposal test fail
+      vi.useRealTimers();
 
       await waitFor(() =>
         expect(spyRegisterVote).toBeCalledTimes(testNeurons.length)
@@ -338,13 +391,13 @@ describe("SnsVotingCard", () => {
         certified: true,
       });
 
-      renderVotingCard();
+      const { queryByTestId } = renderVotingCard();
 
       expect(spyRegisterVote).toBeCalledTimes(0);
       expect(spyOnReloadProposal).toBeCalledTimes(0);
 
-      await fireEvent.click(screen.queryByTestId("vote-yes") as Element);
-      await fireEvent.click(screen.queryByTestId("confirm-yes") as Element);
+      await fireEvent.click(queryByTestId("vote-yes") as Element);
+      await fireEvent.click(queryByTestId("confirm-yes") as Element);
 
       await waitFor(() =>
         expect(spyRegisterVote).toBeCalledWith(
@@ -375,13 +428,13 @@ describe("SnsVotingCard", () => {
         certified: true,
       });
 
-      renderVotingCard();
+      const { queryByTestId } = renderVotingCard();
 
       expect(spyRegisterVote).toBeCalledTimes(0);
       expect(spyOnReloadProposal).toBeCalledTimes(0);
 
-      await fireEvent.click(screen.queryByTestId("vote-no") as Element);
-      await fireEvent.click(screen.queryByTestId("confirm-yes") as Element);
+      await fireEvent.click(queryByTestId("vote-no") as Element);
+      await fireEvent.click(queryByTestId("confirm-yes") as Element);
 
       await waitFor(() =>
         expect(spyRegisterVote).toHaveBeenCalledWith(

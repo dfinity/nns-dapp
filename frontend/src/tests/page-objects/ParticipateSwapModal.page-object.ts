@@ -1,10 +1,10 @@
 import { AdditionalInfoFormPo } from "$tests/page-objects/AdditionalInfoForm.page-object";
 import { AdditionalInfoReviewPo } from "$tests/page-objects/AdditionalInfoReview.page-object";
 import { InProgressPo } from "$tests/page-objects/InProgress.page-object";
-import { TransactionModalPo } from "$tests/page-objects/TransactionModal.page-object";
+import { TransactionModalBasePo } from "$tests/page-objects/TransactionModal.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class ParticipateSwapModalPo extends TransactionModalPo {
+export class ParticipateSwapModalPo extends TransactionModalBasePo {
   private static readonly TID = "participate-swap-modal-component";
 
   static under(element: PageObjectElement): ParticipateSwapModalPo | null {

@@ -2,7 +2,7 @@ import type { PostMessageDataRequestBalances } from "$lib/types/post-message.bal
 import { getIcrcBalance } from "$lib/worker-api/icrc-ledger.worker-api";
 import type { DictionaryWorkerData } from "$lib/worker-stores/dictionary.worker-store";
 import type { TimerWorkerUtilsJobData } from "$lib/worker-utils/timer.worker-utils";
-import { decodeIcrcAccount } from "@dfinity/ledger";
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 
 export interface GetAccountsBalanceData extends DictionaryWorkerData {
   balance: bigint;

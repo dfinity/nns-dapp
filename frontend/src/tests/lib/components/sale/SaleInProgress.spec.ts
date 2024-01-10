@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SaleInProgress from "$lib/components/sale/SaleInProgress.svelte";
 import { SaleStep } from "$lib/types/sale";
 import en from "$tests/mocks/i18n.mock";

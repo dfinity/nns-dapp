@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
+
+export PATH="$PWD/scripts:$PATH"
+
 cd "$(dirname "$(realpath "$0")")" || exit
+# Get commands for network configuration.
+. scripts/network-config
 
 help_text() {
   cat <<-"EOF"
@@ -26,8 +31,8 @@ help_text() {
 }
 
 #
-DFX_NETWORK=local             # which network to deploy to
-CONFIG_FILE="./frontend/.env" # the location of the dapp .env config, computed from dfx.json for the specific network.
+export DFX_NETWORK
+DFX_NETWORK=local # which network to deploy to
 
 # Whether to run each action:
 DEPLOY_II="false"
@@ -53,11 +58,8 @@ while (($# > 0)); do
     ;;
   *)
     DFX_NETWORK="$env"
-    # Check that the network is valid.
-    DFX_NETWORK="$env" jq -e '.networks[env.DFX_NETWORK]' dfx.json || {
-      echo "ERROR: Network '$env' is not listed in dfx.json"
-      exit 1
-    } >&2
+    # Check that the network is valid.  (Using a function from `./scripts/network-config`.)
+    assert_dfx_network_var_is_configured || exit 1
     ;;
   esac
 done
@@ -82,10 +84,6 @@ first_not_null() {
   echo "null"
 }
 
-static_host() {
-  jq -re '.networks[env.DFX_NETWORK].config | .STATIC_HOST // .HOST' dfx.json
-}
-
 canister_static_url_from_id() {
   : "If we have a canister ID, insert it into HOST as a subdomain."
   test -z "${1:-}" || { static_host | sed -E "s,^(https?://)?,&${1}.,g"; }
@@ -100,12 +98,11 @@ if [[ "$DEPLOY_SNS_AGGREGATOR" == "true" ]]; then
 fi
 
 if [[ "$DEPLOY_NNS_DAPP" == "true" ]]; then
-  # Note:  NNS dapp is the only canister provided by this repo, however dfx.json
+  # Note:  NNS Dapp is the only canister provided by this repo, however dfx.json
   #        includes other canisters for testing purposes.  If testing you MAY wish
   #        to deploy these other canisters as well, but you probably don't.
   DFX_NETWORK="$DFX_NETWORK" ./config.sh
   dfx canister --network "$DFX_NETWORK" create nns-dapp --no-wallet || echo "canister for NNS Dapp may have been created already"
   dfx deploy nns-dapp --argument "$(cat "nns-dapp-arg-${DFX_NETWORK}.did")" --upgrade-unchanged --network "$DFX_NETWORK" --no-wallet
-  OWN_CANISTER_URL="$(grep OWN_CANISTER_URL <"$CONFIG_FILE" | sed "s|VITE_OWN_CANISTER_URL=||g")"
-  echo "NNS Dapp deployed to: $OWN_CANISTER_URL"
+  echo "NNS Dapp deployed to: $(dfx-canister-url --network "$DFX_NETWORK" nns-dapp)"
 fi

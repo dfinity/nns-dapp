@@ -1,9 +1,5 @@
-/**
- * @jest-environment jsdom
- */
-
-import * as ledgerApi from "$lib/api/ckbtc-ledger.api";
 import * as minterApi from "$lib/api/ckbtc-minter.api";
+import * as ledgerApi from "$lib/api/wallet-ledger.api";
 import CkBTCWithdrawalAccount from "$lib/components/accounts/CkBTCWithdrawalAccount.svelte";
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -13,7 +9,7 @@ import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-withdrawal-accou
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import CkBTCAccountsTest from "$tests/lib/components/accounts/CkBTCAccountsTest.svelte";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
@@ -29,10 +25,10 @@ import { render, waitFor } from "@testing-library/svelte";
 
 describe("CkBTCWithdrawalAccount", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.resetAllMocks();
+    vi.clearAllMocks();
+    vi.resetAllMocks();
 
-    jest.spyOn(console, "error").mockImplementation(() => undefined);
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
 
     ckBTCWithdrawalAccountsStore.reset();
 
@@ -41,21 +37,19 @@ describe("CkBTCWithdrawalAccount", () => {
       routeId: AppPath.Accounts,
     });
 
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
   describe("loading error", () => {
     beforeEach(() => {
-      jest.spyOn(minterServices, "getWithdrawalAccount").mockResolvedValue({
+      vi.spyOn(minterServices, "getWithdrawalAccount").mockResolvedValue({
         owner: mockCkBTCWithdrawalIcrcAccount.owner,
         subaccount: [mockCkBTCWithdrawalIcrcAccount.subaccount],
       });
 
-      jest
-        .spyOn(minterServices, "getWithdrawalAccount")
-        .mockRejectedValue(new Error());
+      vi.spyOn(minterServices, "getWithdrawalAccount").mockRejectedValue(
+        new Error()
+      );
     });
 
     it("should not render a button if no account", () => {
@@ -69,8 +63,8 @@ describe("CkBTCWithdrawalAccount", () => {
     let spyGetCkBTCAccount;
 
     beforeEach(() => {
-      spyGetCkBTCAccount = jest
-        .spyOn(ledgerApi, "getCkBTCAccount")
+      spyGetCkBTCAccount = vi
+        .spyOn(ledgerApi, "getAccount")
         .mockResolvedValue(mockCkBTCWithdrawalAccount);
     });
 
@@ -104,7 +98,7 @@ describe("CkBTCWithdrawalAccount", () => {
 
     describe("account is not yet loaded", () => {
       beforeEach(() => {
-        jest.spyOn(minterServices, "getWithdrawalAccount").mockResolvedValue({
+        vi.spyOn(minterServices, "getWithdrawalAccount").mockResolvedValue({
           owner: mockCkBTCWithdrawalIcrcAccount.owner,
           subaccount: [mockCkBTCWithdrawalIcrcAccount.subaccount],
         });
@@ -157,8 +151,8 @@ describe("CkBTCWithdrawalAccount", () => {
       it("should render a call to action if balance is bigger than zero", async () => {
         const { getByText } = render(CkBTCWithdrawalAccount);
 
-        const balance = formatToken({
-          value: mockCkBTCWithdrawalAccount.balanceE8s,
+        const balance = formatTokenE8s({
+          value: mockCkBTCWithdrawalAccount.balanceUlps,
           detailed: true,
         });
 
@@ -191,7 +185,7 @@ describe("CkBTCWithdrawalAccount", () => {
           account: {
             account: {
               ...mockCkBTCWithdrawalAccount,
-              balanceE8s: balanceZero,
+              balanceUlps: balanceZero,
             },
             certified: true,
           },
@@ -210,14 +204,14 @@ describe("CkBTCWithdrawalAccount", () => {
 
     describe("with zero balance after load", () => {
       beforeEach(() => {
-        jest.spyOn(minterServices, "getWithdrawalAccount").mockResolvedValue({
+        vi.spyOn(minterServices, "getWithdrawalAccount").mockResolvedValue({
           owner: mockCkBTCWithdrawalIcrcAccount.owner,
           subaccount: [mockCkBTCWithdrawalIcrcAccount.subaccount],
         });
 
-        jest.spyOn(ledgerApi, "getCkBTCAccount").mockResolvedValue({
+        vi.spyOn(ledgerApi, "getAccount").mockResolvedValue({
           ...mockCkBTCWithdrawalAccount,
-          balanceE8s: balanceZero,
+          balanceUlps: balanceZero,
         });
       });
 
@@ -297,11 +291,11 @@ describe("CkBTCWithdrawalAccount", () => {
     let spyUpdateBalance;
 
     beforeEach(() => {
-      jest
-        .spyOn(ledgerApi, "getCkBTCAccount")
-        .mockResolvedValue(mockCkBTCWithdrawalAccount);
+      vi.spyOn(ledgerApi, "getAccount").mockResolvedValue(
+        mockCkBTCWithdrawalAccount
+      );
 
-      spyUpdateBalance = jest
+      spyUpdateBalance = vi
         .spyOn(minterApi, "updateBalance")
         .mockResolvedValue(undefined);
     });
@@ -326,7 +320,7 @@ describe("CkBTCWithdrawalAccount", () => {
 
     describe("account is not yet loaded", () => {
       beforeEach(() => {
-        jest.spyOn(minterServices, "getWithdrawalAccount").mockResolvedValue({
+        vi.spyOn(minterServices, "getWithdrawalAccount").mockResolvedValue({
           owner: mockCkBTCWithdrawalIcrcAccount.owner,
           subaccount: [mockCkBTCWithdrawalIcrcAccount.subaccount],
         });

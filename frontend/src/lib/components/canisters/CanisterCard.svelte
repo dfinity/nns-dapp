@@ -6,11 +6,11 @@
   import CanisterCardCycles from "$lib/components/canisters/CanisterCardCycles.svelte";
 
   export let canister: CanisterDetails;
-  export let role: undefined | "link" | "button" | "checkbox" = undefined;
+  export let href: string;
   export let ariaLabel: string | undefined = undefined;
 </script>
 
-<Card {role} {ariaLabel} on:click testId="canister-card">
+<Card {href} {ariaLabel} testId="canister-card">
   <div slot="start" class="title">
     <CanisterCardTitle {canister} />
 
@@ -21,9 +21,7 @@
 </Card>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/card";
-
   .title {
-    @include card.title;
+    width: 100%;
   }
 </style>

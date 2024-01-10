@@ -1,34 +1,25 @@
-/**
- * @jest-environment jsdom
- */
-
-import * as ledgerApi from "$lib/api/ledger.api";
+import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import NnsStakeNeuronModal from "$lib/modals/neurons/NnsStakeNeuronModal.svelte";
-import { cancelPollAccounts } from "$lib/services/accounts.services";
+import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
 import {
   addHotkeyForHardwareWalletNeuron,
   stakeNeuron,
   updateDelay,
 } from "$lib/services/neurons.services";
-import { accountsStore } from "$lib/stores/accounts.store";
-import { authStore } from "$lib/stores/auth.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { formatVotingPower } from "$lib/utils/neuron.utils";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
-import {
-  mockAuthStoreSubscribe,
-  mockIdentity,
-} from "$tests/mocks/auth.store.mock";
-import en from "$tests/mocks/i18n.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import {
@@ -36,85 +27,81 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { assertNonNullish, clickByTestId } from "$tests/utils/utils.test-utils";
+import { LedgerCanister } from "@dfinity/ledger-icp";
 import type { NeuronInfo } from "@dfinity/nns";
-import { GovernanceCanister, LedgerCanister } from "@dfinity/nns";
+import { GovernanceCanister } from "@dfinity/nns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import { mock } from "jest-mock-extended";
 import type { SvelteComponent } from "svelte";
 import { get } from "svelte/store";
+import type { SpyInstance } from "vitest";
+import { mock } from "vitest-mock-extended";
 
-jest.mock("$lib/api/nns-dapp.api");
-jest.mock("$lib/api/ledger.api");
+vi.mock("$lib/api/nns-dapp.api");
+vi.mock("$lib/api/icp-ledger.api");
 const neuronStake = 2.2;
-const neuronStakeE8s = BigInt(Math.round(neuronStake * E8S_PER_ICP));
+const neuronStakeE8s = 220_000_000n;
 const newNeuron: NeuronInfo = {
   ...mockNeuron,
-  dissolveDelaySeconds: BigInt(0),
-  ageSeconds: BigInt(0),
+  dissolveDelaySeconds: 0n,
+  ageSeconds: 0n,
   fullNeuron: {
     ...mockFullNeuron,
     cachedNeuronStake: neuronStakeE8s,
   },
 };
-jest.mock("$lib/services/neurons.services", () => {
+vi.mock("$lib/services/neurons.services", () => {
   return {
-    stakeNeuron: jest
+    stakeNeuron: vi
       .fn()
       .mockImplementation(() => Promise.resolve(newNeuron.neuronId)),
-    updateDelay: jest.fn().mockResolvedValue(undefined),
-    loadNeuron: jest.fn().mockResolvedValue(undefined),
-    addHotkeyForHardwareWalletNeuron: jest
+    updateDelay: vi.fn().mockResolvedValue(undefined),
+    loadNeuron: vi.fn().mockResolvedValue(undefined),
+    addHotkeyForHardwareWalletNeuron: vi
       .fn()
       .mockResolvedValue({ success: true }),
-    getNeuronFromStore: jest.fn(),
+    getNeuronFromStore: vi.fn(),
   };
 });
 
-jest.mock("$lib/services/known-neurons.services", () => {
+vi.mock("$lib/services/known-neurons.services", () => {
   return {
-    listKnownNeurons: jest.fn(),
+    listKnownNeurons: vi.fn(),
   };
 });
 
-jest.mock("$lib/stores/toasts.store", () => {
+vi.mock("$lib/stores/toasts.store", () => {
   return {
-    toastsError: jest.fn(),
-    toastsShow: jest.fn(),
-    toastsSuccess: jest.fn(),
+    toastsError: vi.fn(),
+    toastsShow: vi.fn(),
+    toastsSuccess: vi.fn(),
   };
 });
 
 describe("NnsStakeNeuronModal", () => {
   beforeEach(() => {
+    resetIdentity();
     cancelPollAccounts();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe("main account selection", () => {
-    let queryBalanceSpy: jest.SpyInstance;
-    const newBalanceE8s = BigInt(10_000_000);
+    let queryBalanceSpy: SpyInstance;
+    const newBalanceE8s = 10_000_000n;
     beforeEach(() => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         ...mockAccountsStoreData,
         subAccounts: [mockSubAccount],
       });
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
-      jest
-        .spyOn(LedgerCanister, "create")
-        .mockImplementation(() => mock<LedgerCanister>());
-      jest
-        .spyOn(GovernanceCanister, "create")
-        .mockImplementation(() => mock<GovernanceCanister>());
-      queryBalanceSpy = jest
+      vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
+        mock<LedgerCanister>()
+      );
+      vi.spyOn(GovernanceCanister, "create").mockImplementation(() =>
+        mock<GovernanceCanister>()
+      );
+      queryBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(newBalanceE8s);
-    });
-
-    afterEach(() => {
-      neuronsStore.setNeurons({ neurons: [], certified: true });
     });
 
     it("should display modal", async () => {
@@ -225,7 +212,7 @@ describe("NnsStakeNeuronModal", () => {
       expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
     });
 
-    it("should have disabled button for dissolve less than six months", async () => {
+    it("should have enabled button for dissolve less than six months", async () => {
       const { container } = await renderModal({
         component: NnsStakeNeuronModal,
       });
@@ -240,20 +227,24 @@ describe("NnsStakeNeuronModal", () => {
       createButton && (await fireEvent.click(createButton));
 
       await waitFor(() =>
-        expect(container.querySelector('input[type="range"]')).not.toBeNull()
+        expect(
+          container.querySelector("input[name='dissolve_delay']")
+        ).not.toBeNull()
       );
-      const inputRange = container.querySelector('input[type="range"]');
+      const inputElement = container.querySelector(
+        "input[name='dissolve_delay']"
+      );
 
-      const FIVE_MONTHS = 60 * 60 * 24 * 30 * 5;
-      inputRange &&
-        (await fireEvent.input(inputRange, {
+      const FIVE_MONTHS = 30 * 5;
+      inputElement &&
+        (await fireEvent.input(inputElement, {
           target: { value: FIVE_MONTHS },
         }));
 
       const updateDelayButton = container.querySelector(
         '[data-tid="go-confirm-delay-button"]'
       );
-      expect(updateDelayButton?.getAttribute("disabled")).not.toBeNull();
+      expect(updateDelayButton?.getAttribute("disabled")).toBeNull();
     });
 
     it("should be able to create a neuron and see the stake of the new neuron in the dissolve modal", async () => {
@@ -272,7 +263,9 @@ describe("NnsStakeNeuronModal", () => {
       createButton && (await fireEvent.click(createButton));
 
       await waitFor(() =>
-        expect(container.querySelector('input[type="range"]')).not.toBeNull()
+        expect(
+          container.querySelector("input[name='dissolve_delay']")
+        ).not.toBeNull()
       );
 
       expect(
@@ -305,15 +298,15 @@ describe("NnsStakeNeuronModal", () => {
       expect(queryBalanceSpy).toBeCalledWith({
         identity: mockIdentity,
         certified: true,
-        accountIdentifier: selectedAccountIdentifier,
+        icpAccountIdentifier: selectedAccountIdentifier,
       });
       expect(queryBalanceSpy).toBeCalledWith({
         identity: mockIdentity,
         certified: false,
-        accountIdentifier: selectedAccountIdentifier,
+        icpAccountIdentifier: selectedAccountIdentifier,
       });
       // New balance is set in the store.
-      expect(get(accountsStore).main.balanceE8s).toEqual(newBalanceE8s);
+      expect(get(icpAccountsStore).main.balanceUlps).toEqual(newBalanceE8s);
     });
 
     it("should be able to change dissolve delay in the confirmation screen", async () => {
@@ -331,13 +324,17 @@ describe("NnsStakeNeuronModal", () => {
       createButton && (await fireEvent.click(createButton));
 
       await waitFor(() =>
-        expect(container.querySelector('input[type="range"]')).not.toBeNull()
+        expect(
+          container.querySelector("input[name='dissolve_delay']")
+        ).not.toBeNull()
       );
-      const inputRange = container.querySelector('input[type="range"]');
+      const inputElement = container.querySelector(
+        "input[name='dissolve_delay']"
+      );
 
-      const ONE_YEAR = 60 * 60 * 24 * 365;
-      inputRange &&
-        (await fireEvent.input(inputRange, {
+      const ONE_YEAR = 365;
+      inputElement &&
+        (await fireEvent.input(inputElement, {
           target: { value: ONE_YEAR },
         }));
 
@@ -383,7 +380,9 @@ describe("NnsStakeNeuronModal", () => {
 
       // SCREEN: Set Dissolve Delay
       await waitFor(() =>
-        expect(container.querySelector('input[type="range"]')).not.toBeNull()
+        expect(
+          container.querySelector("input[name='dissolve_delay']")
+        ).not.toBeNull()
       );
 
       const skipButton = queryByTestId("cancel-neuron-delay");
@@ -401,7 +400,7 @@ describe("NnsStakeNeuronModal", () => {
         component: NnsStakeNeuronModal,
       });
 
-      const onClose = jest.fn();
+      const onClose = vi.fn();
       component.$on("nnsClose", onClose);
 
       await clickByTestId(getByTestId, "stake-neuron-button-cancel");
@@ -412,15 +411,11 @@ describe("NnsStakeNeuronModal", () => {
 
   describe("hardware wallet account selection", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
       neuronsStore.setNeurons({ neurons: [], certified: true });
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         ...mockAccountsStoreData,
         hardwareWallets: [mockHardwareWalletAccount],
       });
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
     });
 
     const createNeuron = async ({
@@ -459,7 +454,7 @@ describe("NnsStakeNeuronModal", () => {
       await waitFor(() =>
         expect(queryByTestId("add-principal-to-hotkeys-modal")).not.toBeNull()
       );
-      const onClose = jest.fn();
+      const onClose = vi.fn();
       component.$on("nnsClose", onClose);
 
       const skipButton = queryByTestId("skip-add-principal-to-hotkey-modal");
@@ -493,13 +488,17 @@ describe("NnsStakeNeuronModal", () => {
       expect(addHotkeyForHardwareWalletNeuron).toBeCalled();
 
       await waitFor(() =>
-        expect(container.querySelector('input[type="range"]')).not.toBeNull()
+        expect(
+          container.querySelector("input[name='dissolve_delay']")
+        ).not.toBeNull()
       );
-      const inputRange = container.querySelector('input[type="range"]');
+      const inputElement = container.querySelector(
+        "input[name='dissolve_delay']"
+      );
 
-      const ONE_YEAR = 60 * 60 * 24 * 365;
-      inputRange &&
-        (await fireEvent.input(inputRange, {
+      const ONE_YEAR = 365;
+      inputElement &&
+        (await fireEvent.input(inputElement, {
           target: { value: ONE_YEAR },
         }));
 
@@ -532,14 +531,14 @@ describe("NnsStakeNeuronModal", () => {
   describe("when accounts are not loaded", () => {
     beforeEach(() => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
-      accountsStore.resetForTesting();
-      const mainBalanceE8s = BigInt(10_000_000);
-      jest
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mainBalanceE8s);
-      jest
-        .spyOn(nnsDappApi, "queryAccount")
-        .mockResolvedValue(mockAccountDetails);
+      icpAccountsStore.resetForTesting();
+      const mainBalanceE8s = 10_000_000n;
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        mainBalanceE8s
+      );
+      vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(
+        mockAccountDetails
+      );
     });
     it("should load and then show the accounts", async () => {
       const { queryByTestId } = await renderModal({
@@ -555,21 +554,20 @@ describe("NnsStakeNeuronModal", () => {
   });
 
   describe("when no accounts and user navigates away", () => {
-    let spyQueryAccount: jest.SpyInstance;
+    let spyQueryAccount: SpyInstance;
     beforeEach(() => {
-      accountsStore.resetForTesting();
-      jest.clearAllTimers();
-      jest.clearAllMocks();
+      icpAccountsStore.resetForTesting();
+      vi.clearAllTimers();
       const now = Date.now();
-      jest.useFakeTimers().setSystemTime(now);
-      const mainBalanceE8s = BigInt(10_000_000);
-      jest
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mainBalanceE8s);
-      spyQueryAccount = jest
+      vi.useFakeTimers().setSystemTime(now);
+      const mainBalanceE8s = 10_000_000n;
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        mainBalanceE8s
+      );
+      spyQueryAccount = vi
         .spyOn(nnsDappApi, "queryAccount")
         .mockRejectedValue(new Error("connection error"));
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
     });
 
     it("should stop polling", async () => {

@@ -12,7 +12,7 @@
     type WizardStep,
   } from "@dfinity/gix-components";
 
-  export let formattedMaturity: string;
+  export let availableMaturityE8s: bigint;
 
   const steps: WizardSteps = [
     {
@@ -38,14 +38,20 @@
   const goToConfirm = () => modal.next();
 </script>
 
-<WizardModal {steps} bind:currentStep on:nnsClose bind:this={modal}>
+<WizardModal
+  {steps}
+  bind:currentStep
+  on:nnsClose
+  bind:this={modal}
+  testId="stake-maturity-modal-component"
+>
   <svelte:fragment slot="title"
     >{currentStep?.title ?? steps[0].title}</svelte:fragment
   >
 
   {#if currentStep?.name === "SelectPercentage"}
     <NeuronSelectPercentage
-      {formattedMaturity}
+      {availableMaturityE8s}
       buttonText={$i18n.neuron_detail.stake}
       on:nnsSelectPercentage={goToConfirm}
       on:nnsCancel={close}

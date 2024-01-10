@@ -1,5 +1,6 @@
 //! Machinery for pre-computing assets and serving them as certified HTTP responses.
 use crate::state::STATE;
+use base64::{engine::general_purpose::STANDARD as BASE64_ENGINE, Engine};
 use candid::CandidType;
 use ic_certified_map::{labeled, labeled_hash, AsHashTree, Hash, RbTree};
 use serde::{Deserialize, Serialize};
@@ -10,12 +11,12 @@ use std::collections::HashMap;
 /// A standard HTTP header
 type HeaderField = (String, String);
 
-/// The standardised data structure for HTTP responses as supported natively by the replica.
+/// The standardized data structure for HTTP responses as supported natively by the replica.
 #[derive(Clone, Debug, CandidType, Deserialize)]
 pub struct HttpRequest {
-    /// The HTTP method of the request, such as "GET" or "POST".
+    /// The HTTP method of the request, such as `GET` or `POST`.
     pub method: String,
-    /// The requested path and query string, for example "/some/path?foo=bar".
+    /// The requested path and query string, for example `/some/path?foo=bar`.
     ///
     /// Note: This does NOT contain the domain, port or protocol.
     pub url: String,
@@ -25,10 +26,10 @@ pub struct HttpRequest {
     pub body: ByteBuf,
 }
 
-/// The standardised data structure for HTTP responses as supported natively by the replica.
+/// The standardized data structure for HTTP responses as supported natively by the replica.
 #[derive(Clone, Debug, CandidType, Deserialize)]
 pub struct HttpResponse {
-    /// The HTTP status code.  E.g. 200 for succcess, 4xx for "you did something wrong", 5xx for "we broke".
+    /// The HTTP status code.  E.g. 200 for success, 4xx for "you did something wrong", 5xx for "we broke".
     pub status_code: u16,
     /// The headers of the HTTP response
     pub headers: Vec<HeaderField>,
@@ -141,10 +142,10 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
     })
 }
 
-/// List of recommended security headers as per https://owasp.org/www-project-secure-headers/
-/// These headers enable browser security features (like limit access to platform apis and set
-/// iFrame policies, etc.).
-/// TODO https://dfinity.atlassian.net/browse/L2-185: Add CSP and Permissions-Policy
+/// List of recommended security headers as per <https://owasp.org/www-project-secure-headers/>
+/// These headers enable browser security features (like limit access to platform APIs and set
+/// iframe policies, etc.).
+/// TODO <https://dfinity.atlassian.net/browse/L2-185>: Add CSP and Permissions-Policy
 fn security_headers() -> Vec<HeaderField> {
     vec![
         ("Access-Control-Allow-Origin".to_string(), "*".to_string()),
@@ -176,8 +177,8 @@ fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -
         "IC-Certificate".to_string(),
         format!(
             "certificate=:{}:, tree=:{}:",
-            base64::encode(certificate),
-            base64::encode(serializer.into_inner())
+            BASE64_ENGINE.encode(certificate),
+            BASE64_ENGINE.encode(serializer.into_inner())
         ),
     ))
 }
@@ -260,38 +261,28 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
 
 /// Inserts a favicon into the certified assets, if there is not one already.
 ///
-/// Note: If a browser visits the aggregation canister directy, it will request
+/// Note: If a browser visits the aggregation canister directly, it will request
 ///       a favicon.  As there is none, the asset canister will return an error
 ///       and the error also has no certification header, so for two reasons the
 ///       users will see errors in their console.  While these errors are not an
 ///       issue in production, they may be misleading at best and may hide real
 ///       errors when developers examine the canister.
 pub fn insert_favicon() {
-    STATE.with(|state| {
-        // Ensure that there is a favicon, or else we get log spam about bad requests.
-        {
-            let favicon_path = "/favicon.ico";
-            if state.stable.borrow().assets.borrow().get(favicon_path).is_none() {
-                let asset = Asset {
-                    headers: Vec::new(),
-                    bytes: include_bytes!("favicon.ico").to_vec(),
-                };
-                insert_asset(favicon_path, asset);
-            }
-        }
-    });
+    // Ensure that there is a favicon, or else we get log spam about bad requests.
+    let favicon_path = "/favicon.ico";
+    let asset = Asset {
+        headers: Vec::new(),
+        bytes: include_bytes!("favicon.ico").to_vec(),
+    };
+    insert_asset(favicon_path, asset);
 }
 
 /// Insert a home page into the certified assets.
 pub fn insert_home_page() {
-    STATE.with(|state| {
-        let path = "/index.html";
-        if state.stable.borrow().assets.borrow().get(path).is_none() {
-            let asset = Asset {
-                headers: Vec::new(),
-                bytes: include_bytes!("index.html").to_vec(),
-            };
-            insert_asset(path, asset);
-        }
-    });
+    let path = "/index.html";
+    let asset = Asset {
+        headers: Vec::new(),
+        bytes: include_bytes!("index.html").to_vec(),
+    };
+    insert_asset(path, asset);
 }

@@ -1,14 +1,11 @@
-/**
- * @jest-environment jsdom
- */
-
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCAccounts from "$lib/pages/CkBTCAccounts.svelte";
-import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
+import { syncAccounts } from "$lib/services/wallet-accounts.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
+import { page } from "$mocks/$app/stores";
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
@@ -19,34 +16,33 @@ import {
   mockUniversesTokens,
 } from "$tests/mocks/tokens.mock";
 import { render, waitFor } from "@testing-library/svelte";
-import { page } from "../../../../__mocks__/$app/stores";
 
-jest.mock("$lib/services/ckbtc-accounts.services", () => {
+vi.mock("$lib/services/wallet-accounts.services", () => {
   return {
-    syncCkBTCAccounts: jest.fn().mockResolvedValue(undefined),
+    syncAccounts: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/ckbtc-withdrawal-accounts.services", () => {
+vi.mock("$lib/services/ckbtc-withdrawal-accounts.services", () => {
   return {
-    loadCkBTCWithdrawalAccount: jest.fn().mockResolvedValue(undefined),
+    loadCkBTCWithdrawalAccount: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/ckbtc-minter.services", () => {
+vi.mock("$lib/services/ckbtc-minter.services", () => {
   return {
-    updateBalance: jest.fn().mockResolvedValue(undefined),
+    updateBalance: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/ckbtc-info.services", () => {
+vi.mock("$lib/services/ckbtc-info.services", () => {
   return {
-    loadCkBTCInfo: jest.fn().mockResolvedValue(undefined),
+    loadCkBTCInfo: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/worker-balances.services", () => ({
-  initBalancesWorker: jest.fn(() =>
+vi.mock("$lib/services/worker-balances.services", () => ({
+  initBalancesWorker: vi.fn(() =>
     Promise.resolve({
       startBalancesTimer: () => {
         // Do nothing
@@ -59,14 +55,11 @@ jest.mock("$lib/services/worker-balances.services", () => ({
 }));
 
 describe("CkBTCAccounts", () => {
-  const goToWallet = async () => {
-    // Do nothing
-  };
-
-  beforeAll(() => {
-    jest
-      .spyOn(tokensStore, "subscribe")
-      .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.spyOn(tokensStore, "subscribe").mockImplementation(
+      mockTokensSubscribe(mockUniversesTokens)
+    );
 
     page.mock({
       data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
@@ -75,7 +68,7 @@ describe("CkBTCAccounts", () => {
   });
 
   describe("when there are accounts in the store", () => {
-    beforeAll(() => {
+    beforeEach(() => {
       icrcAccountsStore.set({
         accounts: {
           accounts: [mockCkBTCMainAccount],
@@ -86,13 +79,13 @@ describe("CkBTCAccounts", () => {
     });
 
     it("should not load ckBTC accounts", () => {
-      render(CkBTCAccounts, { props: { goToWallet } });
+      render(CkBTCAccounts);
 
-      expect(syncCkBTCAccounts).not.toHaveBeenCalled();
+      expect(syncAccounts).not.toHaveBeenCalled();
     });
 
     it("should render a main Account", async () => {
-      const { getByText } = render(CkBTCAccounts, { props: { goToWallet } });
+      const { getByText } = render(CkBTCAccounts);
 
       await waitFor(() =>
         expect(getByText(en.accounts.main)).toBeInTheDocument()
@@ -100,23 +93,21 @@ describe("CkBTCAccounts", () => {
     });
 
     it("should render balance in card", async () => {
-      const { container } = render(CkBTCAccounts, { props: { goToWallet } });
+      const { container } = render(CkBTCAccounts);
 
       const cardTitleRow = container.querySelector(
-        'article > div[data-tid="token-value-label"]'
+        '[data-tid="account-card"] > div[data-tid="token-value-label"]'
       );
 
       expect(cardTitleRow?.textContent.trim()).toEqual(
-        `${formatToken({
-          value: mockCkBTCMainAccount.balanceE8s,
+        `${formatTokenE8s({
+          value: mockCkBTCMainAccount.balanceUlps,
         })} ${mockCkBTCToken.symbol}`
       );
     });
 
     it("should render account cards", async () => {
-      const { getAllByTestId } = render(CkBTCAccounts, {
-        props: { goToWallet },
-      });
+      const { getAllByTestId } = render(CkBTCAccounts);
 
       await waitFor(() =>
         expect(getAllByTestId("account-card").length).toBeGreaterThan(0)
@@ -125,18 +116,18 @@ describe("CkBTCAccounts", () => {
   });
 
   describe("when no accounts", () => {
-    beforeAll(() => {
+    beforeEach(() => {
       icrcAccountsStore.reset();
     });
 
     it("should call load ckBTC accounts", () => {
-      render(CkBTCAccounts, { props: { goToWallet } });
+      render(CkBTCAccounts);
 
-      expect(syncCkBTCAccounts).toHaveBeenCalled();
+      expect(syncAccounts).toHaveBeenCalled();
     });
 
     it("should render skeletons while loading", () => {
-      const { container } = render(CkBTCAccounts, { props: { goToWallet } });
+      const { container } = render(CkBTCAccounts);
       expect(
         container.querySelector('[data-tid="skeleton-card"]')
       ).not.toBeNull();

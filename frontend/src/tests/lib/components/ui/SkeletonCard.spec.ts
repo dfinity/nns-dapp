@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
 import { render } from "@testing-library/svelte";
 

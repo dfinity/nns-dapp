@@ -1,4 +1,5 @@
 import type {
+  ApiManageNeuronParams,
   ApiMergeNeuronsParams,
   ApiQueryParams,
 } from "$lib/api/governance.api";
@@ -11,6 +12,7 @@ import {
 } from "$tests/utils/module.test-utils";
 import type { Identity } from "@dfinity/agent";
 import type { KnownNeuron, NeuronInfo, RewardEvent } from "@dfinity/nns";
+import { NeuronState, NeuronType } from "@dfinity/nns";
 import { isNullish, nonNullish } from "@dfinity/utils";
 
 const modulePath = "$lib/api/governance.api";
@@ -18,6 +20,7 @@ const fakeFunctions = {
   queryNeurons,
   queryKnownNeurons,
   queryLastestRewardEvent,
+  startDissolving,
   mergeNeurons,
   simulateMergeNeurons,
 };
@@ -30,6 +33,8 @@ const fakeFunctions = {
 const neurons: Map<string, NeuronInfo[]> = new Map();
 
 const mapKey = (identity: Identity) => identity.getPrincipal().toText();
+
+let latestRewardEvent: RewardEvent = mockRewardEvent;
 
 const getNeurons = (identity: Identity) => {
   const key = mapKey(identity);
@@ -74,7 +79,15 @@ async function queryLastestRewardEvent({
   identity: _,
   certified: __,
 }: ApiQueryParams): Promise<RewardEvent> {
-  return mockRewardEvent;
+  return latestRewardEvent;
+}
+
+async function startDissolving({
+  neuronId,
+  identity,
+}: ApiManageNeuronParams): Promise<void> {
+  const neuron = getNeuron({ identity, neuronId });
+  neuron.state = NeuronState.Dissolving;
 }
 
 async function mergeNeurons({
@@ -84,11 +97,17 @@ async function mergeNeurons({
 }: ApiMergeNeuronsParams): Promise<void> {
   const sourceNeuron = getNeuron({ identity, neuronId: sourceNeuronId });
   const targetNeuron = getNeuron({ identity, neuronId: targetNeuronId });
+  if (
+    sourceNeuron.state !== NeuronState.Locked ||
+    targetNeuron.state !== NeuronState.Locked
+  ) {
+    throw new Error("Only locked neurons can be merged");
+  }
   // This is extremely simplified, just good enough for the test to see that the
   // merge happened.
   targetNeuron.fullNeuron.cachedNeuronStake +=
     sourceNeuron.fullNeuron.cachedNeuronStake;
-  sourceNeuron.fullNeuron.cachedNeuronStake = BigInt(0);
+  sourceNeuron.fullNeuron.cachedNeuronStake = 0n;
 }
 
 async function simulateMergeNeurons({
@@ -98,6 +117,12 @@ async function simulateMergeNeurons({
 }: ApiMergeNeuronsParams): Promise<NeuronInfo> {
   const sourceNeuron = getNeuron({ identity, neuronId: sourceNeuronId });
   const targetNeuron = getNeuron({ identity, neuronId: targetNeuronId });
+  if (
+    sourceNeuron.state !== NeuronState.Locked ||
+    targetNeuron.state !== NeuronState.Locked
+  ) {
+    throw new Error("Only locked neurons can be merged");
+  }
   // This is extremely simplified, just good enough for the test to see that the
   // correct merge was simulated.
   const mergedStake =
@@ -118,6 +143,7 @@ async function simulateMergeNeurons({
 
 export type FakeNeuronParams = {
   neuronId?: bigint;
+  neuronType?: NeuronType;
   controller?: string;
   stake?: bigint;
 };
@@ -134,11 +160,12 @@ const reset = () => {
   resetPaused();
 };
 
-export { pause, resume, getNeuron };
+export { getNeuron, pause, resume };
 
 export const addNeuronWith = ({
   identity = mockIdentity,
   neuronId,
+  neuronType,
   controller,
   stake,
 }: { identity?: Identity } & Partial<FakeNeuronParams>) => {
@@ -146,6 +173,10 @@ export const addNeuronWith = ({
   if (neuronId) {
     neuron.neuronId = neuronId;
     neuron.fullNeuron.id = neuronId;
+  }
+  if (neuronType) {
+    neuron.neuronType = neuronType;
+    neuron.fullNeuron.neuronType = neuronType;
   }
   if (stake) {
     neuron.fullNeuron.cachedNeuronStake = stake;
@@ -169,6 +200,12 @@ export const addNeurons = ({
   for (const neuron of neurons) {
     addNeuronWith({ identity, ...neuron });
   }
+};
+
+export const setLatestRewardEvent = (
+  latestRewardEventParams: Partial<RewardEvent>
+) => {
+  latestRewardEvent = { ...latestRewardEvent, ...latestRewardEventParams };
 };
 
 // Call this inside a describe() block outside beforeEach() because it defines

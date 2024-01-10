@@ -10,9 +10,9 @@
     type NnsNeuronContext,
   } from "$lib/types/nns-neuron-detail.context";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
-  import AutoStakeMaturity from "$lib/components/neuron-detail/actions/AutoStakeMaturity.svelte";
   import { authStore } from "$lib/stores/auth.store";
-  import { accountsStore } from "$lib/stores/accounts.store";
+  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+  import AutoStakeMaturity from "./AutoStakeMaturity.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -23,7 +23,7 @@
   $: disabled = !isNeuronControllable({
     neuron,
     identity: $authStore.identity,
-    accounts: $accountsStore,
+    accounts: $icpAccountsStore,
   });
 
   const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(

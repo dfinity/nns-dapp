@@ -1,15 +1,10 @@
-/**
- * @jest-environment jsdom
- */
-
 import Warnings from "$lib/components/warnings/Warnings.svelte";
 import type { MetricsCallback } from "$lib/services/$public/worker-metrics.services";
-import { authStore } from "$lib/stores/auth.store";
 import { bitcoinConvertBlockIndexes } from "$lib/stores/bitcoin.store";
 import { layoutWarningToastId } from "$lib/stores/layout.store";
 import { metricsStore } from "$lib/stores/metrics.store";
 import type { DashboardMessageExecutionRateResponse } from "$lib/types/dashboard";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { toastsStore } from "@dfinity/gix-components";
 import { fireEvent } from "@testing-library/dom";
@@ -19,8 +14,8 @@ import WarningsTest from "./WarningsTest.svelte";
 
 let metricsCallback: MetricsCallback | undefined;
 
-jest.mock("$lib/services/$public/worker-metrics.services", () => ({
-  initMetricsWorker: jest.fn(() =>
+vi.mock("$lib/services/$public/worker-metrics.services", () => ({
+  initMetricsWorker: vi.fn(() =>
     Promise.resolve({
       startMetricsTimer: ({ callback }: { callback: MetricsCallback }) => {
         metricsCallback = callback;
@@ -32,18 +27,28 @@ jest.mock("$lib/services/$public/worker-metrics.services", () => ({
   ),
 }));
 
-jest.mock("$lib/constants/environment.constants.ts", () => ({
-  ...jest.requireActual("$lib/constants/environment.constants.ts"),
-  IS_TEST_MAINNET: true,
-}));
+vi.mock("$lib/constants/environment.constants.ts", async () => {
+  return {
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    ...(await vi.importActual<any>("$lib/constants/environment.constants.ts")),
+    IS_TEST_MAINNET: true,
+  };
+});
 
 describe("Warnings", () => {
+  beforeEach(() => {
+    metricsCallback = undefined;
+  });
+
   describe("TransactionRateWarning", () => {
-    beforeEach(() => metricsStore.set(undefined));
+    beforeEach(() => {
+      metricsStore.set(undefined);
+      toastsStore.reset();
+    });
 
     afterAll(() => {
-      jest.clearAllMocks();
-      jest.resetAllMocks();
+      vi.clearAllMocks();
+      vi.resetAllMocks();
     });
 
     const transactionRateHighLoad: DashboardMessageExecutionRateResponse = {
@@ -81,6 +86,9 @@ describe("Warnings", () => {
       const tmp = container.querySelector(".toast .close");
       tmp && fireEvent.click(tmp);
 
+      // Wait for initialization of the callback
+      await waitFor(() => expect(metricsCallback).not.toBeUndefined());
+
       metricsCallback?.({
         metrics: {
           transactionRate: transactionRateNormalLoad,
@@ -94,6 +102,9 @@ describe("Warnings", () => {
 
     it("should render transaction warning once", async () => {
       const { container } = render(WarningsTest);
+
+      // Wait for initialization of the callback
+      await waitFor(() => expect(metricsCallback).not.toBeUndefined());
 
       metricsCallback?.({
         metrics: {
@@ -122,8 +133,8 @@ describe("Warnings", () => {
 
   describe("ConvertCkBTCToBtcWarning", () => {
     beforeEach(() => {
-      jest.clearAllMocks();
-      jest.resetAllMocks();
+      vi.clearAllMocks();
+      vi.resetAllMocks();
 
       layoutWarningToastId.set(undefined);
       metricsStore.set(undefined);
@@ -133,11 +144,9 @@ describe("Warnings", () => {
     });
 
     describe("signed in", () => {
-      beforeEach(() =>
-        jest
-          .spyOn(authStore, "subscribe")
-          .mockImplementation(mockAuthStoreSubscribe)
-      );
+      beforeEach(() => {
+        resetIdentity();
+      });
 
       it("should render ckBTC to BTC warning", async () => {
         bitcoinConvertBlockIndexes.addBlockIndex(1n);
@@ -184,6 +193,10 @@ describe("Warnings", () => {
     });
 
     describe("not signed in", () => {
+      beforeEach(() => {
+        setNoIdentity();
+      });
+
       it("should render no ckBTC warning", async () => {
         bitcoinConvertBlockIndexes.addBlockIndex(1n);
 
@@ -202,6 +215,10 @@ describe("Warnings", () => {
 
   describe("TestEnvironmentWarning", () => {
     describe("not signed in", () => {
+      beforeEach(() => {
+        setNoIdentity();
+      });
+
       it("should not render test environment warning", async () => {
         const { getByTestId } = render(Warnings, {
           props: {
@@ -209,16 +226,16 @@ describe("Warnings", () => {
           },
         });
 
-        await waitFor(expect(() => getByTestId("test-env-warning")).toThrow);
+        await waitFor(() =>
+          expect(() => getByTestId("test-env-warning")).toThrow()
+        );
       });
     });
 
     describe("signed in", () => {
-      beforeAll(() =>
-        jest
-          .spyOn(authStore, "subscribe")
-          .mockImplementation(mockAuthStoreSubscribe)
-      );
+      beforeEach(() => {
+        resetIdentity();
+      });
 
       it("should render test environment warning", async () => {
         const { getByTestId } = render(Warnings, {

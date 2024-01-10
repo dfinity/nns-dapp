@@ -27,8 +27,8 @@
   import { listNeurons } from "$lib/services/neurons.services";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { notForceCallStrategy } from "$lib/utils/env.utils";
+  import { referrerPathStore } from "$lib/stores/routes.store";
 
-  export let referrerPath: AppPath | undefined = undefined;
   // It's exported so that we can test the value
   export let disableInfiniteScroll = false;
 
@@ -36,7 +36,7 @@
     listNeurons();
   }
 
-  let loading = false;
+  let loading = true;
   let hidden = false;
   let initialized = false;
 
@@ -88,7 +88,7 @@
   onMount(async () => {
     const reload = reloadRouteData({
       expectedPreviousPath: AppPath.Proposal,
-      effectivePreviousPath: referrerPath,
+      effectivePreviousPath: $referrerPathStore,
       currentData: $sortedProposals.proposals,
     });
 
@@ -128,6 +128,11 @@
     debounceFindProposals?.();
   };
 
+  // Neurons and proposals are loaded at the same time. But once neurons are
+  // loaded, proposals are loaded again. So it's possible that the component
+  // goes back into loading state immediately after proposals are loaded.
+  // TODO: Fix NnsProposals to load proposals only once and remove the
+  // work-around from NnsProposalList.page-object.ts
   $: $definedNeuronsStore, applyFilter($proposalsFiltersStore);
 
   $: $authStore.identity, (() => proposalsFiltersStore.reload())();

@@ -1,90 +1,73 @@
-/**
- * @jest-environment jsdom
- */
-
 import IcrcTransactionsList from "$lib/components/accounts/IcrcTransactionsList.svelte";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
-import type { Account } from "$lib/types/account";
-import type { IcrcTransactionData } from "$lib/types/transaction";
-import en from "$tests/mocks/i18n.mock";
-import {
-  mockIcrcTransactionsStoreSubscribe,
-  mockIcrcTransactionWithId,
-} from "$tests/mocks/icrc-transactions.mock";
-import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
-import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
-import { render, waitFor } from "@testing-library/svelte";
+import type { UiTransaction } from "$lib/types/transaction";
+import { mockIcrcTransactionsStoreSubscribe } from "$tests/mocks/icrc-transactions.mock";
+import { createMockUiTransaction } from "$tests/mocks/transaction.mock";
+import { IcrcTransactionsListPo } from "$tests/page-objects/IcrcTransactionsList.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { render } from "@testing-library/svelte";
 
 describe("IcrcTransactionList", () => {
-  const renderIcrcTransactionList = ({
-    account,
+  const renderComponent = ({
     transactions,
     loading,
     completed = false,
   }: {
-    account: Account;
-    transactions: IcrcTransactionData[];
+    transactions: UiTransaction[];
     loading?: boolean;
     completed?: boolean;
-  }) =>
-    render(IcrcTransactionsList, {
+  }) => {
+    const { container } = render(IcrcTransactionsList, {
       props: {
-        account,
         transactions,
         loading,
         completed,
-        token: mockSnsToken,
       },
     });
+    return IcrcTransactionsListPo.under(new JestPageObjectElement(container));
+  };
 
-  afterEach(() => jest.clearAllMocks());
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
 
   it("renders skeleton when loading transactions", async () => {
-    jest
-      .spyOn(icrcTransactionsStore, "subscribe")
-      .mockImplementation(mockIcrcTransactionsStoreSubscribe({}));
+    vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(
+      mockIcrcTransactionsStoreSubscribe({})
+    );
 
-    const { queryAllByTestId } = renderIcrcTransactionList({
-      account: mockSnsMainAccount,
+    const po = renderComponent({
       transactions: [],
       loading: true,
     });
 
-    expect(queryAllByTestId("skeleton-card").length).toBeGreaterThan(0);
+    expect(await po.getSkeletonCardPo().isPresent()).toBe(true);
   });
 
   it("should display no-transactions message", async () => {
-    jest
-      .spyOn(icrcTransactionsStore, "subscribe")
-      .mockImplementation(mockIcrcTransactionsStoreSubscribe({}));
+    vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(
+      mockIcrcTransactionsStoreSubscribe({})
+    );
 
-    const { getByText } = renderIcrcTransactionList({
-      account: mockSnsMainAccount,
+    const po = renderComponent({
       transactions: [],
       loading: false,
       completed: true,
     });
 
-    await waitFor(() => {
-      expect(
-        getByText(en.wallet.no_transactions, { exact: false })
-      ).toBeInTheDocument();
-    });
+    expect(await po.getText()).toBe("No transactions");
   });
 
-  it("should render transactions", () => {
-    const { queryAllByTestId } = renderIcrcTransactionList({
-      account: mockSnsMainAccount,
+  it("should render transactions", async () => {
+    const po = renderComponent({
       transactions: [
-        {
-          transaction: mockIcrcTransactionWithId,
-          toSelfTransaction: false,
-        },
+        createMockUiTransaction({ domKey: "1-1" }),
+        createMockUiTransaction({ domKey: "2-1" }),
       ],
       loading: false,
       completed: true,
     });
 
-    expect(queryAllByTestId("transaction-card").length).toBe(1);
+    expect(await po.getTransactionCardPos()).toHaveLength(2);
   });
 });

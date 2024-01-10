@@ -1,31 +1,36 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import {
   CKBTC_MINTER_CANISTER_ID,
   CKBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
+import * as authServices from "$lib/services/auth.services";
 import * as services from "$lib/services/ckbtc-info.services";
 import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
-import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import {
+  mockGetIdentity,
+  mockIdentity,
+  resetIdentity,
+} from "$tests/mocks/auth.store.mock";
 import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("ckbtc-info-services", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     ckBTCInfoStore.reset();
+    resetIdentity();
+    vi.spyOn(authServices, "getAuthenticatedIdentity").mockImplementation(
+      mockGetIdentity
+    );
   });
 
   describe("loadCkBTCInfo", () => {
     let spyGetMinterInfo;
 
     beforeEach(() => {
-      spyGetMinterInfo = jest
+      spyGetMinterInfo = vi
         .spyOn(minterApi, "minterInfo")
         .mockResolvedValue(mockCkBTCMinterInfo);
     });
@@ -93,10 +98,12 @@ describe("ckbtc-info-services", () => {
       });
     });
 
-    afterEach(() => jest.clearAllMocks());
+    afterEach(() => {
+      vi.clearAllMocks();
+    });
 
     it("should not reload info if already loaded", async () => {
-      const spyGetMinterInfo = jest
+      const spyGetMinterInfo = vi
         .spyOn(minterApi, "minterInfo")
         .mockResolvedValue(mockCkBTCMinterInfo);
 

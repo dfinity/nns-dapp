@@ -1,7 +1,8 @@
-import type { AuthStoreData } from "$lib/stores/auth.store";
+import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
 import type { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import type { Subscriber } from "svelte/store";
+import { get } from "svelte/store";
 import en from "./i18n.mock";
 
 export const mockPrincipalText =
@@ -22,26 +23,25 @@ export const createMockIdentity = (p: number) => {
 
 export const mockIdentityErrorMsg = en.error.missing_identity;
 
-let testIdentity: Identity | null = mockIdentity;
+export const setNoIdentity = () => authStore.setForTesting(null);
+export const resetIdentity = () => authStore.setForTesting(mockIdentity);
 
-export const setNoIdentity = () => (testIdentity = null);
-export const resetIdentity = () => (testIdentity = mockIdentity);
-
-export const mockGetIdentity = () => {
-  if (!testIdentity) {
+export const mockGetIdentity = async () => {
+  const identity = get(authStore).identity;
+  if (!identity) {
     throw new Error(mockIdentityErrorMsg);
   }
 
-  return mockIdentity;
+  return identity;
 };
 
 /**
  * A static mock of the auth store. The component that uses it will be rendered for test with a value that is already defined on mount.
  */
 export const mockAuthStoreSubscribe = (
-  run: Subscriber<AuthStoreData>
+  run?: Subscriber<AuthStoreData>
 ): (() => void) => {
-  run({ identity: mockIdentity });
+  run?.({ identity: mockIdentity });
 
   return () => undefined;
 };

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SelectUniverseNavList from "$lib/components/universe/SelectUniverseNavList.svelte";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
@@ -15,9 +11,9 @@ import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("SelectUniverseNavList", () => {
-  jest
-    .spyOn(snsProjectsCommittedStore, "subscribe")
-    .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+  vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
+    mockProjectSubscribe([mockSnsFullProject])
+  );
 
   beforeEach(() => {
     page.mock({
@@ -26,12 +22,14 @@ describe("SelectUniverseNavList", () => {
     });
   });
 
-  afterAll(() => jest.clearAllMocks());
+  afterAll(() => {
+    vi.clearAllMocks();
+  });
 
-  it("should render universe cards as links", () => {
+  it("should render universe cards as buttons", () => {
     const { getAllByRole } = render(SelectUniverseNavList);
     // 1 for Sns project + 1 for Internet Computer / NNS + 1 for ckBTC + 1 for ckTESTBTC
-    expect(getAllByRole("link").length).toEqual(4);
+    expect(getAllByRole("button").length).toEqual(4);
   });
 
   it("should navigate", async () => {
@@ -46,7 +44,7 @@ describe("SelectUniverseNavList", () => {
     );
   });
 
-  it("should not render ckBTC cards as links if route not Accounts", () => {
+  it("should render ckBTC cards as buttons if route not Accounts too", () => {
     page.mock({
       routeId: AppPath.Neurons,
       data: { universe: mockSnsFullProject.rootCanisterId.toText() },
@@ -54,6 +52,6 @@ describe("SelectUniverseNavList", () => {
 
     const { getAllByRole } = render(SelectUniverseNavList);
     // 1 for Sns project + 1 for Internet Computer / NNS
-    expect(getAllByRole("link").length).toEqual(2);
+    expect(getAllByRole("button").length).toEqual(2);
   });
 });

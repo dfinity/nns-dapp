@@ -1,5 +1,5 @@
-import { accountsStore } from "$lib/stores/accounts.store";
 import { startBusy, type BusyStateInitiatorType } from "$lib/stores/busy.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { isNeuronControlledByHardwareWallet } from "$lib/utils/neuron.utils";
 import type { NeuronId } from "@dfinity/nns";
 import { get } from "svelte/store";
@@ -19,7 +19,7 @@ export const startBusyNeuron = ({
   }
   const hardwareWalletNeuron = isNeuronControlledByHardwareWallet({
     neuron,
-    accounts: get(accountsStore),
+    accounts: get(icpAccountsStore),
   });
   startBusy({
     initiator,

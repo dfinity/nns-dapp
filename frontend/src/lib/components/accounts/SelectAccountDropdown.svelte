@@ -61,9 +61,9 @@
     testId="select-account-dropdown"
   >
     {#each selectableAccounts as { identifier, name } (identifier)}
-      <DropdownItem value={identifier}>
-        {name ?? $i18n.accounts.main}
-      </DropdownItem>
+      <DropdownItem value={identifier}
+        >{name ?? $i18n.accounts.main}</DropdownItem
+      >
     {/each}
   </Dropdown>
 {/if}

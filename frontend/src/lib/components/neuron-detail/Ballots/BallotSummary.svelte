@@ -5,8 +5,9 @@
   import { Vote } from "@dfinity/nns";
   import { i18n } from "$lib/stores/i18n";
   import ProposalSummary from "$lib/components/proposal-detail/ProposalSummary.svelte";
-  import { SkeletonText } from "@dfinity/gix-components";
+  import { KeyValuePairInfo, SkeletonText } from "@dfinity/gix-components";
   import { keyOf } from "$lib/utils/utils";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let ballot: Required<BallotInfo>;
 
@@ -23,27 +24,29 @@
   );
 </script>
 
-{#if proposal?.proposal !== undefined}
-  <p class="value">{proposal.id}</p>
-
-  <p class="vote value">
-    {keyOf({ obj: $i18n.core, key: Vote[ballot.vote].toLowerCase() })}
-  </p>
-
-  <div class="summary">
-    <ProposalSummary summary={proposal.proposal.summary} />
-  </div>
-{:else}
-  <SkeletonText />
-
-  <SkeletonText />
-
-  <div class="summary">
+<TestIdWrapper testId="ballot-summary-component">
+  {#if proposal?.proposal !== undefined}
+    <KeyValuePairInfo testId="ballot-summary">
+      <p slot="key" class="value">{proposal.id}</p>
+      <p slot="value" class="vote value">
+        {keyOf({ obj: $i18n.core, key: Vote[ballot.vote].toLowerCase() })}
+      </p>
+      <div slot="info" class="summary">
+        <ProposalSummary summary={proposal.proposal.summary} />
+      </div>
+    </KeyValuePairInfo>
+  {:else}
     <SkeletonText />
+
     <SkeletonText />
-    <SkeletonText />
-  </div>
-{/if}
+
+    <div class="summary">
+      <SkeletonText />
+      <SkeletonText />
+      <SkeletonText />
+    </div>
+  {/if}
+</TestIdWrapper>
 
 <style lang="scss">
   .vote {
@@ -55,8 +58,6 @@
   }
 
   .summary {
-    grid-column-start: 1;
-    grid-column-end: 3;
     // fix broken layout with too long urls in summary
     word-break: break-word;
     // Fix too wide <pre> with code-blocks

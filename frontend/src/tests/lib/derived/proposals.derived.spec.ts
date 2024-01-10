@@ -7,31 +7,31 @@ describe("proposals-derived", () => {
   it("should derives and sort proposals store", () => {
     const storeProposals = [
       {
-        id: BigInt(3),
+        id: 3n,
       },
       {
-        id: BigInt(10),
+        id: 10n,
       },
       {
-        id: BigInt(5),
+        id: 5n,
       },
       {
-        id: BigInt(1),
+        id: 1n,
       },
     ];
 
     const expectedProposals = [
       {
-        id: BigInt(10),
+        id: 10n,
       },
       {
-        id: BigInt(5),
+        id: 5n,
       },
       {
-        id: BigInt(3),
+        id: 3n,
       },
       {
-        id: BigInt(1),
+        id: 1n,
       },
     ];
 

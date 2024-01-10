@@ -19,13 +19,13 @@ use assets::{insert_favicon, insert_home_page, AssetHashes, HttpRequest, HttpRes
 use candid::{candid_method, export_service};
 use fast_scheduler::FastScheduler;
 use ic_cdk::api::call::{self};
-use ic_cdk::timer::{set_timer, set_timer_interval};
+use ic_cdk_timers::{clear_timer, set_timer, set_timer_interval};
 use state::{Config, StableState, STATE};
 use types::Icrc1Value;
 
 /// API method for basic health checks.
 ///
-/// TODO: Provide useful metrics at http://${canister_domain}/metrics
+/// TODO: Provide useful metrics at `http://${canister_domain}/metrics`
 #[candid_method(query)]
 #[ic_cdk_macros::query]
 fn health_check() -> String {
@@ -52,7 +52,7 @@ async fn get_canister_status() -> ic_ic00_types::CanisterStatusResultV2 {
     result.unwrap_or_else(|err| panic!("Couldn't get canister_status of {}. Err: {:#?}", own_canister_id, err))
 }
 
-/// API method to get the current config
+/// API method to get the current configuration.
 #[candid_method(query)]
 #[ic_cdk_macros::query]
 #[allow(clippy::expect_used)] // This is a query call, no real damage can ensue to this canister.
@@ -106,7 +106,7 @@ fn http_request(/* req: HttpRequest */) /* -> HttpResponse */
 /// Function called when a canister is first created IF it is created
 /// with this code.
 ///
-/// Note: If the canister os created with e.g. `dfx canister create`
+/// Note: If the canister is created with e.g. `dfx canister create`
 ///       and then `dfx deploy`, `init(..)` is never called.
 #[ic_cdk_macros::init]
 #[candid_method(init)]
@@ -115,7 +115,7 @@ fn init(config: Option<Config>) {
     setup(config);
 }
 
-/// Function called before upgrade to a new wasm.
+/// Function called before upgrade to a new WASM.
 #[ic_cdk_macros::pre_upgrade]
 fn pre_upgrade() {
     // Make an effort to save state.  If it doesn't work, it doesn't matter much
@@ -138,7 +138,7 @@ fn pre_upgrade() {
     });
 }
 
-/// Function called after a canister has been upgraded to a new wasm.
+/// Function called after a canister has been upgraded to a new WASM.
 #[ic_cdk_macros::post_upgrade]
 fn post_upgrade(config: Option<Config>) {
     crate::state::log("Calling post_upgrade...".to_string());
@@ -161,10 +161,10 @@ fn post_upgrade(config: Option<Config>) {
     setup(config);
 }
 
-/// Method to allow reconfiguration without a wasm change.
+/// Method to allow reconfiguration without a WASM change.
 ///
 /// Note: This _could_ be exposed in production if limited to the controllers
-///  - Controllers can be obtained by the async call: agent.read_state_canister_info(canister_id, "controllers")
+///  - Controllers can be obtained by the async call: `agent.read_state_canister_info(canister_id, "controllers")`
 #[cfg(feature = "reconfigurable")]
 #[ic_cdk_macros::update]
 #[candid_method(update)]
@@ -172,7 +172,7 @@ fn reconfigure(config: Option<Config>) {
     setup(config);
 }
 
-/// Code that needs to be run on init and after every upgrade.
+/// Code that needs to be run on `init` and after every upgrade.
 fn setup(config: Option<Config>) {
     // Note: This is intentionally highly visible in logs.
     crate::state::log(format!(
@@ -197,6 +197,9 @@ fn setup(config: Option<Config>) {
     insert_favicon();
     insert_home_page();
 
+    // Call init and post_upgrade functions for the state.
+    state::State::setup();
+
     // Schedules data collection from the SNSs.
     //
     // Note: In future we are likely to want to make the duration dynamic and
@@ -209,7 +212,7 @@ fn setup(config: Option<Config>) {
         let timer_id = set_timer_interval(timer_interval, || ic_cdk::spawn(crate::upstream::update_cache()));
         let old_timer = state.timer_id.replace_with(|_| Some(timer_id));
         if let Some(id) = old_timer {
-            ic_cdk::timer::clear_timer(id);
+            clear_timer(id);
         }
     });
     // Schedule fast collection of swap state

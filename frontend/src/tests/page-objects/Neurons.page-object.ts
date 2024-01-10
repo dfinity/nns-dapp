@@ -43,4 +43,11 @@ export class NeuronsPo extends BasePageObject {
     ]);
     return nnsLoaded || snsLoaded;
   }
+
+  async waitForContentLoaded(): Promise<void> {
+    await Promise.race([
+      this.getNnsNeuronsPo().waitForContentLoaded(),
+      this.getSnsNeuronsPo().waitForContentLoaded(),
+    ]);
+  }
 }

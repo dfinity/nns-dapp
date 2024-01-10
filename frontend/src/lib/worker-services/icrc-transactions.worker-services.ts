@@ -1,12 +1,11 @@
 import type { GetTransactionsResponse } from "$lib/api/icrc-index.api";
 import { DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 
-import type { AccountIdentifierText } from "$lib/types/account";
+import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
 import type {
   PostMessageDataRequestTransactions,
   PostMessageDataResponseTransaction,
 } from "$lib/types/post-message.transactions";
-import { jsonReplacer } from "$lib/utils/json.utils";
 import { getIcrcTransactions as getIcrcIndexTransactions } from "$lib/worker-api/icrc-index.worker-api";
 import type { DictionaryWorkerState } from "$lib/worker-stores/dictionary.worker-store";
 import type { TransactionsData } from "$lib/worker-types/transactions.worker-types";
@@ -18,8 +17,8 @@ import {
   decodeIcrcAccount,
   type IcrcTransactionWithId,
   type IcrcTxId,
-} from "@dfinity/ledger";
-import { nonNullish } from "@dfinity/utils";
+} from "@dfinity/ledger-icrc";
+import { jsonReplacer, nonNullish } from "@dfinity/utils";
 
 export type GetAccountsTransactionsResults = Omit<
   PostMessageDataResponseTransaction,
@@ -81,7 +80,7 @@ export const getIcrcAccountsTransactions = ({
 
 type GetAccountTransactionsParams = TimerWorkerUtilsSyncParams &
   Omit<PostMessageDataRequestTransactions, "accountIdentifiers"> & {
-    accountIdentifier: AccountIdentifierText;
+    accountIdentifier: IcrcAccountIdentifierText;
     start?: bigint;
     state: TransactionsData | undefined;
   };

@@ -1,31 +1,27 @@
-/**
- * @jest-environment jsdom
- */
-
-import * as ledgerApi from "$lib/api/ledger.api";
+import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
+import * as proposalsApi from "$lib/api/proposals.api";
 import * as snsSaleApi from "$lib/api/sns-sale.api";
 import * as snsMetricsApi from "$lib/api/sns-swap-metrics.api";
 import * as snsApi from "$lib/api/sns.api";
+import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { WATCH_SALE_STATE_EVERY_MILLISECONDS } from "$lib/constants/sns.constants";
 import { NOT_LOADED } from "$lib/constants/stores.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
 import { cancelPollGetOpenTicket } from "$lib/services/sns-sale.services";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+import { getOrCreateSnsFinalizationStatusStore } from "$lib/stores/sns-finalization-status.store";
 import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
-import { snsQueryStore, snsSwapCommitmentsStore } from "$lib/stores/sns.store";
+import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
+import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { userCountryStore } from "$lib/stores/user-country.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
-import { formatToken, numberToE8s } from "$lib/utils/token.utils";
+import { formatTokenE8s, numberToE8s } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import * as fakeLocationApi from "$tests/fakes/location-api.fake";
-import {
-  mockAccountDetails,
-  mockMainAccount,
-} from "$tests/mocks/accounts.store.mock";
 import {
   mockAuthStoreNoIdentitySubscribe,
   mockAuthStoreSubscribe,
@@ -33,154 +29,145 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import {
-  snsResponseFor,
-  snsResponsesForLifecycle,
-} from "$tests/mocks/sns-response.mock";
+  mockAccountDetails,
+  mockMainAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
+import {
+  createFinalizationStatusMock,
+  snsFinalizationStatusResponseMock,
+} from "$tests/mocks/sns-finalization-status.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { ProjectDetailPo } from "$tests/page-objects/ProjectDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
-jest.mock("$lib/api/nns-dapp.api");
-jest.mock("$lib/api/sns.api");
-jest.mock("$lib/api/sns-swap-metrics.api");
-jest.mock("$lib/api/sns-sale.api");
-jest.mock("$lib/api/ledger.api");
-jest.mock("$lib/api/location.api");
+vi.mock("$lib/api/nns-dapp.api");
+vi.mock("$lib/api/sns.api");
+vi.mock("$lib/api/sns-swap-metrics.api");
+vi.mock("$lib/api/sns-sale.api");
+vi.mock("$lib/api/icp-ledger.api");
+vi.mock("$lib/api/location.api");
+vi.mock("$lib/api/proposals.api");
 
 const blockedApiPaths = [
+  "$lib/api/nns-dapp.api",
   "$lib/api/sns.api",
   "$lib/api/sns-swap-metrics.api",
   "$lib/api/sns-sale.api",
-  "$lib/api/ledger.api",
+  "$lib/api/icp-ledger.api",
   "$lib/api/location.api",
+  "$lib/api/proposals.api",
 ];
 
 describe("ProjectDetail", () => {
   blockAllCallsTo(blockedApiPaths);
   fakeLocationApi.install();
 
+  const rootCanisterId = mockCanisterId;
   const userCountryCode = "CH";
   const notUserCountryCode = "US";
-  const newBalance = BigInt(10_000_000_000);
+  const newBalance = 10_000_000_000n;
   const saleBuyerCount = 1_000_000;
   const rawMetricsText = `
 # TYPE sale_buyer_count gauge
 sale_buyer_count ${saleBuyerCount} 1677707139456
 # HELP sale_cf_participants_count`;
+  const now = Date.now();
+  const nowInSeconds = Math.floor(now / 1000);
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    snsQueryStore.reset();
+    vi.clearAllMocks();
+    resetSnsProjects();
     snsSwapCommitmentsStore.reset();
     snsSwapMetricsStore.reset();
+    snsTicketsStore.reset();
     userCountryStore.set(NOT_LOADED);
 
-    jest.clearAllTimers();
-    const now = Date.now();
-    jest.useFakeTimers().setSystemTime(now);
+    vi.clearAllTimers();
+    vi.useFakeTimers().setSystemTime(now);
 
-    jest.spyOn(ledgerApi, "sendICP").mockResolvedValue(undefined);
+    vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(undefined);
 
-    jest
-      .spyOn(nnsDappApi, "queryAccount")
-      .mockResolvedValue(mockAccountDetails);
-    jest.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(newBalance);
+    vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(mockAccountDetails);
+    vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(newBalance);
+
+    vi.spyOn(proposalsApi, "queryProposal").mockResolvedValue(mockProposalInfo);
 
     fakeLocationApi.setCountryCode(userCountryCode);
 
-    jest.spyOn(snsApi, "querySnsDerivedState").mockResolvedValue({
+    vi.spyOn(snsApi, "querySnsDerivedState").mockResolvedValue({
       sns_tokens_per_icp: [1],
-      buyer_total_icp_e8s: [BigInt(200_000_000)],
+      buyer_total_icp_e8s: [200_000_000n],
       cf_participant_count: [],
       direct_participant_count: [],
       cf_neuron_count: [],
+      neurons_fund_participation_icp_e8s: [],
+      direct_participation_icp_e8s: [],
     });
 
-    jest
-      .spyOn(snsMetricsApi, "querySnsSwapMetrics")
-      .mockResolvedValue(rawMetricsText);
+    vi.spyOn(snsSaleApi, "queryFinalizationStatus").mockResolvedValue(
+      snsFinalizationStatusResponseMock
+    );
+
+    vi.spyOn(snsMetricsApi, "querySnsSwapMetrics").mockResolvedValue(
+      rawMetricsText
+    );
   });
 
   describe("not logged in user", () => {
     beforeEach(() => {
       page.mock({ data: { universe: null } });
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreNoIdentitySubscribe
+      );
     });
 
     // TODO: Remove once all SNSes support buyers count in derived state
     describe("Open project without buyers count on derived state", () => {
-      const rootCanisterId = mockCanisterId;
-      const response = snsResponseFor({
-        principal: rootCanisterId,
-        lifecycle: SnsSwapLifecycle.Open,
-        directParticipantCount: [],
-        certified: true,
-      });
       const props = {
         rootCanisterId: rootCanisterId.toText(),
       };
       beforeEach(() => {
-        snsQueryStore.setData(response);
+        setSnsProjects([
+          {
+            rootCanisterId,
+            lifecycle: SnsSwapLifecycle.Open,
+            directParticipantCount: [],
+            certified: true,
+          },
+        ]);
       });
 
-      it("should start watching swap metrics and stop on unmounting", async () => {
-        const { unmount } = render(ProjectDetail, props);
+      it("should fetch swap metrics on load", async () => {
+        render(ProjectDetail, props);
 
         await runResolvedPromises();
-        let expectedCalls = 1;
-        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(
-          expectedCalls
-        );
-
-        const retryDelay = WATCH_SALE_STATE_EVERY_MILLISECONDS;
-        const callsBeforeStopPolling = 4;
-
-        while (expectedCalls < callsBeforeStopPolling) {
-          await advanceTime(retryDelay);
-          expectedCalls += 1;
-          expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(
-            expectedCalls
-          );
-        }
-        unmount();
-
-        await runResolvedPromises();
-        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(
-          expectedCalls
-        );
-
-        // Even after waiting a long time there shouldn't be more calls.
-        await advanceTime(99 * retryDelay);
-        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(
-          expectedCalls
-        );
+        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(1);
       });
     });
 
     describe("Open project with buyers count on derived state", () => {
-      const rootCanisterId = mockCanisterId;
-      const response = snsResponseFor({
-        principal: rootCanisterId,
-        lifecycle: SnsSwapLifecycle.Open,
-        directParticipantCount: [30n],
-        certified: true,
-      });
       const props = {
         rootCanisterId: rootCanisterId.toText(),
       };
       beforeEach(() => {
-        snsQueryStore.setData(response);
+        setSnsProjects([
+          {
+            rootCanisterId,
+            lifecycle: SnsSwapLifecycle.Open,
+            directParticipantCount: [30n],
+            certified: true,
+          },
+        ]);
       });
 
       it("should NOT start watching swap metrics", async () => {
@@ -244,18 +231,18 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
     // TODO: Remove once all SNSes support buyers count in derived state
     describe("Committed project without buyers in derived state", () => {
-      const rootCanisterId = mockCanisterId;
-      const response = snsResponseFor({
-        principal: rootCanisterId,
-        lifecycle: SnsSwapLifecycle.Committed,
-        directParticipantCount: [],
-        certified: true,
-      });
       const props = {
         rootCanisterId: rootCanisterId.toText(),
       };
       beforeEach(() => {
-        snsQueryStore.setData(response);
+        setSnsProjects([
+          {
+            rootCanisterId,
+            lifecycle: SnsSwapLifecycle.Committed,
+            directParticipantCount: [],
+            certified: true,
+          },
+        ]);
       });
 
       it("should query metrics but not watch them", async () => {
@@ -274,16 +261,19 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     });
 
     describe("Committed project with buyers count in derived state", () => {
-      const responses = snsResponsesForLifecycle({
-        lifecycles: [SnsSwapLifecycle.Committed],
-        certified: true,
-      });
-      const rootCanisterId = responses[0][0].rootCanisterId;
       const props = {
-        rootCanisterId,
+        rootCanisterId: rootCanisterId.toText(),
       };
       beforeEach(() => {
-        snsQueryStore.setData(responses);
+        setSnsProjects([
+          {
+            rootCanisterId,
+            lifecycle: SnsSwapLifecycle.Committed,
+            directParticipantCount: [30n],
+            certified: true,
+            swapDueTimestampSeconds: nowInSeconds - SECONDS_IN_DAY,
+          },
+        ]);
       });
 
       it("should NOT query metrics nor watch them", async () => {
@@ -312,18 +302,50 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         await advanceTime(99 * retryDelay);
         expect(snsApi.querySnsDerivedState).toBeCalledTimes(0);
       });
+
+      it("should query finalization status and load it in store", async () => {
+        render(ProjectDetail, props);
+
+        await runResolvedPromises();
+        const store = getOrCreateSnsFinalizationStatusStore(rootCanisterId);
+        expect(get(store)?.data).toEqual(snsFinalizationStatusResponseMock);
+      });
+    });
+
+    describe("project with nns_proposal_id present", () => {
+      const props = {
+        rootCanisterId: rootCanisterId.toText(),
+      };
+      beforeEach(() => {
+        setSnsProjects([
+          {
+            rootCanisterId,
+            lifecycle: SnsSwapLifecycle.Committed,
+            certified: true,
+            nnsProposalId: Number(mockProposalInfo.id),
+          },
+        ]);
+      });
+
+      it("should show a proposal card from the proposal id", async () => {
+        const { queryByTestId } = render(ProjectDetail, props);
+
+        await runResolvedPromises();
+
+        expect(queryByTestId("proposal-card")).toBeInTheDocument();
+      });
     });
   });
 
   describe("logged in user", () => {
     beforeEach(() => {
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreSubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreSubscribe
+      );
 
-      jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
-      jest.spyOn(snsApi, "querySnsLifecycle").mockResolvedValue({
-        decentralization_sale_open_timestamp_seconds: [BigInt(11231312)],
+      vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
+      vi.spyOn(snsApi, "querySnsLifecycle").mockResolvedValue({
+        decentralization_sale_open_timestamp_seconds: [11_231_312n],
         lifecycle: [SnsSwapLifecycle.Open],
       });
 
@@ -331,44 +353,47 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     });
 
     describe("Open project", () => {
-      const responses = snsResponsesForLifecycle({
-        lifecycles: [SnsSwapLifecycle.Open],
-        certified: true,
-      });
-      const rootCanisterId = responses[0][0].rootCanisterId;
       const props = {
-        rootCanisterId,
+        rootCanisterId: rootCanisterId.toText(),
       };
       const { ticket: testTicket } = snsTicketMock({
-        rootCanisterId: Principal.fromText(rootCanisterId),
+        rootCanisterId,
         owner: mockPrincipal,
       });
       beforeEach(() => {
-        snsQueryStore.setData(responses);
-        jest.spyOn(snsSaleApi, "notifyParticipation").mockResolvedValue({
+        setSnsProjects([
+          {
+            rootCanisterId,
+            lifecycle: SnsSwapLifecycle.Open,
+            restrictedCountries: [],
+            certified: true,
+          },
+        ]);
+        vi.spyOn(snsSaleApi, "notifyParticipation").mockResolvedValue({
           icp_accepted_participation_e8s: testTicket.amount_icp_e8s,
           icp_ledger_account_balance_e8s: testTicket.amount_icp_e8s,
         });
-        jest.spyOn(ledgerApi, "sendICP").mockResolvedValue(BigInt(10));
-        jest
-          .spyOn(ledgerApi, "queryAccountBalance")
-          .mockResolvedValue(BigInt(1_000_000_000));
+        vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(10n);
+        vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+          1_000_000_000n
+        );
       });
 
       it("should show user's commitment", async () => {
-        const userCommitment = BigInt(100_000_000);
-        jest.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
-          rootCanisterId: Principal.fromText(rootCanisterId),
+        const userCommitment = 100_000_000n;
+        vi.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
+          rootCanisterId,
           myCommitment: {
             icp: [
               {
-                transfer_start_timestamp_seconds: BigInt(123444),
+                transfer_start_timestamp_seconds: 123_444n,
                 amount_e8s: userCommitment,
-                transfer_success_timestamp_seconds: BigInt(123445),
+                transfer_success_timestamp_seconds: 123_445n,
                 transfer_fee_paid_e8s: [],
                 amount_transferred_e8s: [],
               },
             ],
+            has_created_neuron_recipes: [],
           },
         });
         const { queryByTestId } = render(ProjectDetail, props);
@@ -381,14 +406,14 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           queryByTestId("sns-user-commitment")?.querySelector(
             "[data-tid='token-value']"
           )?.innerHTML
-        ).toMatch(formatToken({ value: userCommitment }));
+        ).toMatch(formatTokenE8s({ value: userCommitment }));
       });
 
       describe("no open ticket and no commitment", () => {
         beforeEach(() => {
-          jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
-          jest.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
-            rootCanisterId: Principal.fromText(rootCanisterId),
+          vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
+          vi.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
+            rootCanisterId,
             myCommitment: undefined,
           } as SnsSwapCommitment);
         });
@@ -412,13 +437,14 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         });
 
         it("should show enabled button after getting user country", async () => {
-          const response = snsResponseFor({
-            principal: Principal.fromText(rootCanisterId),
-            lifecycle: SnsSwapLifecycle.Open,
-            certified: true,
-            restrictedCountries: ["US"],
-          });
-          snsQueryStore.setData(response);
+          setSnsProjects([
+            {
+              rootCanisterId,
+              lifecycle: SnsSwapLifecycle.Open,
+              certified: true,
+              restrictedCountries: ["US"],
+            },
+          ]);
           fakeLocationApi.setCountryCode("CH");
 
           fakeLocationApi.pause();
@@ -449,44 +475,44 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         const finalCommitment = {
           icp: [
             {
-              transfer_start_timestamp_seconds: BigInt(123444),
+              transfer_start_timestamp_seconds: 123_444n,
               amount_e8s: amountE8s,
-              transfer_success_timestamp_seconds: BigInt(123445),
+              transfer_success_timestamp_seconds: 123_445n,
             },
           ],
+          has_created_neuron_recipes: [],
         };
 
         beforeEach(() => {
           // Do not rely on the `loadAccounts` from the modal.
-          accountsStore.setForTesting({
+          icpAccountsStore.setForTesting({
             main: mockMainAccount,
             subAccounts: [],
             hardwareWallets: [],
           });
-          jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
-          jest.spyOn(snsSaleApi, "newSaleTicket").mockResolvedValue({
+          vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
+          vi.spyOn(snsSaleApi, "newSaleTicket").mockResolvedValue({
             ...testTicket,
             amount_icp_e8s: amountE8s,
           });
-          jest
-            .spyOn(snsApi, "querySnsSwapCommitment")
+          vi.spyOn(snsApi, "querySnsSwapCommitment")
             // Query call
             .mockResolvedValueOnce({
-              rootCanisterId: Principal.fromText(rootCanisterId),
+              rootCanisterId,
               myCommitment: undefined,
             } as SnsSwapCommitment)
             // Update call
             .mockResolvedValueOnce({
-              rootCanisterId: Principal.fromText(rootCanisterId),
+              rootCanisterId,
               myCommitment: undefined,
             } as SnsSwapCommitment)
             .mockResolvedValue({
-              rootCanisterId: Principal.fromText(rootCanisterId),
+              rootCanisterId,
               myCommitment: finalCommitment,
             } as SnsSwapCommitment);
         });
 
-        const participateInSwap = async () => {
+        const participateInSwap = async (): Promise<ProjectDetailPo> => {
           const { container } = render(ProjectDetail, props);
 
           await runResolvedPromises();
@@ -502,13 +528,20 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           );
 
           expect(await projectDetail.hasCommitmentAmount()).toBe(false);
-          await projectDetail.participate({
+
+          await projectDetail.clickParticipate();
+          const modal = projectDetail.getParticipateSwapModalPo();
+          await modal.participate({
             amount: amountICP,
             acceptConditions: false,
           });
+          await advanceTime();
+          await modal.waitForAbsent();
           expect(await projectDetail.getCommitmentAmount()).toBe(
             formattedAmountICP
           );
+
+          return projectDetail;
         };
 
         it("when no restricted countries", async () => {
@@ -516,56 +549,77 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         });
 
         it("when restricted countries and user is from another country", async () => {
-          const response = snsResponseFor({
-            principal: Principal.fromText(rootCanisterId),
-            lifecycle: SnsSwapLifecycle.Open,
-            certified: true,
-            restrictedCountries: [notUserCountryCode],
-          });
-          snsQueryStore.setData(response);
+          setSnsProjects([
+            {
+              rootCanisterId,
+              lifecycle: SnsSwapLifecycle.Open,
+              certified: true,
+              restrictedCountries: [notUserCountryCode],
+            },
+          ]);
 
           await participateInSwap();
         });
 
         it("when restricted countries and getting location fails", async () => {
-          jest.spyOn(console, "error").mockImplementation(() => undefined);
+          vi.spyOn(console, "error").mockImplementation(() => undefined);
           fakeLocationApi.setCountryCode(
             new Error("Failed to get user location")
           );
 
-          const response = snsResponseFor({
-            principal: Principal.fromText(rootCanisterId),
-            lifecycle: SnsSwapLifecycle.Open,
-            certified: true,
-            restrictedCountries: ["US"],
-          });
-          snsQueryStore.setData(response);
+          setSnsProjects([
+            {
+              rootCanisterId,
+              lifecycle: SnsSwapLifecycle.Open,
+              certified: true,
+              restrictedCountries: ["US"],
+            },
+          ]);
           await participateInSwap();
+        });
+
+        it("should show finalizing after successful participation if api returns finalizing state", async () => {
+          const finalizingStatus = createFinalizationStatusMock(true);
+          vi.spyOn(snsSaleApi, "queryFinalizationStatus").mockResolvedValue(
+            finalizingStatus
+          );
+
+          const po = await participateInSwap();
+
+          expect(await po.getStatus()).toBe("Finalizing");
         });
       });
 
       it("should participate without user interaction if there is an open ticket.", async () => {
-        const initialCommitment = { icp: [] };
+        const initialCommitment = { icp: [], has_created_neuron_recipes: [] };
         const finalCommitment = {
           icp: [
             {
-              transfer_start_timestamp_seconds: BigInt(123444),
+              transfer_start_timestamp_seconds: 123_444n,
               amount_e8s: testTicket.amount_icp_e8s,
-              transfer_success_timestamp_seconds: BigInt(123445),
+              transfer_success_timestamp_seconds: 123_445n,
             },
           ],
+          has_created_neuron_recipes: [],
         };
-        jest
-          .spyOn(snsApi, "querySnsSwapCommitment")
+        vi.spyOn(snsApi, "querySnsSwapCommitment")
+          // Query call
           .mockResolvedValueOnce({
-            rootCanisterId: Principal.fromText(rootCanisterId),
+            rootCanisterId,
+            myCommitment: initialCommitment,
+          } as SnsSwapCommitment)
+          // Update call
+          .mockResolvedValueOnce({
+            rootCanisterId,
             myCommitment: initialCommitment,
           } as SnsSwapCommitment)
           .mockResolvedValue({
-            rootCanisterId: Principal.fromText(rootCanisterId),
+            rootCanisterId,
             myCommitment: finalCommitment,
           } as SnsSwapCommitment);
-        jest.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(testTicket);
+        vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(testTicket);
+
+        expect(snsApi.querySnsSwapCommitment).not.toBeCalled();
 
         const { getByTestId, queryByTestId } = render(ProjectDetail, props);
 
@@ -575,6 +629,8 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           expect(getByTestId("sale-in-progress-modal")).toBeInTheDocument()
         );
 
+        expect(snsApi.querySnsSwapCommitment).toBeCalledTimes(2);
+
         await waitFor(() =>
           expect(queryByTestId("sns-user-commitment")).toBeInTheDocument()
         );
@@ -583,27 +639,29 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           queryByTestId("sns-user-commitment")?.querySelector(
             "[data-tid='token-value']"
           )?.innerHTML
-        ).toMatch(formatToken({ value: testTicket.amount_icp_e8s }));
+        ).toMatch(formatTokenE8s({ value: testTicket.amount_icp_e8s }));
+        expect(snsApi.querySnsSwapCommitment).toBeCalledTimes(3);
       });
     });
 
     describe("Committed project", () => {
-      const rootCanisterId = mockCanisterId;
-      const response = snsResponseFor({
-        principal: rootCanisterId,
-        lifecycle: SnsSwapLifecycle.Committed,
-        directParticipantCount: [],
-        certified: true,
-      });
       const props = {
         rootCanisterId: rootCanisterId.toText(),
       };
       beforeEach(() => {
-        snsQueryStore.setData(response);
-        jest.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
+        setSnsProjects([
+          {
+            rootCanisterId,
+            lifecycle: SnsSwapLifecycle.Committed,
+            directParticipantCount: [],
+            certified: true,
+          },
+        ]);
+        vi.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
           rootCanisterId,
           myCommitment: {
             icp: [],
+            has_created_neuron_recipes: [],
           },
         });
       });
@@ -624,29 +682,32 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     });
 
     describe("Committed project with buyers count in state", () => {
-      const responses = snsResponsesForLifecycle({
-        lifecycles: [SnsSwapLifecycle.Committed],
-        certified: true,
-      });
-      const rootCanisterId = responses[0][0].rootCanisterId;
       const props = {
-        rootCanisterId,
+        rootCanisterId: rootCanisterId.toText(),
       };
-      const userCommitment = BigInt(100_000_000);
+      const userCommitment = 100_000_000n;
       beforeEach(() => {
-        snsQueryStore.setData(responses);
-        jest.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
-          rootCanisterId: Principal.fromText(rootCanisterId),
+        setSnsProjects([
+          {
+            rootCanisterId,
+            lifecycle: SnsSwapLifecycle.Committed,
+            directParticipantCount: [30n],
+            certified: true,
+          },
+        ]);
+        vi.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
+          rootCanisterId,
           myCommitment: {
             icp: [
               {
-                transfer_start_timestamp_seconds: BigInt(123444),
+                transfer_start_timestamp_seconds: 123_444n,
                 amount_e8s: userCommitment,
-                transfer_success_timestamp_seconds: BigInt(123445),
+                transfer_success_timestamp_seconds: 123_445n,
                 transfer_fee_paid_e8s: [],
                 amount_transferred_e8s: [],
               },
             ],
+            has_created_neuron_recipes: [],
           },
         });
       });
@@ -689,22 +750,24 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           queryByTestId("sns-user-commitment")?.querySelector(
             "[data-tid='token-value']"
           )?.innerHTML
-        ).toMatch(formatToken({ value: userCommitment }));
+        ).toMatch(formatTokenE8s({ value: userCommitment }));
       });
     });
   });
 
   describe("invalid root canister id", () => {
-    const responses = snsResponsesForLifecycle({
-      lifecycles: [SnsSwapLifecycle.Open],
-      certified: true,
-    });
     beforeEach(() => {
-      snsQueryStore.setData(responses);
+      setSnsProjects([
+        {
+          rootCanisterId,
+          lifecycle: SnsSwapLifecycle.Open,
+          certified: true,
+        },
+      ]);
       page.mock({ data: { universe: null } });
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreNoIdentitySubscribe
+      );
     });
 
     it("should redirect to launchpad", async () => {
@@ -722,16 +785,18 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
   });
 
   describe("not found canister id", () => {
-    const responses = snsResponsesForLifecycle({
-      lifecycles: [SnsSwapLifecycle.Open],
-      certified: true,
-    });
     beforeEach(() => {
-      snsQueryStore.setData(responses);
+      setSnsProjects([
+        {
+          rootCanisterId,
+          lifecycle: SnsSwapLifecycle.Open,
+          certified: true,
+        },
+      ]);
       page.mock({ data: { universe: null } });
-      jest
-        .spyOn(authStore, "subscribe")
-        .mockImplementation(mockAuthStoreNoIdentitySubscribe);
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        mockAuthStoreNoIdentitySubscribe
+      );
     });
 
     it("should redirect to launchpad", async () => {

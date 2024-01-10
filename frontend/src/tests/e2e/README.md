@@ -13,17 +13,13 @@ npm run test-e2e -- account
 ```
 This will run only the e2e tests which have `account` in the filename.
 
-If the environment variable `CI` is set, then the tests will run against
-`VITE_OWN_CANISTER_URL` instead of `http://localhost:5173`. This is configured
-in `frontend/playwright.config.ts`.
-
 
 # Environment
 
 Some of the tests will require a specific environment, such as an existing SNS
-project. The enviroment that we run against on CI is created by
-[.github/workflows/run.yml](https://github.com/dfinity/snsdemo/blob/main/.github/workflows/run.yml)
-in ths snsdemo repository. After setting up the enviroment, it creates a
+project. The environment that we run against on CI is created by
+[`.github/workflows/run.yml`](https://github.com/dfinity/snsdemo/blob/main/.github/workflows/run.yml)
+in the snsdemo repository. After setting up the environment, it creates a
 snapshot of the replica state, which is then used for CI by the nns-dapp repo.
 
 You can run locally with such a snapshot by using `scripts/dev-local-state.sh`.

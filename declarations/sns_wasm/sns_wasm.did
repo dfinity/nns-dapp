@@ -1,9 +1,27 @@
+//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-12-13_23-01/rs/nns/sns-wasm/canister/sns-wasm.did>
 type AddWasmRequest = record { hash : vec nat8; wasm : opt SnsWasm };
 type AddWasmResponse = record { result : opt Result };
 type AirdropDistribution = record { airdrop_neurons : vec NeuronDistribution };
+type Canister = record { id : opt principal };
+type CfNeuron = record {
+  has_created_neuron_recipes : opt bool;
+  nns_neuron_id : nat64;
+  amount_icp_e8s : nat64;
+};
+type CfParticipant = record {
+  hotkey_principal : text;
+  cf_neurons : vec CfNeuron;
+};
 type Countries = record { iso_codes : vec text };
+type DappCanisters = record { canisters : vec Canister };
+type DappCanistersTransferResult = record {
+  restored_dapp_canisters : vec Canister;
+  nns_controlled_dapp_canisters : vec Canister;
+  sns_controlled_dapp_canisters : vec Canister;
+};
 type DeployNewSnsRequest = record { sns_init_payload : opt SnsInitPayload };
 type DeployNewSnsResponse = record {
+  dapp_canisters_transfer_result : opt DappCanistersTransferResult;
   subnet_id : opt principal;
   error : opt SnsWasmError;
   canisters : opt SnsCanisterIds;
@@ -27,6 +45,14 @@ type FractionalDeveloperVotingPower = record {
 type GetAllowedPrincipalsResponse = record {
   allowed_principals : vec principal;
 };
+type GetDeployedSnsByProposalIdRequest = record { proposal_id : nat64 };
+type GetDeployedSnsByProposalIdResponse = record {
+  get_deployed_sns_by_proposal_id_result : opt GetDeployedSnsByProposalIdResult;
+};
+type GetDeployedSnsByProposalIdResult = variant {
+  Error : SnsWasmError;
+  DeployedSns : DeployedSns;
+};
 type GetNextSnsVersionRequest = record {
   governance_canister_id : opt principal;
   current_version : opt SnsVersion;
@@ -35,6 +61,9 @@ type GetNextSnsVersionResponse = record { next_version : opt SnsVersion };
 type GetSnsSubnetIdsResponse = record { sns_subnet_ids : vec principal };
 type GetWasmRequest = record { hash : vec nat8 };
 type GetWasmResponse = record { wasm : opt SnsWasm };
+type IdealMatchedParticipationFunction = record {
+  serialized_representation : opt text;
+};
 type InitialTokenDistribution = variant {
   FractionalDeveloperVotingPower : FractionalDeveloperVotingPower;
 };
@@ -43,6 +72,13 @@ type InsertUpgradePathEntriesRequest = record {
   sns_governance_canister_id : opt principal;
 };
 type InsertUpgradePathEntriesResponse = record { error : opt SnsWasmError };
+type LinearScalingCoefficient = record {
+  slope_numerator : opt nat64;
+  intercept_icp_e8s : opt nat64;
+  from_direct_participation_icp_e8s : opt nat64;
+  slope_denominator : opt nat64;
+  to_direct_participation_icp_e8s : opt nat64;
+};
 type ListDeployedSnsesResponse = record { instances : vec DeployedSns };
 type ListUpgradeStep = record {
   pretty_version : opt PrettySnsVersion;
@@ -54,12 +90,23 @@ type ListUpgradeStepsRequest = record {
   sns_governance_canister_id : opt principal;
 };
 type ListUpgradeStepsResponse = record { steps : vec ListUpgradeStep };
+type NeuronBasketConstructionParameters = record {
+  dissolve_delay_interval_seconds : nat64;
+  count : nat64;
+};
 type NeuronDistribution = record {
   controller : opt principal;
   dissolve_delay_seconds : nat64;
   memo : nat64;
   stake_e8s : nat64;
   vesting_period_seconds : opt nat64;
+};
+type NeuronsFundParticipants = record { participants : vec CfParticipant };
+type NeuronsFundParticipationConstraints = record {
+  coefficient_intervals : vec LinearScalingCoefficient;
+  max_neurons_fund_participation_icp_e8s : opt nat64;
+  min_direct_participation_threshold_icp_e8s : opt nat64;
+  ideal_matched_participation_function : opt IdealMatchedParticipationFunction;
 };
 type PrettySnsVersion = record {
   archive_wasm_hash : text;
@@ -81,26 +128,42 @@ type SnsInitPayload = record {
   url : opt text;
   max_dissolve_delay_seconds : opt nat64;
   max_dissolve_delay_bonus_percentage : opt nat64;
+  nns_proposal_id : opt nat64;
+  neurons_fund_participation : opt bool;
+  min_participant_icp_e8s : opt nat64;
+  neuron_basket_construction_parameters : opt NeuronBasketConstructionParameters;
   fallback_controller_principal_ids : vec text;
   token_symbol : opt text;
   final_reward_rate_basis_points : opt nat64;
+  max_icp_e8s : opt nat64;
   neuron_minimum_stake_e8s : opt nat64;
   confirmation_text : opt text;
   logo : opt text;
   name : opt text;
+  swap_start_timestamp_seconds : opt nat64;
+  swap_due_timestamp_seconds : opt nat64;
   initial_voting_period_seconds : opt nat64;
   neuron_minimum_dissolve_delay_to_vote_seconds : opt nat64;
   description : opt text;
   max_neuron_age_seconds_for_age_bonus : opt nat64;
+  min_participants : opt nat64;
   initial_reward_rate_basis_points : opt nat64;
   wait_for_quiet_deadline_increase_seconds : opt nat64;
   transaction_fee_e8s : opt nat64;
+  dapp_canisters : opt DappCanisters;
+  neurons_fund_participation_constraints : opt NeuronsFundParticipationConstraints;
+  neurons_fund_participants : opt NeuronsFundParticipants;
   max_age_bonus_percentage : opt nat64;
   initial_token_distribution : opt InitialTokenDistribution;
   reward_rate_transition_duration_seconds : opt nat64;
+  token_logo : opt text;
   token_name : opt text;
+  max_participant_icp_e8s : opt nat64;
+  min_direct_participation_icp_e8s : opt nat64;
   proposal_reject_cost_e8s : opt nat64;
   restricted_countries : opt Countries;
+  min_icp_e8s : opt nat64;
+  max_direct_participation_icp_e8s : opt nat64;
 };
 type SnsUpgrade = record {
   next_version : opt SnsVersion;
@@ -146,6 +209,9 @@ service : (SnsWasmCanisterInitPayload) -> {
   add_wasm : (AddWasmRequest) -> (AddWasmResponse);
   deploy_new_sns : (DeployNewSnsRequest) -> (DeployNewSnsResponse);
   get_allowed_principals : (record {}) -> (GetAllowedPrincipalsResponse) query;
+  get_deployed_sns_by_proposal_id : (GetDeployedSnsByProposalIdRequest) -> (
+      GetDeployedSnsByProposalIdResponse,
+    ) query;
   get_latest_sns_version_pretty : (null) -> (vec record { text; text }) query;
   get_next_sns_version : (GetNextSnsVersionRequest) -> (
       GetNextSnsVersionResponse,

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ConvertBtcInProgress from "$lib/components/accounts/ConvertBtcInProgress.svelte";
 import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
 import en from "$tests/mocks/i18n.mock";
@@ -247,6 +243,115 @@ describe("ConvertBtcInProgress", () => {
       position: 1,
       label: en.ckbtc.step_initialization,
       status: "In progress",
+    });
+  });
+
+  describe("with ICRC-2 transfer approval", () => {
+    it("should render steps while approving transfer", () => {
+      const result = render(ConvertBtcInProgress, {
+        props: {
+          useIcrc2: true,
+          progressStep: ConvertBtcStep.APPROVE_TRANSFER,
+        },
+      });
+
+      testProgress({
+        result,
+        position: 1,
+        label: en.ckbtc.step_approve_transfer,
+        status: "In progress",
+      });
+
+      expect(result.container.querySelectorAll(".step").length).toEqual(3);
+    });
+
+    it("should render steps while sending btc", () => {
+      const result = render(ConvertBtcInProgress, {
+        props: {
+          useIcrc2: true,
+          progressStep: ConvertBtcStep.SEND_BTC,
+        },
+      });
+
+      testProgress({
+        result,
+        position: 1,
+        label: en.ckbtc.step_approve_transfer,
+        status: "Completed",
+      });
+
+      testProgress({
+        result,
+        position: 2,
+        label: en.ckbtc.step_send_btc,
+        status: "In progress",
+      });
+
+      expect(result.container.querySelectorAll(".step").length).toEqual(3);
+    });
+
+    it("should render steps while reloading", () => {
+      const result = render(ConvertBtcInProgress, {
+        props: {
+          useIcrc2: true,
+          progressStep: ConvertBtcStep.RELOAD,
+        },
+      });
+
+      testProgress({
+        result,
+        position: 1,
+        label: en.ckbtc.step_approve_transfer,
+        status: "Completed",
+      });
+
+      testProgress({
+        result,
+        position: 2,
+        label: en.ckbtc.step_send_btc,
+        status: "Completed",
+      });
+
+      testProgress({
+        result,
+        position: 3,
+        label: en.ckbtc.step_reload,
+        status: "In progress",
+      });
+
+      expect(result.container.querySelectorAll(".step").length).toEqual(3);
+    });
+
+    it("should render steps when done", () => {
+      const result = render(ConvertBtcInProgress, {
+        props: {
+          useIcrc2: true,
+          progressStep: ConvertBtcStep.DONE,
+        },
+      });
+
+      testProgress({
+        result,
+        position: 1,
+        label: en.ckbtc.step_approve_transfer,
+        status: "Completed",
+      });
+
+      testProgress({
+        result,
+        position: 2,
+        label: en.ckbtc.step_send_btc,
+        status: "Completed",
+      });
+
+      testProgress({
+        result,
+        position: 3,
+        label: en.ckbtc.step_reload,
+        status: "Completed",
+      });
+
+      expect(result.container.querySelectorAll(".step").length).toEqual(3);
     });
   });
 });

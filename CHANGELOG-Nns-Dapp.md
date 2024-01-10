@@ -7,14 +7,885 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 The NNS Dapp is released through proposals in the Network Nervous System. Therefore, each proposal is documented below, following the relevant changes.
 
 ## Unreleased
+
+Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
+here after a successful release.
+
+## Proposal 126861
+
+### Application
+
+#### Added
+
+* Disable dissolve delay editing when the maximum is reached.
+* Implement `Storable` for accounts.
+* `UnboundedStableBTreeMap` as an account storage medium.
+* Save accounts in the `pre_upgrade` hook only when accounts are stored in the heap.
+* Save account stats in the `pre_upgrade` hook rather than recomputing them in the `post_upgrade` hook.
+* Migration functions.
+* Render pending and failed BTC withdrawal transaction as such.
+* Add `ENABLE_SNS_TYPES_FILTER` feature flag.
+
+#### Changed
+
+* Use `ic_cdk::println` instead of the `dfn_core` equivalent.
+
+#### Fixed
+
+* Remaining wrong dissolve delay error message after min/max click.
+* Avoid unnecessary calls to SNS root canister ids to get the canister ids.
+* Min dissolve delay button updates not only for the first time.
+* Fix scrollbar in multiline toast message. 
+* Go back to accounts page for incorrect account identifier in SNS wallet page.
+* Stay on the same universe when navigating back from wallet to the accounts page.
+
+### Operations
+
+#### Added
+
+* Entry for bitcoin canister in `dfx.json`.
+
+#### Changed
+
+* Apply clippy only to target `wasm32-unknown-unknown` but prohibit `std::println` and variants for that target.
+
+#### Removed
+
+* Remove `past-changelog-test`.
+
+## Proposal 126734
+
+### Application
+
+#### Added
+
+* Sns dynamic voting proportions.
+* Iterator over AccountsDbs.
+* Display expiration date for sns proposals.
+* Neuron type support.
+* Card with BTC deposit address and QR code in ckBTC wallet.
+* Merge Approve transfer with BTC "Sent" transaction in transaction list.
+* Display Neurons' Fund commitment progress bar.
+* `range()` method to `AccountsDbTrait`.
+* Render ckBTC Reimbursement transactions.
+
+#### Changed
+
+* Render BTC deposits/withdrawals as "BTC Received"/"BTC Sent".
+* Update Rust version: `1.74.0` -> `1.74.1`
+* Provide space for migration state in the `ProxyDb`.
+* Rename "Launch Pad" to "Launchpad".
+
+#### Fixed
+
+* Limit the size of proposal payload rendering errors, as otherwise the error can become too large to return.
+* Provide a fallback if proposal payloads don't have the expected type.
+* Temporary work-around for broken SNS.
+
+#### Security
+
+* Bump css-tools dev dependency to fix minor vulnerability.
+
+### Operations
+
+#### Changed
+
+* Allow npm greater than v10 in frontend project.
+
+#### Removed
+
+* Remove `.gitattributes`.
+
+#### Fixed
+
+* Provide missing global config in cache-filling workflow.
+* Update the correct flavour of golden file when the NNS Dapp canister API changes.
+* Specify the node version to use in the version bump test.
+* Summarize the `AccountsStore` contents in its `Debug` representation rather than trying to print its entire contents.
+* Lock the spellcheck version and its dependencies.
+* Keep `dfx start` logs in CI.
+* Let canister IDs provided by the dfx cli override fixed canister IDs in config files.  Needed for local deployments.
+
+## Proposal 126313
+
+### Application
+
+#### Added
+
+* Support for CkETH token.
+
+#### Removed
+
+* Remove logic for using ICRC-1 when staking a neuron.
+
+### Operations
+
+## Proposal 126305
+
+### Application
+
+#### Added
+
+* Enable ICRC-2 flow for BTC withdrawal.
+* Add ENABLE_CKETH feature flag.
+* Get ckETH canister IDs from environment/configuration.
+* Display BTC deposits with 1-11 confirmations as "pending".
+
+#### Removed
+
+* Remove the `ENABLE_FULL_WIDTH_PROPOSAL` feature flag.
+
+#### Fixed
+
+* Fix swallowed undefined fields in raw json view. 
+
+#### Not Published
+
+* Structure to protect Rust access to stable memory.
+
+### Operations
+
+#### Added
+
+* Experimental tests for schema migration.
+* Add optional version support to the storage records.
+* Include ckETH canister IDs when importing from URL with `scripts/canister_ids`.
+* Include ckETH when generating args.did and .env.
+
+#### Changed
+
+* Adapt `release-sop` script to work with DevEnv instead of staging.
+
+## Proposal 126093
+
+### Application
+
+#### Added
+
+* Button to buy ICP with an external provider.
+
+#### Fixed
+
+* Fix docker builds when there is no global config.
+* Fix "Expiration date" countdown label visibility.
+* Optimize nns proposal rendering for small devices.
+
+### Operations
+
+#### Changed
+
+* Update Rust to the latest stable version (1.74.0).
+* Move the commands that derive aggregator code from NNS candid files.
+* Better text for rust update PRs.
+
+#### Removed
+
+* References to static testnets.
+
+## Proposal 126004
+
+### Application
+
+#### Added
+
+* Render withdrawal address on ckBTC burn transactions.
+
+#### Changed
+
+* New icons for sent/received transactions.
+* Increase the pre-migration account limit.
+* Use "From:" instead of "Source:" for received transactions.
+
+#### Fixed
+
+* Add missing "Rename" button in the subaccount page.
+* Fix disappearing "Received" half of to-self transactions.
+* Fix debug store that wasn't working.
+* Fix the stuck loading issue with the Sns proposal.
+
+### Operations
+
+#### Added
+
+* Add a workflow to update the SNS aggregator bindings regularly.
+* Added support for global network config.
+* Cron job to update proposal types.
+* Enable dependabot for Rust updates.
+* Workflow to get the latest NNS and SNS canister candid files.
+* Try to prevent calls to global.fetch in unit tests.
+* Add `devenv_llorenc` and `devenv_dskloet` to list of networks.
+
+#### Changed
+
+* Update `ic-wasm` to the latest version.
+* Factor out the `snsdemo` installation.
+* Make the location of the snsdemo checkout configurable.
+* Add `prod` and `aggregator-prod` to the list of public releases.
+* Update `dfx` to `v0.15.1`.
+* Update the URL of the app subnet to what dfx v15 expects.
+* Use a unique branch when updating the snsdemo release, didc, IC candid files or rust.
+* Better checks that the network is defined.
+
+#### Fixed
+
+* Remove accidentally committed (empty) directory and fix commit patterns.
+* Fix local deployments with `dfx 0.15.1`.
+
+## Proposal 125580
+
+### Application
+
+#### Added
+
+* Add a link to the ICP Dashboard in the project detail page.
+* Add collapse-all functionality to json tree view.
+
+#### Changed
+
+* Read schema version from stable memory.
+
+#### Fixed
+
+* Show canister title in details when user is not the controller.
+
+#### Not Published
+
+* Use ICRC-2 for BTC withdrawal when `ENABLE_CKBTC_ICRC2` is enabled.
+
+### Operations
+
+#### Added
+
+* Cron job to update proposal types.
+* Enable dependabot for Rust updates.
+* Workflow to get the latest NNS and SNS canister candid files.
+* Try to prevent calls to global.fetch in unit tests.
+
+#### Changed
+
+* Update `ic-wasm` to the latest version.
+* Factor out the `snsdemo` installation.
+* Add `prod` and `aggregator-prod` to the list of public releases.
+
+#### Removed
+
+* No longer update rust bindings when NNS canister interfaces are updated.
+
+## Proposal 125508
+
+### Application
+
+#### Added
+
+* Specified the preferred storage schema as an argument.
+* Added provenance information to .did files and derived rust code.
+* Add `UpdateElectedHostosVersions` and `UpdateNodesHostosVersion` proposals support.
+* Show the maximum participation of the Neurons' Fund when present.
+* A list of exceptional (not-rendered, zero value) transactions.
+
+#### Changed
+
+* Stable structures updated to `0.6.0`.
+* Dapp upgraded to Svelte `v4`.
+* New Proposal Card.
+* Change the slider in dissolve delay for a read-only progress bar.
+* Redesign the proposal payload and action.
+* Switch the flag to use redesigned proposal detail page sections by default.
+* Redesign the proposal voting section.
+* Beautify the proposal cards look & feel.
+
+#### Removed
+
+* Removed debounce on deriving Network from ckBTC send address.
+
+#### Fixed
+
+* Remove robots meta tag to allow search engines to crawl NNS Dapp.
+* Fix i18n key in merge neurons summary screen.
+* Display `TransferFrom` as a normal receive instead of failing to load transactions.
+* Fix issue with setting max dissolve delay when max is not a whole day.
+
+#### Not Published
+
+* Added `retrieveBtcWithApproval` in ckbtc-minter API.
+* Render Approve transactions in transaction list.
+* Add feature flag `ENABLE_CKBTC_ICRC2`.
+
+### Operations
+
+#### Added
+
+* Import candid for NNS ledger.
+* Formatting for `Cargo.toml` files.
+* Add test to check that the nns-dapp cargo and npm versions match.
+* Script to deploy nns-dapp on `DevEnv`.
+
+#### Changed
+
+* Install `dfx` by means of the dedicated GitHub action.
+* Stop updating candid files when updating the test environment.
+* Join npm audit URLs with spaces instead of commas.
+* Add traits with a dedicated command rather than with patch files.
+* Use snsdemo snapshot with Internet Identity version 2023-10-27.
+
+#### Removed
+
+* Delete nightly `GitHub` job to update II used in tests; we now use the II that comes with `snsdemo`.
+
+## Proposal 125338
+
+### Application
+
+#### Fixed
+
+* Fix issue with transactions not appearing in the Wallet page.
+
+## Proposal 125318
+
+### Application
+
+#### Changed
+
+* Update proposal info icons position to improve the UX.
+* Improve the indicator of the minimum commitment in the project status.
+
+#### Fixed
+
+* Add "Finalizing" status in projects of the Launchpad.
+* Fix UI bug when commitment was very low.
+
+#### Not Published
+
+* Added `approveTransfer` in icrc-ledger API.
+* New feature flag `ENABLE_MY_TOKENS`.
+* Detailed values of the Neurons' Fund and direct participation in the project detail page.
+
+### Operations
+
+#### Added
+
+* Documentation for the proposals payload renderer.
+* E2E test for ckBTC.
+* Fix erroneous failures in the `tip` tagging workflow when a PR is closed without merging.
+* Add --host flag to dfx-snapshot-start.
+
+#### Changed
+
+* Migrate the Jest unit test suite to Vitest.
+
+## Proposal 125061
+
+### Application
+
+#### Added
+
+* Get BTC button to use the mock bitcoin canister to test ckBTC.
+
+#### Changed
+
+* Update the schemas for the governance, registry and SNS Wasm canisters, used for proposal rendering.
+* Get the governance, registry and SNS Wasm schemas direcly from `.did` files rather than importing the canisters.
+* Improve security by escaping additional images in the proposal summary markdown.
+* Internal change: remove unused snsQueryStore.
+* New Tag style. Used in followees topic and project status.
+* New header UI in the wallet pages.
+* Integrated library `marked` within dependencies instead of shipping it as a static asset.
+
+#### Fixed
+
+* Separators in project page appearing without data inside.
+* Cycles displayed as T Cycles on canister detail page.
+
+### Operations
+
+#### Changed
+
+* Put unreleased changes in `CHANGELOG-Nns-Dapp-unreleased.md` to avoid bad merges.
+
+#### Removed
+
+* Remove npm script `update:next`.
+
+## Proposal 124999
+
+### Application
+
+#### Added
+
+* New feature flag `ENABLE_FULL_WIDTH_PROPOSAL`.
+
+#### Changed
+
+* Make a histogram of transactions per account, used to optimize the new account storage.
+* Include a copy of the `nns-governance` candid file in the `nns-dapp` repository.
+* Update the IC commit in the `proposals` crate to `release-2023-08-01_23-01`.
+* Separate proposals backend into a separate crate.
+* Improve spacings in the page headings.
+* Improve the skeletons while loading in the neuron details page.
+* Review the chunking strategy to enhance the dapp's loading time and prevent random, rare flashes of unstyled content (FOUC).
+* New header UI in the canister detail page.
+* New labels for min and max participation.
+
+#### Removed
+
+* Remove `ENABLE_DISBURSE_MATURITY` feature flag.
+* Remove `ENABLE_SNS_AGGREGATOR_STORE` feature flag.
+
+#### Fixed
+
+* Change inconsistency in the name of an NNS topic.
+
+#### Security
+
+* Rename `memo` on the ICRC-1 interface of the ICP ledger API to `icrc1Memo` and add a warning about the `memo` and `icrc1Memo` being unrelated.
+
+#### Not Published
+
+* New UI to better explain the commitment of Neurons' Fund and direct participation.
+
+### Operations
+
+#### Added
+
+* Run several script tests on macos as well as ubuntu.
+* Extend the release SOP script up to submitting the proposal.
+* Check spelling in Rust documentation as part of CI.
+
+#### Changed
+
+* Factor out the core of `did2rs` for wider use.
+* Reduce the manual changes needed for `did2rs` by automating more.
+* Use `clap` argument parsing in `did2rs`.
+* Populate the PR description of the `didc` updater.
+* Update the `snsdemo` test environment, `dfx` and the IC commit of the NNS canisters.
+* Update the snsdemo commit & automate further updates.
+* Cron job to update `snsdemo` weekly.
+* Update data for the Launchpad Prod test.
+
+#### Removed
+
+* Comment and skip dfx-nns-proposal-args.test.
+
+## Proposal 124855
+
+### Application
+
+#### Added
+
+* Select destination when disbursing maturity.
+
+#### Changed
+
+* Use ICRC-1 transfer on ICP ledger canister instead of generic ICRC-1 ledger canister.
+* Allow `get_histogram` (an unstable API) only as a query call.
+* Set `ENABLE_SNS_AGGREGATOR_STORE` true for production.
+* Use custom button label for disburse maturity flow.
+
+#### Fixed
+
+* Fix CSS on canister cards to show tooltip and name correctly.
+
+#### Not Published
+
+* Use ICRC-1 transfer when staking a neuron, behind a feature flag.
+
+### Operations
+
+#### Changed
+
+* Fix the `release-sop` command that set `origin/main` as the upstream.
+* Specify the version of `binstall` in `dfx.json`.
+* Fix the proposal matching pattern in `nns-dapp/split-changelog` that used to match aggregator proposals as well.
+* Fix the rust-update action.
+
+## Proposal 124787
+
+### Application
+
+#### Added
+
+* Add the amount of maturity related to a selected percentage.
+* Disburse maturity of sns neurons.
+
+#### Changed
+
+* Show the token selector also when not signed in.
+* Use consistent positioning for the copy icon in the Hash component.
+* Allow setting a dissolve delay that's shorter than what's required for voting power.
+* Improve contrast of token selector's logo in light theme.
+* Remove the "Project" leading word in the SNS Project card.
+
+#### Fixed
+
+* Fixed issues with SetDissolveDelay component.
+* Fix sent transaction icon background color dark theme.
+* Improve text color of total value locked's label.
+* Make duration rendering consistent.
+* Improve Tooltip location when container hides part of it.
+
+### Operations
+
+#### Changed
+
+* Specify the `snsdemo` version in `dfx.json`.
+* Make the file list stats accessible in logs and as a file in the release artefacts.
+* Support using the nns-dapp downgrade-upgrade test with Wasms other than prod.
+
+#### Fixed
+
+* Fix build script by pinning cargo-binstall version.
+
+## Proposal 124486
+
+### Application
+
+#### Added
+
+* Make NNS Dapp accessible via wallet.ic0.app and wallet.internetcomputer.org.
+
+#### Changed
+
+* Add a database abstraction layer, preparing for migration.
+* Put common accountsdb tests in a macro and call that rather than copying the list of tests.
+* Change accounts storage heap structure from `HashMap` to `BTreeMap`.
+* Made disburse neuron flow more consistent with other transaction flows.
+* New colors in NNS Dapp.
+* Make the format of `get_toy_account()`, used in testing, compatible with `get_account()`.
+* Make a histogram of account sizes, used to optimize the new account storage.
+
+#### Removed
+
+* Remove unused components after new neuron details page.
+
+### Operations
+
+#### Added
+
+* Add "Filter proposals by Votable only" e2e test.
+* `--import-from-index-html` flag on `scripts/canister_ids` to get canister IDs from an existing (testnet) release.
+* A dictionary for spell-checking.
+* New "finalizing" status in SNS project detail page.
+
+#### Changed
+
+* Set `ENABLE_SNS_AGGREGATOR_STORE` true in unit tests.
+
+## Proposal 124328
+
+### Application
+
+#### Changed
+
+* Bigger icon and description first on Sns project page.
+
+#### Removed
+
+* Remove ENABLE_NEURON_SETTINGS feature flag.
+
+#### Fixed
+
+* Header in accounts, canisters and neurons was not visible after user came back from logging in.
+* Address issue with displayed SNS balances on quickly switching between SNSes.
+
+#### Security
+
+* Update dependency of @adobe/css-tools because of https://github.com/advisories/GHSA-hpx4-r86g-5jrg
+
+#### Not Published
+
+* Disburse maturity of sns neurons.
+
+### Operations
+
+#### Added
+
+- Add a command to increment the package versions.
+
+#### Changed
+
+- Use the upstream notification action directly, rather than using a local copy.
+- Support comments in proposal titles.  Example: `Proposal 1111 (cherry-pick)`
+
+## Proposal 124280
+
+### Application
+
+#### Added
+
+* New tag for NNS neurons: "Hardware Wallet".
+* New derived state store for SNS projects.
+* Identify swap participation ICP transactions.
+* Improve error messaging on payload size limit in proposals list page.
+* New lifecycle store for SNS projects.
+* New feature flag ENABLE_SNS_AGGREGATOR_STORE.
+* Introduce an option to collapse or expand the application's menu on large screen.
+* Remove some unused fields from the aggregator converted type.
+* Display active sns neuron maturity disbursements.
+
+#### Changed
+
+* Access accounts only by getter and setter; do not assume that in-place modifications are possible.
+* Defined an account data store interface, to allow account storage migrations.
+* Update SNS Swap types to match the latest canister interface. 
+* Hide by default the proposal summary in ballots.
+* Review checkboxes vertical alignment, border contrast on dark mode and remove hover background colors
+* Launchpad proposal requests only Open proposals of the SNS topic.
+* When reusing cached agents, use the current identity instead of the one in the cached agent.
+* New landing pages for Accounts, Neurons, Canister and Settings when not logged in.
+* Remove login page and redirect to accounts instead.
+
+#### Removed
+
+* Remove ENABLE_SIMULATE_MERGE_NEURONS flag.
+
+#### Fixed
+
+* Fix wrong "ICP Staked" message in SNS neurons.
+
+#### Not Published
+
+* Use new stores as source of data instead of snsQueryStore.
+
+### Operations
+
+* Format markdown files, such as `README.md`, except changelogs and frontend markdown files.
+* Improve the rust document generation.
+* Fix shellcheck issues.
+
+#### Added
+
+* Make it easy to skip the CI build step for quick testing.
+* Screenshot e2e tests.
+* Allow specifying a test_filter to the e2e CI action.
+* New test util to set SNS projects for testing.
+* Make scripts/past-changelog-test check again the previous commit when run on main.
+* Unit tests for the detailed `min_participant_icp_e8s` rendering.
+
+#### Changed
+
+* Moved e2e-tests/scripts/ to scripts/e2e-tests/ (but deleted update-chromedriver).
+* Moved e2e-tests/scripts/ to scripts/e2e-tests/.
+* Change some unit tests to set a system time and not rely on actual time.
+
+#### Removed
+
+* Remove compressed `.wasm` files from releases.  Please use `.wasm.gz` instead.
+* Remove `frontend/jest-spy.ts`.
+* Remove e2e-tests/
+
+#### Fixed
+
+* Avoid SIGPIPE in scripts/past-changelog-test which caused flakiness.
+
+#### Security
+
+* Fixed some tests that depended on execution order.
+* [CVE-2023-38497](https://blog.rust-lang.org/2023/08/03/cve-2023-38497.html): Update Rust from version `1.71.0` to `1.71.1`.
+## Proposal 124252 (cherry-pick)
+
+### Application
+
+#### Fixed
+
+* Detailed `min_participant_icp_e8s` rendering hack for Modclub SNS.
+* Disable HW from participating in swaps.
+
+## Proposal 124014
+
+### Application
+
+#### Changed
+
+* Don't display proposal navigation on launch-pad page.
+* Update SNS Aggregator response type and related converters.
+* Implement the standard accounts dropdown selector in canisters' features.
+* Review and optimize the number of steps and the UI of the canisters' related modals.
+* Hotkeys can now manage Neurons' Fund participation as long as the neuron is not controlled by a hardware wallet.
+* Hardware Wallet users need to sign transactions only once. Except for staking a neuron.
+* New NNS and SNS neuron details page layout.
+
+#### Removed
+
+* Remove fallback to load SNSes directly from SNS canisters.
+* Remove ENABLE_SNS_AGGREGATOR flag.
+* Remove relying on the swap raw metrics to get the number of buyers of a Swap.
+
+#### Fixed
+
+* Fix missing referrer path on subpages.
+* Fix some type discrepancies with SNS aggregator data.
+* Do not show unnecessary scrollbar in notifications.
+* Fix error when getting an SNS Aggregator page fails.
+* Maintain text color in hyperlinks card when hovered.
+* Prevent default behavior of copy button to avoid unintentional navigation when used in hyperlinks cards.
+* Prevent the submission of cycles for top-up review unless an amount has been entered first.
+
+### Operations
+
+#### Added
+
+* Proposal details e2e test.
+* Automatically populate the change log section in the release proposal.
+* Remove empty section headings in scripts/nns-dapp/split-changelog.
+* Make it easy to skip the CI build step for quick testing
+
+#### Changed
+
+* Update candid interface for NNS governance to improve 1-proposal support.
+* Rename deleted workflows to start with "ZZZ".
+
+#### Fixed
+
+* past-changelog-test compares lines numbers correctly.
+* Ignore SIGPIPE in scripts/past-changelog-test which caused flakiness.
+
+## Proposal 123921
+
+### Application
+
+#### Added
+
+* Enable merge neurons preview.
+* Display page title in browser's tab.
+
+#### Changed
+
+* Refactor storage to prepare for schema migration.
+* Enhance user experience by rendering hyperlinks for the cards displayed on the Accounts, Neurons, Proposals, Launchpad, and Canister pages instead of buttons
+* Bump agent-js `v0.18.1`.
+* Clarify Ledger app version error message.
+* Increase the displayed size of the projects logo on the "Launchpad".
+* Do not display the "Vote on Proposals" title in the page's header on wide screens to align the behavior with pages that support multiple projects.
+* New icon for dissolving neuron state.
+* Keep menu open and visible on large screen (not only on extra large screen).
+* Use tar format `gnu` instead of `ustar` to archive the frontend assets, to keep reproducibility between GNU tar versions 1.34 and 1.35.
+
+#### Fixed
+
+* Show the current dissolve Delay in the modal to increase a dissolving SNS neuron.
+* Avoid repeating queries to canister status if the principal is not a controller, and avoid long-lasting display of skeletons.
+* Correctly set the referrer on the detail page to go back to the effective previous page. Useful for the proposal detail page that can be opened from either from the "Proposals" or "Launchpage" pages. 
+* Fix incorrect error message when the user tries to set a lower sns dissolve delay than current.
+
+#### Not Published
+
+* New NNS and SNS neuron details page layout.
+
+### Operations
+
+#### Added
+
+* A separate build of nns-dapp for testing.  See: https://github.com/dfinity/nns-dapp/releases/tag/dev-build-test-tag
+* A test that state is preserved in downgrade-upgrade tests.
+* Support SNS neuron permission in fake SNS governance API.
+* Support selective pausing and resuming in API fakes.
+
+#### Changed
+
+* Create the `noassets` build using rust feature flags, for consistency, instead of with a separate build stage.
+* Updated the downgrade-upgrade test summary.
+* Increased the size of the persistent state in downgrade-upgrade tests.
+* Moved the downgrade-upgrade test into a dedicated job.
+* Faster formatting of shell and yaml files, by operating only on named or changed files.
+* Updated the calls to `docker-build` to use the `--network` flag.
+* Upgraded to Playwright 1.36.
+
+#### Fixed
+
+* Deploy.sh script
+* Improve sns governance e2e test.
+
+#### Security
+
+## Proposal 123718
+
+### Application
+
+#### Added
+
+* Support for ICP transactions with Icrc addresses as the destination.
+
+#### Changed
+
+* Improve visibility of proposal summary headers.
+* Improve copy in button to set or increase dissolve delay of a neuron.
+
+### Operations
+
+#### Added
+
+* Install `ic-wasm` as part of the setup command.
+* Better visibility of upgrade cycle consumption, wasm size and memory usage.
+* Check that release-sop is the newest version when it's run.
+* Compile end-to-end tests to catch type errors.
+
+#### Changed
+
+* Use faster GitHub runners for e2e tests.
+* Replace `ic-cdk-optimizer` with `ic-wasm shrink`.
+* Migrate some e2e tests from wdio to playwright.
+
+## Proposal 123471
+### Application
+
+#### Changed
+
+* Revert display of TVL in various currencies to USD only
+* Removed `OWN_CANISTER_URL`.
+* Setting Dissolve Delay supports 888 years.
+* Improve responsiveness in proposal filter modals.
+* Only Locked neurons are mergeable.
+* Add copy button to sns proposal proposer id.
+* New neuron state icons.
+
+#### Deprecated
+#### Removed
+#### Fixed
+
+- Destroy sns neuron component and page after disburse.
+
+#### Security
+
+* Changed `OWN_CANISTER_URL` to `'self'` in the CSP.  These are equivalent but `'self'` does not depend on the deployment config.
+
+#### Not Published
+
+### Operations
+
+#### Added
+
+* Nns voting e2e test.
+* Added CI workflows to update rust and didc automatically, by cron job or button click.
+* Script to reorganize CHANGELOG-Nns-Dapp.md after a release.
+* Test that no new change log entries are added to existing releases.
+* New feature flag "ENABLE_NEURON_SETTINGS".
+* Playwright connects to PLAYWRIGHT_BASE_URL if specified in the environment.
+* release-sop.test now has a flag to update golden files.
+
+#### Changed
+
+* Updated `didc` to the latest release.
+* Migrated some end-to-end tests from Wdio to Playwright.
+* Use the newest snsdemo snapshot with the sns_aggregator preloaded.
+* Split Playwright e2e test on CI into 2 shards.
+
+#### Deprecated
+#### Removed
+
+* Duplicate `ic-cdk-optimizer` version field.
+
+#### Fixed
+
+#### Security
+
+## Proposal 123423
 ### Application
 
 #### Added
 
 * Render SNS neuron voting power in neuron detail page.
-* Users can now add names to canisters to easily identify them within NNS dapp only.
+* Users can now add names to canisters to easily identify them within NNS Dapp only.
 * Periodically check for new transactions and updated balances of the ckBTC tokens/accounts.
-* Nns voting e2e test.
 
 #### Changed
 
@@ -22,15 +893,9 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 * Updated `bitcoin-canister` revision for proposal payload support.
 * Improve proposal action rendering.
 
-#### Deprecated
-#### Removed
 #### Fixed
 
 * Fix bug with newly created canisters where the name was ovewritten to empty string.
-
-#### Security
-
-* Changed `OWN_CANISTER_URL` to `'self'` in the CSP.  These are equivalent but `'self'` does not depend on the deployment config.
 
 #### Not Published
 
@@ -40,15 +905,10 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 
 #### Added
 
-- Added CI workflows to update rust and didc automatically.
 - CreateServiceNervousSystem proposal support.
 - Base64 image support for payload rendering.
 - `scripts/canister_ids` can now remove canisters from `canister_ids.json`.
 - Added a script to perform part of the release SOP.
-- Script to reorganize CHANGELOG-Nns-Dapp.md after a release.
-- Test that no new change log entries are added to existing releases.
-- New feature flag "ENABLE_NEURON_SETTINGS".
-- Playwright connects to PLAYWRIGHT_BASE_URL if specified in the environment.
 
 #### Changed
 
@@ -56,15 +916,10 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - Set a custom URL for `internet_identity` on `ic` rather than using the default.
 - Improve Canister Detail tests by mocking the api layer instead of services.
 - Copied the newest version of clap.bash from snsdemo.
-- Migrated some end-to-end tests from Wdio to Playwright.
 
-#### Deprecated
-#### Removed
 #### Fixed
 
 * ci-link script uses correct workflow name.
-
-#### Security
 
 ## Proposal 123301
 
@@ -103,6 +958,7 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 - A script to get the WASM hash from the GitHub CI build log.
 * Instructions to verify canister args in proposal.
 * Added a command to inspect canister upgrade proposals. (See: scripts/dfx-nns-proposal-args)
+* More test for the release-sop script.
 
 #### Changed
 
@@ -115,7 +971,6 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 #### Removed
 
 * Deleted the now empty `docker-build` and `aggregator` GitHub workflows.
-
 
 ## Proposal 123245
 

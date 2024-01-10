@@ -8,7 +8,7 @@ import { nowInSeconds } from "$lib/utils/date.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
 import type { Principal } from "@dfinity/principal";
-import type { TokenAmount } from "@dfinity/utils";
+import type { TokenAmountV2 } from "@dfinity/utils";
 import { toNullable } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
@@ -46,7 +46,7 @@ export const renderContextCmp = ({
 }: {
   summary?: SnsSummary;
   swapCommitment?: SnsSwapCommitment;
-  totalTokensSupply?: TokenAmount;
+  totalTokensSupply?: TokenAmountV2;
   Component: typeof SvelteComponent;
   reload?: () => void;
 }) =>
@@ -59,7 +59,12 @@ export const renderContextCmp = ({
           swapCommitment,
           totalTokensSupply,
         }),
-        reload: reload === undefined ? jest.fn() : reload,
+        reload:
+          reload === undefined
+            ? () => {
+                // do nothing here
+              }
+            : reload,
       } as ProjectDetailContext,
       Component,
     },

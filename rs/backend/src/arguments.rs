@@ -12,11 +12,21 @@ use regex::{Captures, Regex};
 use serde::Serialize;
 use std::collections::HashMap;
 
-/// Init and post_upgrade arguments
+use crate::accounts_store::schema::SchemaLabel;
+
+/// `init` and `post_upgrade` arguments
 #[derive(Debug, Default, Eq, PartialEq, CandidType, Serialize, Deserialize)]
 pub struct CanisterArguments {
-    /// Values that are to be set in the web front end, by injecting them into Javascript.
+    /// Values that are to be set in the web front end, by injecting them into JavaScript.
     pub args: Vec<(String, String)>,
+    /// TODO: This is a placeholder variable.  Please check whether this is actually implemented
+    /// (in case I forget to remove this when it is implemented) and if it is, delete this TODO.
+    ///
+    /// The preferred schema.  If there is existing data in another schema, it will be converted to this schema.
+    ///
+    /// Note: To change the default schema, please change the default value in `impl Default for SchemaLabel`.
+    ///       This way `canister_arguments.schema.unwrap_or_default()` will provide the expected value.
+    pub schema: Option<SchemaLabel>,
 }
 
 thread_local! {
@@ -25,12 +35,12 @@ thread_local! {
 }
 
 impl CanisterArguments {
-    /// HTML meta tag to be included in every index.html
+    /// HTML meta tag to be included in every `index.html`.
     ///
     /// Canister arguments are included in the meta tag as data attributes.  Thus:
     /// - Arguments are upper snake case with digits: `SAMPLE_ARG2`
     /// - In the tag, arguments are lower kebab case data attributes: `data-sample-arg2`
-    /// - In Javascript the tag can be read as camel case with:
+    /// - In JavaScript the tag can be read as camel case with:
     ///   `document.querySelector('meta[name="nns-dapp-vars"]').dataset.sampleArg2`
     ///
     /// In Rust, the substitution is as follows:
@@ -44,7 +54,7 @@ impl CanisterArguments {
     /// args.push(("OWN_CANISTER_ID".to_string(), "aeiouy".to_string()));
     ///
     /// // We now have complete arguments:
-    /// let args = CanisterArguments{args};
+    /// let args = CanisterArguments{args, ..CanisterArguments::default()};
     ///
     /// // The arguments are encoded as a meta tag like this:
     /// assert_eq!(args.to_html(), r#"<meta name="nns-dapp-vars"
@@ -74,12 +84,12 @@ impl CanisterArguments {
         self
     }
 
-    /// Utility to convert static strings to an args field.
+    /// Utility to convert static strings to an `args` field.
     ///
     /// ```
     /// use nns_dapp::arguments::CanisterArguments;
     /// let args = CanisterArguments::args_from_str(&[("FOO", "bar"), ("BAT", "man")]);
-    /// let canister_arguments = CanisterArguments{args};
+    /// let canister_arguments = CanisterArguments{args, ..CanisterArguments::default()};
     /// ```
     #[allow(dead_code)]
     pub fn args_from_str(str_args: &[(&str, &str)]) -> Vec<(String, String)> {
@@ -102,7 +112,7 @@ pub fn configname2attributename(name: &str) -> String {
     "data-".to_owned() + &name.replace('_', "-").to_lowercase()
 }
 
-/// Escapes a configuration value per the OWASP recommendation: https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding-for-html-contexts
+/// Escapes a configuration value per the OWASP recommendation: <https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding-for-html-contexts>
 pub fn configvalue2attributevalue(value: &str) -> String {
     value
         .replace('&', "&amp;")
@@ -156,7 +166,7 @@ impl TemplateEngine {
     ///
     /// * The keys must be upper snake case, i.e. consist of the characters `A-Z0-9_`.
     /// * Values are taken from the engine `args` map.
-    ///   * If no match is found in the args map, variables are left unchanged.
+    ///   * If no match is found in the `args` map, variables are left unchanged.
     ///
     pub fn populate(&self, input: &str) -> String {
         self.regex

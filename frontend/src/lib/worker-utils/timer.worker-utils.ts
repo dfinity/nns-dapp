@@ -1,3 +1,4 @@
+import type { PostMessageResponse } from "$lib/types/post-messages";
 import type { SyncState } from "$lib/types/sync";
 import { loadIdentity } from "$lib/utils/auth.utils";
 import type { Identity } from "@dfinity/agent";
@@ -76,6 +77,15 @@ export class TimerWorkerUtils {
     this.setStatus("idle");
   }
 
+  postMsg<T>(data: { msg: PostMessageResponse; data: T }) {
+    if (this.isIdle()) {
+      // The worker was stopped between the start of the execution and the actual completion of the job it runs.
+      return;
+    }
+
+    postMessage(data);
+  }
+
   private stopTimer() {
     if (!this.timer) {
       return;
@@ -83,6 +93,10 @@ export class TimerWorkerUtils {
 
     clearInterval(this.timer);
     this.timer = undefined;
+  }
+
+  private isIdle(): boolean {
+    return this.timerStatus === "idle";
   }
 
   private setStatus(state: SyncState) {

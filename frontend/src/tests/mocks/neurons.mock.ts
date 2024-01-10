@@ -5,19 +5,20 @@ import type { Subscriber } from "svelte/store";
 import { mockIdentity } from "./auth.store.mock";
 
 export const mockFullNeuron: Neuron = {
-  id: BigInt(1),
+  id: 1n,
   stakedMaturityE8sEquivalent: undefined,
   controller: undefined,
   recentBallots: [],
+  neuronType: undefined,
   kycVerified: true,
   notForProfit: false,
-  cachedNeuronStake: BigInt(3_000_000_000),
-  createdTimestampSeconds: BigInt(10),
+  cachedNeuronStake: 3_000_000_000n,
+  createdTimestampSeconds: 10n,
   autoStakeMaturity: undefined,
-  maturityE8sEquivalent: BigInt(10),
-  agingSinceTimestampSeconds: BigInt(10),
+  maturityE8sEquivalent: 10n,
+  agingSinceTimestampSeconds: 10n,
   spawnAtTimesSeconds: undefined,
-  neuronFees: BigInt(0),
+  neuronFees: 0n,
   hotKeys: [],
   accountIdentifier:
     "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
@@ -37,15 +38,16 @@ export const createMockFullNeuron = (id: number | bigint) => {
 };
 
 export const mockNeuron: NeuronInfo = {
-  neuronId: BigInt(1),
-  dissolveDelaySeconds: BigInt(11111),
+  neuronId: 1n,
+  dissolveDelaySeconds: 11_111n,
   recentBallots: [],
-  createdTimestampSeconds: BigInt(10),
+  neuronType: undefined,
+  createdTimestampSeconds: 10n,
   state: NeuronState.Locked,
   joinedCommunityFundTimestampSeconds: undefined,
-  retrievedAtTimestampSeconds: BigInt(10),
-  votingPower: BigInt(300_000_000),
-  ageSeconds: BigInt(100),
+  retrievedAtTimestampSeconds: 10n,
+  votingPower: 300_000_000n,
+  ageSeconds: 100n,
   fullNeuron: mockFullNeuron,
 };
 
@@ -61,7 +63,7 @@ export const createMockNeuron = (id: number | bigint) => {
 };
 
 export const mockKnownNeuron: KnownNeuron = {
-  id: BigInt(1000),
+  id: 1_000n,
   name: "Famous Neuron",
   description: undefined,
 };

@@ -33,8 +33,8 @@ describe("ckbtc-withdrawal-accounts-store", () => {
       ]?.account.principal.toText()
     ).toEqual(mockCkBTCWithdrawalIcrcAccount.owner.toText());
     expect(
-      store2[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]?.account.balanceE8s
-    ).toEqual(mockCkBTCWithdrawalAccount.balanceE8s);
+      store2[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]?.account.balanceUlps
+    ).toEqual(mockCkBTCWithdrawalAccount.balanceUlps);
   });
 
   it("should reset", () => {

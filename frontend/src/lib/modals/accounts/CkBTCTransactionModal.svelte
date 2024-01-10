@@ -3,6 +3,7 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
+  import { ENABLE_CKBTC_ICRC2 } from "$lib/stores/feature-flags.store";
   import type { NewTransaction, TransactionInit } from "$lib/types/transaction";
   import { TransactionNetwork } from "$lib/types/transaction";
   import type { ValidateAmountFn } from "$lib/types/transaction";
@@ -11,13 +12,13 @@
   import type { Account } from "$lib/types/account";
   import type { WizardStep } from "@dfinity/gix-components";
   import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
-  import { TokenAmount } from "@dfinity/utils";
-  import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import { TokenAmountV2, type Token } from "@dfinity/utils";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import {
     convertCkBTCToBtc,
+    convertCkBTCToBtcIcrc2,
     type ConvertCkBTCToBtcParams,
     retrieveBtc,
   } from "$lib/services/ckbtc-convert.services";
@@ -36,12 +37,11 @@
   } from "$lib/stores/ckbtc-info.store";
 
   export let selectedAccount: Account | undefined = undefined;
-  export let loadTransactions = false;
 
   export let canisters: CkBTCAdditionalCanisters;
   export let universeId: UniverseCanisterId;
-  export let token: IcrcTokenMetadata;
-  export let transactionFee: TokenAmount;
+  export let token: Token;
+  export let transactionFee: TokenAmountV2;
 
   let withdrawalAccount = selectedAccount?.type === "withdrawalAccount";
 
@@ -56,9 +56,9 @@
   };
 
   // If ckBTC are converted to BTC from the withdrawal account there is no transfer to the ckBTC ledger, therefore no related fee will be applied
-  let fee: TokenAmount;
+  let fee: TokenAmountV2;
   $: fee = withdrawalAccount
-    ? TokenAmount.fromE8s({
+    ? TokenAmountV2.fromUlps({
         amount: 0n,
         token: transactionFee.token,
       })
@@ -99,9 +99,7 @@
       source: sourceAccount,
       destinationAddress,
       amount,
-      loadTransactions,
       universeId,
-      indexCanisterId: canisters.indexCanisterId,
     });
 
     stopBusy("accounts");
@@ -111,6 +109,8 @@
       dispatcher("nnsTransfer");
     }
   };
+
+  let useIcrc2ForProgress = true;
 
   const convert = async ({
     detail: { sourceAccount, amount, destinationAddress },
@@ -127,12 +127,24 @@
       updateProgress,
     };
 
-    const { success } = withdrawalAccount
-      ? await retrieveBtc(params)
-      : await convertCkBTCToBtc({
-          source: sourceAccount,
-          ...params,
-        });
+    let success = false;
+
+    if (withdrawalAccount) {
+      useIcrc2ForProgress = false;
+      ({ success } = await retrieveBtc(params));
+    } else if ($ENABLE_CKBTC_ICRC2) {
+      useIcrc2ForProgress = true;
+      ({ success } = await convertCkBTCToBtcIcrc2({
+        source: sourceAccount,
+        ...params,
+      }));
+    } else {
+      useIcrc2ForProgress = false;
+      ({ success } = await convertCkBTCToBtc({
+        source: sourceAccount,
+        ...params,
+      }));
+    }
 
     if (success) {
       toastsSuccess({
@@ -169,7 +181,7 @@
       networkBtc,
       sourceAccount: selectedAccount,
       amount,
-      transactionFee: fee.toE8s(),
+      transactionFee: fee.toUlps(),
       infoData,
     });
 
@@ -178,6 +190,7 @@
 </script>
 
 <TransactionModal
+  testId="ckbtc-transaction-modal-component"
   rootCanisterId={universeId}
   bind:this={modal}
   on:nnsSubmit={transfer}
@@ -226,5 +239,6 @@
     slot="in_progress"
     {progressStep}
     transferToLedgerStep={!withdrawalAccount}
+    useIcrc2={useIcrc2ForProgress}
   />
 </TransactionModal>

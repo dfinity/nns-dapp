@@ -1,23 +1,19 @@
-/**
- * @jest-environment jsdom
- */
-
 import SpawnNeuronModal from "$lib/modals/neurons/SpawnNeuronModal.svelte";
 import { spawnNeuron } from "$lib/services/neurons.services";
-import { accountsStore } from "$lib/stores/accounts.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { formattedMaturity } from "$lib/utils/neuron.utils";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
-} from "$tests/mocks/accounts.store.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent } from "@testing-library/svelte";
 
-jest.mock("$lib/services/neurons.services", () => {
+vi.mock("$lib/services/neurons.services", () => {
   return {
-    spawnNeuron: jest.fn().mockResolvedValue(BigInt(10)),
-    getNeuronFromStore: jest.fn(),
+    spawnNeuron: vi.fn().mockResolvedValue(10n),
+    getNeuronFromStore: vi.fn(),
   };
 });
 
@@ -26,18 +22,20 @@ describe("SpawnNeuronModal", () => {
     ...mockNeuron,
     fullNeuron: {
       ...mockFullNeuron,
-      maturityE8sEquivalent: BigInt(10_000_000),
+      maturityE8sEquivalent: 10_000_000n,
     },
   };
 
   beforeAll(() =>
-    accountsStore.setForTesting({
+    icpAccountsStore.setForTesting({
       main: mockMainAccount,
       hardwareWallets: [mockHardwareWalletAccount],
     })
   );
 
-  afterAll(() => jest.clearAllMocks());
+  afterAll(() => {
+    vi.clearAllMocks();
+  });
 
   it("should display modal", async () => {
     const { container } = await renderModal({
@@ -69,7 +67,7 @@ describe("SpawnNeuronModal", () => {
           ...neuron,
           fullNeuron: {
             ...neuron.fullNeuron,
-            maturityE8sEquivalent: BigInt(1_000_000),
+            maturityE8sEquivalent: 1_000_000n,
           },
         },
       },

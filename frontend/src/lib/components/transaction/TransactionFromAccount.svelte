@@ -5,13 +5,14 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import type { Account } from "$lib/types/account";
   import type { Principal } from "@dfinity/principal";
-  import { TokenAmount, type Token } from "@dfinity/utils";
+  import { TokenAmountV2, type Token } from "@dfinity/utils";
   import { nonNullish } from "@dfinity/utils";
 
   export let rootCanisterId: Principal;
   export let canSelectSource: boolean;
   export let selectedAccount: Account | undefined = undefined;
   export let token: Token;
+  export let filterAccounts: (account: Account) => boolean = () => true;
 </script>
 
 <div class="select-account" data-tid="transaction-from-account">
@@ -33,8 +34,8 @@
       {#if nonNullish(selectedAccount)}
         <AmountDisplay
           singleLine
-          amount={TokenAmount.fromE8s({
-            amount: selectedAccount.balanceE8s,
+          amount={TokenAmountV2.fromUlps({
+            amount: selectedAccount.balanceUlps,
             token,
           })}
         />
@@ -43,7 +44,11 @@
   </KeyValuePair>
 
   {#if canSelectSource}
-    <SelectAccountDropdown {rootCanisterId} bind:selectedAccount />
+    <SelectAccountDropdown
+      {rootCanisterId}
+      bind:selectedAccount
+      {filterAccounts}
+    />
   {:else}
     <p class="account-identifier">
       {selectedAccount?.identifier}

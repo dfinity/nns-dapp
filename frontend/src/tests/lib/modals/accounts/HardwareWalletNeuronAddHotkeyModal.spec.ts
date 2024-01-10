@@ -1,14 +1,13 @@
-/**
- * @jest-environment jsdom
- */
-
 import * as api from "$lib/api/governance.api";
 import HardwareWalletNeuronAddHotkeyModal from "$lib/modals/accounts/HardwareWalletNeuronAddHotkeyModal.svelte";
-import { getLedgerIdentityProxy } from "$lib/proxy/ledger.services.proxy";
+import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { authStore } from "$lib/stores/auth.store";
+import HardwareWalletAddNeuronHotkeyTest from "$tests/lib/components/accounts/HardwareWalletAddNeuronHotkeyTest.svelte";
 import {
+  createMockIdentity,
   mockAuthStoreSubscribe,
   mockIdentity,
+  resetIdentity,
 } from "$tests/mocks/auth.store.mock";
 import {
   mockHardwareWalletNeuronsStore,
@@ -18,32 +17,32 @@ import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import HardwareWalletAddNeuronHotkeyTest from "../../components/accounts/HardwareWalletAddNeuronHotkeyTest.svelte";
+import type { Mock } from "vitest";
 
-jest.mock("$lib/proxy/ledger.services.proxy");
+vi.mock("$lib/proxy/icp-ledger.services.proxy");
 
 describe("HardwareWalletNeuronAddHotkeyModal", () => {
   const props = { testComponent: HardwareWalletNeuronAddHotkeyModal };
+  let spyAddHotkey;
+  let spyGetNeuron;
 
-  const spyAddHotkey = jest
-    .spyOn(api, "addHotkey")
-    .mockImplementation(() => Promise.resolve());
+  const mockIdentity2 = createMockIdentity(0);
 
-  const spyGetNeuron = jest
-    .spyOn(api, "queryNeuron")
-    .mockImplementation(() => Promise.resolve(mockNeuron));
-
-  jest.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
-
-  beforeAll(() => {
-    (getLedgerIdentityProxy as jest.Mock).mockImplementation(() =>
-      Promise.resolve(mockIdentity)
+  beforeEach(() => {
+    vi.restoreAllMocks();
+    resetIdentity();
+    (getLedgerIdentityProxy as Mock).mockImplementation(() =>
+      Promise.resolve(mockIdentity2)
     );
-  });
+    spyAddHotkey = vi
+      .spyOn(api, "addHotkey")
+      .mockImplementation(() => Promise.resolve());
 
-  afterAll(() => {
-    jest.clearAllMocks();
-    jest.restoreAllMocks();
+    spyGetNeuron = vi
+      .spyOn(api, "queryNeuron")
+      .mockImplementation(() => Promise.resolve(mockNeuron));
+
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
   it("should display modal", () => {
@@ -103,13 +102,30 @@ describe("HardwareWalletNeuronAddHotkeyModal", () => {
       props,
     });
 
+    expect(spyAddHotkey).not.toBeCalled();
+    expect(spyGetNeuron).not.toBeCalled();
+
     const confirmButton = queryByTestId("confirm-yes") as HTMLButtonElement;
     expect(confirmButton).toBeInTheDocument();
 
     await fireEvent.click(confirmButton);
 
-    await waitFor(() => expect(spyAddHotkey).toBeCalled());
-    await waitFor(() => expect(spyGetNeuron).toBeCalled());
+    await waitFor(() =>
+      expect(spyAddHotkey).toBeCalledWith({
+        neuronId: mockNeuronStake.neuronId,
+        principal: mockIdentity.getPrincipal(),
+        // It uses the ledger identity to add the hotkey
+        identity: mockIdentity2,
+      })
+    );
+    await waitFor(() =>
+      expect(spyGetNeuron).toBeCalledWith({
+        neuronId: mockNeuronStake.neuronId,
+        // Once the hotkey is added, it uses the current identity to query the neuron
+        identity: mockIdentity,
+        certified: true,
+      })
+    );
 
     const store = get(mockHardwareWalletNeuronsStore);
     expect(

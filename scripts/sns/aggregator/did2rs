@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../.."
+print_help() {
+  cat <<-EOF
+
+	Derives rust canister types used in the SNS aggregator.
+
+	Usage: $(basename "$0") <CANISTER_NAME>
+	takes inputs:
+	  declarations/<CANISTER_NAME>/<CANISTER_NAME>.did
+	  rs/sns_aggregator/src/types/<CANISTER_NAME>.patch (optional)
+	creates:
+	  rs/sns_aggregator/src/types/<CANISTER_NAME>.rs
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=c long=canister desc="The canister for which the Rust types are to be derived" variable=CANISTER_NAME
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+CANISTER_NAME="${CANISTER_NAME:-$1}"
+GIT_ROOT="$(git rev-parse --show-toplevel)"
+RUST_PATH="${GIT_ROOT}/rs/sns_aggregator/src/types/ic_${CANISTER_NAME}.rs"
+HEADER_FILE="$0.header"
+
+"$SOURCE_DIR/did2rs.sh" --canister "$CANISTER_NAME" --out "$RUST_PATH" --header "$HEADER_FILE" --traits "Serialize, Clone, Debug"

@@ -1,6 +1,8 @@
 <script lang="ts">
   import { IconSubdirectory } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
+
+  export let disabled = false;
 </script>
 
 <button
@@ -8,6 +10,7 @@
   on:click|preventDefault
   class="ghost"
   type="button"
+  {disabled}
 >
   <span class="icon">
     <IconSubdirectory />

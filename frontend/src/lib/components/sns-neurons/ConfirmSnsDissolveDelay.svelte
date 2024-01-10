@@ -1,9 +1,9 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { secondsToDuration } from "$lib/utils/date.utils";
+  import { secondsToDuration } from "@dfinity/utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatToken } from "$lib/utils/token.utils";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
   import { valueSpan } from "$lib/utils/utils";
   import { Html, busy } from "@dfinity/gix-components";
@@ -47,7 +47,9 @@
 
 <div class="wrapper" data-tid="confirm-dissolve-delay-container">
   <div class="main-info">
-    <h3>{secondsToDuration(BigInt(delayInSeconds))}</h3>
+    <h3>
+      {secondsToDuration({ seconds: BigInt(delayInSeconds), i18n: $i18n.time })}
+    </h3>
   </div>
   <div>
     <p class="label">{$i18n.neurons.neuron_id}</p>
@@ -59,7 +61,7 @@
       <Html
         text={replacePlaceholders($i18n.sns_neurons.token_stake, {
           $amount: valueSpan(
-            formatToken({ value: neuronStake, detailed: true })
+            formatTokenE8s({ value: neuronStake, detailed: true })
           ),
           $token: token.symbol,
         })}

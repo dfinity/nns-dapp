@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SummaryLogo from "$lib/components/summary/SummaryLogo.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -30,13 +26,13 @@ describe("SummaryLogo", () => {
 
   describe("sns", () => {
     beforeAll(() => {
-      jest
-        .spyOn(snsProjectSelectedStore, "subscribe")
-        .mockImplementation(mockStoreSubscribe(mockSnsFullProject));
+      vi.spyOn(snsProjectSelectedStore, "subscribe").mockImplementation(
+        mockStoreSubscribe(mockSnsFullProject)
+      );
 
-      jest
-        .spyOn(snsProjectsCommittedStore, "subscribe")
-        .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+      vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
+        mockProjectSubscribe([mockSnsFullProject])
+      );
     });
 
     beforeEach(() =>

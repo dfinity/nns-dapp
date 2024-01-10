@@ -1,13 +1,12 @@
 <script lang="ts">
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import { Spinner } from "@dfinity/gix-components";
-  import Separator from "$lib/components/ui/Separator.svelte";
 
   export let loading = false;
 </script>
 
 <!-- ONLY FOR TESTNET. NO UNIT TESTS -->
-<CardInfo>
+<CardInfo noMargin>
   <h3 slot="start">Proposals TESTNET ONLY</h3>
 
   <div>
@@ -25,8 +24,6 @@
     </button>
   </div>
 </CardInfo>
-
-<Separator />
 
 <style lang="scss">
   h3 {

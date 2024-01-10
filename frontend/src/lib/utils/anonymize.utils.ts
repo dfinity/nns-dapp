@@ -12,7 +12,7 @@ import type {
   SnsSummarySwap,
   SnsSwapCommitment,
 } from "$lib/types/sns";
-import type { IcrcTransaction } from "@dfinity/ledger";
+import type { IcrcTransaction } from "@dfinity/ledger-icrc";
 import type {
   Ballot,
   Followees,
@@ -104,12 +104,13 @@ export const anonymizeAccount = async (
     return account as undefined | null;
   }
 
-  const { identifier, principal, balanceE8s, name, type, subAccount } = account;
+  const { identifier, principal, balanceUlps, name, type, subAccount } =
+    account;
 
   return {
     identifier: await cutAndAnonymize(identifier),
     principal: anonymiseAvailability(principal),
-    balanceE8s: await anonymizeAmount(balanceE8s),
+    balanceUlps: await anonymizeAmount(balanceUlps),
     name: name,
     type: type,
     subAccount: await cutAndAnonymize(subAccount?.join("")),
@@ -120,13 +121,14 @@ export const anonymizeNeuronInfo = async (
   neuron: NeuronInfo | undefined
 ): Promise<undefined | { [key in keyof Required<NeuronInfo>]: unknown }> => {
   if (neuron === undefined || neuron === null) {
-    return neuron;
+    return undefined;
   }
 
   const {
     neuronId,
     dissolveDelaySeconds,
     recentBallots,
+    neuronType,
     createdTimestampSeconds,
     state,
     joinedCommunityFundTimestampSeconds,
@@ -140,6 +142,7 @@ export const anonymizeNeuronInfo = async (
     neuronId: await cutAndAnonymize(neuronId),
     dissolveDelaySeconds,
     recentBallots,
+    neuronType,
     createdTimestampSeconds,
     state,
     joinedCommunityFundTimestampSeconds,
@@ -169,7 +172,7 @@ export const anonymizeFullNeuron = async (
   neuron: Neuron | undefined
 ): Promise<undefined | { [key in keyof Required<Neuron>]: unknown }> => {
   if (neuron === undefined || neuron === null) {
-    return neuron;
+    return undefined;
   }
 
   const {
@@ -177,6 +180,7 @@ export const anonymizeFullNeuron = async (
     stakedMaturityE8sEquivalent,
     controller,
     recentBallots,
+    neuronType,
     kycVerified,
     notForProfit,
     cachedNeuronStake,
@@ -199,6 +203,7 @@ export const anonymizeFullNeuron = async (
     // principal string
     controller: anonymiseAvailability(controller),
     recentBallots,
+    neuronType,
     kycVerified: kycVerified,
     notForProfit,
     cachedNeuronStake: await anonymizeAmount(cachedNeuronStake),
@@ -321,6 +326,7 @@ const anonymizeSnsTransaction = async (
     burn: await anonymizeTransfer(tx.burn as TransferOpt),
     mint: await anonymizeTransfer(tx.mint as TransferOpt),
     transfer: await anonymizeTransfer(tx.transfer as TransferOpt),
+    approve: await anonymizeTransfer(tx.approve as TransferOpt),
   };
 };
 
@@ -440,17 +446,17 @@ export const anonymizeProposal = async (
 
 const anonymizeBuyer = async ([buyer, state]: [
   string,
-  SnsSwapBuyerState
+  SnsSwapBuyerState,
 ]): Promise<[string, SnsSwapBuyerState]> => [
   buyer,
   {
     icp: [
       {
         ...state.icp[0],
-        amount_e8s:
-          (await anonymizeAmount(state.icp[0]?.amount_e8s)) ?? BigInt(0),
+        amount_e8s: (await anonymizeAmount(state.icp[0]?.amount_e8s)) ?? 0n,
       } as SnsTransferableAmount,
     ],
+    has_created_neuron_recipes: state.has_created_neuron_recipes,
   },
 ];
 
@@ -517,6 +523,8 @@ export const anonymizeSnsSwapCommitment = async (
                 },
               ]
             : [],
+        has_created_neuron_recipes:
+          originalSwapCommitment.myCommitment.has_created_neuron_recipes,
       },
     };
   }

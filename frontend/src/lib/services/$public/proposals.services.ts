@@ -18,13 +18,13 @@ import {
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import { hashCode } from "$lib/utils/dev.utils";
 import { isForceCallStrategy } from "$lib/utils/env.utils";
-import { errorToString } from "$lib/utils/error.utils";
+import { errorToString, isPayloadSizeError } from "$lib/utils/error.utils";
 import {
   excludeProposals,
   proposalsHaveSameIds,
 } from "$lib/utils/proposals.utils";
 import type { Identity } from "@dfinity/agent";
-import type { ProposalId, ProposalInfo, Topic } from "@dfinity/nns";
+import type { ProposalId, ProposalInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { getCurrentIdentity } from "../auth.services";
 import {
@@ -51,9 +51,13 @@ const handleFindProposalsError = ({
   ) {
     proposalsStore.setProposals({ proposals: [], certified });
 
+    const resultsTooLarge = isPayloadSizeError(err);
+
     toastsError({
-      labelKey: "error.list_proposals",
-      err,
+      labelKey: resultsTooLarge
+        ? "error.list_proposals_payload_too_large"
+        : "error.list_proposals",
+      err: resultsTooLarge ? undefined : err,
     });
   }
 };
@@ -174,30 +178,6 @@ const findProposals = async ({
     logMessage: `Syncing proposals ${
       beforeProposal === undefined ? "" : `from: ${hashCode(beforeProposal)}`
     }`,
-  });
-};
-
-export const loadProposalsByTopic = async ({
-  topic,
-  certified,
-}: {
-  topic: Topic;
-  certified: boolean;
-}): Promise<ProposalInfo[]> => {
-  const filters: ProposalsFiltersStore = {
-    ...get(proposalsFiltersStore),
-    topics: [topic],
-    rewards: [],
-    status: [],
-    excludeVotedProposals: false,
-    lastAppliedFilter: undefined,
-  };
-
-  return queryProposals({
-    beforeProposal: undefined,
-    identity: getCurrentIdentity(),
-    filters,
-    certified,
   });
 };
 

@@ -1,6 +1,6 @@
 import { getTransactions } from "$lib/api/icrc-index.api";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
-import type { IcrcTransaction } from "@dfinity/ledger";
+import type { IcrcTransaction } from "@dfinity/ledger-icrc";
 
 describe("icrc-index api", () => {
   const params = {
@@ -8,7 +8,7 @@ describe("icrc-index api", () => {
     account: {
       owner: mockPrincipal,
     },
-    maxResults: BigInt(10),
+    maxResults: 10n,
   };
 
   const transaction = {
@@ -17,9 +17,9 @@ describe("icrc-index api", () => {
 
   describe("getTransactions", () => {
     it("returns list of transaction", async () => {
-      const transactions = [{ transaction, id: BigInt(1) }];
+      const transactions = [{ transaction, id: 1n }];
 
-      const getTransactionsSpy = jest.fn().mockResolvedValue({
+      const getTransactionsSpy = vi.fn().mockResolvedValue({
         transactions,
         oldest_tx_id: [],
       });

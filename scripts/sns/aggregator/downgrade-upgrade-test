@@ -21,18 +21,19 @@ source "$(clap.build)"
 
 verify_healthy() {
   dfx canister call sns_aggregator get_canister_status
+  "$SOURCE_DIR/test-pagination"
 }
 
 # Installs the current build of sns_aggregator
 upgrade_canister() {
-  dfx canister install --upgrade-unchanged sns_aggregator --wasm "$1" --mode upgrade
+  dfx canister install --upgrade-unchanged sns_aggregator --wasm "$1" --mode upgrade --yes
 }
 
 echo "Getting or building the local wasm..."
 test -n "${CURRENT_WASM:-}" || {
   CURRENT_WASM="sns_aggregator.wasm.gz"
   echo "Building $CURRENT_WASM..."
-  DFX_NETWORK=local ./scripts/docker-build
+  ./scripts/docker-build --network local
 }
 test -e "$CURRENT_WASM" || {
   echo "ERROR: Wasm file not found at '$CURRENT_WASM'."
@@ -54,7 +55,7 @@ if dfx canister id sns_aggregator >/dev/null 2>/dev/null; then
   upgrade_canister "$CURRENT_WASM"
 else
   dfx canister create sns_aggregator
-  dfx canister install sns_aggregator --wasm "$CURRENT_WASM"
+  dfx canister install sns_aggregator --wasm "$CURRENT_WASM" --yes
 fi
 echo "Checking that the current wasm is healthy..."
 verify_healthy

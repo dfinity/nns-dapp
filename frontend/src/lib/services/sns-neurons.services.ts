@@ -3,12 +3,13 @@ import {
   addNeuronPermissions,
   autoStakeMaturity as autoStakeMaturityApi,
   disburse as disburseApi,
+  disburseMaturity as disburseMaturityApi,
   getSnsNeuron as getSnsNeuronApi,
-  increaseDissolveDelay as increaseDissolveDelayApi,
   querySnsNeuron,
   querySnsNeurons,
   refreshNeuron,
   removeNeuronPermissions,
+  setDissolveDelay,
   setFollowees,
   splitNeuron as splitNeuronApi,
   stakeMaturity as stakeMaturityApi,
@@ -31,22 +32,22 @@ import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
+import { nowInSeconds } from "$lib/utils/date.utils";
 import { notForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import {
   followeesByFunction,
-  getSnsDissolveDelaySeconds,
   getSnsNeuronByHexId,
   hasAutoStakeMaturityOn,
   isEnoughAmountToSplit,
   nextMemo,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
-import { formatToken, numberToE8s } from "$lib/utils/token.utils";
+import { formatTokenE8s, numberToE8s } from "$lib/utils/token.utils";
 import { hexStringToBytes } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
-import { decodeIcrcAccount } from "@dfinity/ledger";
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { E8s } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type {
@@ -60,6 +61,7 @@ import {
   fromDefinedNullable,
   fromNullable,
   isNullish,
+  nonNullish,
 } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
@@ -357,7 +359,7 @@ export const splitNeuron = async ({
       toastsError({
         labelKey: "error__sns.sns_amount_not_enough_stake_neuron",
         substitutions: {
-          $minimum: formatToken({ value: neuronMinimumStake }),
+          $minimum: formatTokenE8s({ value: neuronMinimumStake }),
           $token: token.symbol,
         },
       });
@@ -488,16 +490,12 @@ export const updateDelay = async ({
 }): Promise<{ success: boolean }> => {
   try {
     const identity = await getSnsNeuronIdentity();
-    const currentDissolveDelay =
-      getSnsDissolveDelaySeconds(neuron) ?? BigInt(0);
-    const additionalDissolveDelaySeconds =
-      dissolveDelaySeconds - Number(currentDissolveDelay);
 
-    await increaseDissolveDelayApi({
+    await setDissolveDelay({
       rootCanisterId,
       identity,
       neuronId: fromDefinedNullable(neuron.id),
-      additionalDissolveDelaySeconds,
+      dissolveTimestampSeconds: nowInSeconds() + dissolveDelaySeconds,
     });
 
     return { success: true };
@@ -768,6 +766,43 @@ export const stakeMaturity = async ({
   } catch (err: unknown) {
     toastsError({
       labelKey: "error__sns.sns_stake_maturity",
+      err,
+    });
+
+    return { success: false };
+  }
+};
+
+export const disburseMaturity = async ({
+  neuronId,
+  rootCanisterId,
+  percentageToDisburse,
+  toAccountAddress,
+}: {
+  neuronId: SnsNeuronId;
+  rootCanisterId: Principal;
+  percentageToDisburse: number;
+  toAccountAddress?: string;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity = await getSnsNeuronIdentity();
+
+    const toAccount = nonNullish(toAccountAddress)
+      ? decodeIcrcAccount(toAccountAddress)
+      : undefined;
+
+    await disburseMaturityApi({
+      neuronId,
+      rootCanisterId,
+      percentageToDisburse,
+      identity,
+      toAccount,
+    });
+
+    return { success: true };
+  } catch (err: unknown) {
+    toastsError({
+      labelKey: "error__sns.sns_disburse_maturity",
       err,
     });
 

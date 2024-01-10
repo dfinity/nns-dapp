@@ -11,11 +11,12 @@
   export let neuron: NeuronInfo;
   export let proposerNeuron = false;
   // Setting default value avoids warning missing props during testing
-  export let role: undefined | "link" | "button" | "checkbox" = undefined;
+  export let role: undefined | "button" | "checkbox" = undefined;
   export let ariaLabel: string | undefined = undefined;
   export let selected = false;
   export let disabled = false;
   export let cardType: CardType = "card";
+  export let href: string | undefined = undefined;
 </script>
 
 <TestIdWrapper testId="nns-neuron-card-component">
@@ -25,6 +26,7 @@
     {disabled}
     {ariaLabel}
     on:click
+    {href}
     {cardType}
   >
     <NnsNeuronCardTitle {neuron} slot="start" />

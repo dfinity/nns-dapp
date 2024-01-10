@@ -3,19 +3,23 @@ import type {
   Transaction as NnsTransaction,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { Account } from "$lib/types/account";
-import type { Transaction } from "$lib/types/transaction";
+import type { Transaction, UiTransaction } from "$lib/types/transaction";
 import {
   AccountTransactionType,
   TransactionNetwork,
 } from "$lib/types/transaction";
-import { isNullish } from "@dfinity/utils";
-import { replacePlaceholders } from "./i18n.utils";
+import type { Token } from "@dfinity/utils";
+import { TokenAmount, isNullish } from "@dfinity/utils";
 import { stringifyJson } from "./utils";
 
-export const transactionType = (
-  transaction: NnsTransaction
-): AccountTransactionType => {
-  const { transaction_type } = transaction;
+export const transactionType = ({
+  transaction,
+  swapCanisterAccounts = new Set(),
+}: {
+  transaction: NnsTransaction;
+  swapCanisterAccounts?: Set<string>;
+}): AccountTransactionType => {
+  const { transaction_type, transfer } = transaction;
   if (transaction_type.length === 0) {
     // This should never be hit since people running the latest front end code should have had their principal stored in
     // the NNS UI canister and therefore will have all of their transaction types set.
@@ -25,6 +29,20 @@ export const transactionType = (
       return AccountTransactionType.Mint;
     }
     return AccountTransactionType.Send;
+  }
+
+  if ("Send" in transfer) {
+    const { to } = transfer.Send;
+    if (swapCanisterAccounts.has(to)) {
+      return AccountTransactionType.ParticipateSwap;
+    }
+  }
+
+  if ("Receive" in transfer) {
+    const { from } = transfer.Receive;
+    if (swapCanisterAccounts.has(from)) {
+      return AccountTransactionType.RefundSwap;
+    }
   }
 
   if ("Transfer" in transaction_type[0]) {
@@ -52,25 +70,6 @@ export const transactionType = (
   );
 };
 
-export const showTransactionFee = ({
-  type,
-  isReceive,
-}: {
-  type: AccountTransactionType;
-  isReceive: boolean;
-}): boolean => {
-  if (isReceive) {
-    return false;
-  }
-  switch (type) {
-    case AccountTransactionType.Mint:
-    case AccountTransactionType.Burn:
-      return false;
-    default:
-      return true;
-  }
-};
-
 export const transactionDisplayAmount = ({
   useFee,
   amount,
@@ -93,10 +92,12 @@ export const mapNnsTransaction = ({
   transaction,
   account,
   toSelfTransaction,
+  swapCanisterAccounts,
 }: {
   transaction: NnsTransaction;
   account: Account;
   toSelfTransaction?: boolean;
+  swapCanisterAccounts?: Set<string>;
 }): Transaction => {
   const { transfer, timestamp } = transaction;
   let from: AccountIdentifierString | undefined;
@@ -122,15 +123,14 @@ export const mapNnsTransaction = ({
     throw new Error("Unsupported transfer type");
   }
 
-  const type = transactionType(transaction);
+  const type = transactionType({
+    transaction,
+    swapCanisterAccounts,
+  });
   const date = new Date(Number(timestamp.timestamp_nanos / BigInt(1e6)));
   const isReceive = toSelfTransaction === true || from !== account.identifier;
   const isSend = to !== account.identifier;
-  // (from==to workaround) in case of transaction duplication we replace one of the transaction to `Received`, and it doesn't need to show fee because paid fee is already shown in the `Send` one.
-  const useFee =
-    toSelfTransaction === true
-      ? false
-      : showTransactionFee({ type, isReceive });
+  const useFee = !isReceive;
   const displayAmount = transactionDisplayAmount({ useFee, amount, fee });
 
   return {
@@ -144,6 +144,41 @@ export const mapNnsTransaction = ({
   };
 };
 
+export const toUiTransaction = ({
+  transaction,
+  transactionId,
+  toSelfTransaction,
+  token,
+  transactionNames,
+}: {
+  transaction: Transaction;
+  transactionId: bigint;
+  toSelfTransaction: boolean;
+  token: Token;
+  transactionNames: I18nTransaction_names;
+}): UiTransaction => {
+  const isIncoming = transaction.isReceive || toSelfTransaction;
+  const headline = transactionName({
+    type: transaction.type,
+    isReceive: isIncoming,
+    labels: transactionNames,
+  });
+  const otherParty = isIncoming ? transaction.from : transaction.to;
+
+  return {
+    domKey: `${transactionId}-${toSelfTransaction ? "0" : "1"}`,
+    isIncoming,
+    isPending: false,
+    headline,
+    otherParty,
+    tokenAmount: TokenAmount.fromE8s({
+      amount: transaction.displayAmount,
+      token,
+    }),
+    timestamp: transaction.date,
+  };
+};
+
 /**
  * Note: We used to display the token symbol within the transaction labels that is why this function uses replacePlaceholders.
  * Although it was decided to not render such symbol anymore, we keep the code as it in case this would change in the future.
@@ -152,26 +187,21 @@ export const transactionName = ({
   type,
   isReceive,
   labels,
-  tokenSymbol,
 }: {
   type: AccountTransactionType;
   isReceive: boolean;
   labels: I18nTransaction_names;
-  tokenSymbol: string;
 }): string =>
-  replacePlaceholders(
-    type === AccountTransactionType.Send
-      ? isReceive
-        ? labels.receive
-        : labels.send
-      : labels[type] ?? type,
-    { $tokenSymbol: tokenSymbol }
-  );
+  type === AccountTransactionType.Send
+    ? isReceive
+      ? labels.receive
+      : labels.send
+    : labels[type] ?? type;
 
 /** (from==to workaround) Set `mapToSelfNnsTransaction: true` when sender and receiver are the same account (e.g. transmitting from `main` to `main` account) */
-export const mapToSelfTransaction = <T>(
-  transactions: T[]
-): { transaction: T; toSelfTransaction: boolean }[] => {
+export const mapToSelfTransaction = (
+  transactions: NnsTransaction[]
+): { transaction: NnsTransaction; toSelfTransaction: boolean }[] => {
   const resultTransactions = transactions.map((transaction) => ({
     transaction: { ...transaction },
     toSelfTransaction: false,

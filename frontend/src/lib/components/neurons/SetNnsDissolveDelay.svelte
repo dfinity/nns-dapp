@@ -11,13 +11,13 @@
   } from "$lib/utils/neuron.utils";
 
   import SetDissolveDelay from "$lib/components/neurons/SetDissolveDelay.svelte";
-  import { TokenAmount, ICPToken } from "@dfinity/utils";
+  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 
   export let delayInSeconds: number;
   export let neuron: NeuronInfo;
 
-  let neuronStake: TokenAmount;
-  $: neuronStake = TokenAmount.fromE8s({
+  let neuronStake: TokenAmountV2;
+  $: neuronStake = TokenAmountV2.fromUlps({
     amount: getNeuronStake(neuron),
     token: ICPToken,
   });
@@ -25,7 +25,7 @@
     Number(
       neuronVotingPower({
         neuron,
-        newDissolveDelayInSeconds: BigInt(delayInSeconds),
+        newDissolveDelayInSeconds: BigInt(Math.round(delayInSeconds)),
       })
     );
 </script>
@@ -39,7 +39,6 @@
   {neuronStake}
   minProjectDelayInSeconds={SECONDS_IN_HALF_YEAR}
   maxDelayInSeconds={SECONDS_IN_EIGHT_YEARS}
-  minDelayInSeconds={Number(neuron.dissolveDelaySeconds)}
   {calculateVotingPower}
   minDissolveDelayDescription={$i18n.neurons.dissolve_delay_description}
 >

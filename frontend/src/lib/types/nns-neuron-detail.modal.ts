@@ -14,6 +14,7 @@ export type NnsNeuronModalType =
   | "merge-maturity"
   | "spawn"
   | "join-community-fund"
+  | "dev-add-maturity"
   | "voting-history";
 
 export interface NnsNeuronModalData {

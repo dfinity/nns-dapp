@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { Dropdown, DropdownItem } from "@dfinity/gix-components";
   import { TransactionNetwork } from "$lib/types/transaction";
-  import { debounce, isNullish, nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import {
@@ -19,7 +19,7 @@
   let ckTESTBTC = false;
   $: ckTESTBTC = isUniverseCkTESTBTC(universeId);
 
-  const onDestinationAddressInput = debounce(() => {
+  const onDestinationAddressInput = () => {
     if (nonNullish(selectedNetwork)) {
       // If the network does not match the address an error "Please enter a valid address." is displayed next to the input.
       return;
@@ -48,7 +48,7 @@
         ? TransactionNetwork.BTC_TESTNET
         : TransactionNetwork.BTC_MAINNET;
     }
-  });
+  };
 
   $: selectedDestinationAddress, onDestinationAddressInput();
 </script>

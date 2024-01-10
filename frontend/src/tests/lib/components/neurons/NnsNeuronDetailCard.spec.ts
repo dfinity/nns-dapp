@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsNeuronDetailCard from "$lib/components/neurons/NnsNeuronDetailCard.svelte";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronDetailCardPo } from "$tests/page-objects/NnsNeuronDetailCard.page-object";
@@ -19,7 +15,7 @@ describe("NnsNeuronDetailCard", () => {
   it("should render neuron id", async () => {
     const po = renderComponent({
       ...mockNeuron,
-      neuronId: BigInt(123789),
+      neuronId: 123_789n,
     });
 
     expect(await po.getNeuronId()).toBe("123789");
@@ -30,12 +26,13 @@ describe("NnsNeuronDetailCard", () => {
       ...mockNeuron,
       fullNeuron: {
         ...mockFullNeuron,
-        cachedNeuronStake: BigInt(3_000_000_000),
-        neuronFees: BigInt(1_000_000_000),
+        cachedNeuronStake: 3_000_000_000n,
+        neuronFees: 1_000_000_000n,
       },
     });
 
     expect(await po.getStake()).toBe("20.00 ICP");
+    expect(await po.getStakeLabel()).toBe("ICP staked");
   });
 
   it("should render neuron dissolve delay", async () => {
@@ -59,7 +56,7 @@ describe("NnsNeuronDetailCard", () => {
   it("should render neuron voting power", async () => {
     const po = renderComponent({
       ...mockNeuron,
-      votingPower: BigInt(3_000_000_000),
+      votingPower: 3_000_000_000n,
     });
 
     expect(await po.getVotingPower()).toBe("30.00");
@@ -70,8 +67,8 @@ describe("NnsNeuronDetailCard", () => {
       ...mockNeuron,
       fullNeuron: {
         ...mockFullNeuron,
-        maturityE8sEquivalent: BigInt(300_000_000),
-        stakedMaturityE8sEquivalent: BigInt(500_000_000),
+        maturityE8sEquivalent: 300_000_000n,
+        stakedMaturityE8sEquivalent: 500_000_000n,
       },
     });
 
@@ -83,8 +80,8 @@ describe("NnsNeuronDetailCard", () => {
       ...mockNeuron,
       fullNeuron: {
         ...mockFullNeuron,
-        maturityE8sEquivalent: BigInt(300_000_000),
-        stakedMaturityE8sEquivalent: BigInt(500_000_000),
+        maturityE8sEquivalent: 300_000_000n,
+        stakedMaturityE8sEquivalent: 500_000_000n,
       },
     });
 

@@ -1,15 +1,23 @@
 import type { UniversesAccounts } from "$lib/derived/accounts-list.derived";
-import type { AccountsStoreData } from "$lib/stores/accounts.store";
-import type { Account } from "$lib/types/account";
+import type { IcpAccountsStoreData } from "$lib/stores/icp-accounts.store";
+import type {
+  Account,
+  AccountIdentifierText,
+  IcpAccountIdentifierText,
+} from "$lib/types/account";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { TransactionNetwork } from "$lib/types/transaction";
-import { sumAmountE8s } from "$lib/utils/token.utils";
+import { sumAmounts } from "$lib/utils/token.utils";
 import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
 import { BtcNetwork, parseBtcAddress, type BtcAddress } from "@dfinity/ckbtc";
-import { decodeIcrcAccount } from "@dfinity/ledger";
-import { checkAccountId } from "@dfinity/nns";
+import {
+  AccountIdentifier,
+  SubAccount,
+  checkAccountId,
+} from "@dfinity/ledger-icp";
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
-import { isNullish } from "@dfinity/utils";
+import { isNullish, nonNullish } from "@dfinity/utils";
 import { isUniverseNns } from "./universe.utils";
 
 /*
@@ -22,7 +30,7 @@ export const getAccountByPrincipal = ({
   accounts: { main, hardwareWallets },
 }: {
   principal: string;
-  accounts: AccountsStoreData;
+  accounts: IcpAccountsStoreData;
 }): Account | undefined => {
   if (main?.principal?.toText() === principal) {
     return main;
@@ -76,9 +84,9 @@ export const invalidAddress = ({
     });
   }
 
-  // NNS universe doesn't use ICRC yet
+  // NNS universe accepts ICP and ICRC adresses for transactions
   if (isUniverseNns(rootCanisterId)) {
-    return invalidIcpAddress(address);
+    return invalidIcrcAddress(address) && invalidIcpAddress(address);
   }
 
   // Consider it as an ICRC address
@@ -140,18 +148,24 @@ export const isAccountHardwareWallet = (
   account: Account | undefined
 ): boolean => account?.type === "hardwareWallet";
 
-export const findAccount = ({
+export const findAccount = <T extends Account>({
   identifier,
   accounts,
 }: {
-  identifier: string | undefined | null;
-  accounts: Account[];
-}): Account | undefined => {
-  if (identifier === undefined || identifier === null) {
+  identifier: AccountIdentifierText | undefined | null;
+  accounts: T[];
+}): T | undefined => {
+  if (isNullish(identifier)) {
     return undefined;
   }
 
-  return accounts.find(({ identifier: id }) => id === identifier);
+  return accounts.find((account) => {
+    const { identifier: id } = account;
+    return (
+      id === identifier ||
+      ("icpIdentifier" in account && account.icpIdentifier === identifier)
+    );
+  });
 };
 
 export const getAccountByRootCanister = ({
@@ -182,12 +196,12 @@ export const getAccountsByRootCanister = ({
  */
 export const assertEnoughAccountFunds = ({
   account,
-  amountE8s,
+  amountUlps,
 }: {
   account: Account;
-  amountE8s: bigint;
+  amountUlps: bigint;
 }): void => {
-  if (account.balanceE8s < amountE8s) {
+  if (account.balanceUlps < amountUlps) {
     throw new NotEnoughAmountError("error.insufficient_funds");
   }
 };
@@ -200,6 +214,24 @@ export const mainAccount = (accounts: Account[]): Account | undefined => {
   return accounts.find((account) => account.type === "main");
 };
 
+/**
+ * Returns the main account if identifier is nullish but returns undefined if the
+ * identfiier is present but not found.
+ */
+export const findAccountOrDefaultToMain = ({
+  identifier,
+  accounts,
+}: {
+  identifier: AccountIdentifierText | undefined | null;
+  accounts: Account[];
+}): Account | undefined =>
+  isNullish(identifier)
+    ? mainAccount(accounts)
+    : findAccount({
+        identifier,
+        accounts,
+      });
+
 export const accountName = ({
   account,
   mainName,
@@ -210,22 +242,72 @@ export const accountName = ({
   account?.name ?? (account?.type === "main" ? mainName : account?.name ?? "");
 
 export const sumNnsAccounts = (
-  accounts: AccountsStoreData | undefined
+  accounts: IcpAccountsStoreData | undefined
 ): bigint | undefined =>
-  accounts?.main?.balanceE8s !== undefined
-    ? sumAmountE8s(
-        accounts?.main?.balanceE8s,
-        ...(accounts?.subAccounts || []).map(({ balanceE8s }) => balanceE8s),
-        ...(accounts?.hardwareWallets || []).map(({ balanceE8s }) => balanceE8s)
+  accounts?.main?.balanceUlps !== undefined
+    ? sumAmounts(
+        accounts?.main?.balanceUlps,
+        ...(accounts?.subAccounts || []).map(({ balanceUlps }) => balanceUlps),
+        ...(accounts?.hardwareWallets || []).map(
+          ({ balanceUlps }) => balanceUlps
+        )
       )
     : undefined;
 
-export const sumAccounts = (
+export function sumAccounts(acconts: Account[]): bigint;
+export function sumAccounts(acconts: Account[] | undefined): bigint | undefined;
+export function sumAccounts(
   accounts: Account[] | undefined
-): bigint | undefined =>
-  isNullish(accounts) || accounts.length === 0
+): bigint | undefined {
+  return isNullish(accounts)
     ? undefined
-    : sumAmountE8s(...accounts.map(({ balanceE8s }) => balanceE8s));
+    : sumAmounts(...accounts.map(({ balanceUlps }) => balanceUlps));
+}
 
 export const hasAccounts = (accounts: Account[]): boolean =>
   accounts.length > 0;
+
+/**
+ * The NNS Dapp backend accepts ICP account identifiers. The dapp now also supports Icrc textual representation, which is why we may not always know if an identifier is in ICP format or Icrc format.
+ * This utility optimistically tries to interpret the identifier passed as a parameter as an Icrc textual representation and convert it to an ICP identifier.
+ * If the conversion fails, the utility returns the identifier passed as the parameter, which could be a valid or invalid ICP identifier.
+ *
+ * @param accountIdentifier A valid or invalid ICP identifier.
+ */
+export const toIcpAccountIdentifier = (
+  accountIdentifier: AccountIdentifierText
+): IcpAccountIdentifierText => {
+  try {
+    return maybeIcrcToIcpAccountIdentifier(accountIdentifier);
+  } catch (err: unknown) {
+    // We ignore the error. The provided account identifier was not a valid Icrc account identifier.
+    // We continue with the provided account identifier which might either be a valid Icp account identifier or just incorrect.
+  }
+
+  return accountIdentifier;
+};
+
+const maybeIcrcToIcpAccountIdentifier = (
+  accountIdentifier: AccountIdentifierText
+): IcpAccountIdentifierText => {
+  const { owner: principal, subaccount } = decodeIcrcAccount(accountIdentifier);
+
+  const sub = nonNullish(subaccount)
+    ? SubAccount.fromBytes(new Uint8Array(subaccount))
+    : undefined;
+
+  if (sub instanceof Error) {
+    throw sub;
+  }
+
+  return AccountIdentifier.fromPrincipal({
+    principal,
+    ...(nonNullish(sub) && {
+      subAccount: sub,
+    }),
+  }).toHex();
+};
+
+export const filterHardwareWalletAccounts: (account: Account) => boolean = (
+  account: Account
+): boolean => !isAccountHardwareWallet(account);

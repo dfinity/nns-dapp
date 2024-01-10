@@ -6,7 +6,7 @@
   } from "$lib/utils/neuron.utils";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatToken } from "$lib/utils/token.utils";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
@@ -22,10 +22,12 @@
 
   const openModal = () =>
     openNnsNeuronModal({ type: "split-neuron", data: { neuron } });
+
+  const testId = "split-nns-neuron-button-component";
 </script>
 
 {#if splittable}
-  <button on:click={openModal} class="primary"
+  <button on:click={openModal} class="secondary" data-tid={testId}
     >{$i18n.neuron_detail.split_neuron}</button
   >
 {:else}
@@ -34,7 +36,7 @@
     text={replacePlaceholders(
       $i18n.neuron_detail.split_neuron_disabled_tooltip,
       {
-        $amount: formatToken({
+        $amount: formatTokenE8s({
           value: BigInt(minNeuronSplittable($mainTransactionFeeStore)),
           detailed: true,
         }),
@@ -42,7 +44,7 @@
       }
     )}
   >
-    <button on:click={openModal} class="primary" disabled
+    <button on:click={openModal} class="secondary" disabled data-tid={testId}
       >{$i18n.neuron_detail.split_neuron}</button
     >
   </Tooltip>

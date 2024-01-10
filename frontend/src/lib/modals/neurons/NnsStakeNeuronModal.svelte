@@ -21,7 +21,7 @@
   import {
     cancelPollAccounts,
     pollAccounts,
-  } from "$lib/services/accounts.services";
+  } from "$lib/services/icp-accounts.services";
   import { nonNullish } from "@dfinity/utils";
 
   onMount(() => {
@@ -208,7 +208,7 @@
       <ConfirmDissolveDelay
         confirmButtonText={$i18n.neurons.confirm_set_delay}
         neuron={newNeuron}
-        {delayInSeconds}
+        delayInSeconds={BigInt(Math.round(delayInSeconds))}
         on:nnsUpdated={goNext}
         on:nnsBack={modal.back}
       />

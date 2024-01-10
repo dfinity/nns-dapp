@@ -1,6 +1,12 @@
 import { HardwareWalletAttachError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
-import { errorToString, toToastError } from "$lib/utils/error.utils";
+import {
+  errorToString,
+  isMethodNotSupportedError,
+  isPayloadSizeError,
+  toToastError,
+} from "$lib/utils/error.utils";
 import en from "$tests/mocks/i18n.mock";
+import { UnsupportedMethodError } from "@dfinity/sns";
 
 class TestError extends Error {
   constructor(msg: string) {
@@ -66,6 +72,38 @@ describe("error-utils", () => {
           err,
         })
       ).toEqual({ labelKey: "error.rename_subaccount" });
+    });
+  });
+
+  describe("isPayloadSizeError", () => {
+    it("returns true for payload size error", () => {
+      const message = `Call failed:
+       Canister: rrkah-fqaaa-aaaaa-aaaaq-cai
+       Method: list_proposals (query)
+       "Status": "rejected"
+       "Code": "CanisterError"
+       "Message": "IC0504: Canister rrkah-fqaaa-aaaaa-aaaaq-cai violated contract: ic0.msg_reply_data_append: application payload size (3824349) cannot be larger than 3145728"`;
+      const err = new Error(message);
+      expect(isPayloadSizeError(err)).toBe(true);
+    });
+
+    it("returns false for other errors and non errors", () => {
+      expect(isPayloadSizeError(new Error("test"))).toBe(false);
+      expect(isPayloadSizeError(undefined)).toBe(false);
+      expect(isPayloadSizeError({})).toBe(false);
+    });
+  });
+
+  describe("isMethodNotSupportedError", () => {
+    it("returns true for method is not supported", () => {
+      const err = new UnsupportedMethodError("get_auto_finalization_status");
+      expect(isMethodNotSupportedError(err)).toBe(true);
+    });
+
+    it("returns false for other errors and non errors", () => {
+      expect(isMethodNotSupportedError(new Error("another error"))).toBe(false);
+      expect(isMethodNotSupportedError(undefined)).toBe(false);
+      expect(isMethodNotSupportedError({})).toBe(false);
     });
   });
 });

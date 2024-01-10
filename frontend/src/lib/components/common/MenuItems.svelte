@@ -7,16 +7,16 @@
     IconWallet,
     MenuItem,
   } from "@dfinity/gix-components";
-  import type { SvelteComponent } from "svelte";
+  import type { ComponentType } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import { AppPath } from "$lib/constants/routes.constants";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import GetTokens from "$lib/components/ic/GetTokens.svelte";
   import {
-    accountsPathStore,
     canistersPathStore,
     neuronsPathStore,
+    tokensPathStore,
     proposalsPathStore,
   } from "$lib/derived/paths.derived";
   import { keyOf } from "$lib/utils/utils";
@@ -29,16 +29,21 @@
     href: string;
     selected: boolean;
     label: string;
-    icon: typeof SvelteComponent;
-    statusIcon?: typeof SvelteComponent;
+    icon:
+      | typeof IconWallet
+      | typeof IconPassword
+      | typeof IconUsers
+      | typeof IconRocketLaunch
+      | typeof IconExplore;
+    statusIcon?: ComponentType;
   }[];
   $: routes = [
     {
       context: "accounts",
-      href: $accountsPathStore,
+      href: $tokensPathStore,
       selected: isSelectedPath({
         currentPath: $pageStore.path,
-        paths: [AppPath.Accounts, AppPath.Wallet],
+        paths: [AppPath.Accounts, AppPath.Wallet, AppPath.Tokens],
       }),
       label: "tokens",
       icon: IconWallet,
@@ -88,11 +93,11 @@
 
 <TestIdWrapper testId="menu-items-component">
   {#each routes as { context, label, href, icon, statusIcon, selected } (context)}
-    <MenuItem {href} testId={`menuitem-${context}`} {selected}>
+    {@const title = keyOf({ obj: $i18n.navigation, key: label })}
+
+    <MenuItem {href} testId={`menuitem-${context}`} {selected} {title}>
       <svelte:component this={icon} slot="icon" />
-      <svelte:fragment
-        >{keyOf({ obj: $i18n.navigation, key: label })}</svelte:fragment
-      >
+      <svelte:fragment>{title}</svelte:fragment>
       <svelte:component this={statusIcon} slot="statusIcon" />
     </MenuItem>
   {/each}

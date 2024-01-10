@@ -4,8 +4,8 @@ import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 test("Test accounts requirements", async ({ page, context }) => {
-  await page.goto("/");
-  await expect(page).toHaveTitle("NNS Dapp");
+  await page.goto("/accounts");
+  await expect(page).toHaveTitle("My ICP Tokens / NNS Dapp");
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
@@ -29,11 +29,11 @@ test("Test accounts requirements", async ({ page, context }) => {
   expect(await accountNames()).toEqual([mainAccountName, subAccountName]);
 
   // The linked account should still be present after refresh
-  page.reload();
+  await page.reload({ waitUntil: "load" });
   expect(await accountNames()).toEqual([mainAccountName, subAccountName]);
 
   // Get some ICP to be able to transfer
-  await appPo.getTokens(20);
+  await appPo.getIcpTokens(20);
 
   step("AU004: The user MUST be able to transfer funds");
   expect(await nnsAccountsPo.getAccountBalance(mainAccountName)).toEqual(
@@ -41,9 +41,8 @@ test("Test accounts requirements", async ({ page, context }) => {
   );
   expect(await nnsAccountsPo.getAccountBalance(subAccountName)).toEqual("0");
 
-  const subAccountAddress = await nnsAccountsPo.getAccountAddress(
-    subAccountName
-  );
+  const subAccountAddress =
+    await nnsAccountsPo.getAccountAddress(subAccountName);
   await nnsAccountsPo.getMainAccountCardPo().click();
   await appPo.getWalletPo().getNnsWalletPo().transferToAccount({
     accountName: subAccountName,
@@ -61,9 +60,8 @@ test("Test accounts requirements", async ({ page, context }) => {
   step(
     "AU005: The user MUST be able to see the transactions of a specific account"
   );
-  const mainAccountAddress = await nnsAccountsPo.getAccountAddress(
-    mainAccountName
-  );
+  const mainAccountAddress =
+    await nnsAccountsPo.getAccountAddress(mainAccountName);
   await nnsAccountsPo.openAccount(subAccountName);
   const transactionList = appPo
     .getWalletPo()
@@ -74,8 +72,6 @@ test("Test accounts requirements", async ({ page, context }) => {
   expect(transactions).toHaveLength(1);
   const transaction = transactions[0];
 
-  expect(await transaction.getIdentifier()).toBe(
-    `Source: ${mainAccountAddress}`
-  );
+  expect(await transaction.getIdentifier()).toBe(`From: ${mainAccountAddress}`);
   expect(await transaction.getAmount()).toBe("+5.00");
 });

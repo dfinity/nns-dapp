@@ -1,25 +1,21 @@
-/**
- * @jest-environment jsdom
- */
-
 import JoinCommunityFundCheckbox from "$lib/components/neuron-detail/actions/JoinCommunityFundCheckbox.svelte";
 import { toggleCommunityFund } from "$lib/services/neurons.services";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent, render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "../NeuronContextActionsTest.svelte";
 
-jest.mock("$lib/services/neurons.services", () => {
+vi.mock("$lib/services/neurons.services", () => {
   return {
-    toggleCommunityFund: jest.fn().mockResolvedValue(undefined),
+    toggleCommunityFund: vi.fn().mockResolvedValue(undefined),
   };
 });
 
 describe("JoinCommunityFundCheckbox", () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
-  it("renders checkbox", () => {
+  it("renders enabled checkbox", () => {
     const neuron = {
       ...mockNeuron,
       joinedCommunityFundTimestampSeconds: undefined,
@@ -33,12 +29,32 @@ describe("JoinCommunityFundCheckbox", () => {
     });
 
     expect(queryByTestId("checkbox")).toBeInTheDocument();
+    expect(queryByTestId("checkbox").getAttribute("disabled")).toBeNull();
+  });
+
+  it("renders disabled checkbox", () => {
+    const neuron = {
+      ...mockNeuron,
+      joinedCommunityFundTimestampSeconds: undefined,
+    };
+
+    const { queryByTestId } = render(NeuronContextActionsTest, {
+      props: {
+        neuron,
+        testComponent: JoinCommunityFundCheckbox,
+        moreProps: {
+          disabled: true,
+        },
+      },
+    });
+
+    expect(queryByTestId("checkbox").getAttribute("disabled")).not.toBeNull();
   });
 
   it("renders checked if neuron is part of the fund", () => {
     const neuron = {
       ...mockNeuron,
-      joinedCommunityFundTimestampSeconds: BigInt(1200),
+      joinedCommunityFundTimestampSeconds: 1_200n,
     };
 
     const { queryByTestId } = render(NeuronContextActionsTest, {
@@ -101,7 +117,7 @@ describe("JoinCommunityFundCheckbox", () => {
   it("allows neuron to leave community fund", async () => {
     const neuron = {
       ...mockNeuron,
-      joinedCommunityFundTimestampSeconds: BigInt(10),
+      joinedCommunityFundTimestampSeconds: 10n,
     };
 
     const { container, queryByTestId } = render(NeuronContextActionsTest, {

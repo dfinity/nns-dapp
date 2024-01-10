@@ -11,7 +11,7 @@
   import { minNeuronSplittable } from "$lib/utils/sns-neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { E8s } from "@dfinity/nns";
-  import { formatToken } from "$lib/utils/token.utils";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import type { Token } from "@dfinity/utils";
   import VestingTooltipWrapper from "../VestingTooltipWrapper.svelte";
@@ -49,7 +49,7 @@
     text={replacePlaceholders(
       $i18n.neuron_detail.split_neuron_disabled_tooltip,
       {
-        $amount: formatToken({
+        $amount: formatTokenE8s({
           value: minNeuronSplittable({
             fee: transactionFee,
             neuronMinimumStake,

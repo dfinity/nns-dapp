@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as api from "$lib/api/governance.api";
 import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
@@ -14,36 +10,36 @@ import { NeuronState } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 
-jest.mock("$lib/api/governance.api");
+vi.mock("$lib/api/governance.api");
 
 describe("NnsNeurons", () => {
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
     resetNeuronsApiService();
     neuronsStore.reset();
   });
 
   describe("with enough neurons", () => {
+    const mockNeuron2 = {
+      ...mockNeuron,
+      neuronId: 223n,
+    };
+    const spawningNeuron = {
+      ...mockNeuron,
+      state: NeuronState.Spawning,
+      neuronId: 224n,
+      fullNeuron: {
+        ...mockFullNeuron,
+        spawnAtTimesSeconds: 12_312_313n,
+      },
+    };
+    const neurons = [mockNeuron, spawningNeuron, mockNeuron2];
+
     beforeEach(() => {
-      const mockNeuron2 = {
-        ...mockNeuron,
-        neuronId: BigInt(223),
-      };
-      const spawningNeuron = {
-        ...mockNeuron,
-        state: NeuronState.Spawning,
-        neuronId: BigInt(224),
-        fullNeuron: {
-          ...mockFullNeuron,
-          spawnAtTimesSeconds: BigInt(12312313),
-        },
-      };
-      jest
-        .spyOn(authServices, "getAuthenticatedIdentity")
-        .mockResolvedValue(mockIdentity);
-      jest
-        .spyOn(api, "queryNeurons")
-        .mockResolvedValue([mockNeuron, spawningNeuron, mockNeuron2]);
+      vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
+        mockIdentity
+      );
+      vi.spyOn(api, "queryNeurons").mockResolvedValue(neurons);
     });
 
     it("should render spawning neurons as disabled", async () => {
@@ -52,7 +48,7 @@ describe("NnsNeurons", () => {
       // Wait for the neurons to be loaded and rendered
       await waitFor(() => {
         const neuronCards = queryAllByTestId("neuron-card");
-        return expect(neuronCards.length).toBe(3);
+        return expect(neuronCards.length).toBe(neurons.length);
       });
       const neuronCards = queryAllByTestId("neuron-card");
       const disabledCards = neuronCards.filter(
@@ -61,21 +57,21 @@ describe("NnsNeurons", () => {
       expect(disabledCards.length).toBe(1);
     });
 
-    it("should render a NeuronCard", async () => {
-      const { container } = render(NnsNeurons);
+    it("should render the NeuronCards", async () => {
+      const { getAllByTestId } = render(NnsNeurons);
 
       await waitFor(() =>
-        expect(container.querySelector('article[role="link"]')).not.toBeNull()
+        expect(getAllByTestId("neuron-card").length).toEqual(neurons.length)
       );
     });
   });
 
   describe("no neurons", () => {
     beforeEach(() => {
-      jest
-        .spyOn(authServices, "getAuthenticatedIdentity")
-        .mockResolvedValue(mockIdentity);
-      jest.spyOn(api, "queryNeurons").mockResolvedValue([]);
+      vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
+        mockIdentity
+      );
+      vi.spyOn(api, "queryNeurons").mockResolvedValue([]);
     });
 
     it("should render an empty message", async () => {
@@ -89,10 +85,10 @@ describe("NnsNeurons", () => {
 
   describe("navigating", () => {
     beforeEach(() => {
-      jest
-        .spyOn(authServices, "getAuthenticatedIdentity")
-        .mockResolvedValue(mockIdentity);
-      jest.spyOn(api, "queryNeurons").mockResolvedValue([]);
+      vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
+        mockIdentity
+      );
+      vi.spyOn(api, "queryNeurons").mockResolvedValue([]);
     });
 
     it("should call query neurons twice when rendered", async () => {

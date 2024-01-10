@@ -17,4 +17,18 @@ export class ProposalCardPo extends BasePageObject {
   getProposalId(): Promise<string> {
     return this.getText("proposal-id");
   }
+
+  getProposalTopicText(): Promise<string> {
+    return this.getText("proposal-topic");
+  }
+
+  async getProposalStatusText(): Promise<string> {
+    return (await this.getText("proposal-status")).trim();
+  }
+
+  getProposer(): Promise<string> {
+    return this.root
+      .querySelector("[data-proposer-id]")
+      ?.getAttribute("data-proposer-id");
+  }
 }

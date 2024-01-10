@@ -2,8 +2,9 @@
 set -euo pipefail
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 print_help() {
-  cat <<-EOF
-	Gets stable data from an sns_aggregator.
+  cat <<-"EOF"
+
+	Fetches the candid for NNS canisters.
 	EOF
 }
 # Source the clap.bash file ---------------------------------------------------
@@ -39,17 +40,20 @@ source "$(clap.build)"
     local upstream_path="$2"
     local local_path="declarations/${canister}/${canister}.did"
     mkdir -p "$(dirname "$local_path")"
-    curl -sfL --retry 5 "$IC_URL$upstream_path" >"${local_path}"
+    {
+      echo "//! Candid for canister \`$canister\` obtained by \`scripts/update_ic_commit\` from: <$IC_URL$upstream_path>"
+      curl -sfL --retry 5 "$IC_URL$upstream_path"
+    } >"${local_path}"
   }
+  did_curl nns_governance /rs/nns/governance/canister/governance.did
+  did_curl nns_registry /rs/registry/canister/canister/registry.did
+  did_curl nns_ledger /rs/rosetta-api/icp_ledger/ledger.did
   did_curl sns_governance /rs/sns/governance/canister/governance.did
   did_curl sns_root /rs/sns/root/canister/root.did
   did_curl sns_swap /rs/sns/swap/canister/swap.did
   did_curl sns_wasm /rs/nns/sns-wasm/canister/sns-wasm.did
   did_curl sns_ledger /rs/rosetta-api/icrc1/ledger/ledger.did
 }
-
-: "Derive Rust types from candid interfaces"
-time scripts/mk_nns_types.sh
 
 : "All done"
 echo FIN

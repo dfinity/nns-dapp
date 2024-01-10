@@ -11,4 +11,9 @@ export class NnsNeuronCardTitlePo extends BasePageObject {
   getNeuronId(): Promise<string> {
     return this.root.querySelector("[data-tid=neuron-id]").getText();
   }
+
+  async getNeuronTags(): Promise<string[]> {
+    const elements = await this.root.allByTestId("neuron-tag");
+    return Promise.all(elements.map((tag) => tag.getText()));
+  }
 }

@@ -1,3 +1,4 @@
+import * as agent from "$lib/api/agent.api";
 import {
   buildAndStoreWrapper,
   clearWrapperCache,
@@ -13,11 +14,11 @@ import {
   rootCanisterIdMock,
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
-import type { HttpAgent } from "@dfinity/agent";
-import mock from "jest-mock-extended/lib/Mock";
+import type { Agent, HttpAgent } from "@dfinity/agent";
+import { mock } from "vitest-mock-extended";
 
-const listSnsesSpy = jest.fn().mockResolvedValue(deployedSnsMock);
-const initSnsWrapperSpy = jest.fn().mockResolvedValue(
+const listSnsesSpy = vi.fn().mockResolvedValue(deployedSnsMock);
+const initSnsWrapperSpy = vi.fn().mockResolvedValue(
   Promise.resolve({
     canisterIds: {
       rootCanisterId: rootCanisterIdMock,
@@ -28,21 +29,22 @@ const initSnsWrapperSpy = jest.fn().mockResolvedValue(
   })
 );
 
-jest.mock("$lib/proxy/api.import.proxy", () => {
+vi.mock("$lib/proxy/api.import.proxy", () => {
   return {
-    importSnsWasmCanister: jest.fn().mockImplementation(() => ({
+    importSnsWasmCanister: vi.fn().mockImplementation(() => ({
       create: () => ({
         listSnses: listSnsesSpy,
       }),
     })),
-    importInitSnsWrapper: jest.fn().mockImplementation(() => initSnsWrapperSpy),
+    importInitSnsWrapper: vi.fn().mockImplementation(() => initSnsWrapperSpy),
   };
 });
 
 describe("sns-wrapper api", () => {
   beforeEach(() => {
     clearWrapperCache();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
   describe("wrappers", () => {
@@ -63,7 +65,7 @@ describe("sns-wrapper api", () => {
 
   describe("initSns", () => {
     it("inits sns wrapper", async () => {
-      const mockAgent = mock<HttpAgent>();
+      const mockAgent = mock<Agent>();
       await initSns({
         agent: mockAgent,
         rootCanisterId: rootCanisterIdMock,

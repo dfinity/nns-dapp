@@ -21,9 +21,12 @@
 </div>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/card";
+
   .title-block {
+    @include card.title;
+
     :global(h4) {
-      display: inline-flex;
       align-items: center;
     }
   }

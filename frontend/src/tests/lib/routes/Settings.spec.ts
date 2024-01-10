@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import Settings from "$lib/routes/Settings.svelte";
 import { authRemainingTimeStore, authStore } from "$lib/stores/auth.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
@@ -14,19 +10,19 @@ import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("Settings", () => {
-  beforeAll(() => {
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+  beforeEach(() => {
+    authRemainingTimeStore.set(undefined);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
   it("should set title", async () => {
     const titleBefore = get(layoutTitleStore);
-    expect(titleBefore).toEqual("");
+    expect(titleBefore).toEqual({ title: "" });
 
     render(Settings);
 
-    await (() => expect(get(layoutTitleStore)).toEqual(en.navigation.settings));
+    await (() =>
+      expect(get(layoutTitleStore)).toEqual({ title: en.navigation.settings }));
   });
 
   it("should render principal", () => {

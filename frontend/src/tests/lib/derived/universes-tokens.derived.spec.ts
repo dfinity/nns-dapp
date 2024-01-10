@@ -15,18 +15,20 @@ import {
   mockTokensSubscribe,
   mockUniversesTokens,
 } from "$tests/mocks/tokens.mock";
-import { TokenAmount } from "@dfinity/utils";
+import { TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("universes-tokens", () => {
   describe("complete data set", () => {
     beforeAll(() => {
-      jest
-        .spyOn(tokensStore, "subscribe")
-        .mockImplementation(mockTokensSubscribe(mockUniversesTokens));
+      vi.spyOn(tokensStore, "subscribe").mockImplementation(
+        mockTokensSubscribe(mockUniversesTokens)
+      );
     });
 
-    afterAll(() => jest.clearAllMocks());
+    afterAll(() => {
+      vi.clearAllMocks();
+    });
 
     it("should derive Nns token only", () => {
       const token = get(nnsTokenStore);
@@ -50,11 +52,12 @@ describe("universes-tokens", () => {
     it("should derive ckBTC token fee", () => {
       const tokenFee = get(ckBTCTokenFeeStore);
 
-      const expectedFee = TokenAmount.fromE8s({
+      const expectedFee = TokenAmountV2.fromUlps({
         amount: mockCkBTCToken.fee,
         token: {
           name: mockCkBTCToken.name,
           symbol: mockCkBTCToken.symbol,
+          decimals: mockCkBTCToken.decimals,
         },
       });
 
@@ -67,14 +70,16 @@ describe("universes-tokens", () => {
 
   describe("ckBTC empty", () => {
     beforeAll(() => {
-      jest.spyOn(tokensStore, "subscribe").mockImplementation(
+      vi.spyOn(tokensStore, "subscribe").mockImplementation(
         mockTokensSubscribe({
           [OWN_CANISTER_ID.toText()]: NNS_TOKEN,
         })
       );
     });
 
-    afterAll(() => jest.clearAllMocks());
+    afterAll(() => {
+      vi.clearAllMocks();
+    });
 
     it("should derive no ckBTC token", () => {
       const token = get(ckBTCTokenStore);

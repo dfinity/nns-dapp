@@ -50,6 +50,7 @@ export const queryProposals = async ({
             }),
       includeRewardStatus: rewards,
       includeStatus: status,
+      includeAllManageNeuronProposals: false,
     },
     certified,
   });
@@ -86,10 +87,11 @@ export const queryProposal = async ({
   const response = await governance.listProposals({
     request: {
       limit: 1,
-      beforeProposal: proposalId + BigInt(1),
+      beforeProposal: proposalId + 1n,
       includeRewardStatus: [],
       excludeTopic: [],
       includeStatus: [],
+      includeAllManageNeuronProposals: false,
     },
     certified,
   });

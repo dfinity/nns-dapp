@@ -1,17 +1,13 @@
-/**
- * @jest-environment jsdom
- */
-
 import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { accountsStore } from "$lib/stores/accounts.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
   mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
-import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsAccountsStoreSubscribe } from "$tests/mocks/sns-accounts.mock";
 import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
@@ -25,11 +21,9 @@ describe("SelectDestinationAddress", () => {
     const subaccounts = [mockSubAccount, mockSubAccount2];
     const hardwareWallets = [mockHardwareWalletAccount];
 
-    jest
-      .spyOn(accountsStore, "subscribe")
-      .mockImplementation(
-        mockAccountsStoreSubscribe(subaccounts, hardwareWallets)
-      );
+    vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
+      mockAccountsStoreSubscribe(subaccounts, hardwareWallets)
+    );
 
     it("should render address input as default", () => {
       const { container } = render(SelectDestinationAddress, {
@@ -113,9 +107,9 @@ describe("SelectDestinationAddress", () => {
   });
 
   describe("sns accounts", () => {
-    jest
-      .spyOn(snsAccountsStore, "subscribe")
-      .mockImplementation(mockSnsAccountsStoreSubscribe(mockPrincipal));
+    vi.spyOn(snsAccountsStore, "subscribe").mockImplementation(
+      mockSnsAccountsStoreSubscribe(mockPrincipal)
+    );
 
     it("should render the sns account", async () => {
       const { container, queryByTestId } = render(SelectDestinationAddress, {

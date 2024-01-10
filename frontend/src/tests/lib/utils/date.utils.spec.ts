@@ -1,83 +1,73 @@
 import { SECONDS_IN_DAY, SECONDS_IN_MONTH } from "$lib/constants/constants";
 import {
   daysToDuration,
+  daysToSeconds,
   nanoSecondsToDateTime,
   secondsToDate,
   secondsToDateTime,
   secondsToDissolveDelayDuration,
-  secondsToDuration,
   secondsToTime,
 } from "$lib/utils/date.utils";
 import en from "$tests/mocks/i18n.mock";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
-
-describe("secondsToDuration", () => {
-  it("should give year details", () => {
-    const MORE_THAN_ONE_YEAR = BigInt(60 * 60 * 24 * 365 * 1.5);
-    expect(secondsToDuration(MORE_THAN_ONE_YEAR)).toContain(en.time.year);
-  });
-
-  it("should give day details", () => {
-    const MORE_THAN_ONE_DAY = BigInt(60 * 60 * 24 * 4);
-    expect(secondsToDuration(MORE_THAN_ONE_DAY)).toContain(en.time.day);
-  });
-
-  it("should give hour details", () => {
-    const MORE_THAN_ONE_HOUR = BigInt(60 * 60 * 4);
-    expect(secondsToDuration(MORE_THAN_ONE_HOUR)).toContain(en.time.hour);
-  });
-
-  it("should give minute details", () => {
-    const MORE_THAN_ONE_MINUTE = BigInt(60 * 4);
-    expect(secondsToDuration(MORE_THAN_ONE_MINUTE)).toContain(en.time.minute);
-  });
-
-  it("should give seconds details", () => {
-    expect(secondsToDuration(BigInt(56))).toContain(en.time.second_plural);
-  });
-
-  it("should give a second details", () => {
-    expect(secondsToDuration(BigInt(1))).toContain(en.time.second);
-  });
-});
+import { secondsToDuration } from "@dfinity/utils";
 
 describe("daysToDuration", () => {
-  // 376 => "1 Year, 11 Days" => [1, 11]
-  const parseDaysToDuration = (days: number) =>
-    Array.from(daysToDuration(days).match(/\d+/g)?.map(Number) ?? []);
-
   it("should return 1 year", () => {
-    expect(parseDaysToDuration(364)).toEqual([364]);
-    expect(parseDaysToDuration(365)).toEqual([1]);
-    expect(parseDaysToDuration(366)).toEqual([1, 1]);
+    expect(daysToDuration(364)).toBe("364 days");
+    expect(daysToDuration(365)).toBe("1 year");
+    expect(daysToDuration(366)).toBe("1 year, 1 day");
+    expect(daysToDuration(367)).toBe("1 year, 2 days");
   });
 
   it("should return 2 years", () => {
-    expect(parseDaysToDuration(729)).toEqual([1, 364]);
-    expect(parseDaysToDuration(730)).toEqual([2]);
-    expect(parseDaysToDuration(731)).toEqual([2, 1]);
+    expect(daysToDuration(2 * 365 - 1)).toBe("1 year, 364 days");
+    expect(daysToDuration(2 * 365)).toBe("2 years");
+    expect(daysToDuration(2 * 365 + 1)).toBe("2 years, 1 day");
   });
 
   it("should return 3 years", () => {
-    expect(parseDaysToDuration(1094)).toEqual([2, 364]);
-    expect(parseDaysToDuration(1095)).toEqual([3]);
-    expect(parseDaysToDuration(1096)).toEqual([3, 1]);
+    expect(daysToDuration(3 * 365 - 1)).toBe("2 years, 364 days");
+    expect(daysToDuration(3 * 365)).toBe("3 years");
+    expect(daysToDuration(3 * 365 + 1)).toBe("3 years, 1 day");
   });
 
   it("should return a leap-year", () => {
-    expect(parseDaysToDuration(1460)).toEqual([3, 365]);
-    expect(parseDaysToDuration(1461)).toEqual([4]);
-    expect(parseDaysToDuration(1462)).toEqual([4, 1]);
+    expect(daysToDuration(4 * 365)).toBe("3 years, 365 days");
+    expect(daysToDuration(4 * 365 + 1)).toBe("4 years");
+    expect(daysToDuration(4 * 365 + 2)).toBe("4 years, 1 day");
   });
 
   it("should return 5+ years", () => {
-    expect(parseDaysToDuration(1825)).toEqual([4, 364]);
-    expect(parseDaysToDuration(1826)).toEqual([5]);
-    expect(parseDaysToDuration(1827)).toEqual([5, 1]);
+    expect(daysToDuration(5 * 365)).toBe("4 years, 364 days");
+    expect(daysToDuration(5 * 365 + 1)).toBe("5 years");
+    expect(daysToDuration(5 * 365 + 2)).toBe("5 years, 1 day");
 
-    expect(parseDaysToDuration(2190)).toEqual([5, 364]);
-    expect(parseDaysToDuration(2191)).toEqual([6]);
-    expect(parseDaysToDuration(2192)).toEqual([6, 1]);
+    expect(daysToDuration(6 * 365)).toBe("5 years, 364 days");
+    expect(daysToDuration(6 * 365 + 1)).toBe("6 years");
+    expect(daysToDuration(6 * 365 + 2)).toBe("6 years, 1 day");
+
+    expect(daysToDuration(7 * 365)).toBe("6 years, 364 days");
+    expect(daysToDuration(7 * 365 + 1)).toBe("7 years");
+    expect(daysToDuration(7 * 365 + 2)).toBe("7 years, 1 day");
+
+    expect(daysToDuration(8 * 365 + 1)).toBe("7 years, 365 days");
+    expect(daysToDuration(8 * 365 + 2)).toBe("8 years");
+    expect(daysToDuration(8 * 365 + 3)).toBe("8 years, 1 day");
+  });
+
+  it("should be consistent with secondsToDuration", () => {
+    for (let days = 1; days < 3000; days++) {
+      expect({ days, duration: daysToDuration(days) }).toEqual({
+        days,
+        duration: secondsToDuration({ seconds: BigInt(days * SECONDS_IN_DAY) }),
+      });
+    }
+  });
+
+  it("should return fractions of day", () => {
+    expect(daysToDuration(1.5)).toBe("1 day, 12 hours");
+    expect(daysToDuration(365.125)).toBe("1 year, 3 hours");
   });
 });
 
@@ -125,9 +115,9 @@ describe("secondsToDissolveDelayDuration", () => {
   });
 
   it("should display 2 years, 9 months, 11 days", () => {
-    expect(secondsToDissolveDelayDuration(BigInt(87654321))).toContain("2");
-    expect(secondsToDissolveDelayDuration(BigInt(87654321))).toContain("9");
-    expect(secondsToDissolveDelayDuration(BigInt(87654321))).toContain("11");
+    expect(secondsToDissolveDelayDuration(87_654_321n)).toContain("2");
+    expect(secondsToDissolveDelayDuration(87_654_321n)).toContain("9");
+    expect(secondsToDissolveDelayDuration(87_654_321n)).toContain("11");
   });
 });
 
@@ -148,7 +138,7 @@ describe("secondsToDate", () => {
 
 describe("secondsToDateTime", () => {
   it("should return formatted start date and time in 1970", () => {
-    expect(normalizeWhitespace(secondsToDateTime(BigInt(0)))).toEqual(
+    expect(normalizeWhitespace(secondsToDateTime(0n))).toEqual(
       "Jan 1, 1970 12:00 AM"
     );
   });
@@ -165,7 +155,7 @@ describe("secondsToDateTime", () => {
 
 describe("nanoSecondsToDateTime", () => {
   it("should return formatted start date and time in 1970", () => {
-    expect(normalizeWhitespace(nanoSecondsToDateTime(BigInt(0)))).toEqual(
+    expect(normalizeWhitespace(nanoSecondsToDateTime(0n))).toEqual(
       "Jan 1, 1970 12:00 AM"
     );
   });
@@ -198,5 +188,18 @@ describe("secondsToTime", () => {
     date.setMinutes(45);
     date.setSeconds(59);
     expect(secondsToTime(+date / 1000)).toContain("9:45");
+  });
+});
+
+describe("daysToSeconds", () => {
+  it("returns the days in seconds", () => {
+    expect(daysToSeconds(1)).toBe(SECONDS_IN_DAY);
+    expect(daysToSeconds(2)).toBe(SECONDS_IN_DAY * 2);
+    expect(daysToSeconds(3)).toBe(SECONDS_IN_DAY * 3);
+  });
+
+  it("returns integers only", () => {
+    expect(daysToSeconds(1.123456)).not.toBe(SECONDS_IN_DAY * 1.123456);
+    expect(daysToSeconds(1.123456)).toBe(97067);
   });
 });

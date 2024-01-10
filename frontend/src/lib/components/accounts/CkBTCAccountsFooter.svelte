@@ -13,8 +13,8 @@
   import { busy } from "@dfinity/gix-components";
   import CkBTCReceiveButton from "$lib/components/accounts/CkBTCReceiveButton.svelte";
   import CkBTCSendButton from "$lib/components/accounts/CkBTCSendButton.svelte";
-  import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
   import { toastsError } from "$lib/stores/toasts.store";
+  import { syncAccounts } from "$lib/services/wallet-accounts.services";
 
   let canMakeTransactions = false;
   $: canMakeTransactions =
@@ -38,7 +38,7 @@
       return;
     }
 
-    await syncCkBTCAccounts({ universeId: $selectedCkBTCUniverseIdStore });
+    await syncAccounts({ universeId: $selectedCkBTCUniverseIdStore });
   };
 </script>
 

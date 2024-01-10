@@ -2,10 +2,10 @@ import { AppPath, ROUTE_ID_GROUP_APP } from "$lib/constants/routes.constants";
 import { pathForRouteId } from "$lib/utils/page.utils";
 
 describe("page.utils", () => {
-  it("should find no path and fallback to auth path", () => {
-    expect(pathForRouteId(undefined)).toEqual(AppPath.Authentication);
-    expect(pathForRouteId(null)).toEqual(AppPath.Authentication);
-    expect(pathForRouteId("yolo")).toEqual(AppPath.Authentication);
+  it("should find no path and fallback to accounts path", () => {
+    expect(pathForRouteId(undefined)).toEqual(AppPath.Accounts);
+    expect(pathForRouteId(null)).toEqual(AppPath.Accounts);
+    expect(pathForRouteId("yolo")).toEqual(AppPath.Accounts);
   });
 
   it("should map app path", () => {

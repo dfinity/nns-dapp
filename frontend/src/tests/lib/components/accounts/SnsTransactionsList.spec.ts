@@ -1,9 +1,4 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsTransactionList from "$lib/components/accounts/SnsTransactionsList.svelte";
-import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import * as services from "$lib/services/sns-transactions.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { page } from "$mocks/$app/stores";
@@ -14,20 +9,21 @@ import {
 } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
-  mockProjectSubscribe,
   mockSnsFullProject,
   mockSnsToken,
 } from "$tests/mocks/sns-projects.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
-jest.mock("$lib/services/sns-transactions.services", () => {
+vi.mock("$lib/services/sns-transactions.services", () => {
   return {
-    loadSnsAccountNextTransactions: jest.fn().mockResolvedValue(undefined),
+    loadSnsAccountNextTransactions: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-jest.mock("$lib/services/worker-transactions.services", () => ({
-  initTransactionsWorker: jest.fn(() =>
+vi.mock("$lib/services/worker-transactions.services", () => ({
+  initTransactionsWorker: vi.fn(() =>
     Promise.resolve({
       startTransactionsTimer: () => {
         // Do nothing
@@ -50,18 +46,21 @@ describe("SnsTransactionList", () => {
     });
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     page.mock({
       data: { universe: mockSnsFullProject.rootCanisterId.toText() },
     });
 
-    jest
-      .spyOn(snsProjectsStore, "subscribe")
-      .mockImplementation(mockProjectSubscribe([mockSnsFullProject]));
+    setSnsProjects([
+      {
+        rootCanisterId: mockSnsFullProject.rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+    ]);
   });
 
   it("should call service to load transactions", () => {
-    const spy = jest.spyOn(services, "loadSnsAccountNextTransactions");
+    const spy = vi.spyOn(services, "loadSnsAccountNextTransactions");
 
     renderSnsTransactionList(mockSnsMainAccount, mockPrincipal);
 
@@ -74,14 +73,14 @@ describe("SnsTransactionList", () => {
         [mockSnsMainAccount.identifier]: {
           transactions: [mockIcrcTransactionWithId],
           completed: false,
-          oldestTxId: BigInt(0),
+          oldestTxId: 0n,
         },
       },
     };
 
-    jest
-      .spyOn(icrcTransactionsStore, "subscribe")
-      .mockImplementation(mockIcrcTransactionsStoreSubscribe(store));
+    vi.spyOn(icrcTransactionsStore, "subscribe").mockImplementation(
+      mockIcrcTransactionsStoreSubscribe(store)
+    );
 
     const { queryAllByTestId } = renderSnsTransactionList(
       mockSnsMainAccount,

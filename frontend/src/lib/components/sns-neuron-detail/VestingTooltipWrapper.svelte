@@ -1,7 +1,7 @@
 <script lang="ts">
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { secondsToDuration } from "$lib/utils/date.utils";
+  import { secondsToDuration } from "@dfinity/utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isVesting, vestingInSeconds } from "$lib/utils/sns-neuron.utils";
   import type { SnsNeuron } from "@dfinity/sns";
@@ -17,7 +17,10 @@
       text={replacePlaceholders(
         $i18n.sns_neuron_detail.vesting_period_tooltip,
         {
-          $remainingVesting: secondsToDuration(vestingInSeconds(neuron)),
+          $remainingVesting: secondsToDuration({
+            seconds: vestingInSeconds(neuron),
+            i18n: $i18n.time,
+          }),
         }
       )}
     >

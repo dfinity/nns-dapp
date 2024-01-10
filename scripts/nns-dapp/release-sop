@@ -27,6 +27,8 @@ source "$SOURCE_DIR/../clap.bash"
 clap.define long=new desc="Start a new release branch" variable=IS_NEW_RELEASE nargs=0 default="false"
 clap.define long=continue desc="Continue with an existing release branch" variable=CONTINUE nargs=0 default="false"
 clap.define long=name desc="The name of the new release branch" variable=BRANCH_NAME default=""
+clap.define long=test_network desc="The dfx network to deploy the release candidate to for testing" variable=TEST_NETWORK default="devenv_$USER"
+clap.define long=test_domain desc="The domain to use for the Release candidate URL" variable=TEST_DOMAIN default="${USER}-ingress.devenv.dfinity.network"
 clap.define long=mock-json desc="A json file with mock responses for commands during testing" variable=MOCK_JSON default=""
 # Source the output file ------------------------------------------------------
 source "$(clap.build)"
@@ -41,23 +43,32 @@ if [ "$IS_NEW_RELEASE" = "false" ] && [ "$CONTINUE" = "false" ]; then
   exit 1
 fi
 
+NOT_MOCKED_COMMANDS=(
+  echo
+  printf
+  get_build_hash
+  review_proposal
+)
+
 execute() {
   if ! [ "${MOCK_JSON:-}" ]; then
     "$@"
     return
   fi
-  if [ "$1" = "echo" ]; then
-    "$@"
-    return
-  fi
+  for not_mocked in "${NOT_MOCKED_COMMANDS[@]}"; do
+    if [ "$1" = "$not_mocked" ]; then
+      "$@"
+      return
+    fi
+  done
   cmd=$(printf "%q " "$@" | sed 's/ $//')
   entry="$(jq --arg command "$cmd" '.behavior[] | select(.command == $command)' "$MOCK_JSON")"
   if ! [ "$entry" ]; then
     echo "No mock behavior for: $cmd" >&2
     exit 1
   fi
-  stdout="$(echo "$entry" | jq -r .stdout | tr -d '\n')"
-  stderr="$(echo "$entry" | jq -r .stderr | tr -d '\n')"
+  stdout="$(echo "$entry" | jq -r .stdout)"
+  stderr="$(echo "$entry" | jq -r .stderr)"
   echo -n "$stdout"
   echo -n "$stderr" >&2
   exitCode="$(echo "$entry" | jq -r .exitCode)"
@@ -127,6 +138,10 @@ fi
 TOP_DIR=$(execute git rev-parse --show-toplevel)
 execute cd "$TOP_DIR"
 
+GREEN_COLOR="\033[32m"
+MAGENTA_COLOR="\033[35m"
+RESET_COLOR="\033[0m"
+
 checklist_get() {
   local name
   name="$1"
@@ -150,7 +165,7 @@ checklist_add() {
   temp_file="$CHECKLIST_FILE.tmp"
   jq --arg name "$name" --arg value "$value" '. + [{name: $name, value: $value}]' "$CHECKLIST_FILE" >"$temp_file"
   mv "$temp_file" "$CHECKLIST_FILE"
-  echo "$name: $value"
+  echo -e "$name: ${GREEN_COLOR}$value${RESET_COLOR}"
 }
 
 # This script is designed to be run multiple times. Steps that have been
@@ -181,7 +196,7 @@ confirm_cmd() {
     return
   fi
   (
-    echo "Press enter to run the following command:"
+    echo "👇 Press enter to run the following command:"
     echo
     echo "$cmd"
     echo
@@ -196,13 +211,38 @@ confirm_cmd() {
   checklist_add "$cmd" "Done"
 }
 
+confirm_manual() {
+  local label value input
+  label="$1"
+  shift
+  value="$(checklist_get "$label")"
+  if [ "$value" ]; then
+    echo "$label: Was already done. Skipping."
+    return
+  fi
+  if ! execute "$@"; then
+    echo "$label: Failed"
+    exit 1
+  fi
+  echo
+  echo "When you've done that ☝️  confirm by entering 'y':"
+  if ! [ "${MOCK_JSON:-}" ]; then
+    read -r input
+    if [[ ${input:-} != "y" ]]; then
+      echo "Aborting." >&2
+      exit 1
+    fi
+  fi
+  checklist_add "$label" "Done"
+}
+
 record() {
   local label value
   label="$1"
   shift
   value="$(checklist_get "$label")"
   if [ "$value" ]; then
-    echo "$label: Was already: $value"
+    echo -e "$label: Was already: ${MAGENTA_COLOR}$value${RESET_COLOR}"
     return
   fi
   if ! value="$(execute "$@")"; then
@@ -238,10 +278,21 @@ verify() {
   fi
 }
 
+is_release_sop_script_newest_version() {
+  if git diff --quiet origin/main scripts/nns-dapp/release-sop; then
+    echo "yes"
+    return
+  fi
+  echo
+  echo "The release-sop script is different from origin/main"
+  echo "Pull changes and try again."
+  exit 1
+}
+
 npm_audit() {
   local audit
   pushd "$TOP_DIR/frontend" >&2
-  audit="$(npm audit --json | jq --slurp -r '[.. | .via? | .[]? | .url?] | join(",")')"
+  audit="$(npm audit --json | jq --slurp -r '[.. | .via? | .[]? | .url?] | join(" ")')"
   if [ "$audit" ]; then
     echo "$audit"
     exit
@@ -284,20 +335,6 @@ get_dfx_identity() {
   echo "$(dfx identity whoami): $(dfx identity get-principal)"
 }
 
-remove_staging_nns_dapp_from_canister_ids_json() {
-  old_canister_id="$(jq -r '."nns-dapp".staging' canister_ids.json)"
-  if ! [ "$old_canister_id" ]; then
-    checklist_add "$label" "Was already not there"
-    return
-  fi
-
-  new_name="staging-before-$(execute date +%Y%m%d-%H%M%S)"
-  jq --arg new_name "$new_name" '."nns-dapp"[$new_name] = ."nns-dapp".staging | del(."nns-dapp".staging)' canister_ids.json >canister_ids.json.new
-  mv canister_ids.json.new canister_ids.json
-
-  #checklist_add "$label" "\"$new_name\": \"$old_canister_id\""
-}
-
 get_module_hash_from_network() {
   local network
   network="$1"
@@ -305,18 +342,20 @@ get_module_hash_from_network() {
   echo "${module_hash#0x}"
 }
 
-post_on_slack() {
-  STAGING_URL="$(checklist_must_get "Staging URL")"
+post_rc_on_slack() {
+  RC_URL="$(checklist_must_get "Release candidate URL")"
   COMMIT="$(checklist_must_get "Release commit")"
   WASM_HASH="$(checklist_must_get "CI NNS-dapp WASM hash")"
   (
     echo
     echo "Post the following on #eng-gix-private:"
     echo
-    echo ":rocket: *New RC ${BRANCH_NAME}* : $STAGING_URL"
+    echo ":rocket: *New RC ${BRANCH_NAME}* : $RC_URL"
     echo "Commit: $COMMIT"
     echo "WASM hash: $WASM_HASH"
-    echo "[QR Code](https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=$STAGING_URL)"
+    echo "Change log: https://github.com/dfinity/nns-dapp/blob/release-candidate/CHANGELOG-Nns-Dapp-unreleased.md"
+    echo "[QR Code](https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=$RC_URL)"
+    echo "[Use a VPN](https://www.notion.so/dfinityorg/NNS-dapp-on-DevEnv-2882138a87fa45c39bf0966591c3dd73#929a5ccd7edd4b428efbc765aedf4d84) to test on mobile."
     echo "Please try it out."
     echo
     echo -n "Then enter the Slack link: "
@@ -325,11 +364,69 @@ post_on_slack() {
   echo "$SLACK_LINK"
 }
 
+verify_build() {
+  (
+    echo
+    echo "Run 'scripts/docker-build' on a Linux machine."
+    echo "When it finishes successfully, enter the lines with file hashes here 👇 and then press ENTER followed by Ctrl+D"
+    echo
+  ) >&2
+  cat
+}
+
+get_build_hash() {
+  filename="$1"
+  checklist_must_get "Build hashes" | grep "$filename" | awk '{print $1}'
+}
+
+review_proposal() {
+  echo "==  release/PROPOSAL.md:  ============================================"
+  echo
+  execute cat "release/PROPOSAL.md"
+  echo
+  echo "======================================================================"
+  echo
+  echo "Review the proposal above ☝️  and have someone else review it as well."
+}
+
+review_feature_flags() {
+  execute cat "release/nns-dapp-arg-mainnet.did" | idl2json | jq '.[] | .args[] | select(."0" == "FEATURE_FLAGS") | ."1" | fromjson'
+  echo
+  echo "Review the feature flags above ☝️  ."
+}
+
+post_proposal_on_slack() {
+  DASHBOARD_PROPOSAL_URL="https://dashboard.internetcomputer.org/proposal/$PROPOSAL_ID"
+  NNS_DAPP_PROPOSAL_URL="https://nns.ic0.app/proposal/?u=qoctq-giaaa-aaaaa-aaaea-cai&proposal=$PROPOSAL_ID"
+  NNS_RELEASES_CHANNEL_URL="https://dfinity.slack.com/channels/eng-nns-releases"
+  (
+    echo
+    echo "======================================================================"
+    echo
+    echo "NNS-dapp upgrade proposal:"
+    echo "* $DASHBOARD_PROPOSAL_URL"
+    echo "* $NNS_DAPP_PROPOSAL_URL"
+    echo
+    echo '````'
+    cat "release/PROPOSAL.md"
+    echo '````'
+    echo
+    echo "Post the above ☝️  on $NNS_RELEASES_CHANNEL_URL."
+    echo "Apply code-block formatting to the proposal text."
+    echo -n "Then enter the Slack link: "
+  ) >&2
+  local SLACK_LINK
+  read -r SLACK_LINK
+  echo "$SLACK_LINK"
+}
+
 echo Checklist file: "$CHECKLIST_FILE"
 
+# Pre-release
 record "Start time" date +"%Y-%m-%d %H:%M:%S"
 confirm_cmd git fetch --tags --force
-confirm_cmd git checkout -b "$BRANCH_NAME" origin/main
+record "Release SOP script is newest version" is_release_sop_script_newest_version
+confirm_cmd git checkout -b "$BRANCH_NAME" --no-track origin/main
 record "Release branch" echo "$BRANCH_NAME"
 verify "Release branch" "Current branch" echo "$BRANCH_NAME"
 confirm_cmd git push origin "$BRANCH_NAME"
@@ -339,21 +436,47 @@ record "Release commit" git rev-parse release-candidate
 verify "Release commit" "tags/release-candidate commit" git rev-parse release-candidate
 confirm_cmd git push origin -f tags/release-candidate
 record "Security test: npm audit" npm_audit
-verify "Security test: npm audit" "Expected npm audit" echo "https://github.com/advisories/GHSA-j8xg-fqg3-53r7"
+verify "Security test: npm audit" "Expected npm audit" echo "found 0 vulnerabilities"
 record "Security test: cargo audit" cargo_audit
-verify "Security test: cargo audit" "Expected cargo audit" echo "RUSTSEC-2020-0071,RUSTSEC-2020-0159,RUSTSEC-2023-0044"
+verify "Security test: cargo audit" "Expected cargo audit" echo "RUSTSEC-2020-0071,RUSTSEC-2020-0159"
 record "Security test: no HTML in templates" no_html_in_templates
 confirm_cmd "$SOURCE_DIR/download-ci-wasm" --commit tags/release-candidate --dir "$TOP_DIR/release/ci" --wasm-filename nns-dapp.wasm.gz
 record "CI NNS-dapp WASM hash" "$SOURCE_DIR/get-hash-from-ci-log" --commit tags/release-candidate
 verify "CI NNS-dapp WASM hash" "Local WASM hash" sha256 "$TOP_DIR/release/ci/nns-dapp.wasm.gz"
-confirm_cmd scripts/canister_ids --remove --network staging --canister nns-dapp
+confirm_cmd scripts/canister_ids --remove --network "$TEST_NETWORK" --canister nns-dapp
 record "dfx identity" get_dfx_identity
-confirm_cmd dfx canister create nns-dapp --network staging
-record "NNS-dapp staging canister ID" dfx canister id nns-dapp --network staging
-verify "NNS-dapp staging canister ID" "Current NNS-dapp staging canister ID" dfx canister id nns-dapp --network staging
-CANISTER_ID="$(checklist_must_get "NNS-dapp staging canister ID")"
-confirm_cmd DFX_NETWORK=staging ./config.sh
-confirm_cmd dfx canister install nns-dapp --argument "$(execute cat nns-dapp-arg-staging.did)" --network staging --wasm ./release/ci/nns-dapp.wasm.gz
-record "Staging URL" echo "https://$CANISTER_ID.nnsdapp.dfinity.network/"
-verify "CI NNS-dapp WASM hash" "Staging WASM hash" get_module_hash_from_network staging
-record "Post on Slack" post_on_slack
+confirm_cmd dfx canister create nns-dapp --network "$TEST_NETWORK" --no-wallet
+record "NNS-dapp $TEST_NETWORK canister ID" dfx canister id nns-dapp --network "$TEST_NETWORK"
+verify "NNS-dapp $TEST_NETWORK canister ID" "Current NNS-dapp $TEST_NETWORK canister ID" dfx canister id nns-dapp --network "$TEST_NETWORK"
+CANISTER_ID="$(checklist_must_get "NNS-dapp $TEST_NETWORK canister ID")"
+confirm_cmd DFX_NETWORK="$TEST_NETWORK" ./config.sh
+confirm_cmd dfx canister install nns-dapp --argument "$(execute cat "nns-dapp-arg-${TEST_NETWORK}.did")" --network "$TEST_NETWORK" --wasm ./release/ci/nns-dapp.wasm.gz
+record "Release candidate URL" echo "https://$CANISTER_ID.${TEST_DOMAIN}/"
+verify "CI NNS-dapp WASM hash" "RC WASM hash" get_module_hash_from_network "$TEST_NETWORK"
+record "Post RC on Slack" post_rc_on_slack
+confirm_manual "Update playground" printf 'Update the "Playground" bookmark on the #eng-nns-dapp Slack channel to point to the new release candidate.\n\nSlack channel: https://dfinity.slack.com/channels/eng-nns-dapp\nNew Playground bookmark:  %s\n' "$(checklist_must_get "Release candidate URL")"
+
+# Release
+record "Canister IDs" "$SOURCE_DIR/../canister_ids" --export --network "$TEST_NETWORK"
+record "Build hashes" verify_build
+confirm_cmd "$SOURCE_DIR/release-template"
+confirm_cmd "$SOURCE_DIR/release-check"
+verify "CI NNS-dapp WASM hash" "Built NNS-dapp WASM hash" get_build_hash nns-dapp.wasm.gz
+confirm_manual "Review proposal" review_proposal
+confirm_manual "Review feature flags" review_feature_flags
+record "CI mainnet args hash" "$SOURCE_DIR/get-hash-from-ci-log" --commit tags/release-candidate --filename nns-dapp-arg-mainnet.bin
+verify "CI mainnet args hash" "Built mainnet args hash" get_build_hash nns-dapp-arg-mainnet.bin
+PROPOSAL_ID_FILE="release/proposal_id"
+confirm_cmd "$SOURCE_DIR/release" --save-proposal-id-to-file "$PROPOSAL_ID_FILE"
+record "Proposal ID" cat "$PROPOSAL_ID_FILE"
+PROPOSAL_ID="$(checklist_must_get "Proposal ID")"
+record "Proposal time" date +"%Y-%m-%d %H:%M:%S"
+confirm_cmd git checkout release-candidate
+PROPOSAL_TAG="proposal-$PROPOSAL_ID"
+confirm_cmd git tag "$PROPOSAL_TAG"
+confirm_cmd git push origin "tags/$PROPOSAL_TAG"
+confirm_cmd git checkout "$BRANCH_NAME"
+record "Post proposal on Slack" post_proposal_on_slack
+confirm_manual "Schedule voting" echo "Schedule an appointment for trusted neurons voting (in 3 days)"
+confirm_manual "Schedule silence alerts" echo "Create an event to remind yourself to silence alerts before voting"
+confirm_manual "Forum post" echo "Create a forum post if there's something worth sharing"

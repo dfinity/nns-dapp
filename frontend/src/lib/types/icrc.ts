@@ -1,4 +1,3 @@
-import type { AccountIdentifierText } from "$lib/types/account";
 import type { Token } from "@dfinity/utils";
 
 /**
@@ -7,7 +6,8 @@ import type { Token } from "@dfinity/utils";
  */
 export interface IcrcTokenMetadata extends Token {
   fee: bigint;
+  logo?: string;
   // TODO: integrate "decimals" to replace ICP_DISPLAYED_DECIMALS_DETAILED
 }
 
-export type IcrcAccountIdentifierText = AccountIdentifierText;
+export type IcrcAccountIdentifierText = string;

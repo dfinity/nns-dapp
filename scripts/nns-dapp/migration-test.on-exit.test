@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2030,SC2031,SC2001
+# Note regarding shellcheck: These tests create subshells with variables, it is intentional that the variables are not set globally.
+#
+# WARNING: This file tests backtraces including linenums.  If you change the line numbers in this file, you may need to update the expected stacktrace.
+set -euo pipefail
+. "${0%.test}"
+# Toy functions to test the backtrace
+foo() {
+  "$@"
+}
+bar() {
+  "$@"
+}
+bat() {
+  ACTUAL_STACKTRACE="$(print_stack "$@")"
+  [[ "${ACTUAL_STACKTRACE:-}" == "${EXPECTED_STACKTRACE:-}" ]] || {
+    echo "ERROR: Actual stacktrace did not match expected stacktrace."
+    echo "Expected:"
+    echo "----------------------------------------------"
+    echo "$EXPECTED_STACKTRACE"
+    echo "----------------------------------------------"
+    echo "Actual:"
+    echo "----------------------------------------------"
+    echo "$ACTUAL_STACKTRACE"
+    echo "----------------------------------------------"
+    echo "Diff:"
+    diff -u <(echo "$EXPECTED_STACKTRACE") <(echo "$ACTUAL_STACKTRACE")
+    exit 1
+  } >&2
+}
+bail() {
+  false
+  on_exit
+}
+
+# Prints a section title
+title() {
+  cat <<-EOF
+
+	=============================================================================
+	   $*
+	=============================================================================
+	EOF
+}
+
+(
+  title "Should print a correct backtrace"
+  EXPECTED_STACKTRACE="$(
+    cat <<-EOF
+	   at: scripts/nns-dapp/migration-test.on-exit:??: print_stack
+	   at: scripts/nns-dapp/migration-test.on-exit.test:16: bat
+	   at: scripts/nns-dapp/migration-test.on-exit.test:13: bar
+	   at: scripts/nns-dapp/migration-test.on-exit.test:10: foo
+	   at: scripts/nns-dapp/migration-test.on-exit.test:58: main
+	EOF
+  )"
+  foo bar bat
+)
+
+(
+  title "Backtrace should skip the expected number of entries"
+  EXPECTED_STACKTRACE="$(
+    cat <<-EOF
+	   at: scripts/nns-dapp/migration-test.on-exit.test:13: bar
+	   at: scripts/nns-dapp/migration-test.on-exit.test:10: foo
+	   at: scripts/nns-dapp/migration-test.on-exit.test:70: main
+	EOF
+  )"
+  foo bar bat 2
+)
+
+(
+  title "on_exit should work"
+  EXPECTED="$(
+    cat <<-EOF
+	=============================================
+	   at: scripts/nns-dapp/migration-test.on-exit.test:34: bail
+	   at: scripts/nns-dapp/migration-test.on-exit.test:13: bar
+	   at: scripts/nns-dapp/migration-test.on-exit.test:10: foo
+	   at: scripts/nns-dapp/migration-test.on-exit.test:87: main
+
+
+	ERROR: exiting with code 1
+	EOF
+  )"
+  if ACTUAL="$(foo bar bail 2>&1)"; then
+    echo "ERROR: Expected exit 1"
+    exit 1
+  fi
+  [[ "${ACTUAL:-}" == "${EXPECTED:-}" ]] || {
+    echo "ERROR: Actual output did not match expected output."
+    echo "Expected:"
+    echo "----------------------------------------------"
+    echo "$EXPECTED"
+    echo "----------------------------------------------"
+    echo "Actual:"
+    echo "----------------------------------------------"
+    echo "$ACTUAL"
+    echo "----------------------------------------------"
+    echo "Diff:"
+    diff -u <(echo "$EXPECTED") <(echo "$ACTUAL")
+    exit 1
+  } >&2
+)
+
+echo "$(basename "$0") PASSED"

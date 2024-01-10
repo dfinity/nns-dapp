@@ -13,7 +13,6 @@
   import { spawnNeuron } from "$lib/services/neurons.services";
   import { toastsShow } from "$lib/stores/toasts.store";
   import {
-    formattedMaturity,
     isEnoughMaturityToSpawn,
     isNeuronControlledByHardwareWallet,
   } from "$lib/utils/neuron.utils";
@@ -21,14 +20,14 @@
   import ConfirmSpawnHW from "$lib/components/neuron-detail/ConfirmSpawnHW.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { goto } from "$app/navigation";
-  import { accountsStore } from "$lib/stores/accounts.store";
+  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 
   export let neuron: NeuronInfo;
 
   let controlledByHardwareWallet: boolean;
   $: controlledByHardwareWallet = isNeuronControlledByHardwareWallet({
     neuron,
-    accounts: $accountsStore,
+    accounts: $icpAccountsStore,
   });
 
   const hardwareWalletSteps: WizardSteps = [
@@ -98,7 +97,7 @@
   >
   {#if currentStep?.name === "SelectPercentage"}
     <NeuronSelectPercentage
-      formattedMaturity={formattedMaturity(neuron)}
+      availableMaturityE8s={neuron.fullNeuron?.maturityE8sEquivalent ?? 0n}
       buttonText={$i18n.neuron_detail.spawn}
       on:nnsSelectPercentage={spawnNeuronFromMaturity}
       on:nnsCancel={close}

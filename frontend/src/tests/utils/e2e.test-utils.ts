@@ -1,3 +1,4 @@
+import type { FeatureKey } from "$lib/constants/environment.constants";
 import { expect, test, type BrowserContext, type Page } from "@playwright/test";
 
 let resolvePreviousStep = () => {
@@ -58,9 +59,10 @@ export const signInWithNewUser = async ({
   const iiPage = await iiPagePromise;
   await expect(iiPage).toHaveTitle("Internet Identity");
 
-  await iiPage.getByRole("button", { name: "Create an Anchor" }).click();
-  await iiPage.getByPlaceholder("Example: my phone").fill("my phone");
-  await iiPage.getByRole("button", { name: "Next" }).click();
+  await iiPage
+    .getByRole("button", { name: "Create Internet Identity" })
+    .click();
+  await iiPage.getByRole("button", { name: "Create Passkey" }).click();
   step("Sign in > creating identity");
 
   await iiPage.locator("input#captchaInput").fill("a");
@@ -68,14 +70,44 @@ export const signInWithNewUser = async ({
   step("Sign in > verifying captcha");
 
   await iiPage.getByRole("button", { name: "Continue" }).click();
-  await iiPage.getByText("Choose a Recovery Method").waitFor();
-  await iiPage.getByRole("button", { name: /Skip/ }).click();
-  await iiPage.getByRole("button", { name: "Add another device" }).waitFor();
-  await iiPage.getByRole("button", { name: /Skip/ }).click();
 
   step("Sign in > finalizing authentication");
   await iiPage.waitForEvent("close");
   await expect(iiPage.isClosed()).toBe(true);
 
   await step("Running the main test");
+};
+
+export const setFeatureFlag = ({
+  page,
+  featureFlag,
+  value,
+}: {
+  page: Page;
+  featureFlag: FeatureKey;
+  value: boolean;
+}) =>
+  page.evaluate(
+    ({ featureFlag, value }) =>
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      (window as any).__featureFlags[featureFlag]["overrideWith"](value),
+    { featureFlag, value }
+  );
+
+export const replaceContent = async ({
+  page,
+  selectors,
+  innerHtml,
+}: {
+  page: Page;
+  selectors: string[];
+  innerHtml: string;
+}): Promise<void> => {
+  await page.evaluate(
+    ({ selectors, innerHtml }) =>
+      document.querySelectorAll(selectors.join(", ")).forEach((el) => {
+        el.innerHTML = innerHtml;
+      }),
+    { selectors, innerHtml }
+  );
 };

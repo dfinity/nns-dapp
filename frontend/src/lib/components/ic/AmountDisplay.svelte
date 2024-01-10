@@ -1,17 +1,17 @@
 <script lang="ts">
-  import type { TokenAmount } from "@dfinity/utils";
-  import { formatToken } from "$lib/utils/token.utils";
+  import type { TokenAmount, TokenAmountV2 } from "@dfinity/utils";
+  import { formatTokenV2 } from "$lib/utils/token.utils";
   import { Copy } from "@dfinity/gix-components";
 
   // TODO: should we expose two properties - an amount in bigint and a token Token - and build the TokenAmount.fromE8s in this component?
-  export let amount: TokenAmount;
+  export let amount: TokenAmount | TokenAmountV2;
   export let label: string | undefined = undefined;
   export let inline = false;
   export let singleLine = false;
   export let title = false;
   export let copy = false;
   export let text = false;
-  export let inheritSize = false;
+  export let size: "inherit" | "huge" | undefined = undefined;
   export let sign: "+" | "-" | "" = "";
   export let detailed: boolean | "height_decimals" = false;
 </script>
@@ -19,10 +19,11 @@
 <div
   class:inline
   class:singleLine
-  class:inheritSize
+  class:inheritSize={size === "inherit"}
   class:title
   class:copy
   class:text
+  class:huge={size === "huge"}
   class:plus-sign={sign === "+"}
   data-tid="token-value-label"
 >
@@ -30,12 +31,12 @@
     data-tid="token-value"
     class="value"
     class:tabular-num={detailed === "height_decimals"}
-    >{`${sign}${formatToken({ value: amount.toE8s(), detailed })}`}</span
+    >{`${sign}${formatTokenV2({ value: amount, detailed })}`}</span
   >
-  <span class="label">{label !== undefined ? label : amount.token.symbol}</span>
-
-  {#if copy}
-    <Copy value={formatToken({ value: amount.toE8s(), detailed: true })} />
+  <span class="label">{label !== undefined ? label : amount.token.symbol}</span
+  >{#if copy}
+    {" "}
+    <Copy value={formatTokenV2({ value: amount, detailed: true })} />
   {/if}
 </div>
 
@@ -124,6 +125,10 @@
         // Custom line-height in case the value is spread on multiple lines - we have to amend the particular size of the copy button
         line-height: 1.8;
       }
+    }
+
+    &.huge span.value {
+      font-size: var(--font-size-huge);
     }
   }
 

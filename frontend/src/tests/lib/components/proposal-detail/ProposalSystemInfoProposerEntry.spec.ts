@@ -1,7 +1,4 @@
-/**
- * @jest-environment jsdom
- */
-
+import * as agent from "$lib/api/agent.api";
 import ProposalSystemInfoProposerEntry from "$lib/components/proposal-detail/ProposalSystemInfoProposerEntry.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import {
@@ -10,16 +7,21 @@ import {
   mutableMockAuthStoreSubscribe,
 } from "$tests/mocks/auth.store.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
+import type { HttpAgent } from "@dfinity/agent";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { mock } from "vitest-mock-extended";
+
+vi.mock("$lib/services/neurons.services");
 
 describe("ProposalMeta", () => {
   beforeEach(() => {
-    jest.spyOn(console, "error").mockImplementation(jest.fn);
+    vi.spyOn(console, "error").mockReturnValue();
+    vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
-  jest
-    .spyOn(authStore, "subscribe")
-    .mockImplementation(mutableMockAuthStoreSubscribe);
+  vi.spyOn(authStore, "subscribe").mockImplementation(
+    mutableMockAuthStoreSubscribe
+  );
 
   const props = {
     proposer: mockProposalInfo.proposer,
@@ -28,12 +30,12 @@ describe("ProposalMeta", () => {
   // Proposer description display in tested in ProposalSystemInfoSection.spec.ts
 
   it("should render proposer id", () => {
-    const { getByText } = render(ProposalSystemInfoProposerEntry, {
+    const { queryByTestId } = render(ProposalSystemInfoProposerEntry, {
       props,
     });
     expect(
-      getByText(new RegExp(`${mockProposalInfo.proposer?.toString()}$`))
-    ).toBeInTheDocument();
+      queryByTestId("proposal-system-info-proposer-value").textContent
+    ).toBe(`${mockProposalInfo.proposer?.toString().substring(0, 7)}`);
   });
 
   describe("signed in", () => {
@@ -44,11 +46,14 @@ describe("ProposalMeta", () => {
     });
 
     it("should open proposer modal", async () => {
-      const { container } = render(ProposalSystemInfoProposerEntry, {
-        props,
-      });
+      const { container, getByTestId } = render(
+        ProposalSystemInfoProposerEntry,
+        {
+          props,
+        }
+      );
 
-      const button = container.querySelector("button.text");
+      const button = getByTestId("proposal-system-info-proposer-value");
       expect(button).not.toBeNull();
       button && (await fireEvent.click(button));
 

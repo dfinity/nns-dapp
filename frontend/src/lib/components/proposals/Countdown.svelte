@@ -1,12 +1,13 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
-  import { nowInSeconds, secondsToDuration } from "$lib/utils/date.utils";
+  import { nowInSeconds } from "$lib/utils/date.utils";
+  import { secondsToDuration } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import { AUTH_SESSION_DURATION } from "$lib/constants/identity.constants";
 
   export let deadlineTimestampSeconds: bigint | undefined;
 
-  const ZERO = BigInt(0);
+  const ZERO = 0n;
 
   let clear: NodeJS.Timeout | undefined;
   let countdown: bigint | undefined = undefined;
@@ -35,10 +36,7 @@
 
     // No need to schedule an update if the countdown is longer than an hour plus the auth session duration because even if we refresh,
     // the display value would remain the same until the end of the session
-    if (
-      countdown >
-      AUTH_SESSION_DURATION / BigInt(1_000_000_000) + BigInt(3600)
-    ) {
+    if (countdown > AUTH_SESSION_DURATION / 1_000_000_000n + 3_600n) {
       clearCountdown();
       return;
     }
@@ -56,7 +54,7 @@
    */
   const nextTimeout = () => {
     const frequency: "minutes" | "seconds" =
-      (countdown ?? ZERO) > BigInt(3600) ? "minutes" : "seconds";
+      (countdown ?? ZERO) > 3_600n ? "minutes" : "seconds";
     clear = setTimeout(
       next,
       frequency === "minutes" ? 60000 : 1000
@@ -69,15 +67,14 @@
 </script>
 
 {#if countdown !== undefined && countdown > ZERO}
-  <p class="description" data-tid="countdown">
-    {secondsToDuration(countdown)}
+  <p data-tid="countdown">
+    {secondsToDuration({ seconds: countdown, i18n: $i18n.time })}
     {$i18n.proposal_detail.remaining}
   </p>
 {/if}
 
 <style lang="scss">
   p {
-    text-align: right;
-    margin-bottom: 0;
+    margin: 0;
   }
 </style>

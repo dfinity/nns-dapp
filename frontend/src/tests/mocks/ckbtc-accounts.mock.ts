@@ -1,19 +1,27 @@
 import type { Account } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
-import { decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger";
+import { decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { mockPrincipal } from "./auth.store.mock";
 
 export const mockCkBTCToken: IcrcTokenMetadata = {
   name: "Test account",
   symbol: "ckBTC",
-  fee: BigInt(1),
+  fee: 1n,
+  decimals: 8,
+};
+
+export const mockCkTESTBTCToken = {
+  ...mockCkBTCToken,
+  symbol: "ckTESTBTC",
+  name: "ckTESTBTC",
+  decimals: 8,
 };
 
 export const mockCkBTCMainAccount: Account = {
   identifier: encodeIcrcAccount({
     owner: mockPrincipal,
   }),
-  balanceE8s: 444556698700000n,
+  balanceUlps: 444_556_698_700_000n,
   principal: mockPrincipal,
   type: "main",
 };
@@ -26,7 +34,7 @@ export const mockCkBTCWithdrawalIcrcAccount = decodeIcrcAccount(
 
 export const mockCkBTCWithdrawalAccount: Account = {
   identifier: mockCkBTCWithdrawalIdentifier,
-  balanceE8s: 98711100000n,
+  balanceUlps: 98_711_100_000n,
   principal: mockCkBTCWithdrawalIcrcAccount.owner,
   type: "withdrawalAccount",
 };

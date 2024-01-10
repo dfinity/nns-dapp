@@ -1,8 +1,4 @@
-/**
- * @jest-environment jsdom
- */
-
-import TextInputForm from "$lib/components/common/TextInputForm.svelte";
+import TextInputFormTest from "$tests/lib/components/common/TextInputFormTest.svelte";
 import { TextInputFormPo } from "$tests/page-objects/TextInputForm.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
@@ -15,7 +11,7 @@ describe("TextInputForm", () => {
 
   const renderComponent = (props) => {
     const testId = props.testId ?? "text-input-form";
-    const { container } = render(TextInputForm, {
+    const { container } = render(TextInputFormTest, {
       props: {
         testId,
         ...props,
@@ -67,22 +63,22 @@ describe("TextInputForm", () => {
   });
 
   it("should trigger nnsClose when cancel is clicked", () => {
-    const { getByTestId, component } = render(TextInputForm, {
+    const { getByTestId, component } = render(TextInputFormTest, {
       props: mandatoryProps,
     });
 
-    const callback = jest.fn();
+    const callback = vi.fn();
     component.$on("nnsClose", callback);
     clickByTestId(getByTestId, "cancel");
     expect(callback).toHaveBeenCalled();
   });
 
   it("should trigger nnsConfirmText when confirm is clicked", () => {
-    const { getByTestId, component } = render(TextInputForm, {
+    const { getByTestId, component } = render(TextInputFormTest, {
       props: mandatoryProps,
     });
 
-    const callback = jest.fn();
+    const callback = vi.fn();
     component.$on("nnsConfirmText", callback);
     clickByTestId(getByTestId, "confirm-text-input-screen-button");
     expect(callback).toHaveBeenCalled();

@@ -1,9 +1,12 @@
 <script lang="ts">
+  import { buildAccountsUrl } from "$lib/utils/navigation.utils";
+  import { goto } from "$app/navigation";
+  import { hasAccounts } from "$lib/utils/accounts.utils";
+  import { findAccountOrDefaultToMain } from "$lib/utils/accounts.utils";
   import type { Principal } from "@dfinity/principal";
   import { Spinner, busy } from "@dfinity/gix-components";
   import { setContext } from "svelte";
   import { writable } from "svelte/store";
-  import WalletSummary from "$lib/components/accounts/WalletSummary.svelte";
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
   import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
   import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
@@ -12,19 +15,18 @@
     type WalletContext,
     type WalletStore,
   } from "$lib/types/wallet.context";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Footer from "$lib/components/layout/Footer.svelte";
   import { i18n } from "$lib/stores/i18n";
   import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
   import SnsTransactionsList from "$lib/components/accounts/SnsTransactionsList.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import { Island } from "@dfinity/gix-components";
-  import Summary from "$lib/components/summary/Summary.svelte";
   import {
     snsOnlyProjectStore,
     snsProjectSelectedStore,
   } from "$lib/derived/sns/sns-selected-project.derived";
-  import { isNullish, nonNullish } from "@dfinity/utils";
-  import IC_LOGO from "$lib/assets/icp.svg";
+  import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import { loadSnsAccountTransactions } from "$lib/services/sns-transactions.services";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -33,6 +35,11 @@
   import { tokensStore } from "$lib/stores/tokens.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import SnsBalancesObserver from "$lib/components/accounts/SnsBalancesObserver.svelte";
+  import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
+  import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
+  import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
+  import IC_LOGO from "$lib/assets/icp.svg";
+  import { toTokenAmountV2 } from "$lib/utils/token.utils";
 
   let showModal: "send" | undefined = undefined;
 
@@ -59,18 +66,37 @@
     store: selectedAccountStore,
   });
 
+  const goBack = (): Promise<void> =>
+    goto(
+      buildAccountsUrl({
+        universe: $selectedUniverseStore.canisterId,
+      })
+    );
+
   export let accountIdentifier: string | undefined | null = undefined;
 
   const load = () => {
-    if (nonNullish(accountIdentifier)) {
-      const selectedAccount = $snsProjectAccountsStore?.find(
-        ({ identifier }) => identifier === accountIdentifier
-      );
-
-      selectedAccountStore.set({
-        account: selectedAccount,
-        neurons: [],
+    const accounts = $snsProjectAccountsStore ?? [];
+    const selectedAccount = findAccountOrDefaultToMain({
+      identifier: accountIdentifier,
+      accounts,
+    });
+    selectedAccountStore.set({
+      account: selectedAccount,
+      neurons: [],
+    });
+    // Accounts are loaded in store but no account identifier is matching
+    if (
+      hasAccounts($snsProjectAccountsStore ?? []) &&
+      isNullish($selectedAccountStore.account)
+    ) {
+      toastsError({
+        labelKey: replacePlaceholders($i18n.error.account_not_found, {
+          $account_identifier: accountIdentifier ?? "",
+        }),
       });
+
+      goBack();
     }
   };
 
@@ -92,12 +118,6 @@
 
   let disabled = false;
   $: disabled = isNullish($selectedAccountStore.account) || $busy;
-
-  let logo: string;
-  $: logo = $selectedUniverseStore?.summary?.metadata.logo ?? IC_LOGO;
-
-  let tokenSymbol: string | undefined;
-  $: tokenSymbol = $selectedUniverseStore?.summary?.token.symbol;
 
   const reloadAccount = async () => {
     try {
@@ -126,54 +146,78 @@
     : undefined;
 </script>
 
-<Island>
-  <main class="legacy" data-tid="sns-wallet">
-    <section>
-      {#if nonNullish($selectedAccountStore.account) && nonNullish($snsOnlyProjectStore) && nonNullish($snsProjectSelectedStore)}
-        <SnsBalancesObserver
-          rootCanisterId={$snsOnlyProjectStore}
-          accounts={[$selectedAccountStore.account]}
-          ledgerCanisterId={$snsProjectSelectedStore.summary.ledgerCanisterId}
-        >
-          <Summary />
+<TestIdWrapper testId="sns-wallet-component">
+  <Island>
+    <main class="legacy" data-tid="sns-wallet">
+      <section>
+        {#if nonNullish($selectedAccountStore.account) && nonNullish($snsOnlyProjectStore) && nonNullish($snsProjectSelectedStore) && nonNullish(token)}
+          <SnsBalancesObserver
+            rootCanisterId={$snsOnlyProjectStore}
+            accounts={[$selectedAccountStore.account]}
+            ledgerCanisterId={$snsProjectSelectedStore.summary.ledgerCanisterId}
+          />
+          <WalletPageHeader
+            universe={$selectedUniverseStore}
+            walletAddress={$selectedAccountStore.account.identifier}
+          />
+          <WalletPageHeading
+            balance={TokenAmountV2.fromUlps({
+              amount: $selectedAccountStore.account.balanceUlps,
+              token,
+            })}
+            accountName={$selectedAccountStore.account.name ??
+              $i18n.accounts.main}
+          />
 
-          <WalletSummary {token} />
-
-          <Separator />
+          <Separator spacing="none" />
 
           <SnsTransactionsList
             rootCanisterId={$snsOnlyProjectStore}
             account={$selectedAccountStore.account}
             {token}
           />
-        </SnsBalancesObserver>
-      {:else}
-        <Spinner />
-      {/if}
-    </section>
-  </main>
+        {:else}
+          <Spinner />
+        {/if}
+      </section>
+    </main>
 
-  <Footer>
-    <button
-      class="primary"
-      on:click={() => (showModal = "send")}
-      {disabled}
-      data-tid="open-new-sns-transaction">{$i18n.accounts.send}</button
-    >
+    <Footer>
+      <button
+        class="primary"
+        on:click={() => (showModal = "send")}
+        {disabled}
+        data-tid="open-new-sns-transaction">{$i18n.accounts.send}</button
+      >
 
-    <ReceiveButton
-      type="sns-receive"
-      account={$selectedAccountStore.account}
-      reload={reloadAccount}
-      testId="receive-sns"
+      <ReceiveButton
+        type="icrc-receive"
+        account={$selectedAccountStore.account}
+        reload={reloadAccount}
+        testId="receive-sns"
+        universeId={$snsOnlyProjectStore}
+        logo={$selectedUniverseStore?.summary?.metadata.logo ?? IC_LOGO}
+        tokenSymbol={$selectedUniverseStore?.summary?.token.symbol}
+      />
+    </Footer>
+  </Island>
+
+  {#if showModal && nonNullish($snsOnlyProjectStore)}
+    <SnsTransactionModal
+      on:nnsClose={() => (showModal = undefined)}
+      selectedAccount={$selectedAccountStore.account}
+      rootCanisterId={$snsOnlyProjectStore}
+      loadTransactions
+      {token}
+      transactionFee={toTokenAmountV2($snsSelectedTransactionFeeStore)}
     />
-  </Footer>
-</Island>
+  {/if}
+</TestIdWrapper>
 
-{#if showModal}
-  <SnsTransactionModal
-    on:nnsClose={() => (showModal = undefined)}
-    selectedAccount={$selectedAccountStore.account}
-    loadTransactions
-  />
-{/if}
+<style lang="scss">
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-4x);
+  }
+</style>

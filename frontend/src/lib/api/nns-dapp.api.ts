@@ -4,7 +4,7 @@ import type { AccountDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import type { HttpAgent, Identity } from "@dfinity/agent";
+import type { Agent, Identity } from "@dfinity/agent";
 
 export const addAccount = async (identity: Identity): Promise<void> => {
   logWithTimestamp("Adding account call...");
@@ -33,7 +33,7 @@ export const nnsDappCanister = async ({
   identity: Identity;
 }): Promise<{
   canister: NNSDappCanister;
-  agent: HttpAgent;
+  agent: Agent;
 }> => {
   const agent = await createAgent({ identity, host: HOST });
 

@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import MyVotes from "$lib/components/proposal-detail/MyVotes.svelte";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import type { CompactNeuronInfo } from "$lib/utils/neuron.utils";
@@ -22,22 +18,22 @@ describe("MyVotes", () => {
   };
   const neuronsVotedForProposal = [noVoted, yesVoted];
 
-  it("should have title when proposal has been voted by some owned neuron", () => {
-    const { getByText } = render(MyVotes, {
+  it("should display voted neurons when proposal has been voted by some owned neuron", () => {
+    const { queryAllByTestId } = render(MyVotes, {
       props: {
         neuronsVotedForProposal,
       },
     });
-    expect(getByText(en.proposal_detail.my_votes)).toBeInTheDocument();
+    expect(queryAllByTestId("neuron-data").length).toEqual(2);
   });
 
-  it("should not have title when proposal has not been voted by some owned neuron", () => {
-    const { getByText } = render(MyVotes, {
+  it("should not have voted neurons when proposal has not been voted by some owned neuron", () => {
+    const { queryAllByTestId } = render(MyVotes, {
       props: {
         neuronsVotedForProposal: [],
       },
     });
-    expect(() => getByText(en.proposal_detail.my_votes)).toThrow();
+    expect(queryAllByTestId("neuron-data").length).toEqual(0);
   });
 
   it("should render an item per voted neuron", () => {
@@ -104,5 +100,17 @@ describe("MyVotes", () => {
     expect(element).toBeInTheDocument();
 
     expect(element?.getAttribute("aria-label")).toBeTruthy();
+  });
+
+  it("should add colour class", () => {
+    const rejectedVotedCount = (neurons: CompactNeuronInfo[]) =>
+      render(MyVotes, {
+        props: {
+          neuronsVotedForProposal: neurons,
+        },
+      }).container.querySelectorAll(".rejected").length;
+
+    expect(rejectedVotedCount([yesVoted])).toBe(0);
+    expect(rejectedVotedCount([noVoted])).toBe(1);
   });
 });

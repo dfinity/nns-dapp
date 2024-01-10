@@ -4,7 +4,7 @@
   import { IconClose, Value } from "@dfinity/gix-components";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import { removeHotkey } from "$lib/services/neurons.services";
-  import { accountsStore } from "$lib/stores/accounts.store";
+  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
   import { authStore } from "$lib/stores/auth.store";
   import { stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
@@ -13,7 +13,6 @@
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import AddHotkeyButton from "./actions/AddHotkeyButton.svelte";
   import { goto } from "$app/navigation";
-  import Separator from "$lib/components/ui/Separator.svelte";
   import ConfirmRemoveCurrentUserHotkey from "$lib/modals/neurons/ConfirmRemoveCurrentUserHotkey.svelte";
 
   export let neuron: NeuronInfo;
@@ -38,7 +37,7 @@
   $: isControllable = isNeuronControllable({
     neuron,
     identity: $authStore.identity,
-    accounts: $accountsStore,
+    accounts: $icpAccountsStore,
   });
   let hotkeys: string[];
   $: hotkeys = neuron.fullNeuron?.hotKeys ?? [];
@@ -65,7 +64,7 @@
   };
 </script>
 
-<CardInfo>
+<CardInfo noMargin>
   <h3 slot="start">{$i18n.neuron_detail.hotkeys_title}</h3>
   {#if hotkeys.length === 0}
     <p>{$i18n.neuron_detail.no_notkeys}</p>
@@ -92,8 +91,6 @@
     </div>
   {/if}
 </CardInfo>
-
-<Separator />
 
 {#if showConfirmationHotkey !== undefined}
   <!-- The extra const is required for TS to understand that showConfirmationHotkey is a string, not undefined -->

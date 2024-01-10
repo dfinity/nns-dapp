@@ -2,6 +2,8 @@ import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
 import {
   ballotVotingPower,
+  fromPercentageBasisPoints,
+  getUniversalProposalStatus,
   isAccepted,
   lastProposalId,
   mapProposalInfo,
@@ -27,22 +29,24 @@ import {
   SnsVote,
   type SnsAction,
   type SnsNeuron,
+  type SnsPercentage,
   type SnsProposalData,
+  type SnsTally,
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 
 describe("sns-proposals utils", () => {
   const acceptedTally = {
-    yes: BigInt(10),
-    no: BigInt(2),
-    total: BigInt(20),
-    timestamp_seconds: BigInt(1),
+    yes: 10n,
+    no: 2n,
+    total: 20n,
+    timestamp_seconds: 1n,
   };
   const rejectedTally = {
-    yes: BigInt(10),
-    no: BigInt(20),
-    total: BigInt(30),
-    timestamp_seconds: BigInt(1),
+    yes: 10n,
+    no: 20n,
+    total: 30n,
+    timestamp_seconds: 1n,
   };
   describe("isAccepted", () => {
     it("should return true if the proposal is accepted", () => {
@@ -66,7 +70,7 @@ describe("sns-proposals utils", () => {
     it("should return OPEN status", () => {
       const proposal: SnsProposalData = {
         ...mockSnsProposal,
-        decided_timestamp_seconds: BigInt(0),
+        decided_timestamp_seconds: 0n,
       };
       expect(snsDecisionStatus(proposal)).toBe(
         SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN
@@ -76,8 +80,8 @@ describe("sns-proposals utils", () => {
     it("should return EXECUTED status", () => {
       const proposal: SnsProposalData = {
         ...mockSnsProposal,
-        decided_timestamp_seconds: BigInt(10),
-        executed_timestamp_seconds: BigInt(10),
+        decided_timestamp_seconds: 10n,
+        executed_timestamp_seconds: 10n,
         latest_tally: [acceptedTally],
       };
       expect(snsDecisionStatus(proposal)).toBe(
@@ -88,9 +92,9 @@ describe("sns-proposals utils", () => {
     it("should return FAILED status", () => {
       const proposal: SnsProposalData = {
         ...mockSnsProposal,
-        decided_timestamp_seconds: BigInt(10),
-        executed_timestamp_seconds: BigInt(0),
-        failed_timestamp_seconds: BigInt(10),
+        decided_timestamp_seconds: 10n,
+        executed_timestamp_seconds: 0n,
+        failed_timestamp_seconds: 10n,
         latest_tally: [acceptedTally],
       };
       expect(snsDecisionStatus(proposal)).toBe(
@@ -101,9 +105,9 @@ describe("sns-proposals utils", () => {
     it("should return ADOPTED status", () => {
       const proposal: SnsProposalData = {
         ...mockSnsProposal,
-        decided_timestamp_seconds: BigInt(10),
-        executed_timestamp_seconds: BigInt(0),
-        failed_timestamp_seconds: BigInt(0),
+        decided_timestamp_seconds: 10n,
+        executed_timestamp_seconds: 0n,
+        failed_timestamp_seconds: 0n,
         latest_tally: [acceptedTally],
       };
       expect(snsDecisionStatus(proposal)).toBe(
@@ -114,9 +118,9 @@ describe("sns-proposals utils", () => {
     it("should return REJECTED status", () => {
       const proposal: SnsProposalData = {
         ...mockSnsProposal,
-        decided_timestamp_seconds: BigInt(10),
-        executed_timestamp_seconds: BigInt(0),
-        failed_timestamp_seconds: BigInt(0),
+        decided_timestamp_seconds: 10n,
+        executed_timestamp_seconds: 0n,
+        failed_timestamp_seconds: 0n,
         latest_tally: [rejectedTally],
       };
       expect(snsDecisionStatus(proposal)).toBe(
@@ -128,12 +132,12 @@ describe("sns-proposals utils", () => {
   describe("snsRewardStatus", () => {
     beforeEach(() => {
       const now = Date.now();
-      jest.useFakeTimers().setSystemTime(now);
+      vi.useFakeTimers().setSystemTime(now);
     });
     it("should return SETTLED", () => {
       const proposal: SnsProposalData = {
         ...mockSnsProposal,
-        reward_event_round: BigInt(2),
+        reward_event_round: 2n,
       };
       expect(snsRewardStatus(proposal)).toBe(
         SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED
@@ -144,10 +148,10 @@ describe("sns-proposals utils", () => {
       const now = BigInt(nowInSeconds());
       const proposal: SnsProposalData = {
         ...mockSnsProposal,
-        reward_event_round: BigInt(0),
+        reward_event_round: 0n,
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: now + BigInt(100),
+            current_deadline_timestamp_seconds: now + 100n,
           },
         ],
       };
@@ -160,10 +164,10 @@ describe("sns-proposals utils", () => {
       const now = BigInt(nowInSeconds());
       const proposal: SnsProposalData = {
         ...mockSnsProposal,
-        reward_event_round: BigInt(0),
+        reward_event_round: 0n,
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: now - BigInt(100),
+            current_deadline_timestamp_seconds: now - 100n,
           },
         ],
         is_eligible_for_rewards: true,
@@ -177,10 +181,10 @@ describe("sns-proposals utils", () => {
       const now = BigInt(nowInSeconds());
       const proposal: SnsProposalData = {
         ...mockSnsProposal,
-        reward_event_round: BigInt(0),
+        reward_event_round: 0n,
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: now - BigInt(100),
+            current_deadline_timestamp_seconds: now - 100n,
           },
         ],
         is_eligible_for_rewards: false,
@@ -194,17 +198,17 @@ describe("sns-proposals utils", () => {
   describe("mapProposalInfo", () => {
     beforeEach(() => {
       const now = Date.now();
-      jest.useFakeTimers().setSystemTime(now);
+      vi.useFakeTimers().setSystemTime(now);
     });
     it("should add statuses with text and description", () => {
       const now = BigInt(nowInSeconds());
       const proposalData: SnsProposalData = {
         ...mockSnsProposal,
-        decided_timestamp_seconds: BigInt(0),
-        reward_event_round: BigInt(0),
+        decided_timestamp_seconds: 0n,
+        reward_event_round: 0n,
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: now + BigInt(100),
+            current_deadline_timestamp_seconds: now + 100n,
           },
         ],
       };
@@ -225,11 +229,11 @@ describe("sns-proposals utils", () => {
       const now = BigInt(nowInSeconds());
       const proposalData: SnsProposalData = {
         ...mockSnsProposal,
-        decided_timestamp_seconds: BigInt(0),
-        reward_event_round: BigInt(0),
+        decided_timestamp_seconds: 0n,
+        reward_event_round: 0n,
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: now - BigInt(100),
+            current_deadline_timestamp_seconds: now - 100n,
           },
         ],
       };
@@ -247,7 +251,7 @@ describe("sns-proposals utils", () => {
         summary: "Description test",
         action: [{ UpgradeSnsToNextVersion: {} }],
       };
-      const current_deadline_timestamp_seconds = BigInt(1123);
+      const current_deadline_timestamp_seconds = 1_123n;
       const proposalData = {
         ...mockSnsProposal,
         proposal: [proposal],
@@ -285,18 +289,18 @@ describe("sns-proposals utils", () => {
     it("should return the last proposal id", async () => {
       const proposal1: SnsProposalData = {
         ...mockSnsProposal,
-        id: [{ id: BigInt(1) }],
+        id: [{ id: 1n }],
       };
       const proposal2: SnsProposalData = {
         ...mockSnsProposal,
-        id: [{ id: BigInt(2) }],
+        id: [{ id: 2n }],
       };
       const proposal3: SnsProposalData = {
         ...mockSnsProposal,
-        id: [{ id: BigInt(3) }],
+        id: [{ id: 3n }],
       };
       const proposalId = lastProposalId([proposal3, proposal1, proposal2]);
-      expect(proposalId.id).toEqual(BigInt(1));
+      expect(proposalId.id).toEqual(1n);
     });
 
     it("should return undefined when empty array", () => {
@@ -309,15 +313,15 @@ describe("sns-proposals utils", () => {
     it("sorts proposals by id in descending", () => {
       const proposal1: SnsProposalData = {
         ...mockSnsProposal,
-        id: [{ id: BigInt(1) }],
+        id: [{ id: 1n }],
       };
       const proposal2: SnsProposalData = {
         ...mockSnsProposal,
-        id: [{ id: BigInt(2) }],
+        id: [{ id: 2n }],
       };
       const proposal3: SnsProposalData = {
         ...mockSnsProposal,
-        id: [{ id: BigInt(3) }],
+        id: [{ id: 3n }],
       };
       const sortedProposals = sortSnsProposalsById([
         proposal3,
@@ -444,7 +448,7 @@ describe("sns-proposals utils", () => {
 
   describe("snsProposalId", () => {
     it("should return proposal id", () => {
-      const testId = 123987n;
+      const testId = 123_987n;
       const testProposal: SnsProposalData = {
         ...mockSnsProposal,
         id: [
@@ -459,7 +463,7 @@ describe("sns-proposals utils", () => {
 
   describe("snsProposalIdString", () => {
     it("should stringify proposal id", () => {
-      const testId = 123987n;
+      const testId = 123_987n;
       const testProposal: SnsProposalData = {
         ...mockSnsProposal,
         id: [
@@ -557,7 +561,7 @@ describe("sns-proposals utils", () => {
         ...mockSnsNeuron,
         id: [{ id: arrayOfNumberToUint8Array([1, 2, 3]) }],
         staked_maturity_e8s_equivalent: [],
-        maturity_e8s_equivalent: BigInt(0),
+        maturity_e8s_equivalent: 0n,
         neuron_fees_e8s: 0n,
         dissolve_state: [{ DissolveDelaySeconds: 100n }],
         aging_since_timestamp_seconds: 0n,
@@ -586,6 +590,165 @@ describe("sns-proposals utils", () => {
         neuronIdString: "010203",
         votingPower: 250n,
       });
+    });
+  });
+
+  describe("getUniversalProposalStatus", () => {
+    it("should return UniversalProposalStatus", () => {
+      expect(
+        getUniversalProposalStatus(
+          createSnsProposal({
+            proposalId: 0n,
+            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+          })
+        )
+      ).toBe("open");
+      expect(
+        getUniversalProposalStatus(
+          createSnsProposal({
+            proposalId: 0n,
+            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED,
+          })
+        )
+      ).toBe("executed");
+      expect(
+        getUniversalProposalStatus(
+          createSnsProposal({
+            proposalId: 0n,
+            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_FAILED,
+          })
+        )
+      ).toBe("failed");
+      expect(
+        getUniversalProposalStatus(
+          createSnsProposal({
+            proposalId: 0n,
+            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_ADOPTED,
+          })
+        )
+      ).toBe("adopted");
+      expect(
+        getUniversalProposalStatus(
+          createSnsProposal({
+            proposalId: 0n,
+            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_REJECTED,
+          })
+        )
+      ).toBe("rejected");
+    });
+  });
+
+  describe("fromPercentageBasisPoints", () => {
+    it("should return basis points", () => {
+      expect(
+        fromPercentageBasisPoints([{ basis_points: [300n] } as SnsPercentage])
+      ).toBe(300n);
+    });
+
+    it("should not break when no percentage provided", () => {
+      expect(fromPercentageBasisPoints(undefined)).toBe(undefined);
+    });
+  });
+
+  describe("fromPercentageBasisPoints", () => {
+    it("should return basis points", () => {
+      expect(
+        fromPercentageBasisPoints([{ basis_points: [300n] } as SnsPercentage])
+      ).toBe(300n);
+    });
+
+    it("should not break when no percentage provided", () => {
+      expect(fromPercentageBasisPoints(undefined)).toBe(undefined);
+    });
+  });
+
+  describe("isAccepted", () => {
+    const from_percentage = (percentage: number): SnsPercentage => ({
+      basis_points: [BigInt(percentage * 100)],
+    });
+
+    // Copy of https://gitlab.com/dfinity-lab/public/ic/-/blob/11b6d0797c89937541ef079d54b6320274c07236/rs/sns/governance/tests/proposal.rs#L693
+    it("calculates isAccepted", () => {
+      const p0 = {
+        ...mockSnsProposal,
+        latest_tally: [
+          {
+            yes: 0n,
+            no: 0n,
+            total: 10n,
+            timestamp_seconds: 1n,
+          } as SnsTally,
+        ],
+        proposal_creation_timestamp_seconds: 1n,
+        initial_voting_period_seconds: 10n,
+        minimum_yes_proportion_of_total: [from_percentage(0)],
+      } as SnsProposalData;
+
+      const p1 = {
+        ...mockSnsProposal,
+        latest_tally: [
+          {
+            yes: 2n,
+            no: 0n,
+            total: 10n,
+            timestamp_seconds: 1n,
+          } as SnsTally,
+        ],
+        proposal_creation_timestamp_seconds: 1n,
+        initial_voting_period_seconds: 10n,
+        minimum_yes_proportion_of_total: [from_percentage(0)],
+      } as SnsProposalData;
+
+      const p2 = {
+        ...mockSnsProposal,
+        latest_tally: [
+          {
+            yes: 2n,
+            no: 0n,
+            total: 10n,
+            timestamp_seconds: 1n,
+          } as SnsTally,
+        ],
+        proposal_creation_timestamp_seconds: 1n,
+        initial_voting_period_seconds: 10n,
+        minimum_yes_proportion_of_total: [from_percentage(10)],
+      } as SnsProposalData;
+
+      const p3 = {
+        ...mockSnsProposal,
+        latest_tally: [
+          {
+            yes: 2n,
+            no: 0n,
+            total: 10n,
+            timestamp_seconds: 1n,
+          } as SnsTally,
+        ],
+        proposal_creation_timestamp_seconds: 1n,
+        initial_voting_period_seconds: 10n,
+        minimum_yes_proportion_of_total: [from_percentage(20)],
+      } as SnsProposalData;
+
+      const p4 = {
+        ...mockSnsProposal,
+        latest_tally: [
+          {
+            yes: 2n,
+            no: 0n,
+            total: 10n,
+            timestamp_seconds: 1n,
+          } as SnsTally,
+        ],
+        proposal_creation_timestamp_seconds: 1n,
+        initial_voting_period_seconds: 10n,
+        minimum_yes_proportion_of_total: [from_percentage(30)],
+      } as SnsProposalData;
+
+      expect(isAccepted(p0)).toBe(false);
+      expect(isAccepted(p1)).toBe(true);
+      expect(isAccepted(p2)).toBe(true);
+      expect(isAccepted(p3)).toBe(true);
+      expect(isAccepted(p4)).toBe(false);
     });
   });
 });

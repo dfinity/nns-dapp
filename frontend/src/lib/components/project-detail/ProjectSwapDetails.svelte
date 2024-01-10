@@ -1,6 +1,9 @@
 <script lang="ts">
-  import { TokenAmount, ICPToken } from "@dfinity/utils";
-  import { getDeniedCountries } from "$lib/getters/sns-summary";
+  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+  import {
+    getDeniedCountries,
+    getMaxNeuronsFundParticipation,
+  } from "$lib/getters/sns-summary";
   import type { SnsSummary } from "$lib/types/sns";
   import { getContext } from "svelte";
   import type { CountryCode } from "$lib/types/location";
@@ -33,24 +36,24 @@
     token,
   } = summary);
 
-  let minCommitmentIcp: TokenAmount;
-  $: minCommitmentIcp = TokenAmount.fromE8s({
+  let minCommitmentIcp: TokenAmountV2;
+  $: minCommitmentIcp = TokenAmountV2.fromUlps({
     amount: params.min_participant_icp_e8s,
     token: ICPToken,
   });
-  let maxCommitmentIcp: TokenAmount;
-  $: maxCommitmentIcp = TokenAmount.fromE8s({
+  let maxCommitmentIcp: TokenAmountV2;
+  $: maxCommitmentIcp = TokenAmountV2.fromUlps({
     amount: params.max_participant_icp_e8s,
     token: ICPToken,
   });
 
-  let snsTokens: TokenAmount;
-  $: snsTokens = TokenAmount.fromE8s({
+  let snsTokens: TokenAmountV2;
+  $: snsTokens = TokenAmountV2.fromUlps({
     amount: params.sns_token_e8s,
     token,
   });
 
-  let snsTotalTokenSupply: TokenAmount | undefined | null;
+  let snsTotalTokenSupply: TokenAmountV2 | undefined | null;
   $: snsTotalTokenSupply = $projectDetailStore.totalTokensSupply;
 
   let deniedCountryCodes: CountryCode[];
@@ -61,6 +64,9 @@
 
   let formattedDeniedCountryCodes: string;
   $: formattedDeniedCountryCodes = deniedCountryCodes.join(", ");
+
+  let maxNFParticipation: bigint | undefined;
+  $: maxNFParticipation = getMaxNeuronsFundParticipation(summary);
 </script>
 
 <TestIdWrapper testId="project-swap-details-component">
@@ -70,7 +76,7 @@
       <AmountDisplay slot="value" amount={snsTotalTokenSupply} singleLine />
     </KeyValuePair>
   {/if}
-  <KeyValuePair>
+  <KeyValuePair testId="sns-tokens-distributed">
     <span slot="key">{$i18n.sns_project_detail.total_tokens} </span>
     <AmountDisplay slot="value" amount={snsTokens} singleLine />
   </KeyValuePair>
@@ -83,19 +89,36 @@
       })}</span
     >
   </KeyValuePair>
-  <KeyValuePair>
-    <span slot="key">{$i18n.sns_project_detail.min_commitment} </span>
-    <AmountDisplay slot="value" amount={minCommitmentIcp} singleLine />
+  <KeyValuePair testId="sns-min-participant-commitment">
+    <span slot="key"
+      >{$i18n.sns_project_detail.min_participant_commitment}
+    </span>
+    <AmountDisplay slot="value" amount={minCommitmentIcp} detailed singleLine />
   </KeyValuePair>
-  <KeyValuePair>
-    <span slot="key">{$i18n.sns_project_detail.max_commitment} </span>
+  <KeyValuePair testId="sns-max-participant-commitment">
+    <span slot="key"
+      >{$i18n.sns_project_detail.max_participant_commitment}
+    </span>
     <AmountDisplay slot="value" amount={maxCommitmentIcp} singleLine />
   </KeyValuePair>
-  <KeyValuePair>
+  {#if nonNullish(maxNFParticipation)}
+    <KeyValuePair testId="sns-max-nf-commitment">
+      <span slot="key">{$i18n.sns_project_detail.max_nf_commitment} </span>
+      <AmountDisplay
+        slot="value"
+        amount={TokenAmountV2.fromUlps({
+          amount: maxNFParticipation,
+          token: ICPToken,
+        })}
+        singleLine
+      />
+    </KeyValuePair>
+  {/if}
+  <KeyValuePair testId="sns-sale-end">
     <span slot="key">{$i18n.sns_project_detail.sale_end} </span>
     <DateSeconds
       slot="value"
-      seconds={Number(params.swap_due_timestamp_seconds ?? BigInt(0))}
+      seconds={Number(params.swap_due_timestamp_seconds ?? 0n)}
       tagName="span"
     />
   </KeyValuePair>

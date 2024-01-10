@@ -6,18 +6,18 @@ import {
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
 import { ledgerCanisterIdMock } from "$tests/mocks/sns.api.mock";
-import { IcrcLedgerCanister } from "@dfinity/ledger";
-import mock from "jest-mock-extended/lib/Mock";
+import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
+import { mock } from "vitest-mock-extended";
 
 describe("balances.worker-services", () => {
   const ledgerCanisterMock = mock<IcrcLedgerCanister>();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
-    jest
-      .spyOn(IcrcLedgerCanister, "create")
-      .mockImplementation(() => ledgerCanisterMock);
+    vi.spyOn(IcrcLedgerCanister, "create").mockImplementation(
+      () => ledgerCanisterMock
+    );
   });
 
   const accountIdentifiers = [
@@ -37,7 +37,7 @@ describe("balances.worker-services", () => {
   };
 
   it("should return balances for accounts", async () => {
-    const balance = BigInt(10_000_000);
+    const balance = 10_000_000n;
 
     const balanceSpy = ledgerCanisterMock.balance.mockResolvedValue(balance);
 

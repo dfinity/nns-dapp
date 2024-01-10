@@ -24,7 +24,7 @@
   const dispatch = createEventDispatcher();
 
   // We do not fetch again all the neurons on the ledger and solely update the UI to replicate the UI/UX that was developed in Flutter and is already in production.
-  // i.e. the neuron that has just been added to the hotkey control will be displayed as "Added to NNS dapp"
+  // i.e. the neuron that has just been added to the hotkey control will be displayed as "Added to NNS Dapp"
   const updateContextStoreNeuron = () =>
     store.update(({ neurons, ...rest }) => ({
       ...rest,

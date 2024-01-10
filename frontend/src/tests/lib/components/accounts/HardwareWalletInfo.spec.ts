@@ -1,11 +1,7 @@
-/**
- * @jest-environment jsdom
- */
-
 import HardwareWalletInfo from "$lib/components/accounts/HardwareWalletInfo.svelte";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
-import { principalToAccountIdentifier } from "@dfinity/nns";
+import { principalToAccountIdentifier } from "@dfinity/ledger-icp";
 import { render } from "@testing-library/svelte";
 
 describe("HardwareWalletInfo", () => {

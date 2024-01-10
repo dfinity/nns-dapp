@@ -1,0 +1,36 @@
+# Prints a stack trace
+function print_stack() {
+  local skip i stack_size func linen src
+  skip="${1:-0}"
+  stack_size=${#FUNCNAME[@]}
+  for ((i = skip; i < stack_size; i++)); do
+    func="${FUNCNAME[$((i))]}"
+    func="${func:-MAIN}"
+    linen="${BASH_LINENO[$((i - 1))]}"
+    ((linen != 0)) || linen="??" # 0 is an invalid linenumber.  Happens when -euo pipefail is set and the line number of the exit is unrelated to where the code was running.
+    src="${BASH_SOURCE[$i]}"
+    src="${src:-non_file_source}"
+    # Note: This line format is compatible with MS Code's format.  Clicking on the filename+linenumber jumps to that location.
+    printf "   at: %s:%s: %s\n" "$src" "$linen" "$func"
+  done
+}
+
+# Clean up on exit - or print error details.
+# Usage:
+# - Optionally define on_exit_ok
+# - Optionally define on_exit_err
+# - After parsing arguments, run: trap on_exit EXIT
+on_exit() {
+  exit_code=$?
+  if ((exit_code == 0)); then
+    [[ $(type -t on_exit_ok) != function ]] || on_exit_ok
+  else
+    {
+      echo =============================================
+      print_stack 2 # Skip print_stack (index 0) and on_exit (index 1), so start at index 2.
+      printf "\n\nERROR: exiting with code %s\n\n" $exit_code
+      [[ $(type -t on_exit_err) != function ]] || on_exit_err
+      exit $exit_code
+    } >&2
+  fi
+}

@@ -1,37 +1,33 @@
-/**
- * @jest-environment jsdom
- */
-
-import * as directives from "$lib/directives/intersection.directives";
+import * as dispatchEvents from "$lib/utils/events.utils";
 import {
   IntersectionObserverActive,
-  IntersectionObserverPassive,
   mockIntersectionObserverIsIntersecting,
 } from "$tests/mocks/infinitescroll.mock";
 import { render } from "@testing-library/svelte";
 import IntersectionTest from "./IntersectionTest.svelte";
 
 describe("IntersectionDirectives", () => {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore: test file
-  beforeAll(() => (global.IntersectionObserver = IntersectionObserverActive));
+  beforeAll(() => {
+    vi.stubGlobal("IntersectionObserver", IntersectionObserverActive);
+  });
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore: test file
-  afterAll(() => (global.IntersectionObserver = IntersectionObserverPassive));
+  afterAll(() => {
+    vi.unstubAllGlobals();
+  });
 
   let spy;
   let testIntersecting: boolean;
 
-  beforeEach(
-    () =>
-      (spy = jest
-        .spyOn(directives, "dispatchIntersecting")
-        .mockImplementation(
-          ({ intersecting }) => (testIntersecting = intersecting)
-        ))
-  );
-  afterEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    spy = vi
+      .spyOn(dispatchEvents, "dispatchIntersecting")
+      .mockImplementation(
+        ($event) => (testIntersecting = $event?.intersecting ?? false)
+      );
+  });
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
 
   it("should trigger an intersect event", () => {
     render(IntersectionTest);

@@ -1,4 +1,4 @@
-import { sendICP } from "$lib/api/ledger.api";
+import { sendICP } from "$lib/api/icp-ledger.api";
 import {
   getOpenTicket as getOpenTicketApi,
   newSaleTicket as newSaleTicketApi,
@@ -12,9 +12,14 @@ import {
   type SnsFullProject,
 } from "$lib/derived/sns/sns-projects.derived";
 import { getConditionsToAccept } from "$lib/getters/sns-summary";
-import { loadBalance } from "$lib/services/accounts.services";
 import { getCurrentIdentity } from "$lib/services/auth.services";
-import { toastsError, toastsHide, toastsShow } from "$lib/stores/toasts.store";
+import { loadBalance } from "$lib/services/icp-accounts.services";
+import {
+  toastsError,
+  toastsHide,
+  toastsShow,
+  toastsSuccess,
+} from "$lib/stores/toasts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { ApiErrorKey } from "$lib/types/api.errors";
@@ -42,7 +47,7 @@ import {
   TxDuplicateError,
   TxTooOldError,
   type BlockHeight,
-} from "@dfinity/nns";
+} from "@dfinity/ledger-icp";
 import type { Principal } from "@dfinity/principal";
 import type {
   SnsInvalidUserAmount,
@@ -68,10 +73,9 @@ import { get } from "svelte/store";
 import { DEFAULT_TOAST_DURATION_MILLIS } from "../constants/constants";
 import { SALE_PARTICIPATION_RETRY_SECONDS } from "../constants/sns.constants";
 import { snsTicketsStore } from "../stores/sns-tickets.store";
-import { toastsSuccess } from "../stores/toasts.store";
 import { nanoSecondsToDateTime } from "../utils/date.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
-import { formatToken } from "../utils/token.utils";
+import { formatTokenE8s } from "../utils/token.utils";
 
 let toastId: symbol | undefined;
 export const hidePollingToast = (): void => {
@@ -277,8 +281,8 @@ const handleNewSaleTicketError = ({
         toastsError({
           labelKey: "error__sns.sns_sale_invalid_amount",
           substitutions: {
-            $min: formatToken({ value: min_amount_icp_e8s_included }),
-            $max: formatToken({ value: max_amount_icp_e8s_included }),
+            $min: formatTokenE8s({ value: min_amount_icp_e8s_included }),
+            $max: formatTokenE8s({ value: max_amount_icp_e8s_included }),
           },
         });
         return;
@@ -441,7 +445,7 @@ export const initiateSnsSaleParticipation = async ({
     const transactionFee = get(transactionsFeesStore).main;
     assertEnoughAccountFunds({
       account,
-      amountE8s: amount.toE8s() + transactionFee,
+      amountUlps: amount.toE8s() + transactionFee,
     });
 
     const project = getProjectFromStore(rootCanisterId);
@@ -593,7 +597,7 @@ const notifyParticipationAndRemoveTicket = async ({
         level: "warn",
         labelKey: "error__sns.sns_sale_committed_not_equal_to_amount",
         substitutions: {
-          $amount: formatToken({ value: icp_accepted_participation_e8s }),
+          $amount: formatTokenE8s({ value: icp_accepted_participation_e8s }),
         },
         duration: DEFAULT_TOAST_DURATION_MILLIS,
       });

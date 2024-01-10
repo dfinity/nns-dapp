@@ -1,0 +1,87 @@
+# A GitHub Actions workflow that regularly checks for new snsdemo commits
+# and creates a PR on finding any.
+name: Update snsdemo
+on:
+  schedule:
+    # check for new snsdemo commits weekly
+    - cron: '30 3 * * FRI'
+  workflow_dispatch:
+  push:
+    branches:
+      # Run when the development branch for this workflow is updated.
+      - update-snsdemo
+jobs:
+  update-snsdemo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Update to match the snsdemo repo
+        id: update
+        run: |
+          current_release="$(jq -r .defaults.build.config.SNSDEMO_RELEASE dfx.json)"
+          echo "Current snsdemo release: $current_release"
+          latest_release=$(curl -sSL https://api.github.com/repos/dfinity/snsdemo/releases/latest | jq .tag_name -r)
+          echo "Latest snsdemo release:  $latest_release"
+          {
+            if [ "$current_release" == "$latest_release" ]
+            then
+              echo "updated=0"
+            else
+              echo "updated=1"
+              echo "release=$latest_release"
+            fi
+          } >> "$GITHUB_OUTPUT"
+      - name: Get snsdemo repo
+        uses: actions/checkout@v3
+        if: ${{ steps.update.outputs.updated == '1' }}
+        with:
+          repository: 'dfinity/snsdemo'
+          path: 'snsdemo'
+          ref: ${{ steps.update.outputs.release }}
+      - name: Update snsdemo
+        if: ${{ steps.update.outputs.updated == '1' }}
+        run: |
+          set -x
+          echo snsdemo needs an update
+          # Install `didc`
+          snsdemo/bin/dfx-software-didc-install --release "$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
+          # Install sponge
+          sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
+          # Update
+          ./scripts/update-snsdemo --dir ./snsdemo --release "${{ steps.update.outputs.release }}" --verbose
+          # Show changes
+          echo "Git status:"
+          git status
+          echo "Changes:"
+          git diff
+      - name: Create Pull Request
+        if: ${{ steps.update.outputs.updated == '1' }}
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.GIX_BOT_PAT }}
+          commit-message: Update snsdemo to ${{ steps.update.outputs.release }}
+          committer: GitHub <noreply@github.com>
+          author: gix-bot <gix-bot@users.noreply.github.com>
+          branch: bot-snsdemo-update
+          branch-suffix: timestamp
+          # Note: Please be careful when updating the add-paths field.  We have had the snsdemo committed by accident, with a pattern that matches nothing seemingly committing everything.
+          add-paths: dfx.json
+          delete-branch: true
+          title: 'Update snsdemo to ${{ steps.update.outputs.release }}'
+          body: |
+            # Motivation
+            We would like to keep the testing environment, provided by snsdemo, up to date.
+
+            # Changes
+            * Updated `snsdemo` version in `dfx.json`.
+
+            # Tests
+            CI should pass.
+          # Since the this is a scheduled job, a failure won't be shown on any
+          # PR status. To notify the team, we send a message to our Slack channel on failure.
+      - name: Notify Slack on failure
+        uses: dfinity/internet-identity/.github/actions/slack@release-2023-08-28
+        if: ${{ failure() }}
+        with:
+          WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          MESSAGE: "snsdemo update failed"

@@ -1,12 +1,8 @@
-/**
- * @jest-environment jsdom
- */
-
 import SplitSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/SplitSnsNeuronButton.svelte";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { openSnsNeuronModal } from "$lib/utils/modals.utils";
 import { minNeuronSplittable } from "$lib/utils/sns-neuron.utils";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import en from "$tests/mocks/i18n.mock";
 import {
   createMockSnsNeuron,
@@ -16,8 +12,8 @@ import {
 import { mockToken } from "$tests/mocks/sns-projects.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
-jest.mock("$lib/utils/modals.utils", () => ({
-  openSnsNeuronModal: jest.fn(),
+vi.mock("$lib/utils/modals.utils", () => ({
+  openSnsNeuronModal: vi.fn(),
 }));
 
 describe("SplitSnsNeuronButton", () => {
@@ -37,7 +33,7 @@ describe("SplitSnsNeuronButton", () => {
   };
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("should display enabled button", async () => {
@@ -101,7 +97,7 @@ describe("SplitSnsNeuronButton", () => {
     const tooltip = replacePlaceholders(
       en.neuron_detail.split_neuron_disabled_tooltip,
       {
-        $amount: formatToken({
+        $amount: formatTokenE8s({
           value: minNeuronSplittable({
             fee: transactionFee,
             neuronMinimumStake,

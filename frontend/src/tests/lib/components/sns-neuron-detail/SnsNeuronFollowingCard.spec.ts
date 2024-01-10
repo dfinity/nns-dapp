@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import SnsNeuronFollowingCard from "$lib/components/sns-neuron-detail/SnsNeuronFollowingCard.svelte";
 import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
 import { authStore } from "$lib/stores/auth.store";
@@ -26,16 +22,14 @@ import {
 } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
 
-jest.mock("$lib/services/$public/sns.services", () => ({
-  loadSnsNervousSystemFunctions: jest.fn(),
+vi.mock("$lib/services/$public/sns.services", () => ({
+  loadSnsNervousSystemFunctions: vi.fn(),
 }));
 
 describe("SnsNeuronFollowingCard", () => {
-  beforeAll(() =>
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe)
-  );
+  beforeAll(() => {
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+  });
 
   describe("user has permissions to manage followees", () => {
     const controlledNeuron: SnsNeuron = {
@@ -52,17 +46,17 @@ describe("SnsNeuronFollowingCard", () => {
     };
     const function0: SnsNervousSystemFunction = {
       ...nervousSystemFunctionMock,
-      id: BigInt(0),
+      id: 0n,
       name: "function0",
     };
     const function1: SnsNervousSystemFunction = {
       ...nervousSystemFunctionMock,
-      id: BigInt(1),
+      id: 1n,
       name: "function1",
     };
     const function2: SnsNervousSystemFunction = {
       ...nervousSystemFunctionMock,
-      id: BigInt(2),
+      id: 2n,
       name: "function2",
     };
     const followee1 = createMockSnsNeuron({
@@ -80,7 +74,7 @@ describe("SnsNeuronFollowingCard", () => {
       ],
     };
 
-    const reload = jest.fn();
+    const reload = vi.fn();
     const renderCard = (neuron: SnsNeuron) =>
       renderSelectedSnsNeuronContext({
         reload,
@@ -89,7 +83,7 @@ describe("SnsNeuronFollowingCard", () => {
       });
 
     afterEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       snsFunctionsStore.reset();
     });
 
@@ -156,7 +150,7 @@ describe("SnsNeuronFollowingCard", () => {
       ],
     };
 
-    const reload = jest.fn();
+    const reload = vi.fn();
     const renderCard = (neuron: SnsNeuron) =>
       renderSelectedSnsNeuronContext({
         reload,
@@ -164,7 +158,9 @@ describe("SnsNeuronFollowingCard", () => {
         neuron,
       });
 
-    afterEach(() => jest.clearAllMocks());
+    afterEach(() => {
+      vi.clearAllMocks();
+    });
 
     it("loads sns topics", async () => {
       renderCard(uncontrolledNeuron);

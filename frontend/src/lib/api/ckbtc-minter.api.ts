@@ -1,7 +1,7 @@
 import { createAgent } from "$lib/api/agent.api";
 import { HOST } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import type { HttpAgent, Identity } from "@dfinity/agent";
+import type { Agent, Identity } from "@dfinity/agent";
 import {
   CkBTCMinterCanister,
   type EstimateWithdrawalFee,
@@ -10,6 +10,7 @@ import {
   type MinterParams,
   type RetrieveBtcOk,
   type RetrieveBtcParams,
+  type RetrieveBtcStatusV2WithId,
   type UpdateBalanceOk,
   type WithdrawalAccount,
 } from "@dfinity/ckbtc";
@@ -101,6 +102,52 @@ export const retrieveBtc = async ({
   return result;
 };
 
+export const retrieveBtcWithApproval = async ({
+  identity,
+  canisterId,
+  ...params
+}: {
+  identity: Identity;
+  canisterId: Principal;
+  address: string;
+  amount: bigint;
+  fromSubaccount?: Uint8Array;
+}): Promise<RetrieveBtcOk> => {
+  logWithTimestamp("Retrieve BTC with approval: call...");
+
+  const {
+    canister: { retrieveBtcWithApproval: retrieveBtcWithApprovalApi },
+  } = await ckBTCMinterCanister({ identity, canisterId });
+
+  const result = await retrieveBtcWithApprovalApi(params);
+
+  logWithTimestamp("Retrieve BTC with approval: done");
+
+  return result;
+};
+
+export const retrieveBtcStatusV2ByAccount = async ({
+  identity,
+  canisterId,
+  certified,
+}: {
+  identity: Identity;
+  canisterId: Principal;
+  certified: boolean;
+}): Promise<RetrieveBtcStatusV2WithId[]> => {
+  logWithTimestamp("Retrieve btc status V2 by account: call...");
+
+  const {
+    canister: { retrieveBtcStatusV2ByAccount: retrieveBtcStatusV2ByAccountApi },
+  } = await ckBTCMinterCanister({ identity, canisterId });
+
+  const result = await retrieveBtcStatusV2ByAccountApi({ certified });
+
+  logWithTimestamp("Retrieve btc status V2 by account: done...");
+
+  return result;
+};
+
 export const estimateFee = async ({
   identity,
   canisterId,
@@ -151,7 +198,7 @@ const ckBTCMinterCanister = async ({
   canisterId: Principal;
 }): Promise<{
   canister: CkBTCMinterCanister;
-  agent: HttpAgent;
+  agent: Agent;
 }> => {
   const agent = await createAgent({
     identity,

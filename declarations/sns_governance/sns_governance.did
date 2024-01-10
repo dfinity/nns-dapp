@@ -1,3 +1,4 @@
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-12-13_23-01/rs/sns/governance/canister/governance.did>
 type Account = record { owner : opt principal; subaccount : opt Subaccount };
 type Action = variant {
   ManageNervousSystemParameters : NervousSystemParameters;
@@ -8,6 +9,7 @@ type Action = variant {
   TransferSnsTreasuryFunds : TransferSnsTreasuryFunds;
   UpgradeSnsControlledCanister : UpgradeSnsControlledCanister;
   DeregisterDappCanisters : DeregisterDappCanisters;
+  MintSnsTokens : MintSnsTokens;
   Unspecified : record {};
   ManageSnsMetadata : ManageSnsMetadata;
   ExecuteGenericNervousSystemFunction : ExecuteGenericNervousSystemFunction;
@@ -28,10 +30,7 @@ type By = variant {
   NeuronId : record {};
 };
 type CanisterStatusResultV2 = record {
-  controller : principal;
   status : CanisterStatusType;
-  freezing_threshold : nat;
-  balance : vec record { vec nat8; nat };
   memory_size : nat;
   cycles : nat;
   settings : DefiniteCanisterSettingsArgs;
@@ -99,7 +98,6 @@ type Command_2 = variant {
 type Configure = record { operation : opt Operation };
 type DefaultFollowees = record { followees : vec record { nat64; Followees } };
 type DefiniteCanisterSettingsArgs = record {
-  controller : principal;
   freezing_threshold : nat;
   controllers : vec principal;
   memory_allocation : nat;
@@ -119,7 +117,10 @@ type DisburseMaturityInProgress = record {
   amount_e8s : nat64;
   account_to_disburse_to : opt Account;
 };
-type DisburseMaturityResponse = record { amount_disbursed_e8s : nat64 };
+type DisburseMaturityResponse = record {
+  amount_disbursed_e8s : nat64;
+  amount_deducted_e8s : opt nat64;
+};
 type DisburseResponse = record { transfer_block_height : nat64 };
 type DissolveState = variant {
   DissolveDelaySeconds : nat64;
@@ -243,6 +244,12 @@ type MergeMaturityResponse = record {
   merged_maturity_e8s : nat64;
   new_stake_e8s : nat64;
 };
+type MintSnsTokens = record {
+  to_principal : opt principal;
+  to_subaccount : opt Subaccount;
+  memo : opt nat64;
+  amount_e8s : opt nat64;
+};
 type Motion = record { motion_text : text };
 type NervousSystemFunction = record {
   id : nat64;
@@ -315,6 +322,7 @@ type Operation = variant {
   IncreaseDissolveDelay : IncreaseDissolveDelay;
   SetDissolveTimestamp : SetDissolveTimestamp;
 };
+type Percentage = record { basis_points : opt nat64 };
 type Proposal = record {
   url : text;
   title : text;
@@ -327,6 +335,7 @@ type ProposalData = record {
   action : nat64;
   failure_reason : opt GovernanceError;
   ballots : vec record { text; Ballot };
+  minimum_yes_proportion_of_total : opt Percentage;
   reward_event_round : nat64;
   failed_timestamp_seconds : nat64;
   reward_event_end_timestamp_seconds : opt nat64;
@@ -339,6 +348,7 @@ type ProposalData = record {
   proposal : opt Proposal;
   proposer : opt NeuronId;
   wait_for_quiet_state : opt WaitForQuietState;
+  minimum_yes_proportion_of_exercised : opt Percentage;
   is_eligible_for_rewards : bool;
   executed_timestamp_seconds : nat64;
 };
@@ -355,6 +365,7 @@ type RewardEvent = record {
   rounds_since_last_distribution : opt nat64;
   actual_timestamp_seconds : nat64;
   end_timestamp_seconds : opt nat64;
+  total_available_e8s_equivalent : opt nat64;
   distributed_e8s_equivalent : nat64;
   round : nat64;
   settled_proposals : vec ProposalId;

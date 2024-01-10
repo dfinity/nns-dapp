@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import AddSnsHotkeyButton from "$lib/components/sns-neuron-detail/actions/AddSnsHotkeyButton.svelte";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -11,7 +7,7 @@ import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
 describe("AddSnsHotkeyButton", () => {
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   const renderCard = () =>

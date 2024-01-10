@@ -1,26 +1,22 @@
-/**
- * @jest-environment jsdom
- */
-
 import NnsStakeMaturityModal from "$lib/modals/neurons/NnsStakeMaturityModal.svelte";
 import { stakeMaturity } from "$lib/services/neurons.services";
-import { accountsStore } from "$lib/stores/accounts.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { formattedMaturity } from "$lib/utils/neuron.utils";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
-} from "$tests/mocks/accounts.store.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { selectPercentage } from "$tests/utils/neurons-modal.test-utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 
-jest.mock("$lib/services/neurons.services", () => {
+vi.mock("$lib/services/neurons.services", () => {
   return {
-    stakeMaturity: jest.fn().mockResolvedValue({ success: true }),
-    mergeMaturity: jest.fn().mockResolvedValue({ success: true }),
-    getNeuronFromStore: jest.fn(),
+    stakeMaturity: vi.fn().mockResolvedValue({ success: true }),
+    mergeMaturity: vi.fn().mockResolvedValue({ success: true }),
+    getNeuronFromStore: vi.fn(),
   };
 });
 
@@ -29,7 +25,7 @@ describe("NnsStakeMaturityModal", () => {
     ...mockNeuron,
     fullNeuron: {
       ...mockFullNeuron,
-      maturityE8sEquivalent: BigInt(1_000_000),
+      maturityE8sEquivalent: 1_000_000n,
     },
   };
   const neuronHW = {
@@ -101,13 +97,11 @@ describe("NnsStakeMaturityModal", () => {
   });
 
   describe("HW", () => {
-    beforeAll(() =>
-      jest
-        .spyOn(accountsStore, "subscribe")
-        .mockImplementation(
-          mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
-        )
-    );
+    beforeAll(() => {
+      vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
+        mockAccountsStoreSubscribe([], [mockHardwareWalletAccount])
+      );
+    });
 
     it("should call stakeMaturity service on confirm click for HW", async () => {
       const renderResult: RenderResult<SvelteComponent> =

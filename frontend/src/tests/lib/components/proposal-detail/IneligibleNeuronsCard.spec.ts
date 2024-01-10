@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import IneligibleNeuronsCard from "$lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
 import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
 import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
@@ -21,7 +18,7 @@ describe("IneligibleNeuronsCard", () => {
   });
 
   it("should display texts", () => {
-    const { getByText } = render(IneligibleNeuronsCard, {
+    const { getByTestId } = render(IneligibleNeuronsCard, {
       props: {
         ineligibleNeurons: [
           {
@@ -32,18 +29,10 @@ describe("IneligibleNeuronsCard", () => {
         minSnsDissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE),
       },
     });
-    expect(
-      getByText(en.proposal_detail__ineligible.headline)
-    ).toBeInTheDocument();
-    expect(
-      getByText(
-        replacePlaceholders(en.proposal_detail__ineligible.text, {
-          $minDissolveDelay: secondsToDissolveDelayDuration(
-            BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE)
-          ),
-        })
-      )
-    ).toBeInTheDocument();
+    expect(getByTestId("ineligible-neurons-description")).toBeInTheDocument();
+    expect(getByTestId("ineligible-neurons-description").textContent).toEqual(
+      "The following neurons are not eligible to vote."
+    );
   });
 
   it("should display ineligible neurons with reason 'short'", () => {

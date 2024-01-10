@@ -39,7 +39,7 @@ export class NnsStakeNeuronModalPo extends BasePageObject {
     dissolveDelayDays = "max",
   }: {
     amount: number;
-    dissolveDelayDays?: "max" | 0;
+    dissolveDelayDays?: "max" | number;
   }): Promise<void> {
     await this.getNnsStakeNeuronPo().stake(amount);
     await this.getSetDissolveDelayPo().setDissolveDelayDays(dissolveDelayDays);

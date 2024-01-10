@@ -1,46 +1,47 @@
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as api from "$lib/api/governance.api";
-import {
-  DEFAULT_TRANSACTION_FEE_E8S,
-  E8S_PER_ICP,
-} from "$lib/constants/icp.constants";
+import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import { MIN_NEURON_STAKE } from "$lib/constants/neurons.constants";
+import * as authServices from "$lib/services/auth.services";
 import {
   getAccountIdentityByPrincipal,
   loadBalance,
   transferICP,
-} from "$lib/services/accounts.services";
+} from "$lib/services/icp-accounts.services";
 import * as services from "$lib/services/neurons.services";
 import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
-import { accountsStore } from "$lib/stores/accounts.store";
 import * as busyStore from "$lib/stores/busy.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import { NotAuthorizedNeuronError } from "$lib/types/neurons.errors";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import {
-  mockHardwareWalletAccount,
-  mockMainAccount,
-  mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
-import {
+  mockGetIdentity,
   mockIdentity,
   mockIdentityErrorMsg,
   resetIdentity,
   setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import {
+  mockHardwareWalletAccount,
+  mockMainAccount,
+  mockSubAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { MockLedgerIdentity } from "$tests/mocks/ledger.identity.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import type { Identity } from "@dfinity/agent";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
-import { LedgerCanister, Topic } from "@dfinity/nns";
+import { LedgerCanister } from "@dfinity/ledger-icp";
+import { Topic, type NeuronInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
-import { mock } from "jest-mock-extended";
 import { tick } from "svelte";
 import { get } from "svelte/store";
+import { mock } from "vitest-mock-extended";
 
 const {
   addHotkey,
@@ -76,14 +77,14 @@ const resetAccountIdentity = () => (testIdentity = mockIdentity);
 const setAccountIdentity = (newIdentity: Identity) =>
   (testIdentity = newIdentity);
 
-jest.mock("$lib/services/accounts.services", () => {
+vi.mock("$lib/services/icp-accounts.services", () => {
   return {
-    loadBalance: jest.fn(),
-    transferICP: jest.fn().mockResolvedValue({ success: true }),
-    getAccountIdentityByPrincipal: jest
+    loadBalance: vi.fn(),
+    transferICP: vi.fn().mockResolvedValue({ success: true }),
+    getAccountIdentityByPrincipal: vi
       .fn()
       .mockImplementation(() => Promise.resolve(testIdentity)),
-    getAccountIdentity: jest
+    getAccountIdentity: vi
       .fn()
       .mockImplementation(() => Promise.resolve(testIdentity)),
   };
@@ -98,9 +99,9 @@ const setLedgerThrow = () =>
 const resetLedger = () =>
   (getLedgerIdentityImplementation = mockLedgerIdentity);
 
-jest.mock("$lib/proxy/ledger.services.proxy", () => {
+vi.mock("$lib/proxy/icp-ledger.services.proxy", () => {
   return {
-    getLedgerIdentityProxy: jest
+    getLedgerIdentityProxy: vi
       .fn()
       .mockImplementation(() => getLedgerIdentityImplementation()),
   };
@@ -109,7 +110,7 @@ jest.mock("$lib/proxy/ledger.services.proxy", () => {
 describe("neurons-services", () => {
   const notControlledNeuron = {
     ...mockNeuron,
-    neuronId: BigInt(123),
+    neuronId: 123n,
     fullNeuron: {
       ...mockFullNeuron,
       controller: "not-controller",
@@ -117,7 +118,7 @@ describe("neurons-services", () => {
   };
   const controlledNeuron = {
     ...mockNeuron,
-    neuronId: BigInt(1234),
+    neuronId: 1_234n,
     fullNeuron: {
       ...mockFullNeuron,
       controller: mockIdentity.getPrincipal().toText(),
@@ -125,47 +126,51 @@ describe("neurons-services", () => {
   };
   const sameControlledNeuron = {
     ...mockNeuron,
-    neuronId: BigInt(1234555),
+    neuronId: 1_234_555n,
     fullNeuron: {
       ...mockFullNeuron,
       controller: mockIdentity.getPrincipal().toText(),
     },
   };
-  const newSpawnedNeuronId = BigInt(1234);
+  const newSpawnedNeuronId = 1_234n;
 
   const neurons = [sameControlledNeuron, controlledNeuron];
 
-  const spyStakeNeuron = jest.spyOn(api, "stakeNeuron");
-  const spyGetNeuron = jest.spyOn(api, "queryNeuron");
-  const spyIncreaseDissolveDelay = jest.spyOn(api, "increaseDissolveDelay");
-  const spyJoinCommunityFund = jest.spyOn(api, "joinCommunityFund");
-  const spyAutoStakeMaturity = jest.spyOn(api, "autoStakeMaturity");
-  const spyLeaveCommunityFund = jest.spyOn(api, "leaveCommunityFund");
-  const spyDisburse = jest.spyOn(api, "disburse");
-  const spyMergeMaturity = jest.spyOn(api, "mergeMaturity");
-  const spyStakeMaturity = jest.spyOn(api, "stakeMaturity");
-  const spySpawnNeuron = jest.spyOn(api, "spawnNeuron");
-  const spyMergeNeurons = jest.spyOn(api, "mergeNeurons");
-  const spySimulateMergeNeurons = jest.spyOn(api, "simulateMergeNeurons");
-  const spyAddHotkey = jest.spyOn(api, "addHotkey");
-  const spyRemoveHotkey = jest.spyOn(api, "removeHotkey");
-  const spySplitNeuron = jest.spyOn(api, "splitNeuron");
-  const spyStartDissolving = jest.spyOn(api, "startDissolving");
-  const spyStopDissolving = jest.spyOn(api, "stopDissolving");
-  const spySetFollowees = jest.spyOn(api, "setFollowees");
-  const spyClaimOrRefresh = jest.spyOn(api, "claimOrRefreshNeuron");
+  const spyStakeNeuron = vi.spyOn(api, "stakeNeuron");
+  const spyStakeNeuronIcrc1 = vi.spyOn(api, "stakeNeuronIcrc1");
+  const spyGetNeuron = vi.spyOn(api, "queryNeuron");
+  const spyIncreaseDissolveDelay = vi.spyOn(api, "increaseDissolveDelay");
+  const spyJoinCommunityFund = vi.spyOn(api, "joinCommunityFund");
+  const spyAutoStakeMaturity = vi.spyOn(api, "autoStakeMaturity");
+  const spyLeaveCommunityFund = vi.spyOn(api, "leaveCommunityFund");
+  const spyDisburse = vi.spyOn(api, "disburse");
+  const spyMergeMaturity = vi.spyOn(api, "mergeMaturity");
+  const spyStakeMaturity = vi.spyOn(api, "stakeMaturity");
+  const spySpawnNeuron = vi.spyOn(api, "spawnNeuron");
+  const spyMergeNeurons = vi.spyOn(api, "mergeNeurons");
+  const spySimulateMergeNeurons = vi.spyOn(api, "simulateMergeNeurons");
+  const spyAddHotkey = vi.spyOn(api, "addHotkey");
+  const spyRemoveHotkey = vi.spyOn(api, "removeHotkey");
+  const spySplitNeuron = vi.spyOn(api, "splitNeuron");
+  const spyStartDissolving = vi.spyOn(api, "startDissolving");
+  const spyStopDissolving = vi.spyOn(api, "stopDissolving");
+  const spySetFollowees = vi.spyOn(api, "setFollowees");
+  const spyClaimOrRefresh = vi.spyOn(api, "claimOrRefreshNeuron");
 
   beforeEach(() => {
     spyGetNeuron.mockClear();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     neuronsStore.reset();
-    accountsStore.resetForTesting();
-    resetIdentity();
+    icpAccountsStore.resetForTesting();
     resetAccountIdentity();
     toastsStore.reset();
     resetNeuronsApiService();
+    overrideFeatureFlagsStore.reset();
 
     spyStakeNeuron.mockImplementation(() =>
+      Promise.resolve(mockNeuron.neuronId)
+    );
+    spyStakeNeuronIcrc1.mockImplementation(() =>
       Promise.resolve(mockNeuron.neuronId)
     );
     spyGetNeuron.mockResolvedValue(mockNeuron);
@@ -185,11 +190,15 @@ describe("neurons-services", () => {
     );
     spyAddHotkey.mockResolvedValue();
     spyRemoveHotkey.mockResolvedValue();
-    spySplitNeuron.mockResolvedValue(BigInt(11));
+    spySplitNeuron.mockResolvedValue(11n);
     spyStartDissolving.mockResolvedValue();
     spyStopDissolving.mockResolvedValue();
     spySetFollowees.mockResolvedValue();
     spyClaimOrRefresh.mockResolvedValue(undefined);
+    resetIdentity();
+    vi.spyOn(authServices, "getAuthenticatedIdentity").mockImplementation(
+      mockGetIdentity
+    );
   });
 
   describe("stake new neuron", () => {
@@ -205,10 +214,11 @@ describe("neurons-services", () => {
         fromSubAccount: undefined,
         identity: mockIdentity,
         ledgerCanisterIdentity: mockIdentity,
-        stake: BigInt(10 * E8S_PER_ICP),
+        stake: 1_000_000_000n,
       });
       expect(spyStakeNeuron).toBeCalledTimes(1);
       expect(newNeuronId).toEqual(mockNeuron.neuronId);
+      expect(spyStakeNeuronIcrc1).not.toBeCalled();
     });
 
     it("should stake and load a neuron from subaccount", async () => {
@@ -223,14 +233,21 @@ describe("neurons-services", () => {
         fromSubAccount: mockSubAccount.subAccount,
         identity: mockIdentity,
         ledgerCanisterIdentity: mockIdentity,
-        stake: BigInt(10 * E8S_PER_ICP),
+        stake: 1_000_000_000n,
       });
       expect(spyStakeNeuron).toBeCalledTimes(1);
       expect(newNeuronId).toEqual(mockNeuron.neuronId);
+      expect(spyStakeNeuronIcrc1).not.toBeCalled();
     });
 
     it("should stake neuron from hardware wallet", async () => {
+      const mockHardkwareWalletIdentity = {
+        getPrincipal: () => mockHardwareWalletAccount.principal,
+      } as unknown as Identity;
+      setAccountIdentity(mockHardkwareWalletIdentity);
+
       expect(spyStakeNeuron).not.toBeCalled();
+
       const newNeuronId = await stakeNeuron({
         amount: 10,
         account: mockHardwareWalletAccount,
@@ -240,19 +257,18 @@ describe("neurons-services", () => {
         controller: mockHardwareWalletAccount.principal,
         identity: new AnonymousIdentity(),
         fromSubAccount: undefined,
-        ledgerCanisterIdentity: mockIdentity,
-        stake: BigInt(10 * E8S_PER_ICP),
+        ledgerCanisterIdentity: mockHardkwareWalletIdentity,
+        stake: 1_000_000_000n,
       });
       expect(spyStakeNeuron).toBeCalledTimes(1);
       expect(newNeuronId).toEqual(mockNeuron.neuronId);
+      expect(spyStakeNeuronIcrc1).not.toBeCalled();
     });
 
-    it(`stakeNeuron return undefined if amount less than ${
-      E8S_PER_ICP / E8S_PER_ICP
-    } ICP`, async () => {
-      jest
-        .spyOn(LedgerCanister, "create")
-        .mockImplementation(() => mock<LedgerCanister>());
+    it("stakeNeuron return undefined if amount less than 1 ICP", async () => {
+      vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
+        mock<LedgerCanister>()
+      );
 
       const response = await stakeNeuron({
         amount: 0.1,
@@ -262,12 +278,13 @@ describe("neurons-services", () => {
       expect(response).toBeUndefined();
       expectToastError(en.error.amount_not_enough_stake_neuron);
       expect(spyStakeNeuron).not.toBeCalled();
+      expect(spyStakeNeuronIcrc1).not.toBeCalled();
     });
 
     it("stake neuron should return undefined if amount not valid", async () => {
-      jest
-        .spyOn(LedgerCanister, "create")
-        .mockImplementation(() => mock<LedgerCanister>());
+      vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
+        mock<LedgerCanister>()
+      );
 
       const response = await stakeNeuron({
         amount: NaN,
@@ -277,12 +294,13 @@ describe("neurons-services", () => {
       expect(response).toBeUndefined();
       expectToastError("Invalid number NaN");
       expect(spyStakeNeuron).not.toBeCalled();
+      expect(spyStakeNeuronIcrc1).not.toBeCalled();
     });
 
     it("stake neuron should return undefined if not enough funds in account", async () => {
-      jest
-        .spyOn(LedgerCanister, "create")
-        .mockImplementation(() => mock<LedgerCanister>());
+      vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
+        mock<LedgerCanister>()
+      );
 
       // 10 ICPs
       const amount = 10;
@@ -290,13 +308,14 @@ describe("neurons-services", () => {
         amount,
         account: {
           ...mockMainAccount,
-          balanceE8s: BigInt(amount - 1),
+          balanceUlps: BigInt(amount - 1),
         },
       });
 
       expect(response).toBeUndefined();
       expectToastError(en.error.insufficient_funds);
       expect(spyStakeNeuron).not.toBeCalled();
+      expect(spyStakeNeuronIcrc1).not.toBeCalled();
     });
 
     it("should not stake neuron if no identity", async () => {
@@ -310,11 +329,12 @@ describe("neurons-services", () => {
       expect(response).toBeUndefined();
       expectToastError("Cannot read properties of null");
       expect(spyStakeNeuron).not.toBeCalled();
+      expect(spyStakeNeuronIcrc1).not.toBeCalled();
     });
   });
 
   describe("list neurons", () => {
-    const spyQueryNeurons = jest
+    const spyQueryNeurons = vi
       .spyOn(api, "queryNeurons")
       .mockResolvedValue(neurons);
 
@@ -391,7 +411,7 @@ describe("neurons-services", () => {
       setNoIdentity();
 
       await updateDelay({
-        neuronId: BigInt(10),
+        neuronId: 10n,
         dissolveDelayInSeconds: 12000,
       });
 
@@ -432,10 +452,31 @@ describe("neurons-services", () => {
       expect(spyJoinCommunityFund).toBeCalledTimes(1);
     });
 
+    it("should call joinCommunity if user is a hotkey", async () => {
+      const neuron: NeuronInfo = {
+        ...mockNeuron,
+        joinedCommunityFundTimestampSeconds: undefined,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          controller: "not-user",
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
+      };
+      neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
+      expect(spyJoinCommunityFund).not.toBeCalled();
+      await toggleCommunityFund(neuron);
+
+      expect(spyJoinCommunityFund).toBeCalledWith({
+        identity: mockIdentity,
+        neuronId: neuron.neuronId,
+      });
+      expect(spyJoinCommunityFund).toBeCalledTimes(1);
+    });
+
     it("should call leaveCommunity find if neuron is in the fund already", async () => {
       const neuron = {
         ...controlledNeuron,
-        joinedCommunityFundTimestampSeconds: BigInt(2000),
+        joinedCommunityFundTimestampSeconds: 2_000n,
       };
       neuronsStore.pushNeurons({ neurons: [neuron], certified: true });
       expect(spyLeaveCommunityFund).not.toBeCalled();
@@ -446,33 +487,6 @@ describe("neurons-services", () => {
         neuronId: neuron.neuronId,
       });
       expect(spyLeaveCommunityFund).toBeCalledTimes(1);
-    });
-
-    it("should not update neuron if no identity", async () => {
-      const neuron = {
-        ...controlledNeuron,
-        joinedCommunityFundTimestampSeconds: BigInt(2000),
-      };
-      setNoIdentity();
-
-      await toggleCommunityFund(neuron);
-
-      expectToastError(en.error.missing_identity);
-      expect(spyJoinCommunityFund).not.toBeCalled();
-      expect(spyLeaveCommunityFund).not.toBeCalled();
-    });
-
-    it("should not update neuron if not controlled by user", async () => {
-      neuronsStore.pushNeurons({
-        neurons: [notControlledNeuron],
-        certified: true,
-      });
-
-      await toggleCommunityFund(notControlledNeuron);
-
-      expectToastError(en.error.not_authorized_neuron_action);
-      expect(spyJoinCommunityFund).not.toBeCalled();
-      expect(spyLeaveCommunityFund).not.toBeCalled();
     });
   });
 
@@ -858,7 +872,7 @@ describe("neurons-services", () => {
     it("should not merge neurons if different controllers", async () => {
       const neuron = {
         ...mockNeuron,
-        neuronId: BigInt(5555),
+        neuronId: 5_555n,
         fullNeuron: {
           ...mockFullNeuron,
           controller: "another",
@@ -894,13 +908,13 @@ describe("neurons-services", () => {
         ...mockHardwareWalletAccount,
         principal: smallerVersionIdentity.getPrincipal(),
       };
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
         hardwareWallets: [hwAccount],
       });
       const neuron1 = {
         ...mockNeuron,
-        neuronId: BigInt(5555),
+        neuronId: 5_555n,
         fullNeuron: {
           ...mockFullNeuron,
           controller: smallerVersionIdentity.getPrincipal().toText(),
@@ -908,7 +922,7 @@ describe("neurons-services", () => {
       };
       const neuron2 = {
         ...mockNeuron,
-        neuronId: BigInt(5556),
+        neuronId: 5_556n,
         fullNeuron: {
           ...mockFullNeuron,
           controller: smallerVersionIdentity.getPrincipal().toText(),
@@ -969,7 +983,7 @@ describe("neurons-services", () => {
     it("should not simulate merging neurons if different controllers", async () => {
       const neuron = {
         ...mockNeuron,
-        neuronId: BigInt(5555),
+        neuronId: 5_555n,
         fullNeuron: {
           ...mockFullNeuron,
           controller: "another",
@@ -991,14 +1005,14 @@ describe("neurons-services", () => {
     });
 
     it("should simulate merging neurons if HW controlled", async () => {
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
         hardwareWallets: [mockHardwareWalletAccount],
       });
       const hwPrincipal = mockHardwareWalletAccount.principal.toText();
       const neuron1 = {
         ...mockNeuron,
-        neuronId: BigInt(5555),
+        neuronId: 5_555n,
         fullNeuron: {
           ...mockFullNeuron,
           controller: hwPrincipal,
@@ -1006,7 +1020,7 @@ describe("neurons-services", () => {
       };
       const neuron2 = {
         ...mockNeuron,
-        neuronId: BigInt(5556),
+        neuronId: 5_556n,
         fullNeuron: {
           ...mockFullNeuron,
           controller: hwPrincipal,
@@ -1090,8 +1104,8 @@ describe("neurons-services", () => {
     });
 
     it("should display appropriate busy screen", async () => {
-      const spyBusyStart = jest.spyOn(busyStore, "startBusy");
-      const spyBusyStop = jest.spyOn(busyStore, "stopBusy");
+      const spyBusyStart = vi.spyOn(busyStore, "startBusy");
+      const spyBusyStop = vi.spyOn(busyStore, "stopBusy");
 
       await addHotkeyForHardwareWalletNeuron({
         neuronId: controlledNeuron.neuronId,
@@ -1150,7 +1164,7 @@ describe("neurons-services", () => {
 
     it("should update neuron and return success when user removes itself", async () => {
       spyGetNeuron.mockImplementation(
-        jest.fn().mockRejectedValue(new NotAuthorizedNeuronError())
+        vi.fn().mockRejectedValue(new NotAuthorizedNeuronError())
       );
       neuronsStore.pushNeurons({ neurons, certified: true });
 
@@ -1213,7 +1227,7 @@ describe("neurons-services", () => {
     it("should not update neuron if no identity", async () => {
       setNoIdentity();
 
-      await startDissolving(BigInt(10));
+      await startDissolving(10n);
 
       expectToastError(en.error.missing_identity);
       expect(spyStartDissolving).not.toBeCalled();
@@ -1243,7 +1257,7 @@ describe("neurons-services", () => {
     it("should not update neuron if no identity", async () => {
       setNoIdentity();
 
-      await stopDissolving(BigInt(10));
+      await stopDissolving(10n);
 
       expectToastError(en.error.missing_identity);
       expect(spyStopDissolving).not.toBeCalled();
@@ -1282,10 +1296,8 @@ describe("neurons-services", () => {
     it("should add transaction fee to the amount", async () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
       const amount = 2.2;
-      const transactionFee = DEFAULT_TRANSACTION_FEE_E8S / E8S_PER_ICP;
-      // To avoid rounding errors, we round the amount with the fee to the nearest 8 decimals
-      const amountWithFee =
-        Math.round((amount + transactionFee) * E8S_PER_ICP) / E8S_PER_ICP;
+      const amountE8s = 220_000_000n;
+      const transactionFee = DEFAULT_TRANSACTION_FEE_E8S;
       await services.splitNeuron({
         neuron: controlledNeuron,
         amount,
@@ -1294,7 +1306,7 @@ describe("neurons-services", () => {
       expect(spySplitNeuron).toBeCalledWith({
         identity: mockIdentity,
         neuronId: controlledNeuron.neuronId,
-        amount: numberToE8s(amountWithFee),
+        amount: amountE8s + BigInt(transactionFee),
       });
     });
 
@@ -1327,13 +1339,13 @@ describe("neurons-services", () => {
         ...mockHardwareWalletAccount,
         principal: smallerVersionIdentity.getPrincipal(),
       };
-      accountsStore.setForTesting({
+      icpAccountsStore.setForTesting({
         main: mockMainAccount,
         hardwareWallets: [hwAccount],
       });
       const neuron = {
         ...mockNeuron,
-        neuronId: BigInt(5555),
+        neuronId: 5_555n,
         fullNeuron: {
           ...mockFullNeuron,
           controller: smallerVersionIdentity.getPrincipal().toText(),
@@ -1358,7 +1370,7 @@ describe("neurons-services", () => {
 
   describe("add followee", () => {
     it("should add the followee to next call", async () => {
-      const followee = BigInt(8);
+      const followee = 8n;
       neuronsStore.setNeurons({ neurons, certified: true });
       const topic = Topic.ExchangeRate;
 
@@ -1401,7 +1413,7 @@ describe("neurons-services", () => {
 
     it("should not call api if trying follow a neuron already added", async () => {
       const topic = Topic.ExchangeRate;
-      const followee = BigInt(10);
+      const followee = 10n;
       const neuron = {
         ...controlledNeuron,
         fullNeuron: {
@@ -1422,7 +1434,7 @@ describe("neurons-services", () => {
     });
 
     it("should not call api if no identity", async () => {
-      const followee = BigInt(8);
+      const followee = 8n;
       neuronsStore.setNeurons({ neurons, certified: true });
       const topic = Topic.ExchangeRate;
 
@@ -1443,7 +1455,7 @@ describe("neurons-services", () => {
         neurons: [notControlledNeuron],
         certified: true,
       });
-      const followee = BigInt(8);
+      const followee = 8n;
       const topic = Topic.ExchangeRate;
 
       await addFollowee({
@@ -1457,7 +1469,7 @@ describe("neurons-services", () => {
     });
 
     it("should call api if not controlled by user but controlled by hotkey", async () => {
-      const followee = BigInt(8);
+      const followee = 8n;
       const topic = Topic.ExchangeRate;
       const hotkeyNeuron = {
         ...notControlledNeuron,
@@ -1488,7 +1500,7 @@ describe("neurons-services", () => {
     });
 
     it("should not call api if not controlled by user but controlled by hotkey for topic Manage Neuron", async () => {
-      const followee = BigInt(8);
+      const followee = 8n;
       const topic = Topic.ManageNeuron;
       const hotkeyNeuron = {
         ...notControlledNeuron,
@@ -1513,7 +1525,7 @@ describe("neurons-services", () => {
   });
 
   describe("remove followee", () => {
-    const followee = BigInt(8);
+    const followee = 8n;
     const topic = Topic.ExchangeRate;
     const neuronFollowing = {
       ...controlledNeuron,
@@ -1523,7 +1535,7 @@ describe("neurons-services", () => {
       },
     };
     it("should remove the followee to next call", async () => {
-      const followee = BigInt(8);
+      const followee = 8n;
       const topic = Topic.ExchangeRate;
       const neuronFollowing = {
         ...controlledNeuron,
@@ -1566,7 +1578,7 @@ describe("neurons-services", () => {
     });
 
     it("should not call api if user not controller nor hotkey", async () => {
-      const followee = BigInt(8);
+      const followee = 8n;
       const topic = Topic.ExchangeRate;
       const notControlled = {
         ...notControlledNeuron,
@@ -1590,7 +1602,7 @@ describe("neurons-services", () => {
     });
 
     it("should call api if user not controller but controlled by hotkey", async () => {
-      const followee = BigInt(8);
+      const followee = 8n;
       const topic = Topic.ExchangeRate;
       const hotkeyNeuron = {
         ...notControlledNeuron,
@@ -1621,7 +1633,7 @@ describe("neurons-services", () => {
     });
 
     it("should not call api if user not controller but controlled by hotkey and topic is manage neuron", async () => {
-      const followee = BigInt(8);
+      const followee = 8n;
       const topic = Topic.ManageNeuron;
       const hotkeyNeuron = {
         ...notControlledNeuron,
@@ -1660,11 +1672,11 @@ describe("neurons-services", () => {
     });
 
     it("should call the api to get neuron if not in store", async () => {
-      jest.spyOn(console, "error").mockImplementation(jest.fn);
+      vi.spyOn(console, "error").mockReturnValue();
       expect(spyGetNeuron).not.toBeCalled();
       await loadNeuron({
         neuronId: mockNeuron.neuronId,
-        setNeuron: jest.fn(),
+        setNeuron: vi.fn(),
       });
       expect(spyGetNeuron).toBeCalledWith({
         certified: false,
@@ -1680,14 +1692,14 @@ describe("neurons-services", () => {
     });
 
     it("should call setNeuron even if the neuron doesn't have fullNeuron", async () => {
-      const neuronId = BigInt(333333);
+      const neuronId = 333_333n;
       const publicInfoNeuron = {
         ...mockNeuron,
         neuronId,
         fullNeuron: undefined,
       };
       spyGetNeuron.mockResolvedValue(publicInfoNeuron);
-      const setNeuronSpy = jest.fn();
+      const setNeuronSpy = vi.fn();
 
       expect(spyGetNeuron).not.toBeCalled();
       expect(setNeuronSpy).not.toBeCalled();

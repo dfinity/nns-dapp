@@ -18,6 +18,7 @@ export const snsTokenSymbolSelectedStore: Readable<Token | undefined> = derived(
       return {
         symbol: selectedTokenMetadata.symbol,
         name: selectedTokenMetadata.name,
+        decimals: selectedTokenMetadata.decimals,
       };
     }
   }

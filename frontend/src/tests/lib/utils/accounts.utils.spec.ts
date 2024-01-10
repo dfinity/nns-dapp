@@ -4,7 +4,9 @@ import {
   accountName,
   assertEnoughAccountFunds,
   emptyAddress,
+  filterHardwareWalletAccounts,
   findAccount,
+  findAccountOrDefaultToMain,
   getAccountByPrincipal,
   getAccountByRootCanister,
   getAccountsByRootCanister,
@@ -17,27 +19,28 @@ import {
   mainAccount,
   sumAccounts,
   sumNnsAccounts,
+  toIcpAccountIdentifier,
 } from "$lib/utils/accounts.utils";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockCanisterId } from "$tests/mocks/canisters.mock";
+import {
+  mockBTCAddressMainnet,
+  mockBTCAddressTestnet,
+} from "$tests/mocks/ckbtc-accounts.mock";
 import {
   mockAddressInputInvalid,
   mockAddressInputValid,
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
-} from "$tests/mocks/accounts.store.mock";
-import { mockPrincipal } from "$tests/mocks/auth.store.mock";
-import { mockCanisterId } from "$tests/mocks/canisters.mock";
+} from "$tests/mocks/icp-accounts.store.mock";
 import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
 import { AnonymousIdentity } from "@dfinity/agent";
-import { encodeIcrcAccount } from "@dfinity/ledger";
+import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
-import {
-  mockBTCAddressMainnet,
-  mockBTCAddressTestnet,
-} from "../../mocks/ckbtc-accounts.mock";
 
 describe("accounts-utils", () => {
   const accounts = [mockMainAccount, mockSubAccount];
@@ -242,6 +245,24 @@ describe("accounts-utils", () => {
           })
         ).toBeTruthy();
       });
+
+      it("should be a valid Icrc address for ICP universe", () => {
+        expect(
+          invalidAddress({
+            address: subaccountString,
+            network: undefined,
+            rootCanisterId: OWN_CANISTER_ID,
+          })
+        ).toBeFalsy();
+
+        expect(
+          invalidAddress({
+            address: subaccountString,
+            network: TransactionNetwork.ICP,
+            rootCanisterId: OWN_CANISTER_ID,
+          })
+        ).toBeFalsy();
+      });
     });
 
     describe("invalidIcpAddress", () => {
@@ -414,6 +435,46 @@ describe("accounts-utils", () => {
         })
       ).toEqual(mockSubAccount);
     });
+
+    it("should return corresponding account if icrc matches", () => {
+      const snsAccounts = [mockSnsMainAccount, mockSnsSubAccount];
+
+      expect(
+        findAccount({
+          identifier: mockSnsMainAccount.identifier,
+          accounts: snsAccounts,
+        })
+      ).toEqual(mockSnsMainAccount);
+      expect(
+        findAccount({
+          identifier: mockSnsSubAccount.identifier,
+          accounts: snsAccounts,
+        })
+      ).toEqual(mockSnsSubAccount);
+    });
+
+    it("should return corresponding account for icrc or icp matches", () => {
+      const icpAccount = {
+        ...mockSnsMainAccount,
+        icpIdentifier: "test",
+      };
+
+      const icpAccounts = [icpAccount, mockSnsSubAccount];
+
+      expect(
+        findAccount({
+          identifier: mockSnsMainAccount.identifier,
+          accounts: icpAccounts,
+        })
+      ).toEqual(icpAccount);
+
+      expect(
+        findAccount({
+          identifier: icpAccount.icpIdentifier,
+          accounts: icpAccounts,
+        })
+      ).toEqual(icpAccount);
+    });
   });
 
   describe("getAccountByRootCanister", () => {
@@ -497,27 +558,27 @@ describe("accounts-utils", () => {
 
   describe("assertEnoughAccountFunds", () => {
     it("should throw if not enough balance", () => {
-      const amountE8s = BigInt(1_000_000_000);
+      const amountE8s = 1_000_000_000n;
       expect(() => {
         assertEnoughAccountFunds({
           account: {
             ...mockMainAccount,
-            balanceE8s: amountE8s,
+            balanceUlps: amountE8s,
           },
-          amountE8s: amountE8s + BigInt(10_000),
+          amountUlps: amountE8s + 10_000n,
         });
       }).toThrow();
     });
 
     it("should not throw if not enough balance", () => {
-      const amountE8s = BigInt(1_000_000_000);
+      const amountE8s = 1_000_000_000n;
       expect(() => {
         assertEnoughAccountFunds({
           account: {
             ...mockMainAccount,
-            balanceE8s: amountE8s,
+            balanceUlps: amountE8s,
           },
-          amountE8s: amountE8s - BigInt(10_000),
+          amountUlps: amountE8s - 10_000n,
         });
       }).not.toThrow();
     });
@@ -536,6 +597,37 @@ describe("accounts-utils", () => {
         mockSnsSubAccount,
       ];
       expect(mainAccount(accounts)).toEqual(mockSnsMainAccount);
+    });
+  });
+
+  describe("findAccountOrDefaultToMain", () => {
+    const accounts = [mockMainAccount, mockSubAccount];
+
+    it("should return main account if no identifier is provided", () => {
+      expect(
+        findAccountOrDefaultToMain({ identifier: undefined, accounts })
+      ).toBe(mockMainAccount);
+    });
+
+    it("should find no account if not matches", () => {
+      expect(
+        findAccountOrDefaultToMain({ identifier: "aaa", accounts })
+      ).toBeUndefined();
+    });
+
+    it("should return corresponding account", () => {
+      expect(
+        findAccountOrDefaultToMain({
+          identifier: mockMainAccount.identifier,
+          accounts,
+        })
+      ).toEqual(mockMainAccount);
+      expect(
+        findAccountOrDefaultToMain({
+          identifier: mockSubAccount.identifier,
+          accounts,
+        })
+      ).toEqual(mockSubAccount);
     });
   });
 
@@ -571,9 +663,9 @@ describe("accounts-utils", () => {
   describe("sumNnsAccounts", () => {
     it("should sum accounts balance", () => {
       let totalBalance =
-        mockMainAccount.balanceE8s +
-        mockSubAccount.balanceE8s +
-        mockHardwareWalletAccount.balanceE8s;
+        mockMainAccount.balanceUlps +
+        mockSubAccount.balanceUlps +
+        mockHardwareWalletAccount.balanceUlps;
 
       expect(
         sumNnsAccounts({
@@ -583,7 +675,7 @@ describe("accounts-utils", () => {
         })
       ).toEqual(totalBalance);
 
-      totalBalance = mockMainAccount.balanceE8s + mockSubAccount.balanceE8s;
+      totalBalance = mockMainAccount.balanceUlps + mockSubAccount.balanceUlps;
 
       expect(
         sumNnsAccounts({
@@ -593,7 +685,7 @@ describe("accounts-utils", () => {
         })
       ).toEqual(totalBalance);
 
-      totalBalance = mockMainAccount.balanceE8s;
+      totalBalance = mockMainAccount.balanceUlps;
 
       expect(
         sumNnsAccounts({
@@ -608,15 +700,23 @@ describe("accounts-utils", () => {
   describe("sumAccounts", () => {
     it("should sum accounts balance", () => {
       let totalBalance =
-        mockSnsMainAccount.balanceE8s + mockSnsSubAccount.balanceE8s;
+        mockSnsMainAccount.balanceUlps + mockSnsSubAccount.balanceUlps;
 
       expect(sumAccounts([mockSnsMainAccount, mockSnsSubAccount])).toEqual(
         totalBalance
       );
 
-      totalBalance = mockSnsMainAccount.balanceE8s;
+      totalBalance = mockSnsMainAccount.balanceUlps;
 
       expect(sumAccounts([mockSnsMainAccount])).toEqual(totalBalance);
+    });
+
+    it("should return undefined if no accounts", () => {
+      expect(sumAccounts(undefined)).toBeUndefined();
+    });
+
+    it("should return 0 if accounts list is empty", () => {
+      expect(sumAccounts([])).toBe(0n);
     });
   });
 
@@ -625,5 +725,32 @@ describe("accounts-utils", () => {
       expect(hasAccounts([mockMainAccount])).toBeTruthy());
 
     it("should not have accounts", () => expect(hasAccounts([])).toBe(false));
+  });
+
+  describe("toIcpAccountIdentifier", () => {
+    it("should returns an icp account identifier for an icrc account identifier", () => {
+      expect(toIcpAccountIdentifier(mockSnsMainAccount.identifier)).toEqual(
+        "97783b7f0f34634c06ced774bd1bd27d2c76e80b0dd88f56ad55b3ecab292f68"
+      );
+    });
+
+    it("should returns the account identifier parameter if not an icrc account identifier", () => {
+      expect(toIcpAccountIdentifier(mockMainAccount.identifier)).toEqual(
+        mockMainAccount.identifier
+      );
+
+      expect(toIcpAccountIdentifier("123456")).toEqual("123456");
+    });
+  });
+
+  describe("filterHardwareWalletAccounts", () => {
+    it("should filter hw wallet account", () => {
+      const accounts = [mockMainAccount, mockSubAccount];
+      expect(
+        [...accounts, mockHardwareWalletAccount].filter(
+          filterHardwareWalletAccounts
+        )
+      ).toEqual(accounts);
+    });
   });
 });

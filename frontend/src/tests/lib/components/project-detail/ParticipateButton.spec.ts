@@ -1,21 +1,17 @@
-/**
- * @jest-environment jsdom
- */
-
 import ParticipateButton from "$lib/components/project-detail/ParticipateButton.svelte";
 import { NOT_LOADED } from "$lib/constants/stores.constants";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import { userCountryStore } from "$lib/stores/user-country.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
-import { mockAccountsStoreData } from "$tests/mocks/accounts.store.mock";
 import {
   authStoreMock,
   mockIdentity,
   mutableMockAuthStoreSubscribe,
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import {
   createSummary,
   createTransferableAmount,
@@ -39,9 +35,9 @@ describe("ParticipateButton", () => {
     owner: rootCanisterIdMock,
   });
 
-  jest
-    .spyOn(authStore, "subscribe")
-    .mockImplementation(mutableMockAuthStoreSubscribe);
+  vi.spyOn(authStore, "subscribe").mockImplementation(
+    mutableMockAuthStoreSubscribe
+  );
 
   describe("signed in", () => {
     beforeEach(() => {
@@ -49,7 +45,7 @@ describe("ParticipateButton", () => {
         identity: mockIdentity,
       });
       snsTicketsStore.reset();
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       userCountryStore.set(NOT_LOADED);
     });
 
@@ -109,7 +105,7 @@ describe("ParticipateButton", () => {
 
       // When the modal appears, it will trigger `pollAccounts`
       // which trigger api calls if accounts are not loaded.
-      accountsStore.setForTesting(mockAccountsStoreData);
+      icpAccountsStore.setForTesting(mockAccountsStoreData);
 
       const { getByTestId } = renderContextCmp({
         summary: mockSnsFullProject.summary,
@@ -292,6 +288,7 @@ describe("ParticipateButton", () => {
             icp: [
               createTransferableAmount(mockSnsParams.max_participant_icp_e8s),
             ],
+            has_created_neuron_recipes: [],
           },
         },
         Component: ParticipateButton,

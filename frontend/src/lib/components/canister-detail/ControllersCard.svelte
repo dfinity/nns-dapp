@@ -20,7 +20,7 @@
   $: controllers = canisterDetails?.settings.controllers ?? [];
 </script>
 
-<CardInfo testId="canister-controllers-card">
+<CardInfo noMargin testId="canister-controllers-card">
   <h4 slot="start">{$i18n.canister_detail.controllers}</h4>
   <ul>
     {#each controllers as controller (controller)}

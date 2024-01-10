@@ -1,20 +1,20 @@
 import type { GetTransactionsResponse } from "$lib/api/icrc-index.api";
+import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
 import type {
   UniverseCanisterId,
   UniverseCanisterIdText,
 } from "$lib/types/universe";
+import { getUniqueTransactions } from "$lib/utils/icrc-transactions.utils";
 import { removeKeys } from "$lib/utils/utils";
-import type { IcrcTransactionWithId } from "@dfinity/ledger";
+import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
 import { writable, type Readable } from "svelte/store";
 
-export type IcrcAccountIdentifier = string;
-
 // Each Icrc Account - Sns or ckBTC - is an entry in this store.
 // We use the account string representation as the key to identify the transactions.
 export type IcrcTransactions = Record<
-  IcrcAccountIdentifier,
+  IcrcAccountIdentifierText,
   {
     transactions: IcrcTransactionWithId[];
     oldestTxId?: bigint;
@@ -75,12 +75,10 @@ const initIcrcTransactionsStore = (): IcrcTransactionsStore => {
       update((currentState: IcrcTransactionsStoreData) => {
         const projectState = currentState[canisterId.toText()];
         const accountState = projectState?.[accountIdentifier];
-        const uniquePreviousTransactions = (
-          accountState?.transactions ?? []
-        ).filter(
-          ({ id: oldTxId }) =>
-            !transactions.some(({ id: newTxId }) => newTxId === oldTxId)
-        );
+        const allTransactions = getUniqueTransactions([
+          ...(accountState?.transactions ?? []),
+          ...transactions,
+        ]);
         // Ids are in increasing order. We want to keep the oldest id.
         const newOldestTxId =
           oldestTxId === undefined
@@ -93,7 +91,7 @@ const initIcrcTransactionsStore = (): IcrcTransactionsStore => {
           [canisterId.toText()]: {
             ...projectState,
             [accountIdentifier]: {
-              transactions: [...uniquePreviousTransactions, ...transactions],
+              transactions: allTransactions,
               oldestTxId: newOldestTxId,
               completed,
             },

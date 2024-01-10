@@ -42,7 +42,7 @@
   import {
     cancelPollAccounts,
     pollAccounts,
-  } from "$lib/services/accounts.services";
+  } from "$lib/services/icp-accounts.services";
   import type { TransactionInit } from "$lib/types/transaction";
 
   onMount(() => {
@@ -123,7 +123,7 @@
 
       const updateProgress = (step: SaleStep) => (progressStep = step);
       const userCommitment =
-        getCommitmentE8s($projectDetailStore.swapCommitment) ?? BigInt(0);
+        getCommitmentE8s($projectDetailStore.swapCommitment) ?? 0n;
 
       const { success } = await initiateSnsSaleParticipation({
         account: sourceAccount,

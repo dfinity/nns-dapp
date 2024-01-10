@@ -1,15 +1,11 @@
-/**
- * @jest-environment jsdom
- */
-
-import * as ledgerApi from "$lib/api/ledger.api";
+import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import ParticipateSwapModal from "$lib/modals/sns/sale/ParticipateSwapModal.svelte";
-import { cancelPollAccounts } from "$lib/services/accounts.services";
+import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
 import { initiateSnsSaleParticipation } from "$lib/services/sns-sale.services";
-import { accountsStore } from "$lib/stores/accounts.store";
 import { authStore } from "$lib/stores/auth.store";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import {
   PROJECT_DETAIL_CONTEXT_KEY,
@@ -18,14 +14,16 @@ import {
 } from "$lib/types/project-detail.context";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import {
-  mockAccountDetails,
-  mockAccountsStoreData,
-  mockMainAccount,
-} from "$tests/mocks/accounts.store.mock";
-import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
+import {
+  mockAccountDetails,
+  mockAccountsStoreData,
+  mockHardwareWalletAccount,
+  mockMainAccount,
+  mockSubAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { renderModalContextWrapper } from "$tests/mocks/modal.mock";
 import {
   createBuyersState,
@@ -40,17 +38,16 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import { AccountIdentifier } from "@dfinity/nns";
+import { AccountIdentifier } from "@dfinity/ledger-icp";
 import { writable } from "svelte/store";
+import type { SpyInstance } from "vitest";
 
-jest.mock("$lib/api/nns-dapp.api");
-jest.mock("$lib/api/ledger.api");
-jest.mock("$lib/services/sns.services", () => {
+vi.mock("$lib/api/nns-dapp.api");
+vi.mock("$lib/api/icp-ledger.api");
+vi.mock("$lib/services/sns.services", () => {
   return {
-    initiateSnsSaleParticipation: jest
-      .fn()
-      .mockResolvedValue({ success: true }),
-    getSwapAccount: jest
+    initiateSnsSaleParticipation: vi.fn().mockResolvedValue({ success: true }),
+    getSwapAccount: vi
       .fn()
       .mockImplementation(() =>
         Promise.resolve(AccountIdentifier.fromHex(mockMainAccount.identifier))
@@ -58,38 +55,41 @@ jest.mock("$lib/services/sns.services", () => {
   };
 });
 
-jest.mock("$lib/services/sns-sale.services", () => ({
-  initiateSnsSaleParticipation: jest.fn().mockResolvedValue({ success: true }),
+vi.mock("$lib/services/sns-sale.services", () => ({
+  initiateSnsSaleParticipation: vi.fn().mockResolvedValue({ success: true }),
 }));
 
 type SwapModalParams = {
   swapCommitment?: SnsSwapCommitment | undefined;
   confirmationText?: string | undefined;
+  minParticipantCommitment?: bigint | undefined;
 };
 
 describe("ParticipateSwapModal", () => {
   beforeEach(() => {
     cancelPollAccounts();
-    jest.clearAllMocks();
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
-    jest.mocked(initiateSnsSaleParticipation).mockClear();
-    accountsStore.resetForTesting();
+    vi.clearAllMocks();
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
+    vi.mocked(initiateSnsSaleParticipation).mockClear();
+    icpAccountsStore.resetForTesting();
     snsTicketsStore.setNoTicket(rootCanisterIdMock);
   });
 
-  const reload = jest.fn();
+  const reload = vi.fn();
   const renderSwapModal = ({
     swapCommitment,
     confirmationText,
+    minParticipantCommitment,
   }: SwapModalParams = {}) =>
     renderModalContextWrapper({
       Component: ParticipateSwapModal,
       contextKey: PROJECT_DETAIL_CONTEXT_KEY,
       contextValue: {
         store: writable<ProjectDetailStore>({
-          summary: createSummary({ confirmationText }),
+          summary: createSummary({
+            confirmationText,
+            minParticipantCommitment,
+          }),
           swapCommitment,
         }),
         reload,
@@ -132,9 +132,29 @@ describe("ParticipateSwapModal", () => {
     expect(initiateSnsSaleParticipation).toBeCalledTimes(1);
   };
 
+  describe("when hardware wallet account is available", () => {
+    beforeEach(() => {
+      icpAccountsStore.setForTesting({
+        main: mockMainAccount,
+        subAccounts: [mockSubAccount],
+        hardwareWallets: [mockHardwareWalletAccount],
+        certified: true,
+      });
+    });
+
+    it("should not show hardware wallet account as selectable", async () => {
+      const po = await renderSwapModalPo();
+      const form = po.getTransactionFormPo();
+      expect(await form.getSourceAccounts()).toEqual([
+        "Main",
+        "test subaccount",
+      ]);
+    });
+  });
+
   describe("when accounts are available", () => {
     beforeEach(() => {
-      accountsStore.setForTesting(mockAccountsStoreData);
+      icpAccountsStore.setForTesting(mockAccountsStoreData);
     });
 
     const participate = async (po: ParticipateSwapModalPo) => {
@@ -195,6 +215,51 @@ describe("ParticipateSwapModal", () => {
       expect(await form.isContinueButtonEnabled()).toBe(true);
     });
 
+    it("should not show an error when amount is not too small", async () => {
+      const po = await renderSwapModalPo({
+        swapCommitment: {
+          ...mockSwapCommitment,
+          myCommitment: createBuyersState(0n),
+        },
+        minParticipantCommitment: 100_000_000n,
+      });
+      const form = po.getTransactionFormPo();
+      await form.enterAmount(1);
+      expect(await form.getAmountInputPo().hasError()).toBe(false);
+    });
+
+    it("should show an error when amount is too small", async () => {
+      const po = await renderSwapModalPo({
+        swapCommitment: {
+          ...mockSwapCommitment,
+          myCommitment: createBuyersState(0n),
+        },
+        minParticipantCommitment: 100_000_000n,
+      });
+      const form = po.getTransactionFormPo();
+      await form.enterAmount(0.01);
+      expect(await form.getAmountInputPo().hasError()).toBe(true);
+      expect(await form.getAmountInputPo().getErrorMessage()).toBe(
+        "Sorry, the amount is too small. You need a minimum of 1.00 ICP to participate in this swap."
+      );
+    });
+
+    it("should show an error with enough significant digits", async () => {
+      const po = await renderSwapModalPo({
+        swapCommitment: {
+          ...mockSwapCommitment,
+          myCommitment: createBuyersState(0n),
+        },
+        minParticipantCommitment: 100_000_278n,
+      });
+      const form = po.getTransactionFormPo();
+      await form.enterAmount(0.01);
+      expect(await form.getAmountInputPo().hasError()).toBe(true);
+      expect(await form.getAmountInputPo().getErrorMessage()).toBe(
+        "Sorry, the amount is too small. You need a minimum of 1.00000278 ICP to participate in this swap."
+      );
+    });
+
     describe("when user has non-zero swap commitment", () => {
       it("should move to the last step, enable button when accepting terms and call participate in swap service", async () => {
         const po = await renderEnter10ICPAndNext({
@@ -214,17 +279,17 @@ describe("ParticipateSwapModal", () => {
   });
 
   describe("when accounts are not available", () => {
-    const mainBalanceE8s = BigInt(10_000_000);
-    let queryAccountSpy: jest.SpyInstance;
-    let queryAccountBalanceSpy: jest.SpyInstance;
+    const mainBalanceE8s = 10_000_000n;
+    let queryAccountSpy: SpyInstance;
+    let queryAccountBalanceSpy: SpyInstance;
     let resolveQueryAccounts;
 
     beforeEach(() => {
-      accountsStore.resetForTesting();
-      queryAccountBalanceSpy = jest
+      icpAccountsStore.resetForTesting();
+      queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
-      queryAccountSpy = jest.spyOn(nnsDappApi, "queryAccount").mockReturnValue(
+      queryAccountSpy = vi.spyOn(nnsDappApi, "queryAccount").mockReturnValue(
         new Promise((resolve) => {
           resolveQueryAccounts = resolve;
         })
@@ -251,7 +316,7 @@ describe("ParticipateSwapModal", () => {
       spy,
       params,
     }: {
-      spy: jest.SpyInstance;
+      spy: SpyInstance;
       params: object;
     }) => {
       expect(spy).toBeCalledWith({
@@ -276,7 +341,7 @@ describe("ParticipateSwapModal", () => {
       expectSpyCalledWithQueryOnly({
         spy: queryAccountBalanceSpy,
         params: {
-          accountIdentifier: mockAccountDetails.account_identifier,
+          icpAccountIdentifier: mockAccountDetails.account_identifier,
           identity: mockIdentity,
         },
       });
@@ -284,20 +349,20 @@ describe("ParticipateSwapModal", () => {
   });
 
   describe("when no accounts and user navigates away", () => {
-    let spyQueryAccount: jest.SpyInstance;
+    let spyQueryAccount: SpyInstance;
     beforeEach(() => {
-      accountsStore.resetForTesting();
-      jest.clearAllTimers();
+      icpAccountsStore.resetForTesting();
+      vi.clearAllTimers();
       const now = Date.now();
-      jest.useFakeTimers().setSystemTime(now);
-      const mainBalanceE8s = BigInt(10_000_000);
-      jest
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mainBalanceE8s);
-      spyQueryAccount = jest
+      vi.useFakeTimers().setSystemTime(now);
+      const mainBalanceE8s = 10_000_000n;
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        mainBalanceE8s
+      );
+      spyQueryAccount = vi
         .spyOn(nnsDappApi, "queryAccount")
         .mockRejectedValue(new Error("connection error"));
-      jest.spyOn(console, "error").mockImplementation(() => undefined);
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
     });
 
     it("should stop polling", async () => {

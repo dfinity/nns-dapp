@@ -1,22 +1,18 @@
-/**
- * @jest-environment jsdom
- */
-
 import TransactionReview from "$lib/components/transaction/TransactionReview.svelte";
 import { authStore } from "$lib/stores/auth.store";
-import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
 import {
   authStoreMock,
   mockIdentity,
   mutableMockAuthStoreSubscribe,
 } from "$tests/mocks/auth.store.mock";
+import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("TransactionReview", () => {
-  jest
-    .spyOn(authStore, "subscribe")
-    .mockImplementation(mutableMockAuthStoreSubscribe);
+  vi.spyOn(authStore, "subscribe").mockImplementation(
+    mutableMockAuthStoreSubscribe
+  );
 
   const icp1 = TokenAmount.fromString({
     amount: "1",

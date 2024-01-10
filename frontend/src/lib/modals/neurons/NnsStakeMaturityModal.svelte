@@ -5,13 +5,9 @@
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import StakeMaturityModal from "$lib/modals/neurons/StakeMaturityModal.svelte";
-  import { formattedMaturity } from "$lib/utils/neuron.utils";
   import { createEventDispatcher } from "svelte";
 
   export let neuron: NeuronInfo;
-
-  let maturity: string;
-  $: maturity = formattedMaturity(neuron);
 
   const dispatcher = createEventDispatcher();
   const close = () => dispatcher("nnsClose");
@@ -40,7 +36,7 @@
 </script>
 
 <StakeMaturityModal
-  formattedMaturity={maturity}
+  availableMaturityE8s={neuron.fullNeuron?.maturityE8sEquivalent ?? 0n}
   on:nnsStakeMaturity={stakeNeuronMaturity}
   on:nnsClose
 />

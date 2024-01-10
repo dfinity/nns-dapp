@@ -1,11 +1,7 @@
-/**
- * @jest-environment jsdom
- */
-
 import TransactionSource from "$lib/components/transaction/TransactionSource.svelte";
-import { formatToken } from "$lib/utils/token.utils";
-import { mockMainAccount } from "$tests/mocks/accounts.store.mock";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import en from "$tests/mocks/i18n.mock";
+import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { ICPToken } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
@@ -27,8 +23,8 @@ describe("TransactionSource", () => {
     });
 
     expect(getByTestId("token-value")?.textContent ?? "").toEqual(
-      `${formatToken({
-        value: mockMainAccount.balanceE8s,
+      `${formatTokenE8s({
+        value: mockMainAccount.balanceUlps,
         detailed: "height_decimals",
       })}`
     );

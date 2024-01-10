@@ -1,36 +1,41 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
-
-const SELF_SELECTOR = ":scope";
+import userEvent from "@testing-library/user-event";
 
 /**
  * An implementation of the PageObjectElement interface for Jest unit tests.
  */
 export class JestPageObjectElement implements PageObjectElement {
-  private element: Element | null;
+  // The element represented by JestPageObjectElement is found by applying the
+  // selector to the base element.
+  private readonly baseElement: Element;
   private readonly selector: string | undefined;
-  private readonly parent: JestPageObjectElement | undefined;
 
-  constructor(
-    element: Element | null,
-    params?: { parent: JestPageObjectElement; selector: string }
-  ) {
-    this.element = element;
+  constructor(element: Element, params?: { selector: string }) {
+    this.baseElement = element;
     this.selector = params?.selector;
-    this.parent = params?.parent;
+  }
+
+  getElement(): Element | null {
+    return isNullish(this.selector)
+      ? this.baseElement
+      : this.baseElement?.querySelector(this.selector) ?? null;
   }
 
   querySelector(selector: string): JestPageObjectElement {
-    const el = this.element && this.element.querySelector(selector);
-    return new JestPageObjectElement(el, { parent: this, selector });
+    return new JestPageObjectElement(this.baseElement, {
+      selector: isNullish(this.selector)
+        ? selector
+        : `${this.selector} ${selector}`,
+    });
   }
 
   async querySelectorAll(selector: string): Promise<JestPageObjectElement[]> {
-    if (isNullish(this.element)) {
+    if (isNullish(this.getElement())) {
       return [];
     }
-    return Array.from(this.element.querySelectorAll(selector)).map(
+    return Array.from(this.getElement().querySelectorAll(selector)).map(
       (el) => new JestPageObjectElement(el)
     );
   }
@@ -70,38 +75,18 @@ export class JestPageObjectElement implements PageObjectElement {
   }
 
   async getValue() {
-    if ("value" in this.element) {
+    const element = this.getElement();
+    if ("value" in element) {
       // TS doesn't know that the "value" property is of type string
-      return this.element.value as string;
+      return element.value as string;
     }
     throw new Error(
-      `"value" property is not supported for element: "${this.element.tagName}"`
+      `"value" property is not supported for element: "${element.tagName}"`
     );
   }
 
-  private getRootAndFullSelector(): {
-    rootElement: Element;
-    fullSelector: string;
-  } {
-    if (isNullish(this.parent)) {
-      return { rootElement: this.element, fullSelector: SELF_SELECTOR };
-    }
-    const { rootElement, fullSelector } = this.parent.getRootAndFullSelector();
-    return {
-      rootElement,
-      fullSelector: `${fullSelector} ${this.selector}`,
-    };
-  }
-
   async isPresent(): Promise<boolean> {
-    const { rootElement, fullSelector } = this.getRootAndFullSelector();
-    if (fullSelector !== SELF_SELECTOR) {
-      // I would expect that element.querySelector(":scope") would return the
-      // element itself, but it doesn't. So we skip this step if
-      // fullSelector === SELF_SELECTOR.
-      this.element = rootElement.querySelector(fullSelector);
-    }
-    return nonNullish(this.element);
+    return nonNullish(this.getElement());
   }
 
   waitFor(): Promise<void> {
@@ -111,46 +96,81 @@ export class JestPageObjectElement implements PageObjectElement {
   }
 
   waitForAbsent(): Promise<void> {
-    return waitFor(
-      async () => {
-        return expect(await this.isPresent()).toBe(false);
-      },
-      // TODO: Needed for the swap participation flow. Remove.
-      // To remove we need to use different describes in ProjectDetail.spec.ts
-      // Describes that mock timers and describes that don't.
-      { timeout: 5_000 }
-    );
+    return waitFor(async () => {
+      return expect(await this.isPresent()).toBe(false);
+    });
   }
 
   // Resolves to null if the element is not present.
   async getText(): Promise<string | null> {
-    return this.element && this.element.textContent;
+    return this.getElement() && this.getElement().textContent;
   }
 
   // Resolves to null if the element is not present.
   async getAttribute(attribute: string): Promise<string | null> {
-    return this.element && this.element.getAttribute(attribute);
+    return this.getElement() && this.getElement().getAttribute(attribute);
   }
 
   async getClasses(): Promise<string[] | null> {
-    return this.element && Array.from(this.element.classList);
+    return this.getElement() && Array.from(this.getElement().classList);
+  }
+
+  async isChecked(): Promise<boolean> {
+    const element = this.getElement();
+    if ("checked" in element) {
+      // TS doesn't know that the "checked" property is of type boolean
+      return element.checked as boolean;
+    }
+    throw new Error(
+      `"checked" property is not supported for element: "${element.tagName}"`
+    );
   }
 
   async click(): Promise<void> {
     await this.waitFor();
-    await fireEvent.click(this.element);
+    await fireEvent.click(this.getElement());
   }
 
-  async typeText(text: string): Promise<void> {
+  async input(value: string): Promise<void> {
     await this.waitFor();
     // Svelte generates code for listening to the `input` event, not the `change` event in input fields.
     // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-    await fireEvent.input(this.element, { target: { value: text } });
+    await fireEvent.input(this.getElement(), { target: { value } });
   }
 
-  async selectOption(_text: string): Promise<void> {
-    throw new Error("Not implemented");
-    // Not tested:
-    // userEvent.selectOption(this.element, text);
+  async typeText(text: string): Promise<void> {
+    return this.input(text);
+  }
+
+  async selectOption(text: string): Promise<void> {
+    await this.waitFor();
+    return userEvent.selectOptions(this.getElement(), text);
+  }
+
+  async isVisible(): Promise<boolean> {
+    try {
+      expect(this.getElement()).toBeVisible();
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async blur(): Promise<void> {
+    await this.waitFor();
+    await fireEvent.blur(this.getElement());
+  }
+
+  async innerHtmlForDebugging(): Promise<string> {
+    await this.waitFor();
+    return this.getElement()?.innerHTML ?? "";
+  }
+
+  async addEventListener(
+    eventType: string,
+    fn: (e: Event) => void
+  ): Promise<void> {
+    await this.waitFor();
+    this.getElement()?.addEventListener(eventType, fn);
   }
 }

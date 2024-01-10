@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2030,SC2031,SC2001
+# Note regarding shellcheck: These tests create subshells with variables, it is intentional that the variables are not set globally.
+set -euo pipefail
+. "${0%.test}"
+. "${0%.getters.test}.linters"
+
+# Prints a section title
+title() {
+  cat <<-EOF
+
+	=============================================================================
+	   $*
+	=============================================================================
+	EOF
+}
+
+# Prints a sample argfile
+minimal_argument() {
+  echo '()'
+}
+sample_argument_local_1() {
+  cat <<-EOF
+	(opt record{
+	args = vec {
+	record{ 0="API_HOST"; 1="http://localhost:8080" };
+	record{ 0="CYCLES_MINTING_CANISTER_ID"; 1="rkp4c-7iaaa-aaaaa-aaaca-cai" };
+	record{ 0="DFX_NETWORK"; 1="local" };
+	record{ 0="FEATURE_FLAGS"; 1="{\"ENABLE_CKBTC\":true,\"ENABLE_CKBTC_ICRC2\":false,\"ENABLE_CKTESTBTC\":false,\"ENABLE_FULL_WIDTH_PROPOSAL\":true,\"ENABLE_ICP_ICRC\":false,\"ENABLE_INSTANT_UNLOCK\":false,\"ENABLE_MY_TOKENS\":false,\"ENABLE_NOODLE\":true,\"ENABLE_SNS\":true,\"ENABLE_SNS_2\":true,\"ENABLE_STAKE_NEURON_ICRC1\":false,\"ENABLE_SWAP_ICRC1\":false}" };
+	record{ 0="FETCH_ROOT_KEY"; 1="true" };
+	record{ 0="GOVERNANCE_CANISTER_ID"; 1="rrkah-fqaaa-aaaaa-aaaaq-cai" };
+	record{ 0="HOST"; 1="http://localhost:8080" };
+	record{ 0="IDENTITY_SERVICE_URL"; 1="http://qhbym-qaaaa-aaaaa-aaafq-cai.localhost:8080" };
+	record{ 0="LEDGER_CANISTER_ID"; 1="ryjl3-tyaaa-aaaaa-aaaba-cai" };
+	record{ 0="OWN_CANISTER_ID"; 1="qsgjb-riaaa-aaaaa-aaaga-cai" };
+	record{ 0="ROBOTS"; 1="<meta name=\"robots\" content=\"noindex, nofollow\" />" };
+	record{ 0="SNS_AGGREGATOR_URL"; 1="http://sns_aggregator.localhost:8080" };
+	record{ 0="STATIC_HOST"; 1="http://localhost:8080" };
+	record{ 0="TVL_CANISTER_ID"; 1="" };
+	record{ 0="WASM_CANISTER_ID"; 1="qaa6y-5yaaa-aaaaa-aaafa-cai" };
+	};
+	schema = opt variant { AccountsInStableMemory };
+	})
+	EOF
+}
+sample_argument_mainnet_1() {
+  cat <<-EOF
+	(opt record{
+	args = vec {
+	record{ 0="API_HOST"; 1="https://icp-api.io" };
+	record{ 0="CKBTC_INDEX_CANISTER_ID"; 1="n5wcd-faaaa-aaaar-qaaea-cai" };
+	record{ 0="CKBTC_LEDGER_CANISTER_ID"; 1="mxzaz-hqaaa-aaaar-qaada-cai" };
+	record{ 0="CKBTC_MINTER_CANISTER_ID"; 1="mqygn-kiaaa-aaaar-qaadq-cai" };
+	record{ 0="CYCLES_MINTING_CANISTER_ID"; 1="rkp4c-7iaaa-aaaaa-aaaca-cai" };
+	record{ 0="DFX_NETWORK"; 1="mainnet" };
+	record{ 0="FEATURE_FLAGS"; 1="{\"ENABLE_CKBTC\":true,\"ENABLE_CKBTC_ICRC2\":false,\"ENABLE_CKTESTBTC\":false,\"ENABLE_FULL_WIDTH_PROPOSAL\":true,\"ENABLE_ICP_ICRC\":false,\"ENABLE_INSTANT_UNLOCK\":false,\"ENABLE_MY_TOKENS\":false,\"ENABLE_STAKE_NEURON_ICRC1\":false,\"ENABLE_SWAP_ICRC1\":false}" };
+	record{ 0="FETCH_ROOT_KEY"; 1="false" };
+	record{ 0="GOVERNANCE_CANISTER_ID"; 1="rrkah-fqaaa-aaaaa-aaaaq-cai" };
+	record{ 0="HOST"; 1="https://icp-api.io" };
+	record{ 0="IDENTITY_SERVICE_URL"; 1="https://identity.internetcomputer.org/" };
+	record{ 0="LEDGER_CANISTER_ID"; 1="ryjl3-tyaaa-aaaaa-aaaba-cai" };
+	record{ 0="OWN_CANISTER_ID"; 1="qoctq-giaaa-aaaaa-aaaea-cai" };
+	record{ 0="ROBOTS"; 1="" };
+	record{ 0="SNS_AGGREGATOR_URL"; 1="https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io" };
+	record{ 0="STATIC_HOST"; 1="https://icp0.io" };
+	record{ 0="TVL_CANISTER_ID"; 1="ewh3f-3qaaa-aaaap-aazjq-cai" };
+	record{ 0="WASM_CANISTER_ID"; 1="qaa6y-5yaaa-aaaaa-aaafa-cai" };
+	};
+	schema = opt variant { Map };
+	})
+	EOF
+}
+
+(
+  title get_arguments_schema should get the expected schema
+  compare_schemas() {
+    [[ "${EXPECTED_SCHEMA:-}" == "${ACTUAL_SCHEMA:-}" ]] || {
+      echo "ERROR: Failed to get schema from arguments"
+      echo "Expected: '${EXPECTED_SCHEMA:-}'"
+      echo "Actual:   '${ACTUAL_SCHEMA:-}'"
+      exit 1
+    } >&2
+  }
+  EXPECTED_SCHEMA=""
+  ACTUAL_SCHEMA="$(minimal_argument | get_arguments_schema)"
+  compare_schemas
+  EXPECTED_SCHEMA="AccountsInStableMemory"
+  ACTUAL_SCHEMA="$(sample_argument_local_1 | get_arguments_schema)"
+  compare_schemas
+  EXPECTED_SCHEMA="Map"
+  ACTUAL_SCHEMA="$(sample_argument_mainnet_1 | get_arguments_schema)"
+  compare_schemas
+)
+
+(
+  title set_arguments_schema should set the expected schema
+  compare_schemas() {
+    [[ "${EXPECTED_SCHEMA:-}" == "${ACTUAL_SCHEMA:-}" ]] || {
+      echo "ERROR: Failed to get schema from arguments"
+      echo "Expected: '${EXPECTED_SCHEMA:-}'"
+      echo "Actual:   '${ACTUAL_SCHEMA:-}'"
+      exit 1
+    } >&2
+  }
+  for argfile in minimal_argument sample_argument_local_1 sample_argument_mainnet_1; do
+    for EXPECTED_SCHEMA in "${SCHEMA_LABELS[@]}"; do
+      ACTUAL_SCHEMA="$("${argfile}" | set_arguments_schema "${EXPECTED_SCHEMA}" | get_arguments_schema)"
+      compare_schemas
+    done
+  done
+)
+
+echo "$(basename "$0") PASSED"

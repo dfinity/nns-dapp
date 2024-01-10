@@ -1,182 +1,165 @@
-import type { CachedSns } from "$lib/api/sns-aggregator.api";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import type {
+  CachedNervousFunctionDto,
+  CachedSnsDto,
+  CachedSnsTokenMetadataDto,
+} from "$lib/types/sns-aggregator";
+import tenAggregatedSnses from "$tests/mocks/sns-aggregator.mock.json";
+import { IcrcMetadataResponseEntries } from "@dfinity/ledger-icrc";
+import { SnsSwapLifecycle, type SnsNervousSystemFunction } from "@dfinity/sns";
+import { fromNullable, nonNullish } from "@dfinity/utils";
+import { mockQueryTokenResponse } from "./sns-projects.mock";
 
+export const aggregatorMockSnsesDataDto: CachedSnsDto[] = tenAggregatedSnses;
+
+// It should match the token below
 export const aggregatorTokenMock: IcrcTokenMetadata = {
-  name: "Community Fund Demo",
-  symbol: "CFD",
-  fee: BigInt(1000),
+  name: "CatalyzeDAO",
+  symbol: "CAT",
+  fee: 100000n,
+  decimals: 8,
 };
 
-// It should match the converted response from sns-aggregator.mock.json with the same `index` value
-export const aggregatorSnsMock: CachedSns = {
-  index: 11,
-  canister_ids: {
-    root_canister_id: "4nwps-saaaa-aaaaa-aabjq-cai",
-    governance_canister_id: "4yr67-tiaaa-aaaaa-aabka-cai",
-    ledger_canister_id: "47qyl-6qaaa-aaaaa-aabkq-cai",
-    swap_canister_id: "4wttx-iyaaa-aaaaa-aabla-cai",
-    index_canister_id: "4rsvd-faaaa-aaaaa-aablq-cai",
-  },
-  list_sns_canisters: {
-    root: "4nwps-saaaa-aaaaa-aabjq-cai",
-    governance: "4yr67-tiaaa-aaaaa-aabka-cai",
-    ledger: "47qyl-6qaaa-aaaaa-aabkq-cai",
-    swap: "4wttx-iyaaa-aaaaa-aabla-cai",
-    dapps: [],
-    archives: [],
-    index: "4rsvd-faaaa-aaaaa-aablq-cai",
-  },
-  meta: {
-    url: ["https://sqbzf-5aaaa-aaaam-aavya-cai.ic0.app/"],
-    name: ["Community Fund Demo"],
-    description: ["This is my awesome project"],
-    logo: [
-      "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/4nwps-saaaa-aaaaa-aabjq-cai/logo.png",
-    ],
-  },
-  parameters: {
-    functions: [
-      {
-        id: BigInt(0),
-        name: "Unspecified",
-        description: [
-          "Catch-all w.r.t to following for all types of proposals.",
-        ],
-        function_type: [{ NativeNervousSystemFunction: {} }],
-      },
-      {
-        id: BigInt(1),
-        name: "Motion",
-        description: [
-          "Side-effect-less proposals to set general governance direction.",
-        ],
-        function_type: [{ NativeNervousSystemFunction: {} }],
-      },
-      {
-        id: BigInt(2),
-        name: "Manage nervous system parameters",
-        description: [
-          "Proposal to change the core parameters of SNS governance.",
-        ],
-        function_type: [{ NativeNervousSystemFunction: {} }],
-      },
-      {
-        id: BigInt(3),
-        name: "Upgrade SNS controlled canister",
-        description: [
-          "Proposal to upgrade the wasm of an SNS controlled canister.",
-        ],
-        function_type: [{ NativeNervousSystemFunction: {} }],
-      },
-      {
-        id: BigInt(4),
-        name: "Add nervous system function",
-        description: [
-          "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
-        ],
-        function_type: [{ NativeNervousSystemFunction: {} }],
-      },
-      {
-        id: BigInt(5),
-        name: "Remove nervous system function",
-        description: [
-          "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
-        ],
-        function_type: [{ NativeNervousSystemFunction: {} }],
-      },
-    ],
-    reserved_ids: [],
-  },
-  swap_state: {
-    swap: {
-      lifecycle: SnsSwapLifecycle.Committed,
-      decentralization_sale_open_timestamp_seconds: [BigInt(1234)],
-      finalize_swap_in_progress: [false],
-      buyers: [],
-      init: [
-        {
-          nns_governance_canister_id: "rrkah-fqaaa-aaaaa-aaaaq-cai",
-          sns_governance_canister_id: "4yr67-tiaaa-aaaaa-aabka-cai",
-          sns_ledger_canister_id: "47qyl-6qaaa-aaaaa-aabkq-cai",
-          icp_ledger_canister_id: "ryjl3-tyaaa-aaaaa-aaaba-cai",
-          sns_root_canister_id: "4nwps-saaaa-aaaaa-aabjq-cai",
-          fallback_controller_principal_ids: [
-            "dvxsz-v7mxb-wr2nb-dse2o-iw3pg-kjtll-riew5-y2g2t-olovx-vaeyn-lqe",
-          ],
-          transaction_fee_e8s: [BigInt(1000)],
-          neuron_minimum_stake_e8s: [BigInt(1000000)],
-          confirmation_text: ["I agree"],
-          restricted_countries: [{ iso_codes: ["US"] }],
-        },
-      ],
-      neuron_recipes: [],
-      cf_participants: [],
-      params: [
-        {
-          min_participants: 1,
-          min_icp_e8s: BigInt(5000000000),
-          max_icp_e8s: BigInt(314100000000),
-          min_participant_icp_e8s: BigInt(10000000),
-          max_participant_icp_e8s: BigInt(314100000000),
-          swap_due_timestamp_seconds: BigInt(1674664463),
-          sns_token_e8s: BigInt(314100000000),
-          neuron_basket_construction_parameters: [
-            {
-              count: BigInt(2),
-              dissolve_delay_interval_seconds: BigInt(2629800),
-            },
-          ],
-          sale_delay_seconds: [BigInt(1234)],
-        },
-      ],
-      open_sns_token_swap_proposal_id: [BigInt(120)],
-      next_ticket_id: [],
-      purge_old_tickets_last_completion_timestamp_nanoseconds: [],
-      purge_old_tickets_next_principal: [],
-    },
-    derived: {
-      buyer_total_icp_e8s: BigInt(314100000000),
-      sns_tokens_per_icp: 1.0,
-      cf_participant_count: [BigInt(100)],
-      direct_participant_count: [BigInt(300)],
-      cf_neuron_count: [BigInt(200)],
-    },
-  },
-  icrc1_metadata: [
-    ["icrc1:decimals", { Nat: BigInt(8) }],
-    ["icrc1:name", { Text: aggregatorTokenMock.name }],
-    ["icrc1:symbol", { Text: aggregatorTokenMock.symbol }],
-    ["icrc1:fee", { Nat: aggregatorTokenMock.fee }],
-  ],
-  icrc1_fee: aggregatorTokenMock.fee,
-  icrc1_total_supply: BigInt(1100_000_000_000),
-  derived_state: {
-    sns_tokens_per_icp: [2.0],
-    buyer_total_icp_e8s: [100500000010n],
-    cf_participant_count: [0n],
-    direct_participant_count: [4n],
-    cf_neuron_count: [0n],
-  },
+export const aggregatorSnsMockDto: CachedSnsDto = {
+  ...aggregatorMockSnsesDataDto[7],
 };
+
+const convertToNervousFunctionDto = ({
+  id,
+  name,
+  description,
+}: SnsNervousSystemFunction): CachedNervousFunctionDto => ({
+  id: Number(id),
+  name,
+  description: fromNullable(description),
+  // Not necessary to convert this, it's not used
+  function_type: { NativeNervousSystemFunction: {} },
+});
+
+const createQueryMetadataResponse = ({
+  name,
+  symbol,
+}: Partial<
+  Pick<IcrcTokenMetadata, "name" | "symbol">
+>): CachedSnsTokenMetadataDto =>
+  mockQueryTokenResponse.map(([key, value]) => {
+    if (key === IcrcMetadataResponseEntries.NAME) {
+      return [key, { Text: name }];
+    }
+    if (key === IcrcMetadataResponseEntries.SYMBOL) {
+      return [key, { Text: symbol }];
+    }
+    if (key === IcrcMetadataResponseEntries.DECIMALS && "Nat" in value) {
+      return [key, { Nat: [Number(value.Nat)] }];
+    }
+    if (key === IcrcMetadataResponseEntries.FEE && "Nat" in value) {
+      return [key, { Nat: [Number(value.Nat)] }];
+    }
+    throw new Error(`The key ${key} is not supported yet.`);
+  });
 
 export const aggregatorSnsMockWith = ({
   rootCanisterId = "4nwps-saaaa-aaaaa-aabjq-cai",
   lifecycle = SnsSwapLifecycle.Committed,
+  restrictedCountries,
+  directParticipantCount,
+  projectName,
+  tokenMetadata,
+  index,
+  nervousFunctions,
+  swapDueTimestampSeconds,
+  nnsProposalId,
 }: {
-  rootCanisterId: string;
-  lifecycle: SnsSwapLifecycle;
-}): CachedSns => ({
-  ...aggregatorSnsMock,
+  rootCanisterId?: string;
+  lifecycle?: SnsSwapLifecycle;
+  restrictedCountries?: string[];
+  // TODO: Change to `undefined` or `number`.
+  directParticipantCount?: [] | [bigint];
+  projectName?: string;
+  tokenMetadata?: Partial<IcrcTokenMetadata>;
+  index?: number;
+  nervousFunctions?: SnsNervousSystemFunction[];
+  swapDueTimestampSeconds?: number;
+  nnsProposalId?: number;
+}): CachedSnsDto => ({
+  index: index ?? aggregatorSnsMockDto.index,
+  ...aggregatorSnsMockDto,
   canister_ids: {
-    ...aggregatorSnsMock.canister_ids,
+    ...aggregatorSnsMockDto.canister_ids,
     root_canister_id: rootCanisterId,
   },
+  list_sns_canisters: {
+    ...aggregatorSnsMockDto.list_sns_canisters,
+    root: rootCanisterId,
+  },
   swap_state: {
-    ...aggregatorSnsMock.swap_state,
+    ...aggregatorSnsMockDto.swap_state,
     swap: {
-      ...aggregatorSnsMock.swap_state.swap,
+      ...aggregatorSnsMockDto.swap_state.swap,
       lifecycle,
+      init: {
+        ...aggregatorSnsMockDto.swap_state.swap.init,
+        restricted_countries: nonNullish(restrictedCountries)
+          ? { iso_codes: restrictedCountries }
+          : aggregatorSnsMockDto.swap_state.swap.init.restricted_countries,
+      },
+      params: {
+        ...aggregatorSnsMockDto.swap_state.swap.params,
+        swap_due_timestamp_seconds:
+          swapDueTimestampSeconds ??
+          aggregatorSnsMockDto.swap_state.swap.params
+            .swap_due_timestamp_seconds,
+      },
     },
+    derived: {
+      ...aggregatorSnsMockDto.swap_state.derived,
+      direct_participant_count: nonNullish(directParticipantCount?.[0])
+        ? Number(directParticipantCount[0]) ?? null
+        : aggregatorSnsMockDto.swap_state.derived.direct_participant_count,
+    },
+  },
+  parameters: {
+    ...aggregatorSnsMockDto.parameters,
+    functions:
+      nervousFunctions?.map(convertToNervousFunctionDto) ??
+      aggregatorSnsMockDto.parameters.functions,
+  },
+  meta: {
+    ...aggregatorSnsMockDto.meta,
+    name: projectName ?? aggregatorSnsMockDto.meta.name,
+  },
+  init: {
+    init: {
+      ...aggregatorSnsMockDto.init.init,
+      restricted_countries: nonNullish(restrictedCountries)
+        ? { iso_codes: restrictedCountries }
+        : aggregatorSnsMockDto.swap_state.swap.init.restricted_countries,
+      swap_due_timestamp_seconds:
+        swapDueTimestampSeconds ??
+        aggregatorSnsMockDto.swap_state.swap.params.swap_due_timestamp_seconds,
+      nns_proposal_id:
+        nnsProposalId ?? aggregatorSnsMockDto.init.init.nns_proposal_id,
+    },
+  },
+  swap_params: {
+    params: {
+      ...aggregatorSnsMockDto.swap_params.params,
+      swap_due_timestamp_seconds:
+        swapDueTimestampSeconds ??
+        aggregatorSnsMockDto.swap_state.swap.params.swap_due_timestamp_seconds,
+    },
+  },
+  derived_state: {
+    ...aggregatorSnsMockDto.derived_state,
+    direct_participant_count: nonNullish(directParticipantCount?.[0])
+      ? Number(directParticipantCount[0]) ?? null
+      : aggregatorSnsMockDto.swap_state.derived.direct_participant_count,
+  },
+  icrc1_metadata: nonNullish(tokenMetadata)
+    ? createQueryMetadataResponse(tokenMetadata)
+    : aggregatorSnsMockDto.icrc1_metadata,
+  lifecycle: {
+    ...aggregatorSnsMockDto.lifecycle,
+    lifecycle: lifecycle ?? aggregatorSnsMockDto.lifecycle.lifecycle,
   },
 });

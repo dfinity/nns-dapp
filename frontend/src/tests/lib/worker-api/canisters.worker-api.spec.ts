@@ -4,15 +4,15 @@ import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterDetails } from "$tests/mocks/canisters.mock";
 import type { CanisterStatusResponse } from "@dfinity/ic-management";
 import { ICManagementCanister } from "@dfinity/ic-management";
-import { mock } from "jest-mock-extended";
+import { mock } from "vitest-mock-extended";
 
-jest.mock("@dfinity/agent");
+vi.mock("@dfinity/agent");
 
 describe("canisters-worker-api", () => {
   const response: CanisterStatusResponse = {
     status: { running: null },
-    memory_size: BigInt(1000),
-    cycles: BigInt(10_000),
+    memory_size: 1_000n,
+    cycles: 10_000n,
     settings: {
       controllers: [],
       freezing_threshold: 0n,
@@ -24,12 +24,12 @@ describe("canisters-worker-api", () => {
   };
 
   beforeEach(async () => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
 
     const mockICManagementCanister = mock<ICManagementCanister>();
-    jest
-      .spyOn(ICManagementCanister, "create")
-      .mockImplementation(() => mockICManagementCanister);
+    vi.spyOn(ICManagementCanister, "create").mockImplementation(
+      () => mockICManagementCanister
+    );
 
     mockICManagementCanister.canisterStatus.mockResolvedValue(response);
   });
@@ -47,8 +47,8 @@ describe("canisters-worker-api", () => {
       expect(result).toEqual({
         id: mockCanisterDetails.id,
         status: CanisterStatus.Running,
-        memorySize: 1000n,
-        cycles: 10000n,
+        memorySize: 1_000n,
+        cycles: 10_000n,
         settings: {
           controllers: [],
           freezingThreshold: 0n,

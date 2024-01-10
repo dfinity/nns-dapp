@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import {
   increaseStakeNeuron,
   queryAllSnsMetadata,
@@ -33,19 +29,21 @@ import {
   rootCanisterIdMock,
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
-import type { HttpAgent } from "@dfinity/agent";
-import { LedgerCanister, type SnsWasmCanisterOptions } from "@dfinity/nns";
+import type { Agent } from "@dfinity/agent";
+import { LedgerCanister } from "@dfinity/ledger-icp";
+import type { SnsWasmCanisterOptions } from "@dfinity/nns";
 import {
   SnsSwapLifecycle,
   type SnsGetLifecycleResponse,
   type SnsNeuronId,
 } from "@dfinity/sns";
-import mock from "jest-mock-extended/lib/Mock";
+import type { Mock } from "vitest";
+import { mock } from "vitest-mock-extended";
 
-jest.mock("$lib/proxy/api.import.proxy");
-jest.mock("$lib/api/agent.api", () => {
+vi.mock("$lib/proxy/api.import.proxy");
+vi.mock("$lib/api/agent.api", () => {
   return {
-    createAgent: () => Promise.resolve(mock<HttpAgent>()),
+    createAgent: () => Promise.resolve(mock<Agent>()),
   };
 });
 
@@ -55,41 +53,41 @@ describe("sns-api", () => {
     derived: [
       {
         sns_tokens_per_icp: 1,
-        buyer_total_icp_e8s: BigInt(1_000_000_000),
+        buyer_total_icp_e8s: 1_000_000_000n,
       },
     ],
   };
 
   const derivedState = {
     sns_tokens_per_icp: [1],
-    buyer_total_icp_e8s: [BigInt(1_000_000_000)],
+    buyer_total_icp_e8s: [1_000_000_000n],
   };
   const lifecycleResponse: SnsGetLifecycleResponse = {
     lifecycle: [SnsSwapLifecycle.Open],
-    decentralization_sale_open_timestamp_seconds: [BigInt(1)],
+    decentralization_sale_open_timestamp_seconds: [1n],
   };
-  const notifyParticipationSpy = jest.fn().mockResolvedValue(undefined);
-  const mockUserCommitment = createBuyersState(BigInt(100_000_000));
-  const getUserCommitmentSpy = jest.fn().mockResolvedValue(mockUserCommitment);
-  const getDerivedStateSpy = jest.fn().mockResolvedValue(derivedState);
-  const getLifecycleSpy = jest.fn().mockResolvedValue(lifecycleResponse);
+  const notifyParticipationSpy = vi.fn().mockResolvedValue(undefined);
+  const mockUserCommitment = createBuyersState(100_000_000n);
+  const getUserCommitmentSpy = vi.fn().mockResolvedValue(mockUserCommitment);
+  const getDerivedStateSpy = vi.fn().mockResolvedValue(derivedState);
+  const getLifecycleSpy = vi.fn().mockResolvedValue(lifecycleResponse);
   const ledgerCanisterMock = mock<LedgerCanister>();
-  const stakeNeuronSpy = jest.fn().mockResolvedValue(mockSnsNeuron.id);
-  const increaseStakeNeuronSpy = jest.fn();
+  const stakeNeuronSpy = vi.fn().mockResolvedValue(mockSnsNeuron.id);
+  const increaseStakeNeuronSpy = vi.fn();
 
   beforeAll(() => {
-    jest
-      .spyOn(LedgerCanister, "create")
-      .mockImplementation(() => ledgerCanisterMock);
+    vi.spyOn(LedgerCanister, "create").mockImplementation(
+      () => ledgerCanisterMock
+    );
 
-    (importSnsWasmCanister as jest.Mock).mockResolvedValue({
+    (importSnsWasmCanister as Mock).mockResolvedValue({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       create: (options: SnsWasmCanisterOptions) => ({
         listSnses: () => Promise.resolve(deployedSnsMock),
       }),
     });
 
-    (importInitSnsWrapper as jest.Mock).mockResolvedValue(() =>
+    (importInitSnsWrapper as Mock).mockResolvedValue(() =>
       Promise.resolve({
         canisterIds: {
           rootCanisterId: rootCanisterIdMock,
@@ -111,8 +109,8 @@ describe("sns-api", () => {
   });
 
   afterAll(() => {
-    jest.clearAllMocks();
-    jest.restoreAllMocks();
+    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   it("should query sns metadata", async () => {
@@ -195,12 +193,12 @@ describe("sns-api", () => {
     const neuronId = await stakeNeuron({
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
-      stakeE8s: BigInt(200_000_000),
+      stakeE8s: 200_000_000n,
       source: {
         owner: mockPrincipal,
       },
       controller: mockPrincipal,
-      fee: BigInt(10000),
+      fee: 10_000n,
     });
 
     expect(neuronId).toEqual(mockSnsNeuron.id);
@@ -211,7 +209,7 @@ describe("sns-api", () => {
     await increaseStakeNeuron({
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
-      stakeE8s: BigInt(200_000_000),
+      stakeE8s: 200_000_000n,
       source: {
         owner: mockPrincipal,
       },

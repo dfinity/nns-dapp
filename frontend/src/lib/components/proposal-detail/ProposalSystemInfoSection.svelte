@@ -45,7 +45,7 @@
   } = mapProposalInfo(proposalInfo));
 </script>
 
-<h1 class="content-cell-title">{type ?? ""}</h1>
+<h1 class="content-cell-title">{$i18n.proposal_detail.headline}</h1>
 
 <div
   class="content-cell-details"
@@ -122,3 +122,11 @@
 
   <ProposalSystemInfoProposerEntry {proposer} />
 </div>
+
+<style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
+  h1 {
+    @include fonts.h3;
+  }
+</style>

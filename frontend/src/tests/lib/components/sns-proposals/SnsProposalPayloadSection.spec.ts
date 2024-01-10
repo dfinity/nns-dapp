@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import SnsProposalPayloadSection from "$lib/components/sns-proposals/SnsProposalPayloadSection.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
@@ -10,7 +7,7 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { SnsProposalData } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
-jest.mock("$lib/utils/html.utils", () => ({
+vi.mock("$lib/utils/html.utils", () => ({
   markdownToHTML: (value) => Promise.resolve(value),
 }));
 

@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+RUSTDOCFLAGS="-D warnings"
+export RUSTDOCFLAGS
+./scripts/nns-dapp/doc
+./scripts/sns/aggregator/doc

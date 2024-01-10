@@ -1,7 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
 import ProjectStatusSection from "$lib/components/project-detail/ProjectStatusSection.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
@@ -20,11 +16,9 @@ import { waitFor } from "@testing-library/svelte";
 
 describe("ProjectStatusSection", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     snsTicketsStore.reset();
-    jest
-      .spyOn(authStore, "subscribe")
-      .mockImplementation(mockAuthStoreSubscribe);
+    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
   const render = ({
@@ -65,7 +59,7 @@ describe("ProjectStatusSection", () => {
       summary: mockSnsFullProject.summary,
       swapCommitment: {
         rootCanisterId: mockSnsFullProject.rootCanisterId,
-        myCommitment: createBuyersState(BigInt(2_500_000_000)),
+        myCommitment: createBuyersState(2_500_000_000n),
       },
     });
     expect(await po.getCommitmentAmount()).toBe("25.00");

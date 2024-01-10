@@ -1,30 +1,34 @@
-/**
- * @jest-environment jsdom
- */
-
 import ProposalCard from "$lib/components/proposals/ProposalCard.svelte";
-import { ProposalStatusColor } from "$lib/constants/proposals.constants";
-import { nowInSeconds } from "$lib/utils/date.utils";
+import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import en from "$tests/mocks/i18n.mock";
 import { render } from "@testing-library/svelte";
 
 describe("ProposalCard", () => {
-  jest.useFakeTimers().setSystemTime(Date.now());
-
-  const nowSeconds = Math.floor(nowInSeconds());
+  const now = 1698139468000;
+  const nowSeconds = Math.floor(now / 1000);
   const props = {
     hidden: false,
-    statusString: "Open",
-    id: BigInt(112),
-    title: "Test Proposal",
-    color: ProposalStatusColor.PRIMARY,
+    status: "open",
+    id: 112n,
+    heading: "Treasury Proposal",
+    title: "Give me my tokens",
+    proposer: "2",
     topic: "Test Topic",
-    proposer: "1233444",
-    type: "Test Type",
-    deadlineTimestampSeconds: BigInt(nowSeconds + 3600),
+    deadlineTimestampSeconds: BigInt(nowSeconds + SECONDS_IN_DAY),
+    href: "https://nns.ic0.app/proposal/?u=qoctq-giaaa-aaaaa-aaaea-cai&proposal=123786",
   };
 
-  afterAll(jest.useRealTimers);
+  beforeEach(() => {
+    vi.useFakeTimers().setSystemTime(now);
+  });
+
+  it("should render a heading", () => {
+    const { getByText } = render(ProposalCard, {
+      props,
+    });
+
+    expect(getByText(props.heading)).toBeInTheDocument();
+  });
 
   it("should render a title", () => {
     const { getByText } = render(ProposalCard, {
@@ -42,12 +46,12 @@ describe("ProposalCard", () => {
     expect(getByText(en.status.Open)).toBeInTheDocument();
   });
 
-  it("should render a proposer", () => {
+  it("should render a proposal topic", () => {
     const { getByText } = render(ProposalCard, {
       props,
     });
 
-    expect(getByText(props.proposer, { exact: false })).toBeInTheDocument();
+    expect(getByText(props.topic, { exact: false })).toBeInTheDocument();
   });
 
   it("should render a proposal id", () => {
@@ -58,22 +62,6 @@ describe("ProposalCard", () => {
     expect(getByText(`${props.id}`, { exact: false })).toBeInTheDocument();
   });
 
-  it("should render a proposal topic", () => {
-    const { getByText } = render(ProposalCard, {
-      props,
-    });
-
-    expect(getByText(props.topic, { exact: false })).toBeInTheDocument();
-  });
-
-  it("should render a proposal a type", () => {
-    const { getByText } = render(ProposalCard, {
-      props,
-    });
-
-    expect(getByText(props.type)).toBeInTheDocument();
-  });
-
   it("should render countdown", () => {
     const { queryByTestId } = render(ProposalCard, {
       props,
@@ -82,38 +70,36 @@ describe("ProposalCard", () => {
     expect(queryByTestId("countdown")).toBeInTheDocument();
   });
 
-  it("should render accessible info without label", () => {
-    const { container } = render(ProposalCard, {
-      props,
-    });
-
-    expect(
-      container.querySelector(`[aria-label="${en.proposal_detail.id_prefix}"]`)
-    ).not.toBeNull();
-    expect(
-      container.querySelector(
-        `[aria-label="${en.proposal_detail.type_prefix}"]`
-      )
-    ).not.toBeNull();
-  });
-
-  it("should render a specific color for the status", () => {
-    const { container } = render(ProposalCard, {
+  it("should not render countdown if no deadline is provided", () => {
+    const { queryByTestId } = render(ProposalCard, {
       props: {
         ...props,
-        color: ProposalStatusColor.SUCCESS,
+        deadlineTimestampSeconds: undefined,
       },
     });
 
-    expect(container.querySelector(".success")).not.toBeNull();
+    expect(queryByTestId("countdown")).not.toBeInTheDocument();
   });
 
-  it("should render a svg arrow icon", () => {
+  it("should render a specific status", () => {
     const { container } = render(ProposalCard, {
+      props: {
+        ...props,
+        status: "executed",
+      },
+    });
+
+    expect(container.querySelector(".executed")).not.toBeNull();
+  });
+
+  it("should render an url", () => {
+    const { getByTestId } = render(ProposalCard, {
       props,
     });
 
-    const arrow = container.querySelector("svg");
-    expect(arrow).not.toBeNull();
+    const card = getByTestId("proposal-card");
+    expect(card).not.toBeNull();
+    expect(card.hasAttribute("href")).toBeTruthy();
+    expect(card.getAttribute("href")).toEqual(props.href);
   });
 });

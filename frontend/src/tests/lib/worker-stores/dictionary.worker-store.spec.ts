@@ -10,7 +10,9 @@ describe("dictionary.worker-store", () => {
 
   let store: DictionaryWorkerStore<TestData>;
 
-  beforeEach(() => (store = new DictionaryWorkerStore<TestData>()));
+  beforeEach(() => {
+    store = new DictionaryWorkerStore<TestData>();
+  });
 
   it("should be empty per default", () => {
     expect(Object.keys(store.state)).toHaveLength(0);

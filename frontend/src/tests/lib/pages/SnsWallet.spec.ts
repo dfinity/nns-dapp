@@ -1,49 +1,38 @@
-/**
- * @jest-environment jsdom
- */
-
-import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
+import * as snsIndexApi from "$lib/api/sns-index.api";
+import * as snsLedgerApi from "$lib/api/sns-ledger.api";
+import { AppPath } from "$lib/constants/routes.constants";
+import { pageStore } from "$lib/derived/page.derived";
 import SnsWallet from "$lib/pages/SnsWallet.svelte";
-import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
-import * as services from "$lib/services/sns-transactions.services";
 import * as workerBalances from "$lib/services/worker-balances.services";
 import * as workerTransactions from "$lib/services/worker-transactions.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { snsQueryStore } from "$lib/stores/sns.store";
-import { tokensStore } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
-import { replacePlaceholders } from "$lib/utils/i18n.utils";
-import { formatToken } from "$lib/utils/token.utils";
+import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
-import { mockPrincipal } from "$tests/mocks/auth.store.mock";
-import en from "$tests/mocks/i18n.mock";
-import { waitModalIntroEnd } from "$tests/mocks/modal.mock";
+import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
-import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
-import { snsResponseFor } from "$tests/mocks/sns-response.mock";
-import { mockTokensSubscribe } from "$tests/mocks/tokens.mock";
-import { testAccountsModal } from "$tests/utils/accounts.test-utils";
-import { Principal } from "@dfinity/principal";
+import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
+import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { ReceiveModalPo } from "$tests/page-objects/ReceiveModal.page-object";
+import { SnsWalletPo } from "$tests/page-objects/SnsWallet.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
+import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import AccountsTest from "./AccountsTest.svelte";
 
-jest.mock("$lib/services/sns-accounts.services", () => {
-  return {
-    syncSnsAccounts: jest.fn().mockResolvedValue(undefined),
-  };
-});
+vi.mock("$lib/api/sns-ledger.api");
+vi.mock("$lib/api/sns-index.api");
 
-jest.mock("$lib/services/sns-transactions.services", () => {
-  return {
-    loadSnsAccountNextTransactions: jest.fn().mockResolvedValue(undefined),
-    loadSnsAccountTransactions: jest.fn().mockResolvedValue(undefined),
-  };
-});
+let balancesObserverCallback;
 
-jest.mock("$lib/services/worker-transactions.services", () => ({
-  initTransactionsWorker: jest.fn(() =>
+vi.mock("$lib/services/worker-transactions.services", () => ({
+  initTransactionsWorker: vi.fn(() =>
     Promise.resolve({
       startTransactionsTimer: () => {
         // Do nothing
@@ -55,11 +44,11 @@ jest.mock("$lib/services/worker-transactions.services", () => ({
   ),
 }));
 
-jest.mock("$lib/services/worker-balances.services", () => ({
-  initBalancesWorker: jest.fn(() =>
+vi.mock("$lib/services/worker-balances.services", () => ({
+  initBalancesWorker: vi.fn(() =>
     Promise.resolve({
-      startBalancesTimer: () => {
-        // Do nothing
+      startBalancesTimer: ({ callback }) => {
+        balancesObserverCallback = callback;
       },
       stopBalancesTimer: () => {
         // Do nothing
@@ -69,130 +58,158 @@ jest.mock("$lib/services/worker-balances.services", () => ({
 }));
 
 describe("SnsWallet", () => {
+  const testTokenSymbol = "OOO";
+  const testTokenName = "Out of office";
+
+  const testToken = {
+    ...mockSnsToken,
+    name: testTokenName,
+    symbol: testTokenSymbol,
+  };
+
   const props = {
     accountIdentifier: mockSnsMainAccount.identifier,
   };
 
-  const responses = snsResponseFor({
-    principal: mockPrincipal,
-    lifecycle: SnsSwapLifecycle.Committed,
-  });
+  const rootCanisterId = rootCanisterIdMock;
+  const rootCanisterIdText = rootCanisterId.toText();
+  const fee = 10_000n;
+  const projectName = "Tetris";
 
-  const rootCanisterIdText = responses[0][0].rootCanisterId;
-  const rootCanisterId = Principal.fromText(rootCanisterIdText);
+  const renderComponent = async (props: { accountIdentifier: string }) => {
+    const { container } = render(SnsWallet, props);
+    await runResolvedPromises();
+    return SnsWalletPo.under(new JestPageObjectElement(container));
+  };
 
   beforeEach(() => {
-    snsQueryStore.reset();
+    resetIdentity();
+    vi.clearAllMocks();
     snsAccountsStore.reset();
     transactionsFeesStore.reset();
-    snsQueryStore.setData(responses);
-    transactionsFeesStore.setFee({
-      rootCanisterId,
-      fee: BigInt(10_000),
-      certified: true,
+    toastsStore.reset();
+    vi.spyOn(snsIndexApi, "getSnsTransactions").mockResolvedValue({
+      oldestTxId: 1_234n,
+      transactions: [mockIcrcTransactionWithId],
+    });
+    vi.spyOn(snsLedgerApi, "transactionFee").mockResolvedValue(fee);
+    vi.spyOn(snsLedgerApi, "getSnsToken").mockResolvedValue(testToken);
+    vi.spyOn(snsLedgerApi, "snsTransfer").mockResolvedValue(10n);
+
+    setSnsProjects([
+      {
+        rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+        projectName,
+        tokenMetadata: testToken,
+      },
+    ]);
+    page.mock({
+      data: { universe: rootCanisterIdText },
+      routeId: AppPath.Wallet,
     });
   });
 
-  describe("accounts not loaded", () => {
+  describe("loading accounts", () => {
+    let resolve;
+
     beforeEach(() => {
-      // Load accounts in a different project
-      snsAccountsStore.setAccounts({
-        rootCanisterId: Principal.fromText("aaaaa-aa"),
-        accounts: [mockSnsMainAccount],
-        certified: true,
+      resolve = undefined;
+      vi.spyOn(snsLedgerApi, "getSnsAccounts").mockImplementation(() => {
+        return new Promise<Account[]>((r) => {
+          resolve = r;
+        });
       });
-
-      page.mock({ data: { universe: rootCanisterIdText } });
-    });
-    it("should render a spinner while loading", () => {
-      const { getByTestId } = render(SnsWallet, props);
-
-      expect(getByTestId("spinner")).not.toBeNull();
     });
 
-    it("should call to load sns accounts and transaction fee", async () => {
-      render(SnsWallet, props);
+    it("should hide spinner when account is loaded", async () => {
+      const po = await renderComponent(props);
 
-      await waitFor(() => expect(syncSnsAccounts).toBeCalled());
+      await runResolvedPromises();
+      expect(await po.hasSpinner()).toBe(true);
+
+      expect(resolve).toBeDefined();
+      resolve([mockSnsMainAccount]);
+
+      await runResolvedPromises();
+      expect(await po.hasSpinner()).toBe(false);
     });
   });
 
   describe("accounts loaded", () => {
-    beforeAll(() => {
-      jest.spyOn(tokensStore, "subscribe").mockImplementation(
-        mockTokensSubscribe({
-          [rootCanisterIdText]: {
-            token: mockSnsToken,
-            certified: true,
-          },
-        })
-      );
-    });
-
     beforeEach(() => {
-      snsAccountsStore.setAccounts({
-        rootCanisterId,
-        accounts: [mockSnsMainAccount],
-        certified: true,
-      });
-
-      page.mock({ data: { universe: rootCanisterIdText } });
-
-      jest.clearAllMocks();
+      vi.spyOn(snsLedgerApi, "getSnsAccounts").mockResolvedValue([
+        mockSnsMainAccount,
+      ]);
     });
 
     it("should render sns project name", async () => {
-      const { getByTestId } = render(SnsWallet, props);
+      const po = await renderComponent(props);
 
-      const titleRow = getByTestId("projects-summary");
-
-      expect(titleRow).not.toBeNull();
+      expect(await po.getWalletPageHeaderPo().getUniverse()).toBe(projectName);
     });
 
-    it("should hide spinner when selected account is loaded", async () => {
-      const { queryByTestId } = render(SnsWallet, props);
+    it("should render transactions", async () => {
+      const po = await renderComponent(props);
 
-      await waitFor(() => expect(queryByTestId("spinner")).toBeNull());
+      expect(await po.getIcrcTransactionsListPo().isPresent()).toBe(true);
     });
 
-    it("should render wallet summary and transactions", async () => {
-      const { queryByTestId } = render(SnsWallet, props);
+    it("should render 'Main' as subtitle", async () => {
+      const po = await renderComponent(props);
 
-      await waitFor(() =>
-        expect(queryByTestId("wallet-summary")).toBeInTheDocument()
-      );
-      await waitFor(() =>
-        expect(queryByTestId("transactions-list")).toBeInTheDocument()
-      );
+      expect(await po.getWalletPageHeadingPo().getSubtitle()).toBe("Main");
     });
 
     it("should render a balance with token", async () => {
-      const { getByTestId } = render(SnsWallet, props);
+      vi.spyOn(snsLedgerApi, "getSnsAccounts").mockResolvedValue([
+        {
+          ...mockSnsMainAccount,
+          balanceUlps: 2_233_000_000n,
+        },
+      ]);
 
-      await waitFor(() =>
-        expect(getByTestId("token-value-label")).not.toBeNull()
-      );
+      const po = await renderComponent(props);
 
-      expect(getByTestId("token-value-label")?.textContent.trim()).toEqual(
-        `${formatToken({
-          value: mockSnsMainAccount.balanceE8s,
-        })} ${mockSnsToken.symbol}`
-      );
+      expect(await po.getWalletPageHeadingPo().getTitle()).toBe("22.33 OOO");
     });
 
     it("should open new transaction modal", async () => {
-      const result = render(SnsWallet, props);
+      const po = await renderComponent(props);
 
-      const { queryByTestId, getByTestId } = result;
+      await runResolvedPromises();
+      expect(await po.getSnsTransactionModalPo().isPresent()).toBe(false);
 
-      await waitFor(() =>
-        expect(queryByTestId("open-new-sns-transaction")).toBeInTheDocument()
-      );
+      await po.clickSendButton();
 
-      await testAccountsModal({ result, testId: "open-new-sns-transaction" });
+      await runResolvedPromises();
+      expect(await po.getSnsTransactionModalPo().isPresent()).toBe(true);
+    });
 
-      await waitFor(() => {
-        expect(getByTestId("transaction-step-1")).toBeInTheDocument();
+    it("should make a new transaction", async () => {
+      const po = await renderComponent(props);
+
+      await po.clickSendButton();
+
+      const destinationAccount = {
+        owner: principal(1),
+      };
+
+      expect(snsLedgerApi.snsTransfer).toHaveBeenCalledTimes(0);
+
+      await po.getSnsTransactionModalPo().transferToAddress({
+        destinationAddress: encodeIcrcAccount(destinationAccount),
+        amount: 2,
+      });
+
+      expect(snsLedgerApi.snsTransfer).toHaveBeenCalledTimes(1);
+      expect(snsLedgerApi.snsTransfer).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        rootCanisterId,
+        amount: 200000_000n,
+        fromSubaccount: undefined,
+        fee,
+        to: destinationAccount,
       });
     });
 
@@ -201,75 +218,159 @@ describe("SnsWallet", () => {
       testComponent: SnsWallet,
     };
 
-    it("should open receive modal", async () => {
-      const result = render(AccountsTest, { props: modalProps });
+    const renderWalletAndModal = async (): Promise<{
+      walletPo: SnsWalletPo;
+      receiveModalPo: ReceiveModalPo;
+    }> => {
+      const { container } = render(AccountsTest, modalProps);
+      await runResolvedPromises();
+      return {
+        walletPo: SnsWalletPo.under(new JestPageObjectElement(container)),
+        receiveModalPo: ReceiveModalPo.under(
+          new JestPageObjectElement(container)
+        ),
+      };
+    };
 
-      await testAccountsModal({ result, testId: "receive-sns" });
+    it("should open receive modal with sns logo", async () => {
+      const { walletPo, receiveModalPo } = await renderWalletAndModal();
 
-      const { getByTestId } = result;
+      runResolvedPromises();
+      expect(await receiveModalPo.isPresent()).toBe(false);
 
-      expect(getByTestId("receive-modal")).not.toBeNull();
+      await walletPo.clickReceiveButton();
+
+      runResolvedPromises();
+      expect(await receiveModalPo.isPresent()).toBe(true);
+      await receiveModalPo.waitForQrCode();
+      expect(await receiveModalPo.getLogoAltText()).toBe(testTokenSymbol);
     });
 
     it("should reload account after finish receiving tokens", async () => {
-      const spyLoadSnsAccountTransactions = jest.spyOn(
-        services,
-        "loadSnsAccountTransactions"
-      );
+      const { walletPo, receiveModalPo } = await renderWalletAndModal();
 
-      const result = render(AccountsTest, { props: modalProps });
+      await walletPo.clickReceiveButton();
 
-      await testAccountsModal({ result, testId: "receive-sns" });
+      // Query + update
+      expect(snsLedgerApi.getSnsAccounts).toHaveBeenCalledTimes(2);
+      // Transactions can only be fetched from the Index canister with `updated` calls for now.
+      expect(snsIndexApi.getSnsTransactions).toHaveBeenCalledTimes(1);
 
-      const { getByTestId, container } = result;
+      await receiveModalPo.clickFinish();
 
-      await waitModalIntroEnd({
-        container,
-        selector: "[data-tid='reload-receive-account']",
-      });
-
-      fireEvent.click(
-        getByTestId("reload-receive-account") as HTMLButtonElement
-      );
-
-      await waitFor(() => expect(syncSnsAccounts).toHaveBeenCalled());
-      expect(spyLoadSnsAccountTransactions).toHaveBeenCalled();
+      await runResolvedPromises();
+      expect(snsLedgerApi.getSnsAccounts).toHaveBeenCalledTimes(4);
+      expect(snsIndexApi.getSnsTransactions).toHaveBeenCalledTimes(2);
     });
 
     it("should display receive modal information", async () => {
-      const result = render(AccountsTest, { props: modalProps });
+      const { walletPo, receiveModalPo } = await renderWalletAndModal();
 
-      await testAccountsModal({ result, testId: "receive-sns" });
+      await walletPo.clickReceiveButton();
 
-      const { getByText } = result;
+      await receiveModalPo.waitForQrCode();
 
-      const store = get(selectedUniverseStore);
-
-      const title = replacePlaceholders(en.wallet.token_address, {
-        $tokenSymbol: store.summary?.token.symbol ?? "error-title-is-undefined",
-      });
-
-      expect(getByText(title)).toBeInTheDocument();
+      expect(await receiveModalPo.getTokenAddressLabel()).toBe("OOO Address");
     });
 
     it("should init worker that sync the balance", async () => {
-      const spy = jest.spyOn(workerBalances, "initBalancesWorker");
+      const spy = vi.spyOn(workerBalances, "initBalancesWorker");
 
-      render(SnsWallet, props);
+      await renderComponent(props);
 
       expect(spy).toHaveBeenCalledTimes(1);
     });
 
     it("should init worker that sync the transactions", async () => {
-      const spy = jest.spyOn(workerTransactions, "initTransactionsWorker");
+      const spy = vi.spyOn(workerTransactions, "initTransactionsWorker");
 
-      const { queryByTestId } = render(SnsWallet, props);
+      const po = await renderComponent(props);
 
-      await waitFor(() =>
-        expect(queryByTestId("transactions-list")).toBeInTheDocument()
-      );
+      expect(await po.getIcrcTransactionsListPo().isPresent()).toBe(true);
 
       expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    it("should default to main account when account identifier is missing", async () => {
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Wallet,
+        universe: rootCanisterIdText,
+      });
+      const po = await renderComponent({
+        accountIdentifier: undefined,
+      });
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Wallet,
+        universe: rootCanisterIdText,
+      });
+      expect(get(toastsStore)).toEqual([]);
+
+      expect(await po.getWalletPageHeaderPo().getWalletAddress()).toBe(
+        mockSnsMainAccount.identifier
+      );
+    });
+
+    it("should navigate to accounts when account identifier is invalid", async () => {
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Wallet,
+        universe: rootCanisterIdText,
+      });
+      await renderComponent({
+        accountIdentifier: "invalid-account-identifier",
+      });
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Accounts,
+        universe: rootCanisterIdText,
+      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: 'Sorry, the account "invalid-account-identifier" was not found',
+        },
+      ]);
+    });
+
+    it("should stay on the wallet page when account identifier is valid", async () => {
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Wallet,
+        universe: rootCanisterIdText,
+      });
+      await renderComponent({
+        accountIdentifier: mockSnsMainAccount.identifier,
+      });
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Wallet,
+        universe: rootCanisterIdText,
+      });
+      expect(get(toastsStore)).toEqual([]);
+    });
+
+    it("should display the balance from the observer", async () => {
+      const oldBalance = 123_000_000n;
+      const newBalance = 456_000_000n;
+
+      vi.spyOn(snsLedgerApi, "getSnsAccounts").mockResolvedValue([
+        {
+          ...mockSnsMainAccount,
+          balanceUlps: oldBalance,
+        },
+      ]);
+
+      const po = await renderComponent(props);
+
+      expect(await po.getWalletPageHeadingPo().getTitle()).toBe("1.23 OOO");
+
+      balancesObserverCallback({
+        balances: [
+          {
+            balance: newBalance,
+            accountIdentifier: mockSnsMainAccount.identifier,
+          },
+        ],
+      });
+
+      await runResolvedPromises();
+      expect(await po.getWalletPageHeadingPo().getTitle()).toBe("4.56 OOO");
     });
   });
 });

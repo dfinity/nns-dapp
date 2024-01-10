@@ -1,52 +1,55 @@
-import { Principal } from "@dfinity/principal";
-import { nonNullish } from "@dfinity/utils";
+import { isHash, isPrincipal, typeOfLikeANumber } from "$lib/utils/utils";
 
-const JSON_KEY_BIGINT = "__bigint__";
-const JSON_KEY_PRINCIPAL = "__principal__";
-const JSON_KEY_UINT8ARRAY = "__uint8array__";
+export type TreeJsonValueType =
+  | "bigint"
+  | "boolean"
+  | "function"
+  | "null"
+  | "number"
+  | "object"
+  | "principal"
+  | "hash"
+  | "string"
+  | "symbol"
+  | "base64Encoding"
+  | "undefined"
+  // units-only nodes
+  // sample: { "seconds": 1000000000 }
+  | "seconds"
+  // sample: { "e8s": 1000000000 }
+  | "e8s"
+  // sample: { "basisPoints": 1000000000 }
+  | "basisPoints";
 
-export const jsonReplacer = (_key: string, value: unknown): unknown => {
-  if (typeof value === "bigint") {
-    return { [JSON_KEY_BIGINT]: `${value}` };
+/**
+ * Returns the type of the value for the TreeJson&TreeJsonValue components.
+ * @param value tree node value
+ */
+export const getTreeJsonValueRenderType = (
+  value: unknown
+): TreeJsonValueType => {
+  if (value === null) return "null";
+  if (isPrincipal(value)) return "principal";
+  if (Array.isArray(value) && isHash(value)) return "hash";
+  // not null was already checked above
+  if (typeof value === "object") {
+    const keys = Object.keys(value);
+
+    if (keys[0] === "base64Encoding") {
+      return "base64Encoding";
+    }
+
+    // check for unit-only nodes (e.g. { "e8s": 1000000000 })
+    if (keys.length === 1) {
+      const key = keys[0];
+      const keyValue = (value as Record<string, unknown>)[key];
+      if (
+        ["e8s", "seconds", "basisPoints"].includes(key) &&
+        typeOfLikeANumber(keyValue)
+      ) {
+        return key as TreeJsonValueType;
+      }
+    }
   }
-
-  if (nonNullish(value) && value instanceof Principal) {
-    return { [JSON_KEY_PRINCIPAL]: value.toText() };
-  }
-
-  if (nonNullish(value) && value instanceof Uint8Array) {
-    return { [JSON_KEY_UINT8ARRAY]: Array.from(value) };
-  }
-
-  return value;
-};
-
-export const jsonReviver = (_key: string, value: unknown): unknown => {
-  const mapValue = <T>(key: string): T => (value as Record<string, T>)[key];
-
-  if (
-    nonNullish(value) &&
-    typeof value === "object" &&
-    JSON_KEY_BIGINT in value
-  ) {
-    return BigInt(mapValue(JSON_KEY_BIGINT));
-  }
-
-  if (
-    nonNullish(value) &&
-    typeof value === "object" &&
-    JSON_KEY_PRINCIPAL in value
-  ) {
-    return Principal.fromText(mapValue(JSON_KEY_PRINCIPAL));
-  }
-
-  if (
-    nonNullish(value) &&
-    typeof value === "object" &&
-    JSON_KEY_UINT8ARRAY in value
-  ) {
-    return Uint8Array.from(mapValue(JSON_KEY_UINT8ARRAY));
-  }
-
-  return value;
+  return typeof value;
 };
