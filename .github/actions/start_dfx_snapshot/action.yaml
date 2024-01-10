@@ -85,12 +85,21 @@ runs:
         echo "Install:"
         for ((try = 0; try < 5; try++)); do
           if dfx canister install nns-dapp --wasm ${{ inputs.nns_dapp_wasm }} --upgrade-unchanged --mode ${{ inputs.nns_dapp_install_mode }} --yes --argument "$(cat nns-dapp-arg-${DFX_NETWORK}.did)"; then
-            break;
+            exit 0;
           fi
           sleep 5
         done
+        echo "Couldn't install nns-dapp canister"
+        exit 1
     - name: Install sns_aggregator
       if: ${{ inputs.sns_aggregator_wasm }}
       shell: bash
       run: |
-        dfx canister install sns_aggregator --wasm ${{ inputs.sns_aggregator_wasm }} --upgrade-unchanged --mode ${{ inputs.sns_aggregator_install_mode }} --yes
+        for ((try = 0; try < 5; try++)); do
+          if dfx canister install sns_aggregator --wasm ${{ inputs.sns_aggregator_wasm }} --upgrade-unchanged --mode ${{ inputs.sns_aggregator_install_mode }} --yes; then
+            exit 0;
+          fi
+          sleep 5
+        done
+        echo "Couldn't install sns_aggregator canister"
+        exit 1
