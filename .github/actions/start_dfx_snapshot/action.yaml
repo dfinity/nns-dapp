@@ -89,9 +89,12 @@ runs:
         echo dfx canister install nns-dapp --wasm ${{ inputs.nns_dapp_wasm }} --upgrade-unchanged --mode ${{ inputs.nns_dapp_install_mode }} --yes --argument "$(cat nns-dapp-arg-${DFX_NETWORK}.did)" || cat ${{ inputs.logfile }}
         date
         dfx canister info nns-dapp || echo not good 1
-        sleep 20
+        #sleep 20
         dfx canister info nns-dapp || echo not good 2
         date
+        echo start of first log
+        cat ${{ inputs.logfile }}
+        echo end of first log
         dfx canister install nns-dapp --wasm ${{ inputs.nns_dapp_wasm }} --upgrade-unchanged --mode ${{ inputs.nns_dapp_install_mode }} --yes --argument "$(cat nns-dapp-arg-${DFX_NETWORK}.did)" || cat ${{ inputs.logfile }}
     - name: Install sns_aggregator
       if: ${{ inputs.sns_aggregator_wasm }}
