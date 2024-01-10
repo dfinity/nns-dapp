@@ -88,6 +88,8 @@ runs:
         sha256sum ${{ inputs.nns_dapp_wasm }}
         echo dfx canister install nns-dapp --wasm ${{ inputs.nns_dapp_wasm }} --upgrade-unchanged --mode ${{ inputs.nns_dapp_install_mode }} --yes --argument "$(cat nns-dapp-arg-${DFX_NETWORK}.did)" || cat ${{ inputs.logfile }}
         date
+        sleep 20
+        date
         dfx canister install nns-dapp --wasm ${{ inputs.nns_dapp_wasm }} --upgrade-unchanged --mode ${{ inputs.nns_dapp_install_mode }} --yes --argument "$(cat nns-dapp-arg-${DFX_NETWORK}.did)" || cat ${{ inputs.logfile }}
     - name: Install sns_aggregator
       if: ${{ inputs.sns_aggregator_wasm }}
