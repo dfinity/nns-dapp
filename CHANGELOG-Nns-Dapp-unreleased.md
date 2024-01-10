@@ -20,6 +20,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Default to main account on wallet page when `account` parameter is missing from the URL.
+* New light and dark theme colors.
 
 #### Deprecated
 
