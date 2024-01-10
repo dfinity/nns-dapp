@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TokenAmount, ICPToken, TokenAmountV2 } from "@dfinity/utils";
+  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
   import {
     getDeniedCountries,
     getMaxNeuronsFundParticipation,
@@ -53,7 +53,7 @@
     token,
   });
 
-  let snsTotalTokenSupply: TokenAmount | undefined | null;
+  let snsTotalTokenSupply: TokenAmountV2 | undefined | null;
   $: snsTotalTokenSupply = $projectDetailStore.totalTokensSupply;
 
   let deniedCountryCodes: CountryCode[];

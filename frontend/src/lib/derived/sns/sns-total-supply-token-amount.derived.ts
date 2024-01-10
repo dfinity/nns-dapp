@@ -4,12 +4,12 @@ import {
 } from "$lib/stores/sns-total-token-supply.store";
 import { snsSummariesStore } from "$lib/stores/sns.store";
 import type { RootCanisterIdText, SnsSummary } from "$lib/types/sns";
-import { nonNullish, TokenAmount } from "@dfinity/utils";
+import { nonNullish, TokenAmountV2 } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 
 export const snsTotalSupplyTokenAmountStore = derived<
   [Readable<SnsTotalTokenSupplyStoreData>, Readable<SnsSummary[]>],
-  Record<RootCanisterIdText, TokenAmount>
+  Record<RootCanisterIdText, TokenAmountV2>
 >(
   [snsTotalTokenSupplyStore, snsSummariesStore],
   ([$snsTotalTokenSupplyStore, $snsSummariesStore]) => {
@@ -20,7 +20,7 @@ export const snsTotalSupplyTokenAmountStore = derived<
 
         return nonNullish(totalTokenSupplyStoreEntry?.totalSupply)
           ? {
-              totalSupply: TokenAmount.fromE8s({
+              totalSupply: TokenAmountV2.fromUlps({
                 amount: totalTokenSupplyStoreEntry?.totalSupply,
                 token,
               }),
@@ -28,7 +28,7 @@ export const snsTotalSupplyTokenAmountStore = derived<
             }
           : undefined;
       })
-      .reduce<Record<string, TokenAmount>>((acc, data) => {
+      .reduce<Record<string, TokenAmountV2>>((acc, data) => {
         if (nonNullish(data)) {
           const { totalSupply, rootCanisterId } = data;
           acc[rootCanisterId.toText()] = totalSupply;
