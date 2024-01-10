@@ -78,7 +78,6 @@ runs:
       if: ${{ inputs.nns_dapp_wasm }}
       shell: bash
       run: |
-        set -x
         echo "Create the nns-dapp install argument:"
         export DFX_NETWORK=local
         ./config.sh
