@@ -896,4 +896,28 @@ describe("Accounts", () => {
       expect(call).rejects.toThrowError();
     });
   });
+
+  it("should not redirect to Tokens page when tokens page is enabled and universe is NNS", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
+
+    page.mock({
+      data: {
+        universe: OWN_CANISTER_ID_TEXT,
+        routeId: AppPath.Accounts,
+      },
+    });
+
+    render(Accounts);
+
+    // We wait for the `waitFor` to throw an error when waiting for the page to change.
+    // This is to keep the test similar to the previous one when we waited for the page to change.
+    await waitFor(() => {
+      const call = async () => {
+        await waitFor(() =>
+          expect(get(pageStore)?.path).toEqual(AppPath.Tokens)
+        );
+      };
+      expect(call).rejects.toThrowError();
+    });
+  });
 });
