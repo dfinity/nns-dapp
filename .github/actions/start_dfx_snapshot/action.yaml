@@ -83,19 +83,12 @@ runs:
         export DFX_NETWORK=local
         ./config.sh
         echo "Install:"
-        echo inputs.nns_dapp_wasm ${{ inputs.nns_dapp_wasm }}
-        ls -l ${{ inputs.nns_dapp_wasm }}
-        sha256sum ${{ inputs.nns_dapp_wasm }}
-        echo dfx canister install nns-dapp --wasm ${{ inputs.nns_dapp_wasm }} --upgrade-unchanged --mode ${{ inputs.nns_dapp_install_mode }} --yes --argument "$(cat nns-dapp-arg-${DFX_NETWORK}.did)" || cat ${{ inputs.logfile }}
-        date
-        dfx canister info nns-dapp || echo not good 1
-        #sleep 20
-        dfx canister info nns-dapp || echo not good 2
-        date
-        echo start of first log
-        cat ${{ inputs.logfile }}
-        echo end of first log
-        dfx canister install nns-dapp --wasm ${{ inputs.nns_dapp_wasm }} --upgrade-unchanged --mode ${{ inputs.nns_dapp_install_mode }} --yes --argument "$(cat nns-dapp-arg-${DFX_NETWORK}.did)" || date && dfx canister install nns-dapp --wasm ${{ inputs.nns_dapp_wasm }} --upgrade-unchanged --mode ${{ inputs.nns_dapp_install_mode }} --yes --argument "$(cat nns-dapp-arg-${DFX_NETWORK}.did)" && date && cat ${{ inputs.logfile }}
+        for ((try = 0; try < 5; try++)); do
+          if dfx canister install nns-dapp --wasm ${{ inputs.nns_dapp_wasm }} --upgrade-unchanged --mode ${{ inputs.nns_dapp_install_mode }} --yes --argument "$(cat nns-dapp-arg-${DFX_NETWORK}.did)"; then
+            break;
+          fi
+          sleep 5
+        done
     - name: Install sns_aggregator
       if: ${{ inputs.sns_aggregator_wasm }}
       shell: bash
