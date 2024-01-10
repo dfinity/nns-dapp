@@ -469,14 +469,14 @@ describe("project-utils", () => {
 
   describe("currentUserMaxCommitment", () => {
     it("returns the user maximum when no participation yet", () => {
-      const projectMax = BigInt(10_000_000_000);
-      const userMax = BigInt(1_000_000_000);
+      const projectMax = 10_000_000_000n;
+      const userMax = 1_000_000_000n;
       const validProject: SnsFullProject = {
         ...mockSnsFullProject,
         summary: {
           ...mockSnsFullProject.summary,
           derived: {
-            buyer_total_icp_e8s: BigInt(0),
+            buyer_total_icp_e8s: 0n,
             sns_tokens_per_icp: 1,
             cf_participant_count: [],
             direct_participant_count: [],
@@ -488,7 +488,7 @@ describe("project-utils", () => {
             ...mockSnsFullProject.summary.swap,
             params: {
               ...mockSnsFullProject.summary.swap.params,
-              min_participant_icp_e8s: BigInt(100_000_000),
+              min_participant_icp_e8s: 100_000_000n,
               max_participant_icp_e8s: userMax,
               max_icp_e8s: projectMax,
             },
@@ -500,9 +500,9 @@ describe("project-utils", () => {
     });
 
     it("returns the remainder to the user maximum if already participated", () => {
-      const projectMax = BigInt(10_000_000_000);
-      const userMax = BigInt(1_000_000_000);
-      const userCommitment = BigInt(400_000_000);
+      const projectMax = 10_000_000_000n;
+      const userMax = 1_000_000_000n;
+      const userCommitment = 400_000_000n;
       const validProject: SnsFullProject = {
         ...mockSnsFullProject,
         summary: {
@@ -520,7 +520,7 @@ describe("project-utils", () => {
             ...mockSnsFullProject.summary.swap,
             params: {
               ...mockSnsFullProject.summary.swap.params,
-              min_participant_icp_e8s: BigInt(100_000_000),
+              min_participant_icp_e8s: 100_000_000n,
               max_participant_icp_e8s: userMax,
               max_icp_e8s: projectMax,
             },
@@ -540,9 +540,9 @@ describe("project-utils", () => {
     });
 
     it("returns the remainder to the project maximum if remainder lower than user max", () => {
-      const projectMax = BigInt(10_000_000_000);
-      const userMax = BigInt(1_000_000_000);
-      const projectCommitment = BigInt(9_500_000_000);
+      const projectMax = 10_000_000_000n;
+      const userMax = 1_000_000_000n;
+      const projectCommitment = 9_500_000_000n;
       const validProject: SnsFullProject = {
         ...mockSnsFullProject,
         summary: {
@@ -560,7 +560,7 @@ describe("project-utils", () => {
             ...mockSnsFullProject.summary.swap,
             params: {
               ...mockSnsFullProject.summary.swap.params,
-              min_participant_icp_e8s: BigInt(100_000_000),
+              min_participant_icp_e8s: 100_000_000n,
               max_participant_icp_e8s: userMax,
               max_icp_e8s: projectMax,
             },
@@ -574,10 +574,10 @@ describe("project-utils", () => {
     });
 
     it("returns the remainder to the user maximum even when current commitment minus max is lower than maximum per user", () => {
-      const projectMax = BigInt(10_000_000_000);
-      const userMax = BigInt(1_000_000_000);
-      const projectCommitment = BigInt(9_200_000_000);
-      const userCommitment = BigInt(400_000_000);
+      const projectMax = 10_000_000_000n;
+      const userMax = 1_000_000_000n;
+      const projectCommitment = 9_200_000_000n;
+      const userCommitment = 400_000_000n;
       const validProject: SnsFullProject = {
         ...mockSnsFullProject,
         summary: {
@@ -595,7 +595,7 @@ describe("project-utils", () => {
             ...mockSnsFullProject.summary.swap,
             params: {
               ...mockSnsFullProject.summary.swap.params,
-              min_participant_icp_e8s: BigInt(100_000_000),
+              min_participant_icp_e8s: 100_000_000n,
               max_participant_icp_e8s: userMax,
               max_icp_e8s: projectMax,
             },
@@ -617,8 +617,8 @@ describe("project-utils", () => {
 
   describe("projectRemainingAmount", () => {
     it("returns remaining amount taking into account current commitment", () => {
-      const projectMax = BigInt(10_000_000_000);
-      const projectCommitment = BigInt(9_200_000_000);
+      const projectMax = 10_000_000_000n;
+      const projectCommitment = 9_200_000_000n;
       const summary: SnsSummary = {
         ...mockSnsFullProject.summary,
         derived: {
@@ -634,8 +634,8 @@ describe("project-utils", () => {
           ...mockSnsFullProject.summary.swap,
           params: {
             ...mockSnsFullProject.summary.swap.params,
-            min_participant_icp_e8s: BigInt(100_000_000),
-            max_participant_icp_e8s: BigInt(1_000_000_000),
+            min_participant_icp_e8s: 100_000_000n,
+            max_participant_icp_e8s: 1_000_000_000n,
             max_icp_e8s: projectMax,
           },
         },
@@ -647,13 +647,13 @@ describe("project-utils", () => {
   });
 
   describe("validParticipation", () => {
-    const validAmountE8s = BigInt(1_000_000_000);
+    const validAmountE8s = 1_000_000_000n;
     const validProject: SnsFullProject = {
       ...mockSnsFullProject,
       summary: {
         ...mockSnsFullProject.summary,
         derived: {
-          buyer_total_icp_e8s: BigInt(0),
+          buyer_total_icp_e8s: 0n,
           sns_tokens_per_icp: 1,
           cf_participant_count: [],
           direct_participant_count: [],
@@ -666,16 +666,16 @@ describe("project-utils", () => {
           lifecycle: SnsSwapLifecycle.Open,
           params: {
             ...mockSnsFullProject.summary.swap.params,
-            min_participant_icp_e8s: validAmountE8s - BigInt(10_000),
-            max_participant_icp_e8s: validAmountE8s + BigInt(10_000),
-            max_icp_e8s: validAmountE8s + BigInt(10_000),
+            min_participant_icp_e8s: validAmountE8s - 10_000n,
+            max_participant_icp_e8s: validAmountE8s + 10_000n,
+            max_icp_e8s: validAmountE8s + 10_000n,
           },
         },
       },
       swapCommitment: {
         ...(mockSnsFullProject.swapCommitment as SnsSwapCommitment),
         myCommitment: {
-          icp: [createTransferableAmount(BigInt(0))],
+          icp: [createTransferableAmount(0n)],
           has_created_neuron_recipes: [],
         },
       },
@@ -750,7 +750,7 @@ describe("project-utils", () => {
       const { valid } = validParticipation({
         project,
         amount: TokenAmount.fromE8s({
-          amount: validAmountE8s + BigInt(10_000),
+          amount: validAmountE8s + 10_000n,
           token: ICPToken,
         }),
       });
@@ -766,7 +766,7 @@ describe("project-utils", () => {
             ...validProject.summary.swap,
             params: {
               ...validProject.summary.swap.params,
-              max_participant_icp_e8s: validAmountE8s * BigInt(2),
+              max_participant_icp_e8s: validAmountE8s * 2n,
             },
           },
         },
@@ -781,7 +781,7 @@ describe("project-utils", () => {
       const { valid } = validParticipation({
         project,
         amount: TokenAmount.fromE8s({
-          amount: validAmountE8s + BigInt(10_000),
+          amount: validAmountE8s + 10_000n,
           token: ICPToken,
         }),
       });
@@ -789,9 +789,9 @@ describe("project-utils", () => {
     });
 
     it("returns false if amount is larger than project remainder to get to maximum", () => {
-      const maxE8s = BigInt(1_000_000_000);
-      const participationE8s = BigInt(100_000_000);
-      const currentE8s = BigInt(950_000_000);
+      const maxE8s = 1_000_000_000n;
+      const participationE8s = 100_000_000n;
+      const currentE8s = 950_000_000n;
       const project: SnsFullProject = {
         ...validProject,
         summary: {
@@ -825,12 +825,12 @@ describe("project-utils", () => {
     });
 
     it("returns false if amount is smaller than project remainder to get to maximum, but larger than user remainder until max", () => {
-      const maxProject = BigInt(100_000_000_000);
-      const minPerUser = BigInt(100_000_000);
-      const maxPerUser = BigInt(2_000_000_000);
-      const currentProjectParticipation = BigInt(99_500_000_000);
-      const currentUserParticipation = BigInt(800_000_000);
-      const newParticipation = BigInt(600_000_000);
+      const maxProject = 100_000_000_000n;
+      const minPerUser = 100_000_000n;
+      const maxPerUser = 2_000_000_000n;
+      const currentProjectParticipation = 99_500_000_000n;
+      const currentUserParticipation = 800_000_000n;
+      const newParticipation = 600_000_000n;
       const project: SnsFullProject = {
         ...validProject,
         summary: {
@@ -874,15 +874,15 @@ describe("project-utils", () => {
   });
 
   describe("validParticipation", () => {
-    const maxProject = BigInt(100_000_000_000);
-    const minPerUser = BigInt(100_000_000);
-    const maxPerUser = BigInt(2_000_000_000);
+    const maxProject = 100_000_000_000n;
+    const minPerUser = 100_000_000n;
+    const maxPerUser = 2_000_000_000n;
     const project: SnsFullProject = {
       ...mockSnsFullProject,
       summary: {
         ...mockSnsFullProject.summary,
         derived: {
-          buyer_total_icp_e8s: BigInt(0),
+          buyer_total_icp_e8s: 0n,
           sns_tokens_per_icp: 1,
           cf_participant_count: [],
           direct_participant_count: [],
@@ -925,7 +925,7 @@ describe("project-utils", () => {
       };
 
       // User can participate with amount less than min
-      const secondAmountUser = BigInt(10);
+      const secondAmountUser = 10n;
       const { valid: v2 } = validParticipation({
         project,
         amount: TokenAmount.fromE8s({
@@ -982,7 +982,7 @@ describe("project-utils", () => {
       const { valid: v7 } = validParticipation({
         project,
         amount: TokenAmount.fromE8s({
-          amount: maxPerUser - initialAmountUser + BigInt(10_000),
+          amount: maxPerUser - initialAmountUser + 10_000n,
           token: ICPToken,
         }),
       });
@@ -992,9 +992,9 @@ describe("project-utils", () => {
 
   describe("commitmentExceedsAmountLeft", () => {
     it("returns true if amount is larger than maximum left", () => {
-      const maxE8s = BigInt(1_000_000_000);
-      const participationE8s = BigInt(100_000_000);
-      const currentE8s = BigInt(950_000_000);
+      const maxE8s = 1_000_000_000n;
+      const participationE8s = 100_000_000n;
+      const currentE8s = 950_000_000n;
       const summary: SnsSummary = {
         ...mockSnsFullProject.summary,
         derived: {
@@ -1022,9 +1022,9 @@ describe("project-utils", () => {
     });
 
     it("returns false if amount is smaller than maximum left", () => {
-      const maxE8s = BigInt(1_000_000_000);
-      const participationE8s = BigInt(100_000_000);
-      const currentE8s = BigInt(850_000_000);
+      const maxE8s = 1_000_000_000n;
+      const participationE8s = 100_000_000n;
+      const currentE8s = 850_000_000n;
       const summary: SnsSummary = {
         ...mockSnsFullProject.summary,
         derived: {
@@ -1079,7 +1079,7 @@ describe("project-utils", () => {
           subaccount: [],
         },
       ],
-      amount_icp_e8s: BigInt(1000_000_000),
+      amount_icp_e8s: 1_000_000_000n,
     };
 
     it("returns 'logged-out' if user is not logged in", () => {
@@ -1171,7 +1171,7 @@ describe("project-utils", () => {
         myCommitment: {
           icp: [
             createTransferableAmount(
-              summary.swap.params.max_participant_icp_e8s + BigInt(1)
+              summary.swap.params.max_participant_icp_e8s + 1n
             ),
           ],
           has_created_neuron_recipes: [],
@@ -1285,13 +1285,13 @@ describe("project-utils", () => {
   });
 
   describe("getProjectCommitmentSplit", () => {
-    const nfCommitment = 10000000000n;
-    const directCommitment = 20000000000n;
+    const nfCommitment = 10_000_000_000n;
+    const directCommitment = 20_000_000_000n;
 
     describe("when NF participation is present", () => {
       it("returns the commitments split if min-max direct participations are present", () => {
-        const minDirectParticipation = 10000000000n;
-        const maxDirectParticipation = 100000000000n;
+        const minDirectParticipation = 10_000_000_000n;
+        const maxDirectParticipation = 100_000_000_000n;
         const summary = createSummary({
           currentTotalCommitment: directCommitment + nfCommitment,
           directCommitment,
@@ -1316,10 +1316,10 @@ describe("project-utils", () => {
           directCommitment,
           neuronsFundCommitment: nfCommitment,
           minDirectParticipation: undefined,
-          maxDirectParticipation: 100000000000n,
+          maxDirectParticipation: 100_000_000_000n,
         });
         expect(getProjectCommitmentSplit(summary)).toEqual({
-          totalCommitmentE8s: 30000000000n,
+          totalCommitmentE8s: 30_000_000_000n,
         });
       });
 
@@ -1328,20 +1328,20 @@ describe("project-utils", () => {
           currentTotalCommitment: directCommitment + nfCommitment,
           directCommitment,
           neuronsFundCommitment: nfCommitment,
-          minDirectParticipation: 100000000000n,
+          minDirectParticipation: 100_000_000_000n,
           maxDirectParticipation: undefined,
         });
         expect(getProjectCommitmentSplit(summary)).toEqual({
-          totalCommitmentE8s: 30000000000n,
+          totalCommitmentE8s: 30_000_000_000n,
         });
       });
     });
 
     describe("when NF participation is 0", () => {
       it("returns the commitments split if NF participation is present even when 0", () => {
-        const directCommitment = 20000000000n;
-        const minDirectParticipation = 10000000000n;
-        const maxDirectParticipation = 100000000000n;
+        const directCommitment = 20_000_000_000n;
+        const minDirectParticipation = 10_000_000_000n;
+        const maxDirectParticipation = 100_000_000_000n;
         const summary = createSummary({
           currentTotalCommitment: directCommitment,
           directCommitment,
@@ -1350,8 +1350,8 @@ describe("project-utils", () => {
           maxDirectParticipation,
         });
         expect(getProjectCommitmentSplit(summary)).toEqual({
-          totalCommitmentE8s: 20000000000n,
-          directCommitmentE8s: 20000000000n,
+          totalCommitmentE8s: 20_000_000_000n,
+          directCommitmentE8s: 20_000_000_000n,
           nfCommitmentE8s: 0n,
           minDirectCommitmentE8s: minDirectParticipation,
           maxDirectCommitmentE8s: maxDirectParticipation,
@@ -1362,10 +1362,10 @@ describe("project-utils", () => {
 
     describe("when direct participation is not present", () => {
       it("returns the overall commitments even if nf commitment and min-max direct participations are present", () => {
-        const minDirectParticipation = 10000000000n;
-        const maxDirectParticipation = 100000000000n;
+        const minDirectParticipation = 10_000_000_000n;
+        const maxDirectParticipation = 100_000_000_000n;
 
-        const currentTotalCommitment = 30000000000n;
+        const currentTotalCommitment = 30_000_000_000n;
         const summary = createSummary({
           currentTotalCommitment,
           directCommitment: undefined,
@@ -1382,8 +1382,8 @@ describe("project-utils", () => {
 
     describe("when neurons fund participation is not present", () => {
       it("returns the overall commitments even if nf commitment and min-max direct participations are present", () => {
-        const minDirectParticipation = 10000000000n;
-        const maxDirectParticipation = 100000000000n;
+        const minDirectParticipation = 10_000_000_000n;
+        const maxDirectParticipation = 100_000_000_000n;
 
         const summary = createSummary({
           currentTotalCommitment: nfCommitment + directCommitment,
@@ -1402,8 +1402,8 @@ describe("project-utils", () => {
 
     describe("when NF enhancement fields are present, but NF is not participating", () => {
       it("returns the commitments split with NF as `null`", () => {
-        const minDirectParticipation = 10000000000n;
-        const maxDirectParticipation = 100000000000n;
+        const minDirectParticipation = 10_000_000_000n;
+        const maxDirectParticipation = 100_000_000_000n;
         const summary = createSummary({
           currentTotalCommitment: directCommitment,
           directCommitment,

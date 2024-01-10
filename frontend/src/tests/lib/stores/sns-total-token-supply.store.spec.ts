@@ -7,7 +7,7 @@ describe("SNS Total Tokens Supply store", () => {
   beforeEach(() => snsTotalTokenSupplyStore.reset());
 
   const totalSupplyData = {
-    totalSupply: BigInt(1000_000_000),
+    totalSupply: 1_000_000_000n,
     certified: true,
   };
 
@@ -64,7 +64,7 @@ describe("SNS Total Tokens Supply store", () => {
       totalSupplyData.totalSupply
     );
 
-    const newSupply = BigInt(2000_000_000);
+    const newSupply = 2_000_000_000n;
     snsTotalTokenSupplyStore.setTotalTokenSupplies([
       {
         rootCanisterId,

@@ -46,17 +46,17 @@ describe("SnsNeuronFollowingCard", () => {
     };
     const function0: SnsNervousSystemFunction = {
       ...nervousSystemFunctionMock,
-      id: BigInt(0),
+      id: 0n,
       name: "function0",
     };
     const function1: SnsNervousSystemFunction = {
       ...nervousSystemFunctionMock,
-      id: BigInt(1),
+      id: 1n,
       name: "function1",
     };
     const function2: SnsNervousSystemFunction = {
       ...nervousSystemFunctionMock,
-      id: BigInt(2),
+      id: 2n,
       name: "function2",
     };
     const followee1 = createMockSnsNeuron({

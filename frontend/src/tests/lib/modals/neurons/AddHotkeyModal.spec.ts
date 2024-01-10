@@ -8,7 +8,7 @@ import type { SvelteComponent } from "svelte";
 
 vi.mock("$lib/services/neurons.services", () => {
   return {
-    addHotkey: vi.fn().mockResolvedValue(BigInt(10)),
+    addHotkey: vi.fn().mockResolvedValue(10n),
     getNeuronFromStore: vi.fn(),
   };
 });

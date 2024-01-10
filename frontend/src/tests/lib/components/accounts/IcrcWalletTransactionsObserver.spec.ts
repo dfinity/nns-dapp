@@ -33,7 +33,7 @@ describe("IcrcWalletTransactionsObserver", () => {
     canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
     transactions: [mockIcrcTransactionWithId],
     accountIdentifier: mockCkBTCMainAccount.identifier,
-    oldestTxId: BigInt(10),
+    oldestTxId: 10n,
     completed: false,
   };
 

@@ -6,6 +6,7 @@ import {
   emptyAddress,
   filterHardwareWalletAccounts,
   findAccount,
+  findAccountOrDefaultToMain,
   getAccountByPrincipal,
   getAccountByRootCanister,
   getAccountsByRootCanister,
@@ -557,27 +558,27 @@ describe("accounts-utils", () => {
 
   describe("assertEnoughAccountFunds", () => {
     it("should throw if not enough balance", () => {
-      const amountE8s = BigInt(1_000_000_000);
+      const amountE8s = 1_000_000_000n;
       expect(() => {
         assertEnoughAccountFunds({
           account: {
             ...mockMainAccount,
             balanceUlps: amountE8s,
           },
-          amountUlps: amountE8s + BigInt(10_000),
+          amountUlps: amountE8s + 10_000n,
         });
       }).toThrow();
     });
 
     it("should not throw if not enough balance", () => {
-      const amountE8s = BigInt(1_000_000_000);
+      const amountE8s = 1_000_000_000n;
       expect(() => {
         assertEnoughAccountFunds({
           account: {
             ...mockMainAccount,
             balanceUlps: amountE8s,
           },
-          amountUlps: amountE8s - BigInt(10_000),
+          amountUlps: amountE8s - 10_000n,
         });
       }).not.toThrow();
     });
@@ -596,6 +597,37 @@ describe("accounts-utils", () => {
         mockSnsSubAccount,
       ];
       expect(mainAccount(accounts)).toEqual(mockSnsMainAccount);
+    });
+  });
+
+  describe("findAccountOrDefaultToMain", () => {
+    const accounts = [mockMainAccount, mockSubAccount];
+
+    it("should return main account if no identifier is provided", () => {
+      expect(
+        findAccountOrDefaultToMain({ identifier: undefined, accounts })
+      ).toBe(mockMainAccount);
+    });
+
+    it("should find no account if not matches", () => {
+      expect(
+        findAccountOrDefaultToMain({ identifier: "aaa", accounts })
+      ).toBeUndefined();
+    });
+
+    it("should return corresponding account", () => {
+      expect(
+        findAccountOrDefaultToMain({
+          identifier: mockMainAccount.identifier,
+          accounts,
+        })
+      ).toEqual(mockMainAccount);
+      expect(
+        findAccountOrDefaultToMain({
+          identifier: mockSubAccount.identifier,
+          accounts,
+        })
+      ).toEqual(mockSubAccount);
     });
   });
 

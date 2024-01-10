@@ -367,8 +367,8 @@
   },
   "follow_neurons": {
     "description": "Follow neurons to automate your voting, and receive the maximum voting rewards. You can follow neurons on specific topics or all topics.",
-    "topic_0_title": "All Except Governance, Seed, and SNS & Neurons' Fund",
-    "topic_0_subtitle": "Follow neurons on all proposal topics except the governance and the seed topics, and SNS & Neurons' Fund.",
+    "topic_0_title": "All Except Governance, and SNS & Neurons' Fund",
+    "topic_0_subtitle": "Follow neurons on all proposal topics except the governance topic, and SNS & Neurons' Fund.",
     "topic_1_title": "Manage Neuron",
     "topic_1_subtitle": "Proposals that manage specific neurons, for example making them perform actions.",
     "topic_2_title": "Exchange Rate",
@@ -520,7 +520,7 @@
     "proposer_prefix": "Proposer",
     "proposer_description": "The ID of the neuron that submitted the proposal.",
     "open_voting_prefix": "Voting open:",
-    "my_votes": "My Votes",
+    "neurons_voted": "$count neurons voted",
     "loading_neurons": "Loading your neurons...",
     "unknown_nns_function": "Unknown nnsFunction",
     "nns_function_name": "nnsFunctionName",
@@ -553,8 +553,9 @@
   },
   "proposal_detail__vote": {
     "headline": "Cast Vote",
-    "neurons": "Neurons",
-    "voting_power": "Voting power",
+    "vote_with_neurons": "Vote with $votable_count/$all_count Neurons",
+    "voting_power_value": "Voting power: $value",
+    "voting_power": "Voting Power:",
     "vote_progress": "Vote Progress",
     "total": "Total",
     "adopt": "Adopt",
@@ -565,7 +566,7 @@
     "confirm_reject_text": "You are about to cast $votingPower votes against this proposal, are you sure you want to proceed?",
     "vote_status": "Neuron $neuronId has voted $vote",
     "cast_vote_neuronId": "Neuron ID $neuronId",
-    "cast_vote_votingPower": "Voting power of $votingPower",
+    "cast_vote_votingPower": "Voting Power: $votingPower",
     "vote_adopt_in_progress": "Adopting proposal $proposalType ($proposalId). $status",
     "vote_reject_in_progress": "Rejecting proposal $proposalType ($proposalId). $status",
     "vote_status_registering": "Neurons registered: $completed/$amount. Keep the dapp open until completed.",
@@ -585,8 +586,8 @@
     "cast_votes_needs": "(Yes needs $immediate_majority)"
   },
   "proposal_detail__ineligible": {
-    "headline": "Ineligible Neurons",
-    "text": "The following neurons had a dissolve delay of less than $minDissolveDelay at the time the proposal was submitted, or were created after the proposal was submitted, and therefore are not eligible to vote on it:",
+    "headline": "$count Ineligible neurons",
+    "text": "The following neurons are not eligible to vote.",
     "reason_since": "created after the proposal",
     "reason_no_permission": "no voting permission",
     "reason_short": "dissolve delay < $minDissolveDelay"
@@ -1028,7 +1029,8 @@
     "receiving_btc": "Receiving BTC",
     "reimbursement": "Reimbursement",
     "sending_btc": "Sending BTC",
-    "sending_btc_failed": "Sending BTC failed"
+    "sending_btc_failed": "Sending BTC failed",
+    "sign_in_for_address": "Sign in to see your BTC deposit address."
   },
   "error__ckbtc": {
     "already_process": "The minter has already been notified and updating the balance is in progress.",

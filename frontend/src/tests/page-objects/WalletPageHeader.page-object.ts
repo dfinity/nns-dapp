@@ -14,7 +14,11 @@ export class WalletPageHeaderPo extends BasePageObject {
     return UniversePageSummaryPo.under(this.root).getTitle();
   }
 
+  getHashPo(): HashPo {
+    return HashPo.under(this.root);
+  }
+
   getWalletAddress(): Promise<string> {
-    return HashPo.under(this.root).getText();
+    return this.getHashPo().getText();
   }
 }

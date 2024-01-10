@@ -104,7 +104,7 @@ describe("sns-accounts-services", () => {
       const spyAccountsQuery = vi
         .spyOn(ledgerApi, "getSnsAccounts")
         .mockImplementation(() => Promise.resolve([mockSnsMainAccount]));
-      const fee = BigInt(10_000);
+      const fee = 10_000n;
       const spyFeeQuery = vi
         .spyOn(ledgerApi, "transactionFee")
         .mockImplementation(() => Promise.resolve(fee));
@@ -143,7 +143,7 @@ describe("sns-accounts-services", () => {
     it("should call sns transfer tokens", async () => {
       transactionsFeesStore.setFee({
         rootCanisterId: mockPrincipal,
-        fee: BigInt(100),
+        fee: 100n,
         certified: true,
       });
       const spyTransfer = vi
@@ -166,7 +166,7 @@ describe("sns-accounts-services", () => {
     it("should load transactions if flag is passed", async () => {
       transactionsFeesStore.setFee({
         rootCanisterId: mockPrincipal,
-        fee: BigInt(100),
+        fee: 100n,
         certified: true,
       });
       const spyTransfer = vi
@@ -190,7 +190,7 @@ describe("sns-accounts-services", () => {
     it("should show toast and return success false if transfer fails", async () => {
       transactionsFeesStore.setFee({
         rootCanisterId: mockPrincipal,
-        fee: BigInt(100),
+        fee: 100n,
         certified: true,
       });
       const spyTransfer = vi

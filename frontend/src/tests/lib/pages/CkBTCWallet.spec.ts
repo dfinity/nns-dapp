@@ -12,6 +12,7 @@ import CkBTCWallet from "$lib/pages/CkBTCWallet.svelte";
 import * as services from "$lib/services/wallet-accounts.services";
 import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
+import { ckbtcRetrieveBtcStatusesStore } from "$lib/stores/ckbtc-retrieve-btc-statuses.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
@@ -33,7 +34,9 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
+import type { RetrieveBtcStatusV2WithId } from "@dfinity/ckbtc";
 import { render, waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 import { mockBTCAddressTestnet } from "../../mocks/ckbtc-accounts.mock";
 
 const expectedBalanceAfterTransfer = 11_111n;
@@ -119,6 +122,7 @@ describe("CkBTCWallet", () => {
     tokensStore.reset();
     ckBTCInfoStore.reset();
     bitcoinAddressStore.reset();
+    ckbtcRetrieveBtcStatusesStore.reset();
     overrideFeatureFlagsStore.reset();
     resetIdentity();
 
@@ -144,6 +148,9 @@ describe("CkBTCWallet", () => {
       minter_fee: 2000n,
       bitcoin_fee: 5000n,
     });
+    vi.mocked(ckbtcMinterApi.retrieveBtcStatusV2ByAccount).mockResolvedValue(
+      []
+    );
   });
 
   describe("accounts not loaded", () => {
@@ -463,6 +470,55 @@ describe("CkBTCWallet", () => {
       expect(await walletPo.getCkBTCInfoCardPo().getAddress()).toBe(
         mockBTCAddressTestnet
       );
+    });
+
+    it("should load BTC retrieval statuses", async () => {
+      const statusWithId: RetrieveBtcStatusV2WithId = {
+        id: 123n,
+        status: {
+          Pending: null,
+        },
+      };
+      vi.mocked(ckbtcMinterApi.retrieveBtcStatusV2ByAccount).mockResolvedValue([
+        statusWithId,
+      ]);
+      expect(get(ckbtcRetrieveBtcStatusesStore)).toEqual({});
+      await renderWallet();
+      expect(get(ckbtcRetrieveBtcStatusesStore)).toEqual({
+        [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: [statusWithId],
+      });
+    });
+
+    it("should reload BTC retrieval statuses after transfer", async () => {
+      const statusWithId: RetrieveBtcStatusV2WithId = {
+        id: 124n,
+        status: {
+          Pending: null,
+        },
+      };
+      const { walletPo, sendModalPo } = await renderWalletAndModal();
+
+      vi.mocked(ckbtcMinterApi.retrieveBtcStatusV2ByAccount).mockResolvedValue([
+        statusWithId,
+      ]);
+
+      await runResolvedPromises();
+      // Retrieval statuses are still empty.
+      expect(get(ckbtcRetrieveBtcStatusesStore)).toEqual({
+        [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: [],
+      });
+
+      // Make transfer
+      await walletPo.getCkBTCWalletFooterPo().clickSendButton();
+      await sendModalPo.transferToAddress({
+        destinationAddress: "aaaaa-aa",
+        amount: 10,
+      });
+
+      await runResolvedPromises();
+      expect(get(ckbtcRetrieveBtcStatusesStore)).toEqual({
+        [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: [statusWithId],
+      });
     });
   });
 });

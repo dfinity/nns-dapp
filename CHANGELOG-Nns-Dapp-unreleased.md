@@ -14,16 +14,12 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Disable dissolve delay editing when the maximum is reached.
-- Implement `Storable` for accounts.
-- `UnboundedStableBTreeMap` as an account storage medium.
-- Save accounts in the `pre_upgrade` hook only when accounts are stored in the heap.
-- Save account stats in the `pre_upgrade` hook rather than recomputing them in the `post_upgrade` hook.
-- Migration functions.
+* Redesign proposal detail neurons block (collapsible).
+* Display status in "voted neurons" headline.
 
 #### Changed
 
-- Use `ic_cdk::println` instead of the `dfn_core` equivalent.
+* Default to main account on wallet page when `account` parameter is missing from the URL.
 
 #### Deprecated
 
@@ -31,10 +27,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
-- Remaining wrong dissolve delay error message after min/max click.
-- Avoid unnecessary calls to SNS root canister ids to get the canister ids.
-- Min dissolve delay button updates not only for the first time.
-- Fix scrollbar in multiline toast message. 
+* Reverted the upgrade to SvelteKit 2 as it breaks iOS 15.
+* Auto updating wallet balances
 
 #### Security
 
@@ -46,13 +40,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-- Apply clippy only to target `wasm32-unknown-unknown` but prohibit `std::println` and variants for that target.
-
 #### Deprecated
 
 #### Removed
-
-* Remove `past-changelog-test`.
 
 #### Fixed
 

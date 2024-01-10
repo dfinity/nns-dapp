@@ -107,7 +107,7 @@ impl From<&UpstreamData> for SlowMetadata {
             url: upstream.meta.url.clone(),
             name: upstream.meta.name.clone(),
             description: upstream.meta.description.clone(),
-            // Logo URL example: https://3r4gx-wqaaa-aaaaq-aaaia-cai.ic0.app/v1/sns/root/u67kc-jyaaa-aaaaq-aabpq-cai/logo.png
+            // Logo URL example: https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io/v1/sns/root/u67kc-jyaaa-aaaaq-aabpq-cai/logo.png
             logo: match (upstream.meta.logo.clone(), upstream.list_sns_canisters.root) {
                 (Some(_), Some(canister_id)) => Some(format!("/v1/sns/root/{}/logo.png", canister_id.to_text())),
                 _ => None,

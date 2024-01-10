@@ -111,7 +111,7 @@ describe("icpAccountsStore", () => {
       expect(get(icpAccountsStore)?.main.balanceUlps).toEqual(
         mockMainAccount.balanceUlps
       );
-      const newBalanceE8s = BigInt(100);
+      const newBalanceE8s = 100n;
       accountsStoreSetBalance({
         accountIdentifier: mockMainAccount.identifier,
         balanceE8s: newBalanceE8s,
@@ -129,7 +129,7 @@ describe("icpAccountsStore", () => {
       expect(get(icpAccountsStore)?.subAccounts[0].balanceUlps).toEqual(
         mockSubAccount.balanceUlps
       );
-      const newBalanceE8s = BigInt(100);
+      const newBalanceE8s = 100n;
       accountsStoreSetBalance({
         accountIdentifier: mockSubAccount.identifier,
         balanceE8s: newBalanceE8s,
@@ -150,7 +150,7 @@ describe("icpAccountsStore", () => {
       expect(get(icpAccountsStore)?.hardwareWallets[0].balanceUlps).toEqual(
         mockHardwareWalletAccount.balanceUlps
       );
-      const newBalanceE8s = BigInt(100);
+      const newBalanceE8s = 100n;
       accountsStoreSetBalance({
         accountIdentifier: mockHardwareWalletAccount.identifier,
         balanceE8s: newBalanceE8s,
@@ -168,7 +168,7 @@ describe("icpAccountsStore", () => {
         hardwareWallets: [mockHardwareWalletAccount],
       });
 
-      const newBalanceE8s = BigInt(100);
+      const newBalanceE8s = 100n;
       accountsStoreSetBalance({
         accountIdentifier: "not-matching-identifier",
         balanceE8s: newBalanceE8s,
@@ -185,10 +185,10 @@ describe("icpAccountsStore", () => {
     });
 
     it("should reapply set balance on new data from an older request", () => {
-      const mainBalance1 = BigInt(100);
-      const mainBalance2 = BigInt(200);
-      const subBalance1 = BigInt(300);
-      const subBalance2 = BigInt(400);
+      const mainBalance1 = 100n;
+      const mainBalance2 = 200n;
+      const subBalance1 = 300n;
+      const subBalance2 = 400n;
 
       const dataWithBalances = ({ mainBalance, subBalance, certified }) => ({
         main: {

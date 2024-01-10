@@ -27,26 +27,26 @@ export const mockCanisters: CanisterInfo[] = [
 ];
 
 export const mockCanisterSettings = {
-  freezing_threshold: BigInt(2),
+  freezing_threshold: 2n,
   controllers: [
     "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
   ],
-  memory_allocation: BigInt(4),
-  compute_allocation: BigInt(10),
+  memory_allocation: 4n,
+  compute_allocation: 10n,
 };
 
 export const mockCanisterDetails: CanisterDetails = {
   id: mockCanisterId,
   status: CanisterStatus.Running,
-  memorySize: BigInt(10),
-  cycles: BigInt(30),
+  memorySize: 10n,
+  cycles: 30n,
   settings: {
     controllers: [mockIdentity.getPrincipal().toText()],
-    freezingThreshold: BigInt(30),
-    memoryAllocation: BigInt(1000),
-    computeAllocation: BigInt(2000),
+    freezingThreshold: 30n,
+    memoryAllocation: 1_000n,
+    computeAllocation: 2_000n,
   },
-  idleCyclesBurnedPerDay: BigInt(3000),
+  idleCyclesBurnedPerDay: 3_000n,
 };
 
 export const mockCanistersStoreSubscribe = (

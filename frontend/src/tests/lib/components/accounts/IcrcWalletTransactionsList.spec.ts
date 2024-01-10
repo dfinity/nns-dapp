@@ -134,7 +134,7 @@ describe("IcrcWalletTransactionList", () => {
         [mockCkBTCMainAccount.identifier]: {
           transactions: [mockIcrcTransactionWithId],
           completed: false,
-          oldestTxId: BigInt(0),
+          oldestTxId: 0n,
         },
       },
     };
@@ -154,7 +154,7 @@ describe("IcrcWalletTransactionList", () => {
         [mockCkBTCMainAccount.identifier]: {
           transactions: [mockIcrcTransactionWithIdToSelf],
           completed: false,
-          oldestTxId: BigInt(0),
+          oldestTxId: 0n,
         },
       },
     };
@@ -174,7 +174,7 @@ describe("IcrcWalletTransactionList", () => {
         [mockCkBTCMainAccount.identifier]: {
           transactions: [mockIcrcTransactionWithId],
           completed: false,
-          oldestTxId: BigInt(0),
+          oldestTxId: 0n,
         },
       },
     };
@@ -222,7 +222,7 @@ describe("IcrcWalletTransactionList", () => {
         [mockCkBTCMainAccount.identifier]: {
           transactions: [],
           completed: false,
-          oldestTxId: BigInt(0),
+          oldestTxId: 0n,
         },
       },
     };

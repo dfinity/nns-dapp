@@ -29,12 +29,20 @@ export class CkBTCInfoCardPo extends BasePageObject {
     return this.root.byTestId("block-explorer-link");
   }
 
+  hasBlockExplorerLink(): Promise<boolean> {
+    return this.isPresent("block-explorer-link");
+  }
+
   getUpdateBalanceButton(): ButtonPo {
     return this.getButton("manual-refresh-balance");
   }
 
   hasUpdateBalanceButton(): Promise<boolean> {
     return this.getUpdateBalanceButton().isPresent();
+  }
+
+  hasSignInForAddressMessage(): Promise<boolean> {
+    return this.isPresent("sign-in-for-address");
   }
 
   hasQrCode(): Promise<boolean> {

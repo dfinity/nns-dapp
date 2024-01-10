@@ -127,6 +127,14 @@ describe("TransactionCard", () => {
     expect(await po.hasReimbursementIcon()).toBe(true);
   });
 
+  it("displays failed transaction", async () => {
+    const po = renderComponent({
+      isFailed: true,
+    });
+
+    expect(await po.hasFailedIcon()).toBe(true);
+  });
+
   it("displays identifier for received", async () => {
     const po = renderComponent({
       isIncoming: true,

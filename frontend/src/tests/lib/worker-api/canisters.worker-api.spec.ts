@@ -11,8 +11,8 @@ vi.mock("@dfinity/agent");
 describe("canisters-worker-api", () => {
   const response: CanisterStatusResponse = {
     status: { running: null },
-    memory_size: BigInt(1000),
-    cycles: BigInt(10_000),
+    memory_size: 1_000n,
+    cycles: 10_000n,
     settings: {
       controllers: [],
       freezing_threshold: 0n,
@@ -47,8 +47,8 @@ describe("canisters-worker-api", () => {
       expect(result).toEqual({
         id: mockCanisterDetails.id,
         status: CanisterStatus.Running,
-        memorySize: 1000n,
-        cycles: 10000n,
+        memorySize: 1_000n,
+        cycles: 10_000n,
         settings: {
           controllers: [],
           freezingThreshold: 0n,

@@ -9,6 +9,8 @@ use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::Accou
 use core::fmt;
 use core::ops::RangeBounds;
 use ic_cdk::println;
+#[cfg(test)]
+use ic_stable_structures::DefaultMemoryImpl;
 use std::collections::BTreeMap;
 
 mod enum_boilerplate;

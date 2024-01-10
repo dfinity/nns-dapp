@@ -21,8 +21,9 @@ use icp_ledger::{AccountIdentifier, BlockIndex, Memo, Subaccount, Tokens};
 use itertools::Itertools;
 use on_wire::{FromWire, IntoWire};
 use schema::{
+    map::AccountsDbAsMap,
     proxy::{AccountsDb, AccountsDbAsProxy},
-    AccountsDbTrait, SchemaLabel,
+    AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel,
 };
 use serde::Deserialize;
 use std::borrow::Cow;
@@ -30,9 +31,6 @@ use std::cmp::{min, Ordering};
 use std::collections::{BTreeMap, HashMap, HashSet, VecDeque};
 use std::ops::{RangeBounds, RangeTo};
 use std::time::{Duration, SystemTime};
-
-use self::schema::map::AccountsDbAsMap;
-use self::schema::AccountsDbBTreeMapTrait;
 
 pub mod constructors;
 pub mod histogram;

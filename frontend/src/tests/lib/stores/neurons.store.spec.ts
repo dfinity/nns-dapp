@@ -13,8 +13,8 @@ describe("neurons-store", () => {
   describe("neuronsStore", () => {
     it("should set neurons", () => {
       const neurons: NeuronInfo[] = [
-        { ...mockNeuron, neuronId: BigInt(1) },
-        { ...mockNeuron, neuronId: BigInt(2) },
+        { ...mockNeuron, neuronId: 1n },
+        { ...mockNeuron, neuronId: 2n },
       ];
       neuronsStore.setNeurons({ neurons, certified: true });
 
@@ -24,8 +24,8 @@ describe("neurons-store", () => {
 
     it("should reset neurons", () => {
       const neurons: NeuronInfo[] = [
-        { ...mockNeuron, neuronId: BigInt(1) },
-        { ...mockNeuron, neuronId: BigInt(2) },
+        { ...mockNeuron, neuronId: 1n },
+        { ...mockNeuron, neuronId: 2n },
       ];
       neuronsStore.setNeurons({ neurons, certified: true });
 
@@ -40,14 +40,14 @@ describe("neurons-store", () => {
 
     it("should push neurons", () => {
       const neurons: NeuronInfo[] = [
-        { ...mockNeuron, neuronId: BigInt(1) },
-        { ...mockNeuron, neuronId: BigInt(2) },
+        { ...mockNeuron, neuronId: 1n },
+        { ...mockNeuron, neuronId: 2n },
       ];
       neuronsStore.setNeurons({ neurons, certified: true });
 
       const moreNeurons: NeuronInfo[] = [
-        { ...mockNeuron, neuronId: BigInt(3) },
-        { ...mockNeuron, neuronId: BigInt(4) },
+        { ...mockNeuron, neuronId: 3n },
+        { ...mockNeuron, neuronId: 4n },
       ];
       neuronsStore.pushNeurons({ neurons: moreNeurons, certified: true });
 
@@ -59,15 +59,15 @@ describe("neurons-store", () => {
     });
 
     it("should substitute duplicated neurons", () => {
-      const duplicatedNeuron = { ...mockNeuron, neuronId: BigInt(2) };
+      const duplicatedNeuron = { ...mockNeuron, neuronId: 2n };
       const neurons: NeuronInfo[] = [
-        { ...mockNeuron, neuronId: BigInt(1) },
+        { ...mockNeuron, neuronId: 1n },
         duplicatedNeuron,
       ];
       neuronsStore.setNeurons({ neurons, certified: true });
 
       const moreNeurons: NeuronInfo[] = [
-        { ...mockNeuron, neuronId: BigInt(3) },
+        { ...mockNeuron, neuronId: 3n },
         duplicatedNeuron,
       ];
       neuronsStore.pushNeurons({ neurons: moreNeurons, certified: true });
@@ -90,14 +90,14 @@ describe("neurons-store", () => {
       const neurons: NeuronInfo[] = [
         {
           ...mockNeuron,
-          neuronId: BigInt(1),
+          neuronId: 1n,
           fullNeuron: {
             ...mockNeuron.fullNeuron,
-            cachedNeuronStake: BigInt(0),
-            maturityE8sEquivalent: BigInt(0),
+            cachedNeuronStake: 0n,
+            maturityE8sEquivalent: 0n,
           },
         },
-        { ...mockNeuron, neuronId: BigInt(2) },
+        { ...mockNeuron, neuronId: 2n },
       ];
       neuronsStore.setNeurons({ neurons, certified: true });
 
@@ -111,9 +111,9 @@ describe("neurons-store", () => {
   describe("sortedNeuronStore", () => {
     it("should sort neurons by createdTimestampSeconds", () => {
       const neurons = [
-        { ...mockNeuron, createdTimestampSeconds: BigInt(2) },
-        { ...mockNeuron, createdTimestampSeconds: BigInt(1) },
-        { ...mockNeuron, createdTimestampSeconds: BigInt(3) },
+        { ...mockNeuron, createdTimestampSeconds: 2n },
+        { ...mockNeuron, createdTimestampSeconds: 1n },
+        { ...mockNeuron, createdTimestampSeconds: 3n },
       ];
       neuronsStore.setNeurons({ neurons: [...neurons], certified: true });
       expect(get(sortedNeuronStore)).toEqual([

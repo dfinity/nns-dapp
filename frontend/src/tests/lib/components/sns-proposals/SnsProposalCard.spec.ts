@@ -114,13 +114,13 @@ describe("SnsProposalCard", () => {
   it("should render a specific color for the status", () => {
     const proposalData: SnsProposalData = {
       ...mockSnsProposal,
-      decided_timestamp_seconds: BigInt(2222),
+      decided_timestamp_seconds: 2_222n,
       latest_tally: [
         {
-          yes: BigInt(10),
-          no: BigInt(3),
-          total: BigInt(30),
-          timestamp_seconds: BigInt(2222),
+          yes: 10n,
+          no: 3n,
+          total: 30n,
+          timestamp_seconds: 2_222n,
         },
       ],
       executed_timestamp_seconds: BigInt(nowInSeconds),

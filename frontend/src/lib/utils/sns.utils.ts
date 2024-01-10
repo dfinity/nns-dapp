@@ -7,6 +7,7 @@ import type { Principal } from "@dfinity/principal";
 import type {
   SnsGetAutoFinalizationStatusResponse,
   SnsGetDerivedStateResponse,
+  SnsNervousSystemFunction,
 } from "@dfinity/sns";
 import type { DerivedState } from "@dfinity/sns/dist/candid/sns_swap";
 import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
@@ -29,7 +30,7 @@ export const getSwapCanisterAccount = ({
 
 /**
  * Returns `undefined` if swapCommitment is not present yet.
- * Returns `BigInt(0)` if myCommitment is present but user has no commitment or amount is not present either.
+ * Returns `0n` if myCommitment is present but user has no commitment or amount is not present either.
  * Returns commitment e8s if commitment is defined.
  */
 export const getCommitmentE8s = (
@@ -39,8 +40,7 @@ export const getCommitmentE8s = (
     return undefined;
   }
   return (
-    fromNullable(swapCommitment?.myCommitment?.icp ?? [])?.amount_e8s ??
-    BigInt(0)
+    fromNullable(swapCommitment?.myCommitment?.icp ?? [])?.amount_e8s ?? 0n
   );
 };
 
@@ -171,3 +171,21 @@ export const swapEndedMoreThanOneWeekAgo = ({
   const oneWeekAgoInSeconds = BigInt(nowInSeconds - SECONDS_IN_DAY * 7);
   return oneWeekAgoInSeconds > summary.swap.params.swap_due_timestamp_seconds;
 };
+
+/**
+ * Returns true if the FunctionType is NativeNervousSystemFunction (same for all same-version snses).
+ */
+export const isNativeNervousSystemFunction = (
+  nsFunction: SnsNervousSystemFunction
+): boolean =>
+  "NativeNervousSystemFunction" in
+  (fromNullable(nsFunction.function_type) ?? {});
+
+/**
+ * Returns true if the FunctionType is GenericNervousSystemFunction (custom per sns).
+ */
+export const isGenericNervousSystemFunction = (
+  nsFunction: SnsNervousSystemFunction
+): boolean =>
+  "GenericNervousSystemFunction" in
+  (fromNullable(nsFunction.function_type) ?? {});

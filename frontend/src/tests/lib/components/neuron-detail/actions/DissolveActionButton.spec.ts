@@ -26,7 +26,7 @@ describe("DissolveActionButton", () => {
       props: {
         neuron: {
           ...mockNeuron,
-          neuronId: BigInt(10),
+          neuronId: 10n,
           state: NeuronState.Locked,
         },
       },
@@ -40,7 +40,7 @@ describe("DissolveActionButton", () => {
       props: {
         neuron: {
           ...mockNeuron,
-          neuronId: BigInt(10),
+          neuronId: 10n,
           state: NeuronState.Dissolving,
         },
       },
@@ -54,7 +54,7 @@ describe("DissolveActionButton", () => {
       props: {
         neuron: {
           ...mockNeuron,
-          neuronId: BigInt(10),
+          neuronId: 10n,
           state: NeuronState.Locked,
         },
       },
@@ -82,7 +82,7 @@ describe("DissolveActionButton", () => {
       props: {
         neuron: {
           ...mockNeuron,
-          neuronId: BigInt(10),
+          neuronId: 10n,
           state: NeuronState.Dissolving,
         },
       },

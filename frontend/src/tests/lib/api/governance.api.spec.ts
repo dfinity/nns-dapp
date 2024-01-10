@@ -66,7 +66,7 @@ describe("neurons-api", () => {
 
     expect(mockGovernanceCanister.stakeNeuron).not.toBeCalled();
 
-    const stake = BigInt(20_000_000);
+    const stake = 20_000_000n;
     const controller = mockIdentity.getPrincipal();
     const fromSubAccount = [2, 3, 4];
 
@@ -95,7 +95,7 @@ describe("neurons-api", () => {
 
     expect(mockGovernanceCanister.stakeNeuronIcrc1).not.toBeCalled();
 
-    const stake = BigInt(20_000_000);
+    const stake = 20_000_000n;
     const controller = mockIdentity.getPrincipal();
     const fromSubAccount = new Uint8Array([5, 6, 7]);
 
@@ -156,7 +156,7 @@ describe("neurons-api", () => {
       );
 
       await increaseDissolveDelay({
-        neuronId: BigInt(10),
+        neuronId: 10n,
         dissolveDelayInSeconds: 12000,
         identity: mockIdentity,
       });
@@ -174,7 +174,7 @@ describe("neurons-api", () => {
 
       const call = () =>
         increaseDissolveDelay({
-          neuronId: BigInt(10),
+          neuronId: 10n,
           dissolveDelayInSeconds: 12000,
           identity: mockIdentity,
         });
@@ -191,9 +191,9 @@ describe("neurons-api", () => {
 
       await setFollowees({
         identity: mockIdentity,
-        neuronId: BigInt(10),
+        neuronId: 10n,
         topic: Topic.ExchangeRate,
-        followees: [BigInt(4), BigInt(7)],
+        followees: [4n, 7n],
       });
 
       expect(mockGovernanceCanister.setFollowees).toBeCalled();
@@ -210,9 +210,9 @@ describe("neurons-api", () => {
       const call = () =>
         setFollowees({
           identity: mockIdentity,
-          neuronId: BigInt(10),
+          neuronId: 10n,
           topic: Topic.ExchangeRate,
-          followees: [BigInt(4), BigInt(7)],
+          followees: [4n, 7n],
         });
       await expect(call).rejects.toThrow(error);
     });
@@ -226,7 +226,7 @@ describe("neurons-api", () => {
 
       await joinCommunityFund({
         identity: mockIdentity,
-        neuronId: BigInt(10),
+        neuronId: 10n,
       });
 
       expect(mockGovernanceCanister.joinCommunityFund).toBeCalled();
@@ -243,7 +243,7 @@ describe("neurons-api", () => {
       const call = () =>
         joinCommunityFund({
           identity: mockIdentity,
-          neuronId: BigInt(10),
+          neuronId: 10n,
         });
       await expect(call).rejects.toThrow(error);
     });
@@ -257,7 +257,7 @@ describe("neurons-api", () => {
 
       await leaveCommunityFund({
         identity: mockIdentity,
-        neuronId: BigInt(10),
+        neuronId: 10n,
       });
 
       expect(mockGovernanceCanister.leaveCommunityFund).toBeCalled();
@@ -274,7 +274,7 @@ describe("neurons-api", () => {
       const call = () =>
         leaveCommunityFund({
           identity: mockIdentity,
-          neuronId: BigInt(10),
+          neuronId: 10n,
         });
       await expect(call).rejects.toThrow(error);
     });
@@ -289,7 +289,7 @@ describe("neurons-api", () => {
       await disburse({
         identity: mockIdentity,
         toAccountId: mockMainAccount.identifier,
-        neuronId: BigInt(10),
+        neuronId: 10n,
       });
 
       expect(mockGovernanceCanister.disburse).toBeCalled();
@@ -307,7 +307,7 @@ describe("neurons-api", () => {
         disburse({
           identity: mockIdentity,
           toAccountId: mockMainAccount.identifier,
-          neuronId: BigInt(10),
+          neuronId: 10n,
         });
       await expect(call).rejects.toThrow(error);
     });
@@ -322,7 +322,7 @@ describe("neurons-api", () => {
       await mergeMaturity({
         identity: mockIdentity,
         percentageToMerge: 50,
-        neuronId: BigInt(10),
+        neuronId: 10n,
       });
 
       expect(mockGovernanceCanister.mergeMaturity).toBeCalled();
@@ -340,7 +340,7 @@ describe("neurons-api", () => {
         mergeMaturity({
           identity: mockIdentity,
           percentageToMerge: 50,
-          neuronId: BigInt(10),
+          neuronId: 10n,
         });
       await expect(call).rejects.toThrow(error);
     });
@@ -355,7 +355,7 @@ describe("neurons-api", () => {
       await stakeMaturity({
         identity: mockIdentity,
         percentageToStake: 50,
-        neuronId: BigInt(10),
+        neuronId: 10n,
       });
 
       expect(mockGovernanceCanister.stakeMaturity).toBeCalled();
@@ -373,7 +373,7 @@ describe("neurons-api", () => {
         stakeMaturity({
           identity: mockIdentity,
           percentageToStake: 50,
-          neuronId: BigInt(10),
+          neuronId: 10n,
         });
 
       await expect(call).rejects.toThrow(error);
@@ -389,7 +389,7 @@ describe("neurons-api", () => {
       await autoStakeMaturity({
         identity: mockIdentity,
         autoStake: true,
-        neuronId: BigInt(10),
+        neuronId: 10n,
       });
 
       expect(mockGovernanceCanister.autoStakeMaturity).toBeCalled();
@@ -407,7 +407,7 @@ describe("neurons-api", () => {
         autoStakeMaturity({
           identity: mockIdentity,
           autoStake: true,
-          neuronId: BigInt(10),
+          neuronId: 10n,
         });
 
       await expect(call).rejects.toThrow(error);
@@ -420,7 +420,7 @@ describe("neurons-api", () => {
 
       const expected = {
         autoStake: true,
-        neuronId: BigInt(10),
+        neuronId: 10n,
       };
 
       await autoStakeMaturity({
@@ -438,7 +438,7 @@ describe("neurons-api", () => {
 
       const expected = {
         autoStake: false,
-        neuronId: BigInt(10),
+        neuronId: 10n,
       };
 
       await autoStakeMaturity({
@@ -452,7 +452,7 @@ describe("neurons-api", () => {
 
   describe("spawnNeuron", () => {
     it("spawn a neuron from a percentage of the maturity successfully", async () => {
-      const newNeuronId = BigInt(12333);
+      const newNeuronId = 12_333n;
       mockGovernanceCanister.spawnNeuron.mockImplementation(
         vi.fn().mockResolvedValue(newNeuronId)
       );
@@ -460,7 +460,7 @@ describe("neurons-api", () => {
       const actualNeuronId = await spawnNeuron({
         identity: mockIdentity,
         percentageToSpawn: 50,
-        neuronId: BigInt(10),
+        neuronId: 10n,
       });
 
       expect(mockGovernanceCanister.spawnNeuron).toBeCalled();
@@ -479,7 +479,7 @@ describe("neurons-api", () => {
         spawnNeuron({
           identity: mockIdentity,
           percentageToSpawn: 50,
-          neuronId: BigInt(10),
+          neuronId: 10n,
         });
       await expect(call).rejects.toThrow(error);
     });
@@ -493,8 +493,8 @@ describe("neurons-api", () => {
 
       await mergeNeurons({
         identity: mockIdentity,
-        sourceNeuronId: BigInt(10),
-        targetNeuronId: BigInt(11),
+        sourceNeuronId: 10n,
+        targetNeuronId: 11n,
       });
 
       expect(mockGovernanceCanister.mergeNeurons).toBeCalled();
@@ -511,8 +511,8 @@ describe("neurons-api", () => {
       const call = () =>
         mergeNeurons({
           identity: mockIdentity,
-          sourceNeuronId: BigInt(10),
-          targetNeuronId: BigInt(11),
+          sourceNeuronId: 10n,
+          targetNeuronId: 11n,
         });
       await expect(call).rejects.toThrow(error);
     });
@@ -526,8 +526,8 @@ describe("neurons-api", () => {
 
       await simulateMergeNeurons({
         identity: mockIdentity,
-        sourceNeuronId: BigInt(10),
-        targetNeuronId: BigInt(11),
+        sourceNeuronId: 10n,
+        targetNeuronId: 11n,
       });
 
       expect(mockGovernanceCanister.simulateMergeNeurons).toBeCalled();
@@ -544,8 +544,8 @@ describe("neurons-api", () => {
       const call = () =>
         simulateMergeNeurons({
           identity: mockIdentity,
-          sourceNeuronId: BigInt(10),
-          targetNeuronId: BigInt(11),
+          sourceNeuronId: 10n,
+          targetNeuronId: 11n,
         });
       await expect(call).rejects.toThrow(error);
     });
@@ -559,7 +559,7 @@ describe("neurons-api", () => {
 
       await addHotkey({
         identity: mockIdentity,
-        neuronId: BigInt(10),
+        neuronId: 10n,
         principal: Principal.fromText("aaaaa-aa"),
       });
 
@@ -577,7 +577,7 @@ describe("neurons-api", () => {
       const call = () =>
         addHotkey({
           identity: mockIdentity,
-          neuronId: BigInt(10),
+          neuronId: 10n,
           principal: Principal.fromText("aaaaa-aa"),
         });
       await expect(call).rejects.toThrow(error);
@@ -592,7 +592,7 @@ describe("neurons-api", () => {
 
       await removeHotkey({
         identity: mockIdentity,
-        neuronId: BigInt(10),
+        neuronId: 10n,
         principal: Principal.fromText("aaaaa-aa"),
       });
 
@@ -610,7 +610,7 @@ describe("neurons-api", () => {
       const call = () =>
         removeHotkey({
           identity: mockIdentity,
-          neuronId: BigInt(10),
+          neuronId: 10n,
           principal: Principal.fromText("aaaaa-aa"),
         });
       await expect(call).rejects.toThrow(error);
@@ -625,7 +625,7 @@ describe("neurons-api", () => {
 
       await startDissolving({
         identity: mockIdentity,
-        neuronId: BigInt(10),
+        neuronId: 10n,
       });
 
       expect(mockGovernanceCanister.startDissolving).toBeCalled();
@@ -642,7 +642,7 @@ describe("neurons-api", () => {
       const call = () =>
         startDissolving({
           identity: mockIdentity,
-          neuronId: BigInt(10),
+          neuronId: 10n,
         });
       await expect(call).rejects.toThrow(error);
     });
@@ -656,7 +656,7 @@ describe("neurons-api", () => {
 
       await stopDissolving({
         identity: mockIdentity,
-        neuronId: BigInt(10),
+        neuronId: 10n,
       });
 
       expect(mockGovernanceCanister.stopDissolving).toBeCalled();
@@ -673,22 +673,22 @@ describe("neurons-api", () => {
       const call = () =>
         stopDissolving({
           identity: mockIdentity,
-          neuronId: BigInt(10),
+          neuronId: 10n,
         });
       await expect(call).rejects.toThrow(error);
     });
   });
 
   describe("splitNeuron", () => {
-    const amount = BigInt(220_000_000);
+    const amount = 220_000_000n;
     it("updates neuron successfully", async () => {
       mockGovernanceCanister.splitNeuron.mockImplementation(
-        vi.fn().mockResolvedValue(BigInt(11))
+        vi.fn().mockResolvedValue(11n)
       );
 
       await splitNeuron({
         identity: mockIdentity,
-        neuronId: BigInt(10),
+        neuronId: 10n,
         amount,
       });
 
@@ -706,7 +706,7 @@ describe("neurons-api", () => {
       const call = () =>
         splitNeuron({
           identity: mockIdentity,
-          neuronId: BigInt(10),
+          neuronId: 10n,
           amount,
         });
       expect(mockGovernanceCanister.splitNeuron).not.toBeCalled();
@@ -715,9 +715,9 @@ describe("neurons-api", () => {
   });
 
   describe("registerVote", () => {
-    const neuronId = BigInt(110);
+    const neuronId = 110n;
     const identity = mockIdentity;
-    const proposalId = BigInt(110);
+    const proposalId = 110n;
 
     it("should call the canister to cast vote neuronIds count", async () => {
       await registerVote({

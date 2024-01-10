@@ -144,6 +144,13 @@
         }
       }
     },
+    "bitcoin": {
+      "remote": {
+        "id": {
+          "mainnet": "ghsi2-tqaaa-aaaan-aaaca-cai"
+        }
+      }
+    },
     "ckbtc_ledger": {
       "build": [
         "true"
@@ -323,7 +330,8 @@
           "ENABLE_ICP_ICRC": false,
           "ENABLE_MY_TOKENS": false,
           "ENABLE_CKETH": true,
-          "ENABLE_CKBTC_ICRC2": true
+          "ENABLE_CKBTC_ICRC2": true,
+          "ENABLE_SNS_TYPES_FILTER": false
         }
       }
     },

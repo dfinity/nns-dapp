@@ -28,7 +28,7 @@
 
   let max = 0;
   $: max =
-    stakeE8s === BigInt(0)
+    stakeE8s === 0n
       ? 0
       : ulpsToNumber({
           ulps: stakeE8s - BigInt($mainTransactionFeeStore),
