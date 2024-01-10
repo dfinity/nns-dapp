@@ -29,10 +29,15 @@
 {#if totalVotingNeurons > 0}
   <ExpandableProposalNeurons testId="votable-neurons">
     <div slot="start" data-tid="voting-collapsible-toolbar-neurons">
-      {replacePlaceholders($i18n.proposal_detail__vote.vote_with_neurons, {
-        $votable_count: `${selectedVotingNeurons}`,
-        $all_count: `${totalVotingNeurons}`,
-      })}
+      {replacePlaceholders(
+        selectedVotingNeurons > 1
+          ? $i18n.proposal_detail__vote.vote_with_neurons_plural
+          : $i18n.proposal_detail__vote.vote_with_neurons,
+        {
+          $votable_count: `${selectedVotingNeurons}`,
+          $all_count: `${totalVotingNeurons}`,
+        }
+      )}
     </div>
     <svelte:fragment slot="end">
       <span class="label">{$i18n.proposal_detail__vote.voting_power}</span>

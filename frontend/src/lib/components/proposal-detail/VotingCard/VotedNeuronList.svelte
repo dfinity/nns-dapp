@@ -38,9 +38,14 @@
         class:yes={allVotedVote === Vote.Yes}
         class:no={allVotedVote === Vote.No}
       >
-        {replacePlaceholders($i18n.proposal_detail.neurons_voted, {
-          $count: `${votedNeuronCount}`,
-        })}
+        {replacePlaceholders(
+          votedNeuronCount > 1
+            ? $i18n.proposal_detail.neurons_voted_plural
+            : $i18n.proposal_detail.neurons_voted,
+          {
+            $count: `${votedNeuronCount}`,
+          }
+        )}
         <VoteResultIcon vote={allVotedVote} />
       </span>
     </svelte:fragment>
