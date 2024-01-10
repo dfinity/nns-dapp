@@ -1,10 +1,5 @@
 <script lang="ts">
-  import {
-    isNullish,
-    nonNullish,
-    type TokenAmount,
-    TokenAmountV2,
-  } from "@dfinity/utils";
+  import { isNullish, nonNullish, type TokenAmountV2 } from "@dfinity/utils";
   import PageHeading from "../common/PageHeading.svelte";
   import { SkeletonText } from "@dfinity/gix-components";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
@@ -19,7 +14,7 @@
   import Tooltip from "../ui/Tooltip.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
-  export let balance: TokenAmount | TokenAmountV2 | undefined = undefined;
+  export let balance: TokenAmountV2 | undefined = undefined;
   export let accountName: string;
   export let principal: Principal | undefined = undefined;
 
