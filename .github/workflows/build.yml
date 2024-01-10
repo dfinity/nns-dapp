@@ -30,14 +30,14 @@ jobs:
       - name: Skip build for testing
         # Set to true and set a recent `run_id` below to reuse an existing build
         # instead of building.
-        if: false
+        if: true
         id: skip_build
         run: |
           echo "skip_build=true" >> "$GITHUB_OUTPUT"
           mkdir out
           # The run ID is the number at the end of a URL like this:
           # https://github.com/dfinity/nns-dapp/actions/runs/5801187848
-          run_id=5801187848
+          run_id=7474956401
           gh run download "$run_id" --dir ./out -n out
       - name: Build nns-dapp repo
         if: steps.skip_build.outputs.skip_build != 'true'
