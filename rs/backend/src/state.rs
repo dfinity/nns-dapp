@@ -23,6 +23,7 @@
 use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
 use crate::accounts_store::schema::map::AccountsDbAsMap;
 use crate::accounts_store::schema::proxy::AccountsDb;
+use crate::accounts_store::schema::AccountsDbTrait;
 use crate::accounts_store::schema::SchemaLabel;
 use crate::accounts_store::AccountsStore;
 use crate::arguments::CanisterArguments;

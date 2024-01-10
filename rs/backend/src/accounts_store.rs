@@ -370,9 +370,6 @@ pub enum AddPendingTransactionResponse {
 }
 
 impl AccountsStore {
-    pub fn schema_label(&self) -> SchemaLabel {
-        self.accounts_db.schema_label()
-    }
     /// Starts migrating accounts to the new db.
     pub fn start_migrating_accounts_to(&mut self, accounts_db: AccountsDb) {
         self.accounts_db.start_migrating_accounts_to(accounts_db);
