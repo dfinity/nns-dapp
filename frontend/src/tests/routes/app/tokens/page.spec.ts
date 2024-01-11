@@ -2,6 +2,7 @@ import * as ckBTCMinterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as snsLedgerApi from "$lib/api/sns-ledger.api";
 import * as walletLedgerApi from "$lib/api/wallet-ledger.api";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
@@ -590,16 +591,46 @@ describe("Tokens route", () => {
         });
       });
 
-      it("should click on a row should trigger a login", async () => {
+      it("should click on the Internet Computer row should trigger a login with redirect to NNS Accounts", async () => {
+        vi.spyOn(mockAuthClient, "login").mockImplementation(
+          async ({ onSuccess }: { onSuccess: () => Promise<void> }) => {
+            onSuccess();
+          }
+        );
         const po = await renderPage();
 
         const tablePo = po.getSignInTokensPagePo().getTokensTablePo();
 
         expect(mockAuthClient.login).toBeCalledTimes(0);
-        const rows = await tablePo.getRows();
-        await rows[0].click();
+        const nnsRow = await tablePo.findRowByName("Internet Computer");
+        await nnsRow.click();
 
         expect(mockAuthClient.login).toBeCalledTimes(1);
+
+        expect(get(pageStore).path).toEqual(AppPath.Accounts);
+        expect(get(pageStore).universe).toEqual(OWN_CANISTER_ID_TEXT);
+      });
+
+      it("should click on not Internet Computer row should trigger a login with redirect to the wallet", async () => {
+        vi.spyOn(mockAuthClient, "login").mockImplementation(
+          async ({ onSuccess }: { onSuccess: () => Promise<void> }) => {
+            onSuccess();
+          }
+        );
+        mockAuthClient.getIdentity.mockReturnValue(mockIdentity);
+
+        const po = await renderPage();
+
+        const tablePo = po.getSignInTokensPagePo().getTokensTablePo();
+
+        expect(mockAuthClient.login).toBeCalledTimes(0);
+        const nnsRow = await tablePo.findRowByName("Tetris");
+        await nnsRow.click();
+
+        expect(mockAuthClient.login).toBeCalledTimes(1);
+
+        expect(get(pageStore).path).toEqual(AppPath.Wallet);
+        expect(get(pageStore).universe).toEqual(rootCanisterIdTetris.toText());
       });
     });
   });
