@@ -662,10 +662,31 @@ describe("sns-proposals utils", () => {
     };
 
     describe("generateSnsProposalTypeFilterData", () => {
+      const nativeNervousSystemFunction1 = {
+        ...nativeNervousSystemFunctionMock,
+        id: 1n,
+      };
+      const nativeNervousSystemFunction2 = {
+        ...nativeNervousSystemFunctionMock,
+        id: 2n,
+      };
+      const nativeNervousSystemFunction3 = {
+        ...nativeNervousSystemFunctionMock,
+        id: 3n,
+      };
+      const genericNervousSystemFunctions1 = {
+        ...genericNervousSystemFunctionMock,
+        id: 1001n,
+      };
+      const genericNervousSystemFunctions2 = {
+        ...genericNervousSystemFunctionMock,
+        id: 1002n,
+      };
+
       it("should use nsFunctions to create filter entries", () => {
         const nsFunctions: SnsNervousSystemFunction[] = [
-          nativeNervousSystemFunctionMock,
-          nativeNervousSystemFunctionMock,
+          nativeNervousSystemFunction1,
+          nativeNervousSystemFunction2,
         ];
 
         expect(
@@ -674,14 +695,17 @@ describe("sns-proposals utils", () => {
             typesFilterState: [],
             snsName: "test_sns",
           })
-        ).toStrictEqual([filterEntry, filterEntry]);
+        ).toStrictEqual([
+          { ...filterEntry, id: "1", value: "1" },
+          { ...filterEntry, id: "2", value: "2" },
+        ]);
       });
 
       it('should ignore "All Topic" ns function', () => {
         const nsFunctions: SnsNervousSystemFunction[] = [
           allTopicsNervousSystemFunctionMock,
-          nativeNervousSystemFunctionMock,
-          nativeNervousSystemFunctionMock,
+          nativeNervousSystemFunction1,
+          nativeNervousSystemFunction2,
         ];
 
         expect(
@@ -690,14 +714,17 @@ describe("sns-proposals utils", () => {
             typesFilterState: [],
             snsName: "test_sns",
           })
-        ).toStrictEqual([filterEntry, filterEntry]);
+        ).toStrictEqual([
+          { ...filterEntry, id: "1", value: "1" },
+          { ...filterEntry, id: "2", value: "2" },
+        ]);
       });
 
       it("should combine generic nsFunctions to a single entry", () => {
         const nsFunctions: SnsNervousSystemFunction[] = [
-          nativeNervousSystemFunctionMock,
-          genericNervousSystemFunctionMock,
-          genericNervousSystemFunctionMock,
+          nativeNervousSystemFunction1,
+          genericNervousSystemFunctions1,
+          genericNervousSystemFunctions2,
         ];
 
         expect(
@@ -711,10 +738,9 @@ describe("sns-proposals utils", () => {
 
       it('should not have "All Generic" entry if no generic nsFunctions available', () => {
         const nsFunctions: SnsNervousSystemFunction[] = [
-          nativeNervousSystemFunctionMock,
-          nativeNervousSystemFunctionMock,
-          nativeNervousSystemFunctionMock,
-          nativeNervousSystemFunctionMock,
+          nativeNervousSystemFunction1,
+          nativeNervousSystemFunction2,
+          nativeNervousSystemFunction3,
         ];
 
         expect(
@@ -728,18 +754,9 @@ describe("sns-proposals utils", () => {
 
       it("should preserve selection", () => {
         const nsFunctions: SnsNervousSystemFunction[] = [
-          {
-            ...nativeNervousSystemFunctionMock,
-            id: 1n,
-          },
-          {
-            ...nativeNervousSystemFunctionMock,
-            id: 2n,
-          },
-          {
-            ...nativeNervousSystemFunctionMock,
-            id: 3n,
-          },
+          nativeNervousSystemFunction1,
+          nativeNervousSystemFunction2,
+          nativeNervousSystemFunction3,
         ];
         const typesFilterState = [
           {
@@ -773,18 +790,9 @@ describe("sns-proposals utils", () => {
 
       it("should select new entries", () => {
         const nsFunctions: SnsNervousSystemFunction[] = [
-          {
-            ...nativeNervousSystemFunctionMock,
-            id: 1n,
-          },
-          {
-            ...nativeNervousSystemFunctionMock,
-            id: 2n,
-          },
-          {
-            ...nativeNervousSystemFunctionMock,
-            id: 3n,
-          },
+          nativeNervousSystemFunction1,
+          nativeNervousSystemFunction2,
+          nativeNervousSystemFunction3,
         ];
         const typesFilterState = [
           {
