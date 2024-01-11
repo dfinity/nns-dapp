@@ -148,7 +148,6 @@ describe("VotingCard", () => {
 
     describe("Voted neuron header", () => {
       it("should display ineligible neurons block", async () => {
-        allowLoggingInOneTestForDebugging();
         const po = await renderComponent({
           neuronsVotedForProposal: [yesVoted],
         });
@@ -157,7 +156,6 @@ describe("VotingCard", () => {
       });
 
       it("should display ineligible neurons block", async () => {
-        allowLoggingInOneTestForDebugging();
         const po = await renderComponent({
           neuronsVotedForProposal: [yesVoted, noVoted],
         });
@@ -168,7 +166,6 @@ describe("VotingCard", () => {
 
     describe("Ineligible neuron header", () => {
       it("should display ineligible neurons block", async () => {
-        allowLoggingInOneTestForDebugging();
         const po = await renderComponent({
           ineligibleNeurons: [
             {
@@ -184,7 +181,6 @@ describe("VotingCard", () => {
       });
 
       it("should display ineligible neurons block", async () => {
-        allowLoggingInOneTestForDebugging();
         const po = await renderComponent({
           ineligibleNeurons: [
             {
