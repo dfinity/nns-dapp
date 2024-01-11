@@ -24,10 +24,7 @@ describe("icp-ledger.api", () => {
     let spyTransfer;
 
     const { identifier: accountIdentifier } = mockMainAccount;
-    const amount = TokenAmount.fromE8s({
-      amount: 11_000n,
-      token: ICPToken,
-    });
+    const amount = 11_000n;
 
     const now = Date.now();
     const nowInBigIntNanoSeconds = BigInt(now) * 1_000_000n;
@@ -53,7 +50,7 @@ describe("icp-ledger.api", () => {
 
       expect(spyTransfer).toHaveBeenCalledWith({
         to: AccountIdentifier.fromHex(accountIdentifier),
-        amount: amount.toE8s(),
+        amount,
         createdAt: nowInBigIntNanoSeconds,
       });
     });
@@ -72,7 +69,7 @@ describe("icp-ledger.api", () => {
 
       expect(spyTransfer).toHaveBeenCalledWith({
         to: AccountIdentifier.fromHex(accountIdentifier),
-        amount: amount.toE8s(),
+        amount,
         fromSubAccount,
         createdAt: nowInBigIntNanoSeconds,
       });
@@ -89,7 +86,7 @@ describe("icp-ledger.api", () => {
 
       expect(spyTransfer).toHaveBeenCalledWith({
         to: AccountIdentifier.fromHex(accountIdentifier),
-        amount: amount.toE8s(),
+        amount,
         memo,
         createdAt: nowInBigIntNanoSeconds,
       });
@@ -108,7 +105,7 @@ describe("icp-ledger.api", () => {
 
       expect(spyTransfer).toHaveBeenCalledWith({
         to: AccountIdentifier.fromHex(accountIdentifier),
-        amount: amount.toE8s(),
+        amount,
         memo,
         createdAt,
       });
