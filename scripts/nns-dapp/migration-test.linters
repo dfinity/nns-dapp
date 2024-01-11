@@ -1,6 +1,26 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+migration_test_linters_help() {
+  cat <<-EOF
+		A library of methods for linting wasms and argument files.
+
+		Usage:
+		- Source this file from your code.
+		- You can also call this file directly.  This may be useful for
+		  ad-hoc runs but is not intended for production use.
+
+      Usage: scripts/nns-dapp/migration-test.linters <function> [arguments..]
+      e.g.:  scripts/nns-dapp/migration-test.linters lint_release_name 'fox trot'
+             ERROR: Invalid release name
+             Expected: A valid git tag name
+             Actual:   'fox trot'
+
+      A list of functions:
+		EOF
+  declare -F | awk '{print "        " $3}' | grep -vw "$FUNCNAME"
+}
+
 # Checks that the configuration number is valid.
 # TODO: Unit Test
 lint_configuration_num() {
@@ -123,23 +143,7 @@ lint_argfile() {
 # TODO: Unit Test
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   if (($# == 0)) || [[ "${1:-}" == "--help" ]]; then
-    cat <<-EOF
-		A library of methods for linting wasms and argument files.
-
-		Usage:
-		- Source this file from your code.
-		- You can also call this file directly.  This may be useful for
-		  ad-hoc runs but is not intended for production use.
-
-      Usage: scripts/nns-dapp/migration-test.linters <function> [arguments..]
-      e.g.:  scripts/nns-dapp/migration-test.linters lint_release_name 'fox trot'
-             ERROR: Invalid release name
-             Expected: A valid git tag name
-             Actual:   'fox trot'
-
-      A list of functions:
-		EOF
-    declare -F | awk '{print "        " $3}'
+    migration_test_linters_help
     exit 0
   fi
   "${@}"
