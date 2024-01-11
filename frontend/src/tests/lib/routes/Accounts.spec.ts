@@ -868,9 +868,11 @@ describe("Accounts", () => {
       },
     });
 
+    expect(get(pageStore)?.path).toEqual(AppPath.Accounts);
+
     render(Accounts);
 
-    await waitFor(() => expect(get(pageStore)?.path).toEqual(AppPath.Tokens));
+    expect(get(pageStore)?.path).toEqual(AppPath.Tokens);
   });
 
   it("should not redirect to Tokens page when tokens page is not enabled and universe is not NNS", async () => {
@@ -883,18 +885,11 @@ describe("Accounts", () => {
       },
     });
 
+    expect(get(pageStore)?.path).toEqual(AppPath.Accounts);
+
     render(Accounts);
 
-    // We wait for the `waitFor` to throw an error when waiting for the page to change.
-    // This is to keep the test similar to the previous one when we waited for the page to change.
-    await waitFor(() => {
-      const call = async () => {
-        await waitFor(() =>
-          expect(get(pageStore)?.path).toEqual(AppPath.Tokens)
-        );
-      };
-      expect(call).rejects.toThrowError();
-    });
+    expect(get(pageStore)?.path).toEqual(AppPath.Accounts);
   });
 
   it("should not redirect to Tokens page when tokens page is enabled and universe is NNS", async () => {
@@ -907,17 +902,10 @@ describe("Accounts", () => {
       },
     });
 
+    expect(get(pageStore)?.path).toEqual(AppPath.Accounts);
+
     render(Accounts);
 
-    // We wait for the `waitFor` to throw an error when waiting for the page to change.
-    // This is to keep the test similar to the previous one when we waited for the page to change.
-    await waitFor(() => {
-      const call = async () => {
-        await waitFor(() =>
-          expect(get(pageStore)?.path).toEqual(AppPath.Tokens)
-        );
-      };
-      expect(call).rejects.toThrowError();
-    });
+    expect(get(pageStore)?.path).toEqual(AppPath.Accounts);
   });
 });
