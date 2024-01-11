@@ -228,7 +228,7 @@ describe("canisters-api", () => {
 
       const response = await createCanister({
         identity: mockIdentity,
-        amount: 300000000n,
+        amount: 300_000_000n,
       });
       expect(mockLedgerCanister.transfer).toBeCalled();
       expect(mockCMCCanister.notifyCreateCanister).toBeCalled();
@@ -248,7 +248,7 @@ describe("canisters-api", () => {
       const longName = "a".repeat(MAX_CANISTER_NAME_LENGTH);
       const response = await createCanister({
         identity: mockIdentity,
-        amount: 300000000n,
+        amount: 300_000_000n,
         name: longName,
       });
       expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
@@ -266,7 +266,7 @@ describe("canisters-api", () => {
 
       const response = await createCanister({
         identity: mockIdentity,
-        amount: 300000000n,
+        amount: 300_000_000n,
       });
       expect(mockCMCCanister.notifyCreateCanister).toHaveBeenCalledTimes(2);
       expect(response).toEqual(mockCanisterDetails.id);
@@ -277,7 +277,7 @@ describe("canisters-api", () => {
       mockCMCCanister.notifyCreateCanister.mockResolvedValue(
         mockCanisterDetails.id
       );
-      const amount = 300000000n;
+      const amount = 300_000_000n;
 
       const response = await createCanister({
         identity: mockIdentity,
@@ -313,7 +313,7 @@ describe("canisters-api", () => {
       const call = () =>
         createCanister({
           identity: mockIdentity,
-          amount: 300000000n,
+          amount: 300_000_000n,
         });
       expect(call).rejects.toThrow();
       expect(mockCMCCanister.notifyCreateCanister).not.toBeCalled();
@@ -325,7 +325,7 @@ describe("canisters-api", () => {
       const call = () =>
         createCanister({
           identity: mockIdentity,
-          amount: 300000000n,
+          amount: 300_000_000n,
           name: longName,
         });
 
@@ -353,7 +353,7 @@ describe("canisters-api", () => {
 
       await topUpCanister({
         identity: mockIdentity,
-        amount: 300000000n,
+        amount: 300_000_000n,
         canisterId: mockCanisterDetails.id,
       });
       expect(mockLedgerCanister.transfer).toBeCalled();
@@ -368,7 +368,7 @@ describe("canisters-api", () => {
 
       await topUpCanister({
         identity: mockIdentity,
-        amount: 300000000n,
+        amount: 300_000_000n,
         canisterId: mockCanisterDetails.id,
       });
       expect(mockCMCCanister.notifyTopUp).toHaveBeenCalledTimes(2);
@@ -386,7 +386,7 @@ describe("canisters-api", () => {
         subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
       });
 
-      const amount = 300000000n;
+      const amount = 300_000_000n;
       await topUpCanister({
         identity: mockIdentity,
         amount,
@@ -411,7 +411,7 @@ describe("canisters-api", () => {
       const call = () =>
         topUpCanister({
           identity: mockIdentity,
-          amount: 300000000n,
+          amount: 300_000_000n,
           canisterId: mockCanisterDetails.id,
         });
       expect(call).rejects.toThrow();
