@@ -32,6 +32,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+- Exercise new migration test.
+
 #### Changed
 
 * Upgrade to `dfx` 0.15.3.
