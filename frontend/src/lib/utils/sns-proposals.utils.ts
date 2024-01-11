@@ -491,7 +491,7 @@ export const generateSnsProposalTypesFilterData = ({
   typesFilterState: Filter<SnsProposalTypeFilterId>[];
   snsName: string;
 }): Filter<SnsProposalTypeFilterId>[] => {
-  // transfer only unchecked entries to preselect new items that are not in the current filter state
+  // New proposal types are checked by default so only keep unchecked those types that were already unchecked.
   const getCheckedState = (id: string) =>
     typesFilterState.find(({ id: stateId }) => id === stateId)?.checked !==
     false;
@@ -507,7 +507,7 @@ export const generateSnsProposalTypesFilterData = ({
       id,
       value: id,
       name: name,
-      // transfer only unchecked entries to preselect new items that are not in the current filter state
+      // New proposal types are checked by default so only keep unchecked those types that were already unchecked.
       checked: getCheckedState(id),
     }));
   const allGenericProposalsLabel = replacePlaceholders(
