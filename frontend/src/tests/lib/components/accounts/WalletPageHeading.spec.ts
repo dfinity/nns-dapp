@@ -42,7 +42,7 @@ describe("WalletPageHeading", () => {
     const po = renderComponent({ balance, accountName });
 
     expect(await po.getTitle()).toBe("3.14 ICP");
-    expect(await po.hasSkeleton()).toBe(false);
+    expect(await po.hasBalancePlaceholder()).toBe(false);
   });
 
   it("should render tooltip with detailed balance", async () => {
@@ -53,16 +53,16 @@ describe("WalletPageHeading", () => {
     const po = renderComponent({ balance, accountName });
 
     expect(await po.getTooltipText()).toBe("Current balance: 3.14159265 ICP");
-    expect(await po.hasSkeleton()).toBe(false);
+    expect(await po.hasBalancePlaceholder()).toBe(false);
   });
 
-  it("should render skeleton if no balance", async () => {
+  it("should render balance placeholder if no balance", async () => {
     const po = renderComponent({
       balance: undefined,
       accountName: accountName,
     });
 
-    expect(await po.hasSkeleton()).toBe(true);
+    expect(await po.hasBalancePlaceholder()).toBe(true);
   });
 
   it("should render name as subtitle", async () => {
