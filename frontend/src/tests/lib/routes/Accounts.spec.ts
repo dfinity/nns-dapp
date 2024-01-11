@@ -774,7 +774,7 @@ describe("Accounts", () => {
         expect(icpLedgerApi.sendICP).toHaveBeenCalledWith({
           identity: mockIdentity,
           to: destinationAddress,
-          amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
+          amount: TokenAmount.fromNumber({ amount, token: ICPToken }).toE8s(),
           fromSubaccount: undefined,
         });
       });
@@ -826,7 +826,7 @@ describe("Accounts", () => {
         expect(icpLedgerApi.sendICP).toHaveBeenCalledWith({
           identity: mockIdentity,
           to: destinationAddress,
-          amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
+          amount: TokenAmount.fromNumber({ amount, token: ICPToken }).toE8s(),
           fromSubAccount: mockSubAccount.subAccount,
         });
       });

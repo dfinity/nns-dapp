@@ -328,7 +328,7 @@ export const transferICP = async ({
           identity,
           to,
           fromSubAccount: subAccount,
-          amount: tokenAmount,
+          amount: tokenAmount.toE8s(),
         }));
 
     // Transfer can be to one of the user's account.
