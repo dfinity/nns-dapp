@@ -13,7 +13,10 @@
     loadSnsFilters,
     updateSnsTypeFilter,
   } from "$lib/services/sns-filters.services";
-  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
+  import {
+    snsOnlyProjectStore,
+    snsProjectSelectedStore,
+  } from "$lib/derived/sns/sns-selected-project.derived";
   import {
     snsFiltersStore,
     type SnsFiltersStoreData,
@@ -41,6 +44,7 @@
       updateSnsTypeFilter({
         rootCanisterId: selectedProjectCanisterId,
         nsFunctions: $nsFunctionsStore,
+        snsName: $snsProjectSelectedStore?.summary?.metadata?.name ?? "",
       });
     }
   };

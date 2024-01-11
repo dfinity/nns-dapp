@@ -656,7 +656,7 @@ describe("sns-proposals utils", () => {
     };
     const allSnsGenericFilterEntry: Filter<SnsProposalTypeFilterId> = {
       id: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
-      name: "All SNS-specific proposals",
+      name: "All test_sns specific proposals",
       value: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
       checked: true,
     };
@@ -672,6 +672,7 @@ describe("sns-proposals utils", () => {
           generateSnsProposalTypesFilterData({
             nsFunctions,
             typesFilterState: [],
+            snsName: "test_sns",
           })
         ).toStrictEqual([filterEntry, filterEntry]);
       });
@@ -687,6 +688,7 @@ describe("sns-proposals utils", () => {
           generateSnsProposalTypesFilterData({
             nsFunctions,
             typesFilterState: [],
+            snsName: "test_sns",
           })
         ).toStrictEqual([filterEntry, filterEntry]);
       });
@@ -702,6 +704,7 @@ describe("sns-proposals utils", () => {
           generateSnsProposalTypesFilterData({
             nsFunctions,
             typesFilterState: [],
+            snsName: "test_sns",
           })
         ).toStrictEqual([filterEntry, allSnsGenericFilterEntry]);
       });
@@ -718,6 +721,7 @@ describe("sns-proposals utils", () => {
           generateSnsProposalTypesFilterData({
             nsFunctions,
             typesFilterState: [],
+            snsName: "test_sns",
           })
         ).not.toContain(allSnsGenericFilterEntry);
       });
@@ -762,6 +766,7 @@ describe("sns-proposals utils", () => {
           generateSnsProposalTypesFilterData({
             nsFunctions,
             typesFilterState,
+            snsName: "test_sns",
           })
         ).toStrictEqual(typesFilterState);
       });
@@ -810,6 +815,7 @@ describe("sns-proposals utils", () => {
           generateSnsProposalTypesFilterData({
             nsFunctions,
             typesFilterState,
+            snsName: "test_sns",
           })
         ).toStrictEqual(result);
       });

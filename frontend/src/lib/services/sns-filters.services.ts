@@ -84,15 +84,18 @@ export const loadSnsFilters = async (rootCanisterId: Principal) => {
 export const updateSnsTypeFilter = ({
   rootCanisterId,
   nsFunctions,
+  snsName,
 }: {
   rootCanisterId: Principal;
   nsFunctions: SnsNervousSystemFunction[];
+  snsName: string;
 }) => {
   const typesFilterState =
     get(snsFiltersStore)?.[rootCanisterId.toText()]?.types ?? [];
   const types = generateSnsProposalTypesFilterData({
     nsFunctions,
     typesFilterState,
+    snsName,
   });
   snsFiltersStore.setTypes({
     rootCanisterId,

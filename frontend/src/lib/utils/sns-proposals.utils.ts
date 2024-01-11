@@ -11,6 +11,7 @@ import type {
   UniversalProposalStatus,
   VotingNeuron,
 } from "$lib/types/proposals";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import {
   isGenericNervousSystemFunction,
@@ -484,9 +485,11 @@ export const getUniversalProposalStatus = (
 export const generateSnsProposalTypesFilterData = ({
   nsFunctions,
   typesFilterState,
+  snsName,
 }: {
   nsFunctions: SnsNervousSystemFunction[];
   typesFilterState: Filter<SnsProposalTypeFilterId>[];
+  snsName: string;
 }): Filter<SnsProposalTypeFilterId>[] => {
   // transfer only unchecked entries to preselect new items that are not in the current filter state
   const getCheckedState = (id: string) =>
@@ -507,6 +510,12 @@ export const generateSnsProposalTypesFilterData = ({
       // transfer only unchecked entries to preselect new items that are not in the current filter state
       checked: getCheckedState(id),
     }));
+  const allGenericProposalsLabel = replacePlaceholders(
+    get(i18n).sns_types.sns_specific,
+    {
+      $snsName: snsName,
+    }
+  );
   const genericNsFunctionEntries: Filter<SnsProposalTypeFilterId>[] =
     nsFunctions.some(isGenericNervousSystemFunction)
       ? // Replace all generic entries w/ a single "All Generic"
@@ -514,7 +523,7 @@ export const generateSnsProposalTypesFilterData = ({
           {
             id: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
             value: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
-            name: get(i18n).sns_types.sns_specific,
+            name: allGenericProposalsLabel,
             checked: getCheckedState(ALL_SNS_GENERIC_PROPOSAL_TYPES_ID),
           },
         ]

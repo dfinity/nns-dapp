@@ -950,7 +950,7 @@
     "universe_logo": "$universe logo"
   },
   "sns_types": {
-    "sns_specific": "All SNS-specific proposals"
+    "sns_specific": "All $snsName specific proposals"
   },
   "sns_rewards_status": {
     "0": "Unknown",
