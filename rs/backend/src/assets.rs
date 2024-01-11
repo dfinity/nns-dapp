@@ -12,7 +12,8 @@ use flate2::write::GzEncoder;
 use flate2::Compression;
 use ic_cdk::println;
 use ic_certified_map::{labeled, labeled_hash, AsHashTree, Hash, RbTree};
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize
+           };
 use serde_bytes::ByteBuf;
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
