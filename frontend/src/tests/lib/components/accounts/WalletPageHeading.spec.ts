@@ -5,22 +5,22 @@ import en from "$tests/mocks/i18n.mock";
 import { WalletPageHeadingPo } from "$tests/page-objects/WalletPageHeading.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { Principal } from "@dfinity/principal";
-import { ICPToken, TokenAmount } from "@dfinity/utils";
+import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("WalletPageHeading", () => {
-  const balance = TokenAmount.fromString({
+  const balance = TokenAmountV2.fromString({
     amount: "1",
     token: ICPToken,
-  }) as TokenAmount;
+  }) as TokenAmountV2;
   const accountName = "Account Name";
   const renderComponent = ({
     balance,
     accountName,
     principal,
   }: {
-    balance?: TokenAmount;
+    balance?: TokenAmountV2;
     accountName: string;
     principal?: Principal;
   }) => {
@@ -35,34 +35,34 @@ describe("WalletPageHeading", () => {
   };
 
   it("should render balance as title and no skeleton", async () => {
-    const balance = TokenAmount.fromString({
+    const balance = TokenAmountV2.fromString({
       amount: "3.14159265",
       token: ICPToken,
-    }) as TokenAmount;
+    }) as TokenAmountV2;
     const po = renderComponent({ balance, accountName });
 
     expect(await po.getTitle()).toBe("3.14 ICP");
-    expect(await po.hasSkeleton()).toBe(false);
+    expect(await po.hasBalancePlaceholder()).toBe(false);
   });
 
   it("should render tooltip with detailed balance", async () => {
-    const balance = TokenAmount.fromString({
+    const balance = TokenAmountV2.fromString({
       amount: "3.14159265",
       token: ICPToken,
-    }) as TokenAmount;
+    }) as TokenAmountV2;
     const po = renderComponent({ balance, accountName });
 
     expect(await po.getTooltipText()).toBe("Current balance: 3.14159265 ICP");
-    expect(await po.hasSkeleton()).toBe(false);
+    expect(await po.hasBalancePlaceholder()).toBe(false);
   });
 
-  it("should render skeleton if no balance", async () => {
+  it("should render balance placeholder if no balance", async () => {
     const po = renderComponent({
       balance: undefined,
       accountName: accountName,
     });
 
-    expect(await po.hasSkeleton()).toBe(true);
+    expect(await po.hasBalancePlaceholder()).toBe(true);
   });
 
   it("should render name as subtitle", async () => {
@@ -90,7 +90,7 @@ describe("WalletPageHeading", () => {
     accountName,
   }: {
     intersecting: boolean;
-    balance: TokenAmount;
+    balance: TokenAmountV2;
     accountName: string;
     expectedHeader: string;
   }) => {

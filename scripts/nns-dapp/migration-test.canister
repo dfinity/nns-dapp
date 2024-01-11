@@ -1,6 +1,24 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Prints help message
+migration_test_canisters_help() {
+  cat <<-EOF
+	A library of methods for getting and manipulating the nns-canister state.
+
+	Usage:
+	- Source this file from your code.
+	- You can also call this file directly.  This may be useful for
+	  ad-hoc runs but is not intended for production use.
+
+	Usage: scripts/nns-dapp/migration-test.canister <function> [arguments..]
+	e.g.:  scripts/nns-dapp/migration-test.canister verify_healthy
+
+	A list of functions:
+	EOF
+  declare -F | awk '{print "        " $3}' | grep -vw "${FUNCNAME[0]}"
+}
+
 # Verifies that the nns-dapp canister is healthy
 verify_healthy() {
   dfx canister call nns-dapp get_stats
@@ -207,20 +225,7 @@ assert_schema_is() {
 # This file is intended to be sourced, but if called directly, offer some help
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   if (($# == 0)) || [[ "${1:-}" == "--help" ]]; then
-    cat <<-EOF
-		A library of methods for getting and manipulating the nns-canister state.
-
-		Usage:
-		- Source this file from your code.
-		- You can also call this file directly.  This may be useful for
-		  ad-hoc runs but is not intended for production use.
-
-      Usage: scripts/nns-dapp/migration-test.canister <function> [arguments..]
-      e.g.:  scripts/nns-dapp/migration-test.canister verify_healthy
-
-      A list of functions:
-		EOF
-    declare -F | awk '{print "        " $3}'
+    migration_test_canisters_help
     exit 0
   fi
   "${@}"

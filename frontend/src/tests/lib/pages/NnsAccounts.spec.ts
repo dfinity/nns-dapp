@@ -87,7 +87,7 @@ describe("NnsAccounts", () => {
       ]);
     });
 
-    it("should render add account row with tabindex 1 more than number of accounts", async () => {
+    it("should render add account row with tabindex 0", async () => {
       const mainTokenData = createUserToken({
         title: "Main",
         balance: TokenAmount.fromE8s({
@@ -103,8 +103,7 @@ describe("NnsAccounts", () => {
         }),
       });
       const po = renderComponent([mainTokenData, subaccountTokenData]);
-      // There are two accounts before the add account row
-      expect(await po.getAddAccountRowTabindex()).toBe("3");
+      expect(await po.getAddAccountRowTabindex()).toBe("0");
     });
   });
 
