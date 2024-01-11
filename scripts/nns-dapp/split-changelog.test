@@ -279,6 +279,12 @@ else
   exit 1
 fi
 
+if [ -f "$RELEASED_CHANGELOG.bak" ]; then
+  echo "$RELEASED_CHANGELOG.bak should have been deleted"
+  echo "Test failed"
+  exit 1
+fi
+
 echo "Test passed"
 
 clean_up
