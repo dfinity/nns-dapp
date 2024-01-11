@@ -40,6 +40,8 @@
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import IC_LOGO from "$lib/assets/icp.svg";
   import { toTokenAmountV2 } from "$lib/utils/token.utils";
+  import { ENABLE_MY_TOKENS } from "$lib/stores/feature-flags.store";
+  import { AppPath } from "$lib/constants/routes.constants";
 
   let showModal: "send" | undefined = undefined;
 
@@ -68,9 +70,11 @@
 
   const goBack = (): Promise<void> =>
     goto(
-      buildAccountsUrl({
-        universe: $selectedUniverseStore.canisterId,
-      })
+      $ENABLE_MY_TOKENS
+        ? AppPath.Tokens
+        : buildAccountsUrl({
+            universe: $selectedUniverseStore.canisterId,
+          })
     );
 
   export let accountIdentifier: string | undefined | null = undefined;
