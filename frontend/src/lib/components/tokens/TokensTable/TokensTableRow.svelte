@@ -22,7 +22,6 @@
   import { isUserTokenData } from "$lib/utils/user-token.utils";
 
   export let userTokenData: UserTokenData | UserTokenLoading;
-  export let index: number;
 
   const dispatcher = createEventDispatcher();
 
@@ -53,7 +52,7 @@
   this={nonNullish(userTokenData.rowHref) ? "a" : "div"}
   href={userTokenData.rowHref}
   role="row"
-  tabindex={index + 1}
+  tabindex="0"
   on:keypress={handleClick}
   on:click={handleClick}
   data-tid="tokens-table-row-component"
