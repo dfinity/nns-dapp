@@ -99,7 +99,6 @@ const initAuthStore = (): AuthStore => {
         }),
         maxTimeToLive: AUTH_SESSION_DURATION,
         onSuccess: () => {
-          // Ideally II would redirect to the desired path but, it does not support it yet.
           if (nonNullish(redirectionBuilder) && nonNullish(authClient)) {
             goto(redirectionBuilder(authClient?.getIdentity()));
           }
