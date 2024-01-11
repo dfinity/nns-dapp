@@ -8,7 +8,7 @@
 <button
   data-tid="toolbar-login"
   class="icon-only toggle"
-  on:click={() => login()}
+  on:click={(_) => login()}
   aria-label={$i18n.auth.login}
   disabled={!$layoutAuthReady}
 >

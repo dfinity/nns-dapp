@@ -10,7 +10,7 @@
 </script>
 
 <button
-  on:click={() => login()}
+  on:click={(_) => login()}
   data-tid="login-button"
   class="primary"
   {disabled}
