@@ -1,7 +1,7 @@
 import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { isUniverseCkBTC, isUniverseNns } from "$lib/utils/universe.utils";
-import { nonNullish, TokenAmount } from "@dfinity/utils";
+import { TokenAmount, nonNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 import { selectedUniverseIdStore } from "../selected-universe.derived";
 
