@@ -1,10 +1,12 @@
 import * as snsIndexApi from "$lib/api/sns-index.api";
 import * as snsLedgerApi from "$lib/api/sns-ledger.api";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import SnsWallet from "$lib/pages/SnsWallet.svelte";
 import * as workerBalances from "$lib/services/worker-balances.services";
 import * as workerTransactions from "$lib/services/worker-transactions.services";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
@@ -29,6 +31,8 @@ import { get } from "svelte/store";
 vi.mock("$lib/api/sns-ledger.api");
 vi.mock("$lib/api/sns-index.api");
 
+let balancesObserverCallback;
+
 vi.mock("$lib/services/worker-transactions.services", () => ({
   initTransactionsWorker: vi.fn(() =>
     Promise.resolve({
@@ -45,8 +49,8 @@ vi.mock("$lib/services/worker-transactions.services", () => ({
 vi.mock("$lib/services/worker-balances.services", () => ({
   initBalancesWorker: vi.fn(() =>
     Promise.resolve({
-      startBalancesTimer: () => {
-        // Do nothing
+      startBalancesTimer: ({ callback }) => {
+        balancesObserverCallback = callback;
       },
       stopBalancesTimer: () => {
         // Do nothing
@@ -86,6 +90,7 @@ describe("SnsWallet", () => {
     snsAccountsStore.reset();
     transactionsFeesStore.reset();
     toastsStore.reset();
+    overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
     vi.spyOn(snsIndexApi, "getSnsTransactions").mockResolvedValue({
       oldestTxId: 1_234n,
       transactions: [mockIcrcTransactionWithId],
@@ -328,6 +333,28 @@ describe("SnsWallet", () => {
       ]);
     });
 
+    it("should navigate to /tokens when account identifier is invalid and tokens page is enabled", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
+
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Wallet,
+        universe: rootCanisterIdText,
+      });
+      await renderComponent({
+        accountIdentifier: "invalid-account-identifier",
+      });
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Tokens,
+        universe: OWN_CANISTER_ID_TEXT,
+      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: 'Sorry, the account "invalid-account-identifier" was not found',
+        },
+      ]);
+    });
+
     it("should stay on the wallet page when account identifier is valid", async () => {
       expect(get(pageStore)).toEqual({
         path: AppPath.Wallet,
@@ -341,6 +368,34 @@ describe("SnsWallet", () => {
         universe: rootCanisterIdText,
       });
       expect(get(toastsStore)).toEqual([]);
+    });
+
+    it("should display the balance from the observer", async () => {
+      const oldBalance = 123_000_000n;
+      const newBalance = 456_000_000n;
+
+      vi.spyOn(snsLedgerApi, "getSnsAccounts").mockResolvedValue([
+        {
+          ...mockSnsMainAccount,
+          balanceUlps: oldBalance,
+        },
+      ]);
+
+      const po = await renderComponent(props);
+
+      expect(await po.getWalletPageHeadingPo().getTitle()).toBe("1.23 OOO");
+
+      balancesObserverCallback({
+        balances: [
+          {
+            balance: newBalance,
+            accountIdentifier: mockSnsMainAccount.identifier,
+          },
+        ],
+      });
+
+      await runResolvedPromises();
+      expect(await po.getWalletPageHeadingPo().getTitle()).toBe("4.56 OOO");
     });
   });
 });

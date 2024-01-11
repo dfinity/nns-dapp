@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { UserToken } from "$lib/types/tokens-page";
   import { nonNullish } from "@dfinity/utils";
-  import Row from "./TokensTableRow.svelte";
+  import TokensTableRow from "./TokensTableRow.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let userTokensData: Array<UserToken>;
@@ -22,9 +22,9 @@
     </div>
   </div>
   <div role="rowgroup">
-    {#each userTokensData as userTokenData, index}
+    {#each userTokensData as userTokenData}
       <div class="row-wrapper">
-        <Row on:nnsAction {userTokenData} {index} />
+        <TokensTableRow on:nnsAction {userTokenData} />
       </div>
     {/each}
   </div>

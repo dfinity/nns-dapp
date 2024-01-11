@@ -10,6 +10,7 @@ import {
   CKETH_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { pageStore } from "$lib/derived/page.derived";
 import {
   snsProjectsCommittedStore,
   snsProjectsStore,
@@ -57,6 +58,7 @@ import { SnsSwapLifecycle } from "@dfinity/sns";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 import WalletTest from "../pages/AccountsTest.svelte";
 
 vi.mock("$lib/api/accounts.api");
@@ -772,7 +774,7 @@ describe("Accounts", () => {
         expect(icpLedgerApi.sendICP).toHaveBeenCalledWith({
           identity: mockIdentity,
           to: destinationAddress,
-          amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
+          amount: TokenAmount.fromNumber({ amount, token: ICPToken }).toE8s(),
           fromSubaccount: undefined,
         });
       });
@@ -824,7 +826,7 @@ describe("Accounts", () => {
         expect(icpLedgerApi.sendICP).toHaveBeenCalledWith({
           identity: mockIdentity,
           to: destinationAddress,
-          amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
+          amount: TokenAmount.fromNumber({ amount, token: ICPToken }).toE8s(),
           fromSubAccount: mockSubAccount.subAccount,
         });
       });
@@ -854,5 +856,56 @@ describe("Accounts", () => {
     );
 
     expect(getByTestId("logo").getAttribute("alt")).toEqual(`ckETH logo`);
+  });
+
+  it("should redirect to Tokens page when tokens page is enabled and universe is not NNS", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
+
+    page.mock({
+      data: {
+        universe: CKBTC_UNIVERSE_CANISTER_ID.toText(),
+        routeId: AppPath.Accounts,
+      },
+    });
+
+    expect(get(pageStore)?.path).toEqual(AppPath.Accounts);
+
+    render(Accounts);
+
+    expect(get(pageStore)?.path).toEqual(AppPath.Tokens);
+  });
+
+  it("should not redirect to Tokens page when tokens page is not enabled and universe is not NNS", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
+
+    page.mock({
+      data: {
+        universe: CKBTC_UNIVERSE_CANISTER_ID.toText(),
+        routeId: AppPath.Accounts,
+      },
+    });
+
+    expect(get(pageStore)?.path).toEqual(AppPath.Accounts);
+
+    render(Accounts);
+
+    expect(get(pageStore)?.path).toEqual(AppPath.Accounts);
+  });
+
+  it("should not redirect to Tokens page when tokens page is enabled and universe is NNS", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
+
+    page.mock({
+      data: {
+        universe: OWN_CANISTER_ID_TEXT,
+        routeId: AppPath.Accounts,
+      },
+    });
+
+    expect(get(pageStore)?.path).toEqual(AppPath.Accounts);
+
+    render(Accounts);
+
+    expect(get(pageStore)?.path).toEqual(AppPath.Accounts);
   });
 });

@@ -102,11 +102,13 @@ describe("CkBTCInfoCard", () => {
       expect(await po.hasSpinner()).toBe(true);
       expect(await po.hasSkeletonText()).toBe(true);
       expect(await po.hasQrCode()).toBe(false);
+      expect(await po.hasQrCodePlaceholder()).toBe(false);
       expect(await po.hasAddress()).toBe(false);
       await resolveBtcAddress();
       expect(await po.hasSpinner()).toBe(false);
       expect(await po.hasSkeletonText()).toBe(false);
       expect(await po.hasQrCode()).toBe(true);
+      expect(await po.hasQrCodePlaceholder()).toBe(false);
       expect(await po.hasAddress()).toBe(true);
     });
   });
@@ -231,6 +233,11 @@ describe("CkBTCInfoCard", () => {
     it("should not show a QR code", async () => {
       const po = await renderComponent(props);
       expect(await po.hasQrCode()).toBe(false);
+    });
+
+    it("should show a QR code placeholder", async () => {
+      const po = await renderComponent(props);
+      expect(await po.hasQrCodePlaceholder()).toBe(true);
     });
 
     it("should not show a spinner", async () => {

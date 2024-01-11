@@ -99,9 +99,10 @@
         on:keypress={openAddAccountModal}
         role="button"
         aria-label={$i18n.accounts.add_account}
-        tabindex={userTokensData.length + 1}
+        tabindex="0"
       >
-        <button class="ghost with-icon"
+        <!-- Skip tabindex the button because it's already in the row -->
+        <button tabindex="-1" class="ghost with-icon"
           ><IconAdd />{$i18n.accounts.add_account}</button
         >
       </div>

@@ -38,7 +38,12 @@
   import { pageStore } from "$lib/derived/page.derived";
   import Separator from "$lib/components/ui/Separator.svelte";
   import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
-  import { ICPToken, TokenAmount, isNullish, nonNullish } from "@dfinity/utils";
+  import {
+    ICPToken,
+    TokenAmountV2,
+    isNullish,
+    nonNullish,
+  } from "@dfinity/utils";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import type { AccountIdentifierText } from "$lib/types/account";
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
@@ -190,7 +195,7 @@
             walletAddress={$selectedAccountStore.account.identifier}
           />
           <WalletPageHeading
-            balance={TokenAmount.fromE8s({
+            balance={TokenAmountV2.fromUlps({
               amount: $selectedAccountStore.account.balanceUlps,
               token: ICPToken,
             })}

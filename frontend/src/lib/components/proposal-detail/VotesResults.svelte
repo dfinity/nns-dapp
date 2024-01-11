@@ -321,7 +321,7 @@
     border-radius: 50%;
 
     &.immediate-majority {
-      background: var(--purple-600);
+      background: var(--orchid);
     }
     &.standard-majority {
       background: var(--orange);
@@ -412,7 +412,7 @@
     border-radius: 50%;
   }
   :global(.votes-results-legends .inline-maturity-icon.immediate-majority) {
-    background: var(--purple-600);
+    background: var(--orchid);
   }
   :global(.votes-results-legends .inline-maturity-icon.standard-majority) {
     background: var(--orange);

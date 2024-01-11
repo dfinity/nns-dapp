@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -59,11 +59,8 @@
       }
 
       a {
-        transition:
-          color 0.15s ease-out,
-          background 0.15s ease-out,
-          transform 0.15s ease-out,
-          box-shadow 0.25s ease-out;
+        transition: color 0.15s ease-out, background 0.15s ease-out,
+          transform 0.15s ease-out, box-shadow 0.25s ease-out;
       }
 
       main {
@@ -74,21 +71,36 @@
 
       section {
         background: white;
-        margin: 0 0 48px;
         padding: var(--padding-0_5x) var(--padding-2x);
         border: var(--border-size) solid black;
         border-radius: var(--padding);
       }
 
-      section a {
+      ul a {
+        background: black;
         color: var(--hot-pink);
         border-radius: var(--padding-0_25x);
         text-decoration: underline;
         text-decoration-style: dashed;
+        padding: 0 8px;
       }
 
-      section a:hover {
+      ul a:hover {
         color: var(--blue-bolt);
+      }
+
+      ul li {
+        margin: 0 0 var(--padding-0_25x);
+      }
+
+      ul li span {
+        background: black;
+        border-radius: var(--padding-0_25x);
+        font-size: 13px;
+        font-family: Menlo, Monaco, Consolas, "Andale Mono", "Ubuntu Mono",
+          "Courier New", monospace;
+        color: #ce9178;
+        padding: 0 var(--padding-0_25x);
       }
 
       h1 {
@@ -106,7 +118,7 @@
         width: 100%;
         justify-content: space-between;
         border-bottom: var(--border-size) solid black;
-        margin: 0;
+        margin: var(--padding-3x) 0 0;
       }
 
       h2 span {
@@ -324,7 +336,7 @@
       }
 
       .code {
-        margin: 0 0 var(--padding-3x);
+        margin: 0 0 var(--padding-0_5x);
         border: var(--padding-0_25x) dashed var(--hot-pink);
         padding: var(--padding-0_25x);
         border-radius: var(--border-radius);
@@ -353,16 +365,6 @@
           the data from this aggregator will typically be much faster than
           collecting the same data directly from the SNSs.
         </p>
-        <ul>
-          <li><a href="/v1/sns/list/latest/slow.json">The latest SNSs</a></li>
-          <li>
-            <a href="/v1/sns/list/page/0/slow.json">A paginated list of SNSs</a>
-          </li>
-          <li>
-            Slow data for one SNS is at: /v1/sns/root/$CANISTER_ID/slow.json
-          </li>
-          <li>The SNS logo is at: /v1/sns/root/$CANISTER_ID/logo.png</li>
-        </ul>
       </section>
 
       <h2>
@@ -370,14 +372,88 @@
       </h2>
 
       <p>
-        This aggregator is designed for developers to access information about
-        SNS projects. It provides multiple endpoints for retrieving paginated
-        lists, as well as an endpoint for accessing the latest SNSes.
+        This aggregator is designed to help developers access information about
+        SNS projects. It offers various endpoints for retrieving their
+        information.
+      </p>
+
+      <ul>
+        <li><a href="/v1/sns/list/latest/slow.json">The latest SNSs</a></li>
+        <li>
+          <a href="/v1/sns/list/page/0/slow.json">A paginated list of SNSs</a>
+        </li>
+        <li>
+          Slow data for one SNS is at:
+          <span>/v1/sns/root/$CANISTER_ID/slow.json</span>
+        </li>
+        <li>
+          The SNS logo is at: <span>/v1/sns/root/$CANISTER_ID/logo.png</span>
+        </li>
+      </ul>
+
+      <h2>
+        <span>Documentation</span>
+      </h2>
+
+      <p>
+        You can access the list of the latest SNSes by using the "latest"
+        endpoint. It's important to note that the results returned include all
+        SNSes, not just the ones that are committed.
       </p>
 
       <div class="code">
-        <pre><code class="language-javascript">// Use `fetch` to get the response from the aggregator
-const response = await fetch("https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io/v1/sns/list/page/0/slow.json");
+        <pre><code class="language-javascript">const response = await fetch("https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io/v1/sns/list/latest/slow.json");
+const snses = await response.json();</code></pre>
+      </div>
+
+      <p>
+        The aggregator also offers a list of all SNSes. This result is
+        paginated, which can be useful for implementing UI features like a
+        paginated table or infinite scroller. If you need to fetch all SNSes,
+        you can implement a recursive function.
+      </p>
+
+      <div class="code">
+        <pre><code class="language-javascript">const AGGREGATOR_PAGE_SIZE = 10;
+const SNS_AGGREGATOR_CANISTER_URL = 'https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io';
+const AGGREGATOR_CANISTER_VERSION = 'v1';
+
+const AGGREGATOR_URL = `${SNS_AGGREGATOR_CANISTER_URL}/${AGGREGATOR_CANISTER_VERSION}/sns`;
+
+const aggregatorPageUrl = (page) => `list/page/${page}/slow.json`;
+
+const querySnsAggregator = async (page = 0) => {
+    const response = await fetch(`${AGGREGATOR_URL}/${aggregatorPageUrl(page)}`);
+
+    if (!response.ok) {
+        // If the error is after the first page, is because there are no more pages it fails
+        if (page > 0) {
+            return [];
+        }
+
+        throw new Error('Error loading SNS projects from aggregator canister');
+    }
+
+    const data = await response.json();
+
+    if (data.length === AGGREGATOR_PAGE_SIZE) {
+        const nextPageData = await querySnsAggregator(page + 1);
+        return [...data, ...nextPageData];
+    }
+
+    return data;
+};
+
+const snses = await querySnsAggregator();</code></pre>
+      </div>
+
+      <p>
+        You can query the details of a specific SNS by using its root canister
+        ID in the URL.
+      </p>
+
+      <div class="code">
+        <pre><code class="language-javascript">const response = await fetch("https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io/v1/sns/root/uly3p-iqaaa-aaaaq-aabma-cai/slow.json");
 const snses = await response.json();</code></pre>
       </div>
 

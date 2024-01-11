@@ -107,7 +107,7 @@ describe("SnsBalancesObserver", () => {
     await waitFor(() => {
       const updatedStore = get(snsAccountsStore);
       expect(updatedStore[rootCanisterIdMock.toText()].accounts).toEqual([
-        { ...mockSnsMainAccount, balanceE8s: 123456n },
+        { ...mockSnsMainAccount, balanceUlps: 123456n },
       ]);
     });
   });
