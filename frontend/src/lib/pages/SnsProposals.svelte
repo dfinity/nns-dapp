@@ -9,13 +9,16 @@
     lastProposalId,
     sortSnsProposalsById,
   } from "$lib/utils/sns-proposals.utils";
-  import { loadSnsFilters } from "$lib/services/sns-filters.services";
+  import {
+    loadSnsFilters,
+    updateSnsTypeFilter,
+  } from "$lib/services/sns-filters.services";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
   import {
     snsFiltersStore,
     type SnsFiltersStoreData,
   } from "$lib/stores/sns-filters.store";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
   import type { Principal } from "@dfinity/principal";
   import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
@@ -31,6 +34,14 @@
         loadSnsNervousSystemFunctions(selectedProjectCanisterId),
         loadSnsFilters(selectedProjectCanisterId),
       ]);
+
+      if (isNullish($nsFunctionsStore)) {
+        throw new Error("no nsFunctions");
+      }
+      updateSnsTypeFilter({
+        rootCanisterId: selectedProjectCanisterId,
+        nsFunctions: $nsFunctionsStore,
+      });
     }
   };
 

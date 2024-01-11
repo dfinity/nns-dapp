@@ -2,10 +2,12 @@ import { i18n } from "$lib/stores/i18n";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import type { Filter } from "$lib/types/filters";
 import { enumValues } from "$lib/utils/enum.utils";
+import { generateSnsProposalTypesFilterData } from "$lib/utils/sns-proposals.utils";
 import type { Principal } from "@dfinity/principal";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
+  type SnsNervousSystemFunction,
 } from "@dfinity/sns";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
@@ -76,5 +78,24 @@ export const loadSnsFilters = async (rootCanisterId: Principal) => {
   snsFiltersStore.setRewardStatus({
     rootCanisterId,
     rewardStatus,
+  });
+};
+
+export const updateSnsTypeFilter = ({
+  rootCanisterId,
+  nsFunctions,
+}: {
+  rootCanisterId: Principal;
+  nsFunctions: SnsNervousSystemFunction[];
+}) => {
+  const typesFilterState =
+    get(snsFiltersStore)?.[rootCanisterId.toText()]?.types ?? [];
+  const types = generateSnsProposalTypesFilterData({
+    nsFunctions,
+    typesFilterState,
+  });
+  snsFiltersStore.setTypes({
+    rootCanisterId,
+    types,
   });
 };
