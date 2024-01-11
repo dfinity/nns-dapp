@@ -1,6 +1,6 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockToken } from "$tests/mocks/sns-projects.mock";
@@ -19,6 +19,7 @@ describe("snsSelectedTransactionFeeStore", () => {
   };
   beforeEach(() => {
     resetSnsProjects();
+    tokensStore.reset();
     page.mock({ data: { universe: mockPrincipal.toText() } });
   });
 
@@ -27,10 +28,12 @@ describe("snsSelectedTransactionFeeStore", () => {
     page.mock({ data: { universe } });
 
     const fee = 10_000n;
-    transactionsFeesStore.setFee({
-      rootCanisterId,
-      fee,
-      certified: true,
+    tokensStore.setToken({
+      canisterId: rootCanisterId,
+      token: {
+        ...mockToken,
+        fee,
+      },
     });
 
     const actualFeeTokens = get(snsSelectedTransactionFeeStore);
