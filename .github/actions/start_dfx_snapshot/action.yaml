@@ -82,6 +82,8 @@ runs:
         export DFX_NETWORK=local
         ./config.sh
         echo "Install:"
+        # Retry to work around canister install timing out on dfx 0.15.3.
+        # TODO: Remove loop if no longer necessary.
         for ((try = 0; try < 5; try++)); do
           if dfx canister install nns-dapp --wasm ${{ inputs.nns_dapp_wasm }} --upgrade-unchanged --mode ${{ inputs.nns_dapp_install_mode }} --yes --argument "$(cat nns-dapp-arg-${DFX_NETWORK}.did)"; then
             exit 0;
@@ -94,6 +96,8 @@ runs:
       if: ${{ inputs.sns_aggregator_wasm }}
       shell: bash
       run: |
+        # Retry to work around canister install timing out on dfx 0.15.3.
+        # TODO: Remove loop if no longer necessary.
         for ((try = 0; try < 5; try++)); do
           if dfx canister install sns_aggregator --wasm ${{ inputs.sns_aggregator_wasm }} --upgrade-unchanged --mode ${{ inputs.sns_aggregator_install_mode }} --yes; then
             exit 0;
