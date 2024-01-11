@@ -18,7 +18,7 @@ migration_test_linters_help() {
 
       A list of functions:
 		EOF
-  declare -F | awk '{print "        " $3}' | grep -vw "$FUNCNAME"
+  declare -F | awk '{print "        " $3}' | grep -vw "${FUNCNAME[0]}"
 }
 
 # Checks that the configuration number is valid.

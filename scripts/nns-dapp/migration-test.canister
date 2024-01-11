@@ -16,7 +16,7 @@ migration_test_canisters_help() {
 
 	A list of functions:
 	EOF
-  declare -F | awk '{print "        " $3}' | grep -vw "$FUNCNAME"
+  declare -F | awk '{print "        " $3}' | grep -vw "${FUNCNAME[0]}"
 }
 
 # Verifies that the nns-dapp canister is healthy
