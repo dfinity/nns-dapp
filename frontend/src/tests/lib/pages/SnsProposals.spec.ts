@@ -22,6 +22,7 @@ import {
   type SnsProposalData,
 } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 vi.mock("$lib/api/sns-governance.api");
 
@@ -101,6 +102,25 @@ describe("SnsProposals", () => {
         );
 
         expect(queryAllByTestId("checkbox").length).toBeGreaterThan(0);
+      });
+
+      it("should init types filter", async () => {
+        const getFiltersStoreData = () =>
+          get(snsFiltersStore)[rootCanisterId.toText()];
+
+        expect(getFiltersStoreData()?.types).toEqual(undefined);
+        render(SnsProposals);
+
+        await waitFor(() =>
+          expect(getFiltersStoreData()?.types).toEqual([
+            {
+              checked: true,
+              id: "3",
+              name: "test_function",
+              value: "3",
+            },
+          ])
+        );
       });
 
       it("should render a spinner while searching proposals", async () => {

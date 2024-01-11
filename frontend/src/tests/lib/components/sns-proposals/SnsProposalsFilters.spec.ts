@@ -1,17 +1,10 @@
 import SnsProposalsFilters from "$lib/components/sns-proposals/SnsProposalsFilters.svelte";
-import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { page } from "$mocks/$app/stores";
-import { nativeNervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("SnsProposalsFilters", () => {
-  const renderComponent = () =>
-    render(SnsProposalsFilters, {
-      props: {
-        nsFunctions: [nativeNervousSystemFunctionMock],
-      },
-    });
+  const renderComponent = () => render(SnsProposalsFilters);
 
   beforeEach(() => {
     page.mock({
@@ -45,25 +38,5 @@ describe("SnsProposalsFilters", () => {
     await waitFor(() =>
       expect(queryByTestId("filter-modal")).toBeInTheDocument()
     );
-  });
-
-  it("should update snsFiltersStore with types", async () => {
-    const setTypesSpy = vi.spyOn(snsFiltersStore, "setTypes");
-    expect(setTypesSpy).toBeCalledTimes(0);
-
-    renderComponent();
-
-    expect(setTypesSpy).toBeCalledTimes(1);
-    expect(setTypesSpy).toBeCalledWith({
-      rootCanisterId: mockSnsFullProject.rootCanisterId,
-      types: [
-        {
-          checked: true,
-          id: "1",
-          name: "Motion",
-          value: "1",
-        },
-      ],
-    });
   });
 });
