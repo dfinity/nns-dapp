@@ -1,6 +1,7 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { snsSelectedProjectNewTxData } from "$lib/derived/sns/sns-selected-project-new-tx-data.derived";
 import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { page } from "$mocks/$app/stores";
 import {
@@ -21,6 +22,7 @@ describe("selected-project-new-transaction-data derived store", () => {
       resetSnsProjects();
       snsSwapCommitmentsStore.reset();
       transactionsFeesStore.reset();
+      tokensStore.reset();
     });
 
     it("returns undefined when nns", () => {
@@ -49,10 +51,9 @@ describe("selected-project-new-transaction-data derived store", () => {
       page.mock({ data: { universe: rootCanisterId.toText() } });
 
       const fee = mockSnsToken.fee;
-      transactionsFeesStore.setFee({
-        rootCanisterId,
-        fee,
-        certified: true,
+      tokensStore.setToken({
+        canisterId: rootCanisterId,
+        token: mockSnsToken,
       });
 
       const storeData = get(snsSelectedProjectNewTxData);
