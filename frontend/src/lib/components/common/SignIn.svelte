@@ -9,7 +9,12 @@
   $: disabled = $authSignedInStore || !$layoutAuthReady;
 </script>
 
-<button on:click={login} data-tid="login-button" class="primary" {disabled}>
+<button
+  on:click={() => login()}
+  data-tid="login-button"
+  class="primary"
+  {disabled}
+>
   <slot>{$i18n.auth.login}</slot>
   {#if disabled}
     <div class="spinner">
