@@ -1,5 +1,6 @@
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
 import * as walletLedgerApi from "$lib/api/wallet-ledger.api";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   CKETHSEPOLIA_INDEX_CANISTER_ID,
   CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
@@ -289,7 +290,7 @@ describe("IcrcWallet", () => {
         });
         expect(get(pageStore)).toEqual({
           path: AppPath.Tokens,
-          universe: undefined,
+          universe: OWN_CANISTER_ID_TEXT,
         });
         expect(get(toastsStore)).toMatchObject([
           {
