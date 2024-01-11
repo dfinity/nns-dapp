@@ -508,7 +508,7 @@ export const generateSnsProposalTypesFilterData = ({
       checked: getCheckedState(id),
     }));
   const genericNsFunctionEntries: Filter<SnsProposalTypeFilterId>[] =
-    nsFunctions.filter(isGenericNervousSystemFunction).length > 0
+    nsFunctions.some(isGenericNervousSystemFunction)
       ? // Replace all generic entries w/ a single "All Generic"
         [
           {
