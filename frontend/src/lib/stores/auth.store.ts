@@ -1,3 +1,4 @@
+import { goto } from "$app/navigation";
 import { resetAgents } from "$lib/api/agent.api";
 import {
   AUTH_SESSION_DURATION,
@@ -10,6 +11,7 @@ import { createAuthClient } from "$lib/utils/auth.utils";
 import { isNnsAlternativeOrigin } from "$lib/utils/env.utils";
 import type { Identity } from "@dfinity/agent";
 import type { AuthClient } from "@dfinity/auth-client";
+import { nonNullish } from "@dfinity/utils";
 import type { Readable } from "svelte/store";
 import { writable } from "svelte/store";
 
@@ -28,6 +30,11 @@ const getIdentityProvider = () => {
   }
 
   return IDENTITY_SERVICE_URL;
+};
+
+type SiginParams = {
+  onError: (error?: string) => void;
+  redirectionBuilder?: (identity: Identity) => string;
 };
 
 /**
@@ -51,7 +58,7 @@ const getIdentityProvider = () => {
 export interface AuthStore extends Readable<AuthStoreData> {
   sync: () => Promise<void>;
   setForTesting: (identity: Identity) => void;
-  signIn: (onError: (error?: string) => void) => Promise<void>;
+  signIn: (params: SiginParams) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -82,7 +89,7 @@ const initAuthStore = (): AuthStore => {
       });
     },
 
-    signIn: async (onError: (error?: string) => void) => {
+    signIn: async ({ onError, redirectionBuilder }: SiginParams) => {
       authClient = authClient ?? (await createAuthClient());
 
       await authClient?.login({
@@ -92,6 +99,10 @@ const initAuthStore = (): AuthStore => {
         }),
         maxTimeToLive: AUTH_SESSION_DURATION,
         onSuccess: () => {
+          // Ideally II would redirect to the desired path but, it does not support it yet.
+          if (nonNullish(redirectionBuilder) && nonNullish(authClient)) {
+            goto(redirectionBuilder(authClient?.getIdentity()));
+          }
           update((state: AuthStoreData) => ({
             ...state,
             identity: authClient?.getIdentity(),

@@ -44,6 +44,12 @@
   import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
   import type { Account } from "$lib/types/account";
   import IcrcReceiveModal from "$lib/modals/accounts/IcrcReceiveModal.svelte";
+  import {
+    buildAccountsUrl,
+    buildWalletUrl,
+  } from "$lib/utils/navigation.utils";
+  import type { Identity } from "@dfinity/agent";
+  import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 
   onMount(() => {
     if (!$ENABLE_MY_TOKENS) {
@@ -180,7 +186,18 @@
   const handleAction = ({ detail }: { detail: Action }) => {
     // Any action from non-signed in user should be trigger a login
     if (!$authSignedInStore) {
-      login();
+      if (isUniverseNns(detail.data.universeId)) {
+        login(() =>
+          buildAccountsUrl({ universe: detail.data.universeId.toText() })
+        );
+      } else {
+        login((identity: Identity) =>
+          buildWalletUrl({
+            universe: detail.data.universeId.toText(),
+            account: encodeIcrcAccount({ owner: identity.getPrincipal() }),
+          })
+        );
+      }
     }
     if (detail.type === ActionType.Send) {
       if (isUniverseNns(detail.data.universeId)) {

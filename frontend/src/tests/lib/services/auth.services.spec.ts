@@ -74,6 +74,20 @@ describe("auth-services", () => {
       expect(spy).toHaveBeenCalled();
     });
 
+    it("login should call redirectionBuilder with identity on success", async () => {
+      vi.spyOn(mockAuthClient, "login").mockImplementation(
+        async ({ onSuccess }: { onSuccess: () => Promise<void> }) => {
+          onSuccess();
+        }
+      );
+      mockAuthClient.getIdentity.mockReturnValue(mockIdentity);
+
+      const redirectionBuilder = vi.fn();
+      await login(redirectionBuilder);
+
+      expect(redirectionBuilder).toHaveBeenCalledWith(mockIdentity);
+    });
+
     it("should not toast error on auth-client error UserInterrupt", async () => {
       vi.spyOn(mockAuthClient, "login").mockImplementation(
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment

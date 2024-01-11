@@ -11,7 +11,9 @@ import { get } from "svelte/store";
 const msgParam = "msg";
 const levelParam = "level";
 
-export const login = async () => {
+export const login = async (
+  redirectionBuilder?: (identity: Identity) => string
+) => {
   const onError = (err: unknown) => {
     if (err === "UserInterrupt") {
       // We do not display an error if user explicitly cancelled the process of sign-in. User is most certainly aware of it.
@@ -24,7 +26,7 @@ export const login = async () => {
     });
   };
 
-  await authStore.signIn(onError);
+  await authStore.signIn({ onError, redirectionBuilder });
 };
 
 export const logout = async ({

@@ -4,6 +4,7 @@ import {
   OLD_MAINNET_IDENTITY_SERVICE_URL,
 } from "$lib/constants/identity.constants";
 import { authStore } from "$lib/stores/auth.store";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { AuthClient } from "@dfinity/auth-client";
 import { mock } from "vitest-mock-extended";
 
@@ -34,9 +35,31 @@ describe("auth-store", () => {
       onSuccess();
     };
 
-    await authStore.signIn(() => {
-      // do nothing on error here
+    await authStore.signIn({
+      onError: () => {
+        // do nothing on error here
+      },
     });
+  });
+
+  it("should call auth-client login's redirectionBuilder if present on sign-in", async () => {
+    const redirectionBuilder = vi.fn();
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore: test file
+    mockAuthClient.login = async ({ onSuccess }: { onSuccess: () => void }) => {
+      onSuccess();
+    };
+    mockAuthClient.getIdentity.mockReturnValue(mockIdentity);
+
+    await authStore.signIn({
+      onError: () => {
+        // do nothing on error here
+      },
+      redirectionBuilder,
+    });
+
+    expect(redirectionBuilder).toHaveBeenCalledTimes(1);
+    expect(redirectionBuilder).toHaveBeenCalledWith(mockIdentity);
   });
 
   it("should call auth-client with identity provider", async () => {
@@ -59,8 +82,10 @@ describe("auth-store", () => {
       onSuccess();
     };
 
-    await authStore.signIn(() => {
-      // do nothing on error here
+    await authStore.signIn({
+      onError: () => {
+        // do nothing on error here
+      },
     });
     window.location.host = host;
   });
@@ -85,8 +110,10 @@ describe("auth-store", () => {
       onSuccess();
     };
 
-    await authStore.signIn(() => {
-      // do nothing on error here
+    await authStore.signIn({
+      onError: () => {
+        // do nothing on error here
+      },
     });
     window.location.host = host;
   });
@@ -111,8 +138,10 @@ describe("auth-store", () => {
       onSuccess();
     };
 
-    await authStore.signIn(() => {
-      // do nothing on error here
+    await authStore.signIn({
+      onError: () => {
+        // do nothing on error here
+      },
     });
     window.location.host = host;
   });
