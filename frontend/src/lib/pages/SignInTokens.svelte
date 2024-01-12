@@ -28,5 +28,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-2x);
+
+    margin-bottom: var(--padding);
   }
 </style>
