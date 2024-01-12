@@ -30,9 +30,6 @@
     background: var(--footer-background);
     --button-secondary-background: var(--focus-background);
 
-    // The footer should be on top of the content.
-    z-index: 1;
-
     :global(.toolbar) {
       align-items: end;
       margin: 0 auto max(env(safe-area-inset-bottom), var(--padding-2x));

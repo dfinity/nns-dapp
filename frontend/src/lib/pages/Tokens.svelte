@@ -6,7 +6,7 @@
   export let userTokensData: UserToken[];
 </script>
 
-<div data-tid="tokens-page-component">
+<div class="wrapper" data-tid="tokens-page-component">
   <TokensTable
     {userTokensData}
     on:nnsAction
@@ -15,7 +15,7 @@
 </div>
 
 <style lang="scss">
-  div {
+  .wrapper {
     // Add some margin at the bottom so that the table doesn't stick to the bottom of the screen.
     margin-bottom: var(--padding);
   }

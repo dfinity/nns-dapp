@@ -15,7 +15,6 @@
   import type { UserToken } from "$lib/types/tokens-page";
   import { ENABLE_MY_TOKENS } from "$lib/stores/feature-flags.store";
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { IconAdd } from "@dfinity/gix-components";
   import { openAccountsModal } from "$lib/utils/modals.utils";
   import { ActionType, type Action } from "$lib/types/actions";
