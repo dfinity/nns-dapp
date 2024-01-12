@@ -28,28 +28,38 @@
   import type { Readable } from "svelte/store";
 
   let currentProjectCanisterId: Principal | undefined = undefined;
-  const onSnsProjectChanged = async (
-    selectedProjectCanisterId: Principal | undefined
-  ) => {
-    currentProjectCanisterId = selectedProjectCanisterId;
-    if (nonNullish(selectedProjectCanisterId)) {
+  const onSnsProjectChanged = async ({
+    rootCanisterId,
+    snsName,
+  }: {
+    rootCanisterId: Principal | undefined;
+    snsName: string;
+  }) => {
+    currentProjectCanisterId = rootCanisterId;
+    if (nonNullish(rootCanisterId)) {
       await Promise.all([
-        loadSnsNervousSystemFunctions(selectedProjectCanisterId),
-        loadSnsFilters(selectedProjectCanisterId),
+        loadSnsNervousSystemFunctions(rootCanisterId),
+        loadSnsFilters(rootCanisterId),
       ]);
-
+      // The store should be updated at this point. But in case it's not (errors etc.),
+      // we shouldn't update the filter.
       if (isNullish($nsFunctionsStore)) {
         throw new Error("no nsFunctions");
       }
       updateSnsTypeFilter({
-        rootCanisterId: selectedProjectCanisterId,
+        rootCanisterId,
         nsFunctions: $nsFunctionsStore,
-        snsName: $snsProjectSelectedStore?.summary?.metadata?.name ?? "",
+        snsName,
       });
     }
   };
 
-  $: onSnsProjectChanged($snsOnlyProjectStore);
+  $: if (nonNullish($snsProjectSelectedStore?.summary?.metadata?.name)) {
+    onSnsProjectChanged({
+      rootCanisterId: $snsOnlyProjectStore,
+      snsName: $snsProjectSelectedStore?.summary.metadata.name ?? "",
+    });
+  }
 
   const fetchProposals = async (filters: SnsFiltersStoreData) => {
     // First call will have `filters` as `undefined`.
