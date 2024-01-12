@@ -33,7 +33,7 @@ export const sendICP = async ({
 }: {
   identity: Identity;
   to: string;
-  amount: TokenAmount;
+  amount: bigint;
   fromSubAccount?: SubAccountArray | undefined;
   memo?: bigint;
   createdAt?: bigint;
@@ -43,7 +43,7 @@ export const sendICP = async ({
 
   const response = await canister.transfer({
     to: AccountIdentifier.fromHex(to),
-    amount: amount.toE8s(),
+    amount,
     fromSubAccount,
     memo,
     createdAt: createdAt ?? nowInBigIntNanoSeconds(),

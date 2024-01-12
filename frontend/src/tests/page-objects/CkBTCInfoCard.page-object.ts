@@ -48,4 +48,8 @@ export class CkBTCInfoCardPo extends BasePageObject {
   hasQrCode(): Promise<boolean> {
     return this.isPresent("qr-code");
   }
+
+  hasQrCodePlaceholder(): Promise<boolean> {
+    return this.isPresent("qr-code-placeholder");
+  }
 }

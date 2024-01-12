@@ -22,6 +22,8 @@
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
   import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import { ENABLE_MY_TOKENS } from "$lib/stores/feature-flags.store";
+  import { AppPath } from "$lib/constants/routes.constants";
 
   export let testId: string;
   export let accountIdentifier: string | undefined | null = undefined;
@@ -36,9 +38,11 @@
 
   const goBack = async (): Promise<void> =>
     goto(
-      buildAccountsUrl({
-        universe: $selectedUniverseStore.canisterId,
-      })
+      $ENABLE_MY_TOKENS
+        ? AppPath.Tokens
+        : buildAccountsUrl({
+            universe: $selectedUniverseStore.canisterId,
+          })
     );
 
   // e.g. is called from "Receive" modal after user click "Done"

@@ -27,7 +27,7 @@ import {
   toToastError,
 } from "$lib/utils/error.utils";
 import type { Principal } from "@dfinity/principal";
-import { ICPToken, TokenAmount } from "@dfinity/utils";
+import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { getAccountIdentity, loadBalance } from "./icp-accounts.services";
 import { queryAndUpdate } from "./utils.services";
@@ -75,16 +75,16 @@ export const createCanister = async ({
   name?: string;
 }): Promise<Principal | undefined> => {
   try {
-    const icpAmount = TokenAmount.fromNumber({ amount, token: ICPToken });
-    if (!(icpAmount instanceof TokenAmount)) {
+    const icpAmount = TokenAmountV2.fromNumber({ amount, token: ICPToken });
+    if (!(icpAmount instanceof TokenAmountV2)) {
       throw new LedgerErrorMessage("error.amount_not_valid");
     }
-    assertEnoughAccountFunds({ amountUlps: icpAmount.toE8s(), account });
+    assertEnoughAccountFunds({ amountUlps: icpAmount.toUlps(), account });
 
     const identity = await getAccountIdentity(account.identifier);
     const canisterId = await createCanisterApi({
       identity,
-      amount: icpAmount,
+      amount: icpAmount.toUlps(),
       fromSubAccount: account.subAccount,
       name,
     });
@@ -135,17 +135,17 @@ export const topUpCanister = async ({
   account: Account;
 }): Promise<{ success: boolean }> => {
   try {
-    const icpAmount = TokenAmount.fromNumber({ amount, token: ICPToken });
-    if (!(icpAmount instanceof TokenAmount)) {
+    const icpAmount = TokenAmountV2.fromNumber({ amount, token: ICPToken });
+    if (!(icpAmount instanceof TokenAmountV2)) {
       throw new LedgerErrorMessage("error.amount_not_valid");
     }
-    assertEnoughAccountFunds({ amountUlps: icpAmount.toE8s(), account });
+    assertEnoughAccountFunds({ amountUlps: icpAmount.toUlps(), account });
 
     const identity = await getAccountIdentity(account.identifier);
     await topUpCanisterApi({
       identity,
       canisterId,
-      amount: icpAmount,
+      amount: icpAmount.toUlps(),
       fromSubAccount: account.subAccount,
     });
     // We don't wait for `loadBalance` to finish to give a better UX to the user.

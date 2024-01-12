@@ -1,10 +1,12 @@
 import * as snsIndexApi from "$lib/api/sns-index.api";
 import * as snsLedgerApi from "$lib/api/sns-ledger.api";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import SnsWallet from "$lib/pages/SnsWallet.svelte";
 import * as workerBalances from "$lib/services/worker-balances.services";
 import * as workerTransactions from "$lib/services/worker-transactions.services";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
@@ -88,6 +90,7 @@ describe("SnsWallet", () => {
     snsAccountsStore.reset();
     transactionsFeesStore.reset();
     toastsStore.reset();
+    overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
     vi.spyOn(snsIndexApi, "getSnsTransactions").mockResolvedValue({
       oldestTxId: 1_234n,
       transactions: [mockIcrcTransactionWithId],
@@ -321,6 +324,28 @@ describe("SnsWallet", () => {
       expect(get(pageStore)).toEqual({
         path: AppPath.Accounts,
         universe: rootCanisterIdText,
+      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: 'Sorry, the account "invalid-account-identifier" was not found',
+        },
+      ]);
+    });
+
+    it("should navigate to /tokens when account identifier is invalid and tokens page is enabled", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
+
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Wallet,
+        universe: rootCanisterIdText,
+      });
+      await renderComponent({
+        accountIdentifier: "invalid-account-identifier",
+      });
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Tokens,
+        universe: OWN_CANISTER_ID_TEXT,
       });
       expect(get(toastsStore)).toMatchObject([
         {

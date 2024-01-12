@@ -1,7 +1,6 @@
 import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
 import { writableStored } from "$lib/stores/writable-stored";
 import { get } from "svelte/store";
-import { describe } from "vitest";
 
 describe("writableStored", () => {
   afterEach(() => {

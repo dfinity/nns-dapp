@@ -11,7 +11,6 @@ import { ProposalProposerActionsEntryPo } from "$tests/page-objects/ProposalProp
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { Action, Proposal } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import { beforeEach } from "vitest";
 
 const proposalWithMotionAction = {
   ...mockProposalInfo.proposal,
