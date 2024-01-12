@@ -44,3 +44,8 @@ export const isNotVisible = (element: Element): boolean => {
     return nonNullish(heightString) && Number(heightString) === 0;
   }
 };
+
+export const waitForMilliseconds = (milliseconds: number): Promise<void> =>
+  new Promise((resolve) => {
+    setTimeout(resolve, milliseconds);
+  });

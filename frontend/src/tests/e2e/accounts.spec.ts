@@ -7,11 +7,6 @@ import {
 } from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
-const waitForMilliseconds = (milliseconds: number): Promise<void> =>
-  new Promise((resolve) => {
-    setTimeout(resolve, milliseconds);
-  });
-
 test("Test accounts requirements", async ({ page, context }) => {
   await page.goto("/accounts");
   await expect(page).toHaveTitle("My ICP Tokens / NNS Dapp");
@@ -25,10 +20,10 @@ test("Test accounts requirements", async ({ page, context }) => {
   step("The user has a main account");
 
   const mainAccountName = "Main";
-  let accountsPo = appPo.getAccountsPo();
-  let nnsAccountsPo = accountsPo.getNnsAccountsPo();
-  let tokensTablePo = nnsAccountsPo.getTokensTablePo();
-  let mainAccountRow = await tokensTablePo.findRowByName(mainAccountName);
+  const accountsPo = appPo.getAccountsPo();
+  const nnsAccountsPo = accountsPo.getNnsAccountsPo();
+  const tokensTablePo = nnsAccountsPo.getTokensTablePo();
+  const mainAccountRow = await tokensTablePo.findRowByName(mainAccountName);
   expect(await mainAccountRow.isPresent()).toBe(true);
 
   step("AU002: The user MUST be able to create an additional account");
@@ -48,21 +43,15 @@ test("Test accounts requirements", async ({ page, context }) => {
 
   // The linked account should still be present after refresh
   await page.reload({ waitUntil: "load" });
-  // We need to reset all the variables because the page has been reloaded.
-  accountsPo = appPo.getAccountsPo();
-  nnsAccountsPo = accountsPo.getNnsAccountsPo();
-  tokensTablePo = nnsAccountsPo.getTokensTablePo();
+
   // We wait until the table is loaded.
   await tokensTablePo.waitFor();
-  // We wait until the accounts are loaded.
-  mainAccountRow = await tokensTablePo.findRowByName(mainAccountName);
-  await mainAccountRow.waitFor();
-  const subaccountRow = await tokensTablePo.findRowByName(subAccountName);
-  await subaccountRow.waitFor();
+  // We wait until the subaccount row is loaded.
+  await tokensTablePo.waitForRowByName(subAccountName);
 
   expect(await accountNames()).toEqual([mainAccountName, subAccountName]);
 
-  // Go to /tokens page
+  // Go to /tokens page because the Accounts page doesn't have the menu button.
   await appPo.goBack();
   // Get some ICP to be able to transfer
   await appPo.getIcpTokens(20);
@@ -74,28 +63,19 @@ test("Test accounts requirements", async ({ page, context }) => {
     .findRowByName("Internet Computer");
   await icRow.click();
 
-  // We need to reset all the variables because the page has been unmounted and mounted again.
-  accountsPo = appPo.getAccountsPo();
-  nnsAccountsPo = accountsPo.getNnsAccountsPo();
-  tokensTablePo = nnsAccountsPo.getTokensTablePo();
-  // We wait until the table is loaded.
   await tokensTablePo.waitFor();
-  mainAccountRow = await tokensTablePo.findRowByName(mainAccountName);
 
   step("AU004: The user MUST be able to transfer funds");
   expect(await mainAccountRow.getBalance()).toEqual("20.00 ICP");
+  const subaccountRow = await tokensTablePo.findRowByName(subAccountName);
   expect(await subaccountRow.getBalance()).toEqual("0 ICP");
 
-  // TODO: Use the send from the row instead of the footer
-  await accountsPo.getNnsAccountsFooterPo().clickSend();
-
-  const transactionModalPo = await accountsPo.getIcpTransactionModalPo();
-  await transactionModalPo.waitFor();
-  await transactionModalPo.transferToAccount({
+  await mainAccountRow.click();
+  await appPo.getWalletPo().getNnsWalletPo().transferToAccount({
     accountName: subAccountName,
     amount: 5,
   });
-  await transactionModalPo.waitForClosed();
+  await appPo.goBack({ waitAbsent: false });
 
   expect(await mainAccountRow.getBalance()).toEqual("15.00 ICP");
   expect(await subaccountRow.getBalance()).toEqual("5.00 ICP");
@@ -113,6 +93,5 @@ test("Test accounts requirements", async ({ page, context }) => {
   expect(transactions).toHaveLength(1);
   const transaction = transactions[0];
 
-  // expect(await transaction.getIdentifier()).toBe(`From: ${mainAccountAddress}`);
   expect(await transaction.getAmount()).toBe("+5.00");
 });

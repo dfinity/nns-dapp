@@ -154,9 +154,14 @@ export class AppPo extends BasePageObject {
     await this.closeMenu();
   }
 
-  async goBack(): Promise<void> {
+  async goBack(
+    { waitAbsent }: { waitAbsent: boolean } = { waitAbsent: true }
+  ): Promise<void> {
     await this.getButton("back").click();
-    await this.getButton("back").waitForAbsent();
+    // Not all the times that the back is clicked the button disappears. For example, from ICP Wallet back to ICP Accounts.
+    if (waitAbsent) {
+      await this.getButton("back").waitForAbsent();
+    }
   }
 
   waitForNotBusy(): Promise<void> {
