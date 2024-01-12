@@ -85,7 +85,7 @@
 </script>
 
 {#if $ENABLE_MY_TOKENS}
-  <TestIdWrapper testId="accounts-body">
+  <div class="wrapper" data-tid="accounts-body">
     <TokensTable
       {userTokensData}
       firstColumnHeader={$i18n.tokens.accounts_header}
@@ -107,7 +107,7 @@
         >
       </div>
     </TokensTable>
-  </TestIdWrapper>
+  </div>
 {:else}
   <div class="card-grid" data-tid="accounts-body">
     {#if nonNullish($icpAccountsStore?.main)}
@@ -138,6 +138,11 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/interaction";
   @use "../themes/mixins/button";
+
+  .wrapper {
+    // Add some margin at the bottom so that the table doesn't stick to the bottom of the screen.
+    margin-bottom: var(--padding);
+  }
 
   .add-account-row {
     @include interaction.tappable;

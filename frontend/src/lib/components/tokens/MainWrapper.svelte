@@ -18,8 +18,7 @@
     height: 100%;
     width: 100%;
 
-    padding: var(--padding-2x) var(--padding-2x) var(--padding)
-      var(--padding-2x);
+    padding: var(--padding-2x) var(--padding-2x) 0 var(--padding-2x);
 
     @include media.min-width(large) {
       padding: var(--padding-4x) 0 0 0;
