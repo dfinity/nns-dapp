@@ -17,6 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * New light and dark theme colors.
+* Placeholder when the transaction list is empty.
 
 #### Deprecated
 
