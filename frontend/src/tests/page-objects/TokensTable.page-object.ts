@@ -47,9 +47,11 @@ export class TokensTablePo extends BasePageObject {
 
   async waitForRowByName(projectName: string): Promise<void> {
     let row = await this.findRowByName(projectName);
-    let counter = 0;
-    while (isNullish(row) && counter < 10) {
-      await waitForMilliseconds(1_000);
+    let counter = 1;
+    const MAX_TRIES = 10;
+    const WAIT_MILLISECONDS = 1_000;
+    while (isNullish(row) && counter < MAX_TRIES) {
+      await waitForMilliseconds(WAIT_MILLISECONDS * counter);
       row = await this.findRowByName(projectName);
       counter += 1;
     }
