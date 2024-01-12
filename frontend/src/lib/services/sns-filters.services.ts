@@ -90,15 +90,15 @@ export const loadSnsFilters = async ({
   }
 
   // update types filter
-  const typesFilterState =
+  const currentTypesFilterData =
     get(snsFiltersStore)?.[rootCanisterId.toText()]?.types ?? [];
-  const types = generateSnsProposalTypesFilterData({
+  const updatedTypesFilterData = generateSnsProposalTypesFilterData({
     nsFunctions,
-    typesFilterState,
+    typesFilterState: currentTypesFilterData,
     snsName,
   });
   snsFiltersStore.setTypes({
     rootCanisterId,
-    types,
+    types: updatedTypesFilterData,
   });
 };
