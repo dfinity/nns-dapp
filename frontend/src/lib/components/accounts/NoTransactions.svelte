@@ -11,10 +11,10 @@
 </div>
 
 <style lang="scss">
-.no-transaction {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--padding-2x);
-}
+  .no-transaction {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--padding-2x);
+  }
 </style>
