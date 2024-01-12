@@ -15,6 +15,7 @@ import { SignInPo } from "$tests/page-objects/SignIn.page-object";
 import { WalletPo } from "$tests/page-objects/Wallet.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { expect } from "@playwright/test";
+import { TokensRoutePo } from "./TokensRoute.page-object";
 
 export class AppPo extends BasePageObject {
   getSignInPo(): SignInPo {
@@ -27,6 +28,10 @@ export class AppPo extends BasePageObject {
 
   getAccountsPo(): AccountsPo {
     return AccountsPo.under(this.root);
+  }
+
+  getTokensPo(): TokensRoutePo {
+    return TokensRoutePo.under(this.root);
   }
 
   getWalletPo(): WalletPo {
