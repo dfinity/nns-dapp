@@ -9,10 +9,7 @@
     lastProposalId,
     sortSnsProposalsById,
   } from "$lib/utils/sns-proposals.utils";
-  import {
-    loadSnsFilters,
-    updateSnsTypeFilter,
-  } from "$lib/services/sns-filters.services";
+  import { loadSnsFilters } from "$lib/services/sns-filters.services";
   import {
     snsOnlyProjectStore,
     snsProjectSelectedStore,
@@ -37,16 +34,14 @@
   }) => {
     currentProjectCanisterId = rootCanisterId;
     if (nonNullish(rootCanisterId)) {
-      await Promise.all([
-        loadSnsNervousSystemFunctions(rootCanisterId),
-        loadSnsFilters(rootCanisterId),
-      ]);
+      await loadSnsNervousSystemFunctions(rootCanisterId);
       // The store should be updated at this point. But in case it's not (errors etc.),
       // we shouldn't update the filter.
       if (isNullish($nsFunctionsStore)) {
         throw new Error("no nsFunctions");
       }
-      updateSnsTypeFilter({
+
+      await loadSnsFilters({
         rootCanisterId,
         nsFunctions: $nsFunctionsStore,
         snsName,
