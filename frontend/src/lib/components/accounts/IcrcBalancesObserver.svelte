@@ -21,7 +21,7 @@
         return nonNullish(selectedAccount)
           ? ({
               ...selectedAccount,
-              balanceE8s: balance,
+              balanceUlps: balance,
             } as Account)
           : undefined;
       })

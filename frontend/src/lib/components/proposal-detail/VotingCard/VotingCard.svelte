@@ -5,9 +5,9 @@
   import { i18n } from "$lib/stores/i18n";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
-  import {
-    type CompactNeuronInfo,
-    type IneligibleNeuronData,
+  import type {
+    CompactNeuronInfo,
+    IneligibleNeuronData,
   } from "$lib/utils/neuron.utils";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import VotedNeuronList from "$lib/components/proposal-detail/VotingCard/VotedNeuronList.svelte";

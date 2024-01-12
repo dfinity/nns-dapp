@@ -26,7 +26,7 @@
     snsOnlyProjectStore,
     snsProjectSelectedStore,
   } from "$lib/derived/sns/sns-selected-project.derived";
-  import { TokenAmount, isNullish, nonNullish } from "@dfinity/utils";
+  import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import { loadSnsAccountTransactions } from "$lib/services/sns-transactions.services";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -40,6 +40,8 @@
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import IC_LOGO from "$lib/assets/icp.svg";
   import { toTokenAmountV2 } from "$lib/utils/token.utils";
+  import { ENABLE_MY_TOKENS } from "$lib/stores/feature-flags.store";
+  import { AppPath } from "$lib/constants/routes.constants";
 
   let showModal: "send" | undefined = undefined;
 
@@ -68,9 +70,11 @@
 
   const goBack = (): Promise<void> =>
     goto(
-      buildAccountsUrl({
-        universe: $selectedUniverseStore.canisterId,
-      })
+      $ENABLE_MY_TOKENS
+        ? AppPath.Tokens
+        : buildAccountsUrl({
+            universe: $selectedUniverseStore.canisterId,
+          })
     );
 
   export let accountIdentifier: string | undefined | null = undefined;
@@ -155,28 +159,27 @@
             rootCanisterId={$snsOnlyProjectStore}
             accounts={[$selectedAccountStore.account]}
             ledgerCanisterId={$snsProjectSelectedStore.summary.ledgerCanisterId}
-          >
-            <WalletPageHeader
-              universe={$selectedUniverseStore}
-              walletAddress={$selectedAccountStore.account.identifier}
-            />
-            <WalletPageHeading
-              balance={TokenAmount.fromE8s({
-                amount: $selectedAccountStore.account.balanceUlps,
-                token,
-              })}
-              accountName={$selectedAccountStore.account.name ??
-                $i18n.accounts.main}
-            />
+          />
+          <WalletPageHeader
+            universe={$selectedUniverseStore}
+            walletAddress={$selectedAccountStore.account.identifier}
+          />
+          <WalletPageHeading
+            balance={TokenAmountV2.fromUlps({
+              amount: $selectedAccountStore.account.balanceUlps,
+              token,
+            })}
+            accountName={$selectedAccountStore.account.name ??
+              $i18n.accounts.main}
+          />
 
-            <Separator spacing="none" />
+          <Separator spacing="none" />
 
-            <SnsTransactionsList
-              rootCanisterId={$snsOnlyProjectStore}
-              account={$selectedAccountStore.account}
-              {token}
-            />
-          </SnsBalancesObserver>
+          <SnsTransactionsList
+            rootCanisterId={$snsOnlyProjectStore}
+            account={$selectedAccountStore.account}
+            {token}
+          />
         {:else}
           <Spinner />
         {/if}

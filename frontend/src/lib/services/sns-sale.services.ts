@@ -653,7 +653,7 @@ const pollTransfer = ({
       sendICP({
         identity,
         to,
-        amount,
+        amount: amount.toE8s(),
         fromSubAccount,
         createdAt,
         memo,

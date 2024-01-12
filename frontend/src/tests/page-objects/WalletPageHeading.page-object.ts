@@ -12,7 +12,7 @@ export class WalletPageHeadingPo extends BasePageObject {
   }
 
   async getTitle(): Promise<string | null> {
-    if (await this.hasSkeleton()) {
+    if (await this.hasBalancePlaceholder()) {
       return null;
     }
     return AmountDisplayPo.under(this.root).getText();
@@ -22,8 +22,8 @@ export class WalletPageHeadingPo extends BasePageObject {
     return TooltipPo.under(this.root).getText();
   }
 
-  hasSkeleton(): Promise<boolean> {
-    return this.isPresent("skeleton");
+  hasBalancePlaceholder(): Promise<boolean> {
+    return this.isPresent("balance-placeholder");
   }
 
   getSubtitle(): Promise<string> {
