@@ -2,7 +2,6 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { snsSelectedProjectNewTxData } from "$lib/derived/sns/sns-selected-project-new-tx-data.derived";
 import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { page } from "$mocks/$app/stores";
 import {
   mockSnsSwapCommitment,
@@ -21,7 +20,6 @@ describe("selected-project-new-transaction-data derived store", () => {
       page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
       resetSnsProjects();
       snsSwapCommitmentsStore.reset();
-      transactionsFeesStore.reset();
       tokensStore.reset();
     });
 
