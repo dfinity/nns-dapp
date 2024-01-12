@@ -42,7 +42,7 @@ describe("TransactionList", () => {
   it("should display no-transactions message", async () => {
     const po = renderComponent({ account: mockMainAccount, transactions: [] });
 
-    expect(await po.getText()).toBe("No transactions");
+    expect(await po.hasNoTransactions()).toBe(true);
   });
 
   it("should render transactions", async () => {
@@ -57,5 +57,6 @@ describe("TransactionList", () => {
     });
 
     expect(await po.getTransactionCardPos()).toHaveLength(20);
+    expect(await po.hasNoTransactions()).toBe(false);
   });
 });

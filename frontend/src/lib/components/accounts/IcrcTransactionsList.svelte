@@ -1,6 +1,6 @@
 <script lang="ts">
   import { InfiniteScroll, Spinner } from "@dfinity/gix-components";
-  import { i18n } from "$lib/stores/i18n";
+  import NoTransactions from "./NoTransactions.svelte";
   import IcrcTransactionCard from "./IcrcTransactionCard.svelte";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
   import type { UiTransaction } from "$lib/types/transaction";
@@ -13,7 +13,7 @@
 
 <div data-tid="transactions-list" class="container">
   {#if transactions.length === 0 && !loading}
-    {$i18n.wallet.no_transactions}
+    <NoTransactions />
   {:else if transactions.length === 0 && loading}
     <SkeletonCard cardType="info" />
     <SkeletonCard cardType="info" />

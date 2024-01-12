@@ -497,7 +497,7 @@
     "principal": "Principal",
     "direction_from": "From:",
     "direction_to": "To:",
-    "no_transactions": "No transactions",
+    "no_transactions": "Transactions will appear here.",
     "icp_qrcode_aria_label": "A QR code that renders the address to receive ICP",
     "icrc_qrcode_aria_label": "A QR code that renders the address to receive $tokenSymbol",
     "token_address": "$tokenSymbol Address",
