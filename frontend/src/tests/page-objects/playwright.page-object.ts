@@ -89,7 +89,7 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
   }
 
   waitFor(): Promise<void> {
-    return this.locator.waitFor();
+    return this.locator.waitFor({ state: "attached" });
   }
 
   waitForAbsent(): Promise<void> {

@@ -1,6 +1,6 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import type { ButtonPo } from "./Button.page-object";
+import { DropdownPo } from "./Dropdown.page-object";
 
 export class GetTokensPo extends BasePageObject {
   static readonly TID = "get-tokens-component";
@@ -9,23 +9,13 @@ export class GetTokensPo extends BasePageObject {
     return new GetTokensPo(element.byTestId(GetTokensPo.TID));
   }
 
-  clickGetIcpTokens(): Promise<void> {
-    return this.getButton("get-icp-button").click();
-  }
-
-  clickGetBtc(): Promise<void> {
-    return this.getButton("get-btc-button").click();
-  }
-
-  getSnsTokensButton(): ButtonPo {
-    return this.getButton("get-sns-button");
-  }
-
-  clickGetSnsTokens(): Promise<void> {
-    return this.getSnsTokensButton().click();
+  clickGetTokens(): Promise<void> {
+    return this.getButton("get-tokens-button").click();
   }
 
   enterAmount(amount: number): Promise<void> {
+    console.log("amount", amount);
+    console.log(this.getTextInput().isPresent());
     return this.getTextInput().typeText(amount.toString());
   }
 
@@ -37,19 +27,36 @@ export class GetTokensPo extends BasePageObject {
     return this.root.byTestId("get-icp-form").waitForAbsent();
   }
 
+  getDropdown(): DropdownPo {
+    return DropdownPo.under(this.root);
+  }
+
+  waitForOption(value: string): Promise<void> {
+    return this.getDropdown().waitForOption(value);
+  }
+
   async getIcpTokens(amount: number): Promise<void> {
-    await this.clickGetIcpTokens();
+    await this.clickGetTokens();
+    await this.waitForOption("Internet Computer");
     await this.getTokens(amount);
   }
 
-  async getSnsTokens(amount: number): Promise<void> {
-    await this.getSnsTokensButton().waitFor();
-    await this.clickGetSnsTokens();
+  async getSnsTokens({
+    amount,
+    name,
+  }: {
+    amount: number;
+    name: string;
+  }): Promise<void> {
+    await this.clickGetTokens();
+    await this.waitForOption(name);
     await this.getTokens(amount);
   }
 
   async getBtc(amount: number): Promise<void> {
-    await this.clickGetBtc();
+    await this.clickGetTokens();
+    await this.waitForOption("ckBTC");
+    await this.getDropdown().select("ckBTC");
     await this.getTokens(amount);
   }
 

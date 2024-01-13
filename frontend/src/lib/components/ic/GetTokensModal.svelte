@@ -24,6 +24,7 @@
   import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
   import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
   import { createEventDispatcher } from "svelte";
+  import TestIdWrapper from "../common/TestIdWrapper.svelte";
 
   let transferring = false;
 
@@ -89,6 +90,10 @@
     ({ universeId }) => universeId.toText() === selectedUniverseId
   );
 
+  $: {
+    console.log("in da modal", selectedUniverseId, selectedTokenData);
+  }
+
   const dispatch = createEventDispatcher();
   const onSubmit = async () => {
     if (invalidForm || inputValue === undefined) {
@@ -126,6 +131,12 @@
           // Default to transfer ICPs if the test account's balance of the selected universe is 0.
           await getICPs(inputValue);
         }
+      } else {
+        console.error(
+          "selectedUniverseId or selectedTokenData is undefined",
+          selectedUniverseId,
+          selectedTokenData
+        );
       }
 
       close();
@@ -159,7 +170,9 @@
     <span>Select token</span>
     <Dropdown name="select-token" bind:selectedValue={selectedUniverseId}>
       {#each tokensWithBalance as { title, universeId } (universeId.toText())}
-        <DropdownItem value={universeId.toText()}>{title}</DropdownItem>
+        <DropdownItem value={universeId.toText()}
+          ><span data-tid={title}>{title}</span></DropdownItem
+        >
       {/each}
     </Dropdown>
 
