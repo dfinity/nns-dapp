@@ -66,6 +66,7 @@
   on:click={handleClick}
   data-tid="tokens-table-row-component"
   class={mobileTemplateClass(2)}
+  data-title={userTokenData.title}
 >
   <div role="cell" class="title-cell">
     <div class="title-logo-wrapper">

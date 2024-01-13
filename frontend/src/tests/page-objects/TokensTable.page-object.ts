@@ -1,5 +1,4 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { waitForMilliseconds } from "$tests/utils/utils.test-utils";
 import { isNullish } from "@dfinity/utils";
 import {
   TokensTableRowPo,
@@ -35,29 +34,7 @@ export class TokensTablePo extends BasePageObject {
   async findRowByName(
     projectName: string
   ): Promise<TokensTableRowPo | undefined> {
-    const rows = await this.getRows();
-    for (const row of rows) {
-      const name = await row.getProjectName();
-      if (name === projectName) {
-        return row;
-      }
-    }
-    return undefined;
-  }
-
-  async waitForRowByName(projectName: string): Promise<void> {
-    let row = await this.findRowByName(projectName);
-    let counter = 1;
-    const MAX_TRIES = 10;
-    const WAIT_MILLISECONDS = 1_000;
-    while (isNullish(row) && counter < MAX_TRIES) {
-      await waitForMilliseconds(WAIT_MILLISECONDS * counter);
-      row = await this.findRowByName(projectName);
-      counter += 1;
-    }
-    if (isNullish(row)) {
-      throw new Error(`Row with project name ${projectName} not found`);
-    }
+    return TokensTableRowPo.byTitle({ element: this.root, title: projectName });
   }
 
   async getRowData(projectName: string): Promise<TokensTableRowData> {

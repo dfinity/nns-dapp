@@ -47,7 +47,8 @@ test("Test accounts requirements", async ({ page, context }) => {
   // We wait until the table is loaded.
   await tokensTablePo.waitFor();
   // We wait until the subaccount row is loaded.
-  await tokensTablePo.waitForRowByName(subAccountName);
+  const subaccountRow = await tokensTablePo.findRowByName(subAccountName);
+  await subaccountRow.waitFor();
 
   expect(await accountNames()).toEqual([mainAccountName, subAccountName]);
 
@@ -67,7 +68,6 @@ test("Test accounts requirements", async ({ page, context }) => {
 
   step("AU004: The user MUST be able to transfer funds");
   expect(await mainAccountRow.getBalance()).toEqual("20.00 ICP");
-  const subaccountRow = await tokensTablePo.findRowByName(subAccountName);
   expect(await subaccountRow.getBalance()).toEqual("0 ICP");
 
   await mainAccountRow.click();
