@@ -15,7 +15,6 @@
     display: flex;
     align-items: stretch;
     justify-content: center;
-    height: 100%;
     width: 100%;
 
     padding: var(--padding-2x) var(--padding-2x) var(--padding)
@@ -27,11 +26,8 @@
 
     & .content {
       width: 100%;
-      height: 100%;
 
       overflow-x: hidden;
-      overflow-y: auto;
-
       @include media.min-width(large) {
         width: var(--island-width);
         max-width: var(--island-max-width);
