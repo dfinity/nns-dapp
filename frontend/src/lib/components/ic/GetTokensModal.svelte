@@ -38,6 +38,7 @@
       if (isUniverseNns(universeId)) {
         return await getTestBalance();
       } else if (isUniverseCkBTC(universeId)) {
+        // Show always to get ckBTC
         return 1n;
       } else {
         return await getIcrcTokenTestAccountBalance(ledgerCanisterId);

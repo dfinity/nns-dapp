@@ -62,6 +62,7 @@ export const getTestIcpAccountBalance = async (): Promise<bigint> => {
 
   return ledgerCanister.accountBalance({
     accountIdentifier: AccountIdentifier.fromHex(testAccountAddress),
+    certified: false,
   });
 };
 
@@ -79,6 +80,7 @@ export const getIcrcTokenTestAccountBalance = async (
 
   return canister.balance({
     owner: Principal.fromText(testAccountPrincipal),
+    certified: false,
   });
 };
 
