@@ -24,7 +24,6 @@
   import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
   import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
   import { createEventDispatcher } from "svelte";
-  import TestIdWrapper from "../common/TestIdWrapper.svelte";
 
   let transferring = false;
 
@@ -73,26 +72,25 @@
     getTokensWithBalance($tokensListUserStore)
       .then((tokens) => {
         tokensWithBalance = tokens;
+        // Set the selected universe if not set yet.
+        selectedUniverseId =
+          selectedUniverseId ??
+          tokens
+            .find(({ universeId }) => {
+              return universeId.toText() === $selectedUniverseIdStore.toText();
+            })
+            ?.universeId.toText();
       })
       .catch((err) => {
         console.error("error in getTokensWithBalance", err);
       });
   }
 
-  let selectedUniverseId: string | undefined = tokensWithBalance
-    .find(
-      ({ universeId }) =>
-        universeId.toText() === $selectedUniverseIdStore.toText()
-    )
-    ?.universeId.toText();
+  let selectedUniverseId: string | undefined = undefined;
   let selectedTokenData: UserTokenData | undefined;
   $: selectedTokenData = tokensWithBalance.find(
     ({ universeId }) => universeId.toText() === selectedUniverseId
   );
-
-  $: {
-    console.log("in da modal", selectedUniverseId, selectedTokenData);
-  }
 
   const dispatch = createEventDispatcher();
   const onSubmit = async () => {
