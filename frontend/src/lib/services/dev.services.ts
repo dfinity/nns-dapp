@@ -3,7 +3,7 @@ import {
   acquireICPTs,
   acquireIcrcTokens,
   acquireSnsTokens,
-  getTestAccountBalance,
+  getTestIcpAccountBalance,
   receiveMockBtc,
 } from "$lib/api/dev.api";
 import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -25,7 +25,7 @@ import { syncAccounts } from "./icp-accounts.services";
 import { loadIcrcAccount } from "./icrc-accounts.services";
 import { loadSnsAccounts } from "./sns-accounts.services";
 
-export const getTestBalance = getTestAccountBalance;
+export const getTestBalance = getTestIcpAccountBalance;
 
 const getMainAccount = async (): Promise<IcpAccount> => {
   const { main }: IcpAccountsStoreData = get(icpAccountsStore);
