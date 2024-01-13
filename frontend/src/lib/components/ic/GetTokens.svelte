@@ -86,7 +86,7 @@
   {/if}
 
   {#if visible}
-    <GetTokensModal {tokenSymbol} on:nnsClose={close} />
+    <GetTokensModal on:nnsClose={close} />
   {/if}
 </TestIdWrapper>
 

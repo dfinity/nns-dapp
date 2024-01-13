@@ -59,7 +59,7 @@ export const getICPs = async (icps: number) => {
   await syncAccounts();
 };
 
-export const getTokens = async ({
+export const getSnsTokens = async ({
   tokens,
   rootCanisterId,
 }: {
