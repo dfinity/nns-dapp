@@ -1,7 +1,4 @@
-import {
-  loadSnsFilters,
-  updateSnsTypeFilter,
-} from "$lib/services/sns-filters.services";
+import { loadSnsFilters } from "$lib/services/sns-filters.services";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { enumSize } from "$lib/utils/enum.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
@@ -9,6 +6,7 @@ import { nativeNervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
+  type SnsNervousSystemFunction,
 } from "@dfinity/sns";
 import { get } from "svelte/store";
 
@@ -22,7 +20,11 @@ describe("sns-filters services", () => {
     });
     it("should load the sns decision status filters store but not Unspecified", async () => {
       expect(getFiltersStoreData()?.decisionStatus).toBeUndefined();
-      await loadSnsFilters(mockPrincipal);
+      await loadSnsFilters({
+        rootCanisterId: mockPrincipal,
+        nsFunctions: [nativeNervousSystemFunctionMock],
+        snsName: "sns-name",
+      });
 
       expect(getFiltersStoreData().decisionStatus).toHaveLength(
         enumSize(SnsProposalDecisionStatus) - 1
@@ -36,7 +38,11 @@ describe("sns-filters services", () => {
 
     it("should load the sns reward status filters store but not Unspecified", async () => {
       expect(getFiltersStoreData()?.rewardStatus).toBeUndefined();
-      await loadSnsFilters(mockPrincipal);
+      await loadSnsFilters({
+        rootCanisterId: mockPrincipal,
+        nsFunctions: [nativeNervousSystemFunctionMock],
+        snsName: "sns-name",
+      });
 
       expect(getFiltersStoreData().rewardStatus).toHaveLength(
         enumSize(SnsProposalRewardStatus) - 1
@@ -56,25 +62,29 @@ describe("sns-filters services", () => {
         decisionStatus,
       });
 
-      await loadSnsFilters(mockPrincipal);
+      await loadSnsFilters({
+        rootCanisterId: mockPrincipal,
+        nsFunctions: [nativeNervousSystemFunctionMock],
+        snsName: "sns-name",
+      });
 
       expect(getFiltersStoreData().decisionStatus).toHaveLength(
         decisionStatus.length
       );
     });
-  });
 
-  describe("updateSnsTypeFilter", () => {
-    beforeEach(() => {
-      snsFiltersStore.reset();
-    });
-
-    it("should fill up the sns type filter store", async () => {
+    it("should update the types in filters store", async () => {
       expect(getFiltersStoreData()?.types).toBeUndefined();
 
-      updateSnsTypeFilter({
+      await loadSnsFilters({
         rootCanisterId: mockPrincipal,
-        nsFunctions: [nativeNervousSystemFunctionMock],
+        nsFunctions: [
+          {
+            ...nativeNervousSystemFunctionMock,
+            id: 1n,
+            name: "Motion",
+          } as SnsNervousSystemFunction,
+        ],
         snsName: "sns-name",
       });
 

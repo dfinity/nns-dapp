@@ -14,6 +14,7 @@ import en from "$tests/mocks/i18n.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
 import {
   SnsProposalDecisionStatus,
@@ -111,16 +112,16 @@ describe("SnsProposals", () => {
         expect(getFiltersStoreData()?.types).toEqual(undefined);
         render(SnsProposals);
 
-        await waitFor(() =>
-          expect(getFiltersStoreData()?.types).toEqual([
-            {
-              checked: true,
-              id: "3",
-              name: "test_function",
-              value: "3",
-            },
-          ])
-        );
+        await runResolvedPromises();
+
+        expect(getFiltersStoreData()?.types).toEqual([
+          {
+            checked: true,
+            id: `${functionId}`,
+            name: functionName,
+            value: `${functionId}`,
+          },
+        ]);
       });
 
       it("should render a spinner while searching proposals", async () => {
