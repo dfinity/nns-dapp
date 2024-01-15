@@ -80,6 +80,8 @@ export interface Transaction {
   date: Date;
 }
 
+export type TransactionIconType = "sent" | "received" | "failed" | "reimbursed";
+
 export interface UiTransaction {
   // Used in forEach for consistent rendering.
   domKey: string;

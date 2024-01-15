@@ -1,17 +1,15 @@
 <script lang="ts">
+  import TransactionIcon from "./TransactionIcon.svelte";
   import ColumnRow from "$lib/components/ui/ColumnRow.svelte";
   import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Identifier from "$lib/components/ui/Identifier.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import {
-    IconReimbursed,
-    IconErrorOutline,
-    IconUp,
-    IconDown,
-    KeyValuePair,
-  } from "@dfinity/gix-components";
-  import type { UiTransaction } from "$lib/types/transaction";
+  import { KeyValuePair } from "@dfinity/gix-components";
+  import type {
+    UiTransaction,
+    TransactionIconType,
+  } from "$lib/types/transaction";
   import {
     nonNullish,
     type TokenAmount,
@@ -40,6 +38,15 @@
     timestamp,
   } = transaction);
 
+  let iconType: TransactionIconType;
+  $: iconType = isReimbursement
+    ? "reimbursed"
+    : isFailed
+    ? "failed"
+    : isIncoming
+    ? "received"
+    : "sent";
+
   let label: string;
   $: label = isIncoming
     ? $i18n.wallet.direction_from
@@ -50,22 +57,8 @@
 </script>
 
 <article data-tid="transaction-card" transition:fade|global>
-  <div
-    class="icon"
-    data-tid="icon"
-    class:send={!isIncoming}
-    class:pending={isPending}
-    class:failed={isFailed || isReimbursement}
-  >
-    {#if isFailed}
-      <IconErrorOutline size="24px" />
-    {:else if isReimbursement}
-      <IconReimbursed size="24px" />
-    {:else if isIncoming}
-      <IconDown size="24px" />
-    {:else}
-      <IconUp size="24px" />
-    {/if}
+  <div class="icon">
+    <TransactionIcon type={iconType} {isPending} />
   </div>
 
   <div class="transaction">
@@ -149,33 +142,6 @@
   }
 
   .icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    background: var(--check-tint);
-    color: var(--check);
-
-    border-radius: var(--border-radius);
-
-    width: var(--padding-6x);
-    aspect-ratio: 1 / 1;
-
     margin: var(--padding-0_5x) 0;
-
-    &.send {
-      background: var(--background);
-      color: var(--disable-contrast);
-    }
-
-    &.pending {
-      color: var(--pending-color);
-      background: var(--pending-background);
-    }
-
-    &.failed {
-      color: var(--alert);
-      background: var(--alert-tint);
-    }
   }
 </style>
