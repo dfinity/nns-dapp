@@ -19,7 +19,7 @@ import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
 import CkBTCAccountsTest from "$tests/lib/components/accounts/CkBTCAccountsTest.svelte";
-import { resetIdentity } from "$tests/mocks/auth.store.mock";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
@@ -151,6 +151,74 @@ describe("CkBTCWallet", () => {
     vi.mocked(ckbtcMinterApi.retrieveBtcStatusV2ByAccount).mockResolvedValue(
       []
     );
+  });
+
+  describe("user not signed in", () => {
+    beforeEach(() => {
+      setNoIdentity();
+      page.mock({
+        data: { universe: CKTESTBTC_UNIVERSE_CANISTER_ID.toText() },
+        routeId: AppPath.Wallet,
+      });
+    });
+
+    it("should render universe name", async () => {
+      const po = await renderWallet();
+      expect(await po.getWalletPageHeaderPo().getUniverse()).toBe("ckTESTBTC");
+    });
+
+    it("should not render a wallet address", async () => {
+      const po = await renderWallet();
+      expect(await po.getWalletPageHeaderPo().getHashPo().isPresent()).toBe(
+        false
+      );
+    });
+
+    it("should render balance placeholder", async () => {
+      const po = await renderWallet();
+      expect(await po.getWalletPageHeadingPo().hasBalancePlaceholder()).toBe(
+        true
+      );
+    });
+
+    it("should render 'Main' account name", async () => {
+      const po = await renderWallet();
+      expect(await po.getWalletPageHeadingPo().getSubtitle()).toBe("Main");
+    });
+
+    it("should render sign in button", async () => {
+      const po = await renderWallet();
+      expect(await po.hasSignInButton()).toBe(true);
+    });
+
+    it("should render info card", async () => {
+      const po = await renderWallet();
+      const card = po.getCkBTCInfoCardPo();
+      expect(await card.isPresent()).toBe(true);
+
+      expect(await card.hasSkeletonText()).toBe(false);
+      expect(await card.hasSpinner()).toBe(false);
+      expect(await card.hasAddress()).toBe(false);
+      expect(await card.hasQrCode()).toBe(false);
+
+      expect(await card.hasQrCodePlaceholder()).toBe(true);
+      expect(await card.hasSignInForAddressMessage()).toBe(true);
+    });
+
+    it("should render transactions placeholder", async () => {
+      const po = await renderWallet();
+      expect(await po.hasNoTransactions()).toBe(true);
+    });
+
+    it("should not render send/receive buttons", async () => {
+      const po = await renderWallet();
+      expect(
+        await po.getCkBTCWalletFooterPo().getSendButtonPo().isPresent()
+      ).toBe(false);
+      expect(
+        await po.getCkBTCWalletFooterPo().getReceiveButtonPo().isPresent()
+      ).toBe(false);
+    });
   });
 
   describe("accounts not loaded", () => {
