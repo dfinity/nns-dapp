@@ -23,8 +23,8 @@ test("Test accounts requirements", async ({ page, context }) => {
   const accountsPo = appPo.getAccountsPo();
   const nnsAccountsPo = accountsPo.getNnsAccountsPo();
   const tokensTablePo = nnsAccountsPo.getTokensTablePo();
-  const mainAccountRow = tokensTablePo.findRowByName(mainAccountName);
-  expect(await mainAccountRow.isPresent()).toBe(true);
+  const mainAccountRow = tokensTablePo.getRowByName(mainAccountName);
+  await mainAccountRow.waitFor();
 
   step("AU002: The user MUST be able to create an additional account");
   const subAccountName = "My second account";
@@ -47,7 +47,7 @@ test("Test accounts requirements", async ({ page, context }) => {
   // We wait until the table is loaded.
   await tokensTablePo.waitFor();
   // We wait until the subaccount row is loaded.
-  const subaccountRow = tokensTablePo.findRowByName(subAccountName);
+  const subaccountRow = tokensTablePo.getRowByName(subAccountName);
   await subaccountRow.waitFor();
 
   expect(await accountNames()).toEqual([mainAccountName, subAccountName]);
@@ -61,7 +61,7 @@ test("Test accounts requirements", async ({ page, context }) => {
     .getTokensPo()
     .getTokensPagePo()
     .getTokensTable()
-    .findRowByName("Internet Computer");
+    .getRowByName("Internet Computer");
   await icRow.click();
 
   await tokensTablePo.waitFor();
@@ -70,9 +70,12 @@ test("Test accounts requirements", async ({ page, context }) => {
   expect(await mainAccountRow.getBalance()).toEqual("20.00 ICP");
   expect(await subaccountRow.getBalance()).toEqual("0 ICP");
 
+  const subAccountAddress = await accountsPo.getAccountAddress(subAccountName);
+
   await mainAccountRow.click();
   await appPo.getWalletPo().getNnsWalletPo().transferToAccount({
     accountName: subAccountName,
+    expectedAccountAddress: subAccountAddress,
     amount: 5,
   });
   await appPo.goBack({ waitAbsent: false });
@@ -83,6 +86,8 @@ test("Test accounts requirements", async ({ page, context }) => {
   step(
     "AU005: The user MUST be able to see the transactions of a specific account"
   );
+  const mainAccountAddress =
+    await accountsPo.getAccountAddress(mainAccountName);
   await subaccountRow.click();
   const transactionList = appPo
     .getWalletPo()
@@ -93,5 +98,6 @@ test("Test accounts requirements", async ({ page, context }) => {
   expect(transactions).toHaveLength(1);
   const transaction = transactions[0];
 
+  expect(await transaction.getIdentifier()).toBe(`From: ${mainAccountAddress}`);
   expect(await transaction.getAmount()).toBe("+5.00");
 });

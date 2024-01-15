@@ -31,12 +31,12 @@ export class TokensTablePo extends BasePageObject {
     return Promise.all(rows.map((row) => row.getData()));
   }
 
-  findRowByName(projectName: string): TokensTableRowPo | undefined {
+  getRowByName(projectName: string): TokensTableRowPo | undefined {
     return TokensTableRowPo.byTitle({ element: this.root, title: projectName });
   }
 
   async getRowData(projectName: string): Promise<TokensTableRowData> {
-    const row = await this.findRowByName(projectName);
+    const row = await this.getRowByName(projectName);
     if (isNullish(row)) {
       throw new Error(`Row with project name ${projectName} not found`);
     }
@@ -50,7 +50,7 @@ export class TokensTablePo extends BasePageObject {
     testId: string;
     projectName: string;
   }): Promise<void> {
-    const row = await this.findRowByName(projectName);
+    const row = await this.getRowByName(projectName);
     if (isNullish(row)) {
       throw new Error(`Row with project name ${projectName} not found`);
     }

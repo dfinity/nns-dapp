@@ -84,7 +84,7 @@ export class NnsWalletPo extends BasePageObject {
     amount,
   }: {
     accountName: string;
-    expectedAccountAddress?: string;
+    expectedAccountAddress: string;
     amount: number;
   }): Promise<void> {
     await this.clickSend();

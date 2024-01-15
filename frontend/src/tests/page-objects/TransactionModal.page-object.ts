@@ -2,7 +2,6 @@ import { TransactionFormPo } from "$tests/page-objects/TransactionForm.page-obje
 import { TransactionReviewPo } from "$tests/page-objects/TransactionReview.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { nonNullish } from "@dfinity/utils";
 
 // This should not be used directly but rather as a base class for specific
 // transaction modals.
@@ -21,7 +20,7 @@ export class TransactionModalBasePo extends BasePageObject {
     amount,
   }: {
     accountName: string;
-    expectedAccountAddress?: string;
+    expectedAccountAddress: string;
     amount: number;
   }): Promise<void> {
     await this.getTransactionFormPo().transferToAccount({
@@ -30,10 +29,7 @@ export class TransactionModalBasePo extends BasePageObject {
     });
     const review = this.getTransactionReviewPo();
     const destinationAddress = await review.getDestinationAddress();
-    if (
-      nonNullish(expectedAccountAddress) &&
-      destinationAddress.trim() !== expectedAccountAddress.trim()
-    ) {
+    if (destinationAddress.trim() !== expectedAccountAddress.trim()) {
       throw new Error(
         `Destination address should be ${expectedAccountAddress} but was ${destinationAddress}.`
       );
