@@ -206,6 +206,7 @@
 
     grid-area: qr;
     background: white;
+    color: black;
     width: var(--qr-code-size);
     height: var(--qr-code-size);
     border: var(--padding) solid white;
