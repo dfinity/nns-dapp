@@ -1,5 +1,7 @@
 <script lang="ts">
+  import { authSignedInStore } from "$lib/derived/auth.derived";
   import { Island, Spinner } from "@dfinity/gix-components";
+  import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import type { Writable } from "svelte/store";
   import type { WalletStore } from "$lib/types/wallet.context";
@@ -102,9 +104,21 @@
 
   let loaded = false;
 
-  const loadData = async (universeId: UniverseCanisterId | undefined) => {
+  const loadData = async ({
+    universeId,
+    isSignedIn,
+  }: {
+    universeId: UniverseCanisterId | undefined;
+    isSignedIn: boolean;
+  }) => {
     // Universe is not yet loaded
     if (isNullish(universeId)) {
+      return;
+    }
+
+    if (!isSignedIn) {
+      // nothing to load
+      loaded = true;
       return;
     }
 
@@ -129,31 +143,42 @@
     loaded = true;
   };
 
-  $: accountIdentifier, (async () => await loadData(selectedUniverseId))();
+  $: accountIdentifier,
+    (async () =>
+      await loadData({
+        universeId: selectedUniverseId,
+        isSignedIn: $authSignedInStore,
+      }))();
 </script>
 
 <Island {testId}>
   <main class="legacy">
     <section>
-      {#if loaded && nonNullish($selectedAccountStore.account) && nonNullish(selectedUniverseId) && nonNullish(token)}
-        <IcrcBalancesObserver
-          universeId={selectedUniverseId}
-          accounts={[$selectedAccountStore.account]}
-          reload={reloadOnlyAccountFromStore}
-        />
+      {#if loaded && nonNullish(selectedUniverseId)}
+        {#if nonNullish($selectedAccountStore.account) && nonNullish(token)}
+          <IcrcBalancesObserver
+            universeId={selectedUniverseId}
+            accounts={[$selectedAccountStore.account]}
+            reload={reloadOnlyAccountFromStore}
+          />
+        {/if}
         <WalletPageHeader
           universe={$selectedUniverseStore}
-          walletAddress={$selectedAccountStore.account.identifier}
+          walletAddress={$selectedAccountStore.account?.identifier}
         />
         <WalletPageHeading
-          accountName={$selectedAccountStore.account.name ??
+          accountName={$selectedAccountStore?.account?.name ??
             $i18n.accounts.main}
-          balance={TokenAmountV2.fromUlps({
-            amount: $selectedAccountStore.account.balanceUlps,
-            token,
-          })}
+          balance={nonNullish($selectedAccountStore.account) &&
+          nonNullish(token)
+            ? TokenAmountV2.fromUlps({
+                amount: $selectedAccountStore.account.balanceUlps,
+                token,
+              })
+            : undefined}
         >
           <slot name="header-actions" />
+          <SignInGuard />
         </WalletPageHeading>
 
         {#if $$slots["info-card"]}
