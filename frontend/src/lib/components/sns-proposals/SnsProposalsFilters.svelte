@@ -11,14 +11,14 @@
   import FiltersButton from "../ui/FiltersButton.svelte";
   import SnsFilterRewardsModal from "$lib/modals/sns/proposals/SnsFilterRewardsModal.svelte";
 
-  let modal: "topics" | "rewards" | "status" | undefined = undefined;
+  let modal: "types" | "rewards" | "status" | undefined = undefined;
 
   let rootCanisterId: Principal;
   $: rootCanisterId = $selectedUniverseIdStore;
   let filtersStore: ProjectFiltersStoreData | undefined;
   $: filtersStore = $snsFiltersStore[rootCanisterId.toText()];
 
-  const openFilters = (filtersModal: "topics" | "rewards" | "status") => {
+  const openFilters = (filtersModal: "types" | "rewards" | "status") => {
     modal = filtersModal;
   };
 
