@@ -25,6 +25,10 @@ export class VotingCardPo extends BasePageObject {
     return this.getVotedNeurons().byTestId("voted-neurons-headline");
   }
 
+  async getVotedNeuronHeadlineText(): Promise<string> {
+    return (await this.getVotedNeuronHeadline().getText()).trim();
+  }
+
   getVotedNeuronHeadlineYesIcon(): PageObjectElement {
     return this.getVotedNeuronHeadline().byTestId("thumb-up");
   }
@@ -35,6 +39,12 @@ export class VotingCardPo extends BasePageObject {
 
   getIneligibleNeurons(): PageObjectElement {
     return this.root.byTestId("ineligible-neurons");
+  }
+
+  async getIneligibleNeuronsHeaderText(): Promise<string> {
+    return (
+      await this.getIneligibleNeurons().byTestId("collapsible-header").getText()
+    ).trim();
   }
 
   getVoteYesButtonPo(): ButtonPo {
