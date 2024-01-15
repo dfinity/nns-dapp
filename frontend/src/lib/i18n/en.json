@@ -397,6 +397,8 @@
     "topic_13_subtitle": "Proposals dealing with blessing and retirement of replica versions",
     "topic_14_title": "SNS & Neurons' Fund",
     "topic_14_subtitle": "Proposals related to SNS and Neurons' Fund",
+    "topic_15_title": "API Boundary Node Management",
+    "topic_15_subtitle": "Proposals related to the management of API boundary nodes",
     "current_followees": "Currently Following",
     "add": "Add Followee"
   },
