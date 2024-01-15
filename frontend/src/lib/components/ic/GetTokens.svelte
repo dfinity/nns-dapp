@@ -2,36 +2,25 @@
   /**
    * Transfer ICP to current principal. For test purpose only and only available on "testnet" too.
    */
-  import { Modal } from "@dfinity/gix-components";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import Input from "$lib/components/ui/Input.svelte";
-  import {
-    getICPs,
-    getTestBalance,
-    getTokens,
-    getBTC,
-    getIcrcTokens,
-  } from "$lib/services/dev.services";
-  import { Spinner, IconAccountBalance } from "@dfinity/gix-components";
+  import { getTestBalance } from "$lib/services/dev.services";
+  import { IconAccountBalance } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
-  import { toastsError } from "$lib/stores/toasts.store";
   import {
     isCkBTCUniverseStore,
     selectedIcrcTokenUniverseIdStore,
   } from "$lib/derived/selected-universe.derived";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
   import type { Principal } from "@dfinity/principal";
-  import { ICPToken, nonNullish, type Token } from "@dfinity/utils";
+  import { ICPToken, nonNullish } from "@dfinity/utils";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { browser } from "$app/environment";
   import { getIcrcTokenTestAccountBalance } from "$lib/api/dev.api";
   import { tokensStore } from "$lib/stores/tokens.store";
+  import GetTokensModal from "./GetTokensModal.svelte";
 
   let visible = false;
-  let transferring = false;
-
-  let inputValue: number | undefined = undefined;
 
   let snsSelectedProjectId: Principal | undefined;
   $: snsSelectedProjectId = $snsOnlyProjectStore;
@@ -39,62 +28,9 @@
   let icrcSelectedProjectId: Principal | undefined;
   $: icrcSelectedProjectId = $selectedIcrcTokenUniverseIdStore;
 
-  let token: Token | undefined;
-  $: token = nonNullish(icrcSelectedProjectId)
-    ? $tokensStore[icrcSelectedProjectId?.toText()]?.token
-    : undefined;
-
-  const onSubmit = async () => {
-    if (invalidForm || inputValue === undefined) {
-      toastsError({
-        labelKey: "Invalid ICPs input.",
-      });
-      return;
-    }
-
-    transferring = true;
-
-    try {
-      // Default to transfer ICPs if the test account's balance of the selected universe is 0.
-      if (nonNullish(snsSelectedProjectId) && tokenBalanceE8s > 0n) {
-        await getTokens({
-          tokens: inputValue,
-          rootCanisterId: snsSelectedProjectId,
-        });
-      } else if (nonNullish(icrcSelectedProjectId) && nonNullish(token)) {
-        await getIcrcTokens({
-          tokens: inputValue,
-          token,
-          ledgerCanisterId: icrcSelectedProjectId,
-        });
-      } else if ($isCkBTCUniverseStore) {
-        await getBTC({
-          amount: inputValue,
-        });
-      } else {
-        await getICPs(inputValue);
-      }
-
-      reset();
-    } catch (err: unknown) {
-      toastsError({
-        labelKey: "ICPs could not be transferred.",
-        err,
-      });
-    }
-
-    transferring = false;
-  };
-
-  const onClose = () => reset();
-
-  const reset = () => {
+  const close = () => {
     visible = false;
-    inputValue = undefined;
   };
-
-  let invalidForm: boolean;
-  $: invalidForm = inputValue === undefined || inputValue <= 0;
 
   // Check the balance of the test account in that universe.
   let tokenBalanceE8s = 0n;
@@ -149,40 +85,9 @@
     </button>
   {/if}
 
-  <Modal {visible} role="alert" on:nnsClose={onClose}>
-    <span slot="title">{`Get ${tokenSymbol}`}</span>
-
-    <form
-      id="get-icp-form"
-      data-tid="get-icp-form"
-      on:submit|preventDefault={onSubmit}
-    >
-      <span class="label">How much?</span>
-
-      <Input
-        placeholderLabelKey="core.amount"
-        name="tokens"
-        inputType="icp"
-        bind:value={inputValue}
-        disabled={transferring}
-      />
-    </form>
-
-    <button
-      form="get-icp-form"
-      data-tid="get-icp-submit"
-      type="submit"
-      class="primary"
-      slot="footer"
-      disabled={invalidForm || transferring}
-    >
-      {#if transferring}
-        <Spinner />
-      {:else}
-        Get tokens
-      {/if}
-    </button>
-  </Modal>
+  {#if visible}
+    <GetTokensModal {tokenSymbol} on:nnsClose={close} />
+  {/if}
 </TestIdWrapper>
 
 <style lang="scss">
@@ -219,16 +124,5 @@
     span {
       white-space: nowrap;
     }
-  }
-
-  form {
-    display: flex;
-    flex-direction: column;
-
-    padding: var(--padding-2x) var(--padding);
-  }
-
-  button.primary {
-    min-width: var(--padding-8x);
   }
 </style>
