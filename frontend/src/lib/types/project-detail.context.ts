@@ -1,4 +1,4 @@
-import type { TokenAmount } from "@dfinity/utils";
+import type { TokenAmountV2 } from "@dfinity/utils";
 import type { Writable } from "svelte/store";
 import type { SnsSummary, SnsSwapCommitment } from "./sns";
 
@@ -11,7 +11,7 @@ import type { SnsSummary, SnsSwapCommitment } from "./sns";
 export type ProjectDetailStore = {
   summary: SnsSummary | undefined | null;
   swapCommitment: SnsSwapCommitment | undefined | null;
-  totalTokensSupply?: TokenAmount | undefined | null;
+  totalTokensSupply?: TokenAmountV2 | undefined | null;
 };
 
 export interface ProjectDetailContext {

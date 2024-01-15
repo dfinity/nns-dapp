@@ -44,8 +44,8 @@ const blockedApiPaths = ["$lib/api/canisters.api", "$lib/api/icp-ledger.api"];
 describe("canisters-services", () => {
   blockAllCallsTo(blockedApiPaths);
 
-  const newBalanceE8s = BigInt(100_000_000);
-  const exchangeRate = BigInt(10_000);
+  const newBalanceE8s = 100_000_000n;
+  const exchangeRate = 10_000n;
   let spyQueryCanisters: SpyInstance;
   let spyQueryAccountBalance: SpyInstance;
   let spyAttachCanister: SpyInstance;

@@ -30,7 +30,7 @@ export const getSwapCanisterAccount = ({
 
 /**
  * Returns `undefined` if swapCommitment is not present yet.
- * Returns `BigInt(0)` if myCommitment is present but user has no commitment or amount is not present either.
+ * Returns `0n` if myCommitment is present but user has no commitment or amount is not present either.
  * Returns commitment e8s if commitment is defined.
  */
 export const getCommitmentE8s = (
@@ -40,8 +40,7 @@ export const getCommitmentE8s = (
     return undefined;
   }
   return (
-    fromNullable(swapCommitment?.myCommitment?.icp ?? [])?.amount_e8s ??
-    BigInt(0)
+    fromNullable(swapCommitment?.myCommitment?.icp ?? [])?.amount_e8s ?? 0n
   );
 };
 

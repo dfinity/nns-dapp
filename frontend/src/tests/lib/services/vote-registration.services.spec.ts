@@ -37,7 +37,7 @@ vi.mock("$lib/services/$public/proposals.services", () => {
 });
 
 describe("vote-registration-services", () => {
-  const neuronIds = [BigInt(0), BigInt(1), BigInt(2)];
+  const neuronIds = [0n, 1n, 2n];
   const neurons = neuronIds.map((neuronId) => ({
     ...mockNeuron,
     neuronId,
@@ -434,7 +434,7 @@ describe("vote-registration-services", () => {
 
     it("should display error if no identity", async () => {
       await registerNnsVotes({
-        neuronIds: [BigInt(0)],
+        neuronIds: [0n],
         proposalInfo: proposal,
         vote: Vote.Yes,
         reloadProposalCallback: () => {

@@ -1,10 +1,15 @@
 <script lang="ts">
+  import { authSignedInStore } from "$lib/derived/auth.derived";
   import { Island, Spinner } from "@dfinity/gix-components";
+  import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import type { Writable } from "svelte/store";
   import type { WalletStore } from "$lib/types/wallet.context";
   import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
-  import { findAccount, hasAccounts } from "$lib/utils/accounts.utils";
+  import {
+    findAccountOrDefaultToMain,
+    hasAccounts,
+  } from "$lib/utils/accounts.utils";
   import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
   import { syncAccounts as syncWalletAccounts } from "$lib/services/wallet-accounts.services";
@@ -12,13 +17,15 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import { buildAccountsUrl } from "$lib/utils/navigation.utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import IcrcBalancesObserver from "$lib/components/accounts/IcrcBalancesObserver.svelte";
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
   import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import { ENABLE_MY_TOKENS } from "$lib/stores/feature-flags.store";
+  import { AppPath } from "$lib/constants/routes.constants";
 
   export let testId: string;
   export let accountIdentifier: string | undefined | null = undefined;
@@ -31,7 +38,14 @@
 
   const reloadOnlyAccountFromStore = () => setSelectedAccount();
 
-  const goBack = (): Promise<void> => goto(AppPath.Accounts);
+  const goBack = async (): Promise<void> =>
+    goto(
+      $ENABLE_MY_TOKENS
+        ? AppPath.Tokens
+        : buildAccountsUrl({
+            universe: $selectedUniverseStore.canisterId,
+          })
+    );
 
   // e.g. is called from "Receive" modal after user click "Done"
   export const reloadAccount = async () => {
@@ -48,13 +62,15 @@
   };
 
   export const setSelectedAccount = () => {
+    const accounts = nonNullish(selectedUniverseId)
+      ? $icrcAccountsStore[selectedUniverseId.toText()]?.accounts ?? []
+      : [];
+    const account = findAccountOrDefaultToMain({
+      identifier: accountIdentifier,
+      accounts,
+    });
     selectedAccountStore.set({
-      account: findAccount({
-        identifier: accountIdentifier,
-        accounts: nonNullish(selectedUniverseId)
-          ? $icrcAccountsStore[selectedUniverseId.toText()]?.accounts ?? []
-          : [],
-      }),
+      account,
       neurons: [],
     });
   };
@@ -88,9 +104,21 @@
 
   let loaded = false;
 
-  const loadData = async (universeId: UniverseCanisterId | undefined) => {
+  const loadData = async ({
+    universeId,
+    isSignedIn,
+  }: {
+    universeId: UniverseCanisterId | undefined;
+    isSignedIn: boolean;
+  }) => {
     // Universe is not yet loaded
     if (isNullish(universeId)) {
+      return;
+    }
+
+    if (!isSignedIn) {
+      // nothing to load
+      loaded = true;
       return;
     }
 
@@ -115,46 +143,56 @@
     loaded = true;
   };
 
-  $: accountIdentifier, (async () => await loadData(selectedUniverseId))();
+  $: accountIdentifier,
+    (async () =>
+      await loadData({
+        universeId: selectedUniverseId,
+        isSignedIn: $authSignedInStore,
+      }))();
 </script>
 
 <Island {testId}>
   <main class="legacy">
     <section>
-      {#if loaded && nonNullish($selectedAccountStore.account) && nonNullish(selectedUniverseId) && nonNullish(token)}
-        <IcrcBalancesObserver
-          universeId={selectedUniverseId}
-          accounts={[$selectedAccountStore.account]}
-          reload={reloadOnlyAccountFromStore}
-        >
-          <WalletPageHeader
-            universe={$selectedUniverseStore}
-            walletAddress={$selectedAccountStore.account.identifier}
+      {#if loaded && nonNullish(selectedUniverseId)}
+        {#if nonNullish($selectedAccountStore.account) && nonNullish(token)}
+          <IcrcBalancesObserver
+            universeId={selectedUniverseId}
+            accounts={[$selectedAccountStore.account]}
+            reload={reloadOnlyAccountFromStore}
           />
-          <WalletPageHeading
-            accountName={$selectedAccountStore.account.name ??
-              $i18n.accounts.main}
-            balance={TokenAmountV2.fromUlps({
-              amount: $selectedAccountStore.account.balanceUlps,
-              token,
-            })}
-          >
-            <slot name="header-actions" />
-          </WalletPageHeading>
+        {/if}
+        <WalletPageHeader
+          universe={$selectedUniverseStore}
+          walletAddress={$selectedAccountStore.account?.identifier}
+        />
+        <WalletPageHeading
+          accountName={$selectedAccountStore.account?.name ??
+            $i18n.accounts.main}
+          balance={nonNullish($selectedAccountStore.account) &&
+          nonNullish(token)
+            ? TokenAmountV2.fromUlps({
+                amount: $selectedAccountStore.account.balanceUlps,
+                token,
+              })
+            : undefined}
+        >
+          <slot name="header-actions" />
+          <SignInGuard />
+        </WalletPageHeading>
 
-          {#if $$slots["info-card"]}
-            <div class="content-cell-island info-card">
-              <slot name="info-card" />
-            </div>
-          {/if}
-
-          <Separator spacing="none" />
-
-          <!-- Transactions and the explanation go together. -->
-          <div>
-            <slot name="page-content" />
+        {#if $$slots["info-card"]}
+          <div class="content-cell-island info-card">
+            <slot name="info-card" />
           </div>
-        </IcrcBalancesObserver>
+        {/if}
+
+        <Separator spacing="none" />
+
+        <!-- Transactions and the explanation go together. -->
+        <div>
+          <slot name="page-content" />
+        </div>
       {:else}
         <Spinner />
       {/if}

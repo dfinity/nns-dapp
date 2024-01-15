@@ -68,7 +68,7 @@ describe("NnsNeuronPageHeading", () => {
   it("should render neuron's fund tag if belongs part of neurons fund", async () => {
     const po = renderComponent({
       ...mockNeuron,
-      joinedCommunityFundTimestampSeconds: BigInt(12333444),
+      joinedCommunityFundTimestampSeconds: 12_333_444n,
     });
 
     expect(await po.getNeuronTags()).toEqual(["Neurons' fund"]);
@@ -100,7 +100,7 @@ describe("NnsNeuronPageHeading", () => {
     });
     const po = renderComponent({
       ...mockNeuron,
-      joinedCommunityFundTimestampSeconds: BigInt(12333444),
+      joinedCommunityFundTimestampSeconds: 12_333_444n,
       fullNeuron: {
         ...mockNeuron.fullNeuron,
         controller: "not-current-principal",

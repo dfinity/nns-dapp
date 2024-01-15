@@ -5,7 +5,7 @@ import { enumValues } from "$lib/utils/enum.utils";
 import {
   ballotVotingPower,
   fromPercentageBasisPoints,
-  generateSnsProposalTypeFilterData,
+  generateSnsProposalTypesFilterData,
   getUniversalProposalStatus,
   isAccepted,
   lastProposalId,
@@ -47,16 +47,16 @@ import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 
 describe("sns-proposals utils", () => {
   const acceptedTally = {
-    yes: BigInt(10),
-    no: BigInt(2),
-    total: BigInt(20),
-    timestamp_seconds: BigInt(1),
+    yes: 10n,
+    no: 2n,
+    total: 20n,
+    timestamp_seconds: 1n,
   };
   const rejectedTally = {
-    yes: BigInt(10),
-    no: BigInt(20),
-    total: BigInt(30),
-    timestamp_seconds: BigInt(1),
+    yes: 10n,
+    no: 20n,
+    total: 30n,
+    timestamp_seconds: 1n,
   };
   describe("isAccepted", () => {
     it("should return true if the proposal is accepted", () => {
@@ -80,7 +80,7 @@ describe("sns-proposals utils", () => {
     it("should return OPEN status", () => {
       const proposal: SnsProposalData = {
         ...mockSnsProposal,
-        decided_timestamp_seconds: BigInt(0),
+        decided_timestamp_seconds: 0n,
       };
       expect(snsDecisionStatus(proposal)).toBe(
         SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN
@@ -90,8 +90,8 @@ describe("sns-proposals utils", () => {
     it("should return EXECUTED status", () => {
       const proposal: SnsProposalData = {
         ...mockSnsProposal,
-        decided_timestamp_seconds: BigInt(10),
-        executed_timestamp_seconds: BigInt(10),
+        decided_timestamp_seconds: 10n,
+        executed_timestamp_seconds: 10n,
         latest_tally: [acceptedTally],
       };
       expect(snsDecisionStatus(proposal)).toBe(
@@ -102,9 +102,9 @@ describe("sns-proposals utils", () => {
     it("should return FAILED status", () => {
       const proposal: SnsProposalData = {
         ...mockSnsProposal,
-        decided_timestamp_seconds: BigInt(10),
-        executed_timestamp_seconds: BigInt(0),
-        failed_timestamp_seconds: BigInt(10),
+        decided_timestamp_seconds: 10n,
+        executed_timestamp_seconds: 0n,
+        failed_timestamp_seconds: 10n,
         latest_tally: [acceptedTally],
       };
       expect(snsDecisionStatus(proposal)).toBe(
@@ -115,9 +115,9 @@ describe("sns-proposals utils", () => {
     it("should return ADOPTED status", () => {
       const proposal: SnsProposalData = {
         ...mockSnsProposal,
-        decided_timestamp_seconds: BigInt(10),
-        executed_timestamp_seconds: BigInt(0),
-        failed_timestamp_seconds: BigInt(0),
+        decided_timestamp_seconds: 10n,
+        executed_timestamp_seconds: 0n,
+        failed_timestamp_seconds: 0n,
         latest_tally: [acceptedTally],
       };
       expect(snsDecisionStatus(proposal)).toBe(
@@ -128,9 +128,9 @@ describe("sns-proposals utils", () => {
     it("should return REJECTED status", () => {
       const proposal: SnsProposalData = {
         ...mockSnsProposal,
-        decided_timestamp_seconds: BigInt(10),
-        executed_timestamp_seconds: BigInt(0),
-        failed_timestamp_seconds: BigInt(0),
+        decided_timestamp_seconds: 10n,
+        executed_timestamp_seconds: 0n,
+        failed_timestamp_seconds: 0n,
         latest_tally: [rejectedTally],
       };
       expect(snsDecisionStatus(proposal)).toBe(
@@ -147,7 +147,7 @@ describe("sns-proposals utils", () => {
     it("should return SETTLED", () => {
       const proposal: SnsProposalData = {
         ...mockSnsProposal,
-        reward_event_round: BigInt(2),
+        reward_event_round: 2n,
       };
       expect(snsRewardStatus(proposal)).toBe(
         SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED
@@ -158,10 +158,10 @@ describe("sns-proposals utils", () => {
       const now = BigInt(nowInSeconds());
       const proposal: SnsProposalData = {
         ...mockSnsProposal,
-        reward_event_round: BigInt(0),
+        reward_event_round: 0n,
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: now + BigInt(100),
+            current_deadline_timestamp_seconds: now + 100n,
           },
         ],
       };
@@ -174,10 +174,10 @@ describe("sns-proposals utils", () => {
       const now = BigInt(nowInSeconds());
       const proposal: SnsProposalData = {
         ...mockSnsProposal,
-        reward_event_round: BigInt(0),
+        reward_event_round: 0n,
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: now - BigInt(100),
+            current_deadline_timestamp_seconds: now - 100n,
           },
         ],
         is_eligible_for_rewards: true,
@@ -191,10 +191,10 @@ describe("sns-proposals utils", () => {
       const now = BigInt(nowInSeconds());
       const proposal: SnsProposalData = {
         ...mockSnsProposal,
-        reward_event_round: BigInt(0),
+        reward_event_round: 0n,
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: now - BigInt(100),
+            current_deadline_timestamp_seconds: now - 100n,
           },
         ],
         is_eligible_for_rewards: false,
@@ -214,11 +214,11 @@ describe("sns-proposals utils", () => {
       const now = BigInt(nowInSeconds());
       const proposalData: SnsProposalData = {
         ...mockSnsProposal,
-        decided_timestamp_seconds: BigInt(0),
-        reward_event_round: BigInt(0),
+        decided_timestamp_seconds: 0n,
+        reward_event_round: 0n,
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: now + BigInt(100),
+            current_deadline_timestamp_seconds: now + 100n,
           },
         ],
       };
@@ -239,11 +239,11 @@ describe("sns-proposals utils", () => {
       const now = BigInt(nowInSeconds());
       const proposalData: SnsProposalData = {
         ...mockSnsProposal,
-        decided_timestamp_seconds: BigInt(0),
-        reward_event_round: BigInt(0),
+        decided_timestamp_seconds: 0n,
+        reward_event_round: 0n,
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: now - BigInt(100),
+            current_deadline_timestamp_seconds: now - 100n,
           },
         ],
       };
@@ -261,7 +261,7 @@ describe("sns-proposals utils", () => {
         summary: "Description test",
         action: [{ UpgradeSnsToNextVersion: {} }],
       };
-      const current_deadline_timestamp_seconds = BigInt(1123);
+      const current_deadline_timestamp_seconds = 1_123n;
       const proposalData = {
         ...mockSnsProposal,
         proposal: [proposal],
@@ -299,18 +299,18 @@ describe("sns-proposals utils", () => {
     it("should return the last proposal id", async () => {
       const proposal1: SnsProposalData = {
         ...mockSnsProposal,
-        id: [{ id: BigInt(1) }],
+        id: [{ id: 1n }],
       };
       const proposal2: SnsProposalData = {
         ...mockSnsProposal,
-        id: [{ id: BigInt(2) }],
+        id: [{ id: 2n }],
       };
       const proposal3: SnsProposalData = {
         ...mockSnsProposal,
-        id: [{ id: BigInt(3) }],
+        id: [{ id: 3n }],
       };
       const proposalId = lastProposalId([proposal3, proposal1, proposal2]);
-      expect(proposalId.id).toEqual(BigInt(1));
+      expect(proposalId.id).toEqual(1n);
     });
 
     it("should return undefined when empty array", () => {
@@ -323,15 +323,15 @@ describe("sns-proposals utils", () => {
     it("sorts proposals by id in descending", () => {
       const proposal1: SnsProposalData = {
         ...mockSnsProposal,
-        id: [{ id: BigInt(1) }],
+        id: [{ id: 1n }],
       };
       const proposal2: SnsProposalData = {
         ...mockSnsProposal,
-        id: [{ id: BigInt(2) }],
+        id: [{ id: 2n }],
       };
       const proposal3: SnsProposalData = {
         ...mockSnsProposal,
-        id: [{ id: BigInt(3) }],
+        id: [{ id: 3n }],
       };
       const sortedProposals = sortSnsProposalsById([
         proposal3,
@@ -458,7 +458,7 @@ describe("sns-proposals utils", () => {
 
   describe("snsProposalId", () => {
     it("should return proposal id", () => {
-      const testId = 123987n;
+      const testId = 123_987n;
       const testProposal: SnsProposalData = {
         ...mockSnsProposal,
         id: [
@@ -473,7 +473,7 @@ describe("sns-proposals utils", () => {
 
   describe("snsProposalIdString", () => {
     it("should stringify proposal id", () => {
-      const testId = 123987n;
+      const testId = 123_987n;
       const testProposal: SnsProposalData = {
         ...mockSnsProposal,
         id: [
@@ -571,7 +571,7 @@ describe("sns-proposals utils", () => {
         ...mockSnsNeuron,
         id: [{ id: arrayOfNumberToUint8Array([1, 2, 3]) }],
         staked_maturity_e8s_equivalent: [],
-        maturity_e8s_equivalent: BigInt(0),
+        maturity_e8s_equivalent: 0n,
         neuron_fees_e8s: 0n,
         dissolve_state: [{ DissolveDelaySeconds: 100n }],
         aging_since_timestamp_seconds: 0n,
@@ -657,127 +657,107 @@ describe("sns-proposals utils", () => {
     };
     const allSnsGenericFilterEntry: Filter<SnsProposalTypeFilterId> = {
       id: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
-      name: "All SNS-specific proposals",
+      name: "All test_sns specific proposals",
       value: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
       checked: true,
     };
 
-    describe("toExcludeTypeParameter", () => {
-      const nsFunctions: SnsNervousSystemFunction[] = [
-        allTopicsNervousSystemFunctionMock,
-        nativeNervousSystemFunctionMock,
-        genericNervousSystemFunctionMock,
-      ];
-
-      it("should return empty list if nothing checked", () => {
-        expect(
-          toExcludeTypeParameter({
-            filter: [],
-            snsFunctions: nsFunctions,
-          })
-        ).toStrictEqual([]);
-      });
-
-      it('should always exclude "All Topics"', () => {
-        expect(
-          toExcludeTypeParameter({
-            filter: [],
-            snsFunctions: nsFunctions,
-          }).find((id) => id === 0n)
-        ).toBe(undefined);
-        expect(
-          toExcludeTypeParameter({
-            filter: [filterEntry],
-            snsFunctions: nsFunctions,
-          }).find((id) => id === 0n)
-        ).toBe(undefined);
-        expect(
-          toExcludeTypeParameter({
-            filter: [allSnsGenericFilterEntry],
-            snsFunctions: nsFunctions,
-          }).find((id) => id === 0n)
-        ).toBe(undefined);
-      });
-
-      it("should exclude all except selected native ns function", () => {
-        expect(
-          toExcludeTypeParameter({
-            filter: [filterEntry],
-            snsFunctions: nsFunctions,
-          })
-        ).toStrictEqual([1001n]);
-      });
-
-      it('should exclude generic when "SNS_SPECIFIC" is selected', () => {
-        expect(
-          toExcludeTypeParameter({
-            filter: [allSnsGenericFilterEntry],
-            snsFunctions: nsFunctions,
-          })
-        ).toStrictEqual([1n]);
-      });
-    });
-
     describe("generateSnsProposalTypeFilterData", () => {
-      it('should use nsFunctions to create filter entries w/o "All Topic"', () => {
+      const nativeNervousSystemFunction1 = {
+        ...nativeNervousSystemFunctionMock,
+        id: 1n,
+      };
+      const nativeNervousSystemFunction2 = {
+        ...nativeNervousSystemFunctionMock,
+        id: 2n,
+      };
+      const nativeNervousSystemFunction3 = {
+        ...nativeNervousSystemFunctionMock,
+        id: 3n,
+      };
+      const genericNervousSystemFunctions1 = {
+        ...genericNervousSystemFunctionMock,
+        id: 1001n,
+      };
+      const genericNervousSystemFunctions2 = {
+        ...genericNervousSystemFunctionMock,
+        id: 1002n,
+      };
+
+      it("should use nsFunctions to create filter entries", () => {
         const nsFunctions: SnsNervousSystemFunction[] = [
-          nativeNervousSystemFunctionMock,
-          nativeNervousSystemFunctionMock,
+          nativeNervousSystemFunction1,
+          nativeNervousSystemFunction2,
         ];
 
         expect(
-          generateSnsProposalTypeFilterData({
+          generateSnsProposalTypesFilterData({
             nsFunctions,
             typesFilterState: [],
+            snsName: "test_sns",
           })
-        ).toStrictEqual([filterEntry, filterEntry]);
+        ).toStrictEqual([
+          { ...filterEntry, id: "1", value: "1" },
+          { ...filterEntry, id: "2", value: "2" },
+        ]);
+      });
+
+      it('should ignore "All Topic" ns function', () => {
+        const nsFunctions: SnsNervousSystemFunction[] = [
+          allTopicsNervousSystemFunctionMock,
+          nativeNervousSystemFunction1,
+          nativeNervousSystemFunction2,
+        ];
+
+        expect(
+          generateSnsProposalTypesFilterData({
+            nsFunctions,
+            typesFilterState: [],
+            snsName: "test_sns",
+          })
+        ).toStrictEqual([
+          { ...filterEntry, id: "1", value: "1" },
+          { ...filterEntry, id: "2", value: "2" },
+        ]);
       });
 
       it("should combine generic nsFunctions to a single entry", () => {
         const nsFunctions: SnsNervousSystemFunction[] = [
-          nativeNervousSystemFunctionMock,
-          genericNervousSystemFunctionMock,
-          genericNervousSystemFunctionMock,
+          nativeNervousSystemFunction1,
+          genericNervousSystemFunctions1,
+          genericNervousSystemFunctions2,
         ];
 
         expect(
-          generateSnsProposalTypeFilterData({
+          generateSnsProposalTypesFilterData({
             nsFunctions,
             typesFilterState: [],
+            snsName: "test_sns",
           })
         ).toStrictEqual([filterEntry, allSnsGenericFilterEntry]);
       });
 
       it('should not have "All Generic" entry if no generic nsFunctions available', () => {
         const nsFunctions: SnsNervousSystemFunction[] = [
-          nativeNervousSystemFunctionMock,
-          nativeNervousSystemFunctionMock,
-          nativeNervousSystemFunctionMock,
-          nativeNervousSystemFunctionMock,
+          nativeNervousSystemFunction1,
+          nativeNervousSystemFunction2,
+          nativeNervousSystemFunction3,
         ];
 
         expect(
-          generateSnsProposalTypeFilterData({
+          generateSnsProposalTypesFilterData({
             nsFunctions,
             typesFilterState: [],
+            snsName: "test_sns",
           })
         ).not.toContain(allSnsGenericFilterEntry);
       });
 
       it("should preserve selection", () => {
         const nsFunctions: SnsNervousSystemFunction[] = [
-          {
-            ...nativeNervousSystemFunctionMock,
-            id: 1n,
-          },
-          {
-            ...nativeNervousSystemFunctionMock,
-            id: 2n,
-          },
-          {
-            ...nativeNervousSystemFunctionMock,
-            id: 3n,
-          },
+          nativeNervousSystemFunction1,
+          nativeNervousSystemFunction2,
+          nativeNervousSystemFunction3,
         ];
         const typesFilterState = [
           {
@@ -801,27 +781,19 @@ describe("sns-proposals utils", () => {
         ];
 
         expect(
-          generateSnsProposalTypeFilterData({
+          generateSnsProposalTypesFilterData({
             nsFunctions,
             typesFilterState,
+            snsName: "test_sns",
           })
         ).toStrictEqual(typesFilterState);
       });
 
       it("should select new entries", () => {
         const nsFunctions: SnsNervousSystemFunction[] = [
-          {
-            ...nativeNervousSystemFunctionMock,
-            id: 1n,
-          },
-          {
-            ...nativeNervousSystemFunctionMock,
-            id: 2n,
-          },
-          {
-            ...nativeNervousSystemFunctionMock,
-            id: 3n,
-          },
+          nativeNervousSystemFunction1,
+          nativeNervousSystemFunction2,
+          nativeNervousSystemFunction3,
         ];
         const typesFilterState = [
           {
@@ -849,9 +821,10 @@ describe("sns-proposals utils", () => {
         ];
 
         expect(
-          generateSnsProposalTypeFilterData({
+          generateSnsProposalTypesFilterData({
             nsFunctions,
             typesFilterState,
+            snsName: "test_sns",
           })
         ).toStrictEqual(result);
       });

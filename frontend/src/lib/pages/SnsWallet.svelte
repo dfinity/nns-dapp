@@ -1,4 +1,8 @@
 <script lang="ts">
+  import { buildAccountsUrl } from "$lib/utils/navigation.utils";
+  import { goto } from "$app/navigation";
+  import { hasAccounts } from "$lib/utils/accounts.utils";
+  import { findAccountOrDefaultToMain } from "$lib/utils/accounts.utils";
   import type { Principal } from "@dfinity/principal";
   import { Spinner, busy } from "@dfinity/gix-components";
   import { setContext } from "svelte";
@@ -22,7 +26,7 @@
     snsOnlyProjectStore,
     snsProjectSelectedStore,
   } from "$lib/derived/sns/sns-selected-project.derived";
-  import { TokenAmount, isNullish, nonNullish } from "@dfinity/utils";
+  import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import { loadSnsAccountTransactions } from "$lib/services/sns-transactions.services";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -36,6 +40,8 @@
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import IC_LOGO from "$lib/assets/icp.svg";
   import { toTokenAmountV2 } from "$lib/utils/token.utils";
+  import { ENABLE_MY_TOKENS } from "$lib/stores/feature-flags.store";
+  import { AppPath } from "$lib/constants/routes.constants";
 
   let showModal: "send" | undefined = undefined;
 
@@ -62,18 +68,39 @@
     store: selectedAccountStore,
   });
 
+  const goBack = (): Promise<void> =>
+    goto(
+      $ENABLE_MY_TOKENS
+        ? AppPath.Tokens
+        : buildAccountsUrl({
+            universe: $selectedUniverseStore.canisterId,
+          })
+    );
+
   export let accountIdentifier: string | undefined | null = undefined;
 
   const load = () => {
-    if (nonNullish(accountIdentifier)) {
-      const selectedAccount = $snsProjectAccountsStore?.find(
-        ({ identifier }) => identifier === accountIdentifier
-      );
-
-      selectedAccountStore.set({
-        account: selectedAccount,
-        neurons: [],
+    const accounts = $snsProjectAccountsStore ?? [];
+    const selectedAccount = findAccountOrDefaultToMain({
+      identifier: accountIdentifier,
+      accounts,
+    });
+    selectedAccountStore.set({
+      account: selectedAccount,
+      neurons: [],
+    });
+    // Accounts are loaded in store but no account identifier is matching
+    if (
+      hasAccounts($snsProjectAccountsStore ?? []) &&
+      isNullish($selectedAccountStore.account)
+    ) {
+      toastsError({
+        labelKey: replacePlaceholders($i18n.error.account_not_found, {
+          $account_identifier: accountIdentifier ?? "",
+        }),
       });
+
+      goBack();
     }
   };
 
@@ -132,28 +159,27 @@
             rootCanisterId={$snsOnlyProjectStore}
             accounts={[$selectedAccountStore.account]}
             ledgerCanisterId={$snsProjectSelectedStore.summary.ledgerCanisterId}
-          >
-            <WalletPageHeader
-              universe={$selectedUniverseStore}
-              walletAddress={$selectedAccountStore.account.identifier}
-            />
-            <WalletPageHeading
-              balance={TokenAmount.fromE8s({
-                amount: $selectedAccountStore.account.balanceUlps,
-                token,
-              })}
-              accountName={$selectedAccountStore.account.name ??
-                $i18n.accounts.main}
-            />
+          />
+          <WalletPageHeader
+            universe={$selectedUniverseStore}
+            walletAddress={$selectedAccountStore.account.identifier}
+          />
+          <WalletPageHeading
+            balance={TokenAmountV2.fromUlps({
+              amount: $selectedAccountStore.account.balanceUlps,
+              token,
+            })}
+            accountName={$selectedAccountStore.account.name ??
+              $i18n.accounts.main}
+          />
 
-            <Separator spacing="none" />
+          <Separator spacing="none" />
 
-            <SnsTransactionsList
-              rootCanisterId={$snsOnlyProjectStore}
-              account={$selectedAccountStore.account}
-              {token}
-            />
-          </SnsBalancesObserver>
+          <SnsTransactionsList
+            rootCanisterId={$snsOnlyProjectStore}
+            account={$selectedAccountStore.account}
+            {token}
+          />
         {:else}
           <Spinner />
         {/if}

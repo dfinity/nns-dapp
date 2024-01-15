@@ -9,7 +9,7 @@ describe("ProposalCard", () => {
   const props = {
     hidden: false,
     status: "open",
-    id: BigInt(112),
+    id: 112n,
     heading: "Treasury Proposal",
     title: "Give me my tokens",
     proposer: "2",

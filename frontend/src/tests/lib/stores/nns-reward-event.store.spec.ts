@@ -31,11 +31,11 @@ describe("nnsLatestRewardEventStore", () => {
   it("should not change the reward event that has an older timestamp if the event in the store is certified and the new event is not certified", () => {
     const newReward = {
       ...mockRewardEvent,
-      actual_timestamp_seconds: BigInt(4),
+      actual_timestamp_seconds: 4n,
     };
     const oldReward = {
       ...mockRewardEvent,
-      actual_timestamp_seconds: BigInt(3),
+      actual_timestamp_seconds: 3n,
     };
     nnsLatestRewardEventStore.setLatestRewardEvent({
       rewardEvent: newReward,
@@ -52,11 +52,11 @@ describe("nnsLatestRewardEventStore", () => {
   it("should change the reward event that has an older timestamp if the event in the store is not certified and the new event is certified", () => {
     const newReward = {
       ...mockRewardEvent,
-      actual_timestamp_seconds: BigInt(4),
+      actual_timestamp_seconds: 4n,
     };
     const oldReward = {
       ...mockRewardEvent,
-      actual_timestamp_seconds: BigInt(3),
+      actual_timestamp_seconds: 3n,
     };
     nnsLatestRewardEventStore.setLatestRewardEvent({
       rewardEvent: newReward,
@@ -73,11 +73,11 @@ describe("nnsLatestRewardEventStore", () => {
   it("should not change the reward event that has an older timestamp if the event in the store is not certified and the new event is also not certified", () => {
     const newReward = {
       ...mockRewardEvent,
-      actual_timestamp_seconds: BigInt(4),
+      actual_timestamp_seconds: 4n,
     };
     const oldReward = {
       ...mockRewardEvent,
-      actual_timestamp_seconds: BigInt(3),
+      actual_timestamp_seconds: 3n,
     };
     nnsLatestRewardEventStore.setLatestRewardEvent({
       rewardEvent: newReward,

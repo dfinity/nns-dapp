@@ -38,7 +38,7 @@ describe("icrc-ledger api", () => {
 
   describe("getIcrcMainAccount", () => {
     it("returns main account with balance and project token metadata", async () => {
-      const balanceSpy = vi.fn().mockResolvedValue(BigInt(10_000_000));
+      const balanceSpy = vi.fn().mockResolvedValue(10_000_000n);
 
       const account = await getIcrcAccount({
         certified: true,
@@ -49,7 +49,7 @@ describe("icrc-ledger api", () => {
 
       expect(account).not.toBeUndefined();
 
-      expect(account.balanceUlps).toEqual(BigInt(10_000_000));
+      expect(account.balanceUlps).toEqual(10_000_000n);
 
       expect(account.principal.toText()).toEqual(
         mockIdentity.getPrincipal().toText()
@@ -111,9 +111,9 @@ describe("icrc-ledger api", () => {
 
       await executeIcrcTransfer({
         to: { owner: mockIdentity.getPrincipal() },
-        amount: BigInt(10_000_000),
-        createdAt: BigInt(123456),
-        fee: BigInt(10_000),
+        amount: 10_000_000n,
+        createdAt: 123_456n,
+        fee: 10_000n,
         transfer: transferSpy,
       });
 
@@ -129,9 +129,9 @@ describe("icrc-ledger api", () => {
       await icrcTransfer({
         identity: mockIdentity,
         to: { owner: mockIdentity.getPrincipal() },
-        amount: BigInt(10_000_000),
-        createdAt: BigInt(123456),
-        fee: BigInt(10_000),
+        amount: 10_000_000n,
+        createdAt: 123_456n,
+        fee: 10_000n,
         canisterId: CKBTC_LEDGER_CANISTER_ID,
       });
 
@@ -141,11 +141,11 @@ describe("icrc-ledger api", () => {
 
   describe("approveTransfer", () => {
     it("successfully calls approve api", async () => {
-      const expectedBlockIndex = BigInt(123456);
+      const expectedBlockIndex = 123_456n;
       const approveSpy =
         ledgerCanisterMock.approve.mockResolvedValue(expectedBlockIndex);
       const spenderPrincipal = Principal.fromHex("123abc");
-      const amount = BigInt(13_000_000);
+      const amount = 13_000_000n;
       const nowMillis = 123456789;
       vi.setSystemTime(nowMillis);
 
@@ -173,15 +173,15 @@ describe("icrc-ledger api", () => {
     });
 
     it("successfully passes optional params", async () => {
-      const expectedBlockIndex = BigInt(123456);
+      const expectedBlockIndex = 123_456n;
       const approveSpy =
         ledgerCanisterMock.approve.mockResolvedValue(expectedBlockIndex);
       const spenderPrincipal = Principal.fromHex("123abc");
-      const amount = BigInt(13_000_000);
-      const expectedAllowance = BigInt(135_000_000);
-      const expiresAt = BigInt(123999000000);
-      const createdAt = BigInt(123456000000);
-      const fee = BigInt(17_000);
+      const amount = 13_000_000n;
+      const expectedAllowance = 135_000_000n;
+      const expiresAt = 123_999_000_000n;
+      const createdAt = 123_456_000_000n;
+      const fee = 17_000n;
       const fromSubaccount = new Uint8Array([1, 9, 3]);
 
       const actualBlockIndex = await approveTransfer({
@@ -233,7 +233,7 @@ describe("icrc-ledger api", () => {
 
   describe("queryIcrcBalance", () => {
     it("successfully calls balance endpoint", async () => {
-      const balanceE8s = 314000000n;
+      const balanceE8s = 314_000_000n;
       ledgerCanisterMock.balance.mockResolvedValue(balanceE8s);
 
       const account: IcrcAccount = {

@@ -35,8 +35,17 @@
   import IcrcTokenAccountsFooter from "$lib/components/accounts/IcrcTokenAccountsFooter.svelte";
   import IcrcTokenAccountsModals from "$lib/modals/accounts/IcrcTokenAccountsModals.svelte";
   import { ENABLE_MY_TOKENS } from "$lib/stores/feature-flags.store";
+  import { goto } from "$app/navigation";
+  import { AppPath } from "$lib/constants/routes.constants";
 
   // TODO: This component is mounted twice. Understand why and fix it.
+
+  $: {
+    // When using the new Tokens table, the Accounts page is enabled only for NNS.
+    if ($ENABLE_MY_TOKENS && !$isNnsUniverseStore) {
+      goto(AppPath.Tokens, { replaceState: true });
+    }
+  }
 
   // Selected project ID on mount is excluded from load accounts balances. See documentation.
   let selectedUniverseId = $selectedUniverseIdStore;

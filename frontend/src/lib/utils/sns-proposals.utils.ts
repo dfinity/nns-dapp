@@ -11,6 +11,7 @@ import type {
   UniversalProposalStatus,
   VotingNeuron,
 } from "$lib/types/proposals";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import {
   isGenericNervousSystemFunction,
@@ -261,15 +262,15 @@ export const snsDecisionStatus = (
     executed_timestamp_seconds,
     failed_timestamp_seconds,
   } = proposal;
-  if (decided_timestamp_seconds === BigInt(0)) {
+  if (decided_timestamp_seconds === 0n) {
     return SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN;
   }
 
   if (isAccepted(proposal)) {
-    if (executed_timestamp_seconds > BigInt(0)) {
+    if (executed_timestamp_seconds > 0n) {
       return SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED;
     }
-    if (failed_timestamp_seconds > BigInt(0)) {
+    if (failed_timestamp_seconds > 0n) {
       return SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_FAILED;
     }
     return SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_ADOPTED;
@@ -291,7 +292,7 @@ export const snsRewardStatus = ({
   wait_for_quiet_state,
   is_eligible_for_rewards,
 }: SnsProposalData): SnsProposalRewardStatus => {
-  if (reward_event_round > BigInt(0)) {
+  if (reward_event_round > 0n) {
     return SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED;
   }
 
@@ -333,10 +334,7 @@ export const sortSnsProposalsById = (
   proposals === undefined
     ? undefined
     : [...proposals].sort(({ id: idA }, { id: idB }) =>
-        (fromNullable(idA)?.id ?? BigInt(0)) >
-        (fromNullable(idB)?.id ?? BigInt(0))
-          ? -1
-          : 1
+        (fromNullable(idA)?.id ?? 0n) > (fromNullable(idB)?.id ?? 0n) ? -1 : 1
       );
 
 const getAction = (proposal: SnsProposalData): SnsAction | undefined =>
@@ -482,59 +480,22 @@ export const getUniversalProposalStatus = (
   return statusType;
 };
 
-/**
- * Returns the proposal type ids that should be excluded from the response.
- * snsFunctions are needed to process "All Generic" entry (when not selected, include all generic ids).
- */
-export const toExcludeTypeParameter = ({
-  filter,
-  snsFunctions,
-}: {
-  filter: Filter<SnsProposalTypeFilterId>[];
-  snsFunctions: SnsNervousSystemFunction[];
-}): bigint[] => {
-  // If no filter is selected, return all functions
-  if (filter.length === 0) {
-    return [];
-  }
-  const nativeNsFunctionIds = snsFunctions
-    .filter(isNativeNervousSystemFunction)
-    .map(({ id }) => id);
-  const isNativeNsFunctionSelected = (nsFunctionId: bigint) =>
-    filter.some(({ id, checked }) => id === nsFunctionId.toString() && checked);
-  const excludedNativeNsFunctionIds = nativeNsFunctionIds.filter(
-    (id) => !isNativeNsFunctionSelected(id)
-  );
-  const genericNsFunctionIds = snsFunctions
-    .filter(isGenericNervousSystemFunction)
-    .map(({ id }) => id);
-  const isGenericNsFunctionChecked = filter.some(
-    ({ id, checked }) => id === ALL_SNS_GENERIC_PROPOSAL_TYPES_ID && checked
-  );
-  const excludedGenericNsFunctionIds = isGenericNsFunctionChecked
-    ? []
-    : genericNsFunctionIds;
-
-  return (
-    [...excludedNativeNsFunctionIds, ...excludedGenericNsFunctionIds]
-      // never exclude { 0n: "All Topics"}
-      .filter((id) => id !== ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID)
-  );
-};
-
-// Generate new "type" filter data, but preserve the checked state of the current filter state
-export const generateSnsProposalTypeFilterData = ({
+// Generate new "types" filter data, but preserve the checked state of the current filter state
+// `nsFunctions` can be changed on the backend, and to display recently created proposal types, new entries should be preselected.
+export const generateSnsProposalTypesFilterData = ({
   nsFunctions,
   typesFilterState,
+  snsName,
 }: {
   nsFunctions: SnsNervousSystemFunction[];
   typesFilterState: Filter<SnsProposalTypeFilterId>[];
+  snsName: string;
 }): Filter<SnsProposalTypeFilterId>[] => {
-  // transfer only unchecked entries to preselect new items that are not in the current filter state
+  // New proposal types are checked by default so only keep unchecked those types that were already unchecked.
   const getCheckedState = (id: string) =>
     typesFilterState.find(({ id: stateId }) => id === stateId)?.checked !==
     false;
-  const nativeNsFunctionEntries = nsFunctions
+  const nativeNsFunctionEntries: Filter<SnsProposalTypeFilterId>[] = nsFunctions
     .filter(isNativeNervousSystemFunction)
     // ignore { 0n: "All Topics"}
     .filter(({ id }) => id !== ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID)
@@ -546,17 +507,23 @@ export const generateSnsProposalTypeFilterData = ({
       id,
       value: id,
       name: name,
-      // transfer only unchecked entries to preselect new items that are not in the current filter state
+      // New proposal types are checked by default so only keep unchecked those types that were already unchecked.
       checked: getCheckedState(id),
     }));
-  const genericNsFunctionEntries =
-    nsFunctions.filter(isGenericNervousSystemFunction).length > 0
-      ? [
-          // "All Generic" entry
+  const allGenericProposalsLabel = replacePlaceholders(
+    get(i18n).sns_types.sns_specific,
+    {
+      $snsName: snsName,
+    }
+  );
+  const genericNsFunctionEntries: Filter<SnsProposalTypeFilterId>[] =
+    nsFunctions.some(isGenericNervousSystemFunction)
+      ? // Replace all generic entries w/ a single "All Generic"
+        [
           {
             id: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
             value: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
-            name: get(i18n).sns_types.sns_specific,
+            name: allGenericProposalsLabel,
             checked: getCheckedState(ALL_SNS_GENERIC_PROPOSAL_TYPES_ID),
           },
         ]

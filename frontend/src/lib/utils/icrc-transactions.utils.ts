@@ -200,8 +200,7 @@ export const mapIcrcTransaction = ({
     const isReceive =
       toSelfTransaction === true || txInfo.from !== account.identifier;
     const useFee = !isReceive;
-    const feeApplied =
-      useFee && txInfo.fee !== undefined ? txInfo.fee : BigInt(0);
+    const feeApplied = useFee && txInfo.fee !== undefined ? txInfo.fee : 0n;
 
     const headline = transactionName({
       type,

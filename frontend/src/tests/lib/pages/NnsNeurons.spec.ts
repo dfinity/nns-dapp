@@ -22,15 +22,15 @@ describe("NnsNeurons", () => {
   describe("with enough neurons", () => {
     const mockNeuron2 = {
       ...mockNeuron,
-      neuronId: BigInt(223),
+      neuronId: 223n,
     };
     const spawningNeuron = {
       ...mockNeuron,
       state: NeuronState.Spawning,
-      neuronId: BigInt(224),
+      neuronId: 224n,
       fullNeuron: {
         ...mockFullNeuron,
-        spawnAtTimesSeconds: BigInt(12312313),
+        spawnAtTimesSeconds: 12_312_313n,
       },
     };
     const neurons = [mockNeuron, spawningNeuron, mockNeuron2];

@@ -3,7 +3,7 @@ import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.sto
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
-import { TokenAmount } from "@dfinity/utils";
+import { TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("snsTotalSupplyTokenAmountStore", () => {
@@ -20,7 +20,7 @@ describe("snsTotalSupplyTokenAmountStore", () => {
       ({ rootCanisterId }) => rootCanisterId
     );
     setSnsProjects(projectsParams);
-    const totalSupplyBase = BigInt(10_000_000_000);
+    const totalSupplyBase = 10_000_000_000n;
     const totalSupplies = rootCanisterIds.map((rootCanisterId, index) => ({
       rootCanisterId,
       totalSupply: totalSupplyBase * BigInt(index + 1),
@@ -32,8 +32,8 @@ describe("snsTotalSupplyTokenAmountStore", () => {
 
     for (let i = 0; i < rootCanisterIds.length; i++) {
       const oneTotalSupply = store[rootCanisterIds[i].toText()];
-      expect(oneTotalSupply).toBeInstanceOf(TokenAmount);
-      expect(oneTotalSupply.toE8s()).toEqual(totalSupplies[i].totalSupply);
+      expect(oneTotalSupply).toBeInstanceOf(TokenAmountV2);
+      expect(oneTotalSupply.toUlps()).toEqual(totalSupplies[i].totalSupply);
     }
   });
 });

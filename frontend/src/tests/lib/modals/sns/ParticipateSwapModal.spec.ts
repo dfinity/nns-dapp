@@ -219,9 +219,9 @@ describe("ParticipateSwapModal", () => {
       const po = await renderSwapModalPo({
         swapCommitment: {
           ...mockSwapCommitment,
-          myCommitment: createBuyersState(BigInt(0)),
+          myCommitment: createBuyersState(0n),
         },
-        minParticipantCommitment: BigInt(100000000),
+        minParticipantCommitment: 100_000_000n,
       });
       const form = po.getTransactionFormPo();
       await form.enterAmount(1);
@@ -232,9 +232,9 @@ describe("ParticipateSwapModal", () => {
       const po = await renderSwapModalPo({
         swapCommitment: {
           ...mockSwapCommitment,
-          myCommitment: createBuyersState(BigInt(0)),
+          myCommitment: createBuyersState(0n),
         },
-        minParticipantCommitment: BigInt(100000000),
+        minParticipantCommitment: 100_000_000n,
       });
       const form = po.getTransactionFormPo();
       await form.enterAmount(0.01);
@@ -248,9 +248,9 @@ describe("ParticipateSwapModal", () => {
       const po = await renderSwapModalPo({
         swapCommitment: {
           ...mockSwapCommitment,
-          myCommitment: createBuyersState(BigInt(0)),
+          myCommitment: createBuyersState(0n),
         },
-        minParticipantCommitment: BigInt(100000278),
+        minParticipantCommitment: 100_000_278n,
       });
       const form = po.getTransactionFormPo();
       await form.enterAmount(0.01);
@@ -279,7 +279,7 @@ describe("ParticipateSwapModal", () => {
   });
 
   describe("when accounts are not available", () => {
-    const mainBalanceE8s = BigInt(10_000_000);
+    const mainBalanceE8s = 10_000_000n;
     let queryAccountSpy: SpyInstance;
     let queryAccountBalanceSpy: SpyInstance;
     let resolveQueryAccounts;
@@ -355,7 +355,7 @@ describe("ParticipateSwapModal", () => {
       vi.clearAllTimers();
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);
-      const mainBalanceE8s = BigInt(10_000_000);
+      const mainBalanceE8s = 10_000_000n;
       vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
         mainBalanceE8s
       );

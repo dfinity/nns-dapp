@@ -11,16 +11,18 @@ vi.mock("@dfinity/agent");
 describe("canisters-worker-api", () => {
   const response: CanisterStatusResponse = {
     status: { running: null },
-    memory_size: BigInt(1000),
-    cycles: BigInt(10_000),
+    memory_size: 1_000n,
+    cycles: 10_000n,
     settings: {
       controllers: [],
+      reserved_cycles_limit: 1_000_000_000n,
       freezing_threshold: 0n,
       memory_allocation: 10n,
       compute_allocation: 5n,
     },
     module_hash: [],
     idle_cycles_burned_per_day: 300n,
+    reserved_cycles: 1_000_000n,
   };
 
   beforeEach(async () => {
@@ -47,8 +49,8 @@ describe("canisters-worker-api", () => {
       expect(result).toEqual({
         id: mockCanisterDetails.id,
         status: CanisterStatus.Running,
-        memorySize: 1000n,
-        cycles: 10000n,
+        memorySize: 1_000n,
+        cycles: 10_000n,
         settings: {
           controllers: [],
           freezingThreshold: 0n,

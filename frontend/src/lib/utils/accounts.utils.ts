@@ -214,6 +214,24 @@ export const mainAccount = (accounts: Account[]): Account | undefined => {
   return accounts.find((account) => account.type === "main");
 };
 
+/**
+ * Returns the main account if identifier is nullish but returns undefined if the
+ * identfiier is present but not found.
+ */
+export const findAccountOrDefaultToMain = ({
+  identifier,
+  accounts,
+}: {
+  identifier: AccountIdentifierText | undefined | null;
+  accounts: Account[];
+}): Account | undefined =>
+  isNullish(identifier)
+    ? mainAccount(accounts)
+    : findAccount({
+        identifier,
+        accounts,
+      });
+
 export const accountName = ({
   account,
   mainName,

@@ -24,7 +24,7 @@ describe("transactionsFeesStore", () => {
   });
 
   it("should reset to default", () => {
-    transactionsFeesStore.setMain(BigInt(40_000));
+    transactionsFeesStore.setMain(40_000n);
     const fee1 = get(transactionsFeesStore);
     transactionsFeesStore.setMain(BigInt(DEFAULT_TRANSACTION_FEE_E8S));
     const fee2 = get(transactionsFeesStore);
@@ -34,13 +34,13 @@ describe("transactionsFeesStore", () => {
   it("should set fee of an sns project", () => {
     transactionsFeesStore.setFee({
       rootCanisterId: mockPrincipal,
-      fee: BigInt(40_000),
+      fee: 40_000n,
       certified: true,
     });
     const store1 = get(transactionsFeesStore);
     const { fee: fee1 } = store1.projects[mockPrincipal.toText()];
 
-    const expectedFee = BigInt(50_000);
+    const expectedFee = 50_000n;
     transactionsFeesStore.setFee({
       rootCanisterId: mockPrincipal,
       fee: expectedFee,
@@ -55,8 +55,8 @@ describe("transactionsFeesStore", () => {
 
   it("should set fee of multiple sns projects", () => {
     const rootCanister2 = Principal.fromText("aaaaa-aa");
-    const expectedFee1 = BigInt(40_000);
-    const expectedFee2 = BigInt(50_000);
+    const expectedFee1 = 40_000n;
+    const expectedFee2 = 50_000n;
     transactionsFeesStore.setFees([
       {
         rootCanisterId: mockPrincipal,

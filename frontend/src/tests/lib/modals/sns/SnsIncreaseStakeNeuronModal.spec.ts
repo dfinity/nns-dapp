@@ -4,7 +4,7 @@ import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { increaseStakeNeuron } from "$lib/services/sns-neurons.services";
 import { startBusy } from "$lib/stores/busy.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
 import {
   mockPrincipal,
@@ -14,6 +14,7 @@ import {
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import {
   AMOUNT_INPUT_SELECTOR,
   enterAmount,
@@ -84,7 +85,7 @@ describe("SnsIncreaseStakeNeuronModal", () => {
   describe("accounts and params are not loaded", () => {
     beforeEach(() => {
       snsAccountsStore.reset();
-      transactionsFeesStore.reset();
+      tokensStore.reset();
     });
 
     it("should not display modal", async () => {
@@ -119,10 +120,9 @@ describe("SnsIncreaseStakeNeuronModal", () => {
         accounts: [mockSnsMainAccount],
         certified: true,
       });
-      transactionsFeesStore.setFee({
-        rootCanisterId,
-        fee: 10_000n,
-        certified: true,
+      tokensStore.setToken({
+        canisterId: rootCanisterId,
+        token: mockSnsToken,
       });
     });
 

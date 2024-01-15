@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TokenAmount, ICPToken, TokenAmountV2 } from "@dfinity/utils";
+  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
   import {
     getDeniedCountries,
     getMaxNeuronsFundParticipation,
@@ -53,7 +53,7 @@
     token,
   });
 
-  let snsTotalTokenSupply: TokenAmount | undefined | null;
+  let snsTotalTokenSupply: TokenAmountV2 | undefined | null;
   $: snsTotalTokenSupply = $projectDetailStore.totalTokensSupply;
 
   let deniedCountryCodes: CountryCode[];
@@ -118,7 +118,7 @@
     <span slot="key">{$i18n.sns_project_detail.sale_end} </span>
     <DateSeconds
       slot="value"
-      seconds={Number(params.swap_due_timestamp_seconds ?? BigInt(0))}
+      seconds={Number(params.swap_due_timestamp_seconds ?? 0n)}
       tagName="span"
     />
   </KeyValuePair>

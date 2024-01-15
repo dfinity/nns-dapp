@@ -1,6 +1,24 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Prints help
+migration_test_getters_help() {
+  cat <<-EOF
+		A library of methods for getting assets.
+
+		Usage:
+		- Source this file from your code.
+		- You can also call this file directly.  This may be useful for
+		  ad-hoc runs but is not intended for production use.
+
+      Usage: scripts/nns-dapp/migration-test.getters <function> [arguments..]
+      e.g.:  scripts/nns-dapp/migration-test.getters get_wasm prod ./prod.wasm.gz
+
+      A list of functions:
+		EOF
+  declare -F | awk '{print "        " $3}' | grep -vw "${FUNCNAME[0]}"
+}
+
 # Downloads a released asset
 # TODO: Unit Test
 download_asset() {
@@ -88,23 +106,10 @@ set_arguments_schema() {
 
 # This file is intended to be sourced, but if called directly, offer some help
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-  . "${0%.getters}.linters"
   if (($# == 0)) || [[ "${1:-}" == "--help" ]]; then
-    cat <<-EOF
-		A library of methods for getting assets.
-
-		Usage:
-		- Source this file from your code.
-		- You can also call this file directly.  This may be useful for
-		  ad-hoc runs but is not intended for production use.
-
-      Usage: scripts/nns-dapp/migration-test.getters <function> [arguments..]
-      e.g.:  scripts/nns-dapp/migration-test.getters get_wasm prod ./prod.wasm.gz
-
-      A list of functions:
-		EOF
-    declare -F | awk '{print "        " $3}'
+    migration_test_getters_help
     exit 0
   fi
+  . "${0%.getters}.linters"
   "${@}"
 fi

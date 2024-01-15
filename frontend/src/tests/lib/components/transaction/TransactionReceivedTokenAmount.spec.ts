@@ -6,7 +6,7 @@ import { render } from "@testing-library/svelte";
 
 describe("TransactionReceivedTokenAmount", () => {
   const amount = TokenAmount.fromE8s({
-    amount: BigInt(11_000),
+    amount: 11_000n,
     token: ICPToken,
   });
 

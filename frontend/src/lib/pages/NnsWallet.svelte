@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { Account } from "$lib/types/account";
   import { onDestroy, onMount, setContext } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
@@ -22,7 +23,7 @@
   } from "$lib/types/wallet.context";
   import {
     accountName,
-    findAccount,
+    findAccountOrDefaultToMain,
     isAccountHardwareWallet,
   } from "$lib/utils/accounts.utils";
   import {
@@ -37,7 +38,12 @@
   import { pageStore } from "$lib/derived/page.derived";
   import Separator from "$lib/components/ui/Separator.svelte";
   import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
-  import { ICPToken, TokenAmount, isNullish, nonNullish } from "@dfinity/utils";
+  import {
+    ICPToken,
+    TokenAmountV2,
+    isNullish,
+    nonNullish,
+  } from "@dfinity/utils";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import type { AccountIdentifierText } from "$lib/types/account";
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
@@ -112,15 +118,29 @@
     }
   };
 
+  const setSelectedAccount = ({
+    identifier,
+    accounts,
+  }: {
+    identifier: string | undefined | null;
+    accounts: Account[];
+  }) => {
+    const account = findAccountOrDefaultToMain({
+      identifier,
+      accounts,
+    });
+    selectedAccountStore.set({
+      account,
+      neurons: [],
+    });
+  };
+
   // We need an object to handle case where the identifier does not exist and the wallet page is loaded directly
   // First call: identifier is set, accounts store is empty, selectedAccount is undefined
   // Second call: identifier is set, accounts store is set, selectedAccount is still undefined
-  $: selectedAccountStore.set({
-    account: findAccount({
-      identifier: accountIdentifier,
-      accounts: $nnsAccountsListStore,
-    }),
-    neurons: [],
+  $: setSelectedAccount({
+    identifier: accountIdentifier,
+    accounts: $nnsAccountsListStore,
   });
 
   $: (async () => await accountDidUpdate($selectedAccountStore))();
@@ -175,7 +195,7 @@
             walletAddress={$selectedAccountStore.account.identifier}
           />
           <WalletPageHeading
-            balance={TokenAmount.fromE8s({
+            balance={TokenAmountV2.fromUlps({
               amount: $selectedAccountStore.account.balanceUlps,
               token: ICPToken,
             })}

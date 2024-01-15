@@ -10,7 +10,7 @@
 </script>
 
 <button
-  class="icon"
+  class="icon-only"
   data-tid="receive-button-component"
   on:click|preventDefault|stopPropagation={() => {
     dispatcher("nnsAction", { type: ActionType.Receive, data: userToken });

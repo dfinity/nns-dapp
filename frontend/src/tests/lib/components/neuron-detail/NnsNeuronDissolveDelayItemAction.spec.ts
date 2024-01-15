@@ -93,7 +93,7 @@ describe("NnsNeuronDissolveDelayItemAction", () => {
     const neuron: NeuronInfo = {
       ...controlledNeuron,
       state: NeuronState.Dissolved,
-      dissolveDelaySeconds: BigInt(0),
+      dissolveDelaySeconds: 0n,
     };
     const po = renderComponent(neuron);
 
@@ -106,7 +106,7 @@ describe("NnsNeuronDissolveDelayItemAction", () => {
     const neuron: NeuronInfo = {
       ...mockNeuron,
       state: NeuronState.Dissolved,
-      dissolveDelaySeconds: BigInt(0),
+      dissolveDelaySeconds: 0n,
       fullNeuron: {
         ...mockNeuron.fullNeuron,
         controller: "not-controller",
@@ -126,7 +126,7 @@ describe("NnsNeuronDissolveDelayItemAction", () => {
     const neuron: NeuronInfo = {
       ...mockNeuron,
       state: NeuronState.Dissolved,
-      dissolveDelaySeconds: BigInt(0),
+      dissolveDelaySeconds: 0n,
       fullNeuron: {
         ...mockNeuron.fullNeuron,
         controller: mockHardwareWalletAccount.principal.toText(),

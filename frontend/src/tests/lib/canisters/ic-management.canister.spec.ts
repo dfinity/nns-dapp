@@ -23,22 +23,24 @@ describe("ICManagementCanister", () => {
   describe("ICManagementCanister.getCanisterDetails", () => {
     it("returns account identifier when success", async () => {
       const settings = {
-        freezing_threshold: BigInt(2),
+        freezing_threshold: 2n,
         controllers: [
           Principal.fromText(
             "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"
           ),
         ],
-        memory_allocation: BigInt(4),
-        compute_allocation: BigInt(10),
+        reserved_cycles_limit: 1_000_000_000n,
+        memory_allocation: 4n,
+        compute_allocation: 10n,
       };
       const response: CanisterStatusResponse = {
         status: { running: null },
-        memory_size: BigInt(1000),
-        cycles: BigInt(10_000),
+        memory_size: 1_000n,
+        cycles: 10_000n,
         settings,
         module_hash: [],
-        idle_cycles_burned_per_day: BigInt(30_000),
+        idle_cycles_burned_per_day: 30_000n,
+        reserved_cycles: 1_000_000n,
       };
       const service = mock<IcManagementService>();
       service.canister_status.mockResolvedValue(response);

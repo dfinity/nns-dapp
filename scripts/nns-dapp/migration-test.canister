@@ -1,6 +1,24 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Prints help message
+migration_test_canisters_help() {
+  cat <<-EOF
+	A library of methods for getting and manipulating the nns-canister state.
+
+	Usage:
+	- Source this file from your code.
+	- You can also call this file directly.  This may be useful for
+	  ad-hoc runs but is not intended for production use.
+
+	Usage: scripts/nns-dapp/migration-test.canister <function> [arguments..]
+	e.g.:  scripts/nns-dapp/migration-test.canister verify_healthy
+
+	A list of functions:
+	EOF
+  declare -F | awk '{print "        " $3}' | grep -vw "${FUNCNAME[0]}"
+}
+
 # Verifies that the nns-dapp canister is healthy
 verify_healthy() {
   dfx canister call nns-dapp get_stats
@@ -75,7 +93,7 @@ check_num_transactions() {
 # Wait for the migration countdown to complete.
 wait_for_migration() {
   local migration_countdown
-  for ((i = 0; i < 120; i++)); do
+  for ((i = 0; i < 1200; i++)); do
     migration_countdown="$(dfx canister call nns-dapp get_stats --query | idl2json | jq '.migration_countdown[0] // 0')" # TODO: Remove the default when prod has migration countdown stats
     echo "Migration countdown: $migration_countdown"
     if ((migration_countdown == 0)); then
@@ -96,14 +114,15 @@ wait_for_migration() {
 # - Creates the canister if it doesn't exist
 # - Installs the canister even if the wasm is the same
 install_nnsdapp() {
-  local wasm argfile
+  local wasm argfile argument
   wasm="$1"
   argfile="$2"
+  argument="$(cat "$argfile")"
   if dfx canister id nns-dapp >/dev/null 2>/dev/null; then
     upgrade_nnsdapp "$wasm" "$argfile"
   else
     dfx canister create nns-dapp
-    dfx canister install nns-dapp --wasm "$wasm" --argument "$(cat "$argfile")" --yes
+    dfx canister install nns-dapp --wasm "$wasm" --argument "$argument" --yes --upgrade-unchanged
     scripts/dfx-canister-check-wasm-hash --wasm "$wasm" --canister nns-dapp
     verify_healthy
   fi
@@ -114,15 +133,15 @@ install_nnsdapp() {
 # TODO: Record upgrade cycles
 # TODO: Record state size
 upgrade_nnsdapp() {
-  local wasm argfile
+  local prestate poststate wasm argfile argument
   wasm="$1"
   argfile="$2"
-  local prestate poststate
+  argument="$(cat "$argfile")"
   prestate="$(get_upgrade_invariants | tee /dev/stderr)"
   # Check that the data is plausible
   # TODO: Check that the prestate is not empty; first we need to populate the state.
   # TODO: Consider storing all accounts data in a merkle tree so that we can check just the root hash.
-  dfx canister install --upgrade-unchanged nns-dapp --wasm "$wasm" --mode upgrade --argument "$(cat "$argfile")" --yes
+  dfx canister install --upgrade-unchanged nns-dapp --wasm "$wasm" --mode upgrade --argument "$argument" --yes
   scripts/dfx-canister-check-wasm-hash --wasm "$wasm" --canister nns-dapp
   verify_healthy
   wait_for_migration
@@ -204,20 +223,7 @@ assert_schema_is() {
 # This file is intended to be sourced, but if called directly, offer some help
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   if (($# == 0)) || [[ "${1:-}" == "--help" ]]; then
-    cat <<-EOF
-		A library of methods for getting and manipulating the nns-canister state.
-
-		Usage:
-		- Source this file from your code.
-		- You can also call this file directly.  This may be useful for
-		  ad-hoc runs but is not intended for production use.
-
-      Usage: scripts/nns-dapp/migration-test.canister <function> [arguments..]
-      e.g.:  scripts/nns-dapp/migration-test.canister verify_healthy
-
-      A list of functions:
-		EOF
-    declare -F | awk '{print "        " $3}'
+    migration_test_canisters_help
     exit 0
   fi
   "${@}"

@@ -44,15 +44,15 @@ describe("sns-proposals services", () => {
   });
   const proposal1: SnsProposalData = {
     ...mockSnsProposal,
-    id: [{ id: BigInt(1) }],
+    id: [{ id: 1n }],
   };
   const proposal2: SnsProposalData = {
     ...mockSnsProposal,
-    id: [{ id: BigInt(2) }],
+    id: [{ id: 2n }],
   };
   const proposal3: SnsProposalData = {
     ...mockSnsProposal,
-    id: [{ id: BigInt(3) }],
+    id: [{ id: 3n }],
   };
   const proposals = [proposal1, proposal2, proposal3];
   describe("loadSnsProposals", () => {
@@ -88,7 +88,7 @@ describe("sns-proposals services", () => {
       });
 
       it("should call queryProposals with the last proposal id params", async () => {
-        const proposalId = { id: BigInt(1) };
+        const proposalId = { id: 1n };
         await loadSnsProposals({
           rootCanisterId: mockPrincipal,
           beforeProposalId: proposalId,
@@ -108,7 +108,7 @@ describe("sns-proposals services", () => {
       });
 
       it("should call queryProposals with selected decision status filters", async () => {
-        const proposalId = { id: BigInt(1) };
+        const proposalId = { id: 1n };
         const rootCanisterId = mockPrincipal;
         const decisionStatus = [
           {

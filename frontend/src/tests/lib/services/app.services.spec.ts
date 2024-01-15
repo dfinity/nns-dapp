@@ -37,7 +37,7 @@ describe("app-services", () => {
     ]);
 
     mockNNSDappCanister.getAccount.mockResolvedValue(mockAccountDetails);
-    mockLedgerCanister.accountBalance.mockResolvedValue(BigInt(100_000_000));
+    mockLedgerCanister.accountBalance.mockResolvedValue(100_000_000n);
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 

@@ -37,7 +37,7 @@ describe("transactions.worker-services", () => {
   };
 
   it("should returns new transactions", async () => {
-    const id = BigInt(1);
+    const id = 1n;
     const transactions = [{ transaction, id }];
 
     const getTransactionsSpy =
@@ -70,7 +70,7 @@ describe("transactions.worker-services", () => {
   });
 
   it("should returns new transactions for multiple accounts", async () => {
-    const id = BigInt(1);
+    const id = 1n;
     const transactions = [{ transaction, id }];
 
     const getTransactionsSpy =
