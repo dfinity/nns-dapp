@@ -17,13 +17,6 @@
     justify-content: center;
     width: 100%;
 
-    padding: var(--padding-2x) var(--padding-2x) var(--padding)
-      var(--padding-2x);
-
-    @include media.min-width(large) {
-      padding: var(--padding-4x) 0 var(--padding);
-    }
-
     & .content {
       width: 100%;
 
