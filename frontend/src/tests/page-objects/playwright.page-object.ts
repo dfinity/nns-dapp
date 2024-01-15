@@ -43,11 +43,11 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
   }
 
   byTestId(tid: string): PlaywrightPageObjectElement {
-    return this.querySelector(`[data-tid=${tid}]`);
+    return this.querySelector(`[data-tid='${tid}']`);
   }
 
   allByTestId(tid: string): Promise<PlaywrightPageObjectElement[]> {
-    return this.querySelectorAll(`[data-tid=${tid}]`);
+    return this.querySelectorAll(`[data-tid='${tid}']`);
   }
 
   countByTestId({
@@ -58,7 +58,7 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     count: number;
   }): PlaywrightPageObjectElement[] {
     return this.querySelectorCount({
-      selector: `[data-tid=${tid}]`,
+      selector: `[data-tid='${tid}']`,
       count,
     });
   }
