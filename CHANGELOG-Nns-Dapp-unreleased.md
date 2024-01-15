@@ -26,6 +26,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* BTC deposit address QR code spinner in dark theme.
+
 #### Security
 
 #### Not Published
