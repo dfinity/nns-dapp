@@ -15,12 +15,14 @@ describe("canisters-worker-api", () => {
     cycles: 10_000n,
     settings: {
       controllers: [],
+      reserved_cycles_limit: 1_000_000_000n,
       freezing_threshold: 0n,
       memory_allocation: 10n,
       compute_allocation: 5n,
     },
     module_hash: [],
     idle_cycles_burned_per_day: 300n,
+    reserved_cycles: 1_000_000n,
   };
 
   beforeEach(async () => {

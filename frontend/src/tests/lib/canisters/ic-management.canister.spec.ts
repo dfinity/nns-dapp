@@ -29,6 +29,7 @@ describe("ICManagementCanister", () => {
             "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"
           ),
         ],
+        reserved_cycles_limit: 1_000_000_000n,
         memory_allocation: 4n,
         compute_allocation: 10n,
       };
@@ -39,6 +40,7 @@ describe("ICManagementCanister", () => {
         settings,
         module_hash: [],
         idle_cycles_burned_per_day: 30_000n,
+        reserved_cycles: 1_000_000n,
       };
       const service = mock<IcManagementService>();
       service.canister_status.mockResolvedValue(response);
