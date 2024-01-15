@@ -43,11 +43,11 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
   }
 
   byTestId(tid: string): PlaywrightPageObjectElement {
-    return this.querySelector(`[data-tid='${tid}']`);
+    return this.querySelector(`[data-tid="${tid}"]`);
   }
 
   allByTestId(tid: string): Promise<PlaywrightPageObjectElement[]> {
-    return this.querySelectorAll(`[data-tid='${tid}']`);
+    return this.querySelectorAll(`[data-tid="${tid}"]`);
   }
 
   countByTestId({
@@ -58,7 +58,7 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     count: number;
   }): PlaywrightPageObjectElement[] {
     return this.querySelectorCount({
-      selector: `[data-tid='${tid}']`,
+      selector: `[data-tid="${tid}"]`,
       count,
     });
   }
@@ -88,10 +88,19 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     return (await this.locator.count()) > 0;
   }
 
-  waitFor(options: {
-    state: "attached" | "detached" | "visible" | "hidden";
-  }): Promise<void> {
-    return this.locator.waitFor(options);
+  waitFor(): Promise<void> {
+    /**
+     * `locator.waitFor` defaults to `'visible'`. Can be either:
+     * - `'attached'` - wait for element to be present in DOM.
+     * - `'detached'` - wait for element to not be present in DOM.
+     * - `'visible'` - wait for element to have non-empty bounding box and no `visibility:hidden`. Note that element
+     *   without any content or with `display:none` has an empty bounding box and is not considered visible.
+     * - `'hidden'` - wait for element to be either detached from DOM, or have an empty bounding box or
+     *   `visibility:hidden`. This is opposite to the `'visible'` option.
+     *
+     * We use `"attached"` which is the same functionality as Jest `waitFor` counterpart.
+     */
+    return this.locator.waitFor({ state: "attached" });
   }
 
   waitForAbsent(): Promise<void> {

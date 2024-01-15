@@ -18,6 +18,6 @@ export class DropdownPo extends BasePageObject {
   }
 
   async waitForOption(testId: string): Promise<void> {
-    return this.root.byTestId(testId).waitFor({ state: "attached" });
+    return this.root.byTestId(testId).waitFor();
   }
 }

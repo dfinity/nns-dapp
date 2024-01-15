@@ -54,33 +54,26 @@
 
   const getTokensWithBalance = async (
     universes: Universe[]
-  ): Promise<Universe[]> => {
-    const balances: Array<{ balance: bigint; universeIdText: string }> =
+  ): Promise<Universe[]> =>
+    (
       await Promise.all(
-        universes.map(async ({ canisterId }) => ({
-          balance: await getBalance(canisterId),
-          universeIdText: canisterId,
+        universes.map(async (universe) => ({
+          balance: await getBalance(universe.canisterId),
+          universe,
         }))
-      );
-    return universes.filter(({ canisterId }) => {
-      return (
-        balances.find(({ universeIdText }) => {
-          return universeIdText === canisterId;
-        })?.balance ?? 0n > 0n
-      );
-    });
-  };
+      )
+    )
+      .filter(({ balance }) => balance > 0n)
+      .map(({ universe }) => universe);
   let universesWithBalance: Universe[] = [];
   $: {
     getTokensWithBalance($universesStore)
       .then((universes) => {
         universesWithBalance = universes;
         // Set the selected universe if not set yet.
-        selectedUniverseId =
-          selectedUniverseId ??
-          universes.find(({ canisterId }) => {
-            return canisterId === $selectedUniverseIdStore.toText();
-          })?.canisterId;
+        selectedUniverseId ??= universes.find(({ canisterId }) => {
+          return canisterId === $selectedUniverseIdStore.toText();
+        })?.canisterId;
       })
       .catch((err) => {
         console.error("error in getTokensWithBalance", err);
