@@ -167,7 +167,7 @@
           walletAddress={$selectedAccountStore.account?.identifier}
         />
         <WalletPageHeading
-          accountName={$selectedAccountStore?.account?.name ??
+          accountName={$selectedAccountStore.account?.name ??
             $i18n.accounts.main}
           balance={nonNullish($selectedAccountStore.account) &&
           nonNullish(token)
