@@ -10,12 +10,9 @@ const expectImagesLoaded = async ({ page, sources }) => {
   );
   // We only look at the basename (stripping path and content hash extension)
   // because the rest might differ depending on the environment.
-  const baseImageSources = imageSources.map((src) => {
-    const split = src.replace(/.*\//, "").split(".");
-    // Remove hash if existing from src. e.g. "logo-onchain-light.L_mfZB1R.svg" -> "logo-onchain-light.svg"
-    const { 0: filename, [split.length - 1]: extension } = split;
-    return `${filename}.${extension}`;
-  });
+  const baseImageSources = imageSources.map((src) =>
+    src.replace(/.*\//, "").replace(/\.[0-9a-f]{8}\./, ".")
+  );
   baseImageSources.sort();
   expect(baseImageSources).toEqual(sources);
 
@@ -50,13 +47,7 @@ test("Test images load on accounts page", async ({ page, context }) => {
   await step("Check images before signing");
   await expectImagesLoaded({
     page,
-    sources: [
-      "icp-rounded.svg",
-      "icp-rounded.svg",
-      "logo-nns.svg",
-      "logo-onchain-light.svg",
-      "menu-bg-light.png",
-    ],
+    sources: ["icp-rounded.svg", "icp-rounded.svg"],
   });
 
   await signInWithNewUser({ page, context });
@@ -81,9 +72,6 @@ test("Test images load on accounts page", async ({ page, context }) => {
       "icp-rounded.svg",
       // ICP universe card in the universes selector modal
       "icp-rounded.svg",
-      // Menu
-      "logo-nns.svg",
-      "logo-onchain-light.svg",
       // logo.png are for all the different SNSes and are loaded from the
       // aggregator:
       "logo.png",
@@ -97,8 +85,6 @@ test("Test images load on accounts page", async ({ page, context }) => {
       "logo.png",
       "logo.png",
       "logo.png",
-      // Menu background
-      "menu-bg-light.png",
     ],
   });
 });

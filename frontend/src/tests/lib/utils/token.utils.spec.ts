@@ -18,99 +18,97 @@ import { ICPToken, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 
 describe("token-utils", () => {
   it("should format token", () => {
-    expect(formatTokenE8s({ value: BigInt(0) })).toEqual("0");
+    expect(formatTokenE8s({ value: 0n })).toEqual("0");
     // TODO: this following test used to equals 0.0000001 but because of the new ICP conversion it now renders 0.00
-    // expect(formatTokenE8s({value: BigInt(10)})).toEqual("0.0000001");
-    expect(formatTokenE8s({ value: BigInt(100) })).toEqual("0.000001");
-    expect(formatTokenE8s({ value: BigInt(100000000) })).toEqual("1.00");
-    expect(formatTokenE8s({ value: BigInt(1000000000) })).toEqual("10.00");
-    expect(formatTokenE8s({ value: BigInt(1010000000) })).toEqual("10.10");
-    expect(formatTokenE8s({ value: BigInt(1012300000) })).toEqual("10.12");
-    expect(formatTokenE8s({ value: BigInt(20000000000) })).toEqual("200.00");
-    expect(formatTokenE8s({ value: BigInt(20000000001) })).toEqual("200.00");
-    expect(formatTokenE8s({ value: BigInt(200000000000) })).toEqual(`2'000.00`);
-    expect(formatTokenE8s({ value: BigInt(200000000000000) })).toEqual(
+    // expect(formatTokenE8s({value: 10n})).toEqual("0.0000001");
+    expect(formatTokenE8s({ value: 100n })).toEqual("0.000001");
+    expect(formatTokenE8s({ value: 100_000_000n })).toEqual("1.00");
+    expect(formatTokenE8s({ value: 1_000_000_000n })).toEqual("10.00");
+    expect(formatTokenE8s({ value: 1_010_000_000n })).toEqual("10.10");
+    expect(formatTokenE8s({ value: 1_012_300_000n })).toEqual("10.12");
+    expect(formatTokenE8s({ value: 20_000_000_000n })).toEqual("200.00");
+    expect(formatTokenE8s({ value: 20_000_000_001n })).toEqual("200.00");
+    expect(formatTokenE8s({ value: 200_000_000_000n })).toEqual(`2'000.00`);
+    expect(formatTokenE8s({ value: 200_000_000_000_000n })).toEqual(
       `2'000'000.00`
     );
   });
 
   it("should format token detailed", () => {
-    expect(formatTokenE8s({ value: BigInt(0), detailed: true })).toEqual("0");
-    expect(formatTokenE8s({ value: BigInt(100), detailed: true })).toEqual(
-      "0.000001"
+    expect(formatTokenE8s({ value: 0n, detailed: true })).toEqual("0");
+    expect(formatTokenE8s({ value: 100n, detailed: true })).toEqual("0.000001");
+    expect(formatTokenE8s({ value: 100_000_000n, detailed: true })).toEqual(
+      "1.00"
+    );
+    expect(formatTokenE8s({ value: 1_000_000_000n, detailed: true })).toEqual(
+      "10.00"
+    );
+    expect(formatTokenE8s({ value: 1_010_000_000n, detailed: true })).toEqual(
+      "10.10"
+    );
+    expect(formatTokenE8s({ value: 1_012_300_000n, detailed: true })).toEqual(
+      "10.123"
+    );
+    expect(formatTokenE8s({ value: 20_000_000_000n, detailed: true })).toEqual(
+      "200.00"
+    );
+    expect(formatTokenE8s({ value: 20_000_000_001n, detailed: true })).toEqual(
+      "200.00000001"
+    );
+    expect(formatTokenE8s({ value: 200_000_000_000n, detailed: true })).toEqual(
+      `2'000.00`
     );
     expect(
-      formatTokenE8s({ value: BigInt(100000000), detailed: true })
-    ).toEqual("1.00");
-    expect(
-      formatTokenE8s({ value: BigInt(1000000000), detailed: true })
-    ).toEqual("10.00");
-    expect(
-      formatTokenE8s({ value: BigInt(1010000000), detailed: true })
-    ).toEqual("10.10");
-    expect(
-      formatTokenE8s({ value: BigInt(1012300000), detailed: true })
-    ).toEqual("10.123");
-    expect(
-      formatTokenE8s({ value: BigInt(20000000000), detailed: true })
-    ).toEqual("200.00");
-    expect(
-      formatTokenE8s({ value: BigInt(20000000001), detailed: true })
-    ).toEqual("200.00000001");
-    expect(
-      formatTokenE8s({ value: BigInt(200000000000), detailed: true })
-    ).toEqual(`2'000.00`);
-    expect(
-      formatTokenE8s({ value: BigInt(200000000000000), detailed: true })
+      formatTokenE8s({ value: 200_000_000_000_000n, detailed: true })
     ).toEqual(`2'000'000.00`);
   });
 
   it("should format token detailed with height decimals", () => {
+    expect(formatTokenE8s({ value: 0n, detailed: "height_decimals" })).toEqual(
+      "0"
+    );
+    expect(formatTokenE8s({ value: 1n, detailed: "height_decimals" })).toEqual(
+      "0.00000001"
+    );
+    expect(formatTokenE8s({ value: 10n, detailed: "height_decimals" })).toEqual(
+      "0.00000010"
+    );
     expect(
-      formatTokenE8s({ value: BigInt(0), detailed: "height_decimals" })
-    ).toEqual("0");
-    expect(
-      formatTokenE8s({ value: BigInt(1), detailed: "height_decimals" })
-    ).toEqual("0.00000001");
-    expect(
-      formatTokenE8s({ value: BigInt(10), detailed: "height_decimals" })
-    ).toEqual("0.00000010");
-    expect(
-      formatTokenE8s({ value: BigInt(100), detailed: "height_decimals" })
+      formatTokenE8s({ value: 100n, detailed: "height_decimals" })
     ).toEqual("0.00000100");
     expect(
-      formatTokenE8s({ value: BigInt(100000000), detailed: "height_decimals" })
+      formatTokenE8s({ value: 100_000_000n, detailed: "height_decimals" })
     ).toEqual("1.00000000");
     expect(
-      formatTokenE8s({ value: BigInt(1000000000), detailed: "height_decimals" })
+      formatTokenE8s({ value: 1_000_000_000n, detailed: "height_decimals" })
     ).toEqual("10.00000000");
     expect(
-      formatTokenE8s({ value: BigInt(1010000000), detailed: "height_decimals" })
+      formatTokenE8s({ value: 1_010_000_000n, detailed: "height_decimals" })
     ).toEqual("10.10000000");
     expect(
-      formatTokenE8s({ value: BigInt(1012300000), detailed: "height_decimals" })
+      formatTokenE8s({ value: 1_012_300_000n, detailed: "height_decimals" })
     ).toEqual("10.12300000");
     expect(
       formatTokenE8s({
-        value: BigInt(20000000000),
+        value: 20_000_000_000n,
         detailed: "height_decimals",
       })
     ).toEqual("200.00000000");
     expect(
       formatTokenE8s({
-        value: BigInt(20000000001),
+        value: 20_000_000_001n,
         detailed: "height_decimals",
       })
     ).toEqual("200.00000001");
     expect(
       formatTokenE8s({
-        value: BigInt(200000000000),
+        value: 200_000_000_000n,
         detailed: "height_decimals",
       })
     ).toEqual(`2'000.00000000`);
     expect(
       formatTokenE8s({
-        value: BigInt(200000000000000),
+        value: 200_000_000_000_000n,
         detailed: "height_decimals",
       })
     ).toEqual(`2'000'000.00000000`);
@@ -161,45 +159,47 @@ describe("token-utils", () => {
       it("should format token", () => {
         expect(testFormat({ value: 0n })).toEqual("0");
         // TODO: this following test used to equals 0.0000001 but because of the new ICP conversion it now renders 0.00
-        // expect(testFormat({value: BigInt(10)})).toEqual("0.0000001");
+        // expect(testFormat({value: 10n})).toEqual("0.0000001");
         expect(testFormat({ value: 100n })).toEqual("0.000001");
-        expect(testFormat({ value: 100000000n })).toEqual("1.00");
-        expect(testFormat({ value: 1000000000n })).toEqual("10.00");
-        expect(testFormat({ value: 1010000000n })).toEqual("10.10");
-        expect(testFormat({ value: 1012300000n })).toEqual("10.12");
-        expect(testFormat({ value: 20000000000n })).toEqual("200.00");
-        expect(testFormat({ value: 20000000001n })).toEqual("200.00");
-        expect(testFormat({ value: 200000000000n })).toEqual(`2'000.00`);
-        expect(testFormat({ value: 200000000000000n })).toEqual(`2'000'000.00`);
+        expect(testFormat({ value: 100_000_000n })).toEqual("1.00");
+        expect(testFormat({ value: 1_000_000_000n })).toEqual("10.00");
+        expect(testFormat({ value: 1_010_000_000n })).toEqual("10.10");
+        expect(testFormat({ value: 1_012_300_000n })).toEqual("10.12");
+        expect(testFormat({ value: 20_000_000_000n })).toEqual("200.00");
+        expect(testFormat({ value: 20_000_000_001n })).toEqual("200.00");
+        expect(testFormat({ value: 200_000_000_000n })).toEqual(`2'000.00`);
+        expect(testFormat({ value: 200_000_000_000_000n })).toEqual(
+          `2'000'000.00`
+        );
       });
 
       it("should format token detailed", () => {
         expect(testFormat({ value: 0n, detailed: true })).toEqual("0");
         expect(testFormat({ value: 100n, detailed: true })).toEqual("0.000001");
-        expect(testFormat({ value: 100000000n, detailed: true })).toEqual(
+        expect(testFormat({ value: 100_000_000n, detailed: true })).toEqual(
           "1.00"
         );
-        expect(testFormat({ value: 1000000000n, detailed: true })).toEqual(
+        expect(testFormat({ value: 1_000_000_000n, detailed: true })).toEqual(
           "10.00"
         );
-        expect(testFormat({ value: 1010000000n, detailed: true })).toEqual(
+        expect(testFormat({ value: 1_010_000_000n, detailed: true })).toEqual(
           "10.10"
         );
-        expect(testFormat({ value: 1012300000n, detailed: true })).toEqual(
+        expect(testFormat({ value: 1_012_300_000n, detailed: true })).toEqual(
           "10.123"
         );
-        expect(testFormat({ value: 20000000000n, detailed: true })).toEqual(
+        expect(testFormat({ value: 20_000_000_000n, detailed: true })).toEqual(
           "200.00"
         );
-        expect(testFormat({ value: 20000000001n, detailed: true })).toEqual(
+        expect(testFormat({ value: 20_000_000_001n, detailed: true })).toEqual(
           "200.00000001"
         );
-        expect(testFormat({ value: 200000000000n, detailed: true })).toEqual(
+        expect(testFormat({ value: 200_000_000_000n, detailed: true })).toEqual(
           `2'000.00`
         );
-        expect(testFormat({ value: 200000000000000n, detailed: true })).toEqual(
-          `2'000'000.00`
-        );
+        expect(
+          testFormat({ value: 200_000_000_000_000n, detailed: true })
+        ).toEqual(`2'000'000.00`);
       });
 
       it("should format token detailed with height decimals", () => {
@@ -216,29 +216,29 @@ describe("token-utils", () => {
           testFormat({ value: 100n, detailed: "height_decimals" })
         ).toEqual("0.00000100");
         expect(
-          testFormat({ value: 100000000n, detailed: "height_decimals" })
+          testFormat({ value: 100_000_000n, detailed: "height_decimals" })
         ).toEqual("1.00000000");
         expect(
-          testFormat({ value: 1000000000n, detailed: "height_decimals" })
+          testFormat({ value: 1_000_000_000n, detailed: "height_decimals" })
         ).toEqual("10.00000000");
         expect(
-          testFormat({ value: 1010000000n, detailed: "height_decimals" })
+          testFormat({ value: 1_010_000_000n, detailed: "height_decimals" })
         ).toEqual("10.10000000");
         expect(
-          testFormat({ value: 1012300000n, detailed: "height_decimals" })
+          testFormat({ value: 1_012_300_000n, detailed: "height_decimals" })
         ).toEqual("10.12300000");
         expect(
-          testFormat({ value: 20000000000n, detailed: "height_decimals" })
+          testFormat({ value: 20_000_000_000n, detailed: "height_decimals" })
         ).toEqual("200.00000000");
         expect(
-          testFormat({ value: 20000000001n, detailed: "height_decimals" })
+          testFormat({ value: 20_000_000_001n, detailed: "height_decimals" })
         ).toEqual("200.00000001");
         expect(
-          testFormat({ value: 200000000000n, detailed: "height_decimals" })
+          testFormat({ value: 200_000_000_000n, detailed: "height_decimals" })
         ).toEqual(`2'000.00000000`);
         expect(
           testFormat({
-            value: 200000000000000n,
+            value: 200_000_000_000_000n,
             detailed: "height_decimals",
           })
         ).toEqual(`2'000'000.00000000`);
@@ -293,7 +293,7 @@ describe("token-utils", () => {
     };
 
     it("should convert TokenAmount to TokenAmountV2", () => {
-      const amount = 123456n;
+      const amount = 123_456n;
       expect(
         toTokenAmountV2(
           TokenAmount.fromE8s({
@@ -310,7 +310,7 @@ describe("token-utils", () => {
     });
 
     it("should return TokenAmountV2 as is", () => {
-      const amount = 123457n;
+      const amount = 123_457n;
       const tokenAmountV2 = TokenAmountV2.fromUlps({
         amount,
         token,
@@ -322,12 +322,12 @@ describe("token-utils", () => {
   describe("sumAmounts", () => {
     it("should sum amounts of E8s values", () => {
       const icp0 = 0n;
-      const icp1 = 100000000n;
-      const icp15 = 150000000n;
-      const icp2 = 200000000n;
-      const icp3 = 300000000n;
-      const icp35 = 350000000n;
-      const icp6 = 600000000n;
+      const icp1 = 100_000_000n;
+      const icp15 = 150_000_000n;
+      const icp2 = 200_000_000n;
+      const icp3 = 300_000_000n;
+      const icp35 = 350_000_000n;
+      const icp6 = 600_000_000n;
 
       expect(sumAmounts(icp0, icp1)).toEqual(icp1);
       expect(sumAmounts(icp1, icp2)).toEqual(icp3);
@@ -346,66 +346,66 @@ describe("token-utils", () => {
     expect(getMaxTransactionAmount({ fee, token: ICPToken })).toEqual(0);
     expect(
       getMaxTransactionAmount({
-        balance: BigInt(0),
+        balance: 0n,
         fee,
         token: ICPToken,
       })
     ).toEqual(0);
     expect(
       getMaxTransactionAmount({
-        balance: BigInt(10_000),
+        balance: 10_000n,
         fee,
         token: ICPToken,
       })
     ).toEqual(0);
     expect(
       getMaxTransactionAmount({
-        balance: BigInt(11_000),
+        balance: 11_000n,
         fee,
         token: ICPToken,
       })
     ).toEqual(0.00001);
     expect(
       getMaxTransactionAmount({
-        balance: BigInt(100_000_000),
+        balance: 100_000_000n,
         fee,
         token: ICPToken,
       })
     ).toEqual(0.9999);
     expect(
       getMaxTransactionAmount({
-        balance: BigInt(1_000_000_000),
-        maxAmount: BigInt(500_000_000),
+        balance: 1_000_000_000n,
+        maxAmount: 500_000_000n,
         token: ICPToken,
       })
     ).toEqual(5);
     expect(
       getMaxTransactionAmount({
-        balance: BigInt(1_000_000_000),
+        balance: 1_000_000_000n,
         fee,
         token: ICPToken,
-        maxAmount: BigInt(500_000_000),
+        maxAmount: 500_000_000n,
       })
     ).toEqual(5);
     expect(
       getMaxTransactionAmount({
-        balance: BigInt(100_000_000),
+        balance: 100_000_000n,
         fee,
         token: ICPToken,
-        maxAmount: BigInt(500_000_000),
+        maxAmount: 500_000_000n,
       })
     ).toEqual(0.9999);
     expect(
       getMaxTransactionAmount({
-        balance: BigInt(0),
+        balance: 0n,
         fee,
         token: ICPToken,
-        maxAmount: BigInt(500_000_000),
+        maxAmount: 500_000_000n,
       })
     ).toEqual(0);
     expect(
       getMaxTransactionAmount({
-        balance: BigInt(0),
+        balance: 0n,
         fee,
         token: ICPToken,
       })
@@ -433,45 +433,45 @@ describe("token-utils", () => {
 
   describe("convertIcpToTCycles", () => {
     it("converts ICP to TCycles", () => {
+      expect(convertIcpToTCycles({ icpNumber: 1, exchangeRate: 10_000n })).toBe(
+        1
+      );
       expect(
-        convertIcpToTCycles({ icpNumber: 1, exchangeRate: BigInt(10_000) })
-      ).toBe(1);
-      expect(
-        convertIcpToTCycles({ icpNumber: 2.5, exchangeRate: BigInt(10_000) })
+        convertIcpToTCycles({ icpNumber: 2.5, exchangeRate: 10_000n })
       ).toBe(2.5);
       expect(
-        convertIcpToTCycles({ icpNumber: 2.5, exchangeRate: BigInt(20_000) })
+        convertIcpToTCycles({ icpNumber: 2.5, exchangeRate: 20_000n })
       ).toBe(5);
-      expect(
-        convertIcpToTCycles({ icpNumber: 1, exchangeRate: BigInt(15_000) })
-      ).toBe(1.5);
+      expect(convertIcpToTCycles({ icpNumber: 1, exchangeRate: 15_000n })).toBe(
+        1.5
+      );
     });
   });
 
   describe("convertTCyclesToIcpNumber", () => {
     it("converts TCycles to number", () => {
       expect(
-        convertTCyclesToIcpNumber({ tCycles: 1, exchangeRate: BigInt(10_000) })
+        convertTCyclesToIcpNumber({ tCycles: 1, exchangeRate: 10_000n })
       ).toBe(1);
       expect(
         convertTCyclesToIcpNumber({
           tCycles: 2.5,
-          exchangeRate: BigInt(10_000),
+          exchangeRate: 10_000n,
         })
       ).toBe(2.5);
       expect(
         convertTCyclesToIcpNumber({
           tCycles: 2.5,
-          exchangeRate: BigInt(20_000),
+          exchangeRate: 20_000n,
         })
       ).toBe(1.25);
       expect(
-        convertTCyclesToIcpNumber({ tCycles: 1, exchangeRate: BigInt(15_000) })
+        convertTCyclesToIcpNumber({ tCycles: 1, exchangeRate: 15_000n })
       ).toBe(2 / 3);
       expect(
         convertTCyclesToIcpNumber({
           tCycles: 4.32,
-          exchangeRate: BigInt(10_000),
+          exchangeRate: 10_000n,
         })
       ).toBe(4.32);
     });
@@ -479,10 +479,10 @@ describe("token-utils", () => {
 
   describe("numberToE8s", () => {
     it("converts number to e8s", () => {
-      expect(numberToE8s(1.14)).toBe(BigInt(114_000_000));
-      expect(numberToE8s(1)).toBe(BigInt(100_000_000));
-      expect(numberToE8s(3.14)).toBe(BigInt(314_000_000));
-      expect(numberToE8s(0.14)).toBe(BigInt(14_000_000));
+      expect(numberToE8s(1.14)).toBe(114_000_000n);
+      expect(numberToE8s(1)).toBe(100_000_000n);
+      expect(numberToE8s(3.14)).toBe(314_000_000n);
+      expect(numberToE8s(0.14)).toBe(14_000_000n);
     });
   });
 
@@ -647,7 +647,7 @@ describe("token-utils", () => {
       };
       expect(
         ulpsToNumber({
-          ulps: 1142n,
+          ulps: 1_142n,
           token,
         })
       ).toBe(1142);

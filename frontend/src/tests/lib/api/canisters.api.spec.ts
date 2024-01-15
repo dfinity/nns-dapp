@@ -31,7 +31,7 @@ import {
   LedgerCanister,
   SubAccount,
 } from "@dfinity/ledger-icp";
-import { ICPToken, TokenAmount, principalToSubAccount } from "@dfinity/utils";
+import { principalToSubAccount } from "@dfinity/utils";
 import { mock } from "vitest-mock-extended";
 
 describe("canisters-api", () => {
@@ -204,13 +204,11 @@ describe("canisters-api", () => {
 
   describe("getIcpToCyclesExchangeRate", () => {
     it("should call CMC to get conversion rate", async () => {
-      mockCMCCanister.getIcpToCyclesConversionRate.mockResolvedValue(
-        BigInt(10_000)
-      );
+      mockCMCCanister.getIcpToCyclesConversionRate.mockResolvedValue(10_000n);
 
       const response = await getIcpToCyclesExchangeRate(mockIdentity);
       expect(mockCMCCanister.getIcpToCyclesConversionRate).toBeCalled();
-      expect(response).toEqual(BigInt(10_000));
+      expect(response).toEqual(10_000n);
     });
   });
 
@@ -223,17 +221,14 @@ describe("canisters-api", () => {
     });
 
     it("should make a transfer, notify and attach the canister", async () => {
-      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
+      mockLedgerCanister.transfer.mockResolvedValue(10n);
       mockCMCCanister.notifyCreateCanister.mockResolvedValue(
         mockCanisterDetails.id
       );
 
       const response = await createCanister({
         identity: mockIdentity,
-        amount: TokenAmount.fromString({
-          amount: "3",
-          token: ICPToken,
-        }) as TokenAmount,
+        amount: 300_000_000n,
       });
       expect(mockLedgerCanister.transfer).toBeCalled();
       expect(mockCMCCanister.notifyCreateCanister).toBeCalled();
@@ -245,7 +240,7 @@ describe("canisters-api", () => {
     });
 
     it("should attach the canister if name max length", async () => {
-      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
+      mockLedgerCanister.transfer.mockResolvedValue(10n);
       mockCMCCanister.notifyCreateCanister.mockResolvedValue(
         mockCanisterDetails.id
       );
@@ -253,10 +248,7 @@ describe("canisters-api", () => {
       const longName = "a".repeat(MAX_CANISTER_NAME_LENGTH);
       const response = await createCanister({
         identity: mockIdentity,
-        amount: TokenAmount.fromString({
-          amount: "3",
-          token: ICPToken,
-        }) as TokenAmount,
+        amount: 300_000_000n,
         name: longName,
       });
       expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
@@ -267,31 +259,25 @@ describe("canisters-api", () => {
     });
 
     it("should notify twice if the first call returns Processing", async () => {
-      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
+      mockLedgerCanister.transfer.mockResolvedValue(10n);
       mockCMCCanister.notifyCreateCanister
         .mockRejectedValueOnce(new ProcessingError())
         .mockResolvedValue(mockCanisterDetails.id);
 
       const response = await createCanister({
         identity: mockIdentity,
-        amount: TokenAmount.fromString({
-          amount: "3",
-          token: ICPToken,
-        }) as TokenAmount,
+        amount: 300_000_000n,
       });
       expect(mockCMCCanister.notifyCreateCanister).toHaveBeenCalledTimes(2);
       expect(response).toEqual(mockCanisterDetails.id);
     });
 
     it("handles creating from subaccounts", async () => {
-      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
+      mockLedgerCanister.transfer.mockResolvedValue(10n);
       mockCMCCanister.notifyCreateCanister.mockResolvedValue(
         mockCanisterDetails.id
       );
-      const amount = TokenAmount.fromString({
-        amount: "3",
-        token: ICPToken,
-      }) as TokenAmount;
+      const amount = 300_000_000n;
 
       const response = await createCanister({
         identity: mockIdentity,
@@ -309,7 +295,7 @@ describe("canisters-api", () => {
       expect(mockLedgerCanister.transfer).toBeCalledWith({
         memo: CREATE_CANISTER_MEMO,
         to: AccountIdentifier.fromHex(recipient.toHex()),
-        amount: amount.toE8s(),
+        amount,
         fromSubAccount: mockSubAccount.subAccount,
         createdAt: nowInBigIntNanoSeconds(),
       });
@@ -327,10 +313,7 @@ describe("canisters-api", () => {
       const call = () =>
         createCanister({
           identity: mockIdentity,
-          amount: TokenAmount.fromString({
-            amount: "3",
-            token: ICPToken,
-          }) as TokenAmount,
+          amount: 300_000_000n,
         });
       expect(call).rejects.toThrow();
       expect(mockCMCCanister.notifyCreateCanister).not.toBeCalled();
@@ -342,10 +325,7 @@ describe("canisters-api", () => {
       const call = () =>
         createCanister({
           identity: mockIdentity,
-          amount: TokenAmount.fromString({
-            amount: "3",
-            token: ICPToken,
-          }) as TokenAmount,
+          amount: 300_000_000n,
           name: longName,
         });
 
@@ -368,15 +348,12 @@ describe("canisters-api", () => {
     });
 
     it("should make a transfer and notify", async () => {
-      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
-      mockCMCCanister.notifyTopUp.mockResolvedValue(BigInt(10));
+      mockLedgerCanister.transfer.mockResolvedValue(10n);
+      mockCMCCanister.notifyTopUp.mockResolvedValue(10n);
 
       await topUpCanister({
         identity: mockIdentity,
-        amount: TokenAmount.fromString({
-          amount: "3",
-          token: ICPToken,
-        }) as TokenAmount,
+        amount: 300_000_000n,
         canisterId: mockCanisterDetails.id,
       });
       expect(mockLedgerCanister.transfer).toBeCalled();
@@ -384,25 +361,22 @@ describe("canisters-api", () => {
     });
 
     it("should notify twice if the first returns ProcessingError", async () => {
-      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
+      mockLedgerCanister.transfer.mockResolvedValue(10n);
       mockCMCCanister.notifyTopUp
         .mockRejectedValueOnce(new ProcessingError())
-        .mockResolvedValue(BigInt(10));
+        .mockResolvedValue(10n);
 
       await topUpCanister({
         identity: mockIdentity,
-        amount: TokenAmount.fromString({
-          amount: "3",
-          token: ICPToken,
-        }) as TokenAmount,
+        amount: 300_000_000n,
         canisterId: mockCanisterDetails.id,
       });
       expect(mockCMCCanister.notifyTopUp).toHaveBeenCalledTimes(2);
     });
 
     it("should make a transfer from subaccounts", async () => {
-      mockLedgerCanister.transfer.mockResolvedValue(BigInt(10));
-      mockCMCCanister.notifyTopUp.mockResolvedValue(BigInt(10));
+      mockLedgerCanister.transfer.mockResolvedValue(10n);
+      mockCMCCanister.notifyTopUp.mockResolvedValue(10n);
 
       const toSubAccount = principalToSubAccount(mockCanisterDetails.id);
       // To create a canister you need to send ICP to an account owned by the CMC, so that the CMC can burn those funds.
@@ -412,10 +386,7 @@ describe("canisters-api", () => {
         subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
       });
 
-      const amount = TokenAmount.fromString({
-        amount: "3",
-        token: ICPToken,
-      }) as TokenAmount;
+      const amount = 300_000_000n;
       await topUpCanister({
         identity: mockIdentity,
         amount,
@@ -426,7 +397,7 @@ describe("canisters-api", () => {
       expect(mockLedgerCanister.transfer).toBeCalledWith({
         memo: TOP_UP_CANISTER_MEMO,
         to: AccountIdentifier.fromHex(recipient.toHex()),
-        amount: amount.toE8s(),
+        amount,
         fromSubAccount: mockSubAccount.subAccount,
         createdAt: nowInBigIntNanoSeconds(),
       });
@@ -440,10 +411,7 @@ describe("canisters-api", () => {
       const call = () =>
         topUpCanister({
           identity: mockIdentity,
-          amount: TokenAmount.fromString({
-            amount: "3",
-            token: ICPToken,
-          }) as TokenAmount,
+          amount: 300_000_000n,
           canisterId: mockCanisterDetails.id,
         });
       expect(call).rejects.toThrow();

@@ -6,9 +6,9 @@ import { render } from "@testing-library/svelte";
 describe("CommitmentProgressBar", () => {
   const color: "primary" | "warning" = "primary";
   const props = {
-    participationE8s: 1500n,
-    max: BigInt(3000),
-    minimumIndicator: BigInt(1500),
+    participationE8s: 1_500n,
+    max: 3_000n,
+    minimumIndicator: 1_500n,
     color,
   };
 
@@ -27,7 +27,7 @@ describe("CommitmentProgressBar", () => {
       ...props,
       participationE8s: 150_000_000n,
     });
-    expect(await po.getCommitmentE8s()).toBe(150000000n);
+    expect(await po.getCommitmentE8s()).toBe(150000_000n);
   });
 
   it("should display minimum indicators", async () => {

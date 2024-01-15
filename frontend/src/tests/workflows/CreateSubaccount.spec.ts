@@ -37,7 +37,7 @@ describe("Accounts", () => {
     vi.spyOn(console, "error").mockImplementation(vi.fn);
     queryAccountBalanceSpy = vi
       .spyOn(ledgerApi, "queryAccountBalance")
-      .mockResolvedValue(BigInt(0));
+      .mockResolvedValue(0n);
     queryAccountSpy = vi
       .spyOn(nnsDappApi, "queryAccount")
       .mockResolvedValue(mockAccountDetails);

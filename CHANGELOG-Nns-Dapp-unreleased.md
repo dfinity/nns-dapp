@@ -14,30 +14,17 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Disable dissolve delay editing when the maximum is reached.
-- Implement `Storable` for accounts.
-- `UnboundedStableBTreeMap` as an account storage medium.
-- Save accounts in the `pre_upgrade` hook only when accounts are stored in the heap.
-- Save account stats in the `pre_upgrade` hook rather than recomputing them in the `post_upgrade` hook.
-- Migration functions.
-- Render pending and failed BTC withdrawal transaction as such.
-- Add `ENABLE_SNS_TYPES_FILTER` feature flag.
-
 #### Changed
 
-- Use `ic_cdk::println` instead of the `dfn_core` equivalent.
+* New light and dark theme colors.
+* Pluralise neurons on proposal detail page.
+* Placeholder when the transaction list is empty.
 
 #### Deprecated
 
 #### Removed
 
 #### Fixed
-
-- Remaining wrong dissolve delay error message after min/max click.
-- Avoid unnecessary calls to SNS root canister ids to get the canister ids.
-- Min dissolve delay button updates not only for the first time.
-- Fix scrollbar in multiline toast message. 
-- Go back to accounts page for incorrect account identifier in SNS wallet page.
 
 #### Security
 
@@ -47,17 +34,15 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-Entry for bitcoin canister in `dfx.json`.
+- Exercise new migration test.
 
 #### Changed
 
-- Apply clippy only to target `wasm32-unknown-unknown` but prohibit `std::println` and variants for that target.
+* Upgrade to `dfx` 0.15.3.
 
 #### Deprecated
 
 #### Removed
-
-* Remove `past-changelog-test`.
 
 #### Fixed
 

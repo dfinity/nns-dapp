@@ -38,7 +38,7 @@ describe("SnsStakeMaturityButton", () => {
       props: {
         neuron: {
           ...mockSnsNeuron,
-          maturity_e8s_equivalent: BigInt(0),
+          maturity_e8s_equivalent: 0n,
           staked_maturity_e8s_equivalent: [],
         },
       },

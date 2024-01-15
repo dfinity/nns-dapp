@@ -14,6 +14,7 @@ import en from "$tests/mocks/i18n.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
 import {
   SnsProposalDecisionStatus,
@@ -22,6 +23,7 @@ import {
   type SnsProposalData,
 } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 vi.mock("$lib/api/sns-governance.api");
 
@@ -37,7 +39,7 @@ describe("SnsProposals", () => {
 
   const rootCanisterId = mockPrincipal;
   const functionName = "test_function";
-  const functionId = BigInt(3);
+  const functionId = 3n;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -101,6 +103,25 @@ describe("SnsProposals", () => {
         );
 
         expect(queryAllByTestId("checkbox").length).toBeGreaterThan(0);
+      });
+
+      it("should init types filter", async () => {
+        const getFiltersStoreData = () =>
+          get(snsFiltersStore)[rootCanisterId.toText()];
+
+        expect(getFiltersStoreData()?.types).toEqual(undefined);
+        render(SnsProposals);
+
+        await runResolvedPromises();
+
+        expect(getFiltersStoreData()?.types).toEqual([
+          {
+            checked: true,
+            id: `${functionId}`,
+            name: functionName,
+            value: `${functionId}`,
+          },
+        ]);
       });
 
       it("should render a spinner while searching proposals", async () => {
@@ -171,13 +192,13 @@ describe("SnsProposals", () => {
     const proposals: SnsProposalData[] = [
       createSnsProposal({
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
-        proposalId: BigInt(1),
+        proposalId: 1n,
         rewardStatus:
           SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
       }),
       createSnsProposal({
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED,
-        proposalId: BigInt(2),
+        proposalId: 2n,
         rewardStatus: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED,
       }),
     ];
@@ -185,7 +206,7 @@ describe("SnsProposals", () => {
       vi.spyOn(authStore, "subscribe").mockImplementation(
         mockAuthStoreNoIdentitySubscribe
       );
-      const functionId = BigInt(3);
+      const functionId = 3n;
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,

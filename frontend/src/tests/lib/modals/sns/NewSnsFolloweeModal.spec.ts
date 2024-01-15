@@ -16,7 +16,7 @@ vi.mock("$lib/services/sns-neurons.services", () => {
 
 describe("NewSnsFolloweeModal", () => {
   const reload = vi.fn();
-  const functionId = BigInt(4);
+  const functionId = 4n;
 
   const renderNewSnsFolloweeModal = (): RenderResult<SvelteComponent> =>
     renderSelectedSnsNeuronContext({

@@ -3,7 +3,7 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 import { VotingConfirmationToolbarPo } from "./VotingConfirmationToolbar.page-object";
 
 export class SnsVotingCardPo extends BasePageObject {
-  private static readonly TID = "sns-voting-card-component";
+  private static readonly TID = "voting-card-component";
 
   private constructor(root: PageObjectElement) {
     super(root);

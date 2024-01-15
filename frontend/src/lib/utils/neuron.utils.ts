@@ -846,6 +846,9 @@ export const votedNeuronDetails = ({
       (compactNeuronInfoMaybe) => compactNeuronInfoMaybe.vote !== undefined
     ) as CompactNeuronInfo[];
 
+export const neuronsVotingPower = (neurons?: CompactNeuronInfo[]): bigint =>
+  neurons?.reduce((sum, { votingPower }) => sum + votingPower, 0n) ?? 0n;
+
 export const hasEnoughMaturityToStake = ({ fullNeuron }: NeuronInfo): boolean =>
   (fullNeuron?.maturityE8sEquivalent ?? 0n) > 0n;
 

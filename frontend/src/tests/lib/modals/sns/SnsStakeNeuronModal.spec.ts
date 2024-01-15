@@ -38,7 +38,7 @@ describe("SnsStakeNeuronModal", () => {
       props: {
         token,
         transactionFee: TokenAmount.fromE8s({
-          amount: BigInt(10_000),
+          amount: 10_000n,
           token,
         }),
         rootCanisterId: mockPrincipal,

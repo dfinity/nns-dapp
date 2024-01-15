@@ -25,15 +25,15 @@ describe("ProposalVotingSection", () => {
 
   const neuronIds = [111, 222].map(BigInt);
 
-  const proposalTimestampSeconds = BigInt(100);
+  const proposalTimestampSeconds = 100n;
   const ineligibleNeuron = {
     ...mockNeuron,
-    createdTimestampSeconds: proposalTimestampSeconds + BigInt(1),
+    createdTimestampSeconds: proposalTimestampSeconds + 1n,
   } as NeuronInfo;
 
   const neurons: NeuronInfo[] = neuronIds.map((neuronId) => ({
     ...mockNeuron,
-    createdTimestampSeconds: BigInt(BigInt(1000)),
+    createdTimestampSeconds: BigInt(1_000n),
     dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
     neuronId,
   }));
@@ -53,7 +53,7 @@ describe("ProposalVotingSection", () => {
   const proposalInfo = {
     ...mockProposalInfo,
     ballots: neuronIds.map((neuronId) => ({ neuronId }) as Ballot),
-    proposalTimestampSeconds: BigInt(2000),
+    proposalTimestampSeconds: 2_000n,
     status: ProposalStatus.Open,
   };
 
@@ -78,9 +78,7 @@ describe("ProposalVotingSection", () => {
         queryByText(en.proposal_detail.voting_results)
       ).toBeInTheDocument();
       expect(getByTestId("voting-confirmation-toolbar")).toBeInTheDocument();
-      expect(
-        queryByText(en.proposal_detail__ineligible.headline)
-      ).toBeInTheDocument();
+      expect(getByTestId("voting-neuron-select")).toBeInTheDocument();
     });
 
     it("should not render vote blocks if reward status has settled", () => {

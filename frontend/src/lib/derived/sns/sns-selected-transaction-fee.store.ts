@@ -1,23 +1,18 @@
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
-import { TokenAmount } from "@dfinity/utils";
+import { tokensStore } from "$lib/stores/tokens.store";
+import { TokenAmount, nonNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
-import { selectedUniverseIdStore } from "../selected-universe.derived";
-import { snsTokenSymbolSelectedStore } from "./sns-token-symbol-selected.store";
+import { snsOnlyProjectStore } from "./sns-selected-project.derived";
 
-// TS was not smart enough to infer the type of the stores, so we need to specify them
 export const snsSelectedTransactionFeeStore: Readable<TokenAmount | undefined> =
   derived(
-    [
-      selectedUniverseIdStore,
-      transactionsFeesStore,
-      snsTokenSymbolSelectedStore,
-    ],
-    ([selectedRootCanisterId, feesStore, selectedToken]) => {
-      const selectedFee =
-        feesStore.projects[selectedRootCanisterId.toText()]?.fee;
-      if (selectedFee !== undefined && selectedToken !== undefined) {
+    [snsOnlyProjectStore, tokensStore],
+    ([selectedRootCanisterId, tokensStore]) => {
+      const selectedToken = nonNullish(selectedRootCanisterId)
+        ? tokensStore[selectedRootCanisterId.toText()]?.token
+        : undefined;
+      if (nonNullish(selectedToken)) {
         return TokenAmount.fromE8s({
-          amount: selectedFee,
+          amount: selectedToken.fee,
           token: selectedToken,
         });
       }

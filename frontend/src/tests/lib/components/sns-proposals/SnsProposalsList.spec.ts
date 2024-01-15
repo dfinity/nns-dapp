@@ -6,15 +6,15 @@ import { render } from "@testing-library/svelte";
 describe("SnsProposalsList", () => {
   const proposal1: SnsProposalData = {
     ...mockSnsProposal,
-    id: [{ id: BigInt(1) }],
+    id: [{ id: 1n }],
   };
   const proposal2: SnsProposalData = {
     ...mockSnsProposal,
-    id: [{ id: BigInt(2) }],
+    id: [{ id: 2n }],
   };
   const proposal3: SnsProposalData = {
     ...mockSnsProposal,
-    id: [{ id: BigInt(3) }],
+    id: [{ id: 3n }],
   };
   const proposals = [proposal1, proposal2, proposal3];
 

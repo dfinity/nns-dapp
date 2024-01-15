@@ -7,8 +7,8 @@ import { Vote, type NeuronInfo, type RewardEvent } from "@dfinity/nns";
 import { get } from "svelte/store";
 
 describe("neuronsVotedInLastRewardEventStore", () => {
-  const settledProposal1 = { id: BigInt(123) };
-  const settledProposal2 = { id: BigInt(456) };
+  const settledProposal1 = { id: 123n };
+  const settledProposal2 = { id: 456n };
   const settledProposals = [settledProposal1, settledProposal2];
   const rewardEvent: RewardEvent = {
     ...mockRewardEvent,
@@ -41,11 +41,11 @@ describe("neuronsVotedInLastRewardEventStore", () => {
   it("returns empty array if neurons have not voted in the reward proposals", () => {
     const neuron1: NeuronInfo = {
       ...neuronNoVotes,
-      neuronId: BigInt(1),
+      neuronId: 1n,
     };
     const neuron2: NeuronInfo = {
       ...neuronNoVotes,
-      neuronId: BigInt(2),
+      neuronId: 2n,
     };
     nnsLatestRewardEventStore.setLatestRewardEvent({
       certified: true,
@@ -63,11 +63,11 @@ describe("neuronsVotedInLastRewardEventStore", () => {
   it("returns neuron ids of the neurons that voted in at least one settled proposals", () => {
     const neuronNotVoted: NeuronInfo = {
       ...neuronNoVotes,
-      neuronId: BigInt(1),
+      neuronId: 1n,
     };
     const neuronVotedAll: NeuronInfo = {
       ...mockNeuron,
-      neuronId: BigInt(2),
+      neuronId: 2n,
       recentBallots: settledProposals.map(({ id }) => ({
         proposalId: id,
         vote: Vote.Yes,
@@ -75,7 +75,7 @@ describe("neuronsVotedInLastRewardEventStore", () => {
     };
     const neuronVotedOne: NeuronInfo = {
       ...mockNeuron,
-      neuronId: BigInt(3),
+      neuronId: 3n,
       recentBallots: [
         {
           proposalId: settledProposal1.id,
@@ -104,7 +104,7 @@ describe("neuronsVotedInLastRewardEventStore", () => {
   it("does not return neurons that voted in proposals but are not settled in the latest reward event", () => {
     const neuronVotedSettled: NeuronInfo = {
       ...mockNeuron,
-      neuronId: BigInt(2),
+      neuronId: 2n,
       recentBallots: [
         {
           proposalId: settledProposal1.id,
@@ -118,10 +118,10 @@ describe("neuronsVotedInLastRewardEventStore", () => {
     };
     const neuronVotedNotSettled: NeuronInfo = {
       ...mockNeuron,
-      neuronId: BigInt(3),
+      neuronId: 3n,
       recentBallots: [
         {
-          proposalId: BigInt(133333),
+          proposalId: 133_333n,
           vote: Vote.Yes,
         },
         {

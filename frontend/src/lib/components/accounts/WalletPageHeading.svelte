@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { nonNullish, type TokenAmount, TokenAmountV2 } from "@dfinity/utils";
+  import { isNullish, nonNullish, type TokenAmountV2 } from "@dfinity/utils";
   import PageHeading from "../common/PageHeading.svelte";
-  import { SkeletonText } from "@dfinity/gix-components";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import HeadingSubtitle from "../common/HeadingSubtitle.svelte";
   import type { Principal } from "@dfinity/principal";
@@ -14,7 +13,7 @@
   import Tooltip from "../ui/Tooltip.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
-  export let balance: TokenAmount | TokenAmountV2 | undefined = undefined;
+  export let balance: TokenAmountV2 | undefined = undefined;
   export let accountName: string;
   export let principal: Principal | undefined = undefined;
 
@@ -34,7 +33,7 @@
     layoutTitleStore.set({
       title: $i18n.wallet.title,
       header:
-        intersecting && nonNullish(balance)
+        intersecting || isNullish(balance)
           ? $i18n.wallet.title
           : `${accountName} - ${formatTokenV2({
               value: balance,
@@ -57,9 +56,7 @@
         <AmountDisplay amount={balance} size="huge" singleLine />
       </Tooltip>
     {:else}
-      <div data-tid="skeleton" class="skeleton">
-        <SkeletonText tagName="h1" />
-      </div>
+      <h1 data-tid="balance-placeholder">-/-</h1>
     {/if}
   </svelte:fragment>
   <div
@@ -94,12 +91,5 @@
     & p {
       margin: 0;
     }
-  }
-
-  .skeleton {
-    // This is a width for the skeleton that looks good on desktop and mobile.
-    // Based on $breakpoint-xsmall: 320px;
-    width: 320px;
-    max-width: calc(100% - var(--padding-2x));
   }
 </style>

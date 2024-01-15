@@ -93,7 +93,7 @@ describe("IcrcBalancesObserver", () => {
       const updatedStore = get(icrcAccountsStore);
       expect(
         updatedStore[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()].accounts
-      ).toEqual([{ ...mockCkBTCMainAccount, balanceE8s: 123456n }]);
+      ).toEqual([{ ...mockCkBTCMainAccount, balanceUlps: 123456n }]);
     });
   });
 

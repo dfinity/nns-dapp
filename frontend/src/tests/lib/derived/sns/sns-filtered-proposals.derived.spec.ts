@@ -16,15 +16,15 @@ import { get } from "svelte/store";
 describe("snsFilteredProposalsStore", () => {
   const snsProposal1: SnsProposalData = {
     ...mockSnsProposal,
-    id: [{ id: BigInt(2) }],
+    id: [{ id: 2n }],
   };
   const snsProposal2: SnsProposalData = {
     ...mockSnsProposal,
-    id: [{ id: BigInt(2) }],
+    id: [{ id: 2n }],
   };
   const snsProposal3: SnsProposalData = {
     ...mockSnsProposal,
-    id: [{ id: BigInt(3) }],
+    id: [{ id: 3n }],
   };
 
   beforeEach(() => {
@@ -90,15 +90,15 @@ describe("snsFilteredProposalsStore", () => {
   it("should return open proposals if Open status is checked", () => {
     const rootCanisterId = mockPrincipal;
     const openProposal = createSnsProposal({
-      proposalId: BigInt(2),
+      proposalId: 2n,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
     });
     const failedProposal1 = createSnsProposal({
-      proposalId: BigInt(3),
+      proposalId: 3n,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_FAILED,
     });
     const failedProposal2 = createSnsProposal({
-      proposalId: BigInt(4),
+      proposalId: 4n,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_FAILED,
     });
     const proposals: SnsProposalData[] = [
@@ -139,17 +139,17 @@ describe("snsFilteredProposalsStore", () => {
   it("should return accept votes proposals if Accepting Votes status is checked", () => {
     const rootCanisterId = mockPrincipal;
     const acceptVotesProposal = createSnsProposal({
-      proposalId: BigInt(2),
+      proposalId: 2n,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
       rewardStatus: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
     });
     const settledProposal = createSnsProposal({
-      proposalId: BigInt(3),
+      proposalId: 3n,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_FAILED,
       rewardStatus: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED,
     });
     const readyToSettleProposal = createSnsProposal({
-      proposalId: BigInt(4),
+      proposalId: 4n,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED,
       rewardStatus:
         SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_READY_TO_SETTLE,

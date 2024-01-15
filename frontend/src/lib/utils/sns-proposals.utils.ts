@@ -11,6 +11,7 @@ import type {
   UniversalProposalStatus,
   VotingNeuron,
 } from "$lib/types/proposals";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import {
   isGenericNervousSystemFunction,
@@ -484,11 +485,13 @@ export const getUniversalProposalStatus = (
 export const generateSnsProposalTypesFilterData = ({
   nsFunctions,
   typesFilterState,
+  snsName,
 }: {
   nsFunctions: SnsNervousSystemFunction[];
   typesFilterState: Filter<SnsProposalTypeFilterId>[];
+  snsName: string;
 }): Filter<SnsProposalTypeFilterId>[] => {
-  // transfer only unchecked entries to preselect new items that are not in the current filter state
+  // New proposal types are checked by default so only keep unchecked those types that were already unchecked.
   const getCheckedState = (id: string) =>
     typesFilterState.find(({ id: stateId }) => id === stateId)?.checked !==
     false;
@@ -504,17 +507,23 @@ export const generateSnsProposalTypesFilterData = ({
       id,
       value: id,
       name: name,
-      // transfer only unchecked entries to preselect new items that are not in the current filter state
+      // New proposal types are checked by default so only keep unchecked those types that were already unchecked.
       checked: getCheckedState(id),
     }));
+  const allGenericProposalsLabel = replacePlaceholders(
+    get(i18n).sns_types.sns_specific,
+    {
+      $snsName: snsName,
+    }
+  );
   const genericNsFunctionEntries: Filter<SnsProposalTypeFilterId>[] =
-    nsFunctions.filter(isGenericNervousSystemFunction).length > 0
+    nsFunctions.some(isGenericNervousSystemFunction)
       ? // Replace all generic entries w/ a single "All Generic"
         [
           {
             id: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
             value: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
-            name: get(i18n).sns_types.sns_specific,
+            name: allGenericProposalsLabel,
             checked: getCheckedState(ALL_SNS_GENERIC_PROPOSAL_TYPES_ID),
           },
         ]

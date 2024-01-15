@@ -147,7 +147,7 @@ describe("icp-accounts.services", () => {
         .mockResolvedValue(mockAccountDetails);
       const queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(BigInt(0));
+        .mockResolvedValue(0n);
       const certified = true;
       await loadAccounts({
         identity: mockIdentity,
@@ -170,7 +170,7 @@ describe("icp-accounts.services", () => {
       vi.spyOn(nnsdappApi, "queryAccount").mockResolvedValue(accountDetails);
       const queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(BigInt(0));
+        .mockResolvedValue(0n);
 
       const certified = true;
       await loadAccounts({
@@ -199,7 +199,7 @@ describe("icp-accounts.services", () => {
       vi.spyOn(nnsdappApi, "queryAccount").mockResolvedValue(accountDetails);
       const queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(BigInt(0));
+        .mockResolvedValue(0n);
 
       const certified = true;
       await loadAccounts({
@@ -344,7 +344,7 @@ describe("icp-accounts.services", () => {
 
   describe("initAccounts", () => {
     it("should sync accounts", async () => {
-      const mainBalanceE8s = BigInt(10_000_000);
+      const mainBalanceE8s = 10_000_000n;
       const queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
@@ -392,7 +392,7 @@ describe("icp-accounts.services", () => {
 
   describe("syncAccounts", () => {
     it("should sync accounts", async () => {
-      const mainBalanceE8s = BigInt(10_000_000);
+      const mainBalanceE8s = 10_000_000n;
       const queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
@@ -445,8 +445,8 @@ describe("icp-accounts.services", () => {
     });
 
     it("update response replaces query response", async () => {
-      const queryMainBalanceE8s = BigInt(10_000_000);
-      const updateMainBalanceE8s = BigInt(20_000_000);
+      const queryMainBalanceE8s = 10_000_000n;
+      const updateMainBalanceE8s = 20_000_000n;
       const queryBalanceResponse = Promise.resolve(queryMainBalanceE8s);
       let resolveUpdateResponse;
       const updateBalanceResponse = new Promise<bigint>((resolve) => {
@@ -490,8 +490,8 @@ describe("icp-accounts.services", () => {
     });
 
     it("old update response does not replace newer response", async () => {
-      const queryMainBalanceE8s = BigInt(10_000_000);
-      const updateMainBalanceE8s = BigInt(20_000_000);
+      const queryMainBalanceE8s = 10_000_000n;
+      const updateMainBalanceE8s = 20_000_000n;
       const queryBalanceResponse = Promise.resolve(queryMainBalanceE8s);
       let resolveUpdateResponse;
       const updateBalanceResponse = new Promise<bigint>((resolve) => {
@@ -526,7 +526,7 @@ describe("icp-accounts.services", () => {
         accountsWith({ mainBalanceE8s: queryMainBalanceE8s, certified: false })
       );
 
-      const newerMainBalanceE8s = BigInt(30_000_000);
+      const newerMainBalanceE8s = 30_000_000n;
       vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
         newerMainBalanceE8s
       );
@@ -548,7 +548,7 @@ describe("icp-accounts.services", () => {
 
   describe("loadBalance", () => {
     it("should query account balance and load it in store", async () => {
-      const newBalanceE8s = BigInt(10_000_000);
+      const newBalanceE8s = 10_000_000n;
       const queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(newBalanceE8s);
@@ -576,7 +576,7 @@ describe("icp-accounts.services", () => {
     });
 
     it("should not show error if only query fails", async () => {
-      const newBalanceE8s = BigInt(10_000_000);
+      const newBalanceE8s = 10_000_000n;
       const queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockImplementation(async (args) => {
@@ -612,8 +612,8 @@ describe("icp-accounts.services", () => {
     });
 
     it("old update response does not replace newer response", async () => {
-      const queryMainBalanceE8s = BigInt(10_000_000);
-      const updateMainBalanceE8s = BigInt(20_000_000);
+      const queryMainBalanceE8s = 10_000_000n;
+      const updateMainBalanceE8s = 20_000_000n;
       const queryBalanceResponse = Promise.resolve(queryMainBalanceE8s);
       let resolveUpdateResponse;
       const updateBalanceResponse = new Promise<bigint>((resolve) => {
@@ -648,7 +648,7 @@ describe("icp-accounts.services", () => {
         accountsWith({ mainBalanceE8s: queryMainBalanceE8s, certified: false })
       );
 
-      const newerMainBalanceE8s = BigInt(30_000_000);
+      const newerMainBalanceE8s = 30_000_000n;
       vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
         newerMainBalanceE8s
       );
@@ -668,7 +668,7 @@ describe("icp-accounts.services", () => {
     });
 
     it("should query account balance for Icrc address", async () => {
-      const newBalanceE8s = BigInt(10_000_000);
+      const newBalanceE8s = 10_000_000n;
       const queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(newBalanceE8s);
@@ -689,7 +689,7 @@ describe("icp-accounts.services", () => {
   });
 
   describe("services", () => {
-    const mainBalanceE8s = BigInt(10_000_000);
+    const mainBalanceE8s = 10_000_000n;
 
     let queryAccountBalanceSpy: SpyInstance;
     let queryAccountSpy: SpyInstance;
@@ -773,7 +773,7 @@ describe("icp-accounts.services", () => {
   });
 
   describe("transferICP", () => {
-    const mainBalanceE8s = BigInt(10_000_000);
+    const mainBalanceE8s = 10_000_000n;
     const sourceAccount = mockMainAccount;
     const transferICPParams: NewTransaction = {
       sourceAccount,
@@ -786,7 +786,7 @@ describe("icp-accounts.services", () => {
       queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
-      spySendICP = vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(BigInt(20));
+      spySendICP = vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(20n);
     });
 
     it("should transfer ICP", async () => {
@@ -796,9 +796,7 @@ describe("icp-accounts.services", () => {
     });
 
     it("should not transfer ICP for invalid address", async () => {
-      const spy = vi
-        .spyOn(icrcLedgerApi, "icrcTransfer")
-        .mockResolvedValue(BigInt(1));
+      const spy = vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(1n);
 
       const result = await transferICP({
         ...transferICPParams,
@@ -812,9 +810,7 @@ describe("icp-accounts.services", () => {
     });
 
     it("should transfer ICP using an Icrc destination address", async () => {
-      const spy = vi
-        .spyOn(ledgerApi, "sendIcpIcrc1")
-        .mockResolvedValue(BigInt(1));
+      const spy = vi.spyOn(ledgerApi, "sendIcpIcrc1").mockResolvedValue(1n);
 
       await transferICP({
         ...transferICPParams,
@@ -894,7 +890,7 @@ describe("icp-accounts.services", () => {
     beforeEach(() => {
       queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(BigInt(0));
+        .mockResolvedValue(0n);
       queryAccountSpy = vi
         .spyOn(nnsDappApi, "queryAccount")
         .mockResolvedValue(mockAccountDetails);
@@ -1157,7 +1153,7 @@ describe("icp-accounts.services", () => {
   });
 
   describe("pollAccounts", () => {
-    const mainBalanceE8s = BigInt(10_000_000);
+    const mainBalanceE8s = 10_000_000n;
     const mockAccounts = {
       main: {
         ...mockMainAccount,

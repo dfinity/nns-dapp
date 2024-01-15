@@ -1,128 +1,26 @@
 <script lang="ts">
-  import {
-    type ProposalInfo,
-    type Vote,
-    votableNeurons as getVotableNeurons,
-  } from "@dfinity/nns";
-
-  import { getContext } from "svelte";
-  import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
   import VotingConfirmationToolbar from "./VotingConfirmationToolbar.svelte";
-  import VotingNeuronSelect from "./VotingNeuronSelect.svelte";
-  import {
-    SELECTED_PROPOSAL_CONTEXT_KEY,
-    type SelectedProposalContext,
-  } from "$lib/types/selected-proposal.context";
-  import {
-    isProposalDeadlineInTheFuture,
-    nnsNeuronToVotingNeuron,
-  } from "$lib/utils/proposals.utils";
-  import {
-    voteRegistrationStore,
-    type VoteRegistrationStoreEntry,
-  } from "$lib/stores/vote-registration.store";
+  import type { VoteRegistrationStoreEntry } from "$lib/stores/vote-registration.store";
   import { BottomSheet } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
-  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-  import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
-  import { registerNnsVotes } from "$lib/services/nns-vote-registration.services";
-  import MyVotes from "$lib/components/proposal-detail/MyVotes.svelte";
-  import IneligibleNeuronsCard from "$lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
-  import VotingNeuronSelectList from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelectList.svelte";
-  import {
-    type CompactNeuronInfo,
-    filterIneligibleNnsNeurons,
-    type IneligibleNeuronData,
-    votedNeuronDetails,
+  import type {
+    CompactNeuronInfo,
+    IneligibleNeuronData,
   } from "$lib/utils/neuron.utils";
-  import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { isForceCallStrategy } from "$lib/utils/env.utils";
+  import VotedNeuronList from "$lib/components/proposal-detail/VotingCard/VotedNeuronList.svelte";
+  import IneligibleNeuronList from "$lib/components/proposal-detail/VotingCard/IneligibleNeuronList.svelte";
+  import VotableNeuronList from "$lib/components/proposal-detail/VotingCard/VotableNeuronList.svelte";
 
-  export let proposalInfo: ProposalInfo;
-
-  const votableNeurons = () =>
-    getVotableNeurons({
-      neurons: $definedNeuronsStore,
-      proposal: proposalInfo,
-    }).map((neuron) =>
-      nnsNeuronToVotingNeuron({ neuron, proposal: proposalInfo })
-    );
-
-  let visible = false;
-  /** Signals that the initial checkbox preselection was done. To avoid removing of user selection after second queryAndUpdate callback. */
-  let initialSelectionDone = false;
-  let voteRegistration: VoteRegistrationStoreEntry | undefined = undefined;
-
-  $: voteRegistration = (
-    $voteRegistrationStore.registrations[OWN_CANISTER_ID_TEXT] ?? []
-  ).find(({ proposalIdString }) => `${proposalInfo.id}` === proposalIdString);
-
-  $: $definedNeuronsStore,
-    (visible = isProposalDeadlineInTheFuture(proposalInfo));
-
-  const updateVotingNeuronSelectedStore = () => {
-    if (!initialSelectionDone) {
-      initialSelectionDone = true;
-      votingNeuronSelectStore.set(votableNeurons());
-    } else {
-      // preserve user selection after neurons update (e.g. queryAndUpdate second callback)
-      votingNeuronSelectStore.updateNeurons(votableNeurons());
-    }
-  };
-
-  $: $definedNeuronsStore, updateVotingNeuronSelectedStore();
-
-  const { store } = getContext<SelectedProposalContext>(
-    SELECTED_PROPOSAL_CONTEXT_KEY
-  );
-  const vote = async ({ detail }: { detail: { voteType: Vote } }) =>
-    await registerNnsVotes({
-      neuronIds: $votingNeuronSelectStore.selectedIds.map(BigInt),
-      vote: detail.voteType,
-      proposalInfo,
-      reloadProposalCallback: (
-        proposalInfo: ProposalInfo // we update store only if proposal id are matching even though it would be an edge case that these would not match here
-      ) =>
-        store.update(({ proposalId, proposal }) => ({
-          proposalId,
-          proposal: proposalId === proposalInfo.id ? proposalInfo : proposal,
-        })),
-    });
-
-  // UI loader
-  const neuronsStoreReady = (): boolean => {
-    // We consider the neurons store as ready if it has been initialized once. Subsequent changes that happen after vote or other functions are handled with the busy store.
-    // This to avoid the display of a spinner within the page and another spinner over it (the busy spinner) when the user vote is being processed.
-    if (neuronsReady) {
-      return true;
-    }
-
-    return (
-      $neuronsStore.neurons !== undefined &&
-      ($neuronsStore.certified === true ||
-        ($neuronsStore.certified === false && isForceCallStrategy()))
-    );
-  };
-
-  let neuronsReady = false;
-  $: $neuronsStore, (neuronsReady = neuronsStoreReady());
-
-  let neuronsVotedForProposal: CompactNeuronInfo[];
-  $: {
-    neuronsVotedForProposal = votedNeuronDetails({
-      neurons: $definedNeuronsStore,
-      proposal: proposalInfo,
-    });
-  }
-
-  let ineligibleNeurons: IneligibleNeuronData[];
-  $: ineligibleNeurons = filterIneligibleNnsNeurons({
-    neurons: $definedNeuronsStore,
-    proposal: proposalInfo,
-  });
+  export let hasNeurons: boolean;
+  export let visible: boolean;
+  export let neuronsReady: boolean;
+  export let voteRegistration: VoteRegistrationStoreEntry | undefined;
+  export let neuronsVotedForProposal: CompactNeuronInfo[];
+  export let ineligibleNeurons: IneligibleNeuronData[];
+  export let minSnsDissolveDelaySeconds: bigint;
 </script>
 
 <BottomSheet>
@@ -132,27 +30,21 @@
     data-tid="voting-card-component"
   >
     <SignInGuard>
-      {#if $definedNeuronsStore.length > 0}
+      {#if hasNeurons}
         {#if neuronsReady}
           {#if visible}
-            <VotingConfirmationToolbar
-              {voteRegistration}
-              on:nnsConfirm={vote}
-            />
+            <VotingConfirmationToolbar {voteRegistration} on:nnsConfirm />
           {/if}
-
-          <VotingNeuronSelect>
-            <VotingNeuronSelectList disabled={voteRegistration !== undefined} />
-            <MyVotes {neuronsVotedForProposal} />
-            <IneligibleNeuronsCard
+          <div class="neuron-groups" data-tid="voting-neuron-select">
+            <VotableNeuronList {voteRegistration} />
+            <VotedNeuronList {neuronsVotedForProposal} />
+            <IneligibleNeuronList
               {ineligibleNeurons}
-              minSnsDissolveDelaySeconds={BigInt(
-                NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE
-              )}
+              {minSnsDissolveDelaySeconds}
             />
-          </VotingNeuronSelect>
+          </div>
         {:else}
-          <div class="loader">
+          <div class="loader" data-tid="loading-neurons-spinner">
             <SpinnerText>{$i18n.proposal_detail.loading_neurons}</SpinnerText>
           </div>
         {/if}
@@ -165,15 +57,52 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
 
-  .container:not(.signedIn) {
+  .container {
     display: flex;
-    justify-content: center;
-    padding: var(--padding-2x) 0;
+
+    // add scrollbars for too long content
+    overflow-y: auto;
+    max-height: 100vh;
+
+    /** Fix for iOS Safari 100vh issue
+     @src: https://github.com/postcss/postcss-100vh-fix
+     */
+    // Avoid Chrome to see Safari hack
+    @supports (-webkit-touch-callout: none) {
+      // The hack for Safari
+      max-height: -webkit-fill-available;
+    }
 
     @include media.min-width(large) {
-      display: block;
-      padding: 0;
+      max-height: none;
     }
+
+    // mobile extra padding
+    padding: var(--padding) var(--padding-2x);
+    @include media.min-width(large) {
+      padding: 0 var(--padding) 0 0;
+    }
+
+    &.signedIn {
+      flex-direction: column;
+      gap: var(--padding-3x);
+    }
+
+    &:not(.signedIn) {
+      justify-content: center;
+      padding: var(--padding-2x) 0;
+
+      @include media.min-width(large) {
+        display: block;
+        padding: 0;
+      }
+    }
+  }
+
+  .neuron-groups {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-3x);
   }
 
   .loader {

@@ -73,7 +73,7 @@ describe("SnsTransactionList", () => {
         [mockSnsMainAccount.identifier]: {
           transactions: [mockIcrcTransactionWithId],
           completed: false,
-          oldestTxId: BigInt(0),
+          oldestTxId: 0n,
         },
       },
     };
