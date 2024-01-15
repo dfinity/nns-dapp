@@ -15,7 +15,6 @@ import {
 } from "$lib/utils/sns.utils";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { createFinalizationStatusMock } from "$tests/mocks/sns-finalization-status.mock";
-import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import {
   genericNervousSystemFunctionMock,
   nativeNervousSystemFunctionMock,
@@ -32,7 +31,6 @@ import { AccountIdentifier } from "@dfinity/ledger-icp";
 import type {
   SnsGetAutoFinalizationStatusResponse,
   SnsGetDerivedStateResponse,
-  SnsNervousSystemFunction,
 } from "@dfinity/sns";
 import { get } from "svelte/store";
 
@@ -349,7 +347,6 @@ sale_participants_count ${saleBuyerCount} 1677707139456
         isNativeNervousSystemFunction(nativeNervousSystemFunctionMock)
       ).toBe(true);
     });
-
     it("should return false for not NativeNervousSystemFunction", () => {
       expect(
         isNativeNervousSystemFunction(genericNervousSystemFunctionMock)
@@ -363,7 +360,6 @@ sale_participants_count ${saleBuyerCount} 1677707139456
         isGenericNervousSystemFunction(genericNervousSystemFunctionMock)
       ).toBe(true);
     });
-
     it("should return false for not GenericNervousSystemFunction", () => {
       expect(
         isGenericNervousSystemFunction(nativeNervousSystemFunctionMock)

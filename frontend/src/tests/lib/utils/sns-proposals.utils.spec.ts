@@ -19,7 +19,6 @@ import {
   snsProposalIdString,
   snsRewardStatus,
   sortSnsProposalsById,
-  toExcludeTypeParameter,
 } from "$lib/utils/sns-proposals.utils";
 import {
   allTopicsNervousSystemFunctionMock,

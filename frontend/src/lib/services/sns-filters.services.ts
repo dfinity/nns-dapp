@@ -18,7 +18,6 @@ const defaultFiltersProjectData = {
   decisionStatus: [],
 };
 
-  // Load decision status, these are harcoded based on enum values
 // Load decision status, these are hardcoded based on enum values
 const loadDecisionStatusFilters = (rootCanisterId: Principal) => {
   const i18nKeys = get(i18n);
