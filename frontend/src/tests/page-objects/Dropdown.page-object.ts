@@ -17,7 +17,7 @@ export class DropdownPo extends BasePageObject {
     return Promise.all(options.map((option) => option.getText()));
   }
 
-  async waitForOption(name: string): Promise<void> {
-    return this.root.byTestId(name).waitFor({ state: "attached" });
+  async waitForOption(testId: string): Promise<void> {
+    return this.root.byTestId(testId).waitFor({ state: "attached" });
   }
 }

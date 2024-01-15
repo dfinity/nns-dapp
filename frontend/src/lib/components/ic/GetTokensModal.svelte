@@ -6,7 +6,6 @@
   import Input from "$lib/components/ui/Input.svelte";
   import {
     getICPs,
-    getTestBalance,
     getSnsTokens,
     getBTC,
     getIcrcTokens,
@@ -16,7 +15,10 @@
   import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { Principal } from "@dfinity/principal";
   import { nonNullish, type Token } from "@dfinity/utils";
-  import { getIcrcTokenTestAccountBalance } from "$lib/api/dev.api";
+  import {
+    getIcrcTokenTestAccountBalance,
+    getTestIcpAccountBalance,
+  } from "$lib/api/dev.api";
   import { isUniverseCkBTC, isUniverseNns } from "$lib/utils/universe.utils";
   import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
   import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
@@ -37,7 +39,7 @@
       )?.summary.ledgerCanisterId ?? universeIdPrincipal;
     try {
       if (isUniverseNns(universeIdPrincipal)) {
-        return await getTestBalance();
+        return await getTestIcpAccountBalance();
       } else if (isUniverseCkBTC(universeId)) {
         // Show always to get ckBTC
         return 1n;
@@ -165,7 +167,7 @@
 </script>
 
 <Modal visible role="alert" on:nnsClose={close}>
-  <span slot="title">{`Get ${selectedToken?.symbol}`}</span>
+  <span slot="title">{`Get ${selectedToken?.symbol ?? "Tokens"}`}</span>
 
   <form
     id="get-icp-form"

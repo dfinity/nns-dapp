@@ -29,8 +29,8 @@ export class GetTokensPo extends BasePageObject {
     return DropdownPo.under(this.root);
   }
 
-  waitForOption(value: string): Promise<void> {
-    return this.getDropdown().waitForOption(value);
+  waitForOption(testId: string): Promise<void> {
+    return this.getDropdown().waitForOption(testId);
   }
 
   async getIcpTokens(amount: number): Promise<void> {
