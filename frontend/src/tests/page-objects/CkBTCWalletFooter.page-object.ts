@@ -1,3 +1,4 @@
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -8,11 +9,19 @@ export class CkBTCWalletFooterPo extends BasePageObject {
     return new CkBTCWalletFooterPo(element.byTestId(CkBTCWalletFooterPo.TID));
   }
 
+  getSendButtonPo(): ButtonPo {
+    return this.getButton("open-ckbtc-transaction");
+  }
+
+  getReceiveButtonPo(): ButtonPo {
+    return this.getButton("receive-ckbtc");
+  }
+
   clickSendButton(): Promise<void> {
-    return this.click("open-ckbtc-transaction");
+    return this.getSendButtonPo().click();
   }
 
   clickReceiveButton(): Promise<void> {
-    return this.click("receive-ckbtc");
+    return this.getReceiveButtonPo().click();
   }
 }

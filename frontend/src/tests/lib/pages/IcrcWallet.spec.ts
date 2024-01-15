@@ -176,6 +176,16 @@ describe("IcrcWallet", () => {
       const po = await renderWallet({});
       expect(await po.hasNoTransactions()).toBe(true);
     });
+
+    it("should not render send/receive buttons", async () => {
+      const po = await renderWallet({});
+      expect(await po.getWalletFooterPo().getSendButtonPo().isPresent()).toBe(
+        false
+      );
+      expect(
+        await po.getWalletFooterPo().getReceiveButtonPo().isPresent()
+      ).toBe(false);
+    });
   });
 
   describe("accounts not loaded", () => {
