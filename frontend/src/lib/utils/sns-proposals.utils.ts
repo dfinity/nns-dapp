@@ -2,13 +2,21 @@ import {
   MINIMUM_YES_PROPORTION_OF_EXERCISED_VOTING_POWER,
   MINIMUM_YES_PROPORTION_OF_TOTAL_VOTING_POWER,
 } from "$lib/constants/proposals.constants";
+import { ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID } from "$lib/constants/sns-proposals.constants";
 import { i18n } from "$lib/stores/i18n";
+import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
+import { ALL_SNS_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
 import type {
   BasisPoints,
   UniversalProposalStatus,
   VotingNeuron,
 } from "$lib/types/proposals";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
+import {
+  isGenericNervousSystemFunction,
+  isNativeNervousSystemFunction,
+} from "$lib/utils/sns.utils";
 import { basisPointsToPercent } from "$lib/utils/utils";
 import { Vote } from "@dfinity/nns";
 import type {
@@ -470,6 +478,57 @@ export const getUniversalProposalStatus = (
   }
 
   return statusType;
+};
+
+// Generate new "types" filter data, but preserve the checked state of the current filter state
+// `nsFunctions` can be changed on the backend, and to display recently created proposal types, new entries should be preselected.
+export const generateSnsProposalTypesFilterData = ({
+  nsFunctions,
+  typesFilterState,
+  snsName,
+}: {
+  nsFunctions: SnsNervousSystemFunction[];
+  typesFilterState: Filter<SnsProposalTypeFilterId>[];
+  snsName: string;
+}): Filter<SnsProposalTypeFilterId>[] => {
+  // New proposal types are checked by default so only keep unchecked those types that were already unchecked.
+  const getCheckedState = (id: string) =>
+    typesFilterState.find(({ id: stateId }) => id === stateId)?.checked !==
+    false;
+  const nativeNsFunctionEntries: Filter<SnsProposalTypeFilterId>[] = nsFunctions
+    .filter(isNativeNervousSystemFunction)
+    // ignore { 0n: "All Topics"}
+    .filter(({ id }) => id !== ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID)
+    .map((entry) => ({
+      ...entry,
+      id: `${entry.id}`,
+    }))
+    .map(({ id, name }) => ({
+      id,
+      value: id,
+      name: name,
+      // New proposal types are checked by default so only keep unchecked those types that were already unchecked.
+      checked: getCheckedState(id),
+    }));
+  const allGenericProposalsLabel = replacePlaceholders(
+    get(i18n).sns_types.sns_specific,
+    {
+      $snsName: snsName,
+    }
+  );
+  const genericNsFunctionEntries: Filter<SnsProposalTypeFilterId>[] =
+    nsFunctions.some(isGenericNervousSystemFunction)
+      ? // Replace all generic entries w/ a single "All Generic"
+        [
+          {
+            id: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
+            value: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
+            name: allGenericProposalsLabel,
+            checked: getCheckedState(ALL_SNS_GENERIC_PROPOSAL_TYPES_ID),
+          },
+        ]
+      : [];
+  return [...nativeNsFunctionEntries, ...genericNsFunctionEntries];
 };
 
 export const fromPercentageBasisPoints = (

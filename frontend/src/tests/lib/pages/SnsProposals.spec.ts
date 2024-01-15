@@ -14,6 +14,7 @@ import en from "$tests/mocks/i18n.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
 import {
   SnsProposalDecisionStatus,
@@ -22,6 +23,7 @@ import {
   type SnsProposalData,
 } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 vi.mock("$lib/api/sns-governance.api");
 
@@ -101,6 +103,25 @@ describe("SnsProposals", () => {
         );
 
         expect(queryAllByTestId("checkbox").length).toBeGreaterThan(0);
+      });
+
+      it("should init types filter", async () => {
+        const getFiltersStoreData = () =>
+          get(snsFiltersStore)[rootCanisterId.toText()];
+
+        expect(getFiltersStoreData()?.types).toEqual(undefined);
+        render(SnsProposals);
+
+        await runResolvedPromises();
+
+        expect(getFiltersStoreData()?.types).toEqual([
+          {
+            checked: true,
+            id: `${functionId}`,
+            name: functionName,
+            value: `${functionId}`,
+          },
+        ]);
       });
 
       it("should render a spinner while searching proposals", async () => {
