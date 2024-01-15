@@ -15,27 +15,28 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { Principal } from "@dfinity/principal";
-  import { nonNullish } from "@dfinity/utils";
+  import { nonNullish, type Token } from "@dfinity/utils";
   import { getIcrcTokenTestAccountBalance } from "$lib/api/dev.api";
-  import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
-  import { isUserTokenData } from "$lib/utils/user-token.utils";
   import { isUniverseCkBTC, isUniverseNns } from "$lib/utils/universe.utils";
-  import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
   import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
   import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
   import { createEventDispatcher } from "svelte";
+  import type { Universe } from "$lib/types/universe";
+  import { universesStore } from "$lib/derived/universes.derived";
+  import { tokensStore } from "$lib/stores/tokens.store";
 
   let transferring = false;
 
   let inputValue: number | undefined = undefined;
 
-  const getBalance = async (universeId: Principal): Promise<bigint> => {
+  const getBalance = async (universeId: string): Promise<bigint> => {
+    const universeIdPrincipal = Principal.fromText(universeId);
     const ledgerCanisterId =
       $snsProjectsCommittedStore.find(
-        ({ rootCanisterId }) => rootCanisterId.toText() === universeId.toText()
-      )?.summary.ledgerCanisterId ?? universeId;
+        ({ rootCanisterId }) => rootCanisterId.toText() === universeId
+      )?.summary.ledgerCanisterId ?? universeIdPrincipal;
     try {
-      if (isUniverseNns(universeId)) {
+      if (isUniverseNns(universeIdPrincipal)) {
         return await getTestBalance();
       } else if (isUniverseCkBTC(universeId)) {
         // Show always to get ckBTC
@@ -50,36 +51,34 @@
   };
 
   const getTokensWithBalance = async (
-    tokens: UserToken[]
-  ): Promise<UserTokenData[]> => {
+    universes: Universe[]
+  ): Promise<Universe[]> => {
     const balances: Array<{ balance: bigint; universeIdText: string }> =
       await Promise.all(
-        tokens.map(async (token) => ({
-          balance: await getBalance(token.universeId),
-          universeIdText: token.universeId.toText(),
+        universes.map(async ({ canisterId }) => ({
+          balance: await getBalance(canisterId),
+          universeIdText: canisterId,
         }))
       );
-    return tokens.filter(isUserTokenData).filter(({ universeId }) => {
+    return universes.filter(({ canisterId }) => {
       return (
         balances.find(({ universeIdText }) => {
-          return universeIdText === universeId.toText();
+          return universeIdText === canisterId;
         })?.balance ?? 0n > 0n
       );
     });
   };
-  let tokensWithBalance: UserTokenData[] = [];
+  let universesWithBalance: Universe[] = [];
   $: {
-    getTokensWithBalance($tokensListUserStore)
-      .then((tokens) => {
-        tokensWithBalance = tokens;
+    getTokensWithBalance($universesStore)
+      .then((universes) => {
+        universesWithBalance = universes;
         // Set the selected universe if not set yet.
         selectedUniverseId =
           selectedUniverseId ??
-          tokens
-            .find(({ universeId }) => {
-              return universeId.toText() === $selectedUniverseIdStore.toText();
-            })
-            ?.universeId.toText();
+          universes.find(({ canisterId }) => {
+            return canisterId === $selectedUniverseIdStore.toText();
+          })?.canisterId;
       })
       .catch((err) => {
         console.error("error in getTokensWithBalance", err);
@@ -87,10 +86,14 @@
   }
 
   let selectedUniverseId: string | undefined = undefined;
-  let selectedTokenData: UserTokenData | undefined;
-  $: selectedTokenData = tokensWithBalance.find(
-    ({ universeId }) => universeId.toText() === selectedUniverseId
+  let selectedUniverse: Universe | undefined;
+  $: selectedUniverse = universesWithBalance.find(
+    ({ canisterId }) => canisterId === selectedUniverseId
   );
+  let selectedToken: Token | undefined;
+  $: selectedToken = nonNullish(selectedUniverseId)
+    ? $tokensStore[selectedUniverseId]?.token
+    : undefined;
 
   const dispatch = createEventDispatcher();
   const onSubmit = async () => {
@@ -104,7 +107,7 @@
     transferring = true;
 
     try {
-      if (nonNullish(selectedUniverseId) && nonNullish(selectedTokenData)) {
+      if (nonNullish(selectedUniverseId) && nonNullish(selectedUniverse)) {
         if (
           $snsProjectsCommittedStore.find(
             ({ rootCanisterId }) =>
@@ -120,11 +123,15 @@
             amount: inputValue,
           });
         } else if ($icrcCanistersStore[selectedUniverseId]) {
-          await getIcrcTokens({
-            tokens: inputValue,
-            token: selectedTokenData.token,
-            ledgerCanisterId: Principal.fromText(selectedUniverseId),
-          });
+          if (nonNullish(selectedToken)) {
+            await getIcrcTokens({
+              tokens: inputValue,
+              token: selectedToken,
+              ledgerCanisterId: Principal.fromText(selectedUniverseId),
+            });
+          } else {
+            console.error(`token for ${selectedUniverseId} is undefined`);
+          }
         } else {
           // Default to transfer ICPs if the test account's balance of the selected universe is 0.
           await getICPs(inputValue);
@@ -133,7 +140,7 @@
         console.error(
           "selectedUniverseId or selectedTokenData is undefined",
           selectedUniverseId,
-          selectedTokenData
+          selectedUniverse
         );
       }
 
@@ -158,7 +165,7 @@
 </script>
 
 <Modal visible role="alert" on:nnsClose={close}>
-  <span slot="title">{`Get ${selectedTokenData?.token.symbol}`}</span>
+  <span slot="title">{`Get ${selectedToken?.symbol}`}</span>
 
   <form
     id="get-icp-form"
@@ -167,8 +174,8 @@
   >
     <span>Select token</span>
     <Dropdown name="select-token" bind:selectedValue={selectedUniverseId}>
-      {#each tokensWithBalance as { title, universeId } (universeId.toText())}
-        <DropdownItem value={universeId.toText()}
+      {#each universesWithBalance as { title, canisterId } (canisterId)}
+        <DropdownItem value={canisterId}
           ><span data-tid={title}>{title}</span></DropdownItem
         >
       {/each}
