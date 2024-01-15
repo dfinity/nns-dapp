@@ -14,6 +14,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Add "API Boundary Node Management" topic support.
+
 #### Changed
 
 * New light and dark theme colors.
