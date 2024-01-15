@@ -410,6 +410,8 @@ interface I18nFollow_neurons {
   topic_13_subtitle: string;
   topic_14_title: string;
   topic_14_subtitle: string;
+  topic_15_title: string;
+  topic_15_subtitle: string;
   current_followees: string;
   add: string;
 }
@@ -1165,6 +1167,7 @@ interface I18nTopics {
   ReplicaVersionManagement: string;
   SubnetReplicaVersionManagement: string;
   SnsAndCommunityFund: string;
+  ApiBoundaryNodeManagement: string;
 }
 
 interface I18nTopics_description {
@@ -1183,6 +1186,7 @@ interface I18nTopics_description {
   ReplicaVersionManagement: string;
   SubnetReplicaVersionManagement: string;
   SnsAndCommunityFund: string;
+  ApiBoundaryNodeManagement: string;
 }
 
 interface I18nRewards {
