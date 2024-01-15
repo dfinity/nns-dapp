@@ -175,6 +175,7 @@
     <span>Select token</span>
     <Dropdown name="select-token" bind:selectedValue={selectedUniverseId}>
       {#each universesWithBalance as { title, canisterId } (canisterId)}
+        <!-- data-tid in span used to wait for in e2e test -->
         <DropdownItem value={canisterId}
           ><span data-tid={title}>{title}</span></DropdownItem
         >

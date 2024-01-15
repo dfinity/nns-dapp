@@ -14,8 +14,6 @@ export class GetTokensPo extends BasePageObject {
   }
 
   enterAmount(amount: number): Promise<void> {
-    console.log("amount", amount);
-    console.log(this.getTextInput().isPresent());
     return this.getTextInput().typeText(amount.toString());
   }
 

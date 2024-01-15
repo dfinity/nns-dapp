@@ -88,8 +88,10 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     return (await this.locator.count()) > 0;
   }
 
-  waitFor(): Promise<void> {
-    return this.locator.waitFor({ state: "attached" });
+  waitFor(options: {
+    state: "attached" | "detached" | "visible" | "hidden";
+  }): Promise<void> {
+    return this.locator.waitFor(options);
   }
 
   waitForAbsent(): Promise<void> {

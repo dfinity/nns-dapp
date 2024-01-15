@@ -59,6 +59,7 @@ export const getICPs = async (icps: number) => {
   await syncAccounts();
 };
 
+// TODO: Use `getIcrcTokens` instead.
 export const getSnsTokens = async ({
   tokens,
   rootCanisterId,
