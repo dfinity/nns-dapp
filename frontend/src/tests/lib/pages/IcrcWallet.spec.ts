@@ -16,7 +16,7 @@ import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
 import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
 import WalletTest from "$tests/lib/pages/WalletTest.svelte";
-import { resetIdentity } from "$tests/mocks/auth.store.mock";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCkETHMainAccount,
   mockCkETHTESTToken,
@@ -84,7 +84,7 @@ describe("IcrcWallet", () => {
   };
 
   const renderWallet = async (props: {
-    accountIdentifier: string;
+    accountIdentifier?: string;
   }): Promise<IcrcWalletPo> => {
     const { container } = render(WalletTest, {
       ...props,
@@ -109,6 +109,7 @@ describe("IcrcWallet", () => {
   };
 
   beforeEach(() => {
+    balancesObserverCallback = undefined;
     vi.clearAllMocks();
     vi.clearAllTimers();
     tokensStore.reset();
@@ -124,6 +125,56 @@ describe("IcrcWallet", () => {
     icrcCanistersStore.setCanisters({
       ledgerCanisterId: CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
       indexCanisterId: CKETHSEPOLIA_INDEX_CANISTER_ID,
+    });
+  });
+
+  describe("user not signed in", () => {
+    beforeEach(() => {
+      setNoIdentity();
+      tokensStore.setTokens(mockUniversesTokens);
+      page.mock({
+        data: { universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText() },
+        routeId: AppPath.Wallet,
+      });
+    });
+
+    it("should not activate the balances observer", async () => {
+      await renderWallet({});
+      expect(balancesObserverCallback).toBeUndefined();
+    });
+
+    it("should render universe name", async () => {
+      const po = await renderWallet({});
+      expect(await po.getWalletPageHeaderPo().getUniverse()).toBe("ckETHTEST");
+    });
+
+    it("should not render a wallet address", async () => {
+      const po = await renderWallet({});
+      expect(await po.getWalletPageHeaderPo().getHashPo().isPresent()).toBe(
+        false
+      );
+    });
+
+    it("should render balance placeholder", async () => {
+      const po = await renderWallet({});
+      expect(await po.getWalletPageHeadingPo().hasBalancePlaceholder()).toBe(
+        true
+      );
+    });
+
+    it("should render 'Main' account name", async () => {
+      const po = await renderWallet({});
+      expect(await po.getWalletPageHeadingPo().getSubtitle()).toBe("Main");
+    });
+
+    it("should render sign in button", async () => {
+      const po = await renderWallet({});
+      expect(await po.hasSignInButton()).toBe(true);
+    });
+
+    it("should render transactions placeholder", async () => {
+      const po = await renderWallet({});
+      expect(await po.hasNoTransactions()).toBe(true);
     });
   });
 
@@ -318,6 +369,8 @@ describe("IcrcWallet", () => {
 
     it("should display the balance from the observer", async () => {
       const po = await renderWallet(props);
+      expect(balancesObserverCallback).toBeDefined();
+
       await runResolvedPromises();
 
       expect(await po.getWalletPageHeadingPo().getTitle()).toBe(
