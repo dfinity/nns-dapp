@@ -31,9 +31,7 @@ export class TokensTablePo extends BasePageObject {
     return Promise.all(rows.map((row) => row.getData()));
   }
 
-  async findRowByName(
-    projectName: string
-  ): Promise<TokensTableRowPo | undefined> {
+  findRowByName(projectName: string): TokensTableRowPo | undefined {
     return TokensTableRowPo.byTitle({ element: this.root, title: projectName });
   }
 

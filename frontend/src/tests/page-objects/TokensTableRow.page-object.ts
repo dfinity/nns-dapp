@@ -17,13 +17,13 @@ export class TokensTableRowPo extends BasePageObject {
     );
   }
 
-  static async byTitle({
+  static byTitle({
     element,
     title,
   }: {
     element: PageObjectElement;
     title: string;
-  }): Promise<TokensTableRowPo> {
+  }): TokensTableRowPo {
     return new TokensTableRowPo(
       element.querySelector(`[data-title="${title}"]`)
     );

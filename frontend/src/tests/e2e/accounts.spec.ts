@@ -23,7 +23,7 @@ test("Test accounts requirements", async ({ page, context }) => {
   const accountsPo = appPo.getAccountsPo();
   const nnsAccountsPo = accountsPo.getNnsAccountsPo();
   const tokensTablePo = nnsAccountsPo.getTokensTablePo();
-  const mainAccountRow = await tokensTablePo.findRowByName(mainAccountName);
+  const mainAccountRow = tokensTablePo.findRowByName(mainAccountName);
   expect(await mainAccountRow.isPresent()).toBe(true);
 
   step("AU002: The user MUST be able to create an additional account");
@@ -47,7 +47,7 @@ test("Test accounts requirements", async ({ page, context }) => {
   // We wait until the table is loaded.
   await tokensTablePo.waitFor();
   // We wait until the subaccount row is loaded.
-  const subaccountRow = await tokensTablePo.findRowByName(subAccountName);
+  const subaccountRow = tokensTablePo.findRowByName(subAccountName);
   await subaccountRow.waitFor();
 
   expect(await accountNames()).toEqual([mainAccountName, subAccountName]);
@@ -57,7 +57,7 @@ test("Test accounts requirements", async ({ page, context }) => {
   // Get some ICP to be able to transfer
   await appPo.getIcpTokens(20);
   // Go back to /accounts page
-  const icRow = await appPo
+  const icRow = appPo
     .getTokensPo()
     .getTokensPagePo()
     .getTokensTable()
