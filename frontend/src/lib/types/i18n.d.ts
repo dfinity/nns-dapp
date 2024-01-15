@@ -1165,6 +1165,7 @@ interface I18nTopics {
   ReplicaVersionManagement: string;
   SubnetReplicaVersionManagement: string;
   SnsAndCommunityFund: string;
+  ApiBoundaryNodeManagement: string;
 }
 
 interface I18nTopics_description {
@@ -1183,6 +1184,7 @@ interface I18nTopics_description {
   ReplicaVersionManagement: string;
   SubnetReplicaVersionManagement: string;
   SnsAndCommunityFund: string;
+  ApiBoundaryNodeManagement: string;
 }
 
 interface I18nRewards {
