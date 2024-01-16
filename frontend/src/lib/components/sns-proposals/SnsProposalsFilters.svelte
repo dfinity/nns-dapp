@@ -25,19 +25,6 @@
   let filtersStore: ProjectFiltersStoreData | undefined;
   $: filtersStore = $snsFiltersStore[rootCanisterId.toText()];
 
-  $: if (nonNullish(nsFunctions)) {
-    // Always update type filters in case of backend changes
-    snsFiltersStore.setTypes({
-      rootCanisterId,
-      types: generateSnsProposalTypeFilterData({
-        nsFunctions,
-        typesFilterState: filtersStore?.types ?? [],
-        snsName: $snsProjectSelectedStore?.summary.metadata.name ?? "",
-      }),
-    });
-    filtersStore = $snsFiltersStore[rootCanisterId.toText()];
-  }
-
   const openFilters = (filtersModal: "types" | "rewards" | "status") => {
     modal = filtersModal;
   };

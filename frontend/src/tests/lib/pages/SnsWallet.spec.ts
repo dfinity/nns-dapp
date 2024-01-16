@@ -12,7 +12,11 @@ import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
 import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
-import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import {
+  mockIdentity,
+  resetIdentity,
+  setNoIdentity,
+} from "$tests/mocks/auth.store.mock";
 import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
@@ -78,7 +82,7 @@ describe("SnsWallet", () => {
   const fee = 10_000n;
   const projectName = "Tetris";
 
-  const renderComponent = async (props: { accountIdentifier: string }) => {
+  const renderComponent = async (props: { accountIdentifier?: string }) => {
     const { container } = render(SnsWallet, props);
     await runResolvedPromises();
     return SnsWalletPo.under(new JestPageObjectElement(container));
@@ -110,6 +114,57 @@ describe("SnsWallet", () => {
     page.mock({
       data: { universe: rootCanisterIdText },
       routeId: AppPath.Wallet,
+    });
+  });
+
+  describe("user not signed in", () => {
+    beforeEach(() => {
+      setNoIdentity();
+    });
+
+    it("should not activate the balances observer", async () => {
+      await renderComponent({});
+      expect(balancesObserverCallback).toBeUndefined();
+    });
+
+    it("should render universe name", async () => {
+      const po = await renderComponent({});
+      expect(await po.getWalletPageHeaderPo().getUniverse()).toBe("Tetris");
+    });
+
+    it("should not render a wallet address", async () => {
+      const po = await renderComponent({});
+      expect(await po.getWalletPageHeaderPo().getHashPo().isPresent()).toBe(
+        false
+      );
+    });
+
+    it("should render balance placeholder", async () => {
+      const po = await renderComponent({});
+      expect(await po.getWalletPageHeadingPo().hasBalancePlaceholder()).toBe(
+        true
+      );
+    });
+
+    it("should render 'Main' account name", async () => {
+      const po = await renderComponent({});
+      expect(await po.getWalletPageHeadingPo().getSubtitle()).toBe("Main");
+    });
+
+    it("should render sign in button", async () => {
+      const po = await renderComponent({});
+      expect(await po.hasSignInButton()).toBe(true);
+    });
+
+    it("should render transactions placeholder", async () => {
+      const po = await renderComponent({});
+      expect(await po.hasNoTransactions()).toBe(true);
+    });
+
+    it("should not render send/receive buttons", async () => {
+      const po = await renderComponent({});
+      expect(await po.getSendButtonPo().isPresent()).toBe(false);
+      expect(await po.getReceiveButtonPo().isPresent()).toBe(false);
     });
   });
 
