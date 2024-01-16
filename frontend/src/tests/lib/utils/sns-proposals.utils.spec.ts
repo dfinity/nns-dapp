@@ -5,7 +5,7 @@ import { enumValues } from "$lib/utils/enum.utils";
 import {
   ballotVotingPower,
   fromPercentageBasisPoints,
-  generateSnsProposalTypeFilterData,
+  generateSnsProposalTypesFilterData,
   getUniversalProposalStatus,
   isAccepted,
   lastProposalId,
@@ -662,7 +662,7 @@ describe("sns-proposals utils", () => {
       checked: true,
     };
 
-    describe("generateSnsProposalTypeFilterData", () => {
+    describe("generateSnsProposalTypesFilterData", () => {
       const nativeNervousSystemFunction1 = {
         ...nativeNervousSystemFunctionMock,
         id: 1n,
@@ -691,7 +691,7 @@ describe("sns-proposals utils", () => {
         ];
 
         expect(
-          generateSnsProposalTypeFilterData({
+          generateSnsProposalTypesFilterData({
             nsFunctions,
             typesFilterState: [],
             snsName: "test_sns",
@@ -710,7 +710,7 @@ describe("sns-proposals utils", () => {
         ];
 
         expect(
-          generateSnsProposalTypeFilterData({
+          generateSnsProposalTypesFilterData({
             nsFunctions,
             typesFilterState: [],
             snsName: "test_sns",
@@ -729,7 +729,7 @@ describe("sns-proposals utils", () => {
         ];
 
         expect(
-          generateSnsProposalTypeFilterData({
+          generateSnsProposalTypesFilterData({
             nsFunctions,
             typesFilterState: [],
             snsName: "test_sns",
@@ -745,7 +745,7 @@ describe("sns-proposals utils", () => {
         ];
 
         expect(
-          generateSnsProposalTypeFilterData({
+          generateSnsProposalTypesFilterData({
             nsFunctions,
             typesFilterState: [],
             snsName: "test_sns",
@@ -781,7 +781,7 @@ describe("sns-proposals utils", () => {
         ];
 
         expect(
-          generateSnsProposalTypeFilterData({
+          generateSnsProposalTypesFilterData({
             nsFunctions,
             typesFilterState,
             snsName: "test_sns",
@@ -821,7 +821,7 @@ describe("sns-proposals utils", () => {
         ];
 
         expect(
-          generateSnsProposalTypeFilterData({
+          generateSnsProposalTypesFilterData({
             nsFunctions,
             typesFilterState,
             snsName: "test_sns",

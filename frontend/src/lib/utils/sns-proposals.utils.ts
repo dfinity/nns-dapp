@@ -522,7 +522,7 @@ export const toExcludeTypeParameter = ({
 
 // Generate new "types" filter data, but preserve the checked state of the current filter state
 // `nsFunctions` can be changed on the backend, and to display recently created proposal types, new entries should be preselected.
-export const generateSnsProposalTypeFilterData = ({
+export const generateSnsProposalTypesFilterData = ({
   nsFunctions,
   typesFilterState,
   snsName,
