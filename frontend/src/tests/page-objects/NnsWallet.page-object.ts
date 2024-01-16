@@ -1,5 +1,6 @@
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { IcpTransactionModalPo } from "$tests/page-objects/IcpTransactionModal.page-object";
+import { SignInPo } from "$tests/page-objects/SignIn.page-object";
 import { TransactionListPo } from "$tests/page-objects/TransactionList.page-object";
 import { WalletPageHeaderPo } from "$tests/page-objects/WalletPageHeader.page-object";
 import { WalletPageHeadingPo } from "$tests/page-objects/WalletPageHeading.page-object";
@@ -29,8 +30,16 @@ export class NnsWalletPo extends BasePageObject {
     return TransactionListPo.under(this.root);
   }
 
+  getSignInPo(): SignInPo {
+    return SignInPo.under(this.root);
+  }
+
   getSendButtonPo(): ButtonPo {
     return this.getButton("new-transaction");
+  }
+
+  getReceiveButtonPo(): ButtonPo {
+    return this.getButton("receive-icp");
   }
 
   getRenameButtonPo(): ButtonPo {
@@ -45,8 +54,16 @@ export class NnsWalletPo extends BasePageObject {
     return this.getButton("ledger-show-button");
   }
 
+  hasSignInButton(): Promise<boolean> {
+    return this.getSignInPo().isPresent();
+  }
+
   hasSpinner(): Promise<boolean> {
     return this.isPresent("spinner");
+  }
+
+  hasNoTransactions(): Promise<boolean> {
+    return this.isPresent("no-transactions-component");
   }
 
   clickSend(): Promise<void> {
@@ -54,7 +71,7 @@ export class NnsWalletPo extends BasePageObject {
   }
 
   clickReceive(): Promise<void> {
-    return this.getButton("receive-icp").click();
+    return this.getReceiveButtonPo().click();
   }
 
   clickRename(): Promise<void> {
