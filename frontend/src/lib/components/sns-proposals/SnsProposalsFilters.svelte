@@ -15,6 +15,7 @@
   import { nonNullish } from "@dfinity/utils";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { generateSnsProposalTypeFilterData } from "$lib/utils/sns-proposals.utils";
+  import { ENABLE_SNS_TYPES_FILTER } from "$lib/stores/feature-flags.store";
 
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;
 
@@ -47,15 +48,17 @@
 </script>
 
 <FiltersWrapper>
-  <FiltersButton
-    testId="filters-by-types"
-    totalFilters={filtersStore?.types.length ?? 0}
-    activeFilters={filtersStore?.types.filter(({ checked }) => checked)
-      .length ?? 0}
-    on:nnsFilter={() => openFilters("types")}
-  >
-    {$i18n.voting.types}
-  </FiltersButton>
+  {#if $ENABLE_SNS_TYPES_FILTER}
+    <FiltersButton
+      testId="filters-by-types"
+      totalFilters={filtersStore?.types.length ?? 0}
+      activeFilters={filtersStore?.types.filter(({ checked }) => checked)
+        .length ?? 0}
+      on:nnsFilter={() => openFilters("types")}
+    >
+      {$i18n.voting.types}
+    </FiltersButton>
+  {/if}
   <FiltersButton
     testId="filters-by-rewards"
     totalFilters={filtersStore?.rewardStatus.length ?? 0}
