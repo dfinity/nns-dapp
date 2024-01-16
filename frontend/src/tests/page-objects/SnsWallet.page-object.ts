@@ -1,4 +1,6 @@
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { IcrcTransactionsListPo } from "$tests/page-objects/IcrcTransactionsList.page-object";
+import { SignInPo } from "$tests/page-objects/SignIn.page-object";
 import { SnsTransactionModalPo } from "$tests/page-objects/SnsTransactionModal.page-object";
 import { WalletPageHeaderPo } from "$tests/page-objects/WalletPageHeader.page-object";
 import { WalletPageHeadingPo } from "$tests/page-objects/WalletPageHeading.page-object";
@@ -28,15 +30,35 @@ export class SnsWalletPo extends BasePageObject {
     return SnsTransactionModalPo.under(this.root);
   }
 
+  getSignInPo(): SignInPo {
+    return SignInPo.under(this.root);
+  }
+
+  getSendButtonPo(): ButtonPo {
+    return this.getButton("open-new-sns-transaction");
+  }
+
+  getReceiveButtonPo(): ButtonPo {
+    return this.getButton("receive-sns");
+  }
+
+  hasSignInButton(): Promise<boolean> {
+    return this.getSignInPo().isPresent();
+  }
+
   hasSpinner(): Promise<boolean> {
     return this.isPresent("spinner");
   }
 
+  hasNoTransactions(): Promise<boolean> {
+    return this.isPresent("no-transactions-component");
+  }
+
   clickSendButton(): Promise<void> {
-    return this.click("open-new-sns-transaction");
+    return this.getSendButtonPo().click();
   }
 
   clickReceiveButton(): Promise<void> {
-    return this.click("receive-sns");
+    return this.getReceiveButtonPo().click();
   }
 }
