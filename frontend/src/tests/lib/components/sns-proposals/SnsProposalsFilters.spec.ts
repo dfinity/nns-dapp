@@ -3,21 +3,13 @@ import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("SnsProposalsFilters", () => {
   it("should render types filter button", () => {
-    const { queryByTestId } = render(SnsProposalsFilters, {
-      props: {
-        nsFunctions: [],
-      },
-    });
+    const { queryByTestId } = render(SnsProposalsFilters);
 
     expect(queryByTestId("filters-by-types")).toBeInTheDocument();
   });
 
   it("should show filter modal when types filter is clicked", async () => {
-    const { queryByTestId } = render(SnsProposalsFilters, {
-      props: {
-        nsFunctions: [],
-      },
-    });
+    const { queryByTestId } = render(SnsProposalsFilters);
 
     const statusFilterButton = queryByTestId("filters-by-types");
     statusFilterButton && fireEvent.click(statusFilterButton);
