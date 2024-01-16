@@ -5,7 +5,7 @@
   import { hasAccounts } from "$lib/utils/accounts.utils";
   import { findAccountOrDefaultToMain } from "$lib/utils/accounts.utils";
   import type { Principal } from "@dfinity/principal";
-  import { Spinner, busy } from "@dfinity/gix-components";
+  import { Spinner } from "@dfinity/gix-components";
   import { setContext } from "svelte";
   import { writable } from "svelte/store";
   import { snsProjectAccountsStore } from "$lib/derived/sns/sns-project-accounts.derived";
@@ -123,9 +123,6 @@
 
   $: accountIdentifier, $snsProjectAccountsStore, load();
 
-  let disabled = false;
-  $: disabled = isNullish($selectedAccountStore.account) || $busy;
-
   const reloadAccount = async () => {
     try {
       await Promise.all([
@@ -206,7 +203,6 @@
         <button
           class="primary"
           on:click={() => (showModal = "send")}
-          {disabled}
           data-tid="open-new-sns-transaction">{$i18n.accounts.send}</button
         >
 
