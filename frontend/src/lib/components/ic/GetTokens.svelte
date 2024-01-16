@@ -3,90 +3,32 @@
    * Transfer ICP to current principal. For test purpose only and only available on "testnet" too.
    */
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import { getTestBalance } from "$lib/services/dev.services";
   import { IconAccountBalance } from "@dfinity/gix-components";
-  import { i18n } from "$lib/stores/i18n";
-  import {
-    isCkBTCUniverseStore,
-    selectedIcrcTokenUniverseIdStore,
-  } from "$lib/derived/selected-universe.derived";
-  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
-  import type { Principal } from "@dfinity/principal";
-  import { ICPToken, nonNullish } from "@dfinity/utils";
-  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { browser } from "$app/environment";
-  import { getIcrcTokenTestAccountBalance } from "$lib/api/dev.api";
-  import { tokensStore } from "$lib/stores/tokens.store";
   import GetTokensModal from "./GetTokensModal.svelte";
 
   let visible = false;
 
-  let snsSelectedProjectId: Principal | undefined;
-  $: snsSelectedProjectId = $snsOnlyProjectStore;
-
-  let icrcSelectedProjectId: Principal | undefined;
-  $: icrcSelectedProjectId = $selectedIcrcTokenUniverseIdStore;
-
-  const close = () => {
+  const onClose = () => {
     visible = false;
   };
-
-  // Check the balance of the test account in that universe.
-  let tokenBalanceE8s = 0n;
-  $: snsSelectedProjectId,
-    (async () => {
-      // This was executed at build time and it depends on `window` in `base64ToUInt8Array` helper inside dev.api.ts
-      if (browser) {
-        if (nonNullish(snsSelectedProjectId)) {
-          tokenBalanceE8s = await getTestBalance(snsSelectedProjectId);
-        }
-        if (nonNullish(icrcSelectedProjectId)) {
-          tokenBalanceE8s = await getIcrcTokenTestAccountBalance(
-            icrcSelectedProjectId
-          );
-        }
-      }
-    })();
-
-  // If the SNS test account balance is 0, don't show a button that won't work. Show the ICP token instead.
-  let tokenSymbol: string;
-  $: tokenSymbol =
-    nonNullish(icrcSelectedProjectId) &&
-    $tokensStore[icrcSelectedProjectId?.toText()]?.token &&
-    tokenBalanceE8s > 0n
-      ? $tokensStore[icrcSelectedProjectId?.toText()].token.symbol
-      : nonNullish(snsSelectedProjectId) && tokenBalanceE8s > 0n
-      ? $snsTokenSymbolSelectedStore?.symbol ?? ICPToken.symbol
-      : $isCkBTCUniverseStore
-      ? $i18n.ckbtc.btc
-      : ICPToken.symbol;
-
-  let buttonTestId: string;
-  $: buttonTestId =
-    nonNullish(snsSelectedProjectId) && tokenBalanceE8s > 0n
-      ? "get-sns-button"
-      : $isCkBTCUniverseStore
-      ? "get-btc-button"
-      : "get-icp-button";
 </script>
 
 <TestIdWrapper testId="get-tokens-component">
   {#if $authSignedInStore}
     <button
       role="menuitem"
-      data-tid={buttonTestId}
+      data-tid="get-tokens-button"
       on:click|preventDefault|stopPropagation={() => (visible = true)}
       class="open"
-      title={`Get ${tokenSymbol}`}
     >
       <IconAccountBalance />
-      <span>{`Get ${tokenSymbol}`}</span>
+      <span>Get Tokens</span>
     </button>
   {/if}
 
   {#if visible}
-    <GetTokensModal {tokenSymbol} on:nnsClose={close} />
+    <GetTokensModal on:nnsClose={onClose} />
   {/if}
 </TestIdWrapper>
 

@@ -1,47 +1,96 @@
 <script lang="ts">
   /**
-   * Transfer ICP to current principal. For test purpose only and only available on "testnet" too.
+   * Transfer ICP to current principal. For test purpose only and only available on dev environments.
    */
-  import { Modal } from "@dfinity/gix-components";
+  import { Dropdown, DropdownItem, Modal } from "@dfinity/gix-components";
   import Input from "$lib/components/ui/Input.svelte";
   import {
     getICPs,
-    getTestBalance,
-    getTokens,
+    getSnsTokens,
     getBTC,
     getIcrcTokens,
   } from "$lib/services/dev.services";
   import { Spinner } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
-  import {
-    isCkBTCUniverseStore,
-    selectedIcrcTokenUniverseIdStore,
-  } from "$lib/derived/selected-universe.derived";
-  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
-  import type { Principal } from "@dfinity/principal";
+  import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
+  import { Principal } from "@dfinity/principal";
   import { nonNullish, type Token } from "@dfinity/utils";
-  import { browser } from "$app/environment";
-  import { getIcrcTokenTestAccountBalance } from "$lib/api/dev.api";
-  import { tokensStore } from "$lib/stores/tokens.store";
+  import {
+    getIcrcTokenTestAccountBalance,
+    getTestIcpAccountBalance,
+  } from "$lib/api/dev.api";
+  import { isUniverseCkBTC, isUniverseNns } from "$lib/utils/universe.utils";
+  import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
+  import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
   import { createEventDispatcher } from "svelte";
-
-  export let tokenSymbol: string;
+  import type { Universe } from "$lib/types/universe";
+  import { universesStore } from "$lib/derived/universes.derived";
+  import { tokensStore } from "$lib/stores/tokens.store";
 
   let transferring = false;
 
   let inputValue: number | undefined = undefined;
 
-  let snsSelectedProjectId: Principal | undefined;
-  $: snsSelectedProjectId = $snsOnlyProjectStore;
+  const getBalance = async (universeId: string): Promise<bigint> => {
+    const universeIdPrincipal = Principal.fromText(universeId);
+    const ledgerCanisterId =
+      $snsProjectsCommittedStore.find(
+        ({ rootCanisterId }) => rootCanisterId.toText() === universeId
+      )?.summary.ledgerCanisterId ?? universeIdPrincipal;
+    try {
+      if (isUniverseNns(universeIdPrincipal)) {
+        return await getTestIcpAccountBalance();
+      } else if (isUniverseCkBTC(universeId)) {
+        // Show always to get ckBTC
+        return 1n;
+      } else {
+        return await getIcrcTokenTestAccountBalance(ledgerCanisterId);
+      }
+    } catch (_) {
+      // Return 0 if getting the balance fails.
+      return 0n;
+    }
+  };
 
-  let icrcSelectedProjectId: Principal | undefined;
-  $: icrcSelectedProjectId = $selectedIcrcTokenUniverseIdStore;
+  const getTokensWithBalance = async (
+    universes: Universe[]
+  ): Promise<Universe[]> =>
+    (
+      await Promise.all(
+        universes.map(async (universe) => ({
+          balance: await getBalance(universe.canisterId),
+          universe,
+        }))
+      )
+    )
+      .filter(({ balance }) => balance > 0n)
+      .map(({ universe }) => universe);
+  let universesWithBalance: Universe[] = [];
+  $: {
+    getTokensWithBalance($universesStore)
+      .then((universes) => {
+        universesWithBalance = universes;
+        // Set the selected universe if not set yet.
+        selectedUniverseId ??= universes.find(({ canisterId }) => {
+          return canisterId === $selectedUniverseIdStore.toText();
+        })?.canisterId;
+      })
+      .catch((err) => {
+        console.error("error in getTokensWithBalance", err);
+      });
+  }
 
-  let token: Token | undefined;
-  $: token = nonNullish(icrcSelectedProjectId)
-    ? $tokensStore[icrcSelectedProjectId?.toText()]?.token
+  let selectedUniverseId: string | undefined = undefined;
+  let selectedUniverse: Universe | undefined;
+  $: selectedUniverse = universesWithBalance.find(
+    ({ canisterId }) => canisterId === selectedUniverseId
+  );
+  let selectedToken: Token | undefined;
+  $: selectedToken = nonNullish(selectedUniverseId)
+    ? $tokensStore[selectedUniverseId]?.token
     : undefined;
 
+  const dispatch = createEventDispatcher();
   const onSubmit = async () => {
     if (invalidForm || inputValue === undefined) {
       toastsError({
@@ -53,73 +102,82 @@
     transferring = true;
 
     try {
-      // Default to transfer ICPs if the test account's balance of the selected universe is 0.
-      if (nonNullish(snsSelectedProjectId) && tokenBalanceE8s > 0n) {
-        await getTokens({
-          tokens: inputValue,
-          rootCanisterId: snsSelectedProjectId,
-        });
-      } else if (nonNullish(icrcSelectedProjectId) && nonNullish(token)) {
-        await getIcrcTokens({
-          tokens: inputValue,
-          token,
-          ledgerCanisterId: icrcSelectedProjectId,
-        });
-      } else if ($isCkBTCUniverseStore) {
-        await getBTC({
-          amount: inputValue,
-        });
+      if (nonNullish(selectedUniverseId) && nonNullish(selectedUniverse)) {
+        if (
+          $snsProjectsCommittedStore.find(
+            ({ rootCanisterId }) =>
+              rootCanisterId.toText() === selectedUniverseId
+          )
+        ) {
+          await getSnsTokens({
+            tokens: inputValue,
+            rootCanisterId: Principal.fromText(selectedUniverseId),
+          });
+        } else if (isUniverseCkBTC(selectedUniverseId)) {
+          await getBTC({
+            amount: inputValue,
+          });
+        } else if ($icrcCanistersStore[selectedUniverseId]) {
+          if (nonNullish(selectedToken)) {
+            await getIcrcTokens({
+              tokens: inputValue,
+              token: selectedToken,
+              ledgerCanisterId: Principal.fromText(selectedUniverseId),
+            });
+          } else {
+            console.error(`token for ${selectedUniverseId} is undefined`);
+          }
+        } else {
+          // Default to transfer ICPs if the test account's balance of the selected universe is 0.
+          await getICPs(inputValue);
+        }
       } else {
-        await getICPs(inputValue);
+        console.error(
+          "selectedUniverseId or selectedTokenData is undefined",
+          selectedUniverseId,
+          selectedUniverse
+        );
       }
 
       close();
     } catch (err: unknown) {
       toastsError({
-        labelKey: "ICPs could not be transferred.",
+        labelKey: "Tokens could not be transferred.",
         err,
       });
     }
 
     transferring = false;
+    getSnsTokens;
   };
 
-  const dispatch = createEventDispatcher();
   const close = () => {
     dispatch("nnsClose");
   };
 
   let invalidForm: boolean;
   $: invalidForm = inputValue === undefined || inputValue <= 0;
-
-  // Check the balance of the test account in that universe.
-  let tokenBalanceE8s = 0n;
-  $: snsSelectedProjectId,
-    (async () => {
-      // This was executed at build time and it depends on `window` in `base64ToUInt8Array` helper inside dev.api.ts
-      if (browser) {
-        if (nonNullish(snsSelectedProjectId)) {
-          tokenBalanceE8s = await getTestBalance(snsSelectedProjectId);
-        }
-        if (nonNullish(icrcSelectedProjectId)) {
-          tokenBalanceE8s = await getIcrcTokenTestAccountBalance(
-            icrcSelectedProjectId
-          );
-        }
-      }
-    })();
 </script>
 
 <Modal visible role="alert" on:nnsClose={close}>
-  <span slot="title">{`Get ${tokenSymbol}`}</span>
+  <span slot="title">{`Get ${selectedToken?.symbol ?? "Tokens"}`}</span>
 
   <form
     id="get-icp-form"
     data-tid="get-icp-form"
     on:submit|preventDefault={onSubmit}
   >
-    <span class="label">How much?</span>
+    <span>Select token</span>
+    <Dropdown name="select-token" bind:selectedValue={selectedUniverseId}>
+      {#each universesWithBalance as { title, canisterId } (canisterId)}
+        <!-- data-tid in span used to wait for in e2e test -->
+        <DropdownItem value={canisterId}
+          ><span data-tid={title}>{title}</span></DropdownItem
+        >
+      {/each}
+    </Dropdown>
 
+    <span class="label">How much?</span>
     <Input
       placeholderLabelKey="core.amount"
       name="tokens"
