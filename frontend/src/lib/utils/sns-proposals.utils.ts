@@ -480,9 +480,49 @@ export const getUniversalProposalStatus = (
   return statusType;
 };
 
+/**
+ * Returns the proposal type ids that should be excluded from the response.
+ * snsFunctions are needed to process "All Generic" entry (when not selected, include all generic ids).
+ */
+export const toExcludeTypeParameter = ({
+  filter,
+  snsFunctions,
+}: {
+  filter: Filter<SnsProposalTypeFilterId>[];
+  snsFunctions: SnsNervousSystemFunction[];
+}): bigint[] => {
+  // If no filter is selected, return all functions
+  if (filter.length === 0) {
+    return [];
+  }
+  const nativeNsFunctionIds = snsFunctions
+    .filter(isNativeNervousSystemFunction)
+    .map(({ id }) => id);
+  const isNativeNsFunctionSelected = (nsFunctionId: bigint) =>
+    filter.some(({ id, checked }) => id === nsFunctionId.toString() && checked);
+  const excludedNativeNsFunctionIds = nativeNsFunctionIds.filter(
+    (id) => !isNativeNsFunctionSelected(id)
+  );
+  const genericNsFunctionIds = snsFunctions
+    .filter(isGenericNervousSystemFunction)
+    .map(({ id }) => id);
+  const isGenericNsFunctionChecked = filter.some(
+    ({ id, checked }) => id === ALL_SNS_GENERIC_PROPOSAL_TYPES_ID && checked
+  );
+  const excludedGenericNsFunctionIds = isGenericNsFunctionChecked
+    ? []
+    : genericNsFunctionIds;
+
+  return (
+    [...excludedNativeNsFunctionIds, ...excludedGenericNsFunctionIds]
+      // never exclude { 0n: "All Topics"}
+      .filter((id) => id !== ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID)
+  );
+};
+
 // Generate new "types" filter data, but preserve the checked state of the current filter state
 // `nsFunctions` can be changed on the backend, and to display recently created proposal types, new entries should be preselected.
-export const generateSnsProposalTypesFilterData = ({
+export const generateSnsProposalTypeFilterData = ({
   nsFunctions,
   typesFilterState,
   snsName,

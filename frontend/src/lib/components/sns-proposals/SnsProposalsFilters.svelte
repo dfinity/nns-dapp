@@ -13,12 +13,12 @@
   import SnsFilterTypesModal from "$lib/modals/sns/proposals/SnsFilterTypesModal.svelte";
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
   import { nonNullish } from "@dfinity/utils";
+  import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { generateSnsProposalTypeFilterData } from "$lib/utils/sns-proposals.utils";
 
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;
 
   let modal: "types" | "rewards" | "status" | undefined = undefined;
-
   let rootCanisterId: Principal;
   $: rootCanisterId = $selectedUniverseIdStore;
   let filtersStore: ProjectFiltersStoreData | undefined;
@@ -31,6 +31,7 @@
       types: generateSnsProposalTypeFilterData({
         nsFunctions,
         typesFilterState: filtersStore?.types ?? [],
+        snsName: $snsProjectSelectedStore?.summary.metadata.name ?? "",
       }),
     });
     filtersStore = $snsFiltersStore[rootCanisterId.toText()];

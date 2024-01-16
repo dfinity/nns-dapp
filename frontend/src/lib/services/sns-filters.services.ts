@@ -2,7 +2,7 @@ import { i18n } from "$lib/stores/i18n";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import type { Filter } from "$lib/types/filters";
 import { enumValues } from "$lib/utils/enum.utils";
-import { generateSnsProposalTypesFilterData } from "$lib/utils/sns-proposals.utils";
+import { generateSnsProposalTypeFilterData } from "$lib/utils/sns-proposals.utils";
 import type { Principal } from "@dfinity/principal";
 import {
   SnsProposalDecisionStatus,
@@ -86,7 +86,7 @@ const loadTypesFilters = ({
 }) => {
   const currentTypesFilterData =
     get(snsFiltersStore)?.[rootCanisterId.toText()]?.types ?? [];
-  const updatedTypesFilterData = generateSnsProposalTypesFilterData({
+  const updatedTypesFilterData = generateSnsProposalTypeFilterData({
     nsFunctions,
     typesFilterState: currentTypesFilterData,
     snsName,

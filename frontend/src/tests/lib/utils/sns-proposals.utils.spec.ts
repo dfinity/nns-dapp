@@ -5,7 +5,7 @@ import { enumValues } from "$lib/utils/enum.utils";
 import {
   ballotVotingPower,
   fromPercentageBasisPoints,
-  generateSnsProposalTypesFilterData,
+  generateSnsProposalTypeFilterData,
   getUniversalProposalStatus,
   isAccepted,
   lastProposalId,
@@ -19,6 +19,7 @@ import {
   snsProposalIdString,
   snsRewardStatus,
   sortSnsProposalsById,
+  toExcludeTypeParameter,
 } from "$lib/utils/sns-proposals.utils";
 import {
   allTopicsNervousSystemFunctionMock,
@@ -690,7 +691,7 @@ describe("sns-proposals utils", () => {
         ];
 
         expect(
-          generateSnsProposalTypesFilterData({
+          generateSnsProposalTypeFilterData({
             nsFunctions,
             typesFilterState: [],
             snsName: "test_sns",
@@ -709,7 +710,7 @@ describe("sns-proposals utils", () => {
         ];
 
         expect(
-          generateSnsProposalTypesFilterData({
+          generateSnsProposalTypeFilterData({
             nsFunctions,
             typesFilterState: [],
             snsName: "test_sns",
@@ -728,7 +729,7 @@ describe("sns-proposals utils", () => {
         ];
 
         expect(
-          generateSnsProposalTypesFilterData({
+          generateSnsProposalTypeFilterData({
             nsFunctions,
             typesFilterState: [],
             snsName: "test_sns",
@@ -744,7 +745,7 @@ describe("sns-proposals utils", () => {
         ];
 
         expect(
-          generateSnsProposalTypesFilterData({
+          generateSnsProposalTypeFilterData({
             nsFunctions,
             typesFilterState: [],
             snsName: "test_sns",
@@ -780,7 +781,7 @@ describe("sns-proposals utils", () => {
         ];
 
         expect(
-          generateSnsProposalTypesFilterData({
+          generateSnsProposalTypeFilterData({
             nsFunctions,
             typesFilterState,
             snsName: "test_sns",
@@ -820,13 +821,98 @@ describe("sns-proposals utils", () => {
         ];
 
         expect(
-          generateSnsProposalTypesFilterData({
+          generateSnsProposalTypeFilterData({
             nsFunctions,
             typesFilterState,
             snsName: "test_sns",
           })
         ).toStrictEqual(result);
       });
+    });
+  });
+
+  describe("toExcludeTypeParameter", () => {
+    // Prepare sns functions
+    const allTopicsNativeNsFunction: SnsNervousSystemFunction = {
+      ...nativeNervousSystemFunctionMock,
+      id: 0n,
+      name: "All Topics",
+    };
+    const nativeNsFunction: SnsNervousSystemFunction = {
+      ...nativeNervousSystemFunctionMock,
+      id: 1n,
+      name: "name",
+    };
+    const genericNsFunction: SnsNervousSystemFunction = {
+      ...genericNervousSystemFunctionMock,
+      id: 1001n,
+      name: "name",
+    };
+    const snsFunctions: SnsNervousSystemFunction[] = [
+      allTopicsNativeNsFunction,
+      nativeNsFunction,
+      genericNsFunction,
+    ];
+    // Prepare type filters
+    const nativeFilterEntry: Filter<SnsProposalTypeFilterId> = {
+      id: "1",
+      name: "string",
+      value: "1",
+      checked: true,
+    };
+    const snsSpecificFilterEntry: Filter<SnsProposalTypeFilterId> = {
+      id: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
+      name: "string",
+      value: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
+      checked: true,
+    };
+
+    it("should return empty list if nothing checked", () => {
+      expect(
+        toExcludeTypeParameter({
+          filter: [],
+          snsFunctions,
+        })
+      ).toStrictEqual([]);
+    });
+
+    it('should always exclude "All Topics"', () => {
+      expect(
+        toExcludeTypeParameter({
+          filter: [],
+          snsFunctions,
+        }).find((id) => id === 0n)
+      ).toBe(undefined);
+      expect(
+        toExcludeTypeParameter({
+          filter: [nativeFilterEntry],
+          snsFunctions,
+        }).find((id) => id === 0n)
+      ).toBe(undefined);
+      expect(
+        toExcludeTypeParameter({
+          filter: [snsSpecificFilterEntry],
+          snsFunctions,
+        }).find((id) => id === 0n)
+      ).toBe(undefined);
+    });
+
+    it("should exclude all except selected native ns function", () => {
+      expect(
+        toExcludeTypeParameter({
+          filter: [nativeFilterEntry],
+          snsFunctions,
+        })
+      ).toStrictEqual([1001n]);
+    });
+
+    it('should exclude generic when "SNS_SPECIFIC" is selected', () => {
+      expect(
+        toExcludeTypeParameter({
+          filter: [snsSpecificFilterEntry],
+          snsFunctions,
+        })
+      ).toStrictEqual([1n]);
     });
   });
 
