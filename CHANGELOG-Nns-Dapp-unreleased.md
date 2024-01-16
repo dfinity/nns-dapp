@@ -30,6 +30,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * BTC deposit address QR code spinner in dark theme.
+* Missing NF-neurons on sns proposal detail page.
 
 #### Security
 
