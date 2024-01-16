@@ -96,6 +96,8 @@ describe("SnsVotingCard", () => {
         id: [2],
         state: NeuronState.Locked,
         createdTimestampSeconds: neuronCreatedAt,
+        // Should also work with NF neurons the same way as with own neurons
+        sourceNnsNeuronId: 12345n,
       }),
       permissions: permissionsWithTypeVote,
     },
