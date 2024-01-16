@@ -19,6 +19,7 @@ proposal is successful, the changes it released will be moved from this file to
 * New light and dark theme colors.
 * Pluralise neurons on proposal detail page.
 * Placeholder when the transaction list is empty.
+* New QR code icon.
 
 #### Deprecated
 
