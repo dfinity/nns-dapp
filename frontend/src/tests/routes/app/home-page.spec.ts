@@ -1,6 +1,6 @@
 import * as agent from "$lib/api/agent.api";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import HomePage from "$routes/(app)/(u)/(accounts)/+page.svelte";
+import HomePage from "$routes/(app)/(home)/+page.svelte";
 import type { HttpAgent } from "@dfinity/agent";
 import { render } from "@testing-library/svelte";
 import { mock } from "vitest-mock-extended";
