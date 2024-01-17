@@ -174,6 +174,9 @@ describe("sns-proposals services", () => {
           rootCanisterId,
           types,
         });
+
+        expect(queryProposalsSpy).not.toHaveBeenCalled();
+
         await loadSnsProposals({
           rootCanisterId,
           beforeProposalId: proposalId,
