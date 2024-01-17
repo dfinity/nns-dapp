@@ -3,7 +3,6 @@ import { HOST, IS_TESTNET } from "$lib/constants/environment.constants";
 import type { Account } from "$lib/types/account";
 import { invalidIcrcAddress } from "$lib/utils/accounts.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import { isUniverseNns } from "$lib/utils/universe.utils";
 import type { Identity } from "@dfinity/agent";
 import { Actor, HttpAgent, type Agent } from "@dfinity/agent";
 import type { IDL } from "@dfinity/candid";
@@ -54,29 +53,16 @@ const getTestAccountAgent = async (): Promise<Agent> => {
   return agent;
 };
 
-export const getTestAccountBalance = async (
-  rootCanisterId: Principal
-): Promise<bigint> => {
+export const getTestIcpAccountBalance = async (): Promise<bigint> => {
   assertTestnet();
 
   const agent = await getTestAccountAgent();
 
-  if (isUniverseNns(rootCanisterId)) {
-    const ledgerCanister: LedgerCanister = LedgerCanister.create({ agent });
+  const ledgerCanister: LedgerCanister = LedgerCanister.create({ agent });
 
-    return ledgerCanister.accountBalance({
-      accountIdentifier: AccountIdentifier.fromHex(testAccountAddress),
-    });
-  }
-
-  const { balance } = await initSns({
-    agent,
-    rootCanisterId,
+  return ledgerCanister.accountBalance({
+    accountIdentifier: AccountIdentifier.fromHex(testAccountAddress),
     certified: false,
-  });
-
-  return balance({
-    owner: Principal.fromText(testAccountPrincipal),
   });
 };
 
@@ -94,6 +80,7 @@ export const getIcrcTokenTestAccountBalance = async (
 
   return canister.balance({
     owner: Principal.fromText(testAccountPrincipal),
+    certified: false,
   });
 };
 
