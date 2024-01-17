@@ -1,8 +1,6 @@
 import { NANO_SECONDS_IN_MINUTE } from "$lib/constants/constants";
-import { getWithdrawalAccount as getWithdrawalAccountServices } from "$lib/services/ckbtc-minter.services";
 import { loadCkBTCWithdrawalAccount } from "$lib/services/ckbtc-withdrawal-accounts.services";
 import { bitcoinConvertBlockIndexes } from "$lib/stores/bitcoin.store";
-import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-withdrawal-accounts.store";
 import type { Account } from "$lib/types/account";
 import type { CanisterId } from "$lib/types/canister";
 import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
@@ -16,17 +14,8 @@ import {
   MinterInsufficientFundsError,
   MinterMalformedAddressError,
   MinterTemporaryUnavailableError,
-  type WithdrawalAccount,
 } from "@dfinity/ckbtc";
-import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
-import {
-  arrayOfNumberToUint8Array,
-  fromNullable,
-  isNullish,
-  nonNullish,
-  toNullable,
-} from "@dfinity/utils";
-import { get } from "svelte/store";
+import { nonNullish } from "@dfinity/utils";
 import {
   retrieveBtc as retrieveBtcAPI,
   retrieveBtcWithApproval,
@@ -35,10 +24,7 @@ import { approveTransfer } from "../api/icrc-ledger.api";
 import { toastsError } from "../stores/toasts.store";
 import { numberToE8s } from "../utils/token.utils";
 import { getAuthenticatedIdentity } from "./auth.services";
-import {
-  ckBTCTransferTokens,
-  loadCkBTCAccounts,
-} from "./ckbtc-accounts.services";
+import { loadCkBTCAccounts } from "./ckbtc-accounts.services";
 import type { IcrcTransferTokensUserParams } from "./icrc-accounts.services";
 import { loadWalletTransactions } from "./wallet-transactions.services";
 
@@ -108,95 +94,6 @@ export const convertCkBTCToBtcIcrc2 = async ({
   updateProgress(ConvertBtcStep.DONE);
 
   return { success: true };
-};
-
-/**
- * Convert ckBTC to BTC (legacy, before ICRC-2)
- *
- * 1. get_withdrawal_account -> get ckBTC address (account)
- * 2. icrc1_transfer(account)
- * 3. retrieve_btc
- *
- */
-export const convertCkBTCToBtc = async ({
-  destinationAddress,
-  amount,
-  source,
-  universeId,
-  canisters: { minterCanisterId, indexCanisterId },
-  updateProgress,
-}: ConvertCkBTCToBtcParams &
-  Pick<IcrcTransferTokensUserParams, "source">): Promise<{
-  success: boolean;
-}> => {
-  updateProgress(ConvertBtcStep.INITIALIZATION);
-
-  const getWithdrawalAccount = async (): Promise<
-    WithdrawalAccount | undefined
-  > => {
-    const store = get(ckBTCWithdrawalAccountsStore);
-    const storedWithdrawalAccount = store[universeId.toText()];
-
-    // If a certified withdrawal account has already been loaded in store we can use it to improve performance instead of performing another update call to the backend.
-    if (
-      nonNullish(storedWithdrawalAccount) &&
-      // if account.principal set, then the subAccount is also set as both are set the same time in icrc-ledger.api.getIcrcAccount
-      nonNullish(storedWithdrawalAccount.account.principal) &&
-      storedWithdrawalAccount.certified
-    ) {
-      const {
-        account: { principal, subAccount },
-      } = storedWithdrawalAccount;
-
-      return {
-        owner: principal,
-        subaccount: isNullish(subAccount)
-          ? []
-          : toNullable(arrayOfNumberToUint8Array(subAccount)),
-      };
-    }
-
-    return getWithdrawalAccountServices({ minterCanisterId });
-  };
-
-  const account = await getWithdrawalAccount();
-
-  if (isNullish(account)) {
-    return { success: false };
-  }
-
-  // For simplicity and compatibility reason with the transferTokens interface we just encode the account here instead of extending the interface to support either account identifier or {owner; subaccount;} object.
-  const ledgerAddress = encodeIcrcAccount({
-    owner: account.owner,
-    subaccount: fromNullable(account.subaccount),
-  });
-
-  updateProgress(ConvertBtcStep.LOCKING_CKBTC);
-
-  // We reload the transactions only at the end of the process for performance reason.
-  const { blockIndex } = await ckBTCTransferTokens({
-    source,
-    amount,
-    destinationAddress: ledgerAddress,
-    universeId,
-  });
-
-  if (isNullish(blockIndex)) {
-    return { success: false };
-  }
-
-  // Flag the transaction that was executed
-  bitcoinConvertBlockIndexes.addBlockIndex(blockIndex);
-
-  return await retrieveBtcAndReload({
-    destinationAddress,
-    amount,
-    source,
-    universeId,
-    canisters: { minterCanisterId, indexCanisterId },
-    updateProgress,
-    blockIndex,
-  });
 };
 
 /**
