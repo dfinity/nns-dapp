@@ -15,6 +15,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Add "API Boundary Node Management" topic support.
+* A work-around to recover unsupported ICRC-1 tokens.
 
 #### Changed
 

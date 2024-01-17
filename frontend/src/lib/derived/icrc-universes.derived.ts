@@ -1,5 +1,6 @@
 import CKETH_LOGO from "$lib/assets/ckETH.svg";
 import CKSEPOLIAETH_LOGO from "$lib/assets/ckSepoliaETH.svg";
+import UNKNOWN_LOGO from "$lib/assets/question-mark.svg";
 import {
   CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
   CKETH_UNIVERSE_CANISTER_ID,
@@ -22,16 +23,16 @@ const convertIcrcCanistersToUniverse = ({
 }): Universe | undefined => {
   const universeId = canisters.ledgerCanisterId.toText();
   const token = tokensData[universeId];
+  if (isNullish(token)) {
+    return;
+  }
   // TODO: Read logo from token https://dfinity.atlassian.net/browse/GIX-2140
   const logo =
     universeId === CKETH_UNIVERSE_CANISTER_ID.toText()
       ? CKETH_LOGO
       : universeId === CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()
       ? CKSEPOLIAETH_LOGO
-      : undefined;
-  if (isNullish(token) || isNullish(logo)) {
-    return;
-  }
+      : UNKNOWN_LOGO;
   return {
     canisterId: universeId,
     title: token.token.name,
