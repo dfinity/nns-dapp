@@ -5,7 +5,7 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { page } from "$mocks/$app/stores";
-import AccountsPage from "$routes/(app)/(u)/(accounts)/accounts/+page.svelte";
+import AccountsPage from "$routes/(app)/(u)/(list)/accounts/+page.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
 import { AccountsPlusPagePo } from "$tests/page-objects/AccountsPlusPage.page-object";
