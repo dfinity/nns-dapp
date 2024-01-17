@@ -22,6 +22,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Pluralise neurons on proposal detail page.
 * Placeholder when the transaction list is empty.
 * New QR code icon.
+* Render wallet page when not signed in.
 
 #### Deprecated
 
