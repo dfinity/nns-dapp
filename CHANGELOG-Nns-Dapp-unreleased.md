@@ -51,4 +51,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Keep local replica accessible locally when specifying --domain to dfx-snapshot-start.
+
 #### Security
