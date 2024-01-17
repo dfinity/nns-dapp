@@ -131,9 +131,9 @@ export class AppPo extends BasePageObject {
     await this.getBackdropPo().waitForAbsent();
   }
 
-  async getSnsTokens(amount: number): Promise<void> {
+  async getSnsTokens(params: { amount: number; name: string }): Promise<void> {
     await this.openMenu();
-    await this.getMenuItemsPo().getGetTokensPo().getSnsTokens(amount);
+    await this.getMenuItemsPo().getGetTokensPo().getSnsTokens(params);
     await this.closeMenu();
   }
 

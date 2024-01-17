@@ -21,6 +21,7 @@ proposal is successful, the changes it released will be moved from this file to
 * New light and dark theme colors.
 * Pluralise neurons on proposal detail page.
 * Placeholder when the transaction list is empty.
+* New QR code icon.
 * Render wallet page when not signed in.
 
 #### Deprecated
@@ -30,6 +31,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * BTC deposit address QR code spinner in dark theme.
+* Missing NF-neurons on SNS proposal detail page.
 
 #### Security
 
