@@ -17,6 +17,18 @@ export class TokensTableRowPo extends BasePageObject {
     );
   }
 
+  static byTitle({
+    element,
+    title,
+  }: {
+    element: PageObjectElement;
+    title: string;
+  }): TokensTableRowPo {
+    return new TokensTableRowPo(
+      element.querySelector(`[data-title="${title}"]`)
+    );
+  }
+
   getProjectName(): Promise<string> {
     return this.getText("project-name");
   }
