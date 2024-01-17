@@ -37,6 +37,13 @@ export class TokensTableRowPo extends BasePageObject {
     return this.getText("token-value-label");
   }
 
+  waitForBalance(): Promise<void> {
+    return this.root
+      .byTestId("token-value-label")
+      .byTestId("spinner")
+      .waitForAbsent();
+  }
+
   hasBalanceSpinner(): Promise<boolean> {
     const balanceElement = this.root.byTestId("token-value-label");
     return balanceElement.byTestId("spinner").isPresent();
