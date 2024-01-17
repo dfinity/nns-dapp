@@ -46,6 +46,15 @@
       });
     }
   };
+
+  // Should be the same as the area in the classes `rows-count-X`.
+  const cellAreaName = (index: number) => `cell-${index}`;
+  // This will allow us to have different number of rows depending on the number of columns.
+  // It's not really necessary for the TokensTable becuase we know we want only 1 row.
+  // But this should be moved when we make the generic table.
+  const mobileTemplateClass = (rowsCount: number) => {
+    return `rows-count-${rowsCount}`;
+  };
 </script>
 
 <svelte:element
@@ -56,6 +65,8 @@
   on:keypress={handleClick}
   on:click={handleClick}
   data-tid="tokens-table-row-component"
+  class={mobileTemplateClass(2)}
+  data-title={userTokenData.title}
 >
   <div role="cell" class="title-cell">
     <div class="title-logo-wrapper">
@@ -74,19 +85,8 @@
         {/if}
       </div>
     </div>
-    <div class="title-actions actions mobile-only">
-      {#if nonNullish(userToken)}
-        {#each userToken.actions as action}
-          <svelte:component
-            this={actionMapper[action]}
-            {userToken}
-            on:nnsAction
-          />
-        {/each}
-      {/if}
-    </div>
   </div>
-  <div role="cell" class="mobile-row-cell left-cell">
+  <div role="cell" class={`mobile-row-cell left-cell ${cellAreaName(0)}`}>
     <span class="mobile-only">{$i18n.tokens.balance_header}</span>
     {#if userTokenData.balance instanceof UnavailableTokenAmount}
       <span data-tid="token-value-label"
@@ -128,15 +128,29 @@
     // If we use grid-template-areas, we need to specify all the areas.
     // That makes it hard to have dynamic columns.
     // Instead, we duplicate the actions. Once as the last cell, another within the title cell.
-    display: flex;
+    display: grid;
     flex-direction: column;
     gap: var(--padding-2x);
 
     text-decoration: none;
 
+    &.rows-count-2 {
+      grid-template-areas:
+        "first-cell last-cell"
+        "cell-0 cell-0";
+    }
+
+    &.rows-count-3 {
+      grid-template-areas:
+        "first-cell last-cell"
+        "cell-0 cell-0"
+        "cell-1 cell-1";
+    }
+
     @include media.min-width(medium) {
       @include grid-table.row;
       row-gap: 0;
+      grid-template-areas: none;
     }
 
     padding: var(--padding-2x);
@@ -158,33 +172,43 @@
     gap: var(--padding);
 
     &.title-cell {
-      justify-content: space-between;
+      grid-area: first-cell;
 
-      // Title actions are displayed only on mobile.
-      // On desktop, the actions are in the last cell.
-      .title-actions {
-        display: block;
-
-        @include media.min-width(medium) {
-          display: none;
-        }
+      @include media.min-width(medium) {
+        grid-area: revert;
       }
     }
 
-    // Actions cell is displayed only on desktop.
-    // On mobile, the actions are in the first cell.
     &.actions-cell {
-      display: none;
+      display: flex;
       justify-content: flex-end;
 
+      grid-area: last-cell;
+
       @include media.min-width(medium) {
-        display: flex;
+        grid-area: revert;
       }
     }
 
     &.mobile-row-cell {
       display: flex;
       justify-content: space-between;
+
+      &.cell-0 {
+        grid-area: cell-0;
+
+        @include media.min-width(medium) {
+          grid-area: revert;
+        }
+      }
+
+      &.cell-1 {
+        grid-area: cell-1;
+
+        @include media.min-width(medium) {
+          grid-area: revert;
+        }
+      }
 
       @include media.min-width(medium) {
         &.left-cell {
