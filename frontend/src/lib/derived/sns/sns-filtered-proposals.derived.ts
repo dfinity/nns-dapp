@@ -41,8 +41,14 @@ export const snsFilteredProposalsStore = derived<
               projectSelectedFilters.rewardStatus
                 .map(({ value }) => value)
                 .includes(snsRewardStatus(proposal));
-            // TODO: Filter by nervous functions
-            return statusMatch && rewardStatusMatch;
+
+            const nervousFunctionsMatch =
+              projectSelectedFilters.types.length === 0 ||
+              projectSelectedFilters.types
+                .map(({ value }) => value)
+                .includes(`${proposal.action}`);
+
+            return statusMatch && rewardStatusMatch && nervousFunctionsMatch;
           }
         );
         return {
