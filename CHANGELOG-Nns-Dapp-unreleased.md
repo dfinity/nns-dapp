@@ -28,6 +28,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
+* non-ICRC2 BTC withdrawal flow.
+
 #### Fixed
 
 * BTC deposit address QR code spinner in dark theme.
