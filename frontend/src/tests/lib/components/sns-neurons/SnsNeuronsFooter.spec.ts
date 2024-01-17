@@ -10,7 +10,7 @@ import {
 } from "$tests/mocks/neurons.mock";
 import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 import { NeuronState } from "@dfinity/nns";
-import { TokenAmount } from "@dfinity/utils";
+import { TokenAmountV2 } from "@dfinity/utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("SnsNeuron footer", () => {
@@ -38,7 +38,7 @@ describe("SnsNeuron footer", () => {
       mockStoreSubscribe({
         token: mockSnsFullProject.summary.token,
         rootCanisterId: mockSnsFullProject.rootCanisterId,
-        transactionFee: TokenAmount.fromE8s({
+        transactionFee: TokenAmountV2.fromUlps({
           amount: 10_000n,
           token: mockSnsFullProject.summary.token,
         }),

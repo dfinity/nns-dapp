@@ -9,7 +9,7 @@
     TokenAmountV2,
     fromDefinedNullable,
     type Token,
-    type TokenAmount,
+    nonNullish,
   } from "@dfinity/utils";
   import {
     getSnsNeuronIdAsHexString,
@@ -46,7 +46,7 @@
     token: $snsTokenSymbolSelectedStore as Token,
   });
 
-  let fee: TokenAmount | undefined;
+  let fee: TokenAmountV2 | undefined;
   $: fee = $snsSelectedTransactionFeeStore;
 
   const dispatcher = createEventDispatcher();
@@ -117,7 +117,7 @@
     ><span data-tid="disburse-sns-neuron-modal">{currentStep?.title}</span
     ></svelte:fragment
   >
-  {#if currentStep?.name === "ConfirmDisburse" && destinationAddress !== undefined}
+  {#if currentStep?.name === "ConfirmDisburse" && destinationAddress !== undefined && nonNullish(fee)}
     <ConfirmDisburseNeuron
       on:nnsClose
       on:nnsBack={() => {

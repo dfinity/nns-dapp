@@ -29,6 +29,7 @@
     cancelPollAccounts,
     pollAccounts,
   } from "$lib/services/icp-accounts.services";
+  import { mainTransactionFeeE8sStore } from "$lib/stores/transaction-fees.store";
 
   export let neuron: NeuronInfo;
 
@@ -153,6 +154,10 @@
       {loading}
       {destinationAddress}
       on:nnsBack={modal.back}
+      fee={TokenAmountV2.fromUlps({
+        amount: $mainTransactionFeeE8sStore,
+        token: ICPToken,
+      })}
     />
   {/if}
 </QrWizardModal>

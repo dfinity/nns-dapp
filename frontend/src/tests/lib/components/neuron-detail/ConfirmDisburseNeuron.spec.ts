@@ -1,6 +1,6 @@
 import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { ICPToken, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
+import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 import ConfirmDisburseNeuronTest from "./ConfirmDisburseNeuronTest.svelte";
 
@@ -19,7 +19,7 @@ describe("ConfirmDisburseNeuron", () => {
     source: "test source",
     destinationAddress: "test destination",
     loading: false,
-    fee: TokenAmount.fromNumber({ amount: fee, token: ICPToken }),
+    fee: TokenAmountV2.fromNumber({ amount: fee, token: ICPToken }),
   };
 
   it("should display amount", async () => {

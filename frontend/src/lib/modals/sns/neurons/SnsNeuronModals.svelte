@@ -71,7 +71,7 @@
     : undefined;
 
   let transactionFee: E8s | undefined;
-  $: transactionFee = $snsSelectedTransactionFeeStore?.toE8s();
+  $: transactionFee = $snsSelectedTransactionFeeStore?.toUlps();
 
   const onSnsNeuronDetailModal = ({ detail }: CustomEvent<SnsNeuronModal>) =>
     (modal = detail);

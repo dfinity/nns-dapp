@@ -71,7 +71,7 @@
     $snsParametersStore?.[rootCanisterId?.toText() ?? ""]?.parameters;
 
   let transactionFee: E8s | undefined;
-  $: transactionFee = $snsSelectedTransactionFeeStore?.toE8s();
+  $: transactionFee = $snsSelectedTransactionFeeStore?.toUlps();
 
   let token: Token;
   $: token = $snsTokenSymbolSelectedStore as Token;

@@ -1,15 +1,14 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
-  import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
+  import { formatTokenV2 } from "$lib/utils/token.utils";
   import { Value } from "@dfinity/gix-components";
-  import type { TokenAmount } from "@dfinity/utils";
+  import type { TokenAmountV2 } from "@dfinity/utils";
 
   export let feeOnly = false;
   export let source: string;
   export let destination: string;
   export let hardwareWallet = false;
-  export let fee: TokenAmount | undefined = undefined;
+  export let fee: TokenAmountV2;
 </script>
 
 {#if !feeOnly}
@@ -32,11 +31,7 @@
   <p class="label">{$i18n.accounts.transaction_fee}</p>
 
   <p class="fee">
-    <Value
-      >{formattedTransactionFeeICP(
-        fee?.toE8s() ?? $mainTransactionFeeStore
-      )}</Value
-    >
+    <Value>{formatTokenV2({ value: fee })}</Value>
     {fee?.token.symbol ?? $i18n.core.icp}
   </p>
 </div>

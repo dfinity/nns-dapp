@@ -17,7 +17,6 @@
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import { toTokenAmountV2 } from "$lib/utils/token.utils";
 
   export let neuronId: SnsNeuronId;
   export let token: Token;
@@ -83,7 +82,7 @@
     $snsProjectSelectedStore?.summary.governanceCanisterId;
 
   let transactionFee: TokenAmountV2 | undefined = undefined;
-  $: transactionFee = toTokenAmountV2($snsSelectedTransactionFeeStore);
+  $: transactionFee = $snsSelectedTransactionFeeStore;
 
   let loading = true;
   $: loading =

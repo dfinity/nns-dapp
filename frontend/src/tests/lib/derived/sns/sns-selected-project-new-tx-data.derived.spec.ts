@@ -59,7 +59,7 @@ describe("selected-project-new-transaction-data derived store", () => {
         rootCanisterId.toText()
       );
       expect(storeData.token).toEqual(token);
-      expect(storeData.transactionFee.toE8s()).toEqual(fee);
+      expect(storeData.transactionFee.toUlps()).toEqual(fee);
     });
 
     it("returns undefined if no transaction fee", () => {

@@ -1,13 +1,13 @@
-import { TokenAmount } from "@dfinity/utils";
+import { TokenAmountV2 } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
 
 export const mockSnsSelectedTransactionFeeStoreSubscribe =
   (notDefined = false) =>
-  (run: Subscriber<TokenAmount>): (() => void) => {
+  (run: Subscriber<TokenAmountV2>): (() => void) => {
     run(
       notDefined
         ? undefined
-        : TokenAmount.fromE8s({
+        : TokenAmountV2.fromUlps({
             amount: 10_000n,
             token: { name: "Test", symbol: "TST", decimals: 8 },
           })

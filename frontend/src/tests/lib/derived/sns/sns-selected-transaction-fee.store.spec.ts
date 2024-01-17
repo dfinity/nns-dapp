@@ -38,7 +38,7 @@ describe("snsSelectedTransactionFeeStore", () => {
 
     const actualFeeTokens = get(snsSelectedTransactionFeeStore);
 
-    expect(actualFeeTokens?.toE8s()).toBe(fee);
+    expect(actualFeeTokens?.toUlps()).toBe(fee);
     expect(actualFeeTokens?.token.symbol).toBe(mockToken.symbol);
   });
 
