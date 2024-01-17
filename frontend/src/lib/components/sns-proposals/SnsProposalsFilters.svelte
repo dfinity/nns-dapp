@@ -14,6 +14,7 @@
   import { ENABLE_SNS_TYPES_FILTER } from "$lib/stores/feature-flags.store";
 
   let modal: "types" | "rewards" | "status" | undefined = undefined;
+
   let rootCanisterId: Principal;
   $: rootCanisterId = $selectedUniverseIdStore;
   let filtersStore: ProjectFiltersStoreData | undefined;
