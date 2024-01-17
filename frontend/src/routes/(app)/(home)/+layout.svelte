@@ -5,17 +5,16 @@
   import { ENABLE_MY_TOKENS } from "$lib/stores/feature-flags.store";
   import MainWrapper from "$lib/components/tokens/MainWrapper.svelte";
   import Content from "$lib/components/layout/Content.svelte";
-  import { goto } from "$app/navigation";
-  import { AppPath } from "$lib/constants/routes.constants";
   import { accountsTitleStore } from "$lib/derived/accounts-title.derived";
-
-  const back = (): Promise<void> => goto(AppPath.Tokens);
+  import { i18n } from "$lib/stores/i18n";
 </script>
 
-<LayoutList title={$accountsTitleStore}>
+<LayoutList
+  title={$ENABLE_MY_TOKENS ? $i18n.navigation.tokens : $accountsTitleStore}
+>
   <Layout>
     {#if $ENABLE_MY_TOKENS}
-      <Content {back}>
+      <Content>
         <MainWrapper>
           <slot />
         </MainWrapper>
