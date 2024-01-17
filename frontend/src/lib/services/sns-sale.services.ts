@@ -20,7 +20,7 @@ import {
   toastsShow,
   toastsSuccess,
 } from "$lib/stores/toasts.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { mainTransactionFeeE8sStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { ApiErrorKey } from "$lib/types/api.errors";
 import { LedgerErrorKey } from "$lib/types/ledger.errors";
@@ -442,7 +442,7 @@ export const initiateSnsSaleParticipation = async ({
     updateProgress(SaleStep.INITIALIZATION);
 
     // amount validation
-    const transactionFee = get(transactionsFeesStore).main;
+    const transactionFee = get(mainTransactionFeeE8sStore);
     assertEnoughAccountFunds({
       account,
       amountUlps: amount.toE8s() + transactionFee,
