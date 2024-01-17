@@ -71,7 +71,7 @@ if [ "${DFX_HOST:-}" ]; then
   DFX_ARGS+=("--host" "$DFX_HOST")
 fi
 if [ "${DFX_DOMAIN:-}" ]; then
-  DFX_ARGS+=("--domain" "$DFX_DOMAIN")
+  DFX_ARGS+=("--domain" "localhost" "--domain" "$DFX_DOMAIN")
 fi
 dfx start "${DFX_ARGS[@]}"
 
