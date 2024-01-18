@@ -175,7 +175,7 @@ export const swapEndedMoreThanOneWeekAgo = ({
 /**
  * Returns true if the FunctionType is NativeNervousSystemFunction (same for all same-version snses).
  */
-export const isSnsesNativeNervousSystemFunction = (
+export const isSnsNativeNervousSystemFunction = (
   nsFunction: SnsNervousSystemFunction
 ): boolean =>
   "NativeNervousSystemFunction" in

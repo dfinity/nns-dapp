@@ -9,7 +9,7 @@ import {
   isInternalRefreshBuyerTokensError,
   isSnsFinalizing,
   isSnsGenericNervousSystemFunction,
-  isSnsesNativeNervousSystemFunction,
+  isSnsNativeNervousSystemFunction,
   parseSnsSwapSaleBuyerCount,
   swapEndedMoreThanOneWeekAgo,
 } from "$lib/utils/sns.utils";
@@ -344,12 +344,12 @@ sale_participants_count ${saleBuyerCount} 1677707139456
   describe("isNativeNervousSystemFunction", () => {
     it("should return true for NativeNervousSystemFunction", () => {
       expect(
-        isSnsesNativeNervousSystemFunction(nativeNervousSystemFunctionMock)
+        isSnsNativeNervousSystemFunction(nativeNervousSystemFunctionMock)
       ).toBe(true);
     });
     it("should return false for not NativeNervousSystemFunction", () => {
       expect(
-        isSnsesNativeNervousSystemFunction(genericNervousSystemFunctionMock)
+        isSnsNativeNervousSystemFunction(genericNervousSystemFunctionMock)
       ).toBe(false);
     });
   });

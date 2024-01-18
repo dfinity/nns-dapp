@@ -15,7 +15,7 @@ import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import {
   isSnsGenericNervousSystemFunction,
-  isSnsesNativeNervousSystemFunction,
+  isSnsNativeNervousSystemFunction,
 } from "$lib/utils/sns.utils";
 import { basisPointsToPercent } from "$lib/utils/utils";
 import { Vote } from "@dfinity/nns";
@@ -496,7 +496,7 @@ export const toExcludeTypeParameter = ({
     return [];
   }
   const nativeNsFunctionIds = snsFunctions
-    .filter(isSnsesNativeNervousSystemFunction)
+    .filter(isSnsNativeNervousSystemFunction)
     .map(({ id }) => id);
   const isNativeNsFunctionSelected = (nsFunctionId: bigint) =>
     filter.some(({ id, checked }) => id === nsFunctionId.toString() && checked);
@@ -536,7 +536,7 @@ export const generateSnsProposalTypesFilterData = ({
     typesFilterState.find(({ id: stateId }) => id === stateId)?.checked !==
     false;
   const nativeNsFunctionEntries: Filter<SnsProposalTypeFilterId>[] = nsFunctions
-    .filter(isSnsesNativeNervousSystemFunction)
+    .filter(isSnsNativeNervousSystemFunction)
     // ignore { 0n: "All Topics"}
     .filter(({ id }) => id !== ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID)
     .map((entry) => ({
