@@ -9,6 +9,7 @@ import { authStore } from "$lib/stores/auth.store";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
+import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import {
   mockAuthStoreNoIdentitySubscribe,
@@ -17,6 +18,10 @@ import {
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import {
+  genericNervousSystemFunctionMock,
+  nativeNervousSystemFunctionMock,
+} from "$tests/mocks/sns-functions.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
@@ -196,6 +201,36 @@ describe("sns-proposals services", () => {
           certified: false,
           rootCanisterId: mockPrincipal,
         });
+      });
+
+      it("should call queryProposals with excludeType parameter", async () => {
+        const nativeFunctionId = nativeNervousSystemFunctionMock.id;
+        const genericFunctionId = genericNervousSystemFunctionMock.id;
+        const nativeFilterEntry: Filter<SnsProposalTypeFilterId> = {
+          id: `${nativeFunctionId}`,
+          name: "string",
+          value: `${nativeFunctionId}`,
+          checked: true,
+        };
+        snsFiltersStore.setTypes({
+          rootCanisterId: mockPrincipal,
+          types: [nativeFilterEntry],
+        });
+        await loadSnsProposals({
+          rootCanisterId: mockPrincipal,
+          snsFunctions: [
+            nativeNervousSystemFunctionMock,
+            genericNervousSystemFunctionMock,
+          ],
+        });
+        expect(queryProposalsSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            params: expect.objectContaining({
+              // exclude generic type, because only native was selected
+              excludeType: [genericFunctionId],
+            }),
+          })
+        );
       });
     });
   });
