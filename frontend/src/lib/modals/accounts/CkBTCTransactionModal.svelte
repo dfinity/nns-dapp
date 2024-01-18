@@ -4,21 +4,19 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { NewTransaction, TransactionInit } from "$lib/types/transaction";
-  import { TransactionNetwork } from "$lib/types/transaction";
+  import type { TransactionNetwork } from "$lib/types/transaction";
   import type { ValidateAmountFn } from "$lib/types/transaction";
   import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { Account } from "$lib/types/account";
   import type { WizardStep } from "@dfinity/gix-components";
   import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
-  import { TokenAmountV2, type Token } from "@dfinity/utils";
-  import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
+  import type { TokenAmountV2, Token } from "@dfinity/utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
   import {
     convertCkBTCToBtcIcrc2,
     type ConvertCkBTCToBtcParams,
-    retrieveBtc,
   } from "$lib/services/ckbtc-convert.services";
   import BitcoinEstimatedFee from "$lib/components/accounts/BitcoinEstimatedFee.svelte";
   import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
@@ -41,32 +39,12 @@
   export let token: Token;
   export let transactionFee: TokenAmountV2;
 
-  let withdrawalAccount = selectedAccount?.type === "withdrawalAccount";
-
   let transactionInit: TransactionInit = {
     sourceAccount: selectedAccount,
     mustSelectNetwork: true,
-    ...(withdrawalAccount && {
-      networkReadonly: true,
-      selectDestinationMethods: "manual",
-      showLedgerFee: false,
-    }),
   };
 
-  // If ckBTC are converted to BTC from the withdrawal account there is no transfer to the ckBTC ledger, therefore no related fee will be applied
-  let fee: TokenAmountV2;
-  $: fee = withdrawalAccount
-    ? TokenAmountV2.fromUlps({
-        amount: 0n,
-        token: transactionFee.token,
-      })
-    : transactionFee;
-
-  let selectedNetwork: TransactionNetwork | undefined = withdrawalAccount
-    ? isUniverseCkTESTBTC(universeId)
-      ? TransactionNetwork.BTC_TESTNET
-      : TransactionNetwork.BTC_MAINNET
-    : undefined;
+  let selectedNetwork: TransactionNetwork | undefined = undefined;
   let bitcoinEstimatedFee: bigint | undefined | null = undefined;
 
   let currentStep: WizardStep | undefined;
@@ -82,7 +60,7 @@
       : $i18n.accounts.you_are_sending;
 
   let modal: TransactionModal;
-  let progressStep: ConvertBtcStep = ConvertBtcStep.INITIALIZATION;
+  let progressStep: ConvertBtcStep = ConvertBtcStep.APPROVE_TRANSFER;
 
   const dispatcher = createEventDispatcher();
 
@@ -108,8 +86,6 @@
     }
   };
 
-  let useIcrc2ForProgress = true;
-
   const convert = async ({
     detail: { sourceAccount, amount, destinationAddress },
   }: CustomEvent<NewTransaction>) => {
@@ -125,18 +101,10 @@
       updateProgress,
     };
 
-    let success = false;
-
-    if (withdrawalAccount) {
-      useIcrc2ForProgress = false;
-      ({ success } = await retrieveBtc(params));
-    } else {
-      useIcrc2ForProgress = true;
-      ({ success } = await convertCkBTCToBtcIcrc2({
-        source: sourceAccount,
-        ...params,
-      }));
-    }
+    const { success } = await convertCkBTCToBtcIcrc2({
+      source: sourceAccount,
+      ...params,
+    });
 
     if (success) {
       toastsSuccess({
@@ -173,7 +141,7 @@
       networkBtc,
       sourceAccount: selectedAccount,
       amount,
-      transactionFee: fee.toUlps(),
+      transactionFee: transactionFee.toUlps(),
       infoData,
     });
 
@@ -189,7 +157,7 @@
   on:nnsClose
   bind:currentStep
   {token}
-  transactionFee={fee}
+  {transactionFee}
   {transactionInit}
   bind:selectedNetwork
   {validateAmount}
@@ -227,9 +195,5 @@
       <TransactionReceivedAmount amount={userAmount} {token} />
     {/if}
   </svelte:fragment>
-  <ConvertBtcInProgress
-    slot="in_progress"
-    {progressStep}
-    useIcrc2={useIcrc2ForProgress}
-  />
+  <ConvertBtcInProgress slot="in_progress" {progressStep} />
 </TransactionModal>

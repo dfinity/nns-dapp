@@ -23,12 +23,6 @@ vi.mock("$lib/services/wallet-accounts.services", () => {
   };
 });
 
-vi.mock("$lib/services/ckbtc-withdrawal-accounts.services", () => {
-  return {
-    loadCkBTCWithdrawalAccount: vi.fn().mockResolvedValue(undefined),
-  };
-});
-
 vi.mock("$lib/services/ckbtc-minter.services", () => {
   return {
     updateBalance: vi.fn().mockResolvedValue(undefined),
