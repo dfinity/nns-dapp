@@ -9,10 +9,8 @@ import {
   type MinterInfo,
   type MinterParams,
   type RetrieveBtcOk,
-  type RetrieveBtcParams,
   type RetrieveBtcStatusV2WithId,
   type UpdateBalanceOk,
-  type WithdrawalAccount,
 } from "@dfinity/ckbtc";
 import type { Principal } from "@dfinity/principal";
 import type { QueryParams } from "@dfinity/utils";
@@ -60,44 +58,6 @@ export const updateBalance = async (params: {
   const result = await updateBalanceApi(minterIdentityParams(params));
 
   logWithTimestamp("Updating ckBTC balance: done");
-
-  return result;
-};
-
-export const getWithdrawalAccount = async (params: {
-  identity: Identity;
-  canisterId: Principal;
-}): Promise<WithdrawalAccount> => {
-  logWithTimestamp("Get ckBTC withdrawal account: call...");
-
-  const {
-    canister: { getWithdrawalAccount: getWithdrawalAccountApi },
-  } = await ckBTCMinterCanister(params);
-
-  const result = await getWithdrawalAccountApi();
-
-  logWithTimestamp("Get ckBTC withdrawal account: done");
-
-  return result;
-};
-
-export const retrieveBtc = async ({
-  identity,
-  canisterId,
-  ...params
-}: {
-  identity: Identity;
-  canisterId: Principal;
-} & RetrieveBtcParams): Promise<RetrieveBtcOk> => {
-  logWithTimestamp("Retrieve BTC: call...");
-
-  const {
-    canister: { retrieveBtc: retrieveBtcApi },
-  } = await ckBTCMinterCanister({ identity, canisterId });
-
-  const result = await retrieveBtcApi(params);
-
-  logWithTimestamp("Retrieve BTC: done");
 
   return result;
 };

@@ -3,13 +3,8 @@ import * as minterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import * as ckbtcAccountsServices from "$lib/services/ckbtc-accounts.services";
-import {
-  convertCkBTCToBtcIcrc2,
-  retrieveBtc,
-} from "$lib/services/ckbtc-convert.services";
-import { loadCkBTCWithdrawalAccount } from "$lib/services/ckbtc-withdrawal-accounts.services";
+import { convertCkBTCToBtcIcrc2 } from "$lib/services/ckbtc-convert.services";
 import { loadWalletTransactions } from "$lib/services/wallet-transactions.services";
-import { ckBTCWithdrawalAccountsStore } from "$lib/stores/ckbtc-withdrawal-accounts.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
 import { numberToE8s } from "$lib/utils/token.utils";
@@ -30,7 +25,6 @@ import type { Mock } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/services/wallet-transactions.services");
-vi.mock("$lib/services/ckbtc-withdrawal-accounts.services");
 
 describe("ckbtc-convert-services", () => {
   const now = new Date("2019-02-03T12:34:56.789Z").getTime();
@@ -63,8 +57,6 @@ describe("ckbtc-convert-services", () => {
     vi.restoreAllMocks();
     vi.clearAllTimers();
 
-    ckBTCWithdrawalAccountsStore.reset();
-
     vi.spyOn(CkBTCMinterCanister, "create").mockImplementation(
       () => minterCanisterMock
     );
@@ -78,129 +70,19 @@ describe("ckbtc-convert-services", () => {
     vi.useFakeTimers().setSystemTime(now);
   });
 
-  describe("retrieve BTC", () => {
-    const ok: RetrieveBtcOk = {
-      block_index: 1n,
-    };
-
-    const retrieveBtcSpy = minterCanisterMock.retrieveBtc;
-
-    beforeEach(() => {
-      retrieveBtcSpy.mockResolvedValue(ok);
-    });
-
-    it("should retrieve btc", async () => {
-      const updateProgressSpy = vi.fn();
-
-      await retrieveBtc({
-        ...params,
-        updateProgress: updateProgressSpy,
-      });
-
-      expect(retrieveBtcSpy).toBeCalledWith({
-        address: mockBTCAddressTestnet,
-        amount: numberToE8s(params.amount),
-      });
-
-      // We only test that the call is made here. Test should be covered by its respective service.
-      expect(loadWalletTransactions).not.toBeCalled();
-      expect(loadCkBTCWithdrawalAccount).toBeCalled();
-
-      expectStepsPerformed({
-        updateProgressSpy,
-        steps: [
-          ConvertBtcStep.INITIALIZATION,
-          ConvertBtcStep.SEND_BTC,
-          ConvertBtcStep.RELOAD,
-          ConvertBtcStep.DONE,
-        ],
-      });
-    });
-
-    it("should display an error if retrieve btc fails", async () => {
-      minterCanisterMock.retrieveBtc.mockImplementation(async () => {
-        throw new Error();
-      });
-
-      const spyOnToastsError = vi.spyOn(toastsStore, "toastsError");
-
-      const updateProgressSpy = vi.fn();
-
-      await retrieveBtc({
-        ...params,
-        updateProgress: updateProgressSpy,
-      });
-
-      expect(spyOnToastsError).toBeCalled();
-
-      expectStepsPerformed({
-        updateProgressSpy,
-        steps: [
-          ConvertBtcStep.INITIALIZATION,
-          ConvertBtcStep.SEND_BTC,
-          ConvertBtcStep.RELOAD,
-        ],
-      });
-    });
-
-    it("should reload withdrawal account on retrieve btc success", async () => {
-      await retrieveBtc({
-        ...params,
-        updateProgress: vi.fn(),
-      });
-
-      expect(loadCkBTCWithdrawalAccount).toBeCalled();
-    });
-
-    it("should not reload transaction on retrieve btc success", async () => {
-      await retrieveBtc({
-        ...params,
-        updateProgress: vi.fn(),
-      });
-
-      expect(loadWalletTransactions).not.toBeCalled();
-    });
-
-    it("should reload withdrawal account on retrieve btc error too", async () => {
-      minterCanisterMock.retrieveBtc.mockImplementation(async () => {
-        throw new Error();
-      });
-
-      await retrieveBtc({
-        ...params,
-        updateProgress: vi.fn(),
-      });
-
-      expect(loadCkBTCWithdrawalAccount).toBeCalled();
-    });
-
-    it("should not reload transaction on retrieve btc error too", async () => {
-      minterCanisterMock.retrieveBtc.mockImplementation(async () => {
-        throw new Error();
-      });
-
-      await retrieveBtc({
-        ...params,
-        updateProgress: vi.fn(),
-      });
-
-      expect(loadWalletTransactions).not.toBeCalled();
-    });
-  });
-
   describe("convert with ICRC-2", () => {
     let approveTransferSpy;
     let resolveApproveTransfer;
     let retrieveBtcSpy;
     let resolveRetrieveBtc;
     let rejectRetrieveBtc;
-    let resolveLoadCkBTCWithdrawalAccount;
+    let resolveLoadWalletTransactions;
     let spyOnToastsError;
 
     beforeEach(() => {
       resolveApproveTransfer = undefined;
       resolveRetrieveBtc = undefined;
-      resolveLoadCkBTCWithdrawalAccount = undefined;
+      resolveLoadWalletTransactions = undefined;
 
       approveTransferSpy = vi
         .spyOn(icrcLedgerApi, "approveTransfer")
@@ -219,10 +101,10 @@ describe("ckbtc-convert-services", () => {
               rejectRetrieveBtc = reject;
             })
         );
-      vi.mocked(loadCkBTCWithdrawalAccount).mockImplementation(
+      vi.mocked(loadWalletTransactions).mockImplementation(
         () =>
           new Promise<void>((resolve) => {
-            resolveLoadCkBTCWithdrawalAccount = resolve;
+            resolveLoadWalletTransactions = resolve;
           })
       );
       spyOnToastsError = vi.spyOn(toastsStore, "toastsError");
@@ -254,7 +136,6 @@ describe("ckbtc-convert-services", () => {
 
       expect(approveTransferSpy).toBeCalledTimes(1);
       expect(retrieveBtcSpy).toBeCalledTimes(0);
-      expect(loadCkBTCWithdrawalAccount).toBeCalledTimes(0);
       expect(loadWalletTransactions).toBeCalledTimes(0);
       expect(loadCkBTCAccountsSpy).toBeCalledTimes(0);
     });
@@ -286,7 +167,6 @@ describe("ckbtc-convert-services", () => {
 
       expect(approveTransferSpy).toBeCalledTimes(1);
       expect(retrieveBtcSpy).toBeCalledTimes(1);
-      expect(loadCkBTCWithdrawalAccount).toBeCalledTimes(0);
       expect(loadWalletTransactions).toBeCalledTimes(0);
       expect(loadCkBTCAccountsSpy).toBeCalledTimes(0);
     });
@@ -315,10 +195,6 @@ describe("ckbtc-convert-services", () => {
         ],
       });
 
-      expect(loadCkBTCWithdrawalAccount).toBeCalledWith({
-        universeId: params.universeId,
-      });
-
       expect(loadWalletTransactions).toBeCalledWith({
         account: params.source,
         canisterId: params.universeId,
@@ -331,7 +207,6 @@ describe("ckbtc-convert-services", () => {
 
       expect(approveTransferSpy).toBeCalledTimes(1);
       expect(retrieveBtcSpy).toBeCalledTimes(1);
-      expect(loadCkBTCWithdrawalAccount).toBeCalledTimes(1);
       expect(loadWalletTransactions).toBeCalledTimes(1);
       expect(loadCkBTCAccountsSpy).toBeCalledTimes(1);
     });
@@ -349,7 +224,7 @@ describe("ckbtc-convert-services", () => {
       await runResolvedPromises();
       resolveRetrieveBtc({ block_index: 125 });
       await runResolvedPromises();
-      resolveLoadCkBTCWithdrawalAccount(undefined);
+      resolveLoadWalletTransactions(undefined);
       await runResolvedPromises();
 
       expectStepsPerformed({
@@ -364,7 +239,6 @@ describe("ckbtc-convert-services", () => {
 
       expect(approveTransferSpy).toBeCalledTimes(1);
       expect(retrieveBtcSpy).toBeCalledTimes(1);
-      expect(loadCkBTCWithdrawalAccount).toBeCalledTimes(1);
       expect(loadWalletTransactions).toBeCalledTimes(1);
       expect(loadCkBTCAccountsSpy).toBeCalledTimes(1);
 
@@ -385,7 +259,7 @@ describe("ckbtc-convert-services", () => {
       await runResolvedPromises();
       rejectRetrieveBtc(new MinterInsufficientFundsError());
       await runResolvedPromises();
-      resolveLoadCkBTCWithdrawalAccount(undefined);
+      resolveLoadWalletTransactions(undefined);
       await runResolvedPromises();
 
       expectStepsPerformed({
@@ -399,7 +273,6 @@ describe("ckbtc-convert-services", () => {
 
       expect(approveTransferSpy).toBeCalledTimes(1);
       expect(retrieveBtcSpy).toBeCalledTimes(1);
-      expect(loadCkBTCWithdrawalAccount).toBeCalledTimes(1);
       expect(loadWalletTransactions).toBeCalledTimes(1);
 
       expect(await convertPromise).toEqual({ success: false });

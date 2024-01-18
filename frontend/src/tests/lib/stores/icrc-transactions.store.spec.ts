@@ -1,14 +1,13 @@
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
-import {
-  mockCkBTCMainAccount,
-  mockCkBTCWithdrawalAccount,
-} from "$tests/mocks/ckbtc-accounts.mock";
+import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { get } from "svelte/store";
 
 describe("icrc-transactions", () => {
   it("should reset account", () => {
+    const otherAccountIdentifier = "otherAccountIdentifier";
+
     icrcTransactionsStore.addTransactions({
       canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
       transactions: [mockIcrcTransactionWithId],
@@ -30,16 +29,14 @@ describe("icrc-transactions", () => {
     icrcTransactionsStore.addTransactions({
       canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
       transactions: [mockIcrcTransactionWithId],
-      accountIdentifier: mockCkBTCWithdrawalAccount.identifier,
+      accountIdentifier: otherAccountIdentifier,
       oldestTxId: 10n,
       completed: false,
     });
 
     const accounts2 = get(icrcTransactionsStore);
     expect(
-      accounts2[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()][
-        mockCkBTCWithdrawalAccount.identifier
-      ]
+      accounts2[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()][otherAccountIdentifier]
     ).not.toBeUndefined();
 
     icrcTransactionsStore.resetAccount({

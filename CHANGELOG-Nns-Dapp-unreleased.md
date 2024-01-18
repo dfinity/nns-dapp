@@ -30,6 +30,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Removed
 
 * non-ICRC2 BTC withdrawal flow.
+* ckBTC withdrawal account.
 
 #### Fixed
 

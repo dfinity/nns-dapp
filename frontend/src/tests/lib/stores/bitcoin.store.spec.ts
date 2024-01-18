@@ -1,7 +1,4 @@
-import {
-  bitcoinAddressStore,
-  bitcoinConvertBlockIndexes,
-} from "$lib/stores/bitcoin.store";
+import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import {
   mockBTCAddressTestnet,
   mockCkBTCMainAccount,
@@ -33,56 +30,6 @@ describe("bitcoin-store", () => {
 
       const store = get(bitcoinAddressStore);
       expect(store[mockCkBTCMainAccount.identifier]).toBeUndefined();
-    });
-  });
-
-  describe("Bitcoin convert block indexed store", () => {
-    beforeEach(() => bitcoinConvertBlockIndexes.reset());
-
-    it("should add block indexes", () => {
-      const store = get(bitcoinConvertBlockIndexes);
-      expect(store.length).toEqual(0);
-
-      bitcoinConvertBlockIndexes.addBlockIndex(123n);
-      const store2 = get(bitcoinConvertBlockIndexes);
-      expect(store2[0]).toEqual(123n);
-
-      bitcoinConvertBlockIndexes.addBlockIndex(456n);
-      const store3 = get(bitcoinConvertBlockIndexes);
-      expect(store3[0]).toEqual(123n);
-      expect(store3[1]).toEqual(456n);
-      expect(store3.length).toEqual(2);
-    });
-
-    it("should remove block indexes", () => {
-      const store = get(bitcoinConvertBlockIndexes);
-      expect(store.length).toEqual(0);
-
-      bitcoinConvertBlockIndexes.addBlockIndex(123n);
-      bitcoinConvertBlockIndexes.addBlockIndex(456n);
-
-      const store2 = get(bitcoinConvertBlockIndexes);
-      expect(store2.length).toEqual(2);
-
-      bitcoinConvertBlockIndexes.removeBlockIndex(123n);
-      const store3 = get(bitcoinConvertBlockIndexes);
-      expect(store3[0]).toEqual(456n);
-      expect(store3.length).toEqual(1);
-    });
-
-    it("should reset block indexes", () => {
-      const store = get(bitcoinConvertBlockIndexes);
-      expect(store.length).toEqual(0);
-
-      bitcoinConvertBlockIndexes.addBlockIndex(123n);
-      bitcoinConvertBlockIndexes.addBlockIndex(456n);
-
-      const store2 = get(bitcoinConvertBlockIndexes);
-      expect(store2.length).toEqual(2);
-
-      bitcoinConvertBlockIndexes.reset();
-      const store3 = get(bitcoinConvertBlockIndexes);
-      expect(store3.length).toEqual(0);
     });
   });
 });

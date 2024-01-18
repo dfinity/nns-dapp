@@ -2,10 +2,7 @@ import * as ckbtcMinterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as ckbtcLedgerApi from "$lib/api/wallet-ledger.api";
-import {
-  CKTESTBTC_MINTER_CANISTER_ID,
-  CKTESTBTC_UNIVERSE_CANISTER_ID,
-} from "$lib/constants/ckbtc-canister-ids.constants";
+import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { WALLET_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/wallet.constants";
 import CkBTCWallet from "$lib/pages/CkBTCWallet.svelte";
@@ -134,13 +131,6 @@ describe("CkBTCWallet", () => {
       retrieve_btc_min_amount: 80_000n,
       min_confirmations: 12,
       kyt_fee: 7_000n,
-    });
-    vi.mocked(ckbtcMinterApi.getWithdrawalAccount).mockResolvedValue({
-      owner: CKTESTBTC_MINTER_CANISTER_ID,
-      subaccount: [],
-    });
-    vi.mocked(ckbtcMinterApi.retrieveBtc).mockResolvedValue({
-      block_index: 123n,
     });
     vi.mocked(ckbtcMinterApi.estimateFee).mockResolvedValue({
       minter_fee: 2000n,

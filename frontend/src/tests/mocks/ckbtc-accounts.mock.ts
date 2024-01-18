@@ -32,13 +32,6 @@ export const mockCkBTCWithdrawalIcrcAccount = decodeIcrcAccount(
   mockCkBTCWithdrawalIdentifier
 );
 
-export const mockCkBTCWithdrawalAccount: Account = {
-  identifier: mockCkBTCWithdrawalIdentifier,
-  balanceUlps: 98_711_100_000n,
-  principal: mockCkBTCWithdrawalIcrcAccount.owner,
-  type: "withdrawalAccount",
-};
-
 export const mockCkBTCAddress =
   "73avq-yvrvj-kuzxq-kttlj-nkaz4-tecy6-biuud-3ymeg-guvci-naire-uqe";
 export const mockBTCAddressTestnet = "mipcBbFg9gMiCh81Kj8tqqdgoZub1ZJRfn";

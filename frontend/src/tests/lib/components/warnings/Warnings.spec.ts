@@ -1,7 +1,5 @@
 import Warnings from "$lib/components/warnings/Warnings.svelte";
 import type { MetricsCallback } from "$lib/services/$public/worker-metrics.services";
-import { bitcoinConvertBlockIndexes } from "$lib/stores/bitcoin.store";
-import { layoutWarningToastId } from "$lib/stores/layout.store";
 import { metricsStore } from "$lib/stores/metrics.store";
 import type { DashboardMessageExecutionRateResponse } from "$lib/types/dashboard";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
@@ -128,88 +126,6 @@ describe("Warnings", () => {
       await tick();
 
       expect(container.querySelectorAll(".toast").length).toEqual(1);
-    });
-  });
-
-  describe("ConvertCkBTCToBtcWarning", () => {
-    beforeEach(() => {
-      vi.clearAllMocks();
-      vi.resetAllMocks();
-
-      layoutWarningToastId.set(undefined);
-      metricsStore.set(undefined);
-      toastsStore.reset();
-
-      bitcoinConvertBlockIndexes.reset();
-    });
-
-    describe("signed in", () => {
-      beforeEach(() => {
-        resetIdentity();
-      });
-
-      it("should render ckBTC to BTC warning", async () => {
-        bitcoinConvertBlockIndexes.addBlockIndex(1n);
-
-        const { container } = render(Warnings, {
-          props: {
-            ckBTCWarnings: true,
-          },
-        });
-
-        await waitFor(() => {
-          const toast = container.querySelector(".toast");
-
-          expect(toast?.textContent ?? "").toContain(
-            en.ckbtc.warning_transaction_failed
-          );
-          expect(toast?.textContent ?? "").toContain(
-            en.ckbtc.warning_transaction_description
-          );
-        });
-      });
-
-      it("should render no ckBTC warning if no warning", async () => {
-        const { container } = render(Warnings, {
-          props: {
-            ckBTCWarnings: true,
-          },
-        });
-
-        await waitFor(() => {
-          expect(container.querySelector(".toast")).toBeNull();
-        });
-      });
-
-      it("should render no ckBTC warning if disabled", async () => {
-        bitcoinConvertBlockIndexes.addBlockIndex(1n);
-
-        const { container } = render(Warnings);
-
-        await waitFor(() => {
-          expect(container.querySelector(".toast")).toBeNull();
-        });
-      });
-    });
-
-    describe("not signed in", () => {
-      beforeEach(() => {
-        setNoIdentity();
-      });
-
-      it("should render no ckBTC warning", async () => {
-        bitcoinConvertBlockIndexes.addBlockIndex(1n);
-
-        const { container } = render(Warnings, {
-          props: {
-            ckBTCWarnings: true,
-          },
-        });
-
-        await waitFor(() => {
-          expect(container.querySelector(".toast")).toBeNull();
-        });
-      });
     });
   });
 
