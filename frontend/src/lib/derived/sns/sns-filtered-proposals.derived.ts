@@ -50,7 +50,8 @@ export const snsFilteredProposalsStore = derived<
                 .map(({ value }) => value)
                 .includes(
                   isGenericNervousSystemTypeProposal(proposal)
-                    ? ALL_SNS_GENERIC_PROPOSAL_TYPES_ID
+                    ? // If "All generic functions" is checked, we want to match all generic proposal types.
+                      ALL_SNS_GENERIC_PROPOSAL_TYPES_ID
                     : `${proposal.action}`
                 );
 
