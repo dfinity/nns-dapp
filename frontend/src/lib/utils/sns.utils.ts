@@ -189,3 +189,11 @@ export const isGenericNervousSystemFunction = (
 ): boolean =>
   "GenericNervousSystemFunction" in
   (fromNullable(nsFunction.function_type) ?? {});
+
+/**
+ * Returns true if the sns proposal is of the type GenericNervousSystemFunction
+ */
+export const isGenericNervousSystemTypeProposal = ({
+  action,
+}: SnsProposalData): boolean =>
+  action >= MIN_VALID_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID;
