@@ -1059,8 +1059,6 @@ interface I18nCkbtc {
   test_bitcoin: string;
   btc: string;
   ckbtc_balance_updated: string;
-  step_initialization: string;
-  step_locking_ckbtc: string;
   step_approve_transfer: string;
   step_send_btc: string;
   step_reload: string;
@@ -1075,7 +1073,6 @@ interface I18nCkbtc {
   bitcoin_address_title: string;
   refresh_balance: string;
   confirmations: string;
-  warning_transaction_failed: string;
   warning_transaction_description: string;
   checking_incomplete_btc_transfers: string;
   all_btc_transfers_complete: string;
@@ -1101,7 +1098,6 @@ interface I18nError__ckbtc {
   get_btc_no_universe: string;
   update_balance: string;
   no_new_confirmed_btc: string;
-  withdrawal_account: string;
   retrieve_btc: string;
   malformed_address: string;
   amount_too_low: string;
