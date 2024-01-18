@@ -99,6 +99,14 @@ describe("navigation-utils", () => {
       );
     });
 
+    it("should build wallet url without account", () => {
+      expect(
+        buildWalletUrl({
+          universe: OWN_CANISTER_ID_TEXT,
+        })
+      ).toEqual(`${AppPath.Wallet}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`);
+    });
+
     it("should build neuron url", () => {
       expect(
         buildNeuronUrl({
