@@ -173,7 +173,9 @@ export const swapEndedMoreThanOneWeekAgo = ({
 };
 
 /**
- * Returns true if the FunctionType is NativeNervousSystemFunction (same for all same-version snses).
+ * Returns true if the FunctionType is NativeNervousSystemFunction.
+ * Native means that the function can be executed only on its SNS canisters.
+ * (same for all same-version snses)
  */
 export const isSnsNativeNervousSystemFunction = (
   nsFunction: SnsNervousSystemFunction
@@ -182,7 +184,9 @@ export const isSnsNativeNervousSystemFunction = (
   (fromNullable(nsFunction.function_type) ?? {});
 
 /**
- * Returns true if the FunctionType is GenericNervousSystemFunction (custom per sns).
+ * Returns true if the FunctionType is GenericNervousSystemFunction
+ * Generic means that the function can be executed outside the SNS canisters (on any canister).
+ * (custom per sns).
  */
 export const isSnsGenericNervousSystemFunction = (
   nsFunction: SnsNervousSystemFunction
