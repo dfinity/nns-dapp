@@ -14,8 +14,8 @@ import type {
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import {
-  isGenericNervousSystemFunction,
-  isNativeNervousSystemFunction,
+  isSnsGenericNervousSystemFunction,
+  isSnsesNativeNervousSystemFunction,
 } from "$lib/utils/sns.utils";
 import { basisPointsToPercent } from "$lib/utils/utils";
 import { Vote } from "@dfinity/nns";
@@ -496,7 +496,7 @@ export const toExcludeTypeParameter = ({
     return [];
   }
   const nativeNsFunctionIds = snsFunctions
-    .filter(isNativeNervousSystemFunction)
+    .filter(isSnsesNativeNervousSystemFunction)
     .map(({ id }) => id);
   const isNativeNsFunctionSelected = (nsFunctionId: bigint) =>
     filter.some(({ id, checked }) => id === nsFunctionId.toString() && checked);
@@ -504,12 +504,12 @@ export const toExcludeTypeParameter = ({
     (id) => !isNativeNsFunctionSelected(id)
   );
   const genericNsFunctionIds = snsFunctions
-    .filter(isGenericNervousSystemFunction)
+    .filter(isSnsGenericNervousSystemFunction)
     .map(({ id }) => id);
-  const isGenericNsFunctionChecked = filter.some(
+  const isSnsGenericNsFunctionChecked = filter.some(
     ({ id, checked }) => id === ALL_SNS_GENERIC_PROPOSAL_TYPES_ID && checked
   );
-  const excludedGenericNsFunctionIds = isGenericNsFunctionChecked
+  const excludedGenericNsFunctionIds = isSnsGenericNsFunctionChecked
     ? []
     : genericNsFunctionIds;
 
@@ -536,7 +536,7 @@ export const generateSnsProposalTypesFilterData = ({
     typesFilterState.find(({ id: stateId }) => id === stateId)?.checked !==
     false;
   const nativeNsFunctionEntries: Filter<SnsProposalTypeFilterId>[] = nsFunctions
-    .filter(isNativeNervousSystemFunction)
+    .filter(isSnsesNativeNervousSystemFunction)
     // ignore { 0n: "All Topics"}
     .filter(({ id }) => id !== ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID)
     .map((entry) => ({
@@ -557,7 +557,7 @@ export const generateSnsProposalTypesFilterData = ({
     }
   );
   const genericNsFunctionEntries: Filter<SnsProposalTypeFilterId>[] =
-    nsFunctions.some(isGenericNervousSystemFunction)
+    nsFunctions.some(isSnsGenericNervousSystemFunction)
       ? // Replace all generic entries w/ a single "All Generic"
         [
           {
