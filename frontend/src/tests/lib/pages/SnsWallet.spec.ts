@@ -8,7 +8,7 @@ import * as workerBalances from "$lib/services/worker-balances.services";
 import * as workerTransactions from "$lib/services/worker-transactions.services";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
 import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
@@ -92,7 +92,7 @@ describe("SnsWallet", () => {
     resetIdentity();
     vi.clearAllMocks();
     snsAccountsStore.reset();
-    transactionsFeesStore.reset();
+    tokensStore.reset();
     toastsStore.reset();
     overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
     vi.spyOn(snsIndexApi, "getSnsTransactions").mockResolvedValue({
@@ -111,6 +111,14 @@ describe("SnsWallet", () => {
         tokenMetadata: testToken,
       },
     ]);
+    tokensStore.setToken({
+      canisterId: rootCanisterId,
+      token: {
+        ...testToken,
+        fee,
+      },
+      certified: true,
+    });
     page.mock({
       data: { universe: rootCanisterIdText },
       routeId: AppPath.Wallet,

@@ -1,7 +1,7 @@
 import * as snsLedgerApi from "$lib/api/sns-ledger.api";
 import SnsAccountsFooter from "$lib/components/accounts/SnsAccountsFooter.svelte";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
 import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -38,16 +38,19 @@ describe("SnsAccountsFooter", () => {
     ]);
 
     snsAccountsStore.reset();
-    transactionsFeesStore.reset();
+    tokensStore.reset();
     setSnsProjects([
       {
         rootCanisterId,
         lifecycle: SnsSwapLifecycle.Committed,
       },
     ]);
-    transactionsFeesStore.setFee({
-      rootCanisterId,
-      fee,
+    tokensStore.setToken({
+      canisterId: rootCanisterId,
+      token: {
+        ...mockSnsToken,
+        fee,
+      },
       certified: true,
     });
 

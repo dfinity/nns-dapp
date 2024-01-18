@@ -6,7 +6,7 @@ import { loadSnsToken } from "$lib/services/sns-tokens.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
@@ -83,7 +83,7 @@ export const snsTransferTokens = async ({
   amount: number;
   loadTransactions: boolean;
 }): Promise<{ blockIndex: IcrcBlockIndex | undefined }> => {
-  const fee = get(transactionsFeesStore).projects[rootCanisterId.toText()]?.fee;
+  const fee = get(tokensStore)[rootCanisterId.toText()]?.token.fee;
 
   return transferTokens({
     source,
