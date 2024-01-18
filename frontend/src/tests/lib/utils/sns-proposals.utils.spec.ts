@@ -834,7 +834,8 @@ describe("sns-proposals utils", () => {
 
   describe("toExcludeTypeParameter", () => {
     const allTypesNsFunctionId = ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID;
-    const nativeNsFunctionId = 1n;
+    const nativeNsFunctionId1 = 1n;
+    const nativeNsFunctionId2 = 2n;
     const genericNsFunctionId = 1001n;
     // Prepare sns functions
     const allTopicsNativeNsFunction: SnsNervousSystemFunction = {
@@ -842,9 +843,14 @@ describe("sns-proposals utils", () => {
       id: allTypesNsFunctionId,
       name: "All Topics",
     };
-    const nativeNsFunction: SnsNervousSystemFunction = {
+    const nativeNsFunction1: SnsNervousSystemFunction = {
       ...nativeNervousSystemFunctionMock,
-      id: nativeNsFunctionId,
+      id: nativeNsFunctionId1,
+      name: "name",
+    };
+    const nativeNsFunction2: SnsNervousSystemFunction = {
+      ...nativeNervousSystemFunctionMock,
+      id: nativeNsFunctionId2,
       name: "name",
     };
     const genericNsFunction: SnsNervousSystemFunction = {
@@ -854,17 +860,24 @@ describe("sns-proposals utils", () => {
     };
     const snsFunctions: SnsNervousSystemFunction[] = [
       allTopicsNativeNsFunction,
-      nativeNsFunction,
+      nativeNsFunction1,
+      nativeNsFunction2,
       genericNsFunction,
     ];
     // Prepare type filters
-    const nativeFilterEntry: Filter<SnsProposalTypeFilterId> = {
-      id: "1",
-      name: "string",
-      value: "1",
+    const nativeFilterEntry1Checked: Filter<SnsProposalTypeFilterId> = {
+      id: String(nativeNsFunctionId1),
+      name: "string 1",
+      value: String(nativeNsFunctionId1),
       checked: true,
     };
-    const allGenericProposalTypesFilterEntry: Filter<SnsProposalTypeFilterId> =
+    const nativeFilterEntry2Checked: Filter<SnsProposalTypeFilterId> = {
+      id: String(nativeNsFunctionId2),
+      name: "string 2",
+      value: String(nativeNsFunctionId2),
+      checked: true,
+    };
+    const allGenericProposalTypesFilterEntryChecked: Filter<SnsProposalTypeFilterId> =
       {
         id: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
         name: "string",
@@ -890,13 +903,13 @@ describe("sns-proposals utils", () => {
       ).toBe(undefined);
       expect(
         toExcludeTypeParameter({
-          filter: [nativeFilterEntry],
+          filter: [nativeFilterEntry1Checked],
           snsFunctions,
         }).find((id) => id === allTypesNsFunctionId)
       ).toBe(undefined);
       expect(
         toExcludeTypeParameter({
-          filter: [allGenericProposalTypesFilterEntry],
+          filter: [allGenericProposalTypesFilterEntryChecked],
           snsFunctions,
         }).find((id) => id === allTypesNsFunctionId)
       ).toBe(undefined);
@@ -905,19 +918,38 @@ describe("sns-proposals utils", () => {
     it("should exclude all except selected native ns function", () => {
       expect(
         toExcludeTypeParameter({
-          filter: [nativeFilterEntry],
+          filter: [nativeFilterEntry1Checked, nativeFilterEntry2Checked],
           snsFunctions,
         })
       ).toStrictEqual([genericNsFunctionId]);
     });
 
+    it("should exclude non selected entries", () => {
+      expect(
+        toExcludeTypeParameter({
+          filter: [
+            nativeFilterEntry1Checked,
+            {
+              ...nativeFilterEntry2Checked,
+              checked: false,
+            },
+            {
+              ...allGenericProposalTypesFilterEntryChecked,
+              checked: false,
+            },
+          ],
+          snsFunctions,
+        })
+      ).toStrictEqual([nativeNsFunctionId2, genericNsFunctionId]);
+    });
+
     it('should exclude generic when "All $snsName specific proposals" is selected', () => {
       expect(
         toExcludeTypeParameter({
-          filter: [allGenericProposalTypesFilterEntry],
+          filter: [allGenericProposalTypesFilterEntryChecked],
           snsFunctions,
         })
-      ).toStrictEqual([nativeNsFunctionId]);
+      ).toStrictEqual([nativeNsFunctionId1, nativeNsFunctionId2]);
     });
   });
 
