@@ -193,6 +193,8 @@ const pollNotifyCreateCanister = async ({
           controller,
           block_index: blockHeight,
           subnet_type: [],
+          subnet_selection: [],
+          settings: [],
         }),
       shouldExit: notProcessingError,
     });
