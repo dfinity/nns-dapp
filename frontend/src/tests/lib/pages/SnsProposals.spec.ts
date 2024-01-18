@@ -172,6 +172,7 @@ describe("SnsProposals", () => {
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,
+        action: functionId,
       });
     });
 
