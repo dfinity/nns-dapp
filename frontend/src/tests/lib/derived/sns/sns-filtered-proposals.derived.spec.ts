@@ -1,6 +1,7 @@
 import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
+import { ALL_SNS_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   createSnsProposal,
@@ -14,6 +15,9 @@ import {
 import { get } from "svelte/store";
 
 describe("snsFilteredProposalsStore", () => {
+  const rootCanisterId = mockPrincipal;
+  const getProposals = (): SnsProposalData[] =>
+    get(snsFilteredProposalsStore)[rootCanisterId.toText()]?.proposals;
   const snsProposal1: SnsProposalData = {
     ...mockSnsProposal,
     id: [{ id: 2n }],
@@ -32,7 +36,6 @@ describe("snsFilteredProposalsStore", () => {
     snsProposalsStore.reset();
   });
   it("should return undefined if filter store is not loaded", () => {
-    const rootCanisterId = mockPrincipal;
     const proposals: SnsProposalData[] = [
       snsProposal1,
       snsProposal2,
@@ -51,7 +54,6 @@ describe("snsFilteredProposalsStore", () => {
   });
 
   it("should return all proposals if no decisions filter is checked", () => {
-    const rootCanisterId = mockPrincipal;
     const proposals: SnsProposalData[] = [
       snsProposal1,
       snsProposal2,
@@ -82,13 +84,10 @@ describe("snsFilteredProposalsStore", () => {
       decisionStatus,
     });
 
-    expect(
-      get(snsFilteredProposalsStore)[rootCanisterId.toText()].proposals
-    ).toHaveLength(proposals.length);
+    expect(getProposals()).toHaveLength(proposals.length);
   });
 
   it("should return open proposals if Open status is checked", () => {
-    const rootCanisterId = mockPrincipal;
     const openProposal = createSnsProposal({
       proposalId: 2n,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
@@ -131,13 +130,10 @@ describe("snsFilteredProposalsStore", () => {
       decisionStatus,
     });
 
-    expect(
-      get(snsFilteredProposalsStore)[rootCanisterId.toText()].proposals
-    ).toHaveLength(1);
+    expect(getProposals()).toHaveLength(1);
   });
 
   it("should return accept votes proposals if Accepting Votes status is checked", () => {
-    const rootCanisterId = mockPrincipal;
     const acceptVotesProposal = createSnsProposal({
       proposalId: 2n,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
@@ -190,8 +186,121 @@ describe("snsFilteredProposalsStore", () => {
       rewardStatus,
     });
 
-    expect(
-      get(snsFilteredProposalsStore)[rootCanisterId.toText()].proposals
-    ).toMatchObject([acceptVotesProposal]);
+    expect(getProposals()).toMatchObject([acceptVotesProposal]);
+  });
+
+  it("should return proposals which type is checked", () => {
+    const checkedProposal = createSnsProposal({
+      proposalId: 1n,
+      action: 1n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+    const uncheckedProposal = createSnsProposal({
+      proposalId: 2n,
+      action: 2n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+
+    snsProposalsStore.setProposals({
+      rootCanisterId,
+      proposals: [checkedProposal, uncheckedProposal],
+      certified: true,
+      completed: true,
+    });
+    snsFiltersStore.setTypes({
+      rootCanisterId,
+      types: [
+        {
+          id: "1",
+          value: "1",
+          name: "Motion",
+          checked: true,
+        },
+        {
+          id: "2",
+          value: "2",
+          name: "Add a Node",
+          checked: false,
+        },
+      ],
+    });
+
+    expect(getProposals()).toHaveLength(1);
+    expect(getProposals()[0].action).toEqual(1n);
+
+    snsFiltersStore.setTypes({
+      rootCanisterId,
+      types: [
+        {
+          id: "1",
+          value: "1",
+          name: "_",
+          checked: true,
+        },
+        {
+          id: "2",
+          value: "2",
+          name: "_",
+          checked: true,
+        },
+      ],
+    });
+
+    expect(getProposals()).toHaveLength(2);
+    expect(getProposals().map(({ action }) => action)).toEqual([1n, 2n]);
+  });
+
+  it('should return all generic proposals when "All generic" is checked', () => {
+    const checkedProposal = createSnsProposal({
+      proposalId: 1n,
+      action: 1n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+    const genericTypeProposal1 = createSnsProposal({
+      proposalId: 2n,
+      action: 1001n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+    const genericTypeProposal2 = createSnsProposal({
+      proposalId: 3n,
+      action: 1002n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+
+    snsProposalsStore.setProposals({
+      rootCanisterId,
+      proposals: [checkedProposal, genericTypeProposal1, genericTypeProposal2],
+      certified: true,
+      completed: true,
+    });
+
+    snsFiltersStore.setTypes({
+      rootCanisterId,
+      types: [
+        {
+          id: "1",
+          value: "1",
+          name: "Motion",
+          checked: true,
+        },
+        {
+          id: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
+          value: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
+          name: "Add a Node",
+          checked: false,
+        },
+      ],
+    });
+
+    expect(getProposals()).toHaveLength(1);
+    expect(getProposals()[0].action).toEqual(1n);
+
+    snsFiltersStore.setCheckTypes({
+      rootCanisterId,
+      checkedTypes: [ALL_SNS_GENERIC_PROPOSAL_TYPES_ID],
+    });
+
+    expect(getProposals()).toHaveLength(2);
+    expect(getProposals().map(({ action }) => action)).toEqual([1001n, 1002n]);
   });
 });
