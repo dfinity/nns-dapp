@@ -206,7 +206,7 @@ describe("sns-proposals services", () => {
       it("should call queryProposals with excludeType parameter", async () => {
         const nativeFunctionId = nativeNervousSystemFunctionMock.id;
         const genericFunctionId = genericNervousSystemFunctionMock.id;
-        const nativeFilterEntry: Filter<SnsProposalTypeFilterId> = {
+        const nativeFilterEntryChecked: Filter<SnsProposalTypeFilterId> = {
           id: `${nativeFunctionId}`,
           name: "string",
           value: `${nativeFunctionId}`,
@@ -214,7 +214,7 @@ describe("sns-proposals services", () => {
         };
         snsFiltersStore.setTypes({
           rootCanisterId: mockPrincipal,
-          types: [nativeFilterEntry],
+          types: [nativeFilterEntryChecked],
         });
         await loadSnsProposals({
           rootCanisterId: mockPrincipal,
