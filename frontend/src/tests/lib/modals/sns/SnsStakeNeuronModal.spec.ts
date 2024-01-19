@@ -75,6 +75,11 @@ describe("SnsStakeNeuronModal", () => {
     return SnsStakeNeuronModalPo.under(new JestPageObjectElement(container));
   };
 
+  it("should show token in modal title", async () => {
+    const po = await renderComponent();
+    expect(await po.getModalTitle()).toBe("Stake SNS");
+  });
+
   it("should stake a new sns neuron", async () => {
     const amount = 10;
     const po = await renderComponent();
