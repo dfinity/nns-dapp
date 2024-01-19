@@ -53,8 +53,8 @@ export class TokensTableRowPo extends BasePageObject {
     return this.getText("token-value-label");
   }
 
-  getBalanceNumber(): Promise<string> {
-    return AmountDisplayPo.under(this.root).getAmount();
+  async getBalanceNumber(): Promise<number> {
+    return Number(await AmountDisplayPo.under(this.root).getAmount());
   }
 
   waitForBalance(): Promise<void> {
