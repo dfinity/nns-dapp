@@ -190,64 +190,67 @@ describe("snsFilteredProposalsStore", () => {
   });
 
   it("should return proposals which type is checked", () => {
-    const checkedProposal = createSnsProposal({
-      proposalId: 1n,
-      action: 1n,
+    const nsFunctionId1 = 1n;
+    const nsFunctionId2 = 2n;
+    const proposal1 = createSnsProposal({
+      proposalId: 1000n,
+      action: nsFunctionId1,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
     });
-    const uncheckedProposal = createSnsProposal({
-      proposalId: 2n,
-      action: 2n,
+    const proposal2 = createSnsProposal({
+      proposalId: 2000n,
+      action: nsFunctionId2,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
     });
 
     snsProposalsStore.setProposals({
       rootCanisterId,
-      proposals: [checkedProposal, uncheckedProposal],
+      proposals: [proposal1, proposal2],
       certified: true,
       completed: true,
     });
+
+    // Check only one type
     snsFiltersStore.setTypes({
       rootCanisterId,
       types: [
         {
-          id: "1",
-          value: "1",
+          id: `${nsFunctionId1}`,
+          value: `${nsFunctionId1}`,
           name: "Motion",
           checked: true,
         },
         {
-          id: "2",
-          value: "2",
+          id: `${nsFunctionId2}`,
+          value: `${nsFunctionId2}`,
           name: "Add a Node",
           checked: false,
         },
       ],
     });
 
-    expect(getProposals()).toHaveLength(1);
-    expect(getProposals()[0].action).toEqual(1n);
+    expect(getProposals()).toEqual([proposal1]);
 
+    // Check the second type
     snsFiltersStore.setTypes({
       rootCanisterId,
       types: [
         {
-          id: "1",
-          value: "1",
+          id: `${nsFunctionId1}`,
+          value: `${nsFunctionId1}`,
           name: "_",
           checked: true,
         },
         {
-          id: "2",
-          value: "2",
+          id: `${nsFunctionId2}`,
+          value: `${nsFunctionId2}`,
           name: "_",
           checked: true,
         },
       ],
     });
 
-    expect(getProposals()).toHaveLength(2);
-    expect(getProposals().map(({ action }) => action)).toEqual([1n, 2n]);
+    expect(getProposals()).toEqual([proposal1, proposal2]);
   });
 
   it('should return all generic proposals when "All generic" is checked', () => {
