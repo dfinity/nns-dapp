@@ -1,35 +1,57 @@
-import { authStore } from "$lib/stores/auth.store";
+import * as accountsApi from "$lib/api/accounts.api";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { AppPath } from "$lib/constants/routes.constants";
+import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+import { page } from "$mocks/$app/stores";
 import WalletPage from "$routes/(app)/(u)/(detail)/wallet/+page.svelte";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
-  authStoreMock,
-  mutableMockAuthStoreSubscribe,
-} from "$tests/mocks/auth.store.mock";
+  mockAccountsStoreData,
+  mockSubAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
+import { WalletPo } from "$tests/page-objects/Wallet.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
 describe("Wallet page", () => {
-  vi.spyOn(authStore, "subscribe").mockImplementation(
-    mutableMockAuthStoreSubscribe
-  );
+  beforeEach(() => {
+    resetIdentity();
 
-  beforeAll(() => {
-    authStoreMock.next({
-      identity: undefined,
+    vi.spyOn(accountsApi, "getTransactions").mockResolvedValue([]);
+
+    page.mock({
+      data: { universe: OWN_CANISTER_ID_TEXT },
+      routeId: AppPath.Wallet,
     });
   });
 
-  afterAll(() => {
-    vi.clearAllMocks();
-  });
-
-  it("should render sign-in if not logged in", () => {
-    const { getByTestId } = render(WalletPage, {
+  const renderWallet = (accountIdentifier: string) => {
+    const { container } = render(WalletPage, {
       props: {
         data: {
-          account: "test",
+          account: accountIdentifier,
         },
       },
     });
+    return new WalletPo(new JestPageObjectElement(container));
+  };
 
-    expect(getByTestId("login-button")).not.toBeNull();
+  it("should pass the account identifier", async () => {
+    const testAccountIdentifier = "test-account";
+    icpAccountsStore.setForTesting({
+      ...mockAccountsStoreData,
+      subAccounts: [
+        {
+          ...mockSubAccount,
+          identifier: testAccountIdentifier,
+        },
+      ],
+    });
+
+    const po = renderWallet(testAccountIdentifier);
+
+    expect(
+      await po.getNnsWalletPo().getWalletPageHeaderPo().getWalletAddress()
+    ).toBe(testAccountIdentifier);
   });
 });

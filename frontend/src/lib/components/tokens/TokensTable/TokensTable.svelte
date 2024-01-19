@@ -7,9 +7,20 @@
 
   export let userTokensData: Array<UserToken>;
   export let firstColumnHeader: string;
+
+  // This will be useful when we create the generic table.
+  // The column styles will depend on the columns metadata.
+  // And we don't have the columns metadata in the `style` tag.
+  const desktopColumnsStyle = () => {
+    return "1fr max-content max-content";
+  };
 </script>
 
-<div role="table" data-tid="tokens-table-component">
+<div
+  role="table"
+  data-tid="tokens-table-component"
+  style={`grid-template-columns: ${desktopColumnsStyle()};`}
+>
   <div role="rowgroup">
     <div role="row" class="header-row">
       <span role="columnheader" data-tid="column-header-1"
@@ -51,7 +62,7 @@
 
     @include media.min-width(medium) {
       display: grid;
-      grid-template-columns: 1fr max-content max-content;
+      // `grid-template-columns` set with inline style.
       column-gap: var(--padding-2x);
     }
 

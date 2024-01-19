@@ -9,7 +9,6 @@
   import { onMount } from "svelte";
   import { ActionType, type Action } from "$lib/types/actions";
   import { tokensListVisitorsStore } from "$lib/derived/tokens-list-visitors.derived";
-  import { login } from "$lib/services/auth.services";
   import { loadCkBTCTokens } from "$lib/services/ckbtc-tokens.services";
   import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
   import {
@@ -178,10 +177,6 @@
     );
 
   const handleAction = ({ detail }: { detail: Action }) => {
-    // Any action from non-signed in user should be trigger a login
-    if (!$authSignedInStore) {
-      login();
-    }
     if (detail.type === ActionType.Send) {
       if (isUniverseNns(detail.data.universeId)) {
         modal = { type: "nns-send", data: detail.data };

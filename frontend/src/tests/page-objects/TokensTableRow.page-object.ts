@@ -17,12 +17,31 @@ export class TokensTableRowPo extends BasePageObject {
     );
   }
 
+  static byTitle({
+    element,
+    title,
+  }: {
+    element: PageObjectElement;
+    title: string;
+  }): TokensTableRowPo {
+    return new TokensTableRowPo(
+      element.querySelector(`[data-title="${title}"]`)
+    );
+  }
+
   getProjectName(): Promise<string> {
     return this.getText("project-name");
   }
 
   getBalance(): Promise<string> {
     return this.getText("token-value-label");
+  }
+
+  waitForBalance(): Promise<void> {
+    return this.root
+      .byTestId("token-value-label")
+      .byTestId("spinner")
+      .waitForAbsent();
   }
 
   hasBalanceSpinner(): Promise<boolean> {

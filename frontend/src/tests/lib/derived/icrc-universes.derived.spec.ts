@@ -87,7 +87,7 @@ describe("icrcTokensUniversesStore", () => {
   });
 
   // TODO: https://dfinity.atlassian.net/browse/GIX-2140
-  it("doesn't return non-cketh universes", () => {
+  it("returns question mark logo for  non-cketh universes", () => {
     // For not it's because the logo is not yet parsed in the token.
     const ledgerCanisterId = principal(1);
     tokensStore.setTokens({
@@ -100,6 +100,10 @@ describe("icrcTokensUniversesStore", () => {
       ledgerCanisterId: ledgerCanisterId,
       indexCanisterId: principal(2),
     });
-    expect(get(icrcTokensUniversesStore)).toEqual([]);
+    expect(get(icrcTokensUniversesStore)).toMatchObject([
+      {
+        logo: "/src/lib/assets/question-mark.svg",
+      },
+    ]);
   });
 });

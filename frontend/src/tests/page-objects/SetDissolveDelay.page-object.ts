@@ -37,6 +37,10 @@ export class SetDissolveDelayPo extends BasePageObject {
     return RangeDissolveDelayPo.under(this.root);
   }
 
+  getNeuronStake(): Promise<string> {
+    return this.getText("neuron-stake");
+  }
+
   clickUpdate(): Promise<void> {
     return this.getUpdateButtonPo().click();
   }

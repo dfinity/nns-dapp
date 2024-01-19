@@ -5,7 +5,7 @@ import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
-import AccountsLayout from "$routes/(app)/(u)/(accounts)/+layout.svelte";
+import AccountsLayout from "$routes/(app)/(u)/(list)/accounts/+layout.svelte";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { fireEvent, render } from "@testing-library/svelte";

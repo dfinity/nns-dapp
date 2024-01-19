@@ -1,12 +1,22 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { replaceContent, signInWithNewUser } from "$tests/utils/e2e.test-utils";
+import {
+  replaceContent,
+  setFeatureFlag,
+  signInWithNewUser,
+} from "$tests/utils/e2e.test-utils";
 import { expect, test, type Page } from "@playwright/test";
 
 test.describe("Design", () => {
   test("Login", async ({ page }) => {
-    await page.goto("/accounts");
+    await page.goto("/tokens");
     await expect(page).toHaveTitle("My ICP Tokens / NNS Dapp");
+    // TODO: GIX-1985 Remove this once the feature flag is enabled by default
+    await setFeatureFlag({
+      page,
+      featureFlag: "ENABLE_MY_TOKENS",
+      value: true,
+    });
     // Wait for the button to make sure the screenshot is taken after the page is loaded
     await page.locator("[data-tid=login-button]").waitFor();
 
@@ -15,6 +25,13 @@ test.describe("Design", () => {
 
   test("App loading spinner is removed", async ({ page }) => {
     await page.goto("/");
+    await expect(page).toHaveTitle("My ICP Tokens / NNS Dapp");
+    // TODO: GIX-1985 Remove this once the feature flag is enabled by default
+    await setFeatureFlag({
+      page,
+      featureFlag: "ENABLE_MY_TOKENS",
+      value: true,
+    });
 
     // Wait for the button to make sure the app is loaded
     await page.locator("[data-tid=login-button]").waitFor();
@@ -32,8 +49,14 @@ test.describe("Design", () => {
     test.beforeAll(async ({ browser }) => {
       page = await browser.newPage();
 
-      await page.goto("/accounts");
+      await page.goto("/");
       await expect(page).toHaveTitle("My ICP Tokens / NNS Dapp");
+      // TODO: GIX-1985 Remove this once the feature flag is enabled by default
+      await setFeatureFlag({
+        page,
+        featureFlag: "ENABLE_MY_TOKENS",
+        value: true,
+      });
 
       await signInWithNewUser({ page, context: browser.contexts()[0] });
     });
@@ -46,18 +69,26 @@ test.describe("Design", () => {
       const pageElement = PlaywrightPageObjectElement.fromPage(page);
       const appPo = new AppPo(pageElement);
 
-      await appPo.getAccountsPo().waitFor();
-      await appPo.getAccountsPo().getNnsAccountsPo().waitForContentLoaded();
-
+      await appPo.getTokensPo().waitFor();
+      const tokensTablePo = appPo
+        .getTokensPo()
+        .getTokensPagePo()
+        .getTokensTable();
+      await tokensTablePo.waitFor();
+      const rows = await tokensTablePo.getRows();
+      for (const row of rows) {
+        await row.waitForBalance();
+      }
+      // We need to replace the content to not rely on the SNS project name.
       await replaceContent({
         page,
         selectors: [
-          '[data-tid="identifier"]',
-          '[data-tid="select-universe-card"]:not(:first-of-type) .name',
-          '[data-tid="select-universe-card"]:not(:first-of-type) .amount .label',
+          '[data-tid="tokens-table-row-component"]:not([data-title="Internet Computer"]):not([data-title="ckBTC"]):not([data-title="ckETH"]) [data-tid="project-name"]',
+          '[data-tid="tokens-table-row-component"]:not([data-title="Internet Computer"]):not([data-title="ckBTC"]):not([data-title="ckETH"]) [data-tid="token-value-label"] .label',
         ],
         innerHtml: "XXXXX",
       });
+
       await expect(page).toHaveScreenshot();
     };
 

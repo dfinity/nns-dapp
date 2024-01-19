@@ -13,10 +13,6 @@ export class CkBTCAccountsPo extends BaseAccountsPo {
     return SkeletonCardPo.under(this.root);
   }
 
-  waitForWithdrawalAccountDone(): Promise<void> {
-    return this.waitFor("all-btc-transfers-complete");
-  }
-
   async waitForContentLoaded(): Promise<void> {
     await this.waitFor();
     await this.getSkeletonCardPo().waitForAbsent();

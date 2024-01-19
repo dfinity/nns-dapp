@@ -1,8 +1,5 @@
-import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
-import { writableStored } from "$lib/stores/writable-stored";
 import type { BtcAddressText } from "$lib/types/bitcoin";
 import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
-import type { IcrcBlockIndex } from "@dfinity/ledger-icrc";
 import type { Readable } from "svelte/store";
 import { writable } from "svelte/store";
 
@@ -46,35 +43,4 @@ export const initBitcoinAddressStore = (): BitcoinAddressStore => {
   };
 };
 
-export interface BitcoinConvertBlockIndexesStore
-  extends Readable<IcrcBlockIndex[]> {
-  addBlockIndex: (blockIndex: IcrcBlockIndex) => void;
-  removeBlockIndex: (blockIndex: IcrcBlockIndex) => void;
-  reset: () => void;
-}
-
-const initBitcoinConvertBlockIndexes = (): BitcoinConvertBlockIndexesStore => {
-  const { subscribe, update, set } = writableStored<IcrcBlockIndex[]>({
-    key: StoreLocalStorageKey.BitcoinConvertBlockIndexes,
-    defaultValue: [],
-  });
-
-  return {
-    subscribe,
-
-    addBlockIndex: (blockIndex: IcrcBlockIndex) =>
-      update((blockIndexes) =>
-        Array.from(new Set([...blockIndexes, blockIndex]))
-      ),
-
-    removeBlockIndex: (blockIndex: IcrcBlockIndex) =>
-      update((blockIndexes) =>
-        blockIndexes.filter((block) => block !== blockIndex)
-      ),
-
-    reset: () => set([]),
-  };
-};
-
 export const bitcoinAddressStore = initBitcoinAddressStore();
-export const bitcoinConvertBlockIndexes = initBitcoinConvertBlockIndexes();

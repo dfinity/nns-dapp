@@ -58,6 +58,10 @@ export class TransactionModalBasePo extends BasePageObject {
     }
     await review.clickSend();
   }
+
+  waitForClosed(): Promise<void> {
+    return this.root.waitForAbsent();
+  }
 }
 
 export class TransactionModalPo extends TransactionModalBasePo {

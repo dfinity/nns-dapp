@@ -90,12 +90,6 @@ vi.mock("$lib/services/wallet-uncertified-accounts.services", () => {
   };
 });
 
-vi.mock("$lib/services/ckbtc-withdrawal-accounts.services", () => {
-  return {
-    loadCkBTCWithdrawalAccount: vi.fn().mockResolvedValue(undefined),
-  };
-});
-
 vi.mock("$lib/services/ckbtc-minter.services", () => {
   return {
     updateBalance: vi.fn().mockResolvedValue(undefined),
@@ -165,6 +159,9 @@ describe("Accounts", () => {
     icrcAccountsStore.reset();
     setCkETHCanisters();
     overrideFeatureFlagsStore.reset();
+    // TODO: GIX-1985 Remove all the tests outside the describe once the feature flag is enabled by default.
+    overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
+
     subaccountBalance = subaccountBalanceDefault;
     mainAccountBalance = mainAccountBalanceDefault;
 

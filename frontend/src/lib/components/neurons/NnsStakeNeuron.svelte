@@ -8,7 +8,7 @@
   import { getMaxTransactionAmount } from "$lib/utils/token.utils";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
-  import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+  import { mainTransactionFeeE8sStore } from "$lib/stores/transaction-fees.store";
   import { busy } from "@dfinity/gix-components";
   import TransactionFromAccount from "$lib/components/transaction/TransactionFromAccount.svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
@@ -60,7 +60,7 @@
   let max = 0;
   $: max = getMaxTransactionAmount({
     balance: account?.balanceUlps ?? 0n,
-    fee: $transactionsFeesStore.main,
+    fee: $mainTransactionFeeE8sStore,
     token: ICPToken,
   });
 

@@ -1,4 +1,4 @@
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-12-13_23-01/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-01-09_23-01+new-p2p/rs/sns/governance/canister/governance.did>
 type Account = record { owner : opt principal; subaccount : opt Subaccount };
 type Action = variant {
   ManageNervousSystemParameters : NervousSystemParameters;
@@ -13,6 +13,7 @@ type Action = variant {
   Unspecified : record {};
   ManageSnsMetadata : ManageSnsMetadata;
   ExecuteGenericNervousSystemFunction : ExecuteGenericNervousSystemFunction;
+  ManageLedgerParameters : ManageLedgerParameters;
   Motion : Motion;
 };
 type AddNeuronPermissions = record {
@@ -116,6 +117,7 @@ type DisburseMaturityInProgress = record {
   timestamp_of_disbursement_seconds : nat64;
   amount_e8s : nat64;
   account_to_disburse_to : opt Account;
+  finalize_disbursement_timestamp_seconds : opt nat64;
 };
 type DisburseMaturityResponse = record {
   amount_disbursed_e8s : nat64;
@@ -226,6 +228,7 @@ type ListProposals = record {
   include_status : vec int32;
 };
 type ListProposalsResponse = record { proposals : vec ProposalData };
+type ManageLedgerParameters = record { transfer_fee : opt nat64 };
 type ManageNeuron = record { subaccount : vec nat8; command : opt Command };
 type ManageNeuronResponse = record { command : opt Command_1 };
 type ManageSnsMetadata = record {

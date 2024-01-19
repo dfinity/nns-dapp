@@ -12,6 +12,10 @@ export class ReceiveModalPo extends BasePageObject {
     return this.click("reload-receive-account");
   }
 
+  close(): Promise<void> {
+    return this.click("close-modal");
+  }
+
   waitForQrCode(): Promise<void> {
     return this.waitFor("qr-code");
   }
@@ -22,5 +26,9 @@ export class ReceiveModalPo extends BasePageObject {
 
   async getTokenAddressLabel(): Promise<string> {
     return this.getText("token-address-label");
+  }
+
+  getAddress(): Promise<string> {
+    return this.getText("qrcode-display-address");
   }
 }

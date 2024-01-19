@@ -1,6 +1,8 @@
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
 import type { Universe } from "$lib/types/universe";
+import { buildWalletUrl } from "$lib/utils/navigation.utils";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { Principal } from "@dfinity/principal";
 import { TokenAmountV2 } from "@dfinity/utils";
@@ -22,5 +24,8 @@ export const icpTokensListVisitors = derived<
       token: NNS_TOKEN_DATA,
     }),
     actions: [UserTokenAction.GoToDetail],
+    rowHref: buildWalletUrl({
+      universe: OWN_CANISTER_ID_TEXT,
+    }),
   },
 ]);
