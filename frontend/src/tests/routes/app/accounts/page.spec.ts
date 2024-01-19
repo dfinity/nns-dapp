@@ -55,6 +55,18 @@ describe("Accounts page", () => {
         expect(await pagePo.hasEmptyCards()).toBe(false);
       });
 
+      it("should render Internet Computer row with href to wallet page", async () => {
+        const po = renderComponent();
+
+        const icpRow = await po
+          .getSignInAccountsPo()
+          .getTokensTablePo()
+          .getRowByName("Internet Computer");
+        expect(await icpRow.getHref()).toEqual(
+          `/wallet/?u=${OWN_CANISTER_ID_TEXT}`
+        );
+      });
+
       it("renders 'Accounts' as tokens first column", async () => {
         const po = renderComponent();
 
