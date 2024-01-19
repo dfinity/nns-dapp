@@ -1,4 +1,5 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { AmountDisplayPo } from "./AmountDisplay.page-object";
 import { BasePageObject } from "./base.page-object";
 
 export type TokensTableRowData = {
@@ -35,6 +36,10 @@ export class TokensTableRowPo extends BasePageObject {
 
   getBalance(): Promise<string> {
     return this.getText("token-value-label");
+  }
+
+  getBalanceNumber(): Promise<string> {
+    return AmountDisplayPo.under(this.root).getAmount();
   }
 
   waitForBalance(): Promise<void> {
