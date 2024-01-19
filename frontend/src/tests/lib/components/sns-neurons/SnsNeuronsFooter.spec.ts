@@ -53,4 +53,13 @@ describe("SnsNeuron footer", () => {
 
     expect(await po.getSnsStakeNeuronModalPo().isPresent()).toBe(true);
   });
+
+  it("should render the token symbol in the stake modal", async () => {
+    const po = renderComponent();
+
+    await po.clickStakeNeuronsButton();
+
+    expect(await po.getSnsStakeNeuronModalPo().getModalTitle()).toBe("Stake DOG");
+  });
+
 });

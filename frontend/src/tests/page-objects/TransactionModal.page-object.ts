@@ -6,6 +6,10 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 // This should not be used directly but rather as a base class for specific
 // transaction modals.
 export class TransactionModalBasePo extends BasePageObject {
+  getModalTitle(): Promise<string> {
+    return this.getText("modal-title");
+  }
+
   getTransactionFormPo(): TransactionFormPo {
     return TransactionFormPo.under(this.root);
   }
