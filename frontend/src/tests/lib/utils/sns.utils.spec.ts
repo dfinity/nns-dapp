@@ -6,10 +6,10 @@ import {
   getCommitmentE8s,
   getSwapCanisterAccount,
   hasOpenTicketInProcess,
-  isGenericNervousSystemFunction,
   isInternalRefreshBuyerTokensError,
-  isNativeNervousSystemFunction,
   isSnsFinalizing,
+  isSnsGenericNervousSystemFunction,
+  isSnsNativeNervousSystemFunction,
   parseSnsSwapSaleBuyerCount,
   swapEndedMoreThanOneWeekAgo,
 } from "$lib/utils/sns.utils";
@@ -344,25 +344,25 @@ sale_participants_count ${saleBuyerCount} 1677707139456
   describe("isNativeNervousSystemFunction", () => {
     it("should return true for NativeNervousSystemFunction", () => {
       expect(
-        isNativeNervousSystemFunction(nativeNervousSystemFunctionMock)
+        isSnsNativeNervousSystemFunction(nativeNervousSystemFunctionMock)
       ).toBe(true);
     });
     it("should return false for not NativeNervousSystemFunction", () => {
       expect(
-        isNativeNervousSystemFunction(genericNervousSystemFunctionMock)
+        isSnsNativeNervousSystemFunction(genericNervousSystemFunctionMock)
       ).toBe(false);
     });
   });
 
-  describe("isGenericNervousSystemFunction", () => {
+  describe("isSnsGenericNervousSystemFunction", () => {
     it("should return true for GenericNervousSystemFunction", () => {
       expect(
-        isGenericNervousSystemFunction(genericNervousSystemFunctionMock)
+        isSnsGenericNervousSystemFunction(genericNervousSystemFunctionMock)
       ).toBe(true);
     });
     it("should return false for not GenericNervousSystemFunction", () => {
       expect(
-        isGenericNervousSystemFunction(nativeNervousSystemFunctionMock)
+        isSnsGenericNervousSystemFunction(nativeNervousSystemFunctionMock)
       ).toBe(false);
     });
   });
