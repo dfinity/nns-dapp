@@ -88,7 +88,7 @@ export class TokensTablePo extends BasePageObject {
     return this.getText("last-row");
   }
 
-  async waitForSnsRowsCards(): Promise<void> {
+  async waitForSnsRows(): Promise<void> {
     const maybeRows = TokensTableRowPo.countUnder({
       element: this.root,
       count: TokensTablePo.NON_SNS_NAMES.length + 1,

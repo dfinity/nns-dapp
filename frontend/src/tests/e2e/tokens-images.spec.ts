@@ -52,7 +52,7 @@ test("Test images load on home page", async ({ page, context }) => {
     .getTokensPo()
     .getSignInTokensPagePo()
     .getTokensTablePo()
-    .waitForSnsRowsCards();
+    .waitForSnsRows();
 
   await expectImagesLoaded({
     page,
@@ -64,11 +64,7 @@ test("Test images load on home page", async ({ page, context }) => {
   await step("Check images after signing");
 
   await appPo.getTokensPo().getTokensPagePo().getTokensTable().waitFor();
-  await appPo
-    .getTokensPo()
-    .getTokensPagePo()
-    .getTokensTable()
-    .waitForSnsRowsCards();
+  await appPo.getTokensPo().getTokensPagePo().getTokensTable().waitForSnsRows();
 
   await expectImagesLoaded({
     page,
