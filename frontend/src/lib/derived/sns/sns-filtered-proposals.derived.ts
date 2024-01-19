@@ -12,7 +12,7 @@ import {
   snsDecisionStatus,
   snsRewardStatus,
 } from "$lib/utils/sns-proposals.utils";
-import { isGenericNervousSystemTypeProposal } from "$lib/utils/sns.utils";
+import { isSnsGenericNervousSystemTypeProposal } from "$lib/utils/sns.utils";
 import { isNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 
@@ -49,7 +49,7 @@ export const snsFilteredProposalsStore = derived<
               projectSelectedFilters.types
                 .map(({ value }) => value)
                 .includes(
-                  isGenericNervousSystemTypeProposal(proposal)
+                  isSnsGenericNervousSystemTypeProposal(proposal)
                     ? // If "All generic functions" is checked, we want to match all generic proposal types.
                       ALL_SNS_GENERIC_PROPOSAL_TYPES_ID
                     : `${proposal.action}`
