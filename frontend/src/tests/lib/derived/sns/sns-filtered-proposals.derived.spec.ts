@@ -294,7 +294,7 @@ describe("snsFilteredProposalsStore", () => {
         {
           id: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
           value: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
-          name: "Add a Node",
+          name: "All SNS Specific Functions",
           checked: false,
         },
       ],
