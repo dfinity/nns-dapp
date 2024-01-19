@@ -1,5 +1,5 @@
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
-import { MIN_VALID_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID } from "$lib/constants/sns-proposals.constants";
+import { MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID } from "$lib/constants/sns-proposals.constants";
 import type { SnsTicketsStoreData } from "$lib/stores/sns-tickets.store";
 import type { TicketStatus } from "$lib/types/sale";
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
@@ -182,7 +182,7 @@ export const swapEndedMoreThanOneWeekAgo = ({
 export const isSnsNativeNervousSystemFunction = ({
   id,
 }: SnsNervousSystemFunction): boolean =>
-  id < MIN_VALID_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID;
+  id < MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID;
 
 /**
  * Returns true if the FunctionType is GenericNervousSystemFunction
@@ -192,7 +192,7 @@ export const isSnsNativeNervousSystemFunction = ({
 export const isSnsGenericNervousSystemFunction = ({
   id,
 }: SnsNervousSystemFunction): boolean =>
-  id >= MIN_VALID_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID;
+  id >= MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID;
 
 /**
  * Returns true if the sns proposal is of the type GenericNervousSystemFunction
@@ -200,4 +200,4 @@ export const isSnsGenericNervousSystemFunction = ({
 export const isSnsGenericNervousSystemTypeProposal = ({
   action,
 }: SnsProposalData): boolean =>
-  action >= MIN_VALID_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID;
+  action >= MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID;
