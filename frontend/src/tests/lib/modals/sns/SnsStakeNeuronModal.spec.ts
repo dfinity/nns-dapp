@@ -122,7 +122,7 @@ describe("SnsStakeNeuronModal", () => {
     expect(
       await po.getTransactionFormPo().getAmountInputPo().getErrorMessage()
     ).toBe(
-      "Sorry, the amount is too small. You need a minimum of 1 SNS to stake a SNS neuron"
+      "Sorry, the amount is too small. You need to stake a minimum of 1 SNS."
     );
   });
 });
