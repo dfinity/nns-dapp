@@ -59,7 +59,8 @@ describe("SnsNeuron footer", () => {
 
     await po.clickStakeNeuronsButton();
 
-    expect(await po.getSnsStakeNeuronModalPo().getModalTitle()).toBe("Stake DOG");
+    expect(await po.getSnsStakeNeuronModalPo().getModalTitle()).toBe(
+      "Stake DOG"
+    );
   });
-
 });
