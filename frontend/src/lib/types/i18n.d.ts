@@ -167,7 +167,6 @@ interface I18nAuth {
   title: string;
   on_chain: string;
   wallet: string;
-  stake: string;
   earn: string;
   launchpad: string;
   ic_logo: string;
@@ -283,7 +282,7 @@ interface I18nNeuron_types {
 interface I18nNeurons {
   title: string;
   text: string;
-  stake_neurons: string;
+  stake_token: string;
   merge_neurons: string;
   merge_neurons_modal_title: string;
   merge_neurons_modal_confirm: string;
@@ -303,7 +302,7 @@ interface I18nNeurons {
   your_principal: string;
   confirm_dissolve_delay: string;
   follow_neurons_screen: string;
-  stake_neuron: string;
+  stake_icp: string;
   source: string;
   transaction_fee: string;
   current_balance: string;
@@ -929,7 +928,6 @@ interface I18nError__sns {
   sns_stake: string;
   sns_increase_stake: string;
   sns_register_vote: string;
-  sns_neuron_account: string;
   sns_dissolve_delay_action: string;
   project_not_found: string;
   project_not_open: string;
@@ -959,7 +957,6 @@ interface I18nError__sns {
   sns_add_hotkey: string;
   sns_stake_maturity: string;
   sns_disburse_maturity: string;
-  sns_amount_not_enough_stake_neuron: string;
   sns_reload_no_universe: string;
 }
 

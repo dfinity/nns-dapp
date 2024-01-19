@@ -101,6 +101,7 @@
     <EmptyMessage
       >{replacePlaceholders($i18n.sns_neurons.text, {
         $project: summary.metadata.name,
+        $tokenSymbol: summary.token.symbol,
       })}</EmptyMessage
     >
   {/if}
