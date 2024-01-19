@@ -29,21 +29,6 @@ export class TokensTableRowPo extends BasePageObject {
     );
   }
 
-  static countUnder({
-    element,
-    count,
-  }: {
-    element: PageObjectElement;
-    count?: number | undefined;
-  }): TokensTableRowPo[] {
-    return element
-      .countByTestId({
-        tid: TokensTableRowPo.TID,
-        count,
-      })
-      .map((el) => new TokensTableRowPo(el));
-  }
-
   getProjectName(): Promise<string> {
     return this.getText("project-name");
   }
