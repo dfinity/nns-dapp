@@ -55,7 +55,7 @@ describe("Accounts page", () => {
         expect(await pagePo.hasEmptyCards()).toBe(false);
       });
 
-      it("should rende Internet Computer row with href to wallet page", async () => {
+      it("should render Internet Computer row with href to wallet page", async () => {
         const po = renderComponent();
 
         const icpRow = await po
