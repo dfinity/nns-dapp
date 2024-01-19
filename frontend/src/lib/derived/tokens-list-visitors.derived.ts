@@ -8,7 +8,9 @@ import {
   type UserToken,
   type UserTokenBase,
 } from "$lib/types/tokens-page";
+import { buildAccountsUrl, buildWalletUrl } from "$lib/utils/navigation.utils";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
+import { isUniverseNns } from "$lib/utils/universe.utils";
 import { isNullish, TokenAmountV2 } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 import { tokensListBaseStore } from "./tokens-list-base.derived";
@@ -34,6 +36,11 @@ const convertToUserToken = ({
     token,
     fee: TokenAmountV2.fromUlps({ amount: token.fee, token }),
     actions: [UserTokenAction.GoToDetail],
+    rowHref: isUniverseNns(tokenBaseData.universeId)
+      ? buildAccountsUrl({ universe: tokenBaseData.universeId.toText() })
+      : buildWalletUrl({
+          universe: tokenBaseData.universeId.toText(),
+        }),
   };
 };
 
