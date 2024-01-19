@@ -336,7 +336,7 @@ describe("SnsProposals", () => {
       );
       expect(functionId1Checkbox).not.toBeUndefined();
 
-      // Select Open status checkbox
+      // Unchecked first proposal type
       await fireEvent.click(functionId1Checkbox);
       // Apply filters
       await fireEvent.click(getByTestId("apply-filters"));

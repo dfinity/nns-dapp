@@ -1,3 +1,4 @@
+import { MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID } from "$lib/constants/sns-proposals.constants";
 import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
@@ -254,25 +255,29 @@ describe("snsFilteredProposalsStore", () => {
   });
 
   it('should return all generic proposals when "All generic" is checked', () => {
-    const checkedProposal = createSnsProposal({
+    const nativeTypeProposal = createSnsProposal({
       proposalId: 1n,
       action: 1n,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
     });
     const genericTypeProposal1 = createSnsProposal({
       proposalId: 2n,
-      action: 1001n,
+      action: MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
     });
     const genericTypeProposal2 = createSnsProposal({
       proposalId: 3n,
-      action: 1002n,
+      action: MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID + 1n,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
     });
 
     snsProposalsStore.setProposals({
       rootCanisterId,
-      proposals: [checkedProposal, genericTypeProposal1, genericTypeProposal2],
+      proposals: [
+        nativeTypeProposal,
+        genericTypeProposal1,
+        genericTypeProposal2,
+      ],
       certified: true,
       completed: true,
     });
@@ -281,8 +286,8 @@ describe("snsFilteredProposalsStore", () => {
       rootCanisterId,
       types: [
         {
-          id: "1",
-          value: "1",
+          id: `${nativeTypeProposal.id}`,
+          value: `${nativeTypeProposal.id}`,
           name: "Motion",
           checked: true,
         },
@@ -304,6 +309,9 @@ describe("snsFilteredProposalsStore", () => {
     });
 
     expect(getProposals()).toHaveLength(2);
-    expect(getProposals().map(({ action }) => action)).toEqual([1001n, 1002n]);
+    expect(getProposals().map(({ action }) => action)).toEqual([
+      genericTypeProposal1.id,
+      genericTypeProposal2.id,
+    ]);
   });
 });
