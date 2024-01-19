@@ -9,8 +9,21 @@ import { BasePageObject } from "./base.page-object";
 export class TokensTablePo extends BasePageObject {
   private static readonly TID = "tokens-table-component";
 
+  // There will be multiple ckETH projects and arbitrary ICRC tokens in the future.
+  private static readonly NON_SNS_NAMES = [
+    "Internet Computer",
+    "ckBTC",
+    "ckTESTBTC",
+    "ckETH",
+    "ckETHSepolia",
+  ];
+
   static under(element: PageObjectElement): TokensTablePo {
     return new TokensTablePo(element.byTestId(TokensTablePo.TID));
+  }
+
+  isSnsName(name: string): boolean {
+    return !TokensTablePo.NON_SNS_NAMES.includes(name);
   }
 
   async getFirstColumnHeader(): Promise<string> {
@@ -73,5 +86,18 @@ export class TokensTablePo extends BasePageObject {
 
   getLastRowText(): Promise<string> {
     return this.getText("last-row");
+  }
+
+  async waitForSnsRowsCards(): Promise<void> {
+    const maybeRows = TokensTableRowPo.countUnder({
+      element: this.root,
+      count: TokensTablePo.NON_SNS_NAMES.length + 1,
+    });
+    for (const card of maybeRows) {
+      if (this.isSnsName(await card.getProjectName())) {
+        return;
+      }
+    }
+    throw new Error("SNS universe cards not found");
   }
 }
