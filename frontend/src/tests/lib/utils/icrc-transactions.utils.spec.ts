@@ -242,7 +242,7 @@ describe("icrc-transaction utils", () => {
       });
       expect(data).toEqual({
         ...defaultExpectedData,
-        headline: "Stake Neuron",
+        headline: "Staked",
         otherParty: encodeIcrcAccount({
           owner: governanceCanisterId,
           subaccount: governanceSubaccount,

@@ -32,7 +32,7 @@ vi.mock("$lib/services/sns-neurons.services", () => {
 });
 
 describe("SnsStakeNeuronModal", () => {
-  const token = { name: "SNS", symbol: "SNS", decimals: 8 };
+  const token = { name: "POP", symbol: "POP", decimals: 8 };
   const renderTransactionModal = () =>
     renderModal({
       component: SnsStakeNeuronModal,
@@ -74,6 +74,11 @@ describe("SnsStakeNeuronModal", () => {
     const { container } = await renderTransactionModal();
     return SnsStakeNeuronModalPo.under(new JestPageObjectElement(container));
   };
+
+  it("should show token in modal title", async () => {
+    const po = await renderComponent();
+    expect(await po.getModalTitle()).toBe("Stake POP");
+  });
 
   it("should stake a new sns neuron", async () => {
     const amount = 10;
@@ -122,7 +127,7 @@ describe("SnsStakeNeuronModal", () => {
     expect(
       await po.getTransactionFormPo().getAmountInputPo().getErrorMessage()
     ).toBe(
-      "Sorry, the amount is too small. You need a minimum of 1 SNS to stake a SNS neuron"
+      "Sorry, the amount is too small. You need to stake a minimum of 1 POP."
     );
   });
 });

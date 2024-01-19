@@ -38,6 +38,12 @@ describe("SnsNeuron footer", () => {
     return SnsNeuronsFooterPo.under(new JestPageObjectElement(container));
   };
 
+  it("should render the token symbol in the stake button", async () => {
+    const po = renderComponent();
+
+    expect(await po.getStakeNeuronsButtonPo().getText()).toBe("Stake DOG");
+  });
+
   it("should open the StakeSnsNeuronModal on click to stake SNS Neurons", async () => {
     const po = renderComponent();
     expect(await po.getStakeNeuronsButtonPo().isPresent()).toBe(true);
@@ -46,5 +52,15 @@ describe("SnsNeuron footer", () => {
     await po.clickStakeNeuronsButton();
 
     expect(await po.getSnsStakeNeuronModalPo().isPresent()).toBe(true);
+  });
+
+  it("should render the token symbol in the stake modal", async () => {
+    const po = renderComponent();
+
+    await po.clickStakeNeuronsButton();
+
+    expect(await po.getSnsStakeNeuronModalPo().getModalTitle()).toBe(
+      "Stake DOG"
+    );
   });
 });
