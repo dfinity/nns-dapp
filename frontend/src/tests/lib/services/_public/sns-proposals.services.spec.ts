@@ -10,6 +10,7 @@ import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
 import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
+import { ALL_SNS_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import {
   mockAuthStoreNoIdentitySubscribe,
@@ -142,6 +143,56 @@ describe("sns-proposals services", () => {
             beforeProposal: proposalId,
             includeStatus: selectedDecisionStatus,
             excludeType: [],
+          },
+          identity: new AnonymousIdentity(),
+          certified: false,
+          rootCanisterId: mockPrincipal,
+        });
+      });
+
+      it("should call queryProposals with selected types filters", async () => {
+        const proposalId = { id: 1n };
+        const rootCanisterId = mockPrincipal;
+        const snsFunctions = [
+          nativeNervousSystemFunctionMock,
+          genericNervousSystemFunctionMock,
+        ];
+        const typesFilterState = [
+          {
+            id: `${nativeNervousSystemFunctionMock.id}`,
+            name: "Motion",
+            value: `${nativeNervousSystemFunctionMock.id}`,
+            checked: true,
+          },
+          {
+            id: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
+            name: "Motion",
+            value: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
+            checked: false,
+          },
+        ];
+        snsFiltersStore.setTypes({
+          rootCanisterId,
+          types: typesFilterState,
+        });
+        snsFiltersStore.setTypes({
+          rootCanisterId,
+          types: [...typesFilterState],
+        });
+
+        expect(queryProposalsSpy).not.toHaveBeenCalled();
+
+        await loadSnsProposals({
+          rootCanisterId,
+          beforeProposalId: proposalId,
+          snsFunctions,
+        });
+        expect(queryProposalsSpy).toHaveBeenCalledWith({
+          params: {
+            limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
+            beforeProposal: proposalId,
+            includeStatus: [],
+            excludeType: [genericNervousSystemFunctionMock.id],
           },
           identity: new AnonymousIdentity(),
           certified: false,

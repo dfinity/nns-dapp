@@ -9,6 +9,7 @@ import {
   isInternalRefreshBuyerTokensError,
   isSnsFinalizing,
   isSnsGenericNervousSystemFunction,
+  isSnsGenericNervousSystemTypeProposal,
   isSnsNativeNervousSystemFunction,
   parseSnsSwapSaleBuyerCount,
   swapEndedMoreThanOneWeekAgo,
@@ -25,6 +26,7 @@ import {
   mockDerivedResponse,
   principal,
 } from "$tests/mocks/sns-projects.mock";
+import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { AccountIdentifier } from "@dfinity/ledger-icp";
@@ -363,6 +365,25 @@ sale_participants_count ${saleBuyerCount} 1677707139456
     it("should return false for not GenericNervousSystemFunction", () => {
       expect(
         isSnsGenericNervousSystemFunction(nativeNervousSystemFunctionMock)
+      ).toBe(false);
+    });
+  });
+
+  describe("isGenericNervousSystemTypeProposal", () => {
+    it("should return true for GenericNervousSystem type proposals", () => {
+      expect(
+        isSnsGenericNervousSystemTypeProposal({
+          ...mockSnsProposal,
+          action: genericNervousSystemFunctionMock.id,
+        })
+      ).toBe(true);
+    });
+    it("should return false for NativeNervousSystem type proposals", () => {
+      expect(
+        isSnsGenericNervousSystemTypeProposal({
+          ...mockSnsProposal,
+          action: nativeNervousSystemFunctionMock.id,
+        })
       ).toBe(false);
     });
   });

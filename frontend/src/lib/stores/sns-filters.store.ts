@@ -54,8 +54,6 @@ const defaultProjectData: ProjectFiltersStoreData = {
 
 /**
  * A store that contains the filters of the SNS proposals for each project.
- *
- * TODO: persist to localstorage
  */
 export const initSnsFiltersStore = (): SnsFiltersStore => {
   const { subscribe, set, update } = writableStored<SnsFiltersStoreData>({
