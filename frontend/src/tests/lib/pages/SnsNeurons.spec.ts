@@ -2,10 +2,8 @@ import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import * as ledgerApi from "$lib/api/sns-ledger.api";
 import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
-import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
-import en from "$tests/mocks/i18n.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   createMockSnsNeuron,
@@ -13,10 +11,13 @@ import {
 } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { SnsNeuronsPo } from "$tests/page-objects/SnsNeurons.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
-import { render, waitFor } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
 
 vi.mock("$lib/api/sns-governance.api");
 vi.mock("$lib/api/sns-ledger.api");
@@ -78,6 +79,12 @@ describe("SnsNeurons", () => {
     ]);
   });
 
+  const renderComponent = async () => {
+    const { container } = render(SnsNeurons);
+    await runResolvedPromises();
+    return SnsNeuronsPo.under(new JestPageObjectElement(container));
+  };
+
   describe("without neurons from CF", () => {
     beforeEach(() => {
       vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockResolvedValue([
@@ -90,19 +97,22 @@ describe("SnsNeurons", () => {
     });
 
     it("should render SnsNeuronCards for each neuron", async () => {
-      const { queryAllByTestId } = render(SnsNeurons);
+      const po = await renderComponent();
 
-      await waitFor(() =>
-        expect(queryAllByTestId("sns-neuron-card-title").length).toBe(2)
-      );
+      expect(await po.getNeuronCardPos()).toHaveLength(2);
     });
 
-    it("should render one grids", async () => {
-      const { container } = render(SnsNeurons);
+    it("should not render NF neurons grids", async () => {
+      const po = await renderComponent();
 
-      await waitFor(() =>
-        expect(container.querySelectorAll(".card-grid").length).toBe(1)
-      );
+      expect(await po.hasNonNeuronFundNeuronsGrid()).toBe(true);
+      expect(await po.hasNeuronFundNeuronsGrid()).toBe(false);
+    });
+
+    it("should not render empty text", async () => {
+      const po = await renderComponent();
+
+      expect(await po.hasEmptyMessage()).toBe(false);
     });
   });
 
@@ -115,40 +125,22 @@ describe("SnsNeurons", () => {
     });
 
     it("should render SnsNeuronCards for each neuron", async () => {
-      const { queryAllByTestId } = render(SnsNeurons);
+      const po = await renderComponent();
 
-      await waitFor(() =>
-        expect(queryAllByTestId("sns-neuron-card-title").length).toBe(2)
-      );
+      expect(await po.getNeuronCardPos()).toHaveLength(2);
     });
 
-    it("should render Community Fund title", async () => {
-      const { queryByTestId } = render(SnsNeurons);
+    it("should render NF neurons grids", async () => {
+      const po = await renderComponent();
 
-      await waitFor(() =>
-        expect(queryByTestId("community-fund-title")).toBeInTheDocument()
-      );
+      expect(await po.hasNonNeuronFundNeuronsGrid()).toBe(true);
+      expect(await po.hasNeuronFundNeuronsGrid()).toBe(true);
     });
 
-    it("should render Community Fund neurons text", async () => {
-      const { queryByTestId } = render(SnsNeurons);
+    it("should not render empty text", async () => {
+      const po = await renderComponent();
 
-      const div = document.createElement("div");
-      div.innerHTML = en.sns_neuron_detail.community_fund_section_description;
-
-      await waitFor(() =>
-        expect(
-          queryByTestId("community-fund-description").textContent.trim()
-        ).toBe(div.textContent.trim())
-      );
-    });
-
-    it("should render two grids", async () => {
-      const { container } = render(SnsNeurons);
-
-      await waitFor(() =>
-        expect(container.querySelectorAll(".card-grid").length).toBe(2)
-      );
+      expect(await po.hasEmptyMessage()).toBe(false);
     });
   });
 
@@ -159,20 +151,18 @@ describe("SnsNeurons", () => {
       ]);
     });
 
-    it("should render Community Fund title", async () => {
-      const { queryByTestId } = render(SnsNeurons);
+    it("should render one grid", async () => {
+      const po = await renderComponent();
 
-      await waitFor(() =>
-        expect(queryByTestId("community-fund-title")).toBeInTheDocument()
-      );
+      expect(await po.hasNonNeuronFundNeuronsGrid()).toBe(false);
+      expect(await po.hasNeuronFundNeuronsGrid()).toBe(true);
+      expect(await po.hasEmptyMessage()).toBe(false);
     });
 
-    it("should render one grid", async () => {
-      const { container } = render(SnsNeurons);
+    it("should not render empty text", async () => {
+      const po = await renderComponent();
 
-      await waitFor(() =>
-        expect(container.querySelectorAll(".card-grid").length).toBe(1)
-      );
+      expect(await po.hasEmptyMessage()).toBe(false);
     });
   });
 
@@ -181,14 +171,17 @@ describe("SnsNeurons", () => {
       vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockResolvedValue([]);
     });
 
+    it("should not render either grid", async () => {
+      const po = await renderComponent();
+
+      expect(await po.hasNonNeuronFundNeuronsGrid()).toBe(false);
+      expect(await po.hasNeuronFundNeuronsGrid()).toBe(false);
+    });
+
     it("should render empty text if no neurons", async () => {
-      const { getByText } = render(SnsNeurons);
+      const po = await renderComponent();
 
-      const expectedText = replacePlaceholders(en.sns_neurons.text, {
-        $project: projectName,
-      });
-
-      await waitFor(() => expect(getByText(expectedText)).toBeInTheDocument());
+      expect(await po.hasEmptyMessage()).toBe(true);
     });
   });
 });
