@@ -14,6 +14,7 @@
     id={followee.neuronIdHex}
     tagName="h5"
     slot="title"
+    showCopy
   />
 
   {#each followee.nsFunctions as nsFunction (nsFunction.id)}
