@@ -36,6 +36,7 @@ test("Test images load on home page", async ({ page, context }) => {
     "logo.png",
     "logo.png",
     "logo.png",
+    "logo.png",
   ];
 
   await step("Check images before signing");
