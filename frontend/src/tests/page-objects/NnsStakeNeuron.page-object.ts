@@ -23,12 +23,20 @@ export class NnsStakeNeuronPo extends BasePageObject {
     return this.getButton("create-neuron-button");
   }
 
+  getCancelButtonPo(): ButtonPo {
+    return this.getButton("stake-neuron-button-cancel");
+  }
+
   enterAmount(amount: number): Promise<void> {
     return this.getAmountInputPo().enterAmount(amount);
   }
 
   clickCreate(): Promise<void> {
     return this.getCreateButtonPo().click();
+  }
+
+  clickCancel(): Promise<void> {
+    return this.getCancelButtonPo().click();
   }
 
   async stake(amount: number): Promise<void> {
