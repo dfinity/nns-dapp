@@ -31,9 +31,10 @@ test("Test SNS governance", async ({ page, context }) => {
   expect(snsProjectName).toMatch(/[A-Z]{5}/);
 
   step("Acquire tokens");
-  await appPo.getSnsTokens({ amount: 20, name: snsProjectName });
+  const askedAmount = 20;
+  await appPo.getSnsTokens({ amount: askedAmount, name: snsProjectName });
 
-  expect(await snsUniverseRow.getBalanceNumber()).toEqual("20.00");
+  expect(await snsUniverseRow.getBalanceNumber()).toEqual(askedAmount);
 
   step("Stake a neuron");
   await appPo.goToNeurons();
