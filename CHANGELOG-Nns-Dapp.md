@@ -11,6 +11,46 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 127093
+
+### Application
+
+#### Added
+
+* Add "API Boundary Node Management" topic support.
+* A work-around to recover unsupported ICRC-1 tokens.
+
+#### Changed
+
+* New light and dark theme colors.
+* Pluralise neurons on proposal detail page.
+* Placeholder when the transaction list is empty.
+* New QR code icon.
+* Render wallet page when not signed in.
+
+#### Removed
+
+* non-ICRC2 BTC withdrawal flow.
+
+#### Fixed
+
+* BTC deposit address QR code spinner in dark theme.
+* Missing NF-neurons on SNS proposal detail page.
+
+### Operations
+
+#### Added
+
+- Exercise new migration test.
+
+#### Changed
+
+* Upgrade to `dfx` 0.15.3.
+
+#### Fixed
+
+* Keep local replica accessible locally when specifying --domain to dfx-snapshot-start.
+
 ## Proposal 126904
 
 ### Application

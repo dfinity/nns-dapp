@@ -14,28 +14,15 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Add "API Boundary Node Management" topic support.
-* A work-around to recover unsupported ICRC-1 tokens.
-
 #### Changed
-
-* New light and dark theme colors.
-* Pluralise neurons on proposal detail page.
-* Placeholder when the transaction list is empty.
-* New QR code icon.
-* Render wallet page when not signed in.
 
 #### Deprecated
 
 #### Removed
 
-* non-ICRC2 BTC withdrawal flow.
 * ckBTC withdrawal account.
 
 #### Fixed
-
-* BTC deposit address QR code spinner in dark theme.
-* Missing NF-neurons on SNS proposal detail page.
 
 #### Security
 
@@ -45,11 +32,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Exercise new migration test.
-
 #### Changed
-
-* Upgrade to `dfx` 0.15.3.
 
 #### Deprecated
 
@@ -57,7 +40,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
-* Keep local replica accessible locally when specifying --domain to dfx-snapshot-start.
 * Commented out broken local `config.test`.
 
 #### Security
