@@ -255,18 +255,19 @@ describe("snsFilteredProposalsStore", () => {
   });
 
   it('should return all generic proposals when "All generic" is checked', () => {
+    const nativeNsFunctionId = 1n;
     const nativeTypeProposal = createSnsProposal({
-      proposalId: 1n,
-      action: 1n,
+      proposalId: 9001n,
+      action: nativeNsFunctionId,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
     });
     const genericTypeProposal1 = createSnsProposal({
-      proposalId: 2n,
+      proposalId: 9002n,
       action: MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
     });
     const genericTypeProposal2 = createSnsProposal({
-      proposalId: 3n,
+      proposalId: 9003n,
       action: MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID + 1n,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
     });
@@ -281,13 +282,12 @@ describe("snsFilteredProposalsStore", () => {
       certified: true,
       completed: true,
     });
-
     snsFiltersStore.setTypes({
       rootCanisterId,
       types: [
         {
-          id: `${nativeTypeProposal.id}`,
-          value: `${nativeTypeProposal.id}`,
+          id: `${nativeNsFunctionId}`,
+          value: `${nativeNsFunctionId}`,
           name: "Motion",
           checked: true,
         },
@@ -301,7 +301,7 @@ describe("snsFilteredProposalsStore", () => {
     });
 
     expect(getProposals()).toHaveLength(1);
-    expect(getProposals()[0].action).toEqual(1n);
+    expect(getProposals()).toEqual([nativeTypeProposal]);
 
     snsFiltersStore.setCheckTypes({
       rootCanisterId,
@@ -309,9 +309,9 @@ describe("snsFilteredProposalsStore", () => {
     });
 
     expect(getProposals()).toHaveLength(2);
-    expect(getProposals().map(({ action }) => action)).toEqual([
-      genericTypeProposal1.id,
-      genericTypeProposal2.id,
+    expect(getProposals()).toEqual([
+      genericTypeProposal1,
+      genericTypeProposal2,
     ]);
   });
 });
