@@ -48,6 +48,7 @@ export class GetTokensPo extends BasePageObject {
   }): Promise<void> {
     await this.clickGetTokens();
     await this.waitForOption(name);
+    await this.getDropdown().select(name);
     await this.getTokens(amount);
   }
 

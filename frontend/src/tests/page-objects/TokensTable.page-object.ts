@@ -9,12 +9,25 @@ import { BasePageObject } from "./base.page-object";
 export class TokensTablePo extends BasePageObject {
   private static readonly TID = "tokens-table-component";
 
+  // There will be multiple ckETH projects and arbitrary ICRC tokens in the future.
+  private static readonly NON_SNS_NAMES = [
+    "Internet Computer",
+    "ckBTC",
+    "ckTESTBTC",
+    "ckETH",
+    "ckETHSepolia",
+  ];
+
   static under(element: PageObjectElement): TokensTablePo {
     return new TokensTablePo(element.byTestId(TokensTablePo.TID));
   }
 
   async getFirstColumnHeader(): Promise<string> {
     return this.getText("column-header-1");
+  }
+
+  isSnsName(name: string): boolean {
+    return !TokensTablePo.NON_SNS_NAMES.includes(name);
   }
 
   getRows(): Promise<TokensTableRowPo[]> {
@@ -73,5 +86,31 @@ export class TokensTablePo extends BasePageObject {
 
   getLastRowText(): Promise<string> {
     return this.getText("last-row");
+  }
+
+  async waitForSnsRows(): Promise<void> {
+    const maybeRows = TokensTableRowPo.countUnder({
+      element: this.root,
+      count: TokensTablePo.NON_SNS_NAMES.length + 1,
+    });
+    for (const card of maybeRows) {
+      if (this.isSnsName(await card.getProjectName())) {
+        return;
+      }
+    }
+    throw new Error("SNS universe cards not found");
+  }
+
+  async getSnsRows(): Promise<TokensTableRowPo[]> {
+    // First make sure SNS projects are loaded.
+    await this.waitForSnsRows();
+    const rows = await this.getRows();
+    return (
+      await Promise.all(
+        rows.map(async (row) => ({ name: await row.getProjectName(), row }))
+      )
+    )
+      .filter(({ name }) => this.isSnsName(name))
+      .map(({ row }) => row);
   }
 }
