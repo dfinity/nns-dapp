@@ -72,7 +72,6 @@ fn main() {}
 
 #[pre_upgrade]
 fn pre_upgrade() {
-    println!("START pre-upgrade");
     println!(
         "pre_upgrade instruction_counter before saving state: {} stable_memory_size_gib: {} wasm_memory_size_gib: {}",
         ic_cdk::api::instruction_counter(),
@@ -80,9 +79,7 @@ fn pre_upgrade() {
         stats::gibibytes(stats::wasm_memory_size_bytes())
     );
     STATE.with(|s| {
-        println!("pre_upgrade state before: {s:?}");
         s.save();
-        println!("pre_upgrade state after: {s:?}");
     });
     println!(
         "pre_upgrade instruction_counter after saving state: {} stable_memory_size_gib: {} wasm_memory_size_gib: {}",
@@ -90,7 +87,6 @@ fn pre_upgrade() {
         stats::gibibytes(stats::stable_memory_size_bytes()),
         stats::gibibytes(stats::wasm_memory_size_bytes())
     );
-    println!("END pre-upgrade");
 }
 
 #[post_upgrade]
