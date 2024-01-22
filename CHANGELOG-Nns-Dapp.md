@@ -19,6 +19,7 @@ here after a successful release.
 
 * Add "API Boundary Node Management" topic support.
 * A work-around to recover unsupported ICRC-1 tokens.
+* Copy button to followed neuron IDs.
 
 #### Changed
 
