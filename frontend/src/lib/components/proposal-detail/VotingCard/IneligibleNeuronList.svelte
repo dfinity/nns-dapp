@@ -15,9 +15,14 @@
 {#if ineligibleNeuronCount > 0}
   <ExpandableProposalNeurons testId="ineligible-neurons">
     <svelte:fragment slot="start">
-      {replacePlaceholders($i18n.proposal_detail__ineligible.headline, {
-        $count: `${ineligibleNeuronCount}`,
-      })}
+      {replacePlaceholders(
+        ineligibleNeuronCount > 1
+          ? $i18n.proposal_detail__ineligible.headline_plural
+          : $i18n.proposal_detail__ineligible.headline,
+        {
+          $count: `${ineligibleNeuronCount}`,
+        }
+      )}
     </svelte:fragment>
     <IneligibleNeuronsCard {ineligibleNeurons} {minSnsDissolveDelaySeconds} />
   </ExpandableProposalNeurons>

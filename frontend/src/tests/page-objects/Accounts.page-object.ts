@@ -74,4 +74,16 @@ export class AccountsPo extends BasePageObject {
   clickBuyICP(): Promise<void> {
     return this.getNnsAccountsFooterPo().clickBuyICP();
   }
+
+  async getAccountAddress(accountName: string): Promise<string> {
+    const row = this.getNnsAccountsPo()
+      .getTokensTablePo()
+      .getRowByName(accountName);
+    await row.clickReceive();
+    const receiveModalPo = this.getReceiveModalPo();
+    await receiveModalPo.waitFor();
+    const address = await receiveModalPo.getAddress();
+    await receiveModalPo.close();
+    return address;
+  }
 }

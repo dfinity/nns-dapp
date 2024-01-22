@@ -6,10 +6,11 @@ import {
   getCommitmentE8s,
   getSwapCanisterAccount,
   hasOpenTicketInProcess,
-  isGenericNervousSystemFunction,
   isInternalRefreshBuyerTokensError,
-  isNativeNervousSystemFunction,
   isSnsFinalizing,
+  isSnsGenericNervousSystemFunction,
+  isSnsGenericNervousSystemTypeProposal,
+  isSnsNativeNervousSystemFunction,
   parseSnsSwapSaleBuyerCount,
   swapEndedMoreThanOneWeekAgo,
 } from "$lib/utils/sns.utils";
@@ -25,6 +26,7 @@ import {
   mockDerivedResponse,
   principal,
 } from "$tests/mocks/sns-projects.mock";
+import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { AccountIdentifier } from "@dfinity/ledger-icp";
@@ -344,25 +346,44 @@ sale_participants_count ${saleBuyerCount} 1677707139456
   describe("isNativeNervousSystemFunction", () => {
     it("should return true for NativeNervousSystemFunction", () => {
       expect(
-        isNativeNervousSystemFunction(nativeNervousSystemFunctionMock)
+        isSnsNativeNervousSystemFunction(nativeNervousSystemFunctionMock)
       ).toBe(true);
     });
     it("should return false for not NativeNervousSystemFunction", () => {
       expect(
-        isNativeNervousSystemFunction(genericNervousSystemFunctionMock)
+        isSnsNativeNervousSystemFunction(genericNervousSystemFunctionMock)
       ).toBe(false);
     });
   });
 
-  describe("isGenericNervousSystemFunction", () => {
+  describe("isSnsGenericNervousSystemFunction", () => {
     it("should return true for GenericNervousSystemFunction", () => {
       expect(
-        isGenericNervousSystemFunction(genericNervousSystemFunctionMock)
+        isSnsGenericNervousSystemFunction(genericNervousSystemFunctionMock)
       ).toBe(true);
     });
     it("should return false for not GenericNervousSystemFunction", () => {
       expect(
-        isGenericNervousSystemFunction(nativeNervousSystemFunctionMock)
+        isSnsGenericNervousSystemFunction(nativeNervousSystemFunctionMock)
+      ).toBe(false);
+    });
+  });
+
+  describe("isGenericNervousSystemTypeProposal", () => {
+    it("should return true for GenericNervousSystem type proposals", () => {
+      expect(
+        isSnsGenericNervousSystemTypeProposal({
+          ...mockSnsProposal,
+          action: genericNervousSystemFunctionMock.id,
+        })
+      ).toBe(true);
+    });
+    it("should return false for NativeNervousSystem type proposals", () => {
+      expect(
+        isSnsGenericNervousSystemTypeProposal({
+          ...mockSnsProposal,
+          action: nativeNervousSystemFunctionMock.id,
+        })
       ).toBe(false);
     });
   });

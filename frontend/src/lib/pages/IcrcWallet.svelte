@@ -2,6 +2,7 @@
   import { selectedIcrcTokenUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { nonNullish } from "@dfinity/utils";
   import IcrcWalletPage from "$lib/components/accounts/IcrcWalletPage.svelte";
+  import NoTransactions from "$lib/components/accounts/NoTransactions.svelte";
   import { writable } from "svelte/store";
   import type { WalletStore } from "$lib/types/wallet.context";
   import IcrcWalletTransactionsList from "$lib/components/accounts/IcrcWalletTransactionsList.svelte";
@@ -54,6 +55,8 @@
         {token}
         bind:this={transactions}
       />
+    {:else}
+      <NoTransactions />
     {/if}
   </svelte:fragment>
 

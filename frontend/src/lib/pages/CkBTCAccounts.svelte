@@ -1,7 +1,6 @@
 <script lang="ts">
   import { nonNullish } from "@dfinity/utils";
   import { selectedCkBTCUniverseIdStore } from "$lib/derived/selected-universe.derived";
-  import CkBTCWithdrawalAccount from "$lib/components/accounts/CkBTCWithdrawalAccount.svelte";
   import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
   import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
@@ -30,6 +29,4 @@
   testId="ckbtc-accounts-body"
   selectedUniverseId={$selectedCkBTCUniverseIdStore}
   token={token?.token}
->
-  <CkBTCWithdrawalAccount slot="additional-accounts" />
-</IcrcAccountsPage>
+></IcrcAccountsPage>

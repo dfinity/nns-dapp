@@ -18,7 +18,7 @@ import * as busyStore from "$lib/stores/busy.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import * as toastsStore from "$lib/stores/toasts.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import { nanoSecondsToDateTime } from "$lib/utils/date.utils";
 import { formatTokenE8s } from "$lib/utils/token.utils";
 import {
@@ -167,6 +167,7 @@ describe("sns-api", () => {
 
     snsTicketsStore.reset();
     icpAccountsStore.resetForTesting();
+    tokensStore.reset();
 
     spyOnNewSaleTicketApi.mockResolvedValue(testSnsTicket.ticket);
     spyOnNotifyPaymentFailureApi.mockResolvedValue(undefined);
@@ -177,10 +178,9 @@ describe("sns-api", () => {
 
     spyOnSendICP.mockResolvedValue(13n);
 
-    const fee = mockSnsToken.fee;
-    transactionsFeesStore.setFee({
-      rootCanisterId: rootCanisterIdMock,
-      fee,
+    tokensStore.setToken({
+      canisterId: rootCanisterIdMock,
+      token: mockSnsToken,
       certified: true,
     });
 

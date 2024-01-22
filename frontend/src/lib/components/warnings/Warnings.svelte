@@ -3,11 +3,9 @@
   import { ENABLE_METRICS } from "$lib/constants/mockable.constants";
   import Metrics from "$lib/components/metrics/Metrics.svelte";
   import { Toasts } from "@dfinity/gix-components";
-  import ConvertCkBTCToBtcWarning from "$lib/components/warnings/ConvertCkBTCToBtcWarning.svelte";
   import TestEnvironmentWarning from "$lib/components/warnings/TestEnvironmentWarning.svelte";
 
   export let bringToastsForward = false;
-  export let ckBTCWarnings = false;
   export let testEnvironmentWarning = false;
 </script>
 
@@ -20,10 +18,6 @@
 </div>
 
 <TransactionRateWarning />
-
-{#if ckBTCWarnings}
-  <ConvertCkBTCToBtcWarning />
-{/if}
 
 {#if testEnvironmentWarning}
   <TestEnvironmentWarning />

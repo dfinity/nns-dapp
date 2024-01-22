@@ -14,6 +14,7 @@ import en from "$tests/mocks/i18n.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
 import {
   SnsProposalDecisionStatus,
@@ -22,6 +23,7 @@ import {
   type SnsProposalData,
 } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 vi.mock("$lib/api/sns-governance.api");
 
@@ -103,6 +105,25 @@ describe("SnsProposals", () => {
         expect(queryAllByTestId("checkbox").length).toBeGreaterThan(0);
       });
 
+      it("should init types filter", async () => {
+        const getFiltersStoreData = () =>
+          get(snsFiltersStore)[rootCanisterId.toText()];
+
+        expect(getFiltersStoreData()?.types).toEqual(undefined);
+        render(SnsProposals);
+
+        await runResolvedPromises();
+
+        expect(getFiltersStoreData()?.types).toEqual([
+          {
+            checked: true,
+            id: `${functionId}`,
+            name: functionName,
+            value: `${functionId}`,
+          },
+        ]);
+      });
+
       it("should render a spinner while searching proposals", async () => {
         const { getByTestId } = render(SnsProposals);
 
@@ -151,6 +172,7 @@ describe("SnsProposals", () => {
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,
+        action: functionId,
       });
     });
 
@@ -182,21 +204,36 @@ describe("SnsProposals", () => {
       }),
     ];
     beforeEach(() => {
+      const functionId1 = 3n;
+      const functionId2 = 4n;
       vi.spyOn(authStore, "subscribe").mockImplementation(
         mockAuthStoreNoIdentitySubscribe
       );
-      const functionId = 3n;
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,
         ...proposals[0],
-        action: functionId,
+        action: functionId1,
       });
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,
         ...proposals[1],
-        action: functionId,
+        action: functionId2,
+      });
+      snsFunctionsStore.setProjectFunctions({
+        rootCanisterId,
+        nsFunctions: [
+          {
+            ...nervousSystemFunctionMock,
+            id: functionId1,
+          },
+          {
+            ...nervousSystemFunctionMock,
+            id: functionId2,
+          },
+        ],
+        certified: true,
       });
     });
 
@@ -274,6 +311,39 @@ describe("SnsProposals", () => {
       await waitFor(() =>
         expect(queryByTestId("filter-modal")).not.toBeInTheDocument()
       );
+
+      expect(queryAllByTestId("proposal-card").length).toBe(1);
+    });
+
+    it("should filter by types", async () => {
+      const { getByTestId, queryAllByTestId, queryByTestId } =
+        render(SnsProposals);
+
+      await waitFor(() =>
+        expect(queryByTestId("proposals-loading")).not.toBeInTheDocument()
+      );
+
+      // initially there are 2 proposals
+      expect(queryAllByTestId("proposal-card").length).toBe(2);
+
+      await fireEvent.click(getByTestId("filters-by-types"));
+      await runResolvedPromises();
+
+      expect(queryByTestId("filter-modal")).toBeInTheDocument();
+
+      const functionId1Checkbox = queryAllByTestId("checkbox").find(
+        (element) => element.getAttribute("id") === String(functionId)
+      );
+      expect(functionId1Checkbox).not.toBeUndefined();
+
+      // Unchecked first proposal type
+      await fireEvent.click(functionId1Checkbox);
+      // Apply filters
+      await fireEvent.click(getByTestId("apply-filters"));
+
+      // Wait for modal to close
+      await runResolvedPromises();
+      expect(queryByTestId("filter-modal")).not.toBeInTheDocument();
 
       expect(queryAllByTestId("proposal-card").length).toBe(1);
     });

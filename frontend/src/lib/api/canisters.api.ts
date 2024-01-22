@@ -28,7 +28,6 @@ import type { Identity } from "@dfinity/agent";
 import { CMCCanister, ProcessingError, type Cycles } from "@dfinity/cmc";
 import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp";
 import type { Principal } from "@dfinity/principal";
-import type { TokenAmount } from "@dfinity/utils";
 import { nonNullish, principalToSubAccount } from "@dfinity/utils";
 import { sendICP } from "./icp-ledger.api";
 import { nnsDappCanister } from "./nns-dapp.api";
@@ -194,6 +193,8 @@ const pollNotifyCreateCanister = async ({
           controller,
           block_index: blockHeight,
           subnet_type: [],
+          subnet_selection: [],
+          settings: [],
         }),
       shouldExit: notProcessingError,
     });
@@ -212,7 +213,7 @@ export const createCanister = async ({
   fromSubAccount,
 }: {
   identity: Identity;
-  amount: TokenAmount;
+  amount: bigint;
   name?: string;
   fromSubAccount?: SubAccountArray;
 }): Promise<Principal> => {
@@ -315,7 +316,7 @@ export const topUpCanister = async ({
 }: {
   identity: Identity;
   canisterId: Principal;
-  amount: TokenAmount;
+  amount: bigint;
   fromSubAccount?: SubAccountArray;
 }): Promise<void> => {
   logWithTimestamp(`Topping up canister ${canisterId.toText()} call...`);

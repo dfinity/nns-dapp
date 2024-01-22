@@ -36,8 +36,6 @@ const convertAccountToUserTokenData = ({
     main: undefined,
     subAccount: i18nObj.accounts.subAccount,
     hardwareWallet: i18nObj.accounts.hardwareWallet,
-    // This is not used in the UI, but it's here for completeness
-    withdrawalAccount: i18nObj.accounts.withdrawalAccount,
   };
 
   const title: string =

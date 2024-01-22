@@ -9,7 +9,6 @@ import en from "$tests/mocks/i18n.mock";
 import { VotesResultPo } from "$tests/page-objects/VotesResults.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
-import { describe } from "vitest";
 
 const now = nowInSeconds();
 

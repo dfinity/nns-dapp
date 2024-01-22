@@ -16,11 +16,14 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-* New light and dark theme colors.
+* Changed wording about staking neurons to staking tokens.
+* Add missing feature flags to default feature flags value.
 
 #### Deprecated
 
 #### Removed
+
+* ckBTC withdrawal account.
 
 #### Fixed
 
@@ -32,16 +35,14 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Exercise new migration test.
-
 #### Changed
-
-* Upgrade to `dfx` 0.15.3.
 
 #### Deprecated
 
 #### Removed
 
 #### Fixed
+
+* Commented out broken local `config.test`.
 
 #### Security

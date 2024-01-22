@@ -10,40 +10,67 @@
     sortSnsProposalsById,
   } from "$lib/utils/sns-proposals.utils";
   import { loadSnsFilters } from "$lib/services/sns-filters.services";
-  import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
+  import {
+    snsOnlyProjectStore,
+    snsProjectSelectedStore,
+  } from "$lib/derived/sns/sns-selected-project.derived";
   import {
     snsFiltersStore,
     type SnsFiltersStoreData,
   } from "$lib/stores/sns-filters.store";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
   import type { Principal } from "@dfinity/principal";
   import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
   import type { Readable } from "svelte/store";
 
   let currentProjectCanisterId: Principal | undefined = undefined;
-  const onSnsProjectChanged = async (
-    selectedProjectCanisterId: Principal | undefined
-  ) => {
-    currentProjectCanisterId = selectedProjectCanisterId;
-    if (nonNullish(selectedProjectCanisterId)) {
-      await Promise.all([
-        loadSnsNervousSystemFunctions(selectedProjectCanisterId),
-        loadSnsFilters(selectedProjectCanisterId),
-      ]);
+  const onSnsProjectChanged = async ({
+    rootCanisterId,
+    snsName,
+  }: {
+    rootCanisterId: Principal | undefined;
+    snsName: string;
+  }) => {
+    if (
+      isNullish(rootCanisterId) ||
+      isNullish($snsProjectSelectedStore?.summary?.metadata?.name)
+    ) {
+      return;
     }
+
+    currentProjectCanisterId = rootCanisterId;
+    await loadSnsNervousSystemFunctions(rootCanisterId);
+    // The store should be updated at this point. But in case it's not (errors etc.),
+    // we shouldn't update the filter.
+    if (isNullish($nsFunctionsStore)) {
+      throw new Error("no nsFunctions");
+    }
+
+    await loadSnsFilters({
+      rootCanisterId,
+      nsFunctions: $nsFunctionsStore,
+      snsName,
+    });
   };
 
-  $: onSnsProjectChanged($snsOnlyProjectStore);
+  $: onSnsProjectChanged({
+    rootCanisterId: $snsOnlyProjectStore,
+    snsName: $snsProjectSelectedStore?.summary.metadata.name ?? "",
+  });
 
   const fetchProposals = async (filters: SnsFiltersStoreData) => {
     // First call will have `filters` as `undefined`.
     // Once we have the initial filters, we load the proposals.
     if (
       nonNullish(currentProjectCanisterId) &&
-      nonNullish(filters[currentProjectCanisterId.toText()])
+      nonNullish(filters[currentProjectCanisterId.toText()]) &&
+      nonNullish($nsFunctionsStore)
     ) {
-      await loadSnsProposals({ rootCanisterId: currentProjectCanisterId });
+      await loadSnsProposals({
+        rootCanisterId: currentProjectCanisterId,
+        snsFunctions: $nsFunctionsStore,
+      });
     }
   };
 
@@ -51,13 +78,17 @@
   // TODO(e2e): cover this with e2e tests.
   $: $snsOnlyProjectStore,
     $snsFiltersStore,
+    $nsFunctionsStore,
     (() => fetchProposals($snsFiltersStore))();
 
   let loadingNextPage = false;
   let loadNextPage: () => void;
   $: loadNextPage = async () => {
     const selectedProjectCanisterId = $snsOnlyProjectStore;
-    if (selectedProjectCanisterId !== undefined) {
+    if (
+      selectedProjectCanisterId !== undefined &&
+      nonNullish($nsFunctionsStore)
+    ) {
       const beforeProposalId = nonNullish(currentProjectCanisterId)
         ? lastProposalId(
             $snsProposalsStore[currentProjectCanisterId.toText()]?.proposals ??
@@ -68,6 +99,7 @@
       loadingNextPage = true;
       await loadSnsProposals({
         rootCanisterId: selectedProjectCanisterId,
+        snsFunctions: $nsFunctionsStore,
         beforeProposalId,
       });
       loadingNextPage = false;

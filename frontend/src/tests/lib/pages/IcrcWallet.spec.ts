@@ -1,5 +1,6 @@
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
 import * as walletLedgerApi from "$lib/api/wallet-ledger.api";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   CKETHSEPOLIA_INDEX_CANISTER_ID,
   CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
@@ -15,7 +16,7 @@ import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
 import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
 import WalletTest from "$tests/lib/pages/WalletTest.svelte";
-import { resetIdentity } from "$tests/mocks/auth.store.mock";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCkETHMainAccount,
   mockCkETHTESTToken,
@@ -83,7 +84,7 @@ describe("IcrcWallet", () => {
   };
 
   const renderWallet = async (props: {
-    accountIdentifier: string;
+    accountIdentifier?: string;
   }): Promise<IcrcWalletPo> => {
     const { container } = render(WalletTest, {
       ...props,
@@ -108,12 +109,14 @@ describe("IcrcWallet", () => {
   };
 
   beforeEach(() => {
+    balancesObserverCallback = undefined;
     vi.clearAllMocks();
     vi.clearAllTimers();
     tokensStore.reset();
     overrideFeatureFlagsStore.reset();
     toastsStore.reset();
     resetIdentity();
+    overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
 
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
       transactions: [],
@@ -122,6 +125,66 @@ describe("IcrcWallet", () => {
     icrcCanistersStore.setCanisters({
       ledgerCanisterId: CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
       indexCanisterId: CKETHSEPOLIA_INDEX_CANISTER_ID,
+    });
+  });
+
+  describe("user not signed in", () => {
+    beforeEach(() => {
+      setNoIdentity();
+      tokensStore.setTokens(mockUniversesTokens);
+      page.mock({
+        data: { universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText() },
+        routeId: AppPath.Wallet,
+      });
+    });
+
+    it("should not activate the balances observer", async () => {
+      await renderWallet({});
+      expect(balancesObserverCallback).toBeUndefined();
+    });
+
+    it("should render universe name", async () => {
+      const po = await renderWallet({});
+      expect(await po.getWalletPageHeaderPo().getUniverse()).toBe("ckETHTEST");
+    });
+
+    it("should not render a wallet address", async () => {
+      const po = await renderWallet({});
+      expect(await po.getWalletPageHeaderPo().getHashPo().isPresent()).toBe(
+        false
+      );
+    });
+
+    it("should render balance placeholder", async () => {
+      const po = await renderWallet({});
+      expect(await po.getWalletPageHeadingPo().hasBalancePlaceholder()).toBe(
+        true
+      );
+    });
+
+    it("should render 'Main' account name", async () => {
+      const po = await renderWallet({});
+      expect(await po.getWalletPageHeadingPo().getSubtitle()).toBe("Main");
+    });
+
+    it("should render sign in button", async () => {
+      const po = await renderWallet({});
+      expect(await po.hasSignInButton()).toBe(true);
+    });
+
+    it("should render transactions placeholder", async () => {
+      const po = await renderWallet({});
+      expect(await po.hasNoTransactions()).toBe(true);
+    });
+
+    it("should not render send/receive buttons", async () => {
+      const po = await renderWallet({});
+      expect(await po.getWalletFooterPo().getSendButtonPo().isPresent()).toBe(
+        false
+      );
+      expect(
+        await po.getWalletFooterPo().getReceiveButtonPo().isPresent()
+      ).toBe(false);
     });
   });
 
@@ -275,6 +338,28 @@ describe("IcrcWallet", () => {
           text: 'Sorry, the account "invalid-account-identifier" was not found',
         },
       ]);
+
+      it("should navigate to /tokens when account identifier is invalid and tokens page is enabled", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
+
+        expect(get(pageStore)).toEqual({
+          path: AppPath.Wallet,
+          universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText(),
+        });
+        await renderWallet({
+          accountIdentifier: "invalid-account-identifier",
+        });
+        expect(get(pageStore)).toEqual({
+          path: AppPath.Tokens,
+          universe: OWN_CANISTER_ID_TEXT,
+        });
+        expect(get(toastsStore)).toMatchObject([
+          {
+            level: "error",
+            text: 'Sorry, the account "invalid-account-identifier" was not found',
+          },
+        ]);
+      });
     });
 
     it("should stay on the wallet page when account identifier is valid", async () => {
@@ -294,6 +379,8 @@ describe("IcrcWallet", () => {
 
     it("should display the balance from the observer", async () => {
       const po = await renderWallet(props);
+      expect(balancesObserverCallback).toBeDefined();
+
       await runResolvedPromises();
 
       expect(await po.getWalletPageHeadingPo().getTitle()).toBe(

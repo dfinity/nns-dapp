@@ -30,7 +30,7 @@ import {
 } from "$lib/stores/sns-neurons.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { notForceCallStrategy } from "$lib/utils/env.utils";
@@ -340,9 +340,7 @@ export const splitNeuron = async ({
     const token = get(snsTokenSymbolSelectedStore);
     assertNonNullish(token, "token not defined");
 
-    const transactionFee = get(transactionsFeesStore).projects[
-      rootCanisterId.toText()
-    ]?.fee;
+    const transactionFee = get(tokensStore)[rootCanisterId.toText()]?.token.fee;
     assertNonNullish(transactionFee, "fee not defined");
 
     const amountE8s = numberToE8s(amount);
@@ -562,8 +560,7 @@ export const stakeNeuron = async ({
     const identity = await getAuthenticatedIdentity();
     const stakeE8s = numberToE8s(amount);
 
-    const fee = get(transactionsFeesStore).projects[rootCanisterId.toText()]
-      ?.fee;
+    const fee = get(tokensStore)[rootCanisterId.toText()]?.token.fee;
 
     if (!fee) {
       throw new Error("error.transaction_fee_not_found");

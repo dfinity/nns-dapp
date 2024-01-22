@@ -55,7 +55,7 @@ describe("IcrcTransactionList", () => {
       completed: true,
     });
 
-    expect(await po.getText()).toBe("No transactions");
+    expect(await po.hasNoTransactions()).toBe(true);
   });
 
   it("should render transactions", async () => {
@@ -69,5 +69,6 @@ describe("IcrcTransactionList", () => {
     });
 
     expect(await po.getTransactionCardPos()).toHaveLength(2);
+    expect(await po.hasNoTransactions()).toBe(false);
   });
 });

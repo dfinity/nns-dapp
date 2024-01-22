@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { Transaction as NnsTransaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import type { Account } from "$lib/types/account";
-  import { i18n } from "$lib/stores/i18n";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import NnsTransactionCard from "./NnsTransactionCard.svelte";
+  import NoTransactions from "./NoTransactions.svelte";
   import { getContext } from "svelte";
   import {
     WALLET_CONTEXT_KEY,
@@ -31,7 +31,7 @@
   {#if account === undefined || transactions === undefined}
     <SkeletonCard cardType="info" />
   {:else if transactions.length === 0}
-    {$i18n.wallet.no_transactions}
+    <NoTransactions />
   {:else}
     {#each extendedTransactions as { toSelfTransaction, transaction } (`${transaction.timestamp.timestamp_nanos}-${toSelfTransaction}`)}
       <div animate:flip={{ duration: 250 }} class="flip">

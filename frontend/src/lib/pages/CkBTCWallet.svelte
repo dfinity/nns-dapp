@@ -1,8 +1,10 @@
 <script lang="ts">
+  import { authSignedInStore } from "$lib/derived/auth.derived";
   import { hasAccounts } from "$lib/utils/accounts.utils";
   import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import CkBTCTransactionsList from "$lib/components/accounts/CkBTCTransactionsList.svelte";
+  import NoTransactions from "$lib/components/accounts/NoTransactions.svelte";
   import {
     ckBTCTokenFeeStore,
     ckBTCTokenStore,
@@ -70,6 +72,7 @@
 
   let canMakeTransactions = false;
   $: canMakeTransactions =
+    $authSignedInStore &&
     nonNullish($selectedCkBTCUniverseIdStore) &&
     hasAccounts(
       $icrcAccountsStore[$selectedCkBTCUniverseIdStore.toText()]?.accounts ?? []
@@ -77,14 +80,16 @@
     nonNullish($ckBTCTokenFeeStore[$selectedCkBTCUniverseIdStore.toText()]) &&
     nonNullish($ckBTCTokenStore[$selectedCkBTCUniverseIdStore.toText()]);
 
-  $: (async () =>
-    await loadCkBTCInfo({
-      universeId: $selectedCkBTCUniverseIdStore,
-      minterCanisterId: canisters?.minterCanisterId,
-    }))();
+  $: $authSignedInStore &&
+    (async () =>
+      await loadCkBTCInfo({
+        universeId: $selectedCkBTCUniverseIdStore,
+        minterCanisterId: canisters?.minterCanisterId,
+      }))();
 
   $: $selectedCkBTCUniverseIdStore &&
     canisters &&
+    $authSignedInStore &&
     loadRetrieveBtcStatuses({
       universeId: $selectedCkBTCUniverseIdStore,
       minterCanisterId: canisters.minterCanisterId,
@@ -101,7 +106,7 @@
   {reloadTransactions}
 >
   <svelte:fragment slot="info-card">
-    {#if nonNullish($selectedAccountStore.account) && nonNullish($selectedCkBTCUniverseIdStore) && nonNullish(canisters)}
+    {#if nonNullish($selectedCkBTCUniverseIdStore) && nonNullish(canisters)}
       <CkBTCInfoCard
         account={$selectedAccountStore.account}
         universeId={$selectedCkBTCUniverseIdStore}
@@ -120,6 +125,8 @@
         indexCanisterId={canisters.indexCanisterId}
         token={token?.token}
       />
+    {:else}
+      <NoTransactions />
     {/if}
   </svelte:fragment>
 

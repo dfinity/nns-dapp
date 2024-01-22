@@ -8,10 +8,9 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import NnsWallet from "$lib/pages/NnsWallet.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
-import { authStore } from "$lib/stores/auth.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { page } from "$mocks/$app/stores";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
@@ -50,8 +49,8 @@ describe("NnsWallet", () => {
     cancelPollAccounts();
     icpAccountsStore.resetForTesting();
     toastsStore.reset();
+    resetIdentity();
 
-    vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
     vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
       mainBalanceE8s
     );
@@ -111,6 +110,63 @@ describe("NnsWallet", () => {
     return () => resolveGetTransactions();
   };
 
+  describe("user not signed in", () => {
+    beforeEach(() => {
+      setNoIdentity();
+    });
+
+    it("should not poll accounts", async () => {
+      const spyQueryAccount = vi
+        .spyOn(nnsDappApi, "queryAccount")
+        .mockRejectedValue(new Error("connection error"));
+
+      await renderWallet({});
+      expect(spyQueryAccount).not.toBeCalled();
+    });
+
+    it("should render universe name", async () => {
+      const po = await renderWallet({});
+      expect(await po.getWalletPageHeaderPo().getUniverse()).toBe(
+        "Internet Computer"
+      );
+    });
+
+    it("should not render a wallet address", async () => {
+      const po = await renderWallet({});
+      expect(await po.getWalletPageHeaderPo().getHashPo().isPresent()).toBe(
+        false
+      );
+    });
+
+    it("should render balance placeholder", async () => {
+      const po = await renderWallet({});
+      expect(await po.getWalletPageHeadingPo().hasBalancePlaceholder()).toBe(
+        true
+      );
+    });
+
+    it("should render 'Main' account name", async () => {
+      const po = await renderWallet({});
+      expect(await po.getWalletPageHeadingPo().getSubtitle()).toBe("");
+    });
+
+    it("should render sign in button", async () => {
+      const po = await renderWallet({});
+      expect(await po.hasSignInButton()).toBe(true);
+    });
+
+    it("should render transactions placeholder", async () => {
+      const po = await renderWallet({});
+      expect(await po.hasNoTransactions()).toBe(true);
+    });
+
+    it("should not render send/receive buttons", async () => {
+      const po = await renderWallet({});
+      expect(await po.getSendButtonPo().isPresent()).toBe(false);
+      expect(await po.getReceiveButtonPo().isPresent()).toBe(false);
+    });
+  });
+
   describe("no accounts", () => {
     beforeEach(() => {
       vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(
@@ -136,11 +192,12 @@ describe("NnsWallet", () => {
       const po = await renderWallet(props);
 
       await runResolvedPromises();
-      expect(await po.getSendButtonPo().isDisabled()).toBe(true);
+      expect(await po.getSendButtonPo().isPresent()).toBe(false);
 
       resolveQueryBalance();
 
       await runResolvedPromises();
+      expect(await po.getSendButtonPo().isPresent()).toBe(true);
       expect(await po.getSendButtonPo().isDisabled()).toBe(false);
     });
 

@@ -9,6 +9,8 @@ import { authStore } from "$lib/stores/auth.store";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
+import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
+import { ALL_SNS_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import {
   mockAuthStoreNoIdentitySubscribe,
@@ -17,6 +19,10 @@ import {
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import {
+  genericNervousSystemFunctionMock,
+  nativeNervousSystemFunctionMock,
+} from "$tests/mocks/sns-functions.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
@@ -67,12 +73,14 @@ describe("sns-proposals services", () => {
       it("should call queryProposals with the default params", async () => {
         await loadSnsProposals({
           rootCanisterId: mockPrincipal,
+          snsFunctions: [],
         });
         expect(queryProposalsSpy).toHaveBeenCalledWith({
           params: {
             limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
             beforeProposal: undefined,
             includeStatus: [],
+            excludeType: [],
           },
           identity: new AnonymousIdentity(),
           certified: false,
@@ -85,12 +93,14 @@ describe("sns-proposals services", () => {
         await loadSnsProposals({
           rootCanisterId: mockPrincipal,
           beforeProposalId: proposalId,
+          snsFunctions: [],
         });
         expect(queryProposalsSpy).toHaveBeenCalledWith({
           params: {
             limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
             beforeProposal: proposalId,
             includeStatus: [],
+            excludeType: [],
           },
           identity: new AnonymousIdentity(),
           certified: false,
@@ -125,12 +135,64 @@ describe("sns-proposals services", () => {
         await loadSnsProposals({
           rootCanisterId,
           beforeProposalId: proposalId,
+          snsFunctions: [],
         });
         expect(queryProposalsSpy).toHaveBeenCalledWith({
           params: {
             limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
             beforeProposal: proposalId,
             includeStatus: selectedDecisionStatus,
+            excludeType: [],
+          },
+          identity: new AnonymousIdentity(),
+          certified: false,
+          rootCanisterId: mockPrincipal,
+        });
+      });
+
+      it("should call queryProposals with selected types filters", async () => {
+        const proposalId = { id: 1n };
+        const rootCanisterId = mockPrincipal;
+        const snsFunctions = [
+          nativeNervousSystemFunctionMock,
+          genericNervousSystemFunctionMock,
+        ];
+        const typesFilterState = [
+          {
+            id: `${nativeNervousSystemFunctionMock.id}`,
+            name: "Motion",
+            value: `${nativeNervousSystemFunctionMock.id}`,
+            checked: true,
+          },
+          {
+            id: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
+            name: "Motion",
+            value: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
+            checked: false,
+          },
+        ];
+        snsFiltersStore.setTypes({
+          rootCanisterId,
+          types: typesFilterState,
+        });
+        snsFiltersStore.setTypes({
+          rootCanisterId,
+          types: [...typesFilterState],
+        });
+
+        expect(queryProposalsSpy).not.toHaveBeenCalled();
+
+        await loadSnsProposals({
+          rootCanisterId,
+          beforeProposalId: proposalId,
+          snsFunctions,
+        });
+        expect(queryProposalsSpy).toHaveBeenCalledWith({
+          params: {
+            limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
+            beforeProposal: proposalId,
+            includeStatus: [],
+            excludeType: [genericNervousSystemFunctionMock.id],
           },
           identity: new AnonymousIdentity(),
           certified: false,
@@ -141,6 +203,7 @@ describe("sns-proposals services", () => {
       it("should load the proposals in the store", async () => {
         await loadSnsProposals({
           rootCanisterId: mockPrincipal,
+          snsFunctions: [],
         });
         await waitFor(() => {
           const storeData = get(snsProposalsStore);
@@ -153,6 +216,7 @@ describe("sns-proposals services", () => {
       it("set completed to true if response has less than page size", async () => {
         await loadSnsProposals({
           rootCanisterId: mockPrincipal,
+          snsFunctions: [],
         });
         await waitFor(() => {
           const storeData = get(snsProposalsStore);
@@ -175,17 +239,49 @@ describe("sns-proposals services", () => {
       it("should call queryProposals with user's identity", async () => {
         await loadSnsProposals({
           rootCanisterId: mockPrincipal,
+          snsFunctions: [],
         });
         expect(queryProposalsSpy).toHaveBeenCalledWith({
           params: {
             limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
             beforeProposal: undefined,
             includeStatus: [],
+            excludeType: [],
           },
           identity: mockIdentity,
           certified: false,
           rootCanisterId: mockPrincipal,
         });
+      });
+
+      it("should call queryProposals with excludeType parameter", async () => {
+        const nativeFunctionId = nativeNervousSystemFunctionMock.id;
+        const genericFunctionId = genericNervousSystemFunctionMock.id;
+        const nativeFilterEntryChecked: Filter<SnsProposalTypeFilterId> = {
+          id: `${nativeFunctionId}`,
+          name: "string",
+          value: `${nativeFunctionId}`,
+          checked: true,
+        };
+        snsFiltersStore.setTypes({
+          rootCanisterId: mockPrincipal,
+          types: [nativeFilterEntryChecked],
+        });
+        await loadSnsProposals({
+          rootCanisterId: mockPrincipal,
+          snsFunctions: [
+            nativeNervousSystemFunctionMock,
+            genericNervousSystemFunctionMock,
+          ],
+        });
+        expect(queryProposalsSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            params: expect.objectContaining({
+              // exclude generic type, because only native was selected
+              excludeType: [genericFunctionId],
+            }),
+          })
+        );
       });
     });
   });

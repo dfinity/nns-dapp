@@ -1,16 +1,22 @@
 import * as snsIndexApi from "$lib/api/sns-index.api";
 import * as snsLedgerApi from "$lib/api/sns-ledger.api";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import SnsWallet from "$lib/pages/SnsWallet.svelte";
 import * as workerBalances from "$lib/services/worker-balances.services";
 import * as workerTransactions from "$lib/services/worker-transactions.services";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
 import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
-import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import {
+  mockIdentity,
+  resetIdentity,
+  setNoIdentity,
+} from "$tests/mocks/auth.store.mock";
 import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
@@ -76,7 +82,7 @@ describe("SnsWallet", () => {
   const fee = 10_000n;
   const projectName = "Tetris";
 
-  const renderComponent = async (props: { accountIdentifier: string }) => {
+  const renderComponent = async (props: { accountIdentifier?: string }) => {
     const { container } = render(SnsWallet, props);
     await runResolvedPromises();
     return SnsWalletPo.under(new JestPageObjectElement(container));
@@ -86,8 +92,9 @@ describe("SnsWallet", () => {
     resetIdentity();
     vi.clearAllMocks();
     snsAccountsStore.reset();
-    transactionsFeesStore.reset();
+    tokensStore.reset();
     toastsStore.reset();
+    overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
     vi.spyOn(snsIndexApi, "getSnsTransactions").mockResolvedValue({
       oldestTxId: 1_234n,
       transactions: [mockIcrcTransactionWithId],
@@ -104,9 +111,68 @@ describe("SnsWallet", () => {
         tokenMetadata: testToken,
       },
     ]);
+    tokensStore.setToken({
+      canisterId: rootCanisterId,
+      token: {
+        ...testToken,
+        fee,
+      },
+      certified: true,
+    });
     page.mock({
       data: { universe: rootCanisterIdText },
       routeId: AppPath.Wallet,
+    });
+  });
+
+  describe("user not signed in", () => {
+    beforeEach(() => {
+      setNoIdentity();
+    });
+
+    it("should not activate the balances observer", async () => {
+      await renderComponent({});
+      expect(balancesObserverCallback).toBeUndefined();
+    });
+
+    it("should render universe name", async () => {
+      const po = await renderComponent({});
+      expect(await po.getWalletPageHeaderPo().getUniverse()).toBe("Tetris");
+    });
+
+    it("should not render a wallet address", async () => {
+      const po = await renderComponent({});
+      expect(await po.getWalletPageHeaderPo().getHashPo().isPresent()).toBe(
+        false
+      );
+    });
+
+    it("should render balance placeholder", async () => {
+      const po = await renderComponent({});
+      expect(await po.getWalletPageHeadingPo().hasBalancePlaceholder()).toBe(
+        true
+      );
+    });
+
+    it("should render 'Main' account name", async () => {
+      const po = await renderComponent({});
+      expect(await po.getWalletPageHeadingPo().getSubtitle()).toBe("Main");
+    });
+
+    it("should render sign in button", async () => {
+      const po = await renderComponent({});
+      expect(await po.hasSignInButton()).toBe(true);
+    });
+
+    it("should render transactions placeholder", async () => {
+      const po = await renderComponent({});
+      expect(await po.hasNoTransactions()).toBe(true);
+    });
+
+    it("should not render send/receive buttons", async () => {
+      const po = await renderComponent({});
+      expect(await po.getSendButtonPo().isPresent()).toBe(false);
+      expect(await po.getReceiveButtonPo().isPresent()).toBe(false);
     });
   });
 
@@ -321,6 +387,28 @@ describe("SnsWallet", () => {
       expect(get(pageStore)).toEqual({
         path: AppPath.Accounts,
         universe: rootCanisterIdText,
+      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: 'Sorry, the account "invalid-account-identifier" was not found',
+        },
+      ]);
+    });
+
+    it("should navigate to /tokens when account identifier is invalid and tokens page is enabled", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
+
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Wallet,
+        universe: rootCanisterIdText,
+      });
+      await renderComponent({
+        accountIdentifier: "invalid-account-identifier",
+      });
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Tokens,
+        universe: OWN_CANISTER_ID_TEXT,
       });
       expect(get(toastsStore)).toMatchObject([
         {

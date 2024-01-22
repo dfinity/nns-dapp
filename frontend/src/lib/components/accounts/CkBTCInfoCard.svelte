@@ -15,6 +15,7 @@
     QRCode,
     Copy,
     Html,
+    IconQRCode,
   } from "@dfinity/gix-components";
   import {
     BITCOIN_BLOCK_EXPLORER_MAINNET_URL,
@@ -91,8 +92,8 @@
     </div>
   </div>
 
-  <div class="qr-code">
-    {#if nonNullish(account)}
+  {#if nonNullish(account)}
+    <div class="qr-code">
       {#if nonNullish(btcAddress)}
         <QRCode value={btcAddress}>
           <div class="logo" slot="logo">
@@ -108,8 +109,12 @@
       {:else}
         <Spinner />
       {/if}
-    {/if}
-  </div>
+    </div>
+  {:else}
+    <div class="qr-code-placeholder" data-tid="qr-code-placeholder">
+      <IconQRCode />
+    </div>
+  {/if}
 
   <div class="address-section">
     <div class="content-cell-details">
@@ -201,6 +206,7 @@
 
     grid-area: qr;
     background: white;
+    color: black;
     width: var(--qr-code-size);
     height: var(--qr-code-size);
     border: var(--padding) solid white;
@@ -214,6 +220,13 @@
       justify-content: center;
       align-items: center;
     }
+  }
+
+  .qr-code-placeholder {
+    --qr-code-size: calc(18 * var(--padding));
+    grid-area: qr;
+    width: var(--qr-code-size);
+    height: var(--qr-code-size);
   }
 
   .grid {

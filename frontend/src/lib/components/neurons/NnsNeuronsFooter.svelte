@@ -29,7 +29,7 @@
       data-tid="stake-neuron-button"
       class="primary full-width"
       on:click={() => openModal("stake-neuron")}
-      >{$i18n.neurons.stake_neurons}</button
+      >{$i18n.neurons.stake_icp}</button
     >
     {#if enoughNeuronsToMerge}
       <button

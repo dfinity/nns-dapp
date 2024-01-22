@@ -85,17 +85,6 @@ describe("VotableNeuronList", () => {
   });
 
   describe("Has selected neurons", () => {
-    const neuronIds = [0, 1, 2].map(BigInt);
-    const neurons = neuronIds.map((neuronId) => ({ ...mockNeuron, neuronId }));
-
-    beforeAll(() =>
-      votingNeuronSelectStore.set(
-        neurons.map((neuron) =>
-          nnsNeuronToVotingNeuron({ neuron, proposal: mockProposalInfo })
-        )
-      )
-    );
-
     it("should display voting power", () => {
       const { getByTestId } = render(VotableNeuronList, {
         props: {
@@ -118,6 +107,22 @@ describe("VotableNeuronList", () => {
       expect(
         getByTestId("voting-collapsible-toolbar-neurons")?.textContent
       ).toBe(`Vote with 3/3 Neurons`);
+    });
+
+    it("should display selectable neurons in singular form", () => {
+      votingNeuronSelectStore.set([
+        nnsNeuronToVotingNeuron({ neuron: neuron1, proposal: proposalInfo }),
+      ]);
+
+      const { getByTestId } = render(VotableNeuronList, {
+        props: {
+          voteRegistration: undefined,
+        },
+      });
+
+      expect(
+        getByTestId("voting-collapsible-toolbar-neurons")?.textContent
+      ).toBe(`Vote with 1/1 Neuron`);
     });
   });
 });

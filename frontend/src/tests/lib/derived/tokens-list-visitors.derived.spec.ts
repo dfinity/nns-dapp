@@ -1,3 +1,4 @@
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
@@ -54,6 +55,7 @@ describe("tokens-list-base.derived", () => {
   const icpVisitorToken: UserTokenData = createIcpUserToken({
     balance: new UnavailableTokenAmount(NNS_TOKEN_DATA),
     actions: [UserTokenAction.GoToDetail],
+    rowHref: `/accounts/?u=${OWN_CANISTER_ID_TEXT}`,
   });
   const tetrisTokenLoading: UserTokenLoading = {
     universeId: snsTetris.rootCanisterId,
@@ -71,6 +73,7 @@ describe("tokens-list-base.derived", () => {
       amount: snsTetris.tokenMetadata.fee,
       token: snsTetris.tokenMetadata,
     }),
+    rowHref: `/wallet/?u=${snsTetris.rootCanisterId.toText()}`,
   };
   const pacmanTokenLoading: UserTokenLoading = {
     universeId: snsPacman.rootCanisterId,
@@ -88,6 +91,7 @@ describe("tokens-list-base.derived", () => {
       amount: snsPacman.tokenMetadata.fee,
       token: snsPacman.tokenMetadata,
     }),
+    rowHref: `/wallet/?u=${snsPacman.rootCanisterId.toText()}`,
   };
   const ckBTCTokenLoading: UserTokenLoading = {
     ...ckBTCTokenBase,
@@ -108,6 +112,7 @@ describe("tokens-list-base.derived", () => {
       amount: mockCkTESTBTCToken.fee,
       token: mockCkTESTBTCToken,
     }),
+    rowHref: `/wallet/?u=${CKTESTBTC_UNIVERSE_CANISTER_ID.toText()}`,
   };
   const ckBTCVisitorToken: UserTokenData = {
     ...ckBTCTokenBase,
@@ -118,6 +123,7 @@ describe("tokens-list-base.derived", () => {
       amount: mockCkBTCToken.fee,
       token: mockCkBTCToken,
     }),
+    rowHref: `/wallet/?u=${CKBTC_UNIVERSE_CANISTER_ID.toText()}`,
   };
   const ckETHVisitorToken: UserTokenData = {
     ...ckETHTokenBase,
@@ -128,6 +134,7 @@ describe("tokens-list-base.derived", () => {
       token: mockCkETHToken,
     }),
     actions: [UserTokenAction.GoToDetail],
+    rowHref: `/wallet/?u=${ckETHTokenBase.universeId.toText()}`,
   };
 
   describe("tokensListVisitorsStore", () => {

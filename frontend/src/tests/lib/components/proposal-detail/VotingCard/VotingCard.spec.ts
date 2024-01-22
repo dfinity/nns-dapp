@@ -11,7 +11,6 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Vote, type NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import { describe } from "vitest";
 
 describe("VotingCard", () => {
   const neuron1 = {
@@ -145,6 +144,60 @@ describe("VotingCard", () => {
       expect(await po.getVotableNeurons().isPresent()).toBe(true);
       expect(await po.getVotedNeurons().isPresent()).toBe(true);
       expect(await po.getIneligibleNeurons().isPresent()).toBe(false);
+    });
+
+    describe("Voted neuron header", () => {
+      it("should display ineligible neurons block", async () => {
+        const po = await renderComponent({
+          neuronsVotedForProposal: [yesVoted],
+        });
+
+        expect(await po.getVotedNeuronHeadlineText()).toBe("1 neuron voted");
+      });
+
+      it("should display ineligible neurons block", async () => {
+        const po = await renderComponent({
+          neuronsVotedForProposal: [yesVoted, noVoted],
+        });
+
+        expect(await po.getVotedNeuronHeadlineText()).toBe("2 neurons voted");
+      });
+    });
+
+    describe("Ineligible neuron header", () => {
+      it("should display ineligible neurons block", async () => {
+        const po = await renderComponent({
+          ineligibleNeurons: [
+            {
+              neuronIdString: "1",
+              reason: "since",
+            },
+          ],
+        });
+
+        expect(await po.getIneligibleNeuronsHeaderText()).toBe(
+          "1 Ineligible neuron"
+        );
+      });
+
+      it("should display ineligible neurons block", async () => {
+        const po = await renderComponent({
+          ineligibleNeurons: [
+            {
+              neuronIdString: "1",
+              reason: "since",
+            },
+            {
+              neuronIdString: "2",
+              reason: "since",
+            },
+          ],
+        });
+
+        expect(await po.getIneligibleNeuronsHeaderText()).toBe(
+          "2 Ineligible neurons"
+        );
+      });
     });
 
     describe("Voted neurons headline state", () => {

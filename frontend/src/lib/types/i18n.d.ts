@@ -167,7 +167,6 @@ interface I18nAuth {
   title: string;
   on_chain: string;
   wallet: string;
-  stake: string;
   earn: string;
   launchpad: string;
   ic_logo: string;
@@ -214,7 +213,6 @@ interface I18nAccounts {
   new_linked_account_placeholder: string;
   subAccount: string;
   hardwareWallet: string;
-  withdrawalAccount: string;
   select_source: string;
   select_destination: string;
   address: string;
@@ -284,7 +282,7 @@ interface I18nNeuron_types {
 interface I18nNeurons {
   title: string;
   text: string;
-  stake_neurons: string;
+  stake_token: string;
   merge_neurons: string;
   merge_neurons_modal_title: string;
   merge_neurons_modal_confirm: string;
@@ -304,7 +302,7 @@ interface I18nNeurons {
   your_principal: string;
   confirm_dissolve_delay: string;
   follow_neurons_screen: string;
-  stake_neuron: string;
+  stake_icp: string;
   source: string;
   transaction_fee: string;
   current_balance: string;
@@ -410,6 +408,8 @@ interface I18nFollow_neurons {
   topic_13_subtitle: string;
   topic_14_title: string;
   topic_14_subtitle: string;
+  topic_15_title: string;
+  topic_15_subtitle: string;
   current_followees: string;
   add: string;
 }
@@ -418,6 +418,7 @@ interface I18nVoting {
   title: string;
   text: string;
   topics: string;
+  types: string;
   rewards: string;
   status: string;
   hide_unavailable_proposals: string;
@@ -541,6 +542,7 @@ interface I18nProposal_detail {
   proposer_description: string;
   open_voting_prefix: string;
   neurons_voted: string;
+  neurons_voted_plural: string;
   loading_neurons: string;
   unknown_nns_function: string;
   nns_function_name: string;
@@ -575,6 +577,7 @@ interface I18nProposal_detail {
 interface I18nProposal_detail__vote {
   headline: string;
   vote_with_neurons: string;
+  vote_with_neurons_plural: string;
   voting_power_value: string;
   voting_power: string;
   vote_progress: string;
@@ -609,6 +612,7 @@ interface I18nProposal_detail__vote {
 
 interface I18nProposal_detail__ineligible {
   headline: string;
+  headline_plural: string;
   text: string;
   reason_since: string;
   reason_no_permission: string;
@@ -924,7 +928,6 @@ interface I18nError__sns {
   sns_stake: string;
   sns_increase_stake: string;
   sns_register_vote: string;
-  sns_neuron_account: string;
   sns_dissolve_delay_action: string;
   project_not_found: string;
   project_not_open: string;
@@ -954,7 +957,6 @@ interface I18nError__sns {
   sns_add_hotkey: string;
   sns_stake_maturity: string;
   sns_disburse_maturity: string;
-  sns_amount_not_enough_stake_neuron: string;
   sns_reload_no_universe: string;
 }
 
@@ -989,6 +991,10 @@ interface I18nUniverse {
   select_nervous_system: string;
   select: string;
   universe_logo: string;
+}
+
+interface I18nSns_types {
+  sns_specific: string;
 }
 
 interface I18nSns_rewards_status {
@@ -1050,8 +1056,6 @@ interface I18nCkbtc {
   test_bitcoin: string;
   btc: string;
   ckbtc_balance_updated: string;
-  step_initialization: string;
-  step_locking_ckbtc: string;
   step_approve_transfer: string;
   step_send_btc: string;
   step_reload: string;
@@ -1066,7 +1070,6 @@ interface I18nCkbtc {
   bitcoin_address_title: string;
   refresh_balance: string;
   confirmations: string;
-  warning_transaction_failed: string;
   warning_transaction_description: string;
   checking_incomplete_btc_transfers: string;
   all_btc_transfers_complete: string;
@@ -1092,7 +1095,6 @@ interface I18nError__ckbtc {
   get_btc_no_universe: string;
   update_balance: string;
   no_new_confirmed_btc: string;
-  withdrawal_account: string;
   retrieve_btc: string;
   malformed_address: string;
   amount_too_low: string;
@@ -1158,6 +1160,7 @@ interface I18nTopics {
   ReplicaVersionManagement: string;
   SubnetReplicaVersionManagement: string;
   SnsAndCommunityFund: string;
+  ApiBoundaryNodeManagement: string;
 }
 
 interface I18nTopics_description {
@@ -1176,6 +1179,7 @@ interface I18nTopics_description {
   ReplicaVersionManagement: string;
   SubnetReplicaVersionManagement: string;
   SnsAndCommunityFund: string;
+  ApiBoundaryNodeManagement: string;
 }
 
 interface I18nRewards {
@@ -1373,6 +1377,7 @@ interface I18n {
   auth_canisters: I18nAuth_canisters;
   auth_sns: I18nAuth_sns;
   universe: I18nUniverse;
+  sns_types: I18nSns_types;
   sns_rewards_status: I18nSns_rewards_status;
   sns_rewards_description: I18nSns_rewards_description;
   sns_status: I18nSns_status;

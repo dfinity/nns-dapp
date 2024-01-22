@@ -23,6 +23,7 @@ source "$SOURCE_DIR/clap.bash"
 clap.define short=s long=snapshot desc="The snapshot .zip or .tar.xz file" variable=SNAPSHOT_ARCHIVE default="snapshot.tar.xz"
 clap.define short=c long=clean desc="Extract a clean state from the .zip file, even if a directory with extracted state exists" variable=CLEAN nargs=0 default="false"
 clap.define long=host desc="Passed to dfx start as --host" variable=DFX_HOST
+clap.define long=domain desc="Passed to dfx start as --domain" variable=DFX_DOMAIN
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
@@ -64,8 +65,13 @@ echo "*  starting the replica may just hang after a panic.                *"
 echo "*                                                                   *"
 echo "*********************************************************************"
 
+DFX_ARGS=()
+
 if [ "${DFX_HOST:-}" ]; then
-  DFX_ARGS=("--host" "$DFX_HOST")
+  DFX_ARGS+=("--host" "$DFX_HOST")
+fi
+if [ "${DFX_DOMAIN:-}" ]; then
+  DFX_ARGS+=("--domain" "localhost" "--domain" "$DFX_DOMAIN")
 fi
 dfx start "${DFX_ARGS[@]}"
 
