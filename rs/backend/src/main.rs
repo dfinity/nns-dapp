@@ -105,9 +105,6 @@ fn post_upgrade(args_maybe: Option<CanisterArguments>) {
     perf::record_instruction_count("post_upgrade after state_recovery");
     set_canister_arguments(args_maybe);
     perf::record_instruction_count("post_upgrade after set_canister_arguments");
-    // Saving the instruction counter now will not have the desired effect
-    // as the storage is about to be wiped out and replaced with stable memory.
-
     assets::init_assets(); // TODO: Move this inside State::from (and State::new_with_memory)
     perf::record_instruction_count("post_upgrade stop");
     println!("STOP post-upgrade");
