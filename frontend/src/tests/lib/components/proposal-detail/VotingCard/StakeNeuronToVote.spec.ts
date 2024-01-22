@@ -7,7 +7,6 @@ import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 import { StakeNeuronToVotePo } from "$tests/page-objects/StakeNeuronToVote.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -15,8 +14,6 @@ import { get } from "svelte/store";
 describe("StakeNeuronToVote", () => {
   const renderComponent = async () => {
     const { container } = render(StakeNeuronToVote);
-
-    await runResolvedPromises();
 
     return StakeNeuronToVotePo.under(new JestPageObjectElement(container));
   };
