@@ -18,20 +18,34 @@ test.describe("Design", () => {
       value: true,
     });
     // The page was loaded with `ENABLE_MY_TOKENS` `false` and redirected to `/accounts`.
+    // TODO: GIX-1985 Remove this once the feature flag is enabled by default
     await page.goto("/");
     await expect(page).toHaveTitle("My Tokens / NNS Dapp");
     // Wait for the button to make sure the screenshot is taken after the page is loaded
     await page.locator("[data-tid=login-button]").waitFor();
+
+    // Wait for the first SNS to have a balance to take the screenshot after data has been loaded.
+    const pageElement = PlaywrightPageObjectElement.fromPage(page);
+    const appPo = new AppPo(pageElement);
+    const firstSnsRow = await appPo
+      .getTokensPo()
+      .getSignInTokensPagePo()
+      .getTokensTablePo()
+      .getSnsRows();
+
+    await firstSnsRow[0].waitForBalance();
 
     // We need to replace the content to not rely on the SNS project name.
     await replaceContent({
       page,
       selectors: [
         '[data-tid="tokens-table-row-component"]:not([data-title="Internet Computer"]):not([data-title="ckBTC"]):not([data-title="ckETH"]) [data-tid="project-name"]',
-        '[data-tid="tokens-table-row-component"]:not([data-title="Internet Computer"]):not([data-title="ckBTC"]):not([data-title="ckETH"]) [data-tid="token-value-label"] .label',
+        '[data-tid="tokens-table-row-component"]:not([data-title="Internet Computer"]):not([data-title="ckBTC"]):not([data-title="ckETH"]) [data-tid="token-value-label"] [data-tid="label"]',
       ],
       innerHtml: "XXXXX",
     });
+
+    await page.waitForTimeout(50_000);
 
     await expect(page).toHaveScreenshot();
   });
@@ -97,7 +111,7 @@ test.describe("Design", () => {
         page,
         selectors: [
           '[data-tid="tokens-table-row-component"]:not([data-title="Internet Computer"]):not([data-title="ckBTC"]):not([data-title="ckETH"]) [data-tid="project-name"]',
-          '[data-tid="tokens-table-row-component"]:not([data-title="Internet Computer"]):not([data-title="ckBTC"]):not([data-title="ckETH"]) [data-tid="token-value-label"] .label',
+          '[data-tid="tokens-table-row-component"]:not([data-title="Internet Computer"]):not([data-title="ckBTC"]):not([data-title="ckETH"]) [data-tid="token-value-label"] [data-tid="label"]',
         ],
         innerHtml: "XXXXX",
       });

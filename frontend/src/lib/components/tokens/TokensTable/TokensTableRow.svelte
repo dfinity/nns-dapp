@@ -89,9 +89,10 @@
   <div role="cell" class={`mobile-row-cell left-cell ${cellAreaName(0)}`}>
     <span class="mobile-only">{$i18n.tokens.balance_header}</span>
     {#if userTokenData.balance instanceof UnavailableTokenAmount}
-      <span data-tid="token-value-label"
-        >{`-/- ${userTokenData.balance.token.symbol}`}</span
-      >
+      <!-- The label is within its own element because it will be replaced in screenshot testing. -->
+      <div data-tid="token-value-label" class="balance-unavailable">
+        -/-<span data-tid="label">{userTokenData.balance.token.symbol}</span>
+      </div>
     {:else if userTokenData.balance === "loading"}
       <span data-tid="token-value-label" class="balance-spinner"
         ><Spinner inline size="tiny" /></span
@@ -233,6 +234,11 @@
   .balance-spinner {
     display: flex;
     align-items: center;
+  }
+
+  .balance-unavailable {
+    display: inline-flex;
+    gap: var(--padding-0_5x);
   }
 
   .actions {
