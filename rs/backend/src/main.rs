@@ -97,8 +97,7 @@ fn post_upgrade(args_maybe: Option<CanisterArguments>) {
     let counter_before = PerformanceCount::new("post_upgrade start");
     STATE.with(|s| {
         let stable_memory = DefaultMemoryImpl::default();
-        // Imp[ortant:  Here we are recreating stable memory, ignoring any arguments.]
-        let state = State::from(stable_memory); // TODO: Consistency about whether partitions are created here or in State.  I propose in State.
+        let state = State::from(stable_memory);
         let state = state.with_arguments_maybe(args_maybe.as_ref());
         s.replace(state);
     });
