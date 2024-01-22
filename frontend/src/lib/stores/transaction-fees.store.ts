@@ -107,8 +107,7 @@ export const transactionsFeesStore = initTransactionFeesStore();
 export const mainTransactionFeeStore: Readable<number> = derived(
   tokensStore,
   ($store) =>
-    Number($store[OWN_CANISTER_ID_TEXT]?.token.fee) ??
-    Number(NNS_TOKEN_DATA.fee)
+    Number($store[OWN_CANISTER_ID_TEXT]?.token.fee ?? NNS_TOKEN_DATA.fee)
 );
 
 export const mainTransactionFeeE8sStore: Readable<bigint> = derived(
