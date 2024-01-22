@@ -23,7 +23,7 @@
     on:click={selectNewSubAccount}
     testId="choose-linked-as-account-type"
   >
-    <h4>{$i18n.accounts.new_linked_title}</h4>
+    <h4>{$i18n.accounts.new_account_title}</h4>
     <span>{$i18n.accounts.new_linked_subtitle}</span>
   </Card>
   <Card
