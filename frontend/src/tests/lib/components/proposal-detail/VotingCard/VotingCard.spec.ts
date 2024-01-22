@@ -88,11 +88,27 @@ describe("VotingCard", () => {
     expect(await po.getSignInButtonPo().isPresent()).toBe(true);
   });
 
+  it("should not display voting buttons when not signed in", async () => {
+    const po = await renderComponent();
+
+    expect(await po.getVoteYesButtonPo().isPresent()).toBe(false);
+    expect(await po.getVoteNoButtonPo().isPresent()).toBe(false);
+  });
+
   describe("Signed in", () => {
     beforeEach(() => {
       vi.spyOn(authStore, "subscribe").mockImplementation(
         mockAuthStoreSubscribe
       );
+    });
+
+    it("should display voting buttons when no neurons available", async () => {
+      const po = await renderComponent({
+        hasNeurons: false,
+      });
+
+      expect(await po.getVoteYesButtonPo().isPresent()).toBe(false);
+      expect(await po.getVoteNoButtonPo().isPresent()).toBe(false);
     });
 
     it("should spinner when neurons not ready", async () => {
@@ -144,6 +160,22 @@ describe("VotingCard", () => {
       expect(await po.getVotableNeurons().isPresent()).toBe(true);
       expect(await po.getVotedNeurons().isPresent()).toBe(true);
       expect(await po.getIneligibleNeurons().isPresent()).toBe(false);
+    });
+
+    it('should not display "stake a neuron" when user has neurons', async () => {
+      const po = await renderComponent();
+
+      expect(await po.getStakeNeuronToVotePo().isPresent()).toBe(false);
+    });
+
+    it('should display "stake a neuron" when user possess no neurons', async () => {
+      const po = await renderComponent({
+        hasNeurons: false,
+        neuronsVotedForProposal: [],
+        ineligibleNeurons: [],
+      });
+
+      expect(await po.getStakeNeuronToVotePo().isPresent()).toBe(true);
     });
 
     describe("Voted neuron header", () => {
