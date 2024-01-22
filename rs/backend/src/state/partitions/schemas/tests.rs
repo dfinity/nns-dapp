@@ -12,7 +12,7 @@ fn schema_label_should_be_persisted() {
     for schema in schemas_that_use_partitions() {
         // Prepare partitions with empty memory.
         let toy_memory = DefaultMemoryImpl::default();
-        let memory_manager = MemoryManager::init(Rc::clone(&toy_memory));
+        MemoryManager::init(Rc::clone(&toy_memory));
         let partitions = Partitions::try_from_memory(Rc::clone(&toy_memory)).expect("Failed to get empty partitions");
         // Set the schema label
         partitions.set_schema_label(schema);
