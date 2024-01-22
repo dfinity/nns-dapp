@@ -7,14 +7,23 @@ import { render } from "@testing-library/svelte";
 import FolloweeTest from "./FolloweeTest.svelte";
 
 describe("Followee", () => {
+  let copySpy;
+
   const followee = {
     neuronId: 111n,
     topics: [Topic.ExchangeRate, Topic.Governance, Topic.Kyc],
   };
 
   beforeEach(() => {
-    vi.spyOn(console, "error").mockReturnValue();
     knownNeuronsStore.reset();
+
+    vi.spyOn(console, "error").mockReturnValue();
+    copySpy = vi.fn();
+    Object.assign(navigator, {
+      clipboard: {
+        writeText: copySpy,
+      },
+    });
   });
 
   const renderComponent = () => {
@@ -75,5 +84,13 @@ describe("Followee", () => {
 
     const po = renderComponent();
     expect(await po.getName()).toBe(neuronName);
+  });
+
+  it("should have a copy button", async () => {
+    const po = renderComponent();
+
+    expect(copySpy).not.toBeCalled();
+    await po.copy();
+    expect(copySpy).toBeCalledWith(`${followee.neuronId}`);
   });
 });

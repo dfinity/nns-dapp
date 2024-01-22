@@ -33,4 +33,8 @@ export class FolloweePo extends BasePageObject {
   openModal(): Promise<void> {
     return this.getButton().click();
   }
+
+  copy(): Promise<void> {
+    return this.getButton("copy-component").click();
+  }
 }
