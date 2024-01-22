@@ -17,6 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Changed wording about staking neurons to staking tokens.
+* Add missing feature flags to default feature flags value.
 
 #### Deprecated
 
