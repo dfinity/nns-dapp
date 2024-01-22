@@ -1,3 +1,4 @@
+
 # Unreleased changelog NNS Dapp
 
 All notable changes to the NNS Dapp will be documented in this file.
@@ -13,6 +14,8 @@ proposal is successful, the changes it released will be moved from this file to
 ### Application
 
 #### Added
+
+* New block "Stake a neuron" on proposal details page.
 
 #### Changed
 
