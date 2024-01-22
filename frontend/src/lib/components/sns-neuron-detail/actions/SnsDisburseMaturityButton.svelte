@@ -15,7 +15,10 @@
   export let fee: TokenAmountV2;
 
   let enoughMaturity: boolean;
-  $: enoughMaturity = hasEnoughMaturityToDisburse({ neuron, fee: fee.toE8s() });
+  $: enoughMaturity = hasEnoughMaturityToDisburse({
+    neuron,
+    fee: fee.toUlps(),
+  });
 
   let disabledText: string | undefined = undefined;
   $: disabledText = !enoughMaturity
