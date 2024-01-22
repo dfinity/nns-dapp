@@ -33,7 +33,7 @@
     >
   </Tooltip>
   {#if showCopy}
-    <div class="copy" data-tid="copy-icon">
+    <div class="copy">
       <Copy value={text} />
     </div>
   {/if}
