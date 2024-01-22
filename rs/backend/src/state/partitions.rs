@@ -101,9 +101,9 @@ impl Partitions {
         memory.write(offset, bytes)
     }
 
-    /// Reads a buffer, if possible.
+    /// Reads the exact number of bytes needed to fill `buffer`.
     #[cfg(test)]
-    pub fn try_read(&self, memory_id: MemoryId, offset: u64, buffer: &mut [u8]) -> Result<(), &'static str> {
+    pub fn read_exact(&self, memory_id: MemoryId, offset: u64, buffer: &mut [u8]) -> Result<(), &'static str> {
         let memory = self.get(memory_id);
         let bytes_in_memory =
             memory.size() * u64::try_from(WASM_PAGE_SIZE_IN_BYTES).expect("Wasm page size is too large");
