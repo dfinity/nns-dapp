@@ -1,6 +1,9 @@
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
+import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import type { Principal } from "@dfinity/principal";
 import { derived, writable, type Readable } from "svelte/store";
+import { tokensStore } from "./tokens.store";
 
 interface ProjectFeeData {
   fee: bigint;
@@ -102,11 +105,13 @@ export const transactionsFeesStore = initTransactionFeesStore();
  * @deprecated prefer mainTransactionFeeE8sStore to use e8s for amount of tokens instead of Number.
  */
 export const mainTransactionFeeStore = derived(
-  transactionsFeesStore,
-  ($store) => Number($store.main)
+  tokensStore,
+  ($store) =>
+    $store[OWN_CANISTER_ID_TEXT]?.token.fee ?? Number(NNS_TOKEN_DATA.fee)
 );
 
 export const mainTransactionFeeE8sStore = derived(
-  transactionsFeesStore,
-  ($store) => $store.main
+  tokensStore,
+  ($store) =>
+    $store[OWN_CANISTER_ID_TEXT]?.token.fee ?? Number(NNS_TOKEN_DATA.fee)
 );

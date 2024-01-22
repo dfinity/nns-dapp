@@ -1,4 +1,5 @@
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
+import { tokensStore } from "$lib/stores/tokens.store";
 import {
   mainTransactionFeeStore,
   transactionsFeesStore,
@@ -8,9 +9,10 @@ import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 
 describe("transactionsFeesStore", () => {
-  beforeEach(() =>
-    transactionsFeesStore.setMain(BigInt(DEFAULT_TRANSACTION_FEE_E8S))
-  );
+  beforeEach(() => {
+    transactionsFeesStore.setMain(BigInt(DEFAULT_TRANSACTION_FEE_E8S));
+    tokensStore.reset();
+  });
   it("should set it to default transaction fee", () => {
     const { main } = get(transactionsFeesStore);
     expect(main).toEqual(BigInt(DEFAULT_TRANSACTION_FEE_E8S));
@@ -18,7 +20,6 @@ describe("transactionsFeesStore", () => {
 
   it("should set main value", () => {
     const newFee = 40_000;
-    transactionsFeesStore.setMain(BigInt(newFee));
     const fee = get(mainTransactionFeeStore);
     expect(fee).toBe(newFee);
   });
