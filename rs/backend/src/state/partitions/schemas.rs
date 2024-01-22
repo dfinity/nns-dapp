@@ -19,7 +19,6 @@ impl Partitions {
     }
     /// Gets the schema label from the metadata partition.
     pub fn schema_label(&self) -> SchemaLabel {
-        // TODO: Make this return a SchemaLabel instead of an Option<SchemaLabel>
         let mut schema_label_bytes = [0u8; SchemaLabel::MAX_BYTES];
         self.try_read(Self::METADATA_MEMORY_ID, 0, &mut schema_label_bytes)
             .expect("Metadata memory is not populated");
