@@ -7,6 +7,11 @@ import {
 } from "$tests/utils/e2e.test-utils";
 import { expect, test, type Page } from "@playwright/test";
 
+const rowNameSelector =
+  '[data-tid="tokens-table-row-component"]:not([data-title="Internet Computer"]):not([data-title="ckBTC"]):not([data-title="ckETH"]) [data-tid="project-name"]';
+const rowTokenSymbolSelector =
+  '[data-tid="tokens-table-row-component"]:not([data-title="Internet Computer"]):not([data-title="ckBTC"]):not([data-title="ckETH"]) [data-tid="token-value-label"] [data-tid="token-label"]';
+
 test.describe("Design", () => {
   test("Login", async ({ page }) => {
     await page.goto("/");
@@ -38,10 +43,7 @@ test.describe("Design", () => {
     // We need to replace the content to not rely on the SNS project name.
     await replaceContent({
       page,
-      selectors: [
-        '[data-tid="tokens-table-row-component"]:not([data-title="Internet Computer"]):not([data-title="ckBTC"]):not([data-title="ckETH"]) [data-tid="project-name"]',
-        '[data-tid="tokens-table-row-component"]:not([data-title="Internet Computer"]):not([data-title="ckBTC"]):not([data-title="ckETH"]) [data-tid="token-value-label"] [data-tid="token-label"]',
-      ],
+      selectors: [rowNameSelector, rowTokenSymbolSelector],
       innerHtml: "XXXXX",
     });
 
@@ -109,10 +111,7 @@ test.describe("Design", () => {
       // We need to replace the content to not rely on the SNS project name.
       await replaceContent({
         page,
-        selectors: [
-          '[data-tid="tokens-table-row-component"]:not([data-title="Internet Computer"]):not([data-title="ckBTC"]):not([data-title="ckETH"]) [data-tid="project-name"]',
-          '[data-tid="tokens-table-row-component"]:not([data-title="Internet Computer"]):not([data-title="ckBTC"]):not([data-title="ckETH"]) [data-tid="token-value-label"] [data-tid="token-label"]',
-        ],
+        selectors: [rowNameSelector, rowTokenSymbolSelector],
         innerHtml: "XXXXX",
       });
 
