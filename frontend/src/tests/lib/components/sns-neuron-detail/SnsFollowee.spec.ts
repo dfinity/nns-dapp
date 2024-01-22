@@ -30,7 +30,7 @@ describe("SnsFollowee", () => {
     return SnsFolloweePo.under(new JestPageObjectElement(container));
   };
 
-  it("should have a copy button", async () => {
+  it("should copy neuron ID to clipboard when copy button is clicked", async () => {
     const neuronId = "12ab";
     const po = renderComponent(neuronId);
     expect(await po.getHashPo().hasCopyButton()).toBe(true);

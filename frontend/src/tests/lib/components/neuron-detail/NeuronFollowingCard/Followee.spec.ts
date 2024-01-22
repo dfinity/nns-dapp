@@ -86,7 +86,7 @@ describe("Followee", () => {
     expect(await po.getName()).toBe(neuronName);
   });
 
-  it("should have a copy button", async () => {
+  it("should copy neuron ID to clipboard when copy button is clicked", async () => {
     const po = renderComponent();
 
     expect(copySpy).not.toBeCalled();
