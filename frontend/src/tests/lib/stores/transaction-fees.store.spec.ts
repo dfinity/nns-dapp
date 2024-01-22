@@ -1,4 +1,6 @@
+import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
+import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { tokensStore } from "$lib/stores/tokens.store";
 import {
   mainTransactionFeeStore,
@@ -18,10 +20,19 @@ describe("transactionsFeesStore", () => {
     expect(main).toEqual(BigInt(DEFAULT_TRANSACTION_FEE_E8S));
   });
 
-  it("should set main value", () => {
-    const newFee = 40_000;
-    const fee = get(mainTransactionFeeStore);
-    expect(fee).toBe(newFee);
+  it("should set ICP fee value", () => {
+    expect(get(mainTransactionFeeStore)).toBe(Number(NNS_TOKEN_DATA.fee));
+
+    const newFee = 40_000n;
+    tokensStore.setToken({
+      canisterId: OWN_CANISTER_ID,
+      token: {
+        ...NNS_TOKEN_DATA,
+        fee: newFee,
+      },
+      certified: true,
+    });
+    expect(get(mainTransactionFeeStore)).toBe(Number(newFee));
   });
 
   it("should reset to default", () => {
