@@ -161,7 +161,7 @@ impl State {
             }
             SchemaLabel::AccountsInStableMemory => {
                 println!("New State: AccountsInStableMemory");
-                let partitions = Partitions::new_for_schema(memory, schema);
+                let partitions = Partitions::new_with_schema(memory, schema);
                 let accounts_store = AccountsStore::from(AccountsDb::UnboundedStableBTreeMap(
                     AccountsDbAsUnboundedStableBTreeMap::new(partitions.get(Partitions::ACCOUNTS_MEMORY_ID)),
                 ));
@@ -220,7 +220,7 @@ impl State {
                     // If the memory isn't partitioned, partition it now.
                     if let Err(memory) = partitions_maybe.as_ref().map_err(Partitions::copy_memory_reference) {
                         println!("start_migration_to: Creating new partitions for schema {schema:?}.");
-                        *partitions_maybe = Ok(Partitions::new_for_schema(memory, schema));
+                        *partitions_maybe = Ok(Partitions::new_with_schema(memory, schema));
                     };
                     let vm = partitions_maybe
                         .as_ref()

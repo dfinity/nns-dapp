@@ -194,7 +194,7 @@ interface I18nAccounts {
   ckbtc_transaction_description: string;
   ckbtc_to_btc_transaction_description: string;
   add_account: string;
-  new_linked_title: string;
+  new_account_title: string;
   new_linked_subtitle: string;
   attach_hardware_title: string;
   attach_hardware_subtitle: string;
@@ -211,7 +211,6 @@ interface I18nAccounts {
   edit_name: string;
   new_linked_account_enter_name: string;
   new_linked_account_placeholder: string;
-  subAccount: string;
   hardwareWallet: string;
   select_source: string;
   select_destination: string;

@@ -34,7 +34,7 @@ const convertAccountToUserTokenData = ({
 
   const subtitleMap: Record<AccountType, string | undefined> = {
     main: undefined,
-    subAccount: i18nObj.accounts.subAccount,
+    subAccount: undefined,
     hardwareWallet: i18nObj.accounts.hardwareWallet,
   };
 

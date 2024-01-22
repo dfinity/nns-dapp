@@ -14,10 +14,13 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Getter and setter of partition schema label.
+
 #### Changed
 
 * Changed wording about staking neurons to staking tokens.
 * Add missing feature flags to default feature flags value.
+* Various wording changes.
 
 #### Deprecated
 
