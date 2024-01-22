@@ -313,7 +313,7 @@ impl StableState for State {
 // Methods called on pre_upgrade.
 impl State {
     /// Save any unsaved state to stable memory.
-    pub fn save(&self) {
+    pub fn pre_upgrade(&self) {
         let schema = self.schema_label();
         println!(
             "START State pre_upgrade from: {:?} (accounts: {:?})",
