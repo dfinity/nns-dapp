@@ -87,13 +87,9 @@ impl Partitions {
     }
 
     /// Writes, growing the memory if necessary.
-    #[cfg(test)]
     pub fn growing_write(&self, memory_id: MemoryId, offset: u64, bytes: &[u8]) {
         let memory = self.get(memory_id);
-        let min_pages = u64::try_from(
-            (usize::try_from(offset).unwrap() + bytes.len() + WASM_PAGE_SIZE_IN_BYTES - 1) / WASM_PAGE_SIZE_IN_BYTES,
-        )
-        .expect("That is a large number of pages");
+        let min_pages: u64 = (offset + (bytes.len() as u64)).div_ceil(WASM_PAGE_SIZE_IN_BYTES as u64);
         let current_pages = memory.size();
         if current_pages < min_pages {
             memory.grow(min_pages - current_pages);
@@ -102,7 +98,6 @@ impl Partitions {
     }
 
     /// Reads the exact number of bytes needed to fill `buffer`.
-    #[cfg(test)]
     pub fn read_exact(&self, memory_id: MemoryId, offset: u64, buffer: &mut [u8]) -> Result<(), &'static str> {
         let memory = self.get(memory_id);
         let bytes_in_memory =
