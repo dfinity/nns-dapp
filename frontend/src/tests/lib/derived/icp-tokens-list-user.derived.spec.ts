@@ -65,7 +65,7 @@ describe("icp-tokens-list-user.derived", () => {
       token: NNS_TOKEN_DATA,
     }),
     title: mockHardwareWalletAccount.name,
-    subtitle: "Hardware Wallet",
+    subtitle: "Hardware Wallet Controlled",
     rowHref: buildWalletUrl({
       universe: OWN_CANISTER_ID_TEXT,
       account: mockHardwareWalletAccount.identifier,
