@@ -19,6 +19,13 @@ const expectSignedInAccountsPage = async (appPo: AppPo) => {
   expect(await appPo.getSignInPo().isPresent()).toBe(false);
 };
 
+const expectSignedInTokensPage = async (appPo: AppPo) => {
+  await appPo.getTokensPo().getTokensPagePo().waitFor();
+  expect(await appPo.getTokensPo().getSignInTokensPagePo().isPresent()).toBe(
+    false
+  );
+};
+
 test("Test multi-tab auth", async ({ page: page1, context }) => {
   await page1.goto("/accounts");
   await expect(page1).toHaveTitle("My ICP Tokens / NNS Dapp");
@@ -52,7 +59,7 @@ test("Test multi-tab auth", async ({ page: page1, context }) => {
 
   // When signed in, the landing page shows the tokens page.
   await page1.goto("/");
-  await appPo1.getTokensPo().waitFor();
+  await expectSignedInTokensPage(appPo1);
 
   await step("Sign out");
   await appPo1.getAccountMenuPo().openMenu();
