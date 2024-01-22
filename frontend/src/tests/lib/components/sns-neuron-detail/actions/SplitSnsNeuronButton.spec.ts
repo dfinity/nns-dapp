@@ -10,7 +10,7 @@ import {
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
 import { mockToken } from "$tests/mocks/sns-projects.mock";
-import { ICPToken, TokenAmount } from "@dfinity/utils";
+import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 vi.mock("$lib/utils/modals.utils", () => ({
@@ -18,7 +18,10 @@ vi.mock("$lib/utils/modals.utils", () => ({
 }));
 
 describe("SplitSnsNeuronButton", () => {
-  const transactionFee = TokenAmount.fromE8s({ amount: 100n, token: ICPToken });
+  const transactionFee = TokenAmountV2.fromUlps({
+    amount: 100n,
+    token: ICPToken,
+  });
   const neuronMinimumStake = 100_000_000n;
   const props = {
     neuron: {
@@ -100,7 +103,7 @@ describe("SplitSnsNeuronButton", () => {
       {
         $amount: formatTokenE8s({
           value: minNeuronSplittable({
-            fee: transactionFee.toE8s(),
+            fee: transactionFee.toUlps(),
             neuronMinimumStake,
           }),
           detailed: true,

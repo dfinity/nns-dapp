@@ -12,12 +12,12 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
   import { Tooltip } from "@dfinity/gix-components";
-  import type { Token, TokenAmount } from "@dfinity/utils";
+  import type { Token, TokenAmountV2 } from "@dfinity/utils";
   import VestingTooltipWrapper from "../VestingTooltipWrapper.svelte";
 
   export let neuron: SnsNeuron;
   export let parameters: SnsNervousSystemParameters;
-  export let transactionFee: TokenAmount;
+  export let transactionFee: TokenAmountV2;
   export let token: Token;
 
   let neuronMinimumStake: bigint;
@@ -28,7 +28,7 @@
   let enoughStakeToSplit: boolean;
   $: enoughStakeToSplit = hasEnoughStakeToSplit({
     neuron,
-    fee: transactionFee.toE8s(),
+    fee: transactionFee.toUlps(),
     neuronMinimumStake,
   });
 </script>
@@ -50,7 +50,7 @@
       {
         $amount: formatTokenE8s({
           value: minNeuronSplittable({
-            fee: transactionFee.toE8s(),
+            fee: transactionFee.toUlps(),
             neuronMinimumStake,
           }),
           detailed: true,

@@ -3,11 +3,11 @@ import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { SnsNeuronMaturitySectionPo } from "$tests/page-objects/SnsNeuronMaturitySection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { SnsNeuron } from "@dfinity/sns";
-import { ICPToken, TokenAmount } from "@dfinity/utils";
+import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("SnsNeuronMaturitySection", () => {
-  const fee = TokenAmount.fromE8s({ amount: 10_000n, token: ICPToken });
+  const fee = TokenAmountV2.fromUlps({ amount: 10_000n, token: ICPToken });
   const mockNeuron = createMockSnsNeuron({
     id: [1],
     stakedMaturity: 100_000_000n,
