@@ -9,6 +9,7 @@
     type NnsNeuronContext,
   } from "$lib/types/nns-neuron-detail.context";
   import { getContext } from "svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import TagsList from "$lib/components/ui/TagsList.svelte";
   import { emit } from "$lib/utils/events.utils";
   import type { NnsNeuronModalVotingHistory } from "$lib/types/nns-neuron-detail.modal";
@@ -40,18 +41,20 @@
     });
 </script>
 
-<TagsList {id}>
-  <button
-    slot="title"
-    name="title"
-    {id}
-    class="text"
-    on:click={openVotingHistory}
-  >
-    {name}
-  </button>
+<TestIdWrapper testId="followee-component">
+  <TagsList {id}>
+    <button
+      slot="title"
+      name="title"
+      {id}
+      class="text"
+      on:click={openVotingHistory}
+    >
+      {name}
+    </button>
 
-  {#each followee.topics as topic}
-    <Tag tagName="li">{topicTitle(topic)}</Tag>
-  {/each}
-</TagsList>
+    {#each followee.topics as topic}
+      <Tag tagName="li">{topicTitle(topic)}</Tag>
+    {/each}
+  </TagsList>
+</TestIdWrapper>
