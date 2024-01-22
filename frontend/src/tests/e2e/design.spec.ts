@@ -40,7 +40,7 @@ test.describe("Design", () => {
       page,
       selectors: [
         '[data-tid="tokens-table-row-component"]:not([data-title="Internet Computer"]):not([data-title="ckBTC"]):not([data-title="ckETH"]) [data-tid="project-name"]',
-        '[data-tid="tokens-table-row-component"]:not([data-title="Internet Computer"]):not([data-title="ckBTC"]):not([data-title="ckETH"]) [data-tid="token-value-label"] [data-tid="label"]',
+        '[data-tid="tokens-table-row-component"]:not([data-title="Internet Computer"]):not([data-title="ckBTC"]):not([data-title="ckETH"]) [data-tid="token-value-label"] [data-tid="token-label"]',
       ],
       innerHtml: "XXXXX",
     });
@@ -111,7 +111,7 @@ test.describe("Design", () => {
         page,
         selectors: [
           '[data-tid="tokens-table-row-component"]:not([data-title="Internet Computer"]):not([data-title="ckBTC"]):not([data-title="ckETH"]) [data-tid="project-name"]',
-          '[data-tid="tokens-table-row-component"]:not([data-title="Internet Computer"]):not([data-title="ckBTC"]):not([data-title="ckETH"]) [data-tid="token-value-label"] [data-tid="label"]',
+          '[data-tid="tokens-table-row-component"]:not([data-title="Internet Computer"]):not([data-title="ckBTC"]):not([data-title="ckETH"]) [data-tid="token-value-label"] [data-tid="token-label"]',
         ],
         innerHtml: "XXXXX",
       });

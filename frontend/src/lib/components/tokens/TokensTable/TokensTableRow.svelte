@@ -90,10 +90,11 @@
     <span class="mobile-only">{$i18n.tokens.balance_header}</span>
     {#if userTokenData.balance instanceof UnavailableTokenAmount}
       <!-- The label is within its own element because it will be replaced in screenshot testing. -->
-      <div data-tid="token-value-label" class="balance-unavailable">
-        <!-- The two spans are needed so that when we get the text from "token-value-label" there is a space between amount and token.  -->
-        <span>{`-/-`}</span>
-        <span data-tid="label">{userTokenData.balance.token.symbol}</span>
+      <div data-tid="token-value-label">
+        <!-- The space is needed so that when we get the text from "token-value-label" there is a space between amount and token. -->
+        <span>{"-/- "}</span><span data-tid="token-label"
+          >{userTokenData.balance.token.symbol}</span
+        >
       </div>
     {:else if userTokenData.balance === "loading"}
       <span data-tid="token-value-label" class="balance-spinner"
@@ -236,15 +237,6 @@
   .balance-spinner {
     display: flex;
     align-items: center;
-  }
-
-  .balance-unavailable {
-    // display: inline-flex;
-    // gap: var(--padding-0_5x);
-    display: inline-grid;
-    grid-template-columns: repeat(2, auto);
-    grid-gap: var(--padding-0_5x);
-    align-items: baseline;
   }
 
   .actions {
