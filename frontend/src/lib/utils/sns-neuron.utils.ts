@@ -513,12 +513,11 @@ export const hasEnoughMaturityToStake = (
  */
 export const hasEnoughMaturityToDisburse = ({
   neuron: { maturity_e8s_equivalent },
-  feeE8s,
+  fee,
 }: {
-  feeE8s: bigint;
+  fee: bigint;
   neuron: SnsNeuron;
-}): boolean =>
-  maturity_e8s_equivalent >= minimumAmountToDisburseMaturity(feeE8s);
+}): boolean => maturity_e8s_equivalent >= minimumAmountToDisburseMaturity(fee);
 
 /**
  * Does the neuron has staked maturity?

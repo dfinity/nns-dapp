@@ -24,9 +24,8 @@
   import type { SnsNervousSystemParameters } from "@dfinity/sns";
   import { loadSnsParameters } from "$lib/services/sns-parameters.services";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
-  import type { E8s } from "@dfinity/nns";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
-  import type { Token } from "@dfinity/utils";
+  import type { Token, TokenAmount } from "@dfinity/utils";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { nonNullish, isNullish } from "@dfinity/utils";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
@@ -70,8 +69,8 @@
   $: parameters =
     $snsParametersStore?.[rootCanisterId?.toText() ?? ""]?.parameters;
 
-  let transactionFee: E8s | undefined;
-  $: transactionFee = $snsSelectedTransactionFeeStore?.toE8s();
+  let transactionFee: TokenAmount | undefined;
+  $: transactionFee = $snsSelectedTransactionFeeStore;
 
   let token: Token;
   $: token = $snsTokenSymbolSelectedStore as Token;
@@ -185,7 +184,7 @@
           <Separator spacing="none" />
           <SnsNeuronMaturitySection
             neuron={$selectedSnsNeuronStore.neuron}
-            feeE8s={transactionFee}
+            fee={transactionFee}
           />
           <Separator spacing="none" />
           <SnsNeuronAdvancedSection

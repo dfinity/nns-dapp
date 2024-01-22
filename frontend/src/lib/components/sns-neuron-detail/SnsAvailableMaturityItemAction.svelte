@@ -11,9 +11,10 @@
   import SnsStakeMaturityButton from "./actions/SnsStakeMaturityButton.svelte";
   import SnsDisburseMaturityButton from "./actions/SnsDisburseMaturityButton.svelte";
   import { authStore } from "$lib/stores/auth.store";
+  import type { TokenAmount } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;
-  export let feeE8s: bigint;
+  export let fee: TokenAmount;
 
   let allowedToStakeMaturity: boolean;
   $: allowedToStakeMaturity = hasPermissionToStakeMaturity({
@@ -40,6 +41,6 @@
   {/if}
 
   {#if allowedToDisburseMaturity}
-    <SnsDisburseMaturityButton {neuron} {feeE8s} />
+    <SnsDisburseMaturityButton {neuron} {fee} />
   {/if}
 </CommonItemAction>

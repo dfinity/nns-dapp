@@ -1394,29 +1394,29 @@ describe("sns-neuron utils", () => {
   });
 
   describe("hasEnoughMaturityToDisburse", () => {
-    const feeE8s = 10_000n;
+    const fee = 10_000n;
     it("should return true if maturity is more than fee in worst modulation scenario", () => {
       const neuron = {
         ...mockSnsNeuron,
         maturity_e8s_equivalent: 10_526n + 1n,
       };
-      expect(hasEnoughMaturityToDisburse({ neuron, feeE8s })).toBe(true);
+      expect(hasEnoughMaturityToDisburse({ neuron, fee })).toBe(true);
     });
 
     it("should return false if maturity less than fee", () => {
       const neuron = {
         ...mockSnsNeuron,
-        maturity_e8s_equivalent: feeE8s - 1n,
+        maturity_e8s_equivalent: fee - 1n,
       };
-      expect(hasEnoughMaturityToDisburse({ neuron, feeE8s })).toBe(false);
+      expect(hasEnoughMaturityToDisburse({ neuron, fee })).toBe(false);
     });
 
     it("should return false if maturity is same as fee", () => {
       const neuron = {
         ...mockSnsNeuron,
-        maturity_e8s_equivalent: feeE8s,
+        maturity_e8s_equivalent: fee,
       };
-      expect(hasEnoughMaturityToDisburse({ neuron, feeE8s })).toBe(false);
+      expect(hasEnoughMaturityToDisburse({ neuron, fee })).toBe(false);
     });
   });
 

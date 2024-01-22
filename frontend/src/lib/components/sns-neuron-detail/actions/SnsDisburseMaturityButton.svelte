@@ -9,12 +9,13 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
   import { i18n } from "$lib/stores/i18n";
+  import type { TokenAmount } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;
-  export let feeE8s: bigint;
+  export let fee: TokenAmount;
 
   let enoughMaturity: boolean;
-  $: enoughMaturity = hasEnoughMaturityToDisburse({ neuron, feeE8s });
+  $: enoughMaturity = hasEnoughMaturityToDisburse({ neuron, fee: fee.toE8s() });
 
   let disabledText: string | undefined = undefined;
   $: disabledText = !enoughMaturity
@@ -24,7 +25,7 @@
           $i18n.neuron_detail.disburse_maturity_disabled_tooltip_non_zero,
           {
             $amount: formatTokenE8s({
-              value: minimumAmountToDisburseMaturity(feeE8s),
+              value: minimumAmountToDisburseMaturity(fee.toE8s()),
             }),
           }
         )
