@@ -45,14 +45,16 @@
             class="icon"
             class:expanded
             on:click|stopPropagation={toggleContent}
+            data-tid="expand-icon"
           >
             <IconExpandCircleDown />
           </button>
         </div>
-        <p class="description">
+        <p class="description" data-tid="stake-neuron-description">
           {$i18n.proposal_detail__vote.no_neurons_description}
         </p>
         <button
+          data-tid="stake-neuron-button"
           class="secondary stake-neuron-button"
           type="button"
           on:click|stopPropagation={gotoNeurons}>{label}</button
