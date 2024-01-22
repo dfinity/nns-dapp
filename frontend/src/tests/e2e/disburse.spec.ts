@@ -31,7 +31,7 @@ test("Test disburse neuron", async ({ page, context }) => {
     .stakeNeuron({ amount: stake, dissolveDelayDays: 0 });
 
   step("Check account balance before disburse");
-  await appPo.goToTokens();
+  await appPo.goToAccounts();
   const icpRowBeforeDisburse = appPo
     .getTokensPo()
     .getTokensPagePo()
@@ -54,7 +54,7 @@ test("Test disburse neuron", async ({ page, context }) => {
   await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().disburseNeuron();
 
   step("Check account balance after disburse");
-  await appPo.goToTokens();
+  await appPo.goToAccounts();
   const icpRowAfterDisburse = appPo
     .getTokensPo()
     .getTokensPagePo()

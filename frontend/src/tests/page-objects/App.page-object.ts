@@ -99,15 +99,8 @@ export class AppPo extends BasePageObject {
     await this.getBackdropPo().waitForAbsent();
   }
 
-  // GIX-2080: Remove this once the feature flag is enabled by default
+  // GIX-2080: Rename to "goToTokens"
   async goToAccounts(): Promise<void> {
-    await this.openMenu();
-    await this.getMenuItemsPo().clickAccounts();
-    // Menu closes automatically.
-    await this.getBackdropPo().waitForAbsent();
-  }
-
-  async goToTokens(): Promise<void> {
     await this.openMenu();
     await this.getMenuItemsPo().clickAccounts();
     // Menu closes automatically.
