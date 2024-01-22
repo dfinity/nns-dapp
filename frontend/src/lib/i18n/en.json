@@ -588,7 +588,7 @@
     "cast_votes": "of cast votes",
     "cast_votes_needs": "(Yes needs $immediate_majority)",
     "no_neurons": "You don’t have any neurons to vote",
-    "no_neurons_description": "In order to vote you have to stake a neuron.",
+    "no_neurons_description": "To be eligible to vote in the future, you need to stake a neuron.",
     "stake_neuron": "Stake $token neuron"
   },
   "proposal_detail__ineligible": {
