@@ -58,7 +58,7 @@ export type FeatureKey = keyof FeatureFlags<boolean>;
  */
 export const FEATURE_FLAG_ENVIRONMENT: FeatureFlags<boolean> = JSON.parse(
   envVars?.featureFlags ??
-    '{"ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_ICP_ICRC": false}'
+    '{"ENABLE_CKBTC": true, "ENABLE_CKTESTBTC": false, "ENABLE_ICP_ICRC": false, "ENABLE_MY_TOKENS": true, "ENABLE_CKETH": true, "ENABLE_SNS_TYPES_FILTER": false}'
 );
 
 export const IS_TESTNET: boolean =
