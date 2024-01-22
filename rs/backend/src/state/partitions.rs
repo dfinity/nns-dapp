@@ -5,11 +5,13 @@
 //!
 //! This code also stores virtual memory IDs and other memory functions.
 use core::borrow::Borrow;
+use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
 use ic_cdk::println;
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use std::rc::Rc;
 
+pub mod schemas;
 #[cfg(test)]
 pub mod tests;
 
@@ -82,6 +84,34 @@ impl Partitions {
     /// returns to the original state.
     pub fn into_memory(self) -> DefaultMemoryImpl {
         self.memory
+    }
+
+    /// Writes, growing the memory if necessary.
+    #[cfg(test)]
+    pub fn growing_write(&self, memory_id: MemoryId, offset: u64, bytes: &[u8]) {
+        let memory = self.get(memory_id);
+        let min_pages = u64::try_from(
+            (usize::try_from(offset).unwrap() + bytes.len() + WASM_PAGE_SIZE_IN_BYTES - 1) / WASM_PAGE_SIZE_IN_BYTES,
+        )
+        .expect("That is a large number of pages");
+        let current_pages = memory.size();
+        if current_pages < min_pages {
+            memory.grow(min_pages - current_pages);
+        }
+        memory.write(offset, bytes)
+    }
+
+    /// Reads a buffer, if possible.
+    #[cfg(test)]
+    pub fn try_read(&self, memory_id: MemoryId, offset: u64, buffer: &mut [u8]) -> Result<(), &'static str> {
+        let memory = self.get(memory_id);
+        let bytes_in_memory =
+            memory.size() * u64::try_from(WASM_PAGE_SIZE_IN_BYTES).expect("Wasm page size is too large");
+        if offset + u64::try_from(buffer.len()).unwrap() >= bytes_in_memory {
+            return Err("Insufficient memory to read");
+        }
+        memory.read(offset, buffer);
+        Ok(())
     }
 }
 
