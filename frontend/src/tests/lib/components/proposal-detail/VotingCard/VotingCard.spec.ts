@@ -105,10 +105,11 @@ describe("VotingCard", () => {
     it("should display voting buttons when no neurons available", async () => {
       const po = await renderComponent({
         hasNeurons: false,
+        visible: true,
       });
 
-      expect(await po.getVoteYesButtonPo().isPresent()).toBe(false);
-      expect(await po.getVoteNoButtonPo().isPresent()).toBe(false);
+      expect(await po.getVoteYesButtonPo().isPresent()).toBe(true);
+      expect(await po.getVoteNoButtonPo().isPresent()).toBe(true);
     });
 
     it("should spinner when neurons not ready", async () => {
