@@ -1,6 +1,10 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { setFeatureFlag, signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
+import {
+  setFeatureFlag,
+  signInWithNewUser,
+  step,
+} from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 const expectSignedOut = async (appPo: AppPo) => {
