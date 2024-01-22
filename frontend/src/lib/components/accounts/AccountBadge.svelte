@@ -6,6 +6,6 @@
 </script>
 
 <!-- No badge for main account -->
-{#if !["main", "subAccount"].includes(account.type)}
+{#if account.type !== "main" && account.type !== "subAccount"}
   <small class="label">{$i18n.accounts[account.type]}</small>
 {/if}
