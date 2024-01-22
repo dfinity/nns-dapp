@@ -30,11 +30,11 @@
     data-tid="voting-card-component"
   >
     <SignInGuard>
+      {#if visible}
+        <VotingConfirmationToolbar {voteRegistration} on:nnsConfirm />
+      {/if}
       {#if hasNeurons}
         {#if neuronsReady}
-          {#if visible}
-            <VotingConfirmationToolbar {voteRegistration} on:nnsConfirm />
-          {/if}
           <div class="neuron-groups" data-tid="voting-neuron-select">
             <VotableNeuronList {voteRegistration} />
             <VotedNeuronList {neuronsVotedForProposal} />
