@@ -180,3 +180,116 @@ fn should_be_able_to_convert_memory_to_partitions_and_back() {
         "Memory should be unchanged after converting to partitions and back."
     );
 }
+
+#[derive(Debug, Clone)]
+struct GrowingWriteTestVector {
+    initial_memory_pages: u64,
+    write_offset: u64,
+    buffer: Vec<u8>,
+    expected_final_memory_pages: u64,
+}
+
+fn growing_write_test_vectors() -> Vec<GrowingWriteTestVector> {
+    vec![
+        GrowingWriteTestVector {
+            initial_memory_pages: 0,
+            write_offset: 0,
+            buffer: vec![],
+            expected_final_memory_pages: 0,
+        },
+        GrowingWriteTestVector {
+            initial_memory_pages: 0,
+            write_offset: 1,
+            buffer: vec![],
+            expected_final_memory_pages: 1,
+        },
+        GrowingWriteTestVector {
+            initial_memory_pages: 0,
+            write_offset: WASM_PAGE_SIZE_IN_BYTES as u64,
+            buffer: vec![],
+            expected_final_memory_pages: 1,
+        },
+        GrowingWriteTestVector {
+            initial_memory_pages: 0,
+            write_offset: (WASM_PAGE_SIZE_IN_BYTES as u64) + 1,
+            buffer: vec![],
+            expected_final_memory_pages: 2,
+        },
+        GrowingWriteTestVector {
+            initial_memory_pages: 0,
+            write_offset: 0,
+            buffer: vec![1, 2, 3, 4],
+            expected_final_memory_pages: 1,
+        },
+        GrowingWriteTestVector {
+            initial_memory_pages: 0,
+            write_offset: 1,
+            buffer: vec![1, 2, 3, 4],
+            expected_final_memory_pages: 1,
+        },
+        GrowingWriteTestVector {
+            initial_memory_pages: 0,
+            write_offset: WASM_PAGE_SIZE_IN_BYTES as u64 - 4,
+            buffer: vec![1, 2, 3, 4],
+            expected_final_memory_pages: 1,
+        },
+        GrowingWriteTestVector {
+            initial_memory_pages: 0,
+            write_offset: (WASM_PAGE_SIZE_IN_BYTES as u64) - 3,
+            buffer: vec![1, 2, 3, 4],
+            expected_final_memory_pages: 2,
+        },
+        GrowingWriteTestVector {
+            initial_memory_pages: 0,
+            write_offset: (WASM_PAGE_SIZE_IN_BYTES as u64),
+            buffer: vec![1, 2, 3, 4],
+            expected_final_memory_pages: 2,
+        },
+    ]
+}
+
+fn growing_write_should_work(memory_id: MemoryId, test_vector: &GrowingWriteTestVector) {
+    let GrowingWriteTestVector {
+        initial_memory_pages,
+        write_offset,
+        buffer,
+        expected_final_memory_pages,
+    } = test_vector;
+    let toy_memory = DefaultMemoryImpl::default();
+    MemoryManager::init(Partitions::copy_memory_reference(&toy_memory));
+    let partitions = Partitions::try_from_memory(Rc::clone(&toy_memory)).expect("Failed to get partitions");
+    partitions.get(memory_id).grow(*initial_memory_pages);
+    assert_eq!(
+        partitions.get(memory_id).size(),
+        *initial_memory_pages,
+        "Test setup error: Initial memory size should be as expected for test vector: {:?} {:?}",
+        memory_id,
+        test_vector
+    );
+    partitions.growing_write(memory_id, *write_offset, buffer.as_slice());
+    assert_eq!(
+        partitions.get(memory_id).size(),
+        *expected_final_memory_pages,
+        "growing_write did not leave the final memory size as expected for test vector: {:?} {:?}",
+        memory_id,
+        test_vector
+    );
+    let mut read_buffer = vec![0u8; buffer.len()];
+    partitions
+        .read_exact(memory_id, *write_offset, &mut read_buffer)
+        .expect("Failed to read back what we wrote.");
+    assert_eq!(
+        read_buffer, *buffer,
+        "growing_write did not write the expected data for test vector: {:?} {:?}",
+        memory_id, test_vector
+    );
+}
+
+#[test]
+fn growing_write_should_work_for_all() {
+    for memory_id in [Partitions::METADATA_MEMORY_ID, Partitions::ACCOUNTS_MEMORY_ID] {
+        for test_vector in growing_write_test_vectors() {
+            growing_write_should_work(memory_id, &test_vector);
+        }
+    }
+}
