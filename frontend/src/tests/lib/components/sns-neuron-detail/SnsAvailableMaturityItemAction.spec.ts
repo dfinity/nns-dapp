@@ -12,6 +12,7 @@ import { SnsAvailableMaturityItemActionPo } from "$tests/page-objects/SnsAvailab
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { Principal } from "@dfinity/principal";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
+import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("SnsAvailableMaturityItemAction", () => {
@@ -24,11 +25,14 @@ describe("SnsAvailableMaturityItemAction", () => {
     maturity: 314000000n,
     permissions: [controllerPermissions],
   });
-  const renderComponent = (neuron: SnsNeuron, feeE8s = 10_000n) => {
+  const renderComponent = (
+    neuron: SnsNeuron,
+    fee = TokenAmount.fromE8s({ amount: 10_000n, token: ICPToken })
+  ) => {
     const { container } = render(SnsAvailableMaturityItemAction, {
       props: {
         neuron,
-        feeE8s,
+        fee,
       },
     });
 
@@ -84,10 +88,11 @@ describe("SnsAvailableMaturityItemAction", () => {
   });
 
   it("should render disabled disburse maturity button when maturity is less than fee", async () => {
-    const fee = 100_000_000n;
+    const feeAmount = 100_000_000n;
+    const fee = TokenAmount.fromE8s({ amount: feeAmount, token: ICPToken });
     const neuron = createMockSnsNeuron({
       id: [1],
-      maturity: fee - 1n,
+      maturity: feeAmount - 1n,
       permissions: [controllerPermissions],
     });
     const po = renderComponent(neuron, fee);
