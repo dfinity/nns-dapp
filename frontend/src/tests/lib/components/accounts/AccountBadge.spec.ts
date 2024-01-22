@@ -13,15 +13,15 @@ describe("AccountBadge", () => {
       props: { account: mockMainAccount },
     });
 
-    expect(() => getByText(en.accounts.subAccount, { exact: false })).toThrow();
+    expect(() => getByText("Linked Account", { exact: false })).toThrow();
   });
 
-  it("should render linked account badge", () => {
+  it("should not render linked account badge", () => {
     const { getByText } = render(AccountBadge, {
       props: { account: mockSubAccount },
     });
 
-    expect(getByText(en.accounts.subAccount)).toBeInTheDocument();
+    expect(() => getByText("Linked Account", { exact: false })).toThrow();
   });
 
   it("should render hardware wallet badge", () => {

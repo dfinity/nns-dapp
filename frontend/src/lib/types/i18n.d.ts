@@ -211,7 +211,6 @@ interface I18nAccounts {
   edit_name: string;
   new_linked_account_enter_name: string;
   new_linked_account_placeholder: string;
-  subAccount: string;
   hardwareWallet: string;
   select_source: string;
   select_destination: string;
