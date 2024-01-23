@@ -313,7 +313,8 @@
     "current_dissolve_delay": "Current Dissolve Delay",
     "dissolve_delay_title": "Dissolve Delay",
     "no_delay": "0",
-    "dissolve_delay_description": "Voting power is given when neurons are locked for at least 6 months",
+    "dissolve_delay_description": "Dissolve delay is the minimum amount of time you have to wait for the neuron to unlock, and ICP to be available again. Note, that dissolve delay only decreases when the neuron is in a dissolving state.",
+    "dissolve_delay_voting_power": "Voting power is given to neurons with a dissolve delay of at least 6 months.",
     "dissolve_delay_label": "Dissolve Delay (in days)",
     "dissolve_delay_placeholder": "Delay in days",
     "dissolve_delay_below_minimum": "The neuron will not have voting power unless the dissolve delay is increased.",
@@ -806,7 +807,8 @@
     "sns_neuron_destination": "Subaccount of",
     "stake_sns_neuron_success": "$tokenSymbol Neuron created successfully.",
     "token_stake": "$amount $token Stake",
-    "dissolve_delay_description": "Voting power is given when neurons are locked for at least $duration"
+    "dissolve_delay_description": "Dissolve delay is the minimum amount of time you have to wait for the neuron to unlock, and ICP to be available again. Note, that dissolve delay only decreases when the neuron is in a dissolving state.",
+    "dissolve_delay_voting_power": "Voting power is given to neurons with a dissolve delay of at least $duration."
   },
   "time": {
     "year": "year",

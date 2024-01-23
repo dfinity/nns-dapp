@@ -88,6 +88,7 @@
 
   <div>
     <p class="label">{$i18n.neurons.dissolve_delay_title}</p>
+    <p class="description">{$i18n.neurons.dissolve_delay_description}</p>
     <p class="description">{minDissolveDelayDescription}</p>
   </div>
   <div class="select-delay-container">

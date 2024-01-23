@@ -40,7 +40,7 @@
   minProjectDelayInSeconds={SECONDS_IN_HALF_YEAR}
   maxDelayInSeconds={SECONDS_IN_EIGHT_YEARS}
   {calculateVotingPower}
-  minDissolveDelayDescription={$i18n.neurons.dissolve_delay_description}
+  minDissolveDelayDescription={$i18n.neurons.dissolve_delay_voting_power}
 >
   <p slot="neuron-id" class="value">{neuron.neuronId}</p>
   <slot name="cancel" slot="cancel" />
