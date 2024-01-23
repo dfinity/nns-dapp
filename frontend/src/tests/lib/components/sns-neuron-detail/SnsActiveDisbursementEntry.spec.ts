@@ -18,6 +18,7 @@ describe("SnsActiveDisbursementEntry", () => {
         subaccount: [],
       },
     ],
+    finalize_disbursement_timestamp_seconds: [],
   };
   const renderComponent = (disbursement: DisburseMaturityInProgress) => {
     const { container } = render(SnsActiveDisbursementEntry, {

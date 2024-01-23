@@ -126,6 +126,7 @@ const convertNeuronsFundParticipationConstraints = (
       constraints.min_direct_participation_threshold_icp_e8s
     )
   ),
+  ideal_matched_participation_function: [],
 });
 
 const convertSwapInitParams = (
@@ -373,6 +374,8 @@ const convertDtoToLifecycle = (
     )
   ),
   lifecycle: toNullable(data.lifecycle),
+  // TODO: Add support in SNS Aggregaro for these fields
+  decentralization_swap_termination_timestamp_seconds: [],
 });
 
 type PartialSummary = Omit<

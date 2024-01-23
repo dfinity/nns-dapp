@@ -169,6 +169,7 @@ export const mockQuerySwap: SnsSwap = {
   purge_old_tickets_next_principal: [],
   direct_participation_icp_e8s: [],
   neurons_fund_participation_icp_e8s: [],
+  decentralization_swap_termination_timestamp_seconds: [],
 };
 
 export const mockDerived: SnsSwapDerivedState = {
@@ -209,6 +210,7 @@ export const mockToken: IcrcTokenMetadata = {
 export const mockLifecycleResponse: SnsGetLifecycleResponse = {
   lifecycle: [SnsSwapLifecycle.Open],
   decentralization_sale_open_timestamp_seconds: [],
+  decentralization_swap_termination_timestamp_seconds: [],
 };
 
 export const mockSnsSummaryList: SnsSummary[] = [
@@ -396,6 +398,7 @@ export const createSummary = ({
               toNullable(maxNFParticipation),
             coefficient_intervals: [],
             min_direct_participation_threshold_icp_e8s: [],
+            ideal_matched_participation_function: [],
           },
         ]
       : [],

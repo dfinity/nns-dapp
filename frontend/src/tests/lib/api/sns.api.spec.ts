@@ -65,6 +65,7 @@ describe("sns-api", () => {
   const lifecycleResponse: SnsGetLifecycleResponse = {
     lifecycle: [SnsSwapLifecycle.Open],
     decentralization_sale_open_timestamp_seconds: [1n],
+    decentralization_swap_termination_timestamp_seconds: [],
   };
   const notifyParticipationSpy = vi.fn().mockResolvedValue(undefined);
   const mockUserCommitment = createBuyersState(100_000_000n);
