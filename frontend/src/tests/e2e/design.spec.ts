@@ -24,15 +24,6 @@ test.describe("Design", () => {
 
     await firstRow[0].waitForBalance();
 
-    // // We need to replace the content to not rely on the SNS project name.
-    // await replaceContent({
-    //   page,
-    //   selectors: [rowNameSelector, rowTokenSymbolSelector],
-    //   innerHtml: "XXXXX",
-    // });
-
-    // await page.waitForTimeout(50_000);
-
     await expect(page).toHaveScreenshot();
   });
 
@@ -83,9 +74,14 @@ test.describe("Design", () => {
       const appPo = new AppPo(pageElement);
 
       // Wait for balance in the first row of the table to make sure the screenshot is taken after the app is loaded.
-      await appPo.getSignInAccountsPo().getTokensTablePo().waitFor();
+      await appPo
+        .getAccountsPo()
+        .getNnsAccountsPo()
+        .getTokensTablePo()
+        .waitFor();
       const firstRow = await appPo
-        .getSignInAccountsPo()
+        .getAccountsPo()
+        .getNnsAccountsPo()
         .getTokensTablePo()
         .getRows();
 
@@ -94,11 +90,11 @@ test.describe("Design", () => {
       await expect(page).toHaveScreenshot();
     };
 
-    test("My Tokens", async () => {
+    test("Accounts", async () => {
       await testMyTokens();
     });
 
-    test("My Tokens (wide screen)", async () => {
+    test("Accounts (wide screen)", async () => {
       await page.setViewportSize({ width: 1300, height: 720 });
 
       await testMyTokens();
