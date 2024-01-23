@@ -5,6 +5,7 @@ import {
   SECONDS_IN_HALF_YEAR,
 } from "$lib/constants/constants";
 import en from "$tests/mocks/i18n.mock";
+import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { SetDissolveDelayPo } from "$tests/page-objects/SetDissolveDelay.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronState } from "@dfinity/nns";
@@ -337,4 +338,33 @@ describe("SetDissolveDelay", () => {
       );
     });
   }
+
+  it("should render token symbol in description", async () => {
+    const symbol = "FOX";
+    const po = renderComponent({
+      neuronStake: TokenAmountV2.fromUlps({
+        amount: 200_000_000n,
+        token: {
+          ...mockSnsToken,
+          symbol,
+        },
+      }),
+    });
+
+    expect(await po.getDescription()).toContain(
+      `and ${symbol} to be available again`
+    );
+  });
+
+  it("should render min dissolve delay description", async () => {
+    const minDissolveDelayDescription =
+      "Voting power is given to neurons with a dissolve delay of at least 1 month.";
+    const po = renderComponent({
+      minDissolveDelayDescription,
+    });
+
+    expect(await po.getMinDissolveDelayDescription()).toBe(
+      minDissolveDelayDescription
+    );
+  });
 });

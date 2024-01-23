@@ -88,7 +88,14 @@
 
   <div>
     <p class="label">{$i18n.neurons.dissolve_delay_title}</p>
-    <p class="description">{minDissolveDelayDescription}</p>
+    <p class="description" data-tid="description">
+      {replacePlaceholders($i18n.neurons.dissolve_delay_description, {
+        $token: neuronStake.token.symbol,
+      })}
+    </p>
+    <p class="description" data-tid="min-dissolve-delay-description">
+      {minDissolveDelayDescription}
+    </p>
   </div>
   <div class="select-delay-container">
     <p class="subtitle">{$i18n.neurons.dissolve_delay_label}</p>
