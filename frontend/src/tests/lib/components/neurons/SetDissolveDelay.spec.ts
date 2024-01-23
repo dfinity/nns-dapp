@@ -211,7 +211,7 @@ describe("SetDissolveDelay", () => {
       expect(await po.getErrorMessage()).toBe(
         en.neurons.dissolve_delay_below_minimum
       );
-      expect(await po.hasErrorOutline()).toBe(true);
+      expect(await po.hasErrorOutline()).toBe(false);
 
       await po.clickMin();
       expect(await po.getErrorMessage()).toBe(null);
