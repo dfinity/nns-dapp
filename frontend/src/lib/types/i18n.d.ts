@@ -200,6 +200,7 @@ interface I18nAccounts {
   attach_hardware_subtitle: string;
   attach_hardware_name_placeholder: string;
   attach_hardware_enter_name: string;
+  attach_hardware_description: string;
   attach_hardware_show_neurons: string;
   attach_hardware_neurons_text: string;
   attach_hardware_neurons_add: string;
@@ -207,7 +208,6 @@ interface I18nAccounts {
   connect_hardware_wallet: string;
   connect_hardware_wallet_text: string;
   show_info_hardware_wallet: string;
-  attach_wallet: string;
   edit_name: string;
   new_linked_account_enter_name: string;
   new_linked_account_placeholder: string;
