@@ -263,6 +263,8 @@ sale_participants_count ${saleBuyerCount} 1677707139456
             sweep_icp_result: [],
             claim_neuron_result: [],
             sweep_sns_result: [],
+            create_sns_neuron_recipes_result: [],
+            settle_neurons_fund_participation_result: [],
           },
         ],
         has_auto_finalize_been_attempted: [true],

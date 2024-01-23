@@ -439,6 +439,7 @@ describe("sns aggregator converters utils", () => {
           lifecycle: {
             decentralization_sale_open_timestamp_seconds: [1690786778n],
             lifecycle: [2],
+            decentralization_swap_termination_timestamp_seconds: [],
           },
         })
       );
@@ -573,6 +574,7 @@ describe("sns aggregator converters utils", () => {
                     ],
                     max_neurons_fund_participation_icp_e8s: [300000000000n],
                     min_direct_participation_threshold_icp_e8s: [10000000000n],
+                    ideal_matched_participation_function: [],
                   },
                 ],
                 min_direct_participation_icp_e8s: [300000000000n],

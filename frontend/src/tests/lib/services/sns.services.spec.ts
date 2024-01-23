@@ -277,6 +277,7 @@ describe("sns-services", () => {
       const lifeCycleResponse: SnsGetLifecycleResponse = {
         lifecycle: [newLifeCycle],
         decentralization_sale_open_timestamp_seconds: [1n],
+        decentralization_swap_termination_timestamp_seconds: [],
       };
 
       const spy = vi
