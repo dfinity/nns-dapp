@@ -64,12 +64,13 @@ const hide = ({
     neurons,
     identity,
   }) ||
-  // hide proposals that are currently in the voting state
-  Object.values(registrations).find((votings) =>
-    votings.find(
-      ({ proposalIdString }) => `${proposalInfo.id}` === proposalIdString
-    )
-  ) !== undefined;
+  // hide proposals that are currently in the "complete" voting state
+  Object.values(registrations).find((votings) => {
+    return votings.find(
+      ({ proposalIdString, status }) =>
+        `${proposalInfo.id}` === proposalIdString && status === "complete"
+    );
+  }) !== undefined;
 
 export interface UIProposalsStore {
   proposals: (ProposalInfo & { hidden: boolean })[];
