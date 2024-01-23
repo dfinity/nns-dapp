@@ -66,7 +66,7 @@
   let minDissolveDelayDescription = "";
   $: minDissolveDelayDescription = isNullish(snsParameters)
     ? ""
-    : replacePlaceholders($i18n.sns_neurons.dissolve_delay_voting_power, {
+    : replacePlaceholders($i18n.sns_neurons.min_dissolve_delay_description, {
         $duration: `${secondsToDissolveDelayDuration(
           BigInt(minSnsDissolveDelaySeconds)
         )}`,
