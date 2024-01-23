@@ -343,7 +343,7 @@
         "BINSTALL_VERSION": "1.3.0",
         "DIDC_VERSION": "2024-01-03",
         "CARGO_SORT_VERSION": "1.0.9",
-        "SNSDEMO_RELEASE": "release-2024-01-10.1",
+        "SNSDEMO_RELEASE": "release-2024-01-17",
         "IC_COMMIT": "release-2024-01-09_23-01+new-p2p"
       },
       "packtool": ""
