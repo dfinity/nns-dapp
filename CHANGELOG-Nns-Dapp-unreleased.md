@@ -30,7 +30,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
-* Fix extra gaps on launchpad page.
+* Fix gaps between sections on the mobile launchpad page.
 
 #### Security
 
