@@ -38,6 +38,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Add `reviewers` to the `update-*.yml` workflows that create PRs.
+
 #### Changed
 
 #### Deprecated
