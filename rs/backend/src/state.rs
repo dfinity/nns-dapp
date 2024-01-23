@@ -13,8 +13,6 @@ pub mod partitions;
 #[cfg(test)]
 pub mod tests;
 
-#[derive(Default, Debug)]
-#[cfg_attr(test, derive(Eq, PartialEq))]
 pub struct State {
     // NOTE: When adding new persistent fields here, ensure that these fields
     // are being persisted in the `replace` method below.
@@ -22,6 +20,42 @@ pub struct State {
     pub assets: RefCell<Assets>,
     pub asset_hashes: RefCell<AssetHashes>,
     pub performance: RefCell<PerformanceCounts>,
+    // TODO: Take ownership of stable memory.
+}
+
+#[cfg(test)]
+impl PartialEq for State {
+    /// Compares essential content of two states for equality.
+    ///
+    /// Excluded from the comparison:
+    /// - Raw stable memory owned by the state.
+    fn eq(&self, other: &Self) -> bool {
+        (self.accounts_store == other.accounts_store)
+            && (self.assets == other.assets)
+            && (self.asset_hashes == other.asset_hashes)
+            && (self.performance == other.performance)
+    }
+}
+#[cfg(test)]
+impl Eq for State {}
+
+impl Default for State {
+    fn default() -> Self {
+        Self {
+            accounts_store: RefCell::new(AccountsStore::default()),
+            assets: RefCell::new(Assets::default()),
+            asset_hashes: RefCell::new(AssetHashes::default()),
+            performance: RefCell::new(PerformanceCounts::default()),
+        }
+    }
+}
+
+impl core::fmt::Debug for State {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(f, "State {{")?;
+        writeln!(f, "  accounts: {:?}", &self.accounts_store.borrow())?;
+        writeln!(f, "}}")
+    }
 }
 
 impl State {
