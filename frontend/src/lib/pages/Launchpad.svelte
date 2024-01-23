@@ -61,31 +61,19 @@
   main {
     display: grid;
     gap: var(--padding-4x);
-    grid-template-areas:
-      "open-projects"
-      "upcoming-projects"
-      "proposals"
-      "committed-projects";
 
-    @include media.min-width(medium) {
-      grid-template-areas:
-        "open-projects"
-        "upcoming-projects"
-        "committed-projects"
-        "proposals";
-    }
-
-    .open-projects {
-      grid-area: open-projects;
-    }
-    .upcoming-projects {
-      grid-area: upcoming-projects;
-    }
+    // display "proposals" before "committed-projects" on mobile
     .committed-projects {
-      grid-area: committed-projects;
+      order: 2;
+      @include media.min-width(medium) {
+        order: 1;
+      }
     }
     .proposals {
-      grid-area: proposals;
+      order: 1;
+      @include media.min-width(medium) {
+        order: 2;
+      }
     }
   }
 
