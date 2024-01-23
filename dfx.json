@@ -328,7 +328,7 @@
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
           "ENABLE_ICP_ICRC": false,
-          "ENABLE_MY_TOKENS": false,
+          "ENABLE_MY_TOKENS": true,
           "ENABLE_CKETH": true,
           "ENABLE_SNS_TYPES_FILTER": false
         }
