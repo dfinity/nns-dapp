@@ -23,7 +23,7 @@ import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
 import { NeuronState } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
-import { ICPToken, TokenAmount } from "@dfinity/utils";
+import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 
 describe("SnsNeuronAdvancedSection", () => {
   const nowInSeconds = new Date("Jul 20, 2023 8:53 AM").getTime() / 1000;
@@ -37,7 +37,7 @@ describe("SnsNeuronAdvancedSection", () => {
         governanceCanisterId: mockPrincipal,
         parameters: snsNervousSystemParametersMock,
         token: mockToken,
-        transactionFee: TokenAmount.fromE8s({
+        transactionFee: TokenAmountV2.fromUlps({
           amount: 10_000n,
           token: ICPToken,
         }),
