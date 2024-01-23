@@ -1,6 +1,9 @@
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import type { Principal } from "@dfinity/principal";
+import { isNullish } from "@dfinity/utils";
 import { derived, writable, type Readable } from "svelte/store";
+import { tokensStore } from "./tokens.store";
 
 interface ProjectFeeData {
   fee: bigint;
@@ -101,12 +104,26 @@ export const transactionsFeesStore = initTransactionFeesStore();
 /**
  * @deprecated prefer mainTransactionFeeE8sStore to use e8s for amount of tokens instead of Number.
  */
-export const mainTransactionFeeStore = derived(
-  transactionsFeesStore,
-  ($store) => Number($store.main)
+export const mainTransactionFeeStore: Readable<number> = derived(
+  tokensStore,
+  ($store) => {
+    const icpToken = $store[OWN_CANISTER_ID_TEXT]?.token;
+    if (isNullish(icpToken)) {
+      // This can't happen because the tokensStore always contains the NNS token.
+      throw new Error("ICP token not found");
+    }
+    return Number(icpToken.fee);
+  }
 );
 
-export const mainTransactionFeeE8sStore = derived(
-  transactionsFeesStore,
-  ($store) => $store.main
+export const mainTransactionFeeE8sStore: Readable<bigint> = derived(
+  tokensStore,
+  ($store) => {
+    const icpToken = $store[OWN_CANISTER_ID_TEXT]?.token;
+    if (isNullish(icpToken)) {
+      // This can't happen because the tokensStore always contains the NNS token.
+      throw new Error("ICP token not found");
+    }
+    return icpToken.fee;
+  }
 );
