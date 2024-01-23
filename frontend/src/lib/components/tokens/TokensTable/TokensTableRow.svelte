@@ -89,13 +89,9 @@
   <div role="cell" class={`mobile-row-cell left-cell ${cellAreaName(0)}`}>
     <span class="mobile-only">{$i18n.tokens.balance_header}</span>
     {#if userTokenData.balance instanceof UnavailableTokenAmount}
-      <!-- The label is within its own element because it will be replaced in screenshot testing. -->
-      <div data-tid="token-value-label">
-        <!-- The space is needed so that when we get the text from "token-value-label" there is a space between amount and token. -->
-        <span>{"-/- "}</span><span data-tid="token-label"
-          >{userTokenData.balance.token.symbol}</span
-        >
-      </div>
+      <span data-tid="token-value-label"
+        >{`-/- ${userTokenData.balance.token.symbol}`}</span
+      >
     {:else if userTokenData.balance === "loading"}
       <span data-tid="token-value-label" class="balance-spinner"
         ><Spinner inline size="tiny" /></span
