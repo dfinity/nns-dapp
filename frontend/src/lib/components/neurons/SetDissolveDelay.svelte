@@ -29,6 +29,12 @@
   let disableUpdate: boolean;
   $: disableUpdate = shouldUpdateBeDisabled(delayInSeconds);
 
+  let warningMessage: string | undefined;
+  $: warningMessage =
+    delayInSeconds > 0 && delayInSeconds < minProjectDelayInSeconds
+      ? $i18n.neurons.dissolve_delay_below_minimum
+      : undefined;
+
   const getInputError = (delayInSeconds: number) => {
     if (delayInSeconds > maxDelayInSeconds) {
       return $i18n.neurons.dissolve_delay_above_maximum;
@@ -36,19 +42,11 @@
     if (delayInSeconds <= neuronDissolveDelaySeconds) {
       return $i18n.neurons.dissolve_delay_below_current;
     }
-    if (delayInSeconds < minProjectDelayInSeconds) {
-      return $i18n.neurons.dissolve_delay_below_minimum;
-    }
     return undefined;
   };
 
   const shouldUpdateBeDisabled = (delayInSeconds: number): boolean => {
-    const error = getInputError(delayInSeconds);
-    // It's allowed to set the dissolve delay below the project minimum but we
-    // still show a warning message to the user.
-    return (
-      nonNullish(error) && error !== $i18n.neurons.dissolve_delay_below_minimum
-    );
+    return nonNullish(getInputError(delayInSeconds));
   };
 
   const cancel = () => dispatch("nnsCancel");
@@ -111,6 +109,7 @@
         placeholderLabelKey="neurons.dissolve_delay_placeholder"
         name="dissolve_delay"
         {getInputError}
+        {warningMessage}
       />
     </div>
     <div class="range">
