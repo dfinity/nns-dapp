@@ -99,6 +99,7 @@ export class AppPo extends BasePageObject {
     await this.getBackdropPo().waitForAbsent();
   }
 
+  // GIX-2080: Rename to "goToTokens"
   async goToAccounts(): Promise<void> {
     await this.openMenu();
     await this.getMenuItemsPo().clickAccounts();

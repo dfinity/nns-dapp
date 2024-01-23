@@ -1,82 +1,96 @@
 import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
-import en from "$tests/mocks/i18n.mock";
+import { FolloweePo } from "$tests/page-objects/Followee.page-object";
+import { VotingHistoryModalPo } from "$tests/page-objects/VotingHistoryModal.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { Topic } from "@dfinity/nns";
-import { fireEvent } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import FolloweeTest from "./FolloweeTest.svelte";
 
 describe("Followee", () => {
+  let copySpy;
+
   const followee = {
     neuronId: 111n,
     topics: [Topic.ExchangeRate, Topic.Governance, Topic.Kyc],
   };
 
   beforeEach(() => {
-    vi.spyOn(console, "error").mockReturnValue();
     knownNeuronsStore.reset();
-  });
 
-  it("should render neuronId", () => {
-    const { getByText } = render(FolloweeTest, {
-      props: {
-        followee,
+    vi.spyOn(console, "error").mockReturnValue();
+    copySpy = vi.fn();
+    Object.assign(navigator, {
+      clipboard: {
+        writeText: copySpy,
       },
     });
-
-    expect(getByText(followee.neuronId.toString())).toBeInTheDocument();
   });
 
-  it("should render topics", () => {
-    const { getByText } = render(FolloweeTest, {
-      props: {
-        followee,
-      },
-    });
-
-    followee.topics.forEach((topic) =>
-      expect(getByText(en.topics[Topic[topic]])).toBeInTheDocument()
-    );
-  });
-
-  it("should render ids", () => {
+  const renderComponent = () => {
     const { container } = render(FolloweeTest, {
       props: {
         followee,
       },
     });
+    return FolloweePo.under(new JestPageObjectElement(container));
+  };
 
-    expect(container.querySelector("#followee-111")).toBeInTheDocument();
-    expect(
-      container.querySelector('[aria-labelledby="followee-111"]')
-    ).toBeInTheDocument();
-  });
-
-  it("should open modal", async () => {
-    const { container, getByTestId } = render(FolloweeTest, {
+  const renderComponentAndModal = () => {
+    const { container } = render(FolloweeTest, {
       props: {
         followee,
       },
     });
+    const element = new JestPageObjectElement(container);
+    return {
+      componentPo: FolloweePo.under(element),
+      modalPo: VotingHistoryModalPo.under(element),
+    };
+  };
 
-    await fireEvent.click(container.querySelector("button") as Element);
-    expect(getByTestId("voting-history-modal")).toBeInTheDocument();
+  it("should render neuronId", async () => {
+    const po = renderComponent();
+    expect(await po.getName()).toBe(followee.neuronId.toString());
+  });
+
+  it("should render topics", async () => {
+    const po = renderComponent();
+    expect(await po.getTags()).toEqual(["Exchange Rate", "Governance", "KYC"]);
+  });
+
+  it("should render ids", async () => {
+    const id = `followee-${followee.neuronId}`;
+    const po = renderComponent();
+    expect(await po.getId()).toBe(id);
+    expect(await po.getAriaLabeledBy()).toBe(id);
+  });
+
+  it("should open modal", async () => {
+    const { componentPo, modalPo } = renderComponentAndModal();
+    expect(await modalPo.isPresent()).toBe(false);
+    await componentPo.openModal();
+    expect(await modalPo.isPresent()).toBe(true);
   });
 
   it("should render known neurons name", async () => {
+    const neuronName = "test-name";
     knownNeuronsStore.setNeurons([
       {
         id: followee.neuronId,
-        name: "test-name",
+        name: neuronName,
         description: "test-description",
       },
     ]);
 
-    const { getByText } = render(FolloweeTest, {
-      props: {
-        followee,
-      },
-    });
+    const po = renderComponent();
+    expect(await po.getName()).toBe(neuronName);
+  });
 
-    expect(getByText("test-name")).toBeInTheDocument();
+  it("should copy neuron ID to clipboard when copy button is clicked", async () => {
+    const po = renderComponent();
+
+    expect(copySpy).not.toBeCalled();
+    await po.copy();
+    expect(copySpy).toBeCalledWith(`${followee.neuronId}`);
   });
 });
