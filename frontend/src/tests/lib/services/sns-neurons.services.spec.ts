@@ -17,7 +17,7 @@ import {
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { toastsError } from "$lib/stores/toasts.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import {
   getSnsNeuronIdAsHexString,
   subaccountToHexString,
@@ -653,14 +653,14 @@ describe("sns-neurons-services", () => {
   });
 
   describe("stakeNeuron", () => {
-    afterEach(() => {
-      transactionsFeesStore.reset();
+    beforeEach(() => {
+      tokensStore.reset();
     });
 
     it("should call sns api stakeNeuron, query neurons again and load sns accounts", async () => {
-      transactionsFeesStore.setFee({
-        rootCanisterId: mockPrincipal,
-        fee: 100n,
+      tokensStore.setToken({
+        canisterId: mockPrincipal,
+        token: { ...mockSnsToken, fee: 100n },
         certified: true,
       });
       const spyStake = vi
@@ -683,7 +683,7 @@ describe("sns-neurons-services", () => {
     });
 
     it("should not call sns api stakeNeuron if fee is not present", async () => {
-      transactionsFeesStore.reset();
+      tokensStore.reset();
       const spyStake = vi
         .spyOn(api, "stakeNeuron")
         .mockImplementation(() => Promise.resolve(mockSnsNeuron.id[0]));
@@ -1171,9 +1171,10 @@ describe("sns-neurons-services", () => {
         .spyOn(snsTokenSymbolSelectedStore, "subscribe")
         .mockImplementation(mockTokenStore);
 
-      transactionsFeesStore.setFee({
-        rootCanisterId: mockPrincipal,
-        fee: BigInt(transactionFee),
+      tokensStore.reset();
+      tokensStore.setToken({
+        canisterId: mockPrincipal,
+        token: { ...mockSnsToken, fee: transactionFee },
         certified: true,
       });
     });
@@ -1181,7 +1182,6 @@ describe("sns-neurons-services", () => {
     afterEach(() => {
       snsNeuronsStoreSpy.mockClear();
       snsTokenSymbolSelectedStoreSpy.mockClear();
-      transactionsFeesStore.reset();
     });
 
     it("should call api.addNeuronPermissions", async () => {

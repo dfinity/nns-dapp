@@ -1,20 +1,41 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { replaceContent, signInWithNewUser } from "$tests/utils/e2e.test-utils";
+import { setFeatureFlag, signInWithNewUser } from "$tests/utils/e2e.test-utils";
 import { expect, test, type Page } from "@playwright/test";
 
 test.describe("Design", () => {
   test("Login", async ({ page }) => {
     await page.goto("/accounts");
     await expect(page).toHaveTitle("My ICP Tokens / NNS Dapp");
-    // Wait for the button to make sure the screenshot is taken after the page is loaded
-    await page.locator("[data-tid=login-button]").waitFor();
+    // TODO: GIX-1985 Remove this once the feature flag is enabled by default
+    await setFeatureFlag({
+      page,
+      featureFlag: "ENABLE_MY_TOKENS",
+      value: true,
+    });
+    // Wait for balance in the first row of the table to make sure the screenshot is taken after the app is loaded.
+    const pageElement = PlaywrightPageObjectElement.fromPage(page);
+    const appPo = new AppPo(pageElement);
+    await appPo.getSignInAccountsPo().getTokensTablePo().waitFor();
+    const firstRow = await appPo
+      .getSignInAccountsPo()
+      .getTokensTablePo()
+      .getRows();
+
+    await firstRow[0].waitForBalance();
 
     await expect(page).toHaveScreenshot();
   });
 
   test("App loading spinner is removed", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/accounts");
+    await expect(page).toHaveTitle("My ICP Tokens / NNS Dapp");
+    // TODO: GIX-1985 Remove this once the feature flag is enabled by default
+    await setFeatureFlag({
+      page,
+      featureFlag: "ENABLE_MY_TOKENS",
+      value: true,
+    });
 
     // Wait for the button to make sure the app is loaded
     await page.locator("[data-tid=login-button]").waitFor();
@@ -34,6 +55,12 @@ test.describe("Design", () => {
 
       await page.goto("/accounts");
       await expect(page).toHaveTitle("My ICP Tokens / NNS Dapp");
+      // TODO: GIX-1985 Remove this once the feature flag is enabled by default
+      await setFeatureFlag({
+        page,
+        featureFlag: "ENABLE_MY_TOKENS",
+        value: true,
+      });
 
       await signInWithNewUser({ page, context: browser.contexts()[0] });
     });
@@ -46,26 +73,28 @@ test.describe("Design", () => {
       const pageElement = PlaywrightPageObjectElement.fromPage(page);
       const appPo = new AppPo(pageElement);
 
-      await appPo.getAccountsPo().waitFor();
-      await appPo.getAccountsPo().getNnsAccountsPo().waitForContentLoaded();
+      // Wait for balance in the first row of the table to make sure the screenshot is taken after the app is loaded.
+      await appPo
+        .getAccountsPo()
+        .getNnsAccountsPo()
+        .getTokensTablePo()
+        .waitFor();
+      const firstRow = await appPo
+        .getAccountsPo()
+        .getNnsAccountsPo()
+        .getTokensTablePo()
+        .getRows();
 
-      await replaceContent({
-        page,
-        selectors: [
-          '[data-tid="identifier"]',
-          '[data-tid="select-universe-card"]:not(:first-of-type) .name',
-          '[data-tid="select-universe-card"]:not(:first-of-type) .amount .label',
-        ],
-        innerHtml: "XXXXX",
-      });
+      await firstRow[0].waitForBalance();
+
       await expect(page).toHaveScreenshot();
     };
 
-    test("My Tokens", async () => {
+    test("Accounts", async () => {
       await testMyTokens();
     });
 
-    test("My Tokens (wide screen)", async () => {
+    test("Accounts (wide screen)", async () => {
       await page.setViewportSize({ width: 1300, height: 720 });
 
       await testMyTokens();

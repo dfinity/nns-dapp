@@ -9,12 +9,25 @@ import { BasePageObject } from "./base.page-object";
 export class TokensTablePo extends BasePageObject {
   private static readonly TID = "tokens-table-component";
 
+  // There will be multiple ckETH projects and arbitrary ICRC tokens in the future.
+  private static readonly NON_SNS_NAMES = [
+    "Internet Computer",
+    "ckBTC",
+    "ckTESTBTC",
+    "ckETH",
+    "ckETHSepolia",
+  ];
+
   static under(element: PageObjectElement): TokensTablePo {
     return new TokensTablePo(element.byTestId(TokensTablePo.TID));
   }
 
   async getFirstColumnHeader(): Promise<string> {
     return this.getText("column-header-1");
+  }
+
+  isSnsName(name: string): boolean {
+    return !TokensTablePo.NON_SNS_NAMES.includes(name);
   }
 
   getRows(): Promise<TokensTableRowPo[]> {
@@ -31,21 +44,12 @@ export class TokensTablePo extends BasePageObject {
     return Promise.all(rows.map((row) => row.getData()));
   }
 
-  async findRowByName(
-    projectName: string
-  ): Promise<TokensTableRowPo | undefined> {
-    const rows = await this.getRows();
-    for (const row of rows) {
-      const name = await row.getProjectName();
-      if (name === projectName) {
-        return row;
-      }
-    }
-    return undefined;
+  getRowByName(projectName: string): TokensTableRowPo | undefined {
+    return TokensTableRowPo.byTitle({ element: this.root, title: projectName });
   }
 
   async getRowData(projectName: string): Promise<TokensTableRowData> {
-    const row = await this.findRowByName(projectName);
+    const row = await this.getRowByName(projectName);
     if (isNullish(row)) {
       throw new Error(`Row with project name ${projectName} not found`);
     }
@@ -59,7 +63,7 @@ export class TokensTablePo extends BasePageObject {
     testId: string;
     projectName: string;
   }): Promise<void> {
-    const row = await this.findRowByName(projectName);
+    const row = await this.getRowByName(projectName);
     if (isNullish(row)) {
       throw new Error(`Row with project name ${projectName} not found`);
     }
@@ -82,5 +86,31 @@ export class TokensTablePo extends BasePageObject {
 
   getLastRowText(): Promise<string> {
     return this.getText("last-row");
+  }
+
+  async waitForSnsRows(): Promise<void> {
+    const maybeRows = TokensTableRowPo.countUnder({
+      element: this.root,
+      count: TokensTablePo.NON_SNS_NAMES.length + 1,
+    });
+    for (const card of maybeRows) {
+      if (this.isSnsName(await card.getProjectName())) {
+        return;
+      }
+    }
+    throw new Error("SNS universe cards not found");
+  }
+
+  async getSnsRows(): Promise<TokensTableRowPo[]> {
+    // First make sure SNS projects are loaded.
+    await this.waitForSnsRows();
+    const rows = await this.getRows();
+    return (
+      await Promise.all(
+        rows.map(async (row) => ({ name: await row.getProjectName(), row }))
+      )
+    )
+      .filter(({ name }) => this.isSnsName(name))
+      .map(({ row }) => row);
   }
 }

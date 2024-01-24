@@ -1,4 +1,5 @@
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { StakeNeuronToVotePo } from "$tests/page-objects/StakeNeuronToVote.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -49,6 +50,14 @@ export class VotingCardPo extends BasePageObject {
 
   getVoteYesButtonPo(): ButtonPo {
     return this.getButton("vote-yes");
+  }
+
+  getVoteNoButtonPo(): ButtonPo {
+    return this.getButton("vote-no");
+  }
+
+  getStakeNeuronToVotePo(): StakeNeuronToVotePo {
+    return StakeNeuronToVotePo.under(this.root);
   }
 
   getSignInButtonPo(): ButtonPo {

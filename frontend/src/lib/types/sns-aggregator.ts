@@ -71,10 +71,15 @@ interface CachedLinearScalingCoefficient {
   to_direct_participation_icp_e8s?: number | null;
 }
 
+interface CachedIdealMatchedParticipationFunction {
+  serialized_representation?: string | null;
+}
+
 export type CachedNeuronsFundParticipationConstraints = {
   coefficient_intervals: Array<CachedLinearScalingCoefficient>;
   max_neurons_fund_participation_icp_e8s?: number | null;
   min_direct_participation_threshold_icp_e8s?: number | null;
+  ideal_matched_participation_function?: CachedIdealMatchedParticipationFunction;
 };
 
 // TODO: update when the candid is updated with the new init params

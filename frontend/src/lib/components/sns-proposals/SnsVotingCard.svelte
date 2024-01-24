@@ -6,7 +6,7 @@
     SnsVote,
   } from "@dfinity/sns";
   import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
-  import { sortedSnsUserNeuronsStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
+  import { snsSortedNeuronStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { UniverseCanisterIdText } from "$lib/types/universe";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
@@ -62,7 +62,7 @@
   $: votableNeurons = nonNullish($authStore.identity)
     ? votableSnsNeurons({
         proposal,
-        neurons: $sortedSnsUserNeuronsStore,
+        neurons: $snsSortedNeuronStore,
         identity: $authStore.identity,
       })
     : [];
@@ -123,9 +123,9 @@
   };
 
   let neuronsVotedForProposal: CompactNeuronInfo[] = [];
-  $: if ($sortedSnsUserNeuronsStore.length > 0) {
+  $: if ($snsSortedNeuronStore.length > 0) {
     neuronsVotedForProposal = votedSnsNeuronDetails({
-      neurons: $sortedSnsUserNeuronsStore,
+      neurons: $snsSortedNeuronStore,
       proposal,
     });
   }
@@ -135,7 +135,7 @@
   $: ineligibleNeurons = nonNullish($authStore.identity)
     ? snsNeuronsToIneligibleNeuronData({
         neurons: ineligibleSnsNeurons({
-          neurons: $sortedSnsUserNeuronsStore,
+          neurons: $snsSortedNeuronStore,
           proposal,
           identity: $authStore.identity,
         }),
@@ -152,7 +152,7 @@
         );
 
   let hasNeurons = false;
-  $: hasNeurons = $sortedSnsUserNeuronsStore.length > 0;
+  $: hasNeurons = $snsSortedNeuronStore.length > 0;
 </script>
 
 <VotingCard

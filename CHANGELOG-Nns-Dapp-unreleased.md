@@ -1,3 +1,4 @@
+
 # Unreleased changelog NNS Dapp
 
 All notable changes to the NNS Dapp will be documented in this file.
@@ -14,22 +15,25 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Add "API Boundary Node Management" topic support.
+* New block "Stake a neuron" on proposal details page.
+* Getter and setter of partition schema label.
 
 #### Changed
 
-* New light and dark theme colors.
-* Pluralise neurons on proposal detail page.
-* Placeholder when the transaction list is empty.
-* New QR code icon.
+* Changed wording about staking neurons to staking tokens.
+* Add missing feature flags to default feature flags value.
+* Various wording changes.
 
 #### Deprecated
 
 #### Removed
 
+* ckBTC withdrawal account.
+* Don't show the red error outline on dissolve delay input when the dissolve delay is not enough to have voting power.
+
 #### Fixed
 
-* BTC deposit address QR code spinner in dark theme.
+* Fix gaps between sections on the mobile launchpad page.
 
 #### Security
 
@@ -39,16 +43,16 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Exercise new migration test.
+* Add `reviewers` to the `update-*.yml` workflows that create PRs.
 
 #### Changed
-
-* Upgrade to `dfx` 0.15.3.
 
 #### Deprecated
 
 #### Removed
 
 #### Fixed
+
+* Commented out broken local `config.test`.
 
 #### Security

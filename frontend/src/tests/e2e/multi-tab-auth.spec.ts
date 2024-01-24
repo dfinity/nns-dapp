@@ -1,6 +1,10 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
+import {
+  setFeatureFlag,
+  signInWithNewUser,
+  step,
+} from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 const expectSignedOut = async (appPo: AppPo) => {
@@ -15,9 +19,22 @@ const expectSignedInAccountsPage = async (appPo: AppPo) => {
   expect(await appPo.getSignInPo().isPresent()).toBe(false);
 };
 
+const expectSignedInTokensPage = async (appPo: AppPo) => {
+  await appPo.getTokensPo().getTokensPagePo().waitFor();
+  expect(await appPo.getTokensPo().getSignInTokensPagePo().isPresent()).toBe(
+    false
+  );
+};
+
 test("Test multi-tab auth", async ({ page: page1, context }) => {
   await page1.goto("/accounts");
   await expect(page1).toHaveTitle("My ICP Tokens / NNS Dapp");
+  // TODO: GIX-1985 Remove this once the feature flag is enabled by default
+  await setFeatureFlag({
+    page: page1,
+    featureFlag: "ENABLE_MY_TOKENS",
+    value: true,
+  });
   const appPo1 = new AppPo(PlaywrightPageObjectElement.fromPage(page1));
 
   const page2 = await context.newPage();
@@ -40,9 +57,9 @@ test("Test multi-tab auth", async ({ page: page1, context }) => {
   await page2.reload();
   await expectSignedInAccountsPage(appPo2);
 
-  // When signed in, the landing page redirects to the accounts page.
+  // When signed in, the landing page shows the tokens page.
   await page1.goto("/");
-  await expectSignedInAccountsPage(appPo1);
+  await expectSignedInTokensPage(appPo1);
 
   await step("Sign out");
   await appPo1.getAccountMenuPo().openMenu();

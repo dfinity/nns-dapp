@@ -40,6 +40,7 @@ export interface TokensStore extends Readable<TokensStoreData> {
  *
  */
 const initTokensStore = (): TokensStore => {
+  // Always keep the NNS token as initial data. Other derived stores will raise an error if the token is not found.
   const initialTokensStoreData: TokensStoreData = {
     [OWN_CANISTER_ID_TEXT]: NNS_TOKEN,
   };

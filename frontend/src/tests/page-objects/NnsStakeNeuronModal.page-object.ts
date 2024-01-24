@@ -1,3 +1,4 @@
+import { AddUserToHotkeysPo } from "$tests/page-objects/AddUserToHotkeys.page-object";
 import { ConfirmDissolveDelayPo } from "$tests/page-objects/ConfirmDissolveDelay.page-object";
 import { EditFollowNeuronsPo } from "$tests/page-objects/EditFollowNeurons.page-object";
 import { NnsStakeNeuronPo } from "$tests/page-objects/NnsStakeNeuron.page-object";
@@ -16,6 +17,10 @@ export class NnsStakeNeuronModalPo extends BasePageObject {
 
   getNnsStakeNeuronPo(): NnsStakeNeuronPo {
     return NnsStakeNeuronPo.under(this.root);
+  }
+
+  getAddUserToHotkeysPo(): AddUserToHotkeysPo {
+    return AddUserToHotkeysPo.under(this.root);
   }
 
   getSetDissolveDelayPo(): SetDissolveDelayPo {

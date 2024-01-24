@@ -54,7 +54,7 @@
 
   const firstStep: WizardStep = {
     name: "StakeNeuron",
-    title: $i18n.neurons.stake_neuron,
+    title: $i18n.neurons.stake_icp,
   };
 
   let steps: WizardSteps = [firstStep, ...lastSteps];

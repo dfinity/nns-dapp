@@ -1,4 +1,5 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { AmountDisplayPo } from "./AmountDisplay.page-object";
 import { BasePageObject } from "./base.page-object";
 
 export type TokensTableRowData = {
@@ -17,12 +18,50 @@ export class TokensTableRowPo extends BasePageObject {
     );
   }
 
+  static byTitle({
+    element,
+    title,
+  }: {
+    element: PageObjectElement;
+    title: string;
+  }): TokensTableRowPo {
+    return new TokensTableRowPo(
+      element.querySelector(`[data-title="${title}"]`)
+    );
+  }
+
+  static countUnder({
+    element,
+    count,
+  }: {
+    element: PageObjectElement;
+    count?: number | undefined;
+  }): TokensTableRowPo[] {
+    return element
+      .countByTestId({
+        tid: TokensTableRowPo.TID,
+        count,
+      })
+      .map((el) => new TokensTableRowPo(el));
+  }
+
   getProjectName(): Promise<string> {
     return this.getText("project-name");
   }
 
   getBalance(): Promise<string> {
     return this.getText("token-value-label");
+  }
+
+  async getBalanceNumber(): Promise<number> {
+    return Number(await AmountDisplayPo.under(this.root).getAmount());
+  }
+
+  waitForBalance(): Promise<void> {
+    return this.root
+      .byTestId("token-value-label")
+      .byTestId("spinner")
+      .waitForAbsent();
   }
 
   hasBalanceSpinner(): Promise<boolean> {

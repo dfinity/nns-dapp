@@ -29,6 +29,12 @@
   let disableUpdate: boolean;
   $: disableUpdate = shouldUpdateBeDisabled(delayInSeconds);
 
+  let warningMessage: string | undefined;
+  $: warningMessage =
+    delayInSeconds > 0 && delayInSeconds < minProjectDelayInSeconds
+      ? $i18n.neurons.dissolve_delay_below_minimum
+      : undefined;
+
   const getInputError = (delayInSeconds: number) => {
     if (delayInSeconds > maxDelayInSeconds) {
       return $i18n.neurons.dissolve_delay_above_maximum;
@@ -36,19 +42,11 @@
     if (delayInSeconds <= neuronDissolveDelaySeconds) {
       return $i18n.neurons.dissolve_delay_below_current;
     }
-    if (delayInSeconds < minProjectDelayInSeconds) {
-      return $i18n.neurons.dissolve_delay_below_minimum;
-    }
     return undefined;
   };
 
   const shouldUpdateBeDisabled = (delayInSeconds: number): boolean => {
-    const error = getInputError(delayInSeconds);
-    // It's allowed to set the dissolve delay below the project minimum but we
-    // still show a warning message to the user.
-    return (
-      nonNullish(error) && error !== $i18n.neurons.dissolve_delay_below_minimum
-    );
+    return nonNullish(getInputError(delayInSeconds));
   };
 
   const cancel = () => dispatch("nnsCancel");
@@ -88,7 +86,14 @@
 
   <div>
     <p class="label">{$i18n.neurons.dissolve_delay_title}</p>
-    <p class="description">{minDissolveDelayDescription}</p>
+    <p class="description" data-tid="description">
+      {replacePlaceholders($i18n.neurons.dissolve_delay_description, {
+        $token: neuronStake.token.symbol,
+      })}
+    </p>
+    <p class="description" data-tid="min-dissolve-delay-description">
+      {minDissolveDelayDescription}
+    </p>
   </div>
   <div class="select-delay-container">
     <p class="subtitle">{$i18n.neurons.dissolve_delay_label}</p>
@@ -104,6 +109,7 @@
         placeholderLabelKey="neurons.dissolve_delay_placeholder"
         name="dissolve_delay"
         {getInputError}
+        {warningMessage}
       />
     </div>
     <div class="range">

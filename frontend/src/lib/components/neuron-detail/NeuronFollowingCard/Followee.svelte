@@ -3,12 +3,13 @@
   import type { FolloweesNeuron } from "$lib/utils/neuron.utils";
   import { i18n } from "$lib/stores/i18n";
   import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
-  import { Tag } from "@dfinity/gix-components";
+  import { Copy, Tag } from "@dfinity/gix-components";
   import {
     NNS_NEURON_CONTEXT_KEY,
     type NnsNeuronContext,
   } from "$lib/types/nns-neuron-detail.context";
   import { getContext } from "svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import TagsList from "$lib/components/ui/TagsList.svelte";
   import { emit } from "$lib/utils/events.utils";
   import type { NnsNeuronModalVotingHistory } from "$lib/types/nns-neuron-detail.modal";
@@ -40,18 +41,33 @@
     });
 </script>
 
-<TagsList {id}>
-  <button
-    slot="title"
-    name="title"
-    {id}
-    class="text"
-    on:click={openVotingHistory}
-  >
-    {name}
-  </button>
+<TestIdWrapper testId="followee-component">
+  <TagsList {id}>
+    <div class="neuron" slot="title">
+      <button name="title" {id} class="text" on:click={openVotingHistory}>
+        {name}
+      </button>
+      <div class="copy">
+        <Copy value={followee.neuronId.toString()} />
+      </div>
+    </div>
 
-  {#each followee.topics as topic}
-    <Tag tagName="li">{topicTitle(topic)}</Tag>
-  {/each}
-</TagsList>
+    {#each followee.topics as topic}
+      <Tag tagName="li">{topicTitle(topic)}</Tag>
+    {/each}
+  </TagsList>
+</TestIdWrapper>
+
+<style lang="scss">
+  .neuron {
+    align-items: center;
+    display: inline-flex;
+
+    .copy {
+      align-items: center;
+      display: inline-flex;
+      // Make sure the icon doesn't increase the line height.
+      max-height: 0;
+    }
+  }
+</style>

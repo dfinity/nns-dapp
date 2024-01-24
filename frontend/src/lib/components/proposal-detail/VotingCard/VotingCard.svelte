@@ -13,6 +13,7 @@
   import VotedNeuronList from "$lib/components/proposal-detail/VotingCard/VotedNeuronList.svelte";
   import IneligibleNeuronList from "$lib/components/proposal-detail/VotingCard/IneligibleNeuronList.svelte";
   import VotableNeuronList from "$lib/components/proposal-detail/VotingCard/VotableNeuronList.svelte";
+  import StakeNeuronToVote from "$lib/components/proposal-detail/VotingCard/StakeNeuronToVote.svelte";
 
   export let hasNeurons: boolean;
   export let visible: boolean;
@@ -30,11 +31,11 @@
     data-tid="voting-card-component"
   >
     <SignInGuard>
+      {#if visible}
+        <VotingConfirmationToolbar {voteRegistration} on:nnsConfirm />
+      {/if}
       {#if hasNeurons}
         {#if neuronsReady}
-          {#if visible}
-            <VotingConfirmationToolbar {voteRegistration} on:nnsConfirm />
-          {/if}
           <div class="neuron-groups" data-tid="voting-neuron-select">
             <VotableNeuronList {voteRegistration} />
             <VotedNeuronList {neuronsVotedForProposal} />
@@ -48,6 +49,8 @@
             <SpinnerText>{$i18n.proposal_detail.loading_neurons}</SpinnerText>
           </div>
         {/if}
+      {:else}
+        <StakeNeuronToVote />
       {/if}
       <span slot="signin-cta">{$i18n.proposal_detail.sign_in}</span>
     </SignInGuard>

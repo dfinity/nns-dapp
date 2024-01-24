@@ -17,6 +17,7 @@ describe("SnsActiveDisbursementsModal", () => {
         subaccount: [],
       },
     ],
+    finalize_disbursement_timestamp_seconds: [],
   };
 
   const renderComponent = async (neuron: SnsNeuron) => {

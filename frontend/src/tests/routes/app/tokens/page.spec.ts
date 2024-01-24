@@ -2,6 +2,7 @@ import * as ckBTCMinterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as snsLedgerApi from "$lib/api/sns-ledger.api";
 import * as walletLedgerApi from "$lib/api/wallet-ledger.api";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
@@ -590,16 +591,25 @@ describe("Tokens route", () => {
         });
       });
 
-      it("should click on a row should trigger a login", async () => {
+      it("should render an anchor tag with href", async () => {
         const po = await renderPage();
 
         const tablePo = po.getSignInTokensPagePo().getTokensTablePo();
 
-        expect(mockAuthClient.login).toBeCalledTimes(0);
-        const rows = await tablePo.getRows();
-        await rows[0].click();
+        const icpRow = tablePo.getRowByName("Internet Computer");
+        expect(await icpRow.getHref()).toEqual(
+          `/accounts/?u=${OWN_CANISTER_ID_TEXT}`
+        );
 
-        expect(mockAuthClient.login).toBeCalledTimes(1);
+        const snsRow = tablePo.getRowByName("Tetris");
+        expect(await snsRow.getHref()).toEqual(
+          `/wallet/?u=${rootCanisterIdTetris.toText()}`
+        );
+
+        const ckEthRow = tablePo.getRowByName("ckETH");
+        expect(await ckEthRow.getHref()).toEqual(
+          `/wallet/?u=${CKETH_UNIVERSE_CANISTER_ID.toText()}`
+        );
       });
     });
   });

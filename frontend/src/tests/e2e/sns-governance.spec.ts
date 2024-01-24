@@ -1,50 +1,52 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
+import {
+  setFeatureFlag,
+  signInWithNewUser,
+  step,
+} from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 test("Test SNS governance", async ({ page, context }) => {
-  await page.goto("/accounts");
-  await expect(page).toHaveTitle("My ICP Tokens / NNS Dapp");
+  await page.goto("/");
+  await expect(page).toHaveTitle("My Tokens / NNS Dapp");
+  // TODO: GIX-1985 Remove this once the feature flag is enabled by default
+  await setFeatureFlag({ page, featureFlag: "ENABLE_MY_TOKENS", value: true });
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
   const appPo = new AppPo(pageElement);
 
-  // Open universes selector
-  await appPo.openUniverses();
-
   step("Navigate to SNS universe");
-  const snsUniverseCards = await appPo
-    .getSelectUniverseListPo()
-    .getSnsUniverseCards();
-  expect(snsUniverseCards.length).toBeGreaterThanOrEqual(1);
-  const snsUniverseCard = snsUniverseCards[0];
-  const snsProjectName = await snsUniverseCard.getName();
+  const snsUniverseRows = await appPo
+    .getTokensPo()
+    .getTokensPagePo()
+    .getTokensTable()
+    .getSnsRows();
+  expect(snsUniverseRows.length).toBeGreaterThanOrEqual(1);
+  const snsUniverseRow = snsUniverseRows[0];
+  const snsProjectName = await snsUniverseRow.getProjectName();
 
   // Our test SNS project names are always 5 uppercase letters.
   expect(snsProjectName).toMatch(/[A-Z]{5}/);
 
-  await snsUniverseCard.click();
-
   step("Acquire tokens");
-  await appPo.getSnsTokens({ amount: 20, name: snsProjectName });
+  const askedAmount = 20;
+  await appPo.getSnsTokens({ amount: askedAmount, name: snsProjectName });
 
-  expect(
-    await appPo
-      .getAccountsPo()
-      .getSnsAccountsPo()
-      .getMainAccountCardPo()
-      .getBalance()
-  ).toEqual("20.00");
+  expect(await snsUniverseRow.getBalanceNumber()).toEqual(askedAmount);
 
   step("Stake a neuron");
   await appPo.goToNeurons();
+
+  await appPo.openUniverses();
+  await appPo.getSelectUniverseListPo().clickOnSnsUniverse(snsProjectName);
+
   await appPo.getNeuronsPo().getSnsNeuronsPo().waitForContentLoaded();
   expect(
     await appPo.getNeuronsPo().getSnsNeuronsPo().getEmptyMessage()
   ).toEqual(
-    `You have no ${snsProjectName} neurons. Stake a neuron to vote on proposals for ${snsProjectName}.`
+    `You have no ${snsProjectName} neurons. Create a neuron by staking ${snsProjectName} to vote on ${snsProjectName} proposals.`
   );
 
   const stake = 5;

@@ -167,7 +167,6 @@ interface I18nAuth {
   title: string;
   on_chain: string;
   wallet: string;
-  stake: string;
   earn: string;
   launchpad: string;
   ic_logo: string;
@@ -195,12 +194,13 @@ interface I18nAccounts {
   ckbtc_transaction_description: string;
   ckbtc_to_btc_transaction_description: string;
   add_account: string;
-  new_linked_title: string;
+  new_account_title: string;
   new_linked_subtitle: string;
   attach_hardware_title: string;
   attach_hardware_subtitle: string;
   attach_hardware_name_placeholder: string;
   attach_hardware_enter_name: string;
+  attach_hardware_description: string;
   attach_hardware_show_neurons: string;
   attach_hardware_neurons_text: string;
   attach_hardware_neurons_add: string;
@@ -208,13 +208,10 @@ interface I18nAccounts {
   connect_hardware_wallet: string;
   connect_hardware_wallet_text: string;
   show_info_hardware_wallet: string;
-  attach_wallet: string;
   edit_name: string;
   new_linked_account_enter_name: string;
   new_linked_account_placeholder: string;
-  subAccount: string;
   hardwareWallet: string;
-  withdrawalAccount: string;
   select_source: string;
   select_destination: string;
   address: string;
@@ -284,7 +281,7 @@ interface I18nNeuron_types {
 interface I18nNeurons {
   title: string;
   text: string;
-  stake_neurons: string;
+  stake_token: string;
   merge_neurons: string;
   merge_neurons_modal_title: string;
   merge_neurons_modal_confirm: string;
@@ -304,7 +301,7 @@ interface I18nNeurons {
   your_principal: string;
   confirm_dissolve_delay: string;
   follow_neurons_screen: string;
-  stake_neuron: string;
+  stake_icp: string;
   source: string;
   transaction_fee: string;
   current_balance: string;
@@ -328,6 +325,7 @@ interface I18nNeurons {
   dissolve_delay_title: string;
   no_delay: string;
   dissolve_delay_description: string;
+  min_dissolve_delay_description: string;
   dissolve_delay_label: string;
   dissolve_delay_placeholder: string;
   dissolve_delay_below_minimum: string;
@@ -420,6 +418,7 @@ interface I18nVoting {
   title: string;
   text: string;
   topics: string;
+  types: string;
   rewards: string;
   status: string;
   hide_unavailable_proposals: string;
@@ -609,6 +608,9 @@ interface I18nProposal_detail__vote {
   super_majority_decision_intro: string;
   cast_votes: string;
   cast_votes_needs: string;
+  no_neurons: string;
+  no_neurons_description: string;
+  stake_neuron: string;
 }
 
 interface I18nProposal_detail__ineligible {
@@ -836,7 +838,7 @@ interface I18nSns_neurons {
   sns_neuron_destination: string;
   stake_sns_neuron_success: string;
   token_stake: string;
-  dissolve_delay_description: string;
+  min_dissolve_delay_description: string;
 }
 
 interface I18nTime {
@@ -929,7 +931,6 @@ interface I18nError__sns {
   sns_stake: string;
   sns_increase_stake: string;
   sns_register_vote: string;
-  sns_neuron_account: string;
   sns_dissolve_delay_action: string;
   project_not_found: string;
   project_not_open: string;
@@ -959,7 +960,6 @@ interface I18nError__sns {
   sns_add_hotkey: string;
   sns_stake_maturity: string;
   sns_disburse_maturity: string;
-  sns_amount_not_enough_stake_neuron: string;
   sns_reload_no_universe: string;
 }
 
@@ -1059,8 +1059,6 @@ interface I18nCkbtc {
   test_bitcoin: string;
   btc: string;
   ckbtc_balance_updated: string;
-  step_initialization: string;
-  step_locking_ckbtc: string;
   step_approve_transfer: string;
   step_send_btc: string;
   step_reload: string;
@@ -1075,7 +1073,6 @@ interface I18nCkbtc {
   bitcoin_address_title: string;
   refresh_balance: string;
   confirmations: string;
-  warning_transaction_failed: string;
   warning_transaction_description: string;
   checking_incomplete_btc_transfers: string;
   all_btc_transfers_complete: string;
@@ -1101,7 +1098,6 @@ interface I18nError__ckbtc {
   get_btc_no_universe: string;
   update_balance: string;
   no_new_confirmed_btc: string;
-  withdrawal_account: string;
   retrieve_btc: string;
   malformed_address: string;
   amount_too_low: string;

@@ -5,11 +5,13 @@
 //!
 //! This code also stores virtual memory IDs and other memory functions.
 use core::borrow::Borrow;
+use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
 use ic_cdk::println;
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use std::rc::Rc;
 
+pub mod schemas;
 #[cfg(test)]
 pub mod tests;
 
@@ -82,6 +84,34 @@ impl Partitions {
     /// returns to the original state.
     pub fn into_memory(self) -> DefaultMemoryImpl {
         self.memory
+    }
+
+    /// Writes, growing the memory if necessary.
+    pub fn growing_write(&self, memory_id: MemoryId, offset: u64, bytes: &[u8]) {
+        let memory = self.get(memory_id);
+        let min_pages: u64 = u64::try_from(bytes.len())
+            .expect("Buffer for growing_write is longer than 2**64.")
+            .saturating_add(offset)
+            .div_ceil(WASM_PAGE_SIZE_IN_BYTES as u64);
+        let current_pages = memory.size();
+        if current_pages < min_pages {
+            memory.grow(min_pages - current_pages);
+        }
+        memory.write(offset, bytes)
+    }
+
+    /// Reads the exact number of bytes needed to fill `buffer`.
+    pub fn read_exact(&self, memory_id: MemoryId, offset: u64, buffer: &mut [u8]) -> Result<(), String> {
+        let memory = self.get(memory_id);
+        let bytes_in_memory =
+            memory.size() * u64::try_from(WASM_PAGE_SIZE_IN_BYTES).expect("Wasm page size is too large");
+        if offset.saturating_add(u64::try_from(buffer.len()).expect("Buffer for read_exact is longer than 2**64."))
+            > bytes_in_memory
+        {
+            return Err(format!("Out of bounds memory access: Failed to read exactly {} bytes at offset {} as memory size is only {} bytes.", buffer.len(), offset, bytes_in_memory));
+        }
+        memory.read(offset, buffer);
+        Ok(())
     }
 }
 

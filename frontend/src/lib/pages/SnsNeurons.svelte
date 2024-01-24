@@ -86,7 +86,7 @@
     <p data-tid="community-fund-description" class="bottom-margin">
       <Html text={$i18n.sns_neuron_detail.community_fund_section_description} />
     </p>
-    <div class="card-grid">
+    <div class="card-grid" data-tid="fund-neurons-grid">
       {#each $sortedSnsCFNeuronsStore as neuron (getSnsNeuronIdAsHexString(neuron))}
         <SnsNeuronCard
           {neuron}
@@ -101,6 +101,7 @@
     <EmptyMessage
       >{replacePlaceholders($i18n.sns_neurons.text, {
         $project: summary.metadata.name,
+        $tokenSymbol: summary.token.symbol,
       })}</EmptyMessage
     >
   {/if}

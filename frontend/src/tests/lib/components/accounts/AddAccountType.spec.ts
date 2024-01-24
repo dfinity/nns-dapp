@@ -22,7 +22,7 @@ describe("AddAccountType", () => {
       props,
     });
 
-    expect(queryByText(en.accounts.new_linked_title)).toBeInTheDocument();
+    expect(queryByText(en.accounts.new_account_title)).toBeInTheDocument();
 
     expect(queryByText(en.accounts.attach_hardware_title)).toBeInTheDocument();
   });

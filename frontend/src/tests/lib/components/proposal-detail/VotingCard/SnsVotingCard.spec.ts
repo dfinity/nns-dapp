@@ -96,6 +96,8 @@ describe("SnsVotingCard", () => {
         id: [2],
         state: NeuronState.Locked,
         createdTimestampSeconds: neuronCreatedAt,
+        // Should also work with NF neurons the same way as with own neurons
+        sourceNnsNeuronId: 12345n,
       }),
       permissions: permissionsWithTypeVote,
     },
@@ -144,7 +146,7 @@ describe("SnsVotingCard", () => {
     });
     const { getByTestId } = renderVotingCard();
 
-    expect(() => expect(getByTestId("voting-confirmation-toolbar"))).toThrow();
+    expect(getByTestId("voting-confirmation-toolbar")).toBeInTheDocument();
   });
 
   it("should be visible if there are some not-voted-neurons", async () => {

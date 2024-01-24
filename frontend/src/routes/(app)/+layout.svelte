@@ -53,7 +53,7 @@
   <slot />
 {/if}
 
-<Warnings ckBTCWarnings testEnvironmentWarning />
+<Warnings testEnvironmentWarning />
 
 <Toasts />
 <BusyScreen />

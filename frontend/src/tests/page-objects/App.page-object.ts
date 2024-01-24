@@ -15,6 +15,8 @@ import { SignInPo } from "$tests/page-objects/SignIn.page-object";
 import { WalletPo } from "$tests/page-objects/Wallet.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { expect } from "@playwright/test";
+import { SignInAccountsPo } from "./SignInAccounts.page-object";
+import { TokensRoutePo } from "./TokensRoute.page-object";
 
 export class AppPo extends BasePageObject {
   getSignInPo(): SignInPo {
@@ -27,6 +29,14 @@ export class AppPo extends BasePageObject {
 
   getAccountsPo(): AccountsPo {
     return AccountsPo.under(this.root);
+  }
+
+  getSignInAccountsPo(): SignInAccountsPo {
+    return SignInAccountsPo.under(this.root);
+  }
+
+  getTokensPo(): TokensRoutePo {
+    return TokensRoutePo.under(this.root);
   }
 
   getWalletPo(): WalletPo {
@@ -94,6 +104,7 @@ export class AppPo extends BasePageObject {
     await this.getBackdropPo().waitForAbsent();
   }
 
+  // GIX-2080: Rename to "goToTokens"
   async goToAccounts(): Promise<void> {
     await this.openMenu();
     await this.getMenuItemsPo().clickAccounts();
@@ -149,9 +160,14 @@ export class AppPo extends BasePageObject {
     await this.closeMenu();
   }
 
-  async goBack(): Promise<void> {
+  async goBack(
+    { waitAbsent }: { waitAbsent: boolean } = { waitAbsent: true }
+  ): Promise<void> {
     await this.getButton("back").click();
-    await this.getButton("back").waitForAbsent();
+    // Not all the times that the back is clicked the button disappears. For example, from ICP Wallet back to ICP Accounts.
+    if (waitAbsent) {
+      await this.getButton("back").waitForAbsent();
+    }
   }
 
   waitForNotBusy(): Promise<void> {

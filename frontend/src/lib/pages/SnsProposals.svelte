@@ -64,9 +64,13 @@
     // Once we have the initial filters, we load the proposals.
     if (
       nonNullish(currentProjectCanisterId) &&
-      nonNullish(filters[currentProjectCanisterId.toText()])
+      nonNullish(filters[currentProjectCanisterId.toText()]) &&
+      nonNullish($nsFunctionsStore)
     ) {
-      await loadSnsProposals({ rootCanisterId: currentProjectCanisterId });
+      await loadSnsProposals({
+        rootCanisterId: currentProjectCanisterId,
+        snsFunctions: $nsFunctionsStore,
+      });
     }
   };
 
@@ -74,13 +78,17 @@
   // TODO(e2e): cover this with e2e tests.
   $: $snsOnlyProjectStore,
     $snsFiltersStore,
+    $nsFunctionsStore,
     (() => fetchProposals($snsFiltersStore))();
 
   let loadingNextPage = false;
   let loadNextPage: () => void;
   $: loadNextPage = async () => {
     const selectedProjectCanisterId = $snsOnlyProjectStore;
-    if (selectedProjectCanisterId !== undefined) {
+    if (
+      selectedProjectCanisterId !== undefined &&
+      nonNullish($nsFunctionsStore)
+    ) {
       const beforeProposalId = nonNullish(currentProjectCanisterId)
         ? lastProposalId(
             $snsProposalsStore[currentProjectCanisterId.toText()]?.proposals ??
@@ -91,6 +99,7 @@
       loadingNextPage = true;
       await loadSnsProposals({
         rootCanisterId: selectedProjectCanisterId,
+        snsFunctions: $nsFunctionsStore,
         beforeProposalId,
       });
       loadingNextPage = false;

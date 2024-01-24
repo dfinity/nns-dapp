@@ -45,14 +45,14 @@ describe("AddAccountModal", () => {
   const shouldNavigateSubaccountStep = async ({
     queryByText,
   }: RenderResult<SvelteComponent>) => {
-    const accountCard = queryByText(en.accounts.new_linked_title);
+    const accountCard = queryByText(en.accounts.new_account_title);
     expect(accountCard).not.toBeNull();
 
     accountCard &&
       accountCard.parentElement &&
       (await fireEvent.click(accountCard.parentElement));
 
-    expect(queryByText(en.accounts.new_linked_title)).not.toBeNull();
+    expect(queryByText(en.accounts.new_account_title)).not.toBeNull();
   };
 
   it("should be able to select new subaccount ", async () => {
@@ -85,7 +85,7 @@ describe("AddAccountModal", () => {
       component: AddAccountModal,
     });
 
-    const accountCard = queryByText(en.accounts.new_linked_title);
+    const accountCard = queryByText(en.accounts.new_account_title);
     expect(accountCard).not.toBeNull();
 
     accountCard &&
