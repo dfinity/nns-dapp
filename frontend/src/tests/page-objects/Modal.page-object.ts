@@ -15,4 +15,3 @@ export class ModalPo extends BasePageObject {
     return this.root.waitForAbsent();
   }
 }
-
