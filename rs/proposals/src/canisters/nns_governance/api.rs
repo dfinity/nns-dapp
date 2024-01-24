@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-12-13_23-01/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-01-09_23-01+new-p2p/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(clippy::missing_docs_in_private_items)]
 #![allow(non_camel_case_types)]
@@ -477,20 +477,6 @@ pub struct MakingSnsProposal {
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
-pub struct SeedAccount {
-    pub error_count: u64,
-    pub account_id: String,
-    pub neuron_type: i32,
-    pub tag_end_timestamp_seconds: Option<u64>,
-    pub tag_start_timestamp_seconds: Option<u64>,
-}
-
-#[derive(Serialize, CandidType, Deserialize)]
-pub struct SeedAccounts {
-    pub accounts: Vec<SeedAccount>,
-}
-
-#[derive(Serialize, CandidType, Deserialize)]
 pub struct MostRecentMonthlyNodeProviderRewards {
     pub timestamp: u64,
     pub rewards: Vec<RewardNodeProvider>,
@@ -785,7 +771,6 @@ pub struct Neuron {
 pub struct Governance {
     pub default_followees: Vec<(i32, Followees)>,
     pub making_sns_proposal: Option<MakingSnsProposal>,
-    pub seed_accounts: Option<SeedAccounts>,
     pub most_recent_monthly_node_provider_rewards: Option<MostRecentMonthlyNodeProviderRewards>,
     pub maturity_modulation_last_updated_at_timestamp_seconds: Option<u64>,
     pub wait_for_quiet_threshold_seconds: u64,
