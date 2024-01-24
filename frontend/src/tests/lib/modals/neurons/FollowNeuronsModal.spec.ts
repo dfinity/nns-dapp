@@ -31,23 +31,35 @@ describe("FollowNeuronsModal", () => {
     fillNeuronStore();
   });
 
-  const renderComponent = () => {
-    const { container } = render(FollowNeuronsModal, {
+  const renderComponent = ({ onClose }: { onClose?: () => void }) => {
+    const { container, component } = render(FollowNeuronsModal, {
       props: {
         neuronId: neuronFollowing.neuronId,
       },
     });
+    if (onClose) {
+      component.$on("nnsClose", onClose);
+    }
 
     return FollowNeuronsModalPo.under(new JestPageObjectElement(container));
   };
 
   it("renders title", async () => {
-    const po = renderComponent();
+    const po = renderComponent({});
     expect(await po.getModalTitle()).toBe("Follow neurons");
   });
 
+  it("close button closes modal", async () => {
+    const onClose = vi.fn();
+    const po = renderComponent({ onClose });
+
+    expect(onClose).not.toBeCalled();
+    await po.clickCloseButton();
+    expect(onClose).toBeCalledTimes(1);
+  });
+
   it("renders badge with numbers of followees on the topic", async () => {
-    const po = renderComponent();
+    const po = renderComponent({});
     expect(
       await po.getEditFollowNeuronsPo().getBadgeNumber(Topic.ExchangeRate)
     ).toBe(2);
