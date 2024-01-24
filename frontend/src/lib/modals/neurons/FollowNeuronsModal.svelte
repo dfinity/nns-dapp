@@ -7,7 +7,11 @@
   export let neuronId: NeuronId;
 </script>
 
-<Modal on:nnsClose --modal-content-overflow-y="scroll">
+<Modal
+  testId="follow-neurons-modal-component"
+  on:nnsClose
+  --modal-content-overflow-y="scroll"
+>
   <svelte:fragment slot="title"
     >{$i18n.neurons.follow_neurons_screen}</svelte:fragment
   >
