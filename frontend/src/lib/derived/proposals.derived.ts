@@ -8,10 +8,6 @@ import {
   proposalsFiltersStore,
   proposalsStore,
 } from "$lib/stores/proposals.store";
-import {
-  voteRegistrationStore,
-  type VoteRegistrationStoreMap,
-} from "$lib/stores/vote-registration.store";
 import { hideProposal } from "$lib/utils/proposals.utils";
 import type { Identity } from "@dfinity/agent";
 import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
@@ -49,13 +45,11 @@ const hide = ({
   proposalInfo,
   filters,
   neurons,
-  registrations,
   identity,
 }: {
   proposalInfo: ProposalInfo;
   filters: ProposalsFiltersStore;
   neurons: NeuronInfo[];
-  registrations: VoteRegistrationStoreMap;
   identity: Identity | undefined | null;
 }): boolean =>
   hideProposal({
@@ -63,14 +57,7 @@ const hide = ({
     proposalInfo,
     neurons,
     identity,
-  }) ||
-  // hide proposals that are currently in the "complete" voting state
-  Object.values(registrations).find((votings) => {
-    return votings.find(
-      ({ proposalIdString, status }) =>
-        `${proposalInfo.id}` === proposalIdString && status === "complete"
-    );
-  }) !== undefined;
+  });
 
 export interface UIProposalsStore {
   proposals: (ProposalInfo & { hidden: boolean })[];
@@ -78,27 +65,14 @@ export interface UIProposalsStore {
 }
 
 export const uiProposals: Readable<UIProposalsStore> = derived(
-  [
-    sortedProposals,
-    proposalsFiltersStore,
-    definedNeuronsStore,
-    voteRegistrationStore,
-    authStore,
-  ],
-  ([
-    { proposals, certified },
-    filters,
-    neurons,
-    { registrations },
-    { identity },
-  ]) => ({
+  [sortedProposals, proposalsFiltersStore, definedNeuronsStore, authStore],
+  ([{ proposals, certified }, filters, neurons, { identity }]) => ({
     proposals: proposals.map((proposalInfo) => ({
       ...proposalInfo,
       hidden: hide({
         proposalInfo,
         filters,
         neurons,
-        registrations,
         identity,
       }),
     })),
