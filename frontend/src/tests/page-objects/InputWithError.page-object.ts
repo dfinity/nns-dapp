@@ -44,4 +44,8 @@ export class InputWithErrorPo extends SimpleBasePageObject {
       ? (await this.getText("input-error-message")).trim()
       : null;
   }
+
+  async hasErrorOutline(): Promise<boolean> {
+    return (await this.root.getClasses()).includes("error");
+  }
 }
