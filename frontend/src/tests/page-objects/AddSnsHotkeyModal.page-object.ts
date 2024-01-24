@@ -1,7 +1,7 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { ModalPo } from "$tests/page-objects/Modal.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class AddSnsHotkeyModalPo extends BasePageObject {
+export class AddSnsHotkeyModalPo extends ModalPo {
   private static readonly TID = "add-hotkey-neuron-modal";
 
   static under(element: PageObjectElement): AddSnsHotkeyModalPo {

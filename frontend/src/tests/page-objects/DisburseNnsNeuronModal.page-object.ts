@@ -1,9 +1,9 @@
 import { ConfirmDisburseNeuronPo } from "$tests/page-objects/ConfirmDisburseNeuron.page-object";
+import { ModalPo } from "$tests/page-objects/Modal.page-object";
 import { NnsDestinationAddressPo } from "$tests/page-objects/NnsDestinationAddress.page-object";
-import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class DisburseNnsNeuronModalPo extends BasePageObject {
+export class DisburseNnsNeuronModalPo extends ModalPo {
   private static readonly TID = "disburse-nns-neuron-modal-component";
 
   static under(element: PageObjectElement): DisburseNnsNeuronModalPo {
