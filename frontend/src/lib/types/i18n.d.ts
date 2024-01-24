@@ -325,6 +325,7 @@ interface I18nNeurons {
   dissolve_delay_title: string;
   no_delay: string;
   dissolve_delay_description: string;
+  min_dissolve_delay_description: string;
   dissolve_delay_label: string;
   dissolve_delay_placeholder: string;
   dissolve_delay_below_minimum: string;
@@ -607,6 +608,9 @@ interface I18nProposal_detail__vote {
   super_majority_decision_intro: string;
   cast_votes: string;
   cast_votes_needs: string;
+  no_neurons: string;
+  no_neurons_description: string;
+  stake_neuron: string;
 }
 
 interface I18nProposal_detail__ineligible {
@@ -834,7 +838,7 @@ interface I18nSns_neurons {
   sns_neuron_destination: string;
   stake_sns_neuron_success: string;
   token_stake: string;
-  dissolve_delay_description: string;
+  min_dissolve_delay_description: string;
 }
 
 interface I18nTime {

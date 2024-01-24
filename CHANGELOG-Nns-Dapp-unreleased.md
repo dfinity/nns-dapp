@@ -1,3 +1,4 @@
+
 # Unreleased changelog NNS Dapp
 
 All notable changes to the NNS Dapp will be documented in this file.
@@ -14,6 +15,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* New block "Stake a neuron" on proposal details page.
 * Getter and setter of partition schema label.
 
 #### Changed
@@ -27,6 +29,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Removed
 
 * ckBTC withdrawal account.
+* Don't show the red error outline on dissolve delay input when the dissolve delay is not enough to have voting power.
 
 #### Fixed
 

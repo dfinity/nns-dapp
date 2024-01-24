@@ -146,7 +146,7 @@ describe("SnsVotingCard", () => {
     });
     const { getByTestId } = renderVotingCard();
 
-    expect(() => expect(getByTestId("voting-confirmation-toolbar"))).toThrow();
+    expect(getByTestId("voting-confirmation-toolbar")).toBeInTheDocument();
   });
 
   it("should be visible if there are some not-voted-neurons", async () => {

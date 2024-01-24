@@ -5,6 +5,7 @@ import {
   SECONDS_IN_HALF_YEAR,
 } from "$lib/constants/constants";
 import en from "$tests/mocks/i18n.mock";
+import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { SetDissolveDelayPo } from "$tests/page-objects/SetDissolveDelay.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronState } from "@dfinity/nns";
@@ -123,22 +124,25 @@ describe("SetDissolveDelay", () => {
 
       expect(await po.getUpdateButtonPo().isDisabled()).toBe(true);
       expect(await po.getErrorMessage()).toBe(null);
+      expect(await po.hasErrorOutline()).toBe(false);
 
       await po.enterDays(neuronDays);
       expect(await po.getErrorMessage()).toBe(
         en.neurons.dissolve_delay_below_current
       );
+      expect(await po.hasErrorOutline()).toBe(true);
       expect(await po.getUpdateButtonPo().isDisabled()).toBe(true);
 
       await po.enterDays(neuronDays - 1.5);
       expect(await po.getErrorMessage()).toBe(
         en.neurons.dissolve_delay_below_current
       );
+      expect(await po.hasErrorOutline()).toBe(true);
       expect(await po.getUpdateButtonPo().isDisabled()).toBe(true);
 
       await po.enterDays(neuronDays + 1);
       expect(await po.getErrorMessage()).toBe(null);
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(await po.hasErrorOutline()).toBe(false);
       expect(await po.getUpdateButtonPo().isDisabled()).toBe(false);
     });
 
@@ -156,16 +160,21 @@ describe("SetDissolveDelay", () => {
 
       expect(await po.getUpdateButtonPo().isDisabled()).toBe(true);
       expect(await po.getErrorMessage()).toBe(null);
+      expect(await po.hasErrorOutline()).toBe(false);
 
       await po.enterDays(projectMinDays - 1);
       expect(await po.getUpdateButtonPo().isDisabled()).toBe(false);
       expect(await po.getErrorMessage()).toBe(
         en.neurons.dissolve_delay_below_minimum
       );
+      // We don't show the error outline because the submit button is enabled.
+      // The message is only treated as a warning.
+      expect(await po.hasErrorOutline()).toBe(false);
 
       await po.enterDays(projectMinDays);
       expect(await po.getUpdateButtonPo().isDisabled()).toBe(false);
       expect(await po.getErrorMessage()).toBe(null);
+      expect(await po.hasErrorOutline()).toBe(false);
     });
 
     it("when text input above max project delay", async () => {
@@ -178,11 +187,13 @@ describe("SetDissolveDelay", () => {
       await po.enterDays(projectMaxDays);
       expect(await po.getUpdateButtonPo().isDisabled()).toBe(false);
       expect(await po.getErrorMessage()).toBe(null);
+      expect(await po.hasErrorOutline()).toBe(false);
       await po.enterDays(projectMaxDays + 1);
       expect(await po.getUpdateButtonPo().isDisabled()).toBe(true);
       expect(await po.getErrorMessage()).toBe(
         en.neurons.dissolve_delay_above_maximum
       );
+      expect(await po.hasErrorOutline()).toBe(true);
     });
 
     it("hide error message on min/max click", async () => {
@@ -200,17 +211,21 @@ describe("SetDissolveDelay", () => {
       expect(await po.getErrorMessage()).toBe(
         en.neurons.dissolve_delay_below_minimum
       );
+      expect(await po.hasErrorOutline()).toBe(false);
 
       await po.clickMin();
       expect(await po.getErrorMessage()).toBe(null);
+      expect(await po.hasErrorOutline()).toBe(false);
 
       await po.enterDays(maxProjectDelayInSeconds + 1);
       expect(await po.getErrorMessage()).toBe(
         en.neurons.dissolve_delay_above_maximum
       );
+      expect(await po.hasErrorOutline()).toBe(true);
 
       await po.clickMax();
       expect(await po.getErrorMessage()).toBe(null);
+      expect(await po.hasErrorOutline()).toBe(false);
     });
   });
 
@@ -226,20 +241,24 @@ describe("SetDissolveDelay", () => {
     expect(await po.getProgressBarSeconds()).toBe(1001 * SECONDS_IN_DAY);
 
     expect(await po.getErrorMessage()).toBe(null);
+    expect(await po.hasErrorOutline()).toBe(false);
     expect(await po.getUpdateButtonPo().isDisabled()).toBe(false);
 
     await po.enterDays(1002);
     expect(await po.getErrorMessage()).toBe(null);
+    expect(await po.hasErrorOutline()).toBe(false);
     expect(await po.getUpdateButtonPo().isDisabled()).toBe(false);
 
     await po.enterDays(1000);
     expect(await po.getErrorMessage()).toBe(
       en.neurons.dissolve_delay_below_current
     );
+    expect(await po.hasErrorOutline()).toBe(true);
     expect(await po.getUpdateButtonPo().isDisabled()).toBe(true);
 
     await po.enterDays(1001);
     expect(await po.getErrorMessage()).toBe(null);
+    expect(await po.hasErrorOutline()).toBe(false);
     expect(await po.getUpdateButtonPo().isDisabled()).toBe(false);
   });
 
@@ -337,4 +356,33 @@ describe("SetDissolveDelay", () => {
       );
     });
   }
+
+  it("should render token symbol in description", async () => {
+    const symbol = "FOX";
+    const po = renderComponent({
+      neuronStake: TokenAmountV2.fromUlps({
+        amount: 200_000_000n,
+        token: {
+          ...mockSnsToken,
+          symbol,
+        },
+      }),
+    });
+
+    expect(await po.getDescription()).toContain(
+      `and ${symbol} to be available again`
+    );
+  });
+
+  it("should render min dissolve delay description", async () => {
+    const minDissolveDelayDescription =
+      "Voting power is given to neurons with a dissolve delay of at least 1 month.";
+    const po = renderComponent({
+      minDissolveDelayDescription,
+    });
+
+    expect(await po.getMinDissolveDelayDescription()).toBe(
+      minDissolveDelayDescription
+    );
+  });
 });
