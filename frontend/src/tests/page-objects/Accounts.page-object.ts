@@ -83,7 +83,7 @@ export class AccountsPo extends BasePageObject {
     const receiveModalPo = this.getReceiveModalPo();
     await receiveModalPo.waitFor();
     const address = await receiveModalPo.getAddress();
-    await receiveModalPo.close();
+    await receiveModalPo.closeModal();
     return address;
   }
 }
