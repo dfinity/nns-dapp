@@ -17,6 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * New block "Stake a neuron" on proposal details page.
 * Getter and setter of partition schema label.
+* Close button at the bottom of follow neurons modal.
 
 #### Changed
 
