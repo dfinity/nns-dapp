@@ -1,17 +1,16 @@
 import { CollapsiblePo } from "$tests/page-objects/Collapsible.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import type { Topic } from "@dfinity/nns";
 
 export class FollowTopicSectionPo extends BasePageObject {
-  private readonly topic: Topic;
+  private readonly topic: number;
 
   constructor({
     element,
     topic,
   }: {
     element: PageObjectElement;
-    topic: Topic;
+    topic: number;
   }) {
     super(element);
     this.topic = topic;
@@ -22,7 +21,7 @@ export class FollowTopicSectionPo extends BasePageObject {
     topic,
   }: {
     element: PageObjectElement;
-    topic: Topic;
+    topic: number;
   }): FollowTopicSectionPo {
     return new FollowTopicSectionPo({
       element: element.byTestId(`follow-topic-${topic}-section`),
