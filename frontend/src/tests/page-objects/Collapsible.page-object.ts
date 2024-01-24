@@ -5,9 +5,9 @@ export class CollapsiblePo extends BasePageObject {
   static under({
     element,
     testId,
-  }:{
-    element: PageObjectElement,
-    testId: string,
+  }: {
+    element: PageObjectElement;
+    testId: string;
   }): CollapsiblePo {
     return new CollapsiblePo(element.byTestId(testId));
   }
@@ -17,8 +17,9 @@ export class CollapsiblePo extends BasePageObject {
   }
 
   async isExpanded(): Promise<boolean> {
-    const classes = await this.root.byTestId("collapsible-content").getClasses();
+    const classes = await this.root
+      .byTestId("collapsible-content")
+      .getClasses();
     return classes.includes("expanded");
   }
 }
-
