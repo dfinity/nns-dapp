@@ -80,10 +80,10 @@ describe("VotingCard", () => {
     vi.resetAllMocks();
   });
 
-  it("should be hidden if there is no not-voted-neurons", async () => {
+  it("should not be hidden if there is no not-voted-neurons", async () => {
     neuronsStore.setNeurons({ neurons: [], certified: true });
     const { getByTestId } = renderVotingCard();
-    expect(() => expect(getByTestId("voting-confirmation-toolbar"))).toThrow();
+    expect(getByTestId("voting-confirmation-toolbar")).toBeInTheDocument();
   });
 
   it("should be visible if there are some not-voted-neurons", async () => {
