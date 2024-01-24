@@ -1,5 +1,5 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { expect, type Locator, type Page } from "@playwright/test";
+import type { Locator, Page } from "@playwright/test";
 
 export class PlaywrightPageObjectElement implements PageObjectElement {
   readonly locator: Locator;
@@ -104,7 +104,7 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
   }
 
   waitForAbsent(): Promise<void> {
-    return expect(this.locator).toHaveCount(0);
+    return this.locator.waitFor({ state: "detached" });
   }
 
   click(): Promise<void> {
