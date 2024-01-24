@@ -22,7 +22,7 @@ export class FollowTopicSectionPo extends BasePageObject {
     topic,
   }: {
     element: PageObjectElement;
-    topic: Topic;
+    topic: number;
   }): FollowTopicSectionPo {
     return new FollowTopicSectionPo({
       element: element.byTestId(`follow-topic-${topic}-section`),
