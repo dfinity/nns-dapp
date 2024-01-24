@@ -15,8 +15,8 @@ describe("FollowSnsNeuronsModal", () => {
   const rootCanisterId = mockPrincipal;
   const reload = vi.fn();
 
-  const renderComponent = () => {
-    const { container } = renderSelectedSnsNeuronContext({
+  const renderComponent = ({ onClose }: { onClose?: () => void }) => {
+    const { container, component } = renderSelectedSnsNeuronContext({
       Component: FollowSnsNeuronsModal,
       reload,
       neuron,
@@ -25,6 +25,9 @@ describe("FollowSnsNeuronsModal", () => {
         neuron,
       },
     });
+    if (onClose) {
+      component.$on("nnsClose", onClose);
+    }
     return FollowSnsNeuronsModalPo.under(new JestPageObjectElement(container));
   };
 
@@ -33,12 +36,21 @@ describe("FollowSnsNeuronsModal", () => {
   });
 
   it("renders title", async () => {
-    const po = renderComponent();
+    const po = renderComponent({});
     expect(await po.getModalTitle()).toBe("Follow neurons");
   });
 
+  it("close button closes modal", async () => {
+    const onClose = vi.fn();
+    const po = renderComponent({ onClose });
+
+    expect(onClose).not.toBeCalled();
+    await po.clickCloseButton();
+    expect(onClose).toBeCalledTimes(1);
+  });
+
   it("renders spinner if no functions to follow", async () => {
-    const po = renderComponent();
+    const po = renderComponent({});
     expect(await po.hasSpinner()).toBe(true);
   });
 
@@ -61,7 +73,7 @@ describe("FollowSnsNeuronsModal", () => {
       certified: true,
     });
 
-    const po = renderComponent();
+    const po = renderComponent({});
     expect(await po.getFollowTopicSectionPo(function0.id).isPresent()).toBe(
       true
     );

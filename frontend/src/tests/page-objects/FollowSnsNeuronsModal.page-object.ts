@@ -21,4 +21,8 @@ export class FollowSnsNeuronsModalPo extends ModalPo {
   hasSpinner(): Promise<boolean> {
     return this.isPresent("spinner");
   }
+
+  clickCloseButton(): Promise<void> {
+    return this.click("close-button");
+  }
 }

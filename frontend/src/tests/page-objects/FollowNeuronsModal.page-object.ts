@@ -12,4 +12,8 @@ export class FollowNeuronsModalPo extends ModalPo {
   getEditFollowNeuronsPo(): EditFollowNeuronsPo {
     return EditFollowNeuronsPo.under(this.root);
   }
+
+  clickCloseButton(): Promise<void> {
+    return this.click("close-button");
+  }
 }
