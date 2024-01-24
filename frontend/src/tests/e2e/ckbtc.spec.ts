@@ -22,6 +22,7 @@ test("Test accounts requirements", async ({ page, context }) => {
     .getTokensPo()
     .getTokensPagePo()
     .getTokensTable();
+  await tokensTablePo.waitFor();
   const ckBTCRow = await tokensTablePo.getRowByName("ckBTC");
   await ckBTCRow.waitForBalance();
   expect(await ckBTCRow.getBalance()).toBe("0 ckBTC");
