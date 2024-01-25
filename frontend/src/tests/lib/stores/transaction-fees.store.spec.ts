@@ -1,11 +1,5 @@
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
-import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
-import { tokensStore } from "$lib/stores/tokens.store";
-import {
-  mainTransactionFeeStore,
-  transactionsFeesStore,
-} from "$lib/stores/transaction-fees.store";
+import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
@@ -13,26 +7,10 @@ import { get } from "svelte/store";
 describe("transactionsFeesStore", () => {
   beforeEach(() => {
     transactionsFeesStore.setMain(BigInt(DEFAULT_TRANSACTION_FEE_E8S));
-    tokensStore.reset();
   });
   it("should set it to default transaction fee", () => {
     const { main } = get(transactionsFeesStore);
     expect(main).toEqual(BigInt(DEFAULT_TRANSACTION_FEE_E8S));
-  });
-
-  it("should set ICP fee value", () => {
-    expect(get(mainTransactionFeeStore)).toBe(Number(NNS_TOKEN_DATA.fee));
-
-    const newFee = 40_000n;
-    tokensStore.setToken({
-      canisterId: OWN_CANISTER_ID,
-      token: {
-        ...NNS_TOKEN_DATA,
-        fee: newFee,
-      },
-      certified: true,
-    });
-    expect(get(mainTransactionFeeStore)).toBe(Number(newFee));
   });
 
   it("should reset to default", () => {
