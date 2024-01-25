@@ -157,7 +157,7 @@ describe("NnsNeuronCard", () => {
 
     const po = NnsNeuronCardPo.under(new JestPageObjectElement(container));
 
-    expect(await po.getNeuronTags()).toEqual(["Hardware Wallet"]);
+    expect(await po.getNeuronTags()).toEqual(["Hardware Wallet Controlled"]);
   });
 
   it("renders neuron type tag when not default", async () => {
