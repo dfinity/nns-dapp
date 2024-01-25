@@ -6,10 +6,6 @@ import { TooltipPo } from "./Tooltip.page-object";
 export class NeuronTagPo extends BasePageObject {
   private static readonly TID = "neuron-tag";
 
-  static under(element: PageObjectElement): NeuronTagPo {
-    return new NeuronTagPo(element.byTestId(NeuronTagPo.TID));
-  }
-
   static async allUnder(element: PageObjectElement): Promise<NeuronTagPo[]> {
     return Promise.all(
       Array.from(await element.allByTestId(NeuronTagPo.TID)).map(async (el) => {
