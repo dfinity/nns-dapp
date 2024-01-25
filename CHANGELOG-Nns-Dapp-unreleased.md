@@ -25,6 +25,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Add missing feature flags to default feature flags value.
 * Various wording changes.
 * Various wording changes.
+* Display the full neuron type text within the tag.
 
 #### Deprecated
 

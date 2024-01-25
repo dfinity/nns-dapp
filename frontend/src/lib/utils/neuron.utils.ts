@@ -370,7 +370,6 @@ export const isHotKeyControllable = ({
 
 export type NeuronTagData = {
   text: string;
-  description?: string;
 };
 
 export const getNeuronTags = ({
@@ -387,15 +386,9 @@ export const getNeuronTags = ({
   const tags: NeuronTagData[] = [];
 
   if (isSeedNeuron(neuron)) {
-    tags.push({
-      text: i18n.neuron_types.seed,
-      description: i18n.neuron_types.seedDescription,
-    });
+    tags.push({ text: i18n.neuron_types.seed });
   } else if (isEctNeuron(neuron)) {
-    tags.push({
-      text: i18n.neuron_types.ect,
-      description: i18n.neuron_types.ectDescription,
-    });
+    tags.push({ text: i18n.neuron_types.ect });
   }
 
   if (hasJoinedCommunityFund(neuron)) {
