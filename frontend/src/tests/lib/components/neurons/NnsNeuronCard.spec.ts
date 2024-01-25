@@ -157,7 +157,11 @@ describe("NnsNeuronCard", () => {
 
     const po = NnsNeuronCardPo.under(new JestPageObjectElement(container));
 
-    expect(await po.getNeuronTags()).toEqual(["Hardware Wallet Controlled"]);
+    expect(await po.getNeuronTags()).toHaveLength(1);
+
+    const tag = (await po.getNeuronTags())[0];
+    expect(await tag.getTagText()).toBe("Hardware Wallet Controlled");
+    expect(await tag.getTooltip().isPresent()).toBe(false);
   });
 
   it("renders neuron type tag when not default", async () => {
@@ -180,7 +184,12 @@ describe("NnsNeuronCard", () => {
 
     const po = NnsNeuronCardPo.under(new JestPageObjectElement(container));
 
-    expect(await po.getNeuronTags()).toEqual(["Seed Seed Neuron"]);
+    expect(await po.getNeuronTags()).toHaveLength(1);
+
+    const tag = (await po.getNeuronTags())[0];
+    expect(await tag.getTagText()).toBe("Seed");
+    expect(await tag.getTooltip().isPresent()).toBe(true);
+    expect(await tag.getTooltipText()).toBe("Seed Neuron");
   });
 
   it("renders proper text when status is LOCKED", async () => {

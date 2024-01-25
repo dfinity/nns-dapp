@@ -1,4 +1,5 @@
 import { NeuronCardContainerPo } from "$tests/page-objects/NeuronCardContainer.page-object";
+import type { NeuronTagPo } from "$tests/page-objects/NeuronTag.page-object";
 import { NnsNeuronCardTitlePo } from "$tests/page-objects/NnsNeuronCardTitle.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -46,7 +47,7 @@ export class NnsNeuronCardPo extends BasePageObject {
     return Number(await this.getText("token-value"));
   }
 
-  getNeuronTags(): Promise<string[]> {
+  getNeuronTags(): Promise<NeuronTagPo[]> {
     return this.getCardTitlePo().getNeuronTags();
   }
 }
