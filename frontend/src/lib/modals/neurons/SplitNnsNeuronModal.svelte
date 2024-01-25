@@ -14,7 +14,7 @@
   import { createEventDispatcher } from "svelte";
   import { splitNeuron } from "$lib/services/neurons.services";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
-  import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
+  import { mainTransactionFeeStore } from "$lib/derived/main-transaction-fee.derived";
 
   export let neuron: NeuronInfo;
 

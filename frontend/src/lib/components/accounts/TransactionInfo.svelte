@@ -1,6 +1,6 @@
 <script lang="ts">
+  import { mainTransactionFeeStore } from "$lib/derived/main-transaction-fee.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
   import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
   import { Value } from "@dfinity/gix-components";
   import type { TokenAmount } from "@dfinity/utils";
