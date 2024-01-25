@@ -136,6 +136,24 @@ describe("NnsNeuronCard", () => {
     expect(getByText(en.neurons.hotkey_control)).toBeInTheDocument();
   });
 
+  it("renders no tags by default", async () => {
+    icpAccountsStore.setForTesting({
+      main: mockMainAccount,
+      subAccounts: [],
+    });
+    const { container } = render(NnsNeuronCard, {
+      props: {
+        neuron: {
+          ...mockNeuron,
+        },
+      },
+    });
+
+    const po = NnsNeuronCardPo.under(new JestPageObjectElement(container));
+
+    expect(await po.getNeuronTags()).toHaveLength(0);
+  });
+
   it("renders the hardware wallet label and not hotkey when neuron is controlled by hardware wallet", async () => {
     icpAccountsStore.setForTesting({
       main: mockMainAccount,
@@ -159,9 +177,12 @@ describe("NnsNeuronCard", () => {
 
     expect(await po.getNeuronTags()).toHaveLength(1);
 
-    const tag = (await po.getNeuronTags())[0];
-    expect(await tag.getTagText()).toBe("Hardware Wallet Controlled");
-    expect(await tag.getTooltip().isPresent()).toBe(false);
+    expect(await (await po.getNeuronTags())[0].getTagText()).toBe(
+      "Hardware Wallet Controlled"
+    );
+    expect(await (await po.getNeuronTags())[0].getTooltip().isPresent()).toBe(
+      false
+    );
   });
 
   it("renders neuron type tag when not default", async () => {
@@ -186,10 +207,43 @@ describe("NnsNeuronCard", () => {
 
     expect(await po.getNeuronTags()).toHaveLength(1);
 
-    const tag = (await po.getNeuronTags())[0];
-    expect(await tag.getTagText()).toBe("Seed");
-    expect(await tag.getTooltip().isPresent()).toBe(true);
-    expect(await tag.getTooltipText()).toBe("Seed Neuron");
+    expect(await (await po.getNeuronTags())[0].getTagText()).toBe("Seed");
+    expect(await (await po.getNeuronTags())[0].getTooltip().isPresent()).toBe(
+      true
+    );
+    expect(await (await po.getNeuronTags())[0].getTooltipText()).toBe(
+      "Seed Neuron"
+    );
+  });
+
+  it("renders multiple neuron tags", async () => {
+    icpAccountsStore.setForTesting({
+      main: mockMainAccount,
+      subAccounts: [],
+      hardwareWallets: [mockHardwareWalletAccount],
+    });
+    const { container } = render(NnsNeuronCard, {
+      props: {
+        neuron: {
+          ...mockNeuron,
+          neuronType: NeuronType.Seed,
+          fullNeuron: {
+            ...mockFullNeuron,
+            neuronType: NeuronType.Seed,
+            hotKeys: [mockIdentity.getPrincipal().toText()],
+            controller: mockHardwareWalletAccount.principal.toText(),
+          },
+        },
+      },
+    });
+    const po = NnsNeuronCardPo.under(new JestPageObjectElement(container));
+
+    expect(await po.getNeuronTags()).toHaveLength(2);
+
+    expect(await (await po.getNeuronTags())[0].getTagText()).toBe("Seed");
+    expect(await (await po.getNeuronTags())[1].getTagText()).toBe(
+      "Hardware Wallet Controlled"
+    );
   });
 
   it("renders proper text when status is LOCKED", async () => {
