@@ -7,7 +7,6 @@
   export let text = "";
   export let noWrap = false;
   export let top = false;
-  export let center = false;
   export let containerSelector = "main";
 
   let tooltipComponent: HTMLDivElement | undefined = undefined;
@@ -66,15 +65,14 @@
 
     // If tooltip overflow both on left and right, we only set the left anchor.
     // It would need the width to be maximized to window screen too but it seems to be an acceptable edge case.
-    tooltipStyle = center
-      ? `--tooltip-transform-x: calc(-50%)`
-      : overflowLeft > 0
-      ? `--tooltip-transform-x: calc(-50% + ${overflowLeft}px)`
-      : overflowRight > 0
-      ? `--tooltip-transform-x: calc(-50% - ${overflowRight}px)`
-      : leftToMainCenter
-      ? `--tooltip-transform-x: 0`
-      : undefined;
+    tooltipStyle =
+      overflowLeft > 0
+        ? `--tooltip-transform-x: calc(-50% + ${overflowLeft}px)`
+        : overflowRight > 0
+        ? `--tooltip-transform-x: calc(-50% - ${overflowRight}px)`
+        : leftToMainCenter
+        ? `--tooltip-transform-x: 0`
+        : undefined;
   });
 
   $: innerWidth, tooltipComponent, target, setPosition();
