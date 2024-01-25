@@ -50,4 +50,8 @@ export class NnsNeuronCardPo extends BasePageObject {
   getNeuronTagPos(): Promise<NeuronTagPo[]> {
     return this.getCardTitlePo().getNeuronTagPos();
   }
+
+  getNeuronTags(): Promise<string[]> {
+    return this.getCardTitlePo().getNeuronTags();
+  }
 }

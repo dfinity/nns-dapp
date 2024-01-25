@@ -13,6 +13,11 @@ export class NnsNeuronCardTitlePo extends BasePageObject {
     return this.root.querySelector("[data-tid=neuron-id]").getText();
   }
 
+  async getNeuronTags(): Promise<string[]> {
+    const pos = await this.getNeuronTagPos();
+    return Promise.all(pos.map((po) => po.getTagText()));
+  }
+
   getNeuronTagPos(): Promise<NeuronTagPo[]> {
     return NeuronTagPo.allUnder(this.root);
   }

@@ -238,12 +238,10 @@ describe("NnsNeuronCard", () => {
     });
     const po = NnsNeuronCardPo.under(new JestPageObjectElement(container));
 
-    expect(await po.getNeuronTagPos()).toHaveLength(2);
-
-    expect(await (await po.getNeuronTagPos())[0].getTagText()).toBe("Seed");
-    expect(await (await po.getNeuronTagPos())[1].getTagText()).toBe(
-      "Hardware Wallet Controlled"
-    );
+    expect(await po.getNeuronTags()).toEqual([
+      "Seed",
+      "Hardware Wallet Controlled",
+    ]);
   });
 
   it("renders proper text when status is LOCKED", async () => {
