@@ -295,7 +295,6 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         39 => transform::<BitcoinSetConfigProposal, BitcoinSetConfigProposalHumanReadable>(payload_bytes),
         40 => identity::<UpdateElectedHostosVersionsPayload>(payload_bytes),
         41 => identity::<UpdateNodesHostosVersionPayload>(payload_bytes),
-        // 42 => HARD RESET
         43 => identity::<AddApiBoundaryNodePayload>(payload_bytes),
         44 => identity::<RemoveApiBoundaryNodesPayload>(payload_bytes),
         // 45 reserved ("NNS_FUNCTION_UPDATE_API_BOUNDARY_NODE_DOMAIN") - https://github.com/dfinity/ic/blob/cd8ad64ed63e38db0d40386ba226df25767d4cd6/rs/nns/governance/proto/ic_nns_governance/pb/v1/governance.proto#L616
