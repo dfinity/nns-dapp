@@ -146,6 +146,6 @@ describe("NnsNeuronPageHeading", () => {
       },
     });
 
-    expect(await po.getNeuronTags()).toEqual(["ECT"]);
+    expect(await po.getNeuronTags()).toEqual(["Early Contributor Token"]);
   });
 });

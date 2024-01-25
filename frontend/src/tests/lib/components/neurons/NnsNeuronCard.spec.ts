@@ -180,7 +180,7 @@ describe("NnsNeuronCard", () => {
 
     const po = NnsNeuronCardPo.under(new JestPageObjectElement(container));
 
-    expect(await po.getNeuronTags()).toEqual(["Seed Seed Neuron"]);
+    expect(await po.getNeuronTags()).toEqual(["Seed"]);
   });
 
   it("renders proper text when status is LOCKED", async () => {
