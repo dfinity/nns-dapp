@@ -47,7 +47,7 @@ export class NnsNeuronCardPo extends BasePageObject {
     return Number(await this.getText("token-value"));
   }
 
-  getNeuronTags(): Promise<NeuronTagPo[]> {
-    return this.getCardTitlePo().getNeuronTags();
+  getNeuronTagPos(): Promise<NeuronTagPo[]> {
+    return this.getCardTitlePo().getNeuronTagPos();
   }
 }

@@ -151,7 +151,7 @@ describe("NnsNeuronCard", () => {
 
     const po = NnsNeuronCardPo.under(new JestPageObjectElement(container));
 
-    expect(await po.getNeuronTags()).toHaveLength(0);
+    expect(await po.getNeuronTagPos()).toHaveLength(0);
   });
 
   it("renders the hardware wallet label and not hotkey when neuron is controlled by hardware wallet", async () => {
@@ -175,14 +175,14 @@ describe("NnsNeuronCard", () => {
 
     const po = NnsNeuronCardPo.under(new JestPageObjectElement(container));
 
-    expect(await po.getNeuronTags()).toHaveLength(1);
+    expect(await po.getNeuronTagPos()).toHaveLength(1);
 
-    expect(await (await po.getNeuronTags())[0].getTagText()).toBe(
+    expect(await (await po.getNeuronTagPos())[0].getTagText()).toBe(
       "Hardware Wallet Controlled"
     );
-    expect(await (await po.getNeuronTags())[0].getTooltip().isPresent()).toBe(
-      false
-    );
+    expect(
+      await (await po.getNeuronTagPos())[0].getTooltipPo().isPresent()
+    ).toBe(false);
   });
 
   it("renders neuron type tag when not default", async () => {
@@ -205,13 +205,13 @@ describe("NnsNeuronCard", () => {
 
     const po = NnsNeuronCardPo.under(new JestPageObjectElement(container));
 
-    expect(await po.getNeuronTags()).toHaveLength(1);
+    expect(await po.getNeuronTagPos()).toHaveLength(1);
 
-    expect(await (await po.getNeuronTags())[0].getTagText()).toBe("Seed");
-    expect(await (await po.getNeuronTags())[0].getTooltip().isPresent()).toBe(
-      true
-    );
-    expect(await (await po.getNeuronTags())[0].getTooltipText()).toBe(
+    expect(await (await po.getNeuronTagPos())[0].getTagText()).toBe("Seed");
+    expect(
+      await (await po.getNeuronTagPos())[0].getTooltipPo().isPresent()
+    ).toBe(true);
+    expect(await (await po.getNeuronTagPos())[0].getTooltipText()).toBe(
       "Seed Neuron"
     );
   });
@@ -238,10 +238,10 @@ describe("NnsNeuronCard", () => {
     });
     const po = NnsNeuronCardPo.under(new JestPageObjectElement(container));
 
-    expect(await po.getNeuronTags()).toHaveLength(2);
+    expect(await po.getNeuronTagPos()).toHaveLength(2);
 
-    expect(await (await po.getNeuronTags())[0].getTagText()).toBe("Seed");
-    expect(await (await po.getNeuronTags())[1].getTagText()).toBe(
+    expect(await (await po.getNeuronTagPos())[0].getTagText()).toBe("Seed");
+    expect(await (await po.getNeuronTagPos())[1].getTagText()).toBe(
       "Hardware Wallet Controlled"
     );
   });

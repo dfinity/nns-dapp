@@ -14,19 +14,19 @@ export class NeuronTagPo extends BasePageObject {
     );
   }
 
-  getTag(): TagPo {
+  getTagPo(): TagPo {
     return TagPo.under(this.root);
   }
 
   getTagText(): Promise<string> {
-    return this.getTag().getText();
+    return this.getTagPo().getText();
   }
 
-  getTooltip(): TooltipPo {
+  getTooltipPo(): TooltipPo {
     return TooltipPo.under(this.root);
   }
 
   getTooltipText(): Promise<string> {
-    return TooltipPo.under(this.root).getText();
+    return this.getTooltipPo().getText();
   }
 }
