@@ -8,9 +8,9 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
-  import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import { ICPToken } from "@dfinity/utils";
+  import { mainTransactionFeeStore } from "$lib/derived/main-transaction-fee.derived";
 
   export let neuron: NeuronInfo;
 
