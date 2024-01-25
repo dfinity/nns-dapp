@@ -381,8 +381,6 @@ describe("Accounts", () => {
   });
 
   it("should load ckETH accounts", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
-
     render(Accounts);
 
     await waitFor(() =>
@@ -391,8 +389,6 @@ describe("Accounts", () => {
   });
 
   it("should not load ckETH accounts when universe ckETH is selected", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
-
     page.mock({
       data: { universe: CKETH_UNIVERSE_CANISTER_ID.toText() },
       routeId: AppPath.Accounts,
@@ -511,8 +507,6 @@ describe("Accounts", () => {
   });
 
   it("should render icrc project name", () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
-
     tokensStore.setTokens(mockTokens);
 
     page.mock({
@@ -528,8 +522,6 @@ describe("Accounts", () => {
   });
 
   it("should render related icrc project logo", () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
-
     tokensStore.setTokens(mockTokens);
 
     page.mock({
@@ -831,8 +823,6 @@ describe("Accounts", () => {
   });
 
   it("should open icrc receive modal", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
-
     tokensStore.setTokens(mockTokens);
 
     page.mock({
