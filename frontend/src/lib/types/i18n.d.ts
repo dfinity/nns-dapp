@@ -273,9 +273,7 @@ interface I18nAccounts {
 
 interface I18nNeuron_types {
   seed: string;
-  seedDescription: string;
   ect: string;
-  ectDescription: string;
 }
 
 interface I18nNeurons {

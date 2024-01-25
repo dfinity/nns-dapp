@@ -263,9 +263,7 @@
   },
   "neuron_types": {
     "seed": "Seed",
-    "seedDescription": "Seed Neuron",
-    "ect": "ECT",
-    "ectDescription": "Early Contributor Token Neuron"
+    "ect": "Early Contributor Token"
   },
   "neurons": {
     "title": "Neurons",

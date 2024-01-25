@@ -1138,11 +1138,9 @@ describe("neuron-utils", () => {
     const nfTag = { text: "Neurons' fund" } as NeuronTagData;
     const seedTag = {
       text: "Seed",
-      description: "Seed Neuron",
     } as NeuronTagData;
     const ectTag = {
       text: "ECT",
-      description: "Early Contributor Token Neuron",
     } as NeuronTagData;
     it("returns 'hotkey' if neuron is controllable by hotkey and hardware wallet is not the controller", () => {
       const neuron = {
