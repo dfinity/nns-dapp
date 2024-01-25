@@ -32,7 +32,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * ckBTC withdrawal account.
 * Don't show the red error outline on dissolve delay input when the dissolve delay is not enough to have voting power.
-* Remove ENABLE_CKETH feature flag.
+* Remove `ENABLE_CKETH` feature flag.
 
 #### Fixed
 
