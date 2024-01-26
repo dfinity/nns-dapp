@@ -63,56 +63,61 @@
     userCountry: $userCountryStore,
     ticket,
   });
+
+  let buttonText: string | undefined;
+  $: buttonText = userHasParticipatedToSwap
+    ? $i18n.sns_project_detail.increase_participation
+    : $i18n.sns_project_detail.participate;
+
+  let tooltipText: string | undefined;
+  $: tooltipText =
+    buttonStatus === "disabled-max-participation"
+      ? $i18n.sns_project_detail.max_user_commitment_reached
+      : buttonStatus === "disabled-not-eligible"
+      ? $i18n.sns_project_detail.not_eligible_to_participate
+      : undefined;
 </script>
 
 <TestIdWrapper testId="participate-button-component">
   {#if lifecycle === SnsSwapLifecycle.Open}
     <BottomSheet>
-      <div role="toolbar">
+      <div role="toolbar" class="full-width-mobile">
         <SignInGuard>
           <!-- "logged-out" is handled by SignInGuard -->
           <!-- "disabled-not-open" is handled by the if above and not rendering the button -->
-          {#if buttonStatus === "loading"}
-            <div class="loader" data-tid="connecting_sale_canister">
-              <SpinnerText
-                >{$i18n.sns_sale.connecting_sale_canister}</SpinnerText
-              >
-            </div>
-          {:else if buttonStatus === "disabled-max-participation"}
+          {#if nonNullish(tooltipText)}
             <Tooltip
               id="sns-project-participate-button-tooltip"
-              text={$i18n.sns_project_detail.max_user_commitment_reached}
+              text={tooltipText}
               top={true}
             >
-              <button
-                class="primary"
-                data-tid="sns-project-participate-button"
-                disabled>{$i18n.sns_project_detail.participate}</button
-              >
-            </Tooltip>
-          {:else if buttonStatus === "disabled-not-eligible"}
-            <Tooltip
-              id="sns-project-participate-button-tooltip"
-              text={$i18n.sns_project_detail.not_eligible_to_participate}
-              top={true}
-            >
-              <button
-                class="primary"
-                data-tid="sns-project-participate-button"
-                disabled>{$i18n.sns_project_detail.participate}</button
-              >
+              <div class="full-width-mobile">
+                <button
+                  class="primary"
+                  data-tid="sns-project-participate-button"
+                  disabled>{buttonText}</button
+                >
+              </div>
             </Tooltip>
           {:else}
-            <!-- This is the "enabled" case only -->
-            <button
-              on:click={openModal}
-              class="primary participate"
-              data-tid="sns-project-participate-button"
-            >
-              {userHasParticipatedToSwap
-                ? $i18n.sns_project_detail.increase_participation
-                : $i18n.sns_project_detail.participate}
-            </button>
+            <div class="full-width-mobile">
+              {#if buttonStatus === "loading"}
+                <div class="loader" data-tid="connecting_sale_canister">
+                  <SpinnerText
+                    >{$i18n.sns_sale.connecting_sale_canister}</SpinnerText
+                  >
+                </div>
+              {:else}
+                <!-- This is the "enabled" case only -->
+                <button
+                  on:click={openModal}
+                  class="primary"
+                  data-tid="sns-project-participate-button"
+                >
+                  {buttonText}
+                </button>
+              {/if}
+            </div>
           {/if}
           <span slot="signin-cta">{$i18n.sns_project_detail.sign_in}</span>
         </SignInGuard>
@@ -128,19 +133,19 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
 
-  .participate {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--padding);
+  [role="toolbar"] {
+    padding: var(--padding-2x);
+
+    @include media.min-width(large) {
+      padding: 0;
+    }
   }
 
-  [role="toolbar"] {
+  .full-width-mobile {
     display: flex;
     flex-direction: column;
     align-items: stretch;
     justify-content: center;
-    padding: var(--padding-2x);
 
     @include media.min-width(medium) {
       align-items: center;
@@ -150,7 +155,6 @@
     @include media.min-width(large) {
       align-items: flex-start;
       justify-content: flex-start;
-      padding: 0;
     }
   }
 
