@@ -12,7 +12,6 @@ import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.sto
 import { snsProposalsStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore, type TokensStoreData } from "$lib/stores/tokens.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { isForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
@@ -24,7 +23,7 @@ import {
 import { ProposalStatus, Topic, type ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
-import { fromDefinedNullable, fromNullable, nonNullish } from "@dfinity/utils";
+import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getCurrentIdentity } from "../auth.services";
 
@@ -78,15 +77,6 @@ export const loadSnsProjects = async (): Promise<void> => {
         nsFunctions: sns.parameters.functions.map(convertNervousFunction),
         certified: true,
       }))
-    );
-    transactionsFeesStore.setFees(
-      aggregatorData
-        .filter(({ icrc1_fee }) => nonNullish(fromNullable(icrc1_fee)))
-        .map((sns) => ({
-          rootCanisterId: Principal.fromText(sns.canister_ids.root_canister_id),
-          fee: BigInt(fromDefinedNullable(sns.icrc1_fee)),
-          certified: true,
-        }))
     );
     tokensStore.setTokens(
       aggregatorData

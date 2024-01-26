@@ -6,7 +6,6 @@ import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
@@ -102,26 +101,18 @@ describe("sns-accounts-services", () => {
       snsAccountsStore.reset();
       vi.spyOn(console, "error").mockImplementation(() => undefined);
     });
-    it("should call sns accounts and transaction fee and load them in store", async () => {
+    it("should call sns accounts and load them in store", async () => {
       const spyAccountsQuery = vi
         .spyOn(ledgerApi, "getSnsAccounts")
         .mockImplementation(() => Promise.resolve([mockSnsMainAccount]));
-      const fee = 10_000n;
-      const spyFeeQuery = vi
-        .spyOn(ledgerApi, "transactionFee")
-        .mockImplementation(() => Promise.resolve(fee));
 
       await services.syncSnsAccounts({ rootCanisterId: mockPrincipal });
 
       await tick();
       expect(spyAccountsQuery).toBeCalled();
-      expect(spyFeeQuery).toBeCalled();
 
       const store = get(snsAccountsStore);
       expect(store[mockPrincipal.toText()]?.accounts).toHaveLength(1);
-
-      const feeStore = get(transactionsFeesStore);
-      expect(feeStore.projects[mockPrincipal.toText()]?.fee).toEqual(fee);
     });
   });
 
