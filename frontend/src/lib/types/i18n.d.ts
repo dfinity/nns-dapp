@@ -1292,6 +1292,9 @@ interface I18nNns_functions {
   BitcoinSetConfig: string;
   UpdateElectedHostosVersions: string;
   UpdateNodesHostosVersion: string;
+  AddApiBoundaryNode: string;
+  RemoveApiBoundaryNodes: string;
+  UpdateApiBoundaryNodesVersion: string;
 }
 
 interface I18nNns_functions_description {
@@ -1337,6 +1340,9 @@ interface I18nNns_functions_description {
   BitcoinSetConfig: string;
   UpdateElectedHostosVersions: string;
   UpdateNodesHostosVersion: string;
+  AddApiBoundaryNode: string;
+  RemoveApiBoundaryNodes: string;
+  UpdateApiBoundaryNodesVersion: string;
 }
 
 interface I18n {
