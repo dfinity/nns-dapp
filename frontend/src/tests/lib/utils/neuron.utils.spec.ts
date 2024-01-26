@@ -1134,15 +1134,13 @@ describe("neuron-utils", () => {
     };
 
     const hotkeyTag = { text: "Hotkey control" } as NeuronTagData;
-    const hwTag = { text: "Hardware Wallet" } as NeuronTagData;
+    const hwTag = { text: "Hardware Wallet Controlled" } as NeuronTagData;
     const nfTag = { text: "Neurons' fund" } as NeuronTagData;
     const seedTag = {
       text: "Seed",
-      description: "Seed Neuron",
     } as NeuronTagData;
     const ectTag = {
-      text: "ECT",
-      description: "Early Contributor Token Neuron",
+      text: "Early Contributor Token",
     } as NeuronTagData;
     it("returns 'hotkey' if neuron is controllable by hotkey and hardware wallet is not the controller", () => {
       const neuron = {
@@ -1182,7 +1180,7 @@ describe("neuron-utils", () => {
       ).toEqual([hotkeyTag]);
     });
 
-    it("returns 'Hardware Wallet' if neuron is controllable by hotkey and hardware wallet is the controller", () => {
+    it("returns 'Hardware Wallet Controlled' if neuron is controllable by hotkey and hardware wallet is the controller", () => {
       const neuron = {
         ...mockNeuron,
         fullNeuron: {
@@ -1277,7 +1275,7 @@ describe("neuron-utils", () => {
       ).toEqual([nfTag, hotkeyTag]);
     });
 
-    it("returns 'Neurons' Fund' and 'Hardware Wallet'", () => {
+    it("returns 'Neurons' Fund' and 'Hardware Wallet Controlled'", () => {
       const neuron: NeuronInfo = {
         ...mockNeuron,
         joinedCommunityFundTimestampSeconds: 123_445n,
@@ -1335,7 +1333,7 @@ describe("neuron-utils", () => {
       ).toEqual([ectTag]);
     });
 
-    it("returns 'Seed' and 'Neurons' Fund' and 'Hardware Wallet'", () => {
+    it("returns 'Seed' and 'Neurons' Fund' and 'Hardware Wallet Controlled'", () => {
       const neuron: NeuronInfo = {
         ...mockNeuron,
         neuronType: NeuronType.Seed,

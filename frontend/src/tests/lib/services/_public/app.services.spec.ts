@@ -29,7 +29,6 @@ describe("$public/app-services", () => {
     icrcCanistersStore.reset();
     tokensStore.reset();
     vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockCkETHToken);
-    overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", false);
     overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
   });
 
@@ -39,40 +38,23 @@ describe("$public/app-services", () => {
     await expect(loadSnsProjects).toHaveBeenCalledTimes(1);
   });
 
-  describe("when ENABLE_CKETH and ENABLE_CKTESTBTC are disabled", () => {
-    beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", false);
-      overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
-    });
-    it("should not load ckETH canisters in store", async () => {
-      await initAppPublicData();
+  it("should load ckETH canisters in store", async () => {
+    await initAppPublicData();
 
-      expect(get(icrcCanistersStore)).toEqual({});
+    expect(
+      get(icrcCanistersStore)[CKETH_UNIVERSE_CANISTER_ID.toText()]
+    ).toEqual({
+      ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
+      indexCanisterId: CKETH_INDEX_CANISTER_ID,
     });
   });
 
-  describe("when ENABLE_CKETH is enabled", () => {
-    beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
-    });
-    it("should load ckETH canisters in store", async () => {
-      await initAppPublicData();
+  it("should load token in store", async () => {
+    await initAppPublicData();
 
-      expect(
-        get(icrcCanistersStore)[CKETH_UNIVERSE_CANISTER_ID.toText()]
-      ).toEqual({
-        ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
-        indexCanisterId: CKETH_INDEX_CANISTER_ID,
-      });
-    });
-
-    it("should load token in store", async () => {
-      await initAppPublicData();
-
-      expect(get(tokensStore)[CKETH_UNIVERSE_CANISTER_ID.toText()]).toEqual({
-        token: mockCkETHToken,
-        certified: false,
-      });
+    expect(get(tokensStore)[CKETH_UNIVERSE_CANISTER_ID.toText()]).toEqual({
+      token: mockCkETHToken,
+      certified: false,
     });
   });
 

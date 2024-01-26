@@ -8,10 +8,7 @@ import type { Vote } from "@dfinity/nns";
 import type { SnsVote } from "@dfinity/sns";
 import { writable, type Readable } from "svelte/store";
 
-export type VoteRegistrationStatus =
-  | "vote-registration"
-  | "post-update"
-  | "complete";
+export type VoteRegistrationStatus = "vote-registration" | "post-update";
 
 export interface VoteRegistrationStoreEntry {
   status: VoteRegistrationStatus;

@@ -7,6 +7,7 @@ import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type { AccountDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
+import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import * as authServices from "$lib/services/auth.services";
 import {
@@ -27,7 +28,6 @@ import {
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
-import { mainTransactionFeeE8sStore } from "$lib/stores/transaction-fees.store";
 import type { NewTransaction } from "$lib/types/transaction";
 import { toIcpAccountIdentifier } from "$lib/utils/accounts.utils";
 import {

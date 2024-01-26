@@ -157,7 +157,7 @@ describe("NnsNeuronCard", () => {
 
     const po = NnsNeuronCardPo.under(new JestPageObjectElement(container));
 
-    expect(await po.getNeuronTags()).toEqual(["Hardware Wallet"]);
+    expect(await po.getNeuronTags()).toEqual(["Hardware Wallet Controlled"]);
   });
 
   it("renders neuron type tag when not default", async () => {
@@ -180,7 +180,7 @@ describe("NnsNeuronCard", () => {
 
     const po = NnsNeuronCardPo.under(new JestPageObjectElement(container));
 
-    expect(await po.getNeuronTags()).toEqual(["Seed Seed Neuron"]);
+    expect(await po.getNeuronTags()).toEqual(["Seed"]);
   });
 
   it("renders proper text when status is LOCKED", async () => {

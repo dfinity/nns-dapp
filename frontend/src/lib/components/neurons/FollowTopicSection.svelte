@@ -13,7 +13,7 @@
 </script>
 
 <article data-tid={`follow-topic-${id}-section`}>
-  <Collapsible {id} iconSize="medium">
+  <Collapsible {id} iconSize="medium" testId="collapsible">
     <div class="wrapper" slot="header">
       <span class="value"><slot name="title" /></span>
       <span class="badge" data-tid={`topic-${id}-followees-badge`}>

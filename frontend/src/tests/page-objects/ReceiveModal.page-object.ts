@@ -1,7 +1,7 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { ModalPo } from "$tests/page-objects/Modal.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class ReceiveModalPo extends BasePageObject {
+export class ReceiveModalPo extends ModalPo {
   private static readonly TID = "receive-modal";
 
   static under(element: PageObjectElement): ReceiveModalPo {
@@ -10,10 +10,6 @@ export class ReceiveModalPo extends BasePageObject {
 
   clickFinish(): Promise<void> {
     return this.click("reload-receive-account");
-  }
-
-  close(): Promise<void> {
-    return this.click("close-modal");
   }
 
   waitForQrCode(): Promise<void> {

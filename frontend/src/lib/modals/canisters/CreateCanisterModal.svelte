@@ -13,7 +13,7 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError, toastsShow } from "$lib/stores/toasts.store";
-  import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
+  import { mainTransactionFeeStore } from "$lib/derived/main-transaction-fee.derived";
   import type { Account } from "$lib/types/account";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formattedTransactionFeeICP } from "$lib/utils/token.utils";

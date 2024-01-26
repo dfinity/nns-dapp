@@ -17,12 +17,15 @@ proposal is successful, the changes it released will be moved from this file to
 
 * New block "Stake a neuron" on proposal details page.
 * Getter and setter of partition schema label.
+* Close button at the bottom of follow neurons modal.
 
 #### Changed
 
 * Changed wording about staking neurons to staking tokens.
 * Add missing feature flags to default feature flags value.
 * Various wording changes.
+* Various wording changes.
+* Display the full neuron type text within the tag.
 
 #### Deprecated
 
@@ -30,10 +33,12 @@ proposal is successful, the changes it released will be moved from this file to
 
 * ckBTC withdrawal account.
 * Don't show the red error outline on dissolve delay input when the dissolve delay is not enough to have voting power.
+* Remove `ENABLE_CKETH` feature flag.
 
 #### Fixed
 
 * Fix gaps between sections on the mobile launchpad page.
+* Fix proposal back navigation during voting.
 
 #### Security
 

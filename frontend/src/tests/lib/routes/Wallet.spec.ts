@@ -174,8 +174,6 @@ describe("Wallet", () => {
     const balanceAfterTransfer = 1110000000000000000n;
     const balanceBeforeTransfer = balanceAfterTransfer + amountE18s;
 
-    overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
-
     // Called only after a transfer (for now GIX-2150)
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
       balanceAfterTransfer

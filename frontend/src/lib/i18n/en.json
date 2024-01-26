@@ -263,9 +263,7 @@
   },
   "neuron_types": {
     "seed": "Seed",
-    "seedDescription": "Seed Neuron",
-    "ect": "ECT",
-    "ectDescription": "Early Contributor Token Neuron"
+    "ect": "Early Contributor Token"
   },
   "neurons": {
     "title": "Neurons",
@@ -281,7 +279,7 @@
     "expected_merge_result": "Expected merge result:",
     "set_dissolve_delay": "Set Dissolve Delay",
     "add_user_as_hotkey": "Add Principal to Hotkeys",
-    "add_user_as_hotkey_message": "To see and manage this neuron in the NNS app, please add the NNS app as a hotkey.",
+    "add_user_as_hotkey_message": "This neuron is controlled by your hardware wallet. To see and manage the neuron from the NNS dapp, please add your NNS dapp principal as hotkey to this neuron.",
     "add_user_as_hotkey_success": "Your principal was added to the neuron successfully.",
     "remove_user_hotkey_confirm_title": "Confirm Removal of Hotkey",
     "remove_user_hotkey_confirm_text": "Are you sure you want to remove your principal from the hotkeys of the neuron?",
@@ -298,7 +296,7 @@
     "create": "Create",
     "community_fund": "Neurons' fund",
     "hotkey_control": "Hotkey control",
-    "hardware_wallet_control": "Hardware Wallet",
+    "hardware_wallet_control": "Hardware Wallet Controlled",
     "stake": "Stake",
     "amount_icp_stake": "$amount ICP Stake",
     "ic_stake": "$token staked",
@@ -928,7 +926,7 @@
     "sns_reload_no_universe": "A project should be provided to execute this feature"
   },
   "auth_accounts": {
-    "title": "100% on-chain wallet",
+    "title": "100% on-chain governance",
     "text": "Manage your ICP, ckBTC, and SNS governance tokens within the NNS wallet — hosted 100% on the Internet Computer blockchain. Transfer tokens, secure them with hardware wallets, or participate in governance to earn voting rewards."
   },
   "auth_neurons": {

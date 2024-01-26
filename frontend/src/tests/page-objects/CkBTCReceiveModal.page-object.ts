@@ -1,7 +1,7 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { ModalPo } from "$tests/page-objects/Modal.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class CkBTCReceiveModalPo extends BasePageObject {
+export class CkBTCReceiveModalPo extends ModalPo {
   private static readonly TID = "ckbtc-receive-modal";
 
   static under(element: PageObjectElement): CkBTCReceiveModalPo {
