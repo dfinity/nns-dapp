@@ -29,7 +29,7 @@
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import TransactionFromAccount from "$lib/components/transaction/TransactionFromAccount.svelte";
   import { filterHardwareWalletAccounts } from "$lib/utils/accounts.utils";
-  import { mainTransactionFeeStore } from "$lib/derived/main-transaction-fee.derived";
+  import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
 
   let icpToCyclesExchangeRate: bigint | undefined;
   onMount(async () => {
@@ -129,7 +129,7 @@
           <Html
             text={replacePlaceholders($i18n.canisters.transaction_fee, {
               $amount: valueSpan(
-                formattedTransactionFeeICP($mainTransactionFeeStore)
+                formattedTransactionFeeICP($mainTransactionFeeE8sStore)
               ),
             })}
           />

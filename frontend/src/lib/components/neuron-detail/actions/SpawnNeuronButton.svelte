@@ -49,12 +49,12 @@
         $i18n.neuron_detail.spawn_neuron_disabled_tooltip,
         {
           $amount: formatNumber(
-            MIN_NEURON_STAKE /
+            Number(MIN_NEURON_STAKE) /
               ULPS_PER_MATURITY /
               MATURITY_MODULATION_VARIANCE_PERCENTAGE,
             { minFraction: 4, maxFraction: 4 }
           ),
-          $min: formatNumber(MIN_NEURON_STAKE / ULPS_PER_MATURITY, {
+          $min: formatNumber(Number(MIN_NEURON_STAKE) / ULPS_PER_MATURITY, {
             minFraction: 0,
             maxFraction: 0,
           }),

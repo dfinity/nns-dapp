@@ -1883,7 +1883,7 @@ describe("neurons-services", () => {
           ...mockNeuron,
           fullNeuron: {
             ...mockFullNeuron,
-            cachedNeuronStake: BigInt(MIN_NEURON_STAKE / 2 - 10),
+            cachedNeuronStake: MIN_NEURON_STAKE / 2n - 10n,
           },
         },
         amount: 0.01,

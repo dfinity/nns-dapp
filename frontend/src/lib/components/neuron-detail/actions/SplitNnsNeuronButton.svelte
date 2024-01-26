@@ -10,14 +10,14 @@
   import Tooltip from "$lib/components/ui/Tooltip.svelte";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import { ICPToken } from "@dfinity/utils";
-  import { mainTransactionFeeStore } from "$lib/derived/main-transaction-fee.derived";
+  import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
 
   export let neuron: NeuronInfo;
 
   let splittable: boolean;
   $: splittable = neuronCanBeSplit({
     neuron,
-    fee: $mainTransactionFeeStore,
+    fee: $mainTransactionFeeE8sStore,
   });
 
   const openModal = () =>
@@ -37,7 +37,7 @@
       $i18n.neuron_detail.split_neuron_disabled_tooltip,
       {
         $amount: formatTokenE8s({
-          value: BigInt(minNeuronSplittable($mainTransactionFeeStore)),
+          value: BigInt(minNeuronSplittable($mainTransactionFeeE8sStore)),
           detailed: true,
         }),
         $token: ICPToken.symbol,
