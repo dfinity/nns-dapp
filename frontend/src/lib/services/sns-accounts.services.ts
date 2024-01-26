@@ -15,7 +15,6 @@ import type { IcrcBlockIndex } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { loadSnsAccountTransactions } from "./sns-transactions.services";
-import { loadSnsTransactionFee } from "./transaction-fees.services";
 import { queryAndUpdate } from "./utils.services";
 
 export const loadSnsAccounts = async ({
@@ -63,11 +62,7 @@ export const syncSnsAccounts = async (params: {
   rootCanisterId: Principal;
   handleError?: () => void;
 }) => {
-  await Promise.all([
-    loadSnsAccounts(params),
-    loadSnsTransactionFee(params),
-    loadSnsToken(params),
-  ]);
+  await Promise.all([loadSnsAccounts(params), loadSnsToken(params)]);
 };
 
 export const snsTransferTokens = async ({

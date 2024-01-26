@@ -222,7 +222,6 @@ const anonymiseStoreState = async () => {
     selectedSnsNeuron,
     snsFunctions,
     snsTransactions,
-    transactionsFees,
     transactions,
     aggregatorStore,
   } = get(debugStore);
@@ -300,7 +299,6 @@ const anonymiseStoreState = async () => {
       snsTransactions,
       anonymizeTransactionStore
     ),
-    transactionsFees,
     aggregatorStore,
   };
 };
