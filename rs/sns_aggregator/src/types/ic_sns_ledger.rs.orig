@@ -120,15 +120,17 @@ pub struct BlockRange {
     pub blocks: Vec<Block>,
 }
 
-pub type QueryBlockArchiveFn = candid::Func;
-#[derive(CandidType, Deserialize)]
+candid::define_function!(pub QueryBlockArchiveFn : (GetBlocksArgs) -> (
+    BlockRange,
+  ) query);
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetBlocksResponseArchivedBlocksItem {
     pub callback: QueryBlockArchiveFn,
     pub start: BlockIndex,
     pub length: candid::Nat,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetBlocksResponse {
     pub certificate: Option<serde_bytes::ByteBuf>,
     pub first_index: BlockIndex,
@@ -206,15 +208,17 @@ pub struct TransactionRange {
     pub transactions: Vec<Transaction>,
 }
 
-pub type QueryArchiveFn = candid::Func;
-#[derive(CandidType, Deserialize)]
+candid::define_function!(pub QueryArchiveFn : (GetTransactionsRequest) -> (
+    TransactionRange,
+  ) query);
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetTransactionsResponseArchivedTransactionsItem {
     pub callback: QueryArchiveFn,
     pub start: TxIndex,
     pub length: candid::Nat,
 }
 
-#[derive(CandidType, Deserialize)]
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetTransactionsResponse {
     pub first_index: TxIndex,
     pub log_length: candid::Nat,
