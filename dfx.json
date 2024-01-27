@@ -343,7 +343,7 @@
         "DIDC_VERSION": "2024-01-03",
         "CARGO_SORT_VERSION": "1.0.9",
         "SNSDEMO_RELEASE": "release-2024-01-24",
-        "IC_COMMIT": "release-2024-01-18_23-01+dts-off"
+        "IC_COMMIT": "release-2024-01-25_14-09+p2p-con"
       },
       "packtool": ""
     }
