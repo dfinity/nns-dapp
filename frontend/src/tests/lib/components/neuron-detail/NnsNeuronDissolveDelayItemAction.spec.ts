@@ -136,4 +136,28 @@ describe("NnsNeuronDissolveDelayItemAction", () => {
 
     expect(await po.hasIncreaseDissolveDelayButton()).toBe(true);
   });
+
+  it("should not render a tooltip without dissolve delay", async () => {
+    const neuron: NeuronInfo = {
+      ...controlledNeuron,
+      state: NeuronState.Dissolved,
+      dissolveDelaySeconds: 0n,
+    };
+    const po = renderComponent(neuron);
+
+    expect(await po.getTooltipIconPo().isPresent()).toBe(false);
+  });
+
+  it("should render the dissolve duration in the tooltip text", async () => {
+    const neuron: NeuronInfo = {
+      ...controlledNeuron,
+      state: NeuronState.Locked,
+      dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR * 2),
+    };
+    const po = renderComponent(neuron);
+
+    expect(await po.getTooltipIconPo().getText()).toContain(
+      "available in 2 years, 12 hours"
+    );
+  });
 });
