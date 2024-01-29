@@ -51,6 +51,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Add `reviewers` to the `update-*.yml` workflows that create PRs.
+* Add `.orig` file extension to `.gitignore` file.
 
 #### Changed
 
