@@ -12,17 +12,16 @@
   import SnsNeuronAge from "../sns-neurons/SnsNeuronAge.svelte";
   import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
   import type { Principal } from "@dfinity/principal";
-  import { nonNullish, type Token } from "@dfinity/utils";
+  import { nonNullish, type Token, TokenAmountV2 } from "@dfinity/utils";
   import SnsNeuronVestingPeriodRemaining from "./SnsNeuronVestingPeriodRemaining.svelte";
   import SnsAutoStakeMaturity from "./actions/SnsAutoStakeMaturity.svelte";
   import SplitSnsNeuronButton from "./actions/SplitSnsNeuronButton.svelte";
-  import type { E8s } from "@dfinity/nns";
   import { authStore } from "$lib/stores/auth.store";
 
   export let governanceCanisterId: Principal | undefined;
   export let neuron: SnsNeuron;
   export let parameters: SnsNervousSystemParameters;
-  export let transactionFee: E8s;
+  export let transactionFee: TokenAmountV2;
   export let token: Token;
 
   let neuronAccount: IcrcAccount | undefined;
