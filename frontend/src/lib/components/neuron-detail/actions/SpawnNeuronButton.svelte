@@ -9,7 +9,7 @@
   import { formatNumber, formatPercentage } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isEnoughMaturityToSpawn } from "$lib/utils/neuron.utils";
-  import Tooltip from "$lib/components/ui/Tooltip.svelte";
+  import { Tooltip } from "@dfinity/gix-components";
   import {
     NNS_NEURON_CONTEXT_KEY,
     type NnsNeuronContext,

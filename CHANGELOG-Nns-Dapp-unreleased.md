@@ -40,6 +40,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Fix gaps between sections on the mobile launchpad page.
 * Fix proposal back navigation during voting.
+* Fix tooltip positioning.
 
 #### Security
 
