@@ -88,7 +88,7 @@
   <ul class="content">
     <SnsStakeItemAction {neuron} {token} {universe} />
     <SnsNeuronStateItemAction {neuron} snsParameters={parameters} />
-    <SnsNeuronDissolveDelayItemAction {neuron} {parameters} />
+    <SnsNeuronDissolveDelayItemAction {neuron} {parameters} {token} />
   </ul>
 </Section>
 
