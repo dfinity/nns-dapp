@@ -3,12 +3,7 @@
   import { fromDefinedNullable } from "@dfinity/utils";
   import { getContext } from "svelte";
   import { ICON_SIZE_LARGE } from "$lib/constants/layout.constants";
-  import {
-    IconClose,
-    IconInfo,
-    IconWarning,
-    Value,
-  } from "@dfinity/gix-components";
+  import { IconClose, IconWarning, Value } from "@dfinity/gix-components";
   import { removeHotkey } from "$lib/services/sns-neurons.services";
   import { authStore } from "$lib/stores/auth.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
@@ -23,7 +18,7 @@
     canIdentityManageHotkeys,
   } from "$lib/utils/sns-neuron.utils";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
-  import { Tooltip } from "@dfinity/gix-components";
+  import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import AddSnsHotkeyButton from "./actions/AddSnsHotkeyButton.svelte";
   import { toastsShow } from "$lib/stores/toasts.store";
   import { goto } from "$app/navigation";
@@ -111,14 +106,10 @@
       <div class="title" slot="start">
         <h3>{$i18n.neuron_detail.hotkeys_title}</h3>
         {#if showTooltip}
-          <Tooltip
-            id="sns-hotkeys-info"
+          <TooltipIcon
+            tooltipId="sns-hotkeys-info"
             text={$i18n.sns_neuron_detail.add_hotkey_tooltip}
-          >
-            <span>
-              <IconInfo />
-            </span>
-          </Tooltip>
+          />
         {/if}
       </div>
       {#if hotkeys.length === 0}
@@ -171,8 +162,7 @@
 
   .title {
     display: flex;
-    align-items: center;
-    gap: var(--padding-0_5x);
+    gap: var(--padding);
   }
 
   h3 {
