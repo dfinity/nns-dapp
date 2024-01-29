@@ -16,6 +16,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Close button at the bottom of follow neurons modal.
+* Info tooltips in neuron details.
 
 #### Changed
 
