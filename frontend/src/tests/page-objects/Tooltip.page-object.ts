@@ -12,4 +12,14 @@ export class TooltipPo extends BasePageObject {
   getText(): Promise<string> {
     return assertNonNullish(this.root.querySelector(".tooltip")).getText();
   }
+
+  getAriaDescribedBy(): Promise<string> {
+    return this.root
+      .querySelector(".tooltip-target")
+      .getAttribute("aria-describedby");
+  }
+
+  getTooltipId(): Promise<string> {
+    return this.root.querySelector(".tooltip").getAttribute("id");
+  }
 }
