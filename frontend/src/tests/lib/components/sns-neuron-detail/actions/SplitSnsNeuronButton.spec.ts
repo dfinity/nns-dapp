@@ -103,7 +103,7 @@ describe("SplitSnsNeuronButton", () => {
       {
         $amount: formatTokenE8s({
           value: minNeuronSplittable({
-            fee: transactionFee.toUlps(),
+            fee: transactionFee.toE8s(),
             neuronMinimumStake,
           }),
           detailed: true,

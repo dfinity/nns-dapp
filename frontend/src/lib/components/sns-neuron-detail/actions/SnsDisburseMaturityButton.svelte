@@ -13,11 +13,12 @@
 
   export let neuron: SnsNeuron;
   export let fee: TokenAmountV2;
+  feeE8s;
 
   let enoughMaturity: boolean;
   $: enoughMaturity = hasEnoughMaturityToDisburse({
     neuron,
-    fee: fee.toUlps(),
+    fee: fee.toE8s(),
   });
 
   let disabledText: string | undefined = undefined;
@@ -28,7 +29,7 @@
           $i18n.neuron_detail.disburse_maturity_disabled_tooltip_non_zero,
           {
             $amount: formatTokenE8s({
-              value: minimumAmountToDisburseMaturity(fee.toUlps()),
+              value: minimumAmountToDisburseMaturity(fee.toE8s()),
             }),
           }
         )

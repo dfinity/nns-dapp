@@ -26,7 +26,7 @@ describe("SnsDisburseMaturityButton", () => {
     const po = renderComponent(
       {
         ...mockSnsNeuron,
-        maturity_e8s_equivalent: fee.toUlps() * 2n,
+        maturity_e8s_equivalent: fee.toE8s() * 2n,
         staked_maturity_e8s_equivalent: [],
       },
       fee
@@ -39,7 +39,7 @@ describe("SnsDisburseMaturityButton", () => {
     const po = renderComponent(
       {
         ...mockSnsNeuron,
-        maturity_e8s_equivalent: fee.toUlps() - 1n,
+        maturity_e8s_equivalent: fee.toE8s() - 1n,
         staked_maturity_e8s_equivalent: [],
       },
       fee

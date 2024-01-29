@@ -28,7 +28,7 @@
   let enoughStakeToSplit: boolean;
   $: enoughStakeToSplit = hasEnoughStakeToSplit({
     neuron,
-    fee: transactionFee.toUlps(),
+    fee: transactionFee.toE8s(),
     neuronMinimumStake,
   });
 </script>
@@ -50,7 +50,7 @@
       {
         $amount: formatTokenE8s({
           value: minNeuronSplittable({
-            fee: transactionFee.toUlps(),
+            fee: transactionFee.toE8s(),
             neuronMinimumStake,
           }),
           detailed: true,
