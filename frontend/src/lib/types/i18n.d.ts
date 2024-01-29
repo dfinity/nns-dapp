@@ -744,6 +744,7 @@ interface I18nNeuron_detail {
   dissolve_date: string;
   amount_maturity: string;
   created: string;
+  dissolve_delay_tooltip: string;
 }
 
 interface I18nSns_launchpad {

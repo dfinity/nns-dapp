@@ -15,6 +15,7 @@ import {
   createMockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
+import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronDissolveDelayItemActionPo } from "$tests/page-objects/SnsNeuronDissolveDelayItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronState } from "@dfinity/nns";
@@ -36,6 +37,11 @@ describe("SnsNeuronDissolveDelayItemAction", () => {
     max_dissolve_delay_seconds: [maxDissolveDelay],
     max_dissolve_delay_bonus_percentage: [25n],
   };
+  const token = {
+    ...mockSnsToken,
+    symbol: "ZXCV",
+  };
+
   const renderComponent = (
     neuron: SnsNeuron,
     parameters: SnsNervousSystemParameters = snsParameters
@@ -44,6 +50,7 @@ describe("SnsNeuronDissolveDelayItemAction", () => {
       props: {
         neuron,
         parameters,
+        token,
       },
     });
 
@@ -139,5 +146,16 @@ describe("SnsNeuronDissolveDelayItemAction", () => {
     const po = renderComponent(neuron);
 
     expect(await po.hasIncreaseDissolveDelayButton()).toBe(false);
+  });
+
+  it("should render the token symbol in the tooltip text", async () => {
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      state: NeuronState.Dissolved,
+      permissions: [noDissolvePermissions],
+    });
+    const po = renderComponent(neuron);
+
+    expect(await po.getTooltipIconPo().getText()).toContain(token.symbol);
   });
 });
