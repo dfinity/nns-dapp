@@ -162,6 +162,7 @@
 
   .title {
     display: flex;
+    gap: var(--padding);
   }
 
   h3 {

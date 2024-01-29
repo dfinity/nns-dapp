@@ -16,6 +16,5 @@
     display: inline-flex;
     align-items: center;
     color: var(--tertiary);
-    margin-left: var(--padding);
   }
 </style>
