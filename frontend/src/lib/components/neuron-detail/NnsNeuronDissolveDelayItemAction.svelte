@@ -6,12 +6,13 @@
     getSpawningTimeInSeconds,
     isNeuronControllable,
   } from "$lib/utils/neuron.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { IconClockNoFill } from "@dfinity/gix-components";
   import { NeuronState, type NeuronInfo } from "@dfinity/nns";
   import CommonItemAction from "../ui/CommonItemAction.svelte";
   import IncreaseDissolveDelayButton from "./actions/IncreaseDissolveDelayButton.svelte";
   import { keyOf } from "$lib/utils/utils";
-  import { secondsToDuration } from "@dfinity/utils";
+  import { secondsToDuration, ICPToken } from "@dfinity/utils";
   import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
   import { authStore } from "$lib/stores/auth.store";
   import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
@@ -48,7 +49,13 @@
   });
 </script>
 
-<CommonItemAction testId="nns-neuron-dissolve-delay-item-action-component">
+<CommonItemAction
+  testId="nns-neuron-dissolve-delay-item-action-component"
+  tooltipText={replacePlaceholders($i18n.neuron_detail.dissolve_delay_tooltip, {
+    $token: ICPToken.symbol,
+  })}
+  tooltipId="dissolve-delay-info-icon"
+>
   <IconClockNoFill slot="icon" />
   <span slot="title" data-tid="dissolve-delay-text"
     >{`${keyOf({

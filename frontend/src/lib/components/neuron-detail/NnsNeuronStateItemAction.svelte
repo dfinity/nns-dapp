@@ -1,5 +1,6 @@
 <script lang="ts">
   import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+  import { ICPToken } from "@dfinity/utils";
   import {
     ageMultiplier,
     getStateInfo,
@@ -7,6 +8,7 @@
     type StateInfo,
   } from "$lib/utils/neuron.utils";
   import { i18n } from "$lib/stores/i18n";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { keyOf } from "$lib/utils/utils";
   import DisburseButton from "./actions/DisburseButton.svelte";
   import DissolveActionButton from "./actions/DissolveActionButton.svelte";
@@ -28,7 +30,13 @@
   });
 </script>
 
-<CommonItemAction testId="nns-neuron-state-item-action-component">
+<CommonItemAction
+  testId="nns-neuron-state-item-action-component"
+  tooltipText={replacePlaceholders($i18n.neuron_detail.neuron_state_tooltip, {
+    $token: ICPToken.symbol,
+  })}
+  tooltipId="neuron-state-info-icon"
+>
   <svelte:fragment slot="icon">
     {#if stateInfo?.Icon !== undefined}
       <svelte:component this={stateInfo.Icon} />

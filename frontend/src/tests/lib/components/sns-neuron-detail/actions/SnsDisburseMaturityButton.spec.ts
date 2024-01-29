@@ -3,15 +3,16 @@ import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { DisburseMaturityButtonPo } from "$tests/page-objects/DisburseMaturityButton.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { SnsNeuron } from "@dfinity/sns";
+import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("SnsDisburseMaturityButton", () => {
-  const fee = 10_000n;
-  const renderComponent = (neuron: SnsNeuron, feeE8s: bigint) => {
+  const fee = TokenAmountV2.fromUlps({ amount: 10_000n, token: ICPToken });
+  const renderComponent = (neuron: SnsNeuron, fee: TokenAmountV2) => {
     const { container } = render(SnsDisburseMaturityButton, {
       props: {
         neuron,
-        feeE8s,
+        fee,
       },
     });
     return DisburseMaturityButtonPo.under(new JestPageObjectElement(container));
@@ -25,7 +26,7 @@ describe("SnsDisburseMaturityButton", () => {
     const po = renderComponent(
       {
         ...mockSnsNeuron,
-        maturity_e8s_equivalent: fee * 2n,
+        maturity_e8s_equivalent: fee.toE8s() * 2n,
         staked_maturity_e8s_equivalent: [],
       },
       fee
@@ -38,7 +39,7 @@ describe("SnsDisburseMaturityButton", () => {
     const po = renderComponent(
       {
         ...mockSnsNeuron,
-        maturity_e8s_equivalent: fee - 1n,
+        maturity_e8s_equivalent: fee.toE8s() - 1n,
         staked_maturity_e8s_equivalent: [],
       },
       fee
