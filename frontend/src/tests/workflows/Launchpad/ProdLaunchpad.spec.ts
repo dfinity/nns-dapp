@@ -43,7 +43,6 @@ describe("Launchpad", () => {
           json: () => Promise.resolve(response),
         };
       } catch (err) {
-        console.log("in da catch", err);
         // The frontend shuold stop requesting pages when the aggregator returns a page with less than 10 projects.
         return {
           ok: false,
