@@ -11,7 +11,7 @@
     mapNeuronIds,
     type MergeableNeuron,
   } from "$lib/utils/neuron.utils";
-  import Tooltip from "$lib/components/ui/Tooltip.svelte";
+  import { Tooltip } from "@dfinity/gix-components";
   import NnsNeuronCard from "./NnsNeuronCard.svelte";
 
   let selectedNeuronIds: NeuronId[] = [];

@@ -12,7 +12,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { E8s } from "@dfinity/nns";
   import { formatTokenE8s } from "$lib/utils/token.utils";
-  import Tooltip from "$lib/components/ui/Tooltip.svelte";
+  import { Tooltip } from "@dfinity/gix-components";
   import type { Token } from "@dfinity/utils";
   import VestingTooltipWrapper from "../VestingTooltipWrapper.svelte";
 
