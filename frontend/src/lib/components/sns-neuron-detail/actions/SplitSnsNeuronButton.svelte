@@ -20,8 +20,8 @@
   export let transactionFee: TokenAmountV2;
   export let token: Token;
 
-  let neuronMinimumStake: bigint;
-  $: neuronMinimumStake = fromDefinedNullable(
+  let neuronMinimumStakeE8s: bigint;
+  $: neuronMinimumStakeE8s = fromDefinedNullable(
     parameters.neuron_minimum_stake_e8s
   );
 
@@ -29,7 +29,7 @@
   $: enoughStakeToSplit = hasEnoughStakeToSplit({
     neuron,
     fee: transactionFee.toE8s(),
-    neuronMinimumStake,
+    neuronMinimumStake: neuronMinimumStakeE8s,
   });
 </script>
 
@@ -51,7 +51,7 @@
         $amount: formatTokenE8s({
           value: minNeuronSplittable({
             fee: transactionFee.toE8s(),
-            neuronMinimumStake,
+            neuronMinimumStake: neuronMinimumStakeE8s,
           }),
           detailed: true,
         }),
