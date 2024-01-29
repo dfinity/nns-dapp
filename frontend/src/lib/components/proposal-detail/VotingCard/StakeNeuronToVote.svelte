@@ -19,18 +19,11 @@
     ? $nnsTokenStore.token.symbol
     : $snsTokenSymbolSelectedStore?.symbol;
 
-  let label: string | undefined;
-  $: label =
-    token &&
-    replacePlaceholders($i18n.proposal_detail__vote.stake_neuron, {
-      $token: token,
-    });
-
   const gotoNeurons = () => goto($neuronsPathStore);
 </script>
 
 <TestIdWrapper testId="stake-neuron-to-vote-component">
-  {#if nonNullish(label)}
+  {#if nonNullish(token)}
     <div class="container" in:fade>
       <Collapsible
         expandButton={false}
@@ -40,7 +33,11 @@
         wrapHeight
       >
         <div slot="header" class="header" class:expanded>
-          <span class="value">{$i18n.proposal_detail__vote.no_neurons}</span>
+          <span class="value"
+            >{replacePlaceholders($i18n.proposal_detail__vote.no_neurons, {
+              $token: token,
+            })}</span
+          >
           <button
             class="icon"
             class:expanded
@@ -51,13 +48,21 @@
           </button>
         </div>
         <p class="description" data-tid="stake-neuron-description">
-          {$i18n.proposal_detail__vote.no_neurons_description}
+          {replacePlaceholders(
+            $i18n.proposal_detail__vote.no_neurons_description,
+            {
+              $token: token,
+            }
+          )}
         </p>
         <button
           data-tid="stake-neuron-button"
           class="secondary stake-neuron-button"
           type="button"
-          on:click|stopPropagation={gotoNeurons}>{label}</button
+          on:click|stopPropagation={gotoNeurons}
+          >{replacePlaceholders($i18n.proposal_detail__vote.stake_neuron, {
+            $token: token,
+          })}</button
         >
         <slot />
       </Collapsible>
