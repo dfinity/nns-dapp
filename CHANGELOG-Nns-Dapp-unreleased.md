@@ -17,6 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Close button at the bottom of follow neurons modal.
 * Info tooltips in neuron details.
+* Filtering SNS Proposals by Type.
 
 #### Changed
 
