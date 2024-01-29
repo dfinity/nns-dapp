@@ -23,7 +23,7 @@
     canIdentityManageHotkeys,
   } from "$lib/utils/sns-neuron.utils";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
-  import Tooltip from "$lib/components/ui/Tooltip.svelte";
+  import { Tooltip } from "@dfinity/gix-components";
   import AddSnsHotkeyButton from "./actions/AddSnsHotkeyButton.svelte";
   import { toastsShow } from "$lib/stores/toasts.store";
   import { goto } from "$app/navigation";

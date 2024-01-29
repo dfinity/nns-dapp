@@ -10,7 +10,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { formatTokenV2 } from "$lib/utils/token.utils";
   import IdentifierHash from "../ui/IdentifierHash.svelte";
-  import Tooltip from "../ui/Tooltip.svelte";
+  import { Tooltip } from "@dfinity/gix-components";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
   export let balance: TokenAmountV2 | undefined = undefined;

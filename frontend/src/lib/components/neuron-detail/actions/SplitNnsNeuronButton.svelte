@@ -7,7 +7,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
-  import Tooltip from "$lib/components/ui/Tooltip.svelte";
+  import { Tooltip } from "@dfinity/gix-components";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import { ICPToken } from "@dfinity/utils";
   import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
