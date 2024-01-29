@@ -13,12 +13,11 @@
 
   export let neuron: SnsNeuron;
   export let fee: TokenAmountV2;
-  feeE8s;
 
   let enoughMaturity: boolean;
   $: enoughMaturity = hasEnoughMaturityToDisburse({
     neuron,
-    fee: fee.toE8s(),
+    feeE8s: fee.toE8s(),
   });
 
   let disabledText: string | undefined = undefined;
