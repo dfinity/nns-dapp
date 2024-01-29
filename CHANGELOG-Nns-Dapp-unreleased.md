@@ -29,6 +29,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Remove `ENABLE_CKETH` feature flag.
 * Remove unused `transactionsFeesStore` and related.
+* Remove `ENABLE_SNS_TYPES_FILTER` feature flag.
 
 #### Fixed
 
