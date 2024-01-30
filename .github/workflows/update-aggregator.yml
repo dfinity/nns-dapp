@@ -3,7 +3,8 @@
 name: Update aggregator candid bindings
 on:
   schedule:
-    - cron: '30 3 * * *'
+    # Check for updates on candid interface for the aggregator every monday at 3:30am.
+    - cron: '30 3 * * MON'
   workflow_dispatch:
   push:
     branches:
@@ -41,10 +42,10 @@ jobs:
           branch: bot-aggregator-update
           branch-suffix: timestamp
           delete-branch: true
-          title: 'Update aggregator'
+          title: 'Update aggregator candid bindings'
           body: |
             # Motivation
-            We would like to parse all the latest SNS data.
+            We would like to parse all the latest SNS data. To do so, we update the candid interfaces for the SNS aggregator.
 
             # Changes
             * Updated the Rust code derived from `.did` files in the aggregator.
@@ -52,6 +53,12 @@ jobs:
 
             # Tests
               - [ ] Please check the API updates for any breaking changes that affect our code.
+              
+              Breaking changes are:
+              * New mandatory fields
+              * Removing or renaming fields
+              * Changing the type of a field
+              * Adding new variants
       - name: Report on the action
         # Since the this is a scheduled job, a failure won't be shown on any
         # PR status. To notify the team, we send a message to our Slack channel on failure.

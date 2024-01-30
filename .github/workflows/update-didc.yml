@@ -3,8 +3,8 @@
 name: didc Update
 on:
   schedule:
-    # check for new `didc` releases daily at 7:30
-    - cron: '30 7 * * *'
+    # check for new `didc` releases every tuesday at 7:30.
+    - cron: '30 7 * * TUE'
   workflow_dispatch:
 jobs:
   didc-update:

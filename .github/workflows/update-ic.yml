@@ -3,8 +3,8 @@
 name: Update IC
 on:
   schedule:
-    # Check for new IC releases daily at 7:30.  Upstream releases about once weekly.
-    - cron: '30 7 * * *'
+    # Check for new IC releases every wednesday at 7:30.
+    - cron: '30 7 * * WED'
   push:
     branches:
       - update-ic-workflow
@@ -103,11 +103,15 @@ jobs:
             - Update the version of `ic` specified in `dfx.json`.
             - Update the NNS candid files to the versions in that commit.
 
-            ## Changes made by a human (delete if inapplicable)
-
             # Tests
             - See CI
             - [ ] Check for breaking changes in the APIs and schedule any required follow-on work.
+
+            Breaking changes are:
+              * New mandatory fields
+              * Removing or renaming fields
+              * Changing the type of a field
+              * Adding new variants
           # Since this is a scheduled job, a failure won't be shown on any
           # PR status. To notify the team, we send a message to our Slack channel on failure.
       - name: Notify Slack on failure
