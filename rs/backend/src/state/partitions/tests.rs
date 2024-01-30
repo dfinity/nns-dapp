@@ -1,6 +1,9 @@
 //! Tests for stable memory layout code.
 use super::*;
-use crate::{accounts_store::schema::SchemaLabel, state::{tests::setup_test_state, StableState}};
+use crate::{
+    accounts_store::schema::SchemaLabel,
+    state::{tests::setup_test_state, StableState},
+};
 use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
 use ic_crypto_sha::Sha256;
 use std::rc::Rc;
