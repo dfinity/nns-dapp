@@ -9,7 +9,7 @@ import { expect, test } from "@playwright/test";
 
 test("Test disburse neuron", async ({ page, context }) => {
   await page.goto("/");
-  await expect(page).toHaveTitle("My ICP Tokens / NNS Dapp");
+  await expect(page).toHaveTitle("My Tokens / NNS Dapp");
   // TODO: GIX-1985 Remove this once the feature flag is enabled by default
   await setFeatureFlag({ page, featureFlag: "ENABLE_MY_TOKENS", value: true });
   await signInWithNewUser({ page, context });

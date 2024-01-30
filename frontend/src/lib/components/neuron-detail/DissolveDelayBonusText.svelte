@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { formatPercentage } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import Tooltip from "../ui/Tooltip.svelte";
+  import { Tooltip } from "@dfinity/gix-components";
 
   export let dissolveMultiplier: number;
 </script>

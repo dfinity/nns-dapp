@@ -17,7 +17,6 @@ pub use ic_sns_governance::{GetMetadataResponse, ListNervousSystemFunctionsRespo
 pub use ic_sns_ledger::{Tokens as SnsTokens, Value as Icrc1Value};
 pub use ic_sns_root::ListSnsCanistersResponse;
 pub use ic_sns_swap::GetStateResponse;
-pub use ic_sns_wasm::{DeployedSns, ListDeployedSnsesResponse, SnsCanisterIds};
 pub use serde::Serialize;
 
 /// A named empty record.

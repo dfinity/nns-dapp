@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-12-13_23-01/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-01-25_14-09+p2p-con/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(clippy::missing_docs_in_private_items)]
 #![allow(non_camel_case_types)]
@@ -19,7 +19,6 @@ pub struct EmptyRecord {}
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct AddApiBoundaryNodePayload {
     pub node_id: Principal,
-    pub domain: String,
     pub version: String,
 }
 
@@ -55,6 +54,7 @@ pub struct AddNodePayload {
     pub prometheus_metrics_endpoint: String,
     pub http_endpoint: String,
     pub idkg_dealing_encryption_pk: Option<serde_bytes::ByteBuf>,
+    pub domain: Option<String>,
     pub public_ipv4_config: Option<Vec<String>>,
     pub xnet_endpoint: String,
     pub chip_id: Option<serde_bytes::ByteBuf>,
@@ -336,12 +336,6 @@ pub struct SetFirewallConfigPayload {
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
-pub struct UpdateApiBoundaryNodeDomainPayload {
-    pub node_id: Principal,
-    pub domain: String,
-}
-
-#[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateApiBoundaryNodesVersionPayload {
     pub version: String,
     pub node_ids: Vec<Principal>,
@@ -367,6 +361,12 @@ pub struct UpdateElectedReplicaVersionsPayload {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateNodeDirectlyPayload {
     pub idkg_dealing_encryption_pk: Option<serde_bytes::ByteBuf>,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct UpdateNodeDomainDirectlyPayload {
+    pub node_id: Principal,
+    pub domain: Option<String>,
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
@@ -555,9 +555,6 @@ impl Service {
     pub async fn set_firewall_config(&self, arg0: SetFirewallConfigPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "set_firewall_config", (arg0,)).await
     }
-    pub async fn update_api_boundary_node_domain(&self, arg0: UpdateApiBoundaryNodeDomainPayload) -> CallResult<()> {
-        ic_cdk::call(self.0, "update_api_boundary_node_domain", (arg0,)).await
-    }
     pub async fn update_api_boundary_nodes_version(
         &self,
         arg0: UpdateApiBoundaryNodesVersionPayload,
@@ -575,6 +572,9 @@ impl Service {
     }
     pub async fn update_node_directly(&self, arg0: UpdateNodeDirectlyPayload) -> CallResult<(Result1,)> {
         ic_cdk::call(self.0, "update_node_directly", (arg0,)).await
+    }
+    pub async fn update_node_domain_directly(&self, arg0: UpdateNodeDomainDirectlyPayload) -> CallResult<(Result1,)> {
+        ic_cdk::call(self.0, "update_node_domain_directly", (arg0,)).await
     }
     pub async fn update_node_ipv_4_config_directly(
         &self,

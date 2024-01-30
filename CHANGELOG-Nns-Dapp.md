@@ -11,6 +11,40 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 127458
+
+### Application
+
+#### Added
+
+* New block "Stake a neuron" on proposal details page.
+* Getter and setter of partition schema label.
+
+#### Changed
+
+* Changed wording about staking neurons to staking tokens.
+* Add missing feature flags to default feature flags value.
+* Various wording changes.
+
+#### Removed
+
+* ckBTC withdrawal account.
+* Don't show the red error outline on dissolve delay input when the dissolve delay is not enough to have voting power.
+
+#### Fixed
+
+* Fix gaps between sections on the mobile launchpad page.
+
+### Operations
+
+#### Added
+
+* Add `reviewers` to the `update-*.yml` workflows that create PRs.
+
+#### Fixed
+
+* Commented out broken local `config.test`.
+
 ## Proposal 127093
 
 ### Application

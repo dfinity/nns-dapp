@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2023-12-13_23-01/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-01-25_14-09+p2p-con/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -134,7 +134,6 @@ pub struct RewardEvent {
     pub rounds_since_last_distribution: Option<u64>,
     pub actual_timestamp_seconds: u64,
     pub end_timestamp_seconds: Option<u64>,
-    pub total_available_e8s_equivalent: Option<u64>,
     pub distributed_e8s_equivalent: u64,
     pub round: u64,
     pub settled_proposals: Vec<ProposalId>,
@@ -230,6 +229,11 @@ pub struct ExecuteGenericNervousSystemFunction {
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct ManageLedgerParameters {
+    pub transfer_fee: Option<u64>,
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Motion {
     pub motion_text: String,
 }
@@ -248,6 +252,7 @@ pub enum Action {
     Unspecified(EmptyRecord),
     ManageSnsMetadata(ManageSnsMetadata),
     ExecuteGenericNervousSystemFunction(ExecuteGenericNervousSystemFunction),
+    ManageLedgerParameters(ManageLedgerParameters),
     Motion(Motion),
 }
 
@@ -439,6 +444,7 @@ pub struct DisburseMaturityInProgress {
     pub timestamp_of_disbursement_seconds: u64,
     pub amount_e8s: u64,
     pub account_to_disburse_to: Option<Account>,
+    pub finalize_disbursement_timestamp_seconds: Option<u64>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]

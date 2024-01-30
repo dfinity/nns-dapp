@@ -8,13 +8,15 @@
   import { getMaxTransactionAmount } from "$lib/utils/token.utils";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
-  import { mainTransactionFeeE8sStore } from "$lib/stores/transaction-fees.store";
   import { busy } from "@dfinity/gix-components";
   import TransactionFromAccount from "$lib/components/transaction/TransactionFromAccount.svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { isNullish } from "@dfinity/utils";
   import TransactionFormFee from "$lib/components/transaction/TransactionFormFee.svelte";
-  import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
+  import {
+    mainTransactionFeeStoreAsToken,
+    mainTransactionFeeE8sStore,
+  } from "$lib/derived/main-transaction-fee.derived";
   import { toastsError } from "$lib/stores/toasts.store";
   import { ICPToken } from "@dfinity/utils";
 

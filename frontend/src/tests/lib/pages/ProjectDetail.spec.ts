@@ -347,6 +347,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       vi.spyOn(snsApi, "querySnsLifecycle").mockResolvedValue({
         decentralization_sale_open_timestamp_seconds: [11_231_312n],
         lifecycle: [SnsSwapLifecycle.Open],
+        decentralization_swap_termination_timestamp_seconds: [],
       });
 
       cancelPollGetOpenTicket();

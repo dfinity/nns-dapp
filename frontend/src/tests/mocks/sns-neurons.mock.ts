@@ -34,6 +34,7 @@ export const mockActiveDisbursement: DisburseMaturityInProgress = {
       subaccount: [],
     },
   ],
+  finalize_disbursement_timestamp_seconds: [],
 };
 
 export const createMockSnsNeuron = ({

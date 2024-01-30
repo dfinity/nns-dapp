@@ -10,6 +10,7 @@ import {
   createMockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
+import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronStateItemActionPo } from "$tests/page-objects/SnsNeuronStateItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronState } from "@dfinity/nns";
@@ -19,11 +20,17 @@ import { render } from "@testing-library/svelte";
 
 describe("SnsNeuronStateItemAction", () => {
   const nowInSeconds = 1689843195;
+  const token = {
+    ...mockSnsToken,
+    symbol: "ASDF",
+  };
+
   const renderComponent = (neuron: SnsNeuron) => {
     const { container } = render(SnsNeuronStateItemAction, {
       props: {
         neuron,
         snsParameters: snsNervousSystemParametersMock,
+        token,
       },
     });
 
@@ -161,5 +168,16 @@ describe("SnsNeuronStateItemAction", () => {
     const po = renderComponent(neuron);
 
     expect(await po.getAgeBonus()).toBe("No age bonus");
+  });
+
+  it("should render token symbol in tooltip text", async () => {
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      state: NeuronState.Dissolved,
+      permissions: [controllerPermissions],
+    });
+    const po = renderComponent(neuron);
+
+    expect(await po.getTooltipIconPo().getText()).toContain(token.symbol);
   });
 });

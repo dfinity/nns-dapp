@@ -1,22 +1,10 @@
 import FollowNeuronsModal from "$lib/modals/neurons/FollowNeuronsModal.svelte";
 import { neuronsStore } from "$lib/stores/neurons.store";
-import en from "$tests/mocks/i18n.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
-import { isNotVisible } from "$tests/utils/utils.test-utils";
+import { FollowNeuronsModalPo } from "$tests/page-objects/FollowNeuronsModal.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { Topic } from "@dfinity/nns";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
-
-vi.mock("$lib/services/neurons.services", () => {
-  return {
-    removeFollowee: vi.fn().mockResolvedValue(undefined),
-  };
-});
-
-vi.mock("$lib/services/known-neurons.services", () => {
-  return {
-    listKnownNeurons: vi.fn(),
-  };
-});
+import { render } from "@testing-library/svelte";
 
 describe("FollowNeuronsModal", () => {
   const neuronFollowing = {
@@ -38,66 +26,45 @@ describe("FollowNeuronsModal", () => {
       certified: true,
     });
 
-  beforeAll(() => fillNeuronStore());
-
-  it("renders title", () => {
-    const { queryByText } = render(FollowNeuronsModal, {
-      props: {
-        neuronId: neuronFollowing.neuronId,
-      },
-    });
-
-    expect(queryByText(en.neurons.follow_neurons_screen)).toBeInTheDocument();
+  beforeEach(() => {
+    neuronsStore.reset();
+    fillNeuronStore();
   });
 
-  it("renders badge with numbers of followees on the topic", () => {
-    const { queryByTestId } = render(FollowNeuronsModal, {
+  const renderComponent = ({ onClose }: { onClose?: () => void }) => {
+    const { container, component } = render(FollowNeuronsModal, {
       props: {
         neuronId: neuronFollowing.neuronId,
       },
     });
-
-    const badgeExchange = queryByTestId(
-      `topic-${Topic.ExchangeRate}-followees-badge`
-    );
-
-    expect(badgeExchange).not.toBeNull();
-    expect(badgeExchange?.innerHTML).toBe("2");
-
-    const badgeGovernance = queryByTestId(
-      `topic-${Topic.Governance}-followees-badge`
-    );
-
-    expect(badgeGovernance).not.toBeNull();
-    expect(badgeGovernance?.innerHTML).toBe("0");
-  });
-
-  it("displays the followees of the user in specific topic", async () => {
-    const { queryByTestId } = render(FollowNeuronsModal, {
-      props: {
-        neuronId: neuronFollowing.neuronId,
-      },
-    });
-
-    const topicSection = queryByTestId(
-      `follow-topic-${Topic.ExchangeRate}-section`
-    );
-    expect(topicSection).not.toBeNull();
-
-    if (topicSection !== null) {
-      const collapsibleContent = topicSection.querySelector(
-        "[data-tid='collapsible-content']"
-      );
-      expect(isNotVisible(collapsibleContent)).toBe(true);
-
-      const collapsibleButton = topicSection.querySelector(
-        '[data-tid="collapsible-expand-button"]'
-      );
-      expect(collapsibleButton).not.toBeNull();
-
-      collapsibleButton && (await fireEvent.click(collapsibleButton));
-
-      await waitFor(() => expect(isNotVisible(collapsibleContent)).toBe(false));
+    if (onClose) {
+      component.$on("nnsClose", onClose);
     }
+
+    return FollowNeuronsModalPo.under(new JestPageObjectElement(container));
+  };
+
+  it("renders title", async () => {
+    const po = renderComponent({});
+    expect(await po.getModalTitle()).toBe("Follow neurons");
+  });
+
+  it("close button closes modal", async () => {
+    const onClose = vi.fn();
+    const po = renderComponent({ onClose });
+
+    expect(onClose).not.toBeCalled();
+    await po.clickCloseButton();
+    expect(onClose).toBeCalledTimes(1);
+  });
+
+  it("renders badge with numbers of followees on the topic", async () => {
+    const po = renderComponent({});
+    expect(
+      await po.getEditFollowNeuronsPo().getBadgeNumber(Topic.ExchangeRate)
+    ).toBe(2);
+    expect(
+      await po.getEditFollowNeuronsPo().getBadgeNumber(Topic.Governance)
+    ).toBe(0);
   });
 });

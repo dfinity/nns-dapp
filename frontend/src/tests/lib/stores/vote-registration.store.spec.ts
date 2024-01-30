@@ -44,25 +44,19 @@ describe("voting-store", () => {
 
       voteRegistrationStore.updateStatus({
         proposalIdString: voteA.proposalIdString,
-        status: "complete",
+        status: "post-update",
         canisterId: OWN_CANISTER_ID,
       });
 
       expect(
         get(voteRegistrationStore).registrations[OWN_CANISTER_ID.toText()][0]
           .status
-      ).toEqual("complete");
+      ).toEqual("post-update");
     });
 
     it("should remove completed voting items", () => {
       voteRegistrationStore.add({ ...voteA, canisterId: OWN_CANISTER_ID });
       voteRegistrationStore.add({ ...voteB, canisterId: OWN_CANISTER_ID });
-
-      voteRegistrationStore.updateStatus({
-        status: "complete",
-        proposalIdString: voteA.proposalIdString,
-        canisterId: OWN_CANISTER_ID,
-      });
 
       voteRegistrationStore.remove({
         proposalIdString: voteA.proposalIdString,

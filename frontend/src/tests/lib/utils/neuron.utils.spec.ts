@@ -957,7 +957,7 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          maturityE8sEquivalent: BigInt(MIN_NEURON_STAKE + 1_000),
+          maturityE8sEquivalent: MIN_NEURON_STAKE + 1_000n,
         },
       };
       expect(isEnoughMaturityToSpawn({ neuron, percentage: 100 })).toBe(false);
@@ -966,7 +966,7 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          maturityE8sEquivalent: BigInt(MIN_NEURON_STAKE * 2 + 1_000),
+          maturityE8sEquivalent: MIN_NEURON_STAKE * 2n + 1_000n,
         },
       };
       expect(isEnoughMaturityToSpawn({ neuron: neuron2, percentage: 50 })).toBe(
@@ -978,7 +978,7 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          maturityE8sEquivalent: BigInt(MIN_NEURON_STAKE * 3 + 1_000),
+          maturityE8sEquivalent: MIN_NEURON_STAKE * 3n + 1_000n,
         },
       };
       expect(isEnoughMaturityToSpawn({ neuron, percentage: 100 })).toBe(true);
@@ -987,7 +987,7 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          maturityE8sEquivalent: BigInt(MIN_NEURON_STAKE * 5 + 1_000),
+          maturityE8sEquivalent: MIN_NEURON_STAKE * 5n + 1_000n,
         },
       };
       expect(isEnoughMaturityToSpawn({ neuron: neuron2, percentage: 50 })).toBe(
@@ -999,7 +999,7 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          maturityE8sEquivalent: BigInt(MIN_NEURON_STAKE - 1_000),
+          maturityE8sEquivalent: MIN_NEURON_STAKE - 1_000n,
         },
       };
       expect(isEnoughMaturityToSpawn({ neuron, percentage: 100 })).toBe(false);
@@ -1008,7 +1008,7 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          maturityE8sEquivalent: BigInt(MIN_NEURON_STAKE * 2 + 1_000),
+          maturityE8sEquivalent: MIN_NEURON_STAKE * 2n + 1_000n,
         },
       };
       expect(isEnoughMaturityToSpawn({ neuron: neuron2, percentage: 10 })).toBe(
@@ -1134,15 +1134,13 @@ describe("neuron-utils", () => {
     };
 
     const hotkeyTag = { text: "Hotkey control" } as NeuronTagData;
-    const hwTag = { text: "Hardware Wallet" } as NeuronTagData;
+    const hwTag = { text: "Hardware Wallet Controlled" } as NeuronTagData;
     const nfTag = { text: "Neurons' fund" } as NeuronTagData;
     const seedTag = {
       text: "Seed",
-      description: "Seed Neuron",
     } as NeuronTagData;
     const ectTag = {
-      text: "ECT",
-      description: "Early Contributor Token Neuron",
+      text: "Early Contributor Token",
     } as NeuronTagData;
     it("returns 'hotkey' if neuron is controllable by hotkey and hardware wallet is not the controller", () => {
       const neuron = {
@@ -1182,7 +1180,7 @@ describe("neuron-utils", () => {
       ).toEqual([hotkeyTag]);
     });
 
-    it("returns 'Hardware Wallet' if neuron is controllable by hotkey and hardware wallet is the controller", () => {
+    it("returns 'Hardware Wallet Controlled' if neuron is controllable by hotkey and hardware wallet is the controller", () => {
       const neuron = {
         ...mockNeuron,
         fullNeuron: {
@@ -1277,7 +1275,7 @@ describe("neuron-utils", () => {
       ).toEqual([nfTag, hotkeyTag]);
     });
 
-    it("returns 'Neurons' Fund' and 'Hardware Wallet'", () => {
+    it("returns 'Neurons' Fund' and 'Hardware Wallet Controlled'", () => {
       const neuron: NeuronInfo = {
         ...mockNeuron,
         joinedCommunityFundTimestampSeconds: 123_445n,
@@ -1335,7 +1333,7 @@ describe("neuron-utils", () => {
       ).toEqual([ectTag]);
     });
 
-    it("returns 'Seed' and 'Neurons' Fund' and 'Hardware Wallet'", () => {
+    it("returns 'Seed' and 'Neurons' Fund' and 'Hardware Wallet Controlled'", () => {
       const neuron: NeuronInfo = {
         ...mockNeuron,
         neuronType: NeuronType.Seed,
@@ -2168,7 +2166,7 @@ describe("neuron-utils", () => {
           neuronFees: 10n,
         },
       };
-      expect(neuronCanBeSplit({ neuron, fee: 10_000 })).toBe(true);
+      expect(neuronCanBeSplit({ neuron, fee: 10_000n })).toBe(true);
     });
 
     it("should return false if neuron has not enough stake to be splitted", () => {
@@ -2180,7 +2178,7 @@ describe("neuron-utils", () => {
           neuronFees: 10n,
         },
       };
-      expect(neuronCanBeSplit({ neuron, fee: 10_000 })).toBe(false);
+      expect(neuronCanBeSplit({ neuron, fee: 10_000n })).toBe(false);
     });
   });
 
@@ -2229,8 +2227,8 @@ describe("neuron-utils", () => {
 
   describe("minNeuronSplittable", () => {
     it("returns fee plus two ICPs", () => {
-      const received = minNeuronSplittable(10_000);
-      expect(received).toBe(10_000 + 200_000_000);
+      const received = minNeuronSplittable(10_000n);
+      expect(received).toBe(10_000n + 200_000_000n);
     });
   });
 
@@ -2274,7 +2272,7 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          cachedNeuronStake: BigInt(MIN_NEURON_STAKE * 2),
+          cachedNeuronStake: MIN_NEURON_STAKE * 2n,
         },
       };
       expect(validTopUpAmount({ neuron, amount: 0.001 })).toBe(true);
@@ -2301,7 +2299,7 @@ describe("neuron-utils", () => {
         ...mockNeuron,
         fullNeuron: {
           ...mockFullNeuron,
-          cachedNeuronStake: BigInt(MIN_NEURON_STAKE / 2 - 10),
+          cachedNeuronStake: MIN_NEURON_STAKE / 2n - 10n,
         },
       };
       expect(

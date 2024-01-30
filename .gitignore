@@ -113,6 +113,7 @@ node_modules/
 web-assets/
 playwright-report/
 playwright-results/
+*.orig
 
 **/*.rs.bk
 

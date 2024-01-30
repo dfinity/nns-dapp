@@ -3,8 +3,8 @@
 name: Update IC
 on:
   schedule:
-    # Check for new IC releases daily at 7:30.  Upstream releases about once weekly.
-    - cron: '30 7 * * *'
+    # Check for new IC releases every wednesday at 7:30.
+    - cron: '30 7 * * WED'
   push:
     branches:
       - update-ic-workflow
@@ -82,6 +82,7 @@ jobs:
         with:
           token: ${{ secrets.GIX_BOT_PAT }}
           base: main
+          reviewers: mstrasinskis, dskloetd, lmuntaner
           # Note: Please be careful when updating the add-paths field.  We have had the snsdemo committed by accident, with a pattern that matches nothing seemingly committing everything.
           add-paths: |
             dfx.json
@@ -96,17 +97,23 @@ jobs:
           body: |
             # Motivation
             A newer release of the internet computer is available.
+            Even with no changes, just updating the reference is good practice.
 
             # Changes
             ## Changes made by a bot triggered by ${{ github.actor }}
             - Update the version of `ic` specified in `dfx.json`.
             - Update the NNS candid files to the versions in that commit.
 
-            ## Changes made by a human (delete if inapplicable)
-
             # Tests
             - See CI
             - [ ] Check for breaking changes in the APIs and schedule any required follow-on work.
+
+            Breaking changes are:
+              * New mandatory fields
+                * Removing mandatory fields
+                * Renaming fields
+                * Changing the type of a field
+                * Adding new variants
           # Since this is a scheduled job, a failure won't be shown on any
           # PR status. To notify the team, we send a message to our Slack channel on failure.
       - name: Notify Slack on failure

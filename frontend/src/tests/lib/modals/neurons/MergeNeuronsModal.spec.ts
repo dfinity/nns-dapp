@@ -107,7 +107,9 @@ describe("MergeNeuronsModal", () => {
 
     it("renders title", async () => {
       const po = await renderMergeModal([mergeableNeuron1]);
-      expect(await po.getTitle()).toBe(en.neurons.merge_neurons_modal_title);
+      expect(await po.getModalTitle()).toBe(
+        en.neurons.merge_neurons_modal_title
+      );
     });
 
     it("renders disabled button", async () => {

@@ -1,9 +1,9 @@
 import { AddAccountTypePo } from "$tests/page-objects/AddAccountType.page-object";
 import { AddSubAccountPo } from "$tests/page-objects/AddSubAccount.page-object";
-import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { ModalPo } from "$tests/page-objects/Modal.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class AddAccountModalPo extends BasePageObject {
+export class AddAccountModalPo extends ModalPo {
   private static readonly TID = "add-account-modal-component";
 
   static under(element: PageObjectElement): AddAccountModalPo {
@@ -34,9 +34,5 @@ export class AddAccountModalPo extends BasePageObject {
     await this.chooseLinkedAccount();
     await this.enterAccountName(name);
     await this.clickCreate();
-  }
-
-  waitForClosed(): Promise<void> {
-    return this.root.waitForAbsent();
   }
 }

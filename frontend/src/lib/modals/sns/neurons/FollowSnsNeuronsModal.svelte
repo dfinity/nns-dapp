@@ -6,6 +6,7 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
   import Separator from "$lib/components/ui/Separator.svelte";
+  import { createEventDispatcher } from "svelte";
   import type { Readable } from "svelte/store";
   import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
 
@@ -14,6 +15,10 @@
 
   let functionsStore: Readable<SnsNervousSystemFunction[] | undefined>;
   $: functionsStore = createSnsNsFunctionsProjectStore(rootCanisterId);
+
+  const dispatcher = createEventDispatcher();
+
+  const close = () => dispatcher("nnsClose");
 </script>
 
 <Modal
@@ -35,4 +40,9 @@
       <FollowSnsTopicSection {nsFunction} {rootCanisterId} {neuron} />
     {/each}
   {/if}
+  <div class="toolbar">
+    <button data-tid="close-button" class="secondary" on:click={close}>
+      {$i18n.core.close}
+    </button>
+  </div>
 </Modal>

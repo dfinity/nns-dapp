@@ -370,7 +370,6 @@ export const isHotKeyControllable = ({
 
 export type NeuronTagData = {
   text: string;
-  description?: string;
 };
 
 export const getNeuronTags = ({
@@ -387,15 +386,9 @@ export const getNeuronTags = ({
   const tags: NeuronTagData[] = [];
 
   if (isSeedNeuron(neuron)) {
-    tags.push({
-      text: i18n.neuron_types.seed,
-      description: i18n.neuron_types.seedDescription,
-    });
+    tags.push({ text: i18n.neuron_types.seed });
   } else if (isEctNeuron(neuron)) {
-    tags.push({
-      text: i18n.neuron_types.ect,
-      description: i18n.neuron_types.ectDescription,
-    });
+    tags.push({ text: i18n.neuron_types.ect });
   }
 
   if (hasJoinedCommunityFund(neuron)) {
@@ -519,7 +512,7 @@ export const isEnoughMaturityToSpawn = ({
   );
   return (
     maturitySelected >=
-    MIN_NEURON_STAKE / MATURITY_MODULATION_VARIANCE_PERCENTAGE
+    Number(MIN_NEURON_STAKE) / MATURITY_MODULATION_VARIANCE_PERCENTAGE
   );
 };
 
@@ -852,16 +845,16 @@ export const neuronsVotingPower = (neurons?: CompactNeuronInfo[]): bigint =>
 export const hasEnoughMaturityToStake = ({ fullNeuron }: NeuronInfo): boolean =>
   (fullNeuron?.maturityE8sEquivalent ?? 0n) > 0n;
 
-export const minNeuronSplittable = (fee: number): number =>
-  2 * MIN_NEURON_STAKE + fee;
+export const minNeuronSplittable = (fee: bigint): bigint =>
+  2n * MIN_NEURON_STAKE + fee;
 
 export const neuronCanBeSplit = ({
   neuron,
   fee,
 }: {
   neuron: NeuronInfo;
-  fee: number;
-}): boolean => neuronStake(neuron) >= BigInt(minNeuronSplittable(fee));
+  fee: bigint;
+}): boolean => neuronStake(neuron) >= minNeuronSplittable(fee);
 
 export const getNeuronById = ({
   neuronsStore,

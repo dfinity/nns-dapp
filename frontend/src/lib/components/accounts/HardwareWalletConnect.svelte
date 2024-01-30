@@ -66,7 +66,7 @@
         {disabled}
         data-tid="ledger-attach-button"
       >
-        {$i18n.accounts.attach_wallet}
+        {$i18n.core.create}
       </button>
     </div>
   {/if}

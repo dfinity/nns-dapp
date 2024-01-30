@@ -7,6 +7,7 @@ import {
 } from "$lib/api/sns-sale.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
+import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
 import {
   snsProjectsStore,
   type SnsFullProject,
@@ -20,7 +21,6 @@ import {
   toastsShow,
   toastsSuccess,
 } from "$lib/stores/toasts.store";
-import { mainTransactionFeeE8sStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { ApiErrorKey } from "$lib/types/api.errors";
 import { LedgerErrorKey } from "$lib/types/ledger.errors";

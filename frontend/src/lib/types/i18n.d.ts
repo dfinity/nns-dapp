@@ -200,6 +200,7 @@ interface I18nAccounts {
   attach_hardware_subtitle: string;
   attach_hardware_name_placeholder: string;
   attach_hardware_enter_name: string;
+  attach_hardware_description: string;
   attach_hardware_show_neurons: string;
   attach_hardware_neurons_text: string;
   attach_hardware_neurons_add: string;
@@ -207,7 +208,6 @@ interface I18nAccounts {
   connect_hardware_wallet: string;
   connect_hardware_wallet_text: string;
   show_info_hardware_wallet: string;
-  attach_wallet: string;
   edit_name: string;
   new_linked_account_enter_name: string;
   new_linked_account_placeholder: string;
@@ -273,9 +273,7 @@ interface I18nAccounts {
 
 interface I18nNeuron_types {
   seed: string;
-  seedDescription: string;
   ect: string;
-  ectDescription: string;
 }
 
 interface I18nNeurons {
@@ -325,6 +323,7 @@ interface I18nNeurons {
   dissolve_delay_title: string;
   no_delay: string;
   dissolve_delay_description: string;
+  min_dissolve_delay_description: string;
   dissolve_delay_label: string;
   dissolve_delay_placeholder: string;
   dissolve_delay_below_minimum: string;
@@ -607,6 +606,9 @@ interface I18nProposal_detail__vote {
   super_majority_decision_intro: string;
   cast_votes: string;
   cast_votes_needs: string;
+  no_neurons: string;
+  no_neurons_description: string;
+  stake_neuron: string;
 }
 
 interface I18nProposal_detail__ineligible {
@@ -638,6 +640,8 @@ interface I18nNeuron_detail {
   voting_power_section_description_expanded_zero_nns: string;
   maturity_section_description: string;
   staked_description: string;
+  nns_staked_maturity_tooltip: string;
+  sns_staked_maturity_tooltip: string;
   age_bonus_label: string;
   dissolve_bonus_label: string;
   no_age_bonus: string;
@@ -742,6 +746,8 @@ interface I18nNeuron_detail {
   dissolve_date: string;
   amount_maturity: string;
   created: string;
+  neuron_state_tooltip: string;
+  dissolve_delay_tooltip: string;
 }
 
 interface I18nSns_launchpad {
@@ -834,7 +840,7 @@ interface I18nSns_neurons {
   sns_neuron_destination: string;
   stake_sns_neuron_success: string;
   token_stake: string;
-  dissolve_delay_description: string;
+  min_dissolve_delay_description: string;
 }
 
 interface I18nTime {

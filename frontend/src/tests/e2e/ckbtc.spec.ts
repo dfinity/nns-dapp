@@ -9,7 +9,7 @@ import { expect, test } from "@playwright/test";
 
 test("Test accounts requirements", async ({ page, context }) => {
   await page.goto("/");
-  await expect(page).toHaveTitle("My ICP Tokens / NNS Dapp");
+  await expect(page).toHaveTitle("My Tokens / NNS Dapp");
   // TODO: GIX-1985 Remove this once the feature flag is enabled by default
   await setFeatureFlag({ page, featureFlag: "ENABLE_MY_TOKENS", value: true });
   await signInWithNewUser({ page, context });
@@ -22,6 +22,7 @@ test("Test accounts requirements", async ({ page, context }) => {
     .getTokensPo()
     .getTokensPagePo()
     .getTokensTable();
+  await tokensTablePo.waitFor();
   const ckBTCRow = await tokensTablePo.getRowByName("ckBTC");
   await ckBTCRow.waitForBalance();
   expect(await ckBTCRow.getBalance()).toBe("0 ckBTC");
