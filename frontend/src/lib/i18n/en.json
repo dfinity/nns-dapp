@@ -617,6 +617,8 @@
     "voting_power_section_description_expanded_zero_nns": "The dissolve delay must be greater than 6 months for the neuron to have voting power. Learn more about voting power on the <a href=\"$dashboardLink\" rel=\"noopener noreferrer\" aria-label=\"more info about voting power\" target=\"_blank\">dashboard</a>.",
     "maturity_section_description": "Earn rewards by voting on proposals and/or following active neurons.",
     "staked_description": "Staked",
+    "nns_staked_maturity_tooltip": "Staked maturity contributes to the neuron’s voting power, but cannot be spawned into a new neuron.",
+    "sns_staked_maturity_tooltip": "Staked maturity contributes to the neuron’s voting power, but cannot be disbursed.",
     "age_bonus_label": "Age bonus: +$ageBonus",
     "dissolve_bonus_label": "Dissolve delay bonus: +$dissolveBonus",
     "no_age_bonus": "No age bonus",
