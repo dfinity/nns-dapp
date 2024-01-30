@@ -28,8 +28,8 @@ jobs:
           author: gix-bot <gix-bot@users.noreply.github.com>
           base: main
           reviewers: mstrasinskis, dskloetd, lmuntaner
-          # Note: Please be careful when updating the add-paths field.  We have had the snsdemo committed by accident, with a pattern that matches nothing seemingly committing everything.
-          add-paths: frontend/src/tests/workflows/Launchad
+          # Note: Please be careful when updating the add-paths field.
+          add-paths: frontend/src/tests/workflows/Launchpad/*.json
           branch: bot-aggregator-response-update
           branch-suffix: timestamp
           delete-branch: true
