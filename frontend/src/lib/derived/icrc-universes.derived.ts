@@ -22,12 +22,12 @@ const convertIcrcCanistersToUniverse = ({
   tokensData: TokensStoreData;
 }): Universe | undefined => {
   const universeId = canisters.ledgerCanisterId.toText();
-  const token = tokensData[universeId];
-  if (isNullish(token)) {
+  const tokenData = tokensData[universeId];
+  if (isNullish(tokenData)) {
     return;
   }
   const logo =
-    token.token.logo ??
+    tokenData.token.logo ??
     (universeId === CKETH_UNIVERSE_CANISTER_ID.toText()
       ? CKETH_LOGO
       : universeId === CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()
@@ -35,7 +35,7 @@ const convertIcrcCanistersToUniverse = ({
       : UNKNOWN_LOGO);
   return {
     canisterId: universeId,
-    title: token.token.name,
+    title: tokenData.token.name,
     logo,
   };
 };

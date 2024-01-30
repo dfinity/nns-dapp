@@ -105,7 +105,7 @@ describe("icrcTokensUniversesStore", () => {
     ]);
   });
 
-  it("returns question mark logo if logo not present in token", () => {
+  it("returns logo from the token", () => {
     const ledgerCanisterId = principal(1);
     const logo = "data:image/svg+xml;base64,PHN2ZyB3...";
     tokensStore.setTokens({
