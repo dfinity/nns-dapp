@@ -16,7 +16,7 @@ while :; do
 
   # Fetch the data and store the HTTP status code
   response=$(curl -s -w "%{http_code}" -o ./temp.json "$url")
-  http_code=$(tail -n1 <<< "$response")  # Extract the HTTP status code
+  http_code=$(tail -n1 <<<"$response")  # Extract the HTTP status code
 
   # Check if the HTTP status code is 200 (OK)
   if [ "$http_code" -ne 200 ]; then
@@ -28,9 +28,9 @@ while :; do
   # Save the data to a file
   output="${base_path_test_files}/sns-agg-page-${page}.json"
   # This will create the file if it doesn't exist, or overwrite it if it does
-  echo "" > "$output"
+  echo "" >"$output"
   # Writes the data to the file already formatted
-  jq . "./temp.json" > "$output"
+  jq . "./temp.json" >"$output"
   echo "Downloaded page ${page}."
 
   # Increment the page number
