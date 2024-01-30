@@ -86,9 +86,7 @@ describe("icrcTokensUniversesStore", () => {
     ]);
   });
 
-  // TODO: https://dfinity.atlassian.net/browse/GIX-2140
-  it("returns question mark logo for  non-cketh universes", () => {
-    // For not it's because the logo is not yet parsed in the token.
+  it("returns question mark logo if logo not present in token and it's not a ckBTC nor ckETH canister", () => {
     const ledgerCanisterId = principal(1);
     tokensStore.setTokens({
       [ledgerCanisterId.toText()]: {
@@ -103,6 +101,29 @@ describe("icrcTokensUniversesStore", () => {
     expect(get(icrcTokensUniversesStore)).toMatchObject([
       {
         logo: "/src/lib/assets/question-mark.svg",
+      },
+    ]);
+  });
+
+  it("returns question mark logo if logo not present in token", () => {
+    const ledgerCanisterId = principal(1);
+    const logo = "data:image/svg+xml;base64,PHN2ZyB3...";
+    tokensStore.setTokens({
+      [ledgerCanisterId.toText()]: {
+        certified: true,
+        token: {
+          ...mockToken,
+          logo,
+        },
+      },
+    });
+    icrcCanistersStore.setCanisters({
+      ledgerCanisterId: ledgerCanisterId,
+      indexCanisterId: principal(2),
+    });
+    expect(get(icrcTokensUniversesStore)).toMatchObject([
+      {
+        logo,
       },
     ]);
   });

@@ -26,13 +26,13 @@ const convertIcrcCanistersToUniverse = ({
   if (isNullish(token)) {
     return;
   }
-  // TODO: Read logo from token https://dfinity.atlassian.net/browse/GIX-2140
   const logo =
-    universeId === CKETH_UNIVERSE_CANISTER_ID.toText()
+    token.token.logo ??
+    (universeId === CKETH_UNIVERSE_CANISTER_ID.toText()
       ? CKETH_LOGO
       : universeId === CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()
       ? CKSEPOLIAETH_LOGO
-      : UNKNOWN_LOGO;
+      : UNKNOWN_LOGO);
   return {
     canisterId: universeId,
     title: token.token.name,
