@@ -41,22 +41,17 @@ describe("ReceiveModal", () => {
         canSelectAccount,
       },
     });
-    return {
-      po: ReceiveModalPo.under(new JestPageObjectElement(container)),
-      getByTestId,
-      getByText,
-      container,
-    };
+    return ReceiveModalPo.under(new JestPageObjectElement(container));
   };
 
   it("should render a QR code", async () => {
-    const { po } = await renderReceiveModal({});
+    const po = await renderReceiveModal({});
 
     expect(await po.hasQrCode()).toBe(true);
   });
 
   it("should render account identifier (without being shortened)", async () => {
-    const { po } = await renderReceiveModal({
+    const po = await renderReceiveModal({
       account: mockMainAccount,
     });
 
@@ -64,13 +59,13 @@ describe("ReceiveModal", () => {
   });
 
   it("should render a logo", async () => {
-    const { po } = await renderReceiveModal({});
+    const po = await renderReceiveModal({});
 
     expect(await po.getLogoAltText()).toBe(logoArialLabel);
   });
 
   it("should reload account", async () => {
-    const { po } = await renderReceiveModal({});
+    const po = await renderReceiveModal({});
 
     await po.clickFinish();
 
@@ -84,7 +79,7 @@ describe("ReceiveModal", () => {
       hardwareWallets: undefined,
     });
 
-    const { po } = await renderReceiveModal({
+    const po = await renderReceiveModal({
       canSelectAccount: true,
     });
 
@@ -98,7 +93,7 @@ describe("ReceiveModal", () => {
       hardwareWallets: undefined,
     });
 
-    const { po } = await renderReceiveModal({
+    const po = await renderReceiveModal({
       canSelectAccount: true,
       account: undefined,
     });
