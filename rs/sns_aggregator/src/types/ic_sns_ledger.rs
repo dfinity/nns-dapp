@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_ledger --out ic_sns_ledger.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-01-09_23-01+new-p2p/rs/rosetta-api/icrc1/ledger/ledger.did>
+//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-01-25_14-09+p2p-con/rs/rosetta-api/icrc1/ledger/ledger.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -89,6 +89,13 @@ pub enum LedgerArg {
 }
 
 pub type BlockIndex = candid::Nat;
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct ArchiveInfo {
+    pub block_range_end: BlockIndex,
+    pub canister_id: Principal,
+    pub block_range_start: BlockIndex,
+}
+
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetBlocksArgs {
     pub start: BlockIndex,
@@ -325,6 +332,9 @@ pub enum TransferFromResult {
 
 pub struct Service(pub Principal);
 impl Service {
+    pub async fn archives(&self) -> CallResult<(Vec<ArchiveInfo>,)> {
+        ic_cdk::call(self.0, "archives", ()).await
+    }
     pub async fn get_blocks(&self, arg0: GetBlocksArgs) -> CallResult<(GetBlocksResponse,)> {
         ic_cdk::call(self.0, "get_blocks", (arg0,)).await
     }
