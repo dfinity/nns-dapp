@@ -22,20 +22,20 @@ const convertIcrcCanistersToUniverse = ({
   tokensData: TokensStoreData;
 }): Universe | undefined => {
   const universeId = canisters.ledgerCanisterId.toText();
-  const token = tokensData[universeId];
-  if (isNullish(token)) {
+  const tokenData = tokensData[universeId];
+  if (isNullish(tokenData)) {
     return;
   }
-  // TODO: Read logo from token https://dfinity.atlassian.net/browse/GIX-2140
   const logo =
-    universeId === CKETH_UNIVERSE_CANISTER_ID.toText()
+    tokenData.token.logo ??
+    (universeId === CKETH_UNIVERSE_CANISTER_ID.toText()
       ? CKETH_LOGO
       : universeId === CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()
       ? CKSEPOLIAETH_LOGO
-      : UNKNOWN_LOGO;
+      : UNKNOWN_LOGO);
   return {
     canisterId: universeId,
-    title: token.token.name,
+    title: tokenData.token.name,
     logo,
   };
 };

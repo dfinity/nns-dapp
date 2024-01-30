@@ -4,6 +4,7 @@
   import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
   import type { SnsNeuron } from "@dfinity/sns";
   import { formattedStakedMaturity } from "$lib/utils/sns-neuron.utils";
+  import TooltipIcon from "../ui/TooltipIcon.svelte";
 
   export let neuron: SnsNeuron;
 </script>
@@ -14,6 +15,10 @@
     >{formattedStakedMaturity(neuron)}</span
   >
   <svelte:fragment slot="subtitle"
-    >{$i18n.neuron_detail.staked_description}</svelte:fragment
+    >{$i18n.neuron_detail.staked_description}
+    <TooltipIcon
+      text={$i18n.neuron_detail.sns_staked_maturity_tooltip}
+      tooltipId="sns-staked-maturity-tooltip"
+    /></svelte:fragment
   >
 </CommonItemAction>

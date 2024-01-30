@@ -18,11 +18,13 @@ proposal is successful, the changes it released will be moved from this file to
 * Close button at the bottom of follow neurons modal.
 * Info tooltips in neuron details.
 * Filtering SNS Proposals by Type.
+* Use logo for token (if present) for `ICRC` (but non-`SNS`) tokens.
 
 #### Changed
 
 * Various wording changes.
 * Display the full neuron type text within the tag.
+* Implement `State` traits manually rather than automatically.
 
 #### Deprecated
 
@@ -49,6 +51,8 @@ proposal is successful, the changes it released will be moved from this file to
 * Add `.orig` file extension to `.gitignore` file.
 
 #### Changed
+
+* Frequency of update workflows moved to weekly instead of daily.
 
 #### Deprecated
 
