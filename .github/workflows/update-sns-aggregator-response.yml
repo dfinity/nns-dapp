@@ -10,11 +10,11 @@ on:
       # Run when the development branch for this workflow is updated.
       - update-aggregator-response
 jobs:
-  update-aggregator:
+  update-aggregator-response:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Update to the latest declared APIs
+      - name: Update the SNS aggregator response files
         id: update
         run: scripts/nns-dapp/test-replace-sns-aggregator-response.sh
       - name: Create Pull Request
@@ -48,7 +48,7 @@ jobs:
         # PR status. To notify the team, we send a message to our Slack channel on failure.
         run: |
           (
-            echo "## Aggregator Update"
+            echo "## Aggregator Response Update"
             if test -n "${{ steps.cpr.outputs.pull-request-number }}"
             then echo "Created [PR #${{ steps.cpr.outputs.pull-request-number }}](${{ steps.cpr.outputs.pull-request-url }}) with aggregator updates."
             else echo "No changes needed."
