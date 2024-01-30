@@ -32,6 +32,8 @@
     "finish": "Finish",
     "unknown": "Unknown",
     "expand_all": "Expand All",
+    "receive_with_token": "Receive $token",
+    "receive": "Receive",
     "collapse_all": "Collapse All"
   },
   "error": {
@@ -1005,7 +1007,6 @@
     "test_title": "ckTESTBTC",
     "logo": "Chain-key Bitcoin (ckBTC) logo",
     "test_logo": "Chain-key Bitcoin (ckTESTBTC) logo",
-    "receive": "Receive",
     "qrcode_aria_label_bitcoin": "A QR code that renders the address to receive Bitcoin",
     "qrcode_aria_label_ckBTC": "A QR code that renders the address to receive ckBTC",
     "bitcoin": "Bitcoin",

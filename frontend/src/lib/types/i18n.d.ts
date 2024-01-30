@@ -35,6 +35,8 @@ interface I18nCore {
   finish: string;
   unknown: string;
   expand_all: string;
+  receive_with_token: string;
+  receive: string;
   collapse_all: string;
 }
 
@@ -1054,7 +1056,6 @@ interface I18nCkbtc {
   test_title: string;
   logo: string;
   test_logo: string;
-  receive: string;
   qrcode_aria_label_bitcoin: string;
   qrcode_aria_label_ckBTC: string;
   bitcoin: string;

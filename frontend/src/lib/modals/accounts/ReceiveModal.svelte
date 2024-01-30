@@ -8,6 +8,7 @@
   import { QR_CODE_RENDERED_DEFAULT_STATE } from "$lib/constants/mockable.constants";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import ReceiveSelectAccountDropdown from "$lib/components/accounts/ReceiveSelectAccountDropdown.svelte";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
   export let universeId: UniverseCanisterId;
   export let account: Account | undefined;
@@ -16,6 +17,7 @@
   export let logoArialLabel: string;
   export let reload: (() => Promise<void>) | undefined;
   export let canSelectAccount: boolean;
+  export let tokenSymbol: string;
 
   let qrCodeRendered = QR_CODE_RENDERED_DEFAULT_STATE;
 
@@ -38,7 +40,11 @@
 </script>
 
 <Modal testId="receive-modal" on:nnsClose on:introend={onIntroEnd}>
-  <span slot="title">{$i18n.ckbtc.receive}</span>
+  <span slot="title"
+    >{replacePlaceholders($i18n.core.receive_with_token, {
+      $token: tokenSymbol,
+    })}</span
+  >
 
   <ReceiveSelectAccountDropdown
     {account}
