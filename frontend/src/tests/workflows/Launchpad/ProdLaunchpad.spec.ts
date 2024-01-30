@@ -43,10 +43,12 @@ describe("Launchpad", () => {
           json: () => Promise.resolve(response),
         };
       } catch (err) {
-        // The frontend should stop requesting pages when the aggregator returns a page with less than 10 projects.
+        console.log("in da catch", err);
+        // Return an empty list if importing fails.
+        // That will happen with the last page requested has exactly ten projects.
         return {
-          ok: false,
-          json: () => Promise.reject(err),
+          ok: true,
+          json: () => Promise.resolve([]),
         };
       }
     });
