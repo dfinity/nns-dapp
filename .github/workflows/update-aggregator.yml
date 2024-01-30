@@ -53,12 +53,11 @@ jobs:
 
             # Tests
               - [ ] Please check the API updates for any breaking changes that affect our code.
-              
               Breaking changes are:
-              * New mandatory fields
-              * Removing or renaming fields
-              * Changing the type of a field
-              * Adding new variants
+                * New mandatory fields
+                * Removing or renaming fields
+                * Changing the type of a field
+                * Adding new variants
       - name: Report on the action
         # Since the this is a scheduled job, a failure won't be shown on any
         # PR status. To notify the team, we send a message to our Slack channel on failure.
