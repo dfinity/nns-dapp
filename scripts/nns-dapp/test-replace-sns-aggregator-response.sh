@@ -1,8 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-base_path_test_files="./src/frontend/src/tests/workflows/Launchpad"
-
+base_path_test_files="./frontend/src/tests/workflows/Launchpad"
 
 # Base URL of the API
 base_url="https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io/v1/sns/list/page"
@@ -18,7 +17,6 @@ while :; do
     # Fetch the data and store the HTTP status code
     response=$(curl -s -w "%{http_code}" -o ./temp.json "$url")
     http_code=$(tail -n1 <<< "$response")  # Extract the HTTP status code
-    data=$(cat ./temp.json)          # Get the actual data
 
     # Check if the HTTP status code is 200 (OK)
     if [ "$http_code" -ne 200 ]; then
@@ -27,13 +25,9 @@ while :; do
         break
     fi
 
-    # Remove current page file
-    rm "${base_path_test_files}/sns-agg-page-${page}-*.json"
-
     # Save the data to a file
-    current_timestamp=$(date +"%Y-%m-%d-%H%M")
-    output="${base_path_test_files}/sns-agg-page-${page}-${current_timestamp}.json"
-    # Clean up the file
+    output="${base_path_test_files}/sns-agg-page-${page}.json"
+    # This will create the file if it doesn't exist, or overwrite it if it does
     echo "" > "$output"
     # Writes the data to the file already formatted
     jq . "./temp.json" > "$output"
