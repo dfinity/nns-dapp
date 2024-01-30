@@ -133,6 +133,16 @@ describe("BtcCkBTCReceiveModal", () => {
         expect(getByText(mockBTCAddressTestnet)).toBeInTheDocument();
       });
 
+      it("should render Bitcoin label in title", async () => {
+        const { container, getByTestId } = await renderReceiveModal({
+          universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        });
+
+        await selectSegmentBTC(container);
+
+        expect(getByTestId("modal-title").textContent).toBe("Receive Bitcoin");
+      });
+
       it("should render a KYT fee", async () => {
         const { getByTestId, container } = await renderReceiveModal({});
 
@@ -292,6 +302,14 @@ describe("BtcCkBTCReceiveModal", () => {
       });
 
       await waitFor(() => expect(getByText(title)).toBeInTheDocument());
+    });
+
+    it("should render ckBTC label in title", async () => {
+      const { getByTestId } = await renderReceiveModal({
+        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+      });
+
+      expect(getByTestId("modal-title").textContent).toBe("Receive ckBTC");
     });
 
     it("should reload account", async () => {
