@@ -1,4 +1,4 @@
-use ic_stable_structures::{memory_manager, Memory};
+use ic_stable_structures::memory_manager;
 use proptest::proptest;
 use rand::seq::IteratorRandom;
 use rand::{Rng, SeedableRng};
