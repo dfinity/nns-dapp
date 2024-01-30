@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_swap --out ic_sns_swap.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-01-09_23-01+new-p2p/rs/sns/swap/canister/swap.did>
+//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-01-25_14-09+p2p-con/rs/sns/swap/canister/swap.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -334,6 +334,7 @@ pub struct GetLifecycleArg {}
 pub struct GetLifecycleResponse {
     pub decentralization_sale_open_timestamp_seconds: Option<u64>,
     pub lifecycle: Option<i32>,
+    pub decentralization_swap_termination_timestamp_seconds: Option<u64>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -452,6 +453,7 @@ pub struct Swap {
     pub direct_participation_icp_e8s: Option<u64>,
     pub lifecycle: i32,
     pub purge_old_tickets_next_principal: Option<serde_bytes::ByteBuf>,
+    pub decentralization_swap_termination_timestamp_seconds: Option<u64>,
     pub buyers: Vec<(String, BuyerState)>,
     pub params: Option<Params>,
     pub open_sns_token_swap_proposal_id: Option<u64>,

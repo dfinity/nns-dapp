@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-01-18_23-01+dts-off/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-01-25_14-09+p2p-con/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(clippy::missing_docs_in_private_items)]
 #![allow(non_camel_case_types)]
@@ -54,6 +54,7 @@ pub struct AddNodePayload {
     pub prometheus_metrics_endpoint: String,
     pub http_endpoint: String,
     pub idkg_dealing_encryption_pk: Option<serde_bytes::ByteBuf>,
+    pub domain: Option<String>,
     pub public_ipv4_config: Option<Vec<String>>,
     pub xnet_endpoint: String,
     pub chip_id: Option<serde_bytes::ByteBuf>,

@@ -1,3 +1,4 @@
+import { TooltipIconPo } from "$tests/page-objects/TooltipIcon.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { DissolveDelayBonusTextPo } from "./DissolveDelayBonusText.page-object";
@@ -10,6 +11,10 @@ export class NnsNeuronDissolveDelayItemActionPo extends BasePageObject {
     return new NnsNeuronDissolveDelayItemActionPo(
       element.byTestId(NnsNeuronDissolveDelayItemActionPo.TID)
     );
+  }
+
+  getTooltipIconPo(): TooltipIconPo {
+    return TooltipIconPo.under(this.root);
   }
 
   getDissolveState(): Promise<string> {

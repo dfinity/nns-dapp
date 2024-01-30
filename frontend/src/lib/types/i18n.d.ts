@@ -640,6 +640,8 @@ interface I18nNeuron_detail {
   voting_power_section_description_expanded_zero_nns: string;
   maturity_section_description: string;
   staked_description: string;
+  nns_staked_maturity_tooltip: string;
+  sns_staked_maturity_tooltip: string;
   age_bonus_label: string;
   dissolve_bonus_label: string;
   no_age_bonus: string;
@@ -744,6 +746,8 @@ interface I18nNeuron_detail {
   dissolve_date: string;
   amount_maturity: string;
   created: string;
+  neuron_state_tooltip: string;
+  dissolve_delay_tooltip: string;
 }
 
 interface I18nSns_launchpad {

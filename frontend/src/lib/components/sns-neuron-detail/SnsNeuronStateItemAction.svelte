@@ -1,8 +1,10 @@
 <script lang="ts">
   import { NeuronState } from "@dfinity/nns";
+  import type { Token } from "@dfinity/utils";
   import { getStateInfo, type StateInfo } from "$lib/utils/neuron.utils";
   import { i18n } from "$lib/stores/i18n";
   import { keyOf } from "$lib/utils/utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
   import {
@@ -18,6 +20,7 @@
 
   export let neuron: SnsNeuron;
   export let snsParameters: SnsNervousSystemParameters;
+  export let token: Token;
 
   let state: NeuronState;
   $: state = getSnsNeuronState(neuron);
@@ -45,7 +48,13 @@
     });
 </script>
 
-<CommonItemAction testId="sns-neuron-state-item-action-component">
+<CommonItemAction
+  testId="sns-neuron-state-item-action-component"
+  tooltipText={replacePlaceholders($i18n.neuron_detail.neuron_state_tooltip, {
+    $token: token.symbol,
+  })}
+  tooltipId="sns-neuron-state-info-icon"
+>
   <svelte:fragment slot="icon">
     {#if stateInfo?.Icon !== undefined}
       <svelte:component this={stateInfo.Icon} />
