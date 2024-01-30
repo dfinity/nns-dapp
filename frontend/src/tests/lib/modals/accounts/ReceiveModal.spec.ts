@@ -29,7 +29,7 @@ describe("ReceiveModal", () => {
     canSelectAccount?: boolean;
     account?: Account;
   }) => {
-    const { container, getByTestId, getByText } = await renderModal({
+    const { container } = await renderModal({
       component: ReceiveModal,
       props: {
         account,
