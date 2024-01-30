@@ -160,7 +160,7 @@ describe("SnsNeuronDissolveDelayItemAction", () => {
     expect(await po.getTooltipIconPo().isPresent()).toBe(false);
   });
 
-  it("should render the token symbol in the tooltip text", async () => {
+  it("should render tooltip when locked", async () => {
     const neuron = createMockSnsNeuron({
       id: [1],
       state: NeuronState.Locked,
@@ -169,24 +169,12 @@ describe("SnsNeuronDissolveDelayItemAction", () => {
     });
     const po = renderComponent(neuron);
 
-    expect(await po.getTooltipIconPo().getText()).toContain(token.symbol);
-  });
-
-  it("should render the dissolve duration in the tooltip text", async () => {
-    const neuron = createMockSnsNeuron({
-      id: [1],
-      state: NeuronState.Locked,
-      permissions: [noDissolvePermissions],
-      dissolveDelaySeconds: BigInt(SECONDS_IN_FOUR_YEARS),
-    });
-    const po = renderComponent(neuron);
-
-    expect(await po.getTooltipIconPo().getText()).toContain(
-      "available in 4 years."
+    expect(await po.getTooltipIconPo().getText()).toBe(
+      "Dissolve delay is the minimum amount of time you have to wait for the neuron to unlock, and ZXCV to be available again. If your neuron is dissolving, your ZXCV will be available in 4 years."
     );
   });
 
-  it("should render the dissolve duration in the tooltip text when dissolving", async () => {
+  it("should render tooltip when dissolving", async () => {
     const neuron = createMockSnsNeuron({
       id: [1],
       state: NeuronState.Dissolving,
@@ -198,8 +186,8 @@ describe("SnsNeuronDissolveDelayItemAction", () => {
     });
     const po = renderComponent(neuron);
 
-    expect(await po.getTooltipIconPo().getText()).toContain(
-      "available in 4 years."
+    expect(await po.getTooltipIconPo().getText()).toBe(
+      "Dissolve delay is the minimum amount of time you have to wait for the neuron to unlock, and ZXCV to be available again. If your neuron is dissolving, your ZXCV will be available in 4 years."
     );
   });
 });

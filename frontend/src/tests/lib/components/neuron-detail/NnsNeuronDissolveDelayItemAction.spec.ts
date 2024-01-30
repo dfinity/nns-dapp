@@ -148,7 +148,7 @@ describe("NnsNeuronDissolveDelayItemAction", () => {
     expect(await po.getTooltipIconPo().isPresent()).toBe(false);
   });
 
-  it("should render the dissolve duration in the tooltip text", async () => {
+  it("should render tooltip when locked", async () => {
     const neuron: NeuronInfo = {
       ...controlledNeuron,
       state: NeuronState.Locked,
@@ -156,12 +156,12 @@ describe("NnsNeuronDissolveDelayItemAction", () => {
     };
     const po = renderComponent(neuron);
 
-    expect(await po.getTooltipIconPo().getText()).toContain(
-      "available in 2 years, 12 hours"
+    expect(await po.getTooltipIconPo().getText()).toBe(
+      "Dissolve delay is the minimum amount of time you have to wait for the neuron to unlock, and ICP to be available again. If your neuron is dissolving, your ICP will be available in 2 years, 12 hours."
     );
   });
 
-  it("should render the dissolve duration in the tooltip text when dissolving", async () => {
+  it("should render tooltip when dissolving", async () => {
     const neuron: NeuronInfo = {
       ...controlledNeuron,
       state: NeuronState.Dissolving,
@@ -169,8 +169,8 @@ describe("NnsNeuronDissolveDelayItemAction", () => {
     };
     const po = renderComponent(neuron);
 
-    expect(await po.getTooltipIconPo().getText()).toContain(
-      "available in 2 years, 12 hours."
+    expect(await po.getTooltipIconPo().getText()).toBe(
+      "Dissolve delay is the minimum amount of time you have to wait for the neuron to unlock, and ICP to be available again. If your neuron is dissolving, your ICP will be available in 2 years, 12 hours."
     );
   });
 });
