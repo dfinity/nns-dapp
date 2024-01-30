@@ -49,8 +49,18 @@ impl Default for State {
 
 impl core::fmt::Debug for State {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        // Destructure to ensure that we don't forget to update this when new fields are added:
+        let State {
+            accounts_store,
+            assets: _,
+            asset_hashes: _,
+            performance: _,
+        } = self;
         writeln!(f, "State {{")?;
-        writeln!(f, "  accounts: {:?}", &self.accounts_store.borrow())?;
+        writeln!(f, "  accounts: {:?}", accounts_store.borrow())?;
+        writeln!(f, "  assets: <html etc> (elided)")?;
+        writeln!(f, "  asset_hashes: <hashes of the assets> (elided)")?;
+        writeln!(f, "  performance: <stats for the metrics endpoint> (elided)")?;
         writeln!(f, "}}")
     }
 }
