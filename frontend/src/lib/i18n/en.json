@@ -146,6 +146,8 @@
     "neurons": "My Neuron Staking",
     "voting": "Vote on Proposals",
     "launchpad": "Launchpad",
+    "manage_ii": "Manage Internet Identity",
+    "manage_ii_url": "https://identity.ic0.app/",
     "settings": "Settings"
   },
   "header": {
