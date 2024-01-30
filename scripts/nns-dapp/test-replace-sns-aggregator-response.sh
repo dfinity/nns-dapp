@@ -16,7 +16,7 @@ while :; do
 
   # Fetch the data and store the HTTP status code
   response=$(curl -s -w "%{http_code}" -o ./temp.json "$url")
-  http_code=$(tail -n1 <<<"$response")  # Extract the HTTP status code
+  http_code=$(tail -n1 <<<"$response") # Extract the HTTP status code
 
   # Check if the HTTP status code is 200 (OK)
   if [ "$http_code" -ne 200 ]; then
