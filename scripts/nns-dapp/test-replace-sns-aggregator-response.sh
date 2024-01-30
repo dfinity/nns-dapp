@@ -34,7 +34,7 @@ while :; do
   echo "Downloaded page ${page}."
 
   # Increment the page number
-  ((page++))
+  page=$((page + 1))
 
   # Clean up temporary file
   rm temp.json
