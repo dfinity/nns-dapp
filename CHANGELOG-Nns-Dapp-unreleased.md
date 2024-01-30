@@ -48,6 +48,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Frequency of update workflows moved to weekly instead of daily.
+
 #### Deprecated
 
 #### Removed
