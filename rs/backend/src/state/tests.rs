@@ -55,7 +55,7 @@ fn state_can_be_saved_and_recovered_from_stable_memory() {
             .borrow_mut()
             .db_insert_account(&[0u8; 32], crate::accounts_store::schema::tests::toy_account(1, 2));
         // The state is backed by stable memory.  Pre-upgrade, any state that is not already in stable memory must be saved.
-        state.save();
+        state.pre_upgrade();
         // Post-upgrade state can then be restored from memory.
         let new_state = State::from(memory_after_upgrade);
         // The state should be restored to the same state as before:
