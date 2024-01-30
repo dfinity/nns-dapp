@@ -8,14 +8,20 @@ import {
   allSnsNeuronPermissions,
   createMockSnsNeuron,
 } from "$tests/mocks/sns-neurons.mock";
+import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { SnsAvailableMaturityItemActionPo } from "$tests/page-objects/SnsAvailableMaturityItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { Principal } from "@dfinity/principal";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
-import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+import { TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("SnsAvailableMaturityItemAction", () => {
+  const tokenSymbol = "REAL";
+  const token = {
+    ...mockSnsToken,
+    symbol: tokenSymbol,
+  };
   const controllerPermissions = {
     principal: [mockIdentity.getPrincipal()] as [Principal],
     permission_type: allSnsNeuronPermissions,
@@ -27,12 +33,13 @@ describe("SnsAvailableMaturityItemAction", () => {
   });
   const renderComponent = (
     neuron: SnsNeuron,
-    fee = TokenAmountV2.fromUlps({ amount: 10_000n, token: ICPToken })
+    fee = TokenAmountV2.fromUlps({ amount: 10_000n, token })
   ) => {
     const { container } = render(SnsAvailableMaturityItemAction, {
       props: {
         neuron,
         fee,
+        token,
       },
     });
 
@@ -89,7 +96,7 @@ describe("SnsAvailableMaturityItemAction", () => {
 
   it("should render disabled disburse maturity button when maturity is less than fee", async () => {
     const feeAmount = 100_000_000n;
-    const fee = TokenAmountV2.fromUlps({ amount: feeAmount, token: ICPToken });
+    const fee = TokenAmountV2.fromUlps({ amount: feeAmount, token });
     const neuron = createMockSnsNeuron({
       id: [1],
       maturity: feeAmount - 1n,
@@ -108,5 +115,17 @@ describe("SnsAvailableMaturityItemAction", () => {
     const po = renderComponent(neuron);
 
     expect(await po.hasDisburseMaturityButton()).toBe(false);
+  });
+
+  it("should render the token in the tooltip", async () => {
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      permissions: [noDisburseMaturityPermissions],
+    });
+    const po = renderComponent(neuron);
+
+    expect(await po.getTooltipIconPo().getText()).toBe(
+      "Available maturity can be burned to disburse an amount of REAL that is subject to a non-deterministic process, called maturity modulation."
+    );
   });
 });
