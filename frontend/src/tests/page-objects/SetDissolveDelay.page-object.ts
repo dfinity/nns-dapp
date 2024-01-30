@@ -82,7 +82,19 @@ export class SetDissolveDelayPo extends BasePageObject {
     return this.getInputWithErrorPo().getErrorMessage();
   }
 
+  hasErrorOutline(): Promise<boolean> {
+    return this.getInputWithErrorPo().hasErrorOutline();
+  }
+
   async getProgressBarSeconds(): Promise<number> {
     return this.getRangeDissolveDelayPo().getProgressBarSeconds();
+  }
+
+  getDescription(): Promise<string> {
+    return this.getText("description");
+  }
+
+  async getMinDissolveDelayDescription(): Promise<string> {
+    return this.getText("min-dissolve-delay-description");
   }
 }

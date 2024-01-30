@@ -5,7 +5,6 @@ import {
   CKETH_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
@@ -37,8 +36,6 @@ describe("IcrcTokenAccountsFooter", () => {
       ledgerCanisterId: CKETH_UNIVERSE_CANISTER_ID,
       indexCanisterId: CKETH_INDEX_CANISTER_ID,
     });
-
-    overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
 
     tokensStore.setTokens(mockTokens);
 

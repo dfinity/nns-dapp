@@ -10,27 +10,26 @@
   import { fromDefinedNullable } from "@dfinity/utils";
   import { minNeuronSplittable } from "$lib/utils/sns-neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import type { E8s } from "@dfinity/nns";
   import { formatTokenE8s } from "$lib/utils/token.utils";
-  import Tooltip from "$lib/components/ui/Tooltip.svelte";
-  import type { Token } from "@dfinity/utils";
+  import { Tooltip } from "@dfinity/gix-components";
+  import type { Token, TokenAmountV2 } from "@dfinity/utils";
   import VestingTooltipWrapper from "../VestingTooltipWrapper.svelte";
 
   export let neuron: SnsNeuron;
   export let parameters: SnsNervousSystemParameters;
-  export let transactionFee: E8s;
+  export let transactionFee: TokenAmountV2;
   export let token: Token;
 
-  let neuronMinimumStake: bigint;
-  $: neuronMinimumStake = fromDefinedNullable(
+  let neuronMinimumStakeE8s: bigint;
+  $: neuronMinimumStakeE8s = fromDefinedNullable(
     parameters.neuron_minimum_stake_e8s
   );
 
   let enoughStakeToSplit: boolean;
   $: enoughStakeToSplit = hasEnoughStakeToSplit({
     neuron,
-    fee: transactionFee,
-    neuronMinimumStake,
+    fee: transactionFee.toE8s(),
+    neuronMinimumStake: neuronMinimumStakeE8s,
   });
 </script>
 
@@ -51,8 +50,8 @@
       {
         $amount: formatTokenE8s({
           value: minNeuronSplittable({
-            fee: transactionFee,
-            neuronMinimumStake,
+            fee: transactionFee.toE8s(),
+            neuronMinimumStake: neuronMinimumStakeE8s,
           }),
           detailed: true,
         }),

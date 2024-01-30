@@ -1,4 +1,4 @@
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-01-09_23-01+new-p2p/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-01-25_14-09+p2p-con/rs/registry/canister/canister/registry.did>
 type AddApiBoundaryNodePayload = record { node_id : principal; version : text };
 type AddFirewallRulesPayload = record {
   expected_hash : text;
@@ -18,6 +18,7 @@ type AddNodePayload = record {
   prometheus_metrics_endpoint : text;
   http_endpoint : text;
   idkg_dealing_encryption_pk : opt vec nat8;
+  domain : opt text;
   public_ipv4_config : opt vec text;
   xnet_endpoint : text;
   chip_id : opt vec nat8;

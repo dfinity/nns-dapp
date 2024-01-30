@@ -17,7 +17,6 @@ import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { numberToUlps } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import TokensRoute from "$routes/(app)/(nns)/tokens/+page.svelte";
@@ -223,12 +222,6 @@ describe("Tokens route", () => {
         },
       });
       setCkETHCanisters();
-      // TODO: Remove when we deprecate the store: https://dfinity.atlassian.net/browse/GIX-2060
-      transactionsFeesStore.setFee({
-        rootCanisterId: rootCanisterIdTetris,
-        fee: mockSnsToken.fee,
-        certified: true,
-      });
       icpAccountsStore.setForTesting({
         main: { ...mockMainAccount, balanceUlps: icpBalanceE8s },
       });

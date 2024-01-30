@@ -1,3 +1,4 @@
+
 # Unreleased changelog NNS Dapp
 
 All notable changes to the NNS Dapp will be documented in this file.
@@ -14,21 +15,26 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Getter and setter of partition schema label.
+* Close button at the bottom of follow neurons modal.
+* Info tooltips in neuron details.
 
 #### Changed
 
-* Changed wording about staking neurons to staking tokens.
-* Add missing feature flags to default feature flags value.
 * Various wording changes.
+* Display the full neuron type text within the tag.
 
 #### Deprecated
 
 #### Removed
 
-* ckBTC withdrawal account.
+* Remove `ENABLE_CKETH` feature flag.
+* Remove unused `transactionsFeesStore` and related.
 
 #### Fixed
+
+* Fix proposal back navigation during voting.
+* Fix tooltip positioning.
+* Tooltip icon style.
 
 #### Security
 
@@ -38,14 +44,16 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Add `.orig` file extension to `.gitignore` file.
+
 #### Changed
+
+* Frequency of update workflows moved to weekly instead of daily.
 
 #### Deprecated
 
 #### Removed
 
 #### Fixed
-
-* Commented out broken local `config.test`.
 
 #### Security

@@ -1,7 +1,11 @@
 <script lang="ts">
+  import TooltipIcon from "./TooltipIcon.svelte";
   import { ItemAction } from "@dfinity/gix-components";
+  import { nonNullish } from "@dfinity/utils";
 
   export let testId: string;
+  export let tooltipText: string | undefined = undefined;
+  export let tooltipId: string | undefined = undefined;
 </script>
 
 <ItemAction {testId}>
@@ -9,7 +13,12 @@
     <slot name="icon" />
   </div>
   <div class="content">
-    <h4 data-tid="staked-maturity"><slot name="title" /></h4>
+    <h4>
+      <slot name="title" />
+      {#if nonNullish(tooltipText) && nonNullish(tooltipId)}
+        <TooltipIcon {tooltipId} text={tooltipText} />
+      {/if}
+    </h4>
     <p class="description"><slot name="subtitle" /></p>
   </div>
   <div slot="actions" class="actions">
@@ -24,6 +33,8 @@
     gap: var(--padding);
     p,
     h4 {
+      display: flex;
+      gap: var(--padding);
       margin: 0;
     }
   }

@@ -16,6 +16,7 @@
   // And we don't want to expose days outside.
   // That's why we expect the error function, instead of relying on the parent to calculate it based on `seconds`.
   export let getInputError: (value: number) => string | undefined;
+  export let warningMessage: string | undefined = undefined;
 
   // Round up the first time to not show a lot of decimal places.
   let days: number = Math.min(
@@ -51,6 +52,7 @@
   max={secondsToDays(maxInSeconds)}
   inputType="number"
   {errorMessage}
+  {warningMessage}
   on:nnsInput={showError}
   on:blur={showError}
   {disabled}

@@ -1,15 +1,19 @@
+import { DissolveDelayBonusTextPo } from "$tests/page-objects/DissolveDelayBonusText.page-object";
+import { TooltipIconPo } from "$tests/page-objects/TooltipIcon.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { DissolveDelayBonusTextPo } from "./DissolveDelayBonusText.page-object";
 
 export class SnsNeuronDissolveDelayItemActionPo extends BasePageObject {
-  private static readonly TID =
-    "sns-neuron-dissolve-delay-item-action-component";
+  static readonly TID = "sns-neuron-dissolve-delay-item-action-component";
 
   static under(element: PageObjectElement): SnsNeuronDissolveDelayItemActionPo {
     return new SnsNeuronDissolveDelayItemActionPo(
       element.byTestId(SnsNeuronDissolveDelayItemActionPo.TID)
     );
+  }
+
+  getTooltipIconPo(): TooltipIconPo {
+    return TooltipIconPo.under(this.root);
   }
 
   getDissolveState(): Promise<string> {

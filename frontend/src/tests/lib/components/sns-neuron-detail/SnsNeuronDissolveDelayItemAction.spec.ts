@@ -15,6 +15,7 @@ import {
   createMockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
+import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronDissolveDelayItemActionPo } from "$tests/page-objects/SnsNeuronDissolveDelayItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronState } from "@dfinity/nns";
@@ -36,6 +37,11 @@ describe("SnsNeuronDissolveDelayItemAction", () => {
     max_dissolve_delay_seconds: [maxDissolveDelay],
     max_dissolve_delay_bonus_percentage: [25n],
   };
+  const token = {
+    ...mockSnsToken,
+    symbol: "ZXCV",
+  };
+
   const renderComponent = (
     neuron: SnsNeuron,
     parameters: SnsNervousSystemParameters = snsParameters
@@ -44,6 +50,7 @@ describe("SnsNeuronDissolveDelayItemAction", () => {
       props: {
         neuron,
         parameters,
+        token,
       },
     });
 
@@ -139,5 +146,48 @@ describe("SnsNeuronDissolveDelayItemAction", () => {
     const po = renderComponent(neuron);
 
     expect(await po.hasIncreaseDissolveDelayButton()).toBe(false);
+  });
+
+  it("should not render a tooltip without dissolve delay", async () => {
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      state: NeuronState.Dissolved,
+      permissions: [noDissolvePermissions],
+      dissolveDelaySeconds: 0n,
+    });
+    const po = renderComponent(neuron);
+
+    expect(await po.getTooltipIconPo().isPresent()).toBe(false);
+  });
+
+  it("should render tooltip when locked", async () => {
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      state: NeuronState.Locked,
+      permissions: [noDissolvePermissions],
+      dissolveDelaySeconds: BigInt(SECONDS_IN_FOUR_YEARS),
+    });
+    const po = renderComponent(neuron);
+
+    expect(await po.getTooltipIconPo().getText()).toBe(
+      "Dissolve delay is the minimum amount of time you have to wait for the neuron to unlock, and ZXCV to be available again. If your neuron is dissolving, your ZXCV will be available in 4 years."
+    );
+  });
+
+  it("should render tooltip when dissolving", async () => {
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      state: NeuronState.Dissolving,
+      permissions: [noDissolvePermissions],
+      dissolveDelaySeconds: BigInt(SECONDS_IN_FOUR_YEARS),
+      whenDissolvedTimestampSeconds: BigInt(
+        nowInSeconds + SECONDS_IN_FOUR_YEARS
+      ),
+    });
+    const po = renderComponent(neuron);
+
+    expect(await po.getTooltipIconPo().getText()).toBe(
+      "Dissolve delay is the minimum amount of time you have to wait for the neuron to unlock, and ZXCV to be available again. If your neuron is dissolving, your ZXCV will be available in 4 years."
+    );
   });
 });

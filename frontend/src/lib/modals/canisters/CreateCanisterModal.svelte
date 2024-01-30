@@ -13,7 +13,7 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError, toastsShow } from "$lib/stores/toasts.store";
-  import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
+  import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
   import type { Account } from "$lib/types/account";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
@@ -156,7 +156,7 @@
             <Html
               text={replacePlaceholders($i18n.canisters.minimum_cycles_text_2, {
                 $amount: valueSpan(
-                  formattedTransactionFeeICP($mainTransactionFeeStore)
+                  formattedTransactionFeeICP($mainTransactionFeeE8sStore)
                 ),
               })}
             />

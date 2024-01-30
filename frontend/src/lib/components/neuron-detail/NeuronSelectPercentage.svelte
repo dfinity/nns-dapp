@@ -7,7 +7,7 @@
   import { formatMaturity } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { nonNullish } from "@dfinity/utils";
-  import Tooltip from "../ui/Tooltip.svelte";
+  import { Tooltip } from "@dfinity/gix-components";
 
   export let availableMaturityE8s: bigint;
   export let percentage: number;

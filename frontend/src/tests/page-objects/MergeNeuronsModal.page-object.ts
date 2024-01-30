@@ -1,9 +1,9 @@
 import { ConfirmNeuronsMergePo } from "$tests/page-objects/ConfirmNeuronsMerge.page-object";
+import { ModalPo } from "$tests/page-objects/Modal.page-object";
 import { SelectNeuronsToMergePo } from "$tests/page-objects/SelectNeuronsToMerge.page-object";
-import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class MergeNeuronsModalPo extends BasePageObject {
+export class MergeNeuronsModalPo extends ModalPo {
   static readonly TID = "merge-neurons-modal-component";
 
   static under(element: PageObjectElement): MergeNeuronsModalPo {
@@ -16,10 +16,6 @@ export class MergeNeuronsModalPo extends BasePageObject {
 
   getConfirmNeuronsMergePo(): ConfirmNeuronsMergePo {
     return ConfirmNeuronsMergePo.under(this.root);
-  }
-
-  getTitle(): Promise<string> {
-    return this.getText("modal-title");
   }
 
   async mergeNeurons({
