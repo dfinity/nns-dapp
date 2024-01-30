@@ -9,7 +9,10 @@ use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
 use ic_cdk::println;
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
+#[cfg(not(target_arch = "wasm32"))]
 use std::rc::Rc;
+use strum::IntoEnumIterator;
+use strum_macros::EnumIter;
 
 pub mod schemas;
 #[cfg(test)]
@@ -22,21 +25,47 @@ pub struct Partitions {
     /// but has no method for returning it.  If we wish to convert a `DefaultMemoryImpl`
     /// to `Partitions` and back again, we need to keep a reference to the memory to
     /// provide when we convert back.
+    #[cfg(test)]
     memory: DefaultMemoryImpl,
 }
+
+impl core::fmt::Debug for Partitions {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(f, "Partitions {{")?;
+        writeln!(f, "  schema_label: {:?}", self.schema_label())?;
+        for id in PartitionIds::iter() {
+            writeln!(
+                f,
+                "  {:?} partition: {} pages",
+                id,
+                self.get(MemoryId::new(id as u8)).size()
+            )?;
+        }
+        writeln!(f, "}}")
+    }
+}
+
+#[repr(u8)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, EnumIter)]
+pub enum PartitionIds {
+    Metadata = 0,
+    Heap = 1,
+    Accounts = 2,
+}
+
 impl Partitions {
     /// The virtual memory containing metadata such as schema version.
     ///
     /// Note: This ID is guaranteed to be stable across deployments.
-    pub const METADATA_MEMORY_ID: MemoryId = MemoryId::new(0);
+    pub const METADATA_MEMORY_ID: MemoryId = MemoryId::new(PartitionIds::Metadata as u8);
     /// The virtual memory containing heap data.
     ///
     /// Note: This ID is guaranteed to be stable across deployments.
-    pub const HEAP_MEMORY_ID: MemoryId = MemoryId::new(1);
+    pub const HEAP_MEMORY_ID: MemoryId = MemoryId::new(PartitionIds::Heap as u8);
     /// The virtual memory containing accounts.
     ///
     /// Note: This ID is guaranteed to be stable across deployments.
-    pub const ACCOUNTS_MEMORY_ID: MemoryId = MemoryId::new(2);
+    pub const ACCOUNTS_MEMORY_ID: MemoryId = MemoryId::new(PartitionIds::Accounts as u8);
 
     /// Determines whether the given memory is managed by a memory manager.
     fn is_managed(memory: &DefaultMemoryImpl) -> bool {
@@ -70,7 +99,7 @@ impl Partitions {
     pub fn copy_memory_reference(memory: &DefaultMemoryImpl) -> DefaultMemoryImpl {
         // Empty structure that makes API calls.  Can be cloned.
         #[cfg(target_arch = "wasm32")]
-        let ans = (*memory).clone();
+        let ans = *memory;
         // Reference counted pointer.  Make a copy of the pointer.
         #[cfg(not(target_arch = "wasm32"))]
         let ans = Rc::clone(memory);
@@ -82,6 +111,7 @@ impl Partitions {
     /// Note: The memory manager is still represented in the underlying memory,
     /// so converting from `Partitions` to `DefaultMemoryImpl` and back again
     /// returns to the original state.
+    #[cfg(test)]
     pub fn into_memory(self) -> DefaultMemoryImpl {
         self.memory
     }
@@ -113,6 +143,11 @@ impl Partitions {
         memory.read(offset, buffer);
         Ok(())
     }
+    /// Gets the underlying memory.
+    #[cfg(test)]
+    pub fn into_inner(self) -> DefaultMemoryImpl {
+        self.memory
+    }
 }
 
 impl From<DefaultMemoryImpl> for Partitions {
@@ -122,7 +157,11 @@ impl From<DefaultMemoryImpl> for Partitions {
     /// Note: This is equivalent to `MemoryManager::init()`.
     fn from(memory: DefaultMemoryImpl) -> Self {
         let memory_manager = MemoryManager::init(Self::copy_memory_reference(&memory));
-        Partitions { memory_manager, memory }
+        Partitions {
+            memory_manager,
+            #[cfg(test)]
+            memory,
+        }
     }
 }
 
