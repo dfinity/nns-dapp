@@ -160,4 +160,17 @@ describe("NnsNeuronDissolveDelayItemAction", () => {
       "available in 2 years, 12 hours"
     );
   });
+
+  it("should render the dissolve duration in the tooltip text when dissolving", async () => {
+    const neuron: NeuronInfo = {
+      ...controlledNeuron,
+      state: NeuronState.Dissolving,
+      dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR * 2),
+    };
+    const po = renderComponent(neuron);
+
+    expect(await po.getTooltipIconPo().getText()).toContain(
+      "available in 2 years, 12 hours."
+    );
+  });
 });

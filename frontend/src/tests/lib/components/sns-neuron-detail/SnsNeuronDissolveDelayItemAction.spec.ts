@@ -182,7 +182,24 @@ describe("SnsNeuronDissolveDelayItemAction", () => {
     const po = renderComponent(neuron);
 
     expect(await po.getTooltipIconPo().getText()).toContain(
-      "available in 4 years"
+      "available in 4 years."
+    );
+  });
+
+  it("should render the dissolve duration in the tooltip text when dissolving", async () => {
+    const neuron = createMockSnsNeuron({
+      id: [1],
+      state: NeuronState.Dissolving,
+      permissions: [noDissolvePermissions],
+      dissolveDelaySeconds: BigInt(SECONDS_IN_FOUR_YEARS),
+      whenDissolvedTimestampSeconds: BigInt(
+        nowInSeconds + SECONDS_IN_FOUR_YEARS
+      ),
+    });
+    const po = renderComponent(neuron);
+
+    expect(await po.getTooltipIconPo().getText()).toContain(
+      "available in 4 years."
     );
   });
 });
