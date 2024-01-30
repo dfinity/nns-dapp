@@ -59,6 +59,7 @@ jobs:
           body: |
             # Motivation
             A newer version of `didc` is available.
+            Even with no changes, just updating the reference is good practice.
 
             # Changes
             ## Changes made by a bot triggered by ${{ github.actor }}

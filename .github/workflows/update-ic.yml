@@ -97,6 +97,7 @@ jobs:
           body: |
             # Motivation
             A newer release of the internet computer is available.
+            Even with no changes, just updating the reference is good practice.
 
             # Changes
             ## Changes made by a bot triggered by ${{ github.actor }}

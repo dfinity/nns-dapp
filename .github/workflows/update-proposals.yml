@@ -53,6 +53,7 @@ jobs:
           body: |
             # Motivation
             We would like to render all the latest proposal types.
+            Even with no changes, just updating the reference is good practice.
 
             # Changes
             * Updated the Rust code derived from `.did` files in the proposals payload rendering crate.

@@ -46,6 +46,7 @@ jobs:
           body: |
             # Motivation
             We would like to parse all the latest SNS data. To do so, we update the candid interfaces for the SNS aggregator.
+            Even with no changes, just updating the reference is good practice.
 
             # Changes
             * Updated the Rust code derived from `.did` files in the aggregator.
