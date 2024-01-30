@@ -52,13 +52,26 @@
     neuron,
     identity: $authStore.identity,
   });
+
+  let duration: string;
+  $: duration =
+    dissolvingTime > 0n
+      ? secondsToDuration({ seconds: dissolvingTime, i18n: $i18n.time })
+      : "0";
+
+  let tooltipText: string | undefined;
+  $: tooltipText =
+    dissolvingTime > 0n
+      ? replacePlaceholders($i18n.neuron_detail.dissolve_delay_tooltip, {
+          $token: token.symbol,
+          $duration: duration,
+        })
+      : undefined;
 </script>
 
 <CommonItemAction
   testId="sns-neuron-dissolve-delay-item-action-component"
-  tooltipText={replacePlaceholders($i18n.neuron_detail.dissolve_delay_tooltip, {
-    $token: token.symbol,
-  })}
+  {tooltipText}
   tooltipId="sns-dissolve-delay-info-icon"
 >
   <IconClockNoFill slot="icon" />
@@ -66,11 +79,7 @@
     >{`${keyOf({
       obj: $i18n.neuron_detail,
       key: stateTextMapper[state],
-    })} ${
-      dissolvingTime > 0n
-        ? secondsToDuration({ seconds: dissolvingTime, i18n: $i18n.time })
-        : "0"
-    }`}</span
+    })} ${duration}`}</span
   >
   <svelte:fragment slot="subtitle">
     {#if dissolvingTime >= minimumDelayToVoteInSeconds}

@@ -47,13 +47,26 @@
     identity: $authStore.identity,
     accounts: $icpAccountsStore,
   });
+
+  let duration: string;
+  $: duration =
+    remainingTimeSeconds > 0n
+      ? secondsToDuration({ seconds: remainingTimeSeconds, i18n: $i18n.time })
+      : "0";
+
+  let tooltipText: string | undefined;
+  $: tooltipText =
+    remainingTimeSeconds > 0n
+      ? replacePlaceholders($i18n.neuron_detail.dissolve_delay_tooltip, {
+          $token: ICPToken.symbol,
+          $duration: duration,
+        })
+      : undefined;
 </script>
 
 <CommonItemAction
   testId="nns-neuron-dissolve-delay-item-action-component"
-  tooltipText={replacePlaceholders($i18n.neuron_detail.dissolve_delay_tooltip, {
-    $token: ICPToken.symbol,
-  })}
+  {tooltipText}
   tooltipId="dissolve-delay-info-icon"
 >
   <IconClockNoFill slot="icon" />
@@ -61,11 +74,7 @@
     >{`${keyOf({
       obj: $i18n.neuron_detail,
       key: stateTextMapper[neuron.state],
-    })} ${
-      remainingTimeSeconds > 0n
-        ? secondsToDuration({ seconds: remainingTimeSeconds, i18n: $i18n.time })
-        : "0"
-    }`}</span
+    })} ${duration}`}</span
   >
   <svelte:fragment slot="subtitle">
     {#if Number(remainingTimeSeconds) >= NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE}
