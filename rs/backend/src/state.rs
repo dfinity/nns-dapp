@@ -26,9 +26,6 @@ pub struct State {
 #[cfg(test)]
 impl PartialEq for State {
     /// Compares essential content of two states for equality.
-    ///
-    /// Excluded from the comparison:
-    /// - Raw stable memory owned by the state.
     fn eq(&self, other: &Self) -> bool {
         (self.accounts_store == other.accounts_store)
             && (self.assets == other.assets)
