@@ -32,11 +32,11 @@ pub struct Partitions {
 impl core::fmt::Debug for Partitions {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(f, "Partitions {{")?;
-        writeln!(f, "schema_label: {:?}", self.schema_label())?;
+        writeln!(f, "  schema_label: {:?}", self.schema_label())?;
         for id in PartitionIds::iter() {
             writeln!(
                 f,
-                "partition {:?}: {} pages",
+                "  {:?} partition: {} pages",
                 id,
                 self.get(MemoryId::new(id as u8)).size()
             )?;

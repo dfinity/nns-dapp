@@ -1,6 +1,6 @@
 //! Tests for stable memory layout code.
 use super::*;
-use crate::state::{tests::setup_test_state, StableState};
+use crate::{accounts_store::schema::SchemaLabel, state::{tests::setup_test_state, StableState}};
 use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
 use ic_crypto_sha::Sha256;
 use std::rc::Rc;
@@ -292,4 +292,15 @@ fn growing_write_should_work_for_all() {
             growing_write_should_work(memory_id, &test_vector);
         }
     }
+}
+
+#[test]
+fn debug_should_portray_partitions_accurately() {
+    let partitions = Partitions::new_with_schema(DefaultMemoryImpl::default(), SchemaLabel::AccountsInStableMemory);
+    partitions.get(Partitions::METADATA_MEMORY_ID).grow(5); // Has one page already, storing the schema label.  Increase this to 6.
+    partitions.get(Partitions::ACCOUNTS_MEMORY_ID).grow(2);
+    assert_eq!(
+        format!("{:?}", partitions),
+        "Partitions {\n  schema_label: AccountsInStableMemory\n  Metadata partition: 6 pages\n  Heap partition: 0 pages\n  Accounts partition: 2 pages\n}\n"
+    );
 }
