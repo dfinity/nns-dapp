@@ -124,7 +124,7 @@ impl State {
         SchemaLabel::try_from(&schema_label_bytes[..]).ok()
     }
 
-    /// Create the state from stable memory in the `post_upgrade()` hook.
+    /// Creates the state from stable memory in the `post_upgrade()` hook.
     ///
     /// Note: The stable memory may have been created by any of these schemas:
     /// - The previous schema, when first migrating from the previous schema to the current schema.
@@ -135,30 +135,30 @@ impl State {
     /// - Deploy a release with a parser for the new schema.
     /// - Then, deploy a release that writes the new schema.
     /// This way it is possible to roll back after deploying the new schema.
-    pub fn post_upgrade() -> Self {
+    pub fn restore() -> Self {
         match Self::schema_version_from_stable_memory() {
-            None => Self::post_upgrade_unversioned(),
+            None => Self::restore_unversioned(),
             Some(version) => {
                 trap_with(&format!("Unknown schema version: {version:?}"));
                 unreachable!();
             }
         }
     }
-    /// Save any unsaved state to stable memory.
-    pub fn pre_upgrade(&self) {
-        self.pre_upgrade_unversioned()
+    /// Saves any unsaved state to stable memory.
+    pub fn save(&self) {
+        self.save_unversioned()
     }
 }
 
 // The unversioned schema.
 impl State {
-    /// Save any unsaved state to stable memory.
-    fn pre_upgrade_unversioned(&self) {
+    /// Saves any unsaved state to stable memory.
+    fn save_unversioned(&self) {
         let bytes = self.encode();
         stable::set(&bytes);
     }
-    /// Create the state from stable memory in the `post_upgrade()` hook.
-    fn post_upgrade_unversioned() -> Self {
+    /// Creates the state from stable memory in the `post_upgrade()` hook.
+    fn restore_unversioned() -> Self {
         let bytes = stable::get();
         State::decode(bytes).unwrap_or_else(|e| {
             trap_with(&format!("Decoding stable memory failed. Error: {e:?}"));
