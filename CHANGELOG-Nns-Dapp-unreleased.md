@@ -22,6 +22,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Various wording changes.
 * Display the full neuron type text within the tag.
+* Implement `State` traits manually rather than automatically.
 
 #### Deprecated
 

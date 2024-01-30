@@ -11,6 +11,8 @@ use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemor
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
 #[cfg(not(target_arch = "wasm32"))]
 use std::rc::Rc;
+use strum::IntoEnumIterator;
+use strum_macros::EnumIter;
 
 pub mod schemas;
 #[cfg(test)]
@@ -27,19 +29,43 @@ pub struct Partitions {
     memory: DefaultMemoryImpl,
 }
 
+impl core::fmt::Debug for Partitions {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(f, "Partitions {{")?;
+        writeln!(f, "schema_label: {:?}", self.schema_label())?;
+        for id in PartitionIds::iter() {
+            writeln!(
+                f,
+                "partition {:?}: {} pages",
+                id,
+                self.get(MemoryId::new(id as u8)).size()
+            )?;
+        }
+        writeln!(f, "}}")
+    }
+}
+
+#[repr(u8)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, EnumIter)]
+pub enum PartitionIds {
+    Metadata = 0,
+    Heap = 1,
+    Accounts = 2,
+}
+
 impl Partitions {
     /// The virtual memory containing metadata such as schema version.
     ///
     /// Note: This ID is guaranteed to be stable across deployments.
-    pub const METADATA_MEMORY_ID: MemoryId = MemoryId::new(0);
+    pub const METADATA_MEMORY_ID: MemoryId = MemoryId::new(PartitionIds::Metadata as u8);
     /// The virtual memory containing heap data.
     ///
     /// Note: This ID is guaranteed to be stable across deployments.
-    pub const HEAP_MEMORY_ID: MemoryId = MemoryId::new(1);
+    pub const HEAP_MEMORY_ID: MemoryId = MemoryId::new(PartitionIds::Heap as u8);
     /// The virtual memory containing accounts.
     ///
     /// Note: This ID is guaranteed to be stable across deployments.
-    pub const ACCOUNTS_MEMORY_ID: MemoryId = MemoryId::new(2);
+    pub const ACCOUNTS_MEMORY_ID: MemoryId = MemoryId::new(PartitionIds::Accounts as u8);
 
     /// Determines whether the given memory is managed by a memory manager.
     fn is_managed(memory: &DefaultMemoryImpl) -> bool {

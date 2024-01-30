@@ -79,7 +79,7 @@ fn pre_upgrade() {
         stats::gibibytes(stats::wasm_memory_size_bytes())
     );
     STATE.with(|s| {
-        s.pre_upgrade();
+        s.save();
     });
     println!(
         "pre_upgrade instruction_counter after saving state: {} stable_memory_size_gib: {} wasm_memory_size_gib: {}",

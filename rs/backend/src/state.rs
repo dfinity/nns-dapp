@@ -27,7 +27,6 @@ use crate::accounts_store::schema::AccountsDbTrait;
 use crate::accounts_store::schema::SchemaLabel;
 use crate::accounts_store::AccountsStore;
 use crate::arguments::CanisterArguments;
-use crate::arguments::CANISTER_ARGUMENTS;
 use crate::assets::AssetHashes;
 use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
@@ -36,6 +35,7 @@ use dfn_candid::Candid;
 use dfn_core::api::trap_with;
 use ic_cdk::println;
 use ic_stable_structures::DefaultMemoryImpl;
+use ic_stable_structures::Memory;
 use on_wire::{FromWire, IntoWire};
 use partitions::Partitions;
 
@@ -58,6 +58,7 @@ pub struct State {
 
 #[cfg(test)]
 impl PartialEq for State {
+    /// Compares essential content of two states for equality.
     fn eq(&self, other: &Self) -> bool {
         (self.accounts_store == other.accounts_store)
             && (self.assets == other.assets)
@@ -82,16 +83,27 @@ impl Default for State {
 
 impl core::fmt::Debug for State {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        // Destructure to ensure that we don't forget to update this when new fields are added:
+        let State {
+            accounts_store,
+            assets: _,
+            asset_hashes: _,
+            performance: _,
+            partitions_maybe,
+        } = self;
         writeln!(f, "State {{")?;
-        writeln!(f, "  state_schema: {:?}", &self.schema_label())?;
-        writeln!(f, "  accounts: {:?}", &self.accounts_store.borrow())?;
+        writeln!(f, "  accounts: {:?}", accounts_store.borrow())?;
+        writeln!(f, "  assets: <html etc> (elided)")?;
+        writeln!(f, "  asset_hashes: <hashes of the assets> (elided)")?;
+        writeln!(f, "  performance: <stats for the metrics endpoint> (elided)")?;
         writeln!(
             f,
-            "  args_schema: {:?}",
-            &CANISTER_ARGUMENTS.with(|args| args.borrow().schema)
+            "  partitions_maybe: {:?}",
+            partitions_maybe
+                .borrow()
+                .as_ref()
+                .map_err(|raw_memory| format!("Raw memory: {} pages", raw_memory.size()))
         )?;
-        writeln!(f, "  partitioned: {:?}", self.partitions_maybe.borrow().is_ok())?;
-        writeln!(f, "  accounts_store: ...")?;
         writeln!(f, "}}")
     }
 }
@@ -313,10 +325,10 @@ impl StableState for State {
 // Methods called on pre_upgrade.
 impl State {
     /// Save any unsaved state to stable memory.
-    pub fn pre_upgrade(&self) {
+    pub fn save(&self) {
         let schema = self.schema_label();
         println!(
-            "START State pre_upgrade from: {:?} (accounts: {:?})",
+            "START State save: {:?} (accounts: {:?})",
             &schema,
             self.accounts_store.borrow().schema_label()
         );
