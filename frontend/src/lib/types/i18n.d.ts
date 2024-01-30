@@ -154,6 +154,8 @@ interface I18nNavigation {
   launchpad: string;
   manage_ii: string;
   manage_ii_url: string;
+  source_code: string;
+  source_code_url: string;
   settings: string;
 }
 
