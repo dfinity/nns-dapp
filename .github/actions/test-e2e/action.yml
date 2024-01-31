@@ -60,7 +60,7 @@ runs:
       run: |
         find frontend/playwright-*
     - name: Upload Playwright results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: ${{ failure() }}
       with:
         name: playwright-failure-results
@@ -79,7 +79,7 @@ runs:
         fi
     - name: Upload screenshots
       if: ${{ steps.check-screenshots.outputs.screenshots }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: updated-screenshots
         path: |
