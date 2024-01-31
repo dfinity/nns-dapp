@@ -58,7 +58,7 @@
     </h5>
   </div>
 
-  <div class="toolbar">
+  <div class="toolbar toolbar-buttons">
     <button class="secondary" on:click={() => dispatcher("nnsCancel")}>
       {$i18n.core.cancel}
     </button>

@@ -68,7 +68,7 @@
 <TestIdWrapper testId="participate-button-component">
   {#if lifecycle === SnsSwapLifecycle.Open}
     <BottomSheet>
-      <div role="toolbar">
+      <div role="toolbar" class="toolbar-buttons">
         <SignInGuard>
           <!-- "logged-out" is handled by SignInGuard -->
           <!-- "disabled-not-open" is handled by the if above and not rendering the button -->
