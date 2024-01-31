@@ -771,7 +771,8 @@ mod def {
 
     // NNS function 46 - UpdateApiBoundaryNodesVersion
     // https://github.com/dfinity/ic/blob/04c9c04c7a1f52ab5529531691a7c1bcf289c30d/rs/registry/canister/src/mutations/do_update_api_boundary_nodes_version.rs#L14
-    pub type UpdateApiBoundaryNodesVersionPayload = crate::canisters::nns_registry::api::UpdateApiBoundaryNodesVersionPayload;
+    pub type UpdateApiBoundaryNodesVersionPayload =
+        crate::canisters::nns_registry::api::UpdateApiBoundaryNodesVersionPayload;
 }
 
 #[cfg(test)]
