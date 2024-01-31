@@ -157,9 +157,5 @@
     &:hover {
       background-color: var(--table-row-background-hover);
     }
-
-    & button.with-icon {
-      @include button.with-icon;
-    }
   }
 </style>
