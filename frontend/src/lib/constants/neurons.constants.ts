@@ -4,7 +4,7 @@ import { Topic } from "@dfinity/nns";
 
 export const ULPS_PER_MATURITY = 100_000_000;
 export const MAX_NEURONS_MERGED = 2;
-export const MIN_NEURON_STAKE = 100_000_000;
+export const MIN_NEURON_STAKE = 100_000_000n;
 export const MAX_CONCURRENCY = 10;
 export const MATURITY_MODULATION_VARIANCE_PERCENTAGE = 0.95;
 // Neuron ids are random u64. Max digits of a u64 is 20.

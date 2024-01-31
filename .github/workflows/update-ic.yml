@@ -3,8 +3,8 @@
 name: Update IC
 on:
   schedule:
-    # Check for new IC releases daily at 7:30.  Upstream releases about once weekly.
-    - cron: '30 7 * * *'
+    # Check for new IC releases every wednesday at 7:30.
+    - cron: '30 7 * * WED'
   push:
     branches:
       - update-ic-workflow
@@ -17,7 +17,7 @@ jobs:
   update-ic:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Find newer ic release, if any
         id: update
         run: |
@@ -53,7 +53,7 @@ jobs:
           echo "ref=$SNSDEMO_RELEASE" >> "$GITHUB_OUTPUT"
       - name: Get SNS scripts
         if: ${{ steps.have_snsdemo.outputs.have_snsdemo }} == 'false'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'
@@ -97,17 +97,23 @@ jobs:
           body: |
             # Motivation
             A newer release of the internet computer is available.
+            Even with no changes, just updating the reference is good practice.
 
             # Changes
             ## Changes made by a bot triggered by ${{ github.actor }}
             - Update the version of `ic` specified in `dfx.json`.
             - Update the NNS candid files to the versions in that commit.
 
-            ## Changes made by a human (delete if inapplicable)
-
             # Tests
             - See CI
             - [ ] Check for breaking changes in the APIs and schedule any required follow-on work.
+
+            Breaking changes are:
+              * New mandatory fields
+                * Removing mandatory fields
+                * Renaming fields
+                * Changing the type of a field
+                * Adding new variants
           # Since this is a scheduled job, a failure won't be shown on any
           # PR status. To notify the team, we send a message to our Slack channel on failure.
       - name: Notify Slack on failure

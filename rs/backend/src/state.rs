@@ -13,8 +13,6 @@ pub mod partitions;
 #[cfg(test)]
 pub mod tests;
 
-#[derive(Default, Debug)]
-#[cfg_attr(test, derive(Eq, PartialEq))]
 pub struct State {
     // NOTE: When adding new persistent fields here, ensure that these fields
     // are being persisted in the `replace` method below.
@@ -22,6 +20,49 @@ pub struct State {
     pub assets: RefCell<Assets>,
     pub asset_hashes: RefCell<AssetHashes>,
     pub performance: RefCell<PerformanceCounts>,
+    // TODO: Take ownership of stable memory.
+}
+
+#[cfg(test)]
+impl PartialEq for State {
+    /// Compares essential content of two states for equality.
+    fn eq(&self, other: &Self) -> bool {
+        (self.accounts_store == other.accounts_store)
+            && (self.assets == other.assets)
+            && (self.asset_hashes == other.asset_hashes)
+            && (self.performance == other.performance)
+    }
+}
+#[cfg(test)]
+impl Eq for State {}
+
+impl Default for State {
+    fn default() -> Self {
+        Self {
+            accounts_store: RefCell::new(AccountsStore::default()),
+            assets: RefCell::new(Assets::default()),
+            asset_hashes: RefCell::new(AssetHashes::default()),
+            performance: RefCell::new(PerformanceCounts::default()),
+        }
+    }
+}
+
+impl core::fmt::Debug for State {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        // Destructure to ensure that we don't forget to update this when new fields are added:
+        let State {
+            accounts_store,
+            assets: _,
+            asset_hashes: _,
+            performance: _,
+        } = self;
+        writeln!(f, "State {{")?;
+        writeln!(f, "  accounts: {:?}", accounts_store.borrow())?;
+        writeln!(f, "  assets: <html etc> (elided)")?;
+        writeln!(f, "  asset_hashes: <hashes of the assets> (elided)")?;
+        writeln!(f, "  performance: <stats for the metrics endpoint> (elided)")?;
+        writeln!(f, "}}")
+    }
 }
 
 impl State {
@@ -83,7 +124,7 @@ impl State {
         SchemaLabel::try_from(&schema_label_bytes[..]).ok()
     }
 
-    /// Create the state from stable memory in the `post_upgrade()` hook.
+    /// Creates the state from stable memory in the `post_upgrade()` hook.
     ///
     /// Note: The stable memory may have been created by any of these schemas:
     /// - The previous schema, when first migrating from the previous schema to the current schema.
@@ -94,30 +135,30 @@ impl State {
     /// - Deploy a release with a parser for the new schema.
     /// - Then, deploy a release that writes the new schema.
     /// This way it is possible to roll back after deploying the new schema.
-    pub fn post_upgrade() -> Self {
+    pub fn restore() -> Self {
         match Self::schema_version_from_stable_memory() {
-            None => Self::post_upgrade_unversioned(),
+            None => Self::restore_unversioned(),
             Some(version) => {
                 trap_with(&format!("Unknown schema version: {version:?}"));
                 unreachable!();
             }
         }
     }
-    /// Save any unsaved state to stable memory.
-    pub fn pre_upgrade(&self) {
-        self.pre_upgrade_unversioned()
+    /// Saves any unsaved state to stable memory.
+    pub fn save(&self) {
+        self.save_unversioned()
     }
 }
 
 // The unversioned schema.
 impl State {
-    /// Save any unsaved state to stable memory.
-    fn pre_upgrade_unversioned(&self) {
+    /// Saves any unsaved state to stable memory.
+    fn save_unversioned(&self) {
         let bytes = self.encode();
         stable::set(&bytes);
     }
-    /// Create the state from stable memory in the `post_upgrade()` hook.
-    fn post_upgrade_unversioned() -> Self {
+    /// Creates the state from stable memory in the `post_upgrade()` hook.
+    fn restore_unversioned() -> Self {
         let bytes = stable::get();
         State::decode(bytes).unwrap_or_else(|e| {
             trap_with(&format!("Decoding stable memory failed. Error: {e:?}"));

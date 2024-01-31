@@ -512,7 +512,7 @@ export const isEnoughMaturityToSpawn = ({
   );
   return (
     maturitySelected >=
-    MIN_NEURON_STAKE / MATURITY_MODULATION_VARIANCE_PERCENTAGE
+    Number(MIN_NEURON_STAKE) / MATURITY_MODULATION_VARIANCE_PERCENTAGE
   );
 };
 
@@ -845,16 +845,16 @@ export const neuronsVotingPower = (neurons?: CompactNeuronInfo[]): bigint =>
 export const hasEnoughMaturityToStake = ({ fullNeuron }: NeuronInfo): boolean =>
   (fullNeuron?.maturityE8sEquivalent ?? 0n) > 0n;
 
-export const minNeuronSplittable = (fee: number): number =>
-  2 * MIN_NEURON_STAKE + fee;
+export const minNeuronSplittable = (fee: bigint): bigint =>
+  2n * MIN_NEURON_STAKE + fee;
 
 export const neuronCanBeSplit = ({
   neuron,
   fee,
 }: {
   neuron: NeuronInfo;
-  fee: number;
-}): boolean => neuronStake(neuron) >= BigInt(minNeuronSplittable(fee));
+  fee: bigint;
+}): boolean => neuronStake(neuron) >= minNeuronSplittable(fee);
 
 export const getNeuronById = ({
   neuronsStore,

@@ -51,7 +51,7 @@ runs:
         test -n "$URL" || URL="https://github.com/dfinity/snsdemo/releases/download/${{ steps.snsdemo_ref.outputs.ref }}/snsdemo_snapshot_ubuntu-22.04.tar.xz"
         echo "url=$URL" >> "$GITHUB_OUTPUT"
     - name: Get SNS scripts
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: 'dfinity/snsdemo'
         path: 'snsdemo'

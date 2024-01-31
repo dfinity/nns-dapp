@@ -3,7 +3,8 @@
 name: Update proposals
 on:
   schedule:
-    - cron: '30 3 * * *'
+    # Check for updates on candid interface for the proposals every thursday at 3:30am.
+    - cron: '30 3 * * THU'
   workflow_dispatch:
   push:
     branches:
@@ -13,7 +14,7 @@ jobs:
   update-proposals:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install didc
         run: |
           USER_BIN="$HOME/.local/bin"
@@ -46,12 +47,13 @@ jobs:
           # Note: Please be careful when updating the add-paths field.  We have had the snsdemo committed by accident, with a pattern that matches nothing seemingly committing everything.
           add-paths: rs/proposals/src/canisters/*/api.rs
           delete-branch: true
-          title: 'Update proposal rendering'
+          title: 'Update proposal rendering dependencies'
           # Note: It is _likely_ but not guaranteed that the .did files match the `IC_COMMIT` in `dfx.json`.  The files in the PR have a header that give this information reliably.
           #       We do _not_ put a commit in the PR title as it could be misleading.
           body: |
             # Motivation
             We would like to render all the latest proposal types.
+            Even with no changes, just updating the reference is good practice.
 
             # Changes
             * Updated the Rust code derived from `.did` files in the proposals payload rendering crate.
@@ -60,6 +62,13 @@ jobs:
             # Tests
               - [ ] Please check the API updates for any breaking changes that affect our code.
               - [ ] Please check for new proposal types and add tests for them.
+
+            Breaking changes are:
+              * New mandatory fields
+                * Removing mandatory fields
+                * Renaming fields
+                * Changing the type of a field
+                * Adding new variants
           # Since the this is a scheduled job, a failure won't be shown on any
           # PR status. To notify the team, we send a message to our Slack channel on failure.
       - name: Report on the action

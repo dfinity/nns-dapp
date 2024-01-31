@@ -1,3 +1,4 @@
+import { TooltipIconPo } from "$tests/page-objects/TooltipIcon.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { AgeBonusTextPo } from "./AgeBonusText.page-object";
@@ -10,6 +11,10 @@ export class SnsNeuronStateItemActionPo extends BasePageObject {
     return new SnsNeuronStateItemActionPo(
       element.byTestId(SnsNeuronStateItemActionPo.TID)
     );
+  }
+
+  getTooltipIconPo(): TooltipIconPo {
+    return TooltipIconPo.under(this.root);
   }
 
   getState(): Promise<string> {

@@ -15,30 +15,28 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* New block "Stake a neuron" on proposal details page.
-* Getter and setter of partition schema label.
 * Close button at the bottom of follow neurons modal.
+* Info tooltips in neuron details.
+* Use logo for token (if present) for `ICRC` (but non-`SNS`) tokens.
 
 #### Changed
 
-* Changed wording about staking neurons to staking tokens.
-* Add missing feature flags to default feature flags value.
-* Various wording changes.
 * Various wording changes.
 * Display the full neuron type text within the tag.
+* Implement `State` traits manually rather than automatically.
 
 #### Deprecated
 
 #### Removed
 
-* ckBTC withdrawal account.
-* Don't show the red error outline on dissolve delay input when the dissolve delay is not enough to have voting power.
 * Remove `ENABLE_CKETH` feature flag.
+* Remove unused `transactionsFeesStore` and related.
 
 #### Fixed
 
-* Fix gaps between sections on the mobile launchpad page.
 * Fix proposal back navigation during voting.
+* Fix tooltip positioning.
+* Tooltip icon style.
 
 #### Security
 
@@ -48,16 +46,17 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Add `reviewers` to the `update-*.yml` workflows that create PRs.
+* Add `.orig` file extension to `.gitignore` file.
 
 #### Changed
+
+* Frequency of update workflows moved to weekly instead of daily.
+* Update GitHub actions to newer versions.
 
 #### Deprecated
 
 #### Removed
 
 #### Fixed
-
-* Commented out broken local `config.test`.
 
 #### Security

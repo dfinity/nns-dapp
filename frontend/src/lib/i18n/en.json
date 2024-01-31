@@ -617,6 +617,8 @@
     "voting_power_section_description_expanded_zero_nns": "The dissolve delay must be greater than 6 months for the neuron to have voting power. Learn more about voting power on the <a href=\"$dashboardLink\" rel=\"noopener noreferrer\" aria-label=\"more info about voting power\" target=\"_blank\">dashboard</a>.",
     "maturity_section_description": "Earn rewards by voting on proposals and/or following active neurons.",
     "staked_description": "Staked",
+    "nns_staked_maturity_tooltip": "Staked maturity contributes to the neuron’s voting power, but cannot be spawned into a new neuron.",
+    "sns_staked_maturity_tooltip": "Staked maturity contributes to the neuron’s voting power, but cannot be disbursed.",
     "age_bonus_label": "Age bonus: +$ageBonus",
     "dissolve_bonus_label": "Dissolve delay bonus: +$dissolveBonus",
     "no_age_bonus": "No age bonus",
@@ -709,6 +711,8 @@
     "current_stake": "Current Stake",
     "current_maturity": "Current Maturity",
     "available_maturity": "Maturity available",
+    "nns_available_maturity_tooltip": "Available maturity can be staked, or burned to spawn a neuron containing an amount of ICP that is subject to a non-deterministic process, called maturity modulation.",
+    "sns_available_maturity_tooltip": "Available maturity can be staked, or burned to disburse an amount of $token that is subject to a non-deterministic process, called maturity modulation.",
     "dissolve_delay_range": "Dissolve Delay Range",
     "maturity_range": "Select Maturity Range",
     "spawning_neuron_info": "When this neuron has finished spawning, newly minted ICP will be added. The quantity of new ICP minted will depend on the ICP price trend. You will then be able to disburse this new ICP if you wish.",
@@ -720,7 +724,9 @@
     "neuron_account": "Neuron Account",
     "dissolve_date": "Dissolve Date",
     "amount_maturity": "$amount maturity",
-    "created": "Date created"
+    "created": "Date created",
+    "neuron_state_tooltip": "Your neuron can be locked, unlocked or dissolving. In a locked state, it is accruing age bonus, while its dissolve delay stays constant. If the neuron is in a dissolving state, its age bonus is set to 0, while dissolve delay decreases with time. After dissolve delay reaches 0, the neuron is unlocked, and $token held in it can be sent to any $token account.",
+    "dissolve_delay_tooltip": "Dissolve delay is the minimum amount of time you have to wait for the neuron to unlock, and $token to be available again. If your neuron is dissolving, your $token will be available in $duration."
   },
   "sns_launchpad": {
     "header": "Launchpad",

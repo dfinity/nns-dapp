@@ -59,7 +59,7 @@ fn pre_upgrade() {
         stats::gibibytes(stats::wasm_memory_size_bytes())
     );
     STATE.with(|s| {
-        s.pre_upgrade();
+        s.save();
     });
     println!(
         "pre_upgrade instruction_counter after saving state: {} stable_memory_size_gib: {} wasm_memory_size_gib: {}",
@@ -76,7 +76,7 @@ fn post_upgrade(args: Option<CanisterArguments>) {
     // as the storage is about to be wiped out and replaced with stable memory.
     let counter_before = PerformanceCount::new("post_upgrade start");
     STATE.with(|s| {
-        s.replace(State::post_upgrade());
+        s.replace(State::restore());
     });
     perf::save_instruction_count(counter_before);
     perf::record_instruction_count("post_upgrade after state_recovery");

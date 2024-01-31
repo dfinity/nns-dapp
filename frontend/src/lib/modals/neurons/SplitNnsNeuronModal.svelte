@@ -14,7 +14,7 @@
   import { createEventDispatcher } from "svelte";
   import { splitNeuron } from "$lib/services/neurons.services";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
-  import { mainTransactionFeeStore } from "$lib/derived/main-transaction-fee.derived";
+  import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
 
   export let neuron: NeuronInfo;
 
@@ -31,7 +31,7 @@
     stakeE8s === 0n
       ? 0
       : ulpsToNumber({
-          ulps: stakeE8s - BigInt($mainTransactionFeeStore),
+          ulps: stakeE8s - $mainTransactionFeeE8sStore,
           token: ICPToken,
         });
 
@@ -78,7 +78,8 @@
     <div>
       <p class="label">{$i18n.neurons.transaction_fee}</p>
       <p>
-        <Value>{formattedTransactionFeeICP($mainTransactionFeeStore)}</Value> ICP
+        <Value>{formattedTransactionFeeICP($mainTransactionFeeE8sStore)}</Value>
+        ICP
       </p>
     </div>
 

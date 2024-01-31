@@ -12,7 +12,6 @@ import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
@@ -153,7 +152,6 @@ describe("SNS public services", () => {
   describe("loadSnsProjects", () => {
     beforeEach(() => {
       snsFunctionsStore.reset();
-      transactionsFeesStore.reset();
       snsAggregatorStore.reset();
       clearWrapperCache();
       vi.clearAllMocks();
@@ -176,8 +174,6 @@ describe("SNS public services", () => {
 
       const functionsStore = get(snsFunctionsStore);
       expect(functionsStore[rootCanisterId]).not.toBeUndefined();
-      const feesStore = get(transactionsFeesStore);
-      expect(feesStore.projects[rootCanisterId]).not.toBeUndefined();
     });
 
     it("SNS certified calls after aggregator store is filled don't trigger a call to list_sns_canisters", () => {

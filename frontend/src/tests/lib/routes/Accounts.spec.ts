@@ -26,7 +26,6 @@ import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import { page } from "$mocks/$app/stores";
 import {
   mockAuthStoreSubscribe,
@@ -309,12 +308,6 @@ describe("Accounts", () => {
         lifecycle: SnsSwapLifecycle.Committed,
       },
     ]);
-
-    transactionsFeesStore.setFee({
-      rootCanisterId: mockSnsFullProject.rootCanisterId,
-      fee: 10_000n,
-      certified: true,
-    });
     const { queryByTestId, getByTestId } = render(Accounts);
 
     expect(queryByTestId("sns-accounts-body")).toBeInTheDocument();

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { mainTransactionFeeStore } from "$lib/derived/main-transaction-fee.derived";
+  import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
   import { i18n } from "$lib/stores/i18n";
   import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
   import { Value } from "@dfinity/gix-components";
@@ -34,7 +34,7 @@
   <p class="fee">
     <Value
       >{formattedTransactionFeeICP(
-        fee?.toE8s() ?? $mainTransactionFeeStore
+        fee?.toE8s() ?? $mainTransactionFeeE8sStore
       )}</Value
     >
     {fee?.token.symbol ?? $i18n.core.icp}

@@ -31,7 +31,7 @@ jobs:
       - uses: docker-practice/actions-setup-docker@master
         timeout-minutes: 12
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       # Helps with debugging
       - name: Show versions
         run: |

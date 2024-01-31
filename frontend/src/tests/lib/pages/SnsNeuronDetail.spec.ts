@@ -13,7 +13,6 @@ import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import {
   getSnsNeuronIdAsHexString,
   subaccountToHexString,
@@ -66,7 +65,6 @@ describe("SnsNeuronDetail", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     snsParametersStore.reset();
-    transactionsFeesStore.reset();
     tokensStore.reset();
     snsFunctionsStore.reset();
     snsParametersStore.reset();
