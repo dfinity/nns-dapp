@@ -9,7 +9,10 @@ use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
 use ic_cdk::println;
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
+#[cfg(not(target_arch = "wasm32"))]
 use std::rc::Rc;
+use strum::IntoEnumIterator;
+use strum_macros::EnumIter;
 
 pub mod schemas;
 #[cfg(test)]
@@ -22,22 +25,54 @@ pub struct Partitions {
     /// but has no method for returning it.  If we wish to convert a `DefaultMemoryImpl`
     /// to `Partitions` and back again, we need to keep a reference to the memory to
     /// provide when we convert back.
+    #[cfg(test)]
     memory: DefaultMemoryImpl,
 }
-impl Partitions {
+
+impl core::fmt::Debug for Partitions {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(f, "Partitions {{")?;
+        writeln!(f, "  schema_label: {:?}", self.schema_label())?;
+        for id in PartitionType::iter() {
+            writeln!(
+                f,
+                "  {:?} partition: {} pages",
+                id,
+                self.get(MemoryId::new(id as u8)).size()
+            )?;
+        }
+        writeln!(f, "}}")
+    }
+}
+
+/// The virtual memory IDs for the partitions.
+///
+/// IMPORTANT: There must be a 1-1 mapping between enum entries and virtual memories (aka partitions of the stable memory).
+///
+/// IMPORTANT: The IDs must be stable across deployments.
+#[repr(u8)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, EnumIter)]
+pub enum PartitionType {
     /// The virtual memory containing metadata such as schema version.
     ///
     /// Note: This ID is guaranteed to be stable across deployments.
-    pub const METADATA_MEMORY_ID: MemoryId = MemoryId::new(0);
+    Metadata = 0,
     /// The virtual memory containing heap data.
     ///
     /// Note: This ID is guaranteed to be stable across deployments.
-    pub const HEAP_MEMORY_ID: MemoryId = MemoryId::new(1);
+    Heap = 1,
     /// The virtual memory containing accounts.
     ///
     /// Note: This ID is guaranteed to be stable across deployments.
-    pub const ACCOUNTS_MEMORY_ID: MemoryId = MemoryId::new(2);
+    Accounts = 2,
+}
+impl PartitionType {
+    pub const fn memory_id(&self) -> MemoryId {
+        MemoryId::new(*self as u8)
+    }
+}
 
+impl Partitions {
     /// Determines whether the given memory is managed by a memory manager.
     fn is_managed(memory: &DefaultMemoryImpl) -> bool {
         let memory_pages = memory.size();
