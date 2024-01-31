@@ -80,7 +80,7 @@ fn partitions_should_get_correct_virtual_memory() {
         "Metadata partition should be empty."
     );
     assert_eq!(
-        partitions.get(Partitions::HEAP_MEMORY_ID).size(),
+        partitions.get(PartitionIds::Heap.memory_id()).size(),
         0,
         "Heap partition should be empty."
     );
@@ -99,7 +99,7 @@ fn partitions_should_get_correct_virtual_memory() {
         "Metadata partition should have grown to 1."
     );
     assert_eq!(
-        partitions.get(Partitions::HEAP_MEMORY_ID).size(),
+        partitions.get(PartitionIds::Heap.memory_id()).size(),
         0,
         "Heap partition should still be empty."
     );
@@ -116,7 +116,7 @@ fn partitions_should_get_correct_virtual_memory() {
         "Metadata partition should still be 1."
     );
     assert_eq!(
-        partitions.get(Partitions::HEAP_MEMORY_ID).size(),
+        partitions.get(PartitionIds::Heap.memory_id()).size(),
         0,
         "Heap partition should still be empty."
     );
@@ -124,7 +124,7 @@ fn partitions_should_get_correct_virtual_memory() {
 
     // Populate another partition via partitions.  The memory manager should reflect the change.
     let toy_heap_fill = b"bar".repeat(1000);
-    memory_manager.get(Partitions::HEAP_MEMORY_ID).grow(2);
+    memory_manager.get(PartitionIds::Heap.memory_id()).grow(2);
     let partitions = Partitions::try_from_memory(Rc::clone(&toy_memory))
         .expect("Failed to get partitions when one partition is populated");
     assert_eq!(
@@ -133,18 +133,20 @@ fn partitions_should_get_correct_virtual_memory() {
         "Metadata partition should still be 1."
     );
     assert_eq!(
-        memory_manager.get(Partitions::HEAP_MEMORY_ID).size(),
+        memory_manager.get(PartitionIds::Heap.memory_id()).size(),
         2,
         "Heap partition should have grown to 2."
     );
-    partitions.get(Partitions::HEAP_MEMORY_ID).write(0, &toy_heap_fill[..]);
+    partitions
+        .get(PartitionIds::Heap.memory_id())
+        .write(0, &toy_heap_fill[..]);
     assert_eq!(
         memory_manager.get(PartitionIds::Metadata.memory_id()).size(),
         1,
         "Metadata partition should still be 1."
     );
     assert_eq!(
-        memory_manager.get(Partitions::HEAP_MEMORY_ID).size(),
+        memory_manager.get(PartitionIds::Heap.memory_id()).size(),
         2,
         "Heap partition should still be 2."
     );

@@ -52,6 +52,9 @@ pub enum PartitionIds {
     ///
     /// Note: This ID is guaranteed to be stable across deployments.
     Metadata = 0,
+    /// The virtual memory containing heap data.
+    ///
+    /// Note: This ID is guaranteed to be stable across deployments.
     Heap = 1,
     Accounts = 2,
 }
@@ -62,10 +65,6 @@ impl PartitionIds {
 }
 
 impl Partitions {
-    /// The virtual memory containing heap data.
-    ///
-    /// Note: This ID is guaranteed to be stable across deployments.
-    pub const HEAP_MEMORY_ID: MemoryId = MemoryId::new(PartitionIds::Heap as u8);
     /// The virtual memory containing accounts.
     ///
     /// Note: This ID is guaranteed to be stable across deployments.
