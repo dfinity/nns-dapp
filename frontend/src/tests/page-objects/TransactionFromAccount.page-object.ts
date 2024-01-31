@@ -11,15 +11,15 @@ export class TransactionFromAccountPo extends BasePageObject {
     );
   }
 
-  getDropdownPo(): SelectAccountDropdownPo {
+  getSelectAccountDropdownPo(): SelectAccountDropdownPo {
     return SelectAccountDropdownPo.under(this.root);
   }
 
   async selectAccount(accountName: string): Promise<void> {
-    await this.getDropdownPo().select(accountName);
+    await this.getSelectAccountDropdownPo().select(accountName);
   }
 
   getAccounts(): Promise<string[]> {
-    return this.getDropdownPo().getOptions();
+    return this.getSelectAccountDropdownPo().getOptions();
   }
 }

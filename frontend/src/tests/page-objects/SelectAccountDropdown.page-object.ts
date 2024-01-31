@@ -22,4 +22,8 @@ export class SelectAccountDropdownPo extends BasePageObject {
   getOptions(): Promise<string[]> {
     return this.getDropdown().getOptions();
   }
+
+  hasDropdown(): Promise<boolean> {
+    return this.getDropdown().isPresent();
+  }
 }
