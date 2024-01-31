@@ -18,6 +18,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Close button at the bottom of follow neurons modal.
 * Info tooltips in neuron details.
 * Use logo for token (if present) for `ICRC` (but non-`SNS`) tokens.
+* Filtering SNS Proposals by type.
 
 #### Changed
 
