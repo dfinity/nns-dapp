@@ -172,8 +172,8 @@ fn should_be_able_to_convert_memory_to_partitions_and_back() {
     {
         toy_memory.grow(5);
         let memory_manager = MemoryManager::init(Partitions::copy_memory_reference(&toy_memory));
-        memory_manager.get(Partitions::ACCOUNTS_MEMORY_ID).grow(1);
-        memory_manager.get(Partitions::ACCOUNTS_MEMORY_ID).write(0, b"foo");
+        memory_manager.get(PartitionIds::Accounts.memory_id()).grow(1);
+        memory_manager.get(PartitionIds::Accounts.memory_id()).write(0, b"foo");
     }
     let memory_hash_before = hash_memory(&toy_memory);
     // Load the memory into partitions and back again.
@@ -292,7 +292,7 @@ fn growing_write_should_work(memory_id: MemoryId, test_vector: &GrowingWriteTest
 
 #[test]
 fn growing_write_should_work_for_all() {
-    for memory_id in [PartitionIds::Metadata.memory_id(), Partitions::ACCOUNTS_MEMORY_ID] {
+    for memory_id in [PartitionIds::Metadata.memory_id(), PartitionIds::Accounts.memory_id()] {
         for test_vector in growing_write_test_vectors() {
             growing_write_should_work(memory_id, &test_vector);
         }
@@ -303,7 +303,7 @@ fn growing_write_should_work_for_all() {
 fn debug_should_portray_partitions_accurately() {
     let partitions = Partitions::new_with_schema(DefaultMemoryImpl::default(), SchemaLabel::AccountsInStableMemory);
     partitions.get(PartitionIds::Metadata.memory_id()).grow(5); // Has one page already, storing the schema label.  Increase this to 6.
-    partitions.get(Partitions::ACCOUNTS_MEMORY_ID).grow(2);
+    partitions.get(PartitionIds::Accounts.memory_id()).grow(2);
     assert_eq!(
         format!("{:?}", partitions),
         "Partitions {\n  schema_label: AccountsInStableMemory\n  Metadata partition: 6 pages\n  Heap partition: 0 pages\n  Accounts partition: 2 pages\n}\n"

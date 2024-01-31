@@ -56,6 +56,9 @@ pub enum PartitionIds {
     ///
     /// Note: This ID is guaranteed to be stable across deployments.
     Heap = 1,
+    /// The virtual memory containing accounts.
+    ///
+    /// Note: This ID is guaranteed to be stable across deployments.
     Accounts = 2,
 }
 impl PartitionIds {
@@ -65,11 +68,6 @@ impl PartitionIds {
 }
 
 impl Partitions {
-    /// The virtual memory containing accounts.
-    ///
-    /// Note: This ID is guaranteed to be stable across deployments.
-    pub const ACCOUNTS_MEMORY_ID: MemoryId = MemoryId::new(PartitionIds::Accounts as u8);
-
     /// Determines whether the given memory is managed by a memory manager.
     fn is_managed(memory: &DefaultMemoryImpl) -> bool {
         let memory_pages = memory.size();
