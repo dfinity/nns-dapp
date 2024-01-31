@@ -48,16 +48,20 @@ impl core::fmt::Debug for Partitions {
 #[repr(u8)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, EnumIter)]
 pub enum PartitionIds {
+    /// The virtual memory containing metadata such as schema version.
+    ///
+    /// Note: This ID is guaranteed to be stable across deployments.
     Metadata = 0,
     Heap = 1,
     Accounts = 2,
 }
+impl PartitionIds {
+    pub const fn memory_id(&self) -> MemoryId {
+        MemoryId::new(*self as u8)
+    }
+}
 
 impl Partitions {
-    /// The virtual memory containing metadata such as schema version.
-    ///
-    /// Note: This ID is guaranteed to be stable across deployments.
-    pub const METADATA_MEMORY_ID: MemoryId = MemoryId::new(PartitionIds::Metadata as u8);
     /// The virtual memory containing heap data.
     ///
     /// Note: This ID is guaranteed to be stable across deployments.

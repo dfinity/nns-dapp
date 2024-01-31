@@ -75,7 +75,7 @@ fn partitions_should_get_correct_virtual_memory() {
     // At this stage, partitions should be empty.
     let partitions = Partitions::try_from_memory(Rc::clone(&toy_memory)).expect("Failed to get empty partitions");
     assert_eq!(
-        partitions.get(Partitions::METADATA_MEMORY_ID).size(),
+        partitions.get(PartitionIds::Metadata.memory_id()).size(),
         0,
         "Metadata partition should be empty."
     );
@@ -87,13 +87,13 @@ fn partitions_should_get_correct_virtual_memory() {
 
     // Grow a partition in the memory manager.  The partitions should grow with it.
     let toy_metadata_fill = [9u8; WASM_PAGE_SIZE_IN_BYTES];
-    memory_manager.get(Partitions::METADATA_MEMORY_ID).grow(1);
+    memory_manager.get(PartitionIds::Metadata.memory_id()).grow(1);
     let partitions = Partitions::try_from_memory(Rc::clone(&toy_memory))
         .expect("Failed to get partitions when one partition has grown");
     assert_eq!(
         Partitions::try_from_memory(Rc::clone(&toy_memory))
             .expect("Failed to get partitions")
-            .get(Partitions::METADATA_MEMORY_ID)
+            .get(PartitionIds::Metadata.memory_id())
             .size(),
         1,
         "Metadata partition should have grown to 1."
@@ -106,12 +106,12 @@ fn partitions_should_get_correct_virtual_memory() {
 
     // Populate a partition with the memory manager.  The partitions should be able to read the data back.
     memory_manager
-        .get(Partitions::METADATA_MEMORY_ID)
+        .get(PartitionIds::Metadata.memory_id())
         .write(0, &toy_metadata_fill);
     let partitions = Partitions::try_from_memory(Rc::clone(&toy_memory))
         .expect("Failed to get partitions when one partition is populated");
     assert_eq!(
-        partitions.get(Partitions::METADATA_MEMORY_ID).size(),
+        partitions.get(PartitionIds::Metadata.memory_id()).size(),
         1,
         "Metadata partition should still be 1."
     );
@@ -120,7 +120,7 @@ fn partitions_should_get_correct_virtual_memory() {
         0,
         "Heap partition should still be empty."
     );
-    should_contain(&partitions, Partitions::METADATA_MEMORY_ID, &toy_metadata_fill);
+    should_contain(&partitions, PartitionIds::Metadata.memory_id(), &toy_metadata_fill);
 
     // Populate another partition via partitions.  The memory manager should reflect the change.
     let toy_heap_fill = b"bar".repeat(1000);
@@ -128,7 +128,7 @@ fn partitions_should_get_correct_virtual_memory() {
     let partitions = Partitions::try_from_memory(Rc::clone(&toy_memory))
         .expect("Failed to get partitions when one partition is populated");
     assert_eq!(
-        memory_manager.get(Partitions::METADATA_MEMORY_ID).size(),
+        memory_manager.get(PartitionIds::Metadata.memory_id()).size(),
         1,
         "Metadata partition should still be 1."
     );
@@ -139,7 +139,7 @@ fn partitions_should_get_correct_virtual_memory() {
     );
     partitions.get(Partitions::HEAP_MEMORY_ID).write(0, &toy_heap_fill[..]);
     assert_eq!(
-        memory_manager.get(Partitions::METADATA_MEMORY_ID).size(),
+        memory_manager.get(PartitionIds::Metadata.memory_id()).size(),
         1,
         "Metadata partition should still be 1."
     );
@@ -290,7 +290,7 @@ fn growing_write_should_work(memory_id: MemoryId, test_vector: &GrowingWriteTest
 
 #[test]
 fn growing_write_should_work_for_all() {
-    for memory_id in [Partitions::METADATA_MEMORY_ID, Partitions::ACCOUNTS_MEMORY_ID] {
+    for memory_id in [PartitionIds::Metadata.memory_id(), Partitions::ACCOUNTS_MEMORY_ID] {
         for test_vector in growing_write_test_vectors() {
             growing_write_should_work(memory_id, &test_vector);
         }
@@ -300,7 +300,7 @@ fn growing_write_should_work_for_all() {
 #[test]
 fn debug_should_portray_partitions_accurately() {
     let partitions = Partitions::new_with_schema(DefaultMemoryImpl::default(), SchemaLabel::AccountsInStableMemory);
-    partitions.get(Partitions::METADATA_MEMORY_ID).grow(5); // Has one page already, storing the schema label.  Increase this to 6.
+    partitions.get(PartitionIds::Metadata.memory_id()).grow(5); // Has one page already, storing the schema label.  Increase this to 6.
     partitions.get(Partitions::ACCOUNTS_MEMORY_ID).grow(2);
     assert_eq!(
         format!("{:?}", partitions),
