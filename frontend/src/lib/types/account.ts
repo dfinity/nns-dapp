@@ -5,11 +5,7 @@ import type {
 import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
 import type { Principal } from "@dfinity/principal";
 
-export type AccountType =
-  | "main"
-  | "subAccount"
-  | "hardwareWallet"
-  | "withdrawalAccount";
+export type AccountType = "main" | "subAccount" | "hardwareWallet";
 
 export type IcpAccountIdentifierText = AccountIdentifierString;
 
@@ -22,7 +18,7 @@ export interface Account {
   identifier: AccountIdentifierText;
   // Main and HardwareWallet accounts have Principal
   principal?: Principal;
-  balanceE8s: bigint;
+  balanceUlps: bigint;
   // Subaccounts and HardwareWallets have name and subAccount
   name?: string;
   subAccount?: SubAccountArray;

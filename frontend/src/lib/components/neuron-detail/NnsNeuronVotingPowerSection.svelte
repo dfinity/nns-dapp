@@ -14,7 +14,7 @@
   import NnsNeuronStateItemAction from "./NnsNeuronStateItemAction.svelte";
   import NnsNeuronDissolveDelayItemAction from "./NnsNeuronDissolveDelayItemAction.svelte";
   import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
-  import { formatToken } from "$lib/utils/token.utils";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
   import { Html, Section } from "@dfinity/gix-components";
 
   export let neuron: NeuronInfo;
@@ -39,7 +39,7 @@
       {replacePlaceholders(
         $i18n.neuron_detail.voting_power_section_description_expanded,
         {
-          $stake: formatToken({
+          $stake: formatTokenE8s({
             value: neuronStake(neuron),
           }),
           $maturityStaked: formattedStakedMaturity(neuron),

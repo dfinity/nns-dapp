@@ -1,11 +1,17 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
+import {
+  setFeatureFlag,
+  signInWithNewUser,
+  step,
+} from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 test("Test accounts requirements", async ({ page, context }) => {
   await page.goto("/accounts");
-  await expect(page).toHaveTitle("My Tokens / NNS Dapp");
+  await expect(page).toHaveTitle("My ICP Tokens / NNS Dapp");
+  // TODO: GIX-1985 Remove this once the feature flag is enabled by default
+  await setFeatureFlag({ page, featureFlag: "ENABLE_MY_TOKENS", value: true });
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
@@ -14,55 +20,75 @@ test("Test accounts requirements", async ({ page, context }) => {
   step("The user has a main account");
 
   const mainAccountName = "Main";
-  const nnsAccountsPo = appPo.getAccountsPo().getNnsAccountsPo();
-  expect(
-    await nnsAccountsPo.getMainAccountCardPo().getAccountName(),
-    mainAccountName
-  );
+  const accountsPo = appPo.getAccountsPo();
+  const nnsAccountsPo = accountsPo.getNnsAccountsPo();
+  const tokensTablePo = nnsAccountsPo.getTokensTablePo();
+  const mainAccountRow = tokensTablePo.getRowByName(mainAccountName);
+  await mainAccountRow.waitFor();
 
   step("AU002: The user MUST be able to create an additional account");
   const subAccountName = "My second account";
-  await nnsAccountsPo.addAccount(subAccountName);
+  await nnsAccountsPo.clickAddAccount();
+
+  const addAccountModalPo = accountsPo.getAddAccountModalPo();
+  expect(await addAccountModalPo.isPresent()).toBe(true);
+
+  await addAccountModalPo.addAccount(subAccountName);
+  await addAccountModalPo.waitForClosed();
 
   step("AU001: The user MUST be able to see a list of all their accounts");
-  const accountNames = async () => await nnsAccountsPo.getAccountNames();
+  const accountNames = async () =>
+    (await tokensTablePo.getRowsData()).map(({ projectName }) => projectName);
   expect(await accountNames()).toEqual([mainAccountName, subAccountName]);
 
   // The linked account should still be present after refresh
   await page.reload({ waitUntil: "load" });
+
+  // We wait until the table is loaded.
+  await tokensTablePo.waitFor();
+  // We wait until the subaccount row is loaded.
+  const subaccountRow = tokensTablePo.getRowByName(subAccountName);
+  await subaccountRow.waitFor();
+
   expect(await accountNames()).toEqual([mainAccountName, subAccountName]);
 
+  // Go to /tokens page because the Accounts page doesn't have the menu button.
+  await appPo.goBack();
   // Get some ICP to be able to transfer
   await appPo.getIcpTokens(20);
+  // Go back to /accounts page
+  const icRow = appPo
+    .getTokensPo()
+    .getTokensPagePo()
+    .getTokensTable()
+    .getRowByName("Internet Computer");
+  await icRow.click();
+
+  await tokensTablePo.waitFor();
 
   step("AU004: The user MUST be able to transfer funds");
-  expect(await nnsAccountsPo.getAccountBalance(mainAccountName)).toEqual(
-    "20.00"
-  );
-  expect(await nnsAccountsPo.getAccountBalance(subAccountName)).toEqual("0");
+  expect(await mainAccountRow.getBalance()).toEqual("20.00 ICP");
+  expect(await subaccountRow.getBalance()).toEqual("0 ICP");
 
-  const subAccountAddress =
-    await nnsAccountsPo.getAccountAddress(subAccountName);
-  await nnsAccountsPo.getMainAccountCardPo().click();
+  const subAccountAddress = await accountsPo.getAccountAddress(subAccountName);
+
+  await mainAccountRow.click();
   await appPo.getWalletPo().getNnsWalletPo().transferToAccount({
     accountName: subAccountName,
     expectedAccountAddress: subAccountAddress,
     amount: 5,
   });
+  await appPo.goBack({ waitAbsent: false });
 
-  await appPo.goBack();
-  await nnsAccountsPo.getMainAccountCardPo().getAmountDisplayPo().waitFor();
-  expect(await nnsAccountsPo.getAccountBalance(mainAccountName)).toEqual(
-    "15.00"
-  );
-  expect(await nnsAccountsPo.getAccountBalance(subAccountName)).toEqual("5.00");
+  expect(await mainAccountRow.getBalance()).toEqual("15.00 ICP");
+  expect(await subaccountRow.getBalance()).toEqual("5.00 ICP");
 
   step(
     "AU005: The user MUST be able to see the transactions of a specific account"
   );
   const mainAccountAddress =
-    await nnsAccountsPo.getAccountAddress(mainAccountName);
-  await nnsAccountsPo.openAccount(subAccountName);
+    await accountsPo.getAccountAddress(mainAccountName);
+  await subaccountRow.click();
   const transactionList = appPo
     .getWalletPo()
     .getNnsWalletPo()
@@ -72,8 +98,6 @@ test("Test accounts requirements", async ({ page, context }) => {
   expect(transactions).toHaveLength(1);
   const transaction = transactions[0];
 
-  expect(await transaction.getIdentifier()).toBe(
-    `Source: ${mainAccountAddress}`
-  );
+  expect(await transaction.getIdentifier()).toBe(`From: ${mainAccountAddress}`);
   expect(await transaction.getAmount()).toBe("+5.00");
 });

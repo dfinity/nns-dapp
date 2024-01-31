@@ -1,10 +1,10 @@
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCAccounts from "$lib/pages/CkBTCAccounts.svelte";
-import { syncCkBTCAccounts } from "$lib/services/ckbtc-accounts.services";
+import { syncAccounts } from "$lib/services/wallet-accounts.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import {
   mockCkBTCMainAccount,
@@ -17,15 +17,9 @@ import {
 } from "$tests/mocks/tokens.mock";
 import { render, waitFor } from "@testing-library/svelte";
 
-vi.mock("$lib/services/ckbtc-accounts.services", () => {
+vi.mock("$lib/services/wallet-accounts.services", () => {
   return {
-    syncCkBTCAccounts: vi.fn().mockResolvedValue(undefined),
-  };
-});
-
-vi.mock("$lib/services/ckbtc-withdrawal-accounts.services", () => {
-  return {
-    loadCkBTCWithdrawalAccount: vi.fn().mockResolvedValue(undefined),
+    syncAccounts: vi.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -81,7 +75,7 @@ describe("CkBTCAccounts", () => {
     it("should not load ckBTC accounts", () => {
       render(CkBTCAccounts);
 
-      expect(syncCkBTCAccounts).not.toHaveBeenCalled();
+      expect(syncAccounts).not.toHaveBeenCalled();
     });
 
     it("should render a main Account", async () => {
@@ -100,8 +94,8 @@ describe("CkBTCAccounts", () => {
       );
 
       expect(cardTitleRow?.textContent.trim()).toEqual(
-        `${formatToken({
-          value: mockCkBTCMainAccount.balanceE8s,
+        `${formatTokenE8s({
+          value: mockCkBTCMainAccount.balanceUlps,
         })} ${mockCkBTCToken.symbol}`
       );
     });
@@ -123,7 +117,7 @@ describe("CkBTCAccounts", () => {
     it("should call load ckBTC accounts", () => {
       render(CkBTCAccounts);
 
-      expect(syncCkBTCAccounts).toHaveBeenCalled();
+      expect(syncAccounts).toHaveBeenCalled();
     });
 
     it("should render skeletons while loading", () => {

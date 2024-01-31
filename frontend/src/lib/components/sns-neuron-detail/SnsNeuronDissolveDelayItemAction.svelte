@@ -4,7 +4,8 @@
   import { NeuronState } from "@dfinity/nns";
   import CommonItemAction from "../ui/CommonItemAction.svelte";
   import { keyOf } from "$lib/utils/utils";
-  import { secondsToDuration } from "$lib/utils/date.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { secondsToDuration, type Token } from "@dfinity/utils";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
   import {
     dissolveDelayMultiplier,
@@ -19,6 +20,7 @@
 
   export let neuron: SnsNeuron;
   export let parameters: SnsNervousSystemParameters;
+  export let token: Token;
 
   let state: NeuronState;
   $: state = getSnsNeuronState(neuron);
@@ -50,15 +52,34 @@
     neuron,
     identity: $authStore.identity,
   });
+
+  let duration: string;
+  $: duration =
+    dissolvingTime > 0n
+      ? secondsToDuration({ seconds: dissolvingTime, i18n: $i18n.time })
+      : "0";
+
+  let tooltipText: string | undefined;
+  $: tooltipText =
+    dissolvingTime > 0n
+      ? replacePlaceholders($i18n.neuron_detail.dissolve_delay_tooltip, {
+          $token: token.symbol,
+          $duration: duration,
+        })
+      : undefined;
 </script>
 
-<CommonItemAction testId="sns-neuron-dissolve-delay-item-action-component">
+<CommonItemAction
+  testId="sns-neuron-dissolve-delay-item-action-component"
+  {tooltipText}
+  tooltipId="sns-dissolve-delay-info-icon"
+>
   <IconClockNoFill slot="icon" />
   <span slot="title" data-tid="dissolve-delay-text"
     >{`${keyOf({
       obj: $i18n.neuron_detail,
       key: stateTextMapper[state],
-    })} ${dissolvingTime > 0n ? secondsToDuration(dissolvingTime) : "0"}`}</span
+    })} ${duration}`}</span
   >
   <svelte:fragment slot="subtitle">
     {#if dissolvingTime >= minimumDelayToVoteInSeconds}

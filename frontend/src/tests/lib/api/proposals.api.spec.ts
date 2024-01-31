@@ -80,7 +80,7 @@ describe("proposals-api", () => {
 
   describe("load", () => {
     it("should call the canister to get proposalInfo", async () => {
-      const proposalId = BigInt(404);
+      const proposalId = 404n;
       const certified = false;
 
       const proposal = await queryProposal({
@@ -119,7 +119,7 @@ describe("proposals-api", () => {
       const spyGetProposalPayload = vi.spyOn(nnsDappMock, "getProposalPayload");
 
       await queryProposalPayload({
-        proposalId: BigInt(0),
+        proposalId: 0n,
         identity: mockIdentity,
       });
 

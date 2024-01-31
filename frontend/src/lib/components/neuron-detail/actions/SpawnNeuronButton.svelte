@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
-  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+  import { ULPS_PER_MATURITY } from "$lib/constants/neurons.constants";
   import {
     MIN_NEURON_STAKE,
     MATURITY_MODULATION_VARIANCE_PERCENTAGE,
@@ -9,7 +9,7 @@
   import { formatNumber, formatPercentage } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isEnoughMaturityToSpawn } from "$lib/utils/neuron.utils";
-  import Tooltip from "$lib/components/ui/Tooltip.svelte";
+  import { Tooltip } from "@dfinity/gix-components";
   import {
     NNS_NEURON_CONTEXT_KEY,
     type NnsNeuronContext,
@@ -49,12 +49,12 @@
         $i18n.neuron_detail.spawn_neuron_disabled_tooltip,
         {
           $amount: formatNumber(
-            MIN_NEURON_STAKE /
-              E8S_PER_ICP /
+            Number(MIN_NEURON_STAKE) /
+              ULPS_PER_MATURITY /
               MATURITY_MODULATION_VARIANCE_PERCENTAGE,
             { minFraction: 4, maxFraction: 4 }
           ),
-          $min: formatNumber(MIN_NEURON_STAKE / E8S_PER_ICP, {
+          $min: formatNumber(Number(MIN_NEURON_STAKE) / ULPS_PER_MATURITY, {
             minFraction: 0,
             maxFraction: 0,
           }),

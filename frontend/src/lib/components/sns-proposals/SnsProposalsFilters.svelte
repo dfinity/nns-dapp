@@ -10,15 +10,17 @@
   import FiltersWrapper from "../proposals/FiltersWrapper.svelte";
   import FiltersButton from "../ui/FiltersButton.svelte";
   import SnsFilterRewardsModal from "$lib/modals/sns/proposals/SnsFilterRewardsModal.svelte";
+  import SnsFilterTypesModal from "$lib/modals/sns/proposals/SnsFilterTypesModal.svelte";
+  import { ENABLE_SNS_TYPES_FILTER } from "$lib/stores/feature-flags.store";
 
-  let modal: "topics" | "rewards" | "status" | undefined = undefined;
+  let modal: "types" | "rewards" | "status" | undefined = undefined;
 
   let rootCanisterId: Principal;
   $: rootCanisterId = $selectedUniverseIdStore;
   let filtersStore: ProjectFiltersStoreData | undefined;
   $: filtersStore = $snsFiltersStore[rootCanisterId.toText()];
 
-  const openFilters = (filtersModal: "topics" | "rewards" | "status") => {
+  const openFilters = (filtersModal: "types" | "rewards" | "status") => {
     modal = filtersModal;
   };
 
@@ -28,6 +30,17 @@
 </script>
 
 <FiltersWrapper>
+  {#if $ENABLE_SNS_TYPES_FILTER}
+    <FiltersButton
+      testId="filters-by-types"
+      totalFilters={filtersStore?.types.length ?? 0}
+      activeFilters={filtersStore?.types.filter(({ checked }) => checked)
+        .length ?? 0}
+      on:nnsFilter={() => openFilters("types")}
+    >
+      {$i18n.voting.types}
+    </FiltersButton>
+  {/if}
   <FiltersButton
     testId="filters-by-rewards"
     totalFilters={filtersStore?.rewardStatus.length ?? 0}
@@ -45,6 +58,14 @@
     >{$i18n.voting.status}</FiltersButton
   >
 </FiltersWrapper>
+
+{#if modal === "types"}
+  <SnsFilterTypesModal
+    filters={filtersStore?.types}
+    {rootCanisterId}
+    on:nnsClose={close}
+  />
+{/if}
 
 {#if modal === "status"}
   <SnsFilterStatusModal

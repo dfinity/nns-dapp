@@ -54,7 +54,7 @@
 
   const firstStep: WizardStep = {
     name: "StakeNeuron",
-    title: $i18n.neurons.stake_neuron,
+    title: $i18n.neurons.stake_icp,
   };
 
   let steps: WizardSteps = [firstStep, ...lastSteps];
@@ -208,7 +208,7 @@
       <ConfirmDissolveDelay
         confirmButtonText={$i18n.neurons.confirm_set_delay}
         neuron={newNeuron}
-        {delayInSeconds}
+        delayInSeconds={BigInt(Math.round(delayInSeconds))}
         on:nnsUpdated={goNext}
         on:nnsBack={modal.back}
       />

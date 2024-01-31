@@ -7,7 +7,7 @@ import type {
 } from "$lib/types/account";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { TransactionNetwork } from "$lib/types/transaction";
-import { sumAmountE8s } from "$lib/utils/token.utils";
+import { sumAmounts } from "$lib/utils/token.utils";
 import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
 import { BtcNetwork, parseBtcAddress, type BtcAddress } from "@dfinity/ckbtc";
 import {
@@ -196,12 +196,12 @@ export const getAccountsByRootCanister = ({
  */
 export const assertEnoughAccountFunds = ({
   account,
-  amountE8s,
+  amountUlps,
 }: {
   account: Account;
-  amountE8s: bigint;
+  amountUlps: bigint;
 }): void => {
-  if (account.balanceE8s < amountE8s) {
+  if (account.balanceUlps < amountUlps) {
     throw new NotEnoughAmountError("error.insufficient_funds");
   }
 };
@@ -213,6 +213,24 @@ export const assertEnoughAccountFunds = ({
 export const mainAccount = (accounts: Account[]): Account | undefined => {
   return accounts.find((account) => account.type === "main");
 };
+
+/**
+ * Returns the main account if identifier is nullish but returns undefined if the
+ * identfiier is present but not found.
+ */
+export const findAccountOrDefaultToMain = ({
+  identifier,
+  accounts,
+}: {
+  identifier: AccountIdentifierText | undefined | null;
+  accounts: Account[];
+}): Account | undefined =>
+  isNullish(identifier)
+    ? mainAccount(accounts)
+    : findAccount({
+        identifier,
+        accounts,
+      });
 
 export const accountName = ({
   account,
@@ -226,20 +244,25 @@ export const accountName = ({
 export const sumNnsAccounts = (
   accounts: IcpAccountsStoreData | undefined
 ): bigint | undefined =>
-  accounts?.main?.balanceE8s !== undefined
-    ? sumAmountE8s(
-        accounts?.main?.balanceE8s,
-        ...(accounts?.subAccounts || []).map(({ balanceE8s }) => balanceE8s),
-        ...(accounts?.hardwareWallets || []).map(({ balanceE8s }) => balanceE8s)
+  accounts?.main?.balanceUlps !== undefined
+    ? sumAmounts(
+        accounts?.main?.balanceUlps,
+        ...(accounts?.subAccounts || []).map(({ balanceUlps }) => balanceUlps),
+        ...(accounts?.hardwareWallets || []).map(
+          ({ balanceUlps }) => balanceUlps
+        )
       )
     : undefined;
 
-export const sumAccounts = (
+export function sumAccounts(acconts: Account[]): bigint;
+export function sumAccounts(acconts: Account[] | undefined): bigint | undefined;
+export function sumAccounts(
   accounts: Account[] | undefined
-): bigint | undefined =>
-  isNullish(accounts) || accounts.length === 0
+): bigint | undefined {
+  return isNullish(accounts)
     ? undefined
-    : sumAmountE8s(...accounts.map(({ balanceE8s }) => balanceE8s));
+    : sumAmounts(...accounts.map(({ balanceUlps }) => balanceUlps));
+}
 
 export const hasAccounts = (accounts: Account[]): boolean =>
   accounts.length > 0;
@@ -270,7 +293,7 @@ const maybeIcrcToIcpAccountIdentifier = (
   const { owner: principal, subaccount } = decodeIcrcAccount(accountIdentifier);
 
   const sub = nonNullish(subaccount)
-    ? SubAccount.fromBytes(subaccount)
+    ? SubAccount.fromBytes(new Uint8Array(subaccount))
     : undefined;
 
   if (sub instanceof Error) {

@@ -14,12 +14,12 @@ jobs:
       DFX_NETWORK: mainnet
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Get cargo sort version
         run: jq -r '"CARGO_SORT_VERSION=\(.defaults.build.config.CARGO_SORT_VERSION)"' dfx.json >> $GITHUB_ENV
       - name: Get node version
         run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Install shfmt
@@ -41,15 +41,15 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install spellcheck
         run: |
           cd /
           sudo apt-get update
           sudo apt-get install -yy hunspell hunspell-en-gb hunspell-en-us clang libclang-dev
-          cargo install --target x86_64-unknown-linux-gnu cargo-spellcheck
+          cargo install --locked --target x86_64-unknown-linux-gnu cargo-spellcheck@0.13.1
       - name: Spellcheck Rust
-        run: cargo spellcheck
+        run: cargo spellcheck --code 1
       - name: Spellcheck changelog
         run: scripts/spellcheck-changelog
   cargo-tests:
@@ -58,8 +58,8 @@ jobs:
       matrix:
         os: [ubuntu-20.04]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
         with:
           path: |
             ~/.cargo/registry
@@ -85,10 +85,10 @@ jobs:
       DFX_NETWORK: mainnet
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Get node version
         run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Install dependencies
@@ -106,10 +106,10 @@ jobs:
       DFX_NETWORK: mainnet
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Get node version
         run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Install dependencies
@@ -122,7 +122,7 @@ jobs:
     name: ShellCheck
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Run ShellCheck
         run: |
           sudo apt-get update
@@ -132,7 +132,7 @@ jobs:
     name: IC Commit
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install didc
         run: |
           USER_BIN="$HOME/.local/bin"
@@ -156,7 +156,7 @@ jobs:
     name: Release template
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Install didc
@@ -169,8 +169,12 @@ jobs:
           curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
       - name: Check didc
         run: command -v didc
+      - name: Get dfx version
+        run: echo "DFX_VERSION=$(jq -r .dfx dfx.json)" >> $GITHUB_ENV
       - name: Install dfx
-        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+        uses: dfinity/setup-dfx@main
+        with:
+          dfx-version: ${{ env.DFX_VERSION }}
       - name: Verify template creation
         run: |
           echo Create a fake wasm
@@ -180,28 +184,11 @@ jobs:
           scripts/nns-dapp/release-template
           echo Check the proposal
           ./scripts/nns-dapp/release-check
-  sns-aggregator-patches:
-    name: SNS aggregator patches
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v3
-      - name: Install didc
-        run: |
-          USER_BIN="$HOME/.local/bin"
-          mkdir -p "$USER_BIN"
-          echo "$USER_BIN" >> $GITHUB_PATH
-          version="$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
-          # TODO: Use `binstall`, once `didc` supports it.
-          curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
-      - name: Check didc
-        run: command -v didc
-      - name: Recreate and compare patches
-        run: scripts/mk_nns_patch.test
   config-check:
     name: Config is as expected
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install dfx
         run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
       - name: Install cargo binstall
@@ -215,16 +202,31 @@ jobs:
     name: Asset chunking works
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Test chunking
         run: scripts/nns-dapp/split-assets.test
+  migration-test-utils-work:
+    name: Migration test utilities work
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install cargo binstall
+        uses: ./.github/actions/install_binstall
+      - name: Install idl2json
+        run: cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)" && idl2json --version
+      - name: Test migration utilities
+        run: |
+          set +x
+          scripts/nns-dapp/migration-test.getters.test
+          scripts/nns-dapp/migration-test.on-exit.test
+          scripts/nns-dapp/migration-test.canister.test
   dfx-nns-proposal-args-works:
-    # TODO: Reenable (add it in line 338) once fixed, should it depend on mainnet?
+    # TODO: Re-enable (add it in line 338) once fixed, should it depend on mainnet?
     if: false
     name: Can get NNS proposal args
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install didc
         run: |
           USER_BIN="$HOME/.local/bin"
@@ -246,22 +248,27 @@ jobs:
   docker-build-cli-flags:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: docker-build prints help
         run: ./scripts/docker-build --help | grep -i usage
   minor-version-bump-works:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install yq
         run: sudo snap install yq
       - name: Install sponge
         run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
+      - name: Get node version
+        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
       - name: Bumping the package versions works
         run: ./scripts/nns-dapp/bump-patch.test
       - name: Set git user
         run: |
-          git config --global user.email "gix-bot@dfinity.org"
+          git config --global user.email "gix-bot@users.noreply.github.com"
           git config --global user.name "GIX bot"
       - name: Command creates commits
         run: |
@@ -282,7 +289,7 @@ jobs:
         os: [ubuntu-20.04, macos-13]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install bash and sha256sum if on Mac
         run: |
           if command -v brew ; then
@@ -303,7 +310,7 @@ jobs:
         os: [ubuntu-20.04, macos-13]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install bash if on Mac
         run: |
           if command -v brew ; then
@@ -318,7 +325,7 @@ jobs:
         os: [ubuntu-20.04, macos-13]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install bash if on Mac
         run: |
           if command -v brew ; then
@@ -333,31 +340,18 @@ jobs:
         os: [ubuntu-20.04, macos-13]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install bash if on Mac
         run: |
           if command -v brew ; then
             brew install bash
           fi
       - run: scripts/nns-dapp/split-changelog.test
-  past-changelog:
-    name: Test that no new change log entries are added to past releases.
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-20.04, macos-13]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - run: scripts/past-changelog-test
-      - run: scripts/past-changelog-test.test
   version-match:
     name: The nns-dapp npm and cargo versions should match
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Backend and frontend have the same version
         run: |
           backend_version="$(cargo metadata | jq -r '.packages[] | select(.name == "nns-dapp").version')"
@@ -368,12 +362,39 @@ jobs:
                   echo "Frontend: $frontend_version"
                   exit 1
           } >&2
+  network-config:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install sponge
+        run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
+      - name: Getting network config works
+        run: scripts/network-config.test
   checks-pass:
-    needs: ["formatting", "spelling", "cargo-tests", "svelte-lint", "svelte-tests", "shell-checks", "ic-commit-consistency", "release-templating-works", "config-check", "sns-aggregator-patches", "asset-chunking-works", "docker-build-cli-flags", "download-nns-dapp-ci-wasm", "canister-ids-tool", "release-sop", "split-changelog", "past-changelog", "minor-version-bump-works", "version-match"]
+    needs:
+      - formatting
+      - spelling
+      - cargo-tests
+      - svelte-lint
+      - svelte-tests
+      - shell-checks
+      - ic-commit-consistency
+      - release-templating-works
+      - config-check
+      - asset-chunking-works
+      - docker-build-cli-flags
+      - download-nns-dapp-ci-wasm
+      - canister-ids-tool
+      - release-sop
+      - split-changelog
+      - minor-version-bump-works
+      - version-match
+      - network-config
+      - migration-test-utils-work
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/needs_success
         with:
           needs: '${{ toJson(needs) }}'

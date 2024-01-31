@@ -1,4 +1,9 @@
-import type { DerEncodedPublicKey, PublicKey } from "@dfinity/agent";
+import {
+  bufEquals,
+  concat,
+  type DerEncodedPublicKey,
+  type PublicKey,
+} from "@dfinity/agent";
 
 // TODO(L2-433): should we use @dfinity/identity-ledgerhq the implementation is 100% similar
 
@@ -7,6 +12,15 @@ import type { DerEncodedPublicKey, PublicKey } from "@dfinity/agent";
 // This implementation is adjusted from the Ed25519PublicKey.
 // The RAW_KEY_LENGTH and DER_PREFIX are modified accordingly
 export class Secp256k1PublicKey implements PublicKey {
+  /**
+   * Construct Secp256k1PublicKey from an existing PublicKey
+   * @param {PublicKey} key
+   * @returns {Secp256k1PublicKey} Instance of Secp256k1PublicKey
+   */
+  public static from(key: PublicKey): Secp256k1PublicKey {
+    return this.fromDer(key.toDer());
+  }
+
   public static fromRaw(rawKey: ArrayBuffer): Secp256k1PublicKey {
     return new Secp256k1PublicKey(rawKey);
   }
@@ -37,12 +51,13 @@ export class Secp256k1PublicKey implements PublicKey {
       );
     }
 
-    const derPublicKey = Uint8Array.from([
-      ...Secp256k1PublicKey.DER_PREFIX,
-      ...new Uint8Array(publicKey),
-    ]);
+    const derPublicKey = concat(
+      Secp256k1PublicKey.DER_PREFIX.buffer,
+      publicKey
+    ) as DerEncodedPublicKey;
+    derPublicKey.__derEncodedPublicKey__ = undefined;
 
-    return derPublicKey.buffer as DerEncodedPublicKey;
+    return derPublicKey;
   }
 
   private static derDecode(key: DerEncodedPublicKey): ArrayBuffer {
@@ -55,23 +70,8 @@ export class Secp256k1PublicKey implements PublicKey {
       );
     }
 
-    const equals = (b1: ArrayBuffer, b2: ArrayBuffer): boolean => {
-      if (b1.byteLength !== b2.byteLength) {
-        return false;
-      }
-
-      const u1 = new Uint8Array(b1);
-      const u2 = new Uint8Array(b2);
-      for (let i = 0; i < u1.length; i++) {
-        if (u1[i] !== u2[i]) {
-          return false;
-        }
-      }
-      return true;
-    };
-
     const rawKey = key.slice(0, Secp256k1PublicKey.DER_PREFIX.length);
-    if (!equals(this.derEncode(rawKey), key)) {
+    if (!bufEquals(this.derEncode(rawKey), key)) {
       throw new TypeError(
         "secp256k1 DER-encoded public key is invalid. A valid secp256k1 DER-encoded public key " +
           `must have the following prefix: ${Secp256k1PublicKey.DER_PREFIX}`
@@ -81,13 +81,22 @@ export class Secp256k1PublicKey implements PublicKey {
     return rawKey;
   }
 
-  private readonly rawKey: ArrayBuffer;
-  private readonly derKey: DerEncodedPublicKey;
+  #rawKey: ArrayBuffer;
+
+  public get rawKey(): ArrayBuffer {
+    return this.#rawKey;
+  }
+
+  #derKey: DerEncodedPublicKey;
+
+  public get derKey(): DerEncodedPublicKey {
+    return this.#derKey;
+  }
 
   // `fromRaw` and `fromDer` should be used for instantiation, not this constructor.
   private constructor(key: ArrayBuffer) {
-    this.rawKey = key;
-    this.derKey = Secp256k1PublicKey.derEncode(key);
+    this.#rawKey = key;
+    this.#derKey = Secp256k1PublicKey.derEncode(key);
   }
 
   public toDer(): DerEncodedPublicKey {

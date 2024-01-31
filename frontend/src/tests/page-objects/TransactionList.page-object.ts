@@ -18,6 +18,10 @@ export class TransactionListPo extends BasePageObject {
     return TransactionCardPo.allUnder(this.root);
   }
 
+  hasNoTransactions(): Promise<boolean> {
+    return this.isPresent("no-transactions-component");
+  }
+
   async waitForLoaded(): Promise<void> {
     await this.waitFor();
     await this.getSkeletonCardPo().waitForAbsent();

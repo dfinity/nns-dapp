@@ -1,19 +1,22 @@
 import {
+  PollingCancelledError,
+  PollingLimitExceededError,
   bytesToHexString,
   cancelPoll,
   createChunks,
   expandObject,
+  getObjMaxDepth,
   hexStringToBytes,
   isDefined,
   isHash,
   isPngAsset,
   poll,
-  PollingCancelledError,
-  PollingLimitExceededError,
   removeKeys,
   sameBufferData,
   smallerVersion,
+  splitE8sIntoChunks,
   stringifyJson,
+  typeOfLikeANumber,
   uniqueObjects,
 } from "$lib/utils/utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
@@ -41,9 +44,11 @@ describe("utils", () => {
     });
 
     it("should stringify JSON with bigint", () => {
-      expect(stringifyJson({ a: BigInt(123) })).toBe(
-        JSON.stringify({ a: "123" })
-      );
+      expect(stringifyJson({ a: 123n })).toBe(JSON.stringify({ a: "123" }));
+    });
+
+    it("should preserve undefined values", () => {
+      expect(stringifyJson({ a: undefined })).toBe(`{"a":undefined}`);
     });
 
     it("should support the indentation", () => {
@@ -55,7 +60,7 @@ describe("utils", () => {
     it("should convert bigints to function call in devMode", () => {
       expect(
         stringifyJson(
-          { value: BigInt("123456789012345678901234567890") },
+          { value: 123_456_789_012_345_678_901_234_567_890n },
           { devMode: true }
         )
       ).toBe(`{"value":"BigInt('123456789012345678901234567890')"}`);
@@ -836,6 +841,16 @@ describe("utils", () => {
       const obj = { a: JSON.stringify({ b: "c" }) };
       expect(expandObject(obj)).toEqual({ a: { b: "c" } });
     });
+
+    it("should respect arrays (not convert into objects)", () => {
+      const obj = { a: [1, 2, 3] };
+      expect(expandObject(obj)).toEqual({ a: [1, 2, 3] });
+    });
+
+    it("should parse JSON strings from arrays", () => {
+      const obj = { a: [1, JSON.stringify({ b: 2 }), 3] };
+      expect(expandObject(obj)).toEqual({ a: [1, { b: 2 }, 3] });
+    });
   });
 
   describe("sameBufferData", () => {
@@ -853,6 +868,142 @@ describe("utils", () => {
       expect(sameBufferData(a, b2)).toBe(false);
       const b3 = new Uint16Array([1, 2, 3, 4]).buffer;
       expect(sameBufferData(a, b3)).toBe(false);
+    });
+  });
+
+  describe("getObjMaxDepth", () => {
+    it("returns object maximum depth", () => {
+      const myObject = {
+        a: {
+          c: {
+            d: "Hello, World!",
+          },
+        },
+        e: [
+          2,
+          [
+            [
+              [
+                {
+                  f: "Hello, World!",
+                },
+              ],
+            ],
+          ],
+        ],
+      };
+      expect(getObjMaxDepth(myObject)).toBe(6);
+    });
+
+    it("returns 1 for arrays", () => {
+      const myObject = [1];
+      expect(getObjMaxDepth(myObject)).toBe(1);
+    });
+
+    it("returns 0 for empty arrays", () => {
+      const myObject = [];
+      expect(getObjMaxDepth(myObject)).toBe(0);
+    });
+
+    it("returns 0 for empty objects", () => {
+      const myObject = {};
+      expect(getObjMaxDepth(myObject)).toBe(0);
+    });
+
+    it("returns 0 for not objects", () => {
+      expect(getObjMaxDepth(undefined)).toBe(0);
+      expect(getObjMaxDepth(null)).toBe(0);
+      expect(getObjMaxDepth("hello")).toBe(0);
+      expect(getObjMaxDepth(0)).toBe(0);
+    });
+  });
+
+  describe("typeOfLikeANumber", () => {
+    it("returns true for numbers", () => {
+      expect(typeOfLikeANumber(1)).toBe(true);
+      expect(typeOfLikeANumber(0)).toBe(true);
+      expect(typeOfLikeANumber(0.001)).toBe(true);
+      expect(typeOfLikeANumber(-1)).toBe(true);
+    });
+
+    it("returns true for bigint", () => {
+      expect(
+        typeOfLikeANumber(
+          99_999_999_999_999_999_999_999_999_999_999_999_999_999_999n
+        )
+      ).toBe(true);
+    });
+
+    it("returns true for stringified number", () => {
+      expect(typeOfLikeANumber("1")).toBe(true);
+      expect(typeOfLikeANumber("0")).toBe(true);
+      expect(typeOfLikeANumber("0.001")).toBe(true);
+      expect(typeOfLikeANumber("-1")).toBe(true);
+      expect(typeOfLikeANumber("+1")).toBe(true);
+    });
+
+    it("returns false for empty string", () => {
+      expect(typeOfLikeANumber("")).toBe(false);
+    });
+
+    it("returns false for not numbers", () => {
+      expect(typeOfLikeANumber("test")).toBe(false);
+      expect(typeOfLikeANumber("123sec")).toBe(false);
+      expect(typeOfLikeANumber([])).toBe(false);
+      expect(typeOfLikeANumber({})).toBe(false);
+    });
+  });
+
+  describe("splitE8sIntoChunks", () => {
+    it("should split strings", () => {
+      expect(splitE8sIntoChunks("12345678")).toStrictEqual(["12345678"]);
+      expect(splitE8sIntoChunks("1234567890")).toStrictEqual([
+        "12",
+        "34567890",
+      ]);
+      expect(splitE8sIntoChunks("12345678901234567890")).toStrictEqual([
+        "1234",
+        "56789012",
+        "34567890",
+      ]);
+    });
+
+    it("should split number", () => {
+      expect(splitE8sIntoChunks(12345678)).toStrictEqual(["12345678"]);
+      expect(splitE8sIntoChunks(1234567890)).toStrictEqual(["12", "34567890"]);
+      expect(splitE8sIntoChunks(45678901234567890)).toStrictEqual([
+        "4",
+        "56789012",
+        "34567890",
+      ]);
+    });
+
+    it("should split bigints", () => {
+      expect(splitE8sIntoChunks(12_345_678n)).toStrictEqual(["12345678"]);
+      expect(splitE8sIntoChunks(1_234_567_890n)).toStrictEqual([
+        "12",
+        "34567890",
+      ]);
+      expect(splitE8sIntoChunks(123_456_789n)).toStrictEqual(["1", "23456789"]);
+      expect(splitE8sIntoChunks(12_345_678_901_234_567_890n)).toStrictEqual([
+        "1234",
+        "56789012",
+        "34567890",
+      ]);
+    });
+
+    it("should not split short values", () => {
+      expect(splitE8sIntoChunks(0)).toStrictEqual(["0"]);
+      expect(splitE8sIntoChunks(12345678)).toStrictEqual(["12345678"]);
+    });
+
+    it("should not split not numbers", () => {
+      expect(splitE8sIntoChunks(NaN)).toStrictEqual(["NaN"]);
+      expect(splitE8sIntoChunks("")).toStrictEqual([`""`]);
+      expect(splitE8sIntoChunks(null)).toStrictEqual(["null"]);
+      expect(splitE8sIntoChunks(undefined)).toStrictEqual(["undefined"]);
+      expect(splitE8sIntoChunks([])).toStrictEqual(["[]"]);
+      expect(splitE8sIntoChunks({})).toStrictEqual(["{}"]);
     });
   });
 });

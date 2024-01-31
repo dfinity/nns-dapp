@@ -34,16 +34,15 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
     ckbtcIndexCanisterId: "n5wcd-faaaa-aaaar-qaaea-cai",
     ckbtcLedgerCanisterId: "mxzaz-hqaaa-aaaar-qaada-cai",
     cyclesMintingCanisterId: "rkp4c-7iaaa-aaaaa-aaaca-cai",
+    ckethLedgerCanisterId: "ss2fx-dyaaa-aaaar-qacoq-cai",
+    ckethIndexCanisterId: "s3zol-vqaaa-aaaar-qacpa-cai",
     dfxNetwork: "testnet",
     featureFlags: JSON.stringify({
       ENABLE_CKBTC: true,
       ENABLE_CKTESTBTC: true,
       ENABLE_ICP_ICRC: false,
-      ENABLE_INSTANT_UNLOCK: true,
-      ENABLE_STAKE_NEURON_ICRC1: true,
-      ENABLE_SWAP_ICRC1: true,
-      ENABLE_MY_TOKENS: false,
-      ENABLE_FULL_WIDTH_PROPOSAL: true,
+      ENABLE_MY_TOKENS: true,
+      ENABLE_SNS_TYPES_FILTER: true,
       TEST_FLAG_EDITABLE: true,
       TEST_FLAG_NOT_EDITABLE: true,
     }),
@@ -72,6 +71,22 @@ setDefaultTestConstants({
 });
 
 failTestsThatLogToConsole();
+
+// Avoid using fetch in tests.
+// NOTE: This doesn't seem to work when all tests are run but works when
+// individual tests are run. Not sure why. Still it seems better to have it than
+// not to have it.
+let usedGlobalFetch = false;
+beforeEach(() => {
+  usedGlobalFetch = false;
+});
+afterEach(async () => {
+  expect(usedGlobalFetch).toBe(false);
+});
+vi.spyOn(global, "fetch").mockImplementation(() => {
+  usedGlobalFetch = true;
+  throw new Error("global.fetch is not allowed in tests");
+});
 
 // testing-library setup
 configure({

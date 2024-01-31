@@ -8,10 +8,6 @@ import {
   proposalsFiltersStore,
   proposalsStore,
 } from "$lib/stores/proposals.store";
-import {
-  voteRegistrationStore,
-  type VoteRegistrationStoreMap,
-} from "$lib/stores/vote-registration.store";
 import { hideProposal } from "$lib/utils/proposals.utils";
 import type { Identity } from "@dfinity/agent";
 import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
@@ -31,7 +27,7 @@ export const sortedProposals: Readable<ProposalsStore> = derived(
   [proposalsStore],
   ([{ proposals, certified }]) => ({
     proposals: proposals.sort(({ id: proposalIdA }, { id: proposalIdB }) =>
-      Number((proposalIdB ?? BigInt(0)) - (proposalIdA ?? BigInt(0)))
+      Number((proposalIdB ?? 0n) - (proposalIdA ?? 0n))
     ),
     certified,
   })
@@ -49,13 +45,11 @@ const hide = ({
   proposalInfo,
   filters,
   neurons,
-  registrations,
   identity,
 }: {
   proposalInfo: ProposalInfo;
   filters: ProposalsFiltersStore;
   neurons: NeuronInfo[];
-  registrations: VoteRegistrationStoreMap;
   identity: Identity | undefined | null;
 }): boolean =>
   hideProposal({
@@ -63,13 +57,7 @@ const hide = ({
     proposalInfo,
     neurons,
     identity,
-  }) ||
-  // hide proposals that are currently in the voting state
-  Object.values(registrations).find((votings) =>
-    votings.find(
-      ({ proposalIdString }) => `${proposalInfo.id}` === proposalIdString
-    )
-  ) !== undefined;
+  });
 
 export interface UIProposalsStore {
   proposals: (ProposalInfo & { hidden: boolean })[];
@@ -77,27 +65,14 @@ export interface UIProposalsStore {
 }
 
 export const uiProposals: Readable<UIProposalsStore> = derived(
-  [
-    sortedProposals,
-    proposalsFiltersStore,
-    definedNeuronsStore,
-    voteRegistrationStore,
-    authStore,
-  ],
-  ([
-    { proposals, certified },
-    filters,
-    neurons,
-    { registrations },
-    { identity },
-  ]) => ({
+  [sortedProposals, proposalsFiltersStore, definedNeuronsStore, authStore],
+  ([{ proposals, certified }, filters, neurons, { identity }]) => ({
     proposals: proposals.map((proposalInfo) => ({
       ...proposalInfo,
       hidden: hide({
         proposalInfo,
         filters,
         neurons,
-        registrations,
         identity,
       }),
     })),

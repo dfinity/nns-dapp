@@ -6,16 +6,15 @@ import { loadSnsToken } from "$lib/services/sns-tokens.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
+import { numberToE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import type { IcrcBlockIndex } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
-import type { IcrcTransferTokensUserParams } from "./icrc-accounts.services";
 import { loadSnsAccountTransactions } from "./sns-transactions.services";
-import { loadSnsTransactionFee } from "./transaction-fees.services";
 import { queryAndUpdate } from "./utils.services";
 
 export const loadSnsAccounts = async ({
@@ -63,28 +62,29 @@ export const syncSnsAccounts = async (params: {
   rootCanisterId: Principal;
   handleError?: () => void;
 }) => {
-  await Promise.all([
-    loadSnsAccounts(params),
-    loadSnsTransactionFee(params),
-    loadSnsToken(params),
-  ]);
+  await Promise.all([loadSnsAccounts(params), loadSnsToken(params)]);
 };
 
 export const snsTransferTokens = async ({
   rootCanisterId,
   source,
+  destinationAddress,
+  amount,
   loadTransactions,
-  ...rest
-}: IcrcTransferTokensUserParams & {
+}: {
   rootCanisterId: Principal;
+  source: Account;
+  destinationAddress: string;
+  amount: number;
   loadTransactions: boolean;
 }): Promise<{ blockIndex: IcrcBlockIndex | undefined }> => {
-  const fee = get(transactionsFeesStore).projects[rootCanisterId.toText()]?.fee;
+  const fee = get(tokensStore)[rootCanisterId.toText()]?.token.fee;
 
   return transferTokens({
     source,
+    destinationAddress,
+    amountUlps: numberToE8s(amount),
     fee,
-    ...rest,
     transfer: async (
       params: {
         identity: Identity;

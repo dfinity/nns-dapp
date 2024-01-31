@@ -20,7 +20,7 @@ import {
   isSelectedPath,
   reloadRouteData,
 } from "$lib/utils/navigation.utils";
-import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import { mockSnsFullProject, principal } from "$tests/mocks/sns-projects.mock";
 
 describe("navigation-utils", () => {
   describe("reload", () => {
@@ -99,6 +99,14 @@ describe("navigation-utils", () => {
       );
     });
 
+    it("should build wallet url without account", () => {
+      expect(
+        buildWalletUrl({
+          universe: OWN_CANISTER_ID_TEXT,
+        })
+      ).toEqual(`${AppPath.Wallet}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`);
+    });
+
     it("should build neuron url", () => {
       expect(
         buildNeuronUrl({
@@ -133,13 +141,12 @@ describe("navigation-utils", () => {
     });
 
     it("should build accounts url", () => {
+      const universe = principal(0).toText();
       expect(
         buildAccountsUrl({
-          universe: OWN_CANISTER_ID_TEXT,
+          universe,
         })
-      ).toEqual(
-        `${AppPath.Accounts}/?${UNIVERSE_PARAM}=${OWN_CANISTER_ID_TEXT}`
-      );
+      ).toEqual(`${AppPath.Accounts}/?${UNIVERSE_PARAM}=${universe}`);
     });
 
     it("should build neurons url", () => {

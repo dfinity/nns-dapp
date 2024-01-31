@@ -15,7 +15,7 @@ import {
   mockTokensSubscribe,
   mockUniversesTokens,
 } from "$tests/mocks/tokens.mock";
-import { TokenAmount } from "@dfinity/utils";
+import { TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("universes-tokens", () => {
@@ -52,11 +52,12 @@ describe("universes-tokens", () => {
     it("should derive ckBTC token fee", () => {
       const tokenFee = get(ckBTCTokenFeeStore);
 
-      const expectedFee = TokenAmount.fromE8s({
+      const expectedFee = TokenAmountV2.fromUlps({
         amount: mockCkBTCToken.fee,
         token: {
           name: mockCkBTCToken.name,
           symbol: mockCkBTCToken.symbol,
+          decimals: mockCkBTCToken.decimals,
         },
       });
 

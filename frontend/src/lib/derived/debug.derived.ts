@@ -14,7 +14,6 @@ import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import {
   voteRegistrationStore,
   votingNeuronSelectStore,
@@ -32,7 +31,10 @@ import { derived, readable, writable, type Readable } from "svelte/store";
 const createDerivedStore = <T>(store: Readable<T>): Readable<T> =>
   derived(store, (store) => store);
 
-let addAccountStore: Readable<AddAccountStore>;
+let addAccountStore: Readable<AddAccountStore> = readable({
+  type: undefined,
+  hardwareWalletName: undefined,
+});
 export const debugAddAccountStore = (store: Readable<AddAccountStore>) =>
   (addAccountStore = createDerivedStore(store));
 
@@ -116,7 +118,6 @@ export const initDebugStore = () =>
       transactionsStore,
       snsProjectsStore,
       snsFunctionsStore,
-      transactionsFeesStore,
       snsProposalStore,
       snsAggregatorStore,
     ],
@@ -144,7 +145,6 @@ export const initDebugStore = () =>
       $transactionsStore,
       $projectsStore,
       $snsFunctionsStore,
-      $transactionsFeesStore,
       $snsProposalStore,
       $aggregatorStore,
     ]) => ({
@@ -172,7 +172,6 @@ export const initDebugStore = () =>
       snsProposal: $snsProposalStore,
       projects: $projectsStore,
       snsFunctions: $snsFunctionsStore,
-      transactionsFees: $transactionsFeesStore,
       aggregatorStore: $aggregatorStore,
     })
   );

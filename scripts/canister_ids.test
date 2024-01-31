@@ -27,26 +27,28 @@ reset_test_json_file() {
 
 test_index_html=$(mktemp canister.raw.XXXXXX)
 
+# data-cketh-index-canister-id is deliberately missing so that we can see that
+# it results in an empty string instead of a crash.
 cat >"$test_index_html" <<-EOF
 <html>
   <head>
   <meta name="nns-dapp-vars"
-        data-api-host="https://nnsdapp.dfinity.network"
+        data-api-host="https://fubar.dfinity.network"
         data-ckbtc-index-canister-id="tqtu6-byaaa-aaaaa-aaana-cai"
         data-ckbtc-ledger-canister-id="st75y-vaaaa-aaaaa-aaalq-cai"
         data-ckbtc-minter-canister-id="t6rzw-2iaaa-aaaaa-aaama-cai"
+        data-cketh-ledger-canister-id="omy6t-mmaaa-aaaaa-qabgq-cai"
         data-cycles-minting-canister-id="rkp4c-7iaaa-aaaaa-aaaca-cai"
         data-dfx-network="staging"
-        data-feature-flags="{&quot;ENABLE_CKBTC&quot;:true,&quot;ENABLE_CKTESTBTC&quot;:false,&quot;ENABLE_ICP_ICRC&quot;:false,&quot;ENABLE_INSTANT_UNLOCK&quot;:false,&quot;ENABLE_NEURON_SETTINGS&quot;:true}"
         data-fetch-root-key="true"
         data-governance-canister-id="rrkah-fqaaa-aaaaa-aaaaq-cai"
-        data-host="https://nnsdapp.dfinity.network"
-        data-identity-service-url="https://wqmuk-5qaaa-aaaaa-aaaqq-cai.nnsdapp.dfinity.network"
+        data-host="https://fubar.dfinity.network"
+        data-identity-service-url="https://wqmuk-5qaaa-aaaaa-aaaqq-cai.fubar.dfinity.network"
         data-ledger-canister-id="ryjl3-tyaaa-aaaaa-aaaba-cai"
         data-own-canister-id="lf43c-fyaaa-aaaaa-aacva-cai"
         data-robots="&lt;meta name=&quot;robots&quot; content=&quot;noindex, nofollow&quot; /&gt;"
-        data-sns-aggregator-url="https://p5kov-xqaaa-aaaaa-aacmq-cai.nnsdapp.dfinity.network"
-        data-static-host="https://nnsdapp.dfinity.network"
+        data-sns-aggregator-url="https://p5kov-xqaaa-aaaaa-aacmq-cai.fubar.dfinity.network"
+        data-static-host="https://fubar.dfinity.network"
         data-tvl-canister-id=""
         data-wasm-canister-id="qaa6y-5yaaa-aaaaa-aaafa-cai"
         data-own-canister-id="lf43c-fyaaa-aaaaa-aacva-cai">
@@ -152,6 +154,12 @@ if ! diff "$test_json_file" <(
   },
   "ckbtc_minter": {
     "staging": "t6rzw-2iaaa-aaaaa-aaama-cai"
+  },
+  "cketh_index": {
+    "staging": ""
+  },
+  "cketh_ledger": {
+    "staging": "omy6t-mmaaa-aaaaa-qabgq-cai"
   },
   "nns-sns-wasm": {
     "staging": "qaa6y-5yaaa-aaaaa-aaafa-cai"

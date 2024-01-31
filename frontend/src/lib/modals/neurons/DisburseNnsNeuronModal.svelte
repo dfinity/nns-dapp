@@ -4,10 +4,10 @@
   import { i18n } from "$lib/stores/i18n";
   import type { NeuronInfo } from "@dfinity/nns";
   import {
-    TokenAmount,
     ICPToken,
     type Token,
     assertNonNullish,
+    TokenAmountV2,
   } from "@dfinity/utils";
   import type {
     WizardModal,
@@ -55,8 +55,8 @@
   let currentStep: WizardStep | undefined;
   let modal: WizardModal;
   let loading = false;
-  let amount: TokenAmount;
-  $: amount = TokenAmount.fromE8s({
+  let amount: TokenAmountV2;
+  $: amount = TokenAmountV2.fromUlps({
     amount: neuronStake(neuron),
     token: ICPToken,
   });

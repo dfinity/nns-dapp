@@ -11,7 +11,7 @@
     mapNeuronIds,
     type MergeableNeuron,
   } from "$lib/utils/neuron.utils";
-  import Tooltip from "$lib/components/ui/Tooltip.svelte";
+  import { Tooltip } from "@dfinity/gix-components";
   import NnsNeuronCard from "./NnsNeuronCard.svelte";
 
   let selectedNeuronIds: NeuronId[] = [];
@@ -67,6 +67,7 @@
         {:else}
           <Tooltip
             id={`disabled-mergeable-neuron-${neuron.neuronId}`}
+            center
             text={translate({ labelKey: messageKey ?? "error.not_mergeable" })}
           >
             <NnsNeuronCard disabled role="checkbox" {neuron} />

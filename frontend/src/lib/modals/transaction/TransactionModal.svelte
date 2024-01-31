@@ -11,7 +11,12 @@
   import type { Account } from "$lib/types/account";
   import TransactionForm from "$lib/components/transaction/TransactionForm.svelte";
   import TransactionReview from "$lib/components/transaction/TransactionReview.svelte";
-  import { TokenAmount, ICPToken, type Token } from "@dfinity/utils";
+  import {
+    TokenAmount,
+    TokenAmountV2,
+    ICPToken,
+    type Token,
+  } from "@dfinity/utils";
   import type { Principal } from "@dfinity/principal";
   import type {
     TransactionInit,
@@ -43,7 +48,7 @@
   export let rootCanisterId: Principal;
   export let currentStep: WizardStep | undefined = undefined;
   export let token: Token = ICPToken;
-  export let transactionFee: TokenAmount;
+  export let transactionFee: TokenAmount | TokenAmountV2;
   export let disableContinue = false;
   export let disableSubmit = false;
   // Max amount accepted by the transaction without fees

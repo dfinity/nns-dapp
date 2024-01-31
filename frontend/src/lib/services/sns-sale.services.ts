@@ -7,6 +7,7 @@ import {
 } from "$lib/api/sns-sale.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
+import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
 import {
   snsProjectsStore,
   type SnsFullProject,
@@ -20,7 +21,6 @@ import {
   toastsShow,
   toastsSuccess,
 } from "$lib/stores/toasts.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { ApiErrorKey } from "$lib/types/api.errors";
 import { LedgerErrorKey } from "$lib/types/ledger.errors";
@@ -75,7 +75,7 @@ import { SALE_PARTICIPATION_RETRY_SECONDS } from "../constants/sns.constants";
 import { snsTicketsStore } from "../stores/sns-tickets.store";
 import { nanoSecondsToDateTime } from "../utils/date.utils";
 import { logWithTimestamp } from "../utils/dev.utils";
-import { formatToken } from "../utils/token.utils";
+import { formatTokenE8s } from "../utils/token.utils";
 
 let toastId: symbol | undefined;
 export const hidePollingToast = (): void => {
@@ -281,8 +281,8 @@ const handleNewSaleTicketError = ({
         toastsError({
           labelKey: "error__sns.sns_sale_invalid_amount",
           substitutions: {
-            $min: formatToken({ value: min_amount_icp_e8s_included }),
-            $max: formatToken({ value: max_amount_icp_e8s_included }),
+            $min: formatTokenE8s({ value: min_amount_icp_e8s_included }),
+            $max: formatTokenE8s({ value: max_amount_icp_e8s_included }),
           },
         });
         return;
@@ -442,10 +442,10 @@ export const initiateSnsSaleParticipation = async ({
     updateProgress(SaleStep.INITIALIZATION);
 
     // amount validation
-    const transactionFee = get(transactionsFeesStore).main;
+    const transactionFee = get(mainTransactionFeeE8sStore);
     assertEnoughAccountFunds({
       account,
-      amountE8s: amount.toE8s() + transactionFee,
+      amountUlps: amount.toE8s() + transactionFee,
     });
 
     const project = getProjectFromStore(rootCanisterId);
@@ -597,7 +597,7 @@ const notifyParticipationAndRemoveTicket = async ({
         level: "warn",
         labelKey: "error__sns.sns_sale_committed_not_equal_to_amount",
         substitutions: {
-          $amount: formatToken({ value: icp_accepted_participation_e8s }),
+          $amount: formatTokenE8s({ value: icp_accepted_participation_e8s }),
         },
         duration: DEFAULT_TOAST_DURATION_MILLIS,
       });
@@ -653,7 +653,7 @@ const pollTransfer = ({
       sendICP({
         identity,
         to,
-        amount,
+        amount: amount.toE8s(),
         fromSubAccount,
         createdAt,
         memo,

@@ -18,12 +18,14 @@ import {
 } from "$tests/mocks/sns-proposals.mock";
 import { SnsProposalDetailPo } from "$tests/page-objects/SnsProposalDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
 import {
   SnsNeuronPermissionType,
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
+  SnsSwapLifecycle,
   SnsVote,
 } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
@@ -33,7 +35,7 @@ vi.mock("$lib/api/sns-governance.api");
 
 describe("SnsProposalDetail", () => {
   fakeSnsGovernanceApi.install();
-  const proposalId = { id: BigInt(3) };
+  const proposalId = { id: 3n };
   const rootCanisterId = mockCanisterId;
 
   const renderComponent = async () => {
@@ -55,10 +57,16 @@ describe("SnsProposalDetail", () => {
       authStore.setForTesting(undefined);
       snsFunctionsStore.reset();
       page.mock({ data: { universe: rootCanisterId.toText() } });
+      setSnsProjects([
+        {
+          rootCanisterId,
+          lifecycle: SnsSwapLifecycle.Committed,
+        },
+      ]);
     });
 
     it("should show skeleton while loading proposal", async () => {
-      const proposalId = { id: BigInt(3) };
+      const proposalId = { id: 3n };
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,
@@ -122,12 +130,12 @@ describe("SnsProposalDetail", () => {
       expect(spyOnSetTitle).toHaveBeenCalledTimes(1);
       expect(spyOnSetTitle).toHaveBeenCalledWith({
         title: `Proposal ${proposalIdText}`,
-        header: ``,
+        header: `Proposal ${proposalIdText}`,
       });
     });
 
     it("should render the name of the nervous function as title", async () => {
-      const functionId = BigInt(12);
+      const functionId = 12n;
       const functionName = "test function";
       fakeSnsGovernanceApi.addNervousSystemFunctionWith({
         rootCanisterId,
@@ -144,7 +152,7 @@ describe("SnsProposalDetail", () => {
       const po = await renderComponent();
 
       await waitFor(async () =>
-        expect(await po.getSystemInfoSectionTitle()).toBe(functionName)
+        expect(await po.getSystemInfoSectionTitle()).toBe("Proposal Details")
       );
     });
 

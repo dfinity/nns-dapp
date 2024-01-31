@@ -3,7 +3,7 @@ import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import * as workerBalances from "$lib/services/worker-balances.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import en from "$tests/mocks/i18n.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
@@ -102,8 +102,8 @@ describe("SnsAccounts", () => {
       );
 
       expect(cardTitleRow?.textContent.trim()).toEqual(
-        `${formatToken({
-          value: mockSnsMainAccount.balanceE8s,
+        `${formatTokenE8s({
+          value: mockSnsMainAccount.balanceUlps,
         })} ${mockSnsToken.symbol}`
       );
     });

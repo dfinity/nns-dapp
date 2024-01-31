@@ -1,5 +1,6 @@
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
+import * as proposalsApi from "$lib/api/proposals.api";
 import * as snsSaleApi from "$lib/api/sns-sale.api";
 import * as snsMetricsApi from "$lib/api/sns-swap-metrics.api";
 import * as snsApi from "$lib/api/sns.api";
@@ -18,7 +19,7 @@ import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import { snsSwapCommitmentsStore } from "$lib/stores/sns.store";
 import { userCountryStore } from "$lib/stores/user-country.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
-import { formatToken, numberToE8s } from "$lib/utils/token.utils";
+import { formatTokenE8s, numberToE8s } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import * as fakeLocationApi from "$tests/fakes/location-api.fake";
 import {
@@ -31,6 +32,7 @@ import {
   mockAccountDetails,
   mockMainAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import {
   createFinalizationStatusMock,
   snsFinalizationStatusResponseMock,
@@ -54,6 +56,7 @@ vi.mock("$lib/api/sns-swap-metrics.api");
 vi.mock("$lib/api/sns-sale.api");
 vi.mock("$lib/api/icp-ledger.api");
 vi.mock("$lib/api/location.api");
+vi.mock("$lib/api/proposals.api");
 
 const blockedApiPaths = [
   "$lib/api/nns-dapp.api",
@@ -62,6 +65,7 @@ const blockedApiPaths = [
   "$lib/api/sns-sale.api",
   "$lib/api/icp-ledger.api",
   "$lib/api/location.api",
+  "$lib/api/proposals.api",
 ];
 
 describe("ProjectDetail", () => {
@@ -71,7 +75,7 @@ describe("ProjectDetail", () => {
   const rootCanisterId = mockCanisterId;
   const userCountryCode = "CH";
   const notUserCountryCode = "US";
-  const newBalance = BigInt(10_000_000_000);
+  const newBalance = 10_000_000_000n;
   const saleBuyerCount = 1_000_000;
   const rawMetricsText = `
 # TYPE sale_buyer_count gauge
@@ -96,11 +100,13 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(mockAccountDetails);
     vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(newBalance);
 
+    vi.spyOn(proposalsApi, "queryProposal").mockResolvedValue(mockProposalInfo);
+
     fakeLocationApi.setCountryCode(userCountryCode);
 
     vi.spyOn(snsApi, "querySnsDerivedState").mockResolvedValue({
       sns_tokens_per_icp: [1],
-      buyer_total_icp_e8s: [BigInt(200_000_000)],
+      buyer_total_icp_e8s: [200_000_000n],
       cf_participant_count: [],
       direct_participant_count: [],
       cf_neuron_count: [],
@@ -305,6 +311,30 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         expect(get(store)?.data).toEqual(snsFinalizationStatusResponseMock);
       });
     });
+
+    describe("project with nns_proposal_id present", () => {
+      const props = {
+        rootCanisterId: rootCanisterId.toText(),
+      };
+      beforeEach(() => {
+        setSnsProjects([
+          {
+            rootCanisterId,
+            lifecycle: SnsSwapLifecycle.Committed,
+            certified: true,
+            nnsProposalId: Number(mockProposalInfo.id),
+          },
+        ]);
+      });
+
+      it("should show a proposal card from the proposal id", async () => {
+        const { queryByTestId } = render(ProjectDetail, props);
+
+        await runResolvedPromises();
+
+        expect(queryByTestId("proposal-card")).toBeInTheDocument();
+      });
+    });
   });
 
   describe("logged in user", () => {
@@ -315,8 +345,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
       vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(undefined);
       vi.spyOn(snsApi, "querySnsLifecycle").mockResolvedValue({
-        decentralization_sale_open_timestamp_seconds: [BigInt(11231312)],
+        decentralization_sale_open_timestamp_seconds: [11_231_312n],
         lifecycle: [SnsSwapLifecycle.Open],
+        decentralization_swap_termination_timestamp_seconds: [],
       });
 
       cancelPollGetOpenTicket();
@@ -343,22 +374,22 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           icp_accepted_participation_e8s: testTicket.amount_icp_e8s,
           icp_ledger_account_balance_e8s: testTicket.amount_icp_e8s,
         });
-        vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(BigInt(10));
+        vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(10n);
         vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
-          BigInt(1_000_000_000)
+          1_000_000_000n
         );
       });
 
       it("should show user's commitment", async () => {
-        const userCommitment = BigInt(100_000_000);
+        const userCommitment = 100_000_000n;
         vi.spyOn(snsApi, "querySnsSwapCommitment").mockResolvedValue({
           rootCanisterId,
           myCommitment: {
             icp: [
               {
-                transfer_start_timestamp_seconds: BigInt(123444),
+                transfer_start_timestamp_seconds: 123_444n,
                 amount_e8s: userCommitment,
-                transfer_success_timestamp_seconds: BigInt(123445),
+                transfer_success_timestamp_seconds: 123_445n,
                 transfer_fee_paid_e8s: [],
                 amount_transferred_e8s: [],
               },
@@ -376,7 +407,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           queryByTestId("sns-user-commitment")?.querySelector(
             "[data-tid='token-value']"
           )?.innerHTML
-        ).toMatch(formatToken({ value: userCommitment }));
+        ).toMatch(formatTokenE8s({ value: userCommitment }));
       });
 
       describe("no open ticket and no commitment", () => {
@@ -445,9 +476,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         const finalCommitment = {
           icp: [
             {
-              transfer_start_timestamp_seconds: BigInt(123444),
+              transfer_start_timestamp_seconds: 123_444n,
               amount_e8s: amountE8s,
-              transfer_success_timestamp_seconds: BigInt(123445),
+              transfer_success_timestamp_seconds: 123_445n,
             },
           ],
           has_created_neuron_recipes: [],
@@ -565,9 +596,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         const finalCommitment = {
           icp: [
             {
-              transfer_start_timestamp_seconds: BigInt(123444),
+              transfer_start_timestamp_seconds: 123_444n,
               amount_e8s: testTicket.amount_icp_e8s,
-              transfer_success_timestamp_seconds: BigInt(123445),
+              transfer_success_timestamp_seconds: 123_445n,
             },
           ],
           has_created_neuron_recipes: [],
@@ -609,7 +640,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           queryByTestId("sns-user-commitment")?.querySelector(
             "[data-tid='token-value']"
           )?.innerHTML
-        ).toMatch(formatToken({ value: testTicket.amount_icp_e8s }));
+        ).toMatch(formatTokenE8s({ value: testTicket.amount_icp_e8s }));
         expect(snsApi.querySnsSwapCommitment).toBeCalledTimes(3);
       });
     });
@@ -655,7 +686,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       const props = {
         rootCanisterId: rootCanisterId.toText(),
       };
-      const userCommitment = BigInt(100_000_000);
+      const userCommitment = 100_000_000n;
       beforeEach(() => {
         setSnsProjects([
           {
@@ -670,9 +701,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           myCommitment: {
             icp: [
               {
-                transfer_start_timestamp_seconds: BigInt(123444),
+                transfer_start_timestamp_seconds: 123_444n,
                 amount_e8s: userCommitment,
-                transfer_success_timestamp_seconds: BigInt(123445),
+                transfer_success_timestamp_seconds: 123_445n,
                 transfer_fee_paid_e8s: [],
                 amount_transferred_e8s: [],
               },
@@ -720,7 +751,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           queryByTestId("sns-user-commitment")?.querySelector(
             "[data-tid='token-value']"
           )?.innerHTML
-        ).toMatch(formatToken({ value: userCommitment }));
+        ).toMatch(formatTokenE8s({ value: userCommitment }));
       });
     });
   });

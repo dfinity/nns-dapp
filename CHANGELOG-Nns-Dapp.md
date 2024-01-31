@@ -11,6 +11,422 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 127458
+
+### Application
+
+#### Added
+
+* New block "Stake a neuron" on proposal details page.
+* Getter and setter of partition schema label.
+
+#### Changed
+
+* Changed wording about staking neurons to staking tokens.
+* Add missing feature flags to default feature flags value.
+* Various wording changes.
+
+#### Removed
+
+* ckBTC withdrawal account.
+* Don't show the red error outline on dissolve delay input when the dissolve delay is not enough to have voting power.
+
+#### Fixed
+
+* Fix gaps between sections on the mobile launchpad page.
+
+### Operations
+
+#### Added
+
+* Add `reviewers` to the `update-*.yml` workflows that create PRs.
+
+#### Fixed
+
+* Commented out broken local `config.test`.
+
+## Proposal 127093
+
+### Application
+
+#### Added
+
+* Add "API Boundary Node Management" topic support.
+* A work-around to recover unsupported ICRC-1 tokens.
+* Copy button to followed neuron IDs.
+
+#### Changed
+
+* New light and dark theme colors.
+* Pluralise neurons on proposal detail page.
+* Placeholder when the transaction list is empty.
+* New QR code icon.
+* Render wallet page when not signed in.
+
+#### Removed
+
+* non-ICRC2 BTC withdrawal flow.
+
+#### Fixed
+
+* BTC deposit address QR code spinner in dark theme.
+* Missing NF-neurons on SNS proposal detail page.
+
+### Operations
+
+#### Added
+
+- Exercise new migration test.
+
+#### Changed
+
+* Upgrade to `dfx` 0.15.3.
+
+#### Fixed
+
+* Keep local replica accessible locally when specifying --domain to dfx-snapshot-start.
+
+## Proposal 126904
+
+### Application
+
+#### Added
+
+* Redesign proposal detail neurons block (collapsible).
+* Display status in "voted neurons" headline.
+
+#### Changed
+
+* Default to main account on wallet page when `account` parameter is missing from the URL.
+
+#### Fixed
+
+* Reverted the upgrade to SvelteKit 2 as it breaks iOS 15.
+* Auto updating wallet balances
+
+### Operations
+
+## Proposal 126861
+
+### Application
+
+#### Added
+
+* Disable dissolve delay editing when the maximum is reached.
+* Implement `Storable` for accounts.
+* `UnboundedStableBTreeMap` as an account storage medium.
+* Save accounts in the `pre_upgrade` hook only when accounts are stored in the heap.
+* Save account stats in the `pre_upgrade` hook rather than recomputing them in the `post_upgrade` hook.
+* Migration functions.
+* Render pending and failed BTC withdrawal transaction as such.
+* Add `ENABLE_SNS_TYPES_FILTER` feature flag.
+
+#### Changed
+
+* Use `ic_cdk::println` instead of the `dfn_core` equivalent.
+
+#### Fixed
+
+* Remaining wrong dissolve delay error message after min/max click.
+* Avoid unnecessary calls to SNS root canister ids to get the canister ids.
+* Min dissolve delay button updates not only for the first time.
+* Fix scrollbar in multiline toast message. 
+* Go back to accounts page for incorrect account identifier in SNS wallet page.
+* Stay on the same universe when navigating back from wallet to the accounts page.
+
+### Operations
+
+#### Added
+
+* Entry for bitcoin canister in `dfx.json`.
+
+#### Changed
+
+* Apply clippy only to target `wasm32-unknown-unknown` but prohibit `std::println` and variants for that target.
+
+#### Removed
+
+* Remove `past-changelog-test`.
+
+## Proposal 126734
+
+### Application
+
+#### Added
+
+* Sns dynamic voting proportions.
+* Iterator over AccountsDbs.
+* Display expiration date for sns proposals.
+* Neuron type support.
+* Card with BTC deposit address and QR code in ckBTC wallet.
+* Merge Approve transfer with BTC "Sent" transaction in transaction list.
+* Display Neurons' Fund commitment progress bar.
+* `range()` method to `AccountsDbTrait`.
+* Render ckBTC Reimbursement transactions.
+
+#### Changed
+
+* Render BTC deposits/withdrawals as "BTC Received"/"BTC Sent".
+* Update Rust version: `1.74.0` -> `1.74.1`
+* Provide space for migration state in the `ProxyDb`.
+* Rename "Launch Pad" to "Launchpad".
+
+#### Fixed
+
+* Limit the size of proposal payload rendering errors, as otherwise the error can become too large to return.
+* Provide a fallback if proposal payloads don't have the expected type.
+* Temporary work-around for broken SNS.
+
+#### Security
+
+* Bump css-tools dev dependency to fix minor vulnerability.
+
+### Operations
+
+#### Changed
+
+* Allow npm greater than v10 in frontend project.
+
+#### Removed
+
+* Remove `.gitattributes`.
+
+#### Fixed
+
+* Provide missing global config in cache-filling workflow.
+* Update the correct flavour of golden file when the NNS Dapp canister API changes.
+* Specify the node version to use in the version bump test.
+* Summarize the `AccountsStore` contents in its `Debug` representation rather than trying to print its entire contents.
+* Lock the spellcheck version and its dependencies.
+* Keep `dfx start` logs in CI.
+* Let canister IDs provided by the dfx cli override fixed canister IDs in config files.  Needed for local deployments.
+
+## Proposal 126313
+
+### Application
+
+#### Added
+
+* Support for CkETH token.
+
+#### Removed
+
+* Remove logic for using ICRC-1 when staking a neuron.
+
+### Operations
+
+## Proposal 126305
+
+### Application
+
+#### Added
+
+* Enable ICRC-2 flow for BTC withdrawal.
+* Add ENABLE_CKETH feature flag.
+* Get ckETH canister IDs from environment/configuration.
+* Display BTC deposits with 1-11 confirmations as "pending".
+
+#### Removed
+
+* Remove the `ENABLE_FULL_WIDTH_PROPOSAL` feature flag.
+
+#### Fixed
+
+* Fix swallowed undefined fields in raw json view. 
+
+#### Not Published
+
+* Structure to protect Rust access to stable memory.
+
+### Operations
+
+#### Added
+
+* Experimental tests for schema migration.
+* Add optional version support to the storage records.
+* Include ckETH canister IDs when importing from URL with `scripts/canister_ids`.
+* Include ckETH when generating args.did and .env.
+
+#### Changed
+
+* Adapt `release-sop` script to work with DevEnv instead of staging.
+
+## Proposal 126093
+
+### Application
+
+#### Added
+
+* Button to buy ICP with an external provider.
+
+#### Fixed
+
+* Fix docker builds when there is no global config.
+* Fix "Expiration date" countdown label visibility.
+* Optimize nns proposal rendering for small devices.
+
+### Operations
+
+#### Changed
+
+* Update Rust to the latest stable version (1.74.0).
+* Move the commands that derive aggregator code from NNS candid files.
+* Better text for rust update PRs.
+
+#### Removed
+
+* References to static testnets.
+
+## Proposal 126004
+
+### Application
+
+#### Added
+
+* Render withdrawal address on ckBTC burn transactions.
+
+#### Changed
+
+* New icons for sent/received transactions.
+* Increase the pre-migration account limit.
+* Use "From:" instead of "Source:" for received transactions.
+
+#### Fixed
+
+* Add missing "Rename" button in the subaccount page.
+* Fix disappearing "Received" half of to-self transactions.
+* Fix debug store that wasn't working.
+* Fix the stuck loading issue with the Sns proposal.
+
+### Operations
+
+#### Added
+
+* Add a workflow to update the SNS aggregator bindings regularly.
+* Added support for global network config.
+* Cron job to update proposal types.
+* Enable dependabot for Rust updates.
+* Workflow to get the latest NNS and SNS canister candid files.
+* Try to prevent calls to global.fetch in unit tests.
+* Add `devenv_llorenc` and `devenv_dskloet` to list of networks.
+
+#### Changed
+
+* Update `ic-wasm` to the latest version.
+* Factor out the `snsdemo` installation.
+* Make the location of the snsdemo checkout configurable.
+* Add `prod` and `aggregator-prod` to the list of public releases.
+* Update `dfx` to `v0.15.1`.
+* Update the URL of the app subnet to what dfx v15 expects.
+* Use a unique branch when updating the snsdemo release, didc, IC candid files or rust.
+* Better checks that the network is defined.
+
+#### Fixed
+
+* Remove accidentally committed (empty) directory and fix commit patterns.
+* Fix local deployments with `dfx 0.15.1`.
+
+## Proposal 125580
+
+### Application
+
+#### Added
+
+* Add a link to the ICP Dashboard in the project detail page.
+* Add collapse-all functionality to json tree view.
+
+#### Changed
+
+* Read schema version from stable memory.
+
+#### Fixed
+
+* Show canister title in details when user is not the controller.
+
+#### Not Published
+
+* Use ICRC-2 for BTC withdrawal when `ENABLE_CKBTC_ICRC2` is enabled.
+
+### Operations
+
+#### Added
+
+* Cron job to update proposal types.
+* Enable dependabot for Rust updates.
+* Workflow to get the latest NNS and SNS canister candid files.
+* Try to prevent calls to global.fetch in unit tests.
+
+#### Changed
+
+* Update `ic-wasm` to the latest version.
+* Factor out the `snsdemo` installation.
+* Add `prod` and `aggregator-prod` to the list of public releases.
+
+#### Removed
+
+* No longer update rust bindings when NNS canister interfaces are updated.
+
+## Proposal 125508
+
+### Application
+
+#### Added
+
+* Specified the preferred storage schema as an argument.
+* Added provenance information to .did files and derived rust code.
+* Add `UpdateElectedHostosVersions` and `UpdateNodesHostosVersion` proposals support.
+* Show the maximum participation of the Neurons' Fund when present.
+* A list of exceptional (not-rendered, zero value) transactions.
+
+#### Changed
+
+* Stable structures updated to `0.6.0`.
+* Dapp upgraded to Svelte `v4`.
+* New Proposal Card.
+* Change the slider in dissolve delay for a read-only progress bar.
+* Redesign the proposal payload and action.
+* Switch the flag to use redesigned proposal detail page sections by default.
+* Redesign the proposal voting section.
+* Beautify the proposal cards look & feel.
+
+#### Removed
+
+* Removed debounce on deriving Network from ckBTC send address.
+
+#### Fixed
+
+* Remove robots meta tag to allow search engines to crawl NNS Dapp.
+* Fix i18n key in merge neurons summary screen.
+* Display `TransferFrom` as a normal receive instead of failing to load transactions.
+* Fix issue with setting max dissolve delay when max is not a whole day.
+
+#### Not Published
+
+* Added `retrieveBtcWithApproval` in ckbtc-minter API.
+* Render Approve transactions in transaction list.
+* Add feature flag `ENABLE_CKBTC_ICRC2`.
+
+### Operations
+
+#### Added
+
+* Import candid for NNS ledger.
+* Formatting for `Cargo.toml` files.
+* Add test to check that the nns-dapp cargo and npm versions match.
+* Script to deploy nns-dapp on `DevEnv`.
+
+#### Changed
+
+* Install `dfx` by means of the dedicated GitHub action.
+* Stop updating candid files when updating the test environment.
+* Join npm audit URLs with spaces instead of commas.
+* Add traits with a dedicated command rather than with patch files.
+* Use snsdemo snapshot with Internet Identity version 2023-10-27.
+
+#### Removed
+
+* Delete nightly `GitHub` job to update II used in tests; we now use the II that comes with `snsdemo`.
+
 ## Proposal 125338
 
 ### Application

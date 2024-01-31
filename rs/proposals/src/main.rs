@@ -1,3 +1,4 @@
+use ic_cdk::println;
 use lib::canisters::nns_governance::api::ProposalInfo;
 use proposals as lib;
 use std::io::{self, Read};

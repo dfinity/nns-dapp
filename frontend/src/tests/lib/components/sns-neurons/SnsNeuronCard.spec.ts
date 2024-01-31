@@ -5,7 +5,7 @@ import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-s
 import { authStore } from "$lib/stores/auth.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
@@ -121,7 +121,7 @@ describe("SnsNeuronCard", () => {
     token !== undefined && expect(getByText(token.symbol)).toBeInTheDocument();
     expect(queryAllByText(en.core.icp).length).toBe(0);
 
-    const stakeText = formatToken({
+    const stakeText = formatTokenE8s({
       value:
         mockSnsNeuron.cached_neuron_stake_e8s - mockSnsNeuron.neuron_fees_e8s,
       detailed: true,

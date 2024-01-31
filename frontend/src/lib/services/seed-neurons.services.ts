@@ -1,6 +1,6 @@
 import { createAgent } from "$lib/api/agent.api";
 import { HOST } from "$lib/constants/environment.constants";
-import type { Secp256k1PublicKey } from "$lib/keys/secp256k1";
+import { Secp256k1PublicKey } from "$lib/keys/secp256k1";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
@@ -40,7 +40,7 @@ export const claimSeedNeurons = async () => {
       agent: await createAgent({ identity, host: HOST }),
     });
 
-    const bufferKey = identity.getPublicKey() as Secp256k1PublicKey;
+    const bufferKey = Secp256k1PublicKey.from(identity.getPublicKey());
     const hexPubKey = buf2hex(bufferKey.toRaw());
     const isHex = hexPubKey.match("^[0-9a-fA-F]+$");
     if (!isHex) {

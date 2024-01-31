@@ -25,6 +25,14 @@ inputs:
     description: "Passed as --mode with the dfx canister install command"
     required: false
     default: "reinstall"
+  logfile:
+    description: "The name of the logfile to write to"
+    required: false
+    default: "dfx.log"
+outputs:
+  logfile:
+    description: The path to the dfx log file
+    value: ${{ inputs.logfile }}
 runs:
   using: "composite"
   steps:
@@ -43,7 +51,7 @@ runs:
         test -n "$URL" || URL="https://github.com/dfinity/snsdemo/releases/download/${{ steps.snsdemo_ref.outputs.ref }}/snsdemo_snapshot_ubuntu-22.04.tar.xz"
         echo "url=$URL" >> "$GITHUB_OUTPUT"
     - name: Get SNS scripts
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: 'dfinity/snsdemo'
         path: 'snsdemo'
@@ -63,7 +71,7 @@ runs:
       shell: bash
       run: |
         curl -fL --retry 5 ${{ steps.snsdemo_snapshot.outputs.url }} > state.tar.xz
-        dfx-snapshot-restore --snapshot state.tar.xz --verbose
+        dfx-snapshot-restore --snapshot state.tar.xz --verbose &> '${{ inputs.logfile }}'
         dfx identity use snsdemo8
         dfx-sns-demo-healthcheck
     - name: Install nns-dapp
@@ -74,9 +82,27 @@ runs:
         export DFX_NETWORK=local
         ./config.sh
         echo "Install:"
-        dfx canister install nns-dapp --wasm ${{ inputs.nns_dapp_wasm }} --upgrade-unchanged --mode ${{ inputs.nns_dapp_install_mode }} --yes --argument "$(cat nns-dapp-arg-${DFX_NETWORK}.did)"
+        # Retry to work around canister install timing out on dfx 0.15.3.
+        # TODO: Remove loop if no longer necessary.
+        for ((try = 0; try < 5; try++)); do
+          if dfx canister install nns-dapp --wasm ${{ inputs.nns_dapp_wasm }} --upgrade-unchanged --mode ${{ inputs.nns_dapp_install_mode }} --yes --argument "$(cat nns-dapp-arg-${DFX_NETWORK}.did)"; then
+            exit 0;
+          fi
+          sleep 5
+        done
+        echo "Couldn't install nns-dapp canister"
+        exit 1
     - name: Install sns_aggregator
       if: ${{ inputs.sns_aggregator_wasm }}
       shell: bash
       run: |
-        dfx canister install sns_aggregator --wasm ${{ inputs.sns_aggregator_wasm }} --upgrade-unchanged --mode ${{ inputs.sns_aggregator_install_mode }} --yes
+        # Retry to work around canister install timing out on dfx 0.15.3.
+        # TODO: Remove loop if no longer necessary.
+        for ((try = 0; try < 5; try++)); do
+          if dfx canister install sns_aggregator --wasm ${{ inputs.sns_aggregator_wasm }} --upgrade-unchanged --mode ${{ inputs.sns_aggregator_install_mode }} --yes; then
+            exit 0;
+          fi
+          sleep 5
+        done
+        echo "Couldn't install sns_aggregator canister"
+        exit 1

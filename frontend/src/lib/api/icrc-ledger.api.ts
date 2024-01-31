@@ -30,6 +30,9 @@ import {
   uint8ArrayToArrayOfNumber,
 } from "@dfinity/utils";
 
+/**
+ * @deprecated replace with getAccount function of wallet-ledger.api
+ */
 export const getIcrcAccount = async ({
   owner,
   subaccount,
@@ -43,19 +46,22 @@ export const getIcrcAccount = async ({
   QueryParams): Promise<Account> => {
   const account = { owner, subaccount };
 
-  const balanceE8s = await getBalance({ ...account, certified });
+  const balanceUlps = await getBalance({ ...account, certified });
 
   return {
     identifier: encodeIcrcAccount(account),
     principal: owner,
     ...(nonNullish(subaccount) && {
-      subAccount: uint8ArrayToArrayOfNumber(subaccount),
+      subAccount: uint8ArrayToArrayOfNumber(new Uint8Array(subaccount)),
     }),
-    balanceE8s,
+    balanceUlps,
     type,
   };
 };
 
+/**
+ * @deprecated use queryIcrcToken
+ */
 export const getIcrcToken = async ({
   certified,
   getMetadata,
@@ -72,6 +78,51 @@ export const getIcrcToken = async ({
   }
 
   return token;
+};
+
+/**
+ * Similar to `getIcrcToken` but it expects the canister id instead of the function that queries the metada.
+ */
+export const queryIcrcToken = async ({
+  certified,
+  identity,
+  canisterId,
+}: {
+  certified: boolean;
+  identity: Identity;
+  canisterId: Principal;
+}): Promise<IcrcTokenMetadata> => {
+  const {
+    canister: { metadata },
+  } = await icrcLedgerCanister({ identity, canisterId });
+
+  const tokenData = await metadata({ certified });
+
+  const token = mapOptionalToken(tokenData);
+
+  if (isNullish(token)) {
+    throw new LedgerErrorKey("error.icrc_token_load");
+  }
+
+  return token;
+};
+
+export const queryIcrcBalance = async ({
+  identity,
+  certified,
+  canisterId,
+  account,
+}: {
+  identity: Identity;
+  certified: boolean;
+  canisterId: Principal;
+  account: IcrcAccount;
+}): Promise<bigint> => {
+  const {
+    canister: { balance },
+  } = await icrcLedgerCanister({ identity, canisterId });
+
+  return balance({ ...account, certified });
 };
 
 export interface IcrcTransferParams {

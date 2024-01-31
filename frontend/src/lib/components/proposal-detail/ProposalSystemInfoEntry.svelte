@@ -10,8 +10,8 @@
 </script>
 
 <KeyValuePairInfo {testId} alignIconRight>
-  <svelte:fragment slot="key"
-    >{keyOf({ obj: $i18n.proposal_detail, key: labelKey })}</svelte:fragment
+  <span slot="key" class="description"
+    >{keyOf({ obj: $i18n.proposal_detail, key: labelKey })}</span
   >
   <span class="value" slot="value" data-tid={`${testId}-value`}>{value}</span>
 

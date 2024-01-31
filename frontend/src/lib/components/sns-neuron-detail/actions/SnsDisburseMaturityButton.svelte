@@ -7,14 +7,18 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import DisburseMaturityButton from "$lib/components/neuron-detail/actions/DisburseMaturityButton.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatToken } from "$lib/utils/token.utils";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
   import { i18n } from "$lib/stores/i18n";
+  import type { TokenAmountV2 } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;
-  export let feeE8s: bigint;
+  export let fee: TokenAmountV2;
 
   let enoughMaturity: boolean;
-  $: enoughMaturity = hasEnoughMaturityToDisburse({ neuron, feeE8s });
+  $: enoughMaturity = hasEnoughMaturityToDisburse({
+    neuron,
+    feeE8s: fee.toE8s(),
+  });
 
   let disabledText: string | undefined = undefined;
   $: disabledText = !enoughMaturity
@@ -23,8 +27,8 @@
       : replacePlaceholders(
           $i18n.neuron_detail.disburse_maturity_disabled_tooltip_non_zero,
           {
-            $amount: formatToken({
-              value: minimumAmountToDisburseMaturity(feeE8s),
+            $amount: formatTokenE8s({
+              value: minimumAmountToDisburseMaturity(fee.toE8s()),
             }),
           }
         )

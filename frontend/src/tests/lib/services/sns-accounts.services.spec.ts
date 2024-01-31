@@ -5,10 +5,11 @@ import { loadSnsAccountTransactions } from "$lib/services/sns-transactions.servi
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import * as toastsStore from "$lib/stores/toasts.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
+import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import type { HttpAgent } from "@dfinity/agent";
 import { waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
@@ -100,26 +101,18 @@ describe("sns-accounts-services", () => {
       snsAccountsStore.reset();
       vi.spyOn(console, "error").mockImplementation(() => undefined);
     });
-    it("should call sns accounts and transaction fee and load them in store", async () => {
+    it("should call sns accounts and load them in store", async () => {
       const spyAccountsQuery = vi
         .spyOn(ledgerApi, "getSnsAccounts")
         .mockImplementation(() => Promise.resolve([mockSnsMainAccount]));
-      const fee = BigInt(10_000);
-      const spyFeeQuery = vi
-        .spyOn(ledgerApi, "transactionFee")
-        .mockImplementation(() => Promise.resolve(fee));
 
       await services.syncSnsAccounts({ rootCanisterId: mockPrincipal });
 
       await tick();
       expect(spyAccountsQuery).toBeCalled();
-      expect(spyFeeQuery).toBeCalled();
 
       const store = get(snsAccountsStore);
       expect(store[mockPrincipal.toText()]?.accounts).toHaveLength(1);
-
-      const feeStore = get(transactionsFeesStore);
-      expect(feeStore.projects[mockPrincipal.toText()]?.fee).toEqual(fee);
     });
   });
 
@@ -129,6 +122,7 @@ describe("sns-accounts-services", () => {
     beforeEach(() => {
       vi.clearAllMocks();
       snsAccountsStore.reset();
+      tokensStore.reset();
       vi.spyOn(console, "error").mockImplementation(() => undefined);
 
       spyAccounts = vi
@@ -136,14 +130,13 @@ describe("sns-accounts-services", () => {
         .mockImplementation(() => Promise.resolve([mockSnsMainAccount]));
     });
 
-    afterEach(() => {
-      transactionsFeesStore.reset();
-    });
-
     it("should call sns transfer tokens", async () => {
-      transactionsFeesStore.setFee({
-        rootCanisterId: mockPrincipal,
-        fee: BigInt(100),
+      tokensStore.setToken({
+        canisterId: mockPrincipal,
+        token: {
+          ...mockSnsToken,
+          fee: 100n,
+        },
         certified: true,
       });
       const spyTransfer = vi
@@ -164,9 +157,12 @@ describe("sns-accounts-services", () => {
     });
 
     it("should load transactions if flag is passed", async () => {
-      transactionsFeesStore.setFee({
-        rootCanisterId: mockPrincipal,
-        fee: BigInt(100),
+      tokensStore.setToken({
+        canisterId: mockPrincipal,
+        token: {
+          ...mockSnsToken,
+          fee: 100n,
+        },
         certified: true,
       });
       const spyTransfer = vi
@@ -188,9 +184,12 @@ describe("sns-accounts-services", () => {
     });
 
     it("should show toast and return success false if transfer fails", async () => {
-      transactionsFeesStore.setFee({
-        rootCanisterId: mockPrincipal,
-        fee: BigInt(100),
+      tokensStore.setToken({
+        canisterId: mockPrincipal,
+        token: {
+          ...mockSnsToken,
+          fee: 100n,
+        },
         certified: true,
       });
       const spyTransfer = vi
@@ -213,7 +212,7 @@ describe("sns-accounts-services", () => {
     });
 
     it("should show toast and return success false if there is no transaction fee", async () => {
-      transactionsFeesStore.reset();
+      tokensStore.reset();
       const spyTransfer = vi
         .spyOn(ledgerApi, "snsTransfer")
         .mockRejectedValue(new Error("test error"));

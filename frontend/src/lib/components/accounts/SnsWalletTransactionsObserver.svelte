@@ -5,7 +5,7 @@
     snsOnlyProjectStore,
     snsProjectSelectedStore,
   } from "$lib/derived/sns/sns-selected-project.derived";
-  import IcrcTransactionsObserver from "$lib/components/accounts/IcrcTransactionsObserver.svelte";
+  import TransactionsObserver from "$lib/components/accounts/TransactionsObserver.svelte";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { TransactionsCallback } from "$lib/services/worker-transactions.services";
   import type { Account } from "$lib/types/account";
@@ -41,7 +41,7 @@
 </script>
 
 {#if nonNullish(data) && nonNullish(universeId)}
-  <IcrcTransactionsObserver {data} {callback}>
+  <TransactionsObserver {data} {callback}>
     <slot />
-  </IcrcTransactionsObserver>
+  </TransactionsObserver>
 {/if}

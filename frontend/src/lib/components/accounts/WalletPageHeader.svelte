@@ -3,9 +3,10 @@
   import PageHeader from "../common/PageHeader.svelte";
   import IdentifierHash from "../ui/IdentifierHash.svelte";
   import UniversePageSummary from "../universe/UniversePageSummary.svelte";
+  import { nonNullish } from "@dfinity/utils";
 
   export let universe: Universe;
-  export let walletAddress: string;
+  export let walletAddress: string | undefined;
 </script>
 
 <PageHeader testId="wallet-page-header-component">
@@ -15,7 +16,9 @@
     class="description header-end"
     data-tid="wallet-header-account-identifier"
   >
-    <IdentifierHash identifier={walletAddress} />
+    {#if nonNullish(walletAddress)}
+      <IdentifierHash identifier={walletAddress} />
+    {/if}
   </span>
 </PageHeader>
 

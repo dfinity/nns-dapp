@@ -5,7 +5,7 @@
   import IncreaseStakeButton from "$lib/components/neuron-detail/actions/IncreaseStakeButton.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { Universe } from "$lib/types/universe";
-  import { formatToken } from "$lib/utils/token.utils";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
   export let universe: Universe;
@@ -24,7 +24,8 @@
   />
   <div class="content">
     <h4 class="token-value">
-      <span data-tid="stake-value">{formatToken({ value: neuronStake })}</span
+      <span data-tid="stake-value"
+        >{formatTokenE8s({ value: neuronStake })}</span
       ><span data-tid="token-symbol">{token.symbol}</span>
     </h4>
     <p class="description" data-tid="staked-description">

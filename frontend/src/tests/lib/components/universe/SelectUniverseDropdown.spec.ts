@@ -95,11 +95,11 @@ describe("SelectUniverseDropdown", () => {
       const accounts = [
         {
           ...mockSnsMainAccount,
-          balanceE8s: 100_000_000n,
+          balanceUlps: 100_000_000n,
         },
         {
           ...mockSnsSubAccount,
-          balanceE8s: 23_000_000n,
+          balanceUlps: 23_000_000n,
         },
       ];
       const rootCanisterId = mockSnsFullProject.rootCanisterId;

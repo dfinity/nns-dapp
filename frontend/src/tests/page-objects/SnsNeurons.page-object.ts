@@ -38,4 +38,16 @@ export class SnsNeuronsPo extends BasePageObject {
     const cards = await this.getNeuronCardPos();
     return Promise.all(cards.map((card) => card.getNeuronId()));
   }
+
+  hasNonNeuronFundNeuronsGrid(): Promise<boolean> {
+    return this.isPresent("sns-neurons-body");
+  }
+
+  hasNeuronFundNeuronsGrid(): Promise<boolean> {
+    return this.isPresent("fund-neurons-grid");
+  }
+
+  hasEmptyMessage(): Promise<boolean> {
+    return this.isPresent("empty-message-component");
+  }
 }

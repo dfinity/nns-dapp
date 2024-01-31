@@ -1,6 +1,5 @@
 import * as governanceApi from "$lib/api/sns-governance.api";
 import * as api from "$lib/api/sns.api";
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
 import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
@@ -18,12 +17,12 @@ import {
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { toastsError } from "$lib/stores/toasts.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import {
   getSnsNeuronIdAsHexString,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
-import { numberToE8s } from "$lib/utils/token.utils";
+import { numberToE8s, numberToUlps } from "$lib/utils/token.utils";
 import { bytesToHexString } from "$lib/utils/utils";
 import {
   mockIdentity,
@@ -36,7 +35,7 @@ import {
   mockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
-import { mockTokenStore } from "$tests/mocks/sns-projects.mock";
+import { mockSnsToken, mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import {
@@ -101,7 +100,7 @@ describe("sns-neurons-services", () => {
       });
 
       it("should call api.querySnsNeurons and load neurons in store", async () => {
-        const subaccount: Uint8Array = neuronSubaccount({
+        const subaccount = neuronSubaccount({
           controller: mockIdentity.getPrincipal(),
           index: 0,
         });
@@ -118,7 +117,7 @@ describe("sns-neurons-services", () => {
           .mockImplementationOnce(() =>
             Promise.resolve(mockSnsNeuron.cached_neuron_stake_e8s)
           )
-          .mockImplementation(() => Promise.resolve(BigInt(0)));
+          .mockImplementation(() => Promise.resolve(0n));
         const spyOnNervousSystemParameters = vi
           .spyOn(governanceApi, "nervousSystemParameters")
           .mockResolvedValue(snsNervousSystemParametersMock);
@@ -149,7 +148,7 @@ describe("sns-neurons-services", () => {
       });
 
       it("should call api.querySnsNeurons and load neurons in store", async () => {
-        const subaccount: Uint8Array = neuronSubaccount({
+        const subaccount = neuronSubaccount({
           controller: mockIdentity.getPrincipal(),
           index: 0,
         });
@@ -166,7 +165,7 @@ describe("sns-neurons-services", () => {
           .mockImplementationOnce(() =>
             Promise.resolve(mockSnsNeuron.cached_neuron_stake_e8s)
           )
-          .mockImplementation(() => Promise.resolve(BigInt(0)));
+          .mockImplementation(() => Promise.resolve(0n));
 
         // expect parameters to be in store
         expect(
@@ -185,7 +184,7 @@ describe("sns-neurons-services", () => {
     });
 
     it("should refresh and refetch the neuron if balance doesn't match", async () => {
-      const subaccount: Uint8Array = neuronSubaccount({
+      const subaccount = neuronSubaccount({
         controller: mockIdentity.getPrincipal(),
         index: 0,
       });
@@ -203,11 +202,9 @@ describe("sns-neurons-services", () => {
       const spyNeuronBalance = vi
         .spyOn(governanceApi, "getNeuronBalance")
         .mockImplementationOnce(() =>
-          Promise.resolve(
-            mockSnsNeuron.cached_neuron_stake_e8s + BigInt(10_000)
-          )
+          Promise.resolve(mockSnsNeuron.cached_neuron_stake_e8s + 10_000n)
         )
-        .mockImplementation(() => Promise.resolve(BigInt(0)));
+        .mockImplementation(() => Promise.resolve(0n));
       const spyRefreshNeuron = vi
         .spyOn(governanceApi, "refreshNeuron")
         .mockImplementation(() => Promise.resolve(undefined));
@@ -223,7 +220,7 @@ describe("sns-neurons-services", () => {
     });
 
     it("should claim neuron if find a subaccount without neuron", async () => {
-      const subaccount: Uint8Array = neuronSubaccount({
+      const subaccount = neuronSubaccount({
         controller: mockIdentity.getPrincipal(),
         index: 1,
       });
@@ -243,8 +240,8 @@ describe("sns-neurons-services", () => {
         .mockImplementationOnce(() =>
           Promise.resolve(mockSnsNeuron.cached_neuron_stake_e8s)
         )
-        .mockImplementationOnce(() => Promise.resolve(BigInt(200_000_000)))
-        .mockImplementation(() => Promise.resolve(BigInt(0)));
+        .mockImplementationOnce(() => Promise.resolve(200_000_000n))
+        .mockImplementation(() => Promise.resolve(0n));
       const spyClaimNeuron = vi
         .spyOn(governanceApi, "claimNeuron")
         .mockImplementation(() => Promise.resolve(undefined));
@@ -288,7 +285,7 @@ describe("sns-neurons-services", () => {
     });
 
     it("should call api.querySnsNeurons and load neurons in store", async () => {
-      const subaccount: Uint8Array = neuronSubaccount({
+      const subaccount = neuronSubaccount({
         controller: mockIdentity.getPrincipal(),
         index: 0,
       });
@@ -316,7 +313,7 @@ describe("sns-neurons-services", () => {
     });
     it("should call api.querySnsNeuron and call load neuron when neuron not in store", () =>
       new Promise<void>((done) => {
-        const subaccount: Uint8Array = neuronSubaccount({
+        const subaccount = neuronSubaccount({
           controller: mockIdentity.getPrincipal(),
           index: 0,
         });
@@ -330,7 +327,7 @@ describe("sns-neurons-services", () => {
           .mockImplementationOnce(() =>
             Promise.resolve(mockSnsNeuron.cached_neuron_stake_e8s)
           )
-          .mockImplementation(() => Promise.resolve(BigInt(0)));
+          .mockImplementation(() => Promise.resolve(0n));
         const spyQuery = vi
           .spyOn(governanceApi, "getSnsNeuron")
           .mockImplementation(() => Promise.resolve(neuron));
@@ -359,7 +356,7 @@ describe("sns-neurons-services", () => {
 
     it("should refresh neuron if balance does not match and load again", () =>
       new Promise<void>((done) => {
-        const subaccount: Uint8Array = neuronSubaccount({
+        const subaccount = neuronSubaccount({
           controller: mockIdentity.getPrincipal(),
           index: 0,
         });
@@ -368,7 +365,7 @@ describe("sns-neurons-services", () => {
           ...mockSnsNeuron,
           id: [neuronId] as [SnsNeuronId],
         };
-        const stake = neuron.cached_neuron_stake_e8s + BigInt(10_000);
+        const stake = neuron.cached_neuron_stake_e8s + 10_000n;
         const updatedNeuron = {
           ...neuron,
           cached_neuron_stake_e8s: stake,
@@ -376,7 +373,7 @@ describe("sns-neurons-services", () => {
         const spyNeuronBalance = vi
           .spyOn(governanceApi, "getNeuronBalance")
           .mockImplementationOnce(() => Promise.resolve(stake))
-          .mockImplementation(() => Promise.resolve(BigInt(0)));
+          .mockImplementation(() => Promise.resolve(0n));
         const spyQuery = vi
           .spyOn(governanceApi, "getSnsNeuron")
           // First is the query call and returns old neuron
@@ -656,14 +653,14 @@ describe("sns-neurons-services", () => {
   });
 
   describe("stakeNeuron", () => {
-    afterEach(() => {
-      transactionsFeesStore.reset();
+    beforeEach(() => {
+      tokensStore.reset();
     });
 
     it("should call sns api stakeNeuron, query neurons again and load sns accounts", async () => {
-      transactionsFeesStore.setFee({
-        rootCanisterId: mockPrincipal,
-        fee: BigInt(100),
+      tokensStore.setToken({
+        canisterId: mockPrincipal,
+        token: { ...mockSnsToken, fee: 100n },
         certified: true,
       });
       const spyStake = vi
@@ -686,7 +683,7 @@ describe("sns-neurons-services", () => {
     });
 
     it("should not call sns api stakeNeuron if fee is not present", async () => {
-      transactionsFeesStore.reset();
+      tokensStore.reset();
       const spyStake = vi
         .spyOn(api, "stakeNeuron")
         .mockImplementation(() => Promise.resolve(mockSnsNeuron.id[0]));
@@ -853,7 +850,7 @@ describe("sns-neurons-services", () => {
     };
     const followeeHex2 = subaccountToHexString(followee2.id);
     const rootCanisterId = mockPrincipal;
-    const functionId = BigInt(3);
+    const functionId = 3n;
 
     beforeEach(() => {
       setFolloweesSpy = vi
@@ -892,7 +889,7 @@ describe("sns-neurons-services", () => {
       );
       const neuron: SnsNeuron = {
         ...mockSnsNeuron,
-        followees: [[BigInt(4), { followees: [followee1] }]],
+        followees: [[4n, { followees: [followee1] }]],
       };
       await addFollowee({
         rootCanisterId,
@@ -976,7 +973,7 @@ describe("sns-neurons-services", () => {
       id: arrayOfNumberToUint8Array([1, 2, 4]),
     };
     const rootCanisterId = mockPrincipal;
-    const functionId = BigInt(3);
+    const functionId = 3n;
 
     beforeEach(() => {
       setFolloweesSpy = vi
@@ -1174,9 +1171,10 @@ describe("sns-neurons-services", () => {
         .spyOn(snsTokenSymbolSelectedStore, "subscribe")
         .mockImplementation(mockTokenStore);
 
-      transactionsFeesStore.setFee({
-        rootCanisterId: mockPrincipal,
-        fee: BigInt(transactionFee),
+      tokensStore.reset();
+      tokensStore.setToken({
+        canisterId: mockPrincipal,
+        token: { ...mockSnsToken, fee: transactionFee },
         certified: true,
       });
     });
@@ -1184,7 +1182,6 @@ describe("sns-neurons-services", () => {
     afterEach(() => {
       snsNeuronsStoreSpy.mockClear();
       snsTokenSymbolSelectedStoreSpy.mockClear();
-      transactionsFeesStore.reset();
     });
 
     it("should call api.addNeuronPermissions", async () => {
@@ -1197,7 +1194,7 @@ describe("sns-neurons-services", () => {
 
       const amount = 10;
 
-      const neuronMinimumStake = 1000n;
+      const neuronMinimumStake = 1_000n;
       const { success } = await splitNeuron({
         neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
         rootCanisterId: mockPrincipal,
@@ -1210,7 +1207,7 @@ describe("sns-neurons-services", () => {
         neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
         identity: mockIdentity,
         rootCanisterId: mockPrincipal,
-        amount: BigInt(amount * E8S_PER_ICP) + transactionFee,
+        amount: numberToUlps({ amount, token: mockSnsToken }) + transactionFee,
         memo: 0n,
       });
     });
@@ -1221,7 +1218,7 @@ describe("sns-neurons-services", () => {
         .mockImplementation(() => Promise.resolve())
         .mockReset();
       const amount = 0.00001;
-      const neuronMinimumStake = 2000n;
+      const neuronMinimumStake = 2_000n;
       const { success } = await splitNeuron({
         neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
         rootCanisterId: mockPrincipal,

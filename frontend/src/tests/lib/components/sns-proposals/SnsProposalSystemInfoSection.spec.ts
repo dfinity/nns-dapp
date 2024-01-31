@@ -22,7 +22,7 @@ describe("ProposalSystemInfoSection", () => {
   fakeSnsGovernanceApi.install();
 
   const rootCanisterId = mockCanisterId;
-  const testNervousFunctionId = BigInt(1);
+  const testNervousFunctionId = 1n;
   const testNervousFunctionName = "test function";
   const nervousFunction = {
     ...nervousSystemFunctionMock,
@@ -53,7 +53,7 @@ describe("ProposalSystemInfoSection", () => {
     const openProposal = {
       ...createSnsProposal({
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
-        proposalId: BigInt(2),
+        proposalId: 2n,
       }),
       action: testNervousFunctionId,
     };
@@ -66,11 +66,14 @@ describe("ProposalSystemInfoSection", () => {
       nsFunctions: [nervousFunction],
     });
     const props = {
-      proposal: openProposal,
-      rootCanisterId,
+      proposalDataMap: mapProposalInfo({
+        proposalData: openProposal,
+        nsFunctions: [nervousFunction],
+      }),
     };
 
-    it("should load the nervous functions in the store", async () => {
+    // TODO: move to SnsProposalDetail.spec.ts
+    it.skip("should load the nervous functions in the store", async () => {
       fakeSnsGovernanceApi.pause();
       render(ProposalSystemInfoSection, { props });
 
@@ -84,10 +87,10 @@ describe("ProposalSystemInfoSection", () => {
       );
     });
 
-    it("should render type as title", async () => {
+    it("should render title", async () => {
       const po = await renderComponent(props);
 
-      expect(await po.getTitleText()).toEqual(testNervousFunctionName);
+      expect(await po.getTitleText()).toEqual("Proposal Details");
     });
 
     it("should render type info from the nervous function", async () => {
@@ -139,12 +142,14 @@ describe("ProposalSystemInfoSection", () => {
     const adoptedProposal = {
       ...createSnsProposal({
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_ADOPTED,
-        proposalId: BigInt(2),
+        proposalId: 2n,
       }),
     };
     const props = {
-      proposal: adoptedProposal,
-      rootCanisterId,
+      proposalDataMap: mapProposalInfo({
+        proposalData: adoptedProposal,
+        nsFunctions: [nervousFunction],
+      }),
     };
     it("should render adopted status", async () => {
       const po = await renderComponent(props);
@@ -169,13 +174,16 @@ describe("ProposalSystemInfoSection", () => {
     const executedProposal = {
       ...createSnsProposal({
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED,
-        proposalId: BigInt(2),
+        proposalId: 2n,
       }),
     };
     const props = {
-      proposal: executedProposal,
-      rootCanisterId,
+      proposalDataMap: mapProposalInfo({
+        proposalData: executedProposal,
+        nsFunctions: [nervousFunction],
+      }),
     };
+
     it("should render executed status", async () => {
       const po = await renderComponent(props);
 
@@ -199,12 +207,14 @@ describe("ProposalSystemInfoSection", () => {
     const failedProposal = {
       ...createSnsProposal({
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_FAILED,
-        proposalId: BigInt(2),
+        proposalId: 2n,
       }),
     };
     const props = {
-      proposal: failedProposal,
-      rootCanisterId,
+      proposalDataMap: mapProposalInfo({
+        proposalData: failedProposal,
+        nsFunctions: [nervousFunction],
+      }),
     };
 
     it("should render failed status", async () => {

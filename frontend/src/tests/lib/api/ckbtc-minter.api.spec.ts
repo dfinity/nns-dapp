@@ -2,21 +2,24 @@ import * as agent from "$lib/api/agent.api";
 import {
   estimateFee,
   getBTCAddress,
-  getWithdrawalAccount,
   minterInfo,
-  retrieveBtc,
+  retrieveBtcStatusV2ByAccount,
   retrieveBtcWithApproval,
   updateBalance,
 } from "$lib/api/ckbtc-minter.api";
 import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
-import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockBTCAddressTestnet } from "$tests/mocks/ckbtc-accounts.mock";
 import {
   mockCkBTCMinterInfo,
   mockUpdateBalanceOk,
 } from "$tests/mocks/ckbtc-minter.mock";
 import type { HttpAgent } from "@dfinity/agent";
-import { CkBTCMinterCanister, type RetrieveBtcOk } from "@dfinity/ckbtc";
+import {
+  CkBTCMinterCanister,
+  type RetrieveBtcOk,
+  type RetrieveBtcStatusV2WithId,
+} from "@dfinity/ckbtc";
 import { mock } from "vitest-mock-extended";
 
 describe("ckbtc-minter api", () => {
@@ -89,67 +92,6 @@ describe("ckbtc-minter api", () => {
     });
   });
 
-  describe("getWithdrawalAccount", () => {
-    it("returns the bitcoin withdrawal account", async () => {
-      const mockAccount = {
-        owner: mockPrincipal,
-        subaccount: [Uint8Array.from([0, 0, 1])] as [Uint8Array],
-      };
-
-      const getWithdrawalAccountSpy =
-        minterCanisterMock.getWithdrawalAccount.mockResolvedValue(mockAccount);
-
-      const result = await getWithdrawalAccount(params);
-
-      expect(result).toEqual(mockAccount);
-
-      expect(getWithdrawalAccountSpy).toBeCalled();
-    });
-
-    it("throws an error if issue get withdrawal account", () => {
-      minterCanisterMock.getWithdrawalAccount.mockImplementation(async () => {
-        throw new Error();
-      });
-
-      const call = () => getWithdrawalAccount(params);
-
-      expect(call).rejects.toThrowError();
-    });
-  });
-
-  describe("retrieveBtc", () => {
-    const retrieveParams = {
-      ...params,
-      address: mockBTCAddressTestnet,
-      amount: 123n,
-    };
-
-    it("returns successfully when btc are retrieved", async () => {
-      const ok: RetrieveBtcOk = {
-        block_index: 1n,
-      };
-
-      const retrieveBtcSpy =
-        minterCanisterMock.retrieveBtc.mockResolvedValue(ok);
-
-      const result = await retrieveBtc(retrieveParams);
-
-      expect(result).toEqual(ok);
-
-      expect(retrieveBtcSpy).toBeCalled();
-    });
-
-    it("bubble errors", () => {
-      minterCanisterMock.retrieveBtc.mockImplementation(async () => {
-        throw new Error();
-      });
-
-      const call = () => retrieveBtc(retrieveParams);
-
-      expect(call).rejects.toThrowError();
-    });
-  });
-
   describe("retrieveBtcWithApproval", () => {
     const retrieveWithApprovalParams = {
       address: mockBTCAddressTestnet,
@@ -191,6 +133,38 @@ describe("ckbtc-minter api", () => {
         });
 
       expect(call).rejects.toThrowError();
+    });
+  });
+
+  describe("retrieveBtcStatusV2ByAccount", () => {
+    it("returns result", async () => {
+      const statuses: RetrieveBtcStatusV2WithId[] = [
+        {
+          id: 135n,
+          status: {
+            Confirmed: { txid: [1, 2, 3] },
+          },
+        },
+      ];
+
+      const spy =
+        minterCanisterMock.retrieveBtcStatusV2ByAccount.mockResolvedValue(
+          statuses
+        );
+
+      const statusesParams = {
+        certified: true,
+      };
+
+      const result = await retrieveBtcStatusV2ByAccount({
+        ...params,
+        ...statusesParams,
+      });
+
+      expect(result).toEqual(statuses);
+
+      expect(spy).toBeCalledTimes(1);
+      expect(spy).toBeCalledWith(statusesParams);
     });
   });
 

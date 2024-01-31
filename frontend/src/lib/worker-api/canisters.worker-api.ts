@@ -4,9 +4,9 @@ import { mapError } from "$lib/canisters/ic-management/ic-management.errors";
 import type { CanisterActorParams } from "$lib/types/worker";
 import { mapCanisterId } from "$lib/utils/canisters.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import { HttpAgent } from "@dfinity/agent";
 import type { CanisterStatusResponse } from "@dfinity/ic-management";
 import { ICManagementCanister } from "@dfinity/ic-management";
+import { createAgent } from "@dfinity/utils";
 
 export const queryCanisterDetails = async ({
   identity,
@@ -45,14 +45,11 @@ const canisters = async ({
 }: CanisterActorParams): Promise<{
   icMgtService: ICManagementCanister;
 }> => {
-  const agent = new HttpAgent({
+  const agent = await createAgent({
     identity,
     host,
+    fetchRootKey,
   });
-
-  if (fetchRootKey) {
-    await agent.fetchRootKey();
-  }
 
   const icMgtService = ICManagementCanister.create({ agent });
 

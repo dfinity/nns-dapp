@@ -20,6 +20,8 @@
   import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
   import {
     getUniversalProposalStatus,
+    mapProposalInfo,
+    type SnsProposalDataMap,
     snsProposalId,
     snsProposalIdString,
     sortSnsProposalsById,
@@ -32,10 +34,13 @@
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { i18n } from "$lib/stores/i18n";
   import { authStore } from "$lib/stores/auth.store";
-  import { ENABLE_FULL_WIDTH_PROPOSAL } from "$lib/stores/feature-flags.store";
   import { SplitBlock } from "@dfinity/gix-components";
   import { navigateToProposal } from "$lib/utils/proposals.utils";
   import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
+  import type { Readable } from "svelte/store";
+  import type { SnsNervousSystemFunction } from "@dfinity/sns";
+  import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
+  import { tick } from "svelte";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -55,7 +60,11 @@
   let proposal: SnsProposalData | undefined;
   let updating = false;
 
-  const setProposal = (value: typeof proposal) => {
+  const setProposal = async (value: typeof proposal) => {
+    // TODO: recheck if this workaround is still needed after next svelte update
+    // workaround to fix not triggering the subscriptions ($:...) after "proposal" changes.
+    // Because the update is ignored if the value is changed before onMount.
+    await tick();
     proposal = value;
     debugSnsProposalStore(value);
   };
@@ -170,8 +179,24 @@
 
   $: layoutTitleStore.set({
     title,
-    header: $ENABLE_FULL_WIDTH_PROPOSAL ? "" : title,
+    header: title,
   });
+
+  // preload sns functions for mapping
+  let functionsStore: Readable<SnsNervousSystemFunction[] | undefined>;
+  $: if (universeCanisterId) {
+    loadSnsNervousSystemFunctions(universeCanisterId);
+    functionsStore = createSnsNsFunctionsProjectStore(universeCanisterId);
+  }
+
+  let proposalDataMap: SnsProposalDataMap | undefined;
+  $: proposalDataMap =
+    nonNullish(proposal) && nonNullish($functionsStore)
+      ? mapProposalInfo({
+          proposalData: proposal,
+          nsFunctions: $functionsStore,
+        })
+      : undefined;
 
   let proposalIds: bigint[];
   $: proposalIds = nonNullish(universeIdText)
@@ -182,11 +207,15 @@
 
   // The `update` function cares about the necessary data to be refetched.
   $: universeIdText, proposalIdText, $snsNeuronsStore, $authStore, update();
+
+  let proposalNavigationTitle: string | undefined;
+  $: proposalNavigationTitle = proposalDataMap?.type;
 </script>
 
 <TestIdWrapper testId="sns-proposal-details-grid">
   {#if nonNullish(proposalIdText) && !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
     <ProposalNavigation
+      title={proposalNavigationTitle}
       currentProposalId={BigInt(proposalIdText)}
       currentProposalStatus={getUniversalProposalStatus(proposal)}
       {proposalIds}
@@ -194,45 +223,25 @@
     />
   {/if}
 
-  {#if !updating && nonNullish(proposal) && nonNullish(universeCanisterId)}
-    {#if $ENABLE_FULL_WIDTH_PROPOSAL}
-      <div class="proposal-data-section">
-        <div class="content-cell-island">
-          <SplitBlock>
-            <div slot="start">
-              <SnsProposalSystemInfoSection
-                {proposal}
-                rootCanisterId={universeCanisterId}
-              />
-            </div>
-            <div slot="end">
-              <SnsProposalVotingSection {proposal} {reloadProposal} />
-            </div>
-          </SplitBlock>
-        </div>
-        <SnsProposalSummarySection {proposal} />
-        <SnsProposalPayloadSection {proposal} />
-      </div>
-    {:else}
-      <!-- TODO(GIX-1957): remove this block after the full-width proposal is enabled -->
-      <div class="content-grid">
-        <div class="content-a content-cell-island">
-          <SnsProposalSystemInfoSection
-            {proposal}
-            rootCanisterId={universeCanisterId}
-          />
-        </div>
-        <div class="content-b expand-content-b">
-          <div class="content-cell-island">
-            <SnsProposalVotingSection {proposal} {reloadProposal} />
+  {#if !updating && nonNullish(proposal) && nonNullish(proposalDataMap) && nonNullish(universeCanisterId)}
+    <div class="proposal-data-section">
+      <div class="content-cell-island">
+        <SplitBlock>
+          <div slot="start">
+            <SnsProposalSystemInfoSection {proposalDataMap} />
           </div>
-        </div>
-        <div class="content-c proposal-data-section">
-          <SnsProposalSummarySection {proposal} />
-          <SnsProposalPayloadSection {proposal} />
-        </div>
+          <div slot="end">
+            <SnsProposalVotingSection
+              {proposal}
+              {proposalDataMap}
+              {reloadProposal}
+            />
+          </div>
+        </SplitBlock>
       </div>
-    {/if}
+      <SnsProposalSummarySection {proposal} />
+      <SnsProposalPayloadSection {proposal} />
+    </div>
   {:else}
     <div class="content-grid">
       <div class="content-a">
@@ -245,18 +254,9 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-
   .proposal-data-section {
     display: flex;
     flex-direction: column;
     gap: var(--row-gap);
-  }
-
-  @include media.min-width(medium) {
-    // If this would be use elsewhere, we can extract some utility to gix-components
-    .content-b.expand-content-b {
-      grid-row-end: content-c;
-    }
   }
 </style>

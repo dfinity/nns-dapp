@@ -23,6 +23,7 @@ import {
 import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
+import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { ENABLE_ICP_ICRC } from "$lib/stores/feature-flags.store";
@@ -32,7 +33,6 @@ import {
   type SingleMutationIcpAccountsStore,
 } from "$lib/stores/icp-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
-import { mainTransactionFeeE8sStore } from "$lib/stores/transaction-fees.store";
 import type {
   Account,
   AccountIdentifierText,
@@ -132,7 +132,7 @@ export const loadAccounts = async ({
           })
         : account.account_identifier,
       icpIdentifier: account.account_identifier,
-      balanceE8s: await getAccountBalance(account.account_identifier),
+      balanceUlps: await getAccountBalance(account.account_identifier),
       type,
       ...("sub_account" in account && { subAccount: account.sub_account }),
       ...("name" in account && { name: account.name }),
@@ -328,7 +328,7 @@ export const transferICP = async ({
           identity,
           to,
           fromSubAccount: subAccount,
-          amount: tokenAmount,
+          amount: tokenAmount.toE8s(),
         }));
 
     // Transfer can be to one of the user's account.

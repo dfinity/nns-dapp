@@ -53,7 +53,7 @@ async function transactionFee({
   rootCanisterId: Principal;
   certified: boolean;
 }): Promise<bigint> {
-  return BigInt(10_000);
+  return 10_000n;
 }
 
 async function getSnsToken({

@@ -1,5 +1,5 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { expect, type Locator, type Page } from "@playwright/test";
+import type { Locator, Page } from "@playwright/test";
 
 export class PlaywrightPageObjectElement implements PageObjectElement {
   readonly locator: Locator;
@@ -43,11 +43,11 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
   }
 
   byTestId(tid: string): PlaywrightPageObjectElement {
-    return this.querySelector(`[data-tid=${tid}]`);
+    return this.querySelector(`[data-tid="${tid}"]`);
   }
 
   allByTestId(tid: string): Promise<PlaywrightPageObjectElement[]> {
-    return this.querySelectorAll(`[data-tid=${tid}]`);
+    return this.querySelectorAll(`[data-tid="${tid}"]`);
   }
 
   countByTestId({
@@ -58,7 +58,7 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     count: number;
   }): PlaywrightPageObjectElement[] {
     return this.querySelectorCount({
-      selector: `[data-tid=${tid}]`,
+      selector: `[data-tid="${tid}"]`,
       count,
     });
   }
@@ -89,11 +89,22 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
   }
 
   waitFor(): Promise<void> {
-    return this.locator.waitFor();
+    /**
+     * `locator.waitFor` defaults to `'visible'`. Can be either:
+     * - `'attached'` - wait for element to be present in DOM.
+     * - `'detached'` - wait for element to not be present in DOM.
+     * - `'visible'` - wait for element to have non-empty bounding box and no `visibility:hidden`. Note that element
+     *   without any content or with `display:none` has an empty bounding box and is not considered visible.
+     * - `'hidden'` - wait for element to be either detached from DOM, or have an empty bounding box or
+     *   `visibility:hidden`. This is opposite to the `'visible'` option.
+     *
+     * We use `"attached"` which is the same functionality as Jest `waitFor` counterpart.
+     */
+    return this.locator.waitFor({ state: "attached" });
   }
 
   waitForAbsent(): Promise<void> {
-    return expect(this.locator).toHaveCount(0);
+    return this.locator.waitFor({ state: "detached" });
   }
 
   click(): Promise<void> {
@@ -122,5 +133,9 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
 
   async innerHtmlForDebugging(): Promise<string> {
     return "not implemeneted";
+  }
+
+  async addEventListener(): Promise<void> {
+    throw new Error("Not implement");
   }
 }

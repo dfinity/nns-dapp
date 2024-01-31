@@ -62,7 +62,7 @@
     <ConfirmDissolveDelay
       confirmButtonText={$i18n.neurons.confirm_update_delay}
       {neuron}
-      {delayInSeconds}
+      delayInSeconds={BigInt(Math.round(delayInSeconds))}
       on:nnsUpdated={closeModal}
       on:nnsBack={modal.back}
     />

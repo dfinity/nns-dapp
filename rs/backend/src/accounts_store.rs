@@ -13,28 +13,36 @@ use ic_ledger_core::timestamp::TimeStamp;
 use ic_ledger_core::tokens::SignedTokens;
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::{CYCLES_MINTING_CANISTER_ID, GOVERNANCE_CANISTER_ID};
+use ic_stable_structures::{storable::Bound, Storable};
 use icp_ledger::Operation::{self, Approve, Burn, Mint, Transfer, TransferFrom};
 use icp_ledger::{AccountIdentifier, BlockIndex, Memo, Subaccount, Tokens};
 use itertools::Itertools;
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
+use std::borrow::Cow;
 use std::cmp::{min, Ordering};
 use std::collections::{BTreeMap, HashMap, HashSet, VecDeque};
+use std::fmt;
 use std::ops::RangeTo;
 use std::time::{Duration, SystemTime};
 
 pub mod histogram;
 pub mod schema;
-use schema::{proxy::AccountsDbAsProxy, AccountsDbBTreeMapTrait, AccountsDbTrait};
+use schema::{
+    map::AccountsDbAsMap,
+    proxy::{AccountsDb, AccountsDbAsProxy},
+    AccountsDbBTreeMapTrait, AccountsDbTrait,
+};
 
 type TransactionIndex = u64;
 
 /// The data migration is more complicated if there are too many accounts.  With below this many
 /// accounts we avoid some complications.
-const PRE_MIGRATION_LIMIT: u64 = 220_000;
+const PRE_MIGRATION_LIMIT: u64 = 300_000;
 
 /// Accounts, transactions and related data.
-#[derive(Default, Debug, Eq, PartialEq)]
+#[derive(Default)]
+#[cfg_attr(test, derive(Eq, PartialEq))]
 pub struct AccountsStore {
     // TODO(NNS1-720): Use AccountIdentifier directly as the key for this HashMap
     accounts_db: schema::proxy::AccountsDbAsProxy,
@@ -46,11 +54,34 @@ pub struct AccountsStore {
     neuron_accounts: HashMap<AccountIdentifier, NeuronDetails>,
     block_height_synced_up_to: Option<BlockIndex>,
     multi_part_transactions_processor: MultiPartTransactionsProcessor,
-
-    sub_accounts_count: u64,
-    hardware_wallet_accounts_count: u64,
+    accounts_db_stats: AccountsDbStats,
     last_ledger_sync_timestamp_nanos: u64,
     neurons_topped_up_count: u64,
+}
+
+impl fmt::Debug for AccountsStore {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "AccountsStore{{accounts_db: {:?}, hardware_wallets_and_sub_accounts: HashMap[{:?}], pending_transactions: HashMap[{:?}], transactions: VecDeque[{:?}], neuron_accounts: HashMap[{:?}], block_height_synced_up_to: {:?}, multi_part_transactions_processor: {:?}, accounts_db_stats: {:?}, last_ledger_sync_timestamp_nanos: {:?}, neurons_topped_up_count: {:?}}}",
+            self.accounts_db,
+            self.hardware_wallets_and_sub_accounts.len(),
+            self.pending_transactions.len(),
+            self.transactions.len(),
+            self.neuron_accounts.len(),
+            self.block_height_synced_up_to,
+            self.multi_part_transactions_processor,
+            self.accounts_db_stats,
+            self.last_ledger_sync_timestamp_nanos,
+            self.neurons_topped_up_count,
+        )
+    }
+}
+
+#[derive(Default, CandidType, Deserialize, Debug, Eq, PartialEq)]
+pub struct AccountsDbStats {
+    pub sub_accounts_count: u64,
+    pub hardware_wallet_accounts_count: u64,
 }
 
 /// An abstraction over sub-accounts and hardware wallets.
@@ -72,6 +103,16 @@ pub struct Account {
     sub_accounts: HashMap<u8, NamedSubAccount>,
     hardware_wallet_accounts: Vec<NamedHardwareWalletAccount>,
     canisters: Vec<NamedCanister>,
+}
+
+impl Storable for Account {
+    const BOUND: Bound = Bound::Unbounded;
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
+        candid::encode_one(self).expect("Failed to serialize account").into()
+    }
+    fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
+        candid::decode_one(&bytes).expect("Failed to parse account from store.")
+    }
 }
 
 #[derive(CandidType, Deserialize, Debug, Eq, PartialEq, Clone)]
@@ -470,7 +511,7 @@ impl AccountsStore {
                     sub_account_identifier,
                     AccountWrapper::SubAccount(account_identifier, sub_account_id),
                 );
-                self.sub_accounts_count += 1;
+                self.accounts_db_stats.sub_accounts_count += 1;
             }
 
             response
@@ -543,7 +584,7 @@ impl AccountsStore {
                 self.accounts_db
                     .db_insert_account(&account_identifier.to_vec(), account);
 
-                self.hardware_wallet_accounts_count += 1;
+                self.accounts_db_stats.hardware_wallet_accounts_count += 1;
                 self.link_hardware_wallet_to_account(account_identifier, hardware_wallet_account_identifier);
                 RegisterHardwareWalletResponse::Ok
             }
@@ -783,6 +824,13 @@ impl AccountsStore {
             .take(request.page_size as usize)
             .map(|transaction_index| {
                 let transaction = self.get_transaction(*transaction_index).unwrap();
+                let transaction_type = transaction.transaction_type;
+                let used_transaction_type = if let Some(TransactionType::TransferFrom) = transaction_type {
+                    Some(TransactionType::Transfer)
+                } else {
+                    transaction_type
+                };
+
                 TransactionResult {
                     block_height: transaction.block_height,
                     timestamp: transaction.timestamp,
@@ -818,7 +866,7 @@ impl AccountsStore {
                             fee,
                         },
                     },
-                    transaction_type: transaction.transaction_type,
+                    transaction_type: used_transaction_type,
                 }
             })
             .collect();
@@ -1057,8 +1105,8 @@ impl AccountsStore {
             Duration::from_nanos(timestamp_now_nanos - self.last_ledger_sync_timestamp_nanos);
 
         stats.accounts_count = self.accounts_db.db_accounts_len();
-        stats.sub_accounts_count = self.sub_accounts_count;
-        stats.hardware_wallet_accounts_count = self.hardware_wallet_accounts_count;
+        stats.sub_accounts_count = self.accounts_db_stats.sub_accounts_count;
+        stats.hardware_wallet_accounts_count = self.accounts_db_stats.hardware_wallet_accounts_count;
         stats.transactions_count = self.transactions.len() as u64;
         stats.block_height_synced_up_to = self.block_height_synced_up_to;
         stats.earliest_transaction_timestamp_nanos =
@@ -1527,8 +1575,9 @@ impl AccountsStore {
 
 impl StableState for AccountsStore {
     fn encode(&self) -> Vec<u8> {
+        let empty_accounts = BTreeMap::<Vec<u8>, Account>::new();
         Candid((
-            &self.accounts_db.as_map(),
+            &self.accounts_db.as_map_maybe().unwrap_or(&empty_accounts),
             &self.hardware_wallets_and_sub_accounts,
             // TODO: Remove pending_transactions
             HashMap::<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>::new(),
@@ -1555,6 +1604,7 @@ impl StableState for AccountsStore {
             multi_part_transactions_processor,
             last_ledger_sync_timestamp_nanos,
             neurons_topped_up_count,
+            accounts_db_stats_maybe,
         ): (
             BTreeMap<Vec<u8>, Account>,
             HashMap<AccountIdentifier, AccountWrapper>,
@@ -1565,6 +1615,7 @@ impl StableState for AccountsStore {
             MultiPartTransactionsProcessor,
             u64,
             u64,
+            Option<AccountsDbStats>,
         ) = Candid::from_bytes(bytes).map(|c| c.0)?;
 
         // Remove duplicate transactions from hardware wallet accounts
@@ -1581,23 +1632,33 @@ impl StableState for AccountsStore {
             }
         }
 
-        let mut sub_accounts_count: u64 = 0;
-        let mut hardware_wallet_accounts_count: u64 = 0;
-        for account in accounts.values() {
-            sub_accounts_count += account.sub_accounts.len() as u64;
-            hardware_wallet_accounts_count += account.hardware_wallet_accounts.len() as u64;
-        }
+        let accounts_db_stats = match accounts_db_stats_maybe {
+            Some(counts) => counts,
+            None => {
+                let mut sub_accounts_count: u64 = 0;
+                let mut hardware_wallet_accounts_count: u64 = 0;
+                for account in accounts.values() {
+                    sub_accounts_count += account.sub_accounts.len() as u64;
+                    hardware_wallet_accounts_count += account.hardware_wallet_accounts.len() as u64;
+                }
+                AccountsDbStats {
+                    sub_accounts_count,
+                    hardware_wallet_accounts_count,
+                }
+            }
+        };
+
+        let accounts_db = AccountsDb::Map(AccountsDbAsMap::from_map(accounts));
 
         Ok(AccountsStore {
-            accounts_db: AccountsDbAsProxy::from_map(accounts),
+            accounts_db: AccountsDbAsProxy::from(accounts_db),
             hardware_wallets_and_sub_accounts,
             pending_transactions,
             transactions,
             neuron_accounts,
             block_height_synced_up_to,
             multi_part_transactions_processor,
-            sub_accounts_count,
-            hardware_wallet_accounts_count,
+            accounts_db_stats,
             last_ledger_sync_timestamp_nanos,
             neurons_topped_up_count,
         })
@@ -1710,7 +1771,7 @@ pub struct TransactionResult {
     transaction_type: Option<TransactionType>,
 }
 
-#[derive(CandidType)]
+#[derive(CandidType, Debug, PartialEq)]
 pub enum TransferResult {
     Burn {
         amount: Tokens,

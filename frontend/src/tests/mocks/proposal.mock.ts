@@ -5,7 +5,7 @@ import { deadlineTimestampSeconds } from "./proposals.store.mock";
 /**
  * Generate mock proposals with autoincremented "id".
  * @param count How many proposals to create
- * @param fields Static fields to set to mock entries e.g. {proposalTimestampSeconds: BigInt(0)}
+ * @param fields Static fields to set to mock entries e.g. {proposalTimestampSeconds: 0n}
  * @returns List of mock proposals (not fully set)
  */
 export const generateMockProposals = (
@@ -31,10 +31,10 @@ export const proposalActionRewardNodeProvider = {
     nodeProvider: {
       id: "aaaaa-aa",
     },
-    amountE8s: BigInt(10000000),
+    amountE8s: 10_000_000n,
     rewardMode: {
       RewardToNeuron: {
-        dissolveDelaySeconds: BigInt(1000),
+        dissolveDelaySeconds: 1_000n,
       },
     },
   },
@@ -48,28 +48,36 @@ export const proposalActionNnsFunction21 = {
 
 // Not a valid `ProposalInfo` object. Only related to the test fields are included
 export const mockProposalInfo: ProposalInfo = {
-  id: BigInt(10000),
+  id: 10_000n,
   proposal: {
     title: "title",
     url: "https://url.com",
     action: proposalActionMotion,
     summary: "summary-content",
   },
-  proposer: BigInt(123),
+  proposer: 123n,
   latestTally: {
-    no: BigInt(400000000),
-    yes: BigInt(600000000),
+    no: 400_000_000n,
+    yes: 600_000_000n,
   },
   topic: 8,
   status: 2,
   rewardStatus: 3,
   ballots: [
     {
-      neuronId: BigInt(0),
+      neuronId: 0n,
     },
   ],
   deadlineTimestampSeconds,
 } as unknown as ProposalInfo;
+
+export const createMockProposalInfo = ({ action }: { action: Action }) => ({
+  ...mockProposalInfo,
+  proposal: {
+    ...mockProposalInfo.proposal,
+    action,
+  },
+});
 
 export const mockVoteRegistration = {
   proposalIdString: "10000",

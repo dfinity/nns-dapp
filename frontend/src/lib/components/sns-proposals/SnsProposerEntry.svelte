@@ -12,8 +12,8 @@
 </script>
 
 <KeyValuePairInfo testId="proposal-system-info-proposer" alignIconRight>
-  <svelte:fragment slot="key"
-    >{$i18n.proposal_detail.proposer_prefix}</svelte:fragment
+  <span class="description" slot="key"
+    >{$i18n.proposal_detail.proposer_prefix}</span
   >
 
   <svelte:fragment slot="value">

@@ -17,6 +17,7 @@ export const aggregatorTokenMock: IcrcTokenMetadata = {
   name: "CatalyzeDAO",
   symbol: "CAT",
   fee: 100000n,
+  decimals: 8,
 };
 
 export const aggregatorSnsMockDto: CachedSnsDto = {
@@ -67,6 +68,7 @@ export const aggregatorSnsMockWith = ({
   index,
   nervousFunctions,
   swapDueTimestampSeconds,
+  nnsProposalId,
 }: {
   rootCanisterId?: string;
   lifecycle?: SnsSwapLifecycle;
@@ -78,6 +80,7 @@ export const aggregatorSnsMockWith = ({
   index?: number;
   nervousFunctions?: SnsNervousSystemFunction[];
   swapDueTimestampSeconds?: number;
+  nnsProposalId?: number;
 }): CachedSnsDto => ({
   index: index ?? aggregatorSnsMockDto.index,
   ...aggregatorSnsMockDto,
@@ -134,6 +137,8 @@ export const aggregatorSnsMockWith = ({
       swap_due_timestamp_seconds:
         swapDueTimestampSeconds ??
         aggregatorSnsMockDto.swap_state.swap.params.swap_due_timestamp_seconds,
+      nns_proposal_id:
+        nnsProposalId ?? aggregatorSnsMockDto.init.init.nns_proposal_id,
     },
   },
   swap_params: {

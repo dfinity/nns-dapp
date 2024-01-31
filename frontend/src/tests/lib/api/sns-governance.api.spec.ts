@@ -327,7 +327,7 @@ describe("sns-api", () => {
     await claimNeuron({
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
-      memo: BigInt(2),
+      memo: 2n,
       controller: Principal.fromText("aaaaa-aa"),
       subaccount: arrayOfNumberToUint8Array([1, 2, 3]),
     });
@@ -342,7 +342,7 @@ describe("sns-api", () => {
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
       neuronId: mockSnsNeuron.id[0],
-      functionId: BigInt(3),
+      functionId: 3n,
       followees: [followee1, followee2],
     });
 
@@ -385,7 +385,7 @@ describe("sns-api", () => {
 
   it("should get proposals", async () => {
     const proposalId: SnsProposalId = {
-      id: BigInt(2),
+      id: 2n,
     };
     const res = await queryProposal({
       identity: mockIdentity,

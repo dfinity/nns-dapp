@@ -70,7 +70,7 @@ check() {
   echo "Checking reconfiguring - present only for dev builds"
   EXPECTED_CONFIG='record { update_interval_ms = 9834; fast_interval_ms = 1_123_456_789; }'
   test -f sns_aggregator_dev.wasm.gz || cp out/sns_aggregator_dev.wasm.gz ./sns_aggregator_dev.wasm.gz
-  dfx canister install sns_aggregator --wasm ./sns_aggregator_dev.wasm.gz --mode upgrade
+  dfx canister install sns_aggregator --wasm ./sns_aggregator_dev.wasm.gz --mode upgrade --yes
   dfx canister call sns_aggregator reconfigure "( opt $EXPECTED_CONFIG)"
   check
 ) || EXIT=1

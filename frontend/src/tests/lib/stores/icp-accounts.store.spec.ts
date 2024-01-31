@@ -108,16 +108,16 @@ describe("icpAccountsStore", () => {
     it("should set balance for main account", () => {
       accountsStoreSet({ main: mockMainAccount, subAccounts: [] });
 
-      expect(get(icpAccountsStore)?.main.balanceE8s).toEqual(
-        mockMainAccount.balanceE8s
+      expect(get(icpAccountsStore)?.main.balanceUlps).toEqual(
+        mockMainAccount.balanceUlps
       );
-      const newBalanceE8s = BigInt(100);
+      const newBalanceE8s = 100n;
       accountsStoreSetBalance({
         accountIdentifier: mockMainAccount.identifier,
         balanceE8s: newBalanceE8s,
       });
 
-      expect(get(icpAccountsStore)?.main.balanceE8s).toEqual(newBalanceE8s);
+      expect(get(icpAccountsStore)?.main.balanceUlps).toEqual(newBalanceE8s);
     });
 
     it("should set balance for subaccount", () => {
@@ -126,18 +126,18 @@ describe("icpAccountsStore", () => {
         subAccounts: [mockSubAccount],
       });
 
-      expect(get(icpAccountsStore)?.subAccounts[0].balanceE8s).toEqual(
-        mockSubAccount.balanceE8s
+      expect(get(icpAccountsStore)?.subAccounts[0].balanceUlps).toEqual(
+        mockSubAccount.balanceUlps
       );
-      const newBalanceE8s = BigInt(100);
+      const newBalanceE8s = 100n;
       accountsStoreSetBalance({
         accountIdentifier: mockSubAccount.identifier,
         balanceE8s: newBalanceE8s,
       });
 
       const store = get(icpAccountsStore);
-      expect(store?.subAccounts[0].balanceE8s).toEqual(newBalanceE8s);
-      expect(store.main.balanceE8s).toEqual(mockMainAccount.balanceE8s);
+      expect(store?.subAccounts[0].balanceUlps).toEqual(newBalanceE8s);
+      expect(store.main.balanceUlps).toEqual(mockMainAccount.balanceUlps);
     });
 
     it("should set balance for hw account", () => {
@@ -147,16 +147,16 @@ describe("icpAccountsStore", () => {
         hardwareWallets: [mockHardwareWalletAccount],
       });
 
-      expect(get(icpAccountsStore)?.hardwareWallets[0].balanceE8s).toEqual(
-        mockHardwareWalletAccount.balanceE8s
+      expect(get(icpAccountsStore)?.hardwareWallets[0].balanceUlps).toEqual(
+        mockHardwareWalletAccount.balanceUlps
       );
-      const newBalanceE8s = BigInt(100);
+      const newBalanceE8s = 100n;
       accountsStoreSetBalance({
         accountIdentifier: mockHardwareWalletAccount.identifier,
         balanceE8s: newBalanceE8s,
       });
 
-      expect(get(icpAccountsStore)?.hardwareWallets[0].balanceE8s).toEqual(
+      expect(get(icpAccountsStore)?.hardwareWallets[0].balanceUlps).toEqual(
         newBalanceE8s
       );
     });
@@ -168,37 +168,37 @@ describe("icpAccountsStore", () => {
         hardwareWallets: [mockHardwareWalletAccount],
       });
 
-      const newBalanceE8s = BigInt(100);
+      const newBalanceE8s = 100n;
       accountsStoreSetBalance({
         accountIdentifier: "not-matching-identifier",
         balanceE8s: newBalanceE8s,
       });
 
       const store = get(icpAccountsStore);
-      expect(store?.hardwareWallets[0].balanceE8s).toEqual(
-        mockHardwareWalletAccount.balanceE8s
+      expect(store?.hardwareWallets[0].balanceUlps).toEqual(
+        mockHardwareWalletAccount.balanceUlps
       );
-      expect(store?.subAccounts[0].balanceE8s).toEqual(
-        mockSubAccount.balanceE8s
+      expect(store?.subAccounts[0].balanceUlps).toEqual(
+        mockSubAccount.balanceUlps
       );
-      expect(store?.main.balanceE8s).toEqual(mockMainAccount.balanceE8s);
+      expect(store?.main.balanceUlps).toEqual(mockMainAccount.balanceUlps);
     });
 
     it("should reapply set balance on new data from an older request", () => {
-      const mainBalance1 = BigInt(100);
-      const mainBalance2 = BigInt(200);
-      const subBalance1 = BigInt(300);
-      const subBalance2 = BigInt(400);
+      const mainBalance1 = 100n;
+      const mainBalance2 = 200n;
+      const subBalance1 = 300n;
+      const subBalance2 = 400n;
 
       const dataWithBalances = ({ mainBalance, subBalance, certified }) => ({
         main: {
           ...mockMainAccount,
-          balanceE8s: mainBalance,
+          balanceUlps: mainBalance,
         },
         subAccounts: [
           {
             ...mockSubAccount,
-            balanceE8s: subBalance,
+            balanceUlps: subBalance,
           },
         ],
         certified,
@@ -211,8 +211,8 @@ describe("icpAccountsStore", () => {
         mainBalance: bigint;
         subBalance: bigint;
       }) => {
-        expect(get(icpAccountsStore)?.main.balanceE8s).toEqual(mainBalance);
-        expect(get(icpAccountsStore)?.subAccounts[0].balanceE8s).toEqual(
+        expect(get(icpAccountsStore)?.main.balanceUlps).toEqual(mainBalance);
+        expect(get(icpAccountsStore)?.subAccounts[0].balanceUlps).toEqual(
           subBalance
         );
       };

@@ -464,7 +464,7 @@ describe("NNSDapp", () => {
       const nnsDapp = await createNnsDapp(service);
 
       await nnsDapp.getProposalPayload({
-        proposalId: BigInt(0),
+        proposalId: 0n,
       });
 
       expect(service.get_proposal_payload).toBeCalled();
@@ -479,7 +479,7 @@ describe("NNSDapp", () => {
     const nnsDapp = await createNnsDapp(service);
 
     const result = await nnsDapp.getProposalPayload({
-      proposalId: BigInt(0),
+      proposalId: 0n,
     });
 
     expect(result).toEqual({ test: "data" });
@@ -494,7 +494,7 @@ describe("NNSDapp", () => {
 
     const call = () =>
       nnsDapp.getProposalPayload({
-        proposalId: BigInt(0),
+        proposalId: 0n,
       });
 
     expect(call).rejects.toThrowError(ProposalPayloadNotFoundError);
@@ -509,7 +509,7 @@ describe("NNSDapp", () => {
 
     const call = () =>
       nnsDapp.getProposalPayload({
-        proposalId: BigInt(0),
+        proposalId: 0n,
       });
 
     expect(call).rejects.toThrowError(ProposalPayloadTooLargeError);
@@ -524,7 +524,7 @@ describe("NNSDapp", () => {
 
     const call = () =>
       nnsDapp.getProposalPayload({
-        proposalId: BigInt(0),
+        proposalId: 0n,
       });
 
     expect(call).rejects.toThrowError(UnknownProposalPayloadError);

@@ -1,5 +1,6 @@
 use super::histogram::AccountsStoreHistogram;
 use super::*;
+use crate::accounts_store::toy_data::{toy_account, ToyAccountSize};
 use crate::multi_part_transactions_processor::MultiPartTransactionToBeProcessed;
 use icp_ledger::Tokens;
 use std::str::FromStr;
@@ -81,6 +82,51 @@ fn get_transactions_returns_expected_page() {
 
     assert_eq!(4, results.total);
     assert_eq!(2, results.transactions.len());
+}
+
+#[test]
+fn get_transactions_transfer_from() {
+    let principal1 = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal2 = PrincipalId::from_str(TEST_ACCOUNT_2).unwrap();
+    let account_identifier1 = AccountIdentifier::from(principal1);
+    let account_identifier2 = AccountIdentifier::from(principal2);
+    let timestamp = TimeStamp::from_nanos_since_unix_epoch(100);
+    let fee = Tokens::from_e8s(1_000);
+    let amount = Tokens::from_e8s(350_000_000);
+
+    let mut store = AccountsStore::default();
+    store.add_account(principal1);
+    store.add_account(principal2);
+    let transfer_from = TransferFrom {
+        amount,
+        fee,
+        from: account_identifier1,
+        to: account_identifier2,
+        spender: account_identifier2,
+    };
+    store.append_transaction(transfer_from, Memo(0), 0, timestamp).unwrap();
+
+    let results = store.get_transactions(
+        principal2,
+        GetTransactionsRequest {
+            account_identifier: account_identifier2,
+            offset: 0,
+            page_size: 10,
+        },
+    );
+
+    assert_eq!(1, results.total);
+    assert_eq!(1, results.transactions.len());
+    let transaction = &results.transactions[0];
+    assert_eq!(Some(TransactionType::Transfer), transaction.transaction_type);
+    assert_eq!(
+        TransferResult::Receive {
+            from: account_identifier1,
+            amount,
+            fee
+        },
+        transaction.transfer
+    );
 }
 
 #[test]
@@ -1765,4 +1811,24 @@ pub fn test_store_histogram() -> AccountsStoreHistogram {
     *ans.total_hardware_wallet_transactions(0) += 2; // Therefore neither has any hardware wallet transactions.
     *ans.canisters(0) += 2; // Neither test account has canisters.
     ans
+}
+
+/// Stored accounts should be recovered with the same value.
+///
+/// Note: Given that account implement `CandidType` this is little more than a formality.
+#[test]
+fn accounts_should_implement_storable() {
+    let account = toy_account(
+        1,
+        ToyAccountSize {
+            sub_accounts: 2,
+            canisters: 3,
+            default_account_transactions: 4,
+            sub_account_transactions: 5,
+            hardware_wallets: 6,
+        },
+    );
+    let bytes = account.to_bytes();
+    let parsed = Account::from_bytes(bytes);
+    assert_eq!(account, parsed);
 }

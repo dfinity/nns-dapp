@@ -4,23 +4,27 @@ import {
 } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { pageStore, type Page } from "$lib/derived/page.derived";
-import {
-  NNS_UNIVERSE,
-  selectableUniversesStore,
-} from "$lib/derived/selectable-universes.derived";
+import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
 import {
   ENABLE_CKBTC,
   ENABLE_CKTESTBTC,
 } from "$lib/stores/feature-flags.store";
+import {
+  icrcCanistersStore,
+  type IcrcCanistersStore,
+  type IcrcCanistersStoreData,
+} from "$lib/stores/icrc-canisters.store";
 import type { Universe, UniverseCanisterId } from "$lib/types/universe";
 import {
+  isAllTokensPath,
   isUniverseCkBTC,
   isUniverseCkTESTBTC,
   isUniverseNns,
-  pathSupportsCkBTC,
 } from "$lib/utils/universe.utils";
 import { Principal } from "@dfinity/principal";
+import { nonNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
+import { nnsUniverseStore } from "./nns-universe.derived";
 
 /**
  * In Neurons or ultimately in Voting screen, user can select the "universe" - e.g. display Neurons of Nns or a particular Sns
@@ -44,13 +48,27 @@ const pageUniverseIdStore: Readable<Principal> = derived(
 );
 
 export const selectedUniverseIdStore: Readable<Principal> = derived<
-  [Readable<Principal>, Readable<Page>, Readable<boolean>, Readable<boolean>],
+  [
+    Readable<Principal>,
+    Readable<Page>,
+    IcrcCanistersStore,
+    Readable<boolean>,
+    Readable<boolean>,
+  ],
   Principal
 >(
-  [pageUniverseIdStore, pageStore, ENABLE_CKBTC, ENABLE_CKTESTBTC],
-  ([canisterId, page, $ENABLE_CKBTC, $ENABLE_CKTESTBTC]) => {
-    // ckBTC is only available on Accounts therefore we fallback to Nns if selected and user switch to another view
-    if (isUniverseCkBTC(canisterId) && !pathSupportsCkBTC(page)) {
+  [
+    pageUniverseIdStore,
+    pageStore,
+    icrcCanistersStore,
+    ENABLE_CKBTC,
+    ENABLE_CKTESTBTC,
+  ],
+  ([canisterId, page, icrcCanisters, $ENABLE_CKBTC, $ENABLE_CKTESTBTC]) => {
+    const isCkBTC = isUniverseCkBTC(canisterId);
+    const isIcrcToken = nonNullish(icrcCanisters[canisterId.toText()]);
+    // ckBTC and ICRC Tokens are only available on Accounts therefore we fallback to Nns if selected and user switch to another view
+    if ((isCkBTC || isIcrcToken) && !isAllTokensPath(page)) {
       return OWN_CANISTER_ID;
     }
     if (
@@ -82,12 +100,33 @@ export const isCkBTCUniverseStore = derived(
   ($selectedProjectId: Principal) => isUniverseCkBTC($selectedProjectId)
 );
 
+export const selectedIcrcTokenUniverseIdStore = derived(
+  [pageUniverseIdStore, pageStore, icrcCanistersStore],
+  ([$pageUniverseIdStore, $page, $icrcCanistersStore]: [
+    Principal,
+    Page,
+    IcrcCanistersStoreData,
+  ]) =>
+    isAllTokensPath($page)
+      ? $icrcCanistersStore[$pageUniverseIdStore.toText()]?.ledgerCanisterId
+      : undefined
+);
+
+/**
+ * Is the selected universe an ICRC Token?
+ */
+export const isIcrcTokenUniverseStore = derived(
+  selectedIcrcTokenUniverseIdStore,
+  ($selectedIcrcTokenUniverseIdStore) =>
+    nonNullish($selectedIcrcTokenUniverseIdStore)
+);
+
 export const selectedUniverseStore: Readable<Universe> = derived(
-  [selectedUniverseIdStore, selectableUniversesStore],
-  ([$selectedUniverseIdStore, $selectableUniverses]) =>
+  [selectedUniverseIdStore, selectableUniversesStore, nnsUniverseStore],
+  ([$selectedUniverseIdStore, $selectableUniverses, nnsUniverse]) =>
     $selectableUniverses?.find(
       ({ canisterId }) => canisterId === $selectedUniverseIdStore.toText()
-    ) ?? NNS_UNIVERSE
+    ) ?? nnsUniverse
 );
 
 export const selectedCkBTCUniverseIdStore = derived<

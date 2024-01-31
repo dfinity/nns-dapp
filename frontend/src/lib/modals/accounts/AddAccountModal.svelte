@@ -22,18 +22,18 @@
   const subAccountSteps: WizardSteps = [
     {
       name: "AddSubAccount",
-      title: $i18n.accounts.new_linked_title,
+      title: $i18n.accounts.new_account_title,
     },
   ];
 
   const hardwareWalletSteps: WizardSteps = [
     {
       name: "HardwareWalletName",
-      title: $i18n.accounts.attach_hardware_title,
+      title: $i18n.accounts.new_account_title,
     },
     {
       name: "HardwareWalletConnect",
-      title: $i18n.accounts.attach_hardware_title,
+      title: $i18n.accounts.new_account_title,
     },
   ];
 

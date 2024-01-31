@@ -11,19 +11,30 @@ import {
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { ProjectCardPo } from "$tests/page-objects/ProjectCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
+vi.mock("$lib/api/sns-sale.api");
+
+const blockedApiPaths = ["$lib/api/sns-sale.api"];
+
 describe("ProjectCard", () => {
+  blockAllCallsTo(blockedApiPaths);
+
   const rootCanisterId = rootCanisterIdMock;
   const now = 1698139468000;
   const nowInSeconds = Math.round(now / 1000);
   const yesterdayInSeconds = nowInSeconds - SECONDS_IN_DAY;
+
   beforeEach(() => {
     vi.clearAllMocks();
     vi.useFakeTimers().setSystemTime(now);
+    vi.spyOn(saleApi, "queryFinalizationStatus").mockResolvedValue(
+      createFinalizationStatusMock(false)
+    );
     setSnsProjects([
       {
         rootCanisterId: mockSnsFullProject.rootCanisterId,

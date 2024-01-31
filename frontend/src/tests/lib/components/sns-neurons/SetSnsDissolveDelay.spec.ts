@@ -1,7 +1,6 @@
 import ConfirmSnsDissolveDelay from "$lib/components/sns-neurons/ConfirmSnsDissolveDelay.svelte";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
-import { secondsToDuration } from "$lib/utils/date.utils";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { formatVotingPower } from "$lib/utils/neuron.utils";
 import {
@@ -9,7 +8,7 @@ import {
   getSnsNeuronStake,
   snsNeuronVotingPower,
 } from "$lib/utils/sns-neuron.utils";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import {
@@ -17,7 +16,7 @@ import {
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
 import type { SnsNeuron } from "@dfinity/sns";
-import { ICPToken } from "@dfinity/utils";
+import { ICPToken, secondsToDuration } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("ConfirmSnsDissolveDelay", () => {
@@ -58,7 +57,7 @@ describe("ConfirmSnsDissolveDelay", () => {
     });
 
     expect(
-      getByText(secondsToDuration(BigInt(delayInSeconds)))
+      getByText(secondsToDuration({ seconds: BigInt(delayInSeconds) }))
     ).toBeInTheDocument();
   });
 
@@ -90,7 +89,7 @@ describe("ConfirmSnsDissolveDelay", () => {
 
     expect(
       getByText(
-        formatToken({
+        formatTokenE8s({
           value: getSnsNeuronStake(mockSnsNeuron),
           detailed: true,
         })

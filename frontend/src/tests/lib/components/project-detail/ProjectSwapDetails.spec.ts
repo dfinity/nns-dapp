@@ -1,8 +1,7 @@
 import ProjectSwapDetails from "$lib/components/project-detail/ProjectSwapDetails.svelte";
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import {
   createSummary,
   mockSnsFullProject,
@@ -30,7 +29,7 @@ describe("ProjectSwapDetails", () => {
   it("should render total distributed tokens", async () => {
     const po = await renderComponent({
       summary: createSummary({
-        tokensDistributed: 7125n * BigInt(E8S_PER_ICP),
+        tokensDistributed: 712_500_000_000n,
       }),
       swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
     });
@@ -50,7 +49,7 @@ describe("ProjectSwapDetails", () => {
   it("should render min commitment", async () => {
     const po = renderComponent({
       summary: createSummary({
-        minParticipantCommitment: BigInt(2.5 * E8S_PER_ICP),
+        minParticipantCommitment: 250_000_000n,
       }),
       swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
     });
@@ -72,7 +71,7 @@ describe("ProjectSwapDetails", () => {
   it("should render max commitment", async () => {
     const po = renderComponent({
       summary: createSummary({
-        maxParticipantCommitment: BigInt(345 * E8S_PER_ICP),
+        maxParticipantCommitment: 34_500_000_000n,
       }),
       swapCommitment: mockSnsFullProject.swapCommitment as SnsSwapCommitment,
     });
@@ -113,7 +112,7 @@ describe("ProjectSwapDetails", () => {
   });
 
   it("should render total token supply if present", async () => {
-    const totalSupply = BigInt(2_000_000_000);
+    const totalSupply = 2_000_000_000n;
     const totalTokensSupply = TokenAmount.fromE8s({
       amount: totalSupply,
       token: mockSummary.token,
@@ -125,7 +124,7 @@ describe("ProjectSwapDetails", () => {
     });
 
     expect(await po.getTotalSupply()).toMatch(
-      formatToken({ value: totalSupply })
+      formatTokenE8s({ value: totalSupply })
     );
   });
 

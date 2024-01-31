@@ -18,9 +18,9 @@ import * as busyStore from "$lib/stores/busy.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import * as toastsStore from "$lib/stores/toasts.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import { nanoSecondsToDateTime } from "$lib/utils/date.utils";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
@@ -119,7 +119,7 @@ describe("sns-api", () => {
     derived: [
       {
         sns_tokens_per_icp: 1,
-        buyer_total_icp_e8s: BigInt(1_000_000_000),
+        buyer_total_icp_e8s: 1_000_000_000n,
       },
     ],
   };
@@ -167,6 +167,7 @@ describe("sns-api", () => {
 
     snsTicketsStore.reset();
     icpAccountsStore.resetForTesting();
+    tokensStore.reset();
 
     spyOnNewSaleTicketApi.mockResolvedValue(testSnsTicket.ticket);
     spyOnNotifyPaymentFailureApi.mockResolvedValue(undefined);
@@ -177,10 +178,9 @@ describe("sns-api", () => {
 
     spyOnSendICP.mockResolvedValue(13n);
 
-    const fee = mockSnsToken.fee;
-    transactionsFeesStore.setFee({
-      rootCanisterId: rootCanisterIdMock,
-      fee,
+    tokensStore.setToken({
+      canisterId: rootCanisterIdMock,
+      token: mockSnsToken,
       certified: true,
     });
 
@@ -662,8 +662,8 @@ describe("sns-api", () => {
         expect.objectContaining({
           labelKey: "error__sns.sns_sale_invalid_amount",
           substitutions: {
-            $min: formatToken({ value: min_amount_icp_e8s_included }),
-            $max: formatToken({ value: max_amount_icp_e8s_included }),
+            $min: formatTokenE8s({ value: min_amount_icp_e8s_included }),
+            $max: formatTokenE8s({ value: max_amount_icp_e8s_included }),
           },
         })
       );
@@ -917,7 +917,7 @@ describe("sns-api", () => {
       const account = {
         ...mockMainAccount,
         balance: TokenAmount.fromE8s({
-          amount: BigInt(1_000_000_000_000),
+          amount: 1_000_000_000_000n,
           token: ICPToken,
         }),
       };
@@ -939,7 +939,7 @@ describe("sns-api", () => {
       expect(spyOnNewSaleTicketApi).toBeCalledTimes(1);
       expect(spyOnNewSaleTicketApi).toBeCalledWith(
         expect.objectContaining({
-          amount_icp_e8s: 100000000n,
+          amount_icp_e8s: 100_000_000n,
         })
       );
       expect(spyOnSendICP).toBeCalledTimes(1);
@@ -967,7 +967,7 @@ describe("sns-api", () => {
       const account = {
         ...mockMainAccount,
         balance: TokenAmount.fromE8s({
-          amount: BigInt(1_000_000_000_000),
+          amount: 1_000_000_000_000n,
           token: ICPToken,
         }),
       };
@@ -1031,7 +1031,7 @@ describe("sns-api", () => {
       const postprocessSpy = vi.fn().mockResolvedValue(undefined);
       const upgradeProgressSpy = vi.fn().mockResolvedValue(undefined);
 
-      expect(get(icpAccountsStore).main.balanceE8s).not.toEqual(newBalanceE8s);
+      expect(get(icpAccountsStore).main.balanceUlps).not.toEqual(newBalanceE8s);
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
@@ -1042,7 +1042,7 @@ describe("sns-api", () => {
         ticket: testTicket,
       });
 
-      expect(get(icpAccountsStore).main.balanceE8s).toEqual(newBalanceE8s);
+      expect(get(icpAccountsStore).main.balanceUlps).toEqual(newBalanceE8s);
     });
 
     it("should update subaccounts's balance in the store", async () => {
@@ -1058,7 +1058,7 @@ describe("sns-api", () => {
       const postprocessSpy = vi.fn().mockResolvedValue(undefined);
       const upgradeProgressSpy = vi.fn().mockResolvedValue(undefined);
 
-      expect(get(icpAccountsStore).main.balanceE8s).not.toEqual(newBalanceE8s);
+      expect(get(icpAccountsStore).main.balanceUlps).not.toEqual(newBalanceE8s);
 
       await participateInSnsSale({
         rootCanisterId: testRootCanisterId,
@@ -1069,7 +1069,7 @@ describe("sns-api", () => {
         ticket: snsTicket.ticket,
       });
 
-      expect(get(icpAccountsStore).subAccounts[0].balanceE8s).toEqual(
+      expect(get(icpAccountsStore).subAccounts[0].balanceUlps).toEqual(
         newBalanceE8s
       );
     });

@@ -1,15 +1,24 @@
-import type { ProposalStatusColor } from "$lib/constants/proposals.constants";
 import {
-  SNS_MIN_NUMBER_VOTES_FOR_PROPOSAL_RATIO,
-  SNS_PROPOSAL_COLOR,
-} from "$lib/constants/sns-proposals.constants";
+  MINIMUM_YES_PROPORTION_OF_EXERCISED_VOTING_POWER,
+  MINIMUM_YES_PROPORTION_OF_TOTAL_VOTING_POWER,
+} from "$lib/constants/proposals.constants";
+import { ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID } from "$lib/constants/sns-proposals.constants";
 import { i18n } from "$lib/stores/i18n";
+import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
+import { ALL_SNS_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
 import type {
+  BasisPoints,
   UniversalProposalStatus,
   VotingNeuron,
 } from "$lib/types/proposals";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
-import type { Vote } from "@dfinity/nns";
+import {
+  isSnsGenericNervousSystemFunction,
+  isSnsNativeNervousSystemFunction,
+} from "$lib/utils/sns.utils";
+import { basisPointsToPercent } from "$lib/utils/utils";
+import { Vote } from "@dfinity/nns";
 import type {
   SnsAction,
   SnsBallot,
@@ -24,6 +33,7 @@ import type {
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
+  type SnsPercentage,
 } from "@dfinity/sns";
 import { fromDefinedNullable, fromNullable, isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
@@ -67,11 +77,13 @@ export type SnsProposalDataMap = {
   statusDescription: string;
   rewardStatusString: string;
   rewardStatusDescription: string;
-  color: ProposalStatusColor | undefined;
 
   // Mapped from Nervous Functions
   type?: string;
   typeDescription?: string;
+
+  minimumYesProportionOfTotal: BasisPoints;
+  minimumYesProportionOfExercised: BasisPoints;
 };
 
 // TODO: Return also a type and the type description that for now maps to the topic
@@ -154,31 +166,85 @@ export const mapProposalInfo = ({
     statusDescription: sns_status_description[decisionStatus],
     rewardStatusString: sns_rewards_status[rewardStatus],
     rewardStatusDescription: sns_rewards_description[rewardStatus],
-    color: SNS_PROPOSAL_COLOR[decisionStatus],
 
     // Mapped from Nervous Functions
     type: nsFunction?.name,
     typeDescription: nsFunction?.description[0],
+
+    minimumYesProportionOfTotal: minimumYesProportionOfTotal(proposalData),
+    minimumYesProportionOfExercised:
+      minimumYesProportionOfExercised(proposalData),
   };
 };
+
+export const minimumYesProportionOfTotal = (
+  proposal: SnsProposalData
+): bigint =>
+  // `minimum_yes_proportion_of_total` property could be missing in older canister versions
+  fromPercentageBasisPoints(proposal.minimum_yes_proportion_of_total ?? []) ??
+  MINIMUM_YES_PROPORTION_OF_TOTAL_VOTING_POWER;
+
+export const minimumYesProportionOfExercised = (
+  proposal: SnsProposalData
+): bigint =>
+  // `minimum_yes_proportion_of_exercised` property could be missing in older canister versions
+  fromPercentageBasisPoints(
+    proposal.minimum_yes_proportion_of_exercised ?? []
+  ) ?? MINIMUM_YES_PROPORTION_OF_EXERCISED_VOTING_POWER;
 
 /**
  * Returns whether the proposal is accepted or not based on the data.
  *
- * Reference: https://github.com/dfinity/ic/blob/226ab04e0984367da356bbe27c90447863d33a27/rs/sns/governance/src/proposal.rs#L931
+ * Reference: https://github.com/dfinity/ic/blob/dc2c20b26eaddb459698e4f9a30e521c21fb3d6e/rs/sns/governance/src/proposal.rs#L1095
  * @param {SnsProposalData} proposal
  * @returns {boolean}
  */
-export const isAccepted = ({ latest_tally }: SnsProposalData): boolean => {
+export const isAccepted = (proposal: SnsProposalData): boolean => {
+  const { latest_tally } = proposal;
   const tally = fromNullable(latest_tally);
+
   if (tally === undefined) {
     return false;
   }
-  return (
-    Number(tally.yes) >=
-      Number(tally.no) * SNS_MIN_NUMBER_VOTES_FOR_PROPOSAL_RATIO &&
-    tally.yes > tally.no
-  );
+
+  const { yes, no, total } = tally;
+  const majorityMet =
+    majorityDecision({
+      yes,
+      no,
+      total: yes + no,
+      requiredYesOfTotalBasisPoints: minimumYesProportionOfExercised(proposal),
+    }) == Vote.Yes;
+  const quorumMet =
+    yes * 10_000n >= total * minimumYesProportionOfTotal(proposal);
+
+  return quorumMet && majorityMet;
+};
+
+// Considers the amount of 'yes' and 'no' voting power in relation to the total voting power,
+// based on a percentage threshold that must be met or exceeded for a decision.
+// Reference: https://gitlab.com/dfinity-lab/public/ic/-/blob/8db486b531b2993dad9c6eed015f34fc2378fc3e/rs/sns/governance/src/proposal.rs#L1239
+const majorityDecision = ({
+  yes,
+  no,
+  total,
+  requiredYesOfTotalBasisPoints,
+}: {
+  yes: bigint;
+  no: bigint;
+  total: bigint;
+  requiredYesOfTotalBasisPoints: bigint;
+}): Vote => {
+  // 10_000n is 100% in basis points
+  const requiredNoOfTotalBasisPoints = 10_000n - requiredYesOfTotalBasisPoints;
+
+  if (yes * 10_000n > total * requiredYesOfTotalBasisPoints) {
+    return Vote.Yes;
+  } else if (no * 10_000n >= total * requiredNoOfTotalBasisPoints) {
+    return Vote.No;
+  } else {
+    return Vote.Unspecified;
+  }
 };
 
 /**
@@ -196,15 +262,15 @@ export const snsDecisionStatus = (
     executed_timestamp_seconds,
     failed_timestamp_seconds,
   } = proposal;
-  if (decided_timestamp_seconds === BigInt(0)) {
+  if (decided_timestamp_seconds === 0n) {
     return SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN;
   }
 
   if (isAccepted(proposal)) {
-    if (executed_timestamp_seconds > BigInt(0)) {
+    if (executed_timestamp_seconds > 0n) {
       return SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED;
     }
-    if (failed_timestamp_seconds > BigInt(0)) {
+    if (failed_timestamp_seconds > 0n) {
       return SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_FAILED;
     }
     return SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_ADOPTED;
@@ -226,7 +292,7 @@ export const snsRewardStatus = ({
   wait_for_quiet_state,
   is_eligible_for_rewards,
 }: SnsProposalData): SnsProposalRewardStatus => {
-  if (reward_event_round > BigInt(0)) {
+  if (reward_event_round > 0n) {
     return SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED;
   }
 
@@ -268,10 +334,7 @@ export const sortSnsProposalsById = (
   proposals === undefined
     ? undefined
     : [...proposals].sort(({ id: idA }, { id: idB }) =>
-        (fromNullable(idA)?.id ?? BigInt(0)) >
-        (fromNullable(idB)?.id ?? BigInt(0))
-          ? -1
-          : 1
+        (fromNullable(idA)?.id ?? 0n) > (fromNullable(idB)?.id ?? 0n) ? -1 : 1
       );
 
 const getAction = (proposal: SnsProposalData): SnsAction | undefined =>
@@ -416,3 +479,108 @@ export const getUniversalProposalStatus = (
 
   return statusType;
 };
+
+/**
+ * Returns the proposal type ids that should be excluded from the response.
+ * snsFunctions are needed to process "All Generic" entry (when not selected, include all generic ids).
+ */
+export const toExcludeTypeParameter = ({
+  filter,
+  snsFunctions,
+}: {
+  filter: Filter<SnsProposalTypeFilterId>[];
+  snsFunctions: SnsNervousSystemFunction[];
+}): bigint[] => {
+  // If no filter is selected, return all functions
+  if (filter.length === 0) {
+    return [];
+  }
+  const nativeNsFunctionIds = snsFunctions
+    .filter(isSnsNativeNervousSystemFunction)
+    .map(({ id }) => id);
+  const isNativeNsFunctionSelected = (nsFunctionId: bigint) =>
+    filter.some(({ id, checked }) => id === nsFunctionId.toString() && checked);
+  const excludedNativeNsFunctionIds = nativeNsFunctionIds.filter(
+    (id) => !isNativeNsFunctionSelected(id)
+  );
+  const genericNsFunctionIds = snsFunctions
+    .filter(isSnsGenericNervousSystemFunction)
+    .map(({ id }) => id);
+  const isSnsGenericNsFunctionChecked = filter.some(
+    ({ id, checked }) => id === ALL_SNS_GENERIC_PROPOSAL_TYPES_ID && checked
+  );
+  const excludedGenericNsFunctionIds = isSnsGenericNsFunctionChecked
+    ? []
+    : genericNsFunctionIds;
+
+  return (
+    [...excludedNativeNsFunctionIds, ...excludedGenericNsFunctionIds]
+      // never exclude { 0n: "All Topics"}
+      .filter((id) => id !== ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID)
+  );
+};
+
+// Generate new "types" filter data, but preserve the checked state of the current filter state
+// `nsFunctions` can be changed on the backend, and to display recently created proposal types, new entries should be preselected.
+export const generateSnsProposalTypesFilterData = ({
+  nsFunctions,
+  typesFilterState,
+  snsName,
+}: {
+  nsFunctions: SnsNervousSystemFunction[];
+  typesFilterState: Filter<SnsProposalTypeFilterId>[];
+  snsName: string;
+}): Filter<SnsProposalTypeFilterId>[] => {
+  // New proposal types are checked by default so only keep unchecked those types that were already unchecked.
+  const getCheckedState = (id: string) =>
+    typesFilterState.find(({ id: stateId }) => id === stateId)?.checked !==
+    false;
+  const nativeNsFunctionEntries: Filter<SnsProposalTypeFilterId>[] = nsFunctions
+    .filter(isSnsNativeNervousSystemFunction)
+    // ignore { 0n: "All Topics"}
+    .filter(({ id }) => id !== ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID)
+    .map((entry) => ({
+      ...entry,
+      id: `${entry.id}`,
+    }))
+    .map(({ id, name }) => ({
+      id,
+      value: id,
+      name: name,
+      // New proposal types are checked by default so only keep unchecked those types that were already unchecked.
+      checked: getCheckedState(id),
+    }));
+  const allGenericProposalsLabel = replacePlaceholders(
+    get(i18n).sns_types.sns_specific,
+    {
+      $snsName: snsName,
+    }
+  );
+  const genericNsFunctionEntries: Filter<SnsProposalTypeFilterId>[] =
+    nsFunctions.some(isSnsGenericNervousSystemFunction)
+      ? // Replace all generic entries w/ a single "All Generic"
+        [
+          {
+            id: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
+            value: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
+            name: allGenericProposalsLabel,
+            checked: getCheckedState(ALL_SNS_GENERIC_PROPOSAL_TYPES_ID),
+          },
+        ]
+      : [];
+  return [...nativeNsFunctionEntries, ...genericNsFunctionEntries];
+};
+
+export const fromPercentageBasisPoints = (
+  value: [] | [SnsPercentage]
+): bigint | undefined => {
+  const percentage = fromNullable(value);
+  return isNullish(percentage)
+    ? undefined
+    : fromNullable(percentage.basis_points);
+};
+
+// Is a proposal with variable voting-participation thresholds
+export const isCriticalProposal = (immediateMajorityPercent: number): boolean =>
+  immediateMajorityPercent !==
+  basisPointsToPercent(MINIMUM_YES_PROPORTION_OF_EXERCISED_VOTING_POWER);

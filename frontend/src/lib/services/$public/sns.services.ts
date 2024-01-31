@@ -12,7 +12,6 @@ import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.sto
 import { snsProposalsStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore, type TokensStoreData } from "$lib/stores/tokens.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { isForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
@@ -24,14 +23,13 @@ import {
 import { ProposalStatus, Topic, type ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
-import { fromDefinedNullable, fromNullable, nonNullish } from "@dfinity/utils";
+import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getCurrentIdentity } from "../auth.services";
 
 export const loadSnsProjects = async (): Promise<void> => {
   try {
     const aggregatorData = await querySnsProjects();
-    snsAggregatorStore.setData(aggregatorData);
     const identity = getCurrentIdentity();
     // We load the wrappers to avoid making calls to SNS-W and Root canister for each project.
     // The SNS Aggregator gives us the canister ids of the SNS projects.
@@ -59,6 +57,13 @@ export const loadSnsProjects = async (): Promise<void> => {
         });
       })
     );
+
+    // Calls to SNS canisters are done through an SNS Wrapper that first needs to be initialized with all the SNS canister ids.
+    // If the wrapper is not initialized, it triggers a call to list_sns_canisters on the root canister of the SNS project.
+    // This call is not necessary because the canister ids are already provided by the SNS aggregator.
+    // As soon as the aggregator store is filled, SNS components may start rendering, resulting in calls on the SNS wrappers.
+    // We set the aggregator store after building the wrappers' caches to avoid calls to the root canister when the SNS wrapper is initialized.
+    snsAggregatorStore.setData(aggregatorData);
     snsTotalTokenSupplyStore.setTotalTokenSupplies(
       aggregatorData.map(({ icrc1_total_supply, canister_ids }) => ({
         rootCanisterId: Principal.fromText(canister_ids.root_canister_id),
@@ -72,15 +77,6 @@ export const loadSnsProjects = async (): Promise<void> => {
         nsFunctions: sns.parameters.functions.map(convertNervousFunction),
         certified: true,
       }))
-    );
-    transactionsFeesStore.setFees(
-      aggregatorData
-        .filter(({ icrc1_fee }) => nonNullish(fromNullable(icrc1_fee)))
-        .map((sns) => ({
-          rootCanisterId: Principal.fromText(sns.canister_ids.root_canister_id),
-          fee: BigInt(fromDefinedNullable(sns.icrc1_fee)),
-          certified: true,
-        }))
     );
     tokensStore.setTokens(
       aggregatorData
@@ -181,7 +177,7 @@ export const loadSnsNervousSystemFunctions = async (
       // TODO: Ideally, the name from the backend is user-friendly.
       // https://dfinity.atlassian.net/browse/GIX-1169
       const snsNervousSystemFunctions = nsFunctions.map((nsFunction) => {
-        if (nsFunction.id === BigInt(0)) {
+        if (nsFunction.id === 0n) {
           const translationKeys = get(i18n);
           return {
             ...nsFunction,

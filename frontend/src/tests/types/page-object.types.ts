@@ -36,4 +36,5 @@ export interface PageObjectElement {
   isVisible(): Promise<boolean>;
   blur(): Promise<void>;
   innerHtmlForDebugging(): Promise<string>;
+  addEventListener(eventType: string, fn: (e: Event) => void): Promise<void>;
 }

@@ -1,7 +1,7 @@
 <script lang="ts">
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
-  import { TokenAmount, type Token, nonNullish } from "@dfinity/utils";
+  import { type Token, nonNullish, TokenAmountV2 } from "@dfinity/utils";
   import { tokensStore } from "$lib/stores/tokens.store";
   import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import {
@@ -23,10 +23,10 @@
   let token: Token | undefined;
   $: token = $tokensStore[$selectedUniverseIdStore.toText()].token;
 
-  let amount: TokenAmount | undefined;
+  let amount: TokenAmountV2 | undefined;
   $: amount =
     nonNullish(token) && nonNullish(neuron)
-      ? TokenAmount.fromE8s({
+      ? TokenAmountV2.fromUlps({
           amount: getSnsNeuronStake(neuron),
           token: token,
         })

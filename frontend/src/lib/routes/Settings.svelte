@@ -5,7 +5,7 @@
     SkeletonText,
   } from "@dfinity/gix-components";
   import Hash from "$lib/components/ui/Hash.svelte";
-  import { secondsToDuration } from "$lib/utils/date.utils";
+  import { secondsToDuration } from "@dfinity/utils";
   import { authRemainingTimeStore, authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import { debounce, nonNullish } from "@dfinity/utils";
@@ -57,7 +57,10 @@
             {#if nonNullish(remainingTimeMilliseconds)}
               {remainingTimeMilliseconds <= 0
                 ? "0"
-                : secondsToDuration(BigInt(remainingTimeMilliseconds) / 1000n)}
+                : secondsToDuration({
+                    seconds: BigInt(remainingTimeMilliseconds) / 1000n,
+                    i18n: $i18n.time,
+                  })}
             {:else}
               <div class="skeleton"><SkeletonText /></div>
             {/if}

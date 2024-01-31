@@ -4,6 +4,7 @@ import type {
   UniverseCanisterId,
   UniverseCanisterIdText,
 } from "$lib/types/universe";
+import { getUniqueTransactions } from "$lib/utils/icrc-transactions.utils";
 import { removeKeys } from "$lib/utils/utils";
 import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
@@ -74,12 +75,10 @@ const initIcrcTransactionsStore = (): IcrcTransactionsStore => {
       update((currentState: IcrcTransactionsStoreData) => {
         const projectState = currentState[canisterId.toText()];
         const accountState = projectState?.[accountIdentifier];
-        const uniquePreviousTransactions = (
-          accountState?.transactions ?? []
-        ).filter(
-          ({ id: oldTxId }) =>
-            !transactions.some(({ id: newTxId }) => newTxId === oldTxId)
-        );
+        const allTransactions = getUniqueTransactions([
+          ...(accountState?.transactions ?? []),
+          ...transactions,
+        ]);
         // Ids are in increasing order. We want to keep the oldest id.
         const newOldestTxId =
           oldestTxId === undefined
@@ -92,7 +91,7 @@ const initIcrcTransactionsStore = (): IcrcTransactionsStore => {
           [canisterId.toText()]: {
             ...projectState,
             [accountIdentifier]: {
-              transactions: [...uniquePreviousTransactions, ...transactions],
+              transactions: allTransactions,
               oldestTxId: newOldestTxId,
               completed,
             },

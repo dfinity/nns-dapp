@@ -22,6 +22,7 @@ declare namespace svelteHTML {
     "on:nnsWalletModal"?: CompositionEventHandler<T>;
     "on:nnsCkBTCAccountsModal"?: CompositionEventHandler<T>;
     "on:nnsAccountsModal"?: CompositionEventHandler<T>;
+    "on:nnsIcrcTokenModal"?: CompositionEventHandler<T>;
   }
 }
 

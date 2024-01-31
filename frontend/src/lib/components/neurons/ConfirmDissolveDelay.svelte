@@ -3,9 +3,9 @@
   import { createEventDispatcher } from "svelte";
   import { updateDelay } from "$lib/services/neurons.services";
   import { i18n } from "$lib/stores/i18n";
-  import { secondsToDuration } from "$lib/utils/date.utils";
+  import { secondsToDuration } from "@dfinity/utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatToken } from "$lib/utils/token.utils";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
   import {
     formatVotingPower,
     neuronStake,
@@ -16,7 +16,7 @@
   import { valueSpan } from "$lib/utils/utils";
   import { Html, busy } from "@dfinity/gix-components";
 
-  export let delayInSeconds: number;
+  export let delayInSeconds: bigint;
   export let neuron: NeuronInfo;
   export let confirmButtonText: string;
 
@@ -29,8 +29,9 @@
 
     const neuronId = await updateDelay({
       neuronId: neuron.neuronId,
-      dissolveDelayInSeconds:
-        delayInSeconds - Number(neuron.dissolveDelaySeconds),
+      dissolveDelayInSeconds: Number(
+        delayInSeconds - neuron.dissolveDelaySeconds
+      ),
     });
 
     stopBusy("update-delay");
@@ -43,7 +44,7 @@
 
 <div class="wrapper" data-tid="confirm-dissolve-delay-container">
   <div class="main-info">
-    <h3>{secondsToDuration(BigInt(delayInSeconds))}</h3>
+    <h3>{secondsToDuration({ seconds: delayInSeconds, i18n: $i18n.time })}</h3>
   </div>
   <div>
     <p class="label">{$i18n.neurons.neuron_id}</p>
@@ -54,7 +55,9 @@
     <p>
       <Html
         text={replacePlaceholders($i18n.neurons.amount_icp_stake, {
-          $amount: valueSpan(formatToken({ value: neuronICP, detailed: true })),
+          $amount: valueSpan(
+            formatTokenE8s({ value: neuronICP, detailed: true })
+          ),
         })}
       />
     </p>
@@ -65,7 +68,7 @@
       {formatVotingPower(
         neuronVotingPower({
           neuron,
-          newDissolveDelayInSeconds: BigInt(delayInSeconds),
+          newDissolveDelayInSeconds: delayInSeconds,
         })
       )}
     </p>

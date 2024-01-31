@@ -3,16 +3,19 @@ import {
   getBTCAddress as getBTCAddressAPI,
   updateBalance as updateBalanceAPI,
 } from "$lib/api/ckbtc-minter.api";
-import { CKBTC_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/ckbtc.constants";
+import { WALLET_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/wallet.constants";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
+import { ckbtcPendingUtxosStore } from "$lib/stores/ckbtc-pending-utxos.store";
+import { ckbtcRetrieveBtcStatusesStore } from "$lib/stores/ckbtc-retrieve-btc-statuses.store";
 import { i18n } from "$lib/stores/i18n";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import type { CanisterId } from "$lib/types/canister";
 import { CkBTCErrorKey, CkBTCSuccessKey } from "$lib/types/ckbtc.errors";
 import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
+import type { UniverseCanisterId } from "$lib/types/universe";
 import { toToastError } from "$lib/utils/error.utils";
 import { waitForMilliseconds } from "$lib/utils/utils";
 import {
@@ -22,11 +25,12 @@ import {
   MinterTemporaryUnavailableError,
   type EstimateWithdrawalFee,
   type EstimateWithdrawalFeeParams,
-  type WithdrawalAccount,
+  type PendingUtxo,
+  type UpdateBalanceOk,
 } from "@dfinity/ckbtc";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { getWithdrawalAccount as getWithdrawalAccountAPI } from "../api/ckbtc-minter.api";
+import { retrieveBtcStatusV2ByAccount } from "../api/ckbtc-minter.api";
 
 const getBTCAddress = async (minterCanisterId: CanisterId): Promise<string> => {
   const identity = await getAuthenticatedIdentity();
@@ -99,12 +103,51 @@ export const estimateFee = async ({
   });
 };
 
+/**
+ * Calls update_balance on the ckbtc minter and returns both completed and
+ * pending UTXOs.
+ */
+const getPendingAndCompletedUtxos = async ({
+  minterCanisterId,
+}: {
+  minterCanisterId: CanisterId;
+}): Promise<{ completed: UpdateBalanceOk; pending: PendingUtxo[] }> => {
+  const identity = await getAuthenticatedIdentity();
+  const completedUtxos: UpdateBalanceOk = [];
+
+  try {
+    // The minter only returns pending UTXOs (as an error) if there are no
+    // completed UTXOs. So we need to keep calling until it throws an error.
+    // To avoid an infinite loop we stop after 3 attempts.
+    for (let i = 0; i < 3; i++) {
+      const response = await updateBalanceAPI({
+        identity,
+        canisterId: minterCanisterId,
+      });
+      completedUtxos.push(...response);
+    }
+  } catch (error: unknown) {
+    if (!(error instanceof MinterNoNewUtxosError)) {
+      throw error;
+    }
+    return { completed: completedUtxos, pending: error.pendingUtxos };
+  }
+
+  return { completed: completedUtxos, pending: [] };
+};
+
+/**
+ * Calls update_balance on the ckbtc minter, which makes it check for incoming
+ * BTC UTXOs with enough confirmations to credit ckBTC to the user's account.
+ */
 export const updateBalance = async ({
+  universeId,
   minterCanisterId,
   reload,
   deferReload = false,
   uiIndicators = true,
 }: {
+  universeId: UniverseCanisterId;
   minterCanisterId: CanisterId;
   reload: (() => Promise<void>) | undefined;
   deferReload?: boolean;
@@ -115,39 +158,39 @@ export const updateBalance = async ({
       initiator: "update-ckbtc-balance",
     });
 
-  const identity = await getAuthenticatedIdentity();
-
   try {
-    await updateBalanceAPI({ identity, canisterId: minterCanisterId });
+    const { completed, pending } = await getPendingAndCompletedUtxos({
+      minterCanisterId,
+    });
+
+    ckbtcPendingUtxosStore.setUtxos({ universeId, utxos: pending });
 
     // Workaround. Ultimately we want to poll to update balance and list of transactions
-    await waitForMilliseconds(
-      deferReload ? CKBTC_TRANSACTIONS_RELOAD_DELAY : 0
-    );
+    if (deferReload) {
+      await waitForMilliseconds(WALLET_TRANSACTIONS_RELOAD_DELAY);
+    }
 
-    uiIndicators &&
-      toastsSuccess({
-        labelKey: "ckbtc.ckbtc_balance_updated",
-      });
+    if (uiIndicators) {
+      if (completed.length > 0) {
+        toastsSuccess({
+          labelKey: "ckbtc.ckbtc_balance_updated",
+        });
+      } else {
+        toastsSuccess({
+          labelKey: "error__ckbtc.no_new_confirmed_btc",
+        });
+      }
+    }
 
     return { success: true };
   } catch (error: unknown) {
     const err = mapUpdateBalanceError(error);
-
-    // Few errors returned by the minter are considered to be displayed as information for the user
-    if (err instanceof CkBTCSuccessKey) {
-      uiIndicators &&
-        toastsSuccess({
-          labelKey: err.message,
-        });
-
-      return { success: true };
+    if (uiIndicators) {
+      toastsError({
+        labelKey: "error__ckbtc.update_balance",
+        err,
+      });
     }
-
-    toastsError({
-      labelKey: "error__ckbtc.update_balance",
-      err,
-    });
 
     return { success: false, err };
   } finally {
@@ -184,28 +227,21 @@ const mapUpdateBalanceError = (
   return err;
 };
 
-export const getWithdrawalAccount = async ({
+export const loadRetrieveBtcStatuses = async ({
+  universeId,
   minterCanisterId,
 }: {
+  universeId: UniverseCanisterId;
   minterCanisterId: CanisterId;
-}): Promise<WithdrawalAccount | undefined> => {
+}): Promise<void> => {
   const identity = await getAuthenticatedIdentity();
-
-  try {
-    const account = await getWithdrawalAccountAPI({
-      identity,
-      canisterId: minterCanisterId,
-    });
-
-    return account;
-  } catch (err: unknown) {
-    toastsError(
-      toToastError({
-        err,
-        fallbackErrorLabelKey: "error__ckbtc.withdrawal_account",
-      })
-    );
-
-    return undefined;
-  }
+  const statuses = await retrieveBtcStatusV2ByAccount({
+    identity,
+    canisterId: minterCanisterId,
+    certified: false,
+  });
+  ckbtcRetrieveBtcStatusesStore.setForUniverse({
+    universeId,
+    statuses,
+  });
 };

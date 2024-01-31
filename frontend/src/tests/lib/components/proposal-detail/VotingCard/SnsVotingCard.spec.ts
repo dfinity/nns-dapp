@@ -11,19 +11,20 @@ import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
-import en from "$tests/mocks/i18n.mock";
 import {
   createMockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { mockSnsCanisterId } from "$tests/mocks/sns.api.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { NeuronState, Vote } from "@dfinity/nns";
 import type { SnsNeuron, SnsProposalData } from "@dfinity/sns";
 import {
   SnsNeuronPermissionType,
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
+  SnsSwapLifecycle,
   SnsVote,
   type SnsBallot,
 } from "@dfinity/sns";
@@ -95,6 +96,8 @@ describe("SnsVotingCard", () => {
         id: [2],
         state: NeuronState.Locked,
         createdTimestampSeconds: neuronCreatedAt,
+        // Should also work with NF neurons the same way as with own neurons
+        sourceNnsNeuronId: 12345n,
       }),
       permissions: permissionsWithTypeVote,
     },
@@ -121,6 +124,13 @@ describe("SnsVotingCard", () => {
 
     page.mock({ data: { universe: mockSnsCanisterId.toText() } });
 
+    setSnsProjects([
+      {
+        rootCanisterId: mockSnsCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+    ]);
+
     snsParametersStore.setParameters({
       rootCanisterId: mockSnsCanisterId,
       parameters: snsNervousSystemParametersMock,
@@ -136,7 +146,7 @@ describe("SnsVotingCard", () => {
     });
     const { getByTestId } = renderVotingCard();
 
-    expect(() => expect(getByTestId("voting-confirmation-toolbar"))).toThrow();
+    expect(getByTestId("voting-confirmation-toolbar")).toBeInTheDocument();
   });
 
   it("should be visible if there are some not-voted-neurons", async () => {
@@ -236,6 +246,26 @@ describe("SnsVotingCard", () => {
     expect(queryByTestId("vote-no")).toBeInTheDocument();
   });
 
+  it("should display votable neurons", async () => {
+    snsNeuronsStore.setNeurons({
+      rootCanisterId: mockSnsCanisterId,
+      neurons: [
+        ...testNeurons,
+        // voted neuron
+        {
+          ...createMockSnsNeuron({
+            id: [3],
+            state: NeuronState.Locked,
+          }),
+        },
+      ],
+      certified: true,
+    });
+
+    const { getByTestId } = renderVotingCard();
+    expect(getByTestId("votable-neurons")).toBeInTheDocument();
+  });
+
   it("should display my votes", async () => {
     snsNeuronsStore.setNeurons({
       rootCanisterId: mockSnsCanisterId,
@@ -252,8 +282,28 @@ describe("SnsVotingCard", () => {
       certified: true,
     });
 
-    const { getByText } = renderVotingCard();
-    expect(getByText(en.proposal_detail.my_votes)).toBeInTheDocument();
+    const { getByTestId } = renderVotingCard();
+    expect(getByTestId("voted-neurons")).toBeInTheDocument();
+  });
+
+  it("should display ineligible neurons", async () => {
+    snsNeuronsStore.setNeurons({
+      rootCanisterId: mockSnsCanisterId,
+      neurons: [
+        ...testNeurons,
+        // voted neuron
+        {
+          ...createMockSnsNeuron({
+            id: [3],
+            state: NeuronState.Unspecified,
+          }),
+        },
+      ],
+      certified: true,
+    });
+
+    const { getByTestId } = renderVotingCard();
+    expect(getByTestId("ineligible-neurons")).toBeInTheDocument();
   });
 
   it("should display my votes with ballot voting power", async () => {
@@ -306,8 +356,8 @@ describe("SnsVotingCard", () => {
       certified: true,
     });
 
-    const { getByText } = renderVotingCard();
-    expect(getByText(en.proposal_detail.my_votes)).toBeInTheDocument();
+    const { getByTestId } = renderVotingCard();
+    expect(getByTestId("voted-neurons")).toBeInTheDocument();
   });
 
   describe("voting", () => {

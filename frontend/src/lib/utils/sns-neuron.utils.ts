@@ -13,7 +13,7 @@ import {
   type NeuronIneligibilityReason,
 } from "$lib/utils/neuron.utils";
 import { mapNervousSystemParameters } from "$lib/utils/sns-parameters.utils";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import { NeuronState, Vote, type E8s, type NeuronInfo } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
@@ -56,7 +56,7 @@ export const getSnsNeuronState = ({
     return NeuronState.Dissolved;
   }
   if ("DissolveDelaySeconds" in dissolveState) {
-    return dissolveState.DissolveDelaySeconds === BigInt(0)
+    return dissolveState.DissolveDelaySeconds === 0n
       ? // 0 = already dissolved (more info: https://gitlab.com/dfinity-lab/public/ic/-/blob/master/rs/nns/governance/src/governance.rs#L827)
         NeuronState.Dissolved
       : NeuronState.Locked;
@@ -152,8 +152,9 @@ export const getSnsNeuronIdAsHexString = ({
  * @param {Uint8Array} subaccount
  * @returns {string} hex string
  */
-export const subaccountToHexString = (subaccount: Uint8Array): string =>
-  bytesToHexString(Array.from(subaccount));
+export const subaccountToHexString = (
+  subaccount: Uint8Array | number[]
+): string => bytesToHexString(Array.from(subaccount));
 
 /**
  * Find the first not existed memo (index based).
@@ -430,7 +431,7 @@ export const isSnsNeuron = (
  * @returns {boolean}
  */
 export const hasValidStake = (neuron: SnsNeuron): boolean =>
-  neuron.cached_neuron_stake_e8s + neuron.maturity_e8s_equivalent > BigInt(0);
+  neuron.cached_neuron_stake_e8s + neuron.maturity_e8s_equivalent > 0n;
 
 /*
 - The amount to split minus the transfer fee is more than the minimum stake (thus the child neuron will have at least the minimum stake)
@@ -481,8 +482,8 @@ export const hasAutoStakeMaturityOn = (
 export const formattedMaturity = (
   neuron: SnsNeuron | null | undefined
 ): string =>
-  formatToken({
-    value: neuron?.maturity_e8s_equivalent ?? BigInt(0),
+  formatTokenE8s({
+    value: neuron?.maturity_e8s_equivalent ?? 0n,
   });
 
 /**
@@ -490,11 +491,11 @@ export const formattedMaturity = (
  * @param {SnsNeuron} neuron The neuron that contains the `maturity_e8s_equivalent` and `staked_maturity_e8s_equivalent` which will be summed and formatted
  */
 export const formattedTotalMaturity = (neuron: SnsNeuron): string =>
-  formatToken({
+  formatTokenE8s({
     value:
       neuron.maturity_e8s_equivalent +
       totalDisbursingMaturity(neuron) +
-      (fromNullable(neuron?.staked_maturity_e8s_equivalent ?? []) ?? BigInt(0)),
+      (fromNullable(neuron?.staked_maturity_e8s_equivalent ?? []) ?? 0n),
   });
 
 /**
@@ -503,7 +504,7 @@ export const formattedTotalMaturity = (neuron: SnsNeuron): string =>
  */
 export const hasEnoughMaturityToStake = (
   neuron: SnsNeuron | null | undefined
-): boolean => (neuron?.maturity_e8s_equivalent ?? BigInt(0)) > BigInt(0);
+): boolean => (neuron?.maturity_e8s_equivalent ?? 0n) > 0n;
 
 /**
  * Is the maturity of the neuron bigger than the minimum amount to disburse?
@@ -535,9 +536,8 @@ export const hasStakedMaturity = (
 export const formattedStakedMaturity = (
   neuron: SnsNeuron | null | undefined
 ): string =>
-  formatToken({
-    value:
-      fromNullable(neuron?.staked_maturity_e8s_equivalent ?? []) ?? BigInt(0),
+  formatTokenE8s({
+    value: fromNullable(neuron?.staked_maturity_e8s_equivalent ?? []) ?? 0n,
   });
 
 /**
@@ -717,7 +717,7 @@ export const snsNeuronVotingPower = ({
     Math.max(
       Number(
         getSnsNeuronStake(neuron) +
-          (fromNullable(staked_maturity_e8s_equivalent) ?? BigInt(0))
+          (fromNullable(staked_maturity_e8s_equivalent) ?? 0n)
       ),
       0
     )
@@ -981,7 +981,7 @@ export const totalDisbursingMaturity = ({
 }: SnsNeuron): bigint =>
   disburse_maturity_in_progress.reduce(
     (acc, disbursement) => acc + disbursement.amount_e8s,
-    BigInt(0)
+    0n
   );
 
 /**

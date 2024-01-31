@@ -2,6 +2,7 @@
 Monterey
 IC
 ICP
+IDL
 schemas
 WASM
 Wasm
@@ -9,6 +10,7 @@ Wasms
 OWASP
 <
 >
++
 iframe
 SNSs
 deserialization
@@ -18,7 +20,13 @@ SNS
 NNS
 GIX
 Dapp
+clippy
 dapp
+dockerfile
+dockerfiles
+dockerized
+e2e
+Eslint
 4xx
 5xx
 sha256
@@ -32,3 +40,15 @@ Zondax
 E2E
 Vitest
 npm
+PR
+PRs
+vitest
+promisified
+utils
+Node.js
+js
+SvelteKit
+M1
+M2
+protobuf
+se

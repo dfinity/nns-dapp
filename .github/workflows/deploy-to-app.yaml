@@ -39,29 +39,27 @@ jobs:
       DFX_NETWORK: app
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         # TODO: This builds, it doesn't use a release.  We probably want at least the option of using releases.
       - name: Get versions
         id: tool_versions
         run: echo "dfx=$(jq -r .dfx dfx.json)" >> "$GITHUB_OUTPUT"
+      - name: Get dfx version
+        run: echo "DFX_VERSION=$(jq -r .dfx dfx.json)" >> $GITHUB_ENV
+      - name: Install dfx
+        uses: dfinity/setup-dfx@main
+        with:
+          dfx-version: ${{ env.DFX_VERSION }}
       - name: Set credentials
         run: |
-          DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
           printf "%s" "${{ secrets.DFX_IDENTITY_PEM }}" | dfx identity import --storage-mode=plaintext ci /dev/stdin
           dfx identity use ci
         env:
           DFX_IDENTITY_PEM: ${{ secrets.DFX_IDENTITY_PEM }}
-      - name: Determine snsdemo ref
-        id: snsdemo_ref
-        run: |
-          SNSDEMO_REF="$(jq -r .defaults.build.config.SNSDEMO_RELEASE dfx.json)"
-          echo "ref=$SNSDEMO_REF" >> "$GITHUB_OUTPUT"
       - name: Get SNS scripts
-        uses: actions/checkout@v3
+        uses: ./.github/actions/checkout_snsdemo
         with:
-          repository: 'dfinity/snsdemo'
-          path: 'snsdemo'
-          ref: ${{ steps.snsdemo_ref.outputs.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up SNS scripts
         run: |
           : Install more
@@ -92,6 +90,16 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           network: ${{ env.DFX_NETWORK }}
+      - name: Log the current state of the canisters
+        run: |
+          for canister in nns-dapp sns_aggregator ; do
+            echo "==== $canister ===="
+            set -x
+            dfx canister id --network app "$canister"
+            dfx canister info --network app "$canister"
+            dfx canister status --network app "$canister"
+            set +x
+          done
       - name: Deploy nns-dapp
         if: (inputs.canisters == 'all') || (inputs.canisters == 'nns-dapp') || ( github.event_name != 'workflow_dispatch' )
         run: |

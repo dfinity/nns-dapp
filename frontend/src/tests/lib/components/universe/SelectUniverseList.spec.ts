@@ -17,6 +17,7 @@ describe("SelectUniverseList", () => {
       rootCanisterId: principal(1),
       summary: {
         ...mockSnsFullProject.summary,
+        rootCanisterId: principal(1),
         metadata: {
           ...mockSnsFullProject.summary.metadata,
           name: "another name",

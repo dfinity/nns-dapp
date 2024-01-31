@@ -108,7 +108,7 @@ describe("sns-services", () => {
     it("should call api to get total commitments and load them in stores", async () => {
       const derivedState: SnsGetDerivedStateResponse = {
         sns_tokens_per_icp: [2],
-        buyer_total_icp_e8s: [BigInt(1_000_000_000)],
+        buyer_total_icp_e8s: [1_000_000_000n],
         cf_participant_count: [],
         direct_participant_count: [],
         cf_neuron_count: [],
@@ -133,7 +133,7 @@ describe("sns-services", () => {
     it("should call api with the strategy passed", async () => {
       const derivedState: SnsGetDerivedStateResponse = {
         sns_tokens_per_icp: [1],
-        buyer_total_icp_e8s: [BigInt(1_000_000_000)],
+        buyer_total_icp_e8s: [1_000_000_000n],
         cf_participant_count: [],
         direct_participant_count: [],
         cf_neuron_count: [],
@@ -162,7 +162,7 @@ describe("sns-services", () => {
     it("should call api to get total commitments and load them in store and keep polling", async () => {
       const derivedState: SnsGetDerivedStateResponse = {
         sns_tokens_per_icp: [2],
-        buyer_total_icp_e8s: [BigInt(2_000_000_000)],
+        buyer_total_icp_e8s: [2_000_000_000n],
         cf_participant_count: [],
         direct_participant_count: [],
         cf_neuron_count: [],
@@ -276,7 +276,8 @@ describe("sns-services", () => {
       const newLifeCycle = SnsSwapLifecycle.Committed;
       const lifeCycleResponse: SnsGetLifecycleResponse = {
         lifecycle: [newLifeCycle],
-        decentralization_sale_open_timestamp_seconds: [BigInt(1)],
+        decentralization_sale_open_timestamp_seconds: [1n],
+        decentralization_swap_termination_timestamp_seconds: [],
       };
 
       const spy = vi

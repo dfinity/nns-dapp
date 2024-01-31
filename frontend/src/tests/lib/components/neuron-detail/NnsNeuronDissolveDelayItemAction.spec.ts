@@ -93,7 +93,7 @@ describe("NnsNeuronDissolveDelayItemAction", () => {
     const neuron: NeuronInfo = {
       ...controlledNeuron,
       state: NeuronState.Dissolved,
-      dissolveDelaySeconds: BigInt(0),
+      dissolveDelaySeconds: 0n,
     };
     const po = renderComponent(neuron);
 
@@ -106,7 +106,7 @@ describe("NnsNeuronDissolveDelayItemAction", () => {
     const neuron: NeuronInfo = {
       ...mockNeuron,
       state: NeuronState.Dissolved,
-      dissolveDelaySeconds: BigInt(0),
+      dissolveDelaySeconds: 0n,
       fullNeuron: {
         ...mockNeuron.fullNeuron,
         controller: "not-controller",
@@ -126,7 +126,7 @@ describe("NnsNeuronDissolveDelayItemAction", () => {
     const neuron: NeuronInfo = {
       ...mockNeuron,
       state: NeuronState.Dissolved,
-      dissolveDelaySeconds: BigInt(0),
+      dissolveDelaySeconds: 0n,
       fullNeuron: {
         ...mockNeuron.fullNeuron,
         controller: mockHardwareWalletAccount.principal.toText(),
@@ -135,5 +135,42 @@ describe("NnsNeuronDissolveDelayItemAction", () => {
     const po = renderComponent(neuron);
 
     expect(await po.hasIncreaseDissolveDelayButton()).toBe(true);
+  });
+
+  it("should not render a tooltip without dissolve delay", async () => {
+    const neuron: NeuronInfo = {
+      ...controlledNeuron,
+      state: NeuronState.Dissolved,
+      dissolveDelaySeconds: 0n,
+    };
+    const po = renderComponent(neuron);
+
+    expect(await po.getTooltipIconPo().isPresent()).toBe(false);
+  });
+
+  it("should render tooltip when locked", async () => {
+    const neuron: NeuronInfo = {
+      ...controlledNeuron,
+      state: NeuronState.Locked,
+      dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR * 2),
+    };
+    const po = renderComponent(neuron);
+
+    expect(await po.getTooltipIconPo().getText()).toBe(
+      "Dissolve delay is the minimum amount of time you have to wait for the neuron to unlock, and ICP to be available again. If your neuron is dissolving, your ICP will be available in 2 years, 12 hours."
+    );
+  });
+
+  it("should render tooltip when dissolving", async () => {
+    const neuron: NeuronInfo = {
+      ...controlledNeuron,
+      state: NeuronState.Dissolving,
+      dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR * 2),
+    };
+    const po = renderComponent(neuron);
+
+    expect(await po.getTooltipIconPo().getText()).toBe(
+      "Dissolve delay is the minimum amount of time you have to wait for the neuron to unlock, and ICP to be available again. If your neuron is dissolving, your ICP will be available in 2 years, 12 hours."
+    );
   });
 });

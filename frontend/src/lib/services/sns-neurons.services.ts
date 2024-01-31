@@ -30,7 +30,7 @@ import {
 } from "$lib/stores/sns-neurons.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
-import { transactionsFeesStore } from "$lib/stores/transaction-fees.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { notForceCallStrategy } from "$lib/utils/env.utils";
@@ -44,7 +44,7 @@ import {
   nextMemo,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
-import { formatToken, numberToE8s } from "$lib/utils/token.utils";
+import { formatTokenE8s, numberToE8s } from "$lib/utils/token.utils";
 import { hexStringToBytes } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
@@ -340,9 +340,7 @@ export const splitNeuron = async ({
     const token = get(snsTokenSymbolSelectedStore);
     assertNonNullish(token, "token not defined");
 
-    const transactionFee = get(transactionsFeesStore).projects[
-      rootCanisterId.toText()
-    ]?.fee;
+    const transactionFee = get(tokensStore)[rootCanisterId.toText()]?.token.fee;
     assertNonNullish(transactionFee, "fee not defined");
 
     const amountE8s = numberToE8s(amount);
@@ -359,7 +357,7 @@ export const splitNeuron = async ({
       toastsError({
         labelKey: "error__sns.sns_amount_not_enough_stake_neuron",
         substitutions: {
-          $minimum: formatToken({ value: neuronMinimumStake }),
+          $minimum: formatTokenE8s({ value: neuronMinimumStake }),
           $token: token.symbol,
         },
       });
@@ -562,8 +560,7 @@ export const stakeNeuron = async ({
     const identity = await getAuthenticatedIdentity();
     const stakeE8s = numberToE8s(amount);
 
-    const fee = get(transactionsFeesStore).projects[rootCanisterId.toText()]
-      ?.fee;
+    const fee = get(tokensStore)[rootCanisterId.toText()]?.token.fee;
 
     if (!fee) {
       throw new Error("error.transaction_fee_not_found");

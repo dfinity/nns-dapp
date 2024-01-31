@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { TokenAmount } from "@dfinity/utils";
+  import type { TokenAmountV2, TokenAmount } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
 
-  export let amount: TokenAmount;
+  export let amount: TokenAmountV2 | TokenAmount;
   export let estimation = false;
   export let testId: string | undefined = undefined;
 </script>

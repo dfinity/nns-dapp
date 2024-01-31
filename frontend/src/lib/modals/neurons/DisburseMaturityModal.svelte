@@ -12,7 +12,7 @@
     type WizardStep,
     KeyValuePair,
   } from "@dfinity/gix-components";
-  import { formatToken } from "$lib/utils/token.utils";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
   import { formatMaturity } from "$lib/utils/neuron.utils";
   import QrWizardModal from "$lib/modals/transaction/QrWizardModal.svelte";
   import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
@@ -69,7 +69,7 @@
     notEnoughMaturitySelected && percentageToDisburse > 0
       ? replacePlaceholders(
           $i18n.neuron_detail.disburse_maturity_disabled_tooltip_non_zero,
-          { $amount: formatToken({ value: minimumAmountE8s }) }
+          { $amount: formatTokenE8s({ value: minimumAmountE8s }) }
         )
       : undefined;
 
@@ -90,12 +90,12 @@
 
   // +/- 5%
   let predictedMinimumTokens: string;
-  $: predictedMinimumTokens = formatToken({
+  $: predictedMinimumTokens = formatTokenE8s({
     value: BigInt(Math.floor(Number(maturityToDisburseE8s) * 0.95)),
     roundingMode: "floor",
   });
   let predictedMaximumTokens: string;
-  $: predictedMaximumTokens = formatToken({
+  $: predictedMaximumTokens = formatTokenE8s({
     value: BigInt(Math.ceil(Number(maturityToDisburseE8s) * 1.05)),
     roundingMode: "ceil",
   });

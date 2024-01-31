@@ -53,21 +53,22 @@ describe("sns-api", () => {
     derived: [
       {
         sns_tokens_per_icp: 1,
-        buyer_total_icp_e8s: BigInt(1_000_000_000),
+        buyer_total_icp_e8s: 1_000_000_000n,
       },
     ],
   };
 
   const derivedState = {
     sns_tokens_per_icp: [1],
-    buyer_total_icp_e8s: [BigInt(1_000_000_000)],
+    buyer_total_icp_e8s: [1_000_000_000n],
   };
   const lifecycleResponse: SnsGetLifecycleResponse = {
     lifecycle: [SnsSwapLifecycle.Open],
-    decentralization_sale_open_timestamp_seconds: [BigInt(1)],
+    decentralization_sale_open_timestamp_seconds: [1n],
+    decentralization_swap_termination_timestamp_seconds: [],
   };
   const notifyParticipationSpy = vi.fn().mockResolvedValue(undefined);
-  const mockUserCommitment = createBuyersState(BigInt(100_000_000));
+  const mockUserCommitment = createBuyersState(100_000_000n);
   const getUserCommitmentSpy = vi.fn().mockResolvedValue(mockUserCommitment);
   const getDerivedStateSpy = vi.fn().mockResolvedValue(derivedState);
   const getLifecycleSpy = vi.fn().mockResolvedValue(lifecycleResponse);
@@ -193,12 +194,12 @@ describe("sns-api", () => {
     const neuronId = await stakeNeuron({
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
-      stakeE8s: BigInt(200_000_000),
+      stakeE8s: 200_000_000n,
       source: {
         owner: mockPrincipal,
       },
       controller: mockPrincipal,
-      fee: BigInt(10000),
+      fee: 10_000n,
     });
 
     expect(neuronId).toEqual(mockSnsNeuron.id);
@@ -209,7 +210,7 @@ describe("sns-api", () => {
     await increaseStakeNeuron({
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
-      stakeE8s: BigInt(200_000_000),
+      stakeE8s: 200_000_000n,
       source: {
         owner: mockPrincipal,
       },

@@ -1,3 +1,4 @@
+
 # Unreleased changelog NNS Dapp
 
 All notable changes to the NNS Dapp will be documented in this file.
@@ -14,50 +15,47 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Added provenance information to .did files and derived rust code.
-* Add `UpdateElectedHostosVersions` and `UpdateNodesHostosVersion` proposals support.
-* Show the maximum participation of the Neurons' Fund when present.
-* A list of exceptional (not-rendered, zero value) transactions.
+* Close button at the bottom of follow neurons modal.
+* Info tooltips in neuron details.
+* Use logo for token (if present) for `ICRC` (but non-`SNS`) tokens.
 
 #### Changed
 
-* Stable structures updated to `0.6.0`.
-* Dapp upgraded to Svelte `v4`.
+* Various wording changes.
+* Display the full neuron type text within the tag.
+* Implement `State` traits manually rather than automatically.
 
 #### Deprecated
+
 #### Removed
 
-* Removed debounce on deriving Network from ckBTC send address.
+* Remove `ENABLE_CKETH` feature flag.
+* Remove unused `transactionsFeesStore` and related.
 
 #### Fixed
 
-* Remove robots meta tag to allow search engines to crawl NNS Dapp.
-* Fix i18n key in merge neurons summary screen.
+* Fix proposal back navigation during voting.
+* Fix tooltip positioning.
+* Tooltip icon style.
 
 #### Security
 
 #### Not Published
 
-* Added `retrieveBtcWithApproval` in ckbtc-minter API.
-
 ### Operations
 
 #### Added
 
-* Import candid for NNS ledger.
-* Formatting for `Cargo.toml` files.
-* Add test to check that the nns-dapp cargo and npm versions match.
-* Script to deploy nns-dapp on DevEnv.
+* Add `.orig` file extension to `.gitignore` file.
 
 #### Changed
 
-* Join npm audit URLs with spaces instead of commas.
-* Add traits with a dedicated command rather than with patch files.
+* Frequency of update workflows moved to weekly instead of daily.
+* Update GitHub actions to newer versions.
 
 #### Deprecated
-#### Removed
 
-* Delete nightly `GitHub` job to update II used in tests; we now use the II that comes with `snsdemo`.
+#### Removed
 
 #### Fixed
 

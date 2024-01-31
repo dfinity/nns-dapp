@@ -5,7 +5,7 @@
   import { PageBanner, IconCanistersPage } from "@dfinity/gix-components";
 </script>
 
-<main class="sign-in">
+<main>
   <div class="content">
     <PageBanner>
       <IconCanistersPage slot="image" />

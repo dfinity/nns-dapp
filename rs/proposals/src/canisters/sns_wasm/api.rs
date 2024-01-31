@@ -1,3 +1,5 @@
+//! Rust code created from candid by: `scripts/did2rs.sh --canister sns_wasm --out api.rs --header did2rs.header --traits Serialize`
+//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-01-25_14-09+p2p-con/rs/nns/sns-wasm/canister/sns-wasm.did>
 #![allow(clippy::all)]
 #![allow(clippy::missing_docs_in_private_items)]
 #![allow(non_camel_case_types)]
@@ -75,14 +77,21 @@ pub struct LinearScalingCoefficient {
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct IdealMatchedParticipationFunction {
+    pub serialized_representation: Option<String>,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct NeuronsFundParticipationConstraints {
     pub coefficient_intervals: Vec<LinearScalingCoefficient>,
     pub max_neurons_fund_participation_icp_e8s: Option<u64>,
     pub min_direct_participation_threshold_icp_e8s: Option<u64>,
+    pub ideal_matched_participation_function: Option<IdealMatchedParticipationFunction>,
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct CfNeuron {
+    pub has_created_neuron_recipes: Option<bool>,
     pub nns_neuron_id: u64,
     pub amount_icp_e8s: u64,
 }
@@ -152,6 +161,7 @@ pub struct SnsInitPayload {
     pub max_dissolve_delay_seconds: Option<u64>,
     pub max_dissolve_delay_bonus_percentage: Option<u64>,
     pub nns_proposal_id: Option<u64>,
+    pub neurons_fund_participation: Option<bool>,
     pub min_participant_icp_e8s: Option<u64>,
     pub neuron_basket_construction_parameters: Option<NeuronBasketConstructionParameters>,
     pub fallback_controller_principal_ids: Vec<String>,
@@ -181,9 +191,11 @@ pub struct SnsInitPayload {
     pub token_logo: Option<String>,
     pub token_name: Option<String>,
     pub max_participant_icp_e8s: Option<u64>,
+    pub min_direct_participation_icp_e8s: Option<u64>,
     pub proposal_reject_cost_e8s: Option<u64>,
     pub restricted_countries: Option<Countries>,
     pub min_icp_e8s: Option<u64>,
+    pub max_direct_participation_icp_e8s: Option<u64>,
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
@@ -221,6 +233,31 @@ pub struct GetAllowedPrincipalsArg {}
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct GetAllowedPrincipalsResponse {
     pub allowed_principals: Vec<Principal>,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct GetDeployedSnsByProposalIdRequest {
+    pub proposal_id: u64,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct DeployedSns {
+    pub root_canister_id: Option<Principal>,
+    pub governance_canister_id: Option<Principal>,
+    pub index_canister_id: Option<Principal>,
+    pub swap_canister_id: Option<Principal>,
+    pub ledger_canister_id: Option<Principal>,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
+pub enum GetDeployedSnsByProposalIdResult {
+    Error(SnsWasmError),
+    DeployedSns(DeployedSns),
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct GetDeployedSnsByProposalIdResponse {
+    pub get_deployed_sns_by_proposal_id_result: Option<GetDeployedSnsByProposalIdResult>,
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
@@ -281,15 +318,6 @@ pub struct InsertUpgradePathEntriesResponse {
 
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct ListDeployedSnsesArg {}
-
-#[derive(Serialize, CandidType, Deserialize)]
-pub struct DeployedSns {
-    pub root_canister_id: Option<Principal>,
-    pub governance_canister_id: Option<Principal>,
-    pub index_canister_id: Option<Principal>,
-    pub swap_canister_id: Option<Principal>,
-    pub ledger_canister_id: Option<Principal>,
-}
 
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct ListDeployedSnsesResponse {
@@ -365,6 +393,12 @@ impl Service {
         arg0: GetAllowedPrincipalsArg,
     ) -> CallResult<(GetAllowedPrincipalsResponse,)> {
         ic_cdk::call(self.0, "get_allowed_principals", (arg0,)).await
+    }
+    pub async fn get_deployed_sns_by_proposal_id(
+        &self,
+        arg0: GetDeployedSnsByProposalIdRequest,
+    ) -> CallResult<(GetDeployedSnsByProposalIdResponse,)> {
+        ic_cdk::call(self.0, "get_deployed_sns_by_proposal_id", (arg0,)).await
     }
     pub async fn get_latest_sns_version_pretty(&self, arg0: ()) -> CallResult<(Vec<(String, String)>,)> {
         ic_cdk::call(self.0, "get_latest_sns_version_pretty", (arg0,)).await

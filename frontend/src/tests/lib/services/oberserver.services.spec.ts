@@ -14,7 +14,7 @@ describe("observer.services", () => {
     canisterId: rootCanisterIdMock,
     transactions: [mockIcrcTransactionWithId],
     accountIdentifier: mockSnsMainAccount.identifier,
-    oldestTxId: BigInt(10),
+    oldestTxId: 10n,
     completed: false,
   };
 

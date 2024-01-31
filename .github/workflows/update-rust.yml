@@ -1,6 +1,6 @@
 # A GitHub Actions workflow that regularly checks for new Rust toolchain release
 # and creates a PR on new versions.
-name: Rust Update
+name: Update rust
 on:
   schedule:
     # check for new rust versions weekly
@@ -14,7 +14,7 @@ jobs:
   rust-update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         # First, check rust GitHub releases for a new version. We assume that the
         # latest version's tag name is the version.
       - name: Install yq
@@ -36,6 +36,7 @@ jobs:
           fi
 
           echo "latest rust version '$latest_rust_version'"
+          echo "version=$latest_rust_version" >> "$GITHUB_OUTPUT"
 
           if [ "$current_rust_version" != "$latest_rust_version" ]
           then
@@ -47,6 +48,11 @@ jobs:
           fi
 
           cat ./rust-toolchain.toml
+          # Show changes
+          echo "Git status:"
+          git status
+          echo "Git diff:"
+          git diff
         # If the rust-toolchain was updated, create a PR.
       - name: Create Pull Request
         if: ${{ steps.update.outputs.updated == '1' }}
@@ -54,16 +60,29 @@ jobs:
         with:
           token: ${{ secrets.GIX_BOT_PAT }}
           base: main
+          reviewers: mstrasinskis, dskloetd, lmuntaner
+          # Note: Please be careful when updating the add-paths field.  We have had the snsdemo committed by accident, with a pattern that matches nothing seemingly committing everything.
           add-paths: ./rust-toolchain.toml
           commit-message: Update rust version
           committer: GitHub <noreply@github.com>
           author: gix-bot <gix-bot@users.noreply.github.com>
           branch: bot-rust-update
+          branch-suffix: timestamp
           delete-branch: true
-          title: 'Update rust version'
-          # Since the this is a scheduled job, a failure won't be shown on any
-          # PR status. To notify the team, we send a message to our Slack channel on failure.
+          title: 'Update rust version to ${{ steps.update.outputs.version }}'
+          body: |
+            # Motivation
+            A new verion of Rust is available.
+
+            # Automated changes
+            * Update Rust version.
+
+            # Manual changes
+            - [ ] Fix clippy lints (if necessary)
+            - [ ] Write a changelog entry.
       - name: Notify Slack on failure
+        # Since the this is a scheduled job, a failure won't be shown on any
+        # PR status. To notify the team, we send a message to our Slack channel on failure.
         uses: dfinity/internet-identity/.github/actions/slack@release-2023-08-28
         if: ${{ failure() }}
         with:

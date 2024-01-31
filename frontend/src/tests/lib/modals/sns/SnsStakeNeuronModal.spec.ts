@@ -1,4 +1,3 @@
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import SnsStakeNeuronModal from "$lib/modals/sns/neurons/SnsStakeNeuronModal.svelte";
@@ -12,17 +11,18 @@ import {
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
-import { mockSnsAccountsStoreSubscribe } from "$tests/mocks/sns-accounts.mock";
+import {
+  mockSnsAccountsStoreSubscribe,
+  mockSnsMainAccount,
+} from "$tests/mocks/sns-accounts.mock";
 import { snsNervousSystemParametersMock } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
-import {
-  AMOUNT_INPUT_SELECTOR,
-  enterAmount,
-} from "$tests/utils/neurons-modal.test-utils";
+import { SnsStakeNeuronModalPo } from "$tests/page-objects/SnsStakeNeuronModal.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemParameters } from "@dfinity/sns";
 import { TokenAmount } from "@dfinity/utils";
-import { fireEvent, waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
 
 vi.mock("$lib/services/sns-neurons.services", () => {
@@ -32,14 +32,14 @@ vi.mock("$lib/services/sns-neurons.services", () => {
 });
 
 describe("SnsStakeNeuronModal", () => {
-  const token = { name: "SNS", symbol: "SNS" };
+  const token = { name: "POP", symbol: "POP", decimals: 8 };
   const renderTransactionModal = () =>
     renderModal({
       component: SnsStakeNeuronModal,
       props: {
         token,
         transactionFee: TokenAmount.fromE8s({
-          amount: BigInt(10_000),
+          amount: 10_000n,
           token,
         }),
         rootCanisterId: mockPrincipal,
@@ -70,44 +70,64 @@ describe("SnsStakeNeuronModal", () => {
     snsParametersStore.reset();
   });
 
+  const renderComponent = async () => {
+    const { container } = await renderTransactionModal();
+    return SnsStakeNeuronModalPo.under(new JestPageObjectElement(container));
+  };
+
+  it("should show token in modal title", async () => {
+    const po = await renderComponent();
+    expect(await po.getModalTitle()).toBe("Stake POP");
+  });
+
   it("should stake a new sns neuron", async () => {
-    const renderResult = await renderTransactionModal();
+    const amount = 10;
+    const po = await renderComponent();
 
-    await enterAmount(renderResult);
-
-    const { getByTestId } = renderResult;
-
-    const confirmButton = getByTestId("transaction-button-execute");
-    fireEvent.click(confirmButton);
-
-    await waitFor(() => expect(stakeNeuron).toBeCalled());
+    expect(stakeNeuron).not.toBeCalled();
+    await po.stake(amount);
+    expect(stakeNeuron).toBeCalledTimes(1);
+    expect(stakeNeuron).toBeCalledWith({
+      account: mockSnsMainAccount,
+      amount,
+      rootCanisterId: mockPrincipal,
+    });
   });
 
   it("should show error if amount is less than minimum stake in parameter", async () => {
     const minimumAmount = 1;
     const snsParameters: SnsNervousSystemParameters = {
       ...snsNervousSystemParametersMock,
-      neuron_minimum_stake_e8s: [BigInt(minimumAmount * E8S_PER_ICP)],
+      neuron_minimum_stake_e8s: [100_000_000n],
     };
     snsParametersStore.setParameters({
       rootCanisterId: mockPrincipal,
       parameters: snsParameters,
       certified: true,
     });
-    const { getByTestId, container } = await renderTransactionModal();
+    const po = await renderComponent();
 
-    await waitFor(() =>
-      expect(getByTestId("transaction-step-1")).toBeInTheDocument()
+    await runResolvedPromises();
+    expect(
+      await po.getTransactionFormPo().getContinueButtonPo().isDisabled()
+    ).toBe(true);
+    expect(await po.getTransactionFormPo().getAmountInputPo().hasError()).toBe(
+      false
     );
-    const nextButton = getByTestId("transaction-button-next");
-    expect(nextButton?.hasAttribute("disabled")).toBeTruthy();
 
-    // Enter amount
-    const input = container.querySelector(AMOUNT_INPUT_SELECTOR);
-    input && fireEvent.input(input, { target: { value: minimumAmount / 2 } });
-    await waitFor(() =>
-      expect(getByTestId("input-error-message")).toBeInTheDocument()
+    po.getTransactionFormPo().enterAmount(minimumAmount / 2);
+
+    await runResolvedPromises();
+    expect(
+      await po.getTransactionFormPo().getContinueButtonPo().isDisabled()
+    ).toBe(true);
+    expect(await po.getTransactionFormPo().getAmountInputPo().hasError()).toBe(
+      true
     );
-    expect(nextButton?.hasAttribute("disabled")).toBeTruthy();
+    expect(
+      await po.getTransactionFormPo().getAmountInputPo().getErrorMessage()
+    ).toBe(
+      "Sorry, the amount is too small. You need to stake a minimum of 1 POP."
+    );
   });
 });

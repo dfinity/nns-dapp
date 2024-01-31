@@ -178,7 +178,13 @@ const loadSnsWrappers = async ({
   const error: boolean =
     results.find(({ status }) => status === "rejected") !== undefined;
   if (error) {
-    throw new ApiErrorKey("error__sns.init");
+    const rejectedReasons = results
+      .filter(({ status }) => status === "rejected")
+      .map((wrapper) =>
+        "reason" in wrapper ? wrapper.reason : "Reason not present"
+      );
+    console.error("Rejected SNSes:", rejectedReasons);
+    // Ignoring. SNSes will be filtered out below.
   }
 
   return (

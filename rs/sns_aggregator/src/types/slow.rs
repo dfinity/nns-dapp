@@ -1,5 +1,5 @@
 //! Slowly changing information about an SNS
-use crate::types::ic_sns_governance::ListNervousSystemFunctionsResponse;
+use crate::types::ic_sns_governance::{ListNervousSystemFunctionsResponse, NervousSystemParameters};
 use crate::types::ic_sns_root::ListSnsCanistersResponse;
 use crate::types::ic_sns_swap::{
     DerivedState, GetDerivedStateResponse, GetInitResponse, GetLifecycleResponse, GetSaleParametersResponse,
@@ -8,6 +8,7 @@ use crate::types::ic_sns_swap::{
 use crate::types::ic_sns_wasm::DeployedSns;
 use crate::types::upstream::UpstreamData;
 use crate::Icrc1Value;
+use base64::{engine::general_purpose::STANDARD as BASE64_ENGINE, Engine};
 use candid::{CandidType, Nat};
 use num_traits::ToPrimitive;
 use serde::{Deserialize, Serialize};
@@ -23,8 +24,10 @@ pub struct SlowSnsData {
     pub list_sns_canisters: ListSnsCanistersResponse,
     /// Governance metadata such as token name and logo.
     pub meta: SlowMetadata,
-    /// Governance parameters such as tokenomics.
+    /// Governance functions.
     pub parameters: ListNervousSystemFunctionsResponse,
+    /// Governance parameters such as tokenomics.
+    pub nervous_system_parameters: Option<NervousSystemParameters>,
     /// Decentralisation state
     pub swap_state: SlowSwapState,
     /// Ledger metadata.  The ledger keeps track of who owns how many tokens.
@@ -46,21 +49,38 @@ pub struct SlowSnsData {
 
 impl From<&UpstreamData> for SlowSnsData {
     fn from(upstream: &UpstreamData) -> Self {
+        let UpstreamData {
+            index,
+            canister_ids,
+            list_sns_canisters,
+            meta: _,
+            parameters,
+            nervous_system_parameters,
+            swap_state,
+            icrc1_metadata,
+            icrc1_fee,
+            icrc1_total_supply,
+            swap_params,
+            init,
+            derived_state,
+            lifecycle,
+        } = upstream;
         SlowSnsData {
-            index: upstream.index,
-            canister_ids: upstream.canister_ids.clone(),
-            list_sns_canisters: upstream.list_sns_canisters.clone(),
+            index: *index,
+            canister_ids: canister_ids.clone(),
+            list_sns_canisters: list_sns_canisters.clone(),
             meta: SlowMetadata::from(upstream),
-            parameters: upstream.parameters.clone(),
-            swap_state: SlowSwapState::from(&upstream.swap_state),
-            icrc1_metadata: upstream.icrc1_metadata.clone(),
-            icrc1_fee: upstream.icrc1_fee.clone(),
+            parameters: parameters.clone(),
+            nervous_system_parameters: nervous_system_parameters.clone(),
+            swap_state: SlowSwapState::from(swap_state),
+            icrc1_metadata: icrc1_metadata.clone(),
+            icrc1_fee: icrc1_fee.clone(),
             // Fallback to 0 if conversion to u64 fails.
-            icrc1_total_supply: upstream.icrc1_total_supply.0.to_u64().unwrap_or(0),
-            swap_params: upstream.swap_params.clone(),
-            init: upstream.init.clone(),
-            derived_state: upstream.derived_state.clone(),
-            lifecycle: upstream.lifecycle.clone(),
+            icrc1_total_supply: icrc1_total_supply.0.to_u64().unwrap_or(0),
+            swap_params: swap_params.clone(),
+            init: init.clone(),
+            derived_state: derived_state.clone(),
+            lifecycle: lifecycle.clone(),
         }
     }
 }
@@ -87,7 +107,7 @@ impl From<&UpstreamData> for SlowMetadata {
             url: upstream.meta.url.clone(),
             name: upstream.meta.name.clone(),
             description: upstream.meta.description.clone(),
-            // Logo URL example: https://3r4gx-wqaaa-aaaaq-aaaia-cai.ic0.app/v1/sns/root/u67kc-jyaaa-aaaaq-aabpq-cai/logo.png
+            // Logo URL example: https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io/v1/sns/root/u67kc-jyaaa-aaaaq-aabpq-cai/logo.png
             logo: match (upstream.meta.logo.clone(), upstream.list_sns_canisters.root) {
                 (Some(_), Some(canister_id)) => Some(format!("/v1/sns/root/{}/logo.png", canister_id.to_text())),
                 _ => None,
@@ -104,7 +124,9 @@ pub const LOGO_PREFIX: &str = "data:image/png;base64,";
 /// Get the logo as binary from base64.
 /// TODO: Maybe support more image types?
 pub fn logo_binary(data_url: &str) -> Vec<u8> {
-    base64::decode(data_url.strip_prefix(LOGO_PREFIX).unwrap_or_default()).unwrap_or_default()
+    BASE64_ENGINE
+        .decode(data_url.strip_prefix(LOGO_PREFIX).unwrap_or_default())
+        .unwrap_or_default()
 }
 
 /// Slowly changing information about an SNS canister's swap state.

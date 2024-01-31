@@ -12,7 +12,7 @@ use core::arch::wasm32::memory_size as wasm_memory_size;
 #[cfg(target_arch = "wasm32")]
 use ic_cdk::api::stable::stable64_size;
 #[cfg(target_arch = "wasm32")]
-const WASM_PAGE_SIZE: u64 = 65536;
+use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
 const GIBIBYTE: u64 = 1 << 30;
 
 /// Returns basic stats for frequent monitoring.
@@ -122,7 +122,7 @@ pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
 pub fn stable_memory_size_bytes() -> u64 {
     #[cfg(target_arch = "wasm32")]
     {
-        stable64_size() * WASM_PAGE_SIZE
+        stable64_size() * (WASM_PAGE_SIZE_IN_BYTES as u64)
     }
     #[cfg(not(target_arch = "wasm32"))]
     {
@@ -134,7 +134,7 @@ pub fn stable_memory_size_bytes() -> u64 {
 pub fn wasm_memory_size_bytes() -> u64 {
     #[cfg(target_arch = "wasm32")]
     {
-        (wasm_memory_size(0) as u64) * WASM_PAGE_SIZE
+        (wasm_memory_size(0) as u64) * (WASM_PAGE_SIZE_IN_BYTES as u64)
     }
     // This can happen only for test builds.  When compiled for a canister, the target is
     // always wasm32.

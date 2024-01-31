@@ -1,8 +1,4 @@
 <script lang="ts">
-  import { BottomSheet } from "@dfinity/gix-components";
-  import { i18n } from "$lib/stores/i18n";
-  import SignInGuard from "$lib/components/common/SignInGuard.svelte";
-  import SpinnerText from "$lib/components/ui/SpinnerText.svelte";
   import type {
     SnsNervousSystemParameters,
     SnsNeuron,
@@ -10,7 +6,7 @@
     SnsVote,
   } from "@dfinity/sns";
   import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
-  import { sortedSnsUserNeuronsStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
+  import { snsSortedNeuronStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { UniverseCanisterIdText } from "$lib/types/universe";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
@@ -30,22 +26,16 @@
     votableSnsNeurons,
     votedSnsNeuronDetails,
   } from "$lib/utils/sns-neuron.utils";
-  import VotingConfirmationToolbar from "$lib/components/proposal-detail/VotingCard/VotingConfirmationToolbar.svelte";
   import { snsParametersStore } from "$lib/stores/sns-parameters.store";
   import { registerSnsVotes } from "$lib/services/sns-vote-registration.services";
   import { Principal } from "@dfinity/principal";
-  import VotingNeuronSelect from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelect.svelte";
-  import VotingNeuronSelectList from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelectList.svelte";
   import type {
     CompactNeuronInfo,
     IneligibleNeuronData,
   } from "$lib/utils/neuron.utils";
-  import MyVotes from "$lib/components/proposal-detail/MyVotes.svelte";
   import { ineligibleSnsNeurons } from "$lib/utils/sns-neuron.utils";
-  import IneligibleNeuronsCard from "$lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
   import { authStore } from "$lib/stores/auth.store";
-  import TestIdWrapper from "../common/TestIdWrapper.svelte";
+  import VotingCard from "$lib/components/proposal-detail/VotingCard/VotingCard.svelte";
 
   export let proposal: SnsProposalData;
   export let reloadProposal: () => Promise<void>;
@@ -72,7 +62,7 @@
   $: votableNeurons = nonNullish($authStore.identity)
     ? votableSnsNeurons({
         proposal,
-        neurons: $sortedSnsUserNeuronsStore,
+        neurons: $snsSortedNeuronStore,
         identity: $authStore.identity,
       })
     : [];
@@ -80,9 +70,7 @@
   let visible = false;
   $: $snsOnlyProjectStore,
     $voteRegistrationStore,
-    (visible =
-      voteRegistration !== undefined ||
-      (votableNeurons.length > 0 && snsProposalAcceptingVotes(proposal)));
+    (visible = snsProposalAcceptingVotes(proposal));
 
   let neuronsReady = false;
   $: neuronsReady =
@@ -134,10 +122,10 @@
     }
   };
 
-  let neuronsVotedForProposal: CompactNeuronInfo[];
-  $: if ($sortedSnsUserNeuronsStore.length > 0) {
+  let neuronsVotedForProposal: CompactNeuronInfo[] = [];
+  $: if ($snsSortedNeuronStore.length > 0) {
     neuronsVotedForProposal = votedSnsNeuronDetails({
-      neurons: $sortedSnsUserNeuronsStore,
+      neurons: $snsSortedNeuronStore,
       proposal,
     });
   }
@@ -147,7 +135,7 @@
   $: ineligibleNeurons = nonNullish($authStore.identity)
     ? snsNeuronsToIneligibleNeuronData({
         neurons: ineligibleSnsNeurons({
-          neurons: $sortedSnsUserNeuronsStore,
+          neurons: $snsSortedNeuronStore,
           proposal,
           identity: $authStore.identity,
         }),
@@ -162,63 +150,18 @@
       : fromDefinedNullable(
           snsParameters.neuron_minimum_dissolve_delay_to_vote_seconds
         );
+
+  let hasNeurons = false;
+  $: hasNeurons = $snsSortedNeuronStore.length > 0;
 </script>
 
-<TestIdWrapper testId="sns-voting-card-component">
-  <BottomSheet>
-    <div class="container" class:signedIn={$authSignedInStore}>
-      <SignInGuard>
-        {#if $sortedSnsUserNeuronsStore.length > 0}
-          {#if neuronsReady}
-            {#if visible}
-              <VotingConfirmationToolbar
-                {voteRegistration}
-                on:nnsConfirm={vote}
-              />
-            {/if}
-
-            <VotingNeuronSelect>
-              <VotingNeuronSelectList
-                disabled={voteRegistration !== undefined}
-              />
-              <MyVotes {neuronsVotedForProposal} />
-              <IneligibleNeuronsCard
-                {ineligibleNeurons}
-                {minSnsDissolveDelaySeconds}
-              />
-            </VotingNeuronSelect>
-          {:else}
-            <div class="loader">
-              <SpinnerText>{$i18n.proposal_detail.loading_neurons}</SpinnerText>
-            </div>
-          {/if}
-        {/if}
-        <span slot="signin-cta">{$i18n.proposal_detail.sign_in}</span>
-      </SignInGuard>
-    </div>
-  </BottomSheet>
-</TestIdWrapper>
-
-<style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-
-  .container:not(.signedIn) {
-    display: flex;
-    justify-content: center;
-    padding: var(--padding-2x) 0;
-
-    @include media.min-width(large) {
-      display: block;
-      padding: 0;
-    }
-  }
-
-  .loader {
-    // Observed values that match bottom sheet height
-    padding: var(--padding-3x) var(--padding-2x);
-
-    @include media.min-width(large) {
-      padding: var(--padding-3x) 0;
-    }
-  }
-</style>
+<VotingCard
+  {hasNeurons}
+  {visible}
+  {neuronsReady}
+  {voteRegistration}
+  {neuronsVotedForProposal}
+  {ineligibleNeurons}
+  {minSnsDissolveDelaySeconds}
+  on:nnsConfirm={vote}
+/>

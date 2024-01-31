@@ -14,7 +14,7 @@ vi.mock("$lib/services/sns-neurons.services", () => {
 });
 
 describe("SplitSnsNeuronModal", () => {
-  const token = { name: "SNS", symbol: "SNS" };
+  const token = { name: "SNS", symbol: "SNS", decimals: 8 };
   const reloadNeuronSpy = vi.fn().mockResolvedValue(undefined);
   const renderSplitNeuronModal = () =>
     renderModal({

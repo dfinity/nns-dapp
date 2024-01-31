@@ -37,7 +37,7 @@ vi.mock("$lib/services/$public/proposals.services", () => {
 });
 
 describe("vote-registration-services", () => {
-  const neuronIds = [BigInt(0), BigInt(1), BigInt(2)];
+  const neuronIds = [0n, 1n, 2n];
   const neurons = neuronIds.map((neuronId) => ({
     ...mockNeuron,
     neuronId,
@@ -105,44 +105,6 @@ describe("vote-registration-services", () => {
     });
 
     describe("voting in progress", () => {
-      it("should update store with a new vote registration", () =>
-        new Promise<void>((done) => {
-          let updateContextCalls = 0;
-          registerNnsVotes({
-            neuronIds,
-            proposalInfo: proposal,
-            vote: Vote.Yes,
-            reloadProposalCallback: () => {
-              updateContextCalls += 1;
-              if (updateContextCalls === neuronIds.length) {
-                done();
-              }
-            },
-          });
-
-          expect(
-            get(voteRegistrationStore).registrations[
-              OWN_CANISTER_ID.toText()
-            ][0]
-          ).toBeDefined();
-
-          expect(
-            get(voteRegistrationStore).registrations[
-              OWN_CANISTER_ID.toText()
-            ][0].neuronIdStrings
-          ).toEqual(neuronIds.map(String));
-          expect(
-            get(voteRegistrationStore).registrations[
-              OWN_CANISTER_ID.toText()
-            ][0].proposalIdString
-          ).toEqual(`${proposal.id}`);
-          expect(
-            get(voteRegistrationStore).registrations[
-              OWN_CANISTER_ID.toText()
-            ][0].vote
-          ).toEqual(Vote.Yes);
-        }));
-
       it("should clear the store after registration", async () => {
         await registerNnsVotes({
           neuronIds,
@@ -472,7 +434,7 @@ describe("vote-registration-services", () => {
 
     it("should display error if no identity", async () => {
       await registerNnsVotes({
-        neuronIds: [BigInt(0)],
+        neuronIds: [0n],
         proposalInfo: proposal,
         vote: Vote.Yes,
         reloadProposalCallback: () => {

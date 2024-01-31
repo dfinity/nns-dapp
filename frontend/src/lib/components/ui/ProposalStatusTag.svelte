@@ -3,12 +3,15 @@
   import { i18n } from "$lib/stores/i18n";
 
   export let status: UniversalProposalStatus;
+  export let testId: string | undefined = undefined;
 
   let label: string;
   $: label = $i18n.universal_proposal_status[status];
 </script>
 
-<span data-tid="proposal-status-tag" class={`tag ${status}`}>{label}</span>
+<span data-tid={testId ?? "proposal-status-tag"} class={`tag ${status}`}
+  >{label}</span
+>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";

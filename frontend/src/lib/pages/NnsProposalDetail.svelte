@@ -19,7 +19,6 @@
   import { browser } from "$app/environment";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { referrerPathStore } from "$lib/stores/routes.store";
-  import { ENABLE_FULL_WIDTH_PROPOSAL } from "$lib/stores/feature-flags.store";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -128,7 +127,7 @@
 
   $: layoutTitleStore.set({
     title,
-    header: $ENABLE_FULL_WIDTH_PROPOSAL ? "" : title,
+    header: title,
   });
 </script>
 

@@ -5,9 +5,10 @@ import {
   type WalletStore,
 } from "$lib/types/wallet.context";
 import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
-import en from "$tests/mocks/i18n.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockReceivedFromMainAccountTransaction } from "$tests/mocks/transaction.mock";
+import { TransactionListPo } from "$tests/page-objects/TransactionList.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 import { writable } from "svelte/store";
 
@@ -27,39 +28,35 @@ describe("TransactionList", () => {
       },
     });
 
-  it("renders skeleton when no data provided", () => {
-    const { getByTestId } = renderTransactionList(undefined, undefined);
+  const renderComponent = ({ account, transactions }) => {
+    const { container } = renderTransactionList(account, transactions);
+    return TransactionListPo.under(new JestPageObjectElement(container));
+  };
 
-    expect(getByTestId("skeleton-card")).toBeInTheDocument();
+  it("renders skeleton when no data provided", async () => {
+    const po = renderComponent({ account: undefined, transactions: undefined });
+
+    expect(await po.getSkeletonCardPo().isPresent()).toBe(true);
   });
 
-  it("should display no-transactions message", () => {
-    const { getByText } = renderTransactionList(mockMainAccount, []);
+  it("should display no-transactions message", async () => {
+    const po = renderComponent({ account: mockMainAccount, transactions: [] });
 
-    expect(
-      getByText(en.wallet.no_transactions, { exact: false })
-    ).toBeInTheDocument();
+    expect(await po.hasNoTransactions()).toBe(true);
   });
 
-  it("should display no-transactions message", () => {
-    const { getByText } = renderTransactionList(mockMainAccount, []);
-
-    expect(
-      getByText(en.wallet.no_transactions, { exact: false })
-    ).toBeInTheDocument();
-  });
-
-  it("should render transactions", () => {
-    const { queryAllByTestId } = renderTransactionList(
-      mockMainAccount,
-      Array.from(Array(20)).map((_, index) => ({
+  it("should render transactions", async () => {
+    const po = renderComponent({
+      account: mockMainAccount,
+      transactions: Array.from(Array(20)).map((_, index) => ({
         ...mockReceivedFromMainAccountTransaction,
         timestamp: {
           timestamp_nanos: BigInt(index),
         },
-      }))
-    );
+      })),
+    });
 
-    expect(queryAllByTestId("transaction-card").length).toBe(20);
+    expect(await po.getTransactionCardPos()).toHaveLength(20);
+    expect(await po.hasNoTransactions()).toBe(false);
   });
 });

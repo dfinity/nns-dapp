@@ -1,6 +1,8 @@
+import { MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID } from "$lib/constants/sns-proposals.constants";
 import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
+import { ALL_SNS_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   createSnsProposal,
@@ -14,17 +16,20 @@ import {
 import { get } from "svelte/store";
 
 describe("snsFilteredProposalsStore", () => {
+  const rootCanisterId = mockPrincipal;
+  const getProposals = (): SnsProposalData[] =>
+    get(snsFilteredProposalsStore)[rootCanisterId.toText()]?.proposals;
   const snsProposal1: SnsProposalData = {
     ...mockSnsProposal,
-    id: [{ id: BigInt(2) }],
+    id: [{ id: 2n }],
   };
   const snsProposal2: SnsProposalData = {
     ...mockSnsProposal,
-    id: [{ id: BigInt(2) }],
+    id: [{ id: 2n }],
   };
   const snsProposal3: SnsProposalData = {
     ...mockSnsProposal,
-    id: [{ id: BigInt(3) }],
+    id: [{ id: 3n }],
   };
 
   beforeEach(() => {
@@ -32,7 +37,6 @@ describe("snsFilteredProposalsStore", () => {
     snsProposalsStore.reset();
   });
   it("should return undefined if filter store is not loaded", () => {
-    const rootCanisterId = mockPrincipal;
     const proposals: SnsProposalData[] = [
       snsProposal1,
       snsProposal2,
@@ -51,7 +55,6 @@ describe("snsFilteredProposalsStore", () => {
   });
 
   it("should return all proposals if no decisions filter is checked", () => {
-    const rootCanisterId = mockPrincipal;
     const proposals: SnsProposalData[] = [
       snsProposal1,
       snsProposal2,
@@ -82,23 +85,20 @@ describe("snsFilteredProposalsStore", () => {
       decisionStatus,
     });
 
-    expect(
-      get(snsFilteredProposalsStore)[rootCanisterId.toText()].proposals
-    ).toHaveLength(proposals.length);
+    expect(getProposals()).toHaveLength(proposals.length);
   });
 
   it("should return open proposals if Open status is checked", () => {
-    const rootCanisterId = mockPrincipal;
     const openProposal = createSnsProposal({
-      proposalId: BigInt(2),
+      proposalId: 2n,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
     });
     const failedProposal1 = createSnsProposal({
-      proposalId: BigInt(3),
+      proposalId: 3n,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_FAILED,
     });
     const failedProposal2 = createSnsProposal({
-      proposalId: BigInt(4),
+      proposalId: 4n,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_FAILED,
     });
     const proposals: SnsProposalData[] = [
@@ -131,25 +131,22 @@ describe("snsFilteredProposalsStore", () => {
       decisionStatus,
     });
 
-    expect(
-      get(snsFilteredProposalsStore)[rootCanisterId.toText()].proposals
-    ).toHaveLength(1);
+    expect(getProposals()).toHaveLength(1);
   });
 
   it("should return accept votes proposals if Accepting Votes status is checked", () => {
-    const rootCanisterId = mockPrincipal;
     const acceptVotesProposal = createSnsProposal({
-      proposalId: BigInt(2),
+      proposalId: 2n,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
       rewardStatus: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
     });
     const settledProposal = createSnsProposal({
-      proposalId: BigInt(3),
+      proposalId: 3n,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_FAILED,
       rewardStatus: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED,
     });
     const readyToSettleProposal = createSnsProposal({
-      proposalId: BigInt(4),
+      proposalId: 4n,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED,
       rewardStatus:
         SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_READY_TO_SETTLE,
@@ -190,8 +187,131 @@ describe("snsFilteredProposalsStore", () => {
       rewardStatus,
     });
 
-    expect(
-      get(snsFilteredProposalsStore)[rootCanisterId.toText()].proposals
-    ).toMatchObject([acceptVotesProposal]);
+    expect(getProposals()).toMatchObject([acceptVotesProposal]);
+  });
+
+  it("should return proposals which type is checked", () => {
+    const nsFunctionId1 = 1n;
+    const nsFunctionId2 = 2n;
+    const proposal1 = createSnsProposal({
+      proposalId: 1000n,
+      action: nsFunctionId1,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+    const proposal2 = createSnsProposal({
+      proposalId: 2000n,
+      action: nsFunctionId2,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+
+    snsProposalsStore.setProposals({
+      rootCanisterId,
+      proposals: [proposal1, proposal2],
+      certified: true,
+      completed: true,
+    });
+
+    // Check only one type
+    snsFiltersStore.setTypes({
+      rootCanisterId,
+      types: [
+        {
+          id: `${nsFunctionId1}`,
+          value: `${nsFunctionId1}`,
+          name: "Motion",
+          checked: true,
+        },
+        {
+          id: `${nsFunctionId2}`,
+          value: `${nsFunctionId2}`,
+          name: "Add a Node",
+          checked: false,
+        },
+      ],
+    });
+
+    expect(getProposals()).toEqual([proposal1]);
+
+    // Check the second type
+    snsFiltersStore.setTypes({
+      rootCanisterId,
+      types: [
+        {
+          id: `${nsFunctionId1}`,
+          value: `${nsFunctionId1}`,
+          name: "_",
+          checked: true,
+        },
+        {
+          id: `${nsFunctionId2}`,
+          value: `${nsFunctionId2}`,
+          name: "_",
+          checked: true,
+        },
+      ],
+    });
+
+    expect(getProposals()).toEqual([proposal1, proposal2]);
+  });
+
+  it('should return all generic proposals when "All generic" is checked', () => {
+    const nativeNsFunctionId = 1n;
+    const nativeTypeProposal = createSnsProposal({
+      proposalId: 9001n,
+      action: nativeNsFunctionId,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+    const genericTypeProposal1 = createSnsProposal({
+      proposalId: 9002n,
+      action: MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+    const genericTypeProposal2 = createSnsProposal({
+      proposalId: 9003n,
+      action: MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID + 1n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+
+    snsProposalsStore.setProposals({
+      rootCanisterId,
+      proposals: [
+        nativeTypeProposal,
+        genericTypeProposal1,
+        genericTypeProposal2,
+      ],
+      certified: true,
+      completed: true,
+    });
+    snsFiltersStore.setTypes({
+      rootCanisterId,
+      types: [
+        {
+          id: `${nativeNsFunctionId}`,
+          value: `${nativeNsFunctionId}`,
+          name: "Motion",
+          checked: true,
+        },
+        {
+          id: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
+          value: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
+          name: "All SNS Specific Functions",
+          checked: false,
+        },
+      ],
+    });
+
+    expect(getProposals()).toHaveLength(1);
+    expect(getProposals()).toEqual([nativeTypeProposal]);
+
+    snsFiltersStore.setCheckTypes({
+      rootCanisterId,
+      checkedTypes: [ALL_SNS_GENERIC_PROPOSAL_TYPES_ID],
+    });
+
+    expect(getProposals()).toHaveLength(2);
+    expect(getProposals()).toEqual([
+      genericTypeProposal1,
+      genericTypeProposal2,
+    ]);
   });
 });

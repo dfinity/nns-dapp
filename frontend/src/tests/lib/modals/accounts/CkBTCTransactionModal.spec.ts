@@ -1,6 +1,5 @@
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
 import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
@@ -11,6 +10,7 @@ import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import type { Account } from "$lib/types/account";
 import { TransactionNetwork } from "$lib/types/transaction";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import { ulpsToNumber } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
@@ -18,8 +18,6 @@ import {
   mockBTCAddressTestnet,
   mockCkBTCMainAccount,
   mockCkBTCToken,
-  mockCkBTCWithdrawalAccount,
-  mockCkBTCWithdrawalIdentifier,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -30,12 +28,13 @@ import {
   testTransferTokens,
 } from "$tests/utils/transaction-modal.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { TokenAmount } from "@dfinity/utils";
+import { TokenAmountV2 } from "@dfinity/utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import { SvelteComponent, tick } from "svelte";
 import { get } from "svelte/store";
 
 vi.mock("$lib/services/ckbtc-accounts.services");
+vi.mock("$lib/services/wallet-accounts.services");
 vi.mock("$lib/services/ckbtc-convert.services");
 
 describe("CkBTCTransactionModal", () => {
@@ -45,7 +44,7 @@ describe("CkBTCTransactionModal", () => {
       props: {
         selectedAccount,
         token: mockCkBTCToken,
-        transactionFee: TokenAmount.fromE8s({
+        transactionFee: TokenAmountV2.fromUlps({
           amount: mockCkBTCToken.fee,
           token: mockCkBTCToken,
         }),
@@ -100,7 +99,7 @@ describe("CkBTCTransactionModal", () => {
     await waitFor(() => expect(ckBTCTransferTokens).toBeCalled());
   });
 
-  const testConvertCkBTCToBTC = async ({
+  const testConvertCkBTCToBTCWithIcrc2 = async ({
     success,
     eventName,
   }: {
@@ -108,31 +107,12 @@ describe("CkBTCTransactionModal", () => {
     eventName: "nnsClose" | "nnsTransfer";
   }) => {
     const spy = vi
-      .spyOn(services, "convertCkBTCToBtc")
+      .spyOn(services, "convertCkBTCToBtcIcrc2")
       .mockResolvedValue({ success });
 
     await testTransfer({
       eventName,
       selectedNetwork: TransactionNetwork.BTC_TESTNET,
-    });
-
-    await waitFor(() => expect(spy).toBeCalled());
-  };
-
-  const testRetrieveBTC = async ({
-    success,
-    eventName,
-  }: {
-    success: boolean;
-    eventName: "nnsClose" | "nnsTransfer";
-  }) => {
-    const spy = vi
-      .spyOn(services, "retrieveBtc")
-      .mockResolvedValue({ success });
-
-    await testTransfer({
-      eventName,
-      selectedAccount: mockCkBTCWithdrawalAccount,
     });
 
     await waitFor(() => expect(spy).toBeCalled());
@@ -161,33 +141,55 @@ describe("CkBTCTransactionModal", () => {
     await waitFor(() => expect(onEnd).toBeCalled());
   };
 
-  it("should convert ckBTC to Bitcoin", async () => {
-    await testConvertCkBTCToBTC({ success: true, eventName: "nnsTransfer" });
-  });
-
-  it("should close modal on ckBTC to Bitcoin error", async () => {
-    await testConvertCkBTCToBTC({ success: false, eventName: "nnsClose" });
-  });
-
-  it("should render progress when converting ckBTC to Bitcoin", async () => {
-    vi.spyOn(services, "convertCkBTCToBtc").mockResolvedValue({
-      success: true,
+  describe("convert BTC to ckBTC with ICRC-2", () => {
+    it("should convert ckBTC to Bitcoin", async () => {
+      await testConvertCkBTCToBTCWithIcrc2({
+        success: true,
+        eventName: "nnsTransfer",
+      });
     });
 
-    const result = await renderTransactionModal();
-
-    await testTransferTokens({
-      result,
-      selectedNetwork: TransactionNetwork.BTC_TESTNET,
-      destinationAddress: mockBTCAddressTestnet,
+    it("should close modal on ckBTC to Bitcoin error", async () => {
+      await testConvertCkBTCToBTCWithIcrc2({
+        success: false,
+        eventName: "nnsClose",
+      });
     });
 
-    await waitFor(() =>
-      expect(result.getByTestId("in-progress-warning")).not.toBeNull()
-    );
+    it("should render progress when converting ckBTC to Bitcoin", async () => {
+      vi.spyOn(services, "convertCkBTCToBtcIcrc2").mockResolvedValue({
+        success: true,
+      });
 
-    // In progress + transfer to ledger + sending BTC + reload
-    expect(result.container.querySelectorAll("div.step").length).toEqual(4);
+      const result = await renderTransactionModal();
+
+      await testTransferTokens({
+        result,
+        selectedNetwork: TransactionNetwork.BTC_TESTNET,
+        destinationAddress: mockBTCAddressTestnet,
+      });
+
+      await waitFor(() =>
+        expect(result.getByTestId("in-progress-warning")).not.toBeNull()
+      );
+
+      // Approve transfer + sending BTC + reload
+      expect(result.container.querySelectorAll("div.step").length).toEqual(3);
+    });
+
+    it("should display estimated time in modal", async () => {
+      toastsStore.reset();
+
+      await testConvertCkBTCToBTCWithIcrc2({
+        success: true,
+        eventName: "nnsTransfer",
+      });
+
+      const toastData = get(toastsStore);
+      expect(toastData[0].text).toEqual(
+        en.ckbtc.transaction_success_about_thirty_minutes
+      );
+    });
   });
 
   it("should not render progress when transferring ckBTC", async () => {
@@ -276,17 +278,6 @@ describe("CkBTCTransactionModal", () => {
     expect(result.getByText(en.ckbtc.about_thirty_minutes)).toBeInTheDocument();
   });
 
-  it("should display estimated time in modal", async () => {
-    toastsStore.reset();
-
-    await testConvertCkBTCToBTC({ success: true, eventName: "nnsTransfer" });
-
-    const toastData = get(toastsStore);
-    expect(toastData[0].text).toEqual(
-      en.ckbtc.transaction_success_about_thirty_minutes
-    );
-  });
-
   it("should render btc estimated fee on first step", async () => {
     const result = await renderTransactionModal();
 
@@ -362,10 +353,10 @@ describe("CkBTCTransactionModal", () => {
       "input[name='amount']"
     );
     expect(input?.value).toEqual(
-      `${
-        Number(mockCkBTCMainAccount.balanceE8s - mockCkBTCToken.fee) /
-        E8S_PER_ICP
-      }`
+      `${ulpsToNumber({
+        ulps: mockCkBTCMainAccount.balanceUlps - mockCkBTCToken.fee,
+        token: mockCkBTCToken,
+      })}`
     );
   };
 
@@ -393,134 +384,5 @@ describe("CkBTCTransactionModal", () => {
     });
 
     await testMax(result);
-  });
-
-  describe("withdrawal account", () => {
-    it("should not render ledger fee on first step", async () => {
-      const result = await renderTransactionModal(mockCkBTCWithdrawalAccount);
-
-      await testTransferFormTokens({
-        result,
-        destinationAddress: mockBTCAddressTestnet,
-        amount: "0.002",
-      });
-
-      expect(() => result.getByTestId("transaction-form-fee")).toThrow();
-    });
-
-    it("should not render ledger fee on review step", async () => {
-      const result = await renderTransactionModal(mockCkBTCWithdrawalAccount);
-
-      await testTransferReviewTokens({
-        result,
-        destinationAddress: mockBTCAddressTestnet,
-        amount: "0.002",
-      });
-
-      expect(() => result.getByTestId("transaction-summary-fee")).toThrow();
-    });
-
-    it("should render static btc network", async () => {
-      const result = await renderTransactionModal(mockCkBTCWithdrawalAccount);
-
-      await testTransferFormTokens({
-        result,
-        destinationAddress: mockBTCAddressTestnet,
-        amount: "0.002",
-      });
-
-      await waitFor(() =>
-        expect(result.getByTestId("readonly-network")?.textContent).toEqual(
-          en.accounts.network_btc_testnet
-        )
-      );
-    });
-
-    it("should not render select account dropdown", async () => {
-      const result = await renderTransactionModal(mockCkBTCWithdrawalAccount);
-
-      await testTransferFormTokens({
-        result,
-        destinationAddress: mockBTCAddressTestnet,
-        amount: "0.002",
-      });
-
-      expect(() => result.getByTestId("select-account-dropdown")).toThrow();
-    });
-
-    it("should render withdrawal account source", async () => {
-      const result = await renderTransactionModal(mockCkBTCWithdrawalAccount);
-
-      await testTransferFormTokens({
-        result,
-        destinationAddress: mockBTCAddressTestnet,
-        amount: "0.002",
-      });
-
-      await waitFor(() =>
-        expect(
-          result
-            .getByTestId("transaction-from-account")
-            ?.textContent.includes(en.accounts.source)
-        ).toBeTruthy()
-      );
-
-      expect(
-        result
-          .getByTestId("transaction-from-account")
-          ?.textContent.includes(mockCkBTCWithdrawalIdentifier)
-      ).toBeTruthy();
-    });
-
-    it("should retrieve BTC", async () => {
-      await testRetrieveBTC({ success: true, eventName: "nnsTransfer" });
-    });
-
-    it("should close modal on retrieve BTC error", async () => {
-      await testRetrieveBTC({ success: false, eventName: "nnsClose" });
-    });
-
-    it("should render progress without step transfer", async () => {
-      vi.spyOn(services, "convertCkBTCToBtc").mockResolvedValue({
-        success: true,
-      });
-      vi.spyOn(services, "retrieveBtc").mockResolvedValue({ success: true });
-
-      const result = await renderTransactionModal(mockCkBTCWithdrawalAccount);
-
-      await testTransferTokens({
-        result,
-        destinationAddress: mockBTCAddressTestnet,
-      });
-
-      await waitFor(() =>
-        expect(result.getByTestId("in-progress-warning")).not.toBeNull()
-      );
-
-      // In progress + sending BTC + reload
-      expect(result.container.querySelectorAll("div.step").length).toEqual(3);
-    });
-
-    it("should apply max without deducting fee", async () => {
-      const result = await renderTransactionModal(mockCkBTCWithdrawalAccount);
-
-      await testTransferFormTokens({
-        result,
-        destinationAddress: mockBTCAddressTestnet,
-        amount: "0.002",
-      });
-
-      const max = result.getByTestId("max-button");
-      max && fireEvent.click(max);
-
-      await tick();
-
-      const input: HTMLInputElement = result.container.querySelector(
-        "input[name='amount']"
-      );
-      expect(input?.value).toEqual(
-        `${Number(mockCkBTCWithdrawalAccount.balanceE8s) / E8S_PER_ICP}`
-      );
-    });
   });
 });

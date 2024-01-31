@@ -31,7 +31,7 @@ export interface SnsSummarySwap {
   next_ticket_id: [] | [bigint];
   already_tried_to_auto_finalize: [] | [boolean];
   purge_old_tickets_last_completion_timestamp_nanoseconds: [] | [bigint];
-  purge_old_tickets_next_principal: [] | [Uint8Array];
+  purge_old_tickets_next_principal: [] | [Uint8Array | number[]];
   neuron_recipes: Array<SnsNeuronRecipe>;
   cf_participants: Array<CfParticipant>;
   decentralization_sale_open_timestamp_seconds?: bigint;
@@ -44,6 +44,8 @@ export interface SnsSummarySwap {
   params: SnsParams;
   // We don't use it for now and keep it as the candid optional type
   open_sns_token_swap_proposal_id: [] | [bigint];
+  direct_participation_icp_e8s: [] | [bigint];
+  neurons_fund_participation_icp_e8s: [] | [bigint];
 }
 
 export interface SnsSummary {
@@ -79,17 +81,17 @@ export interface SnsSummary {
   /**
    * Data from `get_init` call.
    */
-  init?: SnsSwapInit;
+  init: SnsSwapInit;
 
   /**
    * Data from `get_sale_parameters` call.
    */
-  swapParams?: SnsParams;
+  swapParams: SnsParams;
 
   /**
    * Data from `get_lifecycle` call.
    */
-  lifecycle?: SnsGetLifecycleResponse;
+  lifecycle: SnsGetLifecycleResponse;
 }
 
 export interface SnsSwapCommitment {

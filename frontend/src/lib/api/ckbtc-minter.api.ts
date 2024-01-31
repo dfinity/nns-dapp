@@ -9,9 +9,8 @@ import {
   type MinterInfo,
   type MinterParams,
   type RetrieveBtcOk,
-  type RetrieveBtcParams,
+  type RetrieveBtcStatusV2WithId,
   type UpdateBalanceOk,
-  type WithdrawalAccount,
 } from "@dfinity/ckbtc";
 import type { Principal } from "@dfinity/principal";
 import type { QueryParams } from "@dfinity/utils";
@@ -63,44 +62,6 @@ export const updateBalance = async (params: {
   return result;
 };
 
-export const getWithdrawalAccount = async (params: {
-  identity: Identity;
-  canisterId: Principal;
-}): Promise<WithdrawalAccount> => {
-  logWithTimestamp("Get ckBTC withdrawal account: call...");
-
-  const {
-    canister: { getWithdrawalAccount: getWithdrawalAccountApi },
-  } = await ckBTCMinterCanister(params);
-
-  const result = await getWithdrawalAccountApi();
-
-  logWithTimestamp("Get ckBTC withdrawal account: done");
-
-  return result;
-};
-
-export const retrieveBtc = async ({
-  identity,
-  canisterId,
-  ...params
-}: {
-  identity: Identity;
-  canisterId: Principal;
-} & RetrieveBtcParams): Promise<RetrieveBtcOk> => {
-  logWithTimestamp("Retrieve BTC: call...");
-
-  const {
-    canister: { retrieveBtc: retrieveBtcApi },
-  } = await ckBTCMinterCanister({ identity, canisterId });
-
-  const result = await retrieveBtcApi(params);
-
-  logWithTimestamp("Retrieve BTC: done");
-
-  return result;
-};
-
 export const retrieveBtcWithApproval = async ({
   identity,
   canisterId,
@@ -121,6 +82,28 @@ export const retrieveBtcWithApproval = async ({
   const result = await retrieveBtcWithApprovalApi(params);
 
   logWithTimestamp("Retrieve BTC with approval: done");
+
+  return result;
+};
+
+export const retrieveBtcStatusV2ByAccount = async ({
+  identity,
+  canisterId,
+  certified,
+}: {
+  identity: Identity;
+  canisterId: Principal;
+  certified: boolean;
+}): Promise<RetrieveBtcStatusV2WithId[]> => {
+  logWithTimestamp("Retrieve btc status V2 by account: call...");
+
+  const {
+    canister: { retrieveBtcStatusV2ByAccount: retrieveBtcStatusV2ByAccountApi },
+  } = await ckBTCMinterCanister({ identity, canisterId });
+
+  const result = await retrieveBtcStatusV2ByAccountApi({ certified });
+
+  logWithTimestamp("Retrieve btc status V2 by account: done...");
 
   return result;
 };

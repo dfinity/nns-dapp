@@ -7,6 +7,7 @@ import {
   UNIVERSE_PARAM,
 } from "$lib/constants/routes.constants";
 import type { NeuronId, ProposalId } from "@dfinity/nns";
+import { nonNullish } from "@dfinity/utils";
 import { isArrayEmpty } from "./utils";
 
 // If the previous page is a particular detail page and if we have data in store, we don't reset and query the data in store after the route is mounted.
@@ -61,12 +62,12 @@ export const buildWalletUrl = ({
   account,
 }: {
   universe: string;
-  account: string;
+  account?: string;
 }): string =>
   buildUrl({
     path: AppPath.Wallet,
     universe,
-    params: { [ACCOUNT_PARAM]: account },
+    params: nonNullish(account) ? { [ACCOUNT_PARAM]: account } : undefined,
   });
 
 export const buildNeuronUrl = ({

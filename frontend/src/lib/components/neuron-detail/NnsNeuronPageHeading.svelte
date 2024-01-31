@@ -1,12 +1,12 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import { TokenAmount, ICPToken } from "@dfinity/utils";
+  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
   import {
     formatVotingPower,
     getNeuronTags,
     neuronStake,
-    type NeuronTag,
+    type NeuronTagData,
   } from "$lib/utils/neuron.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { i18n } from "$lib/stores/i18n";
@@ -19,8 +19,8 @@
 
   export let neuron: NeuronInfo;
 
-  let amount: TokenAmount;
-  $: amount = TokenAmount.fromE8s({
+  let amount: TokenAmountV2;
+  $: amount = TokenAmountV2.fromUlps({
     amount: neuronStake(neuron),
     token: ICPToken,
   });
@@ -30,7 +30,7 @@
   $: canVote =
     neuron.dissolveDelaySeconds > BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE);
 
-  let neuronTags: NeuronTag[];
+  let neuronTags: NeuronTagData[];
   $: neuronTags = getNeuronTags({
     neuron,
     identity: $authStore.identity,

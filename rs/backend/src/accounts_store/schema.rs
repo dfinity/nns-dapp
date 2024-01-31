@@ -1,13 +1,15 @@
 //! Data storage schemas.
 
 // Schemas
-#[cfg(test)]
-pub mod accounts_in_stable_memory;
+pub mod accounts_in_unbounded_stable_btree_map;
 pub mod map;
 pub mod proxy;
 
 // Mechanics
 use crate::accounts_store::Account;
+use candid::{CandidType, Deserialize};
+use core::ops::RangeBounds;
+use serde::Serialize;
 use strum_macros::EnumIter;
 mod label_serialization;
 #[cfg(test)]
@@ -92,8 +94,17 @@ pub trait AccountsDbTrait {
         }
     }
 
+    /// Iterates over entries in the data store.
+    fn iter(&self) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_>;
+
     /// Iterates over accounts in the data store.
-    fn values(&self) -> Box<dyn Iterator<Item = Account> + '_>;
+    fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
+        let iterator = self.iter().map(|(_key, value)| value);
+        Box::new(iterator)
+    }
+
+    /// Returns an iterator over the entries in the map where keys belong to the specified range.
+    fn range(&self, key_range: impl RangeBounds<Vec<u8>>) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_>;
 
     /// Gets the label of the storage schema.
     fn schema_label(&self) -> SchemaLabel;
@@ -103,7 +114,7 @@ pub trait AccountsDbTrait {
 ///
 /// Note: The numeric representations of these labels are guaranteed to be stable.
 #[repr(u32)]
-#[derive(Clone, Copy, Debug, EnumIter, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, EnumIter, PartialEq, Eq, CandidType, Serialize, Deserialize)]
 pub enum SchemaLabel {
     /// Data is stored on the heap in a `BTreeMap` and serialized to stable memory on upgrade.
     /// Implemented by: [`map::AccountsDbAsMap`]
@@ -111,18 +122,23 @@ pub enum SchemaLabel {
     /// Every account is serialized separately and stored in a `StableBTreeMap`.  The remaining
     /// data, mostly consisting of transactions, is serialized into a single large blob in the
     /// `pre_upgrade` hook.
-    #[cfg(test)]
     AccountsInStableMemory = 1,
 }
 
-/// Schema Label as written to stable memory.
-type SchemaLabelBytes = [u8; SchemaLabel::MAX_BYTES];
+impl Default for SchemaLabel {
+    fn default() -> Self {
+        Self::Map
+    }
+}
 
-/// Errors that can occur when deserializing a schema label.
+/// Schema Label as written to stable memory.
+pub type SchemaLabelBytes = [u8; SchemaLabel::MAX_BYTES];
+
+/// Errors that can occur when de-serializing a schema label.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum SchemaLabelError {
     InvalidChecksum,
-    InvalidLabel,
+    InvalidLabel(u32),
     InsufficientBytes,
 }
 

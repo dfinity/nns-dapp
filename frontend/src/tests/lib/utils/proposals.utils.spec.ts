@@ -1,7 +1,4 @@
-import {
-  DEFAULT_PROPOSALS_FILTERS,
-  PROPOSAL_COLOR,
-} from "$lib/constants/proposals.constants";
+import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import {
   concatenateUniqueProposals,
@@ -70,7 +67,7 @@ const actionWithEmpty = {
     amountE8s: undefined,
     rewardMode: {
       RewardToNeuron: {
-        dissolveDelaySeconds: BigInt(1000),
+        dissolveDelaySeconds: 1_000n,
       },
     },
   },
@@ -106,14 +103,14 @@ describe("proposals-utils", () => {
       ...proposal,
       ballots: [
         {
-          neuronId: BigInt(0),
+          neuronId: 0n,
           vote: vote ?? Vote.Unspecified,
         } as Ballot,
       ],
     });
     const neurons = [
       {
-        neuronId: BigInt(0),
+        neuronId: 0n,
       } as NeuronInfo,
     ];
 
@@ -172,7 +169,7 @@ describe("proposals-utils", () => {
             ...mockProposals[0],
             ballots: [
               {
-                neuronId: BigInt(0),
+                neuronId: 0n,
                 vote: Vote.Unspecified,
               } as Ballot,
             ],
@@ -192,7 +189,7 @@ describe("proposals-utils", () => {
             ...mockProposals[1],
             ballots: [
               {
-                neuronId: BigInt(0),
+                neuronId: 0n,
                 vote: Vote.Unspecified,
               } as Ballot,
             ],
@@ -394,7 +391,7 @@ describe("proposals-utils", () => {
             ...mockProposals[0],
             ballots: [
               {
-                neuronId: BigInt(0),
+                neuronId: 0n,
                 vote: Vote.Unspecified,
               } as Ballot,
             ],
@@ -416,7 +413,7 @@ describe("proposals-utils", () => {
             ...mockProposals[0],
             ballots: [
               {
-                neuronId: BigInt(0),
+                neuronId: 0n,
                 vote: Vote.Unspecified,
               } as Ballot,
             ],
@@ -427,7 +424,7 @@ describe("proposals-utils", () => {
           },
           neurons: [
             {
-              neuronId: BigInt(666),
+              neuronId: 666n,
             } as NeuronInfo,
           ],
           identity: mockIdentity,
@@ -439,7 +436,7 @@ describe("proposals-utils", () => {
   describe("hasMatchingProposals", () => {
     const neurons = [
       {
-        neuronId: BigInt(0),
+        neuronId: 0n,
       } as NeuronInfo,
     ];
 
@@ -462,7 +459,7 @@ describe("proposals-utils", () => {
             ...proposal,
             ballots: [
               {
-                neuronId: BigInt(0),
+                neuronId: 0n,
                 vote: Vote.Unspecified,
               } as Ballot,
             ],
@@ -484,7 +481,7 @@ describe("proposals-utils", () => {
               ...mockProposals[0],
               ballots: [
                 {
-                  neuronId: BigInt(0),
+                  neuronId: 0n,
                   vote: Vote.Unspecified,
                 } as Ballot,
               ],
@@ -507,7 +504,7 @@ describe("proposals-utils", () => {
               ...mockProposals[1],
               ballots: [
                 {
-                  neuronId: BigInt(0),
+                  neuronId: 0n,
                   vote: Vote.Unspecified,
                 } as Ballot,
               ],
@@ -530,7 +527,7 @@ describe("proposals-utils", () => {
               ...mockProposals[0],
               ballots: [
                 {
-                  neuronId: BigInt(0),
+                  neuronId: 0n,
                   vote: Vote.Unspecified,
                 } as Ballot,
               ],
@@ -553,7 +550,7 @@ describe("proposals-utils", () => {
               ...mockProposals[1],
               ballots: [
                 {
-                  neuronId: BigInt(0),
+                  neuronId: 0n,
                   vote: Vote.Unspecified,
                 } as Ballot,
               ],
@@ -575,7 +572,7 @@ describe("proposals-utils", () => {
               ...mockProposals[0],
               ballots: [
                 {
-                  neuronId: BigInt(0),
+                  neuronId: 0n,
                   vote: Vote.Yes,
                 } as Ballot,
               ],
@@ -611,7 +608,7 @@ describe("proposals-utils", () => {
               ...mockProposals[0],
               ballots: [
                 {
-                  neuronId: BigInt(0),
+                  neuronId: 0n,
                   vote: Vote.Yes,
                 } as Ballot,
               ],
@@ -633,7 +630,7 @@ describe("proposals-utils", () => {
               ...mockProposals[0],
               ballots: [
                 {
-                  neuronId: BigInt(0),
+                  neuronId: 0n,
                   vote: Vote.No,
                 } as Ballot,
               ],
@@ -690,7 +687,7 @@ describe("proposals-utils", () => {
       ...mockProposalInfo,
       ballots: neurons.map(({ neuronId, votingPower }) => ({
         neuronId,
-        votingPower: votingPower - BigInt(1),
+        votingPower: votingPower - 1n,
         vote: Vote.No,
       })),
     });
@@ -703,7 +700,7 @@ describe("proposals-utils", () => {
           neurons: neurons.map(toTestNnsVotingNode(proposal)),
           selectedIds: [1, 2, 3].map(String),
         })
-      ).toBe(BigInt(6));
+      ).toBe(6n);
     });
 
     it("should take into account only selected neurons", () => {
@@ -725,7 +722,7 @@ describe("proposals-utils", () => {
           neurons: neurons.map(toTestNnsVotingNode(proposal)),
           selectedIds: [],
         })
-      ).toBe(BigInt(0));
+      ).toBe(0n);
     });
   });
 
@@ -826,7 +823,7 @@ describe("proposals-utils", () => {
       proposals[0].id = undefined;
       const idSet = proposalIdSet(proposals);
       expect(idSet.size).toBe(1);
-      expect(Array.from(idSet)).toStrictEqual([BigInt(1)]);
+      expect(Array.from(idSet)).toStrictEqual([1n]);
     });
   });
 
@@ -868,7 +865,7 @@ describe("proposals-utils", () => {
       status: ProposalStatus.Open,
       rewardStatus: ProposalRewardStatus.AcceptVotes,
       deadlineTimestampSeconds,
-      proposer: BigInt(1234),
+      proposer: 1_234n,
     });
 
     const proposal = {
@@ -880,7 +877,6 @@ describe("proposals-utils", () => {
       const {
         topic,
         topicDescription,
-        color,
         deadline,
         proposer,
         title,
@@ -898,11 +894,10 @@ describe("proposals-utils", () => {
 
       expect(topic).toEqual(en.topics.Governance);
       expect(topicDescription).toEqual(en.topics_description.Governance);
-      expect(color).toEqual(PROPOSAL_COLOR[ProposalStatus.Open]);
       expect(deadline).toEqual(
         deadlineTimestampSeconds - BigInt(nowInSeconds())
       );
-      expect(proposer).toEqual(BigInt(1234));
+      expect(proposer).toEqual(1_234n);
       expect(title).toEqual(proposal.title);
       expect(url).toEqual(proposal.url);
 
@@ -988,10 +983,10 @@ describe("proposals-utils", () => {
 
   describe("replaceAndConcatenateProposals", () => {
     const proposalsA = generateMockProposals(10, {
-      proposalTimestampSeconds: BigInt(0),
+      proposalTimestampSeconds: 0n,
     });
     const proposalsB = generateMockProposals(10, {
-      proposalTimestampSeconds: BigInt(0),
+      proposalTimestampSeconds: 0n,
     });
 
     it("should replace proposals by id", () => {
@@ -1051,10 +1046,10 @@ describe("proposals-utils", () => {
 
   describe("replaceProposals", () => {
     const oldProposals = generateMockProposals(10, {
-      proposalTimestampSeconds: BigInt(1),
+      proposalTimestampSeconds: 1n,
     });
     const newProposals = generateMockProposals(10, {
-      proposalTimestampSeconds: BigInt(2),
+      proposalTimestampSeconds: 2n,
     });
 
     it("should replace proposals", () => {
@@ -1087,10 +1082,10 @@ describe("proposals-utils", () => {
 
   describe("getVotingBallot", () => {
     it("should return ballot of neuron if present", () => {
-      const neuronId = BigInt(100);
+      const neuronId = 100n;
       const ballot: Ballot = {
         neuronId,
-        votingPower: BigInt(30),
+        votingPower: 30n,
         vote: Vote.Yes,
       };
       const proposal = {
@@ -1106,10 +1101,10 @@ describe("proposals-utils", () => {
     });
 
     it("should return undefined if ballot not present", () => {
-      const neuronId = BigInt(100);
+      const neuronId = 100n;
       const ballot: Ballot = {
-        neuronId: BigInt(400),
-        votingPower: BigInt(30),
+        neuronId: 400n,
+        votingPower: 30n,
         vote: Vote.Yes,
       };
       const proposal = {
@@ -1127,14 +1122,14 @@ describe("proposals-utils", () => {
 
   describe("getVotingPower", () => {
     it("should return ballot voting power if present", () => {
-      const neuronId = BigInt(100);
+      const neuronId = 100n;
       const neuron = {
         ...mockNeuron,
         neuronId,
       };
       const ballot: Ballot = {
         neuronId,
-        votingPower: BigInt(30),
+        votingPower: 30n,
         vote: Vote.Yes,
       };
       const proposal = {
@@ -1285,13 +1280,13 @@ describe("proposals-utils", () => {
 
   describe("nnsNeuronToVotingNeuron", () => {
     it("should generate VotingNeuron from NeuronInfo", () => {
-      const neuronId = BigInt(100);
+      const neuronId = 100n;
       const neuron = {
         ...mockNeuron,
         neuronId,
         votingPower: 0n,
       };
-      const votingPower = 123456789n;
+      const votingPower = 123_456_789n;
       const ballot: Ballot = {
         neuronId,
         votingPower,

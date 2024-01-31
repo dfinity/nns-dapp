@@ -1,25 +1,41 @@
 import ProposalProposerPayloadEntry from "$lib/components/proposal-detail/ProposalProposerPayloadEntry.svelte";
-import { simplifyJson } from "$tests/utils/json.test-utils";
-import { render, waitFor } from "@testing-library/svelte";
+import { jsonRepresentationStore } from "$lib/stores/json-representation.store";
+import { JsonPreviewPo } from "$tests/page-objects/JsonPreview.page-object";
+import { JsonRepresentationModeTogglePo } from "$tests/page-objects/JsonRepresentationModeToggle.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { render } from "@testing-library/svelte";
 
 describe("ProposalProposerPayloadEntry", () => {
-  const nestedObj = { b: "c" };
-  const payloadWithJsonString = {
-    a: JSON.stringify(nestedObj),
-  };
+  const payload = { b: "c" };
 
-  it("should parse JSON strings and render them", async () => {
-    const { queryByTestId } = render(ProposalProposerPayloadEntry, {
+  it("should render payload", async () => {
+    jsonRepresentationStore.setMode("raw");
+    const { container } = render(ProposalProposerPayloadEntry, {
       props: {
-        payload: payloadWithJsonString,
+        payload,
       },
     });
 
-    const jsonElement = queryByTestId("json-wrapper");
-    await waitFor(() =>
-      expect(simplifyJson(jsonElement.textContent)).toBe(
-        simplifyJson(JSON.stringify(payloadWithJsonString))
-      )
-    );
+    await runResolvedPromises();
+
+    const po = JsonPreviewPo.under(new JestPageObjectElement(container));
+    expect(await po.getRawObject()).toEqual({
+      b: "c",
+    });
+  });
+
+  it("should render json mode toggle", async () => {
+    const { container } = render(ProposalProposerPayloadEntry, {
+      props: {
+        payload,
+      },
+    });
+
+    expect(
+      await JsonRepresentationModeTogglePo.under(
+        new JestPageObjectElement(container)
+      ).isPresent()
+    ).toBe(true);
   });
 });

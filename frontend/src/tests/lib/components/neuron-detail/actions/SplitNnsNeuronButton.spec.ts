@@ -27,7 +27,7 @@ describe("SplitNeuronButton", () => {
           ...mockNeuron,
           fullNeuron: {
             ...mockFullNeuron,
-            cachedNeuronStake: BigInt(10),
+            cachedNeuronStake: 10n,
           },
         },
         testComponent: SplitNeuronButton,
@@ -47,7 +47,7 @@ describe("SplitNeuronButton", () => {
           ...mockNeuron,
           fullNeuron: {
             ...mockFullNeuron,
-            cachedNeuronStake: BigInt(1_000_000_000),
+            cachedNeuronStake: 1_000_000_000n,
           },
         },
         testComponent: SplitNeuronButton,

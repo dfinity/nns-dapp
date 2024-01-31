@@ -11,6 +11,9 @@
   import { isNullish } from "@dfinity/utils";
   import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import type { Principal } from "@dfinity/principal";
+  import { snsProjectDashboardUrl } from "$lib/utils/projects.utils";
+  import { SnsSwapLifecycle } from "@dfinity/sns";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(
     PROJECT_DETAIL_CONTEXT_KEY
@@ -18,6 +21,12 @@
 
   let summary: SnsSummary | undefined | null;
   $: summary = $projectDetailStore.summary;
+
+  let rootCanisterId: Principal | undefined;
+  $: rootCanisterId = summary?.rootCanisterId;
+
+  let lifecycle: SnsSwapLifecycle | undefined;
+  $: lifecycle = summary?.swap.lifecycle;
 
   let metadata: SnsSummaryMetadata | undefined;
   let token: IcrcTokenMetadata | undefined;
@@ -27,7 +36,7 @@
 </script>
 
 <TestIdWrapper testId="project-metadata-section-component">
-  {#if isNullish(metadata) || isNullish(token)}
+  {#if isNullish(metadata) || isNullish(token) || isNullish(rootCanisterId)}
     <SkeletonDetails />
   {:else}
     <div data-tid="sns-project-detail-metadata" class="container">
@@ -41,17 +50,39 @@
           {metadata.name}
         </h1>
       </div>
-      <p class="description content-cell-details">
-        {metadata.description}
-      </p>
-      <a href={metadata.url} target="_blank" rel="noopener noreferrer"
-        >{metadata.url}</a
-      >
+      <div class="metadata-wrapper">
+        <p class="description">
+          {metadata.description}
+        </p>
+        <p class="links">
+          <a href={metadata.url} target="_blank" rel="noopener noreferrer"
+            >{metadata.url}</a
+          >
+          {#if lifecycle === SnsSwapLifecycle.Committed}
+            <span class="separator">|</span>
+            <a
+              data-tid="dashboard-link"
+              href={snsProjectDashboardUrl(rootCanisterId)}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="dashboard-link"
+            >
+              {$i18n.sns_project_detail.link_to_dashboard}
+            </a>
+          {/if}
+        </p>
+      </div>
     </div>
   {/if}
 </TestIdWrapper>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+
+  p {
+    margin: 0;
+  }
+
   .title {
     display: flex;
     gap: var(--padding-1_5x);
@@ -59,11 +90,37 @@
     margin-bottom: var(--padding-2x);
   }
 
-  p {
-    margin-top: var(--padding);
-  }
-
   .container {
     padding: 0 0 var(--padding);
+  }
+
+  .metadata-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+  }
+
+  .links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+
+    .separator {
+      display: none;
+    }
+
+    .dashboard-link {
+      display: flex;
+      align-items: center;
+      gap: var(--padding-0_5x);
+    }
+
+    @include media.min-width(medium) {
+      flex-direction: row;
+
+      .separator {
+        display: inline-block;
+      }
+    }
   }
 </style>

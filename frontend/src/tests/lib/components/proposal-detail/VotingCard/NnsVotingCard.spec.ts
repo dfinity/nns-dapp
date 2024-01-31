@@ -1,5 +1,5 @@
 import * as agent from "$lib/api/agent.api";
-import VotingCard from "$lib/components/proposal-detail/VotingCard/VotingCard.svelte";
+import NnsVotingCard from "$lib/components/proposal-detail/VotingCard/NnsVotingCard.svelte";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -32,12 +32,12 @@ describe("VotingCard", () => {
   const proposalInfo: ProposalInfo = {
     ...mockProposalInfo,
     ballots: neuronIds.map((neuronId) => ({ neuronId }) as Ballot),
-    proposalTimestampSeconds: BigInt(2000),
+    proposalTimestampSeconds: 2_000n,
     status: ProposalStatus.Open,
   };
   const neurons: NeuronInfo[] = neuronIds.map((neuronId) => ({
     ...mockNeuron,
-    createdTimestampSeconds: BigInt(BigInt(1000)),
+    createdTimestampSeconds: BigInt(1_000n),
     dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
     neuronId,
     permission_type: Int32Array.from([
@@ -58,7 +58,7 @@ describe("VotingCard", () => {
             proposal: proposalInfo,
           }),
         } as SelectedProposalContext,
-        Component: VotingCard,
+        Component: NnsVotingCard,
       },
     });
 
@@ -80,10 +80,10 @@ describe("VotingCard", () => {
     vi.resetAllMocks();
   });
 
-  it("should be hidden if there is no not-voted-neurons", async () => {
+  it("should not be hidden if there is no not-voted-neurons", async () => {
     neuronsStore.setNeurons({ neurons: [], certified: true });
     const { getByTestId } = renderVotingCard();
-    expect(() => expect(getByTestId("voting-confirmation-toolbar"))).toThrow();
+    expect(getByTestId("voting-confirmation-toolbar")).toBeInTheDocument();
   });
 
   it("should be visible if there are some not-voted-neurons", async () => {

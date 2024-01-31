@@ -59,9 +59,10 @@ export const signInWithNewUser = async ({
   const iiPage = await iiPagePromise;
   await expect(iiPage).toHaveTitle("Internet Identity");
 
-  await iiPage.getByRole("button", { name: "Create an Anchor" }).click();
-  await iiPage.getByPlaceholder("Example: my phone").fill("my phone");
-  await iiPage.getByRole("button", { name: "Next" }).click();
+  await iiPage
+    .getByRole("button", { name: "Create Internet Identity" })
+    .click();
+  await iiPage.getByRole("button", { name: "Create Passkey" }).click();
   step("Sign in > creating identity");
 
   await iiPage.locator("input#captchaInput").fill("a");
@@ -69,10 +70,6 @@ export const signInWithNewUser = async ({
   step("Sign in > verifying captcha");
 
   await iiPage.getByRole("button", { name: "Continue" }).click();
-  await iiPage.getByText("Choose a Recovery Method").waitFor();
-  await iiPage.getByRole("button", { name: /Skip/ }).click();
-  await iiPage.getByRole("button", { name: "Add another device" }).waitFor();
-  await iiPage.getByRole("button", { name: /Skip/ }).click();
 
   step("Sign in > finalizing authentication");
   await iiPage.waitForEvent("close");
@@ -97,7 +94,7 @@ export const setFeatureFlag = ({
     { featureFlag, value }
   );
 
-export const replaceContent = ({
+export const replaceContent = async ({
   page,
   selectors,
   innerHtml,
@@ -105,8 +102,8 @@ export const replaceContent = ({
   page: Page;
   selectors: string[];
   innerHtml: string;
-}) => {
-  page.evaluate(
+}): Promise<void> => {
+  await page.evaluate(
     ({ selectors, innerHtml }) =>
       document.querySelectorAll(selectors.join(", ")).forEach((el) => {
         el.innerHTML = innerHtml;

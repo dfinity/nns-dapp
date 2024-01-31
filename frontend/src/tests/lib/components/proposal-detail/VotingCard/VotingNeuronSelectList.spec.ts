@@ -1,5 +1,4 @@
 import VotingNeuronSelectList from "$lib/components/proposal-detail/VotingCard/VotingNeuronSelectList.svelte";
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
 import { formatVotingPower } from "$lib/utils/neuron.utils";
 import { nnsNeuronToVotingNeuron } from "$lib/utils/proposals.utils";
@@ -12,23 +11,24 @@ import { get } from "svelte/store";
 describe("VotingNeuronSelectList", () => {
   const neuron1 = {
     ...mockNeuron,
-    neuronId: BigInt(111),
-    votingPower: BigInt(100 * E8S_PER_ICP),
+    neuronId: 111n,
+    votingPower: 10_000_000_000n,
   };
   const neuron2 = {
     ...mockNeuron,
-    neuronId: BigInt(222),
-    votingPower: BigInt(300 * E8S_PER_ICP),
+    neuronId: 222n,
+    votingPower: 30_000_000_000n,
   };
   const neuron3 = {
     ...mockNeuron,
-    neuronId: BigInt(333),
-    votingPower: BigInt(500 * E8S_PER_ICP),
+    neuronId: 333n,
+    votingPower: 50_000_000_000n,
   };
   const neurons: NeuronInfo[] = [neuron1, neuron2, neuron3];
   const ballots = neurons.map(({ neuronId, votingPower }) => ({
     neuronId,
-    votingPower: votingPower - BigInt(E8S_PER_ICP),
+    // Ballots and neurons have different voting power
+    votingPower: votingPower - 100_000_000n,
     vote: Vote.No,
   }));
   const proposalInfo = {

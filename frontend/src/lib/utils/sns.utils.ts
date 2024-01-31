@@ -1,4 +1,5 @@
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
+import { MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID } from "$lib/constants/sns-proposals.constants";
 import type { SnsTicketsStoreData } from "$lib/stores/sns-tickets.store";
 import type { TicketStatus } from "$lib/types/sale";
 import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
@@ -7,6 +8,8 @@ import type { Principal } from "@dfinity/principal";
 import type {
   SnsGetAutoFinalizationStatusResponse,
   SnsGetDerivedStateResponse,
+  SnsNervousSystemFunction,
+  SnsProposalData,
 } from "@dfinity/sns";
 import type { DerivedState } from "@dfinity/sns/dist/candid/sns_swap";
 import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
@@ -29,7 +32,7 @@ export const getSwapCanisterAccount = ({
 
 /**
  * Returns `undefined` if swapCommitment is not present yet.
- * Returns `BigInt(0)` if myCommitment is present but user has no commitment or amount is not present either.
+ * Returns `0n` if myCommitment is present but user has no commitment or amount is not present either.
  * Returns commitment e8s if commitment is defined.
  */
 export const getCommitmentE8s = (
@@ -39,8 +42,7 @@ export const getCommitmentE8s = (
     return undefined;
   }
   return (
-    fromNullable(swapCommitment?.myCommitment?.icp ?? [])?.amount_e8s ??
-    BigInt(0)
+    fromNullable(swapCommitment?.myCommitment?.icp ?? [])?.amount_e8s ?? 0n
   );
 };
 
@@ -171,3 +173,31 @@ export const swapEndedMoreThanOneWeekAgo = ({
   const oneWeekAgoInSeconds = BigInt(nowInSeconds - SECONDS_IN_DAY * 7);
   return oneWeekAgoInSeconds > summary.swap.params.swap_due_timestamp_seconds;
 };
+
+/**
+ * Returns true if the FunctionType is NativeNervousSystemFunction.
+ * Native means that the function can be executed only on its SNS canisters.
+ * (same for all same-version snses)
+ */
+export const isSnsNativeNervousSystemFunction = ({
+  id,
+}: SnsNervousSystemFunction): boolean =>
+  id < MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID;
+
+/**
+ * Returns true if the FunctionType is GenericNervousSystemFunction
+ * Generic means that the function can be executed outside the SNS canisters (on any canister).
+ * (custom per sns).
+ */
+export const isSnsGenericNervousSystemFunction = ({
+  id,
+}: SnsNervousSystemFunction): boolean =>
+  id >= MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID;
+
+/**
+ * Returns true if the sns proposal is of the type GenericNervousSystemFunction
+ */
+export const isSnsGenericNervousSystemTypeProposal = ({
+  action,
+}: SnsProposalData): boolean =>
+  action >= MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID;

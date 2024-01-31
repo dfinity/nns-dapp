@@ -2,17 +2,19 @@
   import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
   import { Modal, Value, busy } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { TokenAmount, ICPToken } from "@dfinity/utils";
+  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
   import { isValidInputAmount, neuronStake } from "$lib/utils/neuron.utils";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
-  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import { i18n } from "$lib/stores/i18n";
-  import { formattedTransactionFeeICP } from "$lib/utils/token.utils";
+  import {
+    formattedTransactionFeeICP,
+    ulpsToNumber,
+  } from "$lib/utils/token.utils";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { createEventDispatcher } from "svelte";
   import { splitNeuron } from "$lib/services/neurons.services";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
-  import { mainTransactionFeeStore } from "$lib/stores/transaction-fees.store";
+  import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
 
   export let neuron: NeuronInfo;
 
@@ -21,14 +23,17 @@
   let stakeE8s: bigint;
   $: stakeE8s = neuronStake(neuron);
 
-  let balance: TokenAmount;
-  $: balance = TokenAmount.fromE8s({ amount: stakeE8s, token: ICPToken });
+  let balance: TokenAmountV2;
+  $: balance = TokenAmountV2.fromUlps({ amount: stakeE8s, token: ICPToken });
 
   let max = 0;
   $: max =
-    stakeE8s === BigInt(0)
+    stakeE8s === 0n
       ? 0
-      : (Number(stakeE8s) - $mainTransactionFeeStore) / E8S_PER_ICP;
+      : ulpsToNumber({
+          ulps: stakeE8s - $mainTransactionFeeE8sStore,
+          token: ICPToken,
+        });
 
   let validForm: boolean;
   $: validForm = isValidInputAmount({ amount, max });
@@ -73,7 +78,8 @@
     <div>
       <p class="label">{$i18n.neurons.transaction_fee}</p>
       <p>
-        <Value>{formattedTransactionFeeICP($mainTransactionFeeStore)}</Value> ICP
+        <Value>{formattedTransactionFeeICP($mainTransactionFeeE8sStore)}</Value>
+        ICP
       </p>
     </div>
 

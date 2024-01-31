@@ -3,7 +3,6 @@ import { HOST, IS_TESTNET } from "$lib/constants/environment.constants";
 import type { Account } from "$lib/types/account";
 import { invalidIcrcAddress } from "$lib/utils/accounts.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import { isUniverseNns } from "$lib/utils/universe.utils";
 import type { Identity } from "@dfinity/agent";
 import { Actor, HttpAgent, type Agent } from "@dfinity/agent";
 import type { IDL } from "@dfinity/candid";
@@ -18,7 +17,11 @@ import {
   SnsGovernanceTestCanister,
   type SnsNeuronId,
 } from "@dfinity/sns";
-import { arrayOfNumberToUint8Array, toNullable } from "@dfinity/utils";
+import {
+  arrayOfNumberToUint8Array,
+  createAgent as createAgentUtils,
+  toNullable,
+} from "@dfinity/utils";
 import { createAgent } from "./agent.api";
 import { governanceCanister } from "./governance.api";
 import { initSns, wrapper } from "./sns-wrapper.api";
@@ -41,38 +44,43 @@ const getTestAccountAgent = async (): Promise<Agent> => {
     base64ToUInt8Array(privateKey)
   );
 
-  const agent: Agent = new HttpAgent({
+  const agent = await createAgentUtils({
     host: HOST,
     identity,
+    fetchRootKey: true,
   });
-  await agent.fetchRootKey();
 
   return agent;
 };
 
-export const getTestAccountBalance = async (
-  rootCanisterId: Principal
+export const getTestIcpAccountBalance = async (): Promise<bigint> => {
+  assertTestnet();
+
+  const agent = await getTestAccountAgent();
+
+  const ledgerCanister: LedgerCanister = LedgerCanister.create({ agent });
+
+  return ledgerCanister.accountBalance({
+    accountIdentifier: AccountIdentifier.fromHex(testAccountAddress),
+    certified: false,
+  });
+};
+
+export const getIcrcTokenTestAccountBalance = async (
+  ledgerCanisterId: Principal
 ): Promise<bigint> => {
   assertTestnet();
 
   const agent = await getTestAccountAgent();
 
-  if (isUniverseNns(rootCanisterId)) {
-    const ledgerCanister: LedgerCanister = LedgerCanister.create({ agent });
-
-    return ledgerCanister.accountBalance({
-      accountIdentifier: AccountIdentifier.fromHex(testAccountAddress),
-    });
-  }
-
-  const { balance } = await initSns({
+  const canister = IcrcLedgerCanister.create({
     agent,
-    rootCanisterId,
-    certified: false,
+    canisterId: ledgerCanisterId,
   });
 
-  return balance({
+  return canister.balance({
     owner: Principal.fromText(testAccountPrincipal),
+    certified: false,
   });
 };
 
@@ -120,13 +128,14 @@ export const acquireICPTs = async ({
   });
 };
 
+// TODO: Reuse the new `acquireIcrcTokens` instead of SNS specific function.
 export const acquireSnsTokens = async ({
   account,
-  e8s,
+  ulps,
   rootCanisterId,
 }: {
   account: Account;
-  e8s: bigint;
+  ulps: bigint;
   rootCanisterId: Principal;
 }): Promise<void> => {
   assertTestnet();
@@ -140,7 +149,37 @@ export const acquireSnsTokens = async ({
   });
 
   await transfer({
-    amount: e8s,
+    amount: ulps,
+    to: {
+      owner: account.principal as Principal,
+      subaccount:
+        account.subAccount === undefined
+          ? []
+          : toNullable(arrayOfNumberToUint8Array(account.subAccount)),
+    },
+  });
+};
+
+export const acquireIcrcTokens = async ({
+  account,
+  ulps,
+  ledgerCanisterId,
+}: {
+  account: Account;
+  ulps: bigint;
+  ledgerCanisterId: Principal;
+}): Promise<void> => {
+  assertTestnet();
+
+  const agent = await getTestAccountAgent();
+
+  const canister = IcrcLedgerCanister.create({
+    agent,
+    canisterId: ledgerCanisterId,
+  });
+
+  await canister.transfer({
+    amount: ulps,
     to: {
       owner: account.principal as Principal,
       subaccount:
@@ -311,6 +350,7 @@ export const receiveMockBtc = async ({
 }) => {
   const agent = new HttpAgent({
     host: HOST,
+    verifyQuerySignatures: false,
   });
   await agent.fetchRootKey();
   const actor = Actor.createActor(mockBitcoinIdlFactory, {
@@ -325,10 +365,16 @@ export const receiveMockBtc = async ({
   }
   await actor.push_utxo_to_address({
     utxo: {
-      // The height defines the number of confirmations. > 12 should mean the
-      // amount can be credited although the current mock bitcoin canister does
-      // not even seem to check this.
-      height: 15,
+      // We need >= 12 confirmations to get the ckBTC credited by the minter.
+      // We have 1 confirmation as soon as the UTXO is included in a block.
+      // Each block mined after that first block, in the same chain, counts as
+      // an additional confirmation.
+      // So the smaller the height of the block with the utxo, the more
+      // confirmations it has (given a fixed height of the latest block).
+      // The mock bitcoin canister starts out assuming that the latest block is
+      // at height 12. So giving our UTXO height 0 will make sure that it has
+      // the required 12 confirmations.
+      height: 0,
       value: amountE8s,
       outpoint: {
         txid,

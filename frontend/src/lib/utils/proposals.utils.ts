@@ -1,8 +1,4 @@
 import { goto } from "$app/navigation";
-import {
-  PROPOSAL_COLOR,
-  type ProposalStatusColor,
-} from "$lib/constants/proposals.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import { i18n } from "$lib/stores/i18n";
 import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
@@ -216,7 +212,7 @@ export const selectedNeuronsVotingPower = ({
   neurons
     .filter(({ neuronIdString }) => selectedIds.includes(neuronIdString))
     .map(({ votingPower }) => votingPower)
-    .reduce((sum, votingPower) => sum + votingPower, BigInt(0));
+    .reduce((sum, votingPower) => sum + votingPower, 0n);
 
 /**
  * Generate new selected neuron id list after new neurons response w/o spoiling the previously done user selection
@@ -340,7 +336,6 @@ export type ProposalInfoMap = {
   proposer: NeuronId | undefined;
   title: string | undefined;
   url: string | undefined;
-  color: ProposalStatusColor | undefined;
 
   created: bigint;
   decided: bigint | undefined;
@@ -400,7 +395,6 @@ export const mapProposalInfo = (
     proposal,
     title: proposal?.title,
     url: proposal?.url,
-    color: PROPOSAL_COLOR[status],
 
     created: proposalTimestampSeconds,
     decided: decidedTimestampSeconds > 0 ? decidedTimestampSeconds : undefined,
@@ -540,12 +534,12 @@ export const updateProposalVote = ({
       ...(proposalInfo.latestTally as Tally),
       yes:
         vote === Vote.Yes
-          ? (proposalInfo.latestTally?.yes ?? BigInt(0)) + votingPower
-          : proposalInfo.latestTally?.yes ?? BigInt(0),
+          ? (proposalInfo.latestTally?.yes ?? 0n) + votingPower
+          : proposalInfo.latestTally?.yes ?? 0n,
       no:
         vote === Vote.No
-          ? (proposalInfo.latestTally?.no ?? BigInt(0)) + votingPower
-          : proposalInfo.latestTally?.no ?? BigInt(0),
+          ? (proposalInfo.latestTally?.no ?? 0n) + votingPower
+          : proposalInfo.latestTally?.no ?? 0n,
     },
   };
 };

@@ -1,14 +1,13 @@
 <script lang="ts">
   import type { Universe } from "$lib/types/universe";
   import UniverseLogo from "./UniverseLogo.svelte";
-  import UniverseName from "./UniverseName.svelte";
 
   export let universe: Universe;
 </script>
 
 <div class="summary" data-tid="universe-page-summary-component">
   <UniverseLogo {universe} framed horizontalPadding={false} />
-  <span><UniverseName {universe} /></span>
+  <span>{universe.title}</span>
 </div>
 
 <style lang="scss">

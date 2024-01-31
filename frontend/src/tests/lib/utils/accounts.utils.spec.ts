@@ -6,6 +6,7 @@ import {
   emptyAddress,
   filterHardwareWalletAccounts,
   findAccount,
+  findAccountOrDefaultToMain,
   getAccountByPrincipal,
   getAccountByRootCanister,
   getAccountsByRootCanister,
@@ -557,27 +558,27 @@ describe("accounts-utils", () => {
 
   describe("assertEnoughAccountFunds", () => {
     it("should throw if not enough balance", () => {
-      const amountE8s = BigInt(1_000_000_000);
+      const amountE8s = 1_000_000_000n;
       expect(() => {
         assertEnoughAccountFunds({
           account: {
             ...mockMainAccount,
-            balanceE8s: amountE8s,
+            balanceUlps: amountE8s,
           },
-          amountE8s: amountE8s + BigInt(10_000),
+          amountUlps: amountE8s + 10_000n,
         });
       }).toThrow();
     });
 
     it("should not throw if not enough balance", () => {
-      const amountE8s = BigInt(1_000_000_000);
+      const amountE8s = 1_000_000_000n;
       expect(() => {
         assertEnoughAccountFunds({
           account: {
             ...mockMainAccount,
-            balanceE8s: amountE8s,
+            balanceUlps: amountE8s,
           },
-          amountE8s: amountE8s - BigInt(10_000),
+          amountUlps: amountE8s - 10_000n,
         });
       }).not.toThrow();
     });
@@ -596,6 +597,37 @@ describe("accounts-utils", () => {
         mockSnsSubAccount,
       ];
       expect(mainAccount(accounts)).toEqual(mockSnsMainAccount);
+    });
+  });
+
+  describe("findAccountOrDefaultToMain", () => {
+    const accounts = [mockMainAccount, mockSubAccount];
+
+    it("should return main account if no identifier is provided", () => {
+      expect(
+        findAccountOrDefaultToMain({ identifier: undefined, accounts })
+      ).toBe(mockMainAccount);
+    });
+
+    it("should find no account if not matches", () => {
+      expect(
+        findAccountOrDefaultToMain({ identifier: "aaa", accounts })
+      ).toBeUndefined();
+    });
+
+    it("should return corresponding account", () => {
+      expect(
+        findAccountOrDefaultToMain({
+          identifier: mockMainAccount.identifier,
+          accounts,
+        })
+      ).toEqual(mockMainAccount);
+      expect(
+        findAccountOrDefaultToMain({
+          identifier: mockSubAccount.identifier,
+          accounts,
+        })
+      ).toEqual(mockSubAccount);
     });
   });
 
@@ -631,9 +663,9 @@ describe("accounts-utils", () => {
   describe("sumNnsAccounts", () => {
     it("should sum accounts balance", () => {
       let totalBalance =
-        mockMainAccount.balanceE8s +
-        mockSubAccount.balanceE8s +
-        mockHardwareWalletAccount.balanceE8s;
+        mockMainAccount.balanceUlps +
+        mockSubAccount.balanceUlps +
+        mockHardwareWalletAccount.balanceUlps;
 
       expect(
         sumNnsAccounts({
@@ -643,7 +675,7 @@ describe("accounts-utils", () => {
         })
       ).toEqual(totalBalance);
 
-      totalBalance = mockMainAccount.balanceE8s + mockSubAccount.balanceE8s;
+      totalBalance = mockMainAccount.balanceUlps + mockSubAccount.balanceUlps;
 
       expect(
         sumNnsAccounts({
@@ -653,7 +685,7 @@ describe("accounts-utils", () => {
         })
       ).toEqual(totalBalance);
 
-      totalBalance = mockMainAccount.balanceE8s;
+      totalBalance = mockMainAccount.balanceUlps;
 
       expect(
         sumNnsAccounts({
@@ -668,15 +700,23 @@ describe("accounts-utils", () => {
   describe("sumAccounts", () => {
     it("should sum accounts balance", () => {
       let totalBalance =
-        mockSnsMainAccount.balanceE8s + mockSnsSubAccount.balanceE8s;
+        mockSnsMainAccount.balanceUlps + mockSnsSubAccount.balanceUlps;
 
       expect(sumAccounts([mockSnsMainAccount, mockSnsSubAccount])).toEqual(
         totalBalance
       );
 
-      totalBalance = mockSnsMainAccount.balanceE8s;
+      totalBalance = mockSnsMainAccount.balanceUlps;
 
       expect(sumAccounts([mockSnsMainAccount])).toEqual(totalBalance);
+    });
+
+    it("should return undefined if no accounts", () => {
+      expect(sumAccounts(undefined)).toBeUndefined();
+    });
+
+    it("should return 0 if accounts list is empty", () => {
+      expect(sumAccounts([])).toBe(0n);
     });
   });
 

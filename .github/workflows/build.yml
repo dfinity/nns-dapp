@@ -26,7 +26,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Skip build for testing
         # Set to true and set a recent `run_id` below to reuse an existing build
         # instead of building.
@@ -80,7 +80,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Run Playwright e2e test shard 1/2
         uses: ./.github/actions/test-e2e
         with:
@@ -92,7 +92,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Run Playwright e2e test shard 2/2
         uses: ./.github/actions/test-e2e
         with:
@@ -104,7 +104,7 @@ jobs:
     timeout-minutes: 40
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Get nns-dapp_test
         uses: actions/download-artifact@v3
         with:
@@ -113,27 +113,62 @@ jobs:
         uses: ./.github/actions/start_dfx_snapshot
         with:
           nns_dapp_wasm: 'nns-dapp_test.wasm.gz'
+          logfile: 'dfx-test-downgrade-upgrade.log'
       - name: Downgrade nns-dapp to prod and upgrade back again
         run: ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp_test.wasm.gz
       - name: Count upgrade cycles
         run: scripts/nns-dapp/estimate-upgrade-cycles | tee -a $GITHUB_STEP_SUMMARY
+  test-upgrade-map:
+    needs: build
+    runs-on: ubuntu-20.04
+    timeout-minutes: 40
+    steps:
+      - name: Checkout nns-dapp
+        uses: actions/checkout@v4
+      - name: Get nns-dapp_test
+        uses: actions/download-artifact@v3
+        with:
+          name: out
+          path: out
+      - name: Install ic-wasm
+        uses: ./.github/actions/install_ic_wasm
+      - name: Install tools
+        run: |
+          sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
+          DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+          cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)" && idl2json --version
+      - name: Start dfx
+        run: dfx start --clean --background &>test-upgrade-map-dfx.log
+      - name: Put assets in the default location
+        run: |
+          ls
+          ls out
+      - name: Upgrade to self, keeping the storage schema as map
+        run: ./scripts/nns-dapp/migration-test --schema1 Map --schema2 Map --accounts 10000
+      - name: Upload dfx logs
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-upgrade-map-dfx.log
+          path: test-upgrade-map-dfx.log
   test-test-account-api:
     needs: build
     runs-on: ubuntu-20.04
     timeout-minutes: 40
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Get nns-dapp_test
         uses: actions/download-artifact@v3
         with:
           name: nns-dapp_test
       - name: Start empty nns-dapp
         # As long as the snapshot environment can be installed with no accounts, we can use that.
-        # The snapshot action also installs idl2json and jq; commands that we will need.
+        # The snapshot action also installs `idl2json` and `jq`; commands that we will need.
         uses: ./.github/actions/start_dfx_snapshot
         with:
           nns_dapp_wasm: 'nns-dapp_test.wasm.gz'
+          logfile: 'dfx-test-test-account-api.log'
       - name: Check that test accounts can be created and read
         run: ./scripts/nns-dapp/test-account.test
   test-rest:
@@ -142,7 +177,7 @@ jobs:
     timeout-minutes: 40
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Get nns-dapp
         uses: actions/download-artifact@v3
         with:
@@ -160,6 +195,7 @@ jobs:
         with:
           nns_dapp_wasm: 'nns-dapp.wasm.gz'
           sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
+          logfile: 'dfx-test-rest.log'
       - name: Add go and SNS scripts to the path
         run: |
           echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
@@ -185,34 +221,8 @@ jobs:
             # `grep ...` fails if the value is implausibly short.
             key="$key" jq -re '.[0][env.key]' nns_dapp_args_in_page.json | grep -E ...
           done
-      - name: Determine ic-wasm version
-        id: ic-wasm-version
-        run: |
-          echo "IC_WASM_VERSION=$(jq -r '.defaults.build.config.IC_WASM_VERSION' dfx.json)" >> "$GITHUB_OUTPUT"
-          echo "IC_WASM_PATH=/home/runner/.cargo/bin/ic-wasm" >> "$GITHUB_OUTPUT"
-      - name: Cache ic-wasm
-        id: cache-ic-wasm
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.ic-wasm-version.outputs.IC_WASM_PATH }}
-          key: ${{ runner.os }}-${{ steps.ic-wasm-version.outputs.IC_WASM_VERSION }}-ic-wasm
-      - name: Install cargo binstall
-        uses: ./.github/actions/install_binstall
       - name: Install ic-wasm
-        if: steps.cache-ic-wasm.outputs.cache-hit != 'true'
-        run: |
-          cargo binstall --no-confirm "ic-wasm@${{ steps.ic-wasm-version.outputs.IC_WASM_VERSION }}"
-          command -v ic-wasm || {
-            echo "ERROR: Failed to install ic-wasm"
-            exit 1
-          }>&2
-          [[ "$( command -v ic-wasm )" == ${{ steps.ic-wasm-version.outputs.IC_WASM_PATH }} ]] || {
-            echo "ERROR: ic-wasm was installed at an unexpected location."
-            echo "EXPECTED: ${{ steps.ic-wasm-version.outputs.IC_WASM_PATH }}"
-            echo "ACTUAL:   $( command -v ic-wasm )"
-            echo "Please align fact and expectation."
-            exit 1
-          } >&2
+        uses: ./.github/actions/install_ic_wasm
       - name: Check that metadata is present
         run: |
           scripts/dfx-wasm-metadata-add.test --verbose
@@ -233,7 +243,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Get the postinstall instruction count
         run: |
-          dfx canister install --upgrade-unchanged nns-dapp --wasm nns-dapp.wasm.gz --mode upgrade --argument "$(cat nns-dapp-arg-local.did)"
+          dfx canister install --upgrade-unchanged nns-dapp --wasm nns-dapp.wasm.gz --mode upgrade --argument "$(cat nns-dapp-arg-local.did)" --yes
           postinstall_instructions="$(scripts/backend/get_upgrade_instructions)"
           echo "Installation consumed ${postinstall_instructions} instructions."
           echo "Cycles consumed are instructions * some factor that depends on subnet.  There is no guarantee that that formula will not change."
@@ -248,7 +258,7 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Check dockerfile for changes
@@ -260,7 +270,9 @@ jobs:
           fi
       - name: Set up docker buildx
         if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
+      - name: Create a blank global config
+        run: echo "{}" > global-config.json
       - name: Build wasms
         if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
         uses: docker/build-push-action@v3
@@ -311,7 +323,7 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Get sns_aggregator_dev
         uses: actions/download-artifact@v3
         with:
@@ -320,6 +332,7 @@ jobs:
         uses: ./.github/actions/start_dfx_snapshot
         with:
           sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
+          logfile: 'dfx-aggregator-test.log'
       - name: Get the earliest data from the sns aggregator
         run: |
           AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
@@ -369,7 +382,7 @@ jobs:
             exit 1
           }
       - name: Upgrade the aggregator to self with a slow refresh rate
-        run: dfx canister install --mode upgrade --wasm sns_aggregator_dev.wasm.gz --upgrade-unchanged sns_aggregator '(opt record { update_interval_ms = 1_000_000_000; fast_interval_ms = 1_000_000_000; })'
+        run: dfx canister install --mode upgrade --wasm sns_aggregator_dev.wasm.gz --upgrade-unchanged sns_aggregator '(opt record { update_interval_ms = 1_000_000_000; fast_interval_ms = 1_000_000_000; })' --yes
       - name: Expect the paginated data to be retained over the upgrade
         run: scripts/sns/aggregator/test-pagination --num 12
       - name: Expect the latest data to be retained over the upgrade
@@ -414,7 +427,7 @@ jobs:
     needs: build
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Get docker build outputs
         uses: actions/download-artifact@v3
         with:
@@ -485,7 +498,7 @@ jobs:
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/needs_success
         with:
           needs: '${{ toJson(needs) }}'

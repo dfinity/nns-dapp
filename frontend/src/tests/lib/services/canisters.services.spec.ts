@@ -44,8 +44,8 @@ const blockedApiPaths = ["$lib/api/canisters.api", "$lib/api/icp-ledger.api"];
 describe("canisters-services", () => {
   blockAllCallsTo(blockedApiPaths);
 
-  const newBalanceE8s = BigInt(100_000_000);
-  const exchangeRate = BigInt(10_000);
+  const newBalanceE8s = 100_000_000n;
+  const exchangeRate = 10_000n;
   let spyQueryCanisters: SpyInstance;
   let spyQueryAccountBalance: SpyInstance;
   let spyAttachCanister: SpyInstance;
@@ -427,7 +427,7 @@ describe("canisters-services", () => {
     it("should call api to create a canister", async () => {
       const account = {
         ...mockMainAccount,
-        balanceE8s: 500000000n,
+        balanceUlps: 500000000n,
       };
       const canisterId = await createCanister({
         amount: 3,
@@ -442,7 +442,7 @@ describe("canisters-services", () => {
     it("should not call api if account doesn't have enough funds", async () => {
       const account = {
         ...mockMainAccount,
-        balanceE8s: 200000000n,
+        balanceUlps: 200000000n,
       };
       const canisterId = await createCanister({
         amount: 3,
@@ -457,7 +457,7 @@ describe("canisters-services", () => {
     it("should show toast error if account doesn't have enough funds", async () => {
       const account = {
         ...mockMainAccount,
-        balanceE8s: 200000000n,
+        balanceUlps: 200000000n,
       };
       const canisterId = await createCanister({
         amount: 3,
@@ -492,7 +492,7 @@ describe("canisters-services", () => {
     it("should call api to top up a canister", async () => {
       const account = {
         ...mockMainAccount,
-        balanceE8s: 500000000n,
+        balanceUlps: 500000000n,
       };
       const { success } = await topUpCanister({
         amount: 3,
@@ -507,7 +507,7 @@ describe("canisters-services", () => {
     it("should not call api if account doesn't have enough funds", async () => {
       const account = {
         ...mockMainAccount,
-        balanceE8s: 200000000n,
+        balanceUlps: 200000000n,
       };
       const { success } = await topUpCanister({
         amount: 3,
@@ -522,7 +522,7 @@ describe("canisters-services", () => {
     it("should show toast error if account doesn't have enough funds", async () => {
       const account = {
         ...mockMainAccount,
-        balanceE8s: 200000000n,
+        balanceUlps: 200000000n,
       };
       const { success } = await topUpCanister({
         amount: 3,

@@ -83,7 +83,7 @@ export class LedgerIdentity extends SignIdentity {
     }
   }
 
-  public override getPublicKey(): PublicKey {
+  public override getPublicKey(): Required<PublicKey> {
     return this.publicKey;
   }
 

@@ -136,7 +136,7 @@ const getOrCreateNeuronPrincipalPermissionEntry = ({
   rootCanisterId: Principal;
   principal: Principal;
   neuronId: SnsNeuronId;
-}): { permission_type: Int32Array } => {
+}): { permission_type: Int32Array | number[] } => {
   const neuron = getNeuronOrThrow({ ...keyParams, neuronId });
   let permissionEntry = neuron.permissions.find(
     (entry) => fromNullable(entry.principal).toText() === principal.toText()
@@ -227,7 +227,7 @@ async function getNeuronBalance({
     // the fake.
     return neuron.cached_neuron_stake_e8s;
   }
-  return BigInt(0);
+  return 0n;
 }
 
 async function refreshNeuron(params: {

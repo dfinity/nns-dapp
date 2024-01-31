@@ -2,7 +2,7 @@ import SplitSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/Spli
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { openSnsNeuronModal } from "$lib/utils/modals.utils";
 import { minNeuronSplittable } from "$lib/utils/sns-neuron.utils";
-import { formatToken } from "$lib/utils/token.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
 import en from "$tests/mocks/i18n.mock";
 import {
   createMockSnsNeuron,
@@ -10,6 +10,7 @@ import {
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
 import { mockToken } from "$tests/mocks/sns-projects.mock";
+import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 vi.mock("$lib/utils/modals.utils", () => ({
@@ -17,7 +18,10 @@ vi.mock("$lib/utils/modals.utils", () => ({
 }));
 
 describe("SplitSnsNeuronButton", () => {
-  const transactionFee = 100n;
+  const transactionFee = TokenAmountV2.fromUlps({
+    amount: 100n,
+    token: ICPToken,
+  });
   const neuronMinimumStake = 100_000_000n;
   const props = {
     neuron: {
@@ -97,9 +101,9 @@ describe("SplitSnsNeuronButton", () => {
     const tooltip = replacePlaceholders(
       en.neuron_detail.split_neuron_disabled_tooltip,
       {
-        $amount: formatToken({
+        $amount: formatTokenE8s({
           value: minNeuronSplittable({
-            fee: transactionFee,
+            fee: transactionFee.toE8s(),
             neuronMinimumStake,
           }),
           detailed: true,

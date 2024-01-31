@@ -1,10 +1,9 @@
 <script lang="ts">
-  import { nonNullish } from "@dfinity/utils";
+  import { TokenAmountV2, nonNullish, type Token } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
   import { numberToE8s } from "$lib/utils/token.utils";
   import TransactionReceivedTokenAmount from "$lib/components/transaction/TransactionReceivedTokenAmount.svelte";
   import BitcoinFeeDisplay from "$lib/components/accounts/BitcoinFeeDisplay.svelte";
-  import { TokenAmount, type Token } from "@dfinity/utils";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import {
@@ -28,28 +27,29 @@
     : $i18n.ckbtc.bitcoin;
 
   let token: Token;
+  // TODO: Use the ckBTC Token object from the tokens store.
   $: token = {
     symbol: $i18n.ckbtc.btc,
     name: bitcoinLabel,
+    decimals: 8,
   };
 
-  let amountE8s = BigInt(0);
-  $: amountE8s = nonNullish(amount) ? numberToE8s(amount) : BigInt(0);
+  let amountE8s = 0n;
+  $: amountE8s = nonNullish(amount) ? numberToE8s(amount) : 0n;
 
-  let estimatedFee = BigInt(0);
-  $: estimatedFee =
-    (bitcoinEstimatedFee ?? BigInt(0)) + (kytEstimatedFee ?? BigInt(0));
+  let estimatedFee = 0n;
+  $: estimatedFee = (bitcoinEstimatedFee ?? 0n) + (kytEstimatedFee ?? 0n);
 
-  let estimatedAmount = BigInt(0);
+  let estimatedAmount = 0n;
   $: estimatedAmount =
     nonNullish(bitcoinEstimatedFee) &&
     nonNullish(kytEstimatedFee) &&
     amountE8s > estimatedFee
       ? amountE8s - estimatedFee
-      : BigInt(0);
+      : 0n;
 
-  let tokenEstimatedAmount: TokenAmount;
-  $: tokenEstimatedAmount = TokenAmount.fromE8s({
+  let tokenEstimatedAmount: TokenAmountV2;
+  $: tokenEstimatedAmount = TokenAmountV2.fromUlps({
     amount: estimatedAmount,
     token,
   });

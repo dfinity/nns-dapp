@@ -265,14 +265,14 @@ const makeNetworkEconomicsDummyProposalRequest = ({
   summary,
   action: {
     ManageNetworkEconomics: {
-      neuronMinimumStake: BigInt(100_000_000),
+      neuronMinimumStake: 100_000_000n,
       maxProposalsToKeepPerTopic: 1000,
-      neuronManagementFeePerProposal: BigInt(10_000),
-      rejectCost: BigInt(10_000_000),
-      transactionFee: BigInt(1000),
+      neuronManagementFeePerProposal: 10_000n,
+      rejectCost: 10_000_000n,
+      transactionFee: 1_000n,
       neuronSpawnDissolveDelaySeconds: BigInt(3600 * 24 * 7),
-      minimumIcpXdrRate: BigInt(1),
-      maximumNodeProviderRewards: BigInt(10_000_000_000),
+      minimumIcpXdrRate: 1n,
+      maximumNodeProviderRewards: 10_000_000_000n,
     },
   },
 });
@@ -294,9 +294,9 @@ const makeRewardNodeProviderDummyProposal = ({
         rewardAccount: undefined,
       },
       rewardMode: {
-        RewardToNeuron: { dissolveDelaySeconds: BigInt(1000) },
+        RewardToNeuron: { dissolveDelaySeconds: 1_000n },
       },
-      amountE8s: BigInt(10_000_000),
+      amountE8s: 10_000_000n,
     },
   },
 });

@@ -1,6 +1,9 @@
 <script lang="ts">
-  import { onDestroy, onMount, setContext } from "svelte";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import type { Account } from "$lib/types/account";
+  import { onDestroy, setContext } from "svelte";
   import { i18n } from "$lib/stores/i18n";
+  import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Footer from "$lib/components/layout/Footer.svelte";
   import {
@@ -10,11 +13,12 @@
     pollAccounts,
   } from "$lib/services/icp-accounts.services";
   import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
-  import { busy, Island, Spinner } from "@dfinity/gix-components";
+  import { Island, Spinner } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { writable } from "svelte/store";
   import TransactionList from "$lib/components/accounts/TransactionList.svelte";
+  import NoTransactions from "$lib/components/accounts/NoTransactions.svelte";
   import {
     WALLET_CONTEXT_KEY,
     type WalletContext,
@@ -22,7 +26,7 @@
   } from "$lib/types/wallet.context";
   import {
     accountName,
-    findAccount,
+    findAccountOrDefaultToMain,
     isAccountHardwareWallet,
   } from "$lib/utils/accounts.utils";
   import {
@@ -37,18 +41,21 @@
   import { pageStore } from "$lib/derived/page.derived";
   import Separator from "$lib/components/ui/Separator.svelte";
   import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
-  import { ICPToken, TokenAmount, isNullish, nonNullish } from "@dfinity/utils";
+  import { ICPToken, TokenAmountV2, nonNullish } from "@dfinity/utils";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import type { AccountIdentifierText } from "$lib/types/account";
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
   import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
-  import { NNS_UNIVERSE } from "$lib/derived/selectable-universes.derived";
   import HardwareWalletListNeuronsButton from "$lib/components/accounts/HardwareWalletListNeuronsButton.svelte";
   import HardwareWalletShowActionButton from "$lib/components/accounts/HardwareWalletShowActionButton.svelte";
+  import RenameSubAccountButton from "$lib/components/accounts/RenameSubAccountButton.svelte";
+  import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import IC_LOGO from "$lib/assets/icp.svg";
 
-  onMount(() => {
+  $: if ($authSignedInStore) {
     pollAccounts();
-  });
+  }
 
   onDestroy(() => {
     cancelPollAccounts();
@@ -109,15 +116,29 @@
     }
   };
 
+  const setSelectedAccount = ({
+    identifier,
+    accounts,
+  }: {
+    identifier: string | undefined | null;
+    accounts: Account[];
+  }) => {
+    const account = findAccountOrDefaultToMain({
+      identifier,
+      accounts,
+    });
+    selectedAccountStore.set({
+      account,
+      neurons: [],
+    });
+  };
+
   // We need an object to handle case where the identifier does not exist and the wallet page is loaded directly
   // First call: identifier is set, accounts store is empty, selectedAccount is undefined
   // Second call: identifier is set, accounts store is set, selectedAccount is still undefined
-  $: selectedAccountStore.set({
-    account: findAccount({
-      identifier: accountIdentifier,
-      accounts: $nnsAccountsListStore,
-    }),
-    neurons: [],
+  $: setSelectedAccount({
+    identifier: accountIdentifier,
+    accounts: $nnsAccountsListStore,
   });
 
   $: (async () => await accountDidUpdate($selectedAccountStore))();
@@ -125,9 +146,6 @@
   let showModal: "send" | undefined = undefined;
 
   // TODO(L2-581): Create WalletInfo component
-
-  let disabled = false;
-  $: disabled = isNullish($selectedAccountStore.account) || $busy;
 
   const reloadAccount = async () => {
     try {
@@ -157,56 +175,71 @@
 
   let isHardwareWallet: boolean;
   $: isHardwareWallet = isAccountHardwareWallet($selectedAccountStore.account);
+
+  let isSubaccount: boolean;
+  $: isSubaccount = $selectedAccountStore.account?.type === "subAccount";
 </script>
 
 <TestIdWrapper testId="nns-wallet-component">
   <Island>
     <main class="legacy" data-tid="nns-wallet">
       <section>
-        {#if $selectedAccountStore.account !== undefined}
+        {#if !$authSignedInStore || $selectedAccountStore.account !== undefined}
           <WalletPageHeader
-            universe={NNS_UNIVERSE}
-            walletAddress={$selectedAccountStore.account.identifier}
+            universe={$nnsUniverseStore}
+            walletAddress={$selectedAccountStore.account?.identifier}
           />
           <WalletPageHeading
-            balance={TokenAmount.fromE8s({
-              amount: $selectedAccountStore.account.balanceE8s,
-              token: ICPToken,
-            })}
+            balance={nonNullish($selectedAccountStore.account)
+              ? TokenAmountV2.fromUlps({
+                  amount: $selectedAccountStore.account.balanceUlps,
+                  token: ICPToken,
+                })
+              : undefined}
             accountName={name}
             principal={isHardwareWallet
-              ? $selectedAccountStore.account.principal
+              ? $selectedAccountStore.account?.principal
               : undefined}
           >
             {#if isHardwareWallet}
               <HardwareWalletListNeuronsButton />
               <HardwareWalletShowActionButton />
+            {:else if isSubaccount}
+              <RenameSubAccountButton />
             {/if}
+            <SignInGuard />
           </WalletPageHeading>
 
           <Separator spacing="none" />
 
-          <TransactionList {transactions} />
+          {#if $selectedAccountStore.account !== undefined}
+            <TransactionList {transactions} />
+          {:else}
+            <NoTransactions />
+          {/if}
         {:else}
           <Spinner />
         {/if}
       </section>
     </main>
 
-    <Footer>
-      <button
-        class="primary"
-        on:click={() => (showModal = "send")}
-        {disabled}
-        data-tid="new-transaction">{$i18n.accounts.send}</button
-      >
+    {#if nonNullish($selectedAccountStore.account)}
+      <Footer>
+        <button
+          class="primary"
+          on:click={() => (showModal = "send")}
+          data-tid="new-transaction">{$i18n.accounts.send}</button
+        >
 
-      <ReceiveButton
-        type="nns-receive"
-        account={$selectedAccountStore.account}
-        reload={reloadAccount}
-      />
-    </Footer>
+        <ReceiveButton
+          type="nns-receive"
+          account={$selectedAccountStore.account}
+          reload={reloadAccount}
+          universeId={OWN_CANISTER_ID}
+          logo={IC_LOGO}
+        />
+      </Footer>
+    {/if}
   </Island>
 
   <WalletModals />

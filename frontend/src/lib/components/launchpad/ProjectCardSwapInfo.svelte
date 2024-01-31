@@ -9,9 +9,9 @@
     durationTillSwapDeadline,
     durationTillSwapStart,
   } from "$lib/utils/projects.utils";
-  import { TokenAmount, ICPToken } from "@dfinity/utils";
+  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
   import { i18n } from "$lib/stores/i18n";
-  import { secondsToDuration } from "$lib/utils/date.utils";
+  import { secondsToDuration } from "@dfinity/utils";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import ProjectUserCommitmentLabel from "$lib/components/project-detail/ProjectUserCommitmentLabel.svelte";
@@ -41,11 +41,11 @@
   let durationTillStart: bigint | undefined;
   $: durationTillStart = durationTillSwapStart(swap);
 
-  let myCommitment: TokenAmount | undefined = undefined;
+  let myCommitment: TokenAmountV2 | undefined = undefined;
   $: {
     const commitmentE8s = getCommitmentE8s(swapCommitment);
-    if (nonNullish(commitmentE8s) && commitmentE8s > BigInt(0)) {
-      myCommitment = TokenAmount.fromE8s({
+    if (nonNullish(commitmentE8s) && commitmentE8s > 0n) {
+      myCommitment = TokenAmountV2.fromUlps({
         amount: commitmentE8s,
         token: ICPToken,
       });
@@ -69,14 +69,16 @@
     <!-- Sale is adopted -->
     {#if lifecycle === SnsSwapLifecycle.Adopted && durationTillStart !== undefined}
       <dt class="label">{$i18n.sns_project_detail.starts}</dt>
-      <dd class="value">{secondsToDuration(durationTillStart)}</dd>
+      <dd class="value">
+        {secondsToDuration({ seconds: durationTillStart, i18n: $i18n.time })}
+      </dd>
     {/if}
 
     <!-- Sale is open -->
     {#if lifecycle === SnsSwapLifecycle.Open && durationTillDeadline !== undefined}
       <dt class="label">{$i18n.sns_project_detail.deadline}</dt>
       <dd class="value" data-tid="project-deadline">
-        {secondsToDuration(durationTillDeadline)}
+        {secondsToDuration({ seconds: durationTillDeadline, i18n: $i18n.time })}
       </dd>
     {/if}
   </TestIdWrapper>

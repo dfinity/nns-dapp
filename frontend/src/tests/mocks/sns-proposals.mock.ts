@@ -14,28 +14,28 @@ import type { Subscriber } from "svelte/store";
 export const mockSnsProposal: SnsProposalData = {
   id: [
     {
-      id: BigInt(2),
+      id: 2n,
     },
   ],
   payload_text_rendering: ["Payload text rendering"],
-  action: BigInt(2),
+  action: 2n,
   failure_reason: [],
   ballots: [],
-  reward_event_round: BigInt(1),
-  failed_timestamp_seconds: BigInt(0),
-  proposal_creation_timestamp_seconds: BigInt(12313123),
-  initial_voting_period_seconds: BigInt(0),
-  reject_cost_e8s: BigInt(10_000_000),
+  reward_event_round: 1n,
+  failed_timestamp_seconds: 0n,
+  proposal_creation_timestamp_seconds: 12_313_123n,
+  initial_voting_period_seconds: 0n,
+  reject_cost_e8s: 10_000_000n,
   latest_tally: [
     {
-      no: BigInt(10),
-      yes: BigInt(10),
-      total: BigInt(100_000),
-      timestamp_seconds: BigInt(22),
+      no: 10n,
+      yes: 10n,
+      total: 100_000n,
+      timestamp_seconds: 22n,
     },
   ],
-  wait_for_quiet_deadline_increase_seconds: BigInt(0),
-  decided_timestamp_seconds: BigInt(0),
+  wait_for_quiet_deadline_increase_seconds: 0n,
+  decided_timestamp_seconds: 0n,
   proposal: [
     {
       title: "Proposal title",
@@ -47,26 +47,28 @@ export const mockSnsProposal: SnsProposalData = {
   proposer: [{ id: arrayOfNumberToUint8Array([1, 2, 3, 0, 0, 1]) }],
   wait_for_quiet_state: [
     {
-      current_deadline_timestamp_seconds: BigInt(10),
+      current_deadline_timestamp_seconds: 10n,
     },
   ],
   is_eligible_for_rewards: true,
-  executed_timestamp_seconds: BigInt(0),
+  executed_timestamp_seconds: 0n,
   reward_event_end_timestamp_seconds: [],
+  minimum_yes_proportion_of_exercised: [],
+  minimum_yes_proportion_of_total: [],
 };
 
 const acceptedTally: SnsTally = {
-  no: BigInt(1),
-  yes: BigInt(10),
-  total: BigInt(11),
-  timestamp_seconds: BigInt(123455),
+  no: 1n,
+  yes: 10n,
+  total: 11n,
+  timestamp_seconds: 123_455n,
 };
 
 const rejectedTally: SnsTally = {
-  no: BigInt(10),
-  yes: BigInt(1),
-  total: BigInt(11),
-  timestamp_seconds: BigInt(123455),
+  no: 10n,
+  yes: 1n,
+  total: 11n,
+  timestamp_seconds: 123_455n,
 };
 
 const addRewardStatusData = ({
@@ -83,31 +85,31 @@ const addRewardStatusData = ({
     case SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES:
       return {
         ...proposal,
-        reward_event_round: BigInt(0),
+        reward_event_round: 0n,
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: BigInt(10_000) + now,
+            current_deadline_timestamp_seconds: 10_000n + now,
           },
         ],
       };
     case SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED:
       return {
         ...proposal,
-        reward_event_round: BigInt(0),
+        reward_event_round: 0n,
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: BigInt(10_000) - now,
+            current_deadline_timestamp_seconds: 10_000n - now,
           },
         ],
       };
     case SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_READY_TO_SETTLE:
       return {
         ...proposal,
-        reward_event_round: BigInt(0),
+        reward_event_round: 0n,
         is_eligible_for_rewards: true,
         wait_for_quiet_state: [
           {
-            current_deadline_timestamp_seconds: BigInt(10_000) - now,
+            current_deadline_timestamp_seconds: 10_000n - now,
           },
         ],
       };
@@ -127,24 +129,30 @@ export const createSnsProposal = ({
   rewardStatus,
   proposalId,
   ballots = [],
-  createdAt = BigInt(12313123),
+  createdAt = 12_313_123n,
+  action = mockSnsProposal.action,
 }: {
   status: SnsProposalDecisionStatus;
   rewardStatus?: SnsProposalRewardStatus;
   proposalId: bigint;
   ballots?: Array<[string, SnsBallot]>;
   createdAt?: bigint;
+  action?: bigint;
 }): SnsProposalData => {
   const id: [SnsProposalId] = [{ id: proposalId }];
+  const snsProposal = {
+    ...mockSnsProposal,
+    id,
+    action,
+    ballots,
+  };
   switch (status) {
     case SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN:
       return addRewardStatusData({
         proposal: {
-          ...mockSnsProposal,
-          id,
+          ...snsProposal,
           latest_tally: [acceptedTally],
-          decided_timestamp_seconds: BigInt(0),
-          ballots,
+          decided_timestamp_seconds: 0n,
           proposal_creation_timestamp_seconds: createdAt,
         },
         rewardStatus,
@@ -152,13 +160,11 @@ export const createSnsProposal = ({
     case SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_ADOPTED:
       return addRewardStatusData({
         proposal: {
-          ...mockSnsProposal,
-          id,
+          ...snsProposal,
           latest_tally: [acceptedTally],
-          decided_timestamp_seconds: BigInt(11223),
-          executed_timestamp_seconds: BigInt(0),
-          failed_timestamp_seconds: BigInt(0),
-          ballots,
+          decided_timestamp_seconds: 11_223n,
+          executed_timestamp_seconds: 0n,
+          failed_timestamp_seconds: 0n,
           proposal_creation_timestamp_seconds: createdAt,
         },
         rewardStatus,
@@ -166,13 +172,11 @@ export const createSnsProposal = ({
     case SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_FAILED:
       return addRewardStatusData({
         proposal: {
-          ...mockSnsProposal,
-          id,
+          ...snsProposal,
           latest_tally: [acceptedTally],
-          decided_timestamp_seconds: BigInt(11223),
-          executed_timestamp_seconds: BigInt(0),
-          failed_timestamp_seconds: BigInt(112231320),
-          ballots,
+          decided_timestamp_seconds: 11_223n,
+          executed_timestamp_seconds: 0n,
+          failed_timestamp_seconds: 112_231_320n,
           proposal_creation_timestamp_seconds: createdAt,
         },
         rewardStatus,
@@ -180,13 +184,11 @@ export const createSnsProposal = ({
     case SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED:
       return addRewardStatusData({
         proposal: {
-          ...mockSnsProposal,
-          id,
+          ...snsProposal,
           latest_tally: [acceptedTally],
-          decided_timestamp_seconds: BigInt(11223),
-          executed_timestamp_seconds: BigInt(112231320),
-          failed_timestamp_seconds: BigInt(0),
-          ballots,
+          decided_timestamp_seconds: 11_223n,
+          executed_timestamp_seconds: 112_231_320n,
+          failed_timestamp_seconds: 0n,
           proposal_creation_timestamp_seconds: createdAt,
         },
         rewardStatus,
@@ -194,13 +196,11 @@ export const createSnsProposal = ({
     case SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_REJECTED:
       return addRewardStatusData({
         proposal: {
-          ...mockSnsProposal,
-          id,
+          ...snsProposal,
           latest_tally: [rejectedTally],
-          decided_timestamp_seconds: BigInt(11223),
-          executed_timestamp_seconds: BigInt(0),
-          failed_timestamp_seconds: BigInt(0),
-          ballots,
+          decided_timestamp_seconds: 11_223n,
+          executed_timestamp_seconds: 0n,
+          failed_timestamp_seconds: 0n,
           proposal_creation_timestamp_seconds: createdAt,
         },
         rewardStatus,
@@ -208,9 +208,7 @@ export const createSnsProposal = ({
     default:
       return addRewardStatusData({
         proposal: {
-          ...mockSnsProposal,
-          id,
-          ballots,
+          ...snsProposal,
           proposal_creation_timestamp_seconds: createdAt,
         },
         rewardStatus,

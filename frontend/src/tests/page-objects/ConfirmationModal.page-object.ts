@@ -1,7 +1,7 @@
+import { ModalPo } from "$tests/page-objects/Modal.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { BasePageObject } from "./base.page-object";
 
-export class ConfirmationModalPo extends BasePageObject {
+export class ConfirmationModalPo extends ModalPo {
   private static TID = "confirmation-modal-component";
 
   static under(element: PageObjectElement): ConfirmationModalPo {

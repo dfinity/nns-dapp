@@ -33,7 +33,9 @@ describe("ProposalSystemInfoSection", () => {
 
     const { container } = renderResult;
     expect(container.querySelector("h1")).not.toBeNull();
-    expect(container.querySelector("h1")?.textContent).toEqual(type);
+    expect(container.querySelector("h1")?.textContent).toEqual(
+      "Proposal Details"
+    );
   });
 
   const expectRenderedInfo = async ({

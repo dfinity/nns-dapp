@@ -1,7 +1,6 @@
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
 import { mergeNeurons } from "$lib/api/governance.api";
-import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import MergeNeuronsModal from "$lib/modals/neurons/MergeNeuronsModal.svelte";
 import * as authServices from "$lib/services/auth.services";
 import { listNeurons } from "$lib/services/neurons.services";
@@ -93,22 +92,24 @@ describe("MergeNeuronsModal", () => {
   describe("when mergeable neurons by user", () => {
     const controller = testIdentity.getPrincipal().toText();
     const mergeableNeuron1 = {
-      neuronId: BigInt(10),
+      neuronId: 10n,
       state: NeuronState.Locked,
       controller,
-      stake: BigInt(12 * E8S_PER_ICP),
+      stake: 1_200_000_000n,
     };
     const mergeableNeuron2 = {
-      neuronId: BigInt(11),
+      neuronId: 11n,
       state: NeuronState.Locked,
       controller,
-      stake: BigInt(34 * E8S_PER_ICP),
+      stake: 3_400_000_000n,
     };
     const mergeableNeurons = [mergeableNeuron1, mergeableNeuron2];
 
     it("renders title", async () => {
       const po = await renderMergeModal([mergeableNeuron1]);
-      expect(await po.getTitle()).toBe(en.neurons.merge_neurons_modal_title);
+      expect(await po.getModalTitle()).toBe(
+        en.neurons.merge_neurons_modal_title
+      );
     });
 
     it("renders disabled button", async () => {
@@ -204,7 +205,7 @@ describe("MergeNeuronsModal", () => {
         neuronId: mergeableNeuron2.neuronId,
       });
       await runResolvedPromises();
-      expect(getStake(sourceNeuron)).toBe(BigInt(0));
+      expect(getStake(sourceNeuron)).toBe(0n);
       expect(getStake(targetNeuron)).toBe(
         mergeableNeuron1.stake + mergeableNeuron2.stake
       );
@@ -254,7 +255,7 @@ describe("MergeNeuronsModal", () => {
       expect(await mergedNeuronCard.getStake()).toBe("46.00 ICP");
       // Just to show where the 46 is coming from:
       expect(mergeableNeuron1.stake + mergeableNeuron2.stake).toBe(
-        BigInt(46 * E8S_PER_ICP)
+        4_600_000_000n
       );
 
       // Make sure no actual merge happened.
@@ -330,12 +331,12 @@ describe("MergeNeuronsModal", () => {
   describe("when mergeable neurons by hardware wallet", () => {
     const controller = mockHardwareWalletAccount.principal?.toText() as string;
     const mergeableNeuron1 = {
-      neuronId: BigInt(10),
+      neuronId: 10n,
       state: NeuronState.Locked,
       controller,
     };
     const mergeableNeuron2 = {
-      neuronId: BigInt(11),
+      neuronId: 11n,
       state: NeuronState.Locked,
       controller,
     };
@@ -364,12 +365,12 @@ describe("MergeNeuronsModal", () => {
 
   describe("when neurons from main user and hardware wallet", () => {
     const neuronHW = {
-      neuronId: BigInt(10),
+      neuronId: 10n,
       state: NeuronState.Locked,
       controller: mockHardwareWalletAccount.principal?.toText() as string,
     };
     const neuronMain = {
-      neuronId: BigInt(11),
+      neuronId: 11n,
       state: NeuronState.Locked,
       controller: testIdentity.getPrincipal().toText(),
     };

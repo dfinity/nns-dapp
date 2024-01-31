@@ -49,9 +49,9 @@ export const principal = (index: number): Principal => {
 export const createTransferableAmount = (
   amount: bigint
 ): SnsTransferableAmount => ({
-  transfer_start_timestamp_seconds: BigInt(0),
+  transfer_start_timestamp_seconds: 0n,
   amount_e8s: amount,
-  transfer_success_timestamp_seconds: BigInt(0),
+  transfer_success_timestamp_seconds: 0n,
   transfer_fee_paid_e8s: [],
   amount_transferred_e8s: [],
 });
@@ -86,13 +86,13 @@ const SECONDS_IN_DAY = 60 * 60 * 24;
 const SECONDS_TODAY = +new Date(new Date().toJSON().split("T")[0]) / 1000;
 
 export const mockSnsParams: SnsParams = {
-  min_participant_icp_e8s: BigInt(150000000),
+  min_participant_icp_e8s: 150_000_000n,
   max_icp_e8s: BigInt(3000 * 100000000),
   neuron_basket_construction_parameters: [],
   swap_due_timestamp_seconds: BigInt(SECONDS_TODAY + SECONDS_IN_DAY * 5),
   min_participants: 1,
-  sns_token_e8s: BigInt(150000000),
-  max_participant_icp_e8s: BigInt(5000000000),
+  sns_token_e8s: 150_000_000n,
+  max_participant_icp_e8s: 5_000_000_000n,
   min_icp_e8s: BigInt(1500 * 100000000),
   sale_delay_seconds: [],
   min_direct_participation_icp_e8s: [],
@@ -145,9 +145,11 @@ export const mockSwap: SnsSummarySwap = {
   decentralization_sale_open_timestamp_seconds: undefined,
   finalize_swap_in_progress: [],
   lifecycle: SnsSwapLifecycle.Open,
-  open_sns_token_swap_proposal_id: [BigInt(1000)],
+  open_sns_token_swap_proposal_id: [1_000n],
   buyers: [],
   params: mockSnsParams,
+  direct_participation_icp_e8s: [],
+  neurons_fund_participation_icp_e8s: [],
 };
 
 export const mockQuerySwap: SnsSwap = {
@@ -159,7 +161,7 @@ export const mockQuerySwap: SnsSwap = {
   init: [],
   already_tried_to_auto_finalize: [],
   lifecycle: SnsSwapLifecycle.Open,
-  open_sns_token_swap_proposal_id: [BigInt(1000)],
+  open_sns_token_swap_proposal_id: [1_000n],
   buyers: [],
   params: [mockSnsParams],
   next_ticket_id: [],
@@ -167,14 +169,15 @@ export const mockQuerySwap: SnsSwap = {
   purge_old_tickets_next_principal: [],
   direct_participation_icp_e8s: [],
   neurons_fund_participation_icp_e8s: [],
+  decentralization_swap_termination_timestamp_seconds: [],
 };
 
 export const mockDerived: SnsSwapDerivedState = {
   buyer_total_icp_e8s: BigInt(100 * 100000000),
   sns_tokens_per_icp: 1,
-  cf_participant_count: [BigInt(100)],
-  direct_participant_count: [BigInt(300)],
-  cf_neuron_count: [BigInt(200)],
+  cf_participant_count: [100n],
+  direct_participant_count: [300n],
+  cf_neuron_count: [200n],
   direct_participation_icp_e8s: [],
   neurons_fund_participation_icp_e8s: [],
 };
@@ -182,9 +185,9 @@ export const mockDerived: SnsSwapDerivedState = {
 export const mockDerivedResponse: SnsGetDerivedStateResponse = {
   buyer_total_icp_e8s: [BigInt(100 * 100000000)],
   sns_tokens_per_icp: [1],
-  cf_participant_count: [BigInt(100)],
-  direct_participant_count: [BigInt(300)],
-  cf_neuron_count: [BigInt(200)],
+  cf_participant_count: [100n],
+  direct_participant_count: [300n],
+  cf_neuron_count: [200n],
   direct_participation_icp_e8s: [],
   neurons_fund_participation_icp_e8s: [],
 };
@@ -200,7 +203,14 @@ export const mockMetadata: SnsSummaryMetadata = {
 export const mockToken: IcrcTokenMetadata = {
   name: "Tetris",
   symbol: "TET",
-  fee: BigInt(0),
+  fee: 0n,
+  decimals: 8,
+};
+
+export const mockLifecycleResponse: SnsGetLifecycleResponse = {
+  lifecycle: [SnsSwapLifecycle.Open],
+  decentralization_sale_open_timestamp_seconds: [],
+  decentralization_swap_termination_timestamp_seconds: [],
 };
 
 export const mockSnsSummaryList: SnsSummary[] = [
@@ -214,6 +224,9 @@ export const mockSnsSummaryList: SnsSummary[] = [
     token: mockToken,
     swap: mockSwap,
     derived: mockDerived,
+    init: mockInit,
+    swapParams: mockSnsParams,
+    lifecycle: mockLifecycleResponse,
   },
   {
     rootCanisterId: principal(1),
@@ -231,10 +244,14 @@ export const mockSnsSummaryList: SnsSummary[] = [
     token: {
       name: "Pacman",
       symbol: "PAC",
-      fee: BigInt(0),
+      fee: 0n,
+      decimals: 8,
     },
     swap: mockSwap,
     derived: mockDerived,
+    init: mockInit,
+    swapParams: mockSnsParams,
+    lifecycle: mockLifecycleResponse,
   },
   {
     rootCanisterId: principal(2),
@@ -252,10 +269,14 @@ export const mockSnsSummaryList: SnsSummary[] = [
     token: {
       name: "Mario",
       symbol: "SPM",
-      fee: BigInt(0),
+      fee: 0n,
+      decimals: 8,
     },
     swap: mockSwap,
     derived: mockDerived,
+    init: mockInit,
+    swapParams: mockSnsParams,
+    lifecycle: mockLifecycleResponse,
   },
   {
     rootCanisterId: principal(3),
@@ -273,10 +294,14 @@ export const mockSnsSummaryList: SnsSummary[] = [
     token: {
       name: "Kong",
       symbol: "DKG",
-      fee: BigInt(0),
+      fee: 0n,
+      decimals: 8,
     },
     swap: mockSwap,
     derived: mockDerived,
+    init: mockInit,
+    swapParams: mockSnsParams,
+    lifecycle: mockLifecycleResponse,
   },
 ];
 
@@ -322,6 +347,10 @@ type SnsSummaryParams = {
   maxNFParticipation?: bigint;
   neuronsFundIsParticipating?: [boolean] | [];
   swapOpenTimestampSeconds?: bigint;
+  nnsProposalId?: bigint;
+  rootCanisterId?: Principal;
+  projectName?: string;
+  logo?: string;
 };
 
 export const createSummary = ({
@@ -333,7 +362,7 @@ export const createSummary = ({
   tokensDistributed = 2_000_000_000_000n,
   minParticipantCommitment = 100_000_000n,
   maxParticipantCommitment = 5_000_000_000n,
-  swapDueTimestampSeconds = 1630444800n,
+  swapDueTimestampSeconds = 1_630_444_800n,
   minTotalCommitment,
   maxTotalCommitment,
   currentTotalCommitment,
@@ -344,6 +373,10 @@ export const createSummary = ({
   maxNFParticipation,
   neuronsFundIsParticipating,
   swapOpenTimestampSeconds,
+  nnsProposalId,
+  rootCanisterId,
+  projectName,
+  logo,
 }: SnsSummaryParams): SnsSummary => {
   const init: SnsSwapInit = {
     ...mockInit,
@@ -365,9 +398,11 @@ export const createSummary = ({
               toNullable(maxNFParticipation),
             coefficient_intervals: [],
             min_direct_participation_threshold_icp_e8s: [],
+            ideal_matched_participation_function: [],
           },
         ]
       : [],
+    nns_proposal_id: toNullable(nnsProposalId),
   };
   const params: SnsParams = {
     ...mockSnsParams,
@@ -387,9 +422,16 @@ export const createSummary = ({
     neurons_fund_participation_icp_e8s: toNullable(neuronsFundCommitment),
     direct_participation_icp_e8s: toNullable(directCommitment),
   };
+  const metadata: SnsSummaryMetadata = {
+    ...mockMetadata,
+    name: projectName ?? mockMetadata.name,
+    logo: logo ?? mockMetadata.logo,
+  };
   const summary = summaryForLifecycle(lifecycle);
   return {
     ...summary,
+    rootCanisterId: rootCanisterId ?? summary.rootCanisterId,
+    metadata,
     swap: {
       ...summary.swap,
       init: [init],
@@ -430,11 +472,12 @@ export const mockQueryMetadataResponse: SnsGetMetadataResponse = {
 export const mockSnsToken: IcrcTokenMetadata = {
   symbol: "TST",
   name: "Tetris",
-  fee: BigInt(40_000),
+  fee: 40_000n,
+  decimals: 8,
 };
 
 export const mockQueryTokenResponse: IcrcTokenMetadataResponse = [
-  [IcrcMetadataResponseEntries.DECIMALS, { Nat: BigInt(8) }],
+  [IcrcMetadataResponseEntries.DECIMALS, { Nat: 8n }],
   [IcrcMetadataResponseEntries.NAME, { Text: mockSnsToken.name }],
   [IcrcMetadataResponseEntries.SYMBOL, { Text: mockSnsToken.symbol }],
   [IcrcMetadataResponseEntries.FEE, { Nat: mockSnsToken.fee }],
@@ -455,9 +498,6 @@ export const mockTokenStore = (run?: Subscriber<Token>) => {
 export const mockUniverse: Universe = {
   canisterId: principal(0).toText(),
   summary: mockSnsFullProject.summary,
-};
-
-export const mockLifecycleResponse: SnsGetLifecycleResponse = {
-  lifecycle: [SnsSwapLifecycle.Open],
-  decentralization_sale_open_timestamp_seconds: [],
+  title: mockSnsFullProject.summary.metadata.name,
+  logo: mockSnsFullProject.summary.metadata.logo,
 };

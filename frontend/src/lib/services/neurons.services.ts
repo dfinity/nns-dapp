@@ -8,10 +8,10 @@ import {
   SNS_SUPPORT_VERSION,
 } from "$lib/constants/ledger-app.constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
+import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
-import { ENABLE_STAKE_NEURON_ICRC1 } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import {
@@ -19,7 +19,6 @@ import {
   toastsShow,
   toastsSuccess,
 } from "$lib/stores/toasts.store";
-import { mainTransactionFeeE8sStore } from "$lib/stores/transaction-fees.store";
 import type { Account } from "$lib/types/account";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
 import {
@@ -53,7 +52,6 @@ import { numberToE8s } from "$lib/utils/token.utils";
 import { AnonymousIdentity, type Identity } from "@dfinity/agent";
 import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import { isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
 import {
@@ -196,7 +194,7 @@ export const stakeNeuron = async ({
     const stake = numberToE8s(amount);
     assertEnoughAccountFunds({
       account,
-      amountE8s: stake,
+      amountUlps: stake,
     });
 
     if (!isEnoughToStakeNeuron({ stakeE8s: stake })) {
@@ -215,28 +213,13 @@ export const stakeNeuron = async ({
     const { ledgerCanisterIdentity, controller, fromSubAccount, identity } =
       getStakeNeuronPropsByAccount({ account, accountIdentity });
 
-    let newNeuronId: NeuronId;
-
-    // Ledger HW app currently (2023-09-21) doesn't support staking with ICRC-1.
-    if (get(ENABLE_STAKE_NEURON_ICRC1) && !isHardwareWallet) {
-      newNeuronId = await governanceApiService.stakeNeuronIcrc1({
-        stake,
-        identity,
-        ledgerCanisterIdentity,
-        controller,
-        fromSubAccount: isNullish(fromSubAccount)
-          ? undefined
-          : new Uint8Array(fromSubAccount),
-      });
-    } else {
-      newNeuronId = await governanceApiService.stakeNeuron({
-        stake,
-        identity,
-        ledgerCanisterIdentity,
-        controller,
-        fromSubAccount,
-      });
-    }
+    const newNeuronId = await governanceApiService.stakeNeuron({
+      stake,
+      identity,
+      ledgerCanisterIdentity,
+      controller,
+      fromSubAccount,
+    });
 
     if (loadNeuron) {
       await getAndLoadNeuron(newNeuronId);

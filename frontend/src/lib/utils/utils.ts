@@ -1,6 +1,7 @@
 import { toastsError, toastsHide } from "$lib/stores/toasts.store";
 import type { PngDataUrl } from "$lib/types/assets";
-import type { Principal } from "@dfinity/principal";
+import type { BasisPoints } from "$lib/types/proposals";
+import { JSON_KEY_PRINCIPAL, type Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
 import { errorToString } from "./error.utils";
 
@@ -17,8 +18,9 @@ export const stringifyJson = (
     indentation?: number;
     devMode?: boolean;
   }
-): string =>
-  JSON.stringify(
+): string => {
+  const __UNDEFINED__ = "__UNDEFINED__";
+  const result = JSON.stringify(
     value,
     (_, value) => {
       switch (typeof value) {
@@ -32,6 +34,11 @@ export const stringifyJson = (
             const asText = value.toString();
             // To not stringify NOT Principal instance that contains _isPrincipal field
             return asText === "[object Object]" ? value : asText;
+          }
+
+          // For proposal rendering, historically we display {principal: "1234"}, but in stringified JSON, principals are now encoded as {"__principal__": "1234"}.
+          if (nonNullish(value) && JSON_KEY_PRINCIPAL in value) {
+            return value[JSON_KEY_PRINCIPAL];
           }
 
           // optimistic hash stringifying
@@ -56,10 +63,15 @@ export const stringifyJson = (
           return value.toString();
         }
       }
-      return value;
+      return value === undefined ? __UNDEFINED__ : value;
     },
     options?.indentation ?? 0
   );
+
+  return (
+    result?.replace(new RegExp(`"${__UNDEFINED__}"`, "g"), "undefined") ?? ""
+  );
+};
 
 /**
  * Returns only uniq elements of the list (uses JSON.stringify for comparation)
@@ -371,30 +383,38 @@ export const isPngAsset = (
  * @param obj
  * @returns parsed object
  */
-export const expandObject = (
-  obj: Record<string, unknown>
-): Record<string, unknown> =>
-  Object.keys(obj).reduce(
-    (acc, key) => {
-      const value = obj[key];
-      if (typeof value === "string") {
-        try {
-          acc[key] = JSON.parse(value);
-        } catch (e) {
-          acc[key] = value;
-        }
-      } else if (typeof value === "object") {
-        acc[key] =
-          value !== null
-            ? expandObject(value as Record<string, unknown>)
-            : value;
-      } else {
-        acc[key] = value;
-      }
-      return acc;
-    },
-    {} as Record<string, unknown>
-  );
+export const expandObject = (value: unknown): unknown => {
+  if (value === null || value === undefined) {
+    return value;
+  }
+  if (typeof value === "string") {
+    try {
+      return JSON.parse(value);
+    } catch (e: unknown) {
+      return value;
+    }
+  }
+  if (Array.isArray(value)) {
+    return value.map(expandObject);
+  }
+  if (typeof value === "object") {
+    if (isPrincipal(value)) {
+      // Do not expand Principal to keep the prototype methods
+      return value;
+    }
+
+    // to avoid mutating original object
+    const result = { ...value };
+    Object.keys(result).forEach(
+      (key) =>
+        ((result as Record<string, unknown>)[key] = expandObject(
+          (result as Record<string, unknown>)[key]
+        ))
+    );
+    return result;
+  }
+  return value;
+};
 
 export const sameBufferData = (
   buffer1: ArrayBuffer,
@@ -412,3 +432,56 @@ export const sameBufferData = (
   }
   return true;
 };
+
+export const getObjMaxDepth = (obj: unknown): number => {
+  if (typeof obj !== "object" || obj === null) {
+    return 0; // If it's not an object, return 0.
+  }
+
+  const keyCount = Object.keys(obj).length;
+  if (keyCount === 0) {
+    return 0; // If it's an empty object, return 0.
+  }
+  // or calculate children depth
+  let childrenMaxDepth = 0;
+  for (const key in obj) {
+    // eslint-disable-next-line no-prototype-builtins
+    if (obj.hasOwnProperty(key)) {
+      const depth = getObjMaxDepth((obj as Record<string, unknown>)[key]);
+      if (depth > childrenMaxDepth) {
+        childrenMaxDepth = depth;
+      }
+    }
+  }
+
+  return 1 + childrenMaxDepth; // Add 1 for the current level.
+};
+
+export const typeOfLikeANumber = (value: unknown): boolean =>
+  typeof value === "number" ||
+  typeof value === "bigint" ||
+  (typeof value === "string" && value.length > 0 && !isNaN(Number(value)));
+
+/**
+ * Split a value into 8 characters chunks
+ * @example
+ * 00001111222233334444 --> ["0000", "11112222", "33334444"]
+ */
+export const splitE8sIntoChunks = (value: unknown): string[] => {
+  if (!typeOfLikeANumber(value)) {
+    console.error("splitE8sIntoChunks: value is not a number");
+    return [`${stringifyJson(value)}`];
+  }
+
+  const chars = `${value}`.split("");
+  const chunks: string[] = [];
+  for (let i = chars.length; i > 0; i -= 8) {
+    const chunk = chars.slice(Math.max(i - 8, 0), i);
+    chunks.unshift(chunk.join(""));
+  }
+
+  return chunks;
+};
+
+export const basisPointsToPercent = (basisPoints: BasisPoints): number =>
+  Number(basisPoints) / 100;

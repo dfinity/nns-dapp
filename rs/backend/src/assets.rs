@@ -4,11 +4,13 @@ use crate::metrics_encoder::MetricsEncoder;
 use crate::state::{State, STATE};
 use crate::stats::encode_metrics;
 use crate::StableState;
+use base64::{engine::general_purpose::STANDARD as BASE64_ENGINE, Engine};
 use candid::{CandidType, Decode, Encode};
 use dfn_core::api::ic0::time;
 use flate2::read::GzDecoder;
 use flate2::write::GzEncoder;
 use flate2::Compression;
+use ic_cdk::println;
 use ic_certified_map::{labeled, labeled_hash, AsHashTree, Hash, RbTree};
 use serde::{Deserialize, Serialize};
 use serde_bytes::ByteBuf;
@@ -119,7 +121,7 @@ impl Assets {
     /// - "" -> "/index.html" A directory does not need a trailing slash.  E.g. `/launchpad` may
     ///   serve `/launchpad/index.html`.  Please note that if this is done, relative URLs in
     ///   `index.html` will break so be careful if using this much requested but error-prone option.
-    const SUFFIX_REWRITES: [(&str, &str); 3] = [("", ""), ("/", "/index.html"), ("", "/index.html")];
+    const SUFFIX_REWRITES: [(&'static str, &'static str); 3] = [("", ""), ("/", "/index.html"), ("", "/index.html")];
     /// Inserts an asset into the database.
     ///
     /// - The asset encoding is deduced from the asset path suffix.  Thus
@@ -324,8 +326,8 @@ fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -
         "IC-Certificate".to_string(),
         format!(
             "certificate=:{}:, tree=:{}:",
-            base64::encode(certificate),
-            base64::encode(serializer.into_inner())
+            BASE64_ENGINE.encode(certificate),
+            BASE64_ENGINE.encode(serializer.into_inner())
         ),
     )
 }
@@ -378,7 +380,7 @@ pub fn init_assets() {
 ///       as it would force the data to be copied into a new vector, even when the
 ///       original is no longer needed.
 pub fn insert_tar_xz(compressed: Vec<u8>) {
-    dfn_core::api::print("Inserting assets...");
+    println!("Inserting assets...");
     let mut num_assets = 0;
     let mut decompressed = Vec::new();
     lzma_rs::xz_decompress(&mut compressed.as_ref(), &mut decompressed).unwrap();
@@ -421,7 +423,7 @@ pub fn insert_tar_xz(compressed: Vec<u8>) {
         }
         update_root_hash(&state.asset_hashes.borrow_mut());
     });
-    dfn_core::api::print(format!("Inserted {num_assets} assets."));
+    println!("Inserted {num_assets} assets.");
 }
 
 impl StableState for Assets {

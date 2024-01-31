@@ -27,29 +27,57 @@
 </script>
 
 <main data-tid="launchpad-component">
-  <h2>{$i18n.sns_launchpad.open_projects}</h2>
-  <Projects testId="open-projects" status={SnsSwapLifecycle.Open} />
+  <div class="open-projects">
+    <h2>{$i18n.sns_launchpad.open_projects}</h2>
+    <Projects testId="open-projects" status={SnsSwapLifecycle.Open} />
+  </div>
 
   {#if showAdopted}
-    <h2>{$i18n.sns_launchpad.upcoming_projects}</h2>
-    <Projects testId="upcoming-projects" status={SnsSwapLifecycle.Adopted} />
+    <div class="upcoming-projects">
+      <h2>{$i18n.sns_launchpad.upcoming_projects}</h2>
+      <Projects testId="upcoming-projects" status={SnsSwapLifecycle.Adopted} />
+    </div>
   {/if}
 
   {#if showCommitted}
-    <h2>{$i18n.sns_launchpad.committed_projects}</h2>
-    <Projects testId="committed-projects" status={SnsSwapLifecycle.Committed} />
+    <div class="committed-projects">
+      <h2>{$i18n.sns_launchpad.committed_projects}</h2>
+      <Projects
+        testId="committed-projects"
+        status={SnsSwapLifecycle.Committed}
+      />
+    </div>
   {/if}
 
-  <h2>{$i18n.sns_launchpad.proposals}</h2>
-  <Proposals />
+  <div class="proposals">
+    <h2>{$i18n.sns_launchpad.proposals}</h2>
+    <Proposals />
+  </div>
 </main>
 
 <style lang="scss">
-  h2 {
-    margin: var(--padding-8x) 0 var(--padding-3x);
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
-    &:first-of-type {
-      margin-top: var(--padding);
+  main {
+    display: grid;
+    gap: var(--padding-4x);
+
+    // display "proposals" before "committed-projects" on mobile
+    .committed-projects {
+      order: 2;
+      @include media.min-width(medium) {
+        order: 1;
+      }
     }
+    .proposals {
+      order: 1;
+      @include media.min-width(medium) {
+        order: 2;
+      }
+    }
+  }
+
+  h2 {
+    margin: 0 0 var(--padding-3x);
   }
 </style>

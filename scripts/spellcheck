@@ -21,7 +21,7 @@ source "$SOURCE_DIR/clap.bash"
 source "$(clap.build)"
 
 EXIT_CODE=0
-cargo spellcheck || EXIT_CODE=1
+cargo spellcheck --code 1 || EXIT_CODE=1
 "$SOURCE_DIR/spellcheck-md" || EXIT_CODE=1
 "$SOURCE_DIR/spellcheck-changelog" || EXIT_CODE=1
 exit "$EXIT_CODE"

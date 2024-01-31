@@ -15,6 +15,11 @@
 
 <div class="wrapper">
   <div>
+    <p class="description">
+      {$i18n.accounts.attach_hardware_description}
+    </p>
+  </div>
+  <div>
     <p class="label" data-tid="hardware-wallet-principal">
       {$i18n.core.principal}
     </p>

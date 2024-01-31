@@ -1,6 +1,10 @@
 {
   "args": [
-    "--new"
+    "--new",
+    "--test_network",
+    "devenv_user",
+    "--test_domain",
+    "user-ingress.devenv.dfinity.network"
   ],
   "behavior": [
     {
@@ -88,19 +92,19 @@
       "exitCode": 0
     },
     {
-      "command": "dfx canister id nns-dapp --network staging",
+      "command": "dfx canister id nns-dapp --network devenv_user",
       "stdout": "jefp3-bqaaa-aaaaa-aacyq-cai",
       "stderr": "",
       "exitCode": 0
     },
     {
-      "command": "cat nns-dapp-arg-staging.did",
+      "command": "cat nns-dapp-arg-devenv_user.did",
       "stdout": "(record{})",
       "stderr": "",
       "exitCode": 0
     },
     {
-      "command": "get_module_hash_from_network staging",
+      "command": "get_module_hash_from_network devenv_user",
       "stdout": "8888888888888888888888888888888888888888888888888888888888888888",
       "stderr": "",
       "exitCode": 0
@@ -154,31 +158,31 @@
     "Local WASM hash: \u001b[32m6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4\u001b[0m",
     "👇 Press enter to run the following command:",
     "",
-    "scripts/canister_ids --remove --network staging --canister nns-dapp",
+    "scripts/canister_ids --remove --network devenv_user --canister nns-dapp",
     "",
-    "scripts/canister_ids --remove --network staging --canister nns-dapp: \u001b[32mDone\u001b[0m",
+    "scripts/canister_ids --remove --network devenv_user --canister nns-dapp: \u001b[32mDone\u001b[0m",
     "dfx identity: \u001b[32mdefault: s2dw5-fmktb-knrnq-772tr-ca3g7-me224-st35j-f3eli-xx2vf-aoesd-2qe\u001b[0m",
     "👇 Press enter to run the following command:",
     "",
-    "dfx canister create nns-dapp --network staging --no-wallet",
+    "dfx canister create nns-dapp --network devenv_user --no-wallet",
     "",
-    "dfx canister create nns-dapp --network staging --no-wallet: \u001b[32mDone\u001b[0m",
-    "NNS-dapp staging canister ID: \u001b[32mjefp3-bqaaa-aaaaa-aacyq-cai\u001b[0m",
-    "Current NNS-dapp staging canister ID: \u001b[32mjefp3-bqaaa-aaaaa-aacyq-cai\u001b[0m",
+    "dfx canister create nns-dapp --network devenv_user --no-wallet: \u001b[32mDone\u001b[0m",
+    "NNS-dapp devenv_user canister ID: \u001b[32mjefp3-bqaaa-aaaaa-aacyq-cai\u001b[0m",
+    "Current NNS-dapp devenv_user canister ID: \u001b[32mjefp3-bqaaa-aaaaa-aacyq-cai\u001b[0m",
     "👇 Press enter to run the following command:",
     "",
-    "DFX_NETWORK=staging ./config.sh",
+    "DFX_NETWORK=devenv_user ./config.sh",
     "",
-    "DFX_NETWORK=staging ./config.sh: \u001b[32mDone\u001b[0m",
+    "DFX_NETWORK=devenv_user ./config.sh: \u001b[32mDone\u001b[0m",
     "👇 Press enter to run the following command:",
     "",
-    "dfx canister install nns-dapp --argument \\(record\\{\\}\\) --network staging --wasm ./release/ci/nns-dapp.wasm.gz",
+    "dfx canister install nns-dapp --argument \\(record\\{\\}\\) --network devenv_user --wasm ./release/ci/nns-dapp.wasm.gz",
     "",
-    "dfx canister install nns-dapp --argument \\(record\\{\\}\\) --network staging --wasm ./release/ci/nns-dapp.wasm.gz: \u001b[32mDone\u001b[0m",
-    "Staging URL: \u001b[32mhttps://jefp3-bqaaa-aaaaa-aacyq-cai.nnsdapp.dfinity.network/\u001b[0m",
+    "dfx canister install nns-dapp --argument \\(record\\{\\}\\) --network devenv_user --wasm ./release/ci/nns-dapp.wasm.gz: \u001b[32mDone\u001b[0m",
+    "Release candidate URL: \u001b[32mhttps://jefp3-bqaaa-aaaaa-aacyq-cai.user-ingress.devenv.dfinity.network/\u001b[0m",
     "Values don't match!",
     "CI NNS-dapp WASM hash: 6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
-    "Staging WASM hash: 8888888888888888888888888888888888888888888888888888888888888888"
+    "RC WASM hash: 8888888888888888888888888888888888888888888888888888888888888888"
   ],
   "expectedExitCode": 1
 }

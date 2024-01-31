@@ -12,8 +12,9 @@
   export let minLength: number | undefined = undefined;
   export let max: number | undefined = undefined;
   export let errorMessage: string | undefined = undefined;
-  let error: boolean;
-  $: error = errorMessage !== undefined;
+  let hasError: boolean;
+  $: hasError = errorMessage !== undefined;
+  export let warningMessage: string | undefined = undefined;
   // https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete
   export let autocomplete: "off" | "on" | undefined = undefined;
   export let value: string | number | undefined = undefined;
@@ -22,7 +23,7 @@
   export let testId = "input-with-error-compoment";
 </script>
 
-<div class="wrapper" data-tid={testId} class:error>
+<div class="wrapper" data-tid={testId} class:error={hasError}>
   <Input
     {inputType}
     {required}
@@ -45,11 +46,11 @@
     <slot name="inner-end" slot="inner-end" />
   </Input>
 
-  {#if error}
+  {#if errorMessage || warningMessage}
     <p class="error-message" data-tid="input-error-message">
       <IconInfo />
       <span>
-        {errorMessage}
+        {errorMessage ?? warningMessage}
       </span>
     </p>
   {/if}

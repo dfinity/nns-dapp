@@ -1,113 +1,130 @@
 <script lang="ts">
-  import { Card, KeyValuePair, Value } from "@dfinity/gix-components";
-  import { i18n } from "$lib/stores/i18n";
   import {
-    type ProposalStatusColor,
-    PROPOSER_ID_DISPLAY_SPLIT_LENGTH,
-  } from "$lib/constants/proposals.constants";
+    Card,
+    IconChat,
+    IconClockNoFill,
+    IconUser,
+    Value,
+  } from "@dfinity/gix-components";
+  import { i18n } from "$lib/stores/i18n";
   import Countdown from "./Countdown.svelte";
+  import { nowInSeconds } from "$lib/utils/date.utils";
+  import { nonNullish } from "@dfinity/utils";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
+  import { PROPOSER_ID_DISPLAY_SPLIT_LENGTH } from "$lib/constants/proposals.constants";
+  import type { UniversalProposalStatus } from "$lib/types/proposals";
+  import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
 
   export let hidden = false;
-  export let statusString: string | undefined;
+  export let status: UniversalProposalStatus | undefined;
   export let id: bigint | undefined;
+  export let heading: string;
   export let title: string | undefined;
-  export let color: ProposalStatusColor | undefined;
   export let topic: string | undefined = undefined;
   export let proposer: string | undefined;
-  export let type: string | undefined;
   export let deadlineTimestampSeconds: bigint | undefined;
   export let href: string;
 </script>
 
 <li class:hidden>
   <Card testId="proposal-card" {href}>
-    <div class="id" data-proposal-id={id}>
-      <Value ariaLabel={$i18n.proposal_detail.id_prefix} testId="proposal-id"
-        >{id}</Value
-      >
+    <div class="container">
+      <div>
+        <div class="header">
+          <div class="id" data-proposal-id={id}>
+            <Value
+              ariaLabel={$i18n.proposal_detail.id_prefix}
+              testId="proposal-id">{$i18n.proposal_detail.id}: {id}</Value
+            >
+          </div>
+
+          {#if nonNullish(status)}
+            <ProposalStatusTag testId="proposal-status" {status} />
+          {/if}
+        </div>
+
+        <h3 data-tid="proposal-card-heading">{heading}</h3>
+
+        {#if title}
+          <blockquote class="title-placeholder">
+            <p class="description">{title}</p>
+          </blockquote>
+        {/if}
+      </div>
+
+      <div>
+        {#if nonNullish(topic)}
+          <p class="info">
+            <IconChat />
+            <span class="visually-hidden"
+              >{$i18n.proposal_detail.topic_prefix}</span
+            ><output data-tid="proposal-topic">{topic}</output>
+          </p>
+        {/if}
+
+        {#if nonNullish(proposer)}
+          <p class="info">
+            <IconUser />
+            <span class="visually-hidden"
+              >{$i18n.proposal_detail.proposer_prefix}</span
+            ><output data-proposer-id={proposer}
+              >{shortenWithMiddleEllipsis(
+                proposer,
+                PROPOSER_ID_DISPLAY_SPLIT_LENGTH
+              )}</output
+            >
+          </p>
+        {/if}
+
+        {#if nonNullish(deadlineTimestampSeconds) && deadlineTimestampSeconds > nowInSeconds()}
+          <p class="info">
+            <IconClockNoFill />
+            <span class="visually-hidden"
+              >{$i18n.proposal_detail.proposer_prefix}</span
+            ><output><Countdown {deadlineTimestampSeconds} /></output>
+          </p>
+        {/if}
+      </div>
     </div>
-
-    <div class="meta-data">
-      {#if type !== undefined}
-        <KeyValuePair testId="proposal-type">
-          <span slot="key">{$i18n.proposal_detail.type_prefix}</span>
-          <span
-            slot="value"
-            class="meta-data-value"
-            aria-label={$i18n.proposal_detail.type_prefix}>{type}</span
-          >
-        </KeyValuePair>
-      {/if}
-
-      {#if topic !== undefined}
-        <KeyValuePair testId="proposal-topic">
-          <span slot="key">{$i18n.proposal_detail.topic_prefix}</span>
-          <span slot="value" class="meta-data-value">{topic ?? ""}</span>
-        </KeyValuePair>
-      {/if}
-
-      {#if proposer !== undefined}
-        <KeyValuePair testId="shortened-proposer">
-          <span slot="key">{$i18n.proposal_detail.proposer_prefix}</span>
-          <span slot="value" class="meta-data-value"
-            >{shortenWithMiddleEllipsis(
-              proposer,
-              PROPOSER_ID_DISPLAY_SPLIT_LENGTH
-            )}</span
-          >
-        </KeyValuePair>
-      {/if}
-    </div>
-
-    <blockquote class="title-placeholder">
-      <p class="description">{title}</p>
-    </blockquote>
-
-    <KeyValuePair testId="proposal-status">
-      <p slot="key" class={`${color ?? ""} status`}>
-        {statusString}
-      </p>
-      <Countdown slot="value" {deadlineTimestampSeconds} />
-    </KeyValuePair>
   </Card>
 </li>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/text";
-  @use "@dfinity/gix-components/dist/styles/mixins/card";
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
-  li.hidden {
-    visibility: hidden;
+  li {
+    list-style: none;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--padding);
   }
 
   .id {
-    display: flex;
-    justify-content: flex-end;
-
-    margin-bottom: var(--padding);
-
-    :global(.value) {
-      color: var(--tertiary);
-    }
+    @include text.truncate;
   }
 
-  .meta-data {
-    margin-bottom: var(--padding);
-
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding);
-
-    // Prevent texts that need two lines leave space on the right side
-    & .meta-data-value {
-      text-align: right;
-    }
+  h3 {
+    padding: var(--padding-2x) 0 var(--padding-0_5x);
+    margin-bottom: var(--padding-2x);
   }
 
-  .title-placeholder {
-    flex-grow: 1;
+  p {
+    margin: 0;
+  }
+
+  blockquote {
+    padding: 0 0 var(--padding-3x);
 
     p {
       @include text.clamp(6);
@@ -115,29 +132,19 @@
     }
   }
 
-  /**
-   * TODO: cleanup once legacy removed, status (L2-954) and counter (L2-955)
-   */
-  .status {
-    // Default color: ProposalStatusColor.PRIMARY
-    --badge-color: var(--primary);
-    color: var(--badge-color);
+  .info {
+    display: flex;
+    align-items: center;
+    gap: var(--padding);
+    padding: 0 0 var(--padding-1_5x);
 
-    margin-bottom: 0;
-
-    // ProposalStatusColor.WARNING
-    &.warning {
-      --badge-color: var(--warning-emphasis);
+    :global(svg) {
+      min-width: 20px;
     }
 
-    // ProposalStatusColor.SUCCESS
-    &.success {
-      --badge-color: var(--positive-emphasis);
-    }
-
-    // ProposalStatusColor.ERROR
-    &.error {
-      --badge-color: var(--negative-emphasis-light);
+    span,
+    output {
+      @include text.clamp(1);
     }
   }
 </style>

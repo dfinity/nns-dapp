@@ -1,11 +1,12 @@
+import { AddUserToHotkeysPo } from "$tests/page-objects/AddUserToHotkeys.page-object";
 import { ConfirmDissolveDelayPo } from "$tests/page-objects/ConfirmDissolveDelay.page-object";
 import { EditFollowNeuronsPo } from "$tests/page-objects/EditFollowNeurons.page-object";
+import { ModalPo } from "$tests/page-objects/Modal.page-object";
 import { NnsStakeNeuronPo } from "$tests/page-objects/NnsStakeNeuron.page-object";
 import { SetDissolveDelayPo } from "$tests/page-objects/SetDissolveDelay.page-object";
-import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class NnsStakeNeuronModalPo extends BasePageObject {
+export class NnsStakeNeuronModalPo extends ModalPo {
   private static readonly TID = "nns-stake-neuron-modal-component";
 
   static under(element: PageObjectElement): NnsStakeNeuronModalPo | null {
@@ -18,6 +19,10 @@ export class NnsStakeNeuronModalPo extends BasePageObject {
     return NnsStakeNeuronPo.under(this.root);
   }
 
+  getAddUserToHotkeysPo(): AddUserToHotkeysPo {
+    return AddUserToHotkeysPo.under(this.root);
+  }
+
   getSetDissolveDelayPo(): SetDissolveDelayPo {
     return SetDissolveDelayPo.under(this.root);
   }
@@ -28,10 +33,6 @@ export class NnsStakeNeuronModalPo extends BasePageObject {
 
   getEditFollowNeuronsPo(): EditFollowNeuronsPo {
     return EditFollowNeuronsPo.under(this.root);
-  }
-
-  closeModal(): Promise<void> {
-    return this.click("close-modal");
   }
 
   async stake({

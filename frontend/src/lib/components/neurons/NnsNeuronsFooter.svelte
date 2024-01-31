@@ -6,7 +6,7 @@
   import { sortedNeuronStore } from "$lib/stores/neurons.store";
   import { MAX_NEURONS_MERGED } from "$lib/constants/neurons.constants";
   import { i18n } from "$lib/stores/i18n";
-  import Tooltip from "$lib/components/ui/Tooltip.svelte";
+  import { Tooltip } from "@dfinity/gix-components";
   import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 
@@ -29,7 +29,7 @@
       data-tid="stake-neuron-button"
       class="primary full-width"
       on:click={() => openModal("stake-neuron")}
-      >{$i18n.neurons.stake_neurons}</button
+      >{$i18n.neurons.stake_icp}</button
     >
     {#if enoughNeuronsToMerge}
       <button

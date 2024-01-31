@@ -16,7 +16,7 @@ export const mockSnsMainAccount: Account = {
   identifier: encodeIcrcAccount({
     owner: mockPrincipal,
   }),
-  balanceE8s: 890156712340000n,
+  balanceUlps: 890156712340000n,
   principal: mockPrincipal,
   type: "main",
 };
@@ -26,7 +26,7 @@ export const mockSnsSubAccount: Account = {
     owner: mockPrincipal,
     subaccount: Uint8Array.from(mockSubAccountArray),
   }),
-  balanceE8s: 567123401890000n,
+  balanceUlps: 567123401890000n,
   subAccount: mockSubAccountArray,
   name: "test subaccount",
   type: "subAccount",

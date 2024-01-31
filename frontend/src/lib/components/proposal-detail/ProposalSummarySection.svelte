@@ -31,6 +31,12 @@
 </div>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
+  h2 {
+    @include fonts.h3;
+  }
+
   a {
     overflow-wrap: break-word;
   }

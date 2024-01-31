@@ -4,7 +4,7 @@
   import NnsNeuronCard from "$lib/components/neurons/NnsNeuronCard.svelte";
   import { neuronsStore, sortedNeuronStore } from "$lib/stores/neurons.store";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
-  import Tooltip from "$lib/components/ui/Tooltip.svelte";
+  import { Tooltip } from "@dfinity/gix-components";
   import { isSpawning } from "$lib/utils/neuron.utils";
   import { pageStore } from "$lib/derived/page.derived";
   import { buildNeuronUrl } from "$lib/utils/navigation.utils";

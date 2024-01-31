@@ -1,9 +1,5 @@
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/dd51544944987556c978e774aa7a1992e5c11542/rs/registry/canister/canister/registry.did>
-type AddApiBoundaryNodePayload = record {
-  node_id : principal;
-  domain : text;
-  version : text;
-};
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-01-25_14-09+p2p-con/rs/registry/canister/canister/registry.did>
+type AddApiBoundaryNodePayload = record { node_id : principal; version : text };
 type AddFirewallRulesPayload = record {
   expected_hash : text;
   scope : FirewallRulesScope;
@@ -22,7 +18,10 @@ type AddNodePayload = record {
   prometheus_metrics_endpoint : text;
   http_endpoint : text;
   idkg_dealing_encryption_pk : opt vec nat8;
+  domain : opt text;
+  public_ipv4_config : opt vec text;
   xnet_endpoint : text;
+  chip_id : opt vec nat8;
   committee_signing_pk : vec nat8;
   node_signing_pk : vec nat8;
   transport_tls_cert : vec nat8;
@@ -195,23 +194,12 @@ type SetFirewallConfigPayload = record {
   firewall_config : text;
   ipv6_prefixes : vec text;
 };
-type SevFeatureStatus = variant {
-  SecureEnabled;
-  Disabled;
-  InsecureIntegrityEnabled;
-  SecureNoUpgradeEnabled;
-  InsecureEnabled;
-};
 type SubnetFeatures = record {
   canister_sandboxing : bool;
-  sev_status : opt SevFeatureStatus;
   http_requests : bool;
+  sev_enabled : opt bool;
 };
 type SubnetType = variant { application; verified_application; system };
-type UpdateApiBoundaryNodeDomainPayload = record {
-  node_id : principal;
-  domain : text;
-};
 type UpdateApiBoundaryNodesVersionPayload = record {
   version : text;
   node_ids : vec principal;
@@ -231,6 +219,16 @@ type UpdateElectedReplicaVersionsPayload = record {
 };
 type UpdateNodeDirectlyPayload = record {
   idkg_dealing_encryption_pk : opt vec nat8;
+};
+type UpdateNodeDomainDirectlyPayload = record {
+  node_id : principal;
+  domain : opt text;
+};
+type UpdateNodeIPv4ConfigDirectlyPayload = record {
+  node_id : principal;
+  gateway_ip_addrs : vec text;
+  prefix_length : nat32;
+  ip_addr : text;
 };
 type UpdateNodeOperatorConfigDirectlyPayload = record {
   node_operator_id : opt principal;
@@ -323,7 +321,6 @@ service : {
   reroute_canister_ranges : (RerouteCanisterRangesPayload) -> (Result_1);
   retire_replica_version : (RetireReplicaVersionPayload) -> ();
   set_firewall_config : (SetFirewallConfigPayload) -> ();
-  update_api_boundary_node_domain : (UpdateApiBoundaryNodeDomainPayload) -> ();
   update_api_boundary_nodes_version : (
       UpdateApiBoundaryNodesVersionPayload,
     ) -> ();
@@ -331,6 +328,10 @@ service : {
   update_elected_replica_versions : (UpdateElectedReplicaVersionsPayload) -> ();
   update_firewall_rules : (AddFirewallRulesPayload) -> ();
   update_node_directly : (UpdateNodeDirectlyPayload) -> (Result_1);
+  update_node_domain_directly : (UpdateNodeDomainDirectlyPayload) -> (Result_1);
+  update_node_ipv4_config_directly : (UpdateNodeIPv4ConfigDirectlyPayload) -> (
+      Result_1,
+    );
   update_node_operator_config : (UpdateNodeOperatorConfigPayload) -> ();
   update_node_operator_config_directly : (
       UpdateNodeOperatorConfigDirectlyPayload,

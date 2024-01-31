@@ -23,22 +23,24 @@ describe("ICManagementCanister", () => {
   describe("ICManagementCanister.getCanisterDetails", () => {
     it("returns account identifier when success", async () => {
       const settings = {
-        freezing_threshold: BigInt(2),
+        freezing_threshold: 2n,
         controllers: [
           Principal.fromText(
             "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"
           ),
         ],
-        memory_allocation: BigInt(4),
-        compute_allocation: BigInt(10),
+        reserved_cycles_limit: 1_000_000_000n,
+        memory_allocation: 4n,
+        compute_allocation: 10n,
       };
       const response: CanisterStatusResponse = {
         status: { running: null },
-        memory_size: BigInt(1000),
-        cycles: BigInt(10_000),
+        memory_size: 1_000n,
+        cycles: 10_000n,
         settings,
         module_hash: [],
-        idle_cycles_burned_per_day: BigInt(30_000),
+        idle_cycles_burned_per_day: 30_000n,
+        reserved_cycles: 1_000_000n,
       };
       const service = mock<IcManagementService>();
       service.canister_status.mockResolvedValue(response);
@@ -52,8 +54,14 @@ describe("ICManagementCanister", () => {
       );
     });
 
-    it("throws UserNotTheControllerError", async () => {
-      const error = new Error("code: 403");
+    it('throws UserNotTheControllerError if "Error Code" is "IC0512"', async () => {
+      const error = new Error(`Call failed:
+      Canister: aaaaa-aa
+      Method: canister_status (update)
+      "Request ID": "9dac7652f94de82d72f00ee492c132defc48da8dd6043516312275ab0fa5b5e1"
+      "Error code": "IC0512"
+      "Reject code": "5"
+      "Reject message": "Only controllers of canister mwewp-s4aaa-aaaaa-qabjq-cai can call ic00 method canister_status"`);
       const service = mock<IcManagementService>();
       service.canister_status.mockRejectedValue(error);
 
@@ -63,6 +71,25 @@ describe("ICManagementCanister", () => {
         icManagement.getCanisterDetails(Principal.fromText("aaaaa-aa"));
 
       expect(call).rejects.toThrowError(UserNotTheControllerError);
+    });
+
+    it('throws Error if "IC0512" is present, but not as "Error Code"', async () => {
+      const error = new Error(`Call failed:
+      Canister: aaaaa-aa
+      Method: canister_status (update)
+      "Request ID": "IC0512"
+      "Error code": "Another code"
+      "Reject code": "5"
+      "Reject message": "..."`);
+      const service = mock<IcManagementService>();
+      service.canister_status.mockRejectedValue(error);
+
+      const icManagement = await createICManagement(service);
+
+      const call = () =>
+        icManagement.getCanisterDetails(Principal.fromText("aaaaa-aa"));
+
+      expect(call).rejects.toThrowError(Error);
     });
 
     it("throws Error", async () => {
@@ -112,7 +139,13 @@ describe("ICManagementCanister", () => {
     });
 
     it("throws UserNotTheControllerError", async () => {
-      const error = new Error("code: 403");
+      const error = new Error(`Call failed:
+      Canister: aaaaa-aa
+      Method: canister_status (update)
+      "Request ID": "9dac7652f94de82d72f00ee492c132defc48da8dd6043516312275ab0fa5b5e1"
+      "Error code": "IC0512"
+      "Reject code": "5"
+      "Reject message": "Only controllers of canister mwewp-s4aaa-aaaaa-qabjq-cai can call ic00 method canister_status"`);
       const service = mock<IcManagementService>();
       service.update_settings.mockRejectedValue(error);
 

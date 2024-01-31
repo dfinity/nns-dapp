@@ -32,6 +32,7 @@ import {
 } from "@dfinity/gix-components";
 import {
   NeuronState,
+  NeuronType,
   Topic,
   Vote,
   ineligibleNeurons,
@@ -41,12 +42,10 @@ import {
   type Neuron,
   type NeuronId,
   type NeuronInfo,
-  type ProposalId,
   type ProposalInfo,
   type RewardEvent,
 } from "@dfinity/nns";
-import type { SnsVote } from "@dfinity/sns";
-import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
+import { ICPToken, fromNullable, isNullish, nonNullish } from "@dfinity/utils";
 import type { ComponentType } from "svelte";
 import {
   getAccountByPrincipal,
@@ -55,8 +54,7 @@ import {
 import { nowInSeconds } from "./date.utils";
 import { formatNumber } from "./format.utils";
 import { getVotingBallot, getVotingPower } from "./proposals.utils";
-import { toNnsVote } from "./sns-proposals.utils";
-import { formatToken } from "./token.utils";
+import { formatTokenE8s, numberToUlps } from "./token.utils";
 import { isDefined } from "./utils";
 
 export type StateInfo = {
@@ -125,8 +123,8 @@ export const neuronVotingPower = ({
   const dissolveDelay =
     newDissolveDelayInSeconds ?? neuron.dissolveDelaySeconds;
   const stakeE8s =
-    (neuron.fullNeuron?.cachedNeuronStake ?? BigInt(0)) +
-    (neuron.fullNeuron?.stakedMaturityE8sEquivalent ?? BigInt(0));
+    (neuron.fullNeuron?.cachedNeuronStake ?? 0n) +
+    (neuron.fullNeuron?.stakedMaturityE8sEquivalent ?? 0n);
   return votingPower({
     stakeE8s,
     dissolveDelay,
@@ -165,7 +163,7 @@ export const votingPower = ({
   minDissolveDelaySeconds = SECONDS_IN_HALF_YEAR,
 }: VotingPowerParams): bigint => {
   if (dissolveDelay < minDissolveDelaySeconds) {
-    return BigInt(0);
+    return 0n;
   }
   const dissolveDelayMultiplier = bonusMultiplier({
     amount: dissolveDelay,
@@ -251,6 +249,12 @@ export const getSpawningTimeInSeconds = (
 export const formatVotingPower = (value: bigint | number): string =>
   formatNumber(Number(value) / E8S_PER_ICP);
 
+export const isSeedNeuron = (neuron: NeuronInfo): boolean =>
+  neuron.neuronType === NeuronType.Seed;
+
+export const isEctNeuron = (neuron: NeuronInfo): boolean =>
+  neuron.neuronType === NeuronType.Ect;
+
 export const hasJoinedCommunityFund = (neuron: NeuronInfo): boolean =>
   neuron.joinedCommunityFundTimestampSeconds !== undefined;
 
@@ -274,8 +278,8 @@ export const formattedMaturity = ({ fullNeuron }: NeuronInfo): string =>
  */
 export const formattedTotalMaturity = ({ fullNeuron }: NeuronInfo): string =>
   formatMaturity(
-    (fullNeuron?.maturityE8sEquivalent ?? BigInt(0)) +
-      (fullNeuron?.stakedMaturityE8sEquivalent ?? BigInt(0))
+    (fullNeuron?.maturityE8sEquivalent ?? 0n) +
+      (fullNeuron?.stakedMaturityE8sEquivalent ?? 0n)
   );
 
 /**
@@ -286,8 +290,8 @@ export const formattedStakedMaturity = ({ fullNeuron }: NeuronInfo): string =>
   formatMaturity(fullNeuron?.stakedMaturityE8sEquivalent);
 
 export const formatMaturity = (value?: bigint): string =>
-  formatToken({
-    value: isNullish(value) ? BigInt(0) : value,
+  formatTokenE8s({
+    value: isNullish(value) ? 0n : value,
   });
 
 export const sortNeuronsByCreatedTimestamp = (
@@ -364,7 +368,7 @@ export const isHotKeyControllable = ({
   ) !== undefined &&
   fullNeuron.controller !== identity?.getPrincipal().toText();
 
-export type NeuronTag = {
+export type NeuronTagData = {
   text: string;
 };
 
@@ -378,8 +382,15 @@ export const getNeuronTags = ({
   identity?: Identity | null;
   accounts: IcpAccountsStoreData;
   i18n: I18n;
-}): NeuronTag[] => {
-  const tags: NeuronTag[] = [];
+}): NeuronTagData[] => {
+  const tags: NeuronTagData[] = [];
+
+  if (isSeedNeuron(neuron)) {
+    tags.push({ text: i18n.neuron_types.seed });
+  } else if (isEctNeuron(neuron)) {
+    tags.push({ text: i18n.neuron_types.ect });
+  }
+
   if (hasJoinedCommunityFund(neuron)) {
     tags.push({ text: i18n.neurons.community_fund });
   }
@@ -426,7 +437,7 @@ export const canUserManageNeuronFundParticipation = ({
 export const neuronStake = (neuron: NeuronInfo): bigint =>
   neuron.fullNeuron?.cachedNeuronStake !== undefined
     ? neuron.fullNeuron?.cachedNeuronStake - neuron.fullNeuron?.neuronFees
-    : BigInt(0);
+    : 0n;
 
 export interface FolloweesNeuron {
   neuronId: NeuronId;
@@ -480,7 +491,7 @@ export const isValidInputAmount = ({
 
 export const isEnoughToStakeNeuron = ({
   stakeE8s,
-  feeE8s = BigInt(0),
+  feeE8s = 0n,
 }: {
   stakeE8s: bigint;
   feeE8s?: bigint;
@@ -501,7 +512,7 @@ export const isEnoughMaturityToSpawn = ({
   );
   return (
     maturitySelected >=
-    MIN_NEURON_STAKE / MATURITY_MODULATION_VARIANCE_PERCENTAGE
+    Number(MIN_NEURON_STAKE) / MATURITY_MODULATION_VARIANCE_PERCENTAGE
   );
 };
 
@@ -618,6 +629,9 @@ const sameController = (neurons: NeuronInfo[]): boolean =>
 const sameId = (neurons: NeuronInfo[]): boolean =>
   new Set(neurons.map(({ neuronId }) => neuronId)).size === 1;
 
+const sameNeuronType = (neurons: NeuronInfo[]): boolean =>
+  new Set(neurons.map(({ neuronType }) => neuronType)).size === 1;
+
 /**
  * Receives multiple lists of followees sorted by id.
  *
@@ -673,6 +687,12 @@ export const canBeMerged = (
     return {
       isValid: false,
       messageKey: "error.merge_neurons_same_id",
+    };
+  }
+  if (!sameNeuronType(neurons)) {
+    return {
+      isValid: false,
+      messageKey: "error.merge_neurons_different_types",
     };
   }
   if (!sameController(neurons)) {
@@ -819,19 +839,22 @@ export const votedNeuronDetails = ({
       (compactNeuronInfoMaybe) => compactNeuronInfoMaybe.vote !== undefined
     ) as CompactNeuronInfo[];
 
-export const hasEnoughMaturityToStake = ({ fullNeuron }: NeuronInfo): boolean =>
-  (fullNeuron?.maturityE8sEquivalent ?? BigInt(0)) > BigInt(0);
+export const neuronsVotingPower = (neurons?: CompactNeuronInfo[]): bigint =>
+  neurons?.reduce((sum, { votingPower }) => sum + votingPower, 0n) ?? 0n;
 
-export const minNeuronSplittable = (fee: number): number =>
-  2 * E8S_PER_ICP + fee;
+export const hasEnoughMaturityToStake = ({ fullNeuron }: NeuronInfo): boolean =>
+  (fullNeuron?.maturityE8sEquivalent ?? 0n) > 0n;
+
+export const minNeuronSplittable = (fee: bigint): bigint =>
+  2n * MIN_NEURON_STAKE + fee;
 
 export const neuronCanBeSplit = ({
   neuron,
   fee,
 }: {
   neuron: NeuronInfo;
-  fee: number;
-}): boolean => neuronStake(neuron) >= BigInt(minNeuronSplittable(fee));
+  fee: bigint;
+}): boolean => neuronStake(neuron) >= minNeuronSplittable(fee);
 
 export const getNeuronById = ({
   neuronsStore,
@@ -841,39 +864,6 @@ export const getNeuronById = ({
   neuronId: NeuronId;
 }): NeuronInfo | undefined =>
   neuronsStore.neurons?.find((n) => n.neuronId === neuronId);
-
-/** Update neurons voting state as they participated in voting */
-export const updateNeuronsVote = ({
-  neuron,
-  vote,
-  proposalId,
-}: {
-  neuron: NeuronInfo;
-  vote: Vote | SnsVote;
-  proposalId: ProposalId;
-}): NeuronInfo => {
-  const newBallot: BallotInfo = {
-    vote: toNnsVote(vote),
-    proposalId,
-  };
-  const recentBallots = [
-    ...neuron.recentBallots.filter(
-      ({ proposalId: ballotProposalId }) => ballotProposalId !== proposalId
-    ),
-    newBallot,
-  ].map((ballot) => ({
-    ...ballot,
-  }));
-
-  return {
-    ...neuron,
-    recentBallots,
-    fullNeuron: {
-      ...(neuron.fullNeuron as Neuron),
-      recentBallots,
-    },
-  };
-};
 
 /** Is a neuron currently in a vote registration process */
 export const neuronVoting = ({
@@ -898,9 +888,9 @@ export const validTopUpAmount = ({
   neuron: NeuronInfo;
   amount: number;
 }): boolean => {
-  const amountE8s = BigInt(Math.floor(amount * E8S_PER_ICP));
-  const neuronStakeE8s = neuron.fullNeuron?.cachedNeuronStake ?? BigInt(0);
-  return amountE8s + neuronStakeE8s > MIN_NEURON_STAKE;
+  const amountUlps = numberToUlps({ amount, token: ICPToken });
+  const neuronStakeUlps = neuron.fullNeuron?.cachedNeuronStake ?? 0n;
+  return amountUlps + neuronStakeUlps > MIN_NEURON_STAKE;
 };
 
 export const neuronAge = ({ ageSeconds }: NeuronInfo): bigint =>

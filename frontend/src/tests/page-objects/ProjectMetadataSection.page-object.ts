@@ -23,4 +23,11 @@ export class ProjectMetadataSectionPo extends BasePageObject {
     await this.waitFor();
     await this.getSkeletonDetailsPo().waitForAbsent();
   }
+
+  async getDashboardLink(): Promise<string | null> {
+    if (await this.isPresent("dashboard-link")) {
+      return this.root.byTestId("dashboard-link").getAttribute("href");
+    }
+    return null;
+  }
 }

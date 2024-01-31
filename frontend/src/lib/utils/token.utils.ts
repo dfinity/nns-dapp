@@ -4,7 +4,13 @@ import {
   ICP_DISPLAYED_DECIMALS_DETAILED,
   ICP_DISPLAYED_HEIGHT_DECIMALS,
 } from "$lib/constants/icp.constants";
-import { ICPToken, TokenAmount } from "@dfinity/utils";
+import {
+  ICPToken,
+  TokenAmount,
+  TokenAmountV2,
+  isNullish,
+  type Token,
+} from "@dfinity/utils";
 
 const countDecimals = (value: number): number => {
   // "1e-7" -> 0.00000001
@@ -12,6 +18,26 @@ const countDecimals = (value: number): number => {
   const split: string[] = asText.split(".");
 
   return Math.max(split[1]?.length ?? 0, ICP_DISPLAYED_DECIMALS);
+};
+
+/**
+ * Truncates the given amount to 8 decimals.
+ *
+ * This is used to then convert the amount to a string or to a number afterwards.
+ */
+const ulpsToE8s = ({
+  ulps,
+  decimals,
+}: {
+  ulps: bigint;
+  decimals: number;
+}): bigint => {
+  if (decimals === 8) {
+    return ulps;
+  } else if (decimals < 8) {
+    return ulps * 10n ** BigInt(8 - decimals);
+  }
+  return ulps / 10n ** BigInt(decimals - 8);
 };
 
 // Source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat
@@ -36,7 +62,7 @@ type RoundMode =
  * Jira GIX-1563:
  * - However, if requested, some amount might be displayed with a fix length of 8 decimals, regardless if leading zero or no leading zero
  */
-export const formatToken = ({
+export const formatTokenE8s = ({
   value,
   detailed = false,
   roundingMode,
@@ -45,7 +71,7 @@ export const formatToken = ({
   detailed?: boolean | "height_decimals";
   roundingMode?: RoundMode;
 }): string => {
-  if (value === BigInt(0)) {
+  if (value === 0n) {
     return "0";
   }
 
@@ -76,26 +102,40 @@ export const formatToken = ({
     .replace(/,/g, "'");
 };
 
-export const sumAmountE8s = (...amountE8s: bigint[]): bigint =>
-  amountE8s.reduce<bigint>((acc, amount) => acc + amount, BigInt(0));
+// TODO: This drops decimals after the 8th decimal place. Decide if this is the
+// desired behavior.
+export const formatTokenV2 = ({
+  value,
+  detailed = false,
+  roundingMode,
+}: {
+  value?: TokenAmount | TokenAmountV2;
+  detailed?: boolean | "height_decimals";
+  roundingMode?: RoundMode;
+}): string => {
+  let e8s;
+  if (isNullish(value)) {
+    e8s = 0n;
+  } else if (value instanceof TokenAmount) {
+    e8s = value.toE8s();
+  } else {
+    const decimals = value.token.decimals;
+    const ulps = value.toUlps();
+    e8s = ulpsToE8s({ ulps, decimals });
+  }
+  return formatTokenE8s({ value: e8s, detailed, roundingMode });
+};
+
+export const sumAmounts = (...amounts: bigint[]): bigint =>
+  amounts.reduce<bigint>((acc, amount) => acc + amount, 0n);
 
 // To make the fixed transaction fee readable, we do not display it with 8 digits but only till the last digit that is not zero
 // e.g. not 0.00010000 but 0.0001
 export const formattedTransactionFeeICP = (fee: number | bigint): string =>
-  formatToken({
+  formatTokenE8s({
     value: TokenAmount.fromE8s({
       amount: BigInt(fee),
       token: ICPToken,
-    }).toE8s(),
-  });
-
-// To make the fixed transaction fee readable, we do not display it with 8 digits but only till the last digit that is not zero
-// e.g. not 0.00010000 but 0.0001
-export const formattedTransactionFee = (fee: TokenAmount): string =>
-  formatToken({
-    value: TokenAmount.fromE8s({
-      amount: fee.toE8s(),
-      token: fee.token,
     }).toE8s(),
   });
 
@@ -109,19 +149,26 @@ export const formattedTransactionFee = (fee: TokenAmount): string =>
  * @returns {number} The maximum amount for the transaction.
  */
 export const getMaxTransactionAmount = ({
-  balance = BigInt(0),
-  fee = BigInt(0),
+  balance = 0n,
+  fee = 0n,
   maxAmount,
+  token,
 }: {
   balance?: bigint;
   fee?: bigint;
   maxAmount?: bigint;
+  token: Token;
 }): number => {
+  const maxUserAmount = ulpsToE8s({
+    ulps: balance - fee,
+    decimals: token.decimals,
+  });
   if (maxAmount === undefined) {
-    return Math.max(Number(balance - fee), 0) / E8S_PER_ICP;
+    return Math.max(Number(maxUserAmount), 0) / E8S_PER_ICP;
   }
+  const maxAmountE8s = ulpsToE8s({ ulps: maxAmount, decimals: token.decimals });
   return (
-    Math.min(Number(maxAmount), Math.max(Number(balance - fee), 0)) /
+    Math.min(Number(maxAmountE8s), Math.max(Number(maxUserAmount), 0)) /
     E8S_PER_ICP
   );
 };
@@ -155,8 +202,73 @@ export const convertTCyclesToIcpNumber = ({
  * @returns {bigint}
  * @throws {Error} If the amount has more than 8 decimals.
  */
-export const numberToE8s = (amount: number): bigint =>
+// TODO: GIX-2150 Make `token` mandatory.
+export const numberToE8s = (amount: number, token: Token = ICPToken): bigint =>
   TokenAmount.fromNumber({
     amount,
-    token: ICPToken,
+    token,
   }).toE8s();
+
+/**
+ * Returns the number of Ulps for the given amount.
+ *
+ * The precision is given by the token.
+ *
+ * @param {Object} params
+ * @param {number} parms.amount
+ * @param {token} params.token
+ * @returns {bigint}
+ * @throws {Error} If the amount has more than number of decimals in the token.
+ */
+export const numberToUlps = (params: {
+  amount: number;
+  token: Token;
+}): bigint => TokenAmountV2.fromNumber(params).toUlps();
+
+/**
+ * Returns the number of tokens for a given amount of ulps and token.
+ *
+ * Precision up to 8 decimals to avoid problems with JS numbers.
+ */
+export const ulpsToNumber = ({
+  ulps,
+  token: { decimals },
+}: {
+  ulps: bigint;
+  token: Token;
+}): number => {
+  const e8s = ulpsToE8s({ ulps, decimals });
+  return Number(e8s) / 100_000_000;
+};
+
+export function toTokenAmountV2(amount: TokenAmount): TokenAmountV2;
+export function toTokenAmountV2(amount: TokenAmountV2): TokenAmountV2;
+export function toTokenAmountV2(amount: undefined): undefined;
+export function toTokenAmountV2(
+  amount: TokenAmount | TokenAmountV2
+): TokenAmountV2;
+export function toTokenAmountV2(
+  amount: TokenAmount | TokenAmountV2 | undefined
+): TokenAmountV2 | undefined;
+export function toTokenAmountV2(
+  tokenAmount: TokenAmount | TokenAmountV2 | undefined
+): TokenAmountV2 | undefined {
+  if (isNullish(tokenAmount)) {
+    return undefined;
+  }
+  if (tokenAmount instanceof TokenAmountV2) {
+    return tokenAmount;
+  }
+  return TokenAmountV2.fromUlps({
+    amount: tokenAmount.toE8s(),
+    token: tokenAmount.token,
+  });
+}
+
+export class UnavailableTokenAmount {
+  public token: Token;
+
+  constructor(token: Token) {
+    this.token = token;
+  }
+}

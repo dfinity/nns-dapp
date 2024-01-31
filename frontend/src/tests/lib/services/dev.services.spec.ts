@@ -10,7 +10,7 @@ describe("dev-services", () => {
   });
 
   it("should throw an error if the environment is not testnet", async () => {
-    await expect(getICPs(0.00000002)).rejects.toThrowError(
+    await expect(getICPs(2)).rejects.toThrowError(
       'The environment is not "testnet"'
     );
   });

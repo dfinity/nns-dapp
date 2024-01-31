@@ -17,8 +17,8 @@
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import SnsNeuronStateItemAction from "./SnsNeuronStateItemAction.svelte";
   import SnsNeuronDissolveDelayItemAction from "./SnsNeuronDissolveDelayItemAction.svelte";
-  import { formatToken } from "$lib/utils/token.utils";
-  import { secondsToDuration } from "$lib/utils/date.utils";
+  import { formatTokenE8s } from "$lib/utils/token.utils";
+  import { secondsToDuration } from "@dfinity/utils";
   import { Html, Section } from "@dfinity/gix-components";
   import { Principal } from "@dfinity/principal";
 
@@ -50,7 +50,7 @@
       {replacePlaceholders(
         $i18n.neuron_detail.voting_power_section_description_expanded,
         {
-          $stake: formatToken({
+          $stake: formatTokenE8s({
             value: getSnsNeuronStake(neuron),
           }),
           $maturityStaked: formattedStakedMaturity(neuron),
@@ -70,11 +70,12 @@
         text={replacePlaceholders(
           $i18n.neuron_detail.voting_power_section_description_expanded_zero,
           {
-            $minDuration: secondsToDuration(
-              fromDefinedNullable(
+            $minDuration: secondsToDuration({
+              seconds: fromDefinedNullable(
                 parameters.neuron_minimum_dissolve_delay_to_vote_seconds
-              )
-            ),
+              ),
+              i18n: $i18n.time,
+            }),
             $dashboardLink: neuronDashboardUrl({
               neuron,
               rootCanisterId: Principal.fromText(universe.canisterId),
@@ -86,8 +87,8 @@
   </p>
   <ul class="content">
     <SnsStakeItemAction {neuron} {token} {universe} />
-    <SnsNeuronStateItemAction {neuron} snsParameters={parameters} />
-    <SnsNeuronDissolveDelayItemAction {neuron} {parameters} />
+    <SnsNeuronStateItemAction {neuron} snsParameters={parameters} {token} />
+    <SnsNeuronDissolveDelayItemAction {neuron} {parameters} {token} />
   </ul>
 </Section>
 

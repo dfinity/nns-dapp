@@ -9,7 +9,7 @@
     durationTillSwapDeadline,
     durationTillSwapStart,
   } from "$lib/utils/projects.utils";
-  import { secondsToDuration } from "$lib/utils/date.utils";
+  import { secondsToDuration } from "@dfinity/utils";
   import { Value, KeyValuePair } from "@dfinity/gix-components";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import { TokenAmount, nonNullish } from "@dfinity/utils";
@@ -38,8 +38,7 @@
   $: isAdopted = swap.lifecycle === SnsSwapLifecycle.Adopted;
 
   let hasParticipated: boolean;
-  $: hasParticipated =
-    nonNullish(myCommitment) && myCommitment.toE8s() > BigInt(0);
+  $: hasParticipated = nonNullish(myCommitment) && myCommitment.toE8s() > 0n;
 
   let dataIsRendered: boolean;
   $: dataIsRendered = isOpen || isAdopted || hasParticipated;
@@ -51,21 +50,21 @@
 {/if}
 {#if isOpen && nonNullish(durationTillDeadline)}
   <KeyValuePair>
-    <span slot="key">
+    <span slot="key" class="description">
       {$i18n.sns_project_detail.deadline}
     </span>
     <Value slot="value">
-      {secondsToDuration(durationTillDeadline)}
+      {secondsToDuration({ seconds: durationTillDeadline, i18n: $i18n.time })}
     </Value>
   </KeyValuePair>
 {/if}
 {#if isAdopted && nonNullish(durationTillStart)}
   <KeyValuePair>
-    <span slot="key">
+    <span slot="key" class="description">
       {$i18n.sns_project_detail.starts}
     </span>
     <Value slot="value">
-      {secondsToDuration(durationTillStart)}
+      {secondsToDuration({ seconds: durationTillStart, i18n: $i18n.time })}
     </Value>
   </KeyValuePair>
 {/if}
