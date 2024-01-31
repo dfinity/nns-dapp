@@ -28,7 +28,7 @@
 </script>
 
 <TestIdWrapper testId="stake-neuron-to-vote-component">
-  {#if nonNullish(token)}
+  {#if nonNullish(token) && nonNullish(project)}
     <div class="container" in:fade>
       <Collapsible
         expandButton={false}
