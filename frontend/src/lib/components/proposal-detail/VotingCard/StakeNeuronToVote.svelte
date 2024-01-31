@@ -19,16 +19,39 @@
     ? $nnsTokenStore.token.symbol
     : $snsProjectSelectedStore?.summary?.token?.symbol;
 
-  let project: string | undefined;
-  $: project = $isNnsUniverseStore
-    ? $nnsTokenStore.token.name
+  let snsName: string | undefined;
+  $: snsName = $isNnsUniverseStore
+    ? undefined
     : $snsProjectSelectedStore?.summary?.metadata?.name;
+
+  let title: string | undefined;
+  $: title =
+    token &&
+    replacePlaceholders($i18n.proposal_detail__vote.no_neurons, {
+      $token: token,
+    });
+
+  let description: string | undefined;
+  $: description =
+    token &&
+    ($isNnsUniverseStore
+      ? replacePlaceholders(
+          $i18n.proposal_detail__vote.no_nns_neurons_description,
+          {
+            $token: token,
+          }
+        )
+      : snsName &&
+        replacePlaceholders($i18n.sns_neurons.text, {
+          $tokenSymbol: token,
+          $project: snsName,
+        }));
 
   const gotoNeurons = () => goto($neuronsPathStore);
 </script>
 
 <TestIdWrapper testId="stake-neuron-to-vote-component">
-  {#if nonNullish(token) && nonNullish(project)}
+  {#if nonNullish(token) && nonNullish(title) && nonNullish(description)}
     <div class="container" in:fade>
       <Collapsible
         expandButton={false}
@@ -38,11 +61,7 @@
         wrapHeight
       >
         <div slot="header" class="header" class:expanded>
-          <span class="value" data-tid="stake-neuron-title"
-            >{replacePlaceholders($i18n.proposal_detail__vote.no_neurons, {
-              $project: project,
-            })}</span
-          >
+          <span class="value" data-tid="stake-neuron-title">{title}</span>
           <button
             class="icon"
             class:expanded
@@ -53,13 +72,7 @@
           </button>
         </div>
         <p class="description" data-tid="stake-neuron-description">
-          {replacePlaceholders(
-            $i18n.proposal_detail__vote.no_neurons_description,
-            {
-              $token: token,
-              $project: project,
-            }
-          )}
+          {description}
         </p>
         <button
           data-tid="stake-neuron-button"

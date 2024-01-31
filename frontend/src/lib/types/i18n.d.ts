@@ -608,8 +608,8 @@ interface I18nProposal_detail__vote {
   super_majority_decision_intro: string;
   cast_votes: string;
   cast_votes_needs: string;
+  no_nns_neurons_description: string;
   no_neurons: string;
-  no_neurons_description: string;
   stake_neuron: string;
 }
 

@@ -26,7 +26,7 @@ export class StakeNeuronToVotePo extends BasePageObject {
   }
 
   getTitleText(): Promise<string> {
-    return this.getDescription().getText();
+    return this.getTitle().getText();
   }
 
   getDescription(): PageObjectElement {
