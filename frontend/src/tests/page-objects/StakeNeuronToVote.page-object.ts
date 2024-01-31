@@ -21,6 +21,14 @@ export class StakeNeuronToVotePo extends BasePageObject {
     return this.getExpandButton().click();
   }
 
+  getTitle(): PageObjectElement {
+    return this.root.byTestId("stake-neuron-title");
+  }
+
+  getTitleText(): Promise<string> {
+    return this.getDescription().getText();
+  }
+
   getDescription(): PageObjectElement {
     return this.root.byTestId("stake-neuron-description");
   }

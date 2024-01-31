@@ -32,6 +32,14 @@ describe("StakeNeuronToVote", () => {
       expect(await po.getExpandButton().isPresent()).toBe(true);
     });
 
+    it("should display title", async () => {
+      const po = await renderAndExpand();
+
+      expect(await po.getTitleText()).toBe(
+        "You have no Internet Computer neurons. Create a neuron by staking ICP to vote on Internet Computer proposals."
+      );
+    });
+
     it("should display description", async () => {
       const po = await renderAndExpand();
 
@@ -76,6 +84,14 @@ describe("StakeNeuronToVote", () => {
       const po = await renderComponent();
 
       expect(await po.getExpandButton().isPresent()).toBe(true);
+    });
+
+    it("should display title", async () => {
+      const po = await renderAndExpand();
+
+      expect(await po.getTitleText()).toBe(
+        "You have no Catalyze neurons. Create a neuron by staking CAT to vote on Catalyze proposals."
+      );
     });
 
     it("should display description", async () => {

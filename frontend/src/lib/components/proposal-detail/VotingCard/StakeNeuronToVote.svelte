@@ -38,7 +38,7 @@
         wrapHeight
       >
         <div slot="header" class="header" class:expanded>
-          <span class="value"
+          <span class="value" data-tid="stake-neuron-title"
             >{replacePlaceholders($i18n.proposal_detail__vote.no_neurons, {
               $project: project,
             })}</span
