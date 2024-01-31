@@ -4,7 +4,7 @@
 </script>
 
 <a
-  data-tid="manage-ii-link"
+  data-tid="source-code-link"
   href={$i18n.navigation.source_code_url}
   rel="noopener noreferrer external"
   target="_blank"
