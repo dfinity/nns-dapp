@@ -39,7 +39,7 @@ jobs:
       DFX_NETWORK: app
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         # TODO: This builds, it doesn't use a release.  We probably want at least the option of using releases.
       - name: Get versions
         id: tool_versions
