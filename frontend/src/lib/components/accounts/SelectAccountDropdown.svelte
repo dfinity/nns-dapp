@@ -9,6 +9,7 @@
   import type { Principal } from "@dfinity/principal";
   import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
   import { isNullish } from "@dfinity/utils";
+  import TestIdWrapper from "../common/TestIdWrapper.svelte";
 
   export let selectedAccount: Account | undefined = undefined;
   export let rootCanisterId: Principal;
@@ -50,23 +51,25 @@
     })();
 </script>
 
-{#if selectableAccounts.length === 0}
-  <div class="select">
-    <Spinner size="small" inline />
-  </div>
-{:else}
-  <Dropdown
-    name="account"
-    bind:selectedValue={selectedAccountIdentifier}
-    testId="select-account-dropdown"
-  >
-    {#each selectableAccounts as { identifier, name } (identifier)}
-      <DropdownItem value={identifier}
-        >{name ?? $i18n.accounts.main}</DropdownItem
-      >
-    {/each}
-  </Dropdown>
-{/if}
+<TestIdWrapper testId="select-account-dropdown-component">
+  {#if selectableAccounts.length === 0}
+    <div class="select">
+      <Spinner size="small" inline />
+    </div>
+  {:else}
+    <Dropdown
+      name="account"
+      bind:selectedValue={selectedAccountIdentifier}
+      testId="select-account-dropdown"
+    >
+      {#each selectableAccounts as { identifier, name } (identifier)}
+        <DropdownItem value={identifier}
+          >{name ?? $i18n.accounts.main}</DropdownItem
+        >
+      {/each}
+    </Dropdown>
+  {/if}
+</TestIdWrapper>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/form";

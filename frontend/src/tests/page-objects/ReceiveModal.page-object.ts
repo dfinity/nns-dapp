@@ -1,5 +1,6 @@
 import { ModalPo } from "$tests/page-objects/Modal.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { SelectAccountDropdownPo } from "./SelectAccountDropdown.page-object";
 
 export class ReceiveModalPo extends ModalPo {
   private static readonly TID = "receive-modal";
@@ -16,6 +17,10 @@ export class ReceiveModalPo extends ModalPo {
     return this.waitFor("qr-code");
   }
 
+  hasQrCode(): Promise<boolean> {
+    return this.isPresent("qr-code");
+  }
+
   async getLogoAltText(): Promise<string> {
     return this.root.byTestId("logo").getAttribute("alt");
   }
@@ -26,5 +31,13 @@ export class ReceiveModalPo extends ModalPo {
 
   getAddress(): Promise<string> {
     return this.getText("qrcode-display-address");
+  }
+
+  getDropdownAccounts() {
+    return SelectAccountDropdownPo.under(this.root);
+  }
+
+  select(accountIdentifier: string) {
+    return this.getDropdownAccounts().select(accountIdentifier);
   }
 }
