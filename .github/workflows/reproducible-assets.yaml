@@ -93,7 +93,7 @@ jobs:
     needs: [native_asset_build]
     steps:
       - name: Get hashes
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: hashes
           path: hashes

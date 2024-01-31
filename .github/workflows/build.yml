@@ -106,7 +106,7 @@ jobs:
       - name: Checkout nns-dapp
         uses: actions/checkout@v4
       - name: Get nns-dapp_test
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: nns-dapp_test
       - name: Start snapshot environment
@@ -126,7 +126,7 @@ jobs:
       - name: Checkout nns-dapp
         uses: actions/checkout@v4
       - name: Get nns-dapp_test
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: out
           path: out
@@ -159,7 +159,7 @@ jobs:
       - name: Checkout nns-dapp
         uses: actions/checkout@v4
       - name: Get nns-dapp_test
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: nns-dapp_test
       - name: Start empty nns-dapp
@@ -179,15 +179,15 @@ jobs:
       - name: Checkout nns-dapp
         uses: actions/checkout@v4
       - name: Get nns-dapp
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: nns-dapp
       - name: Get sns_aggregator
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: sns_aggregator
       - name: Get sns_aggregator_dev
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: sns_aggregator_dev
       - name: Start snapshot environment
@@ -287,19 +287,19 @@ jobs:
           outputs: ./out-mainnet
       - name: Get nns-dapp
         if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: nns-dapp
           path: out-local
       - name: Get sns_aggregator
         if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: sns_aggregator
           path: out-local
       - name: Get sns_aggregator_dev
         if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: sns_aggregator_dev
           path: out-local
@@ -325,7 +325,7 @@ jobs:
       - name: Checkout nns-dapp
         uses: actions/checkout@v4
       - name: Get sns_aggregator_dev
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: sns_aggregator_dev
       - name: Start snapshot environment
@@ -429,7 +429,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Get docker build outputs
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: out
           path: out

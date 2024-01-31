@@ -20,11 +20,11 @@ runs:
     - name: Checkout nns-dapp
       uses: actions/checkout@v4
     - name: Get nns-dapp
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: nns-dapp
     - name: Get sns_aggregator_dev
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: sns_aggregator_dev
     - name: Start snapshot environment
