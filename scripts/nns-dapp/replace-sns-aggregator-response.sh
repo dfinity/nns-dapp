@@ -8,7 +8,7 @@ TEST_FILES_PATH="./frontend/src/tests/workflows/Launchpad"
 BASE_URL="https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io/v1/sns/list/page"
 
 # Loop until an error is received
-for ((page=0; ; page++)); do
+for ((page = 0; ; page++)); do
   # Construct the URL
   url="${BASE_URL}/${page}/slow.json"
   output="${TEST_FILES_PATH}/sns-agg-page-${page}.json"
