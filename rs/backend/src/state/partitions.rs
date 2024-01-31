@@ -99,7 +99,7 @@ impl Partitions {
     pub fn copy_memory_reference(memory: &DefaultMemoryImpl) -> DefaultMemoryImpl {
         // Empty structure that makes API calls.  Can be cloned.
         #[cfg(target_arch = "wasm32")]
-        let ans = *memory;
+        let ans = (*memory).clone();
         // Reference counted pointer.  Make a copy of the pointer.
         #[cfg(not(target_arch = "wasm32"))]
         let ans = Rc::clone(memory);
@@ -111,7 +111,6 @@ impl Partitions {
     /// Note: The memory manager is still represented in the underlying memory,
     /// so converting from `Partitions` to `DefaultMemoryImpl` and back again
     /// returns to the original state.
-    #[cfg(test)]
     pub fn into_memory(self) -> DefaultMemoryImpl {
         self.memory
     }
@@ -143,11 +142,6 @@ impl Partitions {
         memory.read(offset, buffer);
         Ok(())
     }
-    /// Gets the underlying memory.
-    #[cfg(test)]
-    pub fn into_inner(self) -> DefaultMemoryImpl {
-        self.memory
-    }
 }
 
 impl From<DefaultMemoryImpl> for Partitions {
@@ -157,11 +151,7 @@ impl From<DefaultMemoryImpl> for Partitions {
     /// Note: This is equivalent to `MemoryManager::init()`.
     fn from(memory: DefaultMemoryImpl) -> Self {
         let memory_manager = MemoryManager::init(Self::copy_memory_reference(&memory));
-        Partitions {
-            memory_manager,
-            #[cfg(test)]
-            memory,
-        }
+        Partitions { memory_manager, memory }
     }
 }
 
