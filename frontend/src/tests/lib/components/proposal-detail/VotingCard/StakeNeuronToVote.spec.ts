@@ -36,7 +36,7 @@ describe("StakeNeuronToVote", () => {
       const po = await renderAndExpand();
 
       expect(await po.getDescriptionText()).toBe(
-        "To be eligible to vote in the future, you need to stake ICP in neurons."
+        "You have no Internet Computer neurons. Create a neuron by staking ICP to vote on Internet Computer proposals."
       );
     });
 
@@ -82,7 +82,7 @@ describe("StakeNeuronToVote", () => {
       const po = await renderAndExpand();
 
       expect(await po.getDescriptionText()).toBe(
-        "To be eligible to vote in the future, you need to stake CAT in neurons."
+        "You have no Catalyze neurons. Create a neuron by staking CAT to vote on Catalyze proposals."
       );
     });
 

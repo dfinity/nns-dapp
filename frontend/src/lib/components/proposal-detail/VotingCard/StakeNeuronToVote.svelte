@@ -5,11 +5,11 @@
   import { goto } from "$app/navigation";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
   import { isNnsUniverseStore } from "$lib/derived/selected-universe.derived";
-  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { nnsTokenStore } from "$lib/derived/universes-tokens.derived";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { nonNullish } from "@dfinity/utils";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 
   let toggleContent: () => void;
   let expanded: boolean;
@@ -17,7 +17,12 @@
   let token: string | undefined;
   $: token = $isNnsUniverseStore
     ? $nnsTokenStore.token.symbol
-    : $snsTokenSymbolSelectedStore?.symbol;
+    : $snsProjectSelectedStore?.summary?.token?.symbol;
+
+  let project: string | undefined;
+  $: project = $isNnsUniverseStore
+    ? $nnsTokenStore.token.name
+    : $snsProjectSelectedStore?.summary?.metadata?.name;
 
   const gotoNeurons = () => goto($neuronsPathStore);
 </script>
@@ -35,7 +40,7 @@
         <div slot="header" class="header" class:expanded>
           <span class="value"
             >{replacePlaceholders($i18n.proposal_detail__vote.no_neurons, {
-              $token: token,
+              $project: project,
             })}</span
           >
           <button
@@ -52,6 +57,7 @@
             $i18n.proposal_detail__vote.no_neurons_description,
             {
               $token: token,
+              $project: project,
             }
           )}
         </p>

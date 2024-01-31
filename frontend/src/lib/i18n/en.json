@@ -585,8 +585,8 @@
     "super_majority_decision_intro": "There are two ways a critical proposal can be decided:",
     "cast_votes": "of cast votes",
     "cast_votes_needs": "(Yes needs $immediate_majority)",
-    "no_neurons": "You don’t have staked $token to vote",
-    "no_neurons_description": "To be eligible to vote in the future, you need to stake $token in neurons.",
+    "no_neurons": "You don't have any $project neurons to vote",
+    "no_neurons_description": "You have no $project neurons. Create a neuron by staking $token to vote on $project proposals.",
     "stake_neuron": "Stake $token"
   },
   "proposal_detail__ineligible": {
