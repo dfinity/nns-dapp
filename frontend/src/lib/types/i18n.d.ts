@@ -35,6 +35,8 @@ interface I18nCore {
   finish: string;
   unknown: string;
   expand_all: string;
+  receive_with_token: string;
+  receive: string;
   collapse_all: string;
 }
 
@@ -734,6 +736,8 @@ interface I18nNeuron_detail {
   current_stake: string;
   current_maturity: string;
   available_maturity: string;
+  nns_available_maturity_tooltip: string;
+  sns_available_maturity_tooltip: string;
   dissolve_delay_range: string;
   maturity_range: string;
   spawning_neuron_info: string;
@@ -1054,7 +1058,6 @@ interface I18nCkbtc {
   test_title: string;
   logo: string;
   test_logo: string;
-  receive: string;
   qrcode_aria_label_bitcoin: string;
   qrcode_aria_label_ckBTC: string;
   bitcoin: string;

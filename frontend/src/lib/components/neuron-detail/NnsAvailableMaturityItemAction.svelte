@@ -9,6 +9,7 @@
   import NnsStakeMaturityButton from "./actions/NnsStakeMaturityButton.svelte";
   import SpawnNeuronButton from "./actions/SpawnNeuronButton.svelte";
   import CommonItemAction from "../ui/CommonItemAction.svelte";
+  import TooltipIcon from "../ui/TooltipIcon.svelte";
   import { authStore } from "$lib/stores/auth.store";
   import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 
@@ -28,7 +29,11 @@
     >{formattedMaturity(neuron)}</span
   >
   <svelte:fragment slot="subtitle"
-    >{$i18n.neuron_detail.available_description}</svelte:fragment
+    >{$i18n.neuron_detail.available_description}
+    <TooltipIcon
+      text={$i18n.neuron_detail.nns_available_maturity_tooltip}
+      tooltipId="sns-staked-maturity-tooltip"
+    /></svelte:fragment
   >
   {#if isControllable}
     <NnsStakeMaturityButton {neuron} />

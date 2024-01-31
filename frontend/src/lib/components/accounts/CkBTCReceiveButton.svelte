@@ -43,5 +43,5 @@
   class="secondary"
   disabled={disableButton}
   on:click={openReceive}
-  data-tid="receive-ckbtc">{$i18n.ckbtc.receive}</button
+  data-tid="receive-ckbtc">{$i18n.core.receive}</button
 >

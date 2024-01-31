@@ -66,7 +66,6 @@
 </Modal>
 
 <style lang="scss">
-  @use "../../themes/mixins/button";
   .content {
     display: flex;
     flex-direction: column;
@@ -79,38 +78,5 @@
 
     padding: var(--padding-2x);
     border-radius: var(--border-radius);
-  }
-
-  a.button {
-    box-sizing: border-box;
-
-    padding: var(--padding) var(--padding-2x);
-
-    border-radius: var(--border-radius);
-    border-top: 1px solid transparent;
-    border-bottom: 1px solid transparent;
-
-    position: relative;
-    min-height: var(--button-min-height);
-
-    font-weight: var(--font-weight-bold);
-    text-decoration: none;
-
-    &.primary {
-      background: var(--primary);
-      color: var(--primary-contrast);
-
-      &:hover,
-      &:focus {
-        background: var(--primary-shade);
-      }
-    }
-    &.full-width {
-      width: 100%;
-    }
-
-    &.with-icon {
-      @include button.with-icon;
-    }
   }
 </style>
