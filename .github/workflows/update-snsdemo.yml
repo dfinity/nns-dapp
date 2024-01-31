@@ -14,7 +14,7 @@ jobs:
   update-snsdemo:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Update to match the snsdemo repo
         id: update
         run: |
@@ -32,7 +32,7 @@ jobs:
             fi
           } >> "$GITHUB_OUTPUT"
       - name: Get snsdemo repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         if: ${{ steps.update.outputs.updated == '1' }}
         with:
           repository: 'dfinity/snsdemo'

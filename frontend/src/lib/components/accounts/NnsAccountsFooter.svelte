@@ -62,10 +62,3 @@
     </Footer>
   {/if}
 </TestIdWrapper>
-
-<style lang="scss">
-  @use "../../themes/mixins/button";
-  button {
-    @include button.with-icon;
-  }
-</style>

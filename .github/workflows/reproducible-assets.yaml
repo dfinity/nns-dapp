@@ -36,10 +36,10 @@ jobs:
                   ;;
           esac
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Get node version
         run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Get dfx version
@@ -73,10 +73,10 @@ jobs:
           cp assets.tar.xz "builds/assets_${{ matrix.os }}_${{ matrix.time }}.tar.xz"
           cp sourcemaps.tar.xz "builds/sourcemaps_${{ matrix.os }}_${{ matrix.time }}.tar.xz"
       - name: 'Upload assets'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: builds
+          name: "build_${{ matrix.os }}_${{ matrix.time }}"
           path: builds/*.tar.xz
           retention-days: 1
       - name: 'Output the hash'
@@ -84,16 +84,26 @@ jobs:
           mkdir -p hashes
           sha256sum assets.tar.xz > "hashes/assets_sha256_${{ matrix.os }}_${{ matrix.time }}.txt"
       - name: 'Upload hashes'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: hashes
-          path: hashes/*.txt
+          name: "hashes_${{ matrix.os }}_${{ matrix.time }}"
+          path: "hashes/assets_sha256_${{ matrix.os }}_${{ matrix.time }}.txt"
   compare_hashes:
     runs-on: ubuntu-latest
     needs: [native_asset_build]
     steps:
+      - name: Merge Hashes
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: hashes
+          pattern: hashes_*
+      - name: Merge Builds
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: builds
+          pattern: build_*
       - name: Get hashes
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: hashes
           path: hashes
