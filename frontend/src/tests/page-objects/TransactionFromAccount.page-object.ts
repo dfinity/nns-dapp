@@ -1,6 +1,6 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
-import { DropdownPo } from "$tests/page-objects/Dropdown.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { SelectAccountDropdownPo } from "./SelectAccountDropdown.page-object";
 
 export class TransactionFromAccountPo extends BasePageObject {
   private static readonly TID = "transaction-from-account";
@@ -11,8 +11,8 @@ export class TransactionFromAccountPo extends BasePageObject {
     );
   }
 
-  getDropdownPo(): DropdownPo {
-    return DropdownPo.under(this.root);
+  getDropdownPo(): SelectAccountDropdownPo {
+    return SelectAccountDropdownPo.under(this.root);
   }
 
   async selectAccount(accountName: string): Promise<void> {
