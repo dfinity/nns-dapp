@@ -76,7 +76,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: builds
+          name: "build_${{ matrix.os }}_${{ matrix.time }}"
           path: builds/*.tar.xz
           retention-days: 1
       - name: 'Output the hash'
