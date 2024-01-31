@@ -738,6 +738,8 @@ interface I18nNeuron_detail {
   current_stake: string;
   current_maturity: string;
   available_maturity: string;
+  nns_available_maturity_tooltip: string;
+  sns_available_maturity_tooltip: string;
   dissolve_delay_range: string;
   maturity_range: string;
   spawning_neuron_info: string;
