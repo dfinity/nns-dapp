@@ -53,7 +53,7 @@ describe("SnsNeuronMaturitySection", () => {
     expect(
       await po.getAvailableMaturityItemActionPo().getTooltipIconPo().getText()
     ).toBe(
-      "Available maturity can be burned to disburse an amount of BLOB that is subject to a non-deterministic process, called maturity modulation."
+      "Available maturity can be staked, or burned to disburse an amount of BLOB that is subject to a non-deterministic process, called maturity modulation."
     );
   });
 });
