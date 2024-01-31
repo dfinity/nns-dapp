@@ -21,6 +21,7 @@ describe("ReceiveModal", () => {
   const qrCodeLabel = "test QR code";
   const logo = "logo";
   const logoArialLabel = "logo aria-label";
+  const tokenSymbol = "TST";
 
   const renderReceiveModal = async ({
     canSelectAccount = false,
@@ -39,6 +40,7 @@ describe("ReceiveModal", () => {
         reload: reloadSpy,
         universeId: OWN_CANISTER_ID,
         canSelectAccount,
+        tokenSymbol,
       },
     });
     return ReceiveModalPo.under(new JestPageObjectElement(container));
@@ -48,6 +50,12 @@ describe("ReceiveModal", () => {
     const po = await renderReceiveModal({});
 
     expect(await po.hasQrCode()).toBe(true);
+  });
+
+  it("should render token symbol in title", async () => {
+    const po = await renderReceiveModal({});
+
+    expect(await po.getModalTitle()).toBe(`Receive ${tokenSymbol}`);
   });
 
   it("should render account identifier (without being shortened)", async () => {
