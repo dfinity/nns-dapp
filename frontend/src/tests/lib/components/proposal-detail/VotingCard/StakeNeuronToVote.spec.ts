@@ -36,7 +36,7 @@ describe("StakeNeuronToVote", () => {
       const po = await renderAndExpand();
 
       expect(await po.getTitleText()).toBe(
-        "You don't have any ICP neurons to vote"
+        "You don't have any neurons to vote"
       );
     });
 
@@ -90,7 +90,7 @@ describe("StakeNeuronToVote", () => {
       const po = await renderAndExpand();
 
       expect(await po.getTitleText()).toBe(
-        "You don't have any CAT neurons to vote"
+        "You don't have any Catalyze neurons to vote"
       );
     });
 

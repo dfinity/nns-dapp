@@ -25,11 +25,12 @@
     : $snsProjectSelectedStore?.summary?.metadata?.name;
 
   let title: string | undefined;
-  $: title =
-    token &&
-    replacePlaceholders($i18n.proposal_detail__vote.no_neurons, {
-      $token: token,
-    });
+  $: title = $isNnsUniverseStore
+    ? $i18n.proposal_detail__vote.no_nns_neurons
+    : snsName &&
+      replacePlaceholders($i18n.proposal_detail__vote.no_sns_neurons, {
+        $project: snsName,
+      });
 
   let description: string | undefined;
   $: description =
