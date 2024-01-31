@@ -15,12 +15,12 @@ impl Partitions {
     fn set_schema_label(&self, schema: SchemaLabel) {
         let schema_label_bytes = SchemaLabelBytes::from(schema);
         println!("Set schema label bytes to: {:?}", schema_label_bytes);
-        self.growing_write(PartitionIds::Metadata.memory_id(), 0, &schema_label_bytes[..]);
+        self.growing_write(PartitionType::Metadata.memory_id(), 0, &schema_label_bytes[..]);
     }
     /// Gets the schema label from the metadata partition.
     pub fn schema_label(&self) -> SchemaLabel {
         let mut schema_label_bytes = [0u8; SchemaLabel::MAX_BYTES];
-        self.read_exact(PartitionIds::Metadata.memory_id(), 0, &mut schema_label_bytes)
+        self.read_exact(PartitionType::Metadata.memory_id(), 0, &mut schema_label_bytes)
             .expect("Metadata memory is not populated");
         println!("Read schema label bytes as: {:?}", schema_label_bytes);
         let schema_label = SchemaLabel::try_from(&schema_label_bytes[..]).unwrap_or_else(|err| {

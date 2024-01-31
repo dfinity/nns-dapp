@@ -33,7 +33,7 @@ impl core::fmt::Debug for Partitions {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(f, "Partitions {{")?;
         writeln!(f, "  schema_label: {:?}", self.schema_label())?;
-        for id in PartitionIds::iter() {
+        for id in PartitionType::iter() {
             writeln!(
                 f,
                 "  {:?} partition: {} pages",
@@ -45,9 +45,14 @@ impl core::fmt::Debug for Partitions {
     }
 }
 
+/// The virtual memory IDs for the partitions.
+///
+/// IMPORTANT: There must be a 1-1 mapping between enum entries and virtual memories (aka partitions of the stable memory).
+///
+/// IMPORTANT: The IDs must be stable across deployments.
 #[repr(u8)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, EnumIter)]
-pub enum PartitionIds {
+pub enum PartitionType {
     /// The virtual memory containing metadata such as schema version.
     ///
     /// Note: This ID is guaranteed to be stable across deployments.
@@ -61,7 +66,7 @@ pub enum PartitionIds {
     /// Note: This ID is guaranteed to be stable across deployments.
     Accounts = 2,
 }
-impl PartitionIds {
+impl PartitionType {
     pub const fn memory_id(&self) -> MemoryId {
         MemoryId::new(*self as u8)
     }
