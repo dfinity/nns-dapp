@@ -120,7 +120,11 @@
 </script>
 
 <Modal testId="ckbtc-receive-modal" on:nnsClose on:introend={onIntroEnd}>
-  <span slot="title">{$i18n.core.receive}</span>
+  <span slot="title"
+    >{replacePlaceholders($i18n.core.receive_with_token, {
+      $token: tokenLabel,
+    })}</span
+  >
 
   <div class="receive">
     <Segment bind:selectedSegmentId bind:this={segment}>
