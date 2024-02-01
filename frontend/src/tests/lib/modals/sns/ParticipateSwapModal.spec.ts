@@ -304,12 +304,16 @@ describe("ParticipateSwapModal", () => {
         .getTransactionFromAccountPo();
 
       await runResolvedPromises();
-      expect(await fromAccount.getDropdownPo().isPresent()).toBe(false);
+      expect(await fromAccount.getSelectAccountDropdownPo().hasDropdown()).toBe(
+        false
+      );
 
       resolveQueryAccounts(mockAccountDetails);
 
       await runResolvedPromises();
-      expect(await fromAccount.getDropdownPo().isPresent()).toBe(true);
+      expect(await fromAccount.getSelectAccountDropdownPo().hasDropdown()).toBe(
+        true
+      );
     });
 
     const expectSpyCalledWithQueryOnly = ({
