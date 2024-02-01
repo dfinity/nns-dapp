@@ -976,7 +976,6 @@ interface I18nAuth_accounts {
 
 interface I18nAuth_neurons {
   title: string;
-  text: string;
 }
 
 interface I18nAuth_proposals {
