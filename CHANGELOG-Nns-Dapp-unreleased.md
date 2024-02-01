@@ -29,6 +29,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Wording in "no neurons to vote" section.
 * Implement `State` traits manually rather than automatically.
 * Voting power calculation formatting.
+* Voting rewards description.
 
 #### Deprecated
 
