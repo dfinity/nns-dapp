@@ -23,7 +23,7 @@ use std::borrow::Cow;
 use std::cmp::{min, Ordering};
 use std::collections::{BTreeMap, HashMap, HashSet, VecDeque};
 use std::fmt;
-use std::ops::RangeTo;
+use std::ops::{RangeBounds, RangeTo};
 use std::time::{Duration, SystemTime};
 
 pub mod histogram;
@@ -33,6 +33,8 @@ use schema::{
     proxy::{AccountsDb, AccountsDbAsProxy},
     AccountsDbBTreeMapTrait, AccountsDbTrait,
 };
+
+use self::schema::SchemaLabel;
 
 type TransactionIndex = u64;
 
@@ -75,6 +77,36 @@ impl fmt::Debug for AccountsStore {
             self.last_ledger_sync_timestamp_nanos,
             self.neurons_topped_up_count,
         )
+    }
+}
+
+impl AccountsDbTrait for AccountsStore {
+    fn db_insert_account(&mut self, account_key: &[u8], account: Account) {
+        self.accounts_db.db_insert_account(account_key, account);
+    }
+    fn db_contains_account(&self, account_key: &[u8]) -> bool {
+        self.accounts_db.db_contains_account(account_key)
+    }
+    fn db_get_account(&self, account_key: &[u8]) -> Option<Account> {
+        self.accounts_db.db_get_account(account_key)
+    }
+    fn db_remove_account(&mut self, account_key: &[u8]) {
+        self.accounts_db.db_remove_account(account_key);
+    }
+    fn db_accounts_len(&self) -> u64 {
+        self.accounts_db.db_accounts_len()
+    }
+    fn iter(&self) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
+        self.accounts_db.iter()
+    }
+    fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
+        self.accounts_db.values()
+    }
+    fn range(&self, key_range: impl RangeBounds<Vec<u8>>) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
+        self.accounts_db.range(key_range)
+    }
+    fn schema_label(&self) -> SchemaLabel {
+        self.accounts_db.schema_label()
     }
 }
 

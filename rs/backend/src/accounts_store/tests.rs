@@ -1832,3 +1832,5 @@ fn accounts_should_implement_storable() {
     let parsed = Account::from_bytes(bytes);
     assert_eq!(account, parsed);
 }
+
+crate::accounts_store::schema::tests::test_accounts_db!(AccountsStore::default());
