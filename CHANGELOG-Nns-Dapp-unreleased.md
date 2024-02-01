@@ -28,6 +28,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Display the full neuron type text within the tag.
 * Wording in "no neurons to vote" section.
 * Implement `State` traits manually rather than automatically.
+* Voting power calculation formatting.
 
 #### Deprecated
 
