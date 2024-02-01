@@ -1,6 +1,6 @@
 //! State from/to a stable memory partition in the `SchemaLabel::AccountsInStableMemory` format.
-use super::partitions::Partitions;
 use super::State;
+use crate::state::partitions::PartitionType;
 use crate::state::StableState;
 use dfn_core::api::trap_with;
 use ic_cdk::println;
@@ -22,8 +22,8 @@ impl State {
                     unreachable!();
                 })
                 .to_be_bytes();
-            partitions.growing_write(Partitions::HEAP_MEMORY_ID, 0, &length_field);
-            partitions.growing_write(Partitions::HEAP_MEMORY_ID, 8, &bytes);
+            partitions.growing_write(PartitionType::Heap.memory_id(), 0, &length_field);
+            partitions.growing_write(PartitionType::Heap.memory_id(), 8, &bytes);
         } else {
             println!("END state::save_heap: ()");
             trap_with("No memory manager found.  Cannot save heap.");

@@ -30,6 +30,7 @@ use crate::arguments::CanisterArguments;
 use crate::assets::AssetHashes;
 use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
+use crate::state::partitions::PartitionType;
 use core::cell::RefCell;
 use dfn_candid::Candid;
 use dfn_core::api::trap_with;
@@ -175,7 +176,7 @@ impl State {
                 println!("New State: AccountsInStableMemory");
                 let partitions = Partitions::new_with_schema(memory, schema);
                 let accounts_store = AccountsStore::from(AccountsDb::UnboundedStableBTreeMap(
-                    AccountsDbAsUnboundedStableBTreeMap::new(partitions.get(Partitions::ACCOUNTS_MEMORY_ID)),
+                    AccountsDbAsUnboundedStableBTreeMap::new(partitions.get(PartitionType::Accounts.memory_id())),
                 ));
                 State {
                     accounts_store: RefCell::new(accounts_store),
@@ -236,7 +237,7 @@ impl State {
                     };
                     let vm = partitions_maybe
                         .as_ref()
-                        .map(|partitions| partitions.get(Partitions::ACCOUNTS_MEMORY_ID))
+                        .map(|partitions| partitions.get(PartitionType::Accounts.memory_id()))
                         .map_err(|_| "Cannot fail as we just created the partitions")
                         .unwrap();
                     AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::new(vm))
@@ -271,9 +272,9 @@ impl From<Partitions> for State {
             }
             // Accounts are in stable structures in one partition, the rest of the heap is serialized as candid in another partition.
             SchemaLabel::AccountsInStableMemory => {
-                let state = Self::recover_heap_from_managed_memory(partitions.get(Partitions::HEAP_MEMORY_ID));
+                let state = Self::recover_heap_from_managed_memory(partitions.get(PartitionType::Heap.memory_id()));
                 let accounts_db = AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::load(
-                    partitions.get(Partitions::ACCOUNTS_MEMORY_ID),
+                    partitions.get(PartitionType::Accounts.memory_id()),
                 ));
                 state.accounts_store.borrow_mut().with_accounts_db(accounts_db);
                 state
