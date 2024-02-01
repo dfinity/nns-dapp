@@ -35,6 +35,7 @@ interface I18nCore {
   expand_all: string;
   receive_with_token: string;
   receive: string;
+  send_with_token: string;
   collapse_all: string;
 }
 
