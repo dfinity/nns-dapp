@@ -99,5 +99,6 @@
 
   .calculation {
     font-family: monospace;
+    font-size: 12px;
   }
 </style>
