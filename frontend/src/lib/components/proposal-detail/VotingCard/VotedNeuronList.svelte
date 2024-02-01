@@ -50,7 +50,8 @@
       </span>
     </svelte:fragment>
     <svelte:fragment slot="end">
-      <span class="label">{$i18n.proposal_detail__vote.voting_power}</span>
+      <span class="label">{$i18n.proposal_detail__vote.voting_power_label}</span
+      >
       <Value testId="voted-voting-power"
         >{formatVotingPower(votedVotingPower)}</Value
       >
