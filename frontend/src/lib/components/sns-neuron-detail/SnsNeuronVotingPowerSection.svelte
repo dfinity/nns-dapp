@@ -57,44 +57,44 @@
         {$i18n.neuron_detail.this_neuron_calculation}
       </p>
       <p class="description calculation" data-tid="voting-power-description">
-      {replacePlaceholders(
-        $i18n.neuron_detail.voting_power_section_calculation_specific,
-        {
-          $stake: formatTokenE8s({
-            value: getSnsNeuronStake(neuron),
-          }),
-          $maturityStaked: formattedStakedMaturity(neuron),
-          $ageMultiplier: ageMultiplier({
-            neuron,
-            snsParameters: parameters,
-          }).toFixed(2),
-          $dissolveMultiplier: dissolveDelayMultiplier({
-            neuron,
-            snsParameters: parameters,
-          }).toFixed(2),
-          $votingPower: formatVotingPower(votingPower),
-        }
-      )}
+        {replacePlaceholders(
+          $i18n.neuron_detail.voting_power_section_calculation_specific,
+          {
+            $stake: formatTokenE8s({
+              value: getSnsNeuronStake(neuron),
+            }),
+            $maturityStaked: formattedStakedMaturity(neuron),
+            $ageMultiplier: ageMultiplier({
+              neuron,
+              snsParameters: parameters,
+            }).toFixed(2),
+            $dissolveMultiplier: dissolveDelayMultiplier({
+              neuron,
+              snsParameters: parameters,
+            }).toFixed(2),
+            $votingPower: formatVotingPower(votingPower),
+          }
+        )}
       </p>
     {:else}
       <p class="description" data-tid="voting-power-description">
-      <Html
-        text={replacePlaceholders(
-          $i18n.neuron_detail.voting_power_section_description_expanded_zero,
-          {
-            $minDuration: secondsToDuration({
-              seconds: fromDefinedNullable(
-                parameters.neuron_minimum_dissolve_delay_to_vote_seconds
-              ),
-              i18n: $i18n.time,
-            }),
-            $dashboardLink: neuronDashboardUrl({
-              neuron,
-              rootCanisterId: Principal.fromText(universe.canisterId),
-            }),
-          }
-        )}
-      />
+        <Html
+          text={replacePlaceholders(
+            $i18n.neuron_detail.voting_power_section_description_expanded_zero,
+            {
+              $minDuration: secondsToDuration({
+                seconds: fromDefinedNullable(
+                  parameters.neuron_minimum_dissolve_delay_to_vote_seconds
+                ),
+                i18n: $i18n.time,
+              }),
+              $dashboardLink: neuronDashboardUrl({
+                neuron,
+                rootCanisterId: Principal.fromText(universe.canisterId),
+              }),
+            }
+          )}
+        />
       </p>
     {/if}
   </svelte:fragment>

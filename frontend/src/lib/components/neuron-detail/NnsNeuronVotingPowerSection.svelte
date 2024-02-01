@@ -46,30 +46,30 @@
         {$i18n.neuron_detail.this_neuron_calculation}
       </p>
       <p class="description calculation" data-tid="voting-power-description">
-      {replacePlaceholders(
-        $i18n.neuron_detail.voting_power_section_calculation_specific,
-        {
-          $stake: formatTokenE8s({
-            value: neuronStake(neuron),
-          }),
-          $maturityStaked: formattedStakedMaturity(neuron),
-          $ageMultiplier: ageMultiplier(neuron.ageSeconds).toFixed(2),
-          $dissolveMultiplier: dissolveDelayMultiplier(
-            neuron.dissolveDelaySeconds
-          ).toFixed(2),
-          $votingPower: formatVotingPower(neuron.votingPower),
-        }
-      )}
+        {replacePlaceholders(
+          $i18n.neuron_detail.voting_power_section_calculation_specific,
+          {
+            $stake: formatTokenE8s({
+              value: neuronStake(neuron),
+            }),
+            $maturityStaked: formattedStakedMaturity(neuron),
+            $ageMultiplier: ageMultiplier(neuron.ageSeconds).toFixed(2),
+            $dissolveMultiplier: dissolveDelayMultiplier(
+              neuron.dissolveDelaySeconds
+            ).toFixed(2),
+            $votingPower: formatVotingPower(neuron.votingPower),
+          }
+        )}
       </p>
     {:else}
       <p class="description" data-tid="voting-power-description">
-      <Html
-        text={replacePlaceholders(
-          $i18n.neuron_detail
-            .voting_power_section_description_expanded_zero_nns,
-          { $dashboardLink: neuronDashboardUrl(neuron) }
-        )}
-      />
+        <Html
+          text={replacePlaceholders(
+            $i18n.neuron_detail
+              .voting_power_section_description_expanded_zero_nns,
+            { $dashboardLink: neuronDashboardUrl(neuron) }
+          )}
+        />
       </p>
     {/if}
   </svelte:fragment>
