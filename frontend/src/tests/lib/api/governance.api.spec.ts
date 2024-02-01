@@ -69,6 +69,7 @@ describe("neurons-api", () => {
     const stake = 20_000_000n;
     const controller = mockIdentity.getPrincipal();
     const fromSubAccount = [2, 3, 4];
+    const fee = 10_000n;
 
     await stakeNeuron({
       stake,
@@ -76,6 +77,7 @@ describe("neurons-api", () => {
       ledgerCanisterIdentity: mockIdentity,
       identity: mockIdentity,
       fromSubAccount,
+      fee,
     });
 
     expect(mockGovernanceCanister.stakeNeuron).toBeCalledTimes(1);
@@ -84,6 +86,7 @@ describe("neurons-api", () => {
         stake,
         principal: controller,
         fromSubAccount,
+        fee,
       })
     );
   });

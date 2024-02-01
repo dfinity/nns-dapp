@@ -212,6 +212,7 @@ export const stakeNeuron = async ({
     }
     const { ledgerCanisterIdentity, controller, fromSubAccount, identity } =
       getStakeNeuronPropsByAccount({ account, accountIdentity });
+    const fee = get(mainTransactionFeeE8sStore);
 
     const newNeuronId = await governanceApiService.stakeNeuron({
       stake,
@@ -219,6 +220,7 @@ export const stakeNeuron = async ({
       ledgerCanisterIdentity,
       controller,
       fromSubAccount,
+      fee,
     });
 
     if (loadNeuron) {
