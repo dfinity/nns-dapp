@@ -7,6 +7,7 @@
     formatVotingPower,
     type CompactNeuronInfo,
   } from "$lib/utils/neuron.utils";
+  import { getVoteDisplay } from "$lib/utils/proposals.utils";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
   import VotingCardNeuronList from "$lib/components/proposal-detail/VotingCard/VotingCardNeuronList.svelte";
@@ -16,15 +17,9 @@
   export let neuronsVotedForProposal: CompactNeuronInfo[] = [];
 
   const voteMapper = ({ neuron, vote }: { neuron: string; vote: Vote }) => {
-    const stringMapper = {
-      [Vote.No]: $i18n.core.no,
-      [Vote.Yes]: $i18n.core.yes,
-      [Vote.Unspecified]: "",
-    };
-
     return replacePlaceholders($i18n.proposal_detail__vote.vote_status, {
       $neuronId: neuron.toString(),
-      $vote: stringMapper[vote],
+      $vote: getVoteDisplay(vote),
     });
   };
 </script>
