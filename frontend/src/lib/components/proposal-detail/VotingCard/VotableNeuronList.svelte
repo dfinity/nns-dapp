@@ -40,7 +40,8 @@
       )}
     </div>
     <svelte:fragment slot="end">
-      <span class="label">{$i18n.proposal_detail__vote.voting_power}</span>
+      <span class="label">{$i18n.proposal_detail__vote.voting_power_label}</span
+      >
       <Value testId="voting-collapsible-toolbar-voting-power"
         >{formatVotingPower(
           totalNeuronsVotingPower === undefined ? 0n : totalNeuronsVotingPower
