@@ -7,7 +7,7 @@ use strum_macros::EnumIter;
 
 use crate::accounts_store::schema::tests::toy_account;
 use crate::accounts_store::{CanisterId, NamedCanister};
-use crate::state::partitions::Partitions;
+use crate::state::partitions::PartitionType;
 
 use super::super::tests::test_accounts_db;
 use super::*;
@@ -207,7 +207,7 @@ where
     let raw_memory = DefaultMemoryImpl::default();
     let memory_manager = memory_manager::MemoryManager::init(raw_memory);
     let new_accounts_db = AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::new(
-        memory_manager.get(Partitions::ACCOUNTS_MEMORY_ID),
+        memory_manager.get(PartitionType::Accounts.memory_id()),
     ));
     // Insert some accounts
     let number_of_accounts_to_migrate: u32 = rng.gen_range(0..40);
@@ -224,7 +224,7 @@ where
 {
     let raw_memory = DefaultMemoryImpl::default();
     let memory_manager = memory_manager::MemoryManager::init(raw_memory);
-    let accounts_db = AccountsDbAsUnboundedStableBTreeMap::new(memory_manager.get(Partitions::ACCOUNTS_MEMORY_ID));
+    let accounts_db = AccountsDbAsUnboundedStableBTreeMap::new(memory_manager.get(PartitionType::Accounts.memory_id()));
     let mut accounts_db = AccountsDbAsProxy::from(AccountsDb::UnboundedStableBTreeMap(accounts_db));
     let mut reference_db = AccountsDbAsProxy::default();
     let new_accounts_db = AccountsDb::Map(AccountsDbAsMap::default());

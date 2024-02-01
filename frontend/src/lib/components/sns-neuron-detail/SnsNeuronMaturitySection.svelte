@@ -6,10 +6,11 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import { formattedTotalMaturity } from "$lib/utils/sns-neuron.utils";
   import SnsViewActiveDisbursementsItemAction from "$lib/components/sns-neuron-detail/SnsViewActiveDisbursementsItemAction.svelte";
-  import type { TokenAmountV2 } from "@dfinity/utils";
+  import type { TokenAmountV2, Token } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;
   export let fee: TokenAmountV2;
+  export let token: Token;
 </script>
 
 <Section testId="sns-neuron-maturity-section-component">
@@ -22,7 +23,7 @@
   </p>
   <ul class="content">
     <SnsStakedMaturityItemAction {neuron} />
-    <SnsAvailableMaturityItemAction {neuron} {fee} />
+    <SnsAvailableMaturityItemAction {neuron} {fee} {token} />
     <SnsViewActiveDisbursementsItemAction {neuron} />
   </ul>
 </Section>

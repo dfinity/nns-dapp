@@ -224,6 +224,9 @@ const anonymiseStoreState = async () => {
     snsTransactions,
     transactions,
     aggregatorStore,
+    tokensStore,
+    icrcAccountsStore,
+    icrcCanistersStore,
   } = get(debugStore);
 
   return {
@@ -300,6 +303,15 @@ const anonymiseStoreState = async () => {
       anonymizeTransactionStore
     ),
     aggregatorStore,
+    tokensStore,
+    icrcCanistersStore,
+    icrcAccountsStore: await anonymizeSnsTypeStore(
+      icrcAccountsStore,
+      async ({ certified, accounts }) => ({
+        certified,
+        accounts: await mapPromises(accounts, anonymizeAccount),
+      })
+    ),
   };
 };
 

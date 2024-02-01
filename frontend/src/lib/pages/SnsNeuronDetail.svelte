@@ -186,6 +186,7 @@
           <SnsNeuronMaturitySection
             neuron={$selectedSnsNeuronStore.neuron}
             fee={transactionFee}
+            {token}
           />
           <Separator spacing="none" />
           <SnsNeuronAdvancedSection

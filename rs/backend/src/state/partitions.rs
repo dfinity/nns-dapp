@@ -33,7 +33,7 @@ impl core::fmt::Debug for Partitions {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(f, "Partitions {{")?;
         writeln!(f, "  schema_label: {:?}", self.schema_label())?;
-        for id in PartitionIds::iter() {
+        for id in PartitionType::iter() {
             writeln!(
                 f,
                 "  {:?} partition: {} pages",
@@ -45,28 +45,34 @@ impl core::fmt::Debug for Partitions {
     }
 }
 
+/// The virtual memory IDs for the partitions.
+///
+/// IMPORTANT: There must be a 1-1 mapping between enum entries and virtual memories (aka partitions of the stable memory).
+///
+/// IMPORTANT: The IDs must be stable across deployments.
 #[repr(u8)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, EnumIter)]
-pub enum PartitionIds {
-    Metadata = 0,
-    Heap = 1,
-    Accounts = 2,
-}
-
-impl Partitions {
+pub enum PartitionType {
     /// The virtual memory containing metadata such as schema version.
     ///
     /// Note: This ID is guaranteed to be stable across deployments.
-    pub const METADATA_MEMORY_ID: MemoryId = MemoryId::new(PartitionIds::Metadata as u8);
+    Metadata = 0,
     /// The virtual memory containing heap data.
     ///
     /// Note: This ID is guaranteed to be stable across deployments.
-    pub const HEAP_MEMORY_ID: MemoryId = MemoryId::new(PartitionIds::Heap as u8);
+    Heap = 1,
     /// The virtual memory containing accounts.
     ///
     /// Note: This ID is guaranteed to be stable across deployments.
-    pub const ACCOUNTS_MEMORY_ID: MemoryId = MemoryId::new(PartitionIds::Accounts as u8);
+    Accounts = 2,
+}
+impl PartitionType {
+    pub const fn memory_id(&self) -> MemoryId {
+        MemoryId::new(*self as u8)
+    }
+}
 
+impl Partitions {
     /// Determines whether the given memory is managed by a memory manager.
     fn is_managed(memory: &DefaultMemoryImpl) -> bool {
         let memory_pages = memory.size();

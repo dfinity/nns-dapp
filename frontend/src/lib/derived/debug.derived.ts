@@ -2,6 +2,8 @@ import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import { canistersStore } from "$lib/stores/canisters.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
+import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -14,6 +16,7 @@ import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import {
   voteRegistrationStore,
   votingNeuronSelectStore,
@@ -120,6 +123,9 @@ export const initDebugStore = () =>
       snsFunctionsStore,
       snsProposalStore,
       snsAggregatorStore,
+      tokensStore,
+      icrcAccountsStore,
+      icrcCanistersStore,
     ],
     ([
       $busyStore,
@@ -147,6 +153,9 @@ export const initDebugStore = () =>
       $snsFunctionsStore,
       $snsProposalStore,
       $aggregatorStore,
+      $tokensStore,
+      $icrcAccountsStore,
+      $icrcCanistersStore,
     ]) => ({
       busy: $busyStore,
       accounts: $accountsStore,
@@ -173,5 +182,8 @@ export const initDebugStore = () =>
       projects: $projectsStore,
       snsFunctions: $snsFunctionsStore,
       aggregatorStore: $aggregatorStore,
+      tokensStore: $tokensStore,
+      icrcAccountsStore: $icrcAccountsStore,
+      icrcCanistersStore: $icrcCanistersStore,
     })
   );

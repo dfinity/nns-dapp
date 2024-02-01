@@ -17,7 +17,7 @@ jobs:
   update-ic:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Find newer ic release, if any
         id: update
         run: |
@@ -53,7 +53,7 @@ jobs:
           echo "ref=$SNSDEMO_RELEASE" >> "$GITHUB_OUTPUT"
       - name: Get SNS scripts
         if: ${{ steps.have_snsdemo.outputs.have_snsdemo }} == 'false'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: 'dfinity/snsdemo'
           path: 'snsdemo'

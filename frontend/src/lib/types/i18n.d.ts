@@ -35,6 +35,8 @@ interface I18nCore {
   finish: string;
   unknown: string;
   expand_all: string;
+  receive_with_token: string;
+  receive: string;
   collapse_all: string;
 }
 
@@ -578,6 +580,7 @@ interface I18nProposal_detail__vote {
   vote_with_neurons_plural: string;
   voting_power_value: string;
   voting_power: string;
+  voting_power_label: string;
   vote_progress: string;
   total: string;
   adopt: string;
@@ -606,8 +609,9 @@ interface I18nProposal_detail__vote {
   super_majority_decision_intro: string;
   cast_votes: string;
   cast_votes_needs: string;
-  no_neurons: string;
-  no_neurons_description: string;
+  no_nns_neurons: string;
+  no_sns_neurons: string;
+  no_nns_neurons_description: string;
   stake_neuron: string;
 }
 
@@ -634,10 +638,12 @@ interface I18nNeuron_detail {
   voting_power_subtitle: string;
   voting_power_zero_subtitle: string;
   voting_power_zero: string;
-  voting_power_tooltip_with_stake: string;
-  voting_power_section_description_expanded: string;
   voting_power_section_description_expanded_zero: string;
   voting_power_section_description_expanded_zero_nns: string;
+  calculated_as: string;
+  voting_power_section_calculation_generic: string;
+  this_neuron_calculation: string;
+  voting_power_section_calculation_specific: string;
   maturity_section_description: string;
   staked_description: string;
   nns_staked_maturity_tooltip: string;
@@ -734,6 +740,8 @@ interface I18nNeuron_detail {
   current_stake: string;
   current_maturity: string;
   available_maturity: string;
+  nns_available_maturity_tooltip: string;
+  sns_available_maturity_tooltip: string;
   dissolve_delay_range: string;
   maturity_range: string;
   spawning_neuron_info: string;
@@ -827,7 +835,6 @@ interface I18nSns_neuron_detail {
   header: string;
   all_topics: string;
   vesting_period_tooltip: string;
-  voting_power_tooltip_with_stake: string;
   community_fund_section: string;
   community_fund_section_description: string;
   add_hotkey_info: string;
@@ -1054,7 +1061,6 @@ interface I18nCkbtc {
   test_title: string;
   logo: string;
   test_logo: string;
-  receive: string;
   qrcode_aria_label_bitcoin: string;
   qrcode_aria_label_ckBTC: string;
   bitcoin: string;

@@ -32,6 +32,7 @@
     {reload}
     {universeId}
     {canSelectAccount}
+    {tokenSymbol}
   >
     <svelte:fragment slot="address-label"
       >{replacePlaceholders($i18n.wallet.token_address, {
