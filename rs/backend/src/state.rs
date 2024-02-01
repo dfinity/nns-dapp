@@ -8,8 +8,8 @@ use dfn_core::{api::trap_with, stable};
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use on_wire::{FromWire, IntoWire};
 use std::cell::RefCell;
-#[cfg(test)]
 pub mod partitions;
+use partitions::Partitions;
 #[cfg(test)]
 pub mod tests;
 
@@ -20,7 +20,7 @@ pub struct State {
     pub assets: RefCell<Assets>,
     pub asset_hashes: RefCell<AssetHashes>,
     pub performance: RefCell<PerformanceCounts>,
-    // TODO: Take ownership of stable memory.
+    pub partitions_maybe: RefCell<Result<Partitions, DefaultMemoryImpl>>,
 }
 
 #[cfg(test)]
@@ -43,6 +43,7 @@ impl Default for State {
             assets: RefCell::new(Assets::default()),
             asset_hashes: RefCell::new(AssetHashes::default()),
             performance: RefCell::new(PerformanceCounts::default()),
+            partitions_maybe: RefCell::new(Err(DefaultMemoryImpl::default())),
         }
     }
 }
@@ -55,22 +56,43 @@ impl core::fmt::Debug for State {
             assets: _,
             asset_hashes: _,
             performance: _,
+            partitions_maybe,
         } = self;
         writeln!(f, "State {{")?;
         writeln!(f, "  accounts: {:?}", accounts_store.borrow())?;
         writeln!(f, "  assets: <html etc> (elided)")?;
         writeln!(f, "  asset_hashes: <hashes of the assets> (elided)")?;
         writeln!(f, "  performance: <stats for the metrics endpoint> (elided)")?;
+        writeln!(
+            f,
+            "  partitions_maybe: {:?}",
+            partitions_maybe
+                .borrow()
+                .as_ref()
+                .map_err(|raw_memory| format!("Raw memory: {} pages", raw_memory.size()))
+        )?;
         writeln!(f, "}}")
     }
 }
 
 impl State {
     pub fn replace(&self, new_state: State) {
-        self.accounts_store.replace(new_state.accounts_store.take());
-        self.assets.replace(new_state.assets.take());
-        self.asset_hashes.replace(new_state.asset_hashes.take());
-        self.performance.replace(new_state.performance.take());
+        let State {
+            accounts_store,
+            assets,
+            asset_hashes,
+            performance,
+            partitions_maybe,
+        } = new_state;
+        let partitions_maybe = partitions_maybe.into_inner();
+        self.accounts_store.replace(accounts_store.into_inner());
+        self.assets.replace(assets.into_inner());
+        self.asset_hashes.replace(asset_hashes.into_inner());
+        self.performance.replace(performance.into_inner());
+        self.partitions_maybe
+            .replace(partitions_maybe)
+            .map(|_| ())
+            .unwrap_or_default();
     }
 }
 
@@ -102,6 +124,7 @@ impl StableState for State {
             assets: RefCell::new(assets),
             asset_hashes: RefCell::new(asset_hashes),
             performance: RefCell::new(performance),
+            partitions_maybe: RefCell::new(Err(DefaultMemoryImpl::default())),
         })
     }
 }

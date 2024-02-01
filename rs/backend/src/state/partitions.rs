@@ -25,7 +25,6 @@ pub struct Partitions {
     /// but has no method for returning it.  If we wish to convert a `DefaultMemoryImpl`
     /// to `Partitions` and back again, we need to keep a reference to the memory to
     /// provide when we convert back.
-    #[cfg(test)]
     memory: DefaultMemoryImpl,
 }
 
@@ -105,7 +104,7 @@ impl Partitions {
     pub fn copy_memory_reference(memory: &DefaultMemoryImpl) -> DefaultMemoryImpl {
         // Empty structure that makes API calls.  Can be cloned.
         #[cfg(target_arch = "wasm32")]
-        let ans = (*memory).clone();
+        let ans = *memory;
         // Reference counted pointer.  Make a copy of the pointer.
         #[cfg(not(target_arch = "wasm32"))]
         let ans = Rc::clone(memory);
