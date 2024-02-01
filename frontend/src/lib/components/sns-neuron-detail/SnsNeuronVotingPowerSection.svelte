@@ -45,27 +45,39 @@
       {$i18n.neuron_detail.voting_power_zero}
     {/if}
   </p>
-  <p class="description" slot="description" data-tid="voting-power-description">
+  <svelte:fragment slot="description">
     {#if canVote}
+      <p class="description">
+        {$i18n.neuron_detail.calculated_as}
+      </p>
+      <p class="description calculation">
+        {$i18n.neuron_detail.voting_power_section_calculation_generic}
+      </p>
+      <p class="description">
+        {$i18n.neuron_detail.this_neuron_calculation}
+      </p>
+      <p class="description calculation" data-tid="voting-power-description">
       {replacePlaceholders(
-        $i18n.neuron_detail.voting_power_section_description_expanded,
+        $i18n.neuron_detail.voting_power_section_calculation_specific,
         {
           $stake: formatTokenE8s({
             value: getSnsNeuronStake(neuron),
           }),
           $maturityStaked: formattedStakedMaturity(neuron),
-          $ageBonus: ageMultiplier({
+          $ageMultiplier: ageMultiplier({
             neuron,
             snsParameters: parameters,
           }).toFixed(2),
-          $dissolveBonus: dissolveDelayMultiplier({
+          $dissolveMultiplier: dissolveDelayMultiplier({
             neuron,
             snsParameters: parameters,
           }).toFixed(2),
           $votingPower: formatVotingPower(votingPower),
         }
       )}
+      </p>
     {:else}
+      <p class="description" data-tid="voting-power-description">
       <Html
         text={replacePlaceholders(
           $i18n.neuron_detail.voting_power_section_description_expanded_zero,
@@ -83,8 +95,9 @@
           }
         )}
       />
+      </p>
     {/if}
-  </p>
+  </svelte:fragment>
   <ul class="content">
     <SnsStakeItemAction {neuron} {token} {universe} />
     <SnsNeuronStateItemAction {neuron} snsParameters={parameters} {token} />
@@ -93,8 +106,7 @@
 </Section>
 
 <style lang="scss">
-  h3,
-  p {
+  h3 {
     margin: 0;
   }
 
