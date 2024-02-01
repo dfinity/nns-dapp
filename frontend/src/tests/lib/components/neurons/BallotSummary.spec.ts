@@ -3,14 +3,13 @@ import BallotSummary from "$lib/components/neuron-detail/Ballots/BallotSummary.s
 import { authStore } from "$lib/stores/auth.store";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
-import en from "$tests/mocks/i18n.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import { BallotSummaryPo } from "$tests/page-objects/BallotSummary.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
-import type { BallotInfo, Proposal } from "@dfinity/nns";
+import type { BallotInfo } from "@dfinity/nns";
 import { GovernanceCanister, Vote } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import { mock } from "vitest-mock-extended";
@@ -19,10 +18,6 @@ describe("BallotSummary", () => {
   const mockBallot: BallotInfo = {
     vote: Vote.Yes,
     proposalId: mockProposals[0].id,
-  };
-
-  const props = {
-    ballot: mockBallot,
   };
 
   const mockGovernanceCanister: MockGovernanceCanister =
@@ -39,77 +34,63 @@ describe("BallotSummary", () => {
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
-  it("should render proposal id", async () => {
-    const { queryByTestId, getByText } = render(BallotSummary, {
-      props,
-    });
-
-    await waitFor(() => expect(queryByTestId("ballot-summary")).not.toBeNull());
-
-    expect(getByText(`${mockProposals[0].id}`)).toBeInTheDocument();
-  });
-
-  it("should render proposal summary", async () => {
+  const renderComponent = async (ballot) => {
     const { container } = render(BallotSummary, {
-      props,
-    });
-
-    await waitFor(() =>
-      expect(
-        container.querySelector("[data-tid='proposal-summary-component'] p")
-      ).not.toBeNull()
-    );
-
-    const p = container.querySelector(
-      "[data-tid='proposal-summary-component'] p"
-    );
-
-    expect(p.textContent).toEqual(
-      (mockProposals[0].proposal as Proposal).summary
-    );
-  });
-
-  const testVote = async (vote: Vote) => {
-    const { container, getByText } = render(BallotSummary, {
       props: {
         ballot: {
           ...mockBallot,
-          vote,
+          ...ballot,
         },
       },
     });
-
-    await waitFor(() =>
-      expect(container.querySelector("p.vote")).not.toBeNull()
-    );
-
-    expect(getByText(en.core[Vote[vote].toLowerCase()])).toBeInTheDocument();
+    await runResolvedPromises();
+    return BallotSummaryPo.under(new JestPageObjectElement(container));
   };
 
-  it("should render ballot vote yes", async () => await testVote(Vote.Yes));
+  it("should render proposal id", async () => {
+    const po = await renderComponent({});
+    expect(await po.getProposalId()).toBe(`${mockProposals[0].id}`);
+  });
 
-  it("should render ballot vote no", async () => await testVote(Vote.No));
+  it("should render proposal summary", async () => {
+    const po = await renderComponent({});
+    await po.waitForLoaded();
 
-  it("should render ballot vote unspecified", async () =>
-    await testVote(Vote.Unspecified));
+    expect(await po.getBallotSummary()).toBe(mockProposals[0].proposal.summary);
+  });
+
+  it("should render ballot vote yes", async () => {
+    const po = await renderComponent({
+      vote: Vote.Yes,
+    });
+    expect(await po.getVote()).toBe("Yes");
+  });
+
+  it("should render ballot vote no", async () => {
+    const po = await renderComponent({
+      vote: Vote.No,
+    });
+    expect(await po.getVote()).toBe("No");
+  });
+
+  it("should render ballot vote unspecified", async () => {
+    const po = await renderComponent({
+      vote: Vote.Unspecified,
+    });
+    expect(await po.getVote()).toBe("Unspecified");
+  });
 
   it("should show ballot summary on info click", async () => {
-    const { container } = render(BallotSummary, {
-      props: { ballot: mockBallot },
-    });
-
-    const po = BallotSummaryPo.under(new JestPageObjectElement(container));
+    const po = await renderComponent({});
+    await po.waitForLoaded();
 
     await runResolvedPromises();
-
     expect(await po.isBallotSummaryVisible()).toBe(false);
 
     po.clickInfoIcon();
 
-    // We need to wait, without waiting the test will fail
-    await waitFor(async () =>
-      expect(await po.isBallotSummaryVisible()).toBe(true)
-    );
+    await runResolvedPromises();
+    expect(await po.isBallotSummaryVisible()).toBe(true);
 
     await waitFor(async () =>
       expect(await po.getBallotSummary()).toBe(
