@@ -5,11 +5,11 @@
   import { goto } from "$app/navigation";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
   import { isNnsUniverseStore } from "$lib/derived/selected-universe.derived";
-  import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import { nnsTokenStore } from "$lib/derived/universes-tokens.derived";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { nonNullish } from "@dfinity/utils";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 
   let toggleContent: () => void;
   let expanded: boolean;
@@ -17,20 +17,42 @@
   let token: string | undefined;
   $: token = $isNnsUniverseStore
     ? $nnsTokenStore.token.symbol
-    : $snsTokenSymbolSelectedStore?.symbol;
+    : $snsProjectSelectedStore?.summary?.token?.symbol;
 
-  let label: string | undefined;
-  $: label =
+  let snsName: string | undefined;
+  $: snsName = $isNnsUniverseStore
+    ? undefined
+    : $snsProjectSelectedStore?.summary?.metadata?.name;
+
+  let title: string | undefined;
+  $: title = $isNnsUniverseStore
+    ? $i18n.proposal_detail__vote.no_nns_neurons
+    : snsName &&
+      replacePlaceholders($i18n.proposal_detail__vote.no_sns_neurons, {
+        $project: snsName,
+      });
+
+  let description: string | undefined;
+  $: description =
     token &&
-    replacePlaceholders($i18n.proposal_detail__vote.stake_neuron, {
-      $token: token,
-    });
+    ($isNnsUniverseStore
+      ? replacePlaceholders(
+          $i18n.proposal_detail__vote.no_nns_neurons_description,
+          {
+            $token: token,
+          }
+        )
+      : snsName &&
+        replacePlaceholders($i18n.sns_neurons.text, {
+          $tokenSymbol: token,
+          $project: snsName,
+        }));
 
   const gotoNeurons = () => goto($neuronsPathStore);
 </script>
 
 <TestIdWrapper testId="stake-neuron-to-vote-component">
-  {#if nonNullish(label)}
+  {#if nonNullish(token) && nonNullish(title) && nonNullish(description)}
     <div class="container" in:fade>
       <Collapsible
         expandButton={false}
@@ -40,7 +62,7 @@
         wrapHeight
       >
         <div slot="header" class="header" class:expanded>
-          <span class="value">{$i18n.proposal_detail__vote.no_neurons}</span>
+          <span class="value" data-tid="stake-neuron-title">{title}</span>
           <button
             class="icon"
             class:expanded
@@ -51,13 +73,16 @@
           </button>
         </div>
         <p class="description" data-tid="stake-neuron-description">
-          {$i18n.proposal_detail__vote.no_neurons_description}
+          {description}
         </p>
         <button
           data-tid="stake-neuron-button"
           class="secondary stake-neuron-button"
           type="button"
-          on:click|stopPropagation={gotoNeurons}>{label}</button
+          on:click|stopPropagation={gotoNeurons}
+          >{replacePlaceholders($i18n.proposal_detail__vote.stake_neuron, {
+            $token: token,
+          })}</button
         >
         <slot />
       </Collapsible>
