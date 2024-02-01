@@ -128,7 +128,7 @@ describe("NnsStakeNeuronModal", () => {
           .getNnsStakeNeuronPo()
           .getTransactionFromAccountPo()
           .getSelectAccountDropdownPo()
-          .isPresent()
+          .hasDropdown()
       ).toBe(true);
     });
 
