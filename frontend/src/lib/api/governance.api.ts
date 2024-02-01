@@ -389,6 +389,7 @@ export type ApiStakeNeuronParams = ApiCallParams & {
   controller: Principal;
   ledgerCanisterIdentity: Identity;
   fromSubAccount?: SubAccountArray;
+  fee: bigint;
 };
 
 /**
@@ -400,6 +401,7 @@ export const stakeNeuron = async ({
   ledgerCanisterIdentity,
   identity,
   fromSubAccount,
+  fee,
 }: ApiStakeNeuronParams): Promise<NeuronId> => {
   logWithTimestamp(`Staking Neuron call...`);
   const { canister } = await governanceCanister({ identity });
@@ -416,6 +418,7 @@ export const stakeNeuron = async ({
     fromSubAccount,
     ledgerCanister,
     createdAt,
+    fee,
   });
   logWithTimestamp(`Staking Neuron complete.`);
   return response;

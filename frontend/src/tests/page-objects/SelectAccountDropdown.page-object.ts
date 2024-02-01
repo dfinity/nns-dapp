@@ -18,4 +18,12 @@ export class SelectAccountDropdownPo extends BasePageObject {
   select(option: string): Promise<void> {
     return this.getDropdown().select(option);
   }
+
+  getOptions(): Promise<string[]> {
+    return this.getDropdown().getOptions();
+  }
+
+  hasDropdown(): Promise<boolean> {
+    return this.getDropdown().isPresent();
+  }
 }

@@ -10,6 +10,7 @@ import {
   CKETH_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import {
   snsProjectsCommittedStore,
@@ -758,6 +759,7 @@ describe("Accounts", () => {
           to: destinationAddress,
           amount: TokenAmount.fromNumber({ amount, token: ICPToken }).toE8s(),
           fromSubaccount: undefined,
+          fee: NNS_TOKEN_DATA.fee,
         });
       });
 
@@ -810,6 +812,7 @@ describe("Accounts", () => {
           to: destinationAddress,
           amount: TokenAmount.fromNumber({ amount, token: ICPToken }).toE8s(),
           fromSubAccount: mockSubAccount.subAccount,
+          fee: NNS_TOKEN_DATA.fee,
         });
       });
     });

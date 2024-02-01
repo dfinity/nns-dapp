@@ -966,6 +966,7 @@ describe("neurons api-service", () => {
       controller: mockPrincipal,
       ledgerCanisterIdentity: mockIdentity,
       fromSubaccount: new Uint8Array(),
+      fee: 10_000n,
     };
 
     it("should call stakeNeuron api", async () => {

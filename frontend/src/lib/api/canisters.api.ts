@@ -211,11 +211,13 @@ export const createCanister = async ({
   amount,
   name,
   fromSubAccount,
+  fee,
 }: {
   identity: Identity;
   amount: bigint;
   name?: string;
   fromSubAccount?: SubAccountArray;
+  fee: bigint;
 }): Promise<Principal> => {
   logWithTimestamp("Create canister call...");
 
@@ -247,6 +249,7 @@ export const createCanister = async ({
     amount,
     fromSubAccount,
     createdAt,
+    fee,
   });
 
   // If this fails or the client loses connection, nns dapp backend polls the transactions
@@ -313,11 +316,13 @@ export const topUpCanister = async ({
   canisterId,
   amount,
   fromSubAccount,
+  fee,
 }: {
   identity: Identity;
   canisterId: Principal;
   amount: bigint;
   fromSubAccount?: SubAccountArray;
+  fee: bigint;
 }): Promise<void> => {
   logWithTimestamp(`Topping up canister ${canisterId.toText()} call...`);
 
@@ -335,6 +340,7 @@ export const topUpCanister = async ({
     to: recipient.toHex(),
     fromSubAccount,
     createdAt,
+    fee,
   });
 
   // If this fails or the client loses connection

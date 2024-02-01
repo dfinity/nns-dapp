@@ -20,6 +20,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Use logo for token (if present) for `ICRC` (but non-`SNS`) tokens.
 * Filtering SNS Proposals by type.
 * Add the token symbol in the receive modal.
+* Add fee as mandatory when making ICP transactions.
 
 #### Changed
 
@@ -27,6 +28,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Display the full neuron type text within the tag.
 * Wording in "no neurons to vote" section.
 * Implement `State` traits manually rather than automatically.
+* Voting power calculation formatting.
 * Voting rewards description.
 
 #### Deprecated

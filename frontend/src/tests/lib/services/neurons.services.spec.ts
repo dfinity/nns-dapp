@@ -2,6 +2,7 @@ import { resetNeuronsApiService } from "$lib/api-services/governance.api-service
 import * as api from "$lib/api/governance.api";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import { MIN_NEURON_STAKE } from "$lib/constants/neurons.constants";
+import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import * as authServices from "$lib/services/auth.services";
 import {
   getAccountIdentityByPrincipal,
@@ -215,6 +216,7 @@ describe("neurons-services", () => {
         identity: mockIdentity,
         ledgerCanisterIdentity: mockIdentity,
         stake: 1_000_000_000n,
+        fee: NNS_TOKEN_DATA.fee,
       });
       expect(spyStakeNeuron).toBeCalledTimes(1);
       expect(newNeuronId).toEqual(mockNeuron.neuronId);
@@ -234,6 +236,7 @@ describe("neurons-services", () => {
         identity: mockIdentity,
         ledgerCanisterIdentity: mockIdentity,
         stake: 1_000_000_000n,
+        fee: NNS_TOKEN_DATA.fee,
       });
       expect(spyStakeNeuron).toBeCalledTimes(1);
       expect(newNeuronId).toEqual(mockNeuron.neuronId);
@@ -259,6 +262,7 @@ describe("neurons-services", () => {
         fromSubAccount: undefined,
         ledgerCanisterIdentity: mockHardkwareWalletIdentity,
         stake: 1_000_000_000n,
+        fee: NNS_TOKEN_DATA.fee,
       });
       expect(spyStakeNeuron).toBeCalledTimes(1);
       expect(newNeuronId).toEqual(mockNeuron.neuronId);

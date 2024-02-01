@@ -30,6 +30,7 @@ export const sendICP = async ({
   fromSubAccount,
   memo,
   createdAt,
+  fee,
 }: {
   identity: Identity;
   to: string;
@@ -37,6 +38,7 @@ export const sendICP = async ({
   fromSubAccount?: SubAccountArray | undefined;
   memo?: bigint;
   createdAt?: bigint;
+  fee: bigint;
 }): Promise<BlockHeight> => {
   logWithTimestamp(`Sending icp call...`);
   const { canister } = await ledgerCanister({ identity });
@@ -47,6 +49,7 @@ export const sendICP = async ({
     fromSubAccount,
     memo,
     createdAt: createdAt ?? nowInBigIntNanoSeconds(),
+    fee,
   });
   logWithTimestamp(`Sending icp complete.`);
   return response;
