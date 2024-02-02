@@ -955,7 +955,7 @@ export const getTopicTitle = ({
   topic: Topic;
   i18n: I18n;
 }): string => {
-  const mapper = {
+  const mapper: Record<Topic, string> = {
     [Topic.Unspecified]: i18n.follow_neurons.topic_0_title,
     [Topic.ManageNeuron]: i18n.follow_neurons.topic_1_title,
     [Topic.ExchangeRate]: i18n.follow_neurons.topic_2_title,
@@ -983,7 +983,7 @@ export const getTopicSubtitle = ({
   topic: Topic;
   i18n: I18n;
 }): string => {
-  const mapper = {
+  const mapper: Record<Topic, string> = {
     [Topic.Unspecified]: i18n.follow_neurons.topic_0_subtitle,
     [Topic.ManageNeuron]: i18n.follow_neurons.topic_1_subtitle,
     [Topic.ExchangeRate]: i18n.follow_neurons.topic_2_subtitle,
