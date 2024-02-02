@@ -31,6 +31,7 @@
     ckBTCInfoStore,
     type CkBTCInfoStoreUniverseData,
   } from "$lib/stores/ckbtc-info.store";
+  import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
 
   export let selectedAccount: Account | undefined = undefined;
 
@@ -49,10 +50,19 @@
 
   let currentStep: WizardStep | undefined;
 
+  const getTitleForm = (isBtc: boolean) =>
+    replacePlaceholders($i18n.core.send_with_token, {
+      $token: isBtc
+        ? isUniverseCkTESTBTC(universeId)
+          ? $i18n.ckbtc.test_bitcoin
+          : $i18n.ckbtc.bitcoin
+        : token.symbol,
+    });
+
   let title: string;
   $: title =
     currentStep?.name === "Form"
-      ? $i18n.accounts.send
+      ? getTitleForm(networkBtc)
       : currentStep?.name === "Progress"
       ? $i18n.ckbtc.sending_ckbtc_to_btc
       : currentStep?.name === "QRCode"
