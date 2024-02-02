@@ -26,10 +26,8 @@ interface I18nCore {
   principal_id: string;
   copy: string;
   ic: string;
-  previous: string;
   next: string;
   principal_is: string;
-  done: string;
   this_may_take_a_few_minutes: string;
   do_not_close: string;
   finish: string;
