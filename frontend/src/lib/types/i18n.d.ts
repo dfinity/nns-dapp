@@ -270,15 +270,12 @@ interface I18nNeurons {
   confirm_dissolve_delay: string;
   follow_neurons_screen: string;
   stake_icp: string;
-  source: string;
   transaction_fee: string;
-  current_balance: string;
   may_take_while: string;
   create: string;
   community_fund: string;
   hotkey_control: string;
   hardware_wallet_control: string;
-  stake: string;
   amount_icp_stake: string;
   ic_stake: string;
   staked: string;
@@ -306,9 +303,7 @@ interface I18nNeurons {
   confirm_update_delay: string;
   confirm_set_delay: string;
   edit_delay: string;
-  merge_neurons_article_title: string;
   cannot_merge_neuron_community: string;
-  cannot_merge_neuron_seed: string;
   cannot_merge_neuron_spawning: string;
   cannot_merge_neuron_hotkey: string;
   cannot_merge_neuron_state: string;
@@ -323,7 +318,6 @@ interface I18nNeurons {
   remove_followees_sale_prompt_success: string;
   top_up_neuron: string;
   top_up_description: string;
-  community_fund_title: string;
   merge_neurons_select_info: string;
   merge_neurons_source_neuron_disappear: string;
   merge_neurons_more_info: string;
