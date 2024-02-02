@@ -881,16 +881,10 @@ interface I18nError__canister {
   get_exchange_rate: string;
 }
 
-interface I18nTheme {
-  theme: string;
-  switch_theme: string;
-}
-
 interface I18nError__sns {
   init: string;
   undefined_project: string;
   list_summaries: string;
-  load_summary: string;
   list_swap_commitments: string;
   load_swap_commitment: string;
   load_sale_total_commitments: string;
@@ -920,7 +914,6 @@ interface I18nError__sns {
   sns_sale_invalid_subaccount: string;
   sns_sale_try_later: string;
   sns_sale_committed_not_equal_to_amount: string;
-  invalid_root_canister_id: string;
   ledger_temporarily_unavailable: string;
   ledger_duplicate: string;
   ledger_bad_fee: string;
@@ -1044,10 +1037,6 @@ interface I18nCkbtc {
   bitcoin_address_title: string;
   refresh_balance: string;
   confirmations: string;
-  warning_transaction_description: string;
-  checking_incomplete_btc_transfers: string;
-  all_btc_transfers_complete: string;
-  click_to_complete_btc_transfers: string;
   btc_received: string;
   btc_sent: string;
   btc_network: string;
@@ -1060,12 +1049,9 @@ interface I18nCkbtc {
 
 interface I18nError__ckbtc {
   already_process: string;
-  no_new_utxo: string;
   temporary_unavailable: string;
-  no_minter_defined: string;
   info_not_found: string;
   get_btc_address: string;
-  get_btc_no_account: string;
   get_btc_no_universe: string;
   update_balance: string;
   no_new_confirmed_btc: string;
@@ -1075,7 +1061,6 @@ interface I18nError__ckbtc {
   insufficient_funds: string;
   retrieve_btc_unknown: string;
   estimated_fee: string;
-  deposit_fee: string;
   retrieve_btc_min_amount: string;
   retrieve_btc_min_amount_unknown: string;
   wait_ckbtc_info_parameters_certified: string;
@@ -1343,7 +1328,6 @@ interface I18n {
   error__attach_wallet: I18nError__attach_wallet;
   error__account: I18nError__account;
   error__canister: I18nError__canister;
-  theme: I18nTheme;
   error__sns: I18nError__sns;
   auth_accounts: I18nAuth_accounts;
   auth_neurons: I18nAuth_neurons;
