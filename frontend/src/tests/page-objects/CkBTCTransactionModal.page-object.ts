@@ -11,11 +11,11 @@ export class CkBTCTransactionModalPo extends TransactionModalBasePo {
     );
   }
 
-  getTransactionFormItemNetwork() {
+  getTransactionFormItemNetworkPo() {
     return TransactionFormItemNetworkPo.under(this.root);
   }
 
   async selectNetwork(network: string) {
-    return this.getTransactionFormItemNetwork().selectNetwork(network);
+    return this.getTransactionFormItemNetworkPo().selectNetwork(network);
   }
 }
