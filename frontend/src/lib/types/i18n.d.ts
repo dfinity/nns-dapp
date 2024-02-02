@@ -66,7 +66,6 @@ interface I18nError {
   register_vote: string;
   register_vote_neuron: string;
   register_vote_unknown: string;
-  remove_followee: string;
   followee_does_not_exist: string;
   accounts_not_found: string;
   query_balance: string;
@@ -76,19 +75,15 @@ interface I18nError {
   transactions_not_found: string;
   canister_not_found: string;
   fail: string;
-  join_community_fund: string;
   dummy_proposal: string;
   add_maturity: string;
-  update_delay: string;
   unknown: string;
   amount_not_valid: string;
   amount_not_enough_stake_neuron: string;
   amount_not_enough_top_up_neuron: string;
-  stake_neuron: string;
   transaction_error: string;
   unexpected_number_neurons_merge: string;
   cannot_merge: string;
-  split_neuron: string;
   not_authorized_neuron_action: string;
   invalid_sender: string;
   insufficient_funds: string;
@@ -97,7 +92,6 @@ interface I18nError {
   merge_neurons_not_same_controller: string;
   merge_neurons_not_same_manage_neuron_followees: string;
   merge_neurons_different_types: string;
-  neuron_account_not_found: string;
   governance_error: string;
   not_mergeable: string;
   invalid_account_id: string;
@@ -603,7 +597,6 @@ interface I18nNeuron_detail {
   title: string;
   voting_history: string;
   vote: string;
-  join_community_fund: string;
   increase_dissolve_delay: string;
   start_dissolving: string;
   stop_dissolving: string;
