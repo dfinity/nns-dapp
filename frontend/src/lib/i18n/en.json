@@ -534,7 +534,6 @@
     "headline": "Cast Vote",
     "vote_with_neurons": "Vote with $votable_count/$all_count Neuron",
     "vote_with_neurons_plural": "Vote with $votable_count/$all_count Neurons",
-    "voting_power": "Voting Power",
     "voting_power_label": "Voting Power:",
     "vote_progress": "Vote Progress",
     "total": "Total",
