@@ -573,7 +573,6 @@ interface I18nProposal_detail__vote {
   headline: string;
   vote_with_neurons: string;
   vote_with_neurons_plural: string;
-  voting_power_value: string;
   voting_power: string;
   voting_power_label: string;
   vote_progress: string;
@@ -658,7 +657,6 @@ interface I18nNeuron_detail {
   auto_stake_maturity_off: string;
   auto_stake_maturity_on_success: string;
   auto_stake_maturity_off_success: string;
-  community_fund_more_info: string;
   maturity_title: string;
   maturity_last_distribution: string;
   maturity_last_distribution_info: string;
@@ -668,7 +666,6 @@ interface I18nNeuron_detail {
   view_active_disbursements_status: string;
   view_active_disbursements_modal_title: string;
   view_active_disbursements_to: string;
-  view_active_disbursements_maturity: string;
   disburse_maturity_description_1: string;
   disburse_maturity_description_2: string;
   disburse_maturity_amount: string;
@@ -683,7 +680,6 @@ interface I18nNeuron_detail {
   stake_maturity_disabled_tooltip: string;
   disburse_maturity_disabled_tooltip_zero: string;
   disburse_maturity_disabled_tooltip_non_zero: string;
-  stake_maturity_tooltip: string;
   start_dissolve_description: string;
   stop_dissolve_description: string;
   join_community_fund_success: string;
@@ -711,7 +707,6 @@ interface I18nNeuron_detail {
   edit_percentage: string;
   stake_maturity_modal_title: string;
   disburse_maturity_modal_title: string;
-  disburse_maturity_modal_description: string;
   disburse_maturity: string;
   disburse_maturity_confirmation_modal_title: string;
   disburse_maturity_confirmation_description: string;
@@ -724,10 +719,7 @@ interface I18nNeuron_detail {
   stake_maturity_success: string;
   spawn_neuron_modal_title: string;
   spawn_confirmation_modal_title: string;
-  spawn_neuron_modal_description: string;
   spawn_neuron_success: string;
-  spawn_neuron_confirmation_q: string;
-  spawn_neuron_confirmation_a: string;
   spawn_neuron_choose: string;
   spawn_neuron_explanation_1: string;
   spawn_neuron_explanation_2: string;
@@ -737,10 +729,8 @@ interface I18nNeuron_detail {
   available_maturity: string;
   nns_available_maturity_tooltip: string;
   sns_available_maturity_tooltip: string;
-  dissolve_delay_range: string;
   maturity_range: string;
   spawning_neuron_info: string;
-  maturity_percentage: string;
   dissolve_delay_row_title: string;
   remaining_title: string;
   unspecified: string;
