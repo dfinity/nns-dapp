@@ -22,6 +22,8 @@ import {
 import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import en from "$tests/mocks/i18n.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
+import { CkBTCTransactionModalPo } from "$tests/page-objects/CkBTCTransactionModal.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import {
   testTransferFormTokens,
   testTransferReviewTokens,
@@ -52,6 +54,12 @@ describe("CkBTCTransactionModal", () => {
         universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
       },
     });
+
+  const renderModalToPo = async () => {
+    const { container } = await renderTransactionModal();
+
+    return CkBTCTransactionModalPo.under(new JestPageObjectElement(container));
+  };
 
   beforeEach(() => {
     vi.restoreAllMocks();
@@ -86,6 +94,12 @@ describe("CkBTCTransactionModal", () => {
       minter_fee: 123n,
       bitcoin_fee: 456n,
     });
+  });
+
+  it("should show ckBTC label in modal title", async () => {
+    const po = await renderModalToPo();
+
+    expect(await po.getModalTitle()).toBe("Send ckBTC");
   });
 
   it("should transfer tokens", async () => {
@@ -142,6 +156,14 @@ describe("CkBTCTransactionModal", () => {
   };
 
   describe("convert BTC to ckBTC with ICRC-2", () => {
+    it("should show Bitcoin label in modal title", async () => {
+      const po = await renderModalToPo();
+
+      await po.selectNetwork(TransactionNetwork.BTC_TESTNET);
+
+      expect(await po.getModalTitle()).toBe("Send BTC");
+    });
+
     it("should convert ckBTC to Bitcoin", async () => {
       await testConvertCkBTCToBTCWithIcrc2({
         success: true,

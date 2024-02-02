@@ -192,11 +192,7 @@ interface I18nAccounts {
   new_linked_account_placeholder: string;
   hardwareWallet: string;
   select_source: string;
-  select_destination: string;
   address: string;
-  enter_address_or_select: string;
-  my_accounts: string;
-  enter_icp_amount: string;
   source: string;
   destination: string;
   from: string;
@@ -204,13 +200,10 @@ interface I18nAccounts {
   hardware_wallet_text: string;
   token_transaction_fee: string;
   transaction_fee: string;
-  new_transaction_fee: string;
   review_transaction: string;
   you_are_sending: string;
-  edit_destination: string;
   current_balance: string;
   confirm_and_send: string;
-  edit_amount: string;
   account_identifier: string;
   transaction_success: string;
   rename: string;
@@ -221,7 +214,6 @@ interface I18nAccounts {
   hardware_wallet_add_hotkey_text_neuron: string;
   hardware_wallet_add_hotkey_text_principal: string;
   hardware_wallet_add_hotkey_text_confirm: string;
-  current_balance_total: string;
   description: string;
   edit_transaction: string;
   send_now: string;
@@ -229,7 +221,6 @@ interface I18nAccounts {
   manual: string;
   scan_qr_code_alt: string;
   scan_qr_code: string;
-  no_account_select: string;
   current_balance_detail: string;
   network: string;
   network_icp: string;
@@ -279,15 +270,12 @@ interface I18nNeurons {
   confirm_dissolve_delay: string;
   follow_neurons_screen: string;
   stake_icp: string;
-  source: string;
   transaction_fee: string;
-  current_balance: string;
   may_take_while: string;
   create: string;
   community_fund: string;
   hotkey_control: string;
   hardware_wallet_control: string;
-  stake: string;
   amount_icp_stake: string;
   ic_stake: string;
   staked: string;
@@ -315,9 +303,7 @@ interface I18nNeurons {
   confirm_update_delay: string;
   confirm_set_delay: string;
   edit_delay: string;
-  merge_neurons_article_title: string;
   cannot_merge_neuron_community: string;
-  cannot_merge_neuron_seed: string;
   cannot_merge_neuron_spawning: string;
   cannot_merge_neuron_hotkey: string;
   cannot_merge_neuron_state: string;
@@ -332,7 +318,6 @@ interface I18nNeurons {
   remove_followees_sale_prompt_success: string;
   top_up_neuron: string;
   top_up_description: string;
-  community_fund_title: string;
   merge_neurons_select_info: string;
   merge_neurons_source_neuron_disappear: string;
   merge_neurons_more_info: string;
@@ -404,23 +389,17 @@ interface I18nVoting {
 }
 
 interface I18nCanisters {
-  title: string;
   aria_label_canister_card: string;
   text: string;
   create_canister: string;
   link_canister: string;
-  empty: string;
   add_canister: string;
   create_canister_title: string;
-  create_canister_subtitle: string;
   create_canister_success_id: string;
   create_canister_success_name: string;
-  link_canister_title: string;
-  link_canister_subtitle: string;
   link_canister_success: string;
   enter_canister_id: string;
   canister_id: string;
-  enter_name: string;
   enter_name_label: string;
   name: string;
   enter_amount: string;
