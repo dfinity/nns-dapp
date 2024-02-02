@@ -152,18 +152,7 @@
   },
   "auth": {
     "login": "Sign in with Internet Identity",
-    "title": "Open and autonomous governance running",
-    "on_chain": "100% on-chain",
-    "wallet": "Wallet",
-    "earn": "Vote & earn rewards",
-    "launchpad": "SNS Launchpad",
-    "ic_logo": "Internet Computer logo",
-    "dashboard": "Dashboard",
-    "voting_rewards": "Voting rewards",
-    "logo": "Network Nervous System logo",
-    "github_link": "Link to NNS-dapp repo on GitHub",
-    "background": "An abstract image for design and presentation purpose only",
-    "internetcomputer_dot_org_link": "Link to internetcomputer.org"
+    "ic_logo": "Internet Computer logo"
   },
   "accounts": {
     "main": "Main",

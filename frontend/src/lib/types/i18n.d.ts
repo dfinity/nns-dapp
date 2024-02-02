@@ -160,18 +160,7 @@ interface I18nHeader {
 
 interface I18nAuth {
   login: string;
-  title: string;
-  on_chain: string;
-  wallet: string;
-  earn: string;
-  launchpad: string;
   ic_logo: string;
-  dashboard: string;
-  voting_rewards: string;
-  logo: string;
-  github_link: string;
-  background: string;
-  internetcomputer_dot_org_link: string;
 }
 
 interface I18nAccounts {
