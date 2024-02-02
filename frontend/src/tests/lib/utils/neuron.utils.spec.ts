@@ -37,6 +37,8 @@ import {
   getNeuronById,
   getNeuronTags,
   getSpawningTimeInSeconds,
+  getTopicSubtitle,
+  getTopicTitle,
   hasEnoughMaturityToStake,
   hasJoinedCommunityFund,
   hasValidStake,
@@ -2547,6 +2549,143 @@ describe("neuron-utils", () => {
           identity: mockIdentity,
         })
       ).toBe(false);
+    });
+  });
+
+  describe("getTopicTitle", () => {
+    it("should return a title for every topic", () => {
+      for (const topic of Object.values(Topic)) {
+        if (typeof topic !== "string") {
+          expect(getTopicTitle({ topic, i18n: en })).toBe(
+            en.follow_neurons[`topic_${topic}_title`]
+          );
+        }
+      }
+    });
+
+    it("should return the correct title", () => {
+      expect(getTopicTitle({ topic: Topic.Unspecified, i18n: en })).toBe(
+        "All Except Governance, and SNS & Neurons' Fund"
+      );
+      expect(getTopicTitle({ topic: Topic.ManageNeuron, i18n: en })).toBe(
+        "Manage Neuron"
+      );
+      expect(getTopicTitle({ topic: Topic.ExchangeRate, i18n: en })).toBe(
+        "Exchange Rate"
+      );
+      expect(getTopicTitle({ topic: Topic.NetworkEconomics, i18n: en })).toBe(
+        "Network Economics"
+      );
+      expect(getTopicTitle({ topic: Topic.Governance, i18n: en })).toBe(
+        "Governance"
+      );
+      expect(getTopicTitle({ topic: Topic.NodeAdmin, i18n: en })).toBe(
+        "Node Admin"
+      );
+      expect(
+        getTopicTitle({ topic: Topic.ParticipantManagement, i18n: en })
+      ).toBe("Participant Management");
+      expect(getTopicTitle({ topic: Topic.SubnetManagement, i18n: en })).toBe(
+        "Subnet Management"
+      );
+      expect(
+        getTopicTitle({ topic: Topic.NetworkCanisterManagement, i18n: en })
+      ).toBe("System Canister Management");
+      expect(getTopicTitle({ topic: Topic.Kyc, i18n: en })).toBe("KYC");
+      expect(
+        getTopicTitle({ topic: Topic.NodeProviderRewards, i18n: en })
+      ).toBe("Node Provider Rewards");
+      expect(
+        getTopicTitle({ topic: Topic.SnsDecentralizationSale, i18n: en })
+      ).toBe("SNS Decentralization Swap");
+      expect(
+        getTopicTitle({ topic: Topic.SubnetReplicaVersionManagement, i18n: en })
+      ).toBe("Subnet Replica Version Management");
+      expect(
+        getTopicTitle({ topic: Topic.ReplicaVersionManagement, i18n: en })
+      ).toBe("Replica Version Management");
+      expect(
+        getTopicTitle({ topic: Topic.SnsAndCommunityFund, i18n: en })
+      ).toBe("SNS & Neurons' Fund");
+      expect(
+        getTopicTitle({ topic: Topic.ApiBoundaryNodeManagement, i18n: en })
+      ).toBe("API Boundary Node Management");
+    });
+  });
+
+  describe("getTopicSubtitle", () => {
+    it("should return a title for every topic", () => {
+      for (const topic of Object.values(Topic)) {
+        if (typeof topic !== "string") {
+          expect(getTopicSubtitle({ topic, i18n: en })).toBe(
+            en.follow_neurons[`topic_${topic}_subtitle`]
+          );
+        }
+      }
+    });
+
+    it("should return the correct subtitle", () => {
+      expect(getTopicSubtitle({ topic: Topic.Unspecified, i18n: en })).toBe(
+        "Follow neurons on all proposal topics except the governance topic, and SNS & Neurons' Fund."
+      );
+      expect(getTopicSubtitle({ topic: Topic.ManageNeuron, i18n: en })).toBe(
+        "Proposals that manage specific neurons, for example making them perform actions."
+      );
+      expect(getTopicSubtitle({ topic: Topic.ExchangeRate, i18n: en })).toBe(
+        "All proposals that provide “real time” information about the value of ICP, as measured by an IMF SDR, which allows the NNS to convert ICP to cycles (which power computation) at a rate which keeps their real world cost constant."
+      );
+      expect(
+        getTopicSubtitle({ topic: Topic.NetworkEconomics, i18n: en })
+      ).toBe(
+        "Proposals that administer network economics, for example, determining what rewards should be paid to node operators."
+      );
+      expect(getTopicSubtitle({ topic: Topic.Governance, i18n: en })).toBe(
+        "All proposals that administer governance, for example to freeze malicious canisters that are harming the network."
+      );
+      expect(getTopicSubtitle({ topic: Topic.NodeAdmin, i18n: en })).toBe(
+        "All proposals that administer node machines somehow, including, but not limited to, upgrading or configuring the OS, upgrading or configuring the virtual machine framework and upgrading or configuring the node replica software."
+      );
+      expect(
+        getTopicSubtitle({ topic: Topic.ParticipantManagement, i18n: en })
+      ).toBe(
+        "All proposals that administer network participants, for example, granting and revoking DCIDs (data center identities) or NOIDs (node operator identities)."
+      );
+      expect(
+        getTopicSubtitle({ topic: Topic.SubnetManagement, i18n: en })
+      ).toBe(
+        "All proposals that administer network subnets, for example creating new subnets, adding and removing subnet nodes, and splitting subnets."
+      );
+      expect(
+        getTopicSubtitle({ topic: Topic.NetworkCanisterManagement, i18n: en })
+      ).toBe(
+        "Installing and upgrading “system” canisters that belong to the network. For example, upgrading the NNS."
+      );
+      expect(getTopicSubtitle({ topic: Topic.Kyc, i18n: en })).toBe(
+        "Proposals that update KYC information for regulatory purposes, for example during the initial Genesis distribution of ICP in the form of neurons."
+      );
+      expect(
+        getTopicSubtitle({ topic: Topic.NodeProviderRewards, i18n: en })
+      ).toBe("Proposals that reward node providers");
+      expect(
+        getTopicSubtitle({ topic: Topic.SnsDecentralizationSale, i18n: en })
+      ).toBe("Proposals for SNS");
+      expect(
+        getTopicSubtitle({
+          topic: Topic.SubnetReplicaVersionManagement,
+          i18n: en,
+        })
+      ).toBe("Proposals handling updates of a subnet's replica version");
+      expect(
+        getTopicSubtitle({ topic: Topic.ReplicaVersionManagement, i18n: en })
+      ).toBe(
+        "Proposals dealing with blessing and retirement of replica versions"
+      );
+      expect(
+        getTopicSubtitle({ topic: Topic.SnsAndCommunityFund, i18n: en })
+      ).toBe("Proposals related to SNS and Neurons' Fund");
+      expect(
+        getTopicSubtitle({ topic: Topic.ApiBoundaryNodeManagement, i18n: en })
+      ).toBe("Proposals related to the management of API boundary nodes");
     });
   });
 });
