@@ -140,7 +140,6 @@
   },
   "header": {
     "menu": "Open menu to access navigation options",
-    "title": "NETWORK NERVOUS SYSTEM",
     "logout": "Logout",
     "account_menu": "Open menu to access logout button"
   },
@@ -362,8 +361,6 @@
     "add": "Add Followee"
   },
   "voting": {
-    "title": "Voting",
-    "text": "The Internet Computer network runs under the control of the Network Nervous System, which adopts proposals and automatically executes corresponding actions. Anyone can submit a proposal, which are decided as the result of voting activity by neurons.",
     "topics": "Topics",
     "types": "Types",
     "rewards": "Reward Status",
@@ -400,8 +397,6 @@
   },
   "canister_detail": {
     "title": "Canister",
-    "id": "ID: $canisterId",
-    "cycles": "Cycles",
     "controllers": "Controllers",
     "t_cycles": "T Cycles",
     "add_cycles": "Add Cycles",
@@ -448,8 +443,6 @@
   },
   "wallet": {
     "title": "Account",
-    "address": "Address",
-    "principal": "Principal",
     "direction_from": "From:",
     "direction_to": "To:",
     "no_transactions": "Transactions will appear here.",
@@ -477,7 +470,6 @@
     "neurons_voted_plural": "$count neurons voted",
     "loading_neurons": "Loading your neurons...",
     "payload": "Payload",
-    "vote": "Vote",
     "created_prefix": "Created",
     "created_description": "The date when this proposal was created.",
     "decided_prefix": "Decided",
@@ -503,12 +495,10 @@
     "id": "ID"
   },
   "proposal_detail__vote": {
-    "headline": "Cast Vote",
     "vote_with_neurons": "Vote with $votable_count/$all_count Neuron",
     "vote_with_neurons_plural": "Vote with $votable_count/$all_count Neurons",
     "voting_power_label": "Voting Power:",
     "vote_progress": "Vote Progress",
-    "total": "Total",
     "adopt": "Adopt",
     "reject": "Reject",
     "confirm_adopt_headline": "Adopt Proposal",
