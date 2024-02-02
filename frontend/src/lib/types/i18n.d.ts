@@ -192,11 +192,7 @@ interface I18nAccounts {
   new_linked_account_placeholder: string;
   hardwareWallet: string;
   select_source: string;
-  select_destination: string;
   address: string;
-  enter_address_or_select: string;
-  my_accounts: string;
-  enter_icp_amount: string;
   source: string;
   destination: string;
   from: string;
@@ -204,13 +200,10 @@ interface I18nAccounts {
   hardware_wallet_text: string;
   token_transaction_fee: string;
   transaction_fee: string;
-  new_transaction_fee: string;
   review_transaction: string;
   you_are_sending: string;
-  edit_destination: string;
   current_balance: string;
   confirm_and_send: string;
-  edit_amount: string;
   account_identifier: string;
   transaction_success: string;
   rename: string;
@@ -221,7 +214,6 @@ interface I18nAccounts {
   hardware_wallet_add_hotkey_text_neuron: string;
   hardware_wallet_add_hotkey_text_principal: string;
   hardware_wallet_add_hotkey_text_confirm: string;
-  current_balance_total: string;
   description: string;
   edit_transaction: string;
   send_now: string;
@@ -229,7 +221,6 @@ interface I18nAccounts {
   manual: string;
   scan_qr_code_alt: string;
   scan_qr_code: string;
-  no_account_select: string;
   current_balance_detail: string;
   network: string;
   network_icp: string;
