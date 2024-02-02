@@ -161,7 +161,7 @@ describe("CkBTCTransactionModal", () => {
 
       await po.selectNetwork(TransactionNetwork.BTC_TESTNET);
 
-      expect(await po.getModalTitle()).toBe("Send Bitcoin Testnet");
+      expect(await po.getModalTitle()).toBe("Send BTC");
     });
 
     it("should convert ckBTC to Bitcoin", async () => {
