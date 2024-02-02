@@ -24,14 +24,12 @@ interface I18nCore {
   toggle: string;
   log: string;
   principal_id: string;
-  copy: string;
   ic: string;
   next: string;
   principal_is: string;
   this_may_take_a_few_minutes: string;
   do_not_close: string;
   finish: string;
-  unknown: string;
   expand_all: string;
   receive_with_token: string;
   receive: string;
