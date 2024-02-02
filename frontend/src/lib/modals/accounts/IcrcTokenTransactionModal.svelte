@@ -28,7 +28,9 @@
 
   $: title =
     currentStep?.name === "Form"
-      ? $i18n.accounts.send
+      ? replacePlaceholders($i18n.core.send_with_token, {
+          $token: token.symbol,
+        })
       : currentStep?.name === "QRCode"
       ? $i18n.accounts.scan_qr_code
       : $i18n.accounts.you_are_sending;

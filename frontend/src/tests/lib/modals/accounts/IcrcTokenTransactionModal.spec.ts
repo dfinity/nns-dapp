@@ -37,6 +37,27 @@ describe("IcrcTokenTransactionModal", () => {
     vi.spyOn(ledgerApi, "icrcTransfer").mockResolvedValue(1234n);
   });
 
+  const renderModalComponent = async () => {
+    const { container } = await renderModal({
+      component: IcrcTokenTransactionModal,
+      props: {
+        ledgerCanisterId,
+        token,
+        transactionFee,
+      },
+    });
+
+    return IcrcTokenTransactionModalPo.under(
+      new JestPageObjectElement(container)
+    );
+  };
+
+  it("should render token in the modal title", async () => {
+    const po = await renderModalComponent();
+
+    expect(await po.getModalTitle()).toBe(`Send ${token.symbol}`);
+  });
+
   it("should transfer tokens", async () => {
     // Used to choose the source account
     icrcAccountsStore.set({
@@ -52,18 +73,7 @@ describe("IcrcTokenTransactionModal", () => {
       },
     });
 
-    const { container } = await renderModal({
-      component: IcrcTokenTransactionModal,
-      props: {
-        ledgerCanisterId,
-        token,
-        transactionFee,
-      },
-    });
-
-    const po = IcrcTokenTransactionModalPo.under(
-      new JestPageObjectElement(container)
-    );
+    const po = await renderModalComponent();
 
     const toAccount = {
       owner: principal(2),

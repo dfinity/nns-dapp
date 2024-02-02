@@ -33,5 +33,5 @@
   class="secondary"
   on:click={openModal}
   disabled={$busy}
-  data-tid={testId}>{$i18n.ckbtc.receive}</button
+  data-tid={testId}>{$i18n.core.receive}</button
 >

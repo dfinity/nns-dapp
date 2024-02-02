@@ -1,0 +1,54 @@
+# A GitHub Actions workflow that regularly fetches the production response
+# of the SNS aggregator and updates the mock files for the ProdLaunchpad.spec test.
+name: Update the SNS aggregator response for ProdLaunchpad.spec
+on:
+  schedule:
+    - cron: '30 3 * * THU'
+  workflow_dispatch:
+  push:
+    branches:
+      # Run when the development branch for this workflow is updated.
+      - update-aggregator-response
+jobs:
+  update-aggregator-response:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Update the SNS aggregator response files
+        run: scripts/nns-dapp/test-replace-sns-aggregator-response.sh
+      - name: Format the updated files
+        run: scripts/fmt
+      - name: Create Pull Request
+        id: cpr
+        # Note: If there were no changes, this step creates no PR.
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.GIX_BOT_PAT }}
+          commit-message: Update SNS aggregator response
+          committer: GitHub <noreply@github.com>
+          author: gix-bot <gix-bot@users.noreply.github.com>
+          base: main
+          reviewers: mstrasinskis, dskloetd, lmuntaner
+          # Note: Please be careful when updating the add-paths field.
+          add-paths: frontend/src/tests/workflows/Launchpad/*.json
+          branch: bot-aggregator-response-update
+          branch-suffix: timestamp
+          delete-branch: true
+          title: 'Update SNS Aggregator Response'
+          body: |
+            # Motivation
+            We would like to keep the ProdLaunchpad.spec up to date with mainnet data.
+
+            # Changes
+            * Update the files used for the fetch mock in ProdLaunchpad.spec.
+
+            # Tests
+            Only test changes.
+      - name: Notify Slack on failure
+        # Since the this is a scheduled job, a failure won't be shown on any
+        # PR status. To notify the team, we send a message to our Slack channel on failure.
+        uses: dfinity/internet-identity/.github/actions/slack@release-2023-08-28
+        if: ${{ failure() }}
+        with:
+          WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          MESSAGE: "SNS aggregator response update failed"

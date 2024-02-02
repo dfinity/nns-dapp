@@ -25,6 +25,7 @@ describe("icp-ledger.api", () => {
 
     const { identifier: accountIdentifier } = mockMainAccount;
     const amount = 11_000n;
+    const fee = 10_000n;
 
     const now = Date.now();
     const nowInBigIntNanoSeconds = BigInt(now) * 1_000_000n;
@@ -46,12 +47,14 @@ describe("icp-ledger.api", () => {
         identity: mockIdentity,
         to: accountIdentifier,
         amount,
+        fee,
       });
 
       expect(spyTransfer).toHaveBeenCalledWith({
         to: AccountIdentifier.fromHex(accountIdentifier),
         amount,
         createdAt: nowInBigIntNanoSeconds,
+        fee,
       });
     });
 
@@ -65,6 +68,7 @@ describe("icp-ledger.api", () => {
         to: accountIdentifier,
         amount,
         fromSubAccount,
+        fee,
       });
 
       expect(spyTransfer).toHaveBeenCalledWith({
@@ -72,6 +76,7 @@ describe("icp-ledger.api", () => {
         amount,
         fromSubAccount,
         createdAt: nowInBigIntNanoSeconds,
+        fee,
       });
     });
 
@@ -82,6 +87,7 @@ describe("icp-ledger.api", () => {
         to: accountIdentifier,
         amount,
         memo,
+        fee,
       });
 
       expect(spyTransfer).toHaveBeenCalledWith({
@@ -89,6 +95,7 @@ describe("icp-ledger.api", () => {
         amount,
         memo,
         createdAt: nowInBigIntNanoSeconds,
+        fee,
       });
     });
 
@@ -101,6 +108,7 @@ describe("icp-ledger.api", () => {
         amount,
         memo,
         createdAt,
+        fee,
       });
 
       expect(spyTransfer).toHaveBeenCalledWith({
@@ -108,6 +116,7 @@ describe("icp-ledger.api", () => {
         amount,
         memo,
         createdAt,
+        fee,
       });
     });
   });

@@ -32,20 +32,26 @@ describe("StakeNeuronToVote", () => {
       expect(await po.getExpandButton().isPresent()).toBe(true);
     });
 
+    it("should display title", async () => {
+      const po = await renderAndExpand();
+
+      expect(await po.getTitleText()).toBe(
+        "You don't have any neurons to vote"
+      );
+    });
+
     it("should display description", async () => {
       const po = await renderAndExpand();
 
       expect(await po.getDescriptionText()).toBe(
-        "To be eligible to vote in the future, you need to stake a neuron."
+        "You have no neurons. Create a neuron by staking ICP to vote on proposals."
       );
     });
 
     it("should display NNS version of the button", async () => {
       const po = await renderAndExpand();
 
-      await expect(await po.getGotoNeuronsButtonText()).toBe(
-        "Stake ICP neuron"
-      );
+      await expect(await po.getGotoNeuronsButtonText()).toBe("Stake ICP");
     });
 
     it("should navigate to nns neurons page", async () => {
@@ -80,20 +86,26 @@ describe("StakeNeuronToVote", () => {
       expect(await po.getExpandButton().isPresent()).toBe(true);
     });
 
+    it("should display title", async () => {
+      const po = await renderAndExpand();
+
+      expect(await po.getTitleText()).toBe(
+        "You don't have any Catalyze neurons to vote"
+      );
+    });
+
     it("should display description", async () => {
       const po = await renderAndExpand();
 
       expect(await po.getDescriptionText()).toBe(
-        "To be eligible to vote in the future, you need to stake a neuron."
+        "You have no Catalyze neurons. Create a neuron by staking CAT to vote on Catalyze proposals."
       );
     });
 
     it("should display SNS version of the button", async () => {
       const po = await renderAndExpand();
 
-      await expect(await po.getGotoNeuronsButtonText()).toBe(
-        "Stake CAT neuron"
-      );
+      await expect(await po.getGotoNeuronsButtonText()).toBe("Stake CAT");
     });
 
     it("should navigate to sns neurons page", async () => {

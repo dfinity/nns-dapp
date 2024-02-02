@@ -6,6 +6,7 @@
   import IC_LOGO from "$lib/assets/icp.svg";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { ICPToken } from "@dfinity/utils";
 
   export let data: AccountsReceiveModalData;
 
@@ -25,6 +26,7 @@
   {reload}
   universeId={OWN_CANISTER_ID}
   {canSelectAccount}
+  tokenSymbol={ICPToken.symbol}
 >
   <svelte:fragment slot="address-label"
     >{replacePlaceholders($i18n.wallet.token_address, {

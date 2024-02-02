@@ -8,6 +8,8 @@ import {
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
+import { IcpTransactionModalPo } from "$tests/page-objects/IcpTransactionModal.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 
@@ -28,10 +30,22 @@ describe("IcpTransactionModal", () => {
       props: {},
     });
 
+  const renderModalToPo = async () => {
+    const { container } = await renderTransactionModal();
+
+    return IcpTransactionModalPo.under(new JestPageObjectElement(container));
+  };
+
   beforeEach(() => {
     vi.spyOn(icpAccountsStore, "subscribe").mockImplementation(
       mockAccountsStoreSubscribe([mockSubAccount])
     );
+  });
+
+  it("should render token in the modal title", async () => {
+    const po = await renderModalToPo();
+
+    expect(await po.getModalTitle()).toBe("Send ICP");
   });
 
   it("should transfer icps", async () => {
