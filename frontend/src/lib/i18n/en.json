@@ -32,6 +32,7 @@
     "expand_all": "Expand All",
     "receive_with_token": "Receive $token",
     "receive": "Receive",
+    "send_with_token": "Send $token",
     "collapse_all": "Collapse All"
   },
   "error": {
