@@ -1,6 +1,9 @@
+import { WARNING_TOAST_DURATION_MILLIS } from "$lib/constants/constants";
+import { ALL_CANDID_TXS_VERSION } from "$lib/constants/ledger-app.constants";
 import { LEDGER_DEFAULT_DERIVE_PATH } from "$lib/constants/ledger.constants";
 import type { Secp256k1PublicKey } from "$lib/keys/secp256k1";
 import { i18n } from "$lib/stores/i18n";
+import { toastsShow } from "$lib/stores/toasts.store";
 import {
   LedgerErrorKey,
   LedgerErrorMessage,
@@ -30,7 +33,7 @@ import {
   type RequestId,
   type Signature,
 } from "@dfinity/agent";
-import { isNullish, nonNullish } from "@dfinity/utils";
+import { isNullish, nonNullish, smallerVersion } from "@dfinity/utils";
 import type Transport from "@ledgerhq/hw-transport";
 import type LedgerApp from "@zondax/ledger-icp";
 import type {
@@ -87,6 +90,20 @@ export class LedgerIdentity extends SignIdentity {
     return this.publicKey;
   }
 
+  private showWarningIfVersionIsDeprecated = async () => {
+    const { major, minor, patch } = await this.getVersion();
+    const currentVersion = `${major}.${minor}.${patch}`;
+    if (
+      smallerVersion({ minVersion: ALL_CANDID_TXS_VERSION, currentVersion })
+    ) {
+      toastsShow({
+        labelKey: "warning.ledger_version_deprecate",
+        level: "warn",
+        duration: WARNING_TOAST_DURATION_MILLIS,
+      });
+    }
+  };
+
   public override async sign(blob: ArrayBuffer): Promise<Signature> {
     const callback = async (app: LedgerApp): Promise<Signature> => {
       const responseSign: ResponseSign = await app.sign(
@@ -100,6 +117,8 @@ export class LedgerIdentity extends SignIdentity {
 
       return decodeSignature(responseSign);
     };
+
+    await this.showWarningIfVersionIsDeprecated();
 
     return this.executeWithApp<Signature>(callback);
   }
@@ -121,6 +140,8 @@ export class LedgerIdentity extends SignIdentity {
 
       return decodeUpdateSignatures(responseSign);
     };
+
+    await this.showWarningIfVersionIsDeprecated();
 
     return this.executeWithApp<RequestSignatures>(callback);
   }
