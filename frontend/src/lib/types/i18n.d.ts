@@ -389,23 +389,17 @@ interface I18nVoting {
 }
 
 interface I18nCanisters {
-  title: string;
   aria_label_canister_card: string;
   text: string;
   create_canister: string;
   link_canister: string;
-  empty: string;
   add_canister: string;
   create_canister_title: string;
-  create_canister_subtitle: string;
   create_canister_success_id: string;
   create_canister_success_name: string;
-  link_canister_title: string;
-  link_canister_subtitle: string;
   link_canister_success: string;
   enter_canister_id: string;
   canister_id: string;
-  enter_name: string;
   enter_name_label: string;
   name: string;
   enter_amount: string;
