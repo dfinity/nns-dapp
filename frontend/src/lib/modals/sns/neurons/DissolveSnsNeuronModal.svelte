@@ -9,6 +9,7 @@
     stopDissolving,
   } from "$lib/services/sns-neurons.services";
   import type { Principal } from "@dfinity/principal";
+  import { keyOf } from "$lib/utils/utils";
   import { createEventDispatcher } from "svelte";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
 
@@ -17,12 +18,13 @@
   export let reloadNeuron: () => Promise<void>;
 
   let isDissolving: boolean;
-  $: isDissolving = neuronState === NeuronState.Dissolving;
-
-  let description: string;
-  $: description = isDissolving
-    ? $i18n.neuron_detail.stop_dissolve_description
-    : $i18n.neuron_detail.start_dissolve_description;
+  let descriptionKey: string;
+  $: {
+    isDissolving = neuronState === NeuronState.Dissolving;
+    descriptionKey = isDissolving
+      ? "stop_dissolve_description"
+      : "start_dissolve_description";
+  }
 
   const dissolveAction = async () => {
     const action = isDissolving ? stopDissolving : startDissolving;
@@ -46,7 +48,7 @@
 <ConfirmationModal on:nnsClose on:nnsConfirm={dissolveAction}>
   <div data-tid="dissolve-sns-neuron-modal">
     <h4>{$i18n.core.confirm}</h4>
-    <p>{description}</p>
+    <p>{keyOf({ obj: $i18n.neuron_detail, key: descriptionKey })}</p>
   </div>
 </ConfirmationModal>
 

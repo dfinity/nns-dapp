@@ -3,6 +3,7 @@
   import ProjectCard from "./ProjectCard.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import SkeletonProjectCard from "$lib/components/ui/SkeletonProjectCard.svelte";
+  import { keyOf } from "$lib/utils/utils";
   import { isLoadingSnsProjectsStore } from "$lib/stores/sns.store";
   import {
     snsProjectsActivePadStore,
@@ -25,15 +26,18 @@
   $: loading = $isLoadingSnsProjectsStore;
 
   const mapper: Record<SnsSwapLifecycle, string> = {
-    [SnsSwapLifecycle.Open]: $i18n.sns_launchpad.no_open_projects,
-    [SnsSwapLifecycle.Adopted]: $i18n.sns_launchpad.no_opening_soon_projects,
-    [SnsSwapLifecycle.Committed]: $i18n.sns_launchpad.no_committed_projects,
-    [SnsSwapLifecycle.Unspecified]: $i18n.sns_launchpad.no_projects,
-    [SnsSwapLifecycle.Aborted]: $i18n.sns_launchpad.no_projects,
-    [SnsSwapLifecycle.Pending]: $i18n.sns_launchpad.no_projects,
+    [SnsSwapLifecycle.Open]: "no_open_projects",
+    [SnsSwapLifecycle.Adopted]: "no_opening_soon_projects",
+    [SnsSwapLifecycle.Committed]: "no_committed_projects",
+    [SnsSwapLifecycle.Unspecified]: "no_projects",
+    [SnsSwapLifecycle.Aborted]: "no_projects",
+    [SnsSwapLifecycle.Pending]: "no_projects",
   };
   let noProjectsMessageLabel: string;
-  $: noProjectsMessageLabel = mapper[status];
+  $: noProjectsMessageLabel = keyOf({
+    obj: $i18n.sns_launchpad,
+    key: mapper[status],
+  });
 </script>
 
 <TestIdWrapper {testId}>
