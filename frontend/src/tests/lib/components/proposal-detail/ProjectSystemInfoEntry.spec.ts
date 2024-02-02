@@ -6,7 +6,7 @@ describe("ProjectSystemInfoEntry", () => {
   it("should render a description placeholder if no description", async () => {
     const renderResult = render(ProposalSystemInfoEntry, {
       props: {
-        labelKey: "test",
+        label: "test",
         testId: "test",
         value: "",
         description: undefined,
