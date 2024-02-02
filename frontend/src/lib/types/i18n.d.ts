@@ -147,7 +147,6 @@ interface I18nNavigation {
 
 interface I18nHeader {
   menu: string;
-  title: string;
   logout: string;
   account_menu: string;
 }
@@ -376,8 +375,6 @@ interface I18nFollow_neurons {
 }
 
 interface I18nVoting {
-  title: string;
-  text: string;
   topics: string;
   types: string;
   rewards: string;
@@ -416,8 +413,6 @@ interface I18nCanisters {
 
 interface I18nCanister_detail {
   title: string;
-  id: string;
-  cycles: string;
   controllers: string;
   t_cycles: string;
   add_cycles: string;
@@ -466,8 +461,6 @@ interface I18nTransaction_names {
 
 interface I18nWallet {
   title: string;
-  address: string;
-  principal: string;
   direction_from: string;
   direction_to: string;
   no_transactions: string;
@@ -497,7 +490,6 @@ interface I18nProposal_detail {
   neurons_voted_plural: string;
   loading_neurons: string;
   payload: string;
-  vote: string;
   created_prefix: string;
   created_description: string;
   decided_prefix: string;
@@ -524,12 +516,10 @@ interface I18nProposal_detail {
 }
 
 interface I18nProposal_detail__vote {
-  headline: string;
   vote_with_neurons: string;
   vote_with_neurons_plural: string;
   voting_power_label: string;
   vote_progress: string;
-  total: string;
   adopt: string;
   reject: string;
   confirm_adopt_headline: string;
