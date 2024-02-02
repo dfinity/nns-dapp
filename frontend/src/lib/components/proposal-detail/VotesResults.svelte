@@ -134,7 +134,7 @@
             {formatVotingPower(yes)}
           </span>
           <span class="label description">
-            {$i18n.proposal_detail__vote.voting_power}
+            {$i18n.neurons.voting_power}
           </span>
         </span>
         {#if isCriticalProposalMode}
@@ -163,7 +163,7 @@
             {formatVotingPower(no)}
           </span>
           <span class="label description">
-            {$i18n.proposal_detail__vote.voting_power}
+            {$i18n.neurons.voting_power}
           </span>
         </span>
         {#if isCriticalProposalMode}

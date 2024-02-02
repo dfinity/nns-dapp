@@ -574,7 +574,6 @@ interface I18nProposal_detail__vote {
   vote_with_neurons: string;
   vote_with_neurons_plural: string;
   voting_power_value: string;
-  voting_power: string;
   voting_power_label: string;
   vote_progress: string;
   total: string;
