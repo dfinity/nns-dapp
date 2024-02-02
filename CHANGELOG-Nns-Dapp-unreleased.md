@@ -22,6 +22,7 @@ proposal is successful, the changes it released will be moved from this file to
 - Add the token symbol in the receive modal.
 - Add fee as mandatory when making ICP transactions.
 - Add the token symbol in the send modals.
+- Add new boundary node proposals support.
 
 #### Changed
 
