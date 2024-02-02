@@ -1,8 +1,8 @@
 import { AddressInputPo } from "$tests/page-objects/AddressInput.page-object";
-import { DropdownPo } from "$tests/page-objects/Dropdown.page-object";
 import { TogglePo } from "$tests/page-objects/Toggle.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { SelectAccountDropdownPo } from "./SelectAccountDropdown.page-object";
 
 export class SelectDestinationAddressPo extends BasePageObject {
   private static readonly TID = "select-destination";
@@ -21,8 +21,8 @@ export class SelectDestinationAddressPo extends BasePageObject {
     return TogglePo.under(this.root);
   }
 
-  getDropdownPo(): DropdownPo {
-    return DropdownPo.under(this.root);
+  getDropdownPo(): SelectAccountDropdownPo {
+    return SelectAccountDropdownPo.under(this.root);
   }
 
   async toggleSelect(): Promise<void> {
