@@ -11,11 +11,11 @@ export class TransactionFormItemNetworkPo extends BasePageObject {
     );
   }
 
-  getDropdown() {
+  getDropdownPo() {
     return DropdownPo.under(this.root);
   }
 
   async selectNetwork(network: string) {
-    return this.getDropdown().select(network);
+    return this.getDropdownPo().select(network);
   }
 }
