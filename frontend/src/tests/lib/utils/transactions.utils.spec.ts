@@ -397,7 +397,7 @@ describe("transactions-utils", () => {
       transactionId: 123n,
       toSelfTransaction: false,
       token: ICPToken,
-      transactionNames: en.transaction_names,
+      i18n: en,
     };
 
     const defaultExpectedUiTransaction: UiTransaction = {
@@ -578,7 +578,7 @@ describe("transactions-utils", () => {
           transactionName({
             type: key as AccountTransactionType,
             isReceive: false,
-            labels: en.transaction_names,
+            i18n: en,
           })
         ).toBe(en.transaction_names[key as AccountTransactionType]);
       }
@@ -589,7 +589,7 @@ describe("transactions-utils", () => {
         transactionName({
           type: AccountTransactionType.Send,
           isReceive: true,
-          labels: en.transaction_names,
+          i18n: en,
         })
       ).toBe(en.transaction_names.receive);
     });
@@ -599,7 +599,7 @@ describe("transactions-utils", () => {
         transactionName({
           type: "test" as AccountTransactionType,
           isReceive: true,
-          labels: en.transaction_names,
+          i18n: en,
         })
       ).toBe("test");
     });
