@@ -16,6 +16,7 @@ import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
 import type { IcpAccountsStoreData } from "$lib/stores/icp-accounts.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
+import { enumValues } from "$lib/utils/enum.utils";
 import {
   ageMultiplier,
   allHaveSameFollowees,
@@ -2554,12 +2555,10 @@ describe("neuron-utils", () => {
 
   describe("getTopicTitle", () => {
     it("should return a title for every topic", () => {
-      for (const topic of Object.values(Topic)) {
-        if (typeof topic !== "string") {
-          expect(getTopicTitle({ topic, i18n: en })).toBe(
-            en.follow_neurons[`topic_${topic}_title`]
-          );
-        }
+      for (const topic of enumValues(Topic)) {
+        expect(getTopicTitle({ topic, i18n: en })).toBe(
+          en.follow_neurons[`topic_${topic}_title`]
+        );
       }
     });
 
@@ -2615,12 +2614,10 @@ describe("neuron-utils", () => {
 
   describe("getTopicSubtitle", () => {
     it("should return a title for every topic", () => {
-      for (const topic of Object.values(Topic)) {
-        if (typeof topic !== "string") {
-          expect(getTopicSubtitle({ topic, i18n: en })).toBe(
-            en.follow_neurons[`topic_${topic}_subtitle`]
-          );
-        }
+      for (const topic of enumValues(Topic)) {
+        expect(getTopicSubtitle({ topic, i18n: en })).toBe(
+          en.follow_neurons[`topic_${topic}_subtitle`]
+        );
       }
     });
 
