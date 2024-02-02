@@ -67,7 +67,6 @@ interface I18nError {
   register_vote: string;
   register_vote_neuron: string;
   register_vote_unknown: string;
-  add_followee: string;
   remove_followee: string;
   followee_does_not_exist: string;
   accounts_not_found: string;
@@ -124,15 +123,12 @@ interface I18nError {
   limit_exceeded_topping_up_canister: string;
   limit_exceeded_creating_canister: string;
   limit_exceeded_getting_open_ticket: string;
-  sns_loading_commited_projects: string;
-  swap_not_loaded: string;
   transaction_fee_not_found: string;
   token_not_found: string;
   fetch_transactions: string;
   transaction_data: string;
   amount_not_enough_stake_sns_neuron: string;
   adding_permissions: string;
-  adding_maturity: string;
   canister_invalid_transaction: string;
   qrcode_camera_error: string;
   qrcode_token_incompatible: string;
