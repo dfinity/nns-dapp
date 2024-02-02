@@ -1879,6 +1879,7 @@ describe("neurons-services", () => {
       expect(transferICP).not.toBeCalled();
       expect(spyClaimOrRefresh).not.toBeCalled();
       expect(spyGetNeuron).not.toBeCalled();
+      expectToastError(en.error.neuron_account_not_found);
     });
 
     it("should fail if amount and neuron stake are not enough", async () => {

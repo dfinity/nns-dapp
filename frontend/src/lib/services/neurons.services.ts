@@ -978,7 +978,7 @@ export const topUpNeuron = async ({
 }): Promise<{ success: boolean }> => {
   if (neuron.fullNeuron?.accountIdentifier === undefined) {
     toastsError({
-      labelKey: "errors.neuron_account_not_found",
+      labelKey: "error.neuron_account_not_found",
     });
     return { success: false };
   }
