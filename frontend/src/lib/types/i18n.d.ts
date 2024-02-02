@@ -354,7 +354,6 @@ interface I18nNew_followee {
   options_title: string;
   follow: string;
   unfollow: string;
-  same_neuron: string;
   followee_does_not_exist: string;
   neuron_not_followee: string;
   already_followed: string;
@@ -408,7 +407,6 @@ interface I18nVoting {
   hide_unavailable_proposals: string;
   check_all: string;
   uncheck_all: string;
-  filter_by: string;
   nothing_found: string;
 }
 
@@ -518,20 +516,15 @@ interface I18nProposal_detail {
   summary: string;
   topic_prefix: string;
   status_prefix: string;
-  rewards_prefix: string;
   type_prefix: string;
   reward_prefix: string;
   id_prefix: string;
   proposer_prefix: string;
   proposer_description: string;
-  open_voting_prefix: string;
   neurons_voted: string;
   neurons_voted_plural: string;
   loading_neurons: string;
-  unknown_nns_function: string;
-  nns_function_name: string;
   payload: string;
-  summary_toggle_view: string;
   vote: string;
   created_prefix: string;
   created_description: string;
