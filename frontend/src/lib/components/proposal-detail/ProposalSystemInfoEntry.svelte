@@ -1,18 +1,15 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { keyOf } from "$lib/utils/utils";
   import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
 
-  export let labelKey: string;
+  export let label: string;
   export let testId: string;
   export let value: string;
   export let description: string | undefined;
 </script>
 
 <KeyValuePairInfo {testId} alignIconRight>
-  <span slot="key" class="description"
-    >{keyOf({ obj: $i18n.proposal_detail, key: labelKey })}</span
-  >
+  <span slot="key" class="description">{label}</span>
   <span class="value" slot="value" data-tid={`${testId}-value`}>{value}</span>
 
   <svelte:fragment slot="info">

@@ -54,7 +54,7 @@
 >
   {#if type !== undefined}
     <ProposalSystemInfoEntry
-      labelKey="type_prefix"
+      label={$i18n.proposal_detail.type_prefix}
       testId="proposal-system-info-type"
       value={type}
       description={typeDescription}
@@ -63,7 +63,7 @@
 
   {#if topic !== undefined}
     <ProposalSystemInfoEntry
-      labelKey="topic_prefix"
+      label={$i18n.proposal_detail.topic_prefix}
       testId="proposal-system-info-topic"
       value={topic}
       description={topicDescription}
@@ -71,14 +71,14 @@
   {/if}
 
   <ProposalSystemInfoEntry
-    labelKey="status_prefix"
+    label={$i18n.proposal_detail.status_prefix}
     testId="proposal-system-info-status"
     value={statusString}
     description={statusDescription}
   />
 
   <ProposalSystemInfoEntry
-    labelKey="reward_prefix"
+    label={$i18n.proposal_detail.reward_prefix}
     testId="proposal-system-info-reward"
     value={rewardStatusString}
     description={rewardStatusDescription}
@@ -86,7 +86,7 @@
 
   {#if created !== undefined}
     <ProposalSystemInfoEntry
-      labelKey="created_prefix"
+      label={$i18n.proposal_detail.created_prefix}
       testId="proposal-system-info-created"
       value={secondsToDateTime(created)}
       description={$i18n.proposal_detail.created_description}
@@ -95,7 +95,7 @@
 
   {#if decided !== undefined}
     <ProposalSystemInfoEntry
-      labelKey="decided_prefix"
+      label={$i18n.proposal_detail.decided_prefix}
       testId="proposal-system-info-decided"
       value={secondsToDateTime(decided)}
       description={$i18n.proposal_detail.decided_description}
@@ -104,7 +104,7 @@
 
   {#if executed !== undefined}
     <ProposalSystemInfoEntry
-      labelKey="executed_prefix"
+      label={$i18n.proposal_detail.executed_prefix}
       testId="proposal-system-info-executed"
       value={secondsToDateTime(executed)}
       description={$i18n.proposal_detail.executed_description}
@@ -113,7 +113,7 @@
 
   {#if failed !== undefined}
     <ProposalSystemInfoEntry
-      labelKey="failed_prefix"
+      label={$i18n.proposal_detail.failed_prefix}
       testId="proposal-system-info-failed"
       value={secondsToDateTime(failed)}
       description={$i18n.proposal_detail.failed_description}
