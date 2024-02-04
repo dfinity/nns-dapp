@@ -132,7 +132,6 @@ interface I18nWarning {
   test_env_note: string;
   test_env_request: string;
   test_env_confirm: string;
-  ledger_version_deprecate: string;
   test_env_title: string;
 }
 
