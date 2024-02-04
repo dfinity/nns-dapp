@@ -794,6 +794,7 @@ interface I18nTime {
 
 interface I18nError__ledger {
   unexpected: string;
+  app_version_not_supported: string;
   please_open: string;
   locked: string;
   fetch_public_key: string;

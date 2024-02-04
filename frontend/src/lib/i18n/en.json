@@ -764,6 +764,7 @@
   },
   "error__ledger": {
     "unexpected": "There was an error with the hardware wallet.",
+    "app_version_not_supported": "You are using an unsupported version of the Internet Computer app on your Ledger device. Please upgrade the device’s app to the latest version.",
     "please_open": "Please open the Internet Computer app on your hardware wallet and try again.",
     "locked": "Hardware Wallet is locked. Unlock it and try again.",
     "fetch_public_key": "Unable to fetch the public key. Please try again.",
