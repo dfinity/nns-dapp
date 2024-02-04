@@ -24,7 +24,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Deprecated
 
-- Remove support for HW with version smaller than 2.4.9.
+- Remove support for devices with Internet Computer App version smaller than 2.4.9.
 
 #### Removed
 
