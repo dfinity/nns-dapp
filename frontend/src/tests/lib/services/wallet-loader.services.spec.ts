@@ -1,5 +1,5 @@
 import * as ledgerApi from "$lib/api/wallet-ledger.api";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { getAccounts } from "$lib/services/wallet-loader.services";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
@@ -19,14 +19,14 @@ describe("wallet-loader-services", () => {
       await getAccounts({
         identity: mockIdentity,
         certified: true,
-        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID,
       });
 
       await waitFor(() =>
         expect(spyGetCkBTCAccount).toBeCalledWith({
           identity: mockIdentity,
           certified: true,
-          canisterId: CKBTC_UNIVERSE_CANISTER_ID,
+          canisterId: CKBTC_LEDGER_CANISTER_ID,
           owner: mockIdentity.getPrincipal(),
           type: "main",
         })

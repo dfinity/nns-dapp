@@ -24,7 +24,7 @@ export const loadAccounts = async ({
   return queryAndUpdate<Account[], unknown>({
     strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
-      getAccounts({ identity, certified, universeId }),
+      getAccounts({ identity, certified, ledgerCanisterId: universeId }),
     onLoad: ({ response: accounts, certified }) =>
       icrcAccountsStore.set({
         universeId,

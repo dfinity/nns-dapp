@@ -18,7 +18,7 @@ import { Principal } from "@dfinity/principal";
 const loadAccountsBalance = (universeId: UniverseCanisterId): Promise<void> => {
   return queryAndUpdate<Account[], unknown>({
     request: ({ certified, identity }) =>
-      getAccounts({ identity, certified, universeId }),
+      getAccounts({ identity, certified, ledgerCanisterId: universeId }),
     onLoad: ({ response: accounts, certified }) =>
       icrcAccountsStore.set({
         universeId,
