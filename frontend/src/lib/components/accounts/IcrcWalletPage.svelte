@@ -156,8 +156,9 @@
     <section>
       {#if loaded && nonNullish(selectedUniverseId)}
         {#if nonNullish($selectedAccountStore.account) && nonNullish(token)}
+          <!-- TODO(dskloet) -->
           <IcrcBalancesObserver
-            universeId={selectedUniverseId}
+            ledgerCanisterId={selectedUniverseId}
             accounts={[$selectedAccountStore.account]}
             reload={reloadOnlyAccountFromStore}
           />

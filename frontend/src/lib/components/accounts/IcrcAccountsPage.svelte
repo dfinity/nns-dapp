@@ -45,7 +45,8 @@
   {#if loading}
     <SkeletonCard size="medium" />
   {:else if nonNullish(selectedUniverseId)}
-    <IcrcBalancesObserver {accounts} universeId={selectedUniverseId}>
+    <!-- TODO(dskloet) -->
+    <IcrcBalancesObserver {accounts} ledgerCanisterId={selectedUniverseId}>
       {#each accounts as account}
         <AccountCard {account} {token}
           >{account.name ?? $i18n.accounts.main}</AccountCard
