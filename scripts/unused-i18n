@@ -53,7 +53,7 @@ all_i18n_paths() {
 failed=false
 
 for path in $(all_i18n_paths); do
-  if echo "${GRANDFATHERED_PATHS[@]}" | grep -q $path; then
+  if echo "${GRANDFATHERED_PATHS[@]}" | grep -q "$path"; then
     continue
   fi
 
@@ -62,7 +62,7 @@ for path in $(all_i18n_paths); do
     continue
   fi
 
-  multiline_pattern="$(echo $path | sed -E 's@\.@[[:space:]]*\\.[[:space:]]*@g')"
+  multiline_pattern="$(echo "$path" | sed -E 's@\.@[[:space:]]*\\.[[:space:]]*@g')"
   if grep -r -z -w -q "$multiline_pattern" frontend/src; then
     continue
   fi
