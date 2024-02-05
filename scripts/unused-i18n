@@ -81,3 +81,5 @@ if [[ "$failed" != false ]]; then
   echo -e "\tEOF"
   exit 1
 fi
+
+echo "No unused messages found."
