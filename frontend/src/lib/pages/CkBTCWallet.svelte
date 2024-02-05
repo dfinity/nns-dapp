@@ -100,7 +100,7 @@
   testId="ckbtc-wallet-component"
   {accountIdentifier}
   token={token?.token}
-  selectedUniverseId={$selectedCkBTCUniverseIdStore}
+  ledgerCanisterId={$selectedCkBTCUniverseIdStore}
   {selectedAccountStore}
   bind:this={wallet}
   {reloadTransactions}

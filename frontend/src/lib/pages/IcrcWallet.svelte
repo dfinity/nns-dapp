@@ -37,11 +37,12 @@
   const reloadTransactions = () => transactions?.reloadTransactions?.();
 </script>
 
+<!-- TODO(dskloet) -->
 <IcrcWalletPage
   testId="icrc-wallet-component"
   {accountIdentifier}
   {token}
-  selectedUniverseId={$selectedIcrcTokenUniverseIdStore}
+  ledgerCanisterId={$selectedIcrcTokenUniverseIdStore}
   {selectedAccountStore}
   bind:this={wallet}
   {reloadTransactions}
