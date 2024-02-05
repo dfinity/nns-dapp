@@ -37,7 +37,7 @@
       return;
     }
 
-    await loadAccounts({ universeId: $selectedCkBTCUniverseIdStore });
+    await loadAccounts({ ledgerCanisterId: $selectedCkBTCUniverseIdStore });
     await wallet.reloadAccount?.();
   };
 

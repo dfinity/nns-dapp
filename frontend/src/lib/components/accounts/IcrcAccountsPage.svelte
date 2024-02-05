@@ -29,7 +29,7 @@
     }
 
     loading = true;
-    await syncWalletAccounts({ universeId });
+    await syncWalletAccounts({ ledgerCanisterId: universeId });
     loading = false;
   };
 

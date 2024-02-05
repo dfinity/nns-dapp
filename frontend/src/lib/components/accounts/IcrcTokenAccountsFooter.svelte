@@ -46,7 +46,7 @@
       return;
     }
 
-    await syncAccounts({ universeId });
+    await syncAccounts({ ledgerCanisterId: universeId });
   };
 </script>
 

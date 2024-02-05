@@ -109,7 +109,9 @@ const reload = async ({
   // Reload:
   // - if provided, the transactions of the account for which the transfer was executed
   await Promise.all([
-    ...(loadAccounts ? [loadCkBTCAccounts({ universeId })] : []),
+    ...(loadAccounts
+      ? [loadCkBTCAccounts({ ledgerCanisterId: universeId })]
+      : []),
     ...(nonNullish(source)
       ? [
           loadWalletTransactions({

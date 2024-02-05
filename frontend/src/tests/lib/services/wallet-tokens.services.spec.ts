@@ -1,5 +1,8 @@
 import * as ledgerApi from "$lib/api/wallet-ledger.api";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import {
+  CKBTC_LEDGER_CANISTER_ID,
+  CKBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
 import { loadToken } from "$lib/services/wallet-tokens.services";
 import { tokensStore } from "$lib/stores/tokens.store";
@@ -26,13 +29,13 @@ describe("wallet-tokens-services", () => {
         .spyOn(ledgerApi, "getToken")
         .mockResolvedValue(mockCkBTCToken);
 
-      await loadToken({ universeId: CKBTC_UNIVERSE_CANISTER_ID });
+      await loadToken({ ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID });
 
       await waitFor(() =>
         expect(spyGetToken).toBeCalledWith({
           identity: mockIdentity,
           certified: true,
-          canisterId: CKBTC_UNIVERSE_CANISTER_ID,
+          canisterId: CKBTC_LEDGER_CANISTER_ID,
         })
       );
 
@@ -52,7 +55,7 @@ describe("wallet-tokens-services", () => {
   describe("loadToken already loaded", () => {
     beforeEach(() => {
       tokensStore.setToken({
-        canisterId: CKBTC_UNIVERSE_CANISTER_ID,
+        canisterId: CKBTC_LEDGER_CANISTER_ID,
         token: mockCkBTCToken,
         certified: true,
       });
@@ -63,7 +66,7 @@ describe("wallet-tokens-services", () => {
         .spyOn(ledgerApi, "getToken")
         .mockResolvedValue(mockCkBTCToken);
 
-      await loadToken({ universeId: CKBTC_UNIVERSE_CANISTER_ID });
+      await loadToken({ ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID });
 
       expect(spyGetToken).not.toBeCalled();
     });

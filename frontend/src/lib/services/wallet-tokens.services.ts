@@ -4,21 +4,21 @@ import { queryAndUpdate } from "$lib/services/utils.services";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
-import type { UniverseCanisterId } from "$lib/types/universe";
 import { notForceCallStrategy } from "$lib/utils/env.utils";
+import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 
 export const loadToken = async ({
   handleError,
-  universeId,
+  ledgerCanisterId,
 }: {
   handleError?: () => void;
-  universeId: UniverseCanisterId;
+  ledgerCanisterId: Principal;
 }) => {
   // Currently we assume the token metadata does not change that often and might never change while the session is active
   // That's why, we load the token for a project only once as long as its data is already certified
   const storeData = get(tokensStore);
-  if (storeData[universeId.toText()]?.certified) {
+  if (storeData[ledgerCanisterId.toText()]?.certified) {
     return;
   }
 
@@ -29,12 +29,12 @@ export const loadToken = async ({
       getToken({
         identity,
         certified,
-        canisterId: universeId,
+        canisterId: ledgerCanisterId,
       }),
     onLoad: async ({ response: token, certified }) =>
       tokensStore.setToken({
         certified,
-        canisterId: universeId,
+        canisterId: ledgerCanisterId,
         token,
       }),
     onError: ({ error: err, certified }) => {
@@ -49,7 +49,7 @@ export const loadToken = async ({
       });
 
       // Hide unproven data
-      tokensStore.resetUniverse(universeId);
+      tokensStore.resetUniverse(ledgerCanisterId);
 
       handleError?.();
     },

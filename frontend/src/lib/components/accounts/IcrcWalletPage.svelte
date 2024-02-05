@@ -135,7 +135,7 @@
     }
 
     // Maybe the accounts were just not loaded yet in store, so we try to load the accounts in store
-    await syncWalletAccounts({ universeId });
+    await syncWalletAccounts({ ledgerCanisterId: universeId });
 
     // And finally try to set the account again
     await loadAccount(universeId);

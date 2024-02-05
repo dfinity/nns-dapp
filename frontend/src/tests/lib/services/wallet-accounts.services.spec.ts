@@ -1,5 +1,6 @@
 import * as ckbtcLedgerApi from "$lib/api/wallet-ledger.api";
 import {
+  CKBTC_LEDGER_CANISTER_ID,
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -42,7 +43,7 @@ describe("wallet-accounts-services", () => {
         .spyOn(ckbtcLedgerApi, "getAccount")
         .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
 
-      await loadAccounts({ universeId: CKBTC_UNIVERSE_CANISTER_ID });
+      await loadAccounts({ ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID });
 
       await tick();
 
@@ -65,7 +66,7 @@ describe("wallet-accounts-services", () => {
 
       await loadAccounts({
         handleError: spy,
-        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        ledgerCanisterId: CKBTC_UNIVERSE_CANISTER_ID,
       });
 
       expect(spy).toBeCalled();
@@ -94,7 +95,7 @@ describe("wallet-accounts-services", () => {
         Promise.reject(undefined)
       );
 
-      await loadAccounts({ universeId: CKBTC_UNIVERSE_CANISTER_ID });
+      await loadAccounts({ ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID });
 
       const store = get(icrcAccountsStore);
       expect(store[CKBTC_UNIVERSE_CANISTER_ID.toText()]).toBeUndefined();
@@ -122,7 +123,7 @@ describe("wallet-accounts-services", () => {
         .mockImplementation(() => Promise.resolve(mockCkBTCToken));
 
       await syncAccounts({
-        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID,
       });
 
       await tick();
