@@ -1,5 +1,8 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import {
+  CKBTC_LEDGER_CANISTER_ID,
+  CKBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
@@ -51,7 +54,7 @@ describe("universes-accounts", () => {
         accounts: [mockCkBTCMainAccount],
         certified: true,
       },
-      universeId: CKBTC_UNIVERSE_CANISTER_ID,
+      ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID,
     });
 
     const store = get(universesAccountsStore);
@@ -78,7 +81,7 @@ describe("universes-accounts", () => {
         accounts: [mockCkBTCMainAccount],
         certified: true,
       },
-      universeId: CKBTC_UNIVERSE_CANISTER_ID,
+      ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID,
     });
 
     const store = get(universesAccountsStore);

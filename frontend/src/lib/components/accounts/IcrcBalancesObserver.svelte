@@ -27,12 +27,13 @@
       })
       .filter(nonNullish);
 
+    // TODO(dskloet)
     icrcAccountsStore.update({
       accounts: {
         accounts,
         certified: $icrcAccountsStore[universeId.toText()].certified,
       },
-      universeId,
+      ledgerCanisterId: universeId,
     });
 
     reload?.();

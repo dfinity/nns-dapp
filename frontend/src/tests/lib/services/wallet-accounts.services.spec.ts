@@ -80,7 +80,7 @@ describe("wallet-accounts-services", () => {
           accounts: [mockCkBTCMainAccount],
           certified: true,
         },
-        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID,
       });
 
       icrcTransactionsStore.addTransactions({

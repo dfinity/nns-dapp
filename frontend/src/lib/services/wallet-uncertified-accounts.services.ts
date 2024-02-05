@@ -15,13 +15,14 @@ import { Principal } from "@dfinity/principal";
 /**
  * This function performs only an insecure "query" and does not toast the error but throw it so that all errors are collected by its caller.
  */
+// TODO(dskloet)
 const loadAccountsBalance = (universeId: UniverseCanisterId): Promise<void> => {
   return queryAndUpdate<Account[], unknown>({
     request: ({ certified, identity }) =>
       getAccounts({ identity, certified, ledgerCanisterId: universeId }),
     onLoad: ({ response: accounts, certified }) =>
       icrcAccountsStore.set({
-        universeId,
+        ledgerCanisterId: universeId,
         accounts: {
           accounts,
           certified,

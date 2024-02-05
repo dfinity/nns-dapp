@@ -3,6 +3,7 @@ import * as walletLedgerApi from "$lib/api/wallet-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   CKETHSEPOLIA_INDEX_CANISTER_ID,
+  CKETHSEPOLIA_LEDGER_CANISTER_ID,
   CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -234,7 +235,7 @@ describe("IcrcWallet", () => {
           accounts: [mockCkETHMainAccount],
           certified: true,
         },
-        universeId: CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
+        ledgerCanisterId: CKETHSEPOLIA_LEDGER_CANISTER_ID,
       });
 
       tokensStore.setTokens(mockUniversesTokens);

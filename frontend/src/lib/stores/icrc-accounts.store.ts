@@ -1,8 +1,6 @@
 import type { Account } from "$lib/types/account";
-import type {
-  UniverseCanisterId,
-  UniverseCanisterIdText,
-} from "$lib/types/universe";
+import type { UniverseCanisterIdText } from "$lib/types/universe";
+import type { Principal } from "@dfinity/principal";
 import type { Readable } from "svelte/store";
 import { writable } from "svelte/store";
 
@@ -16,11 +14,11 @@ type IcrcAccountStoreData = Record<UniverseCanisterIdText, IcrcAccounts>;
 export interface IcrcAccountsStore extends Readable<IcrcAccountStoreData> {
   set: (params: {
     accounts: IcrcAccounts;
-    universeId: UniverseCanisterId;
+    ledgerCanisterId: Principal;
   }) => void;
   update: (params: {
     accounts: IcrcAccounts;
-    universeId: UniverseCanisterId;
+    ledgerCanisterId: Principal;
   }) => void;
   reset: () => void;
 }
@@ -39,29 +37,29 @@ const initIcrcAccountsStore = (): IcrcAccountsStore => {
 
     set: ({
       accounts,
-      universeId,
+      ledgerCanisterId,
     }: {
       accounts: IcrcAccounts;
-      universeId: UniverseCanisterId;
+      ledgerCanisterId: Principal;
     }) => {
       update((currentState: IcrcAccountStoreData) => ({
         ...currentState,
-        [universeId.toText()]: accounts,
+        [ledgerCanisterId.toText()]: accounts,
       }));
     },
 
     update: ({
       accounts: { accounts, certified },
-      universeId,
+      ledgerCanisterId,
     }: {
       accounts: IcrcAccounts;
-      universeId: UniverseCanisterId;
+      ledgerCanisterId: Principal;
     }) => {
       update((currentState: IcrcAccountStoreData) => ({
         ...currentState,
-        [universeId.toText()]: {
+        [ledgerCanisterId.toText()]: {
           accounts: [
-            ...(currentState[universeId.toText()]?.accounts ?? []).filter(
+            ...(currentState[ledgerCanisterId.toText()]?.accounts ?? []).filter(
               ({ identifier }) =>
                 accounts.find(({ identifier: i }) => identifier === i) ===
                 undefined

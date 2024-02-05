@@ -27,7 +27,7 @@ export const loadAccounts = async ({
       getAccounts({ identity, certified, ledgerCanisterId }),
     onLoad: ({ response: accounts, certified }) =>
       icrcAccountsStore.set({
-        universeId: ledgerCanisterId,
+        ledgerCanisterId,
         accounts: {
           accounts,
           certified,
