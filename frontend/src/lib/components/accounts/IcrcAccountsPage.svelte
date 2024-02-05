@@ -6,47 +6,48 @@
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import { hasAccounts } from "$lib/utils/accounts.utils";
-  import type { UniverseCanisterId } from "$lib/types/universe";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import IcrcBalancesObserver from "$lib/components/accounts/IcrcBalancesObserver.svelte";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
+  import type { Principal } from "@dfinity/principal";
 
   export let testId: string;
-  export let selectedUniverseId: UniverseCanisterId | undefined;
+  export let ledgerCanisterId: Principal | undefined;
   export let token: IcrcTokenMetadata | undefined = undefined;
 
   let loading = false;
 
-  const syncAccounts = async (universeId: UniverseCanisterId | undefined) => {
-    if (isNullish(universeId)) {
+  const syncAccounts = async (ledgerCanisterId: Principal | undefined) => {
+    if (isNullish(ledgerCanisterId)) {
       return;
     }
 
-    if (hasAccounts($icrcAccountsStore[universeId.toText()]?.accounts ?? [])) {
+    if (
+      hasAccounts($icrcAccountsStore[ledgerCanisterId.toText()]?.accounts ?? [])
+    ) {
       // At the moment, we load only once the entire accounts per session.
       // If user performs related actions, accounts are updated.
       return;
     }
 
     loading = true;
-    await syncWalletAccounts({ ledgerCanisterId: universeId });
+    await syncWalletAccounts({ ledgerCanisterId });
     loading = false;
   };
 
-  $: (async () => syncAccounts(selectedUniverseId))();
+  $: (async () => syncAccounts(ledgerCanisterId))();
 
   let accounts: Account[] = [];
-  $: accounts = nonNullish(selectedUniverseId)
-    ? $icrcAccountsStore[selectedUniverseId.toText()]?.accounts ?? []
+  $: accounts = nonNullish(ledgerCanisterId)
+    ? $icrcAccountsStore[ledgerCanisterId.toText()]?.accounts ?? []
     : [];
 </script>
 
 <div class="card-grid" data-tid={testId}>
   {#if loading}
     <SkeletonCard size="medium" />
-  {:else if nonNullish(selectedUniverseId)}
-    <!-- TODO(dskloet) -->
-    <IcrcBalancesObserver {accounts} ledgerCanisterId={selectedUniverseId}>
+  {:else if nonNullish(ledgerCanisterId)}
+    <IcrcBalancesObserver {accounts} {ledgerCanisterId}>
       {#each accounts as account}
         <AccountCard {account} {token}
           >{account.name ?? $i18n.accounts.main}</AccountCard
