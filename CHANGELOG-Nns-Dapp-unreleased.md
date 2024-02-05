@@ -56,6 +56,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 - Add `.orig` file extension to `.gitignore` file.
+- Check for unused i18n messages.
 
 #### Changed
 
