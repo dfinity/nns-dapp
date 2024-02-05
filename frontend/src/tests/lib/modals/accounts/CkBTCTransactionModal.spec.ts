@@ -1,5 +1,8 @@
 import * as minterApi from "$lib/api/ckbtc-minter.api";
-import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import {
+  CKTESTBTC_LEDGER_CANISTER_ID,
+  CKTESTBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
 import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
@@ -72,7 +75,7 @@ describe("CkBTCTransactionModal", () => {
         accounts: [mockCkBTCMainAccount],
         certified: true,
       },
-      universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+      ledgerCanisterId: CKTESTBTC_LEDGER_CANISTER_ID,
     });
 
     ckBTCInfoStore.setInfo({
