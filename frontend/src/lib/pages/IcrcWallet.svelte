@@ -63,7 +63,7 @@
   <svelte:fragment slot="footer-actions">
     {#if nonNullish($selectedAccountStore.account) && nonNullish(token) && nonNullish($selectedIcrcTokenUniverseIdStore)}
       <IcrcTokenWalletFooter
-        universeId={$selectedIcrcTokenUniverseIdStore}
+        ledgerCanisterId={$selectedIcrcTokenUniverseIdStore}
         account={$selectedAccountStore.account}
         {token}
         {reloadAccount}
