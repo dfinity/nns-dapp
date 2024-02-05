@@ -113,12 +113,11 @@
     transactions.length === 0 && loading ? [] : mappedTransactions;
 </script>
 
-<!-- TODO(dskloet) -->
 <IcrcWalletTransactionsObserver
   {indexCanisterId}
   {account}
   {completed}
-  universeId={ledgerCanisterId}
+  {ledgerCanisterId}
 >
   <IcrcTransactionsList
     on:nnsIntersect={loadNextTransactions}
