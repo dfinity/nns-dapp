@@ -24,9 +24,8 @@
       return;
     }
 
-    // TODO(dskloet)
     addObservedIcrcTransactionsToStore({
-      universeId: ledgerCanisterId,
+      ledgerCanisterId,
       completed,
       transactions,
     });
