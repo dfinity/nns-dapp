@@ -29,9 +29,8 @@
     }
     openIcrcTokenModal({
       type: "icrc-send",
-      // TODO(dskloet)
       data: {
-        universeId: ledgerCanisterId,
+        ledgerCanisterId,
         token,
         loadTransactions: false,
         sourceAccount: account,
@@ -48,7 +47,6 @@
     data-tid="open-new-icrc-token-transaction">{$i18n.accounts.send}</button
   >
 
-  <!-- TODO(dskloet) -->
   <ReceiveButton
     type="icrc-receive"
     {account}
