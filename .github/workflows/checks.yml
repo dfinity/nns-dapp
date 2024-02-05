@@ -347,6 +347,11 @@ jobs:
             brew install bash
           fi
       - run: scripts/nns-dapp/split-changelog.test
+  unused-i18n:
+    name: Find unused i18n messages
+    runs-on: ubuntu-20.04
+    steps:
+      - run: scripts/unused-i18n
   version-match:
     name: The nns-dapp npm and cargo versions should match
     runs-on: ubuntu-20.04
