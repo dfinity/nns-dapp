@@ -1,7 +1,4 @@
 import StakeNeuronToVote from "$lib/components/proposal-detail/VotingCard/StakeNeuronToVote.svelte";
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import { AppPath } from "$lib/constants/routes.constants";
-import { pageStore } from "$lib/derived/page.derived";
 import { page } from "$mocks/$app/stores";
 import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 import { StakeNeuronToVotePo } from "$tests/page-objects/StakeNeuronToVote.page-object";
@@ -9,7 +6,6 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
-import { get } from "svelte/store";
 
 describe("StakeNeuronToVote", () => {
   const renderComponent = async () => {
@@ -57,12 +53,9 @@ describe("StakeNeuronToVote", () => {
     it("should navigate to nns neurons page", async () => {
       const po = await renderAndExpand();
 
-      await po.clickGotoNeurons();
-
-      expect(get(pageStore)).toEqual({
-        path: AppPath.Neurons,
-        universe: OWN_CANISTER_ID_TEXT,
-      });
+      expect(await po.clickGotoNeuronsLink()).toEqual(
+        "/neurons/?u=qhbym-qaaaa-aaaaa-aaafq-cai"
+      );
     });
   });
 
@@ -111,12 +104,9 @@ describe("StakeNeuronToVote", () => {
     it("should navigate to sns neurons page", async () => {
       const po = await renderAndExpand();
 
-      await po.clickGotoNeurons();
-
-      expect(get(pageStore)).toEqual({
-        path: AppPath.Neurons,
-        universe: rootCanisterId.toText(),
-      });
+      expect(await po.clickGotoNeuronsLink()).toEqual(
+        "/neurons/?u=g3pce-2iaae"
+      );
     });
   });
 });
