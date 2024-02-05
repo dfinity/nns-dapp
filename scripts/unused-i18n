@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 set -euo pipefail
 
 I18N_FILE="frontend/src/lib/i18n/en.json"
