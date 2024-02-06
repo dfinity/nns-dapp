@@ -127,6 +127,7 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/toolbar";
 
   .participate {
     display: flex;
@@ -136,20 +137,11 @@
   }
 
   [role="toolbar"] {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: center;
+    @include toolbar.in-bottom-sheet;
+
     padding: var(--padding-2x);
 
-    @include media.min-width(medium) {
-      align-items: center;
-      justify-content: center;
-    }
-
     @include media.min-width(large) {
-      align-items: flex-start;
-      justify-content: flex-start;
       padding: 0;
     }
   }
