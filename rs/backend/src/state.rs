@@ -9,7 +9,8 @@ use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use on_wire::{FromWire, IntoWire};
 use std::cell::RefCell;
 pub mod partitions;
-use partitions::Partitions;
+use partitions::PartitionsMaybe;
+
 #[cfg(test)]
 pub mod tests;
 
@@ -20,7 +21,7 @@ pub struct State {
     pub assets: RefCell<Assets>,
     pub asset_hashes: RefCell<AssetHashes>,
     pub performance: RefCell<PerformanceCounts>,
-    pub partitions_maybe: RefCell<Result<Partitions, DefaultMemoryImpl>>,
+    pub partitions_maybe: RefCell<PartitionsMaybe>,
 }
 
 #[cfg(test)]
@@ -43,7 +44,7 @@ impl Default for State {
             assets: RefCell::new(Assets::default()),
             asset_hashes: RefCell::new(AssetHashes::default()),
             performance: RefCell::new(PerformanceCounts::default()),
-            partitions_maybe: RefCell::new(Err(DefaultMemoryImpl::default())),
+            partitions_maybe: RefCell::new(PartitionsMaybe::None(DefaultMemoryImpl::default())),
         }
     }
 }
@@ -63,14 +64,7 @@ impl core::fmt::Debug for State {
         writeln!(f, "  assets: <html etc> (elided)")?;
         writeln!(f, "  asset_hashes: <hashes of the assets> (elided)")?;
         writeln!(f, "  performance: <stats for the metrics endpoint> (elided)")?;
-        writeln!(
-            f,
-            "  partitions_maybe: {:?}",
-            partitions_maybe
-                .borrow()
-                .as_ref()
-                .map_err(|raw_memory| format!("Raw memory: {} pages", raw_memory.size()))
-        )?;
+        writeln!(f, "  partitions_maybe: {:?}", partitions_maybe.borrow())?;
         writeln!(f, "}}")
     }
 }
@@ -89,10 +83,7 @@ impl State {
         self.assets.replace(assets.into_inner());
         self.asset_hashes.replace(asset_hashes.into_inner());
         self.performance.replace(performance.into_inner());
-        self.partitions_maybe
-            .replace(partitions_maybe)
-            .map(|_| ())
-            .unwrap_or_default();
+        self.partitions_maybe.replace(partitions_maybe);
     }
 }
 
@@ -124,7 +115,7 @@ impl StableState for State {
             assets: RefCell::new(assets),
             asset_hashes: RefCell::new(asset_hashes),
             performance: RefCell::new(performance),
-            partitions_maybe: RefCell::new(Err(DefaultMemoryImpl::default())),
+            partitions_maybe: RefCell::new(PartitionsMaybe::None(DefaultMemoryImpl::default())),
         })
     }
 }
