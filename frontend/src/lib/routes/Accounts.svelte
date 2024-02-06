@@ -34,6 +34,7 @@
   import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
   import IcrcTokenAccountsFooter from "$lib/components/accounts/IcrcTokenAccountsFooter.svelte";
   import IcrcTokenAccountsModals from "$lib/modals/accounts/IcrcTokenAccountsModals.svelte";
+  import { ENABLE_MY_TOKENS } from "$lib/stores/feature-flags.store";
   import { goto } from "$app/navigation";
   import { AppPath } from "$lib/constants/routes.constants";
 
@@ -41,7 +42,7 @@
 
   $: {
     // When using the new Tokens table, the Accounts page is enabled only for NNS.
-    if (!$isNnsUniverseStore) {
+    if ($ENABLE_MY_TOKENS && !$isNnsUniverseStore) {
       goto(AppPath.Tokens, { replaceState: true });
     }
   }
@@ -127,7 +128,7 @@
 
 <TestIdWrapper testId="accounts-component">
   <!-- TODO: Remove the `main` element and the rest of unused elements when removing flag ENABLE_MY_TOKENS -->
-  <main class="noPadding">
+  <main class:noPadding={$ENABLE_MY_TOKENS}>
     <SummaryUniverse />
 
     {#if $isNnsUniverseStore}
