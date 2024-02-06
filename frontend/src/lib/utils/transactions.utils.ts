@@ -149,19 +149,19 @@ export const toUiTransaction = ({
   transactionId,
   toSelfTransaction,
   token,
-  transactionNames,
+  i18n,
 }: {
   transaction: Transaction;
   transactionId: bigint;
   toSelfTransaction: boolean;
   token: Token;
-  transactionNames: I18nTransaction_names;
+  i18n: I18n;
 }): UiTransaction => {
   const isIncoming = transaction.isReceive || toSelfTransaction;
   const headline = transactionName({
     type: transaction.type,
     isReceive: isIncoming,
-    labels: transactionNames,
+    i18n,
   });
   const otherParty = isIncoming ? transaction.from : transaction.to;
 
@@ -186,17 +186,40 @@ export const toUiTransaction = ({
 export const transactionName = ({
   type,
   isReceive,
-  labels,
+  i18n,
 }: {
   type: AccountTransactionType;
   isReceive: boolean;
-  labels: I18nTransaction_names;
-}): string =>
-  type === AccountTransactionType.Send
-    ? isReceive
-      ? labels.receive
-      : labels.send
-    : labels[type] ?? type;
+  i18n: I18n;
+}): string => {
+  switch (type) {
+    case AccountTransactionType.Send:
+      return isReceive
+        ? i18n.transaction_names.receive
+        : i18n.transaction_names.send;
+    case AccountTransactionType.Approve:
+      return i18n.transaction_names.approve;
+    case AccountTransactionType.Burn:
+      return i18n.transaction_names.burn;
+    case AccountTransactionType.Mint:
+      return i18n.transaction_names.mint;
+    case AccountTransactionType.StakeNeuron:
+      return i18n.transaction_names.stakeNeuron;
+    case AccountTransactionType.StakeNeuronNotification:
+      return i18n.transaction_names.stakeNeuronNotification;
+    case AccountTransactionType.TopUpNeuron:
+      return i18n.transaction_names.topUpNeuron;
+    case AccountTransactionType.CreateCanister:
+      return i18n.transaction_names.createCanister;
+    case AccountTransactionType.TopUpCanister:
+      return i18n.transaction_names.topUpCanister;
+    case AccountTransactionType.ParticipateSwap:
+      return i18n.transaction_names.participateSwap;
+    case AccountTransactionType.RefundSwap:
+      return i18n.transaction_names.refundSwap;
+  }
+  return type;
+};
 
 /** (from==to workaround) Set `mapToSelfNnsTransaction: true` when sender and receiver are the same account (e.g. transmitting from `main` to `main` account) */
 export const mapToSelfTransaction = (

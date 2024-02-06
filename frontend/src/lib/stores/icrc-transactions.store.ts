@@ -41,7 +41,7 @@ export interface IcrcTransactionsStore
   reset: () => void;
   resetUniverse: (canisterId: UniverseCanisterId) => void;
   resetAccount: (params: {
-    universeId: UniverseCanisterId;
+    canisterId: UniverseCanisterId;
     accountIdentifier: string;
   }) => void;
 }
@@ -115,21 +115,21 @@ const initIcrcTransactionsStore = (): IcrcTransactionsStore => {
     },
 
     resetAccount({
-      universeId,
+      canisterId,
       accountIdentifier,
     }: {
-      universeId: UniverseCanisterId;
+      canisterId: UniverseCanisterId;
       accountIdentifier: string;
     }) {
       update((currentState: IcrcTransactionsStoreData) => {
-        const projectState = currentState[universeId.toText()];
+        const projectState = currentState[canisterId.toText()];
         return {
           ...removeKeys({
             obj: currentState,
-            keysToRemove: [universeId.toText()],
+            keysToRemove: [canisterId.toText()],
           }),
           ...(nonNullish(projectState) && {
-            [universeId.toText()]: removeKeys({
+            [canisterId.toText()]: removeKeys({
               obj: projectState,
               keysToRemove: [accountIdentifier],
             }),

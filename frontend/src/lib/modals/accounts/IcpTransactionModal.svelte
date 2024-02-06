@@ -12,6 +12,8 @@
   import type { WizardStep } from "@dfinity/gix-components";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
   import type { TransactionInit } from "$lib/types/transaction";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { ICPToken } from "@dfinity/utils";
 
   export let selectedAccount: Account | undefined = undefined;
 
@@ -23,7 +25,9 @@
 
   $: title =
     currentStep?.name === "Form"
-      ? $i18n.accounts.send
+      ? replacePlaceholders($i18n.core.send_with_token, {
+          $token: ICPToken.symbol,
+        })
       : currentStep?.name === "QRCode"
       ? $i18n.accounts.scan_qr_code
       : $i18n.accounts.you_are_sending;

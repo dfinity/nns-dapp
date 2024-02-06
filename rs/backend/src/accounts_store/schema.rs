@@ -13,7 +13,7 @@ use serde::Serialize;
 use strum_macros::EnumIter;
 mod label_serialization;
 #[cfg(test)]
-mod tests;
+pub mod tests;
 
 /// API methods that must be implemented by any account store.
 ///

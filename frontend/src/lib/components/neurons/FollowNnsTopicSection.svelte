@@ -6,7 +6,11 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
-  import { followeesByTopic } from "$lib/utils/neuron.utils";
+  import {
+    followeesByTopic,
+    getTopicTitle,
+    getTopicSubtitle,
+  } from "$lib/utils/neuron.utils";
   import FollowTopicSection from "./FollowTopicSection.svelte";
   import { IconClose, Value } from "@dfinity/gix-components";
 
@@ -15,9 +19,9 @@
 
   // TODO: Align with `en.governance.json` "topics.[topic]"
   let title: string;
-  $: title = $i18n.follow_neurons[`topic_${topic}_title`];
+  $: title = getTopicTitle({ topic, i18n: $i18n });
   let subtitle: string;
-  $: subtitle = $i18n.follow_neurons[`topic_${topic}_subtitle`];
+  $: subtitle = getTopicSubtitle({ topic, i18n: $i18n });
 
   let showNewFolloweeModal = false;
   type FolloweeData = {

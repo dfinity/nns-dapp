@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Topic } from "@dfinity/nns";
-  import type { FolloweesNeuron } from "$lib/utils/neuron.utils";
+  import { type FolloweesNeuron, getTopicTitle } from "$lib/utils/neuron.utils";
   import { i18n } from "$lib/stores/i18n";
   import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
   import { Copy, Tag } from "@dfinity/gix-components";
@@ -17,9 +17,7 @@
   export let followee: FolloweesNeuron;
 
   // TODO: Align with `en.governance.json` "topics.[topic]"
-  const topicTitle = (topic: Topic) =>
-    $i18n.follow_neurons[`topic_${topic}_title`];
-
+  const topicTitle = (topic: Topic) => getTopicTitle({ topic, i18n: $i18n });
   let id: string;
   $: id = `followee-${followee.neuronId}`;
   let name: string;

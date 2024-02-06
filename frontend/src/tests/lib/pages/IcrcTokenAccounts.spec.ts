@@ -1,5 +1,6 @@
 import {
   CKETHSEPOLIA_INDEX_CANISTER_ID,
+  CKETHSEPOLIA_LEDGER_CANISTER_ID,
   CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -66,7 +67,7 @@ describe("IcrcTokenAccounts", () => {
           accounts: [mockCkETHMainAccount],
           certified: true,
         },
-        universeId: CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
+        ledgerCanisterId: CKETHSEPOLIA_LEDGER_CANISTER_ID,
       });
     });
 

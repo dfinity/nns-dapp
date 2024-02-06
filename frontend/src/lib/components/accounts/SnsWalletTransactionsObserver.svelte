@@ -30,7 +30,11 @@
     }
 
     addObservedIcrcTransactionsToStore({
-      universeId,
+      // The SNS universeId is not a ledgerCanisterId but the ledgerCanisterId
+      // is only used as a key so it works fine and we want to delete
+      // SnsWalletTransactionsObserver in favor of
+      // IcrcWalletTransactionsObserver anyway.
+      ledgerCanisterId: universeId,
       completed,
       transactions,
     });

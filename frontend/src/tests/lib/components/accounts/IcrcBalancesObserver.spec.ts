@@ -1,4 +1,7 @@
-import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import {
+  CKTESTBTC_LEDGER_CANISTER_ID,
+  CKTESTBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { syncStore } from "$lib/stores/sync.store";
@@ -26,7 +29,7 @@ describe("IcrcBalancesObserver", () => {
   beforeEach(() => {
     const accounts: Account[] = [mockCkBTCMainAccount];
     icrcAccountsStore.set({
-      universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+      ledgerCanisterId: CKTESTBTC_LEDGER_CANISTER_ID,
       accounts: { accounts, certified: true },
     });
 
