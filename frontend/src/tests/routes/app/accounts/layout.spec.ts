@@ -1,7 +1,6 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
@@ -54,10 +53,6 @@ describe("Accounts layout", () => {
   });
 
   describe("when tokens flag is enabled", () => {
-    beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
-    });
-
     it("should not show the split content navigation", () => {
       const { queryByTestId } = render(AccountsLayout);
 
@@ -82,24 +77,6 @@ describe("Accounts layout", () => {
       await fireEvent.click(queryByTestId("back"));
 
       expect(get(pageStore).path).toEqual(AppPath.Tokens);
-    });
-  });
-
-  describe("when tokens flag is disabled", () => {
-    beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
-    });
-
-    it("should not show the split content navigation", () => {
-      const { queryByTestId } = render(AccountsLayout);
-
-      expect(queryByTestId("select-universe-nav-title")).toBeInTheDocument();
-    });
-
-    it("should not render back button", () => {
-      const { queryByTestId } = render(AccountsLayout);
-
-      expect(queryByTestId("back")).not.toBeInTheDocument();
     });
   });
 });

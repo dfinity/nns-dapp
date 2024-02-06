@@ -117,7 +117,7 @@ describe("IcrcWallet", () => {
     overrideFeatureFlagsStore.reset();
     toastsStore.reset();
     resetIdentity();
-    overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
+    overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
 
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
       transactions: [],
