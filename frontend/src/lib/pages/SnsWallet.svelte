@@ -1,6 +1,5 @@
 <script lang="ts">
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { buildAccountsUrl } from "$lib/utils/navigation.utils";
   import { goto } from "$app/navigation";
   import { hasAccounts } from "$lib/utils/accounts.utils";
   import { findAccountOrDefaultToMain } from "$lib/utils/accounts.utils";

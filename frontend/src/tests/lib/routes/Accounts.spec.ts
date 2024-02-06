@@ -2,7 +2,6 @@ import * as accountsApi from "$lib/api/accounts.api";
 import * as icpLedgerApi from "$lib/api/icp-ledger.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
-import CKETH_LOGO from "$lib/assets/ckETH.svg";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import {
@@ -18,8 +17,6 @@ import {
 } from "$lib/derived/sns/sns-projects.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import Accounts from "$lib/routes/Accounts.svelte";
-import { uncertifiedLoadSnsAccountsBalances } from "$lib/services/sns-accounts-balance.services";
-import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-uncertified-accounts.services";
 import { authStore } from "$lib/stores/auth.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
@@ -32,7 +29,6 @@ import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
-import en from "$tests/mocks/i18n.mock";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
@@ -45,10 +41,8 @@ import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
-  mockSummary,
   mockToken,
 } from "$tests/mocks/sns-projects.mock";
-import { mockTokens } from "$tests/mocks/tokens.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -57,10 +51,8 @@ import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
-import { fireEvent, waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
-import WalletTest from "../pages/AccountsTest.svelte";
 
 vi.mock("$lib/api/accounts.api");
 vi.mock("$lib/api/icp-ledger.api");
@@ -231,353 +223,6 @@ describe("Accounts", () => {
       ledgerCanisterId: CKETH_UNIVERSE_CANISTER_ID,
       indexCanisterId: CKETH_INDEX_CANISTER_ID,
     });
-  });
-
-  it("should render NnsAccounts by default", () => {
-    const { queryByTestId } = render(Accounts);
-    expect(queryByTestId("accounts-body")).toBeInTheDocument();
-  });
-
-  it("should render nns name", () => {
-    const { getByTestId } = render(Accounts);
-
-    const titleRow = getByTestId("projects-summary");
-
-    expect(titleRow?.textContent?.includes(en.core.ic)).toBeTruthy();
-  });
-
-  it("should render icp project logo", () => {
-    const { getByTestId } = render(Accounts);
-
-    const logo = getByTestId("project-logo");
-    const img = logo.querySelector('[data-tid="logo"]');
-
-    expect(img?.getAttribute("alt") ?? "").toEqual(en.auth.ic_logo);
-  });
-
-  it("should open nns transaction modal", async () => {
-    const { getByTestId } = render(Accounts);
-
-    const button = getByTestId("open-new-transaction") as HTMLButtonElement;
-    await fireEvent.click(button);
-
-    await waitFor(() => {
-      expect(getByTestId("transaction-step-1")).toBeInTheDocument();
-    });
-  });
-
-  it("should open nns receive modal", async () => {
-    const { getByTestId, container } = render(WalletTest, {
-      props: { testComponent: Accounts },
-    });
-
-    fireEvent.click(getByTestId("receive-icp") as HTMLButtonElement);
-
-    await waitFor(() =>
-      expect(container.querySelector("div.modal")).not.toBeNull()
-    );
-  });
-
-  it("should open add account modal", async () => {
-    const { container, getByTestId, getByText } = render(Accounts);
-
-    const button = getByTestId("open-add-account-modal") as HTMLButtonElement;
-    await fireEvent.click(button);
-
-    await waitFor(() => {
-      expect(container.querySelector("div.modal")).not.toBeNull();
-
-      expect(
-        getByText(en.accounts.attach_hardware_title, { exact: false })
-      ).toBeInTheDocument();
-    });
-  });
-
-  it("should render sns accounts when a project is selected", async () => {
-    page.mock({
-      data: { universe: mockSnsFullProject.rootCanisterId.toText() },
-    });
-
-    const { queryByTestId } = render(Accounts);
-
-    expect(queryByTestId("sns-accounts-body")).toBeInTheDocument();
-
-    await waitFor(() =>
-      expect(queryByTestId("sns-accounts-body")).toBeInTheDocument()
-    );
-  });
-
-  it("should open sns transaction modal", async () => {
-    page.mock({
-      data: { universe: mockSnsFullProject.rootCanisterId.toText() },
-    });
-    setSnsProjects([
-      {
-        rootCanisterId: mockSnsFullProject.rootCanisterId,
-        lifecycle: SnsSwapLifecycle.Committed,
-      },
-    ]);
-    const { queryByTestId, getByTestId } = render(Accounts);
-
-    expect(queryByTestId("sns-accounts-body")).toBeInTheDocument();
-
-    await waitFor(() =>
-      expect(queryByTestId("open-new-sns-transaction")).toBeInTheDocument()
-    );
-
-    const button = getByTestId("open-new-sns-transaction") as HTMLButtonElement;
-    await fireEvent.click(button);
-
-    await waitFor(() => {
-      expect(getByTestId("transaction-step-1")).toBeInTheDocument();
-    });
-  });
-
-  it("should open sns receive modal", async () => {
-    page.mock({
-      data: { universe: mockSnsFullProject.rootCanisterId.toText() },
-    });
-
-    const { getByTestId, container } = render(WalletTest, {
-      props: { testComponent: Accounts },
-    });
-
-    fireEvent.click(getByTestId("receive-sns") as HTMLButtonElement);
-
-    await waitFor(() =>
-      expect(container.querySelector("div.modal")).not.toBeNull()
-    );
-
-    expect(getByTestId("logo").getAttribute("alt")).toEqual(
-      `${mockSnsFullProject.summary.metadata.name} project logo`
-    );
-  });
-
-  it("should load Sns accounts balances", async () => {
-    render(Accounts);
-
-    await waitFor(() =>
-      expect(uncertifiedLoadSnsAccountsBalances).toHaveBeenCalled()
-    );
-  });
-
-  it("should load ckBTC accounts balances", async () => {
-    render(Accounts);
-
-    await waitFor(() =>
-      expect(uncertifiedLoadAccountsBalance).toHaveBeenCalled()
-    );
-  });
-
-  it("should not load ckBTC accounts balances", async () => {
-    page.mock({
-      data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
-      routeId: AppPath.Accounts,
-    });
-
-    render(Accounts);
-
-    await waitFor(() =>
-      expect(uncertifiedLoadAccountsBalance).toHaveBeenCalled()
-    );
-  });
-
-  it("should load ckETH accounts", async () => {
-    render(Accounts);
-
-    await waitFor(() =>
-      expect(uncertifiedLoadAccountsBalance).toHaveBeenCalled()
-    );
-  });
-
-  it("should not load ckETH accounts when universe ckETH is selected", async () => {
-    page.mock({
-      data: { universe: CKETH_UNIVERSE_CANISTER_ID.toText() },
-      routeId: AppPath.Accounts,
-    });
-
-    render(Accounts);
-
-    // TODO: "api for a check on the service" https://dfinity.atlassian.net/browse/GIX-2150
-    await waitFor(() =>
-      expect(uncertifiedLoadAccountsBalance).toHaveBeenCalled()
-    );
-  });
-
-  // TODO: redo https://dfinity.atlassian.net/browse/GIX-2150
-  // it("should load ckETH accounts", async () => {
-  //   overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
-  //
-  //   render(Accounts);
-  //
-  //   const mockAccount = {
-  //     identifier: encodeIcrcAccount({
-  //       owner: mockIdentity.getPrincipal(),
-  //     }),
-  //     principal: mockIdentity.getPrincipal(),
-  //     type: "main",
-  //     balanceUlps: balanceIcrcToken,
-  //   };
-  //
-  //   await waitFor(() => {
-  //     expect(
-  //         get(icrcAccountsStore)[CKETH_UNIVERSE_CANISTER_ID.toText()]
-  //     ).toEqual({
-  //       certified: false,
-  //       accounts: [mockAccount],
-  //     });
-  //   });
-  // });
-  //
-  // it("should make ckETH transactions from ckETH universe", async () => {
-  //   overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
-  //
-  //   page.mock({
-  //     data: { universe: CKETH_UNIVERSE_CANISTER_ID.toText() },
-  //     routeId: AppPath.Accounts,
-  //   });
-  //
-  //   const po = renderComponent();
-  //
-  //   await runResolvedPromises();
-  //
-  //   await po.clickCkETHSend();
-  //
-  //   const modalPo = po.getIcrcTokenTransactionModalPo();
-  //
-  //   expect(await modalPo.isPresent()).toBe(true);
-  //
-  //   const toAccount = {
-  //     owner: principal(2),
-  //   };
-  //   const amount = 2;
-  //
-  //   await modalPo.transferToAddress({
-  //     destinationAddress: encodeIcrcAccount(toAccount),
-  //     amount,
-  //   });
-  //
-  //   expect(icrcLedgerApi.icrcTransfer).toHaveBeenCalledTimes(1);
-  //   expect(icrcLedgerApi.icrcTransfer).toHaveBeenCalledWith({
-  //     identity: mockIdentity,
-  //     canisterId: CKETH_LEDGER_CANISTER_ID,
-  //     amount: 200_000_000n,
-  //     to: toAccount,
-  //     fee: mockCkETHToken.fee,
-  //   });
-  // });
-  //
-  // it("should render IcrcTokenAccounts and IcrcTokenAccountsFooter component with ckETH enabled and universe ckETH", async () => {
-  //   overrideFeatureFlagsStore.setFlag("ENABLE_CKETH", true);
-  //
-  //   page.mock({
-  //     data: { universe: CKETH_UNIVERSE_CANISTER_ID.toText() },
-  //     routeId: AppPath.Accounts,
-  //   });
-  //
-  //   const po = renderComponent();
-  //
-  //   expect(await po.getIcrcTokenAccountsPo().isPresent()).toBe(true);
-  //   expect(await po.getIcrcTokenAccountsFooterPo().isPresent()).toBe(true);
-  // });
-
-  it("should render sns project name", () => {
-    page.mock({
-      data: { universe: mockSnsFullProject.rootCanisterId.toText() },
-    });
-
-    const { getByTestId } = render(Accounts);
-
-    const titleRow = getByTestId("projects-summary");
-
-    expect(
-      titleRow?.textContent?.includes(mockSummary.metadata.name)
-    ).toBeTruthy();
-  });
-
-  it("should render sns project logo", () => {
-    page.mock({
-      data: { universe: mockSnsFullProject.rootCanisterId.toText() },
-    });
-
-    const { getByTestId } = render(Accounts);
-
-    const logo = getByTestId("project-logo");
-    const img = logo.querySelector('[data-tid="logo"]');
-
-    expect(img?.getAttribute("src") ?? "").toEqual(mockSummary.metadata.logo);
-  });
-
-  it("should render icrc project name", () => {
-    tokensStore.setTokens(mockTokens);
-
-    page.mock({
-      data: { universe: CKETH_UNIVERSE_CANISTER_ID.toText() },
-      routeId: AppPath.Accounts,
-    });
-
-    const { getByTestId } = render(Accounts);
-
-    const titleRow = getByTestId("projects-summary");
-
-    expect(titleRow?.textContent?.includes("ckETH")).toBeTruthy();
-  });
-
-  it("should render related icrc project logo", () => {
-    tokensStore.setTokens(mockTokens);
-
-    page.mock({
-      data: { universe: CKETH_UNIVERSE_CANISTER_ID.toText() },
-      routeId: AppPath.Accounts,
-    });
-
-    const { getByTestId } = render(Accounts);
-
-    const logo = getByTestId("project-logo");
-    const img = logo.querySelector('[data-tid="logo"]');
-
-    expect(img?.getAttribute("src") ?? "").toEqual(CKETH_LOGO);
-  });
-
-  it("should render project title", async () => {
-    page.mock({
-      data: { universe: mockSnsFullProject.rootCanisterId.toText() },
-    });
-
-    const { getByText } = render(Accounts);
-
-    await waitFor(() =>
-      expect(
-        getByText(mockSnsFullProject.summary.metadata.name)
-      ).toBeInTheDocument()
-    );
-  });
-
-  it("should render ckBTC name", () => {
-    page.mock({
-      data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
-      routeId: AppPath.Accounts,
-    });
-
-    const { getByTestId } = render(Accounts);
-
-    const titleRow = getByTestId("projects-summary");
-
-    expect(titleRow?.textContent?.includes(en.ckbtc.title)).toBeTruthy();
-  });
-
-  it("should render icp project logo", () => {
-    page.mock({
-      data: { universe: CKBTC_UNIVERSE_CANISTER_ID.toText() },
-      routeId: AppPath.Accounts,
-    });
-
-    const { getByTestId } = render(Accounts);
-
-    const logo = getByTestId("project-logo");
-    const img = logo.querySelector('[data-tid="logo"]');
-
-    expect(img?.getAttribute("alt") ?? "").toEqual(en.ckbtc.logo);
   });
 
   describe("when NNS universe", () => {
@@ -803,32 +448,7 @@ describe("Accounts", () => {
     });
   });
 
-  it("should open icrc receive modal", async () => {
-    tokensStore.setTokens(mockTokens);
-
-    page.mock({
-      data: {
-        universe: CKETH_UNIVERSE_CANISTER_ID.toText(),
-        routeId: AppPath.Accounts,
-      },
-    });
-
-    const { getByTestId, container } = render(WalletTest, {
-      props: { testComponent: Accounts },
-    });
-
-    fireEvent.click(getByTestId("receive-icrc") as HTMLButtonElement);
-
-    await waitFor(() =>
-      expect(container.querySelector("div.modal")).not.toBeNull()
-    );
-
-    expect(getByTestId("logo").getAttribute("alt")).toEqual(`ckETH logo`);
-  });
-
   it("should redirect to Tokens page when tokens page is enabled and universe is not NNS", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
-
     page.mock({
       data: {
         universe: CKBTC_UNIVERSE_CANISTER_ID.toText(),
@@ -844,8 +464,6 @@ describe("Accounts", () => {
   });
 
   it("should not redirect to Tokens page when tokens page is not enabled and universe is not NNS", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
-
     page.mock({
       data: {
         universe: CKBTC_UNIVERSE_CANISTER_ID.toText(),
@@ -861,8 +479,6 @@ describe("Accounts", () => {
   });
 
   it("should not redirect to Tokens page when tokens page is enabled and universe is NNS", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
-
     page.mock({
       data: {
         universe: OWN_CANISTER_ID_TEXT,
