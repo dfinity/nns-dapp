@@ -63,7 +63,7 @@
       {$i18n.core.cancel}
     </button>
     {#if nonNullish(disabledText)}
-      <Tooltip id="disabled-disburse-button-modal" text={disabledText}>
+      <Tooltip id="disabled-disburse-button-modal" text={disabledText} top>
         <button
           data-tid="select-maturity-percentage-button"
           class="primary"
