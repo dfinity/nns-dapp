@@ -52,7 +52,6 @@
     {account}
     reload={reloadAccount}
     testId="receive-icrc"
-    universeId={ledgerCanisterId}
     logo={$selectedUniverseStore?.logo ?? IC_LOGO}
     tokenSymbol={token?.symbol}
   />

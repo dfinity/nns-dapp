@@ -20,7 +20,7 @@
     data);
 </script>
 
-{#if nonNullish(universeId) && nonNullish(tokenSymbol)}
+{#if nonNullish(tokenSymbol)}
   <ReceiveModal
     {account}
     on:nnsClose
