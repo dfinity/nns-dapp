@@ -643,7 +643,6 @@ interface I18nNeuron_detail {
   no_notkeys: string;
   add_hotkey_modal_title: string;
   enter_hotkey: string;
-  remove_hotkey_success: string;
   invalid_hotkey: string;
   disburse_success: string;
   edit_percentage: string;
@@ -727,7 +726,6 @@ interface I18nSns_project_detail {
   status: string;
   status_open: string;
   status_adopted: string;
-  enter_amount: string;
   status_committed: string;
   status_aborted: string;
   status_pending: string;
@@ -759,7 +757,6 @@ interface I18nSns_sale {
 }
 
 interface I18nSns_neuron_detail {
-  header: string;
   all_topics: string;
   vesting_period_tooltip: string;
   community_fund_section: string;
@@ -845,7 +842,6 @@ interface I18nError__canister {
 }
 
 interface I18nError__sns {
-  init: string;
   undefined_project: string;
   list_summaries: string;
   list_swap_commitments: string;
@@ -920,7 +916,6 @@ interface I18nAuth_sns {
 interface I18nUniverse {
   select_token: string;
   select_nervous_system: string;
-  select: string;
   universe_logo: string;
 }
 
@@ -999,7 +994,6 @@ interface I18nCkbtc {
   block_explorer: string;
   bitcoin_address_title: string;
   refresh_balance: string;
-  confirmations: string;
   btc_received: string;
   btc_sent: string;
   btc_network: string;
@@ -1027,7 +1021,6 @@ interface I18nError__ckbtc {
   retrieve_btc_min_amount: string;
   retrieve_btc_min_amount_unknown: string;
   wait_ckbtc_info_parameters_certified: string;
-  icrc_no_universe: string;
 }
 
 interface I18nFeature_flags_prompt {
