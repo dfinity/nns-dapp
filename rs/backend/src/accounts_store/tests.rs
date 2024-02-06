@@ -1854,3 +1854,5 @@ fn should_be_able_to_downgrade_heap_data() {
         Candid::from_bytes(bytes).map(|c| c.0).expect("Failed to parse");
     assert_eq!(accounts_before, accounts_after);
 }
+
+crate::accounts_store::schema::tests::test_accounts_db!(AccountsStore::default());

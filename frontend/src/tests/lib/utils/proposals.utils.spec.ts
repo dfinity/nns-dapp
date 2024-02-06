@@ -5,6 +5,7 @@ import {
   excludeProposals,
   getNnsFunctionKey,
   getUniversalProposalStatus,
+  getVoteDisplay,
   getVotingBallot,
   getVotingPower,
   hasMatchingProposals,
@@ -1331,6 +1332,14 @@ describe("proposals-utils", () => {
       expect(
         getUniversalProposalStatus(proposalWithStatus(ProposalStatus.Failed))
       ).toBe("failed");
+    });
+  });
+
+  describe("getVoteDisplay", () => {
+    it("should render vote", () => {
+      expect(getVoteDisplay(Vote.Yes)).toBe("Yes");
+      expect(getVoteDisplay(Vote.No)).toBe("No");
+      expect(getVoteDisplay(Vote.Unspecified)).toBe("Unspecified");
     });
   });
 });

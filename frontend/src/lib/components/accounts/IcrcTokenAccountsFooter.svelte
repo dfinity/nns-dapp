@@ -31,7 +31,7 @@
     openIcrcTokenModal({
       type: "icrc-send",
       data: {
-        universeId,
+        ledgerCanisterId: universeId,
         token,
         loadTransactions: false,
       },
@@ -46,7 +46,7 @@
       return;
     }
 
-    await syncAccounts({ universeId });
+    await syncAccounts({ ledgerCanisterId: universeId });
   };
 </script>
 

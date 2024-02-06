@@ -1,4 +1,7 @@
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import {
+  CKBTC_LEDGER_CANISTER_ID,
+  CKBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCAccounts from "$lib/pages/CkBTCAccounts.svelte";
 import { syncAccounts } from "$lib/services/wallet-accounts.services";
@@ -68,7 +71,7 @@ describe("CkBTCAccounts", () => {
           accounts: [mockCkBTCMainAccount],
           certified: true,
         },
-        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID,
       });
     });
 

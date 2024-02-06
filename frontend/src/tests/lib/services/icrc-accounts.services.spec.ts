@@ -258,7 +258,7 @@ describe("icrc-accounts-services", () => {
         balanceUlps: balanceE8s + amountE8s,
       };
       icrcAccountsStore.set({
-        universeId: ledgerCanisterId,
+        ledgerCanisterId,
         accounts: {
           accounts: [initialAccount],
           certified: true,

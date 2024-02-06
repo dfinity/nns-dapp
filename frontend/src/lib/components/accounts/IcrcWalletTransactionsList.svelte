@@ -29,7 +29,7 @@
   import { nonNullish } from "@dfinity/utils";
 
   export let indexCanisterId: CanisterId;
-  export let universeId: UniverseCanisterId;
+  export let ledgerCanisterId: UniverseCanisterId;
   export let account: Account;
   export let token: IcrcTokenMetadata | undefined;
   export let mapTransactions = (
@@ -53,7 +53,7 @@
     loading = true;
     await loadWalletNextTransactions({
       account,
-      canisterId: universeId,
+      canisterId: ledgerCanisterId,
       indexCanisterId,
     });
     loading = false;
@@ -71,7 +71,7 @@
     // That way the skeletons will be displayed again which provides the user a visual feedback about the fact that all transactions are realoded.
     // This is handy because the reload notably happens the "update balance" process - i.e. happens after the "busy spinner" has fade away.
     icrcTransactionsStore.resetAccount({
-      universeId,
+      canisterId: ledgerCanisterId,
       accountIdentifier: account.identifier,
     });
 
@@ -80,7 +80,7 @@
 
     await loadWalletTransactions({
       account,
-      canisterId: universeId,
+      canisterId: ledgerCanisterId,
       indexCanisterId,
     });
 
@@ -92,14 +92,14 @@
   let transactions: IcrcTransactionData[];
   $: transactions = getSortedTransactionsFromStore({
     store: $icrcTransactionsStore,
-    canisterId: universeId,
+    canisterId: ledgerCanisterId,
     account,
   });
 
   let completed: boolean;
   $: completed = isIcrcTransactionsCompleted({
     store: $icrcTransactionsStore,
-    canisterId: universeId,
+    canisterId: ledgerCanisterId,
     account,
   });
 
@@ -117,7 +117,7 @@
   {indexCanisterId}
   {account}
   {completed}
-  {universeId}
+  {ledgerCanisterId}
 >
   <IcrcTransactionsList
     on:nnsIntersect={loadNextTransactions}

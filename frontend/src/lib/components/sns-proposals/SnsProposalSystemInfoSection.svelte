@@ -45,7 +45,7 @@
   <div class="content-cell-details">
     {#if nonNullish(type)}
       <ProposalSystemInfoEntry
-        labelKey="type_prefix"
+        label={$i18n.proposal_detail.type_prefix}
         testId="proposal-system-info-type"
         value={type}
         description={typeDescription}
@@ -53,21 +53,21 @@
     {/if}
 
     <ProposalSystemInfoEntry
-      labelKey="status_prefix"
+      label={$i18n.proposal_detail.status_prefix}
       testId="proposal-system-info-status"
       value={statusString}
       description={statusDescription}
     />
 
     <ProposalSystemInfoEntry
-      labelKey="reward_prefix"
+      label={$i18n.proposal_detail.reward_prefix}
       testId="proposal-system-info-reward"
       value={rewardStatusString}
       description={rewardStatusDescription}
     />
 
     <ProposalSystemInfoEntry
-      labelKey="created_prefix"
+      label={$i18n.proposal_detail.created_prefix}
       testId="proposal-system-info-created"
       value={secondsToDateTime(proposal_creation_timestamp_seconds)}
       description={$i18n.proposal_detail.created_description}
@@ -75,7 +75,7 @@
 
     {#if decided_timestamp_seconds > 0n}
       <ProposalSystemInfoEntry
-        labelKey="decided_prefix"
+        label={$i18n.proposal_detail.decided_prefix}
         testId="proposal-system-info-decided"
         value={secondsToDateTime(decided_timestamp_seconds)}
         description={$i18n.proposal_detail.decided_description}
@@ -84,7 +84,7 @@
 
     {#if executed_timestamp_seconds > 0n}
       <ProposalSystemInfoEntry
-        labelKey="executed_prefix"
+        label={$i18n.proposal_detail.executed_prefix}
         testId="proposal-system-info-executed"
         value={secondsToDateTime(executed_timestamp_seconds)}
         description={$i18n.proposal_detail.executed_description}
@@ -93,7 +93,7 @@
 
     {#if failed_timestamp_seconds > 0n}
       <ProposalSystemInfoEntry
-        labelKey="failed_prefix"
+        label={$i18n.proposal_detail.failed_prefix}
         testId="proposal-system-info-failed"
         value={secondsToDateTime(failed_timestamp_seconds)}
         description={$i18n.proposal_detail.failed_description}

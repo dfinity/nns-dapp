@@ -628,3 +628,15 @@ export const getUniversalProposalStatus = (
 
   return statusType;
 };
+
+export const getVoteDisplay = (vote: Vote): string => {
+  const i18nObj = get(i18n);
+  switch (vote) {
+    case Vote.Yes:
+      return i18nObj.core.yes;
+    case Vote.No:
+      return i18nObj.core.no;
+    case Vote.Unspecified:
+      return i18nObj.core.unspecified;
+  }
+};

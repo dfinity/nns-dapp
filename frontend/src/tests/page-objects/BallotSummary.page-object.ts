@@ -16,6 +16,26 @@ export class BallotSummaryPo extends BasePageObject {
     });
   }
 
+  getProposalSummaryPo(): KeyValuePairInfoPo {
+    return KeyValuePairInfoPo.under({
+      element: this.root,
+      testId: "proposal-summary",
+    });
+  }
+
+  async waitForLoaded(): Promise<void> {
+    await this.root.byTestId("skeleton-text").waitForAbsent();
+    await this.root.byTestId("spinner").waitForAbsent();
+  }
+
+  getProposalId(): Promise<string> {
+    return this.getText("proposal-id");
+  }
+
+  getVote(): Promise<string> {
+    return this.getText("vote");
+  }
+
   clickInfoIcon(): Promise<void> {
     return this.getKeyValuePairPo().clickInfoIcon();
   }

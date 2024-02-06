@@ -21,7 +21,7 @@
 {#if modal?.type === "icrc-send"}
   <IcrcTokenTransactionModal
     on:nnsClose={closeModal}
-    ledgerCanisterId={modal.data.universeId}
+    ledgerCanisterId={modal.data.ledgerCanisterId}
     token={modal.data.token}
     transactionFee={TokenAmountV2.fromUlps({
       amount: modal.data.token.fee,

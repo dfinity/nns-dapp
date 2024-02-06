@@ -1,6 +1,6 @@
 import {
-  CKBTC_UNIVERSE_CANISTER_ID,
-  CKTESTBTC_UNIVERSE_CANISTER_ID,
+  CKBTC_LEDGER_CANISTER_ID,
+  CKTESTBTC_LEDGER_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { loadToken } from "$lib/services/wallet-tokens.services";
 import {
@@ -14,10 +14,10 @@ export const loadCkBTCTokens = async () => {
   const enableCkBTCTest = get(ENABLE_CKTESTBTC);
   return Promise.all([
     enableCkBTC
-      ? loadToken({ universeId: CKBTC_UNIVERSE_CANISTER_ID })
+      ? loadToken({ ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID })
       : undefined,
     enableCkBTCTest
-      ? loadToken({ universeId: CKTESTBTC_UNIVERSE_CANISTER_ID })
+      ? loadToken({ ledgerCanisterId: CKTESTBTC_LEDGER_CANISTER_ID })
       : undefined,
   ]);
 };
