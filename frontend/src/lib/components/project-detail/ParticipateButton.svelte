@@ -137,9 +137,13 @@
   }
 
   [role="toolbar"] {
-    @include toolbar.in-bottom-sheet;
+    @include toolbar.base;
 
     padding: var(--padding-2x);
+
+    @include media.min-width(small) {
+      justify-content: center;
+    }
 
     @include media.min-width(large) {
       padding: 0;
