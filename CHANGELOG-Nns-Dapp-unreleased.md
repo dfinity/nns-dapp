@@ -32,6 +32,7 @@ proposal is successful, the changes it released will be moved from this file to
 - Implement `State` traits manually rather than automatically.
 - Voting power calculation formatting.
 - Voting rewards description.
+- Stable memory is owned by State structure to control access.
 
 #### Deprecated
 
