@@ -341,8 +341,6 @@ describe("IcrcWallet", () => {
       ]);
 
       it("should navigate to /tokens when account identifier is invalid and tokens page is enabled", async () => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
-
         expect(get(pageStore)).toEqual({
           path: AppPath.Wallet,
           universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText(),
