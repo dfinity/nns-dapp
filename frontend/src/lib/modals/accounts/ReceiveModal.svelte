@@ -10,7 +10,7 @@
   import ReceiveSelectAccountDropdown from "$lib/components/accounts/ReceiveSelectAccountDropdown.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
-  export let universeId: UniverseCanisterId;
+  export let universeId: UniverseCanisterId | undefined = undefined;
   export let account: Account | undefined;
   export let qrCodeLabel: string;
   export let logo: string;
