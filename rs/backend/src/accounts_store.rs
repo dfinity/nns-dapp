@@ -29,15 +29,12 @@ use serde::Deserialize;
 use std::borrow::Cow;
 use std::cmp::{min, Ordering};
 use std::collections::{BTreeMap, HashMap, HashSet, VecDeque};
-use std::fmt;
 use std::ops::{RangeBounds, RangeTo};
 use std::time::{Duration, SystemTime};
 
 pub mod constructors;
 pub mod histogram;
 pub mod schema;
-
-use self::schema::SchemaLabel;
 
 type TransactionIndex = u64;
 
