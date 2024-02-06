@@ -99,6 +99,8 @@ export class LedgerIdentity extends SignIdentity {
   };
 
   public override async sign(blob: ArrayBuffer): Promise<Signature> {
+    await this.raiseIfVersionIsDeprecated();
+
     const callback = async (app: LedgerApp): Promise<Signature> => {
       const responseSign: ResponseSign = await app.sign(
         this.derivePath,
@@ -112,8 +114,6 @@ export class LedgerIdentity extends SignIdentity {
       return decodeSignature(responseSign);
     };
 
-    await this.raiseIfVersionIsDeprecated();
-
     return this.executeWithApp<Signature>(callback);
   }
 
@@ -121,6 +121,8 @@ export class LedgerIdentity extends SignIdentity {
     callBlob: ArrayBuffer,
     readStateBlob: ArrayBuffer
   ): Promise<RequestSignatures> {
+    await this.raiseIfVersionIsDeprecated();
+
     const callback = async (app: LedgerApp): Promise<RequestSignatures> => {
       const responseSign: ResponseSignUpdateCall = await app.signUpdateCall(
         this.derivePath,
@@ -134,8 +136,6 @@ export class LedgerIdentity extends SignIdentity {
 
       return decodeUpdateSignatures(responseSign);
     };
-
-    await this.raiseIfVersionIsDeprecated();
 
     return this.executeWithApp<RequestSignatures>(callback);
   }
