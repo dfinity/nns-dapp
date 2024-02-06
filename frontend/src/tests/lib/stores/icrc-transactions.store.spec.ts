@@ -40,7 +40,7 @@ describe("icrc-transactions", () => {
     ).not.toBeUndefined();
 
     icrcTransactionsStore.resetAccount({
-      universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+      canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
       accountIdentifier: mockCkBTCMainAccount.identifier,
     });
 

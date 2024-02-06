@@ -27,6 +27,6 @@
 
 <IcrcAccountsPage
   testId="ckbtc-accounts-body"
-  selectedUniverseId={$selectedCkBTCUniverseIdStore}
+  ledgerCanisterId={$selectedCkBTCUniverseIdStore}
   token={token?.token}
 ></IcrcAccountsPage>

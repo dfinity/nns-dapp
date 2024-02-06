@@ -6,9 +6,9 @@ import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
-import type { UniverseCanisterId } from "$lib/types/universe";
 import { notForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
+import type { Principal } from "@dfinity/principal";
 
 /**
  * TODO: once sns are migrated to store this module can probably be reused and renamed to icrc-accounts.services
@@ -16,18 +16,18 @@ import { toToastError } from "$lib/utils/error.utils";
 
 export const loadAccounts = async ({
   handleError,
-  universeId,
+  ledgerCanisterId,
 }: {
   handleError?: () => void;
-  universeId: UniverseCanisterId;
+  ledgerCanisterId: Principal;
 }): Promise<void> => {
   return queryAndUpdate<Account[], unknown>({
     strategy: FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
-      getAccounts({ identity, certified, universeId }),
+      getAccounts({ identity, certified, ledgerCanisterId }),
     onLoad: ({ response: accounts, certified }) =>
       icrcAccountsStore.set({
-        universeId,
+        ledgerCanisterId,
         accounts: {
           accounts,
           certified,
@@ -42,7 +42,7 @@ export const loadAccounts = async ({
 
       // hide unproven data
       icrcAccountsStore.reset();
-      icrcTransactionsStore.resetUniverse(universeId);
+      icrcTransactionsStore.resetUniverse(ledgerCanisterId);
 
       toastsError(
         toToastError({
@@ -59,5 +59,5 @@ export const loadAccounts = async ({
 
 export const syncAccounts = async (params: {
   handleError?: () => void;
-  universeId: UniverseCanisterId;
+  ledgerCanisterId: Principal;
 }) => await Promise.all([loadAccounts(params), loadToken(params)]);

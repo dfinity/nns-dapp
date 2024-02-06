@@ -61,7 +61,7 @@ describe("IcrcTokenTransactionModal", () => {
   it("should transfer tokens", async () => {
     // Used to choose the source account
     icrcAccountsStore.set({
-      universeId: ledgerCanisterId,
+      ledgerCanisterId,
       accounts: {
         accounts: [
           {

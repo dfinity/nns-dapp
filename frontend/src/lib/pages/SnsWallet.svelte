@@ -211,7 +211,6 @@
           account={$selectedAccountStore.account}
           reload={reloadAccount}
           testId="receive-sns"
-          universeId={$snsOnlyProjectStore}
           logo={$selectedUniverseStore?.summary?.metadata.logo ?? IC_LOGO}
           tokenSymbol={$selectedUniverseStore?.summary?.token.symbol}
         />

@@ -1,6 +1,6 @@
 import ProjectAccountsBalance from "$lib/components/universe/UniverseAccountsBalance.svelte";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
-import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
+import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { CKETH_LEDGER_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
@@ -143,7 +143,7 @@ describe("UniverseAccountsBalance", () => {
           accounts: [mockCkBTCMainAccount],
           certified: true,
         },
-        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID,
       });
 
       const { getByTestId } = render(ProjectAccountsBalance, {
@@ -175,7 +175,7 @@ describe("UniverseAccountsBalance", () => {
           ],
           certified: true,
         },
-        universeId: CKETH_UNIVERSE_CANISTER_ID,
+        ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
       });
 
       const { getByTestId } = render(ProjectAccountsBalance, {

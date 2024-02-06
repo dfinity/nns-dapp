@@ -38,7 +38,7 @@
       return;
     }
 
-    await syncAccounts({ universeId: $selectedCkBTCUniverseIdStore });
+    await syncAccounts({ ledgerCanisterId: $selectedCkBTCUniverseIdStore });
   };
 </script>
 

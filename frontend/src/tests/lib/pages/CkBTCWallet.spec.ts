@@ -2,7 +2,10 @@ import * as ckbtcMinterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as ckbtcLedgerApi from "$lib/api/wallet-ledger.api";
-import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import {
+  CKTESTBTC_LEDGER_CANISTER_ID,
+  CKTESTBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { WALLET_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/wallet.constants";
 import CkBTCWallet from "$lib/pages/CkBTCWallet.svelte";
@@ -255,7 +258,7 @@ describe("CkBTCWallet", () => {
           accounts: [mockCkBTCMainAccount],
           certified: true,
         },
-        universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+        ledgerCanisterId: CKTESTBTC_LEDGER_CANISTER_ID,
       });
 
       tokensStore.setTokens(mockUniversesTokens);
