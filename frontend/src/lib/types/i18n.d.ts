@@ -124,6 +124,7 @@ interface I18nError {
   canister_invalid_transaction: string;
   qrcode_camera_error: string;
   qrcode_token_incompatible: string;
+  icrc_no_universe: string;
 }
 
 interface I18nWarning {
