@@ -5,7 +5,7 @@
   import { accountsPathStore } from "$lib/derived/paths.derived";
   import LayoutNavGuard from "$lib/components/layout/LayoutNavGuard.svelte";
   import { isNnsUniverseStore } from "$lib/derived/selected-universe.derived";
-    import { AppPath } from "$lib/constants/routes.constants";
+  import { AppPath } from "$lib/constants/routes.constants";
 
   const back = (): Promise<void> =>
     goto($isNnsUniverseStore ? $accountsPathStore : AppPath.Tokens);
