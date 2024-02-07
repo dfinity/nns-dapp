@@ -151,8 +151,9 @@
           //
           !$authSignedInStore ? undefined : loadSnsParameters(universeId),
           loadSnsNervousSystemFunctions(universeId),
-          reloadProposal(),
         ]);
+        // Reload proposal only after other data, to be sure that the user has some neurons to vote. Otherwise, there is no need to reload.
+        await reloadProposal();
       } catch (error) {
         toastsError({
           labelKey: "error.wrong_proposal_id",
