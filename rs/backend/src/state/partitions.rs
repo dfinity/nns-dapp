@@ -15,6 +15,9 @@ use std::rc::Rc;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
+#[cfg(test)]
+use crate::state::SchemaLabel;
+
 pub mod schemas;
 #[cfg(test)]
 pub mod tests;
@@ -46,12 +49,25 @@ impl core::fmt::Debug for Partitions {
     }
 }
 
+#[derive(strum_macros::Display)]
 pub enum PartitionsMaybe {
     /// Memory that has a memory manager.
     #[cfg(test)]
     Partitions(Partitions),
     /// Memory that does not have any kind of memory manager.
     None(DefaultMemoryImpl),
+}
+
+#[cfg(test)]
+impl PartitionsMaybe {
+    /// Gets the schema label.
+    pub fn schema_label(&self) -> SchemaLabel {
+        match self {
+            #[cfg(test)]
+            PartitionsMaybe::Partitions(partitions) => partitions.schema_label(),
+            PartitionsMaybe::None(_) => SchemaLabel::Map,
+        }
+    }
 }
 
 impl Default for PartitionsMaybe {

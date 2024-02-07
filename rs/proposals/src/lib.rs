@@ -36,7 +36,7 @@ pub async fn get_proposal_payload(proposal_id: u64) -> Result<Json, String> {
             .map(|result| result.0)
         {
             Ok(Some(proposal_info)) => {
-                let json = process_proposal_payload(proposal_info);
+                let json = process_proposal_payload(&proposal_info);
                 CACHED_PROPOSAL_PAYLOADS
                     .with(|c| insert_into_cache(c.borrow_mut().deref_mut(), proposal_id, json.clone()));
                 Ok(json)
@@ -127,7 +127,8 @@ fn decode_arg(arg: &[u8], arg_types: IDLTypes) -> String {
 }
 
 // Check if the proposal has a payload, if yes, deserialize it then convert it to JSON.
-pub fn process_proposal_payload(proposal_info: ProposalInfo) -> Json {
+#[must_use]
+pub fn process_proposal_payload(proposal_info: &ProposalInfo) -> Json {
     if let Some(Action::ExecuteNnsFunction(f)) = proposal_info.proposal.as_ref().and_then(|p| p.action.as_ref()) {
         transform_payload_to_json(f.nns_function, &f.payload)
             .unwrap_or_else(|e| serde_json::to_string(&format!("Unable to deserialize payload: {e:.400}")).unwrap())
@@ -711,8 +712,8 @@ mod def {
     impl From<SnsUpgrade> for SnsUpgradeHumanReadable {
         fn from(payload: SnsUpgrade) -> Self {
             SnsUpgradeHumanReadable {
-                current_version: payload.current_version.map(|v| v.into()),
-                next_version: payload.next_version.map(|v| v.into()),
+                current_version: payload.current_version.map(Into::into),
+                next_version: payload.next_version.map(Into::into),
             }
         }
     }
@@ -720,7 +721,7 @@ mod def {
     impl From<InsertUpgradePathEntriesRequest> for InsertUpgradePathEntriesRequestHumanReadable {
         fn from(payload: InsertUpgradePathEntriesRequest) -> Self {
             InsertUpgradePathEntriesRequestHumanReadable {
-                upgrade_path: payload.upgrade_path.into_iter().map(|u| u.into()).collect(),
+                upgrade_path: payload.upgrade_path.into_iter().map(Into::into).collect(),
                 sns_governance_canister_id: payload.sns_governance_canister_id,
             }
         }

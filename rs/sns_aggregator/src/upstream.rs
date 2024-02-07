@@ -57,7 +57,7 @@ async fn set_list_of_sns_to_get() -> anyhow::Result<()> {
     crate::state::log("Asked for more SNSs".to_string());
     match result {
         Err((_rejection_code, message)) => {
-            crate::state::log(format!("Cache update failed: {}", message));
+            crate::state::log(format!("Cache update failed: {message}"));
             Err(anyhow!("Cache update failed: {}", message))
         }
         Ok((stuff,)) => {

@@ -85,7 +85,7 @@ impl From<&UpstreamData> for SlowSnsData {
     }
 }
 
-/// Response message for 'get_metadata'.
+/// Response message for `get_metadata`.
 ///
 /// Note: Ideally this should not exist and any optimisations we make here can be pushed upstteam.
 #[derive(candid::CandidType, candid::Deserialize, Clone, Debug, PartialEq, Eq, serde::Serialize)]
