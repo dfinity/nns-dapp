@@ -89,8 +89,7 @@ impl FastScheduler {
             let last_sns_update = state.fast_scheduler.borrow().last_sns_updated.unwrap_or_default();
             let iter = Self::needs_update_iter(&sns_cache, time_now_seconds)
                 .skip(last_sns_update as usize + 1)
-                .chain(Self::needs_update_iter(&sns_cache, time_now_seconds).take(
-                    last_sns_update as usize + 1));
+                .chain(Self::needs_update_iter(&sns_cache, time_now_seconds).take(last_sns_update as usize + 1));
             let index_maybe = iter.flatten().next().copied();
             state.fast_scheduler.borrow_mut().last_sns_updated = index_maybe;
             index_maybe
