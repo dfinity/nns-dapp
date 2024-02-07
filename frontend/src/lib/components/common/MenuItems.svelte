@@ -16,7 +16,6 @@
   import {
     canistersPathStore,
     neuronsPathStore,
-    tokensPathStore,
     proposalsPathStore,
   } from "$lib/derived/paths.derived";
   import { pageStore } from "$lib/derived/page.derived";
@@ -39,7 +38,7 @@
   $: routes = [
     {
       context: "accounts",
-      href: $tokensPathStore,
+      href: AppPath.Tokens,
       selected: isSelectedPath({
         currentPath: $pageStore.path,
         paths: [AppPath.Accounts, AppPath.Wallet, AppPath.Tokens],
