@@ -320,25 +320,24 @@ describe("IcrcWallet", () => {
       );
     });
 
-      it("should navigate to /tokens when account identifier is invalid", async () => {
-        expect(get(pageStore)).toEqual({
-          path: AppPath.Wallet,
-          universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText(),
-        });
-        await renderWallet({
-          accountIdentifier: "invalid-account-identifier",
-        });
-        expect(get(pageStore)).toEqual({
-          path: AppPath.Tokens,
-          universe: OWN_CANISTER_ID_TEXT,
-        });
-        expect(get(toastsStore)).toMatchObject([
-          {
-            level: "error",
-            text: 'Sorry, the account "invalid-account-identifier" was not found',
-          },
-        ]);
+    it("should navigate to /tokens when account identifier is invalid", async () => {
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Wallet,
+        universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText(),
       });
+      await renderWallet({
+        accountIdentifier: "invalid-account-identifier",
+      });
+      expect(get(pageStore)).toEqual({
+        path: AppPath.Tokens,
+        universe: OWN_CANISTER_ID_TEXT,
+      });
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: 'Sorry, the account "invalid-account-identifier" was not found',
+        },
+      ]);
     });
 
     it("should stay on the wallet page when account identifier is valid", async () => {
