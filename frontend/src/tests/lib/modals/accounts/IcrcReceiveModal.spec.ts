@@ -3,6 +3,8 @@ import type { Account } from "$lib/types/account";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { ReceiveModalPo } from "$tests/page-objects/ReceiveModal.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 
 describe("IcrcReceiveModal", () => {
   const reloadSpy = vi.fn();
@@ -12,14 +14,14 @@ describe("IcrcReceiveModal", () => {
     vi.clearAllMocks();
   });
 
-  const renderReceiveModal = ({
+  const renderComponent = async ({
     account = mockSnsMainAccount,
     tokenSymbol,
   }: {
     account?: Account;
     tokenSymbol: string;
-  }) =>
-    renderModal({
+  }) => {
+    const { container } = await renderModal({
       component: IcrcReceiveModal,
       props: {
         data: {
@@ -32,23 +34,22 @@ describe("IcrcReceiveModal", () => {
         },
       },
     });
+    return ReceiveModalPo.under(new JestPageObjectElement(container));
+  };
 
   it("should render the sns logo", async () => {
-    const { getByTestId } = await renderReceiveModal({
-      tokenSymbol,
-    });
+    const po = await renderComponent({ tokenSymbol });
 
-    expect(getByTestId("logo").getAttribute("alt")).toEqual(tokenSymbol);
+    expect(await po.getLogoAltText()).toBe(tokenSymbol);
   });
 
   it("should render the address label of the sns account", async () => {
-    const { queryByTestId } = await renderReceiveModal({
+    const po = await renderComponent({
       tokenSymbol,
       account: mockSnsMainAccount,
     });
 
-    expect(queryByTestId("qr-address-label").textContent.trim()).toBe(
-      `${tokenSymbol} Address ${mockSnsMainAccount.identifier}`
-    );
+    expect(await po.getTokenAddressLabel()).toBe(`${tokenSymbol} Address`);
+    expect(await po.getAddress()).toBe(mockSnsMainAccount.identifier);
   });
 });

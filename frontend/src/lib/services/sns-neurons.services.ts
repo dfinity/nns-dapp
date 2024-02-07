@@ -33,7 +33,10 @@ import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import { nowInSeconds } from "$lib/utils/date.utils";
-import { notForceCallStrategy } from "$lib/utils/env.utils";
+import {
+  isForceCallStrategy,
+  notForceCallStrategy,
+} from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import {
@@ -108,7 +111,7 @@ export const syncSnsNeurons = async (
         certified,
       });
 
-      if (certified) {
+      if (certified || isForceCallStrategy()) {
         // be sure that the parameters are loaded
         await snsParametersRequest;
         const neuronMinimumStake = fromNullable(
