@@ -109,7 +109,7 @@ impl State {
     pub fn new(schema: SchemaLabel, memory: DefaultMemoryImpl) -> Self {
         use crate::{accounts_store::schema::AccountsDbTrait, state::partitions::PartitionType};
 
-        let state = match schema {
+        match schema {
             SchemaLabel::Map => {
                 println!("New State: Map");
                 State {
@@ -134,18 +134,7 @@ impl State {
                     partitions_maybe: RefCell::new(PartitionsMaybe::Partitions(partitions)),
                 }
             }
-        };
-        assert_eq!(
-            state.accounts_store.borrow().schema_label(),
-            schema,
-            "Accounts store does not have the expected schema"
-        );
-        assert_eq!(
-            state.partitions_maybe.borrow().schema_label(),
-            schema,
-            "Memory is not partitioned as expected"
-        ); // TODO: Better assertion
-        state
+        }
     }
 }
 
