@@ -117,7 +117,6 @@ describe("IcrcWallet", () => {
     overrideFeatureFlagsStore.reset();
     toastsStore.reset();
     resetIdentity();
-    overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
 
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
       transactions: [],
@@ -321,7 +320,7 @@ describe("IcrcWallet", () => {
       );
     });
 
-    it("should navigate to accounts when account identifier is invalid", async () => {
+    it("should navigate to tokens when account identifier is invalid", async () => {
       expect(get(pageStore)).toEqual({
         path: AppPath.Wallet,
         universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText(),
@@ -329,10 +328,7 @@ describe("IcrcWallet", () => {
       await renderWallet({
         accountIdentifier: "invalid-account-identifier",
       });
-      expect(get(pageStore)).toEqual({
-        path: AppPath.Accounts,
-        universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText(),
-      });
+      expect(get(pageStore)?.path).toEqual(AppPath.Tokens);
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
