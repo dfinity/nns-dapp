@@ -23,7 +23,7 @@ proposal is successful, the changes it released will be moved from this file to
 - Add fee as mandatory when making ICP transactions.
 - Add the token symbol in the send modals.
 - Add new boundary node proposals support.
-- Prevent the 1Password extension from appearing in input fields.
+- Prevent the `1Password` extension from appearing in input fields.
 
 #### Changed
 
@@ -47,7 +47,7 @@ proposal is successful, the changes it released will be moved from this file to
 - Fix proposal back navigation during voting.
 - Fix tooltip positioning.
 - Tooltip icon style.
-- QR-code reader incorrectly mirrored on Samsung S23.
+- QR-code reader incorrectly mirrored on `Samsung S23`.
 
 #### Security
 
