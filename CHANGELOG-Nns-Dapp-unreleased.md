@@ -35,6 +35,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * QR-code reader incorrectly mirrored on `Samsung S23`.
+* Check SNS neuron balances to claim pending neurons.
 
 #### Security
 
