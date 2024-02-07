@@ -6,6 +6,7 @@
 //! This code also stores virtual memory IDs and other memory functions.
 use core::borrow::Borrow;
 use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
+#[cfg(test)]
 use ic_cdk::println;
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
@@ -106,6 +107,7 @@ impl PartitionType {
 
 impl Partitions {
     /// Determines whether the given memory is managed by a memory manager.
+    #[cfg(test)]
     fn is_managed(memory: &DefaultMemoryImpl) -> bool {
         let memory_pages = memory.size();
         if memory_pages == 0 {
@@ -155,6 +157,7 @@ impl Partitions {
     }
 
     /// Writes, growing the memory if necessary.
+    #[cfg(test)]
     pub fn growing_write(&self, memory_id: MemoryId, offset: u64, bytes: &[u8]) {
         let memory = self.get(memory_id);
         let min_pages: u64 = u64::try_from(bytes.len())
@@ -212,6 +215,7 @@ impl From<DefaultMemoryImpl> for Partitions {
 ///
 /// Note: Would prefer to use `TryFrom`, but that causes a conflict.  `DefaultMemoryImpl` a type alias which
 /// may refer to a type that has a generic implementation of `TryFrom`.  This is frustrating.
+#[cfg(test)]
 impl Partitions {
     pub fn try_from_memory(memory: DefaultMemoryImpl) -> Result<Self, DefaultMemoryImpl> {
         if Self::is_managed(&memory) {
