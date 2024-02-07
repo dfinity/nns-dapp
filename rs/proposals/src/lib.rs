@@ -127,6 +127,7 @@ fn decode_arg(arg: &[u8], arg_types: IDLTypes) -> String {
 }
 
 // Check if the proposal has a payload, if yes, deserialize it then convert it to JSON.
+#[must_use]
 pub fn process_proposal_payload(proposal_info: ProposalInfo) -> Json {
     if let Some(Action::ExecuteNnsFunction(f)) = proposal_info.proposal.as_ref().and_then(|p| p.action.as_ref()) {
         transform_payload_to_json(f.nns_function, &f.payload)
@@ -711,8 +712,8 @@ mod def {
     impl From<SnsUpgrade> for SnsUpgradeHumanReadable {
         fn from(payload: SnsUpgrade) -> Self {
             SnsUpgradeHumanReadable {
-                current_version: payload.current_version.map(|v| v.into()),
-                next_version: payload.next_version.map(|v| v.into()),
+                current_version: payload.current_version.map(Into::into),
+                next_version: payload.next_version.map(Into::into),
             }
         }
     }
