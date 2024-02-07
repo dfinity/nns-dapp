@@ -36,7 +36,10 @@ import {
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken, mockTokenStore } from "$tests/mocks/sns-projects.mock";
-import { mockedConstants } from "$tests/utils/mockable-constants.test-utils";
+import {
+  mockedConstants,
+  resetMockedConstants,
+} from "$tests/utils/mockable-constants.test-utils";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import {
@@ -81,6 +84,7 @@ describe("sns-neurons-services", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     resetIdentity();
+    resetMockedConstants();
   });
 
   describe("syncSnsNeurons", () => {
