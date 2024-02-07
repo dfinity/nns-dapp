@@ -41,15 +41,13 @@ impl FastScheduler {
         sns_swap_state
             .swap
             .as_ref()
-            .map(|swap_state| match swap_state.lifecycle {
+            .is_some_and(|swap_state| match swap_state.lifecycle {
                 Self::LIFECYCLE_OPEN => true,
                 Self::LIFECYCLE_ADOPTED => swap_state
                     .decentralization_sale_open_timestamp_seconds
-                    .map(|open_time| open_time + Self::FAST_BEFORE_SECONDS >= time_now_seconds)
-                    .unwrap_or(false),
+                    .is_some_and(|open_time| open_time + Self::FAST_BEFORE_SECONDS >= time_now_seconds),
                 _ => false,
             })
-            .unwrap_or(false)
     }
     /// Iterates over SNSs, showing for each whether it needs an update.
     fn needs_update_iter(
@@ -87,6 +85,8 @@ impl FastScheduler {
             let sns_cache = sns_stable.sns_cache.borrow();
             // We will search forwards, starting after the last updated value, looping around at the end if necessary.
             let last_sns_update = state.fast_scheduler.borrow().last_sns_updated.unwrap_or_default();
+            #[allow(clippy::cast_possible_truncation)]
+            // If we have more SNSs than there are memory addresses, every server in the world will be part of the IC.  This might take a while...
             let iter = Self::needs_update_iter(&sns_cache, time_now_seconds)
                 .skip(last_sns_update as usize + 1)
                 .chain(Self::needs_update_iter(&sns_cache, time_now_seconds).take(last_sns_update as usize + 1));
