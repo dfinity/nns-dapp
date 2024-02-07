@@ -2,6 +2,7 @@
 //! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-01-25_14-09+p2p-con/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
+#![allow(clippy::missing_docs_in_private_items)]
 #![allow(non_camel_case_types)]
 #![allow(dead_code, unused_imports)]
 use candid::{self, CandidType, Decode, Deserialize, Encode, Principal};

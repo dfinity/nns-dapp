@@ -1,6 +1,7 @@
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
+#![allow(clippy::missing_docs_in_private_items)]
 #![allow(non_camel_case_types)]
 #![allow(dead_code)]
 
