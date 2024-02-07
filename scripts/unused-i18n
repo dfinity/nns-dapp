@@ -4,13 +4,6 @@ set -euo pipefail
 I18N_FILE="frontend/src/lib/i18n/en.json"
 
 GRANDFATHERED_PATHS=(
-  time.day_plural
-  time.hour
-  time.hour_plural
-  time.minute
-  time.minute_plural
-  time.second
-  time.second_plural
   sns_rewards_status.0
   sns_rewards_status.1
   sns_rewards_status.2

@@ -4,9 +4,10 @@
   import SelectAccountDropdown from "$lib/components/accounts/SelectAccountDropdown.svelte";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { createEventDispatcher } from "svelte";
+  import { nonNullish } from "@dfinity/utils";
 
   export let account: Account | undefined;
-  export let universeId: UniverseCanisterId;
+  export let universeId: UniverseCanisterId | undefined = undefined;
   export let canSelectAccount: boolean;
 
   let selectedAccount = account;
@@ -16,7 +17,7 @@
     (() => dispatcher("nnsSelectedAccount", selectedAccount))();
 </script>
 
-{#if canSelectAccount}
+{#if canSelectAccount && nonNullish(universeId)}
   <div class="source">
     <span class="label">{$i18n.accounts.receive_account}</span>
 

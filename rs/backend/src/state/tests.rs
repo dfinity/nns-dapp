@@ -1,4 +1,4 @@
-use super::{AssetHashes, Assets, Memory, PerformanceCounts, StableState, State};
+use super::{partitions::PartitionsMaybe, AssetHashes, Assets, Memory, PerformanceCounts, StableState, State};
 use crate::accounts_store::schema::{SchemaLabel, SchemaLabelBytes};
 use ic_stable_structures::VectorMemory;
 use std::cell::RefCell;
@@ -11,6 +11,7 @@ pub fn setup_test_state() -> State {
         assets: RefCell::new(Assets::default()),
         asset_hashes: RefCell::new(AssetHashes::default()),
         performance: RefCell::new(PerformanceCounts::test_data()),
+        partitions_maybe: RefCell::new(PartitionsMaybe::None(VectorMemory::default())),
     }
 }
 
