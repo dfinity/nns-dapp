@@ -18,6 +18,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Add fee as mandatory when making ICP transactions.
 * Add the token symbol in the send modals.
 * Add new boundary node proposals support.
+* Prevent the `1Password` extension from appearing in input fields.
 
 #### Changed
 
@@ -32,6 +33,8 @@ proposal is successful, the changes it released will be moved from this file to
 * Unused `i18n` messages.
 
 #### Fixed
+
+* QR-code reader incorrectly mirrored on `Samsung S23`.
 
 #### Security
 
