@@ -24,9 +24,7 @@
   import { toastsError } from "$lib/stores/toasts.store";
 
   onMount(() => {
-    if (!$ENABLE_MY_TOKENS) {
-      pollAccounts();
-    }
+    pollAccounts();
   });
 
   onDestroy(() => {
