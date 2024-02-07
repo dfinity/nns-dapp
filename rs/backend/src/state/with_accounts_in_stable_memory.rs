@@ -1,6 +1,6 @@
 //! State from/to a stable memory partition in the `SchemaLabel::AccountsInStableMemory` format.
 use super::State;
-use crate::state::partitions::PartitionType;
+use crate::state::partitions::{PartitionType, PartitionsMaybe};
 use crate::state::StableState;
 use dfn_core::api::trap_with;
 use ic_cdk::println;
@@ -12,22 +12,25 @@ impl State {
     pub fn save_heap_to_managed_memory(&self) {
         println!("START state::save_heap: ()");
         let bytes = self.encode();
-        if let Ok(partitions) = self.partitions_maybe.borrow().as_ref() {
-            let len = bytes.len();
-            let length_field = u64::try_from(len)
-                .unwrap_or_else(|e| {
-                    trap_with(&format!(
-                        "The serialized memory takes more than 2**64 bytes.  Amazing: {e:?}"
-                    ));
-                    unreachable!();
-                })
-                .to_be_bytes();
-            partitions.growing_write(PartitionType::Heap.memory_id(), 0, &length_field);
-            partitions.growing_write(PartitionType::Heap.memory_id(), 8, &bytes);
-        } else {
-            println!("END state::save_heap: ()");
-            trap_with("No memory manager found.  Cannot save heap.");
-            unreachable!();
+        match &*self.partitions_maybe.borrow() {
+            PartitionsMaybe::Partitions(partitions) => {
+                let len = bytes.len();
+                let length_field = u64::try_from(len)
+                    .unwrap_or_else(|e| {
+                        trap_with(&format!(
+                            "The serialized memory takes more than 2**64 bytes.  Amazing: {e:?}"
+                        ));
+                        unreachable!();
+                    })
+                    .to_be_bytes();
+                partitions.growing_write(PartitionType::Heap.memory_id(), 0, &length_field);
+                partitions.growing_write(PartitionType::Heap.memory_id(), 8, &bytes);
+            }
+            PartitionsMaybe::None(_) => {
+                println!("END state::save_heap: ()");
+                trap_with("No memory manager found.  Cannot save heap.");
+                unreachable!();
+            }
         }
     }
     /// Create the state from stable memory in the `SchemaLabel::Map` format.

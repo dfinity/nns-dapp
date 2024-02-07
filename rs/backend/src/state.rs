@@ -20,6 +20,14 @@
 //! assert_eq!(state, new_state);
 //! ```
 //! state.save();
+
+pub mod partitions;
+#[cfg(test)]
+pub mod tests;
+pub mod with_accounts_in_stable_memory;
+pub mod with_raw_memory;
+
+use self::partitions::{PartitionType, Partitions, PartitionsMaybe};
 use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
 use crate::accounts_store::schema::map::AccountsDbAsMap;
 use crate::accounts_store::schema::proxy::AccountsDb;
@@ -30,25 +38,13 @@ use crate::arguments::CanisterArguments;
 use crate::assets::AssetHashes;
 use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
-use crate::state::partitions::PartitionType;
+
 use core::cell::RefCell;
 use dfn_candid::Candid;
 use dfn_core::api::trap_with;
 use ic_cdk::println;
 use ic_stable_structures::DefaultMemoryImpl;
-use ic_stable_structures::Memory;
 use on_wire::{FromWire, IntoWire};
-use partitions::Partitions;
-use std::cell::RefCell;
-
-pub mod partitions;
-use partitions::PartitionsMaybe;
-
-#[cfg(test)]
-pub mod tests;
-
-pub mod with_accounts_in_stable_memory;
-pub mod with_raw_memory;
 
 pub struct State {
     // NOTE: When adding new persistent fields here, ensure that these fields
@@ -124,15 +120,15 @@ impl State {
     }
     /// Gets the authoritative schema.  This is the schema that is in stable memory.
     pub fn schema_label(&self) -> SchemaLabel {
-        match self.partitions_maybe.borrow().as_ref() {
-            Ok(partitions) => {
+        match &*self.partitions_maybe.borrow() {
+            PartitionsMaybe::Partitions(partitions) => {
                 println!(
                     "State: schema_label for managed memory: {:?}",
                     partitions.schema_label()
                 );
                 partitions.schema_label()
             }
-            Err(_memory) => {
+            PartitionsMaybe::None(_memory) => {
                 println!("State: schema_label for raw memory is: Map");
                 SchemaLabel::Map
             }
@@ -153,7 +149,7 @@ thread_local! {
 impl State {
     /// Creates new state with the specified schema.
     pub fn new(schema: SchemaLabel, memory: DefaultMemoryImpl) -> Self {
-        let state = match schema {
+        match schema {
             SchemaLabel::Map => {
                 println!("New State: Map");
                 State {
@@ -161,7 +157,7 @@ impl State {
                     assets: RefCell::new(Assets::default()),
                     asset_hashes: RefCell::new(AssetHashes::default()),
                     performance: RefCell::new(PerformanceCounts::default()),
-                    partitions_maybe: RefCell::new(Err(memory)),
+                    partitions_maybe: RefCell::new(PartitionsMaybe::None(memory)),
                 }
             }
             SchemaLabel::AccountsInStableMemory => {
@@ -175,26 +171,10 @@ impl State {
                     assets: RefCell::new(Assets::default()),
                     asset_hashes: RefCell::new(AssetHashes::default()),
                     performance: RefCell::new(PerformanceCounts::default()),
-                    partitions_maybe: RefCell::new(Ok(partitions)),
+                    partitions_maybe: RefCell::new(PartitionsMaybe::Partitions(partitions)),
                 }
             }
-        };
-        assert_eq!(
-            state.accounts_store.borrow().schema_label(),
-            schema,
-            "Accounts store does not have the expected schema"
-        );
-        assert_eq!(
-            state
-                .partitions_maybe
-                .borrow()
-                .as_ref()
-                .map(|partitions| partitions.schema_label())
-                .unwrap_or_default(),
-            schema,
-            "Memory is not partitioned as expected"
-        ); // TODO: Better assertion
-        state
+        }
     }
     /// Applies the specified arguments to the state.
     pub fn with_arguments(mut self, arguments: &CanisterArguments) -> Self {
@@ -223,15 +203,18 @@ impl State {
                 SchemaLabel::AccountsInStableMemory => {
                     let mut partitions_maybe = self.partitions_maybe.borrow_mut();
                     // If the memory isn't partitioned, partition it now.
-                    if let Err(memory) = partitions_maybe.as_ref().map_err(Partitions::copy_memory_reference) {
-                        println!("start_migration_to: Creating new partitions for schema {schema:?}.");
-                        *partitions_maybe = Ok(Partitions::new_with_schema(memory, schema));
+                    if let PartitionsMaybe::None(memory) = &*partitions_maybe {
+                        println!("start_migration_to: Partitioning memory for schema {schema:?}.");
+                        let memory = Partitions::copy_memory_reference(memory);
+                        *partitions_maybe = PartitionsMaybe::Partitions(Partitions::new_with_schema(memory, schema));
                     };
-                    let vm = partitions_maybe
-                        .as_ref()
-                        .map(|partitions| partitions.get(PartitionType::Accounts.memory_id()))
-                        .map_err(|_| "Cannot fail as we just created the partitions")
-                        .unwrap();
+                    let vm = match &*partitions_maybe {
+                        PartitionsMaybe::Partitions(partitions) => partitions.get(PartitionType::Accounts.memory_id()),
+                        PartitionsMaybe::None(_) => {
+                            trap_with("Cannot fail as we just created the partitions");
+                            unreachable!()
+                        }
+                    };
                     AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::new(vm))
                 }
             };
@@ -269,11 +252,7 @@ impl From<Partitions> for State {
                     partitions.get(PartitionType::Accounts.memory_id()),
                 ));
                 state.accounts_store.borrow_mut().with_accounts_db(accounts_db);
-                state
-                    .partitions_maybe
-                    .replace(Ok(partitions))
-                    .map(|_| ())
-                    .unwrap_or_default();
+                state.partitions_maybe.replace(PartitionsMaybe::Partitions(partitions));
                 state
             }
         }

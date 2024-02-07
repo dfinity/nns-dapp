@@ -6,7 +6,6 @@
 //! This code also stores virtual memory IDs and other memory functions.
 use core::borrow::Borrow;
 use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
-#[cfg(test)]
 use ic_cdk::println;
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
@@ -14,6 +13,9 @@ use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use std::rc::Rc;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
+
+#[cfg(test)]
+use crate::state::SchemaLabel;
 
 pub mod schemas;
 #[cfg(test)]
@@ -46,12 +48,24 @@ impl core::fmt::Debug for Partitions {
     }
 }
 
+#[derive(strum_macros::Display)]
 pub enum PartitionsMaybe {
     /// Memory that has a memory manager.
-    #[cfg(test)]
     Partitions(Partitions),
     /// Memory that does not have any kind of memory manager.
     None(DefaultMemoryImpl),
+}
+
+#[cfg(test)]
+impl PartitionsMaybe {
+    /// Gets the schema label.
+    pub fn schema_label(&self) -> SchemaLabel {
+        match self {
+            #[cfg(test)]
+            PartitionsMaybe::Partitions(partitions) => partitions.schema_label(),
+            PartitionsMaybe::None(_) => SchemaLabel::Map,
+        }
+    }
 }
 
 impl Default for PartitionsMaybe {
@@ -63,7 +77,6 @@ impl Default for PartitionsMaybe {
 impl core::fmt::Debug for PartitionsMaybe {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            #[cfg(test)]
             PartitionsMaybe::Partitions(partitions) => {
                 write!(f, "MemoryWithPartitionType::MemoryManager({:?})", partitions)
             }
@@ -107,7 +120,6 @@ impl PartitionType {
 
 impl Partitions {
     /// Determines whether the given memory is managed by a memory manager.
-    #[cfg(test)]
     fn is_managed(memory: &DefaultMemoryImpl) -> bool {
         let memory_pages = memory.size();
         if memory_pages == 0 {
@@ -157,7 +169,6 @@ impl Partitions {
     }
 
     /// Writes, growing the memory if necessary.
-    #[cfg(test)]
     pub fn growing_write(&self, memory_id: MemoryId, offset: u64, bytes: &[u8]) {
         let memory = self.get(memory_id);
         let min_pages: u64 = u64::try_from(bytes.len())
@@ -215,7 +226,6 @@ impl From<DefaultMemoryImpl> for Partitions {
 ///
 /// Note: Would prefer to use `TryFrom`, but that causes a conflict.  `DefaultMemoryImpl` a type alias which
 /// may refer to a type that has a generic implementation of `TryFrom`.  This is frustrating.
-#[cfg(test)]
 impl Partitions {
     pub fn try_from_memory(memory: DefaultMemoryImpl) -> Result<Self, DefaultMemoryImpl> {
         if Self::is_managed(&memory) {

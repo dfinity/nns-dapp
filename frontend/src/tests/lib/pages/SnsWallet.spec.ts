@@ -384,10 +384,7 @@ describe("SnsWallet", () => {
       await renderComponent({
         accountIdentifier: "invalid-account-identifier",
       });
-      expect(get(pageStore)).toEqual({
-        path: AppPath.Accounts,
-        universe: rootCanisterIdText,
-      });
+      expect(get(pageStore)?.path).toEqual(AppPath.Tokens);
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",

@@ -37,6 +37,7 @@ import {
   mockAccountDetails,
   mockAccountsStoreData,
   mockHardwareWalletAccount,
+  mockHardwareWalletAccountDetails,
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
@@ -130,14 +131,23 @@ vi.mock("$lib/services/worker-balances.services", () => ({
 
 describe("Accounts", () => {
   const balanceIcrcToken = 314000000n;
-  const newSubaccountName = "test";
+  const subaccountName = "test";
+  const subaccountDetails = {
+    name: subaccountName,
+    sub_account: mockSubAccount.subAccount,
+    account_identifier: mockSubAccount.identifier,
+  };
   const subaccountBalanceDefault = 0n;
   let subaccountBalance = subaccountBalanceDefault;
   const mainAccountBalanceDefault = 314000000n;
   let mainAccountBalance = mainAccountBalanceDefault;
+  const hardwareWalletBalanceDefault = 220000000n;
+  let hardwareWalletBalance = hardwareWalletBalanceDefault;
 
-  const renderComponent = () => {
+  const renderComponent = async () => {
     const { container } = render(Accounts);
+
+    await runResolvedPromises();
 
     return AccountsPo.under(new JestPageObjectElement(container));
   };
@@ -164,6 +174,7 @@ describe("Accounts", () => {
 
     subaccountBalance = subaccountBalanceDefault;
     mainAccountBalance = mainAccountBalanceDefault;
+    hardwareWalletBalance = hardwareWalletBalanceDefault;
 
     vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
@@ -177,21 +188,18 @@ describe("Accounts", () => {
           return mainAccountBalance;
         } else if (icpAccountIdentifier === mockSubAccount.identifier) {
           return subaccountBalance;
+        } else if (
+          icpAccountIdentifier === mockHardwareWalletAccount.identifier
+        ) {
+          return hardwareWalletBalance;
         }
         throw new Error(
           `Unexpected account identifier ${icpAccountIdentifier}`
         );
       }
     );
-    vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue({
-      ...mockAccountDetails,
-      sub_accounts: [
-        {
-          name: newSubaccountName,
-          sub_account: mockSubAccount.subAccount,
-          account_identifier: mockSubAccount.identifier,
-        },
-      ],
+    vi.spyOn(nnsDappApi, "queryAccount").mockImplementation(async () => {
+      return mockAccountDetails;
     });
 
     vi.spyOn(snsSelectedTransactionFeeStore, "subscribe").mockImplementation(
@@ -578,6 +586,7 @@ describe("Accounts", () => {
         data: { universe: OWN_CANISTER_ID_TEXT },
         routeId: AppPath.Accounts,
       });
+      icpAccountsStore.resetForTesting();
     });
 
     describe("when tokens page is enabled", () => {
@@ -586,25 +595,16 @@ describe("Accounts", () => {
       });
 
       it("renders tokens table with NNS accounts", async () => {
-        icpAccountsStore.setForTesting({
-          main: {
-            ...mockMainAccount,
-            balanceUlps: mainAccountBalance,
-          },
-          subAccounts: [
-            {
-              ...mockSubAccount,
-              balanceUlps: 123456789000000n,
-            },
-          ],
-          hardwareWallets: [
-            {
-              ...mockHardwareWalletAccount,
-              balanceUlps: 222000000n,
-            },
-          ],
+        hardwareWalletBalance = 222000000n;
+        subaccountBalance = 123456789000000n;
+        vi.spyOn(nnsDappApi, "queryAccount").mockImplementation(async () => {
+          return {
+            ...mockAccountDetails,
+            sub_accounts: [subaccountDetails],
+            hardware_wallet_accounts: [mockHardwareWalletAccountDetails],
+          };
         });
-        const po = renderComponent();
+        const po = await renderComponent();
 
         const tablePo = po.getNnsAccountsPo().getTokensTablePo();
         expect(await tablePo.getRowsData()).toEqual([
@@ -614,32 +614,37 @@ describe("Accounts", () => {
           },
           {
             balance: "1'234'567.89 ICP",
-            projectName: "test subaccount",
+            projectName: subaccountName,
           },
           {
             balance: "2.22 ICP",
-            projectName: "hardware wallet account test",
+            projectName: mockHardwareWalletAccountDetails.name,
           },
         ]);
       });
 
       it("renders 'Accounts' as tokens table first column", async () => {
-        const po = renderComponent();
+        const po = await renderComponent();
 
         const tablePo = po.getNnsAccountsPo().getTokensTablePo();
         expect(await tablePo.getFirstColumnHeader()).toEqual("Accounts");
       });
 
       it("user can add a new account", async () => {
-        icpAccountsStore.setForTesting({
-          main: {
-            ...mockMainAccount,
-            balanceUlps: mainAccountBalance,
-          },
-          subAccounts: [],
-          hardwareWallets: [],
+        let hasSubaccount = false;
+        vi.spyOn(nnsDappApi, "queryAccount").mockImplementation(async () => {
+          if (hasSubaccount) {
+            return {
+              ...mockAccountDetails,
+              sub_accounts: [subaccountDetails],
+            };
+          }
+          return {
+            ...mockAccountDetails,
+          };
         });
-        const po = renderComponent();
+
+        const po = await renderComponent();
 
         const tablePo = po.getNnsAccountsPo().getTokensTablePo();
         expect(await tablePo.getRowsData()).toEqual([
@@ -656,7 +661,9 @@ describe("Accounts", () => {
         const modalPo = po.getAddAccountModalPo();
         expect(await modalPo.isPresent()).toBe(true);
 
-        await modalPo.addAccount(newSubaccountName);
+        hasSubaccount = true;
+
+        await modalPo.addAccount(subaccountName);
 
         await runResolvedPromises();
 
@@ -667,34 +674,27 @@ describe("Accounts", () => {
           },
           {
             balance: "0 ICP",
-            projectName: newSubaccountName,
+            projectName: subaccountName,
           },
         ]);
       });
 
       it("user can open receive modal and refresh balance", async () => {
-        icpAccountsStore.setForTesting({
-          main: {
-            ...mockMainAccount,
-            balanceUlps: mainAccountBalance,
-          },
-          subAccounts: [
-            {
-              ...mockSubAccount,
-              balanceUlps: subaccountBalance,
-            },
-          ],
-          hardwareWallets: [],
+        vi.spyOn(nnsDappApi, "queryAccount").mockImplementation(async () => {
+          return {
+            ...mockAccountDetails,
+            sub_accounts: [subaccountDetails],
+          };
         });
-        const po = renderComponent();
+        const po = await renderComponent();
 
         const tablePo = po.getNnsAccountsPo().getTokensTablePo();
-        expect(await tablePo.getRowData(mockSubAccount.name)).toEqual({
+        expect(await tablePo.getRowData(subaccountName)).toEqual({
           balance: "0 ICP",
-          projectName: "test subaccount",
+          projectName: subaccountName,
         });
 
-        await tablePo.clickReceiveOnRow(mockSubAccount.name);
+        await tablePo.clickReceiveOnRow(subaccountName);
 
         const modalPo = po.getReceiveModalPo();
         expect(await modalPo.isPresent()).toBe(true);
@@ -707,22 +707,14 @@ describe("Accounts", () => {
         await runResolvedPromises();
 
         expect(await modalPo.isPresent()).toBe(false);
-        expect(await tablePo.getRowData(mockSubAccount.name)).toEqual({
+        expect(await tablePo.getRowData(subaccountName)).toEqual({
           balance: "2.20 ICP",
-          projectName: "test subaccount",
+          projectName: subaccountName,
         });
       });
 
       it("user can open the send modal from footer and make a transaction", async () => {
-        icpAccountsStore.setForTesting({
-          main: {
-            ...mockMainAccount,
-            balanceUlps: mainAccountBalance,
-          },
-          subAccounts: [],
-          hardwareWallets: [],
-        });
-        const po = renderComponent();
+        const po = await renderComponent();
 
         const tablePo = po.getNnsAccountsPo().getTokensTablePo();
         expect(await tablePo.getRowData("Main")).toEqual({
@@ -765,28 +757,21 @@ describe("Accounts", () => {
 
       it("user can open the send modal from tokens table and make a transaction", async () => {
         subaccountBalance = 220000000n;
-        icpAccountsStore.setForTesting({
-          main: {
-            ...mockMainAccount,
-            balanceUlps: mainAccountBalance,
-          },
-          subAccounts: [
-            {
-              ...mockSubAccount,
-              balanceUlps: subaccountBalance,
-            },
-          ],
-          hardwareWallets: [],
+        vi.spyOn(nnsDappApi, "queryAccount").mockImplementation(async () => {
+          return {
+            ...mockAccountDetails,
+            sub_accounts: [subaccountDetails],
+          };
         });
-        const po = renderComponent();
+        const po = await renderComponent();
 
         const tablePo = po.getNnsAccountsPo().getTokensTablePo();
-        expect(await tablePo.getRowData(mockSubAccount.name)).toEqual({
+        expect(await tablePo.getRowData(subaccountName)).toEqual({
           balance: "2.20 ICP",
-          projectName: "test subaccount",
+          projectName: subaccountName,
         });
 
-        await tablePo.clickSendOnRow(mockSubAccount.name);
+        await tablePo.clickSendOnRow(subaccountName);
 
         const modalPo = po.getIcpTransactionModalPo();
         expect(await modalPo.isPresent()).toBe(true);
@@ -801,9 +786,9 @@ describe("Accounts", () => {
 
         await runResolvedPromises();
 
-        expect(await tablePo.getRowData(mockSubAccount.name)).toEqual({
+        expect(await tablePo.getRowData(subaccountName)).toEqual({
           balance: "1.20 ICP",
-          projectName: "test subaccount",
+          projectName: subaccountName,
         });
         expect(await modalPo.isPresent()).toBe(false);
         expect(icpLedgerApi.sendICP).toHaveBeenCalledTimes(1);
