@@ -108,7 +108,7 @@ export const syncSnsNeurons = async (
         certified,
       });
 
-      if (certified) {
+      if (certified || FORCE_CALL_STRATEGY === "query") {
         // be sure that the parameters are loaded
         await snsParametersRequest;
         const neuronMinimumStake = fromNullable(
