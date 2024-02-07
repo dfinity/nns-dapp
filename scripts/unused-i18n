@@ -7,13 +7,6 @@ GRANDFATHERED_PATHS=(
   neuron_detail.remove_hotkey_success
   sns_project_detail.enter_amount
   sns_neuron_detail.header
-  time.day_plural
-  time.hour
-  time.hour_plural
-  time.minute
-  time.minute_plural
-  time.second
-  time.second_plural
   error__sns.init
   universe.select
   sns_rewards_status.0
