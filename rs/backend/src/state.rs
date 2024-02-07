@@ -1,10 +1,14 @@
 pub mod partitions;
 #[cfg(test)]
 pub mod tests;
-
 #[cfg(test)]
-use self::partitions::Partitions;
+mod with_accounts_in_stable_memory;
+#[cfg(test)]
+mod with_raw_memory;
+
 use self::partitions::PartitionsMaybe;
+#[cfg(test)]
+use self::partitions::{PartitionType, Partitions};
 #[cfg(test)]
 use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
 #[cfg(test)]
@@ -134,6 +138,47 @@ impl State {
                     partitions_maybe: RefCell::new(PartitionsMaybe::Partitions(partitions)),
                 }
             }
+        }
+    }
+}
+
+/// Restores state from managed memory.
+#[cfg(test)]
+impl From<Partitions> for State {
+    fn from(partitions: Partitions) -> Self {
+        println!("state::from<Partitions>: ()");
+        let schema = partitions.schema_label();
+        println!("state::from<Partitions>: from_schema: {schema:#?}");
+        match schema {
+            // The schema claims to read from raw memory, but we got the label from amnaged memory.  This is a bug.
+            SchemaLabel::Map => {
+                trap_with(
+                    "Decoding stable memory failed: Found label 'Map' in managed memory, but these are incompatible.",
+                );
+                unreachable!()
+            }
+            // Accounts are in stable structures in one partition, the rest of the heap is serialized as candid in another partition.
+            SchemaLabel::AccountsInStableMemory => {
+                let state = Self::recover_heap_from_managed_memory(partitions.get(PartitionType::Heap.memory_id()));
+                let accounts_db = AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::load(
+                    partitions.get(PartitionType::Accounts.memory_id()),
+                ));
+                state.accounts_store.borrow_mut().with_accounts_db(accounts_db);
+                state.partitions_maybe.replace(PartitionsMaybe::Partitions(partitions));
+                state
+            }
+        }
+    }
+}
+
+/// Restores state from stable memory.
+#[cfg(test)]
+impl From<DefaultMemoryImpl> for State {
+    fn from(memory: DefaultMemoryImpl) -> Self {
+        println!("START state::from<DefaultMemoryImpl>: ())");
+        match Partitions::try_from_memory(memory) {
+            Ok(partitions) => Self::from(partitions),
+            Err(_memory) => Self::recover_from_raw_memory(),
         }
     }
 }
