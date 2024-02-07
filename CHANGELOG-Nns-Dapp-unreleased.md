@@ -36,6 +36,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * QR-code reader incorrectly mirrored on `Samsung S23`.
 * Check SNS neuron balances to claim pending neurons.
+* Neurons that can vote being displayed as ineligible on the SNS proposal detail page.
 
 #### Security
 

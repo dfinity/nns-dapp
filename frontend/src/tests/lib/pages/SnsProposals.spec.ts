@@ -70,6 +70,8 @@ describe("SnsProposals", () => {
       );
     });
 
+    // TODO(max): add tests that the neurons are being fetched before the proposals (pr: https://github.com/dfinity/nns-dapp/pull/4420/)
+
     describe("Matching results", () => {
       beforeEach(() => {
         fakeSnsGovernanceApi.addProposalWith({
