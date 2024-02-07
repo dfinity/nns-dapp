@@ -65,8 +65,7 @@ export const mockSubAccountDetails: SubAccountDetails = {
 export const mockHardwareWalletAccountDetails: HardwareWalletAccountDetails = {
   name: "ledger test",
   principal: hardwareWalletPrincipal,
-  account_identifier:
-    "646f4d2d6fcb6fab5ba1547647526b666553467ecb5cb28c8d9ddf451c8f4c21",
+  account_identifier: mockHardwareWalletAccount.identifier,
 };
 
 export const mockAccountsStoreData = {
