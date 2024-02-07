@@ -49,6 +49,7 @@ impl core::fmt::Debug for Partitions {
     }
 }
 
+#[derive(strum_macros::Display)]
 pub enum PartitionsMaybe {
     /// Memory that has a memory manager.
     #[cfg(test)]

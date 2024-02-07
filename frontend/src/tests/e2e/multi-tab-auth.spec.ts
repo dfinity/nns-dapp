@@ -1,10 +1,6 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import {
-  setFeatureFlag,
-  signInWithNewUser,
-  step,
-} from "$tests/utils/e2e.test-utils";
+import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 const expectSignedOut = async (appPo: AppPo) => {
@@ -29,12 +25,6 @@ const expectSignedInTokensPage = async (appPo: AppPo) => {
 test("Test multi-tab auth", async ({ page: page1, context }) => {
   await page1.goto("/accounts");
   await expect(page1).toHaveTitle("My ICP Tokens / NNS Dapp");
-  // TODO: GIX-1985 Remove this once the feature flag is enabled by default
-  await setFeatureFlag({
-    page: page1,
-    featureFlag: "ENABLE_MY_TOKENS",
-    value: true,
-  });
   const appPo1 = new AppPo(PlaywrightPageObjectElement.fromPage(page1));
 
   const page2 = await context.newPage();
