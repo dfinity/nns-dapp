@@ -720,7 +720,7 @@ mod def {
     impl From<InsertUpgradePathEntriesRequest> for InsertUpgradePathEntriesRequestHumanReadable {
         fn from(payload: InsertUpgradePathEntriesRequest) -> Self {
             InsertUpgradePathEntriesRequestHumanReadable {
-                upgrade_path: payload.upgrade_path.into_iter().map(|u| u.into()).collect(),
+                upgrade_path: payload.upgrade_path.into_iter().map(Into::into).collect(),
                 sns_governance_canister_id: payload.sns_governance_canister_id,
             }
         }
