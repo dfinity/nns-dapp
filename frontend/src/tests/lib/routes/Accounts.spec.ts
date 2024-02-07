@@ -132,8 +132,11 @@ vi.mock("$lib/services/worker-balances.services", () => ({
 describe("Accounts", () => {
   const balanceIcrcToken = 314000000n;
   const subaccountName = "test";
-  let subaccountDetails = undefined;
-  let hardwareWalletDetails = undefined;
+  const subaccountDetails = {
+    name: subaccountName,
+    sub_account: mockSubAccount.subAccount,
+    account_identifier: mockSubAccount.identifier,
+  };
   const subaccountBalanceDefault = 0n;
   let subaccountBalance = subaccountBalanceDefault;
   const mainAccountBalanceDefault = 314000000n;
@@ -172,8 +175,6 @@ describe("Accounts", () => {
     subaccountBalance = subaccountBalanceDefault;
     mainAccountBalance = mainAccountBalanceDefault;
     hardwareWalletBalance = hardwareWalletBalanceDefault;
-    subaccountDetails = undefined;
-    hardwareWalletDetails = undefined;
 
     vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
@@ -198,19 +199,7 @@ describe("Accounts", () => {
       }
     );
     vi.spyOn(nnsDappApi, "queryAccount").mockImplementation(async () => {
-      return {
-        ...mockAccountDetails,
-        ...(subaccountDetails
-          ? {
-              sub_accounts: [subaccountDetails],
-            }
-          : {}),
-        ...(hardwareWalletDetails
-          ? {
-              hardware_wallet_accounts: [hardwareWalletDetails],
-            }
-          : {}),
-      };
+      return mockAccountDetails;
     });
 
     vi.spyOn(snsSelectedTransactionFeeStore, "subscribe").mockImplementation(
@@ -608,14 +597,13 @@ describe("Accounts", () => {
       it("renders tokens table with NNS accounts", async () => {
         hardwareWalletBalance = 222000000n;
         subaccountBalance = 123456789000000n;
-        subaccountDetails = {
-          name: subaccountName,
-          sub_account: mockSubAccount.subAccount,
-          account_identifier: mockSubAccount.identifier,
-        };
-        hardwareWalletDetails = {
-          ...mockHardwareWalletAccountDetails,
-        };
+        vi.spyOn(nnsDappApi, "queryAccount").mockImplementation(async () => {
+          return {
+            ...mockAccountDetails,
+            sub_accounts: [subaccountDetails],
+            hardware_wallet_accounts: [mockHardwareWalletAccountDetails],
+          };
+        });
         const po = await renderComponent();
 
         const tablePo = po.getNnsAccountsPo().getTokensTablePo();
@@ -643,6 +631,19 @@ describe("Accounts", () => {
       });
 
       it("user can add a new account", async () => {
+        let hasSubaccount = false;
+        vi.spyOn(nnsDappApi, "queryAccount").mockImplementation(async () => {
+          if (hasSubaccount) {
+            return {
+              ...mockAccountDetails,
+              sub_accounts: [subaccountDetails],
+            };
+          }
+          return {
+            ...mockAccountDetails,
+          };
+        });
+
         const po = await renderComponent();
 
         const tablePo = po.getNnsAccountsPo().getTokensTablePo();
@@ -660,11 +661,7 @@ describe("Accounts", () => {
         const modalPo = po.getAddAccountModalPo();
         expect(await modalPo.isPresent()).toBe(true);
 
-        subaccountDetails = {
-          name: subaccountName,
-          sub_account: mockSubAccount.subAccount,
-          account_identifier: mockSubAccount.identifier,
-        };
+        hasSubaccount = true;
 
         await modalPo.addAccount(subaccountName);
 
@@ -683,11 +680,12 @@ describe("Accounts", () => {
       });
 
       it("user can open receive modal and refresh balance", async () => {
-        subaccountDetails = {
-          name: subaccountName,
-          sub_account: mockSubAccount.subAccount,
-          account_identifier: mockSubAccount.identifier,
-        };
+        vi.spyOn(nnsDappApi, "queryAccount").mockImplementation(async () => {
+          return {
+            ...mockAccountDetails,
+            sub_accounts: [subaccountDetails],
+          };
+        });
         const po = await renderComponent();
 
         const tablePo = po.getNnsAccountsPo().getTokensTablePo();
@@ -759,11 +757,12 @@ describe("Accounts", () => {
 
       it("user can open the send modal from tokens table and make a transaction", async () => {
         subaccountBalance = 220000000n;
-        subaccountDetails = {
-          name: subaccountName,
-          sub_account: mockSubAccount.subAccount,
-          account_identifier: mockSubAccount.identifier,
-        };
+        vi.spyOn(nnsDappApi, "queryAccount").mockImplementation(async () => {
+          return {
+            ...mockAccountDetails,
+            sub_accounts: [subaccountDetails],
+          };
+        });
         const po = await renderComponent();
 
         const tablePo = po.getNnsAccountsPo().getTokensTablePo();
