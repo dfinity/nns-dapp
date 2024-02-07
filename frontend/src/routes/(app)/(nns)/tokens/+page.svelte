@@ -1,11 +1,8 @@
 <script lang="ts">
-  import { goto } from "$app/navigation";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import Tokens from "$lib/pages/Tokens.svelte";
   import SignInTokens from "$lib/pages/SignInTokens.svelte";
-  import { ENABLE_MY_TOKENS } from "$lib/stores/feature-flags.store";
   import { onMount } from "svelte";
   import { ActionType, type Action } from "$lib/types/actions";
   import { tokensListVisitorsStore } from "$lib/derived/tokens-list-visitors.derived";
@@ -45,9 +42,6 @@
   import IcrcReceiveModal from "$lib/modals/accounts/IcrcReceiveModal.svelte";
 
   onMount(() => {
-    if (!$ENABLE_MY_TOKENS) {
-      goto(AppPath.Accounts);
-    }
     loadCkBTCTokens();
   });
 

@@ -26,6 +26,7 @@ use std::fmt;
 use std::ops::{RangeBounds, RangeTo};
 use std::time::{Duration, SystemTime};
 
+pub mod constructors;
 pub mod histogram;
 pub mod schema;
 use schema::{

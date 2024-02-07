@@ -1,18 +1,25 @@
+pub mod partitions;
+#[cfg(test)]
+pub mod tests;
+
+#[cfg(test)]
+use self::partitions::Partitions;
+use self::partitions::PartitionsMaybe;
+#[cfg(test)]
+use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
+#[cfg(test)]
+use crate::accounts_store::schema::proxy::AccountsDb;
 use crate::accounts_store::schema::SchemaLabel;
 use crate::accounts_store::AccountsStore;
 use crate::assets::AssetHashes;
 use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
+
 use dfn_candid::Candid;
 use dfn_core::{api::trap_with, stable};
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use on_wire::{FromWire, IntoWire};
 use std::cell::RefCell;
-pub mod partitions;
-use partitions::PartitionsMaybe;
-
-#[cfg(test)]
-pub mod tests;
 
 pub struct State {
     // NOTE: When adding new persistent fields here, ensure that these fields
@@ -94,6 +101,41 @@ pub trait StableState: Sized {
 
 thread_local! {
     pub static STATE: State = State::default();
+}
+
+impl State {
+    /// Creates new state with the specified schema.
+    #[cfg(test)]
+    pub fn new(schema: SchemaLabel, memory: DefaultMemoryImpl) -> Self {
+        use crate::{accounts_store::schema::AccountsDbTrait, state::partitions::PartitionType};
+
+        match schema {
+            SchemaLabel::Map => {
+                println!("New State: Map");
+                State {
+                    accounts_store: RefCell::new(AccountsStore::default()),
+                    assets: RefCell::new(Assets::default()),
+                    asset_hashes: RefCell::new(AssetHashes::default()),
+                    performance: RefCell::new(PerformanceCounts::default()),
+                    partitions_maybe: RefCell::new(PartitionsMaybe::None(memory)),
+                }
+            }
+            SchemaLabel::AccountsInStableMemory => {
+                println!("New State: AccountsInStableMemory");
+                let partitions = Partitions::new_with_schema(memory, schema);
+                let accounts_store = AccountsStore::from(AccountsDb::UnboundedStableBTreeMap(
+                    AccountsDbAsUnboundedStableBTreeMap::new(partitions.get(PartitionType::Accounts.memory_id())),
+                ));
+                State {
+                    accounts_store: RefCell::new(accounts_store),
+                    assets: RefCell::new(Assets::default()),
+                    asset_hashes: RefCell::new(AssetHashes::default()),
+                    performance: RefCell::new(PerformanceCounts::default()),
+                    partitions_maybe: RefCell::new(PartitionsMaybe::Partitions(partitions)),
+                }
+            }
+        }
+    }
 }
 
 impl StableState for State {
