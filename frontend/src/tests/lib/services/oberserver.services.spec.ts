@@ -36,7 +36,7 @@ describe("observer.services", () => {
     const oldestTxId = transaction.oldestTxId - 1n;
 
     addObservedIcrcTransactionsToStore({
-      universeId: rootCanisterIdMock,
+      ledgerCanisterId: rootCanisterIdMock,
       completed: true,
       transactions: [
         {

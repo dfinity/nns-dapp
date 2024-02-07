@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { CanisterId } from "$lib/types/canister";
-  import type { UniverseCanisterId } from "$lib/types/universe";
   import type { Account } from "$lib/types/account";
   import type { TransactionsObserverData } from "$lib/types/icrc.observer";
   import TransactionsObserver from "$lib/components/accounts/TransactionsObserver.svelte";
@@ -9,7 +8,7 @@
   import { addObservedIcrcTransactionsToStore } from "$lib/services/observer.services";
 
   export let indexCanisterId: CanisterId;
-  export let universeId: UniverseCanisterId;
+  export let ledgerCanisterId: CanisterId;
   export let account: Account;
   export let completed: boolean;
 
@@ -20,13 +19,13 @@
   };
 
   const callback: TransactionsCallback = ({ transactions }) => {
-    if (isNullish(universeId)) {
+    if (isNullish(ledgerCanisterId)) {
       // With current usage, can unlikely be undefined here
       return;
     }
 
     addObservedIcrcTransactionsToStore({
-      universeId,
+      ledgerCanisterId,
       completed,
       transactions,
     });

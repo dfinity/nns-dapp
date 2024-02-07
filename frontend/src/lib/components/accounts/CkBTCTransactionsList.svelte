@@ -92,7 +92,7 @@
   bind:this={transactions}
   {indexCanisterId}
   {account}
-  {universeId}
+  ledgerCanisterId={universeId}
   {token}
   {mapTransactions}
 />

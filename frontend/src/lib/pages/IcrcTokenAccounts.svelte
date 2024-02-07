@@ -13,6 +13,6 @@
 
 <IcrcAccountsPage
   testId="icrc-accounts-body"
-  selectedUniverseId={$selectedIcrcTokenUniverseIdStore}
+  ledgerCanisterId={$selectedIcrcTokenUniverseIdStore}
   {token}
 />

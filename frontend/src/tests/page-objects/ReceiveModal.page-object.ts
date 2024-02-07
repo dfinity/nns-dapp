@@ -33,11 +33,11 @@ export class ReceiveModalPo extends ModalPo {
     return this.getText("qrcode-display-address");
   }
 
-  getDropdownAccounts() {
+  getSelectAccountDropdownPo() {
     return SelectAccountDropdownPo.under(this.root);
   }
 
   select(accountIdentifier: string) {
-    return this.getDropdownAccounts().select(accountIdentifier);
+    return this.getSelectAccountDropdownPo().select(accountIdentifier);
   }
 }

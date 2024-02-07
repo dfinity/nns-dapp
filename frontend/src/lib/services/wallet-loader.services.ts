@@ -9,11 +9,11 @@ import type { Principal } from "@dfinity/principal";
 export const getAccounts = async ({
   identity,
   certified,
-  universeId,
+  ledgerCanisterId,
 }: {
   identity: Identity;
   certified: boolean;
-  universeId: Principal;
+  ledgerCanisterId: Principal;
 }): Promise<Account[]> => {
   // TODO: Support subaccounts
   const mainAccount: { owner: Principal; type: AccountType } = {
@@ -24,7 +24,7 @@ export const getAccounts = async ({
   const account = await getAccount({
     identity,
     certified,
-    canisterId: universeId,
+    canisterId: ledgerCanisterId,
     ...mainAccount,
   });
 

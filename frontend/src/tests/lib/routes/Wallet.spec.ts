@@ -185,7 +185,7 @@ describe("Wallet", () => {
     });
 
     icrcAccountsStore.set({
-      universeId: CKETH_UNIVERSE_CANISTER_ID,
+      ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
       accounts: {
         accounts: [
           {

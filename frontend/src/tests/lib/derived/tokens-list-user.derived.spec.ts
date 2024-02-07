@@ -1,9 +1,10 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
+  CKBTC_LEDGER_CANISTER_ID,
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
-import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
+import { CKETH_LEDGER_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
 import { authStore } from "$lib/stores/auth.store";
@@ -255,7 +256,7 @@ describe("tokens-list-user.derived", () => {
           accounts: [mockCkBTCMainAccount],
           certified: true,
         },
-        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID,
       });
       expect(get(tokensListUserStore)).toEqual([
         icpUserTokenLoading,
@@ -273,7 +274,7 @@ describe("tokens-list-user.derived", () => {
           accounts: [mockCkETHMainAccount],
           certified: true,
         },
-        universeId: CKETH_UNIVERSE_CANISTER_ID,
+        ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
       });
       expect(get(tokensListUserStore)).toEqual([
         icpUserTokenLoading,
@@ -310,14 +311,14 @@ describe("tokens-list-user.derived", () => {
           accounts: [mockCkBTCMainAccount],
           certified: true,
         },
-        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID,
       });
       icrcAccountsStore.set({
         accounts: {
           accounts: [mockCkETHMainAccount],
           certified: true,
         },
-        universeId: CKETH_UNIVERSE_CANISTER_ID,
+        ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
       });
       snsAccountsStore.setAccounts({
         accounts: [mockSnsMainAccount],
