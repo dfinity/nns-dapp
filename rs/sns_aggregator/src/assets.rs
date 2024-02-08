@@ -253,7 +253,7 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
             None => HttpResponse {
                 status_code: 404,
                 headers,
-                body: ByteBuf::from(format!("Asset {} not found.", request_path)),
+                body: ByteBuf::from(format!("Asset {request_path} not found.")),
             },
         }
     })
