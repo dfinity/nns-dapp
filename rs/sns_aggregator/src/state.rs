@@ -231,7 +231,9 @@ impl State {
                     .upstream_data
                     .values()
                     .skip((pagenum * State::PAGE_SIZE) as usize)
-                    .take(State::PAGE_SIZE as usize)
+                    .take(usize::try_from(State::PAGE_SIZE).unwrap_or_else(|_| {
+                        unreachable!("Incredible: The number of SNSs returned is larger than the number of addressable bytes in memory.")
+                    }))
                     .map(SlowSnsData::from)
                     .collect();
                 Self::slow_data_asset_v1(&slow_data)
