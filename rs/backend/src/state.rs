@@ -96,17 +96,8 @@ impl State {
     #[cfg(test)]
     pub fn schema_label(&self) -> SchemaLabel {
         match &*self.partitions_maybe.borrow() {
-            PartitionsMaybe::Partitions(partitions) => {
-                println!(
-                    "State: schema_label for managed memory: {:?}",
-                    partitions.schema_label()
-                );
-                partitions.schema_label()
-            }
-            PartitionsMaybe::None(_memory) => {
-                println!("State: schema_label for raw memory is: Map");
-                SchemaLabel::Map
-            }
+            PartitionsMaybe::Partitions(partitions) => partitions.schema_label(),
+            PartitionsMaybe::None(_memory) => SchemaLabel::Map,
         }
     }
 }
