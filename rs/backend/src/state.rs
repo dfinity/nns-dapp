@@ -92,6 +92,23 @@ impl State {
         self.performance.replace(performance.into_inner());
         self.partitions_maybe.replace(partitions_maybe);
     }
+    /// Gets the authoritative schema.  This is the schema that is in stable memory.
+    #[cfg(test)]
+    pub fn schema_label(&self) -> SchemaLabel {
+        match &*self.partitions_maybe.borrow() {
+            PartitionsMaybe::Partitions(partitions) => {
+                println!(
+                    "State: schema_label for managed memory: {:?}",
+                    partitions.schema_label()
+                );
+                partitions.schema_label()
+            }
+            PartitionsMaybe::None(_memory) => {
+                println!("State: schema_label for raw memory is: Map");
+                SchemaLabel::Map
+            }
+        }
+    }
 }
 
 pub trait StableState: Sized {
