@@ -5,11 +5,8 @@ mod with_accounts_in_stable_memory;
 mod with_raw_memory;
 
 use self::partitions::PartitionsMaybe;
-#[cfg(test)]
 use self::partitions::{PartitionType, Partitions};
-#[cfg(test)]
 use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
-#[cfg(test)]
 use crate::accounts_store::schema::proxy::AccountsDb;
 use crate::accounts_store::schema::AccountsDbTrait;
 use crate::accounts_store::schema::SchemaLabel;
@@ -157,7 +154,6 @@ impl State {
 }
 
 /// Restores state from managed memory.
-#[cfg(test)]
 impl From<Partitions> for State {
     fn from(partitions: Partitions) -> Self {
         println!("state::from<Partitions>: ()");
@@ -186,7 +182,6 @@ impl From<Partitions> for State {
 }
 
 /// Restores state from stable memory.
-#[cfg(test)]
 impl From<DefaultMemoryImpl> for State {
     fn from(memory: DefaultMemoryImpl) -> Self {
         println!("START state::from<DefaultMemoryImpl>: ())");

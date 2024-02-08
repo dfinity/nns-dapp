@@ -10,7 +10,6 @@ impl From<AccountsDb> for AccountsStore {
     }
 }
 
-#[cfg(test)]
 impl AccountsStore {
     /// Adds an `accounts_db` to the store.
     ///
