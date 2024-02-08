@@ -25,6 +25,10 @@ thread_local! {
     static CACHED_PROPOSAL_PAYLOADS: RefCell<BTreeMap<u64, Json>> = RefCell::default();
 }
 
+/// Gets a proposal payload from cache, if available, else from the governance canister (and populates the cache).
+///
+/// # Errors
+/// - If the requested `proposal_id` does not exist in, or could not be retrieved from, the governance canister.
 pub async fn get_proposal_payload(proposal_id: u64) -> Result<Json, String> {
     if let Some(result) = CACHED_PROPOSAL_PAYLOADS.with(|c| c.borrow().get(&proposal_id).cloned()) {
         Ok(result)
@@ -53,8 +57,8 @@ fn insert_into_cache(cache: &mut BTreeMap<u64, Json>, proposal_id: u64, payload_
     cache.insert(proposal_id, payload_json);
 }
 
-// Source: https://github.com/dfinity/internet-identity/blob/main/src/internet_identity_interface/src/lib.rs#L174
-// Types used to decode arg's payload of nns_function type 4 for II upgrades
+/// Types used to decode argument payload of NNS function type 4 for II upgrades
+/// Source: https://github.com/dfinity/internet-identity/blob/main/src/internet_identity_interface/src/lib.rs#L174
 pub type AnchorNumber = u64;
 #[derive(CandidType, Serialize, Deserialize)]
 pub struct InternetIdentityInit {
@@ -67,26 +71,26 @@ pub struct InternetIdentityInit {
 }
 #[derive(CandidType, Serialize, Deserialize)]
 pub struct RateLimitConfig {
-    // time it takes for a rate limiting token to be replenished.
+    /// Time it takes for a rate limiting token to be replenished.
     pub time_per_token_ns: u64,
-    // How many tokens are at most generated (to accommodate peaks).
+    /// How many tokens are at most generated (to accommodate peaks).
     pub max_tokens: u64,
 }
 /// Configuration parameters of the archive to be used on the next deployment.
 #[derive(CandidType, Serialize, Deserialize)]
 pub struct ArchiveConfig {
-    // Wasm module hash that is allowed to be deployed to the archive canister.
+    /// Wasm module hash that is allowed to be deployed to the archive canister.
     pub module_hash: [u8; 32],
-    // Buffered archive entries limit. If reached, II will stop accepting new anchor operations
-    // until the buffered operations are acknowledged by the archive.
+    /// Buffered archive entries limit. If reached, II will stop accepting new anchor operations
+    /// until the buffered operations are acknowledged by the archive.
     pub entries_buffer_limit: u64,
-    // Polling interval at which the archive should fetch buffered archive entries from II (in nanoseconds).
+    /// Polling interval at which the archive should fetch buffered archive entries from II (in nanoseconds).
     pub polling_interval_ns: u64,
-    // Max number of archive entries to be fetched in a single call.
+    /// Max number of archive entries to be fetched in a single call.
     pub entries_fetch_limit: u16,
-    // How the entries get transferred to the archive.
-    // This is opt, so that the config parameter can be removed after switching from push to pull.
-    // Defaults to Push (legacy mode).
+    /// How the entries get transferred to the archive.
+    /// This is opt, so that the configuration parameter can be removed after switching from push to pull.
+    /// Defaults to Push (legacy mode).
     pub archive_integration: Option<ArchiveIntegration>,
 }
 
@@ -111,6 +115,7 @@ fn canister_arg_types(canister_id: Option<CanisterId>) -> IDLTypes {
     IDLTypes { args }
 }
 
+/// Converts the argument to JSON.
 fn decode_arg(arg: &[u8], arg_types: &IDLTypes) -> String {
     // TODO: Test empty payload
     // TODO: Test existing payloads
@@ -144,7 +149,7 @@ const IDL2JSON_OPTIONS: Idl2JsonOptions = Idl2JsonOptions {
     prog: Vec::new(), // These are the type definitions used in proposal payloads.  If we have them, it would be nice to use them.  Do we?
 };
 
-/// Convert a Candid `Type` to a candid `IDLType`. `idl2json` uses `IDLType`.
+/// Converts a Candid `Type` to a candid `IDLType`. `idl2json` uses `IDLType`.
 ///
 /// Notes:
 /// - `IDLType` does not exist in Candid `v10`.  This conversion may well not be needed in the future.

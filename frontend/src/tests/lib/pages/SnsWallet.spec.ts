@@ -6,7 +6,6 @@ import { pageStore } from "$lib/derived/page.derived";
 import SnsWallet from "$lib/pages/SnsWallet.svelte";
 import * as workerBalances from "$lib/services/worker-balances.services";
 import * as workerTransactions from "$lib/services/worker-transactions.services";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
@@ -94,7 +93,6 @@ describe("SnsWallet", () => {
     snsAccountsStore.reset();
     tokensStore.reset();
     toastsStore.reset();
-    overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
     vi.spyOn(snsIndexApi, "getSnsTransactions").mockResolvedValue({
       oldestTxId: 1_234n,
       transactions: [mockIcrcTransactionWithId],
@@ -376,26 +374,7 @@ describe("SnsWallet", () => {
       );
     });
 
-    it("should navigate to accounts when account identifier is invalid", async () => {
-      expect(get(pageStore)).toEqual({
-        path: AppPath.Wallet,
-        universe: rootCanisterIdText,
-      });
-      await renderComponent({
-        accountIdentifier: "invalid-account-identifier",
-      });
-      expect(get(pageStore)?.path).toEqual(AppPath.Tokens);
-      expect(get(toastsStore)).toMatchObject([
-        {
-          level: "error",
-          text: 'Sorry, the account "invalid-account-identifier" was not found',
-        },
-      ]);
-    });
-
-    it("should navigate to /tokens when account identifier is invalid and tokens page is enabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
-
+    it("should navigate to /tokens when account identifier is invalid", async () => {
       expect(get(pageStore)).toEqual({
         path: AppPath.Wallet,
         universe: rootCanisterIdText,
