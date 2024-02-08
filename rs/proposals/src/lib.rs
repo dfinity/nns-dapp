@@ -1,5 +1,5 @@
+use crate::canisters::internet_identity::InternetIdentityInit;
 use crate::canisters::nns_governance::api::{Action, ProposalInfo};
-use crate::canisters::internet_identity::{InternetIdentityInit};
 use crate::def::*;
 use candid::parser::types::{self as parser_types, IDLType, IDLTypes};
 use candid::types::{self as candid_types, Type};
