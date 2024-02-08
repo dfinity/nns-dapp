@@ -207,7 +207,9 @@ impl State {
                     .upstream_data
                     .values()
                     .rev()
-                    .take(State::PAGE_SIZE as usize)
+                    .take(usize::try_from(State::PAGE_SIZE).unwrap_or_else(|_| {
+                        unreachable!("The page size is a constant small integer, well below any reasonable usize::MAX.")
+                    }))
                     .map(SlowSnsData::from)
                     .collect();
                 serde_json::to_string(&slow_data).map_err(|err| anyhow!("Failed to serialise latest SNSs: {err:?}"))
