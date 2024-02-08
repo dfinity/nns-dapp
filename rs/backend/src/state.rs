@@ -94,19 +94,11 @@ impl State {
         self.partitions_maybe.replace(partitions_maybe);
     }
     /// Gets the authoritative schema.  This is the schema that is in stable memory.
+    #[cfg(test)]
     pub fn schema_label(&self) -> SchemaLabel {
         match &*self.partitions_maybe.borrow() {
-            PartitionsMaybe::Partitions(partitions) => {
-                println!(
-                    "State: schema_label for managed memory: {:?}",
-                    partitions.schema_label()
-                );
-                partitions.schema_label()
-            }
-            PartitionsMaybe::None(_memory) => {
-                println!("State: schema_label for raw memory is: Map");
-                SchemaLabel::Map
-            }
+            PartitionsMaybe::Partitions(partitions) => partitions.schema_label(),
+            PartitionsMaybe::None(_memory) => SchemaLabel::Map,
         }
     }
 }
@@ -173,7 +165,8 @@ impl From<Partitions> for State {
                 let accounts_db = AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::load(
                     partitions.get(PartitionType::Accounts.memory_id()),
                 ));
-                state.accounts_store.borrow_mut().with_accounts_db(accounts_db);
+                // Replace the default accountsdb created by `serde`` with the one from stable memory.
+                let _deserialized_accounts_db = state.accounts_store.borrow_mut().replace_accounts_db(accounts_db);
                 state.partitions_maybe.replace(PartitionsMaybe::Partitions(partitions));
                 state
             }

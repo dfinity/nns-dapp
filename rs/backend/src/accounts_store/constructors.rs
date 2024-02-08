@@ -10,6 +10,10 @@ impl From<AccountsDb> for AccountsStore {
     }
 }
 
+<<<<<<< HEAD
+=======
+#[cfg(test)]
+>>>>>>> origin/main
 impl AccountsStore {
     /// Adds an `accounts_db` to the store.
     ///
@@ -18,7 +22,10 @@ impl AccountsStore {
     ///
     /// When recreating state post upgrade, the accounts store sans `accounts_db` is recovered from
     /// one virtual memory, then the `accounts_db` is added from another virtual memory.
-    pub fn with_accounts_db(&mut self, accounts_db: AccountsDb) {
+    #[must_use]
+    pub fn replace_accounts_db(&mut self, accounts_db: AccountsDb) -> AccountsDb {
+        let original_accounts_db = self.accounts_db;
         self.accounts_db = AccountsDbAsProxy::from(accounts_db);
+        original_accounts_db
     }
 }

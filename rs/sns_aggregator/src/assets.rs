@@ -57,7 +57,7 @@ pub struct AssetHashes(RbTree<Vec<u8>, Hash>);
 impl From<&Assets> for AssetHashes {
     fn from(assets: &Assets) -> Self {
         let mut asset_hashes = Self::default();
-        for (path, asset) in assets.0.iter() {
+        for (path, asset) in &assets.0 {
             asset_hashes
                 .0
                 .insert(path.as_bytes().to_vec(), hash_bytes(&asset.bytes));
