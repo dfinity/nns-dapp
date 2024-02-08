@@ -12,7 +12,6 @@ use serde::Serialize;
 use std::cell::RefCell;
 use std::collections::BTreeMap;
 use std::fmt::Debug;
-use std::ops::DerefMut;
 
 pub mod canisters;
 
@@ -37,8 +36,7 @@ pub async fn get_proposal_payload(proposal_id: u64) -> Result<Json, String> {
         {
             Ok(Some(proposal_info)) => {
                 let json = process_proposal_payload(&proposal_info);
-                CACHED_PROPOSAL_PAYLOADS
-                    .with(|c| insert_into_cache(c.borrow_mut().deref_mut(), proposal_id, json.clone()));
+                CACHED_PROPOSAL_PAYLOADS.with(|c| insert_into_cache(&mut c.borrow_mut(), proposal_id, json.clone()));
                 Ok(json)
             }
             Ok(None) => Err("Proposal not found".to_string()), // We shouldn't cache this as the proposal may simply not exist yet
