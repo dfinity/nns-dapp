@@ -136,7 +136,7 @@ impl FastScheduler {
         // Update affected assets
         let slow_data =
             STATE.with(|state| state.stable.borrow().sns_cache.borrow_mut().upstream_data[&root_canister_id].clone());
-        State::insert_sns(index, slow_data)
+        State::insert_sns(index, &slow_data)
             .map_err(|err| crate::state::log(format!("Failed to update certified assets: {err:?}")))
             .unwrap_or_default();
         crate::state::log(format!("Updating SNS index {index}... DONE"));

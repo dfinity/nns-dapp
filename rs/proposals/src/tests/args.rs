@@ -162,7 +162,7 @@ fn arg_should_be_parsed(test_vector: &TestVector) -> anyhow::Result<()> {
     let args_parsed: IDLArgs = IDLArgs::from_str(args).context("Test error: Failed to parse arg value")?;
     let args_bytes = args_parsed.to_bytes().context("Failed to convert args to bytes")?;
     let expected = status_quo;
-    let actual = decode_arg(&args_bytes, did); // Note: This does NOT match the current code.
+    let actual = decode_arg(&args_bytes, &did); // Note: This does NOT match the current code.
     assert_eq!(expected, actual, "Invalid conversion for test vector: {name}");
     Ok(())
 }
