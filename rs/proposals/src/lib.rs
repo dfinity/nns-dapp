@@ -63,6 +63,7 @@ fn insert_into_cache(cache: &mut BTreeMap<u64, Json>, proposal_id: u64, payload_
 /// Source: https://github.com/dfinity/internet-identity/blob/main/src/internet_identity_interface/src/lib.rs#L174
 pub type AnchorNumber = u64;
 #[derive(CandidType, Serialize, Deserialize)]
+#[allow(missing_docs)] // Please see the original code upstream for details
 pub struct InternetIdentityInit {
     pub assigned_user_number_range: Option<(AnchorNumber, AnchorNumber)>,
     pub archive_config: Option<ArchiveConfig>,
