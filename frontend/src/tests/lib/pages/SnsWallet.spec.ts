@@ -7,7 +7,6 @@ import { pageStore } from "$lib/derived/page.derived";
 import SnsWallet from "$lib/pages/SnsWallet.svelte";
 import * as workerBalances from "$lib/services/worker-balances.services";
 import * as workerTransactions from "$lib/services/worker-transactions.services";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
@@ -104,7 +103,6 @@ describe("SnsWallet", () => {
     icrcAccountsStore.reset();
     tokensStore.reset();
     toastsStore.reset();
-    overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
       transactions: [],
     });
@@ -402,36 +400,7 @@ describe("SnsWallet", () => {
       );
     });
 
-    it("should navigate to accounts when account identifier is invalid", async () => {
-      expect(get(pageStore)).toEqual({
-        path: AppPath.Wallet,
-        universe: rootCanisterIdText,
-      });
-      await renderComponent({
-        accountIdentifier: "invalid-account-identifier",
-      });
-      expect(get(pageStore)?.path).toEqual(AppPath.Tokens);
-      expect(get(toastsStore)).toMatchObject([
-        {
-          level: "error",
-          text: 'Sorry, the account "invalid-account-identifier" was not found',
-        },
-        // In the test, the IcrcWalletPage component thinks the
-        // ledgerCanisterId has changed, because it is derived from the URL,
-        // which has changed on back navigation. As a result, it tries to load
-        // the account again, and the same error is shown again. This happens
-        // before the test stops rendering the component as a result of the
-        // route having changed.
-        {
-          level: "error",
-          text: 'Sorry, the account "invalid-account-identifier" was not found',
-        },
-      ]);
-    });
-
-    it("should navigate to /tokens when account identifier is invalid and tokens page is enabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
-
+    it("should navigate to /tokens when account identifier is invalid", async () => {
       expect(get(pageStore)).toEqual({
         path: AppPath.Wallet,
         universe: rootCanisterIdText,

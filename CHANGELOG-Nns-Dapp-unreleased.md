@@ -19,6 +19,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Add the token symbol in the send modals.
 * Add new boundary node proposals support.
 * Prevent the `1Password` extension from appearing in input fields.
+* Support HTML within toast messages.
 
 #### Changed
 
