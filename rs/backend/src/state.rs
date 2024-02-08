@@ -24,12 +24,8 @@
 pub mod partitions;
 #[cfg(test)]
 pub mod tests;
-<<<<<<< HEAD
 pub mod with_accounts_in_stable_memory;
 pub mod with_raw_memory;
-=======
-mod with_raw_memory;
->>>>>>> origin/main
 
 use self::partitions::{PartitionType, Partitions, PartitionsMaybe};
 use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
@@ -46,12 +42,8 @@ use crate::perf::PerformanceCounts;
 use core::cell::RefCell;
 use dfn_candid::Candid;
 use dfn_core::api::trap_with;
-<<<<<<< HEAD
 use ic_cdk::println;
 use ic_stable_structures::DefaultMemoryImpl;
-=======
-use ic_stable_structures::{DefaultMemoryImpl, Memory};
->>>>>>> origin/main
 use on_wire::{FromWire, IntoWire};
 
 pub struct State {
@@ -127,27 +119,10 @@ impl State {
         self.partitions_maybe.replace(partitions_maybe);
     }
     /// Gets the authoritative schema.  This is the schema that is in stable memory.
-<<<<<<< HEAD
-    pub fn schema_label(&self) -> SchemaLabel {
-        match &*self.partitions_maybe.borrow() {
-            PartitionsMaybe::Partitions(partitions) => {
-                println!(
-                    "State: schema_label for managed memory: {:?}",
-                    partitions.schema_label()
-                );
-                partitions.schema_label()
-            }
-            PartitionsMaybe::None(_memory) => {
-                println!("State: schema_label for raw memory is: Map");
-                SchemaLabel::Map
-            }
-=======
-    #[cfg(test)]
     pub fn schema_label(&self) -> SchemaLabel {
         match &*self.partitions_maybe.borrow() {
             PartitionsMaybe::Partitions(partitions) => partitions.schema_label(),
             PartitionsMaybe::None(_memory) => SchemaLabel::Map,
->>>>>>> origin/main
         }
     }
 }
@@ -267,7 +242,7 @@ impl From<Partitions> for State {
                 let accounts_db = AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::load(
                     partitions.get(PartitionType::Accounts.memory_id()),
                 ));
-                state.accounts_store.borrow_mut().with_accounts_db(accounts_db);
+                let _ = state.accounts_store.borrow_mut().replace_accounts_db(accounts_db);
                 state.partitions_maybe.replace(PartitionsMaybe::Partitions(partitions));
                 state
             }
@@ -311,7 +286,7 @@ impl StableState for State {
 }
 
 // Methods called on pre_upgrade.
-<<<<<<< HEAD
+impl State {
     /// Save any unsaved state to stable memory.
     pub fn save(&self) {
         let schema = self.schema_label();
