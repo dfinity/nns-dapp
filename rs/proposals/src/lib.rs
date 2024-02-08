@@ -126,7 +126,7 @@ fn decode_arg(arg: &[u8], arg_types: &IDLTypes) -> String {
     }
 }
 
-/// Checks if the proposal has a payload, if yes, deserialize it then convert it to JSON.
+/// Checks if the proposal has a payload.  If yes, de-serializes it then converts it to JSON.
 #[must_use]
 pub fn process_proposal_payload(proposal_info: &ProposalInfo) -> Json {
     if let Some(Action::ExecuteNnsFunction(f)) = proposal_info.proposal.as_ref().and_then(|p| p.action.as_ref()) {
