@@ -6,7 +6,6 @@ import { pageStore } from "$lib/derived/page.derived";
 import SnsWallet from "$lib/pages/SnsWallet.svelte";
 import * as workerBalances from "$lib/services/worker-balances.services";
 import * as workerTransactions from "$lib/services/worker-transactions.services";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
@@ -393,8 +392,6 @@ describe("SnsWallet", () => {
     });
 
     it("should navigate to /tokens when account identifier is invalid and tokens page is enabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
-
       expect(get(pageStore)).toEqual({
         path: AppPath.Wallet,
         universe: rootCanisterIdText,
