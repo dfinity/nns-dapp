@@ -32,6 +32,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Removed
 
 * Unused `i18n` messages.
+* Remove `ENABLE_MY_TOKENS` feature flag.
 
 #### Fixed
 
