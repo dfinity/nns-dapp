@@ -374,24 +374,7 @@ describe("SnsWallet", () => {
       );
     });
 
-    it("should navigate to accounts when account identifier is invalid", async () => {
-      expect(get(pageStore)).toEqual({
-        path: AppPath.Wallet,
-        universe: rootCanisterIdText,
-      });
-      await renderComponent({
-        accountIdentifier: "invalid-account-identifier",
-      });
-      expect(get(pageStore)?.path).toEqual(AppPath.Tokens);
-      expect(get(toastsStore)).toMatchObject([
-        {
-          level: "error",
-          text: 'Sorry, the account "invalid-account-identifier" was not found',
-        },
-      ]);
-    });
-
-    it("should navigate to /tokens when account identifier is invalid and tokens page is enabled", async () => {
+    it("should navigate to /tokens when account identifier is invalid", async () => {
       expect(get(pageStore)).toEqual({
         path: AppPath.Wallet,
         universe: rootCanisterIdText,
