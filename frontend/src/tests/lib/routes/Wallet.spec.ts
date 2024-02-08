@@ -21,6 +21,7 @@ import {
 import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { mockIcrcMainAccount } from "$tests/mocks/icrc-accounts.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsFullProject, principal } from "$tests/mocks/sns-projects.mock";
 import { WalletPo } from "$tests/page-objects/Wallet.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -91,6 +92,7 @@ describe("Wallet", () => {
     setSnsProjects([
       {
         rootCanisterId: mockSnsFullProject.rootCanisterId,
+        ledgerCanisterId: mockSnsFullProject.summary.ledgerCanisterId,
         lifecycle: SnsSwapLifecycle.Committed,
       },
     ]);
@@ -126,15 +128,40 @@ describe("Wallet", () => {
         data: { universe: mockSnsFullProject.rootCanisterId.toText() },
         routeId: AppPath.Wallet,
       });
-    });
 
-    it("should render SnsWallet", async () => {
-      const { getByTestId } = render(Wallet, {
-        props: {
-          accountIdentifier: principal(0).toText(),
+      tokensStore.setToken({
+        canisterId: mockSnsFullProject.summary.ledgerCanisterId,
+        token: mockSnsFullProject.summary.token,
+        certified: true,
+      });
+      icrcAccountsStore.set({
+        ledgerCanisterId: mockSnsFullProject.summary.ledgerCanisterId,
+        accounts: {
+          accounts: [mockSnsMainAccount],
+          certified: true,
         },
       });
-      expect(getByTestId("sns-wallet")).toBeInTheDocument();
+    });
+
+    const renderComponent = () => {
+      const { container } = render(Wallet, {
+        props: {
+          accountIdentifier: mockSnsMainAccount.identifier,
+        },
+      });
+      return WalletPo.under(new JestPageObjectElement(container));
+    };
+
+    it("should render SnsWallet", async () => {
+      const po = renderComponent();
+      expect(await po.getSnsWalletPo().isPresent()).toBe(true);
+    });
+
+    it("should open transaction modal", async () => {
+      const po = renderComponent();
+      expect(await po.getIcrcTokenTransactionModalPo().isPresent()).toBe(false);
+      await po.getSnsWalletPo().clickSendButton();
+      expect(await po.getIcrcTokenTransactionModalPo().isPresent()).toBe(true);
     });
   });
 

@@ -80,15 +80,22 @@ export const loadSnsProjects = async (): Promise<void> => {
     );
     tokensStore.setTokens(
       aggregatorData
-        .map(({ icrc1_metadata, canister_ids: { root_canister_id } }) => ({
+        .map(({ icrc1_metadata, canister_ids }) => ({
           token: mapOptionalToken(convertIcrc1Metadata(icrc1_metadata)),
-          root_canister_id,
+          // TODO: Remove root_canister_id and only used ledger_canister_id.
+          root_canister_id: canister_ids.root_canister_id,
+          ledger_canister_id: canister_ids.ledger_canister_id,
         }))
         .filter(({ token }) => nonNullish(token))
         .reduce(
-          (acc, { root_canister_id, token }) => ({
+          (acc, { root_canister_id, ledger_canister_id, token }) => ({
             ...acc,
             [root_canister_id]: {
+              // Above filter ensure the token is not undefined therefore it can be safely cast
+              token: token as IcrcTokenMetadata,
+              certified: true,
+            },
+            [ledger_canister_id]: {
               // Above filter ensure the token is not undefined therefore it can be safely cast
               token: token as IcrcTokenMetadata,
               certified: true,
