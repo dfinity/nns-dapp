@@ -74,13 +74,13 @@ fn canister_arg_types(canister_id: Option<CanisterId>) -> IDLTypes {
 }
 
 /// Converts the argument to JSON.
-fn decode_arg(arg: &[u8], arg_types: IDLTypes) -> String {
+fn decode_arg(arg: &[u8], arg_types: &IDLTypes) -> String {
     // TODO: Test empty payload
     // TODO: Test existing payloads
     // TODO: Test muti-value payloads
     match IDLArgs::from_bytes(arg) {
         Ok(idl_args) => {
-            let json_value = idl_args2json_with_weak_names(&idl_args, &arg_types, &IDL2JSON_OPTIONS);
+            let json_value = idl_args2json_with_weak_names(&idl_args, arg_types, &IDL2JSON_OPTIONS);
             serde_json::to_string(&json_value).expect("Failed to serialize JSON")
         }
         Err(_) => "[]".to_owned(),
@@ -91,9 +91,12 @@ fn decode_arg(arg: &[u8], arg_types: IDLTypes) -> String {
 #[must_use]
 pub fn process_proposal_payload(proposal_info: &ProposalInfo) -> Json {
     if let Some(Action::ExecuteNnsFunction(f)) = proposal_info.proposal.as_ref().and_then(|p| p.action.as_ref()) {
-        transform_payload_to_json(f.nns_function, &f.payload)
-            .unwrap_or_else(|e| serde_json::to_string(&format!("Unable to deserialize payload: {e:.400}")).unwrap())
+        transform_payload_to_json(f.nns_function, &f.payload).unwrap_or_else(|e| {
+            let error_msg = "Unable to deserialize payload";
+            serde_json::to_string(&format!("{error_msg}: {e:.400}")).unwrap_or_else(|_| format!("\"{error_msg}\""))
+        })
     } else {
+        #[allow(clippy::unwrap_used)]
         serde_json::to_string("Proposal has no payload").unwrap()
     }
 }
@@ -327,7 +330,7 @@ mod def {
     impl From<AddNnsCanisterProposal> for AddNnsCanisterProposalTrimmed {
         fn from(payload: AddNnsCanisterProposal) -> Self {
             let wasm_module_hash = calculate_hash_string(&payload.wasm_module);
-            let candid_arg = decode_arg(&payload.arg, canister_arg_types(None));
+            let candid_arg = decode_arg(&payload.arg, &canister_arg_types(None));
 
             AddNnsCanisterProposalTrimmed {
                 name: payload.name,
@@ -382,7 +385,7 @@ mod def {
     impl From<ChangeNnsCanisterProposal> for ChangeNnsCanisterProposalTrimmed {
         fn from(payload: ChangeNnsCanisterProposal) -> Self {
             let wasm_module_hash = calculate_hash_string(&payload.wasm_module);
-            let candid_arg = decode_arg(&payload.arg, canister_arg_types(Some(payload.canister_id)));
+            let candid_arg = decode_arg(&payload.arg, &canister_arg_types(Some(payload.canister_id)));
 
             ChangeNnsCanisterProposalTrimmed {
                 stop_before_installing: payload.stop_before_installing,
