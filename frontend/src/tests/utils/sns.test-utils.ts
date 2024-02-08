@@ -10,6 +10,7 @@ import type { SnsNervousSystemFunction, SnsSwapLifecycle } from "@dfinity/sns";
 export const setSnsProjects = (
   params: {
     rootCanisterId?: Principal;
+    ledgerCanisterId?: Principal;
     lifecycle: SnsSwapLifecycle;
     certified?: boolean;
     restrictedCountries?: string[];
@@ -25,6 +26,7 @@ export const setSnsProjects = (
     return aggregatorSnsMockWith({
       rootCanisterId:
         params.rootCanisterId?.toText() ?? principal(index).toText(),
+      ledgerCanisterId: params.ledgerCanisterId?.toText(),
       lifecycle: params.lifecycle,
       restrictedCountries: params.restrictedCountries,
       directParticipantCount: params.directParticipantCount,
