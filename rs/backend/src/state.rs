@@ -94,7 +94,6 @@ impl State {
         self.partitions_maybe.replace(partitions_maybe);
     }
     /// Gets the authoritative schema.  This is the schema that is in stable memory.
-    #[cfg(test)]
     pub fn schema_label(&self) -> SchemaLabel {
         match &*self.partitions_maybe.borrow() {
             PartitionsMaybe::Partitions(partitions) => partitions.schema_label(),
