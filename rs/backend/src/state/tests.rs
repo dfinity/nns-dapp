@@ -30,7 +30,6 @@ fn state_heap_contents_can_be_serialized_and_deserialized() {
     assert_eq!(toy_state.asset_hashes, parsed.asset_hashes, "Asset hashes have changed");
 }
 
-
 #[test]
 fn schema_can_be_read_from_memory() {
     let memory: VectorMemory = VectorMemory::default();
