@@ -98,6 +98,7 @@ impl Asset {
 pub struct Assets(HashMap<String, Asset>);
 impl Assets {
     /// Gets the number of assets
+    #[must_use]
     pub fn len(&self) -> usize {
         self.0.len()
     }
@@ -132,8 +133,7 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
         "json" => Some("application/json"),
         "svg" => Some("image/svg+xml"),
         "png" => Some("image/png"),
-        "jpeg" => Some("image/jpeg"),
-        "jpg" => Some("image/jpeg"),
+        "jpeg" | "jpg" => Some("image/jpeg"),
         "ico" => Some("image/x-icon"),
         "ttf" => Some("font/ttf"),
         "woff2" => Some("font/woff2"),
