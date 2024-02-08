@@ -94,7 +94,6 @@ describe("SnsWallet", () => {
     snsAccountsStore.reset();
     tokensStore.reset();
     toastsStore.reset();
-    overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
     vi.spyOn(snsIndexApi, "getSnsTransactions").mockResolvedValue({
       oldestTxId: 1_234n,
       transactions: [mockIcrcTransactionWithId],
