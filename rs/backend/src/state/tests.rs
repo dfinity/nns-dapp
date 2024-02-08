@@ -1,5 +1,10 @@
-use super::{partitions::PartitionsMaybe, AssetHashes, Assets, Memory, PerformanceCounts, StableState, State};
-use crate::accounts_store::schema::{AccountsDbTrait, SchemaLabel, SchemaLabelBytes};
+use crate::{
+    accounts_store::schema::{AccountsDbTrait, SchemaLabel, SchemaLabelBytes},
+    state::{
+        partitions::{Partitions, PartitionsMaybe},
+        AssetHashes, Assets, Memory, PerformanceCounts, StableState, State,
+    },
+};
 use ic_stable_structures::{DefaultMemoryImpl, VectorMemory};
 use std::cell::RefCell;
 use strum::IntoEnumIterator;

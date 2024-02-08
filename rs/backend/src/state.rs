@@ -1,7 +1,6 @@
 pub mod partitions;
 #[cfg(test)]
 pub mod tests;
-#[cfg(test)]
 mod with_accounts_in_stable_memory;
 mod with_raw_memory;
 
@@ -12,6 +11,7 @@ use self::partitions::{PartitionType, Partitions};
 use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
 #[cfg(test)]
 use crate::accounts_store::schema::proxy::AccountsDb;
+use crate::accounts_store::schema::AccountsDbTrait;
 use crate::accounts_store::schema::SchemaLabel;
 use crate::accounts_store::AccountsStore;
 use crate::assets::AssetHashes;
@@ -20,6 +20,7 @@ use crate::perf::PerformanceCounts;
 
 use dfn_candid::Candid;
 use dfn_core::api::trap_with;
+use ic_cdk::println;
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use on_wire::{FromWire, IntoWire};
 use std::cell::RefCell;
@@ -95,6 +96,22 @@ impl State {
         self.performance.replace(performance.into_inner());
         self.partitions_maybe.replace(partitions_maybe);
     }
+    /// Gets the authoritative schema.  This is the schema that is in stable memory.
+    pub fn schema_label(&self) -> SchemaLabel {
+        match &*self.partitions_maybe.borrow() {
+            PartitionsMaybe::Partitions(partitions) => {
+                println!(
+                    "State: schema_label for managed memory: {:?}",
+                    partitions.schema_label()
+                );
+                partitions.schema_label()
+            }
+            PartitionsMaybe::None(_memory) => {
+                println!("State: schema_label for raw memory is: Map");
+                SchemaLabel::Map
+            }
+        }
+    }
 }
 
 pub trait StableState: Sized {
@@ -110,8 +127,6 @@ impl State {
     /// Creates new state with the specified schema.
     #[cfg(test)]
     pub fn new(schema: SchemaLabel, memory: DefaultMemoryImpl) -> Self {
-        use crate::{accounts_store::schema::AccountsDbTrait, state::partitions::PartitionType};
-
         match schema {
             SchemaLabel::Map => {
                 println!("New State: Map");
@@ -246,6 +261,15 @@ impl State {
     }
     /// Saves any unsaved state to stable memory.
     pub fn save(&self) {
-        self.save_to_raw_memory()
+        let schema = self.schema_label();
+        println!(
+            "START State save: {:?} (accounts: {:?})",
+            &schema,
+            self.accounts_store.borrow().schema_label()
+        );
+        match schema {
+            SchemaLabel::Map => self.save_to_raw_memory(),
+            SchemaLabel::AccountsInStableMemory => self.save_heap_to_managed_memory(),
+        }
     }
 }

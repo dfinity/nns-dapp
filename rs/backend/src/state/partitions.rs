@@ -52,7 +52,6 @@ impl core::fmt::Debug for Partitions {
 #[derive(strum_macros::Display)]
 pub enum PartitionsMaybe {
     /// Memory that has a memory manager.
-    #[cfg(test)]
     Partitions(Partitions),
     /// Memory that does not have any kind of memory manager.
     None(DefaultMemoryImpl),
@@ -79,7 +78,6 @@ impl Default for PartitionsMaybe {
 impl core::fmt::Debug for PartitionsMaybe {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            #[cfg(test)]
             PartitionsMaybe::Partitions(partitions) => {
                 write!(f, "MemoryWithPartitionType::MemoryManager({:?})", partitions)
             }
@@ -173,7 +171,6 @@ impl Partitions {
     }
 
     /// Writes, growing the memory if necessary.
-    #[cfg(test)]
     pub fn growing_write(&self, memory_id: MemoryId, offset: u64, bytes: &[u8]) {
         let memory = self.get(memory_id);
         let min_pages: u64 = u64::try_from(bytes.len())
