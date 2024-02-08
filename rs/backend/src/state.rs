@@ -3,7 +3,6 @@ pub mod partitions;
 pub mod tests;
 #[cfg(test)]
 mod with_accounts_in_stable_memory;
-#[cfg(test)]
 mod with_raw_memory;
 
 use self::partitions::PartitionsMaybe;
@@ -20,7 +19,7 @@ use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
 
 use dfn_candid::Candid;
-use dfn_core::{api::trap_with, stable};
+use dfn_core::api::trap_with;
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use on_wire::{FromWire, IntoWire};
 use std::cell::RefCell;
@@ -238,7 +237,7 @@ impl State {
     /// This way it is possible to roll back after deploying the new schema.
     pub fn restore() -> Self {
         match Self::schema_version_from_stable_memory() {
-            None => Self::restore_unversioned(),
+            None => Self::recover_from_raw_memory(),
             Some(version) => {
                 trap_with(&format!("Unknown schema version: {version:?}"));
                 unreachable!();
@@ -247,23 +246,6 @@ impl State {
     }
     /// Saves any unsaved state to stable memory.
     pub fn save(&self) {
-        self.save_unversioned()
-    }
-}
-
-// The unversioned schema.
-impl State {
-    /// Saves any unsaved state to stable memory.
-    fn save_unversioned(&self) {
-        let bytes = self.encode();
-        stable::set(&bytes);
-    }
-    /// Creates the state from stable memory in the `post_upgrade()` hook.
-    fn restore_unversioned() -> Self {
-        let bytes = stable::get();
-        State::decode(bytes).unwrap_or_else(|e| {
-            trap_with(&format!("Decoding stable memory failed. Error: {e:?}"));
-            unreachable!();
-        })
+        self.save_to_raw_memory()
     }
 }
