@@ -230,7 +230,9 @@ impl State {
                     .borrow()
                     .upstream_data
                     .values()
-                    .skip((pagenum * State::PAGE_SIZE) as usize)
+                    .skip(usize::try_from(pagenum * State::PAGE_SIZE).unwrap_or_else(
+                        |_| unreachable!("This product is <= the SNS index, so unless the number of SNSs is larger than the number of addressable bytes in memory, this should not happen."),
+                    ))
                     .take(usize::try_from(State::PAGE_SIZE).unwrap_or_else(|_| {
                         unreachable!("Incredible: The number of SNSs returned is larger than the number of addressable bytes in memory.")
                     }))
