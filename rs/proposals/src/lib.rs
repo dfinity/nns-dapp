@@ -113,13 +113,13 @@ fn canister_arg_types(canister_id: Option<CanisterId>) -> IDLTypes {
     IDLTypes { args }
 }
 
-fn decode_arg(arg: &[u8], arg_types: IDLTypes) -> String {
+fn decode_arg(arg: &[u8], arg_types: &IDLTypes) -> String {
     // TODO: Test empty payload
     // TODO: Test existing payloads
     // TODO: Test muti-value payloads
     match IDLArgs::from_bytes(arg) {
         Ok(idl_args) => {
-            let json_value = idl_args2json_with_weak_names(&idl_args, &arg_types, &IDL2JSON_OPTIONS);
+            let json_value = idl_args2json_with_weak_names(&idl_args, arg_types, &IDL2JSON_OPTIONS);
             serde_json::to_string(&json_value).expect("Failed to serialize JSON")
         }
         Err(_) => "[]".to_owned(),
@@ -369,7 +369,7 @@ mod def {
     impl From<AddNnsCanisterProposal> for AddNnsCanisterProposalTrimmed {
         fn from(payload: AddNnsCanisterProposal) -> Self {
             let wasm_module_hash = calculate_hash_string(&payload.wasm_module);
-            let candid_arg = decode_arg(&payload.arg, canister_arg_types(None));
+            let candid_arg = decode_arg(&payload.arg, &canister_arg_types(None));
 
             AddNnsCanisterProposalTrimmed {
                 name: payload.name,
@@ -424,7 +424,7 @@ mod def {
     impl From<ChangeNnsCanisterProposal> for ChangeNnsCanisterProposalTrimmed {
         fn from(payload: ChangeNnsCanisterProposal) -> Self {
             let wasm_module_hash = calculate_hash_string(&payload.wasm_module);
-            let candid_arg = decode_arg(&payload.arg, canister_arg_types(Some(payload.canister_id)));
+            let candid_arg = decode_arg(&payload.arg, &canister_arg_types(Some(payload.canister_id)));
 
             ChangeNnsCanisterProposalTrimmed {
                 stop_before_installing: payload.stop_before_installing,
