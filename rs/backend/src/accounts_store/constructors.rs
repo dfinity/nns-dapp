@@ -1,5 +1,6 @@
 //! Account store constructors.
 use super::*;
+use std::mem;
 
 impl From<AccountsDb> for AccountsStore {
     fn from(db: AccountsDb) -> Self {
@@ -18,8 +19,11 @@ impl AccountsStore {
     ///
     /// When recreating state post upgrade, the accounts store sans `accounts_db` is recovered from
     /// one virtual memory, then the `accounts_db` is added from another virtual memory.
+    ///
+    /// # Returns
+    /// - The original accounts database.  This is always an `AccountsDbAsProxy`.
     #[must_use]
     pub fn replace_accounts_db(&mut self, accounts_db: AccountsDb) -> AccountsDbAsProxy {
-        std::mem::replace(&mut self.accounts_db, AccountsDbAsProxy::from(accounts_db))
+        mem::replace(&mut self.accounts_db, AccountsDbAsProxy::from(accounts_db))
     }
 }

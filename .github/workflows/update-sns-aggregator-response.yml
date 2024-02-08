@@ -13,9 +13,9 @@ jobs:
   update-aggregator-response:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Update the SNS aggregator response files
-        run: scripts/nns-dapp/test-replace-sns-aggregator-response.sh
+        run: scripts/nns-dapp/replace-sns-aggregator-response.sh
       - name: Format the updated files
         run: scripts/fmt
       - name: Create Pull Request
