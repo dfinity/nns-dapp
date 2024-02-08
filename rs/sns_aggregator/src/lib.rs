@@ -30,8 +30,8 @@ use types::Icrc1Value;
 #[ic_cdk_macros::query]
 fn health_check() -> String {
     STATE.with(|state| {
-        let last_partial_update = state.stable.borrow().sns_cache.borrow().last_partial_update / 1000000000;
-        let last_update = state.stable.borrow().sns_cache.borrow().last_update / 1000000000;
+        let last_partial_update = state.stable.borrow().sns_cache.borrow().last_partial_update / 1_000_000_000;
+        let last_update = state.stable.borrow().sns_cache.borrow().last_update / 1_000_000_000;
         let num_to_get = state.stable.borrow().sns_cache.borrow().sns_to_get.len();
         let num_sns = state.stable.borrow().sns_cache.borrow().all_sns.len();
         // An optional name that may be defined during compilation to force upgrades by changing
@@ -49,7 +49,7 @@ fn health_check() -> String {
 async fn get_canister_status() -> ic_ic00_types::CanisterStatusResultV2 {
     let own_canister_id = dfn_core::api::id();
     let result = ic_nervous_system_common::get_canister_status(own_canister_id.get()).await;
-    result.unwrap_or_else(|err| panic!("Couldn't get canister_status of {}. Err: {:#?}", own_canister_id, err))
+    result.unwrap_or_else(|err| panic!("Couldn't get canister_status of {own_canister_id}.  Err: {err:#?}"))
 }
 
 /// API method to get the current configuration.
@@ -131,7 +131,7 @@ fn pre_upgrade() {
         if let Ok(bytes) = to_serialize.to_bytes() {
             let bytes_summary = StableState::summarize_bytes(&bytes);
             match ic_cdk::storage::stable_save((bytes,)) {
-                Ok(_) => crate::state::log(format!("Saved state as {bytes_summary}")),
+                Ok(()) => crate::state::log(format!("Saved state as {bytes_summary}")),
                 Err(err) => crate::state::log(format!("Failed to save state: {err:?}")),
             }
         }
@@ -225,7 +225,7 @@ fn setup(config: Option<Config>) {
     // the calls will cover all but the most extremely slow networks.
     for i in 0..2 {
         set_timer(Duration::from_secs(i * 4), || {
-            ic_cdk::spawn(crate::upstream::update_cache())
+            ic_cdk::spawn(crate::upstream::update_cache());
         });
     }
 }

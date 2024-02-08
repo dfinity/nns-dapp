@@ -57,7 +57,7 @@ async fn set_list_of_sns_to_get() -> anyhow::Result<()> {
     crate::state::log("Asked for more SNSs".to_string());
     match result {
         Err((_rejection_code, message)) => {
-            crate::state::log(format!("Cache update failed: {}", message));
+            crate::state::log(format!("Cache update failed: {message}"));
             Err(anyhow!("Cache update failed: {}", message))
         }
         Ok((stuff,)) => {
@@ -194,7 +194,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         derived_state: derived_state_response,
         lifecycle: lifecycle_response,
     };
-    State::insert_sns(index, slow_data)
+    State::insert_sns(index, &slow_data)
         .map_err(|err| crate::state::log(format!("Failed to create certified assets: {err:?}")))
         .unwrap_or_default();
     crate::state::log(format!("Getting SNS index {index}... DONE"));
