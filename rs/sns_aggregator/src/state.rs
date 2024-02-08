@@ -143,13 +143,13 @@ impl State {
     pub const PREFIX_V1: &'static str = "/v1";
 
     /// Adds an SNS into the state accessible via certified query calls.
-    pub fn insert_sns(index: u64, upstream_data: UpstreamData) -> Result<(), anyhow::Error> {
+    pub fn insert_sns(index: u64, upstream_data: &UpstreamData) -> Result<(), anyhow::Error> {
         Self::insert_sns_v1(index, upstream_data)
     }
     /// Adds pre-signed responses for the API version 1.
     ///
     /// - `/sns/index/{index}.json` <- All aggregate data about the SNS, in JSON format.
-    pub fn insert_sns_v1(index: u64, upstream_data: UpstreamData) -> Result<(), anyhow::Error> {
+    pub fn insert_sns_v1(index: u64, upstream_data: &UpstreamData) -> Result<(), anyhow::Error> {
         let prefix = Self::PREFIX_V1;
         let root_canister_id = convert_canister_id!(upstream_data.canister_ids.root_canister_id);
         let root_canister_str = root_canister_id.to_string();
@@ -183,7 +183,7 @@ impl State {
         }
         // Adds an http path for just this SNS.
         {
-            let slow_data = SlowSnsData::from(&upstream_data);
+            let slow_data = SlowSnsData::from(upstream_data);
             let json_data = serde_json::to_string(&slow_data)?;
             let path = format!("{prefix}/sns/root/{root_canister_str}/slow.json");
             let asset = Asset {
