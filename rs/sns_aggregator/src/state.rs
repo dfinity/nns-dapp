@@ -143,8 +143,8 @@ impl State {
     pub const PREFIX_V1: &'static str = "/v1";
 
     /// Adds an SNS into the state accessible via certified query calls.
-    pub fn insert_sns(index: u64, upstream_data: UpstreamData) -> Result<(), anyhow::Error> {
-        Self::insert_sns_v1(index, &upstream_data)
+    pub fn insert_sns(index: u64, upstream_data: &UpstreamData) -> Result<(), anyhow::Error> {
+        Self::insert_sns_v1(index, upstream_data)
     }
     /// Adds pre-signed responses for the API version 1.
     ///
