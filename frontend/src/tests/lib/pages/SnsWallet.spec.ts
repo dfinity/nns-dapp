@@ -343,7 +343,7 @@ describe("SnsWallet", () => {
       await runResolvedPromises();
       // IcrcWalletPage does not reload the balance, only the transactions, in
       // `reloadAccount`. Perhaps a bug?
-      // The the number of calls is still 2, rather than 4.
+      // The number of calls is still 2, rather than 4.
       expect(walletLedgerApi.getAccount).toHaveBeenCalledTimes(2);
       // IcrcWalletTransactionsList has a hard coded 4 second delay before it
       // fetches the transactions.
