@@ -49,7 +49,7 @@ impl State {
             .sns_cache
             .borrow()
             .all_sns
-            .get(index as usize)
+            .get(usize::try_from(index).unwrap_or_else(|_| unreachable!("The number of SNSs is far below usize::MAX")))
             .ok_or_else(|| format!("Requested index '{index}' does not exist"))?
             .1
             .swap_canister_id
