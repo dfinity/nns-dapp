@@ -1673,19 +1673,18 @@ impl StableState for AccountsStore {
             }
         }
 
-        let accounts_db_stats = match accounts_db_stats_maybe {
-            Some(counts) => counts,
-            None => {
-                let mut sub_accounts_count: u64 = 0;
-                let mut hardware_wallet_accounts_count: u64 = 0;
-                for account in accounts.values() {
-                    sub_accounts_count += account.sub_accounts.len() as u64;
-                    hardware_wallet_accounts_count += account.hardware_wallet_accounts.len() as u64;
-                }
-                AccountsDbStats {
-                    sub_accounts_count,
-                    hardware_wallet_accounts_count,
-                }
+        let accounts_db_stats = if let Some(counts) = accounts_db_stats_maybe {
+            counts
+        } else {
+            let mut sub_accounts_count: u64 = 0;
+            let mut hardware_wallet_accounts_count: u64 = 0;
+            for account in accounts.values() {
+                sub_accounts_count += account.sub_accounts.len() as u64;
+                hardware_wallet_accounts_count += account.hardware_wallet_accounts.len() as u64;
+            }
+            AccountsDbStats {
+                sub_accounts_count,
+                hardware_wallet_accounts_count,
             }
         };
 

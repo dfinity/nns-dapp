@@ -105,6 +105,7 @@ impl Asset {
         }
     }
 
+    #[must_use]
     pub fn with_header<S: Into<String>>(mut self, key: S, val: S) -> Self {
         self.headers.push((key.into(), val.into()));
         self
