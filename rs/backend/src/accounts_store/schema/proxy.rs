@@ -74,6 +74,7 @@ pub enum AccountsDb {
 // Constructors
 impl AccountsDbAsProxy {
     /// Provides a reference to the underlying map, if that is how accounts are stored.
+    #[must_use]
     pub fn as_map_maybe(&self) -> Option<&BTreeMap<Vec<u8>, Account>> {
         match &self.authoritative_db {
             AccountsDb::Map(map_db) => Some(map_db.as_map()),

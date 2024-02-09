@@ -1,7 +1,23 @@
 //! Code to fetch proposals and render them as JSON for human consumption.
 use crate::canisters::internet_identity::InternetIdentityInit;
 use crate::canisters::nns_governance::api::{Action, ProposalInfo};
-use crate::def::*;
+use crate::def::{
+    AddApiBoundaryNodePayload, AddFirewallRulesPayload, AddNnsCanisterProposal, AddNnsCanisterProposalTrimmed,
+    AddNodeOperatorPayload, AddNodesToSubnetPayload, AddOrRemoveDataCentersProposalPayload, AddWasmRequest,
+    AddWasmRequestTrimmed, BitcoinSetConfigProposal, BitcoinSetConfigProposalHumanReadable, BlessReplicaVersionPayload,
+    ChangeNnsCanisterProposal, ChangeNnsCanisterProposalTrimmed, ChangeSubnetMembershipPayload,
+    ChangeSubnetTypeAssignmentArgs, CompleteCanisterMigrationPayload, CreateSubnetPayload,
+    InsertUpgradePathEntriesRequest, InsertUpgradePathEntriesRequestHumanReadable, PrepareCanisterMigrationPayload,
+    RecoverSubnetPayload, RemoveApiBoundaryNodesPayload, RemoveFirewallRulesPayload, RemoveNodeOperatorsPayload,
+    RemoveNodeOperatorsPayloadHumanReadable, RemoveNodesFromSubnetPayload, RemoveNodesPayload,
+    RerouteCanisterRangesPayload, RetireReplicaVersionPayload, SetAuthorizedSubnetworkListArgs,
+    SetFirewallConfigPayload, StopOrStartNnsCanisterProposal, UpdateAllowedPrincipalsRequest,
+    UpdateApiBoundaryNodesVersionPayload, UpdateElectedHostosVersionsPayload, UpdateElectedReplicaVersionsPayload,
+    UpdateFirewallRulesPayload, UpdateIcpXdrConversionRatePayload, UpdateNodeOperatorConfigPayload,
+    UpdateNodeRewardsTableProposalPayload, UpdateNodesHostosVersionPayload, UpdateSnsSubnetListRequest,
+    UpdateSubnetPayload, UpdateSubnetReplicaVersionPayload, UpdateSubnetTypeArgs, UpdateUnassignedNodesConfigPayload,
+    UpgradeRootProposalPayload, UpgradeRootProposalPayloadTrimmed,
+};
 use candid::parser::types::{self as parser_types, IDLType, IDLTypes};
 use candid::types::{self as candid_types, Type};
 use candid::{CandidType, IDLArgs};
