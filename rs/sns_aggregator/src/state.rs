@@ -120,6 +120,7 @@ thread_local! {
 }
 
 /// Log to console and store for retrieval by query calls.
+#[allow(clippy::needless_pass_by_value)] // The value is actually consumed.
 pub fn log(message: String) {
     println!("{}", &message);
     let now = time();

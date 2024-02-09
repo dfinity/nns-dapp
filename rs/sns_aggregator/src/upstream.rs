@@ -77,6 +77,7 @@ async fn set_list_of_sns_to_get() -> anyhow::Result<()> {
 }
 
 /// Populates the cache with the data for an SNS.
+#[allow(clippy::too_many_lines)] // Long but simple - we have ~ 6 lines per dataset that we need to collect.
 async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Result<()> {
     crate::state::log(format!("Getting SNS index {index}..."));
     let swap_canister_id = convert_canister_id!(&sns_canister_ids.swap_canister_id);

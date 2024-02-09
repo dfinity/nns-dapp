@@ -231,6 +231,8 @@ fn update_root_hash(a: &AssetHashes) {
 
 /// Responds to an HTTP request for an asset.
 #[allow(clippy::expect_used)] // This is a query call, so panicking may be correct.
+#[allow(clippy::needless_pass_by_value)]
+// The signature is standard, we cannot change it.  It would be nice if this standard signature were defined in a trait that we could apply to a main struct, though!
 #[must_use]
 pub fn http_request(req: HttpRequest) -> HttpResponse {
     let mut parts = req.url.splitn(2, '?');
