@@ -46,7 +46,7 @@ describe("sns-accounts-balance.services", () => {
       .spyOn(ledgerApi, "getSnsAccounts")
       .mockImplementation(() => Promise.resolve([mockSnsMainAccount]));
 
-    await services.uncertifiedLoadSnsAccountsBalances({
+    await services.uncertifiedLoadSnsesAccountsBalances({
       rootCanisterIds: [mockSnsMainAccount.principal],
     });
 
@@ -70,7 +70,7 @@ describe("sns-accounts-balance.services", () => {
       Promise.resolve([mockSnsMainAccount])
     );
 
-    await services.uncertifiedLoadSnsAccountsBalances({
+    await services.uncertifiedLoadSnsesAccountsBalances({
       rootCanisterIds: [mockSnsMainAccount.principal],
     });
 
@@ -90,7 +90,7 @@ describe("sns-accounts-balance.services", () => {
     vi.spyOn(console, "error").mockImplementation(() => undefined);
     vi.spyOn(ledgerApi, "getSnsAccounts").mockRejectedValue(new Error());
 
-    await services.uncertifiedLoadSnsAccountsBalances({
+    await services.uncertifiedLoadSnsesAccountsBalances({
       rootCanisterIds: [mockSnsMainAccount.principal],
     });
 

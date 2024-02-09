@@ -6,7 +6,11 @@ import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
+import {
+  mockIdentity,
+  mockPrincipal,
+  resetIdentity,
+} from "$tests/mocks/auth.store.mock";
 import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
@@ -43,7 +47,40 @@ describe("sns-accounts-services", () => {
       await tick();
       const store = get(snsAccountsStore);
       expect(store[mockPrincipal.toText()]?.accounts).toHaveLength(1);
-      expect(spyQuery).toBeCalled();
+      expect(spyQuery).toBeCalledTimes(2);
+      expect(spyQuery).toBeCalledWith({
+        rootCanisterId: mockPrincipal,
+        identity: mockIdentity,
+        certified: false,
+      });
+      expect(spyQuery).toBeCalledWith({
+        rootCanisterId: mockPrincipal,
+        identity: mockIdentity,
+        certified: true,
+      });
+
+      spyQuery.mockClear();
+    });
+
+    it("should call api.getSnsAccounts with only the strategy passed", async () => {
+      const spyQuery = vi
+        .spyOn(ledgerApi, "getSnsAccounts")
+        .mockImplementation(() => Promise.resolve([mockSnsMainAccount]));
+
+      await services.loadSnsAccounts({
+        rootCanisterId: mockPrincipal,
+        strategy: "query",
+      });
+
+      await tick();
+      const store = get(snsAccountsStore);
+      expect(store[mockPrincipal.toText()]?.accounts).toHaveLength(1);
+      expect(spyQuery).toBeCalledTimes(1);
+      expect(spyQuery).toBeCalledWith({
+        rootCanisterId: mockPrincipal,
+        identity: mockIdentity,
+        certified: false,
+      });
 
       spyQuery.mockClear();
     });

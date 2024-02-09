@@ -15,17 +15,19 @@ import type { IcrcBlockIndex } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { loadSnsAccountTransactions } from "./sns-transactions.services";
-import { queryAndUpdate } from "./utils.services";
+import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
 
 export const loadSnsAccounts = async ({
   rootCanisterId,
   handleError,
+  strategy,
 }: {
   rootCanisterId: Principal;
   handleError?: () => void;
+  strategy?: QueryAndUpdateStrategy;
 }): Promise<void> => {
   return queryAndUpdate<Account[], unknown>({
-    strategy: FORCE_CALL_STRATEGY,
+    strategy: strategy ?? FORCE_CALL_STRATEGY,
     request: ({ certified, identity }) =>
       getSnsAccounts({ rootCanisterId, identity, certified }),
     onLoad: ({ response: accounts, certified }) =>
