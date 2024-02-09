@@ -2,7 +2,7 @@
 //!
 //! If a proposal is passed, the governance canister will typically execute a function call specified in the proposal.
 //! This function call is typically one of the following:
-//! - An update call on some canister, in which case the types are defined in the cod eof the target canister.
+//! - An update call on some canister, in which case the types are defined in the code of the target canister.
 //! - A call to install or upgrade a canister.
 //!
 //! Thus the types come from a variety of sources.  Each type is annotated with a versioned URL that points to the source of the type.  Updates are NOT automated yet.
