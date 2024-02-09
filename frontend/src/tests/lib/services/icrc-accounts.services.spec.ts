@@ -2,7 +2,6 @@ import * as ledgerApi from "$lib/api/icrc-ledger.api";
 import {
   getIcrcAccountIdentity,
   icrcTransferTokens,
-  loadIcrcAccount,
   loadIcrcToken,
 } from "$lib/services/icrc-accounts.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
@@ -151,54 +150,6 @@ describe("icrc-accounts-services", () => {
         certified: true,
         token: mockToken,
       });
-    });
-  });
-
-  describe("loadIcrcAccount", () => {
-    const userIcrcAccount = {
-      owner: mockIdentity.getPrincipal(),
-    };
-
-    it("loads account in store with balance from api", async () => {
-      expect(get(icrcAccountsStore)[ledgerCanisterId.toText()]).toBeUndefined();
-
-      await loadIcrcAccount({ ledgerCanisterId, certified: true });
-
-      expect(get(icrcAccountsStore)[ledgerCanisterId.toText()]).toEqual({
-        accounts: [mockAccount],
-        certified: true,
-      });
-      expect(ledgerApi.queryIcrcBalance).toHaveBeenCalledWith({
-        certified: false,
-        identity: mockIdentity,
-        canisterId: ledgerCanisterId,
-        account: userIcrcAccount,
-      });
-      expect(ledgerApi.queryIcrcBalance).toHaveBeenCalledWith({
-        certified: true,
-        identity: mockIdentity,
-        canisterId: ledgerCanisterId,
-        account: userIcrcAccount,
-      });
-      expect(ledgerApi.queryIcrcBalance).toHaveBeenCalledTimes(2);
-    });
-
-    it("loads account in store with balance from api with query", async () => {
-      expect(get(icrcAccountsStore)[ledgerCanisterId.toText()]).toBeUndefined();
-
-      await loadIcrcAccount({ ledgerCanisterId, certified: false });
-
-      expect(get(icrcAccountsStore)[ledgerCanisterId.toText()]).toEqual({
-        accounts: [mockAccount],
-        certified: false,
-      });
-      expect(ledgerApi.queryIcrcBalance).toHaveBeenCalledWith({
-        certified: false,
-        identity: mockIdentity,
-        canisterId: ledgerCanisterId,
-        account: userIcrcAccount,
-      });
-      expect(ledgerApi.queryIcrcBalance).toHaveBeenCalledTimes(1);
     });
   });
 
