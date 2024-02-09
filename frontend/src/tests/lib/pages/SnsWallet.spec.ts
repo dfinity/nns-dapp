@@ -199,7 +199,7 @@ describe("SnsWallet", () => {
       expect(await po.hasSpinner()).toBe(true);
 
       expect(resolve).toBeDefined();
-      resolve(mockSnsMainAccount);
+      resolve(mockSnsMainAccount.balanceUlps);
 
       await runResolvedPromises();
       expect(await po.hasSpinner()).toBe(false);
@@ -255,7 +255,9 @@ describe("SnsWallet", () => {
     });
 
     it("should make a new transaction", async () => {
-      vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(0n);
+      vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
+        2_233_000_000n
+      );
       const { walletPo: po, icrcTokenTransactionModalPo: modalPo } =
         await renderWalletAndModals();
 

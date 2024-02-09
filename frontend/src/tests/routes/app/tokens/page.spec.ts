@@ -154,20 +154,6 @@ describe("Tokens route", () => {
         }
       );
       vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(1234n);
-      vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
-        async ({ canisterId }) => {
-          const balanceMap = {
-            [CKETH_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
-            [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
-          };
-          if (isNullish(balanceMap[canisterId.toText()])) {
-            throw new Error(
-              `Balance not found for canister ${canisterId.toText()}`
-            );
-          }
-          return balanceMap[canisterId.toText()];
-        }
-      );
       vi.spyOn(ckBTCMinterApi, "updateBalance").mockRejectedValue(
         noPendingUtxos
       );

@@ -15,7 +15,6 @@ import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
 import { ckbtcRetrieveBtcStatusesStore } from "$lib/stores/ckbtc-retrieve-btc-statuses.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
 import CkBTCAccountsTest from "$tests/lib/components/accounts/CkBTCAccountsTest.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
@@ -223,8 +222,8 @@ describe("CkBTCWallet", () => {
         routeId: AppPath.Wallet,
       });
 
-      vi.mocked(ckbtcLedgerApi.getAccount).mockImplementation(() => {
-        return new Promise<Account>((resolve) => {
+      vi.mocked(icrcLedgerApi.queryIcrcBalance).mockImplementation(() => {
+        return new Promise<bigint>((resolve) => {
           resolveAccounts = resolve;
         });
       });
@@ -241,7 +240,7 @@ describe("CkBTCWallet", () => {
 
     it("should call to load ckBTC accounts", async () => {
       await renderWallet();
-      expect(ckbtcLedgerApi.getAccount).toBeCalled();
+      expect(icrcLedgerApi.queryIcrcBalance).toBeCalled();
       expect(ckbtcLedgerApi.getToken).toBeCalled();
     });
   });
@@ -281,13 +280,12 @@ describe("CkBTCWallet", () => {
           return Promise.resolve({ block_index: 3n });
         }
       );
-      vi.mocked(ckbtcLedgerApi.getAccount).mockImplementation(() => {
-        return Promise.resolve({
-          ...mockCkBTCMainAccount,
-          ...(afterTransfer
-            ? { balanceUlps: expectedBalanceAfterTransfer }
-            : {}),
-        });
+      vi.mocked(icrcLedgerApi.queryIcrcBalance).mockImplementation(() => {
+        return Promise.resolve(
+          afterTransfer
+            ? expectedBalanceAfterTransfer
+            : mockCkBTCMainAccount.balanceUlps
+        );
       });
     });
 

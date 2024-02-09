@@ -4,7 +4,6 @@ import {
   queryAndUpdate,
   type QueryAndUpdateStrategy,
 } from "$lib/services/utils.services";
-import { getAccounts } from "$lib/services/wallet-loader.services";
 import { loadToken } from "$lib/services/wallet-tokens.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";

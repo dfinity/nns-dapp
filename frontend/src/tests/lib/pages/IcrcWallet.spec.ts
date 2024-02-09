@@ -1,4 +1,5 @@
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
+import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as walletLedgerApi from "$lib/api/wallet-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
@@ -13,7 +14,6 @@ import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
 import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
 import WalletTest from "$tests/lib/pages/WalletTest.svelte";
@@ -189,7 +189,7 @@ describe("IcrcWallet", () => {
   });
 
   describe("accounts not loaded", () => {
-    let resolveAccounts: (Account) => void;
+    let resolveAccounts: (bigint) => void;
 
     beforeEach(() => {
       icrcAccountsStore.reset();
@@ -199,8 +199,8 @@ describe("IcrcWallet", () => {
         routeId: AppPath.Wallet,
       });
 
-      vi.mocked(walletLedgerApi.getAccount).mockImplementation(() => {
-        return new Promise<Account>((resolve) => {
+      vi.mocked(icrcLedgerApi.queryIcrcBalance).mockImplementation(() => {
+        return new Promise<bigint>((resolve) => {
           resolveAccounts = resolve;
         });
       });
@@ -210,14 +210,14 @@ describe("IcrcWallet", () => {
     it("should render a spinner while loading", async () => {
       const po = await renderWallet(props);
       expect(await po.hasSpinner()).toBe(true);
-      resolveAccounts(mockCkETHMainAccount);
+      resolveAccounts(mockCkETHMainAccount.balanceUlps);
       await runResolvedPromises();
       expect(await po.hasSpinner()).toBe(false);
     });
 
     it("should call to load Icrc accounts", async () => {
       await renderWallet(props);
-      expect(walletLedgerApi.getAccount).toBeCalled();
+      expect(icrcLedgerApi.queryIcrcBalance).toBeCalled();
       expect(walletLedgerApi.getToken).toBeCalled();
     });
   });
@@ -244,13 +244,12 @@ describe("IcrcWallet", () => {
         routeId: AppPath.Wallet,
       });
 
-      vi.mocked(walletLedgerApi.getAccount).mockImplementation(() => {
-        return Promise.resolve({
-          ...mockCkETHMainAccount,
-          ...(afterTransfer
-            ? { balanceE8s: expectedBalanceAfterTransfer }
-            : {}),
-        });
+      vi.mocked(icrcLedgerApi.queryIcrcBalance).mockImplementation(() => {
+        return Promise.resolve(
+          afterTransfer
+            ? expectedBalanceAfterTransfer
+            : mockCkETHMainAccount.balanceUlps
+        );
       });
     });
 

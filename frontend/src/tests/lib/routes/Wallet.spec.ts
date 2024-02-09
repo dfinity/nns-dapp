@@ -247,7 +247,7 @@ describe("Wallet", () => {
     };
 
     // Load data with query + Update calls
-    expect(walletLedgerApi.getAccount).toHaveBeenCalledTimes(2);
+    expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(2);
     ckEthBalance = balanceAfterTransfer;
 
     await modalPo.transferToAddress({
@@ -266,7 +266,7 @@ describe("Wallet", () => {
       fee: mockCkETHToken.fee,
     });
     // Setup + Query + Update calls after transfer
-    expect(walletLedgerApi.getAccount).toHaveBeenCalledTimes(4);
+    expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(4);
 
     expect(await pagePo.getWalletPageHeadingPo().getTitle()).toBe("1.11 ckETH");
   });
