@@ -124,7 +124,6 @@ interface I18nError {
   canister_invalid_transaction: string;
   qrcode_camera_error: string;
   qrcode_token_incompatible: string;
-  icrc_no_universe: string;
 }
 
 interface I18nWarning {
@@ -886,7 +885,6 @@ interface I18nError__sns {
   sns_add_hotkey: string;
   sns_stake_maturity: string;
   sns_disburse_maturity: string;
-  sns_reload_no_universe: string;
 }
 
 interface I18nAuth_accounts {

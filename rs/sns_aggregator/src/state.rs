@@ -62,7 +62,7 @@ impl State {
             .sns_cache
             .borrow()
             .all_sns
-            .get(index as usize)
+            .get(usize::try_from(index).unwrap_or_else(|_| unreachable!("Ihe number of SNSs is far below usize::MAX")))
             .ok_or_else(|| format!("Requested index '{index}' does not exist"))?
             .1
             .root_canister_id
@@ -207,7 +207,9 @@ impl State {
                     .upstream_data
                     .values()
                     .rev()
-                    .take(State::PAGE_SIZE as usize)
+                    .take(usize::try_from(State::PAGE_SIZE).unwrap_or_else(|_| {
+                        unreachable!("The page size is a constant small integer, well below any reasonable usize::MAX.")
+                    }))
                     .map(SlowSnsData::from)
                     .collect();
                 serde_json::to_string(&slow_data).map_err(|err| anyhow!("Failed to serialise latest SNSs: {err:?}"))
@@ -230,8 +232,12 @@ impl State {
                     .borrow()
                     .upstream_data
                     .values()
-                    .skip((pagenum * State::PAGE_SIZE) as usize)
-                    .take(State::PAGE_SIZE as usize)
+                    .skip(usize::try_from(pagenum * State::PAGE_SIZE).unwrap_or_else(
+                        |_| unreachable!("This product is <= the SNS index, so unless the number of SNSs is larger than the number of addressable bytes in memory, this should not happen."),
+                    ))
+                    .take(usize::try_from(State::PAGE_SIZE).unwrap_or_else(|_| {
+                        unreachable!("Incredible: The number of SNSs returned is larger than the number of addressable bytes in memory.")
+                    }))
                     .map(SlowSnsData::from)
                     .collect();
                 Self::slow_data_asset_v1(&slow_data)

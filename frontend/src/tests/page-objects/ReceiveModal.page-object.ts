@@ -1,3 +1,4 @@
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { ModalPo } from "$tests/page-objects/Modal.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { SelectAccountDropdownPo } from "./SelectAccountDropdown.page-object";
@@ -9,8 +10,12 @@ export class ReceiveModalPo extends ModalPo {
     return new ReceiveModalPo(element.byTestId(ReceiveModalPo.TID));
   }
 
+  getFinishButtonPo(): ButtonPo {
+    return this.getButton("reload-receive-account");
+  }
+
   clickFinish(): Promise<void> {
-    return this.click("reload-receive-account");
+    return this.getFinishButtonPo().click();
   }
 
   waitForQrCode(): Promise<void> {

@@ -27,12 +27,14 @@ proposal is successful, the changes it released will be moved from this file to
 * Stable memory is owned by State structure to control access.
 * Voting power calculation formatting.
 * Voting rewards description.
+* Unify implementations of SNS token wallets with other (non-ICP) token wallets.
 
 #### Deprecated
 
 #### Removed
 
 * Unused `i18n` messages.
+* Remove `ENABLE_MY_TOKENS` feature flag.
 
 #### Fixed
 
