@@ -814,7 +814,7 @@ impl AccountsStore {
 
     pub fn init_block_height_synced_up_to(&mut self, block_height: BlockIndex) {
         assert!(
-            !self.block_height_synced_up_to.is_some(),
+            self.block_height_synced_up_to.is_none(),
             "This can only be called to initialize the 'block_height_synced_up_to' value"
         );
 
@@ -974,9 +974,7 @@ impl AccountsStore {
     }
 
     pub fn rename_canister(&mut self, caller: PrincipalId, request: RenameCanisterRequest) -> RenameCanisterResponse {
-        if !Self::validate_canister_name(&request.name) {
-            RenameCanisterResponse::NameTooLong
-        } else {
+        if Self::validate_canister_name(&request.name) {
             let account_identifier = AccountIdentifier::from(caller).to_vec();
 
             if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.clone()) {
@@ -999,6 +997,8 @@ impl AccountsStore {
             } else {
                 RenameCanisterResponse::AccountNotFound
             }
+        } else {
+            RenameCanisterResponse::NameTooLong
         }
     }
 
