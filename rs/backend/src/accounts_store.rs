@@ -1257,7 +1257,11 @@ impl AccountsStore {
                     None
                 } else {
                     let offset = t.transaction_index;
-                    self.transactions.get_mut((transaction_index - offset) as usize)
+                    self.transactions.get_mut(
+                        usize::try_from(transaction_index - offset).unwrap_or_else(|_| {
+                            unreachable!("The number of transactions is far below the size of memory")
+                        }),
+                    )
                 }
             }
             None => None,
