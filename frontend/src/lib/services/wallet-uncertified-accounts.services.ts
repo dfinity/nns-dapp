@@ -1,7 +1,8 @@
 import { toastsError } from "$lib/stores/toasts.store";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
 import { Principal } from "@dfinity/principal";
-import { loadIcrcAccount, loadIcrcToken } from "./icrc-accounts.services";
+import { loadIcrcToken } from "./icrc-accounts.services";
+import { loadAccounts } from "./wallet-accounts.services";
 
 /**
  * Load Icrc accounts balances and token
@@ -27,9 +28,9 @@ export const uncertifiedLoadAccountsBalance = async ({
         ) ?? []
       ).map((universeId) =>
         Promise.all([
-          loadIcrcAccount({
+          loadAccounts({
+            // TODO: Use strategy `"query"`
             ledgerCanisterId: Principal.fromText(universeId),
-            certified: false,
           }),
           loadIcrcToken({
             ledgerCanisterId: Principal.fromText(universeId),
