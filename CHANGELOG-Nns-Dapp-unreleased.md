@@ -56,6 +56,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Update the GitHub `build-push-action` from `v4` to `v5`.
+
 #### Deprecated
 
 #### Removed
