@@ -2,6 +2,7 @@ import {
   snsProjectsActivePadStore,
   snsProjectsAdoptedStore,
   snsProjectsCommittedStore,
+  snsProjectsRecordStore,
   snsProjectsStore,
 } from "$lib/derived/sns/sns-projects.derived";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
@@ -23,6 +24,22 @@ describe("projects.derived", () => {
       expect(projects).toHaveLength(2);
     });
   });
+
+  describe("snsProjectsRecordStore", () => {
+    it("should have projects keyed by root canister id", () => {
+      setSnsProjects([
+        { lifecycle: SnsSwapLifecycle.Open },
+        { lifecycle: SnsSwapLifecycle.Committed },
+      ]);
+      const projects = get(snsProjectsStore);
+      const projectsRecord = get(snsProjectsRecordStore);
+      expect(projectsRecord).toEqual({
+        [projects[0].rootCanisterId.toText()]: projects[0],
+        [projects[1].rootCanisterId.toText()]: projects[1],
+      });
+    });
+  });
+
   describe("filter projects derived", () => {
     it("should filter projects that are active", () => {
       setSnsProjects([{ lifecycle: SnsSwapLifecycle.Open }]);

@@ -3,7 +3,11 @@ import {
   snsSwapCommitmentsStore,
   type SnsSwapCommitmentsStore,
 } from "$lib/stores/sns.store";
-import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
+import type {
+  RootCanisterIdText,
+  SnsSummary,
+  SnsSwapCommitment,
+} from "$lib/types/sns";
 import {
   filterActiveProjects,
   filterCommittedProjects,
@@ -47,6 +51,16 @@ export const snsProjectsStore = derived<
         swapCommitment: swapCommitmentStoreEntry?.swapCommitment,
       };
     })
+);
+
+// The same projects but mapped by root canister id.
+export const snsProjectsRecordStore = derived<
+  Readable<SnsFullProject[]>,
+  Record<RootCanisterIdText, SnsFullProject>
+>(snsProjectsStore, (projects: SnsFullProject[]) =>
+  Object.fromEntries(
+    projects.map((project) => [project.rootCanisterId.toText(), project])
+  )
 );
 
 export const snsProjectsActivePadStore = derived<

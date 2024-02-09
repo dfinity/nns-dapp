@@ -1,12 +1,10 @@
 import {
   icrcTransfer,
-  queryIcrcBalance,
   queryIcrcToken,
   type IcrcTransferParams,
 } from "$lib/api/icrc-ledger.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
-import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
@@ -14,16 +12,12 @@ import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { notForceCallStrategy } from "$lib/utils/env.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import type { Identity } from "@dfinity/agent";
-import {
-  decodeIcrcAccount,
-  encodeIcrcAccount,
-  type IcrcAccount,
-  type IcrcBlockIndex,
-} from "@dfinity/ledger-icrc";
+import { decodeIcrcAccount, type IcrcBlockIndex } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { queryAndUpdate } from "./utils.services";
+import { loadAccounts } from "./wallet-accounts.services";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getIcrcAccountIdentity = (_: Account): Promise<Identity> => {
@@ -55,71 +49,6 @@ export const loadIcrcToken = ({
       }),
     onLoad: async ({ response: token, certified }) =>
       tokensStore.setToken({ certified, canisterId: ledgerCanisterId, token }),
-    onError: ({ error: err, certified }) => {
-      if (!certified && notForceCallStrategy()) {
-        return;
-      }
-
-      // Explicitly handle only UPDATE errors
-      toastsError({
-        labelKey: "error.token_not_found",
-        err,
-      });
-
-      // Hide unproven data
-      tokensStore.resetUniverse(ledgerCanisterId);
-    },
-  });
-};
-
-const getIcrcMainIdentityAccount = async ({
-  ledgerCanisterId,
-  identity,
-  certified,
-}: {
-  ledgerCanisterId: Principal;
-  identity: Identity;
-  certified: boolean;
-}): Promise<Account> => {
-  const account: IcrcAccount = {
-    owner: identity.getPrincipal(),
-  };
-
-  const balanceUlps = await queryIcrcBalance({
-    identity,
-    canisterId: ledgerCanisterId,
-    certified,
-    account,
-  });
-
-  return {
-    identifier: encodeIcrcAccount(account),
-    principal: account.owner,
-    balanceUlps,
-    type: "main",
-  };
-};
-
-export const loadIcrcAccount = ({
-  ledgerCanisterId,
-  certified,
-}: {
-  ledgerCanisterId: Principal;
-  certified: boolean;
-}) => {
-  return queryAndUpdate<Account, unknown>({
-    strategy: certified ? FORCE_CALL_STRATEGY : "query",
-    request: ({ certified, identity }) =>
-      getIcrcMainIdentityAccount({
-        identity,
-        ledgerCanisterId,
-        certified,
-      }),
-    onLoad: async ({ response: account, certified }) =>
-      icrcAccountsStore.set({
-        accounts: { accounts: [account], certified },
-        ledgerCanisterId,
-      }),
     onError: ({ error: err, certified }) => {
       if (!certified && notForceCallStrategy()) {
         return;
@@ -221,8 +150,7 @@ export const icrcTransferTokens = async ({
         ...params,
         canisterId: ledgerCanisterId,
       }),
-    reloadAccounts: async () =>
-      loadIcrcAccount({ ledgerCanisterId, certified: true }),
+    reloadAccounts: async () => loadAccounts({ ledgerCanisterId }),
     // Web workders take care of refreshing transactions
     reloadTransactions: () => Promise.resolve(),
   });

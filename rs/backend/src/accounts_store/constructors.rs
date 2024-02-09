@@ -1,5 +1,5 @@
 //! Account store constructors.
-use super::*;
+use super::{AccountsDb, AccountsDbAsProxy, AccountsStore};
 #[cfg(test)]
 use std::mem;
 

@@ -285,6 +285,7 @@ pub fn get_histogram() {
     over(candid, |()| get_histogram_impl());
 }
 
+#[must_use]
 pub fn get_histogram_impl() -> AccountsStoreHistogram {
     // The API is intended for ad-hoc analysis only and may be discontinued at any time.
     // - Other canisters should not rely on the method being available.

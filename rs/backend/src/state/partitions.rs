@@ -116,6 +116,7 @@ pub enum PartitionType {
     Accounts = 2,
 }
 impl PartitionType {
+    #[must_use]
     pub const fn memory_id(&self) -> MemoryId {
         MemoryId::new(*self as u8)
     }
@@ -124,6 +125,7 @@ impl PartitionType {
 impl Partitions {
     /// Determines whether the given memory is managed by a memory manager.
     #[cfg(test)]
+    #[must_use]
     fn is_managed(memory: &DefaultMemoryImpl) -> bool {
         let memory_pages = memory.size();
         if memory_pages == 0 {
@@ -143,6 +145,7 @@ impl Partitions {
     }
 
     /// Gets a partition.
+    #[must_use]
     pub fn get(&self, memory_id: MemoryId) -> VirtualMemory<DefaultMemoryImpl> {
         self.memory_manager.borrow().get(memory_id)
     }
@@ -152,6 +155,7 @@ impl Partitions {
     /// Note:
     /// - Canister stable memory is, in Rust, a stateless `struct` that makes API calls.  It implements Copy.
     /// - Vector memory uses an `Rc` so we use `Rc::clone()` to copy the reference.
+    #[must_use]
     pub fn copy_memory_reference(memory: &DefaultMemoryImpl) -> DefaultMemoryImpl {
         // Empty structure that makes API calls.  Can be cloned.
         #[cfg(target_arch = "wasm32")]

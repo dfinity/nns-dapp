@@ -12,6 +12,7 @@ impl State {
         println!("END state::save_to_raw_memory: ()");
     }
     /// Create the state from stable memory in the `SchemaLabel::Map` format.
+    #[must_use]
     pub fn recover_from_raw_memory() -> Self {
         println!("state::recover_from_raw_memory: ()");
         let bytes = stable::get();

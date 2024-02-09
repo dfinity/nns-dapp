@@ -21,8 +21,8 @@ import type { Principal } from "@dfinity/principal";
 import { ICPToken, nonNullish, type Token } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { syncAccounts } from "./icp-accounts.services";
-import { loadIcrcAccount } from "./icrc-accounts.services";
 import { loadSnsAccounts } from "./sns-accounts.services";
+import { loadAccounts } from "./wallet-accounts.services";
 
 const getMainAccount = async (): Promise<IcpAccount> => {
   const { main }: IcpAccountsStoreData = get(icpAccountsStore);
@@ -118,7 +118,7 @@ export const getIcrcTokens = async ({
   token: Token;
 }) => {
   // Accounts are loaded when user visits the Accounts page, so we need to load them here.
-  await loadIcrcAccount({ ledgerCanisterId, certified: false });
+  await loadAccounts({ ledgerCanisterId });
   const store = get(icrcAccountsStore);
   const { accounts } = store[ledgerCanisterId.toText()];
   const main = accounts.find((account) => account.type === "main");
@@ -134,5 +134,5 @@ export const getIcrcTokens = async ({
   });
 
   // Reload accounts to sync tokens that have been transferred
-  await loadIcrcAccount({ ledgerCanisterId, certified: true });
+  await loadAccounts({ ledgerCanisterId });
 };
