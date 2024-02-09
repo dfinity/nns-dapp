@@ -6,15 +6,14 @@
   import { createEventDispatcher } from "svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { Token } from "@dfinity/utils";
-  import { tokensStore } from "$lib/stores/tokens.store";
-  import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
+  import { selectedTokenStore } from "$lib/derived/selected-token.derived";
   import { formatMaturity } from "$lib/utils/neuron.utils";
   import { totalDisbursingMaturity } from "$lib/utils/sns-neuron.utils";
 
   export let neuron: SnsNeuron;
 
   let token: Token | undefined;
-  $: token = $tokensStore[$selectedUniverseIdStore.toText()]?.token;
+  $: token = $selectedTokenStore;
 
   let symbol: string;
   $: symbol = token?.symbol ?? "";
