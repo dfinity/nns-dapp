@@ -47,7 +47,7 @@ describe("StakeNeuronToVote", () => {
     it("should display NNS version of the button", async () => {
       const po = await renderAndExpand();
 
-      await expect(await po.getGotoNeuronsButtonText()).toBe("Stake ICP");
+      await expect(await po.getGotoNeuronsLinkText()).toBe("Stake ICP");
     });
 
     it("should navigate to nns neurons page", async () => {
@@ -98,7 +98,7 @@ describe("StakeNeuronToVote", () => {
     it("should display SNS version of the button", async () => {
       const po = await renderAndExpand();
 
-      await expect(await po.getGotoNeuronsButtonText()).toBe("Stake CAT");
+      await expect(await po.getGotoNeuronsLinkText()).toBe("Stake CAT");
     });
 
     it("should navigate to sns neurons page", async () => {

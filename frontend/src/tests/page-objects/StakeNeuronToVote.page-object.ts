@@ -41,7 +41,7 @@ export class StakeNeuronToVotePo extends BasePageObject {
     return this.getElement("stake-neuron-button");
   }
 
-  getGotoNeuronsButtonText(): Promise<string> {
+  getGotoNeuronsLinkText(): Promise<string> {
     return this.getGotoNeuronsLink().getText();
   }
 
