@@ -10,7 +10,7 @@ pub fn may_upload(caller: &Principal, is_controller: bool) -> Result<(), String>
     if is_controller {
         return Ok(());
     }
-    reason = format!("{reason}  Caller '{}' is not a controller.", caller);
+    reason = format!("{reason}  Caller '{caller}' is not a controller.");
     Err(reason)
 }
 
@@ -21,7 +21,7 @@ pub fn may_upload(caller: &Principal, is_controller: bool) -> Result<(), String>
 #[cfg(test)]
 fn assert_contains(text: &str, expected: &str, description: &str) {
     if !(text.contains(expected)) {
-        panic!("{} '{}' should contain '{}'", description, text, expected)
+        panic!("{description} '{text}' should contain '{expected}'")
     }
 }
 

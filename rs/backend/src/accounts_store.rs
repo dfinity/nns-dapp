@@ -1749,7 +1749,7 @@ impl Account {
     pub fn get_all_transactions_linked_to_principal_sorted(&self) -> Vec<TransactionIndex> {
         self.default_account_transactions
             .iter()
-            .cloned()
+            .copied()
             .chain(self.sub_accounts.values().flat_map(|a| a.transactions.iter().cloned()))
             .sorted()
             .collect()
