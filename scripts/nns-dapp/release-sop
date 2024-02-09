@@ -348,7 +348,7 @@ post_rc_on_slack() {
   WASM_HASH="$(checklist_must_get "CI NNS-dapp WASM hash")"
   (
     echo
-    echo "Post the following on #eng-gix-private:"
+    echo "Post the following on #eng-nns-dapp:"
     echo
     echo ":rocket: *New RC ${BRANCH_NAME}* : $RC_URL"
     echo "Commit: $COMMIT"
