@@ -1033,7 +1033,7 @@ impl AccountsStore {
     pub fn attach_newly_created_canister(&mut self, principal: PrincipalId, canister_id: CanisterId) {
         let account_identifier = AccountIdentifier::from(principal).to_vec();
 
-        if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
+        if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.clone()) {
             // We only attach if it doesn't already exist
             if Self::find_canister_index(&account, canister_id).is_none() {
                 account.canisters.push(NamedCanister {
@@ -1219,7 +1219,7 @@ impl AccountsStore {
                     let account = self.accounts_db
                         .db_get_account
                         (&account_identifier.to_vec())
-                        .unwrap_or_else(|| panic!("BROKEN STATE: Account identifier {} exists in `hardware_wallets_and_sub_accounts`, but not in `accounts`.", account_identifier));
+                        .unwrap_or_else(|| panic!("BROKEN STATE: Account identifier {account_identifier} exists in `hardware_wallets_and_sub_accounts`, but not in `accounts`."));
                     account.principal
                 }
                 Some(AccountWrapper::HardwareWallet(linked_account_identifiers)) => linked_account_identifiers
@@ -1608,8 +1608,7 @@ impl AccountsStore {
         let db_accounts_len = self.accounts_db.db_accounts_len();
         assert!(
             db_accounts_len < PRE_MIGRATION_LIMIT,
-            "Pre migration account limit exceeded {}",
-            db_accounts_len
+            "Pre migration account limit exceeded {db_accounts_len}"
         );
     }
 }
