@@ -563,7 +563,7 @@ impl AccountsStore {
 
         if !Self::validate_account_name(&request.new_name) {
             RenameSubAccountResponse::NameTooLong
-        } else if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
+        } else if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier) {
             if let Some(sub_account) = account
                 .sub_accounts
                 .values_mut()
