@@ -255,7 +255,7 @@ describe("SnsWallet", () => {
     });
 
     it("should make a new transaction", async () => {
-      const amountToBeTransferred = 2_000_000_000n;
+      const amountToBeTransferred = 200_000_000n;
       const amountIcps = 2;
       // We need the initial balance to be bigger than the amount to be transferred
       vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
