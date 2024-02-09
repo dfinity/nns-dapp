@@ -931,7 +931,7 @@ impl AccountsStore {
         if Self::validate_canister_name(&request.name) {
             let account_identifier = AccountIdentifier::from(caller).to_vec();
 
-            if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.clone()) {
+            if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier) {
                 let mut index_to_remove: Option<usize> = None;
                 for (index, c) in account.canisters.iter().enumerate() {
                     if !request.name.is_empty() && c.name == request.name {
@@ -963,7 +963,7 @@ impl AccountsStore {
                 });
                 account.canisters.sort();
 
-                self.accounts_db.db_insert_account(&account_identifier.clone(), account);
+                self.accounts_db.db_insert_account(&account_identifier, account);
 
                 AttachCanisterResponse::Ok
             } else {
@@ -978,7 +978,7 @@ impl AccountsStore {
         if Self::validate_canister_name(&request.name) {
             let account_identifier = AccountIdentifier::from(caller).to_vec();
 
-            if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.clone()) {
+            if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier) {
                 if !request.name.is_empty() && account.canisters.iter().any(|c| c.name == request.name) {
                     return RenameCanisterResponse::NameAlreadyTaken;
                 }
@@ -990,7 +990,7 @@ impl AccountsStore {
                         canister_id: request.canister_id,
                     });
                     account.canisters.sort();
-                    self.accounts_db.db_insert_account(&account_identifier.clone(), account);
+                    self.accounts_db.db_insert_account(&account_identifier, account);
                     RenameCanisterResponse::Ok
                 } else {
                     RenameCanisterResponse::CanisterNotFound
@@ -1007,10 +1007,10 @@ impl AccountsStore {
     pub fn detach_canister(&mut self, caller: PrincipalId, request: DetachCanisterRequest) -> DetachCanisterResponse {
         let account_identifier = AccountIdentifier::from(caller).to_vec();
 
-        if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.clone()) {
+        if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier) {
             if let Some(index) = Self::find_canister_index(&account, request.canister_id) {
                 account.canisters.remove(index);
-                self.accounts_db.db_insert_account(&account_identifier.clone(), account);
+                self.accounts_db.db_insert_account(&account_identifier, account);
                 DetachCanisterResponse::Ok
             } else {
                 DetachCanisterResponse::CanisterNotFound
@@ -1035,7 +1035,7 @@ impl AccountsStore {
     pub fn attach_newly_created_canister(&mut self, principal: PrincipalId, canister_id: CanisterId) {
         let account_identifier = AccountIdentifier::from(principal).to_vec();
 
-        if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.clone()) {
+        if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier) {
             // We only attach if it doesn't already exist
             if Self::find_canister_index(&account, canister_id).is_none() {
                 account.canisters.push(NamedCanister {
@@ -1043,7 +1043,7 @@ impl AccountsStore {
                     canister_id,
                 });
                 account.canisters.sort();
-                self.accounts_db.db_insert_account(&account_identifier.clone(), account);
+                self.accounts_db.db_insert_account(&account_identifier, account);
             }
         }
     }
