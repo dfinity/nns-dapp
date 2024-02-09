@@ -201,6 +201,7 @@ impl Assets {
 }
 
 #[must_use]
+#[allow(clippy::needless_pass_by_value)] // This is the standard signature that must be provided by the canister.
 pub fn http_request(req: HttpRequest) -> HttpResponse {
     let parts: Vec<&str> = req.url.split('?').collect();
     match parts[0] {
@@ -225,7 +226,7 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
                 Err(err) => HttpResponse {
                     status_code: 500,
                     headers: vec![],
-                    body: ByteBuf::from(format!("Failed to encode metrics: {}", err)),
+                    body: ByteBuf::from(format!("Failed to encode metrics: {err}")),
                 },
             }
         }
@@ -257,7 +258,7 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
                 None => HttpResponse {
                     status_code: 404,
                     headers,
-                    body: ByteBuf::from(format!("Asset {} not found.", request_path)),
+                    body: ByteBuf::from(format!("Asset {request_path} not found.")),
                 },
             }
         }),
@@ -284,8 +285,7 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
         "css" => Some("text/css"),
         "html" => Some("text/html"),
         "xml" => Some("application/xml"),
-        "js" => Some("application/javascript"),
-        "mjs" => Some("application/javascript"),
+        "js" | "mjs" => Some("application/javascript"),
         "json" => Some("application/json"),
         "svg" => Some("image/svg+xml"),
         "png" => Some("image/png"),
