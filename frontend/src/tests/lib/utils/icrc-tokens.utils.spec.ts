@@ -1,13 +1,11 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import { get } from "svelte/store";
-import { fillTokensStoreFromAggregatorData } from "$lib/utils/icrc-tokens.utils";
 import { tokensStore } from "$lib/stores/tokens.store";
+import { fillTokensStoreFromAggregatorData } from "$lib/utils/icrc-tokens.utils";
 import {
-  aggregatorMockSnsesDataDto,
   aggregatorSnsMockDto,
-  aggregatorSnsMockWith,
   aggregatorTokenMock,
 } from "$tests/mocks/sns-aggregator.mock";
+import { get } from "svelte/store";
 
 describe("ICRC tokens utils", () => {
   beforeEach(() => {
@@ -16,9 +14,7 @@ describe("ICRC tokens utils", () => {
 
   describe("fillTokensStoreFromAggregatorData", () => {
     it("should fill the tokens store with SNS tokens", () => {
-      expect(Object.keys(get(tokensStore))).toEqual([
-        OWN_CANISTER_ID_TEXT
-      ]);
+      expect(Object.keys(get(tokensStore))).toEqual([OWN_CANISTER_ID_TEXT]);
       fillTokensStoreFromAggregatorData({
         tokensStore,
         aggregatorData: [aggregatorSnsMockDto],
@@ -30,8 +26,14 @@ describe("ICRC tokens utils", () => {
         aggregatorSnsMockDto.canister_ids.root_canister_id,
         aggregatorSnsMockDto.canister_ids.ledger_canister_id,
       ]);
-      expect(tokensStoreData[aggregatorSnsMockDto.canister_ids.ledger_canister_id].token).toEqual(aggregatorTokenMock);
-      expect(tokensStoreData[aggregatorSnsMockDto.canister_ids.root_canister_id].token).toEqual(aggregatorTokenMock);
+      expect(
+        tokensStoreData[aggregatorSnsMockDto.canister_ids.ledger_canister_id]
+          .token
+      ).toEqual(aggregatorTokenMock);
+      expect(
+        tokensStoreData[aggregatorSnsMockDto.canister_ids.root_canister_id]
+          .token
+      ).toEqual(aggregatorTokenMock);
     });
   });
 });
