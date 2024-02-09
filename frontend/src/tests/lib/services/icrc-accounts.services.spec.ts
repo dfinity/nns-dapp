@@ -21,14 +21,6 @@ describe("icrc-accounts-services", () => {
   const ledgerCanisterId2 = principal(2);
   const balanceE8s = 314000000n;
   const balanceE8s2 = 222000000n;
-  const mockAccount = {
-    identifier: encodeIcrcAccount({
-      owner: mockIdentity.getPrincipal(),
-    }),
-    principal: mockIdentity.getPrincipal(),
-    type: "main",
-    balanceUlps: balanceE8s,
-  };
 
   beforeEach(() => {
     vi.clearAllMocks();
