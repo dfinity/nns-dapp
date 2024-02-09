@@ -7,7 +7,7 @@
   import type { Principal } from "@dfinity/principal";
   import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";
-  import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
+  import { snsProjectsRecordStore } from "$lib/derived/sns/sns-projects.derived";
   import type { IcrcTransactionData } from "$lib/types/transaction";
   import IcrcTransactionsList from "$lib/components/accounts/IcrcTransactionsList.svelte";
   import {
@@ -59,10 +59,9 @@
   });
 
   let governanceCanisterId: Principal | undefined;
-  $: governanceCanisterId = $snsProjectsStore.find(
-    ({ rootCanisterId: currentId }) =>
-      currentId.toText() === rootCanisterId.toText()
-  )?.summary.governanceCanisterId;
+  $: governanceCanisterId =
+    $snsProjectsRecordStore[rootCanisterId.toText()]?.summary
+      .governanceCanisterId;
 
   let uiTransactions: UiTransaction[];
   $: uiTransactions = transactions
