@@ -1,6 +1,6 @@
-use super::{AssetHashes, Assets, Memory, PerformanceCounts, StableState, State};
-use crate::accounts_store::schema::{SchemaLabel, SchemaLabelBytes};
-use ic_stable_structures::VectorMemory;
+use super::{partitions::PartitionsMaybe, AssetHashes, Assets, Memory, PerformanceCounts, StableState, State};
+use crate::accounts_store::schema::{AccountsDbTrait, SchemaLabel, SchemaLabelBytes};
+use ic_stable_structures::{DefaultMemoryImpl, VectorMemory};
 use std::cell::RefCell;
 use strum::IntoEnumIterator;
 
@@ -11,11 +11,12 @@ pub fn setup_test_state() -> State {
         assets: RefCell::new(Assets::default()),
         asset_hashes: RefCell::new(AssetHashes::default()),
         performance: RefCell::new(PerformanceCounts::test_data()),
+        partitions_maybe: RefCell::new(PartitionsMaybe::None(VectorMemory::default())),
     }
 }
 
 #[test]
-fn state_can_be_restored_from_stable_memory() {
+fn state_heap_contents_can_be_serialized_and_deserialized() {
     let toy_state = setup_test_state();
     let bytes: Vec<u8> = toy_state.encode();
     let parsed = State::decode(bytes).expect("Failed to parse");
@@ -42,5 +43,43 @@ fn schema_can_be_read_from_memory() {
         let schema_bytes = SchemaLabelBytes::from(schema);
         memory.write(0, &schema_bytes);
         assert_eq!(Some(schema), State::schema_version_from_memory(&memory));
+    }
+}
+
+#[test]
+fn state_can_be_created_with_any_schema() {
+    for schema in SchemaLabel::iter() {
+        // State is backed by stable memory:
+        let memory = DefaultMemoryImpl::default();
+        let state = State::new(schema, memory);
+        assert_eq!(
+            state.accounts_store.borrow().schema_label(),
+            schema,
+            "Newly created state does not have the expected schema"
+        );
+
+        // Basic functionality check - we can insert an account?
+        state
+            .accounts_store
+            .borrow_mut()
+            .db_insert_account(&[0u8; 32], crate::accounts_store::schema::tests::toy_account(1, 2));
+
+        // Do the partitions look as expected?
+        let partitions_maybe_label = format!("{}", state.partitions_maybe.borrow());
+        match (schema, partitions_maybe_label.as_str()) {
+            (SchemaLabel::Map, "None") | (SchemaLabel::AccountsInStableMemory, "Partitions") => {
+                println!("Partitioning is as expected for {schema:?}!");
+            }
+            (schema, partitions_maybe) => {
+                panic!("Unexpected partitioning for {schema:?}: {partitions_maybe:?}")
+            }
+        }
+
+        // Are accounts stored in the expected partition?
+        assert_eq!(
+            schema,
+            state.accounts_store.borrow().schema_label(),
+            "Accounts are not stored in the expected schema"
+        );
     }
 }

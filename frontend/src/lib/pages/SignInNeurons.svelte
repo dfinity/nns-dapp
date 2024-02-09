@@ -13,7 +13,7 @@
     <PageBanner>
       <IconNeuronsPage slot="image" />
       <svelte:fragment slot="title">{$i18n.auth_neurons.title}</svelte:fragment>
-      <p class="description" slot="description">{$i18n.auth_neurons.text}</p>
+      <p class="description" slot="description">{$i18n.neurons.text}</p>
       <SignIn slot="actions" />
     </PageBanner>
 

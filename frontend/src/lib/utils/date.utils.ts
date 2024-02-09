@@ -33,7 +33,20 @@ export const daysToDuration = (days: number): string => {
   const { time } = get(i18n);
   return secondsToDuration({
     seconds: BigInt(Math.ceil(days * SECONDS_IN_DAY)),
-    i18n: time,
+    i18n: {
+      year: time.year,
+      year_plural: time.year_plural,
+      month: time.month,
+      month_plural: time.month_plural,
+      day: time.day,
+      day_plural: time.day_plural,
+      hour: time.hour,
+      hour_plural: time.hour_plural,
+      minute: time.minute,
+      minute_plural: time.minute_plural,
+      second: time.second,
+      second_plural: time.second_plural,
+    },
   });
 };
 

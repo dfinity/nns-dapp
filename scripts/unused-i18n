@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+I18N_FILE="frontend/src/lib/i18n/en.json"
+
+GRANDFATHERED_PATHS=(
+  sns_rewards_status.0
+  sns_rewards_status.1
+  sns_rewards_status.2
+  sns_rewards_status.3
+  sns_rewards_description.0
+  sns_rewards_description.1
+  sns_rewards_description.2
+  sns_rewards_description.3
+  sns_status.0
+  sns_status.1
+  sns_status.2
+  sns_status.3
+  sns_status.4
+  sns_status.5
+  universal_proposal_status.unknown
+  universal_proposal_status.open
+  universal_proposal_status.rejected
+  universal_proposal_status.adopted
+  universal_proposal_status.executed
+  universal_proposal_status.failed
+  sns_status_description.0
+  sns_status_description.1
+  sns_status_description.2
+  sns_status_description.3
+  sns_status_description.4
+  sns_status_description.5
+)
+
+all_i18n_paths() {
+  jq -r 'paths(scalars) | join(".")' $I18N_FILE
+}
+
+failed=false
+
+for path in $(all_i18n_paths); do
+  if echo "${GRANDFATHERED_PATHS[@]}" | grep -q "$path"; then
+    continue
+  fi
+
+  # `git grep` is faster than `grep` but doesn't do multiline patterns so we try both.
+  if git grep -q -F -w "$path" frontend/src; then
+    continue
+  fi
+
+  multiline_pattern="$(echo "$path" | sed -E 's@\.@[[:space:]]*\\.[[:space:]]*@g')"
+  if grep -r -z -w -q "$multiline_pattern" frontend/src; then
+    continue
+  fi
+
+  if [[ "$failed" == false ]]; then
+    failed=true
+    echo "Some entries of $I18N_FILE seem to be unused."
+    echo "If they are actually used indirectly, reference them in a comment in the file where they are used."
+    echo "If they are not used, you can remove them with the following multiline command:"
+    echo "cat <<-EOF | jq --argfile i18n $I18N_FILE -Rn '\$i18n | delpaths([inputs | split(\".\")])' | sponge $I18N_FILE"
+  fi
+  echo -e "\t$path"
+done
+
+if [[ "$failed" != false ]]; then
+  echo -e "\tEOF"
+  exit 1
+fi
+
+echo "No unused messages found."

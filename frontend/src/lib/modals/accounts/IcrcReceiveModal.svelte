@@ -20,7 +20,7 @@
     data);
 </script>
 
-{#if nonNullish(universeId) && nonNullish(tokenSymbol)}
+{#if nonNullish(tokenSymbol)}
   <ReceiveModal
     {account}
     on:nnsClose
@@ -32,6 +32,7 @@
     {reload}
     {universeId}
     {canSelectAccount}
+    {tokenSymbol}
   >
     <svelte:fragment slot="address-label"
       >{replacePlaceholders($i18n.wallet.token_address, {

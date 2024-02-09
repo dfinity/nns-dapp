@@ -243,13 +243,18 @@ describe("SNS public services", () => {
 
       await loadSnsProjects();
 
-      const rootCanisterId = aggregatorSnsMockDto.canister_ids.root_canister_id;
+      const ledgerCanisterId =
+        aggregatorSnsMockDto.canister_ids.ledger_canister_id;
 
       const tokens = get(tokensStore);
-      const token = tokens[rootCanisterId];
+      const token = tokens[ledgerCanisterId];
       expect(token).not.toBeUndefined();
       expect(token?.certified).toBeTruthy();
       expect(token?.token).toEqual(aggregatorTokenMock);
+
+      const rootCanisterId = aggregatorSnsMockDto.canister_ids.root_canister_id;
+      const tokenForRootCanister = tokens[rootCanisterId];
+      expect(tokenForRootCanister).toEqual(token);
     });
 
     it("should load and map total token supply", async () => {

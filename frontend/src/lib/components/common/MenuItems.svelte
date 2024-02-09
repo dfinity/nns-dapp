@@ -16,10 +16,8 @@
   import {
     canistersPathStore,
     neuronsPathStore,
-    tokensPathStore,
     proposalsPathStore,
   } from "$lib/derived/paths.derived";
-  import { keyOf } from "$lib/utils/utils";
   import { pageStore } from "$lib/derived/page.derived";
   import { isSelectedPath } from "$lib/utils/navigation.utils";
   import MenuMetrics from "$lib/components/common/MenuMetrics.svelte";
@@ -28,7 +26,7 @@
     context: string;
     href: string;
     selected: boolean;
-    label: string;
+    title: string;
     icon:
       | typeof IconWallet
       | typeof IconPassword
@@ -40,12 +38,12 @@
   $: routes = [
     {
       context: "accounts",
-      href: $tokensPathStore,
+      href: AppPath.Tokens,
       selected: isSelectedPath({
         currentPath: $pageStore.path,
         paths: [AppPath.Accounts, AppPath.Wallet, AppPath.Tokens],
       }),
-      label: "tokens",
+      title: $i18n.navigation.tokens,
       icon: IconWallet,
     },
     {
@@ -55,7 +53,7 @@
         currentPath: $pageStore.path,
         paths: [AppPath.Neurons, AppPath.Neuron],
       }),
-      label: "neurons",
+      title: $i18n.navigation.neurons,
       icon: IconPassword,
     },
     {
@@ -65,7 +63,7 @@
         currentPath: $pageStore.path,
         paths: [AppPath.Proposals, AppPath.Proposal],
       }),
-      label: "voting",
+      title: $i18n.navigation.voting,
       icon: IconUsers,
     },
     {
@@ -75,7 +73,7 @@
         currentPath: $pageStore.path,
         paths: [AppPath.Launchpad, AppPath.Project],
       }),
-      label: "launchpad",
+      title: $i18n.navigation.launchpad,
       icon: IconRocketLaunch,
     },
     {
@@ -85,16 +83,14 @@
         currentPath: $pageStore.path,
         paths: [AppPath.Canisters, AppPath.Canister],
       }),
-      label: "canisters",
+      title: $i18n.navigation.canisters,
       icon: IconExplore,
     },
   ];
 </script>
 
 <TestIdWrapper testId="menu-items-component">
-  {#each routes as { context, label, href, icon, statusIcon, selected } (context)}
-    {@const title = keyOf({ obj: $i18n.navigation, key: label })}
-
+  {#each routes as { context, title, href, icon, statusIcon, selected } (context)}
     <MenuItem {href} testId={`menuitem-${context}`} {selected} {title}>
       <svelte:component this={icon} slot="icon" />
       <svelte:fragment>{title}</svelte:fragment>

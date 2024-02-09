@@ -11,11 +11,11 @@
   export let account: Account | undefined = undefined;
   export let reload: (() => Promise<void>) | undefined = undefined;
   export let canSelectAccount = false;
-  export let universeId: UniverseCanisterId | undefined;
+  export let universeId: UniverseCanisterId | undefined = undefined;
   export let logo: string;
   export let tokenSymbol: string | undefined = undefined;
 
-  const openModal = () =>
+  const openModal = () => {
     openAccountsModal({
       type,
       data: {
@@ -27,11 +27,12 @@
         logo,
       },
     });
+  };
 </script>
 
 <button
   class="secondary"
   on:click={openModal}
   disabled={$busy}
-  data-tid={testId}>{$i18n.ckbtc.receive}</button
+  data-tid={testId}>{$i18n.core.receive}</button
 >

@@ -1,8 +1,9 @@
+use crate::canisters::internet_identity::InternetIdentityInit;
 use crate::canisters::nns_governance::api::{Action, ProposalInfo};
 use crate::def::*;
 use candid::parser::types::{self as parser_types, IDLType, IDLTypes};
 use candid::types::{self as candid_types, Type};
-use candid::{CandidType, Deserialize, IDLArgs};
+use candid::{CandidType, IDLArgs};
 use ic_base_types::CanisterId;
 use ic_nns_constants::{GOVERNANCE_CANISTER_ID, IDENTITY_CANISTER_ID};
 use idl2json::candid_types::internal_candid_type_to_idl_type;
@@ -12,7 +13,6 @@ use serde::Serialize;
 use std::cell::RefCell;
 use std::collections::BTreeMap;
 use std::fmt::Debug;
-use std::ops::DerefMut;
 
 pub mod canisters;
 
@@ -26,6 +26,10 @@ thread_local! {
     static CACHED_PROPOSAL_PAYLOADS: RefCell<BTreeMap<u64, Json>> = RefCell::default();
 }
 
+/// Gets a proposal payload from cache, if available, else from the governance canister (and populates the cache).
+///
+/// # Errors
+/// - If the requested `proposal_id` does not exist in, or could not be retrieved from, the governance canister.
 pub async fn get_proposal_payload(proposal_id: u64) -> Result<Json, String> {
     if let Some(result) = CACHED_PROPOSAL_PAYLOADS.with(|c| c.borrow().get(&proposal_id).cloned()) {
         Ok(result)
@@ -36,9 +40,8 @@ pub async fn get_proposal_payload(proposal_id: u64) -> Result<Json, String> {
             .map(|result| result.0)
         {
             Ok(Some(proposal_info)) => {
-                let json = process_proposal_payload(proposal_info);
-                CACHED_PROPOSAL_PAYLOADS
-                    .with(|c| insert_into_cache(c.borrow_mut().deref_mut(), proposal_id, json.clone()));
+                let json = process_proposal_payload(&proposal_info);
+                CACHED_PROPOSAL_PAYLOADS.with(|c| insert_into_cache(&mut c.borrow_mut(), proposal_id, json.clone()));
                 Ok(json)
             }
             Ok(None) => Err("Proposal not found".to_string()), // We shouldn't cache this as the proposal may simply not exist yet
@@ -55,51 +58,6 @@ fn insert_into_cache(cache: &mut BTreeMap<u64, Json>, proposal_id: u64, payload_
     cache.insert(proposal_id, payload_json);
 }
 
-// Source: https://github.com/dfinity/internet-identity/blob/main/src/internet_identity_interface/src/lib.rs#L174
-// Types used to decode arg's payload of nns_function type 4 for II upgrades
-pub type AnchorNumber = u64;
-#[derive(CandidType, Serialize, Deserialize)]
-pub struct InternetIdentityInit {
-    pub assigned_user_number_range: Option<(AnchorNumber, AnchorNumber)>,
-    pub archive_config: Option<ArchiveConfig>,
-    pub canister_creation_cycles_cost: Option<u64>,
-    pub register_rate_limit: Option<RateLimitConfig>,
-    pub max_num_latest_delegation_origins: Option<u64>,
-    pub migrate_storage_to_memory_manager: Option<bool>,
-}
-#[derive(CandidType, Serialize, Deserialize)]
-pub struct RateLimitConfig {
-    // time it takes for a rate limiting token to be replenished.
-    pub time_per_token_ns: u64,
-    // How many tokens are at most generated (to accommodate peaks).
-    pub max_tokens: u64,
-}
-/// Configuration parameters of the archive to be used on the next deployment.
-#[derive(CandidType, Serialize, Deserialize)]
-pub struct ArchiveConfig {
-    // Wasm module hash that is allowed to be deployed to the archive canister.
-    pub module_hash: [u8; 32],
-    // Buffered archive entries limit. If reached, II will stop accepting new anchor operations
-    // until the buffered operations are acknowledged by the archive.
-    pub entries_buffer_limit: u64,
-    // Polling interval at which the archive should fetch buffered archive entries from II (in nanoseconds).
-    pub polling_interval_ns: u64,
-    // Max number of archive entries to be fetched in a single call.
-    pub entries_fetch_limit: u16,
-    // How the entries get transferred to the archive.
-    // This is opt, so that the config parameter can be removed after switching from push to pull.
-    // Defaults to Push (legacy mode).
-    pub archive_integration: Option<ArchiveIntegration>,
-}
-
-#[derive(CandidType, Serialize, Deserialize)]
-pub enum ArchiveIntegration {
-    #[serde(rename = "push")]
-    Push,
-    #[serde(rename = "pull")]
-    Pull,
-}
-
 /// Best effort to determine the types of a canister arguments.
 fn canister_arg_types(canister_id: Option<CanisterId>) -> IDLTypes {
     // If canister id is II
@@ -113,25 +71,30 @@ fn canister_arg_types(canister_id: Option<CanisterId>) -> IDLTypes {
     IDLTypes { args }
 }
 
-fn decode_arg(arg: &[u8], arg_types: IDLTypes) -> String {
+/// Converts the argument to JSON.
+fn decode_arg(arg: &[u8], arg_types: &IDLTypes) -> String {
     // TODO: Test empty payload
     // TODO: Test existing payloads
     // TODO: Test muti-value payloads
     match IDLArgs::from_bytes(arg) {
         Ok(idl_args) => {
-            let json_value = idl_args2json_with_weak_names(&idl_args, &arg_types, &IDL2JSON_OPTIONS);
+            let json_value = idl_args2json_with_weak_names(&idl_args, arg_types, &IDL2JSON_OPTIONS);
             serde_json::to_string(&json_value).expect("Failed to serialize JSON")
         }
         Err(_) => "[]".to_owned(),
     }
 }
 
-// Check if the proposal has a payload, if yes, deserialize it then convert it to JSON.
-pub fn process_proposal_payload(proposal_info: ProposalInfo) -> Json {
+/// Checks if the proposal has a payload.  If yes, de-serializes it then converts it to JSON.
+#[must_use]
+pub fn process_proposal_payload(proposal_info: &ProposalInfo) -> Json {
     if let Some(Action::ExecuteNnsFunction(f)) = proposal_info.proposal.as_ref().and_then(|p| p.action.as_ref()) {
-        transform_payload_to_json(f.nns_function, &f.payload)
-            .unwrap_or_else(|e| serde_json::to_string(&format!("Unable to deserialize payload: {e:.400}")).unwrap())
+        transform_payload_to_json(f.nns_function, &f.payload).unwrap_or_else(|e| {
+            let error_msg = "Unable to deserialize payload";
+            serde_json::to_string(&format!("{error_msg}: {e:.400}")).unwrap_or_else(|_| format!("\"{error_msg}\""))
+        })
     } else {
+        #[allow(clippy::unwrap_used)]
         serde_json::to_string("Proposal has no payload").unwrap()
     }
 }
@@ -142,7 +105,7 @@ const IDL2JSON_OPTIONS: Idl2JsonOptions = Idl2JsonOptions {
     prog: Vec::new(), // These are the type definitions used in proposal payloads.  If we have them, it would be nice to use them.  Do we?
 };
 
-/// Convert a Candid `Type` to a candid `IDLType`. `idl2json` uses `IDLType`.
+/// Converts a Candid `Type` to a candid `IDLType`. `idl2json` uses `IDLType`.
 ///
 /// Notes:
 /// - `IDLType` does not exist in Candid `v10`.  This conversion may well not be needed in the future.
@@ -295,6 +258,11 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         39 => transform::<BitcoinSetConfigProposal, BitcoinSetConfigProposalHumanReadable>(payload_bytes),
         40 => identity::<UpdateElectedHostosVersionsPayload>(payload_bytes),
         41 => identity::<UpdateNodesHostosVersionPayload>(payload_bytes),
+        // 42 => HARD RESET
+        43 => identity::<AddApiBoundaryNodePayload>(payload_bytes),
+        44 => identity::<RemoveApiBoundaryNodesPayload>(payload_bytes),
+        // 45 reserved ("NNS_FUNCTION_UPDATE_API_BOUNDARY_NODE_DOMAIN") - https://github.com/dfinity/ic/blob/cd8ad64ed63e38db0d40386ba226df25767d4cd6/rs/nns/governance/proto/ic_nns_governance/pb/v1/governance.proto#L616
+        46 => identity::<UpdateApiBoundaryNodesVersionPayload>(payload_bytes),
         _ => Err("Unrecognised NNS function".to_string()),
     }
 }
@@ -360,7 +328,7 @@ mod def {
     impl From<AddNnsCanisterProposal> for AddNnsCanisterProposalTrimmed {
         fn from(payload: AddNnsCanisterProposal) -> Self {
             let wasm_module_hash = calculate_hash_string(&payload.wasm_module);
-            let candid_arg = decode_arg(&payload.arg, canister_arg_types(None));
+            let candid_arg = decode_arg(&payload.arg, &canister_arg_types(None));
 
             AddNnsCanisterProposalTrimmed {
                 name: payload.name,
@@ -415,7 +383,7 @@ mod def {
     impl From<ChangeNnsCanisterProposal> for ChangeNnsCanisterProposalTrimmed {
         fn from(payload: ChangeNnsCanisterProposal) -> Self {
             let wasm_module_hash = calculate_hash_string(&payload.wasm_module);
-            let candid_arg = decode_arg(&payload.arg, canister_arg_types(Some(payload.canister_id)));
+            let candid_arg = decode_arg(&payload.arg, &canister_arg_types(Some(payload.canister_id)));
 
             ChangeNnsCanisterProposalTrimmed {
                 stop_before_installing: payload.stop_before_installing,
@@ -706,8 +674,8 @@ mod def {
     impl From<SnsUpgrade> for SnsUpgradeHumanReadable {
         fn from(payload: SnsUpgrade) -> Self {
             SnsUpgradeHumanReadable {
-                current_version: payload.current_version.map(|v| v.into()),
-                next_version: payload.next_version.map(|v| v.into()),
+                current_version: payload.current_version.map(Into::into),
+                next_version: payload.next_version.map(Into::into),
             }
         }
     }
@@ -715,7 +683,7 @@ mod def {
     impl From<InsertUpgradePathEntriesRequest> for InsertUpgradePathEntriesRequestHumanReadable {
         fn from(payload: InsertUpgradePathEntriesRequest) -> Self {
             InsertUpgradePathEntriesRequestHumanReadable {
-                upgrade_path: payload.upgrade_path.into_iter().map(|u| u.into()).collect(),
+                upgrade_path: payload.upgrade_path.into_iter().map(Into::into).collect(),
                 sns_governance_canister_id: payload.sns_governance_canister_id,
             }
         }
@@ -755,6 +723,19 @@ mod def {
     // NNS function 41 - UpdateNodesHostosVersion
     // https://github.com/dfinity/ic/blob/26098e18ddd64ab50d3f3725f50c7f369cd3f90e/rs/registry/canister/src/mutations/do_update_nodes_hostos_version.rs#L38C12-L38C43
     pub type UpdateNodesHostosVersionPayload = crate::canisters::nns_registry::api::UpdateNodesHostosVersionPayload;
+
+    // NNS function 43 - AddApiBoundaryNode
+    // https://github.com/dfinity/ic/blob/04c9c04c7a1f52ab5529531691a7c1bcf289c30d/rs/registry/canister/src/mutations/do_add_api_boundary_node.rs#L14
+    pub type AddApiBoundaryNodePayload = crate::canisters::nns_registry::api::AddApiBoundaryNodePayload;
+
+    // NNS function 44 - RemoveApiBoundaryNodes
+    // https://github.com/dfinity/ic/blob/04c9c04c7a1f52ab5529531691a7c1bcf289c30d/rs/registry/canister/src/mutations/do_remove_api_boundary_nodes.rs#L14
+    pub type RemoveApiBoundaryNodesPayload = crate::canisters::nns_registry::api::RemoveApiBoundaryNodesPayload;
+
+    // NNS function 46 - UpdateApiBoundaryNodesVersion
+    // https://github.com/dfinity/ic/blob/04c9c04c7a1f52ab5529531691a7c1bcf289c30d/rs/registry/canister/src/mutations/do_update_api_boundary_nodes_version.rs#L14
+    pub type UpdateApiBoundaryNodesVersionPayload =
+        crate::canisters::nns_registry::api::UpdateApiBoundaryNodesVersionPayload;
 }
 
 #[cfg(test)]

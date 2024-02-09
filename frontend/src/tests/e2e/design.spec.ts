@@ -1,18 +1,12 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { setFeatureFlag, signInWithNewUser } from "$tests/utils/e2e.test-utils";
+import { signInWithNewUser } from "$tests/utils/e2e.test-utils";
 import { expect, test, type Page } from "@playwright/test";
 
 test.describe("Design", () => {
   test("Login", async ({ page }) => {
     await page.goto("/accounts");
     await expect(page).toHaveTitle("My ICP Tokens / NNS Dapp");
-    // TODO: GIX-1985 Remove this once the feature flag is enabled by default
-    await setFeatureFlag({
-      page,
-      featureFlag: "ENABLE_MY_TOKENS",
-      value: true,
-    });
     // Wait for balance in the first row of the table to make sure the screenshot is taken after the app is loaded.
     const pageElement = PlaywrightPageObjectElement.fromPage(page);
     const appPo = new AppPo(pageElement);
@@ -30,12 +24,6 @@ test.describe("Design", () => {
   test("App loading spinner is removed", async ({ page }) => {
     await page.goto("/accounts");
     await expect(page).toHaveTitle("My ICP Tokens / NNS Dapp");
-    // TODO: GIX-1985 Remove this once the feature flag is enabled by default
-    await setFeatureFlag({
-      page,
-      featureFlag: "ENABLE_MY_TOKENS",
-      value: true,
-    });
 
     // Wait for the button to make sure the app is loaded
     await page.locator("[data-tid=login-button]").waitFor();
@@ -55,12 +43,6 @@ test.describe("Design", () => {
 
       await page.goto("/accounts");
       await expect(page).toHaveTitle("My ICP Tokens / NNS Dapp");
-      // TODO: GIX-1985 Remove this once the feature flag is enabled by default
-      await setFeatureFlag({
-        page,
-        featureFlag: "ENABLE_MY_TOKENS",
-        value: true,
-      });
 
       await signInWithNewUser({ page, context: browser.contexts()[0] });
     });

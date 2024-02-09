@@ -1,17 +1,26 @@
+pub mod partitions;
+#[cfg(test)]
+pub mod tests;
+mod with_raw_memory;
+
+#[cfg(test)]
+use self::partitions::Partitions;
+use self::partitions::PartitionsMaybe;
+#[cfg(test)]
+use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
+#[cfg(test)]
+use crate::accounts_store::schema::proxy::AccountsDb;
 use crate::accounts_store::schema::SchemaLabel;
 use crate::accounts_store::AccountsStore;
 use crate::assets::AssetHashes;
 use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
+
 use dfn_candid::Candid;
-use dfn_core::{api::trap_with, stable};
+use dfn_core::api::trap_with;
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use on_wire::{FromWire, IntoWire};
 use std::cell::RefCell;
-#[cfg(test)]
-pub mod partitions;
-#[cfg(test)]
-pub mod tests;
 
 pub struct State {
     // NOTE: When adding new persistent fields here, ensure that these fields
@@ -20,7 +29,7 @@ pub struct State {
     pub assets: RefCell<Assets>,
     pub asset_hashes: RefCell<AssetHashes>,
     pub performance: RefCell<PerformanceCounts>,
-    // TODO: Take ownership of stable memory.
+    pub partitions_maybe: RefCell<PartitionsMaybe>,
 }
 
 #[cfg(test)]
@@ -43,6 +52,7 @@ impl Default for State {
             assets: RefCell::new(Assets::default()),
             asset_hashes: RefCell::new(AssetHashes::default()),
             performance: RefCell::new(PerformanceCounts::default()),
+            partitions_maybe: RefCell::new(PartitionsMaybe::None(DefaultMemoryImpl::default())),
         }
     }
 }
@@ -55,22 +65,41 @@ impl core::fmt::Debug for State {
             assets: _,
             asset_hashes: _,
             performance: _,
+            partitions_maybe,
         } = self;
         writeln!(f, "State {{")?;
         writeln!(f, "  accounts: {:?}", accounts_store.borrow())?;
         writeln!(f, "  assets: <html etc> (elided)")?;
         writeln!(f, "  asset_hashes: <hashes of the assets> (elided)")?;
         writeln!(f, "  performance: <stats for the metrics endpoint> (elided)")?;
+        writeln!(f, "  partitions_maybe: {:?}", partitions_maybe.borrow())?;
         writeln!(f, "}}")
     }
 }
 
 impl State {
     pub fn replace(&self, new_state: State) {
-        self.accounts_store.replace(new_state.accounts_store.take());
-        self.assets.replace(new_state.assets.take());
-        self.asset_hashes.replace(new_state.asset_hashes.take());
-        self.performance.replace(new_state.performance.take());
+        let State {
+            accounts_store,
+            assets,
+            asset_hashes,
+            performance,
+            partitions_maybe,
+        } = new_state;
+        let partitions_maybe = partitions_maybe.into_inner();
+        self.accounts_store.replace(accounts_store.into_inner());
+        self.assets.replace(assets.into_inner());
+        self.asset_hashes.replace(asset_hashes.into_inner());
+        self.performance.replace(performance.into_inner());
+        self.partitions_maybe.replace(partitions_maybe);
+    }
+    /// Gets the authoritative schema.  This is the schema that is in stable memory.
+    #[cfg(test)]
+    pub fn schema_label(&self) -> SchemaLabel {
+        match &*self.partitions_maybe.borrow() {
+            PartitionsMaybe::Partitions(partitions) => partitions.schema_label(),
+            PartitionsMaybe::None(_memory) => SchemaLabel::Map,
+        }
     }
 }
 
@@ -81,6 +110,41 @@ pub trait StableState: Sized {
 
 thread_local! {
     pub static STATE: State = State::default();
+}
+
+impl State {
+    /// Creates new state with the specified schema.
+    #[cfg(test)]
+    pub fn new(schema: SchemaLabel, memory: DefaultMemoryImpl) -> Self {
+        use crate::{accounts_store::schema::AccountsDbTrait, state::partitions::PartitionType};
+
+        match schema {
+            SchemaLabel::Map => {
+                println!("New State: Map");
+                State {
+                    accounts_store: RefCell::new(AccountsStore::default()),
+                    assets: RefCell::new(Assets::default()),
+                    asset_hashes: RefCell::new(AssetHashes::default()),
+                    performance: RefCell::new(PerformanceCounts::default()),
+                    partitions_maybe: RefCell::new(PartitionsMaybe::None(memory)),
+                }
+            }
+            SchemaLabel::AccountsInStableMemory => {
+                println!("New State: AccountsInStableMemory");
+                let partitions = Partitions::new_with_schema(memory, schema);
+                let accounts_store = AccountsStore::from(AccountsDb::UnboundedStableBTreeMap(
+                    AccountsDbAsUnboundedStableBTreeMap::new(partitions.get(PartitionType::Accounts.memory_id())),
+                ));
+                State {
+                    accounts_store: RefCell::new(accounts_store),
+                    assets: RefCell::new(Assets::default()),
+                    asset_hashes: RefCell::new(AssetHashes::default()),
+                    performance: RefCell::new(PerformanceCounts::default()),
+                    partitions_maybe: RefCell::new(PartitionsMaybe::Partitions(partitions)),
+                }
+            }
+        }
+    }
 }
 
 impl StableState for State {
@@ -102,6 +166,7 @@ impl StableState for State {
             assets: RefCell::new(assets),
             asset_hashes: RefCell::new(asset_hashes),
             performance: RefCell::new(performance),
+            partitions_maybe: RefCell::new(PartitionsMaybe::None(DefaultMemoryImpl::default())),
         })
     }
 }
@@ -137,7 +202,7 @@ impl State {
     /// This way it is possible to roll back after deploying the new schema.
     pub fn restore() -> Self {
         match Self::schema_version_from_stable_memory() {
-            None => Self::restore_unversioned(),
+            None => Self::recover_from_raw_memory(),
             Some(version) => {
                 trap_with(&format!("Unknown schema version: {version:?}"));
                 unreachable!();
@@ -146,23 +211,6 @@ impl State {
     }
     /// Saves any unsaved state to stable memory.
     pub fn save(&self) {
-        self.save_unversioned()
-    }
-}
-
-// The unversioned schema.
-impl State {
-    /// Saves any unsaved state to stable memory.
-    fn save_unversioned(&self) {
-        let bytes = self.encode();
-        stable::set(&bytes);
-    }
-    /// Creates the state from stable memory in the `post_upgrade()` hook.
-    fn restore_unversioned() -> Self {
-        let bytes = stable::get();
-        State::decode(bytes).unwrap_or_else(|e| {
-            trap_with(&format!("Decoding stable memory failed. Error: {e:?}"));
-            unreachable!();
-        })
+        self.save_to_raw_memory()
     }
 }

@@ -3,6 +3,7 @@ import * as walletLedgerApi from "$lib/api/wallet-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   CKETHSEPOLIA_INDEX_CANISTER_ID,
+  CKETHSEPOLIA_LEDGER_CANISTER_ID,
   CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -116,7 +117,6 @@ describe("IcrcWallet", () => {
     overrideFeatureFlagsStore.reset();
     toastsStore.reset();
     resetIdentity();
-    overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
 
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
       transactions: [],
@@ -234,7 +234,7 @@ describe("IcrcWallet", () => {
           accounts: [mockCkETHMainAccount],
           certified: true,
         },
-        universeId: CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
+        ledgerCanisterId: CKETHSEPOLIA_LEDGER_CANISTER_ID,
       });
 
       tokensStore.setTokens(mockUniversesTokens);
@@ -320,7 +320,7 @@ describe("IcrcWallet", () => {
       );
     });
 
-    it("should navigate to accounts when account identifier is invalid", async () => {
+    it("should navigate to /tokens when account identifier is invalid", async () => {
       expect(get(pageStore)).toEqual({
         path: AppPath.Wallet,
         universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText(),
@@ -329,8 +329,8 @@ describe("IcrcWallet", () => {
         accountIdentifier: "invalid-account-identifier",
       });
       expect(get(pageStore)).toEqual({
-        path: AppPath.Accounts,
-        universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText(),
+        path: AppPath.Tokens,
+        universe: OWN_CANISTER_ID_TEXT,
       });
       expect(get(toastsStore)).toMatchObject([
         {
@@ -338,28 +338,6 @@ describe("IcrcWallet", () => {
           text: 'Sorry, the account "invalid-account-identifier" was not found',
         },
       ]);
-
-      it("should navigate to /tokens when account identifier is invalid and tokens page is enabled", async () => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
-
-        expect(get(pageStore)).toEqual({
-          path: AppPath.Wallet,
-          universe: CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText(),
-        });
-        await renderWallet({
-          accountIdentifier: "invalid-account-identifier",
-        });
-        expect(get(pageStore)).toEqual({
-          path: AppPath.Tokens,
-          universe: OWN_CANISTER_ID_TEXT,
-        });
-        expect(get(toastsStore)).toMatchObject([
-          {
-            level: "error",
-            text: 'Sorry, the account "invalid-account-identifier" was not found',
-          },
-        ]);
-      });
     });
 
     it("should stay on the wallet page when account identifier is valid", async () => {

@@ -41,7 +41,7 @@
   testId="icrc-wallet-component"
   {accountIdentifier}
   {token}
-  selectedUniverseId={$selectedIcrcTokenUniverseIdStore}
+  ledgerCanisterId={$selectedIcrcTokenUniverseIdStore}
   {selectedAccountStore}
   bind:this={wallet}
   {reloadTransactions}
@@ -51,7 +51,7 @@
       <IcrcWalletTransactionsList
         account={$selectedAccountStore.account}
         {indexCanisterId}
-        universeId={$selectedIcrcTokenUniverseIdStore}
+        ledgerCanisterId={$selectedIcrcTokenUniverseIdStore}
         {token}
         bind:this={transactions}
       />
@@ -63,7 +63,7 @@
   <svelte:fragment slot="footer-actions">
     {#if nonNullish($selectedAccountStore.account) && nonNullish(token) && nonNullish($selectedIcrcTokenUniverseIdStore)}
       <IcrcTokenWalletFooter
-        universeId={$selectedIcrcTokenUniverseIdStore}
+        ledgerCanisterId={$selectedIcrcTokenUniverseIdStore}
         account={$selectedAccountStore.account}
         {token}
         {reloadAccount}

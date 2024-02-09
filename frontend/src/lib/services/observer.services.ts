@@ -1,14 +1,14 @@
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import type { PostMessageDataResponseTransaction } from "$lib/types/post-message.transactions";
-import type { UniverseCanisterId } from "$lib/types/universe";
+import type { Principal } from "@dfinity/principal";
 import { jsonReviver } from "@dfinity/utils";
 
 export const addObservedIcrcTransactionsToStore = ({
-  universeId,
+  ledgerCanisterId,
   completed,
   transactions,
 }: {
-  universeId: UniverseCanisterId;
+  ledgerCanisterId: Principal;
   completed: boolean;
   transactions: PostMessageDataResponseTransaction[];
 }) => {
@@ -24,7 +24,7 @@ export const addObservedIcrcTransactionsToStore = ({
       ...rest,
       accountIdentifier,
       transactions: JSON.parse(jsonTransactions, jsonReviver),
-      canisterId: universeId,
+      canisterId: ledgerCanisterId,
       completed,
     });
   }

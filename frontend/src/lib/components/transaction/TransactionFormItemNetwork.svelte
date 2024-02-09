@@ -14,6 +14,7 @@
 <div
   class:placeholder={!notEmptyString(selectedNetwork)}
   class:readonly={networkReadonly}
+  data-tid="transaction-form-item-network-component"
 >
   <p class="label">{$i18n.accounts.network}</p>
 

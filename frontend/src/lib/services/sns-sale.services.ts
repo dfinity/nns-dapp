@@ -640,6 +640,7 @@ const pollTransfer = ({
   fromSubAccount,
   memo,
   createdAt,
+  fee,
 }: {
   identity: Identity;
   to: string;
@@ -647,6 +648,7 @@ const pollTransfer = ({
   fromSubAccount?: SubAccountArray | undefined;
   memo?: bigint;
   createdAt?: bigint;
+  fee: bigint;
 }) =>
   poll({
     fn: (): Promise<BlockHeight> =>
@@ -657,6 +659,7 @@ const pollTransfer = ({
         fromSubAccount,
         createdAt,
         memo,
+        fee,
       }),
     // Should still just retry in case of TxCreatedInFutureError
     // (this error should be gone in a couple of seconds)
@@ -730,6 +733,7 @@ export const participateInSnsSale = async ({
       swapCanisterId,
       controller,
     });
+    const fee = get(mainTransactionFeeE8sStore);
 
     logWithTimestamp("[sale] 1. transfer (time,id):", creationTime, ticketId);
 
@@ -744,6 +748,7 @@ export const participateInSnsSale = async ({
       createdAt: creationTime,
       memo: ticketId,
       identity,
+      fee,
     });
   } catch (err) {
     console.error("[sale] on transfer", err);

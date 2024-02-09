@@ -1,4 +1,4 @@
-import type { UniverseCanisterId } from "$lib/types/universe";
+import type { Principal } from "@dfinity/principal";
 import type { Account } from "./account";
 import type { IcrcTokenMetadata } from "./icrc";
 
@@ -9,7 +9,7 @@ import type { IcrcTokenMetadata } from "./icrc";
 export type IcrcTokenModalType = "icrc-send";
 
 export type IcrcTokenTransactionModalData = {
-  universeId: UniverseCanisterId;
+  ledgerCanisterId: Principal;
   token: IcrcTokenMetadata;
   loadTransactions: boolean;
   sourceAccount?: Account;

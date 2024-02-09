@@ -52,7 +52,9 @@
   let title: string;
   $: title =
     currentStep?.name === "Form"
-      ? $i18n.accounts.send
+      ? replacePlaceholders($i18n.core.send_with_token, {
+          $token: networkBtc ? $i18n.ckbtc.btc : token.symbol,
+        })
       : currentStep?.name === "Progress"
       ? $i18n.ckbtc.sending_ckbtc_to_btc
       : currentStep?.name === "QRCode"

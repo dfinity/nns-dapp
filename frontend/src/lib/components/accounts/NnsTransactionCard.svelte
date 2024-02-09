@@ -46,7 +46,7 @@
           transactionId: transaction.block_height,
           toSelfTransaction,
           token: ICPToken,
-          transactionNames: $i18n.transaction_names,
+          i18n: $i18n,
         });
       } catch (err: unknown) {
         uiTransaction = undefined;

@@ -145,7 +145,16 @@ export class LedgerIdentity extends SignIdentity {
   }
 
   /**
-   * @returns The version of the `Internet Computer' app installed on the Ledger device.
+   * @returns The version of the `Internet Computer' app installed on the Ledger device and the device model used under the `targeId` key:
+   *
+   * 0x3110???? => LNS
+   * 0x3300???? => LNX
+   * 0x3310???? => LNS+
+   * 0x3320???? => stax
+   *
+   * Source: https://github.com/LedgerHQ/blue-loader-python?tab=readme-ov-file#target-id
+   *
+   * PS: Another way to find the device model is under the `Transport` object, the `deviceModel` field.
    */
   public async getVersion(): Promise<ResponseVersion> {
     // See comment about `app` in function `showAddressAndPubKeyOnDevice`

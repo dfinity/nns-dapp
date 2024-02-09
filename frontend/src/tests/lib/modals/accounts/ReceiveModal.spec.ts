@@ -9,6 +9,7 @@ import {
 import { renderModal } from "$tests/mocks/modal.mock";
 import { ReceiveModalPo } from "$tests/page-objects/ReceiveModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import type { Principal } from "@dfinity/principal";
 
 describe("ReceiveModal", () => {
   const reloadSpy = vi.fn();
@@ -21,13 +22,16 @@ describe("ReceiveModal", () => {
   const qrCodeLabel = "test QR code";
   const logo = "logo";
   const logoArialLabel = "logo aria-label";
+  const tokenSymbol = "TST";
 
   const renderReceiveModal = async ({
     canSelectAccount = false,
     account = mockMainAccount,
+    universeId,
   }: {
     canSelectAccount?: boolean;
     account?: Account;
+    universeId: Principal;
   }) => {
     const { container } = await renderModal({
       component: ReceiveModal,
@@ -37,35 +41,51 @@ describe("ReceiveModal", () => {
         logo,
         logoArialLabel,
         reload: reloadSpy,
-        universeId: OWN_CANISTER_ID,
+        universeId,
         canSelectAccount,
+        tokenSymbol,
       },
     });
     return ReceiveModalPo.under(new JestPageObjectElement(container));
   };
 
   it("should render a QR code", async () => {
-    const po = await renderReceiveModal({});
+    const po = await renderReceiveModal({
+      universeId: OWN_CANISTER_ID,
+    });
 
     expect(await po.hasQrCode()).toBe(true);
+  });
+
+  it("should render token symbol in title", async () => {
+    const po = await renderReceiveModal({
+      universeId: OWN_CANISTER_ID,
+    });
+
+    expect(await po.getModalTitle()).toBe(`Receive ${tokenSymbol}`);
   });
 
   it("should render account identifier (without being shortened)", async () => {
     const po = await renderReceiveModal({
       account: mockMainAccount,
+      universeId: OWN_CANISTER_ID,
     });
 
     expect(await po.getAddress()).toBe(mockMainAccount.identifier);
   });
 
   it("should render a logo", async () => {
-    const po = await renderReceiveModal({});
+    const po = await renderReceiveModal({
+      universeId: OWN_CANISTER_ID,
+    });
 
     expect(await po.getLogoAltText()).toBe(logoArialLabel);
   });
 
   it("should reload account", async () => {
-    const po = await renderReceiveModal({});
+    const po = await renderReceiveModal({
+      universeId: OWN_CANISTER_ID,
+    });
 
     await po.clickFinish();
 
@@ -81,9 +101,10 @@ describe("ReceiveModal", () => {
 
     const po = await renderReceiveModal({
       canSelectAccount: true,
+      universeId: OWN_CANISTER_ID,
     });
 
-    expect(await po.getDropdownAccounts().isPresent()).toBe(true);
+    expect(await po.getSelectAccountDropdownPo().isPresent()).toBe(true);
   });
 
   it("should select account", async () => {
@@ -96,6 +117,7 @@ describe("ReceiveModal", () => {
     const po = await renderReceiveModal({
       canSelectAccount: true,
       account: undefined,
+      universeId: OWN_CANISTER_ID,
     });
 
     // Main account is selected by default
@@ -104,5 +126,24 @@ describe("ReceiveModal", () => {
     await po.select(mockSubAccount.identifier);
 
     expect(await po.getAddress()).toBe(mockSubAccount.identifier);
+  });
+
+  it("should not require universeId ", async () => {
+    icpAccountsStore.setForTesting({
+      main: mockMainAccount,
+      subAccounts: [mockSubAccount],
+      hardwareWallets: undefined,
+    });
+
+    const po = await renderReceiveModal({
+      canSelectAccount: true,
+      account: undefined,
+      universeId: undefined,
+    });
+
+    // universeId is only required to render the account picker.
+    // So the ReceiveModal render fine without universeId but it won't render
+    // the account picker.
+    expect(await po.getSelectAccountDropdownPo().isPresent()).toBe(false);
   });
 });

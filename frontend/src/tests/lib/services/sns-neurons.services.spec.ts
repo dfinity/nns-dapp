@@ -36,6 +36,10 @@ import {
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken, mockTokenStore } from "$tests/mocks/sns-projects.mock";
+import {
+  mockedConstants,
+  resetMockedConstants,
+} from "$tests/utils/mockable-constants.test-utils";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import {
@@ -80,6 +84,7 @@ describe("sns-neurons-services", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     resetIdentity();
+    resetMockedConstants();
   });
 
   describe("syncSnsNeurons", () => {
@@ -220,6 +225,45 @@ describe("sns-neurons-services", () => {
     });
 
     it("should claim neuron if find a subaccount without neuron", async () => {
+      const subaccount = neuronSubaccount({
+        controller: mockIdentity.getPrincipal(),
+        index: 1,
+      });
+      const neuronId: SnsNeuronId = { id: subaccount };
+      const neuron = {
+        ...mockSnsNeuron,
+        id: [neuronId] as [SnsNeuronId],
+      };
+      const spyQuery = vi
+        .spyOn(governanceApi, "querySnsNeurons")
+        .mockImplementation(() => Promise.resolve([neuron]));
+      const spyNeuronQuery = vi
+        .spyOn(governanceApi, "getSnsNeuron")
+        .mockImplementation(() => Promise.resolve(neuron));
+      const spyNeuronBalance = vi
+        .spyOn(governanceApi, "getNeuronBalance")
+        .mockImplementationOnce(() =>
+          Promise.resolve(mockSnsNeuron.cached_neuron_stake_e8s)
+        )
+        .mockImplementationOnce(() => Promise.resolve(200_000_000n))
+        .mockImplementation(() => Promise.resolve(0n));
+      const spyClaimNeuron = vi
+        .spyOn(governanceApi, "claimNeuron")
+        .mockImplementation(() => Promise.resolve(undefined));
+      await syncSnsNeurons(mockPrincipal);
+
+      await tick();
+      await tick();
+      const store = get(snsNeuronsStore);
+      expect(store[mockPrincipal.toText()]?.neurons).toHaveLength(1);
+      expect(spyQuery).toBeCalled();
+      expect(spyNeuronBalance).toBeCalled();
+      expect(spyClaimNeuron).toBeCalled();
+      expect(spyNeuronQuery).toBeCalled();
+    });
+
+    it("should claim neuron if find a subaccount without neuron for query calls if FORCE_CALL_STRATEGY is query", async () => {
+      mockedConstants.FORCE_CALL_STRATEGY = "query";
       const subaccount = neuronSubaccount({
         controller: mockIdentity.getPrincipal(),
         index: 1,

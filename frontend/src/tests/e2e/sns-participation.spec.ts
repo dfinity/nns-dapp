@@ -1,18 +1,12 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import type { ProjectCardPo } from "$tests/page-objects/ProjectCard.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import {
-  setFeatureFlag,
-  signInWithNewUser,
-  step,
-} from "$tests/utils/e2e.test-utils";
+import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 test("Test SNS participation", async ({ page, context }) => {
   await page.goto("/");
   await expect(page).toHaveTitle("My Tokens / NNS Dapp");
-  // TODO: GIX-1985 Remove this once the feature flag is enabled by default
-  await setFeatureFlag({ page, featureFlag: "ENABLE_MY_TOKENS", value: true });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
   const appPo = new AppPo(pageElement);

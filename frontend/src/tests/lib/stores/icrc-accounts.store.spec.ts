@@ -1,4 +1,7 @@
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import {
+  CKBTC_LEDGER_CANISTER_ID,
+  CKBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import type { Account } from "$lib/types/account";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
@@ -20,7 +23,7 @@ describe("icrc Accounts store", () => {
         accounts,
         certified: true,
       },
-      universeId: CKBTC_UNIVERSE_CANISTER_ID,
+      ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID,
     });
 
     const accountsInStore = get(icrcAccountsStore);
@@ -38,7 +41,7 @@ describe("icrc Accounts store", () => {
         accounts,
         certified: true,
       },
-      universeId: CKBTC_UNIVERSE_CANISTER_ID,
+      ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID,
     });
 
     icrcAccountsStore.reset();
@@ -56,7 +59,7 @@ describe("icrc Accounts store", () => {
         accounts,
         certified: true,
       },
-      universeId: mockPrincipal,
+      ledgerCanisterId: mockPrincipal,
     });
 
     const accountsInStore = get(icrcAccountsStore);
@@ -75,7 +78,7 @@ describe("icrc Accounts store", () => {
         accounts: [updateSnsSubAccount],
         certified: true,
       },
-      universeId: mockPrincipal,
+      ledgerCanisterId: mockPrincipal,
     });
 
     const updatedStore = get(icrcAccountsStore);

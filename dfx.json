@@ -328,8 +328,8 @@
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
           "ENABLE_ICP_ICRC": false,
-          "ENABLE_MY_TOKENS": true,
-          "ENABLE_SNS_TYPES_FILTER": false
+          "ENABLE_SNS_TYPES_FILTER": true,
+          "ENABLE_VOTING_INDICATION": false
         }
       }
     },
@@ -340,9 +340,9 @@
         "IDL2JSON_VERSION": "0.8.8",
         "OPTIMIZER_VERSION": "0.3.6",
         "BINSTALL_VERSION": "1.3.0",
-        "DIDC_VERSION": "2024-01-03",
+        "DIDC_VERSION": "2024-01-30",
         "CARGO_SORT_VERSION": "1.0.9",
-        "SNSDEMO_RELEASE": "release-2024-01-24",
+        "SNSDEMO_RELEASE": "release-2024-02-07",
         "IC_COMMIT": "release-2024-01-25_14-09+p2p-con"
       },
       "packtool": ""

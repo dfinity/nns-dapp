@@ -17,19 +17,17 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
-  import { buildAccountsUrl } from "$lib/utils/navigation.utils";
-  import type { UniverseCanisterId } from "$lib/types/universe";
+  import type { Principal } from "@dfinity/principal";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import IcrcBalancesObserver from "$lib/components/accounts/IcrcBalancesObserver.svelte";
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
   import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
-  import { ENABLE_MY_TOKENS } from "$lib/stores/feature-flags.store";
   import { AppPath } from "$lib/constants/routes.constants";
 
   export let testId: string;
   export let accountIdentifier: string | undefined | null = undefined;
-  export let selectedUniverseId: UniverseCanisterId | undefined;
+  export let ledgerCanisterId: Principal | undefined;
   export let token: IcrcTokenMetadata | undefined = undefined;
   export let selectedAccountStore: Writable<WalletStore>;
   export let reloadTransactions: () => Promise<void>;
@@ -38,22 +36,15 @@
 
   const reloadOnlyAccountFromStore = () => setSelectedAccount();
 
-  const goBack = async (): Promise<void> =>
-    goto(
-      $ENABLE_MY_TOKENS
-        ? AppPath.Tokens
-        : buildAccountsUrl({
-            universe: $selectedUniverseStore.canisterId,
-          })
-    );
+  const goBack = async (): Promise<void> => goto(AppPath.Tokens);
 
   // e.g. is called from "Receive" modal after user click "Done"
   export const reloadAccount = async () => {
-    if (isNullish(selectedUniverseId)) {
+    if (isNullish(ledgerCanisterId)) {
       return;
     }
 
-    await loadAccount(selectedUniverseId);
+    await loadAccount(ledgerCanisterId);
 
     // transactions?.reloadTransactions?.() returns a promise.
     // However, the UI displays skeletons while loading and the user can proceed with other operations during this time.
@@ -62,8 +53,8 @@
   };
 
   export const setSelectedAccount = () => {
-    const accounts = nonNullish(selectedUniverseId)
-      ? $icrcAccountsStore[selectedUniverseId.toText()]?.accounts ?? []
+    const accounts = nonNullish(ledgerCanisterId)
+      ? $icrcAccountsStore[ledgerCanisterId.toText()]?.accounts ?? []
       : [];
     const account = findAccountOrDefaultToMain({
       identifier: accountIdentifier,
@@ -76,7 +67,7 @@
   };
 
   export const loadAccount = async (
-    universeId: UniverseCanisterId
+    ledgerCanisterId: Principal
   ): Promise<{
     state: "loaded" | "not_found" | "unknown";
   }> => {
@@ -88,7 +79,9 @@
     }
 
     // Accounts are loaded in store but no account identifier is matching
-    if (hasAccounts($icrcAccountsStore[universeId.toText()]?.accounts ?? [])) {
+    if (
+      hasAccounts($icrcAccountsStore[ledgerCanisterId.toText()]?.accounts ?? [])
+    ) {
       toastsError({
         labelKey: replacePlaceholders($i18n.error.account_not_found, {
           $account_identifier: accountIdentifier ?? "",
@@ -105,14 +98,14 @@
   let loaded = false;
 
   const loadData = async ({
-    universeId,
+    ledgerCanisterId,
     isSignedIn,
   }: {
-    universeId: UniverseCanisterId | undefined;
+    ledgerCanisterId: Principal | undefined;
     isSignedIn: boolean;
   }) => {
     // Universe is not yet loaded
-    if (isNullish(universeId)) {
+    if (isNullish(ledgerCanisterId)) {
       return;
     }
 
@@ -126,7 +119,7 @@
     // It will also re-create a new component for the list of transactions which per extension will trigger fetching those
     loaded = false;
 
-    const { state } = await loadAccount(universeId);
+    const { state } = await loadAccount(ledgerCanisterId);
 
     // The account was loaded or was not found even though accounts are already loaded in store
     if (state !== "unknown") {
@@ -135,10 +128,10 @@
     }
 
     // Maybe the accounts were just not loaded yet in store, so we try to load the accounts in store
-    await syncWalletAccounts({ universeId });
+    await syncWalletAccounts({ ledgerCanisterId });
 
     // And finally try to set the account again
-    await loadAccount(universeId);
+    await loadAccount(ledgerCanisterId);
 
     loaded = true;
   };
@@ -146,7 +139,7 @@
   $: accountIdentifier,
     (async () =>
       await loadData({
-        universeId: selectedUniverseId,
+        ledgerCanisterId,
         isSignedIn: $authSignedInStore,
       }))();
 </script>
@@ -154,10 +147,10 @@
 <Island {testId}>
   <main class="legacy">
     <section>
-      {#if loaded && nonNullish(selectedUniverseId)}
+      {#if loaded && nonNullish(ledgerCanisterId)}
         {#if nonNullish($selectedAccountStore.account) && nonNullish(token)}
           <IcrcBalancesObserver
-            universeId={selectedUniverseId}
+            {ledgerCanisterId}
             accounts={[$selectedAccountStore.account]}
             reload={reloadOnlyAccountFromStore}
           />

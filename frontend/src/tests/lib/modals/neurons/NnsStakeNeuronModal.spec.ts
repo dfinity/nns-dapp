@@ -127,8 +127,8 @@ describe("NnsStakeNeuronModal", () => {
         await po
           .getNnsStakeNeuronPo()
           .getTransactionFromAccountPo()
-          .getDropdownPo()
-          .isPresent()
+          .getSelectAccountDropdownPo()
+          .hasDropdown()
       ).toBe(true);
     });
 
@@ -423,8 +423,8 @@ describe("NnsStakeNeuronModal", () => {
         await po
           .getNnsStakeNeuronPo()
           .getTransactionFromAccountPo()
-          .getDropdownPo()
-          .isPresent()
+          .getSelectAccountDropdownPo()
+          .hasDropdown()
       ).toBe(false);
 
       resolveQueryAccount();
@@ -434,8 +434,8 @@ describe("NnsStakeNeuronModal", () => {
         await po
           .getNnsStakeNeuronPo()
           .getTransactionFromAccountPo()
-          .getDropdownPo()
-          .isPresent()
+          .getSelectAccountDropdownPo()
+          .hasDropdown()
       ).toBe(true);
     });
   });

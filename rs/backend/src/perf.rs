@@ -48,12 +48,8 @@ impl PerformanceCounts {
 
     pub fn get_stats(&self, stats: &mut Stats) {
         stats.performance_counts = self.instruction_counts.iter().cloned().collect();
-        stats.exceptional_transactions_count = Some(
-            self.exceptional_transactions
-                .as_ref()
-                .map(|x| x.len() as u32)
-                .unwrap_or(0),
-        );
+        stats.exceptional_transactions_count =
+            Some(self.exceptional_transactions.as_ref().map_or(0, |x| x.len() as u32));
     }
 
     /// The maximum number of exceptional transaction IDs we store.

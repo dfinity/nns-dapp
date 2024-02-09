@@ -1,7 +1,10 @@
 import * as agent from "$lib/api/agent.api";
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import {
+  CKBTC_LEDGER_CANISTER_ID,
+  CKBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import * as ckbtcAccountsServices from "$lib/services/ckbtc-accounts.services";
 import { convertCkBTCToBtcIcrc2 } from "$lib/services/ckbtc-convert.services";
 import { loadWalletTransactions } from "$lib/services/wallet-transactions.services";
@@ -202,7 +205,7 @@ describe("ckbtc-convert-services", () => {
       });
 
       expect(loadCkBTCAccountsSpy).toBeCalledWith({
-        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID,
       });
 
       expect(approveTransferSpy).toBeCalledTimes(1);

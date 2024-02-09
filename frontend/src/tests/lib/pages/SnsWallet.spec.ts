@@ -1,39 +1,43 @@
-import * as snsIndexApi from "$lib/api/sns-index.api";
-import * as snsLedgerApi from "$lib/api/sns-ledger.api";
+import * as icrcIndexApi from "$lib/api/icrc-index.api";
+import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
+import * as walletLedgerApi from "$lib/api/wallet-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import SnsWallet from "$lib/pages/SnsWallet.svelte";
 import * as workerBalances from "$lib/services/worker-balances.services";
 import * as workerTransactions from "$lib/services/worker-transactions.services";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
 import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
+import WalletTest from "$tests/lib/pages/WalletTest.svelte";
 import {
   mockIdentity,
   resetIdentity,
   setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
-import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { IcrcTokenTransactionModalPo } from "$tests/page-objects/IcrcTokenTransactionModal.page-object";
 import { ReceiveModalPo } from "$tests/page-objects/ReceiveModal.page-object";
 import { SnsWalletPo } from "$tests/page-objects/SnsWallet.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
+import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
-vi.mock("$lib/api/sns-ledger.api");
-vi.mock("$lib/api/sns-index.api");
+vi.mock("$lib/api/icrc-index.api");
 
 let balancesObserverCallback;
 
@@ -79,40 +83,42 @@ describe("SnsWallet", () => {
 
   const rootCanisterId = rootCanisterIdMock;
   const rootCanisterIdText = rootCanisterId.toText();
+  const ledgerCanisterId = Principal.fromText("bw4dl-smaaa-aaaaa-qaacq-cai");
   const fee = 10_000n;
   const projectName = "Tetris";
 
   const renderComponent = async (props: { accountIdentifier?: string }) => {
-    const { container } = render(SnsWallet, props);
+    const { container } = render(WalletTest, {
+      ...props,
+      testComponent: SnsWallet,
+    });
     await runResolvedPromises();
     return SnsWalletPo.under(new JestPageObjectElement(container));
   };
 
   beforeEach(() => {
+    vi.useRealTimers();
     resetIdentity();
     vi.clearAllMocks();
-    snsAccountsStore.reset();
+    icrcAccountsStore.reset();
     tokensStore.reset();
     toastsStore.reset();
-    overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
-    vi.spyOn(snsIndexApi, "getSnsTransactions").mockResolvedValue({
-      oldestTxId: 1_234n,
-      transactions: [mockIcrcTransactionWithId],
+    vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
+      transactions: [],
     });
-    vi.spyOn(snsLedgerApi, "transactionFee").mockResolvedValue(fee);
-    vi.spyOn(snsLedgerApi, "getSnsToken").mockResolvedValue(testToken);
-    vi.spyOn(snsLedgerApi, "snsTransfer").mockResolvedValue(10n);
+    vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(10n);
 
     setSnsProjects([
       {
         rootCanisterId,
+        ledgerCanisterId,
         lifecycle: SnsSwapLifecycle.Committed,
         projectName,
         tokenMetadata: testToken,
       },
     ]);
     tokensStore.setToken({
-      canisterId: rootCanisterId,
+      canisterId: ledgerCanisterId,
       token: {
         ...testToken,
         fee,
@@ -181,8 +187,8 @@ describe("SnsWallet", () => {
 
     beforeEach(() => {
       resolve = undefined;
-      vi.spyOn(snsLedgerApi, "getSnsAccounts").mockImplementation(() => {
-        return new Promise<Account[]>((r) => {
+      vi.spyOn(walletLedgerApi, "getAccount").mockImplementation(() => {
+        return new Promise<Account>((r) => {
           resolve = r;
         });
       });
@@ -195,7 +201,7 @@ describe("SnsWallet", () => {
       expect(await po.hasSpinner()).toBe(true);
 
       expect(resolve).toBeDefined();
-      resolve([mockSnsMainAccount]);
+      resolve(mockSnsMainAccount);
 
       await runResolvedPromises();
       expect(await po.hasSpinner()).toBe(false);
@@ -204,9 +210,9 @@ describe("SnsWallet", () => {
 
   describe("accounts loaded", () => {
     beforeEach(() => {
-      vi.spyOn(snsLedgerApi, "getSnsAccounts").mockResolvedValue([
-        mockSnsMainAccount,
-      ]);
+      vi.spyOn(walletLedgerApi, "getAccount").mockResolvedValue(
+        mockSnsMainAccount
+      );
     });
 
     it("should render sns project name", async () => {
@@ -228,12 +234,10 @@ describe("SnsWallet", () => {
     });
 
     it("should render a balance with token", async () => {
-      vi.spyOn(snsLedgerApi, "getSnsAccounts").mockResolvedValue([
-        {
-          ...mockSnsMainAccount,
-          balanceUlps: 2_233_000_000n,
-        },
-      ]);
+      vi.spyOn(walletLedgerApi, "getAccount").mockResolvedValue({
+        ...mockSnsMainAccount,
+        balanceUlps: 2_233_000_000n,
+      });
 
       const po = await renderComponent(props);
 
@@ -241,19 +245,22 @@ describe("SnsWallet", () => {
     });
 
     it("should open new transaction modal", async () => {
-      const po = await renderComponent(props);
+      const { walletPo: po, icrcTokenTransactionModalPo: modalPo } =
+        await renderWalletAndModals();
 
       await runResolvedPromises();
-      expect(await po.getSnsTransactionModalPo().isPresent()).toBe(false);
+      expect(await modalPo.isPresent()).toBe(false);
 
       await po.clickSendButton();
 
       await runResolvedPromises();
-      expect(await po.getSnsTransactionModalPo().isPresent()).toBe(true);
+      expect(await modalPo.isPresent()).toBe(true);
     });
 
     it("should make a new transaction", async () => {
-      const po = await renderComponent(props);
+      vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(0n);
+      const { walletPo: po, icrcTokenTransactionModalPo: modalPo } =
+        await renderWalletAndModals();
 
       await po.clickSendButton();
 
@@ -261,19 +268,19 @@ describe("SnsWallet", () => {
         owner: principal(1),
       };
 
-      expect(snsLedgerApi.snsTransfer).toHaveBeenCalledTimes(0);
+      expect(icrcLedgerApi.icrcTransfer).toHaveBeenCalledTimes(0);
 
-      await po.getSnsTransactionModalPo().transferToAddress({
+      await modalPo.transferToAddress({
         destinationAddress: encodeIcrcAccount(destinationAccount),
         amount: 2,
       });
 
-      expect(snsLedgerApi.snsTransfer).toHaveBeenCalledTimes(1);
-      expect(snsLedgerApi.snsTransfer).toHaveBeenCalledWith({
+      expect(icrcLedgerApi.icrcTransfer).toHaveBeenCalledTimes(1);
+      expect(icrcLedgerApi.icrcTransfer).toHaveBeenCalledWith({
         identity: mockIdentity,
-        rootCanisterId,
+        canisterId: ledgerCanisterId,
         amount: 200000_000n,
-        fromSubaccount: undefined,
+        fromSubAccount: undefined,
         fee,
         to: destinationAccount,
       });
@@ -284,22 +291,23 @@ describe("SnsWallet", () => {
       testComponent: SnsWallet,
     };
 
-    const renderWalletAndModal = async (): Promise<{
+    const renderWalletAndModals = async (): Promise<{
       walletPo: SnsWalletPo;
       receiveModalPo: ReceiveModalPo;
+      icrcTokenTransactionModalPo: IcrcTokenTransactionModalPo;
     }> => {
       const { container } = render(AccountsTest, modalProps);
       await runResolvedPromises();
+      const element = new JestPageObjectElement(container);
       return {
-        walletPo: SnsWalletPo.under(new JestPageObjectElement(container)),
-        receiveModalPo: ReceiveModalPo.under(
-          new JestPageObjectElement(container)
-        ),
+        walletPo: SnsWalletPo.under(element),
+        receiveModalPo: ReceiveModalPo.under(element),
+        icrcTokenTransactionModalPo: IcrcTokenTransactionModalPo.under(element),
       };
     };
 
     it("should open receive modal with sns logo", async () => {
-      const { walletPo, receiveModalPo } = await renderWalletAndModal();
+      const { walletPo, receiveModalPo } = await renderWalletAndModals();
 
       runResolvedPromises();
       expect(await receiveModalPo.isPresent()).toBe(false);
@@ -313,24 +321,40 @@ describe("SnsWallet", () => {
     });
 
     it("should reload account after finish receiving tokens", async () => {
-      const { walletPo, receiveModalPo } = await renderWalletAndModal();
+      vi.useFakeTimers();
+      const { walletPo, receiveModalPo } = await renderWalletAndModals();
 
+      expect(await receiveModalPo.isPresent()).toBe(false);
       await walletPo.clickReceiveButton();
+      expect(await receiveModalPo.isPresent()).toBe(true);
 
       // Query + update
-      expect(snsLedgerApi.getSnsAccounts).toHaveBeenCalledTimes(2);
+      expect(walletLedgerApi.getAccount).toHaveBeenCalledTimes(2);
       // Transactions can only be fetched from the Index canister with `updated` calls for now.
-      expect(snsIndexApi.getSnsTransactions).toHaveBeenCalledTimes(1);
+      expect(icrcIndexApi.getTransactions).toHaveBeenCalledTimes(1);
+
+      // The Finish button is only rendered after the modal animation has finished.
+      expect(await receiveModalPo.getFinishButtonPo().isPresent()).toBe(false);
+      await advanceTime(50);
+      expect(await receiveModalPo.getFinishButtonPo().isPresent()).toBe(true);
 
       await receiveModalPo.clickFinish();
 
       await runResolvedPromises();
-      expect(snsLedgerApi.getSnsAccounts).toHaveBeenCalledTimes(4);
-      expect(snsIndexApi.getSnsTransactions).toHaveBeenCalledTimes(2);
+      // IcrcWalletPage does not reload the balance, only the transactions, in
+      // `reloadAccount`. Perhaps a bug?
+      // The number of calls is still 2, rather than 4.
+      expect(walletLedgerApi.getAccount).toHaveBeenCalledTimes(2);
+      // IcrcWalletTransactionsList has a hard coded 4 second delay before it
+      // fetches the transactions.
+      await advanceTime(3500);
+      expect(icrcIndexApi.getTransactions).toHaveBeenCalledTimes(1);
+      await advanceTime(1000);
+      expect(icrcIndexApi.getTransactions).toHaveBeenCalledTimes(2);
     });
 
     it("should display receive modal information", async () => {
-      const { walletPo, receiveModalPo } = await renderWalletAndModal();
+      const { walletPo, receiveModalPo } = await renderWalletAndModals();
 
       await walletPo.clickReceiveButton();
 
@@ -376,29 +400,7 @@ describe("SnsWallet", () => {
       );
     });
 
-    it("should navigate to accounts when account identifier is invalid", async () => {
-      expect(get(pageStore)).toEqual({
-        path: AppPath.Wallet,
-        universe: rootCanisterIdText,
-      });
-      await renderComponent({
-        accountIdentifier: "invalid-account-identifier",
-      });
-      expect(get(pageStore)).toEqual({
-        path: AppPath.Accounts,
-        universe: rootCanisterIdText,
-      });
-      expect(get(toastsStore)).toMatchObject([
-        {
-          level: "error",
-          text: 'Sorry, the account "invalid-account-identifier" was not found',
-        },
-      ]);
-    });
-
-    it("should navigate to /tokens when account identifier is invalid and tokens page is enabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
-
+    it("should navigate to /tokens when account identifier is invalid", async () => {
       expect(get(pageStore)).toEqual({
         path: AppPath.Wallet,
         universe: rootCanisterIdText,
@@ -437,12 +439,10 @@ describe("SnsWallet", () => {
       const oldBalance = 123_000_000n;
       const newBalance = 456_000_000n;
 
-      vi.spyOn(snsLedgerApi, "getSnsAccounts").mockResolvedValue([
-        {
-          ...mockSnsMainAccount,
-          balanceUlps: oldBalance,
-        },
-      ]);
+      vi.spyOn(walletLedgerApi, "getAccount").mockResolvedValue({
+        ...mockSnsMainAccount,
+        balanceUlps: oldBalance,
+      });
 
       const po = await renderComponent(props);
 

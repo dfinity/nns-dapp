@@ -6,10 +6,17 @@
 //! This code also stores virtual memory IDs and other memory functions.
 use core::borrow::Borrow;
 use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
+#[cfg(test)]
 use ic_cdk::println;
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
+#[cfg(not(target_arch = "wasm32"))]
 use std::rc::Rc;
+use strum::IntoEnumIterator;
+use strum_macros::EnumIter;
+
+#[cfg(test)]
+use crate::state::SchemaLabel;
 
 pub mod schemas;
 #[cfg(test)]
@@ -22,23 +29,101 @@ pub struct Partitions {
     /// but has no method for returning it.  If we wish to convert a `DefaultMemoryImpl`
     /// to `Partitions` and back again, we need to keep a reference to the memory to
     /// provide when we convert back.
+    #[cfg(test)]
     memory: DefaultMemoryImpl,
 }
-impl Partitions {
+
+impl core::fmt::Debug for Partitions {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(f, "Partitions {{")?;
+        writeln!(f, "  schema_label: {:?}", self.schema_label())?;
+        for id in PartitionType::iter() {
+            writeln!(
+                f,
+                "  {:?} partition: {} pages",
+                id,
+                self.get(MemoryId::new(id as u8)).size()
+            )?;
+        }
+        writeln!(f, "}}")
+    }
+}
+
+#[derive(strum_macros::Display)]
+pub enum PartitionsMaybe {
+    /// Memory that has a memory manager.
+    #[cfg(test)]
+    Partitions(Partitions),
+    /// Memory that does not have any kind of memory manager.
+    None(DefaultMemoryImpl),
+}
+
+#[cfg(test)]
+impl PartitionsMaybe {
+    /// Gets the schema label.
+    pub fn schema_label(&self) -> SchemaLabel {
+        match self {
+            #[cfg(test)]
+            PartitionsMaybe::Partitions(partitions) => partitions.schema_label(),
+            PartitionsMaybe::None(_) => SchemaLabel::Map,
+        }
+    }
+}
+
+impl Default for PartitionsMaybe {
+    fn default() -> Self {
+        PartitionsMaybe::None(DefaultMemoryImpl::default())
+    }
+}
+
+impl core::fmt::Debug for PartitionsMaybe {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            #[cfg(test)]
+            PartitionsMaybe::Partitions(partitions) => {
+                write!(f, "MemoryWithPartitionType::MemoryManager({:?})", partitions)
+            }
+            PartitionsMaybe::None(memory) => {
+                write!(
+                    f,
+                    "MemoryWithPartitionType::None( Memory with {} pages )",
+                    memory.size()
+                )
+            }
+        }
+    }
+}
+
+/// The virtual memory IDs for the partitions.
+///
+/// IMPORTANT: There must be a 1-1 mapping between enum entries and virtual memories (aka partitions of the stable memory).
+///
+/// IMPORTANT: The IDs must be stable across deployments.
+#[repr(u8)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, EnumIter)]
+pub enum PartitionType {
     /// The virtual memory containing metadata such as schema version.
     ///
     /// Note: This ID is guaranteed to be stable across deployments.
-    pub const METADATA_MEMORY_ID: MemoryId = MemoryId::new(0);
+    Metadata = 0,
     /// The virtual memory containing heap data.
     ///
     /// Note: This ID is guaranteed to be stable across deployments.
-    pub const HEAP_MEMORY_ID: MemoryId = MemoryId::new(1);
+    Heap = 1,
     /// The virtual memory containing accounts.
     ///
     /// Note: This ID is guaranteed to be stable across deployments.
-    pub const ACCOUNTS_MEMORY_ID: MemoryId = MemoryId::new(2);
+    Accounts = 2,
+}
+impl PartitionType {
+    pub const fn memory_id(&self) -> MemoryId {
+        MemoryId::new(*self as u8)
+    }
+}
 
+impl Partitions {
     /// Determines whether the given memory is managed by a memory manager.
+    #[cfg(test)]
     fn is_managed(memory: &DefaultMemoryImpl) -> bool {
         let memory_pages = memory.size();
         if memory_pages == 0 {
@@ -70,7 +155,7 @@ impl Partitions {
     pub fn copy_memory_reference(memory: &DefaultMemoryImpl) -> DefaultMemoryImpl {
         // Empty structure that makes API calls.  Can be cloned.
         #[cfg(target_arch = "wasm32")]
-        let ans = (*memory).clone();
+        let ans = *memory;
         // Reference counted pointer.  Make a copy of the pointer.
         #[cfg(not(target_arch = "wasm32"))]
         let ans = Rc::clone(memory);
@@ -82,11 +167,13 @@ impl Partitions {
     /// Note: The memory manager is still represented in the underlying memory,
     /// so converting from `Partitions` to `DefaultMemoryImpl` and back again
     /// returns to the original state.
+    #[cfg(test)]
     pub fn into_memory(self) -> DefaultMemoryImpl {
         self.memory
     }
 
     /// Writes, growing the memory if necessary.
+    #[cfg(test)]
     pub fn growing_write(&self, memory_id: MemoryId, offset: u64, bytes: &[u8]) {
         let memory = self.get(memory_id);
         let min_pages: u64 = u64::try_from(bytes.len())
@@ -122,7 +209,11 @@ impl From<DefaultMemoryImpl> for Partitions {
     /// Note: This is equivalent to `MemoryManager::init()`.
     fn from(memory: DefaultMemoryImpl) -> Self {
         let memory_manager = MemoryManager::init(Self::copy_memory_reference(&memory));
-        Partitions { memory_manager, memory }
+        Partitions {
+            memory_manager,
+            #[cfg(test)]
+            memory,
+        }
     }
 }
 
@@ -135,6 +226,7 @@ impl From<DefaultMemoryImpl> for Partitions {
 ///
 /// Note: Would prefer to use `TryFrom`, but that causes a conflict.  `DefaultMemoryImpl` a type alias which
 /// may refer to a type that has a generic implementation of `TryFrom`.  This is frustrating.
+#[cfg(test)]
 impl Partitions {
     pub fn try_from_memory(memory: DefaultMemoryImpl) -> Result<Self, DefaultMemoryImpl> {
         if Self::is_managed(&memory) {

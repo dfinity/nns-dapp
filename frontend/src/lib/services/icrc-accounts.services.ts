@@ -118,7 +118,7 @@ export const loadIcrcAccount = ({
     onLoad: async ({ response: account, certified }) =>
       icrcAccountsStore.set({
         accounts: { accounts: [account], certified },
-        universeId: ledgerCanisterId,
+        ledgerCanisterId,
       }),
     onError: ({ error: err, certified }) => {
       if (!certified && notForceCallStrategy()) {

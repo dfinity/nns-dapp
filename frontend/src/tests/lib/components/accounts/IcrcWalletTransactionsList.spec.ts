@@ -1,5 +1,8 @@
 import IcrcWalletTransactionsList from "$lib/components/accounts/IcrcWalletTransactionsList.svelte";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import {
+  CKBTC_LEDGER_CANISTER_ID,
+  CKBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import * as services from "$lib/services/wallet-transactions.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import type {
@@ -68,7 +71,7 @@ describe("IcrcWalletTransactionList", () => {
     const { container, component } = render(IcrcWalletTransactionsList, {
       props: {
         account: mockCkBTCMainAccount,
-        universeId: CKBTC_UNIVERSE_CANISTER_ID,
+        ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID,
         indexCanisterId: mockCkBTCAdditionalCanisters.indexCanisterId,
         token: mockCkBTCToken,
         mapTransactions,

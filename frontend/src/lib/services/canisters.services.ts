@@ -15,6 +15,7 @@ import type {
 } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
+import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
 import { canistersStore } from "$lib/stores/canisters.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
@@ -28,6 +29,7 @@ import {
 } from "$lib/utils/error.utils";
 import type { Principal } from "@dfinity/principal";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+import { get } from "svelte/store";
 import { getAuthenticatedIdentity } from "./auth.services";
 import { getAccountIdentity, loadBalance } from "./icp-accounts.services";
 import { queryAndUpdate } from "./utils.services";
@@ -82,11 +84,13 @@ export const createCanister = async ({
     assertEnoughAccountFunds({ amountUlps: icpAmount.toUlps(), account });
 
     const identity = await getAccountIdentity(account.identifier);
+    const fee = get(mainTransactionFeeE8sStore);
     const canisterId = await createCanisterApi({
       identity,
       amount: icpAmount.toUlps(),
       fromSubAccount: account.subAccount,
       name,
+      fee,
     });
     await listCanisters({ clearBeforeQuery: false });
     // We don't wait for `loadBalance` to finish to give a better UX to the user.
@@ -142,11 +146,13 @@ export const topUpCanister = async ({
     assertEnoughAccountFunds({ amountUlps: icpAmount.toUlps(), account });
 
     const identity = await getAccountIdentity(account.identifier);
+    const fee = get(mainTransactionFeeE8sStore);
     await topUpCanisterApi({
       identity,
       canisterId,
       amount: icpAmount.toUlps(),
       fromSubAccount: account.subAccount,
+      fee,
     });
     // We don't wait for `loadBalance` to finish to give a better UX to the user.
     // update calls might be slow.

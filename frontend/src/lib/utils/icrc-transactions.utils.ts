@@ -205,7 +205,7 @@ export const mapIcrcTransaction = ({
     const headline = transactionName({
       type,
       isReceive,
-      labels: i18n.transaction_names,
+      i18n,
     });
     const otherParty = isReceive ? txInfo.from : txInfo.to;
 
