@@ -202,7 +202,7 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
     ///
     /// # Errors
     /// - Failed to parse the Candid as type `In`.
-    /// - Failed to serilaize the `Out` type into JSON.
+    /// - Failed to serialize the `Out` type into JSON.
     /// - The JSON is too large.
     fn try_transform<In, Out>(payload_bytes: &[u8]) -> Result<String, String>
     where
