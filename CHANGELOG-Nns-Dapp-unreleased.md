@@ -20,6 +20,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Add new boundary node proposals support.
 * Prevent the `1Password` extension from appearing in input fields.
 * Support HTML within toast messages.
+* Add `ENABLE_VOTING_INDICATION` feature flag.
 
 #### Changed
 
@@ -33,6 +34,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Removed
 
 * Unused `i18n` messages.
+* Remove `ENABLE_MY_TOKENS` feature flag.
 
 #### Fixed
 

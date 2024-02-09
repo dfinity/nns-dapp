@@ -1,9 +1,9 @@
-import { BaseAccountsPo } from "$tests/page-objects/BaseAccounts.page-object";
 import { NnsAddAccountPo } from "$tests/page-objects/NnsAddAccount.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { TokensTablePo } from "./TokensTable.page-object";
+import { BasePageObject } from "./base.page-object";
 
-export class NnsAccountsPo extends BaseAccountsPo {
+export class NnsAccountsPo extends BasePageObject {
   private static readonly TID = "accounts-body";
 
   static under(element: PageObjectElement): NnsAccountsPo {
