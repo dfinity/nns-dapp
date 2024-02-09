@@ -31,18 +31,6 @@ vi.mock("$lib/api/icp-ledger.api");
 vi.mock("$lib/api/icrc-ledger.api");
 vi.mock("$lib/api/nns-dapp.api");
 
-vi.mock("$lib/services/sns-accounts-balance.services", () => {
-  return {
-    uncertifiedLoadSnsAccountsBalances: vi.fn().mockResolvedValue(undefined),
-  };
-});
-
-vi.mock("$lib/services/wallet-uncertified-accounts.services", () => {
-  return {
-    uncertifiedLoadAccountsBalance: vi.fn().mockResolvedValue(undefined),
-  };
-});
-
 describe("Accounts", () => {
   const balanceIcrcToken = 314000000n;
   const subaccountName = "test";
