@@ -44,7 +44,7 @@ pub enum ContentEncoding {
 impl ContentEncoding {
     /// Returns the file suffix for every encoding.
     #[must_use]
-    pub fn suffix(&self) -> &'static str {
+    pub fn suffix(self) -> &'static str {
         match self {
             ContentEncoding::Identity => "",
             ContentEncoding::GZip => ".gz",
@@ -52,7 +52,7 @@ impl ContentEncoding {
     }
     /// Returns the content encoding, as used in an HTTP header, if applicable.
     #[must_use]
-    pub fn header(&self) -> Option<&'static str> {
+    pub fn header(self) -> Option<&'static str> {
         match self {
             ContentEncoding::Identity => None,
             ContentEncoding::GZip => Some("gzip"),
@@ -68,7 +68,7 @@ pub struct AssetHashes(RbTree<Vec<u8>, Hash>);
 impl From<&Assets> for AssetHashes {
     fn from(assets: &Assets) -> Self {
         let mut asset_hashes = Self::default();
-        for (path, asset) in assets.0.iter() {
+        for (path, asset) in &assets.0 {
             asset_hashes
                 .0
                 .insert(path.as_bytes().to_vec(), hash_bytes(&asset.bytes));
@@ -105,6 +105,7 @@ impl Asset {
         }
     }
 
+    #[must_use]
     pub fn with_header<S: Into<String>>(mut self, key: S, val: S) -> Self {
         self.headers.push((key.into(), val.into()));
         self
@@ -201,9 +202,10 @@ impl Assets {
 }
 
 #[must_use]
+#[allow(clippy::needless_pass_by_value)] // This is the standard signature that must be provided by the canister.
 pub fn http_request(req: HttpRequest) -> HttpResponse {
     let parts: Vec<&str> = req.url.split('?').collect();
-    match parts[0] {
+    match *parts.first().unwrap_or(&"") {
         "/metrics" => {
             let now;
             unsafe {
@@ -225,7 +227,7 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
                 Err(err) => HttpResponse {
                     status_code: 500,
                     headers: vec![],
-                    body: ByteBuf::from(format!("Failed to encode metrics: {}", err)),
+                    body: ByteBuf::from(format!("Failed to encode metrics: {err}")),
                 },
             }
         }
@@ -257,7 +259,7 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
                 None => HttpResponse {
                     status_code: 404,
                     headers,
-                    body: ByteBuf::from(format!("Asset {} not found.", request_path)),
+                    body: ByteBuf::from(format!("Asset {request_path} not found.")),
                 },
             }
         }),
@@ -284,13 +286,11 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
         "css" => Some("text/css"),
         "html" => Some("text/html"),
         "xml" => Some("application/xml"),
-        "js" => Some("application/javascript"),
-        "mjs" => Some("application/javascript"),
+        "js" | "mjs" => Some("application/javascript"),
         "json" => Some("application/json"),
         "svg" => Some("image/svg+xml"),
         "png" => Some("image/png"),
-        "jpeg" => Some("image/jpeg"),
-        "jpg" => Some("image/jpeg"),
+        "jpeg" | "jpg" => Some("image/jpeg"),
         "ico" => Some("image/x-icon"),
         "ttf" => Some("font/ttf"),
         "woff2" => Some("font/woff2"),

@@ -51,8 +51,9 @@ async fn sync_transactions_within_lock() -> Result<u32, String> {
         let blocks = get_blocks(next_block_height_required, tip_of_chain).await?;
         STATE.with(|s| {
             let mut store = s.accounts_store.borrow_mut();
-            let blocks_count = blocks.len() as u32;
-            for (block_height, block) in blocks.into_iter() {
+            let blocks_count = u32::try_from(blocks.len())
+                .unwrap_or_else(|_| unreachable!("It will be a very long time before we have this many blocks"));
+            for (block_height, block) in blocks {
                 let transaction = block.transaction().into_owned();
                 store.append_transaction(transaction.operation, transaction.memo, block_height, block.timestamp())?;
             }
@@ -68,12 +69,17 @@ fn get_block_height_synced_up_to() -> Option<BlockIndex> {
 }
 
 async fn get_blocks(from: BlockIndex, tip_of_chain: BlockIndex) -> Result<Vec<(BlockIndex, Block)>, String> {
+    const MAX_BLOCK_PER_ITERATION: u32 = 1000;
+
     let archive_index_entries = ledger::get_archive_index().await?.entries;
 
     let (canister_id, range) = determine_canister_for_blocks(from, tip_of_chain, archive_index_entries);
 
-    const MAX_BLOCK_PER_ITERATION: u32 = 1000;
-    let count = min((range.end() - range.start() + 1) as u32, MAX_BLOCK_PER_ITERATION);
+    let count = min(
+        u32::try_from(range.end() - range.start() + 1)
+            .unwrap_or_else(|_| unreachable!("It will be a very long time before we have this many blocks")),
+        MAX_BLOCK_PER_ITERATION,
+    );
 
     let blocks = ledger::get_blocks(canister_id, *range.start(), count).await?;
 
@@ -108,7 +114,7 @@ async fn get_blocks(from: BlockIndex, tip_of_chain: BlockIndex) -> Result<Vec<(B
                         STATE.with(|s| {
                             s.performance
                                 .borrow_mut()
-                                .record_exceptional_transaction_id(range.start() + (index as u64))
+                                .record_exceptional_transaction_id(range.start() + (index as u64));
                         });
                         dummy
                     }
@@ -130,14 +136,13 @@ fn determine_canister_for_blocks(
             break;
         } else if archive_index_entry.height_from > from {
             continue;
-        } else {
-            let range_start = max(from, archive_index_entry.height_from);
-            let range_end = min(tip_of_chain, archive_index_entry.height_to);
-            return (
-                CanisterId::new(archive_index_entry.canister_id.unwrap()).unwrap(),
-                range_start..=range_end,
-            );
         }
+        let range_start = max(from, archive_index_entry.height_from);
+        let range_end = min(tip_of_chain, archive_index_entry.height_to);
+        return (
+            CanisterId::new(archive_index_entry.canister_id.unwrap()).unwrap(),
+            range_start..=range_end,
+        );
     }
 
     (LEDGER_CANISTER_ID, from..=tip_of_chain)

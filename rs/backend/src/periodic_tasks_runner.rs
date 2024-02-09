@@ -79,7 +79,7 @@ async fn handle_stake_neuron(principal: PrincipalId, memo: Memo) {
         Ok(neuron_id) => STATE.with(|s| {
             s.accounts_store
                 .borrow_mut()
-                .mark_neuron_created(&principal, memo, neuron_id)
+                .mark_neuron_created(&principal, memo, neuron_id);
         }),
         Err(_error) => (),
     }
@@ -97,14 +97,14 @@ async fn handle_create_canister_v2(block_height: BlockIndex, controller: Princip
         Ok(Ok(canister_id)) => STATE.with(|s| {
             s.accounts_store
                 .borrow_mut()
-                .attach_newly_created_canister(controller, canister_id)
+                .attach_newly_created_canister(controller, canister_id);
         }),
         Ok(Err(NotifyError::Processing)) => {
             STATE.with(|s| {
                 s.accounts_store.borrow_mut().enqueue_multi_part_transaction(
                     block_height,
                     MultiPartTransactionToBeProcessed::CreateCanisterV2(controller),
-                )
+                );
             });
         }
         Ok(Err(_error)) => (),
@@ -117,7 +117,7 @@ async fn handle_create_canister(block_height: BlockIndex, args: CreateCanisterAr
         Ok(Ok(canister_id)) => STATE.with(|s| {
             s.accounts_store
                 .borrow_mut()
-                .attach_newly_created_canister(args.controller, canister_id)
+                .attach_newly_created_canister(args.controller, canister_id);
         }),
         Ok(Err(error)) => {
             let was_refunded = matches!(error, NotifyError::Refunded { .. });
@@ -155,7 +155,7 @@ async fn handle_top_up_canister_v2(block_height: BlockIndex, principal: Principa
                 s.accounts_store.borrow_mut().enqueue_multi_part_transaction(
                     block_height,
                     MultiPartTransactionToBeProcessed::CreateCanisterV2(principal),
-                )
+                );
             });
         }
         Ok(Err(_error)) => (),
@@ -325,8 +325,8 @@ async fn enqueue_create_or_top_up_canister_refund(
                 STATE.with(|s| {
                     s.accounts_store
                         .borrow_mut()
-                        .enqueue_transaction_to_be_refunded(refund_args)
-                })
+                        .enqueue_transaction_to_be_refunded(refund_args);
+                });
             }
         }
         Err(_error) => (),
@@ -337,7 +337,7 @@ fn should_prune_transactions() -> bool {
     #[cfg(target_arch = "wasm32")]
     {
         const MEMORY_LIMIT_BYTES: u32 = 1024 * 1024 * 1024; // 1GB
-        let memory_usage_bytes = (core::arch::wasm32::memory_size(0) * 65536) as u32;
+        let memory_usage_bytes = u32::try_from(core::arch::wasm32::memory_size(0) * 65536).unwrap_or(u32::MAX);
         memory_usage_bytes > MEMORY_LIMIT_BYTES
     }
 

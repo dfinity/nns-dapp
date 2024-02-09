@@ -117,8 +117,8 @@ pub enum PartitionType {
 }
 impl PartitionType {
     #[must_use]
-    pub const fn memory_id(&self) -> MemoryId {
-        MemoryId::new(*self as u8)
+    pub const fn memory_id(self) -> MemoryId {
+        MemoryId::new(self as u8)
     }
 }
 
@@ -156,6 +156,7 @@ impl Partitions {
     /// - Canister stable memory is, in Rust, a stateless `struct` that makes API calls.  It implements Copy.
     /// - Vector memory uses an `Rc` so we use `Rc::clone()` to copy the reference.
     #[must_use]
+    #[allow(clippy::trivially_copy_pass_by_ref)] // The implementation changes depending on target, so clippy is wrong.
     pub fn copy_memory_reference(memory: &DefaultMemoryImpl) -> DefaultMemoryImpl {
         // Empty structure that makes API calls.  Can be cloned.
         #[cfg(target_arch = "wasm32")]
