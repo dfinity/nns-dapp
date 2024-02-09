@@ -813,14 +813,16 @@ impl AccountsStore {
     }
 
     pub fn init_block_height_synced_up_to(&mut self, block_height: BlockIndex) {
-        if self.block_height_synced_up_to.is_some() {
-            panic!("This can only be called to initialize the 'block_height_synced_up_to' value");
-        }
+        assert!(
+            !self.block_height_synced_up_to.is_some(),
+            "This can only be called to initialize the 'block_height_synced_up_to' value"
+        );
 
         self.block_height_synced_up_to = Some(block_height);
     }
 
     #[must_use]
+    #[allow(clippy::needless_pass_by_value)] // The pattern is to pass a request by value.
     pub fn get_transactions(&self, caller: PrincipalId, request: GetTransactionsRequest) -> GetTransactionsResponse {
         let account_identifier = AccountIdentifier::from(caller);
         let empty_transaction_response = GetTransactionsResponse {
@@ -910,7 +912,8 @@ impl AccountsStore {
 
         GetTransactionsResponse {
             transactions: results,
-            total: transactions.len() as u32,
+            total: u32::try_from(transactions.len())
+                .unwrap_or_else(|_| unreachable!("The number of transactions is well below u32")),
         }
     }
 
@@ -961,8 +964,7 @@ impl AccountsStore {
                 });
                 account.canisters.sort();
 
-                self.accounts_db
-                    .db_insert_account(&account_identifier.to_vec(), account);
+                self.accounts_db.db_insert_account(&account_identifier.clone(), account);
 
                 AttachCanisterResponse::Ok
             } else {
@@ -977,7 +979,7 @@ impl AccountsStore {
         } else {
             let account_identifier = AccountIdentifier::from(caller).to_vec();
 
-            if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
+            if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.clone()) {
                 if !request.name.is_empty() && account.canisters.iter().any(|c| c.name == request.name) {
                     return RenameCanisterResponse::NameAlreadyTaken;
                 }
@@ -989,8 +991,7 @@ impl AccountsStore {
                         canister_id: request.canister_id,
                     });
                     account.canisters.sort();
-                    self.accounts_db
-                        .db_insert_account(&account_identifier.to_vec(), account);
+                    self.accounts_db.db_insert_account(&account_identifier.clone(), account);
                     RenameCanisterResponse::Ok
                 } else {
                     RenameCanisterResponse::CanisterNotFound
@@ -1001,6 +1002,7 @@ impl AccountsStore {
         }
     }
 
+    #[allow(clippy::needless_pass_by_value)] // The pattern here is to pass a request by value.
     pub fn detach_canister(&mut self, caller: PrincipalId, request: DetachCanisterRequest) -> DetachCanisterResponse {
         let account_identifier = AccountIdentifier::from(caller).to_vec();
 
