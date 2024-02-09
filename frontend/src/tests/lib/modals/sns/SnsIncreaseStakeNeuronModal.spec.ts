@@ -1,6 +1,6 @@
 import { AppPath } from "$lib/constants/routes.constants";
 import SnsIncreaseStakeNeuronModal from "$lib/modals/sns/neurons/SnsIncreaseStakeNeuronModal.svelte";
-import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
+import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
 import { increaseStakeNeuron } from "$lib/services/sns-neurons.services";
 import { startBusy } from "$lib/stores/busy.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
@@ -38,7 +38,7 @@ vi.mock("$lib/services/sns-neurons.services", () => {
 
 vi.mock("$lib/services/sns-accounts.services", () => {
   return {
-    syncSnsAccounts: vi.fn().mockResolvedValue(undefined),
+    loadSnsAccounts: vi.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -101,7 +101,7 @@ describe("SnsIncreaseStakeNeuronModal", () => {
         props,
       });
 
-      expect(syncSnsAccounts).toBeCalled();
+      expect(loadSnsAccounts).toBeCalled();
     });
 
     it("should display a spinner on init", async () => {
