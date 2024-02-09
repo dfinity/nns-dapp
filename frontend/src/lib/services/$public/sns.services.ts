@@ -11,15 +11,11 @@ import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
 import { snsProposalsStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
-import { tokensStore, type TokensStoreData } from "$lib/stores/tokens.store";
-import type { IcrcTokenMetadata } from "$lib/types/icrc";
+import { tokensStore } from "$lib/stores/tokens.store";
 import { isForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
-import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
-import {
-  convertIcrc1Metadata,
-  convertNervousFunction,
-} from "$lib/utils/sns-aggregator-converters.utils";
+import { fillTokensStoreFromAggregatorData } from "$lib/utils/icrc-tokens.utils";
+import { convertNervousFunction } from "$lib/utils/sns-aggregator-converters.utils";
 import { ProposalStatus, Topic, type ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
@@ -78,32 +74,10 @@ export const loadSnsProjects = async (): Promise<void> => {
         certified: true,
       }))
     );
-    tokensStore.setTokens(
-      aggregatorData
-        .map(({ icrc1_metadata, canister_ids }) => ({
-          token: mapOptionalToken(convertIcrc1Metadata(icrc1_metadata)),
-          // TODO: Remove root_canister_id and only used ledger_canister_id.
-          root_canister_id: canister_ids.root_canister_id,
-          ledger_canister_id: canister_ids.ledger_canister_id,
-        }))
-        .filter(({ token }) => nonNullish(token))
-        .reduce(
-          (acc, { root_canister_id, ledger_canister_id, token }) => ({
-            ...acc,
-            [root_canister_id]: {
-              // Above filter ensure the token is not undefined therefore it can be safely cast
-              token: token as IcrcTokenMetadata,
-              certified: true,
-            },
-            [ledger_canister_id]: {
-              // Above filter ensure the token is not undefined therefore it can be safely cast
-              token: token as IcrcTokenMetadata,
-              certified: true,
-            },
-          }),
-          {} as TokensStoreData
-        )
-    );
+    fillTokensStoreFromAggregatorData({
+      tokensStore,
+      aggregatorData,
+    });
     // TODO: PENDING to be implemented, load SNS parameters.
   } catch (err) {
     toastsError(
