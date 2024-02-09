@@ -371,6 +371,7 @@ pub enum AddPendingTransactionResponse {
 }
 
 impl AccountsStore {
+    #[must_use]
     pub fn get_account(&self, caller: PrincipalId) -> Option<AccountDetails> {
         let account_identifier = AccountIdentifier::from(caller);
         if let Some(account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
@@ -677,6 +678,7 @@ impl AccountsStore {
     }
 
     // Get pending transaction
+    #[must_use]
     pub fn get_pending_transaction(&self, from: AccountIdentifier, to: AccountIdentifier) -> Option<TransactionType> {
         self.pending_transactions
             .get(&(from, to))
@@ -687,6 +689,7 @@ impl AccountsStore {
         self.remove_pending_transaction((from, to));
     }
 
+    #[must_use]
     pub fn pending_transactions_limit_reached(&self) -> bool {
         // Valid pending transactions are very short lived.
         // If there are many, it's because it's filled with invalid pending transactions.
@@ -817,6 +820,7 @@ impl AccountsStore {
         self.block_height_synced_up_to = Some(block_height);
     }
 
+    #[must_use]
     pub fn get_transactions(&self, caller: PrincipalId, request: GetTransactionsRequest) -> GetTransactionsResponse {
         let account_identifier = AccountIdentifier::from(caller);
         let empty_transaction_response = GetTransactionsResponse {
@@ -1014,6 +1018,7 @@ impl AccountsStore {
         }
     }
 
+    #[must_use]
     pub fn get_canisters(&self, caller: PrincipalId) -> Vec<NamedCanister> {
         let account_identifier = AccountIdentifier::from(caller);
         if let Some(account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
@@ -1049,6 +1054,7 @@ impl AccountsStore {
         );
     }
 
+    #[must_use]
     pub fn get_next_transaction_index(&self) -> TransactionIndex {
         match self.transactions.back() {
             Some(t) => t.transaction_index + 1,
@@ -1056,6 +1062,7 @@ impl AccountsStore {
         }
     }
 
+    #[must_use]
     pub fn get_block_height_synced_up_to(&self) -> Option<BlockIndex> {
         self.block_height_synced_up_to
     }
@@ -1156,6 +1163,7 @@ impl AccountsStore {
         stats.migration_countdown = Some(self.accounts_db.migration_countdown());
     }
 
+    #[must_use]
     pub fn get_histogram(&self) -> AccountsStoreHistogram {
         self.accounts_db
             .values()
@@ -1699,6 +1707,7 @@ impl StableState for AccountsStore {
 }
 
 impl Account {
+    #[must_use]
     pub fn new(principal: PrincipalId, account_identifier: AccountIdentifier) -> Account {
         Account {
             principal: Some(principal),
@@ -1736,6 +1745,7 @@ impl Account {
         account.transactions.push(transaction_index);
     }
 
+    #[must_use]
     pub fn get_all_transactions_linked_to_principal_sorted(&self) -> Vec<TransactionIndex> {
         self.default_account_transactions
             .iter()

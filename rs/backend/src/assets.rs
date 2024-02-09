@@ -43,6 +43,7 @@ pub enum ContentEncoding {
 }
 impl ContentEncoding {
     /// Returns the file suffix for every encoding.
+    #[must_use]
     pub fn suffix(&self) -> &'static str {
         match self {
             ContentEncoding::Identity => "",
@@ -50,6 +51,7 @@ impl ContentEncoding {
         }
     }
     /// Returns the content encoding, as used in an HTTP header, if applicable.
+    #[must_use]
     pub fn header(&self) -> Option<&'static str> {
         match self {
             ContentEncoding::Identity => None,
@@ -85,6 +87,7 @@ pub struct Asset {
 }
 
 impl Asset {
+    #[must_use]
     pub fn new(bytes: Vec<u8>) -> Self {
         Self {
             headers: vec![],
@@ -93,6 +96,7 @@ impl Asset {
         }
     }
 
+    #[must_use]
     pub fn new_stable(bytes: Vec<u8>) -> Self {
         Self {
             headers: vec![],
@@ -140,6 +144,7 @@ impl Assets {
     ///   the requester should ask for `foo.json.gz` instead of `foo.json`.
     /// - The current asset signature scheme supports only one signature per path, so we cannot
     ///   take browser capabilities into account.
+    #[must_use]
     pub fn get(&self, path: &str) -> Option<(ContentEncoding, &Asset)> {
         // Note: The logic for finding an asset is the reverse of listing all asset paths.
         for (old_suffix, new_suffix) in Self::SUFFIX_REWRITES {
@@ -168,6 +173,7 @@ impl Assets {
 
     /// Returns the paths for which a given asset may be returned.
     /// Note:  All these paths must be certified.
+    #[must_use]
     pub fn alternate_paths(path: &str) -> Vec<String> {
         // path.gz may be obtained as path.  Likewise for all encodings.
         Self::CONTENT_ENCODINGS
@@ -194,6 +200,7 @@ impl Assets {
     }
 }
 
+#[must_use]
 pub fn http_request(req: HttpRequest) -> HttpResponse {
     let parts: Vec<&str> = req.url.split('?').collect();
     match parts[0] {
@@ -464,12 +471,14 @@ fn encode_decode() {
 }
 
 /// Compress data
+#[must_use]
 pub fn gzip(uncompressed: &[u8]) -> Vec<u8> {
     let mut encoder = GzEncoder::new(Vec::new(), Compression::default());
     encoder.write_all(uncompressed).unwrap_or_default();
     encoder.finish().unwrap_or_default()
 }
 /// Uncompress data
+#[must_use]
 pub fn gunzip_string(compressed: &[u8]) -> String {
     let mut d = GzDecoder::new(compressed);
     let mut s = String::new();

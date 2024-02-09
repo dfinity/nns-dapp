@@ -29,20 +29,24 @@ impl MultiPartTransactionsProcessor {
         self.queue.push_back((block_height, transaction_to_be_processed));
     }
 
+    #[must_use]
     pub fn take_next(&mut self) -> Option<(BlockIndex, MultiPartTransactionToBeProcessed)> {
         self.queue.pop_front()
     }
 
+    #[must_use]
     pub fn get_queue_length(&self) -> u32 {
         self.queue.len() as u32
     }
 
     #[cfg(test)]
+    #[must_use]
     pub fn get_queue_for_testing(&self) -> VecDeque<(BlockIndex, MultiPartTransactionToBeProcessed)> {
         self.queue.clone()
     }
 
     #[cfg(test)]
+    #[must_use]
     pub fn get_mut_queue_for_testing(&mut self) -> &mut VecDeque<(BlockIndex, MultiPartTransactionToBeProcessed)> {
         &mut self.queue
     }

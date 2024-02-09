@@ -119,6 +119,7 @@ pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
 }
 
 /// The stable memory size in bytes
+#[must_use]
 pub fn stable_memory_size_bytes() -> u64 {
     #[cfg(target_arch = "wasm32")]
     {
@@ -131,6 +132,7 @@ pub fn stable_memory_size_bytes() -> u64 {
 }
 
 /// The WASM memory size in bytes
+#[must_use]
 pub fn wasm_memory_size_bytes() -> u64 {
     #[cfg(target_arch = "wasm32")]
     {
@@ -145,6 +147,7 @@ pub fn wasm_memory_size_bytes() -> u64 {
 }
 
 /// Convert bytes to binary gigabytes
+#[must_use]
 pub fn gibibytes(bytes: u64) -> f64 {
     (bytes as f64) / (GIBIBYTE as f64)
 }

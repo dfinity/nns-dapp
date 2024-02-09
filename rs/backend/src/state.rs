@@ -200,6 +200,7 @@ impl State {
     /// - Deploy a release with a parser for the new schema.
     /// - Then, deploy a release that writes the new schema.
     /// This way it is possible to roll back after deploying the new schema.
+    #[must_use]
     pub fn restore() -> Self {
         match Self::schema_version_from_stable_memory() {
             None => Self::recover_from_raw_memory(),

@@ -18,6 +18,7 @@ pub struct PerformanceCount {
     instruction_count: u64,
 }
 impl PerformanceCount {
+    #[must_use]
     pub fn new(name: &str) -> Self {
         let name = name.to_string();
         let timestamp_ns_since_epoch = crate::time::time();

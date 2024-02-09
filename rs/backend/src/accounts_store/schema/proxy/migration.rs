@@ -17,6 +17,7 @@ impl AccountsDbAsProxy {
     ///         When performing CRUD, apply the operation to the new database ONLY if either:
     ///         - `next_to_migrate` is `None` (i.e. the migration is complete)
     ///         - The key is strictly less than `next_to_migrate`.
+    #[must_use]
     pub fn migration_countdown(&self) -> u32 {
         self.migration.as_ref().map_or(0, |migration| {
             let accounts_to_migrate = self
