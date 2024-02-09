@@ -27,7 +27,7 @@ export const loadSnsAccounts = async ({
   strategy?: QueryAndUpdateStrategy;
 }): Promise<void> => {
   return queryAndUpdate<Account[], unknown>({
-    strategy: strategy,
+    strategy,
     request: ({ certified, identity }) =>
       getSnsAccounts({ rootCanisterId, identity, certified }),
     onLoad: ({ response: accounts, certified }) =>
