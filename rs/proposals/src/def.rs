@@ -190,41 +190,41 @@ pub struct UpdateIcpXdrConversionRatePayload {
     pub xdr_permyriad_per_icp: u64,
 }
 
-// NNS function 11 - `UpdateSubnetReplicaVersion`
-// https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_update_subnet_replica.rs#L58
+/// NNS function 11 - `UpdateSubnetReplicaVersion`
+/// <https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_update_subnet_replica.rs#L58>
 pub type UpdateSubnetReplicaVersionPayload = crate::canisters::nns_registry::api::UpdateSubnetReplicaVersionPayload;
 
-// NNS function 13 - `RemoveNodesFromSubnet`
-// https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_remove_nodes_from_subnet.rs#L57
+/// NNS function 13 - `RemoveNodesFromSubnet`
+/// <https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_remove_nodes_from_subnet.rs#L57>
 pub type RemoveNodesFromSubnetPayload = crate::canisters::nns_registry::internal::RemoveNodesFromSubnetPayload;
 
-// NNS function 14 - `SetAuthorizedSubnetworkList`
-// https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/nns/cmc/src/lib.rs#L168
+/// NNS function 14 - `SetAuthorizedSubnetworkList`
+/// <https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/nns/cmc/src/lib.rs#L168>
 pub type SetAuthorizedSubnetworkListArgs = cycles_minting_canister::SetAuthorizedSubnetworkListArgs;
 
-// NNS function 15 - `SetFirewallConfig`
-// https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_set_firewall_config.rs#L39
+/// NNS function 15 - `SetFirewallConfig`
+/// <https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_set_firewall_config.rs#L39>
 pub type SetFirewallConfigPayload = crate::canisters::nns_registry::api::SetFirewallConfigPayload;
 
-// NNS function 16 - `UpdateNodeOperatorConfig`
-// https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_update_node_operator_config.rs#L106
+/// NNS function 16 - `UpdateNodeOperatorConfig`
+/// <https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_update_node_operator_config.rs#L106>
 pub type UpdateNodeOperatorConfigPayload = crate::canisters::nns_registry::api::UpdateNodeOperatorConfigPayload;
 
-// NNS function 17 - `StopOrStartNNSCanister`
-// https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/nervous_system/root/src/lib.rs#L258
+/// NNS function 17 - `StopOrStartNNSCanister`
+/// <https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/nervous_system/root/src/lib.rs#L258>
 pub type StopOrStartNnsCanisterProposal = ic_nervous_system_root::change_canister::StopOrStartCanisterProposal;
 
-// NNS function 18 - `RemoveNodes`
-// https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/node_management/do_remove_nodes.rs#L96
+/// NNS function 18 - `RemoveNodes`
+/// <https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/node_management/do_remove_nodes.rs#L96>
 pub type RemoveNodesPayload = crate::canisters::nns_registry::api::RemoveNodesPayload;
 
 /// NNS function 20 - `UpdateNodeRewardsTable`
-/// https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/protobuf/def/registry/node_rewards/v2/node_rewards.proto#L24
+/// <https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/protobuf/def/registry/node_rewards/v2/node_rewards.proto#L24>
 pub type UpdateNodeRewardsTableProposalPayload =
     ic_protobuf::registry::node_rewards::v2::UpdateNodeRewardsTableProposalPayload;
 
 /// NNS function 21 - `AddOrRemoveDataCenters`
-/// https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/protobuf/def/registry/dc/v1/dc.proto#L23
+/// <https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/protobuf/def/registry/dc/v1/dc.proto#L23>
 pub type AddOrRemoveDataCentersProposalPayload = ic_protobuf::registry::dc::v1::AddOrRemoveDataCentersProposalPayload;
 
 /// NNS function 22 - `UpdateUnassignedNodes`
