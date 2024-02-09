@@ -1008,7 +1008,7 @@ impl AccountsStore {
             if let Some(index) = Self::find_canister_index(&account, request.canister_id) {
                 account.canisters.remove(index);
                 self.accounts_db
-                    .db_insert_account(&account_identifier.to_vec(), account);
+                    .db_insert_account(&account_identifier.clone(), account);
                 DetachCanisterResponse::Ok
             } else {
                 DetachCanisterResponse::CanisterNotFound
@@ -1037,7 +1037,7 @@ impl AccountsStore {
             // We only attach if it doesn't already exist
             if Self::find_canister_index(&account, canister_id).is_none() {
                 account.canisters.push(NamedCanister {
-                    name: "".to_string(),
+                    name: String::new(),
                     canister_id,
                 });
                 account.canisters.sort();
@@ -1086,7 +1086,7 @@ impl AccountsStore {
     }
 
     pub fn prune_transactions(&mut self, count_to_prune: u32) -> u32 {
-        let count_to_prune = min(count_to_prune, self.transactions.len() as u32);
+        let count_to_prune = min(count_to_prune, u32::try_from(self.transactions.len()).unwrap_or_else(|_| unreachable!("The number of transactions is well below 2**32.  It will get there, but not before we switch to the ledger index and this code is deleted.")));
 
         if count_to_prune > 0 {
             let transactions: Vec<_> = self
@@ -1137,10 +1137,15 @@ impl AccountsStore {
     pub fn get_stats(&self, stats: &mut Stats) {
         let earliest_transaction = self.transactions.front();
         let latest_transaction = self.transactions.back();
-        let timestamp_now_nanos = dfn_core::api::now()
-            .duration_since(SystemTime::UNIX_EPOCH)
-            .unwrap()
-            .as_nanos() as u64;
+        let timestamp_now_nanos = u64::try_from(
+            dfn_core::api::now()
+                .duration_since(SystemTime::UNIX_EPOCH)
+                .unwrap()
+                .as_nanos(),
+        )
+        .unwrap_or_else(|_| {
+            unreachable!("Well, this could kill us if the code is still running in 500 years.  Not impossible.")
+        });
         let duration_since_last_sync =
             Duration::from_nanos(timestamp_now_nanos - self.last_ledger_sync_timestamp_nanos);
 
@@ -1243,7 +1248,10 @@ impl AccountsStore {
                     None
                 } else {
                     let offset = t.transaction_index;
-                    self.transactions.get((transaction_index - offset) as usize)
+                    self.transactions
+                        .get(usize::try_from(transaction_index - offset).unwrap_or_else(|_| {
+                            unreachable!("The number of transactions is far below the size of memory.")
+                        }))
                 }
             }
             None => None,
