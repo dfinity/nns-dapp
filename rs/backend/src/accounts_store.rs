@@ -1451,7 +1451,7 @@ impl AccountsStore {
         // then forwards the ICP on to an account controlled by the CMC and calls notify on the
         // ledger which in turns notifies the CMC.
         if memo == MEMO_TOP_UP_CANISTER {
-            for canister_id in canister_ids.iter() {
+            for canister_id in canister_ids {
                 let subaccount = (&canister_id.get()).into();
                 {
                     // Check if sent to CMC account for this canister
@@ -1750,7 +1750,7 @@ impl Account {
         self.default_account_transactions
             .iter()
             .copied()
-            .chain(self.sub_accounts.values().flat_map(|a| a.transactions.iter().cloned()))
+            .chain(self.sub_accounts.values().flat_map(|a| a.transactions.iter().copied()))
             .sorted()
             .collect()
     }

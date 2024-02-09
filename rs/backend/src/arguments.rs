@@ -98,7 +98,7 @@ impl CanisterArguments {
     pub fn args_from_str(str_args: &[(&str, &str)]) -> Vec<(String, String)> {
         str_args
             .iter()
-            .map(|(key, val)| (key.to_string(), val.to_string()))
+            .map(|(key, val)| ((*key).to_string(), (*val).to_string()))
             .collect()
     }
 }
