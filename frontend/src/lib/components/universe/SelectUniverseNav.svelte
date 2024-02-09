@@ -4,6 +4,8 @@
   import SelectUniverseDropdown from "$lib/components/universe/SelectUniverseDropdown.svelte";
   import { titleTokenSelectorStore } from "$lib/derived/title-token-selector.derived";
 
+  export let votingIndicator: boolean = false;
+
   let innerWidth = 0;
   let list = false;
 
