@@ -180,7 +180,7 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
     ///
     /// # Errors
     /// - Failed to parse the Candid.
-    /// - Failed to serilaize the Candid into JSON.
+    /// - Failed to serialize the Candid into JSON.
     ///
     /// TODO: Check  whether the JSON is too large.
     fn candid_fallback<In>(payload_bytes: &[u8]) -> Result<String, String>
