@@ -44,7 +44,7 @@ pub enum ContentEncoding {
 impl ContentEncoding {
     /// Returns the file suffix for every encoding.
     #[must_use]
-    pub fn suffix(&self) -> &'static str {
+    pub fn suffix(self) -> &'static str {
         match self {
             ContentEncoding::Identity => "",
             ContentEncoding::GZip => ".gz",
@@ -52,7 +52,7 @@ impl ContentEncoding {
     }
     /// Returns the content encoding, as used in an HTTP header, if applicable.
     #[must_use]
-    pub fn header(&self) -> Option<&'static str> {
+    pub fn header(self) -> Option<&'static str> {
         match self {
             ContentEncoding::Identity => None,
             ContentEncoding::GZip => Some("gzip"),

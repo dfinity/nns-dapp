@@ -52,7 +52,7 @@ async fn sync_transactions_within_lock() -> Result<u32, String> {
         STATE.with(|s| {
             let mut store = s.accounts_store.borrow_mut();
             let blocks_count = blocks.len() as u32;
-            for (block_height, block) in blocks.into_iter() {
+            for (block_height, block) in blocks {
                 let transaction = block.transaction().into_owned();
                 store.append_transaction(transaction.operation, transaction.memo, block_height, block.timestamp())?;
             }
@@ -68,11 +68,12 @@ fn get_block_height_synced_up_to() -> Option<BlockIndex> {
 }
 
 async fn get_blocks(from: BlockIndex, tip_of_chain: BlockIndex) -> Result<Vec<(BlockIndex, Block)>, String> {
+    const MAX_BLOCK_PER_ITERATION: u32 = 1000;
+
     let archive_index_entries = ledger::get_archive_index().await?.entries;
 
     let (canister_id, range) = determine_canister_for_blocks(from, tip_of_chain, archive_index_entries);
 
-    const MAX_BLOCK_PER_ITERATION: u32 = 1000;
     let count = min((range.end() - range.start() + 1) as u32, MAX_BLOCK_PER_ITERATION);
 
     let blocks = ledger::get_blocks(canister_id, *range.start(), count).await?;
@@ -108,7 +109,7 @@ async fn get_blocks(from: BlockIndex, tip_of_chain: BlockIndex) -> Result<Vec<(B
                         STATE.with(|s| {
                             s.performance
                                 .borrow_mut()
-                                .record_exceptional_transaction_id(range.start() + (index as u64))
+                                .record_exceptional_transaction_id(range.start() + (index as u64));
                         });
                         dummy
                     }
