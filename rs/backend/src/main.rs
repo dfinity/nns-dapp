@@ -243,6 +243,7 @@ pub fn add_pending_notify_swap() {
     over(candid_one, add_pending_notify_swap_impl);
 }
 
+#[allow(clippy::needless_pass_by_value)] // The pattern is to take requests by value.
 fn add_pending_notify_swap_impl(request: AddPendingNotifySwapRequest) -> AddPendingTransactionResponse {
     let caller = dfn_core::api::caller();
     STATE.with(|s| {
@@ -352,10 +353,10 @@ pub fn add_assets_tar_xz() {
         let caller = ic_cdk::caller();
         let is_controller = ic_cdk::api::is_controller(&caller);
         assets::upload::may_upload(&caller, is_controller)
-            .map_err(|e| format!("Permission to upload denied: {}", e))
+            .map_err(|e| format!("Permission to upload denied: {e}"))
             .unwrap();
         insert_tar_xz(asset_bytes);
-    })
+    });
 }
 
 /// Generates a lot of toy accounts for testing.
@@ -376,8 +377,14 @@ pub fn create_toy_accounts() {
         if !ic_cdk::api::is_controller(&caller) {
             dfn_core::api::trap_with("Only the controller may generate toy accounts");
         }
-        STATE.with(|s| s.accounts_store.borrow_mut().create_toy_accounts(num_accounts as u64))
-    })
+        STATE.with(|s| {
+            s.accounts_store
+                .borrow_mut()
+                .create_toy_accounts(u64::try_from(num_accounts).unwrap_or_else(|_| {
+                    unreachable!("The number of accounts is well below the number of atoms in the universe")
+                }))
+        })
+    });
 }
 
 /// Gets any toy account by toy account index.
@@ -394,7 +401,7 @@ pub fn get_toy_account() {
             Some(account) => GetAccountResponse::Ok(account),
             None => GetAccountResponse::AccountNotFound,
         })
-    })
+    });
 }
 
 #[export_name = "canister_query get_exceptional_transactions"]
@@ -407,7 +414,7 @@ fn get_exceptional_transactions_impl() -> Option<Vec<u64>> {
             .borrow()
             .exceptional_transactions
             .as_ref()
-            .map(|transactions| transactions.iter().cloned().collect::<Vec<u64>>())
+            .map(|transactions| transactions.iter().copied().collect::<Vec<u64>>())
     })
 }
 

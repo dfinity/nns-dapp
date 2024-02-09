@@ -117,8 +117,8 @@ pub enum PartitionType {
 }
 impl PartitionType {
     #[must_use]
-    pub const fn memory_id(&self) -> MemoryId {
-        MemoryId::new(*self as u8)
+    pub const fn memory_id(self) -> MemoryId {
+        MemoryId::new(self as u8)
     }
 }
 
