@@ -112,7 +112,7 @@ pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
     )?;
     w.encode_gauge(
         "exceptional_transactions_count",
-        stats.exceptional_transactions_count.unwrap_or(0) as f64,
+        f64::from(stats.exceptional_transactions_count.unwrap_or(0)),
         "The number of exceptional transactions in the canister log.",
     )?;
     Ok(())
@@ -148,6 +148,7 @@ pub fn wasm_memory_size_bytes() -> u64 {
 
 /// Convert bytes to binary gigabytes
 #[must_use]
+#[allow(clippy::cast_precision_loss)]
 pub fn gibibytes(bytes: u64) -> f64 {
     (bytes as f64) / (GIBIBYTE as f64)
 }

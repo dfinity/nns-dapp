@@ -1,5 +1,7 @@
 //! Code for migration from the authoritative database to a new database.
-use super::*;
+#[cfg(test)]
+use super::{AccountsDb, Migration};
+use super::{AccountsDbAsProxy, AccountsDbTrait};
 
 impl AccountsDbAsProxy {
     /// The number of accounts to move per heartbeat.
