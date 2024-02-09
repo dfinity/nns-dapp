@@ -20,7 +20,9 @@ pub mod def;
 
 type Json = String;
 
+/// The maximum number of proposal payloads that will be cached.
 const CACHE_SIZE_LIMIT: usize = 100;
+/// The maximum length of a proposal payload JSON that will be admitted to the cache.
 const CACHE_ITEM_SIZE_LIMIT: usize = 2 * 1024 * 1024; // 2MB
 
 thread_local! {
