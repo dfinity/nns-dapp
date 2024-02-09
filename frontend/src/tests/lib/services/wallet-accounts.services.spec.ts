@@ -1,4 +1,5 @@
-import * as ckbtcLedgerApi from "$lib/api/wallet-ledger.api";
+import * as ledgerApi from "$lib/api/icrc-ledger.api";
+import * as walletApi from "$lib/api/wallet-ledger.api";
 import {
   CKBTC_LEDGER_CANISTER_ID,
   CKBTC_UNIVERSE_CANISTER_ID,
@@ -38,10 +39,10 @@ describe("wallet-accounts-services", () => {
       vi.spyOn(console, "error").mockImplementation(() => undefined);
     });
 
-    it("should call getAccount and load neurons in store", async () => {
+    it("should call queryIcrcBalance and load accounts in store", async () => {
       const spyQuery = vi
-        .spyOn(ckbtcLedgerApi, "getAccount")
-        .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
+        .spyOn(ledgerApi, "queryIcrcBalance")
+        .mockResolvedValue(mockCkBTCMainAccount.balanceUlps);
 
       await loadAccounts({ ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID });
 
@@ -52,15 +53,16 @@ describe("wallet-accounts-services", () => {
       expect(store[CKBTC_UNIVERSE_CANISTER_ID.toText()].accounts).toHaveLength(
         1
       );
+      expect(store[CKBTC_UNIVERSE_CANISTER_ID.toText()].accounts[0]).toEqual(
+        mockCkBTCMainAccount
+      );
       expect(spyQuery).toBeCalled();
-
-      spyQuery.mockClear();
     });
 
     it("should use the strategy to set certified in api call and store", async () => {
       const spyQuery = vi
-        .spyOn(ckbtcLedgerApi, "getAccount")
-        .mockResolvedValue(mockCkBTCMainAccount);
+        .spyOn(ledgerApi, "queryIcrcBalance")
+        .mockResolvedValue(mockCkBTCMainAccount.balanceUlps);
 
       await loadAccounts({
         ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID,
@@ -78,14 +80,15 @@ describe("wallet-accounts-services", () => {
         canisterId: CKBTC_LEDGER_CANISTER_ID,
         identity: mockIdentity,
         certified: false,
-        owner: mockIdentity.getPrincipal(),
-        type: "main",
+        account: {
+          owner: mockIdentity.getPrincipal(),
+        },
       });
     });
 
     it("should call error callback", async () => {
       const spyQuery = vi
-        .spyOn(ckbtcLedgerApi, "getAccount")
+        .spyOn(ledgerApi, "queryIcrcBalance")
         .mockRejectedValue(new Error());
 
       const spy = vi.fn();
@@ -101,10 +104,10 @@ describe("wallet-accounts-services", () => {
     });
 
     it("should call error callback if query fails strategy is query", async () => {
-      vi.spyOn(ckbtcLedgerApi, "getAccount").mockImplementation(
+      vi.spyOn(ledgerApi, "queryIcrcBalance").mockImplementation(
         async ({ certified }) => {
           if (certified) {
-            return mockCkBTCMainAccount;
+            return mockCkBTCMainAccount.balanceUlps;
           }
           throw new Error();
         }
@@ -122,10 +125,10 @@ describe("wallet-accounts-services", () => {
     });
 
     it("should not call error callback if query fails and update succeeds", async () => {
-      vi.spyOn(ckbtcLedgerApi, "getAccount").mockImplementation(
+      vi.spyOn(ledgerApi, "queryIcrcBalance").mockImplementation(
         async ({ certified }) => {
           if (certified) {
-            return mockCkBTCMainAccount;
+            return mockCkBTCMainAccount.balanceUlps;
           }
           throw new Error();
         }
@@ -158,9 +161,7 @@ describe("wallet-accounts-services", () => {
         completed: false,
       });
 
-      vi.spyOn(ckbtcLedgerApi, "getAccount").mockImplementation(() =>
-        Promise.reject(undefined)
-      );
+      vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(new Error());
 
       await loadAccounts({ ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID });
 
@@ -182,12 +183,12 @@ describe("wallet-accounts-services", () => {
 
     it("should call ckBTC accounts and token and load them in store", async () => {
       const spyAccountsQuery = vi
-        .spyOn(ckbtcLedgerApi, "getAccount")
-        .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
+        .spyOn(ledgerApi, "queryIcrcBalance")
+        .mockResolvedValue(mockCkBTCMainAccount.balanceUlps);
 
       const spyTokenQuery = vi
-        .spyOn(ckbtcLedgerApi, "getToken")
-        .mockImplementation(() => Promise.resolve(mockCkBTCToken));
+        .spyOn(walletApi, "getToken")
+        .mockResolvedValue(mockCkBTCToken);
 
       await syncAccounts({
         ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID,

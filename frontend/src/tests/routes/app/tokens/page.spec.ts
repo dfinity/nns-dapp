@@ -23,14 +23,10 @@ import {
   setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
 import {
-  mockCkBTCMainAccount,
   mockCkBTCToken,
   mockCkTESTBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
-import {
-  mockCkETHMainAccount,
-  mockCkETHToken,
-} from "$tests/mocks/cketh-accounts.mock";
+import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
@@ -122,32 +118,20 @@ describe("Tokens route", () => {
       vi.spyOn(AuthClient, "create").mockImplementation(
         async (): Promise<AuthClient> => mockAuthClient
       );
-      vi.spyOn(walletLedgerApi, "getAccount").mockImplementation(
+      vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
         async ({ canisterId }) => {
-          const accountMap = {
-            [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
-              ...mockCkBTCMainAccount,
-              balanceUlps: ckBTCBalanceE8s,
-            },
-            [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: {
-              ...mockCkBTCMainAccount,
-              balanceUlps: ckBTCBalanceE8s,
-            },
-            [CKETH_UNIVERSE_CANISTER_ID.toText()]: {
-              ...mockCkETHMainAccount,
-              balanceUlps: ckETHBalanceUlps,
-            },
-            [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: {
-              ...mockCkETHMainAccount,
-              balanceUlps: ckETHBalanceUlps,
-            },
+          const balancesMap = {
+            [CKBTC_UNIVERSE_CANISTER_ID.toText()]: ckBTCBalanceE8s,
+            [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: ckBTCBalanceE8s,
+            [CKETH_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
+            [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
           };
-          if (isNullish(accountMap[canisterId.toText()])) {
+          if (isNullish(balancesMap[canisterId.toText()])) {
             throw new Error(
               `Account not found for canister ${canisterId.toText()}`
             );
           }
-          return accountMap[canisterId.toText()];
+          return balancesMap[canisterId.toText()];
         }
       );
       vi.spyOn(snsLedgerApi, "snsTransfer").mockResolvedValue(undefined);
@@ -170,20 +154,6 @@ describe("Tokens route", () => {
         }
       );
       vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(1234n);
-      vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
-        async ({ canisterId }) => {
-          const balanceMap = {
-            [CKETH_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
-            [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
-          };
-          if (isNullish(balanceMap[canisterId.toText()])) {
-            throw new Error(
-              `Balance not found for canister ${canisterId.toText()}`
-            );
-          }
-          return balanceMap[canisterId.toText()];
-        }
-      );
       vi.spyOn(ckBTCMinterApi, "updateBalance").mockRejectedValue(
         noPendingUtxos
       );

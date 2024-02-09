@@ -1,5 +1,4 @@
 import * as icrcLegerApi from "$lib/api/icrc-ledger.api";
-import * as ledgerApi from "$lib/api/wallet-ledger.api";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
@@ -39,12 +38,12 @@ describe("wallet-uncertified-accounts.services", () => {
     ],
   };
 
-  it("should call api.getAccounts and load balance in store", async () => {
+  it("should call api.queryIcrcBalance and load balance in store", async () => {
     vi.spyOn(icrcLegerApi, "queryIcrcToken").mockResolvedValue(mockCkBTCToken);
 
     const spyQuery = vi
-      .spyOn(ledgerApi, "getAccount")
-      .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
+      .spyOn(icrcLegerApi, "queryIcrcBalance")
+      .mockResolvedValue(mockCkBTCMainAccount.balanceUlps);
 
     await services.uncertifiedLoadAccountsBalance(params);
 
@@ -62,8 +61,8 @@ describe("wallet-uncertified-accounts.services", () => {
       .spyOn(icrcLegerApi, "queryIcrcToken")
       .mockResolvedValue(mockCkBTCToken);
 
-    vi.spyOn(ledgerApi, "getAccount").mockImplementation(() =>
-      Promise.resolve(mockCkBTCMainAccount)
+    vi.spyOn(icrcLegerApi, "queryIcrcBalance").mockResolvedValue(
+      mockCkBTCMainAccount.balanceUlps
     );
 
     await services.uncertifiedLoadAccountsBalance(params);
@@ -83,7 +82,7 @@ describe("wallet-uncertified-accounts.services", () => {
 
   it("should toast error", async () => {
     vi.spyOn(console, "error").mockImplementation(() => undefined);
-    vi.spyOn(ledgerApi, "getAccount").mockRejectedValue(new Error());
+    vi.spyOn(icrcLegerApi, "queryIcrcBalance").mockRejectedValue(new Error());
 
     await services.uncertifiedLoadAccountsBalance(params);
 

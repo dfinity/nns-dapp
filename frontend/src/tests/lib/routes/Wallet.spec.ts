@@ -100,22 +100,19 @@ describe("Wallet", () => {
 
     icrcAccountsStore.reset();
     ckEthBalance = 1000000000000000000n;
-    vi.spyOn(walletLedgerApi, "getAccount").mockImplementation(
+    vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
       async ({ canisterId }) => {
         if (canisterId.toText() === CKETH_UNIVERSE_CANISTER_ID.toText()) {
-          return {
-            ...mockIcrcMainAccount,
-            balanceUlps: ckEthBalance,
-          };
+          return ckEthBalance;
         }
         if (canisterId.toText() === CKBTC_UNIVERSE_CANISTER_ID.toText()) {
-          return mockCkBTCMainAccount;
+          return mockCkBTCMainAccount.balanceUlps;
         }
         if (
           canisterId.toText() ===
           mockSnsFullProject.summary.ledgerCanisterId.toText()
         ) {
-          return mockSnsMainAccount;
+          return mockSnsMainAccount.balanceUlps;
         }
         throw new Error(`Unexpected canisterId: ${canisterId.toText()}`);
       }
@@ -250,7 +247,7 @@ describe("Wallet", () => {
     };
 
     // Load data with query + Update calls
-    expect(walletLedgerApi.getAccount).toHaveBeenCalledTimes(2);
+    expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(2);
     ckEthBalance = balanceAfterTransfer;
 
     await modalPo.transferToAddress({
@@ -269,7 +266,7 @@ describe("Wallet", () => {
       fee: mockCkETHToken.fee,
     });
     // Setup + Query + Update calls after transfer
-    expect(walletLedgerApi.getAccount).toHaveBeenCalledTimes(4);
+    expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(4);
 
     expect(await pagePo.getWalletPageHeadingPo().getTitle()).toBe("1.11 ckETH");
   });
