@@ -305,19 +305,19 @@ impl From<AddWasmRequest> for AddWasmRequestTrimmed {
     }
 }
 
-/// NNS function 31 - ChangeSubnetMembership
+/// NNS function 31 - `ChangeSubnetMembership`
 /// The payload of a proposal to change the membership of nodes in an existing subnet.
-/// https://github.com/dfinity/ic/blob/f74c23fe475aa9545f936748e2506f609aa4be8d/rs/registry/canister/src/mutations/do_change_subnet_membership.rs#L71
+/// <https://github.com/dfinity/ic/blob/f74c23fe475aa9545f936748e2506f609aa4be8d/rs/registry/canister/src/mutations/do_change_subnet_membership.rs#L71>
 pub type ChangeSubnetMembershipPayload = crate::canisters::nns_registry::api::ChangeSubnetMembershipPayload;
 
-/// NNS function 32 - UpdateSubnetType
+/// NNS function 32 - `UpdateSubnetType`
 /// Updates the available subnet types in the cycles minting canister.
-/// https://github.com/dfinity/ic/blob/2ff38b1c305302e96aa85c7aa1f1e3811aa84819/rs/nns/cmc/src/lib.rs#L179
+/// <https://github.com/dfinity/ic/blob/2ff38b1c305302e96aa85c7aa1f1e3811aa84819/rs/nns/cmc/src/lib.rs#L179>
 pub type UpdateSubnetTypeArgs = cycles_minting_canister::UpdateSubnetTypeArgs;
 
-/// NNS function 33 - ChangeSubnetTypeAssignment
+/// NNS function 33 - `ChangeSubnetTypeAssignment`
 /// Changes the assignment of subnets to subnet types in the cycles minting canister.
-/// https://github.com/dfinity/ic/blob/503fb9ad621f7ab979b3c874365170c37fe444ba/rs/nns/cmc/src/lib.rs#L227
+/// <https://github.com/dfinity/ic/blob/503fb9ad621f7ab979b3c874365170c37fe444ba/rs/nns/cmc/src/lib.rs#L227>
 pub type ChangeSubnetTypeAssignmentArgs = cycles_minting_canister::ChangeSubnetTypeAssignmentArgs;
 
 /// Uses a `serde` field attribute to custom serialize the Nat candid type.
