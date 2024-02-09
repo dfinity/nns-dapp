@@ -169,14 +169,6 @@ describe("Tokens route", () => {
           ];
         }
       );
-      vi.spyOn(snsLedgerApi, "getSnsToken").mockImplementation(
-        async ({ rootCanisterId }) => {
-          if (rootCanisterId.toText() === rootCanisterIdTetris.toText()) {
-            return tetrisToken;
-          }
-          return pacmanToken;
-        }
-      );
       vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(1234n);
       vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
         async ({ canisterId }) => {
@@ -208,12 +200,13 @@ describe("Tokens route", () => {
           lifecycle: SnsSwapLifecycle.Committed,
         },
       ]);
+      // Tokens are loaded in SNS aggregator
       tokensStore.setTokens({
         [rootCanisterIdTetris.toText()]: {
-          token: mockSnsToken,
+          token: tetrisToken,
         },
         [rootCanisterIdPacman.toText()]: {
-          token: mockSnsToken,
+          token: pacmanToken,
         },
       });
       setCkETHCanisters();
