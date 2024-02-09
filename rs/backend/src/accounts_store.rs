@@ -927,9 +927,7 @@ impl AccountsStore {
     }
 
     pub fn attach_canister(&mut self, caller: PrincipalId, request: AttachCanisterRequest) -> AttachCanisterResponse {
-        if !Self::validate_canister_name(&request.name) {
-            AttachCanisterResponse::NameTooLong
-        } else {
+        if Self::validate_canister_name(&request.name) {
             let account_identifier = AccountIdentifier::from(caller).to_vec();
 
             if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.clone()) {
@@ -970,6 +968,8 @@ impl AccountsStore {
             } else {
                 AttachCanisterResponse::AccountNotFound
             }
+        } else {
+            AttachCanisterResponse::NameTooLong
         }
     }
 
