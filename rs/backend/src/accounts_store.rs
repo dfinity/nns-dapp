@@ -570,8 +570,7 @@ impl AccountsStore {
                 .find(|sub_account| sub_account.account_identifier == request.account_identifier)
             {
                 sub_account.name = request.new_name;
-                self.accounts_db
-                    .db_insert_account(&account_identifier.to_vec(), account);
+                self.accounts_db.db_insert_account(&account_identifier, account);
                 RenameSubAccountResponse::Ok
             } else {
                 RenameSubAccountResponse::SubAccountNotFound
@@ -708,8 +707,7 @@ impl AccountsStore {
             let expected_block_height = block_height_synced_up_to + 1;
             if block_height != block_height_synced_up_to + 1 {
                 return Err(format!(
-                    "Expected block height {}. Got block height {}",
-                    expected_block_height, block_height
+                    "Expected block height {expected_block_height}. Got block height {block_height}",
                 ));
             }
         }
@@ -806,10 +804,13 @@ impl AccountsStore {
     }
 
     pub fn mark_ledger_sync_complete(&mut self) {
-        self.last_ledger_sync_timestamp_nanos = dfn_core::api::now()
-            .duration_since(SystemTime::UNIX_EPOCH)
-            .unwrap()
-            .as_nanos() as u64;
+        self.last_ledger_sync_timestamp_nanos = u64::try_from(
+            dfn_core::api::now()
+                .duration_since(SystemTime::UNIX_EPOCH)
+                .unwrap()
+                .as_nanos(),
+        )
+        .unwrap_or_else(|_| unreachable!("Not impossible, but centuries in the future"));
     }
 
     pub fn init_block_height_synced_up_to(&mut self, block_height: BlockIndex) {
