@@ -9,7 +9,6 @@ import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
-import { notForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import type { Principal } from "@dfinity/principal";
 
@@ -41,7 +40,8 @@ export const loadAccounts = async ({
     onError: ({ error: err, certified }) => {
       console.error(err);
 
-      if (!certified && notForceCallStrategy()) {
+      // Ignore error on query call only if there will be an update call
+      if (certified !== true && strategy !== "query") {
         return;
       }
 

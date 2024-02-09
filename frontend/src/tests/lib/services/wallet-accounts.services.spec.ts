@@ -100,6 +100,47 @@ describe("wallet-accounts-services", () => {
       spyQuery.mockClear();
     });
 
+    it("should call error callback if query fails strategy is query", async () => {
+      vi.spyOn(ckbtcLedgerApi, "getAccount").mockImplementation(
+        async ({ certified }) => {
+          if (certified) {
+            return mockCkBTCMainAccount;
+          }
+          throw new Error();
+        }
+      );
+
+      const spy = vi.fn();
+
+      await loadAccounts({
+        handleError: spy,
+        ledgerCanisterId: CKBTC_UNIVERSE_CANISTER_ID,
+        strategy: "query",
+      });
+
+      expect(spy).toBeCalled();
+    });
+
+    it("should not call error callback if query fails and update succeeds", async () => {
+      vi.spyOn(ckbtcLedgerApi, "getAccount").mockImplementation(
+        async ({ certified }) => {
+          if (certified) {
+            return mockCkBTCMainAccount;
+          }
+          throw new Error();
+        }
+      );
+
+      const spy = vi.fn();
+
+      await loadAccounts({
+        handleError: spy,
+        ledgerCanisterId: CKBTC_UNIVERSE_CANISTER_ID,
+      });
+
+      expect(spy).not.toBeCalled();
+    });
+
     it("should empty store if update call fails", async () => {
       icrcAccountsStore.set({
         accounts: {
