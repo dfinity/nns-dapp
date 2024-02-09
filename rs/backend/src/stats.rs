@@ -53,6 +53,7 @@ pub struct Stats {
     pub exceptional_transactions_count: Option<u32>,
 }
 
+#[allow(clippy::cast_precision_loss)] // We are converting u64 to f64
 pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
     let stats = STATE.with(get_stats);
     w.encode_gauge(
