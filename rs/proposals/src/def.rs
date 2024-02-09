@@ -253,31 +253,31 @@ impl From<RemoveNodeOperatorsPayload> for RemoveNodeOperatorsPayloadHumanReadabl
 }
 
 /// NNS function 24 - RerouteCanisterRange
-/// https://github.com/dfinity/ic/blob/5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c/rs/registry/canister/src/mutations/reroute_canister_ranges.rs#L66
+/// <https://github.com/dfinity/ic/blob/5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c/rs/registry/canister/src/mutations/reroute_canister_ranges.rs#L66>
 pub type RerouteCanisterRangesPayload = crate::canisters::nns_registry::api::RerouteCanisterRangesPayload;
 
 /// NNS function 25 - AddFirewallRules
-/// https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/firewall.rs#L218
+/// <https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/firewall.rs#L218>
 pub type AddFirewallRulesPayload = crate::canisters::nns_registry::api::AddFirewallRulesPayload;
 
 /// NNS function 26 - RemoveFirewallRules
-/// https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/firewall.rs#L233
+/// <https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/firewall.rs#L233>
 pub type RemoveFirewallRulesPayload = crate::canisters::nns_registry::api::RemoveFirewallRulesPayload;
 
 /// NNS function 27 - UpdateFirewallRules
-/// https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/firewall.rs#L246
+/// <https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/firewall.rs#L246>
 pub type UpdateFirewallRulesPayload = crate::canisters::nns_registry::internal::UpdateFirewallRulesPayload;
 
 /// NNS function 28 - PrepareCanisterMigration
-/// https://github.com/dfinity/ic/blob/5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c/rs/registry/canister/src/mutations/prepare_canister_migration.rs#L67
+/// <https://github.com/dfinity/ic/blob/5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c/rs/registry/canister/src/mutations/prepare_canister_migration.rs#L67>
 pub type PrepareCanisterMigrationPayload = crate::canisters::nns_registry::api::PrepareCanisterMigrationPayload;
 
 /// NNS function 29 - CompleteCanisterMigration
-/// https://github.com/dfinity/ic/blob/5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c/rs/registry/canister/src/mutations/complete_canister_migration.rs#L34
+/// <https://github.com/dfinity/ic/blob/5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c/rs/registry/canister/src/mutations/complete_canister_migration.rs#L34>
 pub type CompleteCanisterMigrationPayload = crate::canisters::nns_registry::api::CompleteCanisterMigrationPayload;
 
 /// NNS function 30 - AddSnsWasm
-/// https://github.com/dfinity/ic/blob/187e933e73867efc3993572abc6344b8cedfafe5/rs/nns/sns-wasm/gen/ic_sns_wasm.pb.v1.rs#L62
+/// <https://github.com/dfinity/ic/blob/187e933e73867efc3993572abc6344b8cedfafe5/rs/nns/sns-wasm/gen/ic_sns_wasm.pb.v1.rs#L62>
 pub type AddWasmRequest = crate::canisters::sns_wasm::api::AddWasmRequest;
 
 #[derive(CandidType, Serialize, Deserialize, Clone)]
