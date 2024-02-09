@@ -1,7 +1,7 @@
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
 import * as authServices from "$lib/services/auth.services";
-import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
+import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { page } from "$mocks/$app/stores";
 import {
@@ -125,7 +125,7 @@ describe("DisburseSnsNeuronModal", () => {
     const reloadNeuron = vi.fn().mockResolvedValue(null);
     await renderDisburseModal(mockSnsNeuron, reloadNeuron);
 
-    await waitFor(() => expect(syncSnsAccounts).toBeCalled());
+    await waitFor(() => expect(loadSnsAccounts).toBeCalled());
   });
 
   it("should not trigger the project account load if already available", async () => {
@@ -143,6 +143,6 @@ describe("DisburseSnsNeuronModal", () => {
 
     await fireEvent.click(queryByTestId("disburse-neuron-button") as Element);
 
-    await waitFor(() => expect(syncSnsAccounts).not.toBeCalled());
+    await waitFor(() => expect(loadSnsAccounts).not.toBeCalled());
   });
 });

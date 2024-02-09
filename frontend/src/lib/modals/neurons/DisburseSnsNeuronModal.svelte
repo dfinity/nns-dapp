@@ -25,10 +25,7 @@
   } from "@dfinity/gix-components";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
   import { snsProjectMainAccountStore } from "$lib/derived/sns/sns-project-accounts.derived";
-  import {
-    loadSnsAccounts,
-    syncSnsAccounts,
-  } from "$lib/services/sns-accounts.services";
+  import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import { goto } from "$app/navigation";
   import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
@@ -76,7 +73,7 @@
     }
 
     loading = true;
-    await syncSnsAccounts({ rootCanisterId: selectedProjectCanisterId });
+    await loadSnsAccounts({ rootCanisterId: selectedProjectCanisterId });
     loading = false;
   };
 

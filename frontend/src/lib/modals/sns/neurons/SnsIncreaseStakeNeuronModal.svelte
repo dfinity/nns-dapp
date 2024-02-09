@@ -6,7 +6,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import { createEventDispatcher, onMount } from "svelte";
-  import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
+  import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
   import { nonNullish } from "@dfinity/utils";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
@@ -41,7 +41,7 @@
       initiator: "load-sns-accounts",
     });
 
-    await syncSnsAccounts({
+    await loadSnsAccounts({
       rootCanisterId,
       handleError: () => stopBusySpinner(),
     });

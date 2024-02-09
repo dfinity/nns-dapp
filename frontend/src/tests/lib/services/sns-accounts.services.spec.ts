@@ -172,27 +172,6 @@ describe("sns-accounts-services", () => {
     });
   });
 
-  describe("syncSnsAccounts", () => {
-    beforeEach(() => {
-      vi.clearAllMocks();
-      snsAccountsStore.reset();
-      vi.spyOn(console, "error").mockImplementation(() => undefined);
-    });
-    it("should call sns accounts and load them in store", async () => {
-      const spyAccountsQuery = vi
-        .spyOn(ledgerApi, "getSnsAccounts")
-        .mockImplementation(() => Promise.resolve([mockSnsMainAccount]));
-
-      await services.syncSnsAccounts({ rootCanisterId: mockPrincipal });
-
-      await tick();
-      expect(spyAccountsQuery).toBeCalled();
-
-      const store = get(snsAccountsStore);
-      expect(store[mockPrincipal.toText()]?.accounts).toHaveLength(1);
-    });
-  });
-
   describe("snsTransferTokens", () => {
     let spyAccounts;
 
