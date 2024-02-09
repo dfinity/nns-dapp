@@ -328,7 +328,7 @@ fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -
     let mut serializer = serde_cbor::ser::Serializer::new(vec![]);
     serializer.self_describe().unwrap();
     tree.serialize(&mut serializer)
-        .unwrap_or_else(|e| dfn_core::api::trap_with(&format!("failed to serialize a hash tree: {}", e)));
+        .unwrap_or_else(|e| dfn_core::api::trap_with(&format!("failed to serialize a hash tree: {e}")));
     (
         "IC-Certificate".to_string(),
         format!(
@@ -386,6 +386,7 @@ pub fn init_assets() {
 /// Note: The `Vec` is mutated during decompression, so pass by reference is inefficient
 ///       as it would force the data to be copied into a new vector, even when the
 ///       original is no longer needed.
+#[allow(clippy::needless_pass_by_value)]
 pub fn insert_tar_xz(compressed: Vec<u8>) {
     println!("Inserting assets...");
     let mut num_assets = 0;
