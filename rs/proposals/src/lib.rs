@@ -175,7 +175,7 @@ fn type_2_idltype(ty: Type) -> Result<IDLType, String> {
     }
 }
 
-/// Converts an NNS funtion payload, in candid, to JSON.
+/// Converts an NNS function payload, in candid, to JSON.
 fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<String, String> {
     /// Converts a type to JSON without using type information.
     ///
