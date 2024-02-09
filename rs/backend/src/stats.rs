@@ -102,12 +102,12 @@ pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
     )?;
     w.encode_gauge(
         "nns_dapp_schema",
-        stats.schema.unwrap_or(0) as f64,
+        f64::from(stats.schema.unwrap_or(0)),
         "The nns-dapp schema version",
     )?;
     w.encode_gauge(
         "nns_dapp_migration_countdown",
-        stats.migration_countdown.unwrap_or(0) as f64,
+        f64::from(stats.migration_countdown.unwrap_or(0)),
         "When non-zero, a migration is in progress.",
     )?;
     w.encode_gauge(
