@@ -11,7 +11,7 @@ import {
 } from "$lib/services/wallet-accounts.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
-import { resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
@@ -38,7 +38,7 @@ describe("wallet-accounts-services", () => {
       vi.spyOn(console, "error").mockImplementation(() => undefined);
     });
 
-    it("should call api.getCkBTCAccount and load neurons in store", async () => {
+    it("should call getAccount and load neurons in store", async () => {
       const spyQuery = vi
         .spyOn(ckbtcLedgerApi, "getAccount")
         .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
@@ -55,6 +55,32 @@ describe("wallet-accounts-services", () => {
       expect(spyQuery).toBeCalled();
 
       spyQuery.mockClear();
+    });
+
+    it("should use the strategy to set certified in api call and store", async () => {
+      const spyQuery = vi
+        .spyOn(ckbtcLedgerApi, "getAccount")
+        .mockResolvedValue(mockCkBTCMainAccount);
+
+      await loadAccounts({
+        ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID,
+        strategy: "query",
+      });
+
+      expect(
+        get(icrcAccountsStore)[CKBTC_UNIVERSE_CANISTER_ID.toText()].accounts
+      ).toHaveLength(1);
+      expect(
+        get(icrcAccountsStore)[CKBTC_UNIVERSE_CANISTER_ID.toText()].certified
+      ).toBe(false);
+      expect(spyQuery).toBeCalledTimes(1);
+      expect(spyQuery).toBeCalledWith({
+        canisterId: CKBTC_LEDGER_CANISTER_ID,
+        identity: mockIdentity,
+        certified: false,
+        owner: mockIdentity.getPrincipal(),
+        type: "main",
+      });
     });
 
     it("should call error callback", async () => {

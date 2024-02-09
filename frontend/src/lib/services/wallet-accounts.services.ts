@@ -1,5 +1,8 @@
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
-import { queryAndUpdate } from "$lib/services/utils.services";
+import {
+  queryAndUpdate,
+  type QueryAndUpdateStrategy,
+} from "$lib/services/utils.services";
 import { getAccounts } from "$lib/services/wallet-loader.services";
 import { loadToken } from "$lib/services/wallet-tokens.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
@@ -17,12 +20,14 @@ import type { Principal } from "@dfinity/principal";
 export const loadAccounts = async ({
   handleError,
   ledgerCanisterId,
+  strategy = FORCE_CALL_STRATEGY,
 }: {
   handleError?: () => void;
   ledgerCanisterId: Principal;
+  strategy?: QueryAndUpdateStrategy;
 }): Promise<void> => {
   return queryAndUpdate<Account[], unknown>({
-    strategy: FORCE_CALL_STRATEGY,
+    strategy,
     request: ({ certified, identity }) =>
       getAccounts({ identity, certified, ledgerCanisterId }),
     onLoad: ({ response: accounts, certified }) =>

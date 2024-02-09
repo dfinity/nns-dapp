@@ -29,7 +29,7 @@ export const uncertifiedLoadAccountsBalance = async ({
       ).map((universeId) =>
         Promise.all([
           loadAccounts({
-            // TODO: Use strategy `"query"`
+            strategy: "query",
             ledgerCanisterId: Principal.fromText(universeId),
           }),
           loadIcrcToken({
