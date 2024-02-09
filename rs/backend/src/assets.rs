@@ -68,7 +68,7 @@ pub struct AssetHashes(RbTree<Vec<u8>, Hash>);
 impl From<&Assets> for AssetHashes {
     fn from(assets: &Assets) -> Self {
         let mut asset_hashes = Self::default();
-        for (path, asset) in assets.0.iter() {
+        for (path, asset) in &assets.0 {
             asset_hashes
                 .0
                 .insert(path.as_bytes().to_vec(), hash_bytes(&asset.bytes));
@@ -204,7 +204,7 @@ impl Assets {
 #[allow(clippy::needless_pass_by_value)] // This is the standard signature that must be provided by the canister.
 pub fn http_request(req: HttpRequest) -> HttpResponse {
     let parts: Vec<&str> = req.url.split('?').collect();
-    match *parts.get(0).unwrap_or(&"") {
+    match *parts.first().unwrap_or(&"") {
         "/metrics" => {
             let now;
             unsafe {
