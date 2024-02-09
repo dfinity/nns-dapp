@@ -649,6 +649,7 @@ impl AccountsStore {
         AddPendingTransactionResponse::Ok
     }
 
+    #[allow(clippy::unused_self)] // `self` will be needed when hardware wallets are supported.
     pub fn check_pending_transaction_buyer(&mut self, caller: PrincipalId, buyer: PrincipalId) -> bool {
         // TODO: To support hardware wallets, check that the buyer is either the caller's principal or the principal of a hardware wallet linked to the caller's account.
         caller == buyer

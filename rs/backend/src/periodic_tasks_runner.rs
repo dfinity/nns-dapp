@@ -117,7 +117,7 @@ async fn handle_create_canister(block_height: BlockIndex, args: CreateCanisterAr
         Ok(Ok(canister_id)) => STATE.with(|s| {
             s.accounts_store
                 .borrow_mut()
-                .attach_newly_created_canister(args.controller, canister_id)
+                .attach_newly_created_canister(args.controller, canister_id);
         }),
         Ok(Err(error)) => {
             let was_refunded = matches!(error, NotifyError::Refunded { .. });
@@ -337,7 +337,7 @@ fn should_prune_transactions() -> bool {
     #[cfg(target_arch = "wasm32")]
     {
         const MEMORY_LIMIT_BYTES: u32 = 1024 * 1024 * 1024; // 1GB
-        let memory_usage_bytes = u32::try_from(core::arch::wasm32::memory_size(0) * 65536).unwrap_or_else(|_| u32::MAX);
+        let memory_usage_bytes = u32::try_from(core::arch::wasm32::memory_size(0) * 65536).unwrap_or(u32::MAX);
         memory_usage_bytes > MEMORY_LIMIT_BYTES
     }
 
