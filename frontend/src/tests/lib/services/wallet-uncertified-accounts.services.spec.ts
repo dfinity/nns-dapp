@@ -1,3 +1,4 @@
+import * as icrcLegerApi from "$lib/api/icrc-ledger.api";
 import * as ledgerApi from "$lib/api/wallet-ledger.api";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
@@ -14,7 +15,6 @@ import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
-import { tick } from "svelte";
 import { get } from "svelte/store";
 
 vi.mock("$lib/stores/toasts.store", () => {
@@ -26,9 +26,6 @@ vi.mock("$lib/stores/toasts.store", () => {
 describe("wallet-uncertified-accounts.services", () => {
   beforeEach(() => {
     resetIdentity();
-  });
-
-  afterEach(() => {
     vi.clearAllMocks();
 
     icrcAccountsStore.reset();
@@ -43,17 +40,13 @@ describe("wallet-uncertified-accounts.services", () => {
   };
 
   it("should call api.getAccounts and load balance in store", async () => {
-    vi.spyOn(ledgerApi, "getToken").mockImplementation(() =>
-      Promise.resolve(mockCkBTCToken)
-    );
+    vi.spyOn(icrcLegerApi, "queryIcrcToken").mockResolvedValue(mockCkBTCToken);
 
     const spyQuery = vi
       .spyOn(ledgerApi, "getAccount")
       .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
 
     await services.uncertifiedLoadAccountsBalance(params);
-
-    await tick();
 
     const store = get(universesAccountsBalance);
     // Nns + ckBTC + ckTESTBTC
@@ -66,16 +59,14 @@ describe("wallet-uncertified-accounts.services", () => {
 
   it("should call api.getToken and load token in store", async () => {
     const spyQuery = vi
-      .spyOn(ledgerApi, "getToken")
-      .mockImplementation(() => Promise.resolve(mockCkBTCToken));
+      .spyOn(icrcLegerApi, "queryIcrcToken")
+      .mockResolvedValue(mockCkBTCToken);
 
     vi.spyOn(ledgerApi, "getAccount").mockImplementation(() =>
       Promise.resolve(mockCkBTCMainAccount)
     );
 
     await services.uncertifiedLoadAccountsBalance(params);
-
-    await tick();
 
     const store = get(ckBTCTokenStore);
     const token = {
