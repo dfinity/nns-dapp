@@ -2,7 +2,6 @@
   import { IconExpandCircleDown, Collapsible } from "@dfinity/gix-components";
   import { fade } from "svelte/transition";
   import { i18n } from "$lib/stores/i18n";
-  import { goto } from "$app/navigation";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
   import { isNnsUniverseStore } from "$lib/derived/selected-universe.derived";
   import { nnsTokenStore } from "$lib/derived/universes-tokens.derived";
@@ -47,8 +46,6 @@
           $tokenSymbol: token,
           $project: snsName,
         }));
-
-  const gotoNeurons = () => goto($neuronsPathStore);
 </script>
 
 <TestIdWrapper testId="stake-neuron-to-vote-component">
@@ -75,15 +72,15 @@
         <p class="description" data-tid="stake-neuron-description">
           {description}
         </p>
-        <button
+        <a
+          href={$neuronsPathStore}
           data-tid="stake-neuron-button"
-          class="secondary stake-neuron-button"
-          type="button"
-          on:click|stopPropagation={gotoNeurons}
-          >{replacePlaceholders($i18n.proposal_detail__vote.stake_neuron, {
-            $token: token,
-          })}</button
+          class="button secondary stake-neuron-button"
         >
+          {replacePlaceholders($i18n.proposal_detail__vote.stake_neuron, {
+            $token: token,
+          })}
+        </a>
         <slot />
       </Collapsible>
     </div>
