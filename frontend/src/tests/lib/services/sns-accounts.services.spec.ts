@@ -102,6 +102,46 @@ describe("sns-accounts-services", () => {
       spyQuery.mockClear();
     });
 
+    it("should not call error callback if query fails and update succeeds", async () => {
+      const spyQuery = vi
+        .spyOn(ledgerApi, "getSnsAccounts")
+        .mockImplementation(async ({ certified }) => {
+          if (certified) {
+            return [mockSnsMainAccount];
+          }
+          throw new Error();
+        });
+
+      const spy = vi.fn();
+
+      await services.loadSnsAccounts({
+        rootCanisterId: mockPrincipal,
+        handleError: spy,
+      });
+
+      expect(spy).not.toBeCalled();
+
+      spyQuery.mockClear();
+    });
+
+    it("should call error callback if query fails and only query is requested", async () => {
+      const spyQuery = vi
+        .spyOn(ledgerApi, "getSnsAccounts")
+        .mockRejectedValue(new Error());
+
+      const spy = vi.fn();
+
+      await services.loadSnsAccounts({
+        rootCanisterId: mockPrincipal,
+        handleError: spy,
+        strategy: "query",
+      });
+
+      expect(spy).toBeCalled();
+
+      spyQuery.mockClear();
+    });
+
     it("should empty store if update call fails", async () => {
       snsAccountsStore.setAccounts({
         rootCanisterId: mockPrincipal,

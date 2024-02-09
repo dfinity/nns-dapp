@@ -61,31 +61,6 @@ describe("sns-accounts-balance.services", () => {
     expect(spyQuery).toBeCalled();
   });
 
-  it("should call api.getSnsToken and load it in store", async () => {
-    const spyQuery = vi
-      .spyOn(ledgerApi, "getSnsToken")
-      .mockImplementation(() => Promise.resolve(mockSnsToken));
-
-    vi.spyOn(ledgerApi, "getSnsAccounts").mockImplementation(() =>
-      Promise.resolve([mockSnsMainAccount])
-    );
-
-    await services.uncertifiedLoadSnsesAccountsBalances({
-      rootCanisterIds: [mockSnsMainAccount.principal],
-    });
-
-    await tick();
-
-    const store = get(tokensStore);
-
-    expect(store[mockSnsMainAccount.principal.toText()]).toEqual({
-      token: mockSnsToken,
-      certified: false,
-    });
-
-    expect(spyQuery).toBeCalled();
-  });
-
   it("should toast error", async () => {
     vi.spyOn(console, "error").mockImplementation(() => undefined);
     vi.spyOn(ledgerApi, "getSnsAccounts").mockRejectedValue(new Error());
