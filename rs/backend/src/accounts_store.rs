@@ -929,7 +929,7 @@ impl AccountsStore {
         } else {
             let account_identifier = AccountIdentifier::from(caller).to_vec();
 
-            if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
+            if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.clone()) {
                 let mut index_to_remove: Option<usize> = None;
                 for (index, c) in account.canisters.iter().enumerate() {
                     if !request.name.is_empty() && c.name == request.name {
@@ -1004,11 +1004,10 @@ impl AccountsStore {
     pub fn detach_canister(&mut self, caller: PrincipalId, request: DetachCanisterRequest) -> DetachCanisterResponse {
         let account_identifier = AccountIdentifier::from(caller).to_vec();
 
-        if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
+        if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.clone()) {
             if let Some(index) = Self::find_canister_index(&account, request.canister_id) {
                 account.canisters.remove(index);
-                self.accounts_db
-                    .db_insert_account(&account_identifier.clone(), account);
+                self.accounts_db.db_insert_account(&account_identifier.clone(), account);
                 DetachCanisterResponse::Ok
             } else {
                 DetachCanisterResponse::CanisterNotFound
@@ -1022,7 +1021,7 @@ impl AccountsStore {
     pub fn get_canisters(&self, caller: PrincipalId) -> Vec<NamedCanister> {
         let account_identifier = AccountIdentifier::from(caller);
         if let Some(account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
-            account.canisters.to_vec()
+            account.canisters.clone()
         } else {
             Vec::new()
         }
@@ -1041,8 +1040,7 @@ impl AccountsStore {
                     canister_id,
                 });
                 account.canisters.sort();
-                self.accounts_db
-                    .db_insert_account(&account_identifier.to_vec(), account);
+                self.accounts_db.db_insert_account(&account_identifier.clone(), account);
             }
         }
     }
