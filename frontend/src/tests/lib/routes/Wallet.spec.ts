@@ -100,22 +100,19 @@ describe("Wallet", () => {
 
     icrcAccountsStore.reset();
     ckEthBalance = 1000000000000000000n;
-    vi.spyOn(walletLedgerApi, "getAccount").mockImplementation(
+    vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
       async ({ canisterId }) => {
         if (canisterId.toText() === CKETH_UNIVERSE_CANISTER_ID.toText()) {
-          return {
-            ...mockIcrcMainAccount,
-            balanceUlps: ckEthBalance,
-          };
+          return ckEthBalance;
         }
         if (canisterId.toText() === CKBTC_UNIVERSE_CANISTER_ID.toText()) {
-          return mockCkBTCMainAccount;
+          return mockCkBTCMainAccount.balanceUlps;
         }
         if (
           canisterId.toText() ===
           mockSnsFullProject.summary.ledgerCanisterId.toText()
         ) {
-          return mockSnsMainAccount;
+          return mockSnsMainAccount.balanceUlps;
         }
         throw new Error(`Unexpected canisterId: ${canisterId.toText()}`);
       }

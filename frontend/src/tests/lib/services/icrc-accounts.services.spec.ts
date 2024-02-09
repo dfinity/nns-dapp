@@ -1,5 +1,4 @@
 import * as ledgerApi from "$lib/api/icrc-ledger.api";
-import * as walletApi from "$lib/api/wallet-ledger.api";
 import {
   getIcrcAccountIdentity,
   icrcTransferTokens,
@@ -30,19 +29,13 @@ describe("icrc-accounts-services", () => {
     icrcAccountsStore.reset();
 
     vi.spyOn(ledgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
-    vi.spyOn(walletApi, "getAccount").mockImplementation(
+    vi.spyOn(ledgerApi, "queryIcrcBalance").mockImplementation(
       async ({ canisterId }) => {
         if (canisterId.toText() === ledgerCanisterId.toText()) {
-          return {
-            ...mockIcrcMainAccount,
-            balanceUlps: balanceE8s,
-          };
+          return balanceE8s;
         }
         if (canisterId.toText() === ledgerCanisterId2.toText()) {
-          return {
-            ...mockIcrcMainAccount,
-            balanceUlps: balanceE8s2,
-          };
+          return balanceE8s2;
         }
       }
     );

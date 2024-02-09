@@ -1,6 +1,5 @@
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
-import * as walletLedgerApi from "$lib/api/wallet-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
@@ -9,7 +8,6 @@ import * as workerBalances from "$lib/services/worker-balances.services";
 import * as workerTransactions from "$lib/services/worker-transactions.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
 import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
 import WalletTest from "$tests/lib/pages/WalletTest.svelte";
@@ -187,8 +185,8 @@ describe("SnsWallet", () => {
 
     beforeEach(() => {
       resolve = undefined;
-      vi.spyOn(walletLedgerApi, "getAccount").mockImplementation(() => {
-        return new Promise<Account>((r) => {
+      vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(() => {
+        return new Promise<bigint>((r) => {
           resolve = r;
         });
       });
@@ -210,8 +208,8 @@ describe("SnsWallet", () => {
 
   describe("accounts loaded", () => {
     beforeEach(() => {
-      vi.spyOn(walletLedgerApi, "getAccount").mockResolvedValue(
-        mockSnsMainAccount
+      vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
+        mockSnsMainAccount.balanceUlps
       );
     });
 
@@ -234,10 +232,9 @@ describe("SnsWallet", () => {
     });
 
     it("should render a balance with token", async () => {
-      vi.spyOn(walletLedgerApi, "getAccount").mockResolvedValue({
-        ...mockSnsMainAccount,
-        balanceUlps: 2_233_000_000n,
-      });
+      vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
+        2_233_000_000n
+      );
 
       const po = await renderComponent(props);
 
@@ -329,7 +326,7 @@ describe("SnsWallet", () => {
       expect(await receiveModalPo.isPresent()).toBe(true);
 
       // Query + update
-      expect(walletLedgerApi.getAccount).toHaveBeenCalledTimes(2);
+      expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(2);
       // Transactions can only be fetched from the Index canister with `updated` calls for now.
       expect(icrcIndexApi.getTransactions).toHaveBeenCalledTimes(1);
 
@@ -344,7 +341,7 @@ describe("SnsWallet", () => {
       // IcrcWalletPage does not reload the balance, only the transactions, in
       // `reloadAccount`. Perhaps a bug?
       // The number of calls is still 2, rather than 4.
-      expect(walletLedgerApi.getAccount).toHaveBeenCalledTimes(2);
+      expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(2);
       // IcrcWalletTransactionsList has a hard coded 4 second delay before it
       // fetches the transactions.
       await advanceTime(3500);
@@ -439,10 +436,7 @@ describe("SnsWallet", () => {
       const oldBalance = 123_000_000n;
       const newBalance = 456_000_000n;
 
-      vi.spyOn(walletLedgerApi, "getAccount").mockResolvedValue({
-        ...mockSnsMainAccount,
-        balanceUlps: oldBalance,
-      });
+      vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(oldBalance);
 
       const po = await renderComponent(props);
 

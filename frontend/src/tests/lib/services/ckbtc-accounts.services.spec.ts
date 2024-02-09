@@ -1,5 +1,4 @@
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
-import * as ckbtcLedgerApi from "$lib/api/wallet-ledger.api";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import * as services from "$lib/services/ckbtc-accounts.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
@@ -28,8 +27,8 @@ describe("ckbtc-accounts-services", () => {
       icrcAccountsStore.reset();
 
       spyAccounts = vi
-        .spyOn(ckbtcLedgerApi, "getAccount")
-        .mockImplementation(() => Promise.resolve(mockCkBTCMainAccount));
+        .spyOn(icrcLedgerApi, "queryIcrcBalance")
+        .mockResolvedValue(mockCkBTCMainAccount.balanceUlps);
     });
 
     afterEach(() => {
