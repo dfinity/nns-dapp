@@ -255,8 +255,11 @@ describe("SnsWallet", () => {
     });
 
     it("should make a new transaction", async () => {
+      const amountToBeTransferred = 2_000_000_000n;
+      const amountIcps = 2;
+      // We need the initial balance to be bigger than the amount to be transferred
       vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
-        2_233_000_000n
+        amountToBeTransferred * 2n
       );
       const { walletPo: po, icrcTokenTransactionModalPo: modalPo } =
         await renderWalletAndModals();
@@ -271,14 +274,14 @@ describe("SnsWallet", () => {
 
       await modalPo.transferToAddress({
         destinationAddress: encodeIcrcAccount(destinationAccount),
-        amount: 2,
+        amount: amountIcps,
       });
 
       expect(icrcLedgerApi.icrcTransfer).toHaveBeenCalledTimes(1);
       expect(icrcLedgerApi.icrcTransfer).toHaveBeenCalledWith({
         identity: mockIdentity,
         canisterId: ledgerCanisterId,
-        amount: 200000_000n,
+        amount: amountToBeTransferred,
         fromSubAccount: undefined,
         fee,
         to: destinationAccount,
