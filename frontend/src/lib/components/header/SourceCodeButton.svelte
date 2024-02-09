@@ -5,7 +5,7 @@
 
 <a
   data-tid="source-code-link"
-  href={$i18n.navigation.source_code_url}
+  href="https://github.com/dfinity/nns-dapp"
   rel="noopener noreferrer external"
   target="_blank"
   class="button text"
