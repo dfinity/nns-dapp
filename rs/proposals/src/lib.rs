@@ -176,6 +176,13 @@ fn type_2_idltype(ty: Type) -> Result<IDLType, String> {
 }
 
 fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<String, String> {
+    /// Converts a type to JSON without using type information.
+    ///
+    /// # Errors
+    /// - Failed to parse the Candid.
+    /// - Failed to serilaize the Candid into JSON.
+    ///
+    /// TODO: Check  whether the JSON is too large.
     fn candid_fallback<In>(payload_bytes: &[u8]) -> Result<String, String>
     where
         In: CandidType,
@@ -188,6 +195,15 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         serde_json::to_string(&json_value).map_err(|_| "Failed to serialize JSON".to_string())
     }
 
+    /// Converts a type to JSON with type information:
+    /// - Parses Candid data into the `In` type.
+    /// - Transforms the `In` type into the `Out` type; Please ensure that `Into<Out>` is implemented for `In`.
+    /// - Serializes the `Out` type into JSON.
+    ///
+    /// # Errors
+    /// - Failed to parse the Candid as type `In`.
+    /// - Failed to serilaize the `Out` type into JSON.
+    /// - The JSON is too large.
     fn try_transform<In, Out>(payload_bytes: &[u8]) -> Result<String, String>
     where
         In: CandidType + DeserializeOwned + Into<Out>,
@@ -202,6 +218,13 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
             Err("Payload too large".to_string())
         }
     }
+
+    /// Converts a Candid message to JSON:
+    /// - Tries to convert using the provided types.
+    /// - If that fails, try to convert without type information.
+    ///
+    /// # Errors
+    /// - Even the fallback failed to convert the Candid message to JSON.  Please see `candid_fallback` for possible reasons for this.
     fn transform<In, Out>(payload_bytes: &[u8]) -> Result<String, String>
     where
         In: CandidType + DeserializeOwned + Into<Out>,
@@ -209,6 +232,8 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
     {
         try_transform::<In, Out>(payload_bytes).or_else(|_| candid_fallback::<In>(payload_bytes))
     }
+
+    /// Converts a Candid message to JSON using the given type.
     fn identity<Out>(payload_bytes: &[u8]) -> Result<String, String>
     where
         Out: CandidType + Serialize + DeserializeOwned,
