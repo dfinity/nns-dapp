@@ -18,6 +18,7 @@ use std::fmt::Debug;
 pub mod canisters;
 pub mod def;
 
+/// A JSON string.
 type Json = String;
 
 /// The maximum number of proposal payloads that will be cached.
@@ -54,8 +55,10 @@ pub async fn get_proposal_payload(proposal_id: u64) -> Result<Json, String> {
     }
 }
 
+/// Inserts a proposal payload expressed as JSON into the cache, evicting the entry for the oldest proposal if necessary.
 fn insert_into_cache(cache: &mut BTreeMap<u64, Json>, proposal_id: u64, payload_json: String) {
     if cache.len() >= CACHE_SIZE_LIMIT {
+        // This should correspond to the proposal with the lowest index, hence the oldest entry.
         cache.pop_first();
     }
 
