@@ -320,7 +320,7 @@ pub type UpdateSubnetTypeArgs = cycles_minting_canister::UpdateSubnetTypeArgs;
 // https://github.com/dfinity/ic/blob/503fb9ad621f7ab979b3c874365170c37fe444ba/rs/nns/cmc/src/lib.rs#L227
 pub type ChangeSubnetTypeAssignmentArgs = cycles_minting_canister::ChangeSubnetTypeAssignmentArgs;
 
-/// Uses a serde field attribute to custom serialize the Nat candid type.
+/// Uses a `serde` field attribute to custom serialize the Nat candid type.
 fn serialize_optional_nat<S>(nat: &Option<candid::Nat>, serializer: S) -> Result<S::Ok, S::Error>
 where
     S: serde::Serializer,
