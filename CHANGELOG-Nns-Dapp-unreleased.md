@@ -21,6 +21,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Prevent the `1Password` extension from appearing in input fields.
 * Support HTML within toast messages.
 * Add `ENABLE_VOTING_INDICATION` feature flag.
+* Add "Manage Internet Identity" and "Source code" entries to account menu.
 
 #### Changed
 
