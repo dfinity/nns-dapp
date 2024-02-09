@@ -204,7 +204,7 @@ impl Assets {
 #[allow(clippy::needless_pass_by_value)] // This is the standard signature that must be provided by the canister.
 pub fn http_request(req: HttpRequest) -> HttpResponse {
     let parts: Vec<&str> = req.url.split('?').collect();
-    match parts[0] {
+    match *parts.get(0).unwrap_or(&"") {
         "/metrics" => {
             let now;
             unsafe {
