@@ -320,7 +320,7 @@ pub type UpdateSubnetTypeArgs = cycles_minting_canister::UpdateSubnetTypeArgs;
 // https://github.com/dfinity/ic/blob/503fb9ad621f7ab979b3c874365170c37fe444ba/rs/nns/cmc/src/lib.rs#L227
 pub type ChangeSubnetTypeAssignmentArgs = cycles_minting_canister::ChangeSubnetTypeAssignmentArgs;
 
-// Use a serde field attribute to custom serialize the Nat candid type.
+/// Uses a serde field attribute to custom serialize the Nat candid type.
 fn serialize_optional_nat<S>(nat: &Option<candid::Nat>, serializer: S) -> Result<S::Ok, S::Error>
 where
     S: serde::Serializer,
@@ -331,6 +331,7 @@ where
     }
 }
 
+/// Calculates the SHA256 hash of the given bytes and returns it as a hex string.
 fn calculate_hash_string(bytes: &[u8]) -> String {
     let mut hash_string = String::with_capacity(64);
     for byte in calculate_hash(bytes) {
@@ -339,6 +340,7 @@ fn calculate_hash_string(bytes: &[u8]) -> String {
     hash_string
 }
 
+/// Formats a (typically 32 byte) hash as a hex string.
 fn format_bytes(bytes: &[u8]) -> String {
     let mut hash_string = String::with_capacity(64);
     for byte in bytes {
@@ -347,6 +349,7 @@ fn format_bytes(bytes: &[u8]) -> String {
     hash_string
 }
 
+/// Calculates the SHA256 hash of the given bytes.
 fn calculate_hash(bytes: &[u8]) -> [u8; 32] {
     let mut wasm_sha = Sha256::new();
     wasm_sha.write(bytes);
