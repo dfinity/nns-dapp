@@ -101,10 +101,16 @@ pub fn process_proposal_payload(proposal_info: &ProposalInfo) -> Json {
     }
 }
 
+/// Options for how to serialize Candid to JSON.
+///
+/// Note: The priority here is human readable JSON for proposal verification.
 const IDL2JSON_OPTIONS: Idl2JsonOptions = Idl2JsonOptions {
+    // Express byte arrays as hex, not as arrays of integers.
     bytes_as: Some(BytesFormat::Hex),
+    // Truncate long byte arrays but provide a SHA256 hash of the full value, so that the payload can be verified.
     long_bytes_as: Some((256, BytesFormat::Sha256)),
-    prog: Vec::new(), // These are the type definitions used in proposal payloads.  If we have them, it would be nice to use them.  Do we?
+    // These are the type definitions used in proposal payloads.  If we have them, it would be nice to use them.  Do we?
+    prog: Vec::new(),
 };
 
 /// Converts a Candid `Type` to a candid `IDLType`. `idl2json` uses `IDLType`.
