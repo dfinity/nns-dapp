@@ -47,10 +47,14 @@ impl PerformanceCounts {
         self.instruction_counts.push_back(count);
     }
 
+    /// Note: The `exceptional_transactions_count` saturates at `u32::MAX`, in the very unlikely event that we reach that limit.
     pub fn get_stats(&self, stats: &mut Stats) {
         stats.performance_counts = self.instruction_counts.iter().cloned().collect();
-        stats.exceptional_transactions_count =
-            Some(self.exceptional_transactions.as_ref().map_or(0, |x| x.len() as u32));
+        stats.exceptional_transactions_count = Some(
+            self.exceptional_transactions
+                .as_ref()
+                .map_or(0, |x| u32::try_from(x.len()).unwrap_or(u32::MAX)),
+        );
     }
 
     /// The maximum number of exceptional transaction IDs we store.
@@ -101,5 +105,5 @@ pub fn record_instruction_count(name: &str) {
 
 /// Saves an instruction count; useful if the instruction count was captured independently.
 pub fn save_instruction_count(count: PerformanceCount) {
-    STATE.with(|s| s.performance.borrow_mut().save_instruction_count(count))
+    STATE.with(|s| s.performance.borrow_mut().save_instruction_count(count));
 }

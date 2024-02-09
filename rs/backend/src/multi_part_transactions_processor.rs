@@ -36,7 +36,8 @@ impl MultiPartTransactionsProcessor {
 
     #[must_use]
     pub fn get_queue_length(&self) -> u32 {
-        self.queue.len() as u32
+        u32::try_from(self.queue.len())
+            .expect("MultiPartTransactionsProcessor queue length has length greater than u32::MAX")
     }
 
     #[cfg(test)]

@@ -212,6 +212,6 @@ impl State {
     }
     /// Saves any unsaved state to stable memory.
     pub fn save(&self) {
-        self.save_to_raw_memory()
+        self.save_to_raw_memory();
     }
 }
