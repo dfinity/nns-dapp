@@ -53,7 +53,7 @@ describe("StakeNeuronToVote", () => {
     it("should navigate to nns neurons page", async () => {
       const po = await renderAndExpand();
 
-      expect(await po.clickGotoNeuronsLink()).toEqual(
+      expect(await po.getGotoNeuronsLinkHref()).toEqual(
         "/neurons/?u=qhbym-qaaaa-aaaaa-aaafq-cai"
       );
     });
@@ -104,7 +104,7 @@ describe("StakeNeuronToVote", () => {
     it("should navigate to sns neurons page", async () => {
       const po = await renderAndExpand();
 
-      expect(await po.clickGotoNeuronsLink()).toEqual(
+      expect(await po.getGotoNeuronsLinkHref()).toEqual(
         "/neurons/?u=g3pce-2iaae"
       );
     });
