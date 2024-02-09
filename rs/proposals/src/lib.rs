@@ -269,6 +269,7 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
     }
 }
 
+/// Stringifies a value to create an error message.
 fn debug<T: Debug>(value: T) -> String {
     format!("{value:?}")
 }
