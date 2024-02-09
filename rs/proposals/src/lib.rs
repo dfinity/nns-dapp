@@ -1,3 +1,4 @@
+//! Tests that verify the primary goal of the proposals crate: to provide a way to fetch proposals and convert them to JSON.
 use crate::canisters::internet_identity::InternetIdentityInit;
 use crate::canisters::nns_governance::api::{Action, ProposalInfo};
 use crate::def::*;
