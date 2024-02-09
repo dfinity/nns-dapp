@@ -12,7 +12,7 @@
     snsProjectsCommittedStore,
     type SnsFullProject,
   } from "$lib/derived/sns/sns-projects.derived";
-  import { uncertifiedLoadSnsAccountsBalances } from "$lib/services/sns-accounts-balance.services";
+  import { uncertifiedLoadSnsesAccountsBalances } from "$lib/services/sns-accounts-balance.services";
   import type { Universe, UniverseCanisterIdText } from "$lib/types/universe";
   import { isArrayEmpty } from "$lib/utils/utils";
   import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-uncertified-accounts.services";
@@ -61,7 +61,7 @@
 
     loadSnsAccountsBalancesRequested = true;
 
-    await uncertifiedLoadSnsAccountsBalances({
+    await uncertifiedLoadSnsesAccountsBalances({
       rootCanisterIds: projects.map(({ rootCanisterId }) => rootCanisterId),
       excludeRootCanisterIds: [],
     });
@@ -122,7 +122,7 @@
       ({ rootCanisterId }) => rootCanisterId.toText() === universeId.toText()
     );
     if (isSnsProject) {
-      return uncertifiedLoadSnsAccountsBalances({
+      return uncertifiedLoadSnsesAccountsBalances({
         rootCanisterIds: [universeId],
         excludeRootCanisterIds: [],
       });
