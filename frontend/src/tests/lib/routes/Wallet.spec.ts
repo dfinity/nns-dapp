@@ -1,5 +1,6 @@
 import * as ckbtcMinterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
+import * as walletLedgerApi from "$lib/api/wallet-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import {
@@ -9,7 +10,6 @@ import {
 import { AppPath } from "$lib/constants/routes.constants";
 import Wallet from "$lib/routes/Wallet.svelte";
 import { authStore } from "$lib/stores/auth.store";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
@@ -18,6 +18,10 @@ import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
+import {
+  mockCkBTCMainAccount,
+  mockCkBTCToken,
+} from "$tests/mocks/ckbtc-accounts.mock";
 import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { mockIcrcMainAccount } from "$tests/mocks/icrc-accounts.mock";
@@ -34,18 +38,7 @@ import { render } from "@testing-library/svelte";
 
 vi.mock("$lib/api/icrc-ledger.api");
 vi.mock("$lib/api/ckbtc-minter.api");
-
-vi.mock("$lib/services/sns-accounts.services", () => {
-  return {
-    syncSnsAccounts: vi.fn().mockResolvedValue(undefined),
-  };
-});
-
-vi.mock("$lib/services/wallet-accounts.services", () => {
-  return {
-    syncAccounts: vi.fn().mockResolvedValue(undefined),
-  };
-});
+vi.mock("$lib/api/wallet-ledger.api");
 
 vi.mock("$lib/services/wallet-transactions.services", () => {
   return {
@@ -87,7 +80,9 @@ vi.mock("$lib/services/worker-transactions.services", () => ({
 }));
 
 describe("Wallet", () => {
+  let ckEthBalance = 1000000000000000000n;
   beforeEach(() => {
+    vi.clearAllMocks();
     setCkETHCanisters();
     setSnsProjects([
       {
@@ -98,10 +93,43 @@ describe("Wallet", () => {
     ]);
     setCkETHCanisters();
     icpAccountsStore.setForTesting(mockAccountsStoreData);
-    overrideFeatureFlagsStore.reset();
     vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(1234n);
     vi.mocked(ckbtcMinterApi.retrieveBtcStatusV2ByAccount).mockResolvedValue(
       []
+    );
+
+    icrcAccountsStore.reset();
+    ckEthBalance = 1000000000000000000n;
+    vi.spyOn(walletLedgerApi, "getAccount").mockImplementation(
+      async ({ canisterId }) => {
+        if (canisterId.toText() === CKETH_UNIVERSE_CANISTER_ID.toText()) {
+          return {
+            ...mockIcrcMainAccount,
+            balanceUlps: ckEthBalance,
+          };
+        }
+        if (canisterId.toText() === CKBTC_UNIVERSE_CANISTER_ID.toText()) {
+          return mockCkBTCMainAccount;
+        }
+        if (
+          canisterId.toText() ===
+          mockSnsFullProject.summary.ledgerCanisterId.toText()
+        ) {
+          return mockSnsMainAccount;
+        }
+        throw new Error(`Unexpected canisterId: ${canisterId.toText()}`);
+      }
+    );
+    vi.spyOn(walletLedgerApi, "getToken").mockImplementation(
+      async ({ canisterId }) => {
+        if (canisterId.toText() === CKETH_UNIVERSE_CANISTER_ID.toText()) {
+          return mockCkETHToken;
+        }
+        if (canisterId.toText() === CKBTC_UNIVERSE_CANISTER_ID.toText()) {
+          return mockCkBTCToken;
+        }
+        throw new Error(`Unexpected canisterId: ${canisterId.toText()}`);
+      }
     );
   });
 
@@ -133,13 +161,6 @@ describe("Wallet", () => {
         canisterId: mockSnsFullProject.summary.ledgerCanisterId,
         token: mockSnsFullProject.summary.token,
         certified: true,
-      });
-      icrcAccountsStore.set({
-        ledgerCanisterId: mockSnsFullProject.summary.ledgerCanisterId,
-        accounts: {
-          accounts: [mockSnsMainAccount],
-          certified: true,
-        },
       });
     });
 
@@ -193,41 +214,17 @@ describe("Wallet", () => {
     expect(getByTestId("icrc-wallet-component")).toBeInTheDocument();
   });
 
-  // TODO: GIX-2150 Mock API layer instead of services for the setup
   it("user can transfer ckETH tokens and balance is refreshed", async () => {
     const amount = 2;
     const E18S_PER_TOKEN = 10n ** 18n;
     const amountE18s = BigInt(amount) * E18S_PER_TOKEN;
     const balanceAfterTransfer = 1110000000000000000n;
     const balanceBeforeTransfer = balanceAfterTransfer + amountE18s;
-
-    // Called only after a transfer (for now GIX-2150)
-    vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
-      balanceAfterTransfer
-    );
+    ckEthBalance = balanceBeforeTransfer;
 
     page.mock({
       data: { universe: CKETH_UNIVERSE_CANISTER_ID.toText() },
       routeId: AppPath.Wallet,
-    });
-
-    icrcAccountsStore.set({
-      ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
-      accounts: {
-        accounts: [
-          {
-            ...mockIcrcMainAccount,
-            balanceUlps: balanceBeforeTransfer,
-          },
-        ],
-        certified: true,
-      },
-    });
-
-    tokensStore.setToken({
-      canisterId: CKETH_UNIVERSE_CANISTER_ID,
-      token: mockCkETHToken,
-      certified: true,
     });
 
     const { container } = render(Wallet, {
@@ -252,7 +249,9 @@ describe("Wallet", () => {
       owner: principal(2),
     };
 
-    expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(0);
+    // Load data with query + Update calls
+    expect(walletLedgerApi.getAccount).toHaveBeenCalledTimes(2);
+    ckEthBalance = balanceAfterTransfer;
 
     await modalPo.transferToAddress({
       destinationAddress: encodeIcrcAccount(toAccount),
@@ -269,8 +268,8 @@ describe("Wallet", () => {
       to: toAccount,
       fee: mockCkETHToken.fee,
     });
-    // Query + Update calls
-    expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(2);
+    // Setup + Query + Update calls after transfer
+    expect(walletLedgerApi.getAccount).toHaveBeenCalledTimes(4);
 
     expect(await pagePo.getWalletPageHeadingPo().getTitle()).toBe("1.11 ckETH");
   });
