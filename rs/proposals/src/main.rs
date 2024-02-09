@@ -18,6 +18,6 @@ fn main() {
     let (idl_args,): (Option<ProposalInfo>,) = candid::decode_args(&idl_bytes).expect("Malformed input");
     let idl_args = idl_args.expect("Missing ProposalInfo");
 
-    let json_str = lib::process_proposal_payload(idl_args);
+    let json_str = lib::process_proposal_payload(&idl_args);
     println!("{json_str}");
 }

@@ -151,8 +151,16 @@
           //
           !$authSignedInStore ? undefined : loadSnsParameters(universeId),
           loadSnsNervousSystemFunctions(universeId),
-          reloadProposal(),
         ]);
+        /*
+        Reload proposal only after `syncSnsNeurons` is done,
+        to be sure that the `reloadForBallots` flag is calculated correctly (based on user neuron presence).
+        When `reloadForBallots` is true, the proposal will be reloaded regardless of other conditions.
+        Otherwise, the proposal from snsProposalsStore will be used when:
+          - proposal data in the store is certified
+          - and user has no neurons for selected Sns.
+         */
+        await reloadProposal();
       } catch (error) {
         toastsError({
           labelKey: "error.wrong_proposal_id",

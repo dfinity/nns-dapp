@@ -11,14 +11,11 @@ import {
   CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
   CKETH_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
-import { AppPath } from "$lib/constants/routes.constants";
-import { pageStore } from "$lib/derived/page.derived";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { numberToUlps } from "$lib/utils/token.utils";
-import { page } from "$mocks/$app/stores";
 import TokensRoute from "$routes/(app)/(nns)/tokens/+page.svelte";
 import {
   mockIdentity,
@@ -49,7 +46,6 @@ import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { isNullish } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
-import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/api/wallet-ledger.api");
@@ -107,7 +103,6 @@ describe("Tokens route", () => {
       ckBTCBalanceE8s = ckBTCDefaultBalanceE8s;
       ckETHBalanceUlps = ckETHDefaultBalanceUlps;
       tetrisBalanceE8s = tetrisDefaultBalanceE8s;
-      overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
       vi.spyOn(walletLedgerApi, "getToken").mockImplementation(
         async ({ canisterId }) => {
           const tokenMap = {
@@ -174,14 +169,6 @@ describe("Tokens route", () => {
           ];
         }
       );
-      vi.spyOn(snsLedgerApi, "getSnsToken").mockImplementation(
-        async ({ rootCanisterId }) => {
-          if (rootCanisterId.toText() === rootCanisterIdTetris.toText()) {
-            return tetrisToken;
-          }
-          return pacmanToken;
-        }
-      );
       vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(1234n);
       vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
         async ({ canisterId }) => {
@@ -213,12 +200,13 @@ describe("Tokens route", () => {
           lifecycle: SnsSwapLifecycle.Committed,
         },
       ]);
+      // Tokens are loaded in SNS aggregator
       tokensStore.setTokens({
         [rootCanisterIdTetris.toText()]: {
-          token: mockSnsToken,
+          token: tetrisToken,
         },
         [rootCanisterIdPacman.toText()]: {
-          token: mockSnsToken,
+          token: pacmanToken,
         },
       });
       setCkETHCanisters();
@@ -604,21 +592,6 @@ describe("Tokens route", () => {
           `/wallet/?u=${CKETH_UNIVERSE_CANISTER_ID.toText()}`
         );
       });
-    });
-  });
-
-  describe("when feature flag disabled", () => {
-    beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
-      page.mock({ routeId: AppPath.Tokens });
-    });
-
-    it("should redirect to accounts page", async () => {
-      expect(get(pageStore).path).toEqual(AppPath.Tokens);
-
-      await renderPage();
-
-      expect(get(pageStore).path).toEqual(AppPath.Accounts);
     });
   });
 });

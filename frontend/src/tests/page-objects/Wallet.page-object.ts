@@ -1,6 +1,7 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { CkBTCWalletPo } from "$tests/page-objects/CkBTCWallet.page-object";
 import { NnsWalletPo } from "$tests/page-objects/NnsWallet.page-object";
+import { SnsWalletPo } from "$tests/page-objects/SnsWallet.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import { IcrcTokenTransactionModalPo } from "./IcrcTokenTransactionModal.page-object";
 import { IcrcWalletPo } from "./IcrcWallet.page-object";
@@ -14,6 +15,10 @@ export class WalletPo extends BasePageObject {
 
   getNnsWalletPo(): NnsWalletPo {
     return NnsWalletPo.under(this.root);
+  }
+
+  getSnsWalletPo(): SnsWalletPo {
+    return SnsWalletPo.under(this.root);
   }
 
   getCkBTCWalletPo(): CkBTCWalletPo {

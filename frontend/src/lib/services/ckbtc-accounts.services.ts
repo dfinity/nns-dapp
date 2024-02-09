@@ -7,14 +7,8 @@ import type { Account } from "$lib/types/account";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import type { Identity } from "@dfinity/agent";
 import type { IcrcBlockIndex } from "@dfinity/ledger-icrc";
-import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { numberToE8s } from "../utils/token.utils";
-
-export const loadCkBTCAccounts = async (params: {
-  handleError?: () => void;
-  ledgerCanisterId: Principal;
-}): Promise<void> => loadAccounts(params);
 
 export const ckBTCTransferTokens = async ({
   source,

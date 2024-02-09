@@ -1,8 +1,8 @@
 import * as ledgerApi from "$lib/api/icrc-ledger.api";
+import * as walletApi from "$lib/api/wallet-ledger.api";
 import {
   getIcrcAccountIdentity,
   icrcTransferTokens,
-  loadIcrcAccount,
   loadIcrcToken,
 } from "$lib/services/icrc-accounts.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
@@ -22,14 +22,6 @@ describe("icrc-accounts-services", () => {
   const ledgerCanisterId2 = principal(2);
   const balanceE8s = 314000000n;
   const balanceE8s2 = 222000000n;
-  const mockAccount = {
-    identifier: encodeIcrcAccount({
-      owner: mockIdentity.getPrincipal(),
-    }),
-    principal: mockIdentity.getPrincipal(),
-    type: "main",
-    balanceUlps: balanceE8s,
-  };
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -38,13 +30,19 @@ describe("icrc-accounts-services", () => {
     icrcAccountsStore.reset();
 
     vi.spyOn(ledgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
-    vi.spyOn(ledgerApi, "queryIcrcBalance").mockImplementation(
+    vi.spyOn(walletApi, "getAccount").mockImplementation(
       async ({ canisterId }) => {
         if (canisterId.toText() === ledgerCanisterId.toText()) {
-          return balanceE8s;
+          return {
+            ...mockIcrcMainAccount,
+            balanceUlps: balanceE8s,
+          };
         }
         if (canisterId.toText() === ledgerCanisterId2.toText()) {
-          return balanceE8s2;
+          return {
+            ...mockIcrcMainAccount,
+            balanceUlps: balanceE8s2,
+          };
         }
       }
     );
@@ -151,54 +149,6 @@ describe("icrc-accounts-services", () => {
         certified: true,
         token: mockToken,
       });
-    });
-  });
-
-  describe("loadIcrcAccount", () => {
-    const userIcrcAccount = {
-      owner: mockIdentity.getPrincipal(),
-    };
-
-    it("loads account in store with balance from api", async () => {
-      expect(get(icrcAccountsStore)[ledgerCanisterId.toText()]).toBeUndefined();
-
-      await loadIcrcAccount({ ledgerCanisterId, certified: true });
-
-      expect(get(icrcAccountsStore)[ledgerCanisterId.toText()]).toEqual({
-        accounts: [mockAccount],
-        certified: true,
-      });
-      expect(ledgerApi.queryIcrcBalance).toHaveBeenCalledWith({
-        certified: false,
-        identity: mockIdentity,
-        canisterId: ledgerCanisterId,
-        account: userIcrcAccount,
-      });
-      expect(ledgerApi.queryIcrcBalance).toHaveBeenCalledWith({
-        certified: true,
-        identity: mockIdentity,
-        canisterId: ledgerCanisterId,
-        account: userIcrcAccount,
-      });
-      expect(ledgerApi.queryIcrcBalance).toHaveBeenCalledTimes(2);
-    });
-
-    it("loads account in store with balance from api with query", async () => {
-      expect(get(icrcAccountsStore)[ledgerCanisterId.toText()]).toBeUndefined();
-
-      await loadIcrcAccount({ ledgerCanisterId, certified: false });
-
-      expect(get(icrcAccountsStore)[ledgerCanisterId.toText()]).toEqual({
-        accounts: [mockAccount],
-        certified: false,
-      });
-      expect(ledgerApi.queryIcrcBalance).toHaveBeenCalledWith({
-        certified: false,
-        identity: mockIdentity,
-        canisterId: ledgerCanisterId,
-        account: userIcrcAccount,
-      });
-      expect(ledgerApi.queryIcrcBalance).toHaveBeenCalledTimes(1);
     });
   });
 

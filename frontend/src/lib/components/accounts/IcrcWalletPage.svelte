@@ -17,14 +17,12 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { i18n } from "$lib/stores/i18n";
   import { goto } from "$app/navigation";
-  import { buildAccountsUrl } from "$lib/utils/navigation.utils";
   import type { Principal } from "@dfinity/principal";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import IcrcBalancesObserver from "$lib/components/accounts/IcrcBalancesObserver.svelte";
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
   import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
-  import { ENABLE_MY_TOKENS } from "$lib/stores/feature-flags.store";
   import { AppPath } from "$lib/constants/routes.constants";
 
   export let testId: string;
@@ -38,14 +36,7 @@
 
   const reloadOnlyAccountFromStore = () => setSelectedAccount();
 
-  const goBack = async (): Promise<void> =>
-    goto(
-      $ENABLE_MY_TOKENS
-        ? AppPath.Tokens
-        : buildAccountsUrl({
-            universe: $selectedUniverseStore.canisterId,
-          })
-    );
+  const goBack = async (): Promise<void> => goto(AppPath.Tokens);
 
   // e.g. is called from "Receive" modal after user click "Done"
   export const reloadAccount = async () => {

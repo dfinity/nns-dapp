@@ -14,10 +14,6 @@ describe("Home page", () => {
   });
 
   describe("My Tokens flag enabled", () => {
-    beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", true);
-    });
-
     it("should render the tokens route", () => {
       const { queryByTestId } = render(HomePage);
 
@@ -25,19 +21,6 @@ describe("Home page", () => {
         queryByTestId("accounts-plus-page-component")
       ).not.toBeInTheDocument();
       expect(queryByTestId("tokens-route-component")).toBeInTheDocument();
-    });
-  });
-
-  describe("My Tokens flag disabled", () => {
-    beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_MY_TOKENS", false);
-    });
-
-    it("should render the accounts route", () => {
-      const { queryByTestId } = render(HomePage);
-
-      expect(queryByTestId("accounts-plus-page-component")).toBeInTheDocument();
-      expect(queryByTestId("tokens-route-component")).not.toBeInTheDocument();
     });
   });
 });
