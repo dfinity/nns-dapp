@@ -1,5 +1,5 @@
+import { snsAggregatorApiService } from "$lib/api-services/sns-aggregator.api-service";
 import { queryProposals } from "$lib/api/proposals.api";
-import { querySnsProjects } from "$lib/api/sns-aggregator.api";
 import { getNervousSystemFunctions } from "$lib/api/sns-governance.api";
 import { buildAndStoreWrapper } from "$lib/api/sns-wrapper.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
@@ -25,7 +25,7 @@ import { getCurrentIdentity } from "../auth.services";
 
 export const loadSnsProjects = async (): Promise<void> => {
   try {
-    const aggregatorData = await querySnsProjects();
+    const aggregatorData = await snsAggregatorApiService.querySnsProjects();
     const identity = getCurrentIdentity();
     // We load the wrappers to avoid making calls to SNS-W and Root canister for each project.
     // The SNS Aggregator gives us the canister ids of the SNS projects.
