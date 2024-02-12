@@ -477,6 +477,6 @@ confirm_cmd git tag "$PROPOSAL_TAG"
 confirm_cmd git push origin "tags/$PROPOSAL_TAG"
 confirm_cmd git checkout "$BRANCH_NAME"
 record "Post proposal on Slack" post_proposal_on_slack
-confirm_manual "Schedule voting" echo "Schedule an appointment for trusted neurons voting (in 3 days)"
+confirm_manual "Schedule voting" echo "Schedule an appointment (use \"NNS Upgrades\" calendar) for trusted neurons voting (in 3 days)"
 confirm_manual "Schedule silence alerts" echo "Create an event to remind yourself to silence alerts before voting"
 confirm_manual "Forum post" echo "Create a forum post if there's something worth sharing"
