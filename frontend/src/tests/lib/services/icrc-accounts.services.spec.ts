@@ -254,7 +254,7 @@ describe("icrc-accounts-services", () => {
     it("loads token from api into store", async () => {
       expect(get(tokensStore)[ledgerCanisterId.toText()]).toBeUndefined();
 
-      await loadIcrcToken({ ledgerCanisterId, certified: true });
+      await loadIcrcToken({ ledgerCanisterId });
 
       expect(get(tokensStore)[ledgerCanisterId.toText()]).toEqual({
         certified: true,
