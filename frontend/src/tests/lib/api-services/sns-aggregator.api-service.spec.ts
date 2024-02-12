@@ -43,19 +43,6 @@ describe("sns-aggregator api-service", () => {
     expect(aggregatorApi.querySnsProjects).toHaveBeenCalledTimes(1);
   });
 
-  it("should return call api once for two parallel calls", async () => {
-    const [promise1, promise2] = [
-      snsAggregatorApiService.querySnsProjects(),
-      snsAggregatorApiService.querySnsProjects(),
-    ];
-
-    resolveFn(successData);
-    const [result1, result2] = await Promise.all([promise1, promise2]);
-
-    expect(aggregatorApi.querySnsProjects).toHaveBeenCalledTimes(1);
-    expect(result1).toBe(result2);
-  });
-
   it("should call api once for simultaneous calls", async () => {
     const promise1 = snsAggregatorApiService.querySnsProjects();
     const promise2 = snsAggregatorApiService.querySnsProjects();
