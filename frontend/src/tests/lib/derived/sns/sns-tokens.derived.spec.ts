@@ -7,7 +7,7 @@ import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 
-describe("projects.derived", () => {
+describe("sns-tokens.derived", () => {
   const batmanRootCanisterIdText = "aax3a-h4aaa-aaaaa-qaahq-cai";
   const batmanLedgerCanisterIdText = "c2lt4-zmaaa-aaaaa-qaaiq-cai";
   const robinRootCanisterIdText = "ctiya-peaaa-aaaaa-qaaja-cai";

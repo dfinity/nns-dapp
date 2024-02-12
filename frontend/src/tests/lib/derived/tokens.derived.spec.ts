@@ -2,7 +2,10 @@ import {
   LEDGER_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
-import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import {
+  CKBTC_LEDGER_CANISTER_ID,
+  CKBTC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckbtc-canister-ids.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import {
   tokensByLedgerCanisterIdStore,
@@ -15,7 +18,7 @@ import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 
-describe("projects.derived", () => {
+describe("tokens.derived", () => {
   const batmanRootCanisterIdText = "aax3a-h4aaa-aaaaa-qaahq-cai";
   const batmanLedgerCanisterIdText = "c2lt4-zmaaa-aaaaa-qaaiq-cai";
   const robinRootCanisterIdText = "ctiya-peaaa-aaaaa-qaaja-cai";
@@ -74,7 +77,7 @@ describe("projects.derived", () => {
     it("should hold tokens mappend by ledger canister id", () => {
       const tokens = get(tokensByLedgerCanisterIdStore);
       expect(tokens).toEqual({
-        [CKBTC_UNIVERSE_CANISTER_ID.toText()]: mockCkBTCToken,
+        [CKBTC_LEDGER_CANISTER_ID.toText()]: mockCkBTCToken,
         [batmanLedgerCanisterIdText]: batmanToken,
         [robinLedgerCanisterIdText]: robinToken,
         [LEDGER_CANISTER_ID.toText()]: NNS_TOKEN_DATA,
