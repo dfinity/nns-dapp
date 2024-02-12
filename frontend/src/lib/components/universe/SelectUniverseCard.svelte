@@ -7,6 +7,8 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { isSelectedPath } from "$lib/utils/navigation.utils";
   import type { Universe } from "$lib/types/universe";
+  import { votingProposalCountStore } from "$lib/stores/proposal-voting.store";
+  import { isNullish, nonNullish } from "@dfinity/utils";
 
   export let selected: boolean;
   export let role: "link" | "button" | "dropdown" = "link";
@@ -32,6 +34,17 @@
       currentPath: $pageStore.path,
       paths: [AppPath.Accounts, AppPath.Wallet],
     });
+
+  let isProposalsPage = false;
+  $: isProposalsPage = isSelectedPath({
+    currentPath: $pageStore.path,
+    paths: [AppPath.Proposals],
+  });
+
+  let votingProposalCount: number | undefined = undefined;
+  $: votingProposalCount = isNullish(isProposalsPage)
+    ? undefined
+    : $votingProposalCountStore[universe.canisterId];
 </script>
 
 <Card
@@ -53,6 +66,11 @@
       <span class="name">{universe.title}</span>
       {#if displayProjectAccountsBalance}
         <UniverseAccountsBalance {universe} />
+      {/if}
+      {#if nonNullish(votingProposalCount)}
+        <span class="voting-proposal-count">
+          ({votingProposalCount})
+        </span>
       {/if}
     </div>
   </div>
