@@ -3,12 +3,10 @@
   import Title from "$lib/components/header/Title.svelte";
   import SelectUniverseNav from "$lib/components/universe/SelectUniverseNav.svelte";
   import HeaderToolbar from "$lib/components/header/HeaderToolbar.svelte";
-
-  export let votingIndicator: boolean = false;
 </script>
 
 <SplitContent>
-  <SelectUniverseNav slot="start" {votingIndicator} />
+  <SelectUniverseNav slot="start" />
 
   <Title slot="title" />
 

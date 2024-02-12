@@ -9,8 +9,9 @@
   import { definedNeuronsStore } from "$lib/stores/neurons.store";
   import { fetchAcceptingVotesProposals } from "$lib/services/$public/proposals.services";
   import { votingNnsProposalsStore } from "$lib/stores/proposal-voting.store";
-
-  export let votingIndicator: boolean = false;
+  import { isSelectedPath } from "$lib/utils/navigation.utils";
+  import { pageStore } from "$lib/derived/page.derived";
+  import { AppPath } from "$lib/constants/routes.constants";
 
   let innerWidth = 0;
   let list = false;
@@ -18,7 +19,13 @@
   $: list = innerWidth > BREAKPOINT_LARGE;
 
   onMount(async () => {
-    if (!votingIndicator || !$authSignedInStore) {
+    if (
+      !isSelectedPath({
+        currentPath: $pageStore.path,
+        paths: [AppPath.Proposals],
+      }) ||
+      !$authSignedInStore
+    ) {
       return;
     }
 
