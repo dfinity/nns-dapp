@@ -105,7 +105,10 @@
   </Modal>
 {:else}
   <Modal {visible} on:nnsClose role="alert" testId="filter-modal">
-    <Spinner />
+    <slot slot="title" name="title" />
+    <div class="spinner-wrapper">
+      <Spinner />
+    </div>
   </Modal>
 {/if}
 
@@ -121,5 +124,10 @@
     gap: var(--padding);
 
     margin: 0 var(--padding-2x);
+  }
+
+  .spinner-wrapper {
+    // Only to look good in the modal
+    min-height: 200px;
   }
 </style>
