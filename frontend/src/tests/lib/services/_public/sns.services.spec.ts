@@ -1,3 +1,4 @@
+import { clearSnsAggregatorCache } from "$lib/api-services/sns-aggregator.api-service";
 import * as agent from "$lib/api/agent.api";
 import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import * as governanceApi from "$lib/api/sns-governance.api";
@@ -81,6 +82,7 @@ describe("SNS public services", () => {
 
   beforeEach(() => {
     tokensStore.reset();
+    clearSnsAggregatorCache();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
