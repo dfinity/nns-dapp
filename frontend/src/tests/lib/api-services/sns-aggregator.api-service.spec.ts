@@ -59,7 +59,7 @@ describe("sns-aggregator api-service", () => {
   it("should call api once for simultaneous calls", async () => {
     const promise1 = snsAggregatorApiService.querySnsProjects();
     const promise2 = snsAggregatorApiService.querySnsProjects();
-    expect(promise1).toStrictEqual(promise2);
+    expect(promise1).toBe(promise2);
 
     resolveFn(successData);
     expect(await promise1).toEqual(successData);

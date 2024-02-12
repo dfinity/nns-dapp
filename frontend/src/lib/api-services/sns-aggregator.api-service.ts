@@ -20,7 +20,7 @@ export const clearSnsAggregatorCache = () => {
 };
 
 export const snsAggregatorApiService = {
-  async querySnsProjects() {
+  querySnsProjects() {
     if (
       isNullish(snsAggregatorCache) ||
       nowInSeconds() - snsAggregatorCache.timestampSeconds >
