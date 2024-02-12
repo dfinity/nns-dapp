@@ -112,10 +112,6 @@ const getAccounts = async ({
   ];
 };
 
-/**
- * TODO: once sns are migrated to store this module can probably be reused and renamed to icrc-accounts.services
- */
-
 export const loadAccounts = async ({
   handleError,
   ledgerCanisterId,
