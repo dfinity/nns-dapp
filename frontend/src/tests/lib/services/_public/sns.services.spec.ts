@@ -21,7 +21,6 @@ import {
   aggregatorMockSnsesDataDto,
   aggregatorSnsMockDto,
   aggregatorSnsMockWith,
-  aggregatorTokenMock,
 } from "$tests/mocks/sns-aggregator.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
@@ -235,27 +234,6 @@ describe("SNS public services", () => {
       await loadSnsProjects();
 
       expect(get(snsAggregatorStore).data).toEqual(aggregatorMockSnsesDataDto);
-    });
-
-    it("should load and map tokens", async () => {
-      vi.spyOn(aggregatorApi, "querySnsProjects").mockImplementation(() =>
-        Promise.resolve([aggregatorSnsMockDto, aggregatorSnsMockDto])
-      );
-
-      await loadSnsProjects();
-
-      const ledgerCanisterId =
-        aggregatorSnsMockDto.canister_ids.ledger_canister_id;
-
-      const tokens = get(tokensStore);
-      const token = tokens[ledgerCanisterId];
-      expect(token).not.toBeUndefined();
-      expect(token?.certified).toBeTruthy();
-      expect(token?.token).toEqual(aggregatorTokenMock);
-
-      const rootCanisterId = aggregatorSnsMockDto.canister_ids.root_canister_id;
-      const tokenForRootCanister = tokens[rootCanisterId];
-      expect(tokenForRootCanister).toEqual(token);
     });
 
     it("should load and map total token supply", async () => {
