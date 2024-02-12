@@ -53,7 +53,7 @@ impl FastScheduler {
     fn needs_update_iter(
         sns_cache: &'_ SnsCache,
         time_now_seconds: u64,
-    ) -> impl Iterator<Item = Option<&'_ SnsIndex>> + Sized + DoubleEndedIterator {
+    ) -> impl Sized + DoubleEndedIterator<Item = Option<&'_ SnsIndex>> {
         sns_cache.all_sns.iter().map(move |(index, canister_ids)| {
             let needs_update = canister_ids
                 .root_canister_id

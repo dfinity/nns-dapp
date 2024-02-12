@@ -1,8 +1,10 @@
 import type { IcrcTransferParams } from "$lib/api/icrc-ledger.api";
 import { icrcTransfer } from "$lib/api/icrc-ledger.api";
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
-import { transferTokens } from "$lib/services/icrc-accounts.services";
-import { loadAccounts } from "$lib/services/wallet-accounts.services";
+import {
+  loadAccounts,
+  transferTokens,
+} from "$lib/services/icrc-accounts.services";
 import type { Account } from "$lib/types/account";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import type { Identity } from "@dfinity/agent";

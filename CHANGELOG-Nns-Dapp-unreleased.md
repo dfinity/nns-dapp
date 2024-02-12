@@ -58,6 +58,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Update the GitHub `build-push-action` from `v4` to `v5`.
+* Upgrade Rust to 1.76.0
 
 #### Deprecated
 
