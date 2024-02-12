@@ -16,7 +16,6 @@
   // TODO: Refactor to expect as props the rootCanisterId, transactionFee and token.
   // This way we can reuse this component in a dashboard page.
   export let selectedAccount: Account | undefined = undefined;
-  export let loadTransactions = false;
   export let rootCanisterId: Principal;
   export let token: Token | undefined;
   export let transactionFee: TokenAmountV2 | undefined;
@@ -50,7 +49,6 @@
       source: sourceAccount,
       destinationAddress,
       amount,
-      loadTransactions,
       rootCanisterId,
     });
 

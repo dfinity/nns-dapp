@@ -13,7 +13,6 @@ import type { Identity } from "@dfinity/agent";
 import type { IcrcBlockIndex } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
-import { loadSnsAccountTransactions } from "./sns-transactions.services";
 import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
 
 export const loadSnsAccounts = async ({
@@ -65,13 +64,11 @@ export const snsTransferTokens = async ({
   source,
   destinationAddress,
   amount,
-  loadTransactions,
 }: {
   rootCanisterId: Principal;
   source: Account;
   destinationAddress: string;
   amount: number;
-  loadTransactions: boolean;
 }): Promise<{ blockIndex: IcrcBlockIndex | undefined }> => {
   const fee = get(snsTokensByRootCanisterIdStore)[rootCanisterId.toText()]?.fee;
 
@@ -90,12 +87,6 @@ export const snsTransferTokens = async ({
         rootCanisterId,
       }),
     reloadAccounts: async () => await loadSnsAccounts({ rootCanisterId }),
-    reloadTransactions: async () =>
-      await (loadTransactions
-        ? loadSnsAccountTransactions({
-            account: source,
-            canisterId: rootCanisterId,
-          })
-        : Promise.resolve()),
+    reloadTransactions: async () => undefined,
   });
 };

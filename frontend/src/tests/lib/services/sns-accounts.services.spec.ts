@@ -1,7 +1,6 @@
 import * as agent from "$lib/api/agent.api";
 import * as ledgerApi from "$lib/api/sns-ledger.api";
 import * as services from "$lib/services/sns-accounts.services";
-import { loadSnsAccountTransactions } from "$lib/services/sns-transactions.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import * as toastsStore from "$lib/stores/toasts.store";
@@ -19,10 +18,6 @@ import { waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
-
-vi.mock("$lib/services/sns-transactions.services", () => ({
-  loadSnsAccountTransactions: vi.fn(),
-}));
 
 describe("sns-accounts-services", () => {
   beforeEach(() => {
@@ -205,37 +200,11 @@ describe("sns-accounts-services", () => {
         source: mockSnsMainAccount,
         destinationAddress: "aaaaa-aa",
         amount: 1,
-        loadTransactions: false,
       });
 
       expect(blockIndex).toEqual(123n);
       expect(spyTransfer).toBeCalled();
       expect(spyAccounts).toBeCalled();
-    });
-
-    it("should load transactions if flag is passed", async () => {
-      setSnsProjects([
-        {
-          rootCanisterId: mockPrincipal,
-          tokenMetadata: { ...mockSnsToken, fee: 100n },
-        },
-      ]);
-      const spyTransfer = vi
-        .spyOn(ledgerApi, "snsTransfer")
-        .mockResolvedValue(123n);
-
-      const { blockIndex } = await services.snsTransferTokens({
-        rootCanisterId: mockPrincipal,
-        source: mockSnsMainAccount,
-        destinationAddress: "aaaaa-aa",
-        amount: 1,
-        loadTransactions: true,
-      });
-
-      expect(blockIndex).toEqual(123n);
-      expect(spyTransfer).toBeCalled();
-      expect(spyAccounts).toBeCalled();
-      expect(loadSnsAccountTransactions).toBeCalled();
     });
 
     it("should show toast and return success false if transfer fails", async () => {
@@ -255,7 +224,6 @@ describe("sns-accounts-services", () => {
         source: mockSnsMainAccount,
         destinationAddress: "aaaaa-aa",
         amount: 1,
-        loadTransactions: false,
       });
 
       expect(blockIndex).toBeUndefined();
@@ -276,7 +244,6 @@ describe("sns-accounts-services", () => {
         source: mockSnsMainAccount,
         destinationAddress: "aaaaa-aa",
         amount: 1,
-        loadTransactions: false,
       });
 
       expect(blockIndex).toBeUndefined();
