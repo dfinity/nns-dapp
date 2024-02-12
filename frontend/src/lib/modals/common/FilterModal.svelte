@@ -4,8 +4,6 @@
   import { Checkbox } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
   import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
-  import { onMount } from "svelte";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { isNullish } from "@dfinity/utils";
   import type {
     SnsProposalDecisionStatus,
@@ -30,21 +28,6 @@
 
   let loading: boolean;
   $: loading = isNullish(filters);
-
-  onMount(() => {
-    if (isNullish(filters)) {
-      startBusy({
-        initiator: "load-sns-filters",
-      });
-    }
-  });
-
-  $: loading,
-    (() => {
-      if (!loading) {
-        stopBusy("load-sns-accounts");
-      }
-    })();
 
   const dispatch = createEventDispatcher();
   const close = () => dispatch("nnsClose");
@@ -119,6 +102,10 @@
         {$i18n.core.filter}
       </button>
     </svelte:fragment>
+  </Modal>
+{:else}
+  <Modal {visible} on:nnsClose role="alert" testId="filter-modal">
+    <Spinner />
   </Modal>
 {/if}
 
