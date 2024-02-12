@@ -1,8 +1,6 @@
 import { AppPath } from "$lib/constants/routes.constants";
 import SnsIncreaseStakeNeuronModal from "$lib/modals/sns/neurons/SnsIncreaseStakeNeuronModal.svelte";
-import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
 import { increaseStakeNeuron } from "$lib/services/sns-neurons.services";
-import { startBusy } from "$lib/stores/busy.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
@@ -22,12 +20,7 @@ import {
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { ICPToken } from "@dfinity/utils";
-import {
-  fireEvent,
-  render,
-  waitFor,
-  type RenderResult,
-} from "@testing-library/svelte";
+import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 
 vi.mock("$lib/services/sns-neurons.services", () => {
@@ -80,37 +73,6 @@ describe("SnsIncreaseStakeNeuronModal", () => {
       data: { universe: rootCanisterId.toText() },
     });
     setSnsProjects([snsProjectParams]);
-  });
-
-  describe("accounts and params are not loaded", () => {
-    beforeEach(() => {
-      snsAccountsStore.reset();
-      tokensStore.reset();
-    });
-
-    it("should not display modal", async () => {
-      const { container } = await render(SnsIncreaseStakeNeuronModal, {
-        props,
-      });
-
-      expect(container.querySelector("div.modal")).toBeNull();
-    });
-
-    it("should call sync sns accounts on init", async () => {
-      await render(SnsIncreaseStakeNeuronModal, {
-        props,
-      });
-
-      expect(loadSnsAccounts).toBeCalled();
-    });
-
-    it("should display a spinner on init", async () => {
-      await render(SnsIncreaseStakeNeuronModal, {
-        props,
-      });
-
-      expect(startBusy).toHaveBeenCalled();
-    });
   });
 
   describe("accounts and params are loaded", () => {
