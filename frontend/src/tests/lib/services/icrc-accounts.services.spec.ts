@@ -11,7 +11,9 @@ import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
 import { mockIcrcMainAccount } from "$tests/mocks/icrc-accounts.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
+import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 
 vi.mock("$lib/api/icrc-ledger.api");
@@ -27,6 +29,7 @@ describe("icrc-accounts-services", () => {
     resetIdentity();
     tokensStore.reset();
     icrcAccountsStore.reset();
+    resetSnsProjects();
 
     vi.spyOn(ledgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
     vi.spyOn(ledgerApi, "queryIcrcBalance").mockImplementation(
@@ -142,6 +145,27 @@ describe("icrc-accounts-services", () => {
         certified: true,
         token: mockToken,
       });
+    });
+
+    it("doesn't load token from api into store if sns token", async () => {
+      const snsRootCanisterIdText = "aax3a-h4aaa-aaaaa-qaahq-cai";
+      const snsLedgerCanisterIdText = "c2lt4-zmaaa-aaaaa-qaaiq-cai";
+      setSnsProjects([
+        {
+          rootCanisterId: Principal.fromText(snsRootCanisterIdText),
+          ledgerCanisterId: Principal.fromText(snsLedgerCanisterIdText),
+        },
+      ]);
+      tokensStore.setToken({
+        canisterId: ledgerCanisterId,
+        token: mockToken,
+        certified: false,
+      });
+      expect(ledgerApi.queryIcrcToken).not.toBeCalled();
+
+      await loadIcrcToken({ ledgerCanisterId, certified: false });
+
+      expect(ledgerApi.queryIcrcToken).not.toBeCalled();
     });
   });
 
