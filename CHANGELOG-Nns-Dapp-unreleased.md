@@ -30,6 +30,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Voting power calculation formatting.
 * Voting rewards description.
 * Unify implementations of SNS token wallets with other (non-ICP) token wallets.
+* Refactor tokens store usage.
 
 #### Deprecated
 

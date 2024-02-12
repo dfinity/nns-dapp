@@ -9,7 +9,7 @@
   import type { CanisterId } from "$lib/types/canister";
   import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
-  import { tokensStore } from "$lib/stores/tokens.store";
+  import { tokensByUniverseIdStore } from "$lib/derived/tokens.derived";
   import IcrcTokenWalletFooter from "$lib/components/accounts/IcrcTokenWalletFooter.svelte";
 
   export let accountIdentifier: string | undefined | null = undefined;
@@ -27,7 +27,7 @@
 
   let token: IcrcTokenMetadata | undefined;
   $: token = nonNullish($selectedIcrcTokenUniverseIdStore)
-    ? $tokensStore[$selectedIcrcTokenUniverseIdStore.toText()]?.token
+    ? $tokensByUniverseIdStore[$selectedIcrcTokenUniverseIdStore.toText()]
     : undefined;
 
   let transactions: IcrcWalletTransactionsList;
