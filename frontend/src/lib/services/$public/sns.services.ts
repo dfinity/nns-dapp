@@ -11,10 +11,8 @@ import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
 import { snsProposalsStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
-import { tokensStore } from "$lib/stores/tokens.store";
 import { isForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
-import { fillTokensStoreFromAggregatorData } from "$lib/utils/icrc-tokens.utils";
 import { convertNervousFunction } from "$lib/utils/sns-aggregator-converters.utils";
 import { ProposalStatus, Topic, type ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
@@ -74,10 +72,6 @@ export const loadSnsProjects = async (): Promise<void> => {
         certified: true,
       }))
     );
-    fillTokensStoreFromAggregatorData({
-      tokensStore,
-      aggregatorData,
-    });
     // TODO: PENDING to be implemented, load SNS parameters.
   } catch (err) {
     toastsError(

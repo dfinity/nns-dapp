@@ -162,23 +162,16 @@ describe("Tokens route", () => {
         {
           rootCanisterId: rootCanisterIdTetris,
           projectName: "Tetris",
+          tokenMetadata: tetrisToken,
           lifecycle: SnsSwapLifecycle.Committed,
         },
         {
           rootCanisterId: rootCanisterIdPacman,
           projectName: "Pacman",
+          tokenMetadata: pacmanToken,
           lifecycle: SnsSwapLifecycle.Committed,
         },
       ]);
-      // Tokens are loaded in SNS aggregator
-      tokensStore.setTokens({
-        [rootCanisterIdTetris.toText()]: {
-          token: tetrisToken,
-        },
-        [rootCanisterIdPacman.toText()]: {
-          token: pacmanToken,
-        },
-      });
       setCkETHCanisters();
       icpAccountsStore.setForTesting({
         main: { ...mockMainAccount, balanceUlps: icpBalanceE8s },

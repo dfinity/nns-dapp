@@ -1,11 +1,11 @@
 import type { IcrcTransferParams } from "$lib/api/icrc-ledger.api";
 import { getSnsAccounts, snsTransfer } from "$lib/api/sns-ledger.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
+import { snsTokensByRootCanisterIdStore } from "$lib/derived/sns/sns-tokens.derived";
 import { transferTokens } from "$lib/services/icrc-accounts.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
-import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
@@ -73,7 +73,7 @@ export const snsTransferTokens = async ({
   amount: number;
   loadTransactions: boolean;
 }): Promise<{ blockIndex: IcrcBlockIndex | undefined }> => {
-  const fee = get(tokensStore)[rootCanisterId.toText()]?.token.fee;
+  const fee = get(snsTokensByRootCanisterIdStore)[rootCanisterId.toText()]?.fee;
 
   return transferTokens({
     source,

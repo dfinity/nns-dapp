@@ -23,7 +23,7 @@ import { IcrcTokenTransactionModalPo } from "$tests/page-objects/IcrcTokenTransa
 import { ReceiveModalPo } from "$tests/page-objects/ReceiveModal.page-object";
 import { SnsWalletPo } from "$tests/page-objects/SnsWallet.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
@@ -68,11 +68,13 @@ vi.mock("$lib/services/worker-balances.services", () => ({
 describe("SnsWallet", () => {
   const testTokenSymbol = "OOO";
   const testTokenName = "Out of office";
+  const fee = 17_000n;
 
   const testToken = {
     ...mockSnsToken,
     name: testTokenName,
     symbol: testTokenSymbol,
+    fee,
   };
 
   const props = {
@@ -82,7 +84,6 @@ describe("SnsWallet", () => {
   const rootCanisterId = rootCanisterIdMock;
   const rootCanisterIdText = rootCanisterId.toText();
   const ledgerCanisterId = Principal.fromText("bw4dl-smaaa-aaaaa-qaacq-cai");
-  const fee = 10_000n;
   const projectName = "Tetris";
 
   const renderComponent = async (props: { accountIdentifier?: string }) => {
@@ -100,6 +101,7 @@ describe("SnsWallet", () => {
     vi.clearAllMocks();
     icrcAccountsStore.reset();
     tokensStore.reset();
+    resetSnsProjects();
     toastsStore.reset();
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
       transactions: [],
@@ -115,14 +117,6 @@ describe("SnsWallet", () => {
         tokenMetadata: testToken,
       },
     ]);
-    tokensStore.setToken({
-      canisterId: ledgerCanisterId,
-      token: {
-        ...testToken,
-        fee,
-      },
-      certified: true,
-    });
     page.mock({
       data: { universe: rootCanisterIdText },
       routeId: AppPath.Wallet,

@@ -2,7 +2,6 @@ import { AppPath } from "$lib/constants/routes.constants";
 import SnsIncreaseStakeNeuronModal from "$lib/modals/sns/neurons/SnsIncreaseStakeNeuronModal.svelte";
 import { increaseStakeNeuron } from "$lib/services/sns-neurons.services";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
 import {
   mockPrincipal,
@@ -48,6 +47,7 @@ describe("SnsIncreaseStakeNeuronModal", () => {
   const snsProjectParams = {
     lifecycle: SnsSwapLifecycle.Committed,
     rootCanisterId,
+    tokenMetadata: mockSnsToken,
   };
 
   const props = {
@@ -81,10 +81,6 @@ describe("SnsIncreaseStakeNeuronModal", () => {
         rootCanisterId,
         accounts: [mockSnsMainAccount],
         certified: true,
-      });
-      tokensStore.setToken({
-        canisterId: rootCanisterId,
-        token: mockSnsToken,
       });
     });
 

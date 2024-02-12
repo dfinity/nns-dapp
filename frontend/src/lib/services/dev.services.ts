@@ -6,6 +6,7 @@ import {
   receiveMockBtc,
 } from "$lib/api/dev.api";
 import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { snsTokensByRootCanisterIdStore } from "$lib/derived/sns/sns-tokens.derived";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import type { IcpAccountsStoreData } from "$lib/stores/icp-accounts.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
@@ -14,7 +15,6 @@ import {
   snsAccountsStore,
   type SnsAccountsStoreData,
 } from "$lib/stores/sns-accounts.store";
-import { tokensStore } from "$lib/stores/tokens.store";
 import type { IcpAccount } from "$lib/types/account";
 import { numberToUlps } from "$lib/utils/token.utils";
 import type { Principal } from "@dfinity/principal";
@@ -69,7 +69,7 @@ export const getSnsTokens = async ({
   const store: SnsAccountsStoreData = get(snsAccountsStore);
   const { accounts } = store[rootCanisterId.toText()];
   const main = accounts.find((account) => account.type === "main");
-  const token = get(tokensStore)[rootCanisterId.toText()]?.token;
+  const token = get(snsTokensByRootCanisterIdStore)[rootCanisterId.toText()];
 
   if (!main) {
     throw new Error("No account found to send tokens");

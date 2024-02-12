@@ -24,17 +24,18 @@ describe("snsSelectedTransactionFeeStore", () => {
   });
 
   it("returns transaction fee of current selected sns project", () => {
-    setSnsProjects([projectParams]);
     page.mock({ data: { universe } });
 
-    const fee = 10_000n;
-    tokensStore.setToken({
-      canisterId: rootCanisterId,
-      token: {
-        ...mockToken,
-        fee,
+    const fee = 11_000n;
+    setSnsProjects([
+      {
+        ...projectParams,
+        tokenMetadata: {
+          ...mockToken,
+          fee,
+        },
       },
-    });
+    ]);
 
     const actualFeeTokens = get(snsSelectedTransactionFeeStore);
 
