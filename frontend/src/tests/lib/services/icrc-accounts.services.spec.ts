@@ -148,19 +148,13 @@ describe("icrc-accounts-services", () => {
     });
 
     it("doesn't load token from api into store if sns token", async () => {
-      const snsRootCanisterIdText = "aax3a-h4aaa-aaaaa-qaahq-cai";
-      const snsLedgerCanisterIdText = "c2lt4-zmaaa-aaaaa-qaaiq-cai";
+      const rootCanisterIdText = "aax3a-h4aaa-aaaaa-qaahq-cai";
       setSnsProjects([
         {
-          rootCanisterId: Principal.fromText(snsRootCanisterIdText),
-          ledgerCanisterId: Principal.fromText(snsLedgerCanisterIdText),
+          rootCanisterId: Principal.fromText(rootCanisterIdText),
+          ledgerCanisterId,
         },
       ]);
-      tokensStore.setToken({
-        canisterId: ledgerCanisterId,
-        token: mockToken,
-        certified: false,
-      });
       expect(ledgerApi.queryIcrcToken).not.toBeCalled();
 
       await loadIcrcToken({ ledgerCanisterId, certified: false });
