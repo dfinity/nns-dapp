@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Nav, BREAKPOINT_LARGE } from "@dfinity/gix-components";
+  import { Nav, BREAKPOINT_LARGE, Spinner } from "@dfinity/gix-components";
   import SelectUniverseNavList from "$lib/components/universe/SelectUniverseNavList.svelte";
   import SelectUniverseDropdown from "$lib/components/universe/SelectUniverseDropdown.svelte";
   import { titleTokenSelectorStore } from "$lib/derived/title-token-selector.derived";
@@ -8,10 +8,14 @@
   import { listNeurons } from "$lib/services/neurons.services";
   import { definedNeuronsStore } from "$lib/stores/neurons.store";
   import { fetchAcceptingVotesProposals } from "$lib/services/$public/proposals.services";
-  import { votingNnsProposalsStore } from "$lib/stores/proposal-voting.store";
+  import {
+    votingNnsProposalsStore,
+    votingProposalCountStore,
+  } from "$lib/stores/proposal-voting.store";
   import { isSelectedPath } from "$lib/utils/navigation.utils";
   import { pageStore } from "$lib/derived/page.derived";
   import { AppPath } from "$lib/constants/routes.constants";
+  import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 
   let innerWidth = 0;
   let list = false;
@@ -32,9 +36,13 @@
     // Loading uncertified neurons is safe here, because they will be reloaded on navigation
     await listNeurons({ strategy: "query" });
     await fetchAcceptingVotesProposals($definedNeuronsStore);
-    console.log($votingNnsProposalsStore);
+    console.log($votingProposalCountStore, $votingNnsProposalsStore);
     // sns neurons & proposals TBD
   });
+
+  let votingProposalLoading = true;
+  $: votingProposalLoading =
+    Object.values($votingProposalCountStore).length < $snsProjectsStore.length;
 </script>
 
 <svelte:window bind:innerWidth />
@@ -42,6 +50,9 @@
 <Nav>
   <p class="title" slot="title" data-tid="select-universe-nav-title">
     {$titleTokenSelectorStore}
+    {#if votingProposalLoading}
+      <Spinner inline size="small" />
+    {/if}
   </p>
 
   {#if list}
