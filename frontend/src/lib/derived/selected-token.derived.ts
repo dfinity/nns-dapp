@@ -13,10 +13,10 @@ export const selectedTokenStore: Readable<Token | undefined> = derived<
   Token | undefined
 >(
   [selectedUniverseIdStore, tokensByUniverseIdStore],
-  ([$selectedUniverseIdStore, $tokensStore]) => {
+  ([$selectedUniverseIdStore, $tokensByUniverseIdStore]) => {
     if ($selectedUniverseIdStore.toText() === OWN_CANISTER_ID_TEXT) {
       return ICPToken;
     }
-    return $tokensStore[$selectedUniverseIdStore.toText()];
+    return $tokensByUniverseIdStore[$selectedUniverseIdStore.toText()];
   }
 );

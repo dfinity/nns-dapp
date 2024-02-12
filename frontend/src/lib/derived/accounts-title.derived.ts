@@ -11,8 +11,8 @@ export const accountsTitleStore = derived<
   string
 >(
   [pageStore, tokensByUniverseIdStore, i18n],
-  ([{ universe }, tokensData, i18nObj]) => {
-    const token = tokensData[universe];
+  ([{ universe }, tokensByUniverseId, i18nObj]) => {
+    const token = tokensByUniverseId[universe];
     if (isNullish(token)) {
       return i18nObj.navigation.tokens;
     }

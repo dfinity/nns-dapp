@@ -6,9 +6,9 @@ import { snsOnlyProjectStore } from "./sns-selected-project.derived";
 export const snsSelectedTransactionFeeStore: Readable<TokenAmount | undefined> =
   derived(
     [snsOnlyProjectStore, snsTokensByRootCanisterIdStore],
-    ([selectedRootCanisterId, tokensStore]) => {
+    ([selectedRootCanisterId, snsTokensByRootCanisterId]) => {
       const selectedToken = nonNullish(selectedRootCanisterId)
-        ? tokensStore[selectedRootCanisterId.toText()]
+        ? snsTokensByRootCanisterId[selectedRootCanisterId.toText()]
         : undefined;
       if (nonNullish(selectedToken)) {
         return TokenAmount.fromE8s({
