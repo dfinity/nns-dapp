@@ -5,7 +5,6 @@ import { loadSnsAccountTransactions } from "$lib/services/sns-transactions.servi
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import * as toastsStore from "$lib/stores/toasts.store";
-import { tokensStore } from "$lib/stores/tokens.store";
 import {
   mockIdentity,
   mockPrincipal,
@@ -14,6 +13,7 @@ import {
 import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import { waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
@@ -27,6 +27,7 @@ vi.mock("$lib/services/sns-transactions.services", () => ({
 describe("sns-accounts-services", () => {
   beforeEach(() => {
     resetIdentity();
+    resetSnsProjects();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
@@ -178,7 +179,6 @@ describe("sns-accounts-services", () => {
     beforeEach(() => {
       vi.clearAllMocks();
       snsAccountsStore.reset();
-      tokensStore.reset();
       vi.spyOn(console, "error").mockImplementation(() => undefined);
 
       spyAccounts = vi
@@ -187,14 +187,15 @@ describe("sns-accounts-services", () => {
     });
 
     it("should call sns transfer tokens", async () => {
-      tokensStore.setToken({
-        canisterId: mockPrincipal,
-        token: {
-          ...mockSnsToken,
-          fee: 100n,
+      setSnsProjects([
+        {
+          rootCanisterId: mockPrincipal,
+          tokenMetadata: {
+            ...mockSnsToken,
+            fee: 100n,
+          },
         },
-        certified: true,
-      });
+      ]);
       const spyTransfer = vi
         .spyOn(ledgerApi, "snsTransfer")
         .mockResolvedValue(123n);
@@ -213,14 +214,12 @@ describe("sns-accounts-services", () => {
     });
 
     it("should load transactions if flag is passed", async () => {
-      tokensStore.setToken({
-        canisterId: mockPrincipal,
-        token: {
-          ...mockSnsToken,
-          fee: 100n,
+      setSnsProjects([
+        {
+          rootCanisterId: mockPrincipal,
+          tokenMetadata: { ...mockSnsToken, fee: 100n },
         },
-        certified: true,
-      });
+      ]);
       const spyTransfer = vi
         .spyOn(ledgerApi, "snsTransfer")
         .mockResolvedValue(123n);
@@ -240,14 +239,12 @@ describe("sns-accounts-services", () => {
     });
 
     it("should show toast and return success false if transfer fails", async () => {
-      tokensStore.setToken({
-        canisterId: mockPrincipal,
-        token: {
-          ...mockSnsToken,
-          fee: 100n,
+      setSnsProjects([
+        {
+          rootCanisterId: mockPrincipal,
+          tokenMetadata: { ...mockSnsToken, fee: 100n },
         },
-        certified: true,
-      });
+      ]);
       const spyTransfer = vi
         .spyOn(ledgerApi, "snsTransfer")
         .mockRejectedValue(new Error("test error"));
@@ -268,7 +265,7 @@ describe("sns-accounts-services", () => {
     });
 
     it("should show toast and return success false if there is no transaction fee", async () => {
-      tokensStore.reset();
+      resetSnsProjects();
       const spyTransfer = vi
         .spyOn(ledgerApi, "snsTransfer")
         .mockRejectedValue(new Error("test error"));

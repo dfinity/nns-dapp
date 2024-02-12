@@ -1,5 +1,6 @@
 import { getToken } from "$lib/api/wallet-ledger.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
+import { snsTokensByLedgerCanisterIdStore } from "$lib/derived/sns/sns-tokens.derived";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
@@ -17,6 +18,11 @@ export const loadToken = async ({
 }) => {
   // Currently we assume the token metadata does not change that often and might never change while the session is active
   // That's why, we load the token for a project only once as long as its data is already certified
+  if (ledgerCanisterId.toText() in get(snsTokensByLedgerCanisterIdStore)) {
+    // SNS tokens are derived from aggregator data instead.
+    return;
+  }
+
   const storeData = get(tokensStore);
   if (storeData[ledgerCanisterId.toText()]?.certified) {
     return;

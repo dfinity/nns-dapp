@@ -4,6 +4,7 @@ import {
   type IcrcTransferParams,
 } from "$lib/api/icrc-ledger.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
+import { snsTokensByLedgerCanisterIdStore } from "$lib/derived/sns/sns-tokens.derived";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
@@ -32,6 +33,11 @@ export const loadIcrcToken = ({
   ledgerCanisterId: Principal;
   certified: boolean;
 }) => {
+  if (ledgerCanisterId.toText() in get(snsTokensByLedgerCanisterIdStore)) {
+    // SNS tokens are derived from aggregator data instead.
+    return;
+  }
+
   const currentToken = get(tokensStore)[ledgerCanisterId.toText()];
 
   if (nonNullish(currentToken) && (currentToken.certified || !certified)) {

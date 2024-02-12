@@ -25,7 +25,7 @@
   import { createEventDispatcher } from "svelte";
   import type { Universe } from "$lib/types/universe";
   import { universesStore } from "$lib/derived/universes.derived";
-  import { tokensStore } from "$lib/stores/tokens.store";
+  import { tokensByUniverseIdStore } from "$lib/derived/tokens.derived";
 
   let transferring = false;
 
@@ -87,7 +87,7 @@
   );
   let selectedToken: Token | undefined;
   $: selectedToken = nonNullish(selectedUniverseId)
-    ? $tokensStore[selectedUniverseId]?.token
+    ? $tokensByUniverseIdStore[selectedUniverseId]
     : undefined;
 
   const dispatch = createEventDispatcher();

@@ -141,7 +141,6 @@ describe("tokens-list-base.derived", () => {
     beforeEach(() => {
       resetSnsProjects();
       tokensStore.reset();
-      setSnsProjects([snsTetris, snsPacman]);
       setCkETHCanisters();
     });
 
@@ -153,12 +152,13 @@ describe("tokens-list-base.derived", () => {
         ckBTCTokenLoading,
         ckTESTBTCTokenLoading,
         // ckEHT is not in the list because the name of the universe comes from the token.
-        tetrisTokenLoading,
-        pacmanTokenLoading,
+        // SNS tokens are never loading because their token data comes with the
+        // aggregator data.
       ]);
     });
 
     it("should return unavailable balance and GoToDetail action if token is present", () => {
+      setSnsProjects([snsTetris, snsPacman]);
       tokensStore.setTokens({
         [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
           token: mockCkBTCToken,
@@ -166,14 +166,6 @@ describe("tokens-list-base.derived", () => {
         },
         [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: {
           token: mockCkTESTBTCToken,
-          certified: true,
-        },
-        [snsTetris.rootCanisterId.toText()]: {
-          token: snsTetrisToken,
-          certified: true,
-        },
-        [snsPacman.rootCanisterId.toText()]: {
-          token: snsPackmanToken,
           certified: true,
         },
       });

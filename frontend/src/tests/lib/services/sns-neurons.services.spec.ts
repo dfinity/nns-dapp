@@ -40,6 +40,7 @@ import {
   mockedConstants,
   resetMockedConstants,
 } from "$tests/utils/mockable-constants.test-utils";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import {
@@ -85,6 +86,7 @@ describe("sns-neurons-services", () => {
     vi.clearAllMocks();
     resetIdentity();
     resetMockedConstants();
+    resetSnsProjects();
   });
 
   describe("syncSnsNeurons", () => {
@@ -702,11 +704,12 @@ describe("sns-neurons-services", () => {
     });
 
     it("should call sns api stakeNeuron, query neurons again and load sns accounts", async () => {
-      tokensStore.setToken({
-        canisterId: mockPrincipal,
-        token: { ...mockSnsToken, fee: 100n },
-        certified: true,
-      });
+      setSnsProjects([
+        {
+          rootCanisterId: mockPrincipal,
+          tokenMetadata: { ...mockSnsToken, fee: 100n },
+        },
+      ]);
       const spyStake = vi
         .spyOn(api, "stakeNeuron")
         .mockImplementation(() => Promise.resolve(mockSnsNeuron.id[0]));
@@ -1216,11 +1219,12 @@ describe("sns-neurons-services", () => {
         .mockImplementation(mockTokenStore);
 
       tokensStore.reset();
-      tokensStore.setToken({
-        canisterId: mockPrincipal,
-        token: { ...mockSnsToken, fee: transactionFee },
-        certified: true,
-      });
+      setSnsProjects([
+        {
+          rootCanisterId: mockPrincipal,
+          tokenMetadata: { ...mockSnsToken, fee: transactionFee },
+        },
+      ]);
     });
 
     afterEach(() => {

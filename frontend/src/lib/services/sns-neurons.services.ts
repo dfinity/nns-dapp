@@ -23,6 +23,7 @@ import {
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+import { snsTokensByRootCanisterIdStore } from "$lib/derived/sns/sns-tokens.derived";
 import { loadSnsParameters } from "$lib/services/sns-parameters.services";
 import {
   snsNeuronsStore,
@@ -30,7 +31,6 @@ import {
 } from "$lib/stores/sns-neurons.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
-import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import {
@@ -343,7 +343,9 @@ export const splitNeuron = async ({
     const token = get(snsTokenSymbolSelectedStore);
     assertNonNullish(token, "token not defined");
 
-    const transactionFee = get(tokensStore)[rootCanisterId.toText()]?.token.fee;
+    const transactionFee = get(snsTokensByRootCanisterIdStore)[
+      rootCanisterId.toText()
+    ]?.fee;
     assertNonNullish(transactionFee, "fee not defined");
 
     const amountE8s = numberToE8s(amount);
@@ -563,7 +565,8 @@ export const stakeNeuron = async ({
     const identity = await getAuthenticatedIdentity();
     const stakeE8s = numberToE8s(amount);
 
-    const fee = get(tokensStore)[rootCanisterId.toText()]?.token.fee;
+    const fee = get(snsTokensByRootCanisterIdStore)[rootCanisterId.toText()]
+      ?.fee;
 
     if (!fee) {
       throw new Error("error.transaction_fee_not_found");
