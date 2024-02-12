@@ -1,7 +1,6 @@
 import * as ckbtcMinterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
-import * as ckbtcLedgerApi from "$lib/api/wallet-ledger.api";
 import {
   CKTESTBTC_LEDGER_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
@@ -66,13 +65,11 @@ vi.mock("$lib/services/worker-transactions.services", () => ({
   ),
 }));
 
-vi.mock("$lib/api/wallet-ledger.api");
 vi.mock("$lib/api/ckbtc-minter.api");
 vi.mock("$lib/api/icrc-ledger.api");
 vi.mock("$lib/api/icrc-index.api");
 
 const blockedApiPaths = [
-  "$lib/api/wallet-ledger.api",
   "$lib/api/ckbtc-minter.api",
   "$lib/api/icrc-ledger.api",
   "$lib/api/icrc-index.api",
@@ -227,7 +224,7 @@ describe("CkBTCWallet", () => {
           resolveAccounts = resolve;
         });
       });
-      vi.mocked(ckbtcLedgerApi.getToken).mockResolvedValue(mockCkBTCToken);
+      vi.mocked(icrcLedgerApi.queryIcrcToken).mockResolvedValue(mockCkBTCToken);
     });
 
     it("should render a spinner while loading", async () => {
@@ -241,7 +238,7 @@ describe("CkBTCWallet", () => {
     it("should call to load ckBTC accounts", async () => {
       await renderWallet();
       expect(icrcLedgerApi.queryIcrcBalance).toBeCalled();
-      expect(ckbtcLedgerApi.getToken).toBeCalled();
+      expect(icrcLedgerApi.queryIcrcToken).toBeCalled();
     });
   });
 

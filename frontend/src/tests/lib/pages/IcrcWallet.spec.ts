@@ -1,6 +1,5 @@
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
-import * as walletLedgerApi from "$lib/api/wallet-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   CKETHSEPOLIA_INDEX_CANISTER_ID,
@@ -62,15 +61,10 @@ vi.mock("$lib/services/worker-transactions.services", () => ({
   ),
 }));
 
-vi.mock("$lib/api/wallet-ledger.api");
 vi.mock("$lib/api/icrc-ledger.api");
 vi.mock("$lib/api/icrc-index.api");
 
-const blockedApiPaths = [
-  "$lib/api/wallet-ledger.api",
-  "$lib/api/icrc-ledger.api",
-  "$lib/api/icrc-index.api",
-];
+const blockedApiPaths = ["$lib/api/icrc-ledger.api", "$lib/api/icrc-index.api"];
 
 describe("IcrcWallet", () => {
   blockAllCallsTo(blockedApiPaths);
@@ -204,7 +198,9 @@ describe("IcrcWallet", () => {
           resolveAccounts = resolve;
         });
       });
-      vi.mocked(walletLedgerApi.getToken).mockResolvedValue(mockCkETHTESTToken);
+      vi.mocked(icrcLedgerApi.queryIcrcToken).mockResolvedValue(
+        mockCkETHTESTToken
+      );
     });
 
     it("should render a spinner while loading", async () => {
@@ -218,7 +214,7 @@ describe("IcrcWallet", () => {
     it("should call to load Icrc accounts", async () => {
       await renderWallet(props);
       expect(icrcLedgerApi.queryIcrcBalance).toBeCalled();
-      expect(walletLedgerApi.getToken).toBeCalled();
+      expect(icrcLedgerApi.queryIcrcToken).toBeCalled();
     });
   });
 

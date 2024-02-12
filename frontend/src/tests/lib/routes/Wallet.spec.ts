@@ -1,6 +1,5 @@
 import * as ckbtcMinterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
-import * as walletLedgerApi from "$lib/api/wallet-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import {
@@ -38,7 +37,6 @@ import { render } from "@testing-library/svelte";
 
 vi.mock("$lib/api/icrc-ledger.api");
 vi.mock("$lib/api/ckbtc-minter.api");
-vi.mock("$lib/api/wallet-ledger.api");
 
 vi.mock("$lib/services/wallet-transactions.services", () => {
   return {
@@ -117,7 +115,7 @@ describe("Wallet", () => {
         throw new Error(`Unexpected canisterId: ${canisterId.toText()}`);
       }
     );
-    vi.spyOn(walletLedgerApi, "getToken").mockImplementation(
+    vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockImplementation(
       async ({ canisterId }) => {
         if (canisterId.toText() === CKETH_UNIVERSE_CANISTER_ID.toText()) {
           return mockCkETHToken;
