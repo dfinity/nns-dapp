@@ -22,6 +22,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Support HTML within toast messages.
 * Add `ENABLE_VOTING_INDICATION` feature flag.
 * Add "Manage Internet Identity" and "Source code" entries to account menu.
+* Client side caching of SNS Aggregator calls.
 
 #### Changed
 
