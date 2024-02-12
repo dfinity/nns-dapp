@@ -1,8 +1,7 @@
 import { toastsError } from "$lib/stores/toasts.store";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
 import { Principal } from "@dfinity/principal";
-import { loadIcrcToken } from "./icrc-accounts.services";
-import { loadAccounts } from "./wallet-accounts.services";
+import { loadAccounts, loadIcrcToken } from "./icrc-accounts.services";
 
 /**
  * Load Icrc accounts balances and token

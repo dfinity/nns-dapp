@@ -6,7 +6,7 @@ import {
   CKBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { convertCkBTCToBtcIcrc2 } from "$lib/services/ckbtc-convert.services";
-import * as walletAccountsServices from "$lib/services/wallet-accounts.services";
+import * as walletAccountsServices from "$lib/services/icrc-accounts.services";
 import { loadWalletTransactions } from "$lib/services/wallet-transactions.services";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
@@ -28,7 +28,7 @@ import type { Mock } from "vitest";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/services/wallet-transactions.services");
-vi.mock("$lib/services/wallet-accounts.services");
+vi.mock("$lib/services/icrc-accounts.services");
 
 describe("ckbtc-convert-services", () => {
   const now = new Date("2019-02-03T12:34:56.789Z").getTime();

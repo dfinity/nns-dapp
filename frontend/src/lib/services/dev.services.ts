@@ -21,8 +21,8 @@ import type { Principal } from "@dfinity/principal";
 import { ICPToken, nonNullish, type Token } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { syncAccounts } from "./icp-accounts.services";
+import { loadAccounts } from "./icrc-accounts.services";
 import { loadSnsAccounts } from "./sns-accounts.services";
-import { loadAccounts } from "./wallet-accounts.services";
 
 const getMainAccount = async (): Promise<IcpAccount> => {
   const { main }: IcpAccountsStoreData = get(icpAccountsStore);
