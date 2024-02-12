@@ -26,7 +26,6 @@ import type { Principal } from "@dfinity/principal";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
-import { loadToken } from "./wallet-tokens.services";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getIcrcAccountIdentity = (_: Account): Promise<Identity> => {
@@ -36,10 +35,10 @@ export const getIcrcAccountIdentity = (_: Account): Promise<Identity> => {
 
 export const loadIcrcToken = ({
   ledgerCanisterId,
-  certified,
+  certified = true,
 }: {
   ledgerCanisterId: Principal;
-  certified: boolean;
+  certified?: boolean;
 }) => {
   if (ledgerCanisterId.toText() in get(snsTokensByLedgerCanisterIdStore)) {
     // SNS tokens are derived from aggregator data instead.
@@ -164,10 +163,15 @@ export const loadAccounts = async ({
   });
 };
 
-export const syncAccounts = async (params: {
-  handleError?: () => void;
+export const syncAccounts = async ({
+  ledgerCanisterId,
+}: {
   ledgerCanisterId: Principal;
-}) => await Promise.all([loadAccounts(params), loadToken(params)]);
+}) =>
+  await Promise.all([
+    loadAccounts({ ledgerCanisterId }),
+    loadIcrcToken({ ledgerCanisterId }),
+  ]);
 
 ///
 /// These following services are implicitly covered by their consumers' services testing - i.e. ckbtc-accounts.services.spec and sns-accounts.services.spec

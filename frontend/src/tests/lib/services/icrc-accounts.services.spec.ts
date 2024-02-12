@@ -1,5 +1,4 @@
 import * as ledgerApi from "$lib/api/icrc-ledger.api";
-import * as walletApi from "$lib/api/wallet-ledger.api";
 import {
   CKBTC_LEDGER_CANISTER_ID,
   CKBTC_UNIVERSE_CANISTER_ID,
@@ -222,7 +221,7 @@ describe("icrc-accounts-services", () => {
         .mockResolvedValue(mockCkBTCMainAccount.balanceUlps);
 
       const spyTokenQuery = vi
-        .spyOn(walletApi, "getToken")
+        .spyOn(ledgerApi, "queryIcrcToken")
         .mockResolvedValue(mockCkBTCToken);
 
       await syncAccounts({
@@ -254,7 +253,7 @@ describe("icrc-accounts-services", () => {
     it("loads token from api into store", async () => {
       expect(get(tokensStore)[ledgerCanisterId.toText()]).toBeUndefined();
 
-      await loadIcrcToken({ ledgerCanisterId, certified: true });
+      await loadIcrcToken({ ledgerCanisterId });
 
       expect(get(tokensStore)[ledgerCanisterId.toText()]).toEqual({
         certified: true,

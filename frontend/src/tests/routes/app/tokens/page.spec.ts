@@ -1,7 +1,6 @@
 import * as ckBTCMinterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as snsLedgerApi from "$lib/api/sns-ledger.api";
-import * as walletLedgerApi from "$lib/api/wallet-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
@@ -44,7 +43,6 @@ import { isNullish } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 import { mock } from "vitest-mock-extended";
 
-vi.mock("$lib/api/wallet-ledger.api");
 vi.mock("$lib/api/sns-ledger.api");
 vi.mock("$lib/api/icrc-ledger.api");
 vi.mock("$lib/api/ckbtc-minter.api");
@@ -99,7 +97,7 @@ describe("Tokens route", () => {
       ckBTCBalanceE8s = ckBTCDefaultBalanceE8s;
       ckETHBalanceUlps = ckETHDefaultBalanceUlps;
       tetrisBalanceE8s = tetrisDefaultBalanceE8s;
-      vi.spyOn(walletLedgerApi, "getToken").mockImplementation(
+      vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockImplementation(
         async ({ canisterId }) => {
           const tokenMap = {
             [CKBTC_UNIVERSE_CANISTER_ID.toText()]: mockCkBTCToken,
