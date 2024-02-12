@@ -17,6 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Add `ENABLE_VOTING_INDICATION` feature flag.
 * Add "Manage Internet Identity" and "Source code" entries to account menu.
+* Client side caching of SNS Aggregator calls.
 
 #### Changed
 
@@ -39,6 +40,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Update the GitHub `build-push-action` from `v4` to `v5`.
+* Upgrade Rust to 1.76.0
 
 #### Deprecated
 

@@ -1,5 +1,5 @@
 import { NANO_SECONDS_IN_MINUTE } from "$lib/constants/constants";
-import { loadAccounts as loadWalletAccounts } from "$lib/services/wallet-accounts.services";
+import { loadAccounts as loadWalletAccounts } from "$lib/services/icrc-accounts.services";
 import type { Account } from "$lib/types/account";
 import type { CanisterId } from "$lib/types/canister";
 import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";

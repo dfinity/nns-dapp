@@ -20,7 +20,7 @@
   import IcrcWalletPage from "$lib/components/accounts/IcrcWalletPage.svelte";
   import { writable } from "svelte/store";
   import type { WalletStore } from "$lib/types/wallet.context";
-  import { loadAccounts } from "$lib/services/wallet-accounts.services";
+  import { loadAccounts } from "$lib/services/icrc-accounts.services";
 
   export let accountIdentifier: string | undefined | null = undefined;
 
