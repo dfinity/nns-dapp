@@ -8,13 +8,14 @@ const cacheExpirationDurationSeconds = 5 * SECONDS_IN_MINUTE;
 
 interface SnsAggregatorCache {
   data: Promise<CachedSnsDto[]>;
-  // When the neurons were cached.
+  // When the data was cached.
   timestampSeconds: number;
 }
 
 let snsAggregatorCache: SnsAggregatorCache | null = null;
 
-export const clearCache = () => {
+// For testing purposes.
+export const clearSnsAggregatorCache = () => {
   snsAggregatorCache = null;
 };
 
@@ -26,7 +27,12 @@ export const snsAggregatorApiService = {
         cacheExpirationDurationSeconds
     ) {
       snsAggregatorCache = {
-        data: querySnsProjects(),
+        data: querySnsProjects().catch((err) => {
+          // If the request fails, we don't want to cache the error.
+          snsAggregatorCache = null;
+          // But we still want to throw the error for whoever called this function.
+          throw err;
+        }),
         timestampSeconds: nowInSeconds(),
       };
     }

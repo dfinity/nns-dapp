@@ -1,3 +1,4 @@
+import { clearSnsAggregatorCache } from "$lib/api-services/sns-aggregator.api-service";
 import * as agent from "$lib/api/agent.api";
 import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
@@ -21,6 +22,7 @@ describe("app-services", () => {
     resetIdentity();
     toastsStore.reset();
     vi.clearAllMocks();
+    clearSnsAggregatorCache();
     vi.spyOn(LedgerCanister, "create").mockImplementation(
       (): LedgerCanister => mockLedgerCanister
     );
