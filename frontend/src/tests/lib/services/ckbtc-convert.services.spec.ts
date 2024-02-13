@@ -201,7 +201,7 @@ describe("ckbtc-convert-services", () => {
 
       expect(loadIcrcAccountTransactions).toBeCalledWith({
         account: params.source,
-        universeId: params.universeId,
+        ledgerCanisterId: params.universeId,
         indexCanisterId: mockCkBTCAdditionalCanisters.indexCanisterId,
       });
 
