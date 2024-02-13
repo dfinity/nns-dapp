@@ -7,10 +7,6 @@
     UiTransaction,
     IcrcTransactionData,
   } from "$lib/types/transaction";
-  import {
-    loadWalletNextTransactions,
-    loadWalletTransactions,
-  } from "$lib/services/wallet-transactions.services";
   import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
   import { i18n } from "$lib/stores/i18n";
   import {
@@ -27,6 +23,10 @@
   import { WALLET_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/wallet.constants";
   import { waitForMilliseconds } from "$lib/utils/utils";
   import { nonNullish } from "@dfinity/utils";
+  import {
+    loadIcrcAccountNextTransactions,
+    loadIcrcAccountTransactions,
+  } from "$lib/services/icrc-transactions.services";
 
   export let indexCanisterId: CanisterId;
   export let ledgerCanisterId: UniverseCanisterId;
@@ -51,9 +51,9 @@
 
   const loadNextTransactions = async () => {
     loading = true;
-    await loadWalletNextTransactions({
+    await loadIcrcAccountNextTransactions({
       account,
-      canisterId: ledgerCanisterId,
+      universeId: ledgerCanisterId,
       indexCanisterId,
     });
     loading = false;
@@ -68,7 +68,7 @@
     loading = true;
 
     // We want to reload all transactions of the account from scratch.
-    // That way the skeletons will be displayed again which provides the user a visual feedback about the fact that all transactions are realoded.
+    // That way the skeletons will be displayed again which provides the user a visual feedbauniverseIdhe fact that all transactions are realoded.
     // This is handy because the reload notably happens the "update balance" process - i.e. happens after the "busy spinner" has fade away.
     icrcTransactionsStore.resetAccount({
       canisterId: ledgerCanisterId,
@@ -78,9 +78,9 @@
     // We optimistically try to fetch the new transaction the user just transferred by delaying the reload of the transactions.
     await waitForMilliseconds(WALLET_TRANSACTIONS_RELOAD_DELAY);
 
-    await loadWalletTransactions({
+    await loadIcrcAccountTransactions({
       account,
-      canisterId: ledgerCanisterId,
+      universeId: ledgerCanisterId,
       indexCanisterId,
     });
 

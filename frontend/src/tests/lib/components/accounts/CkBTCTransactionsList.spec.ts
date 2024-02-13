@@ -23,10 +23,10 @@ import { Cbor } from "@dfinity/agent";
 import type { RetrieveBtcStatusV2 } from "@dfinity/ckbtc";
 import { render } from "@testing-library/svelte";
 
-vi.mock("$lib/services/wallet-transactions.services", () => {
+vi.mock("$lib/services/icrc-transactions.services", () => {
   return {
-    loadWalletNextTransactions: vi.fn().mockResolvedValue(undefined),
-    loadWalletTransactions: vi.fn().mockResolvedValue(undefined),
+    loadIcrcAccountNextTransactions: vi.fn().mockResolvedValue(undefined),
+    loadIcrcAccountTransactions: vi.fn().mockResolvedValue(undefined),
   };
 });
 

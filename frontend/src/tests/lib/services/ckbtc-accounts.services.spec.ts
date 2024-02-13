@@ -8,12 +8,6 @@ import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockTokens } from "$tests/mocks/tokens.mock";
 
-vi.mock("$lib/services/wallet-transactions.services", () => {
-  return {
-    loadCkBTCAccountTransactions: vi.fn().mockResolvedValue(undefined),
-  };
-});
-
 describe("ckbtc-accounts-services", () => {
   beforeEach(() => {
     resetIdentity();

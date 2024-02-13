@@ -21,7 +21,7 @@ export const getIcrcTransactions = async ({
   account,
   fetchRootKey,
   host,
-}: Omit<GetTransactionsParams, "getTransactions" | "identity" | "canisterId"> &
+}: Omit<GetTransactionsParams, "identity" | "canisterId"> &
   CanisterActorParams & {
     indexCanisterId: string;
   }): Promise<GetTransactionsResponse> => {

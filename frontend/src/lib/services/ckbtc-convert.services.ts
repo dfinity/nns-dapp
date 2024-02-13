@@ -21,7 +21,7 @@ import { toastsError } from "../stores/toasts.store";
 import { numberToE8s } from "../utils/token.utils";
 import { getAuthenticatedIdentity } from "./auth.services";
 import type { IcrcTransferTokensUserParams } from "./icrc-accounts.services";
-import { loadWalletTransactions } from "./wallet-transactions.services";
+import { loadIcrcAccountTransactions } from "./icrc-transactions.services";
 
 export type ConvertCkBTCToBtcParams = {
   destinationAddress: string;
@@ -114,9 +114,9 @@ const reload = async ({
       : []),
     ...(nonNullish(source)
       ? [
-          loadWalletTransactions({
+          loadIcrcAccountTransactions({
             account: source,
-            canisterId: universeId,
+            universeId: universeId,
             indexCanisterId,
           }),
         ]
