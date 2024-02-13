@@ -11,7 +11,6 @@
   import FiltersButton from "../ui/FiltersButton.svelte";
   import SnsFilterRewardsModal from "$lib/modals/sns/proposals/SnsFilterRewardsModal.svelte";
   import SnsFilterTypesModal from "$lib/modals/sns/proposals/SnsFilterTypesModal.svelte";
-  import { ENABLE_SNS_TYPES_FILTER } from "$lib/stores/feature-flags.store";
 
   let modal: "types" | "rewards" | "status" | undefined = undefined;
 
@@ -30,17 +29,15 @@
 </script>
 
 <FiltersWrapper>
-  {#if $ENABLE_SNS_TYPES_FILTER}
-    <FiltersButton
-      testId="filters-by-types"
-      totalFilters={filtersStore?.types.length ?? 0}
-      activeFilters={filtersStore?.types.filter(({ checked }) => checked)
-        .length ?? 0}
-      on:nnsFilter={() => openFilters("types")}
-    >
-      {$i18n.voting.types}
-    </FiltersButton>
-  {/if}
+  <FiltersButton
+    testId="filters-by-types"
+    totalFilters={filtersStore?.types.length ?? 0}
+    activeFilters={filtersStore?.types.filter(({ checked }) => checked)
+      .length ?? 0}
+    on:nnsFilter={() => openFilters("types")}
+  >
+    {$i18n.voting.types}
+  </FiltersButton>
   <FiltersButton
     testId="filters-by-rewards"
     totalFilters={filtersStore?.rewardStatus.length ?? 0}
