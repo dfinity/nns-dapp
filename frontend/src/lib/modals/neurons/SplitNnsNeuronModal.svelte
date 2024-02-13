@@ -50,7 +50,10 @@
       });
       return;
     }
-    startBusy({ initiator: "split-neuron" });
+    startBusy({
+      initiator: "split-neuron",
+      labelKey: "busy_screen.pending_approval_hw",
+    });
 
     const id = await splitNeuron({
       neuron,
