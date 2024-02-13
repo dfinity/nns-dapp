@@ -48,11 +48,17 @@ describe("sns-accounts-services", () => {
         rootCanisterId: mockPrincipal,
         identity: mockIdentity,
         certified: false,
+        account: {
+          owner: mockIdentity.getPrincipal(),
+        },
       });
       expect(spyQuery).toBeCalledWith({
         rootCanisterId: mockPrincipal,
         identity: mockIdentity,
         certified: true,
+        account: {
+          owner: mockIdentity.getPrincipal(),
+        },
       });
 
       spyQuery.mockClear();
@@ -76,6 +82,9 @@ describe("sns-accounts-services", () => {
         rootCanisterId: mockPrincipal,
         identity: mockIdentity,
         certified: false,
+        account: {
+          owner: mockIdentity.getPrincipal(),
+        },
       });
 
       spyQuery.mockClear();
