@@ -4,7 +4,7 @@ import { DEFAULT_SNS_PROPOSALS_PAGE_SIZE } from "$lib/constants/sns-proposals.co
 import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-import { snsProposalVotingStore } from "$lib/stores/sns-proposal-voting.store";
+import { votingSnsProposalsStore } from "$lib/stores/voting-sns-proposals.store";
 import { Principal } from "@dfinity/principal";
 import type { SnsNeuron, SnsProposalData } from "@dfinity/sns";
 import { SnsProposalRewardStatus } from "@dfinity/sns";
@@ -31,7 +31,7 @@ export const queryNeuronsForSelectableSnses = async () => {
       const proposals = await querySnsProposals(canisterId);
       console.log(proposals);
 
-      snsProposalVotingStore.setProposals({
+      votingSnsProposalsStore.setProposals({
         rootCanisterId: Principal.fromText(canisterId),
         proposals,
       });

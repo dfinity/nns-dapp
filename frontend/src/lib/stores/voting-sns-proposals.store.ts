@@ -2,14 +2,14 @@ import type { Principal } from "@dfinity/principal";
 import type { SnsProposalData } from "@dfinity/sns";
 import { writable, type Readable } from "svelte/store";
 
-export interface SnsProposalVotingStoreData {
+export interface VotingSnsProposalsStoreData {
   // Each SNS Project is an entry in this Store.
   // We use the root canister id as the key to identify the proposals for a specific project.
   [rootCanisterId: string]: SnsProposalData[];
 }
 
-export interface SnsProposalVotingStore
-  extends Readable<SnsProposalVotingStoreData> {
+export interface VotingSnsProposalsStore
+  extends Readable<VotingSnsProposalsStoreData> {
   setProposals: (data: {
     rootCanisterId: Principal;
     proposals: SnsProposalData[];
@@ -23,8 +23,8 @@ export interface SnsProposalVotingStore
  * The update can't be merged with the current state because the proposals status can be updated.
  * - setProposals: replace the current list of proposals with a new list
  */
-const initSnsProposalVotingStore = (): SnsProposalVotingStore => {
-  const { subscribe, update, set } = writable<SnsProposalVotingStoreData>({});
+const initVotingSnsProposalsStore = (): VotingSnsProposalsStore => {
+  const { subscribe, update, set } = writable<VotingSnsProposalsStoreData>({});
 
   return {
     subscribe,
@@ -36,7 +36,7 @@ const initSnsProposalVotingStore = (): SnsProposalVotingStore => {
       rootCanisterId: Principal;
       proposals: SnsProposalData[];
     }) {
-      update((currentState: SnsProposalVotingStoreData) => ({
+      update((currentState: VotingSnsProposalsStoreData) => ({
         ...currentState,
         [rootCanisterId.toText()]: proposals,
       }));
@@ -50,4 +50,4 @@ const initSnsProposalVotingStore = (): SnsProposalVotingStore => {
 };
 
 // TODO(max): add to debug store
-export const snsProposalVotingStore = initSnsProposalVotingStore();
+export const votingSnsProposalsStore = initVotingSnsProposalsStore();

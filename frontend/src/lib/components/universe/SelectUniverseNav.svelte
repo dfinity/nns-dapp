@@ -15,7 +15,7 @@
   import { votingProposalCountStore } from "$lib/derived/votingProposalCount.derived";
   import { queryNeuronsForSelectableSnses } from "$lib/services/$public/sns-voting-proposals.services";
   import { get } from "svelte/store";
-  import { snsProposalVotingStore } from "$lib/stores/sns-proposal-voting.store";
+  import { votingSnsProposalsStore } from "$lib/stores/voting-sns-proposals.store";
 
   let innerWidth = 0;
   let list = false;
@@ -39,7 +39,7 @@
 
     // TODO(max): fetch neurons and proposals in a single function
     await queryNeuronsForSelectableSnses();
-    console.log("✅snsProposalVotingStore", get(snsProposalVotingStore));
+    console.log("✅snsProposalVotingStore", get(votingSnsProposalsStore));
   });
 
   let votingProposalLoading = true;
