@@ -22,13 +22,19 @@ export const queryNeuronsForSelectableSnses = async () => {
   await Promise.all(
     // TODO(max): refactor me, need a separate function
     canisterIds.map(async (canisterId) => {
+      const storeValue = get(votingSnsProposalsStore)[canisterId];
+      if (nonNullish(storeValue)) {
+        // already fetched
+        return;
+      }
+
       const neurons = await queryNeurons(canisterId);
 
+      // TODO(max): apply also upcoming ballots here
       if (neurons?.length === 0) {
         return [];
       }
       const proposals = await querySnsProposals(canisterId);
-      // TODO(max): apply upcoming ballots here
       votingSnsProposalsStore.setProposals({
         rootCanisterId: Principal.fromText(canisterId),
         proposals,
