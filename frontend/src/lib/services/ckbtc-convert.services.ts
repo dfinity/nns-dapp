@@ -116,7 +116,7 @@ const reload = async ({
       ? [
           loadIcrcAccountTransactions({
             account: source,
-            universeId: universeId,
+            ledgerCanisterId: universeId,
             indexCanisterId,
           }),
         ]

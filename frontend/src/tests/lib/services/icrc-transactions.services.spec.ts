@@ -19,7 +19,7 @@ vi.mock("$lib/api/icrc-index.api");
 
 describe("icrc-transactions services", () => {
   const indexCanisterId = principal(0);
-  const universeCanisterId = principal(1);
+  const ledgerCanisterId = principal(1);
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -44,7 +44,7 @@ describe("icrc-transactions services", () => {
         account: mockCkBTCMainAccount,
         start,
         indexCanisterId,
-        universeId: universeCanisterId,
+        ledgerCanisterId,
       });
 
       const account = {
@@ -62,7 +62,7 @@ describe("icrc-transactions services", () => {
 
       const storeData = get(icrcTransactionsStore);
       expect(
-        storeData[universeCanisterId.toText()]?.[
+        storeData[ledgerCanisterId.toText()]?.[
           mockCkBTCMainAccount.principal.toText()
         ].transactions[0]
       ).toEqual(mockIcrcTransactionWithId);
@@ -80,7 +80,7 @@ describe("icrc-transactions services", () => {
         account: mockCkBTCMainAccount,
         start,
         indexCanisterId,
-        universeId: universeCanisterId,
+        ledgerCanisterId,
       });
 
       expect(get(toastsStore)).toHaveLength(1);
@@ -119,7 +119,7 @@ describe("icrc-transactions services", () => {
 
       icrcTransactionsStore.addTransactions({
         accountIdentifier: mockCkBTCMainAccount.identifier,
-        canisterId: universeCanisterId,
+        canisterId: ledgerCanisterId,
         transactions: [
           oldestTransaction,
           secondTransaction,
@@ -130,7 +130,7 @@ describe("icrc-transactions services", () => {
       });
 
       expect(
-        get(icrcTransactionsStore)[universeCanisterId.toText()]?.[
+        get(icrcTransactionsStore)[ledgerCanisterId.toText()]?.[
           mockCkBTCMainAccount.principal.toText()
         ].transactions
       ).toHaveLength(3);
@@ -139,7 +139,7 @@ describe("icrc-transactions services", () => {
       await loadIcrcAccountNextTransactions({
         account: mockCkBTCMainAccount,
         indexCanisterId,
-        universeId: universeCanisterId,
+        ledgerCanisterId,
       });
 
       const account = {
@@ -156,7 +156,7 @@ describe("icrc-transactions services", () => {
       });
 
       const storeTransactions = get(icrcTransactionsStore)[
-        universeCanisterId.toText()
+        ledgerCanisterId.toText()
       ]?.[mockCkBTCMainAccount.principal.toText()].transactions;
       expect(storeTransactions).toHaveLength(4);
       expect(storeTransactions[3]).toEqual(newTransaction);
@@ -178,7 +178,7 @@ describe("icrc-transactions services", () => {
       await loadIcrcAccountNextTransactions({
         account: mockCkBTCMainAccount,
         indexCanisterId,
-        universeId: universeCanisterId,
+        ledgerCanisterId,
       });
 
       const account = {
@@ -205,7 +205,7 @@ describe("icrc-transactions services", () => {
       await loadIcrcAccountNextTransactions({
         account: mockCkBTCMainAccount,
         indexCanisterId,
-        universeId: universeCanisterId,
+        ledgerCanisterId,
       });
 
       expect(get(toastsStore)).toHaveLength(1);

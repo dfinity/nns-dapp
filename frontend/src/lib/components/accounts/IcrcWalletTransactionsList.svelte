@@ -53,7 +53,7 @@
     loading = true;
     await loadIcrcAccountNextTransactions({
       account,
-      universeId: ledgerCanisterId,
+      ledgerCanisterId,
       indexCanisterId,
     });
     loading = false;
@@ -80,7 +80,7 @@
 
     await loadIcrcAccountTransactions({
       account,
-      universeId: ledgerCanisterId,
+      ledgerCanisterId,
       indexCanisterId,
     });
 

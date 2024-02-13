@@ -12,14 +12,14 @@ import { get } from "svelte/store";
 
 export interface LoadIcrcAccountTransactionsParams {
   account: Account;
-  universeId: Principal;
+  ledgerCanisterId: Principal;
   start?: bigint;
   indexCanisterId: Principal;
 }
 
 export const loadIcrcAccountTransactions = async ({
   account,
-  universeId,
+  ledgerCanisterId,
   start,
   indexCanisterId,
 }: LoadIcrcAccountTransactionsParams) => {
@@ -38,7 +38,7 @@ export const loadIcrcAccountTransactions = async ({
     const completed = transactions.length < maxResults;
     icrcTransactionsStore.addTransactions({
       accountIdentifier: account.identifier,
-      canisterId: universeId,
+      canisterId: ledgerCanisterId,
       transactions,
       oldestTxId,
       completed,
@@ -52,24 +52,24 @@ export const loadIcrcAccountTransactions = async ({
 
 type LoadIcrcAccountNextTransactionsParams = {
   account: Account;
-  universeId: Principal;
+  ledgerCanisterId: Principal;
   indexCanisterId: Principal;
 };
 
 export const loadIcrcAccountNextTransactions = async ({
   account,
-  universeId,
+  ledgerCanisterId,
   indexCanisterId,
 }: LoadIcrcAccountNextTransactionsParams) => {
   const store = get(icrcTransactionsStore);
   const currentOldestTxId = getOldestTxIdFromStore({
     account,
-    universeId,
+    ledgerCanisterId,
     store,
   });
   return loadIcrcAccountTransactions({
     account,
-    universeId,
+    ledgerCanisterId,
     indexCanisterId,
     start: currentOldestTxId,
   });
