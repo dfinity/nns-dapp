@@ -48,7 +48,7 @@ describe("Neurons", () => {
     fakeSnsGovernanceApi.addNeuronWith({
       rootCanisterId: testOpenSnsCanisterId,
     });
-    fakeSnsLedgerApi.addBalanceFor({
+    fakeSnsLedgerApi.setBalanceFor({
       rootCanisterId: testCommittedSnsCanisterId,
       balanceUlps: mockSnsMainAccount.balanceUlps,
     });

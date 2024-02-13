@@ -79,7 +79,7 @@ describe("SnsNeuronDetail", () => {
       },
     ]);
 
-    fakeSnsLedgerApi.addBalanceFor({
+    fakeSnsLedgerApi.setBalanceFor({
       rootCanisterId,
       balanceUlps: mockSnsMainAccount.balanceUlps,
     });

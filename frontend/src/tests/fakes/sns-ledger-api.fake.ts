@@ -76,7 +76,7 @@ const reset = () => {
   balances.clear();
 };
 
-export const addBalanceFor = ({
+export const setBalanceFor = ({
   identity = mockIdentity,
   rootCanisterId,
   balanceUlps,
