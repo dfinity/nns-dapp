@@ -1,28 +1,27 @@
 import {
-  getIcrcAccount,
   getIcrcToken,
   executeIcrcTransfer as transferIcrcApi,
   type IcrcTransferParams,
 } from "$lib/api/icrc-ledger.api";
-import type { Account } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
-import type { IcrcBlockIndex } from "@dfinity/ledger-icrc";
+import type { IcrcAccount, IcrcBlockIndex } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import { wrapper } from "./sns-wrapper.api";
 
-export const getSnsAccounts = async ({
+export const querySnsBalance = async ({
   rootCanisterId,
   identity,
   certified,
+  account,
 }: {
   rootCanisterId: Principal;
   identity: Identity;
   certified: boolean;
-}): Promise<Account[]> => {
-  // TODO: Support subaccounts
-  logWithTimestamp("Getting sns accounts: call...");
+  account: IcrcAccount;
+}): Promise<bigint> => {
+  logWithTimestamp("Getting sns balance: call...");
 
   const { balance: getBalance } = await wrapper({
     identity,
@@ -30,16 +29,11 @@ export const getSnsAccounts = async ({
     certified,
   });
 
-  const mainAccount = await getIcrcAccount({
-    owner: identity.getPrincipal(),
-    type: "main",
-    certified,
-    getBalance,
-  });
+  const balance = await getBalance({ ...account });
 
-  logWithTimestamp("Getting sns accounts: done");
+  logWithTimestamp("Getting sns balance: done");
 
-  return [mainAccount];
+  return balance;
 };
 
 export const getSnsToken = async ({

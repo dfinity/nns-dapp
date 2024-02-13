@@ -59,9 +59,9 @@ describe("SnsNeurons", () => {
     vi.clearAllMocks();
     page.mock({ data: { universe: rootCanisterId.toText() } });
     resetIdentity();
-    vi.spyOn(ledgerApi, "getSnsAccounts").mockResolvedValue([
-      mockSnsMainAccount,
-    ]);
+    vi.spyOn(ledgerApi, "querySnsBalance").mockResolvedValue(
+      mockSnsMainAccount.balanceUlps
+    );
     vi.spyOn(ledgerApi, "getSnsToken").mockResolvedValue(mockSnsToken);
     vi.spyOn(ledgerApi, "transactionFee").mockResolvedValue(10_000n);
     snsParametersStore.setParameters({

@@ -26,6 +26,7 @@ import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
@@ -78,9 +79,9 @@ describe("SnsNeuronDetail", () => {
       },
     ]);
 
-    fakeSnsLedgerApi.addAccountWith({
+    fakeSnsLedgerApi.addBalanceFor({
       rootCanisterId,
-      principal: mockIdentity.getPrincipal(),
+      balanceUlps: mockSnsMainAccount.balanceUlps,
     });
 
     page.mock({

@@ -1,16 +1,14 @@
-import type { Account } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
-import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { installImplAndBlockRest } from "$tests/utils/module.test-utils";
 import type { Identity } from "@dfinity/agent";
+import type { IcrcAccount } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
-import { isNullish } from "@dfinity/utils";
 
 const modulePath = "$lib/api/sns-ledger.api";
 const implementedFunctions = {
-  getSnsAccounts,
+  querySnsBalance,
   transactionFee,
   getSnsToken,
 };
@@ -21,7 +19,7 @@ const implementedFunctions = {
 
 // Maps a key reppresenting identity + rootCanisterId to a list of accounts for
 // that identity and sns project.
-const accounts: Map<string, Account[]> = new Map();
+const balances: Map<string, bigint> = new Map();
 
 type KeyParams = { identity: Identity; rootCanisterId: Principal };
 
@@ -32,16 +30,18 @@ const mapKey = ({ identity, rootCanisterId }: KeyParams) =>
 // Fake implementations:
 ////////////////////////
 
-async function getSnsAccounts({
+async function querySnsBalance({
   identity,
   rootCanisterId,
   certified: _,
+  account: __,
 }: {
   identity: Identity;
   rootCanisterId: Principal;
   certified: boolean;
-}): Promise<Account[]> {
-  return accounts.get(mapKey({ identity, rootCanisterId })) || [];
+  account: IcrcAccount;
+}): Promise<bigint> {
+  return balances.get(mapKey({ identity, rootCanisterId })) || undefined;
 }
 
 async function transactionFee({
@@ -73,27 +73,20 @@ async function getSnsToken({
 /////////////////////////////////
 
 const reset = () => {
-  accounts.clear();
+  balances.clear();
 };
 
-export const addAccountWith = ({
+export const addBalanceFor = ({
   identity = mockIdentity,
   rootCanisterId,
-  ...account
+  balanceUlps,
 }: {
   identity?: Identity;
   rootCanisterId: Principal;
-} & Partial<Account>) => {
+  balanceUlps: bigint;
+}) => {
   const key = mapKey({ identity, rootCanisterId });
-  let list = accounts.get(key);
-  if (isNullish(list)) {
-    list = [];
-    accounts.set(key, list);
-  }
-  list.push({
-    ...mockSnsMainAccount,
-    ...account,
-  });
+  balances.set(key, balanceUlps);
 };
 
 // Call this inside a describe() block outside beforeEach() because it defines

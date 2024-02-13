@@ -2,7 +2,6 @@ import * as agent from "$lib/api/agent.api";
 import {
   approveTransfer,
   executeIcrcTransfer,
-  getIcrcAccount,
   getIcrcToken,
   icrcTransfer,
   queryIcrcBalance,
@@ -34,46 +33,6 @@ describe("icrc-ledger api", () => {
 
   afterEach(() => {
     vi.clearAllMocks();
-  });
-
-  describe("getIcrcMainAccount", () => {
-    it("returns main account with balance and project token metadata", async () => {
-      const balanceSpy = vi.fn().mockResolvedValue(10_000_000n);
-
-      const account = await getIcrcAccount({
-        certified: true,
-        owner: mockIdentity.getPrincipal(),
-        type: "main",
-        getBalance: balanceSpy,
-      });
-
-      expect(account).not.toBeUndefined();
-
-      expect(account.balanceUlps).toEqual(10_000_000n);
-
-      expect(account.principal.toText()).toEqual(
-        mockIdentity.getPrincipal().toText()
-      );
-      expect(account.type).toEqual("main");
-
-      expect(balanceSpy).toBeCalled();
-    });
-
-    it("throws an error if no balance", () => {
-      const balanceSpy = async () => {
-        throw new Error();
-      };
-
-      const call = () =>
-        getIcrcAccount({
-          certified: true,
-          owner: mockIdentity.getPrincipal(),
-          type: "main",
-          getBalance: balanceSpy,
-        });
-
-      expect(call).rejects.toThrowError();
-    });
   });
 
   describe("getIcrcToken", () => {

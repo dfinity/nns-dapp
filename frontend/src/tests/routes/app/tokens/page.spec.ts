@@ -27,7 +27,6 @@ import {
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
-import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { TokensRoutePo } from "$tests/page-objects/TokensRoute.page-object";
@@ -133,22 +132,12 @@ describe("Tokens route", () => {
         }
       );
       vi.spyOn(snsLedgerApi, "snsTransfer").mockResolvedValue(undefined);
-      vi.spyOn(snsLedgerApi, "getSnsAccounts").mockImplementation(
+      vi.spyOn(snsLedgerApi, "querySnsBalance").mockImplementation(
         async ({ rootCanisterId }) => {
           if (rootCanisterId.toText() === rootCanisterIdTetris.toText()) {
-            return [
-              {
-                ...mockSnsMainAccount,
-                balanceUlps: tetrisBalanceE8s,
-              },
-            ];
+            return tetrisBalanceE8s;
           }
-          return [
-            {
-              ...mockSnsMainAccount,
-              balanceUlps: pacmanBalanceE8s,
-            },
-          ];
+          return pacmanBalanceE8s;
         }
       );
       vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(1234n);

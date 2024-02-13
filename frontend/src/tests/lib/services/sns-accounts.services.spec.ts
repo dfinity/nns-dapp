@@ -33,10 +33,10 @@ describe("sns-accounts-services", () => {
       vi.spyOn(console, "error").mockImplementation(() => undefined);
     });
 
-    it("should call api.getSnsAccounts and load neurons in store", async () => {
+    it("should call api.querySnsBalance and load neurons in store", async () => {
       const spyQuery = vi
-        .spyOn(ledgerApi, "getSnsAccounts")
-        .mockImplementation(() => Promise.resolve([mockSnsMainAccount]));
+        .spyOn(ledgerApi, "querySnsBalance")
+        .mockResolvedValue(mockSnsMainAccount.balanceUlps);
 
       await services.loadSnsAccounts({ rootCanisterId: mockPrincipal });
 
@@ -58,10 +58,10 @@ describe("sns-accounts-services", () => {
       spyQuery.mockClear();
     });
 
-    it("should call api.getSnsAccounts with only the strategy passed", async () => {
+    it("should call api.querySnsBalance with only the strategy passed", async () => {
       const spyQuery = vi
-        .spyOn(ledgerApi, "getSnsAccounts")
-        .mockImplementation(() => Promise.resolve([mockSnsMainAccount]));
+        .spyOn(ledgerApi, "querySnsBalance")
+        .mockResolvedValue(mockSnsMainAccount.balanceUlps);
 
       await services.loadSnsAccounts({
         rootCanisterId: mockPrincipal,
@@ -83,7 +83,7 @@ describe("sns-accounts-services", () => {
 
     it("should call error callback", async () => {
       const spyQuery = vi
-        .spyOn(ledgerApi, "getSnsAccounts")
+        .spyOn(ledgerApi, "querySnsBalance")
         .mockRejectedValue(new Error());
 
       const spy = vi.fn();
@@ -100,10 +100,10 @@ describe("sns-accounts-services", () => {
 
     it("should not call error callback if query fails and update succeeds", async () => {
       const spyQuery = vi
-        .spyOn(ledgerApi, "getSnsAccounts")
+        .spyOn(ledgerApi, "querySnsBalance")
         .mockImplementation(async ({ certified }) => {
           if (certified) {
-            return [mockSnsMainAccount];
+            return mockSnsMainAccount.balanceUlps;
           }
           throw new Error();
         });
@@ -122,7 +122,7 @@ describe("sns-accounts-services", () => {
 
     it("should call error callback if query fails and only query is requested", async () => {
       const spyQuery = vi
-        .spyOn(ledgerApi, "getSnsAccounts")
+        .spyOn(ledgerApi, "querySnsBalance")
         .mockRejectedValue(new Error());
 
       const spy = vi.fn();
@@ -153,8 +153,8 @@ describe("sns-accounts-services", () => {
       });
 
       const spyQuery = vi
-        .spyOn(ledgerApi, "getSnsAccounts")
-        .mockImplementation(() => Promise.reject(undefined));
+        .spyOn(ledgerApi, "querySnsBalance")
+        .mockRejectedValue(undefined);
 
       await services.loadSnsAccounts({ rootCanisterId: mockPrincipal });
 
@@ -177,8 +177,8 @@ describe("sns-accounts-services", () => {
       vi.spyOn(console, "error").mockImplementation(() => undefined);
 
       spyAccounts = vi
-        .spyOn(ledgerApi, "getSnsAccounts")
-        .mockImplementation(() => Promise.resolve([mockSnsMainAccount]));
+        .spyOn(ledgerApi, "querySnsBalance")
+        .mockResolvedValue(mockSnsMainAccount.balanceUlps);
     });
 
     it("should call sns transfer tokens", async () => {
