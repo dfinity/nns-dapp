@@ -18,7 +18,7 @@ export interface SnsProposalVotingStore
 }
 
 /**
- * A store that contains proposals that can be voted on by the user (ballots w/ state 0).
+ * A store that contains nns proposals that can be voted on by the user (ballots w/ state 0).
  *
  * The update can't be merged with the current state because the proposals status can be updated.
  * - setProposals: replace the current list of proposals with a new list
