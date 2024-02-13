@@ -81,5 +81,6 @@ export const createUniverse = (summary: SnsSummary): Universe => ({
   canisterId: summary.rootCanisterId.toText(),
   summary,
   title: summary.metadata.name,
+  //logo: summary.token.logo,
   logo: summary.metadata.logo,
 });
