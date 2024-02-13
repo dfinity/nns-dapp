@@ -191,12 +191,14 @@ const findProposals = async ({
 /**
  * Fetch all proposals that are accepting votes and set the proposals in the nnsProposalVotingStore.
  */
-export const fetchAcceptingVotesProposals = async (
+export const queryVotingProposals = async (
   neurons: NeuronInfo[]
 ): Promise<void> => {
   const proposals = [];
   let page: ProposalInfo[] = [];
 
+  // TODO(max): error handling?
+  // TODO(max): is this needed of resolve with UX approach (max 99 proposals)?
   do {
     page = await fetchNextAcceptingVotesProposals({
       beforeProposal: lastProposalId(proposals),

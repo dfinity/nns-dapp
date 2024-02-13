@@ -12,7 +12,7 @@ import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 // TODO(max): use the store first, clean the store after user voted
-export const queryNeuronsForSelectableSnses = async () => {
+export const queryVotingSnsProposals = async () => {
   const canisterIds = get(selectableUniversesStore)
     // skip nns
     .filter(({ canisterId }) => canisterId !== OWN_CANISTER_ID_TEXT)

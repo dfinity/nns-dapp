@@ -7,13 +7,13 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { listNeurons } from "$lib/services/neurons.services";
   import { definedNeuronsStore } from "$lib/stores/neurons.store";
-  import { fetchAcceptingVotesProposals } from "$lib/services/$public/proposals.services";
+  import { queryVotingProposals } from "$lib/services/$public/proposals.services";
   import { isSelectedPath } from "$lib/utils/navigation.utils";
   import { pageStore } from "$lib/derived/page.derived";
   import { AppPath } from "$lib/constants/routes.constants";
   import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
   import { votingProposalCountStore } from "$lib/derived/votingProposalCount.derived";
-  import { queryNeuronsForSelectableSnses } from "$lib/services/$public/sns-voting-proposals.services";
+  import { queryVotingSnsProposals } from "$lib/services/$public/sns-voting-proposals.services";
   import { get } from "svelte/store";
   import { votingSnsProposalsStore } from "$lib/stores/voting-sns-proposals.store";
 
@@ -35,10 +35,10 @@
 
     // Loading uncertified neurons is safe here, because they will be reloaded on navigation
     await listNeurons({ strategy: "query" });
-    await fetchAcceptingVotesProposals($definedNeuronsStore);
+    await queryVotingProposals($definedNeuronsStore);
 
     // TODO(max): fetch neurons and proposals in a single function
-    await queryNeuronsForSelectableSnses();
+    await queryVotingSnsProposals();
     console.log("✅snsProposalVotingStore", get(votingSnsProposalsStore));
   });
 
