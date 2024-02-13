@@ -7,7 +7,6 @@ import {
   ProposalPayloadNotFoundError,
   ProposalPayloadTooLargeError,
 } from "$lib/canisters/nns-dapp/nns-dapp.errors";
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_LIST_PAGINATION_LIMIT } from "$lib/constants/constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import {
@@ -17,10 +16,7 @@ import {
   type ProposalsFiltersStore,
 } from "$lib/stores/proposals.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
-import {
-  votingNnsProposalsStore,
-  votingProposalCountStore,
-} from "$lib/stores/voting-proposals.store";
+import { votingNnsProposalsStore } from "$lib/stores/voting-proposals.store";
 import { hashCode } from "$lib/utils/dev.utils";
 import { isForceCallStrategy } from "$lib/utils/env.utils";
 import { errorToString, isPayloadSizeError } from "$lib/utils/error.utils";
@@ -213,10 +209,6 @@ export const fetchAcceptingVotesProposals = async (
     (proposal) => votableNeurons({ neurons, proposal }).length > 0
   );
   votingNnsProposalsStore.setProposals(votableProposals);
-  votingProposalCountStore.setProposals({
-    rootCanisterId: OWN_CANISTER_ID,
-    count: votableProposals.length,
-  });
 };
 
 const fetchNextAcceptingVotesProposals = ({

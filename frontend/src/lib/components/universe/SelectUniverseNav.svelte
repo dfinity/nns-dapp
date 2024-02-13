@@ -8,14 +8,12 @@
   import { listNeurons } from "$lib/services/neurons.services";
   import { definedNeuronsStore } from "$lib/stores/neurons.store";
   import { fetchAcceptingVotesProposals } from "$lib/services/$public/proposals.services";
-  import {
-    votingNnsProposalsStore,
-    votingProposalCountStore,
-  } from "$lib/stores/voting-proposals.store";
+  import { votingNnsProposalsStore } from "$lib/stores/voting-proposals.store";
   import { isSelectedPath } from "$lib/utils/navigation.utils";
   import { pageStore } from "$lib/derived/page.derived";
   import { AppPath } from "$lib/constants/routes.constants";
   import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
+  import { votingProposalCountStore } from "$lib/derived/votingProposalCount.derived";
 
   let innerWidth = 0;
   let list = false;

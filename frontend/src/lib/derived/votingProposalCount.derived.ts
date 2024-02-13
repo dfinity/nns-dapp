@@ -4,16 +4,14 @@ import { derived, type Readable } from "svelte/store";
 
 export interface VotingProposalCountData {
   // We use the root canister id as the key to identify the proposals for a specific project.
-  [rootCanisterId: string]: number;
+  [rootCanisterId: string]: number | undefined;
 }
 
-export const votingProposalCount: Readable<VotingProposalCountData> = derived(
-  [votingNnsProposalsStore],
-  ([{ proposals: nnsProposals }]) => {
-    const nnsProposalCount = nnsProposals?.length ?? 0;
+export const votingProposalCountStore: Readable<VotingProposalCountData> =
+  derived([votingNnsProposalsStore], ([{ proposals: nnsProposals }]) => {
+    console.log("votingProposalCountStore derived", nnsProposals);
     return {
-      [OWN_CANISTER_ID.toText()]: nnsProposalCount,
-      // TODO: add snses here
+      [OWN_CANISTER_ID.toText()]: nnsProposals?.length,
+      // TODO: add Snses here
     };
-  }
-);
+  });

@@ -49,4 +49,5 @@ const initSnsProposalVotingStore = (): SnsProposalVotingStore => {
   };
 };
 
+// TODO(max): add to debug store
 export const snsProposalVotingStore = initSnsProposalVotingStore();

@@ -37,4 +37,5 @@ const initVotingNnsProposalsStore = (): VotingNnsProposalsStore => {
   };
 };
 
+// TODO(max): add to debug store
 export const votingNnsProposalsStore = initVotingNnsProposalsStore();

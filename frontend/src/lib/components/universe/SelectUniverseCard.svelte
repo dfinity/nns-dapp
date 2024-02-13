@@ -7,8 +7,8 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { isSelectedPath } from "$lib/utils/navigation.utils";
   import type { Universe } from "$lib/types/universe";
-  import { votingProposalCountStore } from "$lib/stores/voting-proposals.store";
   import { isNullish, nonNullish } from "@dfinity/utils";
+  import { votingProposalCountStore } from "$lib/derived/votingProposalCount.derived";
 
   export let selected: boolean;
   export let role: "link" | "button" | "dropdown" = "link";
