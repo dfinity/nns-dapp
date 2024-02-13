@@ -1,13 +1,15 @@
 import {
-  getIcrcToken,
   executeIcrcTransfer as transferIcrcApi,
   type IcrcTransferParams,
 } from "$lib/api/icrc-ledger.api";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
+import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
+import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
 import type { Identity } from "@dfinity/agent";
 import type { IcrcAccount, IcrcBlockIndex } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
+import { isNullish } from "@dfinity/utils";
 import { wrapper } from "./sns-wrapper.api";
 
 export const querySnsBalance = async ({
@@ -53,10 +55,13 @@ export const getSnsToken = async ({
     certified,
   });
 
-  const token = await getIcrcToken({
-    certified,
-    getMetadata,
-  });
+  const metadata = await getMetadata({});
+
+  const token = mapOptionalToken(metadata);
+
+  if (isNullish(token)) {
+    throw new LedgerErrorKey("error.icrc_token_load");
+  }
 
   logWithTimestamp("Getting sns token: done");
 
