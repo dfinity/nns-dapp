@@ -121,7 +121,7 @@ jobs:
   test-upgrade-map:
     # This test is flaky.
     # TODO: Debug and re-enable before actually migrating the schema.
-    if: false
+    continue-on-error: true
     needs: build
     runs-on: ubuntu-20.04
     timeout-minutes: 40
