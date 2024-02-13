@@ -7,7 +7,7 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { isSelectedPath } from "$lib/utils/navigation.utils";
   import type { Universe } from "$lib/types/universe";
-  import { votingProposalCountStore } from "$lib/stores/proposal-voting.store";
+  import { votingProposalCountStore } from "$lib/stores/voting-proposals.store";
   import { isNullish, nonNullish } from "@dfinity/utils";
 
   export let selected: boolean;

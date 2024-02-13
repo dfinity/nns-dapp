@@ -11,7 +11,7 @@
   import {
     votingNnsProposalsStore,
     votingProposalCountStore,
-  } from "$lib/stores/proposal-voting.store";
+  } from "$lib/stores/voting-proposals.store";
   import { isSelectedPath } from "$lib/utils/navigation.utils";
   import { pageStore } from "$lib/derived/page.derived";
   import { AppPath } from "$lib/constants/routes.constants";
