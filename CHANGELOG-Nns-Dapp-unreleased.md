@@ -39,6 +39,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Test that project logo (not token logo) is displayed on SNS wallet.
+
 #### Changed
 
 * Update the GitHub `build-push-action` from `v4` to `v5`.
