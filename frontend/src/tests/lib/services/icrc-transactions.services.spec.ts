@@ -56,7 +56,7 @@ describe("icrc-transactions services", () => {
         identity: mockIdentity,
         account,
         maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
-        canisterId: indexCanisterId,
+        indexCanisterId,
         start,
       });
 
@@ -151,7 +151,7 @@ describe("icrc-transactions services", () => {
         identity: mockIdentity,
         account,
         maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
-        canisterId: indexCanisterId,
+        indexCanisterId,
         start: oldestTransaction.id,
       });
 
@@ -190,7 +190,7 @@ describe("icrc-transactions services", () => {
         identity: mockIdentity,
         account,
         maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
-        canisterId: indexCanisterId,
+        indexCanisterId,
         start: undefined,
       });
     });
