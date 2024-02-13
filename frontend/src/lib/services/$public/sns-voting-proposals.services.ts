@@ -13,24 +13,22 @@ import { get } from "svelte/store";
 
 // TODO(max): use the store first, clean the store after user voted
 export const queryNeuronsForSelectableSnses = async () => {
-  console.log("\n\nqueryNeuronsForSelectableSnses");
   const canisterIds = get(selectableUniversesStore)
     // skip nns
     .filter(({ canisterId }) => canisterId !== OWN_CANISTER_ID_TEXT)
     .map(({ canisterId }) => canisterId);
-  console.log(canisterIds);
+
+  // TODO(max): error handling?
   await Promise.all(
-    // TODO(max): refactor me
+    // TODO(max): refactor me, need a separate function
     canisterIds.map(async (canisterId) => {
       const neurons = await queryNeurons(canisterId);
-      console.log(neurons);
 
       if (neurons?.length === 0) {
         return [];
       }
       const proposals = await querySnsProposals(canisterId);
-      console.log(proposals);
-
+      // TODO(max): apply upcoming ballots here
       votingSnsProposalsStore.setProposals({
         rootCanisterId: Principal.fromText(canisterId),
         proposals,

@@ -11,11 +11,18 @@ export interface VotingProposalCountData {
 export const votingProposalCountStore: Readable<VotingProposalCountData> =
   derived(
     [votingNnsProposalsStore, votingSnsProposalsStore],
-    ([{ proposals: nnsProposals }]) => {
-      console.log("votingProposalCountStore derived", nnsProposals);
+    ([{ proposals: nnsProposals }, votingSnsProposals]) => {
+      const snsProposalCounts = Object.entries(votingSnsProposals).reduce(
+        (acc, [canisterId, proposals]) => ({
+          ...acc,
+          [canisterId]: proposals.length,
+        }),
+        {}
+      );
+
       return {
         [OWN_CANISTER_ID.toText()]: nnsProposals?.length,
-        // TODO: add Snses here
+        ...snsProposalCounts,
       };
     }
   );
