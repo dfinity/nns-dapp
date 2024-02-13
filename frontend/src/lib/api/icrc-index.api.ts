@@ -14,7 +14,7 @@ export interface GetTransactionsParams {
   account: IcrcAccount;
   start?: bigint;
   maxResults: bigint;
-  canisterId: Principal;
+  indexCanisterId: Principal;
 }
 
 export interface GetTransactionsResponse
@@ -24,14 +24,14 @@ export interface GetTransactionsResponse
 
 export const getTransactions = async ({
   identity,
-  canisterId,
+  indexCanisterId,
   maxResults,
   start,
   account,
 }: GetTransactionsParams): Promise<GetTransactionsResponse> => {
   const {
     canister: { getTransactions },
-  } = await indexCanister({ identity, canisterId });
+  } = await indexCanister({ identity, canisterId: indexCanisterId });
 
   const { oldest_tx_id, ...rest } = await getTransactions({
     max_results: maxResults,

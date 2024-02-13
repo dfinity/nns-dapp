@@ -1011,7 +1011,7 @@ describe("icrc-transaction utils", () => {
       expect(
         getOldestTxIdFromStore({
           store,
-          canisterId: rootCanisterId,
+          universeId: rootCanisterId,
           account: mockSnsMainAccount,
         })
       ).toBe(oldestTx.id);
@@ -1021,7 +1021,7 @@ describe("icrc-transaction utils", () => {
       expect(
         getOldestTxIdFromStore({
           store: {},
-          canisterId: mockSnsMainAccount.principal,
+          universeId: mockSnsMainAccount.principal,
           account: mockSnsMainAccount,
         })
       ).toBeUndefined();
@@ -1042,7 +1042,7 @@ describe("icrc-transaction utils", () => {
       expect(
         getOldestTxIdFromStore({
           store,
-          canisterId: rootCanisterId,
+          universeId: rootCanisterId,
           account: mockSnsMainAccount,
         })
       ).toBeUndefined();

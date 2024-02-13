@@ -422,14 +422,14 @@ export const mapCkbtcPendingUtxo = ({
  */
 export const getOldestTxIdFromStore = ({
   store,
-  canisterId,
+  universeId,
   account,
 }: {
   store: IcrcTransactionsStoreData;
-  canisterId: Principal;
+  universeId: Principal;
   account: Account;
 }): bigint | undefined => {
-  const accountData = store[canisterId.toText()]?.[account.identifier];
+  const accountData = store[universeId.toText()]?.[account.identifier];
   if (accountData === undefined) {
     return;
   }

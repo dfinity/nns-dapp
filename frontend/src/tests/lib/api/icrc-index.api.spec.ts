@@ -17,7 +17,7 @@ describe("icrc-index api", () => {
       owner: mockPrincipal,
     },
     maxResults: 10n,
-    canisterId: principal(0),
+    indexCanisterId: principal(0),
   };
 
   const indexCanisterMock = mock<IcrcIndexCanister>();

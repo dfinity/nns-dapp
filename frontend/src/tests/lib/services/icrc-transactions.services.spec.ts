@@ -39,6 +39,7 @@ describe("icrc-transactions services", () => {
         });
       const start = 1_234n;
 
+      expect(spyGetTransactions).not.toBeCalled();
       await loadIcrcAccountTransactions({
         account: mockCkBTCMainAccount,
         start,
@@ -50,6 +51,7 @@ describe("icrc-transactions services", () => {
         owner: mockCkBTCMainAccount.principal,
       };
 
+      expect(spyGetTransactions).toBeCalledTimes(1);
       expect(spyGetTransactions).toBeCalledWith({
         identity: mockIdentity,
         account,
@@ -132,6 +134,7 @@ describe("icrc-transactions services", () => {
           mockCkBTCMainAccount.principal.toText()
         ].transactions
       ).toHaveLength(3);
+      expect(spyGetTransactions).not.toBeCalled();
 
       await loadIcrcAccountNextTransactions({
         account: mockCkBTCMainAccount,
@@ -143,6 +146,7 @@ describe("icrc-transactions services", () => {
         owner: mockCkBTCMainAccount.principal,
       };
 
+      expect(spyGetTransactions).toBeCalledTimes(1);
       expect(spyGetTransactions).toBeCalledWith({
         identity: mockIdentity,
         account,
@@ -169,6 +173,7 @@ describe("icrc-transactions services", () => {
           oldestTxId: newTransaction.id,
           transactions: [newTransaction],
         });
+      expect(spyGetTransactions).not.toBeCalled();
 
       await loadIcrcAccountNextTransactions({
         account: mockCkBTCMainAccount,
@@ -180,6 +185,7 @@ describe("icrc-transactions services", () => {
         owner: mockCkBTCMainAccount.principal,
       };
 
+      expect(spyGetTransactions).toBeCalledTimes(1);
       expect(spyGetTransactions).toBeCalledWith({
         identity: mockIdentity,
         account,

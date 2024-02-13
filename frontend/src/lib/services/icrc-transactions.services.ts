@@ -31,7 +31,7 @@ export const loadIcrcAccountTransactions = async ({
       identity,
       account: snsAccount,
       maxResults: BigInt(maxResults),
-      canisterId: indexCanisterId,
+      indexCanisterId,
       start,
     });
     // If API returns less than the maxResults, we reached the end of the list.
@@ -50,7 +50,7 @@ export const loadIcrcAccountTransactions = async ({
   }
 };
 
-export type LoadIcrcAccountNextTransactions = {
+type LoadIcrcAccountNextTransactionsParams = {
   account: Account;
   universeId: Principal;
   indexCanisterId: Principal;
@@ -60,11 +60,11 @@ export const loadIcrcAccountNextTransactions = async ({
   account,
   universeId,
   indexCanisterId,
-}: LoadIcrcAccountNextTransactions) => {
+}: LoadIcrcAccountNextTransactionsParams) => {
   const store = get(icrcTransactionsStore);
   const currentOldestTxId = getOldestTxIdFromStore({
     account,
-    canisterId: universeId,
+    universeId,
     store,
   });
   return loadIcrcAccountTransactions({
