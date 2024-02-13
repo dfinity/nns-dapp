@@ -7,7 +7,7 @@ import {
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { convertCkBTCToBtcIcrc2 } from "$lib/services/ckbtc-convert.services";
 import * as walletAccountsServices from "$lib/services/icrc-accounts.services";
-import { loadWalletTransactions } from "$lib/services/wallet-transactions.services";
+import { loadIcrcAccountTransactions } from "$lib/services/icrc-transactions.services";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
 import { numberToE8s } from "$lib/utils/token.utils";
@@ -27,7 +27,7 @@ import {
 import type { Mock } from "vitest";
 import { mock } from "vitest-mock-extended";
 
-vi.mock("$lib/services/wallet-transactions.services");
+vi.mock("$lib/services/icrc-transactions.services");
 vi.mock("$lib/services/icrc-accounts.services");
 
 describe("ckbtc-convert-services", () => {
@@ -105,7 +105,7 @@ describe("ckbtc-convert-services", () => {
               rejectRetrieveBtc = reject;
             })
         );
-      vi.mocked(loadWalletTransactions).mockImplementation(
+      vi.mocked(loadIcrcAccountTransactions).mockImplementation(
         () =>
           new Promise<void>((resolve) => {
             resolveLoadWalletTransactions = resolve;
@@ -140,7 +140,7 @@ describe("ckbtc-convert-services", () => {
 
       expect(approveTransferSpy).toBeCalledTimes(1);
       expect(retrieveBtcSpy).toBeCalledTimes(0);
-      expect(loadWalletTransactions).toBeCalledTimes(0);
+      expect(loadIcrcAccountTransactions).toBeCalledTimes(0);
       expect(loadAccountsSpy).toBeCalledTimes(0);
     });
 
@@ -171,7 +171,7 @@ describe("ckbtc-convert-services", () => {
 
       expect(approveTransferSpy).toBeCalledTimes(1);
       expect(retrieveBtcSpy).toBeCalledTimes(1);
-      expect(loadWalletTransactions).toBeCalledTimes(0);
+      expect(loadIcrcAccountTransactions).toBeCalledTimes(0);
       expect(loadAccountsSpy).toBeCalledTimes(0);
     });
 
@@ -199,9 +199,9 @@ describe("ckbtc-convert-services", () => {
         ],
       });
 
-      expect(loadWalletTransactions).toBeCalledWith({
+      expect(loadIcrcAccountTransactions).toBeCalledWith({
         account: params.source,
-        canisterId: params.universeId,
+        ledgerCanisterId: params.universeId,
         indexCanisterId: mockCkBTCAdditionalCanisters.indexCanisterId,
       });
 
@@ -211,7 +211,7 @@ describe("ckbtc-convert-services", () => {
 
       expect(approveTransferSpy).toBeCalledTimes(1);
       expect(retrieveBtcSpy).toBeCalledTimes(1);
-      expect(loadWalletTransactions).toBeCalledTimes(1);
+      expect(loadIcrcAccountTransactions).toBeCalledTimes(1);
       expect(loadAccountsSpy).toBeCalledTimes(1);
     });
 
@@ -243,7 +243,7 @@ describe("ckbtc-convert-services", () => {
 
       expect(approveTransferSpy).toBeCalledTimes(1);
       expect(retrieveBtcSpy).toBeCalledTimes(1);
-      expect(loadWalletTransactions).toBeCalledTimes(1);
+      expect(loadIcrcAccountTransactions).toBeCalledTimes(1);
       expect(loadAccountsSpy).toBeCalledTimes(1);
 
       expect(await convertPromise).toEqual({ success: true });
@@ -277,7 +277,7 @@ describe("ckbtc-convert-services", () => {
 
       expect(approveTransferSpy).toBeCalledTimes(1);
       expect(retrieveBtcSpy).toBeCalledTimes(1);
-      expect(loadWalletTransactions).toBeCalledTimes(1);
+      expect(loadIcrcAccountTransactions).toBeCalledTimes(1);
 
       expect(await convertPromise).toEqual({ success: false });
       expect(spyOnToastsError).toBeCalledTimes(1);

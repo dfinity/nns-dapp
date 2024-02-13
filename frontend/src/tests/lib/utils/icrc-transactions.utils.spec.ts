@@ -997,10 +997,10 @@ describe("icrc-transaction utils", () => {
     };
 
     it("returns the id of the oldest tx", () => {
-      const rootCanisterId = mockSnsMainAccount.principal;
+      const ledgerCanisterId = principal(0);
       const transactions = [secondTx, oldestTx, recentTx];
       const store: IcrcTransactionsStoreData = {
-        [rootCanisterId.toText()]: {
+        [ledgerCanisterId.toText()]: {
           [mockSnsMainAccount.identifier]: {
             transactions,
             completed: false,
@@ -1011,7 +1011,7 @@ describe("icrc-transaction utils", () => {
       expect(
         getOldestTxIdFromStore({
           store,
-          canisterId: rootCanisterId,
+          ledgerCanisterId,
           account: mockSnsMainAccount,
         })
       ).toBe(oldestTx.id);
@@ -1021,17 +1021,17 @@ describe("icrc-transaction utils", () => {
       expect(
         getOldestTxIdFromStore({
           store: {},
-          canisterId: mockSnsMainAccount.principal,
+          ledgerCanisterId: principal(0),
           account: mockSnsMainAccount,
         })
       ).toBeUndefined();
     });
 
     it("returns undefined if empty data", () => {
-      const rootCanisterId = mockSnsMainAccount.principal;
+      const ledgerCanisterId = principal(0);
       const transactions = [];
       const store: IcrcTransactionsStoreData = {
-        [rootCanisterId.toText()]: {
+        [ledgerCanisterId.toText()]: {
           [mockSnsMainAccount.identifier]: {
             transactions,
             completed: false,
@@ -1042,7 +1042,7 @@ describe("icrc-transaction utils", () => {
       expect(
         getOldestTxIdFromStore({
           store,
-          canisterId: rootCanisterId,
+          ledgerCanisterId,
           account: mockSnsMainAccount,
         })
       ).toBeUndefined();
