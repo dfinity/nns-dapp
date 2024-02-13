@@ -8,6 +8,7 @@ import * as workerBalances from "$lib/services/worker-balances.services";
 import * as workerTransactions from "$lib/services/worker-transactions.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
+import { aggregatorCanisterLogoPath } from "$lib/utils/sns-aggregator-converters.utils";
 import { page } from "$mocks/$app/stores";
 import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
 import WalletTest from "$tests/lib/pages/WalletTest.svelte";
@@ -452,6 +453,36 @@ describe("SnsWallet", () => {
 
       await runResolvedPromises();
       expect(await po.getWalletPageHeadingPo().getTitle()).toBe("4.56 OOO");
+    });
+
+    it("should use SNS project logo rather than token logo", async () => {
+      const tokenLogo = "http://token.logo";
+      const snsProjectLogo = aggregatorCanisterLogoPath(rootCanisterIdText);
+
+      setSnsProjects([
+        {
+          rootCanisterId,
+          ledgerCanisterId,
+          lifecycle: SnsSwapLifecycle.Committed,
+          projectName,
+          tokenMetadata: {
+            ...testToken,
+            logo: "http://token.logo",
+          },
+        },
+      ]);
+      const po = await renderComponent(props);
+
+      // This could be considered a bug because the wallet should be based on
+      // the token data rather than the project data. But before we fix this bug
+      // we want to make sure that SNSes have the ability to change the logo in
+      // their ledger canister metadata.
+      expect(
+        await po.getWalletPageHeaderPo().getUniversePageSummaryPo().getLogoUrl()
+      ).toBe(snsProjectLogo);
+      expect(
+        await po.getWalletPageHeaderPo().getUniversePageSummaryPo().getLogoUrl()
+      ).not.toBe(tokenLogo);
     });
   });
 });

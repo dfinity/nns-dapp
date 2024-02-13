@@ -481,6 +481,7 @@ export const mockQueryTokenResponse: IcrcTokenMetadataResponse = [
   [IcrcMetadataResponseEntries.NAME, { Text: mockSnsToken.name }],
   [IcrcMetadataResponseEntries.SYMBOL, { Text: mockSnsToken.symbol }],
   [IcrcMetadataResponseEntries.FEE, { Nat: mockSnsToken.fee }],
+  [IcrcMetadataResponseEntries.LOGO, { Text: mockSnsToken.logo }],
 ];
 
 export const mockQueryMetadata: QuerySnsMetadata = {
