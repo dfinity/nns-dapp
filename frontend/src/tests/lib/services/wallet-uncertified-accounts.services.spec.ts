@@ -50,7 +50,7 @@ describe("wallet-uncertified-accounts.services", () => {
     const store = get(universesAccountsBalance);
     // Nns + ckBTC + ckTESTBTC
     expect(Object.keys(store)).toHaveLength(3);
-    expect(store[CKBTC_UNIVERSE_CANISTER_ID.toText()].balanceUlps).toEqual(
+    expect(store[CKBTC_UNIVERSE_CANISTER_ID.toText()]).toEqual(
       mockCkBTCMainAccount.balanceUlps
     );
     expect(spyQuery).toBeCalled();
