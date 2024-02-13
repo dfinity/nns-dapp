@@ -1,10 +1,10 @@
 import {
-  getSnsAccounts,
   getSnsToken,
+  querySnsBalance,
   snsTransfer,
   transactionFee,
 } from "$lib/api/sns-ledger.api";
-import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   mockQueryTokenResponse,
   mockSnsToken,
@@ -24,10 +24,7 @@ const metadataSpy = vi
   .fn()
   .mockImplementation(() => Promise.resolve(metadataReturn));
 
-let balanceReturn = Promise.resolve(mainBalance);
-const setBalanceError = () => (balanceReturn = Promise.reject(new Error()));
-const setBalanceSuccess = () => (balanceReturn = Promise.resolve(mainBalance));
-const balanceSpy = vi.fn().mockImplementation(() => balanceReturn);
+const balanceSpy = vi.fn().mockResolvedValue(mainBalance);
 
 vi.mock("$lib/api/sns-wrapper.api", () => {
   return {
@@ -43,44 +40,25 @@ vi.mock("$lib/api/sns-wrapper.api", () => {
 describe("sns-ledger api", () => {
   beforeEach(() => {
     setMetadataSuccess();
-    setBalanceSuccess();
   });
 
-  describe("getSnsAccounts", () => {
-    beforeEach(() => {
-      setMetadataSuccess();
-    });
-
-    it("returns main account with balance and project token metadata", async () => {
-      setBalanceSuccess();
-
-      const accounts = await getSnsAccounts({
+  describe("querySnsBalance", () => {
+    it("returns balance for of an ICRC account", async () => {
+      const account = {
+        owner: mockPrincipal,
+      };
+      const balance = await querySnsBalance({
         certified: true,
         identity: mockIdentity,
         rootCanisterId: rootCanisterIdMock,
+        account,
       });
 
-      expect(accounts.length).toBeGreaterThan(0);
-
-      const main = accounts.find(({ type }) => type === "main");
-      expect(main).not.toBeUndefined();
-
-      expect(main?.balanceUlps).toEqual(mainBalance);
-
-      expect(balanceSpy).toBeCalled();
-    });
-
-    it("throws an error if no balance", () => {
-      setBalanceError();
-
-      const call = () =>
-        getSnsAccounts({
-          certified: true,
-          identity: mockIdentity,
-          rootCanisterId: rootCanisterIdMock,
-        });
-
-      expect(call).rejects.toThrowError();
+      expect(balance).toBe(mainBalance);
+      expect(balanceSpy).toBeCalledTimes(1);
+      expect(balanceSpy).toBeCalledWith({
+        ...account,
+      });
     });
   });
 

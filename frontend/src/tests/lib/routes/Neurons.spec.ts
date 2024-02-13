@@ -10,6 +10,7 @@ import * as fakeSnsAggregatorApi from "$tests/fakes/sns-aggregator-api.fake";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import * as fakeSnsLedgerApi from "$tests/fakes/sns-ledger-api.fake";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { NeuronsPo } from "$tests/page-objects/Neurons.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { HttpAgent } from "@dfinity/agent";
@@ -47,8 +48,9 @@ describe("Neurons", () => {
     fakeSnsGovernanceApi.addNeuronWith({
       rootCanisterId: testOpenSnsCanisterId,
     });
-    fakeSnsLedgerApi.addAccountWith({
+    fakeSnsLedgerApi.setBalanceFor({
       rootCanisterId: testCommittedSnsCanisterId,
+      balanceUlps: mockSnsMainAccount.balanceUlps,
     });
 
     fakeSnsAggregatorApi.addProjectWith({

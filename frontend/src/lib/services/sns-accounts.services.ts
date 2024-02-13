@@ -1,5 +1,5 @@
 import type { IcrcTransferParams } from "$lib/api/icrc-ledger.api";
-import { getSnsAccounts, snsTransfer } from "$lib/api/sns-ledger.api";
+import { querySnsBalance, snsTransfer } from "$lib/api/sns-ledger.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { snsTokensByRootCanisterIdStore } from "$lib/derived/sns/sns-tokens.derived";
 import { transferTokens } from "$lib/services/icrc-accounts.services";
@@ -10,10 +10,48 @@ import type { Account } from "$lib/types/account";
 import { toToastError } from "$lib/utils/error.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
-import type { IcrcBlockIndex } from "@dfinity/ledger-icrc";
+import { encodeIcrcAccount, type IcrcBlockIndex } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
+
+/**
+ * Return all the accounts for the given identity in the ledger canister of the SNS project.
+ *
+ * For now, it only returns the main account and no subaccounts.
+ *
+ * Once subaccounts are supported, this function should be updated to return all the accounts.
+ */
+const getAccounts = async ({
+  identity,
+  certified,
+  rootCanisterId,
+}: {
+  identity: Identity;
+  certified: boolean;
+  rootCanisterId: Principal;
+}): Promise<Account[]> => {
+  // TODO: Support subaccounts
+  const mainAccount = {
+    owner: identity.getPrincipal(),
+  };
+
+  const balanceUlps = await querySnsBalance({
+    identity,
+    certified,
+    rootCanisterId,
+    account: mainAccount,
+  });
+
+  return [
+    {
+      identifier: encodeIcrcAccount(mainAccount),
+      principal: mainAccount.owner,
+      balanceUlps,
+      type: "main",
+    },
+  ];
+};
 
 export const loadSnsAccounts = async ({
   rootCanisterId,
@@ -27,7 +65,7 @@ export const loadSnsAccounts = async ({
   return queryAndUpdate<Account[], unknown>({
     strategy,
     request: ({ certified, identity }) =>
-      getSnsAccounts({ rootCanisterId, identity, certified }),
+      getAccounts({ rootCanisterId, identity, certified }),
     onLoad: ({ response: accounts, certified }) =>
       snsAccountsStore.setAccounts({
         accounts,

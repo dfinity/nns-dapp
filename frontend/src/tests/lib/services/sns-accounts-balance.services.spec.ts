@@ -37,14 +37,14 @@ describe("sns-accounts-balance.services", () => {
     metadataCertified: false,
   };
 
-  it("should call api.getSnsAccounts and load balance in store", async () => {
+  it("should call api.querySnsBalance and load balance in store", async () => {
     vi.spyOn(ledgerApi, "getSnsToken").mockImplementation(() =>
       Promise.resolve(mockSnsToken)
     );
 
     const spyQuery = vi
-      .spyOn(ledgerApi, "getSnsAccounts")
-      .mockImplementation(() => Promise.resolve([mockSnsMainAccount]));
+      .spyOn(ledgerApi, "querySnsBalance")
+      .mockResolvedValue(mockSnsMainAccount.balanceUlps);
 
     await services.uncertifiedLoadSnsesAccountsBalances({
       rootCanisterIds: [mockSnsMainAccount.principal],
@@ -63,7 +63,7 @@ describe("sns-accounts-balance.services", () => {
 
   it("should toast error", async () => {
     vi.spyOn(console, "error").mockImplementation(() => undefined);
-    vi.spyOn(ledgerApi, "getSnsAccounts").mockRejectedValue(new Error());
+    vi.spyOn(ledgerApi, "querySnsBalance").mockRejectedValue(new Error());
 
     await services.uncertifiedLoadSnsesAccountsBalances({
       rootCanisterIds: [mockSnsMainAccount.principal],
