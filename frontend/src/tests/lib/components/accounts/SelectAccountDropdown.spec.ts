@@ -1,18 +1,24 @@
 import SelectAccountDropdown from "$lib/components/accounts/SelectAccountDropdown.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
-import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
-import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
+import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("SelectAccountDropdown", () => {
+  beforeEach(() => {
+    resetSnsProjects();
+    icrcAccountsStore.reset();
+  });
+
   describe("no accounts", () => {
     beforeEach(() => {
       vi.clearAllMocks();
@@ -124,21 +130,23 @@ describe("SelectAccountDropdown", () => {
 
   describe("sns accounts", () => {
     beforeEach(() => {
-      snsAccountsStore.setAccounts({
-        rootCanisterId: mockPrincipal,
-        accounts: [mockSnsMainAccount],
-        certified: true,
-      });
-    });
+      setSnsProjects([
+        {
+          rootCanisterId: mockSnsFullProject.rootCanisterId,
+          ledgerCanisterId: mockSnsFullProject.summary.ledgerCanisterId,
+        },
+      ]);
 
-    afterEach(() => {
-      snsAccountsStore.reset();
+      icrcAccountsStore.set({
+        ledgerCanisterId: mockSnsFullProject.summary.ledgerCanisterId,
+        accounts: { accounts: [mockSnsMainAccount], certified: true },
+      });
     });
 
     it("should select main as default", () => {
       const { container } = render(SelectAccountDropdown, {
         props: {
-          rootCanisterId: mockPrincipal,
+          rootCanisterId: mockSnsFullProject.rootCanisterId,
         },
       });
 

@@ -1,12 +1,14 @@
 import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
 import { snsTransferTokens } from "$lib/services/sns-accounts.services";
-import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import type { Account } from "$lib/types/account";
 import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
 import { SnsTransactionModalPo } from "$tests/page-objects/SnsTransactionModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { testTransferTokens } from "$tests/utils/transaction-modal.test-utils";
 import { TokenAmountV2 } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
@@ -19,6 +21,7 @@ vi.mock("$lib/services/sns-accounts.services", () => {
 
 describe("SnsTransactionModal", () => {
   const rootCanisterId = mockPrincipal;
+  const ledgerCanisterId = principal(1);
   const token = { name: "Test", symbol: "TST", decimals: 8 };
   const transactionFee = TokenAmountV2.fromUlps({
     amount: 10_000n,
@@ -43,7 +46,8 @@ describe("SnsTransactionModal", () => {
 
   beforeEach(() => {
     resetIdentity();
-    snsAccountsStore.reset();
+    resetSnsProjects();
+    icrcAccountsStore.reset();
   });
 
   it("should render token in the modal title", async () => {
@@ -54,10 +58,18 @@ describe("SnsTransactionModal", () => {
 
   it("should transfer tokens", async () => {
     // Used to choose the source account
-    snsAccountsStore.setAccounts({
-      rootCanisterId,
-      accounts: [mockSnsMainAccount],
-      certified: true,
+    setSnsProjects([
+      {
+        rootCanisterId,
+        ledgerCanisterId,
+      },
+    ]);
+    icrcAccountsStore.set({
+      ledgerCanisterId,
+      accounts: {
+        accounts: [mockSnsMainAccount],
+        certified: true,
+      },
     });
     const result = await renderTransactionModal();
 

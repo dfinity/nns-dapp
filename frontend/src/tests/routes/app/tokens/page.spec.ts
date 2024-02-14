@@ -52,6 +52,8 @@ describe("Tokens route", () => {
 
   const rootCanisterIdTetris = rootCanisterIdMock;
   const rootCanisterIdPacman = principal(1);
+  const ledgerCanisterIdTetris = principal(2);
+  const ledgerCanisterIdPacman = principal(3);
   const tetrisToken = mockSnsToken;
   const pacmanToken = {
     ...mockSnsToken,
@@ -122,6 +124,8 @@ describe("Tokens route", () => {
             [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: ckBTCBalanceE8s,
             [CKETH_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
             [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
+            [ledgerCanisterIdTetris.toText()]: tetrisBalanceE8s,
+            [ledgerCanisterIdPacman.toText()]: pacmanBalanceE8s,
           };
           if (isNullish(balancesMap[canisterId.toText()])) {
             throw new Error(
@@ -132,14 +136,6 @@ describe("Tokens route", () => {
         }
       );
       vi.spyOn(snsLedgerApi, "snsTransfer").mockResolvedValue(undefined);
-      vi.spyOn(snsLedgerApi, "querySnsBalance").mockImplementation(
-        async ({ rootCanisterId }) => {
-          if (rootCanisterId.toText() === rootCanisterIdTetris.toText()) {
-            return tetrisBalanceE8s;
-          }
-          return pacmanBalanceE8s;
-        }
-      );
       vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(1234n);
       vi.spyOn(ckBTCMinterApi, "updateBalance").mockRejectedValue(
         noPendingUtxos
@@ -148,12 +144,14 @@ describe("Tokens route", () => {
       setSnsProjects([
         {
           rootCanisterId: rootCanisterIdTetris,
+          ledgerCanisterId: ledgerCanisterIdTetris,
           projectName: "Tetris",
           tokenMetadata: tetrisToken,
           lifecycle: SnsSwapLifecycle.Committed,
         },
         {
           rootCanisterId: rootCanisterIdPacman,
+          ledgerCanisterId: ledgerCanisterIdPacman,
           projectName: "Pacman",
           tokenMetadata: pacmanToken,
           lifecycle: SnsSwapLifecycle.Committed,

@@ -1,8 +1,10 @@
 import * as agent from "$lib/api/agent.api";
-import * as ledgerApi from "$lib/api/sns-ledger.api";
+import * as ledgerApi from "$lib/api/icrc-ledger.api";
+import * as snsLedgerApi from "$lib/api/sns-ledger.api";
+import { snsAccountsStore } from "$lib/derived/sns/sns-accounts.derived";
 import * as services from "$lib/services/sns-accounts.services";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
-import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import {
   mockIdentity,
@@ -11,7 +13,7 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
-import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
+import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import { waitFor } from "@testing-library/svelte";
@@ -27,25 +29,35 @@ describe("sns-accounts-services", () => {
   });
 
   describe("loadSnsAccounts", () => {
+    const rootCanisterId = principal(1);
+    const snsLedgerCanisterId = principal(2);
+
     beforeEach(() => {
       vi.clearAllMocks();
-      snsAccountsStore.reset();
+      icrcAccountsStore.reset();
+
+      setSnsProjects([
+        {
+          rootCanisterId,
+          ledgerCanisterId: snsLedgerCanisterId,
+        },
+      ]);
       vi.spyOn(console, "error").mockImplementation(() => undefined);
     });
 
     it("should call api.querySnsBalance and load neurons in store", async () => {
       const spyQuery = vi
-        .spyOn(ledgerApi, "querySnsBalance")
+        .spyOn(ledgerApi, "queryIcrcBalance")
         .mockResolvedValue(mockSnsMainAccount.balanceUlps);
 
-      await services.loadSnsAccounts({ rootCanisterId: mockPrincipal });
+      await services.loadSnsAccounts({ rootCanisterId });
 
       await tick();
       const store = get(snsAccountsStore);
-      expect(store[mockPrincipal.toText()]?.accounts).toHaveLength(1);
+      expect(store[rootCanisterId.toText()]?.accounts).toHaveLength(1);
       expect(spyQuery).toBeCalledTimes(2);
       expect(spyQuery).toBeCalledWith({
-        rootCanisterId: mockPrincipal,
+        canisterId: snsLedgerCanisterId,
         identity: mockIdentity,
         certified: false,
         account: {
@@ -53,7 +65,7 @@ describe("sns-accounts-services", () => {
         },
       });
       expect(spyQuery).toBeCalledWith({
-        rootCanisterId: mockPrincipal,
+        canisterId: snsLedgerCanisterId,
         identity: mockIdentity,
         certified: true,
         account: {
@@ -66,20 +78,20 @@ describe("sns-accounts-services", () => {
 
     it("should call api.querySnsBalance with only the strategy passed", async () => {
       const spyQuery = vi
-        .spyOn(ledgerApi, "querySnsBalance")
+        .spyOn(ledgerApi, "queryIcrcBalance")
         .mockResolvedValue(mockSnsMainAccount.balanceUlps);
 
       await services.loadSnsAccounts({
-        rootCanisterId: mockPrincipal,
+        rootCanisterId,
         strategy: "query",
       });
 
       await tick();
       const store = get(snsAccountsStore);
-      expect(store[mockPrincipal.toText()]?.accounts).toHaveLength(1);
+      expect(store[rootCanisterId.toText()]?.accounts).toHaveLength(1);
       expect(spyQuery).toBeCalledTimes(1);
       expect(spyQuery).toBeCalledWith({
-        rootCanisterId: mockPrincipal,
+        canisterId: snsLedgerCanisterId,
         identity: mockIdentity,
         certified: false,
         account: {
@@ -92,13 +104,13 @@ describe("sns-accounts-services", () => {
 
     it("should call error callback", async () => {
       const spyQuery = vi
-        .spyOn(ledgerApi, "querySnsBalance")
+        .spyOn(ledgerApi, "queryIcrcBalance")
         .mockRejectedValue(new Error());
 
       const spy = vi.fn();
 
       await services.loadSnsAccounts({
-        rootCanisterId: mockPrincipal,
+        rootCanisterId,
         handleError: spy,
       });
 
@@ -109,7 +121,7 @@ describe("sns-accounts-services", () => {
 
     it("should not call error callback if query fails and update succeeds", async () => {
       const spyQuery = vi
-        .spyOn(ledgerApi, "querySnsBalance")
+        .spyOn(ledgerApi, "queryIcrcBalance")
         .mockImplementation(async ({ certified }) => {
           if (certified) {
             return mockSnsMainAccount.balanceUlps;
@@ -120,7 +132,7 @@ describe("sns-accounts-services", () => {
       const spy = vi.fn();
 
       await services.loadSnsAccounts({
-        rootCanisterId: mockPrincipal,
+        rootCanisterId,
         handleError: spy,
       });
 
@@ -131,13 +143,13 @@ describe("sns-accounts-services", () => {
 
     it("should call error callback if query fails and only query is requested", async () => {
       const spyQuery = vi
-        .spyOn(ledgerApi, "querySnsBalance")
+        .spyOn(ledgerApi, "queryIcrcBalance")
         .mockRejectedValue(new Error());
 
       const spy = vi.fn();
 
       await services.loadSnsAccounts({
-        rootCanisterId: mockPrincipal,
+        rootCanisterId,
         handleError: spy,
         strategy: "query",
       });
@@ -148,10 +160,12 @@ describe("sns-accounts-services", () => {
     });
 
     it("should empty store if update call fails", async () => {
-      snsAccountsStore.setAccounts({
-        rootCanisterId: mockPrincipal,
-        accounts: [mockSnsMainAccount],
-        certified: true,
+      icrcAccountsStore.set({
+        ledgerCanisterId: snsLedgerCanisterId,
+        accounts: {
+          accounts: [mockSnsMainAccount],
+          certified: true,
+        },
       });
       icrcTransactionsStore.addTransactions({
         canisterId: mockPrincipal,
@@ -162,17 +176,20 @@ describe("sns-accounts-services", () => {
       });
 
       const spyQuery = vi
-        .spyOn(ledgerApi, "querySnsBalance")
+        .spyOn(ledgerApi, "queryIcrcBalance")
         .mockRejectedValue(undefined);
 
-      await services.loadSnsAccounts({ rootCanisterId: mockPrincipal });
+      const store = get(snsAccountsStore);
+      return expect(store[rootCanisterId.toText()]).toBeDefined();
+
+      await services.loadSnsAccounts({ rootCanisterId });
 
       await waitFor(() => {
         const store = get(snsAccountsStore);
-        return expect(store[mockPrincipal.toText()]).toBeUndefined();
+        return expect(store[rootCanisterId.toText()]).toBeUndefined();
       });
       const transactionsStore = get(icrcTransactionsStore);
-      expect(transactionsStore[mockPrincipal.toText()]).toBeUndefined();
+      expect(transactionsStore[rootCanisterId.toText()]).toBeUndefined();
       expect(spyQuery).toBeCalled();
     });
   });
@@ -182,11 +199,11 @@ describe("sns-accounts-services", () => {
 
     beforeEach(() => {
       vi.clearAllMocks();
-      snsAccountsStore.reset();
+      icrcAccountsStore.reset();
       vi.spyOn(console, "error").mockImplementation(() => undefined);
 
       spyAccounts = vi
-        .spyOn(ledgerApi, "querySnsBalance")
+        .spyOn(ledgerApi, "queryIcrcBalance")
         .mockResolvedValue(mockSnsMainAccount.balanceUlps);
     });
 
@@ -201,7 +218,7 @@ describe("sns-accounts-services", () => {
         },
       ]);
       const spyTransfer = vi
-        .spyOn(ledgerApi, "snsTransfer")
+        .spyOn(snsLedgerApi, "snsTransfer")
         .mockResolvedValue(123n);
 
       const { blockIndex } = await services.snsTransferTokens({
@@ -224,7 +241,7 @@ describe("sns-accounts-services", () => {
         },
       ]);
       const spyTransfer = vi
-        .spyOn(ledgerApi, "snsTransfer")
+        .spyOn(snsLedgerApi, "snsTransfer")
         .mockRejectedValue(new Error("test error"));
       const spyOnToastsError = vi.spyOn(toastsStore, "toastsError");
 
@@ -244,7 +261,7 @@ describe("sns-accounts-services", () => {
     it("should show toast and return success false if there is no transaction fee", async () => {
       resetSnsProjects();
       const spyTransfer = vi
-        .spyOn(ledgerApi, "snsTransfer")
+        .spyOn(snsLedgerApi, "snsTransfer")
         .mockRejectedValue(new Error("test error"));
       const spyOnToastsError = vi.spyOn(toastsStore, "toastsError");
 

@@ -2,7 +2,7 @@ import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import DisburseSnsNeuronModal from "$lib/modals/neurons/DisburseSnsNeuronModal.svelte";
 import * as authServices from "$lib/services/auth.services";
 import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
-import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { page } from "$mocks/$app/stores";
 import {
   createMockIdentity,
@@ -14,7 +14,8 @@ import {
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsNeuron, mockSnsNeuronId } from "$tests/mocks/sns-neurons.mock";
-import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { principal } from "$tests/mocks/sns-projects.mock";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
@@ -26,7 +27,9 @@ vi.mock("$lib/services/sns-accounts.services");
 const testIdentity = createMockIdentity(37373);
 
 describe("DisburseSnsNeuronModal", () => {
-  const principalString = `${mockSnsMainAccount.principal}`;
+  const rootCanisterId = principal(1);
+  const ledgerCanisterId = principal(2);
+  const principalString = rootCanisterId.toText();
   const renderDisburseModal = async (
     neuron: SnsNeuron,
     reloadNeuron: () => Promise<void> = () => Promise.resolve()
@@ -43,19 +46,25 @@ describe("DisburseSnsNeuronModal", () => {
 
   beforeEach(() => {
     vi.resetAllMocks();
+    resetSnsProjects();
+    icrcAccountsStore.reset();
+
     vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
       testIdentity
     );
 
-    snsAccountsStore.setAccounts({
-      rootCanisterId: mockPrincipal,
-      accounts: [mockSnsMainAccount, mockSnsSubAccount],
-      certified: true,
+    icrcAccountsStore.set({
+      ledgerCanisterId,
+      accounts: {
+        accounts: [mockSnsMainAccount, mockSnsSubAccount],
+        certified: true,
+      },
     });
 
     setSnsProjects([
       {
-        rootCanisterId: mockSnsMainAccount.principal,
+        rootCanisterId,
+        ledgerCanisterId,
         lifecycle: SnsSwapLifecycle.Committed,
       },
     ]);
@@ -118,7 +127,7 @@ describe("DisburseSnsNeuronModal", () => {
   });
 
   it("should trigger the project account load", async () => {
-    snsAccountsStore.reset();
+    icrcAccountsStore.reset();
 
     page.mock({ data: { universe: principalString, neuron: "12344" } });
 
