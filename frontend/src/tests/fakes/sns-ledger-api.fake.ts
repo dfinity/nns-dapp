@@ -1,6 +1,4 @@
-import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
-import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { installImplAndBlockRest } from "$tests/utils/module.test-utils";
 import type { Identity } from "@dfinity/agent";
 import type { IcrcAccount } from "@dfinity/ledger-icrc";
@@ -10,7 +8,6 @@ const modulePath = "$lib/api/sns-ledger.api";
 const implementedFunctions = {
   querySnsBalance,
   transactionFee,
-  getSnsToken,
 };
 
 //////////////////////////////////////////////
@@ -54,18 +51,6 @@ async function transactionFee({
   certified: boolean;
 }): Promise<bigint> {
   return 10_000n;
-}
-
-async function getSnsToken({
-  identity: _,
-  rootCanisterId: __,
-  certified: ___,
-}: {
-  identity: Identity;
-  rootCanisterId: Principal;
-  certified: boolean;
-}): Promise<IcrcTokenMetadata> {
-  return mockSnsToken;
 }
 
 /////////////////////////////////

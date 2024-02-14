@@ -1,14 +1,9 @@
 import {
-  getSnsToken,
   querySnsBalance,
   snsTransfer,
   transactionFee,
 } from "$lib/api/sns-ledger.api";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
-import {
-  mockQueryTokenResponse,
-  mockSnsToken,
-} from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 
 vi.mock("$lib/proxy/api.import.proxy");
@@ -17,20 +12,12 @@ const fee = 10_000n;
 const transactionFeeSpy = vi.fn().mockResolvedValue(fee);
 const transferSpy = vi.fn().mockResolvedValue(10n);
 
-let metadataReturn = mockQueryTokenResponse;
-const setMetadataError = () => (metadataReturn = []);
-const setMetadataSuccess = () => (metadataReturn = mockQueryTokenResponse);
-const metadataSpy = vi
-  .fn()
-  .mockImplementation(() => Promise.resolve(metadataReturn));
-
 const balanceSpy = vi.fn().mockResolvedValue(mainBalance);
 
 vi.mock("$lib/api/sns-wrapper.api", () => {
   return {
     wrapper: () => ({
       balance: balanceSpy,
-      ledgerMetadata: metadataSpy,
       transactionFee: transactionFeeSpy,
       transfer: transferSpy,
     }),
@@ -38,10 +25,6 @@ vi.mock("$lib/api/sns-wrapper.api", () => {
 });
 
 describe("sns-ledger api", () => {
-  beforeEach(() => {
-    setMetadataSuccess();
-  });
-
   describe("querySnsBalance", () => {
     it("returns balance for of an ICRC account", async () => {
       const account = {
@@ -87,36 +70,6 @@ describe("sns-ledger api", () => {
       });
 
       expect(transferSpy).toBeCalled();
-    });
-  });
-
-  describe("getSnsToken", () => {
-    beforeEach(() => {
-      setMetadataSuccess();
-    });
-
-    it("returns project token metadata", async () => {
-      const token = await getSnsToken({
-        certified: true,
-        identity: mockIdentity,
-        rootCanisterId: rootCanisterIdMock,
-      });
-
-      expect(token).toEqual(mockSnsToken);
-
-      expect(metadataSpy).toBeCalled();
-    });
-
-    it("throws an error if no token metadata", () => {
-      setMetadataError();
-      const call = () =>
-        getSnsToken({
-          certified: true,
-          identity: mockIdentity,
-          rootCanisterId: rootCanisterIdMock,
-        });
-
-      expect(call).rejects.toThrowError();
     });
   });
 });
