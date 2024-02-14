@@ -34,6 +34,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Bug where transferred SNS neurons appeared in the list of neurons after transferring them.
+
 #### Security
 
 #### Not Published
