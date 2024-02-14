@@ -23,6 +23,14 @@ export class VotingCardPo extends BasePageObject {
     return this.getVotingConfirmationToolbarPo().isPresent();
   }
 
+  getVoteYesButtonPo(): ButtonPo {
+    return this.getVotingConfirmationToolbarPo().getVoteYesButtonPo();
+  }
+
+  getVoteNoButtonPo(): ButtonPo {
+    return this.getVotingConfirmationToolbarPo().getVoteNoButtonPo();
+  }
+
   getVotableNeurons(): PageObjectElement {
     return this.root.byTestId("votable-neurons");
   }
