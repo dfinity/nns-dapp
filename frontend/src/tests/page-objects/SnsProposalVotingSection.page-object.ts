@@ -25,6 +25,6 @@ export class SnsProposalVotingSectionPo extends BasePageObject {
   }
 
   hasVotingToolbar(): Promise<boolean> {
-    return this.getVotingCardPo().hasVotingToolbar();
+    return this.getVotingCardPo().hasVotingConfirmationToolbar();
   }
 }

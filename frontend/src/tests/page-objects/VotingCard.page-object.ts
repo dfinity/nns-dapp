@@ -15,12 +15,12 @@ export class VotingCardPo extends BasePageObject {
     return new VotingCardPo(element.byTestId(VotingCardPo.TID));
   }
 
-  getConfirmationToolbar(): VotingConfirmationToolbarPo {
+  getVotingConfirmationToolbarPo(): VotingConfirmationToolbarPo {
     return VotingConfirmationToolbarPo.under(this.root);
   }
 
-  hasVotingToolbar(): Promise<boolean> {
-    return this.getConfirmationToolbar().isPresent();
+  hasVotingConfirmationToolbar(): Promise<boolean> {
+    return this.getVotingConfirmationToolbarPo().isPresent();
   }
 
   getVotableNeurons(): PageObjectElement {
@@ -57,14 +57,6 @@ export class VotingCardPo extends BasePageObject {
     ).trim();
   }
 
-  getVoteYesButtonPo(): ButtonPo {
-    return this.getButton("vote-yes");
-  }
-
-  getVoteNoButtonPo(): ButtonPo {
-    return this.getButton("vote-no");
-  }
-
   getStakeNeuronToVotePo(): StakeNeuronToVotePo {
     return StakeNeuronToVotePo.under(this.root);
   }
@@ -90,7 +82,7 @@ export class VotingCardPo extends BasePageObject {
   }
 
   async voteYes(): Promise<void> {
-    await this.getVoteYesButtonPo().click();
+    await this.getVotingConfirmationToolbarPo().getVoteYesButtonPo().click();
     await this.getConfirmYesButtonPo().click();
     await this.waitForVotingComplete();
   }
