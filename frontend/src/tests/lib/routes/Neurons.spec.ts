@@ -1,4 +1,5 @@
 import * as agent from "$lib/api/agent.api";
+import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import Neurons from "$lib/routes/Neurons.svelte";
@@ -13,6 +14,7 @@ import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { NeuronsPo } from "$tests/page-objects/Neurons.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
@@ -20,6 +22,7 @@ import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import { mock } from "vitest-mock-extended";
 
+vi.mock("$lib/api/icrc-ledger.api");
 vi.mock("$lib/api/governance.api");
 vi.mock("$lib/api/sns-aggregator.api");
 vi.mock("$lib/api/sns-governance.api");
@@ -30,7 +33,11 @@ const testCommittedSnsCanisterId = Principal.fromHex("897654");
 const testOpenSnsCanisterId = Principal.fromHex("567812");
 const testNnsNeuronId = 543n;
 
+const blockedPaths = ["$lib/api/icrc-ledger.api"];
+
 describe("Neurons", () => {
+  blockAllCallsTo(blockedPaths);
+
   fakeGovernanceApi.install();
   fakeSnsGovernanceApi.install();
   fakeSnsLedgerApi.install();
@@ -48,10 +55,9 @@ describe("Neurons", () => {
     fakeSnsGovernanceApi.addNeuronWith({
       rootCanisterId: testOpenSnsCanisterId,
     });
-    fakeSnsLedgerApi.setBalanceFor({
-      rootCanisterId: testCommittedSnsCanisterId,
-      balanceUlps: mockSnsMainAccount.balanceUlps,
-    });
+    vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
+      mockSnsMainAccount.balanceUlps
+    );
 
     fakeSnsAggregatorApi.addProjectWith({
       rootCanisterId: testCommittedSnsCanisterId.toText(),

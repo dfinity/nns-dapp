@@ -2,9 +2,7 @@ import SelectUniverseDropdown from "$lib/components/universe/SelectUniverseDropd
 import { AppPath } from "$lib/constants/routes.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
-import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
-import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { tokensStore } from "$lib/stores/tokens.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockStoreSubscribe } from "$tests/mocks/commont.mock";
@@ -15,27 +13,16 @@ import {
 import {
   mockProjectSubscribe,
   mockSnsFullProject,
-  mockTokenStore,
+  mockSnsToken,
 } from "$tests/mocks/sns-projects.mock";
-import {
-  mockTokensSubscribe,
-  mockUniversesTokens,
-} from "$tests/mocks/tokens.mock";
 import { SelectUniverseDropdownPo } from "$tests/page-objects/SelectUniverseDropdown.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "@testing-library/svelte";
 
 describe("SelectUniverseDropdown", () => {
   vi.spyOn(snsProjectSelectedStore, "subscribe").mockImplementation(
     mockStoreSubscribe(mockSnsFullProject)
-  );
-
-  vi.spyOn(tokensStore, "subscribe").mockImplementation(
-    mockTokensSubscribe(mockUniversesTokens)
-  );
-
-  vi.spyOn(snsTokenSymbolSelectedStore, "subscribe").mockImplementation(
-    mockTokenStore
   );
 
   vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
@@ -44,7 +31,8 @@ describe("SelectUniverseDropdown", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    snsAccountsStore.reset();
+    icrcAccountsStore.reset();
+    resetSnsProjects();
     resetIdentity();
 
     page.mock({
@@ -103,11 +91,19 @@ describe("SelectUniverseDropdown", () => {
         },
       ];
       const rootCanisterId = mockSnsFullProject.rootCanisterId;
+      const ledgerCanisterId = mockSnsFullProject.summary.ledgerCanisterId;
 
-      snsAccountsStore.setAccounts({
-        rootCanisterId,
-        accounts,
-        certified: true,
+      setSnsProjects([
+        {
+          rootCanisterId,
+          ledgerCanisterId,
+          tokenMetadata: mockSnsToken,
+        },
+      ]);
+
+      icrcAccountsStore.set({
+        ledgerCanisterId,
+        accounts: { accounts, certified: true },
       });
 
       page.mock({

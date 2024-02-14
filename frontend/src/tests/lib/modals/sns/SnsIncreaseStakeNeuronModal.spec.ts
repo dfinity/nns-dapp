@@ -1,7 +1,7 @@
 import { AppPath } from "$lib/constants/routes.constants";
 import SnsIncreaseStakeNeuronModal from "$lib/modals/sns/neurons/SnsIncreaseStakeNeuronModal.svelte";
 import { increaseStakeNeuron } from "$lib/services/sns-neurons.services";
-import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { page } from "$mocks/$app/stores";
 import {
   mockPrincipal,
@@ -11,12 +11,12 @@ import {
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
+import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import {
   AMOUNT_INPUT_SELECTOR,
   enterAmount,
 } from "$tests/utils/neurons-modal.test-utils";
-import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { ICPToken } from "@dfinity/utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
@@ -44,9 +44,11 @@ vi.mock("$lib/stores/busy.store", () => {
 describe("SnsIncreaseStakeNeuronModal", () => {
   const reloadNeuron = vi.fn();
   const rootCanisterId = mockPrincipal;
+  const ledgerCanisterId = principal(2);
   const snsProjectParams = {
     lifecycle: SnsSwapLifecycle.Committed,
     rootCanisterId,
+    ledgerCanisterId,
     tokenMetadata: mockSnsToken,
   };
 
@@ -68,6 +70,8 @@ describe("SnsIncreaseStakeNeuronModal", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    resetSnsProjects();
+    icrcAccountsStore.reset();
     page.mock({
       routeId: AppPath.Neuron,
       data: { universe: rootCanisterId.toText() },
@@ -77,10 +81,12 @@ describe("SnsIncreaseStakeNeuronModal", () => {
 
   describe("accounts and params are loaded", () => {
     beforeEach(() => {
-      snsAccountsStore.setAccounts({
-        rootCanisterId,
-        accounts: [mockSnsMainAccount],
-        certified: true,
+      icrcAccountsStore.set({
+        ledgerCanisterId,
+        accounts: {
+          accounts: [mockSnsMainAccount],
+          certified: true,
+        },
       });
     });
 

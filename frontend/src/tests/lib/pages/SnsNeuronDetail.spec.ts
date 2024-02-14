@@ -1,3 +1,4 @@
+import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { increaseStakeNeuron } from "$lib/api/sns.api";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -8,7 +9,7 @@ import {
 import { pageStore } from "$lib/derived/page.derived";
 import SnsNeuronDetail from "$lib/pages/SnsNeuronDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
-import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
@@ -70,7 +71,7 @@ describe("SnsNeuronDetail", () => {
     snsFunctionsStore.reset();
     snsParametersStore.reset();
     snsNeuronsStore.reset();
-    snsAccountsStore.reset();
+    icrcAccountsStore.reset();
     setSnsProjects([
       {
         projectName,
@@ -79,10 +80,9 @@ describe("SnsNeuronDetail", () => {
       },
     ]);
 
-    fakeSnsLedgerApi.setBalanceFor({
-      rootCanisterId,
-      balanceUlps: mockSnsMainAccount.balanceUlps,
-    });
+    vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
+      mockSnsMainAccount.balanceUlps
+    );
 
     page.mock({
       data: { universe: rootCanisterId.toText() },

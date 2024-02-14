@@ -1,7 +1,7 @@
 import { disburseMaturity } from "$lib/api/sns-governance.api";
 import SnsDisburseMaturityModal from "$lib/modals/sns/neurons/SnsDisburseMaturityModal.svelte";
 import { authStore } from "$lib/stores/auth.store";
-import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
@@ -24,6 +24,7 @@ vi.mock("$lib/api/sns-governance.api");
 describe("SnsDisburseMaturityModal", () => {
   const reloadNeuron = vi.fn();
   const rootCanisterId = mockPrincipal;
+  const ledgerCanisterId = principal(2);
 
   const renderSnsDisburseMaturityModal = async (
     neuron: SnsNeuron = mockSnsNeuron
@@ -43,18 +44,22 @@ describe("SnsDisburseMaturityModal", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     resetSnsProjects();
+    icrcAccountsStore.reset();
 
     authStore.setForTesting(mockIdentity);
     setSnsProjects([
       {
         rootCanisterId,
+        ledgerCanisterId,
         tokenMetadata: mockSnsToken,
       },
     ]);
-    snsAccountsStore.setAccounts({
-      rootCanisterId,
-      accounts: [mockSnsMainAccount],
-      certified: true,
+    icrcAccountsStore.set({
+      ledgerCanisterId,
+      accounts: {
+        accounts: [mockSnsMainAccount],
+        certified: true,
+      },
     });
   });
 

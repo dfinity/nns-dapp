@@ -6,8 +6,6 @@ import {
 import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
 import {
   mockMainAccount,
@@ -17,9 +15,16 @@ import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { get } from "svelte/store";
 
 describe("universes-accounts", () => {
+  beforeEach(() => {
+    resetSnsProjects();
+    icrcAccountsStore.reset();
+  });
+
   it("should derive Nns accounts", () => {
     icpAccountsStore.setForTesting({
       main: mockMainAccount,
@@ -35,14 +40,24 @@ describe("universes-accounts", () => {
   });
 
   it("should derive Sns accounts", () => {
-    snsAccountsStore.setAccounts({
-      rootCanisterId: mockPrincipal,
-      accounts: [mockSnsMainAccount, mockSnsSubAccount],
-      certified: true,
+    const rootCanisterId = principal(1);
+    const ledgerCanisterId = principal(2);
+    setSnsProjects([
+      {
+        rootCanisterId,
+        ledgerCanisterId,
+      },
+    ]);
+    icrcAccountsStore.set({
+      ledgerCanisterId,
+      accounts: {
+        accounts: [mockSnsMainAccount, mockSnsSubAccount],
+        certified: true,
+      },
     });
 
     const store = get(universesAccountsStore);
-    expect(store[mockPrincipal.toText()]).toEqual([
+    expect(store[rootCanisterId.toText()]).toEqual([
       mockSnsMainAccount,
       mockSnsSubAccount,
     ]);
@@ -70,10 +85,20 @@ describe("universes-accounts", () => {
       hardwareWallets: [],
     });
 
-    snsAccountsStore.setAccounts({
-      rootCanisterId: mockPrincipal,
-      accounts: [mockSnsMainAccount, mockSnsSubAccount],
-      certified: true,
+    const rootCanisterId = principal(1);
+    const snsLedgerCanisterId = principal(2);
+    setSnsProjects([
+      {
+        rootCanisterId,
+        ledgerCanisterId: snsLedgerCanisterId,
+      },
+    ]);
+    icrcAccountsStore.set({
+      ledgerCanisterId: snsLedgerCanisterId,
+      accounts: {
+        accounts: [mockSnsMainAccount, mockSnsSubAccount],
+        certified: true,
+      },
     });
 
     icrcAccountsStore.set({
@@ -87,7 +112,7 @@ describe("universes-accounts", () => {
     const store = get(universesAccountsStore);
     expect(store).toEqual({
       [OWN_CANISTER_ID_TEXT]: [mockMainAccount, mockSubAccount],
-      [mockPrincipal.toText()]: [mockSnsMainAccount, mockSnsSubAccount],
+      [rootCanisterId.toText()]: [mockSnsMainAccount, mockSnsSubAccount],
       [CKBTC_UNIVERSE_CANISTER_ID.toText()]: [mockCkBTCMainAccount],
     });
   });
