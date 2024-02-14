@@ -23,7 +23,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Refactor tokens store usage.
-* Store SNS accounts in icrcAccountsStore.
+* Store SNS accounts in `icrcAccountsStore`.
 
 #### Deprecated
 
