@@ -1,5 +1,6 @@
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { StakeNeuronToVotePo } from "$tests/page-objects/StakeNeuronToVote.page-object";
+import { VotingConfirmationToolbarPo } from "$tests/page-objects/VotingConfirmationToolbar.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -12,6 +13,14 @@ export class VotingCardPo extends BasePageObject {
 
   static under(element: PageObjectElement): VotingCardPo {
     return new VotingCardPo(element.byTestId(VotingCardPo.TID));
+  }
+
+  getConfirmationToolbar(): VotingConfirmationToolbarPo {
+    return VotingConfirmationToolbarPo.under(this.root);
+  }
+
+  hasVotingToolbar(): Promise<boolean> {
+    return this.getConfirmationToolbar().isPresent();
   }
 
   getVotableNeurons(): PageObjectElement {
