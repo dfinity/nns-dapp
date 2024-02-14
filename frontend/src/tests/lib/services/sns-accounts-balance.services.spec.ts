@@ -6,10 +6,7 @@ import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
-import {
-  mockSnsSummaryList,
-  mockSnsToken,
-} from "$tests/mocks/sns-projects.mock";
+import { mockSnsSummaryList } from "$tests/mocks/sns-projects.mock";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 
@@ -38,10 +35,6 @@ describe("sns-accounts-balance.services", () => {
   };
 
   it("should call api.querySnsBalance and load balance in store", async () => {
-    vi.spyOn(ledgerApi, "getSnsToken").mockImplementation(() =>
-      Promise.resolve(mockSnsToken)
-    );
-
     const spyQuery = vi
       .spyOn(ledgerApi, "querySnsBalance")
       .mockResolvedValue(mockSnsMainAccount.balanceUlps);

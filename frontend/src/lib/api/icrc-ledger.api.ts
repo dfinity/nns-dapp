@@ -7,7 +7,6 @@ import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
 import type { Agent, Identity } from "@dfinity/agent";
-import type { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
 import {
   IcrcLedgerCanister,
   type IcrcAccount,
@@ -15,34 +14,12 @@ import {
   type TransferParams,
 } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
-import type { QueryParams } from "@dfinity/utils";
 import {
   arrayOfNumberToUint8Array,
   isNullish,
   nonNullish,
   toNullable,
 } from "@dfinity/utils";
-
-/**
- * @deprecated use queryIcrcToken
- */
-export const getIcrcToken = async ({
-  certified,
-  getMetadata,
-}: {
-  certified: boolean;
-  getMetadata: (params: QueryParams) => Promise<IcrcTokenMetadataResponse>;
-}): Promise<IcrcTokenMetadata> => {
-  const metadata = await getMetadata({ certified });
-
-  const token = mapOptionalToken(metadata);
-
-  if (isNullish(token)) {
-    throw new LedgerErrorKey("error.icrc_token_load");
-  }
-
-  return token;
-};
 
 /**
  * Similar to `getIcrcToken` but it expects the canister id instead of the function that queries the metada.

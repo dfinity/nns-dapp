@@ -9,7 +9,6 @@ import {
   createMockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
-import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { SnsNeuronsPo } from "$tests/page-objects/SnsNeurons.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -62,7 +61,6 @@ describe("SnsNeurons", () => {
     vi.spyOn(ledgerApi, "querySnsBalance").mockResolvedValue(
       mockSnsMainAccount.balanceUlps
     );
-    vi.spyOn(ledgerApi, "getSnsToken").mockResolvedValue(mockSnsToken);
     vi.spyOn(ledgerApi, "transactionFee").mockResolvedValue(10_000n);
     snsParametersStore.setParameters({
       rootCanisterId,

@@ -2,7 +2,6 @@ import * as agent from "$lib/api/agent.api";
 import {
   approveTransfer,
   executeIcrcTransfer,
-  getIcrcToken,
   icrcTransfer,
   queryIcrcBalance,
   queryIcrcToken,
@@ -33,35 +32,6 @@ describe("icrc-ledger api", () => {
 
   afterEach(() => {
     vi.clearAllMocks();
-  });
-
-  describe("getIcrcToken", () => {
-    it("returns token metadata", async () => {
-      const metadataSpy = vi.fn().mockResolvedValue(mockQueryTokenResponse);
-
-      const token = await getIcrcToken({
-        certified: true,
-        getMetadata: metadataSpy,
-      });
-
-      expect(token).toEqual(mockSnsToken);
-
-      expect(metadataSpy).toBeCalled();
-    });
-
-    it("throws an error if no token", () => {
-      const metadataSpy = async () => {
-        throw new Error();
-      };
-
-      const call = () =>
-        getIcrcToken({
-          certified: true,
-          getMetadata: metadataSpy,
-        });
-
-      expect(call).rejects.toThrowError();
-    });
   });
 
   describe("execute transfer", () => {
