@@ -2,6 +2,7 @@ import {
   claimNeuron,
   getNeuronBalance,
   getSnsNeuron,
+  querySnsNeuron,
   refreshNeuron,
 } from "$lib/api/sns-governance.api";
 import { MAX_NEURONS_SUBACCOUNTS } from "$lib/constants/sns-neurons.constants";
@@ -19,7 +20,7 @@ import {
   type SnsNeuron,
   type SnsNeuronId,
 } from "@dfinity/sns";
-import { fromNullable } from "@dfinity/utils";
+import { fromNullable, isNullish } from "@dfinity/utils";
 
 const loadNeuron = async ({
   rootCanisterId,
@@ -130,19 +131,19 @@ const findNeuronBySubaccount =
  * A stateless SNS UI will perform the following operations every time it starts:
  * - It gets the list of neurons from the SNS Governance using list_neurons. This is done via an update call to confirm the correctness of the data.
  * - It calculates all its ns subaccounts and then checks their balances via query calls. This is where the ordering of ns subaccounts comes into play: the client just needs to check the ns subaccounts that are either already neuron accounts returned in 1. or have a balance different from 0.
- * - The SNS UI notifies the SNS Governance of all the neuron subaccounts that
+ * - The SNS UI notifies the SNS Governance of all the neuron subaccounts that the user has some permission and:
  *   - Have a balance different from 0 but the list of neurons doesn’t list them as neurons.
- *     - In this case, the client need to claim the neuron.
+ *     - In this case, the client needs to claim the neuron.
  *   - Have a balance different from the cached_neuron_stake_e8s returned by the SNS Governance
  *     - In this case, the client needs to refresh the neuron.
  *
  * SUMMARY:
  *
- * -------------------------------------------------
- * |              |  Balance 0     | Balance > 0   |
- * | found neuron |  check neuron stake vs balance |
- * | no neuron    |  stop checking | claim neuron  |
- * -------------------------------------------------
+ * -------------------------------------------------------------------
+ * |                                |  Balance 0     | Balance > 0   |
+ * | found neuron (with permission) |  check neuron stake vs balance |
+ * | no neuron                      |  stop checking | claim neuron  |
+ * -------------------------------------------------------------------
  *
  * @param {Object}
  * @param {Principal} params.rootCanisterId
@@ -185,9 +186,30 @@ const checkNeuronsSubaccounts = async ({
         certified: false,
         identity,
       });
-      const neuron = neurons.find(findNeuronBySubaccount(subaccount));
-      const neuronNotFound = neuron === undefined;
       const positiveBalance = currentBalance >= neuronMinimumStake;
+      let neuron = neurons.find(findNeuronBySubaccount(subaccount));
+      // At this point we don't know whether it's an unclaimed or transferred neuron.
+      if (isNullish(neuron) && positiveBalance) {
+        const neuronId: SnsNeuronId = { id: subaccount };
+        neuron = await querySnsNeuron({
+          identity,
+          rootCanisterId,
+          neuronId,
+          // No need to check with update call, worst case, a neuron will appear in the UI that shouldn't.
+          certified: false,
+        });
+      }
+      const identityPrincipal = identity.getPrincipal();
+      const hasUserSomePermission: boolean | undefined =
+        neuron?.permissions.some(({ principal }) => {
+          return principal[0]?.toText() === identityPrincipal.toText();
+        });
+      // Skip claiming or refreshing if the user has no permission.
+      // This might happen if the user staked the neuron in NNS Dapp and then transferred it.
+      if (hasUserSomePermission === false) {
+        continue;
+      }
+      const neuronNotFound = neuron === undefined;
       // Subaccount balance >= `neuron_minimum_stake_e8s` but no neuron found, claim it.
       if (positiveBalance && neuronNotFound) {
         await claimAndLoadNeuron({
@@ -225,6 +247,9 @@ const checkNeuronsSubaccounts = async ({
       console.error(error);
     }
   }
+  // Not all neurons that the user has some permission need to be creeted in NNS Dapp.
+  // Some of those neurons might need a refresh as well.
+  // That's done in another function, here we only return them.
   const unvisitedNeurons = neurons.filter(
     ({ id }) =>
       !visitedSubaccounts.has(
@@ -257,7 +282,7 @@ const checkNeurons = async ({
     if (neuronId !== undefined) {
       if (await neuronNeedsRefresh({ rootCanisterId, neuron, identity })) {
         await refreshNeuron({ rootCanisterId, identity, neuronId });
-        loadNeuron({
+        await loadNeuron({
           rootCanisterId,
           neuronId: neuronId,
           certified: true,
