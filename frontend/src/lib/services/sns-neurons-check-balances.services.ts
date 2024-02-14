@@ -199,10 +199,9 @@ const checkNeuronsSubaccounts = async ({
           certified: false,
         });
       }
-      const identityPrincipal = identity.getPrincipal();
       const hasUserSomePermission: boolean | undefined =
         neuron?.permissions.some(({ principal }) => {
-          return principal[0]?.toText() === identityPrincipal.toText();
+          return principal[0]?.toText() === controller.toText();
         });
       // Skip claiming or refreshing if the user has no permission.
       // This might happen if the user staked the neuron in NNS Dapp and then transferred it.
