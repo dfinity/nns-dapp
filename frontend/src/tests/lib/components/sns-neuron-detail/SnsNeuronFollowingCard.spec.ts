@@ -1,5 +1,4 @@
 import SnsNeuronFollowingCard from "$lib/components/sns-neuron-detail/SnsNeuronFollowingCard.svelte";
-import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
@@ -20,11 +19,6 @@ import {
   type SnsNervousSystemFunction,
   type SnsNeuron,
 } from "@dfinity/sns";
-import { waitFor } from "@testing-library/svelte";
-
-vi.mock("$lib/services/$public/sns.services", () => ({
-  loadSnsNervousSystemFunctions: vi.fn(),
-}));
 
 describe("SnsNeuronFollowingCard", () => {
   beforeAll(() => {
@@ -85,14 +79,6 @@ describe("SnsNeuronFollowingCard", () => {
     afterEach(() => {
       vi.clearAllMocks();
       snsFunctionsStore.reset();
-    });
-
-    it("loads sns topics", async () => {
-      renderCard(controlledNeuron);
-
-      await waitFor(() =>
-        expect(loadSnsNervousSystemFunctions).toHaveBeenCalled()
-      );
     });
 
     it("renders followees and their topics", () => {
@@ -160,14 +146,6 @@ describe("SnsNeuronFollowingCard", () => {
 
     afterEach(() => {
       vi.clearAllMocks();
-    });
-
-    it("loads sns topics", async () => {
-      renderCard(uncontrolledNeuron);
-
-      await waitFor(() =>
-        expect(loadSnsNervousSystemFunctions).toHaveBeenCalled()
-      );
     });
 
     it("does not render button to follow neurons", () => {

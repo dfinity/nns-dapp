@@ -7,12 +7,6 @@ import { mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { fireEvent, render } from "@testing-library/svelte";
 import SnsNeuronContextTest from "../SnsNeuronContextTest.svelte";
 
-vi.mock("$lib/services/$public/sns.services", () => {
-  return {
-    loadSnsNervousSystemFunctions: vi.fn(),
-  };
-});
-
 describe("FollowSnsNeuronsButton", () => {
   beforeAll(() => {
     vi.spyOn(snsTokenSymbolSelectedStore, "subscribe").mockImplementation(
