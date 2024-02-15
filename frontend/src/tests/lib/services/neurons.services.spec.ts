@@ -145,7 +145,6 @@ describe("neurons-services", () => {
   const spyAutoStakeMaturity = vi.spyOn(api, "autoStakeMaturity");
   const spyLeaveCommunityFund = vi.spyOn(api, "leaveCommunityFund");
   const spyDisburse = vi.spyOn(api, "disburse");
-  const spyMergeMaturity = vi.spyOn(api, "mergeMaturity");
   const spyStakeMaturity = vi.spyOn(api, "stakeMaturity");
   const spySpawnNeuron = vi.spyOn(api, "spawnNeuron");
   const spyMergeNeurons = vi.spyOn(api, "mergeNeurons");
@@ -180,7 +179,6 @@ describe("neurons-services", () => {
     spyAutoStakeMaturity.mockResolvedValue();
     spyLeaveCommunityFund.mockResolvedValue();
     spyDisburse.mockResolvedValue();
-    spyMergeMaturity.mockResolvedValue();
     spyStakeMaturity.mockResolvedValue();
     spySpawnNeuron.mockImplementation(() =>
       Promise.resolve(newSpawnedNeuronId)
