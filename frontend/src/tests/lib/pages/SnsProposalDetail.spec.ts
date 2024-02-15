@@ -10,7 +10,7 @@ import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { page } from "$mocks/$app/stores";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
-import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import {
@@ -358,7 +358,7 @@ describe("SnsProposalDetail", () => {
     beforeEach(() => {
       vi.clearAllMocks();
 
-      authStore.setForTesting(mockIdentity);
+      resetIdentity();
       page.mock({ data: { universe: rootCanisterId.toText() } });
       setSnsProjects([
         {
@@ -371,7 +371,6 @@ describe("SnsProposalDetail", () => {
 
     // This test is related to the fix: https://github.com/dfinity/nns-dapp/pull/4420
     it("should reload sns proposal despite it's presence in the store to have user ballots", async () => {
-      const proposalCreatedTimestamp = 33333n;
       const proposal = createSnsProposal({
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
         rewardStatus:
@@ -394,7 +393,8 @@ describe("SnsProposalDetail", () => {
         rootCanisterId,
         id: mockSnsNeuron.id,
         // The neuron must have creation timestamp before the proposal
-        created_timestamp_seconds: proposalCreatedTimestamp - 100n,
+        created_timestamp_seconds:
+          proposal.proposal_creation_timestamp_seconds - 100n,
         permissions: [
           {
             principal: [mockIdentity.getPrincipal()],
@@ -409,7 +409,6 @@ describe("SnsProposalDetail", () => {
         identity: mockIdentity,
         rootCanisterId,
         ...proposal,
-        proposal_creation_timestamp_seconds: proposalCreatedTimestamp,
         ballots: [
           [
             getSnsNeuronIdAsHexString(mockSnsNeuron),
