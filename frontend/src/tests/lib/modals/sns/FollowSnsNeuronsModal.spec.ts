@@ -67,11 +67,13 @@ describe("FollowSnsNeuronsModal", () => {
       ...nervousSystemFunctionMock,
       id: 2n,
     };
-    snsFunctionsStore.setProjectFunctions({
-      rootCanisterId,
-      nsFunctions: [function0, function1, function2],
-      certified: true,
-    });
+    snsFunctionsStore.setProjectsFunctions([
+      {
+        rootCanisterId,
+        nsFunctions: [function0, function1, function2],
+        certified: true,
+      },
+    ]);
 
     const po = renderComponent({});
     expect(await po.getFollowTopicSectionPo(function0.id).isPresent()).toBe(

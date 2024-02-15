@@ -83,11 +83,13 @@ describe("SnsNeuronFollowingCard", () => {
 
     it("renders followees and their topics", () => {
       // Use same rootCanisterId as in `renderSelectedSnsNeuronContext`
-      snsFunctionsStore.setProjectFunctions({
-        rootCanisterId: rootCanisterIdMock,
-        nsFunctions: [function0, function1, function2],
-        certified: true,
-      });
+      snsFunctionsStore.setProjectsFunctions([
+        {
+          rootCanisterId: rootCanisterIdMock,
+          nsFunctions: [function0, function1, function2],
+          certified: true,
+        },
+      ]);
       const { getAllByText } = renderCard(neuronWithFollowees);
 
       [followee1, followee2].forEach((followee) => {
