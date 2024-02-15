@@ -4,7 +4,6 @@ import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { IS_TESTNET } from "$lib/constants/environment.constants";
 import {
   CANDID_PARSER_VERSION,
-  MIN_VERSION_STAKE_MATURITY_WORKAROUND,
   SNS_SUPPORT_VERSION,
 } from "$lib/constants/ledger-app.constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
@@ -646,39 +645,6 @@ export const disburse = async ({
       loadBalance({ accountIdentifier: toAccountId }),
       listNeurons(),
     ]);
-
-    return { success: true };
-  } catch (err) {
-    toastsShow(mapNeuronErrorToToastMessage(err));
-
-    return { success: false };
-  }
-};
-
-// TODO: Remove as soon as Stake Maturity is proven for Hardware Wallets
-export const mergeMaturity = async ({
-  neuronId,
-  percentageToMerge,
-}: {
-  neuronId: NeuronId;
-  percentageToMerge: number;
-}): Promise<{ success: boolean }> => {
-  try {
-    const identity: Identity =
-      await getIdentityOfControllerByNeuronId(neuronId);
-
-    await assertLedgerVersion({
-      identity,
-      minVersion: MIN_VERSION_STAKE_MATURITY_WORKAROUND,
-    });
-
-    await governanceApiService.mergeMaturity({
-      neuronId,
-      percentageToMerge,
-      identity,
-    });
-
-    await getAndLoadNeuron(neuronId);
 
     return { success: true };
   } catch (err) {
