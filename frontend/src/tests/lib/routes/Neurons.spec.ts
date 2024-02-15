@@ -9,7 +9,6 @@ import { page } from "$mocks/$app/stores";
 import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
 import * as fakeSnsAggregatorApi from "$tests/fakes/sns-aggregator-api.fake";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
-import * as fakeSnsLedgerApi from "$tests/fakes/sns-ledger-api.fake";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { NeuronsPo } from "$tests/page-objects/Neurons.page-object";
@@ -40,7 +39,6 @@ describe("Neurons", () => {
 
   fakeGovernanceApi.install();
   fakeSnsGovernanceApi.install();
-  fakeSnsLedgerApi.install();
   fakeSnsAggregatorApi.install();
 
   let testCommittedSnsNeuron;

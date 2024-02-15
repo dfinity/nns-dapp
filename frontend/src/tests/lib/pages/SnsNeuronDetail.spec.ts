@@ -22,7 +22,6 @@ import { numberToE8s } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import * as fakeSnsApi from "$tests/fakes/sns-api.fake";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
-import * as fakeSnsLedgerApi from "$tests/fakes/sns-ledger-api.fake";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
@@ -49,7 +48,6 @@ vi.mock("$lib/api/sns-ledger.api");
 
 describe("SnsNeuronDetail", () => {
   fakeSnsGovernanceApi.install();
-  fakeSnsLedgerApi.install();
   fakeSnsApi.install();
 
   const rootCanisterId = rootCanisterIdMock;
