@@ -354,7 +354,7 @@ describe("SnsProposalDetail", () => {
     });
   });
 
-  describe("when not full proposal (proposalList) from the store is used on proposal detail page", () => {
+  describe("An issue when the proposal w/o ballots from the store (from `proposalList` response) is used on proposal detail page", () => {
     beforeEach(() => {
       vi.clearAllMocks();
 
