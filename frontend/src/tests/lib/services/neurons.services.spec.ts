@@ -662,54 +662,6 @@ describe("neurons-services", () => {
     });
   });
 
-  describe("mergeMaturity", () => {
-    it("should merge maturity of the neuron", async () => {
-      neuronsStore.pushNeurons({ neurons, certified: true });
-      expect(spyMergeMaturity).not.toBeCalled();
-      const { success } = await services.mergeMaturity({
-        neuronId: controlledNeuron.neuronId,
-        percentageToMerge: 50,
-      });
-
-      expect(spyMergeMaturity).toBeCalledWith({
-        identity: mockIdentity,
-        neuronId: controlledNeuron.neuronId,
-        percentageToMerge: 50,
-      });
-      expect(spyMergeMaturity).toBeCalledTimes(1);
-      expect(success).toBe(true);
-    });
-
-    it("should not merge maturity if no identity", async () => {
-      setNoIdentity();
-
-      const { success } = await services.mergeMaturity({
-        neuronId: controlledNeuron.neuronId,
-        percentageToMerge: 50,
-      });
-
-      expectToastError(en.error.missing_identity);
-      expect(spyMergeMaturity).not.toBeCalled();
-      expect(success).toBe(false);
-    });
-
-    it("should not merge maturity if not controlled by user", async () => {
-      neuronsStore.pushNeurons({
-        neurons: [notControlledNeuron],
-        certified: true,
-      });
-
-      const { success } = await services.mergeMaturity({
-        neuronId: notControlledNeuron.neuronId,
-        percentageToMerge: 50,
-      });
-
-      expectToastError(en.error.not_authorized_neuron_action);
-      expect(spyMergeMaturity).not.toBeCalled();
-      expect(success).toBe(false);
-    });
-  });
-
   describe("stakeMaturity", () => {
     it("should stake maturity of the neuron", async () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
