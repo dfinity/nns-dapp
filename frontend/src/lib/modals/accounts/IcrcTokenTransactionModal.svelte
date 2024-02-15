@@ -16,6 +16,7 @@
 
   export let selectedAccount: Account | undefined = undefined;
   export let ledgerCanisterId: Principal;
+  export let universeId: Principal;
   export let token: Token;
   export let transactionFee: TokenAmountV2;
   export let reloadSourceAccount: (() => void) | undefined = undefined;
@@ -63,7 +64,7 @@
 
 <TransactionModal
   testId="icrc-token-transaction-modal-component"
-  rootCanisterId={ledgerCanisterId}
+  rootCanisterId={universeId}
   on:nnsSubmit={transfer}
   on:nnsClose
   bind:currentStep

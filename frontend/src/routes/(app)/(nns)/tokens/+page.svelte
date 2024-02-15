@@ -22,9 +22,7 @@
     isUniverseCkBTC,
     isUniverseNns,
   } from "$lib/utils/universe.utils";
-  import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
   import type { UserTokenData } from "$lib/types/tokens-page";
-  import { toTokenAmountV2 } from "$lib/utils/token.utils";
   import {
     icrcCanistersStore,
     type IcrcCanistersStoreData,
@@ -215,6 +213,7 @@
       ledgerCanisterId={$snsLedgerCanisterIdsStore[
         modal.data.universeId.toText()
       ]}
+      universeId={modal.data.universeId}
       token={modal.data.token}
       transactionFee={modal.data.fee}
     />
@@ -235,6 +234,7 @@
     <IcrcTokenTransactionModal
       on:nnsClose={closeModal}
       ledgerCanisterId={modal.data.universeId}
+      universeId={modal.data.universeId}
       token={modal.data.token}
       transactionFee={modal.data.fee}
     />
