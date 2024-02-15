@@ -218,9 +218,13 @@ describe("sns-neurons-services", () => {
         .mockImplementation(() => Promise.resolve(undefined));
       await syncSnsNeurons(mockPrincipal);
 
-      await tick();
-      const store = get(snsNeuronsStore);
-      expect(store[mockPrincipal.toText()]?.neurons).toHaveLength(1);
+      // Checking the neuron balances is done in the background.
+      // The `await` on `syncSnsNeurons` is not enough to wait for the balance check.
+      await waitFor(() =>
+        expect(
+          get(snsNeuronsStore)[mockPrincipal.toText()]?.neurons
+        ).toHaveLength(1)
+      );
       expect(spyQuery).toBeCalled();
       expect(spyNeuronBalance).toBeCalled();
       expect(spyRefreshNeuron).toBeCalled();
