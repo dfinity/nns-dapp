@@ -732,7 +732,6 @@
     "connecting_sale_canister": "Retrieving swap required information"
   },
   "sns_neuron_detail": {
-    "all_topics": "All topics",
     "vesting_period_tooltip": "This function is not available during your vesting period. Vesting will last another $remainingVesting",
     "community_fund_section": "Neurons' Fund",
     "community_fund_section_description": "You are not the controller of the SNS neurons below. To facilitate bootstrapping the SNS DAO governance, the NNS treasury has temporarily granted hotkey access to you for voting and following. <a href=\"https://internetcomputer.org/docs/current/tokenomics/nns/neurons-fund\" rel=\"noopener noreferrer\" aria-label=\"more info about neurons' fund\" target=\"_blank\">Learn more</a>.",
