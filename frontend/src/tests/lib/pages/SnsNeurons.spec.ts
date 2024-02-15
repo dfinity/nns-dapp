@@ -1,6 +1,5 @@
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
-import * as snsLedgerApi from "$lib/api/sns-ledger.api";
 import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { page } from "$mocks/$app/stores";
@@ -62,7 +61,6 @@ describe("SnsNeurons", () => {
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
       mockSnsMainAccount.balanceUlps
     );
-    vi.spyOn(snsLedgerApi, "transactionFee").mockResolvedValue(10_000n);
     snsParametersStore.setParameters({
       rootCanisterId,
       certified: true,

@@ -45,7 +45,7 @@ describe("sns-accounts-services", () => {
       vi.spyOn(console, "error").mockImplementation(() => undefined);
     });
 
-    it("should call api.querySnsBalance and load neurons in store", async () => {
+    it("should call api.queryIcrcBalance and load neurons in store", async () => {
       const spyQuery = vi
         .spyOn(ledgerApi, "queryIcrcBalance")
         .mockResolvedValue(mockSnsMainAccount.balanceUlps);
@@ -76,7 +76,7 @@ describe("sns-accounts-services", () => {
       spyQuery.mockClear();
     });
 
-    it("should call api.querySnsBalance with only the strategy passed", async () => {
+    it("should call api.queryIcrcBalance with only the strategy passed", async () => {
       const spyQuery = vi
         .spyOn(ledgerApi, "queryIcrcBalance")
         .mockResolvedValue(mockSnsMainAccount.balanceUlps);
