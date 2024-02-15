@@ -201,16 +201,20 @@ describe("sns-neurons-services", () => {
     });
 
     it("should refresh and refetch the neuron if balance doesn't match", async () => {
+      const updatedNeuron: SnsNeuron = {
+        ...neuron,
+        cached_neuron_stake_e8s: neuron.cached_neuron_stake_e8s + 100_000_000n,
+      };
       const spyQuery = vi
         .spyOn(governanceApi, "querySnsNeurons")
         .mockImplementation(() => Promise.resolve([neuron]));
       const spyNeuronQuery = vi
         .spyOn(governanceApi, "getSnsNeuron")
-        .mockImplementation(() => Promise.resolve(neuron));
+        .mockImplementation(() => Promise.resolve(updatedNeuron));
       const spyNeuronBalance = vi
         .spyOn(governanceApi, "getNeuronBalance")
         .mockImplementationOnce(() =>
-          Promise.resolve(mockSnsNeuron.cached_neuron_stake_e8s + 10_000n)
+          Promise.resolve(updatedNeuron.cached_neuron_stake_e8s)
         )
         .mockImplementation(() => Promise.resolve(0n));
       const spyRefreshNeuron = vi
@@ -221,9 +225,9 @@ describe("sns-neurons-services", () => {
       // Checking the neuron balances is done in the background.
       // The `await` on `syncSnsNeurons` is not enough to wait for the balance check.
       await waitFor(() =>
-        expect(
-          get(snsNeuronsStore)[mockPrincipal.toText()]?.neurons
-        ).toHaveLength(1)
+        expect(get(snsNeuronsStore)[mockPrincipal.toText()]?.neurons).toEqual([
+          updatedNeuron,
+        ])
       );
       expect(spyQuery).toBeCalled();
       expect(spyNeuronBalance).toBeCalled();

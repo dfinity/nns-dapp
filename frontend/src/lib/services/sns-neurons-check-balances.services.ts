@@ -266,7 +266,7 @@ const checkNeuronsSubaccounts = async ({
         const neuronId = fromNullable(neuron.id);
         if (neuronId !== undefined) {
           await refreshNeuron({ rootCanisterId, identity, neuronId });
-          loadNeuron({
+          await loadNeuron({
             rootCanisterId,
             neuronId: neuronId,
             certified: true,
