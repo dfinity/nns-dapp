@@ -40,6 +40,7 @@
   import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
   import type { Account } from "$lib/types/account";
   import IcrcReceiveModal from "$lib/modals/accounts/IcrcReceiveModal.svelte";
+  import { snsLedgerCanisterIdsStore } from "$lib/derived/sns/sns-canisters.derived";
 
   onMount(() => {
     loadCkBTCTokens();
@@ -209,11 +210,13 @@
   {/if}
 
   {#if modal?.type === "sns-send"}
-    <SnsTransactionModal
-      rootCanisterId={modal.data.universeId}
-      token={modal.data.token}
-      transactionFee={toTokenAmountV2(modal.data.fee)}
+    <IcrcTokenTransactionModal
       on:nnsClose={closeModal}
+      ledgerCanisterId={$snsLedgerCanisterIdsStore[
+        modal.data.universeId.toText()
+      ]}
+      token={modal.data.token}
+      transactionFee={modal.data.fee}
     />
   {/if}
 
