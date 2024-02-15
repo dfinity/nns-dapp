@@ -1,4 +1,7 @@
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import {
+  LEDGER_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
 import {
   CKBTC_LEDGER_CANISTER_ID,
   CKBTC_UNIVERSE_CANISTER_ID,
@@ -37,6 +40,10 @@ describe("universes-accounts", () => {
       mockMainAccount,
       mockSubAccount,
     ]);
+    expect(store[LEDGER_CANISTER_ID.toText()]).toEqual([
+      mockMainAccount,
+      mockSubAccount,
+    ]);
   });
 
   it("should derive Sns accounts", () => {
@@ -58,6 +65,10 @@ describe("universes-accounts", () => {
 
     const store = get(universesAccountsStore);
     expect(store[rootCanisterId.toText()]).toEqual([
+      mockSnsMainAccount,
+      mockSnsSubAccount,
+    ]);
+    expect(store[ledgerCanisterId.toText()]).toEqual([
       mockSnsMainAccount,
       mockSnsSubAccount,
     ]);
@@ -112,7 +123,9 @@ describe("universes-accounts", () => {
     const store = get(universesAccountsStore);
     expect(store).toEqual({
       [OWN_CANISTER_ID_TEXT]: [mockMainAccount, mockSubAccount],
+      [LEDGER_CANISTER_ID.toText()]: [mockMainAccount, mockSubAccount],
       [rootCanisterId.toText()]: [mockSnsMainAccount, mockSnsSubAccount],
+      [snsLedgerCanisterId.toText()]: [mockSnsMainAccount, mockSnsSubAccount],
       [CKBTC_UNIVERSE_CANISTER_ID.toText()]: [mockCkBTCMainAccount],
     });
   });

@@ -1,4 +1,7 @@
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import {
+  LEDGER_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
 import type { UniversesAccounts } from "$lib/derived/accounts-list.derived";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import { snsLedgerCanisterIdsStore } from "$lib/derived/sns/sns-canisters.derived";
@@ -10,6 +13,9 @@ import type { Account } from "$lib/types/account";
 import type { Principal } from "@dfinity/principal";
 import { derived, type Readable } from "svelte/store";
 
+/**
+ * Returns a record of accounts keyed by rootCanisterId and ledgerCanisterId.
+ */
 export const universesAccountsStore = derived<
   [Readable<Account[]>, Readable<Record<string, Principal>>, IcrcAccountsStore],
   UniversesAccounts
@@ -27,6 +33,7 @@ export const universesAccountsStore = derived<
 
     return {
       [OWN_CANISTER_ID_TEXT]: $nnsAccountsListStore,
+      [LEDGER_CANISTER_ID.toText()]: $nnsAccountsListStore,
       ...Object.entries($icrcAccountsStore).reduce(
         (acc, [ledgerCanisterId, { accounts }]) => {
           const universeId =
@@ -34,6 +41,7 @@ export const universesAccountsStore = derived<
           return {
             ...acc,
             [universeId]: accounts,
+            [ledgerCanisterId]: accounts,
           };
         },
         {}
