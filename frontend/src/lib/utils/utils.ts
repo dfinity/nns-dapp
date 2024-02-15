@@ -362,6 +362,22 @@ export const keyOfOptional = <T>({
   key: string | keyof T;
 }): T[keyof T] | undefined => obj?.[key as keyof T];
 
+// Transforms one Record<> into another Record<> by mapping the
+// entries with the provided function.
+// An entry can be filtered out by returning `undefined`.
+export const mapEntries = <V1, V2>({
+  obj,
+  mapFn,
+}: {
+  obj: Record<string, V1>;
+  mapFn: (entry: [string, V1]) => [string, V2] | undefined;
+}): Record<string, V2> =>
+  Object.fromEntries(
+    Object.entries(obj)
+      .map((entry) => mapFn(entry))
+      .filter((entry) => nonNullish(entry)) as Array<[string, V2]>
+  );
+
 /**
  * Returns whether an asset is PNG or not.
  *
