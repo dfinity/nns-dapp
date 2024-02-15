@@ -291,7 +291,9 @@ describe("Tokens route", () => {
 
           await tokensPagePo.clickSendOnRow("Tetris");
 
-          expect(await po.getSnsTransactionModalPo().isPresent()).toBe(true);
+          expect(await po.getIcrcTokenTransactionModal().isPresent()).toBe(
+            true
+          );
 
           expect(snsLedgerApi.snsTransfer).not.toBeCalled();
 
@@ -300,7 +302,7 @@ describe("Tokens route", () => {
           };
           const amount = 2;
 
-          await po.transferSnsTokens({
+          await po.transferIcrcTokens({
             amount,
             destinationAddress: encodeIcrcAccount(toAccount),
           });
