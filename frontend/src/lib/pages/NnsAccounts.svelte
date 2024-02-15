@@ -25,8 +25,7 @@
     cancelPollAccounts();
   });
 
-  // TODO: Remove default value when we remove the feature flag
-  export let userTokensData: UserToken[] = [];
+  export let userTokensData: UserToken[];
 
   const openAddAccountModal = () => {
     openAccountsModal({
