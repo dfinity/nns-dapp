@@ -133,7 +133,7 @@ const findNeuronBySubaccount = async ({
       identity: new AnonymousIdentity(),
       rootCanisterId,
       neuronId,
-      // No need to check with update call, worst case, a neuron will appear in the UI that shouldn't.
+      // No need to check with update call, worst case, a neuron will appear in the UI that shouldn't or an extra call to refressh will be made.
       certified: false,
     });
   }
@@ -284,7 +284,7 @@ const checkNeuronsSubaccounts = async ({
       console.error(error);
     }
   }
-  // Not all neurons that the user has some permission need to be creeted in NNS Dapp.
+  // Not all neurons that the user has some permission need to be created in NNS Dapp.
   // Some of those neurons might need a refresh as well.
   // That's done in another function, here we only return them.
   const unvisitedNeurons = neurons.filter(
