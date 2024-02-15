@@ -8,6 +8,7 @@ import {
 } from "$lib/derived/sns/sns-tokens.derived";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
+import { mapEntries } from "$lib/utils/utils";
 import { derived, type Readable } from "svelte/store";
 
 export const tokensByUniverseIdStore: Readable<
@@ -16,12 +17,10 @@ export const tokensByUniverseIdStore: Readable<
   [tokensStore, snsTokensByRootCanisterIdStore],
   ([$tokensStore, $snsTokensByRootCanisterIdStore]) => {
     return {
-      ...Object.fromEntries(
-        Object.entries($tokensStore).map(([universeId, tokenData]) => [
-          universeId,
-          tokenData.token,
-        ])
-      ),
+      ...mapEntries({
+        obj: $tokensStore,
+        mapFn: ([universeId, tokenData]) => [universeId, tokenData.token],
+      }),
       ...$snsTokensByRootCanisterIdStore,
     };
   }
@@ -33,13 +32,13 @@ export const tokensByLedgerCanisterIdStore: Readable<
   [tokensStore, snsTokensByLedgerCanisterIdStore],
   ([$tokensStore, $snsTokensByLedgerCanisterIdStore]) => {
     return {
-      ...Object.fromEntries(
-        Object.entries($tokensStore)
-          .filter(
-            ([universeId, _tokenData]) => universeId !== OWN_CANISTER_ID_TEXT
-          )
-          .map(([universeId, tokenData]) => [universeId, tokenData.token])
-      ),
+      ...mapEntries({
+        obj: $tokensStore,
+        mapFn: ([universeId, tokenData]) =>
+          universeId === OWN_CANISTER_ID_TEXT
+            ? undefined
+            : [universeId, tokenData.token],
+      }),
       ...$snsTokensByLedgerCanisterIdStore,
       [LEDGER_CANISTER_ID.toText()]: $tokensStore[OWN_CANISTER_ID_TEXT].token,
     };

@@ -10,6 +10,7 @@ import {
   isDefined,
   isHash,
   isPngAsset,
+  mapEntries,
   poll,
   removeKeys,
   sameBufferData,
@@ -801,6 +802,55 @@ describe("utils", () => {
         c: 3,
       };
       expect(removeKeys({ obj, keysToRemove: ["b", "d"] })).toEqual(expected);
+    });
+  });
+
+  describe("mapEntries", () => {
+    it("maps the values", () => {
+      const obj = {
+        a: 1,
+        b: 2,
+      };
+      const expected = {
+        a: 2,
+        b: 4,
+      };
+      expect(mapEntries({ obj, mapFn: ([k, v]) => [k, v * 2] })).toEqual(
+        expected
+      );
+    });
+
+    it("maps the keys", () => {
+      const obj = {
+        a: 1,
+        b: 2,
+      };
+      const expected = {
+        aX: 1,
+        bX: 2,
+      };
+      expect(mapEntries({ obj, mapFn: ([k, v]) => [k + "X", v] })).toEqual(
+        expected
+      );
+    });
+
+    it("filters undefined entries", () => {
+      const obj = {
+        a: 1,
+        b: 2,
+        c: 3,
+        d: 4,
+      };
+      const expected = {
+        a: 1,
+        c: 3,
+      };
+      expect(
+        mapEntries({
+          obj,
+          mapFn: ([k, v]) => (v % 2 === 0 ? undefined : [k, v]),
+        })
+      ).toEqual(expected);
     });
   });
 

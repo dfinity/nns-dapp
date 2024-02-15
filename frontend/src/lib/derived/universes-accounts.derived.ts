@@ -7,6 +7,7 @@ import {
   type IcrcAccountsStore,
 } from "$lib/stores/icrc-accounts.store";
 import type { Account } from "$lib/types/account";
+import { mapEntries } from "$lib/utils/utils";
 import type { Principal } from "@dfinity/principal";
 import { derived, type Readable } from "svelte/store";
 
@@ -16,28 +17,24 @@ export const universesAccountsStore = derived<
 >(
   [nnsAccountsListStore, snsLedgerCanisterIdsStore, icrcAccountsStore],
   ([$nnsAccountsListStore, $snsLedgerCanisterIdsStore, $icrcAccountsStore]) => {
-    const snsLedgerToRootCanisterId = Object.fromEntries(
-      Object.entries($snsLedgerCanisterIdsStore).map(
-        ([rootCanisterId, ledgerCanisterId]) => [
-          ledgerCanisterId.toText(),
-          rootCanisterId,
-        ]
-      )
-    );
+    const snsLedgerToRootCanisterId = mapEntries({
+      obj: $snsLedgerCanisterIdsStore,
+      mapFn: ([rootCanisterId, ledgerCanisterId]) => [
+        ledgerCanisterId.toText(),
+        rootCanisterId,
+      ],
+    });
 
     return {
       [OWN_CANISTER_ID_TEXT]: $nnsAccountsListStore,
-      ...Object.entries($icrcAccountsStore).reduce(
-        (acc, [ledgerCanisterId, { accounts }]) => {
+      ...mapEntries({
+        obj: $icrcAccountsStore,
+        mapFn: ([ledgerCanisterId, { accounts }]) => {
           const universeId =
             snsLedgerToRootCanisterId[ledgerCanisterId] ?? ledgerCanisterId;
-          return {
-            ...acc,
-            [universeId]: accounts,
-          };
+          return [universeId, accounts];
         },
-        {}
-      ),
+      }),
     };
   }
 );
