@@ -759,7 +759,6 @@ interface I18nSns_sale {
 }
 
 interface I18nSns_neuron_detail {
-  all_topics: string;
   vesting_period_tooltip: string;
   community_fund_section: string;
   community_fund_section_description: string;
