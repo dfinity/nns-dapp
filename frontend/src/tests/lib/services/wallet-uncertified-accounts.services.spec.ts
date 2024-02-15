@@ -48,8 +48,8 @@ describe("wallet-uncertified-accounts.services", () => {
     await services.uncertifiedLoadAccountsBalance(params);
 
     const store = get(universesAccountsBalance);
-    // Nns + ckBTC + ckTESTBTC
-    expect(Object.keys(store)).toHaveLength(3);
+    // 2 (ledger + root) Nns + ckBTC + ckTESTBTC
+    expect(Object.keys(store)).toHaveLength(4);
     expect(store[CKBTC_UNIVERSE_CANISTER_ID.toText()]).toEqual(
       mockCkBTCMainAccount.balanceUlps
     );

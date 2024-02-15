@@ -48,8 +48,8 @@ describe("sns-accounts-balance.services", () => {
     await tick();
 
     const store = get(universesAccountsBalance);
-    // Nns + 1 Sns
-    expect(Object.keys(store)).toHaveLength(2);
+    // 2 (ledger + root) Nns + 2 (ledger + root canister) x 1 Sns
+    expect(Object.keys(store)).toHaveLength(4);
     expect(store[rootCanisterId.toText()]).toEqual(
       mockSnsMainAccount.balanceUlps
     );
