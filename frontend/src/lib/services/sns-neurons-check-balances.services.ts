@@ -13,7 +13,7 @@ import {
   needsRefresh,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
-import type { Identity } from "@dfinity/agent";
+import { AnonymousIdentity, type Identity } from "@dfinity/agent";
 import type { Principal } from "@dfinity/principal";
 import {
   neuronSubaccount,
@@ -111,9 +111,56 @@ const claimAndLoadNeuron = async ({
   });
 };
 
-const findNeuronBySubaccount =
-  (subaccount: Uint8Array | number[]) => (neuron: SnsNeuron) =>
-    getSnsNeuronIdAsHexString(neuron) === subaccountToHexString(subaccount);
+const findNeuronBySubaccount = async ({
+  subaccount,
+  neurons,
+  rootCanisterId,
+  positiveBalance,
+}: {
+  subaccount: Uint8Array | number[];
+  neurons: SnsNeuron[];
+  rootCanisterId: Principal;
+  positiveBalance: boolean;
+}): Promise<SnsNeuron | undefined> => {
+  let maybeNeuron = neurons.find(
+    (neuron) =>
+      getSnsNeuronIdAsHexString(neuron) === subaccountToHexString(subaccount)
+  );
+  // At this point we don't know whether it's an unclaimed or transferred neuron.
+  if (isNullish(maybeNeuron) && positiveBalance) {
+    const neuronId: SnsNeuronId = { id: subaccount };
+    maybeNeuron = await querySnsNeuron({
+      identity: new AnonymousIdentity(),
+      rootCanisterId,
+      neuronId,
+      // No need to check with update call, worst case, a neuron will appear in the UI that shouldn't.
+      certified: false,
+    });
+  }
+  return maybeNeuron;
+};
+
+/**
+ * Returns true only of neuron is present and the user has no permissions.
+ *
+ * If there is no neuron, it returns false.
+ * If the user has any permission, it returns false.
+ */
+const userHasNoPermissions = ({
+  neuron,
+  controller,
+}: {
+  neuron: SnsNeuron | undefined;
+  controller: Principal;
+}): boolean =>
+  isNullish(neuron)
+    ? false
+    : !neuron.permissions.some(({ principal, permission_type }) => {
+        return (
+          principal[0]?.toText() === controller.toText() &&
+          permission_type.length > 0
+        );
+      });
 
 /**
  * Checks subaccounts of identity in order to find neurons that need to be refreshed or claimed.
@@ -187,25 +234,16 @@ const checkNeuronsSubaccounts = async ({
         identity,
       });
       const positiveBalance = currentBalance >= neuronMinimumStake;
-      let neuron = neurons.find(findNeuronBySubaccount(subaccount));
       // At this point we don't know whether it's an unclaimed or transferred neuron.
-      if (isNullish(neuron) && positiveBalance) {
-        const neuronId: SnsNeuronId = { id: subaccount };
-        neuron = await querySnsNeuron({
-          identity,
-          rootCanisterId,
-          neuronId,
-          // No need to check with update call, worst case, a neuron will appear in the UI that shouldn't.
-          certified: false,
-        });
-      }
-      const hasUserSomePermission: boolean | undefined =
-        neuron?.permissions.some(({ principal }) => {
-          return principal[0]?.toText() === controller.toText();
-        });
+      const neuron = await findNeuronBySubaccount({
+        subaccount,
+        neurons,
+        rootCanisterId,
+        positiveBalance,
+      });
       // Skip claiming or refreshing if the user has no permission.
       // This might happen if the user staked the neuron in NNS Dapp and then transferred it.
-      if (hasUserSomePermission === false) {
+      if (userHasNoPermissions({ neuron, controller })) {
         continue;
       }
       const neuronNotFound = neuron === undefined;
