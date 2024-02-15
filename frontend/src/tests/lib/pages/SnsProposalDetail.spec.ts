@@ -6,6 +6,7 @@ import SnsProposalDetail from "$lib/pages/SnsProposalDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
+import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { page } from "$mocks/$app/stores";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
@@ -350,6 +351,94 @@ describe("SnsProposalDetail", () => {
 
       // await waitFor(async () => expect(await po.hasVotingToolbar()).toBe(true));
       expect(await po.hasVotingToolbar()).toBe(true);
+    });
+  });
+
+  describe("when not full proposal (proposalList) from the store is used on proposal detail page", () => {
+    beforeEach(() => {
+      vi.clearAllMocks();
+
+      authStore.setForTesting(mockIdentity);
+      page.mock({ data: { universe: rootCanisterId.toText() } });
+      setSnsProjects([
+        {
+          rootCanisterId,
+          lifecycle: SnsSwapLifecycle.Committed,
+        },
+      ]);
+      snsProposalsStore.reset();
+    });
+
+    // This test is related to the fix: https://github.com/dfinity/nns-dapp/pull/4420
+    it("should reload sns proposal despite it's presence in the store to have user ballots", async () => {
+      const proposalCreatedTimestamp = 33333n;
+      const proposal = createSnsProposal({
+        status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+        rewardStatus:
+          SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
+        proposalId: proposalId.id,
+        ballots: [
+          // this is a proposal from `proposalList` response, that contains no user ballots
+        ],
+      });
+
+      snsProposalsStore.setProposals({
+        rootCanisterId,
+        proposals: [proposal],
+        certified: true,
+        completed: true,
+      });
+
+      fakeSnsGovernanceApi.addNeuronWith({
+        identity: mockIdentity,
+        rootCanisterId,
+        id: mockSnsNeuron.id,
+        // The neuron must have creation timestamp before the proposal
+        created_timestamp_seconds: proposalCreatedTimestamp - 100n,
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: Int32Array.from([
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+            ]),
+          },
+        ],
+      });
+
+      fakeSnsGovernanceApi.addProposalWith({
+        identity: mockIdentity,
+        rootCanisterId,
+        ...proposal,
+        proposal_creation_timestamp_seconds: proposalCreatedTimestamp,
+        ballots: [
+          [
+            getSnsNeuronIdAsHexString(mockSnsNeuron),
+            {
+              vote: SnsVote.Unspecified,
+              voting_power: 100_000_000n,
+              cast_timestamp_seconds: 0n,
+            },
+          ],
+        ],
+      });
+
+      const { container } = render(SnsProposalDetail, {
+        props: {
+          proposalIdText: proposalId.id.toString(),
+        },
+      });
+      const po = SnsProposalDetailPo.under(
+        new JestPageObjectElement(container)
+      );
+
+      await runResolvedPromises();
+
+      const votingCardPo = await po
+        .getSnsProposalVotingSectionPo()
+        .getVotingCardPo();
+      expect(await votingCardPo.isPresent()).toBe(true);
+      expect(await votingCardPo.getVotableNeurons().isPresent()).toBe(true);
+      expect(await votingCardPo.getIneligibleNeurons().isPresent()).toBe(false);
     });
   });
 });
