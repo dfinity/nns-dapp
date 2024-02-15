@@ -1,6 +1,5 @@
 import * as ckBTCMinterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
-import * as snsLedgerApi from "$lib/api/sns-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
@@ -135,7 +134,6 @@ describe("Tokens route", () => {
           return balancesMap[canisterId.toText()];
         }
       );
-      vi.spyOn(snsLedgerApi, "snsTransfer").mockResolvedValue(undefined);
       vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(1234n);
       vi.spyOn(ckBTCMinterApi, "updateBalance").mockRejectedValue(
         noPendingUtxos
@@ -291,23 +289,25 @@ describe("Tokens route", () => {
 
           await tokensPagePo.clickSendOnRow("Tetris");
 
-          expect(await po.getSnsTransactionModalPo().isPresent()).toBe(true);
+          expect(await po.getIcrcTokenTransactionModal().isPresent()).toBe(
+            true
+          );
 
-          expect(snsLedgerApi.snsTransfer).not.toBeCalled();
+          expect(icrcLedgerApi.icrcTransfer).not.toBeCalled();
 
           const toAccount: IcrcAccount = {
             owner: principal(1),
           };
           const amount = 2;
 
-          await po.transferSnsTokens({
+          await po.transferIcrcTokens({
             amount,
             destinationAddress: encodeIcrcAccount(toAccount),
           });
 
-          expect(snsLedgerApi.snsTransfer).toBeCalledTimes(1);
-          expect(snsLedgerApi.snsTransfer).toBeCalledWith({
-            rootCanisterId: rootCanisterIdTetris,
+          expect(icrcLedgerApi.icrcTransfer).toBeCalledTimes(1);
+          expect(icrcLedgerApi.icrcTransfer).toBeCalledWith({
+            canisterId: ledgerCanisterIdTetris,
             fee: tetrisToken.fee,
             to: toAccount,
             amount: numberToUlps({ amount, token: tetrisToken }),

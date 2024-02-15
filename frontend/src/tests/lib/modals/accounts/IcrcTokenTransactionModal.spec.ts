@@ -42,6 +42,7 @@ describe("IcrcTokenTransactionModal", () => {
       component: IcrcTokenTransactionModal,
       props: {
         ledgerCanisterId,
+        universeId: ledgerCanisterId,
         token,
         transactionFee,
       },
