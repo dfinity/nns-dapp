@@ -1,5 +1,5 @@
+import type { SnsProposalData } from "$lib/types/sns-proposal";
 import type { Principal } from "@dfinity/principal";
-import type { SnsProposalData } from "@dfinity/sns";
 import { writable, type Readable } from "svelte/store";
 
 export interface VotingSnsProposalsStoreData {

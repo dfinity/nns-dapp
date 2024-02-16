@@ -2,7 +2,6 @@
   import type {
     SnsNervousSystemParameters,
     SnsNeuron,
-    SnsProposalData,
     SnsVote,
   } from "@dfinity/sns";
   import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
@@ -36,6 +35,11 @@
   import { ineligibleSnsNeurons } from "$lib/utils/sns-neuron.utils";
   import { authStore } from "$lib/stores/auth.store";
   import VotingCard from "$lib/components/proposal-detail/VotingCard/VotingCard.svelte";
+  import type {
+    SnsProposalData,
+    SnsProposalDataWithBallots,
+  } from "$lib/types/sns-proposal";
+  import { isSnsProposalDataWithBallots } from "$lib/types/sns-proposal";
 
   export let proposal: SnsProposalData;
   export let reloadProposal: () => Promise<void>;
@@ -59,13 +63,14 @@
   }
 
   let votableNeurons: SnsNeuron[];
-  $: votableNeurons = nonNullish($authStore.identity)
-    ? votableSnsNeurons({
-        proposal,
-        neurons: $snsSortedNeuronStore,
-        identity: $authStore.identity,
-      })
-    : [];
+  $: votableNeurons =
+    nonNullish($authStore.identity) && isSnsProposalDataWithBallots(proposal)
+      ? votableSnsNeurons({
+          proposal,
+          neurons: $snsSortedNeuronStore,
+          identity: $authStore.identity,
+        })
+      : [];
 
   let visible = false;
   $: $snsOnlyProjectStore,
@@ -123,7 +128,10 @@
   };
 
   let neuronsVotedForProposal: CompactNeuronInfo[] = [];
-  $: if ($snsSortedNeuronStore.length > 0) {
+  $: if (
+    $snsSortedNeuronStore.length > 0 &&
+    isSnsProposalDataWithBallots(proposal)
+  ) {
     neuronsVotedForProposal = votedSnsNeuronDetails({
       neurons: $snsSortedNeuronStore,
       proposal,
@@ -132,17 +140,18 @@
 
   // ineligible neurons data
   let ineligibleNeurons: IneligibleNeuronData[];
-  $: ineligibleNeurons = nonNullish($authStore.identity)
-    ? snsNeuronsToIneligibleNeuronData({
-        neurons: ineligibleSnsNeurons({
-          neurons: $snsSortedNeuronStore,
+  $: ineligibleNeurons =
+    nonNullish($authStore.identity) && isSnsProposalDataWithBallots(proposal)
+      ? snsNeuronsToIneligibleNeuronData({
+          neurons: ineligibleSnsNeurons({
+            neurons: $snsSortedNeuronStore,
+            proposal,
+            identity: $authStore.identity,
+          }),
           proposal,
           identity: $authStore.identity,
-        }),
-        proposal,
-        identity: $authStore.identity,
-      })
-    : [];
+        })
+      : [];
   let minSnsDissolveDelaySeconds: bigint;
   $: minSnsDissolveDelaySeconds =
     snsParameters === undefined

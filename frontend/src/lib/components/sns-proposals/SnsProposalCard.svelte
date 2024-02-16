@@ -9,11 +9,11 @@
   import type {
     SnsNervousSystemFunction,
     SnsNeuronId,
-    SnsProposalData,
     SnsProposalId,
   } from "@dfinity/sns";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import type { UniversalProposalStatus } from "$lib/types/proposals";
+  import type { SnsProposalData } from "$lib/types/sns-proposal";
 
   export let proposalData: SnsProposalData;
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;

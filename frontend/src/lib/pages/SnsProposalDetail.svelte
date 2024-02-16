@@ -3,7 +3,7 @@
   import { buildProposalsUrl } from "$lib/utils/navigation.utils";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { getSnsProposalById } from "$lib/services/$public/sns-proposals.services";
-  import type { SnsProposalData, SnsProposalId } from "@dfinity/sns";
+  import type { SnsProposalId } from "@dfinity/sns";
   import { toastsError } from "$lib/stores/toasts.store";
   import { Principal } from "@dfinity/principal";
   import SnsProposalSystemInfoSection from "$lib/components/sns-proposals/SnsProposalSystemInfoSection.svelte";
@@ -41,6 +41,7 @@
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
   import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
   import { tick } from "svelte";
+  import type { SnsProposalData } from "$lib/types/sns-proposal";
 
   export let proposalIdText: string | undefined | null = undefined;
 

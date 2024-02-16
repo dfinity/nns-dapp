@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { SnsProposalData } from "@dfinity/sns";
   import SnsProposalCard from "$lib/components/sns-proposals/SnsProposalCard.svelte";
   import { InfiniteScroll } from "@dfinity/gix-components";
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
@@ -8,6 +7,7 @@
   import LoadingProposals from "../proposals/LoadingProposals.svelte";
   import ListLoader from "../proposals/ListLoader.svelte";
   import SnsProposalsFilters from "./SnsProposalsFilters.svelte";
+  import type { SnsProposalData } from "$lib/types/sns-proposal";
 
   export let proposals: SnsProposalData[] | undefined;
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;

@@ -3,6 +3,7 @@ import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposa
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { ALL_SNS_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
+import type { SnsProposalData } from "$lib/types/sns-proposal";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   createSnsProposal,
@@ -11,7 +12,6 @@ import {
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
-  type SnsProposalData,
 } from "@dfinity/sns";
 import { get } from "svelte/store";
 

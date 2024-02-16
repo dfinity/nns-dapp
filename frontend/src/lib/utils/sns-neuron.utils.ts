@@ -5,6 +5,7 @@ import {
   MAX_NEURONS_SUBACCOUNTS,
 } from "$lib/constants/sns-neurons.constants";
 import { NextMemoNotFoundError } from "$lib/types/sns-neurons.errors";
+import type { SnsProposalDataWithBallots } from "$lib/types/sns-proposal";
 import {
   bonusMultiplier,
   votingPower,
@@ -25,7 +26,6 @@ import {
   type SnsNervousSystemFunction,
   type SnsNervousSystemParameters,
   type SnsNeuron,
-  type SnsProposalData,
 } from "@dfinity/sns";
 import {
   fromDefinedNullable,
@@ -805,7 +805,7 @@ export const snsNeuronsIneligibilityReasons = ({
   identity,
 }: {
   neuron: SnsNeuron;
-  proposal: SnsProposalData;
+  proposal: SnsProposalDataWithBallots;
   identity: Identity;
 }): NeuronIneligibilityReason | undefined => {
   const { ballots, proposal_creation_timestamp_seconds } = proposal;
@@ -835,7 +835,7 @@ export const ineligibleSnsNeurons = ({
   identity,
 }: {
   neurons: SnsNeuron[];
-  proposal: SnsProposalData;
+  proposal: SnsProposalDataWithBallots;
   identity: Identity;
 }): SnsNeuron[] =>
   neurons.filter(
@@ -853,7 +853,7 @@ export const votableSnsNeurons = ({
   identity,
 }: {
   neurons: SnsNeuron[];
-  proposal: SnsProposalData;
+  proposal: SnsProposalDataWithBallots;
   identity: Identity;
 }): SnsNeuron[] => {
   return neurons.filter((neuron) => {
@@ -879,7 +879,7 @@ export const votedSnsNeurons = ({
   proposal,
 }: {
   neurons: SnsNeuron[];
-  proposal: SnsProposalData;
+  proposal: SnsProposalDataWithBallots;
 }): SnsNeuron[] => {
   const votedNeuronIds = new Set(
     proposal.ballots
@@ -897,7 +897,7 @@ export const votedSnsNeuronDetails = ({
   proposal,
 }: {
   neurons: SnsNeuron[];
-  proposal: SnsProposalData;
+  proposal: SnsProposalDataWithBallots;
 }): CompactNeuronInfo[] =>
   votedSnsNeurons({
     neurons,
@@ -917,7 +917,7 @@ export const getSnsNeuronVote = ({
   proposal,
 }: {
   neuron: SnsNeuron;
-  proposal: SnsProposalData;
+  proposal: SnsProposalDataWithBallots;
 }): Vote | undefined =>
   proposal.ballots.find(
     ([ballotNeuronId]) => ballotNeuronId === getSnsNeuronIdAsHexString(neuron)
@@ -929,7 +929,7 @@ export const snsNeuronsToIneligibleNeuronData = ({
   identity,
 }: {
   neurons: SnsNeuron[];
-  proposal: SnsProposalData;
+  proposal: SnsProposalDataWithBallots;
   identity: Identity;
 }): IneligibleNeuronData[] =>
   neurons.map((neuron) => ({

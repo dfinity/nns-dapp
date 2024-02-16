@@ -17,6 +17,8 @@ import {
   type ProjectProposalData,
 } from "$lib/stores/sns-proposals.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+import type { SnsProposalData } from "$lib/types/sns-proposal";
+import { isSnsProposalDataWithBallots } from "$lib/types/sns-proposal";
 import {
   getSnsNeuronState,
   hasPermissionToVote,
@@ -29,7 +31,6 @@ import type {
   SnsNervousSystemFunction,
   SnsNeuron,
   SnsNeuronId,
-  SnsProposalData,
   SnsProposalId,
   SnsVote,
 } from "@dfinity/sns";
@@ -248,7 +249,7 @@ export const getSnsProposalById = async ({
   // (when ballots not needed OR when proposal has ballots)
   if (
     nonNullish(proposal) &&
-    (proposal.ballots.length > 0 || !reloadForBallots)
+    (isSnsProposalDataWithBallots(proposal) || !reloadForBallots)
   ) {
     setProposal({ proposal, certified: true });
     return;

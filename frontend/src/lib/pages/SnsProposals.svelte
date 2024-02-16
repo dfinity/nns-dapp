@@ -1,6 +1,5 @@
 <script lang="ts">
   import { loadSnsProposals } from "$lib/services/$public/sns-proposals.services";
-  import type { SnsProposalData } from "@dfinity/sns";
   import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
   import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
@@ -23,6 +22,7 @@
   import type { Principal } from "@dfinity/principal";
   import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
   import type { Readable } from "svelte/store";
+  import type { SnsProposalData } from "$lib/types/sns-proposal";
 
   let currentProjectCanisterId: Principal | undefined = undefined;
   const onSnsProjectChanged = async ({

@@ -1,8 +1,8 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import type { SnsProposalData } from "@dfinity/sns";
   import { fromNullable, nonNullish } from "@dfinity/utils";
   import ProposalSummary from "../proposal-detail/ProposalSummary.svelte";
+  import type { SnsProposalData } from "$lib/types/sns-proposal";
 
   export let proposal: SnsProposalData;
 

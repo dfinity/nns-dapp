@@ -1,6 +1,7 @@
 import { ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID } from "$lib/constants/sns-proposals.constants";
 import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
 import { ALL_SNS_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
+import type { SnsProposalData } from "$lib/types/sns-proposal";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
 import {
@@ -41,7 +42,6 @@ import {
   type SnsNervousSystemFunction,
   type SnsNeuron,
   type SnsPercentage,
-  type SnsProposalData,
   type SnsTally,
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";

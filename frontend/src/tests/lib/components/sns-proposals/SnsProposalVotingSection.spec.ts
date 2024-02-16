@@ -1,11 +1,11 @@
 import SnsProposalVotingSection from "$lib/components/sns-proposals/SnsProposalVotingSection.svelte";
+import type { SnsProposalData } from "$lib/types/sns-proposal";
 import { mapProposalInfo } from "$lib/utils/sns-proposals.utils";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { SnsProposalVotingSectionPo } from "$tests/page-objects/SnsProposalVotingSection.page-object";
 import type { VotesResultPo } from "$tests/page-objects/VotesResults.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type { SnsProposalData } from "@dfinity/sns";
 import { fromDefinedNullable } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 

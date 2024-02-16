@@ -5,8 +5,9 @@ import { selectableUniversesStore } from "$lib/derived/selectable-universes.deri
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { votingSnsProposalsStore } from "$lib/stores/voting-sns-proposals.store";
+import type { SnsProposalData } from "$lib/types/sns-proposal";
 import { Principal } from "@dfinity/principal";
-import type { SnsNeuron, SnsProposalData } from "@dfinity/sns";
+import type { SnsNeuron } from "@dfinity/sns";
 import { SnsProposalRewardStatus } from "@dfinity/sns";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";

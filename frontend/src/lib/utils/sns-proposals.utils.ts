@@ -11,6 +11,7 @@ import type {
   UniversalProposalStatus,
   VotingNeuron,
 } from "$lib/types/proposals";
+import type { SnsProposalData } from "$lib/types/sns-proposal";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import {
@@ -25,7 +26,6 @@ import type {
   SnsNervousSystemFunction,
   SnsNeuron,
   SnsNeuronId,
-  SnsProposalData,
   SnsProposalId,
   SnsTally,
   SnsVote,
@@ -34,6 +34,7 @@ import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
   type SnsPercentage,
+  type SnsProposalData as SnsProposalDataRaw,
 } from "@dfinity/sns";
 import { fromDefinedNullable, fromNullable, isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
@@ -45,7 +46,7 @@ export type SnsProposalDataMap = {
   id?: SnsProposalId;
   payload_text_rendering?: string;
   action: bigint;
-  ballots: Array<[string, SnsBallot]>;
+  ballots?: Array<[string, SnsBallot]>;
   reward_event_round: bigint;
   failed_timestamp_seconds: bigint;
   proposal_creation_timestamp_seconds: bigint;
@@ -432,7 +433,7 @@ export const ballotVotingPower = ({
   neuron: SnsNeuron;
 }): bigint =>
   BigInt(
-    proposal.ballots.find(
+    (proposal.ballots ?? []).find(
       ([ballotNeuronId]) => ballotNeuronId === getSnsNeuronIdAsHexString(neuron)
     )?.[1].voting_power || 0
   );
@@ -584,3 +585,15 @@ export const fromPercentageBasisPoints = (
 export const isCriticalProposal = (immediateMajorityPercent: number): boolean =>
   immediateMajorityPercent !==
   basisPointsToPercent(MINIMUM_YES_PROPORTION_OF_EXERCISED_VOTING_POWER);
+
+// TODO(max): test me
+export const toSnsProposalsData = ({
+  proposals,
+  includeBallots,
+}: {
+  proposals: SnsProposalDataRaw[];
+  includeBallots: boolean;
+}): SnsProposalData[] =>
+  includeBallots
+    ? proposals
+    : proposals.map((proposal) => ({ ...proposal, ballots: undefined }));

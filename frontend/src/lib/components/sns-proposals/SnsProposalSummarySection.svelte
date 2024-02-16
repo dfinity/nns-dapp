@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { SnsProposalData } from "@dfinity/sns";
   import { fromNullable, nonNullish } from "@dfinity/utils";
   import ProposalSummarySection from "../proposal-detail/ProposalSummarySection.svelte";
+  import type { SnsProposalData } from "$lib/types/sns-proposal";
 
   export let proposal: SnsProposalData;
 

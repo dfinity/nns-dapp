@@ -1,9 +1,5 @@
 <script lang="ts">
-  import {
-    type SnsProposalData,
-    SnsProposalRewardStatus,
-    type SnsTally,
-  } from "@dfinity/sns";
+  import { SnsProposalRewardStatus, type SnsTally } from "@dfinity/sns";
   import SnsVotingCard from "$lib/components/sns-proposals/SnsVotingCard.svelte";
   import VotesResults from "$lib/components/proposal-detail/VotesResults.svelte";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
@@ -11,6 +7,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { basisPointsToPercent } from "$lib/utils/utils";
   import { fromDefinedNullable } from "@dfinity/utils";
+  import type { SnsProposalData } from "$lib/types/sns-proposal";
 
   export let proposal: SnsProposalData;
   export let proposalDataMap: SnsProposalDataMap;

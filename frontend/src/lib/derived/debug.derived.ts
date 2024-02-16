@@ -26,9 +26,9 @@ import type { SelectCanisterDetailsStore } from "$lib/types/canister-detail.cont
 import type { ProjectDetailStore } from "$lib/types/project-detail.context";
 import type { SelectedProposalStore } from "$lib/types/selected-proposal.context";
 import type { SelectedSnsNeuronStore } from "$lib/types/sns-neuron-detail.context";
+import type { SnsProposalData } from "$lib/types/sns-proposal";
 import type { WalletStore } from "$lib/types/wallet.context";
 import { busyStore, toastsStore } from "@dfinity/gix-components";
-import type { SnsProposalData } from "@dfinity/sns";
 import { derived, readable, writable, type Readable } from "svelte/store";
 
 const createDerivedStore = <T>(store: Readable<T>): Readable<T> =>

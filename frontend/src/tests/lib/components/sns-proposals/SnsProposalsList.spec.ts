@@ -1,6 +1,6 @@
 import SnsProposalsList from "$lib/components/sns-proposals/SnsProposalsList.svelte";
+import type { SnsProposalData } from "$lib/types/sns-proposal";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import type { SnsProposalData } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
 describe("SnsProposalsList", () => {

@@ -11,6 +11,10 @@ import {
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
+import type {
+  SnsProposalData,
+  SnsProposalDataWithBallots,
+} from "$lib/types/sns-proposal";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
@@ -23,7 +27,6 @@ import {
 import type {
   SnsNervousSystemFunction,
   SnsNeuron,
-  SnsProposalData,
   SnsVote,
 } from "@dfinity/sns";
 import type { Ballot } from "@dfinity/sns/dist/candid/sns_governance";
@@ -158,8 +161,10 @@ const proposalAfterVote = ({
   return {
     ...proposal,
     ballots: [
-      // not voted ballots
-      ...proposal.ballots.filter(([id]) => !votedNeuronsIds.has(id)),
+      // not voted ballots (here we are sure, that the ballots are presented in the proposal)
+      ...(proposal as SnsProposalDataWithBallots).ballots.filter(
+        ([id]) => !votedNeuronsIds.has(id)
+      ),
       // voted ballots
       ...optimisticBallots,
     ],

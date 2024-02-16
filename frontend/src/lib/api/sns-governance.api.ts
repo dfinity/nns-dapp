@@ -1,5 +1,7 @@
+import type { SnsProposalData } from "$lib/types/sns-proposal";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
+import { toSnsProposalsData } from "$lib/utils/sns-proposals.utils";
 import type { Identity } from "@dfinity/agent";
 import type { IcrcAccount } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
@@ -13,6 +15,7 @@ import type {
   SnsProposalId,
   SnsVote,
 } from "@dfinity/sns";
+import { fromNullable } from "@dfinity/utils";
 import { wrapper } from "./sns-wrapper.api";
 
 export const querySnsNeurons = async ({
@@ -568,16 +571,22 @@ export const queryProposals = async ({
   identity: Identity;
   certified: boolean;
   params: SnsListProposalsParams;
-}) => {
+}): Promise<SnsProposalData[]> => {
   logWithTimestamp(`Getting proposals call...`);
 
-  const { listProposals } = await wrapper({
+  const { listCallerProposals } = await wrapper({
     identity,
     rootCanisterId: rootCanisterId.toText(),
     certified,
   });
 
-  const proposals = await listProposals(params);
+  const { proposals: rawProposals, include_ballots_by_caller } =
+    await listCallerProposals(params);
+  const includeBallots = fromNullable(include_ballots_by_caller) ?? false;
+  const proposals = toSnsProposalsData({
+    proposals: rawProposals,
+    includeBallots,
+  });
 
   logWithTimestamp(`Getting proposals call complete.`);
   return proposals;
