@@ -5,15 +5,15 @@
   import { TokenAmountV2, type Token } from "@dfinity/utils";
   import { universesAccountsBalance } from "$lib/derived/universes-accounts-balance.derived";
   import type { Universe } from "$lib/types/universe";
-  import { tokensStore } from "$lib/stores/tokens.store";
+  import { tokensByUniverseIdStore } from "$lib/derived/tokens.derived";
 
   export let universe: Universe;
 
   let balanceUlps: bigint | undefined;
-  $: balanceUlps = $universesAccountsBalance[universe.canisterId]?.balanceUlps;
+  $: balanceUlps = $universesAccountsBalance[universe.canisterId];
 
   let token: Token | undefined;
-  $: token = $tokensStore[universe.canisterId]?.token;
+  $: token = $tokensByUniverseIdStore[universe.canisterId];
 
   let balance: TokenAmountV2 | undefined;
   $: balance =

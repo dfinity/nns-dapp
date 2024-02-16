@@ -241,19 +241,6 @@ export const accountName = ({
 }): string =>
   account?.name ?? (account?.type === "main" ? mainName : account?.name ?? "");
 
-export const sumNnsAccounts = (
-  accounts: IcpAccountsStoreData | undefined
-): bigint | undefined =>
-  accounts?.main?.balanceUlps !== undefined
-    ? sumAmounts(
-        accounts?.main?.balanceUlps,
-        ...(accounts?.subAccounts || []).map(({ balanceUlps }) => balanceUlps),
-        ...(accounts?.hardwareWallets || []).map(
-          ({ balanceUlps }) => balanceUlps
-        )
-      )
-    : undefined;
-
 export function sumAccounts(acconts: Account[]): bigint;
 export function sumAccounts(acconts: Account[] | undefined): bigint | undefined;
 export function sumAccounts(

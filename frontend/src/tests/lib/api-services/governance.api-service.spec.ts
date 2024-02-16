@@ -717,36 +717,6 @@ describe("neurons api-service", () => {
     });
   });
 
-  describe("mergeMaturity", () => {
-    const params = {
-      neuronId,
-      identity: mockIdentity,
-      percentageToMerge: 0.2,
-    };
-
-    it("should call mergeMaturity api", () => {
-      governanceApiService.mergeMaturity(params);
-      expect(api.mergeMaturity).toHaveBeenCalledWith(params);
-      expect(api.mergeMaturity).toHaveBeenCalledTimes(1);
-    });
-
-    it("should invalidate the cache", async () => {
-      await shouldInvalidateCache({
-        apiFunc: api.mergeMaturity,
-        apiServiceFunc: governanceApiService.mergeMaturity,
-        params,
-      });
-    });
-
-    it("should invalidate the cache on failure", async () => {
-      await shouldInvalidateCacheOnFailure({
-        apiFunc: api.mergeMaturity,
-        apiServiceFunc: governanceApiService.mergeMaturity,
-        params,
-      });
-    });
-  });
-
   describe("mergeNeurons", () => {
     const params = {
       identity: mockIdentity,

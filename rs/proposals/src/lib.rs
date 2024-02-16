@@ -1,7 +1,23 @@
 //! Code to fetch proposals and render them as JSON for human consumption.
 use crate::canisters::internet_identity::InternetIdentityInit;
 use crate::canisters::nns_governance::api::{Action, ProposalInfo};
-use crate::def::*;
+use crate::def::{
+    AddApiBoundaryNodePayload, AddFirewallRulesPayload, AddNnsCanisterProposal, AddNnsCanisterProposalTrimmed,
+    AddNodeOperatorPayload, AddNodesToSubnetPayload, AddOrRemoveDataCentersProposalPayload, AddWasmRequest,
+    AddWasmRequestTrimmed, BitcoinSetConfigProposal, BitcoinSetConfigProposalHumanReadable, BlessReplicaVersionPayload,
+    ChangeNnsCanisterProposal, ChangeNnsCanisterProposalTrimmed, ChangeSubnetMembershipPayload,
+    ChangeSubnetTypeAssignmentArgs, CompleteCanisterMigrationPayload, CreateSubnetPayload,
+    InsertUpgradePathEntriesRequest, InsertUpgradePathEntriesRequestHumanReadable, PrepareCanisterMigrationPayload,
+    RecoverSubnetPayload, RemoveApiBoundaryNodesPayload, RemoveFirewallRulesPayload, RemoveNodeOperatorsPayload,
+    RemoveNodeOperatorsPayloadHumanReadable, RemoveNodesFromSubnetPayload, RemoveNodesPayload,
+    RerouteCanisterRangesPayload, RetireReplicaVersionPayload, SetAuthorizedSubnetworkListArgs,
+    SetFirewallConfigPayload, StopOrStartNnsCanisterProposal, UpdateAllowedPrincipalsRequest,
+    UpdateApiBoundaryNodesVersionPayload, UpdateElectedHostosVersionsPayload, UpdateElectedReplicaVersionsPayload,
+    UpdateFirewallRulesPayload, UpdateIcpXdrConversionRatePayload, UpdateNodeOperatorConfigPayload,
+    UpdateNodeRewardsTableProposalPayload, UpdateNodesHostosVersionPayload, UpdateSnsSubnetListRequest,
+    UpdateSubnetPayload, UpdateSubnetReplicaVersionPayload, UpdateSubnetTypeArgs, UpdateUnassignedNodesConfigPayload,
+    UpgradeRootProposalPayload, UpgradeRootProposalPayloadTrimmed,
+};
 use candid::parser::types::{self as parser_types, IDLType, IDLTypes};
 use candid::types::{self as candid_types, Type};
 use candid::{CandidType, IDLArgs};
@@ -18,9 +34,12 @@ use std::fmt::Debug;
 pub mod canisters;
 pub mod def;
 
+/// A JSON string.
 type Json = String;
 
+/// The maximum number of proposal payloads that will be cached.
 const CACHE_SIZE_LIMIT: usize = 100;
+/// The maximum length of a proposal payload JSON that will be admitted to the cache.
 const CACHE_ITEM_SIZE_LIMIT: usize = 2 * 1024 * 1024; // 2MB
 
 thread_local! {
@@ -52,8 +71,10 @@ pub async fn get_proposal_payload(proposal_id: u64) -> Result<Json, String> {
     }
 }
 
+/// Inserts a proposal payload expressed as JSON into the cache, evicting the entry for the oldest proposal if necessary.
 fn insert_into_cache(cache: &mut BTreeMap<u64, Json>, proposal_id: u64, payload_json: String) {
     if cache.len() >= CACHE_SIZE_LIMIT {
+        // This should correspond to the proposal with the lowest index, hence the oldest entry.
         cache.pop_first();
     }
 
@@ -101,10 +122,16 @@ pub fn process_proposal_payload(proposal_info: &ProposalInfo) -> Json {
     }
 }
 
+/// Options for how to serialize Candid to JSON.
+///
+/// Note: The priority here is human readable JSON for proposal verification.
 const IDL2JSON_OPTIONS: Idl2JsonOptions = Idl2JsonOptions {
+    // Express byte arrays as hex, not as arrays of integers.
     bytes_as: Some(BytesFormat::Hex),
+    // Truncate long byte arrays but provide a SHA256 hash of the full value, so that the payload can be verified.
     long_bytes_as: Some((256, BytesFormat::Sha256)),
-    prog: Vec::new(), // These are the type definitions used in proposal payloads.  If we have them, it would be nice to use them.  Do we?
+    // These are the type definitions used in proposal payloads.  If we have them, it would be nice to use them.  Do we?
+    prog: Vec::new(),
 };
 
 /// Converts a Candid `Type` to a candid `IDLType`. `idl2json` uses `IDLType`.
@@ -175,7 +202,15 @@ fn type_2_idltype(ty: Type) -> Result<IDLType, String> {
     }
 }
 
+/// Converts an NNS function payload, in candid, to JSON.
 fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<String, String> {
+    /// Converts a type to JSON without using type information.
+    ///
+    /// # Errors
+    /// - Failed to parse the Candid.
+    /// - Failed to serialize the Candid into JSON.
+    ///
+    /// TODO: Check  whether the JSON is too large.
     fn candid_fallback<In>(payload_bytes: &[u8]) -> Result<String, String>
     where
         In: CandidType,
@@ -188,6 +223,15 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         serde_json::to_string(&json_value).map_err(|_| "Failed to serialize JSON".to_string())
     }
 
+    /// Converts a type to JSON with type information:
+    /// - Parses Candid data into the `In` type.
+    /// - Transforms the `In` type into the `Out` type; Please ensure that `Into<Out>` is implemented for `In`.
+    /// - Serializes the `Out` type into JSON.
+    ///
+    /// # Errors
+    /// - Failed to parse the Candid as type `In`.
+    /// - Failed to serialize the `Out` type into JSON.
+    /// - The JSON is too large.
     fn try_transform<In, Out>(payload_bytes: &[u8]) -> Result<String, String>
     where
         In: CandidType + DeserializeOwned + Into<Out>,
@@ -202,6 +246,13 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
             Err("Payload too large".to_string())
         }
     }
+
+    /// Converts a Candid message to JSON:
+    /// - Tries to convert using the provided types.
+    /// - If that fails, try to convert without type information.
+    ///
+    /// # Errors
+    /// - Even the fallback failed to convert the Candid message to JSON.  Please see `candid_fallback` for possible reasons for this.
     fn transform<In, Out>(payload_bytes: &[u8]) -> Result<String, String>
     where
         In: CandidType + DeserializeOwned + Into<Out>,
@@ -209,6 +260,8 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
     {
         try_transform::<In, Out>(payload_bytes).or_else(|_| candid_fallback::<In>(payload_bytes))
     }
+
+    /// Converts a Candid message to JSON using the given type.
     fn identity<Out>(payload_bytes: &[u8]) -> Result<String, String>
     where
         Out: CandidType + Serialize + DeserializeOwned,
@@ -269,6 +322,7 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
     }
 }
 
+/// Stringifies a value to create an error message.
 fn debug<T: Debug>(value: T) -> String {
     format!("{value:?}")
 }

@@ -62,18 +62,11 @@ describe("selected-project-new-transaction-data derived store", () => {
       expect(storeData.transactionFee.toE8s()).toEqual(fee);
     });
 
-    it("returns undefined if no transaction fee", () => {
+    it("returns undefined if no project", () => {
       snsSwapCommitmentsStore.setSwapCommitment({
         swapCommitment: mockSnsSwapCommitment(rootCanisterId),
         certified: true,
       });
-
-      setSnsProjects([
-        {
-          rootCanisterId,
-          lifecycle: SnsSwapLifecycle.Committed,
-        },
-      ]);
 
       page.mock({ data: { universe: rootCanisterId.toText() } });
 

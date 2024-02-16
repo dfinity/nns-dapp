@@ -190,49 +190,49 @@ pub struct UpdateIcpXdrConversionRatePayload {
     pub xdr_permyriad_per_icp: u64,
 }
 
-// NNS function 11 - UpdateSubnetReplicaVersion
-// https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_update_subnet_replica.rs#L58
+/// NNS function 11 - `UpdateSubnetReplicaVersion`
+/// <https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_update_subnet_replica.rs#L58>
 pub type UpdateSubnetReplicaVersionPayload = crate::canisters::nns_registry::api::UpdateSubnetReplicaVersionPayload;
 
-// NNS function 13 - RemoveNodesFromSubnet
-// https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_remove_nodes_from_subnet.rs#L57
+/// NNS function 13 - `RemoveNodesFromSubnet`
+/// <https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_remove_nodes_from_subnet.rs#L57>
 pub type RemoveNodesFromSubnetPayload = crate::canisters::nns_registry::internal::RemoveNodesFromSubnetPayload;
 
-// NNS function 14 - SetAuthorizedSubnetworkList
-// https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/nns/cmc/src/lib.rs#L168
+/// NNS function 14 - `SetAuthorizedSubnetworkList`
+/// <https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/nns/cmc/src/lib.rs#L168>
 pub type SetAuthorizedSubnetworkListArgs = cycles_minting_canister::SetAuthorizedSubnetworkListArgs;
 
-// NNS function 15 - SetFirewallConfig
-// https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_set_firewall_config.rs#L39
+/// NNS function 15 - `SetFirewallConfig`
+/// <https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_set_firewall_config.rs#L39>
 pub type SetFirewallConfigPayload = crate::canisters::nns_registry::api::SetFirewallConfigPayload;
 
-// NNS function 16 - UpdateNodeOperatorConfig
-// https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_update_node_operator_config.rs#L106
+/// NNS function 16 - `UpdateNodeOperatorConfig`
+/// <https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_update_node_operator_config.rs#L106>
 pub type UpdateNodeOperatorConfigPayload = crate::canisters::nns_registry::api::UpdateNodeOperatorConfigPayload;
 
-// NNS function 17 - StopOrStartNNSCanister
-// https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/nervous_system/root/src/lib.rs#L258
+/// NNS function 17 - `StopOrStartNNSCanister`
+/// <https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/nervous_system/root/src/lib.rs#L258>
 pub type StopOrStartNnsCanisterProposal = ic_nervous_system_root::change_canister::StopOrStartCanisterProposal;
 
-// NNS function 18 - RemoveNodes
-// https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/node_management/do_remove_nodes.rs#L96
+/// NNS function 18 - `RemoveNodes`
+/// <https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/node_management/do_remove_nodes.rs#L96>
 pub type RemoveNodesPayload = crate::canisters::nns_registry::api::RemoveNodesPayload;
 
-// NNS function 20 - UpdateNodeRewardsTable
-// https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/protobuf/def/registry/node_rewards/v2/node_rewards.proto#L24
+/// NNS function 20 - `UpdateNodeRewardsTable`
+/// <https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/protobuf/def/registry/node_rewards/v2/node_rewards.proto#L24>
 pub type UpdateNodeRewardsTableProposalPayload =
     ic_protobuf::registry::node_rewards::v2::UpdateNodeRewardsTableProposalPayload;
 
-// NNS function 21 - AddOrRemoveDataCenters
-// https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/protobuf/def/registry/dc/v1/dc.proto#L23
+/// NNS function 21 - `AddOrRemoveDataCenters`
+/// <https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/protobuf/def/registry/dc/v1/dc.proto#L23>
 pub type AddOrRemoveDataCentersProposalPayload = ic_protobuf::registry::dc::v1::AddOrRemoveDataCentersProposalPayload;
 
-// NNS function 22 - UpdateUnassignedNodes
-// https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_update_unassigned_nodes_config.rs#L62
+/// NNS function 22 - `UpdateUnassignedNodes`
+/// <https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/do_update_unassigned_nodes_config.rs#L62>
 pub type UpdateUnassignedNodesConfigPayload = crate::canisters::nns_registry::api::UpdateUnassignedNodesConfigPayload;
 
-// NNS function 23 - RemoveNodeOperators
-// https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/protobuf/def/registry/node_operator/v1/node_operator.proto#L34
+/// NNS function 23 - `RemoveNodeOperators`
+/// <https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/protobuf/def/registry/node_operator/v1/node_operator.proto#L34>
 pub type RemoveNodeOperatorsPayload = ic_protobuf::registry::node_operator::v1::RemoveNodeOperatorsPayload;
 
 #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -252,32 +252,32 @@ impl From<RemoveNodeOperatorsPayload> for RemoveNodeOperatorsPayloadHumanReadabl
     }
 }
 
-// NNS function 24 - RerouteCanisterRange
-// https://github.com/dfinity/ic/blob/5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c/rs/registry/canister/src/mutations/reroute_canister_ranges.rs#L66
+/// NNS function 24 - `RerouteCanisterRange`
+/// <https://github.com/dfinity/ic/blob/5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c/rs/registry/canister/src/mutations/reroute_canister_ranges.rs#L66>
 pub type RerouteCanisterRangesPayload = crate::canisters::nns_registry::api::RerouteCanisterRangesPayload;
 
-// NNS function 25 - AddFirewallRules
-// https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/firewall.rs#L218
+/// NNS function 25 - `AddFirewallRules`
+/// <https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/firewall.rs#L218>
 pub type AddFirewallRulesPayload = crate::canisters::nns_registry::api::AddFirewallRulesPayload;
 
-// NNS function 26 - RemoveFirewallRules
-// https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/firewall.rs#L233
+/// NNS function 26 - `RemoveFirewallRules`
+/// <https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/firewall.rs#L233>
 pub type RemoveFirewallRulesPayload = crate::canisters::nns_registry::api::RemoveFirewallRulesPayload;
 
-// NNS function 27 - UpdateFirewallRules
-// https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/firewall.rs#L246
+/// NNS function 27 - `UpdateFirewallRules`
+/// <https://github.com/dfinity/ic/blob/0a729806f2fbc717f2183b07efac19f24f32e717/rs/registry/canister/src/mutations/firewall.rs#L246>
 pub type UpdateFirewallRulesPayload = crate::canisters::nns_registry::internal::UpdateFirewallRulesPayload;
 
-// NNS function 28 - PrepareCanisterMigration
-// https://github.com/dfinity/ic/blob/5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c/rs/registry/canister/src/mutations/prepare_canister_migration.rs#L67
+/// NNS function 28 - `PrepareCanisterMigration`
+/// <https://github.com/dfinity/ic/blob/5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c/rs/registry/canister/src/mutations/prepare_canister_migration.rs#L67>
 pub type PrepareCanisterMigrationPayload = crate::canisters::nns_registry::api::PrepareCanisterMigrationPayload;
 
-// NNS function 29 - CompleteCanisterMigration
-// https://github.com/dfinity/ic/blob/5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c/rs/registry/canister/src/mutations/complete_canister_migration.rs#L34
+/// NNS function 29 - `CompleteCanisterMigration`
+/// <https://github.com/dfinity/ic/blob/5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c/rs/registry/canister/src/mutations/complete_canister_migration.rs#L34>
 pub type CompleteCanisterMigrationPayload = crate::canisters::nns_registry::api::CompleteCanisterMigrationPayload;
 
-// NNS function 30 - AddSnsWasm
-// https://github.com/dfinity/ic/blob/187e933e73867efc3993572abc6344b8cedfafe5/rs/nns/sns-wasm/gen/ic_sns_wasm.pb.v1.rs#L62
+/// NNS function 30 - `AddSnsWasm`
+/// <https://github.com/dfinity/ic/blob/187e933e73867efc3993572abc6344b8cedfafe5/rs/nns/sns-wasm/gen/ic_sns_wasm.pb.v1.rs#L62>
 pub type AddWasmRequest = crate::canisters::sns_wasm::api::AddWasmRequest;
 
 #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -305,22 +305,22 @@ impl From<AddWasmRequest> for AddWasmRequestTrimmed {
     }
 }
 
-// NNS function 31 - ChangeSubnetMembership
-// The payload of a proposal to change the membership of nodes in an existing subnet.
-// https://github.com/dfinity/ic/blob/f74c23fe475aa9545f936748e2506f609aa4be8d/rs/registry/canister/src/mutations/do_change_subnet_membership.rs#L71
+/// NNS function 31 - `ChangeSubnetMembership`
+/// The payload of a proposal to change the membership of nodes in an existing subnet.
+/// <https://github.com/dfinity/ic/blob/f74c23fe475aa9545f936748e2506f609aa4be8d/rs/registry/canister/src/mutations/do_change_subnet_membership.rs#L71>
 pub type ChangeSubnetMembershipPayload = crate::canisters::nns_registry::api::ChangeSubnetMembershipPayload;
 
-// NNS function 32 - UpdateSubnetType
-// Updates the available subnet types in the cycles minting canister.
-// https://github.com/dfinity/ic/blob/2ff38b1c305302e96aa85c7aa1f1e3811aa84819/rs/nns/cmc/src/lib.rs#L179
+/// NNS function 32 - `UpdateSubnetType`
+/// Updates the available subnet types in the cycles minting canister.
+/// <https://github.com/dfinity/ic/blob/2ff38b1c305302e96aa85c7aa1f1e3811aa84819/rs/nns/cmc/src/lib.rs#L179>
 pub type UpdateSubnetTypeArgs = cycles_minting_canister::UpdateSubnetTypeArgs;
 
-// NNS function 33 - ChangeSubnetTypeAssignment
-// Changes the assignment of subnets to subnet types in the cycles minting canister.
-// https://github.com/dfinity/ic/blob/503fb9ad621f7ab979b3c874365170c37fe444ba/rs/nns/cmc/src/lib.rs#L227
+/// NNS function 33 - `ChangeSubnetTypeAssignment`
+/// Changes the assignment of subnets to subnet types in the cycles minting canister.
+/// <https://github.com/dfinity/ic/blob/503fb9ad621f7ab979b3c874365170c37fe444ba/rs/nns/cmc/src/lib.rs#L227>
 pub type ChangeSubnetTypeAssignmentArgs = cycles_minting_canister::ChangeSubnetTypeAssignmentArgs;
 
-// Use a serde field attribute to custom serialize the Nat candid type.
+/// Uses a `serde` field attribute to custom serialize the Nat candid type.
 fn serialize_optional_nat<S>(nat: &Option<candid::Nat>, serializer: S) -> Result<S::Ok, S::Error>
 where
     S: serde::Serializer,
@@ -331,6 +331,7 @@ where
     }
 }
 
+/// Calculates the SHA256 hash of the given bytes and returns it as a hex string.
 fn calculate_hash_string(bytes: &[u8]) -> String {
     let mut hash_string = String::with_capacity(64);
     for byte in calculate_hash(bytes) {
@@ -339,6 +340,7 @@ fn calculate_hash_string(bytes: &[u8]) -> String {
     hash_string
 }
 
+/// Formats a (typically 32 byte) hash as a hex string.
 fn format_bytes(bytes: &[u8]) -> String {
     let mut hash_string = String::with_capacity(64);
     for byte in bytes {
@@ -347,6 +349,7 @@ fn format_bytes(bytes: &[u8]) -> String {
     hash_string
 }
 
+/// Calculates the SHA256 hash of the given bytes.
 fn calculate_hash(bytes: &[u8]) -> [u8; 32] {
     let mut wasm_sha = Sha256::new();
     wasm_sha.write(bytes);

@@ -40,7 +40,7 @@ describe("NnsAccounts", () => {
 
   describe("when tokens flag is enabled", () => {
     it("renders 'Accounts' as tokens table first column", async () => {
-      const po = renderComponent();
+      const po = renderComponent([]);
 
       const tablePo = po.getTokensTablePo();
       expect(await tablePo.getFirstColumnHeader()).toEqual("Accounts");
@@ -114,7 +114,9 @@ describe("NnsAccounts", () => {
     });
 
     it("should stop polling", async () => {
-      const { unmount } = render(NnsAccounts);
+      const { unmount } = render(NnsAccounts, {
+        props: { userTokensData: [] },
+      });
 
       await runResolvedPromises();
       let expectedCalls = 1;

@@ -1,62 +1,7 @@
-import { getToken } from "$lib/api/wallet-ledger.api";
-import { queryAndUpdate } from "$lib/services/utils.services";
-import { getAccounts } from "$lib/services/wallet-loader.services";
-import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
-import { tokensStore } from "$lib/stores/tokens.store";
-import type { Account } from "$lib/types/account";
-import type { IcrcTokenMetadata } from "$lib/types/icrc";
-import type {
-  UniverseCanisterId,
-  UniverseCanisterIdText,
-} from "$lib/types/universe";
+import type { UniverseCanisterIdText } from "$lib/types/universe";
 import { Principal } from "@dfinity/principal";
-
-/**
- * This function performs only an insecure "query" and does not toast the error but throw it so that all errors are collected by its caller.
- */
-const loadAccountsBalance = (ledgerCanisterId: Principal): Promise<void> => {
-  return queryAndUpdate<Account[], unknown>({
-    request: ({ certified, identity }) =>
-      getAccounts({ identity, certified, ledgerCanisterId }),
-    onLoad: ({ response: accounts, certified }) =>
-      icrcAccountsStore.set({
-        ledgerCanisterId,
-        accounts: {
-          accounts,
-          certified,
-        },
-      }),
-    onError: ({ error: err }) => {
-      console.error(err);
-      throw err;
-    },
-    logMessage: "Syncing Accounts Balance",
-    strategy: "query",
-  });
-};
-
-/**
- * This function performs only an insecure "query" and does not toast the error but throw it so that all errors are collected by its caller.
- */
-const loadToken = (universeId: UniverseCanisterId): Promise<void> => {
-  return queryAndUpdate<IcrcTokenMetadata, unknown>({
-    request: ({ certified, identity }) =>
-      getToken({ identity, certified, canisterId: universeId }),
-    onLoad: ({ response: token, certified }) =>
-      tokensStore.setToken({
-        canisterId: universeId,
-        token,
-        certified,
-      }),
-    onError: ({ error: err }) => {
-      console.error(err);
-      throw err;
-    },
-    logMessage: "Syncing token",
-    strategy: "query",
-  });
-};
+import { loadAccounts, loadIcrcToken } from "./icrc-accounts.services";
 
 /**
  * Load Icrc accounts balances and token
@@ -82,8 +27,14 @@ export const uncertifiedLoadAccountsBalance = async ({
         ) ?? []
       ).map((universeId) =>
         Promise.all([
-          loadAccountsBalance(Principal.fromText(universeId)),
-          loadToken(Principal.fromText(universeId)),
+          loadAccounts({
+            strategy: "query",
+            ledgerCanisterId: Principal.fromText(universeId),
+          }),
+          loadIcrcToken({
+            ledgerCanisterId: Principal.fromText(universeId),
+            certified: false,
+          }),
         ])
       )
     );

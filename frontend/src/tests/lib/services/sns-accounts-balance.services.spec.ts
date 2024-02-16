@@ -1,15 +1,13 @@
-import * as ledgerApi from "$lib/api/sns-ledger.api";
+import * as ledgerApi from "$lib/api/icrc-ledger.api";
 import { universesAccountsBalance } from "$lib/derived/universes-accounts-balance.derived";
 import * as services from "$lib/services/sns-accounts-balance.services";
-import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
-import {
-  mockSnsSummaryList,
-  mockSnsToken,
-} from "$tests/mocks/sns-projects.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 
@@ -20,34 +18,31 @@ vi.mock("$lib/stores/toasts.store", () => {
 });
 
 describe("sns-accounts-balance.services", () => {
+  const rootCanisterId = principal(1);
+  const ledgerCanisterId = principal(2);
+
   beforeEach(() => {
     resetIdentity();
-  });
-
-  afterEach(() => {
     vi.clearAllMocks();
-
-    snsAccountsStore.reset();
+    icrcAccountsStore.reset();
     tokensStore.reset();
+    resetSnsProjects();
+
+    setSnsProjects([
+      {
+        rootCanisterId,
+        ledgerCanisterId,
+      },
+    ]);
   });
 
-  const summary = {
-    ...mockSnsSummaryList[0],
-    rootCanisterId: mockSnsMainAccount.principal,
-    metadataCertified: false,
-  };
-
-  it("should call api.getSnsAccounts and load balance in store", async () => {
-    vi.spyOn(ledgerApi, "getSnsToken").mockImplementation(() =>
-      Promise.resolve(mockSnsToken)
-    );
-
+  it("should call api.queryIcrcBalance and load balance in store", async () => {
     const spyQuery = vi
-      .spyOn(ledgerApi, "getSnsAccounts")
-      .mockImplementation(() => Promise.resolve([mockSnsMainAccount]));
+      .spyOn(ledgerApi, "queryIcrcBalance")
+      .mockResolvedValue(mockSnsMainAccount.balanceUlps);
 
-    await services.uncertifiedLoadSnsAccountsBalances({
-      rootCanisterIds: [mockSnsMainAccount.principal],
+    await services.uncertifiedLoadSnsesAccountsBalances({
+      rootCanisterIds: [rootCanisterId],
     });
 
     await tick();
@@ -55,43 +50,18 @@ describe("sns-accounts-balance.services", () => {
     const store = get(universesAccountsBalance);
     // Nns + 1 Sns
     expect(Object.keys(store)).toHaveLength(2);
-    expect(store[summary.rootCanisterId.toText()].balanceUlps).toEqual(
+    expect(store[rootCanisterId.toText()]).toEqual(
       mockSnsMainAccount.balanceUlps
     );
     expect(spyQuery).toBeCalled();
   });
 
-  it("should call api.getSnsToken and load it in store", async () => {
-    const spyQuery = vi
-      .spyOn(ledgerApi, "getSnsToken")
-      .mockImplementation(() => Promise.resolve(mockSnsToken));
-
-    vi.spyOn(ledgerApi, "getSnsAccounts").mockImplementation(() =>
-      Promise.resolve([mockSnsMainAccount])
-    );
-
-    await services.uncertifiedLoadSnsAccountsBalances({
-      rootCanisterIds: [mockSnsMainAccount.principal],
-    });
-
-    await tick();
-
-    const store = get(tokensStore);
-
-    expect(store[mockSnsMainAccount.principal.toText()]).toEqual({
-      token: mockSnsToken,
-      certified: false,
-    });
-
-    expect(spyQuery).toBeCalled();
-  });
-
   it("should toast error", async () => {
     vi.spyOn(console, "error").mockImplementation(() => undefined);
-    vi.spyOn(ledgerApi, "getSnsAccounts").mockRejectedValue(new Error());
+    vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(new Error());
 
-    await services.uncertifiedLoadSnsAccountsBalances({
-      rootCanisterIds: [mockSnsMainAccount.principal],
+    await services.uncertifiedLoadSnsesAccountsBalances({
+      rootCanisterIds: [rootCanisterId],
     });
 
     expect(toastsError).toHaveBeenCalled();

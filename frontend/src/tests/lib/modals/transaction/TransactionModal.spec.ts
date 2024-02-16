@@ -3,7 +3,7 @@ import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
-import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import type { Account } from "$lib/types/account";
 import type { ValidateAmountFn } from "$lib/types/transaction";
 import { formatTokenE8s } from "$lib/utils/token.utils";
@@ -17,9 +17,11 @@ import {
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
-import { mockSnsAccountsStoreSubscribe } from "$tests/mocks/sns-accounts.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
 import { TransactionModalPo } from "$tests/page-objects/TransactionModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import type { Principal } from "@dfinity/principal";
@@ -77,6 +79,9 @@ describe("TransactionModal", () => {
   });
 
   beforeEach(() => {
+    resetSnsProjects();
+    icrcAccountsStore.reset();
+
     icpAccountsStore.setForTesting({
       main: mockMainAccount,
       subAccounts: [mockSubAccount],
@@ -84,9 +89,20 @@ describe("TransactionModal", () => {
       certified: true,
     });
 
-    vi.spyOn(snsAccountsStore, "subscribe").mockImplementation(
-      mockSnsAccountsStoreSubscribe(mockPrincipal)
-    );
+    const snsLedgerCanisterId = principal(3);
+    setSnsProjects([
+      {
+        rootCanisterId: mockPrincipal,
+        ledgerCanisterId: snsLedgerCanisterId,
+      },
+    ]);
+    icrcAccountsStore.set({
+      ledgerCanisterId: snsLedgerCanisterId,
+      accounts: {
+        accounts: [mockSnsMainAccount],
+        certified: true,
+      },
+    });
 
     vi.spyOn(console, "error").mockImplementation(() => undefined);
   });

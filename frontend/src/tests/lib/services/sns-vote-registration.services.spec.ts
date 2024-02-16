@@ -70,11 +70,13 @@ describe("sns-vote-registration-services", () => {
     resetIdentity();
     vi.clearAllMocks();
 
-    snsFunctionsStore.setProjectFunctions({
-      rootCanisterId,
-      nsFunctions: [nervousSystemFunctionMock],
-      certified: true,
-    });
+    snsFunctionsStore.setProjectsFunctions([
+      {
+        rootCanisterId,
+        nsFunctions: [nervousSystemFunctionMock],
+        certified: true,
+      },
+    ]);
     snsProposalsStore.setProposals({
       rootCanisterId,
       certified: true,

@@ -53,6 +53,7 @@ pub struct Stats {
     pub exceptional_transactions_count: Option<u32>,
 }
 
+#[allow(clippy::cast_precision_loss)] // We are converting u64 to f64
 pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
     let stats = STATE.with(get_stats);
     w.encode_gauge(
@@ -102,23 +103,24 @@ pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
     )?;
     w.encode_gauge(
         "nns_dapp_schema",
-        stats.schema.unwrap_or(0) as f64,
+        f64::from(stats.schema.unwrap_or(0)),
         "The nns-dapp schema version",
     )?;
     w.encode_gauge(
         "nns_dapp_migration_countdown",
-        stats.migration_countdown.unwrap_or(0) as f64,
+        f64::from(stats.migration_countdown.unwrap_or(0)),
         "When non-zero, a migration is in progress.",
     )?;
     w.encode_gauge(
         "exceptional_transactions_count",
-        stats.exceptional_transactions_count.unwrap_or(0) as f64,
+        f64::from(stats.exceptional_transactions_count.unwrap_or(0)),
         "The number of exceptional transactions in the canister log.",
     )?;
     Ok(())
 }
 
 /// The stable memory size in bytes
+#[must_use]
 pub fn stable_memory_size_bytes() -> u64 {
     #[cfg(target_arch = "wasm32")]
     {
@@ -131,6 +133,7 @@ pub fn stable_memory_size_bytes() -> u64 {
 }
 
 /// The WASM memory size in bytes
+#[must_use]
 pub fn wasm_memory_size_bytes() -> u64 {
     #[cfg(target_arch = "wasm32")]
     {
@@ -145,6 +148,8 @@ pub fn wasm_memory_size_bytes() -> u64 {
 }
 
 /// Convert bytes to binary gigabytes
+#[must_use]
+#[allow(clippy::cast_precision_loss)]
 pub fn gibibytes(bytes: u64) -> f64 {
     (bytes as f64) / (GIBIBYTE as f64)
 }

@@ -18,7 +18,6 @@ import {
   isAccountHardwareWallet,
   mainAccount,
   sumAccounts,
-  sumNnsAccounts,
   toIcpAccountIdentifier,
 } from "$lib/utils/accounts.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
@@ -657,43 +656,6 @@ describe("accounts-utils", () => {
           mainName: "main",
         })
       ).toBe("");
-    });
-  });
-
-  describe("sumNnsAccounts", () => {
-    it("should sum accounts balance", () => {
-      let totalBalance =
-        mockMainAccount.balanceUlps +
-        mockSubAccount.balanceUlps +
-        mockHardwareWalletAccount.balanceUlps;
-
-      expect(
-        sumNnsAccounts({
-          main: mockMainAccount,
-          subAccounts: [mockSubAccount],
-          hardwareWallets: [mockHardwareWalletAccount],
-        })
-      ).toEqual(totalBalance);
-
-      totalBalance = mockMainAccount.balanceUlps + mockSubAccount.balanceUlps;
-
-      expect(
-        sumNnsAccounts({
-          main: mockMainAccount,
-          subAccounts: [mockSubAccount],
-          hardwareWallets: [],
-        })
-      ).toEqual(totalBalance);
-
-      totalBalance = mockMainAccount.balanceUlps;
-
-      expect(
-        sumNnsAccounts({
-          main: mockMainAccount,
-          subAccounts: [],
-          hardwareWallets: [],
-        })
-      ).toEqual(totalBalance);
     });
   });
 

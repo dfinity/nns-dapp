@@ -142,6 +142,8 @@ interface I18nNavigation {
   neurons: string;
   voting: string;
   launchpad: string;
+  manage_ii: string;
+  source_code: string;
   settings: string;
 }
 
@@ -757,7 +759,6 @@ interface I18nSns_sale {
 }
 
 interface I18nSns_neuron_detail {
-  all_topics: string;
   vesting_period_tooltip: string;
   community_fund_section: string;
   community_fund_section_description: string;
@@ -881,7 +882,6 @@ interface I18nError__sns {
   ledger_insufficient_funds: string;
   sns_add_followee: string;
   sns_remove_followee: string;
-  sns_load_functions: string;
   sns_add_hotkey: string;
   sns_stake_maturity: string;
   sns_disburse_maturity: string;

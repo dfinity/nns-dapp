@@ -1,7 +1,7 @@
 //! Types taken from the Internet Identity
 //!
 //! * Types used to decode argument payload of NNS function type 4 for II upgrades
-//!   Source: https://github.com/dfinity/internet-identity/blob/main/src/internet_identity_interface/src/lib.rs#L174
+//!   Source: <https://github.com/dfinity/internet-identity/blob/main/src/internet_identity_interface/src/lib.rs#L174>
 //!   Note: The link above lacks versioning information.
 //!   TODO: Find out when this was last updated and potentially update these types automatically, as for other canisters.
 #![allow(missing_docs)] // Please see the original code upstream for details

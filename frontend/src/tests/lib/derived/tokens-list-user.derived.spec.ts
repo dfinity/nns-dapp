@@ -10,7 +10,6 @@ import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
 import { authStore } from "$lib/stores/auth.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import {
   UserTokenAction,
@@ -40,7 +39,7 @@ import {
   icpTokenBase,
 } from "$tests/mocks/tokens-page.mock";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
-import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { TokenAmountV2 } from "@dfinity/utils";
@@ -65,8 +64,13 @@ describe("tokens-list-user.derived", () => {
     actions: [],
   };
   const snsTetrisToken = mockSnsToken;
+  const tetrisRootCanisterId = rootCanisterIdMock;
+  const tetrisLedgerCanisterId = principal(2);
+  const pacmanRootCanisterId = principal(1);
+  const pacmanLedgerCanisterId = principal(3);
   const snsTetris = {
-    rootCanisterId: rootCanisterIdMock,
+    rootCanisterId: tetrisRootCanisterId,
+    ledgerCanisterId: tetrisLedgerCanisterId,
     projectName: "Tetris",
     lifecycle: SnsSwapLifecycle.Committed,
     tokenMetadata: snsTetrisToken,
@@ -76,7 +80,8 @@ describe("tokens-list-user.derived", () => {
     symbol: "PAC",
   };
   const snsPacman = {
-    rootCanisterId: principal(1),
+    rootCanisterId: pacmanRootCanisterId,
+    ledgerCanisterId: pacmanLedgerCanisterId,
     projectName: "Pacman",
     lifecycle: SnsSwapLifecycle.Committed,
     tokenMetadata: snsPackmanToken,
@@ -187,9 +192,9 @@ describe("tokens-list-user.derived", () => {
     beforeEach(() => {
       icpAccountsStore.resetForTesting();
       icrcAccountsStore.reset();
-      snsAccountsStore.reset();
       tokensStore.reset();
       authStore.setForTesting(mockIdentity);
+      resetSnsProjects();
 
       setSnsProjects([snsTetris, snsPacman]);
       setCkETHCanisters();
@@ -287,10 +292,9 @@ describe("tokens-list-user.derived", () => {
     });
 
     it("should return balance and Send and Receive actions if SNS project balance is present", () => {
-      snsAccountsStore.setAccounts({
-        accounts: [mockSnsMainAccount],
-        certified: true,
-        rootCanisterId: snsTetris.rootCanisterId,
+      icrcAccountsStore.set({
+        accounts: { accounts: [mockSnsMainAccount], certified: true },
+        ledgerCanisterId: snsTetris.ledgerCanisterId,
       });
       expect(get(tokensListUserStore)).toEqual([
         icpUserTokenLoading,
@@ -320,15 +324,19 @@ describe("tokens-list-user.derived", () => {
         },
         ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
       });
-      snsAccountsStore.setAccounts({
-        accounts: [mockSnsMainAccount],
-        certified: true,
-        rootCanisterId: snsTetris.rootCanisterId,
+      icrcAccountsStore.set({
+        accounts: {
+          accounts: [mockSnsMainAccount],
+          certified: true,
+        },
+        ledgerCanisterId: snsTetris.ledgerCanisterId,
       });
-      snsAccountsStore.setAccounts({
-        accounts: [mockSnsMainAccount],
-        certified: true,
-        rootCanisterId: snsPacman.rootCanisterId,
+      icrcAccountsStore.set({
+        accounts: {
+          accounts: [mockSnsMainAccount],
+          certified: true,
+        },
+        ledgerCanisterId: snsPacman.ledgerCanisterId,
       });
       expect(get(tokensListUserStore)).toEqual([
         icpUserToken,

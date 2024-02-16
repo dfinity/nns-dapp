@@ -39,7 +39,7 @@ import { SvelteComponent, tick } from "svelte";
 import { get } from "svelte/store";
 
 vi.mock("$lib/services/ckbtc-accounts.services");
-vi.mock("$lib/services/wallet-accounts.services");
+vi.mock("$lib/services/icrc-accounts.services");
 vi.mock("$lib/services/ckbtc-convert.services");
 
 describe("CkBTCTransactionModal", () => {

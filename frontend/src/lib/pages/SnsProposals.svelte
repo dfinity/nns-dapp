@@ -1,7 +1,6 @@
 <script lang="ts">
   import { loadSnsProposals } from "$lib/services/$public/sns-proposals.services";
   import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
-  import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
   import SnsProposalsList from "$lib/components/sns-proposals/SnsProposalsList.svelte";
   import {
@@ -24,6 +23,9 @@
   import type { Readable } from "svelte/store";
   import type { SnsProposalData } from "$lib/types/sns-proposal";
 
+  let nsFunctionsStore: Readable<SnsNervousSystemFunction[] | undefined>;
+  $: nsFunctionsStore = createSnsNsFunctionsProjectStore($snsOnlyProjectStore);
+
   let currentProjectCanisterId: Principal | undefined = undefined;
   const onSnsProjectChanged = async ({
     rootCanisterId,
@@ -40,7 +42,6 @@
     }
 
     currentProjectCanisterId = rootCanisterId;
-    await loadSnsNervousSystemFunctions(rootCanisterId);
     // The store should be updated at this point. But in case it's not (errors etc.),
     // we shouldn't update the filter.
     if (isNullish($nsFunctionsStore)) {
@@ -113,11 +114,6 @@
         $snsFilteredProposalsStore[currentProjectCanisterId.toText()]?.proposals
       )
     : undefined;
-
-  let nsFunctionsStore: Readable<SnsNervousSystemFunction[] | undefined>;
-  $: nsFunctionsStore = createSnsNsFunctionsProjectStore(
-    currentProjectCanisterId
-  );
 
   let disableInfiniteScroll: boolean;
   $: disableInfiniteScroll = nonNullish(currentProjectCanisterId)

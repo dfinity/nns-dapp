@@ -12,7 +12,7 @@
     snsProjectsCommittedStore,
     type SnsFullProject,
   } from "$lib/derived/sns/sns-projects.derived";
-  import { uncertifiedLoadSnsAccountsBalances } from "$lib/services/sns-accounts-balance.services";
+  import { uncertifiedLoadSnsesAccountsBalances } from "$lib/services/sns-accounts-balance.services";
   import type { Universe, UniverseCanisterIdText } from "$lib/types/universe";
   import { isArrayEmpty } from "$lib/utils/utils";
   import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-uncertified-accounts.services";
@@ -22,9 +22,7 @@
     isUniverseCkBTC,
     isUniverseNns,
   } from "$lib/utils/universe.utils";
-  import SnsTransactionModal from "$lib/modals/accounts/SnsTransactionModal.svelte";
   import type { UserTokenData } from "$lib/types/tokens-page";
-  import { toTokenAmountV2 } from "$lib/utils/token.utils";
   import {
     icrcCanistersStore,
     type IcrcCanistersStoreData,
@@ -40,6 +38,7 @@
   import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
   import type { Account } from "$lib/types/account";
   import IcrcReceiveModal from "$lib/modals/accounts/IcrcReceiveModal.svelte";
+  import { snsLedgerCanisterIdsStore } from "$lib/derived/sns/sns-canisters.derived";
 
   onMount(() => {
     loadCkBTCTokens();
@@ -61,7 +60,7 @@
 
     loadSnsAccountsBalancesRequested = true;
 
-    await uncertifiedLoadSnsAccountsBalances({
+    await uncertifiedLoadSnsesAccountsBalances({
       rootCanisterIds: projects.map(({ rootCanisterId }) => rootCanisterId),
       excludeRootCanisterIds: [],
     });
@@ -122,7 +121,7 @@
       ({ rootCanisterId }) => rootCanisterId.toText() === universeId.toText()
     );
     if (isSnsProject) {
-      return uncertifiedLoadSnsAccountsBalances({
+      return uncertifiedLoadSnsesAccountsBalances({
         rootCanisterIds: [universeId],
         excludeRootCanisterIds: [],
       });
@@ -209,11 +208,14 @@
   {/if}
 
   {#if modal?.type === "sns-send"}
-    <SnsTransactionModal
-      rootCanisterId={modal.data.universeId}
-      token={modal.data.token}
-      transactionFee={toTokenAmountV2(modal.data.fee)}
+    <IcrcTokenTransactionModal
       on:nnsClose={closeModal}
+      ledgerCanisterId={$snsLedgerCanisterIdsStore[
+        modal.data.universeId.toText()
+      ]}
+      universeId={modal.data.universeId}
+      token={modal.data.token}
+      transactionFee={modal.data.fee}
     />
   {/if}
 
@@ -232,6 +234,7 @@
     <IcrcTokenTransactionModal
       on:nnsClose={closeModal}
       ledgerCanisterId={modal.data.universeId}
+      universeId={modal.data.universeId}
       token={modal.data.token}
       transactionFee={modal.data.fee}
     />

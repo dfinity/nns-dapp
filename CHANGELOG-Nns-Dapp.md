@@ -11,6 +11,42 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 127696
+
+### Application
+
+#### Added
+
+* Add fee as mandatory when making ICP transactions.
+* Add the token symbol in the send modals.
+* Add new boundary node proposals support.
+* Prevent the `1Password` extension from appearing in input fields.
+* Support HTML within toast messages.
+
+#### Changed
+
+* Stable memory is owned by State structure to control access.
+* Voting power calculation formatting.
+* Voting rewards description.
+* Unify implementations of SNS token wallets with other (non-ICP) token wallets.
+
+#### Removed
+
+* Unused `i18n` messages.
+* Remove `ENABLE_MY_TOKENS` feature flag.
+
+#### Fixed
+
+* QR-code reader incorrectly mirrored on `Samsung S23`.
+* Check SNS neuron balances to claim pending neurons.
+* Neurons that can vote being displayed as ineligible on the SNS proposal detail page.
+
+### Operations
+
+#### Added
+
+* Check for unused i18n messages.
+
 ## Proposal 127669
 
 ### Application

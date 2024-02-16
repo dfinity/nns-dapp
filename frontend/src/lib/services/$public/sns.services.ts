@@ -1,35 +1,23 @@
+import { snsAggregatorApiService } from "$lib/api-services/sns-aggregator.api-service";
 import { queryProposals } from "$lib/api/proposals.api";
-import { querySnsProjects } from "$lib/api/sns-aggregator.api";
-import { getNervousSystemFunctions } from "$lib/api/sns-governance.api";
 import { buildAndStoreWrapper } from "$lib/api/sns-wrapper.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
-import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
 import { queryAndUpdate } from "$lib/services/utils.services";
-import { i18n } from "$lib/stores/i18n";
 import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
 import { snsProposalsStore } from "$lib/stores/sns.store";
 import { toastsError } from "$lib/stores/toasts.store";
-import { tokensStore, type TokensStoreData } from "$lib/stores/tokens.store";
-import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { isForceCallStrategy } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
-import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
-import {
-  convertIcrc1Metadata,
-  convertNervousFunction,
-} from "$lib/utils/sns-aggregator-converters.utils";
+import { convertNervousFunction } from "$lib/utils/sns-aggregator-converters.utils";
 import { ProposalStatus, Topic, type ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import type { SnsNervousSystemFunction } from "@dfinity/sns";
-import { nonNullish } from "@dfinity/utils";
-import { get } from "svelte/store";
 import { getCurrentIdentity } from "../auth.services";
 
 export const loadSnsProjects = async (): Promise<void> => {
   try {
-    const aggregatorData = await querySnsProjects();
+    const aggregatorData = await snsAggregatorApiService.querySnsProjects();
     const identity = getCurrentIdentity();
     // We load the wrappers to avoid making calls to SNS-W and Root canister for each project.
     // The SNS Aggregator gives us the canister ids of the SNS projects.
@@ -77,32 +65,6 @@ export const loadSnsProjects = async (): Promise<void> => {
         nsFunctions: sns.parameters.functions.map(convertNervousFunction),
         certified: true,
       }))
-    );
-    tokensStore.setTokens(
-      aggregatorData
-        .map(({ icrc1_metadata, canister_ids }) => ({
-          token: mapOptionalToken(convertIcrc1Metadata(icrc1_metadata)),
-          // TODO: Remove root_canister_id and only used ledger_canister_id.
-          root_canister_id: canister_ids.root_canister_id,
-          ledger_canister_id: canister_ids.ledger_canister_id,
-        }))
-        .filter(({ token }) => nonNullish(token))
-        .reduce(
-          (acc, { root_canister_id, ledger_canister_id, token }) => ({
-            ...acc,
-            [root_canister_id]: {
-              // Above filter ensure the token is not undefined therefore it can be safely cast
-              token: token as IcrcTokenMetadata,
-              certified: true,
-            },
-            [ledger_canister_id]: {
-              // Above filter ensure the token is not undefined therefore it can be safely cast
-              token: token as IcrcTokenMetadata,
-              certified: true,
-            },
-          }),
-          {} as TokensStoreData
-        )
     );
     // TODO: PENDING to be implemented, load SNS parameters.
   } catch (err) {
@@ -158,62 +120,5 @@ export const loadProposalsSnsCF = async (): Promise<void> => {
       }
     },
     logMessage: "Syncing Sns proposals",
-  });
-};
-
-// This is a public service.
-export const loadSnsNervousSystemFunctions = async (
-  rootCanisterId: Principal
-) => {
-  const store = createSnsNsFunctionsProjectStore(rootCanisterId);
-  const storeData = get(store);
-  // Avoid loading the same data multiple times if the data is loaded
-  if (nonNullish(storeData)) {
-    return;
-  }
-
-  return queryAndUpdate<SnsNervousSystemFunction[], Error>({
-    strategy: FORCE_CALL_STRATEGY,
-    request: ({ certified, identity }) =>
-      getNervousSystemFunctions({
-        rootCanisterId,
-        identity,
-        certified,
-      }),
-    onLoad: async ({ response: nsFunctions, certified }) => {
-      // TODO: Ideally, the name from the backend is user-friendly.
-      // https://dfinity.atlassian.net/browse/GIX-1169
-      const snsNervousSystemFunctions = nsFunctions.map((nsFunction) => {
-        if (nsFunction.id === 0n) {
-          const translationKeys = get(i18n);
-          return {
-            ...nsFunction,
-            name: translationKeys.sns_neuron_detail.all_topics,
-          };
-        }
-        return nsFunction;
-      });
-      snsFunctionsStore.setProjectFunctions({
-        rootCanisterId,
-        nsFunctions: snsNervousSystemFunctions,
-        certified,
-      });
-    },
-    identityType: "current",
-    onError: ({ certified, error, identity }) => {
-      // If the user is not logged in, only a query is done.
-      // Therefore, we want to show an error even if the error doesn't come from a certified call.
-      if (
-        certified ||
-        identity.getPrincipal().isAnonymous() ||
-        isForceCallStrategy()
-      ) {
-        toastsError({
-          labelKey: "error__sns.sns_load_functions",
-          err: error,
-        });
-      }
-    },
-    logMessage: `Getting SNS ${rootCanisterId.toText()} nervous system functions`,
   });
 };

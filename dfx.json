@@ -328,7 +328,6 @@
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
           "ENABLE_ICP_ICRC": false,
-          "ENABLE_SNS_TYPES_FILTER": true,
           "ENABLE_VOTING_INDICATION": false
         }
       }
@@ -343,7 +342,7 @@
         "DIDC_VERSION": "2024-01-30",
         "CARGO_SORT_VERSION": "1.0.9",
         "SNSDEMO_RELEASE": "release-2024-02-07",
-        "IC_COMMIT": "release-2024-01-25_14-09+p2p-con"
+        "IC_COMMIT": "release-2024-02-07_23-01+feature"
       },
       "packtool": ""
     }

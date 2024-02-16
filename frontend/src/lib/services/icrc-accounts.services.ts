@@ -5,25 +5,27 @@ import {
   type IcrcTransferParams,
 } from "$lib/api/icrc-ledger.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
+import { snsTokensByLedgerCanisterIdStore } from "$lib/derived/sns/sns-tokens.derived";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
+import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { notForceCallStrategy } from "$lib/utils/env.utils";
+import { toToastError } from "$lib/utils/error.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import type { Identity } from "@dfinity/agent";
 import {
   decodeIcrcAccount,
   encodeIcrcAccount,
-  type IcrcAccount,
   type IcrcBlockIndex,
 } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { queryAndUpdate } from "./utils.services";
+import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getIcrcAccountIdentity = (_: Account): Promise<Identity> => {
@@ -33,11 +35,16 @@ export const getIcrcAccountIdentity = (_: Account): Promise<Identity> => {
 
 export const loadIcrcToken = ({
   ledgerCanisterId,
-  certified,
+  certified = true,
 }: {
   ledgerCanisterId: Principal;
-  certified: boolean;
+  certified?: boolean;
 }) => {
+  if (ledgerCanisterId.toText() in get(snsTokensByLedgerCanisterIdStore)) {
+    // SNS tokens are derived from aggregator data instead.
+    return;
+  }
+
   const currentToken = get(tokensStore)[ledgerCanisterId.toText()];
 
   if (nonNullish(currentToken) && (currentToken.certified || !certified)) {
@@ -72,70 +79,99 @@ export const loadIcrcToken = ({
   });
 };
 
-const getIcrcMainIdentityAccount = async ({
-  ledgerCanisterId,
+/**
+ * Return all the accounts for the given identity in the ledger canister.
+ *
+ * For now, it only returns the main account and no subaccounts.
+ *
+ * Once subaccounts are supported, this function should be updated to return all the accounts.
+ */
+const getAccounts = async ({
   identity,
   certified,
+  ledgerCanisterId,
 }: {
-  ledgerCanisterId: Principal;
   identity: Identity;
   certified: boolean;
-}): Promise<Account> => {
-  const account: IcrcAccount = {
+  ledgerCanisterId: Principal;
+}): Promise<Account[]> => {
+  // TODO: Support subaccounts
+  const mainAccount = {
     owner: identity.getPrincipal(),
   };
 
   const balanceUlps = await queryIcrcBalance({
     identity,
-    canisterId: ledgerCanisterId,
     certified,
-    account,
+    canisterId: ledgerCanisterId,
+    account: mainAccount,
   });
 
-  return {
-    identifier: encodeIcrcAccount(account),
-    principal: account.owner,
-    balanceUlps,
-    type: "main",
-  };
+  return [
+    {
+      identifier: encodeIcrcAccount(mainAccount),
+      principal: mainAccount.owner,
+      balanceUlps,
+      type: "main",
+    },
+  ];
 };
 
-export const loadIcrcAccount = ({
+export const loadAccounts = async ({
+  handleError,
   ledgerCanisterId,
-  certified,
+  strategy = FORCE_CALL_STRATEGY,
 }: {
+  handleError?: () => void;
   ledgerCanisterId: Principal;
-  certified: boolean;
-}) => {
-  return queryAndUpdate<Account, unknown>({
-    strategy: certified ? FORCE_CALL_STRATEGY : "query",
+  strategy?: QueryAndUpdateStrategy;
+}): Promise<void> => {
+  return queryAndUpdate<Account[], unknown>({
+    strategy,
     request: ({ certified, identity }) =>
-      getIcrcMainIdentityAccount({
-        identity,
-        ledgerCanisterId,
-        certified,
-      }),
-    onLoad: async ({ response: account, certified }) =>
+      getAccounts({ identity, certified, ledgerCanisterId }),
+    onLoad: ({ response: accounts, certified }) =>
       icrcAccountsStore.set({
-        accounts: { accounts: [account], certified },
         ledgerCanisterId,
+        accounts: {
+          accounts,
+          certified,
+        },
       }),
     onError: ({ error: err, certified }) => {
-      if (!certified && notForceCallStrategy()) {
+      console.error(err);
+
+      // Ignore error on query call only if there will be an update call
+      if (certified !== true && strategy !== "query") {
         return;
       }
 
-      // Explicitly handle only UPDATE errors
-      toastsError({
-        labelKey: "error.token_not_found",
-        err,
-      });
+      // hide unproven data
+      icrcAccountsStore.reset();
+      icrcTransactionsStore.resetUniverse(ledgerCanisterId);
 
-      // Hide unproven data
-      tokensStore.resetUniverse(ledgerCanisterId);
+      toastsError(
+        toToastError({
+          err,
+          fallbackErrorLabelKey: "error.accounts_load",
+        })
+      );
+
+      handleError?.();
     },
+    logMessage: "Syncing Accounts",
   });
 };
+
+export const syncAccounts = async ({
+  ledgerCanisterId,
+}: {
+  ledgerCanisterId: Principal;
+}) =>
+  await Promise.all([
+    loadAccounts({ ledgerCanisterId }),
+    loadIcrcToken({ ledgerCanisterId }),
+  ]);
 
 ///
 /// These following services are implicitly covered by their consumers' services testing - i.e. ckbtc-accounts.services.spec and sns-accounts.services.spec
@@ -147,7 +183,6 @@ export interface IcrcTransferTokensUserParams {
   amountUlps: bigint;
 }
 
-// TODO: use `wallet-accounts.services`
 export const transferTokens = async ({
   source,
   destinationAddress,
@@ -221,8 +256,7 @@ export const icrcTransferTokens = async ({
         ...params,
         canisterId: ledgerCanisterId,
       }),
-    reloadAccounts: async () =>
-      loadIcrcAccount({ ledgerCanisterId, certified: true }),
+    reloadAccounts: async () => loadAccounts({ ledgerCanisterId }),
     // Web workders take care of refreshing transactions
     reloadTransactions: () => Promise.resolve(),
   });

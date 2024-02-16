@@ -14,7 +14,6 @@ import {
   CanisterNotFoundError,
   HardwareWalletAttachError,
   NameTooLongError,
-  NotAuthorizedError,
   ProposalPayloadNotFoundError,
   ProposalPayloadTooLargeError,
   SubAccountLimitExceededError,
@@ -25,7 +24,6 @@ import { idlFactory } from "./nns-dapp.idl";
 import type {
   AccountDetails,
   AccountIdentifierString,
-  AddPendingNotifySwapRequest,
   CanisterDetails,
   CreateSubAccountResponse,
   GetAccountResponse,
@@ -345,23 +343,6 @@ export class NNSDappCanister {
 
     throw new UnknownProposalPayloadError(
       errorText ?? (nonNullish(response) ? JSON.stringify(response) : undefined)
-    );
-  }
-
-  public async addPendingNotifySwap(
-    request: AddPendingNotifySwapRequest
-  ): Promise<void> {
-    const response =
-      await this.certifiedService.add_pending_notify_swap(request);
-    if ("Ok" in response) {
-      return;
-    }
-    if ("NotAuthorized" in response) {
-      throw new NotAuthorizedError();
-    }
-    // Edge case
-    throw new Error(
-      `Unknown response for add_pending_notify_swap ${JSON.stringify(response)}`
     );
   }
 }

@@ -8,7 +8,7 @@
   import type { CanisterId } from "$lib/types/canister";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
-  import { tokensStore } from "$lib/stores/tokens.store";
+  import { tokensByLedgerCanisterIdStore } from "$lib/derived/tokens.derived";
   import IcrcTokenWalletFooter from "$lib/components/accounts/IcrcTokenWalletFooter.svelte";
 
   export let accountIdentifier: string | undefined | null = undefined;
@@ -26,7 +26,7 @@
 
   let token: IcrcTokenMetadata | undefined;
   $: token = nonNullish(ledgerCanisterId)
-    ? $tokensStore[ledgerCanisterId.toText()]?.token
+    ? $tokensByLedgerCanisterIdStore[ledgerCanisterId.toText()]
     : undefined;
 
   let transactions: IcrcWalletTransactionsList;

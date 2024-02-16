@@ -41,11 +41,9 @@ export type BusyStateInitiatorType =
   | "add-sns-followee"
   | "remove-sns-followee"
   | "disburse-sns-neuron"
-  | "load-sns-filters"
   | "dev-add-sns-neuron-permissions"
   | "dev-add-sns-neuron-maturity"
   | "dev-add-nns-neuron-maturity"
-  | "load-sns-accounts"
   | "update-ckbtc-balance"
   | "reload-receive-account";
 

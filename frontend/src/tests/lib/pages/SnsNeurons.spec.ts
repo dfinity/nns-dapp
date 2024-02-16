@@ -1,5 +1,5 @@
+import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
-import * as ledgerApi from "$lib/api/sns-ledger.api";
 import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { page } from "$mocks/$app/stores";
@@ -9,7 +9,6 @@ import {
   createMockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
-import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { SnsNeuronsPo } from "$tests/page-objects/SnsNeurons.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -59,11 +58,9 @@ describe("SnsNeurons", () => {
     vi.clearAllMocks();
     page.mock({ data: { universe: rootCanisterId.toText() } });
     resetIdentity();
-    vi.spyOn(ledgerApi, "getSnsAccounts").mockResolvedValue([
-      mockSnsMainAccount,
-    ]);
-    vi.spyOn(ledgerApi, "getSnsToken").mockResolvedValue(mockSnsToken);
-    vi.spyOn(ledgerApi, "transactionFee").mockResolvedValue(10_000n);
+    vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
+      mockSnsMainAccount.balanceUlps
+    );
     snsParametersStore.setParameters({
       rootCanisterId,
       certified: true,

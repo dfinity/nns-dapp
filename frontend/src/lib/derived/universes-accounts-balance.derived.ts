@@ -1,57 +1,21 @@
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import {
-  icpAccountsStore,
-  type IcpAccountsStore,
-} from "$lib/stores/icp-accounts.store";
-import type { IcrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-import {
-  snsAccountsStore,
-  type SnsAccountsStore,
-} from "$lib/stores/sns-accounts.store";
+import type { UniversesAccounts } from "$lib/derived/accounts-list.derived";
+import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
 import type { RootCanisterIdText } from "$lib/types/sns";
-import { sumAccounts, sumNnsAccounts } from "$lib/utils/accounts.utils";
-import { derived } from "svelte/store";
-
-export interface UniverseAccountsBalance {
-  balanceUlps: bigint | undefined;
-  certified: boolean;
-}
+import { sumAccounts } from "$lib/utils/accounts.utils";
+import { mapEntries } from "$lib/utils/utils";
+import { derived, type Readable } from "svelte/store";
 
 export type UniversesAccountsBalanceReadableStore = Record<
   RootCanisterIdText,
-  UniverseAccountsBalance
+  bigint | undefined
 >;
 
 export const universesAccountsBalance = derived<
-  [IcpAccountsStore, SnsAccountsStore, IcrcAccountsStore],
+  Readable<UniversesAccounts>,
   UniversesAccountsBalanceReadableStore
->(
-  [icpAccountsStore, snsAccountsStore, icrcAccountsStore],
-  ([$accountsStore, $snsAccountsStore, $icrcAccountsStore]) => ({
-    [OWN_CANISTER_ID_TEXT]: {
-      balanceUlps: sumNnsAccounts($accountsStore),
-      certified: $accountsStore.certified ?? false,
-    },
-    ...Object.entries($icrcAccountsStore).reduce(
-      (acc, [canisterId, { accounts, certified }]) => ({
-        ...acc,
-        [canisterId]: {
-          balanceUlps: sumAccounts(accounts),
-          certified,
-        },
-      }),
-      {}
-    ),
-    ...Object.entries($snsAccountsStore).reduce(
-      (acc, [rootCanisterId, { accounts, certified }]) => ({
-        ...acc,
-        [rootCanisterId]: {
-          balanceUlps: sumAccounts(accounts),
-          certified,
-        },
-      }),
-      {}
-    ),
+>(universesAccountsStore, ($universesAccountsStore) =>
+  mapEntries({
+    obj: $universesAccountsStore,
+    mapFn: ([universeId, accounts]) => [universeId, sumAccounts(accounts)],
   })
 );

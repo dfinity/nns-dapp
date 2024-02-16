@@ -17,7 +17,6 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { loadSnsParameters } from "$lib/services/sns-parameters.services";
   import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
-  import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
   import {
     getUniversalProposalStatus,
     mapProposalInfo,
@@ -151,7 +150,6 @@
             : syncSnsNeurons(universeId),
           //
           !$authSignedInStore ? undefined : loadSnsParameters(universeId),
-          loadSnsNervousSystemFunctions(universeId),
         ]);
         /*
         Reload proposal only after `syncSnsNeurons` is done,
@@ -194,7 +192,6 @@
   // preload sns functions for mapping
   let functionsStore: Readable<SnsNervousSystemFunction[] | undefined>;
   $: if (universeCanisterId) {
-    loadSnsNervousSystemFunctions(universeCanisterId);
     functionsStore = createSnsNsFunctionsProjectStore(universeCanisterId);
   }
 
