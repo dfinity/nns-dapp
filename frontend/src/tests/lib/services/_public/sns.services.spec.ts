@@ -1,29 +1,22 @@
 import { clearSnsAggregatorCache } from "$lib/api-services/sns-aggregator.api-service";
 import * as agent from "$lib/api/agent.api";
 import * as aggregatorApi from "$lib/api/sns-aggregator.api";
-import * as governanceApi from "$lib/api/sns-governance.api";
 import { clearWrapperCache, wrapper } from "$lib/api/sns-wrapper.api";
-import {
-  loadSnsNervousSystemFunctions,
-  loadSnsProjects,
-} from "$lib/services/$public/sns.services";
+import { loadSnsProjects } from "$lib/services/$public/sns.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsTotalTokenSupplyStore } from "$lib/stores/sns-total-token-supply.store";
-import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
-  mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
 import {
   aggregatorMockSnsesDataDto,
   aggregatorSnsMockDto,
   aggregatorSnsMockWith,
 } from "$tests/mocks/sns-aggregator.mock";
-import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import {
   deployedSnsMock,
@@ -35,7 +28,6 @@ import {
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import { nonNullish } from "@dfinity/utils";
-import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
 
@@ -83,72 +75,6 @@ describe("SNS public services", () => {
     tokensStore.reset();
     clearSnsAggregatorCache();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
-  });
-
-  describe("loadSnsNervousSystemFunctions", () => {
-    beforeEach(() => {
-      snsFunctionsStore.reset();
-      vi.clearAllMocks();
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreSubscribe
-      );
-    });
-    it("should call sns api getNervousSystemFunctions and load the nervous system functions store", async () => {
-      const spyGetFunctions = vi
-        .spyOn(governanceApi, "getNervousSystemFunctions")
-        .mockImplementation(() => Promise.resolve([nervousSystemFunctionMock]));
-
-      await loadSnsNervousSystemFunctions(mockPrincipal);
-
-      const store = get(snsFunctionsStore);
-      await waitFor(() =>
-        expect(store[mockPrincipal.toText()]?.nsFunctions).toEqual([
-          nervousSystemFunctionMock,
-        ])
-      );
-      expect(spyGetFunctions).toBeCalled();
-    });
-
-    it("should not call api if nervous functions are in the snsFunctionsStore store and certified", async () => {
-      snsFunctionsStore.setProjectFunctions({
-        rootCanisterId: mockPrincipal,
-        nsFunctions: [nervousSystemFunctionMock],
-        certified: true,
-      });
-      const spyGetFunctions = vi
-        .spyOn(governanceApi, "getNervousSystemFunctions")
-        .mockImplementation(() => Promise.resolve([nervousSystemFunctionMock]));
-
-      await loadSnsNervousSystemFunctions(mockPrincipal);
-
-      expect(spyGetFunctions).not.toBeCalled();
-    });
-
-    it("should not call api if nervous functions are in the snsAggregator store", async () => {
-      const rootCanisterId = rootCanisterIdMock;
-      const aggregatorProject = aggregatorSnsMockWith({
-        rootCanisterId: rootCanisterId.toText(),
-      });
-      snsAggregatorStore.setData([aggregatorProject]);
-      const spyGetFunctions = vi.spyOn(
-        governanceApi,
-        "getNervousSystemFunctions"
-      );
-
-      await loadSnsNervousSystemFunctions(rootCanisterId);
-
-      expect(spyGetFunctions).not.toBeCalled();
-    });
-
-    it("should show a toast if api throws an error", async () => {
-      vi.spyOn(governanceApi, "getNervousSystemFunctions").mockImplementation(
-        () => Promise.reject("error")
-      );
-
-      await loadSnsNervousSystemFunctions(mockPrincipal);
-
-      await waitFor(() => expect(toastsError).toBeCalled());
-    });
   });
 
   describe("loadSnsProjects", () => {
