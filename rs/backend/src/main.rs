@@ -1,10 +1,10 @@
 use crate::accounts_store::histogram::AccountsStoreHistogram;
 use crate::accounts_store::{
-    AccountDetails, AddPendingNotifySwapRequest, AddPendingTransactionResponse, AttachCanisterRequest,
+    AccountDetails, AttachCanisterRequest,
     AttachCanisterResponse, CreateSubAccountResponse, DetachCanisterRequest, DetachCanisterResponse,
     GetTransactionsRequest, GetTransactionsResponse, NamedCanister, RegisterHardwareWalletRequest,
     RegisterHardwareWalletResponse, RenameCanisterRequest, RenameCanisterResponse, RenameSubAccountRequest,
-    RenameSubAccountResponse, TransactionType,
+    RenameSubAccountResponse,
 };
 use crate::arguments::{set_canister_arguments, CanisterArguments};
 use crate::assets::{hash_bytes, insert_asset, insert_tar_xz, Asset};
@@ -236,30 +236,6 @@ fn detach_canister_impl(request: DetachCanisterRequest) -> DetachCanisterRespons
 #[export_name = "canister_update get_proposal_payload"]
 pub fn get_proposal_payload() {
     over_async(candid_one, proposals::get_proposal_payload);
-}
-
-#[export_name = "canister_update add_pending_notify_swap"]
-pub fn add_pending_notify_swap() {
-    over(candid_one, add_pending_notify_swap_impl);
-}
-
-#[allow(clippy::needless_pass_by_value)] // The pattern is to take requests by value.
-fn add_pending_notify_swap_impl(request: AddPendingNotifySwapRequest) -> AddPendingTransactionResponse {
-    let caller = dfn_core::api::caller();
-    STATE.with(|s| {
-        if s.accounts_store
-            .borrow_mut()
-            .check_pending_transaction_buyer(caller, request.buyer)
-        {
-            s.accounts_store.borrow_mut().add_pending_transaction(
-                AccountIdentifier::new(request.buyer, request.buyer_sub_account),
-                AccountIdentifier::new(request.swap_canister_id.get(), Some((&request.buyer).into())),
-                TransactionType::ParticipateSwap(request.swap_canister_id),
-            )
-        } else {
-            AddPendingTransactionResponse::NotAuthorized
-        }
-    })
 }
 
 /// Returns stats about the canister.

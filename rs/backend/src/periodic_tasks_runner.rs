@@ -1,6 +1,6 @@
 use crate::accounts_store::{CreateCanisterArgs, RefundTransactionArgs, TopUpCanisterArgs};
 use crate::canisters::ledger;
-use crate::canisters::{cmc, governance, swap};
+use crate::canisters::{cmc, governance};
 use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
 use crate::multi_part_transactions_processor::MultiPartTransactionToBeProcessed;
 use crate::state::STATE;
@@ -10,7 +10,6 @@ use dfn_core::api::{CanisterId, PrincipalId};
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::CYCLES_MINTING_CANISTER_ID;
 use ic_nns_governance::pb::v1::{claim_or_refresh_neuron_from_account_response, ClaimOrRefreshNeuronFromAccount};
-use ic_sns_swap::pb::v1::RefreshBuyerTokensRequest;
 use icp_ledger::{
     AccountBalanceArgs, AccountIdentifier, BlockIndex, Memo, SendArgs, Subaccount, Tokens, DEFAULT_TRANSFER_FEE,
 };
@@ -24,8 +23,10 @@ pub async fn run_periodic_tasks() {
         STATE.with(|s| s.accounts_store.borrow_mut().try_take_next_transaction_to_process());
     if let Some((block_height, transaction_to_process)) = maybe_transaction_to_process {
         match transaction_to_process {
-            MultiPartTransactionToBeProcessed::ParticipateSwap(principal, from, to, swap_canister_id) => {
-                handle_participate_swap(principal, from, to, swap_canister_id).await;
+            MultiPartTransactionToBeProcessed::ParticipateSwap(_principal, _from, _to, _swap_canister_id) => {
+                // DO NOTHING
+                // Handling ParticipateSwap is not supported.
+                ()
             }
             MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo) => {
                 handle_stake_neuron(principal, memo).await;
@@ -57,20 +58,6 @@ pub async fn run_periodic_tasks() {
                 .borrow_mut()
                 .prune_transactions(PRUNE_TRANSACTIONS_COUNT)
         });
-    }
-}
-
-async fn handle_participate_swap(
-    principal: PrincipalId,
-    from: AccountIdentifier,
-    to: AccountIdentifier,
-    swap_canister_id: CanisterId,
-) {
-    let request = RefreshBuyerTokensRequest {
-        buyer: principal.to_string(),
-    };
-    if swap::notify_swap_participation(swap_canister_id, request).await.is_ok() {
-        STATE.with(|s| s.accounts_store.borrow_mut().complete_pending_transaction(from, to));
     }
 }
 
