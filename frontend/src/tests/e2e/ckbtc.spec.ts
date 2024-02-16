@@ -35,7 +35,7 @@ test("Test accounts requirements", async ({ page, context }) => {
   const transactionList = await appPo
     .getWalletPo()
     .getCkBTCWalletPo()
-    .getIcrcTransactionsListPo();
+    .getTransactionsListPo();
   await transactionList.waitForLoaded();
 
   const transactions = await transactionList.getTransactionCardPos();

@@ -217,7 +217,7 @@ describe("SnsWallet", () => {
     it("should render transactions", async () => {
       const po = await renderComponent(props);
 
-      expect(await po.getIcrcTransactionsListPo().isPresent()).toBe(true);
+      expect(await po.getTransactionsListPo().isPresent()).toBe(true);
     });
 
     it("should render 'Main' as subtitle", async () => {
@@ -373,7 +373,7 @@ describe("SnsWallet", () => {
 
       const po = await renderComponent(props);
 
-      expect(await po.getIcrcTransactionsListPo().isPresent()).toBe(true);
+      expect(await po.getTransactionsListPo().isPresent()).toBe(true);
 
       expect(spy).toHaveBeenCalledTimes(1);
     });

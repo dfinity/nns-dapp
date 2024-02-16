@@ -14,7 +14,7 @@
     isIcrcTransactionsCompleted,
     mapIcrcTransaction,
   } from "$lib/utils/icrc-transactions.utils";
-  import IcrcTransactionsList from "$lib/components/accounts/IcrcTransactionsList.svelte";
+  import UiTransactionsList from "$lib/components/accounts/UiTransactionsList.svelte";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { CanisterId } from "$lib/types/canister";
   import { onMount } from "svelte";
@@ -119,7 +119,7 @@
   {completed}
   {ledgerCanisterId}
 >
-  <IcrcTransactionsList
+  <UiTransactionsList
     on:nnsIntersect={loadNextTransactions}
     transactions={uiTransactions}
     {loading}

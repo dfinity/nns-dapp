@@ -1,4 +1,5 @@
 <script lang="ts">
+  // TODO: Rename to TransactionList once we remove the old one.
   import { InfiniteScroll, Spinner } from "@dfinity/gix-components";
   import NoTransactions from "./NoTransactions.svelte";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
