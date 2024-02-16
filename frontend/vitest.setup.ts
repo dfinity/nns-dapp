@@ -41,6 +41,7 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
       ENABLE_CKBTC: true,
       ENABLE_CKTESTBTC: true,
       ENABLE_ICP_ICRC: false,
+      ENABLE_ICP_INDEX: false,
       ENABLE_VOTING_INDICATION: true,
       TEST_FLAG_EDITABLE: true,
       TEST_FLAG_NOT_EDITABLE: true,
