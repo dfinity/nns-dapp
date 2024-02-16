@@ -31,6 +31,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Stop loading SNS tokens individually because they are already loaded from the SNS aggregator data.
 * Remove `ENABLE_SNS_TYPES_FILTER` feature flag.
+* Remove functionality to add pending swap transactions in NNS Dapp canister.
 
 #### Fixed
 

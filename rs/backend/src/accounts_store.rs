@@ -3,7 +3,6 @@ use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
 use crate::multi_part_transactions_processor::{MultiPartTransactionToBeProcessed, MultiPartTransactionsProcessor};
 use crate::state::StableState;
 use crate::stats::Stats;
-use crate::time::time_millis;
 use candid::CandidType;
 use dfn_candid::Candid;
 use histogram::AccountsStoreHistogram;
@@ -357,19 +356,6 @@ pub enum DetachCanisterResponse {
     AccountNotFound,
 }
 
-#[derive(CandidType, Deserialize)]
-pub struct AddPendingNotifySwapRequest {
-    pub swap_canister_id: CanisterId,
-    pub buyer: PrincipalId,
-    pub buyer_sub_account: Option<Subaccount>,
-}
-
-#[derive(CandidType)]
-pub enum AddPendingTransactionResponse {
-    Ok,
-    NotAuthorized,
-}
-
 impl AccountsStore {
     #[must_use]
     pub fn get_account(&self, caller: PrincipalId) -> Option<AccountDetails> {
@@ -624,77 +610,6 @@ impl AccountsStore {
         } else {
             RegisterHardwareWalletResponse::AccountNotFound
         }
-    }
-
-    // Adds a transactions to be handled by `get_transaction_type` when adding transactions
-    // Used to add the Swap Canister Id for decentralized sale participations to the transaction
-    // It's needed to notify the Swap Canister afterwards in the periodic_tasks_runner
-    pub fn add_pending_transaction(
-        &mut self,
-        from: AccountIdentifier,
-        to: AccountIdentifier,
-        transaction_type: TransactionType,
-    ) -> AddPendingTransactionResponse {
-        let now_millis = time_millis();
-        if self.pending_transactions.len() > 1_000 {
-            self.prune_old_pending_transactions(now_millis);
-        }
-        if self.pending_transactions_limit_reached() {
-            // We should never hit this
-            // Just to be safe and the pending transaction is always added
-            self.remove_last_pending_transaction();
-        }
-        self.pending_transactions
-            .insert((from, to), (transaction_type, now_millis));
-        AddPendingTransactionResponse::Ok
-    }
-
-    #[allow(clippy::unused_self)] // `self` will be needed when hardware wallets are supported.
-    pub fn check_pending_transaction_buyer(&mut self, caller: PrincipalId, buyer: PrincipalId) -> bool {
-        // TODO: To support hardware wallets, check that the buyer is either the caller's principal or the principal of a hardware wallet linked to the caller's account.
-        caller == buyer
-    }
-
-    fn prune_old_pending_transactions(&mut self, now_millis: u64) {
-        const HOUR_IN_MILLISECONDS: u64 = 1_000 * 60 * 60;
-        let one_hour_ago = now_millis - HOUR_IN_MILLISECONDS;
-        // Keep pending transactions of the last hour only
-        self.pending_transactions
-            .retain(|_, (_, timestamp)| *timestamp > one_hour_ago);
-    }
-
-    fn remove_last_pending_transaction(&mut self) {
-        if let Some((k, _)) = self
-            .pending_transactions
-            .iter()
-            .max_by(|(_, (_, timestamp1)), (_, (_, timestamp2))| timestamp1.cmp(timestamp2))
-        {
-            self.remove_pending_transaction(*k);
-        }
-    }
-
-    fn remove_pending_transaction(&mut self, (from, to): (AccountIdentifier, AccountIdentifier)) {
-        self.pending_transactions.remove(&(from, to));
-    }
-
-    // Get pending transaction
-    #[must_use]
-    pub fn get_pending_transaction(&self, from: AccountIdentifier, to: AccountIdentifier) -> Option<TransactionType> {
-        self.pending_transactions
-            .get(&(from, to))
-            .map(|&(transaction_type, _)| transaction_type)
-    }
-
-    pub fn complete_pending_transaction(&mut self, from: AccountIdentifier, to: AccountIdentifier) {
-        self.remove_pending_transaction((from, to));
-    }
-
-    #[must_use]
-    pub fn pending_transactions_limit_reached(&self) -> bool {
-        // Valid pending transactions are very short lived.
-        // If there are many, it's because it's filled with invalid pending transactions.
-        const PENDING_TRANSACTIONS_LIMIT: usize = 10_000;
-        self.pending_transactions.len() >= PENDING_TRANSACTIONS_LIMIT
     }
 
     pub fn append_transaction(
@@ -1409,8 +1324,6 @@ impl AccountsStore {
             } else {
                 TransactionType::TopUpNeuron
             }
-        } else if let Some(transaction_type) = self.get_pending_transaction(from, to) {
-            transaction_type
         } else if memo.0 > 0 {
             if Self::is_create_canister_transaction(memo, &to, principal) {
                 TransactionType::CreateCanister

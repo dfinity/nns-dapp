@@ -169,19 +169,6 @@ type RenameCanisterResponse =
         AccountNotFound;
     };
 
-type AddPendingNotifySwapRequest =
-    record {
-        buyer: principal;
-        buyer_sub_account: opt SubAccount;
-        swap_canister_id: principal;
-    };
-
-type AddPendingTransactionResponse =
-    variant {
-        Ok;
-        NotAuthorized;
-    };
-
 type DetachCanisterRequest =
     record {
         canister_id: principal;
@@ -288,7 +275,6 @@ service: (opt Config) -> {
     get_stats: () -> (Stats) query;
     get_histogram: () -> (Histogram) query;
     get_exceptional_transactions: () -> (vec nat64) query;
-    add_pending_notify_swap: (AddPendingNotifySwapRequest) -> (AddPendingTransactionResponse);
 
     http_request: (request: HttpRequest) -> (HttpResponse) query;
     add_stable_asset: (asset: blob) -> ();
