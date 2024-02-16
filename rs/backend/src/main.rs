@@ -1,10 +1,9 @@
 use crate::accounts_store::histogram::AccountsStoreHistogram;
 use crate::accounts_store::{
-    AccountDetails, AttachCanisterRequest,
-    AttachCanisterResponse, CreateSubAccountResponse, DetachCanisterRequest, DetachCanisterResponse,
-    GetTransactionsRequest, GetTransactionsResponse, NamedCanister, RegisterHardwareWalletRequest,
-    RegisterHardwareWalletResponse, RenameCanisterRequest, RenameCanisterResponse, RenameSubAccountRequest,
-    RenameSubAccountResponse,
+    AccountDetails, AttachCanisterRequest, AttachCanisterResponse, CreateSubAccountResponse, DetachCanisterRequest,
+    DetachCanisterResponse, GetTransactionsRequest, GetTransactionsResponse, NamedCanister,
+    RegisterHardwareWalletRequest, RegisterHardwareWalletResponse, RenameCanisterRequest, RenameCanisterResponse,
+    RenameSubAccountRequest, RenameSubAccountResponse,
 };
 use crate::arguments::{set_canister_arguments, CanisterArguments};
 use crate::assets::{hash_bytes, insert_asset, insert_tar_xz, Asset};

@@ -26,7 +26,6 @@ pub async fn run_periodic_tasks() {
             MultiPartTransactionToBeProcessed::ParticipateSwap(_principal, _from, _to, _swap_canister_id) => {
                 // DO NOTHING
                 // Handling ParticipateSwap is not supported.
-                ()
             }
             MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo) => {
                 handle_stake_neuron(principal, memo).await;
