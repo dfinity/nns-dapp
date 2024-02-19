@@ -1,13 +1,13 @@
-import IcrcTransactionsList from "$lib/components/accounts/IcrcTransactionsList.svelte";
+import UiTransactionsList from "$lib/components/accounts/UiTransactionsList.svelte";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import type { UiTransaction } from "$lib/types/transaction";
 import { mockIcrcTransactionsStoreSubscribe } from "$tests/mocks/icrc-transactions.mock";
 import { createMockUiTransaction } from "$tests/mocks/transaction.mock";
-import { IcrcTransactionsListPo } from "$tests/page-objects/IcrcTransactionsList.page-object";
+import { UiTransactionsListPo } from "$tests/page-objects/UiTransactionsList.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
-describe("IcrcTransactionList", () => {
+describe("UiTransactionsList", () => {
   const renderComponent = ({
     transactions,
     loading,
@@ -17,14 +17,14 @@ describe("IcrcTransactionList", () => {
     loading?: boolean;
     completed?: boolean;
   }) => {
-    const { container } = render(IcrcTransactionsList, {
+    const { container } = render(UiTransactionsList, {
       props: {
         transactions,
         loading,
         completed,
       },
     });
-    return IcrcTransactionsListPo.under(new JestPageObjectElement(container));
+    return UiTransactionsListPo.under(new JestPageObjectElement(container));
   };
 
   afterEach(() => {

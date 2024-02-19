@@ -1,4 +1,3 @@
-import { IcrcTransactionsListPo } from "$tests/page-objects/IcrcTransactionsList.page-object";
 import { IcrcWalletFooterPo } from "$tests/page-objects/IcrcWalletFooter.page-object";
 import { SignInPo } from "$tests/page-objects/SignIn.page-object";
 import { WalletPageHeaderPo } from "$tests/page-objects/WalletPageHeader.page-object";
@@ -11,10 +10,6 @@ export class IcrcWalletPo extends BasePageObject {
 
   static under(element: PageObjectElement): IcrcWalletPo {
     return new IcrcWalletPo(element.byTestId(IcrcWalletPo.TID));
-  }
-
-  getIcrcTransactionsListPo(): IcrcTransactionsListPo {
-    return IcrcTransactionsListPo.under(this.root);
   }
 
   getWalletPageHeaderPo(): WalletPageHeaderPo {

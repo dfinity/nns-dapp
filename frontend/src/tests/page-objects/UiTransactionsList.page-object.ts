@@ -3,13 +3,11 @@ import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { TransactionCardPo } from "$tests/page-objects/TransactionCard.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class IcrcTransactionsListPo extends BasePageObject {
+export class UiTransactionsListPo extends BasePageObject {
   private static readonly TID = "transactions-list";
 
-  static under(element: PageObjectElement): IcrcTransactionsListPo {
-    return new IcrcTransactionsListPo(
-      element.byTestId(IcrcTransactionsListPo.TID)
-    );
+  static under(element: PageObjectElement): UiTransactionsListPo {
+    return new UiTransactionsListPo(element.byTestId(UiTransactionsListPo.TID));
   }
 
   getSkeletonCardPo(): SkeletonCardPo {

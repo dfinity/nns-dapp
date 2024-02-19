@@ -16,7 +16,7 @@ import {
   mockIcrcTransactionMint,
   mockIcrcTransactionsStoreSubscribe,
 } from "$tests/mocks/icrc-transactions.mock";
-import { IcrcTransactionsListPo } from "$tests/page-objects/IcrcTransactionsList.page-object";
+import { UiTransactionsListPo } from "$tests/page-objects/UiTransactionsList.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Cbor } from "@dfinity/agent";
@@ -54,7 +54,7 @@ describe("CkBTCTransactionList", () => {
       },
     });
     return {
-      po: IcrcTransactionsListPo.under(new JestPageObjectElement(container)),
+      po: UiTransactionsListPo.under(new JestPageObjectElement(container)),
       reload: component.reloadTransactions,
     };
   };
