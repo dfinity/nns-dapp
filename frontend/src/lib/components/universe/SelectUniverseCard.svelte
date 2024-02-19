@@ -40,8 +40,8 @@
 
   let votingProposalCount: number | undefined = undefined;
   $: votingProposalCount = $votingProposalIndicationEnabledStore
-    ? undefined
-    : $votingProposalCountStore[universe.canisterId];
+    ? $votingProposalCountStore[universe.canisterId]
+    : undefined;
 </script>
 
 <Card

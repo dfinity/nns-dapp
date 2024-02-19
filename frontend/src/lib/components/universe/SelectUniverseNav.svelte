@@ -26,7 +26,6 @@
 
 <Nav>
   <p class="title" slot="title" data-tid="select-universe-nav-title">
-    {$votingProposalIndicationEnabledStore}
     {$titleTokenSelectorStore}
   </p>
 
