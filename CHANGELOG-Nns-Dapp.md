@@ -11,6 +11,43 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 127764
+
+### Application
+
+#### Added
+
+* Add `ENABLE_VOTING_INDICATION` feature flag.
+* Add "Manage Internet Identity" and "Source code" entries to account menu.
+* Client side caching of SNS Aggregator calls.
+* Prompt the user to check the hardware wallet screen when splitting a neuron controlled by one.
+
+#### Changed
+
+* Refactor tokens store usage.
+* Store SNS accounts in `icrcAccountsStore`.
+
+#### Removed
+
+* Stop loading SNS tokens individually because they are already loaded from the SNS aggregator data.
+* Remove `ENABLE_SNS_TYPES_FILTER` feature flag.
+
+### Operations
+
+#### Added
+
+* Test that project logo (not token logo) is displayed on SNS wallet.
+
+#### Changed
+
+* Update the GitHub `build-push-action` from `v4` to `v5`.
+* Upgrade Rust to 1.76.0
+* Ignore failures of `test-upgrade-map`
+
+#### Removed
+
+* Remove periodic app subnet deployment of nns-dapp.
+
 ## Proposal 127696
 
 ### Application
