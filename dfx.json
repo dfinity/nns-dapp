@@ -25,6 +25,19 @@
         }
       }
     },
+    "nns-index": {
+      "build": [
+        "true"
+      ],
+      "candid": "target/ic/nns-index.did",
+      "wasm": "target/ic/nns-index.wasm",
+      "type": "custom",
+      "remote": {
+        "id": {
+          "mainnet": "qhbym-qaaaa-aaaaa-aaafq-cai"
+        }
+      }
+    },
     "nns-cycles-minting": {
       "build": "",
       "candid": "target/ic/nns-cycles-minting.did",
