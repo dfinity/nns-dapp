@@ -1,60 +1,33 @@
 <script lang="ts">
-  import { Nav, BREAKPOINT_LARGE, Spinner } from "@dfinity/gix-components";
+  import { Nav, BREAKPOINT_LARGE } from "@dfinity/gix-components";
   import SelectUniverseNavList from "$lib/components/universe/SelectUniverseNavList.svelte";
   import SelectUniverseDropdown from "$lib/components/universe/SelectUniverseDropdown.svelte";
   import { titleTokenSelectorStore } from "$lib/derived/title-token-selector.derived";
-  import { onMount } from "svelte";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
   import { listNeurons } from "$lib/services/neurons.services";
   import { definedNeuronsStore } from "$lib/stores/neurons.store";
   import { queryVotingProposals } from "$lib/services/$public/proposals.services";
-  import { isSelectedPath } from "$lib/utils/navigation.utils";
-  import { pageStore } from "$lib/derived/page.derived";
-  import { AppPath } from "$lib/constants/routes.constants";
-  import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
-  import { votingProposalCountStore } from "$lib/derived/votingProposalCount.derived";
   import { queryVotingSnsProposals } from "$lib/services/$public/sns-voting-proposals.services";
-  import { get } from "svelte/store";
-  import { votingSnsProposalsStore } from "$lib/stores/voting-sns-proposals.store";
+  import { votingProposalIndicationEnabledStore } from "$lib/derived/voting-proposal-indication.derived";
 
   let innerWidth = 0;
   let list = false;
 
   $: list = innerWidth > BREAKPOINT_LARGE;
 
-  onMount(async () => {
-    if (
-      !isSelectedPath({
-        currentPath: $pageStore.path,
-        paths: [AppPath.Proposals],
-      }) ||
-      !$authSignedInStore
-    ) {
-      return;
-    }
-
-    // Loading uncertified neurons is safe here, because they will be reloaded on navigation
+  const updateVotingProposals = async () => {
     await listNeurons({ strategy: "query" });
     await queryVotingProposals($definedNeuronsStore);
-
-    // TODO(max): fetch neurons and proposals in a single function
     await queryVotingSnsProposals();
-    console.log("✅snsProposalVotingStore", get(votingSnsProposalsStore));
-  });
-
-  let votingProposalLoading = true;
-  $: votingProposalLoading =
-    Object.values($votingProposalCountStore).length < $snsProjectsStore.length;
+  };
+  $: $votingProposalIndicationEnabledStore && updateVotingProposals();
 </script>
 
 <svelte:window bind:innerWidth />
 
 <Nav>
   <p class="title" slot="title" data-tid="select-universe-nav-title">
+    {$votingProposalIndicationEnabledStore}
     {$titleTokenSelectorStore}
-    {#if votingProposalLoading}
-      <Spinner inline size="small" />
-    {/if}
   </p>
 
   {#if list}
