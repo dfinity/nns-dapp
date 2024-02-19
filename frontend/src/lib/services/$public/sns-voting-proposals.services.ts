@@ -52,8 +52,8 @@ const updateVotingProposals = async (canisterId: string): Promise<void> => {
       include_ballots_by_caller
     );
 
-    if (includeBallotsByCaller === false) {
-      // not possible to filter out proposals that are votable
+    if (!includeBallotsByCaller) {
+      // It's not possible to filter out proposals that are votable w/o ballots
       return;
     }
 
@@ -109,35 +109,4 @@ const querySnsProposals = async (
     certified: false,
     rootCanisterId: Principal.fromText(rootCanisterId),
   });
-};
-
-export const queryNeurons222 = async (): Promise<{
-  [rootCanisterId: string]: SnsNeuron[];
-}> => {
-  const identity = await getAuthenticatedIdentity();
-  const canisterIds = get(selectableUniversesStore)
-    // skip nns
-    .filter(({ canisterId }) => canisterId !== OWN_CANISTER_ID_TEXT)
-    .map(({ canisterId }) => canisterId);
-  const neurons = await Promise.all(
-    canisterIds.map(
-      async (canisterId) =>
-        // get neurons from store if available
-        get(snsNeuronsStore)[canisterId] ??
-        // or fetch from the canister
-        (await querySnsNeurons({
-          identity,
-          rootCanisterId: Principal.fromText(canisterId),
-          certified: false,
-        }))
-    )
-  );
-
-  return canisterIds.reduce(
-    (acc, canisterId, index) => ({
-      ...acc,
-      [canisterId]: neurons[index],
-    }),
-    {}
-  );
 };
