@@ -49,7 +49,7 @@ impl State {
             .sns_cache
             .borrow()
             .all_sns
-            .get(index as usize)
+            .get(usize::try_from(index).unwrap_or_else(|_| unreachable!("The number of SNSs is far below usize::MAX")))
             .ok_or_else(|| format!("Requested index '{index}' does not exist"))?
             .1
             .swap_canister_id
@@ -120,6 +120,7 @@ thread_local! {
 }
 
 /// Log to console and store for retrieval by query calls.
+#[allow(clippy::needless_pass_by_value)] // The value is actually consumed.
 pub fn log(message: String) {
     println!("{}", &message);
     let now = time();

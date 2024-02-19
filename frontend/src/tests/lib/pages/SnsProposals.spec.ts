@@ -223,20 +223,22 @@ describe("SnsProposals", () => {
         ...proposals[1],
         action: functionId2,
       });
-      snsFunctionsStore.setProjectFunctions({
-        rootCanisterId,
-        nsFunctions: [
-          {
-            ...nervousSystemFunctionMock,
-            id: functionId1,
-          },
-          {
-            ...nervousSystemFunctionMock,
-            id: functionId2,
-          },
-        ],
-        certified: true,
-      });
+      snsFunctionsStore.setProjectsFunctions([
+        {
+          rootCanisterId,
+          nsFunctions: [
+            {
+              ...nervousSystemFunctionMock,
+              id: functionId1,
+            },
+            {
+              ...nervousSystemFunctionMock,
+              id: functionId2,
+            },
+          ],
+          certified: true,
+        },
+      ]);
     });
 
     it("should filter by status", async () => {

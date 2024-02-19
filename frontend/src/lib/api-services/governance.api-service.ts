@@ -6,7 +6,6 @@ import {
   increaseDissolveDelay,
   joinCommunityFund,
   leaveCommunityFund,
-  mergeMaturity,
   mergeNeurons,
   queryKnownNeurons,
   queryLastestRewardEvent,
@@ -28,7 +27,6 @@ import {
   type ApiIncreaseDissolveDelayParams,
   type ApiManageHotkeyParams,
   type ApiManageNeuronParams,
-  type ApiMergeMaturityParams,
   type ApiMergeNeuronsParams,
   type ApiQueryNeuronParams,
   type ApiQueryParams,
@@ -168,10 +166,6 @@ export const governanceApiService = {
   },
   leaveCommunityFund(params: ApiManageNeuronParams) {
     return clearCacheAfter(leaveCommunityFund(params));
-  },
-  // @deprecated
-  mergeMaturity(params: ApiMergeMaturityParams) {
-    return clearCacheAfter(mergeMaturity(params));
   },
   mergeNeurons(params: ApiMergeNeuronsParams) {
     return clearCacheAfter(mergeNeurons(params));

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { loadSnsNervousSystemFunctions } from "$lib/services/$public/sns.services";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import {
@@ -24,13 +23,6 @@
     createSnsNsFunctionsProjectStore,
     type SnsNervousSystemFunctionsProjectStore,
   } from "$lib/derived/sns-ns-functions-project.derived";
-
-  $: {
-    if (rootCanisterId !== undefined) {
-      // To render the topics of the followees we need to fetch all the topics.
-      loadSnsNervousSystemFunctions(rootCanisterId);
-    }
-  }
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);

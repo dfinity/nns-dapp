@@ -1,10 +1,11 @@
 <script lang="ts">
+  // TODO: Rename to TransactionList once we remove the old one.
   import { InfiniteScroll, Spinner } from "@dfinity/gix-components";
   import NoTransactions from "./NoTransactions.svelte";
-  import IcrcTransactionCard from "./IcrcTransactionCard.svelte";
   import SkeletonCard from "../ui/SkeletonCard.svelte";
   import type { UiTransaction } from "$lib/types/transaction";
   import { flip } from "svelte/animate";
+  import TransactionCard from "./TransactionCard.svelte";
 
   export let transactions: UiTransaction[];
   export let loading: boolean;
@@ -21,7 +22,7 @@
     <InfiniteScroll on:nnsIntersect disabled={loading || completed}>
       {#each transactions as transaction (transaction.domKey)}
         <div animate:flip={{ duration: 250 }}>
-          <IcrcTransactionCard {transaction} />
+          <TransactionCard {transaction} />
         </div>
       {/each}
     </InfiniteScroll>

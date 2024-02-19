@@ -34,7 +34,6 @@ const fakeFunctions = {
   querySnsNeurons,
   getSnsNeuron,
   nervousSystemParameters,
-  getNervousSystemFunctions,
   getNeuronBalance,
   refreshNeuron,
   claimNeuron,
@@ -189,18 +188,6 @@ async function nervousSystemParameters({
   certified: boolean;
 }): Promise<SnsNervousSystemParameters> {
   return snsNervousSystemParametersMock;
-}
-
-async function getNervousSystemFunctions({
-  rootCanisterId,
-  identity: _,
-  certified: __,
-}: {
-  rootCanisterId: Principal;
-  identity: Identity;
-  certified: boolean;
-}): Promise<SnsNervousSystemFunction[]> {
-  return nervousFunctions.get(rootCanisterId.toText()) || [];
 }
 
 async function getNeuronBalance({

@@ -81,10 +81,12 @@ pub struct Asset {
 
 impl Asset {
     /// Creates a new asset with the given bytes in the HTTP body.
+    #[must_use]
     pub fn new(bytes: Vec<u8>) -> Self {
         Self { headers: vec![], bytes }
     }
     /// Adds the given header to the given asset.
+    #[must_use]
     pub fn with_header<S: Into<String>>(mut self, key: S, val: S) -> Self {
         self.headers.push((key.into(), val.into()));
         self
@@ -104,6 +106,7 @@ impl Assets {
     }
 
     /// Determines whether the assets are empty
+    #[must_use]
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
     }
@@ -115,6 +118,7 @@ impl Assets {
 
     /// Gets an asset, using the actual asset path, e.g.
     /// `/foo/index.html` not `/foo/`.
+    #[must_use]
     pub fn get(&self, path: &str) -> Option<&Asset> {
         self.0.get(path)
     }
@@ -228,6 +232,9 @@ fn update_root_hash(a: &AssetHashes) {
 
 /// Responds to an HTTP request for an asset.
 #[allow(clippy::expect_used)] // This is a query call, so panicking may be correct.
+#[allow(clippy::needless_pass_by_value)]
+// The signature is standard, we cannot change it.  It would be nice if this standard signature were defined in a trait that we could apply to a main struct, though!
+#[must_use]
 pub fn http_request(req: HttpRequest) -> HttpResponse {
     let mut parts = req.url.splitn(2, '?');
     let request_path = parts.next().unwrap_or("/");

@@ -4,7 +4,6 @@ import {
   claimNeuron,
   disburse,
   disburseMaturity,
-  getNervousSystemFunctions,
   getNeuronBalance,
   getSnsNeuron,
   nervousSystemParameters,
@@ -347,17 +346,6 @@ describe("sns-api", () => {
     });
 
     expect(setTopicFolloweesSpy).toBeCalled();
-  });
-
-  it("should get nervous system functions", async () => {
-    const res = await getNervousSystemFunctions({
-      identity: mockIdentity,
-      rootCanisterId: rootCanisterIdMock,
-      certified: false,
-    });
-
-    expect(getFunctionsSpy).toBeCalled();
-    expect(res).toEqual([nervousSystemFunctionMock]);
   });
 
   it("should get nervous system parameters", async () => {

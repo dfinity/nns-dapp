@@ -1,8 +1,4 @@
-import {
-  tokensStore,
-  type TokensStore,
-  type TokensStoreData,
-} from "$lib/stores/tokens.store";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import {
   UserTokenAction,
   type UserToken,
@@ -11,18 +7,19 @@ import {
 import { buildAccountsUrl, buildWalletUrl } from "$lib/utils/navigation.utils";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { isUniverseNns } from "$lib/utils/universe.utils";
-import { isNullish, TokenAmountV2 } from "@dfinity/utils";
+import { TokenAmountV2, isNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 import { tokensListBaseStore } from "./tokens-list-base.derived";
+import { tokensByUniverseIdStore } from "./tokens.derived";
 
 const convertToUserToken = ({
   tokenBaseData,
-  tokensStore,
+  tokensByUniverse,
 }: {
   tokenBaseData: UserTokenBase;
-  tokensStore: TokensStoreData;
+  tokensByUniverse: Record<string, IcrcTokenMetadata>;
 }): UserToken => {
-  const token = tokensStore[tokenBaseData.universeId.toText()]?.token;
+  const token = tokensByUniverse[tokenBaseData.universeId.toText()];
   if (isNullish(token)) {
     return {
       ...tokenBaseData,
@@ -45,10 +42,12 @@ const convertToUserToken = ({
 };
 
 export const tokensListVisitorsStore = derived<
-  [Readable<UserTokenBase[]>, TokensStore],
+  [Readable<UserTokenBase[]>, Readable<Record<string, IcrcTokenMetadata>>],
   UserToken[]
->([tokensListBaseStore, tokensStore], ([tokensData, tokensStore]) =>
-  tokensData.map((tokenBaseData) =>
-    convertToUserToken({ tokensStore, tokenBaseData })
-  )
+>(
+  [tokensListBaseStore, tokensByUniverseIdStore],
+  ([tokensData, tokensByUniverse]) =>
+    tokensData.map((tokenBaseData) =>
+      convertToUserToken({ tokensByUniverse, tokenBaseData })
+    )
 );

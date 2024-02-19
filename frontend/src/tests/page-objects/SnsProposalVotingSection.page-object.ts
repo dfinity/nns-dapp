@@ -1,5 +1,5 @@
-import { SnsVotingCardPo } from "$tests/page-objects/SnsVotingCard.page-object";
 import { VotesResultPo } from "$tests/page-objects/VotesResults.page-object";
+import { VotingCardPo } from "$tests/page-objects/VotingCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -20,11 +20,11 @@ export class SnsProposalVotingSectionPo extends BasePageObject {
     return VotesResultPo.under(this.root);
   }
 
-  getSnsVotingCardPo(): SnsVotingCardPo {
-    return SnsVotingCardPo.under(this.root);
+  getVotingCardPo(): VotingCardPo {
+    return VotingCardPo.under(this.root);
   }
 
   hasVotingToolbar(): Promise<boolean> {
-    return this.getSnsVotingCardPo().hasVotingToolbar();
+    return this.getVotingCardPo().hasVotingConfirmationToolbar();
   }
 }

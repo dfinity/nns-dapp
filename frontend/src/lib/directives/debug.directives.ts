@@ -218,7 +218,6 @@ const anonymiseStoreState = async () => {
     selectedProposal,
     selectedProject,
     snsNeurons,
-    snsAccounts,
     selectedSnsNeuron,
     snsFunctions,
     snsTransactions,
@@ -281,13 +280,6 @@ const anonymiseStoreState = async () => {
       async ({ certified, neurons }) => ({
         certified,
         neurons: await mapPromises(neurons, anonymizeSnsNeuron),
-      })
-    ),
-    snsAccounts: await anonymizeSnsTypeStore(
-      snsAccounts,
-      async ({ certified, accounts }) => ({
-        certified,
-        accounts: await mapPromises(accounts, anonymizeAccount),
       })
     ),
     selectedSnsNeuron: {

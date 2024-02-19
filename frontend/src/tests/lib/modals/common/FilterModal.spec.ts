@@ -36,6 +36,14 @@ describe("FilterModal", () => {
     );
   });
 
+  it("should render a modal with spinner if filters are not loaded", () => {
+    const { queryByTestId } = render(FilterModal, {
+      props: { visible: true, filters: undefined },
+    });
+
+    expect(queryByTestId("spinner")).toBeInTheDocument();
+  });
+
   it("should forward close modal event", () =>
     new Promise<void>((done) => {
       const { queryByTestId, component } = render(FilterModal, {

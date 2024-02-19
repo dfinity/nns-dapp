@@ -2,7 +2,6 @@ import { getBTCAddress } from "$lib/api/ckbtc-minter.api";
 import {
   acquireICPTs,
   acquireIcrcTokens,
-  acquireSnsTokens,
   receiveMockBtc,
 } from "$lib/api/dev.api";
 import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -10,19 +9,13 @@ import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import type { IcpAccountsStoreData } from "$lib/stores/icp-accounts.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-import {
-  snsAccountsStore,
-  type SnsAccountsStoreData,
-} from "$lib/stores/sns-accounts.store";
-import { tokensStore } from "$lib/stores/tokens.store";
 import type { IcpAccount } from "$lib/types/account";
 import { numberToUlps } from "$lib/utils/token.utils";
 import type { Principal } from "@dfinity/principal";
 import { ICPToken, nonNullish, type Token } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { syncAccounts } from "./icp-accounts.services";
-import { loadIcrcAccount } from "./icrc-accounts.services";
-import { loadSnsAccounts } from "./sns-accounts.services";
+import { loadAccounts } from "./icrc-accounts.services";
 
 const getMainAccount = async (): Promise<IcpAccount> => {
   const { main }: IcpAccountsStoreData = get(icpAccountsStore);
@@ -56,38 +49,6 @@ export const getICPs = async (icps: number) => {
   await syncAccounts();
 };
 
-// TODO: Use `getIcrcTokens` instead.
-export const getSnsTokens = async ({
-  tokens,
-  rootCanisterId,
-}: {
-  tokens: number;
-  rootCanisterId: Principal;
-}) => {
-  // Accounts are loaded when user visits the Accounts page, so we need to load them here.
-  await loadSnsAccounts({ rootCanisterId });
-  const store: SnsAccountsStoreData = get(snsAccountsStore);
-  const { accounts } = store[rootCanisterId.toText()];
-  const main = accounts.find((account) => account.type === "main");
-  const token = get(tokensStore)[rootCanisterId.toText()]?.token;
-
-  if (!main) {
-    throw new Error("No account found to send tokens");
-  }
-  if (!token) {
-    throw new Error("No token found to send tokens");
-  }
-
-  await acquireSnsTokens({
-    ulps: numberToUlps({ amount: tokens, token }),
-    account: main,
-    rootCanisterId,
-  });
-
-  // Reload accounts to sync tokens that have been transferred
-  await loadSnsAccounts({ rootCanisterId });
-};
-
 // Not clear whether BTC should use the same token as ckBTC, that's why we have a separate token here.
 // Not exported to not be used outside the dev services.
 const BTC_TOKEN: Token = {
@@ -118,7 +79,7 @@ export const getIcrcTokens = async ({
   token: Token;
 }) => {
   // Accounts are loaded when user visits the Accounts page, so we need to load them here.
-  await loadIcrcAccount({ ledgerCanisterId, certified: false });
+  await loadAccounts({ ledgerCanisterId });
   const store = get(icrcAccountsStore);
   const { accounts } = store[ledgerCanisterId.toText()];
   const main = accounts.find((account) => account.type === "main");
@@ -134,5 +95,5 @@ export const getIcrcTokens = async ({
   });
 
   // Reload accounts to sync tokens that have been transferred
-  await loadIcrcAccount({ ledgerCanisterId, certified: true });
+  await loadAccounts({ ledgerCanisterId });
 };

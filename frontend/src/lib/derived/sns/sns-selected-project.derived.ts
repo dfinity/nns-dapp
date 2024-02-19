@@ -1,7 +1,7 @@
 import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
 import {
   snsProjectsCommittedStore,
-  snsProjectsStore,
+  snsProjectsRecordStore,
   type SnsFullProject,
 } from "$lib/derived/sns/sns-projects.derived";
 import {
@@ -34,12 +34,9 @@ export const snsOnlyProjectStore = derived<
 
 export const snsProjectSelectedStore: Readable<SnsFullProject | undefined> =
   derived(
-    [selectedUniverseIdStore, snsProjectsStore],
-    ([$selectedUniverseIdStore, $projectsStore]) =>
-      $projectsStore.find(
-        ({ rootCanisterId }) =>
-          rootCanisterId.toText() === $selectedUniverseIdStore.toText()
-      )
+    [selectedUniverseIdStore, snsProjectsRecordStore],
+    ([$selectedUniverseIdStore, $projectsRecordStore]) =>
+      $projectsRecordStore[$selectedUniverseIdStore.toText()]
   );
 
 export const snsCommittedProjectSelectedStore: Readable<

@@ -1,7 +1,6 @@
 import * as ckbtcMinterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
-import * as ckbtcLedgerApi from "$lib/api/wallet-ledger.api";
 import {
   CKTESTBTC_LEDGER_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
@@ -9,13 +8,12 @@ import {
 import { AppPath } from "$lib/constants/routes.constants";
 import { WALLET_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/wallet.constants";
 import CkBTCWallet from "$lib/pages/CkBTCWallet.svelte";
-import * as services from "$lib/services/wallet-accounts.services";
+import * as services from "$lib/services/icrc-accounts.services";
 import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
 import { ckbtcRetrieveBtcStatusesStore } from "$lib/stores/ckbtc-retrieve-btc-statuses.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import type { Account } from "$lib/types/account";
 import { page } from "$mocks/$app/stores";
 import CkBTCAccountsTest from "$tests/lib/components/accounts/CkBTCAccountsTest.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
@@ -67,13 +65,11 @@ vi.mock("$lib/services/worker-transactions.services", () => ({
   ),
 }));
 
-vi.mock("$lib/api/wallet-ledger.api");
 vi.mock("$lib/api/ckbtc-minter.api");
 vi.mock("$lib/api/icrc-ledger.api");
 vi.mock("$lib/api/icrc-index.api");
 
 const blockedApiPaths = [
-  "$lib/api/wallet-ledger.api",
   "$lib/api/ckbtc-minter.api",
   "$lib/api/icrc-ledger.api",
   "$lib/api/icrc-index.api",
@@ -223,12 +219,12 @@ describe("CkBTCWallet", () => {
         routeId: AppPath.Wallet,
       });
 
-      vi.mocked(ckbtcLedgerApi.getAccount).mockImplementation(() => {
-        return new Promise<Account>((resolve) => {
+      vi.mocked(icrcLedgerApi.queryIcrcBalance).mockImplementation(() => {
+        return new Promise<bigint>((resolve) => {
           resolveAccounts = resolve;
         });
       });
-      vi.mocked(ckbtcLedgerApi.getToken).mockResolvedValue(mockCkBTCToken);
+      vi.mocked(icrcLedgerApi.queryIcrcToken).mockResolvedValue(mockCkBTCToken);
     });
 
     it("should render a spinner while loading", async () => {
@@ -241,8 +237,8 @@ describe("CkBTCWallet", () => {
 
     it("should call to load ckBTC accounts", async () => {
       await renderWallet();
-      expect(ckbtcLedgerApi.getAccount).toBeCalled();
-      expect(ckbtcLedgerApi.getToken).toBeCalled();
+      expect(icrcLedgerApi.queryIcrcBalance).toBeCalled();
+      expect(icrcLedgerApi.queryIcrcToken).toBeCalled();
     });
   });
 
@@ -281,13 +277,12 @@ describe("CkBTCWallet", () => {
           return Promise.resolve({ block_index: 3n });
         }
       );
-      vi.mocked(ckbtcLedgerApi.getAccount).mockImplementation(() => {
-        return Promise.resolve({
-          ...mockCkBTCMainAccount,
-          ...(afterTransfer
-            ? { balanceUlps: expectedBalanceAfterTransfer }
-            : {}),
-        });
+      vi.mocked(icrcLedgerApi.queryIcrcBalance).mockImplementation(() => {
+        return Promise.resolve(
+          afterTransfer
+            ? expectedBalanceAfterTransfer
+            : mockCkBTCMainAccount.balanceUlps
+        );
       });
     });
 

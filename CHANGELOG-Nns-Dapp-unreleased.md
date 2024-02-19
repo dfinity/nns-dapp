@@ -15,32 +15,28 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Add fee as mandatory when making ICP transactions.
-* Add the token symbol in the send modals.
-* Add new boundary node proposals support.
-* Prevent the `1Password` extension from appearing in input fields.
-* Support HTML within toast messages.
 * Add `ENABLE_VOTING_INDICATION` feature flag.
+* Add "Manage Internet Identity" and "Source code" entries to account menu.
+* Client side caching of SNS Aggregator calls.
+* Prompt the user to check the hardware wallet screen when splitting a neuron controlled by one.
+* Add `ENABLE_ICP_INDEX` feature flag.
 
 #### Changed
 
-* Stable memory is owned by State structure to control access.
-* Voting power calculation formatting.
-* Voting rewards description.
-* Unify implementations of SNS token wallets with other (non-ICP) token wallets.
+* Refactor tokens store usage.
+* Store SNS accounts in `icrcAccountsStore`.
 
 #### Deprecated
 
 #### Removed
 
-* Unused `i18n` messages.
-* Remove `ENABLE_MY_TOKENS` feature flag.
+* Stop loading SNS tokens individually because they are already loaded from the SNS aggregator data.
+* Remove `ENABLE_SNS_TYPES_FILTER` feature flag.
+* Remove functionality to add pending swap transactions in NNS Dapp canister.
 
 #### Fixed
 
-* QR-code reader incorrectly mirrored on `Samsung S23`.
-* Check SNS neuron balances to claim pending neurons.
-* Neurons that can vote being displayed as ineligible on the SNS proposal detail page.
+* Bug where transferred SNS neurons appeared in the list of neurons after transferring them.
 
 #### Security
 
@@ -50,13 +46,19 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Check for unused i18n messages.
+* Test that project logo (not token logo) is displayed on SNS wallet.
 
 #### Changed
+
+* Update the GitHub `build-push-action` from `v4` to `v5`.
+* Upgrade Rust to 1.76.0
+* Ignore failures of `test-upgrade-map`
 
 #### Deprecated
 
 #### Removed
+
+* Remove periodic app subnet deployment of nns-dapp.
 
 #### Fixed
 

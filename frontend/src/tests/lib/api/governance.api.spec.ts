@@ -5,7 +5,6 @@ import {
   increaseDissolveDelay,
   joinCommunityFund,
   leaveCommunityFund,
-  mergeMaturity,
   mergeNeurons,
   queryKnownNeurons,
   queryLastestRewardEvent,
@@ -310,39 +309,6 @@ describe("neurons-api", () => {
         disburse({
           identity: mockIdentity,
           toAccountId: mockMainAccount.identifier,
-          neuronId: 10n,
-        });
-      await expect(call).rejects.toThrow(error);
-    });
-  });
-
-  describe("mergeMaturity", () => {
-    it("merges a percentage of the maturity of a neuron successfully", async () => {
-      mockGovernanceCanister.mergeMaturity.mockImplementation(
-        vi.fn().mockResolvedValue(undefined)
-      );
-
-      await mergeMaturity({
-        identity: mockIdentity,
-        percentageToMerge: 50,
-        neuronId: 10n,
-      });
-
-      expect(mockGovernanceCanister.mergeMaturity).toBeCalled();
-    });
-
-    it("throws error when mergeMaturity fails", async () => {
-      const error = new Error();
-      mockGovernanceCanister.mergeMaturity.mockImplementation(
-        vi.fn(() => {
-          throw error;
-        })
-      );
-
-      const call = () =>
-        mergeMaturity({
-          identity: mockIdentity,
-          percentageToMerge: 50,
           neuronId: 10n,
         });
       await expect(call).rejects.toThrow(error);

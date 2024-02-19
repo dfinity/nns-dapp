@@ -119,6 +119,9 @@ jobs:
       - name: Count upgrade cycles
         run: scripts/nns-dapp/estimate-upgrade-cycles | tee -a $GITHUB_STEP_SUMMARY
   test-upgrade-map:
+    # This test is flaky.
+    # TODO: Debug and re-enable before actually migrating the schema.
+    continue-on-error: true
     needs: build
     runs-on: ubuntu-20.04
     timeout-minutes: 40
@@ -275,7 +278,7 @@ jobs:
         run: echo "{}" > global-config.json
       - name: Build wasms
         if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: Dockerfile

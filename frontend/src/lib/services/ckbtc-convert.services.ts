@@ -1,5 +1,5 @@
 import { NANO_SECONDS_IN_MINUTE } from "$lib/constants/constants";
-import { loadAccounts as loadWalletAccounts } from "$lib/services/wallet-accounts.services";
+import { loadAccounts as loadWalletAccounts } from "$lib/services/icrc-accounts.services";
 import type { Account } from "$lib/types/account";
 import type { CanisterId } from "$lib/types/canister";
 import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
@@ -21,7 +21,7 @@ import { toastsError } from "../stores/toasts.store";
 import { numberToE8s } from "../utils/token.utils";
 import { getAuthenticatedIdentity } from "./auth.services";
 import type { IcrcTransferTokensUserParams } from "./icrc-accounts.services";
-import { loadWalletTransactions } from "./wallet-transactions.services";
+import { loadIcrcAccountTransactions } from "./icrc-transactions.services";
 
 export type ConvertCkBTCToBtcParams = {
   destinationAddress: string;
@@ -114,9 +114,9 @@ const reload = async ({
       : []),
     ...(nonNullish(source)
       ? [
-          loadWalletTransactions({
+          loadIcrcAccountTransactions({
             account: source,
-            canisterId: universeId,
+            ledgerCanisterId: universeId,
             indexCanisterId,
           }),
         ]
