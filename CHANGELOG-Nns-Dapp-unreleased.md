@@ -19,6 +19,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Add "Manage Internet Identity" and "Source code" entries to account menu.
 * Client side caching of SNS Aggregator calls.
 * Prompt the user to check the hardware wallet screen when splitting a neuron controlled by one.
+* Add `ENABLE_ICP_INDEX` feature flag.
 
 #### Changed
 
