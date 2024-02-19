@@ -8,7 +8,10 @@
   import { isSelectedPath } from "$lib/utils/navigation.utils";
   import type { Universe } from "$lib/types/universe";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import { votingProposalCountStore } from "$lib/derived/voting-proposal-indication.derived";
+  import {
+    votingProposalCountStore,
+    votingProposalIndicationEnabledStore,
+  } from "$lib/derived/voting-proposal-indication.derived";
 
   export let selected: boolean;
   export let role: "link" | "button" | "dropdown" = "link";
@@ -35,14 +38,8 @@
       paths: [AppPath.Accounts, AppPath.Wallet],
     });
 
-  let isProposalsPage = false;
-  $: isProposalsPage = isSelectedPath({
-    currentPath: $pageStore.path,
-    paths: [AppPath.Proposals],
-  });
-
   let votingProposalCount: number | undefined = undefined;
-  $: votingProposalCount = isNullish(isProposalsPage)
+  $: votingProposalCount = $votingProposalIndicationEnabledStore
     ? undefined
     : $votingProposalCountStore[universe.canisterId];
 </script>
