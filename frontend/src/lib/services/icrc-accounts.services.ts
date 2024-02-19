@@ -2,7 +2,6 @@ import {
   icrcTransfer,
   queryIcrcBalance,
   queryIcrcToken,
-  type IcrcTransferParams,
 } from "$lib/api/icrc-ledger.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { snsTokensByLedgerCanisterIdStore } from "$lib/derived/sns/sns-tokens.derived";
@@ -181,6 +180,8 @@ export interface IcrcTransferTokensUserParams {
   source: Account;
   destinationAddress: string;
   amountUlps: bigint;
+  ledgerCanisterId: Principal;
+  fee: bigint;
 }
 
 export const transferTokens = async ({
@@ -188,19 +189,10 @@ export const transferTokens = async ({
   destinationAddress,
   amountUlps,
   fee,
-  transfer,
-  reloadAccounts,
-  reloadTransactions,
-}: IcrcTransferTokensUserParams & {
-  fee: bigint | undefined;
-  transfer: (
-    params: {
-      identity: Identity;
-    } & IcrcTransferParams
-  ) => Promise<IcrcBlockIndex>;
-  reloadAccounts: () => Promise<void>;
-  reloadTransactions: () => Promise<void>;
-}): Promise<{ blockIndex: IcrcBlockIndex | undefined }> => {
+  ledgerCanisterId,
+}: IcrcTransferTokensUserParams): Promise<{
+  blockIndex: IcrcBlockIndex | undefined;
+}> => {
   try {
     if (isNullish(fee)) {
       throw new Error("error.transaction_fee_not_found");
@@ -209,15 +201,16 @@ export const transferTokens = async ({
     const identity: Identity = await getIcrcAccountIdentity(source);
     const to = decodeIcrcAccount(destinationAddress);
 
-    const blockIndex = await transfer({
+    const blockIndex = await icrcTransfer({
       identity,
       to,
       fromSubAccount: source.subAccount,
       amount: amountUlps,
       fee,
+      canisterId: ledgerCanisterId,
     });
 
-    await Promise.all([reloadAccounts(), reloadTransactions()]);
+    await loadAccounts({ ledgerCanisterId });
 
     return { blockIndex };
   } catch (err) {
@@ -230,34 +223,4 @@ export const transferTokens = async ({
 
     return { blockIndex: undefined };
   }
-};
-
-export const icrcTransferTokens = async ({
-  source,
-  destinationAddress,
-  amountUlps,
-  fee,
-  ledgerCanisterId,
-}: IcrcTransferTokensUserParams & {
-  fee: bigint;
-  ledgerCanisterId: Principal;
-}): Promise<{ blockIndex: IcrcBlockIndex | undefined }> => {
-  return transferTokens({
-    source,
-    amountUlps,
-    fee,
-    destinationAddress,
-    transfer: async (
-      params: {
-        identity: Identity;
-      } & IcrcTransferParams
-    ) =>
-      await icrcTransfer({
-        ...params,
-        canisterId: ledgerCanisterId,
-      }),
-    reloadAccounts: async () => loadAccounts({ ledgerCanisterId }),
-    // Web workders take care of refreshing transactions
-    reloadTransactions: () => Promise.resolve(),
-  });
 };

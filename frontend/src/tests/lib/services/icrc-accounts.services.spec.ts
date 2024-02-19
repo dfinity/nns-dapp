@@ -7,7 +7,6 @@ import {
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
 import {
   getIcrcAccountIdentity,
-  icrcTransferTokens,
   loadAccounts,
   loadIcrcToken,
   syncAccounts,
@@ -20,13 +19,10 @@ import {
   mockCkBTCMainAccount,
   mockCkBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
-import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
-import { mockIcrcMainAccount } from "$tests/mocks/icrc-accounts.mock";
 import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
-import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import { tick } from "svelte";
 import { get } from "svelte/store";
@@ -358,84 +354,6 @@ describe("icrc-accounts-services", () => {
       await loadIcrcToken({ ledgerCanisterId, certified: false });
 
       expect(ledgerApi.queryIcrcToken).not.toBeCalled();
-    });
-  });
-
-  describe("icrcTransferTokens", () => {
-    const amountE8s = 1_000_000_000n;
-    const fee = 10_000n;
-    const destinationAccount = {
-      owner: principal(2),
-    };
-
-    it("calls icrcTransfer from icrc ledger api", async () => {
-      await icrcTransferTokens({
-        source: mockIcrcMainAccount,
-        amountUlps: amountE8s,
-        destinationAddress: encodeIcrcAccount(destinationAccount),
-        fee,
-        ledgerCanisterId,
-      });
-
-      expect(ledgerApi.icrcTransfer).toHaveBeenCalledTimes(1);
-      expect(ledgerApi.icrcTransfer).toHaveBeenCalledWith({
-        identity: mockIdentity,
-        amount: amountE8s,
-        fee,
-        canisterId: ledgerCanisterId,
-        to: destinationAccount,
-      });
-    });
-
-    it("calls transfers from subaccount", async () => {
-      await icrcTransferTokens({
-        source: {
-          ...mockIcrcMainAccount,
-          type: "subAccount",
-          subAccount: mockSubAccountArray,
-        },
-        amountUlps: amountE8s,
-        destinationAddress: encodeIcrcAccount(destinationAccount),
-        fee,
-        ledgerCanisterId,
-      });
-
-      expect(ledgerApi.icrcTransfer).toHaveBeenCalledTimes(1);
-      expect(ledgerApi.icrcTransfer).toHaveBeenCalledWith({
-        identity: mockIdentity,
-        amount: amountE8s,
-        fee,
-        canisterId: ledgerCanisterId,
-        to: destinationAccount,
-        fromSubAccount: mockSubAccountArray,
-      });
-    });
-
-    it("should load balance after transfer", async () => {
-      const initialAccount = {
-        ...mockIcrcMainAccount,
-        balanceUlps: balanceE8s + amountE8s,
-      };
-      icrcAccountsStore.set({
-        ledgerCanisterId,
-        accounts: {
-          accounts: [initialAccount],
-          certified: true,
-        },
-      });
-
-      await icrcTransferTokens({
-        source: mockIcrcMainAccount,
-        amountUlps: amountE8s,
-        destinationAddress: encodeIcrcAccount(destinationAccount),
-        fee,
-        ledgerCanisterId,
-      });
-
-      const finalAccount =
-        get(icrcAccountsStore)[ledgerCanisterId.toText()]?.accounts[0];
-
-      expect(finalAccount.balanceUlps).toEqual(balanceE8s);
     });
   });
 });
