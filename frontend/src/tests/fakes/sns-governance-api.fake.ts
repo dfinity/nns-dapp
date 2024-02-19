@@ -123,15 +123,12 @@ const getProposals = (keyParams: KeyParams): SnsListProposalsResponse => {
   const key = mapKey(keyParams);
 
   if (isNullish(proposals.get(key))) {
-    const defaultResponse = isNullish(keyParams.includeBallotsByCaller)
-      ? ({ proposals: [] } as unknown as SnsListProposalsResponse)
-      : {
-          proposals: [],
-          include_ballots_by_caller: [keyParams.includeBallotsByCaller] as [
-            boolean,
-          ],
-        };
-    proposals.set(key, defaultResponse);
+    proposals.set(key, {
+      proposals: [],
+      include_ballots_by_caller: [
+        keyParams.includeBallotsByCaller ?? false,
+      ] as [boolean],
+    });
   }
   return proposals.get(key);
 };
