@@ -37,6 +37,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Add `NNS_INDEX_CANISTER_ID` to the configuration.
+
 #### Changed
 
 #### Deprecated
