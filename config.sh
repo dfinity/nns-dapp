@@ -81,10 +81,6 @@ local_deployment_data="$(
   export CKBTC_MINTER_CANISTER_ID
   test -n "${CKBTC_MINTER_CANISTER_ID:-}" || unset CKBTC_MINTER_CANISTER_ID
 
-  : "Try to find the NNS Index canister ID"
-  NNS_INDEX_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-index 2>/dev/null || true)"
-  export NNS_INDEX_CANISTER_ID
-
   : "Try to find the ckETH canister IDs"
   CKETH_LEDGER_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id cketh_ledger 2>/dev/null || true)"
   export CKETH_LEDGER_CANISTER_ID
@@ -100,6 +96,9 @@ local_deployment_data="$(
   : "Get the ledger canister ID -it should be defined"
   LEDGER_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-ledger)"
   export LEDGER_CANISTER_ID
+  : "Try to find the NNS Index canister ID"
+  NNS_INDEX_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-index 2>/dev/null || true)"
+  export NNS_INDEX_CANISTER_ID
 
   : "Get the minter canister ID - it should be defined"
   CYCLES_MINTING_CANISTER_ID="$(dfx canister id --network "$DFX_NETWORK" nns-cycles-minting)"
