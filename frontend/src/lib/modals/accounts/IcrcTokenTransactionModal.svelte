@@ -12,7 +12,7 @@
   import type { TransactionInit } from "$lib/types/transaction";
   import { TokenAmountV2, nonNullish, type Token } from "@dfinity/utils";
   import type { Principal } from "@dfinity/principal";
-  import { icrcTransferTokens } from "$lib/services/icrc-accounts.services";
+  import { transferTokens } from "$lib/services/icrc-accounts.services";
 
   export let selectedAccount: Account | undefined = undefined;
   export let ledgerCanisterId: Principal;
@@ -44,7 +44,7 @@
       initiator: "accounts",
     });
 
-    const { blockIndex } = await icrcTransferTokens({
+    const { blockIndex } = await transferTokens({
       source: sourceAccount,
       destinationAddress,
       amountUlps: numberToUlps({ amount, token }),
