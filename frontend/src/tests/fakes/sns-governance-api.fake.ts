@@ -503,9 +503,7 @@ export const addProposalWith = ({
     ...proposalParams,
   };
   proposalsList.push(proposal);
-  response.include_ballots_by_caller = isNullish(includeBallotsByCaller)
-    ? undefined
-    : [includeBallotsByCaller];
+  response.include_ballots_by_caller = [includeBallotsByCaller ?? false];
 
   return proposal;
 };
