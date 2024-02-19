@@ -7,7 +7,7 @@ import { UiTransactionsListPo } from "$tests/page-objects/UiTransactionsList.pag
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
 
-describe("UiTransactionList", () => {
+describe("UiTransactionsList", () => {
   const renderComponent = ({
     transactions,
     loading,

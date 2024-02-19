@@ -22,7 +22,7 @@ export class SnsWalletPo extends BasePageObject {
     return WalletPageHeadingPo.under(this.root);
   }
 
-  getTransactionsListPo(): UiTransactionsListPo {
+  getUiTransactionsListPo(): UiTransactionsListPo {
     return UiTransactionsListPo.under(this.root);
   }
 

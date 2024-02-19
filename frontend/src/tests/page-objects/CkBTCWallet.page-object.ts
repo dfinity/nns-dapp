@@ -14,7 +14,7 @@ export class CkBTCWalletPo extends BasePageObject {
     return new CkBTCWalletPo(element.byTestId(CkBTCWalletPo.TID));
   }
 
-  getTransactionsListPo(): UiTransactionsListPo {
+  getUiTransactionsListPo(): UiTransactionsListPo {
     return UiTransactionsListPo.under(this.root);
   }
 
