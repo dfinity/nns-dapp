@@ -12,6 +12,7 @@ import type {
   SnsProposalId,
   SnsVote,
 } from "@dfinity/sns";
+import { isNullish } from "@dfinity/utils";
 import { wrapper } from "./sns-wrapper.api";
 
 export const querySnsNeurons = async ({
@@ -553,10 +554,15 @@ export const queryProposals = async ({
     certified,
   });
 
-  const proposals = await listProposals(params);
+  const response = await listProposals(params);
+
+  if (isNullish(response.include_ballots_by_caller)) {
+    // Normalise the response for all canister versions, since the old versions do not return this field.
+    response.include_ballots_by_caller = [false];
+  }
 
   logWithTimestamp(`Getting proposals call complete.`);
-  return proposals;
+  return response;
 };
 
 export const queryProposal = async ({

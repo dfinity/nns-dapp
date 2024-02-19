@@ -26,6 +26,7 @@ import { toExcludeTypeParameter } from "$lib/utils/sns-proposals.utils";
 import { NeuronState } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type {
+  SnsListProposalsResponse,
   SnsNervousSystemFunction,
   SnsNeuron,
   SnsNeuronId,
@@ -154,7 +155,7 @@ export const loadSnsProposals = async ({
     filter: filters?.types ?? [],
     snsFunctions,
   });
-  return queryAndUpdate<SnsProposalData[], unknown>({
+  return queryAndUpdate<SnsListProposalsResponse, unknown>({
     identityType: "current",
     request: ({ certified, identity }) =>
       queryProposals({
@@ -170,7 +171,8 @@ export const loadSnsProposals = async ({
         certified,
         rootCanisterId,
       }),
-    onLoad: ({ response: proposals, certified }) => {
+    onLoad: ({ response, certified }) => {
+      const { proposals } = response;
       snsProposalsStore.addProposals({
         rootCanisterId,
         proposals,
