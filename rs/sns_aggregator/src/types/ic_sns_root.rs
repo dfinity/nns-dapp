@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_root --out ic_sns_root.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-01-25_14-09+p2p-con/rs/sns/root/canister/root.did>
+//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-02-07_23-01+feature/rs/sns/root/canister/root.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -134,6 +134,21 @@ pub struct ListSnsCanistersResponse {
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct ManageDappCanisterSettingsRequest {
+    pub freezing_threshold: Option<u64>,
+    pub canister_ids: Vec<Principal>,
+    pub reserved_cycles_limit: Option<u64>,
+    pub log_visibility: Option<i32>,
+    pub memory_allocation: Option<u64>,
+    pub compute_allocation: Option<u64>,
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct ManageDappCanisterSettingsResponse {
+    pub failure_reason: Option<String>,
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct RegisterDappCanisterRequest {
     pub canister_id: Option<Principal>,
 }
@@ -191,6 +206,12 @@ impl Service {
     }
     pub async fn list_sns_canisters(&self, arg0: ListSnsCanistersArg) -> CallResult<(ListSnsCanistersResponse,)> {
         ic_cdk::call(self.0, "list_sns_canisters", (arg0,)).await
+    }
+    pub async fn manage_dapp_canister_settings(
+        &self,
+        arg0: ManageDappCanisterSettingsRequest,
+    ) -> CallResult<(ManageDappCanisterSettingsResponse,)> {
+        ic_cdk::call(self.0, "manage_dapp_canister_settings", (arg0,)).await
     }
     pub async fn register_dapp_canister(
         &self,
