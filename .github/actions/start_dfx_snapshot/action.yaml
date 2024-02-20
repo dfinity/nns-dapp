@@ -115,7 +115,7 @@ runs:
         echo dskloetx 3.4
         ls -l $PWD/work/nns-dapp/nns-dapp/snsdemo/bin
         echo dskloetx 3.5
-        dfx-snapshot-restore --snapshot state.tar.xz --verbose &> '${{ inputs.logfile }}'
+        dfx-snapshot-restore --snapshot state.tar.xz --verbose
         echo dskloetx 4
         dfx identity use snsdemo8
         echo dskloetx 5
