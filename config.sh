@@ -96,6 +96,9 @@ local_deployment_data="$(
   : "Get the ledger canister ID -it should be defined"
   LEDGER_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-ledger)"
   export LEDGER_CANISTER_ID
+  : "Try to find the NNS Index canister ID"
+  INDEX_CANISTER_ID="$(dfx canister --network "$DFX_NETWORK" id nns-index 2>/dev/null || true)"
+  export INDEX_CANISTER_ID
 
   : "Get the minter canister ID - it should be defined"
   CYCLES_MINTING_CANISTER_ID="$(dfx canister id --network "$DFX_NETWORK" nns-cycles-minting)"
@@ -126,6 +129,7 @@ local_deployment_data="$(
     IDENTITY_SERVICE_URL: env.IDENTITY_SERVICE_URL,
     SNS_AGGREGATOR_URL: env.SNS_AGGREGATOR_URL,
     LEDGER_CANISTER_ID: env.LEDGER_CANISTER_ID,
+    INDEX_CANISTER_ID: env.INDEX_CANISTER_ID,
     CKBTC_LEDGER_CANISTER_ID: env.CKBTC_LEDGER_CANISTER_ID,
     CKBTC_MINTER_CANISTER_ID: env.CKBTC_MINTER_CANISTER_ID,
     CKBTC_INDEX_CANISTER_ID: env.CKBTC_INDEX_CANISTER_ID,
@@ -164,6 +168,7 @@ wasmCanisterId=$(echo "$json" | jq -r ".WASM_CANISTER_ID")
 governanceCanisterId=$(echo "$json" | jq -r ".GOVERNANCE_CANISTER_ID")
 tvlCanisterId=$(echo "$json" | jq -r ".TVL_CANISTER_ID")
 ledgerCanisterId=$(echo "$json" | jq -r ".LEDGER_CANISTER_ID")
+indexCanisterId=$(echo "$json" | jq -r ".INDEX_CANISTER_ID")
 ownCanisterId=$(echo "$json" | jq -r ".OWN_CANISTER_ID")
 fetchRootKey=$(echo "$json" | jq -r ".FETCH_ROOT_KEY")
 featureFlags=$(echo "$json" | jq -r ".FEATURE_FLAGS" | jq tostring)
@@ -182,6 +187,7 @@ VITE_WASM_CANISTER_ID=$wasmCanisterId
 VITE_GOVERNANCE_CANISTER_ID=$governanceCanisterId
 VITE_TVL_CANISTER_ID=$tvlCanisterId
 VITE_LEDGER_CANISTER_ID=$ledgerCanisterId
+VITE_INDEX_CANISTER_ID=$indexCanisterId
 VITE_OWN_CANISTER_ID=$ownCanisterId
 VITE_FETCH_ROOT_KEY=$fetchRootKey
 VITE_FEATURE_FLAGS=$featureFlags
@@ -238,6 +244,8 @@ export TVL_CANISTER_ID
 
 LEDGER_CANISTER_ID="$ledgerCanisterId"
 export LEDGER_CANISTER_ID
+INDEX_CANISTER_ID="$indexCanisterId"
+export INDEX_CANISTER_ID
 
 OWN_CANISTER_ID="$ownCanisterId"
 export OWN_CANISTER_ID
