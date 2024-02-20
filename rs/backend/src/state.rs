@@ -270,7 +270,7 @@ impl State {
             //       has grown, this saving and later restoring has become seriously slow.
             SchemaLabel::Map => self.save_to_raw_memory(),
             // Note: In the `AccountsInStableMemory` schema, accounts are stored in a managed
-            //       stable virtual mmeory, so they do not need to be serialized and restored on
+            //       stable virtual memory, so they do not need to be serialized and restored on
             //       canister upgrade.  However other data _is_ still stored on the heap and this
             //       other data must be saved in the pre-upgrade hook to a different managed
             //       stable virtual memory and restored after upgrade.
