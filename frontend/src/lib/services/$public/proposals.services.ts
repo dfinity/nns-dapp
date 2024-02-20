@@ -16,22 +16,15 @@ import {
   type ProposalsFiltersStore,
 } from "$lib/stores/proposals.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
-import { votingNnsProposalsStore } from "$lib/stores/voting-proposals.store";
 import { hashCode } from "$lib/utils/dev.utils";
 import { isForceCallStrategy } from "$lib/utils/env.utils";
 import { errorToString, isPayloadSizeError } from "$lib/utils/error.utils";
 import {
   excludeProposals,
-  lastProposalId,
   proposalsHaveSameIds,
 } from "$lib/utils/proposals.utils";
 import type { Identity } from "@dfinity/agent";
 import type { ProposalId, ProposalInfo } from "@dfinity/nns";
-import {
-  ProposalRewardStatus,
-  votableNeurons,
-  type NeuronInfo,
-} from "@dfinity/nns";
 import { get } from "svelte/store";
 import { getCurrentIdentity } from "../auth.services";
 import {
@@ -185,53 +178,6 @@ const findProposals = async ({
     logMessage: `Syncing proposals ${
       beforeProposal === undefined ? "" : `from: ${hashCode(beforeProposal)}`
     }`,
-  });
-};
-
-/**
- * Fetch all proposals that are accepting votes and set the proposals in the nnsProposalVotingStore.
- */
-export const queryVotingProposals = async (
-  neurons: NeuronInfo[]
-): Promise<void> => {
-  const proposals = [];
-  let page: ProposalInfo[] = [];
-
-  // TODO(max): error handling?
-  // TODO(max): is this needed of resolve with UX approach (max 99 proposals)?
-  do {
-    page = await fetchNextAcceptingVotesProposals({
-      beforeProposal: lastProposalId(proposals),
-    });
-    proposals.push(...page);
-  } while (page.length >= DEFAULT_LIST_PAGINATION_LIMIT);
-
-  // Filter proposals that have at least one votable neuron
-  const votableProposals = proposals.filter(
-    (proposal) => votableNeurons({ neurons, proposal }).length > 0
-  );
-  votingNnsProposalsStore.setProposals(votableProposals);
-};
-
-const fetchNextAcceptingVotesProposals = ({
-  beforeProposal,
-}: {
-  beforeProposal: ProposalId | undefined;
-}): Promise<ProposalInfo[]> => {
-  const identity = getCurrentIdentity();
-  const filters: ProposalsFiltersStore = {
-    // We just want to fetch proposals that are accepting votes, so we don't need to filter by rest of the filters.
-    rewards: [ProposalRewardStatus.AcceptVotes],
-    topics: [],
-    status: [],
-    excludeVotedProposals: false,
-    lastAppliedFilter: undefined,
-  };
-  return queryProposals({
-    beforeProposal,
-    identity,
-    filters,
-    certified: false,
   });
 };
 

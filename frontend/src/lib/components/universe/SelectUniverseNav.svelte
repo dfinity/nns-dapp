@@ -3,23 +3,20 @@
   import SelectUniverseNavList from "$lib/components/universe/SelectUniverseNavList.svelte";
   import SelectUniverseDropdown from "$lib/components/universe/SelectUniverseDropdown.svelte";
   import { titleTokenSelectorStore } from "$lib/derived/title-token-selector.derived";
-  import { listNeurons } from "$lib/services/neurons.services";
-  import { definedNeuronsStore } from "$lib/stores/neurons.store";
-  import { queryVotingProposals } from "$lib/services/$public/proposals.services";
   import { updateVotingSnsProposals } from "$lib/services/$public/sns-voting-proposals.services";
   import { votingProposalIndicationEnabledStore } from "$lib/derived/voting-proposal-indication.derived";
+  import { updateVotingProposals } from "$lib/services/$public/voting-proposals.services";
 
   let innerWidth = 0;
   let list = false;
 
   $: list = innerWidth > BREAKPOINT_LARGE;
 
-  const updateVotingProposals = async () => {
-    await listNeurons({ strategy: "query" });
-    await queryVotingProposals($definedNeuronsStore);
+  const update = async () => {
+    await updateVotingProposals();
     await updateVotingSnsProposals();
   };
-  $: $votingProposalIndicationEnabledStore && updateVotingProposals();
+  $: $votingProposalIndicationEnabledStore && update();
 </script>
 
 <svelte:window bind:innerWidth />
