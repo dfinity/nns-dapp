@@ -87,7 +87,11 @@ runs:
         echo dskloetx 3.2
         dfx --version
         echo dskloetx 3.3
-        scripts/dfx-snapshot-restore --snapshot state.tar.xz --verbose &> '${{ inputs.logfile }}'
+        ls $PWD/
+        echo dskloetx 3.4
+        ls $PWD/snsdemo/bin
+        echo dskloetx 3.5
+        dfx-snapshot-restore --snapshot state.tar.xz --verbose &> '${{ inputs.logfile }}'
         echo dskloetx 4
         dfx identity use snsdemo8
         echo dskloetx 5
