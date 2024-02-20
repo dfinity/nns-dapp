@@ -37,7 +37,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Dependabot configuration to update GitHub actions.
+* Dependabot configuration to update GitHub actions.
+* Add `NNS_INDEX_CANISTER_ID` to the configuration.
 
 #### Changed
 
