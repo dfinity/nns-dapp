@@ -1,15 +1,8 @@
-// Must be on top to use in hoisted vi.mock:
-import { mockEnvVars } from "$tests/mocks/env-vars.mock";
-
 import { TVLCanister } from "$lib/canisters/tvl/tvl.canister";
 import { ACTOR_PARAMS } from "$lib/constants/canister-actor.constants";
 import { queryTVL } from "$lib/worker-api/tvl.worker-api";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { mock } from "vitest-mock-extended";
-
-vi.mock("$lib/utils/env-vars.utils", () => ({
-  getEnvVars: () => mockEnvVars,
-}));
 
 vi.mock("@dfinity/agent", async () => {
   return {

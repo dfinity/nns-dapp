@@ -1,13 +1,6 @@
-// Must be on top to use in hoisted vi.mock:
-import { mockEnvVars } from "$tests/mocks/env-vars.mock";
-
 import { getICPs } from "$lib/services/dev.services";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { mockAccountsStoreSubscribe } from "$tests/mocks/icp-accounts.store.mock";
-
-vi.mock("$lib/utils/env-vars.utils", () => ({
-  getEnvVars: () => mockEnvVars,
-}));
 
 describe("dev-services", () => {
   beforeEach(() => {

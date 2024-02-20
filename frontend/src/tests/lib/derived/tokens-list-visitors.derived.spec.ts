@@ -1,6 +1,3 @@
-// Must be on top to use in hoisted vi.mock:
-import { mockEnvVars } from "$tests/mocks/env-vars.mock";
-
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
@@ -30,10 +27,6 @@ import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
-
-vi.mock("$lib/utils/env-vars.utils", () => ({
-  getEnvVars: () => mockEnvVars,
-}));
 
 describe("tokens-list-base.derived", () => {
   const snsTetrisToken = mockSnsToken;

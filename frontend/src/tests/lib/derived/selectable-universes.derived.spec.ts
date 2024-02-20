@@ -1,6 +1,3 @@
-// Must be on top to use in hoisted vi.mock:
-import { mockEnvVars } from "$tests/mocks/env-vars.mock";
-
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
@@ -17,10 +14,6 @@ import {
   setCkETHCanisters,
 } from "$tests/utils/cketh.test-utils";
 import { get } from "svelte/store";
-
-vi.mock("$lib/utils/env-vars.utils", () => ({
-  getEnvVars: () => mockEnvVars,
-}));
 
 describe("selectable universes derived stores", () => {
   beforeEach(() => {

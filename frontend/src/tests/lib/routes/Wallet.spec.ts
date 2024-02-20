@@ -1,6 +1,3 @@
-// Must be on top to use in hoisted vi.mock:
-import { mockEnvVars } from "$tests/mocks/env-vars.mock";
-
 import * as ckbtcMinterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
@@ -37,10 +34,6 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
-
-vi.mock("$lib/utils/env-vars.utils", () => ({
-  getEnvVars: () => mockEnvVars,
-}));
 
 vi.mock("$lib/api/icrc-ledger.api");
 vi.mock("$lib/api/ckbtc-minter.api");

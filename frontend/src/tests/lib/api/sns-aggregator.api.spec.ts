@@ -1,13 +1,6 @@
-// Must be on top to use in hoisted vi.mock:
-import { mockEnvVars } from "$tests/mocks/env-vars.mock";
-
 import { querySnsProjects } from "$lib/api/sns-aggregator.api";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import tenAggregatedSnses from "$tests/mocks/sns-aggregator.mock.json";
-
-vi.mock("$lib/utils/env-vars.utils", () => ({
-  getEnvVars: () => mockEnvVars,
-}));
 
 describe("sns-aggregator api", () => {
   describe("querySnsProjects", () => {

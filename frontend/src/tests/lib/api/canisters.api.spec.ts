@@ -1,6 +1,3 @@
-// Must be on top to use in hoisted vi.mock:
-import { mockEnvVars } from "$tests/mocks/env-vars.mock";
-
 import {
   attachCanister,
   createCanister,
@@ -36,10 +33,6 @@ import {
 } from "@dfinity/ledger-icp";
 import { principalToSubAccount } from "@dfinity/utils";
 import { mock } from "vitest-mock-extended";
-
-vi.mock("$lib/utils/env-vars.utils", () => ({
-  getEnvVars: () => mockEnvVars,
-}));
 
 describe("canisters-api", () => {
   const mockNNSDappCanister = mock<NNSDappCanister>();

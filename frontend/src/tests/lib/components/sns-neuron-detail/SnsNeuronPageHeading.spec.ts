@@ -1,6 +1,3 @@
-// Must be on top to use in hoisted vi.mock:
-import { mockEnvVars } from "$tests/mocks/env-vars.mock";
-
 import SnsNeuronPageHeading from "$lib/components/sns-neuron-detail/SnsNeuronPageHeading.svelte";
 import { SECONDS_IN_EIGHT_YEARS } from "$lib/constants/constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
@@ -20,10 +17,6 @@ import { NeuronState } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
-
-vi.mock("$lib/utils/env-vars.utils", () => ({
-  getEnvVars: () => mockEnvVars,
-}));
 
 describe("SnsNeuronPageHeading", () => {
   const renderSnsNeuronCmp = (neuron: SnsNeuron) => {

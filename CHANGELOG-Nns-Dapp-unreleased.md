@@ -42,8 +42,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-* Mock environment variables in individual tests instead of in `vitest.setup.ts`.
-
 #### Deprecated
 
 #### Removed

@@ -1,6 +1,10 @@
 import { getEnvVars } from "$lib/utils/env-vars.utils";
 import { principal } from "$tests/mocks/sns-projects.mock";
 
+// env-vars.utils.ts is mocked in vitest.setup.ts so we need to unmock it to be
+// able to test it.
+vi.unmock("$lib/utils/env-vars.utils");
+
 describe("env-vars-utils", () => {
   beforeEach(() => {
     vi.stubEnv("VITE_DFX_NETWORK", "local");

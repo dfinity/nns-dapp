@@ -1,6 +1,3 @@
-// Must be on top to use in hoisted vi.mock:
-import { mockEnvVars } from "$tests/mocks/env-vars.mock";
-
 import CkBTCWalletFooter from "$lib/components/accounts/CkBTCWalletFooter.svelte";
 import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -19,10 +16,6 @@ import {
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import CkBTCWalletContextTest from "./CkBTCWalletContextTest.svelte";
-
-vi.mock("$lib/utils/env-vars.utils", () => ({
-  getEnvVars: () => mockEnvVars,
-}));
 
 vi.mock("$lib/api/ckbtc-minter.api", () => {
   return {
