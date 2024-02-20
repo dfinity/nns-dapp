@@ -77,6 +77,8 @@ runs:
       run: |
         set -x
         echo dskloetx debug 3 PWD $PWD PATH $PATH
+        ls -l
+        head dfx.json
     - name: Install dfx
       uses: dfinity/setup-dfx@dfx-json-version
       with:
