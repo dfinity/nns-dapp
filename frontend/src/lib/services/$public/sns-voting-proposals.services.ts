@@ -14,20 +14,22 @@ import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 // TODO(max): use the store first, clean the store after user voted
-export const queryVotingSnsProposals = async () => {
+export const updateVotingSnsProposals = async () => {
   const canisterIds = get(selectableUniversesStore)
     // skip nns
     .filter(({ canisterId }) => canisterId !== OWN_CANISTER_ID_TEXT)
     .map(({ canisterId }) => canisterId);
 
   await Promise.all(
-    canisterIds.map(async (canisterId) => updateVotingProposals(canisterId))
+    canisterIds.map((canisterId) => updateVotingProposalsForSns(canisterId))
   );
 
   console.log("queryVotingSnsProposals done", get(votingSnsProposalsStore));
 };
 
-const updateVotingProposals = async (canisterId: string): Promise<void> => {
+const updateVotingProposalsForSns = async (
+  canisterId: string
+): Promise<void> => {
   try {
     const storeValue = get(votingSnsProposalsStore)[canisterId];
     if (nonNullish(storeValue)) {

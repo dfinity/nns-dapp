@@ -6,7 +6,7 @@
   import { listNeurons } from "$lib/services/neurons.services";
   import { definedNeuronsStore } from "$lib/stores/neurons.store";
   import { queryVotingProposals } from "$lib/services/$public/proposals.services";
-  import { queryVotingSnsProposals } from "$lib/services/$public/sns-voting-proposals.services";
+  import { updateVotingSnsProposals } from "$lib/services/$public/sns-voting-proposals.services";
   import { votingProposalIndicationEnabledStore } from "$lib/derived/voting-proposal-indication.derived";
 
   let innerWidth = 0;
@@ -17,7 +17,7 @@
   const updateVotingProposals = async () => {
     await listNeurons({ strategy: "query" });
     await queryVotingProposals($definedNeuronsStore);
-    await queryVotingSnsProposals();
+    await updateVotingSnsProposals();
   };
   $: $votingProposalIndicationEnabledStore && updateVotingProposals();
 </script>
