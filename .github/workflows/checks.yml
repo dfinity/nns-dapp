@@ -190,7 +190,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Get dfx version
-        run: DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
         run: jq -r '"DFX_VERSION=\(.dfx)"' dfx.json >> $GITHUB_ENV
       - name: Install dfx
         uses: dfinity/setup-dfx@main
