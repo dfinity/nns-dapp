@@ -76,6 +76,7 @@ runs:
     - name: Get test environment
       shell: bash
       run: |
+        dfx cache install
         curl -fL --retry 5 ${{ steps.snsdemo_snapshot.outputs.url }} > state.tar.xz
         dfx-snapshot-restore --snapshot state.tar.xz --verbose &> '${{ inputs.logfile }}'
         dfx identity use snsdemo8
