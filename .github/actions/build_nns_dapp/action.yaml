@@ -48,11 +48,8 @@ runs:
     - name: Add SNS scripts to the path
       shell: bash
       run: echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
-    - name: Get dfx version
-      shell: bash
-      run: echo "DFX_VERSION=$(jq -r .dfx dfx.json)" >> $GITHUB_ENV
     - name: Install dfx
-      uses: dfinity/setup-dfx@main
+      uses: dfinity/setup-dfx@dfx-json-version
       with:
         dfx-version: ${{ env.DFX_VERSION }}
     - name: Install tools

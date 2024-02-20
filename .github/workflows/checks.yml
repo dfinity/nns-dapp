@@ -169,10 +169,8 @@ jobs:
           curl -Lf "https://github.com/dfinity/candid/releases/download/${version}/didc-linux64" | install -m 755 /dev/stdin "$USER_BIN/didc"
       - name: Check didc
         run: command -v didc
-      - name: Get dfx version
-        run: echo "DFX_VERSION=$(jq -r .dfx dfx.json)" >> $GITHUB_ENV
       - name: Install dfx
-        uses: dfinity/setup-dfx@main
+        uses: dfinity/setup-dfx@dfx-json-version
         with:
           dfx-version: ${{ env.DFX_VERSION }}
       - name: Verify template creation
@@ -189,10 +187,8 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
-      - name: Get dfx version
-        run: echo "DFX_VERSION=$(jq -r .dfx dfx.json)" >> $GITHUB_ENV
       - name: Install dfx
-        uses: dfinity/setup-dfx@main
+        uses: dfinity/setup-dfx@dfx-json-version
         with:
           dfx-version: ${{ env.DFX_VERSION }}
       - name: Install cargo binstall
@@ -245,10 +241,8 @@ jobs:
         run: cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)" && idl2json --version
       - name: Install sponge
         run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
-      - name: Get dfx version
-        run: echo "DFX_VERSION=$(jq -r .dfx dfx.json)" >> $GITHUB_ENV
       - name: Install dfx
-        uses: dfinity/setup-dfx@main
+        uses: dfinity/setup-dfx@dfx-json-version
         with:
           dfx-version: ${{ env.DFX_VERSION }}
       - name: Test getting proposal args

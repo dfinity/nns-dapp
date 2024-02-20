@@ -72,16 +72,13 @@ runs:
       run: |
         set -x
         echo dskloetx debug 2 PWD $PWD PATH $PATH
-    - name: Get dfx version
-      shell: bash
-      run: echo "DFX_VERSION=$(jq -r .dfx dfx.json)" >> $GITHUB_ENV
     - name: debug 2
       shell: bash
       run: |
         set -x
         echo dskloetx debug 3 PWD $PWD PATH $PATH
     - name: Install dfx
-      uses: dfinity/setup-dfx@main
+      uses: dfinity/setup-dfx@dfx-json-version
       with:
         dfx-version: ${{ env.DFX_VERSION }}
     - name: debug 3
@@ -124,6 +121,12 @@ runs:
         echo dskloetx 5
         dfx-sns-demo-healthcheck
         echo dskloetx 6
+    - name: output log
+      if: ${{ failure() }}
+      shell: bash
+      run: |
+        echo restore log
+        cat '${{ inputs.logfile }}'
     - name: Install nns-dapp
       if: ${{ inputs.nns_dapp_wasm }}
       shell: bash

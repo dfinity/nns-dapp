@@ -132,10 +132,8 @@ jobs:
           path: out
       - name: Install ic-wasm
         uses: ./.github/actions/install_ic_wasm
-      - name: Get dfx version
-        run: echo "DFX_VERSION=$(jq -r .dfx dfx.json)" >> $GITHUB_ENV
       - name: Install dfx
-        uses: dfinity/setup-dfx@main
+        uses: dfinity/setup-dfx@dfx-json-version
         with:
           dfx-version: ${{ env.DFX_VERSION }}
       - name: Install tools
