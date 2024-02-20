@@ -117,7 +117,6 @@ fn state_can_be_saved_and_recovered_from_stable_memory(num_accounts: u64) {
         let new_state = State::from(memory_after_upgrade);
         // The state should be restored to the same state as before:
         assert_eq!(state, new_state);
-        // In the reinstallation received any arguments, these are typically applied next.
     }
 }
 
