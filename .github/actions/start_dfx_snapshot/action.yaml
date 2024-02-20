@@ -56,6 +56,20 @@ runs:
         repository: 'dfinity/snsdemo'
         path: 'snsdemo'
         ref: ${{ steps.snsdemo_ref.outputs.ref }}
+    - name: debug
+      shell: bash
+      run: |
+        echo dskloetx debug 1
+        set -x
+        echo dskloetx debug 2
+        echo $PWD
+        echo dskloetx debug 3
+        ls -l $PWD
+        echo dskloetx debug 4
+        ls -l $PWD/snsdemo
+        echo dskloetx debug 5
+        ls -l $PWD/snsdemo/bin
+        echo dskloetx debug 6
     - name: Add snsdemo scripts to the path
       shell: bash
       run: |
@@ -76,6 +90,7 @@ runs:
     - name: Get test environment
       shell: bash
       run: |
+        set -x
         echo dskloetx 1
         dfx cache install
         echo dskloetx 2
