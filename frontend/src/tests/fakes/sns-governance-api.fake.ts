@@ -24,6 +24,7 @@ import type {
 import {
   SnsGovernanceError,
   neuronSubaccount,
+  type SnsListProposalsResponse,
   type SnsNeuron,
 } from "@dfinity/sns";
 import { fromNullable, isNullish, toNullable } from "@dfinity/utils";
@@ -50,11 +51,14 @@ const fakeFunctions = {
 // Maps a key representing identity + rootCanisterId (`mapKey` function) to a list of neurons
 const neurons: Map<string, SnsNeuron[]> = new Map();
 // Maps a key representing identity + rootCanisterId (`mapKey` function) to a list of proposals
-const proposals: Map<string, SnsProposalData[]> = new Map();
+const proposals: Map<string, SnsListProposalsResponse> = new Map();
 // Maps a key representing rootCanisterId to a list of nervous system functions
 const nervousFunctions: Map<string, SnsNervousSystemFunction[]> = new Map();
 
-type KeyParams = { identity: Identity; rootCanisterId: Principal };
+type KeyParams = {
+  identity: Identity;
+  rootCanisterId: Principal;
+};
 
 const mapKey = ({ identity, rootCanisterId }: KeyParams) =>
   JSON.stringify([identity.getPrincipal().toText(), rootCanisterId.toText()]);
@@ -106,14 +110,16 @@ const copyNeuron = (neuron: SnsNeuron): SnsNeuron =>
     permissions: neuron.permissions.map((entry) => ({ ...entry })),
   };
 
-const getProposals = (keyParams: KeyParams) => {
+const getProposals = (keyParams: KeyParams): SnsListProposalsResponse => {
   const key = mapKey(keyParams);
-  let proposalsList = proposals.get(key);
-  if (isNullish(proposalsList)) {
-    proposalsList = [];
-    proposals.set(key, proposalsList);
+
+  if (isNullish(proposals.get(key))) {
+    proposals.set(key, {
+      proposals: [],
+      include_ballots_by_caller: [false],
+    });
   }
-  return proposalsList;
+  return proposals.get(key);
 };
 
 const getNervousFunctions = (rootCanisterId: Principal) => {
@@ -291,8 +297,13 @@ async function queryProposals({
   identity: Identity;
   certified: boolean;
   params: SnsListProposalsParams;
-}): Promise<SnsProposalData[]> {
-  return proposals.get(mapKey({ identity, rootCanisterId })) || [];
+}): Promise<SnsListProposalsResponse> {
+  return (
+    proposals.get(mapKey({ identity, rootCanisterId })) || {
+      proposals: [],
+      include_ballots_by_caller: [false],
+    }
+  );
 }
 
 /**
@@ -311,7 +322,7 @@ async function queryProposal({
 }): Promise<SnsProposalData> {
   const proposal = proposals
     .get(mapKey({ identity, rootCanisterId }))
-    .find(({ id }) => fromNullable(id).id === proposalId.id);
+    .proposals.find(({ id }) => fromNullable(id).id === proposalId.id);
   if (isNullish(proposal)) {
     throw new SnsGovernanceError(
       `No proposal for given proposalId ${proposalId.id}`
@@ -472,12 +483,18 @@ export const setNeuronWith = ({
 export const addProposalWith = ({
   identity = mockIdentity,
   rootCanisterId,
+  includeBallotsByCaller,
   ...proposalParams
 }: {
   identity?: Identity;
   rootCanisterId: Principal;
+  includeBallotsByCaller?: boolean;
 } & Partial<SnsProposalData>): SnsProposalData => {
-  const proposalsList = getProposals({ identity, rootCanisterId });
+  const response = getProposals({
+    identity,
+    rootCanisterId,
+  });
+  const proposalsList = response.proposals;
   const index = proposalsList.length;
   const defaultProposalId = { id: BigInt(index + 1) };
   const proposal: SnsProposalData = {
@@ -486,6 +503,8 @@ export const addProposalWith = ({
     ...proposalParams,
   };
   proposalsList.push(proposal);
+  response.include_ballots_by_caller = [includeBallotsByCaller ?? false];
+
   return proposal;
 };
 

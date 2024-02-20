@@ -85,7 +85,7 @@ describe("sns-api", () => {
   const stakeMaturitySpy = vi.fn().mockResolvedValue(undefined);
   const registerVoteSpy = vi.fn().mockResolvedValue(undefined);
   const autoStakeMaturitySpy = vi.fn().mockResolvedValue(undefined);
-  const listProposalsSpy = vi.fn().mockResolvedValue(proposals);
+  const listProposalsSpy = vi.fn().mockResolvedValue({ proposals });
   const getProposalSpy = vi.fn().mockResolvedValue(mockSnsProposal);
   const disburseMaturitySpy = vi.fn().mockResolvedValue(undefined);
   const nervousSystemFunctionsMock: SnsListNervousSystemFunctionsResponse = {
@@ -368,10 +368,24 @@ describe("sns-api", () => {
     });
 
     expect(listProposalsSpy).toBeCalled();
-    expect(res).toEqual(proposals);
+    expect(res).toEqual(expect.objectContaining({ proposals }));
   });
 
-  it("should get proposals", async () => {
+  it("should solve missing flag for outdated canisters", async () => {
+    const res = await queryProposals({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      certified: false,
+      params: {},
+    });
+
+    expect(listProposalsSpy).toBeCalled();
+    expect(res).toEqual(
+      expect.objectContaining({ include_ballots_by_caller: [false] })
+    );
+  });
+
+  it("should get a proposal", async () => {
     const proposalId: SnsProposalId = {
       id: 2n,
     };
