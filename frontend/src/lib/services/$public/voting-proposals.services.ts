@@ -21,6 +21,11 @@ import { getCurrentIdentity } from "../auth.services";
 export const updateVotingProposals = async (): Promise<void> => {
   const neurons: NeuronInfo[] = await queryNeurons();
 
+  if (neurons.length === 0) {
+    votingNnsProposalsStore.setProposals([]);
+    return;
+  }
+
   const proposals = [];
   let page: ProposalInfo[] = [];
 
