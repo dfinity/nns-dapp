@@ -179,10 +179,12 @@ impl From<Partitions> for State {
 impl From<DefaultMemoryImpl> for State {
     fn from(memory: DefaultMemoryImpl) -> Self {
         println!("START state::from<DefaultMemoryImpl>: ())");
-        match Partitions::try_from_memory(memory) {
+        let state = match Partitions::try_from_memory(memory) {
             Ok(partitions) => Self::from(partitions),
             Err(_memory) => Self::recover_from_raw_memory(),
-        }
+        };
+        println!("END   state::from<DefaultMemoryImpl>: ()");
+        state
     }
 }
 
