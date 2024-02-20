@@ -76,11 +76,17 @@ runs:
     - name: Get test environment
       shell: bash
       run: |
+        echo dskloetx 1
         dfx cache install
+        echo dskloetx 2
         curl -fL --retry 5 ${{ steps.snsdemo_snapshot.outputs.url }} > state.tar.xz
+        echo dskloetx 3
         dfx-snapshot-restore --snapshot state.tar.xz --verbose &> '${{ inputs.logfile }}'
+        echo dskloetx 4
         dfx identity use snsdemo8
+        echo dskloetx 5
         dfx-sns-demo-healthcheck
+        echo dskloetx 6
     - name: Install nns-dapp
       if: ${{ inputs.nns_dapp_wasm }}
       shell: bash
