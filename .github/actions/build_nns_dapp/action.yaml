@@ -50,8 +50,6 @@ runs:
       run: echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
     - name: Install dfx
       uses: dfinity/setup-dfx@dfx-json-version
-      with:
-        dfx-version: ${{ env.DFX_VERSION }}
     - name: Install tools
       shell: bash
       run: |

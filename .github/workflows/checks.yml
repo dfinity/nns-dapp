@@ -171,8 +171,6 @@ jobs:
         run: command -v didc
       - name: Install dfx
         uses: dfinity/setup-dfx@dfx-json-version
-        with:
-          dfx-version: ${{ env.DFX_VERSION }}
       - name: Verify template creation
         run: |
           echo Create a fake wasm
@@ -189,8 +187,6 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install dfx
         uses: dfinity/setup-dfx@dfx-json-version
-        with:
-          dfx-version: ${{ env.DFX_VERSION }}
       - name: Install cargo binstall
         uses: ./.github/actions/install_binstall
       - name: Install tools
@@ -243,8 +239,6 @@ jobs:
         run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
       - name: Install dfx
         uses: dfinity/setup-dfx@dfx-json-version
-        with:
-          dfx-version: ${{ env.DFX_VERSION }}
       - name: Test getting proposal args
         run: scripts/dfx-nns-proposal-args.test
   docker-build-cli-flags:

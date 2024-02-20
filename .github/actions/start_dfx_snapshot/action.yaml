@@ -81,8 +81,6 @@ runs:
         head dfx.json
     - name: Install dfx
       uses: dfinity/setup-dfx@dfx-json-version
-      with:
-        dfx-version: ${{ env.DFX_VERSION }}
     - name: debug 3
       shell: bash
       run: |
