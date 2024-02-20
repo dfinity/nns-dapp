@@ -105,15 +105,10 @@ runs:
         echo dskloetx 2
         curl -fL --retry 5 ${{ steps.snsdemo_snapshot.outputs.url }} > state.tar.xz
         echo dskloetx 3
-        dfx --version
         echo dskloetx 3.1
-        pushd "$HOME"
         echo dskloetx 3.2
-        dfx --version
         echo dskloetx 3.3
-        ls $PWD/
         echo dskloetx 3.4
-        ls -l $PWD/work/nns-dapp/nns-dapp/snsdemo/bin
         echo dskloetx 3.5
         dfx-snapshot-restore --snapshot state.tar.xz --verbose
         echo dskloetx 4
