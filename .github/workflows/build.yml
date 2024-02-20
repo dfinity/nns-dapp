@@ -1,4 +1,3 @@
-$$$$$$$$$$$$$$$$$$$$$$$$$
 name: Build and test
 # We use `push` events so that we have the actual commit. In `pull_request`
 # events we get a merge commit with main instead. The merge commit can be
@@ -133,10 +132,15 @@ jobs:
           path: out
       - name: Install ic-wasm
         uses: ./.github/actions/install_ic_wasm
+      - name: Get dfx version
+        run: echo "DFX_VERSION=$(jq -r .dfx dfx.json)" >> $GITHUB_ENV
+      - name: Install dfx
+        uses: dfinity/setup-dfx@main
+        with:
+          dfx-version: ${{ env.DFX_VERSION }}
       - name: Install tools
         run: |
           sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
-          DFX_VERSION="$(jq -r .dfx dfx.json)" sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
           cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)" && idl2json --version
       - name: Start dfx
         run: dfx start --clean --background &>test-upgrade-map-dfx.log
