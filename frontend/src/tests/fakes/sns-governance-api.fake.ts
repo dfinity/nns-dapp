@@ -58,19 +58,10 @@ const nervousFunctions: Map<string, SnsNervousSystemFunction[]> = new Map();
 type KeyParams = {
   identity: Identity;
   rootCanisterId: Principal;
-  includeBallotsByCaller?: boolean;
 };
 
-const mapKey = ({
-  identity,
-  rootCanisterId,
-  includeBallotsByCaller,
-}: KeyParams) =>
-  JSON.stringify([
-    identity.getPrincipal().toText(),
-    rootCanisterId.toText(),
-    includeBallotsByCaller,
-  ]);
+const mapKey = ({ identity, rootCanisterId }: KeyParams) =>
+  JSON.stringify([identity.getPrincipal().toText(), rootCanisterId.toText()]);
 
 const getNeurons = (keyParams: KeyParams) => {
   const key = mapKey(keyParams);
@@ -125,9 +116,7 @@ const getProposals = (keyParams: KeyParams): SnsListProposalsResponse => {
   if (isNullish(proposals.get(key))) {
     proposals.set(key, {
       proposals: [],
-      include_ballots_by_caller: [
-        keyParams.includeBallotsByCaller ?? false,
-      ] as [boolean],
+      include_ballots_by_caller: [false],
     });
   }
   return proposals.get(key);
@@ -501,11 +490,11 @@ export const addProposalWith = ({
   rootCanisterId: Principal;
   includeBallotsByCaller?: boolean;
 } & Partial<SnsProposalData>): SnsProposalData => {
-  const { proposals: proposalsList } = getProposals({
+  const response = getProposals({
     identity,
     rootCanisterId,
-    includeBallotsByCaller,
   });
+  const proposalsList = response.proposals;
   const index = proposalsList.length;
   const defaultProposalId = { id: BigInt(index + 1) };
   const proposal: SnsProposalData = {
@@ -514,6 +503,8 @@ export const addProposalWith = ({
     ...proposalParams,
   };
   proposalsList.push(proposal);
+  response.include_ballots_by_caller = [includeBallotsByCaller ?? false];
+
   return proposal;
 };
 

@@ -1,6 +1,12 @@
-use super::{partitions::PartitionsMaybe, AssetHashes, Assets, Memory, PerformanceCounts, StableState, State};
-use crate::accounts_store::schema::{AccountsDbTrait, SchemaLabel, SchemaLabelBytes};
+use crate::{
+    accounts_store::schema::{AccountsDbTrait, SchemaLabel, SchemaLabelBytes},
+    state::{
+        partitions::{Partitions, PartitionsMaybe},
+        AssetHashes, Assets, Memory, PerformanceCounts, StableState, State,
+    },
+};
 use ic_stable_structures::{DefaultMemoryImpl, VectorMemory};
+use proptest::proptest;
 use std::cell::RefCell;
 use strum::IntoEnumIterator;
 
@@ -81,5 +87,44 @@ fn state_can_be_created_with_any_schema() {
             state.accounts_store.borrow().schema_label(),
             "Accounts are not stored in the expected schema"
         );
+    }
+}
+
+fn state_can_be_saved_and_recovered_from_stable_memory(num_accounts: u64) {
+    for schema in SchemaLabel::iter().filter(
+        |schema| *schema != SchemaLabel::Map, /* Uses old stable memory APIs that can be used only inside a canister */
+    ) {
+        // State is backed by stable memory:
+        let memory = DefaultMemoryImpl::default();
+        // We will get a second reference to the same memory so that we can compare the initial state to the state post-upgrade.
+        let memory_after_upgrade = Partitions::copy_memory_reference(&memory); // The same memory.
+
+        // On init, the state is created using a schema specified in the init arguments:
+        let state = State::new(schema, memory);
+        // Typically the state is populated with data:
+        // Inserting an account creates:
+        // - An account entry, that is stored on the heap or in stable structures depending on the schema.
+        // - Database stats that record the number of accounts; these are currently stored on the heap for all schemas.
+        for toy_account_index in 0..num_accounts {
+            state.accounts_store.borrow_mut().db_insert_account(
+                &toy_account_index.to_be_bytes()[..],
+                crate::accounts_store::schema::tests::toy_account(toy_account_index, 2),
+            );
+        }
+        // The state is backed by stable memory.  Pre-upgrade, any state that is not already in stable memory must be saved.
+        state.save();
+        // Post-upgrade state can then be restored from memory.
+        let new_state = State::from(memory_after_upgrade);
+        // The state should be restored to the same state as before:
+        assert_eq!(state, new_state);
+    }
+}
+
+proptest! {
+    #[test]
+    // Note: By popular demand this is run with various sizes, although size _should_ have no
+    // effect on the test.
+    fn state_of_any_size_can_be_saved_and_recovered_from_stable_memory(num_accounts: u8) {
+        state_can_be_saved_and_recovered_from_stable_memory(u64::from(num_accounts))
     }
 }

@@ -1,7 +1,6 @@
 //! Accounts DB that delegates API calls to underlying implementations.
 //!
 //! The proxy manages migrations from one implementation to another.
-#[cfg(test)]
 use super::accounts_in_unbounded_stable_btree_map::{AccountsDbAsUnboundedStableBTreeMap, ProductionMemoryType};
 use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel};
 use core::fmt;
@@ -67,7 +66,6 @@ impl From<AccountsDb> for AccountsDbAsProxy {
 #[derive(Debug)]
 pub enum AccountsDb {
     Map(AccountsDbAsMap),
-    #[cfg(test)]
     UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap<ProductionMemoryType>),
 }
 
@@ -79,7 +77,6 @@ impl AccountsDbAsProxy {
     pub fn as_map_maybe(&self) -> Option<&BTreeMap<Vec<u8>, Account>> {
         match &self.authoritative_db {
             AccountsDb::Map(map_db) => Some(map_db.as_map()),
-            #[cfg(test)]
             AccountsDb::UnboundedStableBTreeMap(_) => None,
         }
     }

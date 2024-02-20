@@ -26,7 +26,9 @@ verify_healthy() {
 
 # Installs the current build of sns_aggregator
 upgrade_canister() {
+  dfx canister stop sns_aggregator
   dfx canister install --upgrade-unchanged sns_aggregator --wasm "$1" --mode upgrade --yes
+  dfx canister start sns_aggregator
 }
 
 echo "Getting or building the local wasm..."

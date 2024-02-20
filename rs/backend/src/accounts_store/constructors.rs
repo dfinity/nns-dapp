@@ -1,6 +1,5 @@
 //! Account store constructors.
 use super::{AccountsDb, AccountsDbAsProxy, AccountsStore};
-#[cfg(test)]
 use std::mem;
 
 impl From<AccountsDb> for AccountsStore {
@@ -12,7 +11,6 @@ impl From<AccountsDb> for AccountsStore {
     }
 }
 
-#[cfg(test)]
 impl AccountsStore {
     /// Adds an `accounts_db` to the store.
     ///

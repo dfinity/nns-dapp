@@ -5,8 +5,8 @@ import {
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
-import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
 import * as services from "$lib/services/ckbtc-convert.services";
+import { transferTokens } from "$lib/services/icrc-accounts.services";
 import { authStore } from "$lib/stores/auth.store";
 import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
@@ -67,7 +67,7 @@ describe("CkBTCTransactionModal", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
 
-    vi.mocked(ckBTCTransferTokens).mockResolvedValue({ blockIndex: undefined });
+    vi.mocked(transferTokens).mockResolvedValue({ blockIndex: undefined });
     vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
 
     icrcAccountsStore.set({
@@ -113,7 +113,7 @@ describe("CkBTCTransactionModal", () => {
       selectedNetwork: TransactionNetwork.ICP,
     });
 
-    await waitFor(() => expect(ckBTCTransferTokens).toBeCalled());
+    await waitFor(() => expect(transferTokens).toBeCalled());
   });
 
   const testConvertCkBTCToBTCWithIcrc2 = async ({

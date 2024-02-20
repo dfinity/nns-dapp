@@ -10,7 +10,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { Account } from "$lib/types/account";
   import type { WizardStep } from "@dfinity/gix-components";
-  import { ckBTCTransferTokens } from "$lib/services/ckbtc-accounts.services";
+  import { transferTokens as transferIcrcTokens } from "$lib/services/icrc-accounts.services";
   import type { TokenAmountV2, Token } from "@dfinity/utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
@@ -31,6 +31,7 @@
     ckBTCInfoStore,
     type CkBTCInfoStoreUniverseData,
   } from "$lib/stores/ckbtc-info.store";
+  import { numberToE8s } from "$lib/utils/token.utils";
 
   export let selectedAccount: Account | undefined = undefined;
 
@@ -73,11 +74,12 @@
       initiator: "accounts",
     });
 
-    const { blockIndex } = await ckBTCTransferTokens({
+    const { blockIndex } = await transferIcrcTokens({
       source: sourceAccount,
       destinationAddress,
-      amount,
-      universeId,
+      amountUlps: numberToE8s(amount),
+      ledgerCanisterId: universeId,
+      fee: transactionFee.toUlps(),
     });
 
     stopBusy("accounts");
