@@ -37,6 +37,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+- Dependabot configuration to update GitHub actions.
+
 #### Changed
 
 #### Deprecated
