@@ -1,3 +1,6 @@
+// Must be on top to use in hoisted vi.mock:
+import { mockEnvVars } from "$tests/mocks/env-vars.mock";
+
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import {
@@ -7,6 +10,10 @@ import {
 } from "$lib/utils/sns-aggregator-converters.utils";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { Principal } from "@dfinity/principal";
+
+vi.mock("$lib/utils/env-vars.utils", () => ({
+  getEnvVars: () => mockEnvVars,
+}));
 
 describe("sns aggregator converters utils", () => {
   describe("convertDtoData", () => {

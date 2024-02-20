@@ -1,3 +1,6 @@
+// Must be on top to use in hoisted vi.mock:
+import { mockEnvVars } from "$tests/mocks/env-vars.mock";
+
 import { tokensListBaseStore } from "$lib/derived/tokens-list-base.derived";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { UserTokenBase } from "$lib/types/tokens-page";
@@ -11,6 +14,10 @@ import {
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
+
+vi.mock("$lib/utils/env-vars.utils", () => ({
+  getEnvVars: () => mockEnvVars,
+}));
 
 describe("tokens-list-base.derived", () => {
   const snsTetrisToken = mockSnsToken;

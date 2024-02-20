@@ -1,3 +1,6 @@
+// Must be on top to use in hoisted vi.mock:
+import { mockEnvVars } from "$tests/mocks/env-vars.mock";
+
 import * as ckbtcMinterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
@@ -35,6 +38,10 @@ import type { RetrieveBtcStatusV2WithId } from "@dfinity/ckbtc";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import { mockBTCAddressTestnet } from "../../mocks/ckbtc-accounts.mock";
+
+vi.mock("$lib/utils/env-vars.utils", () => ({
+  getEnvVars: () => mockEnvVars,
+}));
 
 const expectedBalanceAfterTransfer = 11_111n;
 const testnetBtcAddress = "mziXLoUuJs427ATrgn5bMdxtUnXZMZCc3L";

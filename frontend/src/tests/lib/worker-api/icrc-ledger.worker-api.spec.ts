@@ -1,9 +1,16 @@
+// Must be on top to use in hoisted vi.mock:
+import { mockEnvVars } from "$tests/mocks/env-vars.mock";
+
 import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
 import { getIcrcBalance } from "$lib/worker-api/icrc-ledger.worker-api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import { mock } from "vitest-mock-extended";
+
+vi.mock("$lib/utils/env-vars.utils", () => ({
+  getEnvVars: () => mockEnvVars,
+}));
 
 describe("icrc-ledger.worker-api", () => {
   const ledgerCanisterMock = mock<IcrcLedgerCanister>();

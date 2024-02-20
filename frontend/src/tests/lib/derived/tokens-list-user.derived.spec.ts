@@ -1,3 +1,6 @@
+// Must be on top to use in hoisted vi.mock:
+import { mockEnvVars } from "$tests/mocks/env-vars.mock";
+
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   CKBTC_LEDGER_CANISTER_ID,
@@ -44,6 +47,10 @@ import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
+
+vi.mock("$lib/utils/env-vars.utils", () => ({
+  getEnvVars: () => mockEnvVars,
+}));
 
 describe("tokens-list-user.derived", () => {
   const identityMainAccountIdentifier = encodeIcrcAccount({

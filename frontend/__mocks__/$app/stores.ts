@@ -1,7 +1,10 @@
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { ROUTE_ID_GROUP_APP } from "$lib/constants/routes.constants";
 import type { Page } from "@sveltejs/kit";
 import { writable } from "svelte/store";
+
+// Hard code mock OWN_CANISTER_ID_TEXT to avoid transitively importing
+// lib/constants/mockable.constants.ts before having an opportunity to mock it.
+const OWN_CANISTER_ID_TEXT = "qhbym-qaaaa-aaaaa-aaafq-cai";
 
 const initialStoreValue = {
   data: {

@@ -1,3 +1,6 @@
+// Must be on top to use in hoisted vi.mock:
+import { mockEnvVars } from "$tests/mocks/env-vars.mock";
+
 import SelectUniverseNavList from "$lib/components/universe/SelectUniverseNavList.svelte";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
@@ -9,6 +12,10 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
+
+vi.mock("$lib/utils/env-vars.utils", () => ({
+  getEnvVars: () => mockEnvVars,
+}));
 
 describe("SelectUniverseNavList", () => {
   vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(

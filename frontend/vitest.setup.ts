@@ -28,38 +28,6 @@ global.TextEncoder = TextEncoder;
   global as { IntersectionObserver: typeof IntersectionObserver }
 ).IntersectionObserver = IntersectionObserverPassive;
 
-// Environment Variables Setup
-vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
-  getEnvVars: () => ({
-    ckbtcIndexCanisterId: "n5wcd-faaaa-aaaar-qaaea-cai",
-    ckbtcLedgerCanisterId: "mxzaz-hqaaa-aaaar-qaada-cai",
-    cyclesMintingCanisterId: "rkp4c-7iaaa-aaaaa-aaaca-cai",
-    ckethLedgerCanisterId: "ss2fx-dyaaa-aaaar-qacoq-cai",
-    ckethIndexCanisterId: "s3zol-vqaaa-aaaar-qacpa-cai",
-    dfxNetwork: "testnet",
-    featureFlags: JSON.stringify({
-      ENABLE_CKBTC: true,
-      ENABLE_CKTESTBTC: true,
-      ENABLE_ICP_ICRC: false,
-      ENABLE_ICP_INDEX: false,
-      ENABLE_VOTING_INDICATION: true,
-      TEST_FLAG_EDITABLE: true,
-      TEST_FLAG_NOT_EDITABLE: true,
-    }),
-    fetchRootKey: "false",
-    host: "https://icp-api.io",
-    governanceCanisterId: "rrkah-fqaaa-aaaaa-aaaaq-cai",
-    identityServiceUrl: "http://localhost:8000/",
-    ledgerCanisterId: "ryjl3-tyaaa-aaaaa-aaaba-cai",
-    ownCanisterId: "qhbym-qaaaa-aaaaa-aaafq-cai",
-    // Environments without SNS aggregator are valid
-    snsAggregatorUrl:
-      "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network",
-    wasmCanisterId: "u7xn3-ciaaa-aaaaa-aaa4a-cai",
-    tvlCanisterId: "ewh3f-3qaaa-aaaap-aazjq-cai",
-  }),
-}));
-
 vi.mock("./src/lib/constants/mockable.constants.ts", () => mockedConstants);
 setDefaultTestConstants({
   DEV: false,

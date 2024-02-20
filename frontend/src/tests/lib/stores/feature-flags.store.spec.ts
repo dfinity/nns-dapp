@@ -1,3 +1,6 @@
+// Must be on top to use in hoisted vi.mock:
+import { mockEnvVars } from "$tests/mocks/env-vars.mock";
+
 import {
   FEATURE_FLAG_ENVIRONMENT,
   type FeatureKey,
@@ -5,6 +8,10 @@ import {
 import * as featureFlagsModule from "$lib/stores/feature-flags.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { get } from "svelte/store";
+
+vi.mock("$lib/utils/env-vars.utils", () => ({
+  getEnvVars: () => mockEnvVars,
+}));
 
 describe("featureFlags store", () => {
   const noKey = "NO_KEY" as FeatureKey;

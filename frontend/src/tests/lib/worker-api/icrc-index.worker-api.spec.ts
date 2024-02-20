@@ -1,9 +1,16 @@
+// Must be on top to use in hoisted vi.mock:
+import { mockEnvVars } from "$tests/mocks/env-vars.mock";
+
 import { CKBTC_INDEX_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
 import { getIcrcTransactions } from "$lib/worker-api/icrc-index.worker-api";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { IcrcIndexCanister, type IcrcTransaction } from "@dfinity/ledger-icrc";
 import { mock } from "vitest-mock-extended";
+
+vi.mock("$lib/utils/env-vars.utils", () => ({
+  getEnvVars: () => mockEnvVars,
+}));
 
 describe("icrc-index.worker-api", () => {
   const indexCanisterMock = mock<IcrcIndexCanister>();

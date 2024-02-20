@@ -1,3 +1,6 @@
+// Must be on top to use in hoisted vi.mock:
+import { mockEnvVars } from "$tests/mocks/env-vars.mock";
+
 import * as agent from "$lib/api/agent.api";
 import * as proposalsApi from "$lib/api/proposals.api";
 import { authStore } from "$lib/stores/auth.store";
@@ -10,6 +13,10 @@ import { isNullish } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
+
+vi.mock("$lib/utils/env-vars.utils", () => ({
+  getEnvVars: () => mockEnvVars,
+}));
 
 vi.mock("$lib/api/proposals.api");
 
