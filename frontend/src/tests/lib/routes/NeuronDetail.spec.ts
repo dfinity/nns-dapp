@@ -1,4 +1,5 @@
 import * as agent from "$lib/api/agent.api";
+import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import NeuronDetail from "$lib/routes/NeuronDetail.svelte";
@@ -8,11 +9,11 @@ import { page } from "$mocks/$app/stores";
 import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
 import * as fakeSnsAggregatorApi from "$tests/fakes/sns-aggregator-api.fake";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
-import * as fakeSnsLedgerApi from "$tests/fakes/sns-ledger-api.fake";
 import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { resetSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
@@ -22,6 +23,7 @@ import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import { mock } from "vitest-mock-extended";
 
+vi.mock("$lib/api/icrc-ledger.api");
 vi.mock("$lib/api/sns-aggregator.api");
 vi.mock("$lib/api/governance.api");
 vi.mock("$lib/api/sns-governance.api");
@@ -35,16 +37,20 @@ const nnsProps = {
   neuronId: testNnsNeuronId,
 };
 
+const blockedPaths = ["$lib/api/icrc-ledger.api"];
+
 describe("NeuronDetail", () => {
+  blockAllCallsTo(blockedPaths);
+
   fakeGovernanceApi.install();
   fakeSnsGovernanceApi.install();
-  fakeSnsLedgerApi.install();
   fakeSnsAggregatorApi.install();
 
   beforeEach(() => {
     resetIdentity();
     resetSnsProjects();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(0n);
   });
 
   describe("nns neuron", () => {

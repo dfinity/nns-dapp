@@ -1,5 +1,6 @@
 import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
 import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
+import { mapEntries } from "$lib/utils/utils";
 import type { Principal } from "@dfinity/principal";
 import type {
   SnsProposalDecisionStatus,
@@ -213,15 +214,15 @@ export const snsSelectedFiltersStore = derived<
   Readable<SnsFiltersStoreData>,
   SnsFiltersStoreData
 >(snsFiltersStore, ($snsFilters) =>
-  Object.entries($snsFilters).reduce(
-    (acc, [rootCanisterIdText, filters]) => ({
-      ...acc,
-      [rootCanisterIdText]: {
+  mapEntries({
+    obj: $snsFilters,
+    mapFn: ([rootCanisterIdText, filters]) => [
+      rootCanisterIdText,
+      {
         types: filters.types.filter(({ checked }) => checked),
         rewardStatus: filters.rewardStatus.filter(({ checked }) => checked),
         decisionStatus: filters.decisionStatus.filter(({ checked }) => checked),
       },
-    }),
-    {}
-  )
+    ],
+  })
 );

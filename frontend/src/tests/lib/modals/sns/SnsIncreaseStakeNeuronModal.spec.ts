@@ -1,10 +1,7 @@
 import { AppPath } from "$lib/constants/routes.constants";
 import SnsIncreaseStakeNeuronModal from "$lib/modals/sns/neurons/SnsIncreaseStakeNeuronModal.svelte";
-import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
 import { increaseStakeNeuron } from "$lib/services/sns-neurons.services";
-import { startBusy } from "$lib/stores/busy.store";
-import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { tokensStore } from "$lib/stores/tokens.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { page } from "$mocks/$app/stores";
 import {
   mockPrincipal,
@@ -14,20 +11,15 @@ import {
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
+import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import {
   AMOUNT_INPUT_SELECTOR,
   enterAmount,
 } from "$tests/utils/neurons-modal.test-utils";
-import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { ICPToken } from "@dfinity/utils";
-import {
-  fireEvent,
-  render,
-  waitFor,
-  type RenderResult,
-} from "@testing-library/svelte";
+import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 
 vi.mock("$lib/services/sns-neurons.services", () => {
@@ -38,7 +30,7 @@ vi.mock("$lib/services/sns-neurons.services", () => {
 
 vi.mock("$lib/services/sns-accounts.services", () => {
   return {
-    syncSnsAccounts: vi.fn().mockResolvedValue(undefined),
+    loadSnsAccounts: vi.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -52,9 +44,12 @@ vi.mock("$lib/stores/busy.store", () => {
 describe("SnsIncreaseStakeNeuronModal", () => {
   const reloadNeuron = vi.fn();
   const rootCanisterId = mockPrincipal;
+  const ledgerCanisterId = principal(2);
   const snsProjectParams = {
     lifecycle: SnsSwapLifecycle.Committed,
     rootCanisterId,
+    ledgerCanisterId,
+    tokenMetadata: mockSnsToken,
   };
 
   const props = {
@@ -75,6 +70,8 @@ describe("SnsIncreaseStakeNeuronModal", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    resetSnsProjects();
+    icrcAccountsStore.reset();
     page.mock({
       routeId: AppPath.Neuron,
       data: { universe: rootCanisterId.toText() },
@@ -82,47 +79,14 @@ describe("SnsIncreaseStakeNeuronModal", () => {
     setSnsProjects([snsProjectParams]);
   });
 
-  describe("accounts and params are not loaded", () => {
-    beforeEach(() => {
-      snsAccountsStore.reset();
-      tokensStore.reset();
-    });
-
-    it("should not display modal", async () => {
-      const { container } = await render(SnsIncreaseStakeNeuronModal, {
-        props,
-      });
-
-      expect(container.querySelector("div.modal")).toBeNull();
-    });
-
-    it("should call sync sns accounts on init", async () => {
-      await render(SnsIncreaseStakeNeuronModal, {
-        props,
-      });
-
-      expect(syncSnsAccounts).toBeCalled();
-    });
-
-    it("should display a spinner on init", async () => {
-      await render(SnsIncreaseStakeNeuronModal, {
-        props,
-      });
-
-      expect(startBusy).toHaveBeenCalled();
-    });
-  });
-
   describe("accounts and params are loaded", () => {
     beforeEach(() => {
-      snsAccountsStore.setAccounts({
-        rootCanisterId,
-        accounts: [mockSnsMainAccount],
-        certified: true,
-      });
-      tokensStore.setToken({
-        canisterId: rootCanisterId,
-        token: mockSnsToken,
+      icrcAccountsStore.set({
+        ledgerCanisterId,
+        accounts: {
+          accounts: [mockSnsMainAccount],
+          certified: true,
+        },
       });
     });
 

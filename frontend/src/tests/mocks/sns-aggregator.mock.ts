@@ -39,8 +39,10 @@ const convertToNervousFunctionDto = ({
 const createQueryMetadataResponse = ({
   name,
   symbol,
+  fee,
+  logo,
 }: Partial<
-  Pick<IcrcTokenMetadata, "name" | "symbol">
+  Pick<IcrcTokenMetadata, "name" | "symbol" | "fee" | "logo">
 >): CachedSnsTokenMetadataDto =>
   mockQueryTokenResponse.map(([key, value]) => {
     if (key === IcrcMetadataResponseEntries.NAME) {
@@ -49,11 +51,14 @@ const createQueryMetadataResponse = ({
     if (key === IcrcMetadataResponseEntries.SYMBOL) {
       return [key, { Text: symbol }];
     }
+    if (key === IcrcMetadataResponseEntries.LOGO && "Text" in value) {
+      return [key, { Text: logo ?? value.Text }];
+    }
     if (key === IcrcMetadataResponseEntries.DECIMALS && "Nat" in value) {
       return [key, { Nat: [Number(value.Nat)] }];
     }
     if (key === IcrcMetadataResponseEntries.FEE && "Nat" in value) {
-      return [key, { Nat: [Number(value.Nat)] }];
+      return [key, { Nat: [Number(fee ?? value.Nat)] }];
     }
     throw new Error(`The key ${key} is not supported yet.`);
   });

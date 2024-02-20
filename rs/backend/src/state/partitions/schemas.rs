@@ -1,8 +1,9 @@
 //! Sets up memory for a given schema.
 #[cfg(test)]
+use super::DefaultMemoryImpl;
+use super::{PartitionType, Partitions};
+#[cfg(test)]
 use crate::accounts_store::schema::SchemaLabelBytes;
-
-use super::*;
 use crate::state::SchemaLabel;
 use ic_cdk::println;
 #[cfg(test)]
@@ -19,13 +20,14 @@ impl Partitions {
         self.growing_write(PartitionType::Metadata.memory_id(), 0, &schema_label_bytes[..]);
     }
     /// Gets the schema label from the metadata partition.
+    #[must_use]
     pub fn schema_label(&self) -> SchemaLabel {
         let mut schema_label_bytes = [0u8; SchemaLabel::MAX_BYTES];
         self.read_exact(PartitionType::Metadata.memory_id(), 0, &mut schema_label_bytes)
             .expect("Metadata memory is not populated");
         println!("Read schema label bytes as: {:?}", schema_label_bytes);
         let schema_label = SchemaLabel::try_from(&schema_label_bytes[..]).unwrap_or_else(|err| {
-            dfn_core::api::trap_with(&format!("Unknown schema: {:?}", err));
+            dfn_core::api::trap_with(&format!("Unknown schema: {err:?}"));
             unreachable!()
         });
         println!("Partitions schema label: {schema_label:?}");

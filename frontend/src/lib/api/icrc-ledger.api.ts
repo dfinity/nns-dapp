@@ -1,84 +1,25 @@
 import { createAgent } from "$lib/api/agent.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { HOST } from "$lib/constants/environment.constants";
-import type { Account, AccountType } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
 import type { Agent, Identity } from "@dfinity/agent";
-import type {
-  BalanceParams,
-  IcrcTokenMetadataResponse,
-  IcrcTokens,
-} from "@dfinity/ledger-icrc";
 import {
   IcrcLedgerCanister,
-  encodeIcrcAccount,
   type IcrcAccount,
   type IcrcBlockIndex,
   type TransferParams,
 } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
-import type { QueryParams } from "@dfinity/utils";
 import {
   arrayOfNumberToUint8Array,
   isNullish,
   nonNullish,
   toNullable,
-  uint8ArrayToArrayOfNumber,
 } from "@dfinity/utils";
-
-/**
- * @deprecated replace with getAccount function of wallet-ledger.api
- */
-export const getIcrcAccount = async ({
-  owner,
-  subaccount,
-  certified,
-  type,
-  getBalance,
-}: {
-  type: AccountType;
-  getBalance: (params: BalanceParams) => Promise<IcrcTokens>;
-} & IcrcAccount &
-  QueryParams): Promise<Account> => {
-  const account = { owner, subaccount };
-
-  const balanceUlps = await getBalance({ ...account, certified });
-
-  return {
-    identifier: encodeIcrcAccount(account),
-    principal: owner,
-    ...(nonNullish(subaccount) && {
-      subAccount: uint8ArrayToArrayOfNumber(new Uint8Array(subaccount)),
-    }),
-    balanceUlps,
-    type,
-  };
-};
-
-/**
- * @deprecated use queryIcrcToken
- */
-export const getIcrcToken = async ({
-  certified,
-  getMetadata,
-}: {
-  certified: boolean;
-  getMetadata: (params: QueryParams) => Promise<IcrcTokenMetadataResponse>;
-}): Promise<IcrcTokenMetadata> => {
-  const metadata = await getMetadata({ certified });
-
-  const token = mapOptionalToken(metadata);
-
-  if (isNullish(token)) {
-    throw new LedgerErrorKey("error.icrc_token_load");
-  }
-
-  return token;
-};
 
 /**
  * Similar to `getIcrcToken` but it expects the canister id instead of the function that queries the metada.

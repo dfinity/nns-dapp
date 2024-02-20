@@ -18,12 +18,6 @@ import {
 import { waitFor } from "@testing-library/dom";
 import { fireEvent, render } from "@testing-library/svelte";
 
-vi.mock("$lib/services/$public/sns.services", () => {
-  return {
-    loadSnsNervousSystemFunctions: vi.fn().mockResolvedValue(undefined),
-  };
-});
-
 vi.mock("$lib/services/$public/proposals.services", () => {
   return {
     listProposals: vi.fn().mockResolvedValue(undefined),

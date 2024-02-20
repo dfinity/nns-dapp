@@ -3,7 +3,11 @@
   import { Modal, Value, busy } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
-  import { isValidInputAmount, neuronStake } from "$lib/utils/neuron.utils";
+  import {
+    isNeuronControlledByHardwareWallet,
+    isValidInputAmount,
+    neuronStake,
+  } from "$lib/utils/neuron.utils";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
   import { i18n } from "$lib/stores/i18n";
   import {
@@ -15,6 +19,7 @@
   import { splitNeuron } from "$lib/services/neurons.services";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
+  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 
   export let neuron: NeuronInfo;
 
@@ -50,7 +55,14 @@
       });
       return;
     }
-    startBusy({ initiator: "split-neuron" });
+    const hwControlled = isNeuronControlledByHardwareWallet({
+      neuron,
+      accounts: $icpAccountsStore,
+    });
+    startBusy({
+      initiator: "split-neuron",
+      labelKey: hwControlled ? "busy_screen.pending_approval_hw" : undefined,
+    });
 
     const id = await splitNeuron({
       neuron,

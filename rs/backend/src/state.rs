@@ -147,10 +147,10 @@ impl State {
 /// Restores state from managed memory.
 impl From<Partitions> for State {
     fn from(partitions: Partitions) -> Self {
-        println!("state::from<Partitions>: ()");
+        println!("START state::from<Partitions>: ()");
         let schema = partitions.schema_label();
-        println!("state::from<Partitions>: from_schema: {schema:#?}");
-        match schema {
+        println!("      state::from<Partitions>: from_schema: {schema:#?}");
+        let state = match schema {
             // The schema claims to read from raw memory, but we got the label from managed memory.  This is a bug.
             SchemaLabel::Map => {
                 trap_with(
@@ -169,7 +169,9 @@ impl From<Partitions> for State {
                 state.partitions_maybe.replace(PartitionsMaybe::Partitions(partitions));
                 state
             }
-        }
+        };
+        println!("END   state::from<Partitions>: ()");
+        state
     }
 }
 
@@ -237,6 +239,7 @@ impl State {
     /// - Deploy a release with a parser for the new schema.
     /// - Then, deploy a release that writes the new schema.
     /// This way it is possible to roll back after deploying the new schema.
+    #[must_use]
     pub fn restore() -> Self {
         match Self::schema_version_from_stable_memory() {
             None => Self::recover_from_raw_memory(),

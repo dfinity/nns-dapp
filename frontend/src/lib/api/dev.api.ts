@@ -24,7 +24,7 @@ import {
 } from "@dfinity/utils";
 import { createAgent } from "./agent.api";
 import { governanceCanister } from "./governance.api";
-import { initSns, wrapper } from "./sns-wrapper.api";
+import { wrapper } from "./sns-wrapper.api";
 
 export const testAccountPrincipal =
   "jg6qm-uw64t-m6ppo-oluwn-ogr5j-dc5pm-lgy2p-eh6px-hebcd-5v73i-nqe";
@@ -125,38 +125,6 @@ export const acquireICPTs = async ({
   return ledgerCanister.transfer({
     amount: e8s,
     to: AccountIdentifier.fromHex(accountIdentifier),
-  });
-};
-
-// TODO: Reuse the new `acquireIcrcTokens` instead of SNS specific function.
-export const acquireSnsTokens = async ({
-  account,
-  ulps,
-  rootCanisterId,
-}: {
-  account: Account;
-  ulps: bigint;
-  rootCanisterId: Principal;
-}): Promise<void> => {
-  assertTestnet();
-
-  const agent = await getTestAccountAgent();
-
-  const { transfer } = await initSns({
-    agent,
-    rootCanisterId,
-    certified: true,
-  });
-
-  await transfer({
-    amount: ulps,
-    to: {
-      owner: account.principal as Principal,
-      subaccount:
-        account.subAccount === undefined
-          ? []
-          : toNullable(arrayOfNumberToUint8Array(account.subAccount)),
-    },
   });
 };
 

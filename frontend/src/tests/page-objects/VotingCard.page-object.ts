@@ -1,5 +1,6 @@
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { StakeNeuronToVotePo } from "$tests/page-objects/StakeNeuronToVote.page-object";
+import { VotingConfirmationToolbarPo } from "$tests/page-objects/VotingConfirmationToolbar.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -12,6 +13,22 @@ export class VotingCardPo extends BasePageObject {
 
   static under(element: PageObjectElement): VotingCardPo {
     return new VotingCardPo(element.byTestId(VotingCardPo.TID));
+  }
+
+  getVotingConfirmationToolbarPo(): VotingConfirmationToolbarPo {
+    return VotingConfirmationToolbarPo.under(this.root);
+  }
+
+  hasVotingConfirmationToolbar(): Promise<boolean> {
+    return this.getVotingConfirmationToolbarPo().isPresent();
+  }
+
+  getVoteYesButtonPo(): ButtonPo {
+    return this.getVotingConfirmationToolbarPo().getVoteYesButtonPo();
+  }
+
+  getVoteNoButtonPo(): ButtonPo {
+    return this.getVotingConfirmationToolbarPo().getVoteNoButtonPo();
   }
 
   getVotableNeurons(): PageObjectElement {
@@ -48,14 +65,6 @@ export class VotingCardPo extends BasePageObject {
     ).trim();
   }
 
-  getVoteYesButtonPo(): ButtonPo {
-    return this.getButton("vote-yes");
-  }
-
-  getVoteNoButtonPo(): ButtonPo {
-    return this.getButton("vote-no");
-  }
-
   getStakeNeuronToVotePo(): StakeNeuronToVotePo {
     return StakeNeuronToVotePo.under(this.root);
   }
@@ -81,7 +90,7 @@ export class VotingCardPo extends BasePageObject {
   }
 
   async voteYes(): Promise<void> {
-    await this.getVoteYesButtonPo().click();
+    await this.getVotingConfirmationToolbarPo().getVoteYesButtonPo().click();
     await this.getConfirmYesButtonPo().click();
     await this.waitForVotingComplete();
   }

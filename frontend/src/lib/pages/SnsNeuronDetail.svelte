@@ -31,7 +31,7 @@
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import SnsNeuronProposalsCard from "$lib/components/neuron-detail/SnsNeuronProposalsCard.svelte";
   import SnsPermissionsCard from "$lib/components/neuron-detail/SnsPermissionsCard.svelte";
-  import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
+  import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
   import SnsNeuronPageHeader from "$lib/components/sns-neuron-detail/SnsNeuronPageHeader.svelte";
   import SnsNeuronVotingPowerSection from "$lib/components/sns-neuron-detail/SnsNeuronVotingPowerSection.svelte";
   import SnsNeuronMaturitySection from "$lib/components/sns-neuron-detail/SnsNeuronMaturitySection.svelte";
@@ -141,7 +141,7 @@
       await Promise.all([
         loadNeuron(),
         loadSnsParameters(rootCanisterId),
-        syncSnsAccounts({ rootCanisterId }),
+        loadSnsAccounts({ rootCanisterId }),
       ]);
     } catch (err: unknown) {
       // $pageStore.universe might be an invalid principal, like empty or yolo

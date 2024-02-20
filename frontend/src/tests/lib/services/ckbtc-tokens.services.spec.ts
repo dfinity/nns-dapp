@@ -1,4 +1,4 @@
-import * as ledgerApi from "$lib/api/wallet-ledger.api";
+import * as ledgerApi from "$lib/api/icrc-ledger.api";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
@@ -10,7 +10,7 @@ import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
 import { get } from "svelte/store";
 
-vi.mock("$lib/api/wallet-ledger.api");
+vi.mock("$lib/api/icrc-ledger.api");
 
 describe("ckbtc-tokens-services", () => {
   beforeEach(() => {
@@ -25,7 +25,7 @@ describe("ckbtc-tokens-services", () => {
     };
     beforeEach(() => {
       tokensStore.reset();
-      vi.spyOn(ledgerApi, "getToken").mockImplementation(
+      vi.spyOn(ledgerApi, "queryIcrcToken").mockImplementation(
         async ({ canisterId }) => {
           if (canisterId.toText() === CKBTC_UNIVERSE_CANISTER_ID.toText()) {
             return mockCkBTCToken;

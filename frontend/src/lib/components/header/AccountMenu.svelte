@@ -6,6 +6,8 @@
   import { i18n } from "$lib/stores/i18n";
   import SettingsButton from "$lib/components/header/SettingsButton.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import ManageInternetIdentityButton from "$lib/components/header/ManageInternetIdentityButton.svelte";
+  import SourceCodeButton from "$lib/components/header/SourceCodeButton.svelte";
 
   let visible = false;
   let button: HTMLButtonElement | undefined;
@@ -28,6 +30,10 @@
     <Popover bind:visible anchor={button} direction="rtl">
       <div class="info">
         <ThemeToggle />
+
+        <ManageInternetIdentityButton />
+
+        <SourceCodeButton />
 
         <SettingsButton on:nnsLink={() => (visible = false)} />
 

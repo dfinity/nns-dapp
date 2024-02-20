@@ -1,7 +1,7 @@
-//! Boilerplate for implementing traits for the AccountsDb enum.
+//! Boilerplate for implementing traits for the `AccountsDb` enum.
 //!
 //! Each function is implemented by calling the same function on the applicable variant.  There is probably a macro for this.
-use super::*;
+use super::{Account, AccountsDb, AccountsDbTrait, RangeBounds, SchemaLabel};
 
 // TODO: This is boilerplate.  can it be eliminated with a macro?
 impl AccountsDbTrait for AccountsDb {

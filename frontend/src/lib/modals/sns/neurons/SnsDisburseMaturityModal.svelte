@@ -7,7 +7,7 @@
   import { disburseMaturity as disburseMaturityService } from "$lib/services/sns-neurons.services";
   import { minimumAmountToDisburseMaturity } from "$lib/utils/sns-neuron.utils";
   import DisburseMaturityModal from "$lib/modals/neurons/DisburseMaturityModal.svelte";
-  import { tokensStore } from "$lib/stores/tokens.store";
+  import { snsTokensByRootCanisterIdStore } from "$lib/derived/sns/sns-tokens.derived";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
 
   export let neuron: SnsNeuron;
@@ -17,7 +17,9 @@
 
   let token: IcrcTokenMetadata;
   // Modal can't appear without the token being loaded.
-  $: token = $tokensStore[rootCanisterId.toText()]?.token as IcrcTokenMetadata;
+  $: token = $snsTokensByRootCanisterIdStore[
+    rootCanisterId.toText()
+  ] as IcrcTokenMetadata;
 
   let minimumAmountE8s: bigint;
   // Token is loaded with all the projects from the aggregator.

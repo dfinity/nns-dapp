@@ -5,7 +5,6 @@ import type { IcrcAccount } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import type {
   SnsListProposalsParams,
-  SnsNervousSystemFunction,
   SnsNervousSystemParameters,
   SnsNeuron,
   SnsNeuronId,
@@ -360,29 +359,6 @@ export const claimNeuron = async ({
 
   logWithTimestamp(`Claiming neuron call complete.`);
   return neuronId;
-};
-
-export const getNervousSystemFunctions = async ({
-  rootCanisterId,
-  identity,
-  certified,
-}: {
-  rootCanisterId: Principal;
-  identity: Identity;
-  certified: boolean;
-}): Promise<SnsNervousSystemFunction[]> => {
-  logWithTimestamp(`Getting nervous system functions call...`);
-
-  const { listNervousSystemFunctions } = await wrapper({
-    identity,
-    rootCanisterId: rootCanisterId.toText(),
-    certified,
-  });
-
-  const { functions } = await listNervousSystemFunctions({});
-
-  logWithTimestamp(`Getting nervous system functions call complete.`);
-  return functions;
 };
 
 export const nervousSystemParameters = async ({

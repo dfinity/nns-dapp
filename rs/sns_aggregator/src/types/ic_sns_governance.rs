@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-01-25_14-09+p2p-con/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-02-07_23-01+feature/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -175,6 +175,16 @@ pub struct Tally {
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct ManageDappCanisterSettings {
+    pub freezing_threshold: Option<u64>,
+    pub canister_ids: Vec<Principal>,
+    pub reserved_cycles_limit: Option<u64>,
+    pub log_visibility: Option<i32>,
+    pub memory_allocation: Option<u64>,
+    pub compute_allocation: Option<u64>,
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct RegisterDappCanisters {
     pub canister_ids: Vec<Principal>,
 }
@@ -243,6 +253,7 @@ pub struct Motion {
 pub enum Action {
     ManageNervousSystemParameters(NervousSystemParameters),
     AddGenericNervousSystemFunction(NervousSystemFunction),
+    ManageDappCanisterSettings(ManageDappCanisterSettings),
     RemoveGenericNervousSystemFunction(u64),
     UpgradeSnsToNextVersion(EmptyRecord),
     RegisterDappCanisters(RegisterDappCanisters),

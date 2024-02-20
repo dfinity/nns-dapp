@@ -7,10 +7,6 @@
     UiTransaction,
     IcrcTransactionData,
   } from "$lib/types/transaction";
-  import {
-    loadWalletNextTransactions,
-    loadWalletTransactions,
-  } from "$lib/services/wallet-transactions.services";
   import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
   import { i18n } from "$lib/stores/i18n";
   import {
@@ -18,7 +14,7 @@
     isIcrcTransactionsCompleted,
     mapIcrcTransaction,
   } from "$lib/utils/icrc-transactions.utils";
-  import IcrcTransactionsList from "$lib/components/accounts/IcrcTransactionsList.svelte";
+  import UiTransactionsList from "$lib/components/accounts/UiTransactionsList.svelte";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { CanisterId } from "$lib/types/canister";
   import { onMount } from "svelte";
@@ -27,6 +23,10 @@
   import { WALLET_TRANSACTIONS_RELOAD_DELAY } from "$lib/constants/wallet.constants";
   import { waitForMilliseconds } from "$lib/utils/utils";
   import { nonNullish } from "@dfinity/utils";
+  import {
+    loadIcrcAccountNextTransactions,
+    loadIcrcAccountTransactions,
+  } from "$lib/services/icrc-transactions.services";
 
   export let indexCanisterId: CanisterId;
   export let ledgerCanisterId: UniverseCanisterId;
@@ -51,9 +51,9 @@
 
   const loadNextTransactions = async () => {
     loading = true;
-    await loadWalletNextTransactions({
+    await loadIcrcAccountNextTransactions({
       account,
-      canisterId: ledgerCanisterId,
+      ledgerCanisterId,
       indexCanisterId,
     });
     loading = false;
@@ -78,9 +78,9 @@
     // We optimistically try to fetch the new transaction the user just transferred by delaying the reload of the transactions.
     await waitForMilliseconds(WALLET_TRANSACTIONS_RELOAD_DELAY);
 
-    await loadWalletTransactions({
+    await loadIcrcAccountTransactions({
       account,
-      canisterId: ledgerCanisterId,
+      ledgerCanisterId,
       indexCanisterId,
     });
 
@@ -119,7 +119,7 @@
   {completed}
   {ledgerCanisterId}
 >
-  <IcrcTransactionsList
+  <UiTransactionsList
     on:nnsIntersect={loadNextTransactions}
     transactions={uiTransactions}
     {loading}

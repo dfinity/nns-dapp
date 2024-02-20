@@ -1,21 +1,20 @@
-import type { Identity } from "@dfinity/agent";
-import type {
-  GetAccountTransactionsParams,
-  IcrcAccount,
-  IcrcGetTransactions,
+import { HOST } from "$lib/constants/environment.constants";
+import type { Agent, Identity } from "@dfinity/agent";
+import {
+  IcrcIndexCanister,
+  type IcrcAccount,
+  type IcrcGetTransactions,
 } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import { fromNullable } from "@dfinity/utils";
+import { createAgent } from "./agent.api";
 
 export interface GetTransactionsParams {
   identity: Identity;
   account: IcrcAccount;
   start?: bigint;
   maxResults: bigint;
-  canisterId: Principal;
-  getTransactions: (
-    params: GetAccountTransactionsParams
-  ) => Promise<IcrcGetTransactions>;
+  indexCanisterId: Principal;
 }
 
 export interface GetTransactionsResponse
@@ -23,20 +22,19 @@ export interface GetTransactionsResponse
   oldestTxId?: bigint;
 }
 
-/**
- * @deprecated to be replaced with similar function from wallet-index.api
- */
 export const getTransactions = async ({
-  maxResults: max_results,
+  identity,
+  indexCanisterId,
+  maxResults,
   start,
   account,
-  getTransactions: getTransactionsApi,
-}: Omit<
-  GetTransactionsParams,
-  "canisterId"
->): Promise<GetTransactionsResponse> => {
-  const { oldest_tx_id, ...rest } = await getTransactionsApi({
-    max_results,
+}: GetTransactionsParams): Promise<GetTransactionsResponse> => {
+  const {
+    canister: { getTransactions },
+  } = await indexCanister({ identity, canisterId: indexCanisterId });
+
+  const { oldest_tx_id, ...rest } = await getTransactions({
+    max_results: maxResults,
     start,
     account,
   });
@@ -44,5 +42,31 @@ export const getTransactions = async ({
   return {
     oldestTxId: fromNullable(oldest_tx_id),
     ...rest,
+  };
+};
+
+const indexCanister = async ({
+  identity,
+  canisterId,
+}: {
+  identity: Identity;
+  canisterId: Principal;
+}): Promise<{
+  canister: IcrcIndexCanister;
+  agent: Agent;
+}> => {
+  const agent = await createAgent({
+    identity,
+    host: HOST,
+  });
+
+  const canister = IcrcIndexCanister.create({
+    agent,
+    canisterId,
+  });
+
+  return {
+    canister,
+    agent,
   };
 };

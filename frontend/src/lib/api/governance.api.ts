@@ -165,22 +165,6 @@ export const disburse = async ({
   logWithTimestamp(`Disburse neuron (${hashCode(neuronId)}) complete.`);
 };
 
-export type ApiMergeMaturityParams = ApiManageNeuronParams & {
-  percentageToMerge: number;
-};
-
-export const mergeMaturity = async ({
-  neuronId,
-  percentageToMerge,
-  identity,
-}: ApiMergeMaturityParams): Promise<void> => {
-  logWithTimestamp(`Merge maturity (${hashCode(neuronId)}) call...`);
-  const { canister } = await governanceCanister({ identity });
-
-  await canister.mergeMaturity({ neuronId, percentageToMerge });
-  logWithTimestamp(`Merge maturity (${hashCode(neuronId)}) complete.`);
-};
-
 export type ApiStakeMaturityParams = ApiManageNeuronParams & {
   percentageToStake: number;
 };

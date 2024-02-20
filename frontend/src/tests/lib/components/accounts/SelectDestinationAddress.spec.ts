@@ -1,18 +1,24 @@
 import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
-import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
-import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import {
   mockAccountsStoreSubscribe,
   mockHardwareWalletAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
-import { mockSnsAccountsStoreSubscribe } from "$tests/mocks/sns-accounts.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("SelectDestinationAddress", () => {
+  beforeEach(() => {
+    resetSnsProjects();
+    icrcAccountsStore.reset();
+  });
+
   describe("nns accounts", () => {
     const mockSubAccount2 = {
       ...mockSubAccount,
@@ -107,14 +113,29 @@ describe("SelectDestinationAddress", () => {
   });
 
   describe("sns accounts", () => {
-    vi.spyOn(snsAccountsStore, "subscribe").mockImplementation(
-      mockSnsAccountsStoreSubscribe(mockPrincipal)
-    );
+    const rootCanisterId = principal(1);
+    const ledgerCanisterId = principal(2);
+
+    beforeEach(() => {
+      setSnsProjects([
+        {
+          rootCanisterId,
+          ledgerCanisterId,
+        },
+      ]);
+      icrcAccountsStore.set({
+        ledgerCanisterId,
+        accounts: {
+          accounts: [mockSnsMainAccount],
+          certified: true,
+        },
+      });
+    });
 
     it("should render the sns account", async () => {
       const { container, queryByTestId } = render(SelectDestinationAddress, {
         props: {
-          rootCanisterId: mockPrincipal,
+          rootCanisterId,
         },
       });
 

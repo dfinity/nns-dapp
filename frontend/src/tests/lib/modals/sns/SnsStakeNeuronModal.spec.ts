@@ -3,7 +3,7 @@ import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-tr
 import SnsStakeNeuronModal from "$lib/modals/sns/neurons/SnsStakeNeuronModal.svelte";
 import { stakeNeuron } from "$lib/services/sns-neurons.services";
 import { authStore } from "$lib/stores/auth.store";
-import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
 import { page } from "$mocks/$app/stores";
 import {
@@ -11,14 +11,13 @@ import {
   mockPrincipal,
 } from "$tests/mocks/auth.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
-import {
-  mockSnsAccountsStoreSubscribe,
-  mockSnsMainAccount,
-} from "$tests/mocks/sns-accounts.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { snsNervousSystemParametersMock } from "$tests/mocks/sns-neurons.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 import { SnsStakeNeuronModalPo } from "$tests/page-objects/SnsStakeNeuronModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemParameters } from "@dfinity/sns";
@@ -52,9 +51,24 @@ describe("SnsStakeNeuronModal", () => {
   });
 
   beforeEach(() => {
-    vi.spyOn(snsAccountsStore, "subscribe").mockImplementation(
-      mockSnsAccountsStoreSubscribe(mockPrincipal)
-    );
+    resetSnsProjects();
+    icrcAccountsStore.reset();
+
+    const ledgerCanisterId = principal(3);
+    setSnsProjects([
+      {
+        rootCanisterId: mockPrincipal,
+        ledgerCanisterId,
+      },
+    ]);
+    icrcAccountsStore.set({
+      ledgerCanisterId,
+      accounts: {
+        accounts: [mockSnsMainAccount],
+        certified: true,
+      },
+    });
+
     vi.spyOn(snsSelectedTransactionFeeStore, "subscribe").mockImplementation(
       mockSnsSelectedTransactionFeeStoreSubscribe()
     );

@@ -12,7 +12,6 @@ import {
   proposalsFiltersStore,
   proposalsStore,
 } from "$lib/stores/proposals.store";
-import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
@@ -115,7 +114,6 @@ export const initDebugStore = () =>
       voteRegistrationStore,
       selectedProjectStore,
       snsNeuronsStore,
-      snsAccountsStore,
       icrcTransactionsStore,
       selectedSnsNeuronStore,
       transactionsStore,
@@ -145,7 +143,6 @@ export const initDebugStore = () =>
       $voteRegistrationStore,
       $selectedProjectStore,
       $snsNeuronsStore,
-      $snsAccountsStore,
       $snsTransactionsStore,
       $selectedSnsNeuronStore,
       $transactionsStore,
@@ -174,7 +171,6 @@ export const initDebugStore = () =>
       voteRegistrationStore: $voteRegistrationStore,
       selectedProject: $selectedProjectStore,
       snsNeurons: $snsNeuronsStore,
-      snsAccounts: $snsAccountsStore,
       snsTransactions: $snsTransactionsStore,
       selectedSnsNeuron: $selectedSnsNeuronStore,
       transactions: $transactionsStore,

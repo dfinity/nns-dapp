@@ -12,7 +12,7 @@
   } from "$lib/utils/accounts.utils";
   import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
-  import { syncAccounts as syncWalletAccounts } from "$lib/services/wallet-accounts.services";
+  import { syncAccounts as syncWalletAccounts } from "$lib/services/icrc-accounts.services";
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { i18n } from "$lib/stores/i18n";

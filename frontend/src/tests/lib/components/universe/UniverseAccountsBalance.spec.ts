@@ -4,7 +4,6 @@ import { CKETH_LEDGER_CANISTER_ID } from "$lib/constants/cketh-canister-ids.cons
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { formatTokenE8s } from "$lib/utils/token.utils";
 import { createUniverse } from "$lib/utils/universe.utils";
@@ -37,9 +36,15 @@ import {
   ckETHUniverseMock,
   nnsUniverseMock,
 } from "$tests/mocks/universe.mock";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "@testing-library/svelte";
 
 describe("UniverseAccountsBalance", () => {
+  beforeEach(() => {
+    resetSnsProjects();
+    icrcAccountsStore.reset();
+  });
+
   beforeAll(() => {
     page.mock({
       data: { universe: mockSnsCanisterId.toText() },
@@ -110,13 +115,21 @@ describe("UniverseAccountsBalance", () => {
 
     it("should render a total balance for Sns", () => {
       const rootCanisterId = mockSnsFullProject.rootCanisterId;
+      const ledgerCanisterId = mockSnsFullProject.summary.ledgerCanisterId;
 
       const totalBalance = mockSnsMainAccount.balanceUlps;
 
-      snsAccountsStore.setAccounts({
-        rootCanisterId,
-        accounts: [mockSnsMainAccount],
-        certified: true,
+      setSnsProjects([
+        {
+          rootCanisterId,
+          ledgerCanisterId,
+          tokenMetadata: mockSnsToken,
+        },
+      ]);
+
+      icrcAccountsStore.set({
+        ledgerCanisterId,
+        accounts: { accounts: [mockSnsMainAccount], certified: true },
       });
 
       const { getByTestId } = render(ProjectAccountsBalance, {

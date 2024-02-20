@@ -43,14 +43,16 @@ pub enum ContentEncoding {
 }
 impl ContentEncoding {
     /// Returns the file suffix for every encoding.
-    pub fn suffix(&self) -> &'static str {
+    #[must_use]
+    pub fn suffix(self) -> &'static str {
         match self {
             ContentEncoding::Identity => "",
             ContentEncoding::GZip => ".gz",
         }
     }
     /// Returns the content encoding, as used in an HTTP header, if applicable.
-    pub fn header(&self) -> Option<&'static str> {
+    #[must_use]
+    pub fn header(self) -> Option<&'static str> {
         match self {
             ContentEncoding::Identity => None,
             ContentEncoding::GZip => Some("gzip"),
@@ -66,7 +68,7 @@ pub struct AssetHashes(RbTree<Vec<u8>, Hash>);
 impl From<&Assets> for AssetHashes {
     fn from(assets: &Assets) -> Self {
         let mut asset_hashes = Self::default();
-        for (path, asset) in assets.0.iter() {
+        for (path, asset) in &assets.0 {
             asset_hashes
                 .0
                 .insert(path.as_bytes().to_vec(), hash_bytes(&asset.bytes));
@@ -85,6 +87,7 @@ pub struct Asset {
 }
 
 impl Asset {
+    #[must_use]
     pub fn new(bytes: Vec<u8>) -> Self {
         Self {
             headers: vec![],
@@ -93,6 +96,7 @@ impl Asset {
         }
     }
 
+    #[must_use]
     pub fn new_stable(bytes: Vec<u8>) -> Self {
         Self {
             headers: vec![],
@@ -101,6 +105,7 @@ impl Asset {
         }
     }
 
+    #[must_use]
     pub fn with_header<S: Into<String>>(mut self, key: S, val: S) -> Self {
         self.headers.push((key.into(), val.into()));
         self
@@ -140,6 +145,7 @@ impl Assets {
     ///   the requester should ask for `foo.json.gz` instead of `foo.json`.
     /// - The current asset signature scheme supports only one signature per path, so we cannot
     ///   take browser capabilities into account.
+    #[must_use]
     pub fn get(&self, path: &str) -> Option<(ContentEncoding, &Asset)> {
         // Note: The logic for finding an asset is the reverse of listing all asset paths.
         for (old_suffix, new_suffix) in Self::SUFFIX_REWRITES {
@@ -168,6 +174,7 @@ impl Assets {
 
     /// Returns the paths for which a given asset may be returned.
     /// Note:  All these paths must be certified.
+    #[must_use]
     pub fn alternate_paths(path: &str) -> Vec<String> {
         // path.gz may be obtained as path.  Likewise for all encodings.
         Self::CONTENT_ENCODINGS
@@ -194,9 +201,11 @@ impl Assets {
     }
 }
 
+#[must_use]
+#[allow(clippy::needless_pass_by_value)] // This is the standard signature that must be provided by the canister.
 pub fn http_request(req: HttpRequest) -> HttpResponse {
     let parts: Vec<&str> = req.url.split('?').collect();
-    match parts[0] {
+    match *parts.first().unwrap_or(&"") {
         "/metrics" => {
             let now;
             unsafe {
@@ -218,7 +227,7 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
                 Err(err) => HttpResponse {
                     status_code: 500,
                     headers: vec![],
-                    body: ByteBuf::from(format!("Failed to encode metrics: {}", err)),
+                    body: ByteBuf::from(format!("Failed to encode metrics: {err}")),
                 },
             }
         }
@@ -250,7 +259,7 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
                 None => HttpResponse {
                     status_code: 404,
                     headers,
-                    body: ByteBuf::from(format!("Asset {} not found.", request_path)),
+                    body: ByteBuf::from(format!("Asset {request_path} not found.")),
                 },
             }
         }),
@@ -277,13 +286,11 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
         "css" => Some("text/css"),
         "html" => Some("text/html"),
         "xml" => Some("application/xml"),
-        "js" => Some("application/javascript"),
-        "mjs" => Some("application/javascript"),
+        "js" | "mjs" => Some("application/javascript"),
         "json" => Some("application/json"),
         "svg" => Some("image/svg+xml"),
         "png" => Some("image/png"),
-        "jpeg" => Some("image/jpeg"),
-        "jpg" => Some("image/jpeg"),
+        "jpeg" | "jpg" => Some("image/jpeg"),
         "ico" => Some("image/x-icon"),
         "ttf" => Some("font/ttf"),
         "woff2" => Some("font/woff2"),
@@ -321,7 +328,7 @@ fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -
     let mut serializer = serde_cbor::ser::Serializer::new(vec![]);
     serializer.self_describe().unwrap();
     tree.serialize(&mut serializer)
-        .unwrap_or_else(|e| dfn_core::api::trap_with(&format!("failed to serialize a hash tree: {}", e)));
+        .unwrap_or_else(|e| dfn_core::api::trap_with(&format!("failed to serialize a hash tree: {e}")));
     (
         "IC-Certificate".to_string(),
         format!(
@@ -379,6 +386,7 @@ pub fn init_assets() {
 /// Note: The `Vec` is mutated during decompression, so pass by reference is inefficient
 ///       as it would force the data to be copied into a new vector, even when the
 ///       original is no longer needed.
+#[allow(clippy::needless_pass_by_value)]
 pub fn insert_tar_xz(compressed: Vec<u8>) {
     println!("Inserting assets...");
     let mut num_assets = 0;
@@ -464,12 +472,14 @@ fn encode_decode() {
 }
 
 /// Compress data
+#[must_use]
 pub fn gzip(uncompressed: &[u8]) -> Vec<u8> {
     let mut encoder = GzEncoder::new(Vec::new(), Compression::default());
     encoder.write_all(uncompressed).unwrap_or_default();
     encoder.finish().unwrap_or_default()
 }
 /// Uncompress data
+#[must_use]
 pub fn gunzip_string(compressed: &[u8]) -> String {
     let mut d = GzDecoder::new(compressed);
     let mut s = String::new();
