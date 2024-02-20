@@ -78,7 +78,7 @@ impl core::fmt::Debug for PartitionsMaybe {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             PartitionsMaybe::Partitions(partitions) => {
-                write!(f, "MemoryWithPartitionType::MemoryManager({:?})", partitions)
+                write!(f, "MemoryWithPartitionType::MemoryManager({partitions:?})")
             }
             PartitionsMaybe::None(memory) => {
                 write!(
@@ -122,13 +122,15 @@ impl PartitionType {
 impl Partitions {
     /// Determines whether the given memory is managed by a memory manager.
     #[must_use]
+    #[allow(clippy::trivially_copy_pass_by_ref)] // The implementation changes depending on target, so clippy is wrong.
     fn is_managed(memory: &DefaultMemoryImpl) -> bool {
+        // TODO: This is private in ic-stable-structures.  We should make it public, or have a public method for determining whether there is a memory manager at a given offset.
+        const MEMORY_MANAGER_MAGIC_BYTES: &[u8; 3] = b"MGR"; // From the spec: https://docs.rs/ic-stable-structures/0.6.0/ic_stable_structures/memory_manager/struct.MemoryManager.html#v1-layout
+
         let memory_pages = memory.size();
         if memory_pages == 0 {
             return false;
         }
-        // TODO: This is private in ic-stable-structures.  We should make it public, or have a public method for determining whether there is a memory manager at a given offset.
-        const MEMORY_MANAGER_MAGIC_BYTES: &[u8; 3] = b"MGR"; // From the spec: https://docs.rs/ic-stable-structures/0.6.0/ic_stable_structures/memory_manager/struct.MemoryManager.html#v1-layout
         let mut actual_first_bytes = [0u8; MEMORY_MANAGER_MAGIC_BYTES.len()];
         memory.read(0, &mut actual_first_bytes);
         let ans = actual_first_bytes == *MEMORY_MANAGER_MAGIC_BYTES;
@@ -184,7 +186,7 @@ impl Partitions {
         if current_pages < min_pages {
             memory.grow(min_pages - current_pages);
         }
-        memory.write(offset, bytes)
+        memory.write(offset, bytes);
     }
 
     /// Reads the exact number of bytes needed to fill `buffer`.

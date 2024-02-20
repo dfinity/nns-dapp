@@ -34,6 +34,7 @@ impl State {
         }
     }
     /// Create the state from stable memory in the `SchemaLabel::Map` format.
+    #[must_use]
     pub fn recover_heap_from_managed_memory(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
         let candid_len = {
             let mut length_field = [0u8; 8];
