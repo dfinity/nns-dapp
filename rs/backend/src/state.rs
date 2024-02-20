@@ -260,7 +260,20 @@ impl State {
             self.accounts_store.borrow().schema_label()
         );
         match schema {
+            // Note: For 'Map', data is saved to raw stable memory using the original API
+            //       that does not take a memory as an argument but rather gets
+            //       the default memory implementation from the global context and
+            //       writes to that.  This API is impossible to test outside a canister
+            //       and should be deprecated as soon as possible.
+            // Note: The 'Map' schema stores all the data on the heap and, before upgrade,
+            //       all the data is saved directly to the heap.  As the number of accounts
+            //       has grown, this saving and later restoring has become seriously slow.
             SchemaLabel::Map => self.save_to_raw_memory(),
+            // Note: In the `AccountsInStableMemory` schema, accounts are stored in a managed
+            //       stable virtual mmeory, so they do not need to be serialized and restored on
+            //       canister upgrade.  However other data _is_ still stored on the heap and this
+            //       other data must be saved in the pre-upgrade hook to a different managed
+            //       stable virtual memory and restored after upgrade.
             SchemaLabel::AccountsInStableMemory => self.save_heap_to_managed_memory(),
         }
     }
