@@ -6,7 +6,6 @@
 //! This code also stores virtual memory IDs and other memory functions.
 use core::borrow::Borrow;
 use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
-#[cfg(test)]
 use ic_cdk::println;
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
@@ -52,7 +51,6 @@ impl core::fmt::Debug for Partitions {
 #[derive(strum_macros::Display)]
 pub enum PartitionsMaybe {
     /// Memory that has a memory manager.
-    #[cfg(test)]
     Partitions(Partitions),
     /// Memory that does not have any kind of memory manager.
     None(DefaultMemoryImpl),
@@ -79,9 +77,8 @@ impl Default for PartitionsMaybe {
 impl core::fmt::Debug for PartitionsMaybe {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            #[cfg(test)]
             PartitionsMaybe::Partitions(partitions) => {
-                write!(f, "MemoryWithPartitionType::MemoryManager({:?})", partitions)
+                write!(f, "MemoryWithPartitionType::MemoryManager({partitions:?})")
             }
             PartitionsMaybe::None(memory) => {
                 write!(
@@ -124,15 +121,16 @@ impl PartitionType {
 
 impl Partitions {
     /// Determines whether the given memory is managed by a memory manager.
-    #[cfg(test)]
     #[must_use]
+    #[allow(clippy::trivially_copy_pass_by_ref)] // The implementation changes depending on target, so clippy is wrong.
     fn is_managed(memory: &DefaultMemoryImpl) -> bool {
+        // TODO: This is private in ic-stable-structures.  We should make it public, or have a public method for determining whether there is a memory manager at a given offset.
+        const MEMORY_MANAGER_MAGIC_BYTES: &[u8; 3] = b"MGR"; // From the spec: https://docs.rs/ic-stable-structures/0.6.0/ic_stable_structures/memory_manager/struct.MemoryManager.html#v1-layout
+
         let memory_pages = memory.size();
         if memory_pages == 0 {
             return false;
         }
-        // TODO: This is private in ic-stable-structures.  We should make it public, or have a public method for determining whether there is a memory manager at a given offset.
-        const MEMORY_MANAGER_MAGIC_BYTES: &[u8; 3] = b"MGR"; // From the spec: https://docs.rs/ic-stable-structures/0.6.0/ic_stable_structures/memory_manager/struct.MemoryManager.html#v1-layout
         let mut actual_first_bytes = [0u8; MEMORY_MANAGER_MAGIC_BYTES.len()];
         memory.read(0, &mut actual_first_bytes);
         let ans = actual_first_bytes == *MEMORY_MANAGER_MAGIC_BYTES;
@@ -178,7 +176,6 @@ impl Partitions {
     }
 
     /// Writes, growing the memory if necessary.
-    #[cfg(test)]
     pub fn growing_write(&self, memory_id: MemoryId, offset: u64, bytes: &[u8]) {
         let memory = self.get(memory_id);
         let min_pages: u64 = u64::try_from(bytes.len())
@@ -189,7 +186,7 @@ impl Partitions {
         if current_pages < min_pages {
             memory.grow(min_pages - current_pages);
         }
-        memory.write(offset, bytes)
+        memory.write(offset, bytes);
     }
 
     /// Reads the exact number of bytes needed to fill `buffer`.
@@ -231,7 +228,6 @@ impl From<DefaultMemoryImpl> for Partitions {
 ///
 /// Note: Would prefer to use `TryFrom`, but that causes a conflict.  `DefaultMemoryImpl` a type alias which
 /// may refer to a type that has a generic implementation of `TryFrom`.  This is frustrating.
-#[cfg(test)]
 impl Partitions {
     pub fn try_from_memory(memory: DefaultMemoryImpl) -> Result<Self, DefaultMemoryImpl> {
         if Self::is_managed(&memory) {
