@@ -41,21 +41,17 @@ runs:
       run: |
         set -euxo pipefail
         git log | head -n1 > out/commit.txt
-    - name: Get SNS scripts
-      uses: ./.github/actions/checkout_snsdemo
-      with:
-        token: ${{ inputs.token }}
-    - name: Add SNS scripts to the path
+    - name: Get dfx version
       shell: bash
-      run: echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
+      run: echo "DFX_VERSION=$(jq -r .dfx dfx.json)" >> $GITHUB_ENV
+    - name: Install dfx
+      uses: dfinity/setup-dfx@main
+      with:
+        dfx-version: ${{ env.DFX_VERSION }}
     - name: Install tools
       shell: bash
       run: |
         set -euxo pipefail
-        if command -v dfx
-        then echo "Skipping, dfx installation as dfx is already installed"
-        else dfx-software-dfx-install --version "$(jq -r .dfx dfx.json)"
-        fi
         if command -v didc
         then echo "Skipping didc installation, as didc is already installed"
         else dfx-software-didc-install --release "$(jq -r .defaults.build.config.DIDC_VERSION dfx.json)"
