@@ -7,13 +7,17 @@
   import { votingProposalIndicationEnabledStore } from "$lib/derived/voting-proposal-indication.derived";
   import { updateVotingProposals } from "$lib/services/$public/voting-proposals.services";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
+  import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
 
   let innerWidth = 0;
   let list = false;
 
   $: list = innerWidth > BREAKPOINT_LARGE;
-  $: $votingProposalIndicationEnabledStore && updateVotingProposals();
+  $: $ENABLE_VOTING_INDICATION &&
+    $votingProposalIndicationEnabledStore &&
+    updateVotingProposals();
   $: if (
+    $ENABLE_VOTING_INDICATION &&
     $votingProposalIndicationEnabledStore &&
     $selectableUniversesStore.length > 1
   ) {
