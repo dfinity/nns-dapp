@@ -16,7 +16,7 @@
   import { Island, Spinner } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { writable } from "svelte/store";
+  import { writable, type Readable } from "svelte/store";
   import TransactionList from "$lib/components/accounts/TransactionList.svelte";
   import NoTransactions from "$lib/components/accounts/NoTransactions.svelte";
   import {
@@ -56,6 +56,10 @@
   import UiTransactionsList from "$lib/components/accounts/UiTransactionsList.svelte";
   import type { UiTransaction } from "$lib/types/transaction";
   import { mapIcpTransactionsToUiTransactions } from "$lib/utils/icp-transactions.utils";
+  import { authStore } from "$lib/stores/auth.store";
+  import { neuronsStore } from "$lib/stores/neurons.store";
+  import type { Principal } from "@dfinity/principal";
+  import { createSwapCanisterAccountsStore } from "$lib/derived/sns-swap-canisters-accounts.derived";
 
   $: if ($authSignedInStore) {
     pollAccounts();
@@ -69,6 +73,15 @@
 
   let transactions: Transaction[] | undefined;
   let indexTransactions: UiTransaction[] = [];
+
+  // Subaccounts have no principal, but they belong to the II user.
+  let accountPrincipal: Principal | undefined;
+  $: accountPrincipal = $authStore.identity?.getPrincipal();
+
+  // Used to identify transactions related to a Swap.
+  let swapCanisterAccountsStore: Readable<Set<string>>;
+  $: swapCanisterAccountsStore =
+    createSwapCanisterAccountsStore(accountPrincipal);
 
   const reloadTransactions = async (
     accountIdentifier: AccountIdentifierText
@@ -91,6 +104,9 @@
     console.log(icpTransactions);
     indexTransactions = mapIcpTransactionsToUiTransactions({
       transactions: icpTransactions,
+      identity: $authStore.identity,
+      neurons: $neuronsStore?.neurons,
+      swapCanisterAccounts: $swapCanisterAccountsStore,
     });
   };
 
