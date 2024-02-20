@@ -19,7 +19,6 @@
 //! #[cfg(test)]
 //! assert_eq!(state, new_state);
 //! ```
-//! state.save();
 
 pub mod partitions;
 #[cfg(test)]
@@ -139,6 +138,7 @@ thread_local! {
 
 impl State {
     /// Creates new state with the specified schema.
+    #[must_use]
     pub fn new(schema: SchemaLabel, memory: DefaultMemoryImpl) -> Self {
         match schema {
             SchemaLabel::Map => {
@@ -168,6 +168,7 @@ impl State {
         }
     }
     /// Applies the specified arguments to the state.
+    #[must_use]
     pub fn with_arguments(mut self, arguments: &CanisterArguments) -> Self {
         // TODO: If a migration is needed, kick it off.
         // TODO: Initialize assets and asset_hashes
@@ -177,6 +178,7 @@ impl State {
         self
     }
     /// Applies the specified arguments, if provided
+    #[must_use]
     pub fn with_arguments_maybe(self, arguments_maybe: Option<&CanisterArguments>) -> Self {
         match arguments_maybe {
             Some(arguments) => self.with_arguments(arguments),
