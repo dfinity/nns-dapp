@@ -7,11 +7,12 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { isSelectedPath } from "$lib/utils/navigation.utils";
   import type { Universe } from "$lib/types/universe";
-  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { nonNullish } from "@dfinity/utils";
   import {
     votingProposalCountStore,
     votingProposalIndicationEnabledStore,
   } from "$lib/derived/voting-proposal-indication.derived";
+  import Badge from "$lib/components/ui/Badge.svelte";
 
   export let selected: boolean;
   export let role: "link" | "button" | "dropdown" = "link";
@@ -60,14 +61,14 @@
       class={`content ${role}`}
       class:balance={displayProjectAccountsBalance}
     >
-      <span class="name">{universe.title}</span>
+      <span class="name">
+        {universe.title}
+        {#if nonNullish(votingProposalCount)}
+          <Badge>{votingProposalCount}</Badge>
+        {/if}
+      </span>
       {#if displayProjectAccountsBalance}
         <UniverseAccountsBalance {universe} />
-      {/if}
-      {#if nonNullish(votingProposalCount)}
-        <span class="voting-proposal-count">
-          ({votingProposalCount})
-        </span>
       {/if}
     </div>
   </div>
@@ -117,5 +118,10 @@
   .name {
     @include fonts.standard(true);
     @include text.clamp(2);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--padding);
   }
 </style>
