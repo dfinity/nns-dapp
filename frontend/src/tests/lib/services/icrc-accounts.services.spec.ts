@@ -7,10 +7,10 @@ import {
 import { ckBTCTokenStore } from "$lib/derived/universes-tokens.derived";
 import {
   getIcrcAccountIdentity,
-  icrcTransferTokens,
   loadAccounts,
   loadIcrcToken,
   syncAccounts,
+  transferTokens,
 } from "$lib/services/icrc-accounts.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
@@ -361,7 +361,7 @@ describe("icrc-accounts-services", () => {
     });
   });
 
-  describe("icrcTransferTokens", () => {
+  describe("transferTokens", () => {
     const amountE8s = 1_000_000_000n;
     const fee = 10_000n;
     const destinationAccount = {
@@ -369,14 +369,13 @@ describe("icrc-accounts-services", () => {
     };
 
     it("calls icrcTransfer from icrc ledger api", async () => {
-      await icrcTransferTokens({
+      await transferTokens({
         source: mockIcrcMainAccount,
         amountUlps: amountE8s,
         destinationAddress: encodeIcrcAccount(destinationAccount),
         fee,
         ledgerCanisterId,
       });
-
       expect(ledgerApi.icrcTransfer).toHaveBeenCalledTimes(1);
       expect(ledgerApi.icrcTransfer).toHaveBeenCalledWith({
         identity: mockIdentity,
@@ -386,9 +385,8 @@ describe("icrc-accounts-services", () => {
         to: destinationAccount,
       });
     });
-
     it("calls transfers from subaccount", async () => {
-      await icrcTransferTokens({
+      await transferTokens({
         source: {
           ...mockIcrcMainAccount,
           type: "subAccount",
@@ -399,7 +397,6 @@ describe("icrc-accounts-services", () => {
         fee,
         ledgerCanisterId,
       });
-
       expect(ledgerApi.icrcTransfer).toHaveBeenCalledTimes(1);
       expect(ledgerApi.icrcTransfer).toHaveBeenCalledWith({
         identity: mockIdentity,
@@ -410,7 +407,6 @@ describe("icrc-accounts-services", () => {
         fromSubAccount: mockSubAccountArray,
       });
     });
-
     it("should load balance after transfer", async () => {
       const initialAccount = {
         ...mockIcrcMainAccount,
@@ -423,18 +419,15 @@ describe("icrc-accounts-services", () => {
           certified: true,
         },
       });
-
-      await icrcTransferTokens({
+      await transferTokens({
         source: mockIcrcMainAccount,
         amountUlps: amountE8s,
         destinationAddress: encodeIcrcAccount(destinationAccount),
         fee,
         ledgerCanisterId,
       });
-
       const finalAccount =
         get(icrcAccountsStore)[ledgerCanisterId.toText()]?.accounts[0];
-
       expect(finalAccount.balanceUlps).toEqual(balanceE8s);
     });
   });
