@@ -1,10 +1,8 @@
 import { queryProposals as queryNnsProposals } from "$lib/api/proposals.api";
-import { DEFAULT_LIST_PAGINATION_LIMIT } from "$lib/constants/constants";
 import { listNeurons } from "$lib/services/neurons.services";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
 import { votingNnsProposalsStore } from "$lib/stores/voting-proposals.store";
-import { lastProposalId } from "$lib/utils/proposals.utils";
 import type { ProposalId, ProposalInfo } from "@dfinity/nns";
 import {
   ProposalRewardStatus,
@@ -26,23 +24,13 @@ export const updateVotingProposals = async (): Promise<void> => {
     return;
   }
 
-  const proposals = [];
-  let page: ProposalInfo[] = [];
-
-  // TODO(max): error handling?
-  // TODO(max): is this needed of resolve with UX approach (max 99 proposals)?
-  // TODO(max): simplify this to a single query and solve when more then 100 proposals with UI (display 99 cards + some CTA).
-  do {
-    page = await queryProposals({
-      beforeProposal: lastProposalId(proposals),
-    });
-    proposals.push(...page);
-  } while (page.length >= DEFAULT_LIST_PAGINATION_LIMIT);
-
+  // Load max 100 proposals (DEFAULT_LIST_PAGINATION_LIMIT) solve when more than 100 proposals with UI (display 99 cards + some CTA).
+  const proposals = await queryProposals({ beforeProposal: undefined });
   // Filter proposals that have at least one votable neuron
   const votableProposals = proposals.filter(
     (proposal) => votableNeurons({ neurons, proposal }).length > 0
   );
+
   votingNnsProposalsStore.setProposals(votableProposals);
 };
 
