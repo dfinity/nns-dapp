@@ -170,12 +170,7 @@ jobs:
       - name: Check didc
         run: command -v didc
       - name: Get dfx version
-        run: |
-          echo "DFX_VERSION=$(jq -r .dfx dfx.json)"
-          echo "DFX_VERSION=$(jq -r .dfx dfx.json)" >> $GITHUB_ENV
-      - name: Confirm dfx version
-        run: |
-          echo ${{ env.DFX_VERSION }}
+        run: echo "DFX_VERSION=$(jq -r .dfx dfx.json)" >> $GITHUB_ENV
       - name: Install dfx
         uses: dfinity/setup-dfx@main
         with:
@@ -195,7 +190,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Get dfx version
-        run: jq -r '"DFX_VERSION=\(.dfx)"' dfx.json >> $GITHUB_ENV
+        run: echo "DFX_VERSION=$(jq -r .dfx dfx.json)" >> $GITHUB_ENV
       - name: Install dfx
         uses: dfinity/setup-dfx@main
         with:
