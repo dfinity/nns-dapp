@@ -18,6 +18,7 @@ type EnvironmentVars = {
   governanceCanisterId: string;
   identityServiceUrl: string;
   ledgerCanisterId: string;
+  indexCanisterId: string;
   ownCanisterId: string;
   // Environments without SNS aggregator are valid
   snsAggregatorUrl?: string;
@@ -35,6 +36,7 @@ const mandatoryEnvVarKeys: EnvironmentVars = {
   governanceCanisterId: "",
   identityServiceUrl: "",
   ledgerCanisterId: "",
+  indexCanisterId: "",
   ownCanisterId: "",
   wasmCanisterId: "",
 };
@@ -121,6 +123,9 @@ const getBuildEnvVars = (): EnvironmentVars => {
     ),
     ledgerCanisterId: convertEmtpyStringToUndefined(
       import.meta.env.VITE_LEDGER_CANISTER_ID
+    ),
+    indexCanisterId: convertEmtpyStringToUndefined(
+      import.meta.env.VITE_INDEX_CANISTER_ID
     ),
     ownCanisterId: convertEmtpyStringToUndefined(
       import.meta.env.VITE_OWN_CANISTER_ID

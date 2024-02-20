@@ -51,6 +51,11 @@
   import RenameSubAccountButton from "$lib/components/accounts/RenameSubAccountButton.svelte";
   import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
   import IC_LOGO from "$lib/assets/icp.svg";
+  import { loadIcpTransactions } from "$lib/services/icp-transactions.services";
+  import { ENABLE_ICP_INDEX } from "$lib/stores/feature-flags.store";
+  import UiTransactionsList from "$lib/components/accounts/UiTransactionsList.svelte";
+  import type { UiTransaction } from "$lib/types/transaction";
+  import { mapIcpTransactionsToUiTransactions } from "$lib/utils/icp-transactions.utils";
 
   $: if ($authSignedInStore) {
     pollAccounts();
@@ -63,10 +68,11 @@
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
 
   let transactions: Transaction[] | undefined;
+  let indexTransactions: UiTransaction[] = [];
 
-  const reloadTransactions = (
+  const reloadTransactions = async (
     accountIdentifier: AccountIdentifierText
-  ): Promise<void> =>
+  ): Promise<void> => {
     getAccountTransactions({
       accountIdentifier: accountIdentifier,
       onLoad: ({ accountIdentifier, transactions: loadedTransactions }) => {
@@ -78,6 +84,15 @@
         transactions = loadedTransactions;
       },
     });
+
+    const icpTransactions = await loadIcpTransactions({
+      accountIdentifier,
+    });
+    console.log(icpTransactions);
+    indexTransactions = mapIcpTransactionsToUiTransactions({
+      transactions: icpTransactions,
+    });
+  };
 
   const selectedAccountStore = writable<WalletStore>({
     account: undefined,
@@ -212,7 +227,15 @@
           <Separator spacing="none" />
 
           {#if $selectedAccountStore.account !== undefined}
-            <TransactionList {transactions} />
+            {#if $ENABLE_ICP_INDEX}
+              <UiTransactionsList
+                transactions={indexTransactions}
+                loading={false}
+                completed={false}
+              />
+            {:else}
+              <TransactionList {transactions} />
+            {/if}
           {:else}
             <NoTransactions />
           {/if}
