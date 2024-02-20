@@ -12,10 +12,11 @@
   import type { TransactionInit } from "$lib/types/transaction";
   import { TokenAmountV2, nonNullish, type Token } from "@dfinity/utils";
   import type { Principal } from "@dfinity/principal";
-  import { icrcTransferTokens } from "$lib/services/icrc-accounts.services";
+  import { transferTokens } from "$lib/services/icrc-accounts.services";
 
   export let selectedAccount: Account | undefined = undefined;
   export let ledgerCanisterId: Principal;
+  export let universeId: Principal;
   export let token: Token;
   export let transactionFee: TokenAmountV2;
   export let reloadSourceAccount: (() => void) | undefined = undefined;
@@ -43,7 +44,7 @@
       initiator: "accounts",
     });
 
-    const { blockIndex } = await icrcTransferTokens({
+    const { blockIndex } = await transferTokens({
       source: sourceAccount,
       destinationAddress,
       amountUlps: numberToUlps({ amount, token }),
@@ -63,7 +64,7 @@
 
 <TransactionModal
   testId="icrc-token-transaction-modal-component"
-  rootCanisterId={ledgerCanisterId}
+  rootCanisterId={universeId}
   on:nnsSubmit={transfer}
   on:nnsClose
   bind:currentStep

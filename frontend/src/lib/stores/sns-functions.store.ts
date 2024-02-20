@@ -18,7 +18,6 @@ interface SnsFunctionProject extends SnsNervousSystemFunctions {
 
 export interface SnsNervousSystemFunctionsStore
   extends Readable<SnsNervousSystemFunctionsData> {
-  setProjectFunctions: (data: SnsFunctionProject) => void;
   setProjectsFunctions: (projects: SnsFunctionProject[]) => void;
   reset: () => void;
 }
@@ -26,7 +25,6 @@ export interface SnsNervousSystemFunctionsStore
 /**
  * A store that contains the nervous system functions for each sns project.
  *
- * - setProjectFunctions: replace the current list of functions for a specific sns project with a new list.
  * - setProjectsFunctions: replace the list of functions for multiple projects at once.
  */
 const initSnsFunctionsStore = (): SnsNervousSystemFunctionsStore => {
@@ -36,20 +34,6 @@ const initSnsFunctionsStore = (): SnsNervousSystemFunctionsStore => {
 
   return {
     subscribe,
-
-    setProjectFunctions({
-      rootCanisterId,
-      nsFunctions,
-      certified,
-    }: SnsFunctionProject) {
-      update((currentState: SnsNervousSystemFunctionsData) => ({
-        ...currentState,
-        [rootCanisterId.toText()]: {
-          certified,
-          nsFunctions,
-        },
-      }));
-    },
 
     setProjectsFunctions(wrappedFunctions: SnsFunctionProject[]) {
       update((currentState: SnsNervousSystemFunctionsData) =>

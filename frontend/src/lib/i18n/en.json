@@ -119,8 +119,7 @@
     "adding_permissions": "There was an error adding permissions.",
     "canister_invalid_transaction": "Sorry, there was a problem with the transaction.",
     "qrcode_camera_error": "An error occurred while initializing the camera to read the QR code.",
-    "qrcode_token_incompatible": "The payment token you are attempting to use is not compatible with this transaction.",
-    "icrc_no_universe": "An Icrc environment should be provided to execute this feature"
+    "qrcode_token_incompatible": "The payment token you are attempting to use is not compatible with this transaction."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired.",
@@ -137,6 +136,8 @@
     "neurons": "My Neuron Staking",
     "voting": "Vote on Proposals",
     "launchpad": "Launchpad",
+    "manage_ii": "Manage Internet Identity",
+    "source_code": "Source Code",
     "settings": "Settings"
   },
   "header": {
@@ -731,7 +732,6 @@
     "connecting_sale_canister": "Retrieving swap required information"
   },
   "sns_neuron_detail": {
-    "all_topics": "All topics",
     "vesting_period_tooltip": "This function is not available during your vesting period. Vesting will last another $remainingVesting",
     "community_fund_section": "Neurons' Fund",
     "community_fund_section_description": "You are not the controller of the SNS neurons below. To facilitate bootstrapping the SNS DAO governance, the NNS treasury has temporarily granted hotkey access to you for voting and following. <a href=\"https://internetcomputer.org/docs/current/tokenomics/nns/neurons-fund\" rel=\"noopener noreferrer\" aria-label=\"more info about neurons' fund\" target=\"_blank\">Learn more</a>.",
@@ -848,11 +848,9 @@
     "ledger_insufficient_funds": "Sorry, the account doesn't have enough funds for this transaction.",
     "sns_add_followee": "There was an error while adding a followee.",
     "sns_remove_followee": "There was an error while unfollowing the neuron.",
-    "sns_load_functions": "There was an error while loading the project topics.",
     "sns_add_hotkey": "There was an error adding the hotkey.",
     "sns_stake_maturity": "There was an error while staking the maturity of the neuron.",
-    "sns_disburse_maturity": "There was an error while disbursing the maturity of the neuron.",
-    "sns_reload_no_universe": "A project should be provided to execute this feature"
+    "sns_disburse_maturity": "There was an error while disbursing the maturity of the neuron."
   },
   "auth_accounts": {
     "title": "100% on-chain governance",

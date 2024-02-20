@@ -13,7 +13,7 @@
   import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
   import { pageStore } from "$lib/derived/page.derived";
   import { buildNeuronUrl } from "$lib/utils/navigation.utils";
-  import { syncSnsAccounts } from "$lib/services/sns-accounts.services";
+  import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
   import EmptyMessage from "$lib/components/ui/EmptyMessage.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { SnsSummary } from "$lib/types/sns";
@@ -33,7 +33,7 @@
       loading = true;
       await Promise.all([
         syncSnsNeurons(selectedProjectCanisterId),
-        syncSnsAccounts({ rootCanisterId: selectedProjectCanisterId }),
+        loadSnsAccounts({ rootCanisterId: selectedProjectCanisterId }),
       ]);
       loading = false;
     }

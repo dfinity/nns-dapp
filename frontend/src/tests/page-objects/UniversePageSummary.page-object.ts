@@ -10,6 +10,13 @@ export class UniversePageSummaryPo extends BasePageObject {
     );
   }
 
+  async getLogoUrl(): Promise<string> {
+    return this.root
+      .byTestId("project-logo")
+      .querySelector("img")
+      .getAttribute("src");
+  }
+
   async getTitle(): Promise<string> {
     return (await this.getText()).trim();
   }

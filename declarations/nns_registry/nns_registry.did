@@ -1,4 +1,4 @@
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-01-25_14-09+p2p-con/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-02-07_23-01+feature/rs/registry/canister/canister/registry.did>
 type AddApiBoundaryNodePayload = record { node_id : principal; version : text };
 type AddFirewallRulesPayload = record {
   expected_hash : text;
@@ -19,7 +19,7 @@ type AddNodePayload = record {
   http_endpoint : text;
   idkg_dealing_encryption_pk : opt vec nat8;
   domain : opt text;
-  public_ipv4_config : opt vec text;
+  public_ipv4_config : opt IPv4Config;
   xnet_endpoint : text;
   chip_id : opt vec nat8;
   committee_signing_pk : vec nat8;
@@ -134,6 +134,11 @@ type FirewallRulesScope = variant {
 type GetSubnetForCanisterRequest = record { "principal" : opt principal };
 type GetSubnetForCanisterResponse = record { subnet_id : opt principal };
 type Gps = record { latitude : float32; longitude : float32 };
+type IPv4Config = record {
+  prefix_length : nat32;
+  gateway_ip_addr : text;
+  ip_addr : text;
+};
 type NodeOperatorRecord = record {
   ipv6 : opt text;
   node_operator_principal_id : vec nat8;
@@ -225,10 +230,8 @@ type UpdateNodeDomainDirectlyPayload = record {
   domain : opt text;
 };
 type UpdateNodeIPv4ConfigDirectlyPayload = record {
+  ipv4_config : opt IPv4Config;
   node_id : principal;
-  gateway_ip_addrs : vec text;
-  prefix_length : nat32;
-  ip_addr : text;
 };
 type UpdateNodeOperatorConfigDirectlyPayload = record {
   node_operator_id : opt principal;

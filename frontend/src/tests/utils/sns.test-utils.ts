@@ -5,12 +5,13 @@ import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { aggregatorSnsMockWith } from "$tests/mocks/sns-aggregator.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import type { Principal } from "@dfinity/principal";
-import type { SnsNervousSystemFunction, SnsSwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle, type SnsNervousSystemFunction } from "@dfinity/sns";
 
 export const setSnsProjects = (
   params: {
     rootCanisterId?: Principal;
-    lifecycle: SnsSwapLifecycle;
+    ledgerCanisterId?: Principal;
+    lifecycle?: SnsSwapLifecycle;
     certified?: boolean;
     restrictedCountries?: string[];
     directParticipantCount?: [] | [bigint];
@@ -25,7 +26,8 @@ export const setSnsProjects = (
     return aggregatorSnsMockWith({
       rootCanisterId:
         params.rootCanisterId?.toText() ?? principal(index).toText(),
-      lifecycle: params.lifecycle,
+      ledgerCanisterId: params.ledgerCanisterId?.toText(),
+      lifecycle: params.lifecycle ?? SnsSwapLifecycle.Committed,
       restrictedCountries: params.restrictedCountries,
       directParticipantCount: params.directParticipantCount,
       projectName: params.projectName,

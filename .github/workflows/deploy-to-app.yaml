@@ -1,11 +1,6 @@
 # App deployments are non-production deployments to mainnet.  They are public, can be used as staging, but e.g. funds are real.
 name: Deploy to app
 on:
-  schedule:
-    # Run every Wednesday:
-    # Summer: 11 am Zurich time
-    # Winter: noon Zurich time
-    - cron: '0 10 * * 3'
   push:
     branches:
       - "deploy-to-app"

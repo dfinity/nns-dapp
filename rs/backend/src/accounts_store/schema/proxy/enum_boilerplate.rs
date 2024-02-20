@@ -1,7 +1,7 @@
-//! Boilerplate for implementing traits for the AccountsDb enum.
+//! Boilerplate for implementing traits for the `AccountsDb` enum.
 //!
 //! Each function is implemented by calling the same function on the applicable variant.  There is probably a macro for this.
-use super::*;
+use super::{Account, AccountsDb, AccountsDbTrait, RangeBounds, SchemaLabel};
 
 // TODO: This is boilerplate.  can it be eliminated with a macro?
 impl AccountsDbTrait for AccountsDb {
@@ -17,7 +17,7 @@ impl AccountsDbTrait for AccountsDb {
         match self {
             AccountsDb::Map(map_db) => map_db.db_insert_account(account_key, account),
             AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => {
-                unbounded_stable_btree_map_db.db_insert_account(account_key, account)
+                unbounded_stable_btree_map_db.db_insert_account(account_key, account);
             }
         }
     }
@@ -41,7 +41,7 @@ impl AccountsDbTrait for AccountsDb {
         match self {
             AccountsDb::Map(map_db) => map_db.db_remove_account(account_key),
             AccountsDb::UnboundedStableBTreeMap(unbounded_stable_btree_map_db) => {
-                unbounded_stable_btree_map_db.db_remove_account(account_key)
+                unbounded_stable_btree_map_db.db_remove_account(account_key);
             }
         }
     }

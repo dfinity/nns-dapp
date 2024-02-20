@@ -64,6 +64,7 @@ impl CanisterArguments {
     ///
     /// // The meta tag is then inserted into HTML HEAD tags.
     /// ```
+    #[must_use]
     pub fn to_html(&self) -> String {
         let mut ans = r#"<meta name="nns-dapp-vars""#.to_string();
         for (key, value) in &self.args {
@@ -78,6 +79,7 @@ impl CanisterArguments {
     }
 
     /// Looks at the environment to get the canister ID and add it to the list of arguments.
+    #[must_use]
     pub fn with_own_canister_id(mut self) -> Self {
         self.args
             .push(("OWN_CANISTER_ID".to_string(), ic_cdk::api::id().to_string()));
@@ -92,10 +94,11 @@ impl CanisterArguments {
     /// let canister_arguments = CanisterArguments{args, ..CanisterArguments::default()};
     /// ```
     #[allow(dead_code)]
+    #[must_use]
     pub fn args_from_str(str_args: &[(&str, &str)]) -> Vec<(String, String)> {
         str_args
             .iter()
-            .map(|(key, val)| (key.to_string(), val.to_string()))
+            .map(|(key, val)| ((*key).to_string(), (*val).to_string()))
             .collect()
     }
 }
@@ -108,11 +111,13 @@ impl CanisterArguments {
 /// assert_eq!(configname2attributename("FOO"), "data-foo");
 /// assert_eq!(configname2attributename("TERMINATOR_2"), "data-terminator-2");
 /// ```
+#[must_use]
 pub fn configname2attributename(name: &str) -> String {
     "data-".to_owned() + &name.replace('_', "-").to_lowercase()
 }
 
 /// Escapes a configuration value per the OWASP recommendation: <https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#output-encoding-for-html-contexts>
+#[must_use]
 pub fn configvalue2attributevalue(value: &str) -> String {
     value
         .replace('&', "&amp;")
@@ -154,6 +159,7 @@ impl TemplateEngine {
     /// assert_eq!(template_engine.populate("${{lowercase}}"), "${{lowercase}}", "Only uppercase, digits and underscore are valid");
     /// ```
 
+    #[must_use]
     pub fn new(key_val_pairs: &[(String, String)]) -> Self {
         let args = key_val_pairs.iter().cloned().collect();
         // Please see .populate() to learn what this regex does.
@@ -168,6 +174,7 @@ impl TemplateEngine {
     /// * Values are taken from the engine `args` map.
     ///   * If no match is found in the `args` map, variables are left unchanged.
     ///
+    #[must_use]
     pub fn populate(&self, input: &str) -> String {
         self.regex
             .replace_all(input, |cap: &Captures| {

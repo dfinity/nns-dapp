@@ -24,10 +24,10 @@ impl SchemaLabel {
     pub const DOMAIN_SEPARATOR: &'static [u8; 12] = b"schema-label";
 
     /// Checksum of the label.
-    fn checksum(self_bytes: &[u8; Self::LABEL_BYTES]) -> [u8; Self::CHECKSUM_BYTES] {
+    fn checksum(self_bytes: [u8; Self::LABEL_BYTES]) -> [u8; Self::CHECKSUM_BYTES] {
         let mut state = Sha256::new();
         state.write(Self::DOMAIN_SEPARATOR);
-        state.write(self_bytes);
+        state.write(&self_bytes);
         state.finish()
     }
 
@@ -36,7 +36,7 @@ impl SchemaLabel {
         let mut bytes = [0u8; SchemaLabel::MAX_BYTES];
         bytes[SchemaLabel::LABEL_OFFSET..SchemaLabel::LABEL_OFFSET + SchemaLabel::LABEL_BYTES]
             .copy_from_slice(&label_bytes);
-        let checksum = SchemaLabel::checksum(&label_bytes);
+        let checksum = SchemaLabel::checksum(label_bytes);
         bytes[SchemaLabel::CHECKSUM_OFFSET..SchemaLabel::CHECKSUM_OFFSET + SchemaLabel::CHECKSUM_BYTES]
             .copy_from_slice(&checksum);
         bytes
@@ -84,7 +84,7 @@ impl TryFrom<&SchemaLabelBytes> for SchemaLabel {
             .map_err(|_| SchemaLabelError::InsufficientBytes)?;
         let actual_checksum =
             &value[SchemaLabel::CHECKSUM_OFFSET..SchemaLabel::CHECKSUM_OFFSET + SchemaLabel::CHECKSUM_BYTES];
-        let expected_checksum = Self::checksum(&label_bytes);
+        let expected_checksum = Self::checksum(label_bytes);
         if expected_checksum == *actual_checksum {
             Self::try_from(&label_bytes)
         } else {

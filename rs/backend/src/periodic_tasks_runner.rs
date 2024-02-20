@@ -1,6 +1,6 @@
 use crate::accounts_store::{CreateCanisterArgs, RefundTransactionArgs, TopUpCanisterArgs};
 use crate::canisters::ledger;
-use crate::canisters::{cmc, governance, swap};
+use crate::canisters::{cmc, governance};
 use crate::constants::{MEMO_CREATE_CANISTER, MEMO_TOP_UP_CANISTER};
 use crate::multi_part_transactions_processor::MultiPartTransactionToBeProcessed;
 use crate::state::STATE;
@@ -10,7 +10,6 @@ use dfn_core::api::{CanisterId, PrincipalId};
 use ic_nns_common::types::NeuronId;
 use ic_nns_constants::CYCLES_MINTING_CANISTER_ID;
 use ic_nns_governance::pb::v1::{claim_or_refresh_neuron_from_account_response, ClaimOrRefreshNeuronFromAccount};
-use ic_sns_swap::pb::v1::RefreshBuyerTokensRequest;
 use icp_ledger::{
     AccountBalanceArgs, AccountIdentifier, BlockIndex, Memo, SendArgs, Subaccount, Tokens, DEFAULT_TRANSFER_FEE,
 };
@@ -28,8 +27,9 @@ pub async fn run_periodic_tasks() {
         STATE.with(|s| s.accounts_store.borrow_mut().try_take_next_transaction_to_process());
     if let Some((block_height, transaction_to_process)) = maybe_transaction_to_process {
         match transaction_to_process {
-            MultiPartTransactionToBeProcessed::ParticipateSwap(principal, from, to, swap_canister_id) => {
-                handle_participate_swap(principal, from, to, swap_canister_id).await;
+            MultiPartTransactionToBeProcessed::ParticipateSwap(_principal, _from, _to, _swap_canister_id) => {
+                // DO NOTHING
+                // Handling ParticipateSwap is not supported.
             }
             MultiPartTransactionToBeProcessed::StakeNeuron(principal, memo) => {
                 handle_stake_neuron(principal, memo).await;
@@ -64,26 +64,12 @@ pub async fn run_periodic_tasks() {
     }
 }
 
-async fn handle_participate_swap(
-    principal: PrincipalId,
-    from: AccountIdentifier,
-    to: AccountIdentifier,
-    swap_canister_id: CanisterId,
-) {
-    let request = RefreshBuyerTokensRequest {
-        buyer: principal.to_string(),
-    };
-    if swap::notify_swap_participation(swap_canister_id, request).await.is_ok() {
-        STATE.with(|s| s.accounts_store.borrow_mut().complete_pending_transaction(from, to));
-    }
-}
-
 async fn handle_stake_neuron(principal: PrincipalId, memo: Memo) {
     match claim_or_refresh_neuron(principal, memo).await {
         Ok(neuron_id) => STATE.with(|s| {
             s.accounts_store
                 .borrow_mut()
-                .mark_neuron_created(&principal, memo, neuron_id)
+                .mark_neuron_created(&principal, memo, neuron_id);
         }),
         Err(_error) => (),
     }
@@ -101,14 +87,14 @@ async fn handle_create_canister_v2(block_height: BlockIndex, controller: Princip
         Ok(Ok(canister_id)) => STATE.with(|s| {
             s.accounts_store
                 .borrow_mut()
-                .attach_newly_created_canister(controller, canister_id)
+                .attach_newly_created_canister(controller, canister_id);
         }),
         Ok(Err(NotifyError::Processing)) => {
             STATE.with(|s| {
                 s.accounts_store.borrow_mut().enqueue_multi_part_transaction(
                     block_height,
                     MultiPartTransactionToBeProcessed::CreateCanisterV2(controller),
-                )
+                );
             });
         }
         Ok(Err(_error)) => (),
@@ -121,7 +107,7 @@ async fn handle_create_canister(block_height: BlockIndex, args: CreateCanisterAr
         Ok(Ok(canister_id)) => STATE.with(|s| {
             s.accounts_store
                 .borrow_mut()
-                .attach_newly_created_canister(args.controller, canister_id)
+                .attach_newly_created_canister(args.controller, canister_id);
         }),
         Ok(Err(error)) => {
             let was_refunded = matches!(error, NotifyError::Refunded { .. });
@@ -159,7 +145,7 @@ async fn handle_top_up_canister_v2(block_height: BlockIndex, principal: Principa
                 s.accounts_store.borrow_mut().enqueue_multi_part_transaction(
                     block_height,
                     MultiPartTransactionToBeProcessed::CreateCanisterV2(principal),
-                )
+                );
             });
         }
         Ok(Err(_error)) => (),
@@ -329,8 +315,8 @@ async fn enqueue_create_or_top_up_canister_refund(
                 STATE.with(|s| {
                     s.accounts_store
                         .borrow_mut()
-                        .enqueue_transaction_to_be_refunded(refund_args)
-                })
+                        .enqueue_transaction_to_be_refunded(refund_args);
+                });
             }
         }
         Err(_error) => (),
@@ -341,7 +327,7 @@ fn should_prune_transactions() -> bool {
     #[cfg(target_arch = "wasm32")]
     {
         const MEMORY_LIMIT_BYTES: u32 = 1024 * 1024 * 1024; // 1GB
-        let memory_usage_bytes = (core::arch::wasm32::memory_size(0) * 65536) as u32;
+        let memory_usage_bytes = u32::try_from(core::arch::wasm32::memory_size(0) * 65536).unwrap_or(u32::MAX);
         memory_usage_bytes > MEMORY_LIMIT_BYTES
     }
 

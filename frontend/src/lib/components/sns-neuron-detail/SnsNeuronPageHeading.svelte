@@ -2,8 +2,7 @@
   import AmountDisplay from "../ic/AmountDisplay.svelte";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
   import { type Token, nonNullish, TokenAmountV2 } from "@dfinity/utils";
-  import { tokensStore } from "$lib/stores/tokens.store";
-  import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
+  import { selectedTokenStore } from "$lib/derived/selected-token.derived";
   import {
     getSnsNeuronStake,
     isUserHotkey,
@@ -21,7 +20,7 @@
   export let parameters: SnsNervousSystemParameters;
 
   let token: Token | undefined;
-  $: token = $tokensStore[$selectedUniverseIdStore.toText()].token;
+  $: token = $selectedTokenStore;
 
   let amount: TokenAmountV2 | undefined;
   $: amount =

@@ -1,5 +1,9 @@
 //! Tesst for setting and getting the partition schema.
 use super::*;
+#[cfg(test)]
+use ic_stable_structures::memory_manager::MemoryManager;
+#[cfg(test)]
+use std::rc::Rc;
 use strum::IntoEnumIterator;
 
 fn schemas_that_use_partitions() -> impl Iterator<Item = SchemaLabel> {

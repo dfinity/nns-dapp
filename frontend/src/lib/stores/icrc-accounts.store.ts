@@ -1,5 +1,4 @@
 import type { Account } from "$lib/types/account";
-import type { UniverseCanisterIdText } from "$lib/types/universe";
 import type { Principal } from "@dfinity/principal";
 import type { Readable } from "svelte/store";
 import { writable } from "svelte/store";
@@ -9,7 +8,9 @@ interface IcrcAccounts {
   certified?: boolean;
 }
 
-type IcrcAccountStoreData = Record<UniverseCanisterIdText, IcrcAccounts>;
+// The key is the ledger canister ID as text.
+// SNS accounts are included by SNS ledger canister ID.
+type IcrcAccountStoreData = Record<string, IcrcAccounts>;
 
 export interface IcrcAccountsStore extends Readable<IcrcAccountStoreData> {
   set: (params: {

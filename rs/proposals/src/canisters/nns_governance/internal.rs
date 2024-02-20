@@ -2,6 +2,7 @@
 //!
 //! Note: These types should probably be published by the upstream in the `.did` file or in some lightweight
 //! library.
+#![allow(missing_docs)] // Please see the upstream canister code and documentation for details.
 
 /// A list of bitcoin networks.
 ///

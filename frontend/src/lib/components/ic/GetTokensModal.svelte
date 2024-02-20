@@ -4,17 +4,12 @@
    */
   import { Dropdown, DropdownItem, Modal } from "@dfinity/gix-components";
   import Input from "$lib/components/ui/Input.svelte";
-  import {
-    getICPs,
-    getSnsTokens,
-    getBTC,
-    getIcrcTokens,
-  } from "$lib/services/dev.services";
+  import { getICPs, getBTC, getIcrcTokens } from "$lib/services/dev.services";
   import { Spinner } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
   import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import { Principal } from "@dfinity/principal";
-  import { nonNullish, type Token } from "@dfinity/utils";
+  import { isNullish, nonNullish, type Token } from "@dfinity/utils";
   import {
     getIcrcTokenTestAccountBalance,
     getTestIcpAccountBalance,
@@ -25,7 +20,8 @@
   import { createEventDispatcher } from "svelte";
   import type { Universe } from "$lib/types/universe";
   import { universesStore } from "$lib/derived/universes.derived";
-  import { tokensStore } from "$lib/stores/tokens.store";
+  import { tokensByUniverseIdStore } from "$lib/derived/tokens.derived";
+  import { snsLedgerCanisterIdsStore } from "$lib/derived/sns/sns-canisters.derived";
 
   let transferring = false;
 
@@ -87,7 +83,7 @@
   );
   let selectedToken: Token | undefined;
   $: selectedToken = nonNullish(selectedUniverseId)
-    ? $tokensStore[selectedUniverseId]?.token
+    ? $tokensByUniverseIdStore[selectedUniverseId]
     : undefined;
 
   const dispatch = createEventDispatcher();
@@ -109,10 +105,21 @@
               rootCanisterId.toText() === selectedUniverseId
           )
         ) {
-          await getSnsTokens({
-            tokens: inputValue,
-            rootCanisterId: Principal.fromText(selectedUniverseId),
-          });
+          const ledgerCanisterId =
+            $snsLedgerCanisterIdsStore[selectedUniverseId];
+          if (isNullish(selectedToken)) {
+            console.error(`token for ${selectedUniverseId} is undefined`);
+          } else if (isNullish(ledgerCanisterId)) {
+            console.error(
+              `ledgerCanisterId for ${selectedUniverseId} is undefined`
+            );
+          } else {
+            await getIcrcTokens({
+              tokens: inputValue,
+              token: selectedToken,
+              ledgerCanisterId,
+            });
+          }
         } else if (isUniverseCkBTC(selectedUniverseId)) {
           await getBTC({
             amount: inputValue,
@@ -148,7 +155,6 @@
     }
 
     transferring = false;
-    getSnsTokens;
   };
 
   const close = () => {

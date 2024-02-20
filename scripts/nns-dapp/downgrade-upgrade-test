@@ -134,7 +134,9 @@ upgrade_nnsdapp() {
   # Check that the data is plausible
   # TODO: Check that the prestate is not empty; first we need to populate the state.
   # TODO: Consider storing all accounts data in a merkle tree so that we can check just the root hash.
+  dfx canister stop nns-dapp
   dfx canister install --upgrade-unchanged nns-dapp --wasm "$1" --mode upgrade --argument "$(cat nns-dapp-arg-local.did)" --yes
+  dfx canister start nns-dapp
   scripts/dfx-canister-check-wasm-hash --wasm "$1" --canister nns-dapp
   wait_for_migration
   poststate="$(get_upgrade_invariants)"

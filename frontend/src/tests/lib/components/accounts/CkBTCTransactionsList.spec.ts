@@ -16,17 +16,17 @@ import {
   mockIcrcTransactionMint,
   mockIcrcTransactionsStoreSubscribe,
 } from "$tests/mocks/icrc-transactions.mock";
-import { IcrcTransactionsListPo } from "$tests/page-objects/IcrcTransactionsList.page-object";
+import { UiTransactionsListPo } from "$tests/page-objects/UiTransactionsList.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Cbor } from "@dfinity/agent";
 import type { RetrieveBtcStatusV2 } from "@dfinity/ckbtc";
 import { render } from "@testing-library/svelte";
 
-vi.mock("$lib/services/wallet-transactions.services", () => {
+vi.mock("$lib/services/icrc-transactions.services", () => {
   return {
-    loadWalletNextTransactions: vi.fn().mockResolvedValue(undefined),
-    loadWalletTransactions: vi.fn().mockResolvedValue(undefined),
+    loadIcrcAccountNextTransactions: vi.fn().mockResolvedValue(undefined),
+    loadIcrcAccountTransactions: vi.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -54,7 +54,7 @@ describe("CkBTCTransactionList", () => {
       },
     });
     return {
-      po: IcrcTransactionsListPo.under(new JestPageObjectElement(container)),
+      po: UiTransactionsListPo.under(new JestPageObjectElement(container)),
       reload: component.reloadTransactions,
     };
   };

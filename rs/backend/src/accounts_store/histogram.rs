@@ -133,5 +133,6 @@ impl Add<&Account> for AccountsStoreHistogram {
 
 /// Determines which log base 2 bucket a count falls into.
 fn log2_bucket(count: usize) -> u32 {
-    ((1u64 << usize::ilog2(count * 2 + 1)) - 1) as u32
+    u32::try_from((1u64 << usize::ilog2(count * 2 + 1)) - 1)
+        .unwrap_or_else(|_| unreachable!("Log base 2 of u64::MAX is smaller than u32::MAX."))
 }

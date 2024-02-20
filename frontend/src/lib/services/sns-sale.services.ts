@@ -9,7 +9,7 @@ import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
 import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
 import {
-  snsProjectsStore,
+  snsProjectsRecordStore,
   type SnsFullProject,
 } from "$lib/derived/sns/sns-projects.derived";
 import { getConditionsToAccept } from "$lib/getters/sns-summary";
@@ -374,9 +374,7 @@ export const loadNewSaleTicket = async ({
 const getProjectFromStore = (
   rootCanisterId: Principal
 ): SnsFullProject | undefined =>
-  get(snsProjectsStore).find(
-    ({ rootCanisterId: id }) => id.toText() === rootCanisterId.toText()
-  );
+  get(snsProjectsRecordStore)[rootCanisterId.toText()];
 
 export interface ParticipateInSnsSaleParameters {
   rootCanisterId: Principal;

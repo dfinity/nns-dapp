@@ -1,7 +1,5 @@
 import * as ckBTCMinterApi from "$lib/api/ckbtc-minter.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
-import * as snsLedgerApi from "$lib/api/sns-ledger.api";
-import * as walletLedgerApi from "$lib/api/wallet-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
@@ -23,16 +21,11 @@ import {
   setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
 import {
-  mockCkBTCMainAccount,
   mockCkBTCToken,
   mockCkTESTBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
-import {
-  mockCkETHMainAccount,
-  mockCkETHToken,
-} from "$tests/mocks/cketh-accounts.mock";
+import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
-import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { TokensRoutePo } from "$tests/page-objects/TokensRoute.page-object";
@@ -48,7 +41,6 @@ import { isNullish } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 import { mock } from "vitest-mock-extended";
 
-vi.mock("$lib/api/wallet-ledger.api");
 vi.mock("$lib/api/sns-ledger.api");
 vi.mock("$lib/api/icrc-ledger.api");
 vi.mock("$lib/api/ckbtc-minter.api");
@@ -59,6 +51,8 @@ describe("Tokens route", () => {
 
   const rootCanisterIdTetris = rootCanisterIdMock;
   const rootCanisterIdPacman = principal(1);
+  const ledgerCanisterIdTetris = principal(2);
+  const ledgerCanisterIdPacman = principal(3);
   const tetrisToken = mockSnsToken;
   const pacmanToken = {
     ...mockSnsToken,
@@ -103,7 +97,7 @@ describe("Tokens route", () => {
       ckBTCBalanceE8s = ckBTCDefaultBalanceE8s;
       ckETHBalanceUlps = ckETHDefaultBalanceUlps;
       tetrisBalanceE8s = tetrisDefaultBalanceE8s;
-      vi.spyOn(walletLedgerApi, "getToken").mockImplementation(
+      vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockImplementation(
         async ({ canisterId }) => {
           const tokenMap = {
             [CKBTC_UNIVERSE_CANISTER_ID.toText()]: mockCkBTCToken,
@@ -122,76 +116,25 @@ describe("Tokens route", () => {
       vi.spyOn(AuthClient, "create").mockImplementation(
         async (): Promise<AuthClient> => mockAuthClient
       );
-      vi.spyOn(walletLedgerApi, "getAccount").mockImplementation(
+      vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
         async ({ canisterId }) => {
-          const accountMap = {
-            [CKBTC_UNIVERSE_CANISTER_ID.toText()]: {
-              ...mockCkBTCMainAccount,
-              balanceUlps: ckBTCBalanceE8s,
-            },
-            [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: {
-              ...mockCkBTCMainAccount,
-              balanceUlps: ckBTCBalanceE8s,
-            },
-            [CKETH_UNIVERSE_CANISTER_ID.toText()]: {
-              ...mockCkETHMainAccount,
-              balanceUlps: ckETHBalanceUlps,
-            },
-            [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: {
-              ...mockCkETHMainAccount,
-              balanceUlps: ckETHBalanceUlps,
-            },
+          const balancesMap = {
+            [CKBTC_UNIVERSE_CANISTER_ID.toText()]: ckBTCBalanceE8s,
+            [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: ckBTCBalanceE8s,
+            [CKETH_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
+            [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
+            [ledgerCanisterIdTetris.toText()]: tetrisBalanceE8s,
+            [ledgerCanisterIdPacman.toText()]: pacmanBalanceE8s,
           };
-          if (isNullish(accountMap[canisterId.toText()])) {
+          if (isNullish(balancesMap[canisterId.toText()])) {
             throw new Error(
               `Account not found for canister ${canisterId.toText()}`
             );
           }
-          return accountMap[canisterId.toText()];
-        }
-      );
-      vi.spyOn(snsLedgerApi, "snsTransfer").mockResolvedValue(undefined);
-      vi.spyOn(snsLedgerApi, "getSnsAccounts").mockImplementation(
-        async ({ rootCanisterId }) => {
-          if (rootCanisterId.toText() === rootCanisterIdTetris.toText()) {
-            return [
-              {
-                ...mockSnsMainAccount,
-                balanceUlps: tetrisBalanceE8s,
-              },
-            ];
-          }
-          return [
-            {
-              ...mockSnsMainAccount,
-              balanceUlps: pacmanBalanceE8s,
-            },
-          ];
-        }
-      );
-      vi.spyOn(snsLedgerApi, "getSnsToken").mockImplementation(
-        async ({ rootCanisterId }) => {
-          if (rootCanisterId.toText() === rootCanisterIdTetris.toText()) {
-            return tetrisToken;
-          }
-          return pacmanToken;
+          return balancesMap[canisterId.toText()];
         }
       );
       vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(1234n);
-      vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
-        async ({ canisterId }) => {
-          const balanceMap = {
-            [CKETH_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
-            [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
-          };
-          if (isNullish(balanceMap[canisterId.toText()])) {
-            throw new Error(
-              `Balance not found for canister ${canisterId.toText()}`
-            );
-          }
-          return balanceMap[canisterId.toText()];
-        }
-      );
       vi.spyOn(ckBTCMinterApi, "updateBalance").mockRejectedValue(
         noPendingUtxos
       );
@@ -199,23 +142,19 @@ describe("Tokens route", () => {
       setSnsProjects([
         {
           rootCanisterId: rootCanisterIdTetris,
+          ledgerCanisterId: ledgerCanisterIdTetris,
           projectName: "Tetris",
+          tokenMetadata: tetrisToken,
           lifecycle: SnsSwapLifecycle.Committed,
         },
         {
           rootCanisterId: rootCanisterIdPacman,
+          ledgerCanisterId: ledgerCanisterIdPacman,
           projectName: "Pacman",
+          tokenMetadata: pacmanToken,
           lifecycle: SnsSwapLifecycle.Committed,
         },
       ]);
-      tokensStore.setTokens({
-        [rootCanisterIdTetris.toText()]: {
-          token: mockSnsToken,
-        },
-        [rootCanisterIdPacman.toText()]: {
-          token: mockSnsToken,
-        },
-      });
       setCkETHCanisters();
       icpAccountsStore.setForTesting({
         main: { ...mockMainAccount, balanceUlps: icpBalanceE8s },
@@ -350,23 +289,25 @@ describe("Tokens route", () => {
 
           await tokensPagePo.clickSendOnRow("Tetris");
 
-          expect(await po.getSnsTransactionModalPo().isPresent()).toBe(true);
+          expect(await po.getIcrcTokenTransactionModal().isPresent()).toBe(
+            true
+          );
 
-          expect(snsLedgerApi.snsTransfer).not.toBeCalled();
+          expect(icrcLedgerApi.icrcTransfer).not.toBeCalled();
 
           const toAccount: IcrcAccount = {
             owner: principal(1),
           };
           const amount = 2;
 
-          await po.transferSnsTokens({
+          await po.transferIcrcTokens({
             amount,
             destinationAddress: encodeIcrcAccount(toAccount),
           });
 
-          expect(snsLedgerApi.snsTransfer).toBeCalledTimes(1);
-          expect(snsLedgerApi.snsTransfer).toBeCalledWith({
-            rootCanisterId: rootCanisterIdTetris,
+          expect(icrcLedgerApi.icrcTransfer).toBeCalledTimes(1);
+          expect(icrcLedgerApi.icrcTransfer).toBeCalledWith({
+            canisterId: ledgerCanisterIdTetris,
             fee: tetrisToken.fee,
             to: toAccount,
             amount: numberToUlps({ amount, token: tetrisToken }),

@@ -9,7 +9,6 @@ import {
 import { AppPath } from "$lib/constants/routes.constants";
 import Wallet from "$lib/routes/Wallet.svelte";
 import { authStore } from "$lib/stores/auth.store";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
@@ -18,9 +17,14 @@ import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
+import {
+  mockCkBTCMainAccount,
+  mockCkBTCToken,
+} from "$tests/mocks/ckbtc-accounts.mock";
 import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { mockIcrcMainAccount } from "$tests/mocks/icrc-accounts.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsFullProject, principal } from "$tests/mocks/sns-projects.mock";
 import { WalletPo } from "$tests/page-objects/Wallet.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -34,22 +38,10 @@ import { render } from "@testing-library/svelte";
 vi.mock("$lib/api/icrc-ledger.api");
 vi.mock("$lib/api/ckbtc-minter.api");
 
-vi.mock("$lib/services/sns-accounts.services", () => {
+vi.mock("$lib/services/icrc-transactions.services", () => {
   return {
-    syncSnsAccounts: vi.fn().mockResolvedValue(undefined),
-  };
-});
-
-vi.mock("$lib/services/wallet-accounts.services", () => {
-  return {
-    syncAccounts: vi.fn().mockResolvedValue(undefined),
-  };
-});
-
-vi.mock("$lib/services/wallet-transactions.services", () => {
-  return {
-    loadWalletNextTransactions: vi.fn().mockResolvedValue(undefined),
-    loadWalletTransactions: vi.fn().mockResolvedValue(undefined),
+    loadIcrcAccountNextTransactions: vi.fn().mockResolvedValue(undefined),
+    loadIcrcAccountTransactions: vi.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -86,20 +78,53 @@ vi.mock("$lib/services/worker-transactions.services", () => ({
 }));
 
 describe("Wallet", () => {
+  let ckEthBalance = 1000000000000000000n;
   beforeEach(() => {
+    vi.clearAllMocks();
     setCkETHCanisters();
     setSnsProjects([
       {
         rootCanisterId: mockSnsFullProject.rootCanisterId,
+        ledgerCanisterId: mockSnsFullProject.summary.ledgerCanisterId,
         lifecycle: SnsSwapLifecycle.Committed,
       },
     ]);
     setCkETHCanisters();
     icpAccountsStore.setForTesting(mockAccountsStoreData);
-    overrideFeatureFlagsStore.reset();
     vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(1234n);
     vi.mocked(ckbtcMinterApi.retrieveBtcStatusV2ByAccount).mockResolvedValue(
       []
+    );
+
+    icrcAccountsStore.reset();
+    ckEthBalance = 1000000000000000000n;
+    vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
+      async ({ canisterId }) => {
+        if (canisterId.toText() === CKETH_UNIVERSE_CANISTER_ID.toText()) {
+          return ckEthBalance;
+        }
+        if (canisterId.toText() === CKBTC_UNIVERSE_CANISTER_ID.toText()) {
+          return mockCkBTCMainAccount.balanceUlps;
+        }
+        if (
+          canisterId.toText() ===
+          mockSnsFullProject.summary.ledgerCanisterId.toText()
+        ) {
+          return mockSnsMainAccount.balanceUlps;
+        }
+        throw new Error(`Unexpected canisterId: ${canisterId.toText()}`);
+      }
+    );
+    vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockImplementation(
+      async ({ canisterId }) => {
+        if (canisterId.toText() === CKETH_UNIVERSE_CANISTER_ID.toText()) {
+          return mockCkETHToken;
+        }
+        if (canisterId.toText() === CKBTC_UNIVERSE_CANISTER_ID.toText()) {
+          return mockCkBTCToken;
+        }
+        throw new Error(`Unexpected canisterId: ${canisterId.toText()}`);
+      }
     );
   });
 
@@ -126,15 +151,33 @@ describe("Wallet", () => {
         data: { universe: mockSnsFullProject.rootCanisterId.toText() },
         routeId: AppPath.Wallet,
       });
+
+      tokensStore.setToken({
+        canisterId: mockSnsFullProject.summary.ledgerCanisterId,
+        token: mockSnsFullProject.summary.token,
+        certified: true,
+      });
     });
 
-    it("should render SnsWallet", async () => {
-      const { getByTestId } = render(Wallet, {
+    const renderComponent = () => {
+      const { container } = render(Wallet, {
         props: {
-          accountIdentifier: principal(0).toText(),
+          accountIdentifier: mockSnsMainAccount.identifier,
         },
       });
-      expect(getByTestId("sns-wallet")).toBeInTheDocument();
+      return WalletPo.under(new JestPageObjectElement(container));
+    };
+
+    it("should render SnsWallet", async () => {
+      const po = renderComponent();
+      expect(await po.getSnsWalletPo().isPresent()).toBe(true);
+    });
+
+    it("should open transaction modal", async () => {
+      const po = renderComponent();
+      expect(await po.getIcrcTokenTransactionModalPo().isPresent()).toBe(false);
+      await po.getSnsWalletPo().clickSendButton();
+      expect(await po.getIcrcTokenTransactionModalPo().isPresent()).toBe(true);
     });
   });
 
@@ -166,41 +209,17 @@ describe("Wallet", () => {
     expect(getByTestId("icrc-wallet-component")).toBeInTheDocument();
   });
 
-  // TODO: GIX-2150 Mock API layer instead of services for the setup
   it("user can transfer ckETH tokens and balance is refreshed", async () => {
     const amount = 2;
     const E18S_PER_TOKEN = 10n ** 18n;
     const amountE18s = BigInt(amount) * E18S_PER_TOKEN;
     const balanceAfterTransfer = 1110000000000000000n;
     const balanceBeforeTransfer = balanceAfterTransfer + amountE18s;
-
-    // Called only after a transfer (for now GIX-2150)
-    vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
-      balanceAfterTransfer
-    );
+    ckEthBalance = balanceBeforeTransfer;
 
     page.mock({
       data: { universe: CKETH_UNIVERSE_CANISTER_ID.toText() },
       routeId: AppPath.Wallet,
-    });
-
-    icrcAccountsStore.set({
-      ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
-      accounts: {
-        accounts: [
-          {
-            ...mockIcrcMainAccount,
-            balanceUlps: balanceBeforeTransfer,
-          },
-        ],
-        certified: true,
-      },
-    });
-
-    tokensStore.setToken({
-      canisterId: CKETH_UNIVERSE_CANISTER_ID,
-      token: mockCkETHToken,
-      certified: true,
     });
 
     const { container } = render(Wallet, {
@@ -225,7 +244,9 @@ describe("Wallet", () => {
       owner: principal(2),
     };
 
-    expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(0);
+    // Load data with query + Update calls
+    expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(2);
+    ckEthBalance = balanceAfterTransfer;
 
     await modalPo.transferToAddress({
       destinationAddress: encodeIcrcAccount(toAccount),
@@ -242,8 +263,8 @@ describe("Wallet", () => {
       to: toAccount,
       fee: mockCkETHToken.fee,
     });
-    // Query + Update calls
-    expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(2);
+    // Setup + Query + Update calls after transfer
+    expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenCalledTimes(4);
 
     expect(await pagePo.getWalletPageHeadingPo().getTitle()).toBe("1.11 ckETH");
   });

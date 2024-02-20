@@ -1,3 +1,4 @@
+import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { increaseStakeNeuron } from "$lib/api/sns.api";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -8,7 +9,7 @@ import {
 import { pageStore } from "$lib/derived/page.derived";
 import SnsNeuronDetail from "$lib/pages/SnsNeuronDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
-import { snsAccountsStore } from "$lib/stores/sns-accounts.store";
+import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { snsParametersStore } from "$lib/stores/sns-parameters.store";
@@ -21,11 +22,11 @@ import { numberToE8s } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import * as fakeSnsApi from "$tests/fakes/sns-api.fake";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
-import * as fakeSnsLedgerApi from "$tests/fakes/sns-ledger-api.fake";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
 } from "$tests/mocks/auth.store.mock";
+import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
@@ -47,7 +48,6 @@ vi.mock("$lib/api/sns-ledger.api");
 
 describe("SnsNeuronDetail", () => {
   fakeSnsGovernanceApi.install();
-  fakeSnsLedgerApi.install();
   fakeSnsApi.install();
 
   const rootCanisterId = rootCanisterIdMock;
@@ -69,7 +69,7 @@ describe("SnsNeuronDetail", () => {
     snsFunctionsStore.reset();
     snsParametersStore.reset();
     snsNeuronsStore.reset();
-    snsAccountsStore.reset();
+    icrcAccountsStore.reset();
     setSnsProjects([
       {
         projectName,
@@ -78,10 +78,9 @@ describe("SnsNeuronDetail", () => {
       },
     ]);
 
-    fakeSnsLedgerApi.addAccountWith({
-      rootCanisterId,
-      principal: mockIdentity.getPrincipal(),
-    });
+    vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(
+      mockSnsMainAccount.balanceUlps
+    );
 
     page.mock({
       data: { universe: rootCanisterId.toText() },

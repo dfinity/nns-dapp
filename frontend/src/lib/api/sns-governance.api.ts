@@ -5,7 +5,6 @@ import type { IcrcAccount } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import type {
   SnsListProposalsParams,
-  SnsNervousSystemFunction,
   SnsNervousSystemParameters,
   SnsNeuron,
   SnsNeuronId,
@@ -13,6 +12,7 @@ import type {
   SnsProposalId,
   SnsVote,
 } from "@dfinity/sns";
+import { isNullish } from "@dfinity/utils";
 import { wrapper } from "./sns-wrapper.api";
 
 export const querySnsNeurons = async ({
@@ -362,29 +362,6 @@ export const claimNeuron = async ({
   return neuronId;
 };
 
-export const getNervousSystemFunctions = async ({
-  rootCanisterId,
-  identity,
-  certified,
-}: {
-  rootCanisterId: Principal;
-  identity: Identity;
-  certified: boolean;
-}): Promise<SnsNervousSystemFunction[]> => {
-  logWithTimestamp(`Getting nervous system functions call...`);
-
-  const { listNervousSystemFunctions } = await wrapper({
-    identity,
-    rootCanisterId: rootCanisterId.toText(),
-    certified,
-  });
-
-  const { functions } = await listNervousSystemFunctions({});
-
-  logWithTimestamp(`Getting nervous system functions call complete.`);
-  return functions;
-};
-
 export const nervousSystemParameters = async ({
   rootCanisterId,
   identity,
@@ -577,10 +554,15 @@ export const queryProposals = async ({
     certified,
   });
 
-  const proposals = await listProposals(params);
+  const response = await listProposals(params);
+
+  if (isNullish(response.include_ballots_by_caller)) {
+    // Normalise the response for all canister versions, since the old versions do not return this field.
+    response.include_ballots_by_caller = [false];
+  }
 
   logWithTimestamp(`Getting proposals call complete.`);
-  return proposals;
+  return response;
 };
 
 export const queryProposal = async ({

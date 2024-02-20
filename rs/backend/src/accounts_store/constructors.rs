@@ -1,5 +1,5 @@
 //! Account store constructors.
-use super::*;
+use super::{AccountsDb, AccountsDbAsProxy, AccountsStore};
 use std::mem;
 
 impl From<AccountsDb> for AccountsStore {

@@ -34,11 +34,13 @@ impl State {
         }
     }
     /// Create the state from stable memory in the `SchemaLabel::Map` format.
-    pub fn recover_heap_from_managed_memory(memory: VirtualMemory<DefaultMemoryImpl>) -> Self {
+    #[must_use]
+    pub fn recover_heap_from_managed_memory(memory: &VirtualMemory<DefaultMemoryImpl>) -> Self {
         let candid_len = {
             let mut length_field = [0u8; 8];
             memory.read(0, &mut length_field);
-            u64::from_be_bytes(length_field) as usize
+            usize::try_from(u64::from_be_bytes(length_field))
+                .unwrap_or_else(|err| unreachable!("The stable memory size appears to be larger than usize: {err:?}"))
         };
         let candid_bytes = {
             let mut candid_bytes = vec![0u8; candid_len];

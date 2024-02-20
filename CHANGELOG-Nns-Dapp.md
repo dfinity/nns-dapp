@@ -11,6 +11,79 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 127764
+
+### Application
+
+#### Added
+
+* Add `ENABLE_VOTING_INDICATION` feature flag.
+* Add "Manage Internet Identity" and "Source code" entries to account menu.
+* Client side caching of SNS Aggregator calls.
+* Prompt the user to check the hardware wallet screen when splitting a neuron controlled by one.
+
+#### Changed
+
+* Refactor tokens store usage.
+* Store SNS accounts in `icrcAccountsStore`.
+
+#### Removed
+
+* Stop loading SNS tokens individually because they are already loaded from the SNS aggregator data.
+* Remove `ENABLE_SNS_TYPES_FILTER` feature flag.
+
+### Operations
+
+#### Added
+
+* Test that project logo (not token logo) is displayed on SNS wallet.
+
+#### Changed
+
+* Update the GitHub `build-push-action` from `v4` to `v5`.
+* Upgrade Rust to 1.76.0
+* Ignore failures of `test-upgrade-map`
+
+#### Removed
+
+* Remove periodic app subnet deployment of nns-dapp.
+
+## Proposal 127696
+
+### Application
+
+#### Added
+
+* Add fee as mandatory when making ICP transactions.
+* Add the token symbol in the send modals.
+* Add new boundary node proposals support.
+* Prevent the `1Password` extension from appearing in input fields.
+* Support HTML within toast messages.
+
+#### Changed
+
+* Stable memory is owned by State structure to control access.
+* Voting power calculation formatting.
+* Voting rewards description.
+* Unify implementations of SNS token wallets with other (non-ICP) token wallets.
+
+#### Removed
+
+* Unused `i18n` messages.
+* Remove `ENABLE_MY_TOKENS` feature flag.
+
+#### Fixed
+
+* QR-code reader incorrectly mirrored on `Samsung S23`.
+* Check SNS neuron balances to claim pending neurons.
+* Neurons that can vote being displayed as ineligible on the SNS proposal detail page.
+
+### Operations
+
+#### Added
+
+* Check for unused i18n messages.
+
 ## Proposal 127669
 
 ### Application

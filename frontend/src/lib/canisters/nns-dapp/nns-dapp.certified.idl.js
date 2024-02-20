@@ -2,15 +2,6 @@
 export const idlFactory = ({ IDL }) => {
   const AccountIdentifier = IDL.Text;
   const SubAccount = IDL.Vec(IDL.Nat8);
-  const AddPendingNotifySwapRequest = IDL.Record({
-    swap_canister_id: IDL.Principal,
-    buyer_sub_account: IDL.Opt(SubAccount),
-    buyer: IDL.Principal,
-  });
-  const AddPendingTransactionResponse = IDL.Variant({
-    Ok: IDL.Null,
-    NotAuthorized: IDL.Null,
-  });
   const AttachCanisterRequest = IDL.Record({
     name: IDL.Text,
     canister_id: IDL.Principal,
@@ -170,11 +161,6 @@ export const idlFactory = ({ IDL }) => {
   });
   return IDL.Service({
     add_account: IDL.Func([], [AccountIdentifier], []),
-    add_pending_notify_swap: IDL.Func(
-      [AddPendingNotifySwapRequest],
-      [AddPendingTransactionResponse],
-      []
-    ),
     add_stable_asset: IDL.Func([IDL.Vec(IDL.Nat8)], [], []),
     attach_canister: IDL.Func(
       [AttachCanisterRequest],

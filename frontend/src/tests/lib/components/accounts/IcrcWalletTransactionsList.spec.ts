@@ -3,7 +3,7 @@ import {
   CKBTC_LEDGER_CANISTER_ID,
   CKBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
-import * as services from "$lib/services/wallet-transactions.services";
+import * as services from "$lib/services/icrc-transactions.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import type {
   IcrcTransactionData,
@@ -19,7 +19,7 @@ import {
   mockIcrcTransactionWithIdToSelf,
   mockIcrcTransactionsStoreSubscribe,
 } from "$tests/mocks/icrc-transactions.mock";
-import { IcrcTransactionsListPo } from "$tests/page-objects/IcrcTransactionsList.page-object";
+import { UiTransactionsListPo } from "$tests/page-objects/UiTransactionsList.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import {
   advanceTime,
@@ -28,10 +28,10 @@ import {
 import { TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
-vi.mock("$lib/services/wallet-transactions.services", () => {
+vi.mock("$lib/services/icrc-transactions.services", () => {
   return {
-    loadWalletNextTransactions: vi.fn().mockResolvedValue(undefined),
-    loadWalletTransactions: vi.fn().mockResolvedValue(undefined),
+    loadIcrcAccountNextTransactions: vi.fn().mockResolvedValue(undefined),
+    loadIcrcAccountTransactions: vi.fn().mockResolvedValue(undefined),
   };
 });
 
@@ -78,7 +78,7 @@ describe("IcrcWalletTransactionList", () => {
       },
     });
     return {
-      po: IcrcTransactionsListPo.under(new JestPageObjectElement(container)),
+      po: UiTransactionsListPo.under(new JestPageObjectElement(container)),
       reload: component.reloadTransactions,
     };
   };
@@ -93,7 +93,7 @@ describe("IcrcWalletTransactionList", () => {
   });
 
   it("should call service to load transactions", () => {
-    const spy = vi.spyOn(services, "loadWalletNextTransactions");
+    const spy = vi.spyOn(services, "loadIcrcAccountNextTransactions");
 
     renderComponent();
 
@@ -101,8 +101,8 @@ describe("IcrcWalletTransactionList", () => {
   });
 
   it("should call service to load transactions on imperative function call", async () => {
-    const spy = vi.spyOn(services, "loadWalletNextTransactions");
-    const spyReload = vi.spyOn(services, "loadWalletTransactions");
+    const spy = vi.spyOn(services, "loadIcrcAccountNextTransactions");
+    const spyReload = vi.spyOn(services, "loadIcrcAccountTransactions");
 
     let resolveLoadNext;
     spy.mockImplementation(
@@ -210,7 +210,7 @@ describe("IcrcWalletTransactionList", () => {
   });
 
   it("should display skeletons until transaction are loaded even with additional mapped transaction", async () => {
-    const spyLoadNext = vi.spyOn(services, "loadWalletNextTransactions");
+    const spyLoadNext = vi.spyOn(services, "loadIcrcAccountNextTransactions");
 
     let resolveLoadNext;
     spyLoadNext.mockImplementation(

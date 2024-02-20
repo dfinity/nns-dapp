@@ -1,7 +1,7 @@
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
-import { IcrcTransactionsListPo } from "$tests/page-objects/IcrcTransactionsList.page-object";
+import { IcrcWalletFooterPo } from "$tests/page-objects/IcrcWalletFooter.page-object";
 import { SignInPo } from "$tests/page-objects/SignIn.page-object";
-import { SnsTransactionModalPo } from "$tests/page-objects/SnsTransactionModal.page-object";
+import { UiTransactionsListPo } from "$tests/page-objects/UiTransactionsList.page-object";
 import { WalletPageHeaderPo } from "$tests/page-objects/WalletPageHeader.page-object";
 import { WalletPageHeadingPo } from "$tests/page-objects/WalletPageHeading.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -22,12 +22,12 @@ export class SnsWalletPo extends BasePageObject {
     return WalletPageHeadingPo.under(this.root);
   }
 
-  getIcrcTransactionsListPo(): IcrcTransactionsListPo {
-    return IcrcTransactionsListPo.under(this.root);
+  getUiTransactionsListPo(): UiTransactionsListPo {
+    return UiTransactionsListPo.under(this.root);
   }
 
-  getSnsTransactionModalPo(): SnsTransactionModalPo {
-    return SnsTransactionModalPo.under(this.root);
+  getIcrcWalletFooterPo(): IcrcWalletFooterPo {
+    return IcrcWalletFooterPo.under(this.root);
   }
 
   getSignInPo(): SignInPo {
@@ -35,11 +35,11 @@ export class SnsWalletPo extends BasePageObject {
   }
 
   getSendButtonPo(): ButtonPo {
-    return this.getButton("open-new-sns-transaction");
+    return this.getIcrcWalletFooterPo().getSendButtonPo();
   }
 
   getReceiveButtonPo(): ButtonPo {
-    return this.getButton("receive-sns");
+    return this.getIcrcWalletFooterPo().getReceiveButtonPo();
   }
 
   hasSignInButton(): Promise<boolean> {

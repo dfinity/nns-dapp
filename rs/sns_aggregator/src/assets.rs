@@ -81,10 +81,12 @@ pub struct Asset {
 
 impl Asset {
     /// Creates a new asset with the given bytes in the HTTP body.
+    #[must_use]
     pub fn new(bytes: Vec<u8>) -> Self {
         Self { headers: vec![], bytes }
     }
     /// Adds the given header to the given asset.
+    #[must_use]
     pub fn with_header<S: Into<String>>(mut self, key: S, val: S) -> Self {
         self.headers.push((key.into(), val.into()));
         self
@@ -98,11 +100,13 @@ impl Asset {
 pub struct Assets(HashMap<String, Asset>);
 impl Assets {
     /// Gets the number of assets
+    #[must_use]
     pub fn len(&self) -> usize {
         self.0.len()
     }
 
     /// Determines whether the assets are empty
+    #[must_use]
     pub fn is_empty(&self) -> bool {
         self.0.is_empty()
     }
@@ -114,6 +118,7 @@ impl Assets {
 
     /// Gets an asset, using the actual asset path, e.g.
     /// `/foo/index.html` not `/foo/`.
+    #[must_use]
     pub fn get(&self, path: &str) -> Option<&Asset> {
         self.0.get(path)
     }
@@ -132,8 +137,7 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
         "json" => Some("application/json"),
         "svg" => Some("image/svg+xml"),
         "png" => Some("image/png"),
-        "jpeg" => Some("image/jpeg"),
-        "jpg" => Some("image/jpeg"),
+        "jpeg" | "jpg" => Some("image/jpeg"),
         "ico" => Some("image/x-icon"),
         "ttf" => Some("font/ttf"),
         "woff2" => Some("font/woff2"),
@@ -228,6 +232,9 @@ fn update_root_hash(a: &AssetHashes) {
 
 /// Responds to an HTTP request for an asset.
 #[allow(clippy::expect_used)] // This is a query call, so panicking may be correct.
+#[allow(clippy::needless_pass_by_value)]
+// The signature is standard, we cannot change it.  It would be nice if this standard signature were defined in a trait that we could apply to a main struct, though!
+#[must_use]
 pub fn http_request(req: HttpRequest) -> HttpResponse {
     let mut parts = req.url.splitn(2, '?');
     let request_path = parts.next().unwrap_or("/");
@@ -253,7 +260,7 @@ pub fn http_request(req: HttpRequest) -> HttpResponse {
             None => HttpResponse {
                 status_code: 404,
                 headers,
-                body: ByteBuf::from(format!("Asset {} not found.", request_path)),
+                body: ByteBuf::from(format!("Asset {request_path} not found.")),
             },
         }
     })
