@@ -1,3 +1,4 @@
+import { mapEntries } from "$lib/utils/utils";
 import type { Principal } from "@dfinity/principal";
 import type { SnsProposalData } from "@dfinity/sns";
 import { writable, type Readable } from "svelte/store";
@@ -14,14 +15,12 @@ export interface VotingSnsProposalsStore
     rootCanisterId: Principal;
     proposals: SnsProposalData[];
   }) => void;
+  resetForSns: (rootCanisterId: Principal) => void;
   reset: () => void;
 }
 
 /**
- * A store that contains nns proposals that can be voted on by the user (ballots w/ state 0).
- *
- * The update can't be merged with the current state because the proposals status can be updated.
- * - setProposals: replace the current list of proposals with a new list
+ * A store that contains sns proposals that can be voted on by the user (ballots w/ state 0).
  */
 const initVotingSnsProposalsStore = (): VotingSnsProposalsStore => {
   const { subscribe, update, set } = writable<VotingSnsProposalsStoreData>({});
@@ -42,6 +41,18 @@ const initVotingSnsProposalsStore = (): VotingSnsProposalsStore => {
       }));
     },
 
+    resetForSns(rootCanisterId: Principal) {
+      update((currentState: VotingSnsProposalsStoreData) =>
+        mapEntries({
+          obj: currentState,
+          mapFn: ([rootIdText, proposals]) =>
+            rootIdText === rootCanisterId.toText()
+              ? undefined
+              : [rootIdText, proposals],
+        })
+      );
+    },
+
     // Used in tests
     reset(): void {
       set({});
@@ -49,5 +60,4 @@ const initVotingSnsProposalsStore = (): VotingSnsProposalsStore => {
   };
 };
 
-// TODO(max): add to debug store
 export const votingSnsProposalsStore = initVotingSnsProposalsStore();

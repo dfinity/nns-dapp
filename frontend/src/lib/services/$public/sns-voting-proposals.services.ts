@@ -13,7 +13,6 @@ import { SnsProposalRewardStatus } from "@dfinity/sns";
 import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
-// TODO(max): use the store first, clean the store after user voted
 export const updateVotingSnsProposals = async () => {
   const canisterIds = get(selectableUniversesStore)
     // skip nns
@@ -23,8 +22,6 @@ export const updateVotingSnsProposals = async () => {
   await Promise.all(
     canisterIds.map((canisterId) => updateVotingProposalsForSns(canisterId))
   );
-
-  console.log("queryVotingSnsProposals done", get(votingSnsProposalsStore));
 };
 
 const updateVotingProposalsForSns = async (
@@ -33,7 +30,8 @@ const updateVotingProposalsForSns = async (
   try {
     const storeValue = get(votingSnsProposalsStore)[canisterId];
     if (nonNullish(storeValue)) {
-      // already fetched
+      // The proposals state does not update frequently, so we don't need to re-fetch.
+      // The store will be reset after the user registers a vote.
       return;
     }
 
@@ -67,6 +65,7 @@ const updateVotingProposalsForSns = async (
           identity,
         }).length > 0
     );
+
     votingSnsProposalsStore.setProposals({
       rootCanisterId: Principal.fromText(canisterId),
       proposals: votableProposals,

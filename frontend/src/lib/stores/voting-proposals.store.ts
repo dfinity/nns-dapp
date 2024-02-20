@@ -2,7 +2,7 @@ import type { ProposalInfo } from "@dfinity/nns";
 import { writable, type Readable } from "svelte/store";
 
 export interface VotingNnsProposalsStoreData {
-  proposals?: ProposalInfo[];
+  proposals: ProposalInfo[] | undefined;
 }
 
 export interface VotingNnsProposalsStore
@@ -30,12 +30,10 @@ const initVotingNnsProposalsStore = (): VotingNnsProposalsStore => {
       set({ proposals: [...proposals] });
     },
 
-    // Used in tests
     reset(): void {
-      this.setProposals([]);
+      set({ proposals: undefined });
     },
   };
 };
 
-// TODO(max): add to debug store
 export const votingNnsProposalsStore = initVotingNnsProposalsStore();

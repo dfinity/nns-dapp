@@ -9,7 +9,7 @@ import {
   votableNeurons,
   type NeuronInfo,
 } from "@dfinity/nns";
-import { isNullish } from "@dfinity/utils";
+import { isNullish, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getCurrentIdentity } from "../auth.services";
 
@@ -17,8 +17,13 @@ import { getCurrentIdentity } from "../auth.services";
  * Fetch all proposals that are accepting votes and set the proposals in the nnsProposalVotingStore.
  */
 export const updateVotingProposals = async (): Promise<void> => {
-  const neurons: NeuronInfo[] = await queryNeurons();
+  if (nonNullish(get(votingNnsProposalsStore).proposals)) {
+    // The proposals state does not update frequently, so we don't need to re-fetch.
+    // The store will be reset after the user registers a vote.
+    return;
+  }
 
+  const neurons: NeuronInfo[] = await queryNeurons();
   if (neurons.length === 0) {
     votingNnsProposalsStore.setProposals([]);
     return;

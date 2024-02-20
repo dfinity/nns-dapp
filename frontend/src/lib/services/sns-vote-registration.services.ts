@@ -11,6 +11,7 @@ import {
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
+import { votingSnsProposalsStore } from "$lib/stores/voting-sns-proposals.store";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
@@ -85,6 +86,9 @@ export const registerSnsVotes = async ({
         certified: false,
         completed: true,
       });
+
+      // reset the voting store to trigger a new fetch for votable proposals count.
+      votingSnsProposalsStore.resetForSns(universeCanisterId);
     },
   });
 };

@@ -6,17 +6,19 @@
   import { updateVotingSnsProposals } from "$lib/services/$public/sns-voting-proposals.services";
   import { votingProposalIndicationEnabledStore } from "$lib/derived/voting-proposal-indication.derived";
   import { updateVotingProposals } from "$lib/services/$public/voting-proposals.services";
+  import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
 
   let innerWidth = 0;
   let list = false;
 
   $: list = innerWidth > BREAKPOINT_LARGE;
-
-  const update = async () => {
-    await updateVotingProposals();
-    await updateVotingSnsProposals();
-  };
-  $: $votingProposalIndicationEnabledStore && update();
+  $: $votingProposalIndicationEnabledStore && updateVotingProposals();
+  $: if (
+    $votingProposalIndicationEnabledStore &&
+    $selectableUniversesStore.length > 1
+  ) {
+    updateVotingSnsProposals();
+  }
 </script>
 
 <svelte:window bind:innerWidth />
