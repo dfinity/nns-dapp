@@ -60,7 +60,7 @@ runs:
       shell: bash
       run: |
         set -x
-        echo dskloetx debug 1 PWD $PWD
+        echo dskloetx debug 1 PWD $PWD PATH $PATH
     - name: Add snsdemo scripts to the path
       shell: bash
       run: |
@@ -71,7 +71,7 @@ runs:
       shell: bash
       run: |
         set -x
-        echo dskloetx debug 2 PWD $PWD
+        echo dskloetx debug 2 PWD $PWD PATH $PATH
     - name: Get dfx version
       shell: bash
       run: echo "DFX_VERSION=$(jq -r .dfx dfx.json)" >> $GITHUB_ENV
@@ -79,7 +79,7 @@ runs:
       shell: bash
       run: |
         set -x
-        echo dskloetx debug 2 PWD $PWD
+        echo dskloetx debug 3 PWD $PWD PATH $PATH
     - name: Install dfx
       uses: dfinity/setup-dfx@main
       with:
@@ -88,7 +88,7 @@ runs:
       shell: bash
       run: |
         set -x
-        echo dskloetx debug 3 PWD $PWD
+        echo dskloetx debug 4 PWD $PWD PATH $PATH
     - name: Install SNS script dependencies
       shell: bash
       run: |
@@ -97,12 +97,12 @@ runs:
       shell: bash
       run: |
         set -x
-        echo dskloetx debug 4 PWD $PWD
+        echo dskloetx debug 5 PWD $PWD PATH $PATH
     - name: Get test environment
       shell: bash
       run: |
         set -x
-        echo dskloetx debug 5 PWD $PWD
+        echo dskloetx debug 6 PWD $PWD PATH $PATH
         echo dskloetx 1
         dfx cache install
         echo dskloetx 2
@@ -116,7 +116,7 @@ runs:
         echo dskloetx 3.3
         ls $PWD/
         echo dskloetx 3.4
-        ls -l $PWD/snsdemo/bin
+        ls -l $PWD/work/nns-dapp/nns-dapp/snsdemo/bin
         echo dskloetx 3.5
         dfx-snapshot-restore --snapshot state.tar.xz --verbose &> '${{ inputs.logfile }}'
         echo dskloetx 4
