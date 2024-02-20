@@ -98,7 +98,8 @@ fn state_can_be_saved_and_recovered_from_stable_memory() {
         let memory = DefaultMemoryImpl::default();
         // We will get a second reference to the same memory so that we can compare the initial state to the state post-upgrade.
         let memory_after_upgrade = Partitions::copy_memory_reference(&memory); // The same memory.
-                                                                               // On init, the state is created using a schema specified in the init arguments:
+
+        // On init, the state is created using a schema specified in the init arguments:
         let state = State::new(schema, memory);
         // Typically the state is populated with data:
         // Inserting an account creates:
