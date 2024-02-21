@@ -69,12 +69,12 @@
   <h3 slot="start">{$i18n.neuron_detail.hotkeys_title}</h3>
   {#if hotkeys.length === 0}
     {#if isControllable}
-      <div class="warning">
+      <div class="warning" data-tid="add-hotkey-description">
         <span class="icon"><IconWarning size={ICON_SIZE_LARGE} /></span>
         <p class="description">{$i18n.neuron_detail.no_notkeys_yet}</p>
       </div>
     {:else}
-      <p>{$i18n.neuron_detail.no_notkeys}</p>
+      <p data-tid="no-hotkey">{$i18n.neuron_detail.no_notkeys}</p>
     {/if}
   {:else}
     <ul>
