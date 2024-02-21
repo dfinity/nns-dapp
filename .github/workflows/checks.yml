@@ -279,6 +279,9 @@ jobs:
           } >&2
           # TODO: Verify that the commits contain the expected changes.
   download-nns-dapp-ci-wasm:
+    # We require a successful CI run on main before this can pass again.
+    # TODO: remove
+    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
