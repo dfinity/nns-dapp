@@ -15,6 +15,7 @@ use dfn_candid::{candid, candid_one};
 use dfn_core::{over, over_async};
 use ic_cdk::println;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
+use ic_stable_structures::DefaultMemoryImpl;
 use icp_ledger::AccountIdentifier;
 pub use serde::Serialize;
 
@@ -75,7 +76,9 @@ fn post_upgrade(args: Option<CanisterArguments>) {
     // as the storage is about to be wiped out and replaced with stable memory.
     let counter_before = PerformanceCount::new("post_upgrade start");
     STATE.with(|s| {
-        s.replace(State::restore());
+        let stable_memory = DefaultMemoryImpl::default();
+        let state = State::from(stable_memory);
+        s.replace(state);
     });
     perf::save_instruction_count(counter_before);
     perf::record_instruction_count("post_upgrade after state_recovery");
