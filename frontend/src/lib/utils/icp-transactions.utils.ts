@@ -49,24 +49,18 @@ const getTransactionType = ({
   if (swapCanisterAccounts.has(data.from)) {
     return AccountTransactionType.RefundSwap;
   }
-  if (memo > 0n) {
-    if (memo === CREATE_CANISTER_MEMO) {
-      return AccountTransactionType.CreateCanister;
-    }
-    if (memo === TOP_UP_CANISTER_MEMO) {
-      return AccountTransactionType.TopUpCanister;
-    }
-    // Stake neuron transactions have a memo.
-    if (
-      neurons.some((neuron) => neuron.fullNeuron?.accountIdentifier === data.to)
-    ) {
-      return AccountTransactionType.StakeNeuron;
-    }
-    // Top up neuron transactions have no memo.
-  } else if (
+  if (memo === CREATE_CANISTER_MEMO) {
+    return AccountTransactionType.CreateCanister;
+  }
+  if (memo === TOP_UP_CANISTER_MEMO) {
+    return AccountTransactionType.TopUpCanister;
+  }
+  if (
     neurons.some((neuron) => neuron.fullNeuron?.accountIdentifier === data.to)
   ) {
-    return AccountTransactionType.TopUpNeuron;
+    return memo > 0n
+      ? AccountTransactionType.StakeNeuron
+      : AccountTransactionType.TopUpNeuron;
   }
 
   // Send is the default transaction type
@@ -107,7 +101,6 @@ const getTransactionInformation = (
   };
 };
 
-// TODO: Map to self transactions
 export const mapIcpTransaction = ({
   transaction,
   accountIdentifier,
@@ -149,7 +142,6 @@ export const mapIcpTransaction = ({
     });
     const otherParty = isReceive ? txInfo.from : txInfo.to;
 
-    // Timestamp is in nano seconds
     const createdTimestampNanos = fromNullable(
       transaction.transaction.created_at_time
     )?.timestamp_nanos;
