@@ -16,7 +16,7 @@ export interface ActionableSnsProposalsStore
     proposals: SnsProposalData[];
   }) => void;
   resetForSns: (rootCanisterId: Principal) => void;
-  reset: () => void;
+  resetForTesting: () => void;
 }
 
 /**
@@ -55,8 +55,7 @@ const initActionableSnsProposalsStore = (): ActionableSnsProposalsStore => {
       );
     },
 
-    // Used in tests
-    reset(): void {
+    resetForTesting(): void {
       set({});
     },
   };

@@ -16,7 +16,7 @@ describe("actionableSnsProposalsStore", () => {
   const principal1 = Principal.fromText("bw4dl-smaaa-aaaaa-qaacq-cai");
   const principal2 = Principal.fromText("pin7y-wyaaa-aaaaa-aacpa-cai");
   beforeEach(() => {
-    actionableSnsProposalsStore.reset();
+    actionableSnsProposalsStore.resetForTesting();
   });
 
   it("should store sns proposals", () => {
