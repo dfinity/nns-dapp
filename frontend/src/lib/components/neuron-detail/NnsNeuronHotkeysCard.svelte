@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { NeuronInfo } from "@dfinity/nns";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { IconClose, Value } from "@dfinity/gix-components";
+  import { IconClose, IconWarning, Value } from "@dfinity/gix-components";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import { removeHotkey } from "$lib/services/neurons.services";
   import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
@@ -14,6 +14,7 @@
   import AddHotkeyButton from "./actions/AddHotkeyButton.svelte";
   import { goto } from "$app/navigation";
   import ConfirmRemoveCurrentUserHotkey from "$lib/modals/neurons/ConfirmRemoveCurrentUserHotkey.svelte";
+  import { ICON_SIZE_LARGE } from "$lib/constants/layout.constants";
 
   export let neuron: NeuronInfo;
 
@@ -67,7 +68,14 @@
 <CardInfo noMargin>
   <h3 slot="start">{$i18n.neuron_detail.hotkeys_title}</h3>
   {#if hotkeys.length === 0}
-    <p>{$i18n.neuron_detail.no_notkeys}</p>
+    {#if isControllable}
+      <div class="warning">
+        <span class="icon"><IconWarning size={ICON_SIZE_LARGE} /></span>
+        <p class="description">{$i18n.neuron_detail.no_notkeys_yet}</p>
+      </div>
+    {:else}
+      <p>{$i18n.neuron_detail.no_notkeys}</p>
+    {/if}
   {:else}
     <ul>
       {#each hotkeys as hotkey (hotkey)}
@@ -106,6 +114,22 @@
 
   h3 {
     line-height: var(--line-height-standard);
+  }
+
+  .warning {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--padding-2x);
+
+    margin-bottom: var(--padding-2x);
+
+    .icon {
+      color: var(--warning-emphasis);
+    }
+
+    p {
+      margin: 0;
+    }
   }
 
   .actions {
