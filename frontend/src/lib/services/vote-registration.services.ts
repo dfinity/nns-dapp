@@ -1,3 +1,4 @@
+import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { i18n } from "$lib/stores/i18n";
 import {
   toastsError,
@@ -9,7 +10,6 @@ import {
   voteRegistrationStore,
   type VoteRegistrationStoreEntry,
 } from "$lib/stores/vote-registration.store";
-import { actionableNnsProposalsStore } from "$lib/stores/voting-proposals.store";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { errorToString } from "$lib/utils/error.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";

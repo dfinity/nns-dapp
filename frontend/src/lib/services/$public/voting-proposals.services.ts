@@ -1,8 +1,8 @@
 import { queryProposals as queryNnsProposals } from "$lib/api/proposals.api";
 import { listNeurons } from "$lib/services/neurons.services";
+import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
-import { actionableNnsProposalsStore } from "$lib/stores/voting-proposals.store";
 import type { ProposalId, ProposalInfo } from "@dfinity/nns";
 import {
   ProposalRewardStatus,
