@@ -1,80 +1,58 @@
-import type { GetTransactionsResponse } from "$lib/api/icrc-index.api";
-import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
-import type {
-  UniverseCanisterId,
-  UniverseCanisterIdText,
-} from "$lib/types/universe";
-import { getUniqueTransactions } from "$lib/utils/icrc-transactions.utils";
+import type { IcpAccountIdentifierText } from "$lib/types/account";
+import { getUniqueTransactions } from "$lib/utils/transactions.utils";
 import { removeKeys } from "$lib/utils/utils";
-import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
-import type { Principal } from "@dfinity/principal";
-import { nonNullish } from "@dfinity/utils";
+import type { TransactionWithId } from "@dfinity/ledger-icp";
 import { writable, type Readable } from "svelte/store";
 
-// Each Icrc Account - Sns or ckBTC - is an entry in this store.
-// We use the account string representation as the key to identify the transactions.
-export type IcrcTransactions = Record<
-  IcrcAccountIdentifierText,
+// Each ICP Account is an entry in this store.
+// We use the account identifier as the key to identify the transactions.
+export type IcpTransactionsStoreData = Record<
+  IcpAccountIdentifierText,
   {
-    transactions: IcrcTransactionWithId[];
+    transactions: TransactionWithId[];
     oldestTxId?: bigint;
     completed: boolean;
   }
 >;
 
-// Each universe - except Nns - is an entry in this store.
-// We use the root canister id and then the account identifier as the key to identify the transactions.
-export type IcrcTransactionsStoreData = Record<
-  UniverseCanisterIdText,
-  IcrcTransactions
->;
-
-export interface IcrcTransactionsStore
-  extends Readable<IcrcTransactionsStoreData> {
-  addTransactions: (
-    data: {
-      accountIdentifier: string;
-      canisterId: UniverseCanisterId;
-      completed: boolean;
-    } & GetTransactionsResponse
-  ) => void;
-  reset: () => void;
-  resetUniverse: (canisterId: UniverseCanisterId) => void;
-  resetAccount: (params: {
-    canisterId: UniverseCanisterId;
+export interface IcpTransactionsStore
+  extends Readable<IcpTransactionsStoreData> {
+  addTransactions: (data: {
     accountIdentifier: string;
+    transactions: TransactionWithId[];
+    oldestTxId?: bigint;
+    completed: boolean;
   }) => void;
+  reset: () => void;
+  resetAccount: (params: { accountIdentifier: string }) => void;
 }
 
 /**
- * A store that contains the transactions for each account in sns projects.
+ * A store that contains the transactions for each ICP account.
  *
- * - addTransactions: adds new transactions for a specific account in a specific sns project. If the state does not exist, it will be created.
+ * - addTransactions: adds new transactions for a specific account. If the state does not exist, it will be created.
  * - reset: reset the store to an empty state.
- * - resetProject: removed the transactions for a specific project.
+ * - resetAccount: removed the transactions for a specific account.
  */
-const initIcrcTransactionsStore = (): IcrcTransactionsStore => {
-  const { subscribe, update, set } = writable<IcrcTransactionsStoreData>({});
+const initIcpTransactionsStore = (): IcpTransactionsStore => {
+  const { subscribe, update, set } = writable<IcpTransactionsStoreData>({});
 
   return {
     subscribe,
 
     addTransactions({
       accountIdentifier,
-      canisterId,
       transactions,
       oldestTxId,
       completed,
     }: {
       accountIdentifier: string;
-      canisterId: Principal;
-      transactions: IcrcTransactionWithId[];
+      transactions: TransactionWithId[];
       oldestTxId?: bigint;
       completed: boolean;
     }) {
-      update((currentState: IcrcTransactionsStoreData) => {
-        const projectState = currentState[canisterId.toText()];
-        const accountState = projectState?.[accountIdentifier];
+      update((currentState: IcpTransactionsStoreData) => {
+        const accountState = currentState?.[accountIdentifier];
         const allTransactions = getUniqueTransactions([
           ...(accountState?.transactions ?? []),
           ...transactions,
@@ -88,13 +66,10 @@ const initIcrcTransactionsStore = (): IcrcTransactionsStore => {
             : accountState?.oldestTxId;
         return {
           ...currentState,
-          [canisterId.toText()]: {
-            ...projectState,
-            [accountIdentifier]: {
-              transactions: allTransactions,
-              oldestTxId: newOldestTxId,
-              completed,
-            },
+          [accountIdentifier]: {
+            transactions: allTransactions,
+            oldestTxId: newOldestTxId,
+            completed,
           },
         };
       });
@@ -105,39 +80,15 @@ const initIcrcTransactionsStore = (): IcrcTransactionsStore => {
       set({});
     },
 
-    resetUniverse(canisterId: UniverseCanisterId) {
-      update((currentState: IcrcTransactionsStoreData) =>
-        removeKeys({
+    resetAccount({ accountIdentifier }: { accountIdentifier: string }) {
+      update((currentState: IcpTransactionsStoreData) => ({
+        ...removeKeys({
           obj: currentState,
-          keysToRemove: [canisterId.toText()],
-        })
-      );
-    },
-
-    resetAccount({
-      canisterId,
-      accountIdentifier,
-    }: {
-      canisterId: UniverseCanisterId;
-      accountIdentifier: string;
-    }) {
-      update((currentState: IcrcTransactionsStoreData) => {
-        const projectState = currentState[canisterId.toText()];
-        return {
-          ...removeKeys({
-            obj: currentState,
-            keysToRemove: [canisterId.toText()],
-          }),
-          ...(nonNullish(projectState) && {
-            [canisterId.toText()]: removeKeys({
-              obj: projectState,
-              keysToRemove: [accountIdentifier],
-            }),
-          }),
-        };
-      });
+          keysToRemove: [accountIdentifier],
+        }),
+      }));
     },
   };
 };
 
-export const icrcTransactionsStore = initIcrcTransactionsStore();
+export const icpTransactionsStore = initIcpTransactionsStore();

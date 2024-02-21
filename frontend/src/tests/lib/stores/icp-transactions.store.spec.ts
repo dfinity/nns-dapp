@@ -1,88 +1,60 @@
-import { CKTESTBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
-import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
-import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
-import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
+import { icpTransactionsStore } from "$lib/stores/icp-transactions.store";
+import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
+import { mockTransactionWithId } from "$tests/mocks/icp-transactions.mock";
 import { get } from "svelte/store";
 
-describe("icrc-transactions", () => {
+describe("icp-transactions.store", () => {
   it("should reset account", () => {
     const otherAccountIdentifier = "otherAccountIdentifier";
 
-    icrcTransactionsStore.addTransactions({
-      canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
-      transactions: [mockIcrcTransactionWithId],
-      accountIdentifier: mockCkBTCMainAccount.identifier,
+    icpTransactionsStore.addTransactions({
+      transactions: [mockTransactionWithId],
+      accountIdentifier: mockMainAccount.identifier,
       oldestTxId: 10n,
       completed: false,
     });
 
-    const accounts = get(icrcTransactionsStore);
-    expect(
-      accounts[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]
-    ).not.toBeUndefined();
-    expect(
-      accounts[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()][
-        mockCkBTCMainAccount.identifier
-      ]
-    ).not.toBeUndefined();
+    const accounts = get(icpTransactionsStore);
+    expect(accounts[mockMainAccount.identifier]).not.toBeUndefined();
 
-    icrcTransactionsStore.addTransactions({
-      canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
-      transactions: [mockIcrcTransactionWithId],
+    icpTransactionsStore.addTransactions({
+      transactions: [mockTransactionWithId],
       accountIdentifier: otherAccountIdentifier,
       oldestTxId: 10n,
       completed: false,
     });
 
-    const accounts2 = get(icrcTransactionsStore);
-    expect(
-      accounts2[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()][otherAccountIdentifier]
-    ).not.toBeUndefined();
+    const accounts2 = get(icpTransactionsStore);
+    expect(accounts2[otherAccountIdentifier]).not.toBeUndefined();
 
-    icrcTransactionsStore.resetAccount({
-      canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
-      accountIdentifier: mockCkBTCMainAccount.identifier,
+    icpTransactionsStore.resetAccount({
+      accountIdentifier: mockMainAccount.identifier,
     });
 
-    const accounts3 = get(icrcTransactionsStore);
-    expect(
-      accounts3[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]
-    ).not.toBeUndefined();
-    expect(
-      accounts3[CKTESTBTC_UNIVERSE_CANISTER_ID.toText()][
-        mockCkBTCMainAccount.identifier
-      ]
-    ).toBeUndefined();
+    const accounts3 = get(icpTransactionsStore);
+    expect(accounts3).not.toBeUndefined();
+    expect(accounts3[mockMainAccount.identifier]).toBeUndefined();
   });
 
   it("should dedupe transactions", () => {
-    const canisterId = CKTESTBTC_UNIVERSE_CANISTER_ID;
-    const identifier = mockCkBTCMainAccount.identifier;
+    const identifier = mockMainAccount.identifier;
 
-    icrcTransactionsStore.addTransactions({
-      canisterId,
-      transactions: [mockIcrcTransactionWithId],
+    icpTransactionsStore.addTransactions({
+      transactions: [mockTransactionWithId],
       accountIdentifier: identifier,
       oldestTxId: 10n,
       completed: false,
     });
 
-    expect(
-      get(icrcTransactionsStore)[canisterId.toText()][identifier].transactions
-        .length
-    ).toBe(1);
+    expect(get(icpTransactionsStore)[identifier].transactions.length).toBe(1);
 
-    icrcTransactionsStore.addTransactions({
-      canisterId,
-      transactions: [mockIcrcTransactionWithId, mockIcrcTransactionWithId],
+    icpTransactionsStore.addTransactions({
+      transactions: [mockTransactionWithId, mockTransactionWithId],
       accountIdentifier: identifier,
       oldestTxId: 10n,
       completed: false,
     });
 
-    expect(
-      get(icrcTransactionsStore)[canisterId.toText()][identifier].transactions
-        .length
-    ).toBe(1);
+    expect(get(icpTransactionsStore)[identifier].transactions.length).toBe(1);
   });
 });

@@ -250,3 +250,20 @@ export const isTransactionNetworkBtc = (
 ): boolean =>
   TransactionNetwork.BTC_MAINNET === network ||
   TransactionNetwork.BTC_TESTNET === network;
+
+/**
+ * Dedupe transactions based on ID.
+ */
+export const getUniqueTransactions = <TransactionWithId extends { id: bigint }>(
+  transactions: TransactionWithId[]
+): TransactionWithId[] => {
+  const txIds = new Set<bigint>();
+  const result: TransactionWithId[] = [];
+  for (const tx of transactions) {
+    if (!txIds.has(tx.id)) {
+      txIds.add(tx.id);
+      result.push(tx);
+    }
+  }
+  return result;
+};
