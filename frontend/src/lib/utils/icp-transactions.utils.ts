@@ -91,8 +91,9 @@ const getTransactionInformation = (
   return {
     from: "from" in data ? data.from : undefined,
     to: "to" in data ? data.to : undefined,
-    // The only type without `ammunt` is the Approve transaction.
+    // The only type without `amount` is the Approve transaction.
     // For Approve transactions, the balance doesn't change, so we show amount 0.
+    // This is different than ICRC transactions, where thers is an `amount` field.
     amount: "amount" in data ? data.amount.e8s : 0n,
     fee: "fee" in data ? data.fee.e8s : 0n,
   };
