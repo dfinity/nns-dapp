@@ -56,74 +56,35 @@ runs:
         repository: 'dfinity/snsdemo'
         path: 'snsdemo'
         ref: ${{ steps.snsdemo_ref.outputs.ref }}
-    - name: debug 1
-      shell: bash
-      run: |
-        set -x
-        echo dskloetx debug 1 PWD $PWD PATH $PATH
     - name: Add snsdemo scripts to the path
       shell: bash
       run: |
         echo "$PWD/snsdemo/bin" >> $GITHUB_PATH
     - name: Install cargo binstall
       uses: ./.github/actions/install_binstall
-    - name: debug 2
-      shell: bash
-      run: |
-        set -x
-        echo dskloetx debug 2 PWD $PWD PATH $PATH
-    - name: debug 2
-      shell: bash
-      run: |
-        set -x
-        echo dskloetx debug 3 PWD $PWD PATH $PATH
-        ls -l
-        head dfx.json
     - name: Install dfx
       uses: dfinity/setup-dfx@dfx-json-version
-    - name: debug 3
-      shell: bash
-      run: |
-        set -x
-        echo dskloetx debug 4 PWD $PWD PATH $PATH
     - name: Install SNS script dependencies
       shell: bash
       run: |
         cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
-    - name: debug 4
-      shell: bash
-      run: |
-        set -x
-        echo dskloetx debug 5 PWD $PWD PATH $PATH
     - name: Get test environment
       shell: bash
       run: |
         set -x
-        echo dskloetx debug 6 PWD $PWD PATH $PATH
-        echo dskloetx 1
         dfx cache install
-        echo dskloetx 2
         curl -fL --retry 5 ${{ steps.snsdemo_snapshot.outputs.url }} > state.tar.xz
-        echo dskloetx 3
         type dfx
-        echo PATH $PATH
-        echo dskloetx 3.1
+        # We need to set the version explicitly because the config file dfxvm
+        # uses to determine the version will be replaced by the snapshot.
         export DFX_VERSION="$(dfx --version | sed 's/dfx //')"
         scripts/dfx-snapshot-install --snapshot state.tar.xz
+        # Change to $HOME to avoid using nns-dapp dfx.json.
         pushd "$HOME"
         dfx start --background
         popd
-        echo dskloetx 4
         dfx identity use snsdemo8
-        echo dskloetx 5
         dfx-sns-demo-healthcheck
-        echo dskloetx 6
-    - name: output log
-      if: ${{ failure() }}
-      shell: bash
-      run: |
-        echo restore log
-        cat '${{ inputs.logfile }}'
     - name: Install nns-dapp
       if: ${{ inputs.nns_dapp_wasm }}
       shell: bash
@@ -148,6 +109,7 @@ runs:
       run: |
         # Retry to work around canister install timing out on dfx 0.15.3.
         # TODO: Remove loop if no longer necessary.
+        sleep 10
         for ((try = 0; try < 5; try++)); do
           if dfx canister install sns_aggregator --wasm ${{ inputs.sns_aggregator_wasm }} --upgrade-unchanged --mode ${{ inputs.sns_aggregator_install_mode }} --yes; then
             exit 0;

@@ -133,7 +133,6 @@ get_state_dir() {
 # Returns an error if $3 already exists but silently skips moves for which the
 # source doesn't exist.
 mv3() {
-  echo mv3 "$1" "$2" "$3"
   if [ -e "$3" ]; then
     echo "$3 already exists"
     return 1
