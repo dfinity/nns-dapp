@@ -21,6 +21,34 @@ import {
 } from "@dfinity/utils";
 import { transactionName } from "./transactions.utils";
 
+const isToSelf = (transaction: Transaction): boolean => {
+  if ("Transfer" in transaction.operation) {
+    const data = transaction.operation.Transfer;
+    return data.to === data.from;
+  }
+  return false;
+};
+
+/**
+ * Duplicates transactions made from and to the same account such that one of
+ * the transactions has toSelfTransaction set to true and the other to false.
+ */
+export const mapToSelfTransactions = (
+  transactions: TransactionWithId[]
+): { transaction: TransactionWithId; toSelfTransaction: boolean }[] => {
+  const resultTransactions = transactions.flatMap((transaction) => {
+    const tx = {
+      transaction: { ...transaction },
+      toSelfTransaction: false,
+    };
+    if (isToSelf(transaction.transaction)) {
+      return [{ ...tx, toSelfTransaction: true }, tx];
+    }
+    return [tx];
+  });
+  return resultTransactions;
+};
+
 // TODO: Support icrc_memo which is not used at the moment in NNS dapp.
 const getTransactionType = ({
   transaction: { operation, memo },

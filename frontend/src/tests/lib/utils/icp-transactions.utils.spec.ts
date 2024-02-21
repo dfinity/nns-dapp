@@ -4,7 +4,10 @@ import {
 } from "$lib/constants/api.constants";
 import { NANO_SECONDS_IN_MILLISECOND } from "$lib/constants/constants";
 import type { UiTransaction } from "$lib/types/transaction";
-import { mapIcpTransaction } from "$lib/utils/icp-transactions.utils";
+import {
+  mapIcpTransaction,
+  mapToSelfTransactions,
+} from "$lib/utils/icp-transactions.utils";
 import en from "$tests/mocks/i18n.mock";
 import type { Operation, TransactionWithId } from "@dfinity/ledger-icp";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
@@ -406,6 +409,51 @@ describe("icp-transactions.utils", () => {
           i18n: en,
         })
       ).toEqual(expectedUiTransaction);
+    });
+  });
+
+  describe("mapToSelfTransactions", () => {
+    it("duplicateds toSelf transactions", () => {
+      const transaction = createTransactionWithId({
+        operation: toSelfOperation,
+      });
+
+      expect(mapToSelfTransactions([transaction])).toEqual([
+        {
+          transaction,
+          toSelfTransaction: true,
+        },
+        {
+          transaction,
+          toSelfTransaction: false,
+        },
+      ]);
+    });
+
+    it("doesn't duplicate not to self transactoins", () => {
+      const transaction = createTransactionWithId({
+        operation: toSelfOperation,
+      });
+      const notToSelfTransaction = createTransactionWithId({
+        operation: defaultTransferOperation,
+      });
+
+      expect(
+        mapToSelfTransactions([transaction, notToSelfTransaction])
+      ).toEqual([
+        {
+          transaction,
+          toSelfTransaction: true,
+        },
+        {
+          transaction,
+          toSelfTransaction: false,
+        },
+        {
+          transaction: notToSelfTransaction,
+          toSelfTransaction: false,
+        },
+      ]);
     });
   });
 });
