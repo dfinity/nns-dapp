@@ -74,9 +74,9 @@ fi
 if [ "${DFX_DOMAIN:-}" ]; then
   DFX_ARGS+=("--domain" "localhost" "--domain" "$DFX_DOMAIN")
 fi
-if [ "${DFX_BACKGROUND:-}" ]; then
-  DFX_ARGS+=("--background")
-fi
+#if [ "${DFX_BACKGROUND:-}" ]; then
+#  DFX_ARGS+=("--background")
+#fi
 dfx start "${DFX_ARGS[@]}"
 
 # The trap set above will restore the state before this script exits.
