@@ -1,0 +1,183 @@
+import {
+  CREATE_CANISTER_MEMO,
+  TOP_UP_CANISTER_MEMO,
+} from "$lib/constants/api.constants";
+import { NANO_SECONDS_IN_MILLISECOND } from "$lib/constants/constants";
+import { toastsError } from "$lib/stores/toasts.store";
+import {
+  AccountTransactionType,
+  type UiTransaction,
+} from "$lib/types/transaction";
+import type {
+  Operation,
+  Transaction,
+  TransactionWithId,
+} from "@dfinity/ledger-icp";
+import type { NeuronInfo } from "@dfinity/nns";
+import {
+  ICPToken,
+  TokenAmountV2,
+  fromNullable,
+  nonNullish,
+} from "@dfinity/utils";
+import { transactionName } from "./transactions.utils";
+
+// TODO: Support icrc_memo which is not used at the moment in NNS dapp.
+const getTransactionType = ({
+  transaction: { operation, memo },
+  neurons,
+  swapCanisterAccounts,
+}: {
+  transaction: Transaction;
+  neurons: NeuronInfo[];
+  swapCanisterAccounts: Set<string>;
+}): AccountTransactionType => {
+  if ("Burn" in operation) {
+    return AccountTransactionType.Burn;
+  }
+  if ("Mint" in operation) {
+    return AccountTransactionType.Mint;
+  }
+  if ("Approve" in operation) {
+    return AccountTransactionType.Approve;
+  }
+  // "Transfer" in operation
+  const data = operation.Transfer;
+  if (swapCanisterAccounts.has(data.to)) {
+    return AccountTransactionType.ParticipateSwap;
+  }
+  if (swapCanisterAccounts.has(data.from)) {
+    return AccountTransactionType.RefundSwap;
+  }
+  if (memo > 0n) {
+    if (memo === CREATE_CANISTER_MEMO) {
+      return AccountTransactionType.CreateCanister;
+    }
+    if (memo === TOP_UP_CANISTER_MEMO) {
+      return AccountTransactionType.TopUpCanister;
+    }
+    // Stake neuron transactions have a memo.
+    if (
+      neurons.some((neuron) => neuron.fullNeuron?.accountIdentifier === data.to)
+    ) {
+      return AccountTransactionType.StakeNeuron;
+    }
+    // Top up neuron transactions have no memo.
+  } else if (
+    neurons.some((neuron) => neuron.fullNeuron?.accountIdentifier === data.to)
+  ) {
+    return AccountTransactionType.TopUpNeuron;
+  }
+
+  // Send is the default transaction type
+  return AccountTransactionType.Send;
+};
+
+type IcpTransactionInfo = {
+  to?: string;
+  from?: string;
+  amount: bigint;
+  fee?: bigint;
+};
+
+const getTransactionInformation = (
+  operation: Operation
+): IcpTransactionInfo | undefined => {
+  let data = undefined;
+  if ("Approve" in operation) {
+    data = operation.Approve;
+  } else if ("Burn" in operation) {
+    data = operation.Burn;
+  } else if ("Mint" in operation) {
+    data = operation.Mint;
+  } else if ("Transfer" in operation) {
+    data = operation.Transfer;
+  }
+  // Edge case, a transaction will have either "Approve", "Burn", "Mint" or "Transfer" data.
+  if (data === undefined) {
+    throw new Error(`Unknown transaction type ${JSON.stringify(operation)}`);
+  }
+  return {
+    from: "from" in data ? data.from : undefined,
+    to: "to" in data ? data.to : undefined,
+    // The only type without `ammount` is the Approve transaction.
+    // For Approve transactions, the balance doesn't change, so we show amount 0.
+    amount: "amount" in data ? data.amount.e8s : 0n,
+    fee: "fee" in data ? data.fee.e8s : 0n,
+  };
+};
+
+// TODO: Map to self transactions
+export const mapIcpTransaction = ({
+  transaction,
+  accountIdentifier,
+  toSelfTransaction,
+  neurons,
+  swapCanisterAccounts,
+  i18n,
+}: {
+  transaction: TransactionWithId;
+  accountIdentifier: string;
+  toSelfTransaction: boolean;
+  neurons: NeuronInfo[];
+  swapCanisterAccounts: Set<string>;
+  i18n: I18n;
+}): UiTransaction | undefined => {
+  try {
+    const type = getTransactionType({
+      transaction: transaction.transaction,
+      neurons,
+      swapCanisterAccounts,
+    });
+    const txInfo = getTransactionInformation(transaction.transaction.operation);
+    if (txInfo === undefined) {
+      throw new Error(
+        `Unknown transaction type ${
+          Object.keys(transaction.transaction.operation)[0]
+        }`
+      );
+    }
+    const isReceive =
+      toSelfTransaction === true || txInfo.from !== accountIdentifier;
+    const useFee = !isReceive;
+    const feeApplied = useFee && txInfo.fee !== undefined ? txInfo.fee : 0n;
+
+    const headline = transactionName({
+      type,
+      isReceive,
+      i18n,
+    });
+    const otherParty = isReceive ? txInfo.from : txInfo.to;
+
+    // Timestamp is in nano seconds
+    const createdTimestampNanos = fromNullable(
+      transaction.transaction.created_at_time
+    )?.timestamp_nanos;
+    const timestampMilliseconds = nonNullish(createdTimestampNanos)
+      ? Number(createdTimestampNanos) / NANO_SECONDS_IN_MILLISECOND
+      : undefined;
+    const timestamp = nonNullish(timestampMilliseconds)
+      ? new Date(timestampMilliseconds)
+      : undefined;
+    return {
+      domKey: `${transaction.id}-${toSelfTransaction ? "0" : "1"}`,
+      isIncoming: isReceive,
+      isPending: false,
+      headline,
+      otherParty,
+      tokenAmount: TokenAmountV2.fromUlps({
+        amount: txInfo.amount + feeApplied,
+        token: ICPToken,
+      }),
+      timestamp,
+      isFailed: false,
+      isReimbursement: false,
+    };
+  } catch (err) {
+    toastsError({
+      labelKey: "error.transaction_data",
+      substitutions: { $txId: String(transaction.id) },
+      err,
+    });
+  }
+};
