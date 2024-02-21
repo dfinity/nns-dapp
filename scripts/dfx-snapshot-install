@@ -173,6 +173,10 @@ output_restore_dir() {
 # Moves all the existing directories to the backup location and moves the state
 # directories in their place.
 install_state() {
+  # Make sure the dfx cache directory exists.
+  if ! [ -d "$(dfx cache show)" ]; then
+    dfx cache install
+  fi
   install_dir LOCAL_REPLICA_DATA
   install_dir CONFIG
   install_dir NETWORK
