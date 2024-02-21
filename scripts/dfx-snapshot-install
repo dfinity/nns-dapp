@@ -176,9 +176,11 @@ output_restore_dir() {
 # directories in their place.
 install_state() {
   # Make sure the dfx cache directory exists.
+  ls -l "$(dfx cache show)"
   if ! [ -d "$(dfx cache show)" ]; then
     dfx cache install
   fi
+  ls -l "$(dfx cache show)"
   install_dir LOCAL_REPLICA_DATA
   install_dir CONFIG
   install_dir NETWORK

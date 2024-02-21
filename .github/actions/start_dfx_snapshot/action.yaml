@@ -73,6 +73,7 @@ runs:
       run: |
         set -x
         #dfx cache install
+        ls -l "$(dfx cache show)"
         curl -fL --retry 5 ${{ steps.snsdemo_snapshot.outputs.url }} > state.tar.xz
         # We need to set the version explicitly because the config file dfxvm
         # uses to determine the version will be replaced by the snapshot.
