@@ -24,8 +24,7 @@ clap.define short=s long=snapshot desc="The snapshot .zip or .tar.xz file" varia
 clap.define short=c long=clean desc="Extract a clean state from the .zip file, even if a directory with extracted state exists" variable=CLEAN nargs=0 default="false"
 clap.define long=host desc="Passed to dfx start as --host" variable=DFX_HOST
 clap.define long=domain desc="Passed to dfx start as --domain" variable=DFX_DOMAIN
-clap.define long=background desc="Passed to dfx start as --background" nargs=0
-variable=DFX_BACKGROUND
+clap.define long=background desc="Passed to dfx start as --background" nargs=0 variable=DFX_BACKGROUND
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
