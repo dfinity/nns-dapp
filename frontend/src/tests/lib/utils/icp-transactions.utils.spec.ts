@@ -6,7 +6,6 @@ import { NANO_SECONDS_IN_MILLISECOND } from "$lib/constants/constants";
 import type { UiTransaction } from "$lib/types/transaction";
 import { mapIcpTransaction } from "$lib/utils/icp-transactions.utils";
 import en from "$tests/mocks/i18n.mock";
-import { mockNeuron } from "$tests/mocks/neurons.mock";
 import type { Operation, TransactionWithId } from "@dfinity/ledger-icp";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 
@@ -74,22 +73,12 @@ describe("icp-transactions.utils", () => {
 
   describe("mapIcpTransaction", () => {
     it("maps stake neuron transaction", () => {
-      const neuron = mockNeuron;
       const transaction = createTransactionWithId({
-        operation: {
-          Transfer: {
-            to: neuron.fullNeuron.accountIdentifier,
-            fee: { e8s: fee },
-            from,
-            amount: { e8s: amount },
-            spender: [],
-          },
-        },
+        operation: defaultTransferOperation,
         memo: 12345n,
       });
       const expectedUiTransaction: UiTransaction = {
         ...defaultUiTransaction,
-        otherParty: neuron.fullNeuron.accountIdentifier,
         headline: "Staked",
       };
 
@@ -98,7 +87,7 @@ describe("icp-transactions.utils", () => {
           transaction,
           accountIdentifier: from,
           toSelfTransaction: false,
-          neurons: [neuron],
+          neuronAccounts: new Set<string>([to]),
           swapCanisterAccounts: new Set<string>(),
           i18n: en,
         })
@@ -106,22 +95,12 @@ describe("icp-transactions.utils", () => {
     });
 
     it("maps top up neuron transaction", () => {
-      const neuron = mockNeuron;
       const transaction = createTransactionWithId({
-        operation: {
-          Transfer: {
-            to: neuron.fullNeuron.accountIdentifier,
-            fee: { e8s: fee },
-            from,
-            amount: { e8s: amount },
-            spender: [],
-          },
-        },
+        operation: defaultTransferOperation,
         memo: 0n,
       });
       const expectedUiTransaction: UiTransaction = {
         ...defaultUiTransaction,
-        otherParty: neuron.fullNeuron.accountIdentifier,
         headline: "Top-up Neuron",
       };
 
@@ -130,7 +109,7 @@ describe("icp-transactions.utils", () => {
           transaction,
           accountIdentifier: from,
           toSelfTransaction: false,
-          neurons: [neuron],
+          neuronAccounts: new Set<string>([to]),
           swapCanisterAccounts: new Set<string>(),
           i18n: en,
         })
@@ -152,7 +131,7 @@ describe("icp-transactions.utils", () => {
           transaction,
           accountIdentifier: from,
           toSelfTransaction: false,
-          neurons: [],
+          neuronAccounts: new Set<string>(),
           swapCanisterAccounts: new Set<string>(),
           i18n: en,
         })
@@ -174,7 +153,7 @@ describe("icp-transactions.utils", () => {
           transaction,
           accountIdentifier: from,
           toSelfTransaction: false,
-          neurons: [],
+          neuronAccounts: new Set<string>(),
           swapCanisterAccounts: new Set<string>(),
           i18n: en,
         })
@@ -195,7 +174,7 @@ describe("icp-transactions.utils", () => {
           transaction,
           accountIdentifier: from,
           toSelfTransaction: false,
-          neurons: [],
+          neuronAccounts: new Set<string>(),
           swapCanisterAccounts: new Set<string>([to]),
           i18n: en,
         })
@@ -222,7 +201,7 @@ describe("icp-transactions.utils", () => {
           transaction,
           accountIdentifier: to,
           toSelfTransaction: false,
-          neurons: [],
+          neuronAccounts: new Set<string>(),
           swapCanisterAccounts: new Set<string>([from]),
           i18n: en,
         })
@@ -243,7 +222,7 @@ describe("icp-transactions.utils", () => {
           transaction,
           accountIdentifier: from,
           toSelfTransaction: false,
-          neurons: [],
+          neuronAccounts: new Set<string>(),
           swapCanisterAccounts: new Set<string>(),
           i18n: en,
         })
@@ -270,7 +249,7 @@ describe("icp-transactions.utils", () => {
           transaction,
           accountIdentifier: to,
           toSelfTransaction: false,
-          neurons: [],
+          neuronAccounts: new Set<string>(),
           swapCanisterAccounts: new Set<string>(),
           i18n: en,
         })
@@ -298,7 +277,7 @@ describe("icp-transactions.utils", () => {
           transaction,
           accountIdentifier: from,
           toSelfTransaction: true,
-          neurons: [],
+          neuronAccounts: new Set<string>(),
           swapCanisterAccounts: new Set<string>(),
           i18n: en,
         })
@@ -321,7 +300,7 @@ describe("icp-transactions.utils", () => {
           transaction,
           accountIdentifier: from,
           toSelfTransaction: false,
-          neurons: [],
+          neuronAccounts: new Set<string>(),
           swapCanisterAccounts: new Set<string>(),
           i18n: en,
         })
@@ -358,7 +337,7 @@ describe("icp-transactions.utils", () => {
           transaction,
           accountIdentifier: from,
           toSelfTransaction: false,
-          neurons: [],
+          neuronAccounts: new Set<string>(),
           swapCanisterAccounts: new Set<string>(),
           i18n: en,
         })
@@ -390,7 +369,7 @@ describe("icp-transactions.utils", () => {
           transaction,
           accountIdentifier: from,
           toSelfTransaction: false,
-          neurons: [],
+          neuronAccounts: new Set<string>(),
           swapCanisterAccounts: new Set<string>(),
           i18n: en,
         })
@@ -422,7 +401,7 @@ describe("icp-transactions.utils", () => {
           transaction,
           accountIdentifier: from,
           toSelfTransaction: false,
-          neurons: [],
+          neuronAccounts: new Set<string>(),
           swapCanisterAccounts: new Set<string>(),
           i18n: en,
         })

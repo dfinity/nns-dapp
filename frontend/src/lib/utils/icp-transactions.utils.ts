@@ -13,7 +13,6 @@ import type {
   Transaction,
   TransactionWithId,
 } from "@dfinity/ledger-icp";
-import type { NeuronInfo } from "@dfinity/nns";
 import {
   ICPToken,
   TokenAmountV2,
@@ -25,11 +24,11 @@ import { transactionName } from "./transactions.utils";
 // TODO: Support icrc_memo which is not used at the moment in NNS dapp.
 const getTransactionType = ({
   transaction: { operation, memo },
-  neurons,
+  neuronAccounts,
   swapCanisterAccounts,
 }: {
   transaction: Transaction;
-  neurons: NeuronInfo[];
+  neuronAccounts: Set<string>;
   swapCanisterAccounts: Set<string>;
 }): AccountTransactionType => {
   if ("Burn" in operation) {
@@ -55,9 +54,7 @@ const getTransactionType = ({
   if (memo === TOP_UP_CANISTER_MEMO) {
     return AccountTransactionType.TopUpCanister;
   }
-  if (
-    neurons.some((neuron) => neuron.fullNeuron?.accountIdentifier === data.to)
-  ) {
+  if (neuronAccounts.has(data.to)) {
     return memo > 0n
       ? AccountTransactionType.StakeNeuron
       : AccountTransactionType.TopUpNeuron;
@@ -94,7 +91,7 @@ const getTransactionInformation = (
   return {
     from: "from" in data ? data.from : undefined,
     to: "to" in data ? data.to : undefined,
-    // The only type without `ammount` is the Approve transaction.
+    // The only type without `ammunt` is the Approve transaction.
     // For Approve transactions, the balance doesn't change, so we show amount 0.
     amount: "amount" in data ? data.amount.e8s : 0n,
     fee: "fee" in data ? data.fee.e8s : 0n,
@@ -105,21 +102,21 @@ export const mapIcpTransaction = ({
   transaction,
   accountIdentifier,
   toSelfTransaction,
-  neurons,
+  neuronAccounts,
   swapCanisterAccounts,
   i18n,
 }: {
   transaction: TransactionWithId;
   accountIdentifier: string;
   toSelfTransaction: boolean;
-  neurons: NeuronInfo[];
+  neuronAccounts: Set<string>;
   swapCanisterAccounts: Set<string>;
   i18n: I18n;
 }): UiTransaction | undefined => {
   try {
     const type = getTransactionType({
       transaction: transaction.transaction,
-      neurons,
+      neuronAccounts,
       swapCanisterAccounts,
     });
     const txInfo = getTransactionInformation(transaction.transaction.operation);
