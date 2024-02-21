@@ -139,11 +139,12 @@ mv3() {
     return 1
   fi
   if [ -e "$2" ]; then
-    #mkdir -p "$(dirname "$3")"
+    mkdir -p "$(dirname "$3")"
     echo mv "'$2'" "'$3'"
     mv "$2" "$3"
   fi
   if [ -e "$1" ]; then
+    mkdir -p "$(dirname "$2")"
     echo mv "'$1'" "'$2'"
     mv "$1" "$2"
   fi
