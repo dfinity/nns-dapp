@@ -31,8 +31,8 @@ export const actionableProposalIndicationEnabledStore: Readable<boolean> =
 export const actionableProposalCountStore: Readable<ActionableProposalCountData> =
   derived(
     [actionableNnsProposalsStore, actionableSnsProposalsStore],
-    ([{ proposals: nnsProposals }, votingSnsProposals]) => {
-      const snsProposalCounts = Object.entries(votingSnsProposals).reduce(
+    ([{ proposals: nnsProposals }, actionableSnsProposals]) => {
+      const snsProposalCounts = Object.entries(actionableSnsProposals).reduce(
         (acc, [canisterId, proposals]) => ({
           ...acc,
           [canisterId]: proposals.length,

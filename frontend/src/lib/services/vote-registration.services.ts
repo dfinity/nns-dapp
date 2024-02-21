@@ -86,7 +86,7 @@ export const manageVotesRegistration = async ({
       canisterId: universeCanisterId,
     });
 
-    // reset the voting store to trigger a new fetch for votable proposals count.
+    // reset the actionable store to trigger a new fetch for votable proposals count.
     actionableNnsProposalsStore.reset();
   } catch (err: unknown) {
     console.error("vote unknown:", err);

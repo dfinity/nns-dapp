@@ -87,7 +87,7 @@ export const registerSnsVotes = async ({
         completed: true,
       });
 
-      // reset the voting store to trigger a new fetch for votable proposals count.
+      // reset the actionable store to trigger a new fetch for votable proposals count.
       actionableSnsProposalsStore.resetForSns(universeCanisterId);
     },
   });
