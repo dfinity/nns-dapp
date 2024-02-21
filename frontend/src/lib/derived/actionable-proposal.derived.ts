@@ -8,26 +8,27 @@ import { isSelectedPath } from "$lib/utils/navigation.utils";
 import { isNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 
-export interface VotingProposalCountData {
+export interface ActionableProposalCountData {
   // We use the root canister id as the key to identify the proposals for a specific project.
   [rootCanisterId: string]: number | undefined;
 }
 
 /** Returns true when the indication needs to be shown */
-export const votingProposalIndicationEnabledStore: Readable<boolean> = derived(
-  [pageStore, authSignedInStore],
-  ([{ path: currentPath }, isSignedInd]) =>
-    isNullish(currentPath)
-      ? false
-      : isSignedInd &&
-        isSelectedPath({
-          currentPath,
-          paths: [AppPath.Proposals],
-        })
-);
+export const actionableProposalIndicationEnabledStore: Readable<boolean> =
+  derived(
+    [pageStore, authSignedInStore],
+    ([{ path: currentPath }, isSignedInd]) =>
+      isNullish(currentPath)
+        ? false
+        : isSignedInd &&
+          isSelectedPath({
+            currentPath,
+            paths: [AppPath.Proposals],
+          })
+  );
 
 /** A store that contains the count of proposals that can be voted on by the user mapped by canister id (nns + snses) */
-export const votingProposalCountStore: Readable<VotingProposalCountData> =
+export const actionableProposalCountStore: Readable<ActionableProposalCountData> =
   derived(
     [actionableNnsProposalsStore, actionableSnsProposalsStore],
     ([{ proposals: nnsProposals }, votingSnsProposals]) => {

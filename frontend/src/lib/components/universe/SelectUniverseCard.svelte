@@ -8,11 +8,11 @@
   import { isSelectedPath } from "$lib/utils/navigation.utils";
   import type { Universe } from "$lib/types/universe";
   import { nonNullish } from "@dfinity/utils";
-  import {
-    votingProposalCountStore,
-    votingProposalIndicationEnabledStore,
-  } from "$lib/derived/voting-proposal-indication.derived";
   import Badge from "$lib/components/ui/Badge.svelte";
+  import {
+    actionableProposalCountStore,
+    actionableProposalIndicationEnabledStore,
+  } from "$lib/derived/actionable-proposal.derived";
 
   export let selected: boolean;
   export let role: "link" | "button" | "dropdown" = "link";
@@ -39,9 +39,9 @@
       paths: [AppPath.Accounts, AppPath.Wallet],
     });
 
-  let votingProposalCount: number | undefined = undefined;
-  $: votingProposalCount = $votingProposalIndicationEnabledStore
-    ? $votingProposalCountStore[universe.canisterId]
+  let actionableProposalCount: number | undefined = undefined;
+  $: actionableProposalCount = $actionableProposalIndicationEnabledStore
+    ? $actionableProposalCountStore[universe.canisterId]
     : undefined;
 </script>
 
@@ -63,8 +63,8 @@
     >
       <span class="name">
         {universe.title}
-        {#if nonNullish(votingProposalCount)}
-          <Badge>{votingProposalCount}</Badge>
+        {#if nonNullish(actionableProposalCount)}
+          <Badge>{actionableProposalCount}</Badge>
         {/if}
       </span>
       {#if displayProjectAccountsBalance}

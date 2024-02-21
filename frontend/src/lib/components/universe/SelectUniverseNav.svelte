@@ -4,21 +4,21 @@
   import SelectUniverseDropdown from "$lib/components/universe/SelectUniverseDropdown.svelte";
   import { titleTokenSelectorStore } from "$lib/derived/title-token-selector.derived";
   import { updateVotingSnsProposals } from "$lib/services/$public/sns-voting-proposals.services";
-  import { votingProposalIndicationEnabledStore } from "$lib/derived/voting-proposal-indication.derived";
   import { updateVotingProposals } from "$lib/services/$public/voting-proposals.services";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
   import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
+  import { actionableProposalIndicationEnabledStore } from "$lib/derived/actionable-proposal.derived";
 
   let innerWidth = 0;
   let list = false;
 
   $: list = innerWidth > BREAKPOINT_LARGE;
   $: $ENABLE_VOTING_INDICATION &&
-    $votingProposalIndicationEnabledStore &&
+    $actionableProposalIndicationEnabledStore &&
     updateVotingProposals();
   $: if (
     $ENABLE_VOTING_INDICATION &&
-    $votingProposalIndicationEnabledStore &&
+    $actionableProposalIndicationEnabledStore &&
     $selectableUniversesStore.length > 1
   ) {
     updateVotingSnsProposals();
