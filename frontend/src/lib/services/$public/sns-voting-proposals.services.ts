@@ -3,8 +3,8 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_SNS_PROPOSALS_PAGE_SIZE } from "$lib/constants/sns-proposals.constants";
 import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
+import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-import { votingSnsProposalsStore } from "$lib/stores/voting-sns-proposals.store";
 import { votableSnsNeurons } from "$lib/utils/sns-neuron.utils";
 import type { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
@@ -28,7 +28,7 @@ const updateVotingProposalsForSns = async (
   canisterId: string
 ): Promise<void> => {
   try {
-    const storeValue = get(votingSnsProposalsStore)[canisterId];
+    const storeValue = get(actionableSnsProposalsStore)[canisterId];
     if (nonNullish(storeValue)) {
       // The proposals state does not update frequently, so we don't need to re-fetch.
       // The store will be reset after the user registers a vote.
@@ -66,7 +66,7 @@ const updateVotingProposalsForSns = async (
         }).length > 0
     );
 
-    votingSnsProposalsStore.setProposals({
+    actionableSnsProposalsStore.setProposals({
       rootCanisterId: Principal.fromText(canisterId),
       proposals: votableProposals,
     });

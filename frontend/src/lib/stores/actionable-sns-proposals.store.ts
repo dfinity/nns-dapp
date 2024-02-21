@@ -3,14 +3,14 @@ import type { Principal } from "@dfinity/principal";
 import type { SnsProposalData } from "@dfinity/sns";
 import { writable, type Readable } from "svelte/store";
 
-export interface VotingSnsProposalsStoreData {
+export interface ActionableSnsProposalsStoreData {
   // Each SNS Project is an entry in this Store.
   // We use the root canister id as the key to identify the proposals for a specific project.
   [rootCanisterId: string]: SnsProposalData[];
 }
 
-export interface VotingSnsProposalsStore
-  extends Readable<VotingSnsProposalsStoreData> {
+export interface ActionableSnsProposalsStore
+  extends Readable<ActionableSnsProposalsStoreData> {
   setProposals: (data: {
     rootCanisterId: Principal;
     proposals: SnsProposalData[];
@@ -22,8 +22,10 @@ export interface VotingSnsProposalsStore
 /**
  * A store that contains sns proposals that can be voted on by the user (ballots w/ state 0).
  */
-const initVotingSnsProposalsStore = (): VotingSnsProposalsStore => {
-  const { subscribe, update, set } = writable<VotingSnsProposalsStoreData>({});
+const initActionableSnsProposalsStore = (): ActionableSnsProposalsStore => {
+  const { subscribe, update, set } = writable<ActionableSnsProposalsStoreData>(
+    {}
+  );
 
   return {
     subscribe,
@@ -35,14 +37,14 @@ const initVotingSnsProposalsStore = (): VotingSnsProposalsStore => {
       rootCanisterId: Principal;
       proposals: SnsProposalData[];
     }) {
-      update((currentState: VotingSnsProposalsStoreData) => ({
+      update((currentState: ActionableSnsProposalsStoreData) => ({
         ...currentState,
         [rootCanisterId.toText()]: proposals,
       }));
     },
 
     resetForSns(rootCanisterId: Principal) {
-      update((currentState: VotingSnsProposalsStoreData) =>
+      update((currentState: ActionableSnsProposalsStoreData) =>
         mapEntries({
           obj: currentState,
           mapFn: ([rootIdText, proposals]) =>
@@ -60,4 +62,4 @@ const initVotingSnsProposalsStore = (): VotingSnsProposalsStore => {
   };
 };
 
-export const votingSnsProposalsStore = initVotingSnsProposalsStore();
+export const actionableSnsProposalsStore = initActionableSnsProposalsStore();

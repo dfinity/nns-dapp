@@ -2,8 +2,8 @@ import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { authSignedInStore } from "$lib/derived/auth.derived";
 import { pageStore } from "$lib/derived/page.derived";
+import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { votingNnsProposalsStore } from "$lib/stores/voting-proposals.store";
-import { votingSnsProposalsStore } from "$lib/stores/voting-sns-proposals.store";
 import { isSelectedPath } from "$lib/utils/navigation.utils";
 import { isNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
@@ -29,7 +29,7 @@ export const votingProposalIndicationEnabledStore: Readable<boolean> = derived(
 /** A store that contains the count of proposals that can be voted on by the user mapped by canister id (nns + snses) */
 export const votingProposalCountStore: Readable<VotingProposalCountData> =
   derived(
-    [votingNnsProposalsStore, votingSnsProposalsStore],
+    [votingNnsProposalsStore, actionableSnsProposalsStore],
     ([{ proposals: nnsProposals }, votingSnsProposals]) => {
       const snsProposalCounts = Object.entries(votingSnsProposals).reduce(
         (acc, [canisterId, proposals]) => ({
