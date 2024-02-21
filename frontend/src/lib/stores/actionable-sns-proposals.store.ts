@@ -1,4 +1,4 @@
-import { mapEntries } from "$lib/utils/utils";
+import { removeKeys } from "$lib/utils/utils";
 import type { Principal } from "@dfinity/principal";
 import type { SnsProposalData } from "@dfinity/sns";
 import { writable, type Readable } from "svelte/store";
@@ -45,12 +45,9 @@ const initActionableSnsProposalsStore = (): ActionableSnsProposalsStore => {
 
     resetForSns(rootCanisterId: Principal) {
       update((currentState: ActionableSnsProposalsStoreData) =>
-        mapEntries({
+        removeKeys({
           obj: currentState,
-          mapFn: ([rootIdText, proposals]) =>
-            rootIdText === rootCanisterId.toText()
-              ? undefined
-              : [rootIdText, proposals],
+          keysToRemove: [rootCanisterId.toText()],
         })
       );
     },
