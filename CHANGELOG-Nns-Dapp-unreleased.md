@@ -42,6 +42,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Upgraded `ic-js` dependencies to utilize `agent-js` patched version `v1.0.1`.
+
 #### Deprecated
 
 #### Removed
