@@ -63,7 +63,7 @@ runs:
     - name: Install cargo binstall
       uses: ./.github/actions/install_binstall
     - name: Install dfx
-      uses: dfinity/setup-dfx@dfx-json-version
+      uses: dfinity/setup-dfx@main
     - name: Install SNS script dependencies
       shell: bash
       run: |
@@ -74,7 +74,6 @@ runs:
         set -x
         dfx cache install
         curl -fL --retry 5 ${{ steps.snsdemo_snapshot.outputs.url }} > state.tar.xz
-        type dfx
         # We need to set the version explicitly because the config file dfxvm
         # uses to determine the version will be replaced by the snapshot.
         export DFX_VERSION="$(dfx --version | sed 's/dfx //')"
@@ -109,7 +108,7 @@ runs:
       run: |
         # Retry to work around canister install timing out on dfx 0.15.3.
         # TODO: Remove loop if no longer necessary.
-        sleep 10
+        sleep 20
         for ((try = 0; try < 5; try++)); do
           if dfx canister install sns_aggregator --wasm ${{ inputs.sns_aggregator_wasm }} --upgrade-unchanged --mode ${{ inputs.sns_aggregator_install_mode }} --yes; then
             exit 0;

@@ -133,7 +133,7 @@ jobs:
       - name: Install ic-wasm
         uses: ./.github/actions/install_ic_wasm
       - name: Install dfx
-        uses: dfinity/setup-dfx@dfx-json-version
+        uses: dfinity/setup-dfx@main
       - name: Install tools
         run: |
           sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
