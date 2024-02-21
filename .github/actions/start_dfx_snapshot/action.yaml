@@ -108,7 +108,8 @@ runs:
         type dfx
         echo PATH $PATH
         echo dskloetx 3.1
-        scripts/dfx-snapshot-start --snapshot state.tar.xz --verbose
+        export DFX_VERSION="$(dfx --version | sed 's/dfx //')"
+        scripts/dfx-snapshot-start --snapshot state.tar.xz --background --verbose
         echo dskloetx 4
         dfx identity use snsdemo8
         echo dskloetx 5
