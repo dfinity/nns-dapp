@@ -142,6 +142,7 @@ if [ "$command" = "import-from-index-html" ]; then
   snsAggregatorUrl="$(get_value_from_html data-sns-aggregator-url "$tmp_index_html")"
   snsAggregator="$(canister_id_from_url "$snsAggregatorUrl")"
 
+  nnsIndex="$(get_value_from_html data-index-canister-id "$tmp_index_html")"
   ckbtcIndex="$(get_value_from_html data-ckbtc-index-canister-id "$tmp_index_html")"
   ckbtcLedger="$(get_value_from_html data-ckbtc-ledger-canister-id "$tmp_index_html")"
   ckbtcMinter="$(get_value_from_html data-ckbtc-minter-canister-id "$tmp_index_html")"
@@ -152,6 +153,7 @@ if [ "$command" = "import-from-index-html" ]; then
 
   tmp_file="$(mktemp)"
   jq '
+    .["nns-index"][$network] = $nnsIndex |
     .ckbtc_index[$network] = $ckbtcIndex |
     .ckbtc_ledger[$network] = $ckbtcLedger |
     .ckbtc_minter[$network] = $ckbtcMinter |
@@ -162,6 +164,7 @@ if [ "$command" = "import-from-index-html" ]; then
     .["nns-dapp"][$network] = $nnsDapp |
     .sns_aggregator[$network] = $snsAggregator' \
     --arg network "$NETWORK" \
+    --arg nnsIndex "$nnsIndex" \
     --arg ckbtcIndex "$ckbtcIndex" \
     --arg ckbtcLedger "$ckbtcLedger" \
     --arg ckbtcMinter "$ckbtcMinter" \
