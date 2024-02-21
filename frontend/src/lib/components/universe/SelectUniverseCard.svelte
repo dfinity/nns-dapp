@@ -7,6 +7,12 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { isSelectedPath } from "$lib/utils/navigation.utils";
   import type { Universe } from "$lib/types/universe";
+  import { nonNullish } from "@dfinity/utils";
+  import Badge from "$lib/components/ui/Badge.svelte";
+  import {
+    actionableProposalCountStore,
+    actionableProposalIndicationEnabledStore,
+  } from "$lib/derived/actionable-proposal.derived";
 
   export let selected: boolean;
   export let role: "link" | "button" | "dropdown" = "link";
@@ -32,6 +38,11 @@
       currentPath: $pageStore.path,
       paths: [AppPath.Accounts, AppPath.Wallet],
     });
+
+  let actionableProposalCount: number | undefined = undefined;
+  $: actionableProposalCount = $actionableProposalIndicationEnabledStore
+    ? $actionableProposalCountStore[universe.canisterId]
+    : undefined;
 </script>
 
 <Card
@@ -50,7 +61,12 @@
       class={`content ${role}`}
       class:balance={displayProjectAccountsBalance}
     >
-      <span class="name">{universe.title}</span>
+      <span class="name">
+        {universe.title}
+        {#if nonNullish(actionableProposalCount)}
+          <Badge>{actionableProposalCount}</Badge>
+        {/if}
+      </span>
       {#if displayProjectAccountsBalance}
         <UniverseAccountsBalance {universe} />
       {/if}
@@ -102,5 +118,10 @@
   .name {
     @include fonts.standard(true);
     @include text.clamp(2);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--padding);
   }
 </style>

@@ -85,7 +85,7 @@ export const listProposals = async ({
 };
 
 /**
- * List the nex proposals in a paginated way.
+ * List the next proposals in a paginated way.
  * @param {beforeProposal: ProposalId | undefined; loadFinished: (paginationOver: boolean) => void;} params
  * @param {ProposalId | undefined} params.beforeProposal Pagination starting proposal. Undefined for first results
  * @param {(paginationOver: boolean) => void} params.loadFinished Triggered when the loading is over. `paginationOver` equals `true` if all pages of the list have been queried.
