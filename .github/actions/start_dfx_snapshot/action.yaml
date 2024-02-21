@@ -110,7 +110,8 @@ runs:
         echo dskloetx 3.1
         export DFX_VERSION="$(dfx --version | sed 's/dfx //')"
         scripts/dfx-snapshot-install --snapshot state.tar.xz
-        dfx start --background &> '${{ inputs.logfile }}'
+        pushd "$HOME"
+        dfx start --background
         echo dskloetx 4
         dfx identity use snsdemo8
         echo dskloetx 5
