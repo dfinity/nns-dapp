@@ -45,6 +45,13 @@ extract() {
   fi
 }
 
+# Make sure the dfx cache is installed.
+ls -l "$(dfx cache show)" || true
+if ! [ -d "$(dfx cache show)" ]; then
+  dfx cache install
+fi
+ls -l "$(dfx cache show)" || true
+
 STATE_HASH="$(sha256sum "$SNAPSHOT_ARCHIVE" | cut -d' ' -f1)"
 
 STATE_DIR="$(dfx cache show)/snsdemo-state-$STATE_HASH"
@@ -175,12 +182,6 @@ output_restore_dir() {
 # Moves all the existing directories to the backup location and moves the state
 # directories in their place.
 install_state() {
-  # Make sure the dfx cache directory exists.
-  ls -l "$(dfx cache show)" || true
-  if ! [ -d "$(dfx cache show)" ]; then
-    dfx cache install
-  fi
-  ls -l "$(dfx cache show)" || true
   install_dir LOCAL_REPLICA_DATA
   install_dir CONFIG
   install_dir NETWORK
