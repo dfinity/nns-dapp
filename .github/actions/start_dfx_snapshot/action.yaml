@@ -112,6 +112,7 @@ runs:
         scripts/dfx-snapshot-install --snapshot state.tar.xz
         pushd "$HOME"
         dfx start --background
+        popd
         echo dskloetx 4
         dfx identity use snsdemo8
         echo dskloetx 5
