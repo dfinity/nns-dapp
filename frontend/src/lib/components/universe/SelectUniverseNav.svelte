@@ -3,11 +3,11 @@
   import SelectUniverseNavList from "$lib/components/universe/SelectUniverseNavList.svelte";
   import SelectUniverseDropdown from "$lib/components/universe/SelectUniverseDropdown.svelte";
   import { titleTokenSelectorStore } from "$lib/derived/title-token-selector.derived";
-  import { updateVotingSnsProposals } from "$lib/services/$public/sns-voting-proposals.services";
-  import { updateVotingProposals } from "$lib/services/$public/voting-proposals.services";
+  import { updateActionableSnsProposals } from "$lib/services/$public/sns-actionable-proposals.services";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
   import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
   import { actionableProposalIndicationEnabledStore } from "$lib/derived/actionable-proposal.derived";
+  import { updateActionableProposals } from "$lib/services/$public/actionable-proposals.services";
 
   let innerWidth = 0;
   let list = false;
@@ -15,13 +15,13 @@
   $: list = innerWidth > BREAKPOINT_LARGE;
   $: $ENABLE_VOTING_INDICATION &&
     $actionableProposalIndicationEnabledStore &&
-    updateVotingProposals();
+    updateActionableProposals();
   $: if (
     $ENABLE_VOTING_INDICATION &&
     $actionableProposalIndicationEnabledStore &&
     $selectableUniversesStore.length > 1
   ) {
-    updateVotingSnsProposals();
+    updateActionableSnsProposals();
   }
 </script>
 

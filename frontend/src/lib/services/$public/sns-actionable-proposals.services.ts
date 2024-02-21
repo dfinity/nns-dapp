@@ -13,18 +13,18 @@ import { SnsProposalRewardStatus } from "@dfinity/sns";
 import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
-export const updateVotingSnsProposals = async () => {
+export const updateActionableSnsProposals = async () => {
   const canisterIds = get(selectableUniversesStore)
     // skip nns
     .filter(({ canisterId }) => canisterId !== OWN_CANISTER_ID_TEXT)
     .map(({ canisterId }) => canisterId);
 
   await Promise.all(
-    canisterIds.map((canisterId) => updateVotingProposalsForSns(canisterId))
+    canisterIds.map((canisterId) => updateActionableProposalsForSns(canisterId))
   );
 };
 
-const updateVotingProposalsForSns = async (
+const updateActionableProposalsForSns = async (
   canisterId: string
 ): Promise<void> => {
   try {

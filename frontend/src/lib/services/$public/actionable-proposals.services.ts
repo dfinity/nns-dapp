@@ -14,9 +14,9 @@ import { get } from "svelte/store";
 import { getCurrentIdentity } from "../auth.services";
 
 /**
- * Fetch all proposals that are accepting votes and set the proposals in the nnsProposalVotingStore.
+ * Fetch all proposals that are accepting votes and put them in the store.
  */
-export const updateVotingProposals = async (): Promise<void> => {
+export const updateActionableProposals = async (): Promise<void> => {
   if (nonNullish(get(actionableNnsProposalsStore).proposals)) {
     // The proposals state does not update frequently, so we don't need to re-fetch.
     // The store will be reset after the user registers a vote.
