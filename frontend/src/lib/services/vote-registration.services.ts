@@ -9,7 +9,7 @@ import {
   voteRegistrationStore,
   type VoteRegistrationStoreEntry,
 } from "$lib/stores/vote-registration.store";
-import { votingNnsProposalsStore } from "$lib/stores/voting-proposals.store";
+import { actionableNnsProposalsStore } from "$lib/stores/voting-proposals.store";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { errorToString } from "$lib/utils/error.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -87,7 +87,7 @@ export const manageVotesRegistration = async ({
     });
 
     // reset the voting store to trigger a new fetch for votable proposals count.
-    votingNnsProposalsStore.reset();
+    actionableNnsProposalsStore.reset();
   } catch (err: unknown) {
     console.error("vote unknown:", err);
 

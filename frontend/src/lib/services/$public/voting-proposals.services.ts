@@ -2,7 +2,7 @@ import { queryProposals as queryNnsProposals } from "$lib/api/proposals.api";
 import { listNeurons } from "$lib/services/neurons.services";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
-import { votingNnsProposalsStore } from "$lib/stores/voting-proposals.store";
+import { actionableNnsProposalsStore } from "$lib/stores/voting-proposals.store";
 import type { ProposalId, ProposalInfo } from "@dfinity/nns";
 import {
   ProposalRewardStatus,
@@ -17,7 +17,7 @@ import { getCurrentIdentity } from "../auth.services";
  * Fetch all proposals that are accepting votes and set the proposals in the nnsProposalVotingStore.
  */
 export const updateVotingProposals = async (): Promise<void> => {
-  if (nonNullish(get(votingNnsProposalsStore).proposals)) {
+  if (nonNullish(get(actionableNnsProposalsStore).proposals)) {
     // The proposals state does not update frequently, so we don't need to re-fetch.
     // The store will be reset after the user registers a vote.
     return;
@@ -25,7 +25,7 @@ export const updateVotingProposals = async (): Promise<void> => {
 
   const neurons: NeuronInfo[] = await queryNeurons();
   if (neurons.length === 0) {
-    votingNnsProposalsStore.setProposals([]);
+    actionableNnsProposalsStore.setProposals([]);
     return;
   }
 
@@ -36,7 +36,7 @@ export const updateVotingProposals = async (): Promise<void> => {
     (proposal) => votableNeurons({ neurons, proposal }).length > 0
   );
 
-  votingNnsProposalsStore.setProposals(votableProposals);
+  actionableNnsProposalsStore.setProposals(votableProposals);
 };
 
 const queryNeurons = async (): Promise<NeuronInfo[]> => {

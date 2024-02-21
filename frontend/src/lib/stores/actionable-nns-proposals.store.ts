@@ -1,25 +1,25 @@
 import type { ProposalInfo } from "@dfinity/nns";
 import { writable, type Readable } from "svelte/store";
 
-export interface VotingNnsProposalsStoreData {
+export interface ActionableNnsProposalsStoreData {
   proposals: ProposalInfo[] | undefined;
 }
 
-export interface VotingNnsProposalsStore
-  extends Readable<VotingNnsProposalsStoreData> {
+export interface ActionableNnsProposalsStore
+  extends Readable<ActionableNnsProposalsStoreData> {
   setProposals: (proposals: ProposalInfo[]) => void;
   reset: () => void;
 }
 
 /**
  * A store that contains proposals that can be voted on by the user (ballots w/ state 0).
- * Better keep nns and sns stores separate, as they should be available for "Voting Proposals" tab.
+ * Better keep nns and sns stores separate, as they should be available for "Actionable Proposals" tab.
  *
  * The update can't be merged with the current state because the proposals status can be updated.
  * - setProposals: replace the current list of proposals with a new list
  */
-const initVotingNnsProposalsStore = (): VotingNnsProposalsStore => {
-  const { subscribe, set } = writable<VotingNnsProposalsStoreData>({
+const initActionableNnsProposalsStore = (): ActionableNnsProposalsStore => {
+  const { subscribe, set } = writable<ActionableNnsProposalsStoreData>({
     proposals: undefined,
   });
 
@@ -36,4 +36,4 @@ const initVotingNnsProposalsStore = (): VotingNnsProposalsStore => {
   };
 };
 
-export const votingNnsProposalsStore = initVotingNnsProposalsStore();
+export const actionableNnsProposalsStore = initActionableNnsProposalsStore();
