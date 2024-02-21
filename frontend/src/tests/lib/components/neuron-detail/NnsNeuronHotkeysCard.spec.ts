@@ -84,6 +84,42 @@ describe("NnsNeuronHotkeysCard", () => {
     expect(queryAllByTestId("remove-hotkey-button")).toHaveLength(0);
   });
 
+  it("renders add hotkey description when no hotkeys and user can add a hotkey", () => {
+    const { queryByTestId } = render(NeuronContextActionsTest, {
+      props: {
+        neuron: {
+          ...controlledNeuron,
+          fullNeuron: {
+            ...controlledNeuron.fullNeuron,
+            hotKeys: [],
+          },
+        },
+        testComponent: NnsNeuronHotkeysCard,
+      },
+    });
+
+    expect(queryByTestId("add-hotkey-description")).toBeInTheDocument();
+    expect(queryByTestId("no-hotkey")).toBeNull();
+  });
+
+  it("renders no-hotkey message when no hotkeys and user can not add a hotkey", () => {
+    const { queryByTestId } = render(NeuronContextActionsTest, {
+      props: {
+        neuron: {
+          ...unControlledNeuron,
+          fullNeuron: {
+            ...unControlledNeuron.fullNeuron,
+            hotKeys: [],
+          },
+        },
+        testComponent: NnsNeuronHotkeysCard,
+      },
+    });
+
+    expect(queryByTestId("add-hotkey-description")).toBeNull();
+    expect(queryByTestId("no-hotkey")).toBeInTheDocument();
+  });
+
   it("renders hotkeys", () => {
     const { queryByText } = render(NeuronContextActionsTest, {
       props: {

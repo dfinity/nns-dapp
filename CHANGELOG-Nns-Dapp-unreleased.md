@@ -19,6 +19,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Minor wording and style changes on the neuron detail page.
+
 #### Deprecated
 
 #### Removed
