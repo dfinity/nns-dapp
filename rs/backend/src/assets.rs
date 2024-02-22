@@ -387,6 +387,9 @@ pub fn init_assets() {
 /// Note: The `Vec` is mutated during decompression, so pass by reference is inefficient
 ///       as it would force the data to be copied into a new vector, even when the
 ///       original is no longer needed.
+///
+/// # Panics
+/// - If the decompression fails or the tarball cannot be parsed.
 #[allow(clippy::needless_pass_by_value)]
 pub fn insert_tar_xz(compressed: Vec<u8>) {
     println!("Inserting assets...");
