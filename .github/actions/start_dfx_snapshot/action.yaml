@@ -90,6 +90,9 @@ runs:
         export DFX_NETWORK=local
         ./config.sh
         echo "Install:"
+        # If we don't wait 20 seconds now, the first attempt below will take
+        # 5 minutes to time out.
+        sleep 20
         # Retry to work around canister install timing out on dfx 0.15.3.
         # TODO: Remove loop if no longer necessary.
         for ((try = 0; try < 5; try++)); do
