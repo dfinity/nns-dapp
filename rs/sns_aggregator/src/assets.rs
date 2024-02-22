@@ -166,7 +166,13 @@ fn security_headers() -> Vec<HeaderField> {
 }
 
 /// Generates a header used by clients to verify the integrity of the data.
-fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -> Result<(String, String), String> {
+///
+/// # Panics
+/// - If the data certificate is not available.
+///
+/// # Errors
+/// - If the certificate cannot be serialized.
+fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -> Result<HeaderField, String> {
     let certificate = ic_cdk::api::data_certificate()
         .ok_or_else(|| "data certificate is only available in query calls".to_string())?;
     let witness = asset_hashes.0.witness(asset_name.as_bytes());
