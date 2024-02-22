@@ -33,6 +33,7 @@ impl Partitions {
     /// Gets the memory partitioned appropriately for the given schema.
     ///
     /// If a schema uses raw memory, the memory is returned.
+    #[must_use]
     pub fn new_with_schema(memory: DefaultMemoryImpl, schema: SchemaLabel) -> Partitions {
         match schema {
             SchemaLabel::Map => panic!("Map schema does not use partitions"),
