@@ -118,7 +118,8 @@ pub fn process_proposal_payload(proposal_info: &ProposalInfo) -> Json {
         })
     } else {
         #[allow(clippy::unwrap_used)]
-        serde_json::to_string("Proposal has no payload").unwrap()
+        serde_json::to_string("Proposal has no payload")
+            .unwrap_or_else(|err| unreachable!("Surely a fixed string can be serialized as JSON?  Err: {err:?}"))
     }
 }
 
