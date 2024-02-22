@@ -1,4 +1,4 @@
-import { DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
+import { DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { HOST } from "$lib/constants/environment.constants";
 import type { PostMessageDataRequestTransactions } from "$lib/types/post-message.transactions";
 import { getIcrcAccountsTransactions } from "$lib/worker-services/icrc-transactions.worker-services";
@@ -147,7 +147,7 @@ describe("transactions.worker-services", () => {
   it("should fetch recursively all transactions", async () => {
     const mostRecentTxId = 100n;
 
-    const ids = [...Array(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT + 5)]
+    const ids = [...Array(DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT + 5)]
       .map((_, i) => BigInt(i) + mostRecentTxId)
       .reverse();
     const transactions = ids.map((id) => ({ transaction, id }));
@@ -163,7 +163,7 @@ describe("transactions.worker-services", () => {
             return {
               transactions: transactions.slice(
                 0,
-                DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT
+                DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT
               ),
               oldest_tx_id: [],
             };
@@ -171,7 +171,7 @@ describe("transactions.worker-services", () => {
 
           return {
             transactions: transactions.slice(
-              DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT
+              DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT
             ),
             oldest_tx_id: [],
           };
@@ -210,7 +210,7 @@ describe("transactions.worker-services", () => {
   });
 
   it("should return most recent transaction id", async () => {
-    const ids = [...Array(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT)]
+    const ids = [...Array(DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT)]
       .map((_, i) => BigInt(i) + 250n)
       .reverse();
     const transactions = ids.map((id) => ({ transaction, id }));

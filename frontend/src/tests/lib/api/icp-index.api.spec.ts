@@ -2,7 +2,7 @@ import * as agent from "$lib/api/agent.api";
 import { getTransactions } from "$lib/api/icp-index.api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
-import { defaultTransactinoWithId } from "$tests/mocks/transaction.mock";
+import { mockTransactionWithId } from "$tests/mocks/transaction.mock";
 import type { HttpAgent } from "@dfinity/agent";
 import {
   IndexCanister,
@@ -20,7 +20,7 @@ describe("icp-index.api", () => {
   describe("icp-index api", () => {
     const { identifier: accountIdentifier } = mockMainAccount;
     const defaultResponse: GetAccountIdentifierTransactionsResponse = {
-      transactions: [defaultTransactinoWithId],
+      transactions: [mockTransactionWithId],
       oldest_tx_id: [1234n],
       balance: 200_000_000n,
     };
@@ -56,7 +56,7 @@ describe("icp-index.api", () => {
         });
         expect(response).toEqual({
           oldestTxId: defaultResponse.oldest_tx_id[0],
-          transactions: [defaultTransactinoWithId],
+          transactions: [mockTransactionWithId],
           balance: defaultResponse.balance,
         });
       });
@@ -97,7 +97,7 @@ describe("icp-index.api", () => {
 
         expect(response).toEqual({
           oldestTxId: undefined,
-          transactions: [defaultTransactinoWithId],
+          transactions: [mockTransactionWithId],
           balance: defaultResponse.balance,
         });
       });

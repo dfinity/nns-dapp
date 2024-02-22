@@ -100,7 +100,7 @@ export const createMockUiTransaction = ({
   timestamp,
 });
 
-export const defaultTransactinoWithId: TransactionWithId = {
+export const mockTransactionWithId: TransactionWithId = {
   id: 1234n,
   transaction: {
     memo: 0n,

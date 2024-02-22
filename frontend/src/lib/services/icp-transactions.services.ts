@@ -1,5 +1,5 @@
 import { getTransactions } from "$lib/api/icp-index.api";
-import { DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
+import { DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { icpTransactionsStore } from "$lib/stores/icp-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { toToastError } from "$lib/utils/error.utils";
@@ -16,7 +16,7 @@ export const loadIcpAccountTransactions = async ({
   start,
 }: LoadIcrcAccountTransactionsParams) => {
   try {
-    const maxResults = DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT;
+    const maxResults = DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT;
     const identity = await getCurrentIdentity();
     const { transactions, oldestTxId } = await getTransactions({
       accountIdentifier,

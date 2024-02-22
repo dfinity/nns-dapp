@@ -1,5 +1,5 @@
 import * as indexApi from "$lib/api/icp-index.api";
-import { DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
+import { DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import {
   loadIcpAccountNextTransactions,
   loadIcpAccountTransactions,
@@ -8,7 +8,7 @@ import { icpTransactionsStore } from "$lib/stores/icp-transactions.store";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
-import { defaultTransactinoWithId } from "$tests/mocks/transaction.mock";
+import { mockTransactionWithId } from "$tests/mocks/transaction.mock";
 import { toastsStore } from "@dfinity/gix-components";
 import type { TransactionWithId } from "@dfinity/ledger-icp";
 import { get } from "svelte/store";
@@ -32,13 +32,13 @@ describe("icp-transactions services", () => {
       const spyGetTransactions = vi
         .spyOn(indexApi, "getTransactions")
         .mockResolvedValueOnce({
-          oldestTxId: 1_234n,
-          transactions: [defaultTransactinoWithId],
+          oldestTxId: mockTransactionWithId.id,
+          transactions: [mockTransactionWithId],
           balance: 200_000_000n,
         })
         .mockResolvedValueOnce({
-          oldestTxId: 5_678n,
-          transactions: [defaultTransactinoWithId],
+          oldestTxId: mockTransactionWithId.id,
+          transactions: [mockTransactionWithId],
           balance: 300_000_000n,
         });
       const start = 1_234n;
@@ -53,12 +53,12 @@ describe("icp-transactions services", () => {
       expect(spyGetTransactions).toBeCalledWith({
         identity: mockIdentity,
         accountIdentifier,
-        maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
+        maxResults: BigInt(DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT),
         start,
       });
 
       expect(get(icpTransactionsStore)[accountIdentifier]).toEqual({
-        transactions: [defaultTransactinoWithId],
+        transactions: [mockTransactionWithId],
         oldestTxId: 1_234n,
         completed: true,
       });
@@ -70,21 +70,21 @@ describe("icp-transactions services", () => {
 
       // Previous state is not overwritten
       expect(get(icpTransactionsStore)[accountIdentifier]).toEqual({
-        transactions: [defaultTransactinoWithId],
+        transactions: [mockTransactionWithId],
         oldestTxId: 1_234n,
         completed: true,
       });
       // New state is added
       expect(get(icpTransactionsStore)[accountIdentifier2]).toEqual({
-        transactions: [defaultTransactinoWithId],
+        transactions: [mockTransactionWithId],
         oldestTxId: 5_678n,
         completed: true,
       });
     });
 
     it("sets complete to false", async () => {
-      const transactions = new Array(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT).fill(
-        defaultTransactinoWithId
+      const transactions = new Array(DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT).fill(
+        mockTransactionWithId
       );
       vi.spyOn(indexApi, "getTransactions").mockResolvedValue({
         oldestTxId: 1_234n,
@@ -129,11 +129,11 @@ describe("icp-transactions services", () => {
       const recentTransactionId = 200n;
       const recentTransaction: TransactionWithId = {
         id: recentTransactionId,
-        transaction: { ...defaultTransactinoWithId.transaction },
+        transaction: { ...mockTransactionWithId.transaction },
       };
       const oldTransaction = {
         id: oldTransactionId,
-        transaction: { ...defaultTransactinoWithId.transaction },
+        transaction: { ...mockTransactionWithId.transaction },
       };
       const spyGetTransactions = vi
         .spyOn(indexApi, "getTransactions")
@@ -158,7 +158,7 @@ describe("icp-transactions services", () => {
       expect(spyGetTransactions).toBeCalledWith({
         identity: mockIdentity,
         accountIdentifier,
-        maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
+        maxResults: BigInt(DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT),
         start: recentTransactionId,
       });
 
@@ -173,8 +173,8 @@ describe("icp-transactions services", () => {
       const spyGetTransactions = vi
         .spyOn(indexApi, "getTransactions")
         .mockResolvedValue({
-          oldestTxId: defaultTransactinoWithId.id,
-          transactions: [defaultTransactinoWithId],
+          oldestTxId: mockTransactionWithId.id,
+          transactions: [mockTransactionWithId],
           balance: 200_000_000n,
         });
 
@@ -186,7 +186,7 @@ describe("icp-transactions services", () => {
       expect(spyGetTransactions).toBeCalledWith({
         identity: mockIdentity,
         accountIdentifier,
-        maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
+        maxResults: BigInt(DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT),
         start: undefined,
       });
     });
