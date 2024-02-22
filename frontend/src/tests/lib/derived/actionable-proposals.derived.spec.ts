@@ -6,12 +6,12 @@ import {
 } from "$lib/derived/actionable-proposals.derived";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
+import { enumsExclude } from "$lib/utils/enum.utils";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import type { ProposalInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
 import { beforeEach } from "vitest";
@@ -37,12 +37,20 @@ describe("actionable proposals derived stores", () => {
     });
 
     it("returns false when the user is not on proposals page", async () => {
-      setNoIdentity();
-      page.mock({
-        data: { universe: OWN_CANISTER_ID_TEXT },
-        routeId: AppPath.Accounts,
-      });
-      expect(get(actionableProposalIndicationEnabledStore)).toBe(false);
+      const testPath = (routeId: AppPath) => {
+        page.mock({
+          data: { universe: OWN_CANISTER_ID_TEXT },
+          routeId,
+        });
+        expect(get(actionableProposalIndicationEnabledStore)).toBe(false);
+      };
+
+      resetIdentity();
+
+      enumsExclude({
+        obj: AppPath as unknown as AppPath,
+        values: [],
+      }).forEach(testPath);
     });
   });
 
@@ -67,21 +75,11 @@ describe("actionable proposals derived stores", () => {
     });
 
     it("returns actionable proposal count", async () => {
-      expect(get(actionableProposalCountStore)[OWN_CANISTER_ID_TEXT]).toEqual(
-        undefined
-      );
-      expect(get(actionableProposalCountStore)[principal0.toText()]).toEqual(
-        undefined
-      );
-      expect(get(actionableProposalCountStore)[principal1.toText()]).toEqual(
-        undefined
-      );
+      expect(get(actionableProposalCountStore)).toEqual({
+        [OWN_CANISTER_ID_TEXT]: undefined,
+      });
 
       actionableNnsProposalsStore.setProposals(nnsProposals);
-      actionableSnsProposalsStore.setProposals({
-        rootCanisterId: rootCanisterIdMock,
-        proposals: snsProposals,
-      });
       actionableSnsProposalsStore.setProposals({
         rootCanisterId: principal0,
         proposals: snsProposals,
@@ -91,13 +89,11 @@ describe("actionable proposals derived stores", () => {
         proposals: [],
       });
 
-      expect(get(actionableProposalCountStore)[OWN_CANISTER_ID_TEXT]).toEqual(
-        nnsProposals.length
-      );
-      expect(get(actionableProposalCountStore)[principal0.toText()]).toEqual(
-        snsProposals.length
-      );
-      expect(get(actionableProposalCountStore)[principal1.toText()]).toEqual(0);
+      expect(get(actionableProposalCountStore)).toEqual({
+        [OWN_CANISTER_ID_TEXT]: nnsProposals.length,
+        [principal0.toText()]: snsProposals.length,
+        [principal1.toText()]: 0,
+      });
     });
   });
 });
