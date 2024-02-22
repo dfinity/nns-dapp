@@ -1,4 +1,5 @@
 import { DisburseNnsNeuronModalPo } from "$tests/page-objects/DisburseNnsNeuronModal.page-object";
+import { IncreaseNeuronStakeModalPo } from "$tests/page-objects/IncreaseNeuronStakeModal.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -11,5 +12,9 @@ export class NnsNeuronModalsPo extends BasePageObject {
 
   getDisburseNnsNeuronModalPo(): DisburseNnsNeuronModalPo {
     return DisburseNnsNeuronModalPo.under(this.root);
+  }
+
+  getIncreaseNeuronStakeModalPo(): IncreaseNeuronStakeModalPo {
+    return IncreaseNeuronStakeModalPo.under(this.root);
   }
 }

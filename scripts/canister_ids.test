@@ -44,6 +44,7 @@ cat >"$test_index_html" <<-EOF
         data-governance-canister-id="rrkah-fqaaa-aaaaa-aaaaq-cai"
         data-host="https://fubar.dfinity.network"
         data-identity-service-url="https://wqmuk-5qaaa-aaaaa-aaaqq-cai.fubar.dfinity.network"
+        data-index-canister-id="bkyz2-fmaaa-aaaaa-qaaaq-cai"
         data-ledger-canister-id="ryjl3-tyaaa-aaaaa-aaaba-cai"
         data-own-canister-id="lf43c-fyaaa-aaaaa-aacva-cai"
         data-robots="&lt;meta name=&quot;robots&quot; content=&quot;noindex, nofollow&quot; /&gt;"
@@ -145,6 +146,9 @@ if ! diff "$test_json_file" <(
   },
   "nns-governance": {
     "mainnet": "rrkah-fqaaa-aaaaa-aaaaq-cai"
+  },
+  "nns-index": {
+    "staging": "bkyz2-fmaaa-aaaaa-qaaaq-cai"
   },
   "ckbtc_index": {
     "staging": "tqtu6-byaaa-aaaaa-aaana-cai"
