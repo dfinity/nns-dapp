@@ -32,6 +32,7 @@ describe("env-vars-utils", () => {
       "http://bd3sg-teaaa-aaaaa-qaaba-cai.localhost:8080"
     );
     vi.stubEnv("VITE_CKBTC_LEDGER_CANISTER_ID", "oz7p6-neaaa-aaaaa-qabfa-cai");
+    vi.stubEnv("VITE_INDEX_CANISTER_ID", "mecbw-6maaa-aaaaa-qabkq-cai");
     vi.stubEnv("VITE_CKBTC_MINTER_CANISTER_ID", "o66jk-a4aaa-aaaaa-qabfq-cai");
     vi.stubEnv("VITE_CKBTC_INDEX_CANISTER_ID", "olzyh-buaaa-aaaaa-qabga-cai");
     vi.stubEnv("VITE_CKETH_LEDGER_CANISTER_ID", "omy6t-mmaaa-aaaaa-qabgq-cai");
@@ -53,6 +54,7 @@ describe("env-vars-utils", () => {
     host: "http://localhost:8080",
     identityServiceUrl: "http://qhbym-qaaaa-aaaaa-aaafq-cai.localhost:8080",
     ledgerCanisterId: "ryjl3-tyaaa-aaaaa-aaaba-cai",
+    indexCanisterId: "mecbw-6maaa-aaaaa-qabkq-cai",
     ownCanisterId: "qsgjb-riaaa-aaaaa-aaaga-cai",
     snsAggregatorUrl: "http://bd3sg-teaaa-aaaaa-qaaba-cai.localhost:8080",
     tvlCanisterId: undefined,
@@ -77,6 +79,22 @@ describe("env-vars-utils", () => {
 
     expect(() => getEnvVars()).toThrowError(
       "Missing mandatory environment variables: ledgerCanisterId"
+    );
+  });
+
+  it("should return the correct index canister ID", () => {
+    const indexCanisterId = principal(543).toText();
+    vi.stubEnv("VITE_INDEX_CANISTER_ID", indexCanisterId);
+    expect(getEnvVars()).toEqual({
+      ...defaultExpectedEnvVars,
+      indexCanisterId,
+    });
+  });
+
+  it("index canister ID is mandatory", () => {
+    vi.stubEnv("VITE_INDEX_CANISTER_ID", "");
+    expect(() => getEnvVars()).toThrowError(
+      "Missing mandatory environment variables: indexCanisterId"
     );
   });
 

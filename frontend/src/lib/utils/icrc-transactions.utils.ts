@@ -456,20 +456,3 @@ export const isIcrcTransactionsCompleted = ({
   account: Account;
 }): boolean =>
   Boolean(store[canisterId.toText()]?.[account.identifier]?.completed);
-
-/**
- * Dedupe transactions based on ID.
- */
-export const getUniqueTransactions = (
-  transactions: IcrcTransactionWithId[]
-): IcrcTransactionWithId[] => {
-  const txIds = new Set<bigint>();
-  const result: IcrcTransactionWithId[] = [];
-  for (const tx of transactions) {
-    if (!txIds.has(tx.id)) {
-      txIds.add(tx.id);
-      result.push(tx);
-    }
-  }
-  return result;
-};

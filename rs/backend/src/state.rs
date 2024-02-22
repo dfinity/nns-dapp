@@ -18,7 +18,7 @@ use crate::perf::PerformanceCounts;
 use dfn_candid::Candid;
 use dfn_core::api::trap_with;
 use ic_cdk::println;
-use ic_stable_structures::{DefaultMemoryImpl, Memory};
+use ic_stable_structures::DefaultMemoryImpl;
 use on_wire::{FromWire, IntoWire};
 use std::cell::RefCell;
 
@@ -213,43 +213,6 @@ impl StableState for State {
 
 // Methods called on pre_upgrade and post_upgrade.
 impl State {
-    /// The schema version, determined by the last version that was saved to stable memory.
-    fn schema_version_from_stable_memory() -> Option<SchemaLabel> {
-        let memory = DefaultMemoryImpl::default();
-        Self::schema_version_from_memory(&memory)
-    }
-
-    /// The schema version, as stored in an arbitrary memory.
-    fn schema_version_from_memory<M>(memory: &M) -> Option<SchemaLabel>
-    where
-        M: Memory,
-    {
-        let mut schema_label_bytes = [0u8; SchemaLabel::MAX_BYTES];
-        memory.read(0, &mut schema_label_bytes);
-        SchemaLabel::try_from(&schema_label_bytes[..]).ok()
-    }
-
-    /// Creates the state from stable memory in the `post_upgrade()` hook.
-    ///
-    /// Note: The stable memory may have been created by any of these schemas:
-    /// - The previous schema, when first migrating from the previous schema to the current schema.
-    /// - The current schema, if upgrading without changing the schema.
-    /// - The next schema, if a new schema was deployed and we need to roll back.
-    ///
-    /// Note: Changing the schema requires at least two deployments:
-    /// - Deploy a release with a parser for the new schema.
-    /// - Then, deploy a release that writes the new schema.
-    /// This way it is possible to roll back after deploying the new schema.
-    #[must_use]
-    pub fn restore() -> Self {
-        match Self::schema_version_from_stable_memory() {
-            None => Self::recover_from_raw_memory(),
-            Some(version) => {
-                trap_with(&format!("Unknown schema version: {version:?}"));
-                unreachable!();
-            }
-        }
-    }
     /// Saves any unsaved state to stable memory.
     pub fn save(&self) {
         let schema = self.schema_label();

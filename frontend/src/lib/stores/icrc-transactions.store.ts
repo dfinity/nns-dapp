@@ -4,7 +4,7 @@ import type {
   UniverseCanisterId,
   UniverseCanisterIdText,
 } from "$lib/types/universe";
-import { getUniqueTransactions } from "$lib/utils/icrc-transactions.utils";
+import { getUniqueTransactions } from "$lib/utils/transactions.utils";
 import { removeKeys } from "$lib/utils/utils";
 import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";

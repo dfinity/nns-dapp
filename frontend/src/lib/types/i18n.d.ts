@@ -643,6 +643,7 @@ interface I18nNeuron_detail {
   hotkeys_title: string;
   add_hotkey: string;
   no_notkeys: string;
+  no_notkeys_yet: string;
   add_hotkey_modal_title: string;
   enter_hotkey: string;
   invalid_hotkey: string;
