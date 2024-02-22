@@ -242,8 +242,8 @@ fn update_root_hash(a: &AssetHashes) {
 /// - Returns 404 if the asset is not found.
 ///
 /// # Panics
-/// - If the asset certificate header cannot be created. (Likely to be observed as HTTP code 500)
-///   - Note: Certificates are available to query calls only, so technically if a request is made as an update call, this is
+/// - If the asset certificate cannot be added as an HTTP header. (Likely to be observed as HTTP code 500)
+///   - Note: Static asset certificates are available to query calls only, so technically if a request is made as an update call, this is
 ///     the caller's fault, or at least a difference in expected behaviour, not a server implementation error.
 #[allow(clippy::expect_used)] // This is a query call, so panicking may be correct.
 #[allow(clippy::needless_pass_by_value)]
