@@ -1,6 +1,4 @@
-import { ConfirmDisburseNeuronPo } from "$tests/page-objects/ConfirmDisburseNeuron.page-object";
 import { TransactionModalBasePo } from "$tests/page-objects/TransactionModal.page-object";
-import { NnsDestinationAddressPo } from "$tests/page-objects/NnsDestinationAddress.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class IncreaseNeuronStakeModalPo extends TransactionModalBasePo {
@@ -12,11 +10,10 @@ export class IncreaseNeuronStakeModalPo extends TransactionModalBasePo {
     );
   }
 
-  async increaseStake({amount}: {amount: number}): Promise<void> {
+  async increaseStake({ amount }: { amount: number }): Promise<void> {
     const form = this.getTransactionFormPo();
     await form.enterAmount(amount);
     await form.clickContinue();
     await this.getTransactionReviewPo().clickSend();
   }
 }
-
