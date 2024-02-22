@@ -3,9 +3,11 @@ import * as api from "$lib/api/proposals.api";
 import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { authStore } from "$lib/stores/auth.store";
+import { neuronsStore } from "$lib/stores/neurons.store";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
 import { ProposalRewardStatus, Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
@@ -40,6 +42,7 @@ describe("actionable-proposals.services", () => {
 
     beforeEach(() => {
       vi.clearAllMocks();
+      neuronsStore.reset();
       actionableNnsProposalsStore.reset();
       vi.spyOn(authStore, "subscribe").mockImplementation(
         mockAuthStoreSubscribe
@@ -67,6 +70,18 @@ describe("actionable-proposals.services", () => {
       );
     });
 
+    it("should preserve neurons in the neuron store", async () => {
+      expect(get(neuronsStore)).toEqual(
+        expect.objectContaining({ neurons: undefined })
+      );
+
+      await loadActionableProposals();
+
+      expect(get(neuronsStore)).toEqual(
+        expect.objectContaining({ neurons: [neuron1] })
+      );
+    });
+
     it("should query the canister to get list proposals with accept rewards status", async () => {
       expect(spyQueryProposals).not.toHaveBeenCalled();
 
@@ -89,13 +104,28 @@ describe("actionable-proposals.services", () => {
     });
 
     it("should update actionable nns proposals store with votable proposals only", async () => {
-      expect(spyQueryProposals).not.toHaveBeenCalled();
+      expect(get(actionableNnsProposalsStore)).toEqual({
+        proposals: undefined,
+      });
 
       await loadActionableProposals();
 
-      const { proposals } = get(actionableNnsProposalsStore);
-      expect(proposals).toHaveLength(1);
-      expect(proposals).toEqual([votableProposal]);
+      expect(get(actionableNnsProposalsStore)).toEqual({
+        proposals: [votableProposal],
+      });
+    });
+
+    it("should not query proposals when store is already filled", async () => {
+      expect(spyQueryProposals).not.toHaveBeenCalled();
+      expect(spyQueryNeurons).not.toHaveBeenCalled();
+      actionableNnsProposalsStore.setProposals([votableProposal]);
+
+      await loadActionableProposals();
+      // just in case
+      await runResolvedPromises();
+
+      expect(spyQueryProposals).not.toHaveBeenCalled();
+      expect(spyQueryNeurons).not.toHaveBeenCalled();
     });
   });
 });
