@@ -84,6 +84,7 @@ runs:
         dfx-sns-demo-healthcheck
     - name: Wait before installing canisters
       if: ${{ inputs.nns_dapp_wasm }} || ${{ inputs.sns_aggregator_wasm }}
+      shell: bash
       run: |
         # If we don't wait 20 seconds now, the first attempt below will take
         # 5 minutes to time out.
