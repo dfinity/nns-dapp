@@ -237,6 +237,14 @@ fn update_root_hash(a: &AssetHashes) {
 }
 
 /// Responds to an HTTP request for an asset.
+///
+/// # Errors
+/// - Returns 404 if the asset is not found.
+///
+/// # Panics
+/// - If the asset certificate header cannot be created. (Likely to be observed as HTTP code 500)
+///   - Note: Certificates are available to query calls only, so technically if a request is made as an update call, this is
+///     the caller's fault, or at least a difference in expected behaviour, not a server implementation error.
 #[allow(clippy::expect_used)] // This is a query call, so panicking may be correct.
 #[allow(clippy::needless_pass_by_value)]
 // The signature is standard, we cannot change it.  It would be nice if this standard signature were defined in a trait that we could apply to a main struct, though!
