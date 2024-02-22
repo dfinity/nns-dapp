@@ -68,6 +68,7 @@
 <!-- That would be an edge case that would not happen becuase then the button won't even be there -->
 {#if neuron.fullNeuron?.accountIdentifier !== undefined}
   <TransactionModal
+    testId="increase-neuron-stake-modal-component"
     rootCanisterId={OWN_CANISTER_ID}
     on:nnsSubmit={topUp}
     on:nnsClose
