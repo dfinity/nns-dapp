@@ -1,6 +1,6 @@
 import * as governanceApi from "$lib/api/governance.api";
 import * as api from "$lib/api/proposals.api";
-import { updateActionableProposals } from "$lib/services/actionable-proposals.services";
+import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { authStore } from "$lib/stores/auth.store";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
@@ -57,7 +57,7 @@ describe("actionable-proposals.services", () => {
     it("should query user neurons", async () => {
       expect(spyQueryNeurons).not.toHaveBeenCalled();
 
-      await updateActionableProposals();
+      await loadActionableProposals();
 
       expect(spyQueryNeurons).toHaveBeenCalledTimes(1);
       expect(spyQueryNeurons).toHaveBeenCalledWith(
@@ -70,7 +70,7 @@ describe("actionable-proposals.services", () => {
     it("should query the canister to get list proposals with accept rewards status", async () => {
       expect(spyQueryProposals).not.toHaveBeenCalled();
 
-      await updateActionableProposals();
+      await loadActionableProposals();
 
       expect(spyQueryProposals).toHaveBeenCalledTimes(1);
       expect(spyQueryProposals).toHaveBeenCalledWith(
@@ -91,7 +91,7 @@ describe("actionable-proposals.services", () => {
     it("should update actionable nns proposals store with votable proposals only", async () => {
       expect(spyQueryProposals).not.toHaveBeenCalled();
 
-      await updateActionableProposals();
+      await loadActionableProposals();
 
       const { proposals } = get(actionableNnsProposalsStore);
       expect(proposals).toHaveLength(1);
