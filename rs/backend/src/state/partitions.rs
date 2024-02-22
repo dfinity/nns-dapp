@@ -195,8 +195,9 @@ impl Partitions {
         let bytes_in_memory = memory.size()
             * u64::try_from(WASM_PAGE_SIZE_IN_BYTES)
                 .unwrap_or_else(|err| unreachable!("Wasm page size is fixed and well within the range of u64: {err}"));
-        if offset.saturating_add(u64::try_from(buffer.len()).expect("Buffer for read_exact is longer than 2**64."))
-            > bytes_in_memory
+        if offset.saturating_add(u64::try_from(buffer.len()).unwrap_or_else(|err| {
+            unreachable!("Buffer for read_exact is longer than 2**64.  This seems extremely implausible.  Err: {err}")
+        })) > bytes_in_memory
         {
             return Err(format!("Out of bounds memory access: Failed to read exactly {} bytes at offset {} as memory size is only {} bytes.", buffer.len(), offset, bytes_in_memory));
         }
