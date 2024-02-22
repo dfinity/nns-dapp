@@ -4,7 +4,6 @@ import type { IcrcTransactionData } from "$lib/types/transaction";
 import {
   getOldestTxIdFromStore,
   getSortedTransactionsFromStore,
-  getUniqueTransactions,
   isIcrcTransactionsCompleted,
   mapCkbtcPendingUtxo,
   mapCkbtcTransaction,
@@ -1080,56 +1079,6 @@ describe("icrc-transaction utils", () => {
           account: mockSnsSubAccount,
         })
       ).toBe(true);
-    });
-  });
-
-  describe("getUniqueTransactions", () => {
-    const mainAccount = {
-      owner: mockPrincipal,
-      subaccount: [] as [] | [Uint8Array],
-    };
-    const subAccount = {
-      owner: mockPrincipal,
-      subaccount: [new Uint8Array([1, 2, 3])] as [] | [Uint8Array],
-    };
-    const txA = createIcrcTransactionWithId({
-      id: 1n,
-      from: mainAccount,
-      to: subAccount,
-    });
-    const txB = createIcrcTransactionWithId({
-      id: 2n,
-      from: subAccount,
-      to: mainAccount,
-    });
-    const txC = createIcrcTransactionWithId({
-      id: 3n,
-      from: mainAccount,
-      to: mainAccount,
-    });
-
-    it("empty array", () => {
-      expect(getUniqueTransactions([])).toEqual([]);
-    });
-
-    it("singleton array", () => {
-      const transactions = [txA];
-      expect(getUniqueTransactions(transactions)).toEqual(transactions);
-    });
-
-    it("duplicate transactions", () => {
-      const transactions = [txA, txA];
-      expect(getUniqueTransactions(transactions)).toEqual([txA]);
-    });
-
-    it("multiple different transactions", () => {
-      const transactions = [txA, txB, txC];
-      expect(getUniqueTransactions(transactions)).toEqual(transactions);
-    });
-
-    it("non-consecutive duplicate transactions", () => {
-      const transactions = [txA, txB, txC, txA, txC, txB, txA, txC];
-      expect(getUniqueTransactions(transactions)).toEqual([txA, txB, txC]);
     });
   });
 });
