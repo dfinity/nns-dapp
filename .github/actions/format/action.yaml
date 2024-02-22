@@ -6,16 +6,16 @@ runs:
   steps:
     - name: Get cargo sort version
       shell: bash
-      run: jq -r '"CARGO_SORT_VERSION=\(.defaults.build.config.CARGO_SORT_VERSION)"' dfx.json | tee -a $GITHUB_ENV
+      run: jq -r '"CARGO_SORT_VERSION=\(.defaults.build.config.CARGO_SORT_VERSION)"' dfx.json >> $GITHUB_ENV
     - name: Get node version
       shell: bash
-      run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json | tee -a $GITHUB_ENV
+      run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
     - name: Get yq version
       shell: bash
-      run: jq -r '"YQ_VERSION=\(.defaults.build.config.YQ_VERSION)"' dfx.json | tee -a $GITHUB_ENV
+      run: jq -r '"YQ_VERSION=\(.defaults.build.config.YQ_VERSION)"' dfx.json >> $GITHUB_ENV
     - name: Get shfmt version
       shell: bash
-      run: jq -r '"SHFMT_VERSION=\(.defaults.build.config.SHFMT_VERSION)"' dfx.json | tee -a $GITHUB_ENV
+      run: jq -r '"SHFMT_VERSION=\(.defaults.build.config.SHFMT_VERSION)"' dfx.json >> $GITHUB_ENV
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ env.NODE_VERSION }}
