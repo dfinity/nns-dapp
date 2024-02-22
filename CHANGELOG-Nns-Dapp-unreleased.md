@@ -45,6 +45,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Upgraded `ic-js` dependencies to utilize `agent-js` patched version `v1.0.1`.
+* Avoid a 5 minute timeout in CI by waiting 20 seconds instead.
 
 #### Deprecated
 
