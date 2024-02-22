@@ -19,9 +19,12 @@ runs:
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ env.NODE_VERSION }}
+        #    - name: Install shfmt
+        #shell: bash
+        #run: GO111MODULE=on GOBIN=/usr/local/bin/ go install "mvdan.cc/sh/v3/cmd/shfmt@v${{ env.SHFMT_VERSION }}"
     - name: Install shfmt
       shell: bash
-      run: GO111MODULE=on GOBIN=/usr/local/bin/ go install "mvdan.cc/sh/v3/cmd/shfmt@v${{ env.SHFMT_VERSION }}"
+      run: sudo snap install --classic shfmt
     - name: Install yq
       shell: bash
       run: curl -sSL "https://github.com/mikefarah/yq/releases/download/v${{ env.YQ_VERSION }}/yq_linux_amd64" | install -m 755 /dev/stdin /usr/local/bin/yq
