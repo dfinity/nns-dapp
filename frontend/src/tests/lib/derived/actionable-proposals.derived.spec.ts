@@ -3,7 +3,7 @@ import { AppPath } from "$lib/constants/routes.constants";
 import {
   actionableProposalCountStore,
   actionableProposalIndicationEnabledStore,
-} from "$lib/derived/actionable-proposal.derived";
+} from "$lib/derived/actionable-proposals.derived";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { page } from "$mocks/$app/stores";
