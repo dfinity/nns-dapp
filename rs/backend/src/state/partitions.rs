@@ -192,8 +192,9 @@ impl Partitions {
     /// Reads the exact number of bytes needed to fill `buffer`.
     pub fn read_exact(&self, memory_id: MemoryId, offset: u64, buffer: &mut [u8]) -> Result<(), String> {
         let memory = self.get(memory_id);
-        let bytes_in_memory =
-            memory.size() * u64::try_from(WASM_PAGE_SIZE_IN_BYTES).expect("Wasm page size is too large");
+        let bytes_in_memory = memory.size()
+            * u64::try_from(WASM_PAGE_SIZE_IN_BYTES)
+                .unwrap_or_else(|err| unreachable!("Wasm page size is fixed and well within the range of u64: {err}"));
         if offset.saturating_add(u64::try_from(buffer.len()).expect("Buffer for read_exact is longer than 2**64."))
             > bytes_in_memory
         {
