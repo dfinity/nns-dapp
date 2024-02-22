@@ -1,6 +1,7 @@
 import type { Transaction as NnsTransaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { Transaction, UiTransaction } from "$lib/types/transaction";
 import { AccountTransactionType } from "$lib/types/transaction";
+import type { TransactionWithId } from "@dfinity/ledger-icp";
 import { TokenAmount } from "@dfinity/utils";
 import { mockMainAccount, mockSubAccount } from "./icp-accounts.store.mock";
 import { mockSnsToken } from "./sns-projects.mock";
@@ -98,3 +99,21 @@ export const createMockUiTransaction = ({
   tokenAmount,
   timestamp,
 });
+
+export const mockTransactionWithId: TransactionWithId = {
+  id: 1234n,
+  transaction: {
+    memo: 0n,
+    icrc1_memo: [],
+    operation: {
+      Transfer: {
+        to: "1234",
+        fee: { e8s: 10_000n },
+        from: "56789",
+        amount: { e8s: 100_000_000n },
+        spender: [],
+      },
+    },
+    created_at_time: [],
+  },
+};
