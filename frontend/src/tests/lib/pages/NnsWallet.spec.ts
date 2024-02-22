@@ -25,7 +25,7 @@ import {
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { defaultTransactionWithId } from "$tests/mocks/transaction.mock";
+import { mockTransactionWithId } from "$tests/mocks/transaction.mock";
 import { IcpTransactionModalPo } from "$tests/page-objects/IcpTransactionModal.page-object";
 import { NnsWalletPo } from "$tests/page-objects/NnsWallet.page-object";
 import { ReceiveModalPo } from "$tests/page-objects/ReceiveModal.page-object";
@@ -53,7 +53,7 @@ describe("NnsWallet", () => {
     accountIdentifier: mockMainAccount.identifier,
   };
   const mainBalanceE8s = 10_000_000n;
-  const accountTransactions = [defaultTransactionWithId];
+  const accountTransactions = [mockTransactionWithId];
 
   beforeEach(() => {
     vi.clearAllMocks();
