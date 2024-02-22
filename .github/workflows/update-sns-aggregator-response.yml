@@ -9,6 +9,7 @@ on:
     branches:
       # Run when the development branch for this workflow is updated.
       - update-aggregator-response
+      - fix-cargo-sort
 jobs:
   update-aggregator-response:
     runs-on: ubuntu-latest
@@ -16,6 +17,10 @@ jobs:
       - uses: actions/checkout@v4
       - name: Update the SNS aggregator response files
         run: scripts/nns-dapp/replace-sns-aggregator-response.sh
+      - name: Get cargo sort version
+        run: jq -r '"CARGO_SORT_VERSION=\(.defaults.build.config.CARGO_SORT_VERSION)"' dfx.json >> $GITHUB_ENV
+      - name: Install cargo dependency sorter
+        run: cargo install cargo-sort@${{ env.CARGO_SORT_VERSION }}
       - name: Format the updated files
         run: scripts/fmt
       - name: Create Pull Request
