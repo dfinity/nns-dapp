@@ -70,4 +70,11 @@ export class NnsNeuronDetailPo extends BasePageObject {
   getAdvancedSectionPo(): NnsNeuronAdvancedSectionPo {
     return NnsNeuronAdvancedSectionPo.under(this.root);
   }
+
+  async increaseStake({ amount }: { amount: number }): Promise<void> {
+    await this.getVotingPowerSectionPo().getStakeItemActionPo().clickIncrease();
+    const modal = this.getNnsNeuronModalsPo().getIncreaseNeuronStakeModalPo();
+    await modal.increaseStake({ amount });
+    await modal.waitForAbsent();
+  }
 }
