@@ -1,0 +1,25 @@
+name: 'Format all the code'
+description: |
+  Formats the code with `scripts/fmt`, installing all required dependencies.
+runs:
+  using: "composite"
+  steps:
+    - name: Get cargo sort version
+      run: jq -r '"CARGO_SORT_VERSION=\(.defaults.build.config.CARGO_SORT_VERSION)"' dfx.json >> $GITHUB_ENV
+    - name: Get node version
+      run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
+    - name: Get yq version
+      run: jq -r '"YQ_VERSION=\(.defaults.build.config.YQ_VERSION)"' dfx.json >> $GITHUB_ENV
+    - name: Get shfmt version
+      run: jq -r '"SHFMT_VERSION=\(.defaults.build.config.SHFMT_VERSION)"' dfx.json >> $GITHUB_ENV
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+    - name: Install shfmt
+      run: GO111MODULE=on go install "mvdan.cc/sh/v3/cmd/shfmt@v${{ SHFMT_VERSION }}"
+    - name: Install yq
+      run: curl -sSL "https://github.com/mikefarah/yq/releases/download/v${{ env.YQ_VERSION }}/yq_linux_amd64" | install -m 755 /dev/stdin /usr/local/bin/yq
+    - name: Install cargo dependency sorter
+      run: cargo install "cargo-sort@${{ env.CARGO_SORT_VERSION }}"
+    - name: Format
+      run: ./scripts/fmt

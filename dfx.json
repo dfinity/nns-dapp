@@ -348,6 +348,8 @@
     },
     "build": {
       "config": {
+        "YQ_VERSION": "4.33.3",
+        "SHFMT_VERSION": "3.5.1",
         "NODE_VERSION": "18.14.2",
         "IC_WASM_VERSION": "0.6.0",
         "IDL2JSON_VERSION": "0.8.8",
