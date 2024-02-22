@@ -179,7 +179,7 @@ impl Partitions {
     pub fn growing_write(&self, memory_id: MemoryId, offset: u64, bytes: &[u8]) {
         let memory = self.get(memory_id);
         let min_pages: u64 = u64::try_from(bytes.len())
-            .expect("Buffer for growing_write is longer than 2**64.")
+            .unwrap_or_else(|err| unreachable!("Buffer for growing_write is longer than 2**64 bytes?? Err: {err}"))
             .saturating_add(offset)
             .div_ceil(WASM_PAGE_SIZE_IN_BYTES as u64);
         let current_pages = memory.size();
