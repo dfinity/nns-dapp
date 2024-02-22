@@ -18,7 +18,7 @@ jobs:
       - name: Update the SNS aggregator response files
         run: scripts/nns-dapp/replace-sns-aggregator-response.sh
       - name: Format
-        uses: .github/actions/format
+        uses: ./.github/actions/format
       - name: Create Pull Request
         id: cpr
         # Note: If there were no changes, this step creates no PR.

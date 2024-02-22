@@ -16,7 +16,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Format
-        uses: .github/actions/format
+        uses: ./.github/actions/format
       - name: Check that code was already formatted
         run: |
           test -z "$(git status --porcelain)" || {
