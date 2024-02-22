@@ -77,13 +77,13 @@ describe("actionable-proposals.services", () => {
         expect.objectContaining({
           beforeProposal: undefined,
           certified: false,
-          filters: expect.objectContaining({
+          filters: {
             excludeVotedProposals: false,
             lastAppliedFilter: undefined,
-            rewards: Array[ProposalRewardStatus.AcceptVotes],
+            rewards: [ProposalRewardStatus.AcceptVotes],
             status: [],
             topics: [],
-          }),
+          },
         })
       );
     });
