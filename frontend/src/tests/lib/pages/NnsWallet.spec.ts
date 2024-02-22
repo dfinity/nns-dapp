@@ -1,7 +1,3 @@
-import {
-  advanceTime,
-  runResolvedPromises,
-} from "$defaultTransactionWithIdutils";
 import * as accountsApi from "$lib/api/accounts.api";
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
@@ -26,6 +22,10 @@ import { IcpTransactionModalPo } from "$tests/page-objects/IcpTransactionModal.p
 import { NnsWalletPo } from "$tests/page-objects/NnsWallet.page-object";
 import { ReceiveModalPo } from "$tests/page-objects/ReceiveModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { Principal } from "@dfinity/principal";
 import { render } from "@testing-library/svelte";
@@ -54,7 +54,6 @@ describe("NnsWallet", () => {
     vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
       mainBalanceE8s
     );
-    defaultTransactionWithId;
     vi.spyOn(accountsApi, "getTransactions").mockResolvedValue([]);
 
     page.mock({

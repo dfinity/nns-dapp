@@ -29,16 +29,24 @@ describe("icp-transactions services", () => {
 
   describe("loadIcpAccountTransactions", () => {
     it("loads transactions in the store by account identifier from the api data", async () => {
+      const transaction1 = {
+        id: 1_234n,
+        transaction: { ...mockTransactionWithId.transaction },
+      };
+      const transaction2 = {
+        id: 5_678n,
+        transaction: { ...mockTransactionWithId.transaction },
+      };
       const spyGetTransactions = vi
         .spyOn(indexApi, "getTransactions")
         .mockResolvedValueOnce({
-          oldestTxId: mockTransactionWithId.id,
-          transactions: [mockTransactionWithId],
+          oldestTxId: transaction1.id,
+          transactions: [transaction1],
           balance: 200_000_000n,
         })
         .mockResolvedValueOnce({
-          oldestTxId: mockTransactionWithId.id,
-          transactions: [mockTransactionWithId],
+          oldestTxId: transaction2.id,
+          transactions: [transaction2],
           balance: 300_000_000n,
         });
       const start = 1_234n;
@@ -59,7 +67,7 @@ describe("icp-transactions services", () => {
 
       expect(get(icpTransactionsStore)[accountIdentifier]).toEqual({
         transactions: [mockTransactionWithId],
-        oldestTxId: 1_234n,
+        oldestTxId: transaction1.id,
         completed: true,
       });
 
@@ -70,14 +78,14 @@ describe("icp-transactions services", () => {
 
       // Previous state is not overwritten
       expect(get(icpTransactionsStore)[accountIdentifier]).toEqual({
-        transactions: [mockTransactionWithId],
-        oldestTxId: 1_234n,
+        transactions: [transaction1],
+        oldestTxId: transaction1.id,
         completed: true,
       });
       // New state is added
       expect(get(icpTransactionsStore)[accountIdentifier2]).toEqual({
-        transactions: [mockTransactionWithId],
-        oldestTxId: 5_678n,
+        transactions: [transaction2],
+        oldestTxId: transaction2.id,
         completed: true,
       });
     });
