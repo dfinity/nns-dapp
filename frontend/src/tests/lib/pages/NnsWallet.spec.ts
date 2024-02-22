@@ -309,7 +309,7 @@ describe("NnsWallet", () => {
       expect(await transactionCardsPos[0].getHeadline()).toBe("Staked");
     });
 
-    it.only("should render 'Decentralized Swap' transaction from ICP Index canister", async () => {
+    it("should render 'Decentralized Swap' transaction from ICP Index canister", async () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_ICP_INDEX", true);
       const rootCanisterId = principal(0);
       const swapCanisterId = principal(1);
