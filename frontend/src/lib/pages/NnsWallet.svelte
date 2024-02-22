@@ -16,7 +16,7 @@
   import { Island, Spinner } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { writable } from "svelte/store";
+  import { writable, type Readable } from "svelte/store";
   import TransactionList from "$lib/components/accounts/TransactionList.svelte";
   import NoTransactions from "$lib/components/accounts/NoTransactions.svelte";
   import {
@@ -41,7 +41,12 @@
   import { pageStore } from "$lib/derived/page.derived";
   import Separator from "$lib/components/ui/Separator.svelte";
   import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
-  import { ICPToken, TokenAmountV2, nonNullish } from "@dfinity/utils";
+  import {
+    ICPToken,
+    TokenAmountV2,
+    isNullish,
+    nonNullish,
+  } from "@dfinity/utils";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import type { AccountIdentifierText } from "$lib/types/account";
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
@@ -51,9 +56,25 @@
   import RenameSubAccountButton from "$lib/components/accounts/RenameSubAccountButton.svelte";
   import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
   import IC_LOGO from "$lib/assets/icp.svg";
+  import { loadIcpAccountTransactions } from "$lib/services/icp-transactions.services";
+  import { ENABLE_ICP_INDEX } from "$lib/stores/feature-flags.store";
+  import type { UiTransaction } from "$lib/types/transaction";
+  import { icpTransactionsStore } from "$lib/stores/icp-transactions.store";
+  import {
+    mapIcpTransaction,
+    mapToSelfTransactions,
+  } from "$lib/utils/icp-transactions.utils";
+  import UiTransactionsList from "$lib/components/accounts/UiTransactionsList.svelte";
+  import { neuronAccountsStore } from "$lib/stores/neurons.store";
+  import { createSwapCanisterAccountsStore } from "$lib/derived/sns-swap-canisters-accounts.derived";
+  import { authStore } from "$lib/stores/auth.store";
+  import { listNeurons } from "$lib/services/neurons.services";
 
   $: if ($authSignedInStore) {
     pollAccounts();
+    if ($ENABLE_ICP_INDEX) {
+      listNeurons();
+    }
   }
 
   onDestroy(() => {
@@ -63,11 +84,58 @@
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
 
   let transactions: Transaction[] | undefined;
+  // Used to identify transactions related to a Swap.
+  let swapCanisterAccountsStore: Readable<Set<string>> | undefined = undefined;
+  let uiTransactions: UiTransaction[] | undefined;
+  $: {
+    if (
+      nonNullish(accountIdentifier) &&
+      // Used to retrigger setting the transctions when the transactions store change and avoid setting `uiTransactions` before the transactions are loaded.
+      nonNullish($icpTransactionsStore[accountIdentifier]) &&
+      nonNullish(swapCanisterAccountsStore) &&
+      $ENABLE_ICP_INDEX
+    ) {
+      setTransactions({
+        accountIdentifier,
+        neuronAccounts: $neuronAccountsStore,
+        // TS is not smart enough to understand that if `swapCanisterAccountsStore` is defined then `$swapCanisterAccountsStore` is also defined.
+        swapCanisterAccounts: $swapCanisterAccountsStore ?? new Set(),
+      });
+    }
+  }
 
-  const reloadTransactions = (
+  const setTransactions = ({
+    accountIdentifier,
+    neuronAccounts,
+    swapCanisterAccounts,
+  }: {
+    accountIdentifier: string;
+    neuronAccounts: Set<string>;
+    swapCanisterAccounts: Set<string>;
+  }) => {
+    uiTransactions = mapToSelfTransactions(
+      $icpTransactionsStore[accountIdentifier]?.transactions ?? []
+    )
+      .map(({ transaction, toSelfTransaction }) =>
+        mapIcpTransaction({
+          accountIdentifier,
+          transaction,
+          toSelfTransaction,
+          neuronAccounts,
+          swapCanisterAccounts,
+          i18n: $i18n,
+        })
+      )
+      .filter(nonNullish);
+  };
+
+  const reloadTransactions = async (
     accountIdentifier: AccountIdentifierText
-  ): Promise<void> =>
-    getAccountTransactions({
+  ): Promise<void> => {
+    if ($ENABLE_ICP_INDEX) {
+      return loadIcpAccountTransactions({ accountIdentifier });
+    }
+    return getAccountTransactions({
       accountIdentifier: accountIdentifier,
       onLoad: ({ accountIdentifier, transactions: loadedTransactions }) => {
         // avoid using outdated transactions
@@ -78,6 +146,7 @@
         transactions = loadedTransactions;
       },
     });
+  };
 
   const selectedAccountStore = writable<WalletStore>({
     account: undefined,
@@ -126,6 +195,14 @@
       identifier,
       accounts,
     });
+    if (nonNullish(account)) {
+      // The accounts from II have no principal.
+      const accountPrincipal =
+        account.principal ?? $authStore.identity?.getPrincipal();
+      // Set the swapCanistersStore only once we have an account.
+      swapCanisterAccountsStore =
+        createSwapCanisterAccountsStore(accountPrincipal);
+    }
     selectedAccountStore.set({
       account,
       neurons: [],
@@ -212,7 +289,15 @@
           <Separator spacing="none" />
 
           {#if $selectedAccountStore.account !== undefined}
-            <TransactionList {transactions} />
+            {#if $ENABLE_ICP_INDEX}
+              <UiTransactionsList
+                transactions={uiTransactions ?? []}
+                loading={false || isNullish(uiTransactions)}
+                completed={false}
+              />
+            {:else}
+              <TransactionList {transactions} />
+            {/if}
           {:else}
             <NoTransactions />
           {/if}

@@ -1,5 +1,6 @@
 import {
   definedNeuronsStore,
+  neuronAccountsStore,
   neuronsStore,
   sortedNeuronStore,
 } from "$lib/stores/neurons.store";
@@ -121,6 +122,41 @@ describe("neurons-store", () => {
         neurons[0],
         neurons[1],
       ]);
+    });
+  });
+
+  describe("neuronAccountsStore", () => {
+    it("should return the set of neuron accounts", () => {
+      const accountIdentifier1 = "12345";
+      const accountIdentifier2 = "54321";
+      const accountIdentifier3 = "67890";
+      const neurons = [
+        {
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockNeuron.fullNeuron,
+            accountIdentifier: accountIdentifier1,
+          },
+        },
+        {
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockNeuron.fullNeuron,
+            accountIdentifier: accountIdentifier2,
+          },
+        },
+        {
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockNeuron.fullNeuron,
+            accountIdentifier: accountIdentifier3,
+          },
+        },
+      ];
+      neuronsStore.setNeurons({ neurons: [...neurons], certified: true });
+      expect(get(neuronAccountsStore)).toEqual(
+        new Set([accountIdentifier1, accountIdentifier2, accountIdentifier3])
+      );
     });
   });
 });
