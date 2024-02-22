@@ -17,7 +17,7 @@ jobs:
       - name: Update the SNS aggregator response files
         run: scripts/nns-dapp/replace-sns-aggregator-response.sh
       - name: Format the updated files
-        run: scripts/fmt
+        run: scripts/fmt-frontend
       - name: Create Pull Request
         id: cpr
         # Note: If there were no changes, this step creates no PR.

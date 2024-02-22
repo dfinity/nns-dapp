@@ -620,6 +620,7 @@
     "hotkeys_title": "Hotkeys",
     "add_hotkey": "Add Hotkey",
     "no_notkeys": "No hotkeys",
+    "no_notkeys_yet": "To vote with this neuron from another dapp, add the principal id you have in the other dapp as a hotkey.",
     "add_hotkey_modal_title": "Add Hotkey",
     "enter_hotkey": "Enter Hotkey",
     "invalid_hotkey": "Hotkey not valid. Refresh the page and try again.",
@@ -654,11 +655,11 @@
     "dissolve_delay_row_title": "Dissolve Delay:",
     "remaining_title": "Remaining:",
     "unspecified": "Unspecified Neuron State",
-    "advanced_settings_title": "Advanced details & settings",
+    "advanced_settings_title": "Advanced Details & Settings",
     "neuron_account": "Neuron Account",
     "dissolve_date": "Dissolve Date",
     "amount_maturity": "$amount maturity",
-    "created": "Date created",
+    "created": "Date Created",
     "neuron_state_tooltip": "Your neuron can be locked, unlocked or dissolving. In a locked state, it is accruing age bonus, while its dissolve delay stays constant. If the neuron is in a dissolving state, its age bonus is set to 0, while dissolve delay decreases with time. After dissolve delay reaches 0, the neuron is unlocked, and $token held in it can be sent to any $token account.",
     "dissolve_delay_tooltip": "Dissolve delay is the minimum amount of time you have to wait for the neuron to unlock, and $token to be available again. If your neuron is dissolving, your $token will be available in $duration."
   },
@@ -735,8 +736,8 @@
     "vesting_period_tooltip": "This function is not available during your vesting period. Vesting will last another $remainingVesting",
     "community_fund_section": "Neurons' Fund",
     "community_fund_section_description": "You are not the controller of the SNS neurons below. To facilitate bootstrapping the SNS DAO governance, the NNS treasury has temporarily granted hotkey access to you for voting and following. <a href=\"https://internetcomputer.org/docs/current/tokenomics/nns/neurons-fund\" rel=\"noopener noreferrer\" aria-label=\"more info about neurons' fund\" target=\"_blank\">Learn more</a>.",
-    "add_hotkey_info": "In order to use this neuron to vote from the corresponding dapp, you have to add your personal dapp ID as a hotkey here. Please refer to the instructions given by the corresponding dapp.",
-    "add_hotkey_tooltip": "In order to use this neuron to vote from the corresponding dapp, you have to add your personal dapp ID as a hotkey here. Please refer to the instructions given by the corresponding dapp."
+    "add_hotkey_info": "To vote with this neuron from another dapp, add the principal id you have in the other dapp as a hotkey.",
+    "add_hotkey_tooltip": "To vote with this neuron from another dapp, add the principal id you have in the other dapp as a hotkey."
   },
   "sns_neurons": {
     "text": "You have no $project neurons. Create a neuron by staking $tokenSymbol to vote on $project proposals.",

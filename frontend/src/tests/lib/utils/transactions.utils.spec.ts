@@ -8,6 +8,7 @@ import {
 import { enumKeys } from "$lib/utils/enum.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import {
+  getUniqueTransactions,
   isTransactionNetworkBtc,
   mapNnsTransaction,
   mapToSelfTransaction,
@@ -22,6 +23,7 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { createIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import {
   mockReceivedFromMainAccountTransaction,
@@ -618,6 +620,56 @@ describe("transactions-utils", () => {
     it("should not be network Btc", () => {
       expect(isTransactionNetworkBtc(TransactionNetwork.ICP)).toBe(false);
       expect(isTransactionNetworkBtc(TransactionNetwork.ICP)).toBe(false);
+    });
+  });
+
+  describe("getUniqueTransactions", () => {
+    const mainAccount = {
+      owner: mockPrincipal,
+      subaccount: [] as [] | [Uint8Array],
+    };
+    const subAccount = {
+      owner: mockPrincipal,
+      subaccount: [new Uint8Array([1, 2, 3])] as [] | [Uint8Array],
+    };
+    const txA = createIcrcTransactionWithId({
+      id: 1n,
+      from: mainAccount,
+      to: subAccount,
+    });
+    const txB = createIcrcTransactionWithId({
+      id: 2n,
+      from: subAccount,
+      to: mainAccount,
+    });
+    const txC = createIcrcTransactionWithId({
+      id: 3n,
+      from: mainAccount,
+      to: mainAccount,
+    });
+
+    it("empty array", () => {
+      expect(getUniqueTransactions([])).toEqual([]);
+    });
+
+    it("singleton array", () => {
+      const transactions = [txA];
+      expect(getUniqueTransactions(transactions)).toEqual(transactions);
+    });
+
+    it("duplicate transactions", () => {
+      const transactions = [txA, txA];
+      expect(getUniqueTransactions(transactions)).toEqual([txA]);
+    });
+
+    it("multiple different transactions", () => {
+      const transactions = [txA, txB, txC];
+      expect(getUniqueTransactions(transactions)).toEqual(transactions);
+    });
+
+    it("non-consecutive duplicate transactions", () => {
+      const transactions = [txA, txB, txC, txA, txC, txB, txA, txC];
+      expect(getUniqueTransactions(transactions)).toEqual([txA, txB, txC]);
     });
   });
 });
