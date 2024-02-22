@@ -20,6 +20,10 @@ impl Partitions {
         self.growing_write(PartitionType::Metadata.memory_id(), 0, &schema_label_bytes[..]);
     }
     /// Gets the schema label from the metadata partition.
+    ///
+    /// # Panics
+    /// - If the metadata partition has no schema label.
+    /// - If the schema label is not supported.
     #[must_use]
     pub fn schema_label(&self) -> SchemaLabel {
         let mut schema_label_bytes = [0u8; SchemaLabel::MAX_BYTES];
