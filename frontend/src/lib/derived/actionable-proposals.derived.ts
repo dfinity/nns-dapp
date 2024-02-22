@@ -1,10 +1,11 @@
-import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { authSignedInStore } from "$lib/derived/auth.derived";
 import { pageStore } from "$lib/derived/page.derived";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { isSelectedPath } from "$lib/utils/navigation.utils";
+import { mapEntries } from "$lib/utils/utils";
 import { isNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 
@@ -17,10 +18,10 @@ export interface ActionableProposalCountData {
 export const actionableProposalIndicationEnabledStore: Readable<boolean> =
   derived(
     [pageStore, authSignedInStore],
-    ([{ path: currentPath }, isSignedInd]) =>
+    ([{ path: currentPath }, isSignedIn]) =>
       isNullish(currentPath)
         ? false
-        : isSignedInd &&
+        : isSignedIn &&
           isSelectedPath({
             currentPath,
             paths: [AppPath.Proposals],
@@ -31,18 +32,11 @@ export const actionableProposalIndicationEnabledStore: Readable<boolean> =
 export const actionableProposalCountStore: Readable<ActionableProposalCountData> =
   derived(
     [actionableNnsProposalsStore, actionableSnsProposalsStore],
-    ([{ proposals: nnsProposals }, actionableSnsProposals]) => {
-      const snsProposalCounts = Object.entries(actionableSnsProposals).reduce(
-        (acc, [canisterId, proposals]) => ({
-          ...acc,
-          [canisterId]: proposals.length,
-        }),
-        {}
-      );
-
-      return {
-        [OWN_CANISTER_ID.toText()]: nnsProposals?.length,
-        ...snsProposalCounts,
-      };
-    }
+    ([{ proposals: nnsProposals }, actionableSnsProposals]) => ({
+      [OWN_CANISTER_ID_TEXT]: nnsProposals?.length,
+      ...mapEntries({
+        obj: actionableSnsProposals,
+        mapFn: ([canisterId, proposals]) => [canisterId, proposals.length],
+      }),
+    })
   );
