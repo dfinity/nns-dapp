@@ -782,7 +782,7 @@ impl AccountsStore {
             .map(|transaction_index| {
                 let transaction = self.get_transaction(*transaction_index).unwrap_or_else(|| {
                     unreachable!(
-                        "The per-user transaction lists contain only entries that are in the global transaction list"
+                        "If transaction {transaction_index} is in the list for user {caller}, it must also be in the global transaction list."
                     )
                 });
                 let transaction_type = transaction.transaction_type;
