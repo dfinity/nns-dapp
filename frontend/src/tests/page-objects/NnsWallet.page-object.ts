@@ -6,6 +6,7 @@ import { WalletPageHeaderPo } from "$tests/page-objects/WalletPageHeader.page-ob
 import { WalletPageHeadingPo } from "$tests/page-objects/WalletPageHeading.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { UiTransactionsListPo } from "./UiTransactionsList.page-object";
 
 export class NnsWalletPo extends BasePageObject {
   private static readonly TID = "nns-wallet-component";
@@ -28,6 +29,10 @@ export class NnsWalletPo extends BasePageObject {
 
   getTransactionListPo(): TransactionListPo {
     return TransactionListPo.under(this.root);
+  }
+
+  getUiTransactionsListPo(): UiTransactionsListPo {
+    return UiTransactionsListPo.under(this.root);
   }
 
   getSignInPo(): SignInPo {
