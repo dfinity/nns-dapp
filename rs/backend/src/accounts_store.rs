@@ -683,7 +683,8 @@ impl AccountsStore {
                             default_transaction_type,
                         ));
                         self.process_transaction_type(
-                            transaction_type.unwrap(),
+                            transaction_type
+                                .unwrap_or_else(|| unreachable!("Transaction type is set to Some a few lines above")),
                             principal,
                             from,
                             to,
