@@ -12,19 +12,19 @@ import { SnsProposalRewardStatus } from "@dfinity/sns";
 import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
-export const updateActionableSnsProposals = async () => {
+export const loadActionableSnsProposals = async () => {
   const rootCanisterIds = get(snsProjectsCommittedStore).map(
     ({ rootCanisterId }) => rootCanisterId
   );
 
   await Promise.all(
     rootCanisterIds.map((rootCanisterId) =>
-      updateActionableProposalsForSns(rootCanisterId)
+      loadActionableProposalsForSns(rootCanisterId)
     )
   );
 };
 
-const updateActionableProposalsForSns = async (
+const loadActionableProposalsForSns = async (
   rootCanisterId: Principal
 ): Promise<void> => {
   try {

@@ -1,6 +1,6 @@
 import * as api from "$lib/api/sns-governance.api";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
-import { updateActionableSnsProposals } from "$lib/services/actionable-sns-proposals.services";
+import { loadActionableSnsProposals } from "$lib/services/actionable-sns-proposals.services";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { authStore } from "$lib/stores/auth.store";
 import { enumValues } from "$lib/utils/enum.utils";
@@ -138,7 +138,7 @@ describe("actionable-sns-proposals.services", () => {
       mockSnsProjectsCommittedStore([rootCanisterId1, rootCanisterId2]);
       expect(spyQuerySnsNeurons).not.toHaveBeenCalled();
 
-      await updateActionableSnsProposals();
+      await loadActionableSnsProposals();
 
       expect(spyQuerySnsNeurons).toHaveBeenCalledTimes(2);
       expect(spyQuerySnsNeurons).toHaveBeenCalledWith(
@@ -159,7 +159,7 @@ describe("actionable-sns-proposals.services", () => {
       mockSnsProjectsCommittedStore([rootCanisterId1, rootCanisterId2]);
       expect(spyQuerySnsProposals).not.toHaveBeenCalled();
 
-      await updateActionableSnsProposals();
+      await loadActionableSnsProposals();
 
       expect(spyQuerySnsProposals).toHaveBeenCalledTimes(2);
       const expectedFilterParams = {
@@ -188,7 +188,7 @@ describe("actionable-sns-proposals.services", () => {
       mockSnsProjectsCommittedStore([rootCanisterId1, rootCanisterId2]);
       expect(spyQuerySnsProposals).not.toHaveBeenCalled();
 
-      await updateActionableSnsProposals();
+      await loadActionableSnsProposals();
 
       expect(get(actionableSnsProposalsStore)).toEqual({
         [rootCanisterId1.toText()]: [votableProposal],
@@ -202,12 +202,12 @@ describe("actionable-sns-proposals.services", () => {
       expect(spyQuerySnsNeurons).not.toHaveBeenCalled();
       expect(spyQuerySnsProposals).not.toHaveBeenCalled();
 
-      await updateActionableSnsProposals();
+      await loadActionableSnsProposals();
 
       expect(spyQuerySnsNeurons).toHaveBeenCalledTimes(1);
       expect(spyQuerySnsProposals).toHaveBeenCalledTimes(1);
 
-      await updateActionableSnsProposals();
+      await loadActionableSnsProposals();
 
       expect(spyQuerySnsNeurons).toHaveBeenCalledTimes(1);
       expect(spyQuerySnsProposals).toHaveBeenCalledTimes(1);
@@ -219,7 +219,7 @@ describe("actionable-sns-proposals.services", () => {
         .spyOn(api, "querySnsNeurons")
         .mockImplementation(() => Promise.resolve([]));
 
-      await updateActionableSnsProposals();
+      await loadActionableSnsProposals();
 
       expect(spyQuerySnsNeurons).toHaveBeenCalledTimes(1);
       expect(spyQuerySnsProposals).toHaveBeenCalledTimes(0);
