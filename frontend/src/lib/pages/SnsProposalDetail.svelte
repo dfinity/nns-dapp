@@ -143,7 +143,7 @@
         updating = true;
 
         await Promise.all([
-          // skip neurons call when not signedIn or when neurons are not ready
+          // skip neurons call when not signedIn or when neurons are ready
           neuronsReady || !$authSignedInStore
             ? undefined
             : syncSnsNeurons(universeId),
