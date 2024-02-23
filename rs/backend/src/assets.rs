@@ -318,7 +318,6 @@ fn security_headers() -> Vec<HeaderField> {
     ]
 }
 
-///
 fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -> (String, String) {
     let certificate = dfn_core::api::data_certificate().unwrap_or_else(|| {
         dfn_core::api::trap_with("data certificate is only available in query calls");
