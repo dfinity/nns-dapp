@@ -153,7 +153,7 @@ describe("neurons-store", () => {
           },
         },
       ];
-      neuronsStore.setNeurons({ neurons: [...neurons], certified: true });
+      neuronsStore.setNeurons({ neurons, certified: true });
       expect(get(neuronAccountsStore)).toEqual(
         new Set([accountIdentifier1, accountIdentifier2, accountIdentifier3])
       );

@@ -196,7 +196,7 @@
       accounts,
     });
     if (nonNullish(account)) {
-      // The accounts from II have no principal.
+      // The accounts from the II identity have no principal at the moment.
       const accountPrincipal =
         account.principal ?? $authStore.identity?.getPrincipal();
       // Set the swapCanistersStore only once we have an account.
@@ -292,7 +292,7 @@
             {#if $ENABLE_ICP_INDEX}
               <UiTransactionsList
                 transactions={uiTransactions ?? []}
-                loading={false || isNullish(uiTransactions)}
+                loading={false}
                 completed={false}
               />
             {:else}
