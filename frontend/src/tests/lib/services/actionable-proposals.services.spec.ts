@@ -70,7 +70,7 @@ describe("actionable-proposals.services", () => {
       );
     });
 
-    it("should preserve neurons in the neuron store", async () => {
+    it("should load neurons in the neuron store", async () => {
       expect(get(neuronsStore)).toEqual(
         expect.objectContaining({ neurons: undefined })
       );
