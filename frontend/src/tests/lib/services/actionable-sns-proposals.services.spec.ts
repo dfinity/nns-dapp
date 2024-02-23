@@ -36,7 +36,7 @@ describe("actionable-sns-proposals.services", () => {
     vi.clearAllMocks();
   });
 
-  describe("updateActionableSnsProposals", () => {
+  describe("loadActionableProposalsForSns", () => {
     const allPermissions = Int32Array.from(enumValues(SnsNeuronPermissionType));
     const subaccount = neuronSubaccount({
       controller: mockIdentity.getPrincipal(),
