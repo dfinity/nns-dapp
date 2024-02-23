@@ -167,7 +167,6 @@ export const ledgerCanister = async ({
   const canister = LedgerCanister.create({
     agent,
     canisterId: LEDGER_CANISTER_ID,
-    hardwareWallet: false,
   });
 
   logWithTimestamp(`LC complete.`);

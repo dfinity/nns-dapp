@@ -560,7 +560,6 @@ export const governanceCanister = async ({
   const canister = GovernanceCanister.create({
     agent,
     canisterId: GOVERNANCE_CANISTER_ID,
-    hardwareWallet: false,
   });
 
   return {
