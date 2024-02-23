@@ -1662,6 +1662,12 @@ impl Account {
             .push(transaction_index);
     }
 
+    /// Records a transaction in a hardware wallet account.
+    ///
+    /// TODO: Use the index canister instead.
+    ///
+    /// # Panics
+    /// - If the account does not have a hardware wallet sub-account with the given identifier.
     pub fn append_hardware_wallet_transaction(
         &mut self,
         account_identifier: AccountIdentifier,
