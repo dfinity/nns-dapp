@@ -729,6 +729,10 @@ impl AccountsStore {
         .unwrap_or_else(|_| unreachable!("Not impossible, but centuries in the future"));
     }
 
+    /// Initializes the `block_height_synced_up_to` value.
+    ///
+    /// # Panics
+    /// - Panics if the `block_height_synced_up_to` value has already been initialized.
     pub fn init_block_height_synced_up_to(&mut self, block_height: BlockIndex) {
         assert!(
             self.block_height_synced_up_to.is_none(),
