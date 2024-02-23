@@ -7,10 +7,10 @@ import {
 import { icpTransactionsStore } from "$lib/stores/icp-transactions.store";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
+import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockTransactionWithId } from "$tests/mocks/transaction.mock";
 import { toastsStore } from "@dfinity/gix-components";
-import type { TransactionWithId } from "@dfinity/ledger-icp";
 import { get } from "svelte/store";
 
 vi.mock("$lib/api/icp-index.api");
@@ -90,12 +90,16 @@ describe("icp-transactions services", () => {
       });
     });
 
-    it("sets complete to false", async () => {
-      const transactions = new Array(DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT).fill(
-        mockTransactionWithId
-      );
+    it("sets complete to false when oldest is not present in results", async () => {
+      const indexBuffer = 10n;
+      const transactions = new Array(DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT)
+        .fill(mockTransactionWithId)
+        .map((transaction, index) => ({
+          id: BigInt(index) + indexBuffer,
+          transaction: { ...transaction.transaction },
+        }));
       vi.spyOn(indexApi, "getTransactions").mockResolvedValue({
-        oldestTxId: 1_234n,
+        oldestTxId: indexBuffer - 1n,
         transactions: transactions,
         balance: 200_000_000n,
       });
@@ -108,6 +112,28 @@ describe("icp-transactions services", () => {
       expect(get(icpTransactionsStore)[accountIdentifier].completed).toBe(
         false
       );
+    });
+
+    it("sets complete to true when oldest is present in results", async () => {
+      const oldestTxId = 10n;
+      const transactions = new Array(DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT)
+        .fill(mockTransactionWithId)
+        .map((transaction, index) => ({
+          id: oldestTxId + BigInt(index),
+          transaction: { ...transaction.transaction },
+        }));
+      vi.spyOn(indexApi, "getTransactions").mockResolvedValue({
+        oldestTxId,
+        transactions: transactions,
+        balance: 200_000_000n,
+      });
+
+      await loadIcpAccountTransactions({
+        accountIdentifier,
+        start: undefined,
+      });
+
+      expect(get(icpTransactionsStore)[accountIdentifier].completed).toBe(true);
     });
 
     it("toasts error if api fails", async () => {
@@ -132,17 +158,17 @@ describe("icp-transactions services", () => {
   });
 
   describe("loadIcpAccountNextTransactions", () => {
-    it("uses oldest transaction id as start and results in store", async () => {
+    it("uses oldest transaction id as start and stores results in store", async () => {
       const oldTransactionId = 100n;
       const recentTransactionId = 200n;
-      const recentTransaction: TransactionWithId = {
+      const recentTransaction = createTransactionWithId({
+        timestamp: new Date("2023-01-01T00:00:00.000Z"),
         id: recentTransactionId,
-        transaction: { ...mockTransactionWithId.transaction },
-      };
-      const oldTransaction = {
+      });
+      const oldTransaction = createTransactionWithId({
+        timestamp: new Date("2023-01-03T00:00:00.000Z"),
         id: oldTransactionId,
-        transaction: { ...mockTransactionWithId.transaction },
-      };
+      });
       const spyGetTransactions = vi
         .spyOn(indexApi, "getTransactions")
         .mockResolvedValue({
@@ -154,7 +180,7 @@ describe("icp-transactions services", () => {
       icpTransactionsStore.addTransactions({
         accountIdentifier,
         transactions: [recentTransaction],
-        oldestTxId: recentTransactionId,
+        oldestTxId: oldTransactionId,
         completed: false,
       });
 
