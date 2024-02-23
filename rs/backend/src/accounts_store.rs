@@ -1057,7 +1057,7 @@ impl AccountsStore {
         let timestamp_now_nanos = u64::try_from(
             dfn_core::api::now()
                 .duration_since(SystemTime::UNIX_EPOCH)
-                .unwrap()
+                .unwrap_or_else(|err| unreachable!("Hey, we are back in the sixties!  Seriously, if we get here, the system time is before the Unix epoch.  This should be impossible.  Error: {err}"))
                 .as_nanos(),
         )
         .unwrap_or_else(|_| {
