@@ -25,6 +25,7 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { IntersectionObserverActive } from "$tests/mocks/infinitescroll.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockTransactionWithId } from "$tests/mocks/transaction.mock";
@@ -56,6 +57,13 @@ describe("NnsWallet", () => {
     accountIdentifier: mockMainAccount.identifier,
   };
   const mainBalanceE8s = 10_000_000n;
+  const firstPageTransactions = [
+    { id: 1000n, transaction: mockTransactionWithId.transaction },
+  ];
+  const oldestTxId = 10n;
+  const lastPageTransactions = [
+    { id: oldestTxId, transaction: mockTransactionWithId.transaction },
+  ];
   const accountTransactions = [mockTransactionWithId];
 
   beforeEach(() => {
@@ -73,8 +81,8 @@ describe("NnsWallet", () => {
       mainBalanceE8s
     );
     vi.spyOn(indexApi, "getTransactions").mockResolvedValue({
-      transactions: accountTransactions,
-      oldestTxId: 1234n,
+      transactions: firstPageTransactions,
+      oldestTxId,
       balance: mainBalanceE8s,
     });
     vi.spyOn(accountsApi, "getTransactions").mockResolvedValue([]);
@@ -273,6 +281,54 @@ describe("NnsWallet", () => {
       expect(
         await po.getUiTransactionsListPo().getTransactionCardPos()
       ).toHaveLength(accountTransactions.length);
+    });
+
+    it("should render second page of transactions from ICP Index canister", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_INDEX", true);
+      vi.stubGlobal("IntersectionObserver", IntersectionObserverActive);
+      let resolveGetTransactionsFirst;
+      let resolveGetTransactionsSecond;
+      vi.spyOn(indexApi, "getTransactions")
+        .mockImplementationOnce(
+          () =>
+            new Promise<indexApi.GetTransactionsResponse>((resolve) => {
+              resolveGetTransactionsFirst = resolve;
+            })
+        )
+        .mockImplementationOnce(
+          () =>
+            new Promise<indexApi.GetTransactionsResponse>((resolve) => {
+              resolveGetTransactionsSecond = resolve;
+            })
+        );
+
+      const { container } = render(NnsWallet, props);
+      const po = NnsWalletPo.under(new JestPageObjectElement(container));
+
+      await runResolvedPromises();
+      resolveGetTransactionsFirst({
+        transactions: firstPageTransactions,
+        oldestTxId,
+        balance: mainBalanceE8s,
+      });
+      await runResolvedPromises();
+
+      expect(
+        await po.getUiTransactionsListPo().getTransactionCardPos()
+      ).toHaveLength(firstPageTransactions.length);
+
+      resolveGetTransactionsSecond({
+        transactions: lastPageTransactions,
+        oldestTxId,
+        balance: mainBalanceE8s,
+      });
+      await runResolvedPromises();
+
+      expect(
+        await po.getUiTransactionsListPo().getTransactionCardPos()
+      ).toHaveLength(
+        firstPageTransactions.length + lastPageTransactions.length
+      );
     });
 
     it("should render 'Staked' transaction from ICP Index canister", async () => {
