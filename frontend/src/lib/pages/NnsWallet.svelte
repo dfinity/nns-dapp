@@ -41,12 +41,7 @@
   import { pageStore } from "$lib/derived/page.derived";
   import Separator from "$lib/components/ui/Separator.svelte";
   import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
-  import {
-    ICPToken,
-    TokenAmountV2,
-    isNullish,
-    nonNullish,
-  } from "@dfinity/utils";
+  import { ICPToken, TokenAmountV2, nonNullish } from "@dfinity/utils";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import type { AccountIdentifierText } from "$lib/types/account";
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
@@ -59,7 +54,10 @@
   import { loadIcpAccountTransactions } from "$lib/services/icp-transactions.services";
   import { ENABLE_ICP_INDEX } from "$lib/stores/feature-flags.store";
   import type { UiTransaction } from "$lib/types/transaction";
-  import { icpTransactionsStore } from "$lib/stores/icp-transactions.store";
+  import {
+    icpTransactionsStore,
+    type IcpTransactionsStoreData,
+  } from "$lib/stores/icp-transactions.store";
   import {
     mapIcpTransaction,
     mapToSelfTransactions,
@@ -87,46 +85,42 @@
   // Used to identify transactions related to a Swap.
   let swapCanisterAccountsStore: Readable<Set<string>> | undefined = undefined;
   let uiTransactions: UiTransaction[] | undefined;
-  $: {
-    if (
-      nonNullish(accountIdentifier) &&
-      // Used to retrigger setting the transctions when the transactions store change and avoid setting `uiTransactions` before the transactions are loaded.
-      nonNullish($icpTransactionsStore[accountIdentifier]) &&
-      nonNullish(swapCanisterAccountsStore) &&
-      $ENABLE_ICP_INDEX
-    ) {
-      setTransactions({
-        accountIdentifier,
-        neuronAccounts: $neuronAccountsStore,
-        // TS is not smart enough to understand that if `swapCanisterAccountsStore` is defined then `$swapCanisterAccountsStore` is also defined.
-        swapCanisterAccounts: $swapCanisterAccountsStore ?? new Set(),
-      });
-    }
-  }
-
-  const setTransactions = ({
-    accountIdentifier,
-    neuronAccounts,
+  $: uiTransactions = makeUiTransactions({
+    account: $selectedAccountStore.account,
+    transactionsStore: $icpTransactionsStore,
+    swapCanisterAccounts: $swapCanisterAccountsStore ?? new Set(),
+    neuronAccounts: $neuronAccountsStore,
+  });
+  const makeUiTransactions = ({
+    account,
+    transactionsStore,
     swapCanisterAccounts,
+    neuronAccounts,
   }: {
-    accountIdentifier: string;
-    neuronAccounts: Set<string>;
+    account: Account | undefined;
+    transactionsStore: IcpTransactionsStoreData;
     swapCanisterAccounts: Set<string>;
-  }) => {
-    uiTransactions = mapToSelfTransactions(
-      $icpTransactionsStore[accountIdentifier]?.transactions ?? []
-    )
-      .map(({ transaction, toSelfTransaction }) =>
-        mapIcpTransaction({
-          accountIdentifier,
-          transaction,
-          toSelfTransaction,
-          neuronAccounts,
-          swapCanisterAccounts,
-          i18n: $i18n,
-        })
+    neuronAccounts: Set<string>;
+  }): UiTransaction[] | undefined => {
+    if (
+      nonNullish(account) &&
+      nonNullish(transactionsStore[account.identifier])
+    ) {
+      return mapToSelfTransactions(
+        transactionsStore[account.identifier].transactions
       )
-      .filter(nonNullish);
+        .map(({ transaction, toSelfTransaction }) =>
+          mapIcpTransaction({
+            accountIdentifier: account.identifier,
+            transaction,
+            toSelfTransaction,
+            neuronAccounts,
+            swapCanisterAccounts,
+            i18n: $i18n,
+          })
+        )
+        .filter(nonNullish);
+    }
   };
 
   const reloadTransactions = async (
