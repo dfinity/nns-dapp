@@ -1,3 +1,4 @@
+import { ALL_CANDID_TXS_VERSION } from "$lib/constants/ledger-app.constants";
 import { LEDGER_DEFAULT_DERIVE_PATH } from "$lib/constants/ledger.constants";
 import type { Secp256k1PublicKey } from "$lib/keys/secp256k1";
 import { i18n } from "$lib/stores/i18n";
@@ -30,7 +31,7 @@ import {
   type RequestId,
   type Signature,
 } from "@dfinity/agent";
-import { isNullish, nonNullish } from "@dfinity/utils";
+import { isNullish, nonNullish, smallerVersion } from "@dfinity/utils";
 import type Transport from "@ledgerhq/hw-transport";
 import type LedgerApp from "@zondax/ledger-icp";
 import type {
@@ -87,7 +88,19 @@ export class LedgerIdentity extends SignIdentity {
     return this.publicKey;
   }
 
+  private raiseIfVersionIsDeprecated = async () => {
+    const { major, minor, patch } = await this.getVersion();
+    const currentVersion = `${major}.${minor}.${patch}`;
+    if (
+      smallerVersion({ minVersion: ALL_CANDID_TXS_VERSION, currentVersion })
+    ) {
+      throw new LedgerErrorKey("error__ledger.app_version_not_supported");
+    }
+  };
+
   public override async sign(blob: ArrayBuffer): Promise<Signature> {
+    await this.raiseIfVersionIsDeprecated();
+
     const callback = async (app: LedgerApp): Promise<Signature> => {
       const responseSign: ResponseSign = await app.sign(
         this.derivePath,
@@ -108,6 +121,8 @@ export class LedgerIdentity extends SignIdentity {
     callBlob: ArrayBuffer,
     readStateBlob: ArrayBuffer
   ): Promise<RequestSignatures> {
+    await this.raiseIfVersionIsDeprecated();
+
     const callback = async (app: LedgerApp): Promise<RequestSignatures> => {
       const responseSign: ResponseSignUpdateCall = await app.signUpdateCall(
         this.derivePath,
