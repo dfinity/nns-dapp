@@ -1,7 +1,6 @@
 import { queryProposals, querySnsNeurons } from "$lib/api/sns-governance.api";
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_SNS_PROPOSALS_PAGE_SIZE } from "$lib/constants/sns-proposals.constants";
-import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
+import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
@@ -14,21 +13,23 @@ import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 export const updateActionableSnsProposals = async () => {
-  const canisterIds = get(selectableUniversesStore)
-    // skip nns
-    .filter(({ canisterId }) => canisterId !== OWN_CANISTER_ID_TEXT)
-    .map(({ canisterId }) => canisterId);
+  const rootCanisterIds = get(snsProjectsCommittedStore).map(
+    ({ rootCanisterId }) => rootCanisterId
+  );
 
   await Promise.all(
-    canisterIds.map((canisterId) => updateActionableProposalsForSns(canisterId))
+    rootCanisterIds.map((rootCanisterId) =>
+      updateActionableProposalsForSns(rootCanisterId)
+    )
   );
 };
 
 const updateActionableProposalsForSns = async (
-  rootCanisterId: string
+  rootCanisterId: Principal
 ): Promise<void> => {
   try {
-    const storeValue = get(actionableSnsProposalsStore)[rootCanisterId];
+    const rootCanisterIdText = rootCanisterId.toText();
+    const storeValue = get(actionableSnsProposalsStore)[rootCanisterIdText];
     if (nonNullish(storeValue)) {
       // The proposals state does not update frequently, so we don't need to re-fetch.
       // The store will be reset after the user registers a vote.
@@ -37,11 +38,11 @@ const updateActionableProposalsForSns = async (
 
     const identity = await getAuthenticatedIdentity();
     const neurons =
-      get(snsNeuronsStore)[rootCanisterId]?.neurons ??
+      get(snsNeuronsStore)[rootCanisterIdText]?.neurons ??
       // Fetch neurons if they are not in the store, but do not populate the store.
       // Otherwise, it will skip calling of the `syncSnsNeurons` function to check neurons stake against the balance of the subaccount.
       (await queryNeurons({
-        rootCanisterId,
+        rootCanisterId: rootCanisterIdText,
         identity,
       }));
     if (neurons.length === 0) {
@@ -52,7 +53,7 @@ const updateActionableProposalsForSns = async (
 
     const { proposals: allProposals, include_ballots_by_caller } =
       await querySnsProposals({
-        rootCanisterId,
+        rootCanisterId: rootCanisterIdText,
         identity,
       });
     if (!fromDefinedNullable(include_ballots_by_caller)) {
@@ -70,7 +71,7 @@ const updateActionableProposalsForSns = async (
     );
 
     actionableSnsProposalsStore.setProposals({
-      rootCanisterId: Principal.fromText(rootCanisterId),
+      rootCanisterId,
       proposals: votableProposals,
     });
   } catch (err) {
