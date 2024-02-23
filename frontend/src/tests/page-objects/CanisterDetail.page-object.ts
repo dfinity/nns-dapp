@@ -1,3 +1,4 @@
+import { AddCyclesModalPo } from "$tests/page-objects/AddCyclesModal.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 import type { ButtonPo } from "./Button.page-object";
@@ -15,12 +16,20 @@ export class CanisterDetailPo extends BasePageObject {
     return this.getButton("rename-canister-button-component");
   }
 
+  getAddCyclesButtonPo(): ButtonPo {
+    return this.getButton("add-cycles-button");
+  }
+
   clickRename(): Promise<void> {
     return this.getRenameButtonPo().click();
   }
 
   getRenameCanisterModalPo(): RenameCanisterModalPo {
     return RenameCanisterModalPo.under(this.root);
+  }
+
+  getAddCyclesModalPo(): AddCyclesModalPo {
+    return AddCyclesModalPo.under(this.root);
   }
 
   async renameCanister(newName: string): Promise<void> {
@@ -41,5 +50,12 @@ export class CanisterDetailPo extends BasePageObject {
 
   async hasSubtitle(): Promise<boolean> {
     return this.getCanisterPageHeading().hasSubtitle();
+  }
+
+  async addCycles({ icpAmount }: { icpAmount: number }): Promise<void> {
+    await this.getAddCyclesButtonPo().click();
+    const modal = this.getAddCyclesModalPo();
+    await modal.addCycles({ icpAmount });
+    await modal.waitForClosed();
   }
 }
