@@ -738,6 +738,7 @@ impl AccountsStore {
         self.block_height_synced_up_to = Some(block_height);
     }
 
+    /// Gets all the transactions to or from the caller.
     #[must_use]
     #[allow(clippy::needless_pass_by_value)] // The pattern is to pass a request by value.
     pub fn get_transactions(&self, caller: PrincipalId, request: GetTransactionsRequest) -> GetTransactionsResponse {
@@ -779,7 +780,11 @@ impl AccountsStore {
             .skip(request.offset as usize)
             .take(request.page_size as usize)
             .map(|transaction_index| {
-                let transaction = self.get_transaction(*transaction_index).unwrap();
+                let transaction = self.get_transaction(*transaction_index).unwrap_or_else(|| {
+                    unreachable!(
+                        "The per-user transaction lists contain only entries that are in the global transaction list"
+                    )
+                });
                 let transaction_type = transaction.transaction_type;
                 let used_transaction_type = if let Some(TransactionType::TransferFrom) = transaction_type {
                     Some(TransactionType::Transfer)
