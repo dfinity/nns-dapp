@@ -188,8 +188,6 @@ describe("sns-vote-registration-services", () => {
         reloadProposalCallback: () => {},
       });
 
-      // await runResolvedPromises();
-
       expect(get(actionableSnsProposalsStore)).toEqual({
         [rootCanisterId2.toText()]: [proposal],
       });
