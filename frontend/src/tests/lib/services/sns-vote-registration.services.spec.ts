@@ -185,7 +185,9 @@ describe("sns-vote-registration-services", () => {
 
       await callRegisterVote({
         vote: SnsVote.Yes,
-        reloadProposalCallback: () => {},
+        reloadProposalCallback: () => {
+          // do nothing
+        },
       });
 
       expect(get(actionableSnsProposalsStore)).toEqual({
