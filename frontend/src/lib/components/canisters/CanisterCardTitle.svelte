@@ -11,7 +11,7 @@
   $: ({ canisterId, validName } = mapCanisterDetails(canister));
 </script>
 
-<div class={`title-block ${titleTag}`} data-tid="canister-card-title-compoment">
+<div class={`title-block ${titleTag}`} data-tid="canister-card-title-component">
   <svelte:element this={titleTag} class="title value"
     ><span>{validName ? canister.name : canisterId}</span>
     {#if !validName}

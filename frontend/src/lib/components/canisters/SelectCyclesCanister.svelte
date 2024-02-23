@@ -67,6 +67,7 @@
 <form on:submit|preventDefault={selectAmount} data-tid="select-cycles-screen">
   <div class="inputs">
     <Input
+      testId="select-cycles-icp-input"
       placeholderLabelKey="core.icp"
       inputType="icp"
       name="icp-amount"
