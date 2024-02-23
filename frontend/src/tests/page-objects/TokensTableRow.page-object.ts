@@ -57,8 +57,10 @@ export class TokensTableRowPo extends BasePageObject {
     return Number(await AmountDisplayPo.under(this.root).getAmount());
   }
 
-  waitForBalance(): Promise<void> {
-    return this.root
+  async waitForBalance(): Promise<void> {
+    await this.root
+      .byTestId("token-value-label").waitFor();
+    await this.root
       .byTestId("token-value-label")
       .byTestId("spinner")
       .waitForAbsent();
@@ -89,6 +91,11 @@ export class TokensTableRowPo extends BasePageObject {
 
   hasSendButton(): Promise<boolean> {
     return this.getSendButton().isPresent();
+  }
+
+  async click(testId?: string): Promise<void> {
+    await this.waitForBalance();
+    return super.click(testId);
   }
 
   clickSend(): Promise<void> {
