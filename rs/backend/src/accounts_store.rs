@@ -723,7 +723,7 @@ impl AccountsStore {
         self.last_ledger_sync_timestamp_nanos = u64::try_from(
             dfn_core::api::now()
                 .duration_since(SystemTime::UNIX_EPOCH)
-                .unwrap()
+                .unwrap_or_else(|err| unreachable!("The current time is well after the Unix epoch. Error: {err}"))
                 .as_nanos(),
         )
         .unwrap_or_else(|_| unreachable!("Not impossible, but centuries in the future"));
