@@ -1,8 +1,6 @@
 //! Sets up memory for a given schema.
-#[cfg(test)]
 use super::DefaultMemoryImpl;
 use super::{PartitionType, Partitions};
-#[cfg(test)]
 use crate::accounts_store::schema::SchemaLabelBytes;
 use crate::state::SchemaLabel;
 use ic_cdk::println;
@@ -13,7 +11,6 @@ impl Partitions {
     /// Writes the schema label to the metadata partition.
     ///
     /// Note: This MUST be called by every constructor.
-    #[cfg(test)]
     fn set_schema_label(&self, schema: SchemaLabel) {
         let schema_label_bytes = SchemaLabelBytes::from(schema);
         println!("Set schema label bytes to: {:?}", schema_label_bytes);
@@ -40,7 +37,7 @@ impl Partitions {
     /// Gets the memory partitioned appropriately for the given schema.
     ///
     /// If a schema uses raw memory, the memory is returned.
-    #[cfg(test)]
+    #[must_use]
     pub fn new_with_schema(memory: DefaultMemoryImpl, schema: SchemaLabel) -> Partitions {
         match schema {
             SchemaLabel::Map => panic!("Map schema does not use partitions"),

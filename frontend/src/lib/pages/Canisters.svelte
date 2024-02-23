@@ -6,6 +6,7 @@
   import { listCanisters } from "$lib/services/canisters.services";
   import { canistersStore } from "$lib/stores/canisters.store";
   import { AppPath } from "$lib/constants/routes.constants";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import CanisterCard from "$lib/components/canisters/CanisterCard.svelte";
   import type { CanisterId } from "$lib/canisters/nns-dapp/nns-dapp.types";
@@ -64,52 +65,54 @@
   const closeModal = () => (modal = undefined);
 </script>
 
-<main>
-  <Summary displayUniverse={false}>
-    <PrincipalText slot="details" inline />
-  </Summary>
+<TestIdWrapper testId="canisters-component">
+  <main>
+    <Summary displayUniverse={false}>
+      <PrincipalText slot="details" inline />
+    </Summary>
 
-  <div class="card-grid">
-    {#each $canistersStore.canisters ?? [] as canister (canister.canister_id)}
-      <CanisterCard
-        ariaLabel={$i18n.canisters.aria_label_canister_card}
-        href={buildCanisterDetailsHref(canister.canister_id)}
-        {canister}
-      />
-    {/each}
+    <div class="card-grid">
+      {#each $canistersStore.canisters ?? [] as canister (canister.canister_id)}
+        <CanisterCard
+          ariaLabel={$i18n.canisters.aria_label_canister_card}
+          href={buildCanisterDetailsHref(canister.canister_id)}
+          {canister}
+        />
+      {/each}
 
-    {#if loading}
-      <SkeletonCard />
-      <SkeletonCard />
+      {#if loading}
+        <SkeletonCard />
+        <SkeletonCard />
+      {/if}
+    </div>
+
+    {#if noCanisters}
+      <p class="description empty">{$i18n.canisters.text}</p>
     {/if}
-  </div>
+  </main>
 
-  {#if noCanisters}
-    <p class="description empty">{$i18n.canisters.text}</p>
+  {#if modal === "CreateCanister"}
+    <CreateCanisterModal on:nnsClose={closeModal} />
   {/if}
-</main>
+  {#if modal === "LinkCanister"}
+    <LinkCanisterModal on:nnsClose={closeModal} />
+  {/if}
 
-{#if modal === "CreateCanister"}
-  <CreateCanisterModal on:nnsClose={closeModal} />
-{/if}
-{#if modal === "LinkCanister"}
-  <LinkCanisterModal on:nnsClose={closeModal} />
-{/if}
-
-<Footer>
-  <button
-    data-tid="create-canister-button"
-    class="primary"
-    on:click={() => openModal("CreateCanister")}
-    >{$i18n.canisters.create_canister}</button
-  >
-  <button
-    data-tid="link-canister-button"
-    class="secondary"
-    on:click={() => openModal("LinkCanister")}
-    >{$i18n.canisters.link_canister}</button
-  >
-</Footer>
+  <Footer>
+    <button
+      data-tid="create-canister-button"
+      class="primary"
+      on:click={() => openModal("CreateCanister")}
+      >{$i18n.canisters.create_canister}</button
+    >
+    <button
+      data-tid="link-canister-button"
+      class="secondary"
+      on:click={() => openModal("LinkCanister")}
+      >{$i18n.canisters.link_canister}</button
+    >
+  </Footer>
+</TestIdWrapper>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";

@@ -2,7 +2,6 @@ import { createAgent } from "$lib/api/agent.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
-import { isLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import type { IcpAccountIdentifierText } from "$lib/types/account";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
@@ -168,7 +167,6 @@ export const ledgerCanister = async ({
   const canister = LedgerCanister.create({
     agent,
     canisterId: LEDGER_CANISTER_ID,
-    hardwareWallet: await isLedgerIdentityProxy(identity),
   });
 
   logWithTimestamp(`LC complete.`);

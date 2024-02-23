@@ -11,6 +11,7 @@ export const setSnsProjects = (
   params: {
     rootCanisterId?: Principal;
     ledgerCanisterId?: Principal;
+    swapCanisterId?: Principal;
     lifecycle?: SnsSwapLifecycle;
     certified?: boolean;
     restrictedCountries?: string[];
@@ -27,6 +28,7 @@ export const setSnsProjects = (
       rootCanisterId:
         params.rootCanisterId?.toText() ?? principal(index).toText(),
       ledgerCanisterId: params.ledgerCanisterId?.toText(),
+      swapCanisterId: params.swapCanisterId?.toText(),
       lifecycle: params.lifecycle ?? SnsSwapLifecycle.Committed,
       restrictedCountries: params.restrictedCountries,
       directParticipantCount: params.directParticipantCount,

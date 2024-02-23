@@ -1,5 +1,5 @@
 import type { GetTransactionsResponse } from "$lib/api/icrc-index.api";
-import { DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
+import { DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 
 import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
 import type {
@@ -164,7 +164,7 @@ const getIcrcTransactions = async ({
       indexCanisterId,
       identity,
       account: decodeIcrcAccount(accountIdentifier),
-      maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
+      maxResults: BigInt(DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT),
       start,
       fetchRootKey,
       host,

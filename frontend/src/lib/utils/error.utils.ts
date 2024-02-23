@@ -123,7 +123,12 @@ export const toToastError = ({
 }: {
   err: unknown | undefined;
   fallbackErrorLabelKey: string;
-}): { labelKey: string; err?: unknown; substitutions?: I18nSubstitutions } => {
+}): {
+  labelKey: string;
+  err?: unknown;
+  substitutions?: I18nSubstitutions;
+  renderAsHtml: boolean;
+} => {
   let errorKey = false;
   const message: string | undefined = (err as Error)?.message;
 
@@ -143,6 +148,7 @@ export const toToastError = ({
       undefined && {
       substitutions: (err as ErrorSubstitutions).substitutions,
     }),
+    renderAsHtml: true,
   };
 };
 
