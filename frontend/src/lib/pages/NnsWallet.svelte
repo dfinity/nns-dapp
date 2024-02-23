@@ -123,7 +123,7 @@
     }
   };
 
-  const reloadTransactions = async (
+  const reloadTransactions = (
     accountIdentifier: AccountIdentifierText
   ): Promise<void> => {
     if ($ENABLE_ICP_INDEX) {

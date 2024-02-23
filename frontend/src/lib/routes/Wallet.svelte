@@ -22,10 +22,6 @@
   layoutTitleStore.set({
     title: $i18n.wallet.title,
   });
-
-  $: {
-    console.log("in da Wallet", accountIdentifier);
-  }
 </script>
 
 <TestIdWrapper testId="wallet-component">
