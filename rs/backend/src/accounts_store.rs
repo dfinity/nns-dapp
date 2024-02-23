@@ -1013,29 +1013,33 @@ impl AccountsStore {
                 })
                 .collect();
 
-            let min_transaction_index = self.transactions.front().unwrap().transaction_index;
-
-            for transaction in transactions {
-                let accounts = match transaction.transfer {
-                    Burn { from, amount: _ } => vec![from],
-                    Mint { to, amount: _ } => vec![to],
-                    Transfer {
-                        from,
-                        to,
-                        amount: _,
-                        fee: _,
+            if let Some(min_transaction_index) = self
+                .transactions
+                .front()
+                .map(|transaction| transaction.transaction_index)
+            {
+                for transaction in transactions {
+                    let accounts = match transaction.transfer {
+                        Burn { from, amount: _ } => vec![from],
+                        Mint { to, amount: _ } => vec![to],
+                        Transfer {
+                            from,
+                            to,
+                            amount: _,
+                            fee: _,
+                        }
+                        | TransferFrom {
+                            from,
+                            to,
+                            spender: _,
+                            amount: _,
+                            fee: _,
+                        } => vec![from, to],
+                        Approve { .. } => vec![],
+                    };
+                    for account in accounts {
+                        self.prune_transactions_from_account(account, min_transaction_index);
                     }
-                    | TransferFrom {
-                        from,
-                        to,
-                        spender: _,
-                        amount: _,
-                        fee: _,
-                    } => vec![from, to],
-                    Approve { .. } => vec![],
-                };
-                for account in accounts {
-                    self.prune_transactions_from_account(account, min_transaction_index);
                 }
             }
         }
