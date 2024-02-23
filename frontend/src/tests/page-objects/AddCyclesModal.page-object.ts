@@ -30,8 +30,8 @@ export class AddCyclesModalPo extends ModalPo {
     return this.getConfirmCyclesCanisterPo().clickConfirm();
   }
 
-  async addCycles({ icpAmount }: { icpAmount: number }): Promise<void> {
-    await this.enterIcpAmount(icpAmount.toString());
+  async addCycles({ icpAmount }: { icpAmount: string }): Promise<void> {
+    await this.enterIcpAmount(icpAmount);
     await this.clickReview();
     await this.clickConfirm();
   }

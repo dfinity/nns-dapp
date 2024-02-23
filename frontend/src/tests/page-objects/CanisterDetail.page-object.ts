@@ -52,7 +52,7 @@ export class CanisterDetailPo extends BasePageObject {
     return this.getCanisterPageHeading().hasSubtitle();
   }
 
-  async addCycles({ icpAmount }: { icpAmount: number }): Promise<void> {
+  async addCycles({ icpAmount }: { icpAmount: string }): Promise<void> {
     await this.getAddCyclesButtonPo().click();
     const modal = this.getAddCyclesModalPo();
     await modal.addCycles({ icpAmount });

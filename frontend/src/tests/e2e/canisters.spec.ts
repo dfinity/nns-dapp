@@ -36,7 +36,7 @@ test("Test canisters", async ({ page, context }) => {
   await canisterDetail.renameCanister(newCanisterName);
 
   step("Top up canister");
-  await canisterDetail.addCycles({ icpAmount: 2 });
+  await canisterDetail.addCycles({ icpAmount: "2" });
 
   step("Verify name");
   await appPo.goBack();
