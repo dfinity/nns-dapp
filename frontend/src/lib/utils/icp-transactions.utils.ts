@@ -49,6 +49,20 @@ export const mapToSelfTransactions = (
   return resultTransactions;
 };
 
+export const sortTransactionsByTimestamp = (
+  transactions: TransactionWithId[]
+): TransactionWithId[] =>
+  transactions.sort((a, b) => {
+    const aTimestamp = fromNullable(a.transaction.created_at_time)
+      ?.timestamp_nanos;
+    const bTimestamp = fromNullable(b.transaction.created_at_time)
+      ?.timestamp_nanos;
+    if (aTimestamp === undefined || bTimestamp === undefined) {
+      return 0;
+    }
+    return aTimestamp > bTimestamp ? -1 : 1;
+  });
+
 // TODO: Support icrc_memo which is not used at the moment in NNS dapp.
 const getTransactionType = ({
   transaction: { operation, memo },

@@ -7,8 +7,10 @@ import type { UiTransaction } from "$lib/types/transaction";
 import {
   mapIcpTransaction,
   mapToSelfTransactions,
+  sortTransactionsByTimestamp,
 } from "$lib/utils/icp-transactions.utils";
 import en from "$tests/mocks/i18n.mock";
+import { mockTransactionWithId } from "$tests/mocks/icp-transactions.mock";
 import type { Operation, TransactionWithId } from "@dfinity/ledger-icp";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 
@@ -453,6 +455,56 @@ describe("icp-transactions.utils", () => {
           transaction: notToSelfTransaction,
           toSelfTransaction: false,
         },
+      ]);
+    });
+  });
+
+  describe("sortTransactionsByTimestamp", () => {
+    const firstTransaction = createTransactionWithId({
+      operation: defaultTransferOperation,
+      timestamp: new Date("2023-01-01T00:00:00.000Z"),
+    });
+    const secondTransaction = createTransactionWithId({
+      operation: defaultTransferOperation,
+      timestamp: new Date("2023-01-02T00:00:00.000Z"),
+    });
+    const thirdTransaction = createTransactionWithId({
+      operation: defaultTransferOperation,
+      timestamp: new Date("2023-01-03T00:00:00.000Z"),
+    });
+    it("sorts transactions most recent first", () => {
+      const transactions = [
+        secondTransaction,
+        thirdTransaction,
+        firstTransaction,
+      ];
+      expect(sortTransactionsByTimestamp(transactions)).toEqual([
+        thirdTransaction,
+        secondTransaction,
+        firstTransaction,
+      ]);
+    });
+
+    it("leaves the transaction in the same position if no created_at_time is present", () => {
+      const transactionWithoutTimestamp: TransactionWithId = {
+        id: 999n,
+        transaction: {
+          ...mockTransactionWithId.transaction,
+          created_at_time: [],
+        },
+      };
+
+      const transactions = [
+        secondTransaction,
+        thirdTransaction,
+        transactionWithoutTimestamp,
+        firstTransaction,
+      ];
+      expect(sortTransactionsByTimestamp(transactions)).toEqual([
+        thirdTransaction,
+        secondTransaction,
+        transactionWithoutTimestamp,
+        firstTransaction,
       ]);
     });
   });
