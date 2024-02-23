@@ -11,12 +11,9 @@ import {
   resetIdentity,
 } from "$tests/mocks/auth.store.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import {
-  mockProjectSubscribe,
-  mockSnsFullProject,
-  principal,
-} from "$tests/mocks/sns-projects.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import type { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
@@ -24,6 +21,7 @@ import {
   SnsProposalRewardStatus,
   SnsVote,
   neuronSubaccount,
+  type SnsBallot,
   type SnsListProposalsResponse,
   type SnsNeuron,
   type SnsNeuronId,
@@ -55,55 +53,53 @@ describe("actionable-sns-proposals.services", () => {
       ],
     };
     const neuronIdHex = getSnsNeuronIdAsHexString(neuron);
-    const votableProposal: SnsProposalData = {
-      ...createSnsProposal({
-        proposalId: 0n,
-        createdAt: 1n,
-        status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
-        rewardStatus:
-          SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
-        ballots: [
-          [
-            neuronIdHex,
-            {
-              vote: SnsVote.Unspecified,
-              cast_timestamp_seconds: 123n,
-              voting_power: 10000n,
-            },
-          ],
+    const votableProposalProps = {
+      proposalId: 0n,
+      createdAt: 1n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+      rewardStatus: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
+      ballots: [
+        [
+          neuronIdHex,
+          {
+            vote: SnsVote.Unspecified,
+            cast_timestamp_seconds: 123n,
+            voting_power: 10000n,
+          },
         ],
-      }),
+      ] as [string, SnsBallot][],
     };
-    const votedProposal: SnsProposalData = {
-      ...createSnsProposal({
-        proposalId: 1n,
-        createdAt: 1n,
-        status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
-        rewardStatus:
-          SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
-        ballots: [
-          [
-            neuronIdHex,
-            {
-              vote: SnsVote.Yes,
-              cast_timestamp_seconds: 123n,
-              voting_power: 10000n,
-            },
-          ],
+
+    const votableProposal1: SnsProposalData = createSnsProposal({
+      ...votableProposalProps,
+      proposalId: 0n,
+    });
+    const votableProposal2: SnsProposalData = createSnsProposal({
+      ...votableProposalProps,
+      proposalId: 1n,
+    });
+    const votedProposal: SnsProposalData = createSnsProposal({
+      ...votableProposalProps,
+      proposalId: 2n,
+      ballots: [
+        [
+          neuronIdHex,
+          {
+            vote: SnsVote.Yes,
+            cast_timestamp_seconds: 123n,
+            voting_power: 10000n,
+          },
         ],
-      }),
-    };
+      ],
+    });
     const rootCanisterId1 = principal(0);
     const rootCanisterId2 = principal(1);
 
     const mockSnsProjectsCommittedStore = (rootCanisterIds: Principal[]) =>
-      vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
-        mockProjectSubscribe(
-          rootCanisterIds.map((rootCanisterId) => ({
-            ...mockSnsFullProject,
-            rootCanisterId,
-          }))
-        )
+      setSnsProjects(
+        rootCanisterIds.map((rootCanisterId) => ({
+          rootCanisterId,
+        }))
       );
 
     let spyQuerySnsProposals;
@@ -112,6 +108,7 @@ describe("actionable-sns-proposals.services", () => {
 
     beforeEach(() => {
       vi.clearAllMocks();
+      resetSnsProjects();
       actionableSnsProposalsStore.resetForTesting();
 
       resetIdentity();
@@ -126,9 +123,12 @@ describe("actionable-sns-proposals.services", () => {
         .mockImplementation(() => Promise.resolve([neuron]));
       includeBallotsByCaller = true;
       spyQuerySnsProposals = vi.spyOn(api, "queryProposals").mockImplementation(
-        async () =>
+        async ({ rootCanisterId }) =>
           ({
-            proposals: [votableProposal, votedProposal],
+            proposals:
+              rootCanisterId.toText() === rootCanisterId1.toText()
+                ? [votableProposal1, votedProposal]
+                : [votableProposal2, votedProposal],
             include_ballots_by_caller: [includeBallotsByCaller],
           }) as SnsListProposalsResponse
       );
@@ -141,18 +141,16 @@ describe("actionable-sns-proposals.services", () => {
       await loadActionableSnsProposals();
 
       expect(spyQuerySnsNeurons).toHaveBeenCalledTimes(2);
-      expect(spyQuerySnsNeurons).toHaveBeenCalledWith(
-        expect.objectContaining({
-          rootCanisterId: rootCanisterId1,
-          certified: false,
-        })
-      );
-      expect(spyQuerySnsNeurons).toHaveBeenCalledWith(
-        expect.objectContaining({
-          rootCanisterId: rootCanisterId2,
-          certified: false,
-        })
-      );
+      expect(spyQuerySnsNeurons).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        rootCanisterId: rootCanisterId1,
+        certified: false,
+      });
+      expect(spyQuerySnsNeurons).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        rootCanisterId: rootCanisterId2,
+        certified: false,
+      });
     });
 
     it("should query proposals per sns with accept rewards status only", async () => {
@@ -168,20 +166,18 @@ describe("actionable-sns-proposals.services", () => {
         ],
         limit: 20,
       };
-      expect(spyQuerySnsProposals).toHaveBeenCalledWith(
-        expect.objectContaining({
-          rootCanisterId: rootCanisterId1,
-          certified: false,
-          params: expectedFilterParams,
-        })
-      );
-      expect(spyQuerySnsProposals).toHaveBeenCalledWith(
-        expect.objectContaining({
-          rootCanisterId: rootCanisterId2,
-          certified: false,
-          params: expectedFilterParams,
-        })
-      );
+      expect(spyQuerySnsProposals).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        rootCanisterId: rootCanisterId1,
+        certified: false,
+        params: expectedFilterParams,
+      });
+      expect(spyQuerySnsProposals).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        rootCanisterId: rootCanisterId2,
+        certified: false,
+        params: expectedFilterParams,
+      });
     });
 
     it("should update the store with actionable proposal only", async () => {
@@ -191,8 +187,8 @@ describe("actionable-sns-proposals.services", () => {
       await loadActionableSnsProposals();
 
       expect(get(actionableSnsProposalsStore)).toEqual({
-        [rootCanisterId1.toText()]: [votableProposal],
-        [rootCanisterId2.toText()]: [votableProposal],
+        [rootCanisterId1.toText()]: [votableProposal1],
+        [rootCanisterId2.toText()]: [votableProposal2],
       });
     });
 
