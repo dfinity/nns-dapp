@@ -1003,7 +1003,7 @@ impl AccountsStore {
     }
 
     pub fn prune_transactions(&mut self, count_to_prune: u32) -> u32 {
-        let count_to_prune = min(count_to_prune, u32::try_from(self.transactions.len()).unwrap_or_else(|_| unreachable!("The number of transactions is well below 2**32.  It will get there, but not before we switch to the ledger index and this code is deleted.")));
+        let count_to_prune = min(count_to_prune, u32::try_from(self.transactions.len()).unwrap_or_else(|_| unreachable!("The number of transactions is well below 2**32.  Transactions are pruned if the heap, where they are stored, exceeds 1Gb of data.")));
 
         if count_to_prune > 0 {
             let transactions: Vec<_> = self
@@ -1013,6 +1013,7 @@ impl AccountsStore {
                 })
                 .collect();
 
+            // Note: This SHOULD always be true, as transactions.len() should equal count_to_prune and we have already checked that that is greater than 0.
             if let Some(min_transaction_index) = self
                 .transactions
                 .front()
