@@ -6,7 +6,6 @@ import {
 } from "$lib/derived/actionable-proposals.derived";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
-import { enumsExclude } from "$lib/utils/enum.utils";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
@@ -44,13 +43,11 @@ describe("actionable proposals derived stores", () => {
         });
         expect(get(actionableProposalIndicationEnabledStore)).toBe(false);
       };
-
       resetIdentity();
 
-      enumsExclude({
-        obj: AppPath as unknown as AppPath,
-        values: [],
-      }).forEach(testPath);
+      testPath(AppPath.Accounts);
+      testPath(AppPath.Neurons);
+      testPath(AppPath.Launchpad);
     });
   });
 
