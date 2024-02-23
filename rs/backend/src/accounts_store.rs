@@ -493,6 +493,10 @@ impl AccountsStore {
         }
     }
 
+    /// Creates a sub-account for the given user.
+    ///
+    /// # Panics
+    /// - Panics if the user already has the maximum number of sub-accounts.
     pub fn create_sub_account(&mut self, caller: PrincipalId, sub_account_name: String) -> CreateSubAccountResponse {
         self.assert_pre_migration_limit();
         let account_identifier = AccountIdentifier::from(caller);
@@ -501,7 +505,9 @@ impl AccountsStore {
             CreateSubAccountResponse::NameTooLong
         } else if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
             let response = if account.sub_accounts.len() < (u8::MAX as usize) {
-                let sub_account_id = (1..u8::MAX).find(|i| !account.sub_accounts.contains_key(i)).unwrap();
+                let sub_account_id = (1..u8::MAX)
+                    .find(|i| !account.sub_accounts.contains_key(i))
+                    .unwrap_or_else(|| panic!("User {caller} already has the maximum number of sub-accounts"));
 
                 let sub_account = convert_byte_to_sub_account(sub_account_id);
                 let sub_account_identifier = AccountIdentifier::new(caller, Some(sub_account));
