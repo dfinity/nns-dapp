@@ -58,8 +58,7 @@ export class TokensTableRowPo extends BasePageObject {
   }
 
   async waitForBalance(): Promise<void> {
-    await this.root
-      .byTestId("token-value-label").waitFor();
+    await this.root.byTestId("token-value-label").waitFor();
     await this.root
       .byTestId("token-value-label")
       .byTestId("spinner")
