@@ -1648,10 +1648,16 @@ impl Account {
         self.default_account_transactions.push(transaction_index);
     }
 
+    /// Records a transaction in a sub-account.
+    ///
+    /// TODO: Once we use the ledger index canister, this can be deleted.
+    ///
+    /// # Panics
+    /// - If we are unable to get a lock on the sub-accounts map.  This may happen if a previous update call locked the map, but has made an async call and so hasn't released the lock yet.
     pub fn append_sub_account_transaction(&mut self, sub_account: u8, transaction_index: TransactionIndex) {
         self.sub_accounts
             .get_mut(&sub_account)
-            .unwrap()
+            .expect("Unable to lock the sub-account transactions map")
             .transactions
             .push(transaction_index);
     }
