@@ -575,14 +575,9 @@ impl AccountsStore {
 
         if !Self::validate_account_name(&request.name) {
             RegisterHardwareWalletResponse::NameTooLong
-        } else if self.accounts_db.db_get_account(&account_identifier.to_vec()).is_some() {
+        } else if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.to_vec()).clone() {
             let hardware_wallet_account_identifier = AccountIdentifier::from(request.principal);
 
-            let mut account = self
-                .accounts_db
-                .db_get_account(&account_identifier.to_vec())
-                .unwrap()
-                .clone();
             if account.hardware_wallet_accounts.len() == (u8::MAX as usize) {
                 RegisterHardwareWalletResponse::HardwareWalletLimitExceeded
             } else if account
