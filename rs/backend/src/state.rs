@@ -113,7 +113,7 @@ thread_local! {
 
 impl State {
     /// Creates new state with the specified schema.
-    #[cfg(test)]
+    #[must_use]
     pub fn new(schema: SchemaLabel, memory: DefaultMemoryImpl) -> Self {
         match schema {
             SchemaLabel::Map => {

@@ -66,6 +66,7 @@ const createQueryMetadataResponse = ({
 export const aggregatorSnsMockWith = ({
   rootCanisterId = "4nwps-saaaa-aaaaa-aabjq-cai",
   ledgerCanisterId = "5bqmf-wyaaa-aaaaq-aaa5q-cai",
+  swapCanisterId = "5ux5i-xqaaa-aaaaq-aaa6a-cai",
   lifecycle = SnsSwapLifecycle.Committed,
   restrictedCountries,
   directParticipantCount,
@@ -78,6 +79,7 @@ export const aggregatorSnsMockWith = ({
 }: {
   rootCanisterId?: string;
   ledgerCanisterId?: string;
+  swapCanisterId?: string;
   lifecycle?: SnsSwapLifecycle;
   restrictedCountries?: string[];
   // TODO: Change to `undefined` or `number`.
@@ -95,6 +97,7 @@ export const aggregatorSnsMockWith = ({
     ...aggregatorSnsMockDto.canister_ids,
     root_canister_id: rootCanisterId,
     ledger_canister_id: ledgerCanisterId,
+    swap_canister_id: swapCanisterId,
   },
   list_sns_canisters: {
     ...aggregatorSnsMockDto.list_sns_canisters,

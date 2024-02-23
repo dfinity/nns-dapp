@@ -3,6 +3,8 @@ import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { BackdropPo } from "$tests/page-objects/Backdrop.page-object";
 import { BusyScreenPo } from "$tests/page-objects/BusyScreen.page-object";
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { CanisterDetailPo } from "$tests/page-objects/CanisterDetail.page-object";
+import { CanistersPo } from "$tests/page-objects/Canisters.page-object";
 import { LaunchpadPo } from "$tests/page-objects/Launchpad.page-object";
 import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
 import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
@@ -67,6 +69,14 @@ export class AppPo extends BasePageObject {
     return ProjectDetailPo.under(this.root);
   }
 
+  getCanistersPo(): CanistersPo {
+    return CanistersPo.under(this.root);
+  }
+
+  getCanisterDetailPo(): CanisterDetailPo {
+    return CanisterDetailPo.under(this.root);
+  }
+
   getMenuItemsPo(): MenuItemsPo {
     return MenuItemsPo.under(this.root);
   }
@@ -112,6 +122,20 @@ export class AppPo extends BasePageObject {
     await this.getBackdropPo().waitForAbsent();
   }
 
+  async goToNnsMainAccountWallet(): Promise<void> {
+    await this.goToAccounts();
+    await this.getTokensPo()
+      .getTokensPagePo()
+      .getTokensTable()
+      .getRowByName("Internet Computer")
+      .click();
+    await this.getAccountsPo()
+      .getNnsAccountsPo()
+      .getTokensTablePo()
+      .getRowByName("Main")
+      .click();
+  }
+
   async goToNeurons(): Promise<void> {
     await this.openMenu();
     await this.getMenuItemsPo().clickNeuronStaking();
@@ -138,6 +162,13 @@ export class AppPo extends BasePageObject {
   async goToLaunchpad(): Promise<void> {
     await this.openMenu();
     await this.getMenuItemsPo().clickLaunchpad();
+    // Menu closes automatically.
+    await this.getBackdropPo().waitForAbsent();
+  }
+
+  async goToCanisters(): Promise<void> {
+    await this.openMenu();
+    await this.getMenuItemsPo().clickCanisters();
     // Menu closes automatically.
     await this.getBackdropPo().waitForAbsent();
   }

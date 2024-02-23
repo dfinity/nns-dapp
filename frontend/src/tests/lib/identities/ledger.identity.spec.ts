@@ -1,5 +1,6 @@
 import { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { Secp256k1PublicKey } from "$lib/keys/secp256k1";
+import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import { getRequestId } from "$lib/utils/ledger.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
@@ -88,6 +89,18 @@ describe("LedgerIdentity", () => {
       signatureRS: callSignature,
       preSignHash: Buffer.from(""),
       signatureDER: Buffer.from(""),
+    });
+
+    // Return at least a version bigger than ALL_CANDID_TXS_VERSION `2.4.9`.
+    mockLedgerApp.getVersion.mockResolvedValue({
+      errorMessage: undefined,
+      returnCode: LedgerError.NoErrors,
+      major: 3,
+      minor: 0,
+      patch: 0,
+      deviceLocked: false,
+      targetId: "targetId",
+      testMode: true,
     });
   });
 
@@ -195,5 +208,70 @@ describe("LedgerIdentity", () => {
     } else {
       expect.unreachable("To read request id from transformed request 1");
     }
+  });
+
+  describe("when the ledger app is exactly `ALL_CANDID_TXS_VERSION`", () => {
+    it("should work as expected", async () => {
+      mockLedgerApp.getVersion.mockResolvedValue({
+        errorMessage: undefined,
+        returnCode: LedgerError.NoErrors,
+        major: 2,
+        minor: 4,
+        patch: 9,
+        deviceLocked: false,
+        targetId: "targetId",
+        testMode: true,
+      });
+      const identity = await LedgerIdentity.create();
+
+      await identity.transformRequest(mockHttpRequest1);
+      expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("when the ledger app version is smaller than `ALL_CANDID_TXS_VERSION`", () => {
+    it("should raise an error before signing", async () => {
+      mockLedgerApp.getVersion.mockResolvedValue({
+        errorMessage: undefined,
+        returnCode: LedgerError.NoErrors,
+        major: 2,
+        minor: 4,
+        patch: 8,
+        deviceLocked: false,
+        targetId: "targetId",
+        testMode: true,
+      });
+
+      const identity = await LedgerIdentity.create();
+
+      const call = () => identity.transformRequest(mockHttpRequest1);
+      expect(call).rejects.toThrowError(
+        new LedgerErrorKey("error__ledger.app_version_not_supported")
+      );
+      expect(mockLedgerApp.signUpdateCall).not.toBeCalled();
+    });
+
+    it("should raise an error before signing a stake neuron call", async () => {
+      mockLedgerApp.getVersion.mockResolvedValue({
+        errorMessage: undefined,
+        returnCode: LedgerError.NoErrors,
+        major: 2,
+        minor: 4,
+        patch: 8,
+        deviceLocked: false,
+        targetId: "targetId",
+        testMode: true,
+      });
+
+      const identity = await LedgerIdentity.create();
+      // The stake neuron uses a different path that signs also the read_state
+      identity.flagUpcomingStakeNeuron();
+
+      const call = () => identity.transformRequest(mockHttpRequest1);
+      expect(call).rejects.toThrowError(
+        new LedgerErrorKey("error__ledger.app_version_not_supported")
+      );
+      expect(mockLedgerApp.sign).not.toBeCalled();
+    });
   });
 });
