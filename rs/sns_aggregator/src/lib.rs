@@ -18,7 +18,6 @@ use std::time::Duration;
 use assets::{insert_favicon, insert_home_page, AssetHashes, HttpRequest, HttpResponse};
 use candid::{candid_method, export_service};
 use fast_scheduler::FastScheduler;
-use ic_cdk::api::call::{self};
 use ic_cdk_timers::{clear_timer, set_timer, set_timer_interval};
 use state::{Config, StableState, STATE};
 use types::Icrc1Value;
@@ -92,15 +91,12 @@ fn tail_log(limit: Option<u16>) -> String {
 /// Web server
 #[candid_method(query)]
 #[export_name = "canister_query http_request"]
-fn http_request(/* req: HttpRequest */) /* -> HttpResponse */
-{
+fn http_request(request: HttpRequest) -> HttpResponse {
     ic_cdk::setup();
-    let request = call::arg_data::<(HttpRequest,)>().0;
-    let response = match request.url.as_ref() {
+    match request.url.as_ref() {
         "/__candid" => HttpResponse::from(__export_service()),
         _ => assets::http_request(request),
-    };
-    call::reply((response,));
+    }
 }
 
 /// Function called when a canister is first created IF it is created
@@ -165,7 +161,7 @@ fn post_upgrade(config: Option<Config>) {
 ///
 /// Note: This _could_ be exposed in production if limited to the controllers
 ///  - Controllers can be obtained by the async call: `agent.read_state_canister_info(canister_id, "controllers")`
-#[cfg(feature = "reconfigurable")]
+#[cfg(any(test, feature = "reconfigurable"))]
 #[ic_cdk_macros::update]
 #[candid_method(update)]
 fn reconfigure(config: Option<Config>) {
@@ -239,4 +235,73 @@ export_service!();
 #[ic_cdk_macros::query]
 fn interface() -> String {
     __export_service()
+}
+
+#[cfg(test)]
+#[allow(clippy::expect_used)]
+#[allow(clippy::panic)]
+#[allow(clippy::unwrap_used)]
+mod tests {
+    use super::*;
+    use candid::utils::{service_compatible, CandidSource};
+    use lazy_static::lazy_static;
+    use pretty_assertions::assert_eq;
+    use std::{env::var_os, path::PathBuf};
+
+    lazy_static! {
+        static ref DECLARED_INTERFACE: String = {
+            let cargo_manifest_dir = var_os("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR env var undefined");
+
+            let path = PathBuf::from(cargo_manifest_dir).join("sns_aggregator.did");
+
+            let contents = std::fs::read(path).expect("Failed to read .did file.");
+            String::from_utf8(contents).expect(".did file is not valid text.")
+        };
+        static ref IMPLEMENTED_INTERFACE: String = interface();
+    }
+
+    /// Makes sure that ./root.did is up to date with the implementation.
+    ///
+    /// Note: This does a text comparison with the generated `.did` and the actual `.did`.
+    ///       Thus trivial, non-semantically meaningful changes may cause it to fail.
+    ///       On the other hand, the diff is expressed in a very readabale fashion, so
+    ///       while this is not the preferred test, it can be helpful to see its output.
+    ///
+    /// Note: This will NOT generate type aliases such as `HttpHeader = (String, String)`.
+    #[test]
+    #[ignore] // It is preferred to check that the implementation matches the candid file.
+              // To run anyway: cargo test -- --include-ignored check_candid_interface_definition_file
+    fn check_candid_interface_definition_file() {
+        assert_eq!(
+            *DECLARED_INTERFACE, *IMPLEMENTED_INTERFACE,
+            "Generated candid definition does not match canister/root.did. \
+             Run `bazel run :generate_did > canister/root.did` (no nix and/or direnv) in \
+             rs/sns/root to update canister/root.did."
+        );
+    }
+
+    /// Ensures that the implementation matches the `nns-dapp.did` file
+    #[test]
+    fn test_implementation_conforms_to_declared_interface() {
+        let result = service_compatible(
+            CandidSource::Text(&IMPLEMENTED_INTERFACE),
+            CandidSource::Text(&DECLARED_INTERFACE),
+        );
+
+        if let Err(err) = result {
+            panic!(
+                "Implemented interface:\n\
+                 {}\n\
+                 \n\
+                 Declared interface:\n\
+                 {}\n\
+                 \n\
+                 Error:\n\
+                 {}n\
+                 \n\
+                 The Candid service implementation does not comply with the declared interface.",
+                *IMPLEMENTED_INTERFACE, *DECLARED_INTERFACE, err,
+            );
+        }
+    }
 }
