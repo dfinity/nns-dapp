@@ -10,6 +10,8 @@ use core::ops::RangeBounds;
 use ic_stable_structures::memory_manager::VirtualMemory;
 use ic_stable_structures::DefaultMemoryImpl;
 use ic_stable_structures::{btreemap::BTreeMap as StableBTreeMap, Memory};
+#[cfg(test)]
+use std::collections::BTreeMap as StdBTreeMap;
 use std::fmt;
 
 pub type ProductionMemoryType = VirtualMemory<DefaultMemoryImpl>;
@@ -103,7 +105,6 @@ mod tests {
     use crate::accounts_store::schema::tests::toy_account;
     use crate::accounts_store::schema::AccountsDbTrait;
     use ic_stable_structures::memory_manager::{MemoryId, MemoryManager};
-    use std::collections::BTreeMap as StdBTreeMap;
 
     // Test that the AccountsDbTrait implementation works.
     test_accounts_db!(AccountsDbAsUnboundedStableBTreeMap::default());
