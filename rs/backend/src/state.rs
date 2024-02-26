@@ -172,18 +172,8 @@ impl State {
                 SchemaLabel::AccountsInStableMemory => {
                     let mut partitions_maybe = self.partitions_maybe.borrow_mut();
                     // If the memory isn't partitioned, partition it now.
-                    if let PartitionsMaybe::None(memory) = &*partitions_maybe {
-                        println!("start_migration_to: Partitioning memory for schema {schema:?}.");
-                        let memory = Partitions::copy_memory_reference(memory);
-                        *partitions_maybe = PartitionsMaybe::Partitions(Partitions::new_with_schema(memory, schema));
-                    };
-                    let vm = match &*partitions_maybe {
-                        PartitionsMaybe::Partitions(partitions) => partitions.get(PartitionType::Accounts.memory_id()),
-                        PartitionsMaybe::None(_) => {
-                            trap_with("Cannot fail as we just created the partitions");
-                            unreachable!()
-                        }
-                    };
+                    let partitions = partitions_maybe.get_or_format(schema);
+                    let vm = partitions.get(PartitionType::Accounts.memory_id());
                     AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::new(vm))
                 }
             };
