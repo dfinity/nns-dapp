@@ -45,10 +45,10 @@ impl AccountsDbAsProxy {
             db: accounts_db,
             next_to_migrate: self.authoritative_db.iter().next().map(|(key, _account)| key.clone()),
         };
-        println!(format!(
+        println!(
             "Starting account migration: {:?} -> {:?}",
             self.authoritative_db, migration.db
-        ));
+        );
         self.migration = Some(migration);
     }
 
@@ -57,10 +57,7 @@ impl AccountsDbAsProxy {
     pub fn step_migration(&mut self) {
         if let Some(migration) = &mut self.migration {
             if let Some(next_to_migrate) = &migration.next_to_migrate {
-                println!(format!(
-                    "Stepping migration: {:?} -> {:?}",
-                    self.authoritative_db, migration.db
-                ));
+                println!("Stepping migration: {:?} -> {:?}", self.authoritative_db, migration.db);
                 let mut range = self.authoritative_db.range(next_to_migrate.clone()..);
                 for (key, account) in (&mut range).take(Self::MIGRATION_STEP_SIZE as usize) {
                     migration.db.db_insert_account(&key, account);
@@ -76,10 +73,10 @@ impl AccountsDbAsProxy {
     #[cfg(test)]
     pub fn complete_migration(&mut self) {
         if let Some(migration) = self.migration.take() {
-            println!(format!(
+            println!(
                 "Account migration complete: {:?} -> {:?}",
                 self.authoritative_db, migration.db
-            ));
+            );
             self.authoritative_db = migration.db;
         }
     }
