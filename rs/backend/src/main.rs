@@ -49,6 +49,7 @@ fn init(args: Option<CanisterArguments>) {
         let schema = args.schema.unwrap_or_default();
         let stable_memory = DefaultMemoryImpl::default();
         let state = State::new(schema, stable_memory);
+        let state = state.with_arguments(&args);
         STATE.with(|s| {
             s.replace(state);
             println!("init state after: {s:?}");
@@ -83,21 +84,22 @@ fn pre_upgrade() {
 }
 
 #[post_upgrade]
-fn post_upgrade(args: Option<CanisterArguments>) {
-    println!("START post_upgrade with args: {args:#?}");
+fn post_upgrade(args_maybe: Option<CanisterArguments>) {
+    println!("START post_upgrade with args: {args_maybe:#?}");
     // Saving the instruction counter now will not have the desired effect
     // as the storage is about to be wiped out and replaced with stable memory.
     let counter_before = PerformanceCount::new("post_upgrade start");
     STATE.with(|s| {
         let stable_memory = DefaultMemoryImpl::default();
         let state = State::from(stable_memory);
+        let state = state.with_arguments_maybe(args_maybe.as_ref());
         s.replace(state);
     });
     perf::save_instruction_count(counter_before);
     perf::record_instruction_count("post_upgrade after state_recovery");
-    set_canister_arguments(args);
+    set_canister_arguments(args_maybe);
     perf::record_instruction_count("post_upgrade after set_canister_arguments");
-    assets::init_assets();
+    assets::init_assets(); // TODO: Move this inside State::from (and State::new_with_memory)
     perf::record_instruction_count("post_upgrade stop");
     println!("END   post-upgrade");
 }

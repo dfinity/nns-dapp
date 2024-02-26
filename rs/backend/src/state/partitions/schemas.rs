@@ -1,8 +1,6 @@
 //! Sets up memory for a given schema.
-use super::DefaultMemoryImpl;
-use super::{PartitionType, Partitions};
 use crate::accounts_store::schema::SchemaLabelBytes;
-use crate::state::SchemaLabel;
+use crate::state::{DefaultMemoryImpl, PartitionType, Partitions, SchemaLabel};
 use ic_cdk::println;
 #[cfg(test)]
 mod tests;

@@ -4,13 +4,14 @@ pub mod tests;
 mod with_accounts_in_stable_memory;
 mod with_raw_memory;
 
-use self::partitions::PartitionsMaybe;
-use self::partitions::{PartitionType, Partitions};
+use self::partitions::{PartitionType, Partitions, PartitionsMaybe};
 use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
+use crate::accounts_store::schema::map::AccountsDbAsMap;
 use crate::accounts_store::schema::proxy::AccountsDb;
 use crate::accounts_store::schema::AccountsDbTrait;
 use crate::accounts_store::schema::SchemaLabel;
 use crate::accounts_store::AccountsStore;
+use crate::arguments::CanisterArguments;
 use crate::assets::AssetHashes;
 use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
@@ -140,6 +141,55 @@ impl State {
                     partitions_maybe: RefCell::new(PartitionsMaybe::Partitions(partitions)),
                 }
             }
+        }
+    }
+    /// Applies the specified arguments to the state.
+    #[must_use]
+    pub fn with_arguments(mut self, arguments: &CanisterArguments) -> Self {
+        // TODO: If a migration is needed, kick it off.
+        // TODO: Initialize assets and asset_hashes
+        if let Some(schema) = arguments.schema {
+            self.start_migration_to(schema);
+        }
+        self
+    }
+    /// Applies the specified arguments, if provided
+    #[must_use]
+    pub fn with_arguments_maybe(self, arguments_maybe: Option<&CanisterArguments>) -> Self {
+        match arguments_maybe {
+            Some(arguments) => self.with_arguments(arguments),
+            None => self,
+        }
+    }
+    /// Starts a migration, if needed.
+    pub fn start_migration_to(&mut self, schema: SchemaLabel) {
+        let schema_now = self.schema_label();
+        if schema_now == schema {
+            println!("start_migration_to: No migration needed.  Schema is already {schema:?}.");
+        } else {
+            let new_accounts_db = match schema {
+                SchemaLabel::Map => AccountsDb::Map(AccountsDbAsMap::default()),
+                SchemaLabel::AccountsInStableMemory => {
+                    let mut partitions_maybe = self.partitions_maybe.borrow_mut();
+                    // If the memory isn't partitioned, partition it now.
+                    if let PartitionsMaybe::None(memory) = &*partitions_maybe {
+                        println!("start_migration_to: Partitioning memory for schema {schema:?}.");
+                        let memory = Partitions::copy_memory_reference(memory);
+                        *partitions_maybe = PartitionsMaybe::Partitions(Partitions::new_with_schema(memory, schema));
+                    };
+                    let vm = match &*partitions_maybe {
+                        PartitionsMaybe::Partitions(partitions) => partitions.get(PartitionType::Accounts.memory_id()),
+                        PartitionsMaybe::None(_) => {
+                            trap_with("Cannot fail as we just created the partitions");
+                            unreachable!()
+                        }
+                    };
+                    AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::new(vm))
+                }
+            };
+            self.accounts_store
+                .borrow_mut()
+                .start_migrating_accounts_to(new_accounts_db);
         }
     }
 }
