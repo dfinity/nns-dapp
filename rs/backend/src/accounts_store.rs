@@ -1691,7 +1691,7 @@ impl Account {
             .hardware_wallet_accounts
             .iter_mut()
             .find(|a| account_identifier == AccountIdentifier::from(a.principal))
-            .unwrap();
+            .expect("This account does not have a hardware wallet with the given identifier.");
 
         account.transactions.push(transaction_index);
     }
