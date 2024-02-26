@@ -4,6 +4,7 @@
 //! This code is here to protect the memory!
 //!
 //! This code also stores virtual memory IDs and other memory functions.
+use crate::state::SchemaLabel;
 use core::borrow::Borrow;
 use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
 use ic_cdk::println;
@@ -13,9 +14,6 @@ use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use std::rc::Rc;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
-
-#[cfg(test)]
-use crate::state::SchemaLabel;
 
 pub mod schemas;
 #[cfg(test)]
@@ -56,14 +54,33 @@ pub enum PartitionsMaybe {
     None(DefaultMemoryImpl),
 }
 
-#[cfg(test)]
 impl PartitionsMaybe {
     /// Gets the schema label.
+    #[cfg(test)]
     pub fn schema_label(&self) -> SchemaLabel {
         match self {
             #[cfg(test)]
             PartitionsMaybe::Partitions(partitions) => partitions.schema_label(),
             PartitionsMaybe::None(_) => SchemaLabel::Map,
+        }
+    }
+    /// Gets or creates partitions.
+    ///
+    /// WARNING: Partitioning overwrites the memory.  Please be sure that you have extracted all useful data from raw memory before calling this.
+    ///
+    /// WARNING: If the memory is already partitioned, this will return the partitions, even if the schema is different.
+    pub fn get_or_format(&mut self, schema: SchemaLabel) -> &Partitions {
+        match self {
+            PartitionsMaybe::Partitions(partitions) => partitions,
+            PartitionsMaybe::None(memory) => {
+                let memory = Partitions::copy_memory_reference(memory);
+                let partitions = Partitions::new_with_schema(memory, schema);
+                *self = PartitionsMaybe::Partitions(partitions);
+                match self {
+                    PartitionsMaybe::Partitions(partitions) => partitions,
+                    PartitionsMaybe::None(_) => unreachable!("This memory was just partitioned"),
+                }
+            }
         }
     }
 }
