@@ -166,6 +166,7 @@ impl State {
         if schema_now == schema {
             println!("start_migration_to: No migration needed.  Schema is already {schema:?}.");
         } else {
+            // Create a new, empty, accounts database with the new schema, then start migrating to it.
             let new_accounts_db = match schema {
                 SchemaLabel::Map => AccountsDb::Map(AccountsDbAsMap::default()),
                 SchemaLabel::AccountsInStableMemory => {
