@@ -46,12 +46,10 @@ export const loadIcpAccountNextTransactions = async (
 ) => {
   const store = get(icpTransactionsStore);
 
-  const sortedTransactionsAscendingOrder = nonNullish(store[accountIdentifier])
-    ? sortTransactionsByIdDescendingOrder(
-        store[accountIdentifier].transactions
-      ).reverse()
+  const sortedTransactionsDescendingOrder = nonNullish(store[accountIdentifier])
+    ? sortTransactionsByIdDescendingOrder(store[accountIdentifier].transactions)
     : [];
-  const lastTxIdStore = sortedTransactionsAscendingOrder[0]?.id;
+  const lastTxIdStore = sortedTransactionsDescendingOrder.at(-1)?.id;
   return loadIcpAccountTransactions({
     accountIdentifier,
     start: lastTxIdStore,
