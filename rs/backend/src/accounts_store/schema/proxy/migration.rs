@@ -2,6 +2,8 @@
 #[cfg(test)]
 use super::{AccountsDb, Migration};
 use super::{AccountsDbAsProxy, AccountsDbTrait};
+#[cfg(test)]
+use ic_cdk::println;
 
 impl AccountsDbAsProxy {
     /// The number of accounts to move per heartbeat.
