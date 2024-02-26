@@ -146,8 +146,6 @@ impl State {
     /// Applies the specified arguments to the state.
     #[must_use]
     pub fn with_arguments(mut self, arguments: &CanisterArguments) -> Self {
-        // TODO: If a migration is needed, kick it off.
-        // TODO: Initialize assets and asset_hashes
         if let Some(schema) = arguments.schema {
             self.start_migration_to(schema);
         }
