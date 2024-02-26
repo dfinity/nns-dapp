@@ -91,15 +91,15 @@ describe("icp-transactions services", () => {
     });
 
     it("sets complete to false when oldest is not present in results", async () => {
-      const indexBuffer = 10n;
+      const indexOffset = 10n;
       const transactions = new Array(DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT)
         .fill(mockTransactionWithId)
         .map((transaction, index) => ({
-          id: BigInt(index) + indexBuffer,
+          id: BigInt(index) + indexOffset,
           transaction: { ...transaction.transaction },
         }));
       vi.spyOn(indexApi, "getTransactions").mockResolvedValue({
-        oldestTxId: indexBuffer - 1n,
+        oldestTxId: indexOffset - 1n,
         transactions: transactions,
         balance: 200_000_000n,
       });

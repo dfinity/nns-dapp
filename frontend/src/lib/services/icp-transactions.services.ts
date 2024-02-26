@@ -27,7 +27,6 @@ export const loadIcpAccountTransactions = async ({
       start,
     });
 
-    // If API returns less than the maxResults, we reached the end of the list.
     const completed = transactions.some(({ id }) => id === oldestTxId);
     icpTransactionsStore.addTransactions({
       accountIdentifier,
