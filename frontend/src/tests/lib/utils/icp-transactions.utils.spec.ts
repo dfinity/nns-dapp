@@ -7,6 +7,7 @@ import type { UiTransaction } from "$lib/types/transaction";
 import {
   mapIcpTransaction,
   mapToSelfTransactions,
+  sortTransactionsByIdDescendingOrder,
 } from "$lib/utils/icp-transactions.utils";
 import en from "$tests/mocks/i18n.mock";
 import type { Operation, TransactionWithId } from "@dfinity/ledger-icp";
@@ -20,15 +21,17 @@ describe("icp-transactions.utils", () => {
   const fee = 10_000n;
   const transactionId = 1234n;
   const createTransactionWithId = ({
+    id = transactionId,
     memo,
     operation,
     timestamp = defaultTimestamp,
   }: {
+    id?: bigint;
     operation: Operation;
     memo?: bigint;
     timestamp?: Date;
   }): TransactionWithId => ({
-    id: transactionId,
+    id,
     transaction: {
       memo: memo ?? 0n,
       icrc1_memo: [],
@@ -453,6 +456,33 @@ describe("icp-transactions.utils", () => {
           transaction: notToSelfTransaction,
           toSelfTransaction: false,
         },
+      ]);
+    });
+  });
+
+  describe("sortTransactionsByIdDescendingOrder", () => {
+    const firstTransaction = createTransactionWithId({
+      operation: defaultTransferOperation,
+      id: 10n,
+    });
+    const secondTransaction = createTransactionWithId({
+      operation: defaultTransferOperation,
+      id: 20n,
+    });
+    const thirdTransaction = createTransactionWithId({
+      operation: defaultTransferOperation,
+      id: 30n,
+    });
+    it("sorts transactions most recent first", () => {
+      const transactions = [
+        secondTransaction,
+        thirdTransaction,
+        firstTransaction,
+      ];
+      expect(sortTransactionsByIdDescendingOrder(transactions)).toEqual([
+        thirdTransaction,
+        secondTransaction,
+        firstTransaction,
       ]);
     });
   });
