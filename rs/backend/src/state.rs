@@ -154,9 +154,10 @@ impl State {
     /// Applies the specified arguments, if provided
     #[must_use]
     pub fn with_arguments_maybe(self, arguments_maybe: Option<&CanisterArguments>) -> Self {
-        match arguments_maybe {
-            Some(arguments) => self.with_arguments(arguments),
-            None => self,
+        if let Some(arguments) = arguments_maybe {
+            self.with_arguments(arguments)
+        } else {
+            self
         }
     }
     /// Starts a migration, if needed.
