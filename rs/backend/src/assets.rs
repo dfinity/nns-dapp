@@ -386,24 +386,35 @@ pub fn init_assets() {
 /// Note: The `Vec` is mutated during decompression, so pass by reference is inefficient
 ///       as it would force the data to be copied into a new vector, even when the
 ///       original is no longer needed.
+///
+/// # Panics
+/// - If the decompression fails or the tarball cannot be parsed.
 #[allow(clippy::needless_pass_by_value)]
 pub fn insert_tar_xz(compressed: Vec<u8>) {
     println!("Inserting assets...");
     let mut num_assets = 0;
     let mut decompressed = Vec::new();
-    lzma_rs::xz_decompress(&mut compressed.as_ref(), &mut decompressed).unwrap();
+    lzma_rs::xz_decompress(&mut compressed.as_ref(), &mut decompressed)
+        .expect("Failed to decompress xz encoded assets.");
     let mut tar: tar::Archive<&[u8]> = tar::Archive::new(decompressed.as_ref());
     let arguments_html = CANISTER_ARGUMENTS.with(|args| args.borrow().to_html());
     let template_engine = CANISTER_ARGUMENTS.with(|args| TemplateEngine::new(&args.borrow().args));
     STATE.with(|state| {
-        for entry in tar.entries().unwrap() {
-            let mut entry = entry.unwrap();
+        for entry in tar.entries().expect("Failed to get entry from tarball.") {
+            let mut entry = entry.expect("Invalid entry in tarball.");
 
             if !entry.header().entry_type().is_file() {
                 continue;
             }
 
-            let name_bytes = entry.path_bytes().into_owned().strip_prefix(b".").unwrap().to_vec();
+            let name_bytes = entry
+                .path_bytes()
+                .into_owned()
+                .strip_prefix(b".")
+                .expect(
+                    "A filename in the tarball does not start with '.' but we expect every path to start with './'!",
+                )
+                .to_vec();
 
             let name = String::from_utf8(name_bytes.clone()).unwrap_or_else(|e| {
                 dfn_core::api::trap_with(&format!(
@@ -415,7 +426,9 @@ pub fn insert_tar_xz(compressed: Vec<u8>) {
             });
 
             let mut bytes = Vec::new();
-            entry.read_to_end(&mut bytes).unwrap();
+            entry
+                .read_to_end(&mut bytes)
+                .expect("Failed to read an entry from the tarball.");
 
             if name.ends_with("index.html.gz") {
                 let mut html = gunzip_string(&bytes);
