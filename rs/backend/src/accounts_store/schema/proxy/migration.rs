@@ -45,7 +45,7 @@ impl AccountsDbAsProxy {
             db: accounts_db,
             next_to_migrate: self.authoritative_db.iter().next().map(|(key, _account)| key.clone()),
         };
-        dfn_core::api::print(format!(
+        println!(format!(
             "Starting account migration: {:?} -> {:?}",
             self.authoritative_db, migration.db
         ));
@@ -57,7 +57,7 @@ impl AccountsDbAsProxy {
     pub fn step_migration(&mut self) {
         if let Some(migration) = &mut self.migration {
             if let Some(next_to_migrate) = &migration.next_to_migrate {
-                dfn_core::api::print(format!(
+                println!(format!(
                     "Stepping migration: {:?} -> {:?}",
                     self.authoritative_db, migration.db
                 ));
@@ -76,7 +76,7 @@ impl AccountsDbAsProxy {
     #[cfg(test)]
     pub fn complete_migration(&mut self) {
         if let Some(migration) = self.migration.take() {
-            dfn_core::api::print(format!(
+            println!(format!(
                 "Account migration complete: {:?} -> {:?}",
                 self.authoritative_db, migration.db
             ));
