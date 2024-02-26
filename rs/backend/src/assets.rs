@@ -394,7 +394,8 @@ pub fn insert_tar_xz(compressed: Vec<u8>) {
     println!("Inserting assets...");
     let mut num_assets = 0;
     let mut decompressed = Vec::new();
-    lzma_rs::xz_decompress(&mut compressed.as_ref(), &mut decompressed).expect("Failed to decompress xz encoded assets.");
+    lzma_rs::xz_decompress(&mut compressed.as_ref(), &mut decompressed)
+        .expect("Failed to decompress xz encoded assets.");
     let mut tar: tar::Archive<&[u8]> = tar::Archive::new(decompressed.as_ref());
     let arguments_html = CANISTER_ARGUMENTS.with(|args| args.borrow().to_html());
     let template_engine = CANISTER_ARGUMENTS.with(|args| TemplateEngine::new(&args.borrow().args));
@@ -406,7 +407,14 @@ pub fn insert_tar_xz(compressed: Vec<u8>) {
                 continue;
             }
 
-            let name_bytes = entry.path_bytes().into_owned().strip_prefix(b".").expect("A filename in the tarball does not start with '.' but we expect every path to start with './'!").to_vec();
+            let name_bytes = entry
+                .path_bytes()
+                .into_owned()
+                .strip_prefix(b".")
+                .expect(
+                    "A filename in the tarball does not start with '.' but we expect every path to start with './'!",
+                )
+                .to_vec();
 
             let name = String::from_utf8(name_bytes.clone()).unwrap_or_else(|e| {
                 dfn_core::api::trap_with(&format!(
@@ -418,7 +426,9 @@ pub fn insert_tar_xz(compressed: Vec<u8>) {
             });
 
             let mut bytes = Vec::new();
-            entry.read_to_end(&mut bytes).expect("Failed to read an entry from the tarball.");
+            entry
+                .read_to_end(&mut bytes)
+                .expect("Failed to read an entry from the tarball.");
 
             if name.ends_with("index.html.gz") {
                 let mut html = gunzip_string(&bytes);
