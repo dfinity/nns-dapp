@@ -7,10 +7,9 @@ import type { UiTransaction } from "$lib/types/transaction";
 import {
   mapIcpTransaction,
   mapToSelfTransactions,
-  sortTransactionsByTimestamp,
+  sortTransactionsById,
 } from "$lib/utils/icp-transactions.utils";
 import en from "$tests/mocks/i18n.mock";
-import { mockTransactionWithId } from "$tests/mocks/icp-transactions.mock";
 import type { Operation, TransactionWithId } from "@dfinity/ledger-icp";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 
@@ -22,15 +21,17 @@ describe("icp-transactions.utils", () => {
   const fee = 10_000n;
   const transactionId = 1234n;
   const createTransactionWithId = ({
+    id = transactionId,
     memo,
     operation,
     timestamp = defaultTimestamp,
   }: {
+    id?: bigint;
     operation: Operation;
     memo?: bigint;
     timestamp?: Date;
   }): TransactionWithId => ({
-    id: transactionId,
+    id,
     transaction: {
       memo: memo ?? 0n,
       icrc1_memo: [],
@@ -459,18 +460,18 @@ describe("icp-transactions.utils", () => {
     });
   });
 
-  describe("sortTransactionsByTimestamp", () => {
+  describe("sortTransactionsById", () => {
     const firstTransaction = createTransactionWithId({
       operation: defaultTransferOperation,
-      timestamp: new Date("2023-01-01T00:00:00.000Z"),
+      id: 10n,
     });
     const secondTransaction = createTransactionWithId({
       operation: defaultTransferOperation,
-      timestamp: new Date("2023-01-02T00:00:00.000Z"),
+      id: 20n,
     });
     const thirdTransaction = createTransactionWithId({
       operation: defaultTransferOperation,
-      timestamp: new Date("2023-01-03T00:00:00.000Z"),
+      id: 30n,
     });
     it("sorts transactions most recent first", () => {
       const transactions = [
@@ -478,32 +479,9 @@ describe("icp-transactions.utils", () => {
         thirdTransaction,
         firstTransaction,
       ];
-      expect(sortTransactionsByTimestamp(transactions)).toEqual([
+      expect(sortTransactionsById(transactions)).toEqual([
         thirdTransaction,
         secondTransaction,
-        firstTransaction,
-      ]);
-    });
-
-    it("leaves the transaction in the same position if no created_at_time is present", () => {
-      const transactionWithoutTimestamp: TransactionWithId = {
-        id: 999n,
-        transaction: {
-          ...mockTransactionWithId.transaction,
-          created_at_time: [],
-        },
-      };
-
-      const transactions = [
-        secondTransaction,
-        thirdTransaction,
-        transactionWithoutTimestamp,
-        firstTransaction,
-      ];
-      expect(sortTransactionsByTimestamp(transactions)).toEqual([
-        thirdTransaction,
-        secondTransaction,
-        transactionWithoutTimestamp,
         firstTransaction,
       ]);
     });
