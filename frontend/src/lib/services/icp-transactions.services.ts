@@ -3,7 +3,7 @@ import { DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { icpTransactionsStore } from "$lib/stores/icp-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { toToastError } from "$lib/utils/error.utils";
-import { sortTransactionsById } from "$lib/utils/icp-transactions.utils";
+import { sortTransactionsByIdDescendingOrder } from "$lib/utils/icp-transactions.utils";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import { getCurrentIdentity } from "./auth.services";
@@ -47,10 +47,12 @@ export const loadIcpAccountNextTransactions = async (
 ) => {
   const store = get(icpTransactionsStore);
 
-  const sortedTransactions = nonNullish(store[accountIdentifier])
-    ? sortTransactionsById(store[accountIdentifier].transactions).reverse()
+  const sortedTransactionsAscendingOrder = nonNullish(store[accountIdentifier])
+    ? sortTransactionsByIdDescendingOrder(
+        store[accountIdentifier].transactions
+      ).reverse()
     : [];
-  const lastTxIdStore = sortedTransactions[0]?.id;
+  const lastTxIdStore = sortedTransactionsAscendingOrder[0]?.id;
   return loadIcpAccountTransactions({
     accountIdentifier,
     start: lastTxIdStore,
