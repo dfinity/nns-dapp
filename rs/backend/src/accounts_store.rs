@@ -4,7 +4,6 @@ use crate::multi_part_transactions_processor::{MultiPartTransactionToBeProcessed
 use crate::state::StableState;
 use crate::stats::Stats;
 use candid::CandidType;
-use core::fmt;
 use dfn_candid::Candid;
 use histogram::AccountsStoreHistogram;
 use ic_base_types::{CanisterId, PrincipalId};
@@ -18,21 +17,24 @@ use icp_ledger::Operation::{self, Approve, Burn, Mint, Transfer, TransferFrom};
 use icp_ledger::{AccountIdentifier, BlockIndex, Memo, Subaccount, Tokens};
 use itertools::Itertools;
 use on_wire::{FromWire, IntoWire};
-use schema::{
-    map::AccountsDbAsMap,
-    proxy::{AccountsDb, AccountsDbAsProxy},
-    AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel,
-};
 use serde::Deserialize;
 use std::borrow::Cow;
 use std::cmp::{min, Ordering};
 use std::collections::{BTreeMap, HashMap, HashSet, VecDeque};
+use std::fmt;
 use std::ops::{RangeBounds, RangeTo};
 use std::time::{Duration, SystemTime};
 
 pub mod constructors;
 pub mod histogram;
 pub mod schema;
+use schema::{
+    map::AccountsDbAsMap,
+    proxy::{AccountsDb, AccountsDbAsProxy},
+    AccountsDbBTreeMapTrait, AccountsDbTrait,
+};
+
+use self::schema::SchemaLabel;
 
 type TransactionIndex = u64;
 
@@ -355,13 +357,6 @@ pub enum DetachCanisterResponse {
 }
 
 impl AccountsStore {
-    /// Starts migrating accounts to the new db.
-    pub fn start_migrating_accounts_to(&mut self, accounts_db: AccountsDb) {
-        self.accounts_db.start_migrating_accounts_to(accounts_db);
-    }
-    pub fn step_migration(&mut self) {
-        self.accounts_db.step_migration();
-    }
     #[must_use]
     pub fn get_account(&self, caller: PrincipalId) -> Option<AccountDetails> {
         let account_identifier = AccountIdentifier::from(caller);
