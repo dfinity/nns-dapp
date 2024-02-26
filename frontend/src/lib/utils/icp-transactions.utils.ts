@@ -49,7 +49,7 @@ export const mapToSelfTransactions = (
   return resultTransactions;
 };
 
-export const sortTransactionsById = (
+export const sortTransactionsByIdDescendingOrder = (
   transactions: TransactionWithId[]
 ): TransactionWithId[] => transactions.sort((a, b) => (a.id > b.id ? -1 : 1));
 

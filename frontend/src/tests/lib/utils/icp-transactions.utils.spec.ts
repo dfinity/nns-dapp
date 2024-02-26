@@ -7,7 +7,7 @@ import type { UiTransaction } from "$lib/types/transaction";
 import {
   mapIcpTransaction,
   mapToSelfTransactions,
-  sortTransactionsById,
+  sortTransactionsByIdDescendingOrder,
 } from "$lib/utils/icp-transactions.utils";
 import en from "$tests/mocks/i18n.mock";
 import type { Operation, TransactionWithId } from "@dfinity/ledger-icp";
@@ -460,7 +460,7 @@ describe("icp-transactions.utils", () => {
     });
   });
 
-  describe("sortTransactionsById", () => {
+  describe("sortTransactionsByIdDescendingOrder", () => {
     const firstTransaction = createTransactionWithId({
       operation: defaultTransferOperation,
       id: 10n,
@@ -479,7 +479,7 @@ describe("icp-transactions.utils", () => {
         thirdTransaction,
         firstTransaction,
       ];
-      expect(sortTransactionsById(transactions)).toEqual([
+      expect(sortTransactionsByIdDescendingOrder(transactions)).toEqual([
         thirdTransaction,
         secondTransaction,
         firstTransaction,
