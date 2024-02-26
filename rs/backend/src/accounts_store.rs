@@ -501,11 +501,7 @@ impl AccountsStore {
         if !Self::validate_account_name(&sub_account_name) {
             CreateSubAccountResponse::NameTooLong
         } else if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
-            let response = if account.sub_accounts.len() < (u8::MAX as usize) {
-                let sub_account_id = (1..u8::MAX)
-                    .find(|i| !account.sub_accounts.contains_key(i))
-                    .unwrap_or_else(|| unreachable!("User {caller} already has the maximum number of sub-accounts.  But we already checked for that."));
-
+            let response = if let Some(sub_account_id) = (1..u8::MAX).find(|i| !account.sub_accounts.contains_key(i)) {
                 let sub_account = convert_byte_to_sub_account(sub_account_id);
                 let sub_account_identifier = AccountIdentifier::new(caller, Some(sub_account));
                 let named_sub_account = NamedSubAccount::new(sub_account_name.clone(), sub_account_identifier);
