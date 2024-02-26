@@ -118,4 +118,3 @@ playwright-results/
 **/*.rs.bk
 
 tmp
-,*
