@@ -1554,6 +1554,7 @@ impl StableState for AccountsStore {
             &self.multi_part_transactions_processor,
             &self.last_ledger_sync_timestamp_nanos,
             &self.neurons_topped_up_count,
+            Some(&self.accounts_db_stats),
         ))
         .into_bytes()
         .unwrap()

@@ -28,7 +28,6 @@ where
     M: Memory,
 {
     /// Creates a new, empty database.
-    #[cfg(test)]
     pub fn new(memory: M) -> Self {
         Self {
             accounts: StableBTreeMap::new(memory),
