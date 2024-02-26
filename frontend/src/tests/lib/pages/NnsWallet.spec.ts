@@ -286,19 +286,26 @@ describe("NnsWallet", () => {
     it("should render second page of transactions from ICP Index canister", async () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_ICP_INDEX", true);
       vi.stubGlobal("IntersectionObserver", IntersectionObserverActive);
-      let resolveGetTransactionsFirst;
-      let resolveGetTransactionsSecond;
+      let resolveGetTransactions1;
+      let resolveGetTransactions2;
+      let resolveGetTransactions3;
       vi.spyOn(indexApi, "getTransactions")
         .mockImplementationOnce(
           () =>
             new Promise<indexApi.GetTransactionsResponse>((resolve) => {
-              resolveGetTransactionsFirst = resolve;
+              resolveGetTransactions1 = resolve;
             })
         )
         .mockImplementationOnce(
           () =>
             new Promise<indexApi.GetTransactionsResponse>((resolve) => {
-              resolveGetTransactionsSecond = resolve;
+              resolveGetTransactions2 = resolve;
+            })
+        )
+        .mockImplementation(
+          () =>
+            new Promise<indexApi.GetTransactionsResponse>((resolve) => {
+              resolveGetTransactions3 = resolve;
             })
         );
 
@@ -306,7 +313,7 @@ describe("NnsWallet", () => {
       const po = NnsWalletPo.under(new JestPageObjectElement(container));
 
       await runResolvedPromises();
-      resolveGetTransactionsFirst({
+      resolveGetTransactions1({
         transactions: firstPageTransactions,
         oldestTxId,
         balance: mainBalanceE8s,
@@ -317,7 +324,7 @@ describe("NnsWallet", () => {
         await po.getUiTransactionsListPo().getTransactionCardPos()
       ).toHaveLength(firstPageTransactions.length);
 
-      resolveGetTransactionsSecond({
+      resolveGetTransactions2({
         transactions: lastPageTransactions,
         oldestTxId,
         balance: mainBalanceE8s,
@@ -329,6 +336,10 @@ describe("NnsWallet", () => {
       ).toHaveLength(
         firstPageTransactions.length + lastPageTransactions.length
       );
+
+      await runResolvedPromises();
+      // Third page should not be requested.
+      expect(resolveGetTransactions3).toBeUndefined();
     });
 
     it("should render 'Staked' transaction from ICP Index canister", async () => {

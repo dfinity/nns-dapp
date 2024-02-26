@@ -64,7 +64,7 @@
   import {
     mapIcpTransaction,
     mapToSelfTransactions,
-    sortTransactionsByTimestamp,
+    sortTransactionsByIdDescendingOrder,
   } from "$lib/utils/icp-transactions.utils";
   import UiTransactionsList from "$lib/components/accounts/UiTransactionsList.svelte";
   import { neuronAccountsStore } from "$lib/stores/neurons.store";
@@ -132,7 +132,7 @@
       nonNullish(transactionsStore[account.identifier])
     ) {
       return mapToSelfTransactions(
-        sortTransactionsByTimestamp(
+        sortTransactionsByIdDescendingOrder(
           transactionsStore[account.identifier].transactions
         )
       )
