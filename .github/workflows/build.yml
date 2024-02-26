@@ -182,6 +182,7 @@ jobs:
         with:
           name: test-upgrade-stable-dfx.log
           path: test-upgrade-stable-dfx.log
+  test-upgrade-map-stable:
     needs: build
     runs-on: ubuntu-20.04
     timeout-minutes: 40
