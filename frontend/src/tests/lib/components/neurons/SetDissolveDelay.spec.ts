@@ -10,6 +10,7 @@ import { SetDissolveDelayPo } from "$tests/page-objects/SetDissolveDelay.page-ob
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronState } from "@dfinity/nns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+import { expect } from "@playwright/test";
 import { render } from "@testing-library/svelte";
 
 const defaultComponentProps = {
