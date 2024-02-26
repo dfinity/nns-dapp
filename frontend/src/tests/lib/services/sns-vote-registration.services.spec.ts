@@ -1,5 +1,6 @@
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { registerSnsVotes } from "$lib/services/sns-vote-registration.services";
+import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import * as toastsStore from "$lib/stores/toasts.store";
@@ -7,12 +8,14 @@ import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { NeuronState } from "@dfinity/nns";
 import type { SnsProposalData } from "@dfinity/sns";
 import { SnsVote } from "@dfinity/sns";
 import { fromDefinedNullable } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 describe("sns-vote-registration-services", () => {
   const rootCanisterId = mockPrincipal;
@@ -161,6 +164,35 @@ describe("sns-vote-registration-services", () => {
           ]),
         })
       );
+    });
+
+    it("should reset actionable proposals for sns after voting", async () => {
+      vi.spyOn(snsGovernanceApi, "registerVote").mockResolvedValue();
+      const rootCanisterId2 = principal(13);
+      actionableSnsProposalsStore.setProposals({
+        rootCanisterId,
+        proposals: [proposal],
+      });
+      actionableSnsProposalsStore.setProposals({
+        rootCanisterId: rootCanisterId2,
+        proposals: [proposal],
+      });
+
+      expect(get(actionableSnsProposalsStore)).toEqual({
+        [rootCanisterId.toText()]: [proposal],
+        [rootCanisterId2.toText()]: [proposal],
+      });
+
+      await callRegisterVote({
+        vote: SnsVote.Yes,
+        reloadProposalCallback: () => {
+          // do nothing
+        },
+      });
+
+      expect(get(actionableSnsProposalsStore)).toEqual({
+        [rootCanisterId2.toText()]: [proposal],
+      });
     });
 
     it("should display a correct error details", async () => {

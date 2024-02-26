@@ -1,3 +1,4 @@
+import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { i18n } from "$lib/stores/i18n";
 import {
   toastsError,
@@ -84,6 +85,9 @@ export const manageVotesRegistration = async ({
       proposalIdString,
       canisterId: universeCanisterId,
     });
+
+    // reset the actionable store to trigger a new fetch for votable proposals count.
+    actionableNnsProposalsStore.reset();
   } catch (err: unknown) {
     console.error("vote unknown:", err);
 
