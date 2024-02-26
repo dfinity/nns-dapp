@@ -182,8 +182,6 @@ jobs:
         with:
           name: test-upgrade-stable-dfx.log
           path: test-upgrade-stable-dfx.log
-<<<<<<< HEAD
-  test-upgrade-map-stable:
     needs: build
     runs-on: ubuntu-20.04
     timeout-minutes: 40
@@ -205,7 +203,7 @@ jobs:
           cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)" && idl2json --version
       - name: Start dfx
         run: dfx start --clean --background &>test-upgrade-stable-dfx.log
-      - name: Downgrade nns-dapp to prod and upgrade back again
+      - name: Upgrade nns-dapp from Map to AccountsInStableMemory and back again
         run: ./scripts/nns-dapp/migration-test --schema1 Map --schema2 AccountsInStableMemory --accounts 10000
       - name: Upload dfx logs
         if: failure()
@@ -213,8 +211,6 @@ jobs:
         with:
           name: test-upgrade-stable-dfx.log
           path: test-upgrade-stable-dfx.log
-=======
->>>>>>> origin/main
   test-test-account-api:
     needs: build
     runs-on: ubuntu-20.04
