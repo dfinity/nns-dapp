@@ -357,6 +357,13 @@ pub enum DetachCanisterResponse {
 }
 
 impl AccountsStore {
+    /// Starts migrating accounts to the new db.
+    pub fn start_migrating_accounts_to(&mut self, accounts_db: AccountsDb) {
+        self.accounts_db.start_migrating_accounts_to(accounts_db);
+    }
+    pub fn step_migration(&mut self) {
+        self.accounts_db.step_migration();
+    }
     #[must_use]
     pub fn get_account(&self, caller: PrincipalId) -> Option<AccountDetails> {
         let account_identifier = AccountIdentifier::from(caller);
