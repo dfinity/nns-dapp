@@ -46,7 +46,7 @@ type Cycles = u128;
 /// - The state will be set for the appropriate schema.
 #[init]
 fn init(args: Option<CanisterArguments>) {
-    println!("init with args: {args:#?}");
+    println!("START init with args: {args:#?}");
     set_canister_arguments(args);
     perf::record_instruction_count("init after set_canister_arguments");
     CANISTER_ARGUMENTS.with(|args| {
@@ -63,7 +63,7 @@ fn init(args: Option<CanisterArguments>) {
     // Legacy:
     assets::init_assets();
     perf::record_instruction_count("init stop");
-    println!("END init with args");
+    println!("END   init with args");
 }
 
 /// Redundant function, never called but required as this is `main.rs`.
@@ -90,7 +90,7 @@ fn pre_upgrade() {
 
 #[post_upgrade]
 fn post_upgrade(args_maybe: Option<CanisterArguments>) {
-    println!("post_upgrade with args: {args_maybe:#?}");
+    println!("START post_upgrade with args: {args_maybe:#?}");
     // Saving the instruction counter now will not have the desired effect
     // as the storage is about to be wiped out and replaced with stable memory.
     let counter_before = PerformanceCount::new("post_upgrade start");
@@ -106,7 +106,7 @@ fn post_upgrade(args_maybe: Option<CanisterArguments>) {
     perf::record_instruction_count("post_upgrade after set_canister_arguments");
     assets::init_assets(); // TODO: Move this inside State::from (and State::new_with_memory)
     perf::record_instruction_count("post_upgrade stop");
-    println!("STOP post-upgrade");
+    println!("END   post-upgrade");
 }
 
 #[export_name = "canister_query http_request"]

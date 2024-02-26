@@ -2,6 +2,7 @@
   import { translate } from "$lib/utils/i18n.utils";
   import { Input } from "@dfinity/gix-components";
 
+  export let testId: string = "input-ui-element";
   export let name: string;
   export let inputType: "icp" | "number" | "text" = "number";
   export let required = true;
@@ -20,7 +21,7 @@
 </script>
 
 <Input
-  testId="input-ui-element"
+  {testId}
   {inputType}
   {required}
   {spellcheck}

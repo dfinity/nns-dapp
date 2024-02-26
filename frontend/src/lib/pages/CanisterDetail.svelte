@@ -217,6 +217,7 @@
 
   <Footer columns={1}>
     <button
+      data-tid="add-cycles-button"
       class="primary"
       on:click={openModal}
       disabled={canisterInfo === undefined || $busy}

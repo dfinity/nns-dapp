@@ -763,6 +763,7 @@
   },
   "error__ledger": {
     "unexpected": "There was an error with the hardware wallet.",
+    "app_version_not_supported": "This Ledger device is running an outdated version of the Internet Computer app. In order to use the device with this application, it needs to be updated to version 2.4.9 or later. More info <a href=\"https://forum.dfinity.org/t/nns-dapp-to-remove-protobuf-dependency-upgrade-your-ledger-ic-app-to-2-4-9/27712\" rel=\"noopener noreferrer\" aria-label=\"more info ledger App version deprecated\" target=\"_blank\">here</a>.",
     "please_open": "Please open the Internet Computer app on your hardware wallet and try again.",
     "locked": "Hardware Wallet is locked. Unlock it and try again.",
     "fetch_public_key": "Unable to fetch the public key. Please try again.",

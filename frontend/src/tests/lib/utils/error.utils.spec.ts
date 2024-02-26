@@ -44,7 +44,7 @@ describe("error-utils", () => {
           fallbackErrorLabelKey: "test.test",
           err: undefined,
         })
-      ).toEqual({ labelKey: "test.test" });
+      ).toEqual({ labelKey: "test.test", renderAsHtml: true });
 
       const err = new HardwareWalletAttachError("test");
 
@@ -53,14 +53,14 @@ describe("error-utils", () => {
           fallbackErrorLabelKey: "test.test",
           err,
         })
-      ).toEqual({ labelKey: "test.test", err });
+      ).toEqual({ labelKey: "test.test", err, renderAsHtml: true });
 
       expect(
         toToastError({
           fallbackErrorLabelKey: "test.test",
           err,
         })
-      ).toEqual({ labelKey: "test.test", err });
+      ).toEqual({ labelKey: "test.test", err, renderAsHtml: true });
     });
 
     it("should use error message key", () => {
@@ -71,7 +71,7 @@ describe("error-utils", () => {
           fallbackErrorLabelKey: "test.test",
           err,
         })
-      ).toEqual({ labelKey: "error.rename_subaccount" });
+      ).toEqual({ labelKey: "error.rename_subaccount", renderAsHtml: true });
     });
   });
 

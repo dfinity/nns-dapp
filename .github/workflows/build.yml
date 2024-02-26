@@ -182,6 +182,7 @@ jobs:
         with:
           name: test-upgrade-stable-dfx.log
           path: test-upgrade-stable-dfx.log
+<<<<<<< HEAD
   test-upgrade-map-stable:
     needs: build
     runs-on: ubuntu-20.04
@@ -212,6 +213,8 @@ jobs:
         with:
           name: test-upgrade-stable-dfx.log
           path: test-upgrade-stable-dfx.log
+=======
+>>>>>>> origin/main
   test-test-account-api:
     needs: build
     runs-on: ubuntu-20.04
