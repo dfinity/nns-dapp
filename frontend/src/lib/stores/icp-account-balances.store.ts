@@ -1,3 +1,4 @@
+import type { AccountIdentifierString } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { writable, type Readable } from "svelte/store";
 
 export interface IcpAccountBalanceStoreData {
@@ -7,7 +8,7 @@ export interface IcpAccountBalanceStoreData {
 
 // The key is the ICP account identifier.
 export type IcpAccountBalancesStoreData = Record<
-  string,
+  AccountIdentifierString,
   IcpAccountBalanceStoreData
 >;
 
