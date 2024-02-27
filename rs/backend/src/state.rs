@@ -4,13 +4,14 @@ pub mod tests;
 mod with_accounts_in_stable_memory;
 mod with_raw_memory;
 
-use self::partitions::PartitionsMaybe;
-use self::partitions::{PartitionType, Partitions};
+use self::partitions::{PartitionType, Partitions, PartitionsMaybe};
 use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
+use crate::accounts_store::schema::map::AccountsDbAsMap;
 use crate::accounts_store::schema::proxy::AccountsDb;
 use crate::accounts_store::schema::AccountsDbTrait;
 use crate::accounts_store::schema::SchemaLabel;
 use crate::accounts_store::AccountsStore;
+use crate::arguments::CanisterArguments;
 use crate::assets::AssetHashes;
 use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
@@ -18,7 +19,7 @@ use crate::perf::PerformanceCounts;
 use dfn_candid::Candid;
 use dfn_core::api::trap_with;
 use ic_cdk::println;
-use ic_stable_structures::{DefaultMemoryImpl, Memory};
+use ic_stable_structures::DefaultMemoryImpl;
 use on_wire::{FromWire, IntoWire};
 use std::cell::RefCell;
 
@@ -113,7 +114,7 @@ thread_local! {
 
 impl State {
     /// Creates new state with the specified schema.
-    #[cfg(test)]
+    #[must_use]
     pub fn new(schema: SchemaLabel, memory: DefaultMemoryImpl) -> Self {
         match schema {
             SchemaLabel::Map => {
@@ -140,6 +141,45 @@ impl State {
                     partitions_maybe: RefCell::new(PartitionsMaybe::Partitions(partitions)),
                 }
             }
+        }
+    }
+    /// Applies the specified arguments to the state.
+    #[must_use]
+    pub fn with_arguments(mut self, arguments: &CanisterArguments) -> Self {
+        if let Some(schema) = arguments.schema {
+            self.start_migration_to(schema);
+        }
+        self
+    }
+    /// Applies the specified arguments, if provided
+    #[must_use]
+    pub fn with_arguments_maybe(self, arguments_maybe: Option<&CanisterArguments>) -> Self {
+        if let Some(arguments) = arguments_maybe {
+            self.with_arguments(arguments)
+        } else {
+            self
+        }
+    }
+    /// Starts a migration, if needed.
+    pub fn start_migration_to(&mut self, schema: SchemaLabel) {
+        let schema_now = self.schema_label();
+        if schema_now == schema {
+            println!("start_migration_to: No migration needed.  Schema is already {schema:?}.");
+        } else {
+            // Create a new, empty, accounts database with the new schema, then start migrating to it.
+            let new_accounts_db = match schema {
+                SchemaLabel::Map => AccountsDb::Map(AccountsDbAsMap::default()),
+                SchemaLabel::AccountsInStableMemory => {
+                    let mut partitions_maybe = self.partitions_maybe.borrow_mut();
+                    // If the memory isn't partitioned, partition it now.
+                    let partitions = partitions_maybe.get_or_format(schema);
+                    let vm = partitions.get(PartitionType::Accounts.memory_id());
+                    AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::new(vm))
+                }
+            };
+            self.accounts_store
+                .borrow_mut()
+                .start_migrating_accounts_to(new_accounts_db);
         }
     }
 }
@@ -214,43 +254,6 @@ impl StableState for State {
 
 // Methods called on pre_upgrade and post_upgrade.
 impl State {
-    /// The schema version, determined by the last version that was saved to stable memory.
-    fn schema_version_from_stable_memory() -> Option<SchemaLabel> {
-        let memory = DefaultMemoryImpl::default();
-        Self::schema_version_from_memory(&memory)
-    }
-
-    /// The schema version, as stored in an arbitrary memory.
-    fn schema_version_from_memory<M>(memory: &M) -> Option<SchemaLabel>
-    where
-        M: Memory,
-    {
-        let mut schema_label_bytes = [0u8; SchemaLabel::MAX_BYTES];
-        memory.read(0, &mut schema_label_bytes);
-        SchemaLabel::try_from(&schema_label_bytes[..]).ok()
-    }
-
-    /// Creates the state from stable memory in the `post_upgrade()` hook.
-    ///
-    /// Note: The stable memory may have been created by any of these schemas:
-    /// - The previous schema, when first migrating from the previous schema to the current schema.
-    /// - The current schema, if upgrading without changing the schema.
-    /// - The next schema, if a new schema was deployed and we need to roll back.
-    ///
-    /// Note: Changing the schema requires at least two deployments:
-    /// - Deploy a release with a parser for the new schema.
-    /// - Then, deploy a release that writes the new schema.
-    /// This way it is possible to roll back after deploying the new schema.
-    #[must_use]
-    pub fn restore() -> Self {
-        match Self::schema_version_from_stable_memory() {
-            None => Self::recover_from_raw_memory(),
-            Some(version) => {
-                trap_with(&format!("Unknown schema version: {version:?}"));
-                unreachable!();
-            }
-        }
-    }
     /// Saves any unsaved state to stable memory.
     pub fn save(&self) {
         let schema = self.schema_label();

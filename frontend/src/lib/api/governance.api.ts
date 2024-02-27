@@ -3,7 +3,6 @@ import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { DFINITY_NEURON, IC_NEURON } from "$lib/constants/api.constants";
 import { GOVERNANCE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
-import { isLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Agent, Identity } from "@dfinity/agent";
@@ -561,7 +560,6 @@ export const governanceCanister = async ({
   const canister = GovernanceCanister.create({
     agent,
     canisterId: GOVERNANCE_CANISTER_ID,
-    hardwareWallet: await isLedgerIdentityProxy(identity),
   });
 
   return {

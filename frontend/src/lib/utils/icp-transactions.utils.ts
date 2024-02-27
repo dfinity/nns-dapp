@@ -49,6 +49,10 @@ export const mapToSelfTransactions = (
   return resultTransactions;
 };
 
+export const sortTransactionsByIdDescendingOrder = (
+  transactions: TransactionWithId[]
+): TransactionWithId[] => transactions.sort((a, b) => (a.id > b.id ? -1 : 1));
+
 // TODO: Support icrc_memo which is not used at the moment in NNS dapp.
 const getTransactionType = ({
   transaction: { operation, memo },

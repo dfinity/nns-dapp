@@ -42,7 +42,6 @@ struct Migration {
     /// The database being migrated to
     db: AccountsDb,
     /// The next account to migrate.
-    #[cfg(test)]
     next_to_migrate: Option<Vec<u8>>,
 }
 

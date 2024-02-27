@@ -60,6 +60,8 @@ export const toastsError = ({
     level: "error",
     detail: errorToString(err),
     substitutions,
+    // We don't have any use-case to not render as HTML, so no need to add complexity here.
+    renderAsHtml: true,
   });
 };
 

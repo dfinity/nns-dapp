@@ -2,11 +2,11 @@ import * as agent from "$lib/api/agent.api";
 import { getTransactions } from "$lib/api/icp-index.api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
+import { mockTransactionWithId } from "$tests/mocks/transaction.mock";
 import type { HttpAgent } from "@dfinity/agent";
 import {
   IndexCanister,
   type GetAccountIdentifierTransactionsResponse,
-  type TransactionWithId,
 } from "@dfinity/ledger-icp";
 import { mock } from "vitest-mock-extended";
 
@@ -19,26 +19,8 @@ describe("icp-index.api", () => {
 
   describe("icp-index api", () => {
     const { identifier: accountIdentifier } = mockMainAccount;
-
-    const defaultTransactinoWithId: TransactionWithId = {
-      id: 1234n,
-      transaction: {
-        memo: 0n,
-        icrc1_memo: [],
-        operation: {
-          Transfer: {
-            to: "1234",
-            fee: { e8s: 10_000n },
-            from: "56789",
-            amount: { e8s: 100_000_000n },
-            spender: [],
-          },
-        },
-        created_at_time: [],
-      },
-    };
     const defaultResponse: GetAccountIdentifierTransactionsResponse = {
-      transactions: [defaultTransactinoWithId],
+      transactions: [mockTransactionWithId],
       oldest_tx_id: [1234n],
       balance: 200_000_000n,
     };
@@ -74,7 +56,7 @@ describe("icp-index.api", () => {
         });
         expect(response).toEqual({
           oldestTxId: defaultResponse.oldest_tx_id[0],
-          transactions: [defaultTransactinoWithId],
+          transactions: [mockTransactionWithId],
           balance: defaultResponse.balance,
         });
       });
@@ -115,7 +97,7 @@ describe("icp-index.api", () => {
 
         expect(response).toEqual({
           oldestTxId: undefined,
-          transactions: [defaultTransactinoWithId],
+          transactions: [mockTransactionWithId],
           balance: defaultResponse.balance,
         });
       });

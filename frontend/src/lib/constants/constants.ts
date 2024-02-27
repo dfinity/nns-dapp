@@ -2,7 +2,7 @@ export const DEFAULT_LIST_PAGINATION_LIMIT = 100;
 export const DEFAULT_TRANSACTION_PAGE_LIMIT = 100;
 // Use a different limit for Icrc transactions
 // the Index canister needs to query the Icrc Ledger canister for each transaction - i.e. it needs an update call
-export const DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT = 20;
+export const DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT = 20;
 
 /**
  * The infinite scroll observe an element that finds place after x % of last page.
