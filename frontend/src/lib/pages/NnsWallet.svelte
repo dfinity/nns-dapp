@@ -41,7 +41,12 @@
   import { pageStore } from "$lib/derived/page.derived";
   import Separator from "$lib/components/ui/Separator.svelte";
   import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
-  import { ICPToken, TokenAmountV2, nonNullish } from "@dfinity/utils";
+  import {
+    ICPToken,
+    TokenAmountV2,
+    isNullish,
+    nonNullish,
+  } from "@dfinity/utils";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import type { AccountIdentifierText } from "$lib/types/account";
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
@@ -51,7 +56,10 @@
   import RenameSubAccountButton from "$lib/components/accounts/RenameSubAccountButton.svelte";
   import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
   import IC_LOGO from "$lib/assets/icp.svg";
-  import { loadIcpAccountTransactions } from "$lib/services/icp-transactions.services";
+  import {
+    loadIcpAccountNextTransactions,
+    loadIcpAccountTransactions,
+  } from "$lib/services/icp-transactions.services";
   import { ENABLE_ICP_INDEX } from "$lib/stores/feature-flags.store";
   import type { UiTransaction } from "$lib/types/transaction";
   import {
@@ -61,6 +69,7 @@
   import {
     mapIcpTransaction,
     mapToSelfTransactions,
+    sortTransactionsByIdDescendingOrder,
   } from "$lib/utils/icp-transactions.utils";
   import UiTransactionsList from "$lib/components/accounts/UiTransactionsList.svelte";
   import { neuronAccountsStore } from "$lib/stores/neurons.store";
@@ -81,9 +90,32 @@
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
 
+  let loadingTransactions = false;
   let transactions: Transaction[] | undefined;
   // Used to identify transactions related to a Swap.
   let swapCanisterAccountsStore: Readable<Set<string>> | undefined = undefined;
+  let completedTransactions = false;
+  $: completedTransactions = getCompletedFromStore({
+    account: $selectedAccountStore.account,
+    transactionsStore: $icpTransactionsStore,
+  });
+
+  const getCompletedFromStore = ({
+    account,
+    transactionsStore,
+  }: {
+    account: Account | undefined;
+    transactionsStore: IcpTransactionsStoreData;
+  }): boolean => {
+    if (
+      nonNullish(account) &&
+      nonNullish(transactionsStore[account.identifier])
+    ) {
+      return transactionsStore[account.identifier].completed;
+    }
+    return false;
+  };
+
   let uiTransactions: UiTransaction[] | undefined;
   $: uiTransactions = makeUiTransactions({
     account: $selectedAccountStore.account,
@@ -107,7 +139,9 @@
       nonNullish(transactionsStore[account.identifier])
     ) {
       return mapToSelfTransactions(
-        transactionsStore[account.identifier].transactions
+        sortTransactionsByIdDescendingOrder(
+          transactionsStore[account.identifier].transactions
+        )
       )
         .map(({ transaction, toSelfTransaction }) =>
           mapIcpTransaction({
@@ -123,11 +157,16 @@
     }
   };
 
-  const reloadTransactions = (
+  const reloadTransactions = async (
     accountIdentifier: AccountIdentifierText
-  ): Promise<void> => {
+  ) => {
     if ($ENABLE_ICP_INDEX) {
-      return loadIcpAccountTransactions({ accountIdentifier });
+      // Don't show the loading spinner if the transactions are already loaded.
+      loadingTransactions = isNullish($icpTransactionsStore[accountIdentifier]);
+      // But we still load them to get the latest transactions.
+      await loadIcpAccountTransactions({ accountIdentifier });
+      loadingTransactions = false;
+      return;
     }
     return getAccountTransactions({
       accountIdentifier: accountIdentifier,
@@ -140,6 +179,16 @@
         transactions = loadedTransactions;
       },
     });
+  };
+
+  const loadNextTransactions = async () => {
+    if (nonNullish($selectedAccountStore.account)) {
+      loadingTransactions = true;
+      await loadIcpAccountNextTransactions(
+        $selectedAccountStore.account.identifier
+      );
+      loadingTransactions = false;
+    }
   };
 
   const selectedAccountStore = writable<WalletStore>({
@@ -285,9 +334,10 @@
           {#if $selectedAccountStore.account !== undefined}
             {#if $ENABLE_ICP_INDEX}
               <UiTransactionsList
+                on:nnsIntersect={loadNextTransactions}
                 transactions={uiTransactions ?? []}
-                loading={false}
-                completed={false}
+                loading={loadingTransactions}
+                completed={completedTransactions}
               />
             {:else}
               <TransactionList {transactions} />
