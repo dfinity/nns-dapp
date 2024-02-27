@@ -62,6 +62,17 @@ describe("auth-utils", () => {
     it("should return old mainnet identity from ic0.app", async () => {
       Object.defineProperty(window, "location", {
         writable: true,
+        value: { host: "nns.ic0.app" },
+      });
+
+      expect(await getIdentityProviderUrl()).toEqual(
+        "https://identity.ic0.app"
+      );
+    });
+
+    it("should return old mainnet identity from ic0.app", async () => {
+      Object.defineProperty(window, "location", {
+        writable: true,
         value: { host: "qoctq-giaaa-aaaaa-aaaea-cai.ic0.app" },
       });
 
