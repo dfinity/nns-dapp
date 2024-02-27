@@ -1,8 +1,4 @@
 import {
-  IDENTITY_SERVICE_URL,
-  OLD_MAINNET_IDENTITY_SERVICE_URL,
-} from "$lib/constants/identity.constants";
-import {
   getIdentityProviderUrl,
   isSignedIn,
   loadIdentity,
@@ -63,21 +59,14 @@ describe("auth-utils", () => {
       window.location.host = host;
     });
 
-    /*
-        vi.stubEnv(
-      "VITE_IDENTITY_SERVICE_URL",
-      "http://qhbym-qaaaa-aaaaa-aaafq-cai.localhost:8080"
-    );
-     */
-
     it("should return old mainnet identity from ic0.app", async () => {
       Object.defineProperty(window, "location", {
         writable: true,
-        value: { host: ".ic0.app" },
+        value: { host: "qoctq-giaaa-aaaaa-aaaea-cai.ic0.app" },
       });
 
       expect(await getIdentityProviderUrl()).toEqual(
-        OLD_MAINNET_IDENTITY_SERVICE_URL
+        "https://identity.ic0.app"
       );
     });
 
@@ -87,7 +76,7 @@ describe("auth-utils", () => {
         value: { host: "nns.internetcomputer.org" },
       });
 
-      expect(await getIdentityProviderUrl()).toEqual(IDENTITY_SERVICE_URL);
+      expect(await getIdentityProviderUrl()).toEqual("http://localhost:8000/");
     });
   });
 });
