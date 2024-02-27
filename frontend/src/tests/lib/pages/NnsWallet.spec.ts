@@ -286,34 +286,20 @@ describe("NnsWallet", () => {
     it("should render second page of transactions from ICP Index canister", async () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_ICP_INDEX", true);
       vi.stubGlobal("IntersectionObserver", IntersectionObserverActive);
-      let resolveGetTransactions1;
-      let resolveGetTransactions2;
-      let resolveGetTransactions3;
-      vi.spyOn(indexApi, "getTransactions")
-        .mockImplementationOnce(
-          () =>
-            new Promise<indexApi.GetTransactionsResponse>((resolve) => {
-              resolveGetTransactions1 = resolve;
-            })
-        )
-        .mockImplementationOnce(
-          () =>
-            new Promise<indexApi.GetTransactionsResponse>((resolve) => {
-              resolveGetTransactions2 = resolve;
-            })
-        )
-        .mockImplementation(
-          () =>
-            new Promise<indexApi.GetTransactionsResponse>((resolve) => {
-              resolveGetTransactions3 = resolve;
-            })
-        );
+      const resolveFunctions = [];
+      vi.spyOn(indexApi, "getTransactions").mockImplementation(
+        () =>
+          new Promise<indexApi.GetTransactionsResponse>((resolve) => {
+            resolveFunctions.push(resolve);
+          })
+      );
 
       const { container } = render(NnsWallet, props);
       const po = NnsWalletPo.under(new JestPageObjectElement(container));
 
       await runResolvedPromises();
-      resolveGetTransactions1({
+      expect(resolveFunctions).toHaveLength(1);
+      resolveFunctions[0]({
         transactions: firstPageTransactions,
         oldestTxId,
         balance: mainBalanceE8s,
@@ -324,7 +310,8 @@ describe("NnsWallet", () => {
         await po.getUiTransactionsListPo().getTransactionCardPos()
       ).toHaveLength(firstPageTransactions.length);
 
-      resolveGetTransactions2({
+      expect(resolveFunctions).toHaveLength(2);
+      resolveFunctions[1]({
         transactions: lastPageTransactions,
         oldestTxId,
         balance: mainBalanceE8s,
@@ -339,7 +326,7 @@ describe("NnsWallet", () => {
 
       await runResolvedPromises();
       // Third page should not be requested.
-      expect(resolveGetTransactions3).toBeUndefined();
+      expect(resolveFunctions).toHaveLength(2);
     });
 
     it("should render 'Staked' transaction from ICP Index canister", async () => {

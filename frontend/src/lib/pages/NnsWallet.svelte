@@ -94,6 +94,7 @@
     account: $selectedAccountStore.account,
     transactionsStore: $icpTransactionsStore,
   });
+
   const getCompletedFromStore = ({
     account,
     transactionsStore,
@@ -109,6 +110,7 @@
     }
     return false;
   };
+
   let uiTransactions: UiTransaction[] | undefined;
   $: uiTransactions = makeUiTransactions({
     account: $selectedAccountStore.account,
