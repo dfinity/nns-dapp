@@ -64,7 +64,7 @@ describe("icpAccountsStore", () => {
     });
   });
 
-  it("should derived main account and balance", () => {
+  it("should derive main account and balance", () => {
     icpAccountDetailsStore.set({
       accountDetails: {
         ...accountDetails,
@@ -93,7 +93,7 @@ describe("icpAccountsStore", () => {
     });
   });
 
-  it("should derived all accounts and balances", () => {
+  it("should derive all accounts and balances", () => {
     icpAccountDetailsStore.set(accountDetailsData);
 
     icpAccountBalancesStore.setBalance({
