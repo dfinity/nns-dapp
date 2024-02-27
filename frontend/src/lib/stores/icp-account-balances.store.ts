@@ -6,7 +6,6 @@ export interface IcpAccountBalanceStoreData {
   certified: boolean;
 }
 
-// The key is the ICP account identifier.
 export type IcpAccountBalancesStoreData = Record<
   AccountIdentifierString,
   IcpAccountBalanceStoreData
