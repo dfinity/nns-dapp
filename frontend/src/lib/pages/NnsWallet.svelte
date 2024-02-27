@@ -41,7 +41,12 @@
   import { pageStore } from "$lib/derived/page.derived";
   import Separator from "$lib/components/ui/Separator.svelte";
   import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
-  import { ICPToken, TokenAmountV2, nonNullish } from "@dfinity/utils";
+  import {
+    ICPToken,
+    TokenAmountV2,
+    isNullish,
+    nonNullish,
+  } from "@dfinity/utils";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import type { AccountIdentifierText } from "$lib/types/account";
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
@@ -152,11 +157,16 @@
     }
   };
 
-  const reloadTransactions = (
+  const reloadTransactions = async (
     accountIdentifier: AccountIdentifierText
-  ): Promise<void> => {
+  ) => {
     if ($ENABLE_ICP_INDEX) {
-      return loadIcpAccountTransactions({ accountIdentifier });
+      // Don't show the loading spinner if the transactions are already loaded.
+      loadingTransactions = isNullish($icpTransactionsStore[accountIdentifier]);
+      // But we still load them to get the latest transactions.
+      await loadIcpAccountTransactions({ accountIdentifier });
+      loadingTransactions = false;
+      return;
     }
     return getAccountTransactions({
       accountIdentifier: accountIdentifier,

@@ -410,6 +410,71 @@ describe("NnsWallet", () => {
       );
     });
 
+    it("should display SkeletonCard while loading transactions from ICP Index canister", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_INDEX", true);
+      let resolveGetTransactions;
+      vi.spyOn(indexApi, "getTransactions").mockImplementation(
+        () =>
+          new Promise<indexApi.GetTransactionsResponse>((resolve) => {
+            resolveGetTransactions = resolve;
+          })
+      );
+      const po = await renderWallet(props);
+
+      await runResolvedPromises();
+      expect(
+        await po.getUiTransactionsListPo().getSkeletonCardPo().isPresent()
+      ).toBe(true);
+
+      resolveGetTransactions({
+        transactions: accountTransactions,
+        oldestTxId: mockTransactionWithId.id,
+        balance: mainBalanceE8s,
+      });
+
+      await runResolvedPromises();
+      expect(
+        await po.getTransactionListPo().getSkeletonCardPo().isPresent()
+      ).toBe(false);
+    });
+
+    it("should not display SkeletonCard while loading transactions if there are transactions present in the store from ICP Index canister", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_INDEX", true);
+      let resolveGetTransactions;
+      vi.spyOn(indexApi, "getTransactions").mockImplementation(
+        () =>
+          new Promise<indexApi.GetTransactionsResponse>((resolve) => {
+            resolveGetTransactions = resolve;
+          })
+      );
+      icpTransactionsStore.addTransactions({
+        accountIdentifier: mockMainAccount.identifier,
+        transactions: accountTransactions,
+        oldestTxId: mockTransactionWithId.id,
+        completed: false,
+      });
+      const po = await renderWallet(props);
+
+      await runResolvedPromises();
+      expect(
+        await po.getUiTransactionsListPo().getSkeletonCardPo().isPresent()
+      ).toBe(false);
+      expect(
+        await po.getUiTransactionsListPo().getTransactionCardPos()
+      ).toHaveLength(accountTransactions.length);
+
+      resolveGetTransactions({
+        transactions: accountTransactions,
+        oldestTxId: mockTransactionWithId.id,
+        balance: mainBalanceE8s,
+      });
+
+      await runResolvedPromises();
+      expect(
+        await po.getTransactionListPo().getSkeletonCardPo().isPresent()
+      ).toBe(false);
+    });
+
     it("should enable new transaction action for route and store", async () => {
       const po = await renderWallet(props);
 
