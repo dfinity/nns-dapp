@@ -4,6 +4,7 @@ import type {
   SubAccountDetails,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpAccountBalancesStore } from "$lib/stores/icp-account-balances.store";
 import { icpAccountDetailsStore } from "$lib/stores/icp-account-details.store";
 import { principal } from "$tests/mocks/sns-projects.mock";
@@ -23,7 +24,7 @@ describe("icpAccountsStore", () => {
 
   const subAccountName = "My subaccount";
   const hardwareWalletAccountName = "My Nano S";
-  const subAccountArray = [54, 65, 76, 87];
+  const subAccountArray = [0x54, 0x65, 0x76, 0x87];
 
   const hardwareWalletAccount: HardwareWalletAccountDetails = {
     principal: hardwareWalletAccountPrincipal,
@@ -50,6 +51,7 @@ describe("icpAccountsStore", () => {
   };
 
   beforeEach(() => {
+    overrideFeatureFlagsStore.reset();
     icpAccountDetailsStore.reset();
     icpAccountBalancesStore.reset();
   });
@@ -135,6 +137,61 @@ describe("icpAccountsStore", () => {
           balanceUlps: hardwareWalletAccountBalance,
           icpIdentifier: hardwareWalletAccountIdentifier,
           identifier: hardwareWalletAccountIdentifier,
+          name: hardwareWalletAccountName,
+          principal: hardwareWalletAccountPrincipal,
+          type: "hardwareWallet",
+        },
+      ],
+    });
+  });
+
+  it("should use ICRC-1 identifiers with ENABLE_ICP_ICRC", () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_ICP_ICRC", true);
+
+    icpAccountDetailsStore.set(accountDetailsData);
+
+    icpAccountBalancesStore.setBalance({
+      accountIdentifier: mainAccountIdentifier,
+      balanceE8s: mainAccountBalance,
+      certified: true,
+    });
+
+    icpAccountBalancesStore.setBalance({
+      accountIdentifier: subAccountIdentifier,
+      balanceE8s: subAccountBalance,
+      certified: true,
+    });
+
+    icpAccountBalancesStore.setBalance({
+      accountIdentifier: hardwareWalletAccountIdentifier,
+      balanceE8s: hardwareWalletAccountBalance,
+      certified: true,
+    });
+
+    expect(get(icpAccountsStore)).toEqual({
+      main: {
+        balanceUlps: mainAccountBalance,
+        icpIdentifier: mainAccountIdentifier,
+        identifier: mainAccountPrincipal.toText(),
+        principal: mainAccountPrincipal,
+        type: "main",
+      },
+      subAccounts: [
+        {
+          balanceUlps: subAccountBalance,
+          icpIdentifier: subAccountIdentifier,
+          // Principal + checksum + subaccount array
+          identifier: `${mainAccountPrincipal.toText()}-42xschi.54657687`,
+          name: subAccountName,
+          subAccount: subAccountArray,
+          type: "subAccount",
+        },
+      ],
+      hardwareWallets: [
+        {
+          balanceUlps: hardwareWalletAccountBalance,
+          icpIdentifier: hardwareWalletAccountIdentifier,
+          identifier: hardwareWalletAccountPrincipal.toText(),
           name: hardwareWalletAccountName,
           principal: hardwareWalletAccountPrincipal,
           type: "hardwareWallet",
