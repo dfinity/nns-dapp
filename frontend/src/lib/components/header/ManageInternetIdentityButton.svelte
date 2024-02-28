@@ -1,12 +1,12 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { IconOpenInNew } from "@dfinity/gix-components";
-  import { IDENTITY_SERVICE_URL } from "$lib/constants/identity.constants";
+  import { getIdentityProviderUrl } from "$lib/utils/auth.utils";
 </script>
 
 <a
   data-tid="manage-ii-link"
-  href={IDENTITY_SERVICE_URL}
+  href={getIdentityProviderUrl()}
   rel="noopener noreferrer external"
   target="_blank"
   class="button text"

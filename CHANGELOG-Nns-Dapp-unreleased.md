@@ -34,6 +34,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * Bug where transferred SNS neurons appeared in the list of neurons after transferring them.
+* Bug when the "Manage Internet Identity" link always uses `internetcomputer.org` domain.
 
 #### Security
 
