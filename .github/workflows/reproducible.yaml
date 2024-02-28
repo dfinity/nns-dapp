@@ -63,12 +63,17 @@ jobs:
       - name: 'Upload hashes'
         uses: actions/upload-artifact@v4
         with:
-          name: hashes
+          name: hashes_${{ matrix.os }}_${{ matrix.time }}
           path: hashes/*.txt
   compare_hashes:
     runs-on: ubuntu-latest
     needs: [docker_build]
     steps:
+      - name: Merge Hashes
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: hashes
+          pattern: hashes_*
       - name: Get hashes
         uses: actions/download-artifact@v4
         with:
