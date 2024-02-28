@@ -9,7 +9,6 @@ import {
 import { AppPath } from "$lib/constants/routes.constants";
 import Wallet from "$lib/routes/Wallet.svelte";
 import { authStore } from "$lib/stores/auth.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
@@ -28,6 +27,7 @@ import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsFullProject, principal } from "$tests/mocks/sns-projects.mock";
 import { WalletPo } from "$tests/page-objects/Wallet.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
@@ -90,7 +90,7 @@ describe("Wallet", () => {
       },
     ]);
     setCkETHCanisters();
-    icpAccountsStore.setForTesting(mockAccountsStoreData);
+    setAccountsForTesting(mockAccountsStoreData);
     vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(1234n);
     vi.mocked(ckbtcMinterApi.retrieveBtcStatusV2ByAccount).mockResolvedValue(
       []

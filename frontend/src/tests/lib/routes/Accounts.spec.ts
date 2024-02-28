@@ -8,7 +8,6 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import Accounts from "$lib/routes/Accounts.svelte";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { page } from "$mocks/$app/stores";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -21,6 +20,7 @@ import {
 import { mockToken } from "$tests/mocks/sns-projects.mock";
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { resetAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
@@ -57,7 +57,7 @@ describe("Accounts", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     resetIdentity();
-    icpAccountsStore.resetForTesting();
+    resetAccountsForTesting();
 
     subaccountBalance = subaccountBalanceDefault;
     mainAccountBalance = mainAccountBalanceDefault;

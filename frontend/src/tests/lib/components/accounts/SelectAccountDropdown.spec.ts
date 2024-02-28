@@ -1,6 +1,5 @@
 import SelectAccountDropdown from "$lib/components/accounts/SelectAccountDropdown.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
 import {
@@ -10,6 +9,10 @@ import {
 } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
+import {
+  resetAccountsForTesting,
+  setAccountsForTesting,
+} from "$tests/utils/accounts.test-utils";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
@@ -22,7 +25,7 @@ describe("SelectAccountDropdown", () => {
   describe("no accounts", () => {
     beforeEach(() => {
       vi.clearAllMocks();
-      icpAccountsStore.resetForTesting();
+      resetAccountsForTesting();
     });
 
     const props = { rootCanisterId: OWN_CANISTER_ID };
@@ -42,7 +45,7 @@ describe("SelectAccountDropdown", () => {
     const hardwareWallets = [mockHardwareWalletAccount];
 
     beforeEach(() => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: mockMainAccount,
         subAccounts,
         hardwareWallets,

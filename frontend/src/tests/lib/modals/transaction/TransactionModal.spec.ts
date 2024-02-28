@@ -2,7 +2,6 @@ import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
 import { authStore } from "$lib/stores/auth.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import type { Account } from "$lib/types/account";
 import type { ValidateAmountFn } from "$lib/types/transaction";
@@ -21,6 +20,7 @@ import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { TransactionModalPo } from "$tests/page-objects/TransactionModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
@@ -82,7 +82,7 @@ describe("TransactionModal", () => {
     resetSnsProjects();
     icrcAccountsStore.reset();
 
-    icpAccountsStore.setForTesting({
+    setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [mockSubAccount],
       hardwareWallets: [mockHardwareWalletAccount],

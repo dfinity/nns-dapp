@@ -20,6 +20,7 @@ pub async fn run_periodic_tasks() {
     ledger_sync::sync_transactions().await;
 
     STATE.with(|state| {
+        state.performance.borrow_mut().increment_periodic_tasks_run();
         state.accounts_store.borrow_mut().step_migration();
     });
 

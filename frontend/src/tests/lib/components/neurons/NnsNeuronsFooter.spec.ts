@@ -1,6 +1,5 @@
 import NnsNeuronsFooter from "$lib/components/neurons/NnsNeuronsFooter.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
 import en from "$tests/mocks/i18n.mock";
@@ -11,6 +10,7 @@ import {
   mockNeuron,
 } from "$tests/mocks/neurons.mock";
 import { mockVoteRegistration } from "$tests/mocks/proposal.mock";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { NeuronState } from "@dfinity/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
@@ -47,7 +47,7 @@ describe("NnsNeurons", () => {
 
     it("should open stake neuron modal", async () => {
       // To avoid that the modal requests the accounts
-      icpAccountsStore.setForTesting(mockAccountsStoreData);
+      setAccountsForTesting(mockAccountsStoreData);
       const { queryByTestId, queryByText, getByTestId } =
         render(NnsNeuronsFooter);
 

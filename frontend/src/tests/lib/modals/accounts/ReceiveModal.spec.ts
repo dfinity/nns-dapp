@@ -1,6 +1,5 @@
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import ReceiveModal from "$lib/modals/accounts/ReceiveModal.svelte";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import type { Account } from "$lib/types/account";
 import {
   mockMainAccount,
@@ -9,6 +8,10 @@ import {
 import { renderModal } from "$tests/mocks/modal.mock";
 import { ReceiveModalPo } from "$tests/page-objects/ReceiveModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import {
+  resetAccountsForTesting,
+  setAccountsForTesting,
+} from "$tests/utils/accounts.test-utils";
 import type { Principal } from "@dfinity/principal";
 
 describe("ReceiveModal", () => {
@@ -16,7 +19,7 @@ describe("ReceiveModal", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    icpAccountsStore.resetForTesting();
+    resetAccountsForTesting();
   });
 
   const qrCodeLabel = "test QR code";
@@ -93,7 +96,7 @@ describe("ReceiveModal", () => {
   });
 
   it("should render a dropdown to select account", async () => {
-    icpAccountsStore.setForTesting({
+    setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: undefined,
       hardwareWallets: undefined,
@@ -108,7 +111,7 @@ describe("ReceiveModal", () => {
   });
 
   it("should select account", async () => {
-    icpAccountsStore.setForTesting({
+    setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [mockSubAccount],
       hardwareWallets: undefined,
@@ -129,7 +132,7 @@ describe("ReceiveModal", () => {
   });
 
   it("should not require universeId ", async () => {
-    icpAccountsStore.setForTesting({
+    setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [mockSubAccount],
       hardwareWallets: undefined,

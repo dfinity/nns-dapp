@@ -4,7 +4,6 @@ import { mergeNeurons } from "$lib/api/governance.api";
 import MergeNeuronsModal from "$lib/modals/neurons/MergeNeuronsModal.svelte";
 import * as authServices from "$lib/services/auth.services";
 import { listNeurons } from "$lib/services/neurons.services";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import type { Account } from "$lib/types/account";
 import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
@@ -17,6 +16,10 @@ import {
 import { renderModal } from "$tests/mocks/modal.mock";
 import { MergeNeuronsModalPo } from "$tests/page-objects/MergeNeuronsModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import {
+  resetAccountsForTesting,
+  setAccountsForTesting,
+} from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
@@ -45,7 +48,7 @@ describe("MergeNeuronsModal", () => {
       testIdentity
     );
     vi.clearAllMocks();
-    icpAccountsStore.resetForTesting();
+    resetAccountsForTesting();
     neuronsStore.reset();
     resetNeuronsApiService();
     toastsStore.reset();
@@ -77,7 +80,7 @@ describe("MergeNeuronsModal", () => {
     neurons: fakeGovernanceApi.FakeNeuronParams[],
     hardwareWalletAccounts: Account[] = []
   ): Promise<MergeNeuronsModalPo> => {
-    icpAccountsStore.setForTesting({
+    setAccountsForTesting({
       main: { ...mockMainAccount, principal: testIdentity.getPrincipal() },
       hardwareWallets: hardwareWalletAccounts,
     });

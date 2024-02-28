@@ -16,6 +16,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Add `ENABLE_ICP_INDEX` feature flag.
+* Add metrics and logging for schema migration.
 
 #### Changed
 
@@ -34,6 +35,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * Bug where transferred SNS neurons appeared in the list of neurons after transferring them.
+* Bug when the "Manage Internet Identity" link always uses `internetcomputer.org` domain.
 
 #### Security
 

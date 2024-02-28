@@ -1,7 +1,6 @@
 import NnsNeuronPageHeading from "$lib/components/neuron-detail/NnsNeuronPageHeading.svelte";
 import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
 import { authStore } from "$lib/stores/auth.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
@@ -13,6 +12,10 @@ import {
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronPageHeadingPo } from "$tests/page-objects/NnsNeuronPageHeading.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import {
+  resetAccountsForTesting,
+  setAccountsForTesting,
+} from "$tests/utils/accounts.test-utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import { NeuronType } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
@@ -26,7 +29,7 @@ describe("NnsNeuronPageHeading", () => {
 
   beforeEach(() => {
     vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
-    icpAccountsStore.resetForTesting();
+    resetAccountsForTesting();
   });
 
   it("should render the neuron's stake", async () => {
@@ -75,7 +78,7 @@ describe("NnsNeuronPageHeading", () => {
   });
 
   it("should render hotkey tag if user is a hotkey and not controlled by a hardware wallet", async () => {
-    icpAccountsStore.setForTesting({
+    setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [],
       hardwareWallets: [],
@@ -93,7 +96,7 @@ describe("NnsNeuronPageHeading", () => {
   });
 
   it("should render hotkey and Neurons' Fund tag", async () => {
-    icpAccountsStore.setForTesting({
+    setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [],
       hardwareWallets: [],
@@ -115,7 +118,7 @@ describe("NnsNeuronPageHeading", () => {
   });
 
   it("should render hardware wallet tag and not hotkey if neuron is controlled by a hardware wallet", async () => {
-    icpAccountsStore.setForTesting({
+    setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [],
       hardwareWallets: [mockHardwareWalletAccount],
@@ -133,7 +136,7 @@ describe("NnsNeuronPageHeading", () => {
   });
 
   it("should render neuron type tag", async () => {
-    icpAccountsStore.setForTesting({
+    setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [],
     });

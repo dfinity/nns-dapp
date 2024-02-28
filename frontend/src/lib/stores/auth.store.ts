@@ -1,12 +1,11 @@
 import { resetAgents } from "$lib/api/agent.api";
-import {
-  AUTH_SESSION_DURATION,
-  IDENTITY_SERVICE_URL,
-  OLD_MAINNET_IDENTITY_SERVICE_URL,
-} from "$lib/constants/identity.constants";
+import { AUTH_SESSION_DURATION } from "$lib/constants/identity.constants";
 import { IS_TEST_ENV } from "$lib/constants/mockable.constants";
 import { NNS_IC_APP_DERIVATION_ORIGIN } from "$lib/constants/origin.constants";
-import { createAuthClient } from "$lib/utils/auth.utils";
+import {
+  createAuthClient,
+  getIdentityProviderUrl,
+} from "$lib/utils/auth.utils";
 import { isNnsAlternativeOrigin } from "$lib/utils/env.utils";
 import type { Identity } from "@dfinity/agent";
 import type { AuthClient } from "@dfinity/auth-client";
@@ -20,15 +19,6 @@ export interface AuthStoreData {
 // We have to keep the authClient object in memory because calling the `authClient.login` feature should be triggered by a user interaction without any async callbacks call before calling `window.open` to open II
 // @see agent-js issue [#618](https://github.com/dfinity/agent-js/pull/618)
 let authClient: AuthClient | undefined | null;
-
-const getIdentityProvider = () => {
-  // If we are in mainnet in the old domain, we use the old identity provider.
-  if (location.host.endsWith(".ic0.app")) {
-    return OLD_MAINNET_IDENTITY_SERVICE_URL;
-  }
-
-  return IDENTITY_SERVICE_URL;
-};
 
 /**
  * A store to handle authentication and the identity of the user.
@@ -86,7 +76,7 @@ const initAuthStore = (): AuthStore => {
       authClient = authClient ?? (await createAuthClient());
 
       await authClient?.login({
-        identityProvider: getIdentityProvider(),
+        identityProvider: getIdentityProviderUrl(),
         ...(isNnsAlternativeOrigin() && {
           derivationOrigin: NNS_IC_APP_DERIVATION_ORIGIN,
         }),

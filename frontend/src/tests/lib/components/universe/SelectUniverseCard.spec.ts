@@ -3,7 +3,6 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import type { Universe } from "$lib/types/universe";
 import { createUniverse } from "$lib/utils/universe.utils";
 import { page } from "$mocks/$app/stores";
@@ -21,6 +20,10 @@ import { SelectUniverseCardPo } from "$tests/page-objects/SelectUniverseCard.pag
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Principal } from "@dfinity/principal";
+import {
+  resetAccountsForTesting,
+  setAccountsForTesting,
+} from "$tests/utils/accounts.test-utils";
 import { render } from "@testing-library/svelte";
 import { describe } from "vitest";
 
@@ -36,7 +39,7 @@ describe("SelectUniverseCard", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     overrideFeatureFlagsStore.reset();
-    icpAccountsStore.resetForTesting();
+    resetAccountsForTesting();
     resetIdentity();
   });
 
@@ -139,7 +142,7 @@ describe("SelectUniverseCard", () => {
 
   describe("project-balance", () => {
     beforeEach(() => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: {
           ...mockMainAccount,
           balanceUlps: 100_000_000n,

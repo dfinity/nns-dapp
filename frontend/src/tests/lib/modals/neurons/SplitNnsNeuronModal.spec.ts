@@ -1,13 +1,13 @@
 import SplitNeuronModal from "$lib/modals/neurons/SplitNnsNeuronModal.svelte";
 import { splitNeuron } from "$lib/services/neurons.services";
 import * as busyServices from "$lib/stores/busy.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import type { RenderResult } from "@testing-library/svelte";
@@ -61,7 +61,7 @@ describe("SplitNeuronModal", () => {
   });
 
   it("should start busy screen with message if controlled by HW", async () => {
-    icpAccountsStore.setForTesting({
+    setAccountsForTesting({
       main: mockMainAccount,
       hardwareWallets: [mockHardwareWalletAccount],
     });
