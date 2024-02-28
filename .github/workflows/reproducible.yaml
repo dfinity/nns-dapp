@@ -1,11 +1,10 @@
 name: Reproducible Docker Builds
 # Simulates end users verifying builds published by Dfinity:
 # - Runs docker builds on various different operating systems, with an empty docker cache.
-#   Note: This makes builds slow but is more representative of the end user experience.  The cache we
-#   use in most CI builds may diverge from that created by an end user.  We would want to detect that.
+#   Note: This makes builds slow but is more representative of the end user experience.
 # - Verifies that all these builds yield the same artifacts.
-# - NOT DONE: Verify that these builds from scratch match our main CI build.
-#   Idea: We could trigger this workflow when we create a release and compare these builds with the artifacts in the release.
+# - NOT DONE: Verify that these builds match our release artifacts.  This would correspond to third
+#   party verifiers getting consistent hashes that differ from our release.
 on:
   push:
     branches:
