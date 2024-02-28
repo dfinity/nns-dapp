@@ -1,6 +1,8 @@
 import SelectUniverseCard from "$lib/components/universe/SelectUniverseCard.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import type { Universe } from "$lib/types/universe";
 import { createUniverse } from "$lib/utils/universe.utils";
 import { page } from "$mocks/$app/stores";
@@ -12,6 +14,7 @@ import {
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSummary } from "$tests/mocks/sns-projects.mock";
+import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { nnsUniverseMock } from "$tests/mocks/universe.mock";
 import { SelectUniverseCardPo } from "$tests/page-objects/SelectUniverseCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -19,7 +22,10 @@ import {
   resetAccountsForTesting,
   setAccountsForTesting,
 } from "$tests/utils/accounts.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { Principal } from "@dfinity/principal";
 import { render } from "@testing-library/svelte";
+import { describe } from "vitest";
 
 describe("SelectUniverseCard", () => {
   const props = { universe: nnsUniverseMock, selected: false };
@@ -32,6 +38,7 @@ describe("SelectUniverseCard", () => {
 
   beforeEach(() => {
     vi.restoreAllMocks();
+    overrideFeatureFlagsStore.reset();
     resetAccountsForTesting();
     resetIdentity();
   });
@@ -159,6 +166,7 @@ describe("SelectUniverseCard", () => {
     describe("when signed in", () => {
       beforeEach(() => {
         resetIdentity();
+        actionableSnsProposalsStore.resetForTesting();
       });
 
       it("should display balance if selected", async () => {
@@ -211,6 +219,92 @@ describe("SelectUniverseCard", () => {
         });
         expect(await po.getUniverseAccountsBalancePo().isPresent()).toBe(true);
         expect(await po.getUniverseAccountsBalancePo().isLoaded()).toBe(false);
+      });
+
+      describe("actionable proposals", () => {
+        it("should display actionable proposal count", async () => {
+          page.mock({
+            data: { universe: OWN_CANISTER_ID_TEXT },
+            routeId: AppPath.Proposals,
+          });
+
+          actionableSnsProposalsStore.setProposals({
+            rootCanisterId: Principal.from(mockSnsUniverse.canisterId),
+            proposals: [mockSnsProposal, mockSnsProposal],
+          });
+
+          const po = renderComponent({
+            props: { universe: mockSnsUniverse, selected: false },
+          });
+
+          expect(await po.getActionableProposalCountBadgePo().isPresent()).toBe(
+            true
+          );
+          expect(await po.getActionableProposalCount()).toBe("2");
+        });
+
+        it("should not display actionable proposal count when the feature flag is disabled", async () => {
+          page.mock({
+            data: { universe: OWN_CANISTER_ID_TEXT },
+            routeId: AppPath.Proposals,
+          });
+
+          actionableSnsProposalsStore.setProposals({
+            rootCanisterId: Principal.from(mockSnsUniverse.canisterId),
+            proposals: [mockSnsProposal, mockSnsProposal],
+          });
+
+          const po = renderComponent({
+            props: { universe: mockSnsUniverse, selected: false },
+          });
+
+          expect(await po.getActionableProposalCountBadgePo().isPresent()).toBe(
+            true
+          );
+
+          overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", false);
+
+          await runResolvedPromises();
+
+          expect(await po.getActionableProposalCountBadgePo().isPresent()).toBe(
+            false
+          );
+        });
+
+        it("should not display actionable proposal count when it's 0", async () => {
+          page.mock({
+            data: { universe: OWN_CANISTER_ID_TEXT },
+            routeId: AppPath.Proposals,
+          });
+
+          actionableSnsProposalsStore.setProposals({
+            rootCanisterId: Principal.from(mockSnsUniverse.canisterId),
+            proposals: [],
+          });
+
+          const po = renderComponent({
+            props: { universe: mockSnsUniverse, selected: false },
+          });
+
+          expect(await po.getActionableProposalCountBadgePo().isPresent()).toBe(
+            false
+          );
+        });
+
+        it("should not display actionable proposal count when no data", async () => {
+          page.mock({
+            data: { universe: OWN_CANISTER_ID_TEXT },
+            routeId: AppPath.Proposals,
+          });
+
+          const po = renderComponent({
+            props: { universe: mockSnsUniverse, selected: false },
+          });
+
+          expect(await po.getActionableProposalCountBadgePo().isPresent()).toBe(
+            false
+          );
+        });
       });
     });
 
