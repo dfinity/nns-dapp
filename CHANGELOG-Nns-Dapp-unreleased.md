@@ -52,8 +52,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
-* Adapted Dockerfile to the new `dfx` installation procedure:
-  * Added `/root/.local/share/dfx/bin` to `PATH`.
-  * When installing `dfx`, set a new environment variable: `DFXVM_INIT_YES=true`
+* Adapted Dockerfile to the new `dfx` installation procedure.
 
 #### Security
