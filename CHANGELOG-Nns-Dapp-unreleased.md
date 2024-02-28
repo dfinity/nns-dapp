@@ -55,7 +55,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Avoid a 5 minute timeout in CI by waiting 20 seconds instead.
 * Fixed the formatting command in the `update-aggregator-response` GitHub workflow.
 * Disambiguated the title of the docker reproducibility check.
-* Change the number of accounts tested in `test-upgrade-map-stable` from 10000 to 20.
+* Change the number of accounts tested in `test-upgrade-map-stable` from 1000 to 20.
 
 #### Deprecated
 
