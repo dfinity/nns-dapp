@@ -3,7 +3,6 @@
   import SelectUniverseNavList from "$lib/components/universe/SelectUniverseNavList.svelte";
   import SelectUniverseDropdown from "$lib/components/universe/SelectUniverseDropdown.svelte";
   import { titleTokenSelectorStore } from "$lib/derived/title-token-selector.derived";
-  import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
   import { actionableProposalIndicationEnabledStore } from "$lib/derived/actionable-proposals.derived";
   import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
   import { loadActionableSnsProposals } from "$lib/services/actionable-sns-proposals.services";
@@ -13,11 +12,8 @@
   let list = false;
 
   $: list = innerWidth > BREAKPOINT_LARGE;
-  $: $ENABLE_VOTING_INDICATION &&
-    $actionableProposalIndicationEnabledStore &&
-    loadActionableProposals();
+  $: $actionableProposalIndicationEnabledStore && loadActionableProposals();
   $: if (
-    $ENABLE_VOTING_INDICATION &&
     $actionableProposalIndicationEnabledStore &&
     // Check for length in case the sns list is not yet loaded
     $snsProjectsCommittedStore.length > 1

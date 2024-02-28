@@ -4,10 +4,11 @@ import { authSignedInStore } from "$lib/derived/auth.derived";
 import { pageStore } from "$lib/derived/page.derived";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
+import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
 import { isSelectedPath } from "$lib/utils/navigation.utils";
 import { mapEntries } from "$lib/utils/utils";
 import { isNullish } from "@dfinity/utils";
-import { derived, type Readable } from "svelte/store";
+import { derived, get, type Readable } from "svelte/store";
 
 export interface ActionableProposalCountData {
   // We use the root canister id as the key to identify the proposals for a specific project.
@@ -19,7 +20,7 @@ export const actionableProposalIndicationEnabledStore: Readable<boolean> =
   derived(
     [pageStore, authSignedInStore],
     ([{ path: currentPath }, isSignedIn]) =>
-      isNullish(currentPath)
+      isNullish(currentPath) || !get(ENABLE_VOTING_INDICATION)
         ? false
         : isSignedIn &&
           isSelectedPath({
