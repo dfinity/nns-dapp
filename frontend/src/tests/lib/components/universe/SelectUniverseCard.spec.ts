@@ -1,6 +1,7 @@
 import SelectUniverseCard from "$lib/components/universe/SelectUniverseCard.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import type { Universe } from "$lib/types/universe";
 import { createUniverse } from "$lib/utils/universe.utils";
@@ -13,9 +14,11 @@ import {
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSummary } from "$tests/mocks/sns-projects.mock";
+import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { nnsUniverseMock } from "$tests/mocks/universe.mock";
 import { SelectUniverseCardPo } from "$tests/page-objects/SelectUniverseCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { Principal } from "@dfinity/principal";
 import { render } from "@testing-library/svelte";
 
 describe("SelectUniverseCard", () => {
@@ -208,6 +211,27 @@ describe("SelectUniverseCard", () => {
         });
         expect(await po.getUniverseAccountsBalancePo().isPresent()).toBe(true);
         expect(await po.getUniverseAccountsBalancePo().isLoaded()).toBe(false);
+      });
+
+      it.only("should display actionable proposal count", async () => {
+        page.mock({
+          data: { universe: OWN_CANISTER_ID_TEXT },
+          routeId: AppPath.Proposals,
+        });
+
+        actionableSnsProposalsStore.setProposals({
+          rootCanisterId: Principal.from(mockSnsUniverse.canisterId),
+          proposals: [mockSnsProposal, mockSnsProposal],
+        });
+
+        const po = renderComponent({
+          props: { universe: mockSnsUniverse, selected: false },
+        });
+
+        expect(await po.getActionableProposalCountBadgePo().isPresent()).toBe(
+          true
+        );
+        expect(await po.getActionableProposalCount()).toBe("2");
       });
     });
 
