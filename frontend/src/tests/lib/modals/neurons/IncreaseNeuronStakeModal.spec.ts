@@ -3,7 +3,6 @@ import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import IncreaseNeuronStakeModal from "$lib/modals/neurons/IncreaseNeuronStakeModal.svelte";
 import { topUpNeuron } from "$lib/services/neurons.services";
 import { authStore } from "$lib/stores/auth.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import {
   mockAccountDetails,
@@ -11,6 +10,10 @@ import {
 } from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
+import {
+  resetAccountsForTesting,
+  setAccountsForTesting,
+} from "$tests/utils/accounts.test-utils";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor } from "@testing-library/svelte";
 
@@ -37,7 +40,7 @@ describe("IncreaseNeuronStakeModal", () => {
 
   describe("when accounts store is empty", () => {
     beforeEach(() => {
-      icpAccountsStore.resetForTesting();
+      resetAccountsForTesting();
     });
 
     it("should fetch accounts and render account selector", async () => {
@@ -61,7 +64,7 @@ describe("IncreaseNeuronStakeModal", () => {
 
   describe("when accounts are loaded", () => {
     beforeEach(() => {
-      icpAccountsStore.setForTesting(mockAccountsStoreData);
+      setAccountsForTesting(mockAccountsStoreData);
     });
 
     it("should call top up neuron", async () => {

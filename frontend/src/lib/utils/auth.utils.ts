@@ -1,3 +1,7 @@
+import {
+  IDENTITY_SERVICE_URL,
+  OLD_MAINNET_IDENTITY_SERVICE_URL,
+} from "$lib/constants/identity.constants";
 import type { Identity } from "@dfinity/agent";
 import { AuthClient } from "@dfinity/auth-client";
 
@@ -38,4 +42,13 @@ export const loadIdentity = async (): Promise<Identity | undefined> => {
   }
 
   return authClient.getIdentity();
+};
+
+export const getIdentityProviderUrl = (): string => {
+  // If we are in mainnet in the old domain, we use the old identity provider.
+  if (location.host.endsWith(".ic0.app")) {
+    return OLD_MAINNET_IDENTITY_SERVICE_URL;
+  }
+
+  return IDENTITY_SERVICE_URL;
 };

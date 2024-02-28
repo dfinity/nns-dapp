@@ -76,18 +76,7 @@ test("Test merge neurons", async ({ page, context }) => {
   // Reload the page in case we would only know the neuron because it was still
   // in the store from before.
   await page.goto("/");
-  await appPo
-    .getTokensPo()
-    .getTokensPagePo()
-    .getTokensTable()
-    .getRowByName("Internet Computer")
-    .click();
-  await appPo
-    .getAccountsPo()
-    .getNnsAccountsPo()
-    .getTokensTablePo()
-    .getRowByName("Main")
-    .click();
+  await appPo.goToNnsMainAccountWallet();
   const transactionList = appPo
     .getWalletPo()
     .getNnsWalletPo()

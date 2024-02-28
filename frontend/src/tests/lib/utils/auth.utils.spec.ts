@@ -1,4 +1,8 @@
-import { isSignedIn, loadIdentity } from "$lib/utils/auth.utils";
+import {
+  getIdentityProviderUrl,
+  isSignedIn,
+  loadIdentity,
+} from "$lib/utils/auth.utils";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { AuthClient } from "@dfinity/auth-client";
 import { mock } from "vitest-mock-extended";
@@ -45,6 +49,45 @@ describe("auth-utils", () => {
       it("should return identity if authenticated", async () => {
         expect(await loadIdentity()).toEqual(mockIdentity);
       });
+    });
+  });
+  describe("getIdentityProviderUrl", () => {
+    const { host } = window.location;
+
+    afterEach(() => {
+      // restore original host
+      window.location.host = host;
+    });
+
+    it("should return old mainnet identity from ic0.app", async () => {
+      Object.defineProperty(window, "location", {
+        writable: true,
+        value: { host: "nns.ic0.app" },
+      });
+
+      expect(await getIdentityProviderUrl()).toEqual(
+        "https://identity.ic0.app"
+      );
+    });
+
+    it("should return old mainnet identity from ic0.app", async () => {
+      Object.defineProperty(window, "location", {
+        writable: true,
+        value: { host: "qoctq-giaaa-aaaaa-aaaea-cai.ic0.app" },
+      });
+
+      expect(await getIdentityProviderUrl()).toEqual(
+        "https://identity.ic0.app"
+      );
+    });
+
+    it("should return IDENTITY_SERVICE_URL when not old mainnet", async () => {
+      Object.defineProperty(window, "location", {
+        writable: true,
+        value: { host: "nns.internetcomputer.org" },
+      });
+
+      expect(await getIdentityProviderUrl()).toEqual("http://localhost:8000/");
     });
   });
 });

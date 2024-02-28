@@ -166,7 +166,13 @@ fn security_headers() -> Vec<HeaderField> {
 }
 
 /// Generates a header used by clients to verify the integrity of the data.
-fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -> Result<(String, String), String> {
+///
+/// # Panics
+/// - If the data certificate is not available.
+///
+/// # Errors
+/// - If the certificate cannot be serialized.
+fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -> Result<HeaderField, String> {
     let certificate = ic_cdk::api::data_certificate()
         .ok_or_else(|| "data certificate is only available in query calls".to_string())?;
     let witness = asset_hashes.0.witness(asset_name.as_bytes());
@@ -231,6 +237,14 @@ fn update_root_hash(a: &AssetHashes) {
 }
 
 /// Responds to an HTTP request for an asset.
+///
+/// # Errors
+/// - Returns 404 if the asset is not found.
+///
+/// # Panics
+/// - If the asset certificate cannot be added as an HTTP header. (Likely to be observed as HTTP code 500)
+///   - Note: Static asset certificates are available to query calls only, so technically if a request is made as an update call, this is
+///     the caller's fault, or at least a difference in expected behaviour, not a server implementation error.
 #[allow(clippy::expect_used)] // This is a query call, so panicking may be correct.
 #[allow(clippy::needless_pass_by_value)]
 // The signature is standard, we cannot change it.  It would be nice if this standard signature were defined in a trait that we could apply to a main struct, though!

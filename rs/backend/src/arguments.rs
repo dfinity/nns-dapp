@@ -164,7 +164,7 @@ impl TemplateEngine {
         let args = key_val_pairs.iter().cloned().collect();
         // Please see .populate() to learn what this regex does.
         #[allow(clippy::expect_used)]
-        let regex = Regex::new(r"\$\{\{([_0-9A-Z]+)\}\}|<!-- *([_0-9A-Z]+) *-->").expect("Invalid regex");
+        let regex = Regex::new(r"\$\{\{([_0-9A-Z]+)\}\}|<!-- *([_0-9A-Z]+) *-->").unwrap_or_else(|err| unreachable!("This is a fixed regex.  It is exercised in tests, so it cannot not fail to parse in production.  Error: {:?}", err));
         TemplateEngine { args, regex }
     }
 

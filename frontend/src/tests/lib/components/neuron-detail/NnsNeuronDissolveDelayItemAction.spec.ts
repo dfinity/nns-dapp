@@ -1,7 +1,6 @@
 import NnsNeuronDissolveDelayItemAction from "$lib/components/neuron-detail/NnsNeuronDissolveDelayItemAction.svelte";
 import { SECONDS_IN_MONTH, SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
@@ -13,6 +12,10 @@ import {
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronDissolveDelayItemActionPo } from "$tests/page-objects/NnsNeuronDissolveDelayItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import {
+  resetAccountsForTesting,
+  setAccountsForTesting,
+} from "$tests/utils/accounts.test-utils";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
@@ -40,7 +43,7 @@ describe("NnsNeuronDissolveDelayItemAction", () => {
   };
 
   beforeEach(() => {
-    icpAccountsStore.resetForTesting();
+    resetAccountsForTesting();
     vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
   });
 
@@ -118,7 +121,7 @@ describe("NnsNeuronDissolveDelayItemAction", () => {
   });
 
   it("should render increase dissolve delay button if controlled by hardware wallet", async () => {
-    icpAccountsStore.setForTesting({
+    setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [],
       hardwareWallets: [mockHardwareWalletAccount],

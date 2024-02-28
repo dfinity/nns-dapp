@@ -3,6 +3,7 @@ import {
   sortNeuronsByCreatedTimestamp,
 } from "$lib/utils/neuron.utils";
 import type { NeuronInfo } from "@dfinity/nns";
+import { nonNullish } from "@dfinity/utils";
 import { derived, writable, type Readable } from "svelte/store";
 
 export interface NeuronsStore {
@@ -95,4 +96,14 @@ export const sortedNeuronStore: Readable<NeuronInfo[]> = derived(
   definedNeuronsStore,
   (initializedNeuronsStore) =>
     sortNeuronsByCreatedTimestamp(initializedNeuronsStore)
+);
+
+export const neuronAccountsStore: Readable<Set<string>> = derived(
+  neuronsStore,
+  ($neuronsStore) =>
+    new Set(
+      $neuronsStore.neurons
+        ?.map(({ fullNeuron }) => fullNeuron?.accountIdentifier)
+        .filter(nonNullish) || []
+    )
 );

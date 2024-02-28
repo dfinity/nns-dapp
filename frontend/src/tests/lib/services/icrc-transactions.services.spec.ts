@@ -1,5 +1,5 @@
 import * as indexApi from "$lib/api/icrc-index.api";
-import { DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
+import { DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import {
   loadIcrcAccountNextTransactions,
   loadIcrcAccountTransactions,
@@ -55,7 +55,7 @@ describe("icrc-transactions services", () => {
       expect(spyGetTransactions).toBeCalledWith({
         identity: mockIdentity,
         account,
-        maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
+        maxResults: BigInt(DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT),
         indexCanisterId,
         start,
       });
@@ -150,7 +150,7 @@ describe("icrc-transactions services", () => {
       expect(spyGetTransactions).toBeCalledWith({
         identity: mockIdentity,
         account,
-        maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
+        maxResults: BigInt(DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT),
         indexCanisterId,
         start: oldestTransaction.id,
       });
@@ -189,7 +189,7 @@ describe("icrc-transactions services", () => {
       expect(spyGetTransactions).toBeCalledWith({
         identity: mockIdentity,
         account,
-        maxResults: BigInt(DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT),
+        maxResults: BigInt(DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT),
         indexCanisterId,
         start: undefined,
       });

@@ -16,13 +16,17 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Add `ENABLE_ICP_INDEX` feature flag.
+* Add metrics and logging for schema migration.
 
 #### Changed
 
 * Minor wording and style changes on the neuron detail page.
 * Enable loading state from stable structures.
+* Enable migrating state to and from stable structures.
 
 #### Deprecated
+
+- Remove support for devices with Internet Computer App version smaller than 2.4.9.
 
 #### Removed
 
@@ -31,6 +35,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * Bug where transferred SNS neurons appeared in the list of neurons after transferring them.
+* Bug when the "Manage Internet Identity" link always uses `internetcomputer.org` domain.
 
 #### Security
 
@@ -54,5 +59,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Removed
 
 #### Fixed
+
+* Adapted Dockerfile to the new `dfx` installation procedure.
 
 #### Security

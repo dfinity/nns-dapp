@@ -1,4 +1,7 @@
+import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as accountsApi from "$lib/api/accounts.api";
+import * as governanceApi from "$lib/api/governance.api";
+import * as indexApi from "$lib/api/icp-index.api";
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
@@ -8,7 +11,10 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import NnsWallet from "$lib/pages/NnsWallet.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { icpTransactionsStore } from "$lib/stores/icp-transactions.store";
+import { neuronsStore } from "$lib/stores/neurons.store";
+import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -18,15 +24,25 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { IntersectionObserverActive } from "$tests/mocks/infinitescroll.mock";
+import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
+import { mockTransactionWithId } from "$tests/mocks/transaction.mock";
 import { IcpTransactionModalPo } from "$tests/page-objects/IcpTransactionModal.page-object";
 import { NnsWalletPo } from "$tests/page-objects/NnsWallet.page-object";
 import { ReceiveModalPo } from "$tests/page-objects/ReceiveModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import {
+  resetAccountsForTesting,
+  setAccountsForTesting,
+} from "$tests/utils/accounts.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
+import type { TransactionWithId } from "@dfinity/ledger-icp";
 import { Principal } from "@dfinity/principal";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -36,30 +52,49 @@ import AccountsTest from "./AccountsTest.svelte";
 vi.mock("$lib/api/nns-dapp.api");
 vi.mock("$lib/api/accounts.api");
 vi.mock("$lib/api/icp-ledger.api");
+vi.mock("$lib/api/icp-index.api");
+vi.mock("$lib/api/governance.api");
 
 describe("NnsWallet", () => {
   const props = {
     accountIdentifier: mockMainAccount.identifier,
   };
   const mainBalanceE8s = 10_000_000n;
+  const firstPageTransactions = [
+    { id: 1000n, transaction: mockTransactionWithId.transaction },
+  ];
+  const oldestTxId = 10n;
+  const lastPageTransactions = [
+    { id: oldestTxId, transaction: mockTransactionWithId.transaction },
+  ];
+  const accountTransactions = [mockTransactionWithId];
 
   beforeEach(() => {
     vi.clearAllMocks();
     vi.clearAllTimers();
     cancelPollAccounts();
-    icpAccountsStore.resetForTesting();
+    resetAccountsForTesting();
+    neuronsStore.reset();
+    resetNeuronsApiService();
+    icpTransactionsStore.reset();
     toastsStore.reset();
     resetIdentity();
 
     vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
       mainBalanceE8s
     );
+    vi.spyOn(indexApi, "getTransactions").mockResolvedValue({
+      transactions: firstPageTransactions,
+      oldestTxId,
+      balance: mainBalanceE8s,
+    });
     vi.spyOn(accountsApi, "getTransactions").mockResolvedValue([]);
 
     page.mock({
       data: { universe: OWN_CANISTER_ID_TEXT },
       routeId: AppPath.Wallet,
     });
+    overrideFeatureFlagsStore.reset();
   });
 
   const renderWallet = async (props) => {
@@ -217,7 +252,7 @@ describe("NnsWallet", () => {
 
   describe("accounts loaded", () => {
     beforeEach(() => {
-      icpAccountsStore.setForTesting(mockAccountsStoreData);
+      setAccountsForTesting(mockAccountsStoreData);
     });
 
     it("should render nns project name", async () => {
@@ -229,7 +264,7 @@ describe("NnsWallet", () => {
     });
 
     it("should render a balance with token in summary", async () => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         ...mockAccountsStoreData,
         main: {
           ...mockMainAccount,
@@ -239,6 +274,208 @@ describe("NnsWallet", () => {
       const po = await renderWallet(props);
 
       expect(await po.getWalletPageHeadingPo().getTitle()).toBe("4.32 ICP");
+    });
+
+    it("should render transactions from ICP Index canister", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_INDEX", true);
+
+      const po = await renderWallet(props);
+
+      expect(
+        await po.getUiTransactionsListPo().getTransactionCardPos()
+      ).toHaveLength(accountTransactions.length);
+    });
+
+    it("should render second page of transactions from ICP Index canister", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_INDEX", true);
+      vi.stubGlobal("IntersectionObserver", IntersectionObserverActive);
+      const resolveFunctions = [];
+      vi.spyOn(indexApi, "getTransactions").mockImplementation(
+        () =>
+          new Promise<indexApi.GetTransactionsResponse>((resolve) => {
+            resolveFunctions.push(resolve);
+          })
+      );
+
+      const { container } = render(NnsWallet, props);
+      const po = NnsWalletPo.under(new JestPageObjectElement(container));
+
+      await runResolvedPromises();
+      expect(resolveFunctions).toHaveLength(1);
+      resolveFunctions[0]({
+        transactions: firstPageTransactions,
+        oldestTxId,
+        balance: mainBalanceE8s,
+      });
+      await runResolvedPromises();
+
+      expect(
+        await po.getUiTransactionsListPo().getTransactionCardPos()
+      ).toHaveLength(firstPageTransactions.length);
+
+      expect(resolveFunctions).toHaveLength(2);
+      resolveFunctions[1]({
+        transactions: lastPageTransactions,
+        oldestTxId,
+        balance: mainBalanceE8s,
+      });
+      await runResolvedPromises();
+
+      expect(
+        await po.getUiTransactionsListPo().getTransactionCardPos()
+      ).toHaveLength(
+        firstPageTransactions.length + lastPageTransactions.length
+      );
+
+      await runResolvedPromises();
+      // Third page should not be requested.
+      expect(resolveFunctions).toHaveLength(2);
+    });
+
+    it("should render 'Staked' transaction from ICP Index canister", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_INDEX", true);
+      const stakeNeuronTransaction: TransactionWithId = {
+        id: 1234n,
+        transaction: {
+          memo: 123456n,
+          icrc1_memo: [],
+          created_at_time: [{ timestamp_nanos: 1234n }],
+          operation: {
+            Transfer: {
+              from: mockMainAccount.identifier,
+              to: mockNeuron.fullNeuron.accountIdentifier,
+              amount: { e8s: 200_000_000n },
+              fee: { e8s: 10_000n },
+              spender: [],
+            },
+          },
+        },
+      };
+      vi.spyOn(indexApi, "getTransactions").mockResolvedValue({
+        transactions: [stakeNeuronTransaction],
+        oldestTxId: 1234n,
+        balance: mainBalanceE8s,
+      });
+      vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([mockNeuron]);
+
+      const po = await renderWallet(props);
+
+      const transactionCardsPos = await po
+        .getUiTransactionsListPo()
+        .getTransactionCardPos();
+      expect(await transactionCardsPos[0].getHeadline()).toBe("Staked");
+    });
+
+    it("should render 'Decentralization Swap' transaction from ICP Index canister", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_INDEX", true);
+      const rootCanisterId = principal(0);
+      const swapCanisterId = principal(1);
+      setSnsProjects([
+        {
+          rootCanisterId,
+          swapCanisterId,
+        },
+      ]);
+      const swapCanisterAccount = getSwapCanisterAccount({
+        controller: mockMainAccount.principal,
+        swapCanisterId,
+      });
+      const swapTransaction: TransactionWithId = {
+        id: 1234n,
+        transaction: {
+          memo: 123456n,
+          icrc1_memo: [],
+          created_at_time: [{ timestamp_nanos: 1234n }],
+          operation: {
+            Transfer: {
+              from: mockMainAccount.identifier,
+              to: swapCanisterAccount.toHex(),
+              amount: { e8s: 200_000_000n },
+              fee: { e8s: 10_000n },
+              spender: [],
+            },
+          },
+        },
+      };
+      vi.spyOn(indexApi, "getTransactions").mockResolvedValue({
+        transactions: [swapTransaction],
+        oldestTxId: 1234n,
+        balance: mainBalanceE8s,
+      });
+
+      const po = await renderWallet(props);
+
+      const transactionCardsPos = await po
+        .getUiTransactionsListPo()
+        .getTransactionCardPos();
+      expect(await transactionCardsPos[0].getHeadline()).toBe(
+        "Decentralization Swap"
+      );
+    });
+
+    it("should display SkeletonCard while loading transactions from ICP Index canister", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_INDEX", true);
+      let resolveGetTransactions;
+      vi.spyOn(indexApi, "getTransactions").mockImplementation(
+        () =>
+          new Promise<indexApi.GetTransactionsResponse>((resolve) => {
+            resolveGetTransactions = resolve;
+          })
+      );
+      const po = await renderWallet(props);
+
+      await runResolvedPromises();
+      expect(
+        await po.getUiTransactionsListPo().getSkeletonCardPo().isPresent()
+      ).toBe(true);
+
+      resolveGetTransactions({
+        transactions: accountTransactions,
+        oldestTxId: mockTransactionWithId.id,
+        balance: mainBalanceE8s,
+      });
+
+      await runResolvedPromises();
+      expect(
+        await po.getTransactionListPo().getSkeletonCardPo().isPresent()
+      ).toBe(false);
+    });
+
+    it("should not display SkeletonCard while loading transactions if there are transactions present in the store from ICP Index canister", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_INDEX", true);
+      let resolveGetTransactions;
+      vi.spyOn(indexApi, "getTransactions").mockImplementation(
+        () =>
+          new Promise<indexApi.GetTransactionsResponse>((resolve) => {
+            resolveGetTransactions = resolve;
+          })
+      );
+      icpTransactionsStore.addTransactions({
+        accountIdentifier: mockMainAccount.identifier,
+        transactions: accountTransactions,
+        oldestTxId: mockTransactionWithId.id,
+        completed: false,
+      });
+      const po = await renderWallet(props);
+
+      await runResolvedPromises();
+      expect(
+        await po.getUiTransactionsListPo().getSkeletonCardPo().isPresent()
+      ).toBe(false);
+      expect(
+        await po.getUiTransactionsListPo().getTransactionCardPos()
+      ).toHaveLength(accountTransactions.length);
+
+      resolveGetTransactions({
+        transactions: accountTransactions,
+        oldestTxId: mockTransactionWithId.id,
+        balance: mainBalanceE8s,
+      });
+
+      await runResolvedPromises();
+      expect(
+        await po.getTransactionListPo().getSkeletonCardPo().isPresent()
+      ).toBe(false);
     });
 
     it("should enable new transaction action for route and store", async () => {
@@ -375,7 +612,7 @@ describe("NnsWallet", () => {
 
   describe("accounts loaded (Subaccount)", () => {
     beforeEach(() => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         ...mockAccountsStoreData,
         subAccounts: [mockSubAccount],
       });
@@ -397,7 +634,7 @@ describe("NnsWallet", () => {
     const testHwPrincipal = Principal.fromText(testHwPrincipalText);
 
     beforeEach(() => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         ...mockAccountsStoreData,
         hardwareWallets: [
           {

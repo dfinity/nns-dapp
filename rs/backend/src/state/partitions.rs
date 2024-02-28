@@ -4,6 +4,7 @@
 //! This code is here to protect the memory!
 //!
 //! This code also stores virtual memory IDs and other memory functions.
+use crate::state::SchemaLabel;
 use core::borrow::Borrow;
 use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
 use ic_cdk::println;
@@ -13,9 +14,6 @@ use ic_stable_structures::{DefaultMemoryImpl, Memory};
 use std::rc::Rc;
 use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
-
-#[cfg(test)]
-use crate::state::SchemaLabel;
 
 pub mod schemas;
 #[cfg(test)]
@@ -56,14 +54,33 @@ pub enum PartitionsMaybe {
     None(DefaultMemoryImpl),
 }
 
-#[cfg(test)]
 impl PartitionsMaybe {
     /// Gets the schema label.
+    #[cfg(test)]
     pub fn schema_label(&self) -> SchemaLabel {
         match self {
             #[cfg(test)]
             PartitionsMaybe::Partitions(partitions) => partitions.schema_label(),
             PartitionsMaybe::None(_) => SchemaLabel::Map,
+        }
+    }
+    /// Gets or creates partitions.
+    ///
+    /// WARNING: Partitioning overwrites the memory.  Please be sure that you have extracted all useful data from raw memory before calling this.
+    ///
+    /// WARNING: If the memory is already partitioned, this will return the partitions, even if the schema is different.
+    pub fn get_or_format(&mut self, schema: SchemaLabel) -> &Partitions {
+        match self {
+            PartitionsMaybe::Partitions(partitions) => partitions,
+            PartitionsMaybe::None(memory) => {
+                let memory = Partitions::copy_memory_reference(memory);
+                let partitions = Partitions::new_with_schema(memory, schema);
+                *self = PartitionsMaybe::Partitions(partitions);
+                match self {
+                    PartitionsMaybe::Partitions(partitions) => partitions,
+                    PartitionsMaybe::None(_) => unreachable!("This memory was just partitioned"),
+                }
+            }
         }
     }
 }
@@ -182,7 +199,7 @@ impl Partitions {
     pub fn growing_write(&self, memory_id: MemoryId, offset: u64, bytes: &[u8]) {
         let memory = self.get(memory_id);
         let min_pages: u64 = u64::try_from(bytes.len())
-            .expect("Buffer for growing_write is longer than 2**64.")
+            .unwrap_or_else(|err| unreachable!("Buffer for growing_write is longer than 2**64 bytes?? Err: {err}"))
             .saturating_add(offset)
             .div_ceil(WASM_PAGE_SIZE_IN_BYTES as u64);
         let current_pages = memory.size();
@@ -195,10 +212,12 @@ impl Partitions {
     /// Reads the exact number of bytes needed to fill `buffer`.
     pub fn read_exact(&self, memory_id: MemoryId, offset: u64, buffer: &mut [u8]) -> Result<(), String> {
         let memory = self.get(memory_id);
-        let bytes_in_memory =
-            memory.size() * u64::try_from(WASM_PAGE_SIZE_IN_BYTES).expect("Wasm page size is too large");
-        if offset.saturating_add(u64::try_from(buffer.len()).expect("Buffer for read_exact is longer than 2**64."))
-            > bytes_in_memory
+        let bytes_in_memory = memory.size()
+            * u64::try_from(WASM_PAGE_SIZE_IN_BYTES)
+                .unwrap_or_else(|err| unreachable!("Wasm page size is fixed and well within the range of u64: {err}"));
+        if offset.saturating_add(u64::try_from(buffer.len()).unwrap_or_else(|err| {
+            unreachable!("Buffer for read_exact is longer than 2**64.  This seems extremely implausible.  Err: {err}")
+        })) > bytes_in_memory
         {
             return Err(format!("Out of bounds memory access: Failed to read exactly {} bytes at offset {} as memory size is only {} bytes.", buffer.len(), offset, bytes_in_memory));
         }

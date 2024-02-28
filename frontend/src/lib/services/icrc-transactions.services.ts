@@ -1,5 +1,5 @@
 import { getTransactions } from "$lib/api/icrc-index.api";
-import { DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
+import { DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { getIcrcAccountIdentity } from "$lib/services/icrc-accounts.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
@@ -26,7 +26,7 @@ export const loadIcrcAccountTransactions = async ({
   try {
     const identity = await getIcrcAccountIdentity(account);
     const snsAccount = decodeIcrcAccount(account.identifier);
-    const maxResults = DEFAULT_ICRC_TRANSACTION_PAGE_LIMIT;
+    const maxResults = DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT;
     const { transactions, oldestTxId } = await getTransactions({
       identity,
       account: snsAccount,

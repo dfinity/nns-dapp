@@ -7,6 +7,7 @@ use candid::CandidType;
 use dfn_candid::Candid;
 use histogram::AccountsStoreHistogram;
 use ic_base_types::{CanisterId, PrincipalId};
+use ic_cdk::println;
 use ic_crypto_sha::Sha256;
 use ic_ledger_core::timestamp::TimeStamp;
 use ic_ledger_core::tokens::SignedTokens;
@@ -357,6 +358,13 @@ pub enum DetachCanisterResponse {
 }
 
 impl AccountsStore {
+    /// Starts migrating accounts to the new db.
+    pub fn start_migrating_accounts_to(&mut self, accounts_db: AccountsDb) {
+        self.accounts_db.start_migrating_accounts_to(accounts_db);
+    }
+    pub fn step_migration(&mut self) {
+        self.accounts_db.step_migration();
+    }
     #[must_use]
     pub fn get_account(&self, caller: PrincipalId) -> Option<AccountDetails> {
         let account_identifier = AccountIdentifier::from(caller);
@@ -493,6 +501,7 @@ impl AccountsStore {
         }
     }
 
+    /// Creates a sub-account for the given user.
     pub fn create_sub_account(&mut self, caller: PrincipalId, sub_account_name: String) -> CreateSubAccountResponse {
         self.assert_pre_migration_limit();
         let account_identifier = AccountIdentifier::from(caller);
@@ -500,9 +509,7 @@ impl AccountsStore {
         if !Self::validate_account_name(&sub_account_name) {
             CreateSubAccountResponse::NameTooLong
         } else if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
-            let response = if account.sub_accounts.len() < (u8::MAX as usize) {
-                let sub_account_id = (1..u8::MAX).find(|i| !account.sub_accounts.contains_key(i)).unwrap();
-
+            let response = if let Some(sub_account_id) = (1..u8::MAX).find(|i| !account.sub_accounts.contains_key(i)) {
                 let sub_account = convert_byte_to_sub_account(sub_account_id);
                 let sub_account_identifier = AccountIdentifier::new(caller, Some(sub_account));
                 let named_sub_account = NamedSubAccount::new(sub_account_name.clone(), sub_account_identifier);
@@ -575,14 +582,9 @@ impl AccountsStore {
 
         if !Self::validate_account_name(&request.name) {
             RegisterHardwareWalletResponse::NameTooLong
-        } else if self.accounts_db.db_get_account(&account_identifier.to_vec()).is_some() {
+        } else if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.to_vec()).clone() {
             let hardware_wallet_account_identifier = AccountIdentifier::from(request.principal);
 
-            let mut account = self
-                .accounts_db
-                .db_get_account(&account_identifier.to_vec())
-                .unwrap()
-                .clone();
             if account.hardware_wallet_accounts.len() == (u8::MAX as usize) {
                 RegisterHardwareWalletResponse::HardwareWalletLimitExceeded
             } else if account
@@ -683,7 +685,8 @@ impl AccountsStore {
                             default_transaction_type,
                         ));
                         self.process_transaction_type(
-                            transaction_type.unwrap(),
+                            transaction_type
+                                .unwrap_or_else(|| unreachable!("Transaction type is set to Some a few lines above")),
                             principal,
                             from,
                             to,
@@ -723,12 +726,16 @@ impl AccountsStore {
         self.last_ledger_sync_timestamp_nanos = u64::try_from(
             dfn_core::api::now()
                 .duration_since(SystemTime::UNIX_EPOCH)
-                .unwrap()
+                .unwrap_or_else(|err| unreachable!("The current time is well after the Unix epoch. Error: {err}"))
                 .as_nanos(),
         )
         .unwrap_or_else(|_| unreachable!("Not impossible, but centuries in the future"));
     }
 
+    /// Initializes the `block_height_synced_up_to` value.
+    ///
+    /// # Panics
+    /// - Panics if the `block_height_synced_up_to` value has already been initialized.
     pub fn init_block_height_synced_up_to(&mut self, block_height: BlockIndex) {
         assert!(
             self.block_height_synced_up_to.is_none(),
@@ -738,6 +745,7 @@ impl AccountsStore {
         self.block_height_synced_up_to = Some(block_height);
     }
 
+    /// Gets all the transactions to or from the caller.
     #[must_use]
     #[allow(clippy::needless_pass_by_value)] // The pattern is to pass a request by value.
     pub fn get_transactions(&self, caller: PrincipalId, request: GetTransactionsRequest) -> GetTransactionsResponse {
@@ -779,7 +787,11 @@ impl AccountsStore {
             .skip(request.offset as usize)
             .take(request.page_size as usize)
             .map(|transaction_index| {
-                let transaction = self.get_transaction(*transaction_index).unwrap();
+                let transaction = self.get_transaction(*transaction_index).unwrap_or_else(|| {
+                    unreachable!(
+                        "If transaction {transaction_index} is in the list for user {caller}, it must also be in the global transaction list."
+                    )
+                });
                 let transaction_type = transaction.transaction_type;
                 let used_transaction_type = if let Some(TransactionType::TransferFrom) = transaction_type {
                     Some(TransactionType::Transfer)
@@ -988,9 +1000,13 @@ impl AccountsStore {
         self.multi_part_transactions_processor.take_next()
     }
 
+    /// Records that a neuron has been created for the given account.
+    ///
+    /// # Panics
+    /// - If the account does not exist.
     pub fn mark_neuron_created(&mut self, principal: &PrincipalId, memo: Memo, neuron_id: NeuronId) {
         let account_identifier = Self::generate_stake_neuron_address(principal, memo);
-        self.neuron_accounts.get_mut(&account_identifier).unwrap().neuron_id = Some(neuron_id);
+        self.neuron_accounts.get_mut(&account_identifier).unwrap_or_else(|| panic!("Failed to mark neuron created for account {account_identifier} as the account has no neuron_accounts entry.")).neuron_id = Some(neuron_id);
     }
 
     pub fn mark_neuron_topped_up(&mut self) {
@@ -1003,7 +1019,7 @@ impl AccountsStore {
     }
 
     pub fn prune_transactions(&mut self, count_to_prune: u32) -> u32 {
-        let count_to_prune = min(count_to_prune, u32::try_from(self.transactions.len()).unwrap_or_else(|_| unreachable!("The number of transactions is well below 2**32.  It will get there, but not before we switch to the ledger index and this code is deleted.")));
+        let count_to_prune = min(count_to_prune, u32::try_from(self.transactions.len()).unwrap_or_else(|_| unreachable!("The number of transactions is well below 2**32.  Transactions are pruned if the heap, where they are stored, exceeds 1Gb of data.")));
 
         if count_to_prune > 0 {
             let transactions: Vec<_> = self
@@ -1013,29 +1029,34 @@ impl AccountsStore {
                 })
                 .collect();
 
-            let min_transaction_index = self.transactions.front().unwrap().transaction_index;
-
-            for transaction in transactions {
-                let accounts = match transaction.transfer {
-                    Burn { from, amount: _ } => vec![from],
-                    Mint { to, amount: _ } => vec![to],
-                    Transfer {
-                        from,
-                        to,
-                        amount: _,
-                        fee: _,
+            // Note: This SHOULD always be true, as transactions.len() should equal count_to_prune and we have already checked that that is greater than 0.
+            if let Some(min_transaction_index) = self
+                .transactions
+                .front()
+                .map(|transaction| transaction.transaction_index)
+            {
+                for transaction in transactions {
+                    let accounts = match transaction.transfer {
+                        Burn { from, amount: _ } => vec![from],
+                        Mint { to, amount: _ } => vec![to],
+                        Transfer {
+                            from,
+                            to,
+                            amount: _,
+                            fee: _,
+                        }
+                        | TransferFrom {
+                            from,
+                            to,
+                            spender: _,
+                            amount: _,
+                            fee: _,
+                        } => vec![from, to],
+                        Approve { .. } => vec![],
+                    };
+                    for account in accounts {
+                        self.prune_transactions_from_account(account, min_transaction_index);
                     }
-                    | TransferFrom {
-                        from,
-                        to,
-                        spender: _,
-                        amount: _,
-                        fee: _,
-                    } => vec![from, to],
-                    Approve { .. } => vec![],
-                };
-                for account in accounts {
-                    self.prune_transactions_from_account(account, min_transaction_index);
                 }
             }
         }
@@ -1057,7 +1078,7 @@ impl AccountsStore {
         let timestamp_now_nanos = u64::try_from(
             dfn_core::api::now()
                 .duration_since(SystemTime::UNIX_EPOCH)
-                .unwrap()
+                .unwrap_or_else(|err| unreachable!("Hey, we are back in the sixties!  Seriously, if we get here, the system time is before the Unix epoch.  This should be impossible.  Error: {err}"))
                 .as_nanos(),
         )
         .unwrap_or_else(|_| {
@@ -1554,6 +1575,7 @@ impl StableState for AccountsStore {
             &self.multi_part_transactions_processor,
             &self.last_ledger_sync_timestamp_nanos,
             &self.neurons_topped_up_count,
+            Some(&self.accounts_db_stats),
         ))
         .into_bytes()
         .unwrap()
@@ -1600,8 +1622,10 @@ impl StableState for AccountsStore {
         }
 
         let accounts_db_stats = if let Some(counts) = accounts_db_stats_maybe {
+            println!("Using de-serialized accounts_db stats");
             counts
         } else {
+            println!("Re-counting accounts_db stats...");
             let mut sub_accounts_count: u64 = 0;
             let mut hardware_wallet_accounts_count: u64 = 0;
             for account in accounts.values() {
@@ -1648,14 +1672,26 @@ impl Account {
         self.default_account_transactions.push(transaction_index);
     }
 
+    /// Records a transaction in a sub-account.
+    ///
+    /// TODO: Once we use the ledger index canister, this can be deleted.
+    ///
+    /// # Panics
+    /// - If we are unable to get a lock on the sub-accounts map.  This may happen if a previous update call locked the map, but has made an async call and so hasn't released the lock yet.
     pub fn append_sub_account_transaction(&mut self, sub_account: u8, transaction_index: TransactionIndex) {
         self.sub_accounts
             .get_mut(&sub_account)
-            .unwrap()
+            .expect("Unable to lock the sub-account transactions map")
             .transactions
             .push(transaction_index);
     }
 
+    /// Records a transaction in a hardware wallet account.
+    ///
+    /// TODO: Use the index canister instead.
+    ///
+    /// # Panics
+    /// - If the account does not have a hardware wallet sub-account with the given identifier.
     pub fn append_hardware_wallet_transaction(
         &mut self,
         account_identifier: AccountIdentifier,
@@ -1665,7 +1701,7 @@ impl Account {
             .hardware_wallet_accounts
             .iter_mut()
             .find(|a| account_identifier == AccountIdentifier::from(a.principal))
-            .unwrap();
+            .expect("This account does not have a hardware wallet with the given identifier.");
 
         account.transactions.push(transaction_index);
     }
