@@ -34,7 +34,7 @@ jobs:
             echo "/usr/local/bin" >> $GITHUB_PATH
             echo "$(brew --prefix)/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
           fi
-      - uses: docker-practice/actions-setup-docker@master
+      - uses: daniel-wong-dfinity-org/actions-setup-docker@wait-longer-for-docker-to-start-up
         timeout-minutes: 12
       - name: Checkout
         uses: actions/checkout@v4
