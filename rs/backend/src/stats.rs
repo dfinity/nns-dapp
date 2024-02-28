@@ -120,7 +120,7 @@ pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
         "The number of exceptional transactions in the canister log.",
     )?;
     w.encode_gauge(
-        "periodic_tasks_run_since_upgrade",
+        "periodic_tasks_run",
         f64::from(stats.periodic_tasks_run.unwrap_or(0)),
         "The number of times the periodic tasks runner has run without traipping since the last upgrade.",
         // Note: The counter is always incremented, however on trap the increment is lost.
