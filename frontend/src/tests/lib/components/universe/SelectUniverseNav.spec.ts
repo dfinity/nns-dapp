@@ -185,7 +185,7 @@ describe("SelectUniverseNav", () => {
     const po = await renderComponent();
     await runResolvedPromises();
 
-    // nns is selected by default
+    // nns is the current universe
     expect(
       await po.getSelectUniverseCardPo().getActionableProposalCount()
     ).toEqual("1");
