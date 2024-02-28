@@ -7,6 +7,7 @@ use candid::CandidType;
 use dfn_candid::Candid;
 use histogram::AccountsStoreHistogram;
 use ic_base_types::{CanisterId, PrincipalId};
+use ic_cdk::println;
 use ic_crypto_sha::Sha256;
 use ic_ledger_core::timestamp::TimeStamp;
 use ic_ledger_core::tokens::SignedTokens;
@@ -1621,8 +1622,10 @@ impl StableState for AccountsStore {
         }
 
         let accounts_db_stats = if let Some(counts) = accounts_db_stats_maybe {
+            println!("Using de-serialized accounts_db stats");
             counts
         } else {
+            println!("Re-counting accounts_db stats...");
             let mut sub_accounts_count: u64 = 0;
             let mut hardware_wallet_accounts_count: u64 = 0;
             for account in accounts.values() {

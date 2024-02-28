@@ -36,6 +36,9 @@ impl PerformanceCount {
 pub struct PerformanceCounts {
     pub instruction_counts: VecDeque<PerformanceCount>,
     pub exceptional_transactions: Option<VecDeque<u64>>,
+    // TODO[NNS1-2913]: Delete this once the stable memory migration is complete.  This is used purely to get
+    // an idea of how long, in wall clock time, migration is likely to take.
+    pub periodic_tasks_count: Option<u32>,
 }
 
 impl PerformanceCounts {
@@ -55,6 +58,7 @@ impl PerformanceCounts {
                 .as_ref()
                 .map_or(0, |x| u32::try_from(x.len()).unwrap_or(u32::MAX)),
         );
+        stats.periodic_tasks_count = self.periodic_tasks_count;
     }
 
     /// The maximum number of exceptional transaction IDs we store.
@@ -68,6 +72,10 @@ impl PerformanceCounts {
             exceptional_transactions.push_front(transaction_id);
             exceptional_transactions.truncate(Self::MAX_EXCEPTIONAL_TRANSACTIONS);
         }
+    }
+
+    pub fn increment_periodic_tasks_run(&mut self) {
+        self.periodic_tasks_count = Some(self.periodic_tasks_count.unwrap_or(0) + 1);
     }
 
     /// Generates sample data for use in tests
