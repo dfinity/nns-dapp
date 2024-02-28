@@ -109,4 +109,4 @@ jobs:
         if: ${{ failure() }}
         with:
           WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          MESSAGE: "Proposals update failed"
+          MESSAGE: "Reproducible docker build test failed for ${{ github.ref_name }}"
