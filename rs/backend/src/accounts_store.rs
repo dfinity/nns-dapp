@@ -1621,8 +1621,10 @@ impl StableState for AccountsStore {
         }
 
         let accounts_db_stats = if let Some(counts) = accounts_db_stats_maybe {
+            println!("Using de-serialized accounts_db stats");
             counts
         } else {
+            println!("Re-counting accounts_db stats...");
             let mut sub_accounts_count: u64 = 0;
             let mut hardware_wallet_accounts_count: u64 = 0;
             for account in accounts.values() {
