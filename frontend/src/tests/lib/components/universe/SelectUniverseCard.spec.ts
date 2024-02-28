@@ -159,6 +159,7 @@ describe("SelectUniverseCard", () => {
     describe("when signed in", () => {
       beforeEach(() => {
         resetIdentity();
+        actionableSnsProposalsStore.resetForTesting();
       });
 
       it("should display balance if selected", async () => {
@@ -213,7 +214,7 @@ describe("SelectUniverseCard", () => {
         expect(await po.getUniverseAccountsBalancePo().isLoaded()).toBe(false);
       });
 
-      it.only("should display actionable proposal count", async () => {
+      it("should display actionable proposal count", async () => {
         page.mock({
           data: { universe: OWN_CANISTER_ID_TEXT },
           routeId: AppPath.Proposals,
