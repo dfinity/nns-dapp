@@ -16,6 +16,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Add `ENABLE_ICP_INDEX` feature flag.
+* Add metrics and logging for schema migration.
 
 #### Changed
 
