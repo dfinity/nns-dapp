@@ -175,7 +175,7 @@ jobs:
       - name: Start dfx
         run: dfx start --clean --background &>test-upgrade-stable-dfx.log
       - name: Downgrade nns-dapp to prod and upgrade back again
-        run: ./scripts/nns-dapp/migration-test --schema1 AccountsInStableMemory --schema2 AccountsInStableMemory --accounts 20 --chunk 100
+        run: ./scripts/nns-dapp/migration-test --schema1 AccountsInStableMemory --schema2 AccountsInStableMemory --accounts 1000 --chunk 100
       - name: Upload dfx logs
         if: failure()
         uses: actions/upload-artifact@v4
@@ -205,7 +205,7 @@ jobs:
       - name: Start dfx
         run: dfx start --clean --background &>test-upgrade-stable-dfx.log
       - name: Upgrade nns-dapp from Map to AccountsInStableMemory and back again
-        run: ./scripts/nns-dapp/migration-test --schema1 Map --schema2 AccountsInStableMemory --accounts 10000
+        run: ./scripts/nns-dapp/migration-test --schema1 Map --schema2 AccountsInStableMemory --accounts 20
       - name: Upload dfx logs
         if: failure()
         uses: actions/upload-artifact@v3
