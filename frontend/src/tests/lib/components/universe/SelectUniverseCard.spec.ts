@@ -234,6 +234,21 @@ describe("SelectUniverseCard", () => {
         );
         expect(await po.getActionableProposalCount()).toBe("2");
       });
+
+      it("should not display actionable proposal count when no data", async () => {
+        page.mock({
+          data: { universe: OWN_CANISTER_ID_TEXT },
+          routeId: AppPath.Proposals,
+        });
+
+        const po = renderComponent({
+          props: { universe: mockSnsUniverse, selected: false },
+        });
+
+        expect(await po.getActionableProposalCountBadgePo().isPresent()).toBe(
+          false
+        );
+      });
     });
 
     describe("when not signed in", () => {

@@ -42,8 +42,8 @@ export class SelectUniverseCardPo extends CardPo {
     return UniverseLogoPo.under(this.root);
   }
 
-  getName(): Promise<string> {
-    return this.root.querySelector("span.name").getText();
+  async getName(): Promise<string> {
+    return (await this.root.querySelector("span.name").getText()).trim();
   }
 
   getLogoAltText(): Promise<string> {
