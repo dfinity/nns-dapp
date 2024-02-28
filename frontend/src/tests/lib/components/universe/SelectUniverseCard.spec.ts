@@ -1,7 +1,6 @@
 import SelectUniverseCard from "$lib/components/universe/SelectUniverseCard.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import type { Universe } from "$lib/types/universe";
 import { createUniverse } from "$lib/utils/universe.utils";
 import { page } from "$mocks/$app/stores";
@@ -16,6 +15,10 @@ import { mockSummary } from "$tests/mocks/sns-projects.mock";
 import { nnsUniverseMock } from "$tests/mocks/universe.mock";
 import { SelectUniverseCardPo } from "$tests/page-objects/SelectUniverseCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import {
+  resetAccountsForTesting,
+  setAccountsForTesting,
+} from "$tests/utils/accounts.test-utils";
 import { render } from "@testing-library/svelte";
 
 describe("SelectUniverseCard", () => {
@@ -29,7 +32,7 @@ describe("SelectUniverseCard", () => {
 
   beforeEach(() => {
     vi.restoreAllMocks();
-    icpAccountsStore.resetForTesting();
+    resetAccountsForTesting();
     resetIdentity();
   });
 
@@ -132,7 +135,7 @@ describe("SelectUniverseCard", () => {
 
   describe("project-balance", () => {
     beforeEach(() => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: {
           ...mockMainAccount,
           balanceUlps: 100_000_000n,

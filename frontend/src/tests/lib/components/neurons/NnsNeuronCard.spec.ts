@@ -1,7 +1,6 @@
 import NnsNeuronCard from "$lib/components/neurons/NnsNeuronCard.svelte";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { formatTokenE8s } from "$lib/utils/token.utils";
 import {
   mockAuthStoreSubscribe,
@@ -15,6 +14,10 @@ import {
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronCardPo } from "$tests/page-objects/NnsNeuronCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import {
+  resetAccountsForTesting,
+  setAccountsForTesting,
+} from "$tests/utils/accounts.test-utils";
 import type { Neuron } from "@dfinity/nns";
 import { NeuronState, NeuronType } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
@@ -25,7 +28,7 @@ describe("NnsNeuronCard", () => {
     vi.useFakeTimers().setSystemTime(nowInSeconds * 1000);
     vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
 
-    icpAccountsStore.resetForTesting();
+    resetAccountsForTesting();
   });
 
   it("renders a Card", () => {
@@ -137,7 +140,7 @@ describe("NnsNeuronCard", () => {
   });
 
   it("renders the hardware wallet label and not hotkey when neuron is controlled by hardware wallet", async () => {
-    icpAccountsStore.setForTesting({
+    setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [],
       hardwareWallets: [mockHardwareWalletAccount],
@@ -161,7 +164,7 @@ describe("NnsNeuronCard", () => {
   });
 
   it("renders neuron type tag when not default", async () => {
-    icpAccountsStore.setForTesting({
+    setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [],
     });

@@ -4,7 +4,6 @@ import {
   CKBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { mockCkBTCMainAccount } from "$tests/mocks/ckbtc-accounts.mock";
 import {
@@ -16,6 +15,7 @@ import {
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { get } from "svelte/store";
 
@@ -26,7 +26,7 @@ describe("universes-accounts", () => {
   });
 
   it("should derive Nns accounts", () => {
-    icpAccountsStore.setForTesting({
+    setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [mockSubAccount],
       hardwareWallets: [],
@@ -79,7 +79,7 @@ describe("universes-accounts", () => {
   });
 
   it("should derive all accounts", () => {
-    icpAccountsStore.setForTesting({
+    setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [mockSubAccount],
       hardwareWallets: [],

@@ -12,7 +12,6 @@ import { pageStore } from "$lib/derived/page.derived";
 import NnsWallet from "$lib/pages/NnsWallet.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icpTransactionsStore } from "$lib/stores/icp-transactions.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
@@ -33,6 +32,10 @@ import { IcpTransactionModalPo } from "$tests/page-objects/IcpTransactionModal.p
 import { NnsWalletPo } from "$tests/page-objects/NnsWallet.page-object";
 import { ReceiveModalPo } from "$tests/page-objects/ReceiveModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import {
+  resetAccountsForTesting,
+  setAccountsForTesting,
+} from "$tests/utils/accounts.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   advanceTime,
@@ -70,7 +73,7 @@ describe("NnsWallet", () => {
     vi.clearAllMocks();
     vi.clearAllTimers();
     cancelPollAccounts();
-    icpAccountsStore.resetForTesting();
+    resetAccountsForTesting();
     neuronsStore.reset();
     resetNeuronsApiService();
     icpTransactionsStore.reset();
@@ -249,7 +252,7 @@ describe("NnsWallet", () => {
 
   describe("accounts loaded", () => {
     beforeEach(() => {
-      icpAccountsStore.setForTesting(mockAccountsStoreData);
+      setAccountsForTesting(mockAccountsStoreData);
     });
 
     it("should render nns project name", async () => {
@@ -261,7 +264,7 @@ describe("NnsWallet", () => {
     });
 
     it("should render a balance with token in summary", async () => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         ...mockAccountsStoreData,
         main: {
           ...mockMainAccount,
@@ -609,7 +612,7 @@ describe("NnsWallet", () => {
 
   describe("accounts loaded (Subaccount)", () => {
     beforeEach(() => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         ...mockAccountsStoreData,
         subAccounts: [mockSubAccount],
       });
@@ -631,7 +634,7 @@ describe("NnsWallet", () => {
     const testHwPrincipal = Principal.fromText(testHwPrincipalText);
 
     beforeEach(() => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         ...mockAccountsStoreData,
         hardwareWallets: [
           {

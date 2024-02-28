@@ -1,7 +1,6 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { icpTokensListUser } from "$lib/derived/icp-tokens-list-user.derived";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import {
   UserTokenAction,
   type UserTokenData,
@@ -17,6 +16,10 @@ import {
   createIcpUserToken,
   icpTokenBase,
 } from "$tests/mocks/tokens-page.mock";
+import {
+  resetAccountsForTesting,
+  setAccountsForTesting,
+} from "$tests/utils/accounts.test-utils";
 import { TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
 
@@ -75,7 +78,7 @@ describe("icp-tokens-list-user.derived", () => {
 
   describe("icpTokensListVisitors", () => {
     beforeEach(() => {
-      icpAccountsStore.resetForTesting();
+      resetAccountsForTesting();
     });
 
     it("should return empty if no accounts", () => {
@@ -83,14 +86,14 @@ describe("icp-tokens-list-user.derived", () => {
     });
 
     it("should return only main if no subaccounts and no subaccounts", () => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: mockMainAccount,
       });
       expect(get(icpTokensListUser)).toEqual([mainUserTokenData]);
     });
 
     it("should return subaccounts and main", () => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
       });
@@ -101,7 +104,7 @@ describe("icp-tokens-list-user.derived", () => {
     });
 
     it("should return hardware wallets, subaccounts and main", () => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
         hardwareWallets: [mockHardwareWalletAccount],
