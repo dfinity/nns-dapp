@@ -40,9 +40,8 @@
     });
 
   let actionableProposalCount: number | undefined = undefined;
-  $: actionableProposalCount = $actionableProposalIndicationEnabledStore
-    ? $actionableProposalCountStore[universe.canisterId]
-    : undefined;
+  $: actionableProposalCount =
+    $actionableProposalCountStore[universe.canisterId];
 </script>
 
 <Card
