@@ -235,6 +235,26 @@ describe("SelectUniverseCard", () => {
         expect(await po.getActionableProposalCount()).toBe("2");
       });
 
+      it("should not display actionable proposal count when it's 0", async () => {
+        page.mock({
+          data: { universe: OWN_CANISTER_ID_TEXT },
+          routeId: AppPath.Proposals,
+        });
+
+        actionableSnsProposalsStore.setProposals({
+          rootCanisterId: Principal.from(mockSnsUniverse.canisterId),
+          proposals: [],
+        });
+
+        const po = renderComponent({
+          props: { universe: mockSnsUniverse, selected: false },
+        });
+
+        expect(await po.getActionableProposalCountBadgePo().isPresent()).toBe(
+          false
+        );
+      });
+
       it("should not display actionable proposal count when no data", async () => {
         page.mock({
           data: { universe: OWN_CANISTER_ID_TEXT },

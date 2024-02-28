@@ -61,7 +61,7 @@
     >
       <span class="name">
         {universe.title}
-        {#if nonNullish(actionableProposalCount)}
+        {#if nonNullish(actionableProposalCount) && actionableProposalCount > 0}
           <ActionableProposalCountBadge count={actionableProposalCount} />
         {/if}
       </span>
