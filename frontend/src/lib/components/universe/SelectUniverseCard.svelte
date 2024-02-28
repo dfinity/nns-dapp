@@ -8,11 +8,9 @@
   import { isSelectedPath } from "$lib/utils/navigation.utils";
   import type { Universe } from "$lib/types/universe";
   import { nonNullish } from "@dfinity/utils";
-  import {
-    actionableProposalCountStore,
-    actionableProposalIndicationEnabledStore,
-  } from "$lib/derived/actionable-proposals.derived";
+  import { actionableProposalCountStore } from "$lib/derived/actionable-proposals.derived";
   import ActionableProposalCountBadge from "$lib/components/proposals/ActionableProposalCountBadge.svelte";
+  import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
 
   export let selected: boolean;
   export let role: "link" | "button" | "dropdown" = "link";
@@ -40,8 +38,9 @@
     });
 
   let actionableProposalCount: number | undefined = undefined;
-  $: actionableProposalCount =
-    $actionableProposalCountStore[universe.canisterId];
+  $: actionableProposalCount = ENABLE_VOTING_INDICATION
+    ? $actionableProposalCountStore[universe.canisterId]
+    : undefined;
 </script>
 
 <Card

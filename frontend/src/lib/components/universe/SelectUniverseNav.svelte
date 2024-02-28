@@ -7,13 +7,17 @@
   import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
   import { loadActionableSnsProposals } from "$lib/services/actionable-sns-proposals.services";
   import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
+  import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
 
   let innerWidth = 0;
   let list = false;
 
   $: list = innerWidth > BREAKPOINT_LARGE;
-  $: $actionableProposalIndicationEnabledStore && loadActionableProposals();
+  $: ENABLE_VOTING_INDICATION &&
+    $actionableProposalIndicationEnabledStore &&
+    loadActionableProposals();
   $: if (
+    ENABLE_VOTING_INDICATION &&
     $actionableProposalIndicationEnabledStore &&
     // Check for the length in case the sns list is not yet loaded
     $snsProjectsCommittedStore.length > 0
