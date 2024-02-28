@@ -1,4 +1,11 @@
-name: Reproducible
+name: Reproducible Docker Builds
+# Simulates end users verifying builds published by Dfinity:
+# - Runs docker builds on various different operating systems, with an empty docker cache.
+#   Note: This makes builds slow but is more representative of the end user experience.  The cache we
+#   use in most CI builds may diverge from that created by an end user.  We would want to detect that.
+# - Verifies that all these builds yield the same artifacts.
+# - NOT DONE: Verify that these builds from scratch match our main CI build.
+#   Idea: We could trigger this workflow when we create a release and compare these builds with the artifacts in the release.
 on:
   push:
     branches:
@@ -88,3 +95,18 @@ jobs:
         with:
           WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           MESSAGE: "Reproducible build failed"
+  check_passes:
+    needs: ["docker_build", "compare_hashes"]
+    if: ${{ always() }}
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/needs_success
+        with:
+          needs: '${{ toJson(needs) }}'
+      - name: Notify Slack on failure
+        uses: dfinity/internet-identity/.github/actions/slack@release-2023-08-28
+        if: ${{ failure() }}
+        with:
+          WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          MESSAGE: "Proposals update failed"
