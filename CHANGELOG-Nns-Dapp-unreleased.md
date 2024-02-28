@@ -21,6 +21,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Minor wording and style changes on the neuron detail page.
 * Enable loading state from stable structures.
+* Enable migrating state to and from stable structures.
 
 #### Deprecated
 
@@ -33,6 +34,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * Bug where transferred SNS neurons appeared in the list of neurons after transferring them.
+* Bug when the "Manage Internet Identity" link always uses `internetcomputer.org` domain.
 
 #### Security
 

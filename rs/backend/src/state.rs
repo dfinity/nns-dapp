@@ -170,8 +170,6 @@ impl State {
     /// Applies the specified arguments to the state.
     #[must_use]
     pub fn with_arguments(mut self, arguments: &CanisterArguments) -> Self {
-        // TODO: If a migration is needed, kick it off.
-        // TODO: Initialize assets and asset_hashes
         if let Some(schema) = arguments.schema {
             self.start_migration_to(schema);
         }
@@ -180,9 +178,10 @@ impl State {
     /// Applies the specified arguments, if provided
     #[must_use]
     pub fn with_arguments_maybe(self, arguments_maybe: Option<&CanisterArguments>) -> Self {
-        match arguments_maybe {
-            Some(arguments) => self.with_arguments(arguments),
-            None => self,
+        if let Some(arguments) = arguments_maybe {
+            self.with_arguments(arguments)
+        } else {
+            self
         }
     }
     /// Starts a migration, if needed.
@@ -191,23 +190,14 @@ impl State {
         if schema_now == schema {
             println!("start_migration_to: No migration needed.  Schema is already {schema:?}.");
         } else {
+            // Create a new, empty, accounts database with the new schema, then start migrating to it.
             let new_accounts_db = match schema {
                 SchemaLabel::Map => AccountsDb::Map(AccountsDbAsMap::default()),
                 SchemaLabel::AccountsInStableMemory => {
                     let mut partitions_maybe = self.partitions_maybe.borrow_mut();
                     // If the memory isn't partitioned, partition it now.
-                    if let PartitionsMaybe::None(memory) = &*partitions_maybe {
-                        println!("start_migration_to: Partitioning memory for schema {schema:?}.");
-                        let memory = Partitions::copy_memory_reference(memory);
-                        *partitions_maybe = PartitionsMaybe::Partitions(Partitions::new_with_schema(memory, schema));
-                    };
-                    let vm = match &*partitions_maybe {
-                        PartitionsMaybe::Partitions(partitions) => partitions.get(PartitionType::Accounts.memory_id()),
-                        PartitionsMaybe::None(_) => {
-                            trap_with("Cannot fail as we just created the partitions");
-                            unreachable!()
-                        }
-                    };
+                    let partitions = partitions_maybe.get_or_format(schema);
+                    let vm = partitions.get(PartitionType::Accounts.memory_id());
                     AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::new(vm))
                 }
             };

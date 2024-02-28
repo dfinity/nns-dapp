@@ -25,6 +25,7 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { IntersectionObserverActive } from "$tests/mocks/infinitescroll.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockTransactionWithId } from "$tests/mocks/transaction.mock";
@@ -56,6 +57,13 @@ describe("NnsWallet", () => {
     accountIdentifier: mockMainAccount.identifier,
   };
   const mainBalanceE8s = 10_000_000n;
+  const firstPageTransactions = [
+    { id: 1000n, transaction: mockTransactionWithId.transaction },
+  ];
+  const oldestTxId = 10n;
+  const lastPageTransactions = [
+    { id: oldestTxId, transaction: mockTransactionWithId.transaction },
+  ];
   const accountTransactions = [mockTransactionWithId];
 
   beforeEach(() => {
@@ -73,8 +81,8 @@ describe("NnsWallet", () => {
       mainBalanceE8s
     );
     vi.spyOn(indexApi, "getTransactions").mockResolvedValue({
-      transactions: accountTransactions,
-      oldestTxId: 1234n,
+      transactions: firstPageTransactions,
+      oldestTxId,
       balance: mainBalanceE8s,
     });
     vi.spyOn(accountsApi, "getTransactions").mockResolvedValue([]);
@@ -275,6 +283,52 @@ describe("NnsWallet", () => {
       ).toHaveLength(accountTransactions.length);
     });
 
+    it("should render second page of transactions from ICP Index canister", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_INDEX", true);
+      vi.stubGlobal("IntersectionObserver", IntersectionObserverActive);
+      const resolveFunctions = [];
+      vi.spyOn(indexApi, "getTransactions").mockImplementation(
+        () =>
+          new Promise<indexApi.GetTransactionsResponse>((resolve) => {
+            resolveFunctions.push(resolve);
+          })
+      );
+
+      const { container } = render(NnsWallet, props);
+      const po = NnsWalletPo.under(new JestPageObjectElement(container));
+
+      await runResolvedPromises();
+      expect(resolveFunctions).toHaveLength(1);
+      resolveFunctions[0]({
+        transactions: firstPageTransactions,
+        oldestTxId,
+        balance: mainBalanceE8s,
+      });
+      await runResolvedPromises();
+
+      expect(
+        await po.getUiTransactionsListPo().getTransactionCardPos()
+      ).toHaveLength(firstPageTransactions.length);
+
+      expect(resolveFunctions).toHaveLength(2);
+      resolveFunctions[1]({
+        transactions: lastPageTransactions,
+        oldestTxId,
+        balance: mainBalanceE8s,
+      });
+      await runResolvedPromises();
+
+      expect(
+        await po.getUiTransactionsListPo().getTransactionCardPos()
+      ).toHaveLength(
+        firstPageTransactions.length + lastPageTransactions.length
+      );
+
+      await runResolvedPromises();
+      // Third page should not be requested.
+      expect(resolveFunctions).toHaveLength(2);
+    });
+
     it("should render 'Staked' transaction from ICP Index canister", async () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_ICP_INDEX", true);
       const stakeNeuronTransaction: TransactionWithId = {
@@ -354,6 +408,71 @@ describe("NnsWallet", () => {
       expect(await transactionCardsPos[0].getHeadline()).toBe(
         "Decentralization Swap"
       );
+    });
+
+    it("should display SkeletonCard while loading transactions from ICP Index canister", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_INDEX", true);
+      let resolveGetTransactions;
+      vi.spyOn(indexApi, "getTransactions").mockImplementation(
+        () =>
+          new Promise<indexApi.GetTransactionsResponse>((resolve) => {
+            resolveGetTransactions = resolve;
+          })
+      );
+      const po = await renderWallet(props);
+
+      await runResolvedPromises();
+      expect(
+        await po.getUiTransactionsListPo().getSkeletonCardPo().isPresent()
+      ).toBe(true);
+
+      resolveGetTransactions({
+        transactions: accountTransactions,
+        oldestTxId: mockTransactionWithId.id,
+        balance: mainBalanceE8s,
+      });
+
+      await runResolvedPromises();
+      expect(
+        await po.getTransactionListPo().getSkeletonCardPo().isPresent()
+      ).toBe(false);
+    });
+
+    it("should not display SkeletonCard while loading transactions if there are transactions present in the store from ICP Index canister", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_INDEX", true);
+      let resolveGetTransactions;
+      vi.spyOn(indexApi, "getTransactions").mockImplementation(
+        () =>
+          new Promise<indexApi.GetTransactionsResponse>((resolve) => {
+            resolveGetTransactions = resolve;
+          })
+      );
+      icpTransactionsStore.addTransactions({
+        accountIdentifier: mockMainAccount.identifier,
+        transactions: accountTransactions,
+        oldestTxId: mockTransactionWithId.id,
+        completed: false,
+      });
+      const po = await renderWallet(props);
+
+      await runResolvedPromises();
+      expect(
+        await po.getUiTransactionsListPo().getSkeletonCardPo().isPresent()
+      ).toBe(false);
+      expect(
+        await po.getUiTransactionsListPo().getTransactionCardPos()
+      ).toHaveLength(accountTransactions.length);
+
+      resolveGetTransactions({
+        transactions: accountTransactions,
+        oldestTxId: mockTransactionWithId.id,
+        balance: mainBalanceE8s,
+      });
+
+      await runResolvedPromises();
+      expect(
+        await po.getTransactionListPo().getSkeletonCardPo().isPresent()
+      ).toBe(false);
     });
 
     it("should enable new transaction action for route and store", async () => {
