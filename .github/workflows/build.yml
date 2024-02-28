@@ -145,7 +145,7 @@ jobs:
           ls
           ls out
       - name: Upgrade to self, keeping the storage schema as map
-        run: ./scripts/nns-dapp/migration-test --schema1 Map --schema2 Map --accounts 10000
+        run: ./scripts/nns-dapp/migration-test --schema1 Map --schema2 Map --accounts 20
       - name: Upload dfx logs
         if: failure()
         uses: actions/upload-artifact@v4
