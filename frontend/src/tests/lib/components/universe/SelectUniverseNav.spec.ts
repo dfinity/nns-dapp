@@ -101,7 +101,7 @@ describe("SelectUniverseNav", () => {
   const spyQuerySnsProposals = vi
     .spyOn(snsGovernanceApi, "queryProposals")
     .mockImplementation(
-      async ({ rootCanisterId }) =>
+      async () =>
         ({
           proposals: [votableSnsProposal1, votableSnsProposal2],
           include_ballots_by_caller: [true],
