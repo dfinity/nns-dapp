@@ -38,7 +38,7 @@
     });
 
   let actionableProposalCount: number | undefined = undefined;
-  $: actionableProposalCount = ENABLE_VOTING_INDICATION
+  $: actionableProposalCount = $ENABLE_VOTING_INDICATION
     ? $actionableProposalCountStore[universe.canisterId]
     : undefined;
 </script>

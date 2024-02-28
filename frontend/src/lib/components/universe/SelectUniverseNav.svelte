@@ -13,11 +13,11 @@
   let list = false;
 
   $: list = innerWidth > BREAKPOINT_LARGE;
-  $: ENABLE_VOTING_INDICATION &&
+  $: $ENABLE_VOTING_INDICATION &&
     $actionableProposalIndicationEnabledStore &&
     loadActionableProposals();
   $: if (
-    ENABLE_VOTING_INDICATION &&
+    $ENABLE_VOTING_INDICATION &&
     $actionableProposalIndicationEnabledStore &&
     // Check for the length in case the sns list is not yet loaded
     $snsProjectsCommittedStore.length > 0
