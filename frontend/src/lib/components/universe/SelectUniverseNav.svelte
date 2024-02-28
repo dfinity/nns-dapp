@@ -13,9 +13,12 @@
   let list = false;
 
   $: list = innerWidth > BREAKPOINT_LARGE;
-  $: $ENABLE_VOTING_INDICATION &&
-    $actionableProposalIndicationEnabledStore &&
+  $: if (
+    $ENABLE_VOTING_INDICATION &&
+    $actionableProposalIndicationEnabledStore
+  ) {
     loadActionableProposals();
+  }
   $: if (
     $ENABLE_VOTING_INDICATION &&
     $actionableProposalIndicationEnabledStore &&
