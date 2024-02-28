@@ -5,6 +5,11 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
+import {
+  resetAccountsForTesting,
+  setAccountBalanceForTesting,
+  setAccountsForTesting,
+} from "$tests/utils/accounts.test-utils";
 import { get } from "svelte/store";
 
 describe("icpAccountsStore", () => {
@@ -16,31 +21,13 @@ describe("icpAccountsStore", () => {
     expect(initState.hardwareWallets).toBeUndefined();
   };
 
-  // Convenience functions for tests that don't care about the functionality of
-  // the queued store to handle out of order responses.
-  const accountsStoreSet = (accounts: IcpAccountsStoreData) => {
-    const mutableStore = icpAccountsStore.getSingleMutationIcpAccountsStore();
-    mutableStore.set(accounts);
-  };
-
-  const accountsStoreSetBalance = ({
-    accountIdentifier,
-    balanceE8s,
-  }: {
-    accountIdentifier: string;
-    balanceE8s: bigint;
-  }) => {
-    const mutableStore = icpAccountsStore.getSingleMutationIcpAccountsStore();
-    mutableStore.setBalance({ accountIdentifier, balanceE8s, certified: true });
-  };
-
   const accountsStoreReset = () => {
     const mutableStore = icpAccountsStore.getSingleMutationIcpAccountsStore();
     mutableStore.reset({ certified: true });
   };
 
   beforeEach(() => {
-    icpAccountsStore.resetForTesting();
+    resetAccountsForTesting();
   });
 
   it("initializes to undefined", () => {
@@ -48,7 +35,7 @@ describe("icpAccountsStore", () => {
   });
 
   it("should set main account", () => {
-    accountsStoreSet({ main: mockMainAccount, subAccounts: [] });
+    setAccountsForTesting({ main: mockMainAccount, subAccounts: [] });
 
     const { main } = get(icpAccountsStore);
     expect(main).toEqual(mockMainAccount);
@@ -58,7 +45,7 @@ describe("icpAccountsStore", () => {
     const { certified: initialCertified } = get(icpAccountsStore);
     expect(initialCertified).toBe(undefined);
 
-    accountsStoreSet({
+    setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [],
       certified: true,
@@ -69,7 +56,7 @@ describe("icpAccountsStore", () => {
   });
 
   it("should reset account store", () => {
-    accountsStoreSet({ main: mockMainAccount, subAccounts: [] });
+    setAccountsForTesting({ main: mockMainAccount, subAccounts: [] });
     accountsStoreReset();
     expectStoreInitialValues();
   });
@@ -106,13 +93,13 @@ describe("icpAccountsStore", () => {
 
   describe("setBalance", () => {
     it("should set balance for main account", () => {
-      accountsStoreSet({ main: mockMainAccount, subAccounts: [] });
+      setAccountsForTesting({ main: mockMainAccount, subAccounts: [] });
 
       expect(get(icpAccountsStore)?.main.balanceUlps).toEqual(
         mockMainAccount.balanceUlps
       );
       const newBalanceE8s = 100n;
-      accountsStoreSetBalance({
+      setAccountBalanceForTesting({
         accountIdentifier: mockMainAccount.identifier,
         balanceE8s: newBalanceE8s,
       });
@@ -121,7 +108,7 @@ describe("icpAccountsStore", () => {
     });
 
     it("should set balance for subaccount", () => {
-      accountsStoreSet({
+      setAccountsForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
       });
@@ -130,7 +117,7 @@ describe("icpAccountsStore", () => {
         mockSubAccount.balanceUlps
       );
       const newBalanceE8s = 100n;
-      accountsStoreSetBalance({
+      setAccountBalanceForTesting({
         accountIdentifier: mockSubAccount.identifier,
         balanceE8s: newBalanceE8s,
       });
@@ -141,7 +128,7 @@ describe("icpAccountsStore", () => {
     });
 
     it("should set balance for hw account", () => {
-      accountsStoreSet({
+      setAccountsForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
         hardwareWallets: [mockHardwareWalletAccount],
@@ -151,7 +138,7 @@ describe("icpAccountsStore", () => {
         mockHardwareWalletAccount.balanceUlps
       );
       const newBalanceE8s = 100n;
-      accountsStoreSetBalance({
+      setAccountBalanceForTesting({
         accountIdentifier: mockHardwareWalletAccount.identifier,
         balanceE8s: newBalanceE8s,
       });
@@ -162,14 +149,14 @@ describe("icpAccountsStore", () => {
     });
 
     it("should not set balance if identifier doesn't match", () => {
-      accountsStoreSet({
+      setAccountsForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
         hardwareWallets: [mockHardwareWalletAccount],
       });
 
       const newBalanceE8s = 100n;
-      accountsStoreSetBalance({
+      setAccountBalanceForTesting({
         accountIdentifier: "not-matching-identifier",
         balanceE8s: newBalanceE8s,
       });

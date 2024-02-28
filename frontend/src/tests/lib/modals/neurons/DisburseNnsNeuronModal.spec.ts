@@ -7,7 +7,6 @@ import { pageStore } from "$lib/derived/page.derived";
 import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
 import { disburse } from "$lib/services/neurons.services";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockAccountDetails,
@@ -19,6 +18,10 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { DisburseNnsNeuronModalPo } from "$tests/page-objects/DisburseNnsNeuronModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import {
+  resetAccountsForTesting,
+  setAccountsForTesting,
+} from "$tests/utils/accounts.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
@@ -60,7 +63,7 @@ describe("DisburseNnsNeuronModal", () => {
 
   describe("when accounts are loaded", () => {
     beforeEach(() => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         ...mockAccountsStoreData,
         subAccounts: [mockSubAccount],
       });
@@ -127,7 +130,7 @@ describe("DisburseNnsNeuronModal", () => {
 
   describe("when accounts store is empty", () => {
     beforeEach(() => {
-      icpAccountsStore.resetForTesting();
+      resetAccountsForTesting();
     });
 
     it("should fetch accounts and render account selector", async () => {
@@ -168,7 +171,7 @@ describe("DisburseNnsNeuronModal", () => {
   describe("when no accounts and user navigates away", () => {
     let spyQueryAccount: SpyInstance;
     beforeEach(() => {
-      icpAccountsStore.resetForTesting();
+      resetAccountsForTesting();
       vi.clearAllTimers();
       vi.clearAllMocks();
       const now = Date.now();

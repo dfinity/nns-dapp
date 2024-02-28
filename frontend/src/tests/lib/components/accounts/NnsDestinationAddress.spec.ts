@@ -1,11 +1,11 @@
 import NnsDestinationAddress from "$lib/components/accounts/NnsDestinationAddress.svelte";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
 import { NnsDestinationAddressPo } from "$tests/page-objects/NnsDestinationAddress.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { allowLoggingInOneTestForDebugging } from "$tests/utils/console.test-utils";
 import { render } from "@testing-library/svelte";
 import type { Mock } from "vitest";
@@ -31,7 +31,7 @@ describe("NnsDestinationAddress", () => {
     allowLoggingInOneTestForDebugging();
     vi.restoreAllMocks();
 
-    icpAccountsStore.setForTesting({
+    setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [mockSubAccount1, mockSubAccount2],
       hardwareWallets: [],

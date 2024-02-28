@@ -47,6 +47,10 @@ import {
 } from "$tests/mocks/sns.api.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import {
+  resetAccountsForTesting,
+  setAccountsForTesting,
+} from "$tests/utils/accounts.test-utils";
+import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
@@ -166,7 +170,7 @@ describe("sns-api", () => {
     vi.clearAllMocks();
 
     snsTicketsStore.reset();
-    icpAccountsStore.resetForTesting();
+    resetAccountsForTesting();
     tokensStore.reset();
 
     spyOnNewSaleTicketApi.mockResolvedValue(testSnsTicket.ticket);
@@ -998,7 +1002,7 @@ describe("sns-api", () => {
       vi.useFakeTimers().setSystemTime(now);
     });
     it("should call postprocess and APIs", async () => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: mockMainAccount,
       });
       const postprocessSpy = vi.fn().mockResolvedValue(undefined);
@@ -1025,7 +1029,7 @@ describe("sns-api", () => {
     });
 
     it("should update account's balance in the store", async () => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: mockMainAccount,
       });
       const postprocessSpy = vi.fn().mockResolvedValue(undefined);
@@ -1051,7 +1055,7 @@ describe("sns-api", () => {
         owner: mockIdentity.getPrincipal(),
         subaccount: arrayOfNumberToUint8Array(mockSubAccount.subAccount),
       });
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
       });
