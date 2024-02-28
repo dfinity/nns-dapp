@@ -10,7 +10,6 @@ import {
   CKETH_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { numberToUlps } from "$lib/utils/token.utils";
@@ -30,6 +29,7 @@ import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { TokensRoutePo } from "$tests/page-objects/TokensRoute.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
@@ -156,7 +156,7 @@ describe("Tokens route", () => {
         },
       ]);
       setCkETHCanisters();
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: { ...mockMainAccount, balanceUlps: icpBalanceE8s },
       });
     });

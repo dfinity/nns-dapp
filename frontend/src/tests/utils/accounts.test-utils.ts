@@ -1,3 +1,7 @@
+import {
+  icpAccountsStore,
+  type IcpAccountsStoreData,
+} from "$lib/stores/icp-accounts.store";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 
@@ -28,4 +32,23 @@ export const selectSegmentBTC = async (container: HTMLElement) => {
   expect(button).not.toBeNull();
 
   await fireEvent.click(button);
+};
+
+export const setAccountsForTesting = (data: IcpAccountsStoreData) => {
+  icpAccountsStore.setForTesting(data);
+};
+
+export const setAccountBalanceForTesting = ({
+  accountIdentifier,
+  balanceE8s,
+}: {
+  accountIdentifier: string;
+  balanceE8s: bigint;
+}) => {
+  const mutableStore = icpAccountsStore.getSingleMutationIcpAccountsStore();
+  mutableStore.setBalance({ accountIdentifier, balanceE8s, certified: true });
+};
+
+export const resetAccountsForTesting = () => {
+  icpAccountsStore.resetForTesting();
 };

@@ -4,13 +4,13 @@ import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import type { UserTokenData } from "$lib/types/tokens-page";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
 import { createUserToken } from "$tests/mocks/tokens-page.mock";
 import { NnsAccountsPo } from "$tests/page-objects/NnsAccounts.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { resetAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
@@ -31,7 +31,7 @@ describe("NnsAccounts", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     resetIdentity();
-    icpAccountsStore.resetForTesting();
+    resetAccountsForTesting();
     // TODO: Move the pollAccounts to Accounts route when universe selected is NNS instead of the child.
     vi.spyOn(nnsDappApi, "queryAccount").mockImplementation(async () => {
       return mockAccountDetails;
