@@ -43,8 +43,6 @@
   $: actionableProposalCount = $actionableProposalIndicationEnabledStore
     ? $actionableProposalCountStore[universe.canisterId]
     : undefined;
-
-  ActionableProposalCountBadge;
 </script>
 
 <Card
@@ -66,9 +64,7 @@
       <span class="name">
         {universe.title}
         {#if nonNullish(actionableProposalCount)}
-          <ActionableProposalCountBadge
-            >{actionableProposalCount}</ActionableProposalCountBadge
-          >
+          <ActionableProposalCountBadge count={actionableProposalCount} />
         {/if}
       </span>
       {#if displayProjectAccountsBalance}

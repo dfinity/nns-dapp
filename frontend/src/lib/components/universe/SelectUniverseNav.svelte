@@ -3,11 +3,11 @@
   import SelectUniverseNavList from "$lib/components/universe/SelectUniverseNavList.svelte";
   import SelectUniverseDropdown from "$lib/components/universe/SelectUniverseDropdown.svelte";
   import { titleTokenSelectorStore } from "$lib/derived/title-token-selector.derived";
-  import { updateActionableSnsProposals } from "$lib/services/$public/sns-actionable-proposals.services";
-  import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
   import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
-  import { actionableProposalIndicationEnabledStore } from "$lib/derived/actionable-proposal.derived";
-  import { updateActionableProposals } from "$lib/services/$public/actionable-proposals.services";
+  import { actionableProposalIndicationEnabledStore } from "$lib/derived/actionable-proposals.derived";
+  import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
+  import { loadActionableSnsProposals } from "$lib/services/actionable-sns-proposals.services";
+  import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 
   let innerWidth = 0;
   let list = false;
@@ -15,13 +15,14 @@
   $: list = innerWidth > BREAKPOINT_LARGE;
   $: $ENABLE_VOTING_INDICATION &&
     $actionableProposalIndicationEnabledStore &&
-    updateActionableProposals();
+    loadActionableProposals();
   $: if (
     $ENABLE_VOTING_INDICATION &&
     $actionableProposalIndicationEnabledStore &&
-    $selectableUniversesStore.length > 1
+    // Check for length in case the sns list is not yet loaded
+    $snsProjectsCommittedStore.length > 1
   ) {
-    updateActionableSnsProposals();
+    loadActionableSnsProposals();
   }
 </script>
 
