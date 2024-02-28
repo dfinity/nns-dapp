@@ -130,6 +130,9 @@ pub enum PartitionType {
     Accounts = 2,
 }
 impl PartitionType {
+    /// The memory ID.
+    ///
+    /// IMPORTANT: There must be a 1-1 mapping between `PartitionType`s and virtual memory IDs.
     #[must_use]
     pub const fn memory_id(self) -> MemoryId {
         MemoryId::new(self as u8)
