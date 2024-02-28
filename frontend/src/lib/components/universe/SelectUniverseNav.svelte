@@ -15,8 +15,8 @@
   $: $actionableProposalIndicationEnabledStore && loadActionableProposals();
   $: if (
     $actionableProposalIndicationEnabledStore &&
-    // Check for length in case the sns list is not yet loaded
-    $snsProjectsCommittedStore.length > 1
+    // Check for the length in case the sns list is not yet loaded
+    $snsProjectsCommittedStore.length > 0
   ) {
     loadActionableSnsProposals();
   }
