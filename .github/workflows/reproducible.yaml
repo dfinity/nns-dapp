@@ -4,6 +4,7 @@ on:
     branches:
       # This is the recommended development branch for this workflow; pushing it will trigger a build.
       - reproducible
+      - notify-slack-on-failed-reproduction
     tags:
       # The tag used when preparing a release.
       - release-candidate
