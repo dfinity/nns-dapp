@@ -13,7 +13,6 @@ import * as services from "$lib/services/neurons.services";
 import { toggleAutoStakeMaturity } from "$lib/services/neurons.services";
 import * as busyStore from "$lib/stores/busy.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import { NotAuthorizedNeuronError } from "$lib/types/neurons.errors";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -33,6 +32,10 @@ import {
 } from "$tests/mocks/icp-accounts.store.mock";
 import { MockLedgerIdentity } from "$tests/mocks/ledger.identity.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
+import {
+  resetAccountsForTesting,
+  setAccountsForTesting,
+} from "$tests/utils/accounts.test-utils";
 import type { Identity } from "@dfinity/agent";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
@@ -161,7 +164,7 @@ describe("neurons-services", () => {
     spyGetNeuron.mockClear();
     vi.clearAllMocks();
     neuronsStore.reset();
-    icpAccountsStore.resetForTesting();
+    resetAccountsForTesting();
     resetAccountIdentity();
     toastsStore.reset();
     resetNeuronsApiService();
@@ -862,7 +865,7 @@ describe("neurons-services", () => {
         ...mockHardwareWalletAccount,
         principal: smallerVersionIdentity.getPrincipal(),
       };
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: mockMainAccount,
         hardwareWallets: [hwAccount],
       });
@@ -959,7 +962,7 @@ describe("neurons-services", () => {
     });
 
     it("should simulate merging neurons if HW controlled", async () => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: mockMainAccount,
         hardwareWallets: [mockHardwareWalletAccount],
       });
@@ -1293,7 +1296,7 @@ describe("neurons-services", () => {
         ...mockHardwareWalletAccount,
         principal: smallerVersionIdentity.getPrincipal(),
       };
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: mockMainAccount,
         hardwareWallets: [hwAccount],
       });

@@ -1,7 +1,6 @@
 import NnsNeuronStateItemAction from "$lib/components/neuron-detail/NnsNeuronStateItemAction.svelte";
 import { SECONDS_IN_FOUR_YEARS } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
@@ -13,6 +12,7 @@ import {
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronStateItemActionPo } from "$tests/page-objects/NnsNeuronStateItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
@@ -94,7 +94,7 @@ describe("NnsNeuronStateItemAction", () => {
   });
 
   it("should render dissolve button if hardware wallet is the controller", async () => {
-    icpAccountsStore.setForTesting({
+    setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [],
       hardwareWallets: [mockHardwareWalletAccount],

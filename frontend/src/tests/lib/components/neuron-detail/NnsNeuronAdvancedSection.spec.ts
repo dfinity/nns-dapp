@@ -4,7 +4,6 @@ import {
   SECONDS_IN_MONTH,
 } from "$lib/constants/constants";
 import { authStore } from "$lib/stores/auth.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
 import {
   mockAuthStoreSubscribe,
@@ -20,6 +19,10 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { NnsNeuronAdvancedSectionPo } from "$tests/page-objects/NnsNeuronAdvancedSection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import {
+  resetAccountsForTesting,
+  setAccountsForTesting,
+} from "$tests/utils/accounts.test-utils";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
@@ -49,7 +52,7 @@ describe("NnsNeuronAdvancedSection", () => {
     vi.useFakeTimers();
     vi.setSystemTime(nowInSeconds * 1000);
     vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
-    icpAccountsStore.resetForTesting();
+    resetAccountsForTesting();
   });
 
   it("should render neuron data", async () => {
@@ -93,7 +96,7 @@ describe("NnsNeuronAdvancedSection", () => {
   });
 
   it("should render actions if user is the controller", async () => {
-    icpAccountsStore.setForTesting({
+    setAccountsForTesting({
       main: identityMainAccount,
       subAccounts: [],
       hardwareWallets: [],
@@ -124,7 +127,7 @@ describe("NnsNeuronAdvancedSection", () => {
   });
 
   it("should render enabled join neurons' fund if user is the controller", async () => {
-    icpAccountsStore.setForTesting({
+    setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [],
       hardwareWallets: [],
@@ -143,7 +146,7 @@ describe("NnsNeuronAdvancedSection", () => {
   });
 
   it("should render enabled join neurons' fund if user is hotkey", async () => {
-    icpAccountsStore.setForTesting({
+    setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [],
       hardwareWallets: [],
@@ -163,7 +166,7 @@ describe("NnsNeuronAdvancedSection", () => {
   });
 
   it("should render not render join neurons' fund if user is a hotkey but controller is the attached hardware wallet", async () => {
-    icpAccountsStore.setForTesting({
+    setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [],
       hardwareWallets: [mockHardwareWalletAccount],
@@ -194,7 +197,7 @@ describe("NnsNeuronAdvancedSection", () => {
   });
 
   it("should render split button but not join neurons' fund if neuron is controlled by hardware wallet", async () => {
-    icpAccountsStore.setForTesting({
+    setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [],
       hardwareWallets: [mockHardwareWalletAccount],

@@ -1,8 +1,8 @@
 import DisburseButton from "$lib/components/neuron-detail/actions/DisburseButton.svelte";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import en from "$tests/mocks/i18n.mock";
 import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { fireEvent, render } from "@testing-library/svelte";
 import NeuronContextTest from "../NeuronContextTest.svelte";
 
@@ -24,7 +24,7 @@ describe("DisburseButton", () => {
 
   it("opens disburse nns neuron modal", async () => {
     // To avoid that the modal requests the accounts
-    icpAccountsStore.setForTesting(mockAccountsStoreData);
+    setAccountsForTesting(mockAccountsStoreData);
     const { container, queryByTestId } = render(NeuronContextTest, {
       props: {
         neuron: mockNeuron,

@@ -51,6 +51,10 @@ import {
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
 import { mockSentToSubAccountTransaction } from "$tests/mocks/transaction.mock";
+import {
+  resetAccountsForTesting,
+  setAccountsForTesting,
+} from "$tests/utils/accounts.test-utils";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import {
   advanceTime,
@@ -87,7 +91,7 @@ describe("icp-accounts.services", () => {
     vi.spyOn(console, "error").mockReturnValue();
     vi.clearAllMocks();
     toastsStore.reset();
-    icpAccountsStore.resetForTesting();
+    resetAccountsForTesting();
     overrideFeatureFlagsStore.reset();
     resetIdentity();
     vi.spyOn(authServices, "getAuthenticatedIdentity").mockImplementation(
@@ -552,7 +556,7 @@ describe("icp-accounts.services", () => {
       const queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(newBalanceE8s);
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: mockMainAccount,
       });
       expect(get(icpAccountsStore).main.balanceUlps).toEqual(
@@ -585,7 +589,7 @@ describe("icp-accounts.services", () => {
           }
           throw new Error("test");
         });
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: mockMainAccount,
       });
       await loadBalance({ accountIdentifier: mockMainAccount.identifier });
@@ -599,7 +603,7 @@ describe("icp-accounts.services", () => {
       const queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockRejectedValue(error);
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: mockMainAccount,
       });
       await loadBalance({ accountIdentifier: mockMainAccount.identifier });
@@ -851,7 +855,7 @@ describe("icp-accounts.services", () => {
     });
 
     it("should sync destination balances after transfer ICP to own account", async () => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
       });
@@ -1086,7 +1090,7 @@ describe("icp-accounts.services", () => {
 
   describe("getAccountIdentity", () => {
     it("returns user identity if main account", async () => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: mockMainAccount,
       });
       const expectedIdentity = await getAccountIdentity(
@@ -1096,7 +1100,7 @@ describe("icp-accounts.services", () => {
     });
 
     it("returns user identity if main account", async () => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
       });
@@ -1107,7 +1111,7 @@ describe("icp-accounts.services", () => {
     });
 
     it("returns calls for hardware walleet identity if hardware wallet account", async () => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
         hardwareWallets: [mockHardwareWalletAccount],
@@ -1122,7 +1126,7 @@ describe("icp-accounts.services", () => {
 
   describe("getAccountIdentityByPrincipal", () => {
     it("returns user identity if main account", async () => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: mockMainAccount,
       });
       const expectedIdentity = await getAccountIdentityByPrincipal(
@@ -1132,7 +1136,7 @@ describe("icp-accounts.services", () => {
     });
 
     it("returns calls for hardware walleet identity if hardware wallet account", async () => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: mockMainAccount,
         subAccounts: [mockSubAccount],
         hardwareWallets: [mockHardwareWalletAccount],
@@ -1145,7 +1149,7 @@ describe("icp-accounts.services", () => {
     });
 
     it("returns null if no main account nor hardware wallet account", async () => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: mockMainAccount,
         hardwareWallets: [mockHardwareWalletAccount],
       });
@@ -1169,7 +1173,7 @@ describe("icp-accounts.services", () => {
     };
 
     beforeEach(() => {
-      icpAccountsStore.resetForTesting();
+      resetAccountsForTesting();
       vi.clearAllTimers();
       vi.clearAllMocks();
       cancelPollAccounts();

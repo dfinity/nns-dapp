@@ -1,7 +1,6 @@
 import * as accountsApi from "$lib/api/accounts.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { page } from "$mocks/$app/stores";
 import WalletPage from "$routes/(app)/(u)/(detail)/wallet/+page.svelte";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -11,6 +10,7 @@ import {
 } from "$tests/mocks/icp-accounts.store.mock";
 import { WalletPo } from "$tests/page-objects/Wallet.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { render } from "@testing-library/svelte";
 
 describe("Wallet page", () => {
@@ -38,7 +38,7 @@ describe("Wallet page", () => {
 
   it("should pass the account identifier", async () => {
     const testAccountIdentifier = "test-account";
-    icpAccountsStore.setForTesting({
+    setAccountsForTesting({
       ...mockAccountsStoreData,
       subAccounts: [
         {

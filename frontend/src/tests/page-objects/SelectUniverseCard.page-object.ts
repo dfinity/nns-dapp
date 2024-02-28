@@ -1,3 +1,4 @@
+import { ActionableProposalCountBadgePo } from "$tests/page-objects/ActionableProposalCountBadge.page-object";
 import { CardPo } from "$tests/page-objects/Card.page-object";
 import { UniverseAccountsBalancePo } from "$tests/page-objects/UniverseAccountsBalance.page-object";
 import { UniverseLogoPo } from "$tests/page-objects/UniverseLogo.page-object";
@@ -41,8 +42,8 @@ export class SelectUniverseCardPo extends CardPo {
     return UniverseLogoPo.under(this.root);
   }
 
-  getName(): Promise<string> {
-    return this.root.querySelector("span.name").getText();
+  async getName(): Promise<string> {
+    return (await this.root.querySelector("span.name").getText()).trim();
   }
 
   getLogoAltText(): Promise<string> {
@@ -59,5 +60,13 @@ export class SelectUniverseCardPo extends CardPo {
 
   hasBalance(): Promise<boolean> {
     return this.getUniverseAccountsBalancePo().isPresent();
+  }
+
+  getActionableProposalCountBadgePo(): ActionableProposalCountBadgePo {
+    return ActionableProposalCountBadgePo.under(this.root);
+  }
+
+  getActionableProposalCount(): Promise<string> {
+    return this.getActionableProposalCountBadgePo().getText();
   }
 }

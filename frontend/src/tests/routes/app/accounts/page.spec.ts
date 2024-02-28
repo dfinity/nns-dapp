@@ -2,13 +2,13 @@ import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { page } from "$mocks/$app/stores";
 import AccountsPage from "$routes/(app)/(u)/(list)/accounts/+page.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
 import { AccountsPlusPagePo } from "$tests/page-objects/AccountsPlusPage.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { resetAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { render } from "@testing-library/svelte";
 
 vi.mock("$lib/api/icp-ledger.api");
@@ -23,7 +23,7 @@ describe("Accounts page", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    icpAccountsStore.resetForTesting();
+    resetAccountsForTesting();
     vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(mockAccountDetails);
     vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(314000000n);
   });
