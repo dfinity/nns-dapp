@@ -36,8 +36,8 @@ impl PerformanceCount {
 pub struct PerformanceCounts {
     pub instruction_counts: VecDeque<PerformanceCount>,
     pub exceptional_transactions: Option<VecDeque<u64>>,
-    // TODO: Delete this once the stable memory migration is complete.  This is used purely to get
-    // an idea of how long migration is likely to take.
+    // TODO[NNS1-2913]: Delete this once the stable memory migration is complete.  This is used purely to get
+    // an idea of how long, in wall clock time, migration is likely to take.
     pub periodic_tasks_run: Option<u32>,
 }
 
