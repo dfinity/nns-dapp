@@ -53,7 +53,7 @@ pub struct Stats {
     pub exceptional_transactions_count: Option<u32>,
     // TODO[NNS1-2913]: Delete this once the stable memory migration is complete.  This is used purely to get
     // an idea of how long, in wall clock time, migration is likely to take.
-    pub periodic_tasks_run: Option<u32>,
+    pub periodic_tasks_count: Option<u32>,
 }
 
 #[allow(clippy::cast_precision_loss)] // We are converting u64 to f64
@@ -120,10 +120,10 @@ pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
         "The number of exceptional transactions in the canister log.",
     )?;
     w.encode_gauge(
-        "periodic_tasks_run",
-        f64::from(stats.periodic_tasks_run.unwrap_or(0)),
-        "The number of times the periodic tasks runner has run.",
-        // Note: The counter is always incremented, however on trap the increment is lost.
+        "periodic_tasks_count",
+        f64::from(stats.periodic_tasks_count.unwrap_or(0)),
+        "The number of times the periodic tasks runner has run successfully (ignoring async tasks).",
+        // Note: The counter is always incremented, however on Wasm trap (e.g. `ic_cdk::trap` or Rust `panic!`) the increment is lost.
     )?;
     Ok(())
 }
