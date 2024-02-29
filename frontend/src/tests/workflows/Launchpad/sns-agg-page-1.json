@@ -270,7 +270,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98000828839077260,
+    "icrc1_total_supply": 98000878061241950,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -688,7 +688,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100412017963170800,
+    "icrc1_total_supply": 100417282495601310,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1316,7 +1316,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50004114236543670,
+    "icrc1_total_supply": 50005324906040610,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2112,7 +2112,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10005572637546130,
+    "icrc1_total_supply": 10005616869369412,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2624,8 +2624,8 @@
       "functions": [
         {
           "id": 0,
-          "name": "All Topics",
-          "description": "Catch-all w.r.t to following for all types of proposals.",
+          "name": "All non-critical topics",
+          "description": "Catch-all w.r.t to following for non-critical proposals.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -2714,6 +2714,30 @@
           "id": 11,
           "name": "Deregister Dapp Canisters",
           "description": "Proposal to deregister a previously-registered dapp canister from the SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 12,
+          "name": "Mint SNS Tokens",
+          "description": "Proposal to mint SNS tokens to a specified recipient.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 13,
+          "name": "Manage ledger parameters",
+          "description": "Proposal to change some parameters in the ledger canister.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 14,
+          "name": "Manage dapp canister settings",
+          "description": "Proposal to change canister settings for some dapp canisters.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -3039,7 +3063,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10000598993236330,
+    "icrc1_total_supply": 10000722838657952,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -3980,7 +4004,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12545015639936090,
+    "icrc1_total_supply": 12545131155078334,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -5834,7 +5858,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100000232891874450,
+    "icrc1_total_supply": 100000284857815940,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,
