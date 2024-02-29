@@ -20,9 +20,9 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          # - macos-11 - Docker fails to start. Too old and no longer maintained properly?
           - ubuntu-20.04
           - ubuntu-22.04
+          - macos-11
           - macos-12
           - macos-13
           - macos-14
@@ -35,7 +35,11 @@ jobs:
             echo "/usr/local/bin" >> $GITHUB_PATH
             echo "$(brew --prefix)/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
           fi
-      - uses: docker-practice/actions-setup-docker@master
+      - uses: better0fdead/actions-setup-docker@better0fdead/increase-timeout
+        # Note: The above is a fork of:
+        # - uses: docker-practice/actions-setup-docker@master
+        # to be used until this PR is merged:
+        # https://github.com/docker-practice/actions-setup-docker/pull/29
         timeout-minutes: 12
       - name: Checkout
         uses: actions/checkout@v4
