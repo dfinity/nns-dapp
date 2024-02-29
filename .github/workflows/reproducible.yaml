@@ -10,7 +10,6 @@ on:
     branches:
       # This is the recommended development branch for this workflow; pushing it will trigger a build.
       - reproducible
-      - merge-docker-build-artifacts
     tags:
       # The tag used when preparing a release.
       - release-candidate
