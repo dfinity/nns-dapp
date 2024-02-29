@@ -19,7 +19,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04, macos-11, macos-12]
+        os:
+          # - macos-11 - Docker fails to start. Too old and no longer maintained properly?
+          - ubuntu-20.04
+          - ubuntu-22.04
+          - macos-12
+          - macos-13
+          - macos-14
     steps:
       - name: Unbork mac
         run: |
