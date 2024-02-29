@@ -50,10 +50,20 @@ describe("icpAccountsStore", () => {
     certified: true,
   };
 
+  const setBalance = ({ accountIdentifier, balanceE8s, certified }) => {
+    const mutableStore =
+      icpAccountBalancesStore.getSingleMutationIcpAccountBalancesStore();
+    mutableStore.setBalance({
+      accountIdentifier,
+      balanceE8s,
+      certified,
+    });
+  };
+
   beforeEach(() => {
     overrideFeatureFlagsStore.reset();
     icpAccountDetailsStore.reset();
-    icpAccountBalancesStore.reset();
+    icpAccountBalancesStore.resetForTesting();
   });
 
   it("should be initialized to empty", () => {
@@ -74,7 +84,7 @@ describe("icpAccountsStore", () => {
       certified: true,
     });
 
-    icpAccountBalancesStore.setBalance({
+    setBalance({
       accountIdentifier: mainAccountIdentifier,
       balanceE8s: mainAccountBalance,
       certified: true,
@@ -96,19 +106,19 @@ describe("icpAccountsStore", () => {
   it("should derive all accounts and balances", () => {
     icpAccountDetailsStore.set(accountDetailsData);
 
-    icpAccountBalancesStore.setBalance({
+    setBalance({
       accountIdentifier: mainAccountIdentifier,
       balanceE8s: mainAccountBalance,
       certified: true,
     });
 
-    icpAccountBalancesStore.setBalance({
+    setBalance({
       accountIdentifier: subAccountIdentifier,
       balanceE8s: subAccountBalance,
       certified: true,
     });
 
-    icpAccountBalancesStore.setBalance({
+    setBalance({
       accountIdentifier: hardwareWalletAccountIdentifier,
       balanceE8s: hardwareWalletAccountBalance,
       certified: true,
@@ -150,19 +160,19 @@ describe("icpAccountsStore", () => {
 
     icpAccountDetailsStore.set(accountDetailsData);
 
-    icpAccountBalancesStore.setBalance({
+    setBalance({
       accountIdentifier: mainAccountIdentifier,
       balanceE8s: mainAccountBalance,
       certified: true,
     });
 
-    icpAccountBalancesStore.setBalance({
+    setBalance({
       accountIdentifier: subAccountIdentifier,
       balanceE8s: subAccountBalance,
       certified: true,
     });
 
-    icpAccountBalancesStore.setBalance({
+    setBalance({
       accountIdentifier: hardwareWalletAccountIdentifier,
       balanceE8s: hardwareWalletAccountBalance,
       certified: true,

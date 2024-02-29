@@ -7,8 +7,18 @@ describe("icpAccountBalancesStore", () => {
   const subAccountIdentifier = "subAccountIdentifier";
   const subAccountBalance = 200_000_000n;
 
+  const setBalance = ({ accountIdentifier, balanceE8s, certified }) => {
+    const mutableStore =
+      icpAccountBalancesStore.getSingleMutationIcpAccountBalancesStore();
+    mutableStore.setBalance({
+      accountIdentifier,
+      balanceE8s,
+      certified,
+    });
+  };
+
   beforeEach(() => {
-    icpAccountBalancesStore.reset();
+    icpAccountBalancesStore.resetForTesting();
   });
 
   it("should be initialized to empty", () => {
@@ -16,13 +26,13 @@ describe("icpAccountBalancesStore", () => {
   });
 
   it("should set balance", () => {
-    icpAccountBalancesStore.setBalance({
+    setBalance({
       accountIdentifier: mainAccountIdentifier,
       balanceE8s: mainAccountBalance,
       certified: true,
     });
 
-    icpAccountBalancesStore.setBalance({
+    setBalance({
       accountIdentifier: subAccountIdentifier,
       balanceE8s: subAccountBalance,
       certified: true,
@@ -41,14 +51,72 @@ describe("icpAccountBalancesStore", () => {
   });
 
   it("should reset data", () => {
-    icpAccountBalancesStore.setBalance({
+    setBalance({
       accountIdentifier: mainAccountIdentifier,
       balanceE8s: mainAccountBalance,
       certified: true,
     });
 
     expect(get(icpAccountBalancesStore)).not.toEqual({});
-    icpAccountBalancesStore.reset();
+    const mutableStore =
+      icpAccountBalancesStore.getSingleMutationIcpAccountBalancesStore();
+    mutableStore.reset({ certified: true });
     expect(get(icpAccountBalancesStore)).toEqual({});
+  });
+
+  it("should not override a new value with an old value", () => {
+    const oldMainAccountBalance = 300_000_000n;
+    const newMainAccountBalance = 700_000_000n;
+
+    const mutableStore1 =
+      icpAccountBalancesStore.getSingleMutationIcpAccountBalancesStore();
+    mutableStore1.setBalance({
+      accountIdentifier: mainAccountIdentifier,
+      balanceE8s: oldMainAccountBalance,
+      certified: false,
+    });
+
+    const mutableStore2 =
+      icpAccountBalancesStore.getSingleMutationIcpAccountBalancesStore();
+
+    expect(get(icpAccountBalancesStore)[mainAccountIdentifier]).toEqual({
+      balanceE8s: oldMainAccountBalance,
+      certified: false,
+    });
+
+    mutableStore2.setBalance({
+      accountIdentifier: mainAccountIdentifier,
+      balanceE8s: newMainAccountBalance,
+      certified: false,
+    });
+
+    expect(get(icpAccountBalancesStore)[mainAccountIdentifier]).toEqual({
+      balanceE8s: newMainAccountBalance,
+      certified: false,
+    });
+
+    mutableStore1.setBalance({
+      accountIdentifier: mainAccountIdentifier,
+      balanceE8s: oldMainAccountBalance,
+      certified: true,
+    });
+
+    // Setting the old balance with the old mutation did not override the new
+    // balance.
+    expect(get(icpAccountBalancesStore)[mainAccountIdentifier]).toEqual({
+      balanceE8s: newMainAccountBalance,
+      certified: false,
+    });
+
+    mutableStore2.setBalance({
+      accountIdentifier: mainAccountIdentifier,
+      balanceE8s: newMainAccountBalance,
+      certified: true,
+    });
+
+    expect(get(icpAccountBalancesStore)[mainAccountIdentifier]).toEqual({
+      balanceE8s: newMainAccountBalance,
+      certified: true,
+    });
   });
 });
