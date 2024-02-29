@@ -20,12 +20,12 @@ jobs:
       fail-fast: false
       matrix:
         os:
+          # - macos-14 - rus on mac silicon & doesn't support docker properly.
           - ubuntu-20.04
           - ubuntu-22.04
           - macos-11
           - macos-12
           - macos-13
-          - macos-14
     steps:
       - name: Unbork mac
         run: |
