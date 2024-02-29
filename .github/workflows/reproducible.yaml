@@ -41,7 +41,10 @@ jobs:
         # - uses: docker-practice/actions-setup-docker@master
         # to be used until this PR is merged:
         # https://github.com/docker-practice/actions-setup-docker/pull/29
-        timeout-minutes: 12
+        with:
+          docker_version: "24.0"
+          docker_channel: "stable"
+        timeout-minutes: 20
       - name: Checkout
         uses: actions/checkout@v4
       # Helps with debugging
