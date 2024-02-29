@@ -56,6 +56,9 @@ pub struct Stats {
     pub periodic_tasks_count: Option<u32>,
 }
 
+/// Encodes the metrics into the format scraped by the monitoring system.
+///
+/// TODO: Use the new `ic_metrics_encoder` crate instead.  See: <https://docs.rs/ic-metrics-encoder/1.1.1/ic_metrics_encoder/struct.MetricsEncoder.html>
 #[allow(clippy::cast_precision_loss)] // We are converting u64 to f64
 pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
     let stats = STATE.with(get_stats);
