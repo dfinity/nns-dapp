@@ -110,15 +110,7 @@ const loadAccountsStoresData = async ({
     certified,
   });
 
-  const accountIdentifiers = [
-    accountDetails.account_identifier,
-    ...accountDetails.sub_accounts.map(
-      ({ account_identifier }) => account_identifier
-    ),
-    ...accountDetails.hardware_wallet_accounts.map(
-      ({ account_identifier }) => account_identifier
-    ),
-  ];
+  const accountIdentifiers = getAccountIdentifiers(accountDetails);
 
   const balancesData = Object.fromEntries(
     await Promise.all(
@@ -479,17 +471,18 @@ const renameError = ({
   return { success: false, err: labelKey };
 };
 
-const accountsHaveBalance = (accountDetails: AccountDetails) => {
-  const accountIdentifiers = [
-    accountDetails.account_identifier,
-    ...accountDetails.sub_accounts.map(
-      ({ account_identifier }) => account_identifier
-    ),
-    ...accountDetails.hardware_wallet_accounts.map(
-      ({ account_identifier }) => account_identifier
-    ),
-  ];
+const getAccountIdentifiers = (accountDetails: AccountDetails) => [
+  accountDetails.account_identifier,
+  ...accountDetails.sub_accounts.map(
+    ({ account_identifier }) => account_identifier
+  ),
+  ...accountDetails.hardware_wallet_accounts.map(
+    ({ account_identifier }) => account_identifier
+  ),
+];
 
+const accountsHaveBalance = (accountDetails: AccountDetails) => {
+  const accountIdentifiers = getAccountIdentifiers(accountDetails);
   const balances = get(icpAccountBalancesStore);
 
   return accountIdentifiers.every((accountIdentifier) => {
