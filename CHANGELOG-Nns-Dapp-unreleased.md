@@ -57,6 +57,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Disambiguated the title of the docker reproducibility check.
 * Change the number of accounts tested in `test-upgrade-map-stable` from 1000 to 20.
 * Increased timeout for starting up docker from 3 min to 10 min in workflow/reproducible.yaml.
+* Increased timeout for starting up docker from 3 min to 10 min in `reproducible` workflow.
 
 #### Deprecated
 
