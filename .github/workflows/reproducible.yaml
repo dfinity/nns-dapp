@@ -38,8 +38,8 @@ jobs:
       # https://github.com/docker-practice/actions-setup-docker The difference
       # is that this waits up to 10 minutes for docker to start instead of
       # just 3. The reason a fork was created is that the original developer
-      # has not responded for almost a year while people have reported issues
-      # and even made a pull request.
+      # has not responded for almost a year while people have reported related
+      # issues and even made a pull request.
       - uses: dfinity/actions-setup-docker@wait-longer-for-docker-to-start-up
         timeout-minutes: 12
       - name: Checkout
