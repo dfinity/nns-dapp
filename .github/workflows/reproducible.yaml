@@ -42,7 +42,7 @@ jobs:
         # not responded for almost a year while people have reported related
         # issues and even made a pull request.
         # uses: dfinity/actions-setup-docker@wait-longer-for-docker-to-start-up
-        uses: dfinity/actions-setup-docker
+        uses: dfinity/actions-setup-docker@master
         timeout-minutes: 12
       - name: Checkout
         uses: actions/checkout@v4
