@@ -1,6 +1,8 @@
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
-import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
-import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
+import {
+  mockMainAccount,
+  mockSubAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { get } from "svelte/store";
 
@@ -9,12 +11,12 @@ describe("accounts", () => {
     it("returns nns accounts in an array", () => {
       setAccountsForTesting({
         main: mockMainAccount,
-        subAccounts: [mockSnsMainAccount],
+        subAccounts: [mockSubAccount],
         hardwareWallets: [],
       });
 
       const accounts = get(nnsAccountsListStore);
-      expect(accounts).toEqual([mockMainAccount, mockSnsMainAccount]);
+      expect(accounts).toEqual([mockMainAccount, mockSubAccount]);
     });
   });
 });
