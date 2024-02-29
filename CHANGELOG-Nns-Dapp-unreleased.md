@@ -47,12 +47,14 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Dependabot configuration to update GitHub actions.
 * Add `NNS_INDEX_CANISTER_ID` to the configuration.
+* Notify the maintainers if the docker build is not reproducible.
 
 #### Changed
 
 * Upgraded `ic-js` dependencies to utilize `agent-js` patched version `v1.0.1`.
 * Avoid a 5 minute timeout in CI by waiting 20 seconds instead.
 * Fixed the formatting command in the `update-aggregator-response` GitHub workflow.
+* Disambiguated the title of the docker reproducibility check.
 
 #### Deprecated
 
