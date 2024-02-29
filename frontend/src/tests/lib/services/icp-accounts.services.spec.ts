@@ -4,9 +4,9 @@ import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import * as nnsdappApi from "$lib/api/nns-dapp.api";
 import { AccountNotFoundError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
-import type { AccountDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
+import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import * as authServices from "$lib/services/auth.services";
@@ -18,7 +18,6 @@ import {
   getAccountTransactions,
   getOrCreateAccount,
   initAccounts,
-  loadAccounts,
   loadBalance,
   pollAccounts,
   renameSubAccount,
@@ -26,7 +25,8 @@ import {
   transferICP,
 } from "$lib/services/icp-accounts.services";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+import { icpAccountBalancesStore } from "$lib/stores/icp-account-balances.store";
+import { icpAccountDetailsStore } from "$lib/stores/icp-account-details.store";
 import * as toastsFunctions from "$lib/stores/toasts.store";
 import type { NewTransaction } from "$lib/types/transaction";
 import { toIcpAccountIdentifier } from "$lib/utils/accounts.utils";
@@ -41,10 +41,8 @@ import en from "$tests/mocks/i18n.mock";
 import {
   mockAccountDetails,
   mockHardwareWalletAccount,
-  mockHardwareWalletAccountDetails,
   mockMainAccount,
   mockSubAccount,
-  mockSubAccountDetails,
 } from "$tests/mocks/icp-accounts.store.mock";
 import {
   mockSnsMainAccount,
@@ -62,13 +60,8 @@ import {
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { AccountIdentifier } from "@dfinity/ledger-icp";
-import { decodeIcrcAccount, encodeIcrcAccount } from "@dfinity/ledger-icrc";
-import { Principal } from "@dfinity/principal";
-import {
-  ICPToken,
-  TokenAmount,
-  arrayOfNumberToUint8Array,
-} from "@dfinity/utils";
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
+import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { get } from "svelte/store";
 import type { SpyInstance } from "vitest";
 
@@ -144,208 +137,6 @@ describe("icp-accounts.services", () => {
     });
   });
 
-  describe("loadAccounts", () => {
-    it("should call ledger and nnsdapp to get account and balance", async () => {
-      const queryAccountSpy = vi
-        .spyOn(nnsdappApi, "queryAccount")
-        .mockResolvedValue(mockAccountDetails);
-      const queryAccountBalanceSpy = vi
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(0n);
-      const certified = true;
-      await loadAccounts({
-        identity: mockIdentity,
-        certified,
-      });
-
-      expect(queryAccountSpy).toBeCalled();
-      expect(queryAccountBalanceSpy).toBeCalledWith({
-        identity: mockIdentity,
-        certified,
-        icpAccountIdentifier: mockAccountDetails.account_identifier,
-      });
-    });
-
-    it("should get balances of subaccounts", async () => {
-      const accountDetails: AccountDetails = {
-        ...mockAccountDetails,
-        sub_accounts: [mockSubAccountDetails],
-      };
-      vi.spyOn(nnsdappApi, "queryAccount").mockResolvedValue(accountDetails);
-      const queryAccountBalanceSpy = vi
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(0n);
-
-      const certified = true;
-      await loadAccounts({
-        identity: mockIdentity,
-        certified,
-      });
-
-      // Called once for main, another for the subaccount
-      expect(queryAccountBalanceSpy).toBeCalledWith({
-        icpAccountIdentifier: mockAccountDetails.account_identifier,
-        certified,
-        identity: mockIdentity,
-      });
-      expect(queryAccountBalanceSpy).toBeCalledWith({
-        icpAccountIdentifier: mockSubAccountDetails.account_identifier,
-        certified,
-        identity: mockIdentity,
-      });
-    });
-
-    it("should get balances of hardware wallet accounts", async () => {
-      const accountDetails: AccountDetails = {
-        ...mockAccountDetails,
-        hardware_wallet_accounts: [mockHardwareWalletAccountDetails],
-      };
-      vi.spyOn(nnsdappApi, "queryAccount").mockResolvedValue(accountDetails);
-      const queryAccountBalanceSpy = vi
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(0n);
-
-      const certified = true;
-      await loadAccounts({
-        identity: mockIdentity,
-        certified,
-      });
-
-      // Called once for main, another for the hardware wallet = 2
-      expect(queryAccountBalanceSpy).toBeCalledWith({
-        icpAccountIdentifier: mockAccountDetails.account_identifier,
-        certified,
-        identity: mockIdentity,
-      });
-      expect(queryAccountBalanceSpy).toBeCalledWith({
-        icpAccountIdentifier:
-          mockHardwareWalletAccountDetails.account_identifier,
-        certified,
-        identity: mockIdentity,
-      });
-    });
-
-    it("should map ICP identifiers only", async () => {
-      vi.spyOn(nnsdappApi, "queryAccount").mockResolvedValue(
-        mockAccountDetails
-      );
-      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
-        mockMainAccount.balanceUlps
-      );
-      const certified = true;
-      const result = await loadAccounts({
-        identity: mockIdentity,
-        certified,
-      });
-
-      expect(result).toEqual({
-        main: mockMainAccount,
-        subAccounts: [],
-        hardwareWallets: [],
-        certified: true,
-      });
-    });
-
-    it("should map ICRC identifiers", async () => {
-      vi.spyOn(nnsdappApi, "queryAccount").mockResolvedValue({
-        principal: mockMainAccount.principal,
-        sub_accounts: [],
-        hardware_wallet_accounts: [
-          {
-            principal: mockHardwareWalletAccount.principal,
-            name: mockHardwareWalletAccount.name,
-            account_identifier: mockHardwareWalletAccount.icpIdentifier,
-          },
-        ],
-        account_identifier: mockMainAccount.identifier,
-      });
-      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
-        mockHardwareWalletAccount.balanceUlps
-      );
-      const certified = true;
-
-      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_ICRC", true);
-
-      const result = await loadAccounts({
-        identity: mockIdentity,
-        certified,
-      });
-
-      expect(result).toEqual({
-        main: {
-          ...mockMainAccount,
-          identifier: encodeIcrcAccount({
-            owner: mockMainAccount.principal,
-          }),
-        },
-        subAccounts: [],
-        hardwareWallets: [
-          {
-            ...mockHardwareWalletAccount,
-            identifier: encodeIcrcAccount({
-              owner: mockHardwareWalletAccount.principal,
-            }),
-          },
-        ],
-        certified: true,
-      });
-    });
-
-    it("should map ICRC identifiers with subaccounts", async () => {
-      const principal = Principal.fromText(
-        "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"
-      );
-
-      vi.spyOn(nnsdappApi, "queryAccount").mockResolvedValue({
-        principal,
-        sub_accounts: [
-          {
-            name: mockSubAccount.name,
-            account_identifier: mockSubAccount.icpIdentifier,
-            sub_account: mockSubAccount.subAccount,
-          },
-        ],
-        hardware_wallet_accounts: [],
-        account_identifier: AccountIdentifier.fromPrincipal({
-          principal,
-        }).toHex(),
-      });
-      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
-        mockHardwareWalletAccount.balanceUlps
-      );
-      const certified = true;
-
-      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_ICRC", true);
-
-      const result = await loadAccounts({
-        identity: mockIdentity,
-        certified,
-      });
-
-      expect(result).toEqual({
-        main: {
-          ...mockMainAccount,
-          identifier: encodeIcrcAccount({
-            owner: principal,
-          }),
-          icpIdentifier: AccountIdentifier.fromPrincipal({ principal }).toHex(),
-          principal,
-        },
-        subAccounts: [
-          {
-            ...mockSubAccount,
-            identifier: encodeIcrcAccount({
-              owner: principal,
-              subaccount: arrayOfNumberToUint8Array(mockSubAccount.subAccount),
-            }),
-          },
-        ],
-        hardwareWallets: [],
-        certified: true,
-      });
-    });
-  });
-
   describe("initAccounts", () => {
     it("should sync accounts", async () => {
       const mainBalanceE8s = 10_000_000n;
@@ -362,7 +153,6 @@ describe("icp-accounts.services", () => {
         },
         subAccounts: [],
         hardwareWallets: [],
-        certified: true,
       };
       await initAccounts();
 
@@ -381,6 +171,16 @@ describe("icp-accounts.services", () => {
 
       const accounts = get(icpAccountsStore);
       expect(accounts).toEqual(mockAccounts);
+      expect(get(icpAccountDetailsStore)).toEqual({
+        accountDetails: mockAccountDetails,
+        certified: true,
+      });
+      expect(get(icpAccountBalancesStore)).toEqual({
+        [mockAccountDetails.account_identifier]: {
+          balanceE8s: mainBalanceE8s,
+          certified: true,
+        },
+      });
     });
 
     it("should not show toast errors", async () => {
@@ -410,7 +210,6 @@ describe("icp-accounts.services", () => {
         },
         subAccounts: [],
         hardwareWallets: [],
-        certified: true,
       };
       await syncAccounts();
 
@@ -429,6 +228,16 @@ describe("icp-accounts.services", () => {
 
       const accounts = get(icpAccountsStore);
       expect(accounts).toEqual(mockAccounts);
+      expect(get(icpAccountDetailsStore)).toEqual({
+        accountDetails: mockAccountDetails,
+        certified: true,
+      });
+      expect(get(icpAccountBalancesStore)).toEqual({
+        [mockAccountDetails.account_identifier]: {
+          balanceE8s: mainBalanceE8s,
+          certified: true,
+        },
+      });
     });
 
     it("should show toast on error", async () => {
@@ -466,10 +275,8 @@ describe("icp-accounts.services", () => {
       );
       const accountsWith = ({
         mainBalanceE8s,
-        certified,
       }: {
         mainBalanceE8s: bigint;
-        certified: boolean;
       }) => ({
         main: {
           ...mockMainAccount,
@@ -477,19 +284,18 @@ describe("icp-accounts.services", () => {
         },
         subAccounts: [],
         hardwareWallets: [],
-        certified,
       });
       await syncAccounts();
 
       expect(get(icpAccountsStore)).toEqual(
-        accountsWith({ mainBalanceE8s: queryMainBalanceE8s, certified: false })
+        accountsWith({ mainBalanceE8s: queryMainBalanceE8s })
       );
 
       resolveUpdateResponse();
       await runResolvedPromises();
 
       expect(get(icpAccountsStore)).toEqual(
-        accountsWith({ mainBalanceE8s: updateMainBalanceE8s, certified: true })
+        accountsWith({ mainBalanceE8s: updateMainBalanceE8s })
       );
     });
 
@@ -511,10 +317,8 @@ describe("icp-accounts.services", () => {
       );
       const accountsWith = ({
         mainBalanceE8s,
-        certified,
       }: {
         mainBalanceE8s: bigint;
-        certified: boolean;
       }) => ({
         main: {
           ...mockMainAccount,
@@ -522,12 +326,11 @@ describe("icp-accounts.services", () => {
         },
         subAccounts: [],
         hardwareWallets: [],
-        certified,
       });
       await syncAccounts();
 
       expect(get(icpAccountsStore)).toEqual(
-        accountsWith({ mainBalanceE8s: queryMainBalanceE8s, certified: false })
+        accountsWith({ mainBalanceE8s: queryMainBalanceE8s })
       );
 
       const newerMainBalanceE8s = 30_000_000n;
@@ -538,14 +341,14 @@ describe("icp-accounts.services", () => {
       await runResolvedPromises();
 
       expect(get(icpAccountsStore)).toEqual(
-        accountsWith({ mainBalanceE8s: newerMainBalanceE8s, certified: true })
+        accountsWith({ mainBalanceE8s: newerMainBalanceE8s })
       );
 
       resolveUpdateResponse();
       await runResolvedPromises();
 
       expect(get(icpAccountsStore)).toEqual(
-        accountsWith({ mainBalanceE8s: newerMainBalanceE8s, certified: true })
+        accountsWith({ mainBalanceE8s: newerMainBalanceE8s })
       );
     });
   });
@@ -633,10 +436,8 @@ describe("icp-accounts.services", () => {
       );
       const accountsWith = ({
         mainBalanceE8s,
-        certified,
       }: {
         mainBalanceE8s: bigint;
-        certified?: boolean;
       }) => ({
         main: {
           ...mockMainAccount,
@@ -644,12 +445,11 @@ describe("icp-accounts.services", () => {
         },
         subAccounts: [],
         hardwareWallets: [],
-        certified,
       });
       await syncAccounts();
 
       expect(get(icpAccountsStore)).toEqual(
-        accountsWith({ mainBalanceE8s: queryMainBalanceE8s, certified: false })
+        accountsWith({ mainBalanceE8s: queryMainBalanceE8s })
       );
 
       const newerMainBalanceE8s = 30_000_000n;
@@ -718,7 +518,6 @@ describe("icp-accounts.services", () => {
         },
         subAccounts: [],
         hardwareWallets: [],
-        certified: true,
       };
       await syncAccounts();
 
@@ -737,6 +536,16 @@ describe("icp-accounts.services", () => {
 
       const accounts = get(icpAccountsStore);
       expect(accounts).toEqual(mockAccounts);
+      expect(get(icpAccountDetailsStore)).toEqual({
+        accountDetails: mockAccountDetails,
+        certified: true,
+      });
+      expect(get(icpAccountBalancesStore)).toEqual({
+        [mockAccountDetails.account_identifier]: {
+          balanceE8s: mainBalanceE8s,
+          certified: true,
+        },
+      });
     });
 
     it("should add a subaccount", async () => {
@@ -1169,7 +978,6 @@ describe("icp-accounts.services", () => {
       },
       subAccounts: [],
       hardwareWallets: [],
-      certified: true,
     };
 
     beforeEach(() => {
@@ -1201,6 +1009,16 @@ describe("icp-accounts.services", () => {
 
       const accounts = get(icpAccountsStore);
       expect(accounts).toEqual(mockAccounts);
+      expect(get(icpAccountDetailsStore)).toEqual({
+        accountDetails: mockAccountDetails,
+        certified: true,
+      });
+      expect(get(icpAccountBalancesStore)).toEqual({
+        [mockAccountDetails.account_identifier]: {
+          balanceE8s: mainBalanceE8s,
+          certified: true,
+        },
+      });
     });
 
     it("calls apis with certified param used", async () => {
@@ -1222,6 +1040,16 @@ describe("icp-accounts.services", () => {
         identity: mockIdentity,
         icpAccountIdentifier: mockAccountDetails.account_identifier,
         certified: false,
+      });
+      expect(get(icpAccountDetailsStore)).toEqual({
+        accountDetails: mockAccountDetails,
+        certified: false,
+      });
+      expect(get(icpAccountBalancesStore)).toEqual({
+        [mockAccountDetails.account_identifier]: {
+          balanceE8s: mainBalanceE8s,
+          certified: false,
+        },
       });
     });
 
