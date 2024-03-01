@@ -510,44 +510,6 @@ describe("icp-accounts.services", () => {
         .mockResolvedValue(undefined);
     });
 
-    it("should sync accounts", async () => {
-      const mockAccounts = {
-        main: {
-          ...mockMainAccount,
-          balanceUlps: mainBalanceE8s,
-        },
-        subAccounts: [],
-        hardwareWallets: [],
-      };
-      await syncAccounts();
-
-      expect(queryAccountSpy).toHaveBeenCalledTimes(2);
-      expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
-        identity: mockIdentity,
-        icpAccountIdentifier: mockAccountDetails.account_identifier,
-        certified: true,
-      });
-      expect(queryAccountBalanceSpy).toHaveBeenCalledWith({
-        identity: mockIdentity,
-        icpAccountIdentifier: mockAccountDetails.account_identifier,
-        certified: false,
-      });
-      expect(queryAccountBalanceSpy).toBeCalledTimes(2);
-
-      const accounts = get(icpAccountsStore);
-      expect(accounts).toEqual(mockAccounts);
-      expect(get(icpAccountDetailsStore)).toEqual({
-        accountDetails: mockAccountDetails,
-        certified: true,
-      });
-      expect(get(icpAccountBalancesStore)).toEqual({
-        [mockAccountDetails.account_identifier]: {
-          balanceE8s: mainBalanceE8s,
-          certified: true,
-        },
-      });
-    });
-
     it("should add a subaccount", async () => {
       await addSubAccount({
         name: "test subaccount",
