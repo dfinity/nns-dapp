@@ -495,16 +495,14 @@ describe("icp-accounts.services", () => {
   describe("services", () => {
     const mainBalanceE8s = 10_000_000n;
 
-    let queryAccountBalanceSpy: SpyInstance;
-    let queryAccountSpy: SpyInstance;
     let spyCreateSubAccount: SpyInstance;
     beforeEach(() => {
-      queryAccountBalanceSpy = vi
-        .spyOn(ledgerApi, "queryAccountBalance")
-        .mockResolvedValue(mainBalanceE8s);
-      queryAccountSpy = vi
-        .spyOn(nnsdappApi, "queryAccount")
-        .mockResolvedValue(mockAccountDetails);
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        mainBalanceE8s
+      );
+      vi.spyOn(nnsdappApi, "queryAccount").mockResolvedValue(
+        mockAccountDetails
+      );
       spyCreateSubAccount = vi
         .spyOn(accountsApi, "createSubAccount")
         .mockResolvedValue(undefined);
