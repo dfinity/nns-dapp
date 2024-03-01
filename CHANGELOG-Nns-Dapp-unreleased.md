@@ -37,6 +37,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Bug where transferred SNS neurons appeared in the list of neurons after transferring them.
 * Bug when the "Manage Internet Identity" link always uses `internetcomputer.org` domain.
+* Don't reload transactions multiple times when closing the receive modal.
 
 #### Security
 
