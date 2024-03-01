@@ -612,8 +612,8 @@ describe("NnsWallet", () => {
         },
       });
 
-      let resolveQueryBalance = pauseQueryAccountBalance();
-      let resolveGetTransactions = pauseGetTransactions();
+      const resolveQueryBalance = pauseQueryAccountBalance();
+      const resolveGetTransactions = pauseGetTransactions();
 
       const { walletPo, receiveModalPo } =
         await renderWalletAndModals(modalProps);
