@@ -269,12 +269,12 @@
   const reloadAccount = async () => {
     try {
       if (nonNullish($selectedAccountStore.account)) {
-        await Promise.all([
-          loadBalance({
-            accountIdentifier: $selectedAccountStore.account.identifier,
-          }),
-          reloadTransactions($selectedAccountStore.account.identifier),
-        ]);
+        await loadBalance({
+          accountIdentifier: $selectedAccountStore.account.identifier,
+        });
+        // Reloading the balance results in reloading the transactions in
+        // accountDidUpdate so we don't reload transactions here to avoid doing
+        // it twice.
       }
     } catch (err: unknown) {
       toastsError({
