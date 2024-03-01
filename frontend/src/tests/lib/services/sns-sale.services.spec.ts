@@ -1,5 +1,6 @@
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import { SALE_PARTICIPATION_RETRY_SECONDS } from "$lib/constants/sns.constants";
+import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import {
   importInitSnsWrapper,
@@ -15,7 +16,6 @@ import {
 } from "$lib/services/sns-sale.services";
 import { authStore } from "$lib/stores/auth.store";
 import * as busyStore from "$lib/stores/busy.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";

@@ -1,9 +1,9 @@
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
-import { i18n } from "$lib/stores/i18n";
 import {
   icpAccountsStore,
   type IcpAccountsStore,
-} from "$lib/stores/icp-accounts.store";
+} from "$lib/derived/icp-accounts.derived";
+import { i18n } from "$lib/stores/i18n";
 import type { Account, AccountType } from "$lib/types/account";
 import { UserTokenAction, type UserToken } from "$lib/types/tokens-page";
 import type { Universe } from "$lib/types/universe";

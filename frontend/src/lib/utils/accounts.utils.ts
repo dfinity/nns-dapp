@@ -1,5 +1,5 @@
 import type { UniversesAccounts } from "$lib/derived/accounts-list.derived";
-import type { IcpAccountsStoreData } from "$lib/stores/icp-accounts.store";
+import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import type {
   Account,
   AccountIdentifierText,

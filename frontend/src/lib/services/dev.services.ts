@@ -5,9 +5,9 @@ import {
   receiveMockBtc,
 } from "$lib/api/dev.api";
 import { CKBTC_MINTER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
+import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
-import type { IcpAccountsStoreData } from "$lib/stores/icp-accounts.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import type { IcpAccount } from "$lib/types/account";
 import { numberToUlps } from "$lib/utils/token.utils";

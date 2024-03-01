@@ -1,5 +1,5 @@
+import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { startBusy, type BusyStateInitiatorType } from "$lib/stores/busy.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { isNeuronControlledByHardwareWallet } from "$lib/utils/neuron.utils";
 import type { NeuronId } from "@dfinity/nns";
 import { get } from "svelte/store";

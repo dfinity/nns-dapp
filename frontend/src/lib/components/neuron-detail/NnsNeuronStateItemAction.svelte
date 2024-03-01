@@ -14,7 +14,7 @@
   import DissolveActionButton from "./actions/DissolveActionButton.svelte";
   import CommonItemAction from "../ui/CommonItemAction.svelte";
   import { authStore } from "$lib/stores/auth.store";
-  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import AgeBonusText from "./AgeBonusText.svelte";
 
   export let neuron: NeuronInfo;

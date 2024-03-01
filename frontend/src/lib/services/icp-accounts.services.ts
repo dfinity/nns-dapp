@@ -21,6 +21,7 @@ import {
 import { DEFAULT_TRANSACTION_PAGE_LIMIT } from "$lib/constants/constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
+import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
@@ -33,7 +34,6 @@ import {
   icpAccountDetailsStore,
   type IcpAccountDetailsStoreData,
 } from "$lib/stores/icp-account-details.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account, AccountIdentifierText } from "$lib/types/account";
 import type { NewTransaction } from "$lib/types/transaction";

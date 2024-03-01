@@ -18,7 +18,7 @@ import {
   TOPICS_TO_FOLLOW_NNS,
 } from "$lib/constants/neurons.constants";
 import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
-import type { IcpAccountsStoreData } from "$lib/stores/icp-accounts.store";
+import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import type { NeuronsStore } from "$lib/stores/neurons.store";
 import type { VoteRegistrationStoreData } from "$lib/stores/vote-registration.store";
 import type { Account } from "$lib/types/account";

@@ -12,7 +12,7 @@
     loadBalance,
     pollAccounts,
   } from "$lib/services/icp-accounts.services";
-  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { Island, Spinner } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";

@@ -11,7 +11,7 @@
   import CommonItemAction from "../ui/CommonItemAction.svelte";
   import TooltipIcon from "../ui/TooltipIcon.svelte";
   import { authStore } from "$lib/stores/auth.store";
-  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 
   export let neuron: NeuronInfo;
 
