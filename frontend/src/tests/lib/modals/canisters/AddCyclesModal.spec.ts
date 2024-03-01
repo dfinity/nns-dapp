@@ -1,8 +1,8 @@
+import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import {
   getIcpToCyclesExchangeRate,
   topUpCanister,
 } from "$lib/services/canisters.services";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { toastsSuccess } from "$lib/stores/toasts.store";
 import { mockCanister } from "$tests/mocks/canisters.mock";
 import {

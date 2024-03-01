@@ -13,7 +13,7 @@
   import PageHeading from "../common/PageHeading.svelte";
   import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
   import { authStore } from "$lib/stores/auth.store";
-  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import HeadingSubtitle from "../common/HeadingSubtitle.svelte";
   import { Tag } from "@dfinity/gix-components";
 

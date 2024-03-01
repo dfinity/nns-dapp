@@ -3,7 +3,7 @@ import type {
   HardwareWalletAccountDetails,
   SubAccountDetails,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import type { IcpAccountsStoreData } from "$lib/stores/icp-accounts.store";
+import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import type { Account, IcpAccount } from "$lib/types/account";
 import { Principal } from "@dfinity/principal";
 import type { Subscriber } from "svelte/store";

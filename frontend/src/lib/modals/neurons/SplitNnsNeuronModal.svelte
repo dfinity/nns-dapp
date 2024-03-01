@@ -19,7 +19,7 @@
   import { splitNeuron } from "$lib/services/neurons.services";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
-  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 
   export let neuron: NeuronInfo;
 

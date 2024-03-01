@@ -13,7 +13,7 @@ import {
   TOPICS_TO_FOLLOW_NNS,
 } from "$lib/constants/neurons.constants";
 import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
-import type { IcpAccountsStoreData } from "$lib/stores/icp-accounts.store";
+import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";

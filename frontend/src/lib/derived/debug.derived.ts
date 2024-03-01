@@ -1,7 +1,7 @@
 import type { Transaction } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
 import { canistersStore } from "$lib/stores/canisters.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcCanistersStore } from "$lib/stores/icrc-canisters.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";

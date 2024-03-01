@@ -2,7 +2,7 @@
  * A derived store that returns the accounts as an array of accounts.
  */
 
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import type { Account } from "$lib/types/account";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
 import { derived, type Readable } from "svelte/store";

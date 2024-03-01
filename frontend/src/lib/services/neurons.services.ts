@@ -7,11 +7,11 @@ import {
   SNS_SUPPORT_VERSION,
 } from "$lib/constants/ledger-app.constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
+import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import {
   toastsError,
