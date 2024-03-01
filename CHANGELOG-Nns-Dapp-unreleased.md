@@ -57,6 +57,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Fixed the formatting command in the `update-aggregator-response` GitHub workflow.
 * Disambiguated the title of the docker reproducibility check.
 * Change the number of accounts tested in `test-upgrade-map-stable` from 1000 to 20.
+* Andrew will be making the release forum posts.
 
 #### Deprecated
 
