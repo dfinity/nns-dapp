@@ -643,6 +643,16 @@ describe("NnsWallet", () => {
         ...expectedQueryBalanceParams,
       });
 
+      // New balance should be displayed.
+      expect(await walletPo.getWalletPageHeadingPo().getTitle()).toBe(
+        oldBalanceFormatted
+      );
+      resolveQueryBalance(newBalance);
+      await runResolvedPromises();
+      expect(await walletPo.getWalletPageHeadingPo().getTitle()).toBe(
+        newBalanceFormatted
+      );
+
       // Transactions should be reloaded.
       expect(accountsApi.getTransactions).toBeCalledTimes(2);
       const expectedGetTransactionParams = {
@@ -659,16 +669,6 @@ describe("NnsWallet", () => {
         ...expectedGetTransactionParams,
       });
 
-      // New balance should be displayed.
-      expect(await walletPo.getWalletPageHeadingPo().getTitle()).toBe(
-        oldBalanceFormatted
-      );
-      resolveQueryBalance(newBalance);
-      await runResolvedPromises();
-      expect(await walletPo.getWalletPageHeadingPo().getTitle()).toBe(
-        newBalanceFormatted
-      );
-
       // New transactions should be displayed.
       expect(
         await walletPo.getTransactionListPo().getTransactionCardPos()
@@ -684,11 +684,10 @@ describe("NnsWallet", () => {
         await walletPo.getTransactionListPo().getTransactionCardPos()
       ).toHaveLength(1);
 
-      // The updated balance causes one the transactions to be loaded once more.
-      // This is not what should happen but it's what currently happens so we
-      // expect it here to remind us to change the expectation when the behavior
-      // is fixed.
-      expect(accountsApi.getTransactions).toBeCalledTimes(4);
+      // Reloading the balance should not have resulted in additional calls to
+      // getTransactions.
+      expect(accountsApi.getTransactions).toBeCalledTimes(2);
+      expect(ledgerApi.queryAccountBalance).toBeCalledTimes(2);
     });
 
     it("should navigate to accounts when account identifier is missing", async () => {
