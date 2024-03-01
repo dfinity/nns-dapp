@@ -223,9 +223,7 @@ describe("NnsWallet", () => {
     it("should load balance and transactions", async () => {
       const balanceE8s = 30_000_000n;
       const balanceFormatted = "0.30 ICP";
-      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
-        balanceE8s
-      );
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(balanceE8s);
       vi.spyOn(accountsApi, "getTransactions").mockResolvedValue([
         createMockSendTransaction({
           amount: 100_000_000n,
