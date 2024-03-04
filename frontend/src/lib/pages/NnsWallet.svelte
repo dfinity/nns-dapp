@@ -1,7 +1,7 @@
 <script lang="ts">
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import type { Account } from "$lib/types/account";
-  import { onDestroy, setContext } from "svelte";
+  import { onMount, onDestroy, setContext } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
@@ -13,6 +13,7 @@
     pollAccounts,
   } from "$lib/services/icp-accounts.services";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+  import { icpAccountBalancesStore } from "$lib/stores/icp-account-balances.store";
   import { Island, Spinner } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -83,6 +84,17 @@
       listNeurons();
     }
   }
+
+  onMount(() => {
+    // If the balance was already loaded, reload it.
+    // If it wasn't loaded, `pollAccounts` will load it, so don't load it twice.
+    if (
+      nonNullish(accountIdentifier) &&
+      nonNullish($icpAccountBalancesStore[accountIdentifier])
+    ) {
+      loadBalance({ accountIdentifier });
+    }
+  });
 
   onDestroy(() => {
     cancelPollAccounts();
@@ -205,7 +217,8 @@
 
   export let accountIdentifier: string | undefined | null = undefined;
 
-  const accountDidUpdate = async ({ account }: WalletStore) => {
+  const accountDidUpdate = async () => {
+    const account = $selectedAccountStore.account;
     if (account !== undefined) {
       await reloadTransactions(account.identifier);
       return;
@@ -260,7 +273,16 @@
     accounts: $nnsAccountsListStore,
   });
 
-  $: (async () => await accountDidUpdate($selectedAccountStore))();
+  // We use the `accountKey` to determine if the account has meaningfully
+  // changed to avoid unnecessary calls to `accountDidUpdate` when the store is
+  // updated with the same value it already had.
+  let accountKey: string;
+  $: accountKey = JSON.stringify({
+    accountIdentifer: $selectedAccountStore.account?.identifier,
+    balance: $selectedAccountStore.account?.balanceUlps.toString(),
+  });
+
+  $: accountKey, accountDidUpdate();
 
   let showModal: "send" | undefined = undefined;
 
@@ -273,8 +295,8 @@
           accountIdentifier: $selectedAccountStore.account.identifier,
         });
         // Reloading the balance results in reloading the transactions in
-        // accountDidUpdate so we don't reload transactions here to avoid doing
-        // it twice.
+        // accountDidUpdate, if the balance changed, so we don't reload
+        // transactions here to avoid doing it twice.
       }
     } catch (err: unknown) {
       toastsError({

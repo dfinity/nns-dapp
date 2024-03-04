@@ -306,11 +306,31 @@ describe("NnsWallet", () => {
       await runResolvedPromises();
       expect(await po.getWalletPageHeadingPo().isPresent()).toBe(true);
     });
+
+    it("should not load balance twice while accounts are loaded", async () => {
+      expect(ledgerApi.queryAccountBalance).not.toBeCalled();
+
+      await renderWallet(props);
+
+      // Balance should be loaded, but not more than necessary.
+      expect(ledgerApi.queryAccountBalance).toBeCalledTimes(1);
+      expect(ledgerApi.queryAccountBalance).toBeCalledWith({
+        certified: true,
+        icpAccountIdentifier: accountIdentifier,
+        identity: mockIdentity,
+      });
+    });
   });
 
   describe("accounts loaded", () => {
     beforeEach(() => {
-      setAccountsForTesting(mockAccountsStoreData);
+      setAccountsForTesting({
+        ...mockAccountsStoreData,
+        main: {
+          ...mockAccountsStoreData.main,
+          balanceUlps: mainBalanceE8s,
+        },
+      });
     });
 
     it("should render nns project name", async () => {
@@ -322,16 +342,63 @@ describe("NnsWallet", () => {
     });
 
     it("should render a balance with token in summary", async () => {
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        432_100_000n
+      );
+      const po = await renderWallet(props);
+
+      expect(await po.getWalletPageHeadingPo().getTitle()).toBe("4.32 ICP");
+    });
+
+    it("should reload balance on open", async () => {
+      const oldBalance = 135_000_000n;
+      const oldBalanceFormatted = "1.35 ICP";
+      const newBalance = 235_000_000n;
+      const newBalanceFormatted = "2.35 ICP";
+
       setAccountsForTesting({
         ...mockAccountsStoreData,
         main: {
           ...mockMainAccount,
-          balanceUlps: 432_100_000n,
+          balanceUlps: oldBalance,
         },
       });
+
+      const resolveQueryBalance = pauseQueryAccountBalance();
+
+      expect(accountsApi.getTransactions).not.toBeCalled();
+      expect(ledgerApi.queryAccountBalance).not.toBeCalled();
+
       const po = await renderWallet(props);
 
-      expect(await po.getWalletPageHeadingPo().getTitle()).toBe("4.32 ICP");
+      expect(await po.getWalletPageHeadingPo().getTitle()).toBe(
+        oldBalanceFormatted
+      );
+
+      // Balance should be reloaded.
+      expect(ledgerApi.queryAccountBalance).toBeCalledTimes(2);
+      const expectedQueryBalanceParams = {
+        icpAccountIdentifier: mockAccountsStoreData.main.icpIdentifier,
+        identity: mockIdentity,
+      };
+      expect(ledgerApi.queryAccountBalance).toBeCalledWith({
+        certified: false,
+        ...expectedQueryBalanceParams,
+      });
+      expect(ledgerApi.queryAccountBalance).toBeCalledWith({
+        certified: true,
+        ...expectedQueryBalanceParams,
+      });
+
+      // New balance should be displayed.
+      expect(await po.getWalletPageHeadingPo().getTitle()).toBe(
+        oldBalanceFormatted
+      );
+      resolveQueryBalance(newBalance);
+      await runResolvedPromises();
+      expect(await po.getWalletPageHeadingPo().getTitle()).toBe(
+        newBalanceFormatted
+      );
     });
 
     it("should render transactions from ICP Index canister", async () => {
@@ -622,6 +689,9 @@ describe("NnsWallet", () => {
 
       expect(accountsApi.getTransactions).toBeCalledTimes(2);
       vi.mocked(accountsApi.getTransactions).mockClear();
+
+      expect(ledgerApi.queryAccountBalance).toBeCalledTimes(2);
+      vi.mocked(ledgerApi.queryAccountBalance).mockClear();
 
       expect(accountsApi.getTransactions).not.toBeCalled();
       expect(ledgerApi.queryAccountBalance).not.toBeCalled();
