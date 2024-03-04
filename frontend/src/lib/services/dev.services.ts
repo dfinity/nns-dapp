@@ -9,7 +9,7 @@ import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
-import type { IcpAccount } from "$lib/types/account";
+import type { Account } from "$lib/types/account";
 import { numberToUlps } from "$lib/utils/token.utils";
 import type { Principal } from "@dfinity/principal";
 import { ICPToken, nonNullish, type Token } from "@dfinity/utils";
@@ -17,7 +17,7 @@ import { get } from "svelte/store";
 import { syncAccounts } from "./icp-accounts.services";
 import { loadAccounts } from "./icrc-accounts.services";
 
-const getMainAccount = async (): Promise<IcpAccount> => {
+const getMainAccount = async (): Promise<Account> => {
   const { main }: IcpAccountsStoreData = get(icpAccountsStore);
   if (nonNullish(main)) {
     return main;
