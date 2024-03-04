@@ -44,6 +44,7 @@ describe("transactions.worker-services", () => {
       indexCanisterMock.getTransactions.mockResolvedValue({
         transactions,
         oldest_tx_id: [],
+        balance: 123n,
       });
 
     const data: PostMessageDataRequestTransactions = {
@@ -77,6 +78,7 @@ describe("transactions.worker-services", () => {
       indexCanisterMock.getTransactions.mockResolvedValue({
         transactions,
         oldest_tx_id: [],
+        balance: 123n,
       });
 
     const data: PostMessageDataRequestTransactions = {
@@ -119,6 +121,7 @@ describe("transactions.worker-services", () => {
       indexCanisterMock.getTransactions.mockResolvedValue({
         transactions: [...transactions, ...transactions],
         oldest_tx_id: [],
+        balance: 123n,
       });
 
     const data: PostMessageDataRequestTransactions = {
@@ -166,6 +169,7 @@ describe("transactions.worker-services", () => {
                 DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT
               ),
               oldest_tx_id: [],
+              balance: 123n,
             };
           }
 
@@ -174,6 +178,7 @@ describe("transactions.worker-services", () => {
               DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT
             ),
             oldest_tx_id: [],
+            balance: 123n,
           };
         }
       );
@@ -192,6 +197,7 @@ describe("transactions.worker-services", () => {
           mostRecentTxId,
           oldestTxId: undefined,
           certified: true,
+          balance: 123n,
         },
       },
       data,
@@ -219,6 +225,7 @@ describe("transactions.worker-services", () => {
       indexCanisterMock.getTransactions.mockResolvedValue({
         transactions: [...transactions, ...transactions],
         oldest_tx_id: [],
+        balance: 123n,
       });
 
     const data: PostMessageDataRequestTransactions = {
@@ -235,6 +242,7 @@ describe("transactions.worker-services", () => {
           mostRecentTxId: undefined,
           oldestTxId: undefined,
           certified: true,
+          balance: 123n,
         },
       },
       data,

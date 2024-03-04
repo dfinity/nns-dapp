@@ -38,6 +38,7 @@ describe("icrc-index.worker-api", () => {
       indexCanisterMock.getTransactions.mockResolvedValue({
         transactions: [{ transaction, id }],
         oldest_tx_id: [],
+        balance: 123n,
       });
 
     const results = await getIcrcTransactions(params);

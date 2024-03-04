@@ -42,7 +42,7 @@ describe("icrc-index api", () => {
       indexCanisterMock.getTransactions.mockResolvedValue({
         transactions,
         oldest_tx_id: [oldestTxId],
-        balance: 123n
+        balance: 123n,
       });
       const result = await getTransactions(params);
 
@@ -63,7 +63,7 @@ describe("icrc-index api", () => {
       indexCanisterMock.getTransactions.mockResolvedValue({
         transactions,
         oldest_tx_id: [oldestTxId],
-        balance: 123n
+        balance: 123n,
       });
       const start = 23n;
       await getTransactions({

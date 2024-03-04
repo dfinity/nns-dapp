@@ -43,6 +43,7 @@ describe("observer.services", () => {
           accountIdentifier: mockSnsMainAccount.identifier,
           transactions: JSON.stringify([mockIcrcTransactionMint], jsonReplacer),
           oldestTxId,
+          balance: 123n,
         },
       ],
     });
