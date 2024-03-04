@@ -15,28 +15,16 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Add `ENABLE_ICP_INDEX` feature flag.
-* Add metrics and logging for schema migration.
-
 #### Changed
 
-* Minor wording and style changes on the neuron detail page.
-* Enable loading state from stable structures.
-* Enable migrating state to and from stable structures.
 * Refactored `icpAccountsStore` to be derived from separate stores.
 
 #### Deprecated
 
-- Remove support for devices with Internet Computer App version smaller than 2.4.9.
-
 #### Removed
-
-* Remove functionality to add pending swap transactions in NNS Dapp canister.
 
 #### Fixed
 
-* Bug where transferred SNS neurons appeared in the list of neurons after transferring them.
-* Bug when the "Manage Internet Identity" link always uses `internetcomputer.org` domain.
 * Don't reload transactions multiple times when closing the receive modal.
 
 #### Security
@@ -47,15 +35,10 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Dependabot configuration to update GitHub actions.
-* Add `NNS_INDEX_CANISTER_ID` to the configuration.
 * Notify the maintainers if the docker build is not reproducible.
 
 #### Changed
 
-* Upgraded `ic-js` dependencies to utilize `agent-js` patched version `v1.0.1`.
-* Avoid a 5 minute timeout in CI by waiting 20 seconds instead.
-* Fixed the formatting command in the `update-aggregator-response` GitHub workflow.
 * Disambiguated the title of the docker reproducibility check.
 * Change the number of accounts tested in `test-upgrade-map-stable` from 1000 to 20.
 * Andrew will be making the release forum posts.
@@ -66,7 +49,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
-* Adapted Dockerfile to the new `dfx` installation procedure.
 * Adapted the docker reproducibility test to work with `upload-artifact@v4`.
 
 #### Security
