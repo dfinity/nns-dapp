@@ -208,7 +208,7 @@ jobs:
         run: ./scripts/nns-dapp/migration-test --schema1 Map --schema2 AccountsInStableMemory --accounts 20 --chunk 20
       - name: Upload dfx logs
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-upgrade-stable-dfx.log
           path: test-upgrade-stable-dfx.log
