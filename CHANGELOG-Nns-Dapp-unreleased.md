@@ -23,6 +23,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Removed
 
+* Removed unreleased feature flag `ENABLE_ICP_ICRC`.
+
 #### Fixed
 
 * Don't reload transactions multiple times when closing the receive modal.
