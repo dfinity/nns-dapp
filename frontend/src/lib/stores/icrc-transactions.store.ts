@@ -36,7 +36,7 @@ export interface IcrcTransactionsStore
       accountIdentifier: string;
       canisterId: UniverseCanisterId;
       completed: boolean;
-    } & Omit<GetTransactionsResponse, "balance">
+    } & GetTransactionsResponse
   ) => void;
   reset: () => void;
   resetUniverse: (canisterId: UniverseCanisterId) => void;

@@ -122,7 +122,6 @@ describe("CkBTCWallet", () => {
 
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
       transactions: [],
-      balance: 123n,
     });
     vi.mocked(ckbtcMinterApi.getBTCAddress).mockResolvedValue(
       mockBTCAddressTestnet

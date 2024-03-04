@@ -106,7 +106,6 @@ describe("SnsWallet", () => {
     toastsStore.reset();
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
       transactions: [],
-      balance: 123n,
     });
     vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(10n);
 
