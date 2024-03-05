@@ -8,6 +8,7 @@
   const allProposalsSegmentId = Symbol();
 
   let segment: Segment;
+  // TODO(max): get default from parent
   let selectedSegmentId: symbol = allProposalsSegmentId;
 
   $: selectedSegment =
