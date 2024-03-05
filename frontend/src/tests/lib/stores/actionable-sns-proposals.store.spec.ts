@@ -31,12 +31,14 @@ describe("actionableSnsProposalsStore", () => {
       includeBallotsByCaller: true,
     });
 
-    expect(get(actionableSnsProposalsStore)[principal1.toText()]).toEqual([
-      snsProposal1,
-    ]);
-    expect(get(actionableSnsProposalsStore)[principal2.toText()]).toEqual([
-      snsProposal2,
-    ]);
+    expect(get(actionableSnsProposalsStore)[principal1.toText()]).toEqual({
+      proposals: [snsProposal1],
+      includeBallotsByCaller: true,
+    });
+    expect(get(actionableSnsProposalsStore)[principal2.toText()]).toEqual({
+      proposals: [snsProposal2],
+      includeBallotsByCaller: true,
+    });
   });
 
   it("should reset data by sns", () => {
@@ -54,8 +56,9 @@ describe("actionableSnsProposalsStore", () => {
     expect(
       get(actionableSnsProposalsStore)[principal1.toText()]
     ).toBeUndefined();
-    expect(get(actionableSnsProposalsStore)[principal2.toText()]).toEqual([
-      snsProposal2,
-    ]);
+    expect(get(actionableSnsProposalsStore)[principal2.toText()]).toEqual({
+      proposals: [snsProposal2],
+      includeBallotsByCaller: true,
+    });
   });
 });

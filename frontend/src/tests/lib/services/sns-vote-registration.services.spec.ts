@@ -181,8 +181,14 @@ describe("sns-vote-registration-services", () => {
       });
 
       expect(get(actionableSnsProposalsStore)).toEqual({
-        [rootCanisterId.toText()]: [proposal],
-        [rootCanisterId2.toText()]: [proposal],
+        [rootCanisterId.toText()]: {
+          proposals: [proposal],
+          includeBallotsByCaller: true,
+        },
+        [rootCanisterId2.toText()]: {
+          proposals: [proposal],
+          includeBallotsByCaller: true,
+        },
       });
 
       await callRegisterVote({
@@ -193,7 +199,10 @@ describe("sns-vote-registration-services", () => {
       });
 
       expect(get(actionableSnsProposalsStore)).toEqual({
-        [rootCanisterId2.toText()]: [proposal],
+        [rootCanisterId2.toText()]: {
+          proposals: [proposal],
+          includeBallotsByCaller: true,
+        },
       });
     });
 
