@@ -1,6 +1,6 @@
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
+import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import { Principal } from "@dfinity/principal";
 import type { SnsProposalData } from "@dfinity/sns";
 import { get } from "svelte/store";
 
@@ -13,8 +13,9 @@ describe("actionableSnsProposalsStore", () => {
     ...mockSnsProposal,
     id: [{ id: 2n }],
   };
-  const principal1 = Principal.fromText("bw4dl-smaaa-aaaaa-qaacq-cai");
-  const principal2 = Principal.fromText("pin7y-wyaaa-aaaaa-aacpa-cai");
+  const principal1 = principal(0);
+  const principal2 = principal(1);
+  const principal3 = principal(2);
   beforeEach(() => {
     actionableSnsProposalsStore.resetForTesting();
   });
@@ -30,6 +31,11 @@ describe("actionableSnsProposalsStore", () => {
       proposals: [snsProposal2],
       includeBallotsByCaller: true,
     });
+    actionableSnsProposalsStore.set({
+      rootCanisterId: principal3,
+      proposals: [],
+      includeBallotsByCaller: false,
+    });
 
     expect(get(actionableSnsProposalsStore)[principal1.toText()]).toEqual({
       proposals: [snsProposal1],
@@ -38,6 +44,10 @@ describe("actionableSnsProposalsStore", () => {
     expect(get(actionableSnsProposalsStore)[principal2.toText()]).toEqual({
       proposals: [snsProposal2],
       includeBallotsByCaller: true,
+    });
+    expect(get(actionableSnsProposalsStore)[principal3.toText()]).toEqual({
+      proposals: [],
+      includeBallotsByCaller: false,
     });
   });
 
