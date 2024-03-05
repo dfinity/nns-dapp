@@ -1,4 +1,9 @@
-<div class="filters" data-tid="proposals-filters">
+<script lang="ts">
+  import { fade } from "svelte/transition";
+</script>
+
+<!-- TODO(max): provide a custom duration const FADE_OUT_DURATION = 200 as const; out:fade={{ duration: FADE_OUT_DURATION }}-->
+<div class="filters" data-tid="proposals-filters" in:fade out:fade>
   <slot />
 </div>
 
@@ -6,7 +11,6 @@
   .filters {
     display: flex;
     flex-wrap: wrap;
-    padding: 0 0 var(--padding-3x);
     gap: var(--padding);
 
     --checkbox-flex-direction: row-reverse;
