@@ -137,6 +137,7 @@
     }
 
     // Apply same height to all filter buttons
+    // TODO(max): think about moving this to gix-components
     --common-button-min-height: calc(5 * var(--padding));
     :global(.segment),
     :global(.filters button) {

@@ -1,10 +1,6 @@
 <script lang="ts">
   import NnsProposalCard from "./NnsProposalCard.svelte";
-  import {
-    InfiniteScroll,
-    Segment,
-    SegmentButton,
-  } from "@dfinity/gix-components";
+  import { InfiniteScroll } from "@dfinity/gix-components";
   import NnsProposalsFilters from "./NnsProposalsFilters.svelte";
   import { filteredProposals } from "$lib/derived/proposals.derived";
   import NoProposals from "./NoProposals.svelte";
@@ -13,11 +9,10 @@
   import { building } from "$app/environment";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
-  import { createEventDispatcher } from "svelte";
   import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
   import { actionableProposalIndicationEnabledStore } from "$lib/derived/actionable-proposals.derived";
-  import ActionableProposalsSegment from "$lib/components/proposals/ActionableProposalsSegment.svelte";
-
+  import { FADE_IN_PARAMS } from "$lib/constants/ui-constants";
+  import { fade } from "svelte/transition";
   export let nothingFound: boolean;
   export let hidden: boolean;
   export let disableInfiniteScroll: boolean;
@@ -40,23 +35,27 @@
 
   {#if display}
     {#if selectedSegment === "actionable" && $actionableProposalIndicationEnabledStore && $ENABLE_VOTING_INDICATION}
-      <InfiniteScroll layout="grid" disabled>
-        {#each actionableProposals as proposalInfo (proposalInfo.id)}
-          <NnsProposalCard {hidden} {proposalInfo} />
-        {/each}
-      </InfiniteScroll>
-    {:else}
-      <ListLoader loading={loadingAnimation === "spinner"}>
-        <InfiniteScroll
-          on:nnsIntersect
-          layout="grid"
-          disabled={disableInfiniteScroll || loading}
-        >
-          {#each $filteredProposals.proposals as proposalInfo (proposalInfo.id)}
+      <div in:fade={FADE_IN_PARAMS}>
+        <InfiniteScroll layout="grid" disabled>
+          {#each actionableProposals as proposalInfo (proposalInfo.id)}
             <NnsProposalCard {hidden} {proposalInfo} />
           {/each}
         </InfiniteScroll>
-      </ListLoader>
+      </div>
+    {:else}
+      <div in:fade={FADE_IN_PARAMS}>
+        <ListLoader loading={loadingAnimation === "spinner"}>
+          <InfiniteScroll
+            on:nnsIntersect
+            layout="grid"
+            disabled={disableInfiniteScroll || loading}
+          >
+            {#each $filteredProposals.proposals as proposalInfo (proposalInfo.id)}
+              <NnsProposalCard {hidden} {proposalInfo} />
+            {/each}
+          </InfiniteScroll>
+        </ListLoader>
+      </div>
     {/if}
   {/if}
 
