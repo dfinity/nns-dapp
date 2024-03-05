@@ -378,7 +378,7 @@ describe("NnsWallet", () => {
       // Balance should be reloaded.
       expect(ledgerApi.queryAccountBalance).toBeCalledTimes(2);
       const expectedQueryBalanceParams = {
-        icpAccountIdentifier: mockAccountsStoreData.main.icpIdentifier,
+        icpAccountIdentifier: mockAccountsStoreData.main.identifier,
         identity: mockIdentity,
       };
       expect(ledgerApi.queryAccountBalance).toBeCalledWith({
@@ -701,7 +701,7 @@ describe("NnsWallet", () => {
       // Balance should be reloaded.
       expect(ledgerApi.queryAccountBalance).toBeCalledTimes(2);
       const expectedQueryBalanceParams = {
-        icpAccountIdentifier: mockAccountsStoreData.main.icpIdentifier,
+        icpAccountIdentifier: mockAccountsStoreData.main.identifier,
         identity: mockIdentity,
       };
       expect(ledgerApi.queryAccountBalance).toBeCalledWith({
