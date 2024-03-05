@@ -169,13 +169,15 @@ describe("sns-vote-registration-services", () => {
     it("should reset actionable proposals for sns after voting", async () => {
       vi.spyOn(snsGovernanceApi, "registerVote").mockResolvedValue();
       const rootCanisterId2 = principal(13);
-      actionableSnsProposalsStore.setProposals({
+      actionableSnsProposalsStore.set({
         rootCanisterId,
         proposals: [proposal],
+        includeBallotsByCaller: true,
       });
-      actionableSnsProposalsStore.setProposals({
+      actionableSnsProposalsStore.set({
         rootCanisterId: rootCanisterId2,
         proposals: [proposal],
+        includeBallotsByCaller: true,
       });
 
       expect(get(actionableSnsProposalsStore)).toEqual({

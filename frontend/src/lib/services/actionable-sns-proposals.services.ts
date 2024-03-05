@@ -9,7 +9,7 @@ import type { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import type { SnsListProposalsResponse, SnsNeuron } from "@dfinity/sns";
 import { SnsProposalRewardStatus } from "@dfinity/sns";
-import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
+import { fromNullable, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 export const loadActionableSnsProposals = async () => {
@@ -56,23 +56,25 @@ const loadActionableProposalsForSns = async (
         rootCanisterId: rootCanisterIdText,
         identity,
       });
-    if (!fromDefinedNullable(include_ballots_by_caller)) {
-      // It's not possible to filter out proposals that are votable w/o ballots
-      return;
-    }
 
-    const votableProposals = allProposals.filter(
-      (proposal) =>
-        votableSnsNeurons({
-          neurons,
-          proposal,
-          identity,
-        }).length > 0
-    );
+    const includeBallotsByCaller =
+      fromNullable(include_ballots_by_caller) ?? false;
+    // It's not possible to filter out votable proposals w/o ballots
+    const votableProposals = includeBallotsByCaller
+      ? allProposals.filter(
+          (proposal) =>
+            votableSnsNeurons({
+              neurons,
+              proposal,
+              identity,
+            }).length > 0
+        )
+      : [];
 
-    actionableSnsProposalsStore.setProposals({
+    actionableSnsProposalsStore.set({
       rootCanisterId,
       proposals: votableProposals,
+      includeBallotsByCaller,
     });
   } catch (err) {
     console.error(err);

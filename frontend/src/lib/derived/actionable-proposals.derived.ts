@@ -33,7 +33,8 @@ export const actionableProposalCountStore: Readable<ActionableProposalCountData>
       [OWN_CANISTER_ID_TEXT]: nnsProposals?.length,
       ...mapEntries({
         obj: actionableSnsProposals,
-        mapFn: ([canisterId, proposals]) => [canisterId, proposals.length],
+        mapFn: ([canisterId, { proposals, includeBallotsByCaller }]) =>
+          includeBallotsByCaller ? [canisterId, proposals.length] : undefined,
       }),
     })
   );

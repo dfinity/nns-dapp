@@ -20,13 +20,15 @@ describe("actionableSnsProposalsStore", () => {
   });
 
   it("should store sns proposals", () => {
-    actionableSnsProposalsStore.setProposals({
+    actionableSnsProposalsStore.set({
       rootCanisterId: principal1,
       proposals: [snsProposal1],
+      includeBallotsByCaller: true,
     });
-    actionableSnsProposalsStore.setProposals({
+    actionableSnsProposalsStore.set({
       rootCanisterId: principal2,
       proposals: [snsProposal2],
+      includeBallotsByCaller: true,
     });
 
     expect(get(actionableSnsProposalsStore)[principal1.toText()]).toEqual([
@@ -38,13 +40,15 @@ describe("actionableSnsProposalsStore", () => {
   });
 
   it("should reset data by sns", () => {
-    actionableSnsProposalsStore.setProposals({
+    actionableSnsProposalsStore.set({
       rootCanisterId: principal1,
       proposals: [snsProposal1],
+      includeBallotsByCaller: true,
     });
-    actionableSnsProposalsStore.setProposals({
+    actionableSnsProposalsStore.set({
       rootCanisterId: principal2,
       proposals: [snsProposal2],
+      includeBallotsByCaller: true,
     });
     actionableSnsProposalsStore.resetForSns(principal1);
     expect(

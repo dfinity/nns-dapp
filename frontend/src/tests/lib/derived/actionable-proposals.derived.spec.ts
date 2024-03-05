@@ -77,13 +77,15 @@ describe("actionable proposals derived stores", () => {
       });
 
       actionableNnsProposalsStore.setProposals(nnsProposals);
-      actionableSnsProposalsStore.setProposals({
+      actionableSnsProposalsStore.set({
         rootCanisterId: principal0,
         proposals: snsProposals,
+        includeBallotsByCaller: true,
       });
-      actionableSnsProposalsStore.setProposals({
+      actionableSnsProposalsStore.set({
         rootCanisterId: principal1,
         proposals: [],
+        includeBallotsByCaller: true,
       });
 
       expect(get(actionableProposalCountStore)).toEqual({

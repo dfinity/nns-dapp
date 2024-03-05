@@ -187,8 +187,14 @@ describe("actionable-sns-proposals.services", () => {
       await loadActionableSnsProposals();
 
       expect(get(actionableSnsProposalsStore)).toEqual({
-        [rootCanisterId1.toText()]: [votableProposal1],
-        [rootCanisterId2.toText()]: [votableProposal2],
+        [rootCanisterId1.toText()]: {
+          proposals: [votableProposal1],
+          includeBallotsByCaller: true,
+        },
+        [rootCanisterId2.toText()]: {
+          proposals: [votableProposal2],
+          includeBallotsByCaller: true,
+        },
       });
     });
 
@@ -227,7 +233,12 @@ describe("actionable-sns-proposals.services", () => {
 
       await loadActionableSnsProposals();
 
-      expect(get(actionableSnsProposalsStore)).toEqual({});
+      expect(get(actionableSnsProposalsStore)).toEqual({
+        [rootCanisterId1.toText()]: {
+          proposals: [],
+          includeBallotsByCaller: false,
+        },
+      });
     });
   });
 });
