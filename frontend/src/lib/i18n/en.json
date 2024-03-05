@@ -370,7 +370,9 @@
     "hide_unavailable_proposals": "Show only proposals you can still vote for",
     "check_all": "Select All",
     "uncheck_all": "Clear",
-    "nothing_found": "No proposals found for the filters."
+    "nothing_found": "No proposals found for the filters.",
+    "all_proposals": "All Proposals",
+    "actionable_proposals": "Actionable Proposals"
   },
   "canisters": {
     "aria_label_canister_card": "Go to canister details",

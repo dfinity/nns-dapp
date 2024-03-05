@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Segment, SegmentButton } from "@dfinity/gix-components";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { i18n } from "$lib/stores/i18n";
 
   export let selectedSegment: "all" | "actionable";
 
@@ -17,14 +18,13 @@
 
 <TestIdWrapper testId="actionable-proposals-segment-component">
   <Segment bind:selectedSegmentId bind:this={segment}>
-    <!--    TODO(max): move to i18n-->
     <SegmentButton testId="all-proposals" segmentId={allProposalsSegmentId}
-      >All Proposals</SegmentButton
+      >{$i18n.voting.all_proposals}</SegmentButton
     >
     <SegmentButton
       testId="actionable-proposals"
       segmentId={actionableProposalsSegmentId}
-      >Actionable Proposals</SegmentButton
+      >{$i18n.voting.actionable_proposals}</SegmentButton
     >
   </Segment>
 </TestIdWrapper>
