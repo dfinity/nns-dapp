@@ -17,7 +17,7 @@ describe("IneligibleNeuronsCard", () => {
     expect(queryByTestId("neuron-card")).not.toBeInTheDocument();
   });
 
-  it("should display texts", () => {
+  it("should display description text", () => {
     const { getByTestId } = render(IneligibleNeuronsCard, {
       props: {
         ineligibleNeurons: [
@@ -31,7 +31,26 @@ describe("IneligibleNeuronsCard", () => {
     });
     expect(getByTestId("ineligible-neurons-description")).toBeInTheDocument();
     expect(getByTestId("ineligible-neurons-description").textContent).toEqual(
-      "The following neurons are not eligible to vote."
+      "The following neurons are not eligible to vote. They either have dissolve delays of less than 6 months at the time when the proposal was submitted, or they were created after the proposal was submitted."
+    );
+  });
+
+  it("should display description text for not default dissolve delay", () => {
+    const { getByTestId } = render(IneligibleNeuronsCard, {
+      props: {
+        ineligibleNeurons: [
+          {
+            neuronIdString: "123",
+            reason: "short",
+          },
+        ] as IneligibleNeuronData[],
+        minSnsDissolveDelaySeconds: BigInt(
+          NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE * 20
+        ),
+      },
+    });
+    expect(getByTestId("ineligible-neurons-description").textContent).toEqual(
+      "The following neurons are not eligible to vote. They either have dissolve delays of less than 10 years at the time when the proposal was submitted, or they were created after the proposal was submitted."
     );
   });
 

@@ -18,6 +18,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Refactored `icpAccountsStore` to be derived from separate stores.
+* Wording changes for ineligible neurons description.
 
 #### Deprecated
 
