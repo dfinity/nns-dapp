@@ -65,6 +65,7 @@ describe("actionable proposals derived stores", () => {
     const snsProposals = [mockSnsProposal];
     const principal0 = principal(0);
     const principal1 = principal(1);
+    const principal2 = principal(2);
 
     beforeEach(() => {
       actionableNnsProposalsStore.reset();
@@ -77,13 +78,20 @@ describe("actionable proposals derived stores", () => {
       });
 
       actionableNnsProposalsStore.setProposals(nnsProposals);
-      actionableSnsProposalsStore.setProposals({
+      actionableSnsProposalsStore.set({
         rootCanisterId: principal0,
         proposals: snsProposals,
+        includeBallotsByCaller: true,
       });
-      actionableSnsProposalsStore.setProposals({
+      actionableSnsProposalsStore.set({
         rootCanisterId: principal1,
         proposals: [],
+        includeBallotsByCaller: true,
+      });
+      actionableSnsProposalsStore.set({
+        rootCanisterId: principal2,
+        proposals: [],
+        includeBallotsByCaller: false,
       });
 
       expect(get(actionableProposalCountStore)).toEqual({
