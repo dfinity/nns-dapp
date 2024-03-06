@@ -4,13 +4,16 @@
   import { i18n } from "$lib/stores/i18n";
 
   export let selectedSegment: "all" | "actionable";
+  export let defaultSelectedSegment: "all" | "actionable";
 
   const actionableProposalsSegmentId = Symbol();
   const allProposalsSegmentId = Symbol();
 
   let segment: Segment;
-  // TODO(max): get default from parent
-  let selectedSegmentId: symbol = allProposalsSegmentId;
+  let selectedSegmentId: symbol =
+    defaultSelectedSegment === "all"
+      ? allProposalsSegmentId
+      : actionableProposalsSegmentId;
 
   $: selectedSegment =
     selectedSegmentId === actionableProposalsSegmentId ? "actionable" : "all";

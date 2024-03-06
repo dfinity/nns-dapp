@@ -23,14 +23,14 @@
   let display = true;
   $: display = !building;
 
-  let selectedSegment: "actionable" | "all" = "actionable";
+  let selectedSegment: "actionable" | "all";
 
   let actionableProposals;
   $: actionableProposals = $actionableNnsProposalsStore.proposals ?? [];
 </script>
 
 <TestIdWrapper testId="nns-proposal-list-component">
-  <NnsProposalsFilters bind:selectedSegment />
+  <NnsProposalsFilters bind:selectedSegment defaultSelectedSegment="all" />
 
   {#if display}
     {#if selectedSegment === "actionable" && $actionableProposalIndicationEnabledStore && $ENABLE_VOTING_INDICATION}
