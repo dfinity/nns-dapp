@@ -15,6 +15,7 @@ import {
 import { Principal } from "@dfinity/principal";
 import {
   SnsSwapLifecycle,
+  emptyOptionalsForSnsNeuronsFundParticipationConstraints,
   type SnsGetDerivedStateResponse,
   type SnsGetLifecycleResponse,
   type SnsGetMetadataResponse,
@@ -394,11 +395,10 @@ export const createSummary = ({
     neurons_fund_participation_constraints: nonNullish(maxNFParticipation)
       ? [
           {
+            ...emptyOptionalsForSnsNeuronsFundParticipationConstraints,
             max_neurons_fund_participation_icp_e8s:
               toNullable(maxNFParticipation),
             coefficient_intervals: [],
-            min_direct_participation_threshold_icp_e8s: [],
-            ideal_matched_participation_function: [],
           },
         ]
       : [],

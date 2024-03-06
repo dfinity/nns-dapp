@@ -7,6 +7,7 @@ import {
 } from "$lib/utils/sns-aggregator-converters.utils";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { Principal } from "@dfinity/principal";
+import { emptyOptionalsForSnsNeuronsFundParticipationConstraints } from "@dfinity/sns";
 
 describe("sns aggregator converters utils", () => {
   describe("convertDtoData", () => {
@@ -563,6 +564,7 @@ describe("sns aggregator converters utils", () => {
                 ...summaryMockData.swap.init[0],
                 neurons_fund_participation_constraints: [
                   {
+                    ...emptyOptionalsForSnsNeuronsFundParticipationConstraints,
                     coefficient_intervals: [
                       {
                         slope_numerator: [2n],
@@ -574,7 +576,6 @@ describe("sns aggregator converters utils", () => {
                     ],
                     max_neurons_fund_participation_icp_e8s: [300000000000n],
                     min_direct_participation_threshold_icp_e8s: [10000000000n],
-                    ideal_matched_participation_function: [],
                   },
                 ],
                 min_direct_participation_icp_e8s: [300000000000n],

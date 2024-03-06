@@ -32,6 +32,7 @@ import type {
   SnsSwapDerivedState,
   SnsSwapInit,
 } from "@dfinity/sns";
+import { emptyOptionalsForSnsNeuronsFundParticipationConstraints } from "@dfinity/sns";
 import { isNullish, nonNullish, toNullable } from "@dfinity/utils";
 import { mapOptionalToken } from "./icrc-tokens.utils";
 import { isPngAsset } from "./utils";
@@ -93,6 +94,7 @@ export const convertNervousFunction = ({
 const convertNeuronsFundParticipationConstraints = (
   constraints: CachedNeuronsFundParticipationConstraints
 ): SnsNeuronsFundParticipationConstraints => ({
+  ...emptyOptionalsForSnsNeuronsFundParticipationConstraints,
   coefficient_intervals: constraints.coefficient_intervals.map(
     ({
       slope_numerator,
@@ -126,7 +128,6 @@ const convertNeuronsFundParticipationConstraints = (
       constraints.min_direct_participation_threshold_icp_e8s
     )
   ),
-  ideal_matched_participation_function: [],
 });
 
 const convertSwapInitParams = (
