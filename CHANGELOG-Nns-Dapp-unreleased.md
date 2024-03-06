@@ -24,6 +24,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Enable loading state from stable structures.
 * Enable migrating state to and from stable structures.
 * Refactored `icpAccountsStore` to be derived from separate stores.
+* Wording changes for ineligible neurons description.
 
 #### Deprecated
 
