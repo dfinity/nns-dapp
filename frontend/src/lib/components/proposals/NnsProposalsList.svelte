@@ -11,7 +11,6 @@
   import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
   import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
   import { actionableProposalIndicationEnabledStore } from "$lib/derived/actionable-proposals.derived";
-  import { FADE_IN_PARAMS } from "$lib/constants/ui-constants";
   import { fade } from "svelte/transition";
   export let nothingFound: boolean;
   export let hidden: boolean;
@@ -35,7 +34,7 @@
 
   {#if display}
     {#if selectedSegment === "actionable" && $actionableProposalIndicationEnabledStore && $ENABLE_VOTING_INDICATION}
-      <div in:fade={FADE_IN_PARAMS}>
+      <div in:fade>
         <InfiniteScroll layout="grid" disabled>
           {#each actionableProposals as proposalInfo (proposalInfo.id)}
             <NnsProposalCard {hidden} {proposalInfo} />
@@ -43,7 +42,7 @@
         </InfiniteScroll>
       </div>
     {:else}
-      <div in:fade={FADE_IN_PARAMS}>
+      <div in:fade>
         <ListLoader loading={loadingAnimation === "spinner"}>
           <InfiniteScroll
             on:nnsIntersect
