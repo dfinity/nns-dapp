@@ -6,7 +6,6 @@ import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposal
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { isSelectedPath } from "$lib/utils/navigation.utils";
 import { mapEntries } from "$lib/utils/utils";
-import { isNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 
 export interface ActionableProposalCountData {
@@ -19,13 +18,11 @@ export const actionableProposalIndicationEnabledStore: Readable<boolean> =
   derived(
     [pageStore, authSignedInStore],
     ([{ path: currentPath }, isSignedIn]) =>
-      isNullish(currentPath)
-        ? false
-        : isSignedIn &&
-          isSelectedPath({
-            currentPath,
-            paths: [AppPath.Proposals],
-          })
+      isSignedIn &&
+      isSelectedPath({
+        currentPath,
+        paths: [AppPath.Proposals],
+      })
   );
 
 /** A store that contains the count of proposals that can be voted on by the user mapped by canister id (nns + snses) */
@@ -36,7 +33,8 @@ export const actionableProposalCountStore: Readable<ActionableProposalCountData>
       [OWN_CANISTER_ID_TEXT]: nnsProposals?.length,
       ...mapEntries({
         obj: actionableSnsProposals,
-        mapFn: ([canisterId, proposals]) => [canisterId, proposals.length],
+        mapFn: ([canisterId, { proposals, includeBallotsByCaller }]) =>
+          includeBallotsByCaller ? [canisterId, proposals.length] : undefined,
       }),
     })
   );

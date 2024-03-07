@@ -1,9 +1,9 @@
 import { createAgent } from "$lib/api/agent.api";
 import { HOST } from "$lib/constants/environment.constants";
+import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { Secp256k1PublicKey } from "$lib/keys/secp256k1";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import { mapNeuronErrorToToastMessage } from "$lib/utils/error.utils";
 import { translate } from "$lib/utils/i18n.utils";

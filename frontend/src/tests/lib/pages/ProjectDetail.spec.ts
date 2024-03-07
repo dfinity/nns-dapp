@@ -12,7 +12,6 @@ import { pageStore } from "$lib/derived/page.derived";
 import ProjectDetail from "$lib/pages/ProjectDetail.svelte";
 import { cancelPollGetOpenTicket } from "$lib/services/sns-sale.services";
 import { authStore } from "$lib/stores/auth.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { getOrCreateSnsFinalizationStatusStore } from "$lib/stores/sns-finalization-status.store";
 import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
@@ -40,6 +39,7 @@ import {
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { ProjectDetailPo } from "$tests/page-objects/ProjectDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
@@ -486,7 +486,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
         beforeEach(() => {
           // Do not rely on the `loadAccounts` from the modal.
-          icpAccountsStore.setForTesting({
+          setAccountsForTesting({
             main: mockMainAccount,
             subAccounts: [],
             hardwareWallets: [],

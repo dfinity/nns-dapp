@@ -1,8 +1,8 @@
 import ProjectAccountsBalance from "$lib/components/universe/UniverseAccountsBalance.svelte";
 import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKETH_LEDGER_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
+import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { formatTokenE8s } from "$lib/utils/token.utils";

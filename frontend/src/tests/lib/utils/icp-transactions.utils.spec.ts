@@ -2,7 +2,6 @@ import {
   CREATE_CANISTER_MEMO,
   TOP_UP_CANISTER_MEMO,
 } from "$lib/constants/api.constants";
-import { NANO_SECONDS_IN_MILLISECOND } from "$lib/constants/constants";
 import type { UiTransaction } from "$lib/types/transaction";
 import {
   mapIcpTransaction,
@@ -10,7 +9,8 @@ import {
   sortTransactionsByIdDescendingOrder,
 } from "$lib/utils/icp-transactions.utils";
 import en from "$tests/mocks/i18n.mock";
-import type { Operation, TransactionWithId } from "@dfinity/ledger-icp";
+import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
+import type { Operation } from "@dfinity/ledger-icp";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 
 describe("icp-transactions.utils", () => {
@@ -20,30 +20,6 @@ describe("icp-transactions.utils", () => {
   const amount = 200_000_000n;
   const fee = 10_000n;
   const transactionId = 1234n;
-  const createTransactionWithId = ({
-    id = transactionId,
-    memo,
-    operation,
-    timestamp = defaultTimestamp,
-  }: {
-    id?: bigint;
-    operation: Operation;
-    memo?: bigint;
-    timestamp?: Date;
-  }): TransactionWithId => ({
-    id,
-    transaction: {
-      memo: memo ?? 0n,
-      icrc1_memo: [],
-      operation,
-      created_at_time: [
-        {
-          timestamp_nanos:
-            BigInt(timestamp.getTime()) * BigInt(NANO_SECONDS_IN_MILLISECOND),
-        },
-      ],
-    },
-  });
   const defaultTransferOperation: Operation = {
     Transfer: {
       to,
@@ -76,10 +52,25 @@ describe("icp-transactions.utils", () => {
       spender: [],
     },
   };
+  const createTransaction = ({
+    operation,
+    memo,
+    id = transactionId,
+  }: {
+    id?: bigint;
+    operation: Operation;
+    memo?: bigint;
+  }) =>
+    createTransactionWithId({
+      id,
+      timestamp: defaultTimestamp,
+      operation,
+      memo,
+    });
 
   describe("mapIcpTransaction", () => {
     it("maps stake neuron transaction", () => {
-      const transaction = createTransactionWithId({
+      const transaction = createTransaction({
         operation: defaultTransferOperation,
         memo: 12345n,
       });
@@ -101,7 +92,7 @@ describe("icp-transactions.utils", () => {
     });
 
     it("maps top up neuron transaction", () => {
-      const transaction = createTransactionWithId({
+      const transaction = createTransaction({
         operation: defaultTransferOperation,
         memo: 0n,
       });
@@ -123,7 +114,7 @@ describe("icp-transactions.utils", () => {
     });
 
     it("maps create canister transaction", () => {
-      const transaction = createTransactionWithId({
+      const transaction = createTransaction({
         operation: defaultTransferOperation,
         memo: CREATE_CANISTER_MEMO,
       });
@@ -145,7 +136,7 @@ describe("icp-transactions.utils", () => {
     });
 
     it("maps top up canister transaction", () => {
-      const transaction = createTransactionWithId({
+      const transaction = createTransaction({
         operation: defaultTransferOperation,
         memo: TOP_UP_CANISTER_MEMO,
       });
@@ -167,7 +158,7 @@ describe("icp-transactions.utils", () => {
     });
 
     it("maps swap participation transaction", () => {
-      const transaction = createTransactionWithId({
+      const transaction = createTransaction({
         operation: defaultTransferOperation,
       });
       const expectedUiTransaction: UiTransaction = {
@@ -188,7 +179,7 @@ describe("icp-transactions.utils", () => {
     });
 
     it("maps swap participation refund transaction", () => {
-      const transaction = createTransactionWithId({
+      const transaction = createTransaction({
         operation: defaultTransferOperation,
       });
       const expectedUiTransaction: UiTransaction = {
@@ -215,7 +206,7 @@ describe("icp-transactions.utils", () => {
     });
 
     it("maps sent transaction", () => {
-      const transaction = createTransactionWithId({
+      const transaction = createTransaction({
         operation: defaultTransferOperation,
       });
       const expectedUiTransaction: UiTransaction = {
@@ -236,7 +227,7 @@ describe("icp-transactions.utils", () => {
     });
 
     it("maps received transaction", () => {
-      const transaction = createTransactionWithId({
+      const transaction = createTransaction({
         operation: defaultTransferOperation,
       });
       const expectedUiTransaction: UiTransaction = {
@@ -263,7 +254,7 @@ describe("icp-transactions.utils", () => {
     });
 
     it("maps toSelf transaction as Received", () => {
-      const transaction = createTransactionWithId({
+      const transaction = createTransaction({
         operation: toSelfOperation,
       });
       const expectedUiTransaction: UiTransaction = {
@@ -291,7 +282,7 @@ describe("icp-transactions.utils", () => {
     });
 
     it("maps toSelf transaction as Sent", () => {
-      const transaction = createTransactionWithId({
+      const transaction = createTransaction({
         operation: toSelfOperation,
       });
       const expectedUiTransaction: UiTransaction = {
@@ -314,7 +305,7 @@ describe("icp-transactions.utils", () => {
     });
 
     it("maps approve transaction", () => {
-      const transaction = createTransactionWithId({
+      const transaction = createTransaction({
         operation: {
           Approve: {
             fee: { e8s: fee },
@@ -351,7 +342,7 @@ describe("icp-transactions.utils", () => {
     });
 
     it("maps Burn transaction", () => {
-      const transaction = createTransactionWithId({
+      const transaction = createTransaction({
         operation: {
           Burn: {
             from,
@@ -383,7 +374,7 @@ describe("icp-transactions.utils", () => {
     });
 
     it("maps Mint transaction", () => {
-      const transaction = createTransactionWithId({
+      const transaction = createTransaction({
         operation: {
           Mint: {
             to: from,
@@ -417,7 +408,7 @@ describe("icp-transactions.utils", () => {
 
   describe("mapToSelfTransactions", () => {
     it("duplicateds toSelf transactions", () => {
-      const transaction = createTransactionWithId({
+      const transaction = createTransaction({
         operation: toSelfOperation,
       });
 
@@ -434,10 +425,10 @@ describe("icp-transactions.utils", () => {
     });
 
     it("doesn't duplicate not to self transactoins", () => {
-      const transaction = createTransactionWithId({
+      const transaction = createTransaction({
         operation: toSelfOperation,
       });
-      const notToSelfTransaction = createTransactionWithId({
+      const notToSelfTransaction = createTransaction({
         operation: defaultTransferOperation,
       });
 
@@ -461,15 +452,15 @@ describe("icp-transactions.utils", () => {
   });
 
   describe("sortTransactionsByIdDescendingOrder", () => {
-    const firstTransaction = createTransactionWithId({
+    const firstTransaction = createTransaction({
       operation: defaultTransferOperation,
       id: 10n,
     });
-    const secondTransaction = createTransactionWithId({
+    const secondTransaction = createTransaction({
       operation: defaultTransferOperation,
       id: 20n,
     });
-    const thirdTransaction = createTransactionWithId({
+    const thirdTransaction = createTransaction({
       operation: defaultTransferOperation,
       id: 30n,
     });

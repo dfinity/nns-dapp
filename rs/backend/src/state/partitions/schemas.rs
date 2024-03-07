@@ -17,6 +17,10 @@ impl Partitions {
         self.growing_write(PartitionType::Metadata.memory_id(), 0, &schema_label_bytes[..]);
     }
     /// Gets the schema label from the metadata partition.
+    ///
+    /// # Panics
+    /// - If the metadata partition has no schema label.
+    /// - If the schema label is not supported.
     #[must_use]
     pub fn schema_label(&self) -> SchemaLabel {
         let mut schema_label_bytes = [0u8; SchemaLabel::MAX_BYTES];
@@ -33,6 +37,10 @@ impl Partitions {
     /// Gets the memory partitioned appropriately for the given schema.
     ///
     /// If a schema uses raw memory, the memory is returned.
+    ///
+    /// # Panics
+    /// - If the schema label is not supported:
+    ///   - The `Map` schema does not use partitions, so may not be used with this method.
     #[must_use]
     pub fn new_with_schema(memory: DefaultMemoryImpl, schema: SchemaLabel) -> Partitions {
         match schema {

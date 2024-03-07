@@ -12,12 +12,15 @@ import { pageStore } from "$lib/derived/page.derived";
 import NnsWallet from "$lib/pages/NnsWallet.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icpTransactionsStore } from "$lib/stores/icp-transactions.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import { page } from "$mocks/$app/stores";
-import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
+import {
+  mockIdentity,
+  resetIdentity,
+  setNoIdentity,
+} from "$tests/mocks/auth.store.mock";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
@@ -25,13 +28,21 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { IntersectionObserverActive } from "$tests/mocks/infinitescroll.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
-import { mockTransactionWithId } from "$tests/mocks/transaction.mock";
+import {
+  createMockSendTransaction,
+  mockTransactionWithId,
+} from "$tests/mocks/transaction.mock";
 import { IcpTransactionModalPo } from "$tests/page-objects/IcpTransactionModal.page-object";
 import { NnsWalletPo } from "$tests/page-objects/NnsWallet.page-object";
 import { ReceiveModalPo } from "$tests/page-objects/ReceiveModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import {
+  resetAccountsForTesting,
+  setAccountsForTesting,
+} from "$tests/utils/accounts.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   advanceTime,
@@ -52,17 +63,25 @@ vi.mock("$lib/api/icp-index.api");
 vi.mock("$lib/api/governance.api");
 
 describe("NnsWallet", () => {
+  const accountIdentifier = mockMainAccount.identifier;
   const props = {
-    accountIdentifier: mockMainAccount.identifier,
+    accountIdentifier,
   };
   const mainBalanceE8s = 10_000_000n;
+  const firstPageTransactions = [
+    { id: 1000n, transaction: mockTransactionWithId.transaction },
+  ];
+  const oldestTxId = 10n;
+  const lastPageTransactions = [
+    { id: oldestTxId, transaction: mockTransactionWithId.transaction },
+  ];
   const accountTransactions = [mockTransactionWithId];
 
   beforeEach(() => {
     vi.clearAllMocks();
     vi.clearAllTimers();
     cancelPollAccounts();
-    icpAccountsStore.resetForTesting();
+    resetAccountsForTesting();
     neuronsStore.reset();
     resetNeuronsApiService();
     icpTransactionsStore.reset();
@@ -73,8 +92,8 @@ describe("NnsWallet", () => {
       mainBalanceE8s
     );
     vi.spyOn(indexApi, "getTransactions").mockResolvedValue({
-      transactions: accountTransactions,
-      oldestTxId: 1234n,
+      transactions: firstPageTransactions,
+      oldestTxId,
       balance: mainBalanceE8s,
     });
     vi.spyOn(accountsApi, "getTransactions").mockResolvedValue([]);
@@ -117,10 +136,11 @@ describe("NnsWallet", () => {
     vi.spyOn(ledgerApi, "queryAccountBalance").mockImplementation(
       () =>
         new Promise<bigint>((resolve) => {
-          resolveQueryBalance = () => resolve(mainBalanceE8s);
+          resolveQueryBalance = (balance?: bigint) =>
+            resolve(balance ?? mainBalanceE8s);
         })
     );
-    return () => resolveQueryBalance();
+    return (balance?: bigint) => resolveQueryBalance(balance);
   };
 
   const pauseGetTransactions = () => {
@@ -128,10 +148,12 @@ describe("NnsWallet", () => {
     vi.spyOn(accountsApi, "getTransactions").mockImplementation(
       () =>
         new Promise<Transaction[]>((resolve) => {
-          resolveGetTransactions = () => resolve([]);
+          resolveGetTransactions = (transactions?: Transaction[]) =>
+            resolve(transactions ?? []);
         })
     );
-    return () => resolveGetTransactions();
+    return (transactions?: Transaction[]) =>
+      resolveGetTransactions(transactions);
   };
 
   describe("user not signed in", () => {
@@ -198,6 +220,53 @@ describe("NnsWallet", () => {
       );
     });
 
+    it("should load balance and transactions", async () => {
+      const balanceE8s = 30_000_000n;
+      const balanceFormatted = "0.30 ICP";
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(balanceE8s);
+      vi.spyOn(accountsApi, "getTransactions").mockResolvedValue([
+        createMockSendTransaction({
+          amount: 100_000_000n,
+          to: accountIdentifier,
+        }),
+      ]);
+
+      expect(accountsApi.getTransactions).not.toBeCalled();
+      expect(ledgerApi.queryAccountBalance).not.toBeCalled();
+
+      const po = await renderWallet(props);
+
+      expect(ledgerApi.queryAccountBalance).toBeCalledTimes(1);
+      expect(ledgerApi.queryAccountBalance).toBeCalledWith({
+        certified: true,
+        icpAccountIdentifier: accountIdentifier,
+        identity: mockIdentity,
+      });
+
+      expect(accountsApi.getTransactions).toBeCalledTimes(2);
+      const expectedGetTransactionParams = {
+        icpAccountIdentifier: accountIdentifier,
+        identity: mockIdentity,
+        offset: 0,
+        pageSize: 100,
+      };
+      expect(accountsApi.getTransactions).toBeCalledWith({
+        certified: false,
+        ...expectedGetTransactionParams,
+      });
+      expect(accountsApi.getTransactions).toBeCalledWith({
+        certified: true,
+        ...expectedGetTransactionParams,
+      });
+
+      expect(await po.getWalletPageHeadingPo().getTitle()).toBe(
+        balanceFormatted
+      );
+      expect(
+        await po.getTransactionListPo().getTransactionCardPos()
+      ).toHaveLength(1);
+    });
+
     it("should render a spinner while loading", async () => {
       const resolveQueryAccount = pauseQueryAccountBalance();
       const po = await renderWallet({});
@@ -237,11 +306,31 @@ describe("NnsWallet", () => {
       await runResolvedPromises();
       expect(await po.getWalletPageHeadingPo().isPresent()).toBe(true);
     });
+
+    it("should not load balance twice while accounts are loaded", async () => {
+      expect(ledgerApi.queryAccountBalance).not.toBeCalled();
+
+      await renderWallet(props);
+
+      // Balance should be loaded, but not more than necessary.
+      expect(ledgerApi.queryAccountBalance).toBeCalledTimes(1);
+      expect(ledgerApi.queryAccountBalance).toBeCalledWith({
+        certified: true,
+        icpAccountIdentifier: accountIdentifier,
+        identity: mockIdentity,
+      });
+    });
   });
 
   describe("accounts loaded", () => {
     beforeEach(() => {
-      icpAccountsStore.setForTesting(mockAccountsStoreData);
+      setAccountsForTesting({
+        ...mockAccountsStoreData,
+        main: {
+          ...mockAccountsStoreData.main,
+          balanceUlps: mainBalanceE8s,
+        },
+      });
     });
 
     it("should render nns project name", async () => {
@@ -253,16 +342,63 @@ describe("NnsWallet", () => {
     });
 
     it("should render a balance with token in summary", async () => {
-      icpAccountsStore.setForTesting({
-        ...mockAccountsStoreData,
-        main: {
-          ...mockMainAccount,
-          balanceUlps: 432_100_000n,
-        },
-      });
+      vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
+        432_100_000n
+      );
       const po = await renderWallet(props);
 
       expect(await po.getWalletPageHeadingPo().getTitle()).toBe("4.32 ICP");
+    });
+
+    it("should reload balance on open", async () => {
+      const oldBalance = 135_000_000n;
+      const oldBalanceFormatted = "1.35 ICP";
+      const newBalance = 235_000_000n;
+      const newBalanceFormatted = "2.35 ICP";
+
+      setAccountsForTesting({
+        ...mockAccountsStoreData,
+        main: {
+          ...mockMainAccount,
+          balanceUlps: oldBalance,
+        },
+      });
+
+      const resolveQueryBalance = pauseQueryAccountBalance();
+
+      expect(accountsApi.getTransactions).not.toBeCalled();
+      expect(ledgerApi.queryAccountBalance).not.toBeCalled();
+
+      const po = await renderWallet(props);
+
+      expect(await po.getWalletPageHeadingPo().getTitle()).toBe(
+        oldBalanceFormatted
+      );
+
+      // Balance should be reloaded.
+      expect(ledgerApi.queryAccountBalance).toBeCalledTimes(2);
+      const expectedQueryBalanceParams = {
+        icpAccountIdentifier: mockAccountsStoreData.main.identifier,
+        identity: mockIdentity,
+      };
+      expect(ledgerApi.queryAccountBalance).toBeCalledWith({
+        certified: false,
+        ...expectedQueryBalanceParams,
+      });
+      expect(ledgerApi.queryAccountBalance).toBeCalledWith({
+        certified: true,
+        ...expectedQueryBalanceParams,
+      });
+
+      // New balance should be displayed.
+      expect(await po.getWalletPageHeadingPo().getTitle()).toBe(
+        oldBalanceFormatted
+      );
+      resolveQueryBalance(newBalance);
+      await runResolvedPromises();
+      expect(await po.getWalletPageHeadingPo().getTitle()).toBe(
+        newBalanceFormatted
+      );
     });
 
     it("should render transactions from ICP Index canister", async () => {
@@ -273,6 +409,52 @@ describe("NnsWallet", () => {
       expect(
         await po.getUiTransactionsListPo().getTransactionCardPos()
       ).toHaveLength(accountTransactions.length);
+    });
+
+    it("should render second page of transactions from ICP Index canister", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_INDEX", true);
+      vi.stubGlobal("IntersectionObserver", IntersectionObserverActive);
+      const resolveFunctions = [];
+      vi.spyOn(indexApi, "getTransactions").mockImplementation(
+        () =>
+          new Promise<indexApi.GetTransactionsResponse>((resolve) => {
+            resolveFunctions.push(resolve);
+          })
+      );
+
+      const { container } = render(NnsWallet, props);
+      const po = NnsWalletPo.under(new JestPageObjectElement(container));
+
+      await runResolvedPromises();
+      expect(resolveFunctions).toHaveLength(1);
+      resolveFunctions[0]({
+        transactions: firstPageTransactions,
+        oldestTxId,
+        balance: mainBalanceE8s,
+      });
+      await runResolvedPromises();
+
+      expect(
+        await po.getUiTransactionsListPo().getTransactionCardPos()
+      ).toHaveLength(firstPageTransactions.length);
+
+      expect(resolveFunctions).toHaveLength(2);
+      resolveFunctions[1]({
+        transactions: lastPageTransactions,
+        oldestTxId,
+        balance: mainBalanceE8s,
+      });
+      await runResolvedPromises();
+
+      expect(
+        await po.getUiTransactionsListPo().getTransactionCardPos()
+      ).toHaveLength(
+        firstPageTransactions.length + lastPageTransactions.length
+      );
+
+      await runResolvedPromises();
+      // Third page should not be requested.
+      expect(resolveFunctions).toHaveLength(2);
     });
 
     it("should render 'Staked' transaction from ICP Index canister", async () => {
@@ -356,6 +538,71 @@ describe("NnsWallet", () => {
       );
     });
 
+    it("should display SkeletonCard while loading transactions from ICP Index canister", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_INDEX", true);
+      let resolveGetTransactions;
+      vi.spyOn(indexApi, "getTransactions").mockImplementation(
+        () =>
+          new Promise<indexApi.GetTransactionsResponse>((resolve) => {
+            resolveGetTransactions = resolve;
+          })
+      );
+      const po = await renderWallet(props);
+
+      await runResolvedPromises();
+      expect(
+        await po.getUiTransactionsListPo().getSkeletonCardPo().isPresent()
+      ).toBe(true);
+
+      resolveGetTransactions({
+        transactions: accountTransactions,
+        oldestTxId: mockTransactionWithId.id,
+        balance: mainBalanceE8s,
+      });
+
+      await runResolvedPromises();
+      expect(
+        await po.getTransactionListPo().getSkeletonCardPo().isPresent()
+      ).toBe(false);
+    });
+
+    it("should not display SkeletonCard while loading transactions if there are transactions present in the store from ICP Index canister", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ICP_INDEX", true);
+      let resolveGetTransactions;
+      vi.spyOn(indexApi, "getTransactions").mockImplementation(
+        () =>
+          new Promise<indexApi.GetTransactionsResponse>((resolve) => {
+            resolveGetTransactions = resolve;
+          })
+      );
+      icpTransactionsStore.addTransactions({
+        accountIdentifier: mockMainAccount.identifier,
+        transactions: accountTransactions,
+        oldestTxId: mockTransactionWithId.id,
+        completed: false,
+      });
+      const po = await renderWallet(props);
+
+      await runResolvedPromises();
+      expect(
+        await po.getUiTransactionsListPo().getSkeletonCardPo().isPresent()
+      ).toBe(false);
+      expect(
+        await po.getUiTransactionsListPo().getTransactionCardPos()
+      ).toHaveLength(accountTransactions.length);
+
+      resolveGetTransactions({
+        transactions: accountTransactions,
+        oldestTxId: mockTransactionWithId.id,
+        balance: mainBalanceE8s,
+      });
+
+      await runResolvedPromises();
+      expect(
+        await po.getTransactionListPo().getSkeletonCardPo().isPresent()
+      ).toBe(false);
+    });
+
     it("should enable new transaction action for route and store", async () => {
       const po = await renderWallet(props);
 
@@ -419,17 +666,97 @@ describe("NnsWallet", () => {
     });
 
     it("should reload account after finish receiving tokens", async () => {
+      const oldBalance = 105_000_000n;
+      const oldBalanceFormatted = "1.05 ICP";
+      const newBalance = 205_000_000n;
+      const newBalanceFormatted = "2.05 ICP";
+
+      setAccountsForTesting({
+        ...mockAccountsStoreData,
+        main: {
+          ...mockMainAccount,
+          balanceUlps: oldBalance,
+        },
+      });
+
+      const resolveQueryBalance = pauseQueryAccountBalance();
+      const resolveGetTransactions = pauseGetTransactions();
+
       const { walletPo, receiveModalPo } =
         await renderWalletAndModals(modalProps);
 
       await walletPo.clickReceive();
 
       expect(accountsApi.getTransactions).toBeCalledTimes(2);
+      vi.mocked(accountsApi.getTransactions).mockClear();
+
+      expect(ledgerApi.queryAccountBalance).toBeCalledTimes(2);
+      vi.mocked(ledgerApi.queryAccountBalance).mockClear();
+
+      expect(accountsApi.getTransactions).not.toBeCalled();
       expect(ledgerApi.queryAccountBalance).not.toBeCalled();
 
       await receiveModalPo.clickFinish();
 
-      expect(accountsApi.getTransactions).toBeCalledTimes(4);
+      // Balance should be reloaded.
+      expect(ledgerApi.queryAccountBalance).toBeCalledTimes(2);
+      const expectedQueryBalanceParams = {
+        icpAccountIdentifier: mockAccountsStoreData.main.identifier,
+        identity: mockIdentity,
+      };
+      expect(ledgerApi.queryAccountBalance).toBeCalledWith({
+        certified: false,
+        ...expectedQueryBalanceParams,
+      });
+      expect(ledgerApi.queryAccountBalance).toBeCalledWith({
+        certified: true,
+        ...expectedQueryBalanceParams,
+      });
+
+      // New balance should be displayed.
+      expect(await walletPo.getWalletPageHeadingPo().getTitle()).toBe(
+        oldBalanceFormatted
+      );
+      resolveQueryBalance(newBalance);
+      await runResolvedPromises();
+      expect(await walletPo.getWalletPageHeadingPo().getTitle()).toBe(
+        newBalanceFormatted
+      );
+
+      // Transactions should be reloaded.
+      expect(accountsApi.getTransactions).toBeCalledTimes(2);
+      const expectedGetTransactionParams = {
+        ...expectedQueryBalanceParams,
+        offset: 0,
+        pageSize: 100,
+      };
+      expect(accountsApi.getTransactions).toBeCalledWith({
+        certified: false,
+        ...expectedGetTransactionParams,
+      });
+      expect(accountsApi.getTransactions).toBeCalledWith({
+        certified: true,
+        ...expectedGetTransactionParams,
+      });
+
+      // New transactions should be displayed.
+      expect(
+        await walletPo.getTransactionListPo().getTransactionCardPos()
+      ).toHaveLength(0);
+      resolveGetTransactions([
+        createMockSendTransaction({
+          amount: newBalance - oldBalance,
+          to: accountIdentifier,
+        }),
+      ]);
+      await runResolvedPromises();
+      expect(
+        await walletPo.getTransactionListPo().getTransactionCardPos()
+      ).toHaveLength(1);
+
+      // Reloading the balance should not have resulted in additional calls to
+      // getTransactions.
+      expect(accountsApi.getTransactions).toBeCalledTimes(2);
       expect(ledgerApi.queryAccountBalance).toBeCalledTimes(2);
     });
 
@@ -490,7 +817,7 @@ describe("NnsWallet", () => {
 
   describe("accounts loaded (Subaccount)", () => {
     beforeEach(() => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         ...mockAccountsStoreData,
         subAccounts: [mockSubAccount],
       });
@@ -512,7 +839,7 @@ describe("NnsWallet", () => {
     const testHwPrincipal = Principal.fromText(testHwPrincipalText);
 
     beforeEach(() => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         ...mockAccountsStoreData,
         hardwareWallets: [
           {

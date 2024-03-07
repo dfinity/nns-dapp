@@ -22,7 +22,7 @@
   import JoinCommunityFundCheckbox from "./actions/JoinCommunityFundCheckbox.svelte";
   import SplitNnsNeuronButton from "./actions/SplitNnsNeuronButton.svelte";
   import { authStore } from "$lib/stores/auth.store";
-  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 
   export let neuron: NeuronInfo;
 

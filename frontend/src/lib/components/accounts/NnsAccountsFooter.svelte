@@ -1,6 +1,6 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { i18n } from "$lib/stores/i18n";
   import Footer from "$lib/components/layout/Footer.svelte";
   import { nonNullish } from "@dfinity/utils";

@@ -3,6 +3,7 @@ import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import type { AccountDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
+import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import NnsStakeNeuronModal from "$lib/modals/neurons/NnsStakeNeuronModal.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
 import {
@@ -10,7 +11,6 @@ import {
   stakeNeuron,
   updateDelay,
 } from "$lib/services/neurons.services";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -24,6 +24,10 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsStakeNeuronModalPo } from "$tests/page-objects/NnsStakeNeuronModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import {
+  resetAccountsForTesting,
+  setAccountsForTesting,
+} from "$tests/utils/accounts.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
@@ -108,7 +112,7 @@ describe("NnsStakeNeuronModal", () => {
   describe("main account selection", () => {
     beforeEach(() => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         ...mockAccountsStoreData,
         subAccounts: [mockSubAccount],
       });
@@ -329,7 +333,7 @@ describe("NnsStakeNeuronModal", () => {
   describe("hardware wallet account selection", () => {
     beforeEach(() => {
       neuronsStore.setNeurons({ neurons: [], certified: true });
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         ...mockAccountsStoreData,
         hardwareWallets: [mockHardwareWalletAccount],
       });
@@ -400,7 +404,7 @@ describe("NnsStakeNeuronModal", () => {
 
     beforeEach(() => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
-      icpAccountsStore.resetForTesting();
+      resetAccountsForTesting();
       const mainBalanceE8s = 10_000_000n;
       vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
         mainBalanceE8s
@@ -443,7 +447,7 @@ describe("NnsStakeNeuronModal", () => {
   describe("when no accounts and user navigates away", () => {
     let spyQueryAccount: SpyInstance;
     beforeEach(() => {
-      icpAccountsStore.resetForTesting();
+      resetAccountsForTesting();
       vi.clearAllTimers();
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);

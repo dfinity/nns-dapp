@@ -1,7 +1,7 @@
 <script lang="ts">
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import type { Account } from "$lib/types/account";
-  import { onDestroy, setContext } from "svelte";
+  import { onMount, onDestroy, setContext } from "svelte";
   import { i18n } from "$lib/stores/i18n";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
@@ -12,7 +12,8 @@
     loadBalance,
     pollAccounts,
   } from "$lib/services/icp-accounts.services";
-  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+  import { icpAccountBalancesStore } from "$lib/stores/icp-account-balances.store";
   import { Island, Spinner } from "@dfinity/gix-components";
   import { toastsError } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -41,7 +42,12 @@
   import { pageStore } from "$lib/derived/page.derived";
   import Separator from "$lib/components/ui/Separator.svelte";
   import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
-  import { ICPToken, TokenAmountV2, nonNullish } from "@dfinity/utils";
+  import {
+    ICPToken,
+    TokenAmountV2,
+    isNullish,
+    nonNullish,
+  } from "@dfinity/utils";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import type { AccountIdentifierText } from "$lib/types/account";
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
@@ -51,7 +57,10 @@
   import RenameSubAccountButton from "$lib/components/accounts/RenameSubAccountButton.svelte";
   import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
   import IC_LOGO from "$lib/assets/icp.svg";
-  import { loadIcpAccountTransactions } from "$lib/services/icp-transactions.services";
+  import {
+    loadIcpAccountNextTransactions,
+    loadIcpAccountTransactions,
+  } from "$lib/services/icp-transactions.services";
   import { ENABLE_ICP_INDEX } from "$lib/stores/feature-flags.store";
   import type { UiTransaction } from "$lib/types/transaction";
   import {
@@ -61,6 +70,7 @@
   import {
     mapIcpTransaction,
     mapToSelfTransactions,
+    sortTransactionsByIdDescendingOrder,
   } from "$lib/utils/icp-transactions.utils";
   import UiTransactionsList from "$lib/components/accounts/UiTransactionsList.svelte";
   import { neuronAccountsStore } from "$lib/stores/neurons.store";
@@ -75,15 +85,49 @@
     }
   }
 
+  onMount(() => {
+    // If the balance was already loaded, reload it.
+    // If it wasn't loaded, `pollAccounts` will load it, so don't load it twice.
+    if (
+      nonNullish(accountIdentifier) &&
+      nonNullish($icpAccountBalancesStore[accountIdentifier])
+    ) {
+      loadBalance({ accountIdentifier });
+    }
+  });
+
   onDestroy(() => {
     cancelPollAccounts();
   });
 
   const goBack = (): Promise<void> => goto(AppPath.Accounts);
 
+  let loadingTransactions = false;
   let transactions: Transaction[] | undefined;
   // Used to identify transactions related to a Swap.
   let swapCanisterAccountsStore: Readable<Set<string>> | undefined = undefined;
+  let completedTransactions = false;
+  $: completedTransactions = getCompletedFromStore({
+    account: $selectedAccountStore.account,
+    transactionsStore: $icpTransactionsStore,
+  });
+
+  const getCompletedFromStore = ({
+    account,
+    transactionsStore,
+  }: {
+    account: Account | undefined;
+    transactionsStore: IcpTransactionsStoreData;
+  }): boolean => {
+    if (
+      nonNullish(account) &&
+      nonNullish(transactionsStore[account.identifier])
+    ) {
+      return transactionsStore[account.identifier].completed;
+    }
+    return false;
+  };
+
   let uiTransactions: UiTransaction[] | undefined;
   $: uiTransactions = makeUiTransactions({
     account: $selectedAccountStore.account,
@@ -107,7 +151,9 @@
       nonNullish(transactionsStore[account.identifier])
     ) {
       return mapToSelfTransactions(
-        transactionsStore[account.identifier].transactions
+        sortTransactionsByIdDescendingOrder(
+          transactionsStore[account.identifier].transactions
+        )
       )
         .map(({ transaction, toSelfTransaction }) =>
           mapIcpTransaction({
@@ -123,11 +169,16 @@
     }
   };
 
-  const reloadTransactions = (
+  const reloadTransactions = async (
     accountIdentifier: AccountIdentifierText
-  ): Promise<void> => {
+  ) => {
     if ($ENABLE_ICP_INDEX) {
-      return loadIcpAccountTransactions({ accountIdentifier });
+      // Don't show the loading spinner if the transactions are already loaded.
+      loadingTransactions = isNullish($icpTransactionsStore[accountIdentifier]);
+      // But we still load them to get the latest transactions.
+      await loadIcpAccountTransactions({ accountIdentifier });
+      loadingTransactions = false;
+      return;
     }
     return getAccountTransactions({
       accountIdentifier: accountIdentifier,
@@ -140,6 +191,16 @@
         transactions = loadedTransactions;
       },
     });
+  };
+
+  const loadNextTransactions = async () => {
+    if (nonNullish($selectedAccountStore.account)) {
+      loadingTransactions = true;
+      await loadIcpAccountNextTransactions(
+        $selectedAccountStore.account.identifier
+      );
+      loadingTransactions = false;
+    }
   };
 
   const selectedAccountStore = writable<WalletStore>({
@@ -156,7 +217,8 @@
 
   export let accountIdentifier: string | undefined | null = undefined;
 
-  const accountDidUpdate = async ({ account }: WalletStore) => {
+  const accountDidUpdate = async () => {
+    const account = $selectedAccountStore.account;
     if (account !== undefined) {
       await reloadTransactions(account.identifier);
       return;
@@ -211,7 +273,16 @@
     accounts: $nnsAccountsListStore,
   });
 
-  $: (async () => await accountDidUpdate($selectedAccountStore))();
+  // We use the `accountKey` to determine if the account has meaningfully
+  // changed to avoid unnecessary calls to `accountDidUpdate` when the store is
+  // updated with the same value it already had.
+  let accountKey: string;
+  $: accountKey = JSON.stringify({
+    accountIdentifer: $selectedAccountStore.account?.identifier,
+    balance: $selectedAccountStore.account?.balanceUlps.toString(),
+  });
+
+  $: accountKey, accountDidUpdate();
 
   let showModal: "send" | undefined = undefined;
 
@@ -220,12 +291,12 @@
   const reloadAccount = async () => {
     try {
       if (nonNullish($selectedAccountStore.account)) {
-        await Promise.all([
-          loadBalance({
-            accountIdentifier: $selectedAccountStore.account.identifier,
-          }),
-          reloadTransactions($selectedAccountStore.account.identifier),
-        ]);
+        await loadBalance({
+          accountIdentifier: $selectedAccountStore.account.identifier,
+        });
+        // Reloading the balance results in reloading the transactions in
+        // accountDidUpdate, if the balance changed, so we don't reload
+        // transactions here to avoid doing it twice.
       }
     } catch (err: unknown) {
       toastsError({
@@ -285,9 +356,10 @@
           {#if $selectedAccountStore.account !== undefined}
             {#if $ENABLE_ICP_INDEX}
               <UiTransactionsList
+                on:nnsIntersect={loadNextTransactions}
                 transactions={uiTransactions ?? []}
-                loading={false}
-                completed={false}
+                loading={loadingTransactions}
+                completed={completedTransactions}
               />
             {:else}
               <TransactionList {transactions} />

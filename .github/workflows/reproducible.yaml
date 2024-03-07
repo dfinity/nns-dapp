@@ -1,4 +1,10 @@
-name: Reproducible
+name: Reproducible Docker Builds
+# Simulates end users verifying builds published by Dfinity:
+# - Runs docker builds on various different operating systems, with an empty docker cache.
+#   Note: This makes builds slow but is more representative of the end user experience.
+# - Verifies that all these builds yield the same artifacts.
+# - NOT DONE: Verify that these builds match our release artifacts.  This would correspond to third
+#   party verifiers getting consistent hashes that differ from our release.
 on:
   push:
     branches:
@@ -18,7 +24,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04, macos-11, macos-12]
+        os:
+          # - macos-11
+          # - macos-12
+          - ubuntu-20.04
+          - ubuntu-22.04
     steps:
       - name: Unbork mac
         run: |
@@ -63,12 +73,17 @@ jobs:
       - name: 'Upload hashes'
         uses: actions/upload-artifact@v4
         with:
-          name: hashes
+          name: hashes_${{ matrix.os }}_${{ matrix.time }}
           path: hashes/*.txt
   compare_hashes:
     runs-on: ubuntu-latest
     needs: [docker_build]
     steps:
+      - name: Merge Hashes
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: hashes
+          pattern: hashes_*
       - name: Get hashes
         uses: actions/download-artifact@v4
         with:
@@ -81,3 +96,18 @@ jobs:
           # If the assets hashes differ, the Wasm hashes will also
           # differ, so we only check the Wasm hashes.
           (( $(cat hashes/nns-dapp-wasm_*.txt | sort | uniq | wc -l) == 1 ))
+  check_passes:
+    needs: ["docker_build", "compare_hashes"]
+    if: ${{ always() }}
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/needs_success
+        with:
+          needs: '${{ toJson(needs) }}'
+      - name: Notify Slack on failure
+        uses: dfinity/internet-identity/.github/actions/slack@release-2023-08-28
+        if: ${{ failure() }}
+        with:
+          WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          MESSAGE: "Reproducible docker build test failed for ${{ github.ref_name }}"

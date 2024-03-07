@@ -1,5 +1,5 @@
+import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { getICPs } from "$lib/services/dev.services";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { mockAccountsStoreSubscribe } from "$tests/mocks/icp-accounts.store.mock";
 
 describe("dev-services", () => {

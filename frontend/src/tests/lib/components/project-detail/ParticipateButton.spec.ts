@@ -1,7 +1,6 @@
 import ParticipateButton from "$lib/components/project-detail/ParticipateButton.svelte";
 import { NOT_LOADED } from "$lib/constants/stores.constants";
 import { authStore } from "$lib/stores/auth.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import { userCountryStore } from "$lib/stores/user-country.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
@@ -25,6 +24,7 @@ import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { renderContextCmp, snsTicketMock } from "$tests/mocks/sns.mock";
 import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/svelte";
@@ -105,7 +105,7 @@ describe("ParticipateButton", () => {
 
       // When the modal appears, it will trigger `pollAccounts`
       // which trigger api calls if accounts are not loaded.
-      icpAccountsStore.setForTesting(mockAccountsStoreData);
+      setAccountsForTesting(mockAccountsStoreData);
 
       const { getByTestId } = renderContextCmp({
         summary: mockSnsFullProject.summary,

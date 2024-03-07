@@ -8,7 +8,6 @@ import { CKETH_LEDGER_CANISTER_ID } from "$lib/constants/cketh-canister-ids.cons
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
 import { authStore } from "$lib/stores/auth.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import {
@@ -38,6 +37,10 @@ import {
   createIcpUserToken,
   icpTokenBase,
 } from "$tests/mocks/tokens-page.mock";
+import {
+  resetAccountsForTesting,
+  setAccountsForTesting,
+} from "$tests/utils/accounts.test-utils";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
@@ -190,7 +193,7 @@ describe("tokens-list-user.derived", () => {
 
   describe("tokensListUserStore", () => {
     beforeEach(() => {
-      icpAccountsStore.resetForTesting();
+      resetAccountsForTesting();
       icrcAccountsStore.reset();
       tokensStore.reset();
       authStore.setForTesting(mockIdentity);
@@ -242,7 +245,7 @@ describe("tokens-list-user.derived", () => {
     });
 
     it("should return balance and goToDetail action if ICP balance is present", () => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: mockMainAccount,
       });
       expect(get(tokensListUserStore)).toEqual([
@@ -307,7 +310,7 @@ describe("tokens-list-user.derived", () => {
     });
 
     it("should return all balances and actions if all balances are present", () => {
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: mockMainAccount,
       });
       icrcAccountsStore.set({

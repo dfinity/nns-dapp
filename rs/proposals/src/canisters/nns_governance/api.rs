@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-02-07_23-01+feature/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-02-28_23-01+p2p-hotfix/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -484,22 +484,6 @@ pub struct MostRecentMonthlyNodeProviderRewards {
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
-pub struct GenesisNeuronAccount {
-    pub id: u64,
-    pub error_count: u64,
-    pub neuron_type: i32,
-    pub account_ids: Vec<String>,
-    pub tag_end_timestamp_seconds: Option<u64>,
-    pub amount_icp_e8s: u64,
-    pub tag_start_timestamp_seconds: Option<u64>,
-}
-
-#[derive(Serialize, CandidType, Deserialize)]
-pub struct GenesisNeuronAccounts {
-    pub genesis_neuron_accounts: Vec<GenesisNeuronAccount>,
-}
-
-#[derive(Serialize, CandidType, Deserialize)]
 pub struct GovernanceCachedMetrics {
     pub total_maturity_e8s_equivalent: u64,
     pub not_dissolving_neurons_e8s_buckets: Vec<(u64, f64)>,
@@ -790,7 +774,6 @@ pub struct Governance {
     pub making_sns_proposal: Option<MakingSnsProposal>,
     pub most_recent_monthly_node_provider_rewards: Option<MostRecentMonthlyNodeProviderRewards>,
     pub maturity_modulation_last_updated_at_timestamp_seconds: Option<u64>,
-    pub genesis_neuron_accounts: Option<GenesisNeuronAccounts>,
     pub wait_for_quiet_threshold_seconds: u64,
     pub metrics: Option<GovernanceCachedMetrics>,
     pub neuron_management_voting_period_seconds: Option<u64>,

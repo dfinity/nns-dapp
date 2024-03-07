@@ -20,7 +20,7 @@
   import ConfirmSpawnHW from "$lib/components/neuron-detail/ConfirmSpawnHW.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { goto } from "$app/navigation";
-  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 
   export let neuron: NeuronInfo;
 

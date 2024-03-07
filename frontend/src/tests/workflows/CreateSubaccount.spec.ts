@@ -5,7 +5,6 @@ import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import Accounts from "$lib/routes/Accounts.svelte";
 import { authStore } from "$lib/stores/auth.store";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { page } from "$mocks/$app/stores";
 import {
   mockAuthStoreSubscribe,
@@ -18,6 +17,7 @@ import {
 } from "$tests/mocks/icp-accounts.store.mock";
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import { render } from "@testing-library/svelte";
 import { mock } from "vitest-mock-extended";
@@ -55,7 +55,7 @@ describe("Accounts", () => {
   describe("when tokens page flag is enabled", async () => {
     it("should create a subaccount in NNS", async () => {
       page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
-      icpAccountsStore.setForTesting({
+      setAccountsForTesting({
         main: mockMainAccount,
         subAccounts: [],
         hardwareWallets: [],

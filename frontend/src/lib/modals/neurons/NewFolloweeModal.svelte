@@ -6,7 +6,7 @@
   import { Spinner } from "@dfinity/gix-components";
   import { listKnownNeurons } from "$lib/services/known-neurons.services";
   import { addFollowee } from "$lib/services/neurons.services";
-  import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { authStore } from "$lib/stores/auth.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";

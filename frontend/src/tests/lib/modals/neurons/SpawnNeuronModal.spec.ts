@@ -1,6 +1,5 @@
 import SpawnNeuronModal from "$lib/modals/neurons/SpawnNeuronModal.svelte";
 import { spawnNeuron } from "$lib/services/neurons.services";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { formattedMaturity } from "$lib/utils/neuron.utils";
 import {
   mockHardwareWalletAccount,
@@ -8,6 +7,7 @@ import {
 } from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { fireEvent } from "@testing-library/svelte";
 
 vi.mock("$lib/services/neurons.services", () => {
@@ -27,7 +27,7 @@ describe("SpawnNeuronModal", () => {
   };
 
   beforeAll(() =>
-    icpAccountsStore.setForTesting({
+    setAccountsForTesting({
       main: mockMainAccount,
       hardwareWallets: [mockHardwareWalletAccount],
     })

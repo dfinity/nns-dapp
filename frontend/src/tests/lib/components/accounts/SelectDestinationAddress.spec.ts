@@ -1,6 +1,6 @@
 import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
+import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import {
   mockAccountsStoreSubscribe,

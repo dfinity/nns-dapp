@@ -2,12 +2,12 @@ import {
   MAX_CANISTER_NAME_LENGTH,
   NEW_CANISTER_MIN_T_CYCLES,
 } from "$lib/constants/canisters.constants";
+import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import CreateCanisterModal from "$lib/modals/canisters/CreateCanisterModal.svelte";
 import {
   createCanister,
   getIcpToCyclesExchangeRate,
 } from "$lib/services/canisters.services";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { toastsShow } from "$lib/stores/toasts.store";
 import { mockCanister } from "$tests/mocks/canisters.mock";
 import en from "$tests/mocks/i18n.mock";

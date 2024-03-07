@@ -1,6 +1,6 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import { universesAccountsBalance } from "$lib/derived/universes-accounts-balance.derived";
-import { icpAccountsStore } from "$lib/stores/icp-accounts.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import {
   mockAccountsStoreSubscribe,

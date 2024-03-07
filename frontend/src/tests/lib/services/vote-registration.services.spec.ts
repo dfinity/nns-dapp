@@ -4,6 +4,7 @@ import * as authServices from "$lib/services/auth.services";
 import * as neuronsServices from "$lib/services/neurons.services";
 import { registerNnsVotes } from "$lib/services/nns-vote-registration.services";
 import { processRegisterVoteErrors } from "$lib/services/vote-registration.services";
+import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { proposalsStore } from "$lib/stores/proposals.store";
 import * as toastsStore from "$lib/stores/toasts.store";
@@ -251,6 +252,27 @@ describe("vote-registration-services", () => {
             })
           );
         }
+      });
+
+      it("should reset actionable proposals store after voting", async () => {
+        actionableNnsProposalsStore.setProposals([proposal]);
+
+        expect(get(actionableNnsProposalsStore)).toEqual({
+          proposals: [proposal],
+        });
+
+        await registerNnsVotes({
+          neuronIds,
+          proposalInfo: proposal,
+          vote: Vote.Yes,
+          reloadProposalCallback: () => {
+            // do nothing
+          },
+        });
+
+        expect(get(actionableNnsProposalsStore)).toEqual({
+          proposals: undefined,
+        });
       });
 
       it("should hide the vote in progress toast after voting", async () => {
