@@ -21,6 +21,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Minor wording and style changes on the neuron detail page.
 * Enable loading state from stable structures.
+* More readable error messages if `assert_eq` fails in tests.
 
 #### Deprecated
 
