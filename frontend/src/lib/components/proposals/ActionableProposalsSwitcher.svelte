@@ -3,19 +3,19 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { i18n } from "$lib/stores/i18n";
 
-  export let selected: "all" | "actionable";
-  export let defaultSelection: "all" | "actionable";
+  export let selectedSegment: "all" | "actionable";
+  export let defaultSegment: "all" | "actionable";
 
   const actionableProposalsSegmentId = Symbol();
   const allProposalsSegmentId = Symbol();
 
   let segment: Segment;
   let selectedSegmentId: symbol =
-    defaultSelection === "all"
+    defaultSegment === "all"
       ? allProposalsSegmentId
       : actionableProposalsSegmentId;
 
-  $: selected =
+  $: selectedSegment =
     selectedSegmentId === actionableProposalsSegmentId ? "actionable" : "all";
 </script>
 

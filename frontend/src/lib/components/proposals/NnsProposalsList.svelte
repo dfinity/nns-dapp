@@ -30,7 +30,7 @@
 </script>
 
 <TestIdWrapper testId="nns-proposal-list-component">
-  <NnsProposalsFilters bind:selectedSegment defaultSelectedSegment="all" />
+  <NnsProposalsFilters bind:selectedSegment />
 
   {#if display}
     {#if selectedSegment === "actionable" && $actionableProposalIndicationEnabledStore && $ENABLE_VOTING_INDICATION}
