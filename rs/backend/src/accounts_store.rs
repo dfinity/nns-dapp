@@ -58,10 +58,20 @@ pub struct AccountsStore {
     block_height_synced_up_to: Option<BlockIndex>,
     multi_part_transactions_processor: MultiPartTransactionsProcessor,
     accounts_db_stats: AccountsDbStats,
-    accounts_db_stats_recomputed_on_upgrade: Option<bool>,
+    accounts_db_stats_recomputed_on_upgrade: IgnoreEq<Option<bool>>,
     last_ledger_sync_timestamp_nanos: u64,
     neurons_topped_up_count: u64,
 }
+
+/// A wrapper around a value that ignores equality.
+#[derive(Default)]
+struct IgnoreEq<T>(T) where T: Default;
+impl<T: Default> PartialEq for IgnoreEq<T> {
+    fn eq(&self, _: &Self) -> bool {
+        true
+    }
+}
+impl<T: Default> Eq for IgnoreEq<T> {}
 
 impl fmt::Debug for AccountsStore {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -1105,7 +1115,7 @@ impl AccountsStore {
         stats.transactions_to_process_queue_length = self.multi_part_transactions_processor.get_queue_length();
         stats.schema = Some(self.accounts_db.schema_label() as u32);
         stats.migration_countdown = Some(self.accounts_db.migration_countdown());
-        stats.accounts_db_stats_recomputed_on_upgrade = self.accounts_db_stats_recomputed_on_upgrade;
+        stats.accounts_db_stats_recomputed_on_upgrade = self.accounts_db_stats_recomputed_on_upgrade.0;
     }
 
     #[must_use]
@@ -1626,7 +1636,7 @@ impl StableState for AccountsStore {
         let (accounts_db_stats, accounts_db_stats_recomputed_on_upgrade) = if let Some(counts) = accounts_db_stats_maybe
         {
             println!("Using de-serialized accounts_db stats");
-            (counts, Some(false))
+            (counts, IgnoreEq(Some(false)))
         } else {
             println!("Re-counting accounts_db stats...");
             let mut sub_accounts_count: u64 = 0;
@@ -1640,7 +1650,7 @@ impl StableState for AccountsStore {
                     sub_accounts_count,
                     hardware_wallet_accounts_count,
                 },
-                Some(true),
+                IgnoreEq(Some(true)),
             )
         };
 
