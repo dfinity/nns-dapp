@@ -52,7 +52,10 @@
 </script>
 
 <TestIdWrapper testId="nns-proposals-filters-component">
-  <div class="proposal-filters">
+  <div
+    class="proposal-filters"
+    class:voting-indication-enabled={$ENABLE_VOTING_INDICATION}
+  >
     {#if $ENABLE_VOTING_INDICATION && $actionableProposalIndicationEnabledStore}
       <div class="actionable-segment">
         <ActionableProposalsSegment
@@ -140,13 +143,15 @@
       align-items: center;
     }
 
-    // Apply same height to all filter buttons
-    // TODO(max): think about moving this to gix-components
-    --common-button-min-height: calc(5 * var(--padding));
-    :global(.segment),
-    :global(.filters button) {
-      // Subtract segment padding
-      min-height: calc(var(--common-button-min-height) - var(--padding));
+    &.voting-indication-enabled {
+      // Apply same height to all filter buttons
+      // TODO(max): think about moving this to gix-components
+      --common-button-min-height: calc(5 * var(--padding));
+      :global(.segment),
+      :global(.filters button) {
+        // Subtract segment padding
+        min-height: calc(var(--common-button-min-height) - var(--padding));
+      }
     }
   }
 </style>
