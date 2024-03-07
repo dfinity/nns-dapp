@@ -23,7 +23,7 @@
   let display = true;
   $: display = !building;
 
-  let selectedSegment: "actionable" | "all";
+  let selectedSegment: "all" | "actionable";
 
   let actionableProposals;
   $: actionableProposals = $actionableNnsProposalsStore.proposals ?? [];

@@ -15,8 +15,8 @@
   import { actionableProposalIndicationEnabledStore } from "$lib/derived/actionable-proposals.derived";
   import ActionableProposalsSwitcher from "$lib/components/proposals/ActionableProposalsSwitcher.svelte";
 
-  export let selectedSegment: "actionable" | "all";
-  export let defaultSelectedSegment: "all" | "actionable";
+  export let selected: "all" | "actionable";
+  export let defaultSelection: "all" | "actionable" = "all";
 
   let modalFilters: ProposalsFilterModalProps | undefined = undefined;
 
@@ -58,14 +58,11 @@
   >
     {#if $ENABLE_VOTING_INDICATION && $actionableProposalIndicationEnabledStore}
       <div class="actionable-segment">
-        <ActionableProposalsSwitcher
-          {defaultSelectedSegment}
-          bind:selectedSegment
-        />
+        <ActionableProposalsSwitcher {defaultSelection} bind:selected />
       </div>
     {/if}
 
-    {#if !$ENABLE_VOTING_INDICATION || !$actionableProposalIndicationEnabledStore || selectedSegment === "all"}
+    {#if !$ENABLE_VOTING_INDICATION || !$actionableProposalIndicationEnabledStore || selected === "all"}
       <FiltersWrapper>
         <FiltersButton
           testId="filters-by-topics"
