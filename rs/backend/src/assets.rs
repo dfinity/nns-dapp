@@ -19,6 +19,9 @@ use std::collections::HashMap;
 use std::io::prelude::*;
 use std::io::Read;
 
+#[cfg(test)]
+use pretty_assertions::assert_eq;
+
 type HeaderField = (String, String);
 
 #[derive(Clone, Debug, CandidType, Deserialize)]

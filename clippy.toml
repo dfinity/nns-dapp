@@ -3,6 +3,7 @@ disallowed-macros = [
     "std::println",
     "std::eprint",
     "std::eprintln",
+    "std::assert_eq"
 ]
 disallowed-methods = [
     "dfn_core::api::print",

@@ -6,6 +6,7 @@ use crate::{
     },
 };
 use ic_stable_structures::{DefaultMemoryImpl, VectorMemory};
+use pretty_assertions::assert_eq;
 use proptest::proptest;
 use std::cell::RefCell;
 use strum::IntoEnumIterator;
