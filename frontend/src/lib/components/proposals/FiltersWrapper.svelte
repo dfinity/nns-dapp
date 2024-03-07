@@ -1,7 +1,5 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
-
-  export const duration = 150;
 </script>
 
 <div class="filters" data-tid="proposals-filters" in:fade={{ duration: 150 }}>

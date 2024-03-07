@@ -15,7 +15,7 @@
   import { actionableProposalIndicationEnabledStore } from "$lib/derived/actionable-proposals.derived";
   import ActionableProposalsSegment from "$lib/components/proposals/ActionableProposalsSegment.svelte";
 
-  export let selectedSegment: "all" | "actionable" | undefined = undefined;
+  export let selectedSegment: "all" | "actionable" = "all";
 
   let modalFilters: ProposalsFilterModalProps | undefined = undefined;
 
@@ -51,10 +51,7 @@
 </script>
 
 <TestIdWrapper testId="nns-proposals-filters-component">
-  <div
-    class="proposal-filters"
-    class:voting-indication-enabled={$ENABLE_VOTING_INDICATION}
-  >
+  <div class="proposal-filters">
     {#if $ENABLE_VOTING_INDICATION && $actionableProposalIndicationEnabledStore}
       <div class="actionable-segment">
         <ActionableProposalsSegment defaultSegment="all" bind:selectedSegment />
@@ -137,17 +134,6 @@
       flex-direction: row;
       flex-wrap: wrap;
       align-items: center;
-    }
-
-    &.voting-indication-enabled {
-      // Apply same height to all filter buttons
-      // TODO(max): think about moving this to gix-components
-      --common-button-min-height: calc(5 * var(--padding));
-      :global(.segment),
-      :global(.filters button) {
-        // Subtract segment padding
-        min-height: calc(var(--common-button-min-height) - var(--padding));
-      }
     }
   }
 </style>
