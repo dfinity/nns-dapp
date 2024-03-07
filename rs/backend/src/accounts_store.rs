@@ -4,7 +4,6 @@ use crate::multi_part_transactions_processor::{MultiPartTransactionToBeProcessed
 use crate::state::StableState;
 use crate::stats::Stats;
 use candid::CandidType;
-use core::cell::RefCell;
 use dfn_candid::Candid;
 use histogram::AccountsStoreHistogram;
 use ic_base_types::{CanisterId, PrincipalId};
@@ -44,13 +43,6 @@ type TransactionIndex = u64;
 /// accounts we avoid some complications.
 const PRE_MIGRATION_LIMIT: u64 = 300_000;
 
-thread_local! {
-    /// Temporary statistic: Whether account statistics were recomputed.
-    ///
-    /// Note: This data is NOT persisted on upgrade, and must not be persisted.
-    pub static ACCOUNT_STATS_RECOMPUTED: RefCell<Option<bool>> = RefCell::new(None);
-}
-
 /// Accounts, transactions and related data.
 #[derive(Default)]
 #[cfg_attr(test, derive(Eq, PartialEq))]
@@ -66,6 +58,7 @@ pub struct AccountsStore {
     block_height_synced_up_to: Option<BlockIndex>,
     multi_part_transactions_processor: MultiPartTransactionsProcessor,
     accounts_db_stats: AccountsDbStats,
+    accounts_db_stats_recomputed_on_upgrade: Option<bool>,
     last_ledger_sync_timestamp_nanos: u64,
     neurons_topped_up_count: u64,
 }
@@ -1112,6 +1105,7 @@ impl AccountsStore {
         stats.transactions_to_process_queue_length = self.multi_part_transactions_processor.get_queue_length();
         stats.schema = Some(self.accounts_db.schema_label() as u32);
         stats.migration_countdown = Some(self.accounts_db.migration_countdown());
+        stats.accounts_db_stats_recomputed_on_upgrade = self.accounts_db_stats_recomputed_on_upgrade;
     }
 
     #[must_use]
@@ -1629,23 +1623,21 @@ impl StableState for AccountsStore {
             }
         }
 
-        let accounts_db_stats = if let Some(counts) = accounts_db_stats_maybe {
+        let (accounts_db_stats, accounts_db_stats_recomputed_on_upgrade) = if let Some(counts) = accounts_db_stats_maybe {
             println!("Using de-serialized accounts_db stats");
-            ACCOUNT_STATS_RECOMPUTED.replace(Some(false));
-            counts
+            (counts, Some(false))
         } else {
             println!("Re-counting accounts_db stats...");
-            ACCOUNT_STATS_RECOMPUTED.replace(Some(true));
             let mut sub_accounts_count: u64 = 0;
             let mut hardware_wallet_accounts_count: u64 = 0;
             for account in accounts.values() {
                 sub_accounts_count += account.sub_accounts.len() as u64;
                 hardware_wallet_accounts_count += account.hardware_wallet_accounts.len() as u64;
             }
-            AccountsDbStats {
+            (AccountsDbStats {
                 sub_accounts_count,
                 hardware_wallet_accounts_count,
-            }
+            }, Some(true))
         };
 
         let accounts_db = AccountsDb::Map(AccountsDbAsMap::from_map(accounts));
@@ -1659,6 +1651,7 @@ impl StableState for AccountsStore {
             block_height_synced_up_to,
             multi_part_transactions_processor,
             accounts_db_stats,
+            accounts_db_stats_recomputed_on_upgrade,
             last_ledger_sync_timestamp_nanos,
             neurons_topped_up_count,
         })
