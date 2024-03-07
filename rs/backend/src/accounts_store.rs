@@ -65,7 +65,9 @@ pub struct AccountsStore {
 
 /// A wrapper around a value that ignores equality.
 #[derive(Default)]
-struct IgnoreEq<T>(T) where T: Default;
+struct IgnoreEq<T>(T)
+where
+    T: Default;
 impl<T: Default> PartialEq for IgnoreEq<T> {
     fn eq(&self, _: &Self) -> bool {
         true
