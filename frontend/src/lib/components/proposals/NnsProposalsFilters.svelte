@@ -13,9 +13,9 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
   import { actionableProposalIndicationEnabledStore } from "$lib/derived/actionable-proposals.derived";
-  import ActionableProposalsSwitcher from "$lib/components/proposals/ActionableProposalsSwitcher.svelte";
+  import ActionableProposalsSegment from "$lib/components/proposals/ActionableProposalsSegment.svelte";
 
-  export let selectedSegment: "all" | "actionable";
+  export let selectedSegment: "all" | "actionable" | undefined = undefined;
 
   let modalFilters: ProposalsFilterModalProps | undefined = undefined;
 
@@ -57,10 +57,7 @@
   >
     {#if $ENABLE_VOTING_INDICATION && $actionableProposalIndicationEnabledStore}
       <div class="actionable-segment">
-        <ActionableProposalsSwitcher
-          defaultSelection="all"
-          bind:selectedSegment
-        />
+        <ActionableProposalsSegment defaultSegment="all" bind:selectedSegment />
       </div>
     {/if}
 

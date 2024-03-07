@@ -19,7 +19,7 @@
     selectedSegmentId === actionableProposalsSegmentId ? "actionable" : "all";
 </script>
 
-<TestIdWrapper testId="actionable-proposals-switcher-component">
+<TestIdWrapper testId="actionable-proposals-segment-component">
   <Segment bind:selectedSegmentId bind:this={segment}>
     <SegmentButton testId="all-proposals" segmentId={allProposalsSegmentId}
       >{$i18n.voting.all_proposals}</SegmentButton
