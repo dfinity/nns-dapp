@@ -1,18 +1,25 @@
 import NnsProposalsFilters from "$lib/components/proposals/NnsProposalsFilters.svelte";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   DEFAULT_PROPOSALS_FILTERS,
   DEPRECATED_TOPICS,
 } from "$lib/constants/proposals.constants";
+import { AppPath } from "$lib/constants/routes.constants";
 import { authStore } from "$lib/stores/auth.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { proposalsFiltersStore } from "$lib/stores/proposals.store";
 import { PROPOSAL_FILTER_UNSPECIFIED_VALUE } from "$lib/types/proposals";
 import { enumSize } from "$lib/utils/enum.utils";
+import { page } from "$mocks/$app/stores";
 import {
   authStoreMock,
   mockIdentity,
   mutableMockAuthStoreSubscribe,
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import { NnsProposalFiltersPo } from "$tests/page-objects/NnsProposalFilters.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
@@ -85,9 +92,12 @@ describe("NnsProposalsFilters", () => {
         authStoreMock.next({
           identity: mockIdentity,
         });
+        overrideFeatureFlagsStore.reset();
       });
 
       it("should render a checkbox", () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", false);
+
         const { container } = render(NnsProposalsFilters);
 
         const input: HTMLInputElement | null = container.querySelector("input");
@@ -138,6 +148,151 @@ describe("NnsProposalsFilters", () => {
         activeFilters: activeFilters.length - 1,
         totalFilters: enumSize(Topic) - nonShownTopicsLength,
         text: en.voting.topics,
+      });
+    });
+  });
+
+  describe("actionable proposals", () => {
+    const renderComponent = async () => {
+      const { container } = render(NnsProposalsFilters);
+      await runResolvedPromises();
+      return NnsProposalFiltersPo.under(new JestPageObjectElement(container));
+    };
+
+    beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", true);
+      proposalsFiltersStore.reset();
+
+      authStoreMock.next({
+        identity: mockIdentity,
+      });
+
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT },
+        routeId: AppPath.Proposals,
+      });
+    });
+
+    it("should hide votable proposals checkbox", async () => {
+      const po = await renderComponent();
+
+      expect(await po.getVotableProposalsOnlyCheckboxPo().isPresent()).toEqual(
+        false
+      );
+    });
+
+    it("should render actionable proposals segment", async () => {
+      const po = await renderComponent();
+
+      expect(await po.getActionableProposalsSegmentPo().isPresent()).toEqual(
+        true
+      );
+    });
+
+    it('should "all" be preselected by default', async () => {
+      const po = await renderComponent();
+      expect(
+        await po.getActionableProposalsSegmentPo().isAllProposalsSelected()
+      ).toEqual(true);
+    });
+
+    it("should be clickable", async () => {
+      const po = await renderComponent();
+      const segmentPo = po.getActionableProposalsSegmentPo();
+      await segmentPo.clickActionableProposals();
+      expect(await segmentPo.isActionableProposalsSelected()).toEqual(true);
+
+      await segmentPo.clickAllProposals();
+      expect(await segmentPo.isAllProposalsSelected()).toEqual(true);
+    });
+
+    it("should hide and show proposal filters", async () => {
+      const po = await renderComponent();
+      const segmentPo = po.getActionableProposalsSegmentPo();
+
+      expect(await po.getFiltersWrapperElement().isPresent()).toEqual(true);
+
+      await segmentPo.clickActionableProposals();
+      expect(await po.getFiltersWrapperElement().isPresent()).toEqual(false);
+
+      await segmentPo.clickAllProposals();
+      expect(await po.getFiltersWrapperElement().isPresent()).toEqual(true);
+    });
+
+    describe("when feature flag false", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", false);
+      });
+
+      it("should display votable proposals checkbox", async () => {
+        const po = await renderComponent();
+
+        expect(
+          await po.getVotableProposalsOnlyCheckboxPo().isPresent()
+        ).toEqual(true);
+      });
+
+      it("should render only filters when sign-in", async () => {
+        authStoreMock.next({
+          identity: undefined,
+        });
+
+        const po = await renderComponent();
+        expect(await po.getActionableProposalsSegmentPo().isPresent()).toEqual(
+          false
+        );
+        expect(await po.getFiltersWrapperElement().isPresent()).toEqual(true);
+
+        // for actionable selection
+        const po2 = await renderComponent();
+        expect(await po2.getActionableProposalsSegmentPo().isPresent()).toEqual(
+          false
+        );
+        expect(await po2.getFiltersWrapperElement().isPresent()).toEqual(true);
+      });
+
+      it("should render only filters when sign-out", async () => {
+        authStoreMock.next({
+          identity: undefined,
+        });
+
+        const po = await renderComponent();
+        expect(await po.getActionableProposalsSegmentPo().isPresent()).toEqual(
+          false
+        );
+        expect(await po.getFiltersWrapperElement().isPresent()).toEqual(true);
+
+        // for actionable selection
+        const po2 = await renderComponent();
+        expect(await po2.getActionableProposalsSegmentPo().isPresent()).toEqual(
+          false
+        );
+        expect(await po2.getFiltersWrapperElement().isPresent()).toEqual(true);
+      });
+    });
+
+    describe("when signed out", () => {
+      beforeEach(() => {
+        authStoreMock.next({
+          identity: undefined,
+        });
+      });
+
+      it("should not render actionable proposals segment", async () => {
+        authStoreMock.next({
+          identity: undefined,
+        });
+
+        await runResolvedPromises();
+        const po = await renderComponent();
+        expect(await po.getActionableProposalsSegmentPo().isPresent()).toEqual(
+          false
+        );
+      });
+
+      it("should render proposal filters", async () => {
+        const po = await renderComponent();
+        expect(await po.getFiltersWrapperElement().isPresent()).toEqual(true);
       });
     });
   });

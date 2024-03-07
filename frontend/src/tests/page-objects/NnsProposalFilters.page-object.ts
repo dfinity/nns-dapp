@@ -1,3 +1,4 @@
+import { ActionableProposalsSegmentPo } from "$tests/page-objects/ActionableProposalsSegment.page-object";
 import { CheckboxPo } from "$tests/page-objects/Checkbox.page-object";
 import { FilterModalPo } from "$tests/page-objects/FilterModal.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -17,6 +18,15 @@ export class NnsProposalFiltersPo extends BasePageObject {
 
   clickFiltersByStatusButton(): Promise<void> {
     return this.click("filters-by-status");
+  }
+
+  getActionableProposalsSegmentPo(): ActionableProposalsSegmentPo {
+    return ActionableProposalsSegmentPo.under(this.root);
+  }
+
+  // All proposal filter buttons container
+  getFiltersWrapperElement(): PageObjectElement {
+    return this.root.byTestId("proposals-filters");
   }
 
   getFilterModalPo(): FilterModalPo {
