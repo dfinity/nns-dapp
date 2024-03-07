@@ -4,6 +4,7 @@ use crate::multi_part_transactions_processor::{MultiPartTransactionToBeProcessed
 use crate::state::StableState;
 use crate::stats::Stats;
 use candid::CandidType;
+use core::cell::RefCell;
 use dfn_candid::Candid;
 use histogram::AccountsStoreHistogram;
 use ic_base_types::{CanisterId, PrincipalId};
@@ -42,6 +43,13 @@ type TransactionIndex = u64;
 /// The data migration is more complicated if there are too many accounts.  With below this many
 /// accounts we avoid some complications.
 const PRE_MIGRATION_LIMIT: u64 = 300_000;
+
+thread_local! {
+    /// Temporary statistic: Whether account statistics were recomputed.
+    ///
+    /// Note: This data is NOT persisted on upgrade, and must not be persisted.
+    pub static ACCOUNT_STATS_RECOMPUTED: RefCell<Option<bool>> = RefCell::new(None);
+}
 
 /// Accounts, transactions and related data.
 #[derive(Default)]
@@ -1623,9 +1631,11 @@ impl StableState for AccountsStore {
 
         let accounts_db_stats = if let Some(counts) = accounts_db_stats_maybe {
             println!("Using de-serialized accounts_db stats");
+            ACCOUNT_STATS_RECOMPUTED.replace(Some(false));
             counts
         } else {
             println!("Re-counting accounts_db stats...");
+            ACCOUNT_STATS_RECOMPUTED.replace(Some(true));
             let mut sub_accounts_count: u64 = 0;
             let mut hardware_wallet_accounts_count: u64 = 0;
             for account in accounts.values() {
