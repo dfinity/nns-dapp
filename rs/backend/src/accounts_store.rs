@@ -1623,7 +1623,8 @@ impl StableState for AccountsStore {
             }
         }
 
-        let (accounts_db_stats, accounts_db_stats_recomputed_on_upgrade) = if let Some(counts) = accounts_db_stats_maybe {
+        let (accounts_db_stats, accounts_db_stats_recomputed_on_upgrade) = if let Some(counts) = accounts_db_stats_maybe
+        {
             println!("Using de-serialized accounts_db stats");
             (counts, Some(false))
         } else {
@@ -1634,10 +1635,13 @@ impl StableState for AccountsStore {
                 sub_accounts_count += account.sub_accounts.len() as u64;
                 hardware_wallet_accounts_count += account.hardware_wallet_accounts.len() as u64;
             }
-            (AccountsDbStats {
-                sub_accounts_count,
-                hardware_wallet_accounts_count,
-            }, Some(true))
+            (
+                AccountsDbStats {
+                    sub_accounts_count,
+                    hardware_wallet_accounts_count,
+                },
+                Some(true),
+            )
         };
 
         let accounts_db = AccountsDb::Map(AccountsDbAsMap::from_map(accounts));

@@ -47,6 +47,7 @@ icp-ledger = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05c
 on_wire = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 
 proposals = { path = "../proposals" }
+pretty_assertions = "1.4.0"
 
 [dev-dependencies]
 anyhow = "1.0.75"
