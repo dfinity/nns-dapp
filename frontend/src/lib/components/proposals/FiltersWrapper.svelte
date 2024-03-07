@@ -1,14 +1,10 @@
 <script lang="ts">
-  import { slide } from "svelte/transition";
-  import { SHORT_SLIDE_Y_PARAMS } from "$lib/constants/ui-constants";
+  import { fade } from "svelte/transition";
+
+  export const duration = 150;
 </script>
 
-<div
-  class="filters"
-  data-tid="proposals-filters"
-  in:slide={SHORT_SLIDE_Y_PARAMS}
-  out:slide={SHORT_SLIDE_Y_PARAMS}
->
+<div class="filters" data-tid="proposals-filters" in:fade={{ duration: 150 }}>
   <slot />
 </div>
 
