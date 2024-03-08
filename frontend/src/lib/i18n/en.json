@@ -537,7 +537,7 @@
   "proposal_detail__ineligible": {
     "headline": "$count Ineligible neuron",
     "headline_plural": "$count Ineligible neurons",
-    "text": "The following neurons are not eligible to vote.",
+    "text": "The following neurons are not eligible to vote. They either have dissolve delays of less than $minDissolveDelay at the time when the proposal was submitted, or they were created after the proposal was submitted.",
     "reason_since": "created after the proposal",
     "reason_no_permission": "no voting permission",
     "reason_short": "dissolve delay < $minDissolveDelay"

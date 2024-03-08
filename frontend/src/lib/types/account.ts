@@ -24,9 +24,3 @@ export interface Account {
   subAccount?: SubAccountArray;
   type: AccountType;
 }
-
-export interface IcpAccount extends Account {
-  // TODO: IcpAccountIdentifierText to be ultimately removed
-  // @deprecated
-  icpIdentifier?: IcpAccountIdentifierText;
-}

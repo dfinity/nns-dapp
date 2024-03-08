@@ -11,6 +11,51 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 128153
+
+### Application
+
+#### Added
+
+* Add `ENABLE_ICP_INDEX` feature flag.
+* Add metrics and logging for schema migration.
+
+#### Changed
+
+* Minor wording and style changes on the neuron detail page.
+* Enable loading state from stable structures.
+* Enable migrating state to and from stable structures.
+
+#### Deprecated
+
+- Remove support for devices with Internet Computer App version smaller than 2.4.9.
+
+#### Removed
+
+* Remove functionality to add pending swap transactions in NNS Dapp canister.
+
+#### Fixed
+
+* Bug where transferred SNS neurons appeared in the list of neurons after transferring them.
+* Bug when the "Manage Internet Identity" link always uses `internetcomputer.org` domain.
+
+### Operations
+
+#### Added
+
+* Dependabot configuration to update GitHub actions.
+* Add `NNS_INDEX_CANISTER_ID` to the configuration.
+
+#### Changed
+
+* Upgraded `ic-js` dependencies to utilize `agent-js` patched version `v1.0.1`.
+* Avoid a 5 minute timeout in CI by waiting 20 seconds instead.
+* Fixed the formatting command in the `update-aggregator-response` GitHub workflow.
+
+#### Fixed
+
+* Adapted Dockerfile to the new `dfx` installation procedure.
+
 ## Proposal 127764
 
 ### Application

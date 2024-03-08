@@ -93,7 +93,6 @@ describe("icpAccountsStore", () => {
     expect(get(icpAccountsStore)).toEqual({
       main: {
         balanceUlps: mainAccountBalance,
-        icpIdentifier: mainAccountIdentifier,
         identifier: mainAccountIdentifier,
         principal: mainAccountPrincipal,
         type: "main",
@@ -127,7 +126,6 @@ describe("icpAccountsStore", () => {
     expect(get(icpAccountsStore)).toEqual({
       main: {
         balanceUlps: mainAccountBalance,
-        icpIdentifier: mainAccountIdentifier,
         identifier: mainAccountIdentifier,
         principal: mainAccountPrincipal,
         type: "main",
@@ -135,7 +133,6 @@ describe("icpAccountsStore", () => {
       subAccounts: [
         {
           balanceUlps: subAccountBalance,
-          icpIdentifier: subAccountIdentifier,
           identifier: subAccountIdentifier,
           name: subAccountName,
           subAccount: subAccountArray,
@@ -145,63 +142,7 @@ describe("icpAccountsStore", () => {
       hardwareWallets: [
         {
           balanceUlps: hardwareWalletAccountBalance,
-          icpIdentifier: hardwareWalletAccountIdentifier,
           identifier: hardwareWalletAccountIdentifier,
-          name: hardwareWalletAccountName,
-          principal: hardwareWalletAccountPrincipal,
-          type: "hardwareWallet",
-        },
-      ],
-    });
-  });
-
-  it("should use ICRC-1 identifiers with ENABLE_ICP_ICRC", () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_ICP_ICRC", true);
-
-    icpAccountDetailsStore.set(accountDetailsData);
-
-    setBalance({
-      accountIdentifier: mainAccountIdentifier,
-      balanceE8s: mainAccountBalance,
-      certified: true,
-    });
-
-    setBalance({
-      accountIdentifier: subAccountIdentifier,
-      balanceE8s: subAccountBalance,
-      certified: true,
-    });
-
-    setBalance({
-      accountIdentifier: hardwareWalletAccountIdentifier,
-      balanceE8s: hardwareWalletAccountBalance,
-      certified: true,
-    });
-
-    expect(get(icpAccountsStore)).toEqual({
-      main: {
-        balanceUlps: mainAccountBalance,
-        icpIdentifier: mainAccountIdentifier,
-        identifier: mainAccountPrincipal.toText(),
-        principal: mainAccountPrincipal,
-        type: "main",
-      },
-      subAccounts: [
-        {
-          balanceUlps: subAccountBalance,
-          icpIdentifier: subAccountIdentifier,
-          // Principal + checksum + subaccount array
-          identifier: `${mainAccountPrincipal.toText()}-42xschi.54657687`,
-          name: subAccountName,
-          subAccount: subAccountArray,
-          type: "subAccount",
-        },
-      ],
-      hardwareWallets: [
-        {
-          balanceUlps: hardwareWalletAccountBalance,
-          icpIdentifier: hardwareWalletAccountIdentifier,
-          identifier: hardwareWalletAccountPrincipal.toText(),
           name: hardwareWalletAccountName,
           principal: hardwareWalletAccountPrincipal,
           type: "hardwareWallet",

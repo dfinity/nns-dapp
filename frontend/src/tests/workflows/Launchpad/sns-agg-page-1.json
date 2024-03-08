@@ -270,7 +270,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98000878061241950,
+    "icrc1_total_supply": 98000987798971820,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -378,8 +378,8 @@
       "functions": [
         {
           "id": 0,
-          "name": "All Topics",
-          "description": "Catch-all w.r.t to following for all types of proposals.",
+          "name": "All non-critical topics",
+          "description": "Catch-all w.r.t to following for non-critical proposals.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -468,6 +468,22 @@
           "id": 11,
           "name": "Deregister Dapp Canisters",
           "description": "Proposal to deregister a previously-registered dapp canister from the SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 12,
+          "name": "Mint SNS Tokens",
+          "description": "Proposal to mint SNS tokens to a specified recipient.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 13,
+          "name": "Manage ledger parameters",
+          "description": "Proposal to change some parameters in the ledger canister.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -688,7 +704,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100417282495601310,
+    "icrc1_total_supply": 100429807808803820,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1316,7 +1332,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50005324906040610,
+    "icrc1_total_supply": 50005559160166184,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1600,8 +1616,8 @@
         "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
       "voting_rewards_parameters": {
-        "final_reward_rate_basis_points": 250,
-        "initial_reward_rate_basis_points": 250,
+        "final_reward_rate_basis_points": 0,
+        "initial_reward_rate_basis_points": 0,
         "reward_rate_transition_duration_seconds": 0,
         "round_duration_seconds": 86400
       },
@@ -2112,7 +2128,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10005616869369412,
+    "icrc1_total_supply": 10005726770102852,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3063,7 +3079,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10000722838657952,
+    "icrc1_total_supply": 10000767924454300,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -3339,7 +3355,6 @@
         "aanaa-xaaaa-aaaah-aaeiq-cai",
         "utozz-siaaa-aaaam-qaaxq-cai",
         "eo2vl-tyaaa-aaaah-adtfa-cai",
-        "gug5x-niaaa-aaaah-adtka-cai",
         "ltj2f-gaaaa-aaaah-adnea-cai"
       ],
       "archives": ["svw4v-tiaaa-aaaaq-aabyq-cai"]
@@ -3355,8 +3370,8 @@
       "functions": [
         {
           "id": 0,
-          "name": "All Topics",
-          "description": "Catch-all w.r.t to following for all types of proposals.",
+          "name": "All non-critical topics",
+          "description": "Catch-all w.r.t to following for non-critical proposals.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -3445,6 +3460,30 @@
           "id": 11,
           "name": "Deregister Dapp Canisters",
           "description": "Proposal to deregister a previously-registered dapp canister from the SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 12,
+          "name": "Mint SNS Tokens",
+          "description": "Proposal to mint SNS tokens to a specified recipient.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 13,
+          "name": "Manage ledger parameters",
+          "description": "Proposal to change some parameters in the ledger canister.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 14,
+          "name": "Manage dapp canister settings",
+          "description": "Proposal to change canister settings for some dapp canisters.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -4004,7 +4043,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12545131155078334,
+    "icrc1_total_supply": 12545208857126208,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -5434,6 +5473,14 @@
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
+        },
+        {
+          "id": 14,
+          "name": "Manage dapp canister settings",
+          "description": "Proposal to change canister settings for some dapp canisters.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
         }
       ]
     },
@@ -5858,7 +5905,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100000284857815940,
+    "icrc1_total_supply": 100000328435115980,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,

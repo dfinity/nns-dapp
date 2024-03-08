@@ -6,14 +6,18 @@ import { writable, type Readable } from "svelte/store";
 export interface ActionableSnsProposalsStoreData {
   // Each SNS Project is an entry in this Store.
   // We use the root canister id as the key to identify the proposals for a specific project.
-  [rootCanisterId: string]: SnsProposalData[];
+  [rootCanisterId: string]: {
+    proposals: SnsProposalData[];
+    includeBallotsByCaller: boolean;
+  };
 }
 
 export interface ActionableSnsProposalsStore
   extends Readable<ActionableSnsProposalsStoreData> {
-  setProposals: (data: {
+  set: (data: {
     rootCanisterId: Principal;
     proposals: SnsProposalData[];
+    includeBallotsByCaller: boolean;
   }) => void;
   resetForSns: (rootCanisterId: Principal) => void;
   resetForTesting: () => void;
@@ -30,16 +34,21 @@ const initActionableSnsProposalsStore = (): ActionableSnsProposalsStore => {
   return {
     subscribe,
 
-    setProposals({
+    set({
       rootCanisterId,
       proposals,
+      includeBallotsByCaller,
     }: {
       rootCanisterId: Principal;
       proposals: SnsProposalData[];
+      includeBallotsByCaller: boolean;
     }) {
       update((currentState: ActionableSnsProposalsStoreData) => ({
         ...currentState,
-        [rootCanisterId.toText()]: proposals,
+        [rootCanisterId.toText()]: {
+          proposals,
+          includeBallotsByCaller,
+        },
       }));
     },
 

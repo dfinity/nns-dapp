@@ -228,9 +228,10 @@ describe("SelectUniverseCard", () => {
             routeId: AppPath.Proposals,
           });
 
-          actionableSnsProposalsStore.setProposals({
+          actionableSnsProposalsStore.set({
             rootCanisterId: Principal.from(mockSnsUniverse.canisterId),
             proposals: [mockSnsProposal, mockSnsProposal],
+            includeBallotsByCaller: true,
           });
 
           const po = renderComponent({
@@ -249,9 +250,10 @@ describe("SelectUniverseCard", () => {
             routeId: AppPath.Proposals,
           });
 
-          actionableSnsProposalsStore.setProposals({
+          actionableSnsProposalsStore.set({
             rootCanisterId: Principal.from(mockSnsUniverse.canisterId),
             proposals: [mockSnsProposal, mockSnsProposal],
+            includeBallotsByCaller: true,
           });
 
           const po = renderComponent({
@@ -277,9 +279,10 @@ describe("SelectUniverseCard", () => {
             routeId: AppPath.Proposals,
           });
 
-          actionableSnsProposalsStore.setProposals({
+          actionableSnsProposalsStore.set({
             rootCanisterId: Principal.from(mockSnsUniverse.canisterId),
             proposals: [],
+            includeBallotsByCaller: true,
           });
 
           const po = renderComponent({
