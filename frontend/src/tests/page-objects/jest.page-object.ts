@@ -1,4 +1,5 @@
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { areFakeTimersEnabled } from "$tests/utils/timers.test-utils";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
@@ -144,7 +145,10 @@ export class JestPageObjectElement implements PageObjectElement {
 
   async selectOption(text: string): Promise<void> {
     await this.waitFor();
-    return userEvent.selectOptions(this.getElement(), text);
+    const userEventToUse = areFakeTimersEnabled()
+      ? userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+      : userEvent;
+    return userEventToUse.selectOptions(this.getElement(), text);
   }
 
   async isVisible(): Promise<boolean> {
