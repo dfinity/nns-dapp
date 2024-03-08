@@ -12,6 +12,7 @@
   import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
   import { actionableProposalIndicationEnabledStore } from "$lib/derived/actionable-proposals.derived";
   import { fade } from "svelte/transition";
+  import type { ProposalInfo } from "@dfinity/nns";
   export let nothingFound: boolean;
   export let hidden: boolean;
   export let disableInfiniteScroll: boolean;
@@ -25,7 +26,7 @@
 
   let selectedSegment: "all" | "actionable";
 
-  let actionableProposals;
+  let actionableProposals: ProposalInfo[];
   $: actionableProposals = $actionableNnsProposalsStore.proposals ?? [];
 </script>
 
