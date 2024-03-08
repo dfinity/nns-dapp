@@ -34,7 +34,7 @@
 
   {#if display}
     {#if selectedSegment === "actionable" && $actionableProposalIndicationEnabledStore && $ENABLE_VOTING_INDICATION}
-      <div in:fade>
+      <div in:fade data-tid="actionable-proposal-list">
         <InfiniteScroll layout="grid" disabled>
           {#each actionableProposals as proposalInfo (proposalInfo.id)}
             <NnsProposalCard {hidden} {proposalInfo} />
@@ -42,7 +42,7 @@
         </InfiniteScroll>
       </div>
     {:else}
-      <div in:fade>
+      <div in:fade data-tid="all-proposal-list">
         <ListLoader loading={loadingAnimation === "spinner"}>
           <InfiniteScroll
             on:nnsIntersect

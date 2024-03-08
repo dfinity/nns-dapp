@@ -1,14 +1,18 @@
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as agent from "$lib/api/agent.api";
 import * as governanceApi from "$lib/api/governance.api";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
+import { AppPath } from "$lib/constants/routes.constants";
 import NnsProposals from "$lib/pages/NnsProposals.svelte";
 import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import {
   proposalsFiltersStore,
   proposalsStore,
 } from "$lib/stores/proposals.store";
+import { page } from "$mocks/$app/stores";
 import {
   authStoreMock,
   mockAuthStoreSubscribe,
@@ -23,6 +27,9 @@ import {
   mockProposals,
   mockProposalsStoreSubscribe,
 } from "$tests/mocks/proposals.store.mock";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { NnsProposalListPo } from "$tests/page-objects/NnsProposalList.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import {
   GovernanceCanister,
@@ -87,6 +94,7 @@ describe("NnsProposals", () => {
 
     describe("Matching results", () => {
       beforeEach(() => {
+        overrideFeatureFlagsStore.reset();
         const mockGovernanceCanister: MockGovernanceCanister =
           new MockGovernanceCanister(mockProposals);
 
@@ -101,6 +109,8 @@ describe("NnsProposals", () => {
       });
 
       it("should render filters", () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", false);
+
         const { getByText } = render(NnsProposals);
 
         expect(getByText("Topics")).toBeInTheDocument();
@@ -320,6 +330,55 @@ describe("NnsProposals", () => {
       });
 
       expect(spyReload).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("actionable proposals segment", () => {
+    const renderComponent = async () => {
+      const { container } = render(NnsProposals);
+      await runResolvedPromises();
+      return NnsProposalListPo.under(new JestPageObjectElement(container));
+    };
+
+    beforeEach(() => {
+      authStoreMock.next({
+        identity: mockIdentity,
+      });
+
+      page.mock({
+        data: { universe: OWN_CANISTER_ID_TEXT },
+        routeId: AppPath.Proposals,
+      });
+
+      overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", true);
+    });
+
+    it("should render all proposals by default", async () => {
+      const po = await renderComponent();
+
+      expect(await po.getAllProposalList().isPresent()).toEqual(true);
+      expect(await po.getActionableProposalList().isPresent()).toEqual(false);
+    });
+
+    it("should switch proposal lists on actionable toggle", async () => {
+      const po = await renderComponent();
+      await po
+        .getNnsProposalFiltersPo()
+        .getActionableProposalsSegmentPo()
+        .clickActionableProposals();
+      await runResolvedPromises();
+
+      expect(await po.getAllProposalList().isPresent()).toEqual(false);
+      expect(await po.getActionableProposalList().isPresent()).toEqual(true);
+
+      await po
+        .getNnsProposalFiltersPo()
+        .getActionableProposalsSegmentPo()
+        .clickAllProposals();
+      await runResolvedPromises();
+
+      expect(await po.getAllProposalList().isPresent()).toEqual(true);
+      expect(await po.getActionableProposalList().isPresent()).toEqual(false);
     });
   });
 });

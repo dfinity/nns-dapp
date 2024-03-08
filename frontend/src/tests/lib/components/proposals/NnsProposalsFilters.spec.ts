@@ -210,13 +210,13 @@ describe("NnsProposalsFilters", () => {
       const po = await renderComponent();
       const segmentPo = po.getActionableProposalsSegmentPo();
 
-      expect(await po.getFiltersWrapperElement().isPresent()).toEqual(true);
+      expect(await po.getFiltersWrapper().isPresent()).toEqual(true);
 
       await segmentPo.clickActionableProposals();
-      expect(await po.getFiltersWrapperElement().isPresent()).toEqual(false);
+      expect(await po.getFiltersWrapper().isPresent()).toEqual(false);
 
       await segmentPo.clickAllProposals();
-      expect(await po.getFiltersWrapperElement().isPresent()).toEqual(true);
+      expect(await po.getFiltersWrapper().isPresent()).toEqual(true);
     });
 
     describe("when feature flag false", () => {
@@ -241,14 +241,14 @@ describe("NnsProposalsFilters", () => {
         expect(await po.getActionableProposalsSegmentPo().isPresent()).toEqual(
           false
         );
-        expect(await po.getFiltersWrapperElement().isPresent()).toEqual(true);
+        expect(await po.getFiltersWrapper().isPresent()).toEqual(true);
 
         // for actionable selection
         const po2 = await renderComponent();
         expect(await po2.getActionableProposalsSegmentPo().isPresent()).toEqual(
           false
         );
-        expect(await po2.getFiltersWrapperElement().isPresent()).toEqual(true);
+        expect(await po2.getFiltersWrapper().isPresent()).toEqual(true);
       });
 
       it("should render only filters when sign-out", async () => {
@@ -260,14 +260,14 @@ describe("NnsProposalsFilters", () => {
         expect(await po.getActionableProposalsSegmentPo().isPresent()).toEqual(
           false
         );
-        expect(await po.getFiltersWrapperElement().isPresent()).toEqual(true);
+        expect(await po.getFiltersWrapper().isPresent()).toEqual(true);
 
         // for actionable selection
         const po2 = await renderComponent();
         expect(await po2.getActionableProposalsSegmentPo().isPresent()).toEqual(
           false
         );
-        expect(await po2.getFiltersWrapperElement().isPresent()).toEqual(true);
+        expect(await po2.getFiltersWrapper().isPresent()).toEqual(true);
       });
     });
 
@@ -292,7 +292,7 @@ describe("NnsProposalsFilters", () => {
 
       it("should render proposal filters", async () => {
         const po = await renderComponent();
-        expect(await po.getFiltersWrapperElement().isPresent()).toEqual(true);
+        expect(await po.getFiltersWrapper().isPresent()).toEqual(true);
       });
     });
   });

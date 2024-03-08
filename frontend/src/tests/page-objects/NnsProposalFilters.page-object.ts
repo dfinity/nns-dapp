@@ -25,7 +25,7 @@ export class NnsProposalFiltersPo extends BasePageObject {
   }
 
   // All proposal filter buttons container
-  getFiltersWrapperElement(): PageObjectElement {
+  getFiltersWrapper(): PageObjectElement {
     return this.root.byTestId("proposals-filters");
   }
 

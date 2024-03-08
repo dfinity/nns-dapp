@@ -1,3 +1,4 @@
+import { NnsProposalFiltersPo } from "$tests/page-objects/NnsProposalFilters.page-object";
 import { ProposalCardPo } from "$tests/page-objects/ProposalCard.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -12,6 +13,18 @@ export class NnsProposalListPo extends BasePageObject {
 
   getSkeletonCardPo(): SkeletonCardPo {
     return SkeletonCardPo.under(this.root);
+  }
+
+  getAllProposalList(): PageObjectElement {
+    return this.root.byTestId("all-proposal-list");
+  }
+
+  getActionableProposalList(): PageObjectElement {
+    return this.root.byTestId("actionable-proposal-list");
+  }
+
+  getNnsProposalFiltersPo(): NnsProposalFiltersPo {
+    return NnsProposalFiltersPo.under(this.root);
   }
 
   getProposalCardPo(): ProposalCardPo {
