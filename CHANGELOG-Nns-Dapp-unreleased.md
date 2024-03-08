@@ -19,6 +19,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Refactored `icpAccountsStore` to be derived from separate stores.
 * Wording changes for ineligible neurons description.
+* Load ICP transactions from ICP index canister instead of nns-dapp.
 
 #### Deprecated
 
