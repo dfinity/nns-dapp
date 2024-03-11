@@ -309,7 +309,7 @@ pub fn canister_heartbeat() {
     let future = run_periodic_tasks();
 
     dfn_core::api::futures::spawn(future);
-    dfn_core::api::futures::spawn(call_and_log_step_migration());
+    dfn_core::api::futures::spawn(call_step_migration_with_retries());
 }
 
 /// Steps the migration.
@@ -329,13 +329,16 @@ async fn call_step_migration(step_size: u32) -> Result<(), (RejectionCode, Strin
     ic_cdk::api::call::call(ic_cdk::id(), "step_migration", (step_size,)).await
 }
 
-/// Calls step migration and logs any errors.
-async fn call_and_log_step_migration() {
-    call_step_migration(AccountsDbAsProxy::MIGRATION_STEP_SIZE)
-        .await
-        .unwrap_or_else(|(code, msg)| {
-            println!("step_migration failed: {code:?} {msg}");
-        });
+/// Calls step migration, dropping the step size to 1 on failure.
+async fn call_step_migration_with_retries() {
+    for step_size in [AccountsDbAsProxy::MIGRATION_STEP_SIZE, 1] {
+        if let Err((code, msg)) = call_step_migration(step_size).await {
+            println!("WARNING: step_migration failed with step size {step_size}: {code:?} {msg}");
+        } else {
+            return;
+        }
+    }
+    eprintln!("ERROR: step_migration failed.");
 }
 
 /// Add an asset to be served by the canister.
