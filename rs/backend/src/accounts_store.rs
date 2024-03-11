@@ -358,6 +358,11 @@ pub enum DetachCanisterResponse {
 }
 
 impl AccountsStore {
+    /// Determines whether a migration is being performed.
+    #[must_use]
+    pub fn migration_in_progress(&self) -> bool {
+        self.accounts_db.migration_in_progress()
+    }
     /// Starts migrating accounts to the new db.
     pub fn start_migrating_accounts_to(&mut self, accounts_db: AccountsDb) {
         self.accounts_db.start_migrating_accounts_to(accounts_db);

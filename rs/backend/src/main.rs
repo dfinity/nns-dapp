@@ -16,7 +16,7 @@ pub use candid::{CandidType, Deserialize};
 use dfn_candid::{candid, candid_one};
 use dfn_core::{over, over_async};
 use ic_cdk::api::call::RejectionCode;
-use ic_cdk::println;
+use ic_cdk::{eprintln, println};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use ic_stable_structures::DefaultMemoryImpl;
 use icp_ledger::AccountIdentifier;
@@ -309,7 +309,10 @@ pub fn canister_heartbeat() {
     let future = run_periodic_tasks();
 
     dfn_core::api::futures::spawn(future);
-    dfn_core::api::futures::spawn(call_step_migration_with_retries());
+    let migration_in_progress = STATE.with(|s| s.accounts_store.borrow().migration_in_progress());
+    if migration_in_progress {
+        dfn_core::api::futures::spawn(call_step_migration_with_retries());
+    }
 }
 
 /// Steps the migration.
@@ -318,13 +321,13 @@ pub fn step_migration() {
     over(candid_one, step_migration_impl);
 }
 
-fn step_migration_impl(step_size: u32) -> () {
+fn step_migration_impl(step_size: u32) {
     STATE.with(|s| {
         s.accounts_store.borrow_mut().step_migration(step_size);
     });
 }
 
-/// Calls step_migration without panicking and rolling back if anything goes wrong.
+/// Calls `step_migration()` without panicking and rolling back if anything goes wrong.
 async fn call_step_migration(step_size: u32) -> Result<(), (RejectionCode, String)> {
     ic_cdk::api::call::call(ic_cdk::id(), "step_migration", (step_size,)).await
 }

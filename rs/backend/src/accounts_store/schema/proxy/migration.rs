@@ -11,6 +11,12 @@ impl AccountsDbAsProxy {
     /// Note: This must be positive and should correspond to a reasonable estimate of the number of blocks needed to complete the migration.
     pub const MIGRATION_FINALIZATION_BLOCKS: u32 = 1;
 
+    /// Determines whether a migration is in progress.
+    #[must_use]
+    pub fn migration_in_progress(&self) -> bool {
+        self.migration.is_some()
+    }
+
     /// Migration countdown; when it reaches zero, the migration is complete.
     ///
     /// Note: This is a rough estimate of the number of blocks needed to complete the migration.
