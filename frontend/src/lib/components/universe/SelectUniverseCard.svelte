@@ -135,6 +135,9 @@
   }
 
   .not-supported {
+    // extra gap to align with the count badge
+    margin: var(--padding);
+
     width: var(--padding);
     height: var(--padding);
     border-radius: var(--padding);
