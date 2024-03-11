@@ -72,7 +72,7 @@
           {#if actionableProposalCount ?? 0 > 0}
             <ActionableProposalCountBadge count={actionableProposalCount} />
           {:else if actionableProposalSupported === false}
-            <span class="not-supported" />
+            <span class="not-supported" data-tid="not-supported-badge" />
           {/if}
         {/if}
       </span>
