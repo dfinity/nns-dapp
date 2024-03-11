@@ -1,14 +1,14 @@
 import { writable, type Readable } from "svelte/store";
 
-export type Foo = "all" | "actionable";
+export type ActionableSegmentSelection = "all" | "actionable";
 
 export interface ActionableProposalsSegmentStoreData {
-  selected: Foo;
+  selected: ActionableSegmentSelection;
 }
 
 export interface ActionableProposalsSegmentStore
   extends Readable<ActionableProposalsSegmentStoreData> {
-  set: (selected: Foo) => void;
+  set: (selected: ActionableSegmentSelection) => void;
   resetForTesting: () => void;
 }
 
@@ -25,7 +25,7 @@ const initActionableProposalsSegmentStore =
     return {
       subscribe,
 
-      set(selected: Foo) {
+      set(selected: ActionableSegmentSelection) {
         set({ selected });
       },
 
