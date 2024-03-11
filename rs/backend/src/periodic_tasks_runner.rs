@@ -13,8 +13,6 @@ use ic_nns_governance::pb::v1::{claim_or_refresh_neuron_from_account_response, C
 use icp_ledger::{
     AccountBalanceArgs, AccountIdentifier, BlockIndex, Memo, SendArgs, Subaccount, Tokens, DEFAULT_TRANSFER_FEE,
 };
-use nns_dapp::accounts_store::schema::proxy::AccountsDbAsProxy;
-
 const PRUNE_TRANSACTIONS_COUNT: u32 = 1000;
 
 pub async fn run_periodic_tasks() {
@@ -22,7 +20,6 @@ pub async fn run_periodic_tasks() {
 
     STATE.with(|state| {
         state.performance.borrow_mut().increment_periodic_tasks_run();
-        state.accounts_store.borrow_mut().step_migration(AccountsDbAsProxy::MIGRATION_STEP_SIZE);
     });
 
     let maybe_transaction_to_process =

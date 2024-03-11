@@ -11,9 +11,11 @@ use crate::perf::PerformanceCount;
 use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{StableState, State, STATE};
 
+use accounts_store::schema::proxy::AccountsDbAsProxy;
 pub use candid::{CandidType, Deserialize};
 use dfn_candid::{candid, candid_one};
 use dfn_core::{over, over_async};
+use ic_cdk::api::call::RejectionCode;
 use ic_cdk::println;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use ic_stable_structures::DefaultMemoryImpl;
@@ -307,6 +309,33 @@ pub fn canister_heartbeat() {
     let future = run_periodic_tasks();
 
     dfn_core::api::futures::spawn(future);
+    dfn_core::api::futures::spawn(call_and_log_step_migration());
+}
+
+/// Steps the migration.
+#[export_name = "canister_update step_migration"]
+pub fn step_migration() {
+    over(candid, step_migration_impl);
+}
+
+fn step_migration_impl(_: ()) -> () {
+    STATE.with(|s| {
+        s.accounts_store
+            .borrow_mut()
+            .step_migration(AccountsDbAsProxy::MIGRATION_STEP_SIZE);
+    });
+}
+
+/// Calls step_migration without panicking and rolling back if anything goes wrong.
+async fn call_step_migration() -> Result<(), (RejectionCode, String)> {
+    ic_cdk::api::call::call(ic_cdk::id(), "step_migration", ()).await
+}
+
+/// Calls step migration and logs any errors.
+async fn call_and_log_step_migration() {
+    call_step_migration().await.unwrap_or_else(|(code, msg)| {
+        println!("step_migration failed: {code:?} {msg}");
+    });
 }
 
 /// Add an asset to be served by the canister.

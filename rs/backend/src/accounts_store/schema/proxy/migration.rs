@@ -3,8 +3,10 @@ use super::{AccountsDb, AccountsDbAsProxy, AccountsDbTrait, Migration};
 use ic_cdk::println;
 
 impl AccountsDbAsProxy {
-    /// The number of accounts to move per heartbeat.
+    /// The default number of accounts to move per heartbeat.
     pub const MIGRATION_STEP_SIZE: u32 = 10;
+    /// The maximum number of accounts to move per heartbeat.
+    pub const MIGRATION_STEP_SIZE_MAX: u32 = 100;
     /// The progress meter count reserved for finalizing a migration.
     /// Note: This must be positive and should correspond to a reasonable estimate of the number of blocks needed to complete the migration.
     pub const MIGRATION_FINALIZATION_BLOCKS: u32 = 1;
@@ -54,7 +56,10 @@ impl AccountsDbAsProxy {
     ///
     /// # Arguments
     /// - `step_size`: The maximum number of accounts to migrate on this step.
+    ///   - This may be no larger than `Self::MIGRATION_STEP_SIZE_MAX`.  If it is larger, it will be reduced.
     pub fn step_migration(&mut self, step_size: u32) {
+        // Ensure that the step size is modest:
+        let step_size = step_size.min(Self::MIGRATION_STEP_SIZE_MAX).max(1);
         if let Some(migration) = &mut self.migration {
             if let Some(next_to_migrate) = &migration.next_to_migrate {
                 println!("Stepping migration: {:?} -> {:?}", self.authoritative_db, migration.db);
