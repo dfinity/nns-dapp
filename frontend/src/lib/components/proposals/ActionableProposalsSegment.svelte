@@ -2,9 +2,7 @@
   import { Segment, SegmentButton } from "@dfinity/gix-components";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import type { ActionableSegmentSelection } from "$lib/stores/actionable-proposals-segment.store";
   import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
-  import { get } from "svelte/store";
 
   const actionableProposalsSegmentId = Symbol();
   const allProposalsSegmentId = Symbol();

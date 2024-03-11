@@ -13,7 +13,6 @@
   import { actionableProposalIndicationEnabledStore } from "$lib/derived/actionable-proposals.derived";
   import { fade } from "svelte/transition";
   import type { ProposalInfo } from "@dfinity/nns";
-  import type { ActionableSegmentSelection } from "$lib/stores/actionable-proposals-segment.store";
   import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
   export let nothingFound: boolean;
   export let hidden: boolean;

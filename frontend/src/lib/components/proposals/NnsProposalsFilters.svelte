@@ -14,10 +14,7 @@
   import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
   import { actionableProposalIndicationEnabledStore } from "$lib/derived/actionable-proposals.derived";
   import ActionableProposalsSegment from "$lib/components/proposals/ActionableProposalsSegment.svelte";
-  import {
-    actionableProposalsSegmentStore,
-    type ActionableSegmentSelection,
-  } from "$lib/stores/actionable-proposals-segment.store";
+  import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 
   let modalFilters: ProposalsFilterModalProps | undefined = undefined;
 
