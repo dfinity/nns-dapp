@@ -11,6 +11,40 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 128297
+
+### Application
+
+#### Changed
+
+* Refactored `icpAccountsStore` to be derived from separate stores.
+* Wording changes for ineligible neurons description.
+
+#### Removed
+
+* Removed unreleased feature flag `ENABLE_ICP_ICRC`.
+
+#### Fixed
+
+* Don't reload transactions multiple times when closing the receive modal.
+* Reload balance when opening NNS wallet.
+
+### Operations
+
+#### Added
+
+* Notify the maintainers if the docker build is not reproducible.
+
+#### Changed
+
+* Disambiguated the title of the docker reproducibility check.
+* Change the number of accounts tested in `test-upgrade-map-stable` from 1000 to 20.
+* Andrew will be making the release forum posts.
+
+#### Fixed
+
+* Adapted the docker reproducibility test to work with `upload-artifact@v4`.
+
 ## Proposal 128153
 
 ### Application
