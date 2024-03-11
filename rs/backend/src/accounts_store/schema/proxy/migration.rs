@@ -3,10 +3,10 @@ use super::{AccountsDb, AccountsDbAsProxy, AccountsDbTrait, Migration};
 use ic_cdk::println;
 
 impl AccountsDbAsProxy {
-    /// The default number of accounts to move per heartbeat.
+    /// The default number of accounts to move in a migration step.
     pub const MIGRATION_STEP_SIZE: u32 = 10;
-    /// The maximum number of accounts to move per heartbeat.
-    pub const MIGRATION_STEP_SIZE_MAX: u32 = 100;
+    /// The maximum number of accounts to move in a migration step.
+    pub const MIGRATION_STEP_SIZE_MAX: u32 = 1000;
     /// The progress meter count reserved for finalizing a migration.
     /// Note: This must be positive and should correspond to a reasonable estimate of the number of blocks needed to complete the migration.
     pub const MIGRATION_FINALIZATION_BLOCKS: u32 = 1;
