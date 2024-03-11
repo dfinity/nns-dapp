@@ -315,27 +315,27 @@ pub fn canister_heartbeat() {
 /// Steps the migration.
 #[export_name = "canister_update step_migration"]
 pub fn step_migration() {
-    over(candid, step_migration_impl);
+    over(candid_one, step_migration_impl);
 }
 
-fn step_migration_impl(_: ()) -> () {
+fn step_migration_impl(step_size: u32) -> () {
     STATE.with(|s| {
-        s.accounts_store
-            .borrow_mut()
-            .step_migration(AccountsDbAsProxy::MIGRATION_STEP_SIZE);
+        s.accounts_store.borrow_mut().step_migration(step_size);
     });
 }
 
 /// Calls step_migration without panicking and rolling back if anything goes wrong.
-async fn call_step_migration() -> Result<(), (RejectionCode, String)> {
-    ic_cdk::api::call::call(ic_cdk::id(), "step_migration", ()).await
+async fn call_step_migration(step_size: u32) -> Result<(), (RejectionCode, String)> {
+    ic_cdk::api::call::call(ic_cdk::id(), "step_migration", (step_size,)).await
 }
 
 /// Calls step migration and logs any errors.
 async fn call_and_log_step_migration() {
-    call_step_migration().await.unwrap_or_else(|(code, msg)| {
-        println!("step_migration failed: {code:?} {msg}");
-    });
+    call_step_migration(AccountsDbAsProxy::MIGRATION_STEP_SIZE)
+        .await
+        .unwrap_or_else(|(code, msg)| {
+            println!("step_migration failed: {code:?} {msg}");
+        });
 }
 
 /// Add an asset to be served by the canister.
