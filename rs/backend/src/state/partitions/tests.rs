@@ -6,6 +6,7 @@ use crate::{
 };
 use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
 use ic_crypto_sha::Sha256;
+use pretty_assertions::assert_eq;
 use std::rc::Rc;
 
 #[test]

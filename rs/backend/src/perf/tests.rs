@@ -1,5 +1,6 @@
 use super::PerformanceCounts;
 use crate::state::StableState;
+use pretty_assertions::assert_eq;
 
 /// Given valid performance data, it should serialize and be parsed back to the original.
 #[test]
