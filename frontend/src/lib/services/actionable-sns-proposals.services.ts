@@ -37,20 +37,6 @@ const loadActionableProposalsForSns = async (
     }
 
     const identity = await getAuthenticatedIdentity();
-    const neurons =
-      get(snsNeuronsStore)[rootCanisterIdText]?.neurons ??
-      // Fetch neurons if they are not in the store, but do not populate the store.
-      // Otherwise, it will skip calling of the `syncSnsNeurons` function to check neurons stake against the balance of the subaccount.
-      (await queryNeurons({
-        rootCanisterId: rootCanisterIdText,
-        identity,
-      }));
-    if (neurons.length === 0) {
-      // No need to fetch proposals if there are no neurons to vote with.
-      // Expected to be the case for majority of the projects, since not everyone has neurons for every project.
-      return;
-    }
-
     const { proposals: allProposals, include_ballots_by_caller } =
       await querySnsProposals({
         rootCanisterId: rootCanisterIdText,
@@ -59,6 +45,26 @@ const loadActionableProposalsForSns = async (
 
     const includeBallotsByCaller =
       fromNullable(include_ballots_by_caller) ?? false;
+
+    if (!includeBallotsByCaller) {
+      // No need to fetch neurons if there are no actionable proposals support.
+      actionableSnsProposalsStore.set({
+        rootCanisterId,
+        proposals: [],
+        includeBallotsByCaller,
+      });
+      return;
+    }
+
+    const neurons =
+      get(snsNeuronsStore)[rootCanisterIdText]?.neurons ??
+      // Fetch neurons if they are not in the store, but do not populate the store.
+      // Otherwise, it will skip calling of the `syncSnsNeurons` function to check neurons stake against the balance of the subaccount.
+      (await queryNeurons({
+        rootCanisterId: rootCanisterIdText,
+        identity,
+      }));
+
     // It's not possible to filter out votable proposals w/o ballots
     const votableProposals = includeBallotsByCaller
       ? allProposals.filter(
