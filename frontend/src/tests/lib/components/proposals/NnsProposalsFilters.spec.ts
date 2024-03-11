@@ -278,7 +278,7 @@ describe("NnsProposalsFilters", () => {
         });
       });
 
-      it("should not render actionable proposals segment", async () => {
+      it("should render actionable proposals segment", async () => {
         authStoreMock.next({
           identity: undefined,
         });
@@ -286,7 +286,7 @@ describe("NnsProposalsFilters", () => {
         await runResolvedPromises();
         const po = await renderComponent();
         expect(await po.getActionableProposalsSegmentPo().isPresent()).toEqual(
-          false
+          true
         );
       });
 
