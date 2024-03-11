@@ -340,7 +340,6 @@
         "FEATURE_FLAGS": {
           "ENABLE_CKBTC": true,
           "ENABLE_CKTESTBTC": false,
-          "ENABLE_ICP_ICRC": false,
           "ENABLE_ICP_INDEX": false,
           "ENABLE_VOTING_INDICATION": false
         }
@@ -355,7 +354,7 @@
         "BINSTALL_VERSION": "1.3.0",
         "DIDC_VERSION": "2024-02-27",
         "CARGO_SORT_VERSION": "1.0.9",
-        "SNSDEMO_RELEASE": "release-2024-02-28",
+        "SNSDEMO_RELEASE": "release-2024-03-06",
         "IC_COMMIT": "release-2024-02-28_23-01+p2p-hotfix"
       },
       "packtool": ""

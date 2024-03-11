@@ -2,6 +2,7 @@
 
 use super::*;
 use crate::accounts_store::schema::SchemaLabel;
+use pretty_assertions::assert_eq;
 use strum::IntoEnumIterator;
 
 #[test]

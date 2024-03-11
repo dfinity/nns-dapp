@@ -14,7 +14,7 @@
 </p>
 
 <p class="label desc">{$i18n.accounts.description}</p>
-<slot name="description" />
+<span data-tid="transaction-description"><slot name="description" /></span>
 
 <p class="label network">{$i18n.accounts.network}</p>
 <p class="value no-margin" data-tid="transaction-description-network">
@@ -22,7 +22,7 @@
 </p>
 
 <p class="label time">{$i18n.accounts.transaction_time}</p>
-<p class="value no-margin">
+<p class="value no-margin" data-tid="transaction-time-description">
   {#if isTransactionNetworkBtc(selectedNetwork)}
     {$i18n.ckbtc.about_thirty_minutes}
   {:else}

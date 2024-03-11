@@ -3,6 +3,7 @@ use super::*;
 use crate::accounts_store::toy_data::{toy_account, ToyAccountSize};
 use crate::multi_part_transactions_processor::MultiPartTransactionToBeProcessed;
 use icp_ledger::Tokens;
+use pretty_assertions::assert_eq;
 use std::str::FromStr;
 
 const TEST_ACCOUNT_1: &str = "h4a5i-5vcfo-5rusv-fmb6m-vrkia-mjnkc-jpoow-h5mam-nthnm-ldqlr-bqe";

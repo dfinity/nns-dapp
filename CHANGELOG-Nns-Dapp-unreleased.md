@@ -18,6 +18,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Refactored `icpAccountsStore` to be derived from separate stores.
+* More readable error messages if `assert_eq` fails in tests.
 * Wording changes for ineligible neurons description.
 
 #### Deprecated
@@ -53,5 +54,6 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * Adapted the docker reproducibility test to work with `upload-artifact@v4`.
+* Make `JestPageObjectElement.selectOption` work with fake timers.
 
 #### Security

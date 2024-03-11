@@ -2,6 +2,7 @@
 use super::*;
 #[cfg(test)]
 use ic_stable_structures::memory_manager::MemoryManager;
+use pretty_assertions::assert_eq;
 #[cfg(test)]
 use std::rc::Rc;
 use strum::IntoEnumIterator;

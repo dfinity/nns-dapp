@@ -44,6 +44,10 @@ export class TransactionFormPo extends BasePageObject {
     return this.getContinueButtonPo().click();
   }
 
+  enterAddress(address: string): Promise<void> {
+    return this.getSelectDestinationAddressPo().enterAddress(address);
+  }
+
   async transferToAccount({
     accountName,
     amount,
@@ -63,7 +67,7 @@ export class TransactionFormPo extends BasePageObject {
     destinationAddress: string;
     amount: number;
   }): Promise<void> {
-    await this.getSelectDestinationAddressPo().enterAddress(destinationAddress);
+    await this.enterAddress(destinationAddress);
     await this.enterAmount(amount);
     await this.clickContinue();
   }
