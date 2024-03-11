@@ -38,3 +38,22 @@ export const actionableProposalCountStore: Readable<ActionableProposalCountData>
       }),
     })
   );
+
+export interface ActionableProposalSupportData {
+  // We use the root canister id as the key to identify the actionable proposals support for a specific project.
+  [rootCanisterId: string]: boolean | undefined;
+}
+
+/** A store that contains the project actionable proposals support state mapped by canister id (nns + snses) */
+export const actionableProposalSupportedStore: Readable<ActionableProposalSupportData> =
+  derived([actionableSnsProposalsStore], ([actionableSnsProposals]) => ({
+    // NNS already returns ballots
+    [OWN_CANISTER_ID_TEXT]: true,
+    ...mapEntries({
+      obj: actionableSnsProposals,
+      mapFn: ([canisterId, { includeBallotsByCaller }]) => [
+        canisterId,
+        includeBallotsByCaller === true,
+      ],
+    }),
+  }));
