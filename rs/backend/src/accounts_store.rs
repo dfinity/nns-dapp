@@ -362,8 +362,11 @@ impl AccountsStore {
     pub fn start_migrating_accounts_to(&mut self, accounts_db: AccountsDb) {
         self.accounts_db.start_migrating_accounts_to(accounts_db);
     }
-    pub fn step_migration(&mut self) {
-        self.accounts_db.step_migration();
+    /// Advances the migration by one step.
+    ///
+    /// Note: This is a pass-through to the underlying `AccountsDb::step_migration`.  Please see that for further details.
+    pub fn step_migration(&mut self, step_size: u32) {
+        self.accounts_db.step_migration(step_size);
     }
     #[must_use]
     pub fn get_account(&self, caller: PrincipalId) -> Option<AccountDetails> {

@@ -51,12 +51,15 @@ impl AccountsDbAsProxy {
     }
 
     /// Advances the migration by one step.
-    pub fn step_migration(&mut self) {
+    ///
+    /// # Arguments
+    /// - `step_size`: The maximum number of accounts to migrate on this step.
+    pub fn step_migration(&mut self, step_size: u32) {
         if let Some(migration) = &mut self.migration {
             if let Some(next_to_migrate) = &migration.next_to_migrate {
                 println!("Stepping migration: {:?} -> {:?}", self.authoritative_db, migration.db);
                 let mut range = self.authoritative_db.range(next_to_migrate.clone()..);
-                for (key, account) in (&mut range).take(Self::MIGRATION_STEP_SIZE as usize) {
+                for (key, account) in (&mut range).take(usize::try_from(step_size).unwrap_or(usize::MAX)) {
                     migration.db.db_insert_account(&key, account);
                 }
                 migration.next_to_migrate = range.next().map(|(key, _account)| key.clone());
