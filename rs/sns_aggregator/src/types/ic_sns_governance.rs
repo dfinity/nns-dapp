@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-02-07_23-01+feature/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-02-28_23-01+p2p-hotfix/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -155,6 +155,52 @@ pub struct GovernanceError {
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Subaccount {
+    pub subaccount: serde_bytes::ByteBuf,
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Account {
+    pub owner: Option<Principal>,
+    pub subaccount: Option<Subaccount>,
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Decimal {
+    pub human_readable: Option<String>,
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Tokens {
+    pub e8s: Option<u64>,
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct ValuationFactors {
+    pub xdrs_per_icp: Option<Decimal>,
+    pub icps_per_token: Option<Decimal>,
+    pub tokens: Option<Tokens>,
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Valuation {
+    pub token: Option<i32>,
+    pub account: Option<Account>,
+    pub valuation_factors: Option<ValuationFactors>,
+    pub timestamp_seconds: Option<u64>,
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct TransferSnsTreasuryFundsActionAuxiliary {
+    pub valuation: Option<Valuation>,
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub enum ActionAuxiliary {
+    TransferSnsTreasuryFunds(TransferSnsTreasuryFundsActionAuxiliary),
+}
+
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Ballot {
     pub vote: i32,
     pub cast_timestamp_seconds: u64,
@@ -187,11 +233,6 @@ pub struct ManageDappCanisterSettings {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct RegisterDappCanisters {
     pub canister_ids: Vec<Principal>,
-}
-
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct Subaccount {
-    pub subaccount: serde_bytes::ByteBuf,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -287,6 +328,7 @@ pub struct ProposalData {
     pub payload_text_rendering: Option<String>,
     pub action: u64,
     pub failure_reason: Option<GovernanceError>,
+    pub action_auxiliary: Option<ActionAuxiliary>,
     pub ballots: Vec<(String, Ballot)>,
     pub minimum_yes_proportion_of_total: Option<Percentage>,
     pub reward_event_round: u64,
@@ -316,12 +358,6 @@ pub struct Split {
 pub struct Follow {
     pub function_id: u64,
     pub followees: Vec<NeuronId>,
-}
-
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct Account {
-    pub owner: Option<Principal>,
-    pub subaccount: Option<Subaccount>,
 }
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -677,6 +713,7 @@ pub struct ListProposals {
 
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ListProposalsResponse {
+    pub include_ballots_by_caller: Option<bool>,
     pub proposals: Vec<ProposalData>,
 }
 
