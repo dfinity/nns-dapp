@@ -12,7 +12,6 @@
   import FiltersWrapper from "./FiltersWrapper.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
-  import { actionableProposalIndicationEnabledStore } from "$lib/derived/actionable-proposals.derived";
   import ActionableProposalsSegment from "$lib/components/proposals/ActionableProposalsSegment.svelte";
   import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 
@@ -51,13 +50,13 @@
 
 <TestIdWrapper testId="nns-proposals-filters-component">
   <div class="proposal-filters">
-    {#if $ENABLE_VOTING_INDICATION && $actionableProposalIndicationEnabledStore}
+    {#if $ENABLE_VOTING_INDICATION}
       <div class="actionable-segment">
         <ActionableProposalsSegment />
       </div>
     {/if}
 
-    {#if !$ENABLE_VOTING_INDICATION || !$actionableProposalIndicationEnabledStore || $actionableProposalsSegmentStore.selected === "all"}
+    {#if !$ENABLE_VOTING_INDICATION || $actionableProposalsSegmentStore.selected === "all"}
       <FiltersWrapper>
         <FiltersButton
           testId="filters-by-topics"

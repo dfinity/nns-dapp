@@ -10,7 +10,6 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
   import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
-  import { actionableProposalIndicationEnabledStore } from "$lib/derived/actionable-proposals.derived";
   import { fade } from "svelte/transition";
   import type { ProposalInfo } from "@dfinity/nns";
   import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
@@ -33,15 +32,7 @@
   <NnsProposalsFilters />
 
   {#if display}
-    {#if $actionableProposalsSegmentStore.selected === "actionable" && $actionableProposalIndicationEnabledStore && $ENABLE_VOTING_INDICATION}
-      <div in:fade data-tid="actionable-proposal-list">
-        <InfiniteScroll layout="grid" disabled>
-          {#each actionableProposals as proposalInfo (proposalInfo.id)}
-            <NnsProposalCard {hidden} {proposalInfo} />
-          {/each}
-        </InfiniteScroll>
-      </div>
-    {:else}
+    {#if !$ENABLE_VOTING_INDICATION || $actionableProposalsSegmentStore.selected !== "actionable"}
       <div in:fade data-tid="all-proposal-list">
         <ListLoader loading={loadingAnimation === "spinner"}>
           <InfiniteScroll
@@ -54,6 +45,14 @@
             {/each}
           </InfiniteScroll>
         </ListLoader>
+      </div>
+    {:else}
+      <div in:fade data-tid="actionable-proposal-list">
+        <InfiniteScroll layout="grid" disabled>
+          {#each actionableProposals as proposalInfo (proposalInfo.id)}
+            <NnsProposalCard {hidden} {proposalInfo} />
+          {/each}
+        </InfiniteScroll>
       </div>
     {/if}
   {/if}
