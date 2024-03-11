@@ -1,11 +1,16 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
+import {
+  setFeatureFlag,
+  signInWithNewUser,
+  step,
+} from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 test("Test merge neurons", async ({ page, context }) => {
   await page.goto("/");
   await expect(page).toHaveTitle("My Tokens / NNS Dapp");
+  await setFeatureFlag({ page, featureFlag: "ENABLE_ICP_INDEX", value: true });
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
@@ -80,7 +85,7 @@ test("Test merge neurons", async ({ page, context }) => {
   const transactionList = appPo
     .getWalletPo()
     .getNnsWalletPo()
-    .getTransactionListPo();
+    .getUiTransactionsListPo();
   await transactionList.waitForLoaded();
   const transactions = await transactionList.getTransactionCardPos();
   expect(await Promise.all(transactions.map((tx) => tx.getHeadline()))).toEqual(

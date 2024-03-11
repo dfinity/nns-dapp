@@ -25,6 +25,18 @@ export class TransactionReviewPo extends BasePageObject {
     return this.getText("transaction-summary-total-received");
   }
 
+  getTotalDeducted(): Promise<string> {
+    return this.getText("transaction-summary-total-deducted");
+  }
+
+  getTransactionDescription(): Promise<string> {
+    return this.getText("transaction-description");
+  }
+
+  getTransactionTimeDescription(): Promise<string> {
+    return this.getText("transaction-time-description");
+  }
+
   async isSendButtonEnabled(): Promise<boolean> {
     return !(await this.getSendButtonPo().isDisabled());
   }

@@ -7,4 +7,8 @@ export class InProgressPo extends BasePageObject {
   static under(element: PageObjectElement): InProgressPo {
     return new InProgressPo(element.byTestId(InProgressPo.TID));
   }
+
+  async getStepCount(): Promise<number> {
+    return (await this.root.querySelectorAll("div.step")).length;
+  }
 }
