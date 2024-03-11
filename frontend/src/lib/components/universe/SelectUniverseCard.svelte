@@ -13,6 +13,7 @@
   } from "$lib/derived/actionable-proposals.derived";
   import ActionableProposalCountBadge from "$lib/components/proposals/ActionableProposalCountBadge.svelte";
   import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
+  import { nonNullish } from "@dfinity/utils";
 
   export let selected: boolean;
   export let role: "link" | "button" | "dropdown" = "link";
@@ -69,7 +70,7 @@
       <span class="name">
         {universe.title}
         {#if $ENABLE_VOTING_INDICATION}
-          {#if actionableProposalCount ?? 0 > 0}
+          {#if nonNullish(actionableProposalCount) && actionableProposalCount > 0}
             <ActionableProposalCountBadge count={actionableProposalCount} />
           {:else if actionableProposalSupported === false}
             <span class="not-supported" data-tid="not-supported-badge" />
