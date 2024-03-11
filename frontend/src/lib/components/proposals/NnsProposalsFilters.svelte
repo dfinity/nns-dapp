@@ -56,7 +56,7 @@
       </div>
     {/if}
 
-    {#if !$ENABLE_VOTING_INDICATION || $actionableProposalsSegmentStore.selected === "all"}
+    {#if !$ENABLE_VOTING_INDICATION || $actionableProposalsSegmentStore.selected !== "actionable"}
       <FiltersWrapper>
         <FiltersButton
           testId="filters-by-topics"
