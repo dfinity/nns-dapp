@@ -73,7 +73,7 @@
           {#if nonNullish(actionableProposalCount) && actionableProposalCount > 0}
             <ActionableProposalCountBadge count={actionableProposalCount} />
           {:else if actionableProposalSupported === false}
-            <span class="not-supported" data-tid="not-supported-badge" />
+            <span class="not-supported-badge" data-tid="not-supported-badge" />
           {/if}
         {/if}
       </span>
@@ -135,7 +135,7 @@
     gap: var(--padding);
   }
 
-  .not-supported {
+  .not-supported-badge {
     // extra gap to align with the count badge
     margin: var(--padding);
 
