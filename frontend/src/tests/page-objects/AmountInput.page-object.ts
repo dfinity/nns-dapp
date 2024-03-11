@@ -12,11 +12,19 @@ export class AmountInputPo extends BasePageObject {
     return this.getTextInput().typeText(amount.toString());
   }
 
+  getAmount(): Promise<string> {
+    return this.getTextInput().getValue();
+  }
+
   hasError(): Promise<boolean> {
     return this.root.byTestId("input-error-message").isPresent();
   }
 
   async getErrorMessage(): Promise<string> {
     return (await this.getText("input-error-message")).trim();
+  }
+
+  clickMaxButton(): Promise<void> {
+    return this.click("max-button");
   }
 }
