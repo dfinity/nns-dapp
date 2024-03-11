@@ -14,8 +14,10 @@
   import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
   import { actionableProposalIndicationEnabledStore } from "$lib/derived/actionable-proposals.derived";
   import ActionableProposalsSegment from "$lib/components/proposals/ActionableProposalsSegment.svelte";
-
-  export let selectedSegment: "all" | "actionable" = "all";
+  import {
+    actionableProposalsSegmentStore,
+    type ActionableSegmentSelection,
+  } from "$lib/stores/actionable-proposals-segment.store";
 
   let modalFilters: ProposalsFilterModalProps | undefined = undefined;
 
@@ -54,11 +56,11 @@
   <div class="proposal-filters">
     {#if $ENABLE_VOTING_INDICATION && $actionableProposalIndicationEnabledStore}
       <div class="actionable-segment">
-        <ActionableProposalsSegment defaultSegment="all" bind:selectedSegment />
+        <ActionableProposalsSegment />
       </div>
     {/if}
 
-    {#if !$ENABLE_VOTING_INDICATION || !$actionableProposalIndicationEnabledStore || selectedSegment === "all"}
+    {#if !$ENABLE_VOTING_INDICATION || !$actionableProposalIndicationEnabledStore || $actionableProposalsSegmentStore.selected === "all"}
       <FiltersWrapper>
         <FiltersButton
           testId="filters-by-topics"

@@ -13,6 +13,8 @@
   import { actionableProposalIndicationEnabledStore } from "$lib/derived/actionable-proposals.derived";
   import { fade } from "svelte/transition";
   import type { ProposalInfo } from "@dfinity/nns";
+  import type { ActionableSegmentSelection } from "$lib/stores/actionable-proposals-segment.store";
+  import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
   export let nothingFound: boolean;
   export let hidden: boolean;
   export let disableInfiniteScroll: boolean;
@@ -24,17 +26,15 @@
   let display = true;
   $: display = !building;
 
-  let selectedSegment: "all" | "actionable";
-
   let actionableProposals: ProposalInfo[];
   $: actionableProposals = $actionableNnsProposalsStore.proposals ?? [];
 </script>
 
 <TestIdWrapper testId="nns-proposal-list-component">
-  <NnsProposalsFilters bind:selectedSegment />
+  <NnsProposalsFilters />
 
   {#if display}
-    {#if selectedSegment === "actionable" && $actionableProposalIndicationEnabledStore && $ENABLE_VOTING_INDICATION}
+    {#if $actionableProposalsSegmentStore.selected === "actionable" && $actionableProposalIndicationEnabledStore && $ENABLE_VOTING_INDICATION}
       <div in:fade data-tid="actionable-proposal-list">
         <InfiniteScroll layout="grid" disabled>
           {#each actionableProposals as proposalInfo (proposalInfo.id)}
