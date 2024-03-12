@@ -7,10 +7,13 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { isSelectedPath } from "$lib/utils/navigation.utils";
   import type { Universe } from "$lib/types/universe";
-  import { nonNullish } from "@dfinity/utils";
-  import { actionableProposalCountStore } from "$lib/derived/actionable-proposals.derived";
+  import {
+    actionableProposalCountStore,
+    actionableProposalSupportedStore,
+  } from "$lib/derived/actionable-proposals.derived";
   import ActionableProposalCountBadge from "$lib/components/proposals/ActionableProposalCountBadge.svelte";
   import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
+  import { nonNullish } from "@dfinity/utils";
 
   export let selected: boolean;
   export let role: "link" | "button" | "dropdown" = "link";
@@ -41,6 +44,11 @@
   $: actionableProposalCount = $ENABLE_VOTING_INDICATION
     ? $actionableProposalCountStore[universe.canisterId]
     : undefined;
+
+  let actionableProposalSupported: boolean | undefined = undefined;
+  $: actionableProposalSupported = $ENABLE_VOTING_INDICATION
+    ? $actionableProposalSupportedStore[universe.canisterId]
+    : undefined;
 </script>
 
 <Card
@@ -61,8 +69,12 @@
     >
       <span class="name">
         {universe.title}
-        {#if nonNullish(actionableProposalCount) && actionableProposalCount > 0}
-          <ActionableProposalCountBadge count={actionableProposalCount} />
+        {#if $ENABLE_VOTING_INDICATION}
+          {#if nonNullish(actionableProposalCount) && actionableProposalCount > 0}
+            <ActionableProposalCountBadge count={actionableProposalCount} />
+          {:else if actionableProposalSupported === false}
+            <span class="not-supported-badge" data-tid="not-supported-badge" />
+          {/if}
         {/if}
       </span>
       {#if displayProjectAccountsBalance}
@@ -121,5 +133,15 @@
     justify-content: space-between;
     align-items: center;
     gap: var(--padding);
+  }
+
+  .not-supported-badge {
+    // extra gap to align with the count badge
+    margin: var(--padding);
+
+    width: var(--padding);
+    height: var(--padding);
+    border-radius: var(--padding);
+    background: var(--background);
   }
 </style>

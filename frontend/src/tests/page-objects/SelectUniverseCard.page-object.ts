@@ -66,6 +66,10 @@ export class SelectUniverseCardPo extends CardPo {
     return ActionableProposalCountBadgePo.under(this.root);
   }
 
+  getActionableProposalNotSupportedBadge(): PageObjectElement {
+    return this.root.byTestId("not-supported-badge");
+  }
+
   getActionableProposalCount(): Promise<string> {
     return this.getActionableProposalCountBadgePo().getText();
   }
