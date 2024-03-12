@@ -35,6 +35,10 @@ export class NnsProposalListPo extends BasePageObject {
     return ProposalCardPo.allUnder(this.root);
   }
 
+  hasSpinner(): Promise<boolean> {
+    return this.isPresent("spinner");
+  }
+
   async getCardTopics(): Promise<string[]> {
     const topics = await Promise.all(
       (await this.getProposalCardPos()).map((card) =>

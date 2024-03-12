@@ -216,10 +216,6 @@ describe("NnsProposalsFilters", () => {
           await segmentPo.clickAllProposals();
           expect(await po.getFiltersWrapper().isPresent()).toEqual(true);
         });
-
-        it("should display login CTA", async () => {
-          // TODO(max): TBD
-        });
       });
 
       describe("when signed in", () => {
@@ -273,10 +269,6 @@ describe("NnsProposalsFilters", () => {
 
           await segmentPo.clickAllProposals();
           expect(await po.getFiltersWrapper().isPresent()).toEqual(true);
-        });
-
-        it("should display not supported page", async () => {
-          // TODO(max): TBD
         });
       });
     });

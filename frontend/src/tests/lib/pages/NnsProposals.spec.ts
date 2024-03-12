@@ -5,6 +5,7 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import NnsProposals from "$lib/pages/NnsProposals.svelte";
+import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -29,6 +30,7 @@ import {
 } from "$tests/mocks/proposals.store.mock";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NnsProposalListPo } from "$tests/page-objects/NnsProposalList.page-object";
+import { allowLoggingInOneTestForDebugging } from "$tests/utils/console.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import {
@@ -379,6 +381,32 @@ describe("NnsProposals", () => {
 
       expect(await po.getAllProposalList().isPresent()).toEqual(true);
       expect(await po.getActionableProposalList().isPresent()).toEqual(false);
+    });
+
+    it("should render spinner while loading actionable", async () => {
+      allowLoggingInOneTestForDebugging();
+
+      const po = await renderComponent();
+      await po
+        .getNnsProposalFiltersPo()
+        .getActionableProposalsSegmentPo()
+        .clickActionableProposals();
+      await runResolvedPromises();
+
+      expect(await po.hasSpinner()).toEqual(true);
+
+      actionableNnsProposalsStore.setProposals(mockProposals);
+      await runResolvedPromises();
+
+      expect(await po.hasSpinner()).toEqual(false);
+    });
+
+    it("should display login CTA", async () => {
+      // TODO(max): TBD
+    });
+
+    it("should display not supported page", async () => {
+      // TODO(max): TBD
     });
   });
 });
