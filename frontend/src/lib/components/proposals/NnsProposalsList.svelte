@@ -13,6 +13,7 @@
   import { fade } from "svelte/transition";
   import type { ProposalInfo } from "@dfinity/nns";
   import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
+  import { isNullish } from "@dfinity/utils";
   export let nothingFound: boolean;
   export let hidden: boolean;
   export let disableInfiniteScroll: boolean;
@@ -24,8 +25,8 @@
   let display = true;
   $: display = !building;
 
-  let actionableProposals: ProposalInfo[];
-  $: actionableProposals = $actionableNnsProposalsStore.proposals ?? [];
+  let actionableProposals: ProposalInfo[] | undefined;
+  $: actionableProposals = $actionableNnsProposalsStore.proposals;
 </script>
 
 <TestIdWrapper testId="nns-proposal-list-component">
@@ -48,11 +49,13 @@
       </div>
     {:else}
       <div in:fade data-tid="actionable-proposal-list">
-        <InfiniteScroll layout="grid" disabled>
-          {#each actionableProposals as proposalInfo (proposalInfo.id)}
-            <NnsProposalCard {hidden} {proposalInfo} />
-          {/each}
-        </InfiniteScroll>
+        <ListLoader loading={isNullish(actionableProposals)}>
+          <InfiniteScroll layout="grid" disabled>
+            {#each actionableProposals ?? [] as proposalInfo (proposalInfo.id)}
+              <NnsProposalCard {hidden} {proposalInfo} />
+            {/each}
+          </InfiniteScroll>
+        </ListLoader>
       </div>
     {/if}
   {/if}
