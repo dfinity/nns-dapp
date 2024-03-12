@@ -19,12 +19,12 @@ describe("Home layout", () => {
   });
 
   describe("when tokens flag is enabled", () => {
-    it("should set title and header layout to 'My Tokens'", () => {
+    it("should set title and header layout to 'Tokens'", () => {
       render(AccountsLayout);
 
       expect(get(layoutTitleStore)).toEqual({
-        title: "My Tokens",
-        header: "My Tokens",
+        title: "Tokens",
+        header: "Tokens",
       });
     });
 

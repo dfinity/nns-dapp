@@ -16,18 +16,18 @@ describe("accountsTitleStore", () => {
     tokensStore.reset();
   });
 
-  it("returns 'My Tokens' if no token is found", () => {
+  it("returns 'Tokens' if no token is found", () => {
     // the ICP token is hardcoded in the `tokensStore`, so it will always be found
     page.mock({
       routeId: AppPath.Accounts,
       data: { universe: rootCanisterIdMock.toText() },
     });
 
-    expect(get(accountsTitleStore)).toEqual("My Tokens");
+    expect(get(accountsTitleStore)).toEqual("Tokens");
   });
 
   it("returns the ICP in the title", () => {
-    expect(get(accountsTitleStore)).toEqual("My ICP Tokens");
+    expect(get(accountsTitleStore)).toEqual("ICP Tokens");
   });
 
   it("returns the token of the universe in the title", () => {
@@ -44,6 +44,6 @@ describe("accountsTitleStore", () => {
       },
     });
 
-    expect(get(accountsTitleStore)).toEqual("My TTRS Tokens");
+    expect(get(accountsTitleStore)).toEqual("TTRS Tokens");
   });
 });

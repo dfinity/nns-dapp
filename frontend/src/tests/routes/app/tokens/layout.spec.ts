@@ -8,12 +8,12 @@ describe("Tokens layout", () => {
     layoutTitleStore.set({ title: "" });
   });
 
-  it("should set title and header layout to 'My Tokens'", () => {
+  it("should set title and header layout to 'Tokens'", () => {
     render(TokensLayout);
 
     expect(get(layoutTitleStore)).toEqual({
-      title: "My Tokens",
-      header: "My Tokens",
+      title: "Tokens",
+      header: "Tokens",
     });
   });
 });
