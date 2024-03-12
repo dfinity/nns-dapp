@@ -9,7 +9,7 @@ import { expect, test } from "@playwright/test";
 
 test("Test canisters", async ({ page, context }) => {
   await page.goto("/");
-  await expect(page).toHaveTitle("My Tokens / NNS Dapp");
+  await expect(page).toHaveTitle("Tokens / NNS Dapp");
   await setFeatureFlag({ page, featureFlag: "ENABLE_ICP_INDEX", value: true });
   await signInWithNewUser({ page, context });
 
