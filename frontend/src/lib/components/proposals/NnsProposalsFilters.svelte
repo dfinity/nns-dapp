@@ -51,9 +51,7 @@
 <TestIdWrapper testId="nns-proposals-filters-component">
   <div class="proposal-filters">
     {#if $ENABLE_VOTING_INDICATION}
-      <div class="actionable-segment">
-        <ActionableProposalsSegment />
-      </div>
+      <ActionableProposalsSegment />
     {/if}
 
     {#if !$ENABLE_VOTING_INDICATION || $actionableProposalsSegmentStore.selected !== "actionable"}

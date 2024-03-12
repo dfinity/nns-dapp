@@ -7,7 +7,6 @@
   const actionableProposalsSegmentId = Symbol();
   const allProposalsSegmentId = Symbol();
 
-  let segment: Segment;
   let selectedSegmentId: symbol =
     $actionableProposalsSegmentStore.selected !== "all"
       ? actionableProposalsSegmentId
@@ -23,7 +22,7 @@
 </script>
 
 <TestIdWrapper testId="actionable-proposals-segment-component">
-  <Segment bind:selectedSegmentId bind:this={segment}>
+  <Segment bind:selectedSegmentId>
     <SegmentButton testId="all-proposals" segmentId={allProposalsSegmentId}
       >{$i18n.voting.all_proposals}</SegmentButton
     >
