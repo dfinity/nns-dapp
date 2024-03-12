@@ -130,11 +130,11 @@
     "test_env_title": "Warning"
   },
   "navigation": {
-    "tokens": "My Tokens",
-    "universe_tokens": "My $tokenSymbol Tokens",
-    "canisters": "My Canisters",
-    "neurons": "My Neuron Staking",
-    "voting": "Vote on Proposals",
+    "tokens": "Tokens",
+    "universe_tokens": "$tokenSymbol Tokens",
+    "canisters": "Canisters",
+    "neurons": "Neuron Staking",
+    "voting": "Voting",
     "launchpad": "Launchpad",
     "manage_ii": "Manage Internet Identity",
     "source_code": "Source Code",
@@ -876,7 +876,7 @@
   },
   "universe": {
     "select_token": "Select Token",
-    "select_nervous_system": "Select Nervous System",
+    "select_nervous_system": "Nervous System",
     "universe_logo": "$universe logo"
   },
   "sns_types": {
