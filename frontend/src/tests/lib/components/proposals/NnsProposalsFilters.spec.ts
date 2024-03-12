@@ -1,16 +1,13 @@
 import NnsProposalsFilters from "$lib/components/proposals/NnsProposalsFilters.svelte";
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   DEFAULT_PROPOSALS_FILTERS,
   DEPRECATED_TOPICS,
 } from "$lib/constants/proposals.constants";
-import { AppPath } from "$lib/constants/routes.constants";
 import { authStore } from "$lib/stores/auth.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { proposalsFiltersStore } from "$lib/stores/proposals.store";
 import { PROPOSAL_FILTER_UNSPECIFIED_VALUE } from "$lib/types/proposals";
 import { enumSize } from "$lib/utils/enum.utils";
-import { page } from "$mocks/$app/stores";
 import {
   authStoreMock,
   mockIdentity,
@@ -96,6 +93,7 @@ describe("NnsProposalsFilters", () => {
       });
 
       it("should render a checkbox", () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", false);
         const { container } = render(NnsProposalsFilters);
 
         const input: HTMLInputElement | null = container.querySelector("input");
@@ -163,11 +161,6 @@ describe("NnsProposalsFilters", () => {
 
       authStoreMock.next({
         identity: undefined,
-      });
-
-      page.mock({
-        data: { universe: OWN_CANISTER_ID_TEXT },
-        routeId: AppPath.Proposals,
       });
     });
 
