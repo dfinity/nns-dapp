@@ -18,6 +18,8 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * More readable error messages if `assert_eq` fails in tests.
+* Main navigation text changes.
+* Minor text changes.
 
 #### Deprecated
 
