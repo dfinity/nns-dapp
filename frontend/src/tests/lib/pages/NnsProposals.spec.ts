@@ -1,9 +1,7 @@
 import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as agent from "$lib/api/agent.api";
 import * as governanceApi from "$lib/api/governance.api";
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
-import { AppPath } from "$lib/constants/routes.constants";
 import NnsProposals from "$lib/pages/NnsProposals.svelte";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
@@ -13,7 +11,6 @@ import {
   proposalsFiltersStore,
   proposalsStore,
 } from "$lib/stores/proposals.store";
-import { page } from "$mocks/$app/stores";
 import {
   authStoreMock,
   mockAuthStoreSubscribe,
@@ -345,11 +342,6 @@ describe("NnsProposals", () => {
     beforeEach(() => {
       authStoreMock.next({
         identity: mockIdentity,
-      });
-
-      page.mock({
-        data: { universe: OWN_CANISTER_ID_TEXT },
-        routeId: AppPath.Proposals,
       });
 
       overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", true);
