@@ -11,6 +11,9 @@
   import SignedInOnly from "$lib/components/common/SignedInOnly.svelte";
   import FiltersWrapper from "./FiltersWrapper.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
+  import ActionableProposalsSegment from "$lib/components/proposals/ActionableProposalsSegment.svelte";
+  import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 
   let modalFilters: ProposalsFilterModalProps | undefined = undefined;
 
@@ -46,59 +49,87 @@
 </script>
 
 <TestIdWrapper testId="nns-proposals-filters-component">
-  <FiltersWrapper>
-    <FiltersButton
-      testId="filters-by-topics"
-      totalFilters={totalFiltersTopic}
-      activeFilters={activeFiltersCount}
-      on:nnsFilter={() =>
-        openModal({
-          category: "topics",
-          filters: Topic,
-          selectedFilters: topics,
-        })}>{$i18n.voting.topics}</FiltersButton
-    >
+  <div class="proposal-filters">
+    {#if $ENABLE_VOTING_INDICATION}
+      <ActionableProposalsSegment />
+    {/if}
 
-    <FiltersButton
-      testId="filters-by-rewards"
-      totalFilters={totalFiltersProposalRewardStatus}
-      activeFilters={rewards.length}
-      on:nnsFilter={() =>
-        openModal({
-          category: "rewards",
-          filters: ProposalRewardStatus,
-          selectedFilters: rewards,
-        })}>{$i18n.voting.rewards}</FiltersButton
-    >
+    {#if !$ENABLE_VOTING_INDICATION || $actionableProposalsSegmentStore.selected !== "actionable"}
+      <FiltersWrapper>
+        <FiltersButton
+          testId="filters-by-topics"
+          totalFilters={totalFiltersTopic}
+          activeFilters={activeFiltersCount}
+          on:nnsFilter={() =>
+            openModal({
+              category: "topics",
+              filters: Topic,
+              selectedFilters: topics,
+            })}>{$i18n.voting.topics}</FiltersButton
+        >
 
-    <FiltersButton
-      testId="filters-by-status"
-      totalFilters={totalFiltersProposalStatus}
-      activeFilters={status.length}
-      on:nnsFilter={() =>
-        openModal({
-          category: "status",
-          filters: ProposalStatus,
-          selectedFilters: status,
-        })}>{$i18n.voting.status}</FiltersButton
-    >
+        <FiltersButton
+          testId="filters-by-rewards"
+          totalFilters={totalFiltersProposalRewardStatus}
+          activeFilters={rewards.length}
+          on:nnsFilter={() =>
+            openModal({
+              category: "rewards",
+              filters: ProposalRewardStatus,
+              selectedFilters: rewards,
+            })}>{$i18n.voting.rewards}</FiltersButton
+        >
 
-    <SignedInOnly>
-      <Checkbox
-        testId="votable-proposals-only"
-        inputId="hide-unavailable-proposals"
-        checked={excludeVotedProposals}
-        on:nnsChange={() => proposalsFiltersStore.toggleExcludeVotedProposals()}
-        text="block"
-        --checkbox-padding="var(--padding)"
-        --checkbox-label-order="1"
-        >{$i18n.voting.hide_unavailable_proposals}</Checkbox
-      >
-    </SignedInOnly>
-  </FiltersWrapper>
+        <FiltersButton
+          testId="filters-by-status"
+          totalFilters={totalFiltersProposalStatus}
+          activeFilters={status.length}
+          on:nnsFilter={() =>
+            openModal({
+              category: "status",
+              filters: ProposalStatus,
+              selectedFilters: status,
+            })}>{$i18n.voting.status}</FiltersButton
+        >
+
+        {#if !$ENABLE_VOTING_INDICATION}
+          <SignedInOnly>
+            <Checkbox
+              testId="votable-proposals-only"
+              inputId="hide-unavailable-proposals"
+              checked={excludeVotedProposals}
+              on:nnsChange={() =>
+                proposalsFiltersStore.toggleExcludeVotedProposals()}
+              text="block"
+              --checkbox-padding="var(--padding)"
+              --checkbox-label-order="1"
+              >{$i18n.voting.hide_unavailable_proposals}</Checkbox
+            >
+          </SignedInOnly>
+        {/if}
+      </FiltersWrapper>
+    {/if}
+  </div>
 
   <NnsProposalsFilterModal
     props={modalFilters}
     on:nnsClose={() => (modalFilters = undefined)}
   />
 </TestIdWrapper>
+
+<style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+
+  .proposal-filters {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+    margin-bottom: var(--padding-3x);
+
+    @include media.min-width(medium) {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+  }
+</style>
