@@ -8,7 +8,12 @@
   import ListLoader from "./ListLoader.svelte";
   import { building } from "$app/environment";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-
+  import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
+  import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
+  import { fade } from "svelte/transition";
+  import type { ProposalInfo } from "@dfinity/nns";
+  import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
+  import { isNullish } from "@dfinity/utils";
   export let nothingFound: boolean;
   export let hidden: boolean;
   export let disableInfiniteScroll: boolean;
@@ -19,23 +24,40 @@
   // Note: Another solution would be to lazy load the InfiniteScroll component
   let display = true;
   $: display = !building;
+
+  let actionableProposals: ProposalInfo[] | undefined;
+  $: actionableProposals = $actionableNnsProposalsStore.proposals;
 </script>
 
 <TestIdWrapper testId="nns-proposal-list-component">
   <NnsProposalsFilters />
 
   {#if display}
-    <ListLoader loading={loadingAnimation === "spinner"}>
-      <InfiniteScroll
-        on:nnsIntersect
-        layout="grid"
-        disabled={disableInfiniteScroll || loading}
-      >
-        {#each $filteredProposals.proposals as proposalInfo (proposalInfo.id)}
-          <NnsProposalCard {hidden} {proposalInfo} />
-        {/each}
-      </InfiniteScroll>
-    </ListLoader>
+    {#if !$ENABLE_VOTING_INDICATION || $actionableProposalsSegmentStore.selected !== "actionable"}
+      <div in:fade data-tid="all-proposal-list">
+        <ListLoader loading={loadingAnimation === "spinner"}>
+          <InfiniteScroll
+            on:nnsIntersect
+            layout="grid"
+            disabled={disableInfiniteScroll || loading}
+          >
+            {#each $filteredProposals.proposals as proposalInfo (proposalInfo.id)}
+              <NnsProposalCard {hidden} {proposalInfo} />
+            {/each}
+          </InfiniteScroll>
+        </ListLoader>
+      </div>
+    {:else}
+      <div in:fade data-tid="actionable-proposal-list">
+        <ListLoader loading={isNullish(actionableProposals)}>
+          <InfiniteScroll layout="grid" disabled>
+            {#each actionableProposals ?? [] as proposalInfo (proposalInfo.id)}
+              <NnsProposalCard {hidden} {proposalInfo} />
+            {/each}
+          </InfiniteScroll>
+        </ListLoader>
+      </div>
+    {/if}
   {/if}
 
   {#if nothingFound}

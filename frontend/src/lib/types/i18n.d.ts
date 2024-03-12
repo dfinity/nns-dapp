@@ -385,6 +385,8 @@ interface I18nVoting {
   check_all: string;
   uncheck_all: string;
   nothing_found: string;
+  all_proposals: string;
+  actionable_proposals: string;
 }
 
 interface I18nCanisters {

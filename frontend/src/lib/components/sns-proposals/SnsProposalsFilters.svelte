@@ -28,33 +28,36 @@
   };
 </script>
 
-<FiltersWrapper>
-  <FiltersButton
-    testId="filters-by-types"
-    totalFilters={filtersStore?.types.length ?? 0}
-    activeFilters={filtersStore?.types.filter(({ checked }) => checked)
-      .length ?? 0}
-    on:nnsFilter={() => openFilters("types")}
-  >
-    {$i18n.voting.types}
-  </FiltersButton>
-  <FiltersButton
-    testId="filters-by-rewards"
-    totalFilters={filtersStore?.rewardStatus.length ?? 0}
-    activeFilters={filtersStore?.rewardStatus.filter(({ checked }) => checked)
-      .length ?? 0}
-    on:nnsFilter={() => openFilters("rewards")}
-    >{$i18n.voting.rewards}</FiltersButton
-  >
-  <FiltersButton
-    testId="filters-by-status"
-    totalFilters={filtersStore?.decisionStatus.length ?? 0}
-    activeFilters={filtersStore?.decisionStatus.filter(({ checked }) => checked)
-      .length ?? 0}
-    on:nnsFilter={() => openFilters("status")}
-    >{$i18n.voting.status}</FiltersButton
-  >
-</FiltersWrapper>
+<div class="proposal-filters">
+  <FiltersWrapper>
+    <FiltersButton
+      testId="filters-by-types"
+      totalFilters={filtersStore?.types.length ?? 0}
+      activeFilters={filtersStore?.types.filter(({ checked }) => checked)
+        .length ?? 0}
+      on:nnsFilter={() => openFilters("types")}
+    >
+      {$i18n.voting.types}
+    </FiltersButton>
+    <FiltersButton
+      testId="filters-by-rewards"
+      totalFilters={filtersStore?.rewardStatus.length ?? 0}
+      activeFilters={filtersStore?.rewardStatus.filter(({ checked }) => checked)
+        .length ?? 0}
+      on:nnsFilter={() => openFilters("rewards")}
+      >{$i18n.voting.rewards}</FiltersButton
+    >
+    <FiltersButton
+      testId="filters-by-status"
+      totalFilters={filtersStore?.decisionStatus.length ?? 0}
+      activeFilters={filtersStore?.decisionStatus.filter(
+        ({ checked }) => checked
+      ).length ?? 0}
+      on:nnsFilter={() => openFilters("status")}
+      >{$i18n.voting.status}</FiltersButton
+    >
+  </FiltersWrapper>
+</div>
 
 {#if modal === "types"}
   <SnsFilterTypesModal
@@ -79,3 +82,9 @@
     on:nnsClose={close}
   />
 {/if}
+
+<style lang="scss">
+  .proposal-filters {
+    margin-bottom: var(--padding-3x);
+  }
+</style>
