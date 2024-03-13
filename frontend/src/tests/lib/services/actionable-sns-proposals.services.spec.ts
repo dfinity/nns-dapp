@@ -218,16 +218,17 @@ describe("actionable-sns-proposals.services", () => {
       expect(spyQuerySnsProposals).toHaveBeenCalledTimes(1);
     });
 
-    it("should not query proposals when the user has no neurons", async () => {
+    it("should not query neurons when the sns doesn't support ballots", async () => {
       mockSnsProjectsCommittedStore([rootCanisterId1]);
-      spyQuerySnsNeurons = vi
-        .spyOn(api, "querySnsNeurons")
-        .mockImplementation(() => Promise.resolve([]));
+      includeBallotsByCaller = false;
+
+      expect(spyQuerySnsProposals).toHaveBeenCalledTimes(0);
+      expect(spyQuerySnsNeurons).toHaveBeenCalledTimes(0);
 
       await loadActionableSnsProposals();
 
-      expect(spyQuerySnsNeurons).toHaveBeenCalledTimes(1);
-      expect(spyQuerySnsProposals).toHaveBeenCalledTimes(0);
+      expect(spyQuerySnsProposals).toHaveBeenCalledTimes(1);
+      expect(spyQuerySnsNeurons).toHaveBeenCalledTimes(0);
     });
 
     it("should not update the store when api doesn't support ballots", async () => {

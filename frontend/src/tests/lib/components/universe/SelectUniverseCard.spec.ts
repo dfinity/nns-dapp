@@ -307,6 +307,32 @@ describe("SelectUniverseCard", () => {
           expect(await po.getActionableProposalCountBadgePo().isPresent()).toBe(
             false
           );
+          expect(
+            await po.getActionableProposalNotSupportedBadge().isPresent()
+          ).toBe(false);
+        });
+
+        it("should display not supported indicator", async () => {
+          page.mock({
+            data: { universe: mockSnsUniverse.canisterId },
+            routeId: AppPath.Proposals,
+          });
+          actionableSnsProposalsStore.set({
+            rootCanisterId: Principal.from(mockSnsUniverse.canisterId),
+            proposals: [mockSnsProposal, mockSnsProposal],
+            includeBallotsByCaller: undefined,
+          });
+
+          const po = renderComponent({
+            props: { universe: mockSnsUniverse, selected: false },
+          });
+
+          expect(await po.getActionableProposalCountBadgePo().isPresent()).toBe(
+            false
+          );
+          expect(
+            await po.getActionableProposalNotSupportedBadge().isPresent()
+          ).toBe(true);
         });
       });
     });
