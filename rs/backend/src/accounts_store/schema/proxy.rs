@@ -119,7 +119,6 @@ impl AccountsDbTrait for AccountsDbAsProxy {
     /// The authoritative schema label.
     fn schema_label(&self) -> SchemaLabel {
         let schema_label = self.authoritative_db.schema_label();
-        println!("AccountsDb::Proxy: authoritative schema label: {schema_label:#?}");
         schema_label
     }
     /// Iterates over a range of accounts in the authoritative db.
