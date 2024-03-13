@@ -54,7 +54,6 @@ import {
   snsNeuronVotingPower,
   snsNeuronsIneligibilityReasons,
   snsNeuronsToIneligibleNeuronData,
-  sortSnsNeuronsByCreatedTimestamp,
   sortSnsNeuronsByStake,
   subaccountToHexString,
   totalDisbursingMaturity,
@@ -178,31 +177,6 @@ describe("sns-neuron utils", () => {
 
   beforeEach(() => {
     vi.useFakeTimers().setSystemTime(nowSeconds * 1000);
-  });
-
-  describe("sortNeuronsByCreatedTimestamp", () => {
-    it("should sort neurons by created_timestamp_seconds", () => {
-      const neuron1 = {
-        ...mockSnsNeuron,
-        created_timestamp_seconds: 1n,
-      };
-      const neuron2 = {
-        ...mockSnsNeuron,
-        created_timestamp_seconds: 2n,
-      };
-      const neuron3 = {
-        ...mockSnsNeuron,
-        created_timestamp_seconds: 3n,
-      };
-      expect(sortSnsNeuronsByCreatedTimestamp([])).toEqual([]);
-      expect(sortSnsNeuronsByCreatedTimestamp([neuron1])).toEqual([neuron1]);
-      expect(
-        sortSnsNeuronsByCreatedTimestamp([neuron3, neuron2, neuron1])
-      ).toEqual([neuron3, neuron2, neuron1]);
-      expect(
-        sortSnsNeuronsByCreatedTimestamp([neuron2, neuron1, neuron3])
-      ).toEqual([neuron3, neuron2, neuron1]);
-    });
   });
 
   describe("sortSnsNeuronsByStake", () => {
