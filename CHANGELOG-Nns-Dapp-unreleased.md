@@ -23,6 +23,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Order neurons from highest to lowest stake on the neurons page.
 * Main navigation text changes.
 * Minor text changes.
+* Main menu icons and style changes.
 
 #### Deprecated
 
