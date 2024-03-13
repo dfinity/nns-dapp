@@ -17,19 +17,14 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-* Refactored `icpAccountsStore` to be derived from separate stores.
-* Wording changes for ineligible neurons description.
 * Load ICP transactions from ICP index canister instead of nns-dapp.
+* More readable error messages if `assert_eq` fails in tests.
 
 #### Deprecated
 
 #### Removed
 
-* Removed unreleased feature flag `ENABLE_ICP_ICRC`.
-
 #### Fixed
-
-* Don't reload transactions multiple times when closing the receive modal.
 
 #### Security
 
@@ -39,13 +34,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Notify the maintainers if the docker build is not reproducible.
-
 #### Changed
-
-* Disambiguated the title of the docker reproducibility check.
-* Change the number of accounts tested in `test-upgrade-map-stable` from 1000 to 20.
-* Andrew will be making the release forum posts.
 
 #### Deprecated
 
@@ -53,6 +42,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
-* Adapted the docker reproducibility test to work with `upload-artifact@v4`.
+* Make `JestPageObjectElement.selectOption` work with fake timers.
 
 #### Security

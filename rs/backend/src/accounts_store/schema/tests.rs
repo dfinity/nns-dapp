@@ -2,6 +2,7 @@
 
 use super::super::{AccountIdentifier, CanisterId, NamedCanister, PrincipalId};
 use super::*;
+use pretty_assertions::assert_eq;
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 
 /// Creates a toy canister.

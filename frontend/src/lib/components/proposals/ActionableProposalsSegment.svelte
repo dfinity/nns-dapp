@@ -1,0 +1,35 @@
+<script lang="ts">
+  import { Segment, SegmentButton } from "@dfinity/gix-components";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
+
+  const actionableProposalsSegmentId = Symbol();
+  const allProposalsSegmentId = Symbol();
+
+  let selectedSegmentId: symbol =
+    $actionableProposalsSegmentStore.selected !== "all"
+      ? actionableProposalsSegmentId
+      : allProposalsSegmentId;
+
+  $: selectedSegmentId,
+    (() =>
+      actionableProposalsSegmentStore.set(
+        selectedSegmentId === actionableProposalsSegmentId
+          ? "actionable"
+          : "all"
+      ))();
+</script>
+
+<TestIdWrapper testId="actionable-proposals-segment-component">
+  <Segment bind:selectedSegmentId>
+    <SegmentButton testId="all-proposals" segmentId={allProposalsSegmentId}
+      >{$i18n.voting.all_proposals}</SegmentButton
+    >
+    <SegmentButton
+      testId="actionable-proposals"
+      segmentId={actionableProposalsSegmentId}
+      >{$i18n.voting.actionable_proposals}</SegmentButton
+    >
+  </Segment>
+</TestIdWrapper>

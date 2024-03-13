@@ -1,4 +1,5 @@
 use ic_stable_structures::memory_manager;
+use pretty_assertions::assert_eq;
 use proptest::proptest;
 use rand::seq::IteratorRandom;
 use rand::{Rng, SeedableRng};

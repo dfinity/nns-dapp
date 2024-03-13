@@ -23,3 +23,12 @@ export const advanceTime = async (millis?: number): Promise<void> => {
   }
   await runResolvedPromises();
 };
+
+export const areFakeTimersEnabled = (): boolean => {
+  try {
+    vi.getTimerCount();
+    return true;
+  } catch {
+    return false;
+  }
+};
