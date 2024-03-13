@@ -18,6 +18,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * More readable error messages if `assert_eq` fails in tests.
+* Order neurons from highest to lowest stake on the neurons page.
 
 #### Deprecated
 
