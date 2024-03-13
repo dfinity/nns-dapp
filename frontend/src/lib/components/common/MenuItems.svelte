@@ -1,8 +1,8 @@
 <script lang="ts">
   import {
     IconExplore,
-    IconUsers,
-    IconPassword,
+    IconVote,
+    IconNeurons,
     IconRocketLaunch,
     IconWallet,
     MenuItem,
@@ -29,8 +29,8 @@
     title: string;
     icon:
       | typeof IconWallet
-      | typeof IconPassword
-      | typeof IconUsers
+      | typeof IconNeurons
+      | typeof IconVote
       | typeof IconRocketLaunch
       | typeof IconExplore;
     statusIcon?: ComponentType;
@@ -54,7 +54,7 @@
         paths: [AppPath.Neurons, AppPath.Neuron],
       }),
       title: $i18n.navigation.neurons,
-      icon: IconPassword,
+      icon: IconNeurons,
     },
     {
       context: "proposals",
@@ -64,7 +64,7 @@
         paths: [AppPath.Proposals, AppPath.Proposal],
       }),
       title: $i18n.navigation.voting,
-      icon: IconUsers,
+      icon: IconVote,
     },
     {
       context: "launchpad",
