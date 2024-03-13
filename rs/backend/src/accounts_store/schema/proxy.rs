@@ -5,7 +5,6 @@ use super::accounts_in_unbounded_stable_btree_map::{AccountsDbAsUnboundedStableB
 use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel};
 use core::fmt;
 use core::ops::RangeBounds;
-use ic_cdk::println;
 #[cfg(test)]
 use ic_stable_structures::DefaultMemoryImpl;
 use std::collections::BTreeMap;
@@ -118,9 +117,7 @@ impl AccountsDbTrait for AccountsDbAsProxy {
     }
     /// The authoritative schema label.
     fn schema_label(&self) -> SchemaLabel {
-        let schema_label = self.authoritative_db.schema_label();
-        println!("AccountsDb::Proxy: authoritative schema label: {schema_label:#?}");
-        schema_label
+        self.authoritative_db.schema_label()
     }
     /// Iterates over a range of accounts in the authoritative db.
     fn range(&self, key_range: impl RangeBounds<Vec<u8>>) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {

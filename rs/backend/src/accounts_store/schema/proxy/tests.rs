@@ -44,18 +44,18 @@ fn migration_steps_should_work(accounts_db: &mut AccountsDbAsProxy, new_accounts
         if expected_accounts_in_new_db == reference_db.db_accounts_len() {
             break;
         } else {
-            accounts_db.step_migration();
+            accounts_db.step_migration(AccountsDbAsProxy::MIGRATION_STEP_SIZE);
         }
     }
     // The next step should complete the migration.
-    accounts_db.step_migration();
+    accounts_db.step_migration(AccountsDbAsProxy::MIGRATION_STEP_SIZE);
     assert_eq!(*accounts_db, reference_db);
     assert!(
         accounts_db.migration.is_none(),
         "After completing a migration, there should be no migration in progress"
     );
     // Further steps are not needed but should be harmless.
-    accounts_db.step_migration();
+    accounts_db.step_migration(AccountsDbAsProxy::MIGRATION_STEP_SIZE);
     assert!(
         accounts_db.migration.is_none(),
         "Further steps should not create another migration"
@@ -106,7 +106,7 @@ impl Operation {
         R: Rng + ?Sized,
     {
         match self {
-            Operation::StepMigration => accounts_db.step_migration(),
+            Operation::StepMigration => accounts_db.step_migration(AccountsDbAsProxy::MIGRATION_STEP_SIZE),
             Operation::Insert => {
                 let key = rng.gen::<[u8; 32]>();
                 let account = toy_account(rng.gen(), rng.gen_range(0..5));
