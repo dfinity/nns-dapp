@@ -17,6 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Load ICP transactions from ICP index canister instead of nns-dapp.
 * More readable error messages if `assert_eq` fails in tests.
 
 #### Deprecated
