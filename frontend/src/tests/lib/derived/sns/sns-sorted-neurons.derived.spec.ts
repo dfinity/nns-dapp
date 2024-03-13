@@ -35,28 +35,25 @@ describe("sortedSnsNeuronStore", () => {
     expect(get(snsSortedNeuronStore).length).toBe(0);
   });
 
-  it("should sort neurons by createdTimestampSeconds", async () => {
+  it("should sort neurons by stake", async () => {
     const neurons: SnsNeuron[] = [
       {
         ...createMockSnsNeuron({
           stake: 1_000_000_000n,
           id: [1, 5, 3, 9, 1, 1, 1],
         }),
-        created_timestamp_seconds: 1n,
+      },
+      {
+        ...createMockSnsNeuron({
+          stake: 3_000_000_000n,
+          id: [1, 5, 3, 9, 9, 3, 2],
+        }),
       },
       {
         ...createMockSnsNeuron({
           stake: 2_000_000_000n,
-          id: [1, 5, 3, 9, 9, 3, 2],
-        }),
-        created_timestamp_seconds: 3n,
-      },
-      {
-        ...createMockSnsNeuron({
-          stake: 10_000_000_000n,
           id: [1, 2, 2, 9, 9, 3, 2],
         }),
-        created_timestamp_seconds: 2n,
       },
     ];
     snsNeuronsStore.setNeurons({
@@ -83,7 +80,6 @@ describe("sortedSnsNeuronStore", () => {
           stake: 0n,
           id: [1, 5, 3, 9, 1, 1, 1],
         }),
-        created_timestamp_seconds: 1n,
         maturity_e8s_equivalent: 0n,
       },
       {
@@ -98,7 +94,6 @@ describe("sortedSnsNeuronStore", () => {
           stake: 10_000_000_000n,
           id: [1, 2, 2, 9, 9, 3, 2],
         }),
-        created_timestamp_seconds: 2n,
       },
     ];
     snsNeuronsStore.setNeurons({
@@ -110,7 +105,7 @@ describe("sortedSnsNeuronStore", () => {
     page.mock({ data: { universe: mockPrincipal.toText() } });
 
     await waitFor(() =>
-      expect(get(snsSortedNeuronStore)).toEqual([neurons[1], neurons[2]])
+      expect(get(snsSortedNeuronStore)).toEqual([neurons[2], neurons[1]])
     );
   });
 
@@ -121,21 +116,18 @@ describe("sortedSnsNeuronStore", () => {
           stake: 1_000_000_000n,
           id: [1, 5, 3, 9, 1, 1, 1],
         }),
-        created_timestamp_seconds: 1n,
+      },
+      {
+        ...createMockSnsNeuron({
+          stake: 3_000_000_000n,
+          id: [1, 5, 3, 9, 9, 3, 2],
+        }),
       },
       {
         ...createMockSnsNeuron({
           stake: 2_000_000_000n,
-          id: [1, 5, 3, 9, 9, 3, 2],
-        }),
-        created_timestamp_seconds: 3n,
-      },
-      {
-        ...createMockSnsNeuron({
-          stake: 10_000_000_000n,
           id: [1, 2, 2, 9, 9, 3, 2],
         }),
-        created_timestamp_seconds: 2n,
       },
     ];
     snsNeuronsStore.setNeurons({
@@ -146,24 +138,21 @@ describe("sortedSnsNeuronStore", () => {
     const neurons2: SnsNeuron[] = [
       {
         ...createMockSnsNeuron({
-          stake: 1_000_000_000n,
+          stake: 2_000_000_000n,
           id: [1, 5, 3, 9, 1, 1, 1],
         }),
-        created_timestamp_seconds: 2n,
       },
       {
         ...createMockSnsNeuron({
-          stake: 2_000_000_000n,
+          stake: 1_000_000_000n,
           id: [1, 5, 3, 9, 9, 3, 2],
         }),
-        created_timestamp_seconds: 1n,
       },
       {
         ...createMockSnsNeuron({
-          stake: 10_000_000_000n,
+          stake: 3_000_000_000n,
           id: [1, 2, 2, 9, 9, 3, 2],
         }),
-        created_timestamp_seconds: 3n,
       },
     ];
     snsNeuronsStore.setNeurons({
@@ -202,7 +191,6 @@ describe("sortedSnsUserNeuronsStore", () => {
         stake: 10_000_000_000n,
         id: [1, 2, 2, 9, 9, 3, 2],
       }),
-      created_timestamp_seconds: 2n,
       source_nns_neuron_id: [2n],
     };
     const neurons: SnsNeuron[] = [
@@ -211,14 +199,12 @@ describe("sortedSnsUserNeuronsStore", () => {
           stake: 1_000_000_000n,
           id: [1, 5, 3, 9, 1, 1, 1],
         }),
-        created_timestamp_seconds: 1n,
       },
       {
         ...createMockSnsNeuron({
           stake: 2_000_000_000n,
           id: [1, 5, 3, 9, 9, 3, 2],
         }),
-        created_timestamp_seconds: 3n,
       },
       cfNeuron,
     ];
