@@ -21,6 +21,7 @@ proposal is successful, the changes it released will be moved from this file to
 * More readable error messages if `assert_eq` fails in tests.
 * Main navigation text changes.
 * Minor text changes.
+* Main menu icons and style changes.
 
 #### Deprecated
 
