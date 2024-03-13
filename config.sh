@@ -214,7 +214,7 @@ cat <<EOF >"$CANDID_ARGS_FILE"
   args = vec {
 $(jq -r 'to_entries | .[] | "    record{ 0=\(.key | tojson); 1=\(.value | tostring | tojson) };"' "$JSON_OUT")
   };
-  schema = opt variant { Map };
+  schema = opt variant { AccountsInStableMemory };
 })
 EOF
 
