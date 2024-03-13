@@ -183,15 +183,18 @@ describe("sns-neuron utils", () => {
     it("should sort neurons by stake", () => {
       const neuron1 = {
         ...mockSnsNeuron,
-        cached_neuron_stake_e8s: 1_000_000_000n,
+        cached_neuron_stake_e8s: 500_000_000n,
+        neuron_fees_e8s: 400_000_000n,
       };
       const neuron2 = {
         ...mockSnsNeuron,
-        cached_neuron_stake_e8s: 2_000_000_000n,
+        cached_neuron_stake_e8s: 400_000_000n,
+        neuron_fees_e8s: 200_000_000n,
       };
       const neuron3 = {
         ...mockSnsNeuron,
-        cached_neuron_stake_e8s: 3_000_000_000n,
+        cached_neuron_stake_e8s: 400_000_000n,
+        neuron_fees_e8s: 100_000_000n,
       };
       expect(sortSnsNeuronsByStake([])).toEqual([]);
       expect(sortSnsNeuronsByStake([neuron1])).toEqual([neuron1]);

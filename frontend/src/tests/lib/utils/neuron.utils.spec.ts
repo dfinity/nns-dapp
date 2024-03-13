@@ -629,15 +629,27 @@ describe("neuron-utils", () => {
     it("should sort neurons by stake", () => {
       const neuron1 = {
         ...mockNeuron,
-        fullNeuron: { ...mockNeuron.fullNeuron, cachedNeuronStake: 1n },
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: 500_000_000n,
+          neuronFees: 400_000_000n,
+        },
       };
       const neuron2 = {
         ...mockNeuron,
-        fullNeuron: { ...mockNeuron.fullNeuron, cachedNeuronStake: 2n },
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: 400_000_000n,
+          neuronFees: 200_000_000n,
+        },
       };
       const neuron3 = {
         ...mockNeuron,
-        fullNeuron: { ...mockNeuron.fullNeuron, cachedNeuronStake: 3n },
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: 400_000_000n,
+          neuronFees: 100_000_000n,
+        },
       };
       expect(sortNeuronsByStake([])).toEqual([]);
       expect(sortNeuronsByStake([neuron1])).toEqual([neuron1]);
