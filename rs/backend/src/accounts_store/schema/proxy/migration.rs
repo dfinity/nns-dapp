@@ -4,7 +4,7 @@ use ic_cdk::println;
 
 impl AccountsDbAsProxy {
     /// The default number of accounts to move in a migration step.
-    pub const MIGRATION_STEP_SIZE: u32 = 10;
+    pub const MIGRATION_STEP_SIZE: u32 = 20;
     /// The maximum number of accounts to move in a migration step.
     pub const MIGRATION_STEP_SIZE_MAX: u32 = 1000;
     /// The progress meter count reserved for finalizing a migration.
