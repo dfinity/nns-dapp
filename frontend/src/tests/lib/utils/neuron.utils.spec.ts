@@ -62,6 +62,7 @@ import {
   neuronVotingPower,
   neuronsVotingPower,
   sortNeuronsByCreatedTimestamp,
+  sortNeuronsByStake,
   topicsToFollow,
   userAuthorizedNeuron,
   validTopUpAmount,
@@ -638,6 +639,35 @@ describe("neuron-utils", () => {
       expect(
         sortNeuronsByCreatedTimestamp([neuron2, neuron1, neuron3])
       ).toEqual([neuron3, neuron2, neuron1]);
+    });
+  });
+
+  describe("sortNeuronsByStake", () => {
+    it("should sort neurons by stake", () => {
+      const neuron1 = {
+        ...mockNeuron,
+        fullNeuron: { ...mockNeuron.fullNeuron, cachedNeuronStake: 1n },
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        fullNeuron: { ...mockNeuron.fullNeuron, cachedNeuronStake: 2n },
+      };
+      const neuron3 = {
+        ...mockNeuron,
+        fullNeuron: { ...mockNeuron.fullNeuron, cachedNeuronStake: 3n },
+      };
+      expect(sortNeuronsByStake([])).toEqual([]);
+      expect(sortNeuronsByStake([neuron1])).toEqual([neuron1]);
+      expect(sortNeuronsByStake([neuron3, neuron2, neuron1])).toEqual([
+        neuron3,
+        neuron2,
+        neuron1,
+      ]);
+      expect(sortNeuronsByStake([neuron2, neuron1, neuron3])).toEqual([
+        neuron3,
+        neuron2,
+        neuron1,
+      ]);
     });
   });
 
