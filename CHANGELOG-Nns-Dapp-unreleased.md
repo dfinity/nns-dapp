@@ -19,6 +19,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Sort neurons by decreasing dissolve delay when stakes are equal.
 * Make the progress bar on the swap page straight instead of rounded.
+* Store account data in stable structures instead of on the heap.
 
 #### Deprecated
 
