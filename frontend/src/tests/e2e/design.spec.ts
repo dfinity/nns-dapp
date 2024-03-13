@@ -6,7 +6,7 @@ import { expect, test, type Page } from "@playwright/test";
 test.describe("Design", () => {
   test("Login", async ({ page }) => {
     await page.goto("/accounts");
-    await expect(page).toHaveTitle("My ICP Tokens / NNS Dapp");
+    await expect(page).toHaveTitle("ICP Tokens / NNS Dapp");
     // Wait for balance in the first row of the table to make sure the screenshot is taken after the app is loaded.
     const pageElement = PlaywrightPageObjectElement.fromPage(page);
     const appPo = new AppPo(pageElement);
@@ -23,7 +23,7 @@ test.describe("Design", () => {
 
   test("App loading spinner is removed", async ({ page }) => {
     await page.goto("/accounts");
-    await expect(page).toHaveTitle("My ICP Tokens / NNS Dapp");
+    await expect(page).toHaveTitle("ICP Tokens / NNS Dapp");
 
     // Wait for the button to make sure the app is loaded
     await page.locator("[data-tid=login-button]").waitFor();
@@ -42,7 +42,7 @@ test.describe("Design", () => {
       page = await browser.newPage();
 
       await page.goto("/accounts");
-      await expect(page).toHaveTitle("My ICP Tokens / NNS Dapp");
+      await expect(page).toHaveTitle("ICP Tokens / NNS Dapp");
 
       await signInWithNewUser({ page, context: browser.contexts()[0] });
     });

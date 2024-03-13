@@ -8,12 +8,12 @@ describe("Canisters layout", () => {
     layoutTitleStore.set({ title: "" });
   });
 
-  it("should set title and header layout to 'My Canisters'", () => {
+  it("should set title and header layout to 'Canisters'", () => {
     render(CanistersLayout);
 
     expect(get(layoutTitleStore)).toEqual({
-      title: "My Canisters",
-      header: "My Canisters",
+      title: "Canisters",
+      header: "Canisters",
     });
   });
 });
