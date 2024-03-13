@@ -55,6 +55,7 @@ import {
   snsNeuronsIneligibilityReasons,
   snsNeuronsToIneligibleNeuronData,
   sortSnsNeuronsByCreatedTimestamp,
+  sortSnsNeuronsByStake,
   subaccountToHexString,
   totalDisbursingMaturity,
   vestingInSeconds,
@@ -201,6 +202,35 @@ describe("sns-neuron utils", () => {
       expect(
         sortSnsNeuronsByCreatedTimestamp([neuron2, neuron1, neuron3])
       ).toEqual([neuron3, neuron2, neuron1]);
+    });
+  });
+
+  describe("sortSnsNeuronsByStake", () => {
+    it("should sort neurons by stake", () => {
+      const neuron1 = {
+        ...mockSnsNeuron,
+        cached_neuron_stake_e8s: 1_000_000_000n,
+      };
+      const neuron2 = {
+        ...mockSnsNeuron,
+        cached_neuron_stake_e8s: 2_000_000_000n,
+      };
+      const neuron3 = {
+        ...mockSnsNeuron,
+        cached_neuron_stake_e8s: 3_000_000_000n,
+      };
+      expect(sortSnsNeuronsByStake([])).toEqual([]);
+      expect(sortSnsNeuronsByStake([neuron1])).toEqual([neuron1]);
+      expect(sortSnsNeuronsByStake([neuron3, neuron2, neuron1])).toEqual([
+        neuron3,
+        neuron2,
+        neuron1,
+      ]);
+      expect(sortSnsNeuronsByStake([neuron2, neuron1, neuron3])).toEqual([
+        neuron3,
+        neuron2,
+        neuron1,
+      ]);
     });
   });
 
