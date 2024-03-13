@@ -1,4 +1,4 @@
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-02-28_23-01+p2p-hotfix/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-03-06_23-01+p2p/rs/nns/governance/canister/governance.did>
 type AccountIdentifier = record { hash : vec nat8 };
 type Action = variant {
   RegisterKnownNeuron : KnownNeuron;
@@ -124,6 +124,7 @@ type CreateServiceNervousSystem = record {
   swap_parameters : opt SwapParameters;
   initial_token_distribution : opt InitialTokenDistribution;
 };
+type Decimal = record { human_readable : opt text };
 type DerivedProposalInformation = record {
   swap_background_information : opt SwapBackgroundInformation;
 };
@@ -326,6 +327,7 @@ type NetworkEconomics = record {
   neuron_spawn_dissolve_delay_seconds : nat64;
   minimum_icp_xdr_rate : nat64;
   maximum_node_provider_rewards_e8s : nat64;
+  neurons_fund_economics : opt NeuronsFundEconomics;
 };
 type Neuron = record {
   id : opt NeuronId;
@@ -405,6 +407,15 @@ type NeuronsFundData = record {
   final_neurons_fund_participation : opt NeuronsFundParticipation;
   initial_neurons_fund_participation : opt NeuronsFundParticipation;
   neurons_fund_refunds : opt NeuronsFundSnapshot;
+};
+type NeuronsFundEconomics = record {
+  neurons_fund_matched_funding_curve_coefficients : opt NeuronsFundMatchedFundingCurveCoefficients;
+  max_theoretical_neurons_fund_participation_amount_xdr : opt Decimal;
+};
+type NeuronsFundMatchedFundingCurveCoefficients = record {
+  contribution_threshold_xdr : opt Decimal;
+  one_third_participation_milestone_xdr : opt Decimal;
+  full_participation_milestone_xdr : opt Decimal;
 };
 type NeuronsFundNeuron = record {
   hotkey_principal : opt text;
