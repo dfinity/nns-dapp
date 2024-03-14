@@ -294,12 +294,8 @@ export const formatMaturity = (value?: bigint): string =>
     value: isNullish(value) ? 0n : value,
   });
 
-export const sortNeuronsByCreatedTimestamp = (
-  neurons: NeuronInfo[]
-): NeuronInfo[] =>
-  [...neurons].sort((a, b) =>
-    Number(b.createdTimestampSeconds - a.createdTimestampSeconds)
-  );
+export const sortNeuronsByStake = (neurons: NeuronInfo[]): NeuronInfo[] =>
+  [...neurons].sort((a, b) => Number(neuronStake(b) - neuronStake(a)));
 
 /*
  * Returns true if the neuron can be controlled by current user

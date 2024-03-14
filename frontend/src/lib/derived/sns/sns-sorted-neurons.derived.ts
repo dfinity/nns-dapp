@@ -2,7 +2,7 @@ import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import {
   hasValidStake,
   isCommunityFund,
-  sortSnsNeuronsByCreatedTimestamp,
+  sortSnsNeuronsByStake,
 } from "$lib/utils/sns-neuron.utils";
 import type { SnsNeuron } from "@dfinity/sns";
 import { derived, type Readable } from "svelte/store";
@@ -14,9 +14,7 @@ export const snsSortedNeuronStore: Readable<SnsNeuron[]> = derived(
     const projectStore = store[selectedSnsRootCanisterId.toText()];
     return projectStore === undefined
       ? []
-      : sortSnsNeuronsByCreatedTimestamp(
-          projectStore.neurons.filter(hasValidStake)
-        );
+      : sortSnsNeuronsByStake(projectStore.neurons.filter(hasValidStake));
   }
 );
 

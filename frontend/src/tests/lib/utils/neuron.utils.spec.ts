@@ -61,7 +61,7 @@ import {
   neuronStake,
   neuronVotingPower,
   neuronsVotingPower,
-  sortNeuronsByCreatedTimestamp,
+  sortNeuronsByStake,
   topicsToFollow,
   userAuthorizedNeuron,
   validTopUpAmount,
@@ -625,19 +625,44 @@ describe("neuron-utils", () => {
     });
   });
 
-  describe("sortNeuronsByCreatedTimestamp", () => {
-    it("should sort neurons by createdTimestampSeconds", () => {
-      const neuron1 = { ...mockNeuron, createdTimestampSeconds: 1n };
-      const neuron2 = { ...mockNeuron, createdTimestampSeconds: 2n };
-      const neuron3 = { ...mockNeuron, createdTimestampSeconds: 3n };
-      expect(sortNeuronsByCreatedTimestamp([])).toEqual([]);
-      expect(sortNeuronsByCreatedTimestamp([neuron1])).toEqual([neuron1]);
-      expect(
-        sortNeuronsByCreatedTimestamp([neuron3, neuron2, neuron1])
-      ).toEqual([neuron3, neuron2, neuron1]);
-      expect(
-        sortNeuronsByCreatedTimestamp([neuron2, neuron1, neuron3])
-      ).toEqual([neuron3, neuron2, neuron1]);
+  describe("sortNeuronsByStake", () => {
+    it("should sort neurons by stake", () => {
+      const neuron1 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: 500_000_000n,
+          neuronFees: 400_000_000n,
+        },
+      };
+      const neuron2 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: 400_000_000n,
+          neuronFees: 200_000_000n,
+        },
+      };
+      const neuron3 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          cachedNeuronStake: 400_000_000n,
+          neuronFees: 100_000_000n,
+        },
+      };
+      expect(sortNeuronsByStake([])).toEqual([]);
+      expect(sortNeuronsByStake([neuron1])).toEqual([neuron1]);
+      expect(sortNeuronsByStake([neuron3, neuron2, neuron1])).toEqual([
+        neuron3,
+        neuron2,
+        neuron1,
+      ]);
+      expect(sortNeuronsByStake([neuron2, neuron1, neuron3])).toEqual([
+        neuron3,
+        neuron2,
+        neuron1,
+      ]);
     });
   });
 

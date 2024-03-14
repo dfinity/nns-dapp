@@ -37,14 +37,9 @@ import { nowInSeconds } from "./date.utils";
 import { ballotVotingPower } from "./sns-proposals.utils";
 import { bytesToHexString } from "./utils";
 
-export const sortSnsNeuronsByCreatedTimestamp = (
-  neurons: SnsNeuron[]
-): SnsNeuron[] =>
-  [...neurons].sort(
-    (
-      { created_timestamp_seconds: created1 },
-      { created_timestamp_seconds: created2 }
-    ) => Number(created2 - created1)
+export const sortSnsNeuronsByStake = (neurons: SnsNeuron[]): SnsNeuron[] =>
+  [...neurons].sort((a, b) =>
+    Number(getSnsNeuronStake(b) - getSnsNeuronStake(a))
   );
 
 // For now, both nns neurons and sns neurons have the same states.

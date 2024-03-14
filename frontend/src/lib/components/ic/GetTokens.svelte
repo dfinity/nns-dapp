@@ -44,7 +44,7 @@
 
     color: var(--menu-color);
 
-    padding: var(--padding-2x);
+    padding: var(--padding);
 
     &:focus,
     &:hover {

@@ -110,17 +110,35 @@ describe("neurons-store", () => {
   });
 
   describe("sortedNeuronStore", () => {
-    it("should sort neurons by createdTimestampSeconds", () => {
+    it("should sort neurons by stake", () => {
       const neurons = [
-        { ...mockNeuron, createdTimestampSeconds: 2n },
-        { ...mockNeuron, createdTimestampSeconds: 1n },
-        { ...mockNeuron, createdTimestampSeconds: 3n },
+        {
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockNeuron.fullNeuron,
+            cachedNeuronStake: 3_000_000_000n,
+          },
+        },
+        {
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockNeuron.fullNeuron,
+            cachedNeuronStake: 4_000_000_000n,
+          },
+        },
+        {
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockNeuron.fullNeuron,
+            cachedNeuronStake: 1_000_000_000n,
+          },
+        },
       ];
       neuronsStore.setNeurons({ neurons: [...neurons], certified: true });
       expect(get(sortedNeuronStore)).toEqual([
-        neurons[2],
-        neurons[0],
         neurons[1],
+        neurons[0],
+        neurons[2],
       ]);
     });
   });

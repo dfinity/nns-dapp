@@ -54,7 +54,7 @@ import {
   snsNeuronVotingPower,
   snsNeuronsIneligibilityReasons,
   snsNeuronsToIneligibleNeuronData,
-  sortSnsNeuronsByCreatedTimestamp,
+  sortSnsNeuronsByStake,
   subaccountToHexString,
   totalDisbursingMaturity,
   vestingInSeconds,
@@ -179,28 +179,35 @@ describe("sns-neuron utils", () => {
     vi.useFakeTimers().setSystemTime(nowSeconds * 1000);
   });
 
-  describe("sortNeuronsByCreatedTimestamp", () => {
-    it("should sort neurons by created_timestamp_seconds", () => {
+  describe("sortSnsNeuronsByStake", () => {
+    it("should sort neurons by stake", () => {
       const neuron1 = {
         ...mockSnsNeuron,
-        created_timestamp_seconds: 1n,
+        cached_neuron_stake_e8s: 500_000_000n,
+        neuron_fees_e8s: 400_000_000n,
       };
       const neuron2 = {
         ...mockSnsNeuron,
-        created_timestamp_seconds: 2n,
+        cached_neuron_stake_e8s: 400_000_000n,
+        neuron_fees_e8s: 200_000_000n,
       };
       const neuron3 = {
         ...mockSnsNeuron,
-        created_timestamp_seconds: 3n,
+        cached_neuron_stake_e8s: 400_000_000n,
+        neuron_fees_e8s: 100_000_000n,
       };
-      expect(sortSnsNeuronsByCreatedTimestamp([])).toEqual([]);
-      expect(sortSnsNeuronsByCreatedTimestamp([neuron1])).toEqual([neuron1]);
-      expect(
-        sortSnsNeuronsByCreatedTimestamp([neuron3, neuron2, neuron1])
-      ).toEqual([neuron3, neuron2, neuron1]);
-      expect(
-        sortSnsNeuronsByCreatedTimestamp([neuron2, neuron1, neuron3])
-      ).toEqual([neuron3, neuron2, neuron1]);
+      expect(sortSnsNeuronsByStake([])).toEqual([]);
+      expect(sortSnsNeuronsByStake([neuron1])).toEqual([neuron1]);
+      expect(sortSnsNeuronsByStake([neuron3, neuron2, neuron1])).toEqual([
+        neuron3,
+        neuron2,
+        neuron1,
+      ]);
+      expect(sortSnsNeuronsByStake([neuron2, neuron1, neuron3])).toEqual([
+        neuron3,
+        neuron2,
+        neuron1,
+      ]);
     });
   });
 

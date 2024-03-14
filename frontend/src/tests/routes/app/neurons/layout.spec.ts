@@ -8,12 +8,12 @@ describe("Neurons layout", () => {
     layoutTitleStore.set({ title: "" });
   });
 
-  it("should set title and header layout to 'My Neuron Staking'", () => {
+  it("should set title and header layout to 'Neuron Staking'", () => {
     render(NeuronsLayout);
 
     expect(get(layoutTitleStore)).toEqual({
-      title: "My Neuron Staking",
-      header: "My Neuron Staking",
+      title: "Neuron Staking",
+      header: "Neuron Staking",
     });
   });
 });

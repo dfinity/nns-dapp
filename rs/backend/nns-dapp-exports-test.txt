@@ -23,4 +23,5 @@ canister_update get_proposal_payload
 canister_update register_hardware_wallet
 canister_update rename_canister
 canister_update rename_sub_account
+canister_update step_migration
 main

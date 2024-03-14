@@ -13,7 +13,7 @@ describe("Home page", () => {
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
-  describe("My Tokens flag enabled", () => {
+  describe("Tokens flag enabled", () => {
     it("should render the tokens route", () => {
       const { queryByTestId } = render(HomePage);
 
