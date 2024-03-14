@@ -127,7 +127,7 @@ pub enum SchemaLabel {
 
 impl Default for SchemaLabel {
     fn default() -> Self {
-        Self::AccountsInStableMemory
+        Self::Map
     }
 }
 
