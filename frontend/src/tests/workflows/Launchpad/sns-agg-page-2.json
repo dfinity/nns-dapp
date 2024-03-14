@@ -144,6 +144,14 @@
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
+        },
+        {
+          "id": 14,
+          "name": "Manage dapp canister settings",
+          "description": "Proposal to change canister settings for some dapp canisters.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
         }
       ]
     },
@@ -1467,7 +1475,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100001837955181730,
+    "icrc1_total_supply": 100002081712408600,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3334,7 +3342,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100001469852303,
+    "icrc1_total_supply": 100002068918607,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4033,7 +4041,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 999988559000,
+    "icrc1_total_supply": 999987506000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -5633,8 +5641,8 @@
         "decentralization_sale_open_timestamp_seconds": 1709121600
       },
       "derived": {
-        "buyer_total_icp_e8s": 28639685135762,
-        "sns_tokens_per_icp": 219.97449
+        "buyer_total_icp_e8s": 42273823178125,
+        "sns_tokens_per_icp": 149.0284
       }
     },
     "icrc1_metadata": [
@@ -7021,12 +7029,12 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 219.9744873046875,
-      "buyer_total_icp_e8s": 28639685135762,
+      "sns_tokens_per_icp": 149.0283966064453,
+      "buyer_total_icp_e8s": 42273823178125,
       "cf_participant_count": 0,
-      "neurons_fund_participation_icp_e8s": 13975330428393,
-      "direct_participation_icp_e8s": 14664354707369,
-      "direct_participant_count": 869,
+      "neurons_fund_participation_icp_e8s": 20791290296629,
+      "direct_participation_icp_e8s": 21482532881496,
+      "direct_participant_count": 1159,
       "cf_neuron_count": 0
     },
     "lifecycle": {
@@ -7630,8 +7638,8 @@
         "decentralization_sale_open_timestamp_seconds": 1709380800
       },
       "derived": {
-        "buyer_total_icp_e8s": 5110083775429,
-        "sns_tokens_per_icp": 1223.0719
+        "buyer_total_icp_e8s": 10153342264778,
+        "sns_tokens_per_icp": 615.56085
       }
     },
     "icrc1_metadata": [
@@ -8081,12 +8089,12 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 1223.0718994140625,
-      "buyer_total_icp_e8s": 5110083775429,
+      "sns_tokens_per_icp": 615.5608520507812,
+      "buyer_total_icp_e8s": 10153342264778,
       "cf_participant_count": 0,
-      "neurons_fund_participation_icp_e8s": 149484945161,
-      "direct_participation_icp_e8s": 4960598830268,
-      "direct_participant_count": 468,
+      "neurons_fund_participation_icp_e8s": 2059040843439,
+      "direct_participation_icp_e8s": 8094301421339,
+      "direct_participant_count": 689,
       "cf_neuron_count": 0
     },
     "lifecycle": {

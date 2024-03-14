@@ -175,15 +175,15 @@
       "neuron_claimer_permissions": {
         "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8]
       },
-      "neuron_minimum_stake_e8s": 1000000,
+      "neuron_minimum_stake_e8s": 100000000000,
       "max_neuron_age_for_age_bonus": 252460800,
       "initial_voting_period_seconds": 345600,
       "neuron_minimum_dissolve_delay_to_vote_seconds": 2629800,
-      "reject_cost_e8s": 1000000000,
+      "reject_cost_e8s": 5000000000000,
       "max_proposals_to_keep_per_action": 100,
       "wait_for_quiet_deadline_increase_seconds": 86400,
       "max_number_of_neurons": 200000,
-      "transaction_fee_e8s": 1000,
+      "transaction_fee_e8s": 100000,
       "max_number_of_proposals_with_ballots": 700,
       "max_age_bonus_percentage": 25,
       "neuron_grantable_permissions": {
@@ -278,7 +278,7 @@
       [
         "icrc1:fee",
         {
-          "Nat": [1000]
+          "Nat": [100000]
         }
       ],
       [
@@ -288,8 +288,8 @@
         }
       ]
     ],
-    "icrc1_fee": [1000],
-    "icrc1_total_supply": 999534491000,
+    "icrc1_fee": [100000],
+    "icrc1_total_supply": 799999999401694000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -1111,7 +1111,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10054738995120580,
+    "icrc1_total_supply": 10055439678035912,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1748,7 +1748,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 600200331782353,
+    "icrc1_total_supply": 600206712382330,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2106,7 +2106,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100117079797396690,
+    "icrc1_total_supply": 100126511672236820,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2745,7 +2745,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 921252178813585400,
+    "icrc1_total_supply": 921374822463622500,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
