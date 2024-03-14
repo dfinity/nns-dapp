@@ -115,7 +115,7 @@ jobs:
           nns_dapp_wasm: 'nns-dapp_test.wasm.gz'
           logfile: 'dfx-test-downgrade-upgrade.log'
       - name: Downgrade nns-dapp to prod and upgrade back again
-        run: ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp_test.wasm.gz --accounts 100 --chunk 30
+        run: ./scripts/nns-dapp/downgrade-upgrade-test -w nns-dapp_test.wasm.gz
       - name: Count upgrade cycles
         run: scripts/nns-dapp/estimate-upgrade-cycles | tee -a $GITHUB_STEP_SUMMARY
   test-upgrade-map:
