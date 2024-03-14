@@ -11,6 +11,9 @@
   import FiltersButton from "../ui/FiltersButton.svelte";
   import SnsFilterRewardsModal from "$lib/modals/sns/proposals/SnsFilterRewardsModal.svelte";
   import SnsFilterTypesModal from "$lib/modals/sns/proposals/SnsFilterTypesModal.svelte";
+  import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
+  import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
+  import ActionableProposalsSegment from "$lib/components/proposals/ActionableProposalsSegment.svelte";
 
   let modal: "types" | "rewards" | "status" | undefined = undefined;
 
@@ -29,34 +32,41 @@
 </script>
 
 <div class="proposal-filters">
-  <FiltersWrapper>
-    <FiltersButton
-      testId="filters-by-types"
-      totalFilters={filtersStore?.types.length ?? 0}
-      activeFilters={filtersStore?.types.filter(({ checked }) => checked)
-        .length ?? 0}
-      on:nnsFilter={() => openFilters("types")}
-    >
-      {$i18n.voting.types}
-    </FiltersButton>
-    <FiltersButton
-      testId="filters-by-rewards"
-      totalFilters={filtersStore?.rewardStatus.length ?? 0}
-      activeFilters={filtersStore?.rewardStatus.filter(({ checked }) => checked)
-        .length ?? 0}
-      on:nnsFilter={() => openFilters("rewards")}
-      >{$i18n.voting.rewards}</FiltersButton
-    >
-    <FiltersButton
-      testId="filters-by-status"
-      totalFilters={filtersStore?.decisionStatus.length ?? 0}
-      activeFilters={filtersStore?.decisionStatus.filter(
-        ({ checked }) => checked
-      ).length ?? 0}
-      on:nnsFilter={() => openFilters("status")}
-      >{$i18n.voting.status}</FiltersButton
-    >
-  </FiltersWrapper>
+  {#if $ENABLE_VOTING_INDICATION}
+    <ActionableProposalsSegment />
+  {/if}
+
+  {#if !$ENABLE_VOTING_INDICATION || $actionableProposalsSegmentStore.selected !== "actionable"}
+    <FiltersWrapper>
+      <FiltersButton
+        testId="filters-by-types"
+        totalFilters={filtersStore?.types.length ?? 0}
+        activeFilters={filtersStore?.types.filter(({ checked }) => checked)
+          .length ?? 0}
+        on:nnsFilter={() => openFilters("types")}
+      >
+        {$i18n.voting.types}
+      </FiltersButton>
+      <FiltersButton
+        testId="filters-by-rewards"
+        totalFilters={filtersStore?.rewardStatus.length ?? 0}
+        activeFilters={filtersStore?.rewardStatus.filter(
+          ({ checked }) => checked
+        ).length ?? 0}
+        on:nnsFilter={() => openFilters("rewards")}
+        >{$i18n.voting.rewards}</FiltersButton
+      >
+      <FiltersButton
+        testId="filters-by-status"
+        totalFilters={filtersStore?.decisionStatus.length ?? 0}
+        activeFilters={filtersStore?.decisionStatus.filter(
+          ({ checked }) => checked
+        ).length ?? 0}
+        on:nnsFilter={() => openFilters("status")}
+        >{$i18n.voting.status}</FiltersButton
+      >
+    </FiltersWrapper>
+  {/if}
 </div>
 
 {#if modal === "types"}
@@ -84,7 +94,18 @@
 {/if}
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+
   .proposal-filters {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
     margin-bottom: var(--padding-3x);
+
+    @include media.min-width(medium) {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+    }
   }
 </style>
