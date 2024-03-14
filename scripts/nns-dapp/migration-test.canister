@@ -137,6 +137,10 @@ upgrade_nnsdapp() {
   wasm="$1"
   argfile="$2"
   argument="$(cat "$argfile")"
+  echo "Getting stats before upgrade..."
+  dfx canister call nns-dapp get_stats
+  sleep 2
+  dfx canister call nns-dapp get_stats
   prestate="$(get_upgrade_invariants | tee /dev/stderr)"
   # Check that the data is plausible
   # TODO: Check that the prestate is not empty; first we need to populate the state.
@@ -149,6 +153,11 @@ upgrade_nnsdapp() {
   wait_for_migration
   verify_healthy
   poststate="$(get_upgrade_invariants)"
+  echo "Getting stats after upgrade..."
+  dfx canister call nns-dapp get_stats
+  sleep 2
+  dfx canister call nns-dapp get_stats
+
   if [[ "$prestate" != "$poststate" ]]; then
     {
       echo "ERROR: The upgrade changed the state of the canister."
