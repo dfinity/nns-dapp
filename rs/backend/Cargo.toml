@@ -45,7 +45,6 @@ ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05
 ic-stable-structures = "0.6.0"
 icp-ledger = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
 on_wire = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-pretty_assertions = "1.4.0"
 
 proposals = { path = "../proposals" }
 
