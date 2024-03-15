@@ -22,6 +22,7 @@ describe("SnsProposalsList", () => {
     const { queryAllByTestId } = render(SnsProposalsList, {
       props: {
         proposals,
+        actionableProposals: undefined,
         nsFunctions: [],
       },
     });
@@ -33,6 +34,7 @@ describe("SnsProposalsList", () => {
     const { queryByTestId } = render(SnsProposalsList, {
       props: {
         proposals,
+        actionableProposals: undefined,
         nsFunctions: [],
         loadingNextPage: true,
       },
@@ -47,6 +49,7 @@ describe("SnsProposalsList", () => {
     const { queryByTestId } = render(SnsProposalsList, {
       props: {
         proposals: undefined,
+        actionableProposals: undefined,
         nsFunctions: [],
       },
     });
@@ -58,6 +61,7 @@ describe("SnsProposalsList", () => {
     const { queryByTestId } = render(SnsProposalsList, {
       props: {
         proposals: [],
+        actionableProposals: undefined,
         nsFunctions: [],
       },
     });
