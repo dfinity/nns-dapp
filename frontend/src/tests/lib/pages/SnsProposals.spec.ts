@@ -1,6 +1,7 @@
 import SnsProposals from "$lib/pages/SnsProposals.svelte";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { authStore } from "$lib/stores/auth.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
@@ -10,6 +11,8 @@ import {
   mockAuthStoreNoIdentitySubscribe,
   mockAuthStoreSubscribe,
   mockPrincipal,
+  resetIdentity,
+  setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
@@ -375,62 +378,122 @@ describe("SnsProposals", () => {
       });
 
     beforeEach(() => {
+      resetIdentity();
+      overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", true);
       actionableSnsProposalsStore.resetForTesting();
       mockActionableProposalsLoadingDone();
     });
 
-    it("should render all proposals by default", async () => {
-      const po = await renderComponent();
+    describe("when feature flag false", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", false);
+      });
 
-      expect(await po.getAllProposalList().isPresent()).toEqual(true);
-      expect(await po.getActionableProposalList().isPresent()).toEqual(false);
+      it("should render only all proposals", async () => {
+        const po = await renderComponent();
+
+        expect(await po.getAllProposalList().isPresent()).toEqual(true);
+        expect(await po.getActionableProposalList().isPresent()).toEqual(false);
+      });
+
+      it("should not render actionable segment", async () => {
+        const po = await renderComponent();
+
+        expect(
+          await po
+            .getSnsProposalFiltersPo()
+            .getActionableProposalsSegmentPo()
+            .isPresent()
+        ).toEqual(false);
+      });
+
+      describe("when signOut", () => {
+        beforeEach(() => {
+          setNoIdentity();
+        });
+
+        it("should render only all proposals", async () => {
+          const po = await renderComponent();
+
+          expect(await po.getAllProposalList().isPresent()).toEqual(true);
+          expect(await po.getActionableProposalList().isPresent()).toEqual(
+            false
+          );
+        });
+
+        it("should not render actionable segment", async () => {
+          const po = await renderComponent();
+
+          expect(
+            await po
+              .getSnsProposalFiltersPo()
+              .getActionableProposalsSegmentPo()
+              .isPresent()
+          ).toEqual(false);
+        });
+      });
     });
 
-    it("should switch proposal lists on actionable toggle", async () => {
-      const po = await renderComponent();
-      await po
-        .getSnsProposalFiltersPo()
-        .getActionableProposalsSegmentPo()
-        .clickActionableProposals();
-      await runResolvedPromises();
+    describe("when feature flag true", () => {
+      it("should render all proposals by default", async () => {
+        const po = await renderComponent();
 
-      expect(await po.getAllProposalList().isPresent()).toEqual(false);
-      expect(await po.getActionableProposalList().isPresent()).toEqual(true);
+        expect(await po.getAllProposalList().isPresent()).toEqual(true);
+        expect(await po.getActionableProposalList().isPresent()).toEqual(false);
+      });
 
-      await po
-        .getSnsProposalFiltersPo()
-        .getActionableProposalsSegmentPo()
-        .clickAllProposals();
-      await runResolvedPromises();
+      it("should switch proposal lists on actionable toggle", async () => {
+        const po = await renderComponent();
+        await po
+          .getSnsProposalFiltersPo()
+          .getActionableProposalsSegmentPo()
+          .clickActionableProposals();
+        await runResolvedPromises();
 
-      expect(await po.getAllProposalList().isPresent()).toEqual(true);
-      expect(await po.getActionableProposalList().isPresent()).toEqual(false);
-    });
+        expect(await po.getAllProposalList().isPresent()).toEqual(false);
+        expect(await po.getActionableProposalList().isPresent()).toEqual(true);
 
-    it("should render spinner while loading actionable", async () => {
-      actionableSnsProposalsStore.resetForTesting();
+        await po
+          .getSnsProposalFiltersPo()
+          .getActionableProposalsSegmentPo()
+          .clickAllProposals();
+        await runResolvedPromises();
 
-      const po = await renderComponent();
-      await po
-        .getSnsProposalFiltersPo()
-        .getActionableProposalsSegmentPo()
-        .clickActionableProposals();
-      await runResolvedPromises();
+        expect(await po.getAllProposalList().isPresent()).toEqual(true);
+        expect(await po.getActionableProposalList().isPresent()).toEqual(false);
+      });
 
-      expect(await po.getSkeletonCardPo().isPresent()).toEqual(true);
+      it("should render spinner while loading actionable", async () => {
+        actionableSnsProposalsStore.resetForTesting();
 
-      mockActionableProposalsLoadingDone();
-      await runResolvedPromises();
+        const po = await renderComponent();
+        await po
+          .getSnsProposalFiltersPo()
+          .getActionableProposalsSegmentPo()
+          .clickActionableProposals();
+        await runResolvedPromises();
 
-      expect(await po.getSkeletonCardPo().isPresent()).toEqual(false);
-    });
+        expect(await po.getSkeletonCardPo().isPresent()).toEqual(true);
 
-    it("should display login CTA", async () => {
-      // TODO(max): TBD
-    });
+        mockActionableProposalsLoadingDone();
+        await runResolvedPromises();
 
-    it("should display not supported page", async () => {
-      // TODO(max): TBD
+        expect(await po.getSkeletonCardPo().isPresent()).toEqual(false);
+      });
+
+      it("should display not supported page", async () => {
+        // TODO(max): TBD
+      });
+
+      describe("when signOut", () => {
+        beforeEach(() => {
+          setNoIdentity();
+        });
+
+        it("should display login CTA", async () => {
+          // TODO(max): TBD
+        });
+      });
     });
   });
 });
