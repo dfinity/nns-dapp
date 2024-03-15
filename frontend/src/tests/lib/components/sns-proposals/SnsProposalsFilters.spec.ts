@@ -1,49 +1,48 @@
 import SnsProposalsFilters from "$lib/components/sns-proposals/SnsProposalsFilters.svelte";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { SnsProposalFiltersPo } from "$tests/page-objects/SnsProposalFilters.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { render } from "@testing-library/svelte";
 
 describe("SnsProposalsFilters", () => {
-  it("should render types filter button", () => {
-    const { queryByTestId } = render(SnsProposalsFilters);
+  const renderComponent = async () => {
+    const { container } = render(SnsProposalsFilters);
+    await runResolvedPromises();
+    return SnsProposalFiltersPo.under(new JestPageObjectElement(container));
+  };
 
-    expect(queryByTestId("filters-by-types")).toBeInTheDocument();
+  it("should render filter buttons", async () => {
+    const po = await renderComponent();
+
+    expect(await po.getFilterByTypesButton().isPresent()).toBe(true);
+    expect(await po.getFilterByRewardsButton().isPresent()).toBe(true);
+    expect(await po.getFilterByStatusButton().isPresent()).toBe(true);
   });
 
-  it("should show filter modal when types filter is clicked", async () => {
-    const { queryByTestId } = render(SnsProposalsFilters);
+  it("should open filter modal when type filter is clicked", async () => {
+    const po = await renderComponent();
+    expect(await po.getFilterModalPo().isPresent()).toBe(false);
 
-    const statusFilterButton = queryByTestId("filters-by-types");
-    statusFilterButton && fireEvent.click(statusFilterButton);
-
-    await waitFor(() =>
-      expect(queryByTestId("filter-modal")).toBeInTheDocument()
-    );
+    await po.clickFiltersByTypesButton();
+    await runResolvedPromises();
+    expect(await po.getFilterModalPo().isPresent()).toBe(true);
   });
 
-  it("should render status filter button", () => {
-    const { queryByTestId } = render(SnsProposalsFilters);
+  it("should open filter modal when status filter is clicked", async () => {
+    const po = await renderComponent();
+    expect(await po.getFilterModalPo().isPresent()).toBe(false);
 
-    expect(queryByTestId("filters-by-status")).toBeInTheDocument();
+    await po.clickFiltersByStatusButton();
+    await runResolvedPromises();
+    expect(await po.getFilterModalPo().isPresent()).toBe(true);
   });
 
-  it("should show filter modal when status filter is clicked", async () => {
-    const { queryByTestId } = render(SnsProposalsFilters);
+  it("should open filter modal when rewards filter is clicked", async () => {
+    const po = await renderComponent();
+    expect(await po.getFilterModalPo().isPresent()).toBe(false);
 
-    const statusFilterButton = queryByTestId("filters-by-status");
-    statusFilterButton && fireEvent.click(statusFilterButton);
-
-    await waitFor(() =>
-      expect(queryByTestId("filter-modal")).toBeInTheDocument()
-    );
-  });
-
-  it("should show filter modal when rewards filter is clicked", async () => {
-    const { queryByTestId } = render(SnsProposalsFilters);
-
-    const statusFilterButton = queryByTestId("filters-by-rewards");
-    statusFilterButton && fireEvent.click(statusFilterButton);
-
-    await waitFor(() =>
-      expect(queryByTestId("filter-modal")).toBeInTheDocument()
-    );
+    await po.clickFiltersByRewardsButton();
+    await runResolvedPromises();
+    expect(await po.getFilterModalPo().isPresent()).toBe(true);
   });
 });
