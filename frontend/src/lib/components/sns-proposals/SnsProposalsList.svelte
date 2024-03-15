@@ -10,8 +10,8 @@
   import SnsProposalsFilters from "./SnsProposalsFilters.svelte";
   import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
   import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
-  import NnsProposalCard from "$lib/components/proposals/NnsProposalCard.svelte";
   import { fade } from "svelte/transition";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let proposals: SnsProposalData[] | undefined;
   export let actionableProposals: SnsProposalData[] | undefined;
@@ -20,46 +20,48 @@
   export let loadingNextPage = false;
 </script>
 
-<SnsProposalsFilters />
+<TestIdWrapper testId="sns-proposal-list-component">
+  <SnsProposalsFilters />
 
-{#if !$ENABLE_VOTING_INDICATION || $actionableProposalsSegmentStore.selected !== "actionable"}
-  <div in:fade data-tid="all-proposal-list">
-    {#if proposals === undefined}
-      <LoadingProposals />
-    {:else if proposals.length === 0}
-      <NoProposals />
-    {:else}
-      <ListLoader loading={loadingNextPage}>
-        <InfiniteScroll
-          layout="grid"
-          on:nnsIntersect
-          disabled={disableInfiniteScroll}
-        >
-          {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
-            <SnsProposalCard {proposalData} {nsFunctions} />
-          {/each}
-        </InfiniteScroll>
-      </ListLoader>
-    {/if}
-  </div>
-{/if}
-
-{#if $ENABLE_VOTING_INDICATION && $actionableProposalsSegmentStore.selected === "actionable"}
-  {#if actionableProposals === undefined}
-    <!-- TODO(max): TBD SignIn vs No vs NotSupported -->
-    <LoadingProposals />
-  {:else if actionableProposals.length === 0}
-    <!-- TODO(max): TBD custom screen -->
-    <NoProposals />
-  {:else}
-    <div in:fade data-tid="actionable-proposal-list">
-      <ListLoader loading={isNullish(actionableProposals)}>
-        <InfiniteScroll layout="grid" disabled>
-          {#each actionableProposals as proposalData (fromNullable(proposalData.id)?.id)}
-            <SnsProposalCard {proposalData} {nsFunctions} />
-          {/each}
-        </InfiniteScroll>
-      </ListLoader>
+  {#if !$ENABLE_VOTING_INDICATION || $actionableProposalsSegmentStore.selected !== "actionable"}
+    <div in:fade data-tid="all-proposal-list">
+      {#if proposals === undefined}
+        <LoadingProposals />
+      {:else if proposals.length === 0}
+        <NoProposals />
+      {:else}
+        <ListLoader loading={loadingNextPage}>
+          <InfiniteScroll
+            layout="grid"
+            on:nnsIntersect
+            disabled={disableInfiniteScroll}
+          >
+            {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
+              <SnsProposalCard {proposalData} {nsFunctions} />
+            {/each}
+          </InfiniteScroll>
+        </ListLoader>
+      {/if}
     </div>
   {/if}
-{/if}
+
+  {#if $ENABLE_VOTING_INDICATION && $actionableProposalsSegmentStore.selected === "actionable"}
+    {#if actionableProposals === undefined}
+      <!-- TODO(max): TBD SignIn vs No vs NotSupported -->
+      <LoadingProposals />
+    {:else if actionableProposals.length === 0}
+      <!-- TODO(max): TBD custom screen -->
+      <NoProposals />
+    {:else}
+      <div in:fade data-tid="actionable-proposal-list">
+        <ListLoader loading={isNullish(actionableProposals)}>
+          <InfiniteScroll layout="grid" disabled>
+            {#each actionableProposals as proposalData (fromNullable(proposalData.id)?.id)}
+              <SnsProposalCard {proposalData} {nsFunctions} />
+            {/each}
+          </InfiniteScroll>
+        </ListLoader>
+      </div>
+    {/if}
+  {/if}
+</TestIdWrapper>
