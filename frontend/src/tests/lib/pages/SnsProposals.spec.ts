@@ -4,16 +4,12 @@ import { authStore } from "$lib/stores/auth.store";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
-import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
-import { numberToE8s } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import {
   mockAuthStoreNoIdentitySubscribe,
   mockAuthStoreSubscribe,
-  mockIdentity,
   mockPrincipal,
-  resetIdentity,
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
@@ -27,10 +23,6 @@ import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
   SnsSwapLifecycle,
-  SnsVote,
-  neuronSubaccount,
-  type SnsNeuron,
-  type SnsNeuronId,
   type SnsProposalData,
 } from "@dfinity/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
@@ -370,16 +362,21 @@ describe("SnsProposals", () => {
       await runResolvedPromises();
       return SnsProposalListPo.under(new JestPageObjectElement(container));
     };
+    const mockActionableProposalsLoadingDone = () =>
+      actionableSnsProposalsStore.set({
+        rootCanisterId,
+        proposals: [
+          createSnsProposal({
+            proposalId: 10n,
+            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+          }),
+        ],
+        includeBallotsByCaller: true,
+      });
 
     beforeEach(() => {
-      // authStoreMock.next({
-      //   identity: mockIdentity,
-      // });
-      resetIdentity();
-
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreSubscribe
-      );
+      actionableSnsProposalsStore.resetForTesting();
+      mockActionableProposalsLoadingDone();
     });
 
     it("should render all proposals by default", async () => {
@@ -410,7 +407,9 @@ describe("SnsProposals", () => {
       expect(await po.getActionableProposalList().isPresent()).toEqual(false);
     });
 
-    it.only("should render spinner while loading actionable", async () => {
+    it("should render spinner while loading actionable", async () => {
+      actionableSnsProposalsStore.resetForTesting();
+
       const po = await renderComponent();
       await po
         .getSnsProposalFiltersPo()
@@ -420,49 +419,7 @@ describe("SnsProposals", () => {
 
       expect(await po.getSkeletonCardPo().isPresent()).toEqual(true);
 
-      // mock a proposal
-      const subaccount = neuronSubaccount({
-        controller: rootCanisterId,
-        index: 0,
-      });
-      const neuronId: SnsNeuronId = { id: subaccount };
-      fakeSnsGovernanceApi.addNeuronWith({
-        identity: mockIdentity,
-        rootCanisterId,
-        id: [neuronId],
-        cached_neuron_stake_e8s: numberToE8s(10),
-      });
-      fakeSnsGovernanceApi.addProposalWith({
-        identity: mockIdentity,
-        rootCanisterId,
-        ...createSnsProposal({
-          proposalId: 0n,
-          status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
-          ballots: [
-            [
-              getSnsNeuronIdAsHexString({
-                id: [neuronId] as [SnsNeuronId],
-              } as SnsNeuron),
-              {
-                vote: SnsVote.Unspecified,
-                cast_timestamp_seconds: 123n,
-                voting_power: 10000n,
-              },
-            ],
-          ],
-        }),
-      });
-
-      actionableSnsProposalsStore.set({
-        rootCanisterId,
-        proposals: [
-          createSnsProposal({
-            proposalId: 10n,
-            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
-          }),
-        ],
-        includeBallotsByCaller: true,
-      });
+      mockActionableProposalsLoadingDone();
       await runResolvedPromises();
 
       expect(await po.getSkeletonCardPo().isPresent()).toEqual(false);
