@@ -1,5 +1,7 @@
 import SnsProposals from "$lib/pages/SnsProposals.svelte";
+import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { authStore } from "$lib/stores/auth.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
@@ -9,10 +11,14 @@ import {
   mockAuthStoreNoIdentitySubscribe,
   mockAuthStoreSubscribe,
   mockPrincipal,
+  resetIdentity,
+  setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
+import { SnsProposalListPo } from "$tests/page-objects/SnsProposalList.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
@@ -350,6 +356,144 @@ describe("SnsProposals", () => {
       expect(queryByTestId("filter-modal")).not.toBeInTheDocument();
 
       expect(queryAllByTestId("proposal-card").length).toBe(1);
+    });
+  });
+
+  describe("actionable proposals segment", () => {
+    const renderComponent = async () => {
+      const { container } = render(SnsProposals);
+      await runResolvedPromises();
+      return SnsProposalListPo.under(new JestPageObjectElement(container));
+    };
+    const mockActionableProposalsLoadingDone = () =>
+      actionableSnsProposalsStore.set({
+        rootCanisterId,
+        proposals: [
+          createSnsProposal({
+            proposalId: 10n,
+            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+          }),
+        ],
+        includeBallotsByCaller: true,
+      });
+
+    beforeEach(() => {
+      resetIdentity();
+      overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", true);
+      actionableSnsProposalsStore.resetForTesting();
+      mockActionableProposalsLoadingDone();
+    });
+
+    describe("when feature flag false", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", false);
+      });
+
+      it("should render only all proposals", async () => {
+        const po = await renderComponent();
+
+        expect(await po.getAllProposalList().isPresent()).toEqual(true);
+        expect(await po.getActionableProposalList().isPresent()).toEqual(false);
+      });
+
+      it("should not render actionable segment", async () => {
+        const po = await renderComponent();
+
+        expect(
+          await po
+            .getSnsProposalFiltersPo()
+            .getActionableProposalsSegmentPo()
+            .isPresent()
+        ).toEqual(false);
+      });
+
+      describe("when signOut", () => {
+        beforeEach(() => {
+          setNoIdentity();
+        });
+
+        it("should render only all proposals", async () => {
+          const po = await renderComponent();
+
+          expect(await po.getAllProposalList().isPresent()).toEqual(true);
+          expect(await po.getActionableProposalList().isPresent()).toEqual(
+            false
+          );
+        });
+
+        it("should not render actionable segment", async () => {
+          const po = await renderComponent();
+
+          expect(
+            await po
+              .getSnsProposalFiltersPo()
+              .getActionableProposalsSegmentPo()
+              .isPresent()
+          ).toEqual(false);
+        });
+      });
+    });
+
+    describe("when feature flag true", () => {
+      it("should render all proposals by default", async () => {
+        const po = await renderComponent();
+
+        expect(await po.getAllProposalList().isPresent()).toEqual(true);
+        expect(await po.getActionableProposalList().isPresent()).toEqual(false);
+      });
+
+      it("should switch proposal lists on actionable toggle", async () => {
+        const po = await renderComponent();
+        await po
+          .getSnsProposalFiltersPo()
+          .getActionableProposalsSegmentPo()
+          .clickActionableProposals();
+        await runResolvedPromises();
+
+        expect(await po.getAllProposalList().isPresent()).toEqual(false);
+        expect(await po.getActionableProposalList().isPresent()).toEqual(true);
+
+        await po
+          .getSnsProposalFiltersPo()
+          .getActionableProposalsSegmentPo()
+          .clickAllProposals();
+        await runResolvedPromises();
+
+        expect(await po.getAllProposalList().isPresent()).toEqual(true);
+        expect(await po.getActionableProposalList().isPresent()).toEqual(false);
+      });
+
+      it("should render spinner while loading actionable", async () => {
+        actionableSnsProposalsStore.resetForTesting();
+
+        const po = await renderComponent();
+        await po
+          .getSnsProposalFiltersPo()
+          .getActionableProposalsSegmentPo()
+          .clickActionableProposals();
+        await runResolvedPromises();
+
+        expect(await po.getSkeletonCardPo().isPresent()).toEqual(true);
+
+        mockActionableProposalsLoadingDone();
+        await runResolvedPromises();
+
+        expect(await po.getSkeletonCardPo().isPresent()).toEqual(false);
+      });
+
+      it("should display not supported page", async () => {
+        // TODO(max): TBD
+      });
+
+      describe("when signOut", () => {
+        beforeEach(() => {
+          setNoIdentity();
+        });
+
+        it("should display login CTA", async () => {
+          // TODO(max): TBD
+        });
+      });
     });
   });
 });
