@@ -12,12 +12,21 @@
   import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
   import { fade } from "svelte/transition";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import ActionableProposalsSignIn from "$lib/pages/ActionableProposalsSignIn.svelte";
+  import type { ActionableSnsProposalsData } from "$lib/stores/actionable-sns-proposals.store";
+  import ActionableProposalsNotSupported from "$lib/pages/ActionableProposalsNotSupported.svelte";
+  import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
+  import ActionableProposalsEmpty from "$lib/pages/ActionableProposalsEmpty.svelte";
 
   export let proposals: SnsProposalData[] | undefined;
-  export let actionableProposals: SnsProposalData[] | undefined;
+  export let actionableProposals: ActionableSnsProposalsData | undefined;
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;
   export let disableInfiniteScroll = false;
   export let loadingNextPage = false;
+
+  let snsName: string;
+  $: snsName = $snsProjectSelectedStore?.summary?.metadata?.name ?? "";
 </script>
 
 <TestIdWrapper testId="sns-proposal-list-component">
@@ -46,14 +55,16 @@
   {/if}
 
   {#if $ENABLE_VOTING_INDICATION && $actionableProposalsSegmentStore.selected === "actionable"}
-    {#if actionableProposals === undefined}
-      <!-- TODO(max): TBD SignIn vs No vs NotSupported -->
-      <LoadingProposals />
-    {:else if actionableProposals.length === 0}
-      <!-- TODO(max): TBD custom screen -->
-      <NoProposals />
-    {:else}
-      <div in:fade data-tid="actionable-proposal-list">
+    <div in:fade data-tid="actionable-proposal-list">
+      {#if !$authSignedInStore}
+        <ActionableProposalsSignIn />
+      {:else if isNullish(actionableProposals)}
+        <LoadingProposals />
+      {:else if actionableProposals.includeBallotsByCaller === false}
+        <ActionableProposalsNotSupported {snsName} />
+      {:else if actionableProposals.proposals.length === 0}
+        <ActionableProposalsEmpty />
+      {:else}
         <ListLoader loading={isNullish(actionableProposals)}>
           <InfiniteScroll layout="grid" disabled>
             {#each actionableProposals as proposalData (fromNullable(proposalData.id)?.id)}
@@ -61,7 +72,7 @@
             {/each}
           </InfiniteScroll>
         </ListLoader>
-      </div>
-    {/if}
+      {/if}
+    </div>
   {/if}
 </TestIdWrapper>

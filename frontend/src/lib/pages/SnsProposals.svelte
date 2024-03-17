@@ -22,7 +22,10 @@
   import type { Principal } from "@dfinity/principal";
   import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
   import type { Readable } from "svelte/store";
-  import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
+  import {
+    actionableSnsProposalsStore,
+    type ActionableSnsProposalsData,
+  } from "$lib/stores/actionable-sns-proposals.store";
 
   let nsFunctionsStore: Readable<SnsNervousSystemFunction[] | undefined>;
   $: nsFunctionsStore = createSnsNsFunctionsProjectStore($snsOnlyProjectStore);
@@ -116,9 +119,9 @@
       )
     : undefined;
 
-  let actionableProposals: SnsProposalData[] | undefined;
+  let actionableProposals: ActionableSnsProposalsData | undefined;
   $: actionableProposals = nonNullish(currentProjectCanisterId)
-    ? $actionableSnsProposalsStore[currentProjectCanisterId.toText()]?.proposals
+    ? $actionableSnsProposalsStore[currentProjectCanisterId.toText()]
     : undefined;
 
   let disableInfiniteScroll: boolean;
