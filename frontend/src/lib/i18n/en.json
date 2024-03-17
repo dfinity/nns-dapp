@@ -374,6 +374,11 @@
     "all_proposals": "All Proposals",
     "actionable_proposals": "Actionable Proposals"
   },
+  "actionable_proposals_sign_in": {
+    "title": "You are not signed in.",
+    "text": "Sign in to see actionable proposals",
+    "sign_in": "Sign in with Internet Identity"
+  },
   "actionable_proposals_empty": {
     "title": "There are no actionable proposals you can vote for.",
     "text": "Check back later!"
