@@ -389,6 +389,11 @@ interface I18nVoting {
   actionable_proposals: string;
 }
 
+
+interface I18nActionable_proposals_empty {
+  title: string;
+  text: string;
+}
 interface I18nCanisters {
   aria_label_canister_card: string;
   text: string;
