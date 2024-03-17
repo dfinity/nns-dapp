@@ -46,6 +46,14 @@
             {/each}
           </InfiniteScroll>
         </ListLoader>
+
+        {#if nothingFound}
+          <NoProposals />
+        {/if}
+
+        {#if loadingAnimation === "skeleton"}
+          <LoadingProposals />
+        {/if}
       </div>
     {:else}
       <div in:fade data-tid="actionable-proposal-list">
@@ -58,13 +66,5 @@
         </ListLoader>
       </div>
     {/if}
-  {/if}
-
-  {#if nothingFound}
-    <NoProposals />
-  {/if}
-
-  {#if loadingAnimation === "skeleton"}
-    <LoadingProposals />
   {/if}
 </TestIdWrapper>
