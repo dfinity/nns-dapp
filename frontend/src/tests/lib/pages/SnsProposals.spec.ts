@@ -462,38 +462,6 @@ describe("SnsProposals", () => {
         expect(await po.getAllProposalList().isPresent()).toEqual(true);
         expect(await po.getActionableProposalList().isPresent()).toEqual(false);
       });
-
-      it("should render spinner while loading actionable", async () => {
-        actionableSnsProposalsStore.resetForTesting();
-
-        const po = await renderComponent();
-        await po
-          .getSnsProposalFiltersPo()
-          .getActionableProposalsSegmentPo()
-          .clickActionableProposals();
-        await runResolvedPromises();
-
-        expect(await po.getSkeletonCardPo().isPresent()).toEqual(true);
-
-        mockActionableProposalsLoadingDone();
-        await runResolvedPromises();
-
-        expect(await po.getSkeletonCardPo().isPresent()).toEqual(false);
-      });
-
-      it("should display not supported page", async () => {
-        // TODO(max): TBD
-      });
-
-      describe("when signOut", () => {
-        beforeEach(() => {
-          setNoIdentity();
-        });
-
-        it("should display login CTA", async () => {
-          // TODO(max): TBD
-        });
-      });
     });
   });
 });

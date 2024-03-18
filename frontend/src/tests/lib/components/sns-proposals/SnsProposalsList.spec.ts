@@ -8,7 +8,6 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { SnsProposalData } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
-import { beforeEach, describe } from "vitest";
 
 describe("SnsProposalsList", () => {
   const renderComponent = async (props: {
@@ -175,7 +174,7 @@ describe("SnsProposalsList", () => {
       );
     });
 
-    it.only("should display actionable proposals", async () => {
+    it("should display actionable proposals", async () => {
       const po = await renderComponent({
         proposals: [],
         actionableProposals: {
