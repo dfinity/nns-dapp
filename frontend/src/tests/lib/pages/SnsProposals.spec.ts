@@ -435,6 +435,10 @@ describe("SnsProposals", () => {
     });
 
     describe("when feature flag true", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", true);
+      });
+
       it("should render all proposals by default", async () => {
         const po = await renderComponent();
 

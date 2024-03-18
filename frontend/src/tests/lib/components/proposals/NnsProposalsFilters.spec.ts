@@ -165,6 +165,10 @@ describe("NnsProposalsFilters", () => {
     });
 
     describe("when feature flag true", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", true);
+      });
+
       describe("when signed out", () => {
         beforeEach(() => {
           authStoreMock.next({
