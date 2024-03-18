@@ -1,5 +1,4 @@
 <script lang="ts">
-  import SignIn from "$lib/components/common/SignIn.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { PageBanner, IconNotificationPage } from "@dfinity/gix-components";
   import { replacePlaceholders } from "$lib/utils/i18n.utils.js";
