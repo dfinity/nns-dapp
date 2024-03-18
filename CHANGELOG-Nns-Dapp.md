@@ -11,6 +11,25 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 128350
+
+### Application
+
+#### Changed
+
+* Load ICP transactions from ICP index canister instead of nns-dapp.
+* More readable error messages if `assert_eq` fails in tests.
+* Order neurons from highest to lowest stake on the neurons page.
+* Main navigation text changes.
+* Minor text changes.
+* Main menu icons and style changes.
+
+### Operations
+
+#### Fixed
+
+* Make `JestPageObjectElement.selectOption` work with fake timers.
+
 ## Proposal 128297
 
 ### Application
