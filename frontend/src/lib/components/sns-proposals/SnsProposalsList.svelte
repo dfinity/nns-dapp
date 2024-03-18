@@ -16,7 +16,6 @@
   import ActionableProposalsSignIn from "$lib/pages/ActionableProposalsSignIn.svelte";
   import type { ActionableSnsProposalsData } from "$lib/stores/actionable-sns-proposals.store";
   import ActionableProposalsNotSupported from "$lib/pages/ActionableProposalsNotSupported.svelte";
-  import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import ActionableProposalsEmpty from "$lib/pages/ActionableProposalsEmpty.svelte";
 
   export let proposals: SnsProposalData[] | undefined;
@@ -63,13 +62,11 @@
       {:else if actionableProposals.proposals.length === 0}
         <ActionableProposalsEmpty />
       {:else}
-        <ListLoader loading={isNullish(actionableProposals)}>
-          <InfiniteScroll layout="grid" disabled>
-            {#each actionableProposals as proposalData (fromNullable(proposalData.id)?.id)}
-              <SnsProposalCard {proposalData} {nsFunctions} />
-            {/each}
-          </InfiniteScroll>
-        </ListLoader>
+        <InfiniteScroll layout="grid" disabled>
+          {#each actionableProposals.proposals as proposalData (fromNullable(proposalData.id)?.id)}
+            <SnsProposalCard {proposalData} {nsFunctions} />
+          {/each}
+        </InfiniteScroll>
       {/if}
     </div>
   {/if}
