@@ -21,12 +21,10 @@
 
   export let proposals: SnsProposalData[] | undefined;
   export let actionableProposals: ActionableSnsProposalsData | undefined;
+  export let snsName: string | undefined;
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;
   export let disableInfiniteScroll = false;
   export let loadingNextPage = false;
-
-  let snsName: string;
-  $: snsName = $snsProjectSelectedStore?.summary?.metadata?.name ?? "";
 </script>
 
 <TestIdWrapper testId="sns-proposal-list-component">
@@ -61,7 +59,7 @@
       {:else if isNullish(actionableProposals)}
         <LoadingProposals />
       {:else if actionableProposals.includeBallotsByCaller === false}
-        <ActionableProposalsNotSupported {snsName} />
+        <ActionableProposalsNotSupported snsName={snsName ?? ""} />
       {:else if actionableProposals.proposals.length === 0}
         <ActionableProposalsEmpty />
       {:else}

@@ -133,6 +133,7 @@
 <SnsProposalsList
   {proposals}
   {actionableProposals}
+  snsName={$snsProjectSelectedStore?.summary?.metadata?.name}
   nsFunctions={$nsFunctionsStore}
   on:nnsIntersect={loadNextPage}
   {disableInfiniteScroll}
