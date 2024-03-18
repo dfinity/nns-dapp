@@ -442,8 +442,11 @@ describe("SnsProposals", () => {
         expect(await po.getActionableProposalList().isPresent()).toEqual(false);
       });
 
-      it("should switch proposal lists on actionable toggle", async () => {
+      it("should switch proposal lists on actionable segment change", async () => {
         const po = await renderComponent();
+        expect(await po.getAllProposalList().isPresent()).toEqual(true);
+        expect(await po.getActionableProposalList().isPresent()).toEqual(false);
+
         await po
           .getSnsProposalFiltersPo()
           .getActionableProposalsSegmentPo()

@@ -187,14 +187,23 @@ describe("NnsProposalsFilters", () => {
           ).toEqual(true);
         });
 
-        it("should be clickable", async () => {
+        it("should switch segment on click", async () => {
           const po = await renderComponent();
           const segmentPo = po.getActionableProposalsSegmentPo();
+          expect(po.getActionableProposalsSegmentPo()).toEqual(true);
+          expect(await segmentPo.isActionableProposalsSelected()).toEqual(
+            false
+          );
+
           await segmentPo.clickActionableProposals();
+          expect(await segmentPo.isAllProposalsSelected()).toEqual(false);
           expect(await segmentPo.isActionableProposalsSelected()).toEqual(true);
 
           await segmentPo.clickAllProposals();
           expect(await segmentPo.isAllProposalsSelected()).toEqual(true);
+          expect(await segmentPo.isActionableProposalsSelected()).toEqual(
+            false
+          );
         });
 
         it("should hide and show proposal filters", async () => {
@@ -239,16 +248,6 @@ describe("NnsProposalsFilters", () => {
           expect(
             await po.getActionableProposalsSegmentPo().isAllProposalsSelected()
           ).toEqual(true);
-        });
-
-        it("should be clickable", async () => {
-          const po = await renderComponent();
-          const segmentPo = po.getActionableProposalsSegmentPo();
-          await segmentPo.clickActionableProposals();
-          expect(await segmentPo.isActionableProposalsSelected()).toEqual(true);
-
-          await segmentPo.clickAllProposals();
-          expect(await segmentPo.isAllProposalsSelected()).toEqual(true);
         });
 
         it("should hide and show proposal filters", async () => {
