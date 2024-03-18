@@ -13,6 +13,11 @@ describe("SnsProposalsFilters", () => {
     return SnsProposalFiltersPo.under(new JestPageObjectElement(container));
   };
 
+  beforeEach(() => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", false);
+    proposalsFiltersStore.reset();
+  });
+
   it("should render filter buttons", async () => {
     const po = await renderComponent();
 
@@ -50,11 +55,14 @@ describe("SnsProposalsFilters", () => {
 
   describe("actionable proposals", () => {
     beforeEach(() => {
-      overrideFeatureFlagsStore.reset();
       proposalsFiltersStore.reset();
     });
 
-    describe("when feature flag true", () => {
+    describe('when "ENABLE_VOTING_INDICATION" feature flag true', () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", true);
+      });
+
       it("should render actionable proposals segment", async () => {
         const po = await renderComponent();
 
@@ -70,14 +78,20 @@ describe("SnsProposalsFilters", () => {
         ).toEqual(true);
       });
 
-      it("should be clickable", async () => {
+      it("should switch proposal lists on segment change", async () => {
         const po = await renderComponent();
         const segmentPo = po.getActionableProposalsSegmentPo();
+
+        expect(await segmentPo.isAllProposalsSelected()).toEqual(true);
+        expect(await segmentPo.isActionableProposalsSelected()).toEqual(false);
+
         await segmentPo.clickActionableProposals();
+        expect(await segmentPo.isAllProposalsSelected()).toEqual(false);
         expect(await segmentPo.isActionableProposalsSelected()).toEqual(true);
 
         await segmentPo.clickAllProposals();
         expect(await segmentPo.isAllProposalsSelected()).toEqual(true);
+        expect(await segmentPo.isActionableProposalsSelected()).toEqual(false);
       });
 
       it("should hide and show proposal filters", async () => {
@@ -101,7 +115,7 @@ describe("SnsProposalsFilters", () => {
     });
   });
 
-  describe("when feature flag is false", () => {
+  describe('when "ENABLE_VOTING_INDICATION" feature flag is false', () => {
     beforeEach(() => {
       overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", false);
     });
