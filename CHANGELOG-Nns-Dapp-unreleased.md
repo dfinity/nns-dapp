@@ -15,6 +15,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Add feature flag `ENABLE_HIDE_ZERO_BALANCE`.
+
 #### Changed
 
 * Load ICP transactions from ICP index canister instead of nns-dapp.
