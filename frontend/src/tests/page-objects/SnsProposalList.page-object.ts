@@ -1,3 +1,4 @@
+import { ProposalCardPo } from "$tests/page-objects/ProposalCard.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { SnsProposalFiltersPo } from "$tests/page-objects/SnsProposalFilters.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -34,5 +35,9 @@ export class SnsProposalListPo extends BasePageObject {
     return (
       (await this.isPresent()) && !(await this.getSkeletonCardPo().isPresent())
     );
+  }
+
+  getProposalCardPos(): Promise<ProposalCardPo[]> {
+    return ProposalCardPo.allUnder(this.root);
   }
 }

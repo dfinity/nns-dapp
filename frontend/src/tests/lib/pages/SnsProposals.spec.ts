@@ -462,6 +462,23 @@ describe("SnsProposals", () => {
         expect(await po.getAllProposalList().isPresent()).toEqual(true);
         expect(await po.getActionableProposalList().isPresent()).toEqual(false);
       });
+
+      it("should display actionable proposals", async () => {
+        const po = await renderComponent();
+
+        expect((await po.getProposalCardPos()).length).toEqual(0);
+
+        await po
+          .getSnsProposalFiltersPo()
+          .getActionableProposalsSegmentPo()
+          .clickActionableProposals();
+        await runResolvedPromises();
+
+        expect((await po.getProposalCardPos()).length).toEqual(1);
+        expect(
+          await (await po.getProposalCardPos())[0].getProposalId()
+        ).toEqual("ID: 10");
+      });
     });
   });
 });
