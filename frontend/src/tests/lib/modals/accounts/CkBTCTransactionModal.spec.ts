@@ -1,4 +1,3 @@
-import * as ckbtcMinterApi from "$lib/api/ckbtc-minter.api";
 import * as minterApi from "$lib/api/ckbtc-minter.api";
 import {
   CKTESTBTC_LEDGER_CANISTER_ID,
@@ -330,14 +329,14 @@ describe("CkBTCTransactionModal", () => {
       "The amount falls below the minimum of 0.00085 ckBTC required for converting to BTC."
     );
 
-    expect(ckbtcMinterApi.minterInfo).not.toBeCalled();
+    expect(minterApi.minterInfo).not.toBeCalled();
   });
 
   it("should load ckBTC info if not available", async () => {
     const retreiveBtcMinAmount = 85_000n;
 
     ckBTCInfoStore.reset();
-    vi.mocked(ckbtcMinterApi.minterInfo).mockResolvedValue({
+    vi.mocked(minterApi.minterInfo).mockResolvedValue({
       retrieve_btc_min_amount: retreiveBtcMinAmount,
       min_confirmations: 12,
       kyt_fee: 1234n,
@@ -357,16 +356,16 @@ describe("CkBTCTransactionModal", () => {
       "The amount falls below the minimum of 0.00085 ckBTC required for converting to BTC."
     );
 
-    expect(ckbtcMinterApi.minterInfo).toBeCalledTimes(2);
+    expect(minterApi.minterInfo).toBeCalledTimes(2);
     const expectedParams = {
       canisterId: mockCkBTCAdditionalCanisters.minterCanisterId,
       identity: mockIdentity,
     };
-    expect(ckbtcMinterApi.minterInfo).toBeCalledWith({
+    expect(minterApi.minterInfo).toBeCalledWith({
       ...expectedParams,
       certified: true,
     });
-    expect(ckbtcMinterApi.minterInfo).toBeCalledWith({
+    expect(minterApi.minterInfo).toBeCalledWith({
       ...expectedParams,
       certified: false,
     });
