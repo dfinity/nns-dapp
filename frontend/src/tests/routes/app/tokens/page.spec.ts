@@ -23,6 +23,7 @@ import {
   mockCkBTCToken,
   mockCkTESTBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
+import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
@@ -137,6 +138,9 @@ describe("Tokens route", () => {
       vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(1234n);
       vi.spyOn(ckBTCMinterApi, "updateBalance").mockRejectedValue(
         noPendingUtxos
+      );
+      vi.mocked(ckBTCMinterApi.minterInfo).mockResolvedValue(
+        mockCkBTCMinterInfo
       );
 
       setSnsProjects([

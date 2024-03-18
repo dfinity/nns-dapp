@@ -30,6 +30,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Min ckBTC withdrawal amount was unknown when withdrawing directly from My Tokens.
+
 #### Security
 
 #### Not Published
