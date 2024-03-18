@@ -1,7 +1,9 @@
 import SnsProposalsList from "$lib/components/sns-proposals/SnsProposalsList.svelte";
+import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import type { SnsProposalData } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
+import { beforeEach, describe } from "vitest";
 
 describe("SnsProposalsList", () => {
   const proposal1: SnsProposalData = {
@@ -18,11 +20,15 @@ describe("SnsProposalsList", () => {
   };
   const proposals = [proposal1, proposal2, proposal3];
 
+  beforeEach(() => {
+    actionableProposalsSegmentStore.resetForTesting();
+  });
+
   it("should render a proposal card per proposal", () => {
     const { queryAllByTestId } = render(SnsProposalsList, {
       props: {
         proposals,
-        actionableProposals: undefined,
+        isActionable: false,
         nsFunctions: [],
       },
     });
@@ -34,7 +40,7 @@ describe("SnsProposalsList", () => {
     const { queryByTestId } = render(SnsProposalsList, {
       props: {
         proposals,
-        actionableProposals: undefined,
+        isActionable: false,
         nsFunctions: [],
         loadingNextPage: true,
       },
@@ -49,7 +55,7 @@ describe("SnsProposalsList", () => {
     const { queryByTestId } = render(SnsProposalsList, {
       props: {
         proposals: undefined,
-        actionableProposals: undefined,
+        isActionable: false,
         nsFunctions: [],
       },
     });
@@ -61,11 +67,25 @@ describe("SnsProposalsList", () => {
     const { queryByTestId } = render(SnsProposalsList, {
       props: {
         proposals: [],
-        actionableProposals: undefined,
+        isActionable: false,
         nsFunctions: [],
       },
     });
 
     expect(queryByTestId("no-proposals-msg")).toBeInTheDocument();
+  });
+
+  describe("actionable proposals", () => {
+    it("should render skeletons while proposals are loading", async () => {
+      const { queryByTestId } = render(SnsProposalsList, {
+        props: {
+          proposals: undefined,
+          isActionable: true,
+          nsFunctions: [],
+        },
+      });
+
+      expect(queryByTestId("proposals-loading")).toBeInTheDocument();
+    });
   });
 });
