@@ -389,6 +389,17 @@ interface I18nVoting {
   actionable_proposals: string;
 }
 
+interface I18nActionable_proposals_sign_in {
+  title: string;
+  text: string;
+  sign_in: string;
+}
+
+interface I18nActionable_proposals_empty {
+  title: string;
+  text: string;
+}
+
 interface I18nCanisters {
   aria_label_canister_card: string;
   text: string;
@@ -1275,6 +1286,8 @@ interface I18n {
   new_followee: I18nNew_followee;
   follow_neurons: I18nFollow_neurons;
   voting: I18nVoting;
+  actionable_proposals_sign_in: I18nActionable_proposals_sign_in;
+  actionable_proposals_empty: I18nActionable_proposals_empty;
   canisters: I18nCanisters;
   canister_detail: I18nCanister_detail;
   transaction_names: I18nTransaction_names;
