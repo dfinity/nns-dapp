@@ -1,3 +1,4 @@
+import { ActionableProposalsSegmentPo } from "$tests/page-objects/ActionableProposalsSegment.page-object";
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { FilterModalPo } from "$tests/page-objects/FilterModal.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -36,5 +37,9 @@ export class SnsProposalFiltersPo extends BasePageObject {
 
   getFilterModalPo(): FilterModalPo {
     return FilterModalPo.under(this.root);
+  }
+
+  getActionableProposalsSegmentPo(): ActionableProposalsSegmentPo {
+    return ActionableProposalsSegmentPo.under(this.root);
   }
 }
