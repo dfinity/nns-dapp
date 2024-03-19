@@ -14,9 +14,9 @@
   import type { ProposalInfo } from "@dfinity/nns";
   import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
   import { isNullish } from "@dfinity/utils";
-  import ActionableProposalsSignIn from "$lib/pages/ActionableProposalsSignIn.svelte";
+  import ActionableProposalsSignIn from "$lib/components/proposals/ActionableProposalsSignIn.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import ActionableProposalsEmpty from "$lib/pages/ActionableProposalsEmpty.svelte";
+  import ActionableProposalsEmpty from "$lib/components/proposals/ActionableProposalsEmpty.svelte";
   export let nothingFound: boolean;
   export let hidden: boolean;
   export let disableInfiniteScroll: boolean;

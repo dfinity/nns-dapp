@@ -190,8 +190,8 @@ describe("SnsProposalsList", () => {
       expect(await (await po.getProposalCardPos())[0].getProposalId()).toBe(
         "ID: 123"
       );
+    });
 
-  describe("actionable proposals", () => {
     it("should render skeletons while proposals are loading", async () => {
       const { queryByTestId } = render(SnsProposalsList, {
         props: {

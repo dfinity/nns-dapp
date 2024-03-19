@@ -12,9 +12,9 @@
   import { fade } from "svelte/transition";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import ActionableProposalsSignIn from "$lib/pages/ActionableProposalsSignIn.svelte";
-  import ActionableProposalsNotSupported from "$lib/pages/ActionableProposalsNotSupported.svelte";
-  import ActionableProposalsEmpty from "$lib/pages/ActionableProposalsEmpty.svelte";
+  import ActionableProposalsSignIn from "$lib/components/proposals/ActionableProposalsSignIn.svelte";
+  import ActionableProposalsNotSupported from "$lib/components/proposals/ActionableProposalsNotSupported.svelte";
+  import ActionableProposalsEmpty from "$lib/components/proposals/ActionableProposalsEmpty.svelte";
 
   export let snsName: string | undefined;
   export let proposals: SnsProposalData[] | undefined;
