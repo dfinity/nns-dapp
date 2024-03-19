@@ -62,8 +62,4 @@ export class SnsProposalListPo extends BasePageObject {
       (await this.isPresent()) && !(await this.getSkeletonCardPo().isPresent())
     );
   }
-
-  getProposalCardPos(): Promise<ProposalCardPo[]> {
-    return ProposalCardPo.allUnder(this.root);
-  }
 }
