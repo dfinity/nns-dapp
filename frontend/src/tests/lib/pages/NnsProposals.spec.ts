@@ -27,7 +27,6 @@ import {
 } from "$tests/mocks/proposals.store.mock";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NnsProposalListPo } from "$tests/page-objects/NnsProposalList.page-object";
-import { allowLoggingInOneTestForDebugging } from "$tests/utils/console.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import {
@@ -377,9 +376,7 @@ describe("NnsProposals", () => {
       expect(await po.getActionableProposalList().isPresent()).toEqual(false);
     });
 
-    it("should render spinner while loading actionable", async () => {
-      allowLoggingInOneTestForDebugging();
-
+    it("should render skeletons while loading actionable", async () => {
       const po = await renderComponent();
       await po
         .getNnsProposalFiltersPo()
@@ -387,12 +384,12 @@ describe("NnsProposals", () => {
         .clickActionableProposals();
       await runResolvedPromises();
 
-      expect(await po.hasSpinner()).toEqual(true);
+      expect(await po.getSkeletonCardPo().isPresent()).toEqual(true);
 
       actionableNnsProposalsStore.setProposals(mockProposals);
       await runResolvedPromises();
 
-      expect(await po.hasSpinner()).toEqual(false);
+      expect(await po.getSkeletonCardPo().isPresent()).toEqual(false);
     });
 
     it("should display login CTA", async () => {

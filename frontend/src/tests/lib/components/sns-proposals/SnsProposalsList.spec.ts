@@ -1,6 +1,5 @@
 import SnsProposalsList from "$lib/components/sns-proposals/SnsProposalsList.svelte";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
-import type { ActionableSnsProposalsData } from "$lib/stores/actionable-sns-proposals.store";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { SnsProposalListPo } from "$tests/page-objects/SnsProposalList.page-object";
@@ -12,7 +11,8 @@ import { render } from "@testing-library/svelte";
 describe("SnsProposalsList", () => {
   const renderComponent = async (props: {
     proposals: SnsProposalData[];
-    actionableProposals: ActionableSnsProposalsData | undefined;
+    includeBallots: boolean;
+    actionableSelected: boolean;
     snsName: string | undefined;
     nsFunctions: undefined[];
   }) => {
@@ -43,9 +43,9 @@ describe("SnsProposalsList", () => {
     const { queryAllByTestId } = render(SnsProposalsList, {
       props: {
         proposals,
-        actionableProposals: undefined,
+        includeBallots: false,
         snsName: undefined,
-        isActionable: false,
+        actionableSelected: false,
         nsFunctions: [],
       },
     });
@@ -57,8 +57,9 @@ describe("SnsProposalsList", () => {
     const { queryByTestId } = render(SnsProposalsList, {
       props: {
         proposals,
+        includeBallots: false,
         snsName: undefined,
-        isActionable: false,
+        actionableSelected: false,
         nsFunctions: [],
         loadingNextPage: true,
       },
@@ -73,8 +74,9 @@ describe("SnsProposalsList", () => {
     const { queryByTestId } = render(SnsProposalsList, {
       props: {
         proposals: undefined,
+        includeBallots: false,
         snsName: undefined,
-        isActionable: false,
+        actionableSelected: false,
         nsFunctions: [],
       },
     });
@@ -82,15 +84,18 @@ describe("SnsProposalsList", () => {
     expect(queryByTestId("proposals-loading")).toBeInTheDocument();
   });
 
-  it("should render no proposals found message if proposals is empty", () => {
+  it("should render no proposals found message if proposals is empty", async () => {
     const { queryByTestId } = render(SnsProposalsList, {
       props: {
-        proposals: undefined,
+        proposals: [],
+        includeBallots: false,
         snsName: undefined,
-        isActionable: false,
+        actionableSelected: false,
         nsFunctions: [],
       },
     });
+
+    await runResolvedPromises();
 
     expect(queryByTestId("no-proposals-msg")).toBeInTheDocument();
   });
@@ -105,8 +110,9 @@ describe("SnsProposalsList", () => {
       setNoIdentity();
 
       const po = await renderComponent({
-        proposals: [],
-        actionableProposals: undefined,
+        proposals: undefined,
+        includeBallots: false,
+        actionableSelected: true,
         snsName: undefined,
         nsFunctions: [],
       });
@@ -125,8 +131,9 @@ describe("SnsProposalsList", () => {
 
     it("should display loading skeletons", async () => {
       const po = await renderComponent({
-        proposals: [],
-        actionableProposals: undefined,
+        proposals: undefined,
+        includeBallots: false,
+        actionableSelected: true,
         snsName: undefined,
         nsFunctions: [],
       });
@@ -136,10 +143,8 @@ describe("SnsProposalsList", () => {
     it('should display "Actionable not supported" banner', async () => {
       const po = await renderComponent({
         proposals: [],
-        actionableProposals: {
-          includeBallotsByCaller: false,
-          proposals: [],
-        },
+        includeBallots: false,
+        actionableSelected: true,
         snsName: "Sns Name",
         nsFunctions: [],
       });
@@ -158,10 +163,8 @@ describe("SnsProposalsList", () => {
     it('should display "No actionable proposals" banner', async () => {
       const po = await renderComponent({
         proposals: [],
-        actionableProposals: {
-          includeBallotsByCaller: true,
-          proposals: [],
-        },
+        includeBallots: true,
+        actionableSelected: true,
         snsName: undefined,
         nsFunctions: [],
       });
@@ -177,11 +180,9 @@ describe("SnsProposalsList", () => {
 
     it("should display actionable proposals", async () => {
       const po = await renderComponent({
-        proposals: [],
-        actionableProposals: {
-          includeBallotsByCaller: true,
-          proposals: [{ ...mockSnsProposal, id: [{ id: 123n }] }],
-        },
+        proposals: [{ ...mockSnsProposal, id: [{ id: 123n }] }],
+        includeBallots: true,
+        actionableSelected: true,
         snsName: undefined,
         nsFunctions: [],
       });
@@ -190,18 +191,6 @@ describe("SnsProposalsList", () => {
       expect(await (await po.getProposalCardPos())[0].getProposalId()).toBe(
         "ID: 123"
       );
-    });
-
-    it("should render skeletons while proposals are loading", async () => {
-      const { queryByTestId } = render(SnsProposalsList, {
-        props: {
-          proposals: undefined,
-          isActionable: true,
-          nsFunctions: [],
-        },
-      });
-
-      expect(queryByTestId("proposals-loading")).toBeInTheDocument();
     });
   });
 });

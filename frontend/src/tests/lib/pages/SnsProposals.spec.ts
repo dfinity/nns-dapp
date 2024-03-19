@@ -379,8 +379,9 @@ describe("SnsProposals", () => {
 
     beforeEach(() => {
       resetIdentity();
-      overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", true);
       actionableSnsProposalsStore.resetForTesting();
+
+      overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", true);
       mockActionableProposalsLoadingDone();
     });
 
@@ -471,6 +472,9 @@ describe("SnsProposals", () => {
       });
 
       it("should display actionable proposals", async () => {
+        vi.spyOn(authStore, "subscribe").mockImplementation(
+          mockAuthStoreSubscribe
+        );
         const po = await renderComponent();
 
         expect((await po.getProposalCardPos()).length).toEqual(0);
