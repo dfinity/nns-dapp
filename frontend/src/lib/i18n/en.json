@@ -998,6 +998,7 @@
   "tokens": {
     "projects_header": "Projects",
     "balance_header": "Balance",
-    "accounts_header": "Accounts"
+    "accounts_header": "Accounts",
+    "settings_button": "Open tokens settings"
   }
 }

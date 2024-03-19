@@ -1,5 +1,6 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import type { ButtonPo } from "./Button.page-object";
 import { TokensTablePo } from "./TokensTable.page-object";
 import type { TokensTableRowData } from "./TokensTableRow.page-object";
 
@@ -12,6 +13,10 @@ export class TokensPagePo extends BasePageObject {
 
   getTokensTable(): TokensTablePo {
     return TokensTablePo.under(this.root);
+  }
+
+  getSettingsButtonPo(): ButtonPo {
+    return this.getButton("settings-button");
   }
 
   hasTokensTable(): Promise<boolean> {

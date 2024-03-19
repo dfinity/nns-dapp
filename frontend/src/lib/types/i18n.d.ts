@@ -1052,6 +1052,7 @@ interface I18nTokens {
   projects_header: string;
   balance_header: string;
   accounts_header: string;
+  settings_button: string;
 }
 
 interface I18nNeuron_state {

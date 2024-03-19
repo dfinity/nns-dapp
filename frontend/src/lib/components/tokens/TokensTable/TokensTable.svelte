@@ -29,7 +29,9 @@
       <span role="columnheader" data-tid="column-header-2" class="header-right"
         >{$i18n.tokens.balance_header}</span
       >
-      <span role="columnheader"></span>
+      <span role="columnheader" class="header-right header-icon">
+        <slot name="header-icon" />
+      </span>
     </div>
   </div>
   <div role="rowgroup">
@@ -67,20 +69,26 @@
     }
 
     .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
       color: var(--text-description);
       background-color: var(--table-header-background);
 
       font-weight: normal;
       font-size: var(--font-size-small);
 
-      padding: var(--padding) var(--padding-2x);
+      padding: 0 var(--padding-2x);
+      height: var(--padding-4x);
 
       border-bottom: 1px solid var(--elements-divider);
 
       [role="columnheader"] {
         display: none;
 
-        &:first-child {
+        &:first-child,
+        &:last-child {
           display: block;
         }
 
@@ -91,6 +99,12 @@
 
       .header-right {
         text-align: right;
+      }
+
+      .header-icon {
+        // Prevents the element taking up more height than the icon by adding
+        // space for descenders.
+        line-height: 0;
       }
     }
 
