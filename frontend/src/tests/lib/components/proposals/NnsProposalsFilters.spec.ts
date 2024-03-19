@@ -194,9 +194,7 @@ describe("NnsProposalsFilters", () => {
         it("should switch segment on click", async () => {
           const po = await renderComponent();
           const segmentPo = po.getActionableProposalsSegmentPo();
-          expect(
-            await po.getActionableProposalsSegmentPo().isPresent()
-          ).toEqual(true);
+          expect(await segmentPo.isAllProposalsSelected()).toEqual(true);
           expect(await segmentPo.isActionableProposalsSelected()).toEqual(
             false
           );
