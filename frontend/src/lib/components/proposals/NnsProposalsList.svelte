@@ -38,24 +38,22 @@
   {#if display}
     {#if !$ENABLE_VOTING_INDICATION || $actionableProposalsSegmentStore.selected !== "actionable"}
       <div in:fade data-tid="all-proposal-list">
-        <ListLoader loading={loadingAnimation === "spinner"}>
-          <InfiniteScroll
-            on:nnsIntersect
-            layout="grid"
-            disabled={disableInfiniteScroll || loading}
-          >
-            {#each $filteredProposals.proposals as proposalInfo (proposalInfo.id)}
-              <NnsProposalCard {hidden} {proposalInfo} />
-            {/each}
-          </InfiniteScroll>
-        </ListLoader>
-
-        {#if nothingFound}
-          <NoProposals />
-        {/if}
-
         {#if loadingAnimation === "skeleton"}
           <LoadingProposals />
+        {:else if nothingFound}
+          <NoProposals />
+        {:else}
+          <ListLoader loading={loadingAnimation === "spinner"}>
+            <InfiniteScroll
+              on:nnsIntersect
+              layout="grid"
+              disabled={disableInfiniteScroll || loading}
+            >
+              {#each $filteredProposals.proposals as proposalInfo (proposalInfo.id)}
+                <NnsProposalCard {hidden} {proposalInfo} />
+              {/each}
+            </InfiniteScroll>
+          </ListLoader>
         {/if}
       </div>
     {:else}
