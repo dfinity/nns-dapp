@@ -5,7 +5,7 @@ export enum StoreLocalStorageKey {
   BitcoinConvertBlockIndexes = "nnsBitcoinConvertBlockIndexes",
   SnsProposalFilters = "nnsSnsProposalFilters",
   JsonRepresentation = "jsonRepresentation",
-  HideZeroBalances = "nnsHideZeroBalances",
+  HideZeroBalances = "nnsHideZeroBalanceTokens",
 }
 
 export const NOT_LOADED = Symbol("NOT_LOADED");
