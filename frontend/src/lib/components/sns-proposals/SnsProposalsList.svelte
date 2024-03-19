@@ -11,9 +11,15 @@
   import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
   import { fade } from "svelte/transition";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import ActionableProposalsSignIn from "$lib/pages/ActionableProposalsSignIn.svelte";
+  import ActionableProposalsNotSupported from "$lib/pages/ActionableProposalsNotSupported.svelte";
+  import ActionableProposalsEmpty from "$lib/pages/ActionableProposalsEmpty.svelte";
 
+  export let snsName: string | undefined;
   export let proposals: SnsProposalData[] | undefined;
-  export let isActionable: boolean;
+  export let includeBallots: boolean;
+  export let actionableSelected: boolean;
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;
   export let disableInfiniteScroll = false;
   export let loadingNextPage = false;
@@ -22,7 +28,7 @@
 <TestIdWrapper testId="sns-proposal-list-component">
   <SnsProposalsFilters />
 
-  {#if !$ENABLE_VOTING_INDICATION || !isActionable}
+  {#if !$ENABLE_VOTING_INDICATION || !actionableSelected}
     <div in:fade data-tid="all-proposal-list">
       {#if proposals === undefined}
         <LoadingProposals />
@@ -44,19 +50,19 @@
     </div>
   {/if}
 
-  {#if $ENABLE_VOTING_INDICATION && isActionable}
+  {#if $ENABLE_VOTING_INDICATION && actionableSelected}
     <div in:fade data-tid="actionable-proposal-list">
       {#if !$authSignedInStore}
         <ActionableProposalsSignIn />
-      {:else if isNullish(actionableProposals)}
+      {:else if isNullish(proposals)}
         <LoadingProposals />
-      {:else if actionableProposals.includeBallotsByCaller === false}
+      {:else if includeBallots === false}
         <ActionableProposalsNotSupported snsName={snsName ?? ""} />
-      {:else if actionableProposals.proposals.length === 0}
+      {:else if proposals.length === 0}
         <ActionableProposalsEmpty />
       {:else}
         <InfiniteScroll layout="grid" disabled>
-          {#each actionableProposals.proposals as proposalData (fromNullable(proposalData.id)?.id)}
+          {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
             <SnsProposalCard {proposalData} {nsFunctions} />
           {/each}
         </InfiniteScroll>
