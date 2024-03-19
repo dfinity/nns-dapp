@@ -17,8 +17,10 @@
   >
     <div slot="header-icon">
       {#if $ENABLE_HIDE_ZERO_BALANCE}
-        <button data-tid="settings-button" class="settings-button"
-          ><IconSettings /></button
+        <button
+          data-tid="settings-button"
+          class="settings-button icon-only"
+          aria-label={$i18n.tokens.settings_button}><IconSettings /></button
         >
       {/if}
     </div>
@@ -26,11 +28,11 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  .settings-button {
-    color: var(--text-description);
+  @use "@dfinity/gix-components/dist/styles/mixins/header";
 
-    // Prevents the element from adding space for descenders which would make it
-    // take up more height than the icon itself.
-    line-height: 0;
+  .settings-button {
+    --content-color: var(--text-description);
+
+    @include header.button(--primary-tint);
   }
 </style>

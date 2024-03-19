@@ -79,7 +79,8 @@
       font-weight: normal;
       font-size: var(--font-size-small);
 
-      padding: var(--padding) var(--padding-2x);
+      padding: 0 var(--padding-2x);
+      height: var(--padding-4x);
 
       border-bottom: 1px solid var(--elements-divider);
 
