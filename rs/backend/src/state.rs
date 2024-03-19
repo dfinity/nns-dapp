@@ -256,7 +256,10 @@ impl StableState for State {
 impl State {
     /// Saves any unsaved state to stable memory.
     pub fn save(&self) {
-        let schema = self.schema_label();
+        // When saving data to stable memory, ask the accountsdb.  If we migrated from
+        // `AccountsInStableMemory` to `Map`, the stable memory will still have the `AccountsInStableMemory` layout
+        // but we want to save as `Map`.  There is no such issue when migrating from `Map` to `AccountsInStableMemory`.
+        let schema = self.accounts_store.borrow().schema_label();
         println!(
             "START State save: {:?} (accounts: {:?})",
             &schema,

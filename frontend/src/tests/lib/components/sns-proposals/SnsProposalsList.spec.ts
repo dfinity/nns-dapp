@@ -45,6 +45,7 @@ describe("SnsProposalsList", () => {
         proposals,
         actionableProposals: undefined,
         snsName: undefined,
+        isActionable: false,
         nsFunctions: [],
       },
     });
@@ -56,8 +57,8 @@ describe("SnsProposalsList", () => {
     const { queryByTestId } = render(SnsProposalsList, {
       props: {
         proposals,
-        actionableProposals: undefined,
         snsName: undefined,
+        isActionable: false,
         nsFunctions: [],
         loadingNextPage: true,
       },
@@ -72,8 +73,8 @@ describe("SnsProposalsList", () => {
     const { queryByTestId } = render(SnsProposalsList, {
       props: {
         proposals: undefined,
-        actionableProposals: undefined,
         snsName: undefined,
+        isActionable: false,
         nsFunctions: [],
       },
     });
@@ -84,9 +85,9 @@ describe("SnsProposalsList", () => {
   it("should render no proposals found message if proposals is empty", () => {
     const { queryByTestId } = render(SnsProposalsList, {
       props: {
-        proposals: [],
-        actionableProposals: undefined,
+        proposals: undefined,
         snsName: undefined,
+        isActionable: false,
         nsFunctions: [],
       },
     });
@@ -189,6 +190,18 @@ describe("SnsProposalsList", () => {
       expect(await (await po.getProposalCardPos())[0].getProposalId()).toBe(
         "ID: 123"
       );
+
+  describe("actionable proposals", () => {
+    it("should render skeletons while proposals are loading", async () => {
+      const { queryByTestId } = render(SnsProposalsList, {
+        props: {
+          proposals: undefined,
+          isActionable: true,
+          nsFunctions: [],
+        },
+      });
+
+      expect(queryByTestId("proposals-loading")).toBeInTheDocument();
     });
   });
 });

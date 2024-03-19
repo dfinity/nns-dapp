@@ -15,20 +15,17 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-#### Changed
+* Add feature flag `ENABLE_HIDE_ZERO_BALANCE`.
 
-* Load ICP transactions from ICP index canister instead of nns-dapp.
-* More readable error messages if `assert_eq` fails in tests.
-* Order neurons from highest to lowest stake on the neurons page.
-* Main navigation text changes.
-* Minor text changes.
-* Main menu icons and style changes.
+#### Changed
 
 #### Deprecated
 
 #### Removed
 
 #### Fixed
+
+* Min ckBTC withdrawal amount was unknown when withdrawing directly from My Tokens.
 
 #### Security
 
@@ -45,7 +42,5 @@ proposal is successful, the changes it released will be moved from this file to
 #### Removed
 
 #### Fixed
-
-* Make `JestPageObjectElement.selectOption` work with fake timers.
 
 #### Security

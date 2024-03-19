@@ -9,18 +9,11 @@
   import ListLoader from "../proposals/ListLoader.svelte";
   import SnsProposalsFilters from "./SnsProposalsFilters.svelte";
   import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
-  import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
   import { fade } from "svelte/transition";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
-  import ActionableProposalsSignIn from "$lib/pages/ActionableProposalsSignIn.svelte";
-  import type { ActionableSnsProposalsData } from "$lib/stores/actionable-sns-proposals.store";
-  import ActionableProposalsNotSupported from "$lib/pages/ActionableProposalsNotSupported.svelte";
-  import ActionableProposalsEmpty from "$lib/pages/ActionableProposalsEmpty.svelte";
 
   export let proposals: SnsProposalData[] | undefined;
-  export let actionableProposals: ActionableSnsProposalsData | undefined;
-  export let snsName: string | undefined;
+  export let isActionable: boolean;
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;
   export let disableInfiniteScroll = false;
   export let loadingNextPage = false;
@@ -29,7 +22,7 @@
 <TestIdWrapper testId="sns-proposal-list-component">
   <SnsProposalsFilters />
 
-  {#if !$ENABLE_VOTING_INDICATION || $actionableProposalsSegmentStore.selected !== "actionable"}
+  {#if !$ENABLE_VOTING_INDICATION || !isActionable}
     <div in:fade data-tid="all-proposal-list">
       {#if proposals === undefined}
         <LoadingProposals />
@@ -51,7 +44,7 @@
     </div>
   {/if}
 
-  {#if $ENABLE_VOTING_INDICATION && $actionableProposalsSegmentStore.selected === "actionable"}
+  {#if $ENABLE_VOTING_INDICATION && isActionable}
     <div in:fade data-tid="actionable-proposal-list">
       {#if !$authSignedInStore}
         <ActionableProposalsSignIn />

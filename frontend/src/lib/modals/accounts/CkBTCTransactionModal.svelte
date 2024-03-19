@@ -11,6 +11,7 @@
   import type { Account } from "$lib/types/account";
   import type { WizardStep } from "@dfinity/gix-components";
   import { transferTokens as transferIcrcTokens } from "$lib/services/icrc-accounts.services";
+  import { loadCkBTCInfo } from "$lib/services/ckbtc-info.services";
   import type { TokenAmountV2, Token } from "@dfinity/utils";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
@@ -151,6 +152,11 @@
 
     return undefined;
   };
+
+  $: loadCkBTCInfo({
+    universeId: universeId,
+    minterCanisterId: canisters.minterCanisterId,
+  });
 </script>
 
 <TransactionModal

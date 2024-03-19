@@ -435,6 +435,10 @@ describe("SnsProposals", () => {
     });
 
     describe("when feature flag true", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", true);
+      });
+
       it("should render all proposals by default", async () => {
         const po = await renderComponent();
 
@@ -442,8 +446,11 @@ describe("SnsProposals", () => {
         expect(await po.getActionableProposalList().isPresent()).toEqual(false);
       });
 
-      it("should switch proposal lists on actionable toggle", async () => {
+      it("should switch proposal lists on actionable segment change", async () => {
         const po = await renderComponent();
+        expect(await po.getAllProposalList().isPresent()).toEqual(true);
+        expect(await po.getActionableProposalList().isPresent()).toEqual(false);
+
         await po
           .getSnsProposalFiltersPo()
           .getActionableProposalsSegmentPo()
@@ -461,6 +468,23 @@ describe("SnsProposals", () => {
 
         expect(await po.getAllProposalList().isPresent()).toEqual(true);
         expect(await po.getActionableProposalList().isPresent()).toEqual(false);
+      });
+
+      it("should display actionable proposals", async () => {
+        const po = await renderComponent();
+
+        expect((await po.getProposalCardPos()).length).toEqual(0);
+
+        await po
+          .getSnsProposalFiltersPo()
+          .getActionableProposalsSegmentPo()
+          .clickActionableProposals();
+        await runResolvedPromises();
+
+        expect((await po.getProposalCardPos()).length).toEqual(1);
+        expect(
+          await (await po.getProposalCardPos())[0].getProposalId()
+        ).toEqual("ID: 10");
       });
     });
   });

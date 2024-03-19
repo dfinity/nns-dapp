@@ -15,7 +15,10 @@ import type { Account } from "$lib/types/account";
 import { TransactionNetwork } from "$lib/types/transaction";
 import { ulpsToNumber } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "$tests/mocks/auth.store.mock";
 import { mockCkBTCAdditionalCanisters } from "$tests/mocks/canisters.mock";
 import {
   mockBTCAddressTestnet,
@@ -33,6 +36,7 @@ import { TokenAmountV2 } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
+vi.mock("$lib/api/ckbtc-minter.api");
 vi.mock("$lib/services/ckbtc-accounts.services");
 vi.mock("$lib/services/icrc-accounts.services");
 vi.mock("$lib/services/ckbtc-convert.services");
@@ -85,6 +89,7 @@ describe("CkBTCTransactionModal", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     vi.useFakeTimers();
+    ckBTCInfoStore.reset();
 
     vi.mocked(transferTokens).mockResolvedValue({ blockIndex: undefined });
     vi.spyOn(authStore, "subscribe").mockImplementation(mockAuthStoreSubscribe);
@@ -297,7 +302,19 @@ describe("CkBTCTransactionModal", () => {
     );
   });
 
-  it("should not be able to continue as amount is lower than fee", async () => {
+  it("should not be able to continue as amount is lower than min withdrawal amount", async () => {
+    const retreiveBtcMinAmount = 85_000n;
+
+    ckBTCInfoStore.setInfo({
+      canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+      info: {
+        ...mockCkBTCMinterInfo,
+        kyt_fee: 1234n,
+        retrieve_btc_min_amount: retreiveBtcMinAmount,
+      },
+      certified: true,
+    });
+
     const amount = 0.00001;
     const destinationAddress = mockBTCAddressTestnet;
 
@@ -308,6 +325,50 @@ describe("CkBTCTransactionModal", () => {
     await formPo.enterAddress(destinationAddress);
     await formPo.enterAmount(amount);
     expect(await formPo.isContinueButtonEnabled()).toBe(false);
+    expect(await formPo.getAmountInputPo().getErrorMessage()).toBe(
+      "The amount falls below the minimum of 0.00085 ckBTC required for converting to BTC."
+    );
+
+    expect(minterApi.minterInfo).not.toBeCalled();
+  });
+
+  it("should load ckBTC info if not available", async () => {
+    const retreiveBtcMinAmount = 85_000n;
+
+    ckBTCInfoStore.reset();
+    vi.mocked(minterApi.minterInfo).mockResolvedValue({
+      retrieve_btc_min_amount: retreiveBtcMinAmount,
+      min_confirmations: 12,
+      kyt_fee: 1234n,
+    });
+
+    const amount = 0.00001;
+    const destinationAddress = mockBTCAddressTestnet;
+
+    const po = await renderModalToPo();
+
+    await po.selectNetwork(TransactionNetwork.BTC_TESTNET);
+    const formPo = po.getTransactionFormPo();
+    await formPo.enterAddress(destinationAddress);
+    await formPo.enterAmount(amount);
+    expect(await formPo.isContinueButtonEnabled()).toBe(false);
+    expect(await formPo.getAmountInputPo().getErrorMessage()).toBe(
+      "The amount falls below the minimum of 0.00085 ckBTC required for converting to BTC."
+    );
+
+    expect(minterApi.minterInfo).toBeCalledTimes(2);
+    const expectedParams = {
+      canisterId: mockCkBTCAdditionalCanisters.minterCanisterId,
+      identity: mockIdentity,
+    };
+    expect(minterApi.minterInfo).toBeCalledWith({
+      ...expectedParams,
+      certified: true,
+    });
+    expect(minterApi.minterInfo).toBeCalledWith({
+      ...expectedParams,
+      certified: false,
+    });
   });
 
   it("should render BTC estimated time", async () => {
