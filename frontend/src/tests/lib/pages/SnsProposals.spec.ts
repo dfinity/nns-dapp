@@ -352,27 +352,30 @@ describe("SnsProposals", () => {
   });
 
   describe("actionable proposals segment", () => {
+    const actionableProposal1 = createSnsProposal({
+      proposalId: 10n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
     const renderComponent = async () => {
       const { container } = render(SnsProposals);
       await runResolvedPromises();
       return SnsProposalListPo.under(new JestPageObjectElement(container));
     };
-    const mockActionableProposalsLoadingDone = () =>
+    const mockActionableProposalsLoadingDone = (
+      { includeBallotsByCaller }: { includeBallotsByCaller: boolean } = {
+        includeBallotsByCaller: true,
+      }
+    ) =>
       actionableSnsProposalsStore.set({
         rootCanisterId,
-        proposals: [
-          createSnsProposal({
-            proposalId: 10n,
-            status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
-          }),
-        ],
-        includeBallotsByCaller: true,
+        proposals: [actionableProposal1],
+        includeBallotsByCaller,
       });
 
     beforeEach(() => {
       resetIdentity();
-      overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", true);
       actionableSnsProposalsStore.resetForTesting();
+      overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", true);
       mockActionableProposalsLoadingDone();
     });
 
@@ -511,25 +514,28 @@ describe("SnsProposals", () => {
           proposals: [],
           includeBallotsByCaller: true,
         });
+        // no proposals available
         const po = await renderComponent();
-
         await selectActionableProposals(po);
         expect(await po.getActionableEmptyBanner().isPresent()).toBe(true);
 
+        // with proposals available
         mockActionableProposalsLoadingDone();
-        await runResolvedPromises();
+        const po2 = await renderComponent();
+        await selectActionableProposals(po2);
+        expect(await po2.getActionableEmptyBanner().isPresent()).toBe(false);
 
-        expect(await po.getActionableEmptyBanner().isPresent()).toBe(false);
+        // signOut
+        setNoIdentity();
+        const po3 = await renderComponent();
+        await selectActionableProposals(po3);
+        expect(await po3.getActionableEmptyBanner().isPresent()).toBe(false);
       });
 
       it('should display "Actionable not supported" banner', async () => {
-        actionableSnsProposalsStore.set({
-          rootCanisterId,
-          proposals: [],
-          includeBallotsByCaller: false,
-        });
+        // sns without support
+        mockActionableProposalsLoadingDone({ includeBallotsByCaller: false });
         const po = await renderComponent();
-
         await selectActionableProposals(po);
         expect(await po.getActionableNotSupportedBanner().isPresent()).toBe(
           true
@@ -537,6 +543,23 @@ describe("SnsProposals", () => {
         expect(
           await po.getActionableNotSupportedBanner().getTitleText()
         ).toEqual("Catalyze doesn't yet support actionable proposals.");
+
+        // select to all proposals
+        await po
+          .getSnsProposalFiltersPo()
+          .getActionableProposalsSegmentPo()
+          .clickAllProposals();
+        expect(await po.getActionableNotSupportedBanner().isPresent()).toBe(
+          false
+        );
+
+        // sns with support
+        mockActionableProposalsLoadingDone({ includeBallotsByCaller: true });
+        const po2 = await renderComponent();
+        await selectActionableProposals(po2);
+        expect(await po2.getActionableNotSupportedBanner().isPresent()).toBe(
+          false
+        );
       });
 
       it("should display actionable proposals", async () => {
