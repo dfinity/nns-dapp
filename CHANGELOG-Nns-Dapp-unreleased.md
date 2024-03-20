@@ -19,6 +19,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Adjusted table colors in dark theme.
+
 #### Deprecated
 
 #### Removed
