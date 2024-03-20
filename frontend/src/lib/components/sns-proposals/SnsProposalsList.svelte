@@ -16,7 +16,7 @@
   import ActionableProposalsNotSupported from "$lib/components/proposals/ActionableProposalsNotSupported.svelte";
   import ActionableProposalsEmpty from "$lib/components/proposals/ActionableProposalsEmpty.svelte";
 
-  export let snsName: string | undefined;
+  export let snsName: string;
   export let proposals: SnsProposalData[] | undefined;
   export let includeBallots: boolean;
   export let actionableSelected: boolean;
@@ -57,7 +57,7 @@
       {:else if isNullish(proposals)}
         <LoadingProposals />
       {:else if includeBallots === false}
-        <ActionableProposalsNotSupported snsName={snsName ?? ""} />
+        <ActionableProposalsNotSupported {snsName} />
       {:else if proposals.length === 0}
         <ActionableProposalsEmpty />
       {:else}

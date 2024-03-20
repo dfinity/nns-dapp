@@ -141,13 +141,15 @@
     : false;
 </script>
 
-<SnsProposalsList
-  {snsName}
-  {proposals}
-  {actionableSelected}
-  {includeBallots}
-  nsFunctions={$nsFunctionsStore}
-  on:nnsIntersect={loadNextPage}
-  {disableInfiniteScroll}
-  {loadingNextPage}
-/>
+{#if nonNullish(snsName)}
+  <SnsProposalsList
+    {snsName}
+    {proposals}
+    {actionableSelected}
+    {includeBallots}
+    nsFunctions={$nsFunctionsStore}
+    on:nnsIntersect={loadNextPage}
+    {disableInfiniteScroll}
+    {loadingNextPage}
+  />
+{/if}
