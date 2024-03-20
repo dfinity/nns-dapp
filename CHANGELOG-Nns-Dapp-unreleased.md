@@ -19,6 +19,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Adjusted table colors in dark theme.
+
 #### Deprecated
 
 #### Removed
@@ -26,6 +28,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * Min ckBTC withdrawal amount was unknown when withdrawing directly from My Tokens.
+* Fix menu width in collapsed state.
 
 #### Security
 
