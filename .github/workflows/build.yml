@@ -109,11 +109,16 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: nns-dapp_test
-      - name: Start snapshot environment
-        uses: ./.github/actions/start_dfx_snapshot
-        with:
-          nns_dapp_wasm: 'nns-dapp_test.wasm.gz'
-          logfile: 'dfx-test-downgrade-upgrade.log'
+      - name: Install ic-wasm
+        uses: ./.github/actions/install_ic_wasm
+      - name: Install dfx
+        uses: dfinity/setup-dfx@main
+      - name: Install tools
+        run: |
+          sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
+          cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)" && idl2json --version
+      - name: Start dfx
+        run: dfx start --clean --background &>test-upgrade-map-dfx.log
       - name: Get the production Wasm and args for deploying it locally.
         run: |
           mkdir prod
