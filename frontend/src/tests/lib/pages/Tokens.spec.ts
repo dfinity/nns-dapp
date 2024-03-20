@@ -9,6 +9,7 @@ import {
 } from "$tests/mocks/tokens-page.mock";
 import { TokensPagePo } from "$tests/page-objects/TokensPage.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
 
 describe("Tokens page", () => {
@@ -26,6 +27,10 @@ describe("Tokens page", () => {
     return TokensPagePo.under(new JestPageObjectElement(container));
   };
 
+  beforeEach(() => {
+    overrideFeatureFlagsStore.reset();
+  });
+
   it("should render the tokens table", async () => {
     const po = renderPage(userTokensPageMock);
     expect(await po.hasTokensTable()).toBeDefined();
@@ -36,11 +41,40 @@ describe("Tokens page", () => {
     expect(await po.getTokensTable().getRows()).toHaveLength(2);
   });
 
-  it("should show settings button with feature flag enabled", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_HIDE_ZERO_BALANCE", true);
+  describe("with feature flag ENABLE_HIDE_ZERO_BALANCE enabled", () => {
+    beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_HIDE_ZERO_BALANCE", true);
+    });
 
-    const po = renderPage([token1, token2]);
-    expect(await po.getSettingsButtonPo().isPresent()).toBe(true);
+    it("should show settings button with feature flag enabled", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_HIDE_ZERO_BALANCE", true);
+
+      const po = renderPage([token1, token2]);
+      expect(await po.getSettingsButtonPo().isPresent()).toBe(true);
+    });
+
+    it("should open settings popup when clicking on settings button", async () => {
+      const po = renderPage([token1, token2]);
+
+      expect(await po.getHideZeroBalancesTogglePo().isPresent()).toBe(false);
+      expect(await po.getBackdropPo().isPresent()).toBe(false);
+      await po.getSettingsButtonPo().click();
+      expect(await po.getHideZeroBalancesTogglePo().isPresent()).toBe(true);
+      expect(await po.getBackdropPo().isPresent()).toBe(true);
+    });
+
+    it("should close settings popup when clicking on backdrop", async () => {
+      const po = renderPage([token1, token2]);
+
+      await po.getSettingsButtonPo().click();
+      expect(await po.getHideZeroBalancesTogglePo().isPresent()).toBe(true);
+      expect(await po.getBackdropPo().isPresent()).toBe(true);
+
+      await po.getBackdropPo().click();
+      await runResolvedPromises();
+      expect(await po.getHideZeroBalancesTogglePo().isPresent()).toBe(false);
+      expect(await po.getBackdropPo().isPresent()).toBe(false);
+    });
   });
 
   it("should not show settings button with feature flag disabled", async () => {
