@@ -392,7 +392,6 @@ interface I18nVoting {
 interface I18nActionable_proposals_sign_in {
   title: string;
   text: string;
-  sign_in: string;
 }
 
 interface I18nActionable_proposals_empty {
