@@ -382,6 +382,8 @@ describe("NnsProposals", () => {
 
     it("should render skeletons while loading actionable", async () => {
       const po = await renderComponent();
+      expect(await po.getSkeletonCardPo().isPresent()).toEqual(false);
+
       await selectActionableProposals(po);
       expect(await po.getSkeletonCardPo().isPresent()).toEqual(true);
 
