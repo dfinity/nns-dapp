@@ -553,9 +553,6 @@ describe("SnsProposals", () => {
       });
 
       it("should display actionable proposals", async () => {
-        vi.spyOn(authStore, "subscribe").mockImplementation(
-          mockAuthStoreSubscribe
-        );
         const po = await renderComponent();
 
         expect((await po.getProposalCardPos()).length).toEqual(0);
