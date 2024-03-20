@@ -999,6 +999,8 @@
     "projects_header": "Projects",
     "balance_header": "Balance",
     "accounts_header": "Accounts",
-    "settings_button": "Open tokens settings"
+    "settings_button": "Open tokens settings",
+    "hide_zero_balances": "Hide zero balances",
+    "hide_zero_balances_toggle_label": "Switch between showing and hiding tokens with a balance of zero"
   }
 }

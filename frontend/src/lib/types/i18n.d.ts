@@ -1053,6 +1053,8 @@ interface I18nTokens {
   balance_header: string;
   accounts_header: string;
   settings_button: string;
+  hide_zero_balances: string;
+  hide_zero_balances_toggle_label: string;
 }
 
 interface I18nNeuron_state {
