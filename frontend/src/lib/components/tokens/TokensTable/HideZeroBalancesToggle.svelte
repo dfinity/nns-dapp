@@ -29,7 +29,7 @@
   .popup-content {
     display: flex;
     flex-direction: column;
-    width: 240px;
+    width: calc(30 * var(--padding));
     gap: var(--padding-0_5x);
   }
 
