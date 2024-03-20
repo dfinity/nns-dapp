@@ -3,7 +3,6 @@ import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposal
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import type { SnsProposalData } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
-import { beforeEach, describe } from "vitest";
 
 describe("SnsProposalsList", () => {
   const proposal1: SnsProposalData = {
@@ -28,7 +27,9 @@ describe("SnsProposalsList", () => {
     const { queryAllByTestId } = render(SnsProposalsList, {
       props: {
         proposals,
-        isActionable: false,
+        includeBallots: false,
+        snsName: undefined,
+        actionableSelected: false,
         nsFunctions: [],
       },
     });
@@ -40,7 +41,9 @@ describe("SnsProposalsList", () => {
     const { queryByTestId } = render(SnsProposalsList, {
       props: {
         proposals,
-        isActionable: false,
+        includeBallots: false,
+        snsName: undefined,
+        actionableSelected: false,
         nsFunctions: [],
         loadingNextPage: true,
       },
@@ -55,7 +58,9 @@ describe("SnsProposalsList", () => {
     const { queryByTestId } = render(SnsProposalsList, {
       props: {
         proposals: undefined,
-        isActionable: false,
+        includeBallots: false,
+        snsName: undefined,
+        actionableSelected: false,
         nsFunctions: [],
       },
     });
@@ -67,7 +72,9 @@ describe("SnsProposalsList", () => {
     const { queryByTestId } = render(SnsProposalsList, {
       props: {
         proposals: [],
-        isActionable: false,
+        includeBallots: false,
+        snsName: undefined,
+        actionableSelected: false,
         nsFunctions: [],
       },
     });
