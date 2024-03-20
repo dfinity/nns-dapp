@@ -1,4 +1,5 @@
 import SnsProposals from "$lib/pages/SnsProposals.svelte";
+import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { authStore } from "$lib/stores/auth.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
@@ -435,8 +436,20 @@ describe("SnsProposals", () => {
     });
 
     describe("when feature flag true", () => {
+      const selectActionableProposals = async (po: SnsProposalListPo) => {
+        await po
+          .getSnsProposalFiltersPo()
+          .getActionableProposalsSegmentPo()
+          .clickActionableProposals();
+        await runResolvedPromises();
+      };
       beforeEach(() => {
+        actionableProposalsSegmentStore.resetForTesting();
         overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", true);
+        vi.spyOn(authStore, "subscribe").mockImplementation(
+          mockAuthStoreSubscribe
+        );
+        mockActionableProposalsLoadingDone();
       });
 
       it("should render all proposals by default", async () => {
@@ -451,11 +464,7 @@ describe("SnsProposals", () => {
         expect(await po.getAllProposalList().isPresent()).toEqual(true);
         expect(await po.getActionableProposalList().isPresent()).toEqual(false);
 
-        await po
-          .getSnsProposalFiltersPo()
-          .getActionableProposalsSegmentPo()
-          .clickActionableProposals();
-        await runResolvedPromises();
+        await selectActionableProposals(po);
 
         expect(await po.getAllProposalList().isPresent()).toEqual(false);
         expect(await po.getActionableProposalList().isPresent()).toEqual(true);
@@ -470,16 +479,88 @@ describe("SnsProposals", () => {
         expect(await po.getActionableProposalList().isPresent()).toEqual(false);
       });
 
+      it('should display "Not signIn" banner', async () => {
+        vi.spyOn(authStore, "subscribe").mockImplementation(
+          mockAuthStoreNoIdentitySubscribe
+        );
+
+        const po = await renderComponent();
+        await selectActionableProposals(po);
+
+        expect(await po.getActionableSignInBanner().isPresent()).toBe(true);
+        expect(await po.getActionableSignInBanner().getTitleText()).toEqual(
+          "You are not signed in."
+        );
+        expect(
+          await po.getActionableSignInBanner().getDescriptionText()
+        ).toEqual("Sign in to see actionable proposals");
+        expect(
+          await po.getActionableSignInBanner().getBannerActionsText()
+        ).toEqual("Sign in with Internet Identity");
+      });
+
+      it("should display loading skeletons", async () => {
+        actionableSnsProposalsStore.resetForTesting();
+        const po = await renderComponent();
+        expect(await po.getSkeletonCardPo().isPresent()).toBe(false);
+
+        await selectActionableProposals(po);
+        expect(await po.getSkeletonCardPo().isPresent()).toBe(true);
+
+        mockActionableProposalsLoadingDone();
+        await runResolvedPromises();
+        expect(await po.getSkeletonCardPo().isPresent()).toBe(false);
+      });
+
+      it('should display "No actionable proposals" banner', async () => {
+        actionableSnsProposalsStore.set({
+          rootCanisterId,
+          proposals: [],
+          includeBallotsByCaller: true,
+        });
+        const po = await renderComponent();
+
+        await selectActionableProposals(po);
+        expect(await po.getActionableEmptyBanner().isPresent()).toBe(true);
+        expect(await po.getActionableEmptyBanner().getTitleText()).toEqual(
+          "There are no actionable proposals you can vote for."
+        );
+        expect(
+          await po.getActionableEmptyBanner().getDescriptionText()
+        ).toEqual("Check back later!");
+      });
+
+      it('should display "Actionable not supported" banner', async () => {
+        actionableSnsProposalsStore.set({
+          rootCanisterId,
+          proposals: [],
+          includeBallotsByCaller: false,
+        });
+        const po = await renderComponent();
+
+        await selectActionableProposals(po);
+        expect(await po.getActionableNotSupportedBanner().isPresent()).toBe(
+          true
+        );
+        expect(
+          await po.getActionableNotSupportedBanner().getTitleText()
+        ).toEqual("Catalyze doesn't yet support actionable proposals.");
+        expect(
+          await po.getActionableNotSupportedBanner().getDescriptionText()
+        ).toEqual(
+          "Because it is running an older version of the SNS governance canister."
+        );
+      });
+
       it("should display actionable proposals", async () => {
+        vi.spyOn(authStore, "subscribe").mockImplementation(
+          mockAuthStoreSubscribe
+        );
         const po = await renderComponent();
 
         expect((await po.getProposalCardPos()).length).toEqual(0);
 
-        await po
-          .getSnsProposalFiltersPo()
-          .getActionableProposalsSegmentPo()
-          .clickActionableProposals();
-        await runResolvedPromises();
+        await selectActionableProposals(po);
 
         expect((await po.getProposalCardPos()).length).toEqual(1);
         expect(
