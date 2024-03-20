@@ -1,7 +1,6 @@
 import SnsProposals from "$lib/pages/SnsProposals.svelte";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
-import { authStore } from "$lib/stores/auth.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
@@ -9,7 +8,6 @@ import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { page } from "$mocks/$app/stores";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import {
-  mockIdentity,
   mockPrincipal,
   resetIdentity,
   setNoIdentity,
@@ -472,15 +470,25 @@ describe("SnsProposals", () => {
 
       it('should display "Not signIn" banner', async () => {
         setNoIdentity();
-
         const po = await renderComponent();
         await selectActionableProposals(po);
-
         expect(await po.getActionableSignInBanner().isPresent()).toBe(true);
 
-        authStore.setForTesting(mockIdentity);
+        // login
+        resetIdentity();
         await runResolvedPromises();
+        expect(await po.getActionableSignInBanner().isPresent()).toBe(false);
 
+        // logout
+        setNoIdentity();
+        await runResolvedPromises();
+        expect(await po.getActionableSignInBanner().isPresent()).toBe(true);
+
+        // switch to all proposals
+        await po
+          .getSnsProposalFiltersPo()
+          .getActionableProposalsSegmentPo()
+          .clickAllProposals();
         expect(await po.getActionableSignInBanner().isPresent()).toBe(false);
       });
 
