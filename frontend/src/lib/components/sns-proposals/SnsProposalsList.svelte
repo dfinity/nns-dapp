@@ -11,9 +11,15 @@
   import { ENABLE_VOTING_INDICATION } from "$lib/stores/feature-flags.store";
   import { fade } from "svelte/transition";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import ActionableProposalsSignIn from "$lib/components/proposals/ActionableProposalsSignIn.svelte";
+  import ActionableProposalsNotSupported from "$lib/components/proposals/ActionableProposalsNotSupported.svelte";
+  import ActionableProposalsEmpty from "$lib/components/proposals/ActionableProposalsEmpty.svelte";
 
+  export let snsName: string | undefined;
   export let proposals: SnsProposalData[] | undefined;
-  export let isActionable: boolean;
+  export let includeBallots: boolean;
+  export let actionableSelected: boolean;
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;
   export let disableInfiniteScroll = false;
   export let loadingNextPage = false;
@@ -22,7 +28,7 @@
 <TestIdWrapper testId="sns-proposal-list-component">
   <SnsProposalsFilters />
 
-  {#if !$ENABLE_VOTING_INDICATION || !isActionable}
+  {#if !$ENABLE_VOTING_INDICATION || !actionableSelected}
     <div in:fade data-tid="all-proposal-list">
       {#if proposals === undefined}
         <LoadingProposals />
@@ -44,23 +50,23 @@
     </div>
   {/if}
 
-  {#if $ENABLE_VOTING_INDICATION && isActionable}
-    {#if proposals === undefined}
-      <!-- TODO(max): TBD SignIn vs No vs NotSupported -->
-      <LoadingProposals />
-    {:else if proposals.length === 0}
-      <!-- TODO(max): TBD custom screen -->
-      <NoProposals />
-    {:else}
-      <div in:fade data-tid="actionable-proposal-list">
-        <ListLoader loading={isNullish(proposals)}>
-          <InfiniteScroll layout="grid" disabled>
-            {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
-              <SnsProposalCard {proposalData} {nsFunctions} />
-            {/each}
-          </InfiniteScroll>
-        </ListLoader>
-      </div>
-    {/if}
+  {#if $ENABLE_VOTING_INDICATION && actionableSelected}
+    <div in:fade data-tid="actionable-proposal-list">
+      {#if !$authSignedInStore}
+        <ActionableProposalsSignIn />
+      {:else if isNullish(proposals)}
+        <LoadingProposals />
+      {:else if includeBallots === false}
+        <ActionableProposalsNotSupported snsName={snsName ?? ""} />
+      {:else if proposals.length === 0}
+        <ActionableProposalsEmpty />
+      {:else}
+        <InfiniteScroll layout="grid" disabled>
+          {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
+            <SnsProposalCard {proposalData} {nsFunctions} />
+          {/each}
+        </InfiniteScroll>
+      {/if}
+    </div>
   {/if}
 </TestIdWrapper>
