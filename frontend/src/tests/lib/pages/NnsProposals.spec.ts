@@ -402,6 +402,15 @@ describe("NnsProposals", () => {
       const po = await renderComponent();
       await selectActionableProposals(po);
       expect(await po.getActionableSignInBanner().isPresent()).toEqual(true);
+      expect(await po.getActionableSignInBanner().getTitleText()).toEqual(
+        "You are not signed in."
+      );
+      expect(await po.getActionableSignInBanner().getDescriptionText()).toEqual(
+        "Sign in to see actionable proposals"
+      );
+      expect(
+        await po.getActionableSignInBanner().getBannerActionsText()
+      ).toEqual("Sign in with Internet Identity");
     });
 
     it('should display "no actionable proposals" banner', async () => {
@@ -410,6 +419,12 @@ describe("NnsProposals", () => {
 
       await selectActionableProposals(po);
       expect(await po.getActionableEmptyBanner().isPresent()).toEqual(true);
+      expect(await po.getActionableEmptyBanner().getTitleText()).toEqual(
+        "There are no actionable proposals you can vote for."
+      );
+      expect(await po.getActionableEmptyBanner().getDescriptionText()).toEqual(
+        "Check back later!"
+      );
     });
 
     it("should display actionable proposals", async () => {
