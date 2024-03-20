@@ -9,8 +9,7 @@ import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { page } from "$mocks/$app/stores";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import {
-  mockAuthStoreNoIdentitySubscribe,
-  mockAuthStoreSubscribe,
+  mockIdentity,
   mockPrincipal,
   resetIdentity,
   setNoIdentity,
@@ -72,9 +71,7 @@ describe("SnsProposals", () => {
 
   describe("logged in user", () => {
     beforeEach(() => {
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreSubscribe
-      );
+      resetIdentity();
     });
 
     // TODO(max): add tests that the neurons are being fetched before the proposals (pr: https://github.com/dfinity/nns-dapp/pull/4420/)
@@ -175,9 +172,7 @@ describe("SnsProposals", () => {
 
   describe("when not logged in", () => {
     beforeEach(() => {
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreNoIdentitySubscribe
-      );
+      setNoIdentity();
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,
@@ -215,9 +210,7 @@ describe("SnsProposals", () => {
     beforeEach(() => {
       const functionId1 = 3n;
       const functionId2 = 4n;
-      vi.spyOn(authStore, "subscribe").mockImplementation(
-        mockAuthStoreNoIdentitySubscribe
-      );
+      setNoIdentity();
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,
@@ -444,11 +437,9 @@ describe("SnsProposals", () => {
         await runResolvedPromises();
       };
       beforeEach(() => {
+        resetIdentity();
         actionableProposalsSegmentStore.resetForTesting();
         overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", true);
-        vi.spyOn(authStore, "subscribe").mockImplementation(
-          mockAuthStoreSubscribe
-        );
         mockActionableProposalsLoadingDone();
       });
 
@@ -480,14 +471,17 @@ describe("SnsProposals", () => {
       });
 
       it('should display "Not signIn" banner', async () => {
-        vi.spyOn(authStore, "subscribe").mockImplementation(
-          mockAuthStoreNoIdentitySubscribe
-        );
+        setNoIdentity();
 
         const po = await renderComponent();
         await selectActionableProposals(po);
 
         expect(await po.getActionableSignInBanner().isPresent()).toBe(true);
+
+        authStore.setForTesting(mockIdentity);
+        await runResolvedPromises();
+
+        expect(await po.getActionableSignInBanner().isPresent()).toBe(false);
       });
 
       it("should display loading skeletons", async () => {
@@ -513,6 +507,11 @@ describe("SnsProposals", () => {
 
         await selectActionableProposals(po);
         expect(await po.getActionableEmptyBanner().isPresent()).toBe(true);
+
+        mockActionableProposalsLoadingDone();
+        await runResolvedPromises();
+
+        expect(await po.getActionableEmptyBanner().isPresent()).toBe(false);
       });
 
       it('should display "Actionable not supported" banner', async () => {
