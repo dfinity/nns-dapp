@@ -44,6 +44,7 @@ describe("SnsProposals", () => {
   const rootCanisterId = mockPrincipal;
   const functionName = "test_function";
   const functionId = 3n;
+  const projectName = "🪙";
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -55,6 +56,7 @@ describe("SnsProposals", () => {
     setSnsProjects([
       {
         rootCanisterId,
+        projectName,
         lifecycle: SnsSwapLifecycle.Committed,
         nervousFunctions: [
           {
@@ -542,7 +544,7 @@ describe("SnsProposals", () => {
         );
         expect(
           await po.getActionableNotSupportedBanner().getTitleText()
-        ).toEqual("Catalyze doesn't yet support actionable proposals.");
+        ).toEqual(`${projectName} doesn't yet support actionable proposals.`);
 
         // select to all proposals
         await po
