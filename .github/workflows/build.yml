@@ -126,9 +126,9 @@ jobs:
           curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp_test.wasm.gz > prod/nns-dapp_test.wasm.gz
           curl -sL https://github.com/dfinity/nns-dapp/releases/download/prod/nns-dapp-arg-local.did > prod/nns-dapp-arg-local.did
       - name: Downgrade nns-dapp to prod and upgrade back again
-        run: scripts/nns-dapp/migration-test --wasm1 "out/nns-dapp_test.wasm.gz" --args1 out/nns-dapp-arg-local.did --wasm2 "prod/nns-dapp_test.wasm.gz" --args2 prod/nns-dapp-arg-local.did --accounts 20 --chunk 20
+        run: scripts/nns-dapp/migration-test --wasm1 out/nns-dapp_test.wasm.gz --args1 out/nns-dapp-arg-local.did --wasm2 prod/nns-dapp_test.wasm.gz --args2 prod/nns-dapp-arg-local.did --accounts 20 --chunk 20
       - name: Repeat with more data
-        run: scripts/nns-dapp/migration-test --wasm1 "out/nns-dapp_test.wasm.gz" --args1 out/nns-dapp-arg-local.did --wasm2 "prod/nns-dapp_test.wasm.gz" --args2 prod/nns-dapp-arg-local.did --accounts 30 --chunk 20
+        run: scripts/nns-dapp/migration-test --wasm1 out/nns-dapp_test.wasm.gz --args1 out/nns-dapp-arg-local.did --wasm2 prod/nns-dapp_test.wasm.gz --args2 prod/nns-dapp-arg-local.did --accounts 30 --chunk 20
       - name: Count upgrade cycles
         run: scripts/nns-dapp/estimate-upgrade-cycles | tee -a $GITHUB_STEP_SUMMARY
   test-upgrade-map:
