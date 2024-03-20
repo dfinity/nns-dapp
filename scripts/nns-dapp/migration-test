@@ -81,7 +81,7 @@ get_assets() {
     SCHEMA="SCHEMA$config"
     get_wasm "${!WASM}" "$(working_wasm "$config")"
     get_argfile "${!ARGFILE}" "$(working_arguments "$config")"
-    test -z "${!SCHEMA}" || {
+    test -z "${!SCHEMA:-}" || {
       set_arguments_schema "${!SCHEMA}" <"$(working_arguments "$config")" | sponge "$(working_arguments "$config")"
     }
   done
