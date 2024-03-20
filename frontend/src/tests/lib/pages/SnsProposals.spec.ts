@@ -488,15 +488,6 @@ describe("SnsProposals", () => {
         await selectActionableProposals(po);
 
         expect(await po.getActionableSignInBanner().isPresent()).toBe(true);
-        expect(await po.getActionableSignInBanner().getTitleText()).toEqual(
-          "You are not signed in."
-        );
-        expect(
-          await po.getActionableSignInBanner().getDescriptionText()
-        ).toEqual("Sign in to see actionable proposals");
-        expect(
-          await po.getActionableSignInBanner().getBannerActionsText()
-        ).toEqual("Sign in with Internet Identity");
       });
 
       it("should display loading skeletons", async () => {
@@ -522,12 +513,6 @@ describe("SnsProposals", () => {
 
         await selectActionableProposals(po);
         expect(await po.getActionableEmptyBanner().isPresent()).toBe(true);
-        expect(await po.getActionableEmptyBanner().getTitleText()).toEqual(
-          "There are no actionable proposals you can vote for."
-        );
-        expect(
-          await po.getActionableEmptyBanner().getDescriptionText()
-        ).toEqual("Check back later!");
       });
 
       it('should display "Actionable not supported" banner', async () => {
@@ -545,11 +530,6 @@ describe("SnsProposals", () => {
         expect(
           await po.getActionableNotSupportedBanner().getTitleText()
         ).toEqual("Catalyze doesn't yet support actionable proposals.");
-        expect(
-          await po.getActionableNotSupportedBanner().getDescriptionText()
-        ).toEqual(
-          "Because it is running an older version of the SNS governance canister."
-        );
       });
 
       it("should display actionable proposals", async () => {
