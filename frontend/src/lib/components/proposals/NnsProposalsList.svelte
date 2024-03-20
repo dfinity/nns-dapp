@@ -14,6 +14,9 @@
   import type { ProposalInfo } from "@dfinity/nns";
   import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
   import { isNullish } from "@dfinity/utils";
+  import ActionableProposalsSignIn from "$lib/components/proposals/ActionableProposalsSignIn.svelte";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import ActionableProposalsEmpty from "$lib/components/proposals/ActionableProposalsEmpty.svelte";
   export let nothingFound: boolean;
   export let hidden: boolean;
   export let disableInfiniteScroll: boolean;
@@ -35,36 +38,40 @@
   {#if display}
     {#if !$ENABLE_VOTING_INDICATION || $actionableProposalsSegmentStore.selected !== "actionable"}
       <div in:fade data-tid="all-proposal-list">
-        <ListLoader loading={loadingAnimation === "spinner"}>
-          <InfiniteScroll
-            on:nnsIntersect
-            layout="grid"
-            disabled={disableInfiniteScroll || loading}
-          >
-            {#each $filteredProposals.proposals as proposalInfo (proposalInfo.id)}
-              <NnsProposalCard {hidden} {proposalInfo} />
-            {/each}
-          </InfiniteScroll>
-        </ListLoader>
+        {#if loadingAnimation === "skeleton"}
+          <LoadingProposals />
+        {:else if nothingFound}
+          <NoProposals />
+        {:else}
+          <ListLoader loading={loadingAnimation === "spinner"}>
+            <InfiniteScroll
+              on:nnsIntersect
+              layout="grid"
+              disabled={disableInfiniteScroll || loading}
+            >
+              {#each $filteredProposals.proposals as proposalInfo (proposalInfo.id)}
+                <NnsProposalCard {hidden} {proposalInfo} />
+              {/each}
+            </InfiniteScroll>
+          </ListLoader>
+        {/if}
       </div>
     {:else}
       <div in:fade data-tid="actionable-proposal-list">
-        <ListLoader loading={isNullish(actionableProposals)}>
+        {#if !$authSignedInStore}
+          <ActionableProposalsSignIn />
+        {:else if isNullish(actionableProposals)}
+          <LoadingProposals />
+        {:else if actionableProposals?.length === 0}
+          <ActionableProposalsEmpty />
+        {:else}
           <InfiniteScroll layout="grid" disabled>
             {#each actionableProposals ?? [] as proposalInfo (proposalInfo.id)}
               <NnsProposalCard {hidden} {proposalInfo} />
             {/each}
           </InfiniteScroll>
-        </ListLoader>
+        {/if}
       </div>
     {/if}
-  {/if}
-
-  {#if nothingFound}
-    <NoProposals />
-  {/if}
-
-  {#if loadingAnimation === "skeleton"}
-    <LoadingProposals />
   {/if}
 </TestIdWrapper>

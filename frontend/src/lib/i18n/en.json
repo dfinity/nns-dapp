@@ -374,6 +374,14 @@
     "all_proposals": "All Proposals",
     "actionable_proposals": "Actionable Proposals"
   },
+  "actionable_proposals_sign_in": {
+    "title": "You are not signed in.",
+    "text": "Sign in to see actionable proposals"
+  },
+  "actionable_proposals_empty": {
+    "title": "There are no actionable proposals you can vote for.",
+    "text": "Check back later!"
+  },
   "canisters": {
     "aria_label_canister_card": "Go to canister details",
     "text": "Developers can create and manage their canisters (a form of smart contracts) and cycles consumption here.",

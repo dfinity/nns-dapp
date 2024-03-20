@@ -27,7 +27,6 @@ import {
 } from "$tests/mocks/proposals.store.mock";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NnsProposalListPo } from "$tests/page-objects/NnsProposalList.page-object";
-import { allowLoggingInOneTestForDebugging } from "$tests/utils/console.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import {
@@ -338,12 +337,20 @@ describe("NnsProposals", () => {
       await runResolvedPromises();
       return NnsProposalListPo.under(new JestPageObjectElement(container));
     };
+    const selectActionableProposals = async (po: NnsProposalListPo) => {
+      await po
+        .getNnsProposalFiltersPo()
+        .getActionableProposalsSegmentPo()
+        .clickActionableProposals();
+      await runResolvedPromises();
+    };
 
     beforeEach(() => {
+      actionableNnsProposalsStore.reset();
+
       authStoreMock.next({
         identity: mockIdentity,
       });
-
       overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", true);
     });
 
@@ -359,11 +366,7 @@ describe("NnsProposals", () => {
       expect(await po.getAllProposalList().isPresent()).toEqual(true);
       expect(await po.getActionableProposalList().isPresent()).toEqual(false);
 
-      await po
-        .getNnsProposalFiltersPo()
-        .getActionableProposalsSegmentPo()
-        .clickActionableProposals();
-      await runResolvedPromises();
+      await selectActionableProposals(po);
       expect(await po.getAllProposalList().isPresent()).toEqual(false);
       expect(await po.getActionableProposalList().isPresent()).toEqual(true);
 
@@ -377,30 +380,70 @@ describe("NnsProposals", () => {
       expect(await po.getActionableProposalList().isPresent()).toEqual(false);
     });
 
-    it("should render spinner while loading actionable", async () => {
-      allowLoggingInOneTestForDebugging();
-
+    it("should render skeletons while loading actionable", async () => {
       const po = await renderComponent();
-      await po
-        .getNnsProposalFiltersPo()
-        .getActionableProposalsSegmentPo()
-        .clickActionableProposals();
-      await runResolvedPromises();
+      expect(await po.getSkeletonCardPo().isPresent()).toEqual(false);
 
-      expect(await po.hasSpinner()).toEqual(true);
+      await selectActionableProposals(po);
+      expect(await po.getSkeletonCardPo().isPresent()).toEqual(true);
 
       actionableNnsProposalsStore.setProposals(mockProposals);
       await runResolvedPromises();
 
-      expect(await po.hasSpinner()).toEqual(false);
+      expect(await po.getSkeletonCardPo().isPresent()).toEqual(false);
     });
 
     it("should display login CTA", async () => {
-      // TODO(max): TBD
+      vi.spyOn(authStore, "subscribe").mockImplementation(
+        (run: Subscriber<AuthStoreData>): (() => void) => {
+          run({ identity: undefined });
+
+          return () => undefined;
+        }
+      );
+      const po = await renderComponent();
+      await selectActionableProposals(po);
+      expect(await po.getActionableSignInBanner().isPresent()).toEqual(true);
+      expect(await po.getActionableSignInBanner().getTitleText()).toEqual(
+        "You are not signed in."
+      );
+      expect(await po.getActionableSignInBanner().getDescriptionText()).toEqual(
+        "Sign in to see actionable proposals"
+      );
+      expect(
+        await po.getActionableSignInBanner().getBannerActionsText()
+      ).toEqual("Sign in with Internet Identity");
     });
 
-    it("should display not supported page", async () => {
-      // TODO(max): TBD
+    it('should display "no actionable proposals" banner', async () => {
+      actionableNnsProposalsStore.setProposals([]);
+      const po = await renderComponent();
+
+      await selectActionableProposals(po);
+      expect(await po.getActionableEmptyBanner().isPresent()).toEqual(true);
+      expect(await po.getActionableEmptyBanner().getTitleText()).toEqual(
+        "There are no actionable proposals you can vote for."
+      );
+      expect(await po.getActionableEmptyBanner().getDescriptionText()).toEqual(
+        "Check back later!"
+      );
+    });
+
+    it("should display actionable proposals", async () => {
+      actionableNnsProposalsStore.setProposals([
+        mockProposals[0],
+        mockProposals[1],
+      ]);
+      const po = await renderComponent();
+
+      await selectActionableProposals(po);
+      expect(await po.getProposalCardPos()).toHaveLength(2);
+      expect(await (await po.getProposalCardPos())[0].getProposalId()).toEqual(
+        "ID: 404"
+      );
+      expect(await (await po.getProposalCardPos())[1].getProposalId()).toEqual(
+        "ID: 303"
+      );
     });
   });
 });
