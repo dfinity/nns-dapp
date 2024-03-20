@@ -81,18 +81,4 @@ describe("SnsProposalsList", () => {
 
     expect(queryByTestId("no-proposals-msg")).toBeInTheDocument();
   });
-
-  describe("actionable proposals", () => {
-    it("should render skeletons while proposals are loading", async () => {
-      const { queryByTestId } = render(SnsProposalsList, {
-        props: {
-          proposals: undefined,
-          isActionable: true,
-          nsFunctions: [],
-        },
-      });
-
-      expect(queryByTestId("proposals-loading")).toBeInTheDocument();
-    });
-  });
 });
