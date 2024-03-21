@@ -43,6 +43,18 @@ export class ProposalNavigationPo extends BasePageObject {
     return this.root.byTestId("title").getText();
   }
 
+  async getNewerButtonProposalId(): Promise<string> {
+    return (await this.getNewerButtonPo().getElement()).getAttribute(
+      "data-test-proposal-id"
+    );
+  }
+
+  async getOlderButtonProposalId(): Promise<string> {
+    return (await this.getOlderButtonPo().getElement()).getAttribute(
+      "data-test-proposal-id"
+    );
+  }
+
   async isNewerButtonHidden(): Promise<boolean> {
     return ProposalNavigationPo.isButtonHidden(this.getNewerButtonPo());
   }
