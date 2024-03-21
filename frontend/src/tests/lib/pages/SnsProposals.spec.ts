@@ -26,7 +26,7 @@ import {
   SnsSwapLifecycle,
   type SnsProposalData,
 } from "@dfinity/sns";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { cleanup, fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 vi.mock("$lib/api/sns-governance.api");
@@ -359,6 +359,7 @@ describe("SnsProposals", () => {
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
     });
     const renderComponent = async () => {
+      cleanup();
       const { container } = render(SnsProposals);
       await runResolvedPromises();
       return SnsProposalListPo.under(new JestPageObjectElement(container));
