@@ -57,8 +57,7 @@
   };
 </script>
 
-<svelte:element
-  this={nonNullish(userTokenData.rowHref) ? "a" : "div"}
+<a
   href={userTokenData.rowHref}
   role="row"
   tabindex="0"
@@ -111,7 +110,7 @@
       {/each}
     {/if}
   </div>
-</svelte:element>
+</a>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/interaction";
