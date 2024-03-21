@@ -22,6 +22,8 @@
   import type { Principal } from "@dfinity/principal";
   import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
   import type { Readable } from "svelte/store";
+  import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
+  import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 
   let nsFunctionsStore: Readable<SnsNervousSystemFunction[] | undefined>;
   $: nsFunctionsStore = createSnsNsFunctionsProjectStore($snsOnlyProjectStore);
@@ -115,14 +117,23 @@
       )
     : undefined;
 
+  let actionableProposals: SnsProposalData[] | undefined;
+  $: actionableProposals = nonNullish(currentProjectCanisterId)
+    ? $actionableSnsProposalsStore[currentProjectCanisterId.toText()]?.proposals
+    : undefined;
+
   let disableInfiniteScroll: boolean;
   $: disableInfiniteScroll = nonNullish(currentProjectCanisterId)
     ? $snsProposalsStore[currentProjectCanisterId.toText()]?.completed ?? false
     : false;
+
+  let isActionable: boolean;
+  $: isActionable = $actionableProposalsSegmentStore.selected === "actionable";
 </script>
 
 <SnsProposalsList
-  {proposals}
+  proposals={isActionable ? actionableProposals : proposals}
+  {isActionable}
   nsFunctions={$nsFunctionsStore}
   on:nnsIntersect={loadNextPage}
   {disableInfiniteScroll}

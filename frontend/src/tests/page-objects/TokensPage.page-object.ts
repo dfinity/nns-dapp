@@ -1,5 +1,8 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { BackdropPo } from "./Backdrop.page-object";
+import type { ButtonPo } from "./Button.page-object";
+import { HideZeroBalancesTogglePo } from "./HideZeroBalancesToggle.page-object";
 import { TokensTablePo } from "./TokensTable.page-object";
 import type { TokensTableRowData } from "./TokensTableRow.page-object";
 
@@ -12,6 +15,22 @@ export class TokensPagePo extends BasePageObject {
 
   getTokensTable(): TokensTablePo {
     return TokensTablePo.under(this.root);
+  }
+
+  getSettingsButtonPo(): ButtonPo {
+    return this.getButton("settings-button");
+  }
+
+  getHideZeroBalancesTogglePo(): HideZeroBalancesTogglePo {
+    return HideZeroBalancesTogglePo.under(this.root);
+  }
+
+  getBackdropPo(): BackdropPo {
+    return BackdropPo.under(this.root);
+  }
+
+  getShowAllButtonPo(): ButtonPo {
+    return this.getButton("show-all-button");
   }
 
   hasTokensTable(): Promise<boolean> {

@@ -270,7 +270,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98000987798971820,
+    "icrc1_total_supply": 98001065657910540,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -704,7 +704,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100429807808803820,
+    "icrc1_total_supply": 100448123726580960,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1112,8 +1112,8 @@
       "functions": [
         {
           "id": 0,
-          "name": "All Topics",
-          "description": "Catch-all w.r.t to following for all types of proposals.",
+          "name": "All non-critical topics",
+          "description": "Catch-all w.r.t to following for non-critical proposals.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -1202,6 +1202,22 @@
           "id": 11,
           "name": "Deregister Dapp Canisters",
           "description": "Proposal to deregister a previously-registered dapp canister from the SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 12,
+          "name": "Mint SNS Tokens",
+          "description": "Proposal to mint SNS tokens to a specified recipient.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 13,
+          "name": "Manage ledger parameters",
+          "description": "Proposal to change some parameters in the ledger canister.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -1332,7 +1348,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50005559160166184,
+    "icrc1_total_supply": 50008135487179170,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2128,7 +2144,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10005726770102852,
+    "icrc1_total_supply": 10007055790244502,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3079,7 +3095,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10000767924454300,
+    "icrc1_total_supply": 10000853894890214,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -4043,7 +4059,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12545208857126208,
+    "icrc1_total_supply": 12545653047615972,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -5349,7 +5365,8 @@
         "oh54a-baaaa-aaaap-abryq-cai",
         "oo6x4-xiaaa-aaaap-abrza-cai",
         "o4yaf-3yaaa-aaaap-abr2a-cai",
-        "bojx2-iaaaa-aaaag-ab3jq-cai"
+        "bojx2-iaaaa-aaaag-ab3jq-cai",
+        "j4jiq-sqaaa-aaaap-ab23a-cai"
       ],
       "archives": ["fgzua-6iaaa-aaaaq-aacgq-cai"]
     },
@@ -5480,6 +5497,19 @@
           "description": "Proposal to change canister settings for some dapp canisters.",
           "function_type": {
             "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 1001,
+          "name": "Manage NNS neuron",
+          "description": "Proposal to manage an ICP neuron under control of the Gold DAO.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "j4jiq-sqaaa-aaaap-ab23a-cai",
+              "target_canister_id": "j4jiq-sqaaa-aaaap-ab23a-cai",
+              "validator_method_name": "manage_nns_neuron_validate",
+              "target_method_name": "manage_nns_neuron"
+            }
           }
         }
       ]
@@ -5905,7 +5935,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100000328435115980,
+    "icrc1_total_supply": 100000429001003040,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,

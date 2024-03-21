@@ -5,6 +5,7 @@ import { writable, type Unsubscriber, type Writable } from "svelte/store";
 
 type WritableStored<T> = Writable<T> & {
   unsubscribeStorage: Unsubscriber;
+  resetForTesting: () => void;
 };
 
 type VersionedData<T> = { data: T | undefined; version: number | undefined };
@@ -124,5 +125,8 @@ export const writableStored = <T>({
   return {
     ...store,
     unsubscribeStorage,
+    resetForTesting: () => {
+      store.set(defaultValue);
+    },
   };
 };

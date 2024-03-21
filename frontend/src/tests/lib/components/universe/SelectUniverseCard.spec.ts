@@ -24,15 +24,17 @@ import {
 } from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Principal } from "@dfinity/principal";
-import { render } from "@testing-library/svelte";
+import { cleanup, render } from "@testing-library/svelte";
 import { describe } from "vitest";
 
 describe("SelectUniverseCard", () => {
   const props = { universe: nnsUniverseMock, selected: false };
   const mockSnsUniverse: Universe = createUniverse(mockSummary);
 
-  const renderComponent = (props) => {
+  const renderComponent = async (props) => {
+    cleanup();
     const { container } = render(SelectUniverseCard, props);
+    await runResolvedPromises();
     return SelectUniverseCardPo.under(new JestPageObjectElement(container));
   };
 
@@ -45,14 +47,14 @@ describe("SelectUniverseCard", () => {
 
   describe("selected", () => {
     it("display a selected card", async () => {
-      const po = renderComponent({
+      const po = await renderComponent({
         props: { ...props, selected: true },
       });
       expect(await po.isSelected()).toBe(true);
     });
 
     it("display a not selected card", async () => {
-      const po = renderComponent({
+      const po = await renderComponent({
         props,
       });
       expect(await po.isSelected()).toBe(false);
@@ -61,21 +63,21 @@ describe("SelectUniverseCard", () => {
 
   describe("theme", () => {
     it("display theme framed if role button", async () => {
-      const po = renderComponent({
+      const po = await renderComponent({
         props: { ...props, role: "button" },
       });
       expect(await po.isFramed()).toBe(true);
     });
 
     it("display theme transparent if role link", async () => {
-      const po = renderComponent({
+      const po = await renderComponent({
         props: { ...props, role: "link" },
       });
       expect(await po.isTransparent()).toBe(true);
     });
 
     it("display no theme if role dropdown", async () => {
-      const po = renderComponent({
+      const po = await renderComponent({
         props: { ...props, role: "dropdown" },
       });
       expect(await po.isFramed()).toBe(false);
@@ -85,21 +87,21 @@ describe("SelectUniverseCard", () => {
 
   describe("icon", () => {
     it("display an icon if role button and selected", async () => {
-      const po = renderComponent({
+      const po = await renderComponent({
         props: { ...props, role: "button", selected: true },
       });
       expect(await po.hasIcon()).toBe(true);
     });
 
     it("display no icon if role button but not selected", async () => {
-      const po = renderComponent({
+      const po = await renderComponent({
         props: { ...props, role: "button", selected: false },
       });
       expect(await po.hasIcon()).toBe(false);
     });
 
     it("display an icon if role dropdown", async () => {
-      const po = renderComponent({
+      const po = await renderComponent({
         props: { ...props, role: "dropdown" },
       });
       expect(await po.hasIcon()).toBe(true);
@@ -108,7 +110,7 @@ describe("SelectUniverseCard", () => {
 
   describe("nns", () => {
     it("should display ic logo", async () => {
-      const po = renderComponent({
+      const po = await renderComponent({
         props,
       });
       expect(await po.getUniverseLogoPo().isPresent()).toBe(true);
@@ -116,7 +118,7 @@ describe("SelectUniverseCard", () => {
     });
 
     it("should display internet computer", async () => {
-      const po = renderComponent({
+      const po = await renderComponent({
         props,
       });
       expect(await po.getName()).toBe(en.core.ic);
@@ -125,7 +127,7 @@ describe("SelectUniverseCard", () => {
 
   describe("sns", () => {
     it("should display logo", async () => {
-      const po = renderComponent({
+      const po = await renderComponent({
         props: { universe: mockSnsUniverse, selected: false },
       });
       expect(await po.getUniverseLogoPo().isPresent()).toBe(true);
@@ -133,7 +135,7 @@ describe("SelectUniverseCard", () => {
     });
 
     it("should display name", async () => {
-      const po = renderComponent({
+      const po = await renderComponent({
         props: { universe: mockSnsUniverse, selected: false },
       });
       expect(await po.getName()).toBe(mockSummary.metadata.name);
@@ -175,7 +177,7 @@ describe("SelectUniverseCard", () => {
           routeId: AppPath.Accounts,
         });
 
-        const po = renderComponent({
+        const po = await renderComponent({
           props: { universe: nnsUniverseMock, selected: true },
         });
         // Expecting 1 + 2 + 4.
@@ -188,7 +190,7 @@ describe("SelectUniverseCard", () => {
           routeId: AppPath.Accounts,
         });
 
-        const po = renderComponent({
+        const po = await renderComponent({
           props: { universe: nnsUniverseMock, selected: false },
         });
         // Expecting 1 + 2 + 4.
@@ -201,7 +203,7 @@ describe("SelectUniverseCard", () => {
           routeId: AppPath.Neurons,
         });
 
-        const po = renderComponent({
+        const po = await renderComponent({
           props: { universe: mockSnsUniverse, selected: true },
         });
         expect(await po.hasBalance()).toBe(false);
@@ -214,7 +216,7 @@ describe("SelectUniverseCard", () => {
         });
 
         // Mock contains only Nns balance
-        const po = renderComponent({
+        const po = await renderComponent({
           props: { universe: mockSnsUniverse, selected: false },
         });
         expect(await po.getUniverseAccountsBalancePo().isPresent()).toBe(true);
@@ -234,7 +236,7 @@ describe("SelectUniverseCard", () => {
             includeBallotsByCaller: true,
           });
 
-          const po = renderComponent({
+          const po = await renderComponent({
             props: { universe: mockSnsUniverse, selected: false },
           });
 
@@ -256,7 +258,7 @@ describe("SelectUniverseCard", () => {
             includeBallotsByCaller: true,
           });
 
-          const po = renderComponent({
+          const po = await renderComponent({
             props: { universe: mockSnsUniverse, selected: false },
           });
 
@@ -267,6 +269,27 @@ describe("SelectUniverseCard", () => {
           overrideFeatureFlagsStore.setFlag("ENABLE_VOTING_INDICATION", false);
 
           await runResolvedPromises();
+
+          expect(await po.getActionableProposalCountBadgePo().isPresent()).toBe(
+            false
+          );
+        });
+
+        it("should not display actionable proposal count when not on neurons page", async () => {
+          page.mock({
+            data: { universe: OWN_CANISTER_ID_TEXT },
+            routeId: AppPath.Neurons,
+          });
+
+          actionableSnsProposalsStore.set({
+            rootCanisterId: Principal.from(mockSnsUniverse.canisterId),
+            proposals: [mockSnsProposal, mockSnsProposal],
+            includeBallotsByCaller: true,
+          });
+
+          const po = await renderComponent({
+            props: { universe: mockSnsUniverse, selected: false },
+          });
 
           expect(await po.getActionableProposalCountBadgePo().isPresent()).toBe(
             false
@@ -285,7 +308,7 @@ describe("SelectUniverseCard", () => {
             includeBallotsByCaller: true,
           });
 
-          const po = renderComponent({
+          const po = await renderComponent({
             props: { universe: mockSnsUniverse, selected: false },
           });
 
@@ -300,7 +323,7 @@ describe("SelectUniverseCard", () => {
             routeId: AppPath.Proposals,
           });
 
-          const po = renderComponent({
+          const po = await renderComponent({
             props: { universe: mockSnsUniverse, selected: false },
           });
 
@@ -323,7 +346,7 @@ describe("SelectUniverseCard", () => {
             includeBallotsByCaller: undefined,
           });
 
-          const po = renderComponent({
+          const po = await renderComponent({
             props: { universe: mockSnsUniverse, selected: false },
           });
 
@@ -348,7 +371,7 @@ describe("SelectUniverseCard", () => {
           routeId: AppPath.Accounts,
         });
 
-        const po = renderComponent({
+        const po = await renderComponent({
           props: { universe: nnsUniverseMock, selected: true },
         });
         expect(await po.hasBalance()).toBe(false);
@@ -360,7 +383,7 @@ describe("SelectUniverseCard", () => {
           routeId: AppPath.Accounts,
         });
 
-        const po = renderComponent({
+        const po = await renderComponent({
           props: { universe: nnsUniverseMock, selected: false },
         });
         expect(await po.hasBalance()).toBe(false);

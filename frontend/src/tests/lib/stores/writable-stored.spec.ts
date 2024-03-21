@@ -173,4 +173,23 @@ describe("writableStored", () => {
       ).toEqual(JSON.stringify(newState));
     });
   });
+
+  it("should resetForTesting", () => {
+    const defaultState = { filter: "new" };
+
+    const store = writableStored({
+      key: StoreLocalStorageKey.ProposalFilters,
+      defaultValue: defaultState,
+    });
+
+    const newState = { filter: "old" };
+
+    expect(get(store)).toEqual(defaultState);
+
+    store.set(newState);
+    expect(get(store)).toEqual(newState);
+
+    store.resetForTesting();
+    expect(get(store)).toEqual(defaultState);
+  });
 });
