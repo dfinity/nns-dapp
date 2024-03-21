@@ -275,6 +275,27 @@ describe("SelectUniverseCard", () => {
           );
         });
 
+        it("should not display actionable proposal count when not on neurons page", async () => {
+          page.mock({
+            data: { universe: OWN_CANISTER_ID_TEXT },
+            routeId: AppPath.Neurons,
+          });
+
+          actionableSnsProposalsStore.set({
+            rootCanisterId: Principal.from(mockSnsUniverse.canisterId),
+            proposals: [mockSnsProposal, mockSnsProposal],
+            includeBallotsByCaller: true,
+          });
+
+          const po = await renderComponent({
+            props: { universe: mockSnsUniverse, selected: false },
+          });
+
+          expect(await po.getActionableProposalCountBadgePo().isPresent()).toBe(
+            false
+          );
+        });
+
         it("should not display actionable proposal count when it's 0", async () => {
           page.mock({
             data: { universe: OWN_CANISTER_ID_TEXT },
