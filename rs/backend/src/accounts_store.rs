@@ -69,7 +69,7 @@ pub struct AccountsStore {
 
 /// A wrapper around a value that returns true for `PartialEq` and `Eq` equality checks, regardless of the value.
 ///
-/// This is intended to be used on incidental, volatile fields.  A struct containing such a field will typically wish to disregard the field in any comparison.
+/// This is intended to be used on incidental, volatile fields.  A structure containing such a field will typically wish to disregard the field in any comparison.
 #[derive(Default)]
 struct IgnoreEq<T>(T)
 where
