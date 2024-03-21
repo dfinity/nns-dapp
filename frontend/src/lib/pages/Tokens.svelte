@@ -24,13 +24,12 @@
   $: shouldHideZeroBalances = $hideZeroBalancesStore === "hide";
 
   let nonZeroBalanceTokensData: UserToken[] = [];
-  $: nonZeroBalanceTokensData = userTokensData.filter((token) => {
-    return (
+  $: nonZeroBalanceTokensData = userTokensData.filter(
+    (token) =>
       // Internet Computer is shown, even with zero balance.
       token.universeId.toText() === OWN_CANISTER_ID_TEXT ||
       (token.balance instanceof TokenAmountV2 && token.balance.toUlps() > 0n)
-    );
-  });
+  );
 
   let shownTokensData: UserToken[] = [];
   $: shownTokensData = shouldHideZeroBalances

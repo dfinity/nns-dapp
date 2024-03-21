@@ -54,7 +54,7 @@ describe("Tokens page", () => {
   const token1 = zeroBalance;
   const token2 = positiveBalance;
 
-  const renderPage = (userTokensData?: UserTokenData[]) => {
+  const renderPage = (userTokensData: UserTokenData[]) => {
     const { container } = render(TokensPage, {
       props: { userTokensData },
     });
