@@ -44,6 +44,10 @@ type TransactionIndex = u64;
 const PRE_MIGRATION_LIMIT: u64 = 300_000;
 
 /// Accounts, transactions and related data.
+///
+/// Note: Some monitoring fields are not included in the `Eq` and `PartialEq` implementations.  Additionally, please note
+/// that the stable structures BTreeMap does not have an implementation of `Eq`, so special care needs to be taken when comparing
+/// data backed by stable structures.
 #[derive(Default)]
 #[cfg_attr(test, derive(Eq, PartialEq))]
 pub struct AccountsStore {
@@ -63,16 +67,20 @@ pub struct AccountsStore {
     neurons_topped_up_count: u64,
 }
 
-/// A wrapper around a value that ignores equality.
+/// A wrapper around a value that returns true for `PartialEq` and `Eq` equality checks, regardless of the value.
+///
+/// This is intended to be used on incidental, volatile fields.  A struct containing such a field will typically wish to disregard the field in any comparison.
 #[derive(Default)]
 struct IgnoreEq<T>(T)
 where
     T: Default;
+
 impl<T: Default> PartialEq for IgnoreEq<T> {
     fn eq(&self, _: &Self) -> bool {
         true
     }
 }
+
 impl<T: Default> Eq for IgnoreEq<T> {}
 
 impl fmt::Debug for AccountsStore {
@@ -1643,11 +1651,8 @@ impl StableState for AccountsStore {
             }
         }
 
-        let (accounts_db_stats, accounts_db_stats_recomputed_on_upgrade) = if let Some(counts) = accounts_db_stats_maybe
-        {
-            println!("Using de-serialized accounts_db stats");
-            (counts, IgnoreEq(Some(false)))
-        } else {
+        let accounts_db_stats_recomputed_on_upgrade = IgnoreEq(Some(accounts_db_stats_maybe.is_none()));
+        let accounts_db_stats = accounts_db_stats_maybe.unwrap_or_else(|| {
             println!("Re-counting accounts_db stats...");
             let mut sub_accounts_count: u64 = 0;
             let mut hardware_wallet_accounts_count: u64 = 0;
@@ -1655,14 +1660,11 @@ impl StableState for AccountsStore {
                 sub_accounts_count += account.sub_accounts.len() as u64;
                 hardware_wallet_accounts_count += account.hardware_wallet_accounts.len() as u64;
             }
-            (
-                AccountsDbStats {
-                    sub_accounts_count,
-                    hardware_wallet_accounts_count,
-                },
-                IgnoreEq(Some(true)),
-            )
-        };
+            AccountsDbStats {
+                sub_accounts_count,
+                hardware_wallet_accounts_count,
+            }
+        });
 
         let accounts_db = AccountsDb::Map(AccountsDbAsMap::from_map(accounts));
 
