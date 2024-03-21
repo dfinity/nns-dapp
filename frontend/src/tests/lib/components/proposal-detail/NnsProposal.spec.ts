@@ -13,6 +13,7 @@ import { createMockProposalsStoreSubscribe } from "$tests/mocks/proposals.store.
 import { ProposalNavigationPo } from "$tests/page-objects/ProposalNavigation.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render, waitFor } from "@testing-library/svelte";
 import NnsProposalTest from "./NnsProposalTest.svelte";
 
@@ -102,21 +103,28 @@ describe("Proposal", () => {
   });
 
   it("should use actionable proposals for navigation when actionable selected", async () => {
+    const proposals = generateMockProposals(5);
+    // remove proposal id=2
+    const actionableProposals = proposals.filter((_, index) => index !== 2);
+
     actionableProposalsSegmentStore.set("actionable");
-
-    // set no nns proposals to ensure that actionable proposals are used
     vi.spyOn(filteredProposals, "subscribe").mockImplementation(
-      createMockProposalsStoreSubscribe([])
+      createMockProposalsStoreSubscribe(proposals)
     );
-    actionableNnsProposalsStore.setProposals(generateMockProposals(10));
+    actionableNnsProposalsStore.setProposals(actionableProposals);
 
-    const { container } = renderProposalModern(7n);
+    const { container } = renderProposalModern(3n);
     const po = ProposalNavigationPo.under(new JestPageObjectElement(container));
 
     expect(await po.getOlderButtonPo().isPresent()).toBe(true);
-    expect(await po.getOlderButtonProposalId()).toEqual("6");
+    expect(await po.getOlderButtonProposalId()).toEqual("1");
     expect(await po.getNewerButtonPo().isPresent()).toBe(true);
-    expect(await po.getNewerButtonProposalId()).toEqual("8");
+    expect(await po.getNewerButtonProposalId()).toEqual("4");
+
+    actionableProposalsSegmentStore.set("all");
+    await runResolvedPromises();
+    expect(await po.getOlderButtonProposalId()).toEqual("2");
+    expect(await po.getNewerButtonProposalId()).toEqual("4");
   });
 
   it("should not render proposal navigation when on launchpad", async () => {
