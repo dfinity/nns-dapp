@@ -1,5 +1,6 @@
 import * as agent from "$lib/api/agent.api";
 import * as proposalsApi from "$lib/api/proposals.api";
+import { queryFinalizationStatus } from "$lib/api/sns-sale.api";
 import { authStore } from "$lib/stores/auth.store";
 import { LaunchpadPo } from "$tests/page-objects/Launchpad.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -12,6 +13,7 @@ import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/api/proposals.api");
+vi.mock("$lib/api/sns-sale.api");
 
 describe("Launchpad", () => {
   beforeEach(() => {
@@ -21,6 +23,12 @@ describe("Launchpad", () => {
     vi.spyOn(proposalsApi, "queryProposals").mockImplementation(() =>
       Promise.resolve([])
     );
+
+    vi.mocked(queryFinalizationStatus).mockResolvedValue({
+      auto_finalize_swap_response: [],
+      has_auto_finalize_been_attempted: [],
+      is_auto_finalize_enabled: [],
+    });
 
     // TODO: agent mocked because some calls to global.fetch were exposed when we migrated to agent-js v0.20.2
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
