@@ -3,6 +3,8 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
 import SnsProposalDetail from "$lib/pages/SnsProposalDetail.svelte";
+import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
+import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { authStore } from "$lib/stores/auth.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
@@ -54,6 +56,8 @@ describe("SnsProposalDetail", () => {
   describe("not logged in", () => {
     beforeEach(() => {
       vi.clearAllMocks();
+      actionableProposalsSegmentStore.resetForTesting();
+      actionableSnsProposalsStore.resetForTesting();
       vi.spyOn(console, "error").mockImplementation(() => undefined);
       authStore.setForTesting(undefined);
       snsFunctionsStore.reset();
@@ -276,9 +280,79 @@ describe("SnsProposalDetail", () => {
       expect(await navigationPo.isPresent()).toBe(true);
       expect(await navigationPo.getOlderButtonPo().isPresent()).toBe(true);
       expect(await navigationPo.getNewerButtonPo().isPresent()).toBe(true);
+      expect(await navigationPo.getNewerButtonProposalId()).toBe("3");
+      expect(await navigationPo.getOlderButtonProposalId()).toBe("1");
       // all buttons should be enabled
       expect(await navigationPo.getOlderButtonPo().isDisabled()).toBe(false);
       expect(await navigationPo.getNewerButtonPo().isDisabled()).toBe(false);
+    });
+
+    it("should display proposal navigation for actionable proposal", async () => {
+      const proposals = [
+        createSnsProposal({
+          proposalId: 1n,
+          status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+        }),
+        createSnsProposal({
+          proposalId: 2n,
+          status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+        }),
+        createSnsProposal({
+          proposalId: 3n,
+          status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+        }),
+        createSnsProposal({
+          proposalId: 4n,
+          status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+        }),
+      ];
+      // mock the store to have no proposals to fail when used
+      vi.spyOn(snsFilteredProposalsStore, "subscribe").mockImplementation(
+        buildMockSnsProposalsStoreSubscribe({
+          universeIdText: rootCanisterId.toText(),
+          proposals,
+        })
+      );
+      actionableSnsProposalsStore.set({
+        rootCanisterId,
+        includeBallotsByCaller: true,
+        // set the proposal id=2 to be not actionable
+        proposals: proposals.filter((_, index) => index !== 2),
+      });
+
+      fakeSnsGovernanceApi.addProposalWith({
+        identity: new AnonymousIdentity(),
+        rootCanisterId,
+        id: [{ id: 3n }],
+      });
+
+      const { container } = render(SnsProposalDetail, {
+        props: {
+          // set the proposal with id=2 to be in the middle of the list
+          proposalIdText: "2",
+        },
+      });
+      const po = SnsProposalDetailPo.under(
+        new JestPageObjectElement(container)
+      );
+      await waitFor(async () => expect(await po.isContentLoaded()).toBe(true));
+
+      const navigationPo = po.getProposalNavigationPo();
+      expect(await navigationPo.isPresent()).toBe(true);
+      expect(await navigationPo.getOlderButtonPo().isPresent()).toBe(true);
+      expect(await navigationPo.getNewerButtonPo().isPresent()).toBe(true);
+      // 4 <newer 2 older> 1
+      expect(await navigationPo.getNewerButtonProposalId()).toBe("4");
+      expect(await navigationPo.getOlderButtonProposalId()).toBe("1");
+      // all buttons should be enabled
+      expect(await navigationPo.getOlderButtonPo().isDisabled()).toBe(false);
+      expect(await navigationPo.getNewerButtonPo().isDisabled()).toBe(false);
+
+      actionableProposalsSegmentStore.set("all");
+      await runResolvedPromises();
+      // 3 <newer 2 older> 1
+      expect(await navigationPo.getNewerButtonProposalId()).toBe("3");
+      expect(await navigationPo.getOlderButtonProposalId()).toBe("1");
     });
   });
 
