@@ -22,7 +22,7 @@
       "archives": ["zmbi7-fyaaa-aaaaq-aaahq-cai"]
     },
     "meta": {
-      "url": "https://dragginz.io",
+      "url": "https://dragginz.io/",
       "name": "Dragginz",
       "description": "A virtual pets game from the creators of Neopets.  Non-profit, 100% on-chain.  We've got baby dragons, crowdsourced world building, magic spells, and a prince in disguise!",
       "logo": "/v1/sns/root/zxeu2-7aaaa-aaaaq-aaafa-cai/logo.png"
@@ -289,7 +289,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999999401694000,
+    "icrc1_total_supply": 799999998915094000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -1111,7 +1111,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10055439678035912,
+    "icrc1_total_supply": 10055972529517420,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1748,7 +1748,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 600206712382330,
+    "icrc1_total_supply": 600213720651024,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2106,7 +2106,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100126511672236820,
+    "icrc1_total_supply": 100127376816333010,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2595,6 +2595,14 @@
           }
         },
         {
+          "id": 14,
+          "name": "Manage dapp canister settings",
+          "description": "Proposal to change canister settings for some dapp canisters.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1000,
           "name": "burn",
           "description": null,
@@ -2745,7 +2753,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 921374822463622500,
+    "icrc1_total_supply": 921453329261525400,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
