@@ -22,6 +22,10 @@ const convertAccountToUserTokenData = ({
   i18nObj: I18n;
   account?: Account;
 }): UserToken => {
+  const rowHref = buildWalletUrl({
+    universe: nnsUniverse.canisterId.toString(),
+    account: account?.identifier,
+  });
   if (isNullish(account)) {
     return {
       universeId: Principal.fromText(nnsUniverse.canisterId),
@@ -29,6 +33,7 @@ const convertAccountToUserTokenData = ({
       balance: "loading",
       logo: nnsUniverse.logo,
       actions: [],
+      rowHref,
     };
   }
 
@@ -55,10 +60,7 @@ const convertAccountToUserTokenData = ({
       amount: NNS_TOKEN_DATA.fee,
       token: NNS_TOKEN_DATA,
     }),
-    rowHref: buildWalletUrl({
-      universe: nnsUniverse.canisterId.toString(),
-      account: account?.identifier,
-    }),
+    rowHref,
     accountIdentifier: account.identifier,
     actions: [UserTokenAction.Receive, UserTokenAction.Send],
   };

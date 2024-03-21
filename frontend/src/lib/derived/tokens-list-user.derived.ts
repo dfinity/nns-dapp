@@ -33,15 +33,15 @@ const convertToUserTokenData = ({
   authData: AuthStoreData;
 }): UserToken => {
   const token = tokensByUniverse[baseTokenData.universeId.toText()];
-  const rowHref = isNullish(authData.identity)
-    ? undefined
-    : isUniverseNns(baseTokenData.universeId)
+  const rowHref = isUniverseNns(baseTokenData.universeId)
     ? buildAccountsUrl({ universe: baseTokenData.universeId.toText() })
     : buildWalletUrl({
         universe: baseTokenData.universeId.toText(),
-        account: encodeIcrcAccount({
-          owner: authData.identity.getPrincipal(),
-        }),
+        account: isNullish(authData.identity)
+          ? undefined
+          : encodeIcrcAccount({
+              owner: authData.identity.getPrincipal(),
+            }),
       });
   const accountsList = accounts[baseTokenData.universeId.toText()];
   const mainAccount = accountsList?.find(({ type }) => type === "main");
@@ -50,6 +50,7 @@ const convertToUserTokenData = ({
       ...baseTokenData,
       balance: "loading",
       actions: [],
+      rowHref,
     };
   }
   const fee = TokenAmountV2.fromUlps({ amount: token.fee, token });

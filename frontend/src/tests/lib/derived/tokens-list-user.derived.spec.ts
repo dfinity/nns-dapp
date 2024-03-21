@@ -65,6 +65,7 @@ describe("tokens-list-user.derived", () => {
     ...icpTokenBase,
     balance: "loading",
     actions: [],
+    rowHref: buildAccountsUrl({ universe: OWN_CANISTER_ID_TEXT }),
   };
   const snsTetrisToken = mockSnsToken;
   const tetrisRootCanisterId = rootCanisterIdMock;
@@ -89,12 +90,17 @@ describe("tokens-list-user.derived", () => {
     lifecycle: SnsSwapLifecycle.Committed,
     tokenMetadata: snsPackmanToken,
   };
+  const tetrisHref = buildWalletUrl({
+    universe: snsTetris.rootCanisterId.toText(),
+    account: identityMainAccountIdentifier,
+  });
   const tetrisTokenLoading: UserTokenLoading = {
     universeId: snsTetris.rootCanisterId,
     title: snsTetris.projectName,
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/g3pce-2iaae/logo.png",
     balance: "loading",
     actions: [],
+    rowHref: tetrisHref,
   };
   const tetrisUserToken: UserTokenData = {
     ...tetrisTokenLoading,
@@ -108,18 +114,20 @@ describe("tokens-list-user.derived", () => {
       amount: snsTetris.tokenMetadata.fee,
       token: snsTetris.tokenMetadata,
     }),
-    rowHref: buildWalletUrl({
-      universe: snsTetris.rootCanisterId.toText(),
-      account: identityMainAccountIdentifier,
-    }),
+    rowHref: tetrisHref,
     accountIdentifier: mockSnsMainAccount.identifier,
   };
+  const pacmanHref = buildWalletUrl({
+    universe: snsPacman.rootCanisterId.toText(),
+    account: identityMainAccountIdentifier,
+  });
   const pacmanTokenLoading: UserTokenLoading = {
     universeId: snsPacman.rootCanisterId,
     title: snsPacman.projectName,
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/f7crg-kabae/logo.png",
     balance: "loading",
     actions: [],
+    rowHref: pacmanHref,
   };
   const pacmanUserToken: UserTokenData = {
     ...pacmanTokenLoading,
@@ -133,21 +141,28 @@ describe("tokens-list-user.derived", () => {
       amount: snsPacman.tokenMetadata.fee,
       token: snsPacman.tokenMetadata,
     }),
-    rowHref: buildWalletUrl({
-      universe: snsPacman.rootCanisterId.toText(),
-      account: identityMainAccountIdentifier,
-    }),
+    rowHref: pacmanHref,
     accountIdentifier: mockSnsMainAccount.identifier,
   };
+  const ckBTCHref = buildWalletUrl({
+    universe: ckBTCTokenBase.universeId.toText(),
+    account: identityMainAccountIdentifier,
+  });
   const ckBTCTokenLoading: UserTokenLoading = {
     ...ckBTCTokenBase,
     balance: "loading",
     actions: [],
+    rowHref: ckBTCHref,
   };
+  const ckTESTBTCHref = buildWalletUrl({
+    universe: ckTESTBTCTokenBase.universeId.toText(),
+    account: identityMainAccountIdentifier,
+  });
   const ckTESTBTCTokenLoading: UserTokenLoading = {
     ...ckTESTBTCTokenBase,
     balance: "loading",
     actions: [],
+    rowHref: ckTESTBTCHref,
   };
   const ckBTCUserToken: UserTokenData = {
     ...ckBTCTokenBase,
@@ -161,16 +176,18 @@ describe("tokens-list-user.derived", () => {
       amount: mockCkBTCToken.fee,
       token: mockCkBTCToken,
     }),
-    rowHref: buildWalletUrl({
-      universe: ckBTCTokenBase.universeId.toText(),
-      account: identityMainAccountIdentifier,
-    }),
+    rowHref: ckBTCHref,
     accountIdentifier: mockCkBTCMainAccount.identifier,
   };
+  const ckETHHref = buildWalletUrl({
+    universe: ckETHTokenBase.universeId.toText(),
+    account: identityMainAccountIdentifier,
+  });
   const ckETHTokenLoading: UserTokenLoading = {
     ...ckETHTokenBase,
     balance: "loading",
     actions: [],
+    rowHref: ckETHHref,
   };
   const ckETHUserToken: UserTokenData = {
     ...ckETHTokenBase,
@@ -183,10 +200,7 @@ describe("tokens-list-user.derived", () => {
       amount: mockCkETHToken.fee,
       token: mockCkETHToken,
     }),
-    rowHref: buildWalletUrl({
-      universe: ckETHTokenBase.universeId.toText(),
-      account: identityMainAccountIdentifier,
-    }),
+    rowHref: ckETHHref,
     actions: [UserTokenAction.Receive, UserTokenAction.Send],
     accountIdentifier: mockCkETHMainAccount.identifier,
   };
