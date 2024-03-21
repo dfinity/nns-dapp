@@ -46,7 +46,7 @@ const PRE_MIGRATION_LIMIT: u64 = 300_000;
 /// Accounts, transactions and related data.
 ///
 /// Note: Some monitoring fields are not included in the `Eq` and `PartialEq` implementations.  Additionally, please note
-/// that the stable structures BTreeMap does not have an implementation of `Eq`, so special care needs to be taken when comparing
+/// that the `ic_stable_structures::BTreeMap` does not have an implementation of `Eq`, so special care needs to be taken when comparing
 /// data backed by stable structures.
 #[derive(Default)]
 #[cfg_attr(test, derive(Eq, PartialEq))]
