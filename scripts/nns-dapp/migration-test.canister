@@ -35,11 +35,11 @@ get_upgrade_invariant_stats() {
   dfx canister call nns-dapp get_stats | idl2json | jq '{accounts_count, neurons_created_count, neurons_topped_up_count, sub_accounts_count}'
 }
 
-# Verifies that accounts were (or were not) recomputed on upgrade.
+# Verifies that accounts were not recomputed on upgrade.
 # Recomputing on upgrade is very expensive for stable memory.
-assert_accounts_db_stats_recomputed_on_upgrade_is() {
+assert_accounts_db_stats_are_not_recomputed_on_upgrade() {
   local expected_value actual_value
-  expected_value="${1}"
+  expected_value="[false]"
   actual_value="$(dfx canister call nns-dapp get_stats | idl2json | jq -c '.accounts_db_stats_recomputed_on_upgrade')"
   [[ "$expected_value" == "$actual_value" ]] || {
     echo "ERROR: Recompute stats on upgrade is not as expected."
@@ -176,7 +176,7 @@ upgrade_nnsdapp() {
   # Going forwards, this should always be false.  Historically it was always true.
   #
   # TODO: Delete the code path for recomputing stats on upgrade.
-  assert_accounts_db_stats_recomputed_on_upgrade_is "[false]"
+  assert_accounts_db_stats_are_not_recomputed_on_upgrade
 }
 
 # TODO: Get this mapping from the candid file
