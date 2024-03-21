@@ -29,6 +29,10 @@ export class TokensPagePo extends BasePageObject {
     return BackdropPo.under(this.root);
   }
 
+  getShowAllButtonPo(): ButtonPo {
+    return this.getButton("show-all-button");
+  }
+
   hasTokensTable(): Promise<boolean> {
     return this.getTokensTable().isPresent();
   }

@@ -159,6 +159,28 @@ describe("Tokens page", () => {
         "Positive balance",
       ]);
     });
+
+    it("show-all button should show all tokens", async () => {
+      const po = renderPage([positiveBalance, zeroBalance]);
+
+      expect(await po.getShowAllButtonPo().isPresent()).toBe(false);
+
+      await po.getSettingsButtonPo().click();
+      await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
+
+      expect(await po.getTokensTable().getTokenNames()).toEqual([
+        "Positive balance",
+      ]);
+
+      expect(await po.getShowAllButtonPo().isPresent()).toBe(true);
+      await po.getShowAllButtonPo().click();
+
+      expect(await po.getShowAllButtonPo().isPresent()).toBe(false);
+      expect(await po.getTokensTable().getTokenNames()).toEqual([
+        "Positive balance",
+        "Zero balance",
+      ]);
+    });
   });
 
   it("should not show settings button with feature flag disabled", async () => {

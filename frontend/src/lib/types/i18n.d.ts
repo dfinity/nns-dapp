@@ -1065,6 +1065,8 @@ interface I18nTokens {
   settings_button: string;
   hide_zero_balances: string;
   hide_zero_balances_toggle_label: string;
+  zero_balance_hidden: string;
+  show_all: string;
 }
 
 interface I18nNeuron_state {
