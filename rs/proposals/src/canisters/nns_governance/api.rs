@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-02-28_23-01+p2p-hotfix/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-03-14_23-01-p2p/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -413,6 +413,26 @@ pub struct RewardNodeProviders {
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct Decimal {
+    pub human_readable: Option<String>,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct NeuronsFundMatchedFundingCurveCoefficients {
+    pub contribution_threshold_xdr: Option<Decimal>,
+    pub one_third_participation_milestone_xdr: Option<Decimal>,
+    pub full_participation_milestone_xdr: Option<Decimal>,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct NeuronsFundEconomics {
+    pub maximum_icp_xdr_rate: Option<Percentage>,
+    pub neurons_fund_matched_funding_curve_coefficients: Option<NeuronsFundMatchedFundingCurveCoefficients>,
+    pub max_theoretical_neurons_fund_participation_amount_xdr: Option<Decimal>,
+    pub minimum_icp_xdr_rate: Option<Percentage>,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct NetworkEconomics {
     pub neuron_minimum_stake_e8s: u64,
     pub max_proposals_to_keep_per_topic: u32,
@@ -422,6 +442,7 @@ pub struct NetworkEconomics {
     pub neuron_spawn_dissolve_delay_seconds: u64,
     pub minimum_icp_xdr_rate: u64,
     pub maximum_node_provider_rewards_e8s: u64,
+    pub neurons_fund_economics: Option<NeuronsFundEconomics>,
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
@@ -713,6 +734,12 @@ pub struct ProposalData {
 }
 
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct XdrConversionRate {
+    pub xdr_permyriad_per_icp: Option<u64>,
+    pub timestamp_seconds: Option<u64>,
+}
+
+#[derive(Serialize, CandidType, Deserialize)]
 pub enum Command2 {
     Spawn(NeuronId),
     Split(Split),
@@ -787,6 +814,7 @@ pub struct Governance {
     pub topic_followee_index: Vec<(i32, FollowersMap)>,
     pub migrations: Option<Migrations>,
     pub proposals: Vec<(u64, ProposalData)>,
+    pub xdr_conversion_rate: Option<XdrConversionRate>,
     pub in_flight_commands: Vec<(u64, NeuronInFlightCommand)>,
     pub neurons: Vec<(u64, Neuron)>,
     pub genesis_timestamp_seconds: u64,
