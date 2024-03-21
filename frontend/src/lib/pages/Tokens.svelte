@@ -35,6 +35,10 @@
   $: shownTokensData = shouldHideZeroBalances
     ? nonZeroBalanceTokensData
     : userTokensData;
+
+  const showAll = () => {
+    hideZeroBalancesStore.set("show");
+  };
 </script>
 
 <TestIdWrapper testId="tokens-page-component">
@@ -52,6 +56,20 @@
           bind:this={settingsButton}
           on:click={openSettings}><IconSettings /></button
         >
+      {/if}
+    </div>
+    <div slot="last-row">
+      {#if shouldHideZeroBalances}
+        <div class="show-all-row">
+          {$i18n.tokens.zero_balance_hidden}
+          <button
+            data-tid="show-all-button"
+            class="ghost show-all"
+            on:click={showAll}
+          >
+            {$i18n.tokens.show_all}</button
+          >
+        </div>
       {/if}
     </div>
   </TokensTable>
@@ -73,5 +91,19 @@
 
     @include header.button(--primary-tint);
     margin: 0;
+  }
+
+  [slot="last-row"] {
+    grid-column: 1 / -1;
+  }
+
+  .show-all-row {
+    color: var(--text-description);
+    padding: var(--padding-2x);
+    background: var(--table-row-background);
+
+    button.show-all {
+      text-decoration: underline;
+    }
   }
 </style>
