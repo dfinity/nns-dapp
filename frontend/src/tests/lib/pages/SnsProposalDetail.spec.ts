@@ -288,6 +288,7 @@ describe("SnsProposalDetail", () => {
     });
 
     it("should display proposal navigation for actionable proposal", async () => {
+      actionableProposalsSegmentStore.set("actionable");
       const proposals = [
         createSnsProposal({
           proposalId: 1n,
@@ -306,6 +307,8 @@ describe("SnsProposalDetail", () => {
           status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
         }),
       ];
+      // remove the proposal with id=2 to be not actionable
+      const actionableProposals = proposals.filter((_, index) => index !== 1);
       // mock the store to have no proposals to fail when used
       vi.spyOn(snsFilteredProposalsStore, "subscribe").mockImplementation(
         buildMockSnsProposalsStoreSubscribe({
@@ -316,8 +319,7 @@ describe("SnsProposalDetail", () => {
       actionableSnsProposalsStore.set({
         rootCanisterId,
         includeBallotsByCaller: true,
-        // set the proposal id=2 to be not actionable
-        proposals: proposals.filter((_, index) => index !== 2),
+        proposals: actionableProposals,
       });
 
       fakeSnsGovernanceApi.addProposalWith({
@@ -328,8 +330,7 @@ describe("SnsProposalDetail", () => {
 
       const { container } = render(SnsProposalDetail, {
         props: {
-          // set the proposal with id=2 to be in the middle of the list
-          proposalIdText: "2",
+          proposalIdText: "3",
         },
       });
       const po = SnsProposalDetailPo.under(
@@ -341,7 +342,7 @@ describe("SnsProposalDetail", () => {
       expect(await navigationPo.isPresent()).toBe(true);
       expect(await navigationPo.getOlderButtonPo().isPresent()).toBe(true);
       expect(await navigationPo.getNewerButtonPo().isPresent()).toBe(true);
-      // 4 <newer 2 older> 1
+      // 4 <newer 3 older> 1
       expect(await navigationPo.getNewerButtonProposalId()).toBe("4");
       expect(await navigationPo.getOlderButtonProposalId()).toBe("1");
       // all buttons should be enabled
@@ -350,9 +351,9 @@ describe("SnsProposalDetail", () => {
 
       actionableProposalsSegmentStore.set("all");
       await runResolvedPromises();
-      // 3 <newer 2 older> 1
-      expect(await navigationPo.getNewerButtonProposalId()).toBe("3");
-      expect(await navigationPo.getOlderButtonProposalId()).toBe("1");
+      // 4 <newer 3 older> 2
+      expect(await navigationPo.getNewerButtonProposalId()).toBe("4");
+      expect(await navigationPo.getOlderButtonProposalId()).toBe("2");
     });
   });
 
