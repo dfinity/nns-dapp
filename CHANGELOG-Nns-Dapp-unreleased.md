@@ -34,6 +34,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Not Published
 
+* Hide tokens with zero balance based on setting behind feature flag.
+
 ### Operations
 
 #### Added
