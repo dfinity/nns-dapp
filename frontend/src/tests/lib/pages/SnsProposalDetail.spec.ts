@@ -303,7 +303,7 @@ describe("SnsProposalDetail", () => {
           status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
         }),
       ];
-      // Keep "all" proposals empty to make the test fall if not using the actionable proposals
+      // Keep "all" proposals empty to make the test fail if not using the actionable proposals
       vi.spyOn(snsFilteredProposalsStore, "subscribe").mockImplementation(
         buildMockSnsProposalsStoreSubscribe({
           universeIdText: rootCanisterId.toText(),

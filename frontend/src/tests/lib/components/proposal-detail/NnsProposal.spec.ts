@@ -104,7 +104,7 @@ describe("Proposal", () => {
   it("should use actionable proposals for navigation when actionable selected", async () => {
     actionableProposalsSegmentStore.set("actionable");
 
-    // Keep "all" proposals empty to make the test fall if not using the actionable proposals
+    // Keep "all" proposals empty to make the test fail if not using the actionable proposals
     vi.spyOn(filteredProposals, "subscribe").mockImplementation(
       createMockProposalsStoreSubscribe([])
     );
