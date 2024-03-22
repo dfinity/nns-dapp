@@ -1,9 +1,4 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import {
-  authStore,
-  type AuthStore,
-  type AuthStoreData,
-} from "$lib/stores/auth.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import {
   UserTokenAction,
@@ -24,12 +19,10 @@ const convertToUserTokenData = ({
   accounts,
   tokensByUniverse,
   baseTokenData,
-  authData,
 }: {
   accounts: UniversesAccounts;
   tokensByUniverse: Record<string, IcrcTokenMetadata>;
   baseTokenData: UserTokenBase;
-  authData: AuthStoreData;
 }): UserToken => {
   const token = tokensByUniverse[baseTokenData.universeId.toText()];
   const rowHref = isUniverseNns(baseTokenData.universeId)
@@ -80,23 +73,16 @@ export const tokensListUserStore = derived<
     Readable<UserTokenBase[]>,
     Readable<UniversesAccounts>,
     Readable<Record<string, IcrcTokenMetadata>>,
-    AuthStore,
   ],
   UserToken[]
 >(
-  [
-    tokensListBaseStore,
-    universesAccountsStore,
-    tokensByUniverseIdStore,
-    authStore,
-  ],
-  ([tokensList, accounts, tokensByUniverse, authData]) =>
+  [tokensListBaseStore, universesAccountsStore, tokensByUniverseIdStore],
+  ([tokensList, accounts, tokensByUniverse]) =>
     tokensList.map((baseTokenData) =>
       convertToUserTokenData({
         baseTokenData,
         accounts,
         tokensByUniverse,
-        authData,
       })
     )
 );

@@ -43,15 +43,11 @@ import {
 } from "$tests/utils/accounts.test-utils";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
-import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("tokens-list-user.derived", () => {
-  const identityMainAccountIdentifier = encodeIcrcAccount({
-    owner: mockIdentity.getPrincipal(),
-  });
   const icpUserToken: UserTokenData = createIcpUserToken({
     balance: TokenAmountV2.fromUlps({
       amount: mockMainAccount.balanceUlps,
