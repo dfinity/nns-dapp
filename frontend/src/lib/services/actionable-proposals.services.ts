@@ -1,7 +1,7 @@
 import { queryProposals as queryNnsProposals } from "$lib/api/proposals.api";
 import {
   DEFAULT_LIST_PAGINATION_LIMIT,
-  MAX_ACTIONABLE_PROPOSALS_PAGES,
+  MAX_ACTIONABLE_REQUEST_COUNT,
 } from "$lib/constants/constants";
 import { getCurrentIdentity } from "$lib/services/auth.services";
 import { listNeurons } from "$lib/services/neurons.services";
@@ -67,7 +67,7 @@ const queryProposals = async (): Promise<ProposalInfo[]> => {
   let sortedProposals: ProposalInfo[] = [];
   for (
     let pagesLoaded = 0;
-    pagesLoaded < MAX_ACTIONABLE_PROPOSALS_PAGES;
+    pagesLoaded < MAX_ACTIONABLE_REQUEST_COUNT;
     pagesLoaded++
   ) {
     // Fetch all proposals that are accepting votes.
@@ -87,7 +87,7 @@ const queryProposals = async (): Promise<ProposalInfo[]> => {
       break;
     }
 
-    if (pagesLoaded === MAX_ACTIONABLE_PROPOSALS_PAGES - 1) {
+    if (pagesLoaded === MAX_ACTIONABLE_REQUEST_COUNT - 1) {
       console.error("Max actionable pages loaded");
     }
   }

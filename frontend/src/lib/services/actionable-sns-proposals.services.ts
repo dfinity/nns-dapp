@@ -1,5 +1,5 @@
 import { queryProposals, querySnsNeurons } from "$lib/api/sns-governance.api";
-import { MAX_ACTIONABLE_PROPOSALS_PAGES } from "$lib/constants/constants";
+import { MAX_ACTIONABLE_REQUEST_COUNT } from "$lib/constants/constants";
 import { DEFAULT_SNS_PROPOSALS_PAGE_SIZE } from "$lib/constants/sns-proposals.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
@@ -121,7 +121,7 @@ const querySnsProposals = async ({
   let includeBallotsByCaller = false;
   for (
     let pagesLoaded = 0;
-    pagesLoaded < MAX_ACTIONABLE_PROPOSALS_PAGES;
+    pagesLoaded < MAX_ACTIONABLE_REQUEST_COUNT;
     pagesLoaded++
   ) {
     // Fetch all proposals that are accepting votes.
@@ -152,7 +152,7 @@ const querySnsProposals = async ({
       break;
     }
 
-    if (pagesLoaded === MAX_ACTIONABLE_PROPOSALS_PAGES - 1) {
+    if (pagesLoaded === MAX_ACTIONABLE_REQUEST_COUNT - 1) {
       console.error("Max actionable sns pages loaded");
     }
   }
