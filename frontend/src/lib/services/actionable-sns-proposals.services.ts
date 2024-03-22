@@ -157,8 +157,6 @@ const querySnsProposals = async ({
     }
   }
 
-  console.log(sortedProposals.length);
-
   return {
     proposals: sortedProposals,
     includeBallotsByCaller,

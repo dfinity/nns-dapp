@@ -111,11 +111,9 @@ describe("actionable-proposals.services", () => {
         .spyOn(api, "queryProposals")
         .mockImplementation(() => {
           // stop after second call
-          if (count === 1) {
+          if (count++ === 1) {
             return Promise.resolve([votedProposal]);
           }
-
-          count++;
 
           return Promise.resolve(
             Array.from(Array(100)).map(() => ({
