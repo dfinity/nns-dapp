@@ -8,6 +8,7 @@ import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
 import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
 import { ProposalRewardStatus, Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
@@ -103,7 +104,87 @@ describe("actionable-proposals.services", () => {
       );
     });
 
+    it("should query list proposals using multiple calls", async () => {
+      let count = 0;
+      let lastId = 1000n;
+      spyQueryProposals = vi
+        .spyOn(api, "queryProposals")
+        .mockImplementation(() => {
+          // stop after second call
+          if (count === 1) {
+            return Promise.resolve([votedProposal]);
+          }
+
+          count++;
+
+          return Promise.resolve(
+            Array.from(Array(100)).map(() => ({
+              ...mockProposalInfo,
+              id: BigInt(lastId--),
+            }))
+          );
+        });
+
+      expect(spyQueryProposals).not.toHaveBeenCalled();
+
+      await loadActionableProposals();
+
+      expect(spyQueryProposals).toHaveBeenCalledTimes(2);
+      expect(spyQueryProposals).toHaveBeenCalledWith(
+        expect.objectContaining({
+          beforeProposal: undefined,
+          certified: false,
+          filters: {
+            excludeVotedProposals: false,
+            lastAppliedFilter: undefined,
+            rewards: [ProposalRewardStatus.AcceptVotes],
+            status: [],
+            topics: [],
+          },
+        })
+      );
+      expect(spyQueryProposals).toHaveBeenCalledWith(
+        expect.objectContaining({
+          // should call with beforeProposal: last-loaded-proposal-id
+          beforeProposal: 901n,
+          certified: false,
+          filters: {
+            excludeVotedProposals: false,
+            lastAppliedFilter: undefined,
+            rewards: [ProposalRewardStatus.AcceptVotes],
+            status: [],
+            topics: [],
+          },
+        })
+      );
+    });
+
+    it("should throw when page limit reached", async () => {
+      // always return full page
+      spyQueryProposals = vi
+        .spyOn(api, "queryProposals")
+        .mockImplementation(() =>
+          Promise.resolve(Array.from(Array(100)).map(() => mockProposalInfo))
+        );
+      const spyConsoleError = silentConsoleErrors();
+
+      expect(spyQueryProposals).not.toHaveBeenCalled();
+      expect(spyConsoleError).not.toHaveBeenCalled();
+
+      await loadActionableProposals();
+
+      expect(spyQueryProposals).toHaveBeenCalledTimes(5);
+      // expect an error message
+      expect(spyConsoleError).toHaveBeenCalledTimes(1);
+      expect(spyConsoleError).toHaveBeenCalledWith(
+        "Max actionable pages loaded"
+      );
+
+      spyConsoleError.mockReset();
+    });
+
     it("should update actionable nns proposals store with votable proposals only", async () => {
+      console.error("lol");
       expect(get(actionableNnsProposalsStore)).toEqual({
         proposals: undefined,
       });
