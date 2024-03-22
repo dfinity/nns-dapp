@@ -92,7 +92,6 @@ describe("tokens-list-user.derived", () => {
   };
   const tetrisHref = buildWalletUrl({
     universe: snsTetris.rootCanisterId.toText(),
-    account: identityMainAccountIdentifier,
   });
   const tetrisTokenLoading: UserTokenLoading = {
     universeId: snsTetris.rootCanisterId,
@@ -119,7 +118,6 @@ describe("tokens-list-user.derived", () => {
   };
   const pacmanHref = buildWalletUrl({
     universe: snsPacman.rootCanisterId.toText(),
-    account: identityMainAccountIdentifier,
   });
   const pacmanTokenLoading: UserTokenLoading = {
     universeId: snsPacman.rootCanisterId,
@@ -146,7 +144,6 @@ describe("tokens-list-user.derived", () => {
   };
   const ckBTCHref = buildWalletUrl({
     universe: ckBTCTokenBase.universeId.toText(),
-    account: identityMainAccountIdentifier,
   });
   const ckBTCTokenLoading: UserTokenLoading = {
     ...ckBTCTokenBase,
@@ -156,7 +153,6 @@ describe("tokens-list-user.derived", () => {
   };
   const ckTESTBTCHref = buildWalletUrl({
     universe: ckTESTBTCTokenBase.universeId.toText(),
-    account: identityMainAccountIdentifier,
   });
   const ckTESTBTCTokenLoading: UserTokenLoading = {
     ...ckTESTBTCTokenBase,
@@ -181,7 +177,6 @@ describe("tokens-list-user.derived", () => {
   };
   const ckETHHref = buildWalletUrl({
     universe: ckETHTokenBase.universeId.toText(),
-    account: identityMainAccountIdentifier,
   });
   const ckETHTokenLoading: UserTokenLoading = {
     ...ckETHTokenBase,

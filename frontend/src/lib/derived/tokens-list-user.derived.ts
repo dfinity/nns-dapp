@@ -13,7 +13,6 @@ import {
 import { sumAccounts } from "$lib/utils/accounts.utils";
 import { buildAccountsUrl, buildWalletUrl } from "$lib/utils/navigation.utils";
 import { isUniverseNns } from "$lib/utils/universe.utils";
-import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { isNullish, TokenAmountV2 } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 import type { UniversesAccounts } from "./accounts-list.derived";
@@ -37,11 +36,6 @@ const convertToUserTokenData = ({
     ? buildAccountsUrl({ universe: baseTokenData.universeId.toText() })
     : buildWalletUrl({
         universe: baseTokenData.universeId.toText(),
-        account: isNullish(authData.identity)
-          ? undefined
-          : encodeIcrcAccount({
-              owner: authData.identity.getPrincipal(),
-            }),
       });
   const accountsList = accounts[baseTokenData.universeId.toText()];
   const mainAccount = accountsList?.find(({ type }) => type === "main");
