@@ -7,6 +7,7 @@
   import type { UserToken } from "$lib/types/tokens-page";
   import { ENABLE_HIDE_ZERO_BALANCE } from "$lib/stores/feature-flags.store";
   import { hideZeroBalancesStore } from "$lib/stores/hide-zero-balances.store";
+  import { heightTransition } from "$lib/utils/transition.utils";
   import { IconSettings } from "@dfinity/gix-components";
   import { Popover } from "@dfinity/gix-components";
   import { TokenAmountV2 } from "@dfinity/utils";
@@ -60,7 +61,10 @@
     </div>
     <div slot="last-row">
       {#if shouldHideZeroBalances}
-        <div class="show-all-row">
+        <div
+          class="show-all-row"
+          transition:heightTransition={{ duration: 250 }}
+        >
           {$i18n.tokens.zero_balance_hidden}
           <button
             data-tid="show-all-button"
