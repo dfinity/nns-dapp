@@ -8,7 +8,7 @@ import {
 import { sumAccounts } from "$lib/utils/accounts.utils";
 import { buildAccountsUrl, buildWalletUrl } from "$lib/utils/navigation.utils";
 import { isUniverseNns } from "$lib/utils/universe.utils";
-import { isNullish, TokenAmountV2 } from "@dfinity/utils";
+import { TokenAmountV2, isNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 import type { UniversesAccounts } from "./accounts-list.derived";
 import { tokensListBaseStore } from "./tokens-list-base.derived";
