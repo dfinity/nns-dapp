@@ -1,6 +1,8 @@
 import * as proposalsApi from "$lib/api/proposals.api";
 import { AppPath } from "$lib/constants/routes.constants";
 import { filteredProposals } from "$lib/derived/proposals.derived";
+import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
+import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { referrerPathStore } from "$lib/stores/routes.store";
 import {
   generateMockProposals,
@@ -42,6 +44,7 @@ describe("Proposal", () => {
     });
 
   beforeEach(() => {
+    actionableProposalsSegmentStore.resetForTesting();
     vi.spyOn(proposalsApi, "queryProposalPayload").mockResolvedValue({});
   });
 
@@ -93,7 +96,28 @@ describe("Proposal", () => {
     const po = ProposalNavigationPo.under(new JestPageObjectElement(container));
 
     expect(await po.getOlderButtonPo().isPresent()).toBe(true);
+    expect(await po.getOlderButtonProposalId()).toEqual("4");
     expect(await po.getNewerButtonPo().isPresent()).toBe(true);
+    expect(await po.getNewerButtonProposalId()).toEqual("6");
+  });
+
+  it("should use actionable proposals for navigation when actionable selected", async () => {
+    actionableProposalsSegmentStore.set("actionable");
+
+    // Keep "all" proposals empty to make the test fail if not using the actionable proposals
+    vi.spyOn(filteredProposals, "subscribe").mockImplementation(
+      createMockProposalsStoreSubscribe([])
+    );
+    // Set proposals with ids: 0, 1, 2
+    actionableNnsProposalsStore.setProposals(generateMockProposals(3));
+
+    const { container } = renderProposalModern(1n);
+    const po = ProposalNavigationPo.under(new JestPageObjectElement(container));
+
+    expect(await po.getOlderButtonPo().isPresent()).toBe(true);
+    expect(await po.getOlderButtonProposalId()).toEqual("0");
+    expect(await po.getNewerButtonPo().isPresent()).toBe(true);
+    expect(await po.getNewerButtonProposalId()).toEqual("2");
   });
 
   it("should not render proposal navigation when on launchpad", async () => {

@@ -22,11 +22,17 @@
   import type { Principal } from "@dfinity/principal";
   import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
   import type { Readable } from "svelte/store";
-  import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
+  import {
+    actionableSnsProposalsStore,
+    type ActionableSnsProposalsData,
+  } from "$lib/stores/actionable-sns-proposals.store";
   import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 
   let nsFunctionsStore: Readable<SnsNervousSystemFunction[] | undefined>;
   $: nsFunctionsStore = createSnsNsFunctionsProjectStore($snsOnlyProjectStore);
+
+  let snsName: string | undefined;
+  $: snsName = $snsProjectSelectedStore?.summary?.metadata?.name;
 
   let currentProjectCanisterId: Principal | undefined = undefined;
   const onSnsProjectChanged = async ({
@@ -36,10 +42,7 @@
     rootCanisterId: Principal | undefined;
     snsName: string;
   }) => {
-    if (
-      isNullish(rootCanisterId) ||
-      isNullish($snsProjectSelectedStore?.summary?.metadata?.name)
-    ) {
+    if (isNullish(rootCanisterId) || isNullish(snsName)) {
       return;
     }
 
@@ -59,7 +62,7 @@
 
   $: onSnsProjectChanged({
     rootCanisterId: $snsOnlyProjectStore,
-    snsName: $snsProjectSelectedStore?.summary.metadata.name ?? "",
+    snsName: snsName ?? "",
   });
 
   const fetchProposals = async (filters: SnsFiltersStoreData) => {
@@ -109,33 +112,44 @@
     }
   };
 
+  let actionableProposalsData: ActionableSnsProposalsData | undefined;
+  $: actionableProposalsData = nonNullish(currentProjectCanisterId)
+    ? $actionableSnsProposalsStore[currentProjectCanisterId.toText()]
+    : undefined;
+
+  let actionableSelected: boolean;
+  $: actionableSelected =
+    $actionableProposalsSegmentStore.selected === "actionable";
+
+  let includeBallots: boolean;
+  $: includeBallots = actionableProposalsData?.includeBallotsByCaller ?? false;
+
   // `undefined` means that we haven't loaded the proposals yet.
   let proposals: SnsProposalData[] | undefined;
   $: proposals = nonNullish(currentProjectCanisterId)
     ? sortSnsProposalsById(
-        $snsFilteredProposalsStore[currentProjectCanisterId.toText()]?.proposals
+        actionableSelected
+          ? actionableProposalsData?.proposals
+          : $snsFilteredProposalsStore[currentProjectCanisterId.toText()]
+              ?.proposals
       )
-    : undefined;
-
-  let actionableProposals: SnsProposalData[] | undefined;
-  $: actionableProposals = nonNullish(currentProjectCanisterId)
-    ? $actionableSnsProposalsStore[currentProjectCanisterId.toText()]?.proposals
     : undefined;
 
   let disableInfiniteScroll: boolean;
   $: disableInfiniteScroll = nonNullish(currentProjectCanisterId)
     ? $snsProposalsStore[currentProjectCanisterId.toText()]?.completed ?? false
     : false;
-
-  let isActionable: boolean;
-  $: isActionable = $actionableProposalsSegmentStore.selected === "actionable";
 </script>
 
-<SnsProposalsList
-  proposals={isActionable ? actionableProposals : proposals}
-  {isActionable}
-  nsFunctions={$nsFunctionsStore}
-  on:nnsIntersect={loadNextPage}
-  {disableInfiniteScroll}
-  {loadingNextPage}
-/>
+{#if nonNullish(snsName)}
+  <SnsProposalsList
+    {snsName}
+    {proposals}
+    {actionableSelected}
+    {includeBallots}
+    nsFunctions={$nsFunctionsStore}
+    on:nnsIntersect={loadNextPage}
+    {disableInfiniteScroll}
+    {loadingNextPage}
+  />
+{/if}

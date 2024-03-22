@@ -43,15 +43,11 @@ import {
 } from "$tests/utils/accounts.test-utils";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
-import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("tokens-list-user.derived", () => {
-  const identityMainAccountIdentifier = encodeIcrcAccount({
-    owner: mockIdentity.getPrincipal(),
-  });
   const icpUserToken: UserTokenData = createIcpUserToken({
     balance: TokenAmountV2.fromUlps({
       amount: mockMainAccount.balanceUlps,
@@ -92,7 +88,6 @@ describe("tokens-list-user.derived", () => {
   };
   const tetrisHref = buildWalletUrl({
     universe: snsTetris.rootCanisterId.toText(),
-    account: identityMainAccountIdentifier,
   });
   const tetrisTokenLoading: UserTokenLoading = {
     universeId: snsTetris.rootCanisterId,
@@ -119,7 +114,6 @@ describe("tokens-list-user.derived", () => {
   };
   const pacmanHref = buildWalletUrl({
     universe: snsPacman.rootCanisterId.toText(),
-    account: identityMainAccountIdentifier,
   });
   const pacmanTokenLoading: UserTokenLoading = {
     universeId: snsPacman.rootCanisterId,
@@ -146,7 +140,6 @@ describe("tokens-list-user.derived", () => {
   };
   const ckBTCHref = buildWalletUrl({
     universe: ckBTCTokenBase.universeId.toText(),
-    account: identityMainAccountIdentifier,
   });
   const ckBTCTokenLoading: UserTokenLoading = {
     ...ckBTCTokenBase,
@@ -156,7 +149,6 @@ describe("tokens-list-user.derived", () => {
   };
   const ckTESTBTCHref = buildWalletUrl({
     universe: ckTESTBTCTokenBase.universeId.toText(),
-    account: identityMainAccountIdentifier,
   });
   const ckTESTBTCTokenLoading: UserTokenLoading = {
     ...ckTESTBTCTokenBase,
@@ -181,7 +173,6 @@ describe("tokens-list-user.derived", () => {
   };
   const ckETHHref = buildWalletUrl({
     universe: ckETHTokenBase.universeId.toText(),
-    account: identityMainAccountIdentifier,
   });
   const ckETHTokenLoading: UserTokenLoading = {
     ...ckETHTokenBase,
