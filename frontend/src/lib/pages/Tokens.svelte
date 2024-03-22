@@ -84,13 +84,17 @@
 </TestIdWrapper>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/header";
+  @use "@dfinity/gix-components/dist/styles/mixins/effect";
 
   .settings-button {
     --content-color: var(--text-description);
 
-    @include header.button(--primary-tint);
-    margin: 0;
+    @include effect.ripple-effect(--primary-tint);
+
+    &:focus {
+      background: var(--primary-tint);
+      @include effect.ripple-effect(--primary-tint);
+    }
   }
 
   [slot="last-row"] {
