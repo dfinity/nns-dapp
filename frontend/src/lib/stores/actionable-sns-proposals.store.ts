@@ -3,13 +3,14 @@ import type { Principal } from "@dfinity/principal";
 import type { SnsProposalData } from "@dfinity/sns";
 import { writable, type Readable } from "svelte/store";
 
+export interface ActionableSnsProposalsData {
+  proposals: SnsProposalData[];
+  includeBallotsByCaller: boolean;
+}
 export interface ActionableSnsProposalsStoreData {
   // Each SNS Project is an entry in this Store.
   // We use the root canister id as the key to identify the proposals for a specific project.
-  [rootCanisterId: string]: {
-    proposals: SnsProposalData[];
-    includeBallotsByCaller: boolean;
-  };
+  [rootCanisterId: string]: ActionableSnsProposalsData;
 }
 
 export interface ActionableSnsProposalsStore
