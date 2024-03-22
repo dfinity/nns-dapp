@@ -245,7 +245,7 @@ describe("actionable-sns-proposals.services", () => {
       });
     });
 
-    it("should throw when page limit reached", async () => {
+    it("should throw when request count limit reached", async () => {
       mockSnsProjectsCommittedStore([rootCanisterId1]);
       // always return full page (20 proposals)
       let lastId = 100n;
