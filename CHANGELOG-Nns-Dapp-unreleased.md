@@ -20,6 +20,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Adjusted table colors in dark theme.
+* Always omit the account parameter in the URL when navigating to a main account.
 
 #### Deprecated
 

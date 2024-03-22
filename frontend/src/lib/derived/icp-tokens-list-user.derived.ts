@@ -24,7 +24,7 @@ const convertAccountToUserTokenData = ({
 }): UserToken => {
   const rowHref = buildWalletUrl({
     universe: nnsUniverse.canisterId.toString(),
-    account: account?.identifier,
+    account: account?.type !== "main" ? account?.identifier : undefined,
   });
   if (isNullish(account)) {
     return {
