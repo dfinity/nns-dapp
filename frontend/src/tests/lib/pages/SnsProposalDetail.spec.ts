@@ -10,6 +10,7 @@ import { layoutTitleStore } from "$lib/stores/layout.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
+import { snsProposalId } from "$lib/utils/sns-proposals.utils";
 import { page } from "$mocks/$app/stores";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -307,9 +308,10 @@ describe("SnsProposalDetail", () => {
           status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
         }),
       ];
-      // remove the proposal with id=2 to be not actionable
-      const actionableProposals = proposals.filter((_, index) => index !== 1);
-      // mock the store to have no proposals to fail when used
+      // Proposal with id=2 is not actionable
+      const actionableProposals = proposals.filter(
+        (proposal) => snsProposalId(proposal) !== 2n
+      );
       vi.spyOn(snsFilteredProposalsStore, "subscribe").mockImplementation(
         buildMockSnsProposalsStoreSubscribe({
           universeIdText: rootCanisterId.toText(),

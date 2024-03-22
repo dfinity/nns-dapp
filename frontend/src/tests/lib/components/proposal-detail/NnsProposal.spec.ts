@@ -104,8 +104,10 @@ describe("Proposal", () => {
 
   it("should use actionable proposals for navigation when actionable selected", async () => {
     const proposals = generateMockProposals(5);
-    // remove proposal id=2
-    const actionableProposals = proposals.filter((_, index) => index !== 2);
+    // Proposal with id=2 is not actionable
+    const actionableProposals = proposals.filter(
+      (proposal) => proposal.id !== 2n
+    );
 
     actionableProposalsSegmentStore.set("actionable");
     vi.spyOn(filteredProposals, "subscribe").mockImplementation(
