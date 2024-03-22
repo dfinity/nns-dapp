@@ -276,7 +276,7 @@ describe("actionable-sns-proposals.services", () => {
         "Max actionable sns pages loaded"
       );
 
-      spyConsoleError.mockReset();
+      spyConsoleError.mockRestore();
     });
 
     it("should update the store with actionable proposal only", async () => {

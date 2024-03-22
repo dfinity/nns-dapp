@@ -178,11 +178,10 @@ describe("actionable-proposals.services", () => {
         "Max actionable pages loaded"
       );
 
-      spyConsoleError.mockReset();
+      spyConsoleError.mockRestore();
     });
 
     it("should update actionable nns proposals store with votable proposals only", async () => {
-      console.error("lol");
       expect(get(actionableNnsProposalsStore)).toEqual({
         proposals: undefined,
       });
