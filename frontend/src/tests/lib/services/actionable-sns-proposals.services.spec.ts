@@ -14,6 +14,7 @@ import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
 import type { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
@@ -181,6 +182,101 @@ describe("actionable-sns-proposals.services", () => {
         certified: false,
         params: expectedFilterParams,
       });
+    });
+
+    it("should query list proposals using multiple calls", async () => {
+      mockSnsProjectsCommittedStore([rootCanisterId1]);
+      let count = 0;
+      let lastId = 100n;
+      spyQuerySnsProposals = vi
+        .spyOn(api, "queryProposals")
+        .mockImplementation(async () => {
+          // stop after second call
+          if (count++ === 1) {
+            return {
+              proposals: [votableProposal1],
+              include_ballots_by_caller: undefined,
+            } as SnsListProposalsResponse;
+          }
+
+          return {
+            proposals: Array.from(Array(20)).map(() =>
+              createSnsProposal({
+                ...votableProposalProps,
+                proposalId: BigInt(lastId--),
+              })
+            ),
+
+            include_ballots_by_caller: undefined,
+          } as SnsListProposalsResponse;
+        });
+
+      expect(spyQuerySnsProposals).not.toHaveBeenCalled();
+
+      await loadActionableSnsProposals();
+
+      expect(spyQuerySnsProposals).toHaveBeenCalledTimes(2);
+
+      expect(spyQuerySnsProposals).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        rootCanisterId: rootCanisterId1,
+        certified: false,
+        params: {
+          includeRewardStatus: [
+            SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
+          ],
+          beforeProposal: undefined,
+          limit: 20,
+        },
+      });
+      expect(spyQuerySnsProposals).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        rootCanisterId: rootCanisterId1,
+        certified: false,
+        params: {
+          includeRewardStatus: [
+            SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
+          ],
+          beforeProposal: {
+            id: 81n,
+          },
+          limit: 20,
+        },
+      });
+    });
+
+    it("should throw when page limit reached", async () => {
+      mockSnsProjectsCommittedStore([rootCanisterId1]);
+      // always return full page (20 proposals)
+      let lastId = 100n;
+      spyQuerySnsProposals = vi
+        .spyOn(api, "queryProposals")
+        .mockImplementation(async () => {
+          return {
+            proposals: Array.from(Array(20)).map(() =>
+              createSnsProposal({
+                ...votableProposalProps,
+                proposalId: BigInt(lastId--),
+              })
+            ),
+            include_ballots_by_caller: undefined,
+          } as SnsListProposalsResponse;
+        });
+      const spyConsoleError = silentConsoleErrors();
+
+      expect(spyQuerySnsProposals).not.toHaveBeenCalled();
+      expect(spyConsoleError).not.toHaveBeenCalled();
+
+      await loadActionableSnsProposals();
+
+      expect(spyQuerySnsProposals).toHaveBeenCalledTimes(5);
+      // expect an error message
+      expect(spyConsoleError).toHaveBeenCalledTimes(1);
+      expect(spyConsoleError).toHaveBeenCalledWith(
+        "Max actionable sns pages loaded"
+      );
+
+      spyConsoleError.mockReset();
     });
 
     it("should update the store with actionable proposal only", async () => {
