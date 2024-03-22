@@ -10,7 +10,6 @@ import { layoutTitleStore } from "$lib/stores/layout.store";
 import { snsFunctionsStore } from "$lib/stores/sns-functions.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
-import { snsProposalId } from "$lib/utils/sns-proposals.utils";
 import { page } from "$mocks/$app/stores";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -290,7 +289,7 @@ describe("SnsProposalDetail", () => {
 
     it("should display proposal navigation for actionable proposal", async () => {
       actionableProposalsSegmentStore.set("actionable");
-      const proposals = [
+      const actionableProposals = [
         createSnsProposal({
           proposalId: 1n,
           status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
@@ -303,19 +302,12 @@ describe("SnsProposalDetail", () => {
           proposalId: 3n,
           status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
         }),
-        createSnsProposal({
-          proposalId: 4n,
-          status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
-        }),
       ];
-      // Proposal with id=2 is not actionable
-      const actionableProposals = proposals.filter(
-        (proposal) => snsProposalId(proposal) !== 2n
-      );
+      // Keep "all" proposals empty to make the test fall if not using the actionable proposals
       vi.spyOn(snsFilteredProposalsStore, "subscribe").mockImplementation(
         buildMockSnsProposalsStoreSubscribe({
           universeIdText: rootCanisterId.toText(),
-          proposals,
+          proposals: [],
         })
       );
       actionableSnsProposalsStore.set({
@@ -327,12 +319,12 @@ describe("SnsProposalDetail", () => {
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
         rootCanisterId,
-        id: [{ id: 3n }],
+        id: [{ id: 2n }],
       });
 
       const { container } = render(SnsProposalDetail, {
         props: {
-          proposalIdText: "3",
+          proposalIdText: "2",
         },
       });
       const po = SnsProposalDetailPo.under(
@@ -345,17 +337,11 @@ describe("SnsProposalDetail", () => {
       expect(await navigationPo.getOlderButtonPo().isPresent()).toBe(true);
       expect(await navigationPo.getNewerButtonPo().isPresent()).toBe(true);
       // 4 <newer 3 older> 1
-      expect(await navigationPo.getNewerButtonProposalId()).toBe("4");
+      expect(await navigationPo.getNewerButtonProposalId()).toBe("3");
       expect(await navigationPo.getOlderButtonProposalId()).toBe("1");
       // all buttons should be enabled
       expect(await navigationPo.getOlderButtonPo().isDisabled()).toBe(false);
       expect(await navigationPo.getNewerButtonPo().isDisabled()).toBe(false);
-
-      actionableProposalsSegmentStore.set("all");
-      await runResolvedPromises();
-      // 4 <newer 3 older> 2
-      expect(await navigationPo.getNewerButtonProposalId()).toBe("4");
-      expect(await navigationPo.getOlderButtonProposalId()).toBe("2");
     });
   });
 

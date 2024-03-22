@@ -13,7 +13,6 @@ import { createMockProposalsStoreSubscribe } from "$tests/mocks/proposals.store.
 import { ProposalNavigationPo } from "$tests/page-objects/ProposalNavigation.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render, waitFor } from "@testing-library/svelte";
 import NnsProposalTest from "./NnsProposalTest.svelte";
 
@@ -103,30 +102,22 @@ describe("Proposal", () => {
   });
 
   it("should use actionable proposals for navigation when actionable selected", async () => {
-    const proposals = generateMockProposals(5);
-    // Proposal with id=2 is not actionable
-    const actionableProposals = proposals.filter(
-      (proposal) => proposal.id !== 2n
-    );
-
     actionableProposalsSegmentStore.set("actionable");
-    vi.spyOn(filteredProposals, "subscribe").mockImplementation(
-      createMockProposalsStoreSubscribe(proposals)
-    );
-    actionableNnsProposalsStore.setProposals(actionableProposals);
 
-    const { container } = renderProposalModern(3n);
+    // Keep "all" proposals empty to make the test fall if not using the actionable proposals
+    vi.spyOn(filteredProposals, "subscribe").mockImplementation(
+      createMockProposalsStoreSubscribe([])
+    );
+    // Set proposals with ids: 0, 1, 2
+    actionableNnsProposalsStore.setProposals(generateMockProposals(3));
+
+    const { container } = renderProposalModern(1n);
     const po = ProposalNavigationPo.under(new JestPageObjectElement(container));
 
     expect(await po.getOlderButtonPo().isPresent()).toBe(true);
-    expect(await po.getOlderButtonProposalId()).toEqual("1");
+    expect(await po.getOlderButtonProposalId()).toEqual("0");
     expect(await po.getNewerButtonPo().isPresent()).toBe(true);
-    expect(await po.getNewerButtonProposalId()).toEqual("4");
-
-    actionableProposalsSegmentStore.set("all");
-    await runResolvedPromises();
-    expect(await po.getOlderButtonProposalId()).toEqual("2");
-    expect(await po.getNewerButtonProposalId()).toEqual("4");
+    expect(await po.getNewerButtonProposalId()).toEqual("2");
   });
 
   it("should not render proposal navigation when on launchpad", async () => {
