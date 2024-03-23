@@ -4,19 +4,24 @@
 
   export let status: UniversalProposalStatus;
   export let testId: string | undefined = undefined;
+  export let actionable: boolean | undefined = undefined;
 
   let label: string;
   $: label = $i18n.universal_proposal_status[status];
 </script>
 
-<span data-tid={testId ?? "proposal-status-tag"} class={`tag ${status}`}
-  >{label}</span
+<span
+  data-tid={testId ?? "proposal-status-tag"}
+  class={`tag ${status}`}
+  class:actionable>{label}</span
 >
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   .tag {
+    position: relative;
+
     &.unknown {
       color: var(--disable-contrast);
       background-color: var(--disable);
@@ -44,6 +49,21 @@
     &.failed {
       color: var(--orange);
       background-color: var(--orange-tint);
+    }
+
+    &.actionable {
+      &:after {
+        content: "";
+        position: absolute;
+        top: calc(-1 * var(--padding-0_5x));
+        right: calc(-1 * var(--padding-0_5x));
+        width: var(--padding);
+        height: var(--padding);
+
+        border: 1.5px solid var(--card-background);
+        border-radius: var(--padding-1_5x);
+        background: var(--primary);
+      }
     }
   }
 </style>
