@@ -1,8 +1,30 @@
+//! The canister state - most of it!
+//!
+//! # Example
+//!
+//! ```
+//! use ic_stable_structures::DefaultMemoryImpl;
+//! use nns_dapp::state::{State, partitions::Partitions};
+//! use nns_dapp::accounts_store::schema::SchemaLabel;
+//! let memory = DefaultMemoryImpl::default();
+//! let memory_after_upgrade = Partitions::copy_memory_reference(&memory); // The same memory.
+//! let schema = SchemaLabel::AccountsInStableMemory;
+//! // On init, the state is created using a schema specified in the init arguments:
+//! let state = State::new(schema, memory);
+//! // The state is backed by stable memory.  Pre-upgrade, any state that is not already in stable memory must be saved.
+//! state.save();
+//! // Post-upgrade state can then be restored from memory.
+//! let new_state = State::from(memory_after_upgrade);
+//! // In unit tests you can check that the state is the same:
+//! #[cfg(test)]
+//! assert_eq!(state, new_state);
+//! ```
+
 pub mod partitions;
 #[cfg(test)]
 pub mod tests;
-mod with_accounts_in_stable_memory;
-mod with_raw_memory;
+pub mod with_accounts_in_stable_memory;
+pub mod with_raw_memory;
 
 use self::partitions::{PartitionType, Partitions, PartitionsMaybe};
 use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
@@ -16,12 +38,12 @@ use crate::assets::AssetHashes;
 use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
 
+use core::cell::RefCell;
 use dfn_candid::Candid;
 use dfn_core::api::trap_with;
 use ic_cdk::println;
 use ic_stable_structures::DefaultMemoryImpl;
 use on_wire::{FromWire, IntoWire};
-use std::cell::RefCell;
 
 pub struct State {
     // NOTE: When adding new persistent fields here, ensure that these fields
@@ -80,6 +102,7 @@ impl core::fmt::Debug for State {
 
 impl State {
     pub fn replace(&self, new_state: State) {
+        println!("Replacing state:\n {self:?}\nwith:\n{new_state:?}");
         let State {
             accounts_store,
             assets,
@@ -103,6 +126,7 @@ impl State {
     }
 }
 
+// TODO: Probably eliminate this trait, as serialization is now different depending on which schema is in use, making this fundamentally ambiguous.
 pub trait StableState: Sized {
     fn encode(&self) -> Vec<u8>;
     fn decode(bytes: Vec<u8>) -> Result<Self, String>;
@@ -184,7 +208,13 @@ impl State {
     }
 }
 
-/// Restores state from managed memory.
+/// Loads state from given memory partitions.
+///
+/// Typical usage:
+/// - On upgrading a canister, get partitions from raw memory.
+/// - From the partitions, get the state.
+/// - Have a fallback to support the stable memory layout without partitions.
+/// The state structure then owns everything on the heap and in stable memory.
 impl From<Partitions> for State {
     fn from(partitions: Partitions) -> Self {
         println!("START state::from<Partitions>: ()");
@@ -252,7 +282,7 @@ impl StableState for State {
     }
 }
 
-// Methods called on pre_upgrade and post_upgrade.
+// Methods called on pre_upgrade.
 impl State {
     /// Saves any unsaved state to stable memory.
     pub fn save(&self) {

@@ -41,6 +41,11 @@ mod time;
 
 type Cycles = u128;
 
+/// Initializes the canister.
+///
+/// # Guarantees
+/// - The stable memory will be set up for the requested schema.
+/// - The state will be set for the appropriate schema.
 #[init]
 fn init(args: Option<CanisterArguments>) {
     println!("START init with args: {args:#?}");
@@ -101,7 +106,7 @@ fn post_upgrade(args_maybe: Option<CanisterArguments>) {
     perf::record_instruction_count("post_upgrade after state_recovery");
     set_canister_arguments(args_maybe);
     perf::record_instruction_count("post_upgrade after set_canister_arguments");
-    assets::init_assets();
+    assets::init_assets(); // TODO: Move this inside State::from (and State::new_with_memory)
     perf::record_instruction_count("post_upgrade stop");
     println!("END   post-upgrade");
 }

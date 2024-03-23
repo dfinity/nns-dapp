@@ -1,9 +1,7 @@
+use super::{AssetHashes, Assets, PerformanceCounts, StableState, State};
 use crate::{
     accounts_store::schema::{AccountsDbTrait, SchemaLabel},
-    state::{
-        partitions::{Partitions, PartitionsMaybe},
-        AssetHashes, Assets, PerformanceCounts, StableState, State,
-    },
+    state::partitions::{Partitions, PartitionsMaybe},
 };
 use ic_stable_structures::{DefaultMemoryImpl, VectorMemory};
 use pretty_assertions::assert_eq;
@@ -75,6 +73,8 @@ fn state_can_be_created_with_any_schema() {
     }
 }
 
+// Note: This is largely the same as the test in the RustDoc, however the RustDoc test cannot test state equality
+// so it is a good demonstration but not a good test.
 fn state_can_be_saved_and_recovered_from_stable_memory(num_accounts: u64) {
     for schema in SchemaLabel::iter().filter(
         |schema| *schema != SchemaLabel::Map, /* Uses old stable memory APIs that can be used only inside a canister */

@@ -1,8 +1,11 @@
 //! Accounts DB that delegates API calls to underlying implementations.
 //!
 //! The proxy manages migrations from one implementation to another.
-use super::accounts_in_unbounded_stable_btree_map::{AccountsDbAsUnboundedStableBTreeMap, ProductionMemoryType};
-use super::{map::AccountsDbAsMap, Account, AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel};
+use super::{
+    accounts_in_unbounded_stable_btree_map::ProductionMemoryType, map::AccountsDbAsMap, Account,
+    AccountsDbBTreeMapTrait, AccountsDbTrait, SchemaLabel,
+};
+use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
 use core::fmt;
 use core::ops::RangeBounds;
 #[cfg(test)]
@@ -128,6 +131,8 @@ impl AccountsDbTrait for AccountsDbAsProxy {
 /// Check whether two account databases contain the same data.
 ///
 /// It should be possible to use this to confirm that data has been preserved during a migration.
+///
+/// TODO: This is needed in tests only.  Disable otherwise.
 #[cfg(test)]
 impl PartialEq for AccountsDbAsProxy {
     fn eq(&self, other: &Self) -> bool {
