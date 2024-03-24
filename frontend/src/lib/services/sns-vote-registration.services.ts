@@ -1,6 +1,7 @@
 import { registerVote as registerSnsVoteApi } from "$lib/api/sns-governance.api";
 import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
 import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
+import { loadActionableProposalsForSns } from "$lib/services/actionable-sns-proposals.services";
 import { getSnsNeuronIdentity } from "$lib/services/sns-neurons.services";
 import {
   manageVotesRegistration,
@@ -87,8 +88,10 @@ export const registerSnsVotes = async ({
         completed: true,
       });
 
-      // reset the actionable store to trigger a new fetch for votable proposals count.
+      // Reset the reload actionable sns proposals.
       actionableSnsProposalsStore.resetForSns(universeCanisterId);
+      // TODO(max): update test
+      loadActionableProposalsForSns(universeCanisterId);
     },
   });
 };

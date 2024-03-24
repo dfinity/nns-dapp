@@ -24,7 +24,7 @@ export const loadActionableSnsProposals = async () => {
   );
 };
 
-const loadActionableProposalsForSns = async (
+export const loadActionableProposalsForSns = async (
   rootCanisterId: Principal
 ): Promise<void> => {
   try {

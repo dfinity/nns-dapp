@@ -1,3 +1,4 @@
+import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { i18n } from "$lib/stores/i18n";
 import {
@@ -86,8 +87,10 @@ export const manageVotesRegistration = async ({
       canisterId: universeCanisterId,
     });
 
-    // reset the actionable store to trigger a new fetch for votable proposals count.
+    // Reset and reload actionable nns proposals.
     actionableNnsProposalsStore.reset();
+    // TODO(max): update test
+    loadActionableProposals();
   } catch (err: unknown) {
     console.error("vote unknown:", err);
 
