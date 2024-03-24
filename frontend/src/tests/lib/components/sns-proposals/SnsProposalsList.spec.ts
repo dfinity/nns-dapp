@@ -42,7 +42,7 @@ describe("SnsProposalsList", () => {
       props: {
         proposals,
         includeBallots: false,
-        snsName: undefined,
+        snsName: "sns-name",
         actionableSelected: false,
         nsFunctions: [],
       },
@@ -56,7 +56,7 @@ describe("SnsProposalsList", () => {
       props: {
         proposals,
         includeBallots: false,
-        snsName: undefined,
+        snsName: "sns-name",
         actionableSelected: false,
         nsFunctions: [],
         loadingNextPage: true,
@@ -73,7 +73,7 @@ describe("SnsProposalsList", () => {
       props: {
         proposals: undefined,
         includeBallots: false,
-        snsName: undefined,
+        snsName: "sns-name",
         actionableSelected: false,
         nsFunctions: [],
       },
@@ -87,7 +87,7 @@ describe("SnsProposalsList", () => {
       props: {
         proposals: [],
         includeBallots: false,
-        snsName: undefined,
+        snsName: "sns-name",
         actionableSelected: false,
         nsFunctions: [],
       },
