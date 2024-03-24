@@ -164,7 +164,6 @@ describe("NnsProposals", () => {
         expect(
           await (await po.getProposalCardPos())[0].getProposalId()
         ).toEqual("ID: 404");
-
         expect(
           await (await po.getProposalCardPos())[0]
             .getProposalStatusTagPo()
