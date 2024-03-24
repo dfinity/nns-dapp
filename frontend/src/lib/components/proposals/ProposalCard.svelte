@@ -44,11 +44,7 @@
           </div>
 
           {#if nonNullish(status)}
-            <ProposalStatusTag
-              testId="proposal-status"
-              {status}
-              actionable={$isActionableStore}
-            />
+            <ProposalStatusTag {status} actionable={$isActionableStore} />
           {/if}
         </div>
 
