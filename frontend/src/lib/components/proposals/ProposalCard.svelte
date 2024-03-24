@@ -14,8 +14,6 @@
   import { PROPOSER_ID_DISPLAY_SPLIT_LENGTH } from "$lib/constants/proposals.constants";
   import type { UniversalProposalStatus } from "$lib/types/proposals";
   import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
-  import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
-  import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import type { Readable } from "svelte/store";
   import { createIsActionableProposalStore } from "$lib/derived/actionable-proposals.derived";
 
