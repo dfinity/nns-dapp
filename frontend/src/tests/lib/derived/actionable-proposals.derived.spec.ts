@@ -4,6 +4,7 @@ import {
   actionableProposalCountStore,
   actionableProposalIndicationEnabledStore,
   actionableProposalSupportedStore,
+  createIsActionableProposalStore,
 } from "$lib/derived/actionable-proposals.derived";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
@@ -11,10 +12,15 @@ import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
-import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
+import {
+  createSnsProposal,
+  mockSnsProposal,
+} from "$tests/mocks/sns-proposals.mock";
+import { mockSnsCanisterIdText } from "$tests/mocks/sns.api.mock";
 import type { ProposalInfo } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
+import { SnsProposalDecisionStatus } from "@dfinity/sns";
 import { get } from "svelte/store";
-import { beforeEach } from "vitest";
 
 describe("actionable proposals derived stores", () => {
   describe("actionableProposalIndicationEnabledStore", () => {
@@ -147,6 +153,76 @@ describe("actionable proposals derived stores", () => {
         [principal0.toText()]: true,
         [principal1.toText()]: false,
       });
+    });
+  });
+
+  describe("createIsActionableProposalStore", () => {
+    const nnsProposal0: ProposalInfo = {
+      ...mockProposalInfo,
+      id: 0n,
+    };
+    const nnsProposal1: ProposalInfo = {
+      ...mockProposalInfo,
+      id: 1n,
+    };
+    const snsProposal0 = createSnsProposal({
+      proposalId: 0n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+    const snsProposal1 = createSnsProposal({
+      proposalId: 1n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+
+    beforeEach(() => {
+      page.reset();
+      actionableNnsProposalsStore.reset();
+      actionableSnsProposalsStore.resetForTesting();
+    });
+
+    it("returns actionable state for nns proposal", async () => {
+      const isActionableProposalStore = createIsActionableProposalStore(1n);
+      // no nns proposals
+      expect(get(isActionableProposalStore)).toBe(undefined);
+
+      actionableNnsProposalsStore.setProposals([nnsProposal0]);
+      expect(get(isActionableProposalStore)).toBe(false);
+
+      actionableNnsProposalsStore.setProposals([nnsProposal0, nnsProposal1]);
+      expect(get(isActionableProposalStore)).toBe(true);
+
+      // selected project contains no data
+      page.mock({ data: { universe: mockSnsCanisterIdText } });
+      expect(get(isActionableProposalStore)).toBe(undefined);
+    });
+
+    it("returns actionable state for sns proposal", async () => {
+      const isActionableProposalStore = createIsActionableProposalStore(1n);
+      expect(get(isActionableProposalStore)).toBe(undefined);
+
+      actionableSnsProposalsStore.set({
+        rootCanisterId: Principal.fromText(mockSnsCanisterIdText),
+        proposals: [snsProposal0, snsProposal1],
+        includeBallotsByCaller: true,
+      });
+      // selected project contains no data
+      expect(get(isActionableProposalStore)).toBe(undefined);
+
+      page.mock({ data: { universe: mockSnsCanisterIdText } });
+      expect(get(isActionableProposalStore)).toBe(true);
+
+      actionableSnsProposalsStore.set({
+        rootCanisterId: Principal.fromText(mockSnsCanisterIdText),
+        proposals: [snsProposal0],
+        includeBallotsByCaller: true,
+      });
+      expect(get(isActionableProposalStore)).toBe(false);
+    });
+
+    it("returns undefined when proposal id equals undefined", async () => {
+      const isActionableProposalStore =
+        createIsActionableProposalStore(undefined);
+      expect(get(isActionableProposalStore)).toBe(undefined);
     });
   });
 });
