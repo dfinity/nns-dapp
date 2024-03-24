@@ -41,6 +41,11 @@ import { mock } from "vitest-mock-extended";
 vi.mock("$lib/api/governance.api");
 
 describe("NnsProposals", () => {
+  const renderComponent = async () => {
+    const { container } = render(NnsProposals);
+    await runResolvedPromises();
+    return NnsProposalListPo.under(new JestPageObjectElement(container));
+  };
   const nothingFound = (
     container: HTMLElement
   ): HTMLParagraphElement | undefined =>
@@ -142,6 +147,38 @@ describe("NnsProposals", () => {
         expect(
           getByText((secondProposal.proposal as Proposal).title as string)
         ).toBeInTheDocument();
+      });
+
+      it("should display actionable mark on all proposals view", async () => {
+        // proposal ID:303 is actionable
+        actionableNnsProposalsStore.setProposals([mockProposals[1]]);
+        const po = await renderComponent();
+        await po
+          .getNnsProposalFiltersPo()
+          .getActionableProposalsSegmentPo()
+          .clickAllProposals();
+        await runResolvedPromises();
+
+        expect(await po.getProposalCardPos()).toHaveLength(2);
+        // not actionable proposal
+        expect(
+          await (await po.getProposalCardPos())[0].getProposalId()
+        ).toEqual("ID: 404");
+
+        expect(
+          await (await po.getProposalCardPos())[0]
+            .getProposalStatusTagPo()
+            .hasActionableMark()
+        ).toEqual(false);
+        // actionable proposal
+        expect(
+          await (await po.getProposalCardPos())[1].getProposalId()
+        ).toEqual("ID: 303");
+        expect(
+          await (await po.getProposalCardPos())[1]
+            .getProposalStatusTagPo()
+            .hasActionableMark()
+        ).toEqual(true);
       });
 
       it("should hide proposal card if already voted", async () => {
@@ -332,11 +369,6 @@ describe("NnsProposals", () => {
   });
 
   describe("actionable proposals segment", () => {
-    const renderComponent = async () => {
-      const { container } = render(NnsProposals);
-      await runResolvedPromises();
-      return NnsProposalListPo.under(new JestPageObjectElement(container));
-    };
     const selectActionableProposals = async (po: NnsProposalListPo) => {
       await po
         .getNnsProposalFiltersPo()
