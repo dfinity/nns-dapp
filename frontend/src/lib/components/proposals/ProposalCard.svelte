@@ -29,7 +29,7 @@
   export let deadlineTimestampSeconds: bigint | undefined;
   export let href: string;
 
-  let isActionableStore: Readable<boolean>;
+  let isActionableStore: Readable<boolean | undefined>;
   $: isActionableStore = createIsActionableProposalStore(id);
 </script>
 
