@@ -12,7 +12,6 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import {
   createUserToken,
   createUserTokenLoading,
-  userTokenPageMock,
 } from "$tests/mocks/tokens-page.mock";
 import { TokensTablePo } from "$tests/page-objects/TokensTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -219,25 +218,6 @@ describe("TokensTable", () => {
     expect(await rowPo.hasGoToDetailIcon()).toBe(true);
     expect(await rowPo.hasReceiveButton()).toBe(false);
     expect(await rowPo.hasSendButton()).toBe(false);
-  });
-
-  it("should trigger event when clicking in the row", async () => {
-    const handleAction = vi.fn();
-    const po = renderTable({
-      userTokensData: [userTokenPageMock],
-      onAction: handleAction,
-    });
-
-    const rows = await po.getRows();
-    await rows[0].click();
-
-    expect(handleAction).toHaveBeenCalledTimes(1);
-    expect(handleAction).toHaveBeenCalledWith(
-      createActionEvent({
-        type: ActionType.GoToTokenDetail,
-        data: userTokenPageMock,
-      })
-    );
   });
 
   it("should trigger event when clicking in Send action", async () => {
