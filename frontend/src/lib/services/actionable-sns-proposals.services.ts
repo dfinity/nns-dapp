@@ -148,6 +148,7 @@ const querySnsProposals = async ({
     // Canisters w/o ballot support, returns undefined for `include_ballots_by_caller`.
     includeBallotsByCaller = fromNullable(include_ballots_by_caller) ?? false;
 
+    // no more proposals available
     if (page.length !== DEFAULT_SNS_PROPOSALS_PAGE_SIZE) {
       break;
     }

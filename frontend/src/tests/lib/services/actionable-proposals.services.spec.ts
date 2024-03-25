@@ -19,6 +19,7 @@ describe("actionable-proposals.services", () => {
   });
 
   describe("updateActionableProposals", () => {
+    const votedProposalId = 1234n;
     const neuronId = 0n;
     const neuron1: NeuronInfo = {
       ...mockNeuron,
@@ -26,7 +27,7 @@ describe("actionable-proposals.services", () => {
       recentBallots: [
         {
           vote: Vote.Yes,
-          proposalId: 1n,
+          proposalId: votedProposalId,
         },
       ],
     };
@@ -36,8 +37,14 @@ describe("actionable-proposals.services", () => {
     };
     const votedProposal: ProposalInfo = {
       ...mockProposalInfo,
-      id: 1n,
+      id: votedProposalId,
     };
+    const fiveHundredsProposal = Array.from(Array(500))
+      .map((_, index) => ({
+        ...mockProposalInfo,
+        id: BigInt(index),
+      }))
+      .reverse();
     let spyQueryProposals;
     let spyQueryNeurons;
 
@@ -105,23 +112,18 @@ describe("actionable-proposals.services", () => {
     });
 
     it("should query list proposals using multiple calls", async () => {
-      let count = 0;
-      let lastId = 1000n;
+      let requestCount = 0;
+      const firstResponseProposals = fiveHundredsProposal.slice(0, 100);
+      const secondResponseProposals = [fiveHundredsProposal[100]];
+
       spyQueryProposals = vi
         .spyOn(api, "queryProposals")
-        .mockImplementation(() => {
+        .mockImplementation(async () =>
           // stop after second call
-          if (count++ === 1) {
-            return Promise.resolve([votedProposal]);
-          }
-
-          return Promise.resolve(
-            Array.from(Array(100)).map(() => ({
-              ...mockProposalInfo,
-              id: BigInt(--lastId),
-            }))
-          );
-        });
+          ++requestCount === 2
+            ? secondResponseProposals
+            : firstResponseProposals
+        );
 
       expect(spyQueryProposals).not.toHaveBeenCalled();
 
@@ -144,7 +146,8 @@ describe("actionable-proposals.services", () => {
       expect(spyQueryProposals).toHaveBeenCalledWith(
         expect.objectContaining({
           // should call with beforeProposal: last-loaded-proposal-id
-          beforeProposal: lastId,
+          beforeProposal:
+            firstResponseProposals[firstResponseProposals.length - 1].id,
           certified: false,
           filters: {
             excludeVotedProposals: false,
@@ -155,15 +158,23 @@ describe("actionable-proposals.services", () => {
           },
         })
       );
+      expect(get(actionableNnsProposalsStore)?.proposals?.length).toEqual(101);
+      expect(get(actionableNnsProposalsStore)?.proposals).toEqual([
+        ...firstResponseProposals,
+        ...secondResponseProposals,
+      ]);
     });
 
     it("should log an error when request count limit reached", async () => {
+      let requestIndex = 0;
       // always return full page
       spyQueryProposals = vi
         .spyOn(api, "queryProposals")
-        .mockImplementation(() =>
-          Promise.resolve(Array.from(Array(100)).map(() => mockProposalInfo))
-        );
+        .mockImplementation(async () => {
+          const startIndex = requestIndex * 100;
+          requestIndex++;
+          return fiveHundredsProposal.slice(startIndex, startIndex + 100);
+        });
       const spyConsoleError = silentConsoleErrors();
 
       expect(spyQueryProposals).not.toHaveBeenCalled();
@@ -177,8 +188,12 @@ describe("actionable-proposals.services", () => {
       expect(spyConsoleError).toHaveBeenCalledWith(
         "Max actionable pages loaded"
       );
-
       spyConsoleError.mockRestore();
+
+      expect(get(actionableNnsProposalsStore)?.proposals?.length).toEqual(500);
+      expect(get(actionableNnsProposalsStore)?.proposals).toEqual(
+        fiveHundredsProposal
+      );
     });
 
     it("should update actionable nns proposals store with votable proposals only", async () => {
