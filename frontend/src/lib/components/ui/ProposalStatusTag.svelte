@@ -54,9 +54,10 @@
         position: absolute;
         top: calc(-1 * var(--padding-0_5x));
         right: calc(-1 * var(--padding-0_5x));
-        width: var(--padding);
-        height: var(--padding);
+        width: var(--padding-1_5x);
+        height: var(--padding-1_5x);
 
+        box-sizing: border-box;
         border: 1.5px solid var(--card-background);
         border-radius: var(--padding-1_5x);
         background: var(--primary);
