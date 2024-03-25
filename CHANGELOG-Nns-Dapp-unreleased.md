@@ -15,11 +15,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Add feature flag `ENABLE_HIDE_ZERO_BALANCE`.
-
 #### Changed
 
-* Adjusted table colors in dark theme.
+* Always omit the account parameter in the URL when navigating to a main account.
 
 #### Deprecated
 
@@ -27,8 +25,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
-* Min ckBTC withdrawal amount was unknown when withdrawing directly from My Tokens.
-* Fix menu width in collapsed state.
 * Make token table rows always clickable. A few edge cases were missing.
 
 #### Security

@@ -11,6 +11,25 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 128768
+
+### Application
+
+#### Added
+
+* Add feature flag `ENABLE_HIDE_ZERO_BALANCE`.
+
+#### Changed
+
+* Adjusted table colors in dark theme.
+
+#### Fixed
+
+* Min ckBTC withdrawal amount was unknown when withdrawing directly from My Tokens.
+* Fix menu width in collapsed state.
+
+### Operations
+
 ## Proposal 128350
 
 ### Application

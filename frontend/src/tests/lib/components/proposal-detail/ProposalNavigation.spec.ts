@@ -84,6 +84,19 @@ describe("ProposalNavigation", () => {
         expect(await po.getOlderButtonPo().isPresent()).toBe(true);
       });
 
+      it("should render test ids", async () => {
+        const po = renderComponent({
+          title: "Title",
+          currentProposalId: 1n,
+          currentProposalStatus: "open",
+          proposalIds: [2n, 1n, 0n],
+          selectProposal: vi.fn(),
+        });
+
+        expect(await po.getNewerButtonProposalId()).toEqual("2");
+        expect(await po.getOlderButtonProposalId()).toEqual("0");
+      });
+
       it("should enable both buttons", async () => {
         const po = renderComponent({
           title: "Title",

@@ -12,7 +12,7 @@ import {
 } from "$tests/mocks/tokens-page.mock";
 import { TokensPagePo } from "$tests/page-objects/TokensPage.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { advanceTime } from "$tests/utils/timers.test-utils";
 import { TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
@@ -64,6 +64,7 @@ describe("Tokens page", () => {
   beforeEach(() => {
     overrideFeatureFlagsStore.reset();
     hideZeroBalancesStore.resetForTesting();
+    vi.useFakeTimers();
   });
 
   it("should render the tokens table", async () => {
@@ -106,7 +107,10 @@ describe("Tokens page", () => {
       expect(await po.getBackdropPo().isPresent()).toBe(true);
 
       await po.getBackdropPo().click();
-      await runResolvedPromises();
+
+      // Finish transitions
+      await advanceTime();
+
       expect(await po.getHideZeroBalancesTogglePo().isPresent()).toBe(false);
       expect(await po.getBackdropPo().isPresent()).toBe(false);
     });
@@ -121,6 +125,9 @@ describe("Tokens page", () => {
 
       await po.getSettingsButtonPo().click();
       await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
+
+      // Finish transitions
+      await advanceTime();
 
       expect(await po.getTokensTable().getTokenNames()).toEqual([
         "Positive balance",
@@ -137,6 +144,9 @@ describe("Tokens page", () => {
 
       await po.getSettingsButtonPo().click();
       await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
+
+      // Finish transitions
+      await advanceTime();
 
       expect(await po.getTokensTable().getTokenNames()).toEqual([
         "Positive balance",
@@ -168,12 +178,18 @@ describe("Tokens page", () => {
       await po.getSettingsButtonPo().click();
       await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
 
+      // Finish transitions
+      await advanceTime();
+
       expect(await po.getTokensTable().getTokenNames()).toEqual([
         "Positive balance",
       ]);
 
       expect(await po.getShowAllButtonPo().isPresent()).toBe(true);
       await po.getShowAllButtonPo().click();
+
+      // Finish transitions
+      await advanceTime();
 
       expect(await po.getShowAllButtonPo().isPresent()).toBe(false);
       expect(await po.getTokensTable().getTokenNames()).toEqual([
