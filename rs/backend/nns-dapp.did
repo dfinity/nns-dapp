@@ -206,6 +206,7 @@ type Stats =
         wasm_memory_size_bytes: opt nat64;
         schema: opt nat32;
         migration_countdown: opt nat32;
+        accounts_db_stats_recomputed_on_upgrade: opt bool;
     };
 
 type PerformanceCount =

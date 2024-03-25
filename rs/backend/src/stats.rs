@@ -54,6 +54,8 @@ pub struct Stats {
     // TODO[NNS1-2913]: Delete this once the stable memory migration is complete.  This is used purely to get
     // an idea of how long, in wall clock time, migration is likely to take.
     pub periodic_tasks_count: Option<u32>,
+    /// Whether account stats were recomputed on upgrade.
+    pub accounts_db_stats_recomputed_on_upgrade: Option<bool>,
 }
 
 /// Encodes the metrics into the format scraped by the monitoring system.
