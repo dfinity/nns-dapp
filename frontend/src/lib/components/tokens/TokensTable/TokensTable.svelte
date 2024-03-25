@@ -1,6 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import type { UserToken } from "$lib/types/tokens-page";
+  import { heightTransition } from "$lib/utils/transition.utils";
   import { nonNullish } from "@dfinity/utils";
   import TokensTableRow from "./TokensTableRow.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
@@ -35,8 +36,8 @@
     </div>
   </div>
   <div role="rowgroup">
-    {#each userTokensData as userTokenData}
-      <div class="row-wrapper">
+    {#each userTokensData as userTokenData (userTokenData.rowHref)}
+      <div class="row-wrapper" transition:heightTransition={{ duration: 250 }}>
         <TokensTableRow on:nnsAction {userTokenData} />
       </div>
     {/each}
