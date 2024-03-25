@@ -12,6 +12,7 @@ import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
 import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
 import { ProposalRewardStatus, Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
+import { afterEach, beforeEach, describe, type SpyInstance } from "vitest";
 
 describe("actionable-proposals.services", () => {
   beforeEach(() => {
@@ -165,35 +166,46 @@ describe("actionable-proposals.services", () => {
       ]);
     });
 
-    it("should log an error when request count limit reached", async () => {
-      let requestIndex = 0;
-      // always return full page
-      spyQueryProposals = vi
-        .spyOn(api, "queryProposals")
-        .mockImplementation(async () => {
-          const startIndex = requestIndex * 100;
-          requestIndex++;
-          return fiveHundredsProposal.slice(startIndex, startIndex + 100);
-        });
-      const spyConsoleError = silentConsoleErrors();
+    describe("error logging", () => {
+      let spyConsoleError: SpyInstance;
+      beforeEach(() => {
+        spyConsoleError = silentConsoleErrors();
+      });
 
-      expect(spyQueryProposals).not.toHaveBeenCalled();
-      expect(spyConsoleError).not.toHaveBeenCalled();
+      afterEach(() => {
+        spyConsoleError.mockRestore();
+      });
 
-      await loadActionableProposals();
+      it("should log an error when request count limit reached", async () => {
+        let requestIndex = 0;
+        // always return full page
+        spyQueryProposals = vi
+          .spyOn(api, "queryProposals")
+          .mockImplementation(async () => {
+            const startIndex = requestIndex * 100;
+            requestIndex++;
+            return fiveHundredsProposal.slice(startIndex, startIndex + 100);
+          });
 
-      expect(spyQueryProposals).toHaveBeenCalledTimes(5);
-      // expect an error message
-      expect(spyConsoleError).toHaveBeenCalledTimes(1);
-      expect(spyConsoleError).toHaveBeenCalledWith(
-        "Max actionable pages loaded"
-      );
-      spyConsoleError.mockRestore();
+        expect(spyQueryProposals).not.toHaveBeenCalled();
+        expect(spyConsoleError).not.toHaveBeenCalled();
 
-      expect(get(actionableNnsProposalsStore)?.proposals?.length).toEqual(500);
-      expect(get(actionableNnsProposalsStore)?.proposals).toEqual(
-        fiveHundredsProposal
-      );
+        await loadActionableProposals();
+
+        expect(spyQueryProposals).toHaveBeenCalledTimes(5);
+        // expect an error message
+        expect(spyConsoleError).toHaveBeenCalledTimes(1);
+        expect(spyConsoleError).toHaveBeenCalledWith(
+          "Max actionable pages loaded"
+        );
+
+        expect(get(actionableNnsProposalsStore)?.proposals?.length).toEqual(
+          500
+        );
+        expect(get(actionableNnsProposalsStore)?.proposals).toEqual(
+          fiveHundredsProposal
+        );
+      });
     });
 
     it("should update actionable nns proposals store with votable proposals only", async () => {

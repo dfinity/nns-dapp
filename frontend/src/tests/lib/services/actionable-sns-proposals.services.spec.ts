@@ -30,6 +30,7 @@ import {
   type SnsProposalData,
 } from "@dfinity/sns";
 import { get } from "svelte/store";
+import type { SpyInstance } from "vitest";
 
 describe("actionable-sns-proposals.services", () => {
   beforeEach(() => {
@@ -246,43 +247,52 @@ describe("actionable-sns-proposals.services", () => {
       });
     });
 
-    it("should log an error when request count limit reached", async () => {
-      mockSnsProjectsCommittedStore([rootCanisterId1]);
-      // always return full page (20 proposals)
-      let requestIndex = 0;
-      spyQuerySnsProposals = vi
-        .spyOn(api, "queryProposals")
-        .mockImplementation(async () => {
-          const proposalIndex = requestIndex * 20;
-          requestIndex++;
-          return {
-            proposals: oneHundredProposals.slice(
-              proposalIndex,
-              proposalIndex + 20
-            ),
-            include_ballots_by_caller: [true],
-          } as SnsListProposalsResponse;
-        });
-      const spyConsoleError = silentConsoleErrors();
+    describe("error logging", () => {
+      let spyConsoleError: SpyInstance;
+      beforeEach(() => {
+        spyConsoleError = silentConsoleErrors();
+      });
 
-      expect(spyQuerySnsProposals).not.toHaveBeenCalled();
-      expect(spyConsoleError).not.toHaveBeenCalled();
+      afterEach(() => {
+        spyConsoleError.mockRestore();
+      });
 
-      await loadActionableSnsProposals();
+      it("should log an error when request count limit reached", async () => {
+        mockSnsProjectsCommittedStore([rootCanisterId1]);
+        // always return full page (20 proposals)
+        let requestIndex = 0;
+        spyQuerySnsProposals = vi
+          .spyOn(api, "queryProposals")
+          .mockImplementation(async () => {
+            const proposalIndex = requestIndex * 20;
+            requestIndex++;
+            return {
+              proposals: oneHundredProposals.slice(
+                proposalIndex,
+                proposalIndex + 20
+              ),
+              include_ballots_by_caller: [true],
+            } as SnsListProposalsResponse;
+          });
 
-      expect(spyQuerySnsProposals).toHaveBeenCalledTimes(5);
-      // expect an error message
-      expect(spyConsoleError).toHaveBeenCalledTimes(1);
-      expect(spyConsoleError).toHaveBeenCalledWith(
-        "Max actionable sns pages loaded"
-      );
-      spyConsoleError.mockRestore();
+        expect(spyQuerySnsProposals).not.toHaveBeenCalled();
+        expect(spyConsoleError).not.toHaveBeenCalled();
 
-      const storeProposals = get(actionableSnsProposalsStore)?.[
-        rootCanisterId1.toText()
-      ]?.proposals;
-      expect(storeProposals).toHaveLength(100);
-      expect(storeProposals).toEqual(oneHundredProposals);
+        await loadActionableSnsProposals();
+
+        expect(spyQuerySnsProposals).toHaveBeenCalledTimes(5);
+        // expect an error message
+        expect(spyConsoleError).toHaveBeenCalledTimes(1);
+        expect(spyConsoleError).toHaveBeenCalledWith(
+          "Max actionable sns pages loaded"
+        );
+
+        const storeProposals = get(actionableSnsProposalsStore)?.[
+          rootCanisterId1.toText()
+        ]?.proposals;
+        expect(storeProposals).toHaveLength(100);
+        expect(storeProposals).toEqual(oneHundredProposals);
+      });
     });
 
     it("should update the store with actionable proposal only", async () => {
