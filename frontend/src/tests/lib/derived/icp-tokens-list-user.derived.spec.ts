@@ -46,7 +46,6 @@ describe("icp-tokens-list-user.derived", () => {
     subtitle: undefined,
     rowHref: buildWalletUrl({
       universe: OWN_CANISTER_ID_TEXT,
-      account: mockMainAccount.identifier,
     }),
     accountIdentifier: mockMainAccount.identifier,
   };

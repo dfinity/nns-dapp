@@ -61,6 +61,7 @@
     on:click={selectNewer}
     class:hidden={isNullish(newerId)}
     data-tid="proposal-nav-newer"
+    data-test-proposal-id={newerId?.toString() ?? ""}
   >
     <IconLeft />
     {$i18n.proposal_detail.newer_short}</button
@@ -72,6 +73,7 @@
     on:click={selectOlder}
     class:hidden={isNullish(olderId)}
     data-tid="proposal-nav-older"
+    data-test-proposal-id={olderId?.toString() ?? ""}
   >
     {$i18n.proposal_detail.older_short}
     <IconRight />
