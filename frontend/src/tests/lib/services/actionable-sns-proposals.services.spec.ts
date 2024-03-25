@@ -5,6 +5,7 @@ import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposal
 import { authStore } from "$lib/stores/auth.store";
 import { enumValues } from "$lib/utils/enum.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
+import { snsProposalId } from "$lib/utils/sns-proposals.utils";
 import {
   mockAuthStoreSubscribe,
   mockIdentity,
@@ -70,7 +71,14 @@ describe("actionable-sns-proposals.services", () => {
         ],
       ] as [string, SnsBallot][],
     };
-
+    const oneHundredProposals = Array.from(Array(100))
+      .map((_, index) =>
+        createSnsProposal({
+          ...votableProposalProps,
+          proposalId: BigInt(index),
+        })
+      )
+      .reverse();
     const votableProposal1: SnsProposalData = createSnsProposal({
       ...votableProposalProps,
       proposalId: 0n,
@@ -81,7 +89,7 @@ describe("actionable-sns-proposals.services", () => {
     });
     const votedProposal: SnsProposalData = createSnsProposal({
       ...votableProposalProps,
-      proposalId: 2n,
+      proposalId: 123456789n,
       ballots: [
         [
           neuronIdHex,
@@ -186,30 +194,17 @@ describe("actionable-sns-proposals.services", () => {
 
     it("should query list proposals using multiple calls", async () => {
       mockSnsProjectsCommittedStore([rootCanisterId1]);
-      let count = 0;
-      let lastId = 100n;
-      spyQuerySnsProposals = vi
-        .spyOn(api, "queryProposals")
-        .mockImplementation(async () => {
-          // stop after second call
-          if (count++ === 1) {
-            return {
-              proposals: [votableProposal1],
-              include_ballots_by_caller: undefined,
-            } as SnsListProposalsResponse;
-          }
-
-          return {
-            proposals: Array.from(Array(20)).map(() =>
-              createSnsProposal({
-                ...votableProposalProps,
-                proposalId: BigInt(lastId--),
-              })
-            ),
-
-            include_ballots_by_caller: undefined,
-          } as SnsListProposalsResponse;
-        });
+      let requestCount = 0;
+      const firstResponse = oneHundredProposals.slice(0, 20);
+      const secondResponse = [oneHundredProposals[20]];
+      spyQuerySnsProposals = vi.spyOn(api, "queryProposals").mockImplementation(
+        async () =>
+          ({
+            // stop after second call
+            proposals: ++requestCount === 2 ? secondResponse : firstResponse,
+            include_ballots_by_caller: [true],
+          }) as SnsListProposalsResponse
+      );
 
       expect(spyQuerySnsProposals).not.toHaveBeenCalled();
 
@@ -238,9 +233,15 @@ describe("actionable-sns-proposals.services", () => {
             SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
           ],
           beforeProposal: {
-            id: 81n,
+            id: snsProposalId(firstResponse[firstResponse.length - 1]),
           },
           limit: 20,
+        },
+      });
+      expect(get(actionableSnsProposalsStore)).toEqual({
+        [rootCanisterId1.toText()]: {
+          proposals: [...firstResponse, ...secondResponse],
+          includeBallotsByCaller: true,
         },
       });
     });
@@ -248,18 +249,18 @@ describe("actionable-sns-proposals.services", () => {
     it("should log an error when request count limit reached", async () => {
       mockSnsProjectsCommittedStore([rootCanisterId1]);
       // always return full page (20 proposals)
-      let lastId = 100n;
+      let requestIndex = 0;
       spyQuerySnsProposals = vi
         .spyOn(api, "queryProposals")
         .mockImplementation(async () => {
+          const proposalIndex = requestIndex * 20;
+          requestIndex++;
           return {
-            proposals: Array.from(Array(20)).map(() =>
-              createSnsProposal({
-                ...votableProposalProps,
-                proposalId: BigInt(lastId--),
-              })
+            proposals: oneHundredProposals.slice(
+              proposalIndex,
+              proposalIndex + 20
             ),
-            include_ballots_by_caller: undefined,
+            include_ballots_by_caller: [true],
           } as SnsListProposalsResponse;
         });
       const spyConsoleError = silentConsoleErrors();
@@ -275,8 +276,13 @@ describe("actionable-sns-proposals.services", () => {
       expect(spyConsoleError).toHaveBeenCalledWith(
         "Max actionable sns pages loaded"
       );
-
       spyConsoleError.mockRestore();
+
+      const storeProposals = get(actionableSnsProposalsStore)?.[
+        rootCanisterId1.toText()
+      ]?.proposals;
+      expect(storeProposals).toHaveLength(100);
+      expect(storeProposals).toEqual(oneHundredProposals);
     });
 
     it("should update the store with actionable proposal only", async () => {
