@@ -4,7 +4,10 @@ import { loadActionableProposals } from "$lib/services/actionable-proposals.serv
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
@@ -138,21 +141,20 @@ describe("actionable-proposals.services", () => {
           },
         })
       );
-      expect(spyQueryProposals).toHaveBeenCalledWith(
-        expect.objectContaining({
-          // should call with beforeProposal: last-loaded-proposal-id
-          beforeProposal:
-            firstResponseProposals[firstResponseProposals.length - 1].id,
-          certified: false,
-          filters: {
-            excludeVotedProposals: false,
-            lastAppliedFilter: undefined,
-            rewards: [ProposalRewardStatus.AcceptVotes],
-            status: [],
-            topics: [],
-          },
-        })
-      );
+      expect(spyQueryProposals).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        // should call with beforeProposal: last-loaded-proposal-id
+        beforeProposal:
+          firstResponseProposals[firstResponseProposals.length - 1].id,
+        certified: false,
+        filters: {
+          excludeVotedProposals: false,
+          lastAppliedFilter: undefined,
+          rewards: [ProposalRewardStatus.AcceptVotes],
+          status: [],
+          topics: [],
+        },
+      });
       expect(get(actionableNnsProposalsStore)?.proposals?.length).toEqual(101);
       expect(get(actionableNnsProposalsStore)?.proposals).toEqual([
         ...firstResponseProposals,
