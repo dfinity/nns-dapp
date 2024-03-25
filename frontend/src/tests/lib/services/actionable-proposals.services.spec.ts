@@ -118,7 +118,7 @@ describe("actionable-proposals.services", () => {
           return Promise.resolve(
             Array.from(Array(100)).map(() => ({
               ...mockProposalInfo,
-              id: BigInt(lastId--),
+              id: BigInt(--lastId),
             }))
           );
         });
@@ -144,7 +144,7 @@ describe("actionable-proposals.services", () => {
       expect(spyQueryProposals).toHaveBeenCalledWith(
         expect.objectContaining({
           // should call with beforeProposal: last-loaded-proposal-id
-          beforeProposal: 901n,
+          beforeProposal: lastId,
           certified: false,
           filters: {
             excludeVotedProposals: false,
@@ -157,7 +157,7 @@ describe("actionable-proposals.services", () => {
       );
     });
 
-    it("should throw when request count limit reached", async () => {
+    it("should log an error when request count limit reached", async () => {
       // always return full page
       spyQueryProposals = vi
         .spyOn(api, "queryProposals")
