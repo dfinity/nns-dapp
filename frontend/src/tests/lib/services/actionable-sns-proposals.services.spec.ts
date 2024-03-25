@@ -72,7 +72,7 @@ describe("actionable-sns-proposals.services", () => {
         ],
       ] as [string, SnsBallot][],
     };
-    const oneHundredProposals = Array.from(Array(100))
+    const hundredProposals = Array.from(Array(100))
       .map((_, index) =>
         createSnsProposal({
           ...votableProposalProps,
@@ -111,6 +111,11 @@ describe("actionable-sns-proposals.services", () => {
           rootCanisterId,
         }))
       );
+    const queryProposalsResponse = (proposals: SnsProposalData[]) =>
+      ({
+        proposals,
+        include_ballots_by_caller: [true],
+      }) as SnsListProposalsResponse;
 
     let spyQuerySnsProposals;
     let spyQuerySnsNeurons;
@@ -195,17 +200,12 @@ describe("actionable-sns-proposals.services", () => {
 
     it("should query list proposals using multiple calls", async () => {
       mockSnsProjectsCommittedStore([rootCanisterId1]);
-      let requestCount = 0;
-      const firstResponse = oneHundredProposals.slice(0, 20);
-      const secondResponse = [oneHundredProposals[20]];
-      spyQuerySnsProposals = vi.spyOn(api, "queryProposals").mockImplementation(
-        async () =>
-          ({
-            // stop after second call
-            proposals: ++requestCount === 2 ? secondResponse : firstResponse,
-            include_ballots_by_caller: [true],
-          }) as SnsListProposalsResponse
-      );
+      const firstResponse = hundredProposals.slice(0, 20);
+      const secondResponse = [hundredProposals[20]];
+      spyQuerySnsProposals = vi
+        .spyOn(api, "queryProposals")
+        .mockResolvedValueOnce(queryProposalsResponse(firstResponse))
+        .mockResolvedValueOnce(queryProposalsResponse(secondResponse));
 
       expect(spyQuerySnsProposals).not.toHaveBeenCalled();
 
@@ -259,22 +259,23 @@ describe("actionable-sns-proposals.services", () => {
 
       it("should log an error when request count limit reached", async () => {
         mockSnsProjectsCommittedStore([rootCanisterId1]);
-        // always return full page (20 proposals)
-        let requestIndex = 0;
         spyQuerySnsProposals = vi
           .spyOn(api, "queryProposals")
-          .mockImplementation(async () => {
-            const proposalIndex = requestIndex * 20;
-            requestIndex++;
-            return {
-              proposals: oneHundredProposals.slice(
-                proposalIndex,
-                proposalIndex + 20
-              ),
-              include_ballots_by_caller: [true],
-            } as SnsListProposalsResponse;
-          });
-
+          .mockResolvedValueOnce(
+            queryProposalsResponse(hundredProposals.slice(0, 20))
+          )
+          .mockResolvedValueOnce(
+            queryProposalsResponse(hundredProposals.slice(20, 40))
+          )
+          .mockResolvedValueOnce(
+            queryProposalsResponse(hundredProposals.slice(40, 60))
+          )
+          .mockResolvedValueOnce(
+            queryProposalsResponse(hundredProposals.slice(60, 80))
+          )
+          .mockResolvedValueOnce(
+            queryProposalsResponse(hundredProposals.slice(80, 100))
+          );
         expect(spyQuerySnsProposals).not.toHaveBeenCalled();
         expect(spyConsoleError).not.toHaveBeenCalled();
 
@@ -291,7 +292,7 @@ describe("actionable-sns-proposals.services", () => {
           rootCanisterId1.toText()
         ]?.proposals;
         expect(storeProposals).toHaveLength(100);
-        expect(storeProposals).toEqual(oneHundredProposals);
+        expect(storeProposals).toEqual(hundredProposals);
       });
     });
 

@@ -113,19 +113,13 @@ describe("actionable-proposals.services", () => {
     });
 
     it("should query list proposals using multiple calls", async () => {
-      let requestCount = 0;
       const firstResponseProposals = fiveHundredsProposal.slice(0, 100);
       const secondResponseProposals = [fiveHundredsProposal[100]];
 
       spyQueryProposals = vi
         .spyOn(api, "queryProposals")
-        .mockImplementation(async () =>
-          // stop after second call
-          ++requestCount === 2
-            ? secondResponseProposals
-            : firstResponseProposals
-        );
-
+        .mockResolvedValueOnce(firstResponseProposals)
+        .mockResolvedValueOnce(secondResponseProposals);
       expect(spyQueryProposals).not.toHaveBeenCalled();
 
       await loadActionableProposals();
@@ -177,15 +171,13 @@ describe("actionable-proposals.services", () => {
       });
 
       it("should log an error when request count limit reached", async () => {
-        let requestIndex = 0;
-        // always return full page
         spyQueryProposals = vi
           .spyOn(api, "queryProposals")
-          .mockImplementation(async () => {
-            const startIndex = requestIndex * 100;
-            requestIndex++;
-            return fiveHundredsProposal.slice(startIndex, startIndex + 100);
-          });
+          .mockResolvedValueOnce(fiveHundredsProposal.slice(0, 100))
+          .mockResolvedValueOnce(fiveHundredsProposal.slice(100, 200))
+          .mockResolvedValueOnce(fiveHundredsProposal.slice(200, 300))
+          .mockResolvedValueOnce(fiveHundredsProposal.slice(300, 400))
+          .mockResolvedValueOnce(fiveHundredsProposal.slice(400, 500));
 
         expect(spyQueryProposals).not.toHaveBeenCalled();
         expect(spyConsoleError).not.toHaveBeenCalled();
