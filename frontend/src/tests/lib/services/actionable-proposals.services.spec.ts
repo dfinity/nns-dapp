@@ -12,7 +12,7 @@ import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
 import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
 import { ProposalRewardStatus, Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { afterEach, beforeEach, describe, type SpyInstance } from "vitest";
+import type { SpyInstance } from "vitest";
 
 describe("actionable-proposals.services", () => {
   beforeEach(() => {
