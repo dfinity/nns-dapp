@@ -191,7 +191,7 @@ where
     // Check that the default storage is indeed a map.
     assert!(accounts_db.schema_label() == SchemaLabel::Map);
     // Insert some accounts
-    let number_of_accounts_to_migrate: u32 = rng.gen_range(0..40);
+    let number_of_accounts_to_migrate: u32 = rng.gen_range(0..100);
     for _ in 0..number_of_accounts_to_migrate {
         Operation::Insert.perform(&mut accounts_db, &mut reference_db, rng);
     }
@@ -211,7 +211,7 @@ where
         memory_manager.get(PartitionType::Accounts.memory_id()),
     ));
     // Insert some accounts
-    let number_of_accounts_to_migrate: u32 = rng.gen_range(0..40);
+    let number_of_accounts_to_migrate: u32 = rng.gen_range(0..100);
     for _ in 0..number_of_accounts_to_migrate {
         Operation::Insert.perform(&mut accounts_db, &mut reference_db, rng);
     }
@@ -230,7 +230,7 @@ where
     let mut reference_db = AccountsDbAsProxy::default();
     let new_accounts_db = AccountsDb::Map(AccountsDbAsMap::default());
     // Insert some accounts
-    let number_of_accounts_to_migrate: u32 = rng.gen_range(0..40);
+    let number_of_accounts_to_migrate: u32 = rng.gen_range(0..100);
     for _ in 0..number_of_accounts_to_migrate {
         Operation::Insert.perform(&mut accounts_db, &mut reference_db, rng);
     }
