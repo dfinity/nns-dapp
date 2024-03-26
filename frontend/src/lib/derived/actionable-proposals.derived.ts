@@ -2,14 +2,10 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { authSignedInStore } from "$lib/derived/auth.derived";
 import { pageStore } from "$lib/derived/page.derived";
-import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { isSelectedPath } from "$lib/utils/navigation.utils";
-import { snsProposalId } from "$lib/utils/sns-proposals.utils";
-import { isUniverseNns } from "$lib/utils/universe.utils";
 import { mapEntries } from "$lib/utils/utils";
-import { isNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 
 export interface ActionableProposalCountData {
@@ -62,33 +58,3 @@ export const actionableProposalSupportedStore: Readable<ActionableProposalSuppor
       ],
     }),
   }));
-
-/**
- * Returns a derived store based on the proposal id and currently selected universe.
- * It contains `true` if the proposal is actionable,
- * `false` - not actionable,
- * and `undefined` when this information is not available.
- *
- * @param proposalId The proposal id to check. Can be undefined for more flexible usage.
- */
-export const createIsActionableProposalStore = (
-  proposalId: bigint | undefined
-) =>
-  derived(
-    [
-      selectedUniverseIdStore,
-      actionableNnsProposalsStore,
-      actionableSnsProposalsStore,
-    ],
-    ([selectedUniverseId, actionableNnsProposals, actionableSnsProposals]) =>
-      isNullish(proposalId)
-        ? // undefined proposalId
-          undefined
-        : isUniverseNns(selectedUniverseId)
-        ? // nns proposalId
-          actionableNnsProposals.proposals?.some(({ id }) => id === proposalId)
-        : // sns proposalId
-          actionableSnsProposals[selectedUniverseId.toText()]?.proposals?.some(
-            (proposal) => snsProposalId(proposal) === proposalId
-          )
-  );
