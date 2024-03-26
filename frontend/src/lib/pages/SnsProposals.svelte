@@ -1,6 +1,5 @@
 <script lang="ts">
   import { loadSnsProposals } from "$lib/services/$public/sns-proposals.services";
-  import type { SnsProposalData } from "@dfinity/sns";
   import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
   import SnsProposalsList from "$lib/components/sns-proposals/SnsProposalsList.svelte";
@@ -18,7 +17,6 @@
     type SnsFiltersStoreData,
   } from "$lib/stores/sns-filters.store";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
   import type { Principal } from "@dfinity/principal";
   import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
   import type { Readable } from "svelte/store";
@@ -27,6 +25,10 @@
     type ActionableSnsProposalsData,
   } from "$lib/stores/actionable-sns-proposals.store";
   import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
+  import {
+    snsFilteredActionableProposalsStore,
+    type SnsProposalActionableData,
+  } from "$lib/derived/sns/sns-filtered-actionable-proposals.derived";
 
   let nsFunctionsStore: Readable<SnsNervousSystemFunction[] | undefined>;
   $: nsFunctionsStore = createSnsNsFunctionsProjectStore($snsOnlyProjectStore);
@@ -125,13 +127,14 @@
   $: includeBallots = actionableProposalsData?.includeBallotsByCaller ?? false;
 
   // `undefined` means that we haven't loaded the proposals yet.
-  let proposals: SnsProposalData[] | undefined;
+  let proposals: SnsProposalActionableData[] | undefined;
   $: proposals = nonNullish(currentProjectCanisterId)
     ? sortSnsProposalsById(
         actionableSelected
           ? actionableProposalsData?.proposals
-          : $snsFilteredProposalsStore[currentProjectCanisterId.toText()]
-              ?.proposals
+          : $snsFilteredActionableProposalsStore[
+              currentProjectCanisterId.toText()
+            ]?.proposals
       )
     : undefined;
 

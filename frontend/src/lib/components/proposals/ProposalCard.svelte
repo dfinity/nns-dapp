@@ -14,10 +14,9 @@
   import { PROPOSER_ID_DISPLAY_SPLIT_LENGTH } from "$lib/constants/proposals.constants";
   import type { UniversalProposalStatus } from "$lib/types/proposals";
   import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
-  import type { Readable } from "svelte/store";
-  import { createIsActionableProposalStore } from "$lib/derived/actionable-proposals.derived";
 
   export let hidden = false;
+  export let actionable = false;
   export let status: UniversalProposalStatus | undefined;
   export let id: bigint | undefined;
   export let heading: string;
@@ -26,9 +25,6 @@
   export let proposer: string | undefined;
   export let deadlineTimestampSeconds: bigint | undefined;
   export let href: string;
-
-  let isActionableStore: Readable<boolean | undefined>;
-  $: isActionableStore = createIsActionableProposalStore(id);
 </script>
 
 <li class:hidden>
@@ -44,7 +40,7 @@
           </div>
 
           {#if nonNullish(status)}
-            <ProposalStatusTag {status} actionable={$isActionableStore} />
+            <ProposalStatusTag {status} {actionable} />
           {/if}
         </div>
 
