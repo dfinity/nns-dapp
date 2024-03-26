@@ -1,20 +1,14 @@
 import SnsProposalsList from "$lib/components/sns-proposals/SnsProposalsList.svelte";
-import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
-import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import {
   createSnsProposal,
   mockSnsProposal,
 } from "$tests/mocks/sns-proposals.mock";
-import {
-  mockSnsCanisterId,
-  mockSnsCanisterIdText,
-} from "$tests/mocks/sns.api.mock";
+import { mockSnsCanisterIdText } from "$tests/mocks/sns.api.mock";
 import { SnsProposalListPo } from "$tests/page-objects/SnsProposalList.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { SnsProposalData } from "@dfinity/sns";
 import { SnsProposalDecisionStatus } from "@dfinity/sns";
 import { cleanup, render } from "@testing-library/svelte";
 
@@ -40,7 +34,6 @@ describe("SnsProposalsList", () => {
   const proposals = [proposal1, proposal2, proposal3];
 
   beforeEach(() => {
-    actionableProposalsSegmentStore.resetForTesting();
     page.mock({ data: { universe: mockSnsCanisterIdText } });
   });
 
@@ -214,7 +207,23 @@ describe("SnsProposalsList", () => {
 
     it("should display actionable mark on all proposals view", async () => {
       const po = await renderComponent({
-        proposals: [proposal1, proposal2, proposal3],
+        proposals: [
+          {
+            ...mockSnsProposal,
+            id: [{ id: 1n }],
+            isActionable: false,
+          },
+          {
+            ...mockSnsProposal,
+            id: [{ id: 2n }],
+            isActionable: true,
+          },
+          {
+            ...mockSnsProposal,
+            id: [{ id: 3n }],
+            isActionable: true,
+          },
+        ],
         includeBallots: true,
         snsName: "sns-name",
         actionableSelected: false,
@@ -225,12 +234,6 @@ describe("SnsProposalsList", () => {
         .getActionableProposalsSegmentPo()
         .clickAllProposals();
       await runResolvedPromises();
-
-      actionableSnsProposalsStore.set({
-        proposals: [proposal2, proposal3],
-        rootCanisterId: mockSnsCanisterId,
-        includeBallotsByCaller: true,
-      });
 
       const cards = await po.getProposalCardPos();
       expect(await cards[0].getProposalStatusTagPo().hasActionableMark()).toBe(
