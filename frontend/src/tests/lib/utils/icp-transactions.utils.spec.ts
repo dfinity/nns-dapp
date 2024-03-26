@@ -2,6 +2,7 @@ import {
   CREATE_CANISTER_MEMO,
   TOP_UP_CANISTER_MEMO,
 } from "$lib/constants/api.constants";
+import { NANO_SECONDS_IN_MILLISECOND } from "$lib/constants/constants";
 import type { UiTransaction } from "$lib/types/transaction";
 import {
   mapIcpTransaction,
@@ -251,6 +252,67 @@ describe("icp-transactions.utils", () => {
           i18n: en,
         })
       ).toEqual(expectedUiTransaction);
+    });
+
+    describe("maps timestamps", () => {
+      const createdDate = new Date("2023-01-01T00:12:00.000Z");
+      const blockDate = new Date("2023-01-01T00:34:00.000Z");
+      const createTimestamps = {
+        timestamp_nanos:
+          BigInt(createdDate.getTime()) * BigInt(NANO_SECONDS_IN_MILLISECOND),
+      };
+      const blockTimestamps = {
+        timestamp_nanos:
+          BigInt(blockDate.getTime()) * BigInt(NANO_SECONDS_IN_MILLISECOND),
+      };
+
+      it("prefers block timestamp", () => {
+        const transaction = createTransaction({
+          operation: defaultTransferOperation,
+        });
+        transaction.transaction.created_at_time = [createTimestamps];
+        transaction.transaction.timestamp = [blockTimestamps];
+
+        const expectedUiTransaction: UiTransaction = {
+          ...defaultUiTransaction,
+          timestamp: blockDate,
+        };
+
+        expect(
+          mapIcpTransaction({
+            transaction,
+            accountIdentifier: from,
+            toSelfTransaction: false,
+            neuronAccounts: new Set<string>(),
+            swapCanisterAccounts: new Set<string>(),
+            i18n: en,
+          })
+        ).toEqual(expectedUiTransaction);
+      });
+
+      it("falls back on created timestamps", () => {
+        const transaction = createTransaction({
+          operation: defaultTransferOperation,
+        });
+        transaction.transaction.created_at_time = [createTimestamps];
+        transaction.transaction.timestamp = [];
+
+        const expectedUiTransaction: UiTransaction = {
+          ...defaultUiTransaction,
+          timestamp: createdDate,
+        };
+
+        expect(
+          mapIcpTransaction({
+            transaction,
+            accountIdentifier: from,
+            toSelfTransaction: false,
+            neuronAccounts: new Set<string>(),
+            swapCanisterAccounts: new Set<string>(),
+            i18n: en,
+          })
+        ).toEqual(expectedUiTransaction);
+      });
     });
 
     it("maps toSelf transaction as Received", () => {
