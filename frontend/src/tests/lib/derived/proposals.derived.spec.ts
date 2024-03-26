@@ -1,5 +1,13 @@
-import { sortedProposals } from "$lib/derived/proposals.derived";
-import { proposalsStore } from "$lib/stores/proposals.store";
+import {
+  filteredActionableProposals,
+  sortedProposals,
+} from "$lib/derived/proposals.derived";
+import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
+import {
+  proposalsFiltersStore,
+  proposalsStore,
+} from "$lib/stores/proposals.store";
+import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import type { ProposalInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
 
@@ -42,5 +50,63 @@ describe("proposals-derived", () => {
 
     const { proposals } = get(sortedProposals);
     expect(proposals).toEqual(expectedProposals);
+  });
+
+  describe("filteredActionableProposals", () => {
+    beforeEach(() => {
+      proposalsStore.reset();
+      proposalsFiltersStore.reset();
+      actionableNnsProposalsStore.reset();
+    });
+
+    it("should append isActionable", () => {
+      proposalsStore.setProposals({
+        proposals: [...mockProposals],
+        certified: true,
+      });
+      actionableNnsProposalsStore.setProposals([mockProposals[0]]);
+
+      expect(get(filteredActionableProposals)?.proposals).toHaveLength(
+        mockProposals.length
+      );
+      expect(get(filteredActionableProposals)).toEqual({
+        proposals: [
+          {
+            ...mockProposals[0],
+            hidden: false,
+            isActionable: true,
+          },
+          {
+            ...mockProposals[1],
+            hidden: false,
+            isActionable: false,
+          },
+        ],
+        certified: true,
+      });
+    });
+
+    it("should add isActionable=undefined when actionables not available", () => {
+      proposalsStore.setProposals({
+        proposals: [...mockProposals],
+        certified: true,
+      });
+
+      expect(get(filteredActionableProposals)).toEqual({
+        proposals: [
+          {
+            ...mockProposals[0],
+            hidden: false,
+            isActionable: undefined,
+          },
+          {
+            ...mockProposals[1],
+            hidden: false,
+            isActionable: undefined,
+          },
+        ],
+        certified: true,
+      });
+    });
   });
 });
