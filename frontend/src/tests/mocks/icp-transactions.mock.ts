@@ -19,6 +19,7 @@ export const mockTransactionTransfer: Transaction = {
     },
   },
   created_at_time: [{ timestamp_nanos: 234n }],
+  timestamp: [{ timestamp_nanos: 235n }],
 };
 
 const defaultTimestamp = new Date("2023-01-01T00:00:00.000Z");
@@ -32,20 +33,22 @@ export const createTransactionWithId = ({
   memo?: bigint;
   timestamp?: Date;
   id?: bigint;
-}): TransactionWithId => ({
-  id,
-  transaction: {
-    memo: memo ?? 0n,
-    icrc1_memo: [],
-    operation,
-    created_at_time: [
-      {
-        timestamp_nanos:
-          BigInt(timestamp.getTime()) * BigInt(NANO_SECONDS_IN_MILLISECOND),
-      },
-    ],
-  },
-});
+}): TransactionWithId => {
+  const timestampNanos = {
+    timestamp_nanos:
+      BigInt(timestamp.getTime()) * BigInt(NANO_SECONDS_IN_MILLISECOND),
+  };
+  return {
+    id,
+    transaction: {
+      memo: memo ?? 0n,
+      icrc1_memo: [],
+      operation,
+      created_at_time: [timestampNanos],
+      timestamp: [timestampNanos],
+    },
+  };
+};
 
 export const mockTransactionWithId: TransactionWithId = {
   id: 234n,
