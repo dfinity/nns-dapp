@@ -342,7 +342,7 @@
           "ENABLE_CKTESTBTC": false,
           "ENABLE_ICP_INDEX": true,
           "ENABLE_VOTING_INDICATION": false,
-          "ENABLE_HIDE_ZERO_BALANCE": false
+          "ENABLE_HIDE_ZERO_BALANCE": true
         }
       }
     },
