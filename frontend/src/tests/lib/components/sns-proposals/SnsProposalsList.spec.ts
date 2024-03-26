@@ -9,7 +9,7 @@ import { mockSnsCanisterIdText } from "$tests/mocks/sns.api.mock";
 import { SnsProposalListPo } from "$tests/page-objects/SnsProposalList.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { SnsProposalDecisionStatus } from "@dfinity/sns";
+import { SnsProposalDecisionStatus, type SnsProposalData } from "@dfinity/sns";
 import { cleanup, render } from "@testing-library/svelte";
 
 describe("SnsProposalsList", () => {
