@@ -1,10 +1,11 @@
+import type { SnsProposalActionableData } from "$lib/derived/sns/sns-filtered-actionable-proposals.derived";
 import { removeKeys } from "$lib/utils/utils";
 import type { Principal } from "@dfinity/principal";
 import type { SnsProposalData } from "@dfinity/sns";
 import { writable, type Readable } from "svelte/store";
 
 export interface ActionableSnsProposalsData {
-  proposals: SnsProposalData[];
+  proposals: SnsProposalActionableData[];
   includeBallotsByCaller: boolean;
 }
 export interface ActionableSnsProposalsStoreData {
@@ -47,7 +48,10 @@ const initActionableSnsProposalsStore = (): ActionableSnsProposalsStore => {
       update((currentState: ActionableSnsProposalsStoreData) => ({
         ...currentState,
         [rootCanisterId.toText()]: {
-          proposals,
+          proposals: proposals.map((proposal) => ({
+            ...proposal,
+            isActionable: true,
+          })),
           includeBallotsByCaller,
         },
       }));
