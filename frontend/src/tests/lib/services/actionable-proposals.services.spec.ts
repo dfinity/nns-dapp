@@ -128,22 +128,19 @@ describe("actionable-proposals.services", () => {
       await loadActionableProposals();
 
       expect(spyQueryProposals).toHaveBeenCalledTimes(2);
-      expect(spyQueryProposals).toHaveBeenCalledWith(
-        expect.objectContaining({
-          beforeProposal: undefined,
-          certified: false,
-          filters: {
-            excludeVotedProposals: false,
-            lastAppliedFilter: undefined,
-            rewards: [ProposalRewardStatus.AcceptVotes],
-            status: [],
-            topics: [],
-          },
-        })
-      );
+      expect(spyQueryProposals).toHaveBeenCalledWith({
+        beforeProposal: undefined,
+        certified: false,
+        filters: {
+          excludeVotedProposals: false,
+          lastAppliedFilter: undefined,
+          rewards: [ProposalRewardStatus.AcceptVotes],
+          status: [],
+          topics: [],
+        },
+      });
       expect(spyQueryProposals).toHaveBeenCalledWith({
         identity: mockIdentity,
-        // should call with beforeProposal: last-loaded-proposal-id
         beforeProposal:
           firstResponseProposals[firstResponseProposals.length - 1].id,
         certified: false,
