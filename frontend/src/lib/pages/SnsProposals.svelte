@@ -118,6 +118,14 @@
   $: actionableProposalsData = nonNullish(currentProjectCanisterId)
     ? $actionableSnsProposalsStore[currentProjectCanisterId.toText()]
     : undefined;
+  let actionableProposals: SnsProposalActionableData[] | undefined;
+  $: actionableProposals = actionableProposalsData?.proposals.map(
+    (proposal) =>
+      ({
+        ...proposal,
+        isActionable: true,
+      }) as SnsProposalActionableData
+  );
 
   let actionableSelected: boolean;
   $: actionableSelected =
@@ -131,7 +139,7 @@
   $: proposals = nonNullish(currentProjectCanisterId)
     ? sortSnsProposalsById(
         actionableSelected
-          ? actionableProposalsData?.proposals
+          ? actionableProposals
           : $snsFilteredActionableProposalsStore[
               currentProjectCanisterId.toText()
             ]?.proposals

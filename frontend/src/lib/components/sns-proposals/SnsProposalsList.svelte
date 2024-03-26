@@ -42,7 +42,11 @@
             disabled={disableInfiniteScroll}
           >
             {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
-              <SnsProposalCard {proposalData} {nsFunctions} />
+              <SnsProposalCard
+                actionable={proposalData.isActionable}
+                {proposalData}
+                {nsFunctions}
+              />
             {/each}
           </InfiniteScroll>
         </ListLoader>
@@ -63,7 +67,11 @@
       {:else}
         <InfiniteScroll layout="grid" disabled>
           {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
-            <SnsProposalCard {proposalData} {nsFunctions} />
+            <SnsProposalCard
+              actionable={proposalData.isActionable}
+              {proposalData}
+              {nsFunctions}
+            />
           {/each}
         </InfiniteScroll>
       {/if}

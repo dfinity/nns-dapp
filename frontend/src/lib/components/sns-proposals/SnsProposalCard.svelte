@@ -9,14 +9,15 @@
   import type {
     SnsNervousSystemFunction,
     SnsNeuronId,
+    SnsProposalData,
     SnsProposalId,
   } from "@dfinity/sns";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import type { UniversalProposalStatus } from "$lib/types/proposals";
-  import type { SnsProposalActionableData } from "$lib/derived/sns/sns-filtered-actionable-proposals.derived";
 
-  export let proposalData: SnsProposalActionableData;
+  export let proposalData: SnsProposalData;
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;
+  export let actionable = false;
   export let hidden = false;
 
   let id: SnsProposalId | undefined;
@@ -49,7 +50,7 @@
 <ProposalCard
   {status}
   {hidden}
-  actionable={proposalData.isActionable}
+  {actionable}
   {href}
   id={id?.id}
   {title}

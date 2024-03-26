@@ -87,11 +87,11 @@ export type SnsProposalDataMap = {
 };
 
 // TODO: Return also a type and the type description that for now maps to the topic
-export const mapProposalInfo = <T extends SnsProposalData>({
+export const mapProposalInfo = ({
   proposalData,
   nsFunctions,
 }: {
-  proposalData: T;
+  proposalData: SnsProposalData;
   nsFunctions: SnsNervousSystemFunction[] | undefined;
 }): SnsProposalDataMap => {
   const {
@@ -313,8 +313,8 @@ export const snsRewardStatus = ({
   return SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED;
 };
 
-export const lastProposalId = <T extends SnsProposalData>(
-  proposals: T[]
+export const lastProposalId = (
+  proposals: SnsProposalData[]
 ): SnsProposalId | undefined => {
   const last = sortSnsProposalsById(proposals)?.[proposals.length - 1];
   return fromNullable(last?.id ?? []);
@@ -328,9 +328,9 @@ export const lastProposalId = <T extends SnsProposalData>(
  * @param {SnsProposalData[]} proposals
  * @returns {SnsProposalData[]}
  */
-export const sortSnsProposalsById = <T extends SnsProposalData>(
-  proposals: T[] | undefined
-): T[] | undefined =>
+export const sortSnsProposalsById = <P extends SnsProposalData>(
+  proposals: P[] | undefined
+): P[] | undefined =>
   proposals === undefined
     ? undefined
     : [...proposals].sort(({ id: idA }, { id: idB }) =>
