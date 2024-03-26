@@ -125,13 +125,11 @@ describe("actionable-sns-proposals.services", () => {
       vi.clearAllMocks();
       resetSnsProjects();
       actionableSnsProposalsStore.resetForTesting();
-      spyConsoleError?.mockRestore();
-
       resetIdentity();
+
       vi.spyOn(authStore, "subscribe").mockImplementation(
         mockAuthStoreSubscribe
       );
-
       vi.spyOn(snsProjectsCommittedStore, "subscribe").mockClear();
 
       spyQuerySnsNeurons = vi

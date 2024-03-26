@@ -56,7 +56,6 @@ describe("actionable-proposals.services", () => {
       vi.clearAllMocks();
       neuronsStore.reset();
       actionableNnsProposalsStore.reset();
-      spyConsoleError?.mockRestore();
       vi.spyOn(authStore, "subscribe").mockImplementation(
         mockAuthStoreSubscribe
       );
