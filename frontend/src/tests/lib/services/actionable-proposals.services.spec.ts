@@ -15,11 +15,10 @@ import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
 import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
 import { ProposalRewardStatus, Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
-import type { SpyInstance } from "vitest";
 
 describe("actionable-proposals.services", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe("updateActionableProposals", () => {
@@ -49,9 +48,9 @@ describe("actionable-proposals.services", () => {
         id: BigInt(index),
       }))
       .reverse();
-    let spyQueryProposals: SpyInstance;
-    let spyQueryNeurons: SpyInstance;
-    let spyConsoleError: SpyInstance;
+    let spyQueryProposals;
+    let spyQueryNeurons;
+    let spyConsoleError;
 
     beforeEach(() => {
       vi.clearAllMocks();
@@ -131,6 +130,7 @@ describe("actionable-proposals.services", () => {
 
       expect(spyQueryProposals).toHaveBeenCalledTimes(2);
       expect(spyQueryProposals).toHaveBeenCalledWith({
+        identity: mockIdentity,
         beforeProposal: undefined,
         certified: false,
         filters: {

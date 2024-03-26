@@ -30,11 +30,10 @@ import {
   type SnsProposalData,
 } from "@dfinity/sns";
 import { get } from "svelte/store";
-import { SpyInstance } from "vitest/index";
 
 describe("actionable-sns-proposals.services", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe("loadActionableProposalsForSns", () => {
@@ -117,9 +116,9 @@ describe("actionable-sns-proposals.services", () => {
         include_ballots_by_caller: [true],
       }) as SnsListProposalsResponse;
 
-    let spyQuerySnsProposals: SpyInstance;
-    let spyQuerySnsNeurons: SpyInstance;
-    let spyConsoleError: SpyInstance;
+    let spyQuerySnsProposals;
+    let spyQuerySnsNeurons;
+    let spyConsoleError;
     let includeBallotsByCaller = true;
 
     beforeEach(() => {
