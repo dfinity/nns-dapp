@@ -66,7 +66,6 @@ describe("snsFilteredActionableProposalsStore", () => {
 
     expect(get(snsFilteredActionableProposalsStore)).toEqual({
       [rootCanisterId.toText()]: {
-        certified: true,
         proposals: [
           {
             ...snsProposal1,
@@ -95,7 +94,6 @@ describe("snsFilteredActionableProposalsStore", () => {
 
     expect(get(snsFilteredActionableProposalsStore)).toEqual({
       [rootCanisterId.toText()]: {
-        certified: true,
         proposals: [
           {
             ...snsProposal1,

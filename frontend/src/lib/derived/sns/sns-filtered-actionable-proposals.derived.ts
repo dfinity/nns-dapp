@@ -6,6 +6,7 @@ import {
 import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
 import type { SnsProposalsStoreData } from "$lib/stores/sns-proposals.store";
 import { snsProposalId } from "$lib/utils/sns-proposals.utils";
+import { mapEntries } from "$lib/utils/utils";
 import type { SnsProposalData } from "@dfinity/sns";
 import { derived, type Readable } from "svelte/store";
 
@@ -14,10 +15,6 @@ export type SnsProposalActionableData = SnsProposalData & {
 };
 export interface ProjectActionableProposalData {
   proposals: SnsProposalActionableData[];
-  // certified is an optimistic value - i.e. it represents the last value that has been pushed in store
-  certified: boolean | undefined;
-  // Whether all proposals have been loaded
-  completed: boolean;
 }
 
 export interface SnsFilteredActionableProposalsStoreData {
@@ -30,8 +27,9 @@ export const snsFilteredActionableProposalsStore = derived<
 >(
   [snsFilteredProposalsStore, actionableSnsProposalsStore],
   ([proposalsStore, actionableProposalsStore]) => {
-    return Object.entries(proposalsStore).reduce(
-      (acc, [rootCanisterIdText, filteredProposals]) => {
+    return mapEntries({
+      obj: proposalsStore,
+      mapFn: ([rootCanisterIdText, filteredProposals]) => {
         const actionableProposals =
           actionableProposalsStore[rootCanisterIdText];
         const proposals = filteredProposals.proposals.map((proposal) => ({
@@ -42,15 +40,8 @@ export const snsFilteredActionableProposalsStore = derived<
               snsProposalId(actionableProposal) === snsProposalId(proposal)
           ),
         }));
-        return {
-          ...acc,
-          [rootCanisterIdText]: {
-            ...filteredProposals,
-            proposals,
-          },
-        };
+        return [rootCanisterIdText, { proposals }];
       },
-      {}
-    );
+    });
   }
 );
