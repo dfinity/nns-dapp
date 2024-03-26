@@ -30,7 +30,7 @@ import {
   type SnsProposalData,
 } from "@dfinity/sns";
 import { get } from "svelte/store";
-import type { SpyInstance } from "vitest";
+import { SpyInstance } from "vitest/index";
 
 describe("actionable-sns-proposals.services", () => {
   beforeEach(() => {
@@ -117,14 +117,16 @@ describe("actionable-sns-proposals.services", () => {
         include_ballots_by_caller: [true],
       }) as SnsListProposalsResponse;
 
-    let spyQuerySnsProposals;
-    let spyQuerySnsNeurons;
+    let spyQuerySnsProposals: SpyInstance;
+    let spyQuerySnsNeurons: SpyInstance;
+    let spyConsoleError: SpyInstance;
     let includeBallotsByCaller = true;
 
     beforeEach(() => {
       vi.clearAllMocks();
       resetSnsProjects();
       actionableSnsProposalsStore.resetForTesting();
+      spyConsoleError?.mockRestore();
 
       resetIdentity();
       vi.spyOn(authStore, "subscribe").mockImplementation(
@@ -247,53 +249,43 @@ describe("actionable-sns-proposals.services", () => {
       });
     });
 
-    describe("error logging", () => {
-      let spyConsoleError: SpyInstance;
-      beforeEach(() => {
-        spyConsoleError = silentConsoleErrors();
-      });
-
-      afterEach(() => {
-        spyConsoleError.mockRestore();
-      });
-
-      it("should log an error when request count limit reached", async () => {
-        mockSnsProjectsCommittedStore([rootCanisterId1]);
-        spyQuerySnsProposals = vi
-          .spyOn(api, "queryProposals")
-          .mockResolvedValueOnce(
-            queryProposalsResponse(hundredProposals.slice(0, 20))
-          )
-          .mockResolvedValueOnce(
-            queryProposalsResponse(hundredProposals.slice(20, 40))
-          )
-          .mockResolvedValueOnce(
-            queryProposalsResponse(hundredProposals.slice(40, 60))
-          )
-          .mockResolvedValueOnce(
-            queryProposalsResponse(hundredProposals.slice(60, 80))
-          )
-          .mockResolvedValueOnce(
-            queryProposalsResponse(hundredProposals.slice(80, 100))
-          );
-        expect(spyQuerySnsProposals).not.toHaveBeenCalled();
-        expect(spyConsoleError).not.toHaveBeenCalled();
-
-        await loadActionableSnsProposals();
-
-        expect(spyQuerySnsProposals).toHaveBeenCalledTimes(5);
-        // expect an error message
-        expect(spyConsoleError).toHaveBeenCalledTimes(1);
-        expect(spyConsoleError).toHaveBeenCalledWith(
-          "Max actionable sns pages loaded"
+    it("should log an error when request count limit reached", async () => {
+      mockSnsProjectsCommittedStore([rootCanisterId1]);
+      spyQuerySnsProposals = vi
+        .spyOn(api, "queryProposals")
+        .mockResolvedValueOnce(
+          queryProposalsResponse(hundredProposals.slice(0, 20))
+        )
+        .mockResolvedValueOnce(
+          queryProposalsResponse(hundredProposals.slice(20, 40))
+        )
+        .mockResolvedValueOnce(
+          queryProposalsResponse(hundredProposals.slice(40, 60))
+        )
+        .mockResolvedValueOnce(
+          queryProposalsResponse(hundredProposals.slice(60, 80))
+        )
+        .mockResolvedValueOnce(
+          queryProposalsResponse(hundredProposals.slice(80, 100))
         );
+      spyConsoleError = silentConsoleErrors();
+      expect(spyQuerySnsProposals).not.toHaveBeenCalled();
+      expect(spyConsoleError).not.toHaveBeenCalled();
 
-        const storeProposals = get(actionableSnsProposalsStore)?.[
-          rootCanisterId1.toText()
-        ]?.proposals;
-        expect(storeProposals).toHaveLength(100);
-        expect(storeProposals).toEqual(hundredProposals);
-      });
+      await loadActionableSnsProposals();
+
+      expect(spyQuerySnsProposals).toHaveBeenCalledTimes(5);
+      // expect an error message
+      expect(spyConsoleError).toHaveBeenCalledTimes(1);
+      expect(spyConsoleError).toHaveBeenCalledWith(
+        "Max actionable sns pages loaded"
+      );
+
+      const storeProposals = get(actionableSnsProposalsStore)?.[
+        rootCanisterId1.toText()
+      ]?.proposals;
+      expect(storeProposals).toHaveLength(100);
+      expect(storeProposals).toEqual(hundredProposals);
     });
 
     it("should update the store with actionable proposal only", async () => {

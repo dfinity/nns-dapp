@@ -49,13 +49,15 @@ describe("actionable-proposals.services", () => {
         id: BigInt(index),
       }))
       .reverse();
-    let spyQueryProposals;
-    let spyQueryNeurons;
+    let spyQueryProposals: SpyInstance;
+    let spyQueryNeurons: SpyInstance;
+    let spyConsoleError: SpyInstance;
 
     beforeEach(() => {
       vi.clearAllMocks();
       neuronsStore.reset();
       actionableNnsProposalsStore.reset();
+      spyConsoleError?.mockRestore();
       vi.spyOn(authStore, "subscribe").mockImplementation(
         mockAuthStoreSubscribe
       );
@@ -159,44 +161,31 @@ describe("actionable-proposals.services", () => {
       ]);
     });
 
-    describe("error logging", () => {
-      let spyConsoleError: SpyInstance;
-      beforeEach(() => {
-        spyConsoleError = silentConsoleErrors();
-      });
+    it("should log an error when request count limit reached", async () => {
+      spyQueryProposals = vi
+        .spyOn(api, "queryProposals")
+        .mockResolvedValueOnce(fiveHundredsProposal.slice(0, 100))
+        .mockResolvedValueOnce(fiveHundredsProposal.slice(100, 200))
+        .mockResolvedValueOnce(fiveHundredsProposal.slice(200, 300))
+        .mockResolvedValueOnce(fiveHundredsProposal.slice(300, 400))
+        .mockResolvedValueOnce(fiveHundredsProposal.slice(400, 500));
+      spyConsoleError = silentConsoleErrors();
+      expect(spyQueryProposals).not.toHaveBeenCalled();
+      expect(spyConsoleError).not.toHaveBeenCalled();
 
-      afterEach(() => {
-        spyConsoleError.mockRestore();
-      });
+      await loadActionableProposals();
 
-      it("should log an error when request count limit reached", async () => {
-        spyQueryProposals = vi
-          .spyOn(api, "queryProposals")
-          .mockResolvedValueOnce(fiveHundredsProposal.slice(0, 100))
-          .mockResolvedValueOnce(fiveHundredsProposal.slice(100, 200))
-          .mockResolvedValueOnce(fiveHundredsProposal.slice(200, 300))
-          .mockResolvedValueOnce(fiveHundredsProposal.slice(300, 400))
-          .mockResolvedValueOnce(fiveHundredsProposal.slice(400, 500));
+      expect(spyQueryProposals).toHaveBeenCalledTimes(5);
+      // expect an error message
+      expect(spyConsoleError).toHaveBeenCalledTimes(1);
+      expect(spyConsoleError).toHaveBeenCalledWith(
+        "Max actionable pages loaded"
+      );
 
-        expect(spyQueryProposals).not.toHaveBeenCalled();
-        expect(spyConsoleError).not.toHaveBeenCalled();
-
-        await loadActionableProposals();
-
-        expect(spyQueryProposals).toHaveBeenCalledTimes(5);
-        // expect an error message
-        expect(spyConsoleError).toHaveBeenCalledTimes(1);
-        expect(spyConsoleError).toHaveBeenCalledWith(
-          "Max actionable pages loaded"
-        );
-
-        expect(get(actionableNnsProposalsStore)?.proposals?.length).toEqual(
-          500
-        );
-        expect(get(actionableNnsProposalsStore)?.proposals).toEqual(
-          fiveHundredsProposal
-        );
-      });
+      expect(get(actionableNnsProposalsStore)?.proposals?.length).toEqual(500);
+      expect(get(actionableNnsProposalsStore)?.proposals).toEqual(
+        fiveHundredsProposal
+      );
     });
 
     it("should update actionable nns proposals store with votable proposals only", async () => {
