@@ -465,6 +465,7 @@ describe("NnsWallet", () => {
           memo: 123456n,
           icrc1_memo: [],
           created_at_time: [{ timestamp_nanos: 1234n }],
+          timestamp: [{ timestamp_nanos: 1235n }],
           operation: {
             Transfer: {
               from: mockMainAccount.identifier,
@@ -511,6 +512,7 @@ describe("NnsWallet", () => {
           memo: 123456n,
           icrc1_memo: [],
           created_at_time: [{ timestamp_nanos: 1234n }],
+          timestamp: [{ timestamp_nanos: 1235n }],
           operation: {
             Transfer: {
               from: mockMainAccount.identifier,
