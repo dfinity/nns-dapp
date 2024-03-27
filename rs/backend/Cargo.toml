@@ -50,6 +50,7 @@ proposals = { path = "../proposals" }
 
 [dev-dependencies]
 anyhow = "1.0.75"
+ic_principal = "0.1.0"
 maplit = "1.0.2"
 pocket-ic = "2.2.0"
 pretty_assertions = "1.4.0"

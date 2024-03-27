@@ -1,5 +1,6 @@
 //! Test the migration of the accounts database.
 use std::{env, ffi::OsStr, fs, path::PathBuf, sync::Arc};
+use candid::{encode_one, Principal};
 use pocket_ic::PocketIc;
 
 
@@ -21,6 +22,8 @@ fn find_wasm() {
     let arg_bytes = fs::read("../../out/nns-dapp-arg-local.bin").expect("Failed to read arg file");
     println!("Wasm len: {}", wasm_bytes.len());
     pic.install_canister(canister_id, wasm_bytes, arg_bytes, None);
+    let anonymous = ic_principal::Principal::anonymous();
+    pic.update_call(canister_id, anonymous, "create_toy_accounts", encode_one(10u128).unwrap()).expect("Failed to create toy accounts");
 
     // Plan:
     // - [ ] Create the arguments from rust.
