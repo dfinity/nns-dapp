@@ -1,5 +1,5 @@
 //! Test the migration of the accounts database.
-use std::{env, ffi::OsStr, fs, path::PathBuf, sync::Arc};
+use std::{env, ffi::OsStr, fs, path::PathBuf, sync::Arc, time::Duration};
 use candid::{encode_one, decode_one, Principal};
 use nns_dapp::{accounts_store::schema::SchemaLabel, stats::Stats};
 use pocket_ic::{PocketIc, WasmResult};
@@ -20,7 +20,7 @@ fn find_wasm() {
     let pic = PocketIc::new();
     // TODO: Make this a system subnet canister.
     let canister_id = pic.create_canister();
-    pic.add_cycles(canister_id, 2_000_000_000_000);
+    pic.add_cycles(canister_id, 2_000_000_000_000_000);
     // Note: In the examples, the wasm file is not gzipped.  Installing an unzipped nns-dapp Wasm fails as it is too large (` Message byte size 5412983 is larger than the max allowed 3670016`).
     // Experimenting with the sns aggregator as that is smaller.
     // Ok, that worked, now trying with .gz .. success.
@@ -38,6 +38,14 @@ fn find_wasm() {
     let stats: Stats = decode_one(&reply).unwrap();
     println!("Stats: {stats:?}");
     assert_eq!(10, stats.accounts_count);
+    pic.advance_time(Duration::from_secs(30000 * 60));
+    pic.tick();
+    pic.advance_time(Duration::from_secs(30000 * 60));
+    pic.tick();
+    pic.advance_time(Duration::from_secs(30000 * 60));
+    pic.tick();
+    pic.advance_time(Duration::from_secs(30000 * 60));
+    pic.tick();
     pic.upgrade_canister(canister_id, wasm_bytes, args_with_schema(Some(SchemaLabel::AccountsInStableMemory)), Some(anonymous)).expect("Upgrade failed");
     // Upgrade failed: UserError(UserError { code: CanisterInstallCodeRateLimited, description: "Canister lxzze-o7777-77777-aaaaa-cai is rate limited because it executed too many instructions in the previous install_code messages. Please retry installation after several minutes." })
 
