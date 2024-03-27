@@ -12,6 +12,51 @@ fn args_with_schema(schema: Option<SchemaLabel>) -> Vec<u8> {
 
 }
 
+/// An Internet Computer with just the NNS Dapp.
+struct TestEnv {
+    pub pic: PocketIc,
+    pub canister_id: ic_principal::Principal,
+    pub controller: ic_principal::Principal,
+}
+impl TestEnv {
+    /// Create a new test environment.
+    pub fn new() -> TestEnv {
+        let pic = PocketIcBuilder::new().with_nns_subnet().build();
+        let nns_sub = pic.topology().get_nns().unwrap();
+        let controller = ic_principal::Principal::anonymous();
+        let canister_id = pic.create_canister_on_subnet(Some(controller), None, nns_sub);        
+        pic.add_cycles(canister_id, 2_000_000_000_000_000);  //  Needed?
+        TestEnv { pic, canister_id, controller }
+    }
+    /// Get the nns-dapp stats.
+    pub fn get_stats(&self) -> Stats {
+        let WasmResult::Reply(reply) = self.pic.query_call(self.canister_id, self.controller, "get_stats", encode_one(()).unwrap()).expect("Failed to get stats") else {
+            unreachable!()
+        };
+        decode_one(&reply).unwrap()
+    }
+}
+
+#[test]
+fn migration_toy_1() {
+    let test_env = TestEnv::new();
+    let mut expected_num_accounts = 0;
+    // Install the initial Wasm.
+    {
+        let wasm_bytes = fs::read("../../out/nns-dapp_test.wasm.gz").expect("Failed to read wasm file");
+        test_env.pic.install_canister(test_env.canister_id, wasm_bytes.to_owned(), args_with_schema(Some(SchemaLabel::Map)), None);
+    }
+    // Create some accounts.
+    {
+        let accounts_to_add = 23u128;
+        expected_num_accounts += accounts_to_add;
+        test_env.pic.update_call(test_env.canister_id, test_env.controller, "create_toy_accounts", encode_one(accounts_to_add).unwrap()).expect("Failed to create toy accounts");    
+        let stats = test_env.get_stats();
+        assert_eq!(expected_num_accounts, u128::from(stats.accounts_count), "Number of accounts is not as expected  after creatining initial population");    
+    }
+}
+
+
 #[test]
 fn find_wasm() {
     let anonymous = ic_principal::Principal::anonymous();
