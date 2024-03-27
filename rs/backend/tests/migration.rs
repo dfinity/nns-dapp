@@ -84,10 +84,14 @@ impl TestEnv {
             self.pic.update_call(*canister_id, self.controller, "create_toy_accounts", encode_one(num_accounts).unwrap()).expect("Failed to create toy accounts");
         }
     }
+    /// Steps the migration, if any, in the main canister.
+    pub fn step_migration(&self, num_accounts: u32) {
+        self.pic.update_call(self.canister_id, self.controller, "step_migration", encode_one((num_accounts)).unwrap()).expect("Failed to step migration");
+    }
 }
 
 #[test]
-fn migration_toy_1() {
+fn migration_happy_path() {
     let test_env = TestEnv::new();
     // Install the initial Wasm with schema "Map"
     {
@@ -104,6 +108,17 @@ fn migration_toy_1() {
     {
         test_env.upgrade_to_schema(Some(SchemaLabel::AccountsInStableMemory));
         test_env.assert_invariants_match();
+        assert_eq!(test_env.get_stats().schema, Some(SchemaLabel::Map as u32), "The authoritative schema should still be the old one until the migration is complete");
+    }
+    // Step the migration
+    {
+        for _ in 0..10 {
+            test_env.create_toy_accounts(13);
+            test_env.assert_invariants_match();
+            test_env.step_migration(10);
+            test_env.assert_invariants_match();
+        }
+        assert_eq!(test_env.get_stats().schema, Some(SchemaLabel::AccountsInStableMemory as u32), "The migration should have completed successfully");
     }
 }
 
