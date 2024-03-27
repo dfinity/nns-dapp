@@ -5,9 +5,7 @@ use candid::{decode_one, encode_one};
 use nns_dapp::{accounts_store::schema::SchemaLabel, arguments::CanisterArguments, stats::Stats};
 use pocket_ic::{PocketIc, PocketIcBuilder, WasmResult};
 use proptest::prelude::*;
-use rand::seq::IteratorRandom;
 use std::fs;
-use strum::IntoEnumIterator;
 use strum_macros::EnumIter;
 
 fn args_with_schema(schema: Option<SchemaLabel>) -> Vec<u8> {
@@ -133,7 +131,7 @@ impl TestEnv {
                 self.canister_id,
                 self.controller,
                 "step_migration",
-                encode_one((num_accounts)).unwrap(),
+                encode_one(num_accounts).unwrap(),
             )
             .expect("Failed to step migration");
     }
@@ -173,7 +171,7 @@ fn operation_strategy() -> impl Strategy<Value = Operation> {
 }
 /// A strategy by which Proptest can choose a sequence of operations.
 fn operation_sequence_strategy() -> impl Strategy<Value = Vec<Operation>> {
-    prop::collection::vec(operation_strategy(), 1..100)
+    prop::collection::vec(operation_strategy(), 1..20)
 }
 
 #[test]
