@@ -1,7 +1,9 @@
-//! Test the migration of the accounts database.
-use std::{env, ffi::OsStr, fs, path::PathBuf, sync::Arc, time::Duration};
-use candid::{encode_one, decode_one, Principal};
-use nns_dapp::{accounts_store::schema::SchemaLabel, stats::Stats};
+//! Tests the migration of the accounts database.
+//! 
+//! Assumes that the NNS Dapp Wasm has already been compiled and is available in the `out/` directory in the repository root.
+use std::fs;
+use candid::{encode_one, decode_one};
+use nns_dapp::{accounts_store::schema::SchemaLabel, arguments::CanisterArguments, stats::Stats};
 use pocket_ic::{PocketIc, PocketIcBuilder, WasmResult};
 
 
@@ -12,83 +14,95 @@ fn args_with_schema(schema: Option<SchemaLabel>) -> Vec<u8> {
 
 }
 
+/// Data that should be unaffected by migration.
+#[derive(Debug, Eq, PartialEq)]
+struct InvariantStats {
+    pub num_accounts: u64,
+}
+
 /// An Internet Computer with just the NNS Dapp.
 struct TestEnv {
     pub pic: PocketIc,
     pub canister_id: ic_principal::Principal,
+    pub reference_canister_id: ic_principal::Principal,
     pub controller: ic_principal::Principal,
 }
 impl TestEnv {
-    /// Create a new test environment.
+    /// Path to the Wasm
+    const WASM_PATH : &'static str = "../../out/nns-dapp_test.wasm.gz";
+    /// Creates a new test environment.
     pub fn new() -> TestEnv {
         let pic = PocketIcBuilder::new().with_nns_subnet().build();
         let nns_sub = pic.topology().get_nns().unwrap();
         let controller = ic_principal::Principal::anonymous();
         let canister_id = pic.create_canister_on_subnet(Some(controller), None, nns_sub);        
-        pic.add_cycles(canister_id, 2_000_000_000_000_000);  //  Needed?
-        TestEnv { pic, canister_id, controller }
+        let reference_canister_id = pic.create_canister_on_subnet(Some(controller), None, nns_sub);        
+        TestEnv { pic, canister_id, reference_canister_id, controller }
     }
-    /// Get the nns-dapp stats.
-    pub fn get_stats(&self) -> Stats {
-        let WasmResult::Reply(reply) = self.pic.query_call(self.canister_id, self.controller, "get_stats", encode_one(()).unwrap()).expect("Failed to get stats") else {
+    /// Installs the Wasm with a given schema.
+    /// 
+    /// The reference canister is installed with the default schema.
+    pub fn install_wasm_with_schema(&self, schema: Option<SchemaLabel>) {
+        let wasm_bytes = fs::read(Self::WASM_PATH).expect("Failed to read wasm file");
+        self.pic.install_canister(self.canister_id, wasm_bytes.to_owned(), args_with_schema(schema), Some(self.controller));
+        self.pic.install_canister(self.reference_canister_id, wasm_bytes.to_owned(), encode_one(CanisterArguments::default()).unwrap(), Some(self.controller));
+    }
+    /// Upgrades the canister to a given schema.
+    pub fn upgrade_to_schema(&self, schema: Option<SchemaLabel>) {
+        let wasm_bytes = fs::read(Self::WASM_PATH).expect("Failed to read wasm file");
+        self.pic.upgrade_canister(self.canister_id, wasm_bytes, args_with_schema(schema), Some(self.controller)).expect("Upgrade failed");
+    }
+    /// Gets stats from a given canister.
+    fn get_stats_from_canister(&self, canister_id: ic_principal::Principal) -> Stats {
+        let WasmResult::Reply(reply) = self.pic.query_call(canister_id, self.controller, "get_stats", encode_one(()).unwrap()).expect("Failed to get stats") else {
             unreachable!()
         };
         decode_one(&reply).unwrap()
+    }
+    /// Gets stats from the main canister.
+    pub fn get_stats(&self) -> Stats {
+        self.get_stats_from_canister(self.canister_id)
+    }
+    /// Gets the invariants from either the main or the reference canister.
+    fn get_invariants_from_canister(&self, canister_id: ic_principal::Principal) -> InvariantStats {
+        let stats: Stats = self.get_stats_from_canister(canister_id);
+        InvariantStats { num_accounts: u64::from(stats.accounts_count) }
+    }
+    /// Asserts that the number of accounts is as expected.
+    pub fn assert_invariants_match(&self) {
+        let expected = self.get_invariants_from_canister(self.reference_canister_id);
+        let actual = self.get_invariants_from_canister(self.canister_id);
+        assert_eq!(expected, actual, "Account stats do not match for the main and reference canisters");
+    }
+    /// Creates accounts in the main and reference canisters.
+    pub fn create_toy_accounts(&self, num_accounts: u128) {
+        for canister_id in &[self.canister_id, self.reference_canister_id] {
+            self.pic.update_call(*canister_id, self.controller, "create_toy_accounts", encode_one(num_accounts).unwrap()).expect("Failed to create toy accounts");
+        }
     }
 }
 
 #[test]
 fn migration_toy_1() {
     let test_env = TestEnv::new();
-    let mut expected_num_accounts = 0;
-    // Install the initial Wasm.
+    // Install the initial Wasm with schema "Map"
     {
-        let wasm_bytes = fs::read("../../out/nns-dapp_test.wasm.gz").expect("Failed to read wasm file");
-        test_env.pic.install_canister(test_env.canister_id, wasm_bytes.to_owned(), args_with_schema(Some(SchemaLabel::Map)), None);
+        test_env.install_wasm_with_schema(Some(SchemaLabel::Map));
+        test_env.assert_invariants_match();
+        assert_eq!(test_env.get_stats().schema, Some(SchemaLabel::Map as u32));
     }
     // Create some accounts.
     {
-        let accounts_to_add = 23u128;
-        expected_num_accounts += accounts_to_add;
-        test_env.pic.update_call(test_env.canister_id, test_env.controller, "create_toy_accounts", encode_one(accounts_to_add).unwrap()).expect("Failed to create toy accounts");    
-        let stats = test_env.get_stats();
-        assert_eq!(expected_num_accounts, u128::from(stats.accounts_count), "Number of accounts is not as expected  after creatining initial population");    
+        test_env.create_toy_accounts(17);
+        test_env.assert_invariants_match();
+    }
+    // Upgrade to the new schema "AccountsInStableMemory"
+    {
+        test_env.upgrade_to_schema(Some(SchemaLabel::AccountsInStableMemory));
+        test_env.assert_invariants_match();
     }
 }
 
-
-#[test]
-fn find_wasm() {
-    let anonymous = ic_principal::Principal::anonymous();
-    let wasm_filename = "nns-dapp_test.wasm";
-    let args_filename = "nns-dapp-arg-local.did";
-    let build_dir = "../../out/";
-    let pic = PocketIc::new();
-    let pic = PocketIcBuilder::new().with_nns_subnet().build();
-    // TODO: Make this a system subnet canister.
-    let canister_id = pic.create_canister();
-    let nns_sub = pic.topology().get_nns().unwrap();
-let canister_id = pic.create_canister_on_subnet(Some(anonymous), None, nns_sub);
-
-    pic.add_cycles(canister_id, 2_000_000_000_000_000);
-    // Note: In the examples, the wasm file is not gzipped.  Installing an unzipped nns-dapp Wasm fails as it is too large (` Message byte size 5412983 is larger than the max allowed 3670016`).
-    // Experimenting with the sns aggregator as that is smaller.
-    // Ok, that worked, now trying with .gz .. success.
-    // Ok, trying with the nns-dapp:  Success
-    let wasm_bytes = fs::read("../../out/nns-dapp_test.wasm.gz").expect("Failed to read wasm file");
-    // The only example of passing  in args uses: `encode_one(payload).unwrap()`.  If I recall correctly that yields binary candid encoding, not text.
-    // let arg_bytes = fs::read("../../out/nns-dapp-arg-local.bin").expect("Failed to read arg file");
-
-    pic.install_canister(canister_id, wasm_bytes.to_owned(), args_with_schema(Some(SchemaLabel::Map)), None);
-    pic.update_call(canister_id, anonymous, "create_toy_accounts", encode_one(10u128).unwrap()).expect("Failed to create toy accounts");
-    let WasmResult::Reply(reply) = pic.query_call(canister_id, anonymous, "get_stats", encode_one(()).unwrap()).expect("Failed to get stats") else {
-        unreachable!()
-    };
-    let stats: Stats = decode_one(&reply).unwrap();
-    println!("Stats: {stats:?}");
-    assert_eq!(10, stats.accounts_count);
-    pic.upgrade_canister(canister_id, wasm_bytes, args_with_schema(Some(SchemaLabel::AccountsInStableMemory)), Some(anonymous)).expect("Upgrade failed");
-    // Upgrade failed: UserError(UserError { code: CanisterInstallCodeRateLimited, description: "Canister lxzze-o7777-77777-aaaaa-cai is rate limited because it executed too many instructions in the previous install_code messages. Please retry installation after several minutes." })
 
     // Plan:
     // - [x] Create the arguments from rust.
@@ -101,15 +115,3 @@ let canister_id = pic.create_canister_on_subnet(Some(anonymous), None, nns_sub);
     //    - [ ] Example of passing in arguments, empty, from Rust or from a binary (not text) candid file.
     //    - [ ] Tell the infra story - installing pocket-ic and building the Wasm before running the test.
     // - [x] Bonus: Run this on a system subnet.
-
-
-    let build_dir = Some(OsStr::new("../../out/"))
-         .map(PathBuf::from).expect("Cargo is meant to set that....");
-    fs::read_dir(build_dir).expect("Failed to read dir")
-        .filter_map(Result::ok)
-        .map(|entry| entry.path())
-        //.filter(|path| path.extension().map(|ext| ext == "wasm").unwrap_or(false))
-        .for_each(|path| {
-            println!("Found wasm file: {:?}", path);
-        });
-}
