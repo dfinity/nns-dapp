@@ -95,13 +95,9 @@
     display: flex;
     align-items: center;
     gap: var(--padding-2x);
-
-    padding: calc(var(--padding) - var(--card-border-size));
-    @include media.min-width(large) {
-      // Same as Card padding
-      // We want to padding in the container to use the hover effect on ALL the card surface.
-      padding: calc(var(--padding-2x) - var(--card-border-size));
-    }
+    // Same as Card padding
+    // We want to padding in the container to use the hover effect on ALL the card surface.
+    padding: calc(var(--padding-2x) - var(--card-border-size));
 
     --value-color: var(--text-color);
 
