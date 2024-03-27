@@ -12,7 +12,9 @@
   let innerWidth = 0;
   let list = false;
 
-  $: list = innerWidth > BREAKPOINT_LARGE;
+  let largeScreen = false;
+  $: largeScreen = innerWidth > BREAKPOINT_LARGE;
+  $: list = largeScreen;
   $: if (
     $ENABLE_VOTING_INDICATION &&
     $actionableProposalIndicationEnabledStore
@@ -27,11 +29,14 @@
   ) {
     loadActionableSnsProposals();
   }
+
+  let hideTitle = false;
+  $: hideTitle = $ENABLE_VOTING_INDICATION && !largeScreen;
 </script>
 
 <svelte:window bind:innerWidth />
 
-<Nav>
+<Nav {hideTitle}>
   <p class="title" slot="title" data-tid="select-universe-nav-title">
     {$titleTokenSelectorStore}
   </p>
