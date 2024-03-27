@@ -50,9 +50,6 @@
   $: actionableProposalSupported = $ENABLE_VOTING_INDICATION
     ? $actionableProposalSupportedStore[universe.canisterId]
     : undefined;
-
-  let compactView = false;
-  $: compactView = $ENABLE_VOTING_INDICATION;
 </script>
 
 <Card
@@ -65,7 +62,7 @@
   noPadding
   noMarginBottom
 >
-  <div class="container" class:selected class:compactView>
+  <div class="container" class:selected>
     <UniverseLogo size="big" {universe} framed={true} />
 
     <div
@@ -98,15 +95,12 @@
     display: flex;
     align-items: center;
     gap: var(--padding-2x);
-    // Same as Card padding
-    // We want to padding in the container to use the hover effect on ALL the card surface.
-    padding: calc(var(--padding-2x) - var(--card-border-size));
-    &.compactView {
-      padding: calc(var(--padding) - var(--card-border-size));
 
-      @include media.min-width(large) {
-        padding: calc(var(--padding-2x) - var(--card-border-size));
-      }
+    padding: calc(var(--padding) - var(--card-border-size));
+    @include media.min-width(large) {
+      // Same as Card padding
+      // We want to padding in the container to use the hover effect on ALL the card surface.
+      padding: calc(var(--padding-2x) - var(--card-border-size));
     }
 
     --value-color: var(--text-color);
