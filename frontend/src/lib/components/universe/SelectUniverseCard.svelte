@@ -9,6 +9,7 @@
   import type { Universe } from "$lib/types/universe";
   import {
     actionableProposalCountStore,
+    actionableProposalIndicationEnabledStore,
     actionableProposalSupportedStore,
   } from "$lib/derived/actionable-proposals.derived";
   import ActionableProposalCountBadge from "$lib/components/proposals/ActionableProposalCountBadge.svelte";
@@ -69,7 +70,7 @@
     >
       <span class="name">
         {universe.title}
-        {#if $ENABLE_VOTING_INDICATION}
+        {#if $ENABLE_VOTING_INDICATION && $actionableProposalIndicationEnabledStore}
           {#if nonNullish(actionableProposalCount) && actionableProposalCount > 0}
             <ActionableProposalCountBadge count={actionableProposalCount} />
           {:else if actionableProposalSupported === false}

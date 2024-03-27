@@ -20,11 +20,17 @@ const convertToUserToken = ({
   tokensByUniverse: Record<string, IcrcTokenMetadata>;
 }): UserToken => {
   const token = tokensByUniverse[tokenBaseData.universeId.toText()];
+  const rowHref = isUniverseNns(tokenBaseData.universeId)
+    ? buildAccountsUrl({ universe: tokenBaseData.universeId.toText() })
+    : buildWalletUrl({
+        universe: tokenBaseData.universeId.toText(),
+      });
   if (isNullish(token)) {
     return {
       ...tokenBaseData,
       balance: "loading",
       actions: [],
+      rowHref,
     };
   }
   return {
@@ -33,11 +39,7 @@ const convertToUserToken = ({
     token,
     fee: TokenAmountV2.fromUlps({ amount: token.fee, token }),
     actions: [UserTokenAction.GoToDetail],
-    rowHref: isUniverseNns(tokenBaseData.universeId)
-      ? buildAccountsUrl({ universe: tokenBaseData.universeId.toText() })
-      : buildWalletUrl({
-          universe: tokenBaseData.universeId.toText(),
-        }),
+    rowHref,
   };
 };
 

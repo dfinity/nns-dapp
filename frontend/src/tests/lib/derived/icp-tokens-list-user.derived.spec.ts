@@ -32,6 +32,9 @@ describe("icp-tokens-list-user.derived", () => {
     title: "Main",
     balance: "loading",
     actions: [],
+    rowHref: buildWalletUrl({
+      universe: OWN_CANISTER_ID_TEXT,
+    }),
   };
   const mainUserTokenData: UserTokenData = {
     ...icpTokenUser,
@@ -43,7 +46,6 @@ describe("icp-tokens-list-user.derived", () => {
     subtitle: undefined,
     rowHref: buildWalletUrl({
       universe: OWN_CANISTER_ID_TEXT,
-      account: mockMainAccount.identifier,
     }),
     accountIdentifier: mockMainAccount.identifier,
   };

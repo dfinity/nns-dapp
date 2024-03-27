@@ -4,16 +4,11 @@
     type UserTokenData,
     type UserTokenLoading,
   } from "$lib/types/tokens-page";
-  import {
-    SvelteComponent,
-    createEventDispatcher,
-    type ComponentType,
-  } from "svelte";
+  import type { SvelteComponent, ComponentType } from "svelte";
   import Logo from "../../ui/Logo.svelte";
   import GoToDetailIcon from "./actions/GoToDetailIcon.svelte";
   import ReceiveButton from "./actions/ReceiveButton.svelte";
   import SendButton from "./actions/SendButton.svelte";
-  import { ActionType } from "$lib/types/actions";
   import { UnavailableTokenAmount } from "$lib/utils/token.utils";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { nonNullish } from "@dfinity/utils";
@@ -22,8 +17,6 @@
   import { isUserTokenData } from "$lib/utils/user-token.utils";
 
   export let userTokenData: UserTokenData | UserTokenLoading;
-
-  const dispatcher = createEventDispatcher();
 
   const actionMapper: Record<
     UserTokenAction,
@@ -37,16 +30,6 @@
   let userToken: UserTokenData | undefined;
   $: userToken = isUserTokenData(userTokenData) ? userTokenData : undefined;
 
-  const handleClick = () => {
-    if (nonNullish(userToken)) {
-      // Actions can only be dispatched with `UserTokenData`
-      dispatcher("nnsAction", {
-        type: ActionType.GoToTokenDetail,
-        data: userToken,
-      });
-    }
-  };
-
   // Should be the same as the area in the classes `rows-count-X`.
   const cellAreaName = (index: number) => `cell-${index}`;
   // This will allow us to have different number of rows depending on the number of columns.
@@ -57,13 +40,10 @@
   };
 </script>
 
-<svelte:element
-  this={nonNullish(userTokenData.rowHref) ? "a" : "div"}
+<a
   href={userTokenData.rowHref}
   role="row"
   tabindex="0"
-  on:keypress={handleClick}
-  on:click={handleClick}
   data-tid="tokens-table-row-component"
   class={mobileTemplateClass(2)}
   data-title={userTokenData.title}
@@ -111,7 +91,7 @@
       {/each}
     {/if}
   </div>
-</svelte:element>
+</a>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/interaction";
