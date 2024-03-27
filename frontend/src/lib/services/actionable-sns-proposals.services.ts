@@ -1,14 +1,20 @@
 import { queryProposals, querySnsNeurons } from "$lib/api/sns-governance.api";
+import { MAX_ACTIONABLE_REQUEST_COUNT } from "$lib/constants/constants";
 import { DEFAULT_SNS_PROPOSALS_PAGE_SIZE } from "$lib/constants/sns-proposals.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { votableSnsNeurons } from "$lib/utils/sns-neuron.utils";
+import {
+  lastProposalId,
+  sortSnsProposalsById,
+} from "$lib/utils/sns-proposals.utils";
 import type { Identity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
-import type { SnsListProposalsResponse, SnsNeuron } from "@dfinity/sns";
+import type { SnsNeuron } from "@dfinity/sns";
 import { SnsProposalRewardStatus } from "@dfinity/sns";
+import type { ProposalData } from "@dfinity/sns/dist/candid/sns_governance";
 import { fromNullable, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
@@ -37,14 +43,11 @@ const loadActionableProposalsForSns = async (
     }
 
     const identity = await getAuthenticatedIdentity();
-    const { proposals: allProposals, include_ballots_by_caller } =
+    const { proposals: allProposals, includeBallotsByCaller } =
       await querySnsProposals({
         rootCanisterId: rootCanisterIdText,
         identity,
       });
-
-    const includeBallotsByCaller =
-      fromNullable(include_ballots_by_caller) ?? false;
 
     if (!includeBallotsByCaller) {
       // No need to fetch neurons if there are no actionable proposals support.
@@ -113,16 +116,50 @@ const querySnsProposals = async ({
 }: {
   rootCanisterId: string;
   identity: Identity;
-}): Promise<SnsListProposalsResponse> => {
-  return queryProposals({
-    params: {
-      limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
-      includeRewardStatus: [
-        SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
-      ],
-    },
-    identity,
-    certified: false,
-    rootCanisterId: Principal.fromText(rootCanisterId),
-  });
+}): Promise<{ proposals: ProposalData[]; includeBallotsByCaller: boolean }> => {
+  let sortedProposals: ProposalData[] = [];
+  let includeBallotsByCaller = false;
+  for (
+    let pagesLoaded = 0;
+    pagesLoaded < MAX_ACTIONABLE_REQUEST_COUNT;
+    pagesLoaded++
+  ) {
+    // Fetch all proposals that are accepting votes.
+    const { proposals: page, include_ballots_by_caller } = await queryProposals(
+      {
+        params: {
+          limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
+          includeRewardStatus: [
+            SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
+          ],
+          beforeProposal: lastProposalId(sortedProposals),
+        },
+        identity,
+        certified: false,
+        rootCanisterId: Principal.fromText(rootCanisterId),
+      }
+    );
+
+    // Sort proposals by id in descending order to be sure that "lastProposalId" returns correct id.
+    sortedProposals = sortSnsProposalsById([
+      ...sortedProposals,
+      ...page,
+    ]) as ProposalData[];
+    // Canisters w/o ballot support, returns undefined for `include_ballots_by_caller`.
+    includeBallotsByCaller = fromNullable(include_ballots_by_caller) ?? false;
+
+    // no more proposals available
+    if (page.length !== DEFAULT_SNS_PROPOSALS_PAGE_SIZE) {
+      break;
+    }
+
+    if (pagesLoaded === MAX_ACTIONABLE_REQUEST_COUNT - 1) {
+      console.error("Max actionable sns pages loaded");
+    }
+  }
+
+  return {
+    proposals: sortedProposals,
+    includeBallotsByCaller,
+  };
 };
