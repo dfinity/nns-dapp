@@ -23,7 +23,7 @@
     justify-content: center;
     align-items: center;
     // Compensate the secondary button border (2px), to ensure alignment with the segment component.
-    margin: -2px;
+    margin: calc(-1 * var(--button-border-size));
     min-height: auto;
 
     :global(svg) {
