@@ -1,7 +1,7 @@
 //! Test the migration of the accounts database.
 use std::{env, ffi::OsStr, fs, path::PathBuf, sync::Arc};
 use candid::{encode_one, decode_one, Principal};
-use nns_dapp::stats::Stats;
+use nns_dapp::{accounts_store::schema::SchemaLabel, stats::Stats};
 use pocket_ic::{PocketIc, WasmResult};
 
 
@@ -20,7 +20,11 @@ fn find_wasm() {
     // Ok, trying with the nns-dapp:  Success
     let wasm_bytes = fs::read("../../out/nns-dapp_test.wasm.gz").expect("Failed to read wasm file");
     // The only example of passing  in args uses: `encode_one(payload).unwrap()`.  If I recall correctly that yields binary candid encoding, not text.
-    let arg_bytes = fs::read("../../out/nns-dapp-arg-local.bin").expect("Failed to read arg file");
+    // let arg_bytes = fs::read("../../out/nns-dapp-arg-local.bin").expect("Failed to read arg file");
+
+    let mut args = nns_dapp::arguments::CanisterArguments::default();
+    args.schema = Some(SchemaLabel::Map);
+    let arg_bytes = encode_one(args).expect("Failed to encode arguments");
     println!("Wasm len: {}", wasm_bytes.len());
     pic.install_canister(canister_id, wasm_bytes, arg_bytes, None);
     let anonymous = ic_principal::Principal::anonymous();
@@ -33,9 +37,9 @@ fn find_wasm() {
     assert_eq!(10, stats.accounts_count);
 
     // Plan:
-    // - [ ] Create the arguments from rust.
+    // - [x] Create the arguments from rust.
     // - [x] Create accounts
-    // - [ ] Check accounts count is as expected
+    // - [x] Check accounts count is as expected
     // - [ ] Upgrade to trigger a migration.
     // - [ ] Call step? Might be simpler than calling the heartbeat.  Heartbeat would be more realistic so that can be a strech goal ponce everything elese is working.
     // - [ ] Make a PR with rustdocs!
