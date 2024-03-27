@@ -1,5 +1,5 @@
 //! Test the migration of the accounts database.
-use std::{env, ffi::OsStr, fs, path::PathBuf};
+use std::{env, ffi::OsStr, fs, path::PathBuf, sync::Arc};
 use pocket_ic::PocketIc;
 
 
@@ -21,6 +21,17 @@ fn find_wasm() {
     let arg_bytes = fs::read("../../out/nns-dapp-arg-local.bin").expect("Failed to read arg file");
     println!("Wasm len: {}", wasm_bytes.len());
     pic.install_canister(canister_id, wasm_bytes, arg_bytes, None);
+
+    // Plan:
+    // - [ ] Create the arguments from rust.
+    // - [ ] Create accounts
+    // - [ ] Upgrade to trigger a migration.
+    // - [ ] Call step? Might be simpler than calling the heartbeat.  Heartbeat would be more realistic so that can be a strech goal ponce everything elese is working.
+    // - [ ] Make a PR with rustdocs!
+    //    - [ ] Examples of passing in wasm, gzipped or not.
+    //    - [ ] Example of passing in arguments, empty, from Rust or from a binary (not text) candid file.
+    //    - [ ] Tell the infra story - installing pocket-ic and building the Wasm before running the test.
+
 
     let build_dir = Some(OsStr::new("../../out/"))
          .map(PathBuf::from).expect("Cargo is meant to set that....");
