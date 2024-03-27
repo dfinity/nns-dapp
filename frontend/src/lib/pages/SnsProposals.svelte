@@ -142,7 +142,7 @@
           ? actionableProposals
           : $snsFilteredActionableProposalsStore[
               currentProjectCanisterId.toText()
-            ]?.proposals
+            ]
       )
     : undefined;
 

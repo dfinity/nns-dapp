@@ -65,22 +65,20 @@ describe("snsFilteredActionableProposalsStore", () => {
     await runResolvedPromises();
 
     expect(get(snsFilteredActionableProposalsStore)).toEqual({
-      [rootCanisterId.toText()]: {
-        proposals: [
-          {
-            ...snsProposal1,
-            isActionable: true,
-          },
-          {
-            ...snsProposal2,
-            isActionable: false,
-          },
-          {
-            ...snsProposal3,
-            isActionable: true,
-          },
-        ],
-      },
+      [rootCanisterId.toText()]: [
+        {
+          ...snsProposal1,
+          isActionable: true,
+        },
+        {
+          ...snsProposal2,
+          isActionable: false,
+        },
+        {
+          ...snsProposal3,
+          isActionable: true,
+        },
+      ],
     });
   });
 
@@ -93,22 +91,20 @@ describe("snsFilteredActionableProposalsStore", () => {
     });
 
     expect(get(snsFilteredActionableProposalsStore)).toEqual({
-      [rootCanisterId.toText()]: {
-        proposals: [
-          {
-            ...snsProposal1,
-            isActionable: undefined,
-          },
-          {
-            ...snsProposal2,
-            isActionable: undefined,
-          },
-          {
-            ...snsProposal3,
-            isActionable: undefined,
-          },
-        ],
-      },
+      [rootCanisterId.toText()]: [
+        {
+          ...snsProposal1,
+          isActionable: undefined,
+        },
+        {
+          ...snsProposal2,
+          isActionable: undefined,
+        },
+        {
+          ...snsProposal3,
+          isActionable: undefined,
+        },
+      ],
     });
   });
 });

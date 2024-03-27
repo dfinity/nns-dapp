@@ -13,12 +13,9 @@ import { derived, type Readable } from "svelte/store";
 export type SnsProposalActionableData = SnsProposalData & {
   isActionable: boolean | undefined;
 };
-export interface ProjectActionableProposalData {
-  proposals: SnsProposalActionableData[];
-}
 
 export interface SnsFilteredActionableProposalsStoreData {
-  [rootCanisterId: string]: ProjectActionableProposalData;
+  [rootCanisterId: string]: SnsProposalActionableData[];
 }
 
 export const snsFilteredActionableProposalsStore = derived<
@@ -40,7 +37,7 @@ export const snsFilteredActionableProposalsStore = derived<
               snsProposalId(actionableProposal) === snsProposalId(proposal)
           ),
         }));
-        return [rootCanisterIdText, { proposals }];
+        return [rootCanisterIdText, proposals];
       },
     });
   }
