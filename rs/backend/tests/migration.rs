@@ -42,14 +42,6 @@ let canister_id = pic.create_canister_on_subnet(Some(anonymous), None, nns_sub);
     let stats: Stats = decode_one(&reply).unwrap();
     println!("Stats: {stats:?}");
     assert_eq!(10, stats.accounts_count);
-    pic.advance_time(Duration::from_secs(30000 * 60));
-    pic.tick();
-    pic.advance_time(Duration::from_secs(30000 * 60));
-    pic.tick();
-    pic.advance_time(Duration::from_secs(30000 * 60));
-    pic.tick();
-    pic.advance_time(Duration::from_secs(30000 * 60));
-    pic.tick();
     pic.upgrade_canister(canister_id, wasm_bytes, args_with_schema(Some(SchemaLabel::AccountsInStableMemory)), Some(anonymous)).expect("Upgrade failed");
     // Upgrade failed: UserError(UserError { code: CanisterInstallCodeRateLimited, description: "Canister lxzze-o7777-77777-aaaaa-cai is rate limited because it executed too many instructions in the previous install_code messages. Please retry installation after several minutes." })
 
