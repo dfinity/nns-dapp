@@ -5,6 +5,13 @@ use nns_dapp::{accounts_store::schema::SchemaLabel, stats::Stats};
 use pocket_ic::{PocketIc, WasmResult};
 
 
+fn args_with_schema(schema: Option<SchemaLabel>) -> Vec<u8> {
+    let mut args = nns_dapp::arguments::CanisterArguments::default();
+    args.schema = schema;
+    encode_one(args).expect("Failed to encode arguments")
+
+}
+
 #[test]
 fn find_wasm() {
     let wasm_filename = "nns-dapp_test.wasm";
@@ -22,11 +29,7 @@ fn find_wasm() {
     // The only example of passing  in args uses: `encode_one(payload).unwrap()`.  If I recall correctly that yields binary candid encoding, not text.
     // let arg_bytes = fs::read("../../out/nns-dapp-arg-local.bin").expect("Failed to read arg file");
 
-    let mut args = nns_dapp::arguments::CanisterArguments::default();
-    args.schema = Some(SchemaLabel::Map);
-    let arg_bytes = encode_one(args).expect("Failed to encode arguments");
-    println!("Wasm len: {}", wasm_bytes.len());
-    pic.install_canister(canister_id, wasm_bytes, arg_bytes, None);
+    pic.install_canister(canister_id, wasm_bytes.to_owned(), args_with_schema(Some(SchemaLabel::Map)), None);
     let anonymous = ic_principal::Principal::anonymous();
     pic.update_call(canister_id, anonymous, "create_toy_accounts", encode_one(10u128).unwrap()).expect("Failed to create toy accounts");
     let WasmResult::Reply(reply) = pic.query_call(canister_id, anonymous, "get_stats", encode_one(()).unwrap()).expect("Failed to get stats") else {
@@ -35,6 +38,8 @@ fn find_wasm() {
     let stats: Stats = decode_one(&reply).unwrap();
     println!("Stats: {stats:?}");
     assert_eq!(10, stats.accounts_count);
+    pic.upgrade_canister(canister_id, wasm_bytes, args_with_schema(Some(SchemaLabel::AccountsInStableMemory)), Some(anonymous)).expect("Upgrade failed");
+    // Upgrade failed: UserError(UserError { code: CanisterInstallCodeRateLimited, description: "Canister lxzze-o7777-77777-aaaaa-cai is rate limited because it executed too many instructions in the previous install_code messages. Please retry installation after several minutes." })
 
     // Plan:
     // - [x] Create the arguments from rust.
