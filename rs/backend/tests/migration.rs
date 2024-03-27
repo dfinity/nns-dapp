@@ -20,7 +20,11 @@ struct InvariantStats {
     pub num_accounts: u64,
 }
 
-/// An Internet Computer with just the NNS Dapp.
+/// An Internet Computer with two NNS dapps, one to migrate and one as a reference.
+/// 
+/// - Accounts are created in both canisters.
+/// - Migrations and rollbacks are applied only to the main (non-reference) canister.
+/// - The two canisters should always have the same accounts.
 struct TestEnv {
     pub pic: PocketIc,
     pub canister_id: ic_principal::Principal,
