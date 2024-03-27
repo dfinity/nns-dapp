@@ -51,6 +51,7 @@ fn find_wasm() {
     //    - [ ] Examples of passing in wasm, gzipped or not.
     //    - [ ] Example of passing in arguments, empty, from Rust or from a binary (not text) candid file.
     //    - [ ] Tell the infra story - installing pocket-ic and building the Wasm before running the test.
+    // - [ ] Bonus: Run this on a system subnet.
 
 
     let build_dir = Some(OsStr::new("../../out/"))
