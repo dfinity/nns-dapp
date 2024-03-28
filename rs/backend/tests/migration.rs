@@ -258,6 +258,11 @@ fn interrupted_migration() {
             Some(SchemaLabel::Map as u32),
             "The insufficient ticks have passed for the migration to complete, so the schema should not have changed"
         );
+        assert_ne!(
+            test_env.get_stats().migration_countdown,
+            Some(0),
+            "The migration should still be in progress"
+        );
     }
     // Roll back to the "Map" schema.
     {
@@ -273,6 +278,15 @@ fn interrupted_migration() {
             Some(0),
             "There should be no migration in progress after rollback; the map should have been loaded in the post_upgrade hook."
         );
+    }
+    // Make sure nothing is in progress that could cause data loss.
+    {
+        for _ in 0..20 {
+            test_env.create_toy_accounts(5);
+            test_env.assert_invariants_match();
+            test_env.pic.tick();
+            test_env.assert_invariants_match();
+        }
     }
 }
 
