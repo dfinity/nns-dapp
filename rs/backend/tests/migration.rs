@@ -18,6 +18,7 @@ fn args_with_schema(schema: Option<SchemaLabel>) -> Vec<u8> {
 #[derive(Debug, Eq, PartialEq)]
 struct InvariantStats {
     pub num_accounts: u64,
+    // TODO: Are there any more invariants that should be checked?
 }
 
 /// An Internet Computer with two NNS dapps, one to migrate and one as a reference.
