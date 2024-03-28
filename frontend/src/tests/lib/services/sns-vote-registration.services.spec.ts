@@ -19,7 +19,7 @@ import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { NeuronState } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import type { SnsProposalData } from "@dfinity/sns";
+import type { SnsBallot, SnsProposalData } from "@dfinity/sns";
 import {
   SnsNeuronPermissionType,
   SnsProposalRewardStatus,
@@ -63,27 +63,32 @@ describe("sns-vote-registration-services", () => {
   const spyOnToastsUpdate = vi.spyOn(toastsStore, "toastsUpdate");
   const spyOnToastsShow = vi.spyOn(toastsStore, "toastsShow");
   const spyOnToastsError = vi.spyOn(toastsStore, "toastsError");
-  const proposal: SnsProposalData = {
+  const testBallots = neurons.map((neuron) => [
+    getSnsNeuronIdAsHexString(neuron),
+    {
+      vote: SnsVote.Unspecified,
+      cast_timestamp_seconds: 456n,
+      voting_power: 98441n,
+    },
+  ]) as [string, SnsBallot][];
+  const proposal1: SnsProposalData = {
     ...mockSnsProposal,
     id: [{ id: 123n }],
-    // map to the function id
     action: nervousSystemFunctionMock.id,
-    // enable voting in ballots
-    ballots: neurons.map((neuron) => [
-      getSnsNeuronIdAsHexString(neuron),
-      {
-        vote: SnsVote.Unspecified,
-        cast_timestamp_seconds: 456n,
-        voting_power: 98441n,
-      },
-    ]),
+    ballots: testBallots,
   };
+  const proposal2: SnsProposalData = {
+    ...mockSnsProposal,
+    id: [{ id: 321n }],
+    action: nervousSystemFunctionMock.id,
+    ballots: testBallots,
+  };
+  let resolveQuerySnsProposals;
   const spyQuerySnsProposals = vi
     .spyOn(api, "queryProposals")
-    .mockResolvedValue({
-      proposals: [proposal],
-      include_ballots_by_caller: [true],
-    });
+    .mockReturnValue(
+      new Promise((resolve) => (resolveQuerySnsProposals = resolve))
+    );
   const spyQuerySnsNeurons = vi
     .spyOn(api, "querySnsNeurons")
     .mockResolvedValue([...neurons]);
@@ -97,7 +102,7 @@ describe("sns-vote-registration-services", () => {
     await registerSnsVotes({
       universeCanisterId: rootCanisterId,
       neurons,
-      proposal,
+      proposal: proposal1,
       vote,
       updateProposalCallback: reloadProposalCallback,
     });
@@ -105,8 +110,6 @@ describe("sns-vote-registration-services", () => {
   beforeEach(() => {
     resetIdentity();
     vi.clearAllMocks();
-    spyQuerySnsNeurons.mockClear();
-    spyQuerySnsProposals.mockClear();
 
     snsFunctionsStore.setProjectsFunctions([
       {
@@ -119,7 +122,7 @@ describe("sns-vote-registration-services", () => {
       rootCanisterId,
       certified: true,
       completed: true,
-      proposals: [proposal],
+      proposals: [proposal1],
     });
 
     spyOnToastsUpdate.mockClear();
@@ -206,22 +209,22 @@ describe("sns-vote-registration-services", () => {
       const rootCanisterId2 = principal(13);
       actionableSnsProposalsStore.set({
         rootCanisterId,
-        proposals: [proposal],
+        proposals: [proposal1, proposal2],
         includeBallotsByCaller: true,
       });
       actionableSnsProposalsStore.set({
         rootCanisterId: rootCanisterId2,
-        proposals: [proposal],
+        proposals: [proposal1, proposal2],
         includeBallotsByCaller: true,
       });
 
       expect(get(actionableSnsProposalsStore)).toEqual({
         [rootCanisterId.toText()]: {
-          proposals: [proposal],
+          proposals: [proposal1, proposal2],
           includeBallotsByCaller: true,
         },
         [rootCanisterId2.toText()]: {
-          proposals: [proposal],
+          proposals: [proposal1, proposal2],
           includeBallotsByCaller: true,
         },
       });
@@ -252,21 +255,25 @@ describe("sns-vote-registration-services", () => {
 
       expect(get(actionableSnsProposalsStore)).toEqual({
         [rootCanisterId2.toText()]: {
-          proposals: [proposal],
+          proposals: [proposal1, proposal2],
           includeBallotsByCaller: true,
         },
       });
 
       // wait for actionable sns proposals loading
+      resolveQuerySnsProposals({
+        proposals: [proposal1],
+        include_ballots_by_caller: [true],
+      });
       await runResolvedPromises();
 
       expect(get(actionableSnsProposalsStore)).toEqual({
         [rootCanisterId.toText()]: {
-          proposals: [proposal],
+          proposals: [proposal1],
           includeBallotsByCaller: true,
         },
         [rootCanisterId2.toText()]: {
-          proposals: [proposal],
+          proposals: [proposal1, proposal2],
           includeBallotsByCaller: true,
         },
       });
