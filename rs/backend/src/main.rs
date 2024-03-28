@@ -324,8 +324,8 @@ pub fn step_migration() {
 fn step_migration_impl(step_size: u32) {
     let caller = ic_cdk::caller();
     let own_canister_id = ic_cdk::api::id();
-    if (caller != own_canister_id) && !ic_cdk::api::is_controller(&caller) {
-        dfn_core::api::trap_with("Only the canister itself and canister controllers may call step_migration");
+    if caller != own_canister_id {
+        dfn_core::api::trap_with("Only the canister itself may call step_migration");
     }
     STATE.with(|s| {
         s.accounts_store.borrow_mut().step_migration(step_size);

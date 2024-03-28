@@ -148,10 +148,12 @@ impl TestEnv {
 /// Note: u8 is used for some variants, rather than the larger types supported by the actual API, to keep the test runtime reasonable.
 #[derive(Debug, Eq, PartialEq, EnumIter, Copy, Clone)]
 enum Operation {
-    CreateToyAccounts(u8),
     UpgradeToMap,
     UpgradeToStableStructures,
     Tick(u8),
+    CreateToyAccounts(u8),
+    // TODO: Modify a random account
+    // TODO: Delete a random account
 }
 
 /// A strategy by which Proptest can choose operations.
