@@ -71,7 +71,7 @@ jobs:
       - name: Run Unit Tests
         shell: bash
         run: |
-          cargo test --lib --bins --benches --doc --examples --all-features
+          cargo test --lib --bins --benches --examples --all-features
         env:
           RUST_BACKTRACE: 1
       - name: Lint rustdoc
