@@ -1,4 +1,5 @@
 import * as governanceApi from "$lib/api/governance.api";
+import * as api from "$lib/api/proposals.api";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import * as authServices from "$lib/services/auth.services";
 import * as neuronsServices from "$lib/services/neurons.services";
@@ -12,13 +13,20 @@ import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import {
   mockGetIdentity,
+  mockIdentity,
   resetIdentity,
   setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
-import { GovernanceError, Vote, type ProposalInfo } from "@dfinity/nns";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import {
+  GovernanceError,
+  ProposalRewardStatus,
+  Vote,
+  type ProposalInfo,
+} from "@dfinity/nns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -48,6 +56,17 @@ describe("vote-registration-services", () => {
   const spyOnToastsError = vi.spyOn(toastsStore, "toastsError");
   const spyRegisterVote = vi.spyOn(governanceApi, "registerVote");
 
+  const votableProposal: ProposalInfo = {
+    ...mockProposalInfo,
+    id: 0n,
+  };
+  const spyQueryProposals = vi
+    .spyOn(api, "queryProposals")
+    .mockImplementation(() => Promise.resolve([votableProposal]));
+  const spyQueryNeurons = vi
+    .spyOn(governanceApi, "queryNeurons")
+    .mockResolvedValue([...neurons]);
+
   let proposal: ProposalInfo = proposalInfo();
 
   beforeEach(() => {
@@ -56,6 +75,8 @@ describe("vote-registration-services", () => {
     voteRegistrationStore.reset();
     proposalsStore.reset();
     resetIdentity();
+    spyQueryNeurons.mockClear();
+    spyQueryProposals.mockClear();
 
     // Setup:
     proposal = proposalInfo();
@@ -254,12 +275,14 @@ describe("vote-registration-services", () => {
         }
       });
 
-      it("should reset actionable proposals store after voting", async () => {
+      it("should reset and reload actionable proposals after voting", async () => {
         actionableNnsProposalsStore.setProposals([proposal]);
 
         expect(get(actionableNnsProposalsStore)).toEqual({
           proposals: [proposal],
         });
+        expect(spyQueryNeurons).toBeCalledTimes(0);
+        expect(spyQueryProposals).toBeCalledTimes(0);
 
         await registerNnsVotes({
           neuronIds,
@@ -270,8 +293,32 @@ describe("vote-registration-services", () => {
           },
         });
 
+        // should use stored neurons
+        expect(spyQueryNeurons).toBeCalledTimes(0);
+        // reload actionable proposals
+        expect(spyQueryProposals).toBeCalledTimes(1);
+        expect(spyQueryProposals).toBeCalledWith({
+          beforeProposal: undefined,
+          certified: false,
+          filters: {
+            excludeVotedProposals: false,
+            lastAppliedFilter: undefined,
+            rewards: [ProposalRewardStatus.AcceptVotes],
+            status: [],
+            topics: [],
+          },
+          identity: mockIdentity,
+        });
+
         expect(get(actionableNnsProposalsStore)).toEqual({
           proposals: undefined,
+        });
+
+        // wait for actionable proposal loading
+        await runResolvedPromises();
+
+        expect(get(actionableNnsProposalsStore)).toEqual({
+          proposals: [votableProposal],
         });
       });
 
