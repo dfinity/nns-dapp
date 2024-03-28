@@ -20,7 +20,6 @@ const config: UserConfig = {
           const folder = dirname(id);
 
           const lazy = [
-            "@dfinity/nns-proto",
             "html5-qrcode",
             "qr-creator",
             "@ledgerhq",
