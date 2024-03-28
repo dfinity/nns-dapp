@@ -31,6 +31,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * Make token table rows always clickable. A few edge cases were missing.
+* Don't require double hardware approval on neuron staking.
 
 #### Security
 

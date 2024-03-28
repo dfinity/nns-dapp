@@ -116,18 +116,18 @@ describe("LedgerIdentity", () => {
     expect(readRequest.endpoint).toBe("read_state");
   });
 
-  it("should call to sign read state request after signing call request if neuron flag is set", async () => {
+  it("should not call to sign read state request after signing call request if neuron flag is set", async () => {
     const identity = await LedgerIdentity.create();
 
     identity.flagUpcomingStakeNeuron();
     const request = await identity.transformRequest(mockHttpRequest1);
-    expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(0);
-    expect(mockLedgerApp.sign).toHaveBeenCalledTimes(1);
+    expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(1);
+    expect(mockLedgerApp.sign).toHaveBeenCalledTimes(0);
     expect(request.endpoint).toBe("call");
 
     const readRequest = await identity.transformRequest(mockReadStateRequest1);
-    expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(0);
-    expect(mockLedgerApp.sign).toHaveBeenCalledTimes(2);
+    expect(mockLedgerApp.signUpdateCall).toHaveBeenCalledTimes(1);
+    expect(mockLedgerApp.sign).toHaveBeenCalledTimes(0);
     expect(readRequest.endpoint).toBe("read_state");
   });
 
