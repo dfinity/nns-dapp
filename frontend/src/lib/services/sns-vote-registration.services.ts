@@ -88,7 +88,7 @@ export const registerSnsVotes = async ({
         completed: true,
       });
 
-      // Reset the reload actionable sns proposals.
+      // Reset and reload actionable sns proposals.
       actionableSnsProposalsStore.resetForSns(universeCanisterId);
       // TODO(max): update test
       loadActionableProposalsForSns(universeCanisterId);
