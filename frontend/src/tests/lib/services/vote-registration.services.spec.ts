@@ -60,9 +60,12 @@ describe("vote-registration-services", () => {
     ...mockProposalInfo,
     id: 0n,
   };
+  let resolveSpyQueryProposals;
   const spyQueryProposals = vi
     .spyOn(api, "queryProposals")
-    .mockImplementation(() => Promise.resolve([votableProposal]));
+    .mockReturnValue(
+      new Promise((resolve) => (resolveSpyQueryProposals = resolve))
+    );
   const spyQueryNeurons = vi
     .spyOn(governanceApi, "queryNeurons")
     .mockResolvedValue([...neurons]);
@@ -75,8 +78,6 @@ describe("vote-registration-services", () => {
     voteRegistrationStore.reset();
     proposalsStore.reset();
     resetIdentity();
-    spyQueryNeurons.mockClear();
-    spyQueryProposals.mockClear();
 
     // Setup:
     proposal = proposalInfo();
@@ -315,6 +316,7 @@ describe("vote-registration-services", () => {
         });
 
         // wait for actionable proposal loading
+        resolveSpyQueryProposals([votableProposal]);
         await runResolvedPromises();
 
         expect(get(actionableNnsProposalsStore)).toEqual({
