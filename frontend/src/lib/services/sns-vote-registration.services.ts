@@ -90,8 +90,7 @@ export const registerSnsVotes = async ({
 
       // Reset and reload actionable sns proposals.
       actionableSnsProposalsStore.resetForSns(universeCanisterId);
-      // TODO(max): update test
-      loadActionableProposalsForSns(universeCanisterId);
+      loadActionableProposalsForSns(universeCanisterId).then();
     },
   });
 };
