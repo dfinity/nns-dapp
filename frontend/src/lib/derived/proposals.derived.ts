@@ -1,3 +1,4 @@
+import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { authStore } from "$lib/stores/auth.store";
 import { definedNeuronsStore } from "$lib/stores/neurons.store";
 import type {
@@ -87,3 +88,26 @@ export const filteredProposals: Readable<ProposalsStore> = derived(
     certified,
   })
 );
+
+export type ActionableProposalInfo = ProposalInfo & {
+  isActionable: boolean | undefined;
+};
+
+export interface FilteredActionableProposalsStore {
+  proposals: ActionableProposalInfo[];
+  certified: boolean | undefined;
+}
+
+export const filteredActionableProposals: Readable<FilteredActionableProposalsStore> =
+  derived(
+    [filteredProposals, actionableNnsProposalsStore],
+    ([filteredProposalsStore, actionableProposalsStore]) => ({
+      ...filteredProposalsStore,
+      proposals: filteredProposalsStore.proposals.map((proposal) => ({
+        ...proposal,
+        isActionable: actionableProposalsStore?.proposals?.some(
+          ({ id }) => id === proposal.id
+        ),
+      })),
+    })
+  );
