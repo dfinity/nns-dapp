@@ -115,5 +115,6 @@ export const mockTransactionWithId: TransactionWithId = {
       },
     },
     created_at_time: [],
+    timestamp: [],
   },
 };
