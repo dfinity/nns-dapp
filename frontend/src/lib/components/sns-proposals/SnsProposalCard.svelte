@@ -17,6 +17,7 @@
 
   export let proposalData: SnsProposalData;
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;
+  export let actionable = false;
   export let hidden = false;
 
   let id: SnsProposalId | undefined;
@@ -49,6 +50,7 @@
 <ProposalCard
   {status}
   {hidden}
+  {actionable}
   {href}
   id={id?.id}
   {title}

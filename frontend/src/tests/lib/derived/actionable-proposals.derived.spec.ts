@@ -14,7 +14,6 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import type { ProposalInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { beforeEach } from "vitest";
 
 describe("actionable proposals derived stores", () => {
   describe("actionableProposalIndicationEnabledStore", () => {

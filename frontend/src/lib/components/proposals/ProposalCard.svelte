@@ -16,6 +16,7 @@
   import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
 
   export let hidden = false;
+  export let actionable = false;
   export let status: UniversalProposalStatus | undefined;
   export let id: bigint | undefined;
   export let heading: string;
@@ -39,7 +40,7 @@
           </div>
 
           {#if nonNullish(status)}
-            <ProposalStatusTag testId="proposal-status" {status} />
+            <ProposalStatusTag {status} {actionable} />
           {/if}
         </div>
 

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { SnsProposalData } from "@dfinity/sns";
   import SnsProposalCard from "$lib/components/sns-proposals/SnsProposalCard.svelte";
   import { InfiniteScroll } from "@dfinity/gix-components";
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
@@ -15,9 +14,10 @@
   import ActionableProposalsSignIn from "$lib/components/proposals/ActionableProposalsSignIn.svelte";
   import ActionableProposalsNotSupported from "$lib/components/proposals/ActionableProposalsNotSupported.svelte";
   import ActionableProposalsEmpty from "$lib/components/proposals/ActionableProposalsEmpty.svelte";
+  import type { SnsProposalActionableData } from "$lib/derived/sns/sns-filtered-actionable-proposals.derived";
 
   export let snsName: string;
-  export let proposals: SnsProposalData[] | undefined;
+  export let proposals: SnsProposalActionableData[] | undefined;
   export let includeBallots: boolean;
   export let actionableSelected: boolean;
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;
@@ -42,7 +42,11 @@
             disabled={disableInfiniteScroll}
           >
             {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
-              <SnsProposalCard {proposalData} {nsFunctions} />
+              <SnsProposalCard
+                actionable={proposalData.isActionable}
+                {proposalData}
+                {nsFunctions}
+              />
             {/each}
           </InfiniteScroll>
         </ListLoader>
@@ -63,7 +67,11 @@
       {:else}
         <InfiniteScroll layout="grid" disabled>
           {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
-            <SnsProposalCard {proposalData} {nsFunctions} />
+            <SnsProposalCard
+              actionable={proposalData.isActionable}
+              {proposalData}
+              {nsFunctions}
+            />
           {/each}
         </InfiniteScroll>
       {/if}
