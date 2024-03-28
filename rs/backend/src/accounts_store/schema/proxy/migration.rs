@@ -83,6 +83,22 @@ impl AccountsDbAsProxy {
     /// Completes any migration in progress.
     pub fn complete_migration(&mut self) {
         if let Some(migration) = self.migration.take() {
+            // Sanity check before calling migration complete:  Has all the data been migrated?
+            assert_eq!(
+                self.authoritative_db.db_accounts_len(),
+                migration.db.db_accounts_len(),
+                "Old and new account databases have different lengths"
+            );
+            assert_eq!(
+                self.authoritative_db.first_key_value(), // Given that keys are random this efefctively a random account.
+                migration.db.first_key_value(),
+                "Old and new account databases have different first entries"
+            );
+            assert_eq!(
+                self.authoritative_db.last_key_value(), // Given that keys are random this efefctively a random account.
+                migration.db.last_key_value(),
+                "Old and new account databases have different last entries"
+            );
             println!(
                 "Account migration complete: {:?} -> {:?}",
                 self.authoritative_db, migration.db

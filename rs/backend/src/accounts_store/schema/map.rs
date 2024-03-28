@@ -31,6 +31,16 @@ impl AccountsDbTrait for AccountsDbAsMap {
         let iterator = self.accounts.iter().map(|(key, val)| (key.clone(), val.clone()));
         Box::new(iterator)
     }
+    fn first_key_value(&self) -> Option<(Vec<u8>, Account)> {
+        self.accounts
+            .first_key_value()
+            .map(|(key, val)| (key.clone(), val.clone()))
+    }
+    fn last_key_value(&self) -> Option<(Vec<u8>, Account)> {
+        self.accounts
+            .last_key_value()
+            .map(|(key, val)| (key.clone(), val.clone()))
+    }
     fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
         let iterator = self.accounts.values().cloned();
         Box::new(iterator)

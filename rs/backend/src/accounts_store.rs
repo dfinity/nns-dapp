@@ -100,6 +100,12 @@ impl AccountsDbTrait for AccountsStore {
     fn iter(&self) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
         self.accounts_db.iter()
     }
+    fn first_key_value(&self) -> Option<(Vec<u8>, Account)> {
+        self.accounts_db.first_key_value()
+    }
+    fn last_key_value(&self) -> Option<(Vec<u8>, Account)> {
+        self.accounts_db.last_key_value()
+    }
     fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
         self.accounts_db.values()
     }
