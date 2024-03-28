@@ -221,6 +221,61 @@ fn migration_happy_path() {
     }
 }
 
+#[test]
+fn interrupted_migration() {
+    let test_env = TestEnv::new();
+    // Install the initial Wasm with schema "Map"
+    {
+        test_env.install_wasm_with_schema(Some(SchemaLabel::Map));
+        test_env.assert_invariants_match();
+        assert_eq!(test_env.get_stats().schema, Some(SchemaLabel::Map as u32));
+    }
+    // Create some accounts.
+    {
+        test_env.create_toy_accounts(321);
+        test_env.assert_invariants_match();
+    }
+    // Upgrade to the new schema "AccountsInStableMemory"
+    {
+        test_env.upgrade_to_schema(Some(SchemaLabel::AccountsInStableMemory));
+        test_env.assert_invariants_match();
+        assert_eq!(
+            test_env.get_stats().schema,
+            Some(SchemaLabel::Map as u32),
+            "The authoritative schema should still be the old one until the migration is complete"
+        );
+    }
+    // Step the migration a little bit
+    {
+        for _ in 0..5 {
+            test_env.create_toy_accounts(5);
+            test_env.assert_invariants_match();
+            test_env.pic.tick();
+            test_env.assert_invariants_match();
+        }
+        assert_eq!(
+            test_env.get_stats().schema,
+            Some(SchemaLabel::Map as u32),
+            "The insufficient ticks have passed for the migration to complete, so the schema should not have changed"
+        );
+    }
+    // Roll back to the "Map" schema.
+    {
+        test_env.upgrade_to_schema(Some(SchemaLabel::Map));
+        test_env.assert_invariants_match();
+        assert_eq!(
+            test_env.get_stats().schema,
+            Some(SchemaLabel::Map as u32),
+            "The authoritative schema should have stayed as Map"
+        );
+        assert_eq!(
+            test_env.get_stats().migration_countdown,
+            Some(0),
+            "There should be no migration in progress after rollback; the map should have been loaded in the post_upgrade hook."
+        );
+    }
+}
+
 proptest! {
     #[ignore]
     #[test]
