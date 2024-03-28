@@ -69,7 +69,9 @@ impl TestEnv {
     /// Upgrades the canister to a given schema.
     pub fn upgrade_to_schema(&self, schema: Option<SchemaLabel>) {
         let wasm_bytes = fs::read(Self::WASM_PATH).expect("Failed to read wasm file");
-        self.pic.stop_canister(self.canister_id, Some(self.controller)).expect("Failed to stop canister pre-upgrade");
+        self.pic
+            .stop_canister(self.canister_id, Some(self.controller))
+            .expect("Failed to stop canister pre-upgrade");
         self.pic
             .upgrade_canister(
                 self.canister_id,
@@ -78,7 +80,9 @@ impl TestEnv {
                 Some(self.controller),
             )
             .expect("Upgrade failed");
-        self.pic.start_canister(self.canister_id, Some(self.controller)).expect("Failed to start canister post-upgrade");
+        self.pic
+            .start_canister(self.canister_id, Some(self.controller))
+            .expect("Failed to start canister post-upgrade");
     }
     /// Gets stats from a given canister.
     fn get_stats_from_canister(&self, canister_id: ic_principal::Principal) -> Stats {
@@ -175,10 +179,7 @@ fn operation_sequence_strategy() -> impl Strategy<Value = Vec<Operation>> {
 }
 /// A strategy to select a schema label.
 fn schema_label_strategy() -> impl Strategy<Value = SchemaLabel> {
-    prop_oneof![
-        Just(SchemaLabel::Map),
-        Just(SchemaLabel::AccountsInStableMemory),
-    ]
+    prop_oneof![Just(SchemaLabel::Map), Just(SchemaLabel::AccountsInStableMemory),]
 }
 
 #[test]
