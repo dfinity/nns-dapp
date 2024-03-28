@@ -5,12 +5,35 @@
   import HeaderToolbar from "$lib/components/header/HeaderToolbar.svelte";
 </script>
 
-<SplitContent>
-  <SelectUniverseNav slot="start" />
+<div class="container">
+  <SplitContent>
+    <div class="nav" slot="start">
+      <SelectUniverseNav />
+    </div>
 
-  <Title slot="title" />
+    <Title slot="title" />
 
-  <HeaderToolbar slot="toolbar-end" />
+    <HeaderToolbar slot="toolbar-end" />
 
-  <slot slot="end" />
-</SplitContent>
+    <slot slot="end" />
+  </SplitContent>
+</div>
+
+<style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+
+  // Temporarily redefine default values of the SplitContent until the proper redesign is implemented.
+  .container {
+    display: contents;
+    --content-start-height: calc(92px + var(--padding-2x));
+    --nav-component-title-display: none;
+
+    @include media.min-width(large) {
+      --nav-component-title-display: block;
+    }
+  }
+
+  .nav {
+    margin-top: var(--padding-2x);
+  }
+</style>
