@@ -21,7 +21,7 @@
       ))();
 </script>
 
-<TestIdWrapper testId="actionable-proposals-segment-component">
+<div data-tid="actionable-proposals-segment-component">
   <Segment bind:selectedSegmentId>
     <SegmentButton testId="all-proposals" segmentId={allProposalsSegmentId}
       >{$i18n.voting.all_proposals}</SegmentButton
@@ -32,4 +32,18 @@
       >{$i18n.voting.actionable_proposals}</SegmentButton
     >
   </Segment>
-</TestIdWrapper>
+</div>
+
+<style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+
+  div {
+    display: contents;
+
+    --segment-width: 100%;
+    @include media.min-width(medium) {
+      --segment-width: fit-content;
+      --segment-button-width: calc(var(--padding) * 23);
+    }
+  }
+</style>
