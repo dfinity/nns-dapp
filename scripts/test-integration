@@ -20,15 +20,15 @@ REPO_ROOT="$SOURCE_DIR/.."
 cd "$REPO_ROOT"
 
 test -d out || {
-    echo "ERROR: Build artefacts are needed in ./out for integration tests."
-    echo "       Please run: ./scripts/docker-build --network local"
-    exit 1
+  echo "ERROR: Build artefacts are needed in ./out for integration tests."
+  echo "       Please run: ./scripts/docker-build --network local"
+  exit 1
 } >&2
 
 test -x pocket-ic || {
-    echo "ERROR: The pocket-ic executable is needed in the repository root."
-    echo "       Please download an executable for your platform, to ./pocket-ic and make it executable."
-    exit 1
+  echo "ERROR: The pocket-ic executable is needed in the repository root."
+  echo "       Please download an executable for your platform, to ./pocket-ic and make it executable."
+  exit 1
 }
 
 PROPTEST_CASES=20 POCKET_IC_BIN=$PWD/pocket-ic time cargo test --test '*' -- --nocapture

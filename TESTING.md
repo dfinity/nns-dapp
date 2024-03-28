@@ -172,7 +172,6 @@ Tests are found in `rs/backend/src/accounts_store/tests.rs`.
 
 ### Running Tests
 
-
 ### Unit Tests
 
 ```bash
