@@ -26,7 +26,7 @@ struct InvariantStats {
 /// - Migrations and rollbacks are applied only to the main (non-reference) canister.
 /// - The two canisters should always have the same accounts.
 struct TestEnv {
-    pub pic: PocketIc,
+    pic: PocketIc,
     pub canister_id: ic_principal::Principal,
     pub reference_canister_id: ic_principal::Principal,
     pub controller: ic_principal::Principal,
@@ -128,25 +128,17 @@ impl TestEnv {
                 .expect("Failed to create toy accounts");
         }
     }
-    /// Steps the migration, if any, in the main canister.
-    pub fn step_migration(&self, num_accounts: u32) {
-        self.pic
-            .update_call(
-                self.canister_id,
-                self.controller,
-                "step_migration",
-                encode_one(num_accounts).unwrap(),
-            )
-            .expect("Failed to step migration");
-    }
     /// Applies an arbitrary operation.
     pub fn perform(&self, operation: Operation) {
         match operation {
             Operation::CreateToyAccounts(num_accounts) => self.create_toy_accounts(u128::from(num_accounts)),
-            Operation::StepMigration(step_size) => self.step_migration(u32::from(step_size)),
             Operation::UpgradeToMap => self.upgrade_to_schema(Some(SchemaLabel::Map)),
             Operation::UpgradeToStableStructures => self.upgrade_to_schema(Some(SchemaLabel::AccountsInStableMemory)),
-            Operation::Tick => self.pic.tick(),
+            Operation::Tick(ticks) => {
+                for _ in 0..ticks {
+                    self.pic.tick();
+                }
+            }
         }
     }
 }
@@ -157,10 +149,9 @@ impl TestEnv {
 #[derive(Debug, Eq, PartialEq, EnumIter, Copy, Clone)]
 enum Operation {
     CreateToyAccounts(u8),
-    StepMigration(u8),
     UpgradeToMap,
     UpgradeToStableStructures,
-    Tick,
+    Tick(u8),
 }
 
 /// A strategy by which Proptest can choose operations.
@@ -168,9 +159,8 @@ fn operation_strategy() -> impl Strategy<Value = Operation> {
     prop_oneof![
         Just(Operation::UpgradeToMap),
         Just(Operation::UpgradeToStableStructures),
-        Just(Operation::Tick),
         (0..100u8).prop_map(Operation::CreateToyAccounts),
-        (0..100u8).prop_map(Operation::StepMigration),
+        (0..100u8).prop_map(Operation::Tick),
     ]
 }
 /// A strategy by which Proptest can choose a sequence of operations.
