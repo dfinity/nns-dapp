@@ -2,7 +2,7 @@
   import NnsProposalCard from "./NnsProposalCard.svelte";
   import { InfiniteScroll } from "@dfinity/gix-components";
   import NnsProposalsFilters from "./NnsProposalsFilters.svelte";
-  import { filteredProposals } from "$lib/derived/proposals.derived";
+  import { filteredActionableProposals } from "$lib/derived/proposals.derived";
   import NoProposals from "./NoProposals.svelte";
   import LoadingProposals from "./LoadingProposals.svelte";
   import ListLoader from "./ListLoader.svelte";
@@ -49,8 +49,12 @@
               layout="grid"
               disabled={disableInfiniteScroll || loading}
             >
-              {#each $filteredProposals.proposals as proposalInfo (proposalInfo.id)}
-                <NnsProposalCard {hidden} {proposalInfo} />
+              {#each $filteredActionableProposals.proposals as proposalInfo (proposalInfo.id)}
+                <NnsProposalCard
+                  {hidden}
+                  actionable={proposalInfo.isActionable}
+                  {proposalInfo}
+                />
               {/each}
             </InfiniteScroll>
           </ListLoader>
@@ -67,7 +71,7 @@
         {:else}
           <InfiniteScroll layout="grid" disabled>
             {#each actionableProposals ?? [] as proposalInfo (proposalInfo.id)}
-              <NnsProposalCard {hidden} {proposalInfo} />
+              <NnsProposalCard {hidden} actionable {proposalInfo} />
             {/each}
           </InfiniteScroll>
         {/if}
