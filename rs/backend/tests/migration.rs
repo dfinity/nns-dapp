@@ -291,7 +291,6 @@ fn interrupted_migration() {
 }
 
 proptest! {
-    #[ignore]
     #[test]
     fn map_to_map_migration_should_work_with_other_operations(schema in schema_label_strategy(), operations in operation_sequence_strategy()) {
         let test_env = TestEnv::new();
