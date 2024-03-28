@@ -4,20 +4,25 @@ import { loadActionableProposals } from "$lib/services/actionable-proposals.serv
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { authStore } from "$lib/stores/auth.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
-import { mockAuthStoreSubscribe } from "$tests/mocks/auth.store.mock";
+import {
+  mockAuthStoreSubscribe,
+  mockIdentity,
+} from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
 import type { NeuronInfo, ProposalInfo } from "@dfinity/nns";
 import { ProposalRewardStatus, Vote } from "@dfinity/nns";
 import { get } from "svelte/store";
 
 describe("actionable-proposals.services", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe("updateActionableProposals", () => {
+    const votedProposalId = 1234n;
     const neuronId = 0n;
     const neuron1: NeuronInfo = {
       ...mockNeuron,
@@ -25,7 +30,7 @@ describe("actionable-proposals.services", () => {
       recentBallots: [
         {
           vote: Vote.Yes,
-          proposalId: 1n,
+          proposalId: votedProposalId,
         },
       ],
     };
@@ -35,10 +40,17 @@ describe("actionable-proposals.services", () => {
     };
     const votedProposal: ProposalInfo = {
       ...mockProposalInfo,
-      id: 1n,
+      id: votedProposalId,
     };
+    const fiveHundredsProposal = Array.from(Array(500))
+      .map((_, index) => ({
+        ...mockProposalInfo,
+        id: BigInt(index),
+      }))
+      .reverse();
     let spyQueryProposals;
     let spyQueryNeurons;
+    let spyConsoleError;
 
     beforeEach(() => {
       vi.clearAllMocks();
@@ -100,6 +112,78 @@ describe("actionable-proposals.services", () => {
             topics: [],
           },
         })
+      );
+    });
+
+    it("should query list proposals using multiple calls", async () => {
+      const firstResponseProposals = fiveHundredsProposal.slice(0, 100);
+      const secondResponseProposals = [fiveHundredsProposal[100]];
+
+      spyQueryProposals = vi
+        .spyOn(api, "queryProposals")
+        .mockResolvedValueOnce(firstResponseProposals)
+        .mockResolvedValueOnce(secondResponseProposals);
+      expect(spyQueryProposals).not.toHaveBeenCalled();
+
+      await loadActionableProposals();
+
+      expect(spyQueryProposals).toHaveBeenCalledTimes(2);
+      expect(spyQueryProposals).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        beforeProposal: undefined,
+        certified: false,
+        filters: {
+          excludeVotedProposals: false,
+          lastAppliedFilter: undefined,
+          rewards: [ProposalRewardStatus.AcceptVotes],
+          status: [],
+          topics: [],
+        },
+      });
+      expect(spyQueryProposals).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        beforeProposal:
+          firstResponseProposals[firstResponseProposals.length - 1].id,
+        certified: false,
+        filters: {
+          excludeVotedProposals: false,
+          lastAppliedFilter: undefined,
+          rewards: [ProposalRewardStatus.AcceptVotes],
+          status: [],
+          topics: [],
+        },
+      });
+      expect(get(actionableNnsProposalsStore)?.proposals?.length).toEqual(101);
+      expect(get(actionableNnsProposalsStore)?.proposals).toEqual([
+        ...firstResponseProposals,
+        ...secondResponseProposals,
+      ]);
+    });
+
+    it("should log an error when request count limit reached", async () => {
+      spyQueryProposals = vi
+        .spyOn(api, "queryProposals")
+        .mockResolvedValueOnce(fiveHundredsProposal.slice(0, 100))
+        .mockResolvedValueOnce(fiveHundredsProposal.slice(100, 200))
+        .mockResolvedValueOnce(fiveHundredsProposal.slice(200, 300))
+        .mockResolvedValueOnce(fiveHundredsProposal.slice(300, 400))
+        .mockResolvedValueOnce(fiveHundredsProposal.slice(400, 500));
+      spyConsoleError = silentConsoleErrors();
+      expect(spyQueryProposals).not.toHaveBeenCalled();
+      expect(spyConsoleError).not.toHaveBeenCalled();
+
+      await loadActionableProposals();
+
+      expect(spyQueryProposals).toHaveBeenCalledTimes(5);
+      // expect an error message
+      expect(spyConsoleError).toHaveBeenCalledTimes(1);
+      expect(spyConsoleError).toHaveBeenCalledWith(
+        "Max actionable pages loaded"
+      );
+
+      expect(get(actionableNnsProposalsStore)?.proposals?.length).toEqual(500);
+      expect(get(actionableNnsProposalsStore)?.proposals).toEqual(
+        fiveHundredsProposal
       );
     });
 

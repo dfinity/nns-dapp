@@ -1,15 +1,15 @@
 import SnsProposalsList from "$lib/components/sns-proposals/SnsProposalsList.svelte";
-import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
+import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import {
   createSnsProposal,
   mockSnsProposal,
 } from "$tests/mocks/sns-proposals.mock";
+import { mockSnsCanisterIdText } from "$tests/mocks/sns.api.mock";
 import { SnsProposalListPo } from "$tests/page-objects/SnsProposalList.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { SnsProposalData } from "@dfinity/sns";
-import { SnsProposalDecisionStatus } from "@dfinity/sns";
+import { SnsProposalDecisionStatus, type SnsProposalData } from "@dfinity/sns";
 import { cleanup, render } from "@testing-library/svelte";
 
 describe("SnsProposalsList", () => {
@@ -34,7 +34,7 @@ describe("SnsProposalsList", () => {
   const proposals = [proposal1, proposal2, proposal3];
 
   beforeEach(() => {
-    actionableProposalsSegmentStore.resetForTesting();
+    page.mock({ data: { universe: mockSnsCanisterIdText } });
   });
 
   it("should render a proposal card per proposal", () => {
@@ -42,7 +42,7 @@ describe("SnsProposalsList", () => {
       props: {
         proposals,
         includeBallots: false,
-        snsName: undefined,
+        snsName: "sns-name",
         actionableSelected: false,
         nsFunctions: [],
       },
@@ -56,7 +56,7 @@ describe("SnsProposalsList", () => {
       props: {
         proposals,
         includeBallots: false,
-        snsName: undefined,
+        snsName: "sns-name",
         actionableSelected: false,
         nsFunctions: [],
         loadingNextPage: true,
@@ -73,7 +73,7 @@ describe("SnsProposalsList", () => {
       props: {
         proposals: undefined,
         includeBallots: false,
-        snsName: undefined,
+        snsName: "sns-name",
         actionableSelected: false,
         nsFunctions: [],
       },
@@ -87,7 +87,7 @@ describe("SnsProposalsList", () => {
       props: {
         proposals: [],
         includeBallots: false,
-        snsName: undefined,
+        snsName: "sns-name",
         actionableSelected: false,
         nsFunctions: [],
       },
@@ -202,6 +202,48 @@ describe("SnsProposalsList", () => {
       );
       expect(await (await po.getProposalCardPos())[1].getProposalId()).toEqual(
         "ID: 321"
+      );
+    });
+
+    it("should display actionable mark on all proposals view", async () => {
+      const po = await renderComponent({
+        proposals: [
+          {
+            ...mockSnsProposal,
+            id: [{ id: 1n }],
+            isActionable: false,
+          },
+          {
+            ...mockSnsProposal,
+            id: [{ id: 2n }],
+            isActionable: true,
+          },
+          {
+            ...mockSnsProposal,
+            id: [{ id: 3n }],
+            isActionable: true,
+          },
+        ],
+        includeBallots: true,
+        snsName: "sns-name",
+        actionableSelected: false,
+        nsFunctions: [],
+      });
+      await po
+        .getSnsProposalFiltersPo()
+        .getActionableProposalsSegmentPo()
+        .clickAllProposals();
+      await runResolvedPromises();
+
+      const cards = await po.getProposalCardPos();
+      expect(await cards[0].getProposalStatusTagPo().hasActionableMark()).toBe(
+        false
+      );
+      expect(await cards[1].getProposalStatusTagPo().hasActionableMark()).toBe(
+        true
+      );
+      expect(await cards[2].getProposalStatusTagPo().hasActionableMark()).toBe(
+        true
       );
     });
   });

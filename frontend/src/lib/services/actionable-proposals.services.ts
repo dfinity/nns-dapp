@@ -1,9 +1,14 @@
 import { queryProposals as queryNnsProposals } from "$lib/api/proposals.api";
+import {
+  DEFAULT_LIST_PAGINATION_LIMIT,
+  MAX_ACTIONABLE_REQUEST_COUNT,
+} from "$lib/constants/constants";
 import { getCurrentIdentity } from "$lib/services/auth.services";
 import { listNeurons } from "$lib/services/neurons.services";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { definedNeuronsStore, neuronsStore } from "$lib/stores/neurons.store";
 import type { ProposalsFiltersStore } from "$lib/stores/proposals.store";
+import { lastProposalId } from "$lib/utils/proposals.utils";
 import type { ProposalInfo } from "@dfinity/nns";
 import {
   ProposalRewardStatus,
@@ -29,7 +34,6 @@ export const loadActionableProposals = async (): Promise<void> => {
     return;
   }
 
-  // Load max 100 proposals (DEFAULT_LIST_PAGINATION_LIMIT) solve when more than 100 proposals with UI (display 99 cards + some CTA).
   const proposals = await queryProposals();
   // Filter proposals that have at least one votable neuron
   const votableProposals = proposals.filter(
@@ -48,7 +52,8 @@ const queryNeurons = async (): Promise<NeuronInfo[]> => {
   return get(definedNeuronsStore);
 };
 
-const queryProposals = (): Promise<ProposalInfo[]> => {
+/// Fetch all (500 max) proposals that are accepting votes.
+const queryProposals = async (): Promise<ProposalInfo[]> => {
   const identity = getCurrentIdentity();
   const filters: ProposalsFiltersStore = {
     // We just want to fetch proposals that are accepting votes, so we don't need to filter by rest of the filters.
@@ -58,10 +63,34 @@ const queryProposals = (): Promise<ProposalInfo[]> => {
     excludeVotedProposals: false,
     lastAppliedFilter: undefined,
   };
-  return queryNnsProposals({
-    beforeProposal: undefined,
-    identity,
-    filters,
-    certified: false,
-  });
+
+  let sortedProposals: ProposalInfo[] = [];
+  for (
+    let pagesLoaded = 0;
+    pagesLoaded < MAX_ACTIONABLE_REQUEST_COUNT;
+    pagesLoaded++
+  ) {
+    // Fetch all proposals that are accepting votes.
+    const page = await queryNnsProposals({
+      beforeProposal: lastProposalId(sortedProposals),
+      identity,
+      filters,
+      certified: false,
+    });
+    // Sort proposals by id in descending order to be sure that "lastProposalId" returns correct id.
+    sortedProposals = [...sortedProposals, ...page].sort(
+      ({ id: proposalIdA }, { id: proposalIdB }) =>
+        Number((proposalIdB ?? 0n) - (proposalIdA ?? 0n))
+    );
+
+    if (page.length !== DEFAULT_LIST_PAGINATION_LIMIT) {
+      break;
+    }
+
+    if (pagesLoaded === MAX_ACTIONABLE_REQUEST_COUNT - 1) {
+      console.error("Max actionable pages loaded");
+    }
+  }
+
+  return sortedProposals;
 };

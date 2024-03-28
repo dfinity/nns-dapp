@@ -328,9 +328,9 @@ export const lastProposalId = (
  * @param {SnsProposalData[]} proposals
  * @returns {SnsProposalData[]}
  */
-export const sortSnsProposalsById = (
-  proposals: SnsProposalData[] | undefined
-): SnsProposalData[] | undefined =>
+export const sortSnsProposalsById = <P extends SnsProposalData>(
+  proposals: P[] | undefined
+): P[] | undefined =>
   proposals === undefined
     ? undefined
     : [...proposals].sort(({ id: idA }, { id: idB }) =>

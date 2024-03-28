@@ -11,6 +11,7 @@
 
   export let proposalInfo: ProposalInfo;
   export let hidden = false;
+  export let actionable = false;
 
   let id: ProposalId | undefined;
   let title: string | undefined;
@@ -32,6 +33,7 @@
 
 <ProposalCard
   {hidden}
+  {actionable}
   {href}
   {status}
   {id}
