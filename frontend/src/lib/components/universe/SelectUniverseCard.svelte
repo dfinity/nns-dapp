@@ -60,7 +60,7 @@
   {icon}
   testId="select-universe-card"
   noPadding
-  noMarginBottom
+  noMargin
 >
   <div class="container" class:selected>
     <UniverseLogo size="big" {universe} framed={true} />
