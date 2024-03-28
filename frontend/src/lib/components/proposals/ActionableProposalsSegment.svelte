@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Segment, SegmentButton } from "@dfinity/gix-components";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 
