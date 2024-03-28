@@ -173,6 +173,13 @@ fn operation_strategy() -> impl Strategy<Value = Operation> {
 fn operation_sequence_strategy() -> impl Strategy<Value = Vec<Operation>> {
     prop::collection::vec(operation_strategy(), 1..20)
 }
+/// A strategy to select a schema label.
+fn schema_label_strategy() -> impl Strategy<Value = SchemaLabel> {
+    prop_oneof![
+        Just(SchemaLabel::Map),
+        Just(SchemaLabel::AccountsInStableMemory),
+    ]
+}
 
 #[test]
 fn migration_happy_path() {
@@ -216,24 +223,12 @@ fn migration_happy_path() {
 
 proptest! {
     #[test]
-    fn map_to_map_migration_should_work_with_other_operations(operations in operation_sequence_strategy()) {
+    fn map_to_map_migration_should_work_with_other_operations(schema in schema_label_strategy(), operations in operation_sequence_strategy()) {
         let test_env = TestEnv::new();
-        test_env.install_wasm_with_schema(Some(SchemaLabel::Map));
+        test_env.install_wasm_with_schema(Some(schema));
         for operation in operations {
             test_env.perform(operation);
             test_env.assert_invariants_match();
         }
     }
 }
-
-// Plan:
-// - [x] Create the arguments from rust.
-// - [x] Create accounts
-// - [x] Check accounts count is as expected
-// - [x] Upgrade to trigger a migration.
-// - [ ] Call step? Might be simpler than calling the heartbeat.  Heartbeat would be more realistic so that can be a strech goal ponce everything elese is working.
-// - [ ] Make a PR with rustdocs!
-//    - [ ] Examples of passing in wasm, gzipped or not.
-//    - [ ] Example of passing in arguments, empty, from Rust or from a binary (not text) candid file.
-//    - [ ] Tell the infra story - installing pocket-ic and building the Wasm before running the test.
-// - [x] Bonus: Run this on a system subnet.
