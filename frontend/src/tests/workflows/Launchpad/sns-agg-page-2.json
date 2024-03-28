@@ -1475,7 +1475,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100002193410340320,
+    "icrc1_total_supply": 100002393087226000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3351,7 +3351,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100002392523596,
+    "icrc1_total_supply": 100002452449859,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4050,7 +4050,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 999986489000,
+    "icrc1_total_supply": 999984615000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4477,6 +4477,84 @@
               "target_canister_id": "7vkf4-jqaaa-aaaaj-azrua-cai",
               "validator_method_name": "validate_grant_permission",
               "target_method_name": "7vkf4-jqaaa-aaaaj-azrua-cai"
+            }
+          }
+        },
+        {
+          "id": 1016,
+          "name": "backup",
+          "description": "Backs up and saves a snapshot of a trading pair.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorBackup",
+              "target_method_name": "backup"
+            }
+          }
+        },
+        {
+          "id": 1017,
+          "name": "backupToTempCanister",
+          "description": "Backup the data of a trading pair to another canister.  ",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorBackupToTempCanister",
+              "target_method_name": "backupToTempCanister"
+            }
+          }
+        },
+        {
+          "id": 1018,
+          "name": "dex_addCompetition",
+          "description": "This is a feature to be opened in the future. Register a trading competition with a third party for display.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorDexAddCompetition",
+              "target_method_name": "dex_addCompetition"
+            }
+          }
+        },
+        {
+          "id": 1019,
+          "name": "maker_approveToPair",
+          "description": "Let ICDexMaker approve the `_amount` of the sysToken the trading pair could spend.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorMakerApproveToPair",
+              "target_method_name": "maker_approveToPair"
+            }
+          }
+        },
+        {
+          "id": 1020,
+          "name": "maker_transactionLock",
+          "description": "Lock or unlock an Automated Market Maker (ICDexMaker) system transaction lock.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorMakerTransactionLock",
+              "target_method_name": "maker_transactionLock"
+            }
+          }
+        },
+        {
+          "id": 1021,
+          "name": "update",
+          "description": "Add governance method `ICDexRouter.update()`",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorUpdate",
+              "target_method_name": "update"
             }
           }
         }
@@ -5906,7 +5984,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 19999990868000000,
+    "icrc1_total_supply": 20001021491994332,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -7283,7 +7361,8 @@
         "ev7jo-jaaaa-aaaah-adthq-cai",
         "n4ahg-pqaaa-aaaah-advla-cai",
         "gpdbs-xqaaa-aaaah-adtiq-cai",
-        "gichg-2iaaa-aaaah-adtia-cai"
+        "gichg-2iaaa-aaaah-adtia-cai",
+        "bpsjh-6yaaa-aaaah-adyjq-cai"
       ],
       "archives": ["dyxt2-fqaaa-aaaaq-aacsa-cai"]
     },
@@ -7903,7 +7982,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 24999999293100000,
+    "icrc1_total_supply": 24999999093800000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -9010,8 +9089,8 @@
         "decentralization_sale_open_timestamp_seconds": 1710681300
       },
       "derived": {
-        "buyer_total_icp_e8s": 4798949716045,
-        "sns_tokens_per_icp": 520.9473
+        "buyer_total_icp_e8s": 7556190385655,
+        "sns_tokens_per_icp": 330.85455
       }
     },
     "icrc1_metadata": [
@@ -9556,12 +9635,12 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 520.9473266601562,
-      "buyer_total_icp_e8s": 4798949716045,
+      "sns_tokens_per_icp": 330.85455322265625,
+      "buyer_total_icp_e8s": 7556190385655,
       "cf_participant_count": 0,
-      "neurons_fund_participation_icp_e8s": 2104489540129,
-      "direct_participation_icp_e8s": 2694460175916,
-      "direct_participant_count": 347,
+      "neurons_fund_participation_icp_e8s": 3773630253730,
+      "direct_participation_icp_e8s": 3782560131925,
+      "direct_participant_count": 619,
       "cf_neuron_count": 0
     },
     "lifecycle": {
@@ -9981,8 +10060,8 @@
         "decentralization_sale_open_timestamp_seconds": 1710936000
       },
       "derived": {
-        "buyer_total_icp_e8s": 177746483279,
-        "sns_tokens_per_icp": 67511.88
+        "buyer_total_icp_e8s": 1020816282118,
+        "sns_tokens_per_icp": 11755.299
       }
     },
     "icrc1_metadata": [
@@ -10249,16 +10328,2344 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 67511.8828125,
-      "buyer_total_icp_e8s": 177746483279,
+      "sns_tokens_per_icp": 11755.298828125,
+      "buyer_total_icp_e8s": 1020816282118,
       "cf_participant_count": 0,
-      "neurons_fund_participation_icp_e8s": 0,
-      "direct_participation_icp_e8s": 177746483279,
-      "direct_participant_count": 49,
+      "neurons_fund_participation_icp_e8s": 11089669018,
+      "direct_participation_icp_e8s": 1009726613100,
+      "direct_participant_count": 212,
       "cf_neuron_count": 0
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1710936000,
+      "lifecycle": 2
+    }
+  },
+  {
+    "index": 27,
+    "canister_ids": {
+      "root_canister_id": "csyra-haaaa-aaaaq-aacva-cai",
+      "governance_canister_id": "cvzxu-kyaaa-aaaaq-aacvq-cai",
+      "index_canister_id": "co4lr-qaaaa-aaaaq-aacxa-cai",
+      "swap_canister_id": "ch7an-giaaa-aaaaq-aacwq-cai",
+      "ledger_canister_id": "ca6gz-lqaaa-aaaaq-aacwa-cai"
+    },
+    "list_sns_canisters": {
+      "root": "csyra-haaaa-aaaaq-aacva-cai",
+      "swap": "ch7an-giaaa-aaaaq-aacwq-cai",
+      "ledger": "ca6gz-lqaaa-aaaaq-aacwa-cai",
+      "index": "co4lr-qaaaa-aaaaq-aacxa-cai",
+      "governance": "cvzxu-kyaaa-aaaaq-aacvq-cai",
+      "dapps": [
+        "4mmnk-kiaaa-aaaag-qbllq-cai",
+        "cglrh-lyaaa-aaaag-qcs4q-cai",
+        "7eikv-2iaaa-aaaag-qdgwa-cai"
+      ],
+      "archives": []
+    },
+    "meta": {
+      "url": "https://www.icpswap.com",
+      "name": "ICPSwap",
+      "description": "ICPSwap stands as the native, pioneering, and premier Decentralized Exchange (DEX) within the Internet Computer Protocol (ICP) ecosystem, providing an extensive array of financial and market services. Our users and fans may immerse themselves in the ultimate Decentralized Finance (DeFi) experience, featuring a broad spectrum of token standards trading, dedicated staking pools, robust yield farming, innovative Claim features, and more. With ICPSwap, we are nearly exploring every facet of DeFi!\n",
+      "logo": "/v1/sns/root/csyra-haaaa-aaaaq-aacva-cai/logo.png"
+    },
+    "parameters": {
+      "reserved_ids": [],
+      "functions": [
+        {
+          "id": 0,
+          "name": "All non-critical topics",
+          "description": "Catch-all w.r.t to following for non-critical proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 1,
+          "name": "Motion",
+          "description": "Side-effect-less proposals to set general governance direction.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 2,
+          "name": "Manage nervous system parameters",
+          "description": "Proposal to change the core parameters of SNS governance.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 3,
+          "name": "Upgrade SNS controlled canister",
+          "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 4,
+          "name": "Add nervous system function",
+          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 5,
+          "name": "Remove nervous system function",
+          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 6,
+          "name": "Execute nervous system function",
+          "description": "Proposal to execute a user-defined nervous system function,previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 7,
+          "name": "Upgrade SNS to next version",
+          "description": "Proposal to upgrade the WASM of a core SNS canister.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 8,
+          "name": "Manage SNS metadata",
+          "description": "Proposal to change the metadata associated with an SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 9,
+          "name": "Transfer SNS treasury funds",
+          "description": "Proposal to transfer funds from an SNS Governance controlled treasury account",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 10,
+          "name": "Register dapp canisters",
+          "description": "Proposal to register a dapp canister with the SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 11,
+          "name": "Deregister Dapp Canisters",
+          "description": "Proposal to deregister a previously-registered dapp canister from the SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 12,
+          "name": "Mint SNS Tokens",
+          "description": "Proposal to mint SNS tokens to a specified recipient.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 13,
+          "name": "Manage ledger parameters",
+          "description": "Proposal to change some parameters in the ledger canister.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 14,
+          "name": "Manage dapp canister settings",
+          "description": "Proposal to change canister settings for some dapp canisters.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        }
+      ]
+    },
+    "nervous_system_parameters": {
+      "default_followees": {
+        "followees": []
+      },
+      "max_dissolve_delay_seconds": 63115200,
+      "max_dissolve_delay_bonus_percentage": 100,
+      "max_followees_per_function": 15,
+      "neuron_claimer_permissions": {
+        "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      },
+      "neuron_minimum_stake_e8s": 1000000000,
+      "max_neuron_age_for_age_bonus": 63115200,
+      "initial_voting_period_seconds": 345600,
+      "neuron_minimum_dissolve_delay_to_vote_seconds": 2630016,
+      "reject_cost_e8s": 5000000000,
+      "max_proposals_to_keep_per_action": 100,
+      "wait_for_quiet_deadline_increase_seconds": 86400,
+      "max_number_of_neurons": 200000,
+      "transaction_fee_e8s": 1000000,
+      "max_number_of_proposals_with_ballots": 700,
+      "max_age_bonus_percentage": 25,
+      "neuron_grantable_permissions": {
+        "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      },
+      "voting_rewards_parameters": {
+        "final_reward_rate_basis_points": 150,
+        "initial_reward_rate_basis_points": 150,
+        "reward_rate_transition_duration_seconds": 157788000,
+        "round_duration_seconds": 86400
+      },
+      "maturity_modulation_disabled": false,
+      "max_number_of_principals_per_neuron": 5
+    },
+    "swap_state": {
+      "swap": {
+        "lifecycle": 2,
+        "init": {
+          "nns_proposal_id": 128358,
+          "sns_root_canister_id": "csyra-haaaa-aaaaq-aacva-cai",
+          "neurons_fund_participation": true,
+          "min_participant_icp_e8s": 100000000,
+          "neuron_basket_construction_parameters": {
+            "dissolve_delay_interval_seconds": 7890048,
+            "count": 5
+          },
+          "fallback_controller_principal_ids": [
+            "bvt6c-3we7h-a6aeb-f57lr-qxyou-33jd5-y4x57-dif3m-p75yu-yzis7-dae"
+          ],
+          "max_icp_e8s": null,
+          "neuron_minimum_stake_e8s": 1000000000,
+          "confirmation_text": "I confirm my understanding of the responsibilities and risks associated with participating in this token swap and that I'm not resident of one of the sanctioned countries listed below.\n",
+          "swap_start_timestamp_seconds": 1711203300,
+          "swap_due_timestamp_seconds": 1712412900,
+          "min_participants": 500,
+          "sns_token_e8s": 26000000000000000,
+          "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "transaction_fee_e8s": 1000000,
+          "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          "sns_ledger_canister_id": "ca6gz-lqaaa-aaaaq-aacwa-cai",
+          "neurons_fund_participation_constraints": {
+            "coefficient_intervals": [
+              {
+                "slope_numerator": 0,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 0,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 789191898712
+              },
+              {
+                "slope_numerator": 87487126683288,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 789191898712,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 791985977697
+              },
+              {
+                "slope_numerator": 163812919360853,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 791985977697,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 897856225346
+              },
+              {
+                "slope_numerator": 169512753954624,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 897856225346,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 897875866430
+              },
+              {
+                "slope_numerator": 175210964674682,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 897875866430,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 898030139066
+              },
+              {
+                "slope_numerator": 180896443543282,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 898030139066,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 898030680572
+              },
+              {
+                "slope_numerator": 186581877794102,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 898030680572,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 898030695959
+              },
+              {
+                "slope_numerator": 192267310777098,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 898030695959,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 898030704216
+              },
+              {
+                "slope_numerator": 197952743079803,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 898030704216,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 898030738618
+              },
+              {
+                "slope_numerator": 203638172547945,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 898030738618,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 898030747250
+              },
+              {
+                "slope_numerator": 209323601304859,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 898030747250,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 900004176543
+              },
+              {
+                "slope_numerator": 214849700122461,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 900004176543,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 900004190107
+              },
+              {
+                "slope_numerator": 220375797867004,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 900004190107,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 900004489905
+              },
+              {
+                "slope_numerator": 225901871894784,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 900004489905,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 900004505625
+              },
+              {
+                "slope_numerator": 231427944679029,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 900004505625,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 900004520837
+              },
+              {
+                "slope_numerator": 236954016259851,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 900004520837,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 900004528063
+              },
+              {
+                "slope_numerator": 242480087269045,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 900004528063,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 900004796044
+              },
+              {
+                "slope_numerator": 248006137078644,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 900004796044,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 900004805045
+              },
+              {
+                "slope_numerator": 253532186176209,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 900004805045,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 1445488053901
+              },
+              {
+                "slope_numerator": 253694690958786,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1445488053901,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 1727144573123
+              },
+              {
+                "slope_numerator": 253763673338900,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1727144573123,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 1886541905796
+              },
+              {
+                "slope_numerator": 253810374628217,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1886541905796,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 1952174103395
+              },
+              {
+                "slope_numerator": 253850718147047,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1952174103395,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 2009088416004
+              },
+              {
+                "slope_numerator": 253886458856472,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2009088416004,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 2093827928590
+              },
+              {
+                "slope_numerator": 253916568789284,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2093827928590,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 2181694402137
+              },
+              {
+                "slope_numerator": 253942031308527,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2181694402137,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 2484049277337
+              },
+              {
+                "slope_numerator": 253957879445540,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2484049277337,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 2596387308485
+              },
+              {
+                "slope_numerator": 253971749006898,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2596387308485,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 2983416687141
+              },
+              {
+                "slope_numerator": 253981540215125,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2983416687141,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 3174535500024
+              },
+              {
+                "slope_numerator": 253990180738739,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3174535500024,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 3187466099312
+              },
+              {
+                "slope_numerator": 253998756263300,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3187466099312,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 3201650272117
+              },
+              {
+                "slope_numerator": 254007262109711,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3201650272117,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 3219945864496
+              },
+              {
+                "slope_numerator": 254015680519686,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3219945864496,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 3250288471267
+              },
+              {
+                "slope_numerator": 254023959753844,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3250288471267,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 3463196487341
+              },
+              {
+                "slope_numerator": 254031440059133,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3463196487341,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 3494321047083
+              },
+              {
+                "slope_numerator": 254038826182563,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3494321047083,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 3672312888247
+              },
+              {
+                "slope_numerator": 254045765252254,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3672312888247,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 3868969891343
+              },
+              {
+                "slope_numerator": 254052346740378,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3868969891343,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 3972293260437
+              },
+              {
+                "slope_numerator": 254058762223953,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3972293260437,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 4244063718873
+              },
+              {
+                "slope_numerator": 254064791169744,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4244063718873,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 4323051162603
+              },
+              {
+                "slope_numerator": 254070719630432,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4323051162603,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 4359982012697
+              },
+              {
+                "slope_numerator": 254076602741495,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4359982012697,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 4759363093828
+              },
+              {
+                "slope_numerator": 254082053233149,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4759363093828,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 4814079750081
+              },
+              {
+                "slope_numerator": 254087451689704,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4814079750081,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 4913949137483
+              },
+              {
+                "slope_numerator": 254092759063056,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4913949137483,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 4957541065110
+              },
+              {
+                "slope_numerator": 254098028181174,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4957541065110,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 5000389234763
+              },
+              {
+                "slope_numerator": 254103260546826,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 5000389234763,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 5243341177828
+              },
+              {
+                "slope_numerator": 254108299284635,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 5243341177828,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 5245892896612
+              },
+              {
+                "slope_numerator": 254113336113366,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 5245892896612,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 5767651966496
+              },
+              {
+                "slope_numerator": 254118028652326,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 5767651966496,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 5877749235620
+              },
+              {
+                "slope_numerator": 254122658807170,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 5877749235620,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 5990938382778
+              },
+              {
+                "slope_numerator": 254127228026376,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 5990938382778,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 6340081931023
+              },
+              {
+                "slope_numerator": 254131627643109,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 6340081931023,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 7034317612201
+              },
+              {
+                "slope_numerator": 254135757383934,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 7034317612201,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 7539997706193
+              },
+              {
+                "slope_numerator": 254139734276420,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 7539997706193,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 10031787419254
+              },
+              {
+                "slope_numerator": 254143285946079,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 10031787419254,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 10260777177913
+              },
+              {
+                "slope_numerator": 254146816783146,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 10260777177913,
+                "slope_denominator": 254542688644933,
+                "to_direct_participation_icp_e8s": 18446744073709552000
+              }
+            ],
+            "max_neurons_fund_participation_icp_e8s": 7473761955801,
+            "min_direct_participation_threshold_icp_e8s": 30000000000000,
+            "ideal_matched_participation_function": {
+              "serialized_representation": "{\"t_1\":\"7485.4034632466689954588552350\",\"t_2\":\"22456.210389740006986376565705\",\"t_3\":\"37427.017316233344977294276175\",\"t_4\":\"149708.06926493337990917710470\",\"cap\":\"74854.034632466689954588552350\"}"
+            }
+          },
+          "neurons_fund_participants": null,
+          "should_auto_finalize": true,
+          "max_participant_icp_e8s": 10000000000000,
+          "sns_governance_canister_id": "cvzxu-kyaaa-aaaaq-aacvq-cai",
+          "min_direct_participation_icp_e8s": 30000000000000,
+          "restricted_countries": {
+            "iso_codes": ["US", "KP", "CU", "SD", "SY", "IR", "VE", "CN"]
+          },
+          "min_icp_e8s": null,
+          "max_direct_participation_icp_e8s": 90000000000000
+        },
+        "params": {
+          "min_participant_icp_e8s": 100000000,
+          "neuron_basket_construction_parameters": {
+            "dissolve_delay_interval_seconds": 7890048,
+            "count": 5
+          },
+          "max_icp_e8s": 97473761955801,
+          "swap_due_timestamp_seconds": 1712412900,
+          "min_participants": 500,
+          "sns_token_e8s": 26000000000000000,
+          "sale_delay_seconds": null,
+          "max_participant_icp_e8s": 10000000000000,
+          "min_direct_participation_icp_e8s": 30000000000000,
+          "min_icp_e8s": 30000000000000,
+          "max_direct_participation_icp_e8s": 90000000000000
+        },
+        "open_sns_token_swap_proposal_id": 128358,
+        "decentralization_sale_open_timestamp_seconds": 1711203300
+      },
+      "derived": {
+        "buyer_total_icp_e8s": 18131189232131,
+        "sns_tokens_per_icp": 1433.993
+      }
+    },
+    "icrc1_metadata": [
+      [
+        "icrc1:logo",
+        {
+          "Text": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANQAAADUCAYAAADk3g0YAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAGdiSURBVHhe3d0Hmx7FlT58f7j/7tqAhLI0kkZ5lJCEEgqIJJFzDsaA18Y2jrvOaxvbOGKDbTA2mKicNZqkGY1GiXrPXdWn+1T1qerqHgG773Nd91U9Ys3i3flxV1VX9/O5G5adPrS5d3ho08L+WjZ7OT20hcYtvTSqGRjaSuERuaF30GbboirbkSV6diwZjmZnkBuX1rNr6Rkaz9hR5qalozY3L9dzSzHeRtm9fCyZPcvPuqxwuT3IHTbjZe4UuavvXHbu7puosnJi6B4tq1zuLXJfNOfteD+NnAdWnx96cPWFMg8peQRZU+XR1ReHHl2D0LUdLw491pDH11yyeSIjT8qsvTT0VCRPI9e5PJPIF0WeFddfuu5ymefW+Xle5IX1NFIwNuUrGy8PfXXz5YOf29h7enRDz7BZN++0zXqRDV4GzPU9qQyajRQ3DtnrTTRumu+yef6wzZYF1Rhmq8gNC0a8bJNZiJwx24PsEOOOhaNedvaOmhtpvLF3zGYXskiMRW5aTKHxZi9na7llcZVbF4+b24rIa5dzZjeNu2ncs6TK7UsmkrljyXmbO5GlLnctE/F+vmDupvHu5TQWucfLxfL6XrqWuW/FJXN/kAeCPMjpK0LXD9EYy8N9l2t5ZOVl82iQx5Q8zlmFfGyeUPIksrrKUyJPK3kmyBdl1hjzrJIvIWurPNeQL6+jbLg8+rnre08Nr5vXb9bOPV7mOpsTZdaJrJ93shxT2TDvlJfre/oJWT2b5lfZHFxvnn/abFGyVWbBAIFLZ9uCQZvtnIWDhGyont4hs5NGZBdd31gE17t6h9Xc1DtCGSZkI2puKXPGjrfSKHPb4lE1u23GzJ4gty/Rcwey9GyZOyO5qxzHbe5Glo2be5adK3NvkPvEyLl/+UQyDyw/7+XBIg+tuFDmYSWPcPpcHu27qOYxm0s2j6/080SZyzZPBnlKhnBifJpGmWeQAqCLIYDxABWayoK6bq4PyqGqQNVR5YDyUV1PaQIlw6BiqLYsACYHSkO1zbt2oCSsEBMQ8YgwpgqVDgoBqJsIC5JG5WDlgHIZ81BpkMos9VHFIfHoQFWoKlAaKk6JitAgOqY6qE6okL6LNjoqBypEVYGqUIWwQlAYVVB8TdEgcbJASViA5MHKQhW2lN9UGiSOAxVvKaRqKh9TLClQHAa1UwGVgmVRUa4sKG6qUa+lUrgsqiISFCNy1xWmEhUhaQ2KRg0UAkDymkE9sIJGgpJGRYgw9jlMMVCIA3XRA1VH5WBJUC4FJoTASFA+LOMlC9SaOT6oGKowGiQZD5RF1V9DldNUGiiEQaWmfmgr2VCMaruAJEGVUz8BKoWJc9OieFMBkxsx9fNBNcHSpn8aJs4daCuCE5v6oaUYVwmqSIgqhuu+Za6hYk3FoBiTTNhSGio35XOwUqAQi4rQhKh8WBooh8mOBEdDVYIqRg0TIkCdLEFxKlA+rhgsDVIYDxY1FYOSsFIBLA0Uh9tKAyWTg4phhW3lr6siqDgCkw/KhUHJaJg4NVQKJJmyqQQkLQxKogphxVFVbRWCCqOham6qfFjlmkpg0lClYD21qoBF1zVYxToqNvUrQW0gUGsjoGRSoNYpgMJIUA6VD6oJVaqpqqkfRUEURqJCNFCIbSuMAlITKMShijeVi99UNovjqHjql7tRYVvKjulNCkRDdaVBITVQuahk+nRQCK+nkBCUG/X1VAmqyNNIAMqiEpkUqHDXL0S1nkcFUpgSVIFKblZokDhZaypsUthRhyQjQcV2/bihMAVsAwpJTf38VKBuS4BC2oBCJCoNkoxEhbQD5dZSaVhKQyGERIJKoupLr6lSoGRCTCUoaii+joIiPBxA4rEEtZ5ArSFQqwUoDVYIKkTF0RDJhC0VNlUaUxqVbCoNEQJAPJagLKo6KIuK8DCsdqCKpiI0ISoflmioRd3WUylUSAoV8PAoY5uKsDShQgCK11IpVBJUiWpFfT0VogKmh9tM/QiNBKWhirYUpn12rK+pyoYCpGKMNNQpAnXMJgZKpiuqDd61hBWsqQiNBgsBKIxbbBKwCE1TU9VQUTRUCKOysJBMXDz9i4MKUbm0bavbm1ARmjZTvxIV5Z7iPhXwNLYVomCSqcGKoEJCWA4UjzoqpGwrwqPDSkz/BCoJqg6rGoOGOmVWFaDCptJAIRKVB2uei4SkRYJyqAQoSggpTKqpEJ7+aZDCNDUVEIWjBJWDKgTFYVA6Kh0Twmuq3JZCGFWbtuq0pqLEIMlrH1UGKIZkr+NTPyR/kyIxBcS2OoFJweJpXwJUHqooqCIaIpk6KB+VhoiTPf1L3Pjl8A3gJlQMyU4BA0w3BoBkgMmNMUx+cjBxWqNq2E6X8VARkJzpXwXKoWk//bvgwZKYwsjdPw0UJ91SDpWOia65qSgqKGAqRhxPSoBykaB41DYoNFDY+Wtqqg02PqgrhYrXUhYUjSGkMAyKUWmgkHJNhZHijiW5hko1FbdUek3lmsqD1YArnPo1wbpjCUDVb/pqSbWUBgpx6ymEQNmfdVBIDRXhsKHrWEuVoJC++JoKkGKgfFQZO3+ERkUlQa0xBgdpP7eu90QJilOhOm7DsNYU7cSwqus0Lg0TB5h4tLCKMKoULAbF1yEqDsPSIMmEqNBUalsBE40SV/Y9KsIS2/2TsBhUCSuAFGaPTTMojm2qYkxhkmFYXU5VaKCQEJWFRWkC5TYpfFghKg5vVKRxOURRWAQnNv3DGqoEJRtKR5XeqHCNVaEKMeWspxAGxZGgGFUMF8PSMCFy+qdBktFQ1UAVsZiQGqYGVJHpXwUq/xAtp9ZUAaAw5dSvuNZQISoqQpINqmgrDRNHRUVAmqZ/FpO41jBxeE0FQPoUkDFVuBhTEyq0VLKhKlBoKDfGWqppCoiDtG6MQeLRB9V++ucO0kanf5n3qCSoJCpCA0wWVokpDkmmqam0lmra9UO8NRVBaWqqnBu/NVDL8kBJTE0thTSBakL1yAoHJ7ZRYdsJo4Dkgwph+WFQAKS1VNVQC1OgqsRaqglUBauOKYwHqkCVAwpxmCpYUVSUG+hawyTjoSI02rpKNlS9pdLRUHFLVbDq5/5S4ZYK11QaJpvMG7+AxKNFZWH5GxUaKsSe+cOoIOLgdLob06gASIMlUdnpH6WOSqypiqaqowImN4aYSlQIAQpR4RkqPKD4uXUEavWckzVQMtxSsqkkKoblxjQuDZJMDVUAK4WLp364DkFxLCxEQSQjQVlUSHCiQjYU42JUTbjc1M+hYkQyVVNp079mXBJUEhWlO6r6drqGC6B4tI1VANLiMFW4Yjd/Q1QeLFpb1UFV4bVUuq18VBwfVbVR0QoUwqhkU9l4qNKYuoPyjyelUCHcVJMBxSlREaaspqKRb/xqkMKkUCEhKmDhMZWclgIied2EKnzsQ2sqDVSJCSEsMVCxpkI0UCEsBmWv+3RI5TWh0UBVqBygJKwCE0YLyq6hClArZx+1cHgMU03/dEy5qJrWVBwJC2FQTZiQFCgOo2qzUcGgtDWVBMXTv1ZrKkocVP3Gr4ZIhtdTDAtoGpuK0KRgSUxlCEkISkNVthSB0UAxJr4OQWnTPy3cUDz106d/PPVzsHxIPqpYW8mpXwkKDXUdgVpVgOJooBB16sejAKXBkqiaQAEQj5xwk6IJF0//kk1FWGzoOgaJxwoVhUYVlIg/7UvDSoFCHKj2sCQoGQ0T0gyKRx+VbSpKCpTDVLSUvW7XVHbqV8BiVDFY1dSPQNGogUJipykYVhUFlIVUwcK7KaKgYqgAiseypRBgEqjCdEW1oRwLVEXagWpAVSTEFEaicrAi96goYVP5uHRUSGr6x1O/EFQurFxUCNZUIaYwKiqC0oQKYVD385hIDRWe+KVRogphlaA4fammKkJwJCqGVQGro0IY1rO4uStB9UlQc+KoZFKbFJyuLSVTQxUcptVAcSSsKKoOW+ra1A+IeCxTQsoBNVK0VTtUGiIZrak0SGVa7P51RsVtRWg0VDztC1ExrBQoCYvH2EYFMLkxtUkRn/px8AYlC2otgVpZgPJQlaDSayqvqQSs2D0qDVUTLgmKUUlQKVRNLYVM5h6VBCVTtlRx3QQKkHaVoJrfTdEGFNJm6gdQGNPTPx+TBCVRaZgQgHIjQNUP07ppX+IxerHzF0KSkS0VYnKQOFhTNU3/dEyY9mWC4sRB1dZUBSgXt55ywJphNUWCyt1KR7JaiqNAYkw8eqgITP4mhTvv19hUxbNUGqgKVpf1VH5Tle+loOsYKB5rqChZLcVRQMkAEI8VqBY3fvvcWio+9Ssw0TXD0lHF71OVoDDlA6gVBAiJw0qhijdVmBgoh6oZVoiqyz2qZFsVCUGF8VAVsDRUJS4KY3LJe4tS2zVV3omKPFRICpWMDqtCFYNVbVRQU9mfdVQcD1URiUrDBUzlA4pF6qhcGJUEVYdVf+TDnueTDbWC4CAaKLumiqBCuKlSoLQbv3VQOiLOhnIUqApY+U3lTlRomBDZVPG2qjeVhVUACiPbykfVBKqYAgpIdVAKqkU6JE7rTQoC04SqBopwhGsqDRRSNhVFQ8QBIh49VMGNX4mpRFUcpMW1BomTWlNVoOpNBVBf1BoKqYGirEICSDJaU4WoYqD4GlhycDEoCUu2VAwWtxTDioIiMDxqoBAA4tFi4ghIjKlERakgcWJNBUy5oBRUAaIwaCkJS4PEYVCx9RTiIPmwuk3/XFNpmDRQiEMVbyiOnfZx+tw0MATF0UBVqCKgrisaqi8AhahNVSQGyo3xpoodT2JEMhokmRBU26mfayodFeJANU/9kKqhHCiJKgRlU6CqcIWYXICJR6QJVTtQ9alfChaDaoKF1FApR5RqoHiTwl77mMKE96m4pcJ1VRJVX3r6x2spTh1VBasOavaJGihOCCu2nkK4pXKaCukCCoDktQerJw8VIttKfT8FQXGw2p2m4LZiUDKMSUOVgoXEmupmwgNMDpjfUjYt11QaJhuCghGgcK1BkpGoLCyC0oSqAtUMSzZUCatAJZtKg1WhooYqTqnHYtdUK+tvpg1h4UsJHKgFekMhgMRj2VANoHhsWlM5UN1QhSlBFajCNVUMl48qAFWEt9Q1REin9ZRIW1B2GlhiqgJMrqnqu3+IBglp01S2nRACw6lDqjBJWOF6qhEVAlgKJg4Q8ViisrDimDxQSF/OJoVrrDoofFNIC1CcENTKAk4sDKpp+seY3M/tQG3wrj9BUDIBpgpUHZVtKYTQpFBVmCpQMVz2hi/GANNkQCFtttMRiUoH5SBJUBYVIQlRhZDK6wITJ8TEkHgMUcmG0mDJluKzfxooxE370FQaqgrUMxUoTPmO1CDJeKgoPPVz1zFUyhElAaq6vnLrKYbFoCSsWFKoAMl+0weuBaQwQMQjg+I1VYgphqrCVcfEcU3V7iBt3rSvBSp7j6pART+HqBgSjyWoDFQVKN5Gd9chJhkNVM4mBSKbSsOEuJ0/fZOCUZWg1hCoFbSGWj7LgcLI12GAqg6rjglhUNxWWkvJSFQaLA2STA1Vjw8qF1Vq949HJATFYVAy2vSvhEWA2qJC+IsJ2sDSIMl02qhAAkwyEpSEJUHFUCE8/QOcNrC09ZQGCgmnfjFc5SaFAgpf9laAOl6CWk4tFcOEMCgPVWJNhWioYrBSoJpQaaDa7P4hrqXiTZW7nV4DhRSAaqBE2qCKgXKYGJQbQ1QxXA6USxYoceYvNv3DM1QarHBNpWFCGJRrKx0VAMnrEpWF5aMKcQFTiCoGComtp3RQjCox/dNA8bUGigNUEpSGSoKqoerwbgoHykcFODFYqZbiZsrZpHCjgooiUZWgCA+P2aBEQlQaLIkqBgqpUGW2lEAVgnKQeAw2KYp3U7RCRWDSLRXZpKDEQElYfPO3GVW9pQJQxxtA+T/XUFEqPPlrqhBUiKoNKBng8mDJ0+kEJgYKaZr6YT2FsWkrnTcq3HUcFKdsqhaoEN79i4NyqHJBcXJbqlxP0XV66leNFSgdlYYrH9Unv6ZCAEqiUkAdrlAVYUBaGJWEBUw+rjooF7+pNFwSloZLgyTjgbKognN/hEaDBUwpWGgnB8pdN7WVbCkLi9Bo3/bhNRVFomqCxScqQlQc2VTaFFALQGlfSRrFxaiQAo8WbiiZ3DWVA+UCODFYISiLipDkrqskqlRbcVMh9guzJahlBSgeQ1g8ciQoH1UdE0eimhQoioZIRoIqUVFKUJQQk0wFqo6KYTU99hHbTrcpINVQcTIxcVKbFEhbUBxt+hdDJUHF1lQaKCREFQNlR0KTairtEXqLCiEo2rpKR0WYMPZpoPw30+Lb6C2oVQRqeQGK42OKN5UGKvfGrwcKiAJUkwUlI0HltJQLv5YsAao4RZFqKSREZWERmujuHyGSqACmuaVcU+mY/ISYUrDagMIJinRLuXUU0gUUR55Mj6FCgIjHClS9paKg+ipQISq3lV6Aojy5KgEqROVg6aiQEJRsKnnNmGIthbRBxdERyeuqpXgsURXRUVUtFYKqUKGhEB0TpwaqSAiKw03FLZXTVLyeytn9Y1QhrlhyNymQ8h5VCakeIOKRQYU7fylYEpSGSnsvhYSVB6oYKRJTmExQjKrCBTyphFM/eR3GoaqfppCwgMiNFa5cUDK1TYoOoGJNJQNYGiZE2/3jqV90+keIZFPl4mpeTzlYbVDxJkW4porFgirGEJODxGO9qXKnf3Y9Zcc6qDA1VIQkez3Vl5r6ueCbOiyolQRqGYFaKjA5UIypApXaTkfC6V9qkwIBKoxrbOqgYk2lwdIgyQASj4wqhKWBQiQqFZIMoUm1lQTFqLQjSnKDwl4LTE2gEK2pAKlCVV9TaZBk3PTPbysNk0zbpipREZRGUDIKIhkg4tGC4hCUFCiEW4pBabAexxuQ1lpQx1RQYWxDFbAYUBgGVaJqAIXEpn8SlAYrBJVGpb2WrEDVk9dUSFNTSVg6JnkdoBKYLCgxMi4JqglV+iQFY/JByeSCamwqhKaAIaQwEpSGKgYLkahSsBiTh4qgyJaK4eLzfrHp3xMVKGqoWQ5UClXZUglQHNlSnObHPnxQGioJSkNVh1QPT/+4ocI3KKVgtWkqCUlLCErbSg9BtWkpC8qOMVRVckEhjCoXFMIbFRqkMB6oAJWGCekKqkRFaQQlRuCKg5pPDUWglsw8VKIKYWn3qNpO/ypYaVQhLB8URh9VCEtDJANMPJbpyX83BcItFd/9oyiItHiwCI22nrIBKoSuJSx5Sl2Lu0eVQqVvp6dQIWipsKlSuHjql5r+IbKlSliERTaVhqtaTzlYGiiZGiyCkoOKp3486qBoygdQSwiOhOWj8u9RrSAcbbfUUy2F8PQvhYrfpBQDlQMr3KRAwvVUE6zstlIQOUjVFJDvV9mmKhKCspgQAYofo0+1Fd/09VAtdsh2LaDMHzE3zhs2O+eOmJ3z6GfKTfPPmJsXEKrEKXV1+qdAkslDBUjBmqrFlxLkblQAEY8WVIEqa6NCHlGiUQF1rIBEmUmY6FpiClO2lE0+qPyDtP6aKvZW2hQqDRKHt9RDULKlNEQy2aCQAk4sfku5hKAsKk6BSLZUCtWNCymEZwfwLCBcC0fMnuVnzL3rzphHt58xT900ap65dcw8ffOYefLGMfPwllFzz9ozZvcywBo1NxOwW2i8dRElhYrQNKJCaoj8SEwWlE0mKA5haTP9c6BaNFWwpipBrSBQS2c5UBaVBaVP/WQkqlhTqagoGiaOBsqiagDVFhUiQWmo8mHVQVlU9v5UO1CcGKY0LB/R9h5qHgK0Z+WIeezGUfPNJ8fNb380Yf7xpwvm4IeXzMDJy2Z05LIZH/vYnBunnP3YjJ/52IwMfmxOHb1k9r1z0bz5uwvm19+bMC89Nm6e2EG/7CtHzS29hKwAxqjKliqiYlpKY+Y9KhUVQWlCxWma+sXeTJuznipRUYAJsMpdvhoowrKEmoqvlxGuGKQyDIqu7agkRJUHqxkVMhlUSBdUgMRjChWS11IBLAKTWlPJKaAD5U5TANK2uW58fNeo+elL4+bdNy4QkMsWTJfP5cvGnB392Jw8fNm8+7eL5ucvTZinbzprQd04j6aFBEzb+YvBQpqnfkpT4TAtNVXO7p9tKB4pISiOxCSTN/Wr1lKPr7xsngSo5QRqiQBVwXKguK0kKg0W0DSBkqi6rqcsLKTEVAclYQFMDqwmVM2w9Pf9VdO+JlQCUxG3+xdA4rHAJJtqe8+QuWHOoHn61jPmb7+9YM4MfWwunP/YfNzNkfrB3wt/T/y9337tovnyXeO2rW7qIVQELPfLs3nql4JVA8WjsqaqgeIQmhgowJHXKVBNqNBQT669VIFaLDGVowPlgIWgGnApYVQMK/ddfzVUBaYwISwZDZGMBBVDFWLiVC3lEqLyYWmY/DShsiFAfOZv+wKH6cEbRszrvz1vJs5dQUENn0sXjXnn9YvmS7vHzS0LaRpIkaCyvzw7kRAWEoKKomqxSeGBKlBJWBooxIKyDRUB5Se+8ydTYaKRoABQmBBU1VZNoD7pG78udVD5qJAKVQIUoiDiVDt/flvVQBW5Yd6Quff6EfPL750zg/00N/uMPmisV//ngnls25i5tXeMpoHNLYXwuT8NEhI7opQDimNbikYNEicExcma+lFKUMsI1OIClIbKthXv/hGcelP57cQBoFg0VHmw6qD4GohCVBosDVKYOqw8VIwptZ5CGFaISSYExU3FbbWtZ9BsJUxffWjM7H3nop2GfdYfTAeP7r9kfvj8hLljOaFamIcKyT1Qy8E6yq6lFFw1UAihyZ0CaqjkZgUQhbgeI1BPOFBHLahFBAcJYdVAFaNExbA8YGiqBC4NVFtUEhanGVQerMmh0ltKZjKobqDp3Y2Lh8yvvz9hNxqu5BrpSnwmxj82r//ygkV1y/xq2peCZUHZMR+VhYUQlBSoEhVCYJraCtFQMSgJqwYKU75FM+OgLCqx6xcHxakgNYHSmkrDhMRA6agm31QSFLIxQKVhCgNYGiaEQbXZUsf9qRvmD5nb1w6bN/943ly6VPwG/y/9fPTPi+bBDWfNrfObNyr4eFInUBQJKomq2E6PtRSnBqpAFVtTVaB6jhKooyUoCUuiktFAcXIwIYDEYztQuaiuLCh3mNZvqRSspulfCQpRIDlM4uf5g2bTnEFz/9YR8683Lvyvx8Sfwx9dMs/tGU9O/wDIjZwUJnktYBGWJlD3EhSMTVM/JAT1AG76AhVFa6lHyykfgVo8SweltVW4ntLbSqAqpn7Ao0VrqTxY7UBxfFg6pjAlKgsr/9yfnP5psLCVnvMSTWDaOHvAPLxzxBzee8l8/NntPbT+4J/1CP0zv3DHOE3/Ri2cWEtV35zoUKVh1UGFqGKw5NRPgyUfTgxxxVCVoJbPI1DUUL0zDmahsoh4tNchpgpViau48RuD1Q2VcpAWaYBVYsJaqnjZC34OEYUJUUlQMVQVKIcqBGVRIQUqFRNl89wB89COYXPyyP8hSeKDNd6x/ZfMI5tpTdVTNVUMllxPaaA4NVQWVot7VAiBwShBSUThzxaVckSpaigCtahoKKDihLC8lipSoioQxWJR2bRDpWGS4bYqUREgDVYUlYiGSIZBMaocUBxGpYGS0VBt7Rkwd20YMvvevUi/mcVv6P/Rz4H3Lpq7V42ZWzN2/+SaSsOExF76Eq6pQlAhKoBJTf8QCcqh8tdTtYZaNLPCFIJSUdmpH0//4odpK0wuwKNFB5VGlT/981FNFlRbVMDEY6qp8BU6cuq3ed6AuWn5oHnjD//7NyByP2/98YJFxfepNEwcN+3L+eZEH5a2SRHCAiR5rSHiOETK1E8DZRuqmPJpkDjh1A9x7VSgUnb/ACgOSwfWHVYclXuOiq/jsJq+4xeQeLRTP4Qg5aJyayl3HUPF0z+8UWkTTfVe+dE5c+HCJ1NNly5+bM/oDZy6bM/69R+/bA/Gnp/45LbiL5435uVvTpg9OFi7qGHqxyOBwbUGiiNBWVTFSzRzYFU7f27UUTlQ7roO65EYqBQsDZWPS0Olg9IwcUJQFSz92z60psoBpaPSMYWRTeWhKgDFwqCiTVWAun7WafPS02NXHBOOCn309iXz8nfOmf+8b8w8smPU3LvhjLnruhFzz/oR88DmUfPFPWPme8+eNX/97Xlz+sSVr8YBgvvc7mDnL9VWYk2VngIGqCysOKYyfDwJEYhikaBs0FB9CVBu+ufWVE2o3CFa0VJKU3GAiEcGFYOltdTK2T4kGa2lQlgyMVQaHi0+qHbTvxQoZOOc0+a+G4bNcP+V+WUGIjyqgUc3Ht5+xp772zRj0GydPWhPXOyYP2Qf89gxn9KD0+rDZsvMIZs9K0bMt54cNx/+82Ln0+raB4+Q2OenuKUkICV5ayoFFEJQmlCVoCgaIk449UPQUo8wqKXzjtQbqlhPARD/WQiqhgpjAyikxCQ2KDRUsalfDioPlgIpBSoHVu21ZJ3P/ClTv57TZueSAfPnX0/Qumnyv8CA9MoP6Zdg6xmzdQ4hmusAueen3DNU4bNUHDwCYoHNGTa3LRsxX3/krIWFkxCT/eAA77ceO2dumlfd9NUgyfCaKoUK8WDZRz5yjyflogIkH9bDBOrxNQA198hw74wjZiFjUsKYZCSoMratHCgNVdvpH0Dx6MFCAkwygJVqqaaTFHw8qQkW4jUVpQsq2Vab5vab5x84Q2uZyW2RYw303t8vmKd3j5aHaHcsqD/y4WPSYSF40ndHz4i5a+0Z8/NvnbNrrcl+cH/qzj4cpg1OqGu4immfg+WuNUwcico1VYtv+iAsvKbSQHEAiUcB6ujwwpkAdaATKo6ExS3FjZVEZU+nx2FpTWVRBYjCpDYpKlhxVE2g+DF6d+2jymkrDdRmaifc6H3r9YlJbQpgR/D1X583tywfNlvnufN/8oS6hirWUjJ4N8Uuai3ka9RWY2cmiZ7+4z/6z3NmF56lagJFASQe24CyqJT7UxosbigJK4TE4RvAyEME6jGAWsINNZ1AISUgiUlHFQVFTVXCSkwBS1QiQKQlhKUhktHWVBoqREO1vrz2IWlhUBJWEygOowKoDTP7zTN3jpgLE901Yb30GmHataRoJQHJA0WAGJZElcLlXvZC14tG7DTw+bvGzNjI5FAdO3DZ3LNmtNZSIaYwzRsUWks5WDknKhyoCpeEFAYN5YFaWIBaUKBiSGUyQHmoeOrXAAopIdnomJAYqBguByqCSuDiHUANlYXVuJXeDCqFikFtmtdvrp/db9567Xzxq9bt84/XLphbVw6bLbRWij6cSOkCCuF3/eGtSdtnD5sXHzprhge6o8J67JuPnjO3LMx/zTPCGxR3LImBiryRFiEgElIMlNz9i0HisQYKmBjUApr+haj8xvJhMa4SFFK0FGJxFUmhckeUXEtpbcWoGJbbpIiDktc1VEGSN38bUHE8VPYwbX5TbZh9yty3fdC+LKXr59BHF83t1w2ZzXOCU+oUDRXCqFpP/+yLNPEWpRHzkxfPmXNj3f65L9P09K+vXDC3Lxs1t5UvfalgNeEqYQlMMlFYhIRRaaA4ZUsFmMI8hK+3WXOxDopRqU1VJAaqhqpINigljElGNlUKFqOKNlWQFCiMTW2FeKgKWDmo1hOol79/tvg1a/85O3rZPLVnxGyc5U5ZSFAWlUAUphMoHheOmNtXnjHv/OVC53UfNice3jJmX/riXk/mg4qi4jVVkRBTmBoqShMqbqhqo6IDqBIV4dE2KtBWuagsJJr24SWafJ2LigGF8UARFh5DUJxcUEgUFWU9raccLB0TEoIK30qrYbp+br+5aeVpc+wgLYA6fLC4/8PPz9mjSsCjg8pARalANcEqXqBJTbWzZ9i8cDc2KbqJGh3+2HztwXH7erLqfX8ZoERab1JwCEsKFTDZ0TaVw6OhcqCUKZ8HitKLeJjqkGTqoAQskSZUbd6ghGiQEL+l2sPyQBGYNqAkLIkqhLVh7inz7H3DZnys21oER4Yev2XEbCFQfA6wBoojEGmg7NqqwFTh0kC52KailsIbad969ULxT9Tug13JX333vH3Ji/8SzUxQBIanfW2mfhYWYcmZ/nFT3Y9RAfVgU0OVqLCdPr3eVKk1VWzqhzTBKlFFzvrJhLBwf6oJF0ei0mDJppKwujxCH0NV4TptfvnDs+Zih4LCO/Nef2XC7FyCp3krUDIaLA0VEjZVLqrt84bNl+44a88Hdvm89erFElMMVROupvUU4mAFTZXxyIdEZRMHdXh4QQQUh6d/EpSMNgWMohI3f+uYAlQWVHNTtW0rJI0pDiqMhokTogofo+evJN21csC8949u/3bHW1+fvfuM2TQ3/jyVBMWoQkQeKAKktVQKFk5VYDz4Qbdp65F9l81dq9zbaENUIahGVBQNU5WgpSwqH1QSFaZ/hMg2Vh3UkeH5Mw6b+YQG0UAhsfWUTAiKo8FKoXKpUPEDirGEoJq+59cl3VAOVhqVhkgmBMVHlCQqrJ8e2DloTh7rdm5v//sX7FGlzfNSoLQ1Fd7nV28qbiiGFaJKBWf/cOi2ywcnLx674ax9aWYIqtZSApAWbKWnW6o+BWRUOdM/pEQVB7U/DQppQNSEihG56xQqgakAhRF4tNRaKgEKyUUFRCGsNqjcaQoBilHRyKA2EKivPnHGjHc8ePq9F8bM9bP67eMeGiZEBVVEBUV4GFUuKEz7+GbvhYniH67FB/ejnqcpI05NSFAOVQCqiIYJYVDx9VQ+qBgqxsQpQS2mKR9A9VhQLgtsIrAiR5Sa1lRNTZUFS6CS14iGCqMGCmFUuJaoYrhSsDRMYWRTOVwFqDn95uUfnO205Xxm+LK5fd2gPZ3unqHC4x/pryRFcmCVuIpIWDFcO+cPm/s3nTFDHV64iY2Jbz42bm6cm/r2xPzvpOKpX96aqoJlcSmnKVRUnBioCpWOCeGNCokpTAiKUdUw2e30VFP5qFI3fREPVQHKXddBcRhWEygHqULlgcLY9h5VeX/qlPl7x9MRf//TebN+Zr89oY6jSxKVBokjQTEqDRTHovIwMSgfFtZRt68csTeYu3y+//w5s3NO03dS1VFpoBAfVduzf82gEIDCiYoHVnQExYlN/+R1CCpExUeT7DXhCVHxJoW7JlTF1K8JVJemagJVoYqAwqggkvFAYZx7ymxfdtoc3t/+FxCN9q1nx8zaadUjIOXTvgoimXAKyKC0LXWtpWL3qADq1mUj9k22XT4//so5s2O2+4pSDRSirak0TDblYdp0SyE1UK1QTVhQj6y+UAdVoYpP+5C8nT8fFqOSsIDIthRw0bUOq4JkIzYpNFw1VBTgicFiVKk1FRCFqEJYbVFdN+uUuXPTgBnu8KgGbqI+uGPInv/jdsptKQblritUdqOCUkNFeHhdVaEiQAqoW5YM22emunx++uKE2TErDQpp01Ici4pGDRMSgrKoCEvOmgotlQQlUTVO/5AAkoTl/izdVBaWjQ4qBiuEJBOiynsvRR1VCIvTFZX89sQ100+ax/cMmYkOp8sxrbqpz+3ucUPJ5KylEAYlUYWgLCoxxnb/uKH2/asbKDzKwaCavue31lQBoDByPZVqqxqqIk2oKlBzDg/3zDhUA8VJtZUGKozEFENlESUaqsIUoEqsqRiU1lSpNDWVi99SbVEhgLXy2hN2h6/LhsSbf5owWxZWz1LVQCGZU0DER6WsqQgOT/1wLUExKjxGf8fqEXP8YPtbAPi/wfe+eNbsmFOB0iDJqFvqFA2UO03hYGmQEOz+VdcCVMaN3/v9htJBAZIb65hkACpExU0FQBqsWlPxtM+uqXRYvKYKUckp4GRQcUvhWoIKUeXc+NUQhembesJ87yujxa9Uu8/vfjpuNs7lxz8ioHANVAogDhDxKFHVQFG4nTBqoPBo/cPbzpjRkfb/hrh0Aef5ztovzy4banEzrFaokIyHExHZUhWsOCo01EOuoQ4Nz59+yMybtq8GigNQsZbi6KgcnhSosKlKXAWeWBgU4PCoRQOVc+M3BYpRuTGOqglWHzXUz/97rPiVyv/gIcKfvHTW3hSOgeLg/pRtqgCSTOw+lYqqAMXrqgrUkH3py9cfHet0/Gh89GPz9C1jZmfPiLmFQRXRIHEcqIxH6EV4+qdB4rQFhYayoBYRqJ4SVBwV0ogKaXiWyv0cR1XFtZXWVCEqByqOCqmhogAQj2EYVs6JCiQFS8OEYMr3CjVN2w++C+o7L4zaXUIcruWHFDVQiGurvDUVIlGl1lRlgIvGLbMGzau/6HBXlz4DJy6b+68/Y25aUAdlQ22lgeKETaVBkpnMekpOARtA7bdjrK3ceip+RAmg8HBi85qqjqoOqlhbFdExudH+bEG1bCqKhgmpQPlt1YRJQxV7jgqg/vBye1A4VfCNp89QQ1WgcMDWoarDKtdTDU3FkY2VhYpAbe8ZNLtXjpjBk91OzOMb53cvd6fWb6HcascKlIYoTNhWGqQymPrZ6V8aFcdDpaypkqDQVHFUDWf+EBWSBFWPhspiKlqqDkpeu3WUayodFNIdVbyltPVUCMqh0kH98ZftQeH9eC8+QaDmOVAOFb+V1v+mD15LlQEaGjVIMozJjgJRiImv8Yqybz3d/QFJvFQGTwADU5Uz2agYU9em0hBxZEtZVMpJihJUrwAVQyTjWqrbPSrAcSP9HAALmwqI7Givq7aSqBymAlQZWlM1NFUuKCQHlYPl36cKQXEkKKyhujQUzv0BFLbeK1AcH5QKi5pKQ4QAEI+cZEuhneYPmT2rup80v3DemB99ddzsWjBsG4pbKgRVwYrjClsqCYuw2JayycPECVsKoB5kUPMI1NwClIQV/lyHlQDFEaAYk2wriUqHVVwHN39DWA6XhNViTZV9j6p590+iCmHZZ6nE9A+gXvmf9v9Wx0siv/FMtYaSkbBCVJyyqSLRNikYVg3VgiGzbf6g+e8Xzprz3ZZPZvDUZfOl28fKBxUrUBWsOiodFCcEFUVVpKmpVFRIAeo+bqiFBGpuAaqOqglUvK0cpjqoMCGqEJRExdvqcUwVKqBJodKmfxomDrdUzvRPopKgSlR2dKB+8YP2u3x2U+J5AjWnDsqhci3V2FQUDZRMCApNJdsK3/d7/xZ8EVy3dsIHR5XwAk1M+RiUhOXGdqAw7fO20wlNClXejV8FVTH9A6iyoSSoEBVjSqOqg+JwU9Uh6aAYlQTF4XbSWgp4KlgUuaZSYDEoiQpwYgdpZUuFTeWjqtpJpg4LoI6bH3yt/X0obJv/+KUxs35OHRPHgYo3lWspRIcko6ECpu3UThj/8pvznW5O44OnlF/5/kT5FqUQlMPkQElUDCeGS1tPpUAhFlMx6qBc6qgI1PIA1BwCg2gtFULiNLUUJ6epkBSqNu+mQBiV3flTQElUXkshBKYNqBBVBSveVJj6rZh63Lz41Ejxq5X/wS/vKz8et89SaZiQauqnb6dXLTXQ2FQ1UJQbejAOmZe/N27OU2N2/eAFLc/cNmYf/cD7/uKg6qhimGRq6ykCE4NlMSEKIpkaKMq9BOoBDRSjijVVLDlNBTRaW8mEqNS2armeAqqyrZSosAhNKg5WgCoKq0KFcX1xvXLacfPUXUOdvrLmL7+bKJ+pioGS1zFYiGsrHZMfhwov0dy1ZNC88oNz5jyt5ybzefu1i+bmxcPlI/S2qQSmOioXiaoJVtumQtJTPxeJ6t7lF839q85XaygJilG1B9X+NEUYCSqGymsrZVtdYrKQijfSXnlUPiiLysNUByWzesYJc/e2ATPa4R3h77113mxZeNpsJFQSkhYHKoGJoyKqAkx479/NK4bMn385MalmwgcPFT57x5jZNrc6YItpH57+DUH5qHxMeaDabVRUTZV3Qv2eHFBaU2mYODktlUIVYoqBspgKSLFjSjVUBKQtqCgq/kodjLOP26yeRaBoLGEJXCEqHtfOOmFuWtNvTh1vf5j02KGLZtfK03baF2spxDYVXvOMY0r0P6eiIiwMSkOFaSFeUYY30uKb6D98mxY+k7Nk//N/f/WCuWGuaCd+1x8iIGmgwumfBinMHkpOUwESj4AVw8SjAupgDZREJUGlYDGoFCokNe1z2+p5GxVy2qeh4lSoGFYaVQhrxQz6zxRZSf/Z1fOOmXULjpuNS46bLctPmK0rTpoblp80W5aeMNf3Epb5AEXYCNmqmQ4YEElcFtacE2ZT70nz4b/aP7GLN8Xi5S54pso9+VvHhKDBntgzbJ57gH4pVw04XHPoz+eedt/2UaKqYNkngHvcV5LiG+h3Lh4wj+waMb/+0bg5M9TtJET4wVb5YzeOmu3zqnaqWsolBMUJYZWoGmBpTRViKkNYGFQMFYdB3VeCmqaDQgAKYwpT+Gc5sGKoePfPXee1lTv3V0wBA0wSFdBIWFoY1IoZR8ySqUfMsmlHzPWLjpk7tvWbZx8aNN9/6Yz53ctj5m9/OmfeeXPCvPf2efP+Oy7v/uO8eesvE+a1342bl384ar7+xRHzyO4Bc/3CE+V0UILitnrtd+3fFIT38X318TNm9XT/Vc/2K0lpZFA4TfHtL42awf5L5sN3LpiffeeseXw3/bISLoDaMKvf4DF6BN/+gZ/xSjK8SeneLcPmG0+Mmr/Seu3UsUv2f+eV+GDb/+XvnjM7F9QxMSg3UmMJSHFUec9QcRyqTFgIoWlaT1WgZjtQs6/dWyDi0U+9qXxUYSY7/UNioNS2IjQxUPLMH9DYFMDCLMM7Cq8+bNbMP2Ye2nPa/PqnY+bg3vNmZPiyfZE/NhDwi5XaJsZfw7cP4sufT5+8ZB64ecA2VQXqeAlqDU37fvrd0eTfL/b55Q/GzcqpJ73XknEqUP3mmbuHyy9wu0j//Pii6uNHLpm3/3revEKt84MXz5pvPzdqvvflMfM/3z5rXv/NhNn33kX7JDHODV4pSPzZ/+5Fc/d6fNGAA8WPf4Qpp4AFojqmClUuKGByY4WpERWBadr9u3v5BQZ1YHiOAFXBqoOSqFLn/ZDclmJYdUwVKIkrCsq2VBGBiUFV18W6Skz/LDY0ErXRtjUnzHe/NmIOH7hwRX6RgPCFR4csKD5JIZtqDU0Lv/LkSKdv3Xjn7+fN2pkn7YmJEJUEdf+OQXPiaLf3/l3pzyj9i+nL94+abT1A5D9PFQtAaVPArqgQbfqXQsWgYqjusaAmdFAaKgZVb6rUeiqNKgVKhjFJVCGo1Fa6CqrIkumHzcq5R8ydO0+ZX/xotNMGQeqDRvjBS6PFOqoOCpsZD986SFOy9noHaB2yfflpc91s/11/EhSub71u0Ox7v/tJhiv1QWP/+Ovj9uwfjiwxpkZQiZ0/pGtTuWQ0VJFyTRVg8kAtEKAcJI4PiqOhAqAYLKRp+oeosNBSFlQclsRlt9MFLInKYXKgcL10xmGzcMphs3PdCfNzWu+cOHbxik9t8MHf8w+/Gjfreqp1lJc5J8xtG/rNwX3tf+Gx7fzgzYNmzQz3jgqgCpsKP+9YeprWdt1PM1yJz8WLH5tXfnjOQsINYX7sQ6JKweKpH0cHVYelYQrT6h4V4dGayk35FFAygOXGZlAucVQaIhnXVgGoIsDDo5wKatM/Oe3T2+qIWUyttHjaYfP84wOm/9Ql+//sT/Lz9hvnzZalJ6Ogtiw5af75t4lOW9HfeeGMWS1BYRcvQLV5Yb/5/c/P2S83+yw+gP+nX06YGxcN+1+cTakgSVB1WCWoYpSgNFRtQCFt1lQOlN9UJaj5BGp2FFR6TeWj4uigsjYpEIITNhUD4vCfMagQVQkLoIK2Wjz9kNmw5Jj51f+M2unYp/HZ/+EFs+u6U/Y+FUPiKR/uV6G9XvnJ2U4N+Zffn7Pb7+tpHVWh8qd/uAf13y+O2d21T/uDc4dv/vG8uXXFsNlO6yY+VMtP+VaohgUuHxPHYkIIZgiqQlU/npQDSwMVQyW30hkVQN1bgTpgZgWYwmigQlQVro6ocObPjj4omRCXhKWC4tDPi649ZG7besL8881zdhfu0/qcOn7R3LPjtL0v5bVTkdWzTphvfHHErjHafvCSzG3LThEq11IctBQCUDhE+/yDI53fn971g8dM/vyr82b3qmFzwzz/0Q/ZUuHUr0Lk4wImN6Y3Kdy1cuM3+GYPGV5PZU3/qJ0w2qai8U6KB2qWBfWRmUkJYTGgFCoJC3BSqBDA0kAh3FR1SC4pVB6o4ngS1lRLaL3US5geuavfHDnY7WtjJvM5M3LZPH3foFlJoDDtC6d+2AF86NYBMzbavqLwfvN7tg2YtbMUUMW4fna/eXDXkBmd5De2t/ngi6x/9OJZc+PiIbM1wMSg7EhoNFQ+rHpiZ/4cJgblxnZN5dKIisKgMApQ+0tQVeqoNFBIuql0WFmbFMEJdcbUO8OHxMC4peqwDpuFhOmJ+0+bwdOfzSICU8tvvjBi+opTEyEqNNeNa0+ZUyfa//Nhu/35h4YtKPfgYoWKYaGhbllL68UOf/8un5NHL5nn7j1jD9HeMN9/5COMbKpWoGwIEI06qgpUiKoJlgaqCdZdywJQaCfXUBqovKbyMVVP/IagENdSDU1FWNpM/zRUvdceNPft7qdf1s922/jlH45RQ+nPUa2mtRXWUf96q/0RJGD98bfHzDo75XOoPFAY55wyW3v7DU5KfFIf7CDiJvCbr543d20YNhtnVwdq7WMf+I5fGjVQHqxMVHI9ldNUHqiGNyghrXb+KAB1z8ooqI9qoKrRx5RC1QSqeU3VDpREBUzzpxw0t9Ca6dCBT3+aF37++sdz0eeoMPbNOG5+8YP2j8PjF/mvv58wm3tPmXVzuaV8VLjxu55Q/fk33b4MremDtdn7b10wLz42arYtHDCb5vjPV8nnqGJt5YGiMQcVwrDioPhagKJoiGTCe1RJVLSmumvZeR2UjGuqChfg8KiFUUlYwBNDhTAsDRRHW1NxNFTIgqkHzca+o2bvh92+KuZKf/a+f95cvxgn0/UHFFdMP2aee2S4+J9u9/nwXxfMrtX9cVAU3Kv6/ovtH7dPfbBr+C616reeocX8miF7mBaHakNMMowqBGVREZ62TeWCe1N5TdUeVl5L3ZkHCpj8tnLRQSFtQSGNTYUQnrCt+J5UCGvBtINm2dzD5o3Xxz/Tm5nygzN9u9adtCfXNVArZxwzt2/p7/TWVZzLw3NV2OljUFhLSVgA9cy93cCGn7NjH5s3Xp0wX7p7xGzvPW0P04aQJCgePVQCkoeK0wpUMfWzu38xVN3WVNruXxLUPAtqfxRUuKaSN3sBi69DVAzKYUrDymopQpOa/iEMauH0Q+Zrzw922oZOfbBewU7c0SMXzZt/OWd+9v0x883/HDZffWbIfP25YXsS/Y+/OWs+en/CDA5cstvGDPocXT9422mzbJoDFT7xu2rmMbNx0Qlz4mj7td7I0GXz9N1D5rrZElQVgMKZvzs2DdhNDPz3wD2v1L9s8NdwQxYPEY4ToIFTl8x7fz9v/uvL9MuzccidUp/hnq/KeTeFBFWiomio5BcTSFgaJE7eeoozOVAaqgCU3lCccE3F4c0Kd51GxUnv/DVvpzetqRZSO9285fgV3R7HE7Xv/nPC/DeBueemfnP9MpqizTpqFk87YhZNPWJ6p9BIWYzHPaYfMWvnHzW3bjxpnn90yPz59+MWCU5jfP3ZIbN4intokVExKJzpW0nrqHf+3v5dXDgBjxMT1812L3/RQOHG76aF/XZH8CffHjOv/uqceeu1CTtlw2bF3ncvmI8oH7x9wbzzxnnz1z9MmFd+Mm6++8KoefrOEXP7hkGLB4jwnVR49MM+OwVQHAWSTDYoip3+FalAZTRVEQ0Vok/78tZUElQIC6DuZlAzr91vZkz90OLhMUzYVDIhJgalTf8QeR2mafqHJJtq+kHzy5+OXpEbt/i39NtvTphnHqKF9vJjZtlMQkOIls44YpbP9B/7KB9OxMOL9NeWTT9qllOum3/M3LH9lPnp987YrfOl11ag3IhXkzlYSwnbKz/t9vbVX/3obDDlk6AqVLbFgGtBv7lhUb89XHvTygFz8xrK6gGzq2/Anv3buoimcvPddwDjPtb1eCgx8l1USIVKh+UgKU1FeNRNCmDCWFwzqqamQuzUj+BobSVbCqMPS8fEcagqWIDEowpqxtQ4KETbpEDcNf1Z0VgpVIxpntJUwMSjBomjbVJgPTX3mgNm944TnW6Qhh/cjH3py0Nm5TxCdO1hiwnnACWiMCUqSvnErwV2zEJbt5CmdgUkH5UDteSao+alL7V/CxI+f/vjhEMTYAqD/xlOefZvLm4Cu+AJX3lsiU+tV68lc9cqKALDT/2GoBiVvC5RUWqgRHgKmAsKYVQhKB+Vg1Wiavj6HDf9c1NARsVf9BYB5acOyp/+uSmfxOWD4oSgJKxYGlHN8FHhYO28KQfMX/7U/f3a+KCV8CzUA3tOmZ6rD9lTFstnVwdrOYwoTA1UEcBZye+iEAEmBrVs6jHz1D2Dndp177vnzZbek/ahRQ0SxwPV4yIBhZBkKlCxd1MUsOx1HZSMBFWiQgBIiQQlYcWA8dQvp6lKUCIaKERDZUEtbQAVYuIAFEZGxZjCn/NB6bBw07d5569CNY/a6fYbT0z6TTzYZr99xyl7VAnn/+QpdQeJxsQj9IgGilGFmOT1ihnHzN07+juduTt57JLZtfqUWRtZRyGxG7/X91whUIid8jWD4leSSVCx6R+DCqd+MUwciSoOqv5Ksi43fktQc2fuS4DCGGuqvTY+JB0Uowqnf4Dj46ontaYqNyrw2Afl969Mrp0O7j9vbt58ooaJQUlYywlI05cSaG0lQYXpo6nhTetOmtP97Y8InRn+2Ny19bRZPcM9Xh9ikinXVAGsHFSIQ5XxZlpExYSG4jFEVbRVCIrwlOsqD1QmrAJSHFZ9O12DJOPWVA7UHQDVlwDFASisrWKoJCgZIOIxRMWIHCR5HQOVnv7Nm3rAbFt/1Aye7n68COf8dm8/YeZfc9AerJWPfDhIfA1YQMUvfGkBak4a1UoCtXXFCZpytv/vgS36x/YMmlXT80HJtGkqTmNb2eivJpPRUNVAidGCopFRZYGKrKlCUB6qhqaSUz8P1AwCNV3BJBOCqlCF0z8fFF+nUMUwITmgeq49YF54erDTt6njc37isvnGl4fMgimECY99zKyDClM2VQIVEqKycIoxDM76bVh03J6qaPu5TP/Vn39k2L4vvQkURwPVBhWDim5ScAhNqqkkKEbVBAqjBNWIqrhHlW6q+s4fRwOFMKo7lrQApU37JKjY1K/6eXIthURhTTtgls49aP74m7HkjcrYB/+Zf7wxbjYsO2oWTcdUrzqlzqljqkDh7Uld1lQlIu/6mFm/8Lh9NVmXz0vPjtj3pTtQ7VFZWD0+Kg2STF5LnTY3tG0qZerHqOx1gKrpHlW5nkIEJB9UdZ2DiQNUtzOoORbUPguKkwuKE7aUjMQkw7AYV/PUz73sJVxPzSdQ1686Yj76oNsvIU4OPPPwadM77WB5Qt2CYlTiQcWqmfyGsrAIRuzVZEgOKoC6bv5x86+3un3R0n9/bdQsn3rMguKsn3vS+06qWDxUBSyJKoZLrqWS66lioyLVVG6sjio1bVKUJyoKVE0thTCqEBRDquI3VBOs25dMmLtKUFMJ1JQPGlA5PPJaJoUKASIeNVAhKg0Wt5RsqnlT95s7bj7RaSGPz74Pz5vVvUdML7WTBGVRMagCld9SDpK85gBQGJ76lbCwngq+6M2CWnDcvNMRFB7jACg8Wi9RWVgKIg4Q8Vii6qlP/zRQnApWc1tNtqkkKttUJaZmUAi3VHz656Z+bdZTEVAVqhBUmC6oEAaloaqDirWVD+q5p07T+qnbzdyXvjJs5l5z0HuGqgQlrwlOiErGA4WbuYQmTA1VkRDUu//oBgpnC2Og5En0WCQoi0p54YuGCWFM3FZJVAoiGQnKooqA8s78UbilctoqdpAWkHh0sAQqioYJ2aOCEqg0RBwNE6KtpxwieV2BkqgkpApUHVMPpnk0VqAOmB/+10in9ROme9vWHzM9Ux0oiUp+w8cSSgqUxJS7nS5BMSq7huo93uld5/gwqLUKqNZrquKmb7idrmHiNIGyybpHpaBiRGEKVLjOxYS4qR/wuLbSYHEkqBgqB+rc0OdmE6jpBGoag5IhPDFcjEhec2IbFS4+KE6ISiLScLmpn1tD/e7X7b8FEJ/3/zVRnrLAwVpGpbUVf8tHDBYwSVypL3pDQlj4ore+WcfMpqUnzMG93Q72/vR7bg0FUPxWpRAW1lMOmA4K8VuqSE9+U7lRwURBQ/GIaJg4cgfQbqcnYPEmhU0AKwXMTf86rKmCKWAN1LUEqIaqwKOhYkx83QRKJgZKomJI8lqCQoCqd9YB8+bfuj2J+vJPR82sL7jTFvzohwbK/z4qN8ZBFagIVIUrDxSeldqx5oR9S1KXz/e/caYGSp/+tduksLB68kAh3FIOVXpNpUEKk4Xq0wZFiYKaVjQUx4EiSOX1Bx4mGYaloapDcunyGD0SYsIXFiyZd9C8/263NceLzw1aUIwphYrjQBW4CkwVKgkrDQoJUS2fccTs3nqq8+Hebz43YpZNASj3aH0KlYaIox5R6sHh2fzTFAhPAWOY+OyfjqgaGZSEFYIqMRU/MyiHqcKlhTcp0qiUG7+UKCg0FLdUiYqgpEAxHnnN4ZYKYfF6SgOFaKh4s0KCQgBq2YKDZv/e9msOrLmefOi0mR00VAyVRTST1lP4uQAlMUlE8noFoGSuqfA81WN3ne70Jlv893n+4aFyUyJMCKoJFSdE1Q6T2/kLQdVR1UGFqaGKnKYop34FIoYkr7U07/xVqBpBXUugphIaHVWFKwTlIIU/a7D03T8NFIcxMS4fkvt57rX7zYreg+bQwfagcKL74XtOmTlX7SdA1al1Tqyp/OlffE0lUTGsWBhV79WHzUsvdHtMHU8EP3zbgOmbVjVU1VRVW3WBFaIKYaVwcUul1lQcDRKnBoojQHmwRBiTTBQV0jgFrMPas1QBlURFWGJrKnfj12GKo6qDSqGKTf8kKoBavvCgPdTa9oNHwB+7v5+mfBWosKVSqCQmDVR19s/Bcl+crYOyob/We81h8/tfdXuRytDAJXPbxlP2PGAdVHNjaZBkfFRtD9K6aKAQiSq1A6iiIjAhKiCSsHxI8Zbi5K6pJCrbUCsyQJWoRCQmBlVd+5g4MVSxnT9g4rHCxKC4ofaZpfMPdjslQVOk554cMLM+v1+0EjeUDitEZa8j0z+ZqqniB2qXzzxib/Tu7/iWJrySGV9IgHf81b+NPo2pLShko91Wz0OFcEvFYDlM3VGFoMoQIIsKKWHpkGTy1lTVlvruJefMnSlQNVR26ufWVICjTQEdHh1VvKXqp9I53FKMqlpLOVBYQy2ac8D88+/ddvl++N1hM+M/HCj3BiUGVW+rKCh7HWupasonIWmo8GVvO647YcbPdtuQePP1c+a6ee79FD4mf8qnoepy7k87npQKY0pO/QiMDV1rmDgaKglKwrK7f0VyW6qa+umokLClSlAzZ+z1QMlEmypx85fbCoh4rMOKn6hIweKm4nBbvfr7bs9B/e21cfuULw7YMqQYKEZVmwIqayofVYVLIgMiCQsve3n8ntPFP1m7DzYkfvHDMftKZ4DihLA4KiyLKg0r3P1zqIKmCiCFyZr+JXb/ZDxUhEeb/jEs2VhVUzlYPIZxpylo+ocEoCpUDtZtiwFqPA0KiaOKtVQ1plBpmBANFBIDNYca7mc/6fYehsHBS2b1osOmZ2oclPw5BsquqQgLo4qBCsOYEDTUz3/Qbf2EEx//+cRw7VXPMVQSlEQFUG6sYwoTa6q8too3FWJRFdEgcSSobTjzR2DwZW7qFJDQ6KDibVU2FeWKgpKogKmEJSClEoJyqPIxIVpLAdTsKfvM1748aC52fLbwkXtOmdlXVeuoKhUmJGypEpQNjicRKjSU0lIyFpLdnKhQLZtx1KxfdMwc6LD9j8/J45fM3Tv77ZcRyHf95aIqW0pEQyTDoBiVBGUTIJLhlorCylpL8ShaCilg1UBxCBBGicrBSqFq2k4fqUDNIFBTE6CQWEvN4OsIIjfGQPlNxZsTKViMimFhujdn6l7zwF0nzchwt9Pmr7961n716AI8Ri8AyTAmGR1WgYrgpKZ+DInHJdOPmEfvPG3OjnVbP+Ew7ZblJ2jKh3dT1FH5kCpQPNYxNU/9JCiLSmKiAA6PWpKgKPJxjxgsd9M3aKoClgTloQpAAU0KFMJTvxSq2xaPmztKUFP2minXvK9i4mhN5SUAxZiq6ziqsK2ApwkWtxR2+rZuONL5CwGGhy6Z3TtPmJ4p+xtfoqmBqqHipiI8ISx3ksKHhd291T1Hze9/1e0bDHE/7Wc0VVw1151Y57coNaFq2qiocOmoZEpUEVhaGluKkj/105pKX0/VcBWwmlAhDpbeVrdSQ9VATSEYGiZOrKkYVNMUMIVKgpLRQCES1LL5B8ybfx0vfsXaffBL/OtfjJpFs9BSeJOSDoqjoQpBedM/CoOSYVD4Fvq7d50y/Se7zVmxK/jkvYNmOU0b+TGQCpaPKoRVAYuj0gCF8ZrKorqyJ9QZVGoKiGiokqA4Jag0rHJNpdynulU21BQCdQ1ANaDilmJYgGTHqTQGN39jiaPSMcVQeespQvXdbw7ZVxJ3+QwMXDT37j5p5k6t3qTkQYpsp8daqrzxy1FA2dBfA6o/ddylxOfUyUtm+5qT9mWadVDtUdVB5aCqQDEqCSqFKqepkKY1FScHVYhJthQnDso1VNhSKiiLioBomDgqKIRA2TWVgshB4rEOCgkxOUgVLA0Uo5p19T6ze9dxMzLS/Rv63qF1yNolh+02eggqdZICUVEVkMJpHwd/feHUQ+ZrXxqybyzq+vnjK2dN32z3LFU2KERACkFJWE07f249lbemikWC0lABkx0JTBxV5K20BSKJKRyRClIKVLGWUqZ9DtTZOiiHyrWVBoojYclMfvqX/74/RjVn6j6zeN4BQtH9C8XwTRN/+M2YWTLngJkLVAKUlhxUGi7G1HvtYfP4vac7b6bgg0O0D+4+bZZOO+IeARGgZDRYDEqGUUlQNhnb6XyPyl0XUz8LK8AlIOmoHKwQlQUl4mOqx0OlwOIwKJsCU4WrjkpGwgKo22OgLKoOoLipbFsRmhQqDRQi11QMSSZExbBmXLXXPPVof/Gr1u2DBf7vfunWU3gSWIPECUFJVAzLTf0wOkSMqpea6cHbT5uBju/B4M+H716wX0zQR2kGFdyjUkA5VPr0bz2PAk4sZUuVqAQoSgwUj0lQHW76WlTK6XQOT/typ34cuZ7KApU7/WNYFhRSrKc0SGFSoOqYdFQANYv+O/TOPmAOT/JrbPBv/d/8YtSsXHjIolKbKjIFDEExKnfz97BZzN9Gf2e/OdnxIUL+oFG/9MigWXT14SQmpJr+Nd/4nUxLIfr0r8uaSkeFlE2lQHJxiHAtQSWbivDwmA+rmAJKUNOnf6iCKlEhhEQDhYRNVaJCCExq+seI5HWFSgOV3qS49vMfmacf65/0+82B6s2/jJtbth23x5JwksK+7tkikpjypn6Lph0yvZS1i46Yb31lyAxcgW+jx6vG1i08ZhuKQWGM4apQpe9TyahN1bimAiK/pRyqPFAIg2qc+tUgVQlBWVScAJOFhBCc2NQvhorXVLdIUNdc85EKCmFUGiZOiCoGKwQVQpJhVBKW1lDy59m0llo0d795643x4tducp/jRy+aH3xn2GxZe9RuVuDrchYW5/6Ax7aV0lQ2M9yXv+HVzn3zDpvHaL301hvnJo0dHzzR+9zjg/aEhXxAsQLV3FgSlIZKNlUNVtbOnwvDYlxIDqzGprI3fnNg8RjAEphqsBAFVSq3LD5r9iwvGyoOitNm90+CmkZoGJOGqukkhdZUElGYmVP2mfvvOmFv2F6JD9rq+NELBGvEbF9PsAjVzP/Yb5/07SFk86/F4dqDZeZNOWgfq8dfXzn/sHn8/n7zzzfP2VMQXd7MFH7w93jjtXNm3aJjhp+vCkE5VHFM3FRpUHVYJagiGiAZiakElXmPqgLloqHipsJ1CElGYipRRdZUJagiFSiMOibkZoCSDXX11e+pkDi5U78aLKyn7FjHxKCq6zosJLXrV8N17T6zYNZ+8+uXRzudPEh98A50PCry3a8Pmfv3nDI7NhwzG5YfMeuWUpYdMZtWHbNfOPDs46fNb18eMydPTG6dpH1G6F8U99/Wb79JEZgYVL2ldFAchpVCxUmBaoJVQ0WIZEsBTxMsjCEmDjcURwOFABGPFhQO0VpYdVQMix/9kC0Va6tuoCgaJo4KSobQcCSqtqA4KijKzGv2mk3XHTH793U7bJrzQXONnrlkThGao4cvmGNHLtpv8MCj6Jfx5v5P4IP/nd/7+oid6oVP/4aoNEQybUHxGKJqDaoIg5KwYuH1lDb945aSsEJMDInHCpUD1bSmYlASVg3UIkz5xnxQHA0Up6mpEAmqBovgxEAhGigkNf1DQlQzrt5r7tx9wn615/9fPq/+5qzpm3PEgrLv/SM4MozKwiq+OqcJlwZLw8UtxWmDilODRZA8WAomjpv6xTcqkApWuykgYIWgODz1a1pTAdRuBnV1C1AIbvxqkGRSTQU4bVsKaYMKTwJf+3l3b+rCFdgI+Kw///rHhNmw9Jj9wmzGhGNLGDkeKJHUJkU7UD6stqhqoEJUAaIwjErDhFRtFYMUjn5TRUERIB1UBasENW36BwTqQ3OVAJWFiqJB4oSgbAiMbSi61jDJaKAQDZUDVEeF9dT0q/aZ7740ROuf/5uosAlxcN8Fc+uWk2bRtQ5T26/Padr1Q3K20yUmDVQKFRDx6KFS7lEhcVCZqAo0YdzJ9ApTClXZTgjhsajoWmupDFCZayqEgGjRWsqOjRsVOiaEd/8kKC2MatbUvWbRvAPmx98f/j+JCl+gfR82IaYfLr+JPmwmLSEqByuGieODkqcpeNcvhJULCuHjSRIVw7pSoBAGldqk4DShYljluyno2oHyNyg8UFcRqC9c/S6hQkJYOijErafy2iqKiqKh4miokLCpwmNKsqlmTdlHqPab//r2cOcT6Z/Fx36B9nZqpmk4wsTPUxWoxBO/GrDa1K9oqWZYeU/9SlQerOwTFQGqHh9UDBWHccVBcXRIMjVUlBBVCQujBeUnCar19I9QtDlN4UBV078YqqYT6gAVaysJyqKipsLu37NPnjajkziV/ml9/vHmObN55TF7VIlPqNceTixQxaaAAMVjCYuiYUKqpkrv/jU9nDiZd1MwLA2RTNVWaVT2WkHEASIeJaoQE0OSU0AJ6qa2oFKwbEsRijaoLCTCklpTNYOqN1UMlI3dqPjI3Hv7CXPo4IUrfp/qSnzGxz82v/vVmFm3+KhtpmWzHaIqBSKZxJqq1lRFHCIflwTV1FIhqBAVR0OEaNM/CaqppSQobQpYrqU4ASSOQ+SDYlTJjQrEAzVWB8XRpn4pUAij0jAhaksFCUFxYqcpkBQoeS1RYUv9hg1HzB9/O2ZGz/zvUIWT7niM/8tPD5oVc4/YZuLT6T4oF8a0gnCkvjYHqaEqAMUiYcVAOVTppkqB4ocScV2C4oQbFQWiFKoQFKcJFEcFRUmCKuI11LUKqAoW2urdfFQIwdBAcTRYjGtyDyj6Uz+sqVKoMP3rnXPAPPbgKfPuOxP2puln9RkZvmx+9qMzZuf1xwnSQbOYv560OKXOqDRcQIWxNSqky+4fIdJxxWHVMdXDqEpcPQIUBYB4jAVNlWyr4uyfBipMCYvA5DQVGuq2TwpUDqoaKMLCmDRUDEdey/BaKtyo0A7UIvbBRAtrn1mx8KB58YUB03/y011b4RGMv/75rLnjxpOE6KD9FvolM6pT6hZT8RxVCAlhTNxWtrGCExQyGioNEUed/gWQNEwhqBxUGiiJSgPE4WlfrK08UIQlvabiMXPqR5iQXTzlu3b6+1FQiJv+5aNCcnb9otM/AtMVlD79q44nxWDhWaqp//6R6Vt00HzjK4Pm0P7z9uUnn8QaCzeZBwcumT/9YczccfNJM++ag/Y7fnE6XT72wc0UPu0rMamgCAmPWmotRdEwcbTpHxAxLAeoeeqXc0LdAxVBFcMlQaVbCmBaPvFLcJIbFQWo25aPOlBfSIBCtDWVBkmm7dTPYRKwKCEqh0kHxWm1SUEBKM4sWltN/8Jes3LRIftVN7/82Rn7ZW6n+y92fuwCKLFOw4OPf3v9rHnpK/R//M3HLaC5V+NREIJEUztg4lSowtFH5TD5oGzablJknKQINynCLyQAInkdg6VBQqpnqHRYjCoGCqmaqg6KA1QYNUQcialERdFAIWgqgLoFoKYSqM9f84H5fIAojIaqCVbuRkUNVhEdVLylOBoqN/VziDRgAMVvUcLbaGfRVHD+zP1m9dJDZs+u4+bLXzxtfvbjEfOX18bN3o/O29d+Ye2DZ5PwaAYCOPhaGRyWxUtffvfrMfOdbwybR+7pN9uvP2ZW9Bw2C64NH1j0n6MKUckwKAkLgHiU0c76yYSwNEwyUVgEKJwGpkCtE4hSkajwBdobaQxRxXDFWorDTdW0UYGUqAiNhaU89sGgblvGoK4mUFf9y0bDxAmnfk2gkKaNihQoN/1zo0TFoOR1GK2lGBKPYSQqDl4AY0PIZk9x3021dP4Bs27FIbN13RGzc9NRs2vrMZsdG4+azauPmFWLDpvFsw/aZ6XwGD0A4Vkp7XF6IIrB0kA1fccvX8sbv1oYVC4qxlRDlcAkw6By71F5oChhU2mQOFVT1WFxQzlUDpYGSUa2VGxNdSNP+UJQn7+aUF0VB+U2KnxQTbDaorKw5PRPQAoTmwLG1lS8UZELir86B+P8GQ4UvuiNWwyvMJt5FY2UOVfTXwO6qfvto/MLZqCJXOqQqsRApZqKI1GVmETcO9TTqBiUB4tHkaqlJn86naNh4tRABajy3p/ug+JUoNy1BolTtlQRDdWNvWPm5qUC1H8QJsS2FBJg4nSa+iEEQ8PESYKixDHpoBBGJUFVsOqgEF5PSVBudJi04Au05xMavHlWi0UVgJKoqp/joHgdZRNsp6dA5TaViioIY8J1DigJS8OEaJBkNFQlKIqGCalAxVEhuVvpNVQhKKyh5JSPQXmwAkwch8qHlXWYlmDkwGJcjMm+lRbXCiqOBoqjNVVbWIwqhsuhomYKMHEY1ZV43x+mfXZUQHEkqmo9lQ9LaygZh8tHlTP9q4PCqGPidEXFcdO/CCgZBZKMh6r4lg/erIg2lASV2qjgqV84/UuGUDShUqd/HAUSB3B4DDG5MR8T0hVUqqmQGCjZVO5nH5UExbEtNTMOikeHqtpO51FGayrA4TEMg5KogKgJFRBJWDlrKgmKkwsqp6UQBpVCBUg8IgwKYyaoOCrZUm1QuabKP51egiIs5Vgg0oIpoBvrsMLpX+ymrwRVRxWHVaHSm4rXU7iWeBhQ+LME1QWVDG748na6BgrxUBEYhykFqoLlNVWBK4y8X8WgKlg6Jk4ICmup9uspFw0UwqC0KSBj4usKFYXGnU2gSlSU2Jqqy9QP6bSm4hAWmRCUhonDU7/cttJAcUJMnBQohFHF1lT1P9NRlS/QFDd+5RSQT6a7a236l4bFLSUTR9UMCojktYaqCZYPqkBF1zmokAqVggmh9RRfS0xaPFS5oBCe+qWnfz6qrKYiHDlTP04JColspXM0TJzUegrRUPGYiwppnPohBCaE1TT1q7WV3aCoYDEiGQnKIip2/TRQ3FJ+W+mgGBWP4fRPhkExJg2UhkhGPaFepERF0TAhWS2FFBsVbdZUO3pHzU05oDi2qQJIMkB1tc0ng6rWVgTHoiquJ4MKYCpM4c8VKB8V4DQ11YEkrBIVjRKRg+RjClGVoIpYUKKtNFQSF/BooDgeqCIhJhnZVjFYsSNKbXFJUCWqngpUChUSaykOT/t4ChjDxGNnUM0tFYJKo7JTP4RQaKA4KiiE4KSaCtFAIeF6ygGqRolJB1UlDirdVKnpH0dDhYSgSlSEJtZUCIOqttMrYDIaKJk4KIcq1lQcIOKxLSjO5EDFm8piQux9qqaNCodqx8JRs2tJC1BITkt1mv5RNEicEFQOqtjmBMe1lL5J4a59UBwNlgZKJnf6p4FCAIhHTrSpCI3eUBUoHitQPiZOClUIykdVgYqhagLVtJWOpFpKgyRToaqDKlHx1I+iYeJUoM4MfW7KtHxQSFNTIV1RtW6q4DRFN1j1x+gBx42cOiiJqsLTPAXUQCHaesohktd+SzEqhlXen4psVISwuJl4jKWGquE5qgpV+gFFCUpDpSGSia6penxYMWAMKtZUiIOl7/xx0FLbF55xoK4hUP9x9fsqnlRyNinaoOLpnwaJE11PIYRGA+UwOVDuWkNVB8WQqp/9aKhSbdUEComhwol0XlNJWCEomRgoRgVEJazItE8GkCQsDZIMt1UMFNZTMVC4xv0pYMmDFYCiMCgJSwdVwdJAIXbKx2MkAtR7FtS/X/WOCieWLtO/xjWVPZ2ebqouqJpaColtpcvrFCiHCWMKVENLcWqgqjCmEJVrJgEqsUnhQBWYZIotdQ1XbPqnYUI0UDmoJCwZDRJHe+SjCRMnB1U5/VMgcbbTlO9GBvXvV71n/u0L7xAqHY+W/Kmfj+pqwqth4nSZ+pWoCI0NXYeoGBSPYbRNCpkQFKOSoCpYk0BVHKjVMCEhKA5DKkERmCWMqoAlUcmEoGJps55CGFXTmioEpaHSIIXxUPXkv/AFyWoqRMHkQJ1xoK4mUP9GoP7fF952qCgaoDAAZUcC80msqTRIMtGmIjCxpmJMPIaJ3Z8CHh61aE2lgZLRMMmkmkrbUo9N/2xDcVPRqGGSqHjXz11nwMp6L0UzqhBWCKoZlXvhCyKbSkMVwyXbSgVFcGJNpYL6f7alXEJAqTRN/5AQlIuOCUFL5Uz9JCqAmjalaqg4Kh0U4nb/6qC0rXSOPv2b3JqKQWmoQkwyISi0VHiiQkPlJTH1Q9Spn/0meuCqA6umf+k1lQQVwuIzfylYuTd+Y6CQpqayLYUEsCKgqKUIE6LBSaVLSyEaJoSnfld6PcWg3JiPimHJ6xCVBiqGiqd/GiZOrKVydv58VD6oEBXgeLAapn5IiIohuWsfFNKEitdT7lpH1QSKI9dU3UEl7lHxdnoOKIuqaCoNTixNaypeT/mYMlAhBEQDxVFRieNJMVicGCqJKYwGKkSVAoU0obKgEIGpgsTxQTGqGih7RCneUjLcTCWw4mcZgKqjynnVM1KBCk+nJ0FltBSn1lI9PqjUu/42EZZUSyHcVFmgHKp2ayobAtO0ptJgpVAhTai4qRA37StQYfpHYLixNEycGCrZViEiLTFYGiiEUXWZ/lWIcpsKmNBWBS5lTSVjIQlcGGUYlYRl8fCoREVFCV/6koRVRIPEASQeS1QKLA0Vp2qrGKjqiFIjKIeqJShKzu4f4mOaHCiEQcmWsqN4ODGFKgdUqqE4bUFxGptKAWVTTP80UDx6qAQoHRGP1fQvNQXUmqqEpQSY3OiDsqhagmpCxfGbykcFODFYKVAlKsKEcVsOKOTTmv5VuD4BVAjg0KhhQjRQCKPyMaVRIV2aaoGNjgqJoiqiodKbiqd/PGqwqukeAjyc8Gek3lRpXNxUHqoAVIjKw4TpX8bDiQiDkrAYlISlpUIVP02Bb6QHqJ05oBBM/9qjynvkQ25UfBJNVYJCCjxaU+UcUdJQ8XUMVQgqhmoyU78QlLyWsDxQmP5R3DRQByVhAQ2iYeLUmqpAlQJVayoFVRJWEQ0SB4h4nAwoNFVs+rdt4QiBGskDhXBTtb75S9FAIRWo9msqDZNMrakIi5v2oaXiN35jW+ra1K+pqbilGBbjiaFCGJYGihPbqGBIPIaoKkzFSGBS2+kcRuUwpUHVm6qOiQNMbgyaihLDFEMVIgrDmDxUSE8zKiSEFaK6YcGI2bGoFahPZk3VZZMC6TL986KAkomjik//YrhiTYXEUemYOCGqGCRObOrHkag0XBKVg6WjQrymSrQUEm2qAFUIKwSVg4rDoNyaym+qFC6JqgbKNtRwPiikRNVhTaVh4vD0rxUohGBomBBt6ufBUhDJpECFqOqQ/J/bTP04TU0Vaym+R5VCpcFiUBJWMygdltdSDWsphFG1AaWhcgdq89sKoDCGTRUDhURBoaHaguL821Vvq3BiaWoppBOqxEFaBuXBCh73ABw3DcwDJVMHFcOlowKaFKyslsK5vwCUTAqVQ9QOVAgLeBB5zQmnfilQCLeUbKo6qGZUDlYMkrwW078eH1MKFCec9k0KFOJOU7RsKkKTnv65NVUXWBoqpIaKIlFZTHQdgnKoOHVQqelf9XMdFSeEFYKSyZn+aaAQB6mOy2sqglKhctB0VBwGpTcUh1GFbaWBQqrpX3r3L0SlwZKQYvFROVgeLgUSJ5z+uTXUZEDxJkWLNRU3VfOaSmJqRtW0SaGiKk5S2Nif66BkYqAkKjfVqzClUDEoGR1TeurH0TAhwMNjFBSFEeE+FeMKQckwKK2dODVQIhooTs70T4M1aVB2FKAoGibOFQWFABWaqs2ayqKiaJhkGFQFS8fEyUXFoEpYSIFLg8QJQUlUDIpRyZ/dn00OFEYNEceupxAPkg/L/VkdlEQl49pKx4RwS+U2lQeqoamQEFQOKh8UxY46JpkSVREJKoVKttTWKwEKp9PbgkLy1lThPSodkgzWU203KmrTPyWxaR/iUOnv+uNIUF1QIVlrKhsdkrzWYJWQcG9KtJQGq/ZwIpoqgUprqQqPDovXVG1A1WBlbFIAEo8lqp7PDJSLm/7V4aTCb6WNweLt9E7rKRo1UIiKSm5WULQ1VfON3/pGBX8flRZGFYOF1EFV0UAhqQcUeS3lrhOoAIpjf463VdVSzTd9PVgWUrylYuspC0nBFUVVJIQkw5hkcjcqgAnjlisJCrGnKVqvpz4hVBQNEyc69UMIjUUlMGnRQDlUGqx2ayr3KH0dlYSlYeJooKrtdB7rTcWgPFjFiQq+AZxCJXFpqaGiaJg4FSq/qUpYLVBpkMJ4oApUElaIiQNUWxYME6jBKwzKTv90QFp4PZWa/jEqCaoJVduTFCGo1Jk/pM1pComJr5tAyYSgOA5Pqql0UC4+JgalobIPKNKYbinRVBgj0z8NVFdUKVBri9EHlYsqgNXT3FLIFQeFdLnpizRtUnSb+rn1VNN9qhoqAlOOAlGYFKjYESUNFKPSMCEhJLSTGxveSktwwo0KhiVxSVA8SlBAFO78abDKhmpYTyEhqDxUaVAOkg9LogIoN+qQOBITg8qZ/n0ioJBP+jRFG1juNEXe9I/HsqkQghODBUAzprZ/PwUSQyVhOUAVqBiuvI0KfwoYguKRQdWaSq6liumfBkpeW1Q08vNUYcKmSq2nkKqp0rgkJhmGVQHTQSFhSzGsFKpPDBTSFVQzqjqoFCoG1WVL3QNF13VQPi4t+kaFjio19YuBQnJRMaAwISgJi0G5tRSNBSbG5YOS10VbFVlBYMIwKA8VUgDSAkgaqBCVBqsNKKQGSkH1qYFCGFVrWASnzSZF0yMfSOqIEkcFJSIxhYlh4qQghX+mweJNCg0UR4PE0aZ+YTRQXlMVqPjatpVAJNOESSZE5Xb/YqCqTBZU62+j105SUD5FUNj14+eo8lHlNNUXBKhUQ8nkgJKoLCTl7F8OJplwTeWvp/KaSoLSYE2mpYDHXfugaqiAqGgnBgU89aYK26kZlgeqiAYKkahkU2mgUrDW86ggClO2VA+BCprqUwPF4TVV63N/FB2Ti76eSuNqaipG5cEiVDzGUCHAgzVVCArhzQqGFCZEpcGKYeI4VGlYzYdp5bXeVOX0j1sK08AAFcMqgRUbFRWyPFR5sHKayodVthSly2ZF+Bg9splAbf80QCGurdpO/dLTP0RHpWPiuHWVDgoJQVlMIsDDYz06KKTNekqCqreVA6ThqlA1TAEFIi2ypTRUMryuypn+OUxxULXpH0XDhEhQOWuqClcdVVtQjOozA4UAVPvTFF1ANbQUQiA0TIgGilFJXBqoLkeU5GFaLSEoB0lvqpyWQuLTP3ldR+VBKprKXcdbqp46JgSQeMwBhVSo0msqCemKgbKoPkNQ/ALNNpsUvJ5KoUJCVA6WDsqGQHRbU7l2Sk39EA0UwqAkKgcqfYoi1lJamhrKblBQJCQZRoUxBBVDJUGFsDxMduqXd0SpLaoYJgeqPvXzMeWj4nHDPH+D4lMHxbG7f22nf0U0TAjv/mWDouQ2VROqEFd45k9eO1RVWzEqmRAVR2uqGK6qqZphpddUfktpsACo3PUrpn4SFW+nA5FExoBc6sDawkJq0z+BqsLlN5XExbBycZVt1YONCQLV+5mA4ulf+zWVhokTbqfnwLKoKBooTgjKw4UITBx5j8r9XIGqYE0OlJv2xduqQqWD4mhtxe3k/1m8qUpcDIpGxhOmbKsCVR2XDsrd+G3ZVkBEY4gqhMWIZDREMh4oyqb5Q58NKI67R6Xj0cJTv9S6ilHV11U6KGQya6oUKpc6JA43lYYKiaGSU8Cc+1M9BCa584cIOLEwKAnLAxWsqTRIElSXhxMBKtVUDKp556/eVD6mZlCIRAVQ23oHPjtQXW78Nq2peOrXpqm4pZpQdQNVJQZKayoNExKC8ttKw1S1VBdU1Xqq+ZEPRiWnfeHUr/YcVQEqBktDlQKF1FpKQcWg3LUOyo06JI4EtbEC9cHov1/9kQGqTzP4krd/t19FSqER3/Obky8g13xgrrrmw2iuplxzzUdlpkxB9kYzFZm611w7dV8004pMLzJD5lpkP0GpZ9Y0Hg+UIzK7zEHCUmXu9EPedZh5RXpE5vM443AtC8ocITR6epGZRwjK0TKLgyyZdSzIcZullGVljrnMPmaWzz5OOWGzoszxMn2zT9o/67M5afrmnDQry5zysqrIas5clzXl2F/L2iLXzT1ts26envUYezAO2GyQ6Rmg9REymMxGyuYFY2broqHRz02d9cGha6Z9NHT11Pc+m0x7f+iaqZRpH2RnCjL9g6Gp0z+MZhplupePhmbMSGfmjL1DM2fuHZodyRwxInNlZu0bmjeTMttPT3l9wF73zKFRZP6cgzYLOLMPUfhnuo5koUgvMhc5rGaRzZGhJYkstTk6tGze0aHlMj0uK3qODa2YR8Foc9ymj7KSM/9YmVXzj1NO2Kwuc7zMmvkn7Z+tQRactFlb5pSa60TWJbJeZIPIRiWbKZsW9g9tWtBP1y5bOPTnWxaettnakG2LRod2Lj9z8P8DJR8sHBV2J5QAAAAASUVORK5CYII="
+        }
+      ],
+      [
+        "icrc1:decimals",
+        {
+          "Nat": [8]
+        }
+      ],
+      [
+        "icrc1:name",
+        {
+          "Text": "ICPSwap Token"
+        }
+      ],
+      [
+        "icrc1:symbol",
+        {
+          "Text": "ICS"
+        }
+      ],
+      [
+        "icrc1:fee",
+        {
+          "Nat": [1000000]
+        }
+      ],
+      [
+        "icrc1:max_memo_length",
+        {
+          "Nat": [32]
+        }
+      ]
+    ],
+    "icrc1_fee": [1000000],
+    "icrc1_total_supply": 1e17,
+    "swap_params": {
+      "params": {
+        "min_participant_icp_e8s": 100000000,
+        "neuron_basket_construction_parameters": {
+          "dissolve_delay_interval_seconds": 7890048,
+          "count": 5
+        },
+        "max_icp_e8s": 97473761955801,
+        "swap_due_timestamp_seconds": 1712412900,
+        "min_participants": 500,
+        "sns_token_e8s": 26000000000000000,
+        "sale_delay_seconds": null,
+        "max_participant_icp_e8s": 10000000000000,
+        "min_direct_participation_icp_e8s": 30000000000000,
+        "min_icp_e8s": 30000000000000,
+        "max_direct_participation_icp_e8s": 90000000000000
+      }
+    },
+    "init": {
+      "init": {
+        "nns_proposal_id": 128358,
+        "sns_root_canister_id": "csyra-haaaa-aaaaq-aacva-cai",
+        "neurons_fund_participation": true,
+        "min_participant_icp_e8s": 100000000,
+        "neuron_basket_construction_parameters": {
+          "dissolve_delay_interval_seconds": 7890048,
+          "count": 5
+        },
+        "fallback_controller_principal_ids": [
+          "bvt6c-3we7h-a6aeb-f57lr-qxyou-33jd5-y4x57-dif3m-p75yu-yzis7-dae"
+        ],
+        "max_icp_e8s": null,
+        "neuron_minimum_stake_e8s": 1000000000,
+        "confirmation_text": "I confirm my understanding of the responsibilities and risks associated with participating in this token swap and that I'm not resident of one of the sanctioned countries listed below.\n",
+        "swap_start_timestamp_seconds": 1711203300,
+        "swap_due_timestamp_seconds": 1712412900,
+        "min_participants": 500,
+        "sns_token_e8s": 26000000000000000,
+        "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+        "transaction_fee_e8s": 1000000,
+        "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+        "sns_ledger_canister_id": "ca6gz-lqaaa-aaaaq-aacwa-cai",
+        "neurons_fund_participation_constraints": {
+          "coefficient_intervals": [
+            {
+              "slope_numerator": 0,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 0,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 789191898712
+            },
+            {
+              "slope_numerator": 87487126683288,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 789191898712,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 791985977697
+            },
+            {
+              "slope_numerator": 163812919360853,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 791985977697,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 897856225346
+            },
+            {
+              "slope_numerator": 169512753954624,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 897856225346,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 897875866430
+            },
+            {
+              "slope_numerator": 175210964674682,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 897875866430,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 898030139066
+            },
+            {
+              "slope_numerator": 180896443543282,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 898030139066,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 898030680572
+            },
+            {
+              "slope_numerator": 186581877794102,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 898030680572,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 898030695959
+            },
+            {
+              "slope_numerator": 192267310777098,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 898030695959,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 898030704216
+            },
+            {
+              "slope_numerator": 197952743079803,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 898030704216,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 898030738618
+            },
+            {
+              "slope_numerator": 203638172547945,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 898030738618,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 898030747250
+            },
+            {
+              "slope_numerator": 209323601304859,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 898030747250,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 900004176543
+            },
+            {
+              "slope_numerator": 214849700122461,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 900004176543,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 900004190107
+            },
+            {
+              "slope_numerator": 220375797867004,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 900004190107,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 900004489905
+            },
+            {
+              "slope_numerator": 225901871894784,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 900004489905,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 900004505625
+            },
+            {
+              "slope_numerator": 231427944679029,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 900004505625,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 900004520837
+            },
+            {
+              "slope_numerator": 236954016259851,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 900004520837,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 900004528063
+            },
+            {
+              "slope_numerator": 242480087269045,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 900004528063,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 900004796044
+            },
+            {
+              "slope_numerator": 248006137078644,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 900004796044,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 900004805045
+            },
+            {
+              "slope_numerator": 253532186176209,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 900004805045,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 1445488053901
+            },
+            {
+              "slope_numerator": 253694690958786,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1445488053901,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 1727144573123
+            },
+            {
+              "slope_numerator": 253763673338900,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1727144573123,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 1886541905796
+            },
+            {
+              "slope_numerator": 253810374628217,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1886541905796,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 1952174103395
+            },
+            {
+              "slope_numerator": 253850718147047,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1952174103395,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 2009088416004
+            },
+            {
+              "slope_numerator": 253886458856472,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2009088416004,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 2093827928590
+            },
+            {
+              "slope_numerator": 253916568789284,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2093827928590,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 2181694402137
+            },
+            {
+              "slope_numerator": 253942031308527,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2181694402137,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 2484049277337
+            },
+            {
+              "slope_numerator": 253957879445540,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2484049277337,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 2596387308485
+            },
+            {
+              "slope_numerator": 253971749006898,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2596387308485,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 2983416687141
+            },
+            {
+              "slope_numerator": 253981540215125,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2983416687141,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 3174535500024
+            },
+            {
+              "slope_numerator": 253990180738739,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3174535500024,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 3187466099312
+            },
+            {
+              "slope_numerator": 253998756263300,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3187466099312,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 3201650272117
+            },
+            {
+              "slope_numerator": 254007262109711,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3201650272117,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 3219945864496
+            },
+            {
+              "slope_numerator": 254015680519686,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3219945864496,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 3250288471267
+            },
+            {
+              "slope_numerator": 254023959753844,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3250288471267,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 3463196487341
+            },
+            {
+              "slope_numerator": 254031440059133,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3463196487341,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 3494321047083
+            },
+            {
+              "slope_numerator": 254038826182563,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3494321047083,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 3672312888247
+            },
+            {
+              "slope_numerator": 254045765252254,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3672312888247,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 3868969891343
+            },
+            {
+              "slope_numerator": 254052346740378,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3868969891343,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 3972293260437
+            },
+            {
+              "slope_numerator": 254058762223953,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3972293260437,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 4244063718873
+            },
+            {
+              "slope_numerator": 254064791169744,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4244063718873,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 4323051162603
+            },
+            {
+              "slope_numerator": 254070719630432,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4323051162603,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 4359982012697
+            },
+            {
+              "slope_numerator": 254076602741495,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4359982012697,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 4759363093828
+            },
+            {
+              "slope_numerator": 254082053233149,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4759363093828,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 4814079750081
+            },
+            {
+              "slope_numerator": 254087451689704,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4814079750081,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 4913949137483
+            },
+            {
+              "slope_numerator": 254092759063056,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4913949137483,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 4957541065110
+            },
+            {
+              "slope_numerator": 254098028181174,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4957541065110,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 5000389234763
+            },
+            {
+              "slope_numerator": 254103260546826,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 5000389234763,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 5243341177828
+            },
+            {
+              "slope_numerator": 254108299284635,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 5243341177828,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 5245892896612
+            },
+            {
+              "slope_numerator": 254113336113366,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 5245892896612,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 5767651966496
+            },
+            {
+              "slope_numerator": 254118028652326,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 5767651966496,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 5877749235620
+            },
+            {
+              "slope_numerator": 254122658807170,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 5877749235620,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 5990938382778
+            },
+            {
+              "slope_numerator": 254127228026376,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 5990938382778,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 6340081931023
+            },
+            {
+              "slope_numerator": 254131627643109,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 6340081931023,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 7034317612201
+            },
+            {
+              "slope_numerator": 254135757383934,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 7034317612201,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 7539997706193
+            },
+            {
+              "slope_numerator": 254139734276420,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 7539997706193,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 10031787419254
+            },
+            {
+              "slope_numerator": 254143285946079,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 10031787419254,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 10260777177913
+            },
+            {
+              "slope_numerator": 254146816783146,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 10260777177913,
+              "slope_denominator": 254542688644933,
+              "to_direct_participation_icp_e8s": 18446744073709552000
+            }
+          ],
+          "max_neurons_fund_participation_icp_e8s": 7473761955801,
+          "min_direct_participation_threshold_icp_e8s": 30000000000000,
+          "ideal_matched_participation_function": {
+            "serialized_representation": "{\"t_1\":\"7485.4034632466689954588552350\",\"t_2\":\"22456.210389740006986376565705\",\"t_3\":\"37427.017316233344977294276175\",\"t_4\":\"149708.06926493337990917710470\",\"cap\":\"74854.034632466689954588552350\"}"
+          }
+        },
+        "neurons_fund_participants": null,
+        "should_auto_finalize": true,
+        "max_participant_icp_e8s": 10000000000000,
+        "sns_governance_canister_id": "cvzxu-kyaaa-aaaaq-aacvq-cai",
+        "min_direct_participation_icp_e8s": 30000000000000,
+        "restricted_countries": {
+          "iso_codes": ["US", "KP", "CU", "SD", "SY", "IR", "VE", "CN"]
+        },
+        "min_icp_e8s": null,
+        "max_direct_participation_icp_e8s": 90000000000000
+      }
+    },
+    "derived_state": {
+      "sns_tokens_per_icp": 1433.9930419921875,
+      "buyer_total_icp_e8s": 18131189232131,
+      "cf_participant_count": 0,
+      "neurons_fund_participation_icp_e8s": 7288101172536,
+      "direct_participation_icp_e8s": 10843088059595,
+      "direct_participant_count": 982,
+      "cf_neuron_count": 0
+    },
+    "lifecycle": {
+      "decentralization_sale_open_timestamp_seconds": 1711203300,
+      "lifecycle": 2
+    }
+  },
+  {
+    "index": 28,
+    "canister_ids": {
+      "root_canister_id": "cj5nf-5yaaa-aaaaq-aacxq-cai",
+      "governance_canister_id": "auadn-oqaaa-aaaaq-aacya-cai",
+      "index_canister_id": "a5dir-yyaaa-aaaaq-aaczq-cai",
+      "swap_canister_id": "a2cof-vaaaa-aaaaq-aacza-cai",
+      "ledger_canister_id": "atbfz-diaaa-aaaaq-aacyq-cai"
+    },
+    "list_sns_canisters": {
+      "root": "cj5nf-5yaaa-aaaaq-aacxq-cai",
+      "swap": "a2cof-vaaaa-aaaaq-aacza-cai",
+      "ledger": "atbfz-diaaa-aaaaq-aacyq-cai",
+      "index": "a5dir-yyaaa-aaaaq-aaczq-cai",
+      "governance": "auadn-oqaaa-aaaaq-aacya-cai",
+      "dapps": ["udtw4-baaaa-aaaah-abc3q-cai", "pczmq-maaaa-aaaah-abhwa-cai"],
+      "archives": []
+    },
+    "meta": {
+      "url": "https://yuku.app/",
+      "name": "Yuku DAO",
+      "description": "Yuku is a pioneering AI Web3 Platform featuring NFT Aggregator, 3D space, and AI Avatar integration, all governed by the decentralized Yuku DAO. Users can engage in immersive experiences within the 3D environment and interact with AI Avatars, marking a significant advancement in digital innovation.\n",
+      "logo": "/v1/sns/root/cj5nf-5yaaa-aaaaq-aacxq-cai/logo.png"
+    },
+    "parameters": {
+      "reserved_ids": [],
+      "functions": [
+        {
+          "id": 0,
+          "name": "All non-critical topics",
+          "description": "Catch-all w.r.t to following for non-critical proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 1,
+          "name": "Motion",
+          "description": "Side-effect-less proposals to set general governance direction.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 2,
+          "name": "Manage nervous system parameters",
+          "description": "Proposal to change the core parameters of SNS governance.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 3,
+          "name": "Upgrade SNS controlled canister",
+          "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 4,
+          "name": "Add nervous system function",
+          "description": "Proposal to add a new, user-defined, nervous system function:a canister call which can then be executed by proposal.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 5,
+          "name": "Remove nervous system function",
+          "description": "Proposal to remove a user-defined nervous system function,which will be no longer executable by proposal.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 6,
+          "name": "Execute nervous system function",
+          "description": "Proposal to execute a user-defined nervous system function,previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 7,
+          "name": "Upgrade SNS to next version",
+          "description": "Proposal to upgrade the WASM of a core SNS canister.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 8,
+          "name": "Manage SNS metadata",
+          "description": "Proposal to change the metadata associated with an SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 9,
+          "name": "Transfer SNS treasury funds",
+          "description": "Proposal to transfer funds from an SNS Governance controlled treasury account",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 10,
+          "name": "Register dapp canisters",
+          "description": "Proposal to register a dapp canister with the SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 11,
+          "name": "Deregister Dapp Canisters",
+          "description": "Proposal to deregister a previously-registered dapp canister from the SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 12,
+          "name": "Mint SNS Tokens",
+          "description": "Proposal to mint SNS tokens to a specified recipient.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 13,
+          "name": "Manage ledger parameters",
+          "description": "Proposal to change some parameters in the ledger canister.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 14,
+          "name": "Manage dapp canister settings",
+          "description": "Proposal to change canister settings for some dapp canisters.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        }
+      ]
+    },
+    "nervous_system_parameters": {
+      "default_followees": {
+        "followees": []
+      },
+      "max_dissolve_delay_seconds": 31557600,
+      "max_dissolve_delay_bonus_percentage": 50,
+      "max_followees_per_function": 15,
+      "neuron_claimer_permissions": {
+        "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      },
+      "neuron_minimum_stake_e8s": 5000000000,
+      "max_neuron_age_for_age_bonus": 63115200,
+      "initial_voting_period_seconds": 259200,
+      "neuron_minimum_dissolve_delay_to_vote_seconds": 7890048,
+      "reject_cost_e8s": 1000000000000,
+      "max_proposals_to_keep_per_action": 100,
+      "wait_for_quiet_deadline_increase_seconds": 86400,
+      "max_number_of_neurons": 200000,
+      "transaction_fee_e8s": 1000000,
+      "max_number_of_proposals_with_ballots": 700,
+      "max_age_bonus_percentage": 100,
+      "neuron_grantable_permissions": {
+        "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      },
+      "voting_rewards_parameters": {
+        "final_reward_rate_basis_points": 10,
+        "initial_reward_rate_basis_points": 10,
+        "reward_rate_transition_duration_seconds": 31557600,
+        "round_duration_seconds": 86400
+      },
+      "maturity_modulation_disabled": false,
+      "max_number_of_principals_per_neuron": 5
+    },
+    "swap_state": {
+      "swap": {
+        "lifecycle": 2,
+        "init": {
+          "nns_proposal_id": 128815,
+          "sns_root_canister_id": "cj5nf-5yaaa-aaaaq-aacxq-cai",
+          "neurons_fund_participation": true,
+          "min_participant_icp_e8s": 100000000,
+          "neuron_basket_construction_parameters": {
+            "dissolve_delay_interval_seconds": 7890048,
+            "count": 3
+          },
+          "fallback_controller_principal_ids": [
+            "imwzs-x6b7k-hqsih-uw7gv-tp22v-mjf6f-7bddh-acqfm-e3sxf-sqqly-vqe",
+            "h3nxl-6trw3-ugins-bfgpj-jbtbx-hg2si-v74mn-rg2ny-rsl3g-vfktm-pae",
+            "6vatw-256w7-b4cy5-562mf-vtv5l-shaj6-x6yr4-mdpsc-ccjw4-yuini-mae"
+          ],
+          "max_icp_e8s": null,
+          "neuron_minimum_stake_e8s": 5000000000,
+          "confirmation_text": "I confirm my understanding of the responsibilities and risks associated with participating in this token swap.\n",
+          "swap_start_timestamp_seconds": 1711570500,
+          "swap_due_timestamp_seconds": 1712780100,
+          "min_participants": 100,
+          "sns_token_e8s": 9000000000000000,
+          "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "transaction_fee_e8s": 1000000,
+          "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          "sns_ledger_canister_id": "atbfz-diaaa-aaaaq-aacyq-cai",
+          "neurons_fund_participation_constraints": {
+            "coefficient_intervals": [
+              {
+                "slope_numerator": 0,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 0,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 774239075757
+              },
+              {
+                "slope_numerator": 86126234592097,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 774239075757,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 776990144552
+              },
+              {
+                "slope_numerator": 161311890078605,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 776990144552,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 881904209901
+              },
+              {
+                "slope_numerator": 166905816025987,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 881904209901,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 881923436989
+              },
+              {
+                "slope_numerator": 172498165818004,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 881923436989,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 882074661832
+              },
+              {
+                "slope_numerator": 178078140972710,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 882074661832,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 882075191981
+              },
+              {
+                "slope_numerator": 183658072814656,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 882075191981,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 882075207199
+              },
+              {
+                "slope_numerator": 189238003413279,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 882075207199,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 882075215365
+              },
+              {
+                "slope_numerator": 194817933344759,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 882075215365,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 882075249390
+              },
+              {
+                "slope_numerator": 200397860496456,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 882075249390,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 882075257927
+              },
+              {
+                "slope_numerator": 205977786950670,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 882075257927,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 884008936667
+              },
+              {
+                "slope_numerator": 211402880013211,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 884008936667,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 884008950080
+              },
+              {
+                "slope_numerator": 216827972023129,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 884008950080,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 884009243860
+              },
+              {
+                "slope_numerator": 222253040979228,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 884009243860,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 884009259404
+              },
+              {
+                "slope_numerator": 227678108715476,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 884009259404,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 884009274448
+              },
+              {
+                "slope_numerator": 233103175271220,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 884009274448,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 884009281593
+              },
+              {
+                "slope_numerator": 238528241266223,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 884009281593,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 884009543909
+              },
+              {
+                "slope_numerator": 243953286676635,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 884009543909,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 884009552809
+              },
+              {
+                "slope_numerator": 249378331388574,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 884009552809,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 1422191633834
+              },
+              {
+                "slope_numerator": 249538531006159,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1422191633834,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 1699801668376
+              },
+              {
+                "slope_numerator": 249606585911154,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1699801668376,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 1905156926157
+              },
+              {
+                "slope_numerator": 249647878353313,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1905156926157,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 1975907900132
+              },
+              {
+                "slope_numerator": 249683285054906,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1975907900132,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 2062546903060
+              },
+              {
+                "slope_numerator": 249712924681645,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2062546903060,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 2122358978223
+              },
+              {
+                "slope_numerator": 249739300599742,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2122358978223,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 2452938757117
+              },
+              {
+                "slope_numerator": 249754850661286,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2452938757117,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 2560049554379
+              },
+              {
+                "slope_numerator": 249768543558546,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2560049554379,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 2941879212524
+              },
+              {
+                "slope_numerator": 249778246673440,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2941879212524,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 3064203464678
+              },
+              {
+                "slope_numerator": 249787176903209,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3064203464678,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 3103698973534
+              },
+              {
+                "slope_numerator": 249795891175583,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3103698973534,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 3146630269000
+              },
+              {
+                "slope_numerator": 249804386919026,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3146630269000,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 3166411376689
+              },
+              {
+                "slope_numerator": 249812787303372,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3166411376689,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 3221333055995
+              },
+              {
+                "slope_numerator": 249820939350480,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3221333055995,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 3436975705093
+              },
+              {
+                "slope_numerator": 249828315958639,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3436975705093,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 3481063621678
+              },
+              {
+                "slope_numerator": 249835567433806,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3481063621678,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 3551557093968
+              },
+              {
+                "slope_numerator": 249842639114066,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3551557093968,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 3556711053967
+              },
+              {
+                "slope_numerator": 249849698583236,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3556711053967,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 3823711320460
+              },
+              {
+                "slope_numerator": 249856249187526,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3823711320460,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 3983896298598
+              },
+              {
+                "slope_numerator": 249862546901570,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3983896298598,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 4151068263705
+              },
+              {
+                "slope_numerator": 249868607786231,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4151068263705,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 4251223638653
+              },
+              {
+                "slope_numerator": 249874538399694,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4251223638653,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 4325253030989
+              },
+              {
+                "slope_numerator": 249880377778789,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4325253030989,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 4589437954062
+              },
+              {
+                "slope_numerator": 249885922566961,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4589437954062,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 4751635624734
+              },
+              {
+                "slope_numerator": 249891307456020,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4751635624734,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 4773740820289
+              },
+              {
+                "slope_numerator": 249896671649740,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4773740820289,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 4833145238584
+              },
+              {
+                "slope_numerator": 249901981452962,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4833145238584,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 4835909671520
+              },
+              {
+                "slope_numerator": 249907288767662,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4835909671520,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 4985006999556
+              },
+              {
+                "slope_numerator": 249912467195502,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4985006999556,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 5221663087917
+              },
+              {
+                "slope_numerator": 249917460663171,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 5221663087917,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 5927692001268
+              },
+              {
+                "slope_numerator": 249922015207410,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 5927692001268,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 5994939712008
+              },
+              {
+                "slope_numerator": 249926535072853,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 5994939712008,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 7599184651693
+              },
+              {
+                "slope_numerator": 249930468814629,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 7599184651693,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 9100645341901
+              },
+              {
+                "slope_numerator": 249934116708949,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 9100645341901,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 11154633111249
+              },
+              {
+                "slope_numerator": 249937584150465,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 11154633111249,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 12252957422398
+              },
+              {
+                "slope_numerator": 249941013036924,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 12252957422398,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 13274424563693
+              },
+              {
+                "slope_numerator": 249944427106845,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 13274424563693,
+                "slope_denominator": 250336400025685,
+                "to_direct_participation_icp_e8s": 18446744073709552000
+              }
+            ],
+            "max_neurons_fund_participation_icp_e8s": 7328638859966,
+            "min_direct_participation_threshold_icp_e8s": 10000000000000,
+            "ideal_matched_participation_function": {
+              "serialized_representation": "{\"t_1\":\"7340.1319266378281038971207075\",\"t_2\":\"22020.395779913484311691362122\",\"t_3\":\"36700.659633189140519485603538\",\"t_4\":\"146802.63853275656207794241415\",\"cap\":\"73401.319266378281038971207075\"}"
+            }
+          },
+          "neurons_fund_participants": null,
+          "should_auto_finalize": true,
+          "max_participant_icp_e8s": 10000000000000,
+          "sns_governance_canister_id": "auadn-oqaaa-aaaaq-aacya-cai",
+          "min_direct_participation_icp_e8s": 10000000000000,
+          "restricted_countries": {
+            "iso_codes": ["IR", "KP", "CU", "SY"]
+          },
+          "min_icp_e8s": null,
+          "max_direct_participation_icp_e8s": 50000000000000
+        },
+        "params": {
+          "min_participant_icp_e8s": 100000000,
+          "neuron_basket_construction_parameters": {
+            "dissolve_delay_interval_seconds": 7890048,
+            "count": 3
+          },
+          "max_icp_e8s": 57328638859966,
+          "swap_due_timestamp_seconds": 1712780100,
+          "min_participants": 100,
+          "sns_token_e8s": 9000000000000000,
+          "sale_delay_seconds": null,
+          "max_participant_icp_e8s": 10000000000000,
+          "min_direct_participation_icp_e8s": 10000000000000,
+          "min_icp_e8s": 10000000000000,
+          "max_direct_participation_icp_e8s": 50000000000000
+        },
+        "open_sns_token_swap_proposal_id": 128815,
+        "decentralization_sale_open_timestamp_seconds": 1711570500
+      },
+      "derived": {
+        "buyer_total_icp_e8s": 292670917910,
+        "sns_tokens_per_icp": 30751.262
+      }
+    },
+    "icrc1_metadata": [
+      [
+        "icrc1:logo",
+        {
+          "Text": "data:image/png;base64,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"
+        }
+      ],
+      [
+        "icrc1:decimals",
+        {
+          "Nat": [8]
+        }
+      ],
+      [
+        "icrc1:name",
+        {
+          "Text": "Yuku DAO"
+        }
+      ],
+      [
+        "icrc1:symbol",
+        {
+          "Text": "YUKU"
+        }
+      ],
+      [
+        "icrc1:fee",
+        {
+          "Nat": [1000000]
+        }
+      ],
+      [
+        "icrc1:max_memo_length",
+        {
+          "Nat": [32]
+        }
+      ]
+    ],
+    "icrc1_fee": [1000000],
+    "icrc1_total_supply": 1e17,
+    "swap_params": {
+      "params": {
+        "min_participant_icp_e8s": 100000000,
+        "neuron_basket_construction_parameters": {
+          "dissolve_delay_interval_seconds": 7890048,
+          "count": 3
+        },
+        "max_icp_e8s": 57328638859966,
+        "swap_due_timestamp_seconds": 1712780100,
+        "min_participants": 100,
+        "sns_token_e8s": 9000000000000000,
+        "sale_delay_seconds": null,
+        "max_participant_icp_e8s": 10000000000000,
+        "min_direct_participation_icp_e8s": 10000000000000,
+        "min_icp_e8s": 10000000000000,
+        "max_direct_participation_icp_e8s": 50000000000000
+      }
+    },
+    "init": {
+      "init": {
+        "nns_proposal_id": 128815,
+        "sns_root_canister_id": "cj5nf-5yaaa-aaaaq-aacxq-cai",
+        "neurons_fund_participation": true,
+        "min_participant_icp_e8s": 100000000,
+        "neuron_basket_construction_parameters": {
+          "dissolve_delay_interval_seconds": 7890048,
+          "count": 3
+        },
+        "fallback_controller_principal_ids": [
+          "imwzs-x6b7k-hqsih-uw7gv-tp22v-mjf6f-7bddh-acqfm-e3sxf-sqqly-vqe",
+          "h3nxl-6trw3-ugins-bfgpj-jbtbx-hg2si-v74mn-rg2ny-rsl3g-vfktm-pae",
+          "6vatw-256w7-b4cy5-562mf-vtv5l-shaj6-x6yr4-mdpsc-ccjw4-yuini-mae"
+        ],
+        "max_icp_e8s": null,
+        "neuron_minimum_stake_e8s": 5000000000,
+        "confirmation_text": "I confirm my understanding of the responsibilities and risks associated with participating in this token swap.\n",
+        "swap_start_timestamp_seconds": 1711570500,
+        "swap_due_timestamp_seconds": 1712780100,
+        "min_participants": 100,
+        "sns_token_e8s": 9000000000000000,
+        "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+        "transaction_fee_e8s": 1000000,
+        "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+        "sns_ledger_canister_id": "atbfz-diaaa-aaaaq-aacyq-cai",
+        "neurons_fund_participation_constraints": {
+          "coefficient_intervals": [
+            {
+              "slope_numerator": 0,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 0,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 774239075757
+            },
+            {
+              "slope_numerator": 86126234592097,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 774239075757,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 776990144552
+            },
+            {
+              "slope_numerator": 161311890078605,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 776990144552,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 881904209901
+            },
+            {
+              "slope_numerator": 166905816025987,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 881904209901,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 881923436989
+            },
+            {
+              "slope_numerator": 172498165818004,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 881923436989,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 882074661832
+            },
+            {
+              "slope_numerator": 178078140972710,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 882074661832,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 882075191981
+            },
+            {
+              "slope_numerator": 183658072814656,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 882075191981,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 882075207199
+            },
+            {
+              "slope_numerator": 189238003413279,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 882075207199,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 882075215365
+            },
+            {
+              "slope_numerator": 194817933344759,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 882075215365,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 882075249390
+            },
+            {
+              "slope_numerator": 200397860496456,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 882075249390,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 882075257927
+            },
+            {
+              "slope_numerator": 205977786950670,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 882075257927,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 884008936667
+            },
+            {
+              "slope_numerator": 211402880013211,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 884008936667,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 884008950080
+            },
+            {
+              "slope_numerator": 216827972023129,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 884008950080,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 884009243860
+            },
+            {
+              "slope_numerator": 222253040979228,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 884009243860,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 884009259404
+            },
+            {
+              "slope_numerator": 227678108715476,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 884009259404,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 884009274448
+            },
+            {
+              "slope_numerator": 233103175271220,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 884009274448,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 884009281593
+            },
+            {
+              "slope_numerator": 238528241266223,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 884009281593,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 884009543909
+            },
+            {
+              "slope_numerator": 243953286676635,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 884009543909,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 884009552809
+            },
+            {
+              "slope_numerator": 249378331388574,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 884009552809,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 1422191633834
+            },
+            {
+              "slope_numerator": 249538531006159,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1422191633834,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 1699801668376
+            },
+            {
+              "slope_numerator": 249606585911154,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1699801668376,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 1905156926157
+            },
+            {
+              "slope_numerator": 249647878353313,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1905156926157,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 1975907900132
+            },
+            {
+              "slope_numerator": 249683285054906,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1975907900132,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 2062546903060
+            },
+            {
+              "slope_numerator": 249712924681645,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2062546903060,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 2122358978223
+            },
+            {
+              "slope_numerator": 249739300599742,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2122358978223,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 2452938757117
+            },
+            {
+              "slope_numerator": 249754850661286,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2452938757117,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 2560049554379
+            },
+            {
+              "slope_numerator": 249768543558546,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2560049554379,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 2941879212524
+            },
+            {
+              "slope_numerator": 249778246673440,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2941879212524,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 3064203464678
+            },
+            {
+              "slope_numerator": 249787176903209,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3064203464678,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 3103698973534
+            },
+            {
+              "slope_numerator": 249795891175583,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3103698973534,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 3146630269000
+            },
+            {
+              "slope_numerator": 249804386919026,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3146630269000,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 3166411376689
+            },
+            {
+              "slope_numerator": 249812787303372,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3166411376689,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 3221333055995
+            },
+            {
+              "slope_numerator": 249820939350480,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3221333055995,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 3436975705093
+            },
+            {
+              "slope_numerator": 249828315958639,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3436975705093,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 3481063621678
+            },
+            {
+              "slope_numerator": 249835567433806,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3481063621678,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 3551557093968
+            },
+            {
+              "slope_numerator": 249842639114066,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3551557093968,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 3556711053967
+            },
+            {
+              "slope_numerator": 249849698583236,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3556711053967,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 3823711320460
+            },
+            {
+              "slope_numerator": 249856249187526,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3823711320460,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 3983896298598
+            },
+            {
+              "slope_numerator": 249862546901570,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3983896298598,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 4151068263705
+            },
+            {
+              "slope_numerator": 249868607786231,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4151068263705,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 4251223638653
+            },
+            {
+              "slope_numerator": 249874538399694,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4251223638653,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 4325253030989
+            },
+            {
+              "slope_numerator": 249880377778789,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4325253030989,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 4589437954062
+            },
+            {
+              "slope_numerator": 249885922566961,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4589437954062,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 4751635624734
+            },
+            {
+              "slope_numerator": 249891307456020,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4751635624734,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 4773740820289
+            },
+            {
+              "slope_numerator": 249896671649740,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4773740820289,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 4833145238584
+            },
+            {
+              "slope_numerator": 249901981452962,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4833145238584,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 4835909671520
+            },
+            {
+              "slope_numerator": 249907288767662,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4835909671520,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 4985006999556
+            },
+            {
+              "slope_numerator": 249912467195502,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4985006999556,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 5221663087917
+            },
+            {
+              "slope_numerator": 249917460663171,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 5221663087917,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 5927692001268
+            },
+            {
+              "slope_numerator": 249922015207410,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 5927692001268,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 5994939712008
+            },
+            {
+              "slope_numerator": 249926535072853,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 5994939712008,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 7599184651693
+            },
+            {
+              "slope_numerator": 249930468814629,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 7599184651693,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 9100645341901
+            },
+            {
+              "slope_numerator": 249934116708949,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 9100645341901,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 11154633111249
+            },
+            {
+              "slope_numerator": 249937584150465,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 11154633111249,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 12252957422398
+            },
+            {
+              "slope_numerator": 249941013036924,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 12252957422398,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 13274424563693
+            },
+            {
+              "slope_numerator": 249944427106845,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 13274424563693,
+              "slope_denominator": 250336400025685,
+              "to_direct_participation_icp_e8s": 18446744073709552000
+            }
+          ],
+          "max_neurons_fund_participation_icp_e8s": 7328638859966,
+          "min_direct_participation_threshold_icp_e8s": 10000000000000,
+          "ideal_matched_participation_function": {
+            "serialized_representation": "{\"t_1\":\"7340.1319266378281038971207075\",\"t_2\":\"22020.395779913484311691362122\",\"t_3\":\"36700.659633189140519485603538\",\"t_4\":\"146802.63853275656207794241415\",\"cap\":\"73401.319266378281038971207075\"}"
+          }
+        },
+        "neurons_fund_participants": null,
+        "should_auto_finalize": true,
+        "max_participant_icp_e8s": 10000000000000,
+        "sns_governance_canister_id": "auadn-oqaaa-aaaaq-aacya-cai",
+        "min_direct_participation_icp_e8s": 10000000000000,
+        "restricted_countries": {
+          "iso_codes": ["IR", "KP", "CU", "SY"]
+        },
+        "min_icp_e8s": null,
+        "max_direct_participation_icp_e8s": 50000000000000
+      }
+    },
+    "derived_state": {
+      "sns_tokens_per_icp": 30751.26171875,
+      "buyer_total_icp_e8s": 292670917910,
+      "cf_participant_count": 0,
+      "neurons_fund_participation_icp_e8s": 0,
+      "direct_participation_icp_e8s": 292670917910,
+      "direct_participant_count": 93,
+      "cf_neuron_count": 0
+    },
+    "lifecycle": {
+      "decentralization_sale_open_timestamp_seconds": 1711570500,
       "lifecycle": 2
     }
   }

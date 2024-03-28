@@ -21,10 +21,13 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Always omit the account parameter in the URL when navigating to a main account.
 * Display the block timestamp instead of created timestamp on ICP transaction.
+* Minor style changes for mobile project selector.
 
 #### Deprecated
 
 #### Removed
+
+* Remove `protobuf` dependency for Ledger hardware wallet.
 
 #### Fixed
 

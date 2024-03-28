@@ -13,4 +13,9 @@ export class ProposalStatusTagPo extends BasePageObject {
     const classNames = await this.root.getClasses();
     return classNames.includes(className);
   }
+
+  async hasActionableMark(): Promise<boolean> {
+    const classNames = await this.root.getClasses();
+    return classNames.includes("actionable");
+  }
 }

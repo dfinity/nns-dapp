@@ -1,3 +1,4 @@
+import { ProposalStatusTagPo } from "$tests/page-objects/ProposalStatusTag.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -14,6 +15,10 @@ export class ProposalCardPo extends BasePageObject {
     return new ProposalCardPo(element.byTestId(ProposalCardPo.TID));
   }
 
+  getProposalStatusTagPo(): ProposalStatusTagPo {
+    return ProposalStatusTagPo.under(this.root);
+  }
+
   getProposalId(): Promise<string> {
     return this.getText("proposal-id");
   }
@@ -23,7 +28,7 @@ export class ProposalCardPo extends BasePageObject {
   }
 
   async getProposalStatusText(): Promise<string> {
-    return (await this.getText("proposal-status")).trim();
+    return (await this.getProposalStatusTagPo().getText()).trim();
   }
 
   getProposer(): Promise<string> {
