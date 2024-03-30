@@ -1605,4 +1605,26 @@ fn accounts_should_implement_storable() {
     assert_eq!(account, parsed);
 }
 
+// TODO: Delete
+#[test]
+fn should_be_able_to_upgrade_heap_data() {
+    let accounts_before = BTreeMap::new();
+    let bytes = Candid((&accounts_before,)).into_bytes().unwrap();
+    let (accounts_after, count_after): (BTreeMap<Vec<u8>, Account>, Option<u32>) =
+        Candid::from_bytes(bytes).map(|c| c.0).expect("Failed to parse");
+    assert_eq!(accounts_before, accounts_after);
+    assert_eq!(count_after, None);
+}
+
+// TODO: Delete
+#[test]
+fn should_be_able_to_downgrade_heap_data() {
+    let accounts_before = BTreeMap::new();
+    let stats_before = Some(22);
+    let bytes = Candid((&accounts_before, stats_before)).into_bytes().unwrap();
+    let (accounts_after,): (BTreeMap<Vec<u8>, Account>,) =
+        Candid::from_bytes(bytes).map(|c| c.0).expect("Failed to parse");
+    assert_eq!(accounts_before, accounts_after);
+}
+
 crate::accounts_store::schema::tests::test_accounts_db!(AccountsStore::default());

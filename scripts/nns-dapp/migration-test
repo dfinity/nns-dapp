@@ -15,6 +15,7 @@ print_help() {
 	  - Some or all of these changes may be migrated into the downgrade-upgrade test.
 
 	Needs:
+	  - sponge
 	  - dfx
 	  - ic-wasm
 	  - idl2json
@@ -84,6 +85,11 @@ get_assets() {
     test -z "${!SCHEMA}" || {
       set_arguments_schema "${!SCHEMA}" <"$(working_arguments "$config")" | sponge "$(working_arguments "$config")"
     }
+    echo "========== SCHEMA =========="
+    echo "Requested schema: ${!SCHEMA}"
+    echo "========== ARGUMENTS =========="
+    cat "$(working_arguments "$config")"
+    echo "=============END==============="
   done
 }
 
