@@ -16,6 +16,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Setting to hide tokens with zero balance.
+* Actionable proposals.
 
 #### Changed
 
