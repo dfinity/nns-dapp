@@ -18,6 +18,7 @@ jobs:
             brew install jq
             brew install coreutils
             brew install gzip
+            brew install xz
             echo "/usr/local/bin" >> $GITHUB_PATH
             echo "$(brew --prefix)/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
           fi

@@ -1,3 +1,4 @@
+import * as api from "$lib/api/sns-governance.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import SnsVotingCard from "$lib/components/sns-proposals/SnsVotingCard.svelte";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
@@ -361,6 +362,17 @@ describe("SnsVotingCard", () => {
   });
 
   describe("voting", () => {
+    const spyQuerySnsProposals = vi
+      .spyOn(api, "queryProposals")
+      .mockResolvedValue({
+        proposals: [],
+        include_ballots_by_caller: [true],
+      });
+
+    beforeEach(() => {
+      spyQuerySnsProposals.mockClear();
+    });
+
     it("should trigger register-vote and call reloadProposal", async () => {
       snsNeuronsStore.setNeurons({
         rootCanisterId: mockSnsCanisterId,
