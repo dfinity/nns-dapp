@@ -52,4 +52,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Reinstall xz in reproducible assets workflow to get consistent archives.
+
 #### Security
