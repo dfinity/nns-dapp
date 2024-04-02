@@ -18,8 +18,7 @@ jobs:
             brew install jq
             brew install coreutils
             brew install gzip
-            brew install xz@5.4.5
-            brew link --overwrite --force xz@5.4.5
+            brew install xz
             echo "/usr/local/bin" >> $GITHUB_PATH
             echo "$(brew --prefix)/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
           fi
